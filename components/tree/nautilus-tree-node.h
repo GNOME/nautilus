@@ -27,6 +27,9 @@
 #define NAUTILUS_TREE_NODE_H
 
 #include <gtk/gtkobject.h>
+#include <glib.h>
+#include <libnautilus-extensions/nautilus-directory.h>
+#include <libnautilus-extensions/nautilus-file.h>
 
 typedef struct NautilusTreeNode NautilusTreeNode;
 typedef struct NautilusTreeNodeClass NautilusTreeNodeClass;
@@ -49,10 +52,12 @@ struct NautilusTreeNodeClass {
 };
 
 
-NautilusTreeNode *nautilus_tree_node_get_parent    (NautilusTreeNode   *node);
-NautilusTreeNode *nautilus_tree_node_get_children  (NautilusTreeNode   *node);
-NautilusTreeNode *nautilus_tree_node_get_file      (NautilusTreeNode   *node);
-NautilusTreeNode *nautilus_tree_node_get_directory (NautilusTreeNode   *node);
+GtkType            nautilus_tree_node_get_type      (void);
+
+NautilusTreeNode  *nautilus_tree_node_get_parent    (NautilusTreeNode   *node);
+GList             *nautilus_tree_node_get_children  (NautilusTreeNode   *node);
+NautilusFile      *nautilus_tree_node_get_file      (NautilusTreeNode   *node);
+NautilusDirectory *nautilus_tree_node_get_directory (NautilusTreeNode   *node);
 
 void              nautilus_tree_node_set_user_data (NautilusTreeNode   *node,
 						    gpointer           user_data,

@@ -1,5 +1,57 @@
 2000-08-03  Maciej Stachowiak  <mjs@eazel.com>
 
+	Rewrote the tree view to do model/view separation, and in the
+	process fixed bugs 1520, 1526, 1529, 1531 and 1522. Some of these
+	are not for the current milestone, but just fell out naturally
+	from doing the model/view separation, which makes the remaining
+	required tasks far easier.
+	
+	* components/tree/nautilus-tree-model.h: *
+	components/tree/nautilus-tree-model.c:
+	(nautilus_tree_model_initialize_class),
+	(nautilus_tree_model_initialize),
+	(nautilus_tree_stop_monitoring_internal),
+	(nautilus_tree_model_destroy), (nautilus_tree_model_new),
+	(report_root_node_if_possible),
+	(nautilus_tree_model_root_node_file_monitor),
+	(nautilus_tree_model_set_root_uri),
+	(nautilus_tree_model_monitor_add),
+	(nautilus_tree_model_monitor_remove),
+	(nautilus_tree_model_directory_files_changed_callback),
+	(nautilus_tree_model_directory_files_added_callback),
+	(nautilus_tree_model_directory_done_loading_callback),
+	(nautilus_tree_model_monitor_node),
+	(nautilus_tree_model_stop_monitoring_node),
+	(nautilus_tree_model_get_node), (uri_get_parent_text),
+	(report_node_added), (report_node_changed), (report_node_removed),
+	(report_done_loading): Implemented all the calls and signals and
+	monitoring and stuff for the new tree model.	
+	* components/tree/nautilus-tree-node.h,
+	components/tree/nautilus-tree-node.c:
+	(nautilus_tree_node_initialize_class),
+	(nautilus_tree_node_initialize), (nautilus_tree_node_destroy),
+	(nautilus_tree_node_new), (nautilus_tree_node_set_parent),
+	(nautilus_tree_remove_from_parent): New class that represents a
+	single node in the tree.
+	* components/tree/nautilus-tree-view.c:
+	(nautilus_tree_view_should_skip_file),
+	(nautilus_tree_view_insert_model_node),
+	(nautilus_tree_view_remove_model_node),
+	(nautilus_tree_view_update_model_node),
+	(nautilus_tree_view_model_node_added_callback),
+	(nautilus_tree_view_model_node_changed_callback),
+	(nautilus_tree_view_model_node_removed_callback),
+	(nautilus_tree_view_load_from_filesystem),
+	(nautilus_tree_view_initialize), (disconnect_model_handlers),
+	(nautilus_tree_view_destroy), (tree_expand_callback),
+	(tree_collapse_callback), (tree_select_row_callback): Adapt to
+	using the new NautilusTreeModel and NautilusTreeNodes instead of
+	using NautilusDirectories and NautilusFiles directly.
+
+	* components/tree/Makefile.am: Include new files in build.
+
+2000-08-03  Maciej Stachowiak  <mjs@eazel.com>
+
 	* libnautilus-extensions/nautilus-directory-async.c
 	(metafile_read_done): Set directory->details->metafile_read_handle
 	to NULL after freeing it, otherwise we will get random crashing.

@@ -62,10 +62,9 @@ struct NautilusTreeModelClass {
 					       NautilusTreeNode *node);
 };
 
-typedef void (*NautilusTreeCallback) (NautilusTreeModel *model,
-				      NautilusTreeNode  *node,
-				      GList             *child_nodes,
-				      gpointer           callback_data);
+typedef void (*NautilusTreeModelCallback) (NautilusTreeModel *model,
+					   NautilusTreeNode  *node,
+					   gpointer           callback_data);
 
 
 GtkType            nautilus_tree_model_get_type                 (void);
@@ -73,14 +72,21 @@ GtkType            nautilus_tree_model_get_type                 (void);
 NautilusTreeModel *nautilus_tree_model_new                      (const char *root_uri);
 
 
-void               nautilus_tree_model_monitor_node             (NautilusTreeModel    *model,
-								 NautilusTreeNode     *node,
-								 gboolean              force_reload,
-								 NautilusTreeCallback  initial_files_callback,
-								 gpointer              callback_data); 
+void               nautilus_tree_model_monitor_add              (NautilusTreeModel         *model,
+								 gconstpointer              client,
+								 NautilusTreeModelCallback  initial_nodes_callback,
+								 gpointer                   callback_data);
 
-void               nautilus_tree_model_stop_monitoring_node     (NautilusTreeModel *model,
-								 NautilusTreeNode  *node);
+void               nautilus_tree_model_monitor_remove           (NautilusTreeModel         *model,
+								 gconstpointer              client);
+
+void               nautilus_tree_model_monitor_node             (NautilusTreeModel         *model,
+								 NautilusTreeNode          *node,
+								 gconstpointer              client); 
+
+void               nautilus_tree_model_stop_monitoring_node     (NautilusTreeModel         *model,
+								 NautilusTreeNode          *node,
+								 gconstpointer              client);
 
 NautilusTreeNode  *nautilus_tree_model_get_node                 (NautilusTreeModel *model,
 								 const char *uri);
@@ -95,3 +101,4 @@ NautilusTreeNode  *nautilus_tree_model_get_root_node            (NautilusTreeMod
 
 
 #endif /* NAUTILUS_TREE_MODEL_H */
+

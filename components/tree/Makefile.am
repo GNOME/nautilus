@@ -29,6 +29,9 @@ nautilus_tree_view_SOURCES =	       \
 	nautilus-tree-view.c           \
 	nautilus-tree-model.h          \
 	nautilus-tree-model.c          \
+	nautilus-tree-node-private.h   \
+	nautilus-tree-node.h           \
+	nautilus-tree-node.c           \
 	main.c                         \
 	$(NULL)
 

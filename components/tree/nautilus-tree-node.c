@@ -28,10 +28,79 @@
 #include "nautilus-tree-node.h"
 #include "nautilus-tree-node-private.h"
 
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
 
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 
+
+
+static void               nautilus_tree_node_destroy          (GtkObject   *object);
+static void               nautilus_tree_node_initialize       (gpointer     object,
+								gpointer     klass);
+static void               nautilus_tree_node_initialize_class (gpointer     klass);
+
+
+
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTreeNode, nautilus_tree_node, GTK_TYPE_OBJECT)
+
+
+static void
+nautilus_tree_node_initialize_class (gpointer klass)
+{
+	GtkObjectClass *object_class;
+
+	object_class = GTK_OBJECT_CLASS (klass);
+	
+	object_class->destroy = nautilus_tree_node_destroy;
+}
+
+static void
+nautilus_tree_node_initialize (gpointer object, gpointer klass)
+{
+	NautilusTreeNode *node;
+
+	node = NAUTILUS_TREE_NODE (object);
+
+	node->details = g_new0 (NautilusTreeNodeDetails, 1);
+}
+
+
+static void
+nautilus_tree_node_destroy (GtkObject *object)
+{
+	NautilusTreeNode *node;
+
+	node = NAUTILUS_TREE_NODE (object);
+
+	nautilus_directory_unref (node->details->directory);
+
+	nautilus_file_unref (node->details->file);
+
+	g_list_free (node->details->children);
+
+	g_free (node->details);
+
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+}
+
+NautilusTreeNode *
+nautilus_tree_node_new (NautilusFile *file)
+{
+	NautilusTreeNode *node;
+	char *uri;
+
+	node = NAUTILUS_TREE_NODE (gtk_type_new (NAUTILUS_TYPE_TREE_NODE));
+
+	node->details = g_new0 (NautilusTreeNodeDetails, 1);
+	node->details->file      = nautilus_file_ref (file);
+
+	uri = nautilus_file_get_uri (file);
+	node->details->directory = nautilus_directory_get (uri);
+	g_free (uri);
+
+	return node;
+}
 
 
 
@@ -41,43 +110,41 @@ nautilus_tree_node_get_parent (NautilusTreeNode   *node)
 	return node->details->parent;
 }
 
-NautilusTreeNode *
+GList *
 nautilus_tree_node_get_children  (NautilusTreeNode   *node)
 {
 	return node->details->children;
 }
 
-NautilusTreeNode *
+NautilusFile *
 nautilus_tree_node_get_file      (NautilusTreeNode   *node)
 {
 	return node->details->file;
 }
 
-NautilusTreeNode *
+NautilusDirectory *
 nautilus_tree_node_get_directory (NautilusTreeNode   *node)
 {
 	return node->details->directory;
 }
 
+void
+nautilus_tree_node_set_parent (NautilusTreeNode   *node,
+			       NautilusTreeNode   *parent)
+{
+	g_assert (node->details->parent == NULL);
+
+	node->details->parent = parent;
+	parent->details->children = g_list_append (parent->details->children, node);
+}
+
 
 void
-nautilus_tree_node_set_user_data (NautilusTreeNode   *node,
-				  gpointer           user_data,
-				  GDestroyNotifyFunc destroy_notify)
+nautilus_tree_remove_from_parent (NautilusTreeNode *node)
 {
-	if (node->details->user_data != NULL) {
-		/* FIXME: call old destroy_notify */
+	if (node->details->parent != NULL) {
+		node->details->parent->details->children = g_list_remove
+			(node->details->parent->details->children, node);
+		node->details->parent = NULL;
 	}
-
-	node->details->user_data = user_data;
-	node->details->destroy_notify = destroy_notify;
 }
-
-gpointer
-nautilus_tree_node_get_user_data (NautilusTreeNode *node)
-{
-	return node->details->user_data;
-
-}
-
-

@@ -30,6 +30,8 @@
 #include <config.h>
 #include "nautilus-tree-view.h"
 
+#include "nautilus-tree-model.h"
+
 #include <bonobo/bonobo-control.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmain.h>
@@ -56,26 +58,14 @@ struct NautilusTreeViewDetails {
 
 	GtkWidget *tree;
 
+	NautilusTreeModel *model;
+
 	GHashTable *uri_to_node_map;
-	GHashTable *uri_to_directory_map;
-
-	GList *directory_read_queue;
-	NautilusDirectory *current_directory;
-
-	GList *pending_files_added;
-	GList *pending_files_changed;
-
-	guint display_pending_timeout_id;
-	guint display_pending_idle_id;
-	guint files_added_handler_id;
-	guint files_changed_handler_id;
 
 	gboolean show_hidden_files;
 };
 
 #define TREE_SPACING 3
-
-static void nautilus_tree_view_insert_file (NautilusTreeView *view, NautilusFile *file);
 
 static void nautilus_tree_view_initialize_class (NautilusTreeViewClass *klass);
 static void nautilus_tree_view_initialize       (NautilusTreeView      *view);
@@ -83,7 +73,12 @@ static void nautilus_tree_view_destroy          (GtkObject             *object);
 static void tree_load_location_callback         (NautilusView          *nautilus_view,
 						 const char            *location,
 						 NautilusTreeView      *view);
-static void tree_expand_callback                (NautilusView          *nautilus_view,
+
+static void tree_expand_callback                (GtkCTree              *tree,
+						 GtkCTreeNode          *node,
+						 NautilusTreeView      *view);
+
+static void tree_collapse_callback              (GtkCTree              *tree,
 						 GtkCTreeNode          *node,
 						 NautilusTreeView      *view);
 
@@ -95,40 +90,10 @@ static void tree_select_row_callback            (GtkCTree              *tree,
 static void nautilus_tree_view_load_uri         (NautilusTreeView      *view,
 						 const char            *uri);
 
-static void files_added_callback                (NautilusDirectory *directory,
-						 GList *files,
-						 gpointer callback_data);
-
-static void files_changed_callback              (NautilusDirectory *directory,
-						 GList *files,
-						 gpointer callback_data);
-
-static void done_loading_callback               (NautilusDirectory *directory,
-						 gpointer callback_data);
-
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTreeView, nautilus_tree_view, GTK_TYPE_SCROLLED_WINDOW)
      
-
-static void
-nautilus_tree_view_file_added (NautilusTreeView *view, NautilusFile *file)
-{
-#ifdef DEBUG_TREE
-	printf ("file added: %s\n", nautilus_file_get_uri (file));
-#endif
-	nautilus_tree_view_insert_file (view, file);
-
-}
-
-static void
-nautilus_tree_view_file_changed (NautilusTreeView *view, NautilusFile *file)
-{
-#ifdef DEBUG_TREE
-	printf ("file changed: %s\n", nautilus_file_get_uri (file));
-#endif
-	/* FIXME bugzilla.eazel.com 1522: should actually do something here. */
-}
 
 
 static void
@@ -142,317 +107,6 @@ nautilus_tree_view_initialize_class (NautilusTreeViewClass *klass)
 }
 
 
-static void
-nautilus_tree_view_read_head_of_queue (NautilusTreeView *view)
-{
-	if (view->details->directory_read_queue == NULL) {
-#ifdef DEBUG_TREE
-		puts ("No queue");
-#endif
-		return;
-	}
-
-	view->details->current_directory = NAUTILUS_DIRECTORY (view->details->directory_read_queue->data);
-
-
-#ifdef DEBUG_TREE
-	printf ("XXX: Now scanning directory %s\n", nautilus_directory_get_uri (view->details->current_directory));
-#endif
-
-	/* Attach a handler to get any further files that show up as we
-	 * load and sychronize. We won't miss any files because this
-	 * signal is emitted from an idle routine and so we will be
-	 * connected before the next time it is emitted.
-	 */
-    	view->details->files_added_handler_id = gtk_signal_connect
-		(GTK_OBJECT (view->details->current_directory),
-		 "files_added",
-		 GTK_SIGNAL_FUNC (files_added_callback),
-		 view);
-	view->details->files_changed_handler_id = gtk_signal_connect
-		(GTK_OBJECT (view->details->current_directory), 
-		 "files_changed",
-		 GTK_SIGNAL_FUNC (files_changed_callback),
-		 view);
-    	view->details->files_added_handler_id = gtk_signal_connect
-		(GTK_OBJECT (view->details->current_directory),
-		 "done_loading",
-		 GTK_SIGNAL_FUNC (done_loading_callback),
-		 view);
-
-	nautilus_directory_file_monitor_add (view->details->current_directory, view,
-					     NULL, FALSE, TRUE,
-					     files_added_callback, view);
-
-
-
-
-	view->details->directory_read_queue = view->details->directory_read_queue->next;
-}
-
-
-static gboolean
-display_pending_files (NautilusTreeView *view)
-{
-	GList *files_added, *files_changed, *p;
-	NautilusFile *file;
-
-	if (view->details->current_directory != NULL
-	    && nautilus_directory_are_all_files_seen (view->details->current_directory)) {
-		/* done_loading (view); */
-	}
-
-	files_added = view->details->pending_files_added;
-	files_changed = view->details->pending_files_changed;
-
-	if (files_added == NULL && files_changed == NULL) {
-		return FALSE;
-	}
-
-	view->details->pending_files_added = NULL;
-	view->details->pending_files_changed = NULL;
-
-	/* XXX gtk_signal_emit (GTK_OBJECT (view), signals[BEGIN_ADDING_FILES]); */
-
-	for (p = files_added; p != NULL; p = p->next) {
-		file = p->data;
-		
-		/* FIXME bugzilla.eazel.com 1520: Need to do a better test to see if the info is up to date. */
-#if 0
-		if (nautilus_directory_contains_file (view->details->current_directory, file)) {
-#endif
-			nautilus_tree_view_file_added (view, file);
-#if 0
-		}
-#endif
-	}
-
-	for (p = files_changed; p != NULL; p = p->next) {
-		file = p->data;
-
-		nautilus_tree_view_file_changed (view, file);
-	}
-
-	/* gtk_signal_emit (GTK_OBJECT (view), signals[DONE_ADDING_FILES]); */
-
-	nautilus_file_list_free (files_added);
-	nautilus_file_list_free (files_changed);
-
-	return TRUE;
-}
-
-
-static gboolean
-display_pending_idle_callback (gpointer data)
-{
-	/* Don't do another idle until we receive more files. */
-
-	NautilusTreeView *view;
-
-	view = NAUTILUS_TREE_VIEW (data);
-
-	view->details->display_pending_idle_id = 0;
-
-	display_pending_files (view);
-
-	return FALSE;
-}
-
-
-static gboolean
-display_pending_timeout_callback (gpointer data)
-{
-	/* Do another timeout if we displayed some files.
-	 * Once we get all the files, we'll start using
-	 * idle instead.
-	 */
-
-	NautilusTreeView *view;
-	gboolean displayed_some;
-
-	view = NAUTILUS_TREE_VIEW (data);
-
-	displayed_some = display_pending_files (view);
-	if (displayed_some) {
-		return TRUE;
-	}
-
-	view->details->display_pending_timeout_id = 0;
-	return FALSE;
-}
-
-
-
-static void
-unschedule_timeout_display_of_pending_files (NautilusTreeView *view)
-{
-	/* Get rid of timeout if it's active. */
-	if (view->details->display_pending_timeout_id != 0) {
-		g_assert (view->details->display_pending_idle_id == 0);
-		gtk_timeout_remove (view->details->display_pending_timeout_id);
-		view->details->display_pending_timeout_id = 0;
-	}
-}
-
-static void
-schedule_idle_display_of_pending_files (NautilusTreeView *view)
-{
-	/* No need to schedule an idle if there's already one pending. */
-	if (view->details->display_pending_idle_id != 0) {
-		return;
-	}
-
-	/* An idle takes precedence over a timeout. */
-	unschedule_timeout_display_of_pending_files (view);
-
-	view->details->display_pending_idle_id =
-		gtk_idle_add (display_pending_idle_callback, view);
-}
-
-static void
-schedule_timeout_display_of_pending_files (NautilusTreeView *view)
-{
-	/* No need to schedule a timeout if there's already one pending. */
-	if (view->details->display_pending_timeout_id != 0) {
-		return;
-	}
-
-	/* An idle takes precedence over a timeout. */
-	if (view->details->display_pending_idle_id != 0) {
-		return;
-	}
-
-	view->details->display_pending_timeout_id =
-		gtk_timeout_add (DISPLAY_TIMEOUT_INTERVAL_MSECS,
-				 display_pending_timeout_callback, view);
-}
-
-static void
-unschedule_idle_display_of_pending_files (NautilusTreeView *view)
-{
-	/* Get rid of idle if it's active. */
-	if (view->details->display_pending_idle_id != 0) {
-		g_assert (view->details->display_pending_timeout_id == 0);
-		gtk_idle_remove (view->details->display_pending_idle_id);
-		view->details->display_pending_idle_id = 0;
-	}
-}
-
-static void
-unschedule_display_of_pending_files (NautilusTreeView *view)
-{
-	unschedule_idle_display_of_pending_files (view);
-	unschedule_timeout_display_of_pending_files (view);
-}
-
-static void
-queue_pending_files (NautilusTreeView *view,
-		     GList *files,
-		     GList **pending_list)
-{
-	GList *filtered_files = NULL;
-	GList *files_iterator;
-	NautilusFile *file;
-	char * name;
-
-	/* Filter out hidden files if needed */
-	if (!view->details->show_hidden_files) {
-		/* FIXME bugzilla.eazel.com 653: 
-		 * Eventually this should become a generic filtering thingy. 
-		 */
-		for (files_iterator = files; 
-		     files_iterator != NULL; 
-		     files_iterator = files_iterator->next) {
-			file = NAUTILUS_FILE (files_iterator->data);
-			
-			g_assert (file != NULL);
-			
-			name = nautilus_file_get_name (file);
-			
-			g_assert (name != NULL);
-			
-			if (!nautilus_str_has_prefix (name, ".")) {
-				filtered_files = g_list_append (filtered_files, file);
-			}
-			
-			g_free (name);
-		}
-		
-		files = filtered_files;
-	}
-
-	/* Put the files on the pending list if there are any. */
-	if (files != NULL) {
-		nautilus_file_list_ref (files);
-		*pending_list = g_list_concat (*pending_list, g_list_copy (files));
-	
-		/* If we haven't see all the files yet, then we'll wait for the
-		 * timeout to fire. If we have seen all the files, then we'll use
-		 * an idle instead.
-		 */
-		if (nautilus_directory_are_all_files_seen (view->details->current_directory)) {
-			schedule_idle_display_of_pending_files (view);
-		} else {
-			schedule_timeout_display_of_pending_files (view);
-		}
-	}
-}
-
-static void
-files_added_callback (NautilusDirectory *directory,
-		      GList *files,
-		      gpointer callback_data)
-{
-	NautilusTreeView *view;
-
-#ifdef DEBUG_TREE
-	puts ("XXX - files_added_callback");
-#endif
-
-	view = NAUTILUS_TREE_VIEW (callback_data);
-	queue_pending_files (view, files, &view->details->pending_files_added);
-}
-
-static void
-done_loading_callback (NautilusDirectory *directory,
-		       gpointer callback_data)
-{
-	NautilusTreeView *view;
-
-#ifdef DEBUG_TREE
-	puts ("XXX - files_added_callback");
-#endif
-
-	view = NAUTILUS_TREE_VIEW (callback_data);
-
-	if (nautilus_directory_are_all_files_seen (directory)) {
-#ifdef DEBUG_TREE
-		puts ("XXX - should move head of queue ahead here");
-#endif		
-
-#ifdef DEBUG_TREE
-		printf ("Just finished reading '%s', moving queue ahead to '%s'\n",
-			nautilus_directory_get_uri (directory),
-			(view->details->directory_read_queue == NULL ? "none" : nautilus_directory_get_uri (NAUTILUS_DIRECTORY (view->details->directory_read_queue->data))));
-#endif DEBUG_TREE
-
-
-		view->details->current_directory = NULL;
-		nautilus_tree_view_read_head_of_queue (view);
-	}
-}
-
-
-static void
-files_changed_callback (NautilusDirectory *directory,
-			GList *files,
-			gpointer callback_data)
-{
-	NautilusTreeView *view;
-
-	view = NAUTILUS_TREE_VIEW (callback_data);
-	queue_pending_files (view, files, &view->details->pending_files_changed);
-}
 
 
 static char *
@@ -530,40 +184,84 @@ nautilus_tree_view_get_canonical_uri (const char *uri)
 
 
 
-static void
-nautilus_tree_view_insert_file (NautilusTreeView *view, NautilusFile *file)
+static gboolean
+nautilus_tree_view_should_skip_file (NautilusTreeView *view,
+				     NautilusFile *file)
 {
-	GtkCTreeNode *parent_node;
-	GtkCTreeNode *node;
-	GtkCTreeNode *previous_sibling_node;
+	char *name;
+	gboolean should_skip;
+
+	should_skip = FALSE;
+
+	/* FIXME: maybe this should track the "show hidden files" preference? */
+
+	if (!view->details->show_hidden_files) {
+
+		/* FIXME bugzilla.eazel.com 653: 
+		 * Eventually this should become a generic filtering thingy. 
+		 */
+			
+		name = nautilus_file_get_name (file);
+			
+		g_assert (name != NULL);
+			
+		if (nautilus_str_has_prefix (name, ".")) {
+			should_skip = TRUE;
+		}
+		
+		g_free (name);
+	}
+		
+	return should_skip;
+}
+
+static void
+nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *node)
+{
+	GtkCTreeNode *parent_view_node;
+	GtkCTreeNode *view_node;
+	NautilusFile *file;
+	char *uri;
+	char *canonical_uri;
 	char *name;
 	char *text[2];
-	char *canonical_uri;
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
 	
-	canonical_uri = nautilus_tree_view_get_canonical_uri (nautilus_file_get_uri (file));
+	file = nautilus_tree_node_get_file (node);
+
+	if (nautilus_tree_view_should_skip_file (view, file)) {
+		return;
+	}
+
+	uri = nautilus_file_get_uri (file);
+	
+	canonical_uri = nautilus_tree_view_get_canonical_uri (uri);
+
+	g_free (uri);
 
 #ifdef DEBUG_TREE
 	printf ("Inserting URI into tree: %s\n", canonical_uri);
 #endif
 
+	parent_view_node = nautilus_tree_view_find_parent_node (view, canonical_uri);
 
-	parent_node = nautilus_tree_view_find_parent_node (view, canonical_uri);
-	previous_sibling_node = NULL;
+#ifdef DEBUG_TREE
+	printf ("parent_view_node 0x%x (%s)\n", (unsigned) parent_view_node, 
+		(char *) gtk_ctree_node_get_row_data (GTK_CTREE (view->details->tree),
+						      parent_view_node));
+#endif
+
 
 	name = nautilus_tree_view_uri_to_name (canonical_uri);
 
 	text[0] = name;
 	text[1] = NULL;
 
-	node = g_hash_table_lookup (view->details->uri_to_node_map, canonical_uri);
-
-	if (node == NULL) {
+	if (g_hash_table_lookup (view->details->uri_to_node_map, canonical_uri) == NULL) {
 		
 		/* FIXME bugzilla.eazel.com 1524: still need to
 		   respond to icon theme changes. */
-
 
 		nautilus_icon_factory_get_pixmap_and_mask_for_file (file,
 								    NULL,
@@ -571,21 +269,22 @@ nautilus_tree_view_insert_file (NautilusTreeView *view, NautilusFile *file)
 								    &pixmap,
 								    &mask);
 
-		node = gtk_ctree_insert_node (GTK_CTREE (view->details->tree),
-					      parent_node, 
-					      previous_sibling_node,
-					      text,
-					      TREE_SPACING,
-					      pixmap, mask, pixmap, mask,
-					      FALSE,
-					      
-					      /* FIXME bugzilla.eazel.com 1525: should 
-						 remember what was
-						 expanded last time and what
-						 wasn't. On first start, we should
-						 expand "/" and leave everything else
-						 collapsed. */
-					      FALSE);
+		view_node = gtk_ctree_insert_node (GTK_CTREE (view->details->tree),
+						   parent_view_node, 
+						   NULL,
+						   text,
+						   TREE_SPACING,
+						   pixmap, mask, pixmap, mask,
+						   FALSE,
+						   
+						   /* FIXME bugzilla.eazel.com 1525: should 
+						      remember what was
+						      expanded last time and what
+						      wasn't. On first start, we should
+						      expand "/" and leave everything else
+						      collapsed. */
+						   FALSE);
+		
 		if (nautilus_file_is_directory (file)) {
 			/* Gratuitous hack so node can be expandable w/o
 			   immediately inserting all the real children. */
@@ -593,7 +292,7 @@ nautilus_tree_view_insert_file (NautilusTreeView *view, NautilusFile *file)
 			text[0] = "...HACK...";
 			text[1] = NULL;
 			gtk_ctree_insert_node (GTK_CTREE (view->details->tree),
-					       node, 
+					       view_node, 
 					       NULL,
 					       text,
 					       TREE_SPACING,
@@ -601,92 +300,173 @@ nautilus_tree_view_insert_file (NautilusTreeView *view, NautilusFile *file)
 					       FALSE,
 					       FALSE);
 		}
+
+		gtk_ctree_node_set_row_data_full (GTK_CTREE (view->details->tree),
+						  view_node,
+						  g_strdup (canonical_uri),
+						  g_free);
+
+
+		g_hash_table_insert (view->details->uri_to_node_map, canonical_uri, view_node); 
 	}
-
-
-
-	gtk_ctree_node_set_row_data_full (GTK_CTREE (view->details->tree),
-					  node,
-					  g_strdup (canonical_uri),
-					  g_free);
-
-
-#ifdef DEBUG_TREE
-	printf ("XXX - putting node in hash_table: %s\n", canonical_uri);
-#endif
-
-	g_hash_table_insert (view->details->uri_to_node_map, canonical_uri, node); 
 }
 
 
 
 static void
-nautilus_tree_view_enqueue_directory (NautilusTreeView *view,
-				      NautilusDirectory *directory)
+nautilus_tree_view_remove_model_node (NautilusTreeView *view, NautilusTreeNode *node)
 {
-	/* FIXME bugzilla.eazel.com 1526: check if it's already on the
-           queue first. */
-
-	view->details->directory_read_queue = g_list_append (view->details->directory_read_queue, 
-							     directory);
-
-#ifdef DEBUG_TREE
-	printf ("just enqueue'd: 0x%x (%s)\n", (unsigned) directory, nautilus_directory_get_uri (directory));
-	printf ("queue length: %d\n", g_list_length (view->details->directory_read_queue));
-#endif
-
-	if (view->details->current_directory == NULL) {
-#ifdef DEBUG_TREE
-		printf ("reading head of queue");
-#endif
-		nautilus_tree_view_read_head_of_queue (view);
-	}
-}
-
-static void
-nautilus_tree_view_load_uri_children (NautilusTreeView *view, const char *uri, gboolean is_root)
-{
- 	NautilusDirectory *directory;
- 	NautilusFile *file;
-
+	GtkCTreeNode *view_node;
+	NautilusFile *file;
 	char *canonical_uri;
+	char *uri;
 	
+	file = nautilus_tree_node_get_file (node);
+
+	uri = nautilus_file_get_uri (file);
 	canonical_uri = nautilus_tree_view_get_canonical_uri (uri);
-
-	file = nautilus_file_get (canonical_uri);
-
-	/* FIXME bugzilla.eazel.com 1519: remove gone files when
-	   rescaning directory. To implement it here, we should remove all
-	   children of the node for the dir before we load it. */
-
-	if (is_root || nautilus_file_is_directory (file)) {
-		directory = nautilus_directory_get (canonical_uri);
-
-		/* Should clear out all children first */
+	g_free (uri);
+	
+	view_node = g_hash_table_lookup (view->details->uri_to_node_map, canonical_uri); 
+	
+	if (view_node != NULL) {
+		gtk_ctree_remove_node (GTK_CTREE (view->details->tree),
+				       view_node);
 		
-		nautilus_tree_view_enqueue_directory (view,
-						      directory);
+		/* FIXME: free the original key */
+		g_hash_table_remove (view->details->uri_to_node_map, canonical_uri); 
 	}
 
-	nautilus_file_unref (file);
+	g_free (canonical_uri);
+
 }
+
+static void
+nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *node)
+{
+	GtkCTreeNode *view_node;
+	NautilusFile *file;
+	char *canonical_uri;
+	char *uri;
+	char *name;
+	GdkPixmap *pixmap;
+	GdkBitmap *mask;
+	
+	file = nautilus_tree_node_get_file (node);
+
+	/* FIXME: leaks non-canonical URI */
+	uri = nautilus_file_get_uri (file);
+	canonical_uri = nautilus_tree_view_get_canonical_uri (uri);
+	g_free (uri);
+
+	view_node = g_hash_table_lookup (view->details->uri_to_node_map, canonical_uri); 
+
+	if (view_node != NULL) {
+
+		name = nautilus_tree_view_uri_to_name (canonical_uri);
+	
+		nautilus_icon_factory_get_pixmap_and_mask_for_file (file,
+								    NULL,
+								    NAUTILUS_ICON_SIZE_FOR_MENUS,
+								    &pixmap,
+								    &mask);
+		
+		gtk_ctree_node_set_pixtext (GTK_CTREE (view->details->tree),
+					    view_node,
+					    0,
+					    name,
+					    TREE_SPACING,
+					    pixmap,
+					    mask);
+		
+#if 0
+		/* FIXME: should switch to this call so we can set open/closed pixamps */
+		void gtk_ctree_set_node_info  (GtkCTree     *ctree,
+					       GtkCTreeNode *node,
+					       const gchar  *text,
+					       guint8        spacing,
+					       GdkPixmap    *pixmap_closed,
+					       GdkBitmap    *mask_closed,
+					       GdkPixmap    *pixmap_opened,
+					       GdkBitmap    *mask_opened,
+					       gboolean      is_leaf,
+					       gboolean      expanded);
+#endif	
+	}
+
+
+}
+
+
+
+
+static void
+nautilus_tree_view_model_node_added_callback (NautilusTreeModel *model,
+					      NautilusTreeNode  *node,
+					      gpointer           callback_data)
+{
+	NautilusTreeView *view;
+
+	view = NAUTILUS_TREE_VIEW (callback_data);
+
+	nautilus_tree_view_insert_model_node (view, node);
+}
+
+
+
+
+
+static void
+nautilus_tree_view_model_node_changed_callback (NautilusTreeModel *model,
+						NautilusTreeNode  *node,
+						gpointer           callback_data)
+{
+	NautilusTreeView *view;
+
+	view = NAUTILUS_TREE_VIEW (callback_data);
+
+	/* Assume file did not change location - we will model that as a remove + an add */
+	nautilus_tree_view_update_model_node (view, node);
+}
+
+static void
+nautilus_tree_view_model_node_removed_callback (NautilusTreeModel *model,
+						NautilusTreeNode  *node,
+						gpointer           callback_data)
+{
+	NautilusTreeView *view;
+
+	view = NAUTILUS_TREE_VIEW (callback_data);
+
+	nautilus_tree_view_remove_model_node (view, node);
+}
+
 
 
 
 static void
 nautilus_tree_view_load_from_filesystem (NautilusTreeView *view)
 {
-	NautilusFile *file;
-	/* Start loading. */
+	view->details->model = nautilus_tree_model_new ("file:///");
 
-	file = nautilus_file_get ("file:/");
+	nautilus_tree_model_monitor_add (view->details->model,
+					 view,
+					 nautilus_tree_view_model_node_added_callback,
+					 view);
 
-	nautilus_tree_view_insert_file (view, file);
-	nautilus_tree_view_load_uri_children (view, "file:/", TRUE);
-
-	nautilus_file_unref (file);
+	gtk_signal_connect (GTK_OBJECT (view->details->model),
+			    "node_added",
+			    nautilus_tree_view_model_node_added_callback,
+			    view);
+	gtk_signal_connect (GTK_OBJECT (view->details->model),
+			    "node_changed",
+			    nautilus_tree_view_model_node_changed_callback,
+			    view);
+	gtk_signal_connect (GTK_OBJECT (view->details->model),
+			    "node_removed",
+			    nautilus_tree_view_model_node_removed_callback,
+			    view);
 }
-
 
 
 
@@ -719,6 +499,11 @@ nautilus_tree_view_initialize (NautilusTreeView *view)
 			    "tree_expand",
 			    GTK_SIGNAL_FUNC (tree_expand_callback), 
 			    view);
+
+	gtk_signal_connect (GTK_OBJECT (view->details->tree),
+			    "tree_collapse",
+			    GTK_SIGNAL_FUNC (tree_collapse_callback), 
+			    view);
 	
 	gtk_signal_connect (GTK_OBJECT (view->details->tree),
 			    "tree_select_row",
@@ -733,7 +518,7 @@ nautilus_tree_view_initialize (NautilusTreeView *view)
 			    view);
 
 	view->details->uri_to_node_map = g_hash_table_new (g_str_hash, g_str_equal);
-
+	
 	nautilus_tree_view_load_from_filesystem (view);
 
 	gtk_widget_show (view->details->tree);
@@ -744,27 +529,12 @@ nautilus_tree_view_initialize (NautilusTreeView *view)
 }
 
 
-static void
-disconnect_handler (NautilusTreeView *view, int *id)
-{
-	if (*id != 0) {
-		gtk_signal_disconnect (GTK_OBJECT (view->details->current_directory), *id);
-		*id = 0;
-	}
-}
 
 static void
 disconnect_model_handlers (NautilusTreeView *view)
 {
-	/* FIXME bugzilla.eazel.com 1527: this is bogus, we need to
-	   disconnect from all NautilusDirectories, not just the most
-	   recent one. */
-
-	disconnect_handler (view, &view->details->files_added_handler_id);
-	disconnect_handler (view, &view->details->files_changed_handler_id);
-	if (view->details->current_directory != NULL) {
-		nautilus_directory_file_monitor_remove (view->details->current_directory, view);
-	}
+	/* stop monitoring all the nodes, then stop monitoring the
+           whole */
 }
 
 
@@ -775,13 +545,7 @@ nautilus_tree_view_destroy (GtkObject *object)
 	
 	view = NAUTILUS_TREE_VIEW (object);
 	
-
-	if (view->details->current_directory != NULL) {
-		disconnect_model_handlers (view);
-		nautilus_directory_unref (view->details->current_directory);
-	}
-
-	unschedule_display_of_pending_files (view);
+	disconnect_model_handlers (view);
 
 	g_free (view->details);
 	
@@ -847,16 +611,9 @@ tree_load_location_callback (NautilusView *nautilus_view,
 }
 
 
-static void
-nautilus_tree_expand_uri (NautilusTreeView *view, const char *uri)
-{
-	/* Refresh children */
-	nautilus_tree_view_load_uri_children (view, uri, FALSE);
-}
-
 
 static void
-tree_expand_callback (NautilusView     *nautilus_view,
+tree_expand_callback (GtkCTree         *ctree,
 		      GtkCTreeNode     *node,
 		      NautilusTreeView *view)
 {
@@ -865,16 +622,38 @@ tree_expand_callback (NautilusView     *nautilus_view,
 	uri = (const char *) gtk_ctree_node_get_row_data (GTK_CTREE (view->details->tree),
 							  node);
 
-	nautilus_tree_expand_uri (view, uri);
+	nautilus_tree_model_monitor_node (view->details->model,
+					  nautilus_tree_model_get_node (view->details->model,
+									uri),
+					  view);
+}
+
+
+
+static void
+tree_collapse_callback (GtkCTree         *ctree,
+			GtkCTreeNode     *node,
+			NautilusTreeView *view)
+{
+	const char *uri;
+
+	uri = (const char *) gtk_ctree_node_get_row_data (GTK_CTREE (view->details->tree),
+							  node);
+
+	nautilus_tree_model_stop_monitoring_node (view->details->model,
+						  nautilus_tree_model_get_node (view->details->model,
+										uri),
+						  view);
 }
 
 
 
 
-static void tree_select_row_callback            (GtkCTree              *tree,
-						 GtkCTreeNode          *node,
-						 gint                   column,
-						 NautilusTreeView      *view)
+static void
+tree_select_row_callback (GtkCTree              *tree,
+			  GtkCTreeNode          *node,
+			  gint                   column,
+			  NautilusTreeView      *view)
 {
 	const char *uri;
 	
@@ -886,3 +665,6 @@ static void tree_select_row_callback            (GtkCTree              *tree,
 		nautilus_view_open_location (NAUTILUS_VIEW (view->details->nautilus_view), uri);
 	}
 }
+
+
+
