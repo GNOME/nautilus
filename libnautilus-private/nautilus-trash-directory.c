@@ -140,6 +140,8 @@ get_trash_volume (NautilusTrashDirectory *trash,
 		  TrashVolume **trash_volume,
 		  GnomeVFSURI **volume_mount_uri)
 {
+	char *uri_str;
+
 	/* Quick out if we already know about this volume. */
 	*trash_volume = g_hash_table_lookup (trash->details->volumes,
 					     volume);
@@ -148,12 +150,13 @@ get_trash_volume (NautilusTrashDirectory *trash,
 		return FALSE;
 	}
 
-	if (!nautilus_volume_monitor_should_integrate_trash (volume)) {
+	if (!nautilus_volume_should_integrate_trash (volume)) {
 		return FALSE;
 	}
 
-	*volume_mount_uri = gnome_vfs_uri_new
-		(nautilus_volume_monitor_get_volume_mount_uri (volume));
+	uri_str = gnome_vfs_get_uri_from_local_path (nautilus_volume_get_mount_path (volume));
+	*volume_mount_uri = gnome_vfs_uri_new (uri_str);
+	g_free (uri_str);
 
 	if (*trash_volume == NULL) {
 		/* Make the structure used to track the trash for this volume. */

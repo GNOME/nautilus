@@ -747,44 +747,13 @@ category_clicked_callback (GtkWidget *widget, char *category_name)
 	property_browser->details->selected_button = widget;
 }
 
-/* fetch the path of the xml file.  First, try to find it in the home directory, but it
-   we can't find it there, try the shared directory */
-   
-static char *
-get_xml_path (NautilusPropertyBrowser *property_browser)
-{
-	char *xml_path;
-	char *user_directory;
-
-	user_directory = nautilus_get_user_directory ();
-
-	/* first try the user's home directory */
-	xml_path = nautilus_make_path (user_directory,
-				       property_browser->details->path);
-	g_free (user_directory);
-	if (g_file_exists (xml_path)) {
-		return xml_path;
-	}
-	g_free (xml_path);
-	
-	/* next try the shared directory */
-	xml_path = nautilus_make_path (NAUTILUS_DATADIR,
-				       property_browser->details->path);
-	if (g_file_exists (xml_path)) {
-		return xml_path;
-	}
-	g_free (xml_path);
-
-	return NULL;
-}
-
 static xmlDocPtr
 read_browser_xml (NautilusPropertyBrowser *property_browser)
 {
 	char *path;
 	xmlDocPtr document;
 
-	path = get_xml_path (property_browser);
+	path = nautilus_get_data_file_path (property_browser->details->path);
 	if (path == NULL) {
 		return NULL;
 	}

@@ -47,7 +47,6 @@ char *   nautilus_get_desktop_directory              (void);
 char *   nautilus_get_gmc_desktop_directory          (void);
 char *   nautilus_get_pixmap_directory               (void);
 
-
 /* See if the user_main_directory exists. This should be called before
  * nautilus_get_user_main_directory, which creates the directory.
  */
@@ -62,6 +61,9 @@ gboolean nautilus_user_main_directory_exists         (void);
  * gnome_pixmap_file better, using GNOME_PATH.
  */
 char *   nautilus_pixmap_file                        (const char *partial_path);
+
+/* Locate a file in either the uers directory or the datadir. */
+char *   nautilus_get_data_file_path                 (const char *partial_path);
 
 /* Returns the build time stamp the Nautilus binary.
  * This is useful to be able to tell builds apart.

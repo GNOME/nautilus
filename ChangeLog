@@ -1,3 +1,78 @@
+2001-08-15  Darin Adler  <darin@bentspoon.com>
+
+	A pass at cleaning up the volume monitor. Made all the details of
+	NautilusVolume private.
+
+	* libnautilus-private/filesystem-attributes.xml: Changed the
+	"description" string to be named "default_volume_name" and also
+	marked it to be localized.
+	
+	* libnautilus-private/nautilus-file-utilities.h:
+	* libnautilus-private/nautilus-file-utilities.c:
+	(nautilus_get_data_file_path):
+	Added a new utility function to locate a file that's either in the
+	user's directory or in the Nautilus datadir.
+	
+	* src/nautilus-property-browser.c: (read_browser_xml): Use
+	nautilus_get_data_file_path.
+
+	* libnautilus-private/nautilus-trash-directory.c:
+	(get_trash_volume):
+	* libnautilus-private/nautilus-trash-monitor.c:
+	(add_one_volume_trash):
+	* src/file-manager/fm-desktop-icon-view.c: (volume_in_black_list),
+	(create_unique_volume_name), (create_mount_link),
+	(volume_unmounted_callback), (update_disks_menu):
+	* src/nautilus-application.c: (volume_mounted_callback),
+	(volume_unmounted_callback):
+	* src/nautilus-bookmark-list.c:
+	(nautilus_bookmark_list_get_file_path):
+	Use only calls from the NautilusVolume public API -- no getting at
+	the structure directly. Also fix callers that were using
+	nautilus_volume_monitor_get_volume_mount_uri to correctly
+	understand that they get the mount path, not the mount URI.
+	
+	* libnautilus-private/nautilus-volume-monitor.h:
+	* libnautilus-private/nautilus-volume-monitor.c:
+	(load_file_system_table): Fix storage leaks. Use the new
+	nautilus_get_data_file_path. Translate the default volume names as
+	they are loaded. Check for duplicate entries while loading the
+	table. Don't bother checking the name of the root node, since
+	there are plenty of other things about the file that we don't
+	check and there's no reason we particularly need to check that.
+	Fix some storage leaks. Free the doc, since I'm not seeing a
+	"nautilus --quit" segfault.	
+	(nautilus_volume_monitor_initialize): Only initialize stuff that
+	g_new0 won't set up for us.
+	(nautilus_volume_is_removable): Rename so it's a call on
+	NautilusVolume, not the NautilusVolumeMonitor.
+	(volume_is_removable): Fix logic so we don't have to have so many
+	different calls to fclose.
+	(nautilus_volume_get_name): Rename so it's a call on
+	NautilusVolume, not the NautilusVolumeMonitor.
+	(modify_volume_name_for_display): Don't bother supplying a name if
+	passed NULL, since that won't ever be helpful the way this is used.
+	(nautilus_volume_get_target_uri): Rename so it's a call on
+	NautilusVolume, not the NautilusVolumeMonitor.
+	(nautilus_volume_should_integrate_trash): Rename so it's a call on
+	NautilusVolume, not the NautilusVolumeMonitor. Get the information
+	from the file system type, so we don't have to copy it into each
+	NautilusVolume object.
+	(nautilus_volume_get_mount_path): Rename so it's a call on
+	NautilusVolume, and don't call it a URI since it's really a path.
+	(nautilus_volume_get_device_type): New call.
+	(make_volume_name_from_path): Get the default from the file system
+	type rather than passing it in.
+	(free_mount_list): Get rid of some dumb extra code.
+	(copy_volume), (nautilus_volume_free): Update for smaller set of
+	fields.
+	(create_volume), (finish_creating_volume),
+	(finish_creating_volume_and_prepend): Restructure so we don't need
+	to keep so much stuff around in the NautilusVolume object.
+
+	* src/nautilus-first-time-druid.c:
+	(druid_set_first_time_file_flag): Some tiny tweaking.
+	
 2001-08-15  Maciej Stachowiak  <mjs@noisehavoc.org>
 
 	* components/music/Makefile.am: Revert accidental commit of not

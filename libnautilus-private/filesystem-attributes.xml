@@ -1,28 +1,27 @@
 <?xml version="1.0"?>
 <FilesystemAttributes>
-    <filesystem name="affs" trash="no" description="affs"/>
-    <filesystem name="afs" trash="yes" description="AFS Network Volume"/>
-    <filesystem name="auto" trash="no" description="Auto-detected Volume"/>
-    <filesystem name="cdda" trash="no" description="CD Digital Audio"/>
-    <filesystem name="cdrom" trash="no" description="CDROM Drive"/>
-    <filesystem name="devfs" trash="no" description="Hardware Device Volume"/>
-    <filesystem name="ext2" trash="yes" description="Ext2 Linux Volume"/>
-    <filesystem name="ext3" trash="yes" description="Ext3 Linux Volume"/>
-    <filesystem name="fat" trash="yes" description="MSDOS Volume"/>
-    <filesystem name="iso9660" trash="no" description="CDROM Volume"/>
-    <filesystem name="hpfs" trash="no" description="Windows NT Volume"/>
-    <filesystem name="minix" trash="no" description="Minix Volume"/>
-    <filesystem name="msdos" trash="no" description="MSDOS Volume"/>
-    <filesystem name="nfs" trash="yes" description="NFS Network Volume"/>
-    <filesystem name="proc" trash="no" description="System Volume"/>
-    <filesystem name="reiserfs" trash="yes" description="ReiserFS Linux Volume"/>
-    <filesystem name="smb" trash="yes" description="Windows Fileshare Volume"/>
-    <filesystem name="udf" trash="no" description="DVD Volume"/>
-    <filesystem name="ufs" trash="yes" description="Solaris/BSD Volume"/>
-    <filesystem name="umsdos" trash="no" description="Enhanced DOS Volume"/>
-    <filesystem name="vfat" trash="yes" description="Windows Volume"/>
-    <filesystem name="xenix" trash="no" description="Xenix Volume"/>
-    <filesystem name="xfs" trash="yes" description="XFS Linux Volume"/>
-    <filesystem name="xiafs" trash="no" description="xiafs"/>
-    <filesystem name="unknown" trash="no" description="Unknown Filesystem"/>
+    <filesystem name="affs"     _default_volume_name="AFFS Volume"/>
+    <filesystem name="afs"      _default_volume_name="AFS Network Volume" trash="yes"/>
+    <filesystem name="auto"     _default_volume_name="Auto-detected Volume"/>
+    <filesystem name="cdda"     _default_volume_name="CD Digital Audio"/>
+    <filesystem name="cdrom"    _default_volume_name="CD-ROM Drive"/>
+    <filesystem name="devfs"    _default_volume_name="Hardware Device Volume"/>
+    <filesystem name="ext2"     _default_volume_name="Ext2 Linux Volume" trash="yes"/>
+    <filesystem name="ext3"     _default_volume_name="Ext3 Linux Volume" trash="yes"/>
+    <filesystem name="fat"      _default_volume_name="MSDOS Volume" trash="yes"/>
+    <filesystem name="iso9660"  _default_volume_name="CDROM Volume"/>
+    <filesystem name="hpfs"     _default_volume_name="Windows NT Volume"/>
+    <filesystem name="minix"    _default_volume_name="Minix Volume"/>
+    <filesystem name="msdos"    _default_volume_name="MSDOS Volume"/>
+    <filesystem name="nfs"      _default_volume_name="NFS Network Volume" trash="yes"/>
+    <filesystem name="proc"     _default_volume_name="System Volume"/>
+    <filesystem name="reiserfs" _default_volume_name="ReiserFS Linux Volume" trash="yes"/>
+    <filesystem name="smb"      _default_volume_name="Windows Shared Volume" trash="yes"/>
+    <filesystem name="udf"      _default_volume_name="DVD Volume"/>
+    <filesystem name="ufs"      _default_volume_name="Solaris/BSD Volume" trash="yes"/>
+    <filesystem name="umsdos"   _default_volume_name="Enhanced DOS Volume"/>
+    <filesystem name="vfat"     _default_volume_name="Windows VFAT Volume" trash="yes"/>
+    <filesystem name="xenix"    _default_volume_name="Xenix Volume"/>
+    <filesystem name="xfs"      _default_volume_name="XFS Linux Volume" trash="yes"/>
+    <filesystem name="xiafs"    _default_volume_name="XIAFS Volume"/>
 </FilesystemAttributes>

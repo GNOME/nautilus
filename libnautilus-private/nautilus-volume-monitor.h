@@ -34,7 +34,7 @@ typedef struct NautilusVolumeMonitorDetails NautilusVolumeMonitorDetails;
 #define NAUTILUS_TYPE_VOLUME_MONITOR		(nautilus_volume_monitor_get_type())
 #define NAUTILUS_VOLUME_MONITOR(obj)		(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_VOLUME_MONITOR, NautilusVolumeMonitor))
 #define NAUTILUS_VOLUME_MONITOR_CLASS(klass)	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_VOLUME_MONITOR, NautilusVolumeMonitorClass))
-#define IS_NAUTILUS_VOLUME_MONITOR(obj)		(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_VOLUME_MONITOR))
+#define NAUTILUS_IS_VOLUME_MONITOR(obj)		(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_VOLUME_MONITOR))
 
 struct NautilusVolumeMonitor {
 	GtkObject parent;
@@ -42,7 +42,6 @@ struct NautilusVolumeMonitor {
 };
 
 typedef struct NautilusVolume NautilusVolume;
-typedef struct NautilusFilesystemType NautilusFilesystemType;
 
 struct NautilusVolumeMonitorClass {
 	GtkObjectClass parent_class;
@@ -59,6 +58,7 @@ struct NautilusVolumeMonitorClass {
 };
 
 typedef enum {
+	NAUTILUS_DEVICE_UNKNOWN,
 	NAUTILUS_DEVICE_AUDIO_CD,
 	NAUTILUS_DEVICE_CAMERA,
 	NAUTILUS_DEVICE_CDROM_DRIVE,
@@ -66,57 +66,34 @@ typedef enum {
 	NAUTILUS_DEVICE_JAZ_DRIVE,
 	NAUTILUS_DEVICE_MEMORY_STICK,
 	NAUTILUS_DEVICE_NFS,
-	NAUTILUS_DEVICE_ZIP_DRIVE,
-	NAUTILUS_DEVICE_UNKNOWN
+	NAUTILUS_DEVICE_ZIP_DRIVE
 } NautilusDeviceType;
 
-typedef struct {
-	char *name;
-	char *description;
-	gboolean use_trash;
-} NautilusVolumeInfo;
+typedef gboolean (* NautilusEachVolumeCallback) (const NautilusVolume *, gpointer callback_data);
 
-struct NautilusVolume {
-	NautilusDeviceType device_type;
-		
-	char *device_path;
-	char *mount_path;
-	char *volume_name;
-	char *filesystem;
-	
-	char *description;
+GtkType                  nautilus_volume_monitor_get_type                   (void);
+NautilusVolumeMonitor  	*nautilus_volume_monitor_get                        (void);
+void                     nautilus_volume_monitor_mount_unmount_removable    (NautilusVolumeMonitor      *monitor,
+									     const char                 *mount_point,
+									     gboolean                    should_mount);
+gboolean                 nautilus_volume_monitor_volume_is_mounted          (NautilusVolumeMonitor      *monitor,
+									     const NautilusVolume       *mount_point);
+void                     nautilus_volume_monitor_each_mounted_volume        (NautilusVolumeMonitor      *monitor,
+									     NautilusEachVolumeCallback  callback,
+									     gpointer                    callback_data);
+const GList *            nautilus_volume_monitor_get_removable_volumes      (NautilusVolumeMonitor      *monitor);
+char *                   nautilus_volume_monitor_get_mount_name_for_display (NautilusVolumeMonitor      *monitor,
+									     const NautilusVolume       *volume);
+void                     nautilus_volume_monitor_set_volume_name            (NautilusVolumeMonitor      *monitor,
+									     const NautilusVolume       *volume,
+									     const char                 *volume_name);
 
-	gboolean is_removable;	
-	gboolean is_read_only;
-	gboolean use_trash;
-	gboolean audio_cd;
-};
+/* Volume operations. */
+char *                   nautilus_volume_get_name                           (const NautilusVolume       *volume);
+NautilusDeviceType       nautilus_volume_get_device_type                    (const NautilusVolume       *volume);
+gboolean                 nautilus_volume_is_removable                       (const NautilusVolume       *volume);
+gboolean                 nautilus_volume_should_integrate_trash             (const NautilusVolume       *volume);
+const char *             nautilus_volume_get_mount_path                     (const NautilusVolume       *volume);
+char *                   nautilus_volume_get_target_uri                     (const NautilusVolume       *volume);
 
-typedef gboolean (* NautilusEachVolumeFunction) (const NautilusVolume *, gpointer);
-
-GtkType                	nautilus_volume_monitor_get_type                   	(void);
-NautilusVolumeMonitor  	*nautilus_volume_monitor_get                        	(void);
-char 			*nautilus_volume_monitor_get_volume_name 		(const NautilusVolume 		*volume);
-
-void               	nautilus_volume_monitor_mount_unmount_removable    	(NautilusVolumeMonitor 		*monitor,
-									   	 const char            		*mount_point,
-									   	 gboolean			 should_mount);
-gboolean		nautilus_volume_monitor_volume_is_mounted 		(NautilusVolumeMonitor 		*monitor,
-					   					const NautilusVolume 		*mount_point);
-gboolean		nautilus_volume_monitor_volume_is_removable		(const NautilusVolume 		*volume);
-gboolean               	nautilus_volume_monitor_is_volume_link             	(const char            		*path);
-
-gboolean		nautilus_volume_monitor_should_integrate_trash		(const NautilusVolume 		*volume);
-const char		*nautilus_volume_monitor_get_volume_mount_uri 		(const NautilusVolume 		*volume);
-void                   	nautilus_volume_monitor_each_mounted_volume        	(NautilusVolumeMonitor 		*monitor,
-									  	 NautilusEachVolumeFunction   	function,
-									   	 gpointer               	context);
-const GList		*nautilus_volume_monitor_get_removable_volumes 		(NautilusVolumeMonitor 		*monitor);
-void			nautilus_volume_monitor_free_volume             	(NautilusVolume             	*volume);
-char 			*nautilus_volume_monitor_get_target_uri 		(const NautilusVolume 		*volume);
-void			nautilus_volume_monitor_set_volume_name 		(NautilusVolumeMonitor 		*monitor,
-										 const NautilusVolume 		*volume,
-										 const char 			*volume_name);
-char 			*nautilus_volume_monitor_get_mount_name_for_display 	(NautilusVolumeMonitor 		*monitor,
-										 NautilusVolume 		*volume);
 #endif /* NAUTILUS_VOLUME_MONITOR_H */

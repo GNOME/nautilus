@@ -37,6 +37,7 @@
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string-list.h>
 #include <eel/eel-string.h>
+#include <eel/eel-xml-extensions.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <gnome-xml/parser.h>
@@ -122,7 +123,6 @@
 #include <cdda_paranoia.h>
 
 #define CD_AUDIO_PATH "/dev/cdrom"
-#define CDDA_SCHEME "cdda"
 
 /* This is here to work around a broken header file. cdda_interface.h
  * has a statically defined array of chars that is unused. This will
@@ -144,8 +144,23 @@ typedef struct statfs MountTableEntry;
 typedef struct mntent MountTableEntry;
 #endif
 
-typedef void (* ChangeNautilusVolumeFunction) (NautilusVolumeMonitor *view,
-					       NautilusVolume        *volume);
+typedef struct {
+	char *name;
+	char *default_volume_name;
+	gboolean can_handle_trash;
+} NautilusFileSystemType;
+
+struct NautilusVolume {
+	NautilusDeviceType device_type;
+	NautilusFileSystemType *file_system_type;
+	
+	char *device_path;
+	char *mount_path;
+	char *volume_name;
+
+	gboolean is_removable;
+	gboolean is_audio_cd;
+};
 
 struct NautilusVolumeMonitorDetails
 {
@@ -153,8 +168,11 @@ struct NautilusVolumeMonitorDetails
 	GList *removable_volumes;
 	guint mount_volume_timer_id;
 	GHashTable *readable_mount_point_names;
-	GHashTable *filesystem_attribute_table;
+	GHashTable *file_system_table;
 };
+
+typedef void (* ChangeNautilusVolumeFunction) (NautilusVolumeMonitor *view,
+					       NautilusVolume        *volume);
 
 static NautilusVolumeMonitor *global_volume_monitor = NULL;
 static const char *floppy_device_path_prefix;
@@ -178,120 +196,81 @@ static void            nautilus_volume_monitor_initialize_class (NautilusVolumeM
 static void            nautilus_volume_monitor_destroy          (GtkObject                  *object);
 static char *          get_iso9660_volume_name                  (NautilusVolume             *volume,
 								 int                         volume_fd);
-static GHashTable *    load_filesystem_attributes_table         (void);
+static GHashTable *    load_file_system_table                   (void);
 static void            mount_volume_activate                    (NautilusVolumeMonitor      *view,
 								 NautilusVolume             *volume);
 static void            mount_volume_deactivate                  (NautilusVolumeMonitor      *monitor,
 								 NautilusVolume             *volume);
 static void            load_additional_mount_list_info          (GList                      *volume_list);
-static GList *         mount_volume_prepend_filesystem          (GList                      *volume_list,
-								 NautilusVolume             *volume);
-static NautilusVolume *create_volume                            (GHashTable                 *fs_attribute_table,
-								 const char                 *device_path,
-								 const char                 *mount_path,
-								 const char                 *filesystem);
-static NautilusVolume *copy_volume                              (NautilusVolume             *volume);
+static NautilusVolume *create_volume                            (const char                 *device_path,
+								 const char                 *mount_path);
+static GList *         finish_creating_volume_and_prepend       (NautilusVolumeMonitor      *monitor,
+								 NautilusVolume             *volume,
+								 const char                 *file_system_type_name,
+								 GList                      *volume_list);
+static NautilusVolume *copy_volume                              (const NautilusVolume       *volume);
 static void            find_volumes                             (NautilusVolumeMonitor      *monitor);
 static void            free_mount_list                          (GList                      *mount_list);
-static GList *         get_removable_volumes                    (GHashTable                 *fs_attribute_table);
+static GList *         get_removable_volumes                    (NautilusVolumeMonitor      *monitor);
 static GHashTable *    create_readable_mount_point_name_table   (void);
 static int             get_cdrom_type                           (const char                 *vol_dev_path,
 								 int                        *fd);
+static void            nautilus_volume_free                     (NautilusVolume             *volume);
 
 #ifdef HAVE_CDDA
 static gboolean        locate_audio_cd                          (void);
 #endif
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusVolumeMonitor,
-				   nautilus_volume_monitor,
-				   GTK_TYPE_OBJECT)
-static char*
-get_xml_path (const char *file_name)
-{
-	char *xml_path;
-	char *user_directory;
-
-	user_directory = nautilus_get_user_directory ();
-
-	/* first try the user's home directory */
-	xml_path = nautilus_make_path (user_directory,
-				       file_name);
-	g_free (user_directory);
-	if (g_file_exists (xml_path)) {
-		return xml_path;
-	}
-	g_free (xml_path);
-	
-	/* next try the shared directory */
-	xml_path = nautilus_make_path (NAUTILUS_DATADIR,
-				       file_name);
-	if (g_file_exists (xml_path)) {
-		return xml_path;
-	}
-	g_free (xml_path);
-
-	return NULL;
-}
+			      nautilus_volume_monitor,
+			      GTK_TYPE_OBJECT)
 
 static GHashTable *
-load_filesystem_attributes_table (void)
+load_file_system_table (void)
 {
 	xmlDocPtr doc;
 	xmlNodePtr node;
 	GHashTable *table;
-	char *filesystem_attributes_file;
-	xmlChar *name, *trash_str;
-	NautilusVolumeInfo *filesystem;
-
-	filesystem_attributes_file = get_xml_path ("filesystem-attributes.xml");
-
-	if (filesystem_attributes_file == NULL) {
-		return NULL;
-	}
-
-	doc = xmlParseFile (filesystem_attributes_file); 
-	
-	g_free (filesystem_attributes_file);
-
-	if (doc == NULL
-	    || doc->xmlRootNode == NULL
-	    || doc->xmlRootNode->name == NULL
-	    || g_strcasecmp (doc->xmlRootNode->name, "FileSystemAttributes") != 0) {
-		xmlFreeDoc(doc);
-		return NULL;
-	}
+	char *file_system_attributes_file;
+	xmlChar *name, *default_volume_name, *trash;
+	NautilusFileSystemType *type;
 
 	table = g_hash_table_new (g_str_hash, g_str_equal);
 	
-	for (node = doc->xmlRootNode->xmlChildrenNode; node != NULL; node = node->next) {
-		name = xmlGetProp (node, "name");
-		if (name == NULL) {
-			continue;
-		}
-
-		filesystem = g_new0 (NautilusVolumeInfo, 1);
-		filesystem->name = strdup (name);
-		filesystem->description = strdup (xmlGetProp (node, "description"));
-
-		trash_str = xmlGetProp (node, "trash");
-		if (trash_str != NULL && (strcmp (trash_str, "yes") == 0)) {
-			filesystem->use_trash = TRUE;
-		} else {
-			filesystem->use_trash = FALSE;
-		}
-
-		g_hash_table_insert (table, filesystem->name, filesystem);
-
-		xmlFree (name);
-		xmlFree (trash_str);
-		/* printf ("Found filesystem %s (%s), trash support is %d.\n", filesystem->description, filesystem->name, filesystem->use_trash); */
+	file_system_attributes_file = nautilus_get_data_file_path ("filesystem-attributes.xml");
+	if (file_system_attributes_file == NULL) {
+		return table;
+	}
+	doc = xmlParseFile (file_system_attributes_file); 
+	g_free (file_system_attributes_file);
+	if (doc == NULL) {
+		return table;
 	}
 
-	/* FIXME: if I do this xmlFreeDoc, then "nautilus --quit" segfaults somewhere in OAF.
-	   Why? It looks like memory trashing, but the xmlFreeDoc here sure looks correct to me.
-	   Leaving it commented out currently, though that will leak a little memory, it should be
-	   a fixed amount since this function should be (and is) only called once */
-	/* xmlFreeDoc (doc); */
+	for (node = doc->xmlRootNode->xmlChildrenNode; node != NULL; node = node->next) {
+		name = xmlGetProp (node, "name");
+
+		if (name != NULL) {
+			default_volume_name = eel_xml_get_property_translated (node, "default_volume_name");
+			trash = xmlGetProp (node, "trash");
+
+			if (g_hash_table_lookup (table, name) != NULL) {
+				g_message ("duplicate entry for file system type %s", name);
+			}
+			type = g_new (NautilusFileSystemType, 1);
+			type->name = g_strdup (name);
+			type->default_volume_name = g_strdup (default_volume_name);
+			type->can_handle_trash = eel_str_is_equal (trash, "yes");
+			g_hash_table_insert (table, type->name, type);
+
+			xmlFree (default_volume_name);
+			xmlFree (trash);
+		}
+
+		xmlFree (name);
+	}
+
+	xmlFreeDoc (doc);
 
 	return table;
 }
@@ -301,13 +280,9 @@ nautilus_volume_monitor_initialize (NautilusVolumeMonitor *monitor)
 {
 	/* Set up details */
 	monitor->details = g_new0 (NautilusVolumeMonitorDetails, 1);	
-	monitor->details->mounts = NULL;
-	monitor->details->removable_volumes = NULL;
 	monitor->details->readable_mount_point_names = create_readable_mount_point_name_table ();
-	monitor->details->filesystem_attribute_table = load_filesystem_attributes_table ();
-
-	monitor->details->removable_volumes = get_removable_volumes (monitor->details->filesystem_attribute_table);
-	
+	monitor->details->file_system_table = load_file_system_table ();
+	monitor->details->removable_volumes = get_removable_volumes (monitor);
 	find_volumes (monitor);
 }
 
@@ -439,11 +414,10 @@ floppy_sort (const NautilusVolume *volume1, const NautilusVolume *volume2)
 }
 
 gboolean		
-nautilus_volume_monitor_volume_is_removable (const NautilusVolume *volume)
+nautilus_volume_is_removable (const NautilusVolume *volume)
 {
 	return volume->is_removable;
 }
-
 
 /* nautilus_volume_monitor_get_removable_volumes
  *
@@ -489,7 +463,7 @@ has_removable_mntent_options (MountTableEntry *ent)
  */
 
 static GList *
-get_removable_volumes (GHashTable *fs_attribute_table)
+get_removable_volumes (NautilusVolumeMonitor *monitor)
 {
 	FILE *file;
 	GList *volumes;
@@ -509,13 +483,11 @@ get_removable_volumes (GHashTable *fs_attribute_table)
 	/* getmentinfo returns a pointer to static data. Do not free. */
 	for (index = 0; index < count; index++) {
 		if (has_removable_mntent_options (ent + 1)) {
-			create_volume (fs_attribute_table,
-				       ent[index].f_mntfromname,
-				       ent[index].f_mntoname,
-				       ent[index].f_fstyename);
+			volume = create_volume (ent[index].f_mntfromname,
+						ent[index].f_mntoname);
 			volume->is_removable = TRUE;
-			volume->is_read_only = ((ent[index].f_flags & MNT_RDONLY) != 0);
-			volumes = mount_volume_prepend_filesystem (volumes, volume);				
+			volumes = finish_creating_volume_and_prepend
+				(monitor, volume, ent[index].f_fstyename, volumes);
 		}
 	}
 #endif
@@ -528,21 +500,19 @@ get_removable_volumes (GHashTable *fs_attribute_table)
 #ifdef HAVE_SYS_MNTTAB_H
         ent = &ent_storage;
 	while (! getmntent (file, ent)) {
-		/* On Solaris look for /vol/ for determining a removable volume */
 		if (eel_str_has_prefix (ent->mnt_special, noauto_string)) {
-			volume = create_volume (fs_attribute_table, ent->mnt_special, 
-						ent->mnt_mountp, ent->mnt_fstype);
+			volume = create_volume (ent->mnt_special, ent->mnt_mountp);
 			volume->is_removable = TRUE;
-			volume->is_read_only = hasmntopt (ent, MNTOPT_RO) != NULL;
-			volumes = mount_volume_prepend_filesystem (volumes, volume);
+			volumes = finish_creating_volume_and_prepend
+				(monitor, volume, ent->mnt_fstype, volumes);
 		}
 	}
 #elif defined (HAVE_MNTENT_H)
 	while ((ent = getmntent (file)) != NULL) {
 		if (has_removable_mntent_options (ent)) {
-			volume = create_volume (fs_attribute_table, ent->mnt_fsname, 
-						ent->mnt_dir, ent->mnt_type);
-			volumes = mount_volume_prepend_filesystem (volumes, volume);
+			volume = create_volume (ent->mnt_fsname, ent->mnt_dir);
+			volumes = finish_creating_volume_and_prepend
+				(monitor, volume, ent->mnt_type, volumes);
 		}
 	}
 #endif
@@ -550,8 +520,8 @@ get_removable_volumes (GHashTable *fs_attribute_table)
 	fclose (file);
 	
 #ifdef HAVE_CDDA
-	volume = create_volume (NULL, CD_AUDIO_PATH, CD_AUDIO_PATH, CDDA_SCHEME);
-	volumes = mount_volume_prepend_filesystem (volumes, volume);
+	volume = create_volume (CD_AUDIO_PATH, CD_AUDIO_PATH);
+	volumes = finish_creating_volume_and_prepend (monitor, volume, "cdda", volumes);
 #endif
 
 	load_additional_mount_list_info (volumes);
@@ -565,6 +535,7 @@ get_removable_volumes (GHashTable *fs_attribute_table)
 static gboolean
 volume_is_removable (const NautilusVolume *volume)
 {
+	gboolean removable;
 	FILE *file;
      	MountTableEntry *ent;
 #ifdef HAVE_SYS_MNTTAB_H
@@ -577,17 +548,17 @@ volume_is_removable (const NautilusVolume *volume)
 	if (file == NULL) {
 		return FALSE;
 	}
+
+	removable = FALSE;
 	
 	/* Search for our device in the fstab */
 #ifdef HAVE_SYS_MNTTAB_H
 	ent = &ent_storage;
 	while (!getmntent (file, ent)) {
 		if (strcmp (volume->device_path, ent->mnt_special) == 0) {
-  			/* On Solaris look for /vol/ for determining
-			a removable volume */
    		 	if (eel_str_has_prefix (ent->mnt_special, noauto_string)) {
-				fclose (file);
-				return TRUE;
+				removable = TRUE;
+				break;
 			}
 		}	
 	}
@@ -595,73 +566,24 @@ volume_is_removable (const NautilusVolume *volume)
 	while ((ent = getmntent (file)) != NULL) {
 		if (strcmp (volume->device_path, ent->mnt_fsname) == 0
 		    && has_removable_mntent_options (ent)) {
-			fclose (file);
-			return TRUE;
+			removable = TRUE;
+			break;
 		}	
 	}
 #endif
 	
 	fclose (file);
-	return FALSE;
-}
-
-static gboolean
-volume_is_read_only (const NautilusVolume *volume)
-{
-	FILE *file;
-	MountTableEntry *ent;
-
-#ifdef HAVE_SYS_MNTTAB_H
- 	MountTableEntry ent_storage;
-
-	file = setmntent (MOUNT_TABLE_PATH, "r");
- 	if (file == NULL) {
- 		return FALSE;
- 	}
- 
- 	 /* Search for our device in the fstab */
- 	ent = &ent_storage;
-	while (!getmntent (file, ent)) {
- 		if (strcmp (volume->device_path, ent->mnt_special) == 0) {
- 			if (strstr (ent->mnt_mntopts, MNTOPT_RO) != NULL) {
- 				fclose (file);
- 				return TRUE;
- 			}
- 		}
- 	}
-#elif defined (HAVE_MNTENT_H)
-	file = setmntent (MOUNT_TABLE_PATH, "r");
-	if (file == NULL) {
-		return FALSE;
-	}
-		
-	/* Search for our device in the fstab */
-	while ((ent = getmntent (file)) != NULL) {
-		if (strcmp (volume->device_path, ent->mnt_fsname) == 0) {
-			if (strstr (ent->mnt_opts, MNTOPT_RO) != NULL) {
-				fclose (file);
-				return TRUE;
-			}
-        	 }
-	}
-#else
-	ent = NULL;	
-	file = NULL;
-#endif
-				
-	fclose (file);
-	return FALSE;
+	return removable;
 }
 
 #endif /* !SOLARIS_MNT */
 
 char *
-nautilus_volume_monitor_get_volume_name (const NautilusVolume *volume)
+nautilus_volume_get_name (const NautilusVolume *volume)
 {
 	if (volume->volume_name == NULL) {
 		return g_strdup (_("Unknown"));
 	}
-	
 	return g_strdup (volume->volume_name);
 }
 
@@ -678,7 +600,7 @@ modify_volume_name_for_display (const char *unmodified_name)
 	char *name;
 
 	if (unmodified_name == NULL) {
-		return g_strdup (_("Unknown"));
+		return NULL;
 	}
 	
 	name = g_strdup (unmodified_name);
@@ -709,11 +631,11 @@ modify_volume_name_for_display (const char *unmodified_name)
  */
  
 char *
-nautilus_volume_monitor_get_target_uri (const NautilusVolume *volume)
+nautilus_volume_get_target_uri (const NautilusVolume *volume)
 {
 	char *uri, *escaped_path;
 
-	if (volume->audio_cd) {
+	if (volume->is_audio_cd) {
 		escaped_path = gnome_vfs_escape_path_string (volume->mount_path);
 		uri = g_strconcat ("cdda://", escaped_path, NULL);
 		g_free (escaped_path);
@@ -724,15 +646,25 @@ nautilus_volume_monitor_get_target_uri (const NautilusVolume *volume)
 }
 
 gboolean 
-nautilus_volume_monitor_should_integrate_trash (const NautilusVolume *volume)
+nautilus_volume_should_integrate_trash (const NautilusVolume *volume)
 {
-	return volume->use_trash;
+	g_return_val_if_fail (volume != NULL, FALSE);
+	return volume->file_system_type != NULL
+		&& volume->file_system_type->can_handle_trash;
 }
 
 const char *
-nautilus_volume_monitor_get_volume_mount_uri (const NautilusVolume *volume)
+nautilus_volume_get_mount_path (const NautilusVolume *volume)
 {
+	g_return_val_if_fail (volume != NULL, NULL);
 	return volume->mount_path;
+}
+
+const NautilusDeviceType
+nautilus_volume_get_device_type (const NautilusVolume *volume)
+{
+	g_return_val_if_fail (volume != NULL, NAUTILUS_DEVICE_UNKNOWN);
+	return volume->device_type;
 }
 
 
@@ -788,14 +720,17 @@ mount_volume_make_cdrom_name (NautilusVolume *volume)
 }
 
 static char *
-make_volume_name_from_path (NautilusVolume *volume,
-			    const char *default_volume_name)
+make_volume_name_from_path (NautilusVolume *volume)
 {
 	const char *name;
 	
 	name = strrchr (volume->mount_path, '/');
 	if (name == NULL) {
-		return g_strdup (default_volume_name);
+		if (volume->file_system_type == NULL) {
+			return NULL;
+		} else {
+			return g_strdup (volume->file_system_type->default_volume_name);
+		}
 	}
 	if (name[0] == '/' && name[1] == '\0') {
 		return g_strdup (_("Root Volume"));
@@ -806,12 +741,12 @@ make_volume_name_from_path (NautilusVolume *volume,
 static char *
 mount_volume_make_name (NautilusVolume *volume)
 {
-	if (volume->audio_cd) {
+	if (volume->is_audio_cd) {
 		return g_strdup (_("Audio CD"));
 	} else if (volume->device_type == NAUTILUS_DEVICE_CDROM_DRIVE) {
 		return mount_volume_make_cdrom_name (volume);
 	} else {
-		return make_volume_name_from_path (volume, volume->description);
+		return make_volume_name_from_path (volume);
 	}
 }
 
@@ -866,13 +801,8 @@ mount_volume_deactivate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 static void
 free_mount_list (GList *mount_list)
 {
-	if (mount_list == NULL) {
-		return;
-	}
-	
-	g_list_foreach (mount_list, (GFunc) nautilus_volume_monitor_free_volume, NULL);
+	g_list_foreach (mount_list, (GFunc) nautilus_volume_free, NULL);
 	g_list_free (mount_list);
-	mount_list = NULL;
 }
 
 
@@ -918,7 +848,7 @@ build_volume_list_delta (GList *list_one, GList *list_two)
 #ifdef SOLARIS_MNT
 
 static GList *
-get_mount_list (GHashTable *fs_attribute_table) 
+get_mount_list (NautilusVolumeMonitor *monitor) 
 {
         FILE *fh;
         GList *volumes;
@@ -933,11 +863,10 @@ get_mount_list (GHashTable *fs_attribute_table)
 	}
 
         while (! getmntent(fh, &ent)) {
-                volume = create_volume (fs_attribute_table, ent.mnt_special, 
-					ent.mnt_mountp, ent.mnt_fstype);
+                volume = create_volume (ent.mnt_special, ent.mnt_mountp);
                 volume->is_removable = has_removable_mntent_options (&ent);
-                volume->is_read_only = hasmntopt (&ent, MNTOPT_RO) != NULL;
-                volumes = mount_volume_prepend_filesystem (volumes, volume);
+                volumes = finish_creating_volume_and_prepend
+			(monitor, volume, ent.mnt_fstype, volumes);
         }
 
 	fclose (fh);
@@ -948,7 +877,7 @@ get_mount_list (GHashTable *fs_attribute_table)
 #else /* !SOLARIS_MNT */
 
 static GList *
-get_mount_list (GHashTable *fs_attribute_table) 
+get_mount_list (NautilusVolumeMonitor *monitor) 
 {
         GList *volumes;
         NautilusVolume *volume;
@@ -958,7 +887,7 @@ get_mount_list (GHashTable *fs_attribute_table)
 	char line[PATH_MAX * 3];
 	char device_name[sizeof (line)];
 	EelStringList *list;
-	char *device_path, *mount_path, *filesystem;
+	char *device_path, *mount_path, *file_system_type_name;
 
 	volumes = NULL;
         
@@ -996,13 +925,13 @@ get_mount_list (GHashTable *fs_attribute_table)
                 if (eel_string_list_get_length (list) >= 3) {
                         device_path = eel_string_list_nth (list, 0);
                         mount_path = eel_string_list_nth (list, 1);
-                        filesystem = eel_string_list_nth (list, 2);
-                        volume = create_volume (fs_attribute_table, device_path, 
-						mount_path, filesystem);
+                        file_system_type_name = eel_string_list_nth (list, 2);
+                        volume = create_volume (device_path, mount_path);
+                        volumes = finish_creating_volume_and_prepend
+				(monitor, volume, file_system_type_name, volumes);
                         g_free (device_path);
                         g_free (mount_path);
-                        g_free (filesystem);
-                        volumes = mount_volume_prepend_filesystem (volumes, volume);
+                        g_free (file_system_type_name);
                 }
 
 		eel_string_list_free (list);
@@ -1015,21 +944,21 @@ get_mount_list (GHashTable *fs_attribute_table)
 
 
 static GList *
-get_current_mount_list (GHashTable *fs_attribute_table)
+get_current_mount_list (NautilusVolumeMonitor *monitor)
 {
 	GList *volumes;
 #ifdef HAVE_CDDA
         NautilusVolume *volume;
 #endif
 
-	volumes = get_mount_list (fs_attribute_table);
+	volumes = get_mount_list (monitor);
 
 #ifdef HAVE_CDDA
 	/* CD Audio tricks */
 	if (locate_audio_cd ()) {
-		volume = create_volume (NULL, CD_AUDIO_PATH, CD_AUDIO_PATH, CDDA_SCHEME);
+		volume = create_volume (CD_AUDIO_PATH, CD_AUDIO_PATH);
 		volume->volume_name = mount_volume_make_name (volume);
-		volumes = mount_volume_prepend_filesystem (volumes, volume);
+		volumes = finish_creating_volume_and_prepend (monitor, volume, "cdda", volumes);
 	}
 #endif
 
@@ -1076,7 +1005,7 @@ verify_current_mount_state (NautilusVolumeMonitor *monitor)
 	GList *saved_mount_list, *node;
 	
 	/* Get all current mounts */
-	current_mounts = get_current_mount_list (monitor->details->filesystem_attribute_table);
+	current_mounts = get_current_mount_list (monitor);
 	if (current_mounts == NULL) {
 		return;
 	}
@@ -1197,7 +1126,8 @@ mount_volume_auto_add (NautilusVolume *volume)
 {
 	if (eel_str_has_prefix (volume->device_path, floppy_device_path_prefix)) {	
 		volume->device_type = NAUTILUS_DEVICE_FLOPPY_DRIVE;	
-	} /* FIXME: add cdroms to this too */
+	}
+	/* FIXME: add cdroms to this too */
 	return TRUE;
 }
 
@@ -1205,7 +1135,7 @@ static gboolean
 mount_volume_cdda_add (NautilusVolume *volume)
 {
 	volume->device_type = NAUTILUS_DEVICE_CDROM_DRIVE;	
-	volume->audio_cd = TRUE;
+	volume->is_audio_cd = TRUE;
 	return TRUE;
 }
 
@@ -1243,7 +1173,7 @@ find_volumes (NautilusVolumeMonitor *monitor)
 
 void
 nautilus_volume_monitor_each_mounted_volume (NautilusVolumeMonitor *monitor, 
-					     NautilusEachVolumeFunction function,
+					     NautilusEachVolumeCallback function,
 					     gpointer context)
 {
 	GList *p;
@@ -1585,60 +1515,44 @@ nautilus_volume_monitor_set_volume_name (NautilusVolumeMonitor *monitor,
 }
 
 static NautilusVolume *
-create_volume (GHashTable *fs_attribute_table, const char *device_path, 
-	       const char *mount_path, const char *filesystem)
+create_volume (const char *device_path, const char *mount_path)
 {
 	NautilusVolume *volume;
-	NautilusVolumeInfo *info;
 
 	volume = g_new0 (NautilusVolume, 1);
+
 	volume->device_path = g_strdup (device_path);
 	volume->mount_path = g_strdup (mount_path);
-	volume->filesystem = g_strdup (filesystem);
-
-	if (fs_attribute_table != NULL 
-	    && (info = g_hash_table_lookup (fs_attribute_table, filesystem))) {
-		    
-		volume->use_trash = info->use_trash;
-		volume->description = g_strdup (info->description);
-	} else {
-		volume->use_trash = FALSE;
-		volume->description = g_strdup ("Unknown Volume Type");
-	}
-
-	volume->device_type = NAUTILUS_DEVICE_UNKNOWN;
-	volume->audio_cd = FALSE;
 
 	return volume;
 }
 
 static NautilusVolume *
-copy_volume (NautilusVolume *volume)
+copy_volume (const NautilusVolume *volume)
 {
 	NautilusVolume *new_volume;
 
-	new_volume = g_new0 (NautilusVolume, 1);
+	new_volume = g_new (NautilusVolume, 1);
+
+	new_volume->device_type = volume->device_type;
+	new_volume->file_system_type = volume->file_system_type;
+
 	new_volume->device_path = g_strdup (volume->device_path);
 	new_volume->mount_path = g_strdup (volume->mount_path);
-	new_volume->filesystem = g_strdup (volume->filesystem);
-	new_volume->device_type = volume->device_type;	
 	new_volume->volume_name = g_strdup (volume->volume_name);
-	new_volume->description = g_strdup (volume->description);
 
 	new_volume->is_removable = volume->is_removable;
-	new_volume->is_read_only = volume->is_read_only;
-	new_volume->use_trash = volume->use_trash;
+	new_volume->is_audio_cd = volume->is_audio_cd;
 
 	return new_volume;
 }
 
 void
-nautilus_volume_monitor_free_volume (NautilusVolume *volume)
+nautilus_volume_free (NautilusVolume *volume)
 {
 	g_free (volume->device_path);
 	g_free (volume->mount_path);
 	g_free (volume->volume_name);
-	g_free (volume->filesystem);
 	g_free (volume);
 }
 
@@ -1669,84 +1583,93 @@ load_additional_mount_list_info (GList *volume_list)
 #ifndef SOLARIS_MNT
 		/* These are set up by get_current_mount_list for Solaris. */
 		volume->is_removable = volume_is_removable (volume);
-		volume->is_read_only = volume_is_read_only (volume);
 #endif
 
 		volume->volume_name = mount_volume_make_name (volume);
 	}
 }
 
+static gboolean
+finish_creating_volume (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
+			const char *file_system_type_name)
+{
+	gboolean ok;
+	const char *name;
+	
+	volume->file_system_type = g_hash_table_lookup
+		(monitor->details->file_system_table, file_system_type_name);
+
+	if (strcmp (file_system_type_name, "auto") == 0) {		
+		ok = mount_volume_auto_add (volume);
+	} else if (strcmp (file_system_type_name, "cdda") == 0) {		
+		ok = mount_volume_cdda_add (volume);
+	} else if (strcmp (file_system_type_name, "iso9660") == 0) {		    		
+		ok = mount_volume_iso9660_add (volume);
+	} else if (strcmp (file_system_type_name, "nfs") == 0) {		
+		ok = mount_volume_nfs_add (volume);
+	} else {
+		ok = TRUE;
+	}
+	
+	if (!ok) {
+		return FALSE;
+	}
+
+	/* Identify device type */
+	if (eel_str_has_prefix (volume->mount_path, "/mnt/")) {		
+		name = volume->mount_path + strlen ("/mnt/");
+		
+		if (eel_str_has_prefix (name, "cdrom")) {
+			volume->device_type = NAUTILUS_DEVICE_CDROM_DRIVE;
+			volume->is_removable = TRUE;
+		} else if (eel_str_has_prefix (name, "floppy")) {
+			volume->device_type = NAUTILUS_DEVICE_FLOPPY_DRIVE;
+				volume->is_removable = TRUE;
+		} else if (eel_str_has_prefix (volume->device_path, floppy_device_path_prefix)) {		
+			volume->device_type = NAUTILUS_DEVICE_FLOPPY_DRIVE;
+			volume->is_removable = TRUE;
+		} else if (eel_str_has_prefix (name, "zip")) {
+			volume->device_type = NAUTILUS_DEVICE_ZIP_DRIVE;
+			volume->is_removable = TRUE;
+		} else if (eel_str_has_prefix (name, "jaz")) {
+			volume->device_type = NAUTILUS_DEVICE_JAZ_DRIVE;
+			volume->is_removable = TRUE;
+		} else if (eel_str_has_prefix (name, "camera")) {
+			volume->device_type = NAUTILUS_DEVICE_CAMERA;
+			volume->is_removable = TRUE;					
+		} else if (eel_str_has_prefix (name, "memstick")) {
+			volume->device_type = NAUTILUS_DEVICE_MEMORY_STICK;
+			volume->is_removable = TRUE;
+		} else {
+			volume->is_removable = FALSE;
+		}
+	}
+	
+	return TRUE;
+}
 
 static GList *
-mount_volume_prepend_filesystem (GList *volume_list, NautilusVolume *volume)
+finish_creating_volume_and_prepend (NautilusVolumeMonitor *monitor,
+				    NautilusVolume *volume,
+				    const char *file_system_type_name,
+				    GList *list)
 {
-	gboolean added;
-	char *device_name;
-	
-	added = FALSE;
-	
-	if (strcmp (volume->filesystem, "auto") == 0) {		
-		added = mount_volume_auto_add (volume);
-	} else if (strcmp (volume->filesystem, "cdda") == 0) {		
-		added = mount_volume_cdda_add (volume);
-	} else if (strcmp (volume->filesystem, "iso9660") == 0) {		    		
-		added = mount_volume_iso9660_add (volume);
-	} else if (strcmp (volume->filesystem, "nfs") == 0) {		
-		added = mount_volume_nfs_add (volume);
+	if (finish_creating_volume (monitor, volume, file_system_type_name)) {
+		list = g_list_prepend (list, volume);
 	} else {
-		added = TRUE;
+		nautilus_volume_free (volume);
 	}
-
-	if (added) {
-		volume_list = g_list_prepend (volume_list, volume);
-		
-		/* Identify device type */
-		if (eel_str_has_prefix (volume->mount_path, "/mnt/")) {		
-			device_name = g_strdup (volume->mount_path + 5);
-											
-			if (eel_str_has_prefix (device_name, "cdrom")) {
-				volume->device_type = NAUTILUS_DEVICE_CDROM_DRIVE;
-				volume->is_removable = TRUE;
-			} else if (eel_str_has_prefix (device_name, "floppy")) {
-				volume->device_type = NAUTILUS_DEVICE_FLOPPY_DRIVE;
-				volume->is_removable = TRUE;
-			} else if (eel_str_has_prefix (volume->device_path, floppy_device_path_prefix)) {		
-				volume->device_type = NAUTILUS_DEVICE_FLOPPY_DRIVE;
-				volume->is_removable = TRUE;
-			} else if (eel_str_has_prefix (device_name, "zip")) {
-				volume->device_type = NAUTILUS_DEVICE_ZIP_DRIVE;
-				volume->is_removable = TRUE;
-			} else if (eel_str_has_prefix (device_name, "jaz")) {
-				volume->device_type = NAUTILUS_DEVICE_JAZ_DRIVE;
-				volume->is_removable = TRUE;
-			} else if (eel_str_has_prefix (device_name, "camera")) {
-				volume->device_type = NAUTILUS_DEVICE_CAMERA;
-				volume->is_removable = TRUE;					
-			} else if (eel_str_has_prefix (device_name, "memstick")) {
-				volume->device_type = NAUTILUS_DEVICE_MEMORY_STICK;
-				volume->is_removable = TRUE;
-			} else {
-				volume->is_removable = FALSE;
-			}
-			
-			g_free (device_name);
-		}
-	} else {
-		nautilus_volume_monitor_free_volume (volume);	
-	}
-				
-	return volume_list;
+	return list;
 }
 
 char *
 nautilus_volume_monitor_get_mount_name_for_display (NautilusVolumeMonitor *monitor,
-						    NautilusVolume *volume)
+						    const NautilusVolume *volume)
 {
 	const char *name, *found_name;
-	
-	if (monitor == NULL || volume == NULL) {
-		return NULL;
-	}
+
+	g_return_val_if_fail (monitor == NULL, NULL);
+	g_return_val_if_fail (volume == NULL, NULL);
 	
 	name = strrchr (volume->mount_path, '/');
 	if (name != NULL) {
@@ -1755,7 +1678,7 @@ nautilus_volume_monitor_get_mount_name_for_display (NautilusVolumeMonitor *monit
 		name = volume->mount_path;
 	}
 	
-	/* Look for a match in out localized mount name list */
+	/* Look for a match in our localized mount name list */
 	found_name = g_hash_table_lookup (monitor->details->readable_mount_point_names, name);
 	if (found_name != NULL) {
 		return g_strdup (found_name);

@@ -830,10 +830,10 @@ volume_mounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 	}
 	
 	/* Open a window to the CD if the user has set that preference. */
-	if (volume->device_type == NAUTILUS_DEVICE_CDROM_DRIVE
+	if (nautilus_volume_get_device_type (volume) == NAUTILUS_DEVICE_CDROM_DRIVE
 		&& gnome_config_get_bool ("/magicdev/Options/do_fileman_window=true")) {		
 		window = nautilus_application_create_window (application);
-		uri = gnome_vfs_get_uri_from_local_path (volume->mount_path);
+		uri = gnome_vfs_get_uri_from_local_path (nautilus_volume_get_mount_path (volume));
 		nautilus_window_go_to (window, uri);
 		g_free (uri);
 	}
@@ -890,7 +890,7 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volum
 		if (window != NULL && window_can_be_closed (window)) {
 			uri = nautilus_window_get_location (window);
 			path = gnome_vfs_get_local_path_from_uri (uri);
-			if (eel_str_has_prefix (path, volume->mount_path)) {
+			if (eel_str_has_prefix (path, nautilus_volume_get_mount_path (volume))) {
 				close_list = g_list_prepend (close_list, window);
 			}
 			g_free (path);

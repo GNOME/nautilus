@@ -350,7 +350,7 @@ volume_in_black_list (FMDesktopIconView *icon_view,
 	g_return_val_if_fail (FM_IS_DESKTOP_ICON_VIEW (icon_view), TRUE);
 
 	for (p = icon_view->details->mount_black_list; p != NULL; p = p->next) {
-		if (strcmp ((char *) p->data, volume->mount_path) == 0) {
+		if (strcmp ((char *) p->data, nautilus_volume_get_mount_path (volume)) == 0) {
 			return TRUE;
 		}
 	}
@@ -374,7 +374,7 @@ create_unique_volume_name (const NautilusVolume *volume)
 	 */	   
 	index = 1;
 			
-	volume_name = nautilus_volume_monitor_get_volume_name (volume);	
+	volume_name = nautilus_volume_get_name (volume);	
 		
 	uri_path = g_strdup_printf ("%s/%s", desktop_directory, volume_name);		
 	uri = gnome_vfs_uri_new (uri_path);
@@ -398,7 +398,7 @@ create_unique_volume_name (const NautilusVolume *volume)
 		volume_name = new_name;	
 	}
 	
-	original_volume_name = nautilus_volume_monitor_get_volume_name (volume);
+	original_volume_name = nautilus_volume_get_name (volume);
 	if (strcmp (volume_name, original_volume_name) != 0) {
 		nautilus_volume_monitor_set_volume_name (nautilus_volume_monitor_get (),
 							 volume, volume_name);
@@ -423,22 +423,18 @@ create_mount_link (FMDesktopIconView *icon_view,
 	}
 	
 	/* FIXME bugzilla.eazel.com 5412: Design a comprehensive desktop mounting strategy */
-	if (!nautilus_volume_monitor_volume_is_removable (volume)) {
+	if (!nautilus_volume_is_removable (volume)) {
 		return;
 	}
 
 	/* Get icon type */
-	switch (volume->device_type) {
+	icon_name = "i-blockdev";
+	switch (nautilus_volume_get_device_type (volume)) {
 	case NAUTILUS_DEVICE_AUDIO_CD:
 	case NAUTILUS_DEVICE_CDROM_DRIVE:
 		icon_name = "i-cdrom";
 		break;
 
-	case NAUTILUS_DEVICE_CAMERA:
-		icon_name = "i-blockdev";
-		break;
-
-		
 	case NAUTILUS_DEVICE_FLOPPY_DRIVE:
 		icon_name = "i-floppy";
 		break;
@@ -459,15 +455,12 @@ create_mount_link (FMDesktopIconView *icon_view,
 		icon_name = "i-zipdisk";
 		break;
 
+	case NAUTILUS_DEVICE_CAMERA:
 	case NAUTILUS_DEVICE_UNKNOWN:
-		icon_name = "i-blockdev";
-		break;	
-	default:
-		icon_name = "i-blockdev";
-		break;	
+		break;
 	}
 
-	target_uri = nautilus_volume_monitor_get_target_uri (volume);
+	target_uri = nautilus_volume_get_target_uri (volume);
 	
 	volume_name = create_unique_volume_name (volume);
 	
@@ -860,7 +853,7 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor,
 
 	g_assert (volume != NULL);
 	
-	volume_name = nautilus_volume_monitor_get_volume_name (volume);
+	volume_name = nautilus_volume_get_name (volume);
 	if (volume_name == NULL) {
 		return;
 	}
@@ -1244,7 +1237,7 @@ update_disks_menu (FMDesktopIconView *view)
 			(view->details->ui,
 			 command_name,
 			 mount_or_unmount_removable_volume,
-			 mount_parameters_new (view, volume->mount_path),
+			 mount_parameters_new (view, nautilus_volume_get_mount_path (volume)),
 			 mount_parameters_free_wrapper);			 
 		g_free (command_name);
 		

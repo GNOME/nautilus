@@ -215,19 +215,21 @@ static gboolean
 add_one_volume_trash (const NautilusVolume *volume,
 		      gpointer callback_data)
 {
+	char *uri_str;
 	GnomeVFSURI *volume_mount_point_uri;
 	GnomeVFSURI *trash_uri;
 	GList **result;
 	
-	result = (GList **)callback_data;
+	result = (GList **) callback_data;
 
-	if (nautilus_volume_monitor_should_integrate_trash (volume)) {
+	if (nautilus_volume_should_integrate_trash (volume)) {
 	
 		/* Get the uri of the volume mount point as the place
 		 * "near" which to look for trash on the given volume.
-		 */ 
-		volume_mount_point_uri = gnome_vfs_uri_new (
-			nautilus_volume_monitor_get_volume_mount_uri (volume));
+		 */
+		uri_str = gnome_vfs_get_uri_from_local_path (nautilus_volume_get_mount_path (volume));
+		volume_mount_point_uri = gnome_vfs_uri_new (uri_str);
+		g_free (uri_str);
 
 		g_assert (volume_mount_point_uri != NULL);
 	
@@ -236,9 +238,9 @@ add_one_volume_trash (const NautilusVolume *volume,
 		 * already don't know where it is) do not cause any IO.
 		 */
 		if (gnome_vfs_find_directory (volume_mount_point_uri,
-			GNOME_VFS_DIRECTORY_KIND_TRASH, &trash_uri,
-			FALSE, FALSE, 0777) == GNOME_VFS_OK) {
-
+					      GNOME_VFS_DIRECTORY_KIND_TRASH, &trash_uri,
+					      FALSE, FALSE, 0777) == GNOME_VFS_OK) {
+			
 			/* found trash, put it on the list */
 			*result = g_list_prepend (*result, trash_uri);
 		}

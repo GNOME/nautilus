@@ -169,25 +169,20 @@ druid_set_first_time_file_flag (void)
 {
 	FILE *stream;
 	char *user_directory, *druid_flag_file_name;
+	const char * const blurb =
+		_("Existence of this file indicates that the Nautilus configuration druid\n"
+		  "has been presented.\n\n"
+		  "You can manually erase this file to present the druid again.\n");
 	
 	user_directory = nautilus_get_user_directory ();
-	druid_flag_file_name = g_strdup_printf ("%s/%s",
-						user_directory,
-						"first-time-flag");
+	druid_flag_file_name = nautilus_make_path (user_directory, "first-time-flag");
 	g_free (user_directory);
-
 		
 	stream = fopen (druid_flag_file_name, "w");
-	if (stream) {
-		const char *blurb =
-			_("Existence of this file indicates that the Nautilus configuration druid\n"
-				"has been presented.\n\n"
-				"You can manually erase this file to present the druid again.\n\n");
-			
-			fwrite (blurb, sizeof (char), strlen (blurb), stream);
-			fclose (stream);
+	if (stream != NULL) {
+		fwrite (blurb, sizeof (char), strlen (blurb), stream);
+		fclose (stream);
 	}
-	
 	g_free (druid_flag_file_name);
 }
 

@@ -288,6 +288,31 @@ nautilus_pixmap_file (const char *partial_path)
 }
 
 char *
+nautilus_get_data_file_path (const char *partial_path)
+{
+	char *path;
+	char *user_directory;
+
+	/* first try the user's home directory */
+	user_directory = nautilus_get_user_directory ();
+	path = nautilus_make_path (user_directory, partial_path);
+	g_free (user_directory);
+	if (g_file_exists (path)) {
+		return path;
+	}
+	g_free (path);
+	
+	/* next try the shared directory */
+	path = nautilus_make_path (NAUTILUS_DATADIR, partial_path);
+	if (g_file_exists (path)) {
+		return path;
+	}
+	g_free (path);
+
+	return NULL;
+}
+
+char *
 nautilus_unique_temporary_file_name (void)
 {
 	const char *prefix = "/tmp/nautilus-temp-file";
