@@ -23,6 +23,7 @@
    Author: John Sullivan <sullivan@eazel.com>
 */
 
+#include <config.h>
 #include "ntl-window-private.h"
 #include "ntl-app.h"
 

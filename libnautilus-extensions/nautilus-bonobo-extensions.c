@@ -24,6 +24,7 @@
    Author: John Sullivan <sullivan@eazel.com>
 */
 
+#include <config.h>
 #include "nautilus-bonobo-extensions.h"
 
 

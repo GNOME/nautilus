@@ -25,6 +25,7 @@
  */
 /* ntl-content-view.c: Implementation of the object representing a content view. */
 
+#include <config.h>
 #include "ntl-content-view.h"
 #include "ntl-view-private.h"
 #include <gtk/gtksignal.h>

@@ -1,3 +1,88 @@
+2000-05-01  Darin Adler  <darin@eazel.com>
+
+	* check-config-h.pl: Wrote a script to check for files that forget
+	to include <config.h> and optionally edit to add it.
+	
+        * src/nautilus-zoom-control.c (set_zoom_level): Fixed the bug
+	number in a FIXME.
+
+        * docs/style-guide.html: Added one more tip.
+
+        * check-FIXME.pl: Use my newfound Perl knowledge to spruce it up.
+
+        * components/help/converters/gnome-db2html2/gdb3html.c:
+        * components/help/converters/gnome-db2html2/sect-elements.c:
+        * components/help/converters/gnome-db2html2/sect-preparse.c:
+        * components/help/converters/gnome-db2html2/toc-elements.c:
+        * components/help/converters/gnome-info2html2/html.c:
+        * components/help/converters/gnome-info2html2/main.c:
+        * components/help/converters/gnome-info2html2/parse.c:
+        * components/help/converters/gnome-info2html2/utils.c:
+        * components/help/converters/gnome-man2html2/gnome-man2html.c:
+        * components/help/hyperbola-filefmt.c:
+        * components/help/hyperbola-nav-index.c:
+        * components/help/hyperbola-nav-search.c:
+        * components/help/hyperbola-nav-tree.c:
+        * components/html/glibwww-callbacks.c:
+        * components/html/glibwww-init.c:
+        * components/html/glibwww-trans.c:
+        * components/html/gnome-dialogs.c:
+        * components/html/ntl-web-browser.c:
+        * components/services/install/eazel-install-metadata.c:
+        * components/services/install/eazel-install-protocols.c:
+        * components/services/install/eazel-install-rpm-glue.c:
+        * components/services/install/eazel-install-tests.c:
+        * components/services/install/eazel-install-utils.c:
+        * components/services/install/eazel-install-xml-package-list.c:
+        * components/services/install/eazel-install.c:
+        * components/services/install/helixcode-install-utils.c:
+        * components/services/startup/eazel-register.c:
+        * components/websearch/ntl-web-search.c:
+        * helper-utilities/authenticate/nautilus-authenticate-fork.c:
+        * helper-utilities/authenticate/nautilus-authenticate-pam.c:
+        * helper-utilities/authenticate/nautilus-authenticate.c:
+        * libnautilus-extensions/nautilus-bonobo-extensions.c:
+        * libnautilus-extensions/nautilus-file-utilities.c:
+        * libnautilus-extensions/nautilus-glib-extensions.c:
+        * libnautilus-extensions/nautilus-link.c:
+        * libnautilus-extensions/nautilus-mime-type.c:
+        * libnautilus-extensions/nautilus-undo-transaction.c:
+        * librsvg/art_rgba.c:
+        * librsvg/art_rgba_svp.c:
+        * librsvg/rsvg-bpath-util.c:
+        * librsvg/rsvg-path.c:
+        * librsvg/rsvg.c:
+        * librsvg/test-rsvg.c:
+        * nautilus-widgets/nautilus-caption-table.c:
+        * nautilus-widgets/nautilus-password-dialog.c:
+        * nautilus-widgets/nautilus-preferences-box.c:
+        * nautilus-widgets/nautilus-preferences-dialog.c:
+        * nautilus-widgets/nautilus-preferences-group.c:
+        * nautilus-widgets/nautilus-preferences-item.c:
+        * nautilus-widgets/nautilus-preferences-pane.c:
+        * nautilus-widgets/nautilus-radio-button-group.c:
+        * nautilus-widgets/test-nautilus-widgets.c:
+        * nautilus-widgets/test-preferences.c:
+        * src/file-manager/desktop-item.c:
+        * src/file-manager/desktop-layout.c:
+        * src/file-manager/desktop-menu.c:
+        * src/nautilus-bookmarks-window.c:
+        * src/nautilus-gconf.c:
+	* src/nautilus-window-menus.c:
+        * src/nautilus-window-toolbars.c:
+	* src/nautilus-zoom-control.c
+        * src/nautilus-zoomable-frame-svr.c:
+        * src/ntl-app.c:
+        * src/ntl-content-view.c:
+        * src/ntl-main.c:
+        * src/ntl-meta-view.c:
+        * src/ntl-miniicon.c:
+        * src/ntl-uri-map.c:
+        * src/ntl-view-frame-svr.c:
+        * src/ntl-view.c:
+        * src/ntl-window-state.c:
+	Added includes of <config.h>.
+
 2000-05-01  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-text-item.c 

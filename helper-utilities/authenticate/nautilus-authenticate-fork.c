@@ -24,6 +24,7 @@
  * command.   Return the process id in *pid_out.
  */
 
+#include <config.h>
 #include "nautilus-authenticate.h"
 
 #include <stdio.h>

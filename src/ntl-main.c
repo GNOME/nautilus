@@ -28,7 +28,7 @@
 
 /* ntl-main.c: Implementation of the routines that drive program lifecycle and main window creation/destruction. */
 
-#include "config.h"
+#include <config.h>
 #include "nautilus.h"
 #include "nautilus-self-check-functions.h"
 #include <libnautilus-extensions/nautilus-debug.h>

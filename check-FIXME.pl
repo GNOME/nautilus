@@ -33,20 +33,23 @@ use strict;
 my %skip_files;
 if (!@ARGV)
   {
-    @ARGV = `find -name '*' -and ! \\( -name '*~' -or -name '#*' -or -name 'ChangeLog*' -or -name 'Entries' -or -name 'check-FIXME.pl' \\)`;
-    $skip_files{"./TODO"} = 1;
-    $skip_files{"./autogen.sh"} = 1;
-    $skip_files{"./aclocal.m4"} = 1;
-    $skip_files{"./config.sub"} = 1;
-    $skip_files{"./libtool"} = 1;
-    $skip_files{"./ltconfig"} = 1;
-    $skip_files{"./ltmain.sh"} = 1;
-    $skip_files{"./macros/gnome-fileutils.m4"} = 1;
-    $skip_files{"./macros/gnome-objc-checks.m4"} = 1;
-    $skip_files{"./macros/gnome-vfs.m4"} = 1;
-    $skip_files{"./src/file-manager/desktop-canvas.c"} = 1;
-    $skip_files{"./src/file-manager/desktop-layout.c"} = 1;
-    $skip_files{"./src/file-manager/desktop-window.c"} = 1;
+    @ARGV = `find -name '*' -and ! \\( -name '*~' -or -name '#*' -or -name 'ChangeLog*' -or -name 'Entries' \\)`;
+    %skip_files =
+      (
+       "./TODO" => 1,
+       "./aclocal.m4" => 1,
+       "./check-FIXME.pl" => 1,
+       "./config.sub" => 1,
+       "./libtool" => 1,
+       "./ltconfig" => 1,
+       "./ltmain.sh" => 1,
+       "./macros/gnome-fileutils.m4" => 1,
+       "./macros/gnome-objc-checks.m4" => 1,
+       "./macros/gnome-vfs.m4" => 1,
+       "./src/file-manager/desktop-canvas.c" => 1,
+       "./src/file-manager/desktop-layout.c" => 1,
+       "./src/file-manager/desktop-window.c" => 1,
+      );
   }
 
 # locate all of the target lines

@@ -26,6 +26,7 @@
 /* ntl-zoomable-frame-svr.c: CORBA server implementation of
    Nautilus::ZoomableFrame interface of a nautilus ViewFrame. */
 
+#include <config.h>
 #include "nautilus.h"
 #include "ntl-view-private.h"
 

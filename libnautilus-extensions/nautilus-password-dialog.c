@@ -22,6 +22,7 @@
    Authors: Ramiro Estrugo <ramiro@eazel.com>
 */
 
+#include <config.h>
 #include "nautilus-password-dialog.h"
 #include "nautilus-caption-table.h"
 

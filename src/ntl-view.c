@@ -27,6 +27,7 @@
    and its associated CORBA object for proxying requests into this
    object. */
 
+#include <config.h>
 #include "ntl-view-private.h"
 #include "nautilus.h"
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>

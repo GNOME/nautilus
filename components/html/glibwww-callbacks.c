@@ -1,4 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
+#include <config.h>
 #include "glibwww.h"
 #include <HTEvent.h>
 #include <HTTimer.h>

@@ -1,4 +1,5 @@
 
+#include <config.h>
 #include <nautilus-widgets/nautilus-radio-button-group.h>
 #include <nautilus-widgets/nautilus-caption-table.h>
 #include <nautilus-widgets/nautilus-password-dialog.h>

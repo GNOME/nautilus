@@ -22,6 +22,7 @@
    Authors: John Sullivan <sullivan@eazel.com>
 */
 
+#include <config.h>
 #include "nautilus-file-utilities.h"
 
 #include <libgnome/gnome-defs.h>

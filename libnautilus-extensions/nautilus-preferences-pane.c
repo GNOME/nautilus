@@ -23,6 +23,7 @@
 */
 
 
+#include <config.h>
 #include <nautilus-widgets/nautilus-preferences-pane.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 

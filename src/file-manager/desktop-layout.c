@@ -20,6 +20,7 @@
  * USA
  */
 
+#include <config.h>
 #include "desktop-layout.h"
 
 struct _DesktopLayoutItem {

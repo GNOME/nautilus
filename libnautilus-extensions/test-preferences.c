@@ -1,4 +1,5 @@
 
+#include <config.h>
 #include <nautilus-widgets/nautilus-radio-button-group.h>
 #include <nautilus-widgets/nautilus-preferences-group.h>
 #include <nautilus-widgets/nautilus-preferences-item.h>

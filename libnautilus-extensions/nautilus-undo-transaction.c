@@ -22,6 +22,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <config.h>
 #include "nautilus-undo-transaction.h"
 
 /* nautilus_undo_transaction_new */

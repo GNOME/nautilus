@@ -23,8 +23,8 @@
  *
  */
 /* ntl-web-search.c: Rewrite KWebSearch using Gtk+ and Nautilus */
-#include "config.h"
 
+#include <config.h>
 #include <libnautilus/libnautilus.h>
 #include <gnome.h>
 #include <liboaf/liboaf.h>

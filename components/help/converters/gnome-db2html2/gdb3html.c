@@ -1,3 +1,4 @@
+#include <config.h>
 #include "gdb3html.h"
 #include "toc-elements.h"
 #include "sect-elements.h"

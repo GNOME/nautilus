@@ -24,6 +24,7 @@
    Authors: John Sullivan <sullivan@eazel.com>
 */
 
+#include <config.h>
 #include "nautilus-glib-extensions.h"
 
 #include "nautilus-lib-self-check-functions.h"

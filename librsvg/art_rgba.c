@@ -20,6 +20,7 @@
  * 02111-1307, USA.
  */
 
+#include <config.h>
 #include <libart_lgpl/art_misc.h>
 #include "art_rgba.h"
 

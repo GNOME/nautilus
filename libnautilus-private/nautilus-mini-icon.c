@@ -19,6 +19,7 @@
  * USA
  */
 
+#include <config.h>
 #include "ntl-miniicon.h"
 
 #include <gdk/gdkprivate.h>

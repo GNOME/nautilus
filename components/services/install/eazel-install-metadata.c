@@ -25,6 +25,7 @@
  * file and install a services generated package-list.xml.
  */
 
+#include <config.h>
 #include "eazel-install-metadata.h"
 
 static gboolean create_default_configuration_metafile (const char* target_file);

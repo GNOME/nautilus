@@ -1,3 +1,4 @@
+#include <config.h>
 #include <WWWCore.h>
 #include <WWWStream.h>
 #include <WWWTrans.h>

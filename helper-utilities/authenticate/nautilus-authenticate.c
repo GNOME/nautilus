@@ -24,6 +24,7 @@
  * user and execute a priviledge command on their behalf.
  */
 
+#include <config.h>
 #include "nautilus-authenticate.h"
 
 #include <nautilus-widgets/nautilus-password-dialog.h>

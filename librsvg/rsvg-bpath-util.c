@@ -21,6 +21,7 @@
    Author: Raph Levien <raph@artofcode.com>
 */
 
+#include <config.h>
 #include <glib.h>
 #include <math.h>
 #include "rsvg-bpath-util.h"

@@ -24,6 +24,7 @@
  */
 /* ntl-meta-view.c: Implementation of the object representing a meta/navigation view. */
 
+#include <config.h>
 #include "nautilus.h"
 #include "ntl-view-private.h"
 #include <gtk/gtksignal.h>

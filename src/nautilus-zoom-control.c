@@ -23,6 +23,7 @@
  *
  */
 
+#include <config.h>
 #include <gdk/gdk.h>
 #include <gtk/gtkeventbox.h>
 #include <gtk/gtkwidget.h>
@@ -260,7 +261,7 @@ set_zoom_level(NautilusZoomControl *zoom_control, gint new_level)
 	zoom_control->current_zoom = new_level;
 	zoom_control->zoom_factor = (double) nautilus_get_icon_size_for_zoom_level
 		(zoom_control->current_zoom) / NAUTILUS_ICON_SIZE_STANDARD;    
-	/* FIXME bugzilla.eazel.com 671: 
+	/* FIXME bugzilla.eazel.com 305: 
 	 * tell the content view about the zoom change here soon 
 	 */
 }

@@ -1,4 +1,5 @@
 
+#include <config.h>
 #include "sect-elements.h"
 #include "gnome.h"
 

@@ -23,6 +23,7 @@
 /* nautilus-authenticate-pam.c - Use PAM to authenticate a user.
  */
 
+#include <config.h>
 #include "nautilus-authenticate.h"
 
 #include <security/pam_appl.h>

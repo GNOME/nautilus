@@ -24,6 +24,7 @@
  *
  */
 
+#include <config.h>
 #include "nautilus.h"
 #include <libnautilus/libnautilus.h>
 #include <bonobo.h>

@@ -26,6 +26,7 @@
    Author: Andy Hertzfeld <andy@eazel.com>
 */
 
+#include <config.h>
 #include <string.h>
 #include <stdio.h>
 #include "nautilus-glib-extensions.h"

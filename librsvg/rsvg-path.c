@@ -24,6 +24,7 @@
 /* This is adapted from svg-path in Gill. */
 
 
+#include <config.h>
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>

@@ -26,6 +26,7 @@
  * file and install a services generated package-list.xml.
  */
 
+#include <config.h>
 #include "eazel-install-protocols.h"
 
 gboolean

@@ -24,6 +24,7 @@
  *
  */
 
+#include <config.h>
 #include "nautilus.h"
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>

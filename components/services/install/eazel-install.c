@@ -28,6 +28,7 @@
  * file and install a services generated package-list.xml.
  */
 
+#include <config.h>
 #include "eazel-install-types.h"
 #include "eazel-install-protocols.h"
 #include "eazel-install-rpm-glue.h"

@@ -26,6 +26,7 @@
 /* ntl-view-frame-svr.c: CORBA server implementation of the object
    representing a data view frame. */
 
+#include <config.h>
 #include "nautilus.h"
 #include "ntl-view-private.h"
 

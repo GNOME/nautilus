@@ -26,6 +26,7 @@
 /* ntl-uri-map.c: Implementation of routines for mapping a location
    change request to a set of views and actual URL to be loaded. */
 
+#include <config.h>
 #include "ntl-uri-map.h"
 
 #include <libnautilus-extensions/nautilus-directory.h>

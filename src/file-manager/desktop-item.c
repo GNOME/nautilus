@@ -20,6 +20,7 @@
  * USA
  */
 
+#include <config.h>
 #include "desktop-item.h"
 
 #include <gdk-pixbuf/gnome-canvas-pixbuf.h>

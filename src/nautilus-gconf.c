@@ -22,6 +22,7 @@
    Authors: Havoc Pennington <hp@redhat.com>
 */
 
+#include <config.h>
 #include "nautilus-gconf.h"
 
 static GConfClient *global_client = NULL;

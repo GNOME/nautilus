@@ -24,6 +24,7 @@
  *
  */
 
+#include <config.h>
 #include <gdk/gdk.h>
 #include <stdio.h>
 #include <fcntl.h>

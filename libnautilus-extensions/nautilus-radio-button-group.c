@@ -22,6 +22,7 @@
    Authors: Ramiro Estrugo <ramiro@eazel.com>
 */
 
+#include <config.h>
 #include <nautilus-widgets/nautilus-radio-button-group.h>
 
 #include <gtk/gtkradiobutton.h>

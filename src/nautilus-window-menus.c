@@ -23,6 +23,8 @@
    Author: John Sullivan <sullivan@eazel.com>
 */
 
+#include <config.h>
+
 #include "nautilus-bookmark-list.h"
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-signaller.h"
@@ -78,19 +80,19 @@ file_menu_new_window_callback (BonoboUIHandler *ui_handler,
 			       gpointer user_data, 
 			       const char *path)
 {
-  NautilusWindow *current_mainwin;
-  NautilusWindow *new_mainwin;
-
-  g_return_if_fail (NAUTILUS_IS_WINDOW (user_data));
-  
-  current_mainwin = NAUTILUS_WINDOW (user_data);
-
-  new_mainwin = nautilus_app_create_window (NAUTILUS_APP (current_mainwin->app));
-
-  nautilus_window_goto_uri (new_mainwin, 
-                            nautilus_window_get_requested_uri (current_mainwin));
-
-  gtk_widget_show (GTK_WIDGET (new_mainwin));
+	NautilusWindow *current_mainwin;
+	NautilusWindow *new_mainwin;
+	
+	g_return_if_fail (NAUTILUS_IS_WINDOW (user_data));
+	
+	current_mainwin = NAUTILUS_WINDOW (user_data);
+	
+	new_mainwin = nautilus_app_create_window (NAUTILUS_APP (current_mainwin->app));
+	
+	nautilus_window_goto_uri (new_mainwin, 
+				  nautilus_window_get_requested_uri (current_mainwin));
+	
+	gtk_widget_show (GTK_WIDGET (new_mainwin));
 }
 
 static void
@@ -849,15 +851,15 @@ nautilus_window_initialize_menus (NautilusWindow *window)
          * Some (hopefully all) will be overridden by implementations by the
          * different content views.
          */
-	bonobo_ui_handler_menu_set_sensitivity(ui_handler, 
-        				       NAUTILUS_MENU_PATH_SELECT_ALL_ITEM, 
-        				       FALSE);
+	bonobo_ui_handler_menu_set_sensitivity (ui_handler, 
+        				        NAUTILUS_MENU_PATH_SELECT_ALL_ITEM, 
+						FALSE);
 
         /* Set initial toggle state of Eazel theme menu item */
         update_eazel_theme_menu_item (window);
 
         /* Set inital state of undo menu */
-	update_undo_menu_item(window);
+	update_undo_menu_item (window);
         
         /* Sign up to be notified of icon theme changes so Use Eazel Theme Icons
          * menu item will show correct toggle state. */        

@@ -2,6 +2,7 @@
 /* currently only finds nodes and contructs a tree */
 /* partially motivated by source code of the 'info' program */
 
+#include <config.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

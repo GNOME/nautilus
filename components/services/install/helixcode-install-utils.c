@@ -25,6 +25,7 @@
 /* Most of this code is taken directly from Joe Shaw's Helix Code install / Updater
  * with a few very minor changes made by me. */
 
+#include <config.h>
 #include "helixcode-install-utils.h"
 
 char*

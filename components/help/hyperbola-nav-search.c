@@ -1,3 +1,4 @@
+#include <config.h>
 #include <libnautilus/libnautilus.h>
 #include <gnome.h>
 #include "hyperbola-filefmt.h"

@@ -20,6 +20,7 @@
  * USA
  */
 
+#include <config.h>
 #include "desktop-menu.h"
 
 #include <libgnomeui/gnome-popup-menu.h>

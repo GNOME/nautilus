@@ -22,6 +22,7 @@
    Author: Raph Levien <raph@artofcode.com>
 */
 
+#include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <png.h>

@@ -22,6 +22,7 @@
    Authors: Ramiro Estrugo <ramiro@eazel.com>
 */
 
+#include <config.h>
 #include "nautilus-preferences-item.h"
 #include "nautilus-preferences.h"
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
