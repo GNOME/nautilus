@@ -30,13 +30,9 @@ LDADD =                                           \
 	$(RPM_LIBS)                                                       \
 	$(NULL)
 
-bin_PROGRAMS = eazel-install eazel-install-query
+bin_PROGRAMS = eazel-install
 
 eazel_install_SOURCES = 		\
 	eazel-alt-install-corba.c	\
-	$(NULL)
-
-eazel_install_query_SOURCES = 		\
-	eazel-install-query.c		\
 	$(NULL)
 
