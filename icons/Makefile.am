@@ -1,6 +1,6 @@
 NULL=
 
-SUBDIRS = arlo eazel gnome vector throbber
+SUBDIRS = ardmore arlo eazel gnome vector throbber
 
 icondir = $(datadir)/pixmaps/nautilus
 
