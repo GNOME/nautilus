@@ -539,6 +539,31 @@ nautilus_icon_canvas_item_update (GnomeCanvasItem *item,
 
 /* Rendering */
 
+/* routine to underline the text in a gnome_icon_text structure */
+
+static void
+gnome_icon_underline_text (GnomeIconTextInfo *text_info, GdkDrawable *drawable, GdkGC *gc, gint x, gint y)
+{
+	GList *item;
+	gint text_width;
+	GnomeIconTextInfoRow *row;
+	int xpos;
+
+	y += text_info->font->ascent;
+
+	for (item = text_info->rows; item; item = item->next) {
+		if (item->data) {
+			row = item->data;
+			xpos = (text_info->width - row->width) / 2;
+			text_width = gdk_text_width_wc(text_info->font, row->text_wc, row->text_length);
+			gdk_draw_line(drawable, gc, x + xpos, y + 1, x + xpos + text_width, y + 1);
+	
+			y += text_info->baseline_skip;
+		} else
+			y += text_info->baseline_skip / 2;
+	}
+}
+
 /* Draw the text in a box, using gnomelib routines. */
 static void
 draw_or_measure_label_text (NautilusIconCanvasItem *item,
@@ -595,7 +620,9 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 			if (details->is_highlighted_for_selection || details->is_highlighted_for_drop)
 				gnome_icon_paint_text (icon_text_info, drawable, gc,
 					       text_left + 1, icon_bottom + height_so_far, GTK_JUSTIFY_CENTER);			
-
+			/* if it's prelit, underline the text */
+			if (details->is_prelit)	
+				gnome_icon_underline_text (icon_text_info, drawable, gc, text_left + 1, icon_bottom + height_so_far);			
 		}
 		
 		width_so_far = MAX (width_so_far, icon_text_info->width);
