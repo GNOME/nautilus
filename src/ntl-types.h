@@ -25,54 +25,13 @@
 /* ntl-types.h: Declarations of basic types */
 
 #ifndef NTL_TYPES_H
-#define NTL_TYPES_H 1
-
-#include <gtk/gtk.h>
-#include <libnautilus/libnautilus.h>
-#include <libgnomevfs/gnome-vfs.h>
+#define NTL_TYPES_H
 
 typedef char *NautilusLocationReference;
 
-typedef struct _NautilusNavigationInfo NautilusNavigationInfo;
-typedef struct _NautilusViewIdentifier NautilusViewIdentifier;
-
-typedef void (*NautilusNavigationInfoFunc)(NautilusNavigationInfo *navinfo, gpointer data);
-
-struct _NautilusViewIdentifier {
+typedef struct {
 	char *iid;	/* magic key */
 	char *name;	/* human-readable name */
-};
-
-/* These are the different ways that Nautilus can fail to
- * display the contents of a given uri. NAUTILUS_NAVIGATION_RESULT_OK
- * means the uri was displayed successfully. These are similar to
- * GnomeVFSResults but there are nautilus-specific codes and many of
- * the GnomeVFSResults are treated the same here.
- */
-enum _NautilusNavigationResult {
-	NAUTILUS_NAVIGATION_RESULT_OK,
-	NAUTILUS_NAVIGATION_RESULT_UNSPECIFIC_ERROR,
-	NAUTILUS_NAVIGATION_RESULT_NO_HANDLER_FOR_TYPE,
-	NAUTILUS_NAVIGATION_RESULT_NOT_FOUND,
-	NAUTILUS_NAVIGATION_RESULT_UNSUPPORTED_SCHEME,
-	NAUTILUS_NAVIGATION_RESULT_INVALID_URI
-};
-typedef enum _NautilusNavigationResult NautilusNavigationResult;
-
-struct _NautilusNavigationInfo {
-	Nautilus_NavigationInfo navinfo;
-
-	char *referring_iid;		/* iid of content view that we're coming from */
-	char *initial_content_iid;	/* iid to use for content view that we're going to display */
-	GSList *content_identifiers;	/* list of NautilusViewIdentifiers */
-	GSList *meta_iids;	/* list of iid strings */
-	NautilusNavigationResult result_code;
-
-	/* internal usage */
-	NautilusNavigationInfoFunc notify_ready;
-	gpointer data;
-  
-	GnomeVFSAsyncHandle *ah;
-};
+} NautilusViewIdentifier;
 
 #endif

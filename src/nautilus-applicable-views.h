@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*- */
 
 /*
  *  Nautilus
@@ -22,20 +22,59 @@
  *  Author: Elliot Lee <sopwith@redhat.com>
  *
  */
+
 /* ntl-uri-map.h: Interface for mapping a location change request to a set of views and actual URL to be loaded. */
 
 #ifndef NAUTILUS_URI_MAP_H
-#define NAUTILUS_URI_MAP_H 1
+#define NAUTILUS_URI_MAP_H
 
-#include "ntl-types.h"
-#include "ntl-view.h"
+#include <glib.h>
+#include <libgnomevfs/gnome-vfs-types.h>
+#include <libnautilus/nautilus.h>
+#include <libnautilus/nautilus-directory.h>
 
-void nautilus_navinfo_init(void);
-gpointer nautilus_navinfo_new(Nautilus_NavigationRequestInfo *nri,
-                              Nautilus_NavigationInfo *old_navinfo,
-                              NautilusNavigationInfoFunc notify_when_ready,
-                              gpointer notify_data,
-                              const char *referring_iid);
-void nautilus_navinfo_free(NautilusNavigationInfo *navinfo);
+typedef struct NautilusNavigationInfo NautilusNavigationInfo;
+
+/* These are the different ways that Nautilus can fail to
+ * display the contents of a given uri. NAUTILUS_NAVIGATION_RESULT_OK
+ * means the uri was displayed successfully. These are similar to
+ * GnomeVFSResults but there are nautilus-specific codes and many of
+ * the GnomeVFSResults are treated the same here.
+ */
+typedef enum {
+	NAUTILUS_NAVIGATION_RESULT_OK,
+	NAUTILUS_NAVIGATION_RESULT_UNSPECIFIC_ERROR,
+	NAUTILUS_NAVIGATION_RESULT_NO_HANDLER_FOR_TYPE,
+	NAUTILUS_NAVIGATION_RESULT_NOT_FOUND,
+	NAUTILUS_NAVIGATION_RESULT_UNSUPPORTED_SCHEME,
+	NAUTILUS_NAVIGATION_RESULT_INVALID_URI
+} NautilusNavigationResult;
+
+typedef void (*NautilusNavigationCallback) (NautilusNavigationResult result,
+                                            NautilusNavigationInfo  *info,
+                                            gpointer                 callback_data);
+
+struct NautilusNavigationInfo {
+	Nautilus_NavigationInfo navinfo;
+
+	char *referring_iid;		/* iid of content view that we're coming from */
+	char *initial_content_iid;	/* iid to use for content view that we're going to display */
+	GSList *content_identifiers;	/* list of NautilusViewIdentifiers */
+	GSList *meta_iids;	        /* list of iid strings */
+
+	/* internal usage */
+	NautilusNavigationCallback callback;
+	gpointer callback_data;
+	GnomeVFSAsyncHandle *ah;
+        NautilusDirectory *directory;
+};
+
+NautilusNavigationInfo *nautilus_navigation_info_new    (Nautilus_NavigationRequestInfo *request,
+                                                         Nautilus_NavigationInfo        *previous_location,
+                                                         NautilusNavigationCallback      ready_callback,
+                                                         gpointer                        callback_data,
+                                                         const char                     *referring_iid);
+void                    nautilus_navigation_info_cancel (NautilusNavigationInfo         *info);
+void                    nautilus_navigation_info_free   (NautilusNavigationInfo         *info);
 
 #endif

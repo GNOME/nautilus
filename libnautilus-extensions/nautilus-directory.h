@@ -56,66 +56,77 @@ typedef struct NautilusDirectoryClass NautilusDirectoryClass;
 #define NAUTILUS_IS_DIRECTORY_CLASS(klass) \
 	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_DIRECTORY))
 
+typedef void (*NautilusMetadataCallback) (NautilusDirectory *directory,
+					  gpointer           callback_data);
 typedef void (*NautilusFileListCallback) (NautilusDirectory *directory,
 					  GList             *files,
 					  gpointer           callback_data);
 
 /* Basic GtkObject requirements. */
-GtkType            nautilus_directory_get_type             (void);
+GtkType            nautilus_directory_get_type                 (void);
 
 /* Get a directory given a uri.
  * Creates the appropriate subclass given the uri mappings.
  * Returns a referenced object, not a floating one. Unref when finished.
  * If two windows are viewing the same uri, the directory object is shared.
  */
-NautilusDirectory *nautilus_directory_get                  (const char               *uri);
+NautilusDirectory *nautilus_directory_get                      (const char               *uri);
 
 /* Convenience functions, since we do a lot of ref'ing and unref'ing. */
-void               nautilus_directory_ref                  (NautilusDirectory        *directory);
-void               nautilus_directory_unref                (NautilusDirectory        *directory);
+void               nautilus_directory_ref                      (NautilusDirectory        *directory);
+void               nautilus_directory_unref                    (NautilusDirectory        *directory);
 
 /* Access to a URI. */
-char *             nautilus_directory_get_uri              (NautilusDirectory        *directory);
+char *             nautilus_directory_get_uri                  (NautilusDirectory        *directory);
 
-/* Simple preliminary interface for getting and setting metadata. */
-char *             nautilus_directory_get_metadata         (NautilusDirectory        *directory,
-							    const char               *tag,
-							    const char               *default_metadata);
-void               nautilus_directory_set_metadata         (NautilusDirectory        *directory,
-							    const char               *tag,
-							    const char               *default_metadata,
-							    const char               *metadata);
-gboolean           nautilus_directory_get_boolean_metadata (NautilusDirectory        *directory,
-							    const char               *tag,
-							    gboolean                  default_metadata);
-void               nautilus_directory_set_boolean_metadata (NautilusDirectory        *directory,
-							    const char               *tag,
-							    gboolean                  default_metadata,
-							    gboolean                  metadata);
-int                nautilus_directory_get_integer_metadata (NautilusDirectory        *directory,
-							    const char               *tag,
-							    int                       default_metadata);
-void               nautilus_directory_set_integer_metadata (NautilusDirectory        *directory,
-							    const char               *tag,
-							    int                       default_metadata,
-							    int                       metadata);
+/* Getting and setting metadata. */
+char *             nautilus_directory_get_metadata             (NautilusDirectory        *directory,
+								const char               *tag,
+								const char               *default_metadata);
+void               nautilus_directory_set_metadata             (NautilusDirectory        *directory,
+								const char               *tag,
+								const char               *default_metadata,
+								const char               *metadata);
+void               nautilus_directory_metadata_call_when_ready (NautilusDirectory        *directory,
+								GList                    *tags,
+								NautilusMetadataCallback  callback,
+								gpointer                  callback_data);
+void               nautilus_directory_metadata_callback_cancel (NautilusDirectory        *directory,
+								NautilusMetadataCallback  callback,
+								gpointer                  callback_data);
+
+/* Covers for common data types. */
+gboolean           nautilus_directory_get_boolean_metadata     (NautilusDirectory        *directory,
+								const char               *tag,
+								gboolean                  default_metadata);
+void               nautilus_directory_set_boolean_metadata     (NautilusDirectory        *directory,
+								const char               *tag,
+								gboolean                  default_metadata,
+								gboolean                  metadata);
+int                nautilus_directory_get_integer_metadata     (NautilusDirectory        *directory,
+								const char               *tag,
+								int                       default_metadata);
+void               nautilus_directory_set_integer_metadata     (NautilusDirectory        *directory,
+								const char               *tag,
+								int                       default_metadata,
+								int                       metadata);
 
 /* Monitor the files in a directory. */
-void               nautilus_directory_monitor_files_ref    (NautilusDirectory        *directory,
-							    NautilusFileListCallback  initial_files_callback,
-							    gpointer                  callback_data);
-void               nautilus_directory_monitor_files_unref  (NautilusDirectory        *directory);
+void               nautilus_directory_monitor_files_ref        (NautilusDirectory        *directory,
+								NautilusFileListCallback  initial_files_callback,
+								gpointer                  callback_data);
+void               nautilus_directory_monitor_files_unref      (NautilusDirectory        *directory);
 
 /* Return true if the directory has information about all the files.
  * This will be false until the directory has been read at least once.
  */
-gboolean           nautilus_directory_are_all_files_seen   (NautilusDirectory        *directory);
+gboolean           nautilus_directory_are_all_files_seen       (NautilusDirectory        *directory);
 
 /* Return true if the directory metadata has been loaded.
  * Until this is true, get_metadata calls will return defaults.
  * (We could have another way to indicate "don't know".)
  */
-gboolean           nautilus_directory_metadata_loaded      (NautilusDirectory        *directory);
+gboolean           nautilus_directory_metadata_loaded          (NautilusDirectory        *directory);
 
 typedef struct NautilusDirectoryDetails NautilusDirectoryDetails;
 

@@ -30,7 +30,7 @@
 
 #include <libgnomeui/gnome-app.h>
 #include <libnautilus/nautilus-bookmark.h>
-#include "ntl-types.h"
+#include "ntl-uri-map.h"
 #include "ntl-view.h"
 #include "ntl-index-panel.h"
 
@@ -106,7 +106,7 @@ struct _NautilusWindow {
 
   enum { NW_LOADING_INFO, NW_LOADING_VIEWS, NW_IDLE } state;
 
-  gpointer cancel_tag;
+  NautilusNavigationInfo *cancel_tag;
   guint action_tag;
   guint16 made_changes, making_changes;
 

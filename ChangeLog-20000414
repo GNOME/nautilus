@@ -1,5 +1,44 @@
 2000-04-06  Darin Adler  <darin@eazel.com>
 
+	Added the hooks needed to make metafile reading asynchronous.
+	Next I'll change the actual metafile access to work that way.
+	
+	* libnautilus/nautilus-directory.h:
+	* libnautilus/nautilus-directory.c:
+	(nautilus_directory_metadata_call_when_ready): Added function
+	that requests a read of some metadata and calls back when the
+	data is ready.
+
+	* src/ntl-app.c: (nautilus_app_startup): Got rid of call to
+	nautilus_navinfo_init.
+
+	* src/ntl-types.h: Moved the NautilusNavigationInfo struct
+	and related defines to ntl-uri-map.h.
+
+	* src/ntl-uri-map.h:
+	* src/ntl-uri-map.c:
+	Reformatted and changed the names of many functions.
+	Added code to use the new metadata callback.
+	
+	* src/ntl-index-panel.c:
+	* src/ntl-main.c:
+	* src/ntl-view.h:
+	* src/ntl-window-msgs.c:
+	* src/ntl-window.c:
+	* src/ntl-window.h:
+	Had to change includes a bit because of my changes to what
+	header files are including.
+
+	* src/ntl-window-msgs.c: (nautilus_window_update_state):
+	* src/ntl-window.h:
+	Use the new nautilus_navigation_info_cancel call instead of
+	reaching right in to cancel the underlying call.
+
+	* src/ntl-view-private.h:
+	Reformatting.
+
+2000-04-06  Darin Adler  <darin@eazel.com>
+
 	* libnautilus/nautilus-directory-background.c:
 	(nautilus_connect_background_to_directory_metadata):
 	Fixed code that was trying to disconnect the handler from the

@@ -34,6 +34,7 @@
 #include <libnautilus/nautilus-debug.h>
 #include <libnautilus/nautilus-lib-self-check-functions.h>
 #include <libnautilus/nautilus-self-checks.h>
+#include <libgnomevfs/gnome-vfs-init.h>
 
 int
 main(int argc, char *argv[])

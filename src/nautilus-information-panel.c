@@ -28,6 +28,7 @@
 #include "ntl-index-panel.h"
 
 #include <math.h>
+#include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libnautilus/nautilus-background.h>

@@ -254,8 +254,6 @@ nautilus_app_startup(NautilusApp *app, const char *initial_url)
 {
   NautilusWindow *mainwin;
 
-  nautilus_navinfo_init();
-
   /* Set default configuration */
   mainwin = nautilus_app_create_window(app);
   bonobo_activate();

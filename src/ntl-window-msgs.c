@@ -36,6 +36,8 @@
 #include <stdarg.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-dialog-util.h>
+#include <libgnomevfs/gnome-vfs-uri.h>
+#include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libnautilus/nautilus-string.h>
 #include <libnautilus/nautilus-gtk-extensions.h>
 #include <libnautilus/nautilus-metadata.h>
@@ -45,6 +47,7 @@
 #include "ntl-window-private.h"
 #include "ntl-window-state.h"
 #include "nautilus-location-bar.h"
+#include "ntl-types.h"
 
 /* #define EXTREME_DEBUGGING */
 
@@ -471,10 +474,10 @@ nautilus_window_update_view (NautilusWindow *window,
 }
 
 void
-nautilus_window_view_destroyed(NautilusView *view, NautilusWindow *window)
+nautilus_window_view_destroyed (NautilusView *view, NautilusWindow *window)
 {
         NautilusWindowStateItem item = VIEW_ERROR;
-        nautilus_window_set_state_info(window, item, view, (NautilusWindowStateItem) 0);
+        nautilus_window_set_state_info (window, item, view, (NautilusWindowStateItem) 0);
 }
 
 /* This is called when we have decided we can actually change to the new view/location situation. */
@@ -521,7 +524,7 @@ nautilus_window_has_really_changed(NautilusWindow *window)
         
         if (window->pending_ni != NULL) {
                 nautilus_window_update_internals (window, window->pending_ni);
-                nautilus_navinfo_free (window->pending_ni);
+                nautilus_navigation_info_free (window->pending_ni);
                 window->pending_ni = NULL;
         }
 }
@@ -532,9 +535,11 @@ nautilus_window_free_load_info (NautilusWindow *window)
 {
         x_message (("-> FREE_LOAD_INFO <-"));
         
-        if (window->pending_ni)
-                nautilus_navinfo_free(window->pending_ni);
-        window->pending_ni = NULL;
+        if (window->pending_ni != NULL) {
+                nautilus_navigation_info_free (window->pending_ni);
+                window->pending_ni = NULL;
+        }
+
         window->error_views = NULL;
         window->new_meta_views = NULL;
         window->new_content_view = NULL;
@@ -665,7 +670,7 @@ nautilus_window_load_content_view(NautilusWindow *window,
 }
 
 static gboolean
-nautilus_window_update_state(gpointer data)
+nautilus_window_update_state (gpointer data)
 {
         NautilusWindow *window;
         GSList *p;
@@ -739,15 +744,12 @@ nautilus_window_update_state(gpointer data)
                 window->made_changes++;
                 window->reset_to_idle = FALSE;
                 
-                if (window->cancel_tag) {
-                        gnome_vfs_async_cancel (window->cancel_tag);
-                        if (window->pending_ni != NULL) {
-                                window->pending_ni->ah = NULL;
-                        }
+                if (window->cancel_tag != NULL) {
+                        nautilus_navigation_info_cancel (window->cancel_tag);
                         window->cancel_tag = NULL;
                 }
                 
-                if (window->pending_ni) {
+                if (window->pending_ni != NULL) {
                         nautilus_window_reset_title_internal (window, window->ni->requested_uri);
                         
                         /* Tell previously-notified views to go back to the old page */
@@ -1004,19 +1006,20 @@ nautilus_window_set_state_info (NautilusWindow *window, ...)
 }
 
 static void
-nautilus_window_end_location_change_callback (NautilusNavigationInfo *navi, gpointer data)
+nautilus_window_end_location_change_callback (NautilusNavigationResult result_code,
+                                              NautilusNavigationInfo *navi,
+                                              gpointer data)
 {
         NautilusWindow *window = data;
         char *requested_uri;
         char *error_message;
-        char * scheme_string;
+        char *scheme_string;
         
         g_assert (navi != NULL);
         
         window->cancel_tag = NULL;
         
-        if (navi->result_code == NAUTILUS_NAVIGATION_RESULT_OK)
-        {
+        if (result_code == NAUTILUS_NAVIGATION_RESULT_OK) {
                 /* Navigation successful. Show the window to handle the
                  * new-window case. (Doesn't hurt if window is already showing.)
                  * Maybe this should go sometime later so the blank window isn't
@@ -1033,7 +1036,7 @@ nautilus_window_end_location_change_callback (NautilusNavigationInfo *navi, gpoi
         /* Some sort of failure occurred. How 'bout we tell the user? */
         requested_uri = navi->navinfo.requested_uri;
         
-        switch (navi->result_code) {
+        switch (result_code) {
 
         case NAUTILUS_NAVIGATION_RESULT_NOT_FOUND:
                 error_message = g_strdup_printf (_("Couldn't find \"%s\".\nPlease check the spelling and try again."), requested_uri);
@@ -1044,7 +1047,7 @@ nautilus_window_end_location_change_callback (NautilusNavigationInfo *navi, gpoi
                 break;
 
         case NAUTILUS_NAVIGATION_RESULT_NO_HANDLER_FOR_TYPE:
-                error_message = g_strdup_printf ("Couldn't display \"%s\",\nbecause Nautilus cannot handle items of this type.", requested_uri);
+                error_message = g_strdup_printf (_("Couldn't display \"%s\",\nbecause Nautilus cannot handle items of this type."), requested_uri);
                 break;
 
         case NAUTILUS_NAVIGATION_RESULT_UNSUPPORTED_SCHEME:
@@ -1053,7 +1056,7 @@ nautilus_window_end_location_change_callback (NautilusNavigationInfo *navi, gpoi
                  */
                 scheme_string = nautilus_str_get_prefix (requested_uri, ":");
                 g_assert (scheme_string != NULL);  /* Shouldn't have gotten this error unless there's a : separator. */
-                error_message = g_strdup_printf ("Couldn't display \"%s\",\nbecause Nautilus cannot handle %s: locations.",
+                error_message = g_strdup_printf (_("Couldn't display \"%s\",\nbecause Nautilus cannot handle %s: locations."),
                                                  requested_uri, scheme_string);
                 g_free (scheme_string);
                 break;
@@ -1063,11 +1066,11 @@ nautilus_window_end_location_change_callback (NautilusNavigationInfo *navi, gpoi
                  * When this comes up, we should figure out what's really happening
                  * and add another specific case.
                  */
-                error_message = g_strdup_printf ("Nautilus cannot display \"%s\".", requested_uri);
+                error_message = g_strdup_printf (_("Nautilus cannot display \"%s\"."), requested_uri);
         }
         
         if (navi != NULL) {
-                nautilus_navinfo_free (navi);
+                nautilus_navigation_info_free (navi);
         }
         
         if (!GTK_WIDGET_VISIBLE (GTK_WIDGET (window))) {
@@ -1133,16 +1136,15 @@ nautilus_window_begin_location_change (NautilusWindow *window,
                 current_iid = nautilus_view_get_iid (window->content_view);
         }
         
-        window->cancel_tag = nautilus_navinfo_new
+        window->cancel_tag = nautilus_navigation_info_new
                 (loc, window->ni,
                  nautilus_window_end_location_change_callback,
                  window, current_iid);
 }
 
-
 /******** content view switching **********/
 static void
-view_menu_switch_views_cb (GtkWidget *widget, gpointer data)
+view_menu_switch_views_callback (GtkWidget *widget, gpointer data)
 {
         NautilusWindow *window;
         NautilusView *view;
@@ -1212,7 +1214,7 @@ nautilus_window_load_content_view_menu (NautilusWindow *window,
                 nautilus_gtk_signal_connect_free_data
                         (GTK_OBJECT (menu_item),
                          "activate",
-                         GTK_SIGNAL_FUNC (view_menu_switch_views_cb), 
+                         GTK_SIGNAL_FUNC (view_menu_switch_views_callback), 
                          g_strdup (identifier->iid));
 
                 /* Store reference to window in item; no need to free this. */

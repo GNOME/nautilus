@@ -43,6 +43,7 @@
 #include <libnautilus/nautilus-string.h>
 #include "nautilus-zoom-control.h"
 #include <ctype.h>
+#include <libgnomevfs/gnome-vfs-uri.h>
 
 enum
 {
