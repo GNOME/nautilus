@@ -28,6 +28,7 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-vfs-extensions.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtklabel.h>
@@ -144,7 +145,7 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 		}
 	} else {
 		char *method, *user, *port, *initial_path, *server, *folder;
-		char *t;
+		char *t, *join;
 		gboolean free_initial_path, free_user, free_port;
 
 		server = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->server_entry), 0, -1);
@@ -196,23 +197,36 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 		folder = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->folder_entry), 0, -1);
 		if (dialog->details->user_entry->parent != NULL) {
 			free_user = TRUE;
-			user = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->user_entry), 0, -1);
+			
+			t = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->user_entry), 0, -1);
+
+			user = gnome_vfs_escape_string (t);
+
+			g_free (t);
 		}
 
 		if (folder[0] != 0 &&
 		    folder[0] != '/') {
-			t = folder;
-			folder = g_strconcat ("/", t, NULL);
-			g_free (t);
+			join = "/";
+		} else {
+			join = "";
 		}
-		
-		uri = g_strdup_printf ("%s://%s%s%s%s%s%s%s",
+
+		t = folder;
+		folder = g_strconcat (initial_path, join, t, NULL);
+		g_free (t);
+
+		t = folder;
+		folder = gnome_vfs_escape_path_string (t);
+		g_free (t);
+
+		uri = g_strdup_printf ("%s://%s%s%s%s%s%s",
 				       method,
 				       user, (user[0] != 0) ? "@" : "",
 				       server,
 				       (port[0] != 0) ? ":" : "", port,
-				       initial_path,
 				       folder);
+
 		if (free_initial_path) {
 			g_free (initial_path);
 		}
