@@ -130,6 +130,8 @@ gboolean                nautilus_file_is_nautilus_link          (NautilusFile   
 gboolean                nautilus_file_is_executable             (NautilusFile                  *file);
 gboolean                nautilus_file_is_directory              (NautilusFile                  *file);
 gboolean                nautilus_file_is_in_trash               (NautilusFile                  *file);
+gboolean                nautilus_file_get_info_failed           (NautilusFile                  *file,
+								 GnomeVFSResult                *result);
 gboolean                nautilus_file_get_directory_item_count  (NautilusFile                  *file,
 								 guint                         *count,
 								 gboolean                      *count_unreadable);

@@ -35,6 +35,7 @@ struct NautilusFileDetails
 
 	GnomeVFSFileInfo *info;
 	gboolean get_info_failed;
+	GnomeVFSResult get_info_error;
 
 	/* Since the file info doesn't remember what mime type
 	   it got, we'll just keep them here, where it 

@@ -1,3 +1,18 @@
+2000-10-09  Rebecca Schulman  <rebecka@eazel.com>
+	Fixed bugzilla bug 3359, to create nautilus
+	file api call to get the error code for
+	when a get file info call failed
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(get_info_callback):
+	Record the error received in the file structure
+	* libnautilus-extensions/nautilus-file-private.h:
+	store the error in a field in NautilusFile
+	* libnautilus-extensions/nautilus-file.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_info_failed):
+	Add new API call
+
 2000-10-09  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory.c:

@@ -2250,6 +2250,7 @@ get_info_callback (GnomeVFSAsyncHandle *handle,
 	result = results->data;
 	if (result->result != GNOME_VFS_OK) {
 		get_info_file->details->get_info_failed = TRUE;
+		get_info_file->details->get_info_error = result->result;
 	} else {
 		nautilus_file_update_info (get_info_file, result->file_info,
 					   got_slow_mime_type);
