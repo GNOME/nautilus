@@ -445,6 +445,22 @@ nautilus_sidebar_new (void)
 	return NAUTILUS_SIDEBAR (gtk_type_new (nautilus_sidebar_get_type ()));
 }
 
+/* utility routine to handle mapping local file names to a uri */
+static char*
+map_local_data_file (char *file_name)
+{
+	char *temp_str;
+	if (file_name && !nautilus_str_has_prefix (file_name, "file://")) {
+		temp_str = g_strdup_printf ("%s/%s",
+					    NAUTILUS_DATADIR,
+					    file_name);
+		g_free (file_name);
+		file_name = nautilus_get_uri_from_local_path (temp_str);
+		g_free (temp_str);
+	}
+	return file_name;
+}
+
 /* read the theme file and set up the default backgrounds and images accordingly */
 static void
 nautilus_sidebar_read_theme (NautilusSidebar *sidebar)
@@ -459,13 +475,14 @@ nautilus_sidebar_read_theme (NautilusSidebar *sidebar)
 	g_free(sidebar->details->default_background_image);
 	sidebar->details->default_background_image = NULL;
 			
-	if (background_color && strlen(background_color)) {
+	if (background_color && strlen (background_color)) {
 		sidebar->details->default_background_color = g_strdup(background_color);
 	}
 			
 	/* set up the default background image */
 	
-	if (background_image && strlen(background_image)) {
+	background_image = map_local_data_file (background_image);
+	if (background_image && strlen (background_image)) {
 		sidebar->details->default_background_image = g_strdup(background_image);
 	}
 
@@ -1241,7 +1258,7 @@ nautilus_sidebar_update_info (NautilusSidebar *sidebar,
 	NautilusDirectory *directory;
 	NautilusBackground *background;
 	char *background_color, *color_spec;
-	char *background_image, *temp_str;
+	char *background_image;
 
 	if (sidebar->details->uri == NULL) {
 		directory = NULL;
@@ -1280,16 +1297,7 @@ nautilus_sidebar_update_info (NautilusSidebar *sidebar,
 							    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
 							    sidebar->details->default_background_image);
 	}	
-	
-	if (background_image && !nautilus_str_has_prefix (background_image, "file://")) {
-		temp_str = g_strdup_printf ("%s/%s",
-					    NAUTILUS_DATADIR,
-					    background_image);
-		g_free (background_image);
-		background_image = nautilus_get_uri_from_local_path (temp_str);
-		g_free (temp_str);
-	}
-	
+		
 	/* disable the settings_changed callback, so the background doesn't get
 	   written out, since it might be the theme-dependent default */
 	gtk_signal_handler_block_by_func (GTK_OBJECT (background),

@@ -2672,15 +2672,6 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
 	insert_bonobo_menu_item 
 		(view,
 		 ui_handler, selection,
-		 FM_DIRECTORY_VIEW_MENU_PATH_RESET_BACKGROUND,
-		 _("Remove the custom color or image from the background"),
-		 -1,
-		  0, 0,
-		 (BonoboUIHandlerCallback) reset_background_callback, view);
-
-	insert_bonobo_menu_item 
-		(view,
-		 ui_handler, selection,
 		 FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS,
 		 _("Remove the custom image from each selected icon"),
 		 -1,

@@ -29,7 +29,11 @@
 
 #include <gtk/gtksignal.h>
 #include "nautilus-background.h"
+#include "nautilus-file-utilities.h"
+#include "nautilus-global-preferences.h"
 #include "nautilus-metadata.h"
+#include "nautilus-string.h"
+#include "nautilus-theme.h"
 
 static void background_changed_callback (NautilusBackground *background,
                                          NautilusDirectory  *directory);
@@ -79,6 +83,22 @@ background_changed_callback (NautilusBackground *background,
                                             background);
 }
 
+/* utility routine to handle mapping local file names to a uri */
+static char*
+local_data_file_to_uri (char *file_name)
+{
+	char *temp_str;
+	if (file_name && !nautilus_str_has_prefix (file_name, "file://")) {
+		temp_str = g_strdup_printf ("%s/%s",
+					    NAUTILUS_DATADIR,
+					    file_name);
+		g_free (file_name);
+		file_name = nautilus_get_uri_from_local_path (temp_str);
+		g_free (temp_str);
+	}
+	return file_name;
+}
+
 /* handle the directory changed signal */
 static void
 directory_changed_callback (NautilusDirectory *directory,
@@ -98,18 +118,25 @@ directory_changed_callback (NautilusDirectory *directory,
                                           background_changed_callback,
                                           directory);
         
-        /* Update color based on metadata. */
+        /* Update color and tile image based on metadata. */
 	color = nautilus_directory_get_metadata (directory,
                                                  NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_COLOR,
                                                  NULL);
-	nautilus_background_set_color (background, color);
-	g_free (color);
-        
-        /* Update tile image based on metadata. */
 	image = nautilus_directory_get_metadata (directory,
                                                  NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_IMAGE,
                                                  NULL);
+	
+	/* if there's none, read the default from the theme */
+	if (color == NULL && image == NULL) {
+		color = nautilus_theme_get_theme_data ("directory", NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_COLOR);
+		image = nautilus_theme_get_theme_data ("directory", NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_IMAGE);
+		image = local_data_file_to_uri(image);
+	}
+	
+	nautilus_background_set_color (background, color);     
 	nautilus_background_set_tile_image_uri (background, image);
+	
+	g_free (color);
 	g_free (image);
 
         /* Unblock the handler. */
@@ -118,14 +145,59 @@ directory_changed_callback (NautilusDirectory *directory,
                                             directory);
 }
 
-/* handle the background reset signal.  Eventually, fetch the defaults from the theme,
-   but for now, just use NULL */
+/* handle the theme changing */
+static void
+nautilus_directory_background_theme_changed (gpointer user_data)
+{
+	NautilusDirectory *directory;
+	NautilusBackground *background;
+	
+	background = NAUTILUS_BACKGROUND (user_data);
+	directory = gtk_object_get_data (GTK_OBJECT (background),
+					"nautilus_background_directory");
+	if (directory) {
+		directory_changed_callback (directory, background);
+	}
+}
+
+/* handle the background reset signal by setting values from the current theme */
 static void
 background_reset_callback (NautilusBackground *background,
                            NautilusDirectory *directory)
 {
-	nautilus_background_set_color (background, NULL);
-	nautilus_background_set_tile_image_uri (background, NULL);
+	char *color, *image;
+	
+	color = nautilus_theme_get_theme_data ("directory", NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_COLOR);
+	image = nautilus_theme_get_theme_data ("directory", NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_IMAGE);		
+	image = local_data_file_to_uri(image);
+	
+	/* block the handler so we don't write metadata */
+        gtk_signal_handler_block_by_func (GTK_OBJECT (background),
+                                          background_changed_callback,
+                                          directory);
+
+	nautilus_background_set_color (background, color);
+	nautilus_background_set_tile_image_uri (background, image);
+        
+        /* Unblock the handler. */
+        gtk_signal_handler_unblock_by_func (GTK_OBJECT (background),
+                                            background_changed_callback,
+                                            directory);
+	
+	g_free (color);
+	g_free (image);
+	
+	/* reset the metadata */
+	nautilus_directory_set_metadata (directory,
+					 NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_COLOR,
+					 NULL,
+					 NULL);
+
+	nautilus_directory_set_metadata (directory,
+					 NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_IMAGE,
+					 NULL,
+					 NULL);		
+
 	gtk_signal_emit_stop_by_name (GTK_OBJECT (background),
 				      "reset");
 }
@@ -139,6 +211,10 @@ background_destroyed_callback (NautilusBackground *background,
                                        GTK_SIGNAL_FUNC (directory_changed_callback),
                                        background);
         nautilus_directory_file_monitor_remove (directory, background);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
+					      nautilus_directory_background_theme_changed,
+					      background);
+
 }
 
 /* dummy callback for directory monitoring */
@@ -182,6 +258,10 @@ nautilus_connect_background_to_directory_metadata (GtkWidget *widget,
                                                GTK_SIGNAL_FUNC (directory_changed_callback),
                                                background);
         	nautilus_directory_file_monitor_remove (old_directory, background);
+		nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
+					      nautilus_directory_background_theme_changed,
+					      background);
+
 	}
 
         /* Attach the new directory. */
@@ -216,6 +296,10 @@ nautilus_connect_background_to_directory_metadata (GtkWidget *widget,
 						     NULL, TRUE, FALSE,
 						     dummy_callback,
 						     NULL);					     
+		
+		/* arrange for notification when the theme changes */
+		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, nautilus_directory_background_theme_changed, background);	
+
 	}
 
         /* Update the background based on the directory metadata. */

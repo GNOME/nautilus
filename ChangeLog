@@ -1,5 +1,24 @@
 2000-06-28  Andy Hertzfeld  <andy@eazel.com>
 
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(local_data_file_to_uri), (directory_changed_callback),
+	(nautilus_directory_background_theme_changed),
+	(background_reset_callback), (background_destroyed_callback),
+	(nautilus_connect_background_to_directory_metadata):
+	made directory backgrounds use the current theme to determine their
+	default background.  Made reset restore the default background. Receive
+	notification when the theme changes, and change the background if necessary.
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_real_merge_menus):
+	removed the "reset background" menu item.
+	* src/nautilus-sidebar.c: (map_local_data_file),
+	(nautilus_sidebar_read_theme), (nautilus_sidebar_update_info):
+	cleaned up dealing with local filenames
+	* icons/vector/vector.xml:
+	changed the main background of the vector theme
+
+2000-06-28  Andy Hertzfeld  <andy@eazel.com>
+
 	* components/music/mp3head.c,h: (get_bitrate), (get_mpgver),
 	(get_stereo):
 	integrated Erik Gustavsson's patches to make the slider
