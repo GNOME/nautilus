@@ -28,7 +28,7 @@
  * widget to display and munge html.
  */
 
-#define DEBUG_ramiro 1
+#define nopeDEBUG_ramiro 1
 
 #include <config.h>
 #include "nautilus-mozilla-content-view.h"
