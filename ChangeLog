@@ -1,3 +1,11 @@
+2000-12-15  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_or_measure_label_text), (draw_or_measure_label_text_aa):
+	fixed problem with selection causing relayout, by always allocating
+	the space for highlighting.  Also, tightened up the size of the
+	highlighted area.
+	
 2000-12-14  Pavel Cisler <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-canvas-item.c:

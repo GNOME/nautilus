@@ -56,7 +56,7 @@
 #define EMBLEM_SPACING 2
 
 /* gap between bottom of icon and start of text box */
-#define LABEL_OFFSET 2
+#define LABEL_OFFSET 1
 
 #define MAX_TEXT_WIDTH_STANDARD 135
 #define MAX_TEXT_WIDTH_TIGHTER 80
@@ -821,10 +821,8 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	}
 	g_strfreev (pieces);
 	
-	if (needs_highlight) {
-		height_so_far += 2; /* extra slop for nicer highlighting */	
-		width_so_far += 4; /* account for emboldening, plus extra to make it look nicer */
-	}	
+	/* add slop used for highlighting, even if we're not highlighting now */
+	width_so_far += 4;
 	
 	if (drawable != NULL) {
 		/* Current calculations should match what we measured before drawing.
@@ -1447,8 +1445,8 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 			
 			/* draw the shadow in black */
 			if (needs_highlight) {
-				icon_bottom += 3; /* leave some space for selection frame */
-				text_left   -= 1;
+				icon_bottom += 1; /* leave some space for selection frame */
+				text_left -= 1;
 				nautilus_text_layout_paint (icon_text_layout, 
 							    destination_pixbuf, 
 							    text_left + 2, 
@@ -1490,11 +1488,9 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 	}
 	g_strfreev (pieces);
 	
-	/* add some extra space for highlighting */
-	if (needs_highlight) {
-		height_so_far += 8; /* extra slop for nicer highlighting */	
-		width_so_far += 15; /* account for emboldening, plus extra to make it look nicer */
-	}	
+	/* add some extra space for highlighting, even when we don't highlight so things wont move */
+	height_so_far += 2; /* extra slop for nicer highlighting */	
+	width_so_far += 8;  /* account for emboldening, plus extra to make it look nicer */
 	
 	if (destination_pixbuf != NULL) {
 		/* Current calculations should match what we measured before drawing.
