@@ -97,6 +97,7 @@ ElementInfo sect_elements[] = {
 	{ MARKUP, "markup", NULL, NULL, (charactersSAXFunc) sect_write_characters},
 	{ SIMPLELIST, "simplelist", (startElementSAXFunc) sect_table_without_border_start_element, (endElementSAXFunc) sect_table_end_element, NULL},
 	{ MEMBER, "member", (startElementSAXFunc) sect_member_start_element, (endElementSAXFunc) sect_member_end_element, (charactersSAXFunc) sect_write_characters},
+	{ MOUSEBUTTON, "mousebutton", NULL, NULL, (charactersSAXFunc) sect_write_characters},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 

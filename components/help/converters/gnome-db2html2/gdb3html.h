@@ -100,7 +100,8 @@ typedef enum ElementIndex {
 	MARKUP, /* 90 */
 	SIMPLELIST,
 	MEMBER,
-	UNDEFINED /* 93 */
+	MOUSEBUTTON,
+	UNDEFINED /* 94 */
 } ElementIndex;
 
 typedef struct _ElementInfo ElementInfo;
