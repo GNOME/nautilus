@@ -1,3 +1,16 @@
+2000-04-18  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Factor out the code that describes a preference from the big messy
+	preferences into a class.
+	
+	* nautilus-widgets/nautilus-preference.c,
+	  nautilus-widgets/nautilus-preference.h: New files.  A class that
+	describes a nautilus preference.
+	
+	  nautilus-widgets/nautilus-widgets-self-check-functions.c,
+	  nautilus-widgets/nautilus-widgets-self-check-functions.h: New
+	files .  Self check code driver nautilus-widgets.
+	
 2000-04-17  Pavel Cisler  <pavel@eazel.com>
 
 	This checkin requires new gnome-vfs.
