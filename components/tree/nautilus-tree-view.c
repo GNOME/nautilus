@@ -465,6 +465,8 @@ static gboolean
 add_one_volume_root (const NautilusVolume *volume, gpointer callback_data)
 {
 	add_root_for_volume (NAUTILUS_TREE_VIEW (callback_data), volume);
+
+	return TRUE;
 }
 
 static void
