@@ -58,6 +58,7 @@
 #define STATUS_ROWS		2
 
 #define PROGRESS_BAR_HEIGHT	15
+#define MESSAGE_BOX_HEIGHT	110
 
 /* This ensures that if the arch is detected as i[3-9]86, the
    requested archtype will be set to i386 */
@@ -161,17 +162,10 @@ install_message_new (NautilusServiceInstallView *view, const char *package_name)
 	}
 
 	im = g_new0 (InstallMessage, 1);
-	im->label = eazel_services_label_new (NULL,
-					      0,
-					      0.5,
-					      0.5,
-					      0,
-					      0,
+	im->label = eazel_services_label_new (NULL, 0, 0.0, 0.5, 0, 0,
 					      EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
 					      EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
-					      NULL,
-					      0,
-					      FALSE);
+					      NULL, -2, FALSE);
 	nautilus_label_set_justify (NAUTILUS_LABEL (im->label), GTK_JUSTIFY_LEFT);
 	gtk_widget_show (im->label);
 	im->progress_bar = gtk_progress_bar_new ();
@@ -181,17 +175,10 @@ install_message_new (NautilusServiceInstallView *view, const char *package_name)
 	gtk_widget_set_usize (im->progress_bar, -2, PROGRESS_BAR_HEIGHT);
 	gtk_widget_show (im->progress_bar);
 
-	im->progress_label = eazel_services_label_new (NULL,
-						       0,
-						       0.5,
-						       0.5,
-						       0,
-						       0,
+	im->progress_label = eazel_services_label_new (NULL, 0, 0.0, 0.0, 0, 0,
 						       EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
 						       EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
-						       NULL,
-						       0,
-						       TRUE);
+						       NULL, -2, TRUE);
 	nautilus_label_set_justify (NAUTILUS_LABEL (im->progress_label), GTK_JUSTIFY_LEFT);
 
 	gtk_widget_show (im->progress_label);
@@ -213,11 +200,13 @@ install_message_new (NautilusServiceInstallView *view, const char *package_name)
 	add_padding_to_box (im->hbox, 20, 0);
 	gtk_widget_show (im->hbox);
 
+#if 0
 	if (g_list_length (view->details->message) == STATUS_ROWS) {
 		gtk_widget_set_usize (view->details->pane, -2, view->details->pane->allocation.height);
 		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (view->details->pane),
 						GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 	}
+#endif
 
 	/* add this, and possibly a separating line, to the message box */
 	if (g_list_length (view->details->message) > 0) {
@@ -247,7 +236,8 @@ generate_install_form (NautilusServiceInstallView	*view)
 {
 	GtkWidget	*temp_box;
 	GtkWidget	*title;
-	GtkWidget	*middle_title;
+	GtkWidget	*viewport;
+	GtkWidget	*filler;
 	NautilusBackground *background;
 
 	/* allocate the parent box to hold everything */
@@ -267,17 +257,10 @@ generate_install_form (NautilusServiceInstallView	*view)
 	temp_box = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 0);
 	gtk_widget_show (temp_box);
-	view->details->package_name = eazel_services_label_new (NULL,
-								0,
-								0.0,
-								0.0,
-								0,
-								0,
+	view->details->package_name = eazel_services_label_new (NULL, 0, 0.0, 0.0, 0, 0,
 								EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
 								EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
-								NULL,
-								4,
-								TRUE);
+								NULL, 4, TRUE);
 	nautilus_label_set_justify (NAUTILUS_LABEL (view->details->package_name), GTK_JUSTIFY_LEFT);
 	gtk_box_pack_start (GTK_BOX (temp_box), view->details->package_name, FALSE, FALSE, 15);
 	gtk_widget_show (view->details->package_name);
@@ -286,17 +269,10 @@ generate_install_form (NautilusServiceInstallView	*view)
 	temp_box = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 2);
 	gtk_widget_show (temp_box);
-	view->details->package_version = eazel_services_label_new (NULL,
-								   0,
-								   0.5,
-								   0.5,
-								   0,
-								   0,
+	view->details->package_version = eazel_services_label_new (NULL, 0, 0.0, 0.0, 0, 0,
 								   EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
 								   EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
-								   NULL,
-								   0,
-								   TRUE);
+								   NULL, -2, TRUE);
 	nautilus_label_set_justify (NAUTILUS_LABEL (view->details->package_version), GTK_JUSTIFY_LEFT);
 	gtk_box_pack_start (GTK_BOX (temp_box), view->details->package_version, FALSE, FALSE, 15);
 	gtk_widget_show (view->details->package_version);
@@ -316,17 +292,10 @@ generate_install_form (NautilusServiceInstallView	*view)
 	temp_box = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 2);
 	gtk_widget_show (temp_box);
-	view->details->overall_feedback_text = eazel_services_label_new (NULL,
-									 0,
-									 0.5,
-									 0.5,
-									 0,
-									 0,
+	view->details->overall_feedback_text = eazel_services_label_new (NULL, 0, 0.0, 0.0, 0, 0,
 									 EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
 									 EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
-									 NULL,
-									 0,
-									 TRUE);
+									 NULL, -2, FALSE);
 	nautilus_label_set_justify (NAUTILUS_LABEL (view->details->overall_feedback_text), GTK_JUSTIFY_LEFT);
 	gtk_box_pack_start (GTK_BOX (temp_box), view->details->overall_feedback_text, FALSE, FALSE, 30);
 
@@ -337,17 +306,10 @@ generate_install_form (NautilusServiceInstallView	*view)
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 2);
 	gtk_widget_show (temp_box);
 
-	view->details->package_details = eazel_services_label_new (NULL,
-								   0,
-								   0.5,
-								   0.5,
-								   0,
-								   0,
+	view->details->package_details = eazel_services_label_new (NULL, 0, 0.0, 0.0, 0, 0,
 								   EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
 								   EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
-								   NULL,
-								   0,
-								   TRUE);
+								   NULL, -2, FALSE);
 	nautilus_label_set_justify (NAUTILUS_LABEL (view->details->package_details), GTK_JUSTIFY_LEFT);
 	nautilus_label_set_wrap (NAUTILUS_LABEL (view->details->package_details), TRUE);
 
@@ -359,27 +321,32 @@ generate_install_form (NautilusServiceInstallView	*view)
 
 	/* add a table at the bottom of the screen to hold current progresses */
 	view->details->message_box = gtk_vbox_new (FALSE, 0);
-	view->details->pane = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (view->details->pane), GTK_POLICY_NEVER, GTK_POLICY_NEVER);
-	{
-		GtkWidget *viewport;
-		viewport = gtk_viewport_new (NULL, NULL);
-		gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);
-		gtk_container_add (GTK_CONTAINER (view->details->pane), viewport);
-		gtk_widget_show (viewport);
-		gtk_container_add (GTK_CONTAINER (viewport), view->details->message_box);
-		background = nautilus_get_widget_background (viewport);
-		nautilus_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
-	}
-	gtk_widget_show (view->details->pane);
+	filler = gtk_label_new ("");
+	gtk_widget_show (filler);
+	gtk_box_pack_end (GTK_BOX (view->details->message_box), filler, TRUE, TRUE, 0);
 
-	gtk_box_pack_end (GTK_BOX (view->details->form), view->details->pane, FALSE, FALSE, 2);
+	view->details->pane = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (view->details->pane), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	viewport = gtk_viewport_new (NULL, NULL);
+	gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);
+	gtk_container_add (GTK_CONTAINER (view->details->pane), viewport);
+	gtk_widget_show (viewport);
+	gtk_container_add (GTK_CONTAINER (viewport), view->details->message_box);
 	gtk_widget_show (view->details->message_box);
+	background = nautilus_get_widget_background (viewport);
+	nautilus_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
+	gtk_widget_set_usize (view->details->pane, -2, MESSAGE_BOX_HEIGHT);
+	gtk_widget_show (view->details->pane);
+	gtk_box_pack_end (GTK_BOX (view->details->form), view->details->pane, FALSE, FALSE, 2);
 
 	/* Setup the progress header */
-	middle_title = eazel_services_header_middle_new (_("Messages"), _("Progress"));
-        gtk_box_pack_end (GTK_BOX (view->details->form), middle_title, FALSE, FALSE, 0);
-	gtk_widget_show (middle_title);
+	/* FIXME: the middle header is all fubar now, so we just say "messages", but the spec
+	 * shows "progress" over the 2nd column of the message box.  it's just too hard to get
+	 * it aligned currently.
+	 */
+	view->details->middle_title = eazel_services_header_middle_new (_("Messages"), "");
+        gtk_box_pack_end (GTK_BOX (view->details->form), view->details->middle_title, FALSE, FALSE, 0);
+	gtk_widget_show (view->details->middle_title);
 
 	gtk_widget_show (view->details->form);
 }
@@ -680,6 +647,7 @@ current_progress_bar_complete (NautilusServiceInstallView *view, const char *tex
 	/* can't figure out a decent way to do this yet... :( */
 	if (view->details->current_im != NULL) {
 		nautilus_label_set_text (NAUTILUS_LABEL (view->details->current_im->progress_label), text);
+		gtk_widget_queue_resize (view->details->message_box);
 	}
 }
 
@@ -726,7 +694,9 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const char *name
 		gtk_progress_set_percentage (GTK_PROGRESS (im->progress_bar), 0.0);
 		out = g_strdup_printf (_("0K of %dK"), total/1024);
 		nautilus_label_set_text (NAUTILUS_LABEL (im->progress_label), out);
+		gtk_widget_queue_resize (view->details->message_box);
 		g_free (out);
+		view->details->last_k = 0;
 
 		needed_by = g_hash_table_lookup (view->details->deps, root_name);
 		if (needed_by != NULL) {
@@ -758,9 +728,13 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const char *name
 		if ((im != NULL) && (im->progress_bar != NULL)) {
 			gtk_progress_set_percentage (GTK_PROGRESS (im->progress_bar),
 						     (float) amount / (float) total);
-			out = g_strdup_printf (_("%dK of %dK"), amount/1024, total/1024);
-			nautilus_label_set_text (NAUTILUS_LABEL (im->progress_label), out);
-			g_free (out);
+			if ((amount/1024) >= view->details->last_k + 10) {
+				out = g_strdup_printf (_("%dK of %dK"), amount/1024, total/1024);
+				nautilus_label_set_text (NAUTILUS_LABEL (im->progress_label), out);
+				gtk_widget_queue_resize (view->details->message_box);
+				g_free (out);
+				view->details->last_k = (amount/1024);
+			}
 			/* spin the cylon some more, whee! */
 			/* spin_cylon (view); */
 		}
@@ -911,6 +885,33 @@ nautilus_service_install_download_failed (EazelInstallCallback *cb, const char *
 }
 
 static void
+previous_install_finished (NautilusServiceInstallView *view)
+{
+	InstallMessage *im;
+	char *needed_by;
+	char *out;
+
+	im = view->details->current_im;
+	if (im != NULL) {
+		current_progress_bar_complete (view, _("Complete"));
+		gtk_progress_set_percentage (GTK_PROGRESS (im->progress_bar), 1.0);
+
+		needed_by = g_hash_table_lookup (view->details->deps, view->details->current_rpm);
+		if (needed_by != NULL) {
+			out = g_strdup_printf (_("The package \"%s\" needed \"%s\" to run.\nI've downloaded and installed it."),
+					       needed_by, view->details->current_rpm);
+		} else {
+			out = g_strdup_printf (_("I've downloaded and installed package \"%s\"."), view->details->current_rpm);
+		}
+		nautilus_label_set_text (NAUTILUS_LABEL (im->label), out);
+		g_free (out);
+	}
+	g_free (view->details->current_rpm);
+	view->details->current_rpm = NULL;
+	view->details->current_im = NULL;
+}
+
+static void
 nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData *pack,
 				     int current_package, int total_packages,
 				     int package_progress, int package_total,
@@ -931,8 +932,7 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 
 		/* new behavior: sometimes the previous package wasn't quite closed out -- do it now */
 		if (im != NULL) {
-			current_progress_bar_complete (view, _("Complete"));
-			gtk_progress_set_percentage (GTK_PROGRESS (im->progress_bar), 1.0);
+			previous_install_finished (view);
 		}
 
 		/* if you're looking for the place where we notice that one of nautilus's core
@@ -947,7 +947,8 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 			} 
 		}
 
-		g_warning ("start: '%s'", pack->name);
+		g_free (view->details->current_rpm);
+		view->details->current_rpm = g_strdup (pack->name);
 		view->details->current_im = im = install_message_new (view, pack->name);
 		gtk_progress_set_percentage (GTK_PROGRESS (im->progress_bar), 0.0);
 		needed_by = g_hash_table_lookup (view->details->deps, pack->name);
@@ -989,8 +990,8 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 	g_free (out);
 
 	if ((package_progress == package_total) && (package_total > 0)) {
-		current_progress_bar_complete (view, _("Complete"));
-		gtk_progress_set_percentage (GTK_PROGRESS (im->progress_bar), 1.0);
+		/* done with another package! */
+		previous_install_finished (view);
 	}
 }
 
@@ -1110,13 +1111,15 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 	}
 
 	turn_cylon_off (view, success ? 1.0 : 0.0);
+	g_free (view->details->current_rpm);
+	view->details->current_rpm = NULL;
 
-	if (success) {
-		message = _("Installation complete!");
-	} else if (view->details->cancelled) {
+	if (view->details->cancelled) {
 		message = _("Installation aborted.");
 	} else if (view->details->already_installed) {
 		message = _("This package has already been installed.");
+	} else if (success) {
+		message = _("Installation complete!");
 	} else {
 		message = _("Installation failed!");
 		answer = nautilus_service_install_solve_cases (view);
@@ -1137,7 +1140,11 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 							message,
 							nautilus_install_service_locate_menu_entries (view));
 		} else {
-			real_message = g_strdup_printf (_("%s\nErase the leftover RPM files?"), message);
+			if (view->details->cancelled || view->details->failure) {
+				real_message = g_strdup_printf (_("%s\nErase the RPM files?"), message);
+			} else {
+				real_message = g_strdup_printf (_("%s\nErase the leftover RPM files?"), message);
+			}
 		}
 		toplevel = gtk_widget_get_toplevel (view->details->message_box);
 		if (GTK_IS_WINDOW (toplevel)) {

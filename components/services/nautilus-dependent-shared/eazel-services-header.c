@@ -132,18 +132,18 @@ eazel_services_header_middle_new (const char *left_text,
 
 	header = EAZEL_SERVICES_HEADER (gtk_widget_new (eazel_services_header_get_type (), NULL));
 
-	header->details->left_text = 
+	header->details->left_text =
 		eazel_services_label_new (left_text,
 					  0,
 					  0.1,
-					  0.1,
-					  12,
+					  0.3,
 					  10,
+					  0,
 					  EAZEL_SERVICES_TITLE_TEXT_COLOR_RGB,
 					  EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
 					  EAZEL_SERVICES_HEADER_MIDDLE_FILL_ICON,
 					  0,
-					  FALSE);
+					  TRUE);
 
 	nautilus_label_set_tile_height (NAUTILUS_LABEL (header->details->left_text),
 					NAUTILUS_SMOOTH_TILE_EXTENT_ONE_STEP);
@@ -164,14 +164,14 @@ eazel_services_header_middle_new (const char *left_text,
 		eazel_services_label_new (right_text,
 					  0,
 					  0.1,
-					  0.1,
+					  0.3,
 					  76,
-					  10,
+					  0,
 					  EAZEL_SERVICES_TITLE_TEXT_COLOR_RGB,
 					  EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
 					  EAZEL_SERVICES_HEADER_MIDDLE_FILL_ICON,
-					  0,
-					  FALSE);
+					  -2,
+					  TRUE);
 
 	nautilus_label_set_tile_height (NAUTILUS_LABEL (header->details->right_text),
 					NAUTILUS_SMOOTH_TILE_EXTENT_ONE_STEP);

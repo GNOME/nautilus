@@ -1135,7 +1135,12 @@ eazel_install_uninstall_packages (EazelInstall *service, GList *categories, cons
 	eazel_install_set_uninstall (service, TRUE);
 
 	if (categories == NULL && eazel_install_get_package_list (service) == NULL) {
-		eazel_install_set_package_list (service, "/var/eazel/services/package-list.xml");
+		char *tmp;
+		tmp = g_strdup_printf ("%s/package-list.xml", eazel_install_get_tmp_dir (service));
+		eazel_install_set_package_list (service, tmp);
+		unlink (tmp);
+		g_free (tmp);
+
 		eazel_install_fetch_remote_package_list (service);
 	}
 

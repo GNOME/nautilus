@@ -955,13 +955,13 @@ eazel_install_start_transaction (EazelInstall *service,
 	if (g_list_length (packages) == 0) {
 		return -1;
 	}
-		
+
 	res = 0;
-	
+
 	if (service->private->downloaded_files) {
-		/* I need to get the lenght here, because all_files_check can alter the list */
+		/* I need to get the length here, because all_files_check can alter the list */
 		int l  = g_list_length (packages);
-		/* Unless we're forc installing, check file conflicts */
+		/* Unless we're force installing, check file conflicts */
 		if (eazel_install_get_force (service) == FALSE) {
 			if(!eazel_install_do_transaction_md5_check (service, packages)) {
 				res = l;
@@ -995,6 +995,11 @@ eazel_install_start_transaction (EazelInstall *service,
 	service->private->infoblock [5] = get_total_size_of_packages (packages);
 
 	if (eazel_install_emit_preflight_check (service, packages)) {
+		/* this makes the primary packages appear before their dependencies.  very useful for installs
+		 * via the install-view, where only toplevel packages cause the package detail info to update.
+		 */
+		packages = g_list_reverse (packages);
+
 		if (eazel_install_get_uninstall (service)) {
 			eazel_package_system_uninstall (service->private->package_system,
 							service->private->cur_root,

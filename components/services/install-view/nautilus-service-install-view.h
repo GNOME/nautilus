@@ -77,6 +77,7 @@ struct _NautilusServiceInstallViewDetails {
 	GtkWidget       *current_feedback_text;
 	InstallMessage	*current_im;
 	GtkWidget	*pane;
+	GtkWidget	*middle_title;
 
 	char		*current_rpm;
 	int		current_package;
@@ -87,6 +88,7 @@ struct _NautilusServiceInstallViewDetails {
 	gboolean	failure;
 	gboolean	cancelled;
 	gboolean	already_installed;
+	int		last_k;			/* used to avoid flickering the KB count so much */
 
 	EazelInstallCallback *installer;
 	EazelInstallProblem *problem;

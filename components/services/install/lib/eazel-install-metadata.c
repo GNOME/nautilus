@@ -187,7 +187,7 @@ init_default_install_configuration (void)
 	rv->protocol = get_urltype_from_string (temp);
 	g_free (temp);
 
-	rv->pkg_list = get_conf_string ("package-list", "/var/eazel/services/package-list.xml");
+	rv->pkg_list = get_conf_string ("package-list", NULL);
 	rv->transaction_dir = get_conf_string ("transaction-dir", NULL);
 	if (rv->transaction_dir == NULL) {
 		rv->transaction_dir = g_strdup_printf ("%s/.nautilus/transactions", g_get_home_dir ());

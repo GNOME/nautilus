@@ -1,3 +1,43 @@
+2001-01-11  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-logic.c:
+	(eazel_install_start_transaction):
+
+	Reverse the package list just before installing, so that the
+	install view gets info on toplevel packages before their
+	dependencies (this keeps the user from being bored, since they'll
+	see the package detailed info on toplevel packages while the
+	others are installing).
+	
+	* components/services/install/lib/eazel-install-metadata.c:
+	(init_default_install_configuration):
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_uninstall_packages):
+
+	Remove last vestigal uses of a literal "/var" path.
+	
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (install_message_new), (generate_install_form),
+	(current_progress_bar_complete),
+	(nautilus_service_install_downloading),
+	(previous_install_finished), (nautilus_service_install_installing),
+	(nautilus_service_install_done):
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.h:
+
+	Finish Arlo'ification of the install view: Pin the message box at
+	a specific height, clean up lots of nastiness caused by the new
+	font system, and fix up the text displayed per-package when the
+	package is done being installed.  Also, fix a bug that caused a
+	cancelled install to report that it was successful.
+	
+	* components/services/nautilus-dependent-shared/eazel-services-head
+	er.c: (eazel_services_header_middle_new):
+
+	Change positioning of the middle header so that it doesn't cause
+	mondo amounts of empty space to appear beneath it.  (Not sure why;
+	GTK magic.)
+
 2001-01-11  John Harper  <jsh@eazel.com>
 
 	reviewed by: Pavel Cisler  <pavel@eazel.com>
