@@ -1,5 +1,12 @@
 2001-04-27  Darin Adler  <darin@eazel.com>
 
+	* libnautilus-extensions/nautilus-thumbnails-jpeg.c:
+	(fatal_error_handler), (output_message_handler),
+	(nautilus_thumbnail_load_scaled_jpeg): Added error handling
+	based on Alex Larsson's revised patch. Needs more testing.
+
+2001-04-27  Darin Adler  <darin@eazel.com>
+
 	Fixed bug 7818 (Duplicating a link to a file on a different
 	partition gives "You can't copy a file over itself" error).
 

@@ -29,6 +29,7 @@
 #include "nautilus-thumbnails-jpeg.h"
 
 #include <eel/eel-glib-extensions.h>
+#include <setjmp.h>
 
 #include <stdio.h>
 #include <jpeglib.h>
@@ -44,6 +45,28 @@ typedef struct {
 	GnomeVFSHandle *handle;
 	JOCTET buffer[BUFFER_SIZE];
 } Source;
+
+typedef struct {
+	struct jpeg_error_mgr pub;
+	jmp_buf setjmp_buffer;
+} ErrorHandlerData;
+
+static void
+fatal_error_handler (j_common_ptr cinfo)
+{
+	ErrorHandlerData *data;
+
+	data = (ErrorHandlerData *) cinfo->err;
+	longjmp (data->setjmp_buffer, 1);
+}
+
+static void
+output_message_handler (j_common_ptr cinfo)
+{
+	/* If we don't supply this handler, libjpeg reports errors
+	 * directly to stderr.
+	 */
+}
 
 static void
 init_source (j_decompress_ptr cinfo)
@@ -147,11 +170,12 @@ nautilus_thumbnail_load_scaled_jpeg (const char *uri,
 				     int         target_height)
 {
 	struct jpeg_decompress_struct cinfo;
-	struct jpeg_error_mgr jerr;
+	ErrorHandlerData jerr;
 	GnomeVFSHandle *handle;
 	unsigned char *lines[1];
-	guchar *buffer;
-	guchar *pixels, *ptr;
+	guchar * volatile buffer;
+	guchar * volatile pixels;
+	guchar *ptr;
 	GnomeVFSResult result;
 	unsigned int i;
 	
@@ -162,7 +186,21 @@ nautilus_thumbnail_load_scaled_jpeg (const char *uri,
 		return NULL;
 	}
 	
-	cinfo.err = jpeg_std_error (&jerr);
+	cinfo.err = jpeg_std_error (&jerr.pub);
+	jerr.pub.error_exit = fatal_error_handler;
+	jerr.pub.output_message = output_message_handler;
+
+	buffer = NULL;
+	pixels = NULL;
+	if (setjmp (jerr.setjmp_buffer)) {
+		/* Handle a JPEG error. */
+		jpeg_destroy_decompress (&cinfo);
+		gnome_vfs_close (handle);
+		g_free (buffer);
+		g_free (pixels);
+		return NULL;
+	}
+
 	jpeg_create_decompress (&cinfo);
 
 	vfs_src (&cinfo, handle);
@@ -187,7 +225,6 @@ nautilus_thumbnail_load_scaled_jpeg (const char *uri,
 		buffer = g_malloc (cinfo.output_width);
 		lines[0] = buffer;
 	} else {
-		buffer = NULL;
 		lines[0] = pixels;
 	}
 	
@@ -208,6 +245,7 @@ nautilus_thumbnail_load_scaled_jpeg (const char *uri,
 	}
 
 	g_free (buffer);
+	buffer = NULL;
 	
 	jpeg_finish_decompress (&cinfo);
 	jpeg_destroy_decompress (&cinfo);
