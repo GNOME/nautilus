@@ -1,3 +1,16 @@
+2000-12-06  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 4994 (Back and Forward tool bar buttons don't respect
+	"no label" gnomecc option)
+
+	* src/nautilus-window-toolbars.c: (set_up_special_bonobo_button):
+	Set initial labels-or-not state based on global preference. This
+	is an imperfect solution because it only partially matches the
+	logic used by the Bonobo standard button mechanism, but the
+	remaining symptoms are very minor (see bug 5005).
+
 2000-12-06  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* nautilus.spec.in:
