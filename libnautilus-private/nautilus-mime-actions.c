@@ -39,9 +39,15 @@
 static gint gnome_vfs_mime_application_has_id (GnomeVFSMimeApplication *application, const char *id);
 static gint gnome_vfs_mime_id_matches_application (const char *id, GnomeVFSMimeApplication *application);
 static gint gnome_vfs_mime_id_matches_component (const char *iid, OAF_ServerInfo *component);
+static gint gnome_vfs_mime_application_matches_id (GnomeVFSMimeApplication *application, const char *id);
+static gint gnome_vfs_mime_component_matches_id (OAF_ServerInfo *component, const char *iid);
 static gboolean gnome_vfs_mime_application_has_id_not_in_list (GnomeVFSMimeApplication *application, GList *ids);
 static gboolean component_has_id_in_list (OAF_ServerInfo *server, GList *iids);
+static gboolean gnome_vfs_mime_id_in_application_list (const char *id, GList *applications);
+static gboolean gnome_vfs_mime_id_in_component_list (const char *iid, GList *components);
 static gboolean string_not_in_list (const char *str, GList *list);
+static GList *id_list_from_application_list (GList *applications);
+static GList *id_list_from_component_list (GList *applications);
 static OAF_ServerInfo *OAF_ServerInfo__copy (OAF_ServerInfo *orig);
 static char *extract_prefix_add_suffix (const char *string, const char *separator, const char *suffix);
 static char *mime_type_get_supertype (const char *mime_type);
@@ -630,28 +636,110 @@ nautilus_mime_set_short_list_components_for_uri (const char *uri,
 
 }
 
+static GList *
+id_list_from_application_list (GList *applications)
+{
+	GList *result;
+	GList *node;
+
+	result = NULL;
+	
+	for (node = applications; node != NULL; node = node->next) {
+		result = g_list_append 
+			(result, g_strdup (((GnomeVFSMimeApplication *)node->data)->id));
+	}
+
+	return result;
+}
+
+static GList *
+id_list_from_component_list (GList *components)
+{
+	GList *result;
+	GList *node;
+
+	result = NULL;
+	
+	for (node = components; node != NULL; node = node->next) {
+		result = g_list_append 
+			(result, g_strdup (((OAF_ServerInfo *)node->data)->iid));
+	}
+
+	return result;
+}
+
 void nautilus_mime_add_application_to_short_list_for_uri (const char *uri,
 						   	  const char *application_id)
 {
-	g_message ("called nautilus_mime_add_application_to_short_list_for_uri");
+	GList *old_list, *new_list;
+
+	old_list = nautilus_mime_get_short_list_applications_for_uri (uri);
+
+	if (!gnome_vfs_mime_id_in_application_list (application_id, old_list)) {
+		new_list = g_list_append (id_list_from_application_list (old_list), 
+					  g_strdup (application_id));
+		nautilus_mime_set_short_list_applications_for_uri (uri, new_list);
+		nautilus_g_list_free_deep (new_list);
+	}
+
+	gnome_vfs_mime_application_list_free (old_list);
 }						   
 
 void nautilus_mime_remove_application_from_short_list_for_uri (const char *uri,
 						   	       const char *application_id)
 {
-	g_message ("called nautilus_mime_remove_application_from_short_list_for_uri");
+	GList *old_list, *matching_node, *new_list;
+
+	old_list = nautilus_mime_get_short_list_applications_for_uri (uri);
+
+	matching_node = g_list_find_custom 
+		(old_list, (gpointer)application_id, (GCompareFunc) gnome_vfs_mime_application_matches_id);
+	if (matching_node != NULL) {
+		old_list = g_list_remove_link (old_list, matching_node);
+		gnome_vfs_mime_application_list_free (matching_node);
+		new_list = id_list_from_application_list (old_list);
+		nautilus_mime_set_short_list_applications_for_uri (uri, new_list);
+		nautilus_g_list_free_deep (new_list);
+	}
+
+	gnome_vfs_mime_application_list_free (old_list);
 }						   
 
 void nautilus_mime_add_component_to_short_list_for_uri (const char *uri,
 						 	const char *iid)
 {
-	g_message ("called nautilus_mime_add_component_to_short_list_for_uri");
+	GList *old_list, *new_list;
+
+	old_list = nautilus_mime_get_short_list_components_for_uri (uri);
+
+	if (!gnome_vfs_mime_id_in_component_list (iid, old_list)) {
+		new_list = g_list_append (id_list_from_component_list (old_list), 
+					  g_strdup (iid));
+		nautilus_mime_set_short_list_components_for_uri (uri, new_list);
+		nautilus_g_list_free_deep (new_list);
+	}
+
+	gnome_vfs_mime_component_list_free (old_list);
 }						   
 
 void nautilus_mime_remove_component_from_short_list_for_uri (const char *uri,
 						      	     const char *iid)
 {
-	g_message ("called nautilus_mime_remove_component_from_short_list_for_uri");
+	GList *old_list, *matching_node, *new_list;
+
+	old_list = nautilus_mime_get_short_list_components_for_uri (uri);
+
+	matching_node = g_list_find_custom 
+		(old_list, (gpointer) iid, (GCompareFunc) gnome_vfs_mime_component_matches_id);
+	if (matching_node != NULL) {
+		old_list = g_list_remove_link (old_list, matching_node);
+		gnome_vfs_mime_component_list_free (matching_node);
+		new_list = id_list_from_component_list (old_list);
+		nautilus_mime_set_short_list_components_for_uri (uri, new_list);
+		nautilus_g_list_free_deep (new_list);
+	}
+
+	gnome_vfs_mime_application_list_free (old_list);
 }						   
 
 void
@@ -716,6 +804,18 @@ gnome_vfs_mime_id_matches_component (const char *iid, OAF_ServerInfo *component)
 	return strcmp (component->iid, iid);
 }
 
+static gint 
+gnome_vfs_mime_application_matches_id (GnomeVFSMimeApplication *application, const char *id)
+{
+	return gnome_vfs_mime_id_matches_application (id, application);
+}
+
+static gint 
+gnome_vfs_mime_component_matches_id (OAF_ServerInfo *component, const char *iid)
+{
+	return gnome_vfs_mime_id_matches_component (iid, component);
+}
+
 
 static gboolean
 gnome_vfs_mime_application_has_id_not_in_list (GnomeVFSMimeApplication *application, GList *ids)
@@ -727,6 +827,18 @@ static gboolean
 component_has_id_in_list (OAF_ServerInfo *server, GList *iids)
 {
 	return g_list_find_custom (iids, server, (GCompareFunc) gnome_vfs_mime_id_matches_component) != NULL;
+}
+
+static gboolean
+gnome_vfs_mime_id_in_application_list (const char *id, GList *applications)
+{
+	return g_list_find_custom (applications, (gpointer) id, (GCompareFunc) gnome_vfs_mime_application_matches_id) != NULL;
+}
+
+static gboolean
+gnome_vfs_mime_id_in_component_list (const char *iid, GList *components)
+{
+	return g_list_find_custom (components, (gpointer) iid, (GCompareFunc) gnome_vfs_mime_component_matches_id) != NULL;
 }
 
 static gboolean

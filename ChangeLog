@@ -1,3 +1,20 @@
+2000-06-02  John Sullivan  <sullivan@eazel.com>
+
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_add_application_to_short_list_for_uri),
+	(nautilus_mime_remove_application_from_short_list_for_uri),
+	(nautilus_mime_add_component_to_short_list_for_uri),
+	(nautilus_mime_remove_component_from_short_list_for_uri):
+	Provided implementations for these functions (formerly empty).
+	Unfortunately bad things happen when I invoke them. Will
+	debug now.
+	(id_list_from_application_list), (id_list_from_component_list),
+	(gnome_vfs_mime_application_matches_id),
+	(gnome_vfs_mime_component_matches_id), (component_has_id_in_list),
+	(gnome_vfs_mime_id_in_application_list),
+	(gnome_vfs_mime_id_in_component_list): New helper functions all
+	used to implement the add/remove functions.
+
 2000-06-02  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-global-preferences.c:
