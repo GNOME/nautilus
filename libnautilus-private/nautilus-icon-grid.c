@@ -557,16 +557,14 @@ nautilus_icon_grid_set_visible_width (NautilusIconGrid *grid,
  * Size 1 means it fits in 2x2 grid cells.
  */
 static int
-get_icon_size_power (NautilusIcon *icon)
+get_icon_size_power_from_bounds (const ArtDRect *world_bounds)
 {
-	ArtDRect world_bounds;
 	int cell_count, power;
 
-	nautilus_gnome_canvas_item_get_world_bounds
-		(GNOME_CANVAS_ITEM (icon->item), &world_bounds);
-
-	cell_count = MAX (ceil ((world_bounds.x1 - world_bounds.x0) / BASE_CELL_WIDTH),
-			  ceil ((world_bounds.y1 - world_bounds.y0) / BASE_CELL_HEIGHT));
+	cell_count = MAX (ceil ((world_bounds->x1 - world_bounds->x0) / BASE_CELL_WIDTH)
+			  + BASE_CELL_WIDTH / 2,
+			  ceil ((world_bounds->y1 - world_bounds->y0) / BASE_CELL_HEIGHT)
+			  + BASE_CELL_HEIGHT / 2);
 
 	for (power = 0; cell_count > 1; power++) {
 		cell_count /= 2;
@@ -574,25 +572,36 @@ get_icon_size_power (NautilusIcon *icon)
 	return power;
 }
 
+static int
+get_icon_size_power (NautilusIcon *icon)
+{
+	ArtDRect world_bounds;
+
+	nautilus_gnome_canvas_item_get_world_bounds
+		(GNOME_CANVAS_ITEM (icon->item), &world_bounds);
+	return get_icon_size_power_from_bounds (&world_bounds);
+}
+
 void
 nautilus_icon_grid_add (NautilusIconGrid *grid,
 			NautilusIcon *icon)
 {
 	ArtDRect world_bounds;
-	int i;
+	int power, i;
 
 	/* Figure out how big the icon is. */
 	nautilus_gnome_canvas_item_get_world_bounds
 		(GNOME_CANVAS_ITEM (icon->item), &world_bounds);
+	power = get_icon_size_power_from_bounds (&world_bounds);
 	
 	/* Compute grid bounds for the icon. */
-	icon->grid_rectangle.x0 = floor (world_bounds.x0 / BASE_CELL_WIDTH);
-	icon->grid_rectangle.y0 = floor (world_bounds.y0 / BASE_CELL_HEIGHT);
-	icon->grid_rectangle.x1 = ceil (world_bounds.x1 / BASE_CELL_WIDTH);
-	icon->grid_rectangle.y1 = ceil (world_bounds.y1 / BASE_CELL_HEIGHT);
+	icon->grid_rectangle.x0 = (int) floor (world_bounds.x0 / (BASE_CELL_WIDTH << power)) << power;
+	icon->grid_rectangle.y0 = (int) floor (world_bounds.y0 / (BASE_CELL_HEIGHT << power)) << power;
+	icon->grid_rectangle.x1 = (int) ceil (world_bounds.x1 / (BASE_CELL_WIDTH << power)) << power;
+	icon->grid_rectangle.y1 = (int) ceil (world_bounds.y1 / (BASE_CELL_HEIGHT << power)) << power;
 
 	if (grid->subgrids->len == 0) {
-		create_subgrid (grid, get_icon_size_power (icon));
+		create_subgrid (grid, power);
 	}
 
 	for (i = 0; i < grid->subgrids->len; i++) {
@@ -620,12 +629,24 @@ nautilus_icon_grid_get_position (NautilusIconGrid *grid,
 				 NautilusIcon *icon,
 				 ArtPoint *position)
 {
+	ArtDRect icon_rect;
+	int power;
+
 	g_return_if_fail (grid != NULL);
 	g_return_if_fail (position != NULL);
 
+	power = get_icon_size_power (icon);
 	subgrid_get_position
-		(create_subgrid (grid, get_icon_size_power (icon)),
+		(create_subgrid (grid, power),
 		 icon, position);
+
+	/* Position the icon centered in the X space
+	 * and at the top of the Y space.
+	 */
+	nautilus_icon_canvas_item_get_icon_rectangle
+		(icon->item, &icon_rect);
+	position->x += ((BASE_CELL_WIDTH << power)
+	     - (icon_rect.x1 - icon_rect.x0)) / 2;
 }
 
 GList *

@@ -1260,12 +1260,6 @@ nautilus_icon_canvas_item_bounds (GnomeCanvasItem *item,
 		art_irect_union (&total_rect, &total_rect, &emblem_rect);
 	}
         
-        /* Add 2 pixels slop to each side. */
-	total_rect.x0 -= 2;
-	total_rect.x1 += 2;
-	total_rect.y0 -= 2;
-	total_rect.y1 += 2;
-	
 	/* Return the result. */
 	pixels_per_unit = item->canvas->pixels_per_unit;
 	*x1 = total_rect.x0 / pixels_per_unit;

@@ -1,3 +1,29 @@
+2000-05-01  Darin Adler  <darin@eazel.com>
+
+	Another cut at icon positioning. Still much tweaking needed.
+
+        * libnautilus-extensions/nautilus-icon-canvas-item.c
+        (nautilus_icon_canvas_item_bounds): Got rid of "slop".
+        * libnautilus-extensions/nautilus-icon-grid.c
+        (get_icon_size_power_from_bounds), (get_icon_size_power):
+	Get more grid space per icon now that slop is gone.
+        (nautilus_icon_grid_add): Base grid space occupied on the size of
+	the icon, not the side of the grid.
+	(nautilus_icon_grid_get_position): Position icons horizontally
+	centered in the space, but vertically at the top.
+
+	Made the OAF queries more readable as I discussed with Maciej.
+	
+        * src/ntl-uri-map.c (extract_prefix_add_suffix),
+        (mime_type_get_supertype), (uri_string_get_scheme):
+	Make special-purpose string routines use common function instead.
+	We must not optimize this kind of thing for speed, but rather for
+	ease of reading the code.  This can be whittled down a little more
+	and put into nautilus-string.h
+        (make_oaf_query_with_known_mime_type),
+        (make_oaf_query_with_uri_scheme_only):
+	Reformatted and commented the OAF queries so they are easy to read.
+
 2000-04-30  Darin Adler  <darin@eazel.com>
 
 	* src/file-manager/fm-icon-view.c:

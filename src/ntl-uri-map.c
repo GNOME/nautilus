@@ -194,7 +194,7 @@ set_initial_content_iid (NautilusNavigationInfo *navinfo,
 }
 
 
-static char *nautilus_sort_criteria[4] = {
+static char * const nautilus_sort_criteria[] = {
         /* Prefer the html view most */
         "iid == 'OAFIID:ntl_web_browser:0ce1a736-c939-4ac7-b12c-19d72bf1510b'",
         /* Prefer the icon view next */
@@ -203,43 +203,40 @@ static char *nautilus_sort_criteria[4] = {
         "iid != 'OAFIID:nautilus_sample_content_view:45c746bc-7d64-4346-90d5-6410463b43ae'",
         NULL};
 
+/* It might be worth moving this to nautilus-string.h at some point. */
+static char *
+extract_prefix_add_suffix (const char *string, const char *separator, const char *suffix)
+{
+        const char *separator_position;
+        int prefix_length;
+        char *result;
+
+        separator_position = strstr (string, separator);
+        prefix_length = separator_position == NULL
+                ? strlen (string)
+                : separator_position - string;
+
+        result = g_malloc (prefix_length + strlen(suffix) + 1);
+        
+        strncpy (result, string, prefix_length);
+        result[prefix_length] = '\0';
+
+        strcat (result, suffix);
+
+        return result;
+}
+
 static char *
 mime_type_get_supertype (const char *mime_type)
 {
-        char *slash_loc;
-        char *retval;
-
-        slash_loc = strchr (mime_type, '/');
-
-        g_assert (slash_loc != NULL);
-
-        retval = g_new0 (char, slash_loc - mime_type + 3);
-        
-        retval = strncpy (retval, mime_type, slash_loc - mime_type + 1);
-        retval [slash_loc-mime_type + 1] = '*';
-        retval [slash_loc-mime_type + 2] = '\0';
-
-        return retval;
+        return extract_prefix_add_suffix (mime_type, "/", "/*");
 }
-
 
 static char *
 uri_string_get_scheme (const char *uri_string)
 {
-        char *colon_loc;
-        char *retval;
-
-        colon_loc = strchr (uri_string, ':');
-        g_assert (colon_loc != NULL);
-
-        retval = g_new0 (char, colon_loc - uri_string + 1);
-        
-        retval = strncpy (retval, uri_string, colon_loc - uri_string);
-        retval [colon_loc - uri_string] = '\0';
-
-        return retval;
+        return extract_prefix_add_suffix (uri_string, ":", "");
 }
-
 
 static char *
 make_oaf_query_with_known_mime_type (NautilusNavigationInfo *navinfo)
@@ -247,77 +244,139 @@ make_oaf_query_with_known_mime_type (NautilusNavigationInfo *navinfo)
         const char *mime_type;
         char *mime_supertype;
         char *uri_scheme;
-        char *retval;
+        char *result;
 
         mime_type = navinfo->navinfo.content_type;
         mime_supertype = mime_type_get_supertype (mime_type);
         uri_scheme = uri_string_get_scheme (navinfo->navinfo.requested_uri);
 
-        retval = g_strdup_printf 
-                ("(repo_ids.has_all (['IDL:Bonobo/Control:1.0','IDL:Nautilus/ContentView:1.0'])"
-                 " OR (repo_ids.has_one (['IDL:Bonobo/Control:1.0','IDL:Bonobo/Embeddable:1.0'])"
-                 " AND repo_ids.has_one(['IDL:Bonobo/PersistStream:1.0', 'IDL:Bonobo/ProgressiveDataSink:1.0',"
-                 " 'IDL:Bonobo/PersistFile:1.0']))) AND (bonobo:supported_mime_types.defined()"
-                 " OR bonobo:supported_uri_schemes.defined ()) AND (NOT bonobo:supported_mime_types.defined()"
-                 " OR bonobo:supported_mime_types.has('%s') OR bonobo:supported_mime_types.has('%s') OR"
-                 " bonobo:supported_mime_types.has('*/*')) AND (NOT bonobo:supported_uri_schemes.defined()"
-                 " OR bonobo:supported_uri_schemes.has('%s') OR bonobo:supported_uri_schemes.has('*')) "
-                 " AND nautilus:view_as_name.defined()"
-                 , mime_type, mime_supertype, uri_scheme);
+        result = g_strdup_printf 
+                (
+                 /* Check if the component has the interfaces we need.
+                  * We can work with either a Nautilus ContentView, or
+                  * with a Bonobo Control or Embeddable that works on
+                  * a file, which is indicated by Bonobo PersistFile.
+                  */
+                 "(repo_ids.has_all(['IDL:Bonobo/Control:1.0','IDL:Nautilus/ContentView:1.0'])"
+                  "OR (repo_ids.has_one(['IDL:Bonobo/Control:1.0','IDL:Bonobo/Embeddable:1.0'])"
+                  "AND repo_ids.has_one(['IDL:Bonobo/PersistStream:1.0',"
+                                        "'IDL:Bonobo/ProgressiveDataSink:1.0',"
+                                        "'IDL:Bonobo/PersistFile:1.0'])))"
+                 
+                 /* Check that the component either has a specific
+                  * MIME type or URI scheme. If neither is specified,
+                  * then we don't trust that to mean "all MIME types
+                  * and all schemes". For that, you have to do a
+                  * wildcard for the MIME type or for the scheme.
+                  */
+                 "AND (bonobo:supported_mime_types.defined()"
+                      "OR bonobo:supported_uri_schemes.defined ())"
 
-                 /* FIXME bugzilla.eazel.com 701: hack until music view is handled right. */
+                 /* Check that the supported MIME types include the
+                  * URI's MIME type or its supertype.
+                  */
+                 "AND (NOT bonobo:supported_mime_types.defined()"
+                      "OR bonobo:supported_mime_types.has('%s')"
+                      "OR bonobo:supported_mime_types.has('%s')"
+                      "OR bonobo:supported_mime_types.has('*/*'))"
+
+                 /* Check that the supported URI schemes include the
+                  * URI's scheme.
+                  */
+                 "AND (NOT bonobo:supported_uri_schemes.defined()"
+                      "OR bonobo:supported_uri_schemes.has('%s')"
+                      "OR bonobo:supported_uri_schemes.has('*'))"
+
+                  /* Check that the component makes it clear that it's intended for 
+                   * Nautilus by providing a "view_as" name. We could instead support
+                   * a default, but that would make components that are untested with
+                   * Nautilus appear.
+                   */
+                 "AND nautilus:view_as_name.defined()"
+
+                 /* The MIME type, MIME supertype, and URI scheme for
+                  * the %s above.
+                  */
+                 , mime_type, mime_supertype, uri_scheme);
 
         g_free (mime_supertype);
         g_free (uri_scheme);
 
-        return retval;
+        return result;
 }
 
 static char *
 make_oaf_query_with_uri_scheme_only (NautilusNavigationInfo *navinfo)
 {
         char *uri_scheme;
-        char *retval;
+        char *result;
         
         uri_scheme = uri_string_get_scheme (navinfo->navinfo.requested_uri);
 
-        retval = g_strdup_printf 
-                ("(repo_ids.has_all(['IDL:Bonobo/Control:1.0','IDL:Nautilus/ContentView:1.0'])"
-                 " OR (repo_ids.has_one(['IDL:Bonobo/Control:1.0','IDL:Bonobo/Embeddable:1.0'])"
-                 " AND repo_ids.has('IDL:Bonobo/PersistFile:1.0'))) AND (bonobo:supported_uri_schemes.has('%s')"
-                 " OR bonobo:supported_uri_schemes.has('*')) AND (NOT bonobo:supported_mime_types.defined())"
-                 " AND nautilus:view_as_name.defined()", uri_scheme);
+        result = g_strdup_printf 
+                (
+                 /* Check if the component has the interfaces we need.
+                  * We can work with either a Nautilus ContentView, or
+                  * with a Bonobo Control or Embeddable that works on
+                  * a file, which is indicated by Bonobo PersistFile.
+                  */
+                  "(repo_ids.has_all(['IDL:Bonobo/Control:1.0','IDL:Nautilus/ContentView:1.0'])"
+                   "OR (repo_ids.has_one(['IDL:Bonobo/Control:1.0','IDL:Bonobo/Embeddable:1.0'])"
+                       "AND repo_ids.has('IDL:Bonobo/PersistFile:1.0')))"
+
+                  /* Check if the component supports this particular
+                   * URI scheme.
+                   */
+                  "AND (bonobo:supported_uri_schemes.has('%s')"
+                       "OR bonobo:supported_uri_schemes.has('*'))"
+
+                  /* Check that the component doesn't require
+                   * particular MIME types. Note that even saying you support "all"
+                   */
+                  "AND (NOT bonobo:supported_mime_types.defined())"
+
+                  /* Check that the component makes it clear that it's
+                   * intended for Nautilus by providing a "view_as"
+                   * name. We could instead support a default, but
+                   * that would make components that are untested with
+                   * Nautilus appear.
+                   */
+                  "AND nautilus:view_as_name.defined()"
+
+                  /* The URI scheme for the %s above. */
+                  , uri_scheme);
+
         g_free (uri_scheme);
         
-        return retval;
+        return result;
 }
 
 
 static GHashTable *
 file_list_to_mime_type_hash_table (GList *files)
 {
-        GHashTable *retval;
+        GHashTable *result;
         GList *p;
         char *mime_type;
 
-        retval = g_hash_table_new (g_str_hash, g_str_equal);
+        result = g_hash_table_new (g_str_hash, g_str_equal);
 
         for (p = files; p != NULL; p = p->next) {
                 if (p->data != NULL) {
                         mime_type = (char *) nautilus_file_get_mime_type ((NautilusFile *) p->data);
                         
                         if (NULL != mime_type) {
-                                if (g_hash_table_lookup (retval, mime_type) == NULL) {
+                                if (g_hash_table_lookup (result, mime_type) == NULL) {
 #if DEBUG_MJS
                                         printf ("XXX content mime type: %s\n", mime_type);
 #endif
-                                        g_hash_table_insert (retval, mime_type, mime_type);
+                                        g_hash_table_insert (result, mime_type, mime_type);
                                 }
                         }
                 }
         }
 
-        return retval;
+        return result;
 }
 
 
