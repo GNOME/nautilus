@@ -410,6 +410,69 @@
       </locale>
     </schema>
 
+   <schema>
+      <key>/schemas/apps/nautilus/icon_view/captions</key>
+      <applyto>/apps/nautilus/icon_view/captions</applyto>
+      <owner>nautilus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>size,date_modified,type</default>
+      <locale name="C">
+         <short>Captions to show in Icon view</short>
+         <long>
+	   The further you zoom in, more information is shown for each icon.
+	   This controls the order to reveal the information.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/icon_view/default_sort_order</key>
+      <applyto>/apps/nautilus/icon_view/default_sort_order</applyto>
+      <owner>nautilus</owner>
+      <type>string</type>
+      <default>name</default>
+      <locale name="C">
+         <short>Default sort order</short>
+         <long>
+           The default sort-order for the item in the icon view. Possible
+	   values are name, size, type, modification_date, emblems.
+         </long>
+      </locale>
+    </schema>    
+         
+   <schema>
+      <key>/schemas/apps/nautilus/icon_view/default_sort_in_reverse_order</key>
+      <applyto>/apps/nautilus/icon_view/default_sort_in_reverse_order</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+         <short>Reverse sort order in new windows</short>
+         <long>
+           If true, files in new windows will be sorted in reverse order.
+	   ie, if sorted by name, then instead of sorting the files from
+	   "a" to "z", they will be sorted from "z" to "a"; if sorted by
+	   size, instead of being incrementally they will be sorted
+	   decrementally.
+         </long>
+      </locale>
+    </schema>
+    
+   <schema>
+      <key>/schemas/apps/nautilus/icon_view/default_use_tighter_layout</key>
+      <applyto>/apps/nautilus/icon_view/default_use_tighter_layout</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+         <short>Use tighter Layout in new windows</short>
+         <long>
+           If true, icons will be layed out tighter by default in new windows.
+         </long>
+      </locale>
+    </schema>     
+               
     <schema>
       <key>/schemas/apps/nautilus/preferences/hide_built_in_bookmarks</key>
       <applyto>/apps/nautilus/preferences/hide_built_in_bookmarks</applyto>
@@ -425,7 +488,140 @@
       </locale>
     </schema>
 
+   <schema>
+      <key>/schemas/apps/nautilus/preferences/sidebar_width</key>
+      <applyto>/apps/nautilus/preferences/sidbar_width</applyto>
+      <owner>nautilus</owner>
+      <type>int</type>
+      <default>148</default>
+      <locale name="C">
+         <short>width of the sidebar</short>
+         <long>
+          The default width of the sidebar in new windows.
+         </long>
+      </locale>
+    </schema>
 
+   <schema>
+      <key>/schemas/apps/nautilus/preferences/start_with_toolbar</key>
+      <applyto>/apps/nautilus/preferences/start_with_toolbar</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+         <short>Show toolbar in new windows</short>
+         <long>
+           If set to true, newly opened windows will have toolbars visible.
+         </long>
+      </locale>
+    </schema>
+    
+   <schema>
+      <key>/schemas/apps/nautilus/preferences/start_with_location_bar</key>
+      <applyto>/apps/nautilus/preferences/start_with_location_bar</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+         <short>Show  location bar in new windows</short>
+         <long>
+           If set to true, newly opened windows will have the
+	   location bar visible.
+         </long>
+      </locale>
+    </schema>
+    
+   <schema>
+      <key>/schemas/apps/nautilus/preferences/start_with_status_bar</key>
+      <applyto>/apps/nautilus/preferences/start_with_status_bar</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+         <short>Show status bar in new windows</short>
+         <long>
+           If set to true, newly opened windows will have the status
+	   bar visible.
+         </long>
+      </locale>
+    </schema>
+         
+   <schema>
+      <key>/schemas/apps/nautilus/preferences/start_with_side_bar</key>
+      <applyto>/apps/nautilus/preferences/start_with_side_bar</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+         <short>Show side bar in new windows</short>
+         <long>
+           If set to true, newly opened windows will have the side
+	   bar visible.
+         </long>
+      </locale>
+    </schema>
+    
+   <schema>
+      <key>/schemas/apps/nautilus/sidebar_panels/tree/show_only_directories</key>
+      <applyto>/apps/nautilus/sidebar_panels/tree/show_only_directories</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+         <short>Only show directories in the tree sidebar</short>
+         <long>
+           If set to true, Nautilus will show only show directories
+           in the tree sidebar.Otherwise it will show both directories
+	   and files.
+         </long>
+      </locale>
+    </schema>
+    
+   <schema>
+      <key>/schemas/apps/nautilus/news/max_items</key>
+      <applyto>/apps/nautilus/news/max_items</applyto>
+      <owner>nautilus</owner>
+      <type>int</type>
+      <default>6</default>
+      <locale name="C">
+         <short>Maximum number of news items per site</short>
+         <long>
+          Maximum number of news items to show per site in the news sidebar.
+         </long>
+      </locale>
+    </schema>
+    
+   <schema>
+      <key>/schemas/apps/nautilus/news/update_interval</key>
+      <applyto>/apps/nautilus/news/update_interval</applyto>
+      <owner>nautilus</owner>
+      <type>int</type>
+      <default>5</default>
+      <locale name="C">
+         <short>News update frequency in minutes</short>
+         <long>
+	  How many minutes to wait between checking the sites in the
+	  news sidebar for updates.
+         </long>
+      </locale>
+    </schema>     
+    
+   <schema>
+      <key>/schemas/apps/nautilus/preferences/add_to_session</key>
+      <applyto>/apps/nautilus/preferences/add_to_session</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+         <short>Add nautilus to session</short>
+         <long>
+          If this is set to true, Nautilus adds itself to the session
+	  when it starts up. This means it will be started the next
+	  time you log in.
+         </long>
+      </locale>
+    </schema>
+    
     <schema>
       <key>/schemas/apps/nautilus/list_view/font</key>
       <applyto>/apps/nautilus/list_view/font</applyto>
@@ -456,7 +652,3 @@
 
   </schemalist>  
 </gconfschemafile>
-
-
-
-
