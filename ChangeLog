@@ -1,5 +1,11 @@
 2002-05-24  Michael Meeks  <michael@ximian.com>
 
+	* components/tree/nautilus-tree-view.c
+	(row_inserted_expand_node_callback): work around the
+	aformentioned gtk+ bug, since it seems not to be being fixed.
+
+2002-05-24  Michael Meeks  <michael@ximian.com>
+
 	* libnautilus-private/nautilus-icon-dnd.c
 	(drag_data_received_callback): fix proximate cause of #80896
 
