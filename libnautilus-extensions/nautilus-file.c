@@ -174,8 +174,8 @@ nautilus_file_new_from_info (NautilusDirectory *directory,
  * Returns a referenced object. Unref when finished.
  * If two windows are viewing the same uri, the file object is shared.
  */
-NautilusFile *
-nautilus_file_get (const char *uri)
+static NautilusFile *
+nautilus_file_get_internal (const char *uri, gboolean create)
 {
 	gboolean self_owned;
 	GnomeVFSURI *vfs_uri, *directory_vfs_uri;
@@ -229,7 +229,7 @@ nautilus_file_get (const char *uri)
 	}
 	if (file != NULL) {
 		nautilus_file_ref (file);
-	} else {
+	} else if (create) {
 		file = nautilus_file_new_from_name (directory, file_name);
 		if (self_owned) {
 			g_assert (directory->details->as_file == NULL);
@@ -244,6 +244,18 @@ nautilus_file_get (const char *uri)
 	nautilus_directory_unref (directory);
 	
 	return file;
+}
+
+NautilusFile *
+nautilus_file_get_existing (const char *uri)
+{
+	return nautilus_file_get_internal (uri, FALSE);
+}
+
+NautilusFile *
+nautilus_file_get (const char *uri)
+{
+	return nautilus_file_get_internal (uri, TRUE);
 }
 
 static void

@@ -301,7 +301,7 @@ metafile_read_failed (NautilusDirectory *directory)
 		 */
 
 		/* First, check if we already know if it a directory. */
-		file = nautilus_file_get (directory->details->uri_text);
+		file = nautilus_file_get_existing (directory->details->uri_text);
 		if (file == NULL || file->details->is_gone) {
 			need_directory_check = FALSE;
 			is_directory = FALSE;
@@ -1636,11 +1636,52 @@ nautilus_directory_stop_monitoring_file_list (NautilusDirectory *directory)
 	nautilus_file_list_unref (directory->details->files);
 }
 
+static NautilusFile *
+get_corresponding_file (NautilusDirectory *directory)
+{
+	NautilusFile *file;
+	
+	file = directory->details->as_file;
+	if (file != NULL) {
+		nautilus_file_ref (file);
+		return file;
+	}
+
+	return nautilus_file_get_existing (directory->details->uri_text);
+}
+
 void
 nautilus_directory_force_reload (NautilusDirectory *directory)
 {
+	NautilusFile *file;
+	NautilusDirectory *parent_directory;
+
+	/* Start a new directory load. */
 	cancel_directory_load (directory);
 	directory->details->directory_loaded = FALSE;
+
+	/* Start a new directory count. */
+	file = get_corresponding_file (directory);
+	if (file != NULL) {
+		parent_directory = file->details->directory;
+
+		if (parent_directory->details->count_file == file) {
+			cancel_directory_counts (parent_directory);
+		}
+		if (parent_directory->details->deep_count_file == file) {
+			cancel_deep_count (parent_directory);
+		}
+
+		file->details->got_directory_count = FALSE;
+		file->details->directory_count_failed = FALSE;
+		file->details->deep_counts_status = NAUTILUS_REQUEST_NOT_STARTED;
+
+		if (parent_directory != directory) {
+			nautilus_directory_async_state_changed (parent_directory);
+		}
+
+		nautilus_file_unref (file);
+	}
 
 	nautilus_directory_async_state_changed (directory);
 }

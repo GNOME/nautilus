@@ -1,3 +1,20 @@
+2000-08-07  Darin Adler  <darin@eazel.com>
+
+	Fixed bug 1921 (reloading does not cause directory count to be
+	recomputed)
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(metafile_read_failed), (get_corresponding_file),
+	(nautilus_directory_force_reload):
+	Make the force reload call also force recomputing the counts (both
+	shallow and deep) for that directory.
+	
+	* libnautilus-extensions/nautilus-file-private.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_internal), (nautilus_file_get_existing),
+	(nautilus_file_get): Added interface to get an existing NautilusFile
+	that won't create a new one.
+
 2000-08-07  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 1906 (text size under icons is not always correct)
