@@ -30,6 +30,24 @@
 
 BEGIN_GNOME_DECLS
 
+/*
+ * The following preferences exist independently of the user level. 
+ *
+ * Note that the configuration path is fully qualified 
+ */
+
+/* Themes */
+#define NAUTILUS_PREFERENCES_THEME				"/apps/nautilus/preferences/theme"
+
+
+/*
+ * The following preferences are coupled to the user level.
+ *
+ * Note that the configuration path does include the nautilus gconf 
+ * prefix.  The nautilus_preferences_* api will fill in the missing
+ * prefix according to the current user level.
+ */
+
 /* Window options */
 #define NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW			"preferences/window_always_new"
 
@@ -67,9 +85,6 @@ BEGIN_GNOME_DECLS
 
 /* Directory view */
 #define NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY		"directory-view/font_family"
-
-/* themes */
-#define NAUTILUS_PREFERENCES_THEME				"preferences/theme"
 
 /* File Indexing */
 #define NAUTILUS_PREFERENCES_SEARCH_METHOD			"preferences/also_do_slow_search"

@@ -603,6 +603,29 @@ global_preferences_register (void)
 	 * In the soon to come star trek future, the following information
 	 * will be fetched using the latest xml techniques.
 	 */
+
+
+	/* 
+	 * Non user level specific preferences:
+	 */
+
+	/* FIXME bugzilla.eazel.com 2654: 
+	 * Cannot set default values for non user level preferecens.  Yes, this
+	 * is bad.  The right way to fix this problem (and many other default
+	 * value problems) is to use gconf schemas.  See the bug for info.
+	 */
+
+#if 0
+	global_preferences_register_string_with_defaults (NAUTILUS_PREFERENCES_THEME,
+							  _("current theme"),
+							  "default",
+							  "default",
+							  "default");
+#endif
+
+	/* 
+	 * User user level specific preferences:
+	 */
 	
 	/* Window create new */
 	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
@@ -657,12 +680,6 @@ global_preferences_register (void)
 							   TRUE,
 							   TRUE);
 
-	global_preferences_register_string_with_defaults (NAUTILUS_PREFERENCES_THEME,
-							  _("current theme"),
-							  "default",
-							  "default",
-							  "default");
-	
 	global_preferences_register_string_with_defaults (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
 							  _("Font family used to display file names"),
 							  "helvetica",

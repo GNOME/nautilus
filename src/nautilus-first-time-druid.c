@@ -33,7 +33,6 @@
 #include <gnome.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <gconf/gconf.h>
 
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-druid.h>
@@ -46,6 +45,7 @@
 #include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-radio-button-group.h>
 #include <libnautilus-extensions/nautilus-user-level-manager.h>
+#include <libnautilus-extensions/nautilus-preferences.h>
 
 #include "nautilus-first-time-druid.h"
 
@@ -58,19 +58,12 @@
 #define UPDATE_FEEDBACK_PAGE 3
 #define PROXY_CONFIGURATION_PAGE 4
 
-/* GConf path for http proxy settings */
-#define PATH_GCONF_GNOME_VFS "/system/gnome-vfs/"
-#define ITEM_GCONF_HTTP_PROXY "http-proxy"
-#define KEY_GCONF_HTTP_PROXY (PATH_GCONF_GNOME_VFS ITEM_GCONF_HTTP_PROXY)
+/* Preference for http proxy settings */
+#define GNOME_VFS_PREFERENCES_HTTP_PROXY "/system/gnome-vfs/http-proxy"
 
-static void
-initiate_file_download (GnomeDruid *druid);
-
-static gboolean
-set_http_proxy (char * proxy_url);
-
-static gboolean
-attempt_http_proxy_autoconfigure (void);
+static void     initiate_file_download           (GnomeDruid *druid);
+static gboolean set_http_proxy                   (char       *proxy_url);
+static gboolean attempt_http_proxy_autoconfigure (void);
 
 /* globals */
 static NautilusApplication *save_application;
@@ -891,22 +884,21 @@ initiate_file_download (GnomeDruid *druid)
 /**
  * set_http_proxy
  * 
- * sets the GConf HTTP proxy setting to the "http://host:port" style string proxy_url
+ * sets the HTTP proxy preference to the "http://host:port" style string proxy_url
  * also sets "http_proxy" environment variable
  */
 static gboolean
-set_http_proxy (char * proxy_url)
+set_http_proxy (char *proxy_url)
 {
 	size_t proxy_len;
 	char * proxy_host_port = NULL;
 	gboolean success = FALSE;
-	GConfEngine *my_gconf_engine = NULL;
 
 	/* set the "http_proxy" environment variable */
 
 	setenv ("http_proxy", proxy_url, TRUE);
 
-	/* The GConf variable is expected to be in the form host:port */
+	/* The variable is expected to be in the form host:port */
 	if ( 0 != strncmp (proxy_url, "http://", strlen ("http://"))) {
 		return FALSE;
 	}
@@ -925,15 +917,12 @@ set_http_proxy (char * proxy_url)
 		proxy_host_port[proxy_len - 1] = 0;
 	}
 
-	my_gconf_engine = gconf_engine_get_default();
-
 	g_message ("Setting http proxy to '%s'", proxy_host_port);
-	success = gconf_set_string (my_gconf_engine, KEY_GCONF_HTTP_PROXY, proxy_host_port, NULL);
 
-	gconf_engine_unref (my_gconf_engine);
-	my_gconf_engine = NULL;
-	
+	nautilus_preferences_set (GNOME_VFS_PREFERENCES_HTTP_PROXY, proxy_host_port);
+
 	success = TRUE;
+
 error:
 	g_free (proxy_host_port);
 

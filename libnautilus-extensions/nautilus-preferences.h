@@ -33,10 +33,37 @@
 BEGIN_GNOME_DECLS
 
 /*
+ * Preference names:
+ *
+ * In the api below, all preference names can be specified in two 
+ * different ways.
+ *
+ * 1) Independent of user level:
+ * 
+ *    Example1: "/apps/nautilus/preferences/something"
+ *
+ *    The preference in question will be dealt with just as gconf
+ *    would without taking into account the Nautilus user level.
+ * 
+ *    You can also deal with non Nautilus things, such as:
+ *
+ *    Example2: "/system/gnome-vfs/http-proxy"
+ * 
+ * 2) By user level:
+ *
+ *    Example:  "preferences/something"
+ *
+ *    The preference in question will depend on the current Nautilus
+ *    user level.
+ *
+ */
+
+
+/*
  * A callback which you can register to to be notified when a particular
  * preference changes.
  */
-typedef void (*NautilusPreferencesCallback) (gpointer                callback_data);
+typedef void (*NautilusPreferencesCallback) (gpointer callback_data);
 
 gboolean            nautilus_preferences_add_callback         (const char                   *name,
 							       NautilusPreferencesCallback   callback,

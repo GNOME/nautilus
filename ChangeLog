@@ -1,3 +1,51 @@
+2000-08-31  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Task 1229.  Need support for preferences not coupled to user level.
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_register):
+	Add FIXME for the issue of setting default values for non user
+	level specific preferences.
+	
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	Add blurb explaining preferences that are user level specific and
+	those that arent.
+
+	* libnautilus-extensions/nautilus-preferences.c:
+	(preferences_hash_node_add_by_user_level_callbacks),
+	(preferences_hash_node_add_callback),
+	New functions to deal with callbacks for preferences that are
+	coupled to the user level.
+	
+	(preferences_hash_node_check_changes_func),
+	(preferences_make_make_gconf_key),
+	(preferences_gconf_by_user_level_callback),
+	(preferences_gconf_callback), (nautilus_preferences_add_callback),
+	New functions to deal with callbacks for preferences that are NOT
+	coupled to the user level.
+
+	(nautilus_preferences_set_boolean),
+	(nautilus_preferences_get_boolean),
+	(nautilus_preferences_set_string_list),
+	(nautilus_preferences_get_string_list),
+	(nautilus_preferences_set_enum), (nautilus_preferences_get_enum),
+	(nautilus_preferences_set), (nautilus_preferences_get):
+	Add support for preferences that are not coupled to the user
+	level.  Compute gconf keys by taking the preference name into
+	account.  If it begins with a "/" (indicating it is fully
+	qualified) then treat it as a regular gconf key and use it as is.
+	 Otherwise, use the user_level_manager to compute a key according
+	to the current user level.
+	
+	* libnautilus-extensions/nautilus-preferences.h:
+	Add documentation explaining the two different ways to specify
+	preference names depending on whether they are user level specific
+	or not.
+
+	* src/nautilus-first-time-druid.c: (set_http_proxy):
+	Use the non user level specific perferences support instead of
+	poking gconf directly.
+	
 2000-08-31  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* nautilus-installer/src/evil.xpm:
