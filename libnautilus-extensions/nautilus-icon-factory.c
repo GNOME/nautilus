@@ -70,7 +70,6 @@ static const char *icon_file_name_suffixes[] =
 #define ICON_NAME_DIRECTORY_CLOSED      "i-dirclosed"
 #define ICON_NAME_EXECUTABLE            "i-executable"
 #define ICON_NAME_REGULAR               "i-regular"
-#define ICON_NAME_CORE                  "i-core"
 #define ICON_NAME_SOCKET                "i-sock"
 #define ICON_NAME_FIFO                  "i-fifo"
 #define ICON_NAME_CHARACTER_DEVICE      "i-chardev"
@@ -436,17 +435,8 @@ nautilus_icon_factory_set_theme (const char *theme_name)
 static const char *
 nautilus_icon_factory_get_icon_name_for_regular_file (NautilusFile *file)
 {
-	char *file_name;
-	gboolean is_core;
         const char *mime_type;
         const char *icon_name;
-
-	file_name = nautilus_file_get_name (file);
-	is_core = strcmp (file_name, "core") == 0;
-	g_free (file_name);
-	if (is_core) {
-		return ICON_NAME_CORE;
-	}
 
         mime_type = nautilus_file_get_mime_type (file);
         if (mime_type != NULL) {

@@ -1,3 +1,10 @@
+2000-05-02  John Sullivan  <sullivan@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-factory.c
+	(nautilus_icon_factory_get_icon_name_for_regular_file):
+	Removed special case for "core" files, which are now
+	handled by the MIME type database used in gnome-vfs.
+
 2000-05-02  Andy Hertzfeld <andy@eazel.com>
 
 	1st cut at property browser for drag and drop customization;
