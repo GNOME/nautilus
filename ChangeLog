@@ -1,3 +1,18 @@
+2001-02-14  Laszlo Kovacs <laszlo.kovacs@sun.com>
+        * components/help/hyperbola-filefmt.c
+        * components/help/hyperbola-nav-tree.c
+          (ctree_populate_subnode, ctree_populate,
+           hyperbola_navigation_tree_new,
+           hyperbola_navigation_tree_load_location,
+           hyperbola_navigation_tree_select_row):
+        Toplevel docs put into a separate ctree in
+        the GUI of the help sidebar if Scrollkeeper
+        is enabled.
+        Note that this is not the final GUI, only the widget
+        layout is right, the look will be changed by somebody
+        who knows more gtk than me. Dan Mueth tries to find the
+        right person.
+
 2001-02-14  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* librsvg/Makefile.am: Move $(FREETYPE2_CFLAGS) all the way to the
