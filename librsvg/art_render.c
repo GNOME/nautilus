@@ -358,28 +358,28 @@ art_render_composite (ArtRenderCallback *self, ArtRender *render,
 	     store in src as 0..0xffff range */
 	  if (buf_alpha == ART_ALPHA_NONE)
 	    {
-	      src_alpha = run_alpha;
+	      src_alpha = alpha;
 	      src_mul = src_alpha;
 	    }
 	  else
 	    {
 	      if (buf_depth == 8)
 		{
-		  tmp = run_alpha * bufptr[n_chan] + 0x80;
+		  tmp = alpha * bufptr[n_chan] + 0x80;
 		  /* range 0x80 .. 0xff0080 */
 		  src_alpha = (tmp + (tmp >> 8) + (tmp >> 16)) >> 8;
 		}
 	      else /* (depth == 16) */
 		{
 		  tmp = ((art_u16 *)bufptr)[n_chan];
-		  tmp = (run_alpha * tmp + 0x8000) >> 8;
+		  tmp = (alpha * tmp + 0x8000) >> 8;
 		  /* range 0x80 .. 0xffff80 */
 		  src_alpha = (tmp + (tmp >> 16)) >> 8;
 		}
 	      if (buf_alpha == ART_ALPHA_SEPARATE)
 		src_mul = src_alpha;
 	      else /* buf_alpha == (ART_ALPHA_PREMUL) */
-		src_mul = run_alpha;
+		src_mul = alpha;
 	    }
 	  /* src_alpha is the (alpha of the source pixel * alpha),
 	     range 0..0x10000 */
@@ -565,19 +565,19 @@ art_render_composite_8 (ArtRenderCallback *self, ArtRender *render,
 	     store in src as 0..0xffff range */
 	  if (buf_alpha == ART_ALPHA_NONE)
 	    {
-	      src_alpha = run_alpha;
+	      src_alpha = alpha;
 	      src_mul = src_alpha;
 	    }
 	  else
 	    {
-	      tmp = run_alpha * bufptr[n_chan] + 0x80;
+	      tmp = alpha * bufptr[n_chan] + 0x80;
 	      /* range 0x80 .. 0xff0080 */
 	      src_alpha = (tmp + (tmp >> 8) + (tmp >> 16)) >> 8;
 
 	      if (buf_alpha == ART_ALPHA_SEPARATE)
 		src_mul = src_alpha;
 	      else /* buf_alpha == (ART_ALPHA_PREMUL) */
-		src_mul = run_alpha;
+		src_mul = alpha;
 	    }
 	  /* src_alpha is the (alpha of the source pixel * alpha),
 	     range 0..0x10000 */

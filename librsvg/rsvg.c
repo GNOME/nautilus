@@ -21,10 +21,10 @@
    Author: Raph Levien <raph@artofcode.com>
 */
 
-#include <config.h>
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include <ctype.h>
 
 #include <glib.h>
 
@@ -43,6 +43,7 @@
 #include "art_render.h"
 #include "art_render_gradient.h"
 #include "art_render_svp.h"
+#include "art_render_mask.h"
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
@@ -53,6 +54,7 @@
 #include "rsvg-path.h"
 #include "rsvg-css.h"
 #include "rsvg-paint-server.h"
+#include "rsvg-ft.h"
 #include "rsvg.h"
 
 #define noVERBOSE
@@ -75,6 +77,10 @@ struct _RsvgCtx {
 
   RsvgSaxHandler *handler; /* should this be a handler stack? */
   int handler_nest;
+
+  GHashTable *entities; /* g_malloc'd string -> xmlEntityPtr */
+
+  RsvgFTCtx *ft_ctx;
 };
 
 struct _RsvgState {
@@ -102,6 +108,7 @@ struct _RsvgSaxHandler {
   void (*free) (RsvgSaxHandler *self);
   void (*start_element) (RsvgSaxHandler *self, const xmlChar *name, const xmlChar **atts);
   void (*end_element) (RsvgSaxHandler *self, const xmlChar *name);
+  void (*characters) (RsvgSaxHandler *self, const xmlChar *ch, int len);
 };
 
 static RsvgCtx *
@@ -118,6 +125,8 @@ rsvg_ctx_new (void)
   result->defs = rsvg_defs_new ();
   result->handler = NULL;
   result->handler_nest = 0;
+  result->entities = g_hash_table_new (g_str_hash, g_str_equal);
+  result->ft_ctx = NULL;
   return result;
 }
 
@@ -154,17 +163,37 @@ rsvg_state_finalize (RsvgState *state)
   rsvg_paint_server_unref (state->stroke);
 }
 
+static void
+rsvg_ctx_free_helper (gpointer key, gpointer value, gpointer user_data)
+{
+  xmlEntityPtr entval = (xmlEntityPtr)value;
+
+  /* key == entval->name, so it's implicitly freed below */
+
+  g_free ((xmlChar *)entval->name);
+  g_free ((xmlChar *)entval->ExternalID);
+  g_free ((xmlChar *)entval->SystemID);
+  g_free (entval->content);
+  g_free (entval->orig);
+  g_free (entval);
+}
+
 /* does not destroy the pixbuf */
 static void
 rsvg_ctx_free (RsvgCtx *ctx)
 {
   int i;
 
+  if (ctx->ft_ctx != NULL)
+    rsvg_ft_ctx_done (ctx->ft_ctx);
   rsvg_defs_free (ctx->defs);
 
   for (i = 0; i < ctx->n_state; i++)
     rsvg_state_finalize (&ctx->state[i]);
   free (ctx->state);
+
+  g_hash_table_foreach (ctx->entities, rsvg_ctx_free_helper, NULL);
+  g_hash_table_destroy (ctx->entities);
 
   free (ctx);
 }
@@ -322,14 +351,166 @@ rsvg_parse_style (RsvgCtx *ctx, RsvgState *state, const char *str)
     }
 }
 
+/* Parse an SVG transform string into an affine matrix. Reference: SVG
+   working draft dated 1999-07-06, section 8.5. Return TRUE on
+   success. */
+static gboolean
+rsvg_parse_transform (double dst[6], const char *src)
+{
+  int idx;
+  char keyword[32];
+  double args[6];
+  int n_args;
+  int key_len;
+  double tmp_affine[6];
+
+  art_affine_identity (dst);
+
+  idx = 0;
+  while (src[idx])
+    {
+      /* skip initial whitespace */
+      while (isspace (src[idx]))
+	idx++;
+
+      /* parse keyword */
+      for (key_len = 0; key_len < sizeof (keyword); key_len++)
+	{
+	  char c;
+
+	  c = src[idx];
+	  if (isalpha (c) || c == '-')
+	    keyword[key_len] = src[idx++];
+	  else
+	    break;
+	}
+      if (key_len >= sizeof (keyword))
+	return FALSE;
+      keyword[key_len] = '\0';
+
+      /* skip whitespace */
+      while (isspace (src[idx]))
+	idx++;
+
+      if (src[idx] != '(')
+	return FALSE;
+      idx++;
+
+      for (n_args = 0; ; n_args++)
+	{
+	  char c;
+	  char *end_ptr;
+
+	  /* skip whitespace */
+	  while (isspace (src[idx]))
+	    idx++;
+	  c = src[idx];
+	  if (isdigit (c) || c == '+' || c == '-' || c == '.')
+	    {
+	      if (n_args == sizeof(args) / sizeof(args[0]))
+		return FALSE; /* too many args */
+	      args[n_args] = strtod (src + idx, &end_ptr);
+	      idx = end_ptr - src;
+
+	      while (isspace (src[idx]))
+		idx++;
+
+	      /* skip optional comma */
+	      if (src[idx] == ',')
+		idx++;
+	    }
+	  else if (c == ')')
+	    break;
+	  else
+	    return FALSE;
+	}
+      idx++;
+
+      /* ok, have parsed keyword and args, now modify the transform */
+      if (!strcmp (keyword, "matrix"))
+	{
+	  if (n_args != 6)
+	    return FALSE;
+	  art_affine_multiply (dst, args, dst);
+	}
+      else if (!strcmp (keyword, "translate"))
+	{
+	  if (n_args == 1)
+	    args[1] = 0;
+	  else if (n_args != 2)
+	    return FALSE;
+	  art_affine_translate (tmp_affine, args[0], args[1]);
+	  art_affine_multiply (dst, tmp_affine, dst);
+	}
+      else if (!strcmp (keyword, "scale"))
+	{
+	  if (n_args == 1)
+	    args[1] = args[0];
+	  else if (n_args != 2)
+	    return FALSE;
+	  art_affine_scale (tmp_affine, args[0], args[1]);
+	  art_affine_multiply (dst, tmp_affine, dst);
+	}
+      else if (!strcmp (keyword, "rotate"))
+	{
+	  if (n_args != 1)
+	    return FALSE;
+	  art_affine_rotate (tmp_affine, args[0]);
+	  art_affine_multiply (dst, tmp_affine, dst);
+	}
+      else if (!strcmp (keyword, "skewX"))
+	{
+	  if (n_args != 1)
+	    return FALSE;
+	  art_affine_shear (tmp_affine, args[0]);
+	  art_affine_multiply (dst, tmp_affine, dst);
+	}
+      else if (!strcmp (keyword, "skewY"))
+	{
+	  if (n_args != 1)
+	    return FALSE;
+	  art_affine_shear (tmp_affine, args[0]);
+	  /* transpose the affine, given that we know [1] is zero */
+	  tmp_affine[1] = tmp_affine[2];
+	  tmp_affine[2] = 0;
+	  art_affine_multiply (dst, tmp_affine, dst);
+	}
+      else
+	return FALSE; /* unknown keyword */
+    }
+  return TRUE;
+}
+
+/**
+ * rsvg_parse_transform_attr: Parse transform attribute and apply to state.
+ * @ctx: Rsvg context.
+ * @state: State in which to apply the transform.
+ * @str: String containing transform.
+ *
+ * Parses the transform attribute in @str and applies it to @state.
+ **/
+static void
+rsvg_parse_transform_attr (RsvgCtx *ctx, RsvgState *state, const char *str)
+{
+  double affine[6];
+
+  if (rsvg_parse_transform (affine, str))
+    {
+      art_affine_multiply (state->affine, affine, state->affine);
+    }
+  else
+    {
+      /* parse error for transform attribute. todo: report */
+    }
+}
+
 /**
  * rsvg_parse_style_attrs: Parse style attribute.
  * @ctx: Rsvg context.
  * @atts: Attributes in SAX style.
  *
- * Parses style attribute and modifies state at top of stack.
- *
- * Note: this routine will also be responsible for parsing transforms.
+ * Parses style and transform attributes and modifies state at top of
+ * stack.
  **/
 static void
 rsvg_parse_style_attrs (RsvgCtx *ctx, const xmlChar **atts)
@@ -343,6 +524,9 @@ rsvg_parse_style_attrs (RsvgCtx *ctx, const xmlChar **atts)
 	  if (!strcmp ((char *)atts[i], "style"))
 	    rsvg_parse_style (ctx, &ctx->state[ctx->n_state - 1],
 			      (char *)atts[i + 1]);
+	  else if (!strcmp ((char *)atts[i], "transform"))
+	    rsvg_parse_transform_attr (ctx, &ctx->state[ctx->n_state - 1],
+				       (char *)atts[i + 1]);
 	}
     }
 }
@@ -514,6 +698,7 @@ rsvg_start_path (RsvgCtx *ctx, const xmlChar **atts)
   int i;
   char *d = NULL;
 
+  rsvg_parse_style_attrs (ctx, atts);
   if (atts != NULL)
     {
       for (i = 0; atts[i] != NULL; i += 2)
@@ -534,6 +719,127 @@ rsvg_start_path (RsvgCtx *ctx, const xmlChar **atts)
       rsvg_bpath_def_free (bpath_def);
     }
 }
+
+/* begin text - this should likely get split into its own .c file */
+
+typedef struct _RsvgSaxHandlerText RsvgSaxHandlerText;
+
+struct _RsvgSaxHandlerText {
+  RsvgSaxHandler super;
+  RsvgCtx *ctx;
+  double xpos;
+  double ypos;
+};
+
+static void
+rsvg_text_handler_free (RsvgSaxHandler *self)
+{
+  g_free (self);
+}
+
+static void
+rsvg_text_handler_characters (RsvgSaxHandler *self, const xmlChar *ch, int len)
+{
+  RsvgSaxHandlerText *z = (RsvgSaxHandlerText *)self;
+  RsvgCtx *ctx = z->ctx;
+  char *string;
+  int beg, end;
+  RsvgFTFontHandle fh;
+  RsvgFTGlyph *glyph;
+  int glyph_xy[2];
+  RsvgState *state;
+  ArtRender *render;
+  GdkPixbuf *pixbuf;
+  gboolean has_alpha;
+  static int count = 0;
+  int opacity;
+
+  count++;
+  if (count == 2)
+    {
+      count = 10;
+    }
+
+  /* Copy ch into string, chopping off leading and trailing whitespace */
+  for (beg = 0; beg < len; beg++)
+    if (!isspace (ch[beg]))
+      break;
+
+  for (end = len; end > beg; end--)
+    if (!isspace (ch[end - 1]))
+      break;
+
+  string = g_malloc (end - beg + 1);
+  memcpy (string, ch + beg, end - beg);
+  string[end - beg] = 0;
+
+  fprintf (stderr, "text characters(%s, %d)\n", string, len);
+
+  if (ctx->ft_ctx == NULL)
+    ctx->ft_ctx = rsvg_ft_ctx_new ();
+
+  /* A hack! */
+  fh = rsvg_ft_intern (ctx->ft_ctx,
+		       "/usr/share/fonts/default/Type1/n021003l.pfb");
+  rsvg_ft_font_attach (ctx->ft_ctx, fh,
+		       "/usr/share/fonts/default/Type1/n021003l.afm");
+
+  state = &ctx->state[ctx->n_state - 1];
+
+  if (state->fill != NULL)
+    {
+      pixbuf = ctx->pixbuf;
+      has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
+
+      render = art_render_new (0, 0, 
+			       gdk_pixbuf_get_width (pixbuf),
+			       gdk_pixbuf_get_height (pixbuf),
+			       gdk_pixbuf_get_pixels (pixbuf),
+			       gdk_pixbuf_get_rowstride (pixbuf),
+			       gdk_pixbuf_get_n_channels (pixbuf) -
+			       (has_alpha ? 1 : 0),
+			       gdk_pixbuf_get_bits_per_sample (pixbuf),
+			       has_alpha ? ART_ALPHA_SEPARATE : ART_ALPHA_NONE,
+			       NULL);
+
+      glyph = rsvg_ft_render_string (ctx->ft_ctx, fh, string,
+				     state->font_size, state->font_size,
+				     state->affine, glyph_xy);
+
+      rsvg_render_paint_server (render, state->fill, NULL); /* todo: paint server ctx */
+      opacity = state->fill_opacity;
+      fprintf (stderr, "opacity = %d\n", opacity);
+      art_render_mask_solid (render, (opacity << 8) + opacity + (opacity >> 7));
+      art_render_mask (render,
+		       glyph_xy[0], glyph_xy[1],
+		       glyph_xy[0] + glyph->width, glyph_xy[1] + glyph->height,
+		       glyph->buf, glyph->rowstride);
+      art_render_invoke (render);
+      rsvg_ft_glyph_unref (glyph);
+    }
+
+  g_free (string);
+}
+
+static void
+rsvg_start_text (RsvgCtx *ctx, const xmlChar **atts)
+{
+  RsvgSaxHandlerText *handler = g_new0 (RsvgSaxHandlerText, 1);
+
+  handler->super.free = rsvg_text_handler_free;
+  handler->super.characters = rsvg_text_handler_characters;
+  handler->ctx = ctx;
+
+  /* todo: parse "x" and "y" attributes */
+  handler->xpos = 0;
+  handler->ypos = 0;
+
+  rsvg_parse_style_attrs (ctx, atts);
+  ctx->handler = &handler->super;
+  fprintf (stderr, "begin text!\n");
+}
+
+/* end text */
 
 static void
 rsvg_start_defs (RsvgCtx *ctx, const xmlChar **atts)
@@ -618,7 +924,7 @@ rsvg_gradient_stop_handler_end (RsvgSaxHandler *self, const xmlChar *name)
 static RsvgSaxHandler *
 rsvg_gradient_stop_handler_new (RsvgCtx *ctx, RsvgGradientStops **p_stops)
 {
-  RsvgSaxHandlerGstops *gstops = g_new (RsvgSaxHandlerGstops, 1);
+  RsvgSaxHandlerGstops *gstops = g_new0 (RsvgSaxHandlerGstops, 1);
   RsvgGradientStops *stops = g_new (RsvgGradientStops, 1);
 
   gstops->super.free = rsvg_gradient_stop_handler_free;
@@ -776,7 +1082,8 @@ rsvg_start_element (void *data, const xmlChar *name, const xmlChar **atts)
   if (ctx->handler)
     {
       ctx->handler_nest++;
-      ctx->handler->start_element (ctx->handler, name, atts);
+      if (ctx->handler->start_element != NULL)
+	ctx->handler->start_element (ctx->handler, name, atts);
     }
   else
     {
@@ -796,6 +1103,8 @@ rsvg_start_element (void *data, const xmlChar *name, const xmlChar **atts)
 	rsvg_start_g (ctx, atts);
       else if (!strcmp ((char *)name, "path"))
 	rsvg_start_path (ctx, atts);
+      else if (!strcmp ((char *)name, "text"))
+	rsvg_start_text (ctx, atts);
       else if (!strcmp ((char *)name, "defs"))
 	rsvg_start_defs (ctx, atts);
       else if (!strcmp ((char *)name, "linearGradient"))
@@ -812,7 +1121,8 @@ rsvg_end_element (void *data, const xmlChar *name)
 
   if (ctx->handler_nest > 0)
     {
-      ctx->handler->end_element (ctx->handler, name);
+      if (ctx->handler->end_element != NULL)
+	ctx->handler->end_element (ctx->handler, name);
       ctx->handler_nest--;
     }
   else
@@ -833,14 +1143,53 @@ rsvg_end_element (void *data, const xmlChar *name)
     }
 }
 
-xmlSAXHandler emptySAXHandlerStruct = {
+static void
+rsvg_characters (void *data, const xmlChar *ch, int len)
+{
+  RsvgCtx *ctx = (RsvgCtx *)data;
+
+  if (ctx->handler && ctx->handler->characters != NULL)
+    ctx->handler->characters (ctx->handler, ch, len);
+}
+
+static xmlEntityPtr
+rsvg_get_entity (void *data, const xmlChar *name)
+{
+  RsvgCtx *ctx = (RsvgCtx *)data;
+
+  return (xmlEntityPtr)g_hash_table_lookup (ctx->entities, name);
+}
+
+static void
+rsvg_entity_decl (void *data, const xmlChar *name, int type,
+		  const xmlChar *publicId, const xmlChar *systemId, xmlChar *content)
+{
+  RsvgCtx *ctx = (RsvgCtx *)data;
+  GHashTable *entities = ctx->entities;
+  xmlEntityPtr entity;
+  char *dupname;
+
+  entity = g_new (xmlEntity, 1);
+  entity->type = type;
+  entity->len = strlen (name);
+  dupname = g_strdup (name);
+  entity->name = dupname;
+  entity->ExternalID = g_strdup (publicId);
+  entity->SystemID = g_strdup (systemId);
+  entity->content = g_strdup (content);
+  entity->length = strlen (content);
+  entity->orig = NULL;
+  g_hash_table_insert (entities, dupname, entity);
+}
+
+xmlSAXHandler rsvgSAXHandlerStruct = {
     NULL, /* internalSubset */
     NULL, /* isStandalone */
     NULL, /* hasInternalSubset */
     NULL, /* hasExternalSubset */
     NULL, /* resolveEntity */
-    NULL, /* getEntity */
-    NULL, /* entityDecl */
+    rsvg_get_entity, /* getEntity */
+    rsvg_entity_decl, /* entityDecl */
     NULL, /* notationDecl */
     NULL, /* attributeDecl */
     NULL, /* elementDecl */
@@ -851,7 +1200,7 @@ xmlSAXHandler emptySAXHandlerStruct = {
     rsvg_start_element, /* startElement */
     rsvg_end_element, /* endElement */
     NULL, /* reference */
-    NULL, /* characters */
+    rsvg_characters, /* characters */
     NULL, /* ignorableWhitespace */
     NULL, /* processingInstruction */
     NULL, /* comment */
@@ -861,7 +1210,7 @@ xmlSAXHandler emptySAXHandlerStruct = {
     NULL, /* getParameterEntity */
 };
 
-xmlSAXHandlerPtr emptySAXHandler = &emptySAXHandlerStruct;
+xmlSAXHandlerPtr rsvgSAXHandler = &rsvgSAXHandlerStruct;
 
 GdkPixbuf *
 rsvg_render_file (FILE *f, double zoom)
@@ -876,8 +1225,9 @@ rsvg_render_file (FILE *f, double zoom)
   ctx->zoom = zoom;
   res = fread(chars, 1, 4, f);
   if (res > 0) {
-    ctxt = xmlCreatePushParserCtxt(emptySAXHandler, ctx,
+    ctxt = xmlCreatePushParserCtxt(rsvgSAXHandler, ctx,
 				   chars, res, "filename XXX");
+    ctxt->replaceEntities = TRUE;
     while ((res = fread(chars, 1, 3, f)) > 0) {
       xmlParseChunk(ctxt, chars, res, 0);
     }

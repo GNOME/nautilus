@@ -23,8 +23,6 @@
 
 /* This is adapted from svg-path in Gill. */
 
-
-#include <config.h>
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
@@ -513,12 +511,10 @@ rsvg_parse_path_data (RSVGParsePathCtx *ctx, const char *data)
 #ifndef RSVGV_RELATIVE
 		  /* rule: even-numbered params are x-relative, odd-numbered
 		     are y-relative */
-		  if (ctx->param == 0)
+		  if ((ctx->param & 1) == 0)
 		    val += ctx->cpx;
-		  else if (ctx->param == 1)
+		  else if ((ctx->param & 1) == 1)
 		    val += ctx->cpy;
-		  else
-		    val += ctx->params[ctx->param - 2];
 		  break;
 #else
 		  /* rule: even-numbered params are x-relative, odd-numbered

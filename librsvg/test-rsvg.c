@@ -22,15 +22,12 @@
    Author: Raph Levien <raph@artofcode.com>
 */
 
-#include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <png.h>
 #include <popt.h>
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
-
-#include <freetype/freetype.h>
 
 #include "rsvg.h"
 

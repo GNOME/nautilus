@@ -47,7 +47,6 @@ rsvg_defs_lookup (const RsvgDefs *defs, const char *name)
 void
 rsvg_defs_set (RsvgDefs *defs, const char *name, RsvgDefVal *val)
 {
-  /* FIXME: Leaks a name and a val if there's already an entry in the table. */
   g_hash_table_insert (defs->hash, g_strdup (name), val);
 }
 

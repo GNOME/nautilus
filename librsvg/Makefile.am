@@ -36,6 +36,8 @@ librsvg_la_SOURCES=	\
 	rsvg-css.h		\
 	rsvg-defs.c		\
 	rsvg-defs.h		\
+	rsvg-ft.c		\
+	rsvg-ft.h		\
 	rsvg-paint-server.c 	\
 	rsvg-paint-server.h 	\
 	rsvg-path.c 		\
@@ -44,6 +46,8 @@ librsvg_la_SOURCES=	\
 	art_render.h		\
 	art_render_gradient.c	\
 	art_render_gradient.h	\
+	art_render_mask.c	\
+	art_render_mask.h	\
 	art_render_svp.c	\
 	art_render_svp.h	\
 	$(NULL)
