@@ -335,7 +335,7 @@ create_list (FMListView *list_view)
 	};
 
 	guint max_widths[] = {
-		300,	/* Icon */
+		fm_list_view_get_icon_size (list_view),	/* Icon */
 		300,	/* Emblems */
 		300,	/* Name */
 		 80,	/* Size */
@@ -355,10 +355,14 @@ create_list (FMListView *list_view)
 		gboolean right_justified;
 
 		right_justified = (i == LIST_VIEW_COLUMN_SIZE);
-	
-		gtk_clist_set_column_width (clist, i, widths[i]);
-		gtk_clist_set_column_min_width (clist, i, min_widths[i]);
+
 		gtk_clist_set_column_max_width (clist, i, max_widths[i]);
+		gtk_clist_set_column_min_width (clist, i, min_widths[i]);
+		/* work around broken GtkCList that pins the max_width to be no less than
+		 * the min_width instead of bumping min_width down too
+		 */
+		gtk_clist_set_column_max_width (clist, i, max_widths[i]);
+		gtk_clist_set_column_width (clist, i, widths[i]);
 
 
 		if (right_justified) {
@@ -700,6 +704,7 @@ fm_list_view_set_zoom_level (FMListView *list_view,
 {
 	GtkCList *clist;
 	int row;
+	int new_width;
 
 	g_return_if_fail (FM_IS_LIST_VIEW (list_view));
 	g_return_if_fail (new_level >= NAUTILUS_ZOOM_LEVEL_SMALLEST &&
@@ -725,14 +730,25 @@ fm_list_view_set_zoom_level (FMListView *list_view,
 	
 	gtk_clist_freeze (clist);
 	fm_list_view_reset_row_height (list_view);
+
+	new_width = fm_list_view_get_icon_size (list_view);
+	
+	gtk_clist_set_column_min_width (GTK_CLIST (get_list (list_view)),
+				  LIST_VIEW_COLUMN_ICON,
+				  fm_list_view_get_icon_size (list_view));
+	gtk_clist_set_column_max_width (GTK_CLIST (get_list (list_view)),
+				  LIST_VIEW_COLUMN_ICON,
+				  fm_list_view_get_icon_size (list_view));
+	gtk_clist_set_column_min_width (GTK_CLIST (get_list (list_view)),
+				  LIST_VIEW_COLUMN_ICON,
+				  fm_list_view_get_icon_size (list_view));
 	gtk_clist_set_column_width (GTK_CLIST (get_list (list_view)),
 				  LIST_VIEW_COLUMN_ICON,
 				  fm_list_view_get_icon_size (list_view));
 
 	clist = GTK_CLIST (get_list (list_view));
 
-	for (row = 0; row < clist->rows; ++row)
-	{
+	for (row = 0; row < clist->rows; ++row) {
 		install_row_images (list_view, row);
 	}
 	gtk_clist_thaw (clist);

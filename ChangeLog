@@ -1,3 +1,16 @@
+2000-05-11  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-list-column-title.c:
+	(truncate_string), (nautilus_list_column_title_paint):
+	Fix 376 - Truncate text in collumns. Clean up nautilus_list_column_title_paint
+	a little in the process.
+	
+	* src/file-manager/fm-list-view.c: (create_list),
+	(fm_list_view_set_zoom_level):
+	Fix 315 - Icon columns are now fixed width. Fix a bug that this uncovered
+	where setting column width, column min width and column max width have to 
+	be done	in a predetermined order to not get messed up by a bug in GtkCList.
+
 2000-05-11  Darin Adler  <darin@eazel.com>
 
 	* idl/Makefile.am:
@@ -24,7 +37,7 @@
 	operations that can take a while.  Used it to make renaming async.
 	(nautilus_file_can_get_permissions): Handle deleted file case.
 	(nautilus_file_set_permissions): Handle case where you can't get
-	permissions properly. I inadvertently delete this last time.
+	permissions properly. I inadvertently deleted this last time.
 	
 	* libnautilus-extensions/nautilus-metadata.h:
 	Added a metadata key for the icon view sort. Still need to write

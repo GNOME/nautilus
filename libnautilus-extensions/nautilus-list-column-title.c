@@ -37,6 +37,8 @@
 
 #include <libgnomeui/gnome-pixmap.h>
 
+#include <string.h>
+
 /* these are from GtkCList, for now we need to copy them here 
  * eventually the target list should be able to describe the values
  */
@@ -324,6 +326,53 @@ get_sort_indicator (GtkWidget *widget, gboolean ascending)
 	}
 }
 
+/* Add more truncation modes, optimize for performance, move to nautilus-gdk-extensions */
+static char *
+truncate_string (const char *string, GdkFont *font, int width, int *final_width)
+{
+	int current_width;
+	int ellipsis_width;
+	int length;
+	int trimmed_length;
+	char *result;
+
+	length = strlen (string);
+	current_width = gdk_text_width (font, string, length);
+	if (current_width <= width) {
+		/* trivial case, already fits fine */
+		if (final_width  != NULL) {
+			*final_width = current_width;
+		}
+		return g_strdup (string);
+	}
+
+	ellipsis_width = gdk_string_width (font, "...");
+	if (ellipsis_width > width) {
+		/* we can't fit anything */
+		if (final_width  != NULL) {
+			*final_width = 0;
+		}
+		return g_strdup ("");
+	}
+
+	width -= ellipsis_width;
+
+	for (trimmed_length = length - 1; trimmed_length >= 0; trimmed_length--) {
+		current_width = gdk_text_width (font, string, trimmed_length);
+		if (current_width <= width)
+			break;
+	}
+	result = (char *) g_malloc (trimmed_length + 3 + 1);
+	strncpy (result, string, trimmed_length);
+	strcpy (result + trimmed_length, "...");
+
+	if (final_width  != NULL) {
+		*final_width = current_width + ellipsis_width;
+	}
+
+	return result;
+}
+
 /* FIXME bugzilla.eazel.com 615:
  * Some of these magic numbers could be replaced with some more dynamic values
  */
@@ -353,6 +402,7 @@ nautilus_list_column_title_paint (GtkWidget *widget, GtkWidget *draw_target,
 		GdkRectangle cell_redraw_area;
 		const char *cell_label;
 		int text_x_offset;
+		int text_x_available_end;
 		int sort_indicator_x_offset;
 		GnomePixmap *sort_indicator;
 		gboolean right_justified;
@@ -381,11 +431,8 @@ nautilus_list_column_title_paint (GtkWidget *widget, GtkWidget *draw_target,
 		 * add support for center justification
 		 */
 
-		if (right_justified) {
-			text_x_offset = cell_rectangle.x + cell_rectangle.width - CELL_TITLE_INSET;
-		} else {
-			text_x_offset = cell_rectangle.x + CELL_TITLE_INSET;
-		}
+		text_x_offset = cell_rectangle.x + CELL_TITLE_INSET;
+		text_x_available_end = cell_rectangle.x + cell_rectangle.width - 2 * CELL_TITLE_INSET;
 
 		/* Paint the column tiles as rectangles using "menu" (COLUMN_TITLE_THEME_STYLE_NAME).
 		 * Style buttons as used by GtkCList produce round corners in some themes.
@@ -407,9 +454,12 @@ nautilus_list_column_title_paint (GtkWidget *widget, GtkWidget *draw_target,
 
 			if (right_justified) {
 				sort_indicator_x_offset = cell_rectangle.x + SORT_INDICATOR_X_OFFSET;		
+				text_x_offset = sort_indicator_x_offset + CELL_TITLE_INSET 
+					+ SORT_ORDER_INDICATOR_WIDTH ;
 			} else {
 				sort_indicator_x_offset = cell_rectangle.x + cell_rectangle.width 
-					   - SORT_INDICATOR_X_OFFSET - SORT_ORDER_INDICATOR_WIDTH;		
+					   - SORT_INDICATOR_X_OFFSET - SORT_ORDER_INDICATOR_WIDTH;
+				text_x_available_end = sort_indicator_x_offset - CELL_TITLE_INSET;
 			}
 			y_offset = cell_rectangle.y + cell_rectangle.height / 2 
 				   - SORT_INDICATOR_Y_OFFSET;
@@ -428,36 +478,39 @@ nautilus_list_column_title_paint (GtkWidget *widget, GtkWidget *draw_target,
 			gdk_draw_pixmap (target_drawable, column_title->details->copy_area_gc, 
 					 sort_indicator->pixmap, 0, 0, sort_indicator_x_offset, y_offset, 
 					 -1, -1);
-
 		}
 			
 		if (cell_label) {
-			/* extend the redraw area vertically to contain the entire cell 
+			char *truncated_label;
+			int truncanted_width;
+
+			/* Extend the redraw area vertically to contain the entire cell 
 			 * -- seems like if I don't do this, for short exposed areas no text
-			 * will get drawn
-			 * this happens when the title is half off-screen and you move it up by a pixel or two;
-			 * if you move it up faster, it gets redrawn properly
+			 * will get drawn.
+			 * This happens when the title is half off-screen and you move it up by a pixel or two.
+			 * If you move it up faster, it gets redrawn properly.
 			 */
 			cell_redraw_area.y = cell_rectangle.y;
 			cell_redraw_area.height = cell_rectangle.height;
 
-
-			/* clip a little more than the cell rectangle to
-			 * not have the text draw over the cell broder
-			 * (this might no longer be needed when the 
-			 * title gets truncated properly, as opposed to
-			 * getting chopped of
+			/* Clip a little more than the cell rectangle to
+			 * not have the text draw over the cell broder.
 			 */
 			nautilus_rectangle_inset (&cell_redraw_area, 2, 2);
+
+			truncated_label = truncate_string (cell_label, widget->style->font, 
+				text_x_available_end - text_x_offset, &truncanted_width);
+		
 			if (right_justified) {
-				text_x_offset -= gdk_string_width (widget->style->font, cell_label) + 3;
+				text_x_offset = text_x_available_end - truncanted_width;
 			}
 
 			gtk_paint_string (widget->style, target_drawable, GTK_STATE_NORMAL,
 					  &cell_redraw_area, draw_target, "label", 
 					  text_x_offset,
 					  cell_rectangle.y + cell_rectangle.height - TITLE_BASELINE_OFFSET,
-					  cell_label);
+					  truncated_label);
+			g_free (truncated_label);
 		}
 	}
 }
