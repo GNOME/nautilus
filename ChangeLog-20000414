@@ -1,3 +1,25 @@
+1999-12-16  John Sullivan  <sullivan@eazel.com>
+
+	* src/ntl-window.c (file_menu_new_window_cb):
+	New, currently empty callback.
+
+	* src/ntl-window.c (file_menu_info[]):
+	Added New Window item.
+	
+	* src/ntl-window.c (edit_menu_info[]):
+	Added standard menu items, all unimplemented as of now.
+	
+	* src/ntl-window.c (help_menu_info[]):
+	Added About item, unimplemented as of now.
+
+	* src/ntl-window.c (main_menu[]):
+	Now includes edit and help menus.
+	
+	* src/ntl-window.c (nautilus_window_constructed):
+	Changed the way the toolbar is created, to fix bug
+	where Back failed because data parameter was NULL.
+	Also desensitized all the new unimplemented menu items.
+
 1999-12-16  Maciej Stachowiak  <mjs@eazel.com>
 
 	* src/file-manager/gnome-desktop.c (main): Quiet some warnings.
@@ -26,7 +48,7 @@
 	
 	* idl/gnome-desktop.idl: Change BackgroundInfo to not be a union.
 
-1999-12-16  John Sullivan  <sullivan.com>
+1999-12-16  John Sullivan  <sullivan@eazel.com>
 
 	* src/file-manager/fm-directory-view.c (directory_load_cb): 
 	changed assert to warning

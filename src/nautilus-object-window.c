@@ -124,6 +124,14 @@ file_menu_close_cb (GtkWidget *widget,
 }
 
 static void
+file_menu_new_window_cb (GtkWidget *widget,
+	       gpointer data)
+{
+	// FIXME: create & open a new window, with a URI either of
+	// Home or the current URI
+}
+
+static void
 file_menu_exit_cb (GtkWidget *widget,
 	       gpointer data)
 {
@@ -131,14 +139,56 @@ file_menu_exit_cb (GtkWidget *widget,
 }
 
 static GnomeUIInfo file_menu_info[] = {
+	{
+	    GNOME_APP_UI_ITEM,
+	    N_("New Window"), N_("Create a new window"),
+	    file_menu_new_window_cb, NULL, NULL,
+	    GNOME_APP_PIXMAP_NONE, NULL,
+	    'N', GDK_CONTROL_MASK, NULL
+	},
 	GNOMEUIINFO_MENU_CLOSE_ITEM(file_menu_close_cb,NULL),
 	GNOMEUIINFO_SEPARATOR,
 	GNOMEUIINFO_MENU_EXIT_ITEM(file_menu_exit_cb,NULL),
 	GNOMEUIINFO_END
 };
 
+// FIXME: These all need implementation, though we might end up doing that
+// separately for each content view (and merging with the insensitive items here)
+static GnomeUIInfo edit_menu_info[] = {
+	GNOMEUIINFO_MENU_UNDO_ITEM(NULL, NULL),
+	GNOMEUIINFO_SEPARATOR,
+	GNOMEUIINFO_MENU_CUT_ITEM(NULL, NULL),
+	GNOMEUIINFO_MENU_COPY_ITEM(NULL, NULL),
+	GNOMEUIINFO_MENU_PASTE_ITEM(NULL, NULL),
+	GNOMEUIINFO_MENU_CLEAR_ITEM(NULL, NULL),
+	GNOMEUIINFO_SEPARATOR,
+	// Didn't use standard SELECT_ALL_ITEM 'cuz it didn't have accelerator
+	{
+	    GNOME_APP_UI_ITEM,
+	    N_("Select All"), NULL,
+	    NULL, NULL, NULL,
+	    GNOME_APP_PIXMAP_NONE, NULL,
+	    'A', GDK_CONTROL_MASK, NULL
+	},
+	GNOMEUIINFO_END
+};
+
+// FIXME: This needs implementation.
+static GnomeUIInfo help_menu_info[] = {
+        {
+            GNOME_APP_UI_ITEM,
+            N_("About Nautilus..."), N_("Info about the Nautilus program"),
+            NULL, NULL, NULL,
+            GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_ABOUT,
+            0, 0, NULL
+        },
+	GNOMEUIINFO_END
+};
+
 static GnomeUIInfo main_menu[] = {
 	GNOMEUIINFO_MENU_FILE_TREE (file_menu_info),
+	GNOMEUIINFO_MENU_EDIT_TREE (edit_menu_info),
+	GNOMEUIINFO_MENU_HELP_TREE (help_menu_info),
 	GNOMEUIINFO_END
 };
 
@@ -314,7 +364,6 @@ nautilus_window_constructed(NautilusWindow *window)
   GnomeApp *app;
   GtkWidget *location_bar_box, *statusbar;
   GtkMenuBar *menubar;
-  GtkToolbar *toolbar;
   GtkAccelGroup *ag;
 
   app = GNOME_APP(window);
@@ -329,13 +378,26 @@ nautilus_window_constructed(NautilusWindow *window)
   gnome_app_fill_menu_with_data(GTK_MENU_SHELL(menubar), main_menu, ag, TRUE, 0, window);
   gnome_app_set_menus(GNOME_APP(window), menubar);
 
+  // desensitize the items that haven't yet been implemented
+  // FIXME: these all need to be implemented. I'm using hardwired numbers
+  // rather than enum symbols here just 'cuz the enums aren't needed (I think)
+  // once we've implemented things. If it turns out they are, we'll define 'em.
+  gtk_widget_set_sensitive(file_menu_info[0].widget, FALSE); // New Window
+
+  gtk_widget_set_sensitive(edit_menu_info[0].widget, FALSE); // Undo
+  gtk_widget_set_sensitive(edit_menu_info[2].widget, FALSE); // Cut
+  gtk_widget_set_sensitive(edit_menu_info[3].widget, FALSE); // Copy
+  gtk_widget_set_sensitive(edit_menu_info[4].widget, FALSE); // Paste
+  gtk_widget_set_sensitive(edit_menu_info[5].widget, FALSE); // Clear
+  gtk_widget_set_sensitive(edit_menu_info[7].widget, FALSE); // Select All
+
+  gtk_widget_set_sensitive(help_menu_info[0].widget, FALSE); // About
+
   // set up toolbar
 
-  toolbar = GTK_TOOLBAR(gtk_toolbar_new(GTK_ORIENTATION_HORIZONTAL, GTK_TOOLBAR_BOTH));
-  gnome_app_fill_toolbar(toolbar, toolbar_info, NULL);
+  gnome_app_create_toolbar_with_data (GNOME_APP(window), toolbar_info, window);
   window->btn_back = toolbar_info[0].widget;
   window->btn_fwd = toolbar_info[1].widget;
-  gnome_app_set_toolbar(GNOME_APP(window), toolbar);
 
   // set up location bar
 
