@@ -13,7 +13,7 @@
 #  used within.
 
 
-$VERSION = "1.3";
+$VERSION = "1.3.2";
 $LANG    = $ARGV[0];
 $PACKAGE  = "nautilus";
 $| = 1;
@@ -158,18 +158,20 @@ sub GeneratePot{
     $c1="test \! -f $PACKAGE\.po \|\| \( rm -f \.\/$PACKAGE\.pot "
        ."&& mv $PACKAGE\.po \.\/$PACKAGE\.pot \)";
 
-    open FILE, "<POTFILES.in";	
-    while (<FILE>) {
-       if ($_=~ /(.*)(\.xml\.h)/o){
-          $filename = "$1\.xml";
-          $xmlfiles="\.\/ui-extract.pl --update ../$filename";
-          system($xmlfiles);
-          }
+    if (-s "ui-extract.pl"){
+       open FILE, "<POTFILES.in";	
+       while (<FILE>) {
+          if ($_=~ /(.*)(\.xml\.h)/o){
+             $filename = "$1\.xml";
+             $xmlfiles="\.\/ui-extract.pl --update ../$filename";
+             system($xmlfiles);
+             }
 
-       elsif ($_=~ /(.*)(\.glade\.h)/o){
-          $filename = "$1\.glade";
-          $xmlfiles="\.\/ui-extract.pl --update ../$filename";
-          system($xmlfiles);
+          elsif ($_=~ /(.*)(\.glade\.h)/o){
+             $filename = "$1\.glade";
+             $xmlfiles="\.\/ui-extract.pl --update ../$filename";
+             system($xmlfiles);
+          }
        }
     }
 
