@@ -179,6 +179,7 @@ static gint
 ui_idle_handler (gpointer data)
 {
 	NautilusWindow *window;
+	gboolean old_updating_bonobo_state;
 
 	window = data;
 
@@ -189,6 +190,7 @@ ui_idle_handler (gpointer data)
 	 * (the already running idle handler)
 	 */
 	window->details->ui_change_depth++;
+	old_updating_bonobo_state = window->details->updating_bonobo_state;
 
 	if (window->details->ui_pending_initialize_menus_part_2) {
 		nautilus_window_initialize_menus_part_2 (window);
@@ -196,8 +198,10 @@ ui_idle_handler (gpointer data)
 	}
 
 	if (window->details->ui_is_frozen) {
+		window->details->updating_bonobo_state = TRUE;
 		bonobo_ui_engine_thaw (bonobo_ui_container_get_engine (window->details->ui_container));
 		window->details->ui_is_frozen = FALSE;
+		window->details->updating_bonobo_state = old_updating_bonobo_state;
 	}
 
 	window->details->ui_change_depth--;
@@ -264,8 +268,12 @@ static void
 nautilus_window_ui_update (NautilusWindow *window)
 {
 	BonoboUIEngine *engine;
+	gboolean old_updating_bonobo_state;
 
 	engine = bonobo_ui_container_get_engine (window->details->ui_container);
+	old_updating_bonobo_state = window->details->updating_bonobo_state;
+
+	window->details->updating_bonobo_state = TRUE;
 	if (window->details->ui_is_frozen) {
 		bonobo_ui_engine_thaw (engine);
 		if (window->details->ui_change_depth == 0) {
@@ -279,6 +287,7 @@ nautilus_window_ui_update (NautilusWindow *window)
 	} else {
 		bonobo_ui_engine_update (engine);
 	}
+	window->details->updating_bonobo_state = old_updating_bonobo_state;
 }
 
 static gboolean

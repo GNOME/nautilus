@@ -1,3 +1,14 @@
+2001-02-27  John Harper  <jsh@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 7086 (Hitting cntl - F will switch to search, then
+	back to location bar.):
+
+	* src/nautilus-window.c (ui_idle_handler,
+	nautilu_window_ui_update): set the updating_bonobo_state flag
+	in the window details structure while sync'ing the UI
+
 2001-02-27  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>
