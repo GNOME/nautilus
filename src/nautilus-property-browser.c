@@ -807,6 +807,11 @@ remove_color (NautilusPropertyBrowser *property_browser, const char* color_value
 		for (color_node = eel_xml_get_children (cur_node);
 		     color_node != NULL;
 		     color_node = color_node->next) {
+
+			if (color_node->type != XML_ELEMENT_NODE) {
+				continue;
+			}
+
 			color_content = xmlNodeGetContent(color_node);
 			match = color_content != NULL
 				&& strcmp (color_content, color_value) == 0;
@@ -1778,6 +1783,11 @@ make_properties_from_xml_node (NautilusPropertyBrowser *property_browser,
 	for (child_node = eel_xml_get_children (node);
 	     child_node != NULL;
 	     child_node = child_node->next) {
+
+		if (child_node->type != XML_ELEMENT_NODE) {
+			continue;
+		}
+
 		deleted = xmlGetProp (child_node, "deleted");
 		local = xmlGetProp (child_node, "local");
 		
@@ -1966,6 +1976,11 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 	for (cur_node = eel_xml_get_children (xmlDocGetRootElement (document));
 	     cur_node != NULL;
 	     cur_node = cur_node->next) {
+
+		if (cur_node->type != XML_ELEMENT_NODE) {
+			continue;
+		}
+
 		if (strcmp (cur_node->name, "category") == 0) {
 			name = xmlGetProp (cur_node, "name");
 			

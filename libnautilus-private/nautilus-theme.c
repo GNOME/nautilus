@@ -184,7 +184,7 @@ nautilus_theme_get_theme_data_from_theme (const char *resource_name, const char 
 	if (theme_document != NULL) {
 		/* fetch the resource node */			
 		resource_node = eel_xml_get_child_by_name (xmlDocGetRootElement (theme_document), resource_name);
-		if (resource_node) {		
+		if (resource_node) {
 			temp_str = xmlGetProp(resource_node, property_name);
 			if (temp_str) {
 				theme_data = g_strdup (temp_str);

@@ -1,5 +1,16 @@
 2001-11-30  Darin Adler  <darin@bentspoon.com>
 
+	* src/nautilus-bookmark-list.c: (nautilus_bookmark_list_load_file):
+	* src/nautilus-property-browser.c: (remove_color),
+	(make_properties_from_xml_node),
+	(nautilus_property_browser_update_contents):
+	Skip over non-element nodes when walking libxml DOM tree.
+
+	* libnautilus-private/nautilus-theme.c:
+	(nautilus_theme_get_theme_data_from_theme): Whitespace tweak.
+
+2001-11-30  Darin Adler  <darin@bentspoon.com>
+
 	* libnautilus-private/nautilus-directory-async.c:
 	(top_left_read_callback): Roll double-free bug fix from the branch.
 	

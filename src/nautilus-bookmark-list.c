@@ -440,6 +440,10 @@ nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks)
 	     node != NULL;
 	     node = node->next) {
 
+		if (node->type != XML_ELEMENT_NODE) {
+			continue;
+		}
+
 		if (strcmp (node->name, "bookmark") == 0) {
 			insert_bookmark_internal (bookmarks, 
 						  nautilus_bookmark_new_from_node (node), 
