@@ -1,3 +1,24 @@
+2000-09-28  Andy Hertzfeld  <set EMAIL_ADDRESS environment variable>
+
+	* src/file-manager/fm-properties-window.c:
+	(get_property_names_from_uri):
+	fixed bug 3332, erase emblem was mistakenly included in
+	properties window.
+	
+	* src/nautilus-property-browser.c: (make_color_drag_image),
+	(element_clicked_callback), (make_properties_from_xml_node):
+	made the colors in the property browser consistent with the
+	image backgrounds
+	
+	* icons/backgrounds.png:
+	* icons/colors.png:
+	* icons/emblems.png:
+	* icons/chit_frame.png:
+	tweaked images from Susan for the property browser
+	
+	* icons/i-music-aa.png:
+	Susan fixed Eli's time signature bug in the music icon
+	
 2000-09-28  Mathieu Lacage  <mathieu@eazel.com>
 
 	Fix bug 2688. back and forward buttons do not work 

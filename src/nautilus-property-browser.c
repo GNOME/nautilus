@@ -592,7 +592,7 @@ make_drag_image(NautilusPropertyBrowser *property_browser, const char* file_name
 /* create a pixbuf and fill it with a color */
 
 static GdkPixbuf*
-make_color_drag_image (NautilusPropertyBrowser *property_browser, const char *color_spec)
+make_color_drag_image (NautilusPropertyBrowser *property_browser, const char *color_spec, gboolean trim_edges)
 {
 	GdkPixbuf *color_square;
 	int row, col, stride;
@@ -620,7 +620,9 @@ make_color_drag_image (NautilusPropertyBrowser *property_browser, const char *co
 		}
 	}
 	
-	return nautilus_customization_make_background_chit (color_square, property_browser->details->property_chit, TRUE);	
+	return nautilus_customization_make_background_chit (color_square, 
+							    property_browser->details->property_chit,
+							    trim_edges);	
 }
 
 /* this callback handles button presses on the category widget. It maintains the select color */
@@ -1298,7 +1300,7 @@ element_clicked_callback(GtkWidget *widget, GdkEventButton *event, char *element
 
 		pixbuf = make_drag_image(property_browser, element_name);
 	} else {
-		pixbuf = make_color_drag_image(property_browser, element_name);
+		pixbuf = make_color_drag_image(property_browser, element_name, TRUE);
 	}
 
 	
@@ -1490,7 +1492,7 @@ make_properties_from_xml_node (NautilusPropertyBrowser *property_browser, xmlNod
 			
 			/* make the image from the color spec */
 
-			pixbuf = make_color_drag_image (property_browser, color_str);			
+			pixbuf = make_color_drag_image (property_browser, color_str, FALSE);			
 			gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
 			gdk_pixbuf_unref (pixbuf);
 			pixmap_widget = GTK_WIDGET (gtk_pixmap_new (pixmap, mask));

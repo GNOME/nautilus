@@ -113,6 +113,8 @@ enum {
 	COLUMN_COUNT
 };
 
+#define ERASE_EMBLEM_FILENAME	"erase.png"
+
 static void cancel_group_change_callback (gpointer callback_data);
 static void cancel_owner_change_callback (gpointer callback_data);
 
@@ -1218,6 +1220,11 @@ get_property_names_from_uri (const char *directory_uri, GList *property_list)
 	for (current_file_info = gnome_vfs_directory_list_first(list); current_file_info != NULL; 
 	    current_file_info = gnome_vfs_directory_list_next(list)) {
 		if (nautilus_istr_has_prefix (current_file_info->mime_type, "image/")) {
+			/* skip the special "erase" emblem */
+			if (nautilus_strcmp (current_file_info->name, 
+					     ERASE_EMBLEM_FILENAME) == 0)
+				continue;
+				
 			keyword = g_strdup (current_file_info->name);
 			
 			/* strip image type suffix */
