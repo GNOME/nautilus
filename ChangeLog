@@ -1,3 +1,9 @@
+2000-11-06  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* nautilus-clean.sh:
+	Fix for bug 4530.  Race condition in nautilus-clean.sh trying to
+	kill its own grep processes.
+
 2000-11-05  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/nautilus-first-time-druid.c:
