@@ -186,13 +186,17 @@ realize (GtkWidget *widget)
 
 	/* Make things like the task list ignore this window and make
 	 * it clear that it it's at its full size.
+	 *
+	 * We originally included WIN_STATE_HIDDEN here, but IceWM
+	 * interprets that (wrongly, imho) as meaning `don't display
+	 * this window'. Not including this bit seems to make
+	 * no difference though, so..
 	 */
 	gnome_win_hints_set_state (widget,
 				   WIN_STATE_STICKY
 				   | WIN_STATE_MAXIMIZED_VERT
 				   | WIN_STATE_MAXIMIZED_HORIZ
 				   | WIN_STATE_FIXED_POSITION
-				   | WIN_STATE_HIDDEN
 				   | WIN_STATE_ARRANGE_IGNORE);
 
 	/* Make sure that focus, and any window lists or task bars also

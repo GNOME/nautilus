@@ -1,5 +1,17 @@
 2001-04-03  John Harper  <jsh@eazel.com>
 
+	Fixed part of bug 7823 (Nautilus window hints make it unusable
+	with the IceWM window manager):
+
+	* src/nautilus-desktop-window.c (realize): don't include
+	WIN_STATE_HIDDEN in the desktop window's state hints
+
+	IceWM apparently interprets this bit as meaning `don't display
+	the window', despite the GNOME documentation saying that it
+	just means `not on taskbar but window visible'
+
+2001-04-03  John Harper  <jsh@eazel.com>
+
 	reviewed by: Darin Adler <darin@eazel.com>
 
 	Fixed bug 7967 (Tree view uses non-standard colors instead of
