@@ -913,6 +913,7 @@ rename_callback (GnomeVFSAsyncHandle *handle,
 	char *old_relative_uri;
 	char *old_uri;
 	char *new_uri;
+	GList name_attribute = { 0, };
 
 	op = callback_data;
 	g_assert (handle == op->handle);
@@ -949,6 +950,17 @@ rename_callback (GnomeVFSAsyncHandle *handle,
 		nautilus_directory_moved (old_uri, new_uri);
 		g_free (new_uri);
 		g_free (old_uri);
+
+
+		/* the rename could have affected the display name if e.g.
+		 * we're in a vfolder where the name comes from a desktop file
+		 * and a rename affects the contents of the desktop file.
+		 */
+		if (op->file->details->display_name != NULL) {
+			name_attribute.data = NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME;
+			nautilus_file_invalidate_attributes (op->file, 
+							     &name_attribute);
+		}
 	}
 	operation_complete (op, result);
 }
@@ -1241,7 +1253,6 @@ update_info_internal (NautilusFile *file,
 	GList *node;
 	GnomeVFSFileInfo *info_copy;
 	char *new_relative_uri;
-	GList name_attribute = {0, };
 
 	if (file->details->is_gone) {
 		return FALSE;
