@@ -174,8 +174,6 @@ static void          handle_vadjustment_changed                     (GtkAdjustme
 static void          nautilus_icon_container_prioritize_thumbnailing_for_visible_icons (NautilusIconContainer *container);
 
 
-static int click_policy_auto_value;
-
 static gpointer accessible_parent_class;
 
 static GQuark accessible_private_data_quark = 0;
@@ -2754,30 +2752,6 @@ button_press_event (GtkWidget *widget,
 	gboolean selection_changed;
 	gboolean return_value;
 	gboolean clicked_on_icon;
-	gint64 current_time;
-	static gint64 last_click_time = 0;
-	static gint click_count = 0;
-	gint double_click_time;
-
-	g_object_get (G_OBJECT (gtk_widget_get_settings (widget)), 
-		      "gtk-double-click-time", &double_click_time,
-		      NULL);
-
-	/* Determine click count */
-	current_time = eel_get_system_time ();
-	if (current_time - last_click_time < double_click_time * 1000) {
-		click_count++;
-	} else {
-		click_count = 0;
-	}
-
-	/* Stash time for next compare */
-	last_click_time = current_time;
-
-	/* Ignore double click if we are in single click mode */
-	if (click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE && click_count >= 2) {
-		return TRUE;
-	}
 
 	container = NAUTILUS_ICON_CONTAINER (widget);
         container->details->button_down_time = event->time;
@@ -2857,6 +2831,10 @@ nautilus_icon_container_did_not_drag (NautilusIconContainer *container,
 {
 	NautilusIconContainerDetails *details;
 	gboolean selection_changed;
+	static gint64 last_click_time = 0;
+	static gint click_count = 0;
+	gint double_click_time;
+	gint64 current_time;
 		
 	details = container->details;
 
@@ -2876,14 +2854,31 @@ nautilus_icon_container_did_not_drag (NautilusIconContainer *container,
 		}
 	} 
 	
-	if (details->drag_icon != NULL) {		
-		/* If single-click mode, activate the selected icons, unless modifying
-		 * the selection or pressing for a very long time.
-		 */
-		if (details->single_click_mode
-		    && event->time - details->button_down_time < MAX_CLICK_TIME
-		    && ! button_event_modifies_selection (event)) {
+	if (details->drag_icon != NULL &&
+	    details->single_click_mode) {		
+		/* Determine click count */
+		g_object_get (G_OBJECT (gtk_widget_get_settings (GTK_WIDGET (container))), 
+			      "gtk-double-click-time", &double_click_time,
+			      NULL);
+		current_time = eel_get_system_time ();
+		if (current_time - last_click_time < double_click_time * 1000) {
+			click_count++;
+		} else {
+			click_count = 0;
+		}
+		
+		/* Stash time for next compare */
+		last_click_time = current_time;
 
+		/* If single-click mode, activate the selected icons, unless modifying
+		 * the selection or pressing for a very long time, or double clicking.
+		 */
+
+		
+		if (click_count == 0 &&
+		    event->time - details->button_down_time < MAX_CLICK_TIME &&
+		    ! button_event_modifies_selection (event)) {
+			
 			/* It's a tricky UI issue whether this should activate
 			 * just the clicked item (as if it were a link), or all
 			 * the selected items (as if you were issuing an "activate
@@ -3693,9 +3688,6 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 	canvas_class = EEL_CANVAS_CLASS (class);
 	canvas_class->draw_background = draw_canvas_background;
 	
-	eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
-				       &click_policy_auto_value);
-
 	gtk_widget_class_install_style_property (widget_class,
 						 g_param_spec_boolean ("frame_text",
 								       _("Frame Text"),
@@ -3844,14 +3836,20 @@ handle_icon_button_press (NautilusIconContainer *container,
 			  GdkEventButton *event)
 {
 	NautilusIconContainerDetails *details;
+
+	details = container->details;
+
+	if (details->single_click_mode &&
+	    event->type == GDK_2BUTTON_PRESS) {
+		/* Don't care about double clicks in single click mode */
+		return TRUE;
+	}
 	
 	if (event->button != DRAG_BUTTON
 	    && event->button != CONTEXTUAL_MENU_BUTTON
 	    && event->button != DRAG_MENU_BUTTON) {
 		return TRUE;
 	}
-
-	details = container->details;
 
 	if (event->button == DRAG_BUTTON &&
 	    event->type == GDK_BUTTON_PRESS) {

@@ -1,5 +1,12 @@
 2003-03-28  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-icon-container.c:
+	Fix up the single click mode double-click protection
+	Don't use eel_prefs to get the single-click-mode, we already
+	have it in details.
+
+2003-03-28  Alexander Larsson  <alexl@redhat.com>
+	
 	* src/file-manager/fm-list-view.c (fm_list_view_click_policy_changed):
 	Use the FMDirectoryView click_policy_changed instead of our own.
 	
