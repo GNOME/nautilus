@@ -1,3 +1,15 @@
+2000-08-29  Mike Fleming  <mfleming@eazel.com>
+
+	* src/nautilus-first-time-druid.c:
+	(next_proxy_configuration_page_callback), (download_callback),
+	(initiate_file_download), (set_http_proxy), (getline_dup),
+	(load_nscp_proxy_settings), (attempt_http_proxy_autoconfigure):
+
+	Bug #1812
+	First-time druid now autoprobes for HTTP proxy settings and
+	saves them to GConf.  Now gnome-vfs needs to be fixed to make use
+	of this (ammonite already does).
+
 Tue Aug 29 22:43:15 2000  George Lebl <jirka@5z.com>
 
 	This should close bug #1361

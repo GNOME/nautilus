@@ -28,10 +28,12 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
+#include <ctype.h>
 
 #include <gnome.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <gconf/gconf.h>
 
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-druid.h>
@@ -56,8 +58,19 @@
 #define UPDATE_FEEDBACK_PAGE 3
 #define PROXY_CONFIGURATION_PAGE 4
 
+/* GConf path for http proxy settings */
+#define PATH_GCONF_GNOME_VFS "/system/gnome-vfs/"
+#define ITEM_GCONF_HTTP_PROXY "http-proxy"
+#define KEY_GCONF_HTTP_PROXY (PATH_GCONF_GNOME_VFS ITEM_GCONF_HTTP_PROXY)
+
 static void
 initiate_file_download (GnomeDruid *druid);
+
+static gboolean
+set_http_proxy (char * proxy_url);
+
+static gboolean
+attempt_http_proxy_autoconfigure (void);
 
 /* globals */
 static NautilusApplication *save_application;
@@ -607,11 +620,13 @@ next_update_feedback_page_callback (GtkWidget *button, GnomeDruid *druid)
 static gboolean
 next_proxy_configuration_page_callback (GtkWidget *button, GnomeDruid *druid)
 {
-	
-	/* FIXME bugzilla.eazel.com 1812: here's where we configuration the proxy server information - Mike Fleming will do that soon */
-	/* including unconfiguring the proxy server if last_proxy_choice == 0 */
-	
+	char *proxy_string;
+
 	g_message ("proxy server name is %s, port is %s", gtk_entry_get_text (GTK_ENTRY(proxy_address_entry)), gtk_entry_get_text (GTK_ENTRY(port_number_entry))); 
+
+	proxy_string = g_strdup_printf ("http://%s:%s", gtk_entry_get_text (GTK_ENTRY(proxy_address_entry)), gtk_entry_get_text (GTK_ENTRY(port_number_entry)));
+	set_http_proxy (proxy_string);
+	g_free (proxy_string);
 	
 	/* now, go back to the offer update page or finish, depending on the user's selection */
 	if (last_proxy_choice == 1) {
@@ -843,13 +858,19 @@ download_callback (GnomeVFSResult result,
 		gtk_widget_set_sensitive (druid->next, TRUE);
 		gtk_widget_set_sensitive (druid->back, TRUE);
 	} else {
-		/* there was an error, so go to the proxy configuration page */
-		gnome_druid_set_page (druid, GNOME_DRUID_PAGE (pages[PROXY_CONFIGURATION_PAGE]));	
+		/* there was an error; see if we can't find some HTTP proxy config info */
+		/* note that attempt_http_proxy_autoconfigure() returns FALSE if its already been tried */ 
+		if (attempt_http_proxy_autoconfigure()) {
+			initiate_file_download (druid);
+		} else {
+			/* Autoconfiguration didn't work; prompt the user */
+			gnome_druid_set_page (druid, GNOME_DRUID_PAGE (pages[PROXY_CONFIGURATION_PAGE]));	
+		}
 	}
-
 }
 
 /* initiate downloading of the welcome package from the service */
+/* Note that this may be invoked more than once, if the first time fails */
 
 static void
 initiate_file_download (GnomeDruid *druid)
@@ -865,5 +886,236 @@ initiate_file_download (GnomeDruid *druid)
 			
 	/* initiate the file transfer */
 	file_handle = nautilus_read_entire_file_async (file_uri, download_callback, druid);
+}
+
+/**
+ * set_http_proxy
+ * 
+ * sets the GConf HTTP proxy setting to the "http://host:port" style string proxy_url
+ * also sets "http_proxy" environment variable
+ */
+static gboolean
+set_http_proxy (char * proxy_url)
+{
+	size_t proxy_len;
+	char * proxy_host_port = NULL;
+	gboolean success = FALSE;
+	GConfEngine *my_gconf_engine = NULL;
+
+	/* set the "http_proxy" environment variable */
+
+	setenv ("http_proxy", proxy_url, TRUE);
+
+	/* The GConf variable is expected to be in the form host:port */
+	if ( 0 != strncmp (proxy_url, "http://", strlen ("http://"))) {
+		return FALSE;
+	}
+
+	/* Chew off a leading http:// */
+	proxy_host_port  = g_strdup ( strlen ("http://") + proxy_url );
+
+	proxy_len = strlen (proxy_host_port);
+
+	if (0 == proxy_len) {
+		goto error;
+	}
+
+	/* chew off trailing / */
+	if ( '/' == proxy_host_port[proxy_len - 1] ) {
+		proxy_host_port[proxy_len - 1] = 0;
+	}
+
+	my_gconf_engine = gconf_engine_get_default();
+
+	g_message ("Setting http proxy to '%s'", proxy_host_port);
+	success = gconf_set_string (my_gconf_engine, KEY_GCONF_HTTP_PROXY, proxy_host_port, NULL);
+
+	gconf_engine_unref (my_gconf_engine);
+	my_gconf_engine = NULL;
+	
+	success = TRUE;
+error:
+	g_free (proxy_host_port);
+
+	return success;
+}
+
+/**
+ * getline_dup
+ *
+ * reads newline or EOF terminated line from stream, allocating the return
+ * buffer as appropriate
+ */ 
+#define GETLINE_INITIAL 256
+static char * 
+getline_dup (FILE* stream)
+{
+	char *ret;
+	size_t ret_size;
+	size_t ret_used;
+	int char_read;
+	gboolean done;
+
+	ret = g_malloc( GETLINE_INITIAL * sizeof(char) );
+	ret_size = GETLINE_INITIAL;
+
+	for ( ret_used = 0, done = FALSE ;
+	      !done && (EOF != (char_read = fgetc (stream))) ; 
+	      ret_used++
+	) {
+		if (ret_size == (ret_used + 1)) {
+			ret_size *= 2;
+			ret = g_realloc (ret, ret_size); 
+		}
+		if ('\n' == char_read || '\r' == char_read ) {
+			done = TRUE;
+			ret [ret_used] = '\0';
+		} else {
+			ret [ret_used] = char_read;
+		}
+	}
+
+	if ( 0 == ret_used ) {
+		g_free (ret);
+		ret = NULL;
+	} else {
+		ret [ret_used] = '\0';
+	}
+
+	return ret;
+}
+
+#define NETSCAPE_PREFS_PATH "/.netscape/preferences.js"
+
+/* user_pref("network.proxy.http", "localhost");
+ * user_pref("network.proxy.http_port", 8080);
+ * user_pref("network.proxy.type", 1);
+ */
+static char *
+load_nscp_proxy_settings ()
+{
+	char * user_directory = NULL;
+	char * prefs_path = NULL;
+	char * ret = NULL;
+	char * proxy_host = NULL;
+	guint32 proxy_port = 8080;
+	gboolean has_proxy_type = FALSE;
+
+	char * line;
+	char * current, *end;
+	FILE * prefs_file;
+
+	user_directory = g_get_home_dir ();
+
+	prefs_path = g_strconcat (user_directory, NETSCAPE_PREFS_PATH, NULL);
+	g_free (user_directory);
+	user_directory = NULL;
+
+	prefs_file = fopen (prefs_path, "r");
+
+	if ( NULL == prefs_file ) {
+		goto error;
+	}
+
+	/* Normally I wouldn't be caught dead doing it this way...*/
+	for ( ; NULL != (line = getline_dup (prefs_file)) ; g_free (line) ) {
+		if ( NULL != (current = strstr (line, "\"network.proxy.http\"")) ) {
+			current += strlen ("\"network.proxy.http\"");
+
+			current = strchr (current, '"');
+
+			if (NULL == current) {
+				continue;
+			}
+			current++;
+
+			end = strchr (current, '"');
+			if (NULL == end) {
+				continue;
+			}
+
+			proxy_host = g_strndup (current, end-current);
+		} else if ( NULL != (current = strstr (line, "\"network.proxy.http_port\""))) {
+			current += strlen ("\"network.proxy.http_port\"");
+
+			while ( *current && !isdigit(*current)) {
+				current++;
+			}
+
+			if ( '\0' == *current ) {
+				continue;
+			}
+
+			proxy_port = strtoul (current, &end, 10);
+
+		} else if ( NULL != (current = strstr (line, "\"network.proxy.type\""))) {
+			/* Proxy type must equal '1' */
+			current += strlen ("\"network.proxy.type\"");
+
+			while ( *current && !isdigit(*current)) {
+				current++;
+			}
+
+			has_proxy_type = ('1' == *current);
+		}
+	}
+
+	if (has_proxy_type && NULL != proxy_host) {
+		ret = g_strdup_printf ("http://%s:%u", proxy_host, proxy_port);
+	}
+	
+error:
+	g_free (proxy_host);
+	g_free (prefs_path);
+	prefs_path = NULL;
+
+	return ret;
+}
+
+/**
+ * attempt_http_proxy_autoconfigure
+ *
+ * Attempt to discover HTTP proxy settings from environment variables
+ * and Netscape 4.x configuation files
+ */
+static gboolean
+attempt_http_proxy_autoconfigure (void)
+{
+	static gboolean autoconfigure_attempted = FALSE;
+	gboolean success = FALSE;
+	char * proxy_url;
+
+	/* If we've already failed once, we're not going to try again */
+	if (autoconfigure_attempted) {
+		return FALSE;
+	}
+	
+	/* The "http_proxy" environment variable is used by libwww */
+
+	/* Note that g_getenv returns a pointer to a static buffer */
+	proxy_url = g_getenv ("http_proxy");
+
+	if ( NULL != proxy_url ) {
+		g_message ("Found proxy setting in enviroment variable");
+		success = TRUE;
+		set_http_proxy (proxy_url);
+		g_free (proxy_url);
+		proxy_url = NULL;
+	}
+
+	/* Check Netscape 4.x settings */
+
+	proxy_url = load_nscp_proxy_settings ();
+
+	if ( NULL != proxy_url ) {
+		g_message ("Found proxy setting in Netscape 4.x settings");
+		success = TRUE;
+		set_http_proxy (proxy_url);
+		g_free (proxy_url);
+		proxy_url = NULL;
+	}
+
+	autoconfigure_attempted = TRUE;
+	return success;
 }
 
