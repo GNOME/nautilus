@@ -178,7 +178,7 @@ typedef struct {
 /* pixel and drawing constant defines */
 
 #define RSS_ITEM_HEIGHT 12
-#define CHANNEL_GAP_SIZE 12
+#define CHANNEL_GAP_SIZE 6
 #define LOGO_GAP_SIZE 2
 #define DISCLOSURE_RIGHT_POSITION 16
 #define LOGO_LEFT_OFFSET 15
@@ -478,6 +478,7 @@ draw_rss_title (RSSChannelData *channel_data,
 {
 	EelDimensions title_dimensions;
 	int label_offset;
+	gboolean is_prelit;
 	
 	if (channel_data->title == NULL || channel_data->owner->font == NULL) {
 		return v_offset;
@@ -495,6 +496,9 @@ draw_rss_title (RSSChannelData *channel_data,
 	} else {
 		label_offset = 4;
 	}
+
+	is_prelit = channel_data->prelight_index == PRELIGHT_LOGO &&
+			channel_data->link_uri != NULL;
 	
 	/* draw the name into the pixbuf using anti-aliased text */	
 	if (!measure_only) {
@@ -503,7 +507,7 @@ draw_rss_title (RSSChannelData *channel_data,
 					  eel_gdk_pixbuf_whole_pixbuf,
 					  18,
 					  channel_data->title, strlen (channel_data->title),
-					  EEL_RGB_COLOR_BLACK,
+					  is_prelit ? EEL_RGBA_COLOR_PACK (0, 0, 128, 255) : EEL_RGB_COLOR_BLACK,
 					  EEL_OPACITY_FULLY_OPAQUE);
 	}
 	
