@@ -134,7 +134,7 @@ nautilus_trash_monitor_initialize (gpointer object, gpointer klass)
 	 * Add trash directories from all known volumes here
 	 */
 	gnome_vfs_find_directory (NULL, GNOME_VFS_DIRECTORY_KIND_TRASH,
-		&trash_dir_uri, TRUE, 0777);
+		&trash_dir_uri, TRUE, TRUE, 0777);
 	g_assert (trash_dir_uri != NULL);
 	trash_dir_uri_string = gnome_vfs_uri_to_string (trash_dir_uri, GNOME_VFS_URI_HIDE_NONE);
 

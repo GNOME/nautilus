@@ -1787,7 +1787,7 @@ fm_directory_is_trash (FMDirectoryView *view)
 	directory_uri = gnome_vfs_uri_new (directory);
 
 	result = gnome_vfs_find_directory (directory_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
-		&trash_dir_uri, TRUE, 0777) == GNOME_VFS_OK;
+		&trash_dir_uri, FALSE, FALSE, 0777) == GNOME_VFS_OK;
 
 	if (result) {
 		result = (gnome_vfs_uri_equal (trash_dir_uri, directory_uri)
@@ -1817,7 +1817,7 @@ fm_directory_can_move_to_trash (FMDirectoryView *view)
 	directory_uri = gnome_vfs_uri_new (directory);
 
 	result = gnome_vfs_find_directory (directory_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
-		&trash_dir_uri, TRUE, 0777) == GNOME_VFS_OK;
+		&trash_dir_uri, TRUE, FALSE, 0777) == GNOME_VFS_OK;
 
 	if (result && (gnome_vfs_uri_equal (trash_dir_uri, directory_uri)
 		|| gnome_vfs_uri_is_parent (trash_dir_uri, directory_uri, TRUE))) {

@@ -3234,7 +3234,7 @@ nautilus_file_is_in_trash (NautilusFile *file)
 	file_uri = gnome_vfs_uri_new (uri);
 
 	result = gnome_vfs_find_directory (file_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
-					   &trash_dir_uri, TRUE, 0777) == GNOME_VFS_OK;
+					   &trash_dir_uri, FALSE, FALSE, 0777) == GNOME_VFS_OK;
 
         if (result) {
 		result = (gnome_vfs_uri_equal (trash_dir_uri, file_uri)

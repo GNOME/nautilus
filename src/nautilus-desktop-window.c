@@ -109,7 +109,7 @@ nautilus_desktop_window_new (NautilusApplication *application)
 	 * might be a good time.
 	 */
 	result = gnome_vfs_find_directory (NULL, GNOME_VFS_DIRECTORY_KIND_TRASH, 
-					   &trash_dir_uri, TRUE, 0777);
+					   &trash_dir_uri, TRUE, FALSE, 0777);
 	if (result == GNOME_VFS_OK) {
 		trash_dir_uri_text = gnome_vfs_uri_to_string (trash_dir_uri,
 							      GNOME_VFS_URI_HIDE_NONE);

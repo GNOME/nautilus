@@ -1,3 +1,17 @@
+2000-08-09  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_is_in_trash):
+	* src/file-manager/dfos-xfer.c: (fs_xfer), (fs_move_to_trash),
+	(fs_empty_trash):
+	* src/file-manager/fm-directory-view.c: (fm_directory_is_trash),
+	(fm_directory_can_move_to_trash):
+	* src/file-manager/nautilus-trash-monitor.c:
+	(nautilus_trash_monitor_initialize):
+	* src/nautilus-desktop-window.c: (nautilus_desktop_window_new):
+
+	Support new find_if_needed parameter of gnome_vfs_find_directory.
+
 2000-08-09  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/mozilla/nautilus-mozilla-content-view.c:

@@ -733,7 +733,7 @@ fs_xfer (const GList *item_uris,
 
 	/* we'll need to check for copy into Trash and for moving/copying the Trash itself */
 	gnome_vfs_find_directory (target_dir_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
-		&trash_dir_uri, TRUE, 0777);
+		&trash_dir_uri, FALSE, FALSE, 0777);
 
 	if ((move_options & GNOME_VFS_XFER_REMOVESOURCE) == 0) {
 
@@ -911,7 +911,7 @@ fs_move_to_trash (const GList *item_uris, GtkWidget *parent_view)
 	source_dir = gnome_vfs_uri_to_string (source_dir_uri, GNOME_VFS_URI_HIDE_NONE);
 
 	result = gnome_vfs_find_directory (source_dir_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
-		&trash_dir_uri, TRUE, 0777);
+		&trash_dir_uri, TRUE, FALSE, 0777);
 
 	for (p = item_uris; p != NULL; p = p->next) {
 		bail = FALSE;
@@ -1038,7 +1038,7 @@ fs_empty_trash (GtkWidget *parent_view)
 	 */
 
 	result = gnome_vfs_find_directory (NULL, GNOME_VFS_DIRECTORY_KIND_TRASH,
-		&trash_dir_uri, TRUE, 0777);
+		&trash_dir_uri, FALSE, FALSE, 0777);
 
 	if (result == GNOME_VFS_OK) {
 		GList *trash_dir_list;
