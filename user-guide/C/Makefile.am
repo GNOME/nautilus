@@ -21,7 +21,7 @@ install-data-local:
 	done; 							\
 	fi
 	$(mkinstalldirs) $(DESTDIR)$(SGML_DIR)/fdl/$(LANG)/
-	$(INSTALL_DATA) fdl.sgml $(DESTDIR)$(SGML_DIR)/fdl/$(LANG)/fdl.sgml
+	$(INSTALL_DATA) $(srcdir)/fdl.sgml $(DESTDIR)$(SGML_DIR)/fdl/$(LANG)/fdl.sgml
 
 dist-hook:
 	mkdir $(distdir)/sgml 
