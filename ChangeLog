@@ -1,3 +1,15 @@
+2000-09-18  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/summary/lib/eazel-summary-shared.c:
+	(parse_a_service), (parse_a_eazel_news_item),
+	(parse_a_update_news_item):
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (generate_startup_form), (authn_cb_succeeded), (authn_cb_failed),
+	(login_button_cb), (nautilus_summary_view_load_uri):
+
+	Removing some debugging code and checking state fixes for a logged in
+	user.
+
 2000-09-18  Mathieu Lacage  <mathieu@eazel.com>
 
 	* components/tree/nautilus-tree-view.c: cleanup.

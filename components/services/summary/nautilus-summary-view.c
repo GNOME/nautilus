@@ -52,7 +52,8 @@
 #define DEFAULT_SUMMARY_BACKGROUND_COLOR	"rgb:FFFF/FFFF/FFFF"
 /* #define	SUMMARY_XML_HOME			"http://localhost/summary-configuration.xml" */
 #define	SUMMARY_XML_HOME			"http://services.eazel.com:8888/services"
-#define	REGISTER_HOME				"http://services.eazel.com:8888/account/register/form"
+#define	SUMMARY_XML_HOME_2			"eazel-services:/services"
+#define	REGISTER_HOME				"eazel-services://anonymous/account/register/form"
 
 typedef struct _ServicesButtonCallbackData ServicesButtonCallbackData;
 
@@ -196,10 +197,9 @@ generate_startup_form (NautilusSummaryView       *view)
 	GtkWidget		*align;
 	int			counter;
 
-	/* fetch and parse the xml file */
-	view->details->xml_data = parse_summary_xml_file (SUMMARY_XML_HOME);
-
 	if (view->details->logged_in == TRUE) {
+		/* fetch and parse the xml file */
+		view->details->xml_data = parse_summary_xml_file (SUMMARY_XML_HOME_2);
 		/* dispose of startup form that was shown */
 		if (view->details->form != NULL) {
 			gtk_widget_destroy (view->details->form);
@@ -209,6 +209,9 @@ generate_startup_form (NautilusSummaryView       *view)
 		generate_summary_form (view);
 	}
 	else {
+
+	/* fetch and parse the xml file */
+	view->details->xml_data = parse_summary_xml_file (SUMMARY_XML_HOME);
 
 	/* set to default not logged in for now */
 	view->details->logged_in = FALSE;
@@ -808,15 +811,12 @@ authn_cb_succeeded (const EazelProxy_User *user, gpointer state, CORBA_Environme
 
 	g_message ("Login succeeded");
 	view->details->logged_in = TRUE;
-
 	/* dispose of startup form that was shown */
-	if (view->details->form != NULL) {
-		gtk_widget_destroy (view->details->form);
-		view->details->form = NULL;
-	}
+	gtk_widget_destroy (view->details->form);
+	view->details->form = NULL;
 
-	generate_summary_form (view);
-	
+	generate_startup_form (view);
+
 	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
 }
 
@@ -835,6 +835,7 @@ authn_cb_failed (const EazelProxy_User *user, const EazelProxy_AuthnFailInfo *in
 	/* FIXME bugzilla.eazel.com 2744: what now? */
 
 	g_message ("Login FAILED");
+	view->details->logged_in = FALSE;
 	
 	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
 }
@@ -887,10 +888,11 @@ login_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 			/* FIXME bugzilla.eazel.com 2745: cleanup after fail here */ 
 		}
 
+		g_free (user_name);
+		g_free (password);
+
 	}
 
-	g_free (user_name);
-	g_free (password);
 	CORBA_exception_free (&ev);
 
 }
@@ -1073,14 +1075,6 @@ nautilus_summary_view_load_uri (NautilusSummaryView	*view,
 	}
 
 	generate_startup_form (view);
-
-	/* dispose of startup form that was shown */
-	if (view->details->form != NULL) {
-		gtk_widget_destroy (view->details->form);
-		view->details->form = NULL;
-	}
-
-	generate_summary_form (view);
 
 }
 

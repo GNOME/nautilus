@@ -119,19 +119,12 @@ parse_a_service (xmlNodePtr node)
 	return_value = services_data_new ();
 
 	return_value->name = g_strdup (xml_get_value (node, "NAME"));
-	g_print ("%s\n", return_value->name);
 	return_value->icon = g_strdup (xml_get_value (node, "ICON"));
-	g_print ("%s\n", return_value->icon);
 	return_value->button_label = (xml_get_value (node, "BUTTON_LABEL"));
-	g_print ("%s\n", return_value->button_label);
 	return_value->uri = (xml_get_value (node, "URI"));
-	g_print ("%s\n", return_value->uri);
 	return_value->description_header = (xml_get_value (node, "DESCRIPTION_HEADER"));
-	g_print ("%s\n", return_value->description_header);
 	return_value->description = (xml_get_value (node, "DESCRIPTION"));
-	g_print ("%s\n", return_value->description);
 	tempbuf = (xml_get_value (node, "ENABLED"));
-	g_print ("%s\n", tempbuf);
 	if (tempbuf[0] == 'T' || tempbuf[0] == 't') {
 		return_value->enabled = TRUE;
 	}
@@ -154,11 +147,8 @@ parse_a_eazel_news_item (xmlNodePtr node)
 	return_value = eazel_news_data_new ();
 
 	return_value->name = g_strdup (xml_get_value (node, "NAME"));
-	g_print ("%s\n", return_value->name);
 	return_value->icon = g_strdup (xml_get_value (node, "ICON"));
-	g_print ("%s\n", return_value->icon);
 	return_value->message = g_strdup (xml_get_value (node, "MESSAGE"));
-	g_print ("%s\n", return_value->message);
 
 	return return_value;
 
@@ -171,19 +161,12 @@ parse_a_update_news_item (xmlNodePtr node)
 	return_value = update_news_data_new ();
 
 	return_value->name = g_strdup (xml_get_value (node, "NAME"));
-	g_print ("%s\n", return_value->name);
 	return_value->version = (xml_get_value (node, "VERSION"));
-	g_print ("%s\n", return_value->version);
 	return_value->priority = g_strdup (xml_get_value (node, "PRIORITY"));
-	g_print ("%s\n", return_value->priority);
 	return_value->description = g_strdup (xml_get_value (node, "DESCRIPTION"));
-	g_print ("%s\n", return_value->description);
 	return_value->icon = g_strdup (xml_get_value (node, "ICON"));
-	g_print ("%s\n", return_value->icon);
 	return_value->button_label = g_strdup (xml_get_value (node, "BUTTON_LABEL"));
-	g_print ("%s\n", return_value->button_label);
 	return_value->uri = (xml_get_value (node, "URI"));
-	g_print ("%s\n", return_value->uri);
 
 	return return_value;
 
