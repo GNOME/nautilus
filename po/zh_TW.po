@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.1.15\n"
-"POT-Creation-Date: 2002-05-13 02:39+0800\n"
+"POT-Creation-Date: 2002-05-13 12:34-0400\n"
 "PO-Revision-Date: 2002-05-13 02:46+0800\n"
 "Last-Translator: Abel Cheung <maddog@linux.org.hk>\n"
 "Language-Team: traditional Chinese <zh-l10n@linux.org.tw>\n"
@@ -2843,8 +2843,9 @@ msgid ""
 msgstr "確定要永久刪除垃圾桶內的所有項目嗎？"
 
 #: libnautilus-private/nautilus-file-operations.c:2222
-msgid "Delete Trash Contents?"
-msgstr "刪除垃圾桶內的內容？"
+#, fuzzy
+msgid "Empty Trash?"
+msgstr "清理垃圾桶"
 
 #: libnautilus-private/nautilus-file-operations.c:2223
 msgid "Empty"
@@ -3355,15 +3356,18 @@ msgid "Trash"
 msgstr "垃圾埇"
 
 #: libnautilus-private/nautilus-global-preferences.c:100
-msgid "Always"
+#, fuzzy
+msgid "_Always"
 msgstr "一定"
 
 #: libnautilus-private/nautilus-global-preferences.c:101
-msgid "Local Files Only"
+#, fuzzy
+msgid "_Local Files Only"
 msgstr "只有本機檔案適用"
 
 #: libnautilus-private/nautilus-global-preferences.c:102
-msgid "Never"
+#, fuzzy
+msgid "_Never"
 msgstr "不會"
 
 #: libnautilus-private/nautilus-global-preferences.c:108
@@ -3430,23 +3434,28 @@ msgid "100 MB"
 msgstr "100 MB"
 
 #: libnautilus-private/nautilus-global-preferences.c:137
-msgid "Activate items with a single click"
+#, fuzzy
+msgid "Activate items with a _single click"
 msgstr "按一下開啟"
 
 #: libnautilus-private/nautilus-global-preferences.c:141
-msgid "Activate items with a double click"
+#, fuzzy
+msgid "Activate items with a _double click"
 msgstr "按兩下開啟"
 
 #: libnautilus-private/nautilus-global-preferences.c:149
-msgid "Execute files when they are clicked"
+#, fuzzy
+msgid "E_xecute files when they are clicked"
 msgstr "當按下檔案時執行該檔案"
 
 #: libnautilus-private/nautilus-global-preferences.c:153
-msgid "Display files when they are clicked"
+#, fuzzy
+msgid "Display _files when they are clicked"
 msgstr "當按下檔案時顯示該檔案"
 
 #: libnautilus-private/nautilus-global-preferences.c:157
-msgid "Ask each time"
+#, fuzzy
+msgid "_Ask each time"
 msgstr "每次都會先詢問"
 
 #: libnautilus-private/nautilus-global-preferences.c:165
@@ -3802,7 +3811,6 @@ msgstr "不包含在“%s”選項的選單中"
 
 #: libnautilus-private/nautilus-program-chooser.c:1200
 #: src/file-manager/fm-search-list-view.c:494
-#: src/nautilus-bookmarks-window.c:202
 msgid "Name"
 msgstr "名稱"
 
@@ -4732,151 +4740,151 @@ msgstr "如果選取“貼上檔案”指令將會複製 %d 個已選取的項�
 msgid "There is nothing on the clipboard to paste."
 msgstr "剪貼簿中沒有內容可供貼上。"
 
-#: src/file-manager/fm-directory-view.c:4269
+#: src/file-manager/fm-directory-view.c:4271
 msgid "Open _in This Window"
 msgstr "在此視窗開啟(_I)"
 
-#: src/file-manager/fm-directory-view.c:4272
+#: src/file-manager/fm-directory-view.c:4274
 #: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "Open _in New Window"
 msgstr "用新視窗開啟(_I)"
 
-#: src/file-manager/fm-directory-view.c:4274
+#: src/file-manager/fm-directory-view.c:4276
 #, c-format
 msgid "Open _in %d New Windows"
 msgstr "用 %d 個新視窗開啟(_I)"
 
-#: src/file-manager/fm-directory-view.c:4292
+#: src/file-manager/fm-directory-view.c:4294
 msgid "Delete from _Trash..."
 msgstr "從垃圾桶中刪除(_T)..."
 
-#: src/file-manager/fm-directory-view.c:4292
+#: src/file-manager/fm-directory-view.c:4294
 msgid "Delete from _Trash"
 msgstr "從垃圾桶中刪除(_T)"
 
-#: src/file-manager/fm-directory-view.c:4294
+#: src/file-manager/fm-directory-view.c:4296
 msgid "Delete all selected items permanently"
 msgstr "永久刪除所選的項目"
 
-#: src/file-manager/fm-directory-view.c:4297
+#: src/file-manager/fm-directory-view.c:4299
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Move to _Trash"
 msgstr "丟到垃圾桶(_T)"
 
-#: src/file-manager/fm-directory-view.c:4299
+#: src/file-manager/fm-directory-view.c:4301
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
 msgid "Move each selected item to the Trash"
 msgstr "將所選的項目丟到垃圾桶"
 
-#: src/file-manager/fm-directory-view.c:4326
+#: src/file-manager/fm-directory-view.c:4328
 msgid "De_lete..."
 msgstr "刪除(_L)..."
 
-#: src/file-manager/fm-directory-view.c:4326
+#: src/file-manager/fm-directory-view.c:4328
 #: src/file-manager/nautilus-directory-view-ui.xml.h:9
 msgid "De_lete"
 msgstr "刪除(_L)"
 
-#: src/file-manager/fm-directory-view.c:4347
+#: src/file-manager/fm-directory-view.c:4349
 msgid "Make _Links"
 msgstr "建立鏈結(_L)"
 
-#: src/file-manager/fm-directory-view.c:4348
+#: src/file-manager/fm-directory-view.c:4350
 msgid "Make _Link"
 msgstr "建立鏈結(_L)"
 
-#: src/file-manager/fm-directory-view.c:4363 src/nautilus-sidebar.c:1501
+#: src/file-manager/fm-directory-view.c:4365 src/nautilus-sidebar.c:1501
 msgid "_Empty Trash..."
 msgstr "清理垃圾桶(_E)..."
 
-#: src/file-manager/fm-directory-view.c:4364
+#: src/file-manager/fm-directory-view.c:4366
 #: src/file-manager/nautilus-directory-view-ui.xml.h:58
 #: src/nautilus-sidebar.c:1502
 msgid "_Empty Trash"
 msgstr "清理垃圾桶(_E)"
 
-#: src/file-manager/fm-directory-view.c:4375
+#: src/file-manager/fm-directory-view.c:4377
 msgid "R_emove Custom Icons"
 msgstr "移除自訂圖示(_E)"
 
-#: src/file-manager/fm-directory-view.c:4376
+#: src/file-manager/fm-directory-view.c:4378
 msgid "R_emove Custom Icon"
 msgstr "移除自訂圖示(_E)"
 
-#: src/file-manager/fm-directory-view.c:4390
+#: src/file-manager/fm-directory-view.c:4392
 msgid "Cu_t File"
 msgstr "剪下檔案(_T)"
 
-#: src/file-manager/fm-directory-view.c:4391
+#: src/file-manager/fm-directory-view.c:4393
 #: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Cu_t Files"
 msgstr "剪下檔案(_T)"
 
-#: src/file-manager/fm-directory-view.c:4401
+#: src/file-manager/fm-directory-view.c:4403
 msgid "_Copy File"
 msgstr "複製檔案(_C)"
 
-#: src/file-manager/fm-directory-view.c:4402
+#: src/file-manager/fm-directory-view.c:4404
 #: src/file-manager/nautilus-directory-view-ui.xml.h:56
 msgid "_Copy Files"
 msgstr "複製檔案(_C)"
 
-#: src/file-manager/fm-directory-view.c:4571
+#: src/file-manager/fm-directory-view.c:4574
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the Trash?"
 msgstr "此鏈結無法使用，因為它沒有定義任何目標位置。是否要將它丟到垃圾桶？"
 
-#: src/file-manager/fm-directory-view.c:4574
+#: src/file-manager/fm-directory-view.c:4577
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
 "want to put this link in the Trash?"
 msgstr "此鏈結無法使用，因為它的目標位置“%s”不存在。是否要將它丟到垃圾桶？"
 
-#: src/file-manager/fm-directory-view.c:4580
+#: src/file-manager/fm-directory-view.c:4583
 msgid "Broken Link"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4580
+#: src/file-manager/fm-directory-view.c:4583
 msgid "Throw Away"
 msgstr "丟棄"
 
-#: src/file-manager/fm-directory-view.c:4637
+#: src/file-manager/fm-directory-view.c:4640
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
 "contents?"
 msgstr "“%s”是一個可執行的文字檔。要執行它，還是顯示它的內容？"
 
-#: src/file-manager/fm-directory-view.c:4643
+#: src/file-manager/fm-directory-view.c:4646
 msgid "Run or Display?"
 msgstr "執行還是顯示？"
 
-#: src/file-manager/fm-directory-view.c:4644
+#: src/file-manager/fm-directory-view.c:4647
 msgid "Run"
 msgstr "執行"
 
-#: src/file-manager/fm-directory-view.c:4645
+#: src/file-manager/fm-directory-view.c:4648
 msgid "Display"
 msgstr "顯示"
 
-#: src/file-manager/fm-directory-view.c:4700
+#: src/file-manager/fm-directory-view.c:4703
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
 msgstr "抱歉，因系統保安理由，不能執行遠端站台的指令。"
 
-#: src/file-manager/fm-directory-view.c:4702
+#: src/file-manager/fm-directory-view.c:4705
 msgid "Can't execute remote links"
 msgstr "無法執行遠端遠結"
 
-#: src/file-manager/fm-directory-view.c:4846
+#: src/file-manager/fm-directory-view.c:4849
 #, c-format
 msgid "Opening \"%s\""
 msgstr "開啟“%s”"
 
-#: src/file-manager/fm-directory-view.c:4852
+#: src/file-manager/fm-directory-view.c:4855
 msgid "Cancel Open?"
 msgstr "取消開啟？"
 
@@ -5186,7 +5194,6 @@ msgid "Size:"
 msgstr "大小："
 
 #: src/file-manager/fm-properties-window.c:1611 src/nautilus-location-bar.c:60
-#: src/nautilus-preferences-dialog.c:239
 msgid "Location:"
 msgstr "位置："
 
@@ -6090,11 +6097,17 @@ msgstr ""
 msgid "Bookmarks"
 msgstr "書籤"
 
-#: src/nautilus-bookmarks-window.c:215
-msgid "Location"
+#: src/nautilus-bookmarks-window.c:202
+#, fuzzy
+msgid "_Name"
+msgstr "名稱"
+
+#: src/nautilus-bookmarks-window.c:217
+#, fuzzy
+msgid "_Location"
 msgstr "位置"
 
-#: src/nautilus-bookmarks-window.c:228
+#: src/nautilus-bookmarks-window.c:232
 msgid "_Remove"
 msgstr "移除(_R)"
 
@@ -6202,35 +6215,42 @@ msgid "Opening New Windows"
 msgstr "開啟新視窗"
 
 #: src/nautilus-preferences-dialog.c:69
-msgid "Open each file or folder in a separate window"
+#, fuzzy
+msgid "_Open each file or folder in a separate window"
 msgstr "開啟每一個檔案或資料夾時都開啟新視窗"
 
 #: src/nautilus-preferences-dialog.c:74
-msgid "Display toolbar in new windows"
-msgstr "在新視窗中顯示工具列"
+#, fuzzy
+msgid "Display _sidebar in new windows"
+msgstr "在新視窗中顯示側列"
 
 #: src/nautilus-preferences-dialog.c:79
-msgid "Display location bar in new windows"
-msgstr "在新視窗中顯示位置列"
+#, fuzzy
+msgid "Display _toolbar in new windows"
+msgstr "在新視窗中顯示工具列"
 
 #: src/nautilus-preferences-dialog.c:84
-msgid "Display status bar in new windows"
-msgstr "在新視窗中顯示狀態列"
+#, fuzzy
+msgid "Display location _bar in new windows"
+msgstr "在新視窗中顯示位置列"
 
 #: src/nautilus-preferences-dialog.c:89
-msgid "Display sidebar in new windows"
-msgstr "在新視窗中顯示側列"
+#, fuzzy
+msgid "Display st_atus bar in new windows"
+msgstr "在新視窗中顯示狀態列"
 
 #: src/nautilus-preferences-dialog.c:96 src/nautilus-preferences-dialog.c:101
 msgid "Desktop"
 msgstr "桌面"
 
 #: src/nautilus-preferences-dialog.c:98
-msgid "Use Nautilus to draw the desktop"
+#, fuzzy
+msgid "_Use Nautilus to draw the desktop"
 msgstr "使用 Nautilus 來繪畫桌面"
 
 #: src/nautilus-preferences-dialog.c:103
-msgid "Use your home folder as the desktop"
+#, fuzzy
+msgid "Use your _home folder as the desktop"
 msgstr "使用個人資料夾作為桌面"
 
 #: src/nautilus-preferences-dialog.c:106 src/nautilus-preferences-dialog.c:111
@@ -6238,11 +6258,13 @@ msgid "Trash Behavior"
 msgstr "垃圾桶使用方式"
 
 #: src/nautilus-preferences-dialog.c:108
-msgid "Ask before emptying the Trash or deleting files"
+#, fuzzy
+msgid "_Ask before emptying the Trash or deleting files"
 msgstr "清理垃圾桶或刪除檔案前先詢問"
 
 #: src/nautilus-preferences-dialog.c:113
-msgid "Include a Delete command that bypasses Trash"
+#, fuzzy
+msgid "_Include a Delete command that bypasses Trash"
 msgstr "在選單中加入不經垃圾桶刪除檔案的「刪除」指令"
 
 #: src/nautilus-preferences-dialog.c:120 src/nautilus-preferences-dialog.c:122
@@ -6259,15 +6281,18 @@ msgid "Show/Hide Options"
 msgstr "顯示/隱藏選項"
 
 #: src/nautilus-preferences-dialog.c:132
-msgid "Show hidden files (file names start with \".\")"
+#, fuzzy
+msgid "Show _hidden files (file names start with \".\")"
 msgstr "顯示隱藏檔（檔名以“.”開始）"
 
 #: src/nautilus-preferences-dialog.c:137
-msgid "Show backup files (file names end with \"~\")"
+#, fuzzy
+msgid "Show _backup files (file names end with \"~\")"
 msgstr "顯示備份檔（檔名以“~”結束）"
 
 #: src/nautilus-preferences-dialog.c:142
-msgid "Show special flags in Properties window"
+#, fuzzy
+msgid "Show special flags in _Properties window"
 msgstr "在屬性視窗中顯示特殊旗標"
 
 #: src/nautilus-preferences-dialog.c:145
@@ -6275,7 +6300,8 @@ msgid "Sorting Order"
 msgstr "排列次序"
 
 #: src/nautilus-preferences-dialog.c:147
-msgid "Always list folders before files"
+#, fuzzy
+msgid "Always _list folders before files"
 msgstr "永遠在檔案前先列出資料夾"
 
 #: src/nautilus-preferences-dialog.c:154 src/nautilus-preferences-dialog.c:321
@@ -6295,7 +6321,8 @@ msgid "Default View"
 msgstr "預設檢視模式"
 
 #: src/nautilus-preferences-dialog.c:171
-msgid "View new folders using:"
+#, fuzzy
+msgid "_View new folders using:"
 msgstr "新建資料夾的檢視模式："
 
 #. Icon View Defaults
@@ -6304,20 +6331,24 @@ msgstr "新建資料夾的檢視模式："
 msgid "Icon View Defaults"
 msgstr "圖示檢視模式預設值"
 
-#: src/nautilus-preferences-dialog.c:178 src/nautilus-preferences-dialog.c:202
-msgid "Arrange Items:"
+#: src/nautilus-preferences-dialog.c:178
+#, fuzzy
+msgid "_Arrange Items:"
 msgstr "項目排列："
 
-#: src/nautilus-preferences-dialog.c:183 src/nautilus-preferences-dialog.c:207
-msgid "Sort in reversed order"
+#: src/nautilus-preferences-dialog.c:183
+#, fuzzy
+msgid "_Sort in reversed order"
 msgstr "顛倒排列次序"
 
-#: src/nautilus-preferences-dialog.c:188 src/nautilus-preferences-dialog.c:212
-msgid "Default zoom level:"
+#: src/nautilus-preferences-dialog.c:188
+#, fuzzy
+msgid "_Default zoom level:"
 msgstr "預設縮放程度："
 
 #: src/nautilus-preferences-dialog.c:194
-msgid "Use tighter layout"
+#, fuzzy
+msgid "Use _tighter layout"
 msgstr "使用較緊密的排列方式"
 
 #. List View Defaults
@@ -6325,6 +6356,21 @@ msgstr "使用較緊密的排列方式"
 #: src/nautilus-preferences-dialog.c:210 src/nautilus-preferences-dialog.c:216
 msgid "List View Defaults"
 msgstr "列表檢視模式預設值"
+
+#: src/nautilus-preferences-dialog.c:202
+#, fuzzy
+msgid "Arrange _Items:"
+msgstr "項目排列："
+
+#: src/nautilus-preferences-dialog.c:207
+#, fuzzy
+msgid "Sort in _reversed order"
+msgstr "顛倒排列次序"
+
+#: src/nautilus-preferences-dialog.c:212
+#, fuzzy
+msgid "Default _zoom level:"
+msgstr "預設縮放程度："
 
 #: src/nautilus-preferences-dialog.c:227
 msgid "Search Complexity Options"
@@ -6338,12 +6384,18 @@ msgstr "使用預設方式搜尋"
 msgid "Home"
 msgstr "首頁"
 
+#: src/nautilus-preferences-dialog.c:239
+#, fuzzy
+msgid "_Location:"
+msgstr "位置："
+
 #: src/nautilus-preferences-dialog.c:242
 msgid "Built-in Bookmarks"
 msgstr "內置書籤"
 
 #: src/nautilus-preferences-dialog.c:244
-msgid "Don't include the built-in bookmarks in the Bookmarks menu"
+#, fuzzy
+msgid "_Don't include the built-in bookmarks in the Bookmarks menu"
 msgstr "不要將內置書籤加入書籤選單內"
 
 #: src/nautilus-preferences-dialog.c:251
@@ -6359,7 +6411,8 @@ msgid "Show Thumbnails for Image Files"
 msgstr "預覽圖像檔案"
 
 #: src/nautilus-preferences-dialog.c:268
-msgid "Don't make thumbnails for files larger than:"
+#, fuzzy
+msgid "_Don't make thumbnails for files larger than:"
 msgstr "檔案預覽不可大於："
 
 #: src/nautilus-preferences-dialog.c:271
@@ -6371,7 +6424,8 @@ msgid "Tabs"
 msgstr "標籤"
 
 #: src/nautilus-preferences-dialog.c:291
-msgid "Show only folders (no files) in the tree"
+#, fuzzy
+msgid "_Show only folders (no files) in the tree"
 msgstr "樹狀目錄只顯示資料夾（不會有檔案）"
 
 #: src/nautilus-preferences-dialog.c:299
@@ -6379,7 +6433,8 @@ msgid "Maximum items per site"
 msgstr "每個網站的項目最大數目"
 
 #: src/nautilus-preferences-dialog.c:301
-msgid "Maximum number of items displayed per site"
+#, fuzzy
+msgid "_Maximum number of items displayed per site"
 msgstr "每個網站可顯示的項目最大數目"
 
 #: src/nautilus-preferences-dialog.c:304
@@ -6387,7 +6442,8 @@ msgid "Update Minutes"
 msgstr "更新頻率"
 
 #: src/nautilus-preferences-dialog.c:306
-msgid "Update frequency in minutes"
+#, fuzzy
+msgid "_Update frequency in minutes"
 msgstr "更新頻率（以分鐘計）"
 
 #: src/nautilus-preferences-dialog.c:316
@@ -7448,6 +7504,9 @@ msgstr "縮放"
 #: src/nautilus-zoom-control.c:1088
 msgid "Set the zoom level of the current view"
 msgstr "設定目前檢視模式的縮放程度"
+
+#~ msgid "Delete Trash Contents?"
+#~ msgstr "刪除垃圾桶內的內容？"
 
 #~ msgid "_Restore Icons' Original Sizes"
 #~ msgstr "還原圖示大小(_R)"

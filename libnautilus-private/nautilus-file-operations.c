@@ -2219,7 +2219,7 @@ confirm_empty_trash (GtkWidget *parent_view)
 	dialog = eel_show_yes_no_dialog (
 		_("Are you sure you want to permanently delete "
 		  "all of the items in the Trash?"),
-		_("Delete Trash Contents?"),
+		_("Empty Trash?"),
 		_("Empty"),
 		GTK_STOCK_CANCEL,
 		parent_window);
