@@ -325,9 +325,6 @@ show_stretch_handles_callback (BonoboUIComponent *component, gpointer callback_d
 
 	nautilus_icon_container_show_stretch_handles
 		(get_icon_container (FM_ICON_VIEW (callback_data)));
-
-        /* Update menus because Stretch and Unstretch items have changed state */
-	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (callback_data));
 }
 
 static void
@@ -337,9 +334,6 @@ unstretch_icons_callback (BonoboUIComponent *component, gpointer callback_data, 
 
 	nautilus_icon_container_unstretch
 		(get_icon_container (FM_ICON_VIEW (callback_data)));
-
-        /* Update menus because Stretch and Unstretch items have changed state */
-	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (callback_data));
 }
 
 static void
@@ -2054,6 +2048,14 @@ create_icon_container (FMIconView *icon_view)
 			    "renaming_icon",
 			    renaming_icon_callback,
 			    directory_view);
+	gtk_signal_connect_object (GTK_OBJECT (icon_container),
+			           "icon_stretch_started",
+			           fm_directory_view_update_menus,
+			           GTK_OBJECT (directory_view));
+	gtk_signal_connect_object (GTK_OBJECT (icon_container),
+			           "icon_stretch_ended",
+			           fm_directory_view_update_menus,
+			           GTK_OBJECT (directory_view));
 
 	gtk_container_add (GTK_CONTAINER (icon_view),
 			   GTK_WIDGET (icon_container));

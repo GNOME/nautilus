@@ -167,6 +167,8 @@ enum {
 	GET_STORED_ICON_POSITION,
 	ICON_POSITION_CHANGED,
 	ICON_TEXT_CHANGED,
+	ICON_STRETCH_STARTED,
+	ICON_STRETCH_ENDED,
 	RENAMING_ICON,
 	LAYOUT_CHANGED,
 	MOVE_COPY_ITEMS,
@@ -301,6 +303,22 @@ icon_raise (NautilusIcon *icon)
 }
 
 static void
+emit_stretch_started (NautilusIconContainer *container, NautilusIcon *icon)
+{
+	gtk_signal_emit (GTK_OBJECT (container),
+			 signals[ICON_STRETCH_STARTED],
+			 icon->data);
+}
+
+static void
+emit_stretch_ended (NautilusIconContainer *container, NautilusIcon *icon)
+{
+	gtk_signal_emit (GTK_OBJECT (container),
+			 signals[ICON_STRETCH_ENDED],
+			 icon->data);
+}
+
+static void
 icon_toggle_selected (NautilusIconContainer *container,
 		      NautilusIcon *icon)
 {		
@@ -317,6 +335,7 @@ icon_toggle_selected (NautilusIconContainer *container,
 	if (icon == container->details->stretch_icon) {
 		container->details->stretch_icon = NULL;
 		nautilus_icon_canvas_item_set_show_stretch_handles (icon->item, FALSE);
+		emit_stretch_ended (container, icon);
 	}
 
 	/* Raise each newly-selected icon to the front as it is selected. */
@@ -2569,7 +2588,11 @@ end_stretching (NautilusIconContainer *container,
 static void
 undo_stretching (NautilusIconContainer *container)
 {
-	if (container->details->stretch_icon == NULL) {
+	NautilusIcon *stretched_icon;
+
+	stretched_icon = container->details->stretch_icon;
+
+	if (stretched_icon == NULL) {
 		return;
 	}
 
@@ -2578,17 +2601,18 @@ undo_stretching (NautilusIconContainer *container)
 		clear_drag_state (container);
 	}
 	nautilus_icon_canvas_item_set_show_stretch_handles
-		(container->details->stretch_icon->item, FALSE);
+		(stretched_icon->item, FALSE);
 	
-	icon_set_position (container->details->stretch_icon,
+	icon_set_position (stretched_icon,
 			   container->details->stretch_initial_x,
 			   container->details->stretch_initial_y);
 	icon_set_size (container,
-		       container->details->stretch_icon, 
+		       stretched_icon, 
 		       container->details->stretch_initial_size,
 		       FALSE);
 	
 	container->details->stretch_icon = NULL;				
+	emit_stretch_ended (container, stretched_icon);
 	redo_layout (container);
 }
 
@@ -2965,6 +2989,24 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  GTK_TYPE_NONE, 2,
 				  GTK_TYPE_POINTER,
 				  GTK_TYPE_STRING);
+	signals[ICON_STRETCH_STARTED]
+		= gtk_signal_new ("icon_stretch_started",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+						     icon_stretch_started),
+				  gtk_marshal_NONE__POINTER,
+				  GTK_TYPE_NONE, 1,
+				  GTK_TYPE_POINTER);
+	signals[ICON_STRETCH_ENDED]
+		= gtk_signal_new ("icon_stretch_ended",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+						     icon_stretch_ended),
+				  gtk_marshal_NONE__POINTER,
+				  GTK_TYPE_NONE, 1,
+				  GTK_TYPE_POINTER);
 	signals[RENAMING_ICON]
 		= gtk_signal_new ("renaming_icon",
 				  GTK_RUN_LAST,
@@ -4265,9 +4307,9 @@ nautilus_icon_container_show_stretch_handles (NautilusIconContainer *container)
 		nautilus_icon_canvas_item_set_show_stretch_handles
 			(details->stretch_icon->item, FALSE);
 		ungrab_stretch_icon (container);
+		emit_stretch_ended (container, details->stretch_icon);
 	}
 	nautilus_icon_canvas_item_set_show_stretch_handles (icon->item, TRUE);
-
 	details->stretch_icon = icon;
 	
 	icon_get_size (container, icon, &initial_size_x, &initial_size_y);
@@ -4276,6 +4318,8 @@ nautilus_icon_container_show_stretch_handles (NautilusIconContainer *container)
 	container->details->stretch_initial_x = icon->x;
 	container->details->stretch_initial_y = icon->y;
 	container->details->stretch_initial_size = initial_size_x;
+
+	emit_stretch_started (container, icon);
 }
 
 /**

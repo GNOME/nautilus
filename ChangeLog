@@ -1,3 +1,27 @@
+2001-01-05  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 5410 ("Esc" cancelling of icon stretch doesn't
+	update menus)
+
+	* libnautilus-extensions/nautilus-icon-container.h:
+	Defined signals icon_stretch_started and icon_stretch_ended.
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_initialize_class): Set up new signals.
+	(emit_stretch_started), (emit_stretch_ended): New convenience
+	functions for emitting new signals.
+	(icon_toggle_selected), (undo_stretching),
+	(nautilus_icon_container_show_stretch_handles): Emit new signals.
+	
+	* src/file-manager/fm-icon-view.c: 
+	(create_icon_container): Call fm_directory_view_update_menus
+	when icon_stretch_begin/end signals are emitted.
+	(show_stretch_handles_callback),
+	(unstretch_icons_callback): Remove calls to update menus, since
+	we'll now do it when we get the stretch-state-changed signals.
+
 2001-01-05  Darin Adler  <darin@eazel.com>
 
 	* Makefile.am: Fix for wrongly named ChangeLog-200001018.

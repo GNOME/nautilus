@@ -139,6 +139,10 @@ typedef struct {
 						   const char *text);
 	void         (* renaming_icon)            (NautilusIconContainer *container,
 						   GtkWidget *renaming_widget);
+	void	     (* icon_stretch_started)     (NautilusIconContainer *container,
+						   NautilusIconData *data);
+	void	     (* icon_stretch_ended)       (NautilusIconContainer *container,
+						   NautilusIconData *data);
 	int	     (* preview)		  (NautilusIconContainer *container,
 						   NautilusIconData *data,
 						   gboolean start_flag);
