@@ -229,10 +229,10 @@ create_mount_link (const NautilusVolume *volume)
 	 */
 	 	 	 
 	/* Make a link only for the root partition for now. */
-	if (volume->type == NAUTILUS_VOLUME_EXT2
-	    && strcmp (volume->mount_path, "/") != 0) {
-		return;
-	}
+	//if (volume->type == NAUTILUS_VOLUME_EXT2
+	//    && strcmp (volume->mount_path, "/") != 0) {
+	//	return;
+	//}
 	
 	/* Get icon type */
 	if (volume->type == NAUTILUS_VOLUME_CDROM) {

@@ -1,14 +1,23 @@
 2000-12-15  Gene Z. Ragan  <gzr@eazel.com>
 
+	* src/file-manager/fm-desktop-icon-view.c: (create_mount_link):
+	Test and see how users respong to a more lenient mount policy.
+	We now will mount a lot of things. Just curious.
+
+2000-12-15  Gene Z. Ragan  <gzr@eazel.com>
+
 	reviewed by: Pavel Cisler <pavel@eazel.com>
 
 	Fixed bug 2400, LABEL=/ lines in /etc/fstab (used in Red Hat Beta 7)
 	prevents trash from working
 
-	Fixed bug 4586, Nautilus does not properly detect zip drives as removable 			media
+	Fixed bug 4586, Nautilus does not properly detect zip drives as removable
+	media
 	
 	Rearchitected the way the volume monitor works. It now examines /proc/mounts
-	to determine what file systems are mounted. This solves several problems such 			as the use of LABEL and auto in fstab. By using /proc/mounts we do not have to 			worry about permissions and disk access.
+	to determine what file systems are mounted. This solves several problems such
+	as the use of LABEL and auto in fstab. By using /proc/mounts we do not have to
+	worry about permissions and disk access.
 	
 	* libnautilus-extensions/nautilus-volume-monitor.c:
 	* libnautilus-extensions/nautilus-volume-monitor.h:
