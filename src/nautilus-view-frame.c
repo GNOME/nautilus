@@ -539,7 +539,6 @@ nautilus_view_frame_load_client (NautilusViewFrame *view, const char *iid)
 	bonobo_object_release_unref (control, NULL);
 	
 	view->iid = g_strdup (iid);
-	g_print ("IID: %s, view frame: %p\n", view->iid, view);
 
 	gtk_signal_connect_while_alive
 		(GTK_OBJECT (view->client_object), "destroy",
