@@ -1287,7 +1287,7 @@ generate_login_dialog (NautilusSummaryView	*view)
 			break;
 		case retry:
 			pixmap_name = "serv_dialog_alert.png";
-			message_text = _("Oops! Your user name or password were not correct. Please try again:");
+			message_text = _("Your user name or password were not correct, or you have not activated your account.  Please try again, or check your email for an account activation notice.");
 			break;
 		case fail:
 			pixmap_name = "serv_dialog_alert.png";
