@@ -258,7 +258,7 @@ impl_Trilobite_Eazel_Inventory_upload (impl_POA_Trilobite_Eazel_Inventory *servi
 	}
 
         ghttp_set_header (request, http_hdr_Connection, "close");
-        ghttp_set_header (request, http_hdr_User_Agent, trilobite_get_useragent_string (FALSE, NULL));
+        ghttp_set_header (request, http_hdr_User_Agent, trilobite_get_useragent_string (NULL));
         ghttp_set_header (request, http_hdr_Content_Type, "application/x-www-form-urlencoded");
 	g_print("about to read file\n");
 

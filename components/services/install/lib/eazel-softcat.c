@@ -562,7 +562,7 @@ eazel_softcat_get_info (EazelSoftCat *softcat, PackageData *package, int sense_f
 	}
 	trilobite_debug ("package search url: %s", search_url);
 
-	trilobite_setenv ("GNOME_VFS_HTTP_USER_AGENT", trilobite_get_useragent_string (FALSE, NULL), TRUE);
+	trilobite_setenv ("GNOME_VFS_HTTP_USER_AGENT", trilobite_get_useragent_string (NULL), TRUE);
 
 	for (got_happy = FALSE, tries_left = softcat->private->retries;
 	     !got_happy && (tries_left > 0);

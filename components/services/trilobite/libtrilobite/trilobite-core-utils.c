@@ -254,13 +254,13 @@ trilobite_main_quit (void)
 #endif /* TRILOBITE_SLIM */
 
 const char *
-trilobite_get_useragent_string (gboolean version, char *suffix)
+trilobite_get_useragent_string (char *suffix)
 {
 	static char *result = NULL;
 
 	g_free (result);
 	result = g_strdup_printf ("Trilobite/%s%s%s", 
-				  version ? "/" TRILOBITE_VERSION : suffix ? "/" : "" , 
+				  TRILOBITE_VERSION, 
 				  suffix ? "/" : "", 
 				  suffix ? suffix : "");
 	return result;

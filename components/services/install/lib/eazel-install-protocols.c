@@ -148,7 +148,7 @@ http_fetch_remote_file (EazelInstall *service,
         }
 
         ghttp_set_header (request, http_hdr_Connection, "close");
-        ghttp_set_header (request, http_hdr_User_Agent, trilobite_get_useragent_string (FALSE, NULL));
+        ghttp_set_header (request, http_hdr_User_Agent, trilobite_get_useragent_string (NULL));
         if (ghttp_prepare (request) != 0) {
                 g_warning (_("Could not prepare http request !"));
                 get_failed = 1;
@@ -720,7 +720,7 @@ eazel_install_fetch_definitive_package_info (EazelInstall *service, PackageData 
 	}
 
 	trilobite_debug ("Search URL: %s", search_url);
-	trilobite_setenv ("GNOME_VFS_HTTP_USER_AGENT", trilobite_get_useragent_string (FALSE, NULL), TRUE);
+	trilobite_setenv ("GNOME_VFS_HTTP_USER_AGENT", trilobite_get_useragent_string (NULL), TRUE);
 
 	if (! trilobite_fetch_uri (search_url, &body, &length)) {
 		g_free (search_url);
