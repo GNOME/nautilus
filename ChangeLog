@@ -1,5 +1,11 @@
 2003-09-19  Alexander Larsson  <alexl@redhat.com>
 
+	* add-include-prefix:
+	Fix to work correctly on MacOS X and NetBSD.
+	Fixes bug #87835.
+
+2003-09-19  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-file.c (nautilus_file_get_internal):
 	Don't assert_not_reached for unsupported URIs when create == FALSE.
 	Fixes bug #122265.
