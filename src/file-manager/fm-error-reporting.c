@@ -28,9 +28,8 @@
 
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-stock.h>
 
-#include <libnautilus-extensions/nautilus-gnome-extensions.h>
+#include <libnautilus-extensions/nautilus-stock-dialogs.h>
 
 void
 fm_report_error_renaming_file (NautilusFile *file,

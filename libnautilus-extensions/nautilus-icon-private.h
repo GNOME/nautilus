@@ -104,6 +104,7 @@ typedef struct NautilusIconGrid NautilusIconGrid;
 struct NautilusIconContainerDetails {
 	/* List of icons. */
 	GList *icons;
+	GList *new_icons;
 
 	/* The grid. */
 	NautilusIconGrid *grid;

@@ -23,15 +23,15 @@
 */
 
 #include <config.h>
-
 #include "nautilus-horizontal-splitter.h"
+
 #include "nautilus-gtk-macros.h"
 
-struct _NautilusHorizontalSplitterDetail
-{
-	double	down_position;
-	time_t	down_time;
-	int	saved_size;
+struct NautilusHorizontalSplitterDetails {
+	gboolean down;
+	double down_position;
+	guint32 down_time;
+	int saved_size;
 };
 
 /* Bar width currently hardcoded to 7 */
@@ -42,23 +42,23 @@ struct _NautilusHorizontalSplitterDetail
 #define SPLITTER_CLICK_TIMEOUT	1500
 
 /* NautilusHorizontalSplitterClass methods */
-static void nautilus_horizontal_splitter_initialize_class (NautilusHorizontalSplitterClass *horizontal_splitter_class);
-static void nautilus_horizontal_splitter_initialize       (NautilusHorizontalSplitter *horizontal_splitter);
-static gboolean nautilus_horizontal_splitter_button_press   (GtkWidget *widget, GdkEventButton *event);
-static gboolean nautilus_horizontal_splitter_button_release (GtkWidget *widget, GdkEventButton *event);
-
+static void     nautilus_horizontal_splitter_initialize_class (NautilusHorizontalSplitterClass *horizontal_splitter_class);
+static void     nautilus_horizontal_splitter_initialize       (NautilusHorizontalSplitter      *horizontal_splitter);
+static gboolean nautilus_horizontal_splitter_button_press     (GtkWidget                       *widget,
+							       GdkEventButton                  *event);
+static gboolean nautilus_horizontal_splitter_button_release   (GtkWidget                       *widget,
+							       GdkEventButton                  *event);
 
 /* GtkObjectClass methods */
-static void nautilus_horizontal_splitter_destroy          (GtkObject                       *object);
-
+static void     nautilus_horizontal_splitter_destroy          (GtkObject                       *object);
 
 /* GtkWidgetClass methods */
-static void nautilus_horizontal_splitter_draw             (GtkWidget                       *widget,
-							   GdkRectangle                    *area);
+static void     nautilus_horizontal_splitter_draw             (GtkWidget                       *widget,
+							       GdkRectangle                    *area);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusHorizontalSplitter,
 				   nautilus_horizontal_splitter,
-				   E_TYPE_HPANED);
+				   E_TYPE_HPANED)
 
 /* GtkObjectClass methods */
 static void
@@ -83,8 +83,7 @@ nautilus_horizontal_splitter_initialize_class (NautilusHorizontalSplitterClass *
 static void
 nautilus_horizontal_splitter_initialize (NautilusHorizontalSplitter *horizontal_splitter)
 {
-	horizontal_splitter->details = g_new (NautilusHorizontalSplitterDetail, 1);
-	horizontal_splitter->details->saved_size = 0;
+	horizontal_splitter->details = g_new0 (NautilusHorizontalSplitterDetails, 1);
 	e_paned_set_handle_size (E_PANED (horizontal_splitter), BAR_WIDTH);
 }
 
@@ -93,9 +92,6 @@ static void
 nautilus_horizontal_splitter_destroy(GtkObject *object)
 {
 	NautilusHorizontalSplitter *horizontal_splitter;
-	
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (NAUTILUS_IS_HORIZONTAL_SPLITTER (object));
 	
 	horizontal_splitter = NAUTILUS_HORIZONTAL_SPLITTER (object);
 
@@ -256,75 +252,81 @@ nautilus_horizontal_splitter_draw (GtkWidget    *widget,
 		/* Redraw the children
 		 */
 		if (paned->child1 && gtk_widget_intersect (paned->child1, area, &child_area)) {
-			gtk_widget_draw(paned->child1, &child_area);
+			gtk_widget_draw (paned->child1, &child_area);
 		}
 
-		if (paned->child2 && gtk_widget_intersect(paned->child2, area, &child_area)) {
-			gtk_widget_draw(paned->child2, &child_area);
+		if (paned->child2 && gtk_widget_intersect (paned->child2, area, &child_area)) {
+			gtk_widget_draw (paned->child2, &child_area);
 		}
 	}
 }
 
 /* routine to toggle the open/closed state of the splitter */
-
-static void 
-toggle_splitter_position(NautilusHorizontalSplitter *splitter)
+static void
+toggle_splitter_position (NautilusHorizontalSplitter *splitter)
 {
-	int current_size;
-	gboolean grow_flag;
+	int position;
 
-	current_size = e_paned_get_position (E_PANED(splitter));
-	grow_flag = current_size < CLOSED_THRESHOLD;
-	if (!grow_flag)
-		splitter->details->saved_size = current_size;
-	else if (splitter->details->saved_size < CLOSED_THRESHOLD)
-		splitter->details->saved_size = NOMINAL_SIZE;
-			
-	e_paned_set_position (E_PANED (splitter), grow_flag ? splitter->details->saved_size : 0);				
+	position = e_paned_get_position (E_PANED (splitter));
+
+	if (position >= CLOSED_THRESHOLD) {
+		splitter->details->saved_size = position;
+		position = 0;
+	} else {
+		position = splitter->details->saved_size;
+		if (splitter->details->saved_size < CLOSED_THRESHOLD) {
+			position = NOMINAL_SIZE;
+		}
+	}
+	
+	e_paned_set_position (E_PANED (splitter), position);
 }
 
 /* NautilusHorizontalSplitter public methods */
-GtkWidget*
+GtkWidget *
 nautilus_horizontal_splitter_new (void)
 {
-	NautilusHorizontalSplitter *horizontal_splitter;
-
-	horizontal_splitter = gtk_type_new (nautilus_horizontal_splitter_get_type ());
-
-	return GTK_WIDGET (horizontal_splitter);
+	return GTK_WIDGET (gtk_type_new (nautilus_horizontal_splitter_get_type ()));
 }
 
 /* handle mouse downs by remembering the position and the time */
-static gboolean nautilus_horizontal_splitter_button_press   (GtkWidget *widget, GdkEventButton *event)
+static gboolean
+nautilus_horizontal_splitter_button_press (GtkWidget *widget, GdkEventButton *event)
 {
 	NautilusHorizontalSplitter *splitter;
 	
-	splitter = NAUTILUS_HORIZONTAL_SPLITTER(widget);
-	splitter->details->down_position = event->x;
-	splitter->details->down_time = event->time;
-	
+	splitter = NAUTILUS_HORIZONTAL_SPLITTER (widget);
+
+	if (event->window != E_PANED (widget)->handle) {
+		splitter->details->down = FALSE;
+	} else {
+		splitter->details->down = TRUE;
+		splitter->details->down_position = event->x;
+		splitter->details->down_time = event->time;
+	}
+
 	return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, button_press_event, (widget, event));
 }
 
 /* handle mouse ups by seeing if it was a tap and toggling the open state accordingly */
-static gboolean nautilus_horizontal_splitter_button_release (GtkWidget *widget, GdkEventButton *event)
+static gboolean
+nautilus_horizontal_splitter_button_release (GtkWidget *widget, GdkEventButton *event)
 {
 	NautilusHorizontalSplitter *splitter;
-	EPaned *paned;
 	int delta, delta_time;
 	
-	splitter = NAUTILUS_HORIZONTAL_SPLITTER(widget);
+	splitter = NAUTILUS_HORIZONTAL_SPLITTER (widget);
 
- 	paned = E_PANED (widget);
-	if (event->window == paned->handle) {
-
+	if (event->window == E_PANED (widget)->handle
+	    && splitter->details->down) {
 		delta = abs (event->x - splitter->details->down_position);
 		delta_time = abs (splitter->details->down_time - event->time);
 		if (delta < SPLITTER_CLICK_SLOP && delta_time < SPLITTER_CLICK_TIMEOUT)  {
 			toggle_splitter_position(splitter);
 		}
 	}
+
+	splitter->details->down = FALSE;
+	
 	return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, button_release_event, (widget, event));
-
 }
-

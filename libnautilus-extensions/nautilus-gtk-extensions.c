@@ -913,3 +913,31 @@ nautilus_gtk_pixmap_new_empty (void)
 
 	return pixmap;
 }
+
+/* The standard gtk_adjustment_set_value ignores page size, which
+ * disagrees with the logic used by scroll bars, for example.
+ */
+void
+nautilus_gtk_adjustment_set_value (GtkAdjustment *adjustment,
+				   float value)
+{
+	float upper_page_start, clamped_value;
+
+	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
+	
+	upper_page_start = MAX (adjustment->upper - adjustment->page_size, adjustment->lower);
+	clamped_value = CLAMP (value, adjustment->lower, upper_page_start);
+	if (clamped_value != adjustment->value) {
+		adjustment->value = clamped_value;
+		gtk_adjustment_value_changed (adjustment);
+	}
+}
+
+/* Clamp a value if the minimum or maximum has changed. */
+void
+nautilus_gtk_adjustment_clamp_value (GtkAdjustment *adjustment)
+{
+	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
+	
+	nautilus_gtk_adjustment_set_value (adjustment, adjustment->value);
+}

@@ -1,14 +1,92 @@
+2000-06-26  Darin Adler  <darin@eazel.com>
+
+	* components/services/install/command-line/.cvsignore:
+	* components/services/install/lib/.cvsignore:
+	Ignore some additional generated files.
+	
+	* libnautilus-extensions/nautilus-gnome-extensions.h:
+	* libnautilus-extensions/nautilus-gnome-extensions.c:
+	Moved stock dialog functions to nautilus-stock-dialogs.[ch].
+	(nautilus_gnome_canvas_item_request_update_deep),
+	(nautilus_gnome_canvas_request_update_all),
+	(nautilus_gnome_canvas_set_scroll_region),
+	(nautilus_gnome_canvas_set_scroll_region_left_justify):
+	Added a bunch of functions that were previously private inside
+	NautilusIconContainer.
+	
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_adjustment_set_value),
+	(nautilus_gtk_adjustment_clamp_value):
+	Added functions that treat the value range in a GtkAdjustment the
+	same way scroll bars do, taking the page size into account.
+	
+	* libnautilus-extensions/nautilus-horizontal-splitter.h:
+	* libnautilus-extensions/nautilus-horizontal-splitter.c:
+	(nautilus_horizontal_splitter_initialize),
+	(toggle_splitter_position),
+	(nautilus_horizontal_splitter_button_press),
+	(nautilus_horizontal_splitter_button_release):
+	Fixed logic so that splitter will only open or close if you both
+	click and release within the splitter itself.
+	
+	* libnautilus-extensions/nautilus-icon-private.h:
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(icon_toggle_selected): Move icons to front when they are selected.
+	(set_scroll_region): Moved workaround that sets scroll region to
+	be large enough to fill the widget allocation into a function in
+	nautilus-gnome-extensions.h. In the process, I fixed the problem
+	where it would do the job wrong when the view was zoomed.
+	(lay_down_icons), (relayout), (reload_icon_positions):
+	Started work on sharing code between automatic layout of the entire
+	container and layout of new icons as the arrive.
+	(nautilus_icon_container_clear), (nautilus_icon_container_add):
+	Got started on the mechanism for laying out new icons as they arrive
+	in bunches instead of one at a time.
+	
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	* src/file-manager/dfos-xfer.c:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-error-reporting.c:
+	* src/nautilus-application.c:
+	* src/nautilus-location-bar.c:
+	* src/nautilus-property-browser.c:
+	* src/nautilus-window-manage-views.c:
+	* src/nautilus-window-menus.c:
+	Added includes to source files that use the stock dialogs.
+	
+	* libnautilus-extensions/nautilus-stock-dialogs.h:
+	* libnautilus-extensions/nautilus-stock-dialogs.c:
+	(nautilus_timed_wait_stop), (convert_varargs_to_name_array),
+	(nautilus_simple_dialog), (turn_on_line_wrap_flag),
+	(turn_on_line_wrap_flag_callback), (show_ok_box),
+	(show_yes_no_box), (nautilus_info_dialog),
+	(nautilus_info_dialog_parented), (nautilus_warning_dialog),
+	(nautilus_warning_dialog_parented), (nautilus_error_dialog),
+	(nautilus_error_dialog_parented), (nautilus_yes_no_dialog),
+	(nautilus_yes_no_dialog_parented):
+	Moved all the stock dialog code in here.
+	
+	* src/nautilus-sidebar-title.c: (update_icon): Only display the
+	icon when it's ready, instead of showing generic document icon
+	before that time.
+	(update_title), (update_more_info), (update_emblems),
+	(update_notes): Added FIXMEs about doing the same with other info.
+	(nautilus_sidebar_title_button_press_event): Added a FIXME to the
+	half-baked code in here.
+
 2000-06-26  Fatih Demir	<kabalak@gmx.net>
 
 	* Makefile.am: Added the previous ChangeLogs to
-		the EXTRA_DIST target.
+	the EXTRA_DIST target.
 	
-	* configure.in: Cosmetics and a configuration summary at the
-		end of the ./configure process.
+	* configure.in: Cosmetics and a configuration summary at the end
+	of the ./configure process.
 	
 	* helper-utilities/authenticate/nautilus-authenticate.h:
-		Include <stdlib.h> for compiling with -Werror without
-		 error.
+	Include <stdlib.h> for compiling with -Werror without error.
 	
 2000-06-26  Pavel Cisler <pavel@eazel.com>
 
@@ -16,14 +94,15 @@
 	* configure.in:
 	Fix build breakage caused recent changes to make GnomeVFS compile
 	without OAF support. Some GnomeVFS headers now require USING_OAF
-	to be defined and when included from Nautilus, this define was missing.
-	Not sure this is the 100% correct way to do this but this should at 
-	least prevent people from being stuck with a broken build.
+	to be defined and when included from Nautilus, this define was
+	missing. Not sure this is the 100% correct way to do this but
+	this should at least prevent people from being stuck with a broken
+	build.
 
 2000-06-26  Andy Hertzfeld  <andy@eazel.com>
 
-	added xml based theme mechanism and used it for the sidebar background,
-	which isn't entirely working yet.
+	Added XML-based theme mechanism and used it for the sidebar
+	background, which isn't entirely working yet.
 	
 	* icons/Makefile.am:
 	* icons/default.xml:
@@ -31,44 +110,44 @@
 	* icons/eazel/eazel.xml:
 	* icons/vector/Makefile.am:
 	* icons/vector/vector.xml:
-	new xml-based theme files
+	New XML-based theme files.
 	* libnautilus-extensions/nautilus-global-preferences.c,h:
 	(global_preferences_create_dialog),
 	(global_preferences_register_for_ui):
-	changed "icon_theme" preference to general "theme"
+	Changed "icon_theme" preference to general "theme".
 	* libnautilus-extensions/nautilus-icon-factory.c:
 	(nautilus_get_current_icon_factory),
 	(nautilus_icon_factory_destroy), (icon_theme_changed_callback):
-	changed from "icon_theme" to "theme"
+	Changed from "icon_theme" to "theme".
 	* libnautilus-extensions/nautilus-preferences-item.c,h:
 	(preferences_item_construct), (preferences_item_create_theme):
-	changed from "icon_theme" to "theme"
+	Changed from "icon_theme" to "theme".
 	* libnautilus-extensions/nautilus-xml-extensions.c,h:
 	(nautilus_xml_get_child_by_name):
-	added a routine to access child nodes
+	Added a routine to access child nodes.
 	* src/nautilus-sidebar.c: (nautilus_sidebar_initialize),
 	(nautilus_sidebar_destroy), (nautilus_sidebar_read_theme),
 	(nautilus_sidebar_theme_changed),
 	(nautilus_sidebar_background_changed),
 	(nautilus_sidebar_update_info):
-	made the sidebar get its default values from an xml-based theme file, and reload
-	them when the theme changes
+	Made the sidebar get its default values from an XML-based theme
+	file, and reload them when the theme changes.
 
 2000-06-25  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-link.c:
 	(free_icon_notification_info), (icon_read_done_callback),
 	(is_remote_uri), (nautilus_link_get_image_uri):
-	Linksets now use gnome-vfs to load load icons over http instead of ghttp,
-	using Darin's new utility routines.  Also, made it load them asynchronously.	
+	Linksets now use gnome-vfs to load load icons over http instead of
+	ghttp, using Darin's new utility routines.  Also, made it load
+	them asynchronously.
 	
 	* libnautilus-extensions/nautilus-icon-factory.c:
 	(nautilus_icon_factory_get_pixbuf_for_icon):
-	made get_pixbuf_for_icon set the custom boolean when it calls get_icon_from_cache
-	if necessary
+	Made get_pixbuf_for_icon set the custom boolean when it calls
+	get_icon_from_cache if necessary.
 	
 2000-06-25  Fatih Demir	<kabalak@gmx.net>
 	
 	* ChangeLog: This is the fresh one.
-
-	* ChangeLog-20000625: Splitted up the ChangeLog.
+	* ChangeLog-20000625: Split up the ChangeLog.

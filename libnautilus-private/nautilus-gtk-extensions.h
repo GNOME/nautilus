@@ -35,15 +35,15 @@
 #define NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT 2
 
 /* GtkButton */
-void		  nautilus_gtk_button_auto_click	       (GtkButton	       *button);
-void		  nautilus_gtk_button_set_padding	       (GtkButton	       *button,
-								int			pad_amount);
+void              nautilus_gtk_button_auto_click               (GtkButton              *button);
+void              nautilus_gtk_button_set_padding              (GtkButton              *button,
+								int                     pad_amount);
 
 /* GtkCList */
 int               nautilus_gtk_clist_get_first_selected_row    (GtkCList               *list);
 int               nautilus_gtk_clist_get_last_selected_row     (GtkCList               *list);
-void		  nautilus_gtk_clist_set_double_click_button   (GtkCList 	       *clist, 
-								GtkButton 	       *button);
+void              nautilus_gtk_clist_set_double_click_button   (GtkCList               *clist,
+								GtkButton              *button);
 
 /* signals */
 guint             nautilus_gtk_signal_connect_free_data        (GtkObject              *object,
@@ -106,6 +106,11 @@ void              nautilus_gtk_style_set_font_by_name          (GtkStyle        
 
 /* GtkPixmap */
 GtkPixmap        *nautilus_gtk_pixmap_new_empty                (void);
+
+/* GtkAdjustment */
+void              nautilus_gtk_adjustment_set_value            (GtkAdjustment          *adjustment,
+								float                   value);
+void              nautilus_gtk_adjustment_clamp_value          (GtkAdjustment          *adjustment);
 
 /* marshals */
 

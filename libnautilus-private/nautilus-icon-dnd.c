@@ -45,6 +45,7 @@
 #include "nautilus-gnome-extensions.h"
 #include "nautilus-background.h"
 #include "nautilus-graphic-effects.h"
+#include "nautilus-stock-dialogs.h"
 
 #include "nautilus-icon-private.h"
 

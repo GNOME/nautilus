@@ -30,12 +30,37 @@
 typedef void (* NautilusCancelCallback) (gpointer callback_data);
 typedef struct NautilusTimedWait NautilusTimedWait;
 
-NautilusTimedWait *nautilus_timed_wait_start (const char             *window_title,
-					      const char             *wait_message,
-					      NautilusCancelCallback  cancel_callback,
-					      gpointer                callback_data,
-					      GDestroyNotify          destroy_notify,
-					      GtkWindow              *parent_window);
-void               nautilus_timed_wait_stop  (NautilusTimedWait      *timed_wait);
+/* Dialog for cancelling something that normally is fast enough not to need a dialog. */
+NautilusTimedWait *nautilus_timed_wait_start        (const char             *window_title,
+						     const char             *wait_message,
+						     NautilusCancelCallback  cancel_callback,
+						     gpointer                callback_data,
+						     GDestroyNotify          destroy_notify,
+						     GtkWindow              *parent_window);
+void               nautilus_timed_wait_stop         (NautilusTimedWait      *timed_wait);
+
+/* Basic dialog with buttons. */
+int                nautilus_simple_dialog           (GtkWidget              *parent,
+						     const char             *text,
+						     const char             *title,
+						     ...);
+
+/* Variations on gnome stock dialogs; these do line wrapping. */
+GtkWidget *        nautilus_info_dialog             (const char             *info);
+GtkWidget *        nautilus_info_dialog_parented    (const char             *info,
+						     GtkWindow              *parent);
+GtkWidget *        nautilus_warning_dialog          (const char             *warning);
+GtkWidget *        nautilus_warning_dialog_parented (const char             *warning,
+						     GtkWindow              *parent);
+GtkWidget *        nautilus_error_dialog            (const char             *error);
+GtkWidget *        nautilus_error_dialog_parented   (const char             *error,
+						     GtkWindow              *parent);
+GtkWidget *        nautilus_yes_no_dialog           (const char             *question,
+						     const char             *yes_label,
+						     const char             *no_label);
+GtkWidget *        nautilus_yes_no_dialog_parented  (const char             *question,
+						     const char             *yes_label,
+						     const char             *no_label,
+						     GtkWindow              *parent);
 
 #endif /* NAUTILUS_STOCK_DIALOGS_H */

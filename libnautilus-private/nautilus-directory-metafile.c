@@ -449,7 +449,7 @@ set_metadata_eat_value (NautilusDirectory *directory,
 	GHashTable *directory_table, *file_table;
 	gboolean found, changed;
 	char *combined_key;
-	gpointer old_key, old_value;
+	MetadataValue *old_value;
 
 	if (directory->details->metafile_read) {
 		changed = set_metadata_in_metafile
@@ -478,21 +478,17 @@ set_metadata_eat_value (NautilusDirectory *directory,
 		} else {
 			combined_key = g_strconcat (key, "/", subkey, NULL);
 		}
-		found = g_hash_table_lookup_extended
-			(file_table, combined_key, &old_key, &old_value);
+		old_value = g_hash_table_lookup (file_table, combined_key);
 
 		/* Put the change into the hash. Delete the old change. */
-		if (!found) {
-			old_key = NULL;
-			old_value = NULL;
-			changed = TRUE;
-		} else {
-			changed = !metadata_value_equal (old_value, value);
-		}
+		changed = old_value == NULL || !metadata_value_equal (old_value, value);
 		if (changed) {
 			g_hash_table_insert (file_table, combined_key, value);
-			g_free (old_key);
-			metadata_value_destroy (old_value);
+			if (old_value != NULL) {
+				/* The hash table keeps the old key. */
+				g_free (combined_key);
+				metadata_value_destroy (old_value);
+			}
 		} else {
 			g_free (combined_key);
 			metadata_value_destroy (value);

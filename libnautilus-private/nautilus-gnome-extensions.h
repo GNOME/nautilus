@@ -37,6 +37,24 @@ typedef struct {
 	int y;
 } NautilusArtIPoint;
 
+/* Causes an update as needed. The GnomeCanvas code says it should, but it doesn't. */
+void       nautilus_gnome_canvas_set_scroll_region              (GnomeCanvas     *canvas,
+								 double           x1,
+								 double           y1,
+								 double           x2,
+								 double           y2);
+
+/* Make the scroll region bigger so the code in GnomeCanvas won't center it. */
+void       nautilus_gnome_canvas_set_scroll_region_left_justify (GnomeCanvas     *canvas,
+								 double           x1,
+								 double           y1,
+								 double           x2,
+								 double           y2);
+
+/* For cases where you need to get more than one item updated. */
+void       nautilus_gnome_canvas_request_update_all             (GnomeCanvas     *canvas);
+void       nautilus_gnome_canvas_item_request_update_deep       (GnomeCanvasItem *item);
+
 /* This is more handy than gnome_canvas_item_get_bounds because it
  * always returns the bounds * in world coordinates and it returns
  * them in a single rectangle.
@@ -67,12 +85,14 @@ void       nautilus_gnome_canvas_request_redraw_rectangle       (GnomeCanvas    
  */
 void       nautilus_gnome_canvas_item_request_redraw            (GnomeCanvasItem *item);
 
-/* fill a canvas buffer with a gradient background */
-void	   nautilus_gnome_canvas_fill_with_gradient		(GnomeCanvasBuf *buffer,
-								int entire_width, int entire_height,
-								guint32 start_rgb,
-				       				guint32 end_rgb,
-				       				gboolean horizontal);
+/* Fill a canvas buffer with a gradient background. */
+void       nautilus_gnome_canvas_fill_with_gradient             (GnomeCanvasBuf  *buffer,
+								 int              entire_width,
+								 int              entire_height,
+								 guint32          start_rgb,
+								 guint32          end_rgb,
+								 gboolean         horizontal);
+
 /* More functions for ArtIRect and ArtDRect. */
 gboolean   nautilus_art_irect_equal                             (const ArtIRect  *rect_a,
 								 const ArtIRect  *rect_b);
@@ -82,32 +102,9 @@ gboolean   nautilus_art_irect_hits_irect                        (const ArtIRect 
 								 const ArtIRect  *rect_b);
 gboolean   nautilus_art_irect_contains_irect                    (const ArtIRect  *outer_rect,
 								 const ArtIRect  *inner_rect);
-int        nautilus_simple_dialog                               (GtkWidget       *parent,
-								 const char      *text,
-								 const char      *title,
-								 ...);
-
-/* Variations on gnome dialogs that use text with line-wrapping turned on. */
-GtkWidget *nautilus_info_dialog                              	(const char      *info);
-GtkWidget *nautilus_info_dialog_parented                     	(const char      *info,
-								 GtkWindow       *parent);
-GtkWidget *nautilus_warning_dialog                              (const char      *warning);
-GtkWidget *nautilus_warning_dialog_parented                     (const char      *warning,
-								 GtkWindow       *parent);
-GtkWidget *nautilus_error_dialog                                (const char      *error);
-GtkWidget *nautilus_error_dialog_parented                       (const char      *error,
-								 GtkWindow       *parent);
-
-GtkWidget *nautilus_yes_no_dialog				(const char	 *question,
-								 const char	 *yes_label,
-								 const char 	 *no_label);
-GtkWidget *nautilus_yes_no_dialog_parented			(const char	 *question,
-								 const char	 *yes_label,
-								 const char 	 *no_label,
-								 GtkWindow	 *parent);
 
 /* More functions for GnomeDialog */
-GtkButton *nautilus_gnome_dialog_get_button_by_index 		(GnomeDialog 	 *dialog, 
-								 int 		  index);
+GtkButton *nautilus_gnome_dialog_get_button_by_index            (GnomeDialog     *dialog,
+								 int              index);
 
 #endif /* NAUTILUS_GNOME_EXTENSIONS_H */

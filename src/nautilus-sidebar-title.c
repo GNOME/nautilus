@@ -167,10 +167,15 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
 
-	nautilus_icon_factory_get_pixmap_and_mask_for_file
-		(sidebar_title->details->file,
-		 NAUTILUS_ICON_SIZE_STANDARD,
-		 &pixmap, &mask);
+	if (nautilus_icon_factory_is_icon_ready_for_file (sidebar_title->details->file)) {
+		nautilus_icon_factory_get_pixmap_and_mask_for_file
+			(sidebar_title->details->file,
+			 NAUTILUS_ICON_SIZE_STANDARD,
+			 &pixmap, &mask);
+	} else {
+		pixmap = NULL;
+		mask = NULL;
+	}
 
 	gtk_pixmap_set (GTK_PIXMAP (sidebar_title->details->icon),
 			pixmap, mask);
@@ -186,19 +191,24 @@ static void
 update_title (NautilusSidebarTitle *sidebar_title)
 {
 	GdkFont *label_font;
+	const char *title_text;
+
+	/* FIXME: We could defer showing the title until the icon is ready. */
+	title_text = sidebar_title->details->title_text;
 
 	gtk_label_set_text (GTK_LABEL (sidebar_title->details->title),
-			    sidebar_title->details->title_text);
+			    title_text);
 
 	/* FIXME bugzilla.eazel.com 1103: Make this use the font
 	 * factory.
 	 */
 	/* FIXME: Where does the "4" come from? */
 	label_font = nautilus_get_largest_fitting_font
-		(sidebar_title->details->title_text,
+		(title_text,
 		 GTK_WIDGET (sidebar_title)->allocation.width - 4,
 		 "-*-helvetica-medium-r-normal-*-%d-*-*-*-*-*-*-*");
 	nautilus_gtk_widget_set_font (sidebar_title->details->title, label_font);
+	/* FIXME: Is there a font leak here? */
 }
 
 static void
@@ -223,6 +233,8 @@ update_more_info (NautilusSidebarTitle *sidebar_title)
 
 	file = sidebar_title->details->file;
 	
+	/* FIXME: We could defer showing info until the icon is ready. */
+
 	info_string = g_string_new (NULL);
 	type_string = nautilus_file_get_string_attribute (file, "type");
 	if (type_string != NULL) {
@@ -262,6 +274,8 @@ update_emblems (NautilusSidebarTitle *sidebar_title)
 	GList *icons, *p;
 	GdkPixbuf *pixbuf;
 
+	/* FIXME: We could defer showing emblems until the icon is ready. */
+
 	/* First, deallocate any existing ones */
 	gtk_container_foreach (GTK_CONTAINER (sidebar_title->details->emblem_box),
 			       (GtkCallback) gtk_widget_destroy,
@@ -290,6 +304,8 @@ update_notes (NautilusSidebarTitle *sidebar_title)
 {
 	char *text;
 	
+	/* FIXME: We could defer showing notes until the icon is ready. */
+
 	text = nautilus_file_get_metadata (sidebar_title->details->file,
 					   NAUTILUS_METADATA_KEY_NOTES,
 					   NULL);
@@ -365,8 +381,8 @@ nautilus_sidebar_title_set_uri (NautilusSidebarTitle *sidebar_title,
 static gboolean
 nautilus_sidebar_title_button_press_event (GtkWidget *widget, GdkEventButton *event)
 {
-	/* FIXME: We must do something other than a g_message here.
-	 * NautilusSidebarTitle *sidebar_title = NAUTILUS_SIDEBAR_TITLE (widget);  
+	/* FIXME: Do we want to do something when clicked? If not,
+	 * remove this.
 	 */
 	g_message ("button press");
 	return TRUE;

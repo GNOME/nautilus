@@ -31,7 +31,7 @@
 #include "dfos-xfer.h"
 #include <libnautilus-extensions/nautilus-file-changes-queue.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-gnome-extensions.h>
+#include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include "fm-directory-view.h"
 
 typedef enum {

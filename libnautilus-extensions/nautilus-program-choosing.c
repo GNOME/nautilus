@@ -27,7 +27,7 @@
 #include "nautilus-program-choosing.h"
 
 #include "nautilus-file-utilities.h"
-#include "nautilus-gnome-extensions.h"
+#include "nautilus-stock-dialogs.h"
 #include "nautilus-mime-actions.h"
 #include "nautilus-program-chooser.h"
 #include "nautilus-string.h"

@@ -211,12 +211,6 @@ icon_raise (NautilusIcon *icon)
 }
 
 static void
-icon_show (NautilusIcon *icon)
-{
-	gnome_canvas_item_show (GNOME_CANVAS_ITEM (icon->item));
-}
-
-static void
 icon_toggle_selected (NautilusIconContainer *container,
 		      NautilusIcon *icon)
 {		
@@ -234,6 +228,12 @@ icon_toggle_selected (NautilusIconContainer *container,
 		container->details->stretch_icon = NULL;
 		nautilus_icon_canvas_item_set_show_stretch_handles (icon->item, FALSE);
 	}
+
+	/* Raise each newly-selected icon to the front as it is selected. */
+	if (icon->is_selected) {
+		icon_raise (icon);
+	}
+
 }
 
 /* Select an icon. Return TRUE if selection has changed. */
@@ -273,23 +273,6 @@ icon_get_bounding_box (NautilusIcon *icon,
 
 
 /* Utility functions for NautilusIconContainer.  */
-
-/* FIXME: Need better name for this. The normal
- * gtk_adjustment_set_value ignores page size, which disagrees with
- * the logic used by scroll bars.
- */
-static void
-nautilus_gtk_adjustment_set_value (GtkAdjustment *adjustment,
-				   gfloat value)
-{
-	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
-	
-	value = CLAMP (value, adjustment->lower, adjustment->upper - adjustment->page_size);
-	if (value != adjustment->value) {
-		adjustment->value = value;
-		gtk_adjustment_value_changed (adjustment);
-	}
-}
 
 static void
 scroll (NautilusIconContainer *container,
@@ -430,90 +413,28 @@ set_keyboard_focus (NautilusIconContainer *container,
 /* Idle operation handler.  */
 
 static void
-nautilus_gnome_canvas_item_request_update_deep (GnomeCanvasItem *item)
-{
-	GList *p;
-
-	gnome_canvas_item_request_update (item);
-	if (GNOME_IS_CANVAS_GROUP (item)) {
-		for (p = GNOME_CANVAS_GROUP (item)->item_list; p != NULL; p = p->next) {
-			nautilus_gnome_canvas_item_request_update_deep (p->data);
-		}
-	}
-}
-
-static void
-nautilus_gnome_canvas_request_update_all (GnomeCanvas *canvas)
-{
-	nautilus_gnome_canvas_item_request_update_deep (canvas->root);
-}
-
-/* FIXME: Move to nautilus-gnome-extensions.h. */
-/* gnome_canvas_set_scroll_region doesn't do an update, even though it should.
- * The update is in there with an #if 0 around it, with no explanation of
- * why it's commented out. For now, work around this by requesting an update
- * explicitly.
- */
-static void
-nautilus_gnome_canvas_set_scroll_region (GnomeCanvas *canvas,
-					 double x1, double y1,
-					 double x2, double y2)
-{
-	double old_x1, old_y1, old_x2, old_y2;
-
-	gnome_canvas_get_scroll_region (canvas, &old_x1, &old_y1, &old_x2, &old_y2);
-	if (old_x1 == x1 && old_y1 == y1 && old_x2 == x2 && old_y2 == y2) {
-		return;
-	}
-
-	gnome_canvas_set_scroll_region (canvas, x1, y1, x2, y2);
-	nautilus_gnome_canvas_request_update_all (canvas);
-	gnome_canvas_item_request_update (canvas->root);
-}
-
-static void
 set_scroll_region (NautilusIconContainer *container)
 {
 	double x1, y1, x2, y2;
-        double content_width, content_height;
-	double scroll_width, scroll_height;
-	int step_increment;
-	GtkAllocation *allocation;
-	GtkAdjustment *vadj, *hadj;
+	GtkAdjustment *hadj, *vadj;
+	float step_increment;
 
 	gnome_canvas_item_get_bounds
 		(GNOME_CANVAS (container)->root,
 		 &x1, &y1, &x2, &y2);
-
-	x1 -= CONTAINER_PAD_LEFT;
-	x2 += CONTAINER_PAD_RIGHT;
-	y1 -= CONTAINER_PAD_TOP;
-	y2 += CONTAINER_PAD_BOTTOM;
-
-	content_width = x2 - x1;
-	content_height = y2 - y1;
-
-	allocation = &GTK_WIDGET (container)->allocation;
-
-	/* FIXME bugzilla.eazel.com 622: We subtracting one from each
-	 * dimension to avoid having scroll arrows. But where does
-	 * this extra pixel come from?
-	 */
-	scroll_width = MAX (content_width, allocation->width - 1);
-	scroll_height = MAX (content_height, allocation->height - 1);
-
-	nautilus_gnome_canvas_set_scroll_region
+	nautilus_gnome_canvas_set_scroll_region_left_justify
 		(GNOME_CANVAS (container),
-		 x1, y1,
-		 x1 + scroll_width,
-		 y1 + scroll_height);
+		 x1 - CONTAINER_PAD_LEFT,
+		 y1 - CONTAINER_PAD_TOP,
+		 x2 + CONTAINER_PAD_RIGHT,
+		 y2 + CONTAINER_PAD_BOTTOM);
 
 	hadj = GTK_LAYOUT (container)->hadjustment;
 	vadj = GTK_LAYOUT (container)->vadjustment;
 
+	/* Scroll by 1/4 icon each time you click. */
 	step_increment = nautilus_get_icon_size_for_zoom_level
 		(container->details->zoom_level) / 4;
-
 	if (hadj->step_increment != step_increment) {
 		hadj->step_increment = step_increment;
 		gtk_adjustment_changed (hadj);
@@ -523,8 +444,11 @@ set_scroll_region (NautilusIconContainer *container)
 		gtk_adjustment_changed (vadj);
 	}
 
-	nautilus_gtk_adjustment_set_value (hadj, hadj->value);
-	nautilus_gtk_adjustment_set_value (vadj, vadj->value);
+	/* Now that we have a new scroll region, clamp the
+         * adjustments so we are within the valid scorll area.
+	 */
+	nautilus_gtk_adjustment_clamp_value (hadj);
+	nautilus_gtk_adjustment_clamp_value (vadj);
 }
 
 static NautilusIconContainer *sort_hack_container;
@@ -648,42 +572,23 @@ lay_down_one_line (NautilusIconContainer *container,
 }
 
 static void
-relayout (NautilusIconContainer *container)
+lay_down_icons (NautilusIconContainer *container,
+		GList *icons,
+		double start_y)
 {
 	GList *p, *line_start;
 	NautilusIcon *icon;
 	ArtDRect bounds;
 	double canvas_width, line_width, space_width, y;
 
-	if (!container->details->auto_layout) {
-		return;
-	}
-
-	resort_and_clear (container);
-
-	/* An icon currently being stretched must be left in place.
-	 * That's "drag_icon". This doesn't come up for cases where
-	 * we are doing other kinds of drags, but if it did, the
-	 * same logic would probably apply.
-	 */
-
-	/* Don't do any re-laying-out during stretching. Later we
-	 * might add smart logic that does this and leaves room for
-	 * the stretched icon, but if we do it we want it to be fast
-	 * and only re-lay-out when it's really needed.
-	 */
-	if (container->details->drag_icon != NULL) {
-		return;
-	}
-
 	/* Lay out icons a line at a time. */
 	gnome_canvas_c2w (GNOME_CANVAS (container),
 			  GTK_WIDGET (container)->allocation.width, 0,
 			  &canvas_width, NULL);
 	line_width = 0;
-	line_start = container->details->icons;
-	y = 0;
-	for (p = container->details->icons; p != NULL; p = p->next) {
+	line_start = icons;
+	y = start_y;
+	for (p = icons; p != NULL; p = p->next) {
 		icon = p->data;
 
 		/* Get the width of the icon. */
@@ -708,13 +613,38 @@ relayout (NautilusIconContainer *container)
 	}
 
 	/* Add all the icons back into the grid. */
-	for (p = container->details->icons; p != NULL; p = p->next) {
+	for (p = icons; p != NULL; p = p->next) {
 		icon = p->data;
 
-		if (icon != container->details->drag_icon) {
-			nautilus_icon_grid_add (container->details->grid, icon);
-		}
+		nautilus_icon_grid_add (container->details->grid, icon);
 	}
+}
+
+static void
+relayout (NautilusIconContainer *container)
+{
+	if (!container->details->auto_layout) {
+		return;
+	}
+
+	resort_and_clear (container);
+
+	/* An icon currently being stretched must be left in place.
+	 * That's "drag_icon". This doesn't come up for cases where
+	 * we are doing other kinds of drags, but if it did, the
+	 * same logic would probably apply.
+	 */
+
+	/* Don't do any re-laying-out during stretching. Later we
+	 * might add smart logic that does this and leaves room for
+	 * the stretched icon, but if we do it we want it to be fast
+	 * and only re-lay-out when it's really needed.
+	 */
+	if (container->details->drag_icon != NULL) {
+		return;
+	}
+
+	lay_down_icons (container, container->details->icons, 0);
 }
 
 static void
@@ -724,6 +654,8 @@ reload_icon_positions (NautilusIconContainer *container)
 	NautilusIcon *icon;
 	gboolean have_stored_position;
 	NautilusIconPosition position;
+	ArtDRect bounds;
+	double bottom;
 
 	g_assert (!container->details->auto_layout);
 
@@ -732,6 +664,7 @@ reload_icon_positions (NautilusIconContainer *container)
 	no_position_icons = NULL;
 
 	/* Place all the icons with positions. */
+	bottom = 0;
 	for (p = container->details->icons; p != NULL; p = p->next) {
 		icon = p->data;
 
@@ -744,6 +677,12 @@ reload_icon_positions (NautilusIconContainer *container)
 		if (have_stored_position) {
 			icon_set_position (icon, position.x, position.y);
 			nautilus_icon_grid_add (container->details->grid, icon);
+
+			nautilus_gnome_canvas_item_get_world_bounds
+				(GNOME_CANVAS_ITEM (icon->item), &bounds);
+			if (bounds.y1 > bottom) {
+				bottom = bounds.y1;
+			}
 		} else {
 			no_position_icons = g_list_prepend (no_position_icons, icon);
 		}
@@ -751,12 +690,7 @@ reload_icon_positions (NautilusIconContainer *container)
 	no_position_icons = g_list_reverse (no_position_icons);
 
 	/* Place all the other icons. */
-	for (p = no_position_icons; p != NULL; p = p->next) {
-		icon = p->data;
-
-		auto_position_icon (container, icon);
-		nautilus_icon_grid_add (container->details->grid, icon);
-	}
+	lay_down_icons (container, no_position_icons, bottom + ICON_PAD_BOTTOM);
 
 	g_list_free (no_position_icons);
 }
@@ -2774,6 +2708,8 @@ nautilus_icon_container_clear (NautilusIconContainer *container)
 	}
 	g_list_free (details->icons);
 	details->icons = NULL;
+	g_list_free (details->new_icons);
+	details->new_icons = NULL;
 
 	nautilus_icon_grid_clear (details->grid);
 }
@@ -2994,19 +2930,17 @@ nautilus_icon_container_add (NautilusIconContainer *container,
 					NULL));
 	icon->item->user_data = icon;
 
+	details->icons = g_list_prepend (details->icons, icon);
+	details->new_icons = g_list_prepend (details->new_icons, icon);
+
 	if (!details->auto_layout && have_stored_position) {
 		icon_set_position (icon, position.x, position.y);
 	} else {
 		auto_position_icon (container, icon);
 	}
 
-	details->icons = g_list_prepend (details->icons, icon);
-
 	nautilus_icon_container_update_icon (container, icon);
-	icon_show (icon);
-	
-	nautilus_icon_canvas_item_update_bounds (icon->item);
-	nautilus_icon_grid_add (details->grid, icon);
+	gnome_canvas_item_show (GNOME_CANVAS_ITEM (icon->item));
 
 	/* Must connect the bounds_changed signal after adding the icon to the
 	 * grid, because it will try to remove/add the icon too.
@@ -3082,13 +3016,13 @@ nautilus_icon_container_request_update (NautilusIconContainer *container,
 /* zooming */
 
 int
-nautilus_icon_container_get_zoom_level(NautilusIconContainer *container)
+nautilus_icon_container_get_zoom_level (NautilusIconContainer *container)
 {
         return container->details->zoom_level;
 }
 
 void
-nautilus_icon_container_set_zoom_level(NautilusIconContainer *container, int new_level)
+nautilus_icon_container_set_zoom_level (NautilusIconContainer *container, int new_level)
 {
 	NautilusIconContainerDetails *details;
         int pinned_level;
@@ -3140,7 +3074,8 @@ nautilus_icon_container_request_update_all (NautilusIconContainer *container)
 	relayout (container);
 }
 
-/** * nautilus_icon_container_set_anti_aliased_mode:
+/**
+ * nautilus_icon_container_set_anti_aliased_mode:
  * Change the anti-aliased mode and redraw everything
  *
  **/

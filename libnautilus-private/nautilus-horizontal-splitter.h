@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_HORIZONTAL_SPLITTER_H
 #define NAUTILUS_HORIZONTAL_SPLITTER_H
 
-#include <gnome.h>
+#include <libgnome/gnome-defs.h>
 #include <widgets/e-paned/e-hpaned.h>
 
 BEGIN_GNOME_DECLS
@@ -36,30 +36,21 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_IS_HORIZONTAL_SPLITTER(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_HORIZONTAL_SPLITTER))
 #define NAUTILUS_IS_HORIZONTAL_SPLITTER_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_HORIZONTAL_SPLITTER))
 
-typedef struct _NautilusHorizontalSplitter	    NautilusHorizontalSplitter;
-typedef struct _NautilusHorizontalSplitterClass     NautilusHorizontalSplitterClass;
-typedef struct _NautilusHorizontalSplitterDetail    NautilusHorizontalSplitterDetail;
+typedef struct NautilusHorizontalSplitterDetails NautilusHorizontalSplitterDetails;
 
-struct _NautilusHorizontalSplitter
-{
-	/* Super Class */
-	EHPaned					hpaned;
-	
-	/* Private stuff */
-	NautilusHorizontalSplitterDetail	*details;
-};
+typedef struct {
+	EHPaned					parent_slot;
+	NautilusHorizontalSplitterDetails	*details;
+} NautilusHorizontalSplitter;
 
-struct _NautilusHorizontalSplitterClass
-{
-	EHPanedClass				parent_class;
-};
+typedef struct {
+	EHPanedClass				parent_slot;
+} NautilusHorizontalSplitterClass;
 
 /* NautilusHorizontalSplitter public methods */
 GtkType    nautilus_horizontal_splitter_get_type (void);
-GtkWidget* nautilus_horizontal_splitter_new      (void);
+GtkWidget *nautilus_horizontal_splitter_new      (void);
 
-BEGIN_GNOME_DECLS
+END_GNOME_DECLS
 
 #endif /* NAUTILUS_HORIZONTAL_SPLITTER_H */
-
-
