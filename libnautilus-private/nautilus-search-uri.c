@@ -278,10 +278,10 @@ static operand_criterion_item owner2_table [] = {
 */
 static operand_criterion_item size2_table [] = {
         {"larger_than",
-         N_("size is larger than %s kilobytes"),
+         N_("size is larger than %s bytes"),
          NULL},
         {"smaller_than",
-         N_("size is smaller than %s kilobytes"),
+         N_("size is smaller than %s bytes"),
          NULL},
         {"is",
          N_("size is %s kilobytes"),
@@ -671,6 +671,15 @@ nautilus_self_check_search_uri (void)
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stu|ff & file_type is file"), 
                                       "search:[][]file_name contains stu|ff & file_type is file");
 
+        /* make sure all the code paths work */
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff"), 
+                                      "Search results for items whose name contains \"stuff\".");
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type is file"), 
+                                      "Search results for items whose name contains \"stuff\" and are regular files.");
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type is file"
+                                                                    " & size smaller_than 2000"), 
+                                      "Search results for items whose name contains \"stuff\", are regular files and size is "
+                                      "smaller than 2000 bytes.");
 
         /* FIXME: Need a lot more tests. */
 
