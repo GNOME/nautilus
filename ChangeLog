@@ -1,5 +1,13 @@
 2001-02-15  Michael Engber  <engber@eazel.com>
 
+	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
+
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_bump_zoom_level):
+	Change fm_icon_view_bump_zoom_level to ignore bumps to out
+	of bounds values - bug 6347.
+
+2001-02-15  Michael Engber  <engber@eazel.com>
+
 	* libnautilus-extensions/nautilus-directory-metafile.c:
 	(get_metafile), (nautilus_directory_get_file_metadata),
 	(nautilus_directory_get_file_metadata_list),

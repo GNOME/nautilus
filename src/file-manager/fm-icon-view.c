@@ -909,7 +909,11 @@ fm_icon_view_bump_zoom_level (FMDirectoryView *view, int zoom_increment)
 
 	icon_view = FM_ICON_VIEW (view);
 	new_level = fm_icon_view_get_zoom_level (icon_view) + zoom_increment;
-	fm_icon_view_set_zoom_level(icon_view, new_level, FALSE);
+
+	if (new_level >= NAUTILUS_ZOOM_LEVEL_SMALLEST &&
+	    new_level <= NAUTILUS_ZOOM_LEVEL_LARGEST) {
+		fm_icon_view_set_zoom_level(icon_view, new_level, FALSE);
+	}
 }
 
 static void
