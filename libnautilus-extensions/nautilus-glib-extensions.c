@@ -33,6 +33,7 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <stdlib.h>
+#include <math.h>
 #include <sys/time.h>
 
 /* Legal conversion specifiers, as specified in the C standard. */
@@ -994,6 +995,21 @@ nautilus_shell_quote (const char *string)
 	g_string_free (quoted_string, FALSE);
 
 	return quoted_str;
+}
+
+int nautilus_g_round (double d)
+{
+	double val = floor (d + .5);
+
+	/* The tests are needed because the result of floating-point to integral
+	 * conversion is undefined if the floating point value is not representable
+	 * in the new type. E.g. the magnititude is too large or a negative
+	 * floating-point value being converted to an unsigned.
+	 */
+	g_return_val_if_fail (val <= INT_MAX, INT_MAX);
+	g_return_val_if_fail (val >= INT_MIN, INT_MIN);
+
+	return val;
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)

@@ -4653,12 +4653,8 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	NautilusIconContainerDetails *details;
 	NautilusIcon *icon;
 	ArtDRect icon_rect;
-	GdkFont *font;
 	const char *editable_text;
-	int max_text_width;
-	int cx0, cx1, cy1;
-	int marginX, marginY;
-	
+
 	/* Check if it already in renaming mode. */
 	details = container->details;
 	if (details->renaming) {
@@ -4688,36 +4684,31 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	if (editable_text == NULL) {
 		return;
 	}
-	
+
 	details->original_text = g_strdup (editable_text);
 
 	/* Create text renaming widget, if it hasn't been created already.
 	   We deal with the broken icon text item widget by keeping it around
 	   so its contents can still be cut and pasted as part of the clipboard */
 	g_assert (details->rename_widget == NULL);
+
 	details->rename_widget = NAUTILUS_ICON_TEXT_ITEM
 		(gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (container)),
 					nautilus_icon_text_item_get_type (),
 					NULL));
 	
-	/* Determine widget position widget in container */
-	font = details->label_font[details->zoom_level];
-	max_text_width = floor (nautilus_icon_canvas_item_get_max_text_width (icon->item));
 	nautilus_icon_canvas_item_get_icon_rectangle (icon->item, &icon_rect);
-	gnome_canvas_w2c (GNOME_CANVAS(container), icon_rect.x0, icon_rect.y0, &cx0, NULL);
-	gnome_canvas_w2c (GNOME_CANVAS(container), icon_rect.x1, icon_rect.y1, &cx1, &cy1);
-
-	cx0 += ((cx1 - cx0) - max_text_width) / 2;
-
-	nautilus_icon_text_item_get_margins (&marginX, &marginY);
-	nautilus_icon_text_item_configure
-		(details->rename_widget, 
-		 cx0 - marginX,	        /* x */
-		 cy1 - marginY,         /* y */		
-		 max_text_width + 4, 	/* width */
-		 font,		        /* font */
-		 editable_text,	        /* text */
-		 TRUE);		        /* allocate local copy */
+	gnome_canvas_item_w2i (GNOME_CANVAS_ITEM (details->rename_widget), &icon_rect.x0, &icon_rect.y0);
+	gnome_canvas_item_w2i (GNOME_CANVAS_ITEM (details->rename_widget), &icon_rect.x1, &icon_rect.y1);
+	
+	nautilus_icon_text_item_configure (
+		details->rename_widget,
+		(icon_rect.x0 + icon_rect.x1) / 2,				/* x_center */
+		icon_rect.y1,							/* y_top */		
+		nautilus_icon_canvas_item_get_max_text_width (icon->item),	/* max_text_width */
+		details->label_font[details->zoom_level],			/* font */
+		editable_text,							/* text */
+		FALSE);								/* allocate local copy */
 
 	nautilus_icon_text_item_start_editing (details->rename_widget);
 	nautilus_icon_container_update_icon (container, icon);

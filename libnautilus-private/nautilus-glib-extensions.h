@@ -142,4 +142,7 @@ gint64      nautilus_get_system_time                  (void);
 /* shell */
 char *      nautilus_shell_quote                      (const char                 *string);
 
+/* math */
+int nautilus_g_round (double d);
+
 #endif /* NAUTILUS_GLIB_EXTENSIONS_H */

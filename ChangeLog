@@ -1,3 +1,29 @@
+2001-01-05  Michael Engber  <engber@eazel.com>
+
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(nautilus_shell_quote), (nautilus_g_round):
+	* libnautilus-extensions/nautilus-glib-extensions.h:
+	Added nautilus_g_round.
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_start_renaming_selected_item):
+	* libnautilus-extensions/nautilus-icon-text-item.c:
+	(iti_stop_editing), (layout_text), (iti_edition_accept),
+	(iti_entry_text_changed_by_clipboard), (iti_start_editing),
+	(iti_destroy), (recompute_bounding_box), (iti_update), (iti_draw),
+	(iti_render), (iti_point), (iti_start_selecting),
+	(iti_stop_selecting), (iti_selection_motion), (iti_ensure_focus),
+	(iti_event), (iti_bounds), (nautilus_icon_text_item_configure),
+	(nautilus_icon_text_item_setxy), (nautilus_icon_text_item_select),
+	(nautilus_icon_text_item_set_text),
+	(nautilus_icon_text_item_get_type):
+	* libnautilus-extensions/nautilus-icon-text-item.h:
+	Overhauled nautilus-icon-text-item to be a more proper canvas
+	item - mainly fixing it's use of coordinates.  Also simplified
+	its configure api a bit. This fixed bug 4166. Also put in a
+	workaround to fix bug 3973.
+	
+
 Fri Jan 05 20:28:43 2001  George Lebl <jirka@5z.com>
 
 	Darin saw this patch and says it should not destroy the world
@@ -24,6 +50,7 @@ Fri Jan 05 20:28:43 2001  George Lebl <jirka@5z.com>
 	  signal and redoing the style stuff so that we don't get garbage
 	  and other fun on changing of gtk theme.
 
+>>>>>>> 1.3291
 2001-01-05  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* components/notes/Makefile.am:

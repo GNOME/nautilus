@@ -18,6 +18,7 @@
 
 #include <libnautilus/nautilus-undo.h>
 #include "nautilus-gdk-extensions.h"
+#include "nautilus-glib-extensions.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -61,24 +62,9 @@ typedef struct {
 	NautilusEntry *entry;
 	GtkWidget *entry_top;
 
-	/* Whether the user pressed the mouse while the item was unselected */
-	guint unselected_click : 1;
-
-	/* Whether we need to update the position */
-	guint need_pos_update : 1;
-
-	/* Whether we need to update the font */
-	guint need_font_update : 1;
-
-	/* Whether we need to update the text */
-	guint need_text_update : 1;
-
-	/* Whether we need to update because the editing/selected state changed */
-	guint need_state_update : 1;
-
 	/* Store min width and height.  These are used when the text entry is empty. */
-	guint min_width;
-	guint min_height;
+	int min_width;
+	int min_height;
 
 	gboolean undo_registered;
 		
@@ -118,7 +104,6 @@ iti_stop_editing (Iti *iti)
 	priv->entry = NULL;
 	priv->entry_top = NULL;
 
-	priv->need_state_update = TRUE;
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
 
 	gtk_signal_emit (GTK_OBJECT (iti), iti_signals[EDITING_STOPPED]);
@@ -156,7 +141,7 @@ layout_text (Iti *iti)
 	iti->ti = gnome_icon_layout_text (priv->font,
 					  text,
 					  DEFAULT_SEPARATORS,
-					  iti->width - 2 * MARGIN_X,
+					  iti->max_text_width - 2 * MARGIN_X,
 					  TRUE);
 
 	/* Check the sizes and see if we need to emit any signals */
@@ -197,7 +182,6 @@ iti_edition_accept (Iti *iti)
 	}
 	layout_text (iti);
 
-	priv->need_text_update = TRUE;
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
 }
 
@@ -214,7 +198,6 @@ iti_entry_text_changed_by_clipboard (GtkObject *widget,
 	iti = NAUTILUS_ICON_TEXT_ITEM (data);
 	layout_text (iti);
 	priv = iti->priv;
-	priv->need_text_update = TRUE;
 
 	item = GNOME_CANVAS_ITEM (iti);
 	gnome_canvas_item_request_update (item);
@@ -266,7 +249,6 @@ iti_start_editing (Iti *iti)
 
 	iti->editing = TRUE;
 
-	priv->need_state_update = TRUE;
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
 
 	gtk_signal_emit (GTK_OBJECT (iti), iti_signals[EDITING_STARTED]);
@@ -288,7 +270,11 @@ iti_destroy (GtkObject *object)
 	item = GNOME_CANVAS_ITEM (object);
 
 	/* Queue redraw of bounding box */
-	gnome_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
+	gnome_canvas_request_redraw (item->canvas,
+				     nautilus_g_round (item->x1),
+				     nautilus_g_round (item->y1),
+				     nautilus_g_round (item->x2),
+				     nautilus_g_round (item->y2));
 
 	/* Free everything */
 	if (iti->font)
@@ -330,45 +316,49 @@ static void
 recompute_bounding_box (Iti *iti)
 {
 	GnomeCanvasItem *item;
-	double affine[6];
-	ArtPoint p, q;
-	int x1, y1, x2, y2;
-	guint width, height;
+	int width_c, height_c;
+	double width_w, height_w;
+	double x1, y1, x2, y2;
 	ItiPrivate *priv;
 
 	item = GNOME_CANVAS_ITEM (iti);
 
 	priv = iti->priv;
 
-	/* Compute width, height, position */
-	width = iti->ti->width + 2 * MARGIN_X;
-	height = iti->ti->height + 2 * MARGIN_Y;
+	/* Compute width, height - scaled to world coords
+	 */
+	width_c  = iti->ti->width  + 2 * MARGIN_X;
+	height_c = iti->ti->height + 2 * MARGIN_Y;
+	
+	/* Verify we are not smaller than default settings
+	 */
+	if (width_c < priv->min_width) {
+		width_c = priv->min_width;
+	}
+	if (height_c < priv->min_height) {
+		height_c = priv->min_height;
+	}
 
-	/* Verify we are not smaller than default settings */
-	if (width < priv->min_width)
-		width = priv->min_width;
-	if (height < priv->min_height)
-		height = priv->min_height;
+	width_w  = width_c  / item->canvas->pixels_per_unit;
+	height_w = height_c / item->canvas->pixels_per_unit;
 
-	x1 = iti->x + (iti->width - width) / 2;
-	y1 = iti->y;
-	x2 = x1 + width;
-	y2 = y1 + height;
+	/* start with item coords
+	 */
+	x1 = iti->x_center;
+	y1 = iti->y_top;
+	
+	/* do computations in world coords
+	 */
+	gnome_canvas_item_i2w (item, &x1, &y1);
+	x1 -= width_w / 2;
+	y1 -= MARGIN_Y / item->canvas->pixels_per_unit;
+	x2 = x1 + width_w;
+	y2 = y1 + height_w;
 
-	/* Translate to world coordinates */
-	gnome_canvas_item_i2w_affine (item, affine);
-
-	p.x = x1;
-	p.y = y1;
-	art_affine_point (&q, &p, affine);
-	item->x1 = q.x;
-	item->y1 = q.y;
-
-	p.x = x2;
-	p.y = y2;
-	art_affine_point (&q, &p, affine);
-	item->x2 = q.x;
-	item->y2 = q.y;
+	/* store canvas coords in item
+	 */
+	gnome_canvas_w2c_d (item->canvas, x1, y1, &item->x1, &item->y1);
+	gnome_canvas_w2c_d (item->canvas, x2, y2, &item->x2, &item->y2);
 }
 
 /* Update method for the icon text item */
@@ -376,35 +366,23 @@ static void
 iti_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags)
 {
 	Iti *iti;
-	ItiPrivate *priv;
 
 	iti = ITI (item);
-	priv = iti->priv;
 
 	if (parent_class->update)
 		(* parent_class->update) (item, affine, clip_path, flags);
 
-	/* If necessary, queue a redraw of the old bounding box */
-	if ((flags & GNOME_CANVAS_UPDATE_VISIBILITY)
-	    || (flags & GNOME_CANVAS_UPDATE_AFFINE)
-	    || priv->need_pos_update
-	    || priv->need_font_update
-	    || priv->need_text_update)
-		gnome_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
-
-	/* Compute new bounds */
-	if (priv->need_pos_update
-	    || priv->need_font_update
-	    || priv->need_text_update)
-		recompute_bounding_box (iti);
-
-	/* Queue redraw */
-	gnome_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
-
-	priv->need_pos_update = FALSE;
-	priv->need_font_update = FALSE;
-	priv->need_text_update = FALSE;
-	priv->need_state_update = FALSE;
+	gnome_canvas_request_redraw (item->canvas,
+				     nautilus_g_round (item->x1),
+				     nautilus_g_round (item->y1),
+				     nautilus_g_round (item->x2),
+				     nautilus_g_round (item->y2));
+	recompute_bounding_box (iti);
+	gnome_canvas_request_redraw (item->canvas,
+				     nautilus_g_round (item->x1),
+				     nautilus_g_round (item->y1),
+				     nautilus_g_round (item->x2),
+				     nautilus_g_round (item->y2));
 }
 
 /* utility to fetch a color from a theme */
@@ -582,33 +560,20 @@ iti_paint_text (Iti *iti, GdkDrawable *drawable, int x, int y)
 
 /* Draw method handler for the icon text item */
 static void
-iti_draw (GnomeCanvasItem *item, GdkDrawable *drawable, int x, int y, int width, int height)
+iti_draw (GnomeCanvasItem *item, GdkDrawable *drawable, int x, int y, int update_width, int update_height)
 {
 	Iti *iti;
 	GtkStyle *style;
-	guint w, h;
+	int width, height;
 	int xofs, yofs;
-	ItiPrivate *priv;
 
 	iti = ITI (item);
-	priv = iti->priv;
 
-	if (iti->ti) {
-		w = iti->ti->width + 2 * MARGIN_X;
-		h = iti->ti->height + 2 * MARGIN_Y;
-
-		/* Make sure we aren't smaller than default settings */
-		if (w < priv->min_width)
-			w = priv->min_width;
-		if (h < priv->min_height)
-			h = priv->min_height;			
-	} else {
-		w = 2 * MARGIN_X;
-		h = 2 * MARGIN_Y;
-	}
+	width  = nautilus_g_round (item->x2 - item->x1);
+	height = nautilus_g_round (item->y2 - item->y1);
 	
-	xofs = item->x1 - x;
-	yofs = item->y1 - y;
+	xofs = nautilus_g_round (item->x1) - x;
+	yofs = nautilus_g_round (item->y1) - y;
 
 	style = GTK_WIDGET (item->canvas)->style;
 
@@ -618,7 +583,7 @@ iti_draw (GnomeCanvasItem *item, GdkDrawable *drawable, int x, int y, int width,
 				    style->fg_gc[GTK_STATE_NORMAL],
 				    FALSE,
 				    xofs, yofs,
-				    w - 1, h - 1);
+				    width - 1, height - 1);
 		
 		iti_paint_text (iti, drawable, xofs + MARGIN_X, yofs + MARGIN_Y);
 	} else {
@@ -628,9 +593,8 @@ iti_draw (GnomeCanvasItem *item, GdkDrawable *drawable, int x, int y, int width,
 				    style->bg_gc[GTK_STATE_SELECTED],
 				    TRUE,
 				    xofs, yofs,
-				    w, h);
+				    width, height);
 		}
-		
 		gnome_icon_paint_text (iti->ti,
 				       drawable,
 				       style->fg_gc[(iti->selected
@@ -687,27 +651,27 @@ iti_render (GnomeCanvasItem *item, GnomeCanvasBuf *buffer)
 	GdkPixmap *pixmap;
 	GdkPixbuf *text_pixbuf;
 	double affine[6];
-	int text_width, text_height;
-	
+	int width, height;
+
 	visual = gdk_visual_get_system ();
 	art_affine_identity(affine);
-	text_width = item->x2 - item->x1;
-	text_height = item->y2 - item->y1;
+	width  = nautilus_g_round (item->x2 - item->x1);
+	height = nautilus_g_round (item->y2 - item->y1);
 	
 	/* allocate a pixmap to draw the text into, and clear it to white */
-	pixmap = gdk_pixmap_new (NULL, text_width, text_height, visual->depth);
+	pixmap = gdk_pixmap_new (NULL, width, height, visual->depth);
 
 	gc = gdk_gc_new (pixmap);
-	gdk_rgb_gc_set_foreground (gc,
-				   NAUTILUS_RGB_COLOR_WHITE);
+
+	gdk_rgb_gc_set_foreground (gc, NAUTILUS_RGB_COLOR_WHITE);
 	gdk_draw_rectangle (pixmap, gc, TRUE,
 			    0, 0,
-			    text_width,
-			    text_height);
+			    width,
+			    height);
 	gdk_gc_unref (gc);
 	
 	/* use a common routine to draw the label into the pixmap */
-	iti_draw (item, pixmap, (int) item->x1, (int) item->y1, text_width, text_height);
+	iti_draw (item, pixmap, nautilus_g_round (item->x1), nautilus_g_round (item->y1), width, height);
 	
 	/* turn it into a pixbuf */
 	colormap = gdk_colormap_new (visual, FALSE);
@@ -715,15 +679,18 @@ iti_render (GnomeCanvasItem *item, GnomeCanvasBuf *buffer)
 		(NULL, pixmap, colormap,
 		 0, 0,
 		 0, 0, 
-		 text_width, 
-		 text_height);
+		 width, 
+		 height);
 	
 	gdk_colormap_unref (colormap);
 	gdk_pixmap_unref (pixmap);
 		
 	/* draw the pixbuf containing the label */
-	draw_pixbuf_aa (text_pixbuf, buffer, affine, (int)item->x1, (int)item->y1);
+	draw_pixbuf_aa (text_pixbuf, buffer, affine, nautilus_g_round (item->x1), nautilus_g_round (item->y1));
 	gdk_pixbuf_unref (text_pixbuf);
+
+	buffer->is_bg = FALSE;
+	buffer->is_buf = TRUE;
 }
 
 
@@ -732,22 +699,27 @@ static double
 iti_point (GnomeCanvasItem *item, double x, double y, int cx, int cy, GnomeCanvasItem **actual_item)
 {
 	double dx, dy;
+	double cx_d, cy_d;
 
 	*actual_item = item;
 
-	if (cx < item->x1)
-		dx = item->x1 - cx;
-	else if (cx > item->x2)
-		dx = cx - item->x2;
-	else
-		dx = 0.0;
+	gnome_canvas_w2c_d (item->canvas, x, y, &cx_d, &cy_d);
 
-	if (cy < item->y1)
-		dy = item->y1 - cy;
-	else if (cy > item->y2)
-		dy = cy - item->y2;
-	else
+	if (cx_d < item->x1) {
+		dx = item->x1 - cx_d;
+	} else if (cx_d > item->x2) {
+		dx = cx_d - item->x2;
+	} else {
+		dx = 0.0;
+	}
+
+	if (cy_d < item->y1) {
+		dy = item->y1 - cy_d;
+	} else if (cy_d > item->y2) {
+		dy = cy_d - item->y2;
+	} else {
 		dy = 0.0;
+	}
 
 	return sqrt (dx * dx + dy * dy);
 }
@@ -840,7 +812,6 @@ iti_start_selecting (Iti *iti, int idx, guint32 event_time)
 	e->has_selection = TRUE;
 	iti->selecting = TRUE;
 
-	priv->need_state_update = TRUE;
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
 
 	gtk_signal_emit (GTK_OBJECT (iti), iti_signals[SELECTION_STARTED]);
@@ -862,7 +833,6 @@ iti_stop_selecting (Iti *iti, guint32 event_time)
 	e->has_selection = FALSE;
 	iti->selecting = FALSE;
 
-	priv->need_state_update = TRUE;
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
 	gtk_signal_emit (GTK_OBJECT (iti), iti_signals[SELECTION_STOPPED]);
 	/* Hack, since the real nautilus entry can't get this information */
@@ -889,7 +859,6 @@ iti_selection_motion (Iti *iti, int idx)
 		e->selection_end_pos  = idx;
 	}
 
-	priv->need_state_update = TRUE;
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
 }
 
@@ -899,7 +868,12 @@ iti_ensure_focus (GnomeCanvasItem *item)
 {
 	GtkWidget *toplevel;
 
-	gnome_canvas_item_grab_focus (GNOME_CANVAS_ITEM (item));
+        /* gnome_canvas_item_grab_focus still generates focus out/in
+         * events when focused_item == item
+         */
+        if (GNOME_CANVAS_ITEM (item)->canvas->focused_item != item) {
+        	gnome_canvas_item_grab_focus (GNOME_CANVAS_ITEM (item));
+        }
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (item->canvas));
 	if (toplevel != NULL && GTK_WIDGET_REALIZED (toplevel)) {
@@ -995,8 +969,7 @@ iti_event (GnomeCanvasItem *item, GdkEvent *event)
 	Iti *iti;
 	ItiPrivate *priv;
 	int idx;
-	double x, y;
-	int cx, cy;
+	double cx, cy;
 	
 	iti = ITI (item);
 	priv = iti->priv;
@@ -1041,7 +1014,6 @@ iti_event (GnomeCanvasItem *item, GdkEvent *event)
 		
 		/* Update text item to reflect changes */
 		layout_text (iti);
-		priv->need_text_update = TRUE;
 		gnome_canvas_item_request_update (item);
 		return TRUE;
 
@@ -1050,13 +1022,11 @@ iti_event (GnomeCanvasItem *item, GdkEvent *event)
 			break;
 		}
 
-		iti_ensure_focus (item);
-
-		if (iti->editing && event->button.button == 1) {
-			gnome_canvas_w2c(item->canvas, event->button.x, event->button.y, &cx, &cy);			
-			x = cx - (item->x1 + MARGIN_X);
-			y = cy - (item->y1 + MARGIN_Y);
-			idx = iti_idx_from_x_y (iti, x, y);
+		if (event->button.button == 1) {
+			gnome_canvas_w2c_d (item->canvas, event->button.x, event->button.y, &cx, &cy);						
+			idx = iti_idx_from_x_y (iti,
+						nautilus_g_round (cx - (item->x1 + MARGIN_X)),
+						nautilus_g_round (cy - (item->y1 + MARGIN_Y)));
 			iti_start_selecting (iti, idx, event->button.time);
 		}
 		return TRUE;
@@ -1066,10 +1036,10 @@ iti_event (GnomeCanvasItem *item, GdkEvent *event)
 			break;
 
 		gtk_widget_event (GTK_WIDGET (priv->entry), event);
-		gnome_canvas_w2c(item->canvas, event->button.x, event->button.y, &cx, &cy);			
-		x = cx - (item->x1 + MARGIN_X);
-		y = cy - (item->y1 + MARGIN_Y);
-		idx = iti_idx_from_x_y (iti, x, y);
+		gnome_canvas_w2c_d (item->canvas, event->button.x, event->button.y, &cx, &cy);			
+		idx = iti_idx_from_x_y (iti,
+					nautilus_g_round (cx - (item->x1 + MARGIN_X)),
+					nautilus_g_round (cy - (item->y1 + MARGIN_Y)));
 		iti_selection_motion (iti, idx);
 		return TRUE;
 
@@ -1082,6 +1052,18 @@ iti_event (GnomeCanvasItem *item, GdkEvent *event)
 		return TRUE;
 
 	case GDK_FOCUS_CHANGE:
+		/* FIXME bugzilla.eazel.com 5484:
+		 * Working around bug in the GnomeCanvas widget's focus_in/focus_out
+		 * methods. They (all widgets) should be setting/usetting these flags.
+		 * GnomeCanvas doesn't. We need it set so the GtkWindow passes us all
+		 * focus out events. Once GnomeCanvas is fixed, this can be removed.
+		 */
+		if (event->focus_change.in) {
+			GTK_WIDGET_SET_FLAGS (item->canvas, GTK_HAS_FOCUS);
+		} else {
+			GTK_WIDGET_UNSET_FLAGS (item->canvas, GTK_HAS_FOCUS);
+		}
+		
 		if (iti->editing && !event->focus_change.in) {
 			iti_edition_accept (iti);
 
@@ -1103,22 +1085,39 @@ static void
 iti_bounds (GnomeCanvasItem *item, double *x1, double *y1, double *x2, double *y2)
 {
 	Iti *iti;
-	int width, height;
+	int width_c, height_c;
+	double width_w, height_w;
 
 	iti = ITI (item);
 
 	if (iti->ti) {
-		width = iti->ti->width + 2 * MARGIN_X;
-		height = iti->ti->height + 2 * MARGIN_Y;
+		width_c  = iti->ti->width  + 2 * MARGIN_X;
+		height_c = iti->ti->height + 2 * MARGIN_Y;
 	} else {
-		width = 2 * MARGIN_X;
-		height = 2 * MARGIN_Y;
+		width_c  = 2 * MARGIN_X;
+		height_c = 2 * MARGIN_Y;
 	}
 
-	*x1 = iti->x + (iti->width - width) / 2;
-	*y1 = iti->y;
-	*x2 = *x1 + width;
-	*y2 = *y1 + height;
+	width_w  = width_c / item->canvas->pixels_per_unit;
+	height_w = height_c / item->canvas->pixels_per_unit;
+
+	/* start with item coords
+	 */
+	*x1 = iti->x_center;
+	*y1 = iti->y_top;
+	
+	/* do computations in world coords
+	 */
+	gnome_canvas_item_i2w (item, x1, y1);
+	*x1 -= width_w / 2;
+	*y1 -= MARGIN_Y / item->canvas->pixels_per_unit;
+	*x2 = *x1 + width_w;
+	*y2 = *y1 + height_w;
+
+	/* convert back to item coords
+	 */
+	gnome_canvas_item_w2i (item, x1, y1);
+	gnome_canvas_item_w2i (item, x2, y2);
 }
 
 /* Class initialization function for the icon text item */
@@ -1226,8 +1225,8 @@ iti_init (NautilusIconTextItem *iti)
 /**
  * nautilus_icon_text_item_configure:
  * @iti: An icon text item.
- * @x: X position in which to place the item.
- * @y: Y position in which to place the item.
+ * @x_center: X position of item's center - item coords.
+ * @y_top: Y position of item's top - item coords.
  * @width: Maximum width allowed for this item, to be used for word wrapping.
  * @font: Name of the fontset that should be used to display the text.
  * @text: Text that is going to be displayed.
@@ -1253,8 +1252,8 @@ iti_init (NautilusIconTextItem *iti)
  * item).  This is an optimization to reduce memory usage for large icon sets.
  */
 void
-nautilus_icon_text_item_configure (NautilusIconTextItem *iti, int x, int y,
-				int width, GdkFont *font,
+nautilus_icon_text_item_configure (NautilusIconTextItem *iti, double x_center, double y_top,
+				int max_text_width, GdkFont *font,
 				const char *text, gboolean is_static)
 {
 	ItiPrivate *priv;
@@ -1262,14 +1261,14 @@ nautilus_icon_text_item_configure (NautilusIconTextItem *iti, int x, int y,
 
 	g_return_if_fail (iti != NULL);
 	g_return_if_fail (IS_ITI (iti));
-	g_return_if_fail (width > 2 * MARGIN_X);
+	g_return_if_fail (max_text_width > 2 * MARGIN_X);
 	g_return_if_fail (text != NULL);
 
 	priv = iti->priv;
 
-	iti->x = x;
-	iti->y = y;
-	iti->width = width;
+	iti->x_center = x_center;
+	iti->y_top = y_top;
+	iti->max_text_width = max_text_width;
 
 	if (iti->text && iti->is_text_allocated)
 		g_free (iti->text);
@@ -1302,33 +1301,31 @@ nautilus_icon_text_item_configure (NautilusIconTextItem *iti, int x, int y,
 	min_text_info = gnome_icon_layout_text (priv->font,
 					  " ",
 					  DEFAULT_SEPARATORS,
-					  iti->width - 2 * MARGIN_X,
+					  iti->max_text_width - 2 * MARGIN_X,
 					  TRUE);
-	priv->min_width = min_text_info->width + 2 * MARGIN_X;
+
+	priv->min_width  = min_text_info->width  + 2 * MARGIN_X;
 	priv->min_height = min_text_info->height + 2 * MARGIN_Y;
 	gnome_icon_text_info_free(min_text_info);
 
 	priv->undo_registered = FALSE;
 
 	/* Request update */
-	priv->need_pos_update = TRUE;
-	priv->need_font_update = TRUE;
-	priv->need_text_update = TRUE;
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
 }
 
 /**
  * nautilus_icon_text_item_setxy:
  * @iti:  An icon text item.
- * @x: X position.
- * @y: Y position.
+ * @x_center: X position of item's center - item coords.
+ * @y_top: Y position of item's top - item coords.
  *
  * Sets the coordinates at which the icon text item should be placed.
  *
  * See also: nautilus_icon_text_item_configure().
  */
 void
-nautilus_icon_text_item_setxy (NautilusIconTextItem *iti, int x, int y)
+nautilus_icon_text_item_setxy (NautilusIconTextItem *iti, double x_center, double y_top)
 {
 	ItiPrivate *priv;
 
@@ -1337,10 +1334,9 @@ nautilus_icon_text_item_setxy (NautilusIconTextItem *iti, int x, int y)
 
 	priv = iti->priv;
 
-	iti->x = x;
-	iti->y = y;
+	iti->x_center = x_center;
+	iti->y_top = y_top;
 
-	priv->need_pos_update = TRUE;
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
 }
 
@@ -1373,7 +1369,6 @@ nautilus_icon_text_item_select (NautilusIconTextItem *iti, int sel)
 		iti_edition_accept (iti);
 	}
 
-	priv->need_state_update = TRUE;
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
 }
 
@@ -1399,7 +1394,6 @@ nautilus_icon_text_item_set_text (NautilusIconTextItem *iti, const char *text)
 
 	layout_text (iti);
 
-	priv->need_text_update = TRUE;
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
 }
 
@@ -1515,20 +1509,6 @@ nautilus_icon_text_item_get_type (void)
 	}
 
 	return iti_type;
-}
-
-
-/**
- * nautilus_icon_text_item_get_margins:
- * @void:
- *
- * Return the x and y margins of th etext item
- **/
-void
-nautilus_icon_text_item_get_margins (int *x, int *y)
-{
-	*x = MARGIN_X;
-	*y = MARGIN_Y;
 }
 
 /**

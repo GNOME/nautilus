@@ -26,9 +26,10 @@
 typedef struct {
 	GnomeCanvasItem canvas_item;
 
-	/* Size and maximum allowed width */
-	int x, y;
-	int width;
+	double x_center;	/* center of text, item coords */
+	double y_top;		/* top of text, item coords */
+	
+	int max_text_width;	/* max width of text - canvas coords */
 
 	/* Font */
 	GdkFont *font;
@@ -72,15 +73,15 @@ typedef struct {
 
 GtkType      nautilus_icon_text_item_get_type              (void);
 void         nautilus_icon_text_item_configure             (NautilusIconTextItem *item,
-							    int                   x,
-							    int                   y,
-							    int                   width,
+							    double                x_center,
+							    double                y_top,
+							    int                   max_text_width,
 							    GdkFont              *font,
 							    const char           *text,
 							    gboolean              is_static);
 void         nautilus_icon_text_item_setxy                 (NautilusIconTextItem *item,
-							    int                   x,
-							    int                   y);
+							    double                x_center,
+							    double                y_top);
 void         nautilus_icon_text_item_select                (NautilusIconTextItem *item,
 							    int                   sel);
 void         nautilus_icon_text_item_set_text              (NautilusIconTextItem *item,
@@ -89,8 +90,6 @@ const char * nautilus_icon_text_item_get_text              (NautilusIconTextItem
 void         nautilus_icon_text_item_start_editing         (NautilusIconTextItem *item);
 void         nautilus_icon_text_item_stop_editing          (NautilusIconTextItem *item,
 							    gboolean              accept);
-void         nautilus_icon_text_item_get_margins           (int                  *x,
-							    int                  *y);
 GtkEditable *nautilus_icon_text_item_get_renaming_editable (NautilusIconTextItem *item);
 
 #endif /* NAUTILUS_ICON_TEXT_ITEM_H */
