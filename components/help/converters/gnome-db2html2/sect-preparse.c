@@ -118,6 +118,7 @@ ElementInfo sect_preparse[] = {
         { ANSWER, "answer", NULL, NULL, NULL},
         { CHAPTER, "chapter", (startElementSAXFunc) sect_preparse_sect_start_element, NULL, NULL},
 	{ PREFACE, "preface", (startElementSAXFunc) sect_preparse_sect_start_element, NULL, NULL},
+	{ TERM, "term", NULL, NULL, NULL},
 	{ APPENDIX, "appendix", (startElementSAXFunc) sect_preparse_sect_start_element, NULL, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
