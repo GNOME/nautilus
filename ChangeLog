@@ -1,5 +1,13 @@
 2000-09-22  Andy Hertzfeld  <andy@eazel.com>
 
+	* libnautilus-extensions/nautilus-gdk-extensions.c:
+	(nautilus_gradient_parse_one_color_spec):
+	fixed glitch in Michael's gradient parsing logic that was
+	mishandling three-point gradients and making Arlo's sidebar
+	draw wrong.
+	
+2000-09-22  Andy Hertzfeld  <andy@eazel.com>
+
 	implemented Arlo's new design for icon selection highlighting.
 	It's still not finished; it needs to be optimized and refined in
 	various ways.

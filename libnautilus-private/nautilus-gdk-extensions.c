@@ -307,7 +307,7 @@ nautilus_gradient_parse_one_color_spec (const char *spec, int *percent, const ch
 	percent_ptr   = nautilus_strchr (spec, '%');
 	separator_ptr = nautilus_strchr (spec, '-');
 
-	if (percent_ptr != NULL) {
+	if (percent_ptr != NULL && (separator_ptr == NULL || percent_ptr < separator_ptr)) {
 		if (percent != NULL) {
 			*percent = (int) strtol (percent_ptr + 1, NULL, 10);
 		}
