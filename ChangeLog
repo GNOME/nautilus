@@ -1,5 +1,13 @@
 2001-06-29  Darin Adler  <darin@bentspoon.com>
 
+	* src/run-nautilus: Get rid of all the "smarts" in this
+	script and made it just call Nautilus. The things it was
+	doing (disable bug buddy, work around MOZILLA_FIVE_HOME
+	for Debian users, call nautilus-verify-rpm.sh) are all
+	obsolete now.
+
+2001-06-29  Darin Adler  <darin@bentspoon.com>
+
 	* configure.in: Fix minor problem in DB2HTML3 part that was
 	causing trouble for some people.
 
