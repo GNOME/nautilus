@@ -1,3 +1,10 @@
+2002-02-28  Darin Adler  <darin@bentspoon.com>
+
+	* libnautilus-private/nautilus-link-desktop-file.c:
+	(nautilus_link_desktop_file_get_link_icon_from_desktop):
+	Fix assert where it was calling gnome_vfs_get_uri_from_local_path
+	on something that wasn't an absolute local path.
+
 2002-02-28  Josh Barrow  <drleary@mac.com>
 
 	* icons/Makefile.am:
