@@ -678,6 +678,12 @@ osd_parse_provides (PackageData *pack, xmlNodePtr node, GList **feature_list)
 				g_free (tmp);
 				got_package = TRUE;
 			}
+		} else if (g_strcasecmp (child->name, "FEATURE") == 0) {
+			tmp = xmlNodeGetContent (child);
+			list = g_list_prepend (list, g_strdup (tmp));
+			xmlFree (tmp);
+		} else {
+			trilobite_debug ("Unknown tag %s in xml", child->name);
 		}
 		child = child->next;
 	}

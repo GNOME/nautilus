@@ -1,3 +1,30 @@
+2001-01-19  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/lib/eazel-install-logic2.c:
+	(dump_tree_helper), (check_md5_on_files),
+	(eazel_install_check_existing_packages), (get_softcat_info),
+	(is_satisfied), (is_satisfied_features), (do_file_conflict_check),
+	(install_packages_helper):
+	Removed old FIXME's
+	Trying to fix the memory corruption wrt ->minor.
+	Added more ifdefs around debug output.
+	
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_emit_preflight_check),
+	(eazel_install_emit_dependency_check):
+	Do the proper thing with total_packages and total_bytes.
+	Use gtk_object_unref to delete packagedata object in dep_check
+	signal.
+	
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(osd_parse_provides):
+	Parse <FEATURE> in <PROVIDES> and blurp on unknown tags.
+	
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(eazel_package_system_rpm3_packagedata_fill_from_header),
+	(check_if_all_packages_seen):
+	No more start and end signals around failed signals.
+
 2001-01-11  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* nautilus.spec.in: added Nautilus_Control_throbber.oaf

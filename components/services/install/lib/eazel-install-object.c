@@ -1343,11 +1343,14 @@ eazel_install_emit_preflight_check (EazelInstall *service,
 	GList *iterator;
 	unsigned long size_packages, num_packages;
 	gboolean result;
+	GList *flat_packages;
 
 	EAZEL_INSTALL_SANITY_VAL(service, FALSE);
 
-	size_packages = eazel_install_get_size_increasement (service, packages);
-	num_packages = g_list_length (packages);
+	flat_packages = flatten_packagedata_dependency_tree (packages);
+	size_packages = eazel_install_get_size_increasement (service, flat_packages);
+	num_packages = g_list_length (flat_packages);
+	g_list_free (flat_packages);
 
 	for (iterator = packages; iterator; glist_step (iterator)) {
 		PackageData *pack = (PackageData*)iterator->data;
@@ -1523,11 +1526,13 @@ eazel_install_emit_dependency_check (EazelInstall *service,
 	needed_package = packagedata_copy (needs->package, FALSE);
 	if (needs->version) {
 		g_free (needed_package->version);
+		needed_package->version = NULL;
 		g_free (needed_package->minor);
+		needed_package->minor = NULL;
 		needed_package->version = g_strdup (needs->version);
 	} 
 	gtk_signal_emit (GTK_OBJECT (service), signals[DEPENDENCY_CHECK], package, needed_package);
-	packagedata_destroy (needed_package, TRUE);
+	gtk_object_unref (GTK_OBJECT (needed_package));
 }
 
 void 

@@ -666,6 +666,8 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 		free ((void*)requires_version);
 
 	}
+	/* FIXME: bugzilla.eazel.com 5826
+	   Load in the features of the package */	
 }
 
 static gboolean 
@@ -1075,9 +1077,6 @@ check_if_all_packages_seen (EazelPackageSystemRpm3 *system,
 		PackageData *pack = (PackageData*)iterator->data;
 		/* HACK: that fixes bugzilla.eazel.com 4914 */		  
 		if (op==EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL) {
-			eazel_package_system_emit_start (EAZEL_PACKAGE_SYSTEM (system),
-							 op,
-							 pack);
 			if (eazel_package_system_is_installed (EAZEL_PACKAGE_SYSTEM (system),
 							       dbpath,
 							       pack->name,
@@ -1086,22 +1085,20 @@ check_if_all_packages_seen (EazelPackageSystemRpm3 *system,
 							       EAZEL_SOFTCAT_SENSE_EQ)) {
 				fail (system, "%s is still installed", pack->name);
 				eazel_package_system_emit_failed (EAZEL_PACKAGE_SYSTEM (system), op, pack);
-			} 
-			eazel_package_system_emit_end (EAZEL_PACKAGE_SYSTEM (system),
-						       op,
-						       pack);
+			} else {
+				eazel_package_system_emit_start (EAZEL_PACKAGE_SYSTEM (system),
+								 op,
+								 pack);				
+				eazel_package_system_emit_end (EAZEL_PACKAGE_SYSTEM (system),
+							       op,
+							       pack);
+			}
 		} else {
 			if (!g_list_find_custom (seen, 
 						 pack,
 						 (GCompareFunc)eazel_install_package_compare)) {
 				fail (system, "did not see %s", pack->name);
-				eazel_package_system_emit_start (EAZEL_PACKAGE_SYSTEM (system),
-								 op,
-								 pack);
 				eazel_package_system_emit_failed (EAZEL_PACKAGE_SYSTEM (system), op, pack);
-				eazel_package_system_emit_end (EAZEL_PACKAGE_SYSTEM (system),
-							       op,
-							       pack);
 			}
 		}
 	}

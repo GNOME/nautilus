@@ -74,11 +74,12 @@ dump_tree_helper (GList *packages, char *indent, GList *path)
 		}
 		
 		name = packagedata_get_readable_name (pack);
-		trilobite_debug ("%s%p (%s) %s%s", 
+		trilobite_debug ("%s%p (%s) %s %s%s", 
 				 indent, 
 				 pack, 
 				 name, 
-				 pack->fillflag & MUST_HAVE ? "filled":"not_filled",
+				 pack->eazel_id,
+				 pack->fillflag & MUST_HAVE ? "filled":"not filled",
 				 pack->status == PACKAGE_CANNOT_OPEN ? " but failed" : "");
 		tmp = g_strdup_printf ("%s  ", indent);
 		if (g_list_find_custom (path, name, (GCompareFunc)strcmp)) {
@@ -134,8 +135,11 @@ check_md5_on_files (EazelInstall *service,
 
 			if (memcmp (pmd5, md5, 16) != 0) {
 				g_warning (_("MD5 mismatch, package %s may be compromised"), pack->name);
+#if EI2_DEBUG & 0x4				
+				/* get_readable_name is leaked */
 				trilobite_debug ("read md5 from file %s", pack->filename);
-				trilobite_debug ("for package %s version %s", pack->name, pack->version);
+				trilobite_debug ("for package %s", packagedata_get_readable_name (pack));
+#endif
 				eazel_install_emit_md5_check_failed (service, 
 								     pack, 
 								     trilobite_md5_get_string_from_md5_digest (md5));
@@ -294,8 +298,15 @@ eazel_install_check_existing_packages (EazelInstall *service,
 										    pack->minor, existing_package->minor);
 				} else if (!pack->minor && existing_package->minor) {
 					/* If the given packages does not have a minor,
-					   but the installed has, assume we're updated */
-					res = 1;
+					   but the installed has, assume we're fine */
+					/* FIXME: bugzilla.eazel.com
+					   This is a patch, it should be res=1, revert when
+					   softcat is updated to have revisions for all packages 
+					   (post PR3) */
+					res = 0;
+				} else {
+					/* Eh, do nothing just to be safe */
+					res = 0;
 				}
 			}
 
@@ -481,6 +492,8 @@ get_softcat_info (EazelInstall *service,
 				break;
 			case EAZEL_INSTALL_STATUS_DOWNGRADES:
 			case EAZEL_INSTALL_STATUS_QUO:
+				(*package)->status = PACKAGE_ALREADY_INSTALLED;
+				eazel_install_emit_install_failed (service, *package);
 				gtk_object_unref (GTK_OBJECT (*package));
 				result = PACKAGE_SKIPPED;
 				break;
@@ -595,7 +608,7 @@ dedupe (EazelInstall *service,
 void check_dependencies (EazelInstall *service, GList *packages);
 void check_dependencies_foreach (PackageData *package, EazelInstall *service);
 gboolean is_satisfied (EazelInstall *service, PackageDependency *dep);
-gboolean is_satisfied_features (EazelInstall *service, GList *features);
+gboolean is_satisfied_features (EazelInstall *service, PackageData *package);
 
 gboolean
 is_satisfied (EazelInstall *service, 
@@ -612,7 +625,8 @@ is_satisfied (EazelInstall *service,
 	if (dep->version != NULL) {
 		char *sense_str = eazel_softcat_sense_flags_to_string (dep->sense);
 #if EI2_DEBUG & 0x4
-		trilobite_debug ("is_satisfied? %p %s %s %s", dep->package, dep->package->name, sense_str, dep->version);
+		trilobite_debug ("is_satisfied? %p %s %s %s", 
+				 dep->package, dep->package->name, sense_str, dep->version);
 #endif
 		key = g_strdup_printf ("%s-%s-%s", dep->package->eazel_id, sense_str, dep->version);
 		g_free (sense_str);
@@ -655,14 +669,17 @@ is_satisfied (EazelInstall *service,
 				result = TRUE;
 			}
 		} else {
-			if (is_satisfied_features (service, dep->package->features)) {
+			if (dep->package->features && is_satisfied_features (service, dep->package)) {
 #if EI2_DEBUG & 0x4
-				trilobite_debug ("\t--> feature satisfied");
+				trilobite_debug ("\t--> features of package are satisfied");
 #endif
 				result = TRUE;
 			}
 		}
 		if (result) {
+#if EI2_DEBUG & 0x4
+			trilobite_debug ("\t--> feature is satisfied");
+#endif
 			g_hash_table_insert (service->private->dep_ok_hash, 
 					     key,
 					     GINT_TO_POINTER (DEPENDENCY_OK));
@@ -683,13 +700,18 @@ is_satisfied (EazelInstall *service,
 
 gboolean
 is_satisfied_features (EazelInstall *service, 
-		       GList *features)
+		       PackageData *package)
 {
 	gboolean result = TRUE;
 	GList *iterator;
+	GList *features;
 
 	g_assert (service);
 	g_assert (EAZEL_IS_INSTALL (service));
+	g_assert (package);
+	g_assert (IS_PACKAGEDATA (package));
+
+	features = package->features;
 
 	trilobite_debug ("is_satisfied_features %d features", g_list_length (features));
 
@@ -1246,6 +1268,10 @@ do_file_conflict_check (EazelInstall *service,
 	if (extra_packages == NULL) {
 		check_feature_consistency (service, *packages);
 		prune_failed_packages (service, packages);
+	} else {
+#if EI2_DEBUG & 0x4
+		trilobite_debug ("extra_packages set, no doing feature consistency check");
+#endif		
 	}
 }
 
@@ -1424,6 +1450,9 @@ install_packages_helper (EazelInstall *service,
 			 GList **packages,
 			 GList **extra_packages)
 {
+#if EI2_DEBUG & 0x4
+	trilobite_debug ("-> install_packages_helper");
+#endif	
 	do_dep_check (service, packages);
 	do_file_conflict_check (service, packages, extra_packages);
 
@@ -1433,15 +1462,9 @@ install_packages_helper (EazelInstall *service,
 	trilobite_debug ("FINAL TREE END");
 #endif
 	
-	/* FIXME: bugzilla.eazel.com 5264(fixed), 5266, 5267
-	   finish this cruft by 
-	   1: traversing the tree to see if anything failed/broke (5264)
-	   2 if failed, emit_failed on the root, and remove root from tree
-	     3: if any broke any other, add the others to tree and recurse
-	   else
-	     4: traverse tree and download packages (5266)
-	     5: force install... (5267)
-	*/
+#if EI2_DEBUG & 0x4
+	trilobite_debug ("<- install_packages_helper");
+#endif	
 	return;
 }
 
