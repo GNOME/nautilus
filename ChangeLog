@@ -2,6 +2,19 @@
 
 	reviewed by: John Harper  <jsh@eazel.com>
 
+	Fixed bug 6797, GConf errors after updating Nautilus, and removing
+	.gconf and .gconfd directories.
+	
+	* helper-scripts/nautilus-restore-settings-to-default.sh: Initial
+	version of a script to let testers reset their preferences. The
+	script shutsdown nautilus and gconf then removes the .nautilus,
+	.gconf, and .gconfd directories. There are various other features
+	that can be added later.
+
+2001-02-23  Arik Devens  <arik@eazel.com>
+
+	reviewed by: John Harper  <jsh@eazel.com>
+
 	Fixed bug 6847, if you delete the text in the homedir preference
 	by holding down the backspace key nautilus freezes and eventually
 	crashes.
