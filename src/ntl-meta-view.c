@@ -27,6 +27,7 @@
 #include "nautilus.h"
 #include "ntl-view-private.h"
 #include <gtk/gtksignal.h>
+#include <libnautilus/nautilus-gtk-macros.h>
 
 static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL };
 
@@ -44,43 +45,19 @@ static POA_Nautilus_MetaViewFrame__vepv impl_Nautilus_MetaViewFrame_vepv =
    &impl_Nautilus_MetaViewFrame_epv
 };
 
-static void nautilus_meta_view_class_init (NautilusMetaViewClass *klass);
-static void nautilus_meta_view_init (NautilusMetaView *view);
-static void nautilus_meta_view_destroy (GtkObject *object);
+static void nautilus_meta_view_initialize_class (NautilusMetaViewClass *klass);
+static void nautilus_meta_view_initialize (NautilusMetaView *view);
 
-GtkType
-nautilus_meta_view_get_type(void)
-{
-  static guint view_type = 0;
-
-  if (!view_type)
-    {
-      GtkTypeInfo view_info = {
-	"NautilusMetaView",
-	sizeof(NautilusMetaView),
-	sizeof(NautilusMetaViewClass),
-	(GtkClassInitFunc) nautilus_meta_view_class_init,
-	(GtkObjectInitFunc) nautilus_meta_view_init,
-        NULL,
-        NULL,
-        NULL
-      };
-
-      view_type = gtk_type_unique (nautilus_view_get_type(), &view_info);
-    }
-
-  return view_type;
-}
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusMetaView, nautilus_meta_view, NAUTILUS_TYPE_VIEW)
 
 static void
-nautilus_meta_view_class_init (NautilusMetaViewClass *klass)
+nautilus_meta_view_initialize_class (NautilusMetaViewClass *klass)
 {
   GtkObjectClass *object_class;
   GtkWidgetClass *widget_class;
   NautilusViewClass *view_class;
 
   object_class = (GtkObjectClass*) klass;
-  object_class->destroy = nautilus_meta_view_destroy;
   widget_class = (GtkWidgetClass*) klass;
   view_class = (NautilusViewClass*) klass;
   klass->parent_class = gtk_type_class (gtk_type_parent (object_class->type));
@@ -90,18 +67,10 @@ nautilus_meta_view_class_init (NautilusMetaViewClass *klass)
 }
 
 static void
-nautilus_meta_view_init (NautilusMetaView *view)
+nautilus_meta_view_initialize (NautilusMetaView *view)
 {
 }
 
-static void
-nautilus_meta_view_destroy (GtkObject *object)
-{
-  NautilusViewClass *klass = (NautilusViewClass *)object->klass;
-
-  if(GTK_OBJECT_CLASS(klass->parent_class)->destroy)
-    GTK_OBJECT_CLASS(klass->parent_class)->destroy(object);
-}
 
 const char *
 nautilus_meta_view_get_label(NautilusMetaView *nview)
@@ -125,3 +94,8 @@ nautilus_meta_view_get_label(NautilusMetaView *nview)
 
   return retval;
 }
+
+
+
+
+

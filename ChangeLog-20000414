@@ -1,3 +1,10 @@
+2000-02-09  Maciej Stachowiak  <mjs@eazel.com>
+
+	* src/ntl-meta-view.c: To avoid a bug which caused parts of the
+	destroy function calling chain to be skipped, remove the destroy
+	function. In the process, switch over to using the boilerplate
+	generation macros from nautilus-gtk-macros.h
+
 2000-02-08  Andy Hertzfeld <andy@eazel.com>
 
 	more work on the index tabs; they're drawing properly now but they're
