@@ -1198,6 +1198,10 @@ create_normal_cache_icon (const char *icon,
 		filename = gtk_icon_info_get_filename (info);
 	}
 
+	/* If e.g. the absolute filename doesn't exist */
+	if (filename == NULL) {
+		return NULL;
+	}
 	
 	pixbuf = load_icon_file (filename,
 				 base_size,
