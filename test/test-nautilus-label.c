@@ -722,6 +722,12 @@ create_drop_shadow_offset_frame (const char	*title,
 	return frame;
 }
 
+static void
+delete_event (GtkWidget *widget, GdkEvent *event, gpointer callback_data)
+{
+	gtk_main_quit ();
+}
+
 int 
 main (int argc, char* argv[])
 {
@@ -747,6 +753,7 @@ main (int argc, char* argv[])
 	gnome_vfs_init ();
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	gtk_signal_connect (GTK_OBJECT (window), "delete_event", GTK_SIGNAL_FUNC (delete_event), NULL);
 	gtk_window_set_title (GTK_WINDOW (window), "Label Test");
 	gtk_window_set_policy (GTK_WINDOW (window), TRUE, TRUE, FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER (window), 10);
