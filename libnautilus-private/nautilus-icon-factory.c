@@ -45,7 +45,6 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-scalable-font.h>
-#include <eel/eel-smooth-text-layout.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtksignal.h>
@@ -59,6 +58,12 @@
 #include <librsvg/rsvg.h>
 #include <stdio.h>
 #include <string.h>
+
+#define USE_EEL_TEXT
+
+#ifdef USE_EEL_TEXT
+#include <eel/eel-smooth-text-layout.h>
+#endif
 
 #define ICON_NAME_BLOCK_DEVICE          "i-blockdev"
 #define ICON_NAME_BROKEN_SYMBOLIC_LINK  "i-symlink"
@@ -2278,8 +2283,8 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 		embedded_text_preferences_callbacks_added = TRUE;
 
 		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
-						   embedded_text_font_changed_callback,
-						   GINT_TO_POINTER (TRUE));
+					      embedded_text_font_changed_callback,
+					      GINT_TO_POINTER (TRUE));
 		embedded_text_font_changed_callback (GINT_TO_POINTER (FALSE));
 
 		g_atexit (embedded_text_font_free);

@@ -1,7 +1,6 @@
 NULL=
 
 SUBDIRS = 					\
-	help 					\
 	history 				\
 	image-viewer 				\
 	news					\

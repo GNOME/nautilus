@@ -25,37 +25,39 @@
 #include <config.h>
 #include "nautilus-icon-canvas-item.h"
 
-#include <math.h>
-#include <string.h>
-#include <stdio.h>
-#include <gtk/gtksignal.h>
+#include "nautilus-file-utilities.h"
+#include "nautilus-global-preferences.h"
+#include "nautilus-icon-factory.h"
+#include "nautilus-icon-private.h"
+#include "nautilus-theme.h"
+#include <eel/eel-art-extensions.h>
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-gdk-font-extensions.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gnome-extensions.h>
+#include <eel/eel-graphic-effects.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-string.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <libgnome/gnome-i18n.h>
-#include <libgnomecanvas/gnome-canvas-util.h>
+#include <gtk/gtksignal.h>
 #include <libart_lgpl/art_rgb.h>
 #include <libart_lgpl/art_rgb_affine.h>
 #include <libart_lgpl/art_rgb_rgba_affine.h>
 #include <libart_lgpl/art_svp_vpath.h>
-#include "nautilus-icon-private.h"
-#include <eel/eel-string.h>
-#include <eel/eel-art-extensions.h>
-#include <eel/eel-glib-extensions.h>
-#include <eel/eel-gdk-extensions.h>
-#include <eel/eel-gdk-font-extensions.h>
-#include <eel/eel-gdk-pixbuf-extensions.h>
-#include "nautilus-global-preferences.h"
-#include <eel/eel-gtk-macros.h>
-#include <eel/eel-gnome-extensions.h>
-#include <eel/eel-graphic-effects.h>
-#include "nautilus-file-utilities.h"
-#include "nautilus-icon-factory.h"
-#include "nautilus-theme.h"
-#include <eel/eel-smooth-text-layout.h>
-#include <eel/eel-smooth-text-layout-cache.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomecanvas/gnome-canvas-util.h>
+#include <math.h>
+#include <stdio.h>
+#include <string.h>
 
-/* Comment this out if the new smooth fonts code give you problems
- * This isnt meant to be permanent.  Its just a precaution.
- */
+#define USE_EEL_TEXT
+
+#ifdef USE_EEL_TEXT
+#include <eel/eel-smooth-text-layout-cache.h>
+#include <eel/eel-smooth-text-layout.h>
+#endif
+
 #define EMBLEM_SPACING 2
 
 /* gap between bottom of icon and start of text box */
@@ -101,9 +103,11 @@ struct NautilusIconCanvasItemDetails {
 	
 	gboolean is_renaming;
 
+#ifdef USE_EEL_TEXT
 	/* Font stuff whilst in smooth mode */
 	int smooth_font_size;
 	EelScalableFont *smooth_font;
+#endif
 	
 	/* Cached rectangle in canvas coordinates */
 	ArtIRect canvas_rect;
@@ -121,8 +125,10 @@ enum {
     	ARG_HIGHLIGHTED_AS_KEYBOARD_FOCUS,
     	ARG_HIGHLIGHTED_FOR_DROP,
     	ARG_MODIFIER,
+#ifdef USE_EEL_TEXT
 	ARG_SMOOTH_FONT_SIZE,
 	ARG_SMOOTH_FONT
+#endif
 };
 
 typedef enum {
@@ -192,6 +198,8 @@ EEL_CLASS_BOILERPLATE (NautilusIconCanvasItem,
 		       nautilus_icon_canvas_item,
 		       GNOME_TYPE_CANVAS_ITEM)
 
+#ifdef USE_EEL_TEXT
+
 static EelSmoothTextLayoutCache *layout_cache;
 
 static void
@@ -199,6 +207,8 @@ free_layout_cache (void)
 {
 	g_object_unref (layout_cache);
 }
+
+#endif
 
 /* Object initialization function for the icon item. */
 static void
@@ -215,9 +225,11 @@ nautilus_icon_canvas_item_init (NautilusIconCanvasItem *icon_item)
 	/* invalidate cached text dimensions initially */
 	nautilus_icon_canvas_item_invalidate_label_size (icon_item);
 	
+#ifdef USE_EEL_TEXT
 	/* set up the default font and size */
 	icon_item->details->smooth_font_size = 12;
 	icon_item->details->smooth_font = eel_scalable_font_get_default_font ();
+#endif
 }
 
 static void
@@ -241,7 +253,9 @@ nautilus_icon_canvas_item_finalize (GObject *object)
 		gdk_font_unref (details->font);
 	}
 
+#ifdef USE_EEL_TEXT
 	g_object_unref (details->smooth_font);
+#endif
 
 	if (details->rendered_pixbuf != NULL) {
 		g_object_unref (details->rendered_pixbuf);
@@ -348,6 +362,7 @@ nautilus_icon_canvas_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 		details->is_highlighted_for_drop = GTK_VALUE_BOOL (*arg);
 		break;
 
+#ifdef USE_EEL_TEXT
         case ARG_SMOOTH_FONT:
 		nautilus_icon_canvas_item_set_smooth_font (NAUTILUS_ICON_CANVAS_ITEM (object),
 							   EEL_SCALABLE_FONT (GTK_VALUE_OBJECT (*arg)));
@@ -358,6 +373,7 @@ nautilus_icon_canvas_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 		nautilus_icon_canvas_item_set_smooth_font_size (NAUTILUS_ICON_CANVAS_ITEM (object),
 								GTK_VALUE_INT (*arg));
 		break;
+#endif
         
 	default:
 		g_warning ("nautilus_icons_view_item_item_set_arg on unknown argument");
@@ -401,6 +417,7 @@ nautilus_icon_canvas_item_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
                 GTK_VALUE_BOOL (*arg) = details->is_highlighted_for_drop;
                 break;
 
+#ifdef USE_EEL_TEXT
         case ARG_SMOOTH_FONT:
 		g_object_ref (details->smooth_font);
                 GTK_VALUE_OBJECT (*arg) = GTK_OBJECT (details->smooth_font);
@@ -409,6 +426,7 @@ nautilus_icon_canvas_item_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
         case ARG_SMOOTH_FONT_SIZE:
                 GTK_VALUE_INT (*arg) = details->smooth_font_size;
 		break;
+#endif
         
         default:
 		arg->type = G_TYPE_INVALID;
@@ -1313,13 +1331,21 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 			       int icon_bottom)
 {
 	NautilusIconCanvasItemDetails *details;
-	guint width_so_far, height_so_far;
+	int width_so_far, height_so_far;
 	guint32 label_name_color;
 	guint32 label_info_color;
 	GnomeCanvasItem *canvas_item;
 	int max_text_width;
 	int icon_width, text_left, box_left;
+#ifdef USE_EEL_TEXT
 	EelSmoothTextLayout *smooth_text_layout;
+#else
+	PangoContext *context;
+	PangoLayout *layout;
+	int layout_width, layout_height;
+	PangoAttrList *attr_list;
+	PangoAttribute *attr;
+#endif
 	char **pieces;
 	const char *text_piece;
 	int i;
@@ -1411,6 +1437,7 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 			text_piece = " ";
 		}
 
+#ifdef USE_EEL_TEXT
 		smooth_text_layout = eel_smooth_text_layout_cache_render (layout_cache,
 									  text_piece,
 									  strlen (text_piece),
@@ -1418,16 +1445,45 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 									  details->smooth_font_size,
 									  TRUE, LABEL_LINE_SPACING,
 									  max_text_width);
-		
+#else
+		context = eel_gnome_canvas_get_pango_context (canvas_item->canvas);
+
+		layout = pango_layout_new (context);
+		pango_layout_set_text (layout, text_piece, -1);
+		pango_layout_set_width (layout, max_text_width * PANGO_SCALE);
+#if GNOME2_CONVERSION_COMPLETE
+		pango_layout_set_alignment (layout, PANGO_ALIGN_CENTER);
+#endif
+		pango_layout_set_spacing (layout, LABEL_LINE_SPACING);
+
+		pango_layout_get_pixel_size (layout, &layout_width, &layout_height);
+#endif		
+
 		/* Draw text if we are not in user rename mode */
 		if (destination_pixbuf != NULL && !details->is_renaming) {
-			gboolean underlined;
 			ArtIRect destination_area;
+
+#ifdef USE_EEL_TEXT
+			gboolean underlined;
 
 			text_left = icon_left + (icon_width - eel_smooth_text_layout_get_width (smooth_text_layout)) / 2;
 			
 			/* if it's prelit, and we're in click-to-activate mode, underline the text */
-			underlined = (details->is_prelit && in_single_click_mode ());
+			underlined = details->is_prelit && in_single_click_mode ();
+#else
+			text_left = icon_left + (icon_width - layout_width) / 2;
+			
+			/* if it's prelit, and we're in click-to-activate mode, underline the text */
+			if (details->is_prelit && in_single_click_mode ()) {
+				attr_list = pango_attr_list_new ();
+				attr = pango_attr_underline_new (PANGO_UNDERLINE_SINGLE);
+				attr->start_index = 0;
+				attr->end_index = strlen (text_piece);
+				pango_attr_list_insert (attr_list, attr);
+				pango_layout_set_attributes (layout, attr_list);
+				pango_attr_list_unref (attr_list);
+			}
+#endif
 			
 			/* draw the shadow in black */
 			if (needs_highlight) {
@@ -1436,6 +1492,7 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 				
 				destination_area.x0 = text_left + 2;
 				destination_area.y0 = icon_bottom + height_so_far + 1;
+#ifdef USE_EEL_TEXT
 				destination_area.x1 = destination_area.x0 + eel_smooth_text_layout_get_width (smooth_text_layout);
 				destination_area.y1 = destination_area.y0 + eel_smooth_text_layout_get_height (smooth_text_layout);
 				eel_smooth_text_layout_draw_to_pixbuf (smooth_text_layout,
@@ -1447,10 +1504,20 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 								       underlined,
 								       EEL_RGB_COLOR_BLACK,
 								       0xff);
+#else
+				destination_area.x1 = destination_area.x0 + layout_width;
+				destination_area.y1 = destination_area.y0 + layout_height;
+				eel_draw_layout_to_pixbuf (layout,
+							   destination_pixbuf,
+							   0, 0,
+							   destination_area,
+							   EEL_RGB_COLOR_BLACK);
+#endif
 			}
 			
 			destination_area.x0 = text_left;
 			destination_area.y0 = icon_bottom + height_so_far;
+#ifdef USE_EEL_TEXT
 			destination_area.x1 = destination_area.x0 + eel_smooth_text_layout_get_width (smooth_text_layout);
 			destination_area.y1 = destination_area.y0 + eel_smooth_text_layout_get_height (smooth_text_layout);
 			eel_smooth_text_layout_draw_to_pixbuf (smooth_text_layout,
@@ -1462,11 +1529,21 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 							       underlined,
 							       label_color,
 							       0xff);
+#else
+			destination_area.x1 = destination_area.x0 + layout_width;
+			destination_area.y1 = destination_area.y0 + layout_height;
+			eel_draw_layout_to_pixbuf (layout,
+						   destination_pixbuf,
+						   0, 0,
+						   destination_area,
+						   label_color);
+#endif
 			
 			/* if it's highlighted, embolden by drawing twice */
 			if (needs_highlight) {
 				destination_area.x0 = text_left + 1;
 				destination_area.y0 = icon_bottom + height_so_far;
+#ifdef USE_EEL_TEXT
 				destination_area.x1 = destination_area.x0 + eel_smooth_text_layout_get_width (smooth_text_layout);
 				destination_area.y1 = destination_area.y0 + eel_smooth_text_layout_get_height (smooth_text_layout);
 				eel_smooth_text_layout_draw_to_pixbuf (smooth_text_layout,
@@ -1478,14 +1555,30 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 								       underlined,
 								       label_color,
 								       0xff);
+#else
+				destination_area.x1 = destination_area.x0 + layout_width;
+				destination_area.y1 = destination_area.y0 + layout_height;
+				eel_draw_layout_to_pixbuf (layout,
+							   destination_pixbuf,
+							   0, 0,
+							   destination_area,
+							   label_color);
+#endif
 			}
 			
 		}
 		
-		width_so_far = MAX (width_so_far, (guint) eel_smooth_text_layout_get_width (smooth_text_layout));
+#ifdef USE_EEL_TEXT
+		width_so_far = MAX (width_so_far, eel_smooth_text_layout_get_width (smooth_text_layout));
 		height_so_far += eel_smooth_text_layout_get_height (smooth_text_layout) + LABEL_LINE_SPACING;
 		
 		g_object_unref (smooth_text_layout);
+#else
+		width_so_far = MAX (width_so_far, layout_width);
+		height_so_far += layout_height + LABEL_LINE_SPACING;
+		
+		g_object_unref (layout);
+#endif
 	}
 	g_strfreev (pieces);
 	
@@ -1500,8 +1593,8 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 		 * differently and change these asserts.
 		 */
 #if (defined PERFORMANCE_TEST_MEASURE_DISABLE || defined PERFORMANCE_TEST_DRAW_DISABLE)
-		g_assert ((int) height_so_far == details->text_height);
-		g_assert ((int) width_so_far == details->text_width);
+		g_assert (height_so_far == details->text_height);
+		g_assert (width_so_far == details->text_width);
 #endif
 	
 		box_left = icon_left + (icon_width - width_so_far) / 2;
@@ -1573,8 +1666,14 @@ draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, int 
 		&& icon_item->details->additional_text[0] != '\0';
 
 	/* No font or no text, then do no work. */
-	if (icon_item->details->smooth_font == NULL
-	    || (!have_editable && !have_additional)) {
+#ifdef USE_EEL_TEXT
+	if (icon_item->details->smooth_font == NULL) {
+		icon_item->details->text_height = 0;
+		icon_item->details->text_width = 0;			
+		return;
+	}
+#endif
+	if (!have_editable && !have_additional) {
 		icon_item->details->text_height = 0;
 		icon_item->details->text_width = 0;			
 		return;
@@ -2095,6 +2194,8 @@ nautilus_icon_canvas_item_get_max_text_width (NautilusIconCanvasItem *item)
 
 }
 
+#ifdef USE_EEL_TEXT
+
 void
 nautilus_icon_canvas_item_set_smooth_font (NautilusIconCanvasItem	*icon_item,
 					   EelScalableFont		*font)
@@ -2133,6 +2234,8 @@ nautilus_icon_canvas_item_set_smooth_font_size (NautilusIconCanvasItem *icon_ite
 	}
 }
 
+#endif
+
 /* Class initialization function for the icon canvas item. */
 static void
 nautilus_icon_canvas_item_class_init (NautilusIconCanvasItemClass *class)
@@ -2140,10 +2243,12 @@ nautilus_icon_canvas_item_class_init (NautilusIconCanvasItemClass *class)
 	GtkObjectClass *object_class;
 	GnomeCanvasItemClass *item_class;
 
+#ifdef USE_EEL_TEXT
 	if (layout_cache == NULL) {
 		layout_cache = eel_smooth_text_layout_cache_new ();
 		g_atexit (free_layout_cache);
 	}
+#endif
 
 	object_class = GTK_OBJECT_CLASS (class);
 	item_class = GNOME_CANVAS_ITEM_CLASS (class);
@@ -2160,10 +2265,12 @@ nautilus_icon_canvas_item_class_init (NautilusIconCanvasItemClass *class)
 				 G_TYPE_BOOLEAN, GTK_ARG_READWRITE, ARG_HIGHLIGHTED_AS_KEYBOARD_FOCUS);
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::highlighted_for_drop",
 				 G_TYPE_BOOLEAN, GTK_ARG_READWRITE, ARG_HIGHLIGHTED_FOR_DROP);
+#ifdef USE_EEL_TEXT
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::smooth_font_size",
 				 G_TYPE_INT, GTK_ARG_READWRITE, ARG_SMOOTH_FONT_SIZE);
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::smooth_font",
 				 GTK_TYPE_OBJECT, GTK_ARG_READWRITE, ARG_SMOOTH_FONT);
+#endif
 
 	G_OBJECT_CLASS (class)->finalize = nautilus_icon_canvas_item_finalize;
 

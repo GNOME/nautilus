@@ -1,3 +1,41 @@
+2001-12-13  Darin Adler  <darin@bentspoon.com>
+
+	* components/Makefile.am:
+	* components/help/*:
+	* nautilus.spec.in:
+	Deleted help component as it is not slated to be part of Gnome 2.
+
+	* RENAMING: No need to rename hyperbola if it's gone.
+
+	* configure.in: Removed ScrollKeeper check. Took a cut at making
+	the medusa check use pkg-config, it's probably messed up but at
+	least we won't define HAVE_MEDUSA if we see the Gnome 1 medusa.
+
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_init),
+	(nautilus_icon_canvas_item_finalize),
+	(nautilus_icon_canvas_item_set_arg),
+	(nautilus_icon_canvas_item_get_arg),
+	(draw_or_measure_label_text_aa), (draw_label_text_aa),
+	(nautilus_icon_canvas_item_class_init):
+	Quick cut at porting to Pango from Eel font code. It's all under
+	ifdef USE_EEL_TEXT because it's not working well yet. At the moment
+	the text looks bad, and it's very slow, and it's not centered.
+
+	* libnautilus-private/nautilus-icon-factory.c: (embed_text):
+	Baby steps at doing the port to Pango here too.
+
+        * src/file-manager/fm-directory-view.c: (real_update_menus):
+        Add a check for NULL that seems required. This change was
+        suggested by the backtrace in bug 66809, but it's not clear
+        if this really fixes anything. (Rolled from stable branch.)
+
+	* src/file-manager/fm-icon-view.c: (icon_view_handle_uri_list):
+	Fix code that passed a path instead of a URI when creating a
+        desktop file. (Rolled from stable branch.)
+
+	* TODO: Minor updates.
+
 2001-12-12  Michael Meeks  <michael@ximian.com>
 
 	* src/file-manager/fm-icon-view.c
@@ -1143,6 +1181,8 @@ Tue Nov 20 21:45:43 2001  Owen Taylor  <otaylor@redhat.com>
 	* libnautilus-private/nautilus-link-desktop-file.c:
 	(nautilus_link_desktop_file_get_link_name_from_desktop):
 	Use the localized string
+
+=== Gnome 1 Nautilus development continues on nautilus-gnome-1 stable branch ===
 
 === nautilus 1.0.5 ===
 

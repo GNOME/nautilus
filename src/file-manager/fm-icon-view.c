@@ -2556,6 +2556,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 	GnomeDesktopEntry *entry;
 #endif
 	GdkPoint point;
+	char *uri;
 	char *local_path;
 	char *stripped_uri;
 	char *container_uri_string;
@@ -2650,12 +2651,12 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 		container_path = gnome_vfs_get_local_path_from_uri (container_uri_string);
 		for (node = real_uri_list; node != NULL; node = node->next) {
 			/* Make a link using the desktop file contents? */
-			local_path = gnome_vfs_get_local_path_from_uri (node->data);
+			uri = node->data;
+			local_path = gnome_vfs_get_local_path_from_uri (uri);
 			if (local_path != NULL) {
 #if GNOME2_CONVERSION_COMPLETE
 				entry = gnome_desktop_entry_load (local_path);
 				if (entry != NULL) {
-					
 					/* FIXME: Handle name conflicts? */
 					nautilus_link_local_create_from_gnome_entry (entry, container_path, &point);
 					gnome_desktop_entry_free (entry);
@@ -2673,20 +2674,19 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 			/* FIXME: This should be using eel_uri_get_basename
 			 * instead of a "roll our own" solution.
 			 */
-			stripped_uri = eel_str_strip_trailing_chr ((char *)node->data, '/');
-			g_print ("local_path:%s\nstripped_uri:%s\n", (char *)node->data, stripped_uri);
+			stripped_uri = eel_str_strip_trailing_chr (uri, '/');
+			g_print ("local_path:%s\nstripped_uri:%s\n", local_path, stripped_uri);
 			last_slash = strrchr (stripped_uri, '/');
 			link_name = last_slash == NULL ? NULL : last_slash + 1;
 			
 			if (!eel_str_is_empty (link_name)) {
 				/* FIXME: Handle name conflicts? */
 				nautilus_link_local_create (container_path, link_name,
-							    "gnome-http-url", local_path,
+							    "gnome-http-url", uri,
 							    &point, NAUTILUS_LINK_GENERIC);
 			}
 			
 			g_free (stripped_uri);
-
 			break;
 		}
 		g_free (container_path);

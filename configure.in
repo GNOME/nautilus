@@ -25,7 +25,6 @@ MEDUSA_REQUIRED=0.5.1
 ORBIT_REQUIRED=2.3.97
 POPT_REQUIRED=1.5
 RSVG_REQUIRED=1.1
-SCROLLKEEPER_REQUIRED=0.1.4
 XML_REQUIRED=2.4.6
 
 AC_SUBST(EEL_REQUIRED)
@@ -36,7 +35,6 @@ AC_SUBST(MEDUSA_REQUIRED)
 AC_SUBST(ORBIT_REQUIRED)
 AC_SUBST(POPT_REQUIRED)
 AC_SUBST(RSVG_REQUIRED)
-AC_SUBST(SCROLLKEEPER_REQUIRED)
 AC_SUBST(XML_REQUIRED)
 
 dnl ===========================================================================
@@ -183,15 +181,6 @@ AC_CHECK_HEADERS(cdda_interface.h cdda_paranoia.h, [
 
 dnl ==========================================================================
 
-dnl scrollkeeper
-
-AC_PATH_PROG(SCROLLKEEPER_CONFIG, scrollkeeper-config,no)
-if test x$SCROLLKEEPER_CONFIG = xno; then
-  AC_MSG_ERROR(Couldn't find scrollkeeper-config, please install the scrollkeeper packaga)
-fi
-
-dnl ==========================================================================
-
 dnl jw (for doc build)
 
 AC_PATH_PROG(JW,jw,no)
@@ -205,25 +194,13 @@ AC_SUBST(HAVE_JW)
 
 dnl ==========================================================================
 
+dnl medusa checking (this is the Gnome 1 version -- change to pkg-config)
+
 AC_MSG_CHECKING(for Medusa)
 
-case "`medusa-config --libs 2>/dev/null | cut -d ' ' -f1`" in
-'')
-	MEDUSA_CFLAGS=""
-	MEDUSA_LIBS=""
-	AC_MSG_RESULT(no)
-;;
- 
-*)
-	MEDUSA_CFLAGS=`medusa-config --cflags`
-	MEDUSA_LIBS=`medusa-config --libs`
-	AC_DEFINE(HAVE_MEDUSA)
-	AC_MSG_RESULT(yes)
-;;
-esac
-
-AC_SUBST(MEDUSA_CFLAGS)
-AC_SUBST(MEDUSA_LIBS)
+PKG_CHECK_MODULES(MEDUSA, medusa-2.0 >= $MEDUSA_REQUIRED, have_medusa=yes, have_medusa=no)
+AM_CONDITIONAL(HAVE_MEDUSA, test x$have_medusa = xyes)
+AC_SUBST(HAVE_MEDUSA)
 
 dnl ==========================================================================
 
@@ -362,7 +339,6 @@ components/Makefile
 components/adapter/Makefile
 components/hardware/Makefile
 components/hardware/icons/Makefile
-components/help/Makefile
 components/history/Makefile
 components/image-viewer/Makefile
 components/loser/Makefile

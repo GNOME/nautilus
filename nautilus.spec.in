@@ -33,7 +33,6 @@ Requires:	librsvg >= @LIBRSVG_REQUIRED@
 Requires:	libxml >= @LIBXML_REQUIRED@
 Requires:	medusa >= @MEDUSA_REQUIRED@
 Requires:	popt >= @POPT_REQUIRED@
-Requires:	scrollkeeper >= @SCROLLKEEPER_REQUIRED@
 
 BuildRequires:	GConf-devel >= @GCONF_REQUIRED@
 BuildRequires:	ORBit-devel >= @ORBIT_REQUIRED@
@@ -52,7 +51,6 @@ BuildRequires:	librsvg-devel >= @LIBRSVG_REQUIRED@
 BuildRequires:	libxml-devel >= @LIBXML_REQUIRED@
 BuildRequires:	medusa-devel >= @MEDUSA_REQUIRED@
 BuildRequires:	popt >= @POPT_REQUIRED@
-BuildRequires:	scrollkeeper >= @SCROLLKEEPER_REQUIRED@
 BuildRequires:	xpdf >= 0.90
 
 %description
@@ -140,7 +138,6 @@ scrollkeeper-update
 
 %defattr(0555, bin, bin)
 %doc AUTHORS COPYING COPYING-DOCS COPYING.LIB TRADEMARK_NOTICE ChangeLog NEWS README
-%{_bindir}/hyperbola
 %{_bindir}/nautilus
 %{_bindir}/nautilus-adapter
 %{_bindir}/nautilus-error-dialog
@@ -177,8 +174,6 @@ scrollkeeper-update
 %{_datadir}/gnome/apps/Applications/*.desktop
 %{_datadir}/locale/*/LC_MESSAGES/*.mo
 %{_datadir}/nautilus/*.xml
-%{_datadir}/nautilus/components/hyperbola/*.xml
-%{_datadir}/nautilus/components/hyperbola/maps/*.map
 %{_datadir}/nautilus/emblems/*.png
 %{_datadir}/nautilus/linksets/*.xml
 %{_datadir}/nautilus/patterns/*.jpg
@@ -212,7 +207,6 @@ scrollkeeper-update
 %{_libdir}/bonobo/servers/Nautilus_ComponentAdapterFactory_std.server
 %{_libdir}/bonobo/servers/Nautilus_Control_throbber.server
 %{_libdir}/bonobo/servers/Nautilus_View_hardware.server
-%{_libdir}/bonobo/servers/Nautilus_View_help.server
 %{_libdir}/bonobo/servers/Nautilus_View_history.server
 %{_libdir}/bonobo/servers/Nautilus_View_image.server
 %{_libdir}/bonobo/servers/Nautilus_View_music.server

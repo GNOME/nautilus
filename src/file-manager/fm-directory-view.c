@@ -4173,6 +4173,10 @@ real_update_menus (FMDirectoryView *view)
 	gboolean can_duplicate_files;
 	gboolean show_separate_delete_command;
 	EelBackground *background;
+
+	if (view->details->ui == NULL) {
+		return;
+	}
 	
 	selection = fm_directory_view_get_selection (view);
 	selection_count = g_list_length (selection);
