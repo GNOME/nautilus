@@ -886,12 +886,13 @@ draw_or_layout_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean layout_only
 				cur_x_pos = last_x_pos + tab_width;				
 				last_x_pos = total_width - gdk_pixbuf_get_width (sidebar_tabs->details->tab_piece_images[tab_select]) - tab_width; 
 				
-				if (prev_item->visible && !layout_only) {
+				if (prev_item->visible) {
 					int x = widget->allocation.x;
 					int y = widget->allocation.y;
 					
 					while (cur_x_pos < total_width) {
-						draw_tab_piece_aa (sidebar_tabs, tab_pixbuf, cur_x_pos - x,
+						if (!layout_only)
+							draw_tab_piece_aa (sidebar_tabs, tab_pixbuf, cur_x_pos - x,
 									last_y_pos - y, total_width, extra_fill);				
 						cur_x_pos += extra_width;
 					}
@@ -911,10 +912,13 @@ draw_or_layout_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean layout_only
 			if (!prev_item->visible)
 				tab_select = (!changed_rows && this_item) ? TAB_NORMAL_LEFT : -1;
 			
+			piece_width = 0;
 			if (tab_select >= 0) {	
+				GdkPixbuf *temp_pixbuf = sidebar_tabs->details->tab_piece_images[tab_select];
+				piece_width = gdk_pixbuf_get_width (temp_pixbuf);
+				
 				if (!layout_only) {
 					if (needs_compositing) {
-						GdkPixbuf *temp_pixbuf = sidebar_tabs->details->tab_piece_images[tab_select];
 						int dest_x = last_x_pos + tab_width - widget->allocation.x;
 						int dest_y = last_y_pos - widget->allocation.y;
 						
@@ -934,13 +938,10 @@ draw_or_layout_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean layout_only
 									last_y_pos - widget->allocation.y, -1, 
 									tab_select);
 					}
-				} else {
-					piece_width = 0;
-				}
+				} 
 				prev_item->tab_rect.width = last_x_pos + tab_width + piece_width - prev_item->tab_rect.x;
-			} else {
-				piece_width = 0;
-			}	
+			} 
+				
 			if (!changed_rows)
 				x_pos += piece_width;
 		}
