@@ -2093,7 +2093,8 @@ nautilus_tree_view_move_copy_files (NautilusTreeView *tree_view,
 					    NULL, 
 					    target_uri,
 					    context->action,
-					    GTK_WIDGET (tree_view->details->tree));
+					    GTK_WIDGET (tree_view->details->tree),
+					    NULL, NULL);
 
 	g_list_free (source_uris);
 }

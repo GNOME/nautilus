@@ -323,39 +323,32 @@ load_image_from_stream (BonoboPersistStream *ps, Bonobo_Stream stream,
 			gtk_object_unref (GTK_OBJECT (loader));
 			return;
 		}
-
-		if (buffer->_buffer &&
-		     !gdk_pixbuf_loader_write (loader,
-					       buffer->_buffer,
-					       buffer->_length)) {
-			CORBA_free (buffer);
-			if (ev->_major == CORBA_NO_EXCEPTION) {
+		
+		if (buffer->_buffer != NULL && 
+		    !gdk_pixbuf_loader_write (loader, buffer->_buffer, buffer->_length)) {
+				CORBA_free (buffer);
+				if (ev->_major != CORBA_NO_EXCEPTION) {
+					CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+										 ex_Bonobo_Persist_WrongDataType, NULL);
+				}				
 				gdk_pixbuf_loader_close (loader);
 				gtk_object_unref (GTK_OBJECT (loader));
 				return;
-			} else {
-				CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
-				ex_Bonobo_Persist_WrongDataType, NULL);
-				gdk_pixbuf_loader_close (loader);
-				gtk_object_unref (GTK_OBJECT (loader));
-				return;
-			}
 		}
+		
 		len = buffer->_length;
-
 		CORBA_free (buffer);
 	} while (len > 0);
 
+	gdk_pixbuf_loader_close (loader);
 	bod->pixbuf = gdk_pixbuf_loader_get_pixbuf (loader);
 
 	if (bod->pixbuf == NULL) {
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION, ex_Bonobo_Persist_WrongDataType, NULL);
-		gdk_pixbuf_loader_close (loader);
 		gtk_object_unref (GTK_OBJECT (loader));
 	} else {
 		gdk_pixbuf_ref (bod->pixbuf);
-		bonobo_embeddable_foreach_view (bod->bonobo_object,
-						resize_all_cb, bod);
+		bonobo_embeddable_foreach_view (bod->bonobo_object, resize_all_cb, bod);
 	}
 }
 

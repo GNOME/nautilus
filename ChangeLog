@@ -1,3 +1,24 @@
+2000-10-23  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 1945, Image viewer component does not display XPMs
+	Fixed bug 1964, doesn't load xpm images using the loader framework.
+	
+	* components/image-viewer/nautilus-image-view.c:
+	(load_image_from_stream):
+	Fixed some leaks and call close on the loader to fix TIFF and XPM loading.
+	
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	(nautilus_gdk_pixbuf_load):
+	Now it does. Loader must be closed to cause callbacks an non-progressive
+	loaders to complete.
+
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_fill_from_rpm_header):
+	Fixed a couple of build breaking unitilaized variable warnings.
+	
+	* components/tree/nautilus-tree-view.c:
+	Updated function call to new prototype that was causing build to fail.	
+
 2000-10-23  Mathieu Lacage  <mathieu@eazel.com>
 
 	* components/help/hyperbola-filefmt.c:
