@@ -1,3 +1,26 @@
+2000-08-24  Michael Engber  <engber@eazel.com>
+
+	Added a Change Desktop Background item to the right click
+	menu of the desktop. I brings up the background capplet (bug
+	1791). While I was at it I made it so the Change Background
+	item for the desktop was called Change Desktop Background in
+	accordance with Arlo's wishes.
+
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(nautilus_directory_background_is_set):
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_initialize_class),
+	(reset_desktop_background_menu_item_callback),
+	(change_desktop_background_menu_item_callback),
+	(fm_desktop_icon_view_create_background_context_menu_background_ite
+	ms):
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize_class),
+	(real_create_background_context_menu_background_items),
+	(create_background_context_menu_background_items),
+	(fm_directory_view_real_create_background_context_menu_items):
+	* src/file-manager/fm-directory-view.h:
+
 2000-08-24 Alastair McKinstry <mckinstry@computer.org>
 
 	* configure.in: Added "ga" to ALL_LINGUAS

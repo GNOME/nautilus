@@ -131,10 +131,11 @@ static void           fm_directory_view_destroy                                 
 static void           fm_directory_view_activate_file	                          (FMDirectoryView          *view,
 										   NautilusFile             *file,
 										   gboolean                  use_new_window);
-static NautilusBackground *fm_directory_view_get_background 			  (FMDirectoryView 	    *view);
 static void           fm_directory_view_create_background_context_menu_items      (FMDirectoryView          *view,
 										   GtkMenu                  *menu);
 static void           fm_directory_view_merge_menus                               (FMDirectoryView          *view);
+static void	      real_create_background_context_menu_background_items        (FMDirectoryView	    *view, 
+							                           GtkMenu		    *menu);
 static void           fm_directory_view_real_create_background_context_menu_items (FMDirectoryView          *view,
 										   GtkMenu                  *menu);
 static void           fm_directory_view_real_create_selection_context_menu_items  (FMDirectoryView          *view,
@@ -273,6 +274,7 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 
 	klass->create_selection_context_menu_items = fm_directory_view_real_create_selection_context_menu_items;
 	klass->create_background_context_menu_items = fm_directory_view_real_create_background_context_menu_items;
+	klass->create_background_context_menu_background_items = real_create_background_context_menu_background_items;
         klass->merge_menus = fm_directory_view_real_merge_menus;
         klass->update_menus = fm_directory_view_real_update_menus;
 	klass->get_required_metadata_keys = get_required_metadata_keys;
@@ -1743,7 +1745,7 @@ fm_directory_view_get_background_widget (FMDirectoryView *view)
 		 get_background_widget, (view));
 }
 
-static NautilusBackground *
+NautilusBackground *
 fm_directory_view_get_background (FMDirectoryView *view)
 {
 	return nautilus_get_widget_background (fm_directory_view_get_background_widget (view));
@@ -2407,8 +2409,31 @@ fm_directory_view_add_menu_item (FMDirectoryView *view, GtkMenu *menu, const cha
 }
 
 static void
+real_create_background_context_menu_background_items (FMDirectoryView *view, 
+							     GtkMenu *menu)
+{
+	append_gtk_menu_item_with_view (view,
+					menu,
+					NULL,
+					FM_DIRECTORY_VIEW_MENU_PATH_RESET_BACKGROUND,
+					reset_background_callback,
+					view);
+
+	/* add the change background item here
+	 */
+}
+
+static void
+create_background_context_menu_background_items (FMDirectoryView *view, 
+							     GtkMenu *menu)
+{
+	NAUTILUS_CALL_VIRTUAL (FM_DIRECTORY_VIEW_CLASS, view, create_background_context_menu_background_items, (view, menu));
+}
+
+static void
 fm_directory_view_real_create_background_context_menu_items (FMDirectoryView *view, 
 							     GtkMenu *menu)
+
 {
 	fm_directory_view_add_menu_item (view, menu, _("New Folder"), new_folder_menu_item_callback,
 		       TRUE);
@@ -2426,12 +2451,8 @@ fm_directory_view_real_create_background_context_menu_items (FMDirectoryView *vi
 	fm_directory_view_add_menu_item (view, menu, _("Zoom Out"), zoom_out_callback,
 		       fm_directory_view_can_zoom_out (view));
 	fm_directory_view_add_menu_item (view, menu, _("Normal Size"), zoom_default_callback, TRUE);
-	append_gtk_menu_item_with_view (view,
-					menu,
-					NULL,
-					FM_DIRECTORY_VIEW_MENU_PATH_RESET_BACKGROUND,
-					reset_background_callback,
-					view);
+	
+	create_background_context_menu_background_items (view, menu);
 }
 
 static void

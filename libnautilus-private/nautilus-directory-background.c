@@ -509,16 +509,17 @@ nautilus_directory_background_is_set (NautilusBackground *background)
 
 	color = nautilus_background_get_color (background);
 	image = nautilus_background_get_image_uri (background);
-	default_combine = nautilus_background_get_combine_mode (background);
-	default_placement = nautilus_background_get_image_placement (background);
+	combine = nautilus_background_get_combine_mode (background);
+	placement = nautilus_background_get_image_placement (background);
+	
 	nautilus_directory_background_get_default_settings (
 		nautilus_directory_background_peek_theme_source (background),
-		&default_color, &default_image, &placement, &combine);
+		&default_color, &default_image, &default_placement, &default_combine);
 
-	is_set = !nautilus_strcmp (color, default_color) ||
-		 !nautilus_strcmp (image, default_image) ||
-		 placement != default_placement ||
-		 combine != default_combine;
+	is_set = (default_color != NULL && nautilus_strcmp (color, default_color) != 0) ||
+		 (default_image != NULL && nautilus_strcmp (image, default_image) != 0) ||
+		 (placement != default_placement) ||
+		 (combine != default_combine);
 
 	g_free (color);
 	g_free (image);

@@ -29,6 +29,7 @@
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <libnautilus/nautilus-view.h>
+#include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-icon-container.h>
@@ -137,6 +138,12 @@ struct FMDirectoryViewClass {
 					  GtkMenu *menu);
 	 
 	/* Function pointers that don't have corresponding signals */
+
+	/* This method adds the items relating to changed background to the
+	 * background context menu. It's there to be overridden (by the desktop
+	 * icon view) to add different items.
+	 */
+	void (* create_background_context_menu_background_items) (FMDirectoryView *view, GtkMenu *menu);
 
 	/* get_selection is not a signal; it is just a function pointer for
 	 * subclasses to replace (override). Subclasses must replace it
@@ -291,9 +298,10 @@ void               fm_directory_view_activate_files                 (FMDirectory
 void		   fm_directory_view_queue_file_change	    	    (FMDirectoryView	   *view,
 								     NautilusFile 	   *file);
 void               fm_directory_view_notify_selection_changed       (FMDirectoryView       *view);
-BonoboUIHandler *  fm_directory_view_get_bonobo_ui_handler          (FMDirectoryView       *view);
+BonoboUIHandler    *fm_directory_view_get_bonobo_ui_handler         (FMDirectoryView       *view);
 NautilusStringList *fm_directory_view_get_emblem_names_to_exclude   (FMDirectoryView	   *view);
-NautilusDirectory *fm_directory_view_get_model                      (FMDirectoryView       *view);
+NautilusDirectory  *fm_directory_view_get_model                     (FMDirectoryView       *view);
+NautilusBackground *fm_directory_view_get_background		    (FMDirectoryView 	   *view);
 void               fm_directory_view_pop_up_background_context_menu (FMDirectoryView       *view);
 void               fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView       *view); 
 void               fm_directory_view_update_menus                   (FMDirectoryView       *view);

@@ -36,6 +36,8 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-extensions/nautilus-directory-notify.h>
+#include <libnautilus-extensions/nautilus-directory-background.h>
+#include <libnautilus-extensions/nautilus-program-choosing.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
@@ -56,6 +58,9 @@
 static void     fm_desktop_icon_view_initialize                           (FMDesktopIconView      *desktop_icon_view);
 static void     fm_desktop_icon_view_initialize_class                     (FMDesktopIconViewClass *klass);
 static void     fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView        *view,
+									   GtkMenu                *menu);
+static void     fm_desktop_icon_view_create_background_context_menu_background_items
+                                                                          (FMDirectoryView        *view,
 									   GtkMenu                *menu);
 static char *   fm_desktop_icon_view_get_directory_sort_by                (FMIconView             *icon_view,
 									   NautilusDirectory      *directory);
@@ -143,6 +148,7 @@ fm_desktop_icon_view_initialize_class (FMDesktopIconViewClass *klass)
 	object_class->destroy = fm_desktop_icon_view_destroy;
 
         fm_directory_view_class->create_background_context_menu_items = fm_desktop_icon_view_create_background_context_menu_items;
+	fm_directory_view_class->create_background_context_menu_background_items = fm_desktop_icon_view_create_background_context_menu_background_items;
 	fm_directory_view_class->bump_zoom_level = bump_zoom_level;
 	fm_directory_view_class->zoom_to_level = zoom_to_level;
 	fm_directory_view_class->restore_default_zoom_level = restore_default_zoom_level;
@@ -301,6 +307,37 @@ new_terminal_menu_item_callback (GtkMenuItem *item, FMDirectoryView *view)
 	nautilus_gnome_open_terminal (NULL);
 }
 
+static void
+reset_desktop_background_menu_item_callback (GtkMenuItem *item, FMDirectoryView *view)
+{
+	nautilus_background_reset (fm_directory_view_get_background (view));
+}
+
+static void
+change_desktop_background_menu_item_callback (GtkMenuItem *item, FMDirectoryView *view)
+{
+	nautilus_launch_application_from_command ("background-properties-capplet", NULL);
+}
+
+static void
+fm_desktop_icon_view_create_background_context_menu_background_items (FMDirectoryView *view, GtkMenu *menu)
+{
+	GtkWidget *menu_item;
+
+	menu_item = gtk_menu_item_new_with_label (_("Reset Desktop Background"));
+	gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
+			    GTK_SIGNAL_FUNC (reset_desktop_background_menu_item_callback), view);
+	gtk_widget_set_sensitive (menu_item,
+				  nautilus_directory_background_is_set (fm_directory_view_get_background (view)));
+	gtk_widget_show (menu_item);
+	gtk_menu_append (menu, menu_item);
+
+	menu_item = gtk_menu_item_new_with_label (_("Change Desktop Background"));
+	gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
+			    GTK_SIGNAL_FUNC (change_desktop_background_menu_item_callback), view);
+	gtk_widget_show (menu_item);
+	gtk_menu_append (menu, menu_item);
+}
 
 static void
 fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view, GtkMenu *menu)
