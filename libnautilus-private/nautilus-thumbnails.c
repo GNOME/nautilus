@@ -64,7 +64,7 @@ static gboolean thumbnail_in_progress;
 /* id of timeout task for making thumbnails */
 static int thumbnail_timeout_id;
 
-static int make_thumbnails (gpointer data);
+static gboolean make_thumbnails (gpointer data);
 
 /* utility to test whether a file exists using vfs */
 static gboolean
@@ -460,8 +460,8 @@ nautilus_get_thumbnail_uri (NautilusFile *file)
 		}
 	
 		if (thumbnail_timeout_id == 0) {
-			thumbnail_timeout_id = gtk_timeout_add
-				(400, make_thumbnails, NULL);
+			thumbnail_timeout_id = g_idle_add_full
+				(G_PRIORITY_LOW, make_thumbnails, NULL, NULL);
 		}
 	}
 	
@@ -571,7 +571,7 @@ check_for_thumbnails (void)
 }
 
 /* make_thumbnails is invoked periodically as a timer task to launch a task to make thumbnails */
-static int
+static gboolean
 make_thumbnails (gpointer data)
 {
 	NautilusThumbnailInfo *info;
@@ -580,7 +580,7 @@ make_thumbnails (gpointer data)
 
 	/* if the queue is empty, there's nothing more to do */
 	if (next_thumbnail == NULL) {
-		gtk_timeout_remove (thumbnail_timeout_id);
+		g_source_remove (thumbnail_timeout_id);
 		thumbnail_timeout_id = 0;
 		return FALSE;
 	}
