@@ -56,6 +56,8 @@
 
 #define STATIC_BOOKMARKS_FILE_NAME	"static_bookmarks.xml"
 
+#define FEEDBACK_LOCATION		"http://www.eazel.com/feedback.html"
+
 /*
 #define WINDOW_ITEMS_TEST
 */
@@ -446,7 +448,22 @@ help_menu_about_nautilus_callback (BonoboUIHandler *ui_handler,
 	nautilus_gtk_window_present (GTK_WINDOW (aboot));
 }
 
-/* utility routine to returnan image corresponding to the passed-in user level */
+static void
+help_menu_feedback_nautilus_callback (BonoboUIHandler *ui_handler, 
+		       	       	      gpointer user_data,
+		      		      const char *path)
+{
+	NautilusWindow *current_window;
+	NautilusWindow *new_window;
+	
+	current_window = NAUTILUS_WINDOW (user_data);
+	new_window = nautilus_application_create_window (current_window->application);
+	nautilus_window_goto_uri (new_window, FEEDBACK_LOCATION);
+	gtk_widget_show (GTK_WIDGET (new_window));	
+
+}
+
+/* utility routine to return an image corresponding to the passed-in user level */
 
 static GdkPixbuf*
 get_user_level_image (int user_level, gboolean is_selected)
@@ -1293,7 +1310,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 
         bonobo_ui_handler_menu_new_item (ui_handler,
         				 NAUTILUS_MENU_PATH_ABOUT_ITEM,
-        				 _("_About Nautilus..."),
+        				 _("_About Nautilus"),
         				 _("Displays information about the Nautilus program"),
         				 -1,
         				 BONOBO_UI_HANDLER_PIXMAP_STOCK,
@@ -1302,6 +1319,18 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 0,
         				 help_menu_about_nautilus_callback,
         				 NULL);
+
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_FEEDBACK_ITEM,
+        				 _("_Preview Release Feedback"),
+        				 _("Displays a feedback form for the Nautilus Preview"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
+        				 NULL,
+        				 0,
+        				 0,
+        				 help_menu_feedback_nautilus_callback,
+        				 window);
 
         /* Desensitize the items that aren't implemented at this level.
          * Some (hopefully all) will be overridden by implementations by the
