@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-06 10:09+0400\n"
-"PO-Revision-Date: 2004-08-06 16:22+0400\n"
+"POT-Creation-Date: 2004-08-16 08:26+0400\n"
+"PO-Revision-Date: 2004-08-16 08:35+0400\n"
 "Last-Translator: Dmitry G. Mastrukov <dmitry@taurussoft.org>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -2822,12 +2822,12 @@ msgstr "Опусто_шить"
 msgid "(%d:%02d:%d Remaining)"
 msgstr "(%d:%02d:%d остаётся)"
 
-#: libnautilus-private/nautilus-file-operations-progress.c:399
+#: libnautilus-private/nautilus-file-operations-progress.c:400
 #, c-format
 msgid "(%d:%02d Remaining)"
 msgstr "(%d:%02d остаётся)"
 
-#: libnautilus-private/nautilus-file-operations-progress.c:512
+#: libnautilus-private/nautilus-file-operations-progress.c:513
 #, c-format
 msgid "%ld of %ld"
 msgstr "%ld из %ld"
@@ -3925,22 +3925,12 @@ msgstr "По_казать"
 msgid "_Run"
 msgstr "За_пустить"
 
-#: src/file-manager/fm-directory-view.c:3929
-#: src/file-manager/nautilus-directory-view-ui.xml.h:60
-msgid "_Other Application..."
-msgstr "_Другое приложение..."
-
-# "Открыть с помощью..." -- это ешё помещается, но для соответствия с "Open with %s"...
-#: src/file-manager/fm-directory-view.c:3930
-msgid "Open _With..."
-msgstr "Открыть в про_грамме..."
-
-#: src/file-manager/fm-directory-view.c:4119
+#: src/file-manager/fm-directory-view.c:4112
 #, c-format
 msgid "Cannot open %s"
 msgstr "Невозможно открыть файл \"%s\""
 
-#: src/file-manager/fm-directory-view.c:4122
+#: src/file-manager/fm-directory-view.c:4115
 #, c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents "
@@ -3962,22 +3952,22 @@ msgstr ""
 "путём. Или используйте пункт меню \"Открыть в программе\" для выбора "
 "приложения для этого файла. "
 
-#: src/file-manager/fm-directory-view.c:4505
+#: src/file-manager/fm-directory-view.c:4498
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Использовать приложение \"%s\" для выбранных элементов"
 
-#: src/file-manager/fm-directory-view.c:4739
+#: src/file-manager/fm-directory-view.c:4732
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Создать документ из шаблона \"%s\""
 
-#: src/file-manager/fm-directory-view.c:4923
+#: src/file-manager/fm-directory-view.c:4916
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
 "Все исполняемые файлы из этой папки будут показаны в меню \"Сценарии\"."
 
-#: src/file-manager/fm-directory-view.c:4925
+#: src/file-manager/fm-directory-view.c:4918
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -3985,11 +3975,11 @@ msgstr ""
 "Выбор сценария из меню будет запускать этот сценарий с выбранными элементами "
 "в качестве ввода."
 
-#: src/file-manager/fm-directory-view.c:4927
+#: src/file-manager/fm-directory-view.c:4920
 msgid "About Scripts"
 msgstr "О сценариях"
 
-#: src/file-manager/fm-directory-view.c:4928
+#: src/file-manager/fm-directory-view.c:4921
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4032,21 +4022,21 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: позиция и размер текущего окна"
 
-#: src/file-manager/fm-directory-view.c:5059
+#: src/file-manager/fm-directory-view.c:5052
 #: src/file-manager/fm-tree-view.c:788
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr ""
 "Если вы выберете команду \"Вставить файлы\", элемент \"%s\" будет перемещён"
 
-#: src/file-manager/fm-directory-view.c:5063
+#: src/file-manager/fm-directory-view.c:5056
 #: src/file-manager/fm-tree-view.c:792
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr ""
 "Если вы выберете команду \"Вставить файлы\", элемент \"%s\" будет скопирован"
 
-#: src/file-manager/fm-directory-view.c:5070
+#: src/file-manager/fm-directory-view.c:5063
 #, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
@@ -4062,7 +4052,7 @@ msgstr[2] ""
 "%d выбранных элементов будет перемещено, если вы выберете команду \"Вставить "
 "файлы\""
 
-#: src/file-manager/fm-directory-view.c:5077
+#: src/file-manager/fm-directory-view.c:5070
 #, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
@@ -4078,61 +4068,61 @@ msgstr[2] ""
 "%d выбранных элементов будут скопированы, если вы выберете команду "
 "\"Вставить файлы\""
 
-#: src/file-manager/fm-directory-view.c:5159
+#: src/file-manager/fm-directory-view.c:5152
 #: src/file-manager/fm-tree-view.c:868
 msgid "There is nothing on the clipboard to paste."
 msgstr "В буфере обмена нет ничего для вставки."
 
-#: src/file-manager/fm-directory-view.c:5262
-#: src/file-manager/fm-directory-view.c:6497
+#: src/file-manager/fm-directory-view.c:5255
+#: src/file-manager/fm-directory-view.c:6490
 msgid "Mount Error"
 msgstr "Произошла ошибка подсоединения"
 
-#: src/file-manager/fm-directory-view.c:5324
+#: src/file-manager/fm-directory-view.c:5317
 msgid "Eject Error"
 msgstr "Произошла ошибка извлечения"
 
-#: src/file-manager/fm-directory-view.c:5327
+#: src/file-manager/fm-directory-view.c:5320
 msgid "Unmount Error"
 msgstr "Произошла ошибка отсоединения"
 
-#: src/file-manager/fm-directory-view.c:5451
+#: src/file-manager/fm-directory-view.c:5444
 #, c-format
 msgid "Connect to Server %s"
 msgstr "Соединение с сервером \"%s\""
 
-#: src/file-manager/fm-directory-view.c:5456
+#: src/file-manager/fm-directory-view.c:5449
 msgid "_Connect"
 msgstr "_Соединиться"
 
-#: src/file-manager/fm-directory-view.c:5470
+#: src/file-manager/fm-directory-view.c:5463
 #: src/nautilus-connect-server-dialog.c:191
 msgid "Link _name:"
 msgstr "_Имя ссылки:"
 
-#: src/file-manager/fm-directory-view.c:5782
+#: src/file-manager/fm-directory-view.c:5775
 msgid "E_ject"
 msgstr "И_звлечь"
 
-#: src/file-manager/fm-directory-view.c:5782
+#: src/file-manager/fm-directory-view.c:5775
 #: src/file-manager/nautilus-directory-view-ui.xml.h:66
 msgid "_Unmount Volume"
 msgstr "О_тсоединить том"
 
 # "Открыть с помощью программы "%s" -- это слишком длинно и не помешается
 # на боковую панель даже без распаковки `%s'.
-#: src/file-manager/fm-directory-view.c:5926
+#: src/file-manager/fm-directory-view.c:5919
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "_Открыть  в программе \"%s\""
 
-#: src/file-manager/fm-directory-view.c:5938
-#: src/file-manager/nautilus-directory-view-ui.xml.h:58
+#: src/file-manager/fm-directory-view.c:5931
+#: src/file-manager/nautilus-directory-view-ui.xml.h:59
 msgid "_Open"
 msgstr "_Открыть"
 
 #. add the "open in new window" menu item
-#: src/file-manager/fm-directory-view.c:5947
+#: src/file-manager/fm-directory-view.c:5940
 #: src/file-manager/fm-tree-view.c:960
 #, c-format
 msgid "Open in New Window"
@@ -4141,94 +4131,94 @@ msgstr[0] "Открыть в новом окне"
 msgstr[1] "Открыть в %d новых окнах"
 msgstr[2] "Открыть в %d новых окнах"
 
-#: src/file-manager/fm-directory-view.c:5954
+#: src/file-manager/fm-directory-view.c:5947
 msgid "Browse Folder"
 msgstr "Просмотреть папку"
 
-#: src/file-manager/fm-directory-view.c:5956
+#: src/file-manager/fm-directory-view.c:5949
 msgid "Browse Folders"
 msgstr "Просмотреть папки"
 
-#: src/file-manager/fm-directory-view.c:5979
+#: src/file-manager/fm-directory-view.c:5972
 msgid "_Delete from Trash"
 msgstr "_Удалить из мусорной корзины"
 
-#: src/file-manager/fm-directory-view.c:5981
+#: src/file-manager/fm-directory-view.c:5974
 msgid "Delete all selected items permanently"
 msgstr "Окончательно удалить все выделенные элементы"
 
-#: src/file-manager/fm-directory-view.c:5984
-#: src/file-manager/fm-directory-view.c:6329
+#: src/file-manager/fm-directory-view.c:5977
+#: src/file-manager/fm-directory-view.c:6322
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Mo_ve to Trash"
 msgstr "П_ереместить в мусорную корзину"
 
-#: src/file-manager/fm-directory-view.c:5986
+#: src/file-manager/fm-directory-view.c:5979
 #: src/file-manager/nautilus-directory-view-ui.xml.h:24
 msgid "Move each selected item to the Trash"
 msgstr "Переместить каждый выделенный элемент в мусорную корзину"
 
-#: src/file-manager/fm-directory-view.c:6010
-#: src/file-manager/nautilus-directory-view-ui.xml.h:53
+#: src/file-manager/fm-directory-view.c:6003
+#: src/file-manager/nautilus-directory-view-ui.xml.h:54
 msgid "_Delete"
 msgstr "_Удалить"
 
-#: src/file-manager/fm-directory-view.c:6030
+#: src/file-manager/fm-directory-view.c:6023
 msgid "Ma_ke Links"
 msgstr "Создать сс_ылки"
 
-#: src/file-manager/fm-directory-view.c:6031
+#: src/file-manager/fm-directory-view.c:6024
 #: src/file-manager/nautilus-directory-view-ui.xml.h:19
 msgid "Ma_ke Link"
 msgstr "Создать сс_ылку"
 
-#: src/file-manager/fm-directory-view.c:6044
-#: src/file-manager/nautilus-directory-view-ui.xml.h:55
+#: src/file-manager/fm-directory-view.c:6037
+#: src/file-manager/nautilus-directory-view-ui.xml.h:56
 msgid "_Empty Trash"
 msgstr "Опусто_шить мусорную корзину"
 
-#: src/file-manager/fm-directory-view.c:6060
+#: src/file-manager/fm-directory-view.c:6053
 msgid "Cu_t File"
 msgstr "_Вырезать файл"
 
-#: src/file-manager/fm-directory-view.c:6061
+#: src/file-manager/fm-directory-view.c:6054
 #: src/file-manager/nautilus-directory-view-ui.xml.h:11
 msgid "Cu_t Files"
 msgstr "_Вырезать файлы"
 
-#: src/file-manager/fm-directory-view.c:6070
+#: src/file-manager/fm-directory-view.c:6063
 msgid "_Copy File"
 msgstr "С_копировать файл"
 
-#: src/file-manager/fm-directory-view.c:6071
-#: src/file-manager/nautilus-directory-view-ui.xml.h:52
+#: src/file-manager/fm-directory-view.c:6064
+#: src/file-manager/nautilus-directory-view-ui.xml.h:53
 msgid "_Copy Files"
 msgstr "С_копировать файлы"
 
-#: src/file-manager/fm-directory-view.c:6320
+#: src/file-manager/fm-directory-view.c:6313
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr "Ссылка испорчена, переместить ее в корзину?"
 
-#: src/file-manager/fm-directory-view.c:6322
+#: src/file-manager/fm-directory-view.c:6315
 msgid "This link can't be used, because it has no target."
 msgstr "Эта ссылка не может быть использована, поскольку она не имеет цели."
 
-#: src/file-manager/fm-directory-view.c:6324
+#: src/file-manager/fm-directory-view.c:6317
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr ""
 "Эту ссылку нельзя использовать, поскольку ее цель \"%s\" не существует."
 
-#: src/file-manager/fm-directory-view.c:6329
+#: src/file-manager/fm-directory-view.c:6322
 msgid "Broken Link"
 msgstr "Испорченная ссылка"
 
-#: src/file-manager/fm-directory-view.c:6633
+#: src/file-manager/fm-directory-view.c:6626
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Открывается \"%s\"."
 
-#: src/file-manager/fm-directory-view.c:6640
+#: src/file-manager/fm-directory-view.c:6633
 msgid "Cancel Open?"
 msgstr "Отменить открытие?"
 
@@ -4848,7 +4838,7 @@ msgstr ""
 
 #. add the reset background item, possibly disabled
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:9
-#: src/file-manager/nautilus-directory-view-ui.xml.h:49
+#: src/file-manager/nautilus-directory-view-ui.xml.h:50
 #: src/nautilus-information-panel.c:349
 msgid "Use _Default Background"
 msgstr "Сбросить фон к ис_ходному"
@@ -4945,7 +4935,7 @@ msgid "No templates Installed"
 msgstr "Шаблоны не установлены"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:28
-msgid "Open _With"
+msgid "Open Wit_h"
 msgstr "Открыть в про_грамме"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:29
@@ -4961,101 +4951,105 @@ msgid "Open the selected item in this window"
 msgstr "Открыть выбранный элемент в этом окне"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:32
+msgid "Open with Other _Application..."
+msgstr "Открыть в другой _программе..."
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:33
 msgid "Prepare the selected files to be copied with a Paste Files command"
 msgstr ""
 "Подготовить выбранные файлы к копированию с помощью команды \"Вставить файлы"
 "\""
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:33
+#: src/file-manager/nautilus-directory-view-ui.xml.h:34
 msgid "Prepare the selected files to be moved with a Paste Files command"
 msgstr ""
 "Подготовить выбранные файлы к перемещению с помощью команды \"Вставить файлы"
 "\""
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:34
+#: src/file-manager/nautilus-directory-view-ui.xml.h:35
 msgid "Prot_ect"
 msgstr "За_щитить"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:35
+#: src/file-manager/nautilus-directory-view-ui.xml.h:36
 msgid "Protect the selected volume"
 msgstr "Защитить выбранный том"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:36
+#: src/file-manager/nautilus-directory-view-ui.xml.h:37
 msgid "Rename selected item"
 msgstr "Переименовать выделенный элемент"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:37
+#: src/file-manager/nautilus-directory-view-ui.xml.h:38
 msgid "Reset View to _Defaults"
 msgstr "Сб_росить параметры просмотра"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:38
+#: src/file-manager/nautilus-directory-view-ui.xml.h:39
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr ""
 "Обновить порядок сортировки и масштаб для соответствия параметрам этого "
 "режима просмотра"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:39
+#: src/file-manager/nautilus-directory-view-ui.xml.h:40
 msgid "Run or manage scripts from ~/Nautilus/scripts"
 msgstr "Запустить или управлять сценариями из ~/Nautilus/scripts"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:40
+#: src/file-manager/nautilus-directory-view-ui.xml.h:41
 msgid "Select _All Files"
 msgstr "Выделить вс_е файлы"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:41
+#: src/file-manager/nautilus-directory-view-ui.xml.h:42
 msgid "Select _Pattern"
 msgstr "Выделить по _шаблону"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:42
+#: src/file-manager/nautilus-directory-view-ui.xml.h:43
 msgid "Select all items in this window"
 msgstr "Выделить все элементы в этом окне"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:43
+#: src/file-manager/nautilus-directory-view-ui.xml.h:44
 msgid "Select items in this window matching a given pattern"
 msgstr ""
 "Выделить в этом окне все элементы, соответствующие приведенному шаблону"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:44
+#: src/file-manager/nautilus-directory-view-ui.xml.h:45
 msgid "Show _Hidden Files"
 msgstr "Показывать скр_ытые и файлы"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:45
+#: src/file-manager/nautilus-directory-view-ui.xml.h:46
 msgid "Show media properties for the selected volume"
 msgstr "Просмотреть свойства носителя выделенного тома"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:46
+#: src/file-manager/nautilus-directory-view-ui.xml.h:47
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Показать папку содержащую сценарии, которые показаны в этом меню"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:47
+#: src/file-manager/nautilus-directory-view-ui.xml.h:48
 msgid "Toggles the display of hidden files in the current window"
 msgstr "Показывать скрытые файлы в текущем окне"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:48
+#: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "Unmount the selected volume"
 msgstr "Отсоединить выделенный том"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:50
+#: src/file-manager/nautilus-directory-view-ui.xml.h:51
 msgid "Use the default background for this location"
 msgstr "Использовать исходный фон для этого местоположения"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:51
+#: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "View or modify the properties of each selected item"
 msgstr "Просмотреть или изменить свойства каждого выделенного элемента"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:54
+#: src/file-manager/nautilus-directory-view-ui.xml.h:55
 msgid "_Empty File"
 msgstr "_Пустой файл"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:56
+#: src/file-manager/nautilus-directory-view-ui.xml.h:57
 msgid "_Format"
 msgstr "От_форматировать"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:57
+#: src/file-manager/nautilus-directory-view-ui.xml.h:58
 msgid "_Mount Volume"
 msgstr "_Подсоединить том"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:59
+#: src/file-manager/nautilus-directory-view-ui.xml.h:60
 msgid "_Open Scripts Folder"
 msgstr "Открыть папку с_ценариев"
 
@@ -5712,7 +5706,7 @@ msgstr "Просмотреть во множественных окнах?"
 msgid "Open Location"
 msgstr "Открыть местоположение"
 
-#: src/nautilus-location-dialog.c:147
+#: src/nautilus-location-dialog.c:148
 msgid "_Location:"
 msgstr "_Местоположение:"
 
@@ -5878,7 +5872,7 @@ msgstr "Назад"
 #: src/nautilus-navigation-window-ui.xml.h:3
 #: src/nautilus-spatial-window-ui.xml.h:1
 msgid "CD _Creator"
-msgstr "_Создать компакт-диск"
+msgstr "_Создатель компакт-дисков"
 
 #: src/nautilus-navigation-window-ui.xml.h:4
 msgid "Change the visibility of this window's location bar"
@@ -6766,6 +6760,16 @@ msgstr "Сетевые серверы"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Окно просмотра сетевых серверов в файловом менеджере \"Наутилус\""
+
+#~ msgid "_Other Application..."
+#~ msgstr "_Другое приложение..."
+
+# "Открыть с помощью..." -- это ешё помещается, но для соответствия с "Open with %s"...
+#~ msgid "Open _With..."
+#~ msgstr "Открыть в про_грамме..."
+
+#~ msgid "Open _With"
+#~ msgstr "Открыть в про_грамме"
 
 #~ msgid "Adjust your user environment"
 #~ msgstr "Окно настройки пользовательского окружения"
