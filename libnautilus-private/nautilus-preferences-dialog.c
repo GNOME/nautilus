@@ -176,8 +176,6 @@ nautilus_preferences_dialog_construct (NautilusPreferencesDialog *prefs_dialog,
 	gdk_window_set_functions (GTK_WIDGET (prefs_dialog)->window, GDK_FUNC_MOVE | GDK_FUNC_RESIZE);
 #endif
 
- 	gtk_window_set_position (GTK_WINDOW (prefs_dialog), GTK_WIN_POS_CENTER);
-
  	gtk_container_set_border_width (GTK_CONTAINER(prefs_dialog), 
 					DEFAULT_BORDER_WIDTH);
 	

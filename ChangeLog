@@ -1,3 +1,13 @@
+2001-02-06  Arik Devens  <arik@eazel.com>
+
+	reviewed by: Eskil Heyn Olsen  <eskil@eazel.com>
+
+	Fixed bug 5919, Preferences dialog jumps around the screen.
+	
+	* libnautilus-extensions/nautilus-preferences-dialog.c:
+	(nautilus_preferences_dialog_construct): Removed the center
+	positioning so that the dialog stays where the user put it.
+
 2001-02-06  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 1736, if icons on desktop are offscreen, need to
