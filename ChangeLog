@@ -1,3 +1,10 @@
+2001-02-12  Gene Z. Ragan  <gzr@eazel.com>
+
+	Turn off repawn behavior in debug mode at request of Andy.
+	
+	* src/nautilus-application.c: (set_session_restart):
+	Check for debug environment variable.
+	
 2001-02-12  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* nautilus.spec.in: merged changes from branch into

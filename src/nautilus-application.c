@@ -761,7 +761,13 @@ static void
 set_session_restart (GnomeClient *client, gboolean restart)
 {
 	gnome_client_set_priority (client, 40);
-	gnome_client_set_restart_style (client, (restart ? GNOME_RESTART_IMMEDIATELY : GNOME_RESTART_NEVER));
+	
+	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
+		/* Don't respawn in debug mode */
+		gnome_client_set_restart_style (client, GNOME_RESTART_NEVER);
+	} else {
+		gnome_client_set_restart_style (client, (restart ? GNOME_RESTART_IMMEDIATELY : GNOME_RESTART_NEVER));
+	}
 }
 
 static void
