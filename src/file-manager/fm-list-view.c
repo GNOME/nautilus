@@ -531,11 +531,14 @@ key_press_callback (GtkWidget *widget, GdkEventKey *event, gpointer callback_dat
 		}
 		break;
 	case GDK_space:
-		if ((event->state & GDK_CONTROL_MASK) == 0) {
-			activate_selected_items (FM_LIST_VIEW (view));
-			return TRUE;
+		if (event->state & GDK_CONTROL_MASK) {
+			return FALSE;
 		}
-		break;
+		if (!GTK_WIDGET_HAS_FOCUS (GTK_WIDGET (FM_LIST_VIEW (view)->details->tree_view))) {
+			return FALSE;
+		}
+		activate_selected_items (FM_LIST_VIEW (view));
+		return TRUE;
 	case GDK_Return:
 	case GDK_KP_Enter:
 		activate_selected_items (FM_LIST_VIEW (view));
