@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* eazel-services-constants.h - Constants used in services widgets.
+/* eazel-services-extensions.h - Extensions to Nautilus and gtk widget.
 
    Copyright (C) 2000 Eazel, Inc.
 
@@ -22,8 +22,14 @@
    Authors: Ramiro Estrugo <ramiro@eazel.com>
 */
 
-#ifndef EAZEL_SERVICES_CONSTANTS_H
-#define EAZEL_SERVICES_CONSTANTS_H
+#ifndef EAZEL_SERVICES_EXTENSIONS_H
+#define EAZEL_SERVICES_EXTENSIONS_H
+
+#include <libgnome/gnome-defs.h>
+#include <libnautilus-extensions/nautilus-gdk-extensions.h>
+#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 
 #define EAZEL_SERVICES_BACKGROUND_COLOR_STRING		"white"
 #define EAZEL_SERVICES_BACKGROUND_COLOR_RGBA		NAUTILUS_RGB_COLOR_WHITE
@@ -45,8 +51,27 @@
 #define EAZEL_SERVICES_REMAINDER_FILL			"summary-service-remainder-fill.png"
 #define EAZEL_SERVICES_REMAINDER_RIGHT_BUMPER		"summary-service-remainder-right-bumper.png"
 
+#define EAZEL_SERVICES_FONT_FAMILY			"helvetica"
+
+BEGIN_GNOME_DECLS
+
+GdkPixbuf *eazel_services_pixbuf_new              (const char *name);
+GtkWidget *eazel_services_image_new               (const char *icon_name,
+						   const char *tile_name,
+						   guint32     background_color);
+GtkWidget *eazel_services_label_new               (const char *text,
+						   gboolean    bold,
+						   guint       font_size,
+						   gint        xpadding,
+						   gint        ypadding,
+						   guint       vertical_offset,
+						   guint       horizontal_offset,
+						   guint32     background_color,
+						   const char *tile_name);
+char *     eazel_services_get_current_date_string (void);
+
 END_GNOME_DECLS
 
-#endif /* EAZEL_SERVICES_CONSTANTS_H */
+#endif /* EAZEL_SERVICES_EXTENSIONS_H */
 
 

@@ -73,6 +73,13 @@ typedef enum
 
 GtkType                nautilus_image_get_type          (void);
 GtkWidget *            nautilus_image_new               (void);
+GtkWidget *            nautilus_image_new_loaded        (GdkPixbuf              *pixbuf,
+							 gint                    xpadding,
+							 gint                    ypadding,
+							 guint                   vertical_offset,
+							 guint                   horizontal_offset,
+							 guint32                 background_color,
+							 GdkPixbuf              *tile_pixbuf);
 void                   nautilus_image_set_pixbuf        (NautilusImage          *image,
 							 GdkPixbuf              *pixbuf);
 GdkPixbuf*             nautilus_image_get_pixbuf        (const NautilusImage    *image);

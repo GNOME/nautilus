@@ -503,3 +503,53 @@ nautilus_image_get_alpha_mode (const NautilusImage *image)
 
 	return image->detail->alpha_mode;
 }
+
+/**
+ * nautilus_image_new_loaded:
+ *
+ * @text: Text or NULL
+ * @family: Font family or NULL
+ * @weight: Font weight or NULL
+ * @font_size: Font size in pixels
+ * @drop_shadow_offset: Drop shadow offset
+ * @drop_shadow_color: Drop shadow color
+ * @text_color: Text color
+ * @xpadding: Amount to pad image in the x direction.
+ * @ypadding: Amount to pad image in the y direction.
+ * @vertical_offset: Amount to offset the image vertically.
+ * @horizontal_offset: Amount to offset the image horizontally.
+ * @background_color: Background color.
+ * @tile_pixbuf: Pixbuf to use for tile or NULL
+ *
+ * Return value: Newly created image with all the given values.
+ */
+GtkWidget *
+nautilus_image_new_loaded (GdkPixbuf *pixbuf,
+			   gint xpadding,
+			   gint ypadding,
+			   guint vertical_offset,
+			   guint horizontal_offset,
+			   guint32 background_color,
+			   GdkPixbuf *tile_pixbuf)
+{
+	NautilusImage *image;
+
+ 	image = NAUTILUS_IMAGE (nautilus_image_new ());
+
+	nautilus_buffered_widget_set_background_type (NAUTILUS_BUFFERED_WIDGET (image), NAUTILUS_BACKGROUND_SOLID);
+	nautilus_buffered_widget_set_background_color (NAUTILUS_BUFFERED_WIDGET (image), background_color);
+	nautilus_buffered_widget_set_vertical_offset (NAUTILUS_BUFFERED_WIDGET (image), vertical_offset);
+	nautilus_buffered_widget_set_horizontal_offset (NAUTILUS_BUFFERED_WIDGET (image), horizontal_offset);
+
+	gtk_misc_set_padding (GTK_MISC (image), xpadding, ypadding);
+
+	if (pixbuf != NULL) {
+		nautilus_image_set_pixbuf (image, pixbuf);
+	}
+
+	if (tile_pixbuf != NULL) {
+		nautilus_buffered_widget_set_tile_pixbuf (NAUTILUS_BUFFERED_WIDGET (image), tile_pixbuf);
+	}
+	
+	return GTK_WIDGET (image);
+}

@@ -71,6 +71,19 @@ struct _NautilusLabelClass
 
 GtkType               nautilus_label_get_type                 (void);
 GtkWidget *           nautilus_label_new                      (const char           *text);
+GtkWidget *           nautilus_label_new_loaded               (const char           *text,
+							       const char           *family,
+							       const char           *weight,
+							       guint                 font_size,
+							       guint                 drop_shadow_offset,
+							       guint32               drop_shadow_color,
+							       guint32               text_color,
+							       gint                  xpadding,
+							       gint                  ypadding,
+							       guint                 vertical_offset,
+							       guint                 horizontal_offset,
+							       guint32               background_color,
+							       GdkPixbuf            *tile_pixbuf);
 void                  nautilus_label_set_text                 (NautilusLabel        *label,
 							       const char           *text);
 char*                 nautilus_label_get_text                 (NautilusLabel        *label);

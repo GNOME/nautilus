@@ -25,18 +25,9 @@
 #include <config.h>
 
 #include <gtk/gtk.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-
-/* #include <libnautilus-extensions/nautilus-gdk-extensions.h> */
-/* #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h> */
-/* #include <libnautilus-extensions/nautilus-image.h> */
-/* #include <libnautilus-extensions/nautilus-label.h> */
-/* #include <libnautilus-extensions/nautilus-theme.h> */
-
+#include "eazel-services-extensions.h"
 #include "eazel-services-footer.h"
 #include "eazel-services-header.h"
-#include "eazel-services-constants.h"
 
 static void
 delete_event (GtkWidget *widget, GdkEvent *event, gpointer callback_data)
@@ -52,13 +43,11 @@ static const char *footer_items[] =
 	"Privacy Statement"
 };
 
-static const char *footer_uris[] = 
+static void
+footer_item_clicked_callback (GtkWidget *widget, int index, gpointer callback_data)
 {
-	"eazel:register",
-	"eazel:login",
-	"eazel:terms",
-	"eazel:privacy"
-};
+	g_print ("footer_item_clicked_callback(%d)\n", index);
+}
 
 int 
 main (int argc, char* argv[])
@@ -87,9 +76,10 @@ main (int argc, char* argv[])
 	content = gtk_vbox_new (FALSE, 0);
 
 	footer = eazel_services_footer_new ();
+	gtk_signal_connect (GTK_OBJECT (footer), "item_clicked", GTK_SIGNAL_FUNC (footer_item_clicked_callback), NULL);
+
 	eazel_services_footer_update (EAZEL_SERVICES_FOOTER (footer),
 				      footer_items,
-				      footer_uris,
 				      NAUTILUS_N_ELEMENTS (footer_items));
 	
 	gtk_box_pack_start (GTK_BOX (vbox), header, FALSE, FALSE, 0);

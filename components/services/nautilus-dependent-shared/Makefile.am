@@ -10,6 +10,7 @@ CPPFLAGS =							\
 INCLUDES = \
 	-I$(top_srcdir)						\
 	-I$(top_builddir)					\
+	-I$(top_srcdir)/components/services/nautilus-dependent-shared	\
         -I$(top_srcdir)/components/services/trilobite		\
         -I$(top_builddir)/components/services/trilobite		\
         -I$(top_srcdir)/components/services/trilobite/lib	\
@@ -22,6 +23,7 @@ INCLUDES = \
 noinst_LIBRARIES = libnautilusdepshared.a
 
 noinst_HEADERS =\
+	eazel-services-extensions.h \
 	eazel-services-footer.h \
 	eazel-services-header.h \
 	shared-service-utilities.h \
@@ -29,6 +31,7 @@ noinst_HEADERS =\
 	$(NULL)
 
 libnautilusdepshared_a_SOURCES =\
+	eazel-services-extensions.c \
 	eazel-services-footer.c \
 	eazel-services-header.c \
 	shared-service-utilities.c \

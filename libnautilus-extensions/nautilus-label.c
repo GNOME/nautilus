@@ -1018,3 +1018,63 @@ nautilus_label_get_line_wrap_separators (const NautilusLabel *label)
 
 	return g_strdup (label->detail->line_wrap_separators);
 }
+
+/**
+ * nautilus_label_new_loaded:
+ *
+ * @text: Text or NULL
+ * @family: Font family or NULL
+ * @weight: Font weight or NULL
+ * @font_size: Font size in pixels
+ * @drop_shadow_offset: Drop shadow offset
+ * @drop_shadow_color: Drop shadow color
+ * @text_color: Text color
+ * @xpadding: Amount to pad label in the x direction.
+ * @ypadding: Amount to pad label in the y direction.
+ * @vertical_offset: Amount to offset the label vertically.
+ * @horizontal_offset: Amount to offset the label horizontally.
+ * @background_color: Background color.
+ * @tile_pixbuf: Pixbuf to use for tile or NULL
+ *
+ * Return value: Newly created label with all the given values.
+ */
+GtkWidget *
+nautilus_label_new_loaded (const char *text,
+			   const char *family,
+			   const char *weight,
+			   guint font_size,
+			   guint drop_shadow_offset,
+			   guint32 drop_shadow_color,
+			   guint32 text_color,
+			   gint xpadding,
+			   gint ypadding,
+			   guint vertical_offset,
+			   guint horizontal_offset,
+			   guint32 background_color,
+			   GdkPixbuf *tile_pixbuf)
+{
+	NautilusLabel *label;
+
+ 	label = NAUTILUS_LABEL (nautilus_label_new (text ? text : ""));
+
+	if (family != NULL) {
+		nautilus_label_set_font_from_components (label, family, weight, NULL, NULL);
+	}
+
+	nautilus_label_set_font_size (label, font_size);
+	nautilus_label_set_drop_shadow_offset (label, drop_shadow_offset);
+	nautilus_buffered_widget_set_background_type (NAUTILUS_BUFFERED_WIDGET (label), NAUTILUS_BACKGROUND_SOLID);
+	nautilus_buffered_widget_set_background_color (NAUTILUS_BUFFERED_WIDGET (label), background_color);
+	nautilus_label_set_drop_shadow_color (label, drop_shadow_color);
+	nautilus_label_set_text_color (label, text_color);
+	nautilus_buffered_widget_set_vertical_offset (NAUTILUS_BUFFERED_WIDGET (label), vertical_offset);
+	nautilus_buffered_widget_set_horizontal_offset (NAUTILUS_BUFFERED_WIDGET (label), horizontal_offset);
+
+	gtk_misc_set_padding (GTK_MISC (label), xpadding, ypadding);
+
+	if (tile_pixbuf != NULL) {
+		nautilus_buffered_widget_set_tile_pixbuf (NAUTILUS_BUFFERED_WIDGET (label), tile_pixbuf);
+	}
+	
+	return GTK_WIDGET (label);
+}

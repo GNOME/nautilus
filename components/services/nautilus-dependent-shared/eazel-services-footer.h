@@ -59,8 +59,9 @@ GtkType    eazel_services_footer_get_type (void);
 GtkWidget* eazel_services_footer_new      (void);
 void       eazel_services_footer_update   (EazelServicesFooter *footer,
 					   const char          *items[],
-					   const char          *uris[],
 					   guint                num_items);
+void       eazel_services_footer_set_date (EazelServicesFooter *footer,
+					   const char          *date);
 
 END_GNOME_DECLS
 

@@ -23,14 +23,10 @@
 */
 
 #include <config.h>
-#include "eazel-services-footer.h"
-#include "eazel-services-constants.h"
 
-#include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-gdk-extensions.h>
-#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include "eazel-services-footer.h"
+#include "eazel-services-extensions.h"
+
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-image.h>
 #include <libnautilus-extensions/nautilus-label.h>
@@ -41,8 +37,18 @@
 
 struct _EazelServicesFooterDetails
 {
-	GList *items;
+	GtkWidget *date;
 };
+
+/* Signals */
+typedef enum
+{
+	ITEM_CLICKED,
+	LAST_SIGNAL
+} FooterSignal;
+
+/* Signals */
+static guint footer_signals[LAST_SIGNAL] = { 0 };
 
 /* GtkObjectClass methods */
 static void eazel_services_footer_initialize_class (EazelServicesFooterClass *klass);
@@ -61,6 +67,18 @@ eazel_services_footer_initialize_class (EazelServicesFooterClass *footer_class)
 
 	/* GtkObjectClass */
 	object_class->destroy = footer_destroy;
+	
+ 	/* Signals */
+	footer_signals[ITEM_CLICKED] = gtk_signal_new ("item_clicked",
+						       GTK_RUN_LAST,
+						       object_class->type,
+						       0,
+						       gtk_marshal_NONE__INT,
+						       GTK_TYPE_NONE, 
+						       1,
+						       GTK_TYPE_INT);
+	
+ 	gtk_object_class_add_signals (object_class, footer_signals, LAST_SIGNAL);
 }
 
 static void
@@ -80,74 +98,14 @@ footer_destroy (GtkObject *object)
 	footer = EAZEL_SERVICES_FOOTER (object);
 
 	g_free (footer->details);
+
+	g_print ("%s()\n", __FUNCTION__);
 	
 	/* Chain destroy */
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* Private stuff */
-static GdkPixbuf *
-pixbuf_new_from_name (const char *name)
-{
-	char *path;
-	GdkPixbuf *pixbuf;
-
-	g_return_val_if_fail (name != NULL, NULL);
-
-	path = nautilus_theme_get_image_path (name);
-	
-	g_return_val_if_fail (path != NULL, NULL);
-
-	pixbuf = gdk_pixbuf_new_from_file (path);
-	g_free (path);
-
-	return pixbuf;
-}
-
-static GtkWidget *
-label_new (const char *text,
-	   guint font_size,
-	   guint drop_shadow_offset,
-	   guint vertical_offset,
-	   guint horizontal_offset,
-	   gint xpadding,
-	   gint ypadding,
-	   guint32 background_color,
-	   guint32 drop_shadow_color,
-	   guint32 text_color,
-	   const char *tile_name)
-{
-	GtkWidget *label;
-
-	g_return_val_if_fail (text != NULL, NULL);
-	
- 	label = nautilus_label_new (text);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (label), font_size);
-	nautilus_label_set_drop_shadow_offset (NAUTILUS_LABEL (label), drop_shadow_offset);
-	nautilus_buffered_widget_set_background_type (NAUTILUS_BUFFERED_WIDGET (label), NAUTILUS_BACKGROUND_SOLID);
-	nautilus_buffered_widget_set_background_color (NAUTILUS_BUFFERED_WIDGET (label), background_color);
-	nautilus_label_set_drop_shadow_color (NAUTILUS_LABEL (label), drop_shadow_color);
-	nautilus_label_set_text_color (NAUTILUS_LABEL (label), background_color);
-
-	nautilus_buffered_widget_set_vertical_offset (NAUTILUS_BUFFERED_WIDGET (label), vertical_offset);
-	nautilus_buffered_widget_set_horizontal_offset (NAUTILUS_BUFFERED_WIDGET (label), horizontal_offset);
-
-	gtk_misc_set_padding (GTK_MISC (label), xpadding, ypadding);
-
-	if (tile_name != NULL) {
-		GdkPixbuf *tile_pixbuf;
-
-		tile_pixbuf = pixbuf_new_from_name (tile_name);
-
-		if (tile_pixbuf != NULL) {
-			nautilus_buffered_widget_set_tile_pixbuf (NAUTILUS_BUFFERED_WIDGET (label), tile_pixbuf);
-		}
-
-		nautilus_gdk_pixbuf_unref_if_not_null (tile_pixbuf);
-	}
-	
-	return label;
-}
 
 typedef struct
 {
@@ -156,27 +114,25 @@ typedef struct
 	char *prelight_tile_name;
 	GdkPixbuf *tile_pixbuf;
 	GdkPixbuf *prelight_tile_pixbuf;
-} PrelightLabelData;
+} PrelightData;
 
 static gint
-label_enter_event (GtkWidget *event_box,
-		   GdkEventCrossing *event,
-		   gpointer client_data)
+footer_item_enter_event (GtkWidget *event_box,
+			 GdkEventCrossing *event,
+			 gpointer client_data)
 {
-	PrelightLabelData *data;
+	PrelightData *data;
 
 	g_return_val_if_fail (GTK_IS_EVENT_BOX (event_box), TRUE);
 	g_return_val_if_fail (client_data != NULL, TRUE);
 
-	data = (PrelightLabelData *) client_data;
+	data = (PrelightData *) client_data;
 
 	g_return_val_if_fail (data->prelight_tile_name, TRUE);
 	g_return_val_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (data->buffered_widget), TRUE);
 
-	//g_print ("%s(%p)\n", __FUNCTION__, data);
-
 	if (data->prelight_tile_pixbuf == NULL) {
-		data->prelight_tile_pixbuf = pixbuf_new_from_name (data->prelight_tile_name);
+		data->prelight_tile_pixbuf = eazel_services_pixbuf_new (data->prelight_tile_name);
 	}
 
 	if (data->prelight_tile_pixbuf != NULL) {
@@ -188,22 +144,22 @@ label_enter_event (GtkWidget *event_box,
 }
 
 static gint
-label_leave_event (GtkWidget *event_box,
-		   GdkEventCrossing *event,
-		   gpointer client_data)
+footer_item_leave_event (GtkWidget *event_box,
+			 GdkEventCrossing *event,
+			 gpointer client_data)
 {
-	PrelightLabelData *data;
+	PrelightData *data;
 
 	g_return_val_if_fail (GTK_IS_EVENT_BOX (event_box), TRUE);
 	g_return_val_if_fail (client_data != NULL, TRUE);
 
-	data = (PrelightLabelData *) client_data;
+	data = (PrelightData *) client_data;
 
 	g_return_val_if_fail (data->tile_name, TRUE);
 	g_return_val_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (data->buffered_widget), TRUE);
 
 	if (data->tile_pixbuf == NULL) {
-		data->tile_pixbuf = pixbuf_new_from_name (data->tile_name);
+		data->tile_pixbuf = eazel_services_pixbuf_new (data->tile_name);
 	}
 	
 	if (data->tile_pixbuf != NULL) {
@@ -214,33 +170,41 @@ label_leave_event (GtkWidget *event_box,
 	return TRUE;
 }
 
-static gint
-label_button_press_event (GtkWidget *widget,
-			  GdkEventButton *event,
-			  gpointer client_data)
+typedef struct
 {
-	const char *uri;
-	
+	EazelServicesFooter *footer;
+	int index;
+} ButtonPressData;
+
+static gint
+footer_item_button_press_event (GtkWidget *widget,
+				GdkEventButton *event,
+				gpointer client_data)
+{
+	ButtonPressData	*data;
+
 	g_return_val_if_fail (GTK_IS_EVENT_BOX (widget), TRUE);
 	g_return_val_if_fail (client_data != NULL, TRUE);
 
-	uri = (const char *) client_data;
+	data = (ButtonPressData *) client_data;
 
-	g_print ("%s(%s)\n", __FUNCTION__, uri);
+	g_return_val_if_fail (EAZEL_SERVICES_IS_FOOTER (data->footer), TRUE);
+	
+	gtk_signal_emit (GTK_OBJECT (data->footer), footer_signals[ITEM_CLICKED], data->index);
 
 	return TRUE;
 }
 
 static void
-label_free_data (GtkWidget *event_box,
-		 gpointer client_data)
+footer_item_prelight_data_free_callback (GtkWidget *event_box,
+					 gpointer client_data)
 {
-	PrelightLabelData *data;
+	PrelightData *data;
 
 	g_return_if_fail (GTK_IS_EVENT_BOX (event_box));
 	g_return_if_fail (client_data != NULL);
 
-	data = (PrelightLabelData *) client_data;
+	data = (PrelightData *) client_data;
 
 	g_free (data->tile_name);
 	g_free (data->prelight_tile_name);
@@ -250,63 +214,13 @@ label_free_data (GtkWidget *event_box,
 }
 
 static void
-label_free_uri (GtkWidget *event_box,
-		gpointer client_data)
+free_data_callback (GtkWidget *event_box,
+		    gpointer client_data)
 {
 	g_return_if_fail (GTK_IS_EVENT_BOX (event_box));
 	g_return_if_fail (client_data != NULL);
 
 	g_free (client_data);
-}
-
-static GtkWidget *
-image_new (GdkPixbuf *pixbuf, GdkPixbuf *tile_pixbuf, guint32 background_color)
-{
-	GtkWidget *image;
-
-	g_return_val_if_fail (pixbuf || tile_pixbuf, NULL);
-
-	image = nautilus_image_new ();
-
-	nautilus_buffered_widget_set_background_type (NAUTILUS_BUFFERED_WIDGET (image), NAUTILUS_BACKGROUND_SOLID);
-	nautilus_buffered_widget_set_background_color (NAUTILUS_BUFFERED_WIDGET (image), background_color);
-
-	if (pixbuf != NULL) {
-		nautilus_image_set_pixbuf (NAUTILUS_IMAGE (image), pixbuf);
-	}
-	
-	if (tile_pixbuf != NULL) {
-		nautilus_buffered_widget_set_tile_pixbuf (NAUTILUS_BUFFERED_WIDGET (image), tile_pixbuf);
-	}
-
-	return image;
-}
-
-static GtkWidget *
-image_new_from_name (const char *icon_name, const char *tile_name, guint32 background_color)
-{
-	GtkWidget *image;
-	GdkPixbuf *pixbuf = NULL;
-	GdkPixbuf *tile_pixbuf = NULL;
-
-	g_return_val_if_fail (icon_name || tile_name, NULL);
-
-	if (icon_name) {
-		pixbuf = pixbuf_new_from_name (icon_name);
-	}
-
-	if (tile_name) {
-		tile_pixbuf = pixbuf_new_from_name (tile_name);
-	}
-
-	g_return_val_if_fail (pixbuf || tile_pixbuf, NULL);
-
-	image = image_new (pixbuf, tile_pixbuf, background_color);
-
-	nautilus_gdk_pixbuf_unref_if_not_null (pixbuf);
-	nautilus_gdk_pixbuf_unref_if_not_null (tile_pixbuf);
-
-	return image;
 }
 
 static void
@@ -315,37 +229,39 @@ buffered_widget_add_prelighting (GtkWidget *buffered_widget,
 				 const char *tile_name,
 				 const char *prelight_tile_name)
 {
-	PrelightLabelData *data;
+	PrelightData *data;
 
 	g_return_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (buffered_widget));
 	g_return_if_fail (GTK_IS_EVENT_BOX (event_box));
 	g_return_if_fail (tile_name != NULL);
 	g_return_if_fail (prelight_tile_name != NULL);
 
-	data = g_new0 (PrelightLabelData, 1);
+	data = g_new0 (PrelightData, 1);
 	
 	data->buffered_widget = buffered_widget;
 	data->tile_name = g_strdup (tile_name);
 	data->prelight_tile_name = g_strdup (prelight_tile_name);
 	
-	gtk_signal_connect (GTK_OBJECT (event_box), "enter_notify_event", GTK_SIGNAL_FUNC (label_enter_event), data);
-	gtk_signal_connect (GTK_OBJECT (event_box), "leave_notify_event", GTK_SIGNAL_FUNC (label_leave_event), data);
-	gtk_signal_connect (GTK_OBJECT (event_box), "destroy", GTK_SIGNAL_FUNC (label_free_data), data);
+	gtk_signal_connect (GTK_OBJECT (event_box), "enter_notify_event", GTK_SIGNAL_FUNC (footer_item_enter_event), data);
+	gtk_signal_connect (GTK_OBJECT (event_box), "leave_notify_event", GTK_SIGNAL_FUNC (footer_item_leave_event), data);
+	gtk_signal_connect (GTK_OBJECT (event_box), "destroy", GTK_SIGNAL_FUNC (footer_item_prelight_data_free_callback), data);
 }
 
 static GtkWidget *
-footer_item_new (const char *text, const char *uri, gboolean has_left_bumper, gboolean has_right_bumper)
+footer_item_new (EazelServicesFooter *footer,
+		 const char *text,
+		 int index,
+		 gboolean has_left_bumper,
+		 gboolean has_right_bumper)
 {
 	GtkWidget *hbox;
 	GtkWidget *event_box;
   	GtkWidget *label;
-	char *uri_copy;
+	ButtonPressData *data;
 
+	g_return_val_if_fail (EAZEL_SERVICES_IS_FOOTER (footer), NULL);
 	g_return_val_if_fail (text != NULL, NULL);
 	g_return_val_if_fail (text[0] != '\0', NULL);
-
-	g_return_val_if_fail (uri != NULL, NULL);
-	g_return_val_if_fail (uri[0] != '\0', NULL);
 
 	event_box = gtk_event_box_new ();
 	hbox = gtk_hbox_new (FALSE, 0);
@@ -353,37 +269,31 @@ footer_item_new (const char *text, const char *uri, gboolean has_left_bumper, gb
 
 	if (has_left_bumper) {
 		GtkWidget *left;
-		left = image_new_from_name (EAZEL_SERVICES_NORMAL_LEFT_BUMPER, EAZEL_SERVICES_NORMAL_FILL, EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
+		left = eazel_services_image_new (EAZEL_SERVICES_NORMAL_LEFT_BUMPER, EAZEL_SERVICES_NORMAL_FILL, EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
 		buffered_widget_add_prelighting (left, event_box, EAZEL_SERVICES_NORMAL_FILL, EAZEL_SERVICES_PRELIGHT_FILL);
 		gtk_box_pack_start (GTK_BOX (hbox), left, FALSE, FALSE, 0);
 		gtk_widget_show (left);
 	}
 
- 	label = label_new (text,
-			   13,
-			   1,
-			   2,
-			   0,
-			   5,
-			   0,
-			   EAZEL_SERVICES_BACKGROUND_COLOR_RGBA,
-			   EAZEL_SERVICES_DROP_SHADOW_COLOR_RGBA,
-			   EAZEL_SERVICES_TEXT_COLOR_RGBA,
-			   EAZEL_SERVICES_NORMAL_FILL);
+	label = eazel_services_label_new (text, FALSE, 13, 5, 0, 2, 0,
+					  EAZEL_SERVICES_BACKGROUND_COLOR_RGBA,
+					  EAZEL_SERVICES_NORMAL_FILL);
 	
 	gtk_widget_show (label);
 
-	uri_copy = g_strdup (uri);
+	data = g_new (ButtonPressData, 1);
+	data->index = index;
+	data->footer = footer;
 
-	gtk_signal_connect (GTK_OBJECT (event_box), "button_press_event", GTK_SIGNAL_FUNC (label_button_press_event), uri_copy);
-	gtk_signal_connect (GTK_OBJECT (event_box), "destroy", GTK_SIGNAL_FUNC (label_free_uri), uri_copy);
+	gtk_signal_connect (GTK_OBJECT (event_box), "button_press_event", GTK_SIGNAL_FUNC (footer_item_button_press_event), data);
+	gtk_signal_connect (GTK_OBJECT (event_box), "destroy", GTK_SIGNAL_FUNC (free_data_callback), data);
 
 	buffered_widget_add_prelighting (label, event_box, EAZEL_SERVICES_NORMAL_FILL, EAZEL_SERVICES_PRELIGHT_FILL);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
 	if (has_right_bumper) {
 		GtkWidget *right;
-		right = image_new_from_name (EAZEL_SERVICES_NORMAL_RIGHT_BUMPER, EAZEL_SERVICES_NORMAL_FILL, EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
+		right = eazel_services_image_new (EAZEL_SERVICES_NORMAL_RIGHT_BUMPER, EAZEL_SERVICES_NORMAL_FILL, EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
 		buffered_widget_add_prelighting (right, event_box, EAZEL_SERVICES_NORMAL_FILL, EAZEL_SERVICES_PRELIGHT_FILL);
 		gtk_box_pack_start (GTK_BOX (hbox), right, FALSE, FALSE, 0);
 		gtk_widget_show (right);
@@ -404,9 +314,9 @@ footer_remainder_new (void)
 
 	hbox = gtk_hbox_new (FALSE, 0);
 
-	left = image_new_from_name (EAZEL_SERVICES_REMAINDER_LEFT_BUMPER, NULL, EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
-	fill = image_new_from_name (NULL, EAZEL_SERVICES_REMAINDER_FILL, EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
-	right = image_new_from_name (EAZEL_SERVICES_REMAINDER_RIGHT_BUMPER, NULL, EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
+	left = eazel_services_image_new (EAZEL_SERVICES_REMAINDER_LEFT_BUMPER, NULL, EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
+	fill = eazel_services_image_new (NULL, EAZEL_SERVICES_REMAINDER_FILL, EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
+	right = eazel_services_image_new (EAZEL_SERVICES_REMAINDER_RIGHT_BUMPER, NULL, EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
 
 	gtk_box_pack_start (GTK_BOX (hbox), left, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), fill, TRUE, TRUE, 0);
@@ -433,22 +343,21 @@ eazel_services_footer_new (void)
 void
 eazel_services_footer_update (EazelServicesFooter *footer,
 			      const char *items[],
-			      const char *uris[],
 			      guint num_items)
 {
 	GtkWidget *remainder;
-	GtkWidget *date;
 	guint i;
+	char *date_string;
 
 	g_return_if_fail (EAZEL_SERVICES_IS_FOOTER (footer));
 	g_return_if_fail (items != NULL);
-	g_return_if_fail (uris != NULL);
 	g_return_if_fail (num_items > 0);
 
 	for (i = 0; i < num_items; i++) {
 		GtkWidget *item;
 		
-		item = footer_item_new (items[i], uris[i], i > 0, i < (num_items - 1));
+		item = footer_item_new (footer, items[i], i, i > 0, i < (num_items - 1));
+
 		gtk_box_pack_start (GTK_BOX (footer), item, FALSE, FALSE, 0);
 		gtk_widget_show (item);
 	}
@@ -456,20 +365,30 @@ eazel_services_footer_update (EazelServicesFooter *footer,
 	remainder = footer_remainder_new ();
 	gtk_box_pack_start (GTK_BOX (footer), remainder, TRUE, TRUE, 0);
 
- 	date = label_new ("Friday, October 13th",
-			  13,
-			  1,
-			  2,
-			  0,
-			  8,
-			  0,
-			  EAZEL_SERVICES_BACKGROUND_COLOR_RGBA,
-			  EAZEL_SERVICES_DROP_SHADOW_COLOR_RGBA,
-			  EAZEL_SERVICES_TEXT_COLOR_RGBA,
-			  EAZEL_SERVICES_NORMAL_FILL);
+	date_string = eazel_services_get_current_date_string ();
 
+	footer->details->date = eazel_services_label_new (date_string,
+							  FALSE, 13, 8, 0, 2, 0,
+							  EAZEL_SERVICES_BACKGROUND_COLOR_RGBA,
+							  EAZEL_SERVICES_NORMAL_FILL);
+	g_free (date_string);
+	
 	gtk_widget_show (remainder);
-	gtk_widget_show (date);
+	gtk_widget_show (footer->details->date);
 
-	gtk_box_pack_start (GTK_BOX (footer), date, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (footer), footer->details->date, FALSE, FALSE, 0);
+}
+
+void
+eazel_services_footer_set_date (EazelServicesFooter *footer,
+				const char *date)
+{
+
+	g_return_if_fail (EAZEL_SERVICES_IS_FOOTER (footer));
+	g_return_if_fail (date != NULL);
+	g_return_if_fail (date[0] != '\0');
+
+	g_return_if_fail (NAUTILUS_IS_LABEL (footer->details->date));
+
+	nautilus_label_set_text (NAUTILUS_LABEL (footer->details->date), date);
 }

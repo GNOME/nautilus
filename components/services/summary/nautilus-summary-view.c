@@ -30,7 +30,7 @@
 
 #include "eazel-services-footer.h"
 #include "eazel-services-header.h"
-#include "eazel-services-constants.h"
+#include "eazel-services-extensions.h"
 
 #include <gnome-xml/tree.h>
 #include <bonobo/bonobo-control.h>
@@ -210,70 +210,76 @@ struct _NautilusSummaryViewDetails {
 	GConfEngine *	engine_gconf;
 };
 
-static void	nautilus_summary_view_initialize_class	(NautilusSummaryViewClass	*klass);
-static void	nautilus_summary_view_initialize	(NautilusSummaryView		*view);
-static void	nautilus_summary_view_destroy		(GtkObject			*object);
-static void	summary_load_location_callback		(NautilusView			*nautilus_view,
-							 const char			*location,
-	 						 NautilusSummaryView		*view);
-static void	generate_summary_form			(NautilusSummaryView		*view);
-static void	generate_service_entry_row		(NautilusSummaryView		*view,
-							 int				row);
-static void	generate_eazel_news_entry_row		(NautilusSummaryView		*view,
-							 int				row);
-static void	generate_update_news_entry_row		(NautilusSummaryView		*view,
-							 int				row);
-static void	login_button_cb				(GtkWidget			*button,
-							 NautilusSummaryView		*view); 
-static void	preferences_button_cb			(GtkWidget			*button,
-							 NautilusSummaryView		*view);
-static void	logout_button_cb			(GtkWidget			*button,
-							 NautilusSummaryView		*view);
-static void	goto_service_cb				(GtkWidget			*button,
-							 ServicesButtonCallbackData	*cbdata);
-static void	goto_update_cb				(GtkWidget			*button,
-							 ServicesButtonCallbackData	*cbdata);
-static void	register_button_cb			(GtkWidget			*button,
-							 NautilusSummaryView		*view);
-static gboolean	am_i_logged_in				(NautilusSummaryView		*view);
-static char*	who_is_logged_in			(NautilusSummaryView		*view);
-static gint	logged_in_callback			(gpointer			raw);
-static gint	logged_out_callback			(gpointer			raw);
-static void	generate_error_dialog			(NautilusSummaryView		*view,
-							 const char			*message);
-static void	generate_login_dialog			(NautilusSummaryView		*view);
-static void	widget_set_nautilus_background_color	(GtkWidget			*widget,
-							 const char			*color);
-static void	merge_bonobo_menu_items			(BonoboControl *control,
-							 gboolean state,
-							 gpointer user_data);
-static void	update_menu_items 			(NautilusSummaryView *view,
-							 gboolean logged_in);
-static void
-service_tab_selected_callback				(GtkWidget *widget,
-		   					int which_tab,
-		   					NautilusSummaryView *view);
-static void
-updates_tab_selected_callback				(GtkWidget *widget,
-		   					int which_tab,
-		   					NautilusSummaryView *view);
+static void     nautilus_summary_view_initialize_class (NautilusSummaryViewClass   *klass);
+static void     nautilus_summary_view_initialize       (NautilusSummaryView        *view);
+static void     nautilus_summary_view_destroy          (GtkObject                  *object);
+static void     summary_load_location_callback         (NautilusView               *nautilus_view,
+							const char                 *location,
+							NautilusSummaryView        *view);
+static void     generate_summary_form                  (NautilusSummaryView        *view);
+static void     generate_service_entry_row             (NautilusSummaryView        *view,
+							int                         row);
+static void     generate_eazel_news_entry_row          (NautilusSummaryView        *view,
+							int                         row);
+static void     generate_update_news_entry_row         (NautilusSummaryView        *view,
+							int                         row);
+static void     login_button_cb                        (GtkWidget                  *button,
+							NautilusSummaryView        *view);
+static void     preferences_button_cb                  (GtkWidget                  *button,
+							NautilusSummaryView        *view);
+static void     logout_button_cb                       (GtkWidget                  *button,
+							NautilusSummaryView        *view);
+static void     goto_service_cb                        (GtkWidget                  *button,
+							ServicesButtonCallbackData *cbdata);
+static void     goto_update_cb                         (GtkWidget                  *button,
+							ServicesButtonCallbackData *cbdata);
+static void     register_button_cb                     (GtkWidget                  *button,
+							NautilusSummaryView        *view);
+static gboolean am_i_logged_in                         (NautilusSummaryView        *view);
+static char*    who_is_logged_in                       (NautilusSummaryView        *view);
+static gint     logged_in_callback                     (gpointer                    raw);
+static gint     logged_out_callback                    (gpointer                    raw);
+static void     generate_error_dialog                  (NautilusSummaryView        *view,
+							const char                 *message);
+static void     generate_login_dialog                  (NautilusSummaryView        *view);
+static void     widget_set_nautilus_background_color   (GtkWidget                  *widget,
+							const char                 *color);
+static void     merge_bonobo_menu_items                (BonoboControl              *control,
+							gboolean                    state,
+							gpointer                    user_data);
+static void     update_menu_items                      (NautilusSummaryView        *view,
+							gboolean                    logged_in);
+static void     service_tab_selected_callback          (GtkWidget                  *widget,
+							int                         which_tab,
+							NautilusSummaryView        *view);
+static void     updates_tab_selected_callback          (GtkWidget                  *widget,
+							int                         which_tab,
+							NautilusSummaryView        *view);
+static void     footer_item_clicked_callback           (GtkWidget                  *widget,
+							int                         index,
+							gpointer                    callback_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSummaryView, nautilus_summary_view, GTK_TYPE_EVENT_BOX)
 
-static const char *footer_items[] = 
+#define FOOTER_REGISTER_OR_PREFERENCES	0
+#define FOOTER_LOGIN_OR_LOGOUT		1
+#define FOOTER_TERMS_OF_USER		2
+#define FOOTER_PRIVACY_STATEMENT	3
+
+static const char *footer_online_items[] = 
 {
-	"Register",
-	"Login",
-	"Terms of Use",
-	"Privacy Statement"
+	N_("Register"),
+	N_("Login"),
+	N_("Terms of Use"),
+	N_("Privacy Statement")
 };
 
-static const char *footer_uris[] = 
+static const char *footer_offline_items[] = 
 {
-	"eazel:register",
-	"eazel:login",
-	"eazel:terms",
-	"eazel:privacy"
+	N_("Account Preferences"),
+	N_("Logout"),
+	N_("Terms of Use"),
+	N_("Privacy Statement")
 };
 
 static void
@@ -316,17 +322,17 @@ generate_summary_form (NautilusSummaryView	*view)
 	/* setup the title */
 	title = eazel_services_header_new ("");
 
-	if (!view->details->logged_in) {
-		eazel_services_header_set_text (EAZEL_SERVICES_HEADER (title),
-						_("You are not logged in!"));
-	}
-	else {
+	if (view->details->logged_in) {
 		char *text;
 		g_free (view->details->user_name);
 		view->details->user_name = who_is_logged_in (view);
 		text = g_strdup_printf (_("Welcome Back %s!"), view->details->user_name);
 		eazel_services_header_set_text (EAZEL_SERVICES_HEADER (title), text);
 		g_free (text);
+	}
+	else {
+		eazel_services_header_set_text (EAZEL_SERVICES_HEADER (title),
+						_("You are not logged in!"));
 	}
 	gtk_box_pack_start (GTK_BOX (view->details->form), title, FALSE, FALSE, 0);
 	gtk_widget_show (title);
@@ -576,11 +582,19 @@ generate_summary_form (NautilusSummaryView	*view)
 	view->details->xml_data = NULL;
 
 	footer = eazel_services_footer_new ();
-	eazel_services_footer_update (EAZEL_SERVICES_FOOTER (footer),
-				      footer_items,
-				      footer_uris,
-				      NAUTILUS_N_ELEMENTS (footer_items));
-	
+	gtk_signal_connect (GTK_OBJECT (footer), "item_clicked", GTK_SIGNAL_FUNC (footer_item_clicked_callback), view);
+
+	if (view->details->logged_in) {
+		eazel_services_footer_update (EAZEL_SERVICES_FOOTER (footer),
+					      footer_offline_items,
+					      NAUTILUS_N_ELEMENTS (footer_online_items));
+	}
+	else {
+		eazel_services_footer_update (EAZEL_SERVICES_FOOTER (footer),
+					      footer_online_items,
+					      NAUTILUS_N_ELEMENTS (footer_online_items));
+	}
+
 	gtk_box_pack_start (GTK_BOX (view->details->form), footer, FALSE, FALSE, 0);
 	gtk_widget_show (footer);
 
@@ -1614,4 +1628,38 @@ merge_bonobo_menu_items (BonoboControl *control, gboolean state, gpointer user_d
         /* Note that we do nothing if state is FALSE. Nautilus content
          * views are never explicitly deactivated
 	 */
+}
+
+static void
+footer_item_clicked_callback (GtkWidget *widget, int index, gpointer callback_data)
+{
+	NautilusSummaryView *view;
+
+	g_return_if_fail (NAUTILUS_IS_SUMMARY_VIEW (callback_data));
+	g_return_if_fail (index >= FOOTER_REGISTER_OR_PREFERENCES);
+	g_return_if_fail (index <= FOOTER_PRIVACY_STATEMENT);
+
+	view = NAUTILUS_SUMMARY_VIEW (callback_data);
+
+	switch (index) {
+	case FOOTER_REGISTER_OR_PREFERENCES:
+		register_button_cb (NULL, view);
+		break;
+
+	case FOOTER_LOGIN_OR_LOGOUT:
+		generate_login_dialog (view);
+		break;
+
+	case FOOTER_TERMS_OF_USER:
+		go_to_uri (view->details->nautilus_view, "eazel-services://anonymous/aboutus/terms_of_use");
+		break;
+
+	case FOOTER_PRIVACY_STATEMENT:
+		go_to_uri (view->details->nautilus_view, "eazel-services://anonymous/aboutus/privacy");
+		break;
+
+	default:
+		g_assert_not_reached ();
+		break;
+	}
 }

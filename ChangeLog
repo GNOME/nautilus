@@ -1,5 +1,40 @@
 2000-10-25  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* components/services/nautilus-dependent-shared/eazel-services-constants.h:
+	Removed.  It was a bad try.  Stuff is now in eazel-services-extensions.h.
+	
+	* components/services/nautilus-dependent-shared/Makefile.am:
+	* components/services/nautilus-dependent-shared/eazel-services-extensions.c:
+	(pixbuf_new_from_name), (eazel_services_image_new),
+	(eazel_services_label_new):
+	* components/services/nautilus-dependent-shared/eazel-services-extensions.h:
+	Add a place to put shared services extensions.
+	
+	* components/services/nautilus-dependent-shared/eazel-services-footer.c:
+	(footer_item_new), (footer_remainder_new),
+	(eazel_services_footer_update):
+	* components/services/nautilus-dependent-shared/eazel-services-header.c:
+	(eazel_services_header_new):
+	* components/services/nautilus-dependent-shared/test-footer-header.c:
+	Remove a bunch of duplicated code and put it in a shared
+	extensions location.  Make the footer real.  Add an item_clicked
+	signal to the footer.
+
+	* components/services/summary/nautilus-view/nautilus-summary-view.c:
+	Hook up the footer for item clicks.
+	
+	* libnautilus-extensions/nautilus-image.c:
+	(nautilus_image_new_loaded):
+	* libnautilus-extensions/nautilus-image.h:
+	* libnautilus-extensions/nautilus-label.c:
+	(nautilus_label_new_loaded):
+	* libnautilus-extensions/nautilus-label.h:
+	Add constructors that take a bunch of arguments for the various
+	widgets attributes.  Makes the widgets easier to use for callers
+	that need to tweak many attributes (like eazel services).
+	
+2000-10-25  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* components/services/nautilus-dependent-shared/.cvsignore:
 	* components/services/nautilus-dependent-shared/Makefile.am:
 	* components/services/nautilus-dependent-shared/eazel-services-constants.h:
