@@ -605,14 +605,20 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+
 dnl
-dnl Do the timestamp
+dnl Define the build timestamp if given in the environment.
 dnl
-AC_DEFINE_UNQUOTED(NAUTILUS_TIMESTAMP,"`date`")
+if test -n "$EAZEL_BUILD_TIMESTAMP"
+then
+  AC_DEFINE_UNQUOTED(EAZEL_BUILD_TIMESTAMP,"$EAZEL_BUILD_TIMESTAMP")
+fi
 
 AC_OUTPUT([
 nautilus.spec
 Makefile
+helper-utilities/Makefile
+helper-utilities/authenticate/Makefile
 icons/Makefile
 icons/ardmore/Makefile
 icons/arlo/Makefile
@@ -694,8 +700,6 @@ components/loser/Makefile
 components/loser/content/Makefile
 components/loser/sidebar/Makefile
 components/tree/Makefile
-helper-utilities/Makefile
-helper-utilities/authenticate/Makefile
 po/Makefile.in
 intl/Makefile
 test/Makefile
@@ -778,6 +782,11 @@ dnl <= CFLAGS and LDFLAGS =>
 echo "
 CFLAGS                  : $CFLAGS
 LDFLAGS                 : $LDFLAGS"
+echo
+
+dnl <= Snapshot things =>
+echo "
+EAZEL_BUILD_TIMESTAMP   : $EAZEL_BUILD_TIMESTAMP"
 echo
 
 dnl <= End of configuration summary =>

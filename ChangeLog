@@ -1,5 +1,24 @@
 2000-10-16  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* acconfig.h:
+	* configure.in:
+	Define the build timestamp only if given in the environment.
+	
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_get_build_timestamp):
+	* libnautilus-extensions/nautilus-file-utilities.h:
+	New function to obtain the build timestamp.
+	
+	* src/nautilus-window-manage-views.c:
+	(window_set_title_with_timestamp), (update_title):
+	* src/nautilus-window-menus.c: (get_about_box_timestamp_string),
+	(help_menu_about_nautilus_callback):
+	Display the build timestamp in both the about box and window
+	title.   This only happens if the build timestamp is set at
+	compile time.
+	
+2000-10-16  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* README:
 	Update docs for the fact that we now require Mozilla-M18.
 	

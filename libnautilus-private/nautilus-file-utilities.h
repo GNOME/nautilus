@@ -41,15 +41,16 @@ char *                  nautilus_make_uri_from_input        (const char         
 gboolean                nautilus_uri_is_trash               (const char                *uri);
 char *                  nautilus_make_uri_canonical         (const char                *uri);
 gboolean                nautilus_uri_is_canonical_uri       (const char                *uri);
-
 gboolean                nautilus_uris_match                 (const char                *uri_1,
 							     const char                *uri_2);
+
 /* FIXME bugzilla.eazel.com 2424: 
  * This is the same as gnome-libs g_concat_dir_and_file except
  * for handling path == NULL.
  */
 char *                  nautilus_make_path                  (const char                *path,
 							     const char                *name);
+
 
 /* These functions all return something something that needs to be
  * freed with g_free, is not NULL, and is guaranteed to exist.
@@ -59,13 +60,16 @@ char *                  nautilus_get_user_main_directory    (void);
 char *                  nautilus_get_desktop_directory      (void);
 char *                  nautilus_get_pixmap_directory       (void);
 
+
 /* See if the user_main_directory exists. This should be called before
  * nautilus_get_user_main_directory, which creates the directory.
  */
 gboolean                nautilus_user_main_directory_exists (void);
 
+
 /* Convenience routine to test if a string is a remote URI. */
 gboolean                nautilus_is_remote_uri              (const char                *uri);
+
 
 /* A version of gnome's gnome_pixmap_file that works for the nautilus prefix.
  * Otherwise similar to gnome_pixmap_file in that it checks to see if the file
@@ -76,6 +80,7 @@ gboolean                nautilus_is_remote_uri              (const char         
  * gnome_pixmap_file better, using GNOME_PATH.
  */
 char *                  nautilus_pixmap_file                (const char                *partial_path);
+
 
 /* Read an entire file at once with gnome-vfs. */
 GnomeVFSResult          nautilus_read_entire_file           (const char                *uri,
@@ -90,11 +95,20 @@ NautilusReadFileHandle *nautilus_read_file_async            (const char         
 							     gpointer                   callback_data);
 void                    nautilus_read_file_cancel           (NautilusReadFileHandle    *handle);
 
+
 /* Convenience routine for simple file copying using text-based uris */
-GnomeVFSResult			nautilus_copy_uri_simple 			(const char *source_uri, const char *dest_uri);
+GnomeVFSResult          nautilus_copy_uri_simple            (const char                *source_uri,
+							     const char                *dest_uri);
+
 
 /* gnome-vfs cover to make a directory and parents */
 GnomeVFSResult          nautilus_make_directory_and_parents (GnomeVFSURI               *uri,
 							     guint                      permissions);
+
+/* Returns the build timestamp the Nautilus binary.
+ * This is useful to be able to tell builds apart.
+ * A return value of NULL means unknown timestamp.
+ */
+char *                  nautilus_get_build_timestamp       (void);
 
 #endif /* NAUTILUS_FILE_UTILITIES_H */

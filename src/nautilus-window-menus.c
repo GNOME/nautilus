@@ -578,6 +578,16 @@ change_appearance_callback (BonoboUIComponent *component,
 	nautilus_theme_selector_show ();
 }
 
+static char *
+get_about_box_timestamp_string (void)
+{
+	char *timestamp;
+
+	timestamp = nautilus_get_build_timestamp ();
+	
+	return timestamp ? timestamp : g_strdup ("");
+}
+
 static void
 help_menu_about_nautilus_callback (BonoboUIComponent *component, 
 			           gpointer user_data, 
@@ -617,12 +627,17 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 			NULL
 		};
 
-		about = nautilus_about_new(_("Nautilus"),
-					VERSION,
-					"(C) 1999-2000 Eazel, Inc.",
-					authors,
-					_("Nautilus is a graphical shell \nfor GNOME that makes it \neasy to manage your files \nand the rest of your system."),
-					NAUTILUS_TIMESTAMP);
+		char *timestamp = get_about_box_timestamp_string ();
+		g_assert (timestamp != NULL);
+
+		about = nautilus_about_new (_("Nautilus"),
+					    VERSION,
+					    "(C) 1999-2000 Eazel, Inc.",
+					    authors,
+					    _("Nautilus is a graphical shell \nfor GNOME that makes it \neasy to manage your files \nand the rest of your system."),
+					    timestamp);
+		
+		g_free (timestamp);
 	} else {
 		nautilus_about_update_authors (NAUTILUS_ABOUT (about));
 	}

@@ -220,6 +220,37 @@ compute_title (NautilusWindow *window)
         return title;
 }
 
+/* window_set_title_with_timestamp
+ * 
+ * Update the non-NautilusViewFrame objects that use the location's user-displayable
+ * title in some way. Called when the location or title has changed.
+ * @window: The NautilusWindow in question.
+ * @title: The new user-displayable title.
+ * 
+ */
+static void
+window_set_title_with_timestamp (NautilusWindow *window, const char *title)
+{
+        char *timestamp;
+	
+        g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+        g_return_if_fail (title != NULL);
+
+	timestamp = nautilus_get_build_timestamp ();
+	
+	if (timestamp != NULL) {
+		char *title_with_timestamp;
+		title_with_timestamp = g_strdup_printf ("Preview Release %s: %s", timestamp, title);
+		gtk_window_set_title (GTK_WINDOW (window), title_with_timestamp);
+		g_free (title_with_timestamp);
+	}
+	else {
+		gtk_window_set_title (GTK_WINDOW (window), title);
+	}
+
+	g_free (timestamp);
+}
+
 /* update_title:
  * 
  * Update the non-NautilusViewFrame objects that use the location's user-displayable
@@ -247,10 +278,10 @@ update_title (NautilusWindow *window)
         window->details->title = g_strdup (title);
 
         if (title[0] == '\0') {
-                gtk_window_set_title (GTK_WINDOW (window), _("Nautilus"));
+		window_set_title_with_timestamp (window, _("Nautilus"));
         } else {
                 window_title = nautilus_str_middle_truncate (title, MAX_TITLE_LENGTH);
-                gtk_window_set_title (GTK_WINDOW (window), window_title);
+		window_set_title_with_timestamp (window, window_title);
                 g_free (window_title);
         }
 

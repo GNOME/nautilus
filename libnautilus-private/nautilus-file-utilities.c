@@ -1155,6 +1155,18 @@ nautilus_uri_is_canonical_uri (const char *uri)
 	return TRUE;
 }
 
+#ifdef EAZEL_BUILD_TIMESTAMP
+static const char *BUILD_TIMESTAMP = EAZEL_BUILD_TIMESTAMP;
+#else
+static const char *BUILD_TIMESTAMP = NULL;
+#endif
+
+char *
+nautilus_get_build_timestamp (void)
+{
+	return BUILD_TIMESTAMP ? g_strdup (BUILD_TIMESTAMP) : NULL;
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 void
