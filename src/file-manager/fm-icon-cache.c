@@ -837,101 +837,16 @@ fm_icon_cache_load_file(FMIconCache *fmic, const char *fn)
 
 /* Splats one on top of the other, putting the src pixbuf in the lower left corner of the dest pixbuf */
 static void
-gdk_pixbuf_composite(GdkPixbuf *dest, GdkPixbuf *src)
+my_gdk_pixbuf_composite(GdkPixbuf *dest, GdkPixbuf *src)
 {
-        guchar *dest_data;
-        int dx, dy, dw, dh, drs;
-        guchar *rgba;
-        int rrs;
-        int da;
-        int r, g, b, a;
-        int i,j;
-        guchar *imgrow;
-        guchar *dstrow;
-        int dest_has_alpha, src_has_alpha;
+        int dx, dy, dw, dh;
 
         dw = MIN(dest->art_pixbuf->width, src->art_pixbuf->width);
         dh = MIN(dest->art_pixbuf->width, src->art_pixbuf->width);
         dx = dw - src->art_pixbuf->width;
         dy = dh - src->art_pixbuf->height;
 
-        dest_has_alpha = dest->art_pixbuf->has_alpha;
-        src_has_alpha = src->art_pixbuf->has_alpha;
-
-        dest_data = dest->art_pixbuf->pixels;
-        rgba = src->art_pixbuf->pixels;
-
-        drs = dest->art_pixbuf->rowstride;
-        rrs = src->art_pixbuf->rowstride;
-
-        /* To do as few conditionals inside the loop as possible, we have four different variants of it */
-        if (dest_has_alpha) {
-                if(src_has_alpha) {
-                        for (j = 0; j < dh; j++) {
-                                imgrow = rgba + j * rrs;
-                                dstrow = dest_data + (dy+j) * drs + (dx*4);
-
-                                for (i = 0; i < dw; i++) {
-                                        r = *(imgrow++);
-                                        g = *(imgrow++);
-                                        b = *(imgrow++);
-                                        a = *(imgrow++);
-
-                                        da = *(dstrow+3);
-                                        *dstrow = (r*a + *dstrow * (da-a))>>8;
-                                        dstrow++;
-                                        *dstrow = (g*a + *dstrow * (da-a))>>8;
-                                        dstrow++;
-                                        *dstrow = (b*a + *dstrow * (da-a))>>8;
-                                        dstrow++;
-
-                                        *dstrow = (da * a)>>8;
-                                        dstrow++;
-                                }
-                        }
-                } else {
-                        for (j = 0; j < dh; j++) {
-                                imgrow = rgba + j * rrs;
-                                dstrow = dest_data + (dy+j) * drs + (dx*4);
-
-                                for (i = 0; i < dw; i++) {
-                                        memcpy(dstrow, imgrow, 3);
-                                        imgrow += 3;
-                                        dstrow += 3;
-
-                                        *dstrow = 255;
-                                        dstrow++;
-                                }
-                        }
-                }
-        } else {
-                if(src_has_alpha) {
-                        for (j = 0; j < dh; j++) {
-                                imgrow = rgba + j * rrs;
-                                dstrow = dest_data + (dy+j) * drs + (dx*3);
-                                
-                                for (i = 0; i < dw; i++) {
-                                        r = *(imgrow++);
-                                        g = *(imgrow++);
-                                        b = *(imgrow++);
-                                        a = *(imgrow++);
-                                                *dstrow = (r*a + *dstrow * (256-a))>>8;
-                                                dstrow++;
-                                                *dstrow = (g*a + *dstrow * (256-a))>>8;
-                                                dstrow++;
-                                                *dstrow = (b*a + *dstrow * (256-a))>>8;
-                                                dstrow++;
-                                }
-                        }
-                } else {
-                        for (j = 0; j < dh; j++) {
-                                imgrow = rgba + j * rrs;
-                                dstrow = dest_data + (dy+j) * drs + (dx*3);
-                                
-                                memcpy(dstrow, imgrow, dw);
-                        }
-                }
-        }
+	gdk_pixbuf_composite(src, dest, dx, dy, dw, dh, 0, 0, 1, 1, ART_FILTER_BILINEAR, 255);
 }
 
 static GdkPixbuf *
@@ -965,7 +880,7 @@ fm_icon_cache_load_icon(FMIconCache *fmic, IconSet *is, gboolean is_symlink)
                                 fmic->symlink_overlay = fm_icon_cache_load_file(fmic, "i-symlink.png");
                   
                         if(fmic->symlink_overlay)
-                                gdk_pixbuf_composite(retval, fmic->symlink_overlay);
+                                my_gdk_pixbuf_composite(retval, fmic->symlink_overlay);
                         is->symlink = retval;
                 } else
                         is->plain = retval;
