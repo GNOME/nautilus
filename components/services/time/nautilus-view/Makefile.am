@@ -32,14 +32,19 @@ CORBA_GENERATED = \
 	trilobite-eazel-time-service-common.c	\
 	$(NULL)
 
-$(CORBA_GENERATED): IDL_COMPILE
+# make the auto-generated files depend on a timestamp file.
+# this is to ensure the individual files wait for each other before
+# proceeding which is needed in parallel makes
 
-IDL_COMPILE: $(IDL)
+$(CORBA_GENERATED): trilobite_eazel_time_service_idl_stamp
+
+trilobite_eazel_time_service_idl_stamp: $(IDL)
 	$(prefix)/bin/orbit-idl -I${datadir}/idl $(IDL)
+	touch trilobite_eazel_time_service_idl_stamp
 
 main.c trilobite-eazel-time-view.c: $(CORBA_GENERATED)
 
-CLEANFILES+=$(CORBA_GENERATED)
+CLEANFILES+=$(CORBA_GENERATED) trilobite_eazel_time_service_idl_stamp
 
 
 
