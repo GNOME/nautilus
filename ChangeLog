@@ -1,3 +1,22 @@
+2001-03-10  Robey Pointer  <robey@eazel.com>
+
+	reviewed by: Eskil Heyn Olsen <eskil@eazel.com>
+	(implicitly)
+
+	Backport a few patches that appear to have only made it to the 1.0
+	branch, so we can start building the installer on CVS head.
+
+	* components/services/install/lib/eazel-install-logic2.c:
+	(prune_failed_packages_helper):	
+
+	That cancelled vs. already-installed bug, plus the "not deduping
+	myself" patch.
+	
+	* components/services/install-view/callbacks.c:
+	(nautilus_service_install_done):
+
+	Remove the spurious "panic" warning.
+
 2001-03-09  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: John Harper  <jsh@eazel.com>

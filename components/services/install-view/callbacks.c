@@ -530,7 +530,6 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 
         if (view->details->preflight_status == PREFLIGHT_PANIC_BUTTON) {
                 /* user actually destroyed us -- panic! */
-g_warning ("done: panic!");
                 return;
         }
 

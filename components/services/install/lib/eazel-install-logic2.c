@@ -171,11 +171,6 @@ prune_failed_packages_helper (EazelInstall *service,
 			 pack, pack->name, 
 			 packagedata_status_enum_to_str (pack->status));
 #endif
-	/* If it's a suite and no dependencies, cancel it */
-	if (pack->suite_id && g_list_length (pack->depends)==0 && pack->status == PACKAGE_PARTLY_RESOLVED) {
-		pack->status = PACKAGE_CANCELLED;
-	}
-
 	/* If package is already installed, check if the service
 	   settings requires us to fail it */
 	if (pack->status == PACKAGE_ALREADY_INSTALLED) {
@@ -187,6 +182,11 @@ prune_failed_packages_helper (EazelInstall *service,
 		if (cancel_package == 0) {
 			action = PRUNE_ACTION_ALLOW;
 		}
+	}
+
+	/* If it's a suite and no dependencies, cancel it */
+	if (pack->suite_id && g_list_length (pack->depends)==0 && pack->status == PACKAGE_PARTLY_RESOLVED) {
+		pack->status = PACKAGE_ALREADY_INSTALLED;
 	}
 
 	/* Recursion check */
@@ -802,9 +802,18 @@ dedupe_foreach_depends (PackageDependency *d,
 	p11 = g_hash_table_lookup (service->private->dedupe_hash, p1->md5);
 	
 	if (p11) {
-		gtk_object_ref (GTK_OBJECT (p11));
-		gtk_object_unref (GTK_OBJECT (p1)); 
-		d->package = p11;
+		if (p11 != p1) {
+#if EI2_DEBUG & 0x4
+			trilobite_debug ("\tdeduping(b) %p %s to %p", p11, p11->name, p1);
+#endif         
+			gtk_object_ref (GTK_OBJECT (p11));
+			gtk_object_unref (GTK_OBJECT (p1)); 
+			d->package = p11;
+		} else {
+#if EI2_DEBUG & 0x4
+			trilobite_debug ("\tnot deduping(b) myself %p %s", p11, p11->name, p1);
+#endif
+		}
 	} else {
 		add_to_dedupe_hash (service, p1);
 		dedupe_foreach (p1, service);
