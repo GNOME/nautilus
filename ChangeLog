@@ -1,3 +1,14 @@
+2001-03-01  Arik Devens  <arik@eazel.com>
+
+	reviewed by: Mike Fleming  <mfleming@eazel.com>
+
+	Fixed bug 6756, Clicking on anchor links in info: pages causes
+	page to reload.
+	
+	* components/help/converters/gnome-info2html2/html.c:
+	(form_info_tag_href): Changed so that info anchor tag uri's are
+	always local.
+
 2001-03-01  Andy Hertzfeld  <andy@eazel.com>
 
 	fixed bug 7168, change name of first time druid flag so 1.0 users
