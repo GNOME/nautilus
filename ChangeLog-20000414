@@ -1,5 +1,13 @@
 2000-03-09  Maciej Stachowiak  <mjs@eazel.com>
 
+	* libnautilus/nautilus-zoomable.c
+	(impl_Nautilus_Zoomable__create): Pass the correct thing as the
+	servant to avoid crashing on instantiation.	
+	(nautilus_zoomable_real_set_bonobo_control): ref and sink the
+	BonoboControl Gtk object.
+	(nautilus_zoomable_destroy): unref the control instead of
+	destroying.
+
 	* idl/nautilus.idl: Reformat, add emacs magic to maintain indent
 	style.
 
