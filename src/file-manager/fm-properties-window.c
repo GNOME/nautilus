@@ -264,6 +264,10 @@ get_original_file (FMPropertiesWindow *window)
 {
 	g_return_val_if_fail (!is_multi_file_window (window), NULL);
 
+	if (window->details->original_files == NULL) {
+		return NULL;
+	}
+
 	return NAUTILUS_FILE (window->details->original_files->data);
 }
 
@@ -702,7 +706,7 @@ name_field_done_editing (NautilusEntry *name_field, FMPropertiesWindow *window)
 	/* This gets called when the window is closed, which might be
 	 * caused by the file having been deleted.
 	 */
-	if (nautilus_file_is_gone (file)) {
+	if (file == NULL || nautilus_file_is_gone (file)) {
 		return;
 	}
 
@@ -912,15 +916,21 @@ static void
 update_properties_window_title (FMPropertiesWindow *window)
 {
 	char *name, *title;
+	NautilusFile *file;
 
 	g_return_if_fail (GTK_IS_WINDOW (window));
 
-	if (is_multi_file_window (window)) {
-		title = g_strdup_printf (_("Properties"));
-	} else {
-		name = nautilus_file_get_display_name (get_original_file (window));
-		title = g_strdup_printf (_("%s Properties"), name);
-		g_free (name);
+	title = g_strdup_printf (_("Properties"));
+
+	if (!is_multi_file_window (window)) {
+		file = get_original_file (window);
+
+		if (file != NULL) {
+			g_free (title);
+			name = nautilus_file_get_display_name (file);
+			title = g_strdup_printf (_("%s Properties"), name);
+			g_free (name);
+		}
 	}
 	
   	gtk_window_set_title (GTK_WINDOW (window), title);
