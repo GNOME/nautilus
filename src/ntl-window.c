@@ -795,6 +795,9 @@ nautilus_window_constructed(NautilusWindow *window)
 
   gtk_widget_show_all(window->content_hbox);
 
+  /* enable mouse tracking for the index panel */
+  gtk_widget_add_events(GTK_WIDGET (window->index_panel), GDK_POINTER_MOTION_MASK);
+
   /* CORBA stuff */
   window->ntl_viewwindow = impl_Nautilus_ViewWindow__create(window);
   window->uih = bonobo_ui_handler_new();

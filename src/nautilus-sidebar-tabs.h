@@ -67,6 +67,7 @@ gboolean	nautilus_index_tabs_add_view(NautilusIndexTabs *index_tabs, const gchar
 gchar*          nautilus_index_tabs_get_title_from_index(NautilusIndexTabs *index_tabs, gint which_tab);
 gint		nautilus_index_tabs_hit_test(NautilusIndexTabs *index_tabs, double x, double y);
 void		nautilus_index_tabs_remove_view(NautilusIndexTabs *index_tabs, const gchar *name);
+void		nautilus_index_tabs_prelite_tab(NautilusIndexTabs *index_tabs, gint which_tab);
 void		nautilus_index_tabs_select_tab(NautilusIndexTabs *index_tabs, gint which_tab);
 void		nautilus_index_tabs_set_title(NautilusIndexTabs* index_tabs, const gchar *new_title);
 void		nautilus_index_tabs_set_title_mode(NautilusIndexTabs* index_tabs, gboolean is_title_mode);

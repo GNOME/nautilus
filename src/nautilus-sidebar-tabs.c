@@ -36,7 +36,7 @@
 
 struct _tabItem {
 	gboolean visible;
-	gboolean mouse_over;
+	gboolean prelit;
 	char *tab_text;
 	int notebook_page;
 	GtkWidget *tab_view;
@@ -51,6 +51,7 @@ struct _NautilusIndexTabsDetails {
 	GdkColor background_color;
 	GdkColor line_color;
 	GdkColor hilite_color;
+	GdkColor prelite_color;
 	GdkColor text_color;  
 	
 	char *title;
@@ -114,6 +115,10 @@ nautilus_index_tabs_initialize (NautilusIndexTabs *index_tabs)
 	gdk_color_parse ("rgb:9c/9c/9c", &index_tabs->details->tab_color);
 	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (index_tabs)), 
 				  &index_tabs->details->tab_color, FALSE, TRUE);
+	
+	gdk_color_parse ("rgb:55/55/55", &index_tabs->details->prelite_color);
+	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (index_tabs)), 
+				  &index_tabs->details->prelite_color, FALSE, TRUE);
 	
 	gdk_color_parse ("rgb:ff/ff/ff", &index_tabs->details->background_color);
 	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (index_tabs)), 
@@ -212,7 +217,7 @@ nautilus_index_tabs_size_request(GtkWidget *widget, GtkRequisition *requisition)
 /* draw a single tab at the passed-in position, return the total width */
 
 static int
-draw_one_tab(NautilusIndexTabs *index_tabs, GdkGC *gc, char *tab_name, int x, int y)
+draw_one_tab(NautilusIndexTabs *index_tabs, GdkGC *gc, char *tab_name, int x, int y, gboolean prelite_flag)
 {  
 	int text_y_offset, tab_bottom, tab_right;
 	/* measure the name and compute the bounding box */
@@ -224,7 +229,7 @@ draw_one_tab(NautilusIndexTabs *index_tabs, GdkGC *gc, char *tab_name, int x, in
 		
 	/* fill the tab rectangle with the tab color */
 	
-	gdk_gc_set_foreground (gc, &index_tabs->details->tab_color);
+	gdk_gc_set_foreground (gc, prelite_flag ? &index_tabs->details->prelite_color : &index_tabs->details->tab_color);
 	gdk_draw_rectangle (widget->window, gc, TRUE, x, y + 1, total_width, TAB_HEIGHT - 1); 
 	
 	/* draw the border */
@@ -295,7 +300,7 @@ draw_or_hit_test_all_tabs(NautilusIndexTabs *index_tabs, gboolean draw_flag, int
 		tabItem *this_item = (tabItem*) next_tab->data;
 		
 		if (draw_flag && this_item->visible)
-			tab_width = draw_one_tab(index_tabs, temp_gc, this_item->tab_text, x_pos, y_pos);
+			tab_width = draw_one_tab(index_tabs, temp_gc, this_item->tab_text, x_pos, y_pos, this_item->prelit);
 		else {   
 			int edge_width = 2 * TAB_MARGIN;
 			name_width = gdk_string_width(tab_font, this_item->tab_text);
@@ -364,7 +369,7 @@ nautilus_index_tabs_expose (GtkWidget *widget, GdkEventExpose *event)
 		int x_pos = widget->allocation.x;
 		int y_pos = widget->allocation.y;
 		
-		draw_one_tab(index_tabs, temp_gc, index_tabs->details->title, x_pos + TITLE_TAB_OFFSET, y_pos);  
+		draw_one_tab(index_tabs, temp_gc, index_tabs->details->title, x_pos + TITLE_TAB_OFFSET, y_pos, FALSE);  
 		gdk_gc_unref(temp_gc);   
 	} else
 		if (index_tabs->details->tab_count > 0)
@@ -389,7 +394,7 @@ nautilus_index_tabs_add_view (NautilusIndexTabs *index_tabs, const char *name, G
 	new_tab_item = g_new0 (tabItem, 1);
 	new_tab_item->tab_text = g_strdup (name);
 	new_tab_item->visible = TRUE;
-	new_tab_item->mouse_over = FALSE;
+	new_tab_item->prelit = FALSE;
 	new_tab_item->tab_view = new_view;
 	new_tab_item->notebook_page = page_num;
 	
@@ -444,8 +449,31 @@ nautilus_index_tabs_remove_view (NautilusIndexTabs *index_tabs, const char *name
 	gtk_widget_queue_draw (GTK_WIDGET (index_tabs));
 }
 
-/* select a tab, from its associated notebook page number, by making it invisible and all
-   the others visible */
+/* prelite a tab, from its associated notebook page number, by setting the pre-lite flag of
+   the proper tab and clearing the others */
+
+void
+nautilus_index_tabs_prelite_tab(NautilusIndexTabs *index_tabs, int which_tab)
+{
+	GList *next_tab;
+	gboolean is_prelit;
+	gboolean changed = FALSE;
+	
+	for (next_tab = index_tabs->details->tab_items; next_tab != NULL; next_tab = next_tab->next) {
+		tabItem *item = (tabItem*) next_tab->data;
+		is_prelit = (item->notebook_page == which_tab);
+		if (item->prelit != is_prelit) {
+			item->prelit = is_prelit;
+			changed = TRUE;
+		}
+	}
+	
+	if (changed)
+		gtk_widget_queue_draw(GTK_WIDGET(index_tabs));	
+}
+
+/* select a tab, from its associated notebook page number, by making it invisible 
+   and all the others visible */
 
 void
 nautilus_index_tabs_select_tab(NautilusIndexTabs *index_tabs, int which_tab)
@@ -454,6 +482,7 @@ nautilus_index_tabs_select_tab(NautilusIndexTabs *index_tabs, int which_tab)
 	for (next_tab = index_tabs->details->tab_items; next_tab != NULL; next_tab = next_tab->next) {
 		tabItem *item = (tabItem*) next_tab->data;
 		item->visible = (item->notebook_page != which_tab);
+		item->prelit = FALSE;
 	}
 	
 	recalculate_size(index_tabs);

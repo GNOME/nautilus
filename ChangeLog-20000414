@@ -1,5 +1,18 @@
 2000-02-25  Andy Hertzfeld  <andy@eazel.com>
 
+	implemented mouse-over hiliting for the index tabs
+	
+	* src/ntl-index-panel.c:
+	receive motion notify events to hit test the tabs
+	* src/nautilus-index-tabs.c,h:
+	add pre-lite boolean to tab, pre-lite color
+	draw with pre-lite color when boolean is set
+	implemented nautilus_index_tabs_prelite_tab to set booleans
+	* src/ntl-window.c:
+	turn on mouse motion events for the index panel
+	
+2000-02-25  Andy Hertzfeld  <andy@eazel.com>
+
 	* libnautilus/gnome-icon-container.c:
 	made the return key activate all selected icons, to make keyboard navigation actually
 	do something useful besides selecting
@@ -7,7 +20,7 @@
 2000-02-25  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-index-tabs.c:
-	  Susan's new look for the index-tabs, as well as some misc clean-ups
+	Susan's new look for the index-tabs, as well as some misc clean-ups
 	
 2000-02-25  John Sullivan <sullivan@eazel.com>
 

@@ -60,6 +60,8 @@ struct _NautilusIndexPanelDetails {
 static void nautilus_index_panel_initialize_class (GtkObjectClass *object_klass);
 static void nautilus_index_panel_initialize (GtkObject *object);
 static gboolean nautilus_index_panel_press_event(GtkWidget *widget, GdkEventButton *event);
+static gboolean nautilus_index_panel_leave_event (GtkWidget *widget, GdkEventCrossing *event);
+static gboolean nautilus_index_panel_motion_event(GtkWidget *widget, GdkEventMotion *event);
 static void nautilus_index_panel_destroy (GtkObject *object);
 static void nautilus_index_panel_finalize (GtkObject *object);
 
@@ -104,8 +106,10 @@ nautilus_index_panel_initialize_class (GtkObjectClass *object_klass)
 	object_klass->destroy = nautilus_index_panel_destroy;
 	object_klass->finalize = nautilus_index_panel_finalize;
 
-	widget_class->drag_data_received = nautilus_index_panel_drag_data_received;
-	widget_class->button_press_event = nautilus_index_panel_press_event;
+	widget_class->drag_data_received  = nautilus_index_panel_drag_data_received;
+	widget_class->motion_notify_event = nautilus_index_panel_motion_event;
+	widget_class->leave_notify_event = nautilus_index_panel_leave_event;
+	widget_class->button_press_event  = nautilus_index_panel_press_event;
 }
 
 /* utility routine to allocate the box the holds the command buttons */
@@ -116,7 +120,7 @@ make_button_box(NautilusIndexPanel *index_panel)
 	gtk_container_set_border_width (GTK_CONTAINER (index_panel->details->button_box), 8);				
 	gtk_widget_show (index_panel->details->button_box);
 	gtk_container_add (GTK_CONTAINER (index_panel->details->index_container), index_panel->details->button_box);
-        index_panel->details->has_buttons = FALSE;
+	index_panel->details->has_buttons = FALSE;
 }
 
 /* initialize the instance's fields, create the necessary subviews, etc. */
@@ -134,7 +138,7 @@ nautilus_index_panel_initialize (GtkObject *object)
 	
 	/* set the size of the index panel */
 	gtk_widget_set_usize (widget, INDEX_PANEL_WIDTH, 400);
- 
+  	
 	/* create the container box */
   	index_panel->details->index_container = gtk_vbox_new (FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (index_panel->details->index_container), 0);				
@@ -326,6 +330,51 @@ nautilus_index_panel_deactivate_meta_view(NautilusIndexPanel *index_panel)
 	gtk_widget_show(index_panel->details->button_box);
 	index_panel->details->selected_index = -1;
 	nautilus_index_tabs_select_tab(NAUTILUS_INDEX_TABS(index_panel->details->index_tabs), -1);
+}
+
+/* handle mouse motion events by passing it to the tabs if necessary for pre-lighting */
+static gboolean
+nautilus_index_panel_motion_event (GtkWidget *widget, GdkEventMotion *event)
+{
+	gint x, y;
+	NautilusIndexPanel *index_panel = NAUTILUS_INDEX_PANEL (widget);
+	NautilusIndexTabs *index_tabs = NAUTILUS_INDEX_TABS(index_panel->details->index_tabs);
+
+	gtk_widget_get_pointer(widget, &x, &y);
+	
+	/* if the click is in the main tabs, tell them about it */
+	if (y >= index_panel->details->index_tabs->allocation.y) {
+		gint which_tab = nautilus_index_tabs_hit_test(index_tabs, (double) x, (double) y);
+		nautilus_index_tabs_prelite_tab(index_tabs, which_tab);
+	}
+
+	/* also handle prelighting in the title tab if necessary */
+	if (index_panel->details->selected_index >= 0) {
+		gint title_top = index_panel->details->title_tab->allocation.y;
+		gint title_bottom = title_top + index_panel->details->title_tab->allocation.height;
+		if ((y >= title_top) && (y <= title_bottom)) {
+			gint which_tab = nautilus_index_tabs_hit_test(NAUTILUS_INDEX_TABS(index_panel->details->title_tab), (double) x, (double) y);
+			nautilus_index_tabs_prelite_tab(NAUTILUS_INDEX_TABS(index_panel->details->title_tab), which_tab);			
+		}
+	}
+
+
+	return TRUE;
+}
+
+/* handle the leave event by turning off the preliting */
+
+static gboolean
+nautilus_index_panel_leave_event (GtkWidget *widget, GdkEventCrossing *event)
+{
+	NautilusIndexPanel *index_panel = NAUTILUS_INDEX_PANEL (widget);
+	NautilusIndexTabs *index_tabs = NAUTILUS_INDEX_TABS(index_panel->details->index_tabs);	
+	nautilus_index_tabs_prelite_tab(index_tabs, -1);
+	
+	index_tabs = NAUTILUS_INDEX_TABS(index_panel->details->title_tab);
+	nautilus_index_tabs_prelite_tab(index_tabs, -1);
+
+	return TRUE;
 }
 
 /* hit-test the index tabs and activate if necessary */
