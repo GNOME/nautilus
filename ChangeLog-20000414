@@ -1,3 +1,18 @@
+2000-01-07  Andy Hertzfeld <andy@eazel.com>
+
+        changed the way the index panel gets notified of location changes
+        removed the index_panel_connect stuff
+        instead, calls index_panel_set_uri directly from nautilus_window_change_location
+        
+        * src/ntl-index-panel.c, src/ntl-index-panel.h:
+        restructured the code that populates the view with the info,
+        added logic to use as large a font as possible for the title
+        fixed bug involving the path ending with a slash.
+        * src/ntl-window-msgs.c:
+          added explicit call to index_panel_set_uri as mentioned above 
+        * src/ntl-window.c
+          removed call to index_panel_connect as mentioned above
+        
 2000-01-07  John Sullivan  <sullivan@eazel.com>
 
 	Added and deployed utility routine for presenting a

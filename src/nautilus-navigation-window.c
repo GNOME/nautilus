@@ -988,9 +988,6 @@ nautilus_window_connect_view(NautilusWindow *window, NautilusView *view)
                      "destroy",
                      nautilus_window_view_destroyed,
                      window);
-  
-  /* also, connect up the index view */
-  nautilus_index_panel_connect_view(window->index_panel, view); 
 }
 
 void

@@ -1,5 +1,6 @@
 #include "nautilus.h"
 #include "ntl-window-private.h"
+#include "ntl-index-panel.h"
 #include "explorer-location-bar.h"
 
 struct _NautilusWindowLoadInfo {
@@ -469,6 +470,11 @@ nautilus_window_change_location_2(NautilusNavigationInfo *ni, gpointer data)
       return;
     }
 
+  /* FIXME: notify the index panel of the location change.  Eventually, this will not be necessary
+     when we restructure the index panel to be a NautilusView */
+  
+  nautilus_index_panel_set_uri(window->index_panel, ni->navinfo.requested_uri);
+  
   /* Step 5 */
 
   /* Figure out which meta views are going to go away */

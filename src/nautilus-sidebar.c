@@ -35,11 +35,17 @@
 static void nautilus_index_panel_class_init(NautilusIndexPanelClass *klass);
 static void nautilus_index_panel_init(NautilusIndexPanel *icon_view);
 static void nautilus_index_panel_drag_data_received(GtkWidget *widget, GdkDragContext *context, gint x, gint y, GtkSelectionData *selection_data, guint info, guint time);
-void nautilus_index_panel_connect_view(GtkWidget* widget, NautilusView *view);
 void nautilus_index_panel_set_meta_tabs(GtkWidget* widget, GtkWidget* new_tabs);
 void nautilus_index_panel_set_uri(GtkWidget *widget, const gchar *new_uri);
 void nautilus_index_panel_add_meta_view(GtkWidget* widget, NautilusView *meta_view);
 void nautilus_index_panel_remove_meta_view(GtkWidget* widget, NautilusView *meta_view);
+
+void nautilus_index_panel_set_up_background(GtkWidget* widget, const gchar *background_data);
+void nautilus_index_panel_set_up_info(GtkWidget* widget, const gchar* new_uri);
+void nautilus_index_panel_set_up_label(GtkWidget* widget, const gchar *uri);
+void nautilus_index_panel_set_up_logo(GtkWidget* widget, const gchar *logo_path);
+
+GdkFont *select_font(const gchar *text_to_format, gint width, const gchar* font_template);
 
 /* drag and drop definitions */
 
@@ -94,29 +100,6 @@ nautilus_index_panel_class_init (NautilusIndexPanelClass *class)
   widget_class->drag_data_received = nautilus_index_panel_drag_data_received;
 }
 
-/* handle notification of a location change */
-
-static void
-nautilus_index_panel_request_location_change_cb (NautilusView *view, 
-                                            Nautilus_NavigationRequestInfo *info, 
-                                            GtkWidget *index_panel)
-{
-  nautilus_index_panel_set_uri(index_panel, info->requested_uri);
-}
-
-/* routine to establish a connection with the view to get informed when the location changes */
-void
-nautilus_index_panel_connect_view(GtkWidget *index_panel, NautilusView *view)
-{
-  GtkObject *viewo;
-
-  viewo = GTK_OBJECT(view);
-  gtk_signal_connect(viewo,
-                     "request_location_change", 
-                     nautilus_index_panel_request_location_change_cb, 
-                     index_panel);
-}
-
 /* common routine to make the per-uri container */
 
 static void make_per_uri_container(NautilusIndexPanel *index_panel)
@@ -127,7 +110,8 @@ static void make_per_uri_container(NautilusIndexPanel *index_panel)
   gtk_box_pack_start(GTK_BOX(index_panel->index_container), index_panel->per_uri_container, FALSE, FALSE, 0);
 }
 
-/* initialize the instance's fields, create the necessary subviews, etc*/
+/* initialize the instance's fields, create the necessary subviews, etc. */
+
 static void
 nautilus_index_panel_init (NautilusIndexPanel *index_panel)
 {
@@ -168,7 +152,7 @@ nautilus_index_panel_init (NautilusIndexPanel *index_panel)
 GtkWidget*
 nautilus_index_panel_new (void)
 {
-  return GTK_WIDGET (gtk_type_new (nautilus_index_panel_get_type ()));
+  return GTK_WIDGET(gtk_type_new (nautilus_index_panel_get_type ()));
 }
 
 /* drag and drop handler for index panel */
@@ -176,6 +160,7 @@ nautilus_index_panel_new (void)
 static void  
 nautilus_index_panel_drag_data_received(GtkWidget *widget, GdkDragContext *context, gint x, gint y, GtkSelectionData *selection_data, guint info, guint time)
 {
+  /* FIXME: set up the new color here */
   printf("something dropped on index panel: %d\n", info);
 }
 
@@ -217,16 +202,127 @@ void nautilus_index_panel_remove_meta_view(GtkWidget* widget, NautilusView *meta
   gtk_notebook_remove_page(GTK_NOTEBOOK(index_panel->meta_tabs), pagenum);
 }
 
+/* set up the index panel's background. Darin's background stuff will soon replace this,
+   but for now just set up the color */
+
+void nautilus_index_panel_set_up_background(GtkWidget* widget, const gchar *background_data)
+{
+  GdkColor temp_color;
+  GtkStyle *temp_style;
+
+  gdk_color_parse(background_data, &temp_color);          
+  gdk_color_alloc(gtk_widget_get_colormap(widget), &temp_color);			
+  temp_style = gtk_style_new();
+  temp_style->bg[GTK_STATE_NORMAL] = temp_color;
+  gtk_widget_set_style(widget, gtk_style_attach(temp_style, widget->window));		
+}
+
+/* set up the logo image */
+void nautilus_index_panel_set_up_logo(GtkWidget* widget, const gchar *logo_path)
+{
+  const gchar *file_name;
+  GtkWidget *pix_widget;
+  NautilusIndexPanel *index_panel = (NautilusIndexPanel*) widget;
+    
+  file_name = gnome_pixmap_file(logo_path);
+  pix_widget = (GtkWidget*) gnome_pixmap_new_from_file(file_name);		
+  gtk_widget_show(pix_widget);
+  gtk_box_pack_start(GTK_BOX(index_panel->per_uri_container), pix_widget, 0, 0, 0);
+  g_free((gchar*)file_name);
+}
+
+/* utility routine (FIXME: should be located elsewhere) to find the largest font that fits */
+
+GdkFont *select_font(const gchar *text_to_format, gint width, const gchar* font_template)
+{
+  GdkFont *candidate_font;
+  gchar font_name[512];
+  gint this_width;
+  gint font_sizes[8] = { 28, 24, 18, 14, 12, 10, 8 };
+  gint font_index = 0;
+	
+  while (font_index < 8)
+    {
+      g_snprintf(font_name, sizeof(font_name), font_template, font_sizes[font_index]);
+      candidate_font = gdk_font_load(font_name);
+      this_width = gdk_string_width(candidate_font, text_to_format);
+      if (this_width < width)
+	return candidate_font;
+      else
+      	gdk_font_unref(candidate_font);	
+      font_index += 1;
+		
+    }
+  return candidate_font;
+}
+
+/* set up the label */
+
+void nautilus_index_panel_set_up_label(GtkWidget* widget, const gchar *uri)
+{
+  GtkWidget *label_widget;
+  const gchar *file_name;
+  GnomeVFSURI *vfs_uri;
+  GdkFont* label_font;
+  gchar *temp_uri = strdup(uri); 
+  gint slash_pos = strlen(temp_uri) - 1;
+  NautilusIndexPanel *index_panel = (NautilusIndexPanel*) widget;
+
+  /* we must remove the trailing slash for vfs_get_basename to work right for us */
+  if ((temp_uri[slash_pos] == '/') && (slash_pos > 0))
+  	temp_uri[slash_pos] = '\0';
+
+  vfs_uri = gnome_vfs_uri_new(temp_uri);
+  file_name = gnome_vfs_uri_get_basename(vfs_uri);	
+  gnome_vfs_uri_destroy(vfs_uri);
+  
+  label_widget = gtk_label_new(file_name);	
+  gtk_box_pack_start(GTK_BOX(index_panel->per_uri_container), label_widget, 0, 0, 0);
+ 
+  label_font = select_font(file_name, widget->allocation.width - 4, "-bitstream-courier-medium-r-normal-*-%d-*-*-*-*-*-*-*");	
+  if (label_font != NULL)
+    {
+      GtkStyle *temp_style;
+      gtk_widget_realize(label_widget);	
+      temp_style = gtk_style_new();	  	
+      temp_style->font = label_font;
+      gtk_widget_set_style(label_widget, gtk_style_attach(temp_style, label_widget->window));
+    }
+ 
+  gtk_widget_show(label_widget);
+  g_free((gchar*) file_name);
+  g_free(temp_uri);
+}
+
+/* this routine populates the index panel with the per-uri information */
+
+void nautilus_index_panel_set_up_info(GtkWidget* widget, const gchar* new_uri)
+{       
+  NautilusIndexPanel *index_panel = (NautilusIndexPanel*) widget;
+
+  /* set up the background from the metadata.  At first, just use hardwired backgrounds */
+  nautilus_index_panel_set_up_background(widget, "rgb:DD/DD/FF");
+   			
+  /* next, install the logo image. */
+  /* For now, just use a fixed folder image */	
+  nautilus_index_panel_set_up_logo(widget, "nautilus/i-directory.png");
+	
+  /* add the name, discarding all but the last part of the path */
+  /* soon, we'll use the biggest font that fit, for now don't worry about it */
+  nautilus_index_panel_set_up_label(widget, new_uri);
+    
+  /* format and install the type-dependent descriptive info  */
+		
+  /* add the description text, if any.  Try to fetch it from the notes file if none is present */
+	
+  /* add keywords if we got any */				
+}
+
 /* here is the key routine that populates the index panel with the appropriate information when the uri changes */
 
 void nautilus_index_panel_set_uri(GtkWidget* widget, const gchar* new_uri)
 {       
   NautilusIndexPanel *index_panel = (NautilusIndexPanel*) widget;
-  GdkColor temp_color;
-  GtkStyle *temp_style;
-  GtkWidget *pix_widget, *label_widget;
-  const gchar *file_name;
-  GnomeVFSURI *vfs_uri;
   
   /* there's nothing to do if the uri is the same as the current one */ 
   
@@ -241,48 +337,8 @@ void nautilus_index_panel_set_uri(GtkWidget* widget, const gchar* new_uri)
   /* get rid of the old widgets in the per_uri container */
   gtk_widget_destroy(index_panel->per_uri_container);
   make_per_uri_container(index_panel);
- 	
-  /* set up the background from the metadata.  At first, just use hardwired backgrounds */
-		
-  gdk_color_parse("rgb:DD/DD/FF", &temp_color);          
-  gdk_color_alloc(gtk_widget_get_colormap(widget), &temp_color);			
-  temp_style = gtk_style_new();
-  temp_style->bg[GTK_STATE_NORMAL] = temp_color;  	
-  gtk_widget_set_style(widget, gtk_style_attach(temp_style, widget->window));		
-		
-  /* next, install the logo image. */
-  /* For now, just use a fixed folder image */	
-
-  file_name = gnome_pixmap_file("nautilus/i-directory.png");
-  pix_widget = (GtkWidget*) gnome_pixmap_new_from_file(file_name);		
-  gtk_widget_show(pix_widget);
-  gtk_box_pack_start(GTK_BOX(index_panel->per_uri_container), pix_widget, 0, 0, 0);
-  g_free((gchar*)file_name);
-	
-  /* add the name, discarding all but the last part of the path */
-  /* soon, we'll use the biggest font that fit, for now don't worry about it */
-   
-  vfs_uri = gnome_vfs_uri_new(new_uri);
-  file_name = gnome_vfs_uri_get_basename(vfs_uri);	
-  gnome_vfs_uri_destroy(vfs_uri);
-  
-  label_widget = gtk_label_new(file_name);	
-  gtk_box_pack_start(GTK_BOX(index_panel->per_uri_container), label_widget, 0, 0, 0);
-  gtk_widget_show(label_widget);
-  g_free((gchar*)file_name);
-  
-  /* format the information to be displayed */
-
-  /* add the information to be displayed */
-  		
-  /* add a package label, if any */
-		
-  /* add the description text, if any.  Try to fetch it from the notes file if none is present */
-	
-  /* add time info */
-
-	
-  /* add keywords if we got any */
-				
-}
+ 
+  /* populate the per-uri box with the info */
+  nautilus_index_panel_set_up_info(widget, new_uri);  	
+ }
 
