@@ -189,8 +189,8 @@ static char *   strip_extension                                 (const char     
 #define PROPERTY_BROWSER_WIDTH 528
 #define PROPERTY_BROWSER_HEIGHT 322
 
-#define MAX_ICON_WIDTH 64
-#define MAX_ICON_HEIGHT 64
+#define MAX_ICON_WIDTH 63
+#define MAX_ICON_HEIGHT 63
 #define COLOR_SQUARE_SIZE 48
 
 #define CONTENT_TABLE_HEIGHT 4
@@ -966,26 +966,21 @@ dialog_destroy (GtkWidget *widget, gpointer data)
 /* utility to set up the emblem image from the passed-in file */
 
 static void
-set_emblem_image_from_file(NautilusPropertyBrowser *property_browser)
+set_emblem_image_from_file (NautilusPropertyBrowser *property_browser)
 {
 	GdkPixbuf *pixbuf;
 	GdkPixbuf *scaled_pixbuf;
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;
 
 	pixbuf = gdk_pixbuf_new_from_file (property_browser->details->image_path);			
 	scaled_pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit (pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);			
 	gdk_pixbuf_unref (pixbuf);
-    	gdk_pixbuf_render_pixmap_and_mask (scaled_pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
-	gdk_pixbuf_unref (scaled_pixbuf);
 	
 	if (property_browser->details->emblem_image == NULL) {
-		property_browser->details->emblem_image = gtk_pixmap_new(pixmap, mask);
+		property_browser->details->emblem_image = nautilus_image_new ();
 		gtk_widget_show(property_browser->details->emblem_image);
-	} else {
-		gtk_pixmap_set (GTK_PIXMAP (property_browser->details->emblem_image),
-				pixmap, mask);
-	}
+	} 
+	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (property_browser->details->emblem_image), scaled_pixbuf);
+	gdk_pixbuf_unref (scaled_pixbuf);
 }
 
 /* this callback is invoked when a file is selected by the file selection */
@@ -1770,6 +1765,10 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 									 &label) == GNOME_VFS_OK) {
 		GtkWidget *temp_vbox;
 
+		/* set the mode of the returned nautilus_image since the background is fixed */
+		nautilus_buffered_widget_set_background_type (NAUTILUS_BUFFERED_WIDGET (pixmap_widget), NAUTILUS_BACKGROUND_SOLID);	
+		nautilus_buffered_widget_set_background_color (NAUTILUS_BUFFERED_WIDGET (pixmap_widget), NAUTILUS_RGB_COLOR_WHITE);	
+		
 		/* allocate a pixmap and insert it into the table */
 		temp_vbox = make_property_tile (property_browser, pixmap_widget, label, object_name);
 				

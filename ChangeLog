@@ -1,3 +1,13 @@
+2001-01-04  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-property-browser.c: (set_emblem_image_from_file),
+	(make_properties_from_directories):
+	fixed bug 5392, custom image causes distortion in emblems dialog,
+	by setting the background mode of the nautilus_image used to display
+	the emblems to solid, which also improves performance.  Also, use
+	a nautilus image instead of a pixmap widget in the emblem image
+	selection dialog to better display the image.
+	
 2001-01-04  Darin Adler  <darin@eazel.com>
 
 	Some FIXME cleanup.
