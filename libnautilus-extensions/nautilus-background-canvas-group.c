@@ -136,8 +136,8 @@ nautilus_background_canvas_group_render (GnomeCanvasItem *item, GnomeCanvasBuf *
 	background = nautilus_get_widget_background(GTK_WIDGET (item->canvas));
 	if (background != NULL) {
 		gnome_canvas_get_scroll_region (GNOME_CANVAS(item->canvas), &left, &top, &right, &bottom);
-		entire_width = right - left;
-		entire_height = bottom - top;
+		entire_width = right - left + 24; /* add some slop since icons can go past bounds */
+		entire_height = bottom - top + 24;
 		nautilus_background_draw_aa(background, buffer, entire_width, entire_height);
 	} else
 		gnome_canvas_buf_ensure_buf (buffer);

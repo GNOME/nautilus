@@ -1,3 +1,14 @@
+2000-06-07  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-gnome-extensions.c:
+	(nautilus_gnome_canvas_fill_with_gradient):
+	made gradient fill work properly on the anti-aliased canvas
+	by changing a multiplier from 4 to 3 (no alpha value in the
+	canvas buffer) and pinning the gradient fraction to 1.0.
+	* libnautilus-extensions/nautilus-background-canvas-group.c:
+	(nautilus_background_canvas_group_render):
+	added some slop to the bounds passed to gradient fill
+
 2000-06-07  John Sullivan  <sullivan@eazel.com>
 
 	* src/nautilus-window.c: (chose_component_callback):
