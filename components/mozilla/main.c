@@ -46,9 +46,9 @@
 #define nopeDEBUG_mfleming 1
 
 #ifdef DEBUG_mfleming
-#define DEBUG_MSG(x)	g_print x;
+#define DEBUG_MSG(x)	g_print x
 #else
-#define DEBUG_MSG(x)	;
+#define DEBUG_MSG(x)	
 #endif
 
 /* Hold the process for a half hour after the last mozilla component has

@@ -43,12 +43,12 @@
 #include "nsIServiceManager.h"
 #include "nsIPref.h"
 
-#define DEBUG_mfleming 1
+#define nopeDEBUG_mfleming 1
 
 #ifdef DEBUG_mfleming
-#define DEBUG_MSG(x)	g_print x;
+#define DEBUG_MSG(x)	g_print x
 #else
-#define DEBUG_MSG(x)	;
+#define DEBUG_MSG(x)	
 #endif
 
 static GConfClient *preferences_get_global_gconf_client       (void);
@@ -332,6 +332,6 @@ preferences_proxy_sync_mozilla_with_gconf (void)
 
 	DEBUG_MSG(("mozilla-view: disabling HTTP proxy\n"));
 
-	/* Default is 3, which conects to internet hosts directly */
-	mozilla_preference_set_int ("network.proxy.type", 3);
+	/* Default is 0, which conects to internet hosts directly */
+	mozilla_preference_set_int ("network.proxy.type", 0);
 }

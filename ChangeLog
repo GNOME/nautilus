@@ -1,3 +1,12 @@
+2001-02-25  Michael K. Fleming  <mfleming@eazel.com>
+
+	Bug 3887: Mozilla view only recognizes first change to proxy setting.
+	Oops: the wrong integer for "network.proxy.type" being "disabled" was being
+	used.
+ 
+	* components/mozilla/main.c:
+	* components/mozilla/mozilla-preferences.cpp:
+
 Sun Feb 25 17:58:57 2001  George Lebl <jirka@5z.com>
 
 	bored by this patch: Mike Fleming  <mfleming@eazel.com>
