@@ -22,6 +22,7 @@ icon_DATA =\
 	bubble-LR.png \
 	bubble-UL.png \
 	bubble-UR.png \
+	bullet.png \
 	chit_frame.png \
 	colors.png \
 	computer.png \
