@@ -25,9 +25,7 @@
 #include <libnautilus/libnautilus.h>
 #include <gtkhtml/gtkhtml.h>
 #include <libgnorba/gnorba.h>
-
-extern GtkHTMLStreamHandle gtk_html_stream_ref(GtkHTMLStreamHandle handle);
-extern void gtk_html_stream_unref(GtkHTMLStreamHandle handle);
+#include <libgnomevfs/gnome-vfs.h>
 
 typedef struct {
   NautilusViewFrame *view_frame;
@@ -39,6 +37,17 @@ typedef struct {
   HTMethod method;
   char *post_data;
 } BrowserInfo;
+
+typedef struct {
+  GtkHTMLStreamHandle sh;
+  BrowserInfo *bi;
+  char *url;
+  HTStream *stream;
+} VFSHandle;
+
+extern GtkHTMLStreamHandle gtk_html_stream_ref(GtkHTMLStreamHandle handle);
+extern void gtk_html_stream_unref(GtkHTMLStreamHandle handle);
+static void do_vfs_load(VFSHandle *handle);
 
 static char *
 canonicalize_url (const char *in_url, const char *base_url)
@@ -194,11 +203,9 @@ static int netin_stream_flush (HTStream * me)
 
 static int netin_stream_free (HTStream * me)
 {
-  g_return_val_if_fail(me->handle, HT_ERROR);
-
   g_message("netin_stream_free");
-  gtk_html_end(GTK_HTML(me->bi->htmlw), me->handle, GTK_HTML_STREAM_OK);
-  me->handle = NULL;
+  if(me->handle)
+    gtk_html_end(GTK_HTML(me->bi->htmlw), me->handle, GTK_HTML_STREAM_OK);
   g_free(me);
 
   return HT_OK;
@@ -207,7 +214,8 @@ static int netin_stream_free (HTStream * me)
 static int netin_stream_abort (HTStream * me, HTList * e)
 {
   g_message("netin_stream_abort");
-  gtk_html_end(GTK_HTML(me->bi->htmlw), me->handle, GTK_HTML_STREAM_ERROR);
+  if(me->handle)
+    gtk_html_end(GTK_HTML(me->bi->htmlw), me->handle, GTK_HTML_STREAM_ERROR);
   g_free(me);
 
   return HT_OK;
@@ -250,12 +258,24 @@ static int
 request_terminator (HTRequest * request, HTResponse * response, void * param, int status)
 {
   gpointer d;
-
-  if (status != HT_LOADED) 
-    g_print("Load couldn't be completed successfully (%p)\n", request);
+  VFSHandle *vfsh;
 
   d = HTRequest_context(request);
   g_return_val_if_fail(d, HT_OK);
+  vfsh = d;
+
+  if (status < 0)
+    {
+      g_print("Load couldn't be completed successfully (%p)\n", request);
+      vfsh->stream->handle = NULL;
+      vfsh->stream = NULL;
+      do_vfs_load(vfsh);
+    }
+  else
+    {
+      g_free(vfsh->url);
+      g_free(vfsh);
+    }
 
   HTRequest_setContext(request, NULL);
   g_idle_add(do_request_delete, request);
@@ -266,12 +286,12 @@ request_terminator (HTRequest * request, HTResponse * response, void * param, in
 static int
 browser_do_post(HTRequest *request, HTStream *stream)
 {
-  BrowserInfo *bi = HTRequest_context(request);
+  VFSHandle *vfsh = HTRequest_context(request);
   int status;
 
-  g_assert(bi);
+  g_assert(vfsh);
 
-  status = (*stream->isa->put_block)(stream, bi->post_data, strlen(bi->post_data));
+  status = (*stream->isa->put_block)(stream, vfsh->bi->post_data, strlen(vfsh->bi->post_data));
 
   g_message("browser_do_post got status %d", status);
 
@@ -279,12 +299,61 @@ browser_do_post(HTRequest *request, HTStream *stream)
     {
     case HT_LOADED:
     case HT_OK:
-      g_free(bi->post_data); bi->post_data = NULL;
+      g_free(vfsh->bi->post_data); vfsh->bi->post_data = NULL;
       (*stream->isa->flush)(stream);
     default:
       return status;
       break;
     }
+}
+
+static char vfs_read_buf[4096];
+
+static void
+browser_vfs_read_callback(GnomeVFSAsyncHandle *h, GnomeVFSResult res, gpointer buffer,
+			  GnomeVFSFileSize bytes_requested,
+			  GnomeVFSFileSize bytes_read,
+			  gpointer data)
+{
+  VFSHandle *vfsh = data;
+
+  gtk_html_write(GTK_HTML(vfsh->bi->htmlw), vfsh->sh, buffer, bytes_read);
+
+  if(res != GNOME_VFS_OK)
+    {
+      gtk_html_end(GTK_HTML(vfsh->bi->htmlw), vfsh->sh, GTK_HTML_STREAM_OK);
+      gnome_vfs_async_close(h, (GnomeVFSAsyncCloseCallback)gtk_true, NULL);
+      g_free(vfsh);
+    }
+
+  gnome_vfs_async_read(h, vfs_read_buf, sizeof(vfs_read_buf), browser_vfs_read_callback, data);
+}
+
+static void
+browser_vfs_callback(GnomeVFSAsyncHandle *h, GnomeVFSResult res, gpointer data)
+{
+  VFSHandle *vfsh = data;
+
+  if(res != GNOME_VFS_OK)
+    {
+      gtk_html_end(GTK_HTML(vfsh->bi->htmlw), vfsh->sh, GTK_HTML_STREAM_ERROR);
+      g_free(vfsh);
+    }
+  else
+    gnome_vfs_async_read(h, vfs_read_buf, sizeof(vfs_read_buf), browser_vfs_read_callback, vfsh);
+}
+
+static void
+do_vfs_load(VFSHandle *vfsh)
+{
+  GnomeVFSResult res;
+  GnomeVFSAsyncHandle *ah;
+
+  g_warning("Falling back to gnome-vfs for %s", vfsh->url);
+
+  res = gnome_vfs_async_open(&ah, vfsh->url, GNOME_VFS_OPEN_READ, browser_vfs_callback, vfsh);
+      
+  return;
 }
 
 static void
@@ -293,28 +362,40 @@ browser_url_requested(GtkWidget *htmlw, const char *url, GtkHTMLStreamHandle han
   char *real_url;
   HTRequest *request;
   HTStream *writer;
+  HTAnchor *anchor;
+  VFSHandle *vfsh;
 
   real_url = canonicalize_url(url, bi->base_url);
 
+  vfsh = g_new0(VFSHandle, 1);
+  vfsh->sh = handle;
+  vfsh->bi = bi;
+  vfsh->url = real_url;
+
+  anchor = HTAnchor_findAddress(real_url);
+  if(!anchor)
+    {
+      do_vfs_load(vfsh);
+      return;
+    }
+
   request = HTRequest_new();
+  HTRequest_setContext(request, vfsh);
   writer = netin_stream_new(bi, handle);
-  HTRequest_setContext(request, bi);
+  vfsh->stream = writer;
   HTRequest_setOutputFormat(request, WWW_SOURCE);
   HTRequest_setOutputStream(request, writer);
   if(bi->method == METHOD_POST)
     HTRequest_setPostCallback(request, browser_do_post);
-  HTRequest_setAnchor(request, HTAnchor_findAddress(real_url));
+  HTRequest_setAnchor(request, anchor);
   HTRequest_setMethod(request, bi->method);
   bi->method = METHOD_GET;
 
   if(HTLoad(request, NO) == NO)
     {
+      g_warning("Load failed");
       HTRequest_delete(request);
-      /* I think deleting the request will end the stream, too */
-      /* gtk_html_end(GTK_HTML(bi->htmlw), handle, GTK_HTML_STREAM_ERROR); */
     }
-
-  g_free(real_url);
 }
 
 static void
@@ -500,6 +581,7 @@ int main(int argc, char *argv[])
   CORBA_exception_init(&ev);
   orb = gnome_CORBA_init_with_popt_table("ntl-web-browser", VERSION, &argc, argv, NULL, 0, NULL,
 					 GNORBA_INIT_SERVER_FUNC, &ev);
+  gnome_vfs_init();
   gdk_rgb_init();
   glibwww_init("ntl-web-browser", VERSION);
   HTNet_addAfter(request_terminator, NULL, NULL, HT_ALL, HT_FILTER_LAST);
