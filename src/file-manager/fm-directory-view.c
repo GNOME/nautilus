@@ -96,6 +96,7 @@ struct _FMDirectoryViewDetails
 	GList *pending_files_added;
 	GList *pending_files_changed;
 	GList *pending_uris_selected;
+	gboolean have_pending_uris_selected;
 
 	GHashTable *files_by_uri;
 
@@ -706,6 +707,7 @@ notify_selection_change_cb (NautilusViewFrame *view_frame,
 		g_list_foreach (directory_view->details->pending_uris_selected, g_free_callback, NULL);
 		g_list_free (directory_view->details->pending_uris_selected);
 		directory_view->details->pending_uris_selected = NULL;
+		directory_view->details->have_pending_uris_selected = TRUE;
 	}
 
 	if (!selection_context->self_originated) {
@@ -851,7 +853,7 @@ display_pending_files (FMDirectoryView *view)
 
 	gtk_signal_emit (GTK_OBJECT (view), signals[DONE_ADDING_FILES]);
 
-	if (nautilus_directory_are_all_files_seen (view->details->model)) {
+	if (nautilus_directory_are_all_files_seen (view->details->model) && view->details->have_pending_uris_selected) {
 		GList *selection;
 		char *uri;
 
@@ -872,8 +874,9 @@ display_pending_files (FMDirectoryView *view)
 
 		fm_directory_view_set_selection (view, selection);
 
-		/* FIXME: free selection when done */
-		
+		g_list_free (selection);
+
+		view->details->have_pending_uris_selected = FALSE;		
 	}
 
 	nautilus_file_list_free (files_added);
