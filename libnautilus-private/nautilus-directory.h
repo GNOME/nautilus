@@ -161,6 +161,9 @@ gboolean           nautilus_directory_metadata_loaded      (NautilusDirectory   
 /* Return true if the directory is local. */
 gboolean           nautilus_directory_is_local             (NautilusDirectory         *directory);
 
+gboolean           nautilus_directory_is_search_directory  (NautilusDirectory         *directory);
+
+
 typedef struct NautilusDirectoryDetails NautilusDirectoryDetails;
 
 struct NautilusDirectory

@@ -70,6 +70,10 @@ static guint signals[LAST_SIGNAL];
 static void  nautilus_file_initialize_class          (NautilusFileClass    *klass);
 static void  nautilus_file_initialize                (NautilusFile         *file);
 static void  destroy                                 (GtkObject            *object);
+static int   nautilus_file_compare_by_real_name      (NautilusFile         *file_1,
+						      NautilusFile         *file_2);
+static int   nautilus_file_compare_by_real_directory (NautilusFile         *file_1,
+						      NautilusFile         *file_2);
 static int   nautilus_file_compare_by_emblems        (NautilusFile         *file_1,
 						      NautilusFile         *file_2);
 static int   nautilus_file_compare_by_type           (NautilusFile         *file_1,
@@ -980,6 +984,47 @@ compare_emblem_names (const char *name_1, const char *name_2)
 }
 
 static int
+nautilus_file_compare_by_real_name (NautilusFile *file_1, NautilusFile *file_2)
+{
+	char *name_1;
+	char *name_2;
+	int compare;
+
+	name_1 = nautilus_file_get_real_name (file_1);
+	name_2 = nautilus_file_get_real_name (file_2);
+
+	compare = nautilus_strcasecmp (name_1, name_2);
+
+	g_free (name_1);
+	g_free (name_2);
+
+	return compare;
+}
+
+static int
+nautilus_file_compare_by_real_directory (NautilusFile *file_1, NautilusFile *file_2)
+{
+	char *directory_1;
+	char *directory_2;
+	int compare;
+
+	directory_1 = nautilus_file_get_real_directory (file_1);
+	directory_2 = nautilus_file_get_real_directory (file_2);
+
+	compare = nautilus_strcasecmp (directory_1, directory_2);
+
+	g_free (directory_1);
+	g_free (directory_2);
+
+	if (compare != 0) {
+		return compare;
+	} 
+
+	return nautilus_file_compare_by_real_name (file_1, file_2);
+}
+
+
+static int
 nautilus_file_compare_by_emblems (NautilusFile *file_1, NautilusFile *file_2)
 {
 	GList *emblem_names_1;
@@ -1084,8 +1129,13 @@ nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 		 * but I can imagine discussing this further.
 		 * John Sullivan <sullivan@eazel.com>
 		 */
-		rules[0] = GNOME_VFS_DIRECTORY_SORT_BYNAME_IGNORECASE;
-		rules[1] = GNOME_VFS_DIRECTORY_SORT_NONE;
+		
+		return nautilus_file_compare_by_real_name (file_1, file_2);
+		
+		break;
+	case NAUTILUS_FILE_SORT_BY_DIRECTORY:
+		return nautilus_file_compare_by_real_directory (file_1, file_2);
+		
 		break;
 	case NAUTILUS_FILE_SORT_BY_SIZE:
 		/* Compare directory sizes ourselves, then if necessary
@@ -1332,6 +1382,7 @@ nautilus_file_monitor_remove (NautilusFile *file,
 	nautilus_directory_monitor_remove_internal
 		(file->details->directory, file, client);
 }			      
+
 
 /* Return the uri associated with the passed-in file, which may not be
  * the actual uri if the file is an old-style gmc link or a nautilus
@@ -2698,7 +2749,8 @@ nautilus_file_get_deep_directory_count_as_string (NautilusFile *file)
  * @attribute_name: The name of the desired attribute. The currently supported
  * set includes "name", "type", "mime_type", "size", "deep_size", "deep_directory_count",
  * "deep_file_count", "deep_total_count", "date_modified", "date_changed", "date_accessed", 
- * "date_permissions", "owner", "group", "permissions", "octal_permissions", "uri", "parent_uri".
+ * "date_permissions", "owner", "group", "permissions", "octal_permissions", "uri", "parent_uri",
+ * "real_name", "real_directory".
  * 
  * Returns: Newly allocated string ready to display to the user, or NULL
  * if the value is unknown or @attribute_name is not supported.
@@ -2785,6 +2837,14 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 
 	if (strcmp (attribute_name, "parent_uri") == 0) {
 		return nautilus_file_get_parent_uri_as_string (file);
+	}
+
+	if (strcmp (attribute_name, "real_name") == 0) {
+		return nautilus_file_get_real_name (file);
+	}
+
+	if (strcmp (attribute_name, "real_directory") == 0) {
+		return nautilus_file_get_real_directory (file);
 	}
 
 	return NULL;
@@ -3202,6 +3262,77 @@ nautilus_file_get_top_left_text (NautilusFile *file)
 	/* Show what we read in. */
 	return g_strdup (file->details->top_left_text);
 }
+
+
+gboolean
+nautilus_file_is_search_result (NautilusFile *file)
+{
+	if (file == NULL) {
+		return FALSE;
+	}
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+	if (file->details->directory == NULL) {
+		return FALSE;
+	}
+	
+	return nautilus_directory_is_search_directory (file->details->directory);
+}
+
+char *
+nautilus_file_get_real_name (NautilusFile *file)
+{
+	char *uri;
+	GnomeVFSURI *vfs_uri;
+	char *name;
+
+	if (file == NULL) {
+		return NULL;
+	}
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+	if (nautilus_file_is_search_result (file)) {
+		uri = nautilus_file_get_name (file);
+		vfs_uri = gnome_vfs_uri_new (uri);
+		g_free (uri);
+		name = gnome_vfs_uri_extract_short_path_name (vfs_uri);
+		gnome_vfs_uri_unref (vfs_uri);	
+
+		return name;
+	} else {
+		return nautilus_file_get_name (file);
+	}
+}
+
+
+char *
+nautilus_file_get_real_directory (NautilusFile *file)
+{
+	char *uri;
+	GnomeVFSURI *vfs_uri;
+	char *dir;
+
+	if (file == NULL) {
+		return NULL;
+	}
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+	if (nautilus_file_is_search_result (file)) {
+		uri = nautilus_file_get_name (file);
+	} else {
+		uri = nautilus_file_get_uri (file);
+	}
+
+	vfs_uri = gnome_vfs_uri_new (uri);
+	g_free (uri);
+	dir = gnome_vfs_uri_extract_dirname (vfs_uri);
+	gnome_vfs_uri_unref (vfs_uri);
+	
+	return dir;
+}
+
+
+
 
 /**
  * nautilus_file_delete

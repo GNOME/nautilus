@@ -1,3 +1,29 @@
+2000-07-25  Maciej Stachowiak  <mjs@eazel.com>
+
+	I think I fixed 1693 and 1766 but I can't test them cause medusa
+	searching is broken right now.
+
+	* libnautilus-extensions/nautilus-directory.h,
+	libnautilus-extensions/nautilus-directory.c
+	(nautilus_directory_is_search_directory): New call to determine if
+	a directory is a virtual search directory.
+
+	* libnautilus-extensions/nautilus-file.h,
+	libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_compare_by_real_name,
+	nautilus_file_compare_by_real_directory,
+	nautilus_file_compare_for_sort_internal): Added ability to sort by
+	directory; made name sorting work right for search results.
+	(nautilus_file_is_search_result, nautilus_file_get_real_name,
+	nautilus_file_get_real_directory): New functions to get useful
+	info about search results.
+	(nautilus_file_get_string_attribute): Add real_name and
+	real_directory attributes.
+
+	* src/file-manager/fm-search-list-view.c: Use real_name and
+	real_directory attributes for name and directory.
+	(sort_criterion_from_column): sort properly by directory.
+
 2000-07-25  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory-async.c:

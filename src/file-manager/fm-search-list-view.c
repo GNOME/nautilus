@@ -54,8 +54,8 @@
 
 #define SEARCH_LIST_VIEW_ICON_ATTRIBUTE 		"icon"
 #define SEARCH_LIST_VIEW_EMBLEMS_ATTRIBUTE		"emblems"
-#define SEARCH_LIST_VIEW_ACTUAL_PATH_ATTRIBUTE          "actual_path"
-#define SEARCH_LIST_VIEW_NAME_ATTRIBUTE	        	"name"
+#define SEARCH_LIST_VIEW_ACTUAL_PATH_ATTRIBUTE          "real_directory"
+#define SEARCH_LIST_VIEW_NAME_ATTRIBUTE	        	"real_name"
 #define SEARCH_LIST_VIEW_SIZE_ATTRIBUTE		        "size"
 #define SEARCH_LIST_VIEW_MIME_TYPE_ATTRIBUTE		"type"
 #define SEARCH_LIST_VIEW_DATE_MODIFIED_ATTRIBUTE	"date_modified"
@@ -330,8 +330,7 @@ sort_criterion_from_column (int column)
 	case SEARCH_LIST_VIEW_COLUMN_NAME:
 		return NAUTILUS_FILE_SORT_BY_NAME;
 	case SEARCH_LIST_VIEW_COLUMN_ACTUAL_PATH:
-		/* FIXME: Add sort by full path name. */
-		return NAUTILUS_FILE_SORT_BY_NAME;
+		return NAUTILUS_FILE_SORT_BY_DIRECTORY;
 	case SEARCH_LIST_VIEW_COLUMN_EMBLEMS:
 		return NAUTILUS_FILE_SORT_BY_EMBLEMS;
 	case SEARCH_LIST_VIEW_COLUMN_SIZE:

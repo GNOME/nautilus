@@ -53,6 +53,7 @@ typedef struct NautilusFile NautilusFile;
 typedef enum {
 	NAUTILUS_FILE_SORT_NONE,
 	NAUTILUS_FILE_SORT_BY_NAME,
+	NAUTILUS_FILE_SORT_BY_DIRECTORY,
 	NAUTILUS_FILE_SORT_BY_SIZE,
 	NAUTILUS_FILE_SORT_BY_TYPE,
 	NAUTILUS_FILE_SORT_BY_MTIME,
@@ -130,6 +131,13 @@ void                    nautilus_file_set_keywords              (NautilusFile   
 								 GList                         *keywords);
 GList *                 nautilus_file_get_emblem_names          (NautilusFile                  *file);
 char *                  nautilus_file_get_top_left_text         (NautilusFile                  *file);
+
+
+/* Attributes that behave specially for search results */
+gboolean                nautilus_file_is_search_result          (NautilusFile                  *file);
+char *                  nautilus_file_get_real_name             (NautilusFile                  *file);
+char *                  nautilus_file_get_real_directory        (NautilusFile                  *file);
+
 
 /* Permissions. */
 gboolean                nautilus_file_can_get_permissions       (NautilusFile                  *file);
