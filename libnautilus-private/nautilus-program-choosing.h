@@ -30,10 +30,11 @@
 #include "nautilus-view-identifier.h"
 
 #include <gtk/gtkwindow.h>
+#include <libgnomevfs/gnome-vfs-mime-handlers.h>
 
 typedef void (*NautilusComponentChoiceCallback)   (NautilusViewIdentifier 	 *identifier,
 						   gpointer		 	  callback_data);
-typedef void (*NautilusApplicationChoiceCallback) (const char 			 *command_string,
+typedef void (*NautilusApplicationChoiceCallback) (GnomeVFSMimeApplication	 *application,
 						   gpointer			  callback_data);						 
 
 void nautilus_choose_application_for_file (NautilusFile 		     *file,
