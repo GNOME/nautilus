@@ -403,6 +403,23 @@ action_about_nautilus_callback (GtkAction *action,
 		"Sun Microsystem",
 		NULL
 	};
+	const gchar *license[] = {
+		N_("Nautilus is free software; you can redistribute it and/or modify \n"
+		   "it under the terms of the GNU General Public License as published by \n"
+		   "the Free Software Foundation; either version 2 of the License, or \n"
+		   "(at your option) any later version."),
+		N_("Nautilus is distributed in the hope that it will be useful, \n"
+		   "but WITHOUT ANY WARRANTY; without even the implied warranty of \n"
+		   "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the \n"
+		   "GNU General Public License for more details."),
+		N_("You should have received a copy of the GNU General Public License \n"
+		   "along with Evince; if not, write to the Free Software Foundation, Inc., \n"
+		   "59 Temple Place, Suite 330, Boston, MA  02111-1307  USA")
+	};
+	gchar *license_trans;
+
+	license_trans = g_strconcat (_(license[0]), "\n\n", _(license[1]), "\n\n",
+				     _(license[2]), "\n\n", NULL);
 
 	if (about == NULL) {
  
@@ -420,10 +437,9 @@ action_about_nautilus_callback (GtkAction *action,
 					   "for GNOME that makes it "
 					   "easy to manage your files "
 					   "and the rest of your system."),
-			      "copyright", _("Copyright \xC2\xA9 2002-2005 Red Hat, Inc\n"
-					     "Copyright \xC2\xA9 2002-2004 Novell, Inc\n"
-					     "Copyright \xC2\xA9 1999-2001 Eazel, Inc.\n"
-					     "And all the other authors"),
+			      "copyright", _("Copyright \xC2\xA9 1999-2005 "
+					     "The Nautilus authors"),
+			      "license", license_trans,
 			      "authors", authors,
 			      "documenters", documenters,
 			      "translator-credits", _("translator-credits"),
