@@ -477,7 +477,7 @@ eazel_install_fetch_file (EazelInstall *service,
 		}
 	}
 	
-	if (result==FALSE) {
+	if (!result) {
 		g_warning (_("Failed to retreive %s!"), 
 			   file_to_report ? file_to_report : g_basename (target_file));
 		eazel_install_emit_download_failed (service, 
@@ -551,7 +551,7 @@ eazel_install_fetch_package (EazelInstall *service,
 			trilobite_debug ("cannot handle %s", url);
 		}
 #endif /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
-		if (result==TRUE) {
+		if (result) {
 			packagedata_fill_from_file (package, targetname); 
 		} else {
 			g_warning (_("File download failed"));

@@ -646,7 +646,7 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb, const GList 
 	gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
 	g_string_free (message, TRUE);
 
-	if (answer == FALSE) {
+	if (!answer) {
 		view->details->cancelled = TRUE;
 		return answer;
 	}

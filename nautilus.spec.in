@@ -1,4 +1,4 @@
-# Note this is NOT a relocatable thing :)
+# Note that this is NOT a relocatable package
 %define name		nautilus
 %define ver		@VERSION@
 %define RELEASE		prw2
@@ -55,7 +55,7 @@ files to allow you to develop nautilus components.
 
 %build
 %ifarch alpha
-  MYARCH_FLAGS="--host=alpha-redhat-linux"
+	MYARCH_FLAGS="--host=alpha-redhat-linux"
 %endif
 
 LC_ALL=""
@@ -71,17 +71,15 @@ CFLAGS="$RPM_OPT_FLAGS" ./configure $MYARCH_FLAGS --prefix=%{prefix} \
 	--sysconfdir=%{sysconfdir}
 
 if [ "$SMP" != "" ]; then
-  (make "MAKE=make -k -j $SMP"; exit 0)
-  make
+	(make "MAKE=make -k -j $SMP"; exit 0)
+	make
 else
-  make
+	make -k
 fi
 
 %install
 [ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
-
-make prefix=$RPM_BUILD_ROOT%{prefix} sysconfdir=$RPM_BUILD_ROOT%{sysconfdir} install
-
+make -k prefix=$RPM_BUILD_ROOT%{prefix} sysconfdir=$RPM_BUILD_ROOT%{sysconfdir} install
 for FILE in "$RPM_BUILD_ROOT/bin/*"; do
 	file "$FILE" | grep -q not\ stripped && strip $FILE
 done
@@ -91,11 +89,10 @@ done
 
 %post
 if ! grep %{prefix}/lib /etc/ld.so.conf > /dev/null ; then
-  echo "%{prefix}/lib" >> /etc/ld.so.conf
+	echo "%{prefix}/lib" >> /etc/ld.so.conf
 fi
-  
 /sbin/ldconfig
-  
+
 %postun -p /sbin/ldconfig
 
 %files

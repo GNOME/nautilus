@@ -1851,10 +1851,10 @@ get_filter_options_for_directory_count (NautilusFile *file)
 	filter_options = GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR | 
 		GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR;
 	
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES, FALSE) == FALSE) {
+	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES, FALSE)) {
 		filter_options |= GNOME_VFS_DIRECTORY_FILTER_NODOTFILES;
 	}
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES, FALSE) == FALSE) {
+	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES, FALSE)) {
 		filter_options |= GNOME_VFS_DIRECTORY_FILTER_NOBACKUPFILES;
 	}
 

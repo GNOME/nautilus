@@ -124,9 +124,6 @@ nautilus_undo_context_new (Nautilus_Undo_Manager undo_manager)
 	
   	CORBA_exception_free (&ev);
 
-	gtk_object_ref (GTK_OBJECT (context));
-	gtk_object_sink (GTK_OBJECT (context));
-
 	return context;
 }
 

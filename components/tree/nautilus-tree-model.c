@@ -290,7 +290,7 @@ nautilus_tree_model_monitor_add (NautilusTreeModel         *model,
            to monitor the root node itself. */
 
 	if (model->details->monitor_clients == NULL) {
-		if (model->details->root_node_reported == FALSE) {
+		if (!model->details->root_node_reported) {
 			report_root_node_if_possible (model);
 		}
 
@@ -685,7 +685,7 @@ static void
 nautilus_tree_model_root_node_file_monitor (NautilusFile      *file,
 					    NautilusTreeModel *model)
 {
-	if (model->details->root_node_reported == FALSE) {
+	if (!model->details->root_node_reported) {
 		report_root_node_if_possible (model);
 	} else {
 		report_node_changed (model,

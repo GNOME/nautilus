@@ -462,7 +462,7 @@ toc_title_start_element (Context *context,
 				|| stack_el->info->index == CHAPTER
 		                || stack_el->info->index == PREFACE);
 
-		if (print_link == TRUE) {
+		if (print_link) {
 			g_print ("<A href=\"gnome-help:%s", context->base_file);
 
 			atrs_ptr = (stack_el->atrs);

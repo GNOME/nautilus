@@ -371,7 +371,7 @@ nautilus_rpm_view_install_package_callback (GtkWidget *widget,
 	EazelInstallCallback *cb;
 
 	/* Check that we're on a redhat system */
-	if (check_for_redhat () == FALSE) {
+	if (!check_for_redhat ()) {
 		fprintf (stderr, "*** This tool can only be used on RedHat.\n");
 		return;
 	}
@@ -428,7 +428,7 @@ nautilus_rpm_view_uninstall_package_callback (GtkWidget *widget,
 	EazelInstallCallback *cb;		
 
 	/* Check that we're on a redhat system */
-	if (check_for_redhat () == FALSE) {
+	if (!check_for_redhat ()) {
 		fprintf (stderr, "*** This tool can only be used on RedHat.\n");
 		return;
 	}

@@ -694,7 +694,7 @@ init_server_factory (int argc, char **argv)
 				   oaf_popt_options, 0, NULL); 
 	oaf_init (argc, argv);
 
-	if (bonobo_init (CORBA_OBJECT_NIL, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL) == FALSE)
+	if (!bonobo_init (CORBA_OBJECT_NIL, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL))
 		g_error (_("I could not initialize Bonobo"));
 
 	CORBA_exception_free (&ev);

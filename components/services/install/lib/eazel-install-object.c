@@ -707,7 +707,7 @@ eazel_install_fetch_remote_package_list (EazelInstall *service)
 					   "package list", 
 					   destination);
 
-	if (retval == FALSE) {
+	if (!retval) {
 		g_warning (_("Unable to retrieve package-list.xml!\n"));
 	}
 

@@ -231,13 +231,7 @@ corba_undo (PortableServer_Servant servant,
 NautilusUndoManager *
 nautilus_undo_manager_new (void)
 {
-	NautilusUndoManager *manager;
-
-	manager = NAUTILUS_UNDO_MANAGER (gtk_object_new (nautilus_undo_manager_get_type (), NULL));
-	gtk_object_ref (GTK_OBJECT (manager));
-	gtk_object_sink (GTK_OBJECT (manager));
-
-	return manager;
+	return NAUTILUS_UNDO_MANAGER (gtk_object_new (nautilus_undo_manager_get_type (), NULL));
 }
 
 static void

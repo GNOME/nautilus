@@ -111,7 +111,7 @@ int main(int argc, char *argv[]) {
 	gnome_init_with_popt_table ("trilobite-eazel-time-service-factory", "0.1", argc, argv, oaf_popt_options, 0, NULL);
 	orb = oaf_init (argc, argv);
 
-	if (bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL) == FALSE) {
+	if (!bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL)) {
 		g_error ("Could not initialize Bonobo");
 	}
 

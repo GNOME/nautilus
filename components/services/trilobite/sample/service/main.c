@@ -116,7 +116,7 @@ int main(int argc, char *argv[]) {
 
 	g_datalist_init (&data);
 	g_datalist_set_data (&data, "debug", (void *)1);
-	if (trilobite_init ("trilobite-sample-service", "0.1", "/tmp/trilobite.log", argc, argv, data) == FALSE) {
+	if (!trilobite_init ("trilobite-sample-service", "0.1", "/tmp/trilobite.log", argc, argv, data)) {
 		g_error ("Could not initialize trilobite. :(");
 		exit (1);
 	}

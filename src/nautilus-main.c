@@ -43,6 +43,7 @@
 #include <libnautilus-extensions/nautilus-lib-self-check-functions.h>
 #include <libnautilus-extensions/nautilus-self-checks.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <liboaf/liboaf.h>
 #include <gtk/gtkmain.h>
 #include <parser.h>
@@ -211,6 +212,12 @@ main (int argc, char *argv[])
 	gnome_vfs_init ();
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 	bonobo_activate (); /* do now since we need it before main loop */
+
+	/* Initialize preferences. This is needed so that proper 
+	 * defaults are available before any preference peeking 
+	 * happens.
+	 */
+	nautilus_global_preferences_initialize ();
 
 	/* Do either the self-check or the real work. */
 	if (perform_self_check) {

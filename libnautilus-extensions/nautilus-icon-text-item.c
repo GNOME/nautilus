@@ -1036,8 +1036,9 @@ iti_event (GnomeCanvasItem *item, GdkEvent *event)
 		return TRUE;
 
 	case GDK_FOCUS_CHANGE:
-		if (iti->editing && event->focus_change.in == FALSE)
+		if (iti->editing && !event->focus_change.in) {
 			iti_edition_accept (iti);
+		}
 
 		return TRUE;
 

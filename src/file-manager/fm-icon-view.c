@@ -500,7 +500,7 @@ context_menu_layout_radio_item_callback (GtkWidget *menu_item, gpointer user_dat
 	icon_view = FM_ICON_VIEW (user_data);
 
 	/* FIXME bugzilla.eazel.com 916: Workaround for Bonobo/GTK menu bug. */
-	if (icon_view->details->updating_toggle_menu_item == TRUE) {
+	if (icon_view->details->updating_toggle_menu_item) {
 		return;
 	}
 

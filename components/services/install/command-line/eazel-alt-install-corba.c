@@ -556,15 +556,15 @@ int main(int argc, char *argv[]) {
 		g_message ("Using remote list ");
 	}
 
-	/* Chech that we're root and on a redhat system */
-	if (check_for_redhat () == FALSE) {
+	/* Check that we're root and on a redhat system */
+	if (!check_for_redhat ()) {
 		fprintf (stderr, "*** This tool can only be used on RedHat.\n");
 		exit (1);
 	}
 
 	orb = oaf_init (argc, argv);
 	
-	if (bonobo_init (NULL, NULL, NULL) == FALSE) {
+	if (!bonobo_init (NULL, NULL, NULL)) {
 		g_error ("Could not init bonobo");
 	}
 	bonobo_activate ();

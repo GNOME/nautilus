@@ -419,7 +419,7 @@ trilobite_service_initialize (TrilobiteService *trilobite)
 
 	corba_trilobite = trilobite_service_create_corba_object (BONOBO_OBJECT (trilobite));
 	
-	if (trilobite_service_construct (trilobite, corba_trilobite) == FALSE) {
+	if (!trilobite_service_construct (trilobite, corba_trilobite)) {
 		trilobite_service_destroy (GTK_OBJECT (trilobite));
 		trilobite = NULL;
 	} 

@@ -1390,7 +1390,7 @@ initialize_global_stuff_if_needed (void)
 	}
 
 	/* Initialize the global font table */
-	if (fonts_initialized == FALSE) {
+	if (!fonts_initialized) {
 		fonts_initialized = TRUE;
 		global_font_family_table = g_hash_table_new (g_str_hash, g_str_equal);
 

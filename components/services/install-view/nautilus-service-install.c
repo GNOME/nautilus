@@ -179,14 +179,14 @@ nautilus_service_install_view_install_package_callback (GtkWidget *widget,
 	}
 
 	/* Check that we're on a redhat system */
-	if (check_for_redhat () == FALSE) {
+	if (!check_for_redhat ()) {
 		fprintf (stderr, "*** This tool can only be used on RedHat.\n");
 	}
 
 	cb = eazel_install_callback_new ();
 	
 	Trilobite_Eazel_Install__set_protocol (eazel_install_callback_corba_objref (cb), Trilobite_Eazel_PROTOCOL_HTTP, &ev);
-	if (check_for_root_user() == FALSE) {
+	if (!check_for_root_user()) {
 		fprintf (stderr, "*** This tool requires root access, switching to test mode\n");
 		Trilobite_Eazel_Install__set_test_mode (eazel_install_callback_corba_objref (cb), TRUE, &ev); 
 	} else {
@@ -233,14 +233,14 @@ nautilus_service_install_view_uninstall_package_callback (GtkWidget *widget,
 	}
 
 	/* Check that we're on a redhat system */
-	if (check_for_redhat () == FALSE) {
+	if (!check_for_redhat ()) {
 		fprintf (stderr, "*** This tool can only be used on RedHat.\n");
 	}
 
 	cb = eazel_install_callback_new ();
 	
 	Trilobite_Eazel_Install__set_protocol (eazel_install_callback_corba_objref (cb), Trilobite_Eazel_PROTOCOL_HTTP, &ev);
-	if (check_for_root_user() == FALSE) {
+	if (!check_for_root_user ()) {
 		fprintf (stderr, "*** This tool requires root access, switching to test mode\n");
 		Trilobite_Eazel_Install__set_test_mode (eazel_install_callback_corba_objref (cb), TRUE, &ev); 
 	} else {

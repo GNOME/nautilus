@@ -438,7 +438,7 @@ trilobite_init (const char *service_name, const char *version_name, const char *
 	gnome_init_with_popt_table (service_name, version_name, argc, argv, oaf_popt_options, 0, NULL);
 	orb = oaf_init (argc, argv);
 
-	if (bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL) == FALSE) {
+	if (!bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL)) {
 		g_error (_("Could not initialize Bonobo"));
 		goto fail;
 	}

@@ -194,7 +194,7 @@ nautilus_switchable_search_bar_set_mode (NautilusSwitchableSearchBar *bar,
 
 	/* Ignore requests for impossible modes for now */
 	location = nautilus_navigation_bar_get_location (NAUTILUS_NAVIGATION_BAR (bar));
-	if (nautilus_search_uri_is_displayable_by_mode (location, mode) == FALSE) {
+	if (!nautilus_search_uri_is_displayable_by_mode (location, mode)) {
 		g_free (location);
 		return;
 	}

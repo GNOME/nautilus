@@ -39,7 +39,6 @@
 #include "nautilus-main.h"
 #include <bonobo.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
@@ -166,15 +165,9 @@ nautilus_application_initialize (NautilusApplication *application)
 		g_error ("could not create factory");
 	}
 	CORBA_exception_free (&ev);
-
+	
 	bonobo_object_construct (BONOBO_OBJECT (application), corba_object);
-
-	/* Initialize preferences. This is needed so that proper 
-	 * defaults are available before any preference peeking 
-	 * happens.
-	 */
-	nautilus_global_preferences_initialize ();
-
+	
 	/* Create an undo manager */
 	application->undo_manager = nautilus_undo_manager_new ();
 }
@@ -182,18 +175,19 @@ nautilus_application_initialize (NautilusApplication *application)
 NautilusApplication *
 nautilus_application_new (void)
 {
-	NautilusApplication *application;
-
-	application = NAUTILUS_APPLICATION (gtk_object_new (nautilus_application_get_type (), NULL));
-	gtk_object_ref (GTK_OBJECT (application));
-	gtk_object_sink (GTK_OBJECT (application));
-	return application;
+	return NAUTILUS_APPLICATION (gtk_object_new (nautilus_application_get_type (), NULL));
 }
 
 static void
 nautilus_application_destroy (GtkObject *object)
 {
+	NautilusApplication *application;
+
+	application = NAUTILUS_APPLICATION (object);
+
 	nautilus_bookmarks_exiting ();
+
+	bonobo_object_unref (BONOBO_OBJECT (application->undo_manager));
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }

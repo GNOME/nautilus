@@ -2748,7 +2748,7 @@ nautilus_list_ensure_drag_data (NautilusList *list,
 				guint32 time)
 {
 
-	if (list->details->drag_info->got_drop_data_type == FALSE) {
+	if (!list->details->drag_info->got_drop_data_type) {
 		gtk_drag_get_data (GTK_WIDGET (list), context,
 				   GPOINTER_TO_INT (context->targets->data),
 				   time);
@@ -2840,7 +2840,7 @@ nautilus_list_get_drop_action (NautilusList *list,
 
 	/* FIXME bugzilla.eazel.com 2569: Too much code copied from nautilus-icon-dnd.c. Need to share more. */
 
-	if (drag_info->got_drop_data_type == FALSE) {
+	if (!drag_info->got_drop_data_type) {
 		/* drag_data_received didn't get called yet */
 		return;
 	}
@@ -3073,7 +3073,7 @@ nautilus_list_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 		break;
 	}
 
-	if (drag_info->drop_occured == TRUE) {
+	if (drag_info->drop_occured) {
 
 		switch (info) {
 		case NAUTILUS_ICON_DND_GNOME_ICON_LIST:

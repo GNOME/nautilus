@@ -108,7 +108,7 @@ generate_new_package_list (const char* popt_genpkg_file,
 
 	retval = generate_xml_package_list (popt_genpkg_file, config_file);
 
-	if (retval == FALSE) {
+	if (!retval) {
 		g_error (_("*** Could not generate xml package list! ***\n"));
 	}
 
@@ -144,7 +144,7 @@ fetch_remote_package_list (const char* pkg_list, TransferOptions* topts) {
 
 	retval = http_fetch_remote_file (url, pkg_list);
 
-	if (retval == FALSE) {
+	if (!retval) {
 		g_free (url);
 		g_error ("*** Unable to retrieve package-list.xml! ***\n");
 	}
@@ -261,16 +261,16 @@ main (int argc, char* argv[]) {
 	poptFreeContext (pctx);
 
 	retval = check_for_root_user ();
-	if (retval == FALSE) {
+	if (!retval) {
 		g_error (_("*** You must run eazel-install as root! ***\n"));
 	}
 
 	retval = check_for_redhat ();
-	if (retval == FALSE) {
+	if (!retval) {
 		g_error (_("*** eazel-install can only be used on RedHat! ***\n"));
 	}
 
-	if ( DOWNGRADE_MODE == TRUE ) {
+	if ( DOWNGRADE_MODE ) {
 		g_error (_("*** Downgrade Mode not supported yet! ***\n"));
 	}
 
@@ -283,31 +283,31 @@ main (int argc, char* argv[]) {
 		generate_new_package_list (popt_genpkg_file, target_file);
 	}
 
-	if ( LOGGING_MODE == TRUE ) {
+	if ( LOGGING_MODE ) {
 		g_error (_("*** Logging not currently supported! ***\n"));
 		exit (1);
 	}
 
-	if ( USE_FTP == TRUE ) {
+	if ( USE_FTP ) {
 		g_error (_("*** FTP installs are not currently supported! ***\n"));
 		exit (1);
 	}
-	else if (USE_HTTP == TRUE) {
+	else if (USE_HTTP) {
 		iopts->protocol = PROTOCOL_HTTP;
 	}
 	else {
 		iopts->protocol = PROTOCOL_LOCAL;
 	}
 
-	if (VERBOSE_MODE == TRUE) {
+	if (VERBOSE_MODE) {
 		iopts->mode_verbose = TRUE;
 	}
 
-	if (TEST_MODE == TRUE) {
+	if (TEST_MODE) {
 		iopts->mode_test = TRUE;
 	}
 	
-	if (FORCE_MODE == TRUE) {
+	if (FORCE_MODE) {
 		iopts->mode_force = TRUE;
 	}
 
@@ -327,17 +327,17 @@ main (int argc, char* argv[]) {
 		fetch_remote_package_list (iopts->pkg_list, topts);
 	}
 
-	if (UNINSTALL_MODE == TRUE) {
+	if (UNINSTALL_MODE) {
 		iopts->mode_uninstall = TRUE;
 
 		retval = uninstall_packages (iopts, topts);
-		if (retval == FALSE) {
+		if (!retval) {
 			g_error (_("*** The uninstall failed! ***\n"));
 		}
 	}
 	else {
 		retval = install_new_packages (iopts, topts);
-		if (retval == FALSE) {
+		if (!retval) {
 			g_error (_("*** The install failed! ***\n"));
 		}
 	}

@@ -157,7 +157,7 @@ editable_register_edit_undo (GtkEditable *editable)
 	}
 
 	undo_info = (EditableUndoObjectData *)data;		
-	if (undo_info->undo_registered == TRUE) {
+	if (undo_info->undo_registered) {
 		return;
 	}
 	

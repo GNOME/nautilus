@@ -131,23 +131,23 @@ install_new_packages (EazelInstall *service, GList *categories) {
 	interface_flags = 0;
 	problem_filters = 0;
 	
-	if (eazel_install_get_test (service) == TRUE) {
+	if (eazel_install_get_test (service)) {
 		g_message (_("Dry Run Mode Activated.  Packages will not actually be installed ..."));
 		install_flags |= RPMTRANS_FLAG_TEST;
 	}
 
-	if (eazel_install_get_update (service) == TRUE) {
+	if (eazel_install_get_update (service)) {
 		interface_flags |= INSTALL_UPGRADE;
 	}
 
-	if (eazel_install_get_verbose (service) == TRUE) {
+	if (eazel_install_get_verbose (service)) {
 		rpmSetVerbosity (RPMMESS_VERBOSE);
 	}
 	else {
 		rpmSetVerbosity (RPMMESS_NORMAL);
 	}
 
-	if (eazel_install_get_force (service) == TRUE) {
+	if (eazel_install_get_force (service)) {
 		problem_filters |= RPMPROB_FILTER_REPLACEPKG |
 			RPMPROB_FILTER_REPLACEOLDFILES |
 			RPMPROB_FILTER_REPLACENEWFILES |
@@ -206,7 +206,7 @@ eazel_install_download_packages (EazelInstall *service,
 	g_assert (packages);
 	g_assert (*packages);
 
-	for (iterator = *packages; (iterator != NULL) && (result == TRUE); iterator = g_list_next (iterator)) {
+	for (iterator = *packages; (iterator != NULL) && result; iterator = g_list_next (iterator)) {
 		PackageData* package = (PackageData*)iterator->data;
 		gboolean fetch_package;
 		
@@ -267,7 +267,7 @@ eazel_install_download_packages (EazelInstall *service,
 				result = eazel_install_fetch_package (service, package);
 			}
 
-			if (result == FALSE) {
+			if (!result) {
 				remove_list = g_list_prepend (remove_list, package);
 			} else {
 				package->toplevel = toplevel;
@@ -460,12 +460,12 @@ uninstall_packages (EazelInstall *service,
 	interface_flags = 0;
 	problem_filters = 0;
 	
-	if (eazel_install_get_test (service) == TRUE) {
+	if (eazel_install_get_test (service)) {
 		g_message (_("Dry Run Mode Activated.  Packages will not actually be installed ..."));
 		uninstall_flags |= RPMTRANS_FLAG_TEST;
 	}
 
-	if (eazel_install_get_verbose (service) == TRUE) {
+	if (eazel_install_get_verbose (service)) {
 		rpmSetVerbosity (RPMMESS_VERBOSE);
 	}
 	else {
@@ -1028,7 +1028,7 @@ eazel_install_start_transaction (EazelInstall *service,
 	res = 0;
 
 	if (service->private->downloaded_files) {
-		if (eazel_install_do_transaction_md5_check (service, packages) == FALSE) {
+		if (!eazel_install_do_transaction_md5_check (service, packages)) {
 			res = g_list_length (packages);
 		}
 	}
@@ -1043,7 +1043,7 @@ eazel_install_start_transaction (EazelInstall *service,
 		g_message (_("Preflight (%d bytes, %d packages)"), 
 			   service->private->packsys.rpm.total_size,
 			   service->private->packsys.rpm.num_packages);
-		if (eazel_install_emit_preflight_check (service, packages) == FALSE) {
+		if (!eazel_install_emit_preflight_check (service, packages)) {
 			trilobite_debug ("Operation aborted at user request");
 			res = g_list_length (packages);
 		} 
@@ -1473,7 +1473,7 @@ eazel_install_add_to_rpm_set (EazelInstall *service,
 
 	tmp_failed = NULL;
 
-	if (eazel_install_get_update (service) == TRUE) {
+	if (eazel_install_get_update (service)) {
 		interface_flags |= INSTALL_UPGRADE;
 	}
 
@@ -1764,7 +1764,7 @@ eazel_install_check_if_related_package (EazelInstall *service,
 						 dep->name, dep->version, 
 						 modpack->name, modpack->version,
 						 package->name, package->version);
-				if (result == FALSE) {
+				if (!result) {
 					g_free (dep->version);
 					dep->version = g_strdup (package->version);
 					result = TRUE;

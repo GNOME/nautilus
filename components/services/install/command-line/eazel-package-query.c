@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
 	ctxt = gnomelib_parse_args (argc, argv, 0);
 #endif
 
-	if (bonobo_init (NULL, NULL, NULL) == FALSE) {
+	if (!bonobo_init (NULL, NULL, NULL)) {
 		g_error ("Could not init bonobo");
 	}
 	bonobo_activate ();

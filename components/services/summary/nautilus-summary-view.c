@@ -209,10 +209,10 @@ generate_startup_form (NautilusSummaryView       *view)
 
 	view->details->logged_in = am_i_logged_in (view);
 
-	if (view->details->logged_in == TRUE) {
+	if (view->details->logged_in) {
 		/* fetch urls */
 		got_url_table = trilobite_redirect_fetch_table (URL_REDIRECT_TABLE_HOME_2);
-		if (got_url_table != TRUE) {
+		if (!got_url_table) {
 			g_assert ("Could not get url table !\n");
 		}
 		/* fetch and parse the xml file */
@@ -229,7 +229,7 @@ generate_startup_form (NautilusSummaryView       *view)
 
 	/* fetch urls */
 	got_url_table = trilobite_redirect_fetch_table (URL_REDIRECT_TABLE_HOME);
-	if (got_url_table != TRUE) {
+	if (!got_url_table) {
 		g_error (_("Could not get url table !\n"));
 		return;
 	}
@@ -373,7 +373,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	nautilus_background_set_color (background, DEFAULT_SUMMARY_BACKGROUND_COLOR); */
 
 	/* setup the title */
-	if (view->details->logged_in == FALSE) {
+	if (!view->details->logged_in) {
 		title = create_services_title_widget ("You are not logged in!.");
 	}
 	else {
@@ -463,7 +463,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_box_pack_start (GTK_BOX (temp_box), title, FALSE, FALSE, 0);
 	gtk_widget_show (title);
 
-	if (view->details->logged_in == FALSE) {
+	if (!view->details->logged_in) {
 		/* username label */
 		g_print ("label unl start\n");
 		temp_hbox = gtk_hbox_new (FALSE, 0);
@@ -750,7 +750,7 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	cbdata->uri = view->details->services_redirects[view->details->current_service_row - 1];
 	gtk_signal_connect (GTK_OBJECT (view->details->services_goto_button), "clicked", GTK_SIGNAL_FUNC (goto_service_cb), cbdata);
 
-	if (view->details->services_button_enabled == FALSE) {
+	if (!view->details->services_button_enabled) {
 		gtk_widget_set_sensitive (view->details->services_goto_button, FALSE);
 	}
 

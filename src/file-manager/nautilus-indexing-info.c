@@ -68,9 +68,11 @@ update_progress_display (gpointer data)
         if (dialog == NULL) {
                 return 0;
         }
+        
         /* This shouldn't ever happen, but it is possible, so we'll
-           not whine if it does */
-        if (NAUTILUS_IS_LABEL (progress_change_data->progress_label) == FALSE) {
+         * not whine if it does.
+         */
+        if (!NAUTILUS_IS_LABEL (progress_change_data->progress_label)) {
                 return 0;
         }
                                                                               

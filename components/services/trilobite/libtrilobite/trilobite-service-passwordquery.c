@@ -230,7 +230,7 @@ trilobite_passwordquery_initialize (TrilobitePasswordQuery *trilobite)
 
 	corba_trilobite = trilobite_passwordquery_create_corba_object (BONOBO_OBJECT (trilobite));
 	
-	if (trilobite_passwordquery_construct (trilobite, corba_trilobite) == FALSE) {
+	if (!trilobite_passwordquery_construct (trilobite, corba_trilobite)) {
 		trilobite_passwordquery_destroy (GTK_OBJECT (trilobite));
 		trilobite = NULL;
 	} 

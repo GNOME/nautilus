@@ -1764,7 +1764,7 @@ sect_entry_end_element (Context *context,
 		return;
 	}
 
-	if (context->empty_element == TRUE) {
+	if (context->empty_element) {
 		/* We encoutnered an 'empty' element */
 		g_print ("&nbsp;");
 	}

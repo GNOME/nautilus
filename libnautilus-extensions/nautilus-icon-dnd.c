@@ -406,7 +406,7 @@ drag_data_received_callback (GtkWidget *widget,
 	/* this is the second use case of this callback.
 	 * we have to do the actual work for the drop.
 	 */
-	if (drag_info->drop_occured == TRUE) {
+	if (drag_info->drop_occured) {
 
 		switch (info) {
 		case NAUTILUS_ICON_DND_GNOME_ICON_LIST:

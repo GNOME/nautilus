@@ -274,7 +274,7 @@ int main(int argc, char *argv[]) {
 	
 	oaf_init (argc, argv);
 	
-	if (bonobo_init (NULL, NULL, NULL) == FALSE) {
+	if (!bonobo_init (NULL, NULL, NULL)) {
 		g_error ("Could not init bonobo");
 	}
 	bonobo_activate ();
@@ -296,10 +296,10 @@ int main(int argc, char *argv[]) {
 	}
 
 	/* Chech that we're root and on a redhat system */
-	if (check_for_root_user() == FALSE) {
+	if (!check_for_root_user()) {
 		fprintf (stderr, "*** This tool requires root access.\n");
 	}
-	if (check_for_redhat () == FALSE) {
+	if (!check_for_redhat ()) {
 		fprintf (stderr, "*** This tool can only be used on RedHat.\n");
 	}
 

@@ -58,7 +58,7 @@ init_bonobo (int argc, char **argv)
 				argc, argv, oaf_popt_options, 0, NULL);
     orb = oaf_init (argc, argv);
 
-    if (bonobo_init (orb, NULL, NULL) == FALSE)
+    if (!bonobo_init (orb, NULL, NULL))
 	g_error (_("Could not initialize Bonobo"));
 }
 

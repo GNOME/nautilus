@@ -181,7 +181,7 @@ nautilus_uri_is_local_scheme (const char *uri)
 	is_local_scheme = FALSE;
 	for (temp_scheme = *local_schemes, i = 0; temp_scheme != NULL; i++, temp_scheme = local_schemes[i]) {
 		is_local_scheme = nautilus_istr_has_prefix (uri, temp_scheme);
-		if (is_local_scheme == TRUE) {
+		if (is_local_scheme) {
 			break;
 		}
 	}
@@ -211,9 +211,9 @@ nautilus_handle_trailing_slashes (const char *uri)
 
 	/* remove multiple trailing slashes */
 	for (temp = uri_copy; *temp != '\0'; temp++) {
-		if (*temp == '/' && previous_char_is_column == FALSE) {
+		if (*temp == '/' && !previous_char_is_column) {
 			previous_chars_are_slashes_without_column = TRUE;
-		} else if (*temp == '/' && previous_char_is_column == TRUE) {
+		} else if (*temp == '/' && previous_char_is_column) {
 			previous_chars_are_slashes_without_column = FALSE;
 			previous_char_is_column = TRUE;
 			previous_chars_are_slashes_with_column = TRUE;
@@ -228,8 +228,8 @@ nautilus_handle_trailing_slashes (const char *uri)
 		}
 	}
 
-	if (*temp == '\0' && previous_chars_are_slashes_without_column == TRUE) {
-		if (is_local_scheme == TRUE) {
+	if (*temp == '\0' && previous_chars_are_slashes_without_column) {
+		if (is_local_scheme) {
 			/* go back till you remove them all. */
 			for (temp--; *(temp) == '/'; temp--) {
 				*temp = '\0';
@@ -242,7 +242,7 @@ nautilus_handle_trailing_slashes (const char *uri)
 		}
 	}
 
-	if (*temp == '\0' && previous_chars_are_slashes_with_column == TRUE) {
+	if (*temp == '\0' && previous_chars_are_slashes_with_column) {
 		/* go back till you remove them all but three. */
 		for (temp--; *(temp - 3) != ':' && *(temp - 2) != ':' && *(temp - 1) != ':'; temp--) {
 			*temp = '\0';
