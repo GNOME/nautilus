@@ -327,7 +327,7 @@ settings_menu_customize_callback (BonoboUIHandler *ui_handler,
 				  gpointer user_data,
 				  const char *path)
 {
-	nautilus_property_browser_new ();
+	nautilus_property_browser_show ();
 }
 
 

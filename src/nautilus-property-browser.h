@@ -58,6 +58,7 @@ struct NautilusPropertyBrowserClass
 
 GtkType nautilus_property_browser_get_type (void);
 NautilusPropertyBrowser *nautilus_property_browser_new (void);
+void nautilus_property_browser_show (void);
 void nautilus_property_browser_set_path (NautilusPropertyBrowser *panel,
 					 const char         *new_path);
 

@@ -1,3 +1,31 @@
+2000-07-23  Andy Hertzfeld  <andy@eazel.com>
+
+	rework of the property browser to Arlo's design
+	
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize),
+	(nautilus_property_browser_destroy),
+	(nautilus_property_browser_show),
+	(nautilus_property_browser_delete_event_callback),
+	(nautilus_property_browser_drag_end), (category_clicked_callback),
+	(make_properties_from_directory_path),
+	(make_properties_from_directory), (make_properties_from_xml_node),
+	(make_category), (make_category_link),
+	(nautilus_property_browser_update_contents):
+	converted the property browser to use a two panel design, where it remembers
+	the last category for next time. Made it use a single, persistent one instead of
+	allocating a new one each time
+	* src/nautilus-property-browser.h:
+	added nautilus_property_browser_show
+	* src/nautilus-window-menus.c: (settings_menu_customize_callback):
+	made the "customize" menu command call nautilus_property_browser_show instead of _new
+	* src/nautilus-sidebar-tabs.c:
+	(nautilus_sidebar_tabs_load_theme_data),
+	(draw_or_hit_test_all_tabs):
+	made the tabs in the arlo theme pre-light properly
+	* icons/arlo/arlo.xml:
+	changed rectangle for prelight tab piece
+	
 2000-07-23  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/inventory/Makefile.am:

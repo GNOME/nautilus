@@ -30,6 +30,7 @@
 #include <string.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 
@@ -201,7 +202,7 @@ nautilus_sidebar_tabs_load_theme_data (NautilusSidebarTabs *sidebar_tabs)
 		gdk_pixbuf_unref (sidebar_tabs->details->background_tile);
 		sidebar_tabs->details->background_tile = NULL;
 	}
-	
+			
 	/* load the tab_pieces image if necessary */
 	tab_pieces = nautilus_theme_get_theme_data ("sidebar", "TAB_PIECE_IMAGE");
 	if (tab_pieces) {
@@ -651,9 +652,17 @@ draw_or_hit_test_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean draw_flag
 	
 		/* now that we know about the next tab, we can draw the proper right piece of the tab */
 		if (is_themed && draw_flag) {
-			tab_select = TAB_NORMAL_NEXT;
 			if ((y_pos != last_y_pos) || (this_item == NULL) || !this_item->visible)
 				tab_select = prev_item->prelit ? TAB_PRELIGHT_EDGE : TAB_NORMAL_EDGE;
+			else {
+				if (prev_item->prelit) {
+					tab_select = TAB_PRELIGHT_NEXT;
+				} else if (this_item->prelit) {
+					tab_select = TAB_PRELIGHT_RIGHT;				
+				} else {
+					tab_select = TAB_NORMAL_NEXT;		
+				}
+			}	
 			if (!prev_item->visible)
 				tab_select = TAB_NORMAL_LEFT;
 				
