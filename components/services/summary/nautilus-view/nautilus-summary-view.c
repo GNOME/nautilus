@@ -211,6 +211,8 @@ generate_summary_form (NautilusSummaryView	*view)
 	gint			length;
 	gint			padding;
 	gboolean		got_url_table;
+	GtkWidget 		*viewport;
+	NautilusBackground	*background;
 
 	view->details->current_service_row = 0;
 	view->details->current_news_row = 0;
@@ -293,6 +295,12 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	/* create the services scroll widget */
 	temp_scrolled_window = gtk_scrolled_window_new (NULL, NULL);
+	viewport = gtk_viewport_new (NULL, NULL);
+	gtk_widget_show (viewport);
+	gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);
+	background = nautilus_get_widget_background (viewport);
+	nautilus_background_set_color (background, DEFAULT_SUMMARY_BACKGROUND_COLOR);
+
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (temp_scrolled_window),
 			                GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 
@@ -327,7 +335,8 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	/* draw parent vbox and connect it to the login frame */
 	gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->services_table), 0, 0, 0);
-	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (temp_scrolled_window), GTK_WIDGET (temp_box));
+	gtk_container_add (GTK_CONTAINER (viewport), temp_box);
+	gtk_container_add (GTK_CONTAINER (temp_scrolled_window), viewport);
 
 	gtk_box_pack_start (GTK_BOX (frame), temp_scrolled_window, TRUE, TRUE, 0);
 
@@ -446,6 +455,11 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	/* create the service news scroll widget */
 	temp_scrolled_window = gtk_scrolled_window_new (NULL, NULL);
+	viewport = gtk_viewport_new (NULL, NULL);
+	gtk_widget_show (viewport);
+	gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);
+	background = nautilus_get_widget_background (viewport);
+	nautilus_background_set_color (background, DEFAULT_SUMMARY_BACKGROUND_COLOR);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (temp_scrolled_window),
 			                GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 
@@ -478,7 +492,8 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	/* draw parent vbox and connect it to the service news frame */
 	gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->service_news_table), TRUE, TRUE, 0);
-	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (temp_scrolled_window), GTK_WIDGET (temp_box));
+	gtk_container_add (GTK_CONTAINER (viewport), temp_box);
+	gtk_container_add (GTK_CONTAINER (temp_scrolled_window), viewport);
 	gtk_box_pack_start (GTK_BOX (frame), temp_scrolled_window, TRUE, TRUE, 0);
 
 	/* Create the Update News Frame */
@@ -492,6 +507,11 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	/* create the update news scroll widget */
 	temp_scrolled_window = gtk_scrolled_window_new (NULL, NULL);
+	viewport = gtk_viewport_new (NULL, NULL);
+	gtk_widget_show (viewport);
+	gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);
+	background = nautilus_get_widget_background (viewport);
+	nautilus_background_set_color (background, DEFAULT_SUMMARY_BACKGROUND_COLOR);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (temp_scrolled_window),
 			                GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 
@@ -529,7 +549,8 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	/* draw parent vbox and connect it to the update news frame */
 	gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->updates_table), TRUE, TRUE, 0);
-	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (temp_scrolled_window), GTK_WIDGET (temp_box));
+	gtk_container_add (GTK_CONTAINER (viewport), temp_box);
+	gtk_container_add (GTK_CONTAINER (temp_scrolled_window), viewport);
 	gtk_box_pack_start (GTK_BOX (frame), temp_scrolled_window, TRUE, TRUE, 0);
 
 	/* draw the parent frame box */
