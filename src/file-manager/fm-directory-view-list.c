@@ -91,11 +91,15 @@ static void fm_directory_view_list_background_changed_cb
 						     FMDirectoryViewList *list_view);
 static void fm_directory_view_list_begin_adding_entries
 						    (FMDirectoryView *view);
-static gboolean fm_directory_view_list_bump_zoom_level  (FMDirectoryView *view, 
+static void fm_directory_view_list_bump_zoom_level  (FMDirectoryView *view, 
 						     gint zoom_increment);
+static gboolean fm_directory_view_list_can_zoom_in  (FMDirectoryView *view);
+static gboolean fm_directory_view_list_can_zoom_out (FMDirectoryView *view);
 static void fm_directory_view_list_clear 	    (FMDirectoryView *view);
 static guint fm_directory_view_list_get_icon_size   (FMDirectoryViewList *list_view);
 static GList *fm_directory_view_list_get_selection  (FMDirectoryView *view);
+static NautilusZoomLevel fm_directory_view_list_get_zoom_level 
+						    (FMDirectoryViewList *list_view);
 static void fm_directory_view_list_initialize 	    (gpointer object, gpointer klass);
 static void fm_directory_view_list_initialize_class (gpointer klass);
 static void fm_directory_view_list_destroy 	    (GtkObject *object);
@@ -162,6 +166,8 @@ fm_directory_view_list_initialize_class (gpointer klass)
 	fm_directory_view_class->done_adding_entries = fm_directory_view_list_done_adding_entries;	
 	fm_directory_view_class->get_selection = fm_directory_view_list_get_selection;	
 	fm_directory_view_class->bump_zoom_level = fm_directory_view_list_bump_zoom_level;	
+	fm_directory_view_class->can_zoom_in = fm_directory_view_list_can_zoom_in;
+	fm_directory_view_class->can_zoom_out = fm_directory_view_list_can_zoom_out;
 }
 
 static void
@@ -490,34 +496,49 @@ get_flist (FMDirectoryViewList *list_view)
 	return GTK_FLIST (GTK_BIN (list_view)->child);
 }
 
-static gboolean
+static void
 fm_directory_view_list_bump_zoom_level (FMDirectoryView *view, gint zoom_increment)
 {
 	FMDirectoryViewList *list_view;
+	NautilusZoomLevel old_level;
 	NautilusZoomLevel new_level;
 
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (view));
 
 	list_view = FM_DIRECTORY_VIEW_LIST (view);
+	old_level = fm_directory_view_list_get_zoom_level (list_view);
 
-	if (zoom_increment < 0 && 0 - zoom_increment > list_view->details->zoom_level)
+	if (zoom_increment < 0 && 0 - zoom_increment > old_level)
 	{
 		new_level = NAUTILUS_ZOOM_LEVEL_SMALLEST;
 	} 
 	else
 	{
-		new_level = MIN (list_view->details->zoom_level + zoom_increment,
+		new_level = MIN (old_level + zoom_increment,
 				 NAUTILUS_ZOOM_LEVEL_LARGEST);
 	}
 
 	fm_directory_view_list_set_zoom_level (list_view, new_level);
-	
-	if (zoom_increment > 0)
-    	return new_level <  NAUTILUS_ZOOM_LEVEL_LARGEST;
-  	else
-  		return new_level > NAUTILUS_ZOOM_LEVEL_SMALLEST;
-
 }
+
+static gboolean 
+fm_directory_view_list_can_zoom_in (FMDirectoryView *view) 
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW_LIST (view), FALSE);
+
+	return fm_directory_view_list_get_zoom_level (FM_DIRECTORY_VIEW_LIST (view))
+		< NAUTILUS_ZOOM_LEVEL_LARGEST;
+}
+
+static gboolean 
+fm_directory_view_list_can_zoom_out (FMDirectoryView *view) 
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW_LIST (view), FALSE);
+
+	return fm_directory_view_list_get_zoom_level (FM_DIRECTORY_VIEW_LIST (view))
+		> NAUTILUS_ZOOM_LEVEL_SMALLEST;
+}
+
 
 static void
 fm_directory_view_list_clear (FMDirectoryView *view)
@@ -570,7 +591,8 @@ fm_directory_view_list_get_icon_size (FMDirectoryViewList *list_view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW_LIST (list_view), NAUTILUS_ICON_SIZE_STANDARD);
 
-	return nautilus_icon_size_for_zoom_level (list_view->details->zoom_level);
+	return nautilus_icon_size_for_zoom_level (
+		fm_directory_view_list_get_zoom_level (list_view));
 }
 
 static GList *
@@ -579,6 +601,15 @@ fm_directory_view_list_get_selection (FMDirectoryView *view)
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW_LIST (view), NULL);
 
 	return gtk_flist_get_selection (get_flist (FM_DIRECTORY_VIEW_LIST (view)));
+}
+
+static NautilusZoomLevel
+fm_directory_view_list_get_zoom_level (FMDirectoryViewList *list_view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW_LIST (list_view),
+			      NAUTILUS_ZOOM_LEVEL_STANDARD);
+
+	return list_view->details->zoom_level;
 }
 
 static void
@@ -592,7 +623,7 @@ fm_directory_view_list_set_zoom_level (FMDirectoryViewList *list_view,
 	g_return_if_fail (new_level >= NAUTILUS_ZOOM_LEVEL_SMALLEST &&
 			  new_level <= NAUTILUS_ZOOM_LEVEL_LARGEST);
 
-	if (new_level == list_view->details->zoom_level)
+	if (new_level == fm_directory_view_list_get_zoom_level (list_view))
 		return;
 	
 	list_view->details->zoom_level = new_level;

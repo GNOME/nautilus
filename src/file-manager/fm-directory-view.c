@@ -104,6 +104,8 @@ NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, add_entry)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, clear)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selection)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, bump_zoom_level)
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, can_zoom_in)
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, can_zoom_out)
 
 static void
 fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
@@ -150,10 +152,14 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 		    		gtk_marshal_NONE__NONE,
 		    		GTK_TYPE_NONE, 0);
 
+	/* Function pointers that subclasses must override */
+
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, add_entry);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, clear);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_selection);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, bump_zoom_level);
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, can_zoom_in);
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, can_zoom_out);
 }
 
 static void
@@ -370,21 +376,33 @@ stop_load (FMDirectoryView *view, gboolean error)
 /* handle the zoom in/out menu items */
 
 static void
+update_zoom_menu_items (FMDirectoryView *directory_view)
+{
+   /* Note that this updates only the unchanging background menu;
+    * we also have to make sure we set the sensitivity of these
+    * items on the item-specific menu when it's created. This function
+    * can go away entirely when the background menu is created on
+    * the fly, a change Darin is in the process of making.
+    */
+   gtk_widget_set_sensitive(directory_view->details->zoom_in_item, 
+   	fm_directory_view_can_zoom_in (directory_view));
+   gtk_widget_set_sensitive(directory_view->details->zoom_out_item, 
+   	fm_directory_view_can_zoom_out (directory_view));
+}
+
+
+static void
 zoom_in_cb(GtkMenuItem *item, FMDirectoryView *directory_view)
 {
-    
-   gboolean can_zoom_in = fm_directory_view_bump_zoom_level (directory_view, 1);
-   gtk_widget_set_sensitive(directory_view->details->zoom_in_item, can_zoom_in);
-   gtk_widget_set_sensitive(directory_view->details->zoom_out_item, TRUE);
+	fm_directory_view_bump_zoom_level (directory_view, 1);
+	update_zoom_menu_items (directory_view);
 }
 
 static void
 zoom_out_cb(GtkMenuItem *item, FMDirectoryView *directory_view)
 {
-     gboolean can_zoom_out = fm_directory_view_bump_zoom_level (directory_view, -1);
-     gtk_widget_set_sensitive(directory_view->details->zoom_out_item, can_zoom_out);
-     gtk_widget_set_sensitive(directory_view->details->zoom_in_item, TRUE);
-     
+	fm_directory_view_bump_zoom_level (directory_view, -1);
+	update_zoom_menu_items (directory_view);
 }
 
 static void
@@ -578,12 +596,46 @@ fm_directory_view_begin_loading (FMDirectoryView *view)
  * bump the current zoom level by invoking the relevant subclass through the slot
  * 
  **/
-gboolean
+void
 fm_directory_view_bump_zoom_level (FMDirectoryView *view, gint zoom_increment)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	(* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->bump_zoom_level) (view, zoom_increment);
+}
+
+/**
+ * fm_directory_view_can_zoom_in:
+ *
+ * Determine whether the view can be zoomed any closer.
+ * @view: The zoomable FMDirectoryView.
+ * 
+ * Return value: TRUE if @view can be zoomed any closer, FALSE otherwise.
+ * 
+ **/
+gboolean
+fm_directory_view_can_zoom_in (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
-	return (* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->bump_zoom_level) (view, zoom_increment);
+	return (* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->can_zoom_in) (view);
+}
+
+/**
+ * fm_directory_view_can_zoom_out:
+ *
+ * Determine whether the view can be zoomed any further away.
+ * @view: The zoomable FMDirectoryView.
+ * 
+ * Return value: TRUE if @view can be zoomed any further away, FALSE otherwise.
+ * 
+ **/
+gboolean
+fm_directory_view_can_zoom_out (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
+
+	return (* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->can_zoom_out) (view);
 }
 
 /**
@@ -676,6 +728,14 @@ append_background_items (FMDirectoryView *view, GtkMenu *menu)
 
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
+	gtk_widget_set_sensitive (menu_item, fm_directory_view_can_zoom_in (view));
+
+	/* FIXME: This code assumes that the function won't be called again after
+	 * the background menu is set up, but that's not true if the user clicks
+	 * on an item. This code and the corresponding details field can go away
+	 * entirely when the background menu is always created dynamically (a change
+	 * Darin is in the process of making).
+	 */
         view->details->zoom_in_item = menu_item;
 
        
@@ -686,6 +746,14 @@ append_background_items (FMDirectoryView *view, GtkMenu *menu)
 	
         gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
+	gtk_widget_set_sensitive (menu_item, fm_directory_view_can_zoom_out (view));
+
+	/* FIXME: This code assumes that the function won't be called again after
+	 * the background menu is set up, but that's not true if the user clicks
+	 * on an item. This code and the corresponding details field can go away
+	 * entirely when the background menu is always created dynamically (a change
+	 * Darin is in the process of making).
+	 */
 	view->details->zoom_out_item = menu_item;
 }
 

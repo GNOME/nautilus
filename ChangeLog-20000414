@@ -1,3 +1,44 @@
+2000-01-31  John Sullivan <sullivan@eazel.com>
+
+	Improved zooming API and made zoom items on item context
+	menu disable properly. (There's still a bug with disabling
+	the background menu if an item menu ever appears; Darin will
+	fix this in his next checkin.)
+
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-directory-view.h:
+	(can_zoom_in), (can_zoom_out): New function pointers for subclasses
+	to replace.
+	(fm_directory_view_can_zoom_in), (fm_directory_view_can_zoom_out):
+	New functions that call through to the new function pointers.
+	(bump_zoom_level), (fm_directory_view_bump_zoom_level): 
+	Removed return value in favor of new functions.
+	(update_zoom_menu_items): Helper function to update sensitivity of
+	background context menu Zoom In and Zoom Out items. Darin will eliminate
+	this with his next checkin.
+	(zoom_in_cb), (zoom_out_cb): Now use update_zoom_menu_items to share code.
+	(append_background_items): Set sensitivity of Zoom In and Zoom Out items
+	at creation time.
+	
+	* src/file-manager/fm-directory-view-list.c:
+	(fm_directory_view_list_bump_zoom_level): Removed return value.
+	(fm_directory_view_list_can_zoom_in), (fm_directory_view_list_can_zoom_out):
+	New functions, compare current zoom level against limits.
+	(fm_directory_view_list_get_zoom_level), 
+	(fm_directory_view_list_set_zoom_level): New convenience functions,
+	deployed throughout this file.
+	(fm_directory_view_list_initialize_class): Replace can_zoom_in and 
+	can_zoom_out function pointers.
+	
+	* src/file-manager/fm-directory-view-icons.c:
+	(fm_directory_view_icons_bump_zoom_level): Removed return value.
+	(fm_directory_view_icons_can_zoom_in), (fm_directory_view_icons_can_zoom_out):
+	New functions, compare current zoom level against limits.
+	(fm_directory_view_icons_get_zoom_level): New convenience function,
+	deployed throughout this file.
+	(fm_directory_view_icons_initialize_class): Replace can_zoom_in and 
+	can_zoom_out function pointers.
+
 2000-01-30  Andy Hertzfeld <andy@eazel.com>
 
 	made fonts scale according to the zoom level:

@@ -80,6 +80,8 @@ struct _FMDirectoryViewClass {
 	 */
 	void 	(* begin_loading) 	 (FMDirectoryView *view);
 
+	/* Function pointers that don't have corresponding signals */
+
 	/* get_selection is not a signal; it is just a function pointer for
 	 * subclasses to replace (override). Subclasses must replace it
 	 * with a function that returns a newly-allocated GList of
@@ -88,10 +90,17 @@ struct _FMDirectoryViewClass {
 	NautilusFileList *
 		(* get_selection) 	 (FMDirectoryView *view);
 
-        /* bump_zoom_level is a function pointer that subclasses override to
-         * change the zoom level of an object. It returns FALSE if it's now zoomed as
-           far as it can go */
-        gboolean     (* bump_zoom_level)   (FMDirectoryView *view, gint zoom_increment);
+        /* bump_zoom_level is a function pointer that subclasses must override
+         * to change the zoom level of an object. */
+        void    (* bump_zoom_level)      (FMDirectoryView *view, gint zoom_increment);
+
+        /* can_zoom_in is a function pointer that subclasses must override to
+         * return whether the view is at maximum size (furthest-in zoom level) */
+        gboolean (* can_zoom_in)	 (FMDirectoryView *view);
+
+        /* can_zoom_out is a function pointer that subclasses must override to
+         * return whether the view is at minimum size (furthest-out zoom level) */
+        gboolean (* can_zoom_out)	 (FMDirectoryView *view);
 };
 
 
@@ -109,6 +118,10 @@ void                      fm_directory_view_load_uri                 (FMDirector
 /* Functions callable from the user interface and elsewhere. */
 GList *                   fm_directory_view_get_selection            (FMDirectoryView         *view);
 void                      fm_directory_view_stop                     (FMDirectoryView         *view);
+gboolean		  fm_directory_view_can_zoom_in		     (FMDirectoryView	      *view);
+gboolean		  fm_directory_view_can_zoom_out	     (FMDirectoryView	      *view);
+void	                  fm_directory_view_bump_zoom_level          (FMDirectoryView         *view, 
+								      gint 		       zoom_increment);
 
 /* Wrappers for signal emitters. These are normally called 
  * only by FMDirectoryView itself. They have corresponding signals
@@ -120,12 +133,12 @@ void                      fm_directory_view_add_entry                (FMDirector
 								      NautilusFile            *file);
 void                      fm_directory_view_done_adding_entries      (FMDirectoryView         *view);
 void                      fm_directory_view_begin_loading            (FMDirectoryView         *view);				       			 
+
 /* Hooks for subclasses to call. These are normally called only by 
  * FMDirectoryView and its subclasses 
  */
 void                      fm_directory_view_activate_entry           (FMDirectoryView         *view,
 								      NautilusFile            *file);
-gboolean                  fm_directory_view_bump_zoom_level          (FMDirectoryView         *view, gint zoom_increment);
 void                      fm_directory_view_notify_selection_changed (FMDirectoryView         *view);
 
 

@@ -61,16 +61,23 @@ static void fm_directory_view_icons_background_changed_cb (NautilusBackground *b
 							   FMDirectoryViewIcons *icon_view);
 static void fm_directory_view_icons_begin_loading
 				          	 (FMDirectoryView *view);
-static gboolean fm_directory_view_icons_bump_zoom_level
+static void fm_directory_view_icons_bump_zoom_level
 				          	 (FMDirectoryView *view, gint zoom_increment);
+static gboolean fm_directory_view_icons_can_zoom_in  (FMDirectoryView *view);
+static gboolean fm_directory_view_icons_can_zoom_out (FMDirectoryView *view);
 static void fm_directory_view_icons_clear 	 (FMDirectoryView *view);
 static void fm_directory_view_icons_destroy      (GtkObject *view);
 static void fm_directory_view_icons_done_adding_entries 
 				          	 (FMDirectoryView *view);
 static NautilusFileList * fm_directory_view_icons_get_selection
 						 (FMDirectoryView *view);
+static NautilusZoomLevel fm_directory_view_icons_get_zoom_level 
+						 (FMDirectoryViewIcons *view);
 static void fm_directory_view_icons_initialize   (FMDirectoryViewIcons *icon_view);
 static void fm_directory_view_icons_initialize_class (FMDirectoryViewIconsClass *klass);
+static void fm_directory_view_icons_set_zoom_level 
+						 (FMDirectoryViewIcons *view,
+						  NautilusZoomLevel new_level);
 static GnomeIconContainer *get_icon_container 	 (FMDirectoryViewIcons *icon_view);
 static void icon_container_activate_cb 		 (GnomeIconContainer *container,
 						  NautilusFile *icon_data,
@@ -118,6 +125,10 @@ fm_directory_view_icons_initialize_class (FMDirectoryViewIconsClass *klass)
 		= fm_directory_view_icons_get_selection;	
 	fm_directory_view_class->bump_zoom_level 
 		= fm_directory_view_icons_bump_zoom_level;	
+	fm_directory_view_class->can_zoom_in 
+		= fm_directory_view_icons_can_zoom_in;
+	fm_directory_view_class->can_zoom_out 
+		= fm_directory_view_icons_can_zoom_out;
 
 }
 
@@ -295,18 +306,67 @@ fm_directory_view_icons_begin_loading (FMDirectoryView *view)
 {
 }
 
-static gboolean
+static NautilusZoomLevel
+fm_directory_view_icons_get_zoom_level (FMDirectoryViewIcons *view)
+{
+	GnomeIconContainer *icon_container;
+
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view), 
+			      NAUTILUS_ZOOM_LEVEL_STANDARD);
+
+	icon_container = get_icon_container (view);
+	return (gnome_icon_container_get_zoom_level (icon_container));
+}
+
+static void
+fm_directory_view_icons_set_zoom_level (FMDirectoryViewIcons *view,
+					NautilusZoomLevel new_level)
+{
+	GnomeIconContainer *icon_container;
+
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view));
+	g_return_if_fail (new_level >= NAUTILUS_ZOOM_LEVEL_SMALLEST &&
+			  new_level <= NAUTILUS_ZOOM_LEVEL_LARGEST);
+
+	icon_container = get_icon_container (view);
+	if (gnome_icon_container_get_zoom_level (icon_container) == new_level)
+		return;
+
+	gnome_icon_container_set_zoom_level (icon_container, new_level);
+}
+
+
+static void
 fm_directory_view_icons_bump_zoom_level (FMDirectoryView *view, gint zoom_increment)
 {
-  GnomeIconContainer *icon_container = get_icon_container(FM_DIRECTORY_VIEW_ICONS (view));
-  gint current_zoom_level = gnome_icon_container_get_zoom_level(icon_container);
-  gint new_zoom_level = current_zoom_level + zoom_increment;
-  gnome_icon_container_set_zoom_level(icon_container, new_zoom_level);
-  if (zoom_increment > 0)
-    return new_zoom_level <  NAUTILUS_ZOOM_LEVEL_LARGEST;
-  else
-  	return new_zoom_level > NAUTILUS_ZOOM_LEVEL_SMALLEST;
+	FMDirectoryViewIcons *icon_view;
+	NautilusZoomLevel new_level;
+
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view));
+
+	icon_view = FM_DIRECTORY_VIEW_ICONS (view);
+	new_level = fm_directory_view_icons_get_zoom_level (icon_view) + zoom_increment;
+	fm_directory_view_icons_set_zoom_level(icon_view, new_level);
 }
+
+static gboolean 
+fm_directory_view_icons_can_zoom_in (FMDirectoryView *view) 
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view), FALSE);
+
+	return fm_directory_view_icons_get_zoom_level (FM_DIRECTORY_VIEW_ICONS (view)) 
+		< NAUTILUS_ZOOM_LEVEL_LARGEST;
+}
+
+static gboolean 
+fm_directory_view_icons_can_zoom_out (FMDirectoryView *view) 
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view), FALSE);
+
+	return fm_directory_view_icons_get_zoom_level (FM_DIRECTORY_VIEW_ICONS (view)) 
+		> NAUTILUS_ZOOM_LEVEL_SMALLEST;
+}
+
 
 static GList *
 fm_directory_view_icons_get_selection (FMDirectoryView *view)
