@@ -2298,8 +2298,6 @@ destroy (GtkObject *object)
 	nautilus_icon_dnd_fini (container);
         nautilus_icon_container_clear (container);
 
-	unschedule_keyboard_icon_reveal (container);
-	
 	if (container->details->rubberband_info.timer_id != 0) {
 		gtk_timeout_remove (container->details->rubberband_info.timer_id);
 	}
@@ -3585,7 +3583,10 @@ nautilus_icon_container_clear (NautilusIconContainer *container)
 	end_renaming_mode (container, TRUE);
 	
 	clear_keyboard_focus (container);
+	unschedule_keyboard_icon_reveal (container);
+	set_pending_icon_to_reveal (container, NULL);
 	details->stretch_icon = NULL;
+	details->drop_target = NULL;
 
 	for (p = details->icons; p != NULL; p = p->next) {
 		icon_free (p->data);
@@ -3594,7 +3595,6 @@ nautilus_icon_container_clear (NautilusIconContainer *container)
 	details->icons = NULL;
 	g_list_free (details->new_icons);
 	details->new_icons = NULL;
-	details->drop_target = NULL;
 	
 	nautilus_icon_container_update_scroll_region (container);
 }
@@ -3662,6 +3662,9 @@ icon_destroy (NautilusIconContainer *container,
 	}
 	if (details->drop_target == icon) {
 		details->drop_target = NULL;
+	}
+	if (details->pending_icon_to_reveal == icon) {
+		set_pending_icon_to_reveal (container, NULL);
 	}
 
 	icon_free (icon);

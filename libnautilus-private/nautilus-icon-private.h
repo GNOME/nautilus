@@ -160,12 +160,6 @@ struct NautilusIconContainerDetails {
 	/* Idle handler for stretch code */
 	guint stretch_idle_id;
 
-	/* Timeout for selection in browser mode. */
-	guint linger_selection_mode_timer_id;
-
-	/* Icon to be selected at timeout in browser mode. */
-	NautilusIcon *linger_selection_mode_icon;
-
 	/* DnD info. */
 	NautilusIconDndInfo *dnd_info;
 

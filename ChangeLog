@@ -1,3 +1,18 @@
+2001-07-19  Darin Adler  <darin@bentspoon.com>
+
+	More fixes like the one Alex just did.
+
+	* libnautilus-private/nautilus-icon-container.c: (destroy):
+	Move the call to unschedule_keyboard_icon_reveal into
+	nautilus_icon_container_clear.
+	(nautilus_icon_container_clear): Cancel both of the pending
+	icon reveals, since all the icons are gone.
+	(icon_destroy): Cancel a pending icon to reveal if the
+	icon being destroyed is that icon.
+
+	* libnautilus-private/nautilus-icon-private.h: Remove some
+	unused fields.
+
 2001-07-19  Alex Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-container.c (nautilus_icon_container_clear):
