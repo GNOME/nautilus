@@ -88,8 +88,10 @@
 #define STATUS_BAR_PATH         "/status"
 #define MENU_BAR_PATH           "/menu"
 
-/* default web search uri - FIXME bugzilla.eazel.com 2465: this will be changed to point to the Eazel service */
-#define DEFAULT_SEARCH_WEB_URI "http://www.google.com"
+/* FIXME bug  4015 so this is the correct URL and it works behind the
+ * firewall but nautilus does not go to it
+ */
+#define DEFAULT_SEARCH_WEB_URI "http://services.eazel.com/websearch"
 
 /* FIXME: bugzilla.eazel.com 3590
  * This shouldn't need to exist. See bug report for details.
