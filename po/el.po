@@ -19,12 +19,13 @@
 # simos: 1391 messages, 20Apr2002, 167 remaining.
 # simos: 1454 messages, 26 Oct2002, 71 remaining.
 # simos: 1508 messages, 07Nov2002, 17 remaining.
+# simos: 1525 messages, 11Nov2002, translation completed.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.0.7\n"
-"POT-Creation-Date: 2002-11-07 16:56+0000\n"
-"PO-Revision-Date: 2002-11-07 17:26+0000\n"
+"POT-Creation-Date: 2002-11-11 19:04+0000\n"
+"PO-Revision-Date: 2002-11-11 19:27+0000\n"
 "Last-Translator: Simos Xenitellis <simos74@gmx.net>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
@@ -3563,27 +3564,27 @@ msgstr "λίγο περισσότερο κείμενο"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2033
 msgid "highlighted for selection"
-msgstr ""
+msgstr "φωτισμένο για επιλογή"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2034
 msgid "whether we are highlighted for a selection"
-msgstr ""
+msgstr "όταν είναι φωτισμένο για επιλογή"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2041
 msgid "highlighted as keyboard focus"
-msgstr ""
+msgstr "φωτισμένο ως εστίαση πληκτρολογίου"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2042
 msgid "whether we are highlighted to render keyboard focus"
-msgstr ""
+msgstr "αν είναι φωτισμένο για να υποδηλώσει την εστίαση πληκτρολογίου"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2050
 msgid "highlighted for drop"
-msgstr ""
+msgstr "φωτισμένο για ρίψη"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2051
 msgid "whether we are highlighted for a D&D drop"
-msgstr ""
+msgstr "αν είναι φωτισμένο για ρίψη D&D"
 
 #: libnautilus-private/nautilus-icon-container.c:1635
 msgid "The selection rectangle"
@@ -3597,7 +3598,7 @@ msgstr "Κείμενο Πλαισίου"
 
 #: libnautilus-private/nautilus-icon-container.c:3415
 msgid "Draw a frame around unselected text"
-msgstr ""
+msgstr "Σχηματισμός πλαισίου γύρω από το μη επιλεγμένο κείμενο"
 
 #: libnautilus-private/nautilus-icon-dnd.c:625
 msgid ""
@@ -3657,6 +3658,17 @@ msgid ""
 "Fast searches will not be available until an initial index of your files has "
 "been created.  This may take a long time."
 msgstr ""
+"Αν θέλετε να ενεργοποιήσετε τις γρήγορες αναζητήσεις, μπορείτε να επεξεργαστείτε "
+"το αρχείο %s ως διαχειριστής (root). Θέτοντας τη σημαία ενεργοποίησης σε \"ναι\" "
+"θέτει σε λειτουργία τις υπηρεσίες Μέδουσα.\n"
+"Για να εκκινήσετε τις υπηρεσίες ευρετηρίου και αναζήτησης άμεσα, πρέπει να "
+"εκτελέσετε ως διαχειριστής (root) τις επόμενες εντολές:\n"
+"\n"
+"medusa-indexd\n"
+"medusa-searchd\n"
+"\n"
+"Οι γρήγορες αναζητήσεις δε θα είναι διαθέσιμες μέχρι να ολοκληρωθεί η δημιουργία "
+"αρχικού ευρετηρίου των αρχείων σας. Αυτό μπορεί να πάρει κάποιο χρόνο."
 
 #: libnautilus-private/nautilus-medusa-support.c:138
 msgid ""
@@ -3667,6 +3679,12 @@ msgid ""
 "If you are using a packaged version of Nautilus, fast searching is not "
 "available.\n"
 msgstr ""
+"Η Μέδουσα, η εφαρμογή που εκτελεί αναζητήσεις, δε μπορεί να βρεθεί στο σύστημά "
+"σας. Αν μεταγλωττίσατε το Ναυτίλο χειρωνακτικά, πρέπει να εγκαταστήσετε ένα "
+"αντίγραφο της Μέδουσας και να επαναγλωττίσετε το Ναυτίλο. (Ένα αντίγραφο "
+"της Μέδουσας είναι διαθέσιμο από το ftp://ftp.gnome.org)\n"
+"Αν χρησιμοποιείτε μια πακεταρισμένη έκδοση του Ναυτίλου, οι γρήγορες αναζητήσεις "
+"δεν είναι διαθέσιμες.\n"
 
 #: libnautilus-private/nautilus-program-chooser.c:195
 #, c-format
@@ -3857,6 +3875,10 @@ msgid ""
 "You can configure GNOME to associate applications with file types.  Do you "
 "want to associate an application with this file type now?"
 msgstr ""
+"%s\n"
+"\n"
+"Μπορείτε να ρυθμίσετε το GNOME να αντιστοιχεί εφαρμογές με είδη αρχείων. Θέλετε "
+"να αντιστοιχίσετε μια εφαρμογή με αυτό το είδος αρχείου τώρα;"
 
 #: libnautilus-private/nautilus-program-chooser.c:1613
 msgid "Associate Application"
@@ -3922,6 +3944,10 @@ msgid ""
 "\n"
 "To open non-local files copy them to a local folder and then drop them again."
 msgstr ""
+"Αυτός ο στόχος ρίψης υποστηρίζει μόνο τοπικά αρχεία.\n"
+"\n"
+"Για να ανοίξετε μη τοπικά αρχεία, αντιγράψτε τα σε ένα τοπικό κατάλογο "
+"και ρίξτε τα ξανά."
 
 #: libnautilus-private/nautilus-program-choosing.c:708
 #: libnautilus-private/nautilus-program-choosing.c:720
@@ -3935,6 +3961,10 @@ msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
 msgstr ""
+"Αυτός ο στόχος ρίψης υποστηρίζει μόνο τοπικά αρχεία.\n"
+"\n"
+"Για να ανοίξετε μη τοπικά αρχεία, αντιγράψτε τα σε ένα τοπικό κατάλογο "
+"και ρίξτε τα ξανά. Τα τοπικά αρχεία που ρίξατε έχει ήδη ανοιχτεί."
 
 #. Human readable description for a criterion in a search for
 #. files. Bracketed items are context, and are message
@@ -4738,6 +4768,9 @@ msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 msgstr ""
+"Όλα τα εκτελέσιμα αρχεία σε αυτόν τον κατάλογο θα εμφανιστούν στο μενού "
+"προγραμμάτων εντολών. Η επιλογή ενός προγράμματος εντολών από το μενού "
+"θα εκτελέσει το πρόγραμμα εντολών με τα ήδη επιλεγμένα στοιχεία ως είσοδο."
 
 #: src/file-manager/fm-directory-view.c:3935
 msgid "About Scripts"
@@ -4764,6 +4797,27 @@ msgid ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
 msgstr ""
+"Όλα τα εκτελέσιμα αρχεία σε αυτόν τον κατάλογο θα εμφανιστούν στο μενού "
+"προγραμμάτων εντολών. Η επιλογή ενός προγράμματος εντολών από το μενού "
+"θα εκτελέσει το πρόγραμμα εντολών.\n"
+"\n"
+"Στην εκτέλεση από τοπικό φάκελο, τα προγράμματα εντολών θα έχουν ως "
+"ορίσματα τα επιλεγμένα ονόματα αρχείων. Στην εκτέλεση από απομακρυσμένο "
+"φάκελο (π.χ. ένας φάκελος δικτυακού τόπου, ftp ή www), τα προγράμματα "
+"εντολών δε θα δεχθούν καμία παράμετρο.\n"
+"\n"
+"Σε όλες της περιπτώσεις, οι παρακάτω μεταβλητές περιβάλλοντος θα τεθούν "
+"από το Ναυτίλο, που τα προγράμματα εντολών μπορούν να χρησιμοποιήσουν:\n"
+"\n"
+"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: λίστα διαδρομών με επιλεγμένα αρχεία "
+"διαχωρισμένα με τον χαρακτήρα αλλαγής γραμμής (μόνο για τοπικά)\n"
+"\n"
+"NAUTILUS_SCRIPT_SELECTED_URIS: λίστα URI επιλεγμένων αρχείων διαχωρισμένα "
+"με τον χαρακτήρα αλλαγής γραμμής\n"
+"\n"
+"NAUTILUS_SCRIPT_CURRENT_URI: URI με την τρέχουσα διαδρομή\n"
+"\n"
+"NAUTILUS_SCRIPT_WINDOW_GEOMETRY: θέση και μέγεθος του τρέχοντος παραθύρου"
 
 #: src/file-manager/fm-directory-view.c:4048
 #, c-format
@@ -5138,11 +5192,11 @@ msgstr "δείχνει στο \"%s\""
 
 #: src/file-manager/fm-icon-view.c:2238
 msgid "Drag and drop is only supported to local file systems."
-msgstr ""
+msgstr "Η μεταφορά και ρίψη (drag και drop) είναι διαθέσιμο μόνο στα τοπικά συστήματα αρχείων."
 
 #: src/file-manager/fm-icon-view.c:2239 src/file-manager/fm-icon-view.c:2257
 msgid "Drag and Drop error"
-msgstr ""
+msgstr "Σφάλμα Μεταφοράς και Ρίψης (drag και drop)"
 
 #: src/file-manager/fm-icon-view.c:2256
 msgid "An invalid drag type was used."
@@ -5978,6 +6032,9 @@ msgid ""
 "Fast searching is not enabled on your computer, so you do not have an index "
 "right now."
 msgstr ""
+"Όταν είναι ενεργοποιημένη η Γρήγορη Αναζήτηση, η Εύρεση δημιουργεί ένα ευρετήριο "
+"για την επιτάχυνση των αναζητήσεών σας. Η Γρήγορη Αναζήτηση δεν είναι ενεργοποιημένη "
+"στον υπολογιστή σας, οπότε δεν έχετε ένα ευρετήριο αυτή τη στιγμή."
 
 #: src/file-manager/nautilus-indexing-info.c:265
 msgid "There is no index of your files right now."
@@ -6090,9 +6147,9 @@ msgid ""
 "We have also seen this error when a faulty version of bonobo-activation was "
 "installed."
 msgstr ""
-"Ο Ναυτίλος δε μπορεί να χρησιμοποιηθεί τώρα. Η εκτέλεση της εντολής "
-"\"bonobo-slay\" σε παράθυρο τερματικού στον υπολογιστή σας μπορεί να λύσει "
-"το πρόβλημα. Αν όχι, δοκιμάστε να επανεκκινήσετε τον υπολογιστή σας ή να "
+"Ο Ναυτίλος δε μπορεί να χρησιμοποιηθεί τώρα. Η εκτέλεση της εντολής \"bonobo-"
+"slay\" σε παράθυρο τερματικού στον υπολογιστή σας μπορεί να λύσει το "
+"πρόβλημα. Αν όχι, δοκιμάστε να επανεκκινήσετε τον υπολογιστή σας ή να "
 "εγκαταστήσετε τον Ναυτίλο ξανά.\n"
 "\n"
 "Ο Bonobo δε μπόρεσε να εντοπίσει το αρχείο Nautilus_shell.server. Μια αιτία "
@@ -6101,13 +6158,14 @@ msgstr ""
 "εγκατάσταση με το αρχείο Nautilus_Shell.server να λείπει.\n"
 "\n"
 "Εκτελώντας το \"bonobo-slay\" θα τερματίσει όλες τις διεργασίες Bonobo "
-"Activation και GConf, οι οποίες μπορεί να είναι αναγκαίες από άλλες εφαρμογές.\n"
+"Activation και GConf, οι οποίες μπορεί να είναι αναγκαίες από άλλες "
+"εφαρμογές.\n"
 "\n"
-"Μερικές φορές ο τερματισμός των bonobo-activation-server και gconfd διορθώνει "
-"το πρόβλημα αλλά δεν ξέρουμε γιατί.\n"
+"Μερικές φορές ο τερματισμός των bonobo-activation-server και gconfd "
+"διορθώνει το πρόβλημα αλλά δεν ξέρουμε γιατί.\n"
 "\n"
-"Τέλος, είναι πιθανό να συμβεί αυτό το πρόβλημα λόγω λάθος έκδοση του "
-"bonobo-activation."
+"Τέλος, είναι πιθανό να συμβεί αυτό το πρόβλημα λόγω λάθος έκδοση του bonobo-"
+"activation."
 
 #. Some misc. error (can never happen with current
 #. * version of bonobo-activation). Show dialog and terminate the
@@ -6140,9 +6198,9 @@ msgid ""
 "restarting Nautilus may help fix the problem."
 msgstr ""
 "Ο Ναυτίλος δε μπορεί να χρησιμοποιηθεί τώρα λόγω μη αναμενόμενου σφάλματος "
-"από το Bonobo κατά την προσπάθεια εντοπισμού του εργοστασίου. Ο τερματισμός του "
-"bonobo-activation-server και η επανεκκίνηση του Ναυτίλου μπορεί να βοηθήσει "
-"στην επίλυση του προβλήματος."
+"από το Bonobo κατά την προσπάθεια εντοπισμού του εργοστασίου. Ο τερματισμός "
+"του bonobo-activation-server και η επανεκκίνηση του Ναυτίλου μπορεί να "
+"βοηθήσει στην επίλυση του προβλήματος."
 
 #: src/nautilus-application.c:505
 msgid ""
@@ -6243,7 +6301,9 @@ msgstr "Μόνο δημιουργία παραθύρων για καθορισμ
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
-msgstr "Να μη γίνει διαχείριση της επιφάνειας εργασίας (αγνοεί τις προτιμήσεις στο διάλογο προτιμήσεων)"
+msgstr ""
+"Να μη γίνει διαχείριση της επιφάνειας εργασίας (αγνοεί τις προτιμήσεις στο "
+"διάλογο προτιμήσεων)"
 
 #: src/nautilus-main.c:157
 msgid "Quit Nautilus."
