@@ -126,7 +126,6 @@ struct _ServicesButtonCallbackData {
 struct _NautilusSummaryViewDetails {
 	char 		*uri;
 	NautilusView	*nautilus_view;
-	BonoboUIComponent *ui_component;
 	
 	SummaryData	*xml_data;
 
@@ -1430,11 +1429,6 @@ nautilus_summary_view_destroy (GtkObject *object)
 		g_free (view->details->uri);
 	}
 
-	if (view->details->ui_component) {
-		bonobo_ui_component_unset_container (view->details->ui_component);
-		bonobo_object_unref (BONOBO_OBJECT (view->details->ui_component));
-	}
-	
 	g_assert (Pending_None == view->details->pending_operation);
 	CORBA_Object_release (view->details->user_control, &ev);
 
@@ -1603,19 +1597,25 @@ bonobo_preferences_callback (BonoboUIComponent *ui, gpointer user_data, const ch
 static void
 update_menu_items (NautilusSummaryView *view, gboolean logged_in)
 {
-	nautilus_bonobo_set_hidden (view->details->ui_component,
+	BonoboUIComponent *ui;
+
+	ui = bonobo_control_get_ui_component 
+		(nautilus_view_get_bonobo_control 
+			(view->details->nautilus_view)); 
+
+	nautilus_bonobo_set_hidden (ui,
 				    "/commands/Register",
 				    logged_in);
 	
-	nautilus_bonobo_set_hidden (view->details->ui_component,
+	nautilus_bonobo_set_hidden (ui,
 				     "/commands/Login",
 				    logged_in);
 
-	nautilus_bonobo_set_hidden (view->details->ui_component,
+	nautilus_bonobo_set_hidden (ui,
 				    "/commands/Preferences",
 				    !logged_in);
 	
-	nautilus_bonobo_set_hidden (view->details->ui_component,
+	nautilus_bonobo_set_hidden (ui,
 				    "/commands/Logout",
 				    !logged_in);				    				    
 }
@@ -1638,12 +1638,13 @@ merge_bonobo_menu_items (BonoboControl *control, gboolean state, gpointer user_d
 	view = NAUTILUS_SUMMARY_VIEW (user_data);
 
 	if (state) {
-		view->details->ui_component = nautilus_view_set_up_ui (view->details->nautilus_view,
-							DATADIR,
-							"nautilus-summary-view-ui.xml",
-							"nautilus-summary-view");
+		nautilus_view_set_up_ui (view->details->nautilus_view,
+				         DATADIR,
+					 "nautilus-summary-view-ui.xml",
+					 "nautilus-summary-view");
 									
-		bonobo_ui_component_add_verb_list_with_data (view->details->ui_component, verbs, view);
+		bonobo_ui_component_add_verb_list_with_data 
+			(bonobo_control_get_ui_component (control), verbs, view);
 		update_menu_items (view, ammonite_am_i_logged_in (view->details->user_control));
 	}
 

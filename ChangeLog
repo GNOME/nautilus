@@ -1,3 +1,19 @@
+2000-10-27  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 4087 (crash leaving Summary view)
+
+	* components/services/summary/nautilus-view/nautilus-summary-view.c: 
+	(nautilus_summary_view_destroy): Don't unset container and unref
+	component here; that's not necessary for the component that's
+	created automagically. And doing so causes a double-destroy.
+	(update_menu_items), (merge_bonobo_menu_items): Removed 
+	ui_component field from details and changed callers to get the
+	ui_component elsewise when needed (to clarify that it isn't
+	owned here).
+	* src/nautilus-service-ui.xml: Changed "Eazel Services" to
+	"Eazel Services Home" since all the services are Eazel Services.
+	* src/nautilus-service-ui.xml.h: gotta check this in too.
+
 2000-10-27  Andy Hertzfeld  <andy@eazel.com>
 
 	at Bud's request, implemented bug 4127, add a preference to
