@@ -2008,6 +2008,8 @@ activation_uri_found (NautilusDirectory *directory,
 
 	g_free (directory->details->activation_uri_read_state);
 	directory->details->activation_uri_read_state = NULL;
+
+	nautilus_directory_async_state_changed (directory);
 }
 
 static void

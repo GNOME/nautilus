@@ -1,6 +1,13 @@
 2000-07-26  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory-async.c:
+	(activation_uri_found): Added a missing call to
+	nautilus_directory_async_state_changed to keep the state machine
+	alive.
+
+2000-07-26  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-async.c:
 	(metafile_read_failed): First cut at only reading the metafile if the
 	directory is really a directory. This might be making things worse
 	for now, because I'm not sure if the file info is available at this
