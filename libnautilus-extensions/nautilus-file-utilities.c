@@ -63,7 +63,7 @@ nautilus_make_path(const char *path, const char* name)
 
 	path_length = strlen (path);
     	insert_separator = path_length > 0 && 
-    			   name[0] != '\0' > 0 && 
+    			   name[0] != '\0' && 
     			   path[path_length - 1] != G_DIR_SEPARATOR;
 
     	if (insert_separator) {
