@@ -616,7 +616,7 @@ preferences_initialize_if_needed (void)
 
 	g_assert (GLOBAL.preference_table != NULL);
 
- 	GLOBAL.gconf_client = gconf_client_new ();
+ 	GLOBAL.gconf_client = gconf_client_get_default ();
 
 	/* Let gconf know about ~/.gconf/nautilus */
 	gconf_client_add_dir (GLOBAL.gconf_client,

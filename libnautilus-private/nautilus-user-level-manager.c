@@ -128,7 +128,7 @@ user_level_manager_new (void)
 
         manager = NAUTILUS_USER_LEVEL_MANAGER (gtk_object_new (nautilus_user_level_manager_get_type (), NULL));
 
-	manager->gconf_client = gconf_client_new ();
+	manager->gconf_client = gconf_client_get_default ();
 
 	/* Let gconf know about ~/.gconf/apps/nautilus */
 	gconf_client_add_dir (manager->gconf_client,
