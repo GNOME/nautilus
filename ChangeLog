@@ -1,5 +1,72 @@
 2000-08-24  John Sullivan  <sullivan@eazel.com>
 
+	Fixed bug 1653 (new menu layout). View menu now contains
+	Show/Hide items for tool bar, location bar, sidebar, and
+	status bar. The preference now controls only what you get
+	for new windows. Any future "menus aren't quite right" 
+	issues should be filed as new bugs.
+
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog), (global_preferences_register):
+	Renamed NAUTILUS_PREFERENCES_DISPLAY_SIDEBAR and its ilk to
+	NAUTILUS_PREFERENCES_START_WITH_SIDEBAR since these preferences
+	now only affect the initial appearance of new windows. Also,
+	clarified the text that appears in the preferences window for these.
+	
+	* src/nautilus-window-menus.c:
+	Removed a bunch of code #ifdeffed WINDOW_ITEMS_TEST since the
+	functionality it partly implemented is now implemented for real.
+	(view_menu_show_hide_sidebar_callback),
+	(view_menu_show_hide_tool_bar_callback),
+	(view_menu_show_hide_location_bar_callback),
+	(view_menu_show_hide_status_bar_callback):
+	New menu callback functions that toggle the visibility of the
+	various views.
+	(nautilus_window_update_show_hide_menu_items): New function,
+	sets the text in the show/hide menu items based on current
+	visibility.
+	(nautilus_window_initialize_menus): Put the Show/Hide menu items
+	in the menu.
+	* src/nautilus-window-private.h: Add prototype for
+	nautilus_window_update_show_hide_menu_items.
+	* src/nautilus-window.h: Renamed statusbar_ctx -> status_bar_context_id
+	and statusbar_clear_id -> status_bar_clear_id; renamed show/hide
+	locationbar/toolbar/statusbar to use location_bar, tool_bar, and
+	status_bar (GTK bad English usage notwithstanding); added prototypes
+	for nautilus_window_sidebar_showing and its ilk.
+	* src/nautilus-window.c: 
+	(nautilus_window_initialize), (nautilus_window_destroy): Removed
+	monitoring & unmonitoring of DISPLAY_SIDEBAR-type preferences since
+	changing these preferences now has no dynamic effect.
+	(nautilus_window_clear_status), (nautilus_window_set_status),
+	(nautilus_window_constructed): Fixed wordgroupingification of 
+	status_bar et al.
+	(show_dock_item), (hide_dock_item): New functions to share code of
+	show/hide location bar & tool bar functions; these call
+	nautilus_window_update_show_hide_menu_items now also.
+	(dock_item_showing): New function, tests visibility of named dock item.
+	(nautilus_window_hide_location_bar),
+	(nautilus_window_show_location_bar),
+	(nautilus_window_hide_tool_bar), (nautilus_window_show_tool_bar):
+	Use new code-sharing functions.
+
+	(nautilus_window_location_bar_showing),
+	(nautilus_window_tool_bar_showing), 
+	(nautilus_window_sidebar_showing),
+	(nautilus_window_status_bar_showing): New functions to test visibility
+	(nautilus_window_hide_sidebar),
+	(nautilus_window_show_sidebar), 
+	(nautilus_window_hide_status_bar),
+	(nautilus_window_show_status_bar): These call 
+	nautilus_window_update_show_hide_menu_items now.
+	(nautilus_window_show): Updated for naming changes.
+
+	* RENAMING: Noted that the evil one-word "toolbar" phrase
+	is still rampant in Nautilus.
+
+2000-08-24  John Sullivan  <sullivan@eazel.com>
+
 	Fixed bug 2119 (Alt-key navigation for menus doesn't work).
 
 	* libnautilus-extensions/nautilus-icon-container.c:
@@ -54,8 +121,9 @@
 	(nautilus_druid_page_finish_destroy),
 	(nautilus_druid_page_finish_configure_size),
 	(nautilus_druid_page_finish_set_logo):
-	changed the logo from being a fixed width and height to automatically adjusting 
-	image dimensions; also, made it use the anti-aliased canvas for prettier images
+	changed the logo from being a fixed width and height to 
+	automatically adjusting image dimensions; also, made it use the 
+	anti-aliased canvas for prettier images
 	
 	cut-n-paste-code/widgets/nautilus-druid/nautilus-druid-page-standard.c: 
 	(nautilus_druid_page_standard_init),

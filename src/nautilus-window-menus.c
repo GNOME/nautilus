@@ -72,6 +72,12 @@
 #define NAUTILUS_MENU_PATH_SEPARATOR_AFTER_CLEAR	"/Edit/Separator after Clear"
 #define NAUTILUS_MENU_PATH_SEPARATOR_AFTER_SELECT_ALL	"/Edit/Separator after Select All"
 
+#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_SHOW_HIDE	"/View/Separator before Show Hide"
+#define NAUTILUS_MENU_PATH_SHOW_HIDE_SIDEBAR		"/View/Show Hide Sidebar"
+#define NAUTILUS_MENU_PATH_SHOW_HIDE_TOOL_BAR		"/View/Show Hide Tool Bar"
+#define NAUTILUS_MENU_PATH_SHOW_HIDE_LOCATION_BAR	"/View/Show Hide Location Bar"
+#define NAUTILUS_MENU_PATH_SHOW_HIDE_STATUS_BAR		"/View/Show Hide Status Bar"
+
 #define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_ZOOM	"/View/Separator before Zoom"
 
 #define NAUTILUS_MENU_PATH_HOME_ITEM			"/Go/Home"
@@ -85,10 +91,6 @@
 #define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_BOOKMARKS	"/Bookmarks/Separator before Bookmarks"
 
 #define NAUTILUS_MENU_PATH_ABOUT_ITEM			"/Help/About Nautilus"
-
-/*
-#define WINDOW_ITEMS_TEST
-*/
 
 static GtkWindow *bookmarks_window = NULL;
 
@@ -171,15 +173,6 @@ bookmark_holder_free (BookmarkHolder *bookmark_holder)
 #define NAUTILUS_MENU_PATH_USER_LEVEL_CUSTOMIZE			"/UserLevel/User Level Customize"
 
 #define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_CANNED_BOOKMARKS	"/Bookmarks/Before Canned Separator"
-
-#ifdef WINDOW_ITEMS_TEST
-#define NAUTILUS_MENU_PATH_AFTER_CUSTOMIZE_SEPARATOR		"/Settings/After Customize Separator"
-#define NAUTILUS_MENU_PATH_TOOLBAR_ITEM				"/Settings/Toolbar"
-#define NAUTILUS_MENU_PATH_LOCATIONBAR_ITEM			"/Settings/Locationbar"
-#define NAUTILUS_MENU_PATH_STATUSBAR_ITEM			"/Settings/Statusbar"
-#define NAUTILUS_MENU_PATH_SIDEBAR_ITEM				"/Settings/Sidebar"
-#define NAUTILUS_MENU_PATH_NORMALIZE_ITEM			"/Settings/Normalize"
-#endif
 
 static void
 file_menu_new_window_callback (BonoboUIHandler *ui_handler, 
@@ -339,6 +332,101 @@ view_menu_reload_callback (BonoboUIHandler *ui_handler,
 }
 
 static void
+view_menu_show_hide_sidebar_callback (BonoboUIHandler *ui_handler, 
+		           	      gpointer user_data,
+		          	      const char *path) 
+{
+	NautilusWindow *window;
+
+	window = NAUTILUS_WINDOW (user_data);
+	if (nautilus_window_sidebar_showing (window)) {
+		nautilus_window_hide_sidebar (window);
+	} else {
+		nautilus_window_show_sidebar (window);
+	}
+}
+
+static void
+view_menu_show_hide_tool_bar_callback (BonoboUIHandler *ui_handler, 
+		           	       gpointer user_data,
+		          	       const char *path) 
+{
+	NautilusWindow *window;
+
+	window = NAUTILUS_WINDOW (user_data);
+	if (nautilus_window_tool_bar_showing (window)) {
+		nautilus_window_hide_tool_bar (window);
+	} else {
+		nautilus_window_show_tool_bar (window);
+	}
+}
+
+static void
+view_menu_show_hide_location_bar_callback (BonoboUIHandler *ui_handler, 
+		         		   gpointer user_data,
+					   const char *path) 
+{
+	NautilusWindow *window;
+
+	window = NAUTILUS_WINDOW (user_data);
+	if (nautilus_window_location_bar_showing (window)) {
+		nautilus_window_hide_location_bar (window);
+	} else {
+		nautilus_window_show_location_bar (window);
+	}
+}
+
+static void
+view_menu_show_hide_status_bar_callback (BonoboUIHandler *ui_handler, 
+		         		 gpointer user_data,
+					 const char *path) 
+{
+	NautilusWindow *window;
+
+	window = NAUTILUS_WINDOW (user_data);
+	if (nautilus_window_status_bar_showing (window)) {
+		nautilus_window_hide_status_bar (window);
+	} else {
+		nautilus_window_show_status_bar (window);
+	}
+}
+
+void
+nautilus_window_update_show_hide_menu_items (NautilusWindow *window) 
+{
+	g_assert (NAUTILUS_IS_WINDOW (window));
+	
+	bonobo_ui_handler_menu_set_label 
+		(window->ui_handler, 
+		 NAUTILUS_MENU_PATH_SHOW_HIDE_STATUS_BAR, 
+		 nautilus_window_status_bar_showing (window)
+		 	? _("Hide Status Bar")
+		 	: _("Show Status Bar"));
+
+	bonobo_ui_handler_menu_set_label 
+		(window->ui_handler, 
+		 NAUTILUS_MENU_PATH_SHOW_HIDE_SIDEBAR, 
+		 nautilus_window_sidebar_showing (window)
+		 	? _("Hide Sidebar")
+		 	: _("Show Sidebar"));
+
+	bonobo_ui_handler_menu_set_label 
+		(window->ui_handler, 
+		 NAUTILUS_MENU_PATH_SHOW_HIDE_TOOL_BAR, 
+		 nautilus_window_tool_bar_showing (window)
+		 	? _("Hide Tool Bar")
+		 	: _("Show Tool Bar"));
+
+	bonobo_ui_handler_menu_set_label 
+		(window->ui_handler, 
+		 NAUTILUS_MENU_PATH_SHOW_HIDE_LOCATION_BAR, 
+		 nautilus_window_location_bar_showing (window)
+		 	? _("Hide Location Bar")
+		 	: _("Show Location Bar"));
+
+}
+
+static void
 view_menu_zoom_in_callback (BonoboUIHandler *ui_handler, 
 		            gpointer user_data,
 		            const char *path) 
@@ -401,96 +489,6 @@ change_appearance_callback (BonoboUIHandler *ui_handler,
 {
 	nautilus_theme_selector_show ();
 }
-
-#ifdef WINDOW_ITEMS_TEST
-static void
-settings_menu_toolbar_callback (BonoboUIHandler *ui_handler, 
-				  gpointer user_data,
-				  const char *path)
-{
-	NautilusWindow *window;
-	window = NAUTILUS_WINDOW (user_data);
-
-	if (bonobo_ui_handler_menu_get_toggle_state (ui_handler, path) == TRUE) {
-		nautilus_window_show_toolbar (NAUTILUS_WINDOW (window));
-	} else {
-		nautilus_window_hide_toolbar (NAUTILUS_WINDOW (window));
-	}
-}
-
-static void
-settings_menu_locationbar_callback (BonoboUIHandler *ui_handler, 
-				  gpointer user_data,
-				  const char *path)
-{
-	NautilusWindow *window;
-	window = NAUTILUS_WINDOW (user_data);
-
-	if (bonobo_ui_handler_menu_get_toggle_state (ui_handler, path) == TRUE) {
-		nautilus_window_show_locationbar (NAUTILUS_WINDOW (window));
-	} else {
-		nautilus_window_hide_locationbar (NAUTILUS_WINDOW (window));
-	}
-}
-
-static void
-settings_menu_statusbar_callback (BonoboUIHandler *ui_handler, 
-				  gpointer user_data,
-				  const char *path)
-{
-	NautilusWindow *window;
-	window = NAUTILUS_WINDOW (user_data);
-	
-	if (bonobo_ui_handler_menu_get_toggle_state (ui_handler, path) == TRUE) {
-		nautilus_window_show_statusbar (NAUTILUS_WINDOW (window));
-	} else {
-		nautilus_window_hide_statusbar (NAUTILUS_WINDOW (window));
-	}
-}
-
-static void
-settings_menu_sidebar_callback (BonoboUIHandler *ui_handler, 
-				  gpointer user_data,
-				  const char *path)
-{
-	NautilusWindow *window;
-	window = NAUTILUS_WINDOW (user_data);
-
-	if (bonobo_ui_handler_menu_get_toggle_state (ui_handler, path) == TRUE) {
-		nautilus_window_show_sidebar (NAUTILUS_WINDOW (window));
-	} else {
-		nautilus_window_hide_sidebar (NAUTILUS_WINDOW (window));
-	}
-}
-
-static void
-settings_menu_normalize_menu_callback (BonoboUIHandler *ui_handler, 
-				  gpointer user_data,
-				  const char *path)
-{
-	NautilusWindow *window;
-	GnomeApp *app;
-	GnomeDockItem *dock_item;
-	
-	window = NAUTILUS_WINDOW (user_data);
-	app = GNOME_APP (window);
-
-	if (bonobo_ui_handler_menu_get_toggle_state (ui_handler, path) == TRUE) {
-		if (app->menubar != NULL) {
-			gtk_widget_set_usize(app->menubar, 0, app->menubar->allocation.height - 6);
-		}
-	} else {
-		if (app->menubar != NULL) {
-			gtk_widget_set_usize(app->menubar, 0, app->menubar->allocation.height + 6);
-		}
-	}
-
-	dock_item = gnome_app_get_dock_item_by_name (app, GNOME_APP_MENUBAR_NAME);
-	gtk_widget_queue_resize (GTK_WIDGET (dock_item)->parent);
-}
-
-#endif
-
 
 static void
 help_menu_about_nautilus_callback (BonoboUIHandler *ui_handler, 
@@ -1301,6 +1299,53 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 view_menu_reload_callback,
         				 window);
 
+        append_separator (window, NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_SHOW_HIDE);
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_SHOW_HIDE_SIDEBAR,
+        				 "", /* Title computed dynamically */
+        				 _("Change the visibility of this window's sidebar"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
+        				 NULL,
+        				 0,
+        				 0,
+        				 view_menu_show_hide_sidebar_callback,
+        				 window);
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_SHOW_HIDE_TOOL_BAR,
+        				 "", /* Title computed dynamically */
+        				 _("Change the visibility of this window's tool bar"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
+        				 NULL,
+        				 0,
+        				 0,
+        				 view_menu_show_hide_tool_bar_callback,
+        				 window);
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_SHOW_HIDE_LOCATION_BAR,
+        				 "", /* Title computed dynamically */
+        				 _("Change the visibility of this window's location bar"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
+        				 NULL,
+        				 0,
+        				 0,
+        				 view_menu_show_hide_location_bar_callback,
+        				 window);
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_SHOW_HIDE_STATUS_BAR,
+        				 "", /* Title computed dynamically */
+        				 _("Change the visibility of this window's status bar"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
+        				 NULL,
+        				 0,
+        				 0,
+        				 view_menu_show_hide_status_bar_callback,
+        				 window);
+        nautilus_window_update_show_hide_menu_items (window);
+
         append_placeholder (window, NAUTILUS_MENU_PATH_SHOW_HIDE_PLACEHOLDER);
         append_placeholder (window, NAUTILUS_MENU_PATH_VIEW_ITEMS_PLACEHOLDER);
 
@@ -1425,69 +1470,6 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 window);
 
 	append_placeholder (window, NAUTILUS_MENU_PATH_BOOKMARK_ITEMS_PLACEHOLDER);			 
-#ifdef WINDOW_ITEMS_TEST
-	/* Test window modification items */
-	bonobo_ui_handler_menu_new_separator (ui_handler,
-					      NAUTILUS_MENU_PATH_AFTER_CURSTOMIZE_SEPARATOR,
-					      -1);
-
-
-	bonobo_ui_handler_menu_new_toggleitem (ui_handler,
-        				 NAUTILUS_MENU_PATH_TOOLBAR_ITEM,
-        				 _("Toolbar"),
-        				 _("Show/Hide Stuff"),
-        				 -1,
-        				 0,
-        				 0,
-        				 settings_menu_toolbar_callback,
-        				 window);
-	bonobo_ui_handler_menu_set_toggle_state (ui_handler, NAUTILUS_MENU_PATH_TOOLBAR_ITEM, TRUE);
-        				 
-
-	bonobo_ui_handler_menu_new_toggleitem (ui_handler,
-        				 NAUTILUS_MENU_PATH_LOCATIONBAR_ITEM,
-        				 _("Locationbar"),
-        				 _("Show/Hide Stuff"),
-        				 -1,
-        				 0,
-        				 0,
-        				 settings_menu_locationbar_callback,
-        				 window);        				 
-	bonobo_ui_handler_menu_set_toggle_state (ui_handler, NAUTILUS_MENU_PATH_LOCATIONBAR_ITEM, TRUE);
-
-	bonobo_ui_handler_menu_new_toggleitem (ui_handler,
-        				 NAUTILUS_MENU_PATH_STATUSBAR_ITEM,
-        				 _("Statusbar"),
-        				 _("Show/Hide Stuff"),
-        				 -1,
-        				 0,
-        				 0,
-        				 settings_menu_statusbar_callback,
-        				 window);        				 
-	bonobo_ui_handler_menu_set_toggle_state (ui_handler, NAUTILUS_MENU_PATH_STATUSBAR_ITEM, TRUE);
-
-	bonobo_ui_handler_menu_new_toggleitem (ui_handler,
-        				 NAUTILUS_MENU_PATH_SIDEBAR_ITEM,
-        				 _("Sidebar"),
-        				 _("Show/Hide Stuff"),
-        				 -1,
-        				 0,
-        				 0,
-        				 settings_menu_sidebar_callback,
-        				 window);    
-	bonobo_ui_handler_menu_set_toggle_state (ui_handler, NAUTILUS_MENU_PATH_SIDEBAR_ITEM, TRUE);
-	
-	bonobo_ui_handler_menu_new_toggleitem (ui_handler,
-        				 NAUTILUS_MENU_PATH_NORMALIZE_ITEM,
-        				 _("Normalize Menu"),
-        				 _("Show/Hide Stuff"),
-        				 -1,
-        				 0,
-        				 0,
-        				 settings_menu_normalize_menu_callback,
-        				 window);            				     				 
-	bonobo_ui_handler_menu_set_toggle_state (ui_handler, NAUTILUS_MENU_PATH_NORMALIZE_ITEM, FALSE);        				 
-#endif
 
 	/* Help */
         new_top_level_menu (window, NAUTILUS_MENU_PATH_HELP_MENU, _("_Help"));

@@ -202,19 +202,19 @@ global_preferences_create_dialog (void)
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane), _("Views"));
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
 							 2,
-							 NAUTILUS_PREFERENCES_DISPLAY_TOOLBAR,
+							 NAUTILUS_PREFERENCES_START_WITH_TOOL_BAR,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
 							 2,
-							 NAUTILUS_PREFERENCES_DISPLAY_LOCATIONBAR,
+							 NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
 							 2,
-							 NAUTILUS_PREFERENCES_DISPLAY_STATUSBAR,
+							 NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
 							 2,
-							 NAUTILUS_PREFERENCES_DISPLAY_SIDEBAR,
+							 NAUTILUS_PREFERENCES_START_WITH_SIDEBAR,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 	
 
@@ -670,26 +670,26 @@ global_preferences_register (void)
 							  "helvetica");
 
 
-	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_DISPLAY_TOOLBAR,
-							   _("Display tool bar"),
+	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_START_WITH_TOOL_BAR,
+							   _("Display tool bar in new windows"),
 							   TRUE,
 							   TRUE,
 							   TRUE);
 
-	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_DISPLAY_LOCATIONBAR,
-							   _("Display location bar"),
+	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR,
+							   _("Display location bar in new windows"),
 							   TRUE,
 							   TRUE,
 							   TRUE);
 
-	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_DISPLAY_STATUSBAR,
-							   _("Display status bar"),
+	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR,
+							   _("Display status bar in new windows"),
 							   TRUE,
 							   TRUE,
 							   TRUE);
 
-	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_DISPLAY_SIDEBAR,
-							   _("Display Sidebar"),
+	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR,
+							   _("Display sidebar in new windows"),
 							   TRUE,
 							   TRUE,
 							   TRUE);

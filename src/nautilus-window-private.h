@@ -95,6 +95,7 @@ void		     nautilus_window_remove_bookmarks_menu_callback    (NautilusWindow 		 
 void		     nautilus_window_remove_go_menu_callback 	       (NautilusWindow 		   *window);
 void		     nautilus_window_remove_bookmarks_menu_items       (NautilusWindow 		   *window);
 void		     nautilus_window_remove_go_menu_items 	       (NautilusWindow 		   *window);
+void		     nautilus_window_update_show_hide_menu_items       (NautilusWindow		   *window);
 void		     nautilus_window_zoom_in 			       (NautilusWindow 		   *window);
 void		     nautilus_window_zoom_out 			       (NautilusWindow 		   *window);
 void		     nautilus_window_zoom_to_level	       	       (NautilusWindow 		   *window,

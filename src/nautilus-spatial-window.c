@@ -65,7 +65,7 @@
 #include "nautilus-desktop-window.h"
 
 /* Milliseconds */
-#define STATUSBAR_CLEAR_TIMEOUT 5000
+#define STATUS_BAR_CLEAR_TIMEOUT 5000
 
 /* GNOME Dock Items */
 #define URI_ENTRY_DOCK_ITEM	"uri_entry"
@@ -98,10 +98,6 @@ static void nautilus_window_realize                 (GtkWidget           *widget
 static void nautilus_window_real_set_content_view   (NautilusWindow      *window,
 						     NautilusViewFrame   *new_view);
 static void sidebar_panels_changed_callback         (gpointer             user_data);
-static void toolbar_visibility_changed_callback     (gpointer             user_data);
-static void locationbar_visibility_changed_callback (gpointer             user_data);
-static void statusbar_visibility_changed_callback   (gpointer             user_data);
-static void sidebar_visibility_changed_callback     (gpointer             user_data);
 static void nautilus_window_show                    (GtkWidget           *widget);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusWindow,
@@ -152,43 +148,28 @@ nautilus_window_initialize (NautilusWindow *window)
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE,
 					   sidebar_panels_changed_callback,
 					   window);
-
-	/* Keep track of view item visibility changes */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DISPLAY_TOOLBAR,
-					   toolbar_visibility_changed_callback,
-					   window);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DISPLAY_LOCATIONBAR,
-					   locationbar_visibility_changed_callback,
-					   window);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DISPLAY_STATUSBAR,
-					   statusbar_visibility_changed_callback,
-					   window);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DISPLAY_SIDEBAR,
-					   sidebar_visibility_changed_callback,
-					   window);
-
 }
 
 static gboolean
 nautilus_window_clear_status(NautilusWindow *window)
 {
-	gtk_statusbar_pop(GTK_STATUSBAR(GNOME_APP(window)->statusbar), window->statusbar_ctx);
-	window->statusbar_clear_id = 0;
+	gtk_statusbar_pop(GTK_STATUSBAR(GNOME_APP(window)->statusbar), window->status_bar_context_id);
+	window->status_bar_clear_id = 0;
 	return FALSE;
 }
 
 void
 nautilus_window_set_status(NautilusWindow *window, const char *txt)
 {
-	if(window->statusbar_clear_id)
-		g_source_remove(window->statusbar_clear_id);
+	if(window->status_bar_clear_id)
+		g_source_remove(window->status_bar_clear_id);
 	
-	gtk_statusbar_pop(GTK_STATUSBAR(GNOME_APP(window)->statusbar), window->statusbar_ctx);
+	gtk_statusbar_pop(GTK_STATUSBAR(GNOME_APP(window)->statusbar), window->status_bar_context_id);
 	if(txt && *txt)	{
-		window->statusbar_clear_id = g_timeout_add(STATUSBAR_CLEAR_TIMEOUT, (GSourceFunc)nautilus_window_clear_status, window);
-		gtk_statusbar_push(GTK_STATUSBAR(GNOME_APP(window)->statusbar), window->statusbar_ctx, txt);
+		window->status_bar_clear_id = g_timeout_add(STATUS_BAR_CLEAR_TIMEOUT, (GSourceFunc)nautilus_window_clear_status, window);
+		gtk_statusbar_push(GTK_STATUSBAR(GNOME_APP(window)->statusbar), window->status_bar_context_id, txt);
 	} else
-		  window->statusbar_clear_id = 0;
+		  window->status_bar_clear_id = 0;
 }
 
 void
@@ -261,7 +242,7 @@ static void
 nautilus_window_constructed (NautilusWindow *window)
 {
 	GnomeApp *app;
-	GtkWidget *location_bar_box, *statusbar;
+	GtkWidget *location_bar_box, *status_bar;
   	GnomeDockItemBehavior behavior;
   	int sidebar_width;
 
@@ -310,12 +291,12 @@ nautilus_window_constructed (NautilusWindow *window)
 	gtk_widget_show (location_bar_box);
 	
 	/* set up status bar */
-	statusbar = gtk_statusbar_new ();
-	gnome_app_set_statusbar (app, statusbar);
+	status_bar = gtk_statusbar_new ();
+	gnome_app_set_statusbar (app, status_bar);
 
 	/* insert a little padding so text isn't jammed against frame */
-	gtk_misc_set_padding (GTK_MISC (GTK_STATUSBAR (statusbar)->label), GNOME_PAD, 0);
-	window->statusbar_ctx = gtk_statusbar_get_context_id (GTK_STATUSBAR (statusbar),
+	gtk_misc_set_padding (GTK_MISC (GTK_STATUSBAR (status_bar)->label), GNOME_PAD, 0);
+	window->status_bar_context_id = gtk_statusbar_get_context_id (GTK_STATUSBAR (status_bar),
 							      "IhateGtkStatusbar");
 	
 	/* FIXME bugzilla.eazel.com 1243: 
@@ -365,9 +346,9 @@ nautilus_window_constructed (NautilusWindow *window)
 	/* CORBA and Bonobo setup */
 	window->ui_handler = bonobo_ui_handler_new ();
 	bonobo_ui_handler_set_app (window->ui_handler, app);
-	bonobo_ui_handler_set_statusbar (window->ui_handler, statusbar);
+	bonobo_ui_handler_set_statusbar (window->ui_handler, status_bar);
 
-	/* Create menus and toolbars */
+	/* Create menus and tool bars */
 	nautilus_window_initialize_menus (window);
 	nautilus_window_initialize_toolbars (window);
 	
@@ -457,20 +438,6 @@ nautilus_window_destroy (GtkObject *object)
 					      sidebar_panels_changed_callback,
 					      NULL);
 
-	/* Don't keep track of window view changes */
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DISPLAY_TOOLBAR,
-					      toolbar_visibility_changed_callback,
-					      NULL);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DISPLAY_LOCATIONBAR,
-					      locationbar_visibility_changed_callback,
-					      NULL);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DISPLAY_STATUSBAR,
-					      statusbar_visibility_changed_callback,
-					      NULL);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DISPLAY_SIDEBAR,
-					      sidebar_visibility_changed_callback,
-					      NULL);
-
 	nautilus_window_remove_bookmarks_menu_callback (window);
 	nautilus_window_remove_bookmarks_menu_items (window);
 	nautilus_window_remove_go_menu_callback (window);
@@ -501,8 +468,8 @@ nautilus_window_destroy (GtkObject *object)
 		gtk_object_unref (GTK_OBJECT (window->last_location_bookmark));
 	}
 	
-	if (window->statusbar_clear_id != 0) {
-		g_source_remove (window->statusbar_clear_id);
+	if (window->status_bar_clear_id != 0) {
+		g_source_remove (window->status_bar_clear_id);
 	}
 	if (window->action_tag != 0) {
 		g_source_remove (window->action_tag);
@@ -1564,130 +1531,85 @@ sidebar_panels_changed_callback (gpointer user_data)
 	window_update_sidebar_panels_from_preferences (NAUTILUS_WINDOW (user_data));
 }
 
-/**
- * toolbar_visibility_changed_callback:
- * @user_data:	Callback data
- *
- * Called when eshow/hide preferences change for the toolbar
- */
-static void
-toolbar_visibility_changed_callback (gpointer user_data)
-{
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DISPLAY_TOOLBAR, TRUE)) {
-		nautilus_window_show_toolbar (NAUTILUS_WINDOW (user_data));
-	} else {
-		nautilus_window_hide_toolbar (NAUTILUS_WINDOW (user_data));
-	}
-}
-
-/**
- * locationbar_visibility_changed_callback:
- * @user_data:	Callback data
- *
- * Called when eshow/hide preferences change for the locationbar
- */
-static void
-locationbar_visibility_changed_callback (gpointer user_data)
-{
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DISPLAY_LOCATIONBAR, TRUE)) {
-		nautilus_window_show_locationbar (NAUTILUS_WINDOW (user_data));
-	} else {
-		nautilus_window_hide_locationbar (NAUTILUS_WINDOW (user_data));
-	}
-}
-
-/**
- * statusbar_visibility_changed_callback:
- * @user_data:	Callback data
- *
- * Called when eshow/hide preferences change for the statusbar
- */
-static void
-statusbar_visibility_changed_callback (gpointer user_data)
-{
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DISPLAY_STATUSBAR, TRUE)) {
-		nautilus_window_show_statusbar (NAUTILUS_WINDOW (user_data));
-	} else {
-		nautilus_window_hide_statusbar (NAUTILUS_WINDOW (user_data));
-	}
-}
-
-/**
- * sidebar_visibility_changed_callback:
- * @user_data:	Callback data
- *
- * Called when eshow/hide preferences change for the sidebar
- */
-static void
-sidebar_visibility_changed_callback (gpointer user_data)
-{
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DISPLAY_SIDEBAR, TRUE)) {
-		nautilus_window_show_sidebar (NAUTILUS_WINDOW (user_data));
-	} else {
-		nautilus_window_hide_sidebar (NAUTILUS_WINDOW (user_data));
-	}	
-}
-
-
-void 
-nautilus_window_hide_locationbar (NautilusWindow *window)
+static void 
+show_dock_item (NautilusWindow *window, const char *dock_item_name)
 {
 	GnomeApp *app;
 	GnomeDockItem *dock_item;
 
 	app = GNOME_APP (window);
 
-	dock_item = gnome_app_get_dock_item_by_name (app, URI_ENTRY_DOCK_ITEM);
-	if (dock_item != NULL) {
-		gtk_widget_hide (GTK_WIDGET (dock_item));
-		gtk_widget_queue_resize (GTK_WIDGET (dock_item)->parent);
-	}
-}
-
-
-void 
-nautilus_window_show_locationbar (NautilusWindow *window)
-{
-	GnomeApp *app;
-	GnomeDockItem *dock_item;
-
-	app = GNOME_APP (window);
-
-	dock_item = gnome_app_get_dock_item_by_name (app, URI_ENTRY_DOCK_ITEM);
+	dock_item = gnome_app_get_dock_item_by_name (app, dock_item_name);
 	if (dock_item != NULL) {
 		gtk_widget_show (GTK_WIDGET (dock_item));
 		gtk_widget_queue_resize (GTK_WIDGET (dock_item)->parent);
 	}
+	nautilus_window_update_show_hide_menu_items (window);
 }
 
-void 
-nautilus_window_hide_toolbar (NautilusWindow *window)
+static void 
+hide_dock_item (NautilusWindow *window, const char *dock_item_name)
 {
 	GnomeApp *app;
 	GnomeDockItem *dock_item;
 
 	app = GNOME_APP (window);
 
-	dock_item = gnome_app_get_dock_item_by_name (app, GNOME_APP_TOOLBAR_NAME);
+	dock_item = gnome_app_get_dock_item_by_name (app, dock_item_name);
 	if (dock_item != NULL) {
 		gtk_widget_hide (GTK_WIDGET (dock_item));
 		gtk_widget_queue_resize (GTK_WIDGET (dock_item)->parent);
 	}
+	nautilus_window_update_show_hide_menu_items (window);
 }
 
-void 
-nautilus_window_show_toolbar (NautilusWindow *window)
+static gboolean
+dock_item_showing (NautilusWindow *window, const char *dock_item_name)
 {
 	GnomeApp *app;
 	GnomeDockItem *dock_item;
 
 	app = GNOME_APP (window);
 
-	dock_item = gnome_app_get_dock_item_by_name (app, GNOME_APP_TOOLBAR_NAME);
-	if (dock_item != NULL) {
-		gtk_widget_show (GTK_WIDGET (dock_item));
-		gtk_widget_queue_resize (GTK_WIDGET (dock_item)->parent);
-	}
+	dock_item = gnome_app_get_dock_item_by_name (app, dock_item_name);
+	return dock_item != NULL && GTK_WIDGET_VISIBLE (dock_item);
+}
+
+void 
+nautilus_window_hide_location_bar (NautilusWindow *window)
+{
+	hide_dock_item (window, URI_ENTRY_DOCK_ITEM);
+}
+
+
+void 
+nautilus_window_show_location_bar (NautilusWindow *window)
+{
+	show_dock_item (window, URI_ENTRY_DOCK_ITEM);
+}
+
+gboolean
+nautilus_window_location_bar_showing (NautilusWindow *window)
+{
+	return dock_item_showing (window, URI_ENTRY_DOCK_ITEM);
+}
+
+void 
+nautilus_window_hide_tool_bar (NautilusWindow *window)
+{
+	hide_dock_item (window, GNOME_APP_TOOLBAR_NAME);
+}
+
+void 
+nautilus_window_show_tool_bar (NautilusWindow *window)
+{
+	show_dock_item (window, GNOME_APP_TOOLBAR_NAME);
+}
+
+gboolean
+nautilus_window_tool_bar_showing (NautilusWindow *window)
+{
+	return dock_item_showing (window, GNOME_APP_TOOLBAR_NAME);
 }
 
 void 
@@ -1697,6 +1619,7 @@ nautilus_window_hide_sidebar (NautilusWindow *window)
 	if (window->content_hbox != NULL && !NAUTILUS_IS_DESKTOP_WINDOW (window)) {
 		e_paned_set_position (E_PANED (window->content_hbox), 0);
 	}
+	nautilus_window_update_show_hide_menu_items (window);
 }
 
 void 
@@ -1709,10 +1632,17 @@ nautilus_window_show_sidebar (NautilusWindow *window)
 	if (window->content_hbox != NULL && !NAUTILUS_IS_DESKTOP_WINDOW (window)) {
 		e_paned_set_position (E_PANED (window->content_hbox), widget->allocation.width);
 	}
+	nautilus_window_update_show_hide_menu_items (window);
+}
+
+gboolean
+nautilus_window_sidebar_showing (NautilusWindow *window)
+{
+	return GTK_WIDGET_VISIBLE (window->sidebar);
 }
 
 void 
-nautilus_window_hide_statusbar (NautilusWindow *window)
+nautilus_window_hide_status_bar (NautilusWindow *window)
 {
 	GnomeApp *app;
 
@@ -1721,10 +1651,11 @@ nautilus_window_hide_statusbar (NautilusWindow *window)
 	if (app->statusbar != NULL) {
 		gtk_widget_hide (GTK_WIDGET (app->statusbar)->parent);
 	}	
+	nautilus_window_update_show_hide_menu_items (window);
 }
 
 void 
-nautilus_window_show_statusbar (NautilusWindow *window)
+nautilus_window_show_status_bar (NautilusWindow *window)
 {
 	GnomeApp *app;
 
@@ -1733,6 +1664,17 @@ nautilus_window_show_statusbar (NautilusWindow *window)
 	if (app->statusbar != NULL) {
 		gtk_widget_show (GTK_WIDGET (app->statusbar)->parent);
 	}	
+	nautilus_window_update_show_hide_menu_items (window);
+}
+
+gboolean
+nautilus_window_status_bar_showing (NautilusWindow *window)
+{
+	GnomeApp *app;
+
+	app = GNOME_APP (window);
+
+	return (app->statusbar != NULL && GTK_WIDGET_VISIBLE (GTK_WIDGET (app->statusbar)->parent));
 }
 
 /**
@@ -1778,26 +1720,28 @@ nautilus_window_show (GtkWidget *widget)
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, show, (widget));
 	
-	/* Show or hide views based on preferences */
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DISPLAY_TOOLBAR, TRUE)) {
-		nautilus_window_show_toolbar (window);
+	/* Initially show or hide views based on preferences; once the window is displayed
+	 * these can be controlled on a per-window basis from View menu items. 
+	 */
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOL_BAR, TRUE)) {
+		nautilus_window_show_tool_bar (window);
 	} else {
-		nautilus_window_hide_toolbar (window);
+		nautilus_window_hide_tool_bar (window);
 	}
 
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DISPLAY_LOCATIONBAR, TRUE)) {
-		nautilus_window_show_locationbar (window);
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR, TRUE)) {
+		nautilus_window_show_location_bar (window);
 	} else {
-		nautilus_window_hide_locationbar (window);
+		nautilus_window_hide_location_bar (window);
 	}
 
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DISPLAY_STATUSBAR, TRUE)) {
-		nautilus_window_show_statusbar (window);
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR, TRUE)) {
+		nautilus_window_show_status_bar (window);
 	} else {
-		nautilus_window_hide_statusbar (window);
+		nautilus_window_hide_status_bar (window);
 	}
 
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DISPLAY_SIDEBAR, TRUE)) {
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR, TRUE)) {
 		nautilus_window_show_sidebar (window);
 	} else {
 		nautilus_window_hide_sidebar (window);

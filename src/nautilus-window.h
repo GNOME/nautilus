@@ -75,7 +75,7 @@ struct NautilusWindow {
   GtkWidget *view_as_option_menu;
   GtkWidget *navigation_bar;
 
-  guint statusbar_ctx, statusbar_clear_id;
+  guint status_bar_context_id, status_bar_clear_id;
 
   /** CORBA-related elements **/
   BonoboUIHandler *ui_handler;
@@ -174,13 +174,17 @@ void             nautilus_window_allow_stop           (NautilusWindow    *window
 void             nautilus_bookmarks_exiting           (void);
 void		 nautilus_window_reload		      (NautilusWindow	 *window);
 gint 		 nautilus_window_get_base_page_index  (NautilusWindow 	 *window);
-void 		 nautilus_window_hide_locationbar     (NautilusWindow 	 *window);
-void 		 nautilus_window_show_locationbar     (NautilusWindow 	 *window);
-void 		 nautilus_window_hide_toolbar         (NautilusWindow 	 *window);
-void 		 nautilus_window_show_toolbar         (NautilusWindow 	 *window);
+void 		 nautilus_window_hide_location_bar    (NautilusWindow 	 *window);
+void 		 nautilus_window_show_location_bar    (NautilusWindow 	 *window);
+gboolean	 nautilus_window_location_bar_showing (NautilusWindow    *window);
+void 		 nautilus_window_hide_tool_bar        (NautilusWindow 	 *window);
+void 		 nautilus_window_show_tool_bar        (NautilusWindow 	 *window);
+gboolean	 nautilus_window_tool_bar_showing     (NautilusWindow    *window);
 void 		 nautilus_window_hide_sidebar         (NautilusWindow 	 *window);
 void 		 nautilus_window_show_sidebar         (NautilusWindow 	 *window);
-void 		 nautilus_window_hide_statusbar       (NautilusWindow 	 *window);
-void 		 nautilus_window_show_statusbar       (NautilusWindow 	 *window);
+gboolean	 nautilus_window_sidebar_showing      (NautilusWindow    *window);
+void 		 nautilus_window_hide_status_bar      (NautilusWindow 	 *window);
+void 		 nautilus_window_show_status_bar      (NautilusWindow 	 *window);
+gboolean	 nautilus_window_status_bar_showing   (NautilusWindow    *window);
 
 #endif
