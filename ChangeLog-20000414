@@ -1,5 +1,30 @@
 2000-03-12  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* nautilus-file-utilities.h,
+	nautilus-file-utilities.c:
+	(nautilus_user_top_directory): New function.  Used to obtain
+	the user's "top" directory.  The top directory is an alternative
+	home place for naive users.
+
+2000-03-12  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* data/.cvsignore,
+	data/Makefile.am:
+	Add a data directory to the tree.  This is the default per-user
+	data that nautilus installs the first time it runs.
+	
+	*data/top/.cvsignore,
+	data/top/Makefile.am,
+	data/top/Welcome:
+	Add a top directory to the tree.  The top directory is an
+	alternative home place for novice users.
+
+	*configure.in,
+	Makefile.am: 
+	Grok the above.
+	
+2000-03-12  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus/nautilus-global-preferences.c,
 	libnautilus/nautilus-global-preferences.h,
 	src/ntl-window-state.c:

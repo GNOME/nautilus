@@ -28,8 +28,10 @@
 #include <libgnome/gnome-util.h>
 #include <sys/stat.h>
 #include <string.h>
+#include <stdlib.h>
 
 const char* const nautilus_user_directory_name = ".nautilus";
+const char* const nautilus_user_top_directory_name = "top";
 const unsigned default_nautilus_directory_mode = 0755;
 
 
@@ -98,4 +100,73 @@ nautilus_user_directory()
 	}
 
 	return user_directory;
+}
+
+/**
+ * nautilus_user_top_directory:
+ * 
+ * Get the path for the user's top directory.  
+ * Usually ~/.nautilus/top
+ *
+ * Return value: the directory path.
+ **/
+const char *
+nautilus_user_top_directory()
+{
+	static char *user_top_directory;
+
+	if (user_top_directory == NULL)
+	{
+		const char * user_directory;
+		
+		user_directory = nautilus_user_directory ();
+
+		g_assert (user_directory != NULL);
+
+		user_top_directory = nautilus_make_path (user_directory,
+							 nautilus_user_top_directory_name);
+
+		if (!g_file_exists (user_top_directory))
+		{
+			/* Hack the prefix for now */
+			const char *gnome_prefix = "/gnome";
+
+			GString	   *src;
+			GString	   *dst;
+			GString	   *command;
+
+
+			src = g_string_new (gnome_prefix);
+			g_string_append (src, "/share/nautilus/top");
+
+			dst = g_string_new (user_top_directory);
+
+			command = g_string_new ("cp -R ");
+			g_string_append (command, src->str);
+			g_string_append (command, " ");
+			g_string_append (command, dst->str);
+
+			if (system (command->str) != 0)
+			{
+				g_warning ("could not execute '%s'.  Make sure you typed 'make install'\n", 
+					   command->str);
+			}
+			
+			g_string_free (src, TRUE);
+			g_string_free (dst, TRUE);
+			g_string_free (command, TRUE);
+		}
+
+	}
+
+	if (!g_file_test (user_top_directory, G_FILE_TEST_ISDIR))
+	{
+		/* Bad news, directory still isn't there.
+		 * FIXME: Report this to user somehow. 
+		 */
+		g_assert_not_reached();
+
+	}
+
+	return user_top_directory;
 }
