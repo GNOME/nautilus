@@ -123,7 +123,7 @@ set_displayed_location (NautilusWindow *window, const char *location)
                 recreate = TRUE;
         } else {
                 bookmark_uri = nautilus_bookmark_get_uri (window->current_location_bookmark);
-                recreate = !eel_uris_match (bookmark_uri, location);
+                recreate = !gnome_vfs_uris_match (bookmark_uri, location);
                 g_free (bookmark_uri);
         }
         
@@ -146,7 +146,7 @@ check_bookmark_location_matches (NautilusBookmark *bookmark, const char *uri)
 	char *bookmark_uri;
 
 	bookmark_uri = nautilus_bookmark_get_uri (bookmark);
-	if (!eel_uris_match (uri, bookmark_uri)) {
+	if (!gnome_vfs_uris_match (uri, bookmark_uri)) {
 		g_warning ("bookmark uri is %s, but expected %s", bookmark_uri, uri);
 	}
 	g_free (bookmark_uri);
@@ -254,7 +254,7 @@ handle_go_elsewhere (NautilusWindow *window, const char *location)
                          * This also avoids a problem where set_displayed_location
                          * didn't update last_location_bookmark since the uri didn't change.
                          */
-                        if (!eel_uris_match (window->details->location, location)) {
+                        if (!gnome_vfs_uris_match (window->details->location, location)) {
                                 /* Store bookmark for current location in back list, unless there is no current location */
                                 check_last_bookmark_location_matches_window (window);
                                 /* Use the first bookmark in the history list rather than creating a new one. */
@@ -906,9 +906,9 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 				   in which case going home would cause an infinite loop, so we
 				   better test for that */
 				
-				if (!eel_uris_match (location, "file:///")) {
+				if (!gnome_vfs_uris_match (location, "file:///")) {
 					home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
-					if (!eel_uris_match (home_uri, location)) {	
+					if (!gnome_vfs_uris_match (home_uri, location)) {	
 						nautilus_window_go_home (NAUTILUS_WINDOW (window));
 					} else {
 						/* the last fallback is to go to a known place that can't be deleted! */

@@ -150,7 +150,7 @@ nautilus_bookmark_compare_with (gconstpointer a, gconstpointer b)
 		return 1;
 	}
 
-	if (!eel_uris_match (bookmark_a->details->uri,
+	if (!gnome_vfs_uris_match (bookmark_a->details->uri,
 			     bookmark_b->details->uri)) {
 		return 1;
 	}
@@ -180,7 +180,7 @@ nautilus_bookmark_compare_uris (gconstpointer a, gconstpointer b)
 	bookmark_a = NAUTILUS_BOOKMARK (a);
 	bookmark_b = NAUTILUS_BOOKMARK (b);
 
-	return !eel_uris_match (bookmark_a->details->uri,
+	return !gnome_vfs_uris_match (bookmark_a->details->uri,
 				bookmark_b->details->uri);
 }
 
@@ -335,7 +335,7 @@ bookmark_file_changed_callback (NautilusFile *file, NautilusBookmark *bookmark)
 	should_emit_contents_changed_signal = FALSE;
 	file_uri = nautilus_file_get_uri (file);
 
-	if (!eel_uris_match (bookmark->details->uri, file_uri)) {
+	if (!gnome_vfs_uris_match (bookmark->details->uri, file_uri)) {
 		g_free (bookmark->details->uri);
 		bookmark->details->uri = file_uri;
 		should_emit_contents_changed_signal = TRUE;

@@ -1082,7 +1082,7 @@ nautilus_application_present_spatial_window_with_selection (NautilusApplication 
 			existing_location = existing_window->details->location;
 		}
 
-		if (eel_uris_match (existing_location, location)) {
+		if (gnome_vfs_uris_match (existing_location, location)) {
 			end_startup_notification (GTK_WIDGET (existing_window),
 						  startup_id);
 

@@ -517,7 +517,7 @@ nautilus_location_bar_update_label (NautilusLocationBar *bar)
 	current_text = gtk_entry_get_text (GTK_ENTRY (bar->details->entry));
 	current_location = eel_make_uri_from_input (current_text);
 	
-	if (eel_uris_match (bar->details->last_location, current_location)) {
+	if (gnome_vfs_uris_match (bar->details->last_location, current_location)) {
 		gtk_label_set_text (GTK_LABEL (bar->details->label), LOCATION_LABEL);
 	} else {		 
 		gtk_label_set_text (GTK_LABEL (bar->details->label), GO_TO_LABEL);

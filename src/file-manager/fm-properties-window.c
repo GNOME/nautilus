@@ -2148,7 +2148,7 @@ is_merged_trash_directory (NautilusFile *file)
 	gboolean result;
 
 	file_uri = nautilus_file_get_uri (file);
-	result = eel_uris_match (file_uri, EEL_TRASH_URI);
+	result = gnome_vfs_uris_match (file_uri, EEL_TRASH_URI);
 	g_free (file_uri);
 
 	return result;

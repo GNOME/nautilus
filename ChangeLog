@@ -1,3 +1,23 @@
+2005-03-25  Martin Wehner  <martin.wehner@gmail.com>
+
+	* libnautilus-private/nautilus-bookmark.c:
+	(nautilus_bookmark_compare_with), (nautilus_bookmark_compare_uris),
+	(bookmark_file_changed_callback):
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_get_internal):
+	* src/file-manager/fm-properties-window.c:
+	(is_merged_trash_directory):
+	* src/nautilus-application.c:
+	(nautilus_application_present_spatial_window_with_selection):
+	* src/nautilus-location-bar.c:
+	(nautilus_location_bar_update_label):
+	* src/nautilus-window-manage-views.c: (set_displayed_location),
+	(check_bookmark_location_matches), (handle_go_elsewhere),
+	(got_file_info_for_view_selection_callback):
+	Use gnome_vfs_uris_match instead of eel_uris_match. (#155852)
+
+	Patch from Paolo Borelli <pborelli@katamail.com>
+
 2005-03-23  Fernando Herrera  <fherrera onirica com>
 
 	* src/nautilus-connect-server-dialog-main.c: (main): call
