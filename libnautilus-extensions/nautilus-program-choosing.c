@@ -655,7 +655,6 @@ nautilus_launch_application_from_command (const char *name,
 {
 	char *full_command;
 	char *quoted_parameter; 
-	char *quoted_full_command;
 	char *final_command;
 	char *xalf_prefix;
 
@@ -670,11 +669,8 @@ nautilus_launch_application_from_command (const char *name,
 	xalf_prefix = get_xalf_prefix (name);
 
 	if (use_terminal) {
-		quoted_full_command = eel_shell_quote (full_command);
-		final_command = g_strconcat (xalf_prefix, "/bin/sh -c ",
-					     quoted_full_command, NULL);
+		final_command = g_strconcat (xalf_prefix, full_command, NULL);
 		eel_gnome_open_terminal (final_command);
-		g_free (quoted_full_command);
 	} else {
 		final_command = g_strconcat (xalf_prefix, full_command, " &", NULL);
 		system (final_command);

@@ -31,6 +31,7 @@
 #include "nautilus-file.h"
 #include "nautilus-metadata.h"
 #include "nautilus-file-utilities.h"
+#include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
@@ -497,8 +498,8 @@ void
 nautilus_link_local_create_from_gnome_entry (GnomeDesktopEntry *entry, const char *dest_path, const GdkPoint *position)
 {
 	const char *icon_name;
-	char *launch_string, *terminal_path;
-	char *arguments, *temp_str;
+	char *launch_string, *terminal_command;
+	char *quoted, *arguments, *temp_str;
 	gboolean create_link;
 	int index;
 
@@ -506,34 +507,28 @@ nautilus_link_local_create_from_gnome_entry (GnomeDesktopEntry *entry, const cha
 		return;
 	}
 	
-	terminal_path = eel_gnome_get_terminal_path ();
-	if (terminal_path == NULL) {
-		return;
-	}
-
 	create_link = TRUE;
 	
 	/* Extract arguments from exec array */			
 	for (index = 0, arguments = NULL; index < entry->exec_length; ++index) {
+		quoted = eel_shell_quote (entry->exec[index]);
 		if (arguments == NULL) {
-			arguments = g_strdup (entry->exec[index]);
+			arguments = quoted;
 		} else {
 			temp_str = arguments;
-			arguments = g_strdup_printf ("%s %s", temp_str, entry->exec[index]);
+			arguments = g_strdup_printf ("%s %s", temp_str, quoted);
 			g_free (temp_str);
-		}		
+			g_free (quoted);
+		}
 	}
 		
 	if (strcmp (entry->type, "Application") == 0) {
-		if (entry->terminal) {		
-			if (strstr (terminal_path, "gnome-terminal") != NULL) {
-				/* gnome-terminal takes different arguments */
-				launch_string = g_strdup_printf ("command:%s '-x %s'", terminal_path, arguments);			
-			} else {
-				launch_string = g_strdup_printf ("command:%s '-e %s'", terminal_path, arguments);
-			}			
+		if (entry->terminal) {
+			terminal_command = eel_gnome_make_terminal_command (arguments);
+			launch_string = g_strconcat ("command:", terminal_command, NULL);
+			g_free (terminal_command);
 		} else {
-			launch_string = g_strdup_printf ("command:%s", arguments);
+			launch_string = g_strconcat ("command:", arguments, NULL);
 		}		
 	} else if (strcmp (entry->type, "URL") == 0) {
 		launch_string = g_strdup (arguments);
@@ -556,6 +551,5 @@ nautilus_link_local_create_from_gnome_entry (GnomeDesktopEntry *entry, const cha
 				
 	g_free (launch_string);
 	g_free (arguments);
-	g_free (terminal_path);
 }
 

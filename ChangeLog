@@ -1,3 +1,18 @@
+2001-04-30  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Updated for eel changes needed to fix bug 8198 ("New Terminal"
+	does not use GNOME default applications):
+
+	* libnautilus-extensions/nautilus-link.c:
+	(nautilus_link_local_create_from_gnome_entry): Use the new
+	eel_gnome_make_terminal_command instead of the obsolete
+	eel_gnome_get_terminal_path.
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	(nautilus_launch_application_from_command): Let eel do the /bin/sh
+	-c trick. Get rid of it from here.
+
 2001-04-30  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/news/nautilus-news.c: (extract_items),
