@@ -217,31 +217,23 @@ nautilus_file_background_read_desktop_settings (char **color,
 	char*	 default_image_uri;
 	EelBackgroundImagePlacement default_placement;
 	
-	char    *cur_theme_name;
 	char	*end_color;
 	char	*start_color;
 	char	*default_color;
 	gboolean use_gradient;
 	gboolean is_horizontal;
-	gboolean switch_to_cur_theme_default;
 
 	char *theme_name;
-	gboolean no_theme_name_set;
 	BGPreferences *prefs;
 
         prefs = BG_PREFERENCES (bg_preferences_new ());
 
 	bg_preferences_load (prefs);
 
-	theme_name = gnome_config_get_string_with_default ("/Background/Default/nautilus_theme", &no_theme_name_set);
+	theme_name = nautilus_theme_get_theme ();
 
-	if (no_theme_name_set) {
-		nautilus_file_background_get_default_settings
-			(desktop_theme_source, &default_color, &default_image_uri, &default_placement);
-	} else {
-		nautilus_file_background_get_default_settings_for_theme
-			(theme_name, desktop_theme_source, &default_color, &default_image_uri, &default_placement);
-	}
+	nautilus_file_background_get_default_settings_for_theme
+		(theme_name, desktop_theme_source, &default_color, &default_image_uri, &default_placement);
 
         if (prefs->wallpaper_enabled) {
                 if (prefs->wallpaper_filename != NULL) {
@@ -282,7 +274,7 @@ nautilus_file_background_read_desktop_settings (char **color,
 	is_horizontal = (prefs->orientation == ORIENTATION_HORIZ);
 
 	if (use_gradient) {
-		*color = eel_gradient_new (start_color, end_color , is_horizontal);
+		*color = eel_gradient_new (start_color, end_color, is_horizontal);
 	} else {
 		*color = g_strdup (start_color);
 	}
@@ -290,43 +282,7 @@ nautilus_file_background_read_desktop_settings (char **color,
 	g_free (start_color);
 	g_free (end_color);
 
-	/* Since we share our settings with the background-capplet, we can't
-	 * write the default values specially (e.g. by removing them entirely).
-	 * 
-	 * The best we can do is check to see if the settings match the default values
-	 * for the theme name that's stored with them. If so, we assume it means use
-	 * the default - i.e. the default from the current theme.
-	 * 
-	 *  - there must be a theme name stored with the settings
-	 *  - if the stored theme name matches the current theme, then
-	 *    we don't need to do anything since we're already using
-	 *    the current theme's default values. 
-	 * 
-	 */
-	cur_theme_name = nautilus_theme_get_theme ();
-
-	switch_to_cur_theme_default = !no_theme_name_set &&
-				      (eel_strcmp (theme_name, cur_theme_name) != 0) &&
-				      nautilus_file_background_matches_default_settings
-					(*color, default_color,
-					 *image, default_image_uri,
-					 *placement, default_placement);
-
-	if (switch_to_cur_theme_default) {
-		g_free (*color);
-		g_free (*image);
-		nautilus_file_background_get_default_settings (desktop_theme_source, color, image, placement);
-	}
-
-	if (switch_to_cur_theme_default || no_theme_name_set) {
-		/* Writing out the actual settings for the current theme so that the
-		 * background capplet will show the right settings.
-		 */
-		nautilus_file_background_write_desktop_settings (*color, *image, *placement);
-	}
-
 	g_free (theme_name);	
-	g_free (cur_theme_name);	
 	g_free (default_color);
 	g_free (default_image_uri);
 
@@ -338,7 +294,6 @@ nautilus_file_background_write_desktop_settings (char *color, char *image, EelBa
 {
 	char *end_color;
 	char *start_color;
-	char *theme_name;
 	char *default_image_uri;
 
 	wallpaper_type_t wallpaper_align;
@@ -406,12 +361,6 @@ nautilus_file_background_write_desktop_settings (char *color, char *image, EelBa
 		prefs->wallpaper_filename = gnome_vfs_get_local_path_from_uri (default_image_uri);
                 g_free (default_image_uri);
 	}
-
-	theme_name = nautilus_theme_get_theme ();
-	gnome_config_set_string ("/Background/Default/nautilus_theme", theme_name);
-	g_free (theme_name);
-
-	gnome_config_sync ();
 
 	bg_preferences_save (prefs);
 	g_object_unref (prefs);
