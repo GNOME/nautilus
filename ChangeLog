@@ -1,5 +1,14 @@
 2002-01-03  Darin Adler  <darin@bentspoon.com>
 
+	* Makefile.am: Turn on test subdirectory.
+	* test/test.c: (test_init), (test_label_new):
+	* test/test.h:
+	Build without using EelLabel.
+
+	* src/nautilus-sidebar-title.c: Remove unused header include.
+
+2002-01-03  Darin Adler  <darin@bentspoon.com>
+
 	* TODO: Updated.
 
 	* libnautilus-private/nautilus-icon-canvas-item.c:
@@ -7,7 +16,6 @@
 
 	* components/music/nautilus-music-view.c:
 	Don't include EelList.
-
 
 2002-01-03  Darin Adler  <darin@bentspoon.com>
 

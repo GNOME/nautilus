@@ -11,20 +11,7 @@ test_init (int *argc,
 	gdk_rgb_init ();
 	gnome_vfs_init ();
 
-	eel_make_warnings_and_criticals_stop_in_debugger
-		(G_LOG_DOMAIN,
-		 "Bonobo",
-		 "Gdk",
-		 "GnomeUI",
-		 "GnomeVFS",
-		 "GnomeVFS-CORBA",
-		 "GnomeVFS-pthread",
-		 "Gtk",
-		 "Nautilus",
-		 "Nautilus-Authenticate",
-		 "Nautilus-Tree",
-		 "ORBit",
-		 NULL);
+	eel_make_warnings_and_criticals_stop_in_debugger ();
 }
 
 int
@@ -178,17 +165,7 @@ test_label_new (const char *text,
 		text = "Foo";
 	}
 	
-	if (with_background) {
-		label = eel_label_new_with_background (text);
-	} else {
-		label = eel_label_new (text);
-	}
-
-	if (num_sizes_larger < 0) {
-		eel_label_make_smaller (EEL_LABEL (label), ABS (num_sizes_larger));
-	} else if (num_sizes_larger > 0) {
-		eel_label_make_larger (EEL_LABEL (label), num_sizes_larger);
-	}
+	label = gtk_label_new (text);
 
 	return label;
 }

@@ -34,7 +34,6 @@
 #include <bonobo/bonobo-property-bag-client.h>
 #include <eel/eel-background.h>
 #include <eel/eel-gdk-extensions.h>
-#include <eel/eel-gdk-font-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>

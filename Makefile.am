@@ -11,6 +11,7 @@ SUBDIRS =			\
 	libnautilus-private 	\
 	libnautilus-adapter	\
 	src 			\
+	test 			\
 	components		\
 	po 			\
 	data 			\
@@ -19,10 +20,6 @@ SUBDIRS =			\
 	help			\
 	omf-install		\
 	docs			\
-	$(NULL)
-
-XXX = \
-	test 			\
 	$(NULL)
 
 EXTRA_DIST=					\
