@@ -216,9 +216,16 @@ nautilus_window_update_internals(NautilusWindow *window, NautilusNavigationInfo 
         }
 
       new_uri = gnome_vfs_uri_new (loci->navinfo.requested_uri);
-      nautilus_window_allow_up(window, 
-                               gnome_vfs_uri_has_parent(new_uri));
-      gnome_vfs_uri_unref(new_uri);
+      if(!new_uri)
+        new_uri = gnome_vfs_uri_new (loci->navinfo.actual_uri);
+      if(new_uri)
+        {
+          nautilus_window_allow_up(window, 
+                                   gnome_vfs_uri_has_parent(new_uri));
+          gnome_vfs_uri_unref(new_uri);
+        }
+      else
+        nautilus_window_allow_up(window, FALSE);
 
       newni = Nautilus_NavigationInfo__alloc();
       Nautilus_NavigationInfo__copy(newni, &loci->navinfo);

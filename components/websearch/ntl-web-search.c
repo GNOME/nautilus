@@ -26,6 +26,8 @@
 #include "config.h"
 
 #include <libnautilus/libnautilus.h>
+#include <gnome.h>
+#include <libgnorba/gnorba.h>
 #include <limits.h>
 #include <ctype.h>
 

@@ -360,6 +360,8 @@ nautilus_index_panel_set_up_info (NautilusIndexPanel *index_panel, const gchar* 
 	if (index_panel->details->directory != NULL)
 		gtk_object_unref (GTK_OBJECT (index_panel->details->directory));
 	index_panel->details->directory = directory;
+	if(!directory)
+		return;
 	
 	/* Connect the background changed signal to code that writes the color. */
 	background = nautilus_get_widget_background (GTK_WIDGET (index_panel));

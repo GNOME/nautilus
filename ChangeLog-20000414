@@ -1,3 +1,12 @@
+2000-01-27  Elliot Lee  <sopwith@redhat.com>
+
+	* configure.in: Add components/help/converters/* makefiles.
+	* libnautilus/nautilus-directory.c: Check for NULL directory
+	result before doing stuff with it.
+	* src/ntl-index-panel.c: Ditto.
+	* src/ntl-prefs.c: Add help browser nav tree to list of possibilities.
+	* src/ntl-window-msgs.c: Handle non-VFS-handleable URIs correctly WRT 'up' button.
+
 2000-01-27  Andy Hertzfeld <andy@eazel.com>
 
         * libnautilus/nautilus-icons-view-icon-item.c:

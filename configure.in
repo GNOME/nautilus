@@ -75,6 +75,9 @@ LIBWWW_CFLAGS=`$LIBWWW_CONFIG --cflags`
 AC_SUBST(LIBWWW_LIBS)
 AC_SUBST(LIBWWW_CFLAGS)
 
+AC_CHECK_LIB(z, gzopen, [Z_LIBS=-lz
+AC_SUBST(Z_LIBS)], AC_MSG_ERROR([*** zlib is required]))
+
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 
@@ -88,6 +91,9 @@ src/file-manager/Makefile
 components/Makefile
 components/history/Makefile
 components/help/Makefile
+components/help/converters/Makefile
+components/help/converters/gnome-info2html2/Makefile
+components/help/converters/gnome-man2html2/Makefile
 components/html/Makefile
 components/websearch/Makefile
 ])

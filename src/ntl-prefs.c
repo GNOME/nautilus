@@ -73,6 +73,7 @@ nautilus_prefs_load(void)
     int i;
 
     gnome_config_get_vector("/nautilus/prefs/global_meta_views=ntl_history_view ntl_websearch_view", &npieces, &pieces);
+
     for(i = 0; i < npieces; i++)
       nautilus_prefs.global_meta_views = g_slist_prepend(nautilus_prefs.global_meta_views, pieces[i]);
     g_free(pieces);
@@ -248,6 +249,7 @@ meta_prefs_create(GtkWidget *container)
 
   meta_prefs_add_entry(mpi, "ntl_history_view", "History");
   meta_prefs_add_entry(mpi, "ntl_websearch_view", "Web Search");
+  meta_prefs_add_entry(mpi, "hyperbola_navigation_tree", "Help tree");
 
   for(items = NULL, cur = mpi->entry_list; cur; cur = cur->next)
     {
