@@ -1,3 +1,12 @@
+2002-11-20  Anders Carlsson  <andersca@gnu.org>
+
+	* components/Makefile.am:
+	Remove sample and loser from the default build.
+	
+	* libnautilus-private/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_for_file):
+	Special-case the trash location so that it gets the correct icon.
+	
 2002-11-19  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-properties-window.c:

@@ -67,6 +67,9 @@
 #define CACHE_SELF_CHECKS 0
 
 #define ICON_NAME_THUMBNAIL_LOADING     "gnome-fs-loading-icon"
+#define ICON_NAME_TRASH_EMPTY		"gnome-fs-trash-empty"
+#define ICON_NAME_TRASH_FULL		"gnome-fs-trash-full"
+
 #define NAUTILUS_EMBLEM_NAME_PREFIX "emblem-"
 
 /* This used to be called ICON_CACHE_MAX_ENTRIES, but it's misleading
@@ -702,6 +705,14 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
  	g_free (custom_uri);
 
 	file_uri = nautilus_file_get_uri (file);
+	
+	if (strcmp (file_uri, EEL_TRASH_URI) == 0) {
+		g_free (file_uri);
+
+		return  g_strdup (nautilus_trash_monitor_is_empty ()
+				  ? ICON_NAME_TRASH_EMPTY : ICON_NAME_TRASH_FULL);
+	}
+	
 	mime_type = nautilus_file_get_mime_type (file);
 	
 	file_info = nautilus_file_peek_vfs_file_info (file);
