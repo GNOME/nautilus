@@ -1,5 +1,12 @@
 2000-03-21  John Sullivan  <sullivan@eazel.com>
 
+	Fixed bug 335 (Menus incorrect after keyboard navigation)
+
+	* libnautilus/nautilus-icon-container.c: (keyboard_move_to):
+	Emit SELECTION_CHANGED signal after changing selection.
+
+2000-03-21  John Sullivan  <sullivan@eazel.com>
+
 	Fixed bug 203 (preserve back/forward chain when using
 	back/forward menus).
 
