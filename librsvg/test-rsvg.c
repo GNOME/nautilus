@@ -166,7 +166,7 @@ main (int argc, const char **argv)
 	char c;
 	const char * const *args;
 
-	optCtx = poptGetContext ("test-rsvg", argc, (char **)argv, optionsTable, 0);
+	optCtx = poptGetContext ("test-rsvg", argc, argv, optionsTable, 0);
 
 	c = poptGetNextOpt (optCtx);
 	args = poptGetArgs (optCtx);

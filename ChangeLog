@@ -1,33 +1,58 @@
-2000-04-18 Shane Culpepper <pepper@eazel.com>
-	*components/services/install/eazel-install-lib-xml.c
-	*components/services/install/eazel-install-lib.h
-	*components/servics/install/eazel-install-lib-rpm.c
-	*components/services/install/eazel-install.c
+2000-04-18  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	* libnautilus-extensions/nautilus-icon-container.h:
+	(compare_icons), (idle_handler), (nautilus_icon_container_move_icon),
+	(size_allocate), (nautilus_icon_container_initialize_class),
+	(nautilus_icon_container_set_auto_layout):
+	First cut at the auto-layout feature. It just does a lot of
+	re-laying things out.
+	
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* libnautilus-extensions/nautilus-list.h: 
+	Added interfaces for telling whether to use single-click mode or
+	not. A first step in moving preferences code out of here and
+	into the file-manager classes.
+
+	* libnautilus-extensions/fm-icon-view.c:
+	(create_icon_container), (icon_container_compare_icons_callback):
+	Provide a sorting order for the auto-layout mode.
+
+	* librsvg/test-rsvg.c:
+	Rolled out the change to work with the old popt that Pavel
+	accidentally checked as Gene in when he was helping me.
+
+2000-04-18  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	* libnautilus-extensions/nautilus-icon-canvas-item.h:
+	Renamed several public functions to use proper nomenclature.
+	An example would be changing nautilus_icon_canvas_get_editable_text_bounds
+	to nautilus_icon_canvas_item_get_editable_text_bounds. A few of 
+	these misnaming were in my last submission.
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	* libnautilus-extensions/nautilus-icon-container.h:
+	Renamed nautilus_icon_container_show_rename_widget to
+	nautilus_icon_container_start_renaming_selected_item
+
+	* libnautilus-extensions/nautilus-icon-text-item.c:
+	Fixed the following bugs:
+	487 Trying to rename an icon to empty string should revert to original
+	498 Renaming text field looks silly when empty
+	500 text-editing box too narrow when renaming files with short names
+	508 Icon text appears and disappears incorrectly when zooming
+
+2000-04-18  Shane Culpepper  <pepper@eazel.com>
+	
+	* components/services/install/eazel-install-lib-xml.c
+	* components/services/install/eazel-install-lib.h
+	* components/services/install/eazel-install-lib-rpm.c
+	* components/services/install/eazel-install.c
 	Fixed a few memory leaks, removed some debugging code,
 	and added interfaceFlags, installFlags, and probFilter
 	in order to remove some hardcoded options and make use
 	of the configuration files.
-
-2000-04-18  Gene Z. Ragan <gzr@eazel.com>
-
-	*libnautilus-extensions/nautilus-icon-canvas-item.c
-	*libnautilus-extensions/nautilus-icon-canvas-item.h
-	Renamed several public functions to use proper nomenclature.
-	An example would be changing nautilus_icon_canvas_get_editable_text_bounds
-	to nautilus_icon_canvas_item_get_editable_text_bounds.  A few of 
-	these misnaming were in my last submission.
-
-	*libnautilus-extensions/nautilus-icon-container.c
-	*libnautilus-extensions/nautilus-icon-container.h
-	Renamed nautilus_icon_container_show_rename_widget to
-	nautilus_icon_container_start_renaming_selected_item
-
-	*libnautilus-extensions/nautilus-icon-text-item.c
-	Fixed the following bugs:
-	487 Trying to rename an icon to empty string should revert to original
-	498 Renaming text field looks silly when empty
-	500 text-editng box too narrow when renaming files with short names
-	508 Icon text appears and disappears incorrectly when zooming
 
 2000-04-18  Darin Adler  <darin@eazel.com>
 

@@ -117,6 +117,10 @@ static NautilusIconContainer *get_icon_container                                
 static void                   icon_container_activate_callback                  (NautilusIconContainer  *container,
 										 NautilusFile           *icon_data,
 										 FMIconView             *icon_view);
+static int                    icon_container_compare_icons_callback             (NautilusIconContainer  *container,
+										 NautilusFile           *file_a,
+										 NautilusFile           *file_b,
+										 FMIconView             *icon_view);
 static void                   icon_container_selection_changed_callback         (NautilusIconContainer  *container,
 										 FMIconView             *icon_view);
 static void                   icon_container_context_click_selection_callback   (NautilusIconContainer  *container,
@@ -243,6 +247,10 @@ create_icon_container (FMIconView *icon_view)
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "activate",
 			    GTK_SIGNAL_FUNC (icon_container_activate_callback),
+			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "compare_icons",
+			    GTK_SIGNAL_FUNC (icon_container_compare_icons_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "context_click_selection",
@@ -977,9 +985,24 @@ icon_container_activate_callback (NautilusIconContainer *container,
 {
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 	g_assert (container == get_icon_container (icon_view));
-	g_assert (file != NULL);
+	g_assert (NAUTILUS_IS_FILE (file));
 
 	fm_directory_view_activate_file (FM_DIRECTORY_VIEW (icon_view), file, FALSE);
+}
+
+static int
+icon_container_compare_icons_callback (NautilusIconContainer *container,
+				       NautilusFile *file_a,
+				       NautilusFile *file_b,
+				       FMIconView *icon_view)
+{
+	g_assert (FM_IS_ICON_VIEW (icon_view));
+	g_assert (container == get_icon_container (icon_view));
+	g_assert (NAUTILUS_IS_FILE (file_a));
+	g_assert (NAUTILUS_IS_FILE (file_b));
+
+	return nautilus_file_compare_for_sort (file_a, file_b,
+					       NAUTILUS_FILE_SORT_BY_NAME);
 }
 
 static void
@@ -1043,7 +1066,7 @@ fm_icon_view_icon_changed_callback (NautilusIconContainer *container,
 
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 	g_assert (container == get_icon_container (icon_view));
-	g_assert (file != NULL);
+	g_assert (NAUTILUS_IS_FILE (file));
 
 	/* Schedule updating menus for the next idle. Doing it directly here
 	 * noticeably slows down icon stretching.  The other work here to

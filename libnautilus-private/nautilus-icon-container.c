@@ -93,18 +93,6 @@ static void          hide_rename_widget                       (NautilusIconConta
 static void          click_policy_changed_callback            (NautilusPreferences        *preferences,
 							       const char                 *name,
 							       gpointer                    user_data);
-#if 0
-static gboolean      has_selection                            (NautilusIconContainer      *container);
-static void          update_rename_widget_text                (NautilusIconContainer      *container,
-							       NautilusIcon               *icon,
-							       char                       *new_text);
-#endif
-
-#if 0
-static void 					update_rename_widget_text			(NautilusIconContainer *container, 
-																	 NautilusIcon *icon, char *new_text);
-#endif																	
-static void						hide_rename_widget (NautilusIconContainer *container, NautilusIcon *icon);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconContainer, nautilus_icon_container, GNOME_TYPE_CANVAS)
 
@@ -114,19 +102,20 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconContainer, nautilus_icon_containe
 enum {
 	ACTIVATE,
 	BUTTON_PRESS,
+	CAN_ACCEPT_ITEM,
+	COMPARE_ICONS,
 	CONTEXT_CLICK_BACKGROUND,
 	CONTEXT_CLICK_SELECTION,
+	GET_CONTAINER_URI,
+	GET_ICON_ADDITIONAL_TEXT,
+	GET_ICON_EDITABLE_TEXT,
 	GET_ICON_IMAGES,
 	GET_ICON_PROPERTY,
-	GET_ICON_EDITABLE_TEXT,
-	GET_ICON_ADDITIONAL_TEXT,
 	GET_ICON_URI,
 	ICON_CHANGED,
 	ICON_TEXT_CHANGED,
-	SELECTION_CHANGED,	
 	MOVE_COPY_ITEMS,
-	GET_CONTAINER_URI,
-	CAN_ACCEPT_ITEM,
+	SELECTION_CHANGED,	
 	LAST_SIGNAL
 };
 static guint signals[LAST_SIGNAL];
@@ -193,8 +182,9 @@ static void
 icon_set_position (NautilusIcon *icon,
 		   double x, double y)
 {
-	if (icon->x == x && icon->y == y)
+	if (icon->x == x && icon->y == y) {
 		return;
+	}
 
 	gnome_canvas_item_move (GNOME_CANVAS_ITEM (icon->item),
 				x - icon->x,
@@ -562,6 +552,49 @@ set_scroll_region (NautilusIconContainer *container)
 	}
 }
 
+static NautilusIconContainer *sort_hack_container;
+
+static int
+compare_icons (gconstpointer a, gconstpointer b)
+{
+	const NautilusIcon *icon_a, *icon_b;
+	int result;
+
+	icon_a = a;
+	icon_b = b;
+
+	result = 0;
+	gtk_signal_emit (GTK_OBJECT (sort_hack_container),
+			 signals[COMPARE_ICONS],
+			 icon_a->data,
+			 icon_b->data,
+			 &result);
+	return result;
+}
+
+static void
+relayout (NautilusIconContainer *container)
+{
+	GList *p;
+	NautilusIcon *icon;
+	ArtPoint position;
+
+	sort_hack_container = container;
+	container->details->icons = g_list_sort
+		(container->details->icons, compare_icons);
+
+	nautilus_icon_grid_clear (container->details->grid);
+
+	for (p = container->details->icons; p != NULL; p = p->next) {
+		icon = p->data;
+
+		nautilus_icon_grid_get_position (container->details->grid,
+						 icon, &position);
+		icon_set_position (icon, position.x, position.y);
+		nautilus_icon_grid_add (container->details->grid, icon);
+	}
+}
+
 static gboolean
 idle_handler (gpointer data)
 {
@@ -572,6 +605,10 @@ idle_handler (gpointer data)
 
 	container = NAUTILUS_ICON_CONTAINER (data);
 	details = container->details;
+
+	if (details->auto_layout) {
+		relayout (container);
+	}
 
 	set_scroll_region (container);
 
@@ -631,27 +668,32 @@ unselect_all (NautilusIconContainer *container)
 
 void
 nautilus_icon_container_move_icon (NautilusIconContainer *container,
-				NautilusIcon *icon,
-				int x, int y,
-				double scale_x, double scale_y,
-				gboolean raise)
+				   NautilusIcon *icon,
+				   int x, int y,
+				   double scale_x, double scale_y,
+				   gboolean raise)
 {
 	NautilusIconContainerDetails *details;
 	gboolean emit_signal;
-
+	
 	details = container->details;
-
+	
 	emit_signal = FALSE;
-
-	if (x != icon->x || y != icon->y) {
-		icon_set_position (icon, x, y);
-		emit_signal = TRUE;
+	
+	if (!details->auto_layout) {
+		if (x != icon->x || y != icon->y) {
+			icon_set_position (icon, x, y);
+			emit_signal = TRUE;
+		}
 	}
 	
 	if (scale_x != icon->scale_x || scale_y != icon->scale_y) {
 		icon->scale_x = scale_x;
 		icon->scale_y = scale_y;
 		nautilus_icon_container_update_icon (container, icon);
+		if (details->auto_layout) {
+			relayout (container);
+		}
 		emit_signal = TRUE;
 	}
 	
@@ -1423,6 +1465,9 @@ size_allocate (GtkWidget *widget,
 
 	nautilus_icon_grid_set_visible_width (grid, world_width);
 
+	if (container->details->auto_layout) {
+		relayout (container);
+	}
 	set_scroll_region (container);
 }
 
@@ -1760,11 +1805,9 @@ key_press_event (GtkWidget *widget,
 		keyboard_space (container, event);
 		break;
 	case GDK_Return:
-	case GDK_KP_Enter:
-		if (container->details->renaming == TRUE){
-			end_renaming_mode(container, TRUE);	
-		}
-		else{
+		if (container->details->renaming) {
+			end_renaming_mode (container, TRUE);	
+		} else {
 			activate_selected_items (container);
 		}
 		break;
@@ -1911,6 +1954,16 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  GTK_TYPE_STRING, 2,
 				  GTK_TYPE_POINTER,
 				  GTK_TYPE_STRING);
+	signals[COMPARE_ICONS]
+		= gtk_signal_new ("compare_icons",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+						     compare_icons),
+				  nautilus_gtk_marshal_INT__POINTER_POINTER,
+				  GTK_TYPE_INT, 2,
+				  GTK_TYPE_POINTER,
+				  GTK_TYPE_POINTER);
 	signals[MOVE_COPY_ITEMS] 
 		= gtk_signal_new ("move_copy_items",
 				  GTK_RUN_LAST,
@@ -2438,7 +2491,7 @@ nautilus_icon_container_add (NautilusIconContainer *container,
  **/
 void
 nautilus_icon_container_add_auto (NautilusIconContainer *container,
-			       NautilusIconData *data)
+				  NautilusIconData *data)
 {
 	NautilusIcon *new_icon;
 	ArtPoint position;
@@ -2449,8 +2502,8 @@ nautilus_icon_container_add_auto (NautilusIconContainer *container,
 	new_icon = icon_new (container, data);
 
 	nautilus_icon_grid_get_position (container->details->grid,
-						new_icon,
-						&position);
+					 new_icon,
+					 &position);
 
 	icon_set_position (new_icon, position.x, position.y);
 
@@ -2794,16 +2847,6 @@ get_first_selected_icon (NautilusIconContainer *container)
         return get_nth_selected_icon (container, 1);
 }
 
-#if 0
-
-static gboolean
-has_selection (NautilusIconContainer *container)
-{
-	return get_first_selected_icon (container) != NULL;
-}
-
-#endif
-
 static gboolean
 has_multiple_selection (NautilusIconContainer *container)
 {
@@ -2899,9 +2942,9 @@ nautilus_icon_container_unstretch (NautilusIconContainer *container)
 		icon = p->data;
 		if (icon->is_selected) {
 			nautilus_icon_container_move_icon (container, icon,
-							icon->x, icon->y,
-							1.0, 1.0,
-							FALSE);
+							   icon->x, icon->y,
+							   1.0, 1.0,
+							   FALSE);
 		}
 	}
 }
@@ -2959,8 +3002,17 @@ nautilus_icon_container_set_auto_layout (NautilusIconContainer *container,
 					 gboolean auto_layout)
 {
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+	g_return_if_fail (auto_layout == FALSE || auto_layout == TRUE);
+
+	if (container->details->auto_layout == auto_layout) {
+		return;
+	}
 
 	container->details->auto_layout = auto_layout;
+
+	if (auto_layout) {
+		relayout (container);
+	}
 }
 
 gboolean
@@ -3017,7 +3069,7 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	
 	/* Check if it already in renaming mode. */
 	details = container->details;
-	if (details->renaming == TRUE) {
+	if (details->renaming) {
 		return;
 	}
 
@@ -3027,18 +3079,18 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 		return;
 	}
 
-	/*	Get location of text item */
-	nautilus_icon_canvas_item_get_text_bounds(icon->item, &text_rect);
+	/* Get location of text item */
+	nautilus_icon_canvas_item_get_text_bounds (icon->item, &text_rect);
 
 	/* Make a copy of the original editable text for a later compare */
 	editable_text = nautilus_icon_canvas_item_get_editable_text(icon->item);
 	details->original_text = g_strdup(editable_text);
 
 	/* Create text renaming widget */	
-	details->rename_widget = NAUTILUS_ICON_TEXT_ITEM (gnome_canvas_item_new (gnome_canvas_root(GNOME_CANVAS (container)),
-								nautilus_icon_text_item_get_type (),
-								NULL));
-
+	details->rename_widget = NAUTILUS_ICON_TEXT_ITEM (gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (container)),
+										 nautilus_icon_text_item_get_type (),
+										 NULL));
+	
 	font = details->label_font[details->zoom_level];
 	/* FIXME: There needs to be a way to get the max width constant from the canvas item */
 	ppu = GNOME_CANVAS_ITEM (icon->item)->canvas->pixels_per_unit;
@@ -3060,15 +3112,14 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	
 	/* Set up the signals */
 	gtk_signal_connect (GTK_OBJECT (details->rename_widget), "editing_started",
-			    		GTK_SIGNAL_FUNC (editing_started),
-			    		container);
-
+			    GTK_SIGNAL_FUNC (editing_started),
+			    container);
 	gtk_signal_connect (GTK_OBJECT (details->rename_widget), "editing_stopped",
-			    		GTK_SIGNAL_FUNC (editing_stopped),
-			    		container);
-		
+			    GTK_SIGNAL_FUNC (editing_stopped),
+			    container);
+	
 	nautilus_icon_text_item_start_editing (details->rename_widget);
-
+	
 	nautilus_icon_container_update_icon (container, icon);
 	
 	/* We are in renaming mode */
@@ -3076,36 +3127,34 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	nautilus_icon_canvas_item_set_renaming (icon->item, details->renaming);
 }
 
-#if 0
-/* Update the current text of the rename widget.  Do nothing if the text has not changed. */
-static void update_rename_widget_text(NautilusIconContainer *container, NautilusIcon *icon, char *new_text)
-{
-	if (container->details->renaming == TRUE && icon != NULL) {
-		gnome_icon_text_item_set_text(container->details->rename_widget, new_text);
-	}
-}
-#endif
-
-static void end_renaming_mode(NautilusIconContainer *container, gboolean commit)
+static void
+end_renaming_mode (NautilusIconContainer *container, gboolean commit)
 {
 	NautilusIcon *icon;
 	char *changed_text;
 		
-	if (container->details->renaming == TRUE) {	
-		icon = get_first_selected_icon (container);
-		if (icon != NULL) {
-			if (commit == TRUE) {						
-				/* Verify that text has been modified before signalling change */			
-				changed_text = nautilus_icon_text_item_get_text(container->details->rename_widget);
+	if (!container->details->renaming) {
+		return;
+	}
 
-				if (g_strcasecmp(container->details->original_text, changed_text) != 0) {			
-					gtk_signal_emit (GTK_OBJECT (container), signals[ICON_TEXT_CHANGED],
-				 				 	 icon->data, changed_text);
-				}
-			}			
-			hide_rename_widget(container, icon);
+	icon = get_first_selected_icon (container);
+	if (icon == NULL) {
+		return;
+	}
+		
+	if (commit) {						
+		/* Verify that text has been modified before signalling change. */			
+		changed_text = nautilus_icon_text_item_get_text (container->details->rename_widget);
+		
+		if (strcmp (container->details->original_text, changed_text) != 0) {			
+			gtk_signal_emit (GTK_OBJECT (container),
+					 signals[ICON_TEXT_CHANGED],
+					 icon->data,
+					 changed_text);
 		}
 	}
+	
+	hide_rename_widget(container, icon);
 }							
 
 static void
@@ -3113,15 +3162,11 @@ hide_rename_widget (NautilusIconContainer *container, NautilusIcon *icon)
 {
 	nautilus_icon_text_item_stop_editing (container->details->rename_widget, TRUE);
 
-	/* Hide renaming widget */
-	gnome_canvas_item_hide (GNOME_CANVAS_ITEM (container->details->rename_widget));
-
-	gtk_object_destroy( GTK_OBJECT (container->details->rename_widget));
+	/* Destroy renaming widget */
+	gtk_object_destroy (GTK_OBJECT (container->details->rename_widget));
 	container->details->rename_widget = NULL;
 
-	if (container->details->original_text != NULL) {
-		g_free(container->details->original_text);
-	}
+	g_free (container->details->original_text);
 	
 	/* We are not in renaming mode */	
 	container->details->renaming = FALSE;
@@ -3142,7 +3187,7 @@ click_policy_changed_callback (NautilusPreferences	*preferences,
 	
 	container = NAUTILUS_ICON_CONTAINER (user_data);
 
-	container->details->single_click_mode = 
+	container->details->single_click_mode =
 		(nautilus_preferences_get_enum (preferences,
 						NAUTILUS_PREFERENCES_CLICK_POLICY,
 						NAUTILUS_CLICK_POLICY_SINGLE) == NAUTILUS_CLICK_POLICY_SINGLE);
