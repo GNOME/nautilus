@@ -94,6 +94,7 @@ nautilus_about_destroy (GtkObject *object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
+
 /* initialize the about */
 static void
 nautilus_about_initialize (NautilusAbout *about)
@@ -108,6 +109,9 @@ nautilus_about_initialize (NautilusAbout *about)
 	about->details->background_pixbuf = gdk_pixbuf_new_from_file (background_path);
 	g_free (background_path);	
 
+	/* set the window title */
+	gtk_window_set_title (GTK_WINDOW (about), _("About Nautilus"));
+	
 	/* allocate a frame to hold the drawing area */
 	frame = gtk_frame_new (NULL);
 	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_ETCHED_IN);
@@ -136,8 +140,9 @@ nautilus_about_initialize (NautilusAbout *about)
 	/* configure the dialog */                                  
 	gnome_dialog_append_button ( GNOME_DIALOG(about),
 				     GNOME_STOCK_BUTTON_OK);
-
-	gnome_dialog_set_close( GNOME_DIALOG(about), TRUE);
+	
+	gnome_dialog_set_close( GNOME_DIALOG(about), TRUE);			
+	gnome_dialog_close_hides ( GNOME_DIALOG(about), TRUE);
 }
 
 /* allocate a new about dialog */

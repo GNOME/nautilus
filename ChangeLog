@@ -1,3 +1,10 @@
+2000-08-31  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-about.c: (nautilus_about_initialize):
+	fixed bug 2653, about window crashes if shown more than once.
+	Fixed by setting the "close_hides" boolean.  Also, set the
+	title of the window to "About Nautilus".
+	
 2000-08-31  Ramiro Estrugo  <ramiro@eazel.com>
 
 	Bug 1293.  Core dump if gconf returns bad values
