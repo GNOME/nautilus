@@ -302,6 +302,9 @@ eazel_softcat_reset_server_update_flag (EazelSoftCat *softcat)
 const char *
 eazel_softcat_error_string (EazelSoftCatError err)
 {
+	/* No need to translate these strings, since this is only used
+	 * in test code.
+	 */
 	switch (err) {
 	case EAZEL_SOFTCAT_SUCCESS:
 		return "(no error)";

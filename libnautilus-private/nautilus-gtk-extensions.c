@@ -85,8 +85,8 @@ finish_button_activation (gpointer data)
 		gtk_button_released (button);
 	}
 
-	/* this was ref'd in nautilus_gtk_button_auto_click */
-	gtk_object_unref (GTK_OBJECT(button));
+	/* This was ref'd in nautilus_gtk_button_auto_click */
+	gtk_object_unref (GTK_OBJECT (button));
 
 	return FALSE;	
 }
@@ -121,7 +121,7 @@ nautilus_gtk_button_auto_click (GtkButton *button)
 	 */
 
 	/* This is unref'ed in finish_button_activation */
-	gtk_object_ref (GTK_OBJECT(button));
+	gtk_object_ref (GTK_OBJECT (button));
 
 	g_timeout_add (BUTTON_AUTO_HIGHLIGHT_MILLISECONDS, 
 		       finish_button_activation, button);
@@ -299,10 +299,11 @@ guint nautilus_gtk_signal_connect_free_data_custom (GtkObject *object,
  * @data: the user data associated with the function. g_free() will be called on
  * this user data when the signal is disconnected.
  **/
-guint nautilus_gtk_signal_connect_free_data (GtkObject *object,
-				  	     const gchar *name,
-				  	     GtkSignalFunc func,
-				  	     gpointer data)
+guint
+nautilus_gtk_signal_connect_free_data (GtkObject *object,
+				       const gchar *name,
+				       GtkSignalFunc func,
+				       gpointer data)
 {
 	return nautilus_gtk_signal_connect_free_data_custom
 		(object, name, func, data, g_free);

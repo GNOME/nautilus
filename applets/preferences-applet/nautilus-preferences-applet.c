@@ -223,11 +223,11 @@ main (int argc, char **argv)
 	gtk_box_pack_start (GTK_BOX (main_hbox), command_hbox, TRUE, TRUE, 1);
 	
 	show_desktop_button = boolean_toggle_button_new (NAUTILUS_PREFERENCES_SHOW_DESKTOP,
-							 "Show Desktop");
+							 _("Show Desktop"));
 	gtk_box_pack_start (GTK_BOX (preference_vbox), show_desktop_button, TRUE, TRUE, 1);
 
 	smooth_graphics_button = boolean_toggle_button_new (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
-							    "Smooth Graphics");
+							    _("Smooth Graphics"));
 	gtk_box_pack_start (GTK_BOX (preference_vbox), smooth_graphics_button, TRUE, TRUE, 1);
 
 	nautilus_preferences_add_callback ("user_level",
@@ -240,7 +240,7 @@ main (int argc, char **argv)
 					   smooth_graphics_button);
 	user_level_changed_callback (smooth_graphics_button);
 
-	quit_button = gtk_button_new_with_label ("Quit");
+	quit_button = gtk_button_new_with_label (_("Quit"));
 	nautilus_gtk_label_make_smaller (GTK_LABEL (GTK_BIN (quit_button)->child), 4);
 	gtk_box_pack_start (GTK_BOX (command_hbox), quit_button, TRUE, TRUE, 1);
 	gtk_signal_connect (GTK_OBJECT (quit_button),
@@ -248,7 +248,7 @@ main (int argc, char **argv)
 			    GTK_SIGNAL_FUNC (quit_nautilus_button_clicked_callback),
 			    NULL);
 
-	start_button = gtk_button_new_with_label ("Start");
+	start_button = gtk_button_new_with_label (_("Start"));
 	nautilus_gtk_label_make_smaller (GTK_LABEL (GTK_BIN (start_button)->child), 4);
 	gtk_box_pack_start (GTK_BOX (command_hbox), start_button, TRUE, TRUE, 1);
 	gtk_signal_connect (GTK_OBJECT (start_button),
@@ -256,7 +256,7 @@ main (int argc, char **argv)
 			    GTK_SIGNAL_FUNC (start_nautilus_button_clicked_callback),
 			    NULL);
 
-	restart_button = gtk_button_new_with_label ("Restart");
+	restart_button = gtk_button_new_with_label (_("Restart"));
 	nautilus_gtk_label_make_smaller (GTK_LABEL (GTK_BIN (restart_button)->child), 4);
 	gtk_box_pack_start (GTK_BOX (command_hbox), restart_button, TRUE, TRUE, 1);
 	gtk_signal_connect (GTK_OBJECT (restart_button),

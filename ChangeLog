@@ -1,3 +1,51 @@
+2001-02-28  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Found and fixed as many untranslated things as possible. John
+	Sullivan found them and I fixed them. This takes care of much of
+	bug 6977.
+
+	* check-strings-functions:
+	* check-strings-patterns:
+	More things to ignore and fixes to bad patterns done while John
+	and I did our pass over all the code.
+	
+	* check-strings.pl: Fix comment.
+
+	* applets/preferences-applet/nautilus-preferences-applet.c: (main):
+	* components/hardware/nautilus-hardware-view.c: (setup_CPU_form),
+	(setup_RAM_form), (setup_IDE_form):
+	* components/rpmview/nautilus-rpm-verify-window.c:
+	(nautilus_rpm_verify_window_initialize):
+	* components/services/inventory-view/nautilus-inventory-config-page.c:
+	(nautilus_inventory_config_page_initialize),
+	(nautilus_inventory_config_page_destroy):
+	* components/services/inventory-view/nautilus-inventory-disable-page.c:
+	(nautilus_inventory_disable_page_initialize):
+	* helper-utilities/authenticate/nautilus-authenticate.c: (main):
+	* libnautilus-extensions/nautilus-password-dialog.c:
+	(nautilus_password_dialog_new):
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(nautilus_program_chooser_show_no_choices_message):
+	Mark additional strings for translation.
+	
+	* components/adapter/nautilus-adapter-embed-strategy.c:
+	(nautilus_adapter_embed_strategy_initialize_class): Fix misspelling
+	of signal names.
+	
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(rpmmonitorpiggybag_new): Fix a typo.
+	* components/services/install/lib/eazel-softcat.c:
+	(eazel_softcat_error_string): Write comment about why these strings
+	don't need translation.
+	
+	* libnautilus-extensions/nautilus-gtk-extensions.c: Tweak formatting.
+	
+	* libnautilus-extensions/nautilus-preferences-dialog.c:
+	(nautilus_preferences_dialog_construct): Use stock button instead of
+	hard-coded OK for translation purposes.
+
 2001-02-28  Michael Engber  <engber@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>

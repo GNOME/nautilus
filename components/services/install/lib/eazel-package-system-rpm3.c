@@ -133,7 +133,7 @@ rpmmonitorpiggybag_new (EazelPackageSystemRpm3 *system,
 #ifdef USE_PERCENT
 	lc = localeconv ();
 	pig.separator = *(lc->decimal_point);
-	info (system, "decimal seperator is '%c'",  pig.separator);
+	info (system, "decimal separator is '%c'",  pig.separator);
 	pig.state = 1;
 	pig.bytes_read_in_line = 0;
 	pig.line[0] = '\0';

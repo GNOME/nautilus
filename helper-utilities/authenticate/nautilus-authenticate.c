@@ -27,11 +27,10 @@
 #include <config.h>
 #include "nautilus-authenticate.h"
 
-#include <libnautilus-extensions/nautilus-password-dialog.h>
-
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-init.h>
-
-
+#include <libnautilus-extensions/nautilus-password-dialog.h>
 #include <stdio.h>
 #include <unistd.h>
 
@@ -70,7 +69,7 @@ int main (int argc, char *argv[])
 	if (!command)
 		command = g_strdup("");
 	
-	password_dialog = nautilus_password_dialog_new ("Privileged Command Execution",
+	password_dialog = nautilus_password_dialog_new (_("Privileged Command Execution"),
 							NULL,
 							"root",
 							"",
@@ -105,7 +104,7 @@ int main (int argc, char *argv[])
 		}
 		else {
 			fprintf (stderr, 
-				 "Authentication for user '%s' failed.\n\n",
+				 _("Authentication for user '%s' failed.\n\n"),
 				 username);
 		}
 

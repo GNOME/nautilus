@@ -2,7 +2,7 @@
 
 /* nautilus-preferences-dialog.c - Implementation for preferences dialog.
 
-   Copyright (C) 1999, 2000 Eazel, Inc.
+   Copyright (C) 1999, 2000, 2001 Eazel, Inc.
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -24,16 +24,13 @@
 
 #include <config.h>
 #include "nautilus-preferences-dialog.h"
+
 #include "nautilus-gtk-extensions.h"
 #include "nautilus-gtk-macros.h"
-
-/* #include "caption-table.h" */
-
-#include <libgnomeui/gnome-stock.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
-
-#include <gnome.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-stock.h>
 
 enum
 {
@@ -48,7 +45,7 @@ struct _NautilusPreferencesDialogDetails
 
 static const gchar * stock_buttons[] =
 {
-	"OK",
+	GNOME_STOCK_BUTTON_OK,
 	NULL
 };
 
@@ -147,7 +144,7 @@ dialog_destroy (GtkWidget * widget, gpointer data)
 
 static void
 nautilus_preferences_dialog_construct (NautilusPreferencesDialog *prefs_dialog,
-				 const gchar	     *dialog_title)
+				       const gchar *dialog_title)
 {
 	GnomeDialog *gnome_dialog;
 

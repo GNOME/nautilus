@@ -152,13 +152,15 @@ nautilus_rpm_verify_window_initialize (NautilusRPMVerifyWindow *rpm_verify_windo
 	gtk_widget_show (button_box);
 	gtk_box_pack_start (GTK_BOX (window_contents), button_box, FALSE, FALSE, 8);
 	
-	rpm_verify_window->details->continue_button = gtk_button_new_with_label ("Continue");
+	rpm_verify_window->details->continue_button = gtk_button_new_with_label (_("Continue"));
 	gtk_box_pack_start (GTK_BOX (button_box), rpm_verify_window->details->continue_button, FALSE, FALSE, 4);
-	gtk_signal_connect(GTK_OBJECT (rpm_verify_window->details->continue_button), "clicked", GTK_SIGNAL_FUNC (continue_button_callback), rpm_verify_window);
+	gtk_signal_connect (GTK_OBJECT (rpm_verify_window->details->continue_button), "clicked",
+			    GTK_SIGNAL_FUNC (continue_button_callback), rpm_verify_window);
 	
-	rpm_verify_window->details->cancel_button = gtk_button_new_with_label ("Cancel");
+	rpm_verify_window->details->cancel_button = gtk_button_new_with_label (_("Cancel"));
 	gtk_box_pack_start (GTK_BOX (button_box), rpm_verify_window->details->cancel_button, FALSE, FALSE, 4);
-	gtk_signal_connect(GTK_OBJECT (rpm_verify_window->details->cancel_button), "clicked", GTK_SIGNAL_FUNC (cancel_button_callback), rpm_verify_window);
+	gtk_signal_connect (GTK_OBJECT (rpm_verify_window->details->cancel_button), "clicked",
+			   GTK_SIGNAL_FUNC (cancel_button_callback), rpm_verify_window);
 	
 	/* configure the dialog */                                  
 	gtk_widget_set_usize (GTK_WIDGET (rpm_verify_window), 420, 180);

@@ -1,7 +1,7 @@
-%s %s # common simple printf format
+^%s %s$ # common simple printf format
 . ||| -skels # CORBA-generated
 . ||| -stubs # CORBA-generated
-\\n # common simple string
+^\\n+$ # common simple string
 ^Ali Abdin$
 ^Andy Hertzfeld$
 ^Arlo Rose$
@@ -32,7 +32,7 @@ OAFIID # strings with oaf IIDs
 ^Seth Nickell$
 ^Susan Kare$
 ^\/ # paths
-^[-\w/]+\.(png|xml) # recognizable file names
+^[-\w/]+\.(png|xml)$ # recognizable file names
 ^bookmark$ ||| nautilus-bookmark-list
 ^http:
 ^rgb: # color specs
@@ -64,3 +64,5 @@ network\.proxy
 ^_SAWFISH # keys for WM
 ^TRUE$
 ^FALSE$
+. ||| components/help/converters
+. ||| components/music/pixmaps\.h$

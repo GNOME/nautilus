@@ -113,11 +113,11 @@ nautilus_inventory_config_page_initialize (NautilusInventoryConfigPage *config_p
 
 	bonobo_object_unref (BONOBO_OBJECT (object));
 
-	label = gtk_label_new ("Eazel Inventory Configuration");
+	label = gtk_label_new (_("Eazel Inventory Configuration"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (config_page), label, FALSE, FALSE, 0);
 	
-	label = gtk_label_new ("blah blah blah");
+	label = gtk_label_new (_("blah blah blah"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (config_page), label, FALSE, FALSE, 0);
 
@@ -125,7 +125,7 @@ nautilus_inventory_config_page_initialize (NautilusInventoryConfigPage *config_p
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (config_page), hbox, FALSE, FALSE, 0);
 
-	label = gtk_label_new ("Machine Name:");
+	label = gtk_label_new (_("Machine Name:"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
@@ -151,14 +151,14 @@ nautilus_inventory_config_page_initialize (NautilusInventoryConfigPage *config_p
 	gtk_widget_show (config_page->details->machine_entry);
 	gtk_box_pack_start (GTK_BOX (hbox), config_page->details->machine_entry, FALSE, FALSE, 0);
 
-	config_page->details->warn_check_button = gtk_check_button_new_with_label ("Warn me before upload");
+	config_page->details->warn_check_button = gtk_check_button_new_with_label (_("Warn me before upload"));
 	initial_warn = Trilobite_Eazel_Inventory__get_warn_before_upload
                                         (config_page->details->inventory_service, &ev);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (config_page->details->warn_check_button), initial_warn);
 	gtk_widget_show (config_page->details->warn_check_button);
 	gtk_box_pack_start (GTK_BOX (config_page), config_page->details->warn_check_button, FALSE, FALSE, 0);
 	
-	button = gtk_button_new_with_label ("Next");
+	button = gtk_button_new_with_label (_("Next"));
 	gtk_widget_show (button);
 	gtk_box_pack_start (GTK_BOX (config_page), button, FALSE, FALSE, 0);
 	gtk_signal_connect (GTK_OBJECT (button), "clicked", next_button_callback, config_page);
@@ -188,10 +188,3 @@ nautilus_inventory_config_page_destroy (GtkObject *object)
 
 	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
-
-
-
-
-
-
-

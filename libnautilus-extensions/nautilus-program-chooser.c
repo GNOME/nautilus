@@ -1482,23 +1482,24 @@ nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType action_
 	file_name = get_file_name_for_display (file);
 
 	if (action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
-		unavailable_message = g_strdup_printf ("No viewers are available for \"%s\".", file_name);		
-		dialog_title = g_strdup ("No Viewers Available");
+		unavailable_message = g_strdup_printf (_("No viewers are available for \"%s\"."), file_name);
+		dialog_title = g_strdup (_("No Viewers Available"));
 	} else {
 		g_assert (action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION);
-		unavailable_message = g_strdup_printf ("No applications are available for \"%s\".", file_name);		
-		dialog_title = g_strdup ("No Applications Available");
+		unavailable_message = g_strdup_printf (_("No applications are available for \"%s\"."), file_name);
+		dialog_title = g_strdup (_("No Applications Available"));
 	}
 
 	/* Note: This might be misleading in the components case, since the
 	 * user can't add components to the complete list even from the capplet.
 	 * (They can add applications though.)
 	 */
-	prompt = g_strdup_printf ("%s\n\n"
-				  "You can configure which programs are offered "
-				  "for which file types with the \"File Types and "
-				  "Programs\" part of the GNOME Control Center. Do "
-				  "you want to go there now?", unavailable_message);
+	prompt = g_strdup_printf (_("%s\n\n"
+				    "You can configure which programs are offered "
+				    "for which file types with the \"File Types and "
+				    "Programs\" part of the GNOME Control Center. Do "
+				    "you want to go there now?"),
+				  unavailable_message);
 	dialog = nautilus_show_yes_no_dialog 
 		(prompt, dialog_title, GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, parent_window);
 

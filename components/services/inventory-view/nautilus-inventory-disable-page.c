@@ -107,11 +107,11 @@ nautilus_inventory_disable_page_initialize (NautilusInventoryDisablePage *disabl
 
 	disable_page->details->inventory = eazel_inventory_get ();
 
-	header = eazel_services_header_title_new ("Disable Inventory [FIXME]");
+	header = eazel_services_header_title_new (_("Disable Inventory [FIXME]"));
 	gtk_widget_show (header);
 	gtk_box_pack_start (GTK_BOX (vbox), header, FALSE, FALSE, 0);
 	
-	disable_page->details->label = gtk_label_new ("An explanation of how why and what we're doing here.");
+	disable_page->details->label = gtk_label_new (_("An explanation of how why and what we're doing here."));
 	gtk_widget_show (disable_page->details->label);
 	gtk_box_pack_start (GTK_BOX (vbox), disable_page->details->label, FALSE, FALSE, 0);
 

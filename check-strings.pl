@@ -70,7 +70,6 @@ while (<STRINGS>)
   }
 close STRINGS;
 
-# look for strings that are not quoted
 FILE: foreach my $file (@ARGV)
   {
     chomp $file;

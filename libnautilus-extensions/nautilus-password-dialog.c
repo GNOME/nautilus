@@ -24,14 +24,15 @@
 
 #include <config.h>
 #include "nautilus-password-dialog.h"
-#include "nautilus-caption-table.h"
 
-#include <libgnomeui/gnome-stock.h>
+#include "nautilus-caption-table.h"
+#include "nautilus-gtk-macros.h"
+#include <gtk/gtkcheckbutton.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkmain.h>
-#include <gtk/gtkcheckbutton.h>
 #include <gtk/gtksignal.h>
-#include "nautilus-gtk-macros.h"
+#include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-stock.h>
 
 struct _NautilusPasswordDialogDetails
 {
@@ -259,20 +260,20 @@ nautilus_password_dialog_new (const char	*dialog_title,
 	password_dialog->details->table = nautilus_caption_table_new (2);
 	
 	gtk_signal_connect (GTK_OBJECT (password_dialog->details->table),
-			   "activate",
-			   GTK_SIGNAL_FUNC (caption_table_activate_callback),
-			   (gpointer) password_dialog);
+			    "activate",
+			    GTK_SIGNAL_FUNC (caption_table_activate_callback),
+			    password_dialog);
 
 	nautilus_caption_table_set_row_info (NAUTILUS_CAPTION_TABLE (password_dialog->details->table),
 					     CAPTION_TABLE_USERNAME_ROW,
-					     "Username:",
+					     _("Username:"),
 					     "",
 					     TRUE,
 					     TRUE);
 
 	nautilus_caption_table_set_row_info (NAUTILUS_CAPTION_TABLE (password_dialog->details->table),
 					     CAPTION_TABLE_PASSWORD_ROW,
-					     "Password:",
+					     _("Password:"),
 					     "",
 					     FALSE,
 					     FALSE);
@@ -300,9 +301,9 @@ nautilus_password_dialog_new (const char	*dialog_title,
 			    TRUE,	/* expand */
 			    TRUE,	/* fill */
 			    0);		/* padding */
-#if 0 /* disabled for PR2 */
+#if 0 /* FIXME: disabled for PR2 originally, when will we re-enable */
 	password_dialog->details->remember_button = 
-		gtk_check_button_new_with_label ("Remember this password");
+		gtk_check_button_new_with_label (_("Remember this password"));
 
 	gtk_box_pack_end (GTK_BOX (GNOME_DIALOG (password_dialog)->vbox),
 			  password_dialog->details->remember_button,
