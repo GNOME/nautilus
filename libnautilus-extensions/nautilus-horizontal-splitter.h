@@ -46,7 +46,7 @@ struct _NautilusHorizontalSplitter
 	EHPaned					hpaned;
 	
 	/* Private stuff */
-	NautilusHorizontalSplitterDetail	*detail;
+	NautilusHorizontalSplitterDetail	*details;
 };
 
 struct _NautilusHorizontalSplitterClass

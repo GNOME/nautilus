@@ -1,3 +1,15 @@
+2000-06-23  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-horizontal-splitter.c,h:
+	(nautilus_horizontal_splitter_initialize_class),
+	(nautilus_horizontal_splitter_initialize),
+	(nautilus_horizontal_splitter_destroy), (toggle_splitter_position),
+	(nautilus_horizontal_splitter_button_press),
+	(nautilus_horizontal_splitter_button_release):
+	made tapping on the splitter show or hide the sidebar
+	* src/nautilus-sidebar.c:
+	reduced the minimum size of the sidebar
+	
 2000-06-22  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/install/command-line/Makefile.am:

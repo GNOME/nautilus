@@ -101,7 +101,7 @@ static void     add_command_buttons                 (NautilusSidebar  *sidebar,
 #define DEFAULT_BACKGROUND_COLOR "rgb:DDDD/DDDD/FFFF"
 #define DEFAULT_TAB_COLOR "rgb:9999/9999/9999"
 
-#define SIDEBAR_MINIMUM_WIDTH 24
+#define SIDEBAR_MINIMUM_WIDTH 1
 #define SIDEBAR_MINIMUM_HEIGHT 400
 
 enum {
