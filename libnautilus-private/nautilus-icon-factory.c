@@ -336,7 +336,7 @@ nautilus_icon_factory_instance_init (NautilusIconFactory *factory)
 	static const char *types [] = {
 		"image/x-bmp", "image/x-ico", "image/jpeg", "image/gif",
 		"image/png", "image/pnm", "image/ras", "image/tga",
-		"image/tiff", "image/wbmp", "image/x-xbitmap",
+		"image/tiff", "image/wbmp", "image/bmp", "image/x-xbitmap",
 		"image/x-xpixmap"
         };
 
