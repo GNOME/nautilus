@@ -1,5 +1,22 @@
 2000-07-05  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-string-picker.c:
+	(nautilus_string_picker_initialize_class),
+	(nautilus_string_picker_initialize),
+	(nautilus_string_picker_destroy), (option_menu_activate_callback),
+	(nautilus_string_picker_set_string_list),
+	(nautilus_string_picker_get_text),
+	(nautilus_string_picker_set_text):
+	* libnautilus-extensions/nautilus-string-picker.h:
+	Changed string picker to use option menus instead of combo boxes.
+	
+	* test/test-nautilus-widgets.c: (test_string_picker),
+	(string_picker_changed_callback):
+	Changed widget test program to exercise more string picker
+	functions. 
+	
+2000-07-05  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* components/services/install/command-line/.cvsignore:
 	Ignore generated files.
 	

@@ -31,7 +31,7 @@
 /*
  * NautilusStringPicker is made up of 2 widgets. 
  *
- * [title label] [string combo box]
+ * [title label] [string list]
  *
  * The user can select a string from the list.
  */
