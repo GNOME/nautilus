@@ -1048,6 +1048,8 @@ fm_icon_view_set_zoom_level (FMIconView *view,
 
 	nautilus_icon_container_set_zoom_level (icon_container, new_level);
 	fm_directory_view_set_zoom_level (&view->parent, new_level);
+
+	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (view));
 }
 
 static void
@@ -1422,6 +1424,7 @@ fm_icon_view_update_menus (FMDirectoryView *view)
 	nautilus_bonobo_set_sensitive (icon_view->details->ui, 
 				       COMMAND_RENAME,
 				       selection_count == 1
+				       && fm_icon_view_get_zoom_level (icon_view) > NAUTILUS_ZOOM_LEVEL_SMALLEST
 				       && nautilus_file_can_rename (selection->data));
 				       
 	bonobo_ui_component_thaw (icon_view->details->ui, NULL);

@@ -1,3 +1,14 @@
+2001-07-25  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	Fixed bug 6776 (In-place file rename allowed (but doesn't occur)
+	at 25% zoom level):
+
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_set_zoom_level):
+	Update menus since the sensitivity of "Rename" now depends on the
+	zoom level.
+	(fm_icon_view_update_menus): Disable the "Rename" item when at
+	smallest zoom level, since renaming won't happen anyway.
+	
 2001-07-24  Darin Adler  <darin@bentspoon.com>
 
 	* libnautilus-private/nautilus-directory-background.c:
