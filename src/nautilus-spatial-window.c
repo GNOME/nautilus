@@ -108,6 +108,9 @@ enum {
 
 static GList *history_list = NULL;
 
+static GdkPixmap *mini_icon_pixmap;
+static GdkBitmap *mini_icon_mask;
+
 static void nautilus_window_initialize_class       (NautilusWindowClass *klass);
 static void nautilus_window_initialize             (NautilusWindow      *window);
 static void nautilus_window_destroy                (GtkObject           *object);
@@ -131,10 +134,21 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusWindow,
 				   BONOBO_TYPE_WINDOW)
 
 static void
+unref_mini_icon (void)
+{
+	gdk_pixmap_unref (mini_icon_pixmap);
+	if (mini_icon_mask != NULL) {
+		gdk_bitmap_unref (mini_icon_mask);
+	}
+}
+
+static void
 nautilus_window_initialize_class (NautilusWindowClass *klass)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
+	char *filename;
+	GdkPixbuf *pixbuf;
 	
 	object_class = (GtkObjectClass *) klass;
 	widget_class = (GtkWidgetClass *) klass;
@@ -159,6 +173,19 @@ nautilus_window_initialize_class (NautilusWindowClass *klass)
 
 	klass->add_current_location_to_history_list
 		= real_add_current_location_to_history_list;
+
+        filename = nautilus_pixmap_file ("nautilus-mini-logo.png");
+        if (filename != NULL) {
+                pixbuf = gdk_pixbuf_new_from_file (filename);
+                if (pixbuf != NULL) {
+                        gdk_pixbuf_render_pixmap_and_mask
+				(pixbuf, &mini_icon_pixmap, &mini_icon_mask,
+				 NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
+			gdk_pixbuf_unref (pixbuf);
+			g_atexit (unref_mini_icon);
+		}
+        	g_free (filename);
+	}
 }
 
 static void
@@ -971,30 +998,14 @@ nautilus_window_update_launcher (GdkWindow *window)
 static void
 nautilus_window_realize (GtkWidget *widget)
 {
-        char *filename;
-	GdkPixbuf *pixbuf;
-        GdkPixmap *pixmap;
-        GdkBitmap *mask;
-        
+	char *filename;
+
         /* Create our GdkWindow */
 	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
 
         /* Set the mini icon */
-        filename = nautilus_pixmap_file ("nautilus-mini-logo.png");
-        if (filename != NULL) {
-                pixbuf = gdk_pixbuf_new_from_file(filename);
-                if (pixbuf != NULL) {
-                        gdk_pixbuf_render_pixmap_and_mask
-				(pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);				   
-			gdk_pixbuf_unref (pixbuf);
-			nautilus_set_mini_icon
-				(widget->window, pixmap, mask);
-			/* FIXME bugzilla.eazel.com 610: It seems we are
-			 * leaking the pixmap and mask here, but if we unref
-			 * them here, the task bar crashes.
-			 */
-		}
-        	g_free (filename);
+	if (mini_icon_pixmap != NULL) {
+		nautilus_set_mini_icon (widget->window, mini_icon_pixmap, mini_icon_mask);
 	}
 
 	/* Set the maxi icon */

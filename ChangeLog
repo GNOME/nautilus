@@ -1,3 +1,15 @@
+2001-03-16  Darin Adler  <darin@eazel.com>
+
+	reviewed by: <delete if not using a buddy>
+
+	Fix bug 610, a small per-window storage leak.
+
+	* src/nautilus-window.c: (unref_mini_icon): Free icon at quit
+	time for leak checking purposes.
+	(nautilus_window_initialize_class): Create the mini-icon here.
+	(nautilus_window_realize): Use it here, instead of re-making
+	it each time.
+
 2001-03-16  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>
