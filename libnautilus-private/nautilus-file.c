@@ -4833,7 +4833,8 @@ nautilus_file_get_guessed_mime_type (NautilusFile *file)
 /**
  * nautilus_file_is_mime_type
  * 
- * Check whether a file is of a particular MIME type.
+ * Check whether a file is of a particular MIME type, or inherited
+ * from it.
  * @file: NautilusFile representing the file in question.
  * @mime_type: The MIME-type string to test (e.g. "text/plain")
  * 
@@ -4847,11 +4848,11 @@ nautilus_file_is_mime_type (NautilusFile *file, const char *mime_type)
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 	g_return_val_if_fail (mime_type != NULL, FALSE);
 	
-	if (file->details->info == NULL) {
+	if (file->details->info == NULL || file->details->info->mime_type == NULL) {
 		return FALSE;
 	}
-	return gnome_vfs_mime_type_is_equal (file->details->info->mime_type,
-					     mime_type);
+	return (gnome_vfs_mime_type_get_equivalence (file->details->info->mime_type,
+						     mime_type) != GNOME_VFS_MIME_UNRELATED);
 }
 
 /**
@@ -5192,14 +5193,9 @@ nautilus_file_contains_text (NautilusFile *file)
 	if (file == NULL) {
 		return FALSE;
 	}
-	
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-	if (file->details->info == NULL || file->details->info->mime_type == NULL) {
-		return FALSE;
-	}
-
-	return eel_istr_has_prefix (file->details->info->mime_type, "text/");
+	/* All text files inherit from text/plain */
+	return nautilus_file_is_mime_type (file, "text/plain");
 }
 
 /**
