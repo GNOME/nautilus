@@ -1260,7 +1260,10 @@ get_cdrom_type (const char *vol_dev_path, int* fd)
 static gboolean
 mount_volume_iso9660_add (NautilusVolume *volume)
 {
-	volume->device_type = NAUTILUS_DEVICE_CDROM_DRIVE;
+	/* Don't mark loopback mounts as cdroms. */
+	if (!eel_str_has_prefix (volume->device_path, "/dev/loop")) {		
+		volume->device_type = NAUTILUS_DEVICE_CDROM_DRIVE;
+	}
 	
 	return TRUE;
 }

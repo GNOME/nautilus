@@ -1,5 +1,10 @@
 2002-08-29  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-volume-monitor.c (mount_volume_iso9660_add):
+	Don't mark loopback mounts as CDROM.
+
+2002-08-29  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-application.c (volume_mounted_callback):
 	Allow other apps that do their own CD switching to temporary disable
 	nautilus from popping up CD windows by grabbing the
