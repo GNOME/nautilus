@@ -1343,6 +1343,19 @@ should_display_image_file_as_itself (NautilusFile *file, gboolean anti_aliased)
 	return nautilus_file_is_local (file);
 }
 
+/* return TRUE if the passed-in mime-type is one that we can thumbnail.  It's
+ * used to exclude ones that we know will generate errors if we tried them.
+ */
+static gboolean
+is_supported_mime_type (const char *mime_type)
+{
+	/* exclude xfig images, since we can't handle them */
+	if (nautilus_strcmp (mime_type, "image/x-xfig") == 0) {
+		return FALSE;
+	}	
+	return TRUE;
+}
+
 /* key routine to get the scalable icon for a file */
 NautilusScalableIcon *
 nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifier, gboolean anti_aliased)
@@ -1372,6 +1385,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 		file_size = nautilus_file_get_size (file);
 		
 		if (nautilus_istr_has_prefix (mime_type, "image/")
+		    && is_supported_mime_type (mime_type)
 		    && should_display_image_file_as_itself (file, anti_aliased)) {
 			if (file_size < SELF_THUMBNAIL_SIZE_THRESHOLD && is_local) {
 				uri = nautilus_file_get_uri (file);				

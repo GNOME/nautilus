@@ -1,3 +1,11 @@
+2001-02-14  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(is_supported_mime_type),
+	(nautilus_icon_factory_get_icon_for_file):
+	fixed bug 6623, .fig files cause warnings to spew, by checking for
+	types that we don't support and excluding them from thumbnailing.
+	
 2001-02-14 John Fleck <jfleck@inkstain.net>
 
 	reviewed by: Ali Abdin <aliabdin@aucegypt.edu>
