@@ -1,3 +1,18 @@
+2001-02-24  Ian McKellar  <ian@eazel.com>
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+
+	* components/rpmview/Makefile.am:
+	* components/rpmview/nautilus-rpm-view-install.c:
+	(inventory_service_callback), (nautilus_rpm_view_install_done):
+	Added inventory hooks. Finishing bug 6186.
+
+	* components/services/install/Makefile.am:
+	* components/services/install/nautilus-view/Makefile.am:
+	* components/services/install/nautilus-view/callbacks.c:
+	(inventory_service_callback), (nautilus_service_install_done):
+	Fixed an evil build problem and did some little code fixes.
+
 2001-02-24  Arik Devens  <arik@eazel.com>
 
 	reviewed by: Maciej Stachowiak  <mjs@eazel.com>

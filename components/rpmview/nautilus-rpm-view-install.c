@@ -27,6 +27,9 @@
 #include <libnautilus-extensions/nautilus-password-dialog.h>
 #include "libtrilobite/libtrilobite.h"
 #include "nautilus-rpm-view-private.h"
+#ifdef EAZEL_SERVICES
+#include "eazel-inventory.h"
+#endif
 
 #define OAF_ID "OAFIID:trilobite_eazel_install_service:8ff6e815-1992-437c-9771-d932db3b4a17"
 
@@ -227,12 +230,36 @@ nautilus_rpm_view_finished_working (NautilusRPMView *rpm_view)
 	rpm_view->details->password_attempts = 0;
 }
 
+#ifdef EAZEL_SERVICES
+static void
+inventory_service_callback (EazelInventory *inventory,
+	  		 gboolean succeeded,
+	  		 gpointer callback_data)
+{
+	NautilusRPMView *rpm_view;
+	char *tmp;
+
+	rpm_view = NAUTILUS_RPM_VIEW (callback_data);
+
+	gtk_object_unref (GTK_OBJECT (inventory));
+
+	tmp = g_strdup (nautilus_rpm_view_get_uri (rpm_view));
+	nautilus_rpm_view_load_uri (rpm_view, tmp);
+	g_free (tmp);
+}
+#endif
+
+
 static void
 nautilus_rpm_view_install_done (EazelInstallCallback *service,
 				gboolean result,
 				NautilusRPMView *rpm_view)
 {
+#ifdef EAZEL_SERVICES
+	EazelInventory *inventory_service;
+#else
 	char *tmp;	
+#endif
 
 	if (!result) {
 		char *dialog_title;
@@ -278,9 +305,18 @@ nautilus_rpm_view_install_done (EazelInstallCallback *service,
 	
 	nautilus_rpm_view_finished_working (rpm_view);
 	
+#ifdef EAZEL_SERVICES
+	inventory_service = eazel_inventory_get ();
+
+	if (inventory_service) {
+		eazel_inventory_upload (inventory_service, 
+				inventory_service_callback, rpm_view);
+	}
+#else
 	tmp = g_strdup (nautilus_rpm_view_get_uri (rpm_view));
 	nautilus_rpm_view_load_uri (rpm_view, tmp);
 	g_free (tmp);
+#endif
 }
 
 /* BEGIN code chunk from nautilus-install-view.c */

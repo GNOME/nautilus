@@ -489,6 +489,7 @@ inventory_service_callback (EazelInventory *inventory,
 
 	gtk_object_unref (GTK_OBJECT (inventory));
 
+	g_warning ("attemping to go back");
 	nautilus_view_go_back (view->details->nautilus_view);
 }
 
@@ -671,7 +672,6 @@ g_warning ("done: panic!");
 			if (message != NULL) {
 				nautilus_view_open_location_in_this_window (view->details->nautilus_view, message);
 			} else {
-				g_warning ("attemping to go back");
 				inventory_service = eazel_inventory_get ();
 
 				if (inventory_service) {

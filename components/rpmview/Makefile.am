@@ -1,5 +1,13 @@
 NULL =
 
+if EAZEL_SERVICES
+INVENTORY_LIBS=$(top_builddir)/components/services/inventory/libtrilobite-inventory-service.la
+INVENTORY_CFLAGS=-I$(top_srcdir)/components/services/inventory/
+else
+INVENTORY_LIBS=
+INVENTORY_CFLAGS=
+endif
+
 INCLUDES = \
 	-DPREFIX=\"$(prefix)\" \
 	-DG_LOG_DOMAIN=\"Nautilus-RPM\" \
@@ -14,12 +22,12 @@ INCLUDES = \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	$(GNOMEUI_CFLAGS) \
 	$(VFS_CFLAGS) \
+	$(INVENTORY_CFLAGS) \
 	$(NULL)
 
 bin_PROGRAMS = nautilus-rpm-view
 
 if EAZEL_SERVICES
-
 extra_libs = \
 	$(top_builddir)/components/services/install/lib/libeazelinstall.la \
 	$(top_builddir)/components/services/install/lib/libeazelpackagesystem.la \
@@ -41,6 +49,7 @@ nautilus_rpm_view_SOURCES =		        \
 nautilus_rpm_view_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
+	$(INVENTORY_LIBS)			\
 	$(extra_libs)				\
 	$(BONOBO_LIBS) 				\
 	$(GCONF_LIBS) 				\
