@@ -112,6 +112,11 @@ static void          hide_rename_widget                       (NautilusIconConta
 static void          finish_adding_new_icons                  (NautilusIconContainer      *container);
 static void          update_label_color                       (NautilusBackground         *background,
 							       NautilusIconContainer      *icon_container);
+static void	     icon_get_bounding_box 		      (NautilusIcon 		  *icon,
+							       int 			  *x1_return, 
+							       int 			  *y1_return,
+		       					       int 			  *x2_return, 
+		       					       int 			  *y2_return);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconContainer, nautilus_icon_container, GNOME_TYPE_CANVAS)
 
@@ -156,9 +161,42 @@ icon_free (NautilusIcon *icon)
 static void
 icon_set_position (NautilusIcon *icon,
 		   double x, double y)
-{		
+{	
+	NautilusIconContainer *container;
+	
+	int left, top, right, bottom;
+	int width, height;
+	int x1, y1, x2, y2;
+	
 	if (icon->x == x && icon->y == y) {
 		return;
+	}
+
+	container = NAUTILUS_ICON_CONTAINER (GNOME_CANVAS_ITEM (icon->item)->canvas);
+
+	if (nautilus_icon_container_get_is_fixed_size (container)) {
+		/* Clip the movement of the icon within our desktop bounds */
+		left = GTK_WIDGET (container)->allocation.x;
+		top  = GTK_WIDGET (container)->allocation.y;
+		right  = left + GTK_WIDGET (container)->allocation.width;
+		bottom  = top + GTK_WIDGET (container)->allocation.height;
+
+		icon_get_bounding_box (icon, &x1, &y1, &x2, &y2);
+		width = x2 - x1;
+		height = y2 - y1;
+		
+		if ((x - width) < left) {
+			x = left;
+		}
+		if (x > right - width) {
+			x = right - width;
+		}
+		if (y < top) {
+			y = top;
+		}
+		if (y > bottom - height) {
+			y = bottom - height;
+		}
 	}
 
 	gnome_canvas_item_move (GNOME_CANVAS_ITEM (icon->item),
@@ -428,6 +466,19 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 	double x1, y1, x2, y2;
 	GtkAdjustment *hadj, *vadj;
 	float step_increment;
+	GtkAllocation *allocation;
+
+	if (nautilus_icon_container_get_is_fixed_size (container)) {
+			/* Set the scroll region to the size of the container allocation */
+			allocation = &GTK_WIDGET (container)->allocation;			
+			nautilus_gnome_canvas_set_scroll_region_left_justify
+				(GNOME_CANVAS (container),
+		 		(double) allocation->x,
+		 		(double) allocation->y,
+		 		(double) allocation->width-1,
+		 		(double) allocation->height-1);		
+		return;
+	}
 
 	get_all_icon_bounds (container, &x1, &y1, &x2, &y2);
 	nautilus_gnome_canvas_set_scroll_region_left_justify
@@ -453,7 +504,7 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 	}
 
 	/* Now that we have a new scroll region, clamp the
-         * adjustments so we are within the valid scorll area.
+         * adjustments so we are within the valid scroll area.
 	 */
 	nautilus_gtk_adjustment_clamp_value (hadj);
 	nautilus_gtk_adjustment_clamp_value (vadj);
@@ -566,6 +617,7 @@ lay_down_one_line (NautilusIconContainer *container,
 	*y += max_height_below + ICON_PAD_BOTTOM;
 }
 
+
 static void
 lay_down_icons_horizontal (NautilusIconContainer *container,
 		GList *icons,
@@ -606,7 +658,6 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 	}
 }
 
-
 static void
 lay_down_icons (NautilusIconContainer *container, GList *icons, double start_y)
 {
@@ -620,7 +671,6 @@ lay_down_icons (NautilusIconContainer *container, GList *icons, double start_y)
 			break;
 	}
 }
-
 
 static void
 relayout (NautilusIconContainer *container)

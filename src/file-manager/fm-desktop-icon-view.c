@@ -37,6 +37,7 @@
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-link.h>
 #include <libnautilus-extensions/nautilus-volume-monitor.h>
@@ -176,7 +177,9 @@ static void
 fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 {
 	NautilusIconContainer *icon_container;
-
+	GtkAllocation *allocation;
+	GtkAdjustment *hadj, *vadj;
+	
 	icon_container = get_icon_container (desktop_icon_view);
 
 	/* Set up details */
@@ -184,6 +187,18 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 	desktop_icon_view->details->volume_monitor = nautilus_volume_monitor_get ();
 
 	nautilus_icon_container_set_is_fixed_size (icon_container, TRUE);
+
+	/* Set allocation to be at 0, 0 */
+	allocation = &GTK_WIDGET (icon_container)->allocation;
+	allocation->x = 0;
+	allocation->y = 0;
+	gtk_widget_queue_resize (GTK_WIDGET (icon_container));
+
+	hadj = GTK_LAYOUT (icon_container)->hadjustment;
+	vadj = GTK_LAYOUT (icon_container)->vadjustment;
+
+	nautilus_gtk_adjustment_set_value (hadj, 0);
+	nautilus_gtk_adjustment_set_value (vadj, 0);
 
 	/* Check for and clean up any old mount links that may have been left behind */		
 	remove_old_mount_links ();

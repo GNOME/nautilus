@@ -1,3 +1,17 @@
+2000-08-11  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(icon_set_position),
+	(nautilus_icon_container_update_scroll_region), (lay_down_icons):
+	Handle fixed size icon containers.  Add clipping to icon 
+	positioning.  Don't adjust scroll region if the icon container
+	is set to a fixed size.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_initialize):
+	Set up desktop icon view to a fixed size and set the allocation
+	of the widget to be our fixed size with an offset of 0, 0
+	
 2000-08-11  Ali Abdin  <aliabdin@aucegypt.edu>
 
         * components/help/converters/gnome-db2html2/ASSUMPTIONS:
