@@ -357,7 +357,6 @@ browser_goto_url_real(GtkWidget *htmlw, const char *url, BrowserInfo *bi)
     }
 
   gtk_html_begin(GTK_HTML(bi->htmlw), url);
-  gtk_html_parse(GTK_HTML(bi->htmlw));
   nautilus_view_frame_request_progress_change(bi->view_frame, &pri);
 }
 
