@@ -1,3 +1,20 @@
+2001-02-27  John Harper  <jsh@eazel.com>
+
+	Fixed bug 6294 (Sidebar gets smaller each time you open a new
+	Window) and probably 6499 (Sidebar grows each time a window is
+	opened):
+
+	* cut-n-paste-code/widgets/e-paned/e-paned.c
+	(e_paned_compute_position): fixed a bug in when it stores the
+	last allocation of the widget. This in turn causes the widget
+	not to do the annoying scaled resizing if the position of the
+	splitter was set before the first size_allocate invocation
+
+	* cut-n-paste-code/widgets/e-paned/README.changes: added this
+	file describing the changes I had to make to the widget
+
+	I'm also going to submit this patch to the gal maintainers
+
 2001-02-27  Andy Hertzfeld  <andy@eazel.com>
 
 	fixed bug 7019, emblem names are not aligned vertically in

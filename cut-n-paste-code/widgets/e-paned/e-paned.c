@@ -606,7 +606,12 @@ e_paned_compute_position(EPaned *paned,
 			      paned->min_position,
 			      paned->max_position);
 
-  paned->last_allocation = allocation;
+  /* Only remember the last allocation if no position has been set
+   * yet, or the last allocation was already previously stored. Otherwise
+   * the second half of the above if can wrongly move the split
+   */
+  if (!paned->position_set || paned->last_allocation >= 0)
+    paned->last_allocation = allocation;
 }
 
 gboolean

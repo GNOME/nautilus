@@ -1,0 +1,25 @@
+
+I had to update this widget to fix an annoying sidebar bug (6294 and
+probably 6499).
+
+This is the patch I applied, so please check this if and when updating
+e-paned from it's original source:
+
+
+--- e-paned.c	1997/01/02 07:38:15	1.1
++++ e-paned.c	2001/02/27 20:17:26
+@@ -606,7 +606,12 @@ e_paned_compute_position(EPaned *paned,
+ 			      paned->min_position,
+ 			      paned->max_position);
+ 
+-  paned->last_allocation = allocation;
++  /* Only remember the last allocation if no position has been set
++   * yet, or the last allocation was already previously stored. Otherwise
++   * the second half of the above if can wrongly move the split
++   */
++  if (!paned->position_set || paned->last_allocation >= 0)
++    paned->last_allocation = allocation;
+ }
+ 
+ gboolean
+
