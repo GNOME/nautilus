@@ -1,0 +1,44 @@
+SUBDIRS=icons
+
+CPPFLAGS =					\
+	-DPREFIX=\"$(prefix)\"
+	-DG_LOG_DOMAIN=\"Nautilus-Services\"
+
+INCLUDES =					\
+	-I$(top_srcdir)				\
+	-I$(top_builddir)			\
+	-I/usr/include/rpm 			\
+	$(GNOMEUI_CFLAGS)                       \
+	$(GCONF_CFLAGS) \
+	$(WERROR)
+
+oafdir = $(datadir)/oaf
+
+oaf_DATA =					\
+	nautilus-service-startup-view.oafinfo
+
+
+bin_PROGRAMS =					\
+	nautilus-service-startup-view
+
+nautilus_service_startup_view_SOURCES =		\
+	nautilus-service-startup-view.h		\
+	nautilus-service-startup-view.c         \
+	eazel-register.h			\
+	eazel-register.c			\
+	main.c
+
+nautilus_service_startup_view_LDFLAGS =			\
+	$(top_builddir)/nautilus-widgets/libnautilus-widgets.la \
+	$(top_builddir)/libnautilus/libnautilus.la	\
+	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
+	$(top_builddir)/librsvg/librsvg.la		\
+	$(BONOBO_LIBS)					\
+	$(GNOMEUI_LIBS)					\
+	$(GCONF_LIBS) \
+	$(VFS_LIBS)					\
+	-lrpm						\
+	-lghttp						\
+	$(OAF_LIBS)
+
+EXTRA_DIST = $(oaf_DATA)

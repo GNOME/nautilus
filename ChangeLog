@@ -1,3 +1,15 @@
+2000-05-09  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/ ALL
+	* nautilus-installer/ ALL
+	Massive reorganization of components/services.  All service components
+	are now broken up into a command-line and a nautilus-view.  Added
+	directories for trilobite, the core service framework.  Added
+	directories for the proof of concept time sync service.  Also added
+	nautilus-installer directory at the base level of nautilus which will
+	contain the bootstrap installer for nautilus and its dependancies. Most
+	these changes are in the build harness yet.
+
 2000-05-09  John Sullivan  <sullivan@eazel.com>
 
 	Finished task 547 (show and set permissions in
