@@ -950,6 +950,11 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 	nautilus_view_frame_request_progress_change
 		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &progress);
 
+	/* Tell interested parties that we've begun loading this directory now.
+	 * Subclasses use this to know that the new metadata is now available.
+	 */
+	gtk_signal_emit (GTK_OBJECT (view), fm_directory_view_signals[BEGIN_LOADING]);
+
 	schedule_timeout_display_of_pending_files (view);
 	view->details->loading = TRUE;
 	nautilus_directory_start_monitoring (view->details->model,

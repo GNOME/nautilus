@@ -62,6 +62,14 @@ struct _FMDirectoryViewListDetails
 #define UP_INDICATOR_VALUE		1
 #define DOWN_INDICATOR_VALUE		2
 
+/* special values for metadata */
+
+#define LIST_VIEW_COLUMN_ICON_METADATA_VALUE		"icon_column"
+#define LIST_VIEW_COLUMN_NAME_METADATA_VALUE		"name_column"
+#define LIST_VIEW_COLUMN_SIZE_METADATA_VALUE		"size_column"
+#define LIST_VIEW_COLUMN_MIME_TYPE_METADATA_VALUE	"type_column"
+#define LIST_VIEW_COLUMN_DATE_MODIFIED_METADATA_VALUE	"date_modified_column"
+
 
 /* forward declarations */
 static void add_to_flist	 		    (FMDirectoryViewList *list_view,
@@ -89,6 +97,7 @@ static void fm_directory_view_list_background_changed_cb
 						     FMDirectoryViewList *list_view);
 static void fm_directory_view_list_begin_adding_entries
 						    (FMDirectoryView *view);
+static void fm_directory_view_list_begin_loading    (FMDirectoryView *view);
 static void fm_directory_view_list_bump_zoom_level  (FMDirectoryView *view, 
 						     gint zoom_increment);
 static gboolean fm_directory_view_list_can_zoom_in  (FMDirectoryView *view);
@@ -110,7 +119,9 @@ static void fm_directory_view_list_set_zoom_level   (FMDirectoryViewList *list_v
 static void fm_directory_view_list_sort_items 	    (FMDirectoryViewList *list_view, 
 				   		     int column, 
 				   		     gboolean reversed);
+int get_column_from_metadata_value 		    (const char *value);
 static GtkFList *get_flist 			    (FMDirectoryViewList *list_view);
+const char *get_metadata_value_from_column 	    (int column);
 static GtkWidget *get_sort_indicator 		    (GtkFList *flist, 
 						     gint column, 
 						     gboolean reverse);
@@ -162,6 +173,7 @@ fm_directory_view_list_initialize_class (gpointer klass)
 	
 	fm_directory_view_class->clear = fm_directory_view_list_clear;	
 	fm_directory_view_class->begin_adding_entries = fm_directory_view_list_begin_adding_entries;	
+	fm_directory_view_class->begin_loading = fm_directory_view_list_begin_loading;
 	fm_directory_view_class->add_entry = fm_directory_view_list_add_entry;	
 	fm_directory_view_class->done_adding_entries = fm_directory_view_list_done_adding_entries;	
 	fm_directory_view_class->get_selection = fm_directory_view_list_get_selection;	
@@ -183,11 +195,12 @@ fm_directory_view_list_initialize (gpointer object, gpointer klass)
 
 	list_view->details = g_new0 (FMDirectoryViewListDetails, 1);
 
-	/* FIXME: These should be read from metadata */
-	list_view->details->sort_column = LIST_VIEW_COLUMN_NAME;
-	list_view->details->sort_reversed = FALSE;
+	/* These initial values are needed so the state is right when
+	 * the metadata is read in later.
+	 */
 	list_view->details->zoom_level = NAUTILUS_ZOOM_LEVEL_SMALLER;
-	
+	list_view->details->sort_column = LIST_VIEW_COLUMN_NONE;
+
 	create_flist (list_view);
 }
 
@@ -238,6 +251,7 @@ compare_rows (GtkCList *clist,
 	int sort_criterion;
   
 	g_return_val_if_fail (GTK_IS_FLIST (clist), 0);
+	g_return_val_if_fail (clist->sort_column != LIST_VIEW_COLUMN_NONE, 0);
 
 	row1 = (GtkCListRow *) ptr1;
 	row2 = (GtkCListRow *) ptr2;
@@ -368,18 +382,8 @@ create_flist (FMDirectoryViewList *list_view)
 		gtk_clist_set_column_widget (clist, i, hbox);
 	}
 
-	g_assert (list_view->details->sort_column != LIST_VIEW_COLUMN_NONE);
-
 	gtk_clist_set_auto_sort (clist, TRUE);
 	gtk_clist_set_compare_func (clist, compare_rows);
-
-	gtk_clist_set_sort_column (clist, list_view->details->sort_column);
-	gtk_clist_set_sort_type (clist, list_view->details->sort_reversed
-		? GTK_SORT_DESCENDING
-		: GTK_SORT_ASCENDING);
-	show_sort_indicator (flist, 
-			     list_view->details->sort_column, 
-			     list_view->details->sort_reversed);
 
 	/* Make height tall enough for icons to look good */
 	gtk_clist_set_row_height (clist, fm_directory_view_list_get_icon_size (list_view));
@@ -572,6 +576,37 @@ fm_directory_view_list_begin_adding_entries (FMDirectoryView *view)
 }
 
 static void
+fm_directory_view_list_begin_loading (FMDirectoryView *view)
+{
+	NautilusDirectory *directory;
+	FMDirectoryViewList *list_view;
+
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (view));
+
+	directory = fm_directory_view_get_model (view);
+	list_view = FM_DIRECTORY_VIEW_LIST (view);
+
+	fm_directory_view_list_set_zoom_level (
+		list_view,
+		nautilus_directory_get_integer_metadata (
+			directory, 
+			LIST_VIEW_ZOOM_LEVEL_METADATA_KEY, 
+			NAUTILUS_ZOOM_LEVEL_SMALLER));
+
+	fm_directory_view_list_sort_items (
+		list_view,
+		get_column_from_metadata_value (
+			nautilus_directory_get_metadata (
+				directory,
+				LIST_VIEW_SORT_COLUMN_METADATA_KEY,
+				LIST_VIEW_COLUMN_NAME_METADATA_VALUE)),
+		nautilus_directory_get_boolean_metadata (
+			directory,
+			LIST_VIEW_SORT_REVERSED_METADATA_KEY,
+			FALSE));
+}
+
+static void
 fm_directory_view_list_add_entry (FMDirectoryView *view, NautilusFile *file)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (view));
@@ -628,6 +663,11 @@ fm_directory_view_list_set_zoom_level (FMDirectoryViewList *list_view,
 		return;
 	
 	list_view->details->zoom_level = new_level;
+	nautilus_directory_set_integer_metadata (
+		fm_directory_view_get_model (FM_DIRECTORY_VIEW (list_view)), 
+		LIST_VIEW_ZOOM_LEVEL_METADATA_KEY, 
+		NAUTILUS_ZOOM_LEVEL_SMALLER,
+		new_level);
 
 	clist = GTK_CLIST (get_flist (list_view));
 	
@@ -665,10 +705,29 @@ fm_directory_view_list_sort_items (FMDirectoryViewList *list_view,
 {
 	GtkFList *flist;
 	GtkCList *clist;
+	NautilusDirectory *directory;
 	
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (list_view));
 	g_return_if_fail (column >= 0);
 	g_return_if_fail (column < GTK_CLIST (get_flist (list_view))->columns);
+
+	if (column == list_view->details->sort_column &&
+	    reversed == list_view->details->sort_reversed)
+	{
+		return;
+	}
+
+	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (list_view));
+	nautilus_directory_set_metadata (
+		directory,
+		LIST_VIEW_SORT_COLUMN_METADATA_KEY,
+		LIST_VIEW_COLUMN_NAME_METADATA_VALUE,
+		get_metadata_value_from_column (column));
+	nautilus_directory_set_boolean_metadata (
+		directory,
+		LIST_VIEW_SORT_REVERSED_METADATA_KEY,
+		FALSE,
+		reversed);
 
 	flist = get_flist (list_view);
 	clist = GTK_CLIST (flist);
@@ -711,6 +770,66 @@ fm_directory_view_list_background_changed_cb (NautilusBackground *background,
 					 color_spec);
 	g_free (color_spec);
 }
+
+/**
+ * Get the string value representing the column, to store in the metadata.
+ * Note that these are not localized on purpose, so that the metadata files
+ * can be shared.
+ * @column: The column index.
+ * 
+ * Return value: The string to be saved in the metadata.
+ */
+const char *
+get_metadata_value_from_column (int column)
+{
+	switch (column)
+	{
+		case LIST_VIEW_COLUMN_ICON:
+			return LIST_VIEW_COLUMN_ICON_METADATA_VALUE;
+		case LIST_VIEW_COLUMN_NAME:
+			return LIST_VIEW_COLUMN_NAME_METADATA_VALUE;
+		case LIST_VIEW_COLUMN_SIZE:
+			return LIST_VIEW_COLUMN_SIZE_METADATA_VALUE;
+		case LIST_VIEW_COLUMN_MIME_TYPE:
+			return LIST_VIEW_COLUMN_MIME_TYPE_METADATA_VALUE;
+		case LIST_VIEW_COLUMN_DATE_MODIFIED:
+			return LIST_VIEW_COLUMN_DATE_MODIFIED_METADATA_VALUE;
+		default:
+			g_assert_not_reached ();
+			return NULL;
+	}
+}
+
+/**
+ * Get the column number given the metadata representation of the column.
+ * Some day the columns might move around, forcing this function to get
+ * more complicated.
+ * @value: The string read from the metadata representing the saved sort column.
+ * 
+ * Return value: The column index.
+ */
+int
+get_column_from_metadata_value (const char *value)
+{
+	if (strcmp (LIST_VIEW_COLUMN_ICON_METADATA_VALUE, value) == 0)
+		return LIST_VIEW_COLUMN_ICON;
+
+	if (strcmp (LIST_VIEW_COLUMN_NAME_METADATA_VALUE, value) == 0)
+		return LIST_VIEW_COLUMN_NAME;
+
+	if (strcmp (LIST_VIEW_COLUMN_SIZE_METADATA_VALUE, value) == 0)
+		return LIST_VIEW_COLUMN_SIZE;
+
+	if (strcmp (LIST_VIEW_COLUMN_MIME_TYPE_METADATA_VALUE, value) == 0)
+		return LIST_VIEW_COLUMN_MIME_TYPE;
+
+	if (strcmp (LIST_VIEW_COLUMN_DATE_MODIFIED_METADATA_VALUE, value) == 0)
+		return LIST_VIEW_COLUMN_DATE_MODIFIED;
+
+	g_assert_not_reached ();
+	return LIST_VIEW_COLUMN_NONE;
+}
+
 
 static GtkWidget *
 get_sort_indicator (GtkFList *flist, gint column, gboolean reverse)

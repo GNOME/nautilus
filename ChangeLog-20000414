@@ -1,3 +1,42 @@
+2000-01-31  John Sullivan <sullivan@eazel.com>
+
+	Now saves/restores zoom level in icon & list views, and
+	sort column & direction in list view.
+
+	* nautilus-metadata.h: New #defines for ICON_VIEW_ZOOM_LEVEL_METADATA_KEY,
+	LIST_VIEW_ZOOM_LEVEL_METADATA_KEY, LIST_VIEW_SORT_COLUMN_METADATA_KEY,
+	LIST_VIEW_SORT_REVERSED_METADATA_KEY.
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_load_uri): Now emits the BEGIN_LOADING signal. This
+	signal was already defined but its use had been removed.
+	
+	* src/file-manager/fm-directory-view-icons.c:
+	(fm_directory_view_icons_set_zoom_level): Stores new zoom level in
+	the metadata.
+	(fm_directory_view_icons_begin_loading): Sets zoom level to the one
+	read from the metadata.
+
+	* src/file-manager/fm-directory-view-list.c:
+	Created #defines for column names stored in metadata.
+	(get_metadata_value_from_column), (get_column_from_metadata_value):
+	Helper functions for converting between column number and string to
+	store in metadata.
+	(fm_directory_view_list_begin_loading): New function: sets zoom level,
+	sort column, and sort direction to the values read from the metadata. 
+	(fm_directory_view_initialize_class): Wire up begin_loading function 
+	pointer.
+	(fm_directory_view_initialize): Change initial value of sort column
+	to LIST_VIEW_COLUMN_NONE, so when it changes later the right updating
+	will occur.
+	(compare_rows): Added another g_return_val_if_fail condition.
+	(create_flist): Removed some of the sorting set-up; it is now done
+	in begin_loading instead.
+	(fm_directory_view_list_set_zoom_level): Stores new zoom level in
+	the metadata.
+	(fm_directory_view_list_sort_items): Stores new sort column and
+	direction in metadata.
+
 2000-01-31  Andy Hertzfeld <andy@eazel.com>
 
         implemented the "select all" command in the context menus
