@@ -1,3 +1,16 @@
+2001-03-22  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 7843 (Name changes to Home icon are lost when 
+	user level changes)
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(update_link_and_delete_copies): Made name parameter of NULL
+	mean "don't require name to match"; added comment.
+	(update_home_link_and_delete_copies): pass NULL for name
+	to update_link_and_delete_copies.
+
 2001-03-22  Eskil Olsen  <eskil@eazel.com
 
 	reviewed by: a donkey

@@ -722,6 +722,16 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 	gnome_uri_list_free_strings (uri_list);
 }
 
+/* update_link_and_delete_copies
+ * 
+ * Look for a particular type of link on the desktop. If the right
+ * link is there, update its target URI. Delete any extra links of
+ * that type.
+ * 
+ * @is_link_function: predicate function to test whether a link is the right type.
+ * @link_name: if non-NULL, only a link with this name is considered a match.
+ * @link_target_uri: new URI to set as link target.
+ */
 static gboolean
 update_link_and_delete_copies (gboolean (*is_link_function) (const char *path),
 			       const char *link_name,
@@ -746,7 +756,8 @@ update_link_and_delete_copies (gboolean (*is_link_function) (const char *path),
 	while ((dir_entry = readdir (dir)) != NULL) {
 		link_path = nautilus_make_path (desktop_path, dir_entry->d_name);
 		if ((* is_link_function) (link_path)) {
-			if (strcmp (dir_entry->d_name, link_name) == 0) {
+			if (!found_link &&
+			     (link_name == NULL || strcmp (dir_entry->d_name, link_name) == 0)) {
 				nautilus_link_local_set_link_uri (link_path, link_target_uri);
 				found_link = TRUE;
 			} else {
@@ -788,7 +799,7 @@ update_home_link_and_delete_copies (void)
 	home_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
 	
 	if (!update_link_and_delete_copies (nautilus_link_local_is_home_link,
-					    home_link_name,
+					    NULL,
 					    home_uri)) {
 		nautilus_link_local_create (desktop_path,
 					    home_link_name,
