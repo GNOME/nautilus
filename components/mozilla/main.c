@@ -73,17 +73,7 @@ mozilla_make_object (BonoboGenericFactory *factory,
 static gboolean
 mozilla_check_environment (void)
 {
-	gboolean rv = FALSE;
-	char *mozilla_five_home;
-	
-	mozilla_five_home = g_getenv ("MOZILLA_FIVE_HOME");
-
-	if (mozilla_five_home) {
-		rv = TRUE;
-		g_free (mozilla_five_home);
-	}
-
-	return rv;
+	return g_getenv ("MOZILLA_FIVE_HOME") != NULL;
 }
 
 int

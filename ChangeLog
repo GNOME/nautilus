@@ -1,3 +1,19 @@
+2000-08-04  Darin Adler  <darin@eazel.com>
+
+	* components/html/glibwww-init.c:
+	Added a declaration to work around a bug or version issue that
+	some Solaris hackers ran into with glibwww.
+	* components/mozilla/main.c: (mozilla_check_environment):
+	Fixed a bug where we g_free the result of g_getenv.
+	* helper-utilities/authenticate/nautilus-authenticate-pam.c:
+	Changed includes so this builds for some Solaris versions
+	(doesn't seem to create any problem compiling elsewhere).
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_clear_from_row): Got rid of an overzealous
+	assert that wasn't doing us any good.
+	* src/nautilus-first-time-druid.c: (set_up_user_level_page):
+	Fixed a broken assert.
+
 2000-08-04  John Sullivan  <sullivan@eazel.com>
 
 	Fixed demo bug 1908: Title in sidebar vanishes on theme change.
@@ -21,12 +37,11 @@
 2000-08-04  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/nautilus-sidebar-title.c: (update_font):
-
 	Revert the font change since the font I picked is not available on
 	all platforms.  Ill make a better fix soon.  In the mean time this
 	should fix the torrent of assertions.
 	
-2000-08-04  Mathieu Lacage  <set EMAIL_ADDRESS environment variable>
+2000-08-04  Mathieu Lacage  <mathieu@eazel.com>
 
 	first draft at the 1744 and 1761 tasks.
 	They depend on another one I have to finish first to mek them 
@@ -321,8 +336,7 @@
 
 2000-08-03  Michael K. Fleming  <mfleming@eazel.com>
 
-	*
-	components/services/install/command-line/eazel-alt-install-corba.c:
+	* components/services/install/command-line/eazel-alt-install-corba.c:
 	(get_password_dude):
 	* components/services/time/command-line/main.c: (get_password):
 	* components/services/trilobite/sample/command-line/main.c:

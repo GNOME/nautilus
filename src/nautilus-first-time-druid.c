@@ -179,7 +179,7 @@ set_up_user_level_page (NautilusDruidPageStandard *page)
 	g_assert (user_level_icons[1] != NULL);
 
 	user_level_icons[2] = create_named_pixbuf ("expert.png");
-	g_assert (user_level_icons[3] != NULL);
+	g_assert (user_level_icons[2] != NULL);
 
 	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("Novice"));
 	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("Intermediate"));

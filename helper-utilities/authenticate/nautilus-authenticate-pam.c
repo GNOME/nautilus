@@ -27,7 +27,8 @@
 #include "nautilus-authenticate.h"
 
 #include <security/pam_appl.h>
-#include <security/pam_misc.h>
+#include <security/pam_modules.h>
+#include <string.h>
 
 typedef struct _PamConvData
 {

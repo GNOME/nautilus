@@ -20,6 +20,11 @@
 #include <glib.h>
 #include "glibwww.h"
 
+/* For some reason, the folks at Sun are missing this declaration.
+ * Rather than figure out why, I just decided to add it here.
+ */
+extern HTCoder HTZLib_inflate;
+
 #ifndef FTP_PORT
 #define FTP_PORT        21
 #endif

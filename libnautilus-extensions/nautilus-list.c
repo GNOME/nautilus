@@ -2230,7 +2230,6 @@ nautilus_list_clear_from_row (NautilusList *list, int row_index,
 			  first_column_plain_rectangle.x, first_column_plain_rectangle.y, 
 			  first_column_plain_rectangle.width, first_column_plain_rectangle.height);
 	}
-	g_assert (selected_column_rectangle.width > 0);
 	/* draw the selected column if non-empty */
 	if (selected_column_rectangle.width > 0) {
 		gdk_draw_rectangle (clist->clist_window, selected_column_gc, TRUE,
