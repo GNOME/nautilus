@@ -87,8 +87,8 @@ nautilus_SOURCES = \
 	nautilus-navigation-window-menus.c      \
 	nautilus-navigation-window.c            \
 	nautilus-navigation-window.h            \
-	nautilus-notes-sidebar.c		\
-	nautilus-notes-sidebar.h		\
+	nautilus-notes-viewer.c			\
+	nautilus-notes-viewer.h			\
 	nautilus-profiler.c			\
 	nautilus-profiler.h			\
 	nautilus-property-browser.c     	\
