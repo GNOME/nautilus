@@ -253,7 +253,7 @@ forget_file_activation_uri (NautilusFile *file)
 	GList *attributes;
 
 	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
-	nautilus_file_forget_attributes (file, attributes);
+	nautilus_file_invalidate_attributes (file, attributes);
 	g_list_free (attributes);
 }
 

@@ -1131,6 +1131,8 @@ update_info_internal (NautilusFile *file,
 		return TRUE;
 	}
 
+	file->details->file_info_is_up_to_date = TRUE;
+
 	if (file->details->info != NULL
 	    && gnome_vfs_file_info_matches (file->details->info, info)) {
 		return FALSE;
@@ -4254,66 +4256,46 @@ nautilus_file_cancel_call_when_ready (NautilusFile *file,
 }
 
 static void
-forget_directory_count (NautilusFile *file)
+invalidate_directory_count (NautilusFile *file)
 {
-	file->details->directory_count_failed = FALSE;
-	file->details->directory_count = 0;
-	file->details->got_directory_count = FALSE;
+	file->details->directory_count_is_up_to_date = FALSE;
 }
 
 
 static void
-forget_deep_counts (NautilusFile *file)
+invalidate_deep_counts (NautilusFile *file)
 {
-	file->details->deep_directory_count = 0;
-	file->details->deep_file_count = 0;
-	file->details->deep_unreadable_count = 0;
-	file->details->deep_size = 0;
 	file->details->deep_counts_status = NAUTILUS_REQUEST_NOT_STARTED;
 }
 
 static void
-forget_mime_list (NautilusFile *file)
+invalidate_mime_list (NautilusFile *file)
 {
-	nautilus_g_list_free_deep (file->details->mime_list);
-	file->details->mime_list = NULL;
-	file->details->got_mime_list = FALSE;
-	file->details->mime_list_failed = FALSE;
+	file->details->mime_list_is_up_to_date = FALSE;
 }
 
 static void
-forget_top_left_text (NautilusFile *file)
+invalidate_top_left_text (NautilusFile *file)
 {
-	g_free (file->details->top_left_text);
-	file->details->top_left_text = NULL;
-	file->details->got_top_left_text = FALSE;
+	file->details->top_left_text_is_up_to_date = FALSE;
 }
 
 static void
-forget_file_info (NautilusFile *file)
+invalidate_file_info (NautilusFile *file)
 {
-	remove_from_link_hash_table (file);
-
-	if (file->details->info != NULL) {
-		gnome_vfs_file_info_unref (file->details->info);
-		file->details->info = NULL;
-	}
-	file->details->get_info_failed = FALSE;
-	file->details->get_info_error = GNOME_VFS_OK;
+	file->details->file_info_is_up_to_date = FALSE;
 }
 
 static void
-forget_activation_uri (NautilusFile *file)
+invalidate_activation_uri (NautilusFile *file)
 {
-	g_free (file->details->activation_uri);
-	file->details->activation_uri = NULL;
-	file->details->got_activation_uri = FALSE;
+	file->details->activation_uri_is_up_to_date = FALSE;
 }
 
 
 void
-nautilus_file_forget_attributes_internal (NautilusFile *file,
-					  GList *file_attributes)
+nautilus_file_invalidate_attributes_internal (NautilusFile *file,
+					      GList *file_attributes)
 {
 	Request request;
 
@@ -4324,30 +4306,30 @@ nautilus_file_forget_attributes_internal (NautilusFile *file,
 	nautilus_directory_set_up_request (&request, file_attributes);
 
 	if (request.directory_count) {
-		forget_directory_count (file);
+		invalidate_directory_count (file);
 	}
 	if (request.deep_count) {
-		forget_deep_counts (file);
+		invalidate_deep_counts (file);
 	}
 	if (request.mime_list) {
-		forget_mime_list (file);
+		invalidate_mime_list (file);
 	}
 	if (request.file_info) {
-		forget_file_info (file);
+		invalidate_file_info (file);
 	}
 	if (request.top_left_text) {
-		forget_top_left_text (file);
+		invalidate_top_left_text (file);
 	}
 	if (request.activation_uri) {
-		forget_activation_uri (file);
+		invalidate_activation_uri (file);
 	}
 
-	/* FIXME bugzilla.eazel.com 5075: implement forgetting metadata */
+	/* FIXME bugzilla.eazel.com 5075: implement invalidating metadata */
 }
 
 
 /**
- * nautilus_file_forget_attributes
+ * nautilus_file_invalidate_attributes
  * 
  * Invalidate the specified attributes and force a reload.
  * @file: NautilusFile representing the file in question.
@@ -4355,7 +4337,7 @@ nautilus_file_forget_attributes_internal (NautilusFile *file,
  **/
 
 void
-nautilus_file_forget_attributes (NautilusFile *file,
+nautilus_file_invalidate_attributes (NautilusFile *file,
 				 GList        *file_attributes)
 {
 	/* Cancel possible in-progress loads of any of these attributes */
@@ -4363,15 +4345,15 @@ nautilus_file_forget_attributes (NautilusFile *file,
 							   file,
 							   file_attributes);
 
-	/* Actually forget the values */
-	nautilus_file_forget_attributes_internal (file, file_attributes);
+	/* Actually invalidate the values */
+	nautilus_file_invalidate_attributes_internal (file, file_attributes);
 	
 	/* Kick off I/O if necessary */
 	nautilus_directory_async_state_changed (file->details->directory);
 }
 
 void
-nautilus_file_forget_all_attributes (NautilusFile *file)
+nautilus_file_invalidate_all_attributes (NautilusFile *file)
 {
 	GList *attributes;
 
@@ -4387,7 +4369,7 @@ nautilus_file_forget_all_attributes (NautilusFile *file)
         attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES);
         attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_METADATA);
 	
-	nautilus_file_forget_attributes (file, attributes);
+	nautilus_file_invalidate_attributes (file, attributes);
 
 	g_list_free (attributes);
 }

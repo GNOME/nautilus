@@ -1359,10 +1359,10 @@ nautilus_window_begin_location_change (NautilusWindow *window,
         nautilus_window_allow_stop (window, TRUE);
 
         if (type == NAUTILUS_LOCATION_CHANGE_RELOAD && window->details->viewed_file != NULL) {
-                /* If we are reloading, forget all we know about the
+                /* If we are reloading, invalidate all we know about the
                  * file so we learn about new mime types, contents, etc. 
                  */
-                nautilus_file_forget_all_attributes (window->details->viewed_file);
+                nautilus_file_invalidate_all_attributes (window->details->viewed_file);
         }        
 
         /* If we just set the cancel tag in the obvious way here we run into

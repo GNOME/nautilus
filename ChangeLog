@@ -1,3 +1,60 @@
+2000-12-11  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+	Fix bug 4919 (Tree view crashes when you expand and collapse the
+	root node). I did this by changing the design of file attribute
+	forgetting, which I implemented recently - now when you forget an
+	attribute, it is merely marked out of date, not thrown away; the
+	old value is still available until the fresh value is actually
+	loaded. This fixes other potential UI problems with the old
+	approach but I am not sure if bugs were filed for those.
+
+	* libnautilus-extensions/nautilus-file-private.h: Added new
+	is_up_to_date booleans, converted all booleans and the
+	RequestStatus enum to bitfields. This saved 200-300k or so for me
+	on runs of Nautilus with the tree view on and expanded a lot.
+
+	* libnautilus-extensions/nautilus-file.h,
+	libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_invalidate_attributes_internal,
+	nautilus_file_invalidate_attributes,
+	nautilus_file_invalidate_all_attributes): Renamed to match new
+	semantics.
+	(update_info_internal): Mark file info up to date.
+	(invalidate_directory_count), (invalidate_deep_counts),
+	(invalidate_mime_list), (invalidate_top_left_text),
+	(invalidate_file_info), (invalidate_activation_uri): renamed from
+	forget_*, and changed to only mark the attributes invalid, not
+	actually throw them out.
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(lacks_directory_count, lacks_top_left, lacks_info,
+	lacks_mime_list, lacks_activation_uri): Check _is_up_to_date bit
+	for relevant attribute, not got_ or _failed bits. If the info is
+	out of date, we want to retry eve if we already got it or it
+	already failed.
+	(directory_count_callback, mime_list_callback,
+	top_left_read_callback, get_info_callback,
+	activation_uri_read_done): Mark corresponding attributes up to
+	date.
+	(dequeue_pending_idle_callback): Mark directory_count and
+	mime_list up to date if appropriate.
+	(file_info_start): Mark file info up to date on invalid URI error.
+	(nautilus_directory_invalidate_counts): Mark directory count and
+	mime list out of date, but do not forget them.
+
+	(nautilus_directory_invalidate_file_attributes): Renamed.
+	(nautilus_directory_force_reload): Deal with rename.
+	(cancel_loading_attributes,
+	nautilus_directory_cancel_loading_file_attributes): Replace forget
+	with invalidate in some comments.
+
+	* libnautilus-extensions/nautilus-link.c
+	(forget_file_activation_uri): Handle function renames.
+	* src/nautilus-window-manage-views.c
+	(nautilus_window_begin_location_change): Likewise
+
 2000-12-11  Eskil Olsen  <eskil@eazel.com>
 	
 	* components/services/install/lib/eazel-package-system-rpm3-private

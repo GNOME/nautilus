@@ -1286,11 +1286,14 @@ dequeue_pending_idle_callback (gpointer callback_data)
 		nautilus_directory_emit_done_loading (directory);
 
 		file = directory->details->load_directory_file;
+
 		if (file != NULL) {
+			file->details->directory_count_is_up_to_date = TRUE;
 			file->details->got_directory_count = TRUE;
 			file->details->directory_count = directory->details->load_file_count;
 
 			file->details->got_mime_list = TRUE;
+			file->details->mime_list_is_up_to_date = TRUE;
 			file->details->mime_list = istr_set_get_as_list
 				(directory->details->load_mime_list_hash);
 
@@ -1637,6 +1640,8 @@ directory_count_callback (GnomeVFSAsyncHandle *handle,
 		return;
 	}
 
+	count_file->details->directory_count_is_up_to_date = TRUE;
+
 	/* Record either a failure or success. */
 	if (result != GNOME_VFS_ERROR_EOF) {
 		count_file->details->directory_count_failed = TRUE;
@@ -1779,8 +1784,7 @@ static gboolean
 lacks_directory_count (NautilusFile *file)
 {
 	return nautilus_file_is_directory (file)
-		&& !file->details->got_directory_count
-		&& !file->details->directory_count_failed;
+		&& !file->details->directory_count_is_up_to_date;
 }
 
 static gboolean
@@ -1801,7 +1805,7 @@ lacks_top_left (NautilusFile *file)
 {
 	return nautilus_file_should_get_top_left_text (file)
 		&& nautilus_file_contains_text (file)
-		&& !file->details->got_top_left_text;
+		&& !file->details->top_left_text_is_up_to_date;
 }
 
 static gboolean
@@ -1813,9 +1817,8 @@ wants_top_left (const Request *request)
 static gboolean
 lacks_info (NautilusFile *file)
 {
-	return file->details->info == NULL
-		&& !file->details->is_gone
-		&& !file->details->get_info_failed;
+	return !file->details->file_info_is_up_to_date
+		&& !file->details->is_gone;
 }
 
 static gboolean
@@ -1841,8 +1844,7 @@ static gboolean
 lacks_mime_list (NautilusFile *file)
 {
 	return nautilus_file_is_directory (file)
-		&& !file->details->got_mime_list
-		&& !file->details->mime_list_failed;
+		&& !file->details->mime_list_is_up_to_date;
 }
 
 static gboolean
@@ -1862,7 +1864,7 @@ static gboolean
 lacks_activation_uri (NautilusFile *file)
 {
 	return file->details->info != NULL
-		&& !file->details->got_activation_uri;
+		&& !file->details->activation_uri_is_up_to_date;
 }
 
 static gboolean
@@ -2178,11 +2180,9 @@ nautilus_directory_invalidate_counts (NautilusDirectory *directory)
 			mime_list_cancel (parent_directory);
 		}
 
-		file->details->got_directory_count = FALSE;
-		file->details->directory_count_failed = FALSE;
+		file->details->directory_count_is_up_to_date = FALSE;
 		file->details->deep_counts_status = NAUTILUS_REQUEST_NOT_STARTED;
-		file->details->got_mime_list = FALSE;
-		file->details->mime_list_failed = FALSE;
+		file->details->mime_list_is_up_to_date = FALSE;
 
 		nautilus_file_unref (file);
 
@@ -2191,21 +2191,21 @@ nautilus_directory_invalidate_counts (NautilusDirectory *directory)
 }
 
 static void
-nautilus_directory_forget_file_attributes (NautilusDirectory *directory,
-					   GList             *file_attributes)
+nautilus_directory_invalidate_file_attributes (NautilusDirectory *directory,
+					       GList             *file_attributes)
 {
 	GList *node;
 
 	cancel_loading_attributes (directory, file_attributes);
 
 	for (node = directory->details->file_list; node != NULL; node = node->next) {
-		nautilus_file_forget_attributes_internal (NAUTILUS_FILE (node->data),
-							  file_attributes);
+		nautilus_file_invalidate_attributes_internal (NAUTILUS_FILE (node->data),
+							      file_attributes);
 	}
 
 	if (directory->details->as_file != NULL) {
-		nautilus_file_forget_attributes_internal (directory->details->as_file,
-							  file_attributes);
+		nautilus_file_invalidate_attributes_internal (directory->details->as_file,
+							      file_attributes);
 	}
 }
 
@@ -2213,8 +2213,8 @@ void
 nautilus_directory_force_reload (NautilusDirectory *directory,
 				 GList             *file_attributes)
 {
-	/* forget attributes that are getting reloaded for all files */
-	nautilus_directory_forget_file_attributes (directory, file_attributes);
+	/* invalidate attributes that are getting reloaded for all files */
+	nautilus_directory_invalidate_file_attributes (directory, file_attributes);
 
 	/* Start a new directory load. */
 	file_list_cancel (directory);
@@ -2633,6 +2633,8 @@ mime_list_callback (GnomeVFSAsyncHandle *handle,
 		return;
 	}
 
+	file->details->mime_list_is_up_to_date = TRUE;
+
 	/* Record either a failure or success. */
 	nautilus_g_list_free_deep (file->details->mime_list);
 	if (result != GNOME_VFS_ERROR_EOF) {
@@ -2766,6 +2768,8 @@ top_left_read_callback (GnomeVFSResult result,
 
 	directory->details->top_left_read_state->handle = NULL;
 
+	directory->details->top_left_read_state->file->details->top_left_text_is_up_to_date = TRUE;
+
 	if (result == GNOME_VFS_OK) {
 		g_free (directory->details->top_left_read_state->file->details->top_left_text);
 		directory->details->top_left_read_state->file->details->top_left_text =
@@ -2865,9 +2869,13 @@ get_info_callback (GnomeVFSAsyncHandle *handle,
 	 * least long enough to send the change notification. 
 	 */
 	nautilus_file_ref (get_info_file);
-	
+
 	result = results->data;
+
 	if (result->result != GNOME_VFS_OK) {
+		get_info_file->details->file_info_is_up_to_date = TRUE;
+		gnome_vfs_file_info_unref (get_info_file->details->info);
+		get_info_file->details->info = NULL;
 		get_info_file->details->get_info_failed = TRUE;
 		get_info_file->details->get_info_error = result->result;
 		if (result->result == GNOME_VFS_ERROR_NOT_FOUND) {
@@ -2924,6 +2932,7 @@ file_info_start (NautilusDirectory *directory)
 		g_free (uri);
 		
 		if (vfs_uri == NULL) {
+			file->details->file_info_is_up_to_date = TRUE;
 			file->details->get_info_failed = TRUE;
 			file->details->get_info_error = GNOME_VFS_ERROR_INVALID_URI;
 			nautilus_file_changed (file);
@@ -2968,6 +2977,7 @@ activation_uri_read_done (NautilusDirectory *directory,
 	NautilusFile *file;
 
 	file = directory->details->activation_uri_read_state->file;
+	file->details->activation_uri_is_up_to_date = TRUE;
 
 	g_free (directory->details->activation_uri_read_state);
 	directory->details->activation_uri_read_state = NULL;
@@ -3271,7 +3281,7 @@ cancel_loading_attributes (NautilusDirectory *directory,
 	}
 	
 	/* FIXME bugzilla.eazel.com 5064: implement cancelling metadata when we
-	   implement forgetting metadata */
+	   implement invalidating metadata */
 }
 
 void
@@ -3304,5 +3314,5 @@ nautilus_directory_cancel_loading_file_attributes (NautilusDirectory *directory,
 	}
 
 	/* FIXME bugzilla.eazel.com 5064: implement cancelling metadata when we
-	   implement forgetting metadata */
+	   implement invalidating metadata */
 }

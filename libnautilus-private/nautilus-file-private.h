@@ -24,43 +24,29 @@
 
 #include "nautilus-file.h"
 #include "nautilus-directory.h"
+#include "nautilus-glib-extensions.h"
 
 struct NautilusFileDetails
 {
 	NautilusDirectory *directory;
-	gboolean unconfirmed;
-
-	gboolean is_gone;
 	char *relative_uri;
 	
 	/* Set by the NautilusDirectory while it's loading the file
 	 * list so the file knows not to do redundant I/O.
 	 */
-	gboolean loading_directory;
 
 	GnomeVFSFileInfo *info;
-	gboolean get_info_failed;
 	GnomeVFSResult get_info_error;
 
-	gboolean got_directory_count;
-	gboolean directory_count_failed;
 	guint directory_count;
 
-	NautilusRequestStatus deep_counts_status;
 	guint deep_directory_count;
 	guint deep_file_count;
 	guint deep_unreadable_count;
 	GnomeVFSFileSize deep_size;
 
-	/* If this is a directory, the list of MIME types in it. */
-	GList *mime_list;
-	gboolean got_mime_list;
-	gboolean mime_list_failed;
-
-	gboolean got_top_left_text;
+	GList *mime_list; 	/* If this is a directory, the list of MIME types in it. */
 	char *top_left_text;
-
-	gboolean got_activation_uri;
 	char *activation_uri;
 
 	/* The following is for file operations in progress. Since
@@ -69,6 +55,35 @@ struct NautilusFileDetails
 	 * file objects small.
 	 */
 	GList *operations_in_progress;
+
+	/* boolean fields: bitfield to save space, since there can be
+           many NautilusFile objects. */
+
+	nautilus_boolean_bit unconfirmed                   : 1;
+	nautilus_boolean_bit is_gone                       : 1;
+	nautilus_boolean_bit loading_directory             : 1;
+	/* got_info known from info field being non-NULL */
+	nautilus_boolean_bit get_info_failed               : 1;
+	nautilus_boolean_bit file_info_is_up_to_date       : 1;
+
+	nautilus_boolean_bit got_directory_count           : 1;
+	nautilus_boolean_bit directory_count_failed        : 1;
+	nautilus_boolean_bit directory_count_is_up_to_date : 1;
+
+	NautilusRequestStatus deep_counts_status           : 2;
+	/* no deep_counts_are_up_to_date field; since we expose
+           intermediate values for this attribute, we do actually
+           forget it rather than invalidating. */
+
+	nautilus_boolean_bit got_mime_list                 : 1;
+	nautilus_boolean_bit mime_list_failed              : 1;
+	nautilus_boolean_bit mime_list_is_up_to_date       : 1;
+
+	nautilus_boolean_bit got_top_left_text             : 1;
+	nautilus_boolean_bit top_left_text_is_up_to_date   : 1;
+
+	nautilus_boolean_bit got_activation_uri            : 1;
+	nautilus_boolean_bit activation_uri_is_up_to_date  : 1;
 };
 
 #define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_CHARACTERS_PER_LINE 80
@@ -86,8 +101,7 @@ gboolean      nautilus_file_contains_text            (NautilusFile      *file);
 
 /* Compare file's state with a fresh file info struct, return FALSE if
  * no change, update file and return TRUE if the file info contains
- * new state.
- */
+ * new state.  */
 gboolean      nautilus_file_update_info              (NautilusFile      *file,
 						      GnomeVFSFileInfo  *info);
 gboolean      nautilus_file_update_name              (NautilusFile      *file,
@@ -98,9 +112,9 @@ gboolean      nautilus_file_update_name              (NautilusFile      *file,
  */
 gboolean      nautilus_file_should_get_top_left_text (NautilusFile      *file);
 
-/* Forget specified attributes for this file without canceling current
+/* Mark specified attributes for this file out of date without canceling current
  * I/O or kicking off new I/O.
  */
-void          nautilus_file_forget_attributes_internal (NautilusFile *file,
-							GList        *file_attributes);
+void          nautilus_file_invalidate_attributes_internal (NautilusFile *file,
+							    GList        *file_attributes);
 
