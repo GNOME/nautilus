@@ -235,7 +235,7 @@ nautilus_directory_read_metafile (NautilusDirectory *directory)
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 
 	result = nautilus_directory_try_to_read_metafile (directory);
-	if (result == GNOME_VFS_ERROR_ACCESSDENIED && !directory->details->is_alternate_metafile_uri)
+	if (result != GNOME_VFS_OK && !directory->details->is_alternate_metafile_uri)
 		if (nautilus_directory_switch_to_alternate_metafile_uri (directory))
 			result = nautilus_directory_try_to_read_metafile (directory);
 

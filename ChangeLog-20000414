@@ -1,7 +1,13 @@
 2000-01-18  Andy Hertzfeld <andy@eazel.com>
 
-        * libnautilus/nautilus-directory.c
+        * libnautilus/nautilus-directory:
+        * made reading metafile from directory where we don't have write
+        permissions work by changing error-check to look in common place on
+        any error instead of just access_denied.
         
+2000-01-18  Andy Hertzfeld <andy@eazel.com>
+
+        * libnautilus/nautilus-directory.c:
         fixed bug caused by Elliot where he used alloca but forgot to remove g_free
         
 2000-01-18  Elliot Lee  <sopwith@redhat.com>
