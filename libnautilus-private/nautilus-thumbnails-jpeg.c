@@ -32,8 +32,12 @@
 #include <setjmp.h>
 
 #include <stdio.h>
-/* Some versions of libjpeg seem to have jconfig.h in the public header */
-#define JCONFIG_INCLUDED
+
+/* Workaround broken libjpeg defining these that may
+ * collide w/ the ones in config.h
+ */
+#undef HAVE_STDDEF_H
+#undef HAVE_STDLIB_H
 #include <jpeglib.h>
 
 #include <libgnomevfs/gnome-vfs-types.h>
