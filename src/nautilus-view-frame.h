@@ -122,6 +122,9 @@ double             nautilus_view_frame_get_max_zoom_level        (NautilusViewFr
 gboolean           nautilus_view_frame_get_has_min_zoom_level    (NautilusViewFrame   *view);
 gboolean           nautilus_view_frame_get_has_max_zoom_level    (NautilusViewFrame   *view);
 gboolean           nautilus_view_frame_get_is_continuous         (NautilusViewFrame   *view);
+Nautilus_View	   nautilus_view_frame_get_view			 (NautilusViewFrame   *view);
+Bonobo_Control	   nautilus_view_frame_get_control		 (NautilusViewFrame   *view);
+
 GList *            nautilus_view_frame_get_preferred_zoom_levels (NautilusViewFrame   *view);
 void               nautilus_view_frame_zoom_in                   (NautilusViewFrame   *view);
 void               nautilus_view_frame_zoom_out                  (NautilusViewFrame   *view);

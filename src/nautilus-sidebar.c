@@ -33,12 +33,14 @@
 #include "nautilus-link-set-window.h"
 #include "nautilus-sidebar-tabs.h"
 #include "nautilus-sidebar-title.h"
+
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gnome-xml/parser.h>
 #include <gtk/gtkcheckmenuitem.h>
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtknotebook.h>
+#include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-application-registry.h>
@@ -67,6 +69,7 @@
 #include <libnautilus-extensions/nautilus-trash-monitor.h>
 #include <libnautilus-extensions/nautilus-view-identifier.h>
 #include <liboaf/liboaf.h>
+
 #include <math.h>
 
 struct NautilusSidebarDetails {
@@ -819,6 +822,15 @@ nautilus_sidebar_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 	}
 }
 
+static void
+view_loaded_callback (NautilusViewFrame *view_frame, gpointer user_data)
+{
+	NautilusSidebar *sidebar;
+	
+	sidebar = NAUTILUS_SIDEBAR (user_data);	
+	nautilus_sidebar_tabs_connect_view (sidebar->details->sidebar_tabs, GTK_WIDGET (view_frame));
+}
+
 /* add a new panel to the sidebar */
 void
 nautilus_sidebar_add_panel (NautilusSidebar *sidebar, NautilusViewFrame *panel)
@@ -835,7 +847,9 @@ nautilus_sidebar_add_panel (NautilusSidebar *sidebar, NautilusViewFrame *panel)
 	label = gtk_label_new (description);
 
 	gtk_widget_show (label);
-	
+
+	gtk_signal_connect (GTK_OBJECT (panel), "view_loaded", view_loaded_callback, sidebar);
+			
 	gtk_notebook_append_page (GTK_NOTEBOOK (sidebar->details->notebook),
 				  GTK_WIDGET (panel), label);
 	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (sidebar->details->notebook),
@@ -844,11 +858,11 @@ nautilus_sidebar_add_panel (NautilusSidebar *sidebar, NautilusViewFrame *panel)
 	/* tell the index tabs about it */
 	nautilus_sidebar_tabs_add_view (sidebar->details->sidebar_tabs,
 					_(description), GTK_WIDGET (panel), page_num);
-	
-	g_free (description);
 
+	g_free (description);
 	gtk_widget_show (GTK_WIDGET (panel));
 }
+
 
 /* remove the passed-in panel from the sidebar */
 void
@@ -1524,7 +1538,6 @@ background_metadata_changed_callback (NautilusSidebar *sidebar)
 }
 
 /* here is the key routine that populates the sidebar with the appropriate information when the uri changes */
-
 void
 nautilus_sidebar_set_uri (NautilusSidebar *sidebar, 
 			  const char* new_uri,

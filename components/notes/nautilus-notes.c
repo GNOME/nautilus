@@ -56,12 +56,70 @@
 
 typedef struct {
         NautilusView *view;
+	BonoboPropertyBag *property_bag;
         GtkWidget *note_text_field;
+        gboolean has_text;
         char *uri;
         NautilusFile *file;
 } Notes;
 
 static int notes_object_count = 0;
+
+/* property bag getting and setting routines */
+enum {
+	TAB_IMAGE,
+} MyArgs;
+
+static char*
+notes_get_indicator_image (Notes *notes)
+{
+	if (notes->has_text) {
+		return g_strdup ("bullet.png");
+	} else {
+		return g_strdup ("empty.png");
+	}
+	return NULL;
+}
+
+static void
+get_bonobo_properties (BonoboPropertyBag *bag,
+			BonoboArg *arg,
+			guint arg_id,
+			CORBA_Environment *ev,
+			gpointer user_data)
+{
+        char *indicator_image;
+        Notes *notes;
+	notes = (Notes*) user_data;
+	
+	switch (arg_id) {
+
+		case TAB_IMAGE:
+		{
+			/* if there is a note, return the name of the indicator image,
+			   otherwise, return NULL */
+
+			indicator_image = notes_get_indicator_image (notes);
+			BONOBO_ARG_SET_STRING (arg, indicator_image);					
+			g_free (indicator_image);
+			break;
+		}
+		
+		default:
+			g_warning ("Unhandled arg %d", arg_id);
+			break;
+	}
+}
+
+static void
+set_bonobo_properties (BonoboPropertyBag *bag,
+			const BonoboArg *arg,
+			guint arg_id,
+			CORBA_Environment *ev,
+			gpointer user_data)
+{
+	g_warning ("Cant set note property %d", arg_id);
+}
 
 static void
 finish_loading_note (NautilusFile *file,
@@ -69,7 +127,8 @@ finish_loading_note (NautilusFile *file,
 {
         Notes *notes;
         int position;
-        char *notes_text;
+        char *notes_text, *tab_image;
+	BonoboArg *tab_image_arg;
 
         g_assert (NAUTILUS_IS_FILE (file));
 
@@ -78,12 +137,31 @@ finish_loading_note (NautilusFile *file,
 
         notes_text = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_ANNOTATION, "");
         position = 0;
-        gtk_editable_insert_text (GTK_EDITABLE (notes->note_text_field),
+        if (notes_text != NULL && strlen (notes_text) > 0) {
+        	gtk_editable_insert_text (GTK_EDITABLE (notes->note_text_field),
                                   notes_text,
                                   strlen (notes_text),
                                   &position);
-	g_free (notes_text);
+		g_free (notes_text);
+		notes->has_text = TRUE;
+	} else {
+		notes->has_text = FALSE;
+	}
 
+/* notify listeners if has_text status has changed */
+
+	tab_image = notes_get_indicator_image (notes);	
+	
+	g_message ("has text is %d, tab image is %s", notes->has_text, tab_image);
+	
+	tab_image_arg = bonobo_arg_new (BONOBO_ARG_STRING);
+	BONOBO_ARG_SET_STRING (tab_image_arg, tab_image);			
+	
+	bonobo_property_bag_notify_listeners (notes->property_bag, "tab_image", tab_image_arg, NULL);
+	
+	bonobo_arg_release (tab_image_arg);
+	g_free (tab_image);
+	
 /* FIXME bugzilla.eazel.com 4436: 
  * Undo not working in notes-view.
  */
@@ -105,6 +183,8 @@ notes_load_metainfo (Notes *notes)
         GList *attributes;
 
         gtk_editable_delete_text (GTK_EDITABLE (notes->note_text_field), 0, -1);   
+        
+        notes->has_text = FALSE;
         
         done_with_file (notes);
         notes->file = nautilus_file_get (notes->uri);
@@ -131,6 +211,7 @@ notes_save_metainfo (Notes *notes)
         }
 
         notes_text = gtk_editable_get_chars (GTK_EDITABLE (notes->note_text_field), 0 , -1);
+        notes->has_text = notes_text != NULL;
         nautilus_file_set_metadata (notes->file, NAUTILUS_METADATA_KEY_ANNOTATION, NULL, notes_text);
         g_free (notes_text);
 }
@@ -172,6 +253,10 @@ do_destroy (GtkObject *obj, Notes *notes)
         done_with_file (notes);
         g_free (notes->uri);
         g_free (notes);
+
+	if (notes->property_bag) {
+		bonobo_object_unref (BONOBO_OBJECT (notes->property_bag));
+	}
 
         notes_object_count--;
         if (notes_object_count <= 0) {
@@ -216,6 +301,15 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
         notes->view = nautilus_view_new (vbox);
         gtk_signal_connect (GTK_OBJECT (notes->view), "destroy", do_destroy, notes);
 
+	/* allocate a property bag to reflect the TAB_IMAGE property */
+
+	notes->property_bag = bonobo_property_bag_new (get_bonobo_properties,  set_bonobo_properties, notes);
+	bonobo_control_set_properties (nautilus_view_get_bonobo_control (notes->view), notes->property_bag);
+	
+	bonobo_property_bag_add (notes->property_bag, "tab_image", TAB_IMAGE, BONOBO_ARG_STRING, NULL,
+				 "image indicating that a note is present", 0);
+
+	/* increment the count */	
         notes_object_count++;
         
         /* handle events */

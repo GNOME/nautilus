@@ -62,6 +62,9 @@ char *     nautilus_sidebar_tabs_get_title_from_index  (NautilusSidebarTabs *sid
 int        nautilus_sidebar_tabs_hit_test              (NautilusSidebarTabs *sidebar_tabs,
 							int                  x,
 							int                  y);
+void	   nautilus_sidebar_tabs_connect_view	       (NautilusSidebarTabs *sidebar_tabs,
+							GtkWidget	    *view);
+							
 void       nautilus_sidebar_tabs_set_color             (NautilusSidebarTabs *sidebar_tabs,
 							const char          *color_spec);
 void       nautilus_sidebar_tabs_receive_dropped_color (NautilusSidebarTabs *sidebar_tabs,
@@ -82,4 +85,7 @@ void       nautilus_sidebar_tabs_set_visible           (NautilusSidebarTabs *sid
 							const char          *name,
 							gboolean             is_visible);
 
+void	   nautilus_sidebar_tabs_update_all_indicators (NautilusSidebarTabs *sidebar_tabs);
+void	   nautilus_sidebar_tabs_update_indicator      (NautilusSidebarTabs *sidebar_tabs,
+							GtkWidget *widget);
 #endif /* NAUTILUS_SIDEBAR_TABS_H */

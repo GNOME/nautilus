@@ -762,6 +762,8 @@ nautilus_canvas_note_item_render (GnomeCanvasItem *item,
 	
 	note_item = NAUTILUS_CANVAS_NOTE_ITEM (item);
 
+	g_message ("in note item render, %f %f %f %f", item->x1, item->y1, item->x2, item->y2);
+	
 	if (note_item->fill_svp != NULL) {
 		gnome_canvas_render_svp (buf, note_item->fill_svp, note_item->fill_color);
 	}

@@ -1294,6 +1294,24 @@ nautilus_view_frame_set_label (NautilusViewFrame *view,
 	view->details->label = g_strdup (label);
 }
 
+/* return the Nautilus_View CORBA object associated with the view frame */
+Nautilus_View
+nautilus_view_frame_get_view (NautilusViewFrame *view)
+{
+	return view->details->view;
+}
+
+/* return the Bonobo_Control CORBA object associated with the view frame */
+Bonobo_Control
+nautilus_view_frame_get_control (NautilusViewFrame *view)
+{
+	if (view->details->control_frame == NULL) {
+		return NULL;
+	}
+	
+	return bonobo_control_frame_get_control (view->details->control_frame);
+}
+
 /* Activate the underlying control frame whenever the view is mapped.
  * This causes the view to merge its menu items, for example. For
  * sidebar panels, it might be a little late to merge them at map

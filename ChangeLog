@@ -1,3 +1,34 @@
+2001-03-26  Andy Hertzfeld  <andy@eazel.com>
+
+	implemented indicator in tab for whether notes are present or not by
+	implementing a framework for sidebar views to specify an indicator
+	tab image, using the bonobo property bag interface; not quite
+	finished yet.
+	
+	* components/notes/nautilus-notes.c: (notes_get_indicator_image),
+	(get_bonobo_properties), (set_bonobo_properties),
+	(finish_loading_note), (notes_load_metainfo),
+	(notes_save_metainfo), (do_destroy), (make_notes_view):
+	* libnautilus-extensions/nautilus-canvas-note-item.c:
+	(nautilus_canvas_note_item_render):
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(create_annotation):
+	* src/nautilus-sidebar-tabs.c: (tab_item_destroy),
+	(draw_one_tab_themed), (draw_or_layout_all_tabs),
+	(nautilus_sidebar_tabs_expose),
+	(nautilus_sidebar_tabs_update_tab_item), (get_tab_item_from_view),
+	(nautilus_sidebar_tabs_update_all_indicators),
+	(nautilus_sidebar_tabs_update_indicator),
+	(tab_indicator_changed_callback),
+	(nautilus_sidebar_tabs_connect_view),
+	(nautilus_sidebar_tabs_add_view):
+	* src/nautilus-sidebar-tabs.h:
+	* src/nautilus-sidebar.c: (view_loaded_callback),
+	(nautilus_sidebar_add_panel):
+	* src/nautilus-view-frame.c: (nautilus_view_frame_get_view),
+	(nautilus_view_frame_get_control):
+	* src/nautilus-view-frame.h:
+
 2001-03-23  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/rss-control/nautilus-rss-control.c:
