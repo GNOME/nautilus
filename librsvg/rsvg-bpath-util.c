@@ -23,6 +23,7 @@
 
 #include <glib.h>
 #include <math.h>
+#include <string.h>
 #include "rsvg-bpath-util.h"
 
 /* This is adapted from gnome-canvas-bpath-util in libgnomeprint

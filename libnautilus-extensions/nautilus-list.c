@@ -30,6 +30,7 @@
 #include "nautilus-list.h"
 
 #include <ctype.h>
+#include <string.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkbindings.h>
 #include <gtk/gtkdnd.h>

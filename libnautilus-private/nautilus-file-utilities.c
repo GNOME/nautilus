@@ -86,9 +86,9 @@ nautilus_format_uri_for_display (const char *uri)
 	
 	/* Remove file:// from the beginning */
 	if (nautilus_istr_has_prefix (uri, DEFAULT_SCHEME)) {
-		toreturn = strdup (unescaped + sizeof (DEFAULT_SCHEME) - 1);
+		toreturn = g_strdup (unescaped + sizeof (DEFAULT_SCHEME) - 1);
 	} else {
-		toreturn = strdup (unescaped);
+		toreturn = g_strdup (unescaped);
 	}
 	
 	g_free (unescaped);

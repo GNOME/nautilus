@@ -22,12 +22,12 @@
 #ifdef FT_FLAT_COMPILE
 
 #include "freetype.h"
-#include "ftconfig.h"   /* for LONG64 */
+#include "ftconfig.h"   /* for FT_LONG64 */
 
 #else
 
 #include <freetype/freetype.h>
-#include <freetype/config/ftconfig.h>   /* for LONG64 */
+#include <freetype/config/ftconfig.h>   /* for FT_LONG64 */
 
 #endif
 
@@ -36,10 +36,10 @@
 #endif
 
 
-#ifdef LONG64
+#ifdef FT_LONG64
 
 
-  typedef INT64  FT_Int64;
+  typedef FT_INT64  FT_Int64;
 
 #define ADD_64( x, y, z )  z = (x) + (y)
 #define MUL_64( x, y, z )  z = (FT_Int64)(x) * (y)
@@ -54,7 +54,7 @@
 
 #endif /* FT_CONFIG_OPTION_OLD_CALCS */
 
-#else /* LONG64 */
+#else /* FT_LONG64 */
 
 
   typedef struct  FT_Int64_
@@ -87,7 +87,7 @@
 
 #endif /* OLD_CALC */
 
-#endif /* LONG64 */
+#endif /* FT_LONG64 */
 
 
 #ifndef FT_CONFIG_OPTION_OLD_CALCS

@@ -1,3 +1,60 @@
+Fri Aug 04 14:21:51 2000  George Lebl <jirka@5z.com>
+
+	* components/hardware/nautilus-hardware-view.c (setup_form_title):
+	  Check result of gnome_pixmap_file.  If NULL, we can't make a new
+	  gnome-pixmap.
+
+	* components/help/converters/gnome-db2html2/sect-elements.c
+	  (sect_get_infobox_logo) (sect_infobox_start_element):
+	  sect_get_infobox_logo can return a NULL so check its return
+	  and if NULL just add %s instead of <IMG ...>
+
+	* components/services/vault/command-line/vault-operations.c,
+	  libnautilus-extensions/nautilus-list.c:
+	  add #include <string.h>
+
+	* cut-n-paste-code/freetype/ftcalc.h,
+	  cut-n-paste-code/freetype/ftconfig.h:  Well even though this
+	  is cut and paste code I NEED to add this patch for it to even
+	  compile on alpha, I'll try to get this upstream.  The only changes
+	  are inside #ifdefs on platforms where long is 64 bit so it should
+	  not affect intel code at all.
+
+	* libnautilus-extensions/nautilus-file-utilities.c
+	  (nautilus_format_uri_for_display):  use g_strdup instead of strdup
+	  as then g_free is used and this would really confuse glib in memory
+	  checking mode.
+
+
+	* librsvg/art_render_mask.c, librsvg/rsvg-bpath-util.c,
+	  librsvg/rsvg-ft.c: add #include <string.h>
+
+	* src/Makefile.am: define NAUTILUS_PIXMAPDIR.  This is neccessary for
+	  both making the tarballs and actual code sanity on switching
+	  toolbar themes etc.  In GNOME 2.0 the GNOME_PATH can be sanely used
+	  to allow relocatable nautilus binary, but in 1.[02] this is the
+	  correct way to do things.
+
+	* src/nautilus-complex-search-bar.c
+	  (nautilus_complex_search_bar_initialize)
+	  (load_find_them_pixmap_widget):  If we can't load pixmaps don't
+	  add them.  Also don't hardcode "/gnome/share" prefix and use
+	  the NAUTILUS_PIXMAPDIR define to find search.png AND make sure
+	  we can load it before using it.
+
+	* src/nautilus-window-toolbars.c (find_toolbar_child) (setup_button)
+	  In toolbar_info use the NAUTILUS_PIXMAPDIR define to find pixmaps.
+	  remove get_stock_callback and get_stock_widget as those functions
+	  were an incredible hack and were likely to break.  Replace with a
+	  function which searches the toolbar children and then finds correct
+	  icon widget.  It also doesn't do anything if there is no icon.  In
+	  setup button, use NAUTILUS_PIXMAPDIR to define pixmaps by their
+	  full name.  If we cannot set the stock widget icon, then the icon
+	  is not registered and we register it with gnome-stock.
+	  Miraculously the current code worked but only worked because the
+	  eazel theme was set up in the toolbar_info, other themes with
+	  outside images would break.
+
 2000-08-04  Arlo Rose  <arlo@eazel.com>
 
 	* icons/arlo/Makefile.am:

@@ -170,8 +170,10 @@
   /*                                                                       */
 #ifdef FTCALC_USE_LONG_LONG
 
+#ifndef FT_LONG64
 #define FT_LONG64
 #define FT_INT64   long long
+#endif
 
 #endif /* FTCALC_USE_LONG_LONG */
 #endif

@@ -282,12 +282,14 @@ setup_form_title (NautilusHardwareView *view, const char* image_name, const char
 	gtk_box_pack_start (GTK_BOX(view->details->form), temp_container, 0, 0, 4);	
 	gtk_widget_show(temp_container);
 	
-	if (image_name) {
+	if (image_name != NULL) {
  		file_name = gnome_pixmap_file (image_name);
-  		temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
-		gtk_box_pack_start(GTK_BOX(temp_container), temp_widget, 0, 0, 8);		
-  		gtk_widget_show(temp_widget);
-  		g_free (file_name);
+		if (file_name != NULL) {
+			temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
+			gtk_box_pack_start(GTK_BOX(temp_container), temp_widget, 0, 0, 8);		
+			gtk_widget_show(temp_widget);
+			g_free (file_name);
+		}
 	}
 	
  	temp_widget = gtk_label_new (title_text);

@@ -22,6 +22,7 @@
  * Authors: Raph Levien <raph@acm.org>
  */
 
+#include <string.h>
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_alphagamma.h>
 

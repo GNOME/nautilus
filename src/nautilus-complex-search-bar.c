@@ -156,11 +156,12 @@ nautilus_complex_search_bar_initialize (NautilusComplexSearchBar *bar)
 	bar->details->find_them = gtk_button_new ();
 	find_them_box = gtk_hbox_new (FALSE, 1);
 	find_them_pixmap_widget = load_find_them_pixmap_widget ();
-	gtk_box_pack_start (GTK_BOX (find_them_box),
-			    find_them_pixmap_widget,
-			    TRUE,
-			    FALSE,
-			    1);
+	if (find_them_pixmap_widget != NULL)
+		gtk_box_pack_start (GTK_BOX (find_them_box),
+				    find_them_pixmap_widget,
+				    TRUE,
+				    FALSE,
+				    1);
 	find_them_label = gtk_label_new ("Find Them!");
 	gtk_box_pack_start (GTK_BOX (find_them_box),
 			    find_them_label,
@@ -315,11 +316,13 @@ load_find_them_pixmap_widget (void)
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
 	
-	pixbuf = gdk_pixbuf_new_from_file ("/gnome/share/pixmaps/nautilus/search.png");
-	gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
-	gdk_pixbuf_unref (pixbuf);
-
-	return gtk_pixmap_new (pixmap, mask);
+	pixbuf = gdk_pixbuf_new_from_file (NAUTILUS_PIXMAPDIR "/search.png");
+	if(pixmap != NULL) {
+		gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
+		gdk_pixbuf_unref (pixbuf);
+		return gtk_pixmap_new (pixmap, mask);
+	} else
+		return NULL;
 }
 				  
 

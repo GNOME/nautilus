@@ -115,43 +115,52 @@ toolbar_search_web_callback (GtkWidget *widget, NautilusWindow *window)
 static GnomeUIInfo toolbar_info[] = {
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Back"), N_("Go to the previously visited directory"),
-	 toolbar_back_callback, "nautilus/eazel/Back.png"),
+	 toolbar_back_callback,
+	 NAUTILUS_PIXMAPDIR "/eazel/Back.png"),
 	
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Forward"), N_("Go to the next directory"),
-	 toolbar_forward_callback, "nautilus/eazel/Forward.png"),
+	 toolbar_forward_callback,
+	 NAUTILUS_PIXMAPDIR "/eazel/Forward.png"),
 	
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Up"), N_("Go up a level in the directory hierarchy"),
-	 toolbar_up_callback, "nautilus/eazel/Up.png"),
+	 toolbar_up_callback,
+	 NAUTILUS_PIXMAPDIR "/eazel/Up.png"),
 	
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Reload"), N_("Reload this view"),
-	 toolbar_reload_callback, "nautilus/eazel/Refresh.png"),
+	 toolbar_reload_callback,
+	 NAUTILUS_PIXMAPDIR "/eazel/Refresh.png"),
 	
 	GNOMEUIINFO_SEPARATOR,
 	
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Home"), N_("Go to your home directory"),
-	 toolbar_home_callback, "nautilus/eazel/Home.png"),
+	 toolbar_home_callback,
+	 NAUTILUS_PIXMAPDIR "/eazel/Home.png"),
 	
 	NAUTILUS_GNOMEUIINFO_TOGGLEITEM_STOCK
 	(N_("Search"), N_("Search this computer for files"),
-	 toolbar_search_local_callback, "nautilus/eazel/Search.png"),
+	 toolbar_search_local_callback,
+	 NAUTILUS_PIXMAPDIR "/eazel/Search.png"),
 	
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Web Search"), N_("Search the web"),
-	 toolbar_search_web_callback, "nautilus/eazel/Search.png"),
+	 toolbar_search_web_callback,
+	 NAUTILUS_PIXMAPDIR "/eazel/Search.png"),
 	
 	GNOMEUIINFO_SEPARATOR,
 	
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Stop"), N_("Interrupt loading"),
-	 toolbar_stop_callback, "nautilus/eazel/Stop.png"),
+	 toolbar_stop_callback,
+	 NAUTILUS_PIXMAPDIR "/eazel/Stop.png"),
 #if defined(EAZEL_SERVICES)
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Services"), N_("Eazel Services"),
-	 toolbar_services_callback, "nautilus/eazel/Services.png"),
+	 toolbar_services_callback,
+	 NAUTILUS_PIXMAPDIR "/eazel/Services.png"),
 #endif
 	GNOMEUIINFO_END
 };
@@ -257,47 +266,67 @@ remember_buttons(NautilusWindow *window, GnomeUIInfo current_toolbar_info[])
 	window->home_button = current_toolbar_info[TOOLBAR_HOME_BUTTON_INDEX].widget;	
 }
 
-/* utility to find the stock widget within a toolbar button so we can switch it's pixmap */
-
-static void
-get_stock_callback (GtkWidget *widget, gpointer callback_data)
+/* find the toolbar child structure within a toolbar.  This way we can easily
+ * find the icon in a clean way */
+static GtkToolbarChild *
+find_toolbar_child(GtkToolbar *toolbar, GtkWidget *button)
 {
-	GtkWidget **stock_widget;
-	stock_widget = callback_data;
-
-	if (GNOME_IS_STOCK_PIXMAP_WIDGET(widget)) {
-		*stock_widget = widget;
-		/* We'd stop the iterating now if we could. */
+	GList *li;
+	for (li = toolbar->children; li != NULL; li = li->next) {
+		GtkToolbarChild *child = li->data;
+		if (child->widget == button)
+			return child;
 	}
+	return NULL;
 }
-
-static GtkWidget *
-get_stock_widget (GtkContainer *container)
-{
-	GtkWidget *stock_widget;
-
-	stock_widget = NULL;
-	gtk_container_foreach (container, get_stock_callback, &stock_widget);
-	return stock_widget;
-}
-
 
 /* set up the toolbar info based on the current theme selection from preferences */
 
 static void
 setup_button(GtkWidget* button,  const char *theme_name, const char *icon_name)
 {
-	GtkWidget *widget;
+	GnomeStock *stock_widget;
 	char *full_name;
-	
+	GtkToolbarChild *toolbar_child;
+
 	if ((theme_name == NULL) || (strcmp(theme_name, "default") == 0)) {
 		full_name = g_strdup (icon_name);
 	} else {
-		full_name = g_strdup_printf ("nautilus/%s/%s.png", theme_name, icon_name);
+		full_name = g_strdup_printf (NAUTILUS_PIXMAPDIR "/%s/%s.png", theme_name, icon_name);
 	}
 	
-	widget = get_stock_widget (GTK_CONTAINER (GTK_BIN (button)->child));
-	gnome_stock_set_icon (GNOME_STOCK (widget), full_name);
+	toolbar_child = find_toolbar_child (GTK_TOOLBAR (button->parent), button);
+	if (toolbar_child != NULL &&
+	    toolbar_child->icon != NULL &&
+	    GNOME_IS_STOCK (toolbar_child->icon))
+		stock_widget = GNOME_STOCK (toolbar_child->icon);
+	else
+		stock_widget = NULL;
+			
+	if (stock_widget != NULL &&
+	    ! gnome_stock_set_icon (stock_widget, full_name) &&
+	    g_file_exists(full_name)) {
+		/* if full_name exists but gnome_stock_set_icon fails, that means
+		 * this file has NOT been registered with gnome stock.  Unfortunately
+		 * gnome_stock is a worthless pile of dung and doesn't do this for us.
+		 * Do note however that it DOES register this stuff when it first
+		 * creates the toolbars from GnomeUIInfo. */
+		GnomeStockPixmapEntryPath *new_entry;
+		new_entry = g_malloc(sizeof(GnomeStockPixmapEntryPath));
+		new_entry->type = GNOME_STOCK_PIXMAP_TYPE_PATH;
+		new_entry->label = NULL;
+		new_entry->pathname = full_name;
+		new_entry->width = 0;
+		new_entry->height = 0;
+		/* register this under the "full_name" as that's what we'll look it
+		 * up under later */
+		gnome_stock_pixmap_register(full_name, GNOME_STOCK_PIXMAP_REGULAR,
+					    (GnomeStockPixmapEntry *)new_entry);
+		full_name = NULL; /* we used it in new_entry, so we just transfer
+				     ownership */
+		gnome_stock_set_icon (stock_widget, full_name);
+	}
+
 	g_free (full_name);
 	gtk_widget_queue_resize (button);
 }

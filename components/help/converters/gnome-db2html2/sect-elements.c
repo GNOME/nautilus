@@ -1108,6 +1108,7 @@ sect_programlisting_end_element (Context *context,
 	sect_print (context, "</pre>\n</td></tr>\n</table>\n");
 }
 
+/* Note that this can return NULL if the file is not found */
 static gchar *
 sect_get_infobox_logo (const gchar *name)
 {
@@ -1134,7 +1135,12 @@ sect_infobox_start_element (Context *context,
 
 	logo = sect_get_infobox_logo (name);
 
-	sect_print (context, "<TABLE BORDER=\"0\"  WIDTH=\"100%%\">\n<tr><TD WIDTH=\"25%%\" ALIGN=\"CENTER\" VALIGN=\"TOP\"><IMG ALT=\"%s\" SRC=\"%s\"><TH ALIGN=\"LEFT\" VALIGN=\"CENTER\"></TD>\n", name, logo);
+	sect_print (context, "<TABLE BORDER=\"0\"  WIDTH=\"100%%\">\n<tr><TD WIDTH=\"25%%\" ALIGN=\"CENTER\" VALIGN=\"TOP\">");
+	if (logo != NULL)
+		sect_print (context, "<IMG ALT=\"%s\" SRC=\"%s\">", name, logo);
+	else
+		sect_print (context, "%s", name);
+	sect_print (context, "<TH ALIGN=\"LEFT\" VALIGN=\"CENTER\"></TD>\n");
 	sect_print (context, "<TD>&nbsp;</TD>\n<TD ALIGN=\"LEFT\" VALIGN=\"TOP\">\n");
 	g_free (logo);
 }
