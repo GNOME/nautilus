@@ -1,3 +1,17 @@
+2000-10-25  John Sullivan  <sullivan@eazel.com>
+
+	Fixed various usability problems with the services log-in
+	dialog that I ran into. Some coding tweaks too.
+
+	* components/services/summary/nautilus-view/nautilus-summary-view.c:
+	(generate_error_dialog): move cast to cause fewer of them
+	(name_or_password_field_activated): New function, auto-clicks the
+	OK button if the password row is activated.
+	(generate_login_dialog): move cast to cause fewer of them; use
+	#defines for button indices and row numbers; changed "Opps" to
+	"Oops" (Oops!); set default button to OK button; wire up
+	name_or_password_field_activated; start with focus in Name field.
+
 2000-10-25  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c

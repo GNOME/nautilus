@@ -44,6 +44,7 @@
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-string.h>
@@ -82,6 +83,18 @@
 
 #define MAX_IMAGE_WIDTH				50
 #define MAX_IMAGE_HEIGHT			50
+
+enum {
+	LOGIN_DIALOG_NAME_ROW,
+	LOGIN_DIALOG_PASSWORD_ROW,
+	LOGIN_DIALOG_ROW_COUNT
+};
+
+enum {
+	LOGIN_DIALOG_REGISTER_BUTTON_INDEX,
+	LOGIN_DIALOG_OK_BUTTON_INDEX,
+	LOGIN_DIALOG_CANCEL_BUTTON
+};
 
 #ifdef DEBUG_TEST
 	#undef URL_REDIRECT_TABLE_HOME
@@ -1128,13 +1141,13 @@ set_dialog_parent (NautilusSummaryView *view, GnomeDialog *dialog)
 static void
 generate_error_dialog (NautilusSummaryView *view, const char *message)
 {
-	GtkWidget	*dialog;
+	GnomeDialog	*dialog;
 	GtkWidget	*icon_container;
 	GtkWidget	*icon_widget;
 	GtkWidget	*hbox;
 	GtkWidget	*error_text;
 
-	dialog = gnome_dialog_new (_("Service Error"), GNOME_STOCK_BUTTON_OK, NULL);
+	dialog = GNOME_DIALOG (gnome_dialog_new (_("Service Error"), GNOME_STOCK_BUTTON_OK, NULL));
 
 	gtk_signal_connect (GTK_OBJECT (dialog), "destroy", GTK_SIGNAL_FUNC (gtk_widget_destroyed), &dialog);
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), GNOME_PAD);
@@ -1142,7 +1155,7 @@ generate_error_dialog (NautilusSummaryView *view, const char *message)
 
 	hbox = gtk_hbox_new (FALSE, GNOME_PAD);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox), GNOME_PAD);
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox), hbox, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (dialog->vbox), hbox, FALSE, FALSE, 0);
 
 	icon_container = gtk_hbox_new (TRUE, 4);
 	icon_widget = create_image_widget ("gnome-warning.png", DEFAULT_SUMMARY_BACKGROUND_COLOR);
@@ -1162,19 +1175,31 @@ generate_error_dialog (NautilusSummaryView *view, const char *message)
 	gtk_box_pack_start (GTK_BOX (hbox), error_text, FALSE, FALSE, 0);
 
 
-	gnome_dialog_set_close (GNOME_DIALOG (dialog), TRUE);
-	set_dialog_parent (view, GNOME_DIALOG (dialog));
+	gnome_dialog_set_close (dialog, TRUE);
+	set_dialog_parent (view, dialog);
 
 	gtk_widget_show (hbox);
 	gtk_widget_show (GTK_WIDGET (dialog));
-	gnome_dialog_button_connect (GNOME_DIALOG (dialog), 0, GTK_SIGNAL_FUNC (error_dialog_cancel_cb), view);
-	gnome_dialog_run (GNOME_DIALOG (dialog));
+	gnome_dialog_button_connect (dialog, 0, GTK_SIGNAL_FUNC (error_dialog_cancel_cb), view);
+	gnome_dialog_run (dialog);
+}
+
+static void
+name_or_password_field_activated (GtkWidget *caption_table, int active_entry, gpointer user_data)
+{
+	g_assert (NAUTILUS_IS_CAPTION_TABLE (caption_table));
+	g_assert (GTK_IS_BUTTON (user_data));
+
+	/* auto-click "OK" button when password activated (via Enter key) */
+	if (active_entry == LOGIN_DIALOG_OK_BUTTON_INDEX) {
+		nautilus_gtk_button_auto_click (GTK_BUTTON (user_data));
+	}
 }
 
 static void
 generate_login_dialog (NautilusSummaryView	*view)
 {
-	GtkWidget	*dialog;
+	GnomeDialog	*dialog;
 	GtkWidget	*hbox;
 	GtkWidget	*pixmap;
 	GtkWidget	*message;
@@ -1184,24 +1209,25 @@ generate_login_dialog (NautilusSummaryView	*view)
 	dialog = NULL;
 	pixmap = NULL;
 
-	dialog = gnome_dialog_new (_("Services Login"), _("Register Now"), GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, NULL);
+	dialog = GNOME_DIALOG (gnome_dialog_new (_("Services Login"), _("Register Now"), 
+			       GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, NULL));
 
 	gtk_signal_connect (GTK_OBJECT (dialog), "destroy", GTK_SIGNAL_FUNC (gtk_widget_destroyed), &dialog);
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), GNOME_PAD);
 	gtk_window_set_policy (GTK_WINDOW (dialog), FALSE, FALSE, FALSE);
 
-	view->details->caption_table = nautilus_caption_table_new (2);
+	view->details->caption_table = nautilus_caption_table_new (LOGIN_DIALOG_ROW_COUNT);
 	gtk_widget_show (view->details->caption_table);
 
 	nautilus_caption_table_set_row_info (NAUTILUS_CAPTION_TABLE (view->details->caption_table),
-					     0,
+					     LOGIN_DIALOG_NAME_ROW,
 					     "Username:",
 					     "",
 					     TRUE,
 					     FALSE);
 
 	nautilus_caption_table_set_row_info (NAUTILUS_CAPTION_TABLE (view->details->caption_table),
-					     1,
+					     LOGIN_DIALOG_PASSWORD_ROW,
 					     "Password:",
 					     "",
 					     FALSE,
@@ -1214,7 +1240,7 @@ generate_login_dialog (NautilusSummaryView	*view)
 			break;
 		case retry:
 			pixmap_name = "serv_dialog_alert.png";
-			message_text = _("Opps! Your user name or password were not correct. Please try again:");
+			message_text = _("Oops! Your user name or password were not correct. Please try again:");
 			break;
 		case fail:
 			pixmap_name = "serv_dialog_alert.png";
@@ -1235,7 +1261,7 @@ generate_login_dialog (NautilusSummaryView	*view)
 	}
 	gtk_box_pack_end (GTK_BOX (hbox), view->details->caption_table, TRUE, TRUE, 0);
 
-	gtk_box_set_spacing (GTK_BOX (GNOME_DIALOG (dialog)->vbox), 10);
+	gtk_box_set_spacing (GTK_BOX (dialog->vbox), 10);
 
 	message = nautilus_label_new (message_text);
 	nautilus_label_set_text_justification (NAUTILUS_LABEL (message), GTK_JUSTIFY_LEFT);
@@ -1244,13 +1270,13 @@ generate_login_dialog (NautilusSummaryView	*view)
 	nautilus_label_set_line_wrap_width (NAUTILUS_LABEL (message), 300);
 	gtk_widget_show (message);
 
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox),
+	gtk_box_pack_start (GTK_BOX (dialog->vbox),
 			    GTK_WIDGET (message),
 			    TRUE,
 			    TRUE,
 			    0);
 
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox),
+	gtk_box_pack_start (GTK_BOX (dialog->vbox),
 			    hbox,
 			    TRUE,
 			    TRUE,
@@ -1258,15 +1284,21 @@ generate_login_dialog (NautilusSummaryView	*view)
 
 	gtk_container_set_border_width (GTK_CONTAINER (view->details->caption_table), 4);
 
-	gtk_widget_show (GNOME_DIALOG (dialog)->vbox);
+	gtk_widget_show (dialog->vbox);
 
-	gnome_dialog_set_close (GNOME_DIALOG (dialog), TRUE);
-	set_dialog_parent (view, GNOME_DIALOG (dialog));
+	gnome_dialog_set_close (dialog, TRUE);
+	set_dialog_parent (view, dialog);
 
-	gnome_dialog_button_connect (GNOME_DIALOG (dialog), 0, GTK_SIGNAL_FUNC (register_button_cb), view);
-	gnome_dialog_button_connect (GNOME_DIALOG (dialog), 1, GTK_SIGNAL_FUNC (login_button_cb), view);
+	gnome_dialog_set_default (dialog, LOGIN_DIALOG_OK_BUTTON_INDEX);
+	gtk_signal_connect (GTK_OBJECT (view->details->caption_table), "activate",
+			    name_or_password_field_activated, 
+			    nautilus_gnome_dialog_get_button_by_index (dialog, LOGIN_DIALOG_OK_BUTTON_INDEX));
+	nautilus_caption_table_entry_grab_focus	(NAUTILUS_CAPTION_TABLE (view->details->caption_table), LOGIN_DIALOG_NAME_ROW);
 
-  	gnome_dialog_set_close (GNOME_DIALOG (dialog), TRUE);
+	gnome_dialog_button_connect (dialog, LOGIN_DIALOG_REGISTER_BUTTON_INDEX, GTK_SIGNAL_FUNC (register_button_cb), view);
+	gnome_dialog_button_connect (dialog, LOGIN_DIALOG_OK_BUTTON_INDEX, GTK_SIGNAL_FUNC (login_button_cb), view);
+
+  	gnome_dialog_set_close (dialog, TRUE);
 	gtk_widget_show (GTK_WIDGET (dialog));
 }
 
