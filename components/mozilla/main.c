@@ -72,13 +72,6 @@ mozilla_make_object (BonoboGenericFactory *factory,
 	return BONOBO_OBJECT (nautilus_view);
 }
 
-/* Make sure the mozilla environment is setup properly */
-static gboolean
-mozilla_check_environment (void)
-{
-	return g_getenv ("MOZILLA_FIVE_HOME") != NULL;
-}
-
 extern gboolean test_make_full_uri_from_relative (void);
 
 static gboolean
@@ -102,29 +95,23 @@ main (int argc, char *argv[])
 		exit (success ? 0 : -1);
 	}
 
-
-	if (!mozilla_check_environment ()) {
-		g_print ("There is no reasonable default for MOZILLA_FIVE_HOME.  You lose.\n");
-		exit (1);
-	}
-
-	gnome_init_with_popt_table("nautilus-mozilla-content-view", VERSION, 
-				   argc, argv,
-				   oaf_popt_options, 0, NULL); 
-
+	gnome_init_with_popt_table ("nautilus-mozilla-content-view", VERSION, 
+				    argc, argv,
+				    oaf_popt_options, 0, NULL); 
+	
 	orb = oaf_init (argc, argv);
 	
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
-
-
+	
+	
         registration_id = oaf_make_registration_id ("OAFIID:nautilus_mozilla_content_view_factory:020a0285-6b96-4685-84a1-4a56eb6baa2b", getenv ("DISPLAY"));
 	factory = bonobo_generic_factory_new_multi (registration_id, 
 						    mozilla_make_object,
 						    NULL);
 	g_free (registration_id);
-
+	
 	gnome_vfs_init ();
-
+	
 #ifdef DEBUG_mfleming
 	g_print ("OAF registration complete.\n");
 #endif
