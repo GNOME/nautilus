@@ -1,2 +1,2 @@
-SUBDIRS = widgets freetype
+SUBDIRS = widgets
 

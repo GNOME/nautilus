@@ -12,6 +12,7 @@ and file manager.
 4: Compiling
 5: Issues when running Nautilus
 6: Mozilla support
+7: FreeType issues
 
 ==========
 1: Hacking
@@ -49,17 +50,18 @@ You will also need the library package that is associated with each
 development package, these versions are for Red Hat 6.2 and Debian
 "potato":
 
-library         Red Hat                   Debian                          approx. version
---------------  ------------------------  ------------------------------  ------------------
-audiofile       audiofile-devel-0.1.9-3   libaudiofile-dev (0.1.9-0.1)    0.1.9
-libc            glibc-devel-2.1.3-15      libc6-dev (2.1.3-10)            2.1.3
-libc++          egcs-c++-1.1.2-30         libstdc++2.10-dev (2.95.2-12)   2.9.0, 2.10
-libjpeg         libjpeg-devel-6b-10       libjpeg62-dev (6b-1.2)          6b 1.0-1.2
-libpng          libpng-devel-1.0.5-3      libpng2-dev (1.0.5-1)           1.0.5
-libtiff         libtiff-devel-3.5.4-5     libtiff3g-dev (3.5.4-5)         3.5.4
-libungif        libungif-devel-4.1.0-4    libungif3g-dev (3.0-3)          3.0 or 4.1.0
-Xlib            XFree86-devel-3.3.6-20    xlib6g-dev (3.3.6-7)            3.3.6
-zlib            zlib-devel-1.1.3-6        zlib1g-dev (1.1.3-5)            1.1.3
+library         Red Hat                     Debian                          approx. version
+--------------  ------------------------    ------------------------------  ------------------
+audiofile       audiofile-devel-0.1.9-3     libaudiofile-dev (0.1.9-0.1)    0.1.9
+libc            glibc-devel-2.1.3-15        libc6-dev (2.1.3-10)            2.1.3
+libc++          egcs-c++-1.1.2-30           libstdc++2.10-dev (2.95.2-12)   2.9.0, 2.10
+libjpeg         libjpeg-devel-6b-10         libjpeg62-dev (6b-1.2)          6b 1.0-1.2
+libpng          libpng-devel-1.0.5-3        libpng2-dev (1.0.5-1)           1.0.5
+libtiff         libtiff-devel-3.5.4-5       libtiff3g-dev (3.5.4-5)         3.5.4
+libungif        libungif-devel-4.1.0-4      libungif3g-dev (3.0-3)          3.0 or 4.1.0
+Xlib            XFree86-devel-3.3.6-20      xlib6g-dev (3.3.6-7)            3.3.6
+zlib            zlib-devel-1.1.3-6          zlib1g-dev (1.1.3-5)            1.1.3
+freetype2	freetype2-devel-1.0beta8    ???				    1.0beta8
 
 Other modules for Red Hat users: either 6.1 or 6.2
 
@@ -68,6 +70,11 @@ Other modules for Red Hat users: either 6.1 or 6.2
 
         ftp://ftp.valinux.com/pub/mirrors/redhat/rawhide/i386/RedHat/RPMS/popt-1.5-0.45.i386.rpm
         ftp://ftp.valinux.com/pub/mirrors/redhat/redhat/redhat-6.2/i386/RedHat/RPMS/popt-1.5-0.48.i386.rpm
+
+	- FreeType packages are available here:
+
+	http://developer.eazel.com/eazel-hacking/updates/freetype2/freetype2-1.0beta8-0_eazel_1.i386.rpm
+	http://developer.eazel.com/eazel-hacking/updates/freetype2/freetype2-devel-1.0beta8-0_eazel_1.i386.rpm
 
 Other modules for Debian users: using potato, or possibly woody
 
@@ -273,3 +280,26 @@ Finally, you can disable the Mozilla component (even if Mozilla
 development libraries are installed in your system) as follows:
 
 ./configure --disable-mozilla-component
+
+===============================
+7: FreeType issues
+===============================
+
+Nautilus includes support for rendering anti aliased text (Smooth mode).
+For smooth mode to work, Nautilus needs to detect and use FreeType2 
+in your system.
+
+To learn more about FreeType2, please see:
+
+  http://freetype.sourceforge.net/
+
+If you are using a RedHat 6.x or greater system, then you can easily
+add FreeType2 support byt installing the rpms found here:
+
+  http://developer.eazel.com/eazel-hacking/updates/freetype2
+
+We will soon have additional autoconf flags for supporting FreeType2
+builds in arbitrary locations.
+
+We will also soon have the equivalent Debian packages.
+

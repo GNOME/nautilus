@@ -22,14 +22,13 @@ INCLUDES = 						\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 	\
 	$(NULL)
 
-dependency_static_libs =								\
-	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la 			\
-	$(top_builddir)/cut-n-paste-code/widgets/nautilusclist/libnautilusclist.la 	\
-	$(top_builddir)/librsvg/librsvg.la 						\
-	$(top_builddir)/cut-n-paste-code/freetype/libfreetype2.la 			\
+dependency_static_libs = \
+	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la \
+	$(top_builddir)/cut-n-paste-code/widgets/nautilusclist/libnautilusclist.la \
+	$(top_builddir)/librsvg/librsvg.la \
 	$(NULL)
 
-libnautilus_extensions_la_LDFLAGS=	\
+libnautilus_extensions_la_LDFLAGS =	\
 	$(dependency_static_libs)	\
 	$(GNOME_LIBS) 			\
 	$(GNOMECANVASPIXBUF_LIBS)	\
@@ -41,6 +40,7 @@ libnautilus_extensions_la_LDFLAGS=	\
 	$(XML_LIBS) 			\
 	$(MEDUSA_LIBS) 			\
 	$(LIBPNG) 			\
+	$(FREETYPE2_LIBS)		\
 	$(NULL)
 
 libnautilus_extensions_la_SOURCES = 		\
