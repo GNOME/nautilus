@@ -1,3 +1,14 @@
+2000-09-19  Michael Engber  <engber@eazel.com>
+
+	First cut at speeding up background drawing. Images now scaled
+	with interpolation and image drawing is faster.
+	* libnautilus-extensions/nautilus-background.c:
+	(ensure_image_scaled), (nautilus_background_image_fully_obscures),
+	(nautilus_background_draw), (nautilus_art_rgb),
+	(nautilus_art_rgb_rgba), (nautilus_draw_pixbuf_to_canvasbuf),
+	(draw_pixbuf_centered_aa), (draw_pixbuf_tiled_aa),
+	(nautilus_background_draw_aa), (load_image_callback):
+
 2000-09-19  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c
