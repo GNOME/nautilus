@@ -1,3 +1,14 @@
+2000-09-03  Maciej Stachowiak  <mjs@eazel.com>
+
+	* components/tree/nautilus-tree-model.c
+	(nautilus_tree_model_for_each_postorder): Some optional debugging
+	statements.
+	(nautilus_tree_model_monitor_remove): Also unmonitor any nodes
+	that might be monitored by this client.
+
+	* components/tree/nautilus-tree-view.c
+	(nautilus_tree_view_destroy): Stop monitoring the model
+
 2000-09-03  Ali Abdin  <aliabdin@aucegypt.edu>
 
         I now consider navigation links to be 'done' (Fixes bug #2201)

@@ -945,9 +945,7 @@ disconnect_model_handlers (NautilusTreeView *view)
 					     "file:///");
 
 	if (node != NULL) {
-		nautilus_tree_model_stop_monitoring_node_recursive (view->details->model,
-								    node,
-								    view);
+		nautilus_tree_model_monitor_remove (view->details->model, view);
 	}
 }
 
@@ -967,12 +965,10 @@ nautilus_tree_view_destroy (GtkObject *object)
 	/* FIXME bugzilla.eazel.com 2422: destroy drag_info */
 
 	disconnect_model_handlers (view);
+	gtk_object_unref (GTK_OBJECT (view->details->model));
 
 	nautilus_tree_expansion_state_save (view->details->expansion_state);
-
 	gtk_object_unref (GTK_OBJECT (view->details->expansion_state));
-
-	gtk_object_unref (GTK_OBJECT (view->details->model));
 
 	g_free (view->details);
 	

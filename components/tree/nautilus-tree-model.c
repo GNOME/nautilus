@@ -66,7 +66,7 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTreeModel, nautilus_tree_model, GTK_T
 
 
 
-     static void  remove_all_nodes                                  (NautilusTreeModel *model);
+static void  remove_all_nodes                                  (NautilusTreeModel *model);
 
 static void  nautilus_tree_model_set_root_uri                  (NautilusTreeModel *model,
 								const char        *root_uri);
@@ -240,12 +240,33 @@ nautilus_tree_model_for_each_postorder (NautilusTreeModel  *model,
 			current_node = (NautilusTreeNode *) reporting_queue->data;
 
 			if (nautilus_tree_node_get_children (current_node) == NULL) {
+				NautilusDirectory *tmp;
+
 				reporting_queue = g_list_remove_link (reporting_queue, reporting_queue);
+				
+#ifdef DEBUG_TREE
+				printf ("XXX unrefing: %s\n", nautilus_file_get_uri
+					(nautilus_tree_node_get_file (current_node)));
+#endif
+
+				tmp = current_node->details->directory;
+
 				(*callback) (model, current_node, callback_data);
+				
+#ifdef DEBUG_TREE
+				printf ("XXX refs: %d\n", ((GtkObject *) tmp)->ref_count);
+#endif
 			} else {
+#ifdef DEBUG_TREE
+				printf ("XXX adding children of: %s\n", nautilus_file_get_uri
+					(nautilus_tree_node_get_file (current_node)));
+#endif
 				reporting_queue = g_list_concat (g_list_copy (nautilus_tree_node_get_children (current_node)),
 								 reporting_queue);
 			}
+#ifdef DEBUG_TREE
+			printf ("XXX queue length: %d\n", g_list_length (reporting_queue));
+#endif
 		}
 	}
 }
@@ -329,9 +350,22 @@ nautilus_tree_model_monitor_remove (NautilusTreeModel         *model,
 {
 	model->details->monitor_clients = g_list_remove (model->details->monitor_clients, (gpointer) client);
 
+	if (model->details->root_node_reported) {
+		nautilus_tree_model_stop_monitoring_node_recursive (model,
+								    model->details->root_node,
+								    client);
+	}
+
+
 	if (model->details->monitor_clients == NULL) {
 		/* FIXME bugzilla.eazel.com 2412: 
 		 * stop monitoring root node file, dunno what else */
+
+		if (model->details->root_node_reported) {
+			nautilus_file_monitor_remove (nautilus_tree_node_get_file 
+						      (model->details->root_node),
+						      model);
+		}
 	}
 }
 
