@@ -1,3 +1,16 @@
+2001-03-08  Maciej Stachowiak  <mjs@eazel.com>
+
+	Merge from HEAD:
+
+	2001-03-08  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	* nautilus-installer/src/installer.c (start_logging): After
+	creating log file and verifying safety (to avoid /tmp races), make
+	it world-readable to fix bug 7544 (eazel-install.log created with
+	read-only perms for root). 
+
 2001-03-08  Dan Mueth  <dan@eazel.com>
 
         reviewed by: Pavel Cisler <pavel@eazel.com>
