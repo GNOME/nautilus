@@ -1945,7 +1945,7 @@ get_icon_drop_target_uri_callback (NautilusIconContainer *container,
 	/* Check for Nautilus link */
 	if (nautilus_file_is_nautilus_link (file)) {
 		/* FIXME bugzilla.gnome.org 43020: This does sync. I/O and works only locally. */
-		if (nautilus_file_is_local (file)) {
+		if (!eel_vfs_has_capability (uri, EEL_VFS_CAPABILITY_IS_REMOTE_AND_SLOW)) {
 			target_uri = nautilus_link_local_get_link_uri (uri);
 			if (target_uri != NULL) {
 				g_free (uri);

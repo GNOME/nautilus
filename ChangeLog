@@ -1,3 +1,9 @@
+2002-06-25  Dave Camp  <dave@ximian.com>
+
+	* src/file-manager/fm-icon-view.c (get_icon_drop_target_uri_callback): 
+	Use eel_vfs_has_capability() to test for locality of the drop
+	target.  Fixes #82644.
+
 2002-06-25  Damon Chaplin  <damon@ximian.com>
 
 	* libnautilus-private/nautilus-icon-factory.c (load_icon_from_path): 
