@@ -112,7 +112,7 @@ static void     init_session                      (void);
 static gboolean is_kdesktop_present               (void);
 
 BONOBO_CLASS_BOILERPLATE (NautilusApplication, nautilus_application,
-			  BonoboGenericFactory, BONOBO_GENERIC_FACTORY_TYPE)
+			  BonoboGenericFactory, BONOBO_TYPE_GENERIC_FACTORY)
 
 static CORBA_Object
 create_object (PortableServer_Servant servant,

@@ -2005,7 +2005,7 @@ filter_search_uri (const GnomeVFSFileInfo *info, gpointer data)
 	options = GPOINTER_TO_INT (data);
 	
 	real_file_uri = nautilus_get_target_uri_from_search_result_name (info->name);
-	result = should_display_file_name (g_basename (real_file_uri), options);	
+	result = should_display_file_name (g_path_get_basename (real_file_uri), options);	
 	g_free (real_file_uri);
 
 	return result;

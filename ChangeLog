@@ -1,3 +1,15 @@
+2004-02-08  Jason Leach  <leach@wam.umd.edu>
+
+	* libnautilus-private/nautilus-directory-async.c
+	(filter_search_uri): Replace deprecated call to g_basename with
+	g_path_get_basename.
+
+2004-02-08  Jason Leach  <leach@wam.umd.edu>
+
+	* src/nautilus-application.c: As noted in
+	bonobo-generic-factory.h, BONOBO_GENERIC_FACTORY_TYPE is
+	deprecated, use BONOBO_TYPE_GENERIC_FACTORY instead.
+
 2004-02-07  Shaun McCance  <shaunm@gnome.org>
 
 	* libnautilus-private/nautilus-program-chooser.c:
