@@ -249,7 +249,7 @@ struct _PackageData {
 	GList *features;
 
 	/* This identifies a package (by name) that should be deleted if installing this package */
-	char *obsoletes;
+        GList *obsoletes;
 
 	/* if set, the package has an epoch, currently only set for stuff read from the local db system */
 	guint32 epoch;

@@ -1,3 +1,60 @@
+2001-02-25  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	glanced at by: Ian McKellar  <ian@eazel.com>
+
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (eazel_download_progress_signal),
+	(eazel_install_progress_signal):
+	Fixed bug 6985, no mo're \r's in the translated strings
+	Fixed bug 7003
+	
+	* components/services/install/lib/eazel-install-logic2.c:
+	(check_tree_helper),
+
+	(check_no_two_packages_has_same_file),
+	indent fixed
+	Nicer output in the non-debug output mode (use readable packagename)
+	Removed call to add_file_conflict untill SoftCat db is rebuild.
+	
+	(check_conflicts_against_already_installed_packages),
+	Test for file existance, if present, do the proper check.
+	Nicer output in the non-debug ouptut mode (use readable packagename)
+
+	(check_feature_consistency), 
+	Set a integer datafield to not recheck consistency for packages
+	when doing a revive cycle.
+	Added check to avoid noting certain updates as breaks.
+	Added check to avoid renoting revived breaks (fixes bug 6811)
+
+	(do_file_conflict_check),
+	Call check_tree_for_conflicts after feature_consistency_check to
+	revive FeatureBreaks (fixes bug 6811)
+	
+	(eazel_uninstall_globber):
+	Removed a c++ commented out debug call.
+
+	Also added I18N tags to all g_message output and revamped some
+	output to be more translator friendly. Ensured that debugless
+	output still makes sense.
+
+	Fixed a bug in uninstall where it would report too many packages.
+
+	Removed add_to_breaks_if_new, replaced it with the "normal"
+	g_list_find_custom call.
+	
+	* components/services/install/lib/eazel-package-system-types.h:
+	Changed packagedata->obsolotes into a GList *
+
+	* components/services/install/lib/eazel-package-system-types.c:
+	(packagedata_finalize), (packagedata_copy),
+	(packagedata_fill_in_missing), (packagedata_get_readable_name),
+	(eazel_install_package_compare), (packagedata_dump_int):
+	treat packagedata->obsolotes as a GList* and not a char*.
+
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(eazel_package_system_rpm3_packagedata_fill_from_header):
+	Correctly read the RPMTAG_OBSOLETES and put into the packagedata object.
+	
 2001-02-26  Arik Devens  <arik@eazel.com>
 
 	reviewed by: John Harper  <jsh@eazel.com
@@ -130,9 +187,7 @@ Mon Feb 26 03:00:03 2001  George Lebl <jirka@5z.com>
         Removed the throbber and the document icons out of Crux Eggplant
         and made them point to the ones in Crux teal.
 
-
-2001-02-26 Dan Mueth
-<dan@eazel.com>
+2001-02-26 Dan Mueth  <dan@eazel.com>
 
 	reviewed by: Seth Nickell  <snickell@stanford.edu>
 

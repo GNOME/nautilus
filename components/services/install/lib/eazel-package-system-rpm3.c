@@ -872,7 +872,7 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 	eazel_package_system_rpm3_get_and_set_string_tag (hd, RPMTAG_NAME, &pack->name);
 	eazel_package_system_rpm3_get_and_set_string_tag (hd, RPMTAG_VERSION, &pack->version);
 	eazel_package_system_rpm3_get_and_set_string_tag (hd, RPMTAG_RELEASE, &pack->minor);
-	eazel_package_system_rpm3_get_and_set_string_tag (hd, RPMTAG_OBSOLETENAME, &pack->obsoletes);
+
 	eazel_package_system_rpm3_get_and_set_string_tag (hd, RPMTAG_ARCH, &pack->archtype);
 	if (~detail_level & PACKAGE_FILL_NO_TEXT) {
 		eazel_package_system_rpm3_get_and_set_string_tag (hd, RPMTAG_DESCRIPTION, &pack->description);
@@ -895,6 +895,24 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 	pack->packsys_struc = (gpointer)hd;
 	
 	pack->fillflag = detail_level;
+
+	{
+		char **obsoletes = NULL;
+		int count = 0;
+		int i;
+	/* FIXME: bugzilla.eazel.com 6903
+	   obsoletes is not a string, it's a stringlist! */
+		
+		headerGetEntry (hd,			
+				RPMTAG_OBSOLETENAME, NULL,
+				(void**)&obsoletes, 
+				&count);
+		
+		for (i = 0; i < count; i++) {
+			pack->obsoletes = g_list_prepend (pack->obsoletes, g_strdup (obsoletes[i]));
+		}
+		free (obsoletes);
+	}
 
 	/* FIXME: bugzilla.eazel.com 4863 */
 	if (~detail_level & PACKAGE_FILL_NO_PROVIDES) {

@@ -328,7 +328,8 @@ packagedata_finalize (GtkObject *obj)
 	g_list_free (pack->modifies);
 	pack->modifies = NULL;
 
-	g_free (pack->obsoletes);
+	g_list_foreach (pack->obsoletes, (GFunc)g_free, NULL);
+	g_list_free (pack->obsoletes);
 	pack->obsoletes = NULL;
 	
 	pack->epoch = 0;
@@ -510,7 +511,9 @@ packagedata_copy (const PackageData *pack, gboolean deep)
 	result->filesize = pack->filesize;
 	result->md5 = g_strdup (pack->md5);
 
-	result->obsoletes = g_strdup (pack->obsoletes);
+	for (ptr = pack->obsoletes; ptr; ptr = g_list_next (ptr)) {
+		result->obsoletes = g_list_prepend (result->obsoletes, g_strdup ((char*)ptr->data));
+	}
 	result->epoch = pack->epoch;
 
 	if (deep) {
@@ -565,7 +568,16 @@ packagedata_fill_in_missing (PackageData *package, const PackageData *full_packa
 	COPY_STRING (suite_id);
 	COPY_STRING (remote_url);
 	COPY_STRING (md5);
-	COPY_STRING (obsoletes);
+
+	if (full_package->obsoletes != NULL) {
+		g_list_foreach (package->obsoletes, (GFunc)g_free, NULL);
+		g_list_free (package->obsoletes);
+		package->obsoletes = NULL;
+
+		for (ptr = full_package->obsoletes; ptr; ptr = g_list_next (ptr)) {
+			package->obsoletes = g_list_prepend (package->obsoletes, g_strdup ((char*)ptr->data));
+		}
+	}
 
 	package->epoch = full_package->epoch;
 
@@ -678,17 +690,16 @@ packagedata_get_readable_name (const PackageData *pack)
 	} else if ((pack->name != NULL) && (pack->version != NULL)) {
 		/* This is a hack to shorten EazelSourceSnapshot names
 		   into the build date/time */
-		if (pack->version && pack->minor &&
-		    strstr (pack->version, "Eazel")!=NULL && strstr (pack->minor, "200") != NULL) {
+		if (pack->version && pack->minor && 
+		    strstr (pack->version, ".200") != NULL) {
 			char *month[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
 					 "Sep", "Oct", "Nov", "Dec"};
 			char *temp, *temp2;
 			int mo, da, ho, mi;
 			/* this crap is too long to display ! */
-			temp = g_strdup (pack->minor);
-			temp2 = strstr (temp, "200");
-			strcpy (temp2, "ESS");
-			temp2 += strlen ("200x");
+			temp = g_strdup (pack->version);
+			temp2 = strstr (temp, ".200");
+			temp2 += strlen (".200x");
 			sscanf (temp2, "%2d%2d%2d%2d", &mo, &da, &ho, &mi);
 			result = g_strdup_printf ("%s of %d %s, %02d:%02d", 
 						  pack->name,
@@ -1015,6 +1026,12 @@ eazel_install_package_compare (PackageData *pack,
 			       PackageData *other)
 {
 	int result = 0;
+
+	char *a, *b;
+	a = packagedata_get_readable_name (pack);
+	b = packagedata_get_readable_name (other);
+	g_message ("\t%s vs %s", a, b);
+
 	/* For the field sets, if they both exists, compare them,
 	   if one has it and the other doesn't, not equal */
 	if (pack->name && other->name) {
@@ -1448,9 +1465,14 @@ packagedata_dump_int (const PackageData *package, gboolean deep, int indent)
 		g_string_sprintfa (out, "Epoch: %d", package->epoch);
 	}
 	if (package->obsoletes) {
+		GList *fitte;
+
 		g_string_sprintfa (out, "\n");
 		gstr_indent (out, indent);
-		g_string_sprintfa (out, "Obsoletes: %s", package->obsoletes);
+		g_string_sprintfa (out, "Obsoletes: ");
+		for (fitte = package->obsoletes; fitte; fitte = g_list_next (fitte)) {
+			g_string_sprintfa (out, "%s ", (char*)fitte->data);
+		}
 	}
 	g_string_sprintfa (out, "\n");
 

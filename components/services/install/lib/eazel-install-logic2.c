@@ -43,7 +43,8 @@
   0x4 enables random spewing
   0x8 enables dumping the final tree
  */
-#define EI2_DEBUG 0xff
+#define EI2_DEBUG 0xFF
+
 #define PATCH_FOR_SOFTCAT_BUG 1
 #define MUST_HAVE PACKAGE_FILL_NO_DIRS_IN_PROVIDES
 #define UPDATE_MUST_HAVE PACKAGE_FILL_NO_DEPENDENCIES|PACKAGE_FILL_NO_TEXT|PACKAGE_FILL_NO_DIRS_IN_PROVIDES
@@ -164,10 +165,12 @@ check_md5_on_files (EazelInstall *service,
 								     trilobite_md5_get_string_from_md5_digest (md5));
 				result = FALSE;
 			} else {
+#if EI2_DEBUG & 0x4				
 				trilobite_debug ("md5 match on %s", pack->name);
+#endif
 			}
 		} else {
-			trilobite_debug ("No MD5 available for %s", pack->name);
+			g_message (_("No MD5 available for %s"), pack->name);
 		}
 	}	
 
@@ -333,9 +336,11 @@ eazel_install_check_existing_packages (EazelInstall *service,
 		int res;
 
 		if (g_list_length (existing_packages)>1) {
+#if EI2_DEBUG & 0x4
 			trilobite_debug ("there are %d existing packages called %s",
 					 g_list_length (existing_packages),
 					 pack->name);
+#endif
 			/* Verify them all, to find one that is not damaged. Mark the rest
 			   as invalid so the client can suggest the user should delete them */
 			for (iterator = existing_packages; iterator; iterator = g_list_next (iterator)) {
@@ -347,14 +352,18 @@ eazel_install_check_existing_packages (EazelInstall *service,
 				if (eazel_package_system_verify (service->private->package_system,
 								 service->private->cur_root,
 								 foo)) {
-					g_message ("%s is ok", name);
+					/* I18N note: "%is is ok" in the sense that %s=package name and the
+					   package is intact */
+					g_message (_("%s is ok"), name);
 					if (survivor == NULL) {
 						survivor = existing_package;
 					} else {						
 						abort = TRUE;
 					}
 				} else {
-					g_message ("%s is NOT ok", name);
+					/* I18N note: "%is is not ok" in the sense that %s=package name and the
+					   package is not intact */
+					g_message ("%s is not ok", name);
 					existing_package->status = PACKAGE_INVALID;
 					/* I add the borked packages later, so they'll show up
 					   earlier in the tree */
@@ -612,7 +621,7 @@ get_softcat_info (EazelInstall *service,
 #if EI2_DEBUG & 0x4
 				trilobite_debug ("%p %s load from disk", *package, (*package)->name);
 #else
-				g_message ("Loading package info from %s", (*package)->filename);
+				g_message (_("Loading package info from file %s"), (*package)->filename);
 #endif		
 				loaded_package = eazel_package_system_load_package (service->private->package_system,
 										    *package,
@@ -724,7 +733,7 @@ get_package_info_foreach (EazelInstall *service,
 	result = get_softcat_info (service, &package);
         switch (result) {
 	case NO_SOFTCAT_HIT:
-		trilobite_debug ("Could not get info from SoftwareCatalog ");
+		g_message ("Could not get info from SoftwareCatalog ");
 		break;
 	case PACKAGE_SKIPPED:
 #if EI2_DEBUG & 0x4
@@ -864,7 +873,7 @@ is_satisfied (EazelInstall *service,
 				 dep->package, dep->package->name);
 		trilobite_debug ("\t -> already filled, must be ok");
 #else
-		g_message ("\t(cached) : %s", 
+		g_message ("\tcached : %s", 
 			   dep->package->name);
 #endif
 		
@@ -979,7 +988,8 @@ is_satisfied (EazelInstall *service,
 
 #if ~EI2_DEBUG & 0x4	
 	g_message ("\t%8.8s : %s %s %s", 
-		   result ? "ok" : "NOT ok",
+		   /* I18N note: ok is for "package dependencies are ok", "not ok".. well guess... */
+		   result ? _("ok") : _("not ok"),
 		   dep->package->name, sense_str,
 		   (dep->version != NULL ? dep->version : ""));
 #endif
@@ -1136,8 +1146,6 @@ check_dependencies_foreach (EazelInstall *service,
 		}
 #if EI2_DEBUG & 0x4
 		trilobite_debug ("skipping suite %p %s", package, package->suite_id);
-#else
-		g_message ("Skipping suite %s", package->suite_id);
 #endif
 	}
 
@@ -1145,7 +1153,7 @@ check_dependencies_foreach (EazelInstall *service,
 #if EI2_DEBUG & 0x4
 	trilobite_debug ("check deps for %p %s", package, package->name);
 #else
-	g_message ("Checking dependencies for %s", package->name);
+	g_message (_("Checking dependencies for %s"), package->name);
 #endif
 
 	for (iterator = package->depends; iterator; iterator = g_list_next (iterator)) {
@@ -1359,21 +1367,11 @@ check_if_modification_is_ok (EazelInstall *service,
 	return accept;
 }
 
-/* add a "breaks" marker to a package, but only if the broken package isn't already in the breaks list */
-static void
-packagedata_add_to_breaks_if_new (PackageData *pack, PackageBreaks *breaks)
+static int
+find_break_by_package_name (PackageBreaks *breaks, PackageData *pack)
 {
-	PackageData *what_broke = packagebreaks_get_package (breaks);
-	GList *iter;
-
-	for (iter = g_list_first (pack->breaks); iter != NULL; iter = g_list_next (iter)) {
-		pack = packagebreaks_get_package (PACKAGEBREAKS (iter->data));
-		if (pack == what_broke) {
-			/* redundant */
-			return;
-		}
-	}
-	packagedata_add_to_breaks (pack, breaks);
+	return eazel_install_package_compare (packagebreaks_get_package (breaks), 
+					      pack);
 }
 
 /*
@@ -1454,21 +1452,25 @@ do_requirement_consistency_check_package (EazelInstall *service,
 						/* If we fail, mark pack as breaking requiredby */
 						if (check_if_modification_is_ok (service, pack, updated, dep)
 						    == FALSE) {
-							PackageFeatureMissing *breakage = 
-								packagefeaturemissing_new ();
-							PackageDependency *req_dep = packagedependency_new();
+							if (g_list_find_custom (pack->breaks, 
+										updated,
+										(GCompareFunc)find_break_by_package_name)==NULL) {
+								PackageFeatureMissing *breakage = 
+									packagefeaturemissing_new ();
+								PackageDependency *req_dep = packagedependency_new();
 
-							/* Ref mojo */
-							gtk_object_ref (GTK_OBJECT (updated));
-							gtk_object_ref (GTK_OBJECT (requiredby));
-							req_dep->package = updated;
-							req_dep->sense = dep->sense;
-							req_dep->version = g_strdup (dep->version);
-							packagedata_add_pack_to_depends (requiredby, req_dep);
-							pack->status = PACKAGE_BREAKS_DEPENDENCY;
-							packagebreaks_set_package (PACKAGEBREAKS (breakage), 
-										   requiredby);
-							packagedata_add_to_breaks_if_new (pack, PACKAGEBREAKS (breakage));
+								/* Ref mojo */
+								gtk_object_ref (GTK_OBJECT (updated));
+								gtk_object_ref (GTK_OBJECT (requiredby));
+								req_dep->package = updated;
+								req_dep->sense = dep->sense;
+								req_dep->version = g_strdup (dep->version);
+								packagedata_add_pack_to_depends (requiredby, req_dep);
+								pack->status = PACKAGE_BREAKS_DEPENDENCY;
+								packagebreaks_set_package (PACKAGEBREAKS (breakage), 
+											   requiredby);
+								packagedata_add_to_breaks (pack, PACKAGEBREAKS (breakage));
+							}
 						}
 					}
 				}
@@ -1583,20 +1585,25 @@ check_if_related_package (EazelInstall *service,
 				break;
 			}
 			if (cnt >= 1) {
+#if EI2_DEBUG & 0x4
 				trilobite_debug ("%s-%s seems to be a child package of %s-%s, which %s-%s updates",
 						 dep->name, dep->version, 
 						 modpack->name, modpack->version,
 						 package->name, package->version);
+#endif
 				if (!result) {
 					result = TRUE;
 				} else {
 					trilobite_debug ("but what blows is, the previous also did!!");
-					g_assert_not_reached ();
+					package->status = PACKAGE_CANCELLED;
+					result = FALSE;
 				}				
 			} else {
+#if EI2_DEBUG & 0x4
 				trilobite_debug ("%s-%s is not related to %s-%s", 
 						 dep->name, dep->version, 
 						 package->name, package->version);
+#endif
 			}
 			g_strfreev (mod_name_elements);			
 		}
@@ -1647,6 +1654,7 @@ check_for_no_more_missing_features (PackageFeatureMissing *missing,
 	for (iterator = missing->features; iterator; iterator = g_list_next (iterator)) {
 		char *feature = (char*)iterator->data;
 		GList *dep_iterator;
+
 		for (dep_iterator = pack_update->depends; dep_iterator; dep_iterator = g_list_next (dep_iterator)) {
 			PackageDependency *dep = PACKAGEDEPENDENCY (dep_iterator->data);
 			PackageData *pack = dep->package;
@@ -1701,7 +1709,10 @@ check_tree_helper (EazelInstall *service,
 				char *a, *b;
 				a = packagedata_get_readable_name (pack);
 				b = packagedata_get_readable_name (pack_broken);
-				g_message ("%s is related to %s",
+				/* I18N note: both %s' are package names.
+				   related is in the sense that the two packages apparently
+				   are connected somehow, eg. foo and foo-devel */
+				g_message (_("%s is related to %s"),
 					   a, b);
 				
 					/* Create the pack_update */
@@ -1755,24 +1766,24 @@ check_tree_helper (EazelInstall *service,
 					trilobite_debug ("adding %s to packages to be installed", 
 							 pack_update->name);
 #else
-					g_message ("updating %s to version %s-%s solves conflict",
-						   pack_update->name, pack_update->version,
-						   pack_update->minor);
+					g_message (_("updating %s to version %s-%s solves conflict"),
+						pack_update->name, pack_update->version,
+						pack_update->minor);
 #endif
 					/* ref the package and add it to the extra_packages list */
 					gtk_object_ref (GTK_OBJECT (pack_update));
 					(*extra_packages) = g_list_prepend (*extra_packages, 
 									    pack_update);
 					pack_update->status = PACKAGE_PARTLY_RESOLVED;
-						remove = g_list_prepend (remove, breakage);
-						/* reset pack_broken to some sane values */
-						pack->status = PACKAGE_PARTLY_RESOLVED;
-						pack_update->toplevel = TRUE;
+					remove = g_list_prepend (remove, breakage);
+					/* reset pack_broken to some sane values */
+					pack->status = PACKAGE_PARTLY_RESOLVED;
+					pack_update->toplevel = TRUE;
 				} else {
 #if EI2_DEBUG & 0x4
 					trilobite_debug ("%s still has conflict", pack_update->name);
 #else
-					g_message ("available update to %s (%s-%s) does not solves conflict",
+					g_message (_("available update to %s (%s-%s) does not solves conflict"),
 						   pack_update->name,
 						   pack_update->version, pack_update->minor);
 #endif
@@ -1828,13 +1839,6 @@ check_tree_for_conflicts (EazelInstall *service,
 #if EI2_DEBUG & 0x4
 	trilobite_debug ("<- check_tree_for_conflicts");
 #endif
-}
-
-static int
-find_break_by_package_name (PackageBreaks *breaks, PackageData *pack)
-{
-	return eazel_install_package_compare (packagebreaks_get_package (breaks), 
-					      pack);
 }
 
 static void
@@ -1899,7 +1903,9 @@ check_no_two_packages_has_same_file (EazelInstall *service,
 	if (eazel_install_get_force (service) ||
 	    eazel_install_get_ignore_file_conflicts (service) ||
 	    (g_list_length (flat_packages) == 1)) {
+#if EI2_DEBUG & 0x4
 		trilobite_debug ("(not performing duplicate file check)");
+#endif
 		g_list_free (flat_packages);
 		return;
 	}
@@ -1920,7 +1926,7 @@ check_no_two_packages_has_same_file (EazelInstall *service,
 			continue;
 		}
 
-		g_message ("file uniqueness checking %s", pack->name);
+		g_message (_("file uniqueness checking %s"), pack->name);
 		eazel_install_emit_file_uniqueness_check (service, pack);
 
 		for (iter_file = g_list_first (pack->provides); iter_file != NULL; iter_file = g_list_next (iter_file)) {
@@ -1932,20 +1938,35 @@ check_no_two_packages_has_same_file (EazelInstall *service,
 				/* Only report it once in the debug log or we'll spam to eternity on some
 				 * large broken packages... */
 				if (! reported_yet) {
-					g_message ("Duplicate file : %s occurs in %s and %s",
-						   filename, pack->name, pack_other->name);
+#if EI2_DEBUG & 0x4
+					trilobite_debug ("Duplicate file : %s occurs in %p %s and %p %s",
+							 filename, pack, pack->name, 
+							 pack_other, pack_other->name);
+#else
+					{
+						char *a, *b;
+						a = packagedata_get_readable_name (pack);
+						b = packagedata_get_readable_name (pack_other);
+						g_message (_("Duplicate file : %s occurs in %s and %s"),
+							   filename, a, b);
+						g_free (a);
+						g_free (b);
+					}
+#endif
 					reported_yet = TRUE;
 				} else {
 					other_conflicts++;
 				}
-				add_file_conflict (pack, pack_other, filename);
+				/* FIXME: bugzilla.eazel.com 7024
+				   reinsert this command once softcat is rebuild */
+				/* add_file_conflict (pack, pack_other, filename); */
 			} else {
 				/* file is okay */
 				g_hash_table_insert (file_table, filename, pack);
 			}
 		}
 		if (other_conflicts) {
-			trilobite_debug ("(there were %d other conflicts)", other_conflicts);
+			g_message (_("(there were %d other conflicts)"), other_conflicts);
 		}
 	}
 
@@ -2021,7 +2042,9 @@ check_conflicts_against_already_installed_packages (EazelInstall *service,
 	GList *flat_packages;
 
 	if (eazel_install_get_ignore_file_conflicts (service)) {
+#if EI2_DEBUG & 0x4
 		trilobite_debug ("(not performing file conflict check)");
+#endif
 		return;
 	}
 
@@ -2038,7 +2061,7 @@ check_conflicts_against_already_installed_packages (EazelInstall *service,
 			continue;
 		}
 
-		g_message ("file conflict checking %s", pack->name);
+		g_message (_("file conflict checking %s"), pack->name);
 		eazel_install_emit_file_conflict_check (service, pack);
 
 		pack->conflicts_checked = TRUE;
@@ -2051,8 +2074,13 @@ check_conflicts_against_already_installed_packages (EazelInstall *service,
 			   till it does, I use this check */
 			/* but wait!  this is also needed to fix bug 5799 until softcat fixes
 			 * forseti bug XXXX [files and directories need to be indicated differently in the xml]
-			 */
 			if (g_file_test (filename, G_FILE_TEST_ISDIR)) {
+				continue;
+			}
+			*/
+
+			/* If the file isn't on the system, no need to check for conflicts */
+			if (g_file_test (filename, G_FILE_TEST_ISFILE) == 0) {
 				continue;
 			}
 
@@ -2073,13 +2101,25 @@ check_conflicts_against_already_installed_packages (EazelInstall *service,
 					continue;
 				}
 
-				g_message ("file conflict : package %s already provides %s also provided by %s",
-						 pack_owner->name, filename, pack->name);
+#if EI2_DEBUG & 0x4
+				trilobite_debug ("file conflict : package %p %s already provides %s also provided by %p %s",
+						 pack_owner, pack_owner->name, filename, pack, pack->name);
+#else
+				{
+					char *a, *b;
+					a = packagedata_get_readable_name (pack_owner);
+					b = packagedata_get_readable_name (pack);
+					g_message (_("file conflict : package %s already provides file %s also provided by %s"),
+						   a, filename, b);
+					g_free (a);
+					g_free (b);
+				}
+#endif
 				if (package_is_upgrading_and_doesnt_need_file (pack_owner, 
 									       flat_packages, filename)) {
 					/* the owner of this file is a package that we're upgrading, and the
 					 * new version no longer has this file, so everything's okay. */
-					g_message ("...but it's okay, we're upgrading %s and it ditched that file",
+					g_message (_("...but it is okay, we're upgrading %s and it ditched that file"),
 						   pack_owner->name);
 				} else {
 					add_file_conflict (pack, pack_owner, filename);
@@ -2141,6 +2181,10 @@ check_feature_consistency (EazelInstall *service,
 		PackageData *pack = PACKAGEDATA (iterator->data);
 		GList *feature_it;
 
+		if (GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (pack), "do_feature_consistency_check"))!=0) {
+			continue;
+		}
+
 #if EI2_DEBUG & 0x4
 		trilobite_debug ("%s provides %d features", pack->name, g_list_length (pack->features));
 #endif
@@ -2157,10 +2201,15 @@ check_feature_consistency (EazelInstall *service,
 		PackageData *pack = PACKAGEDATA (iterator->data);
 		GList *modify_it;
 
+		if (GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (pack), "do_feature_consistency_check"))!=0) {
+			continue;
+		}
+		gtk_object_set_data (GTK_OBJECT (pack), "do_feature_consistency_check", GINT_TO_POINTER (1));
+
 #if EI2_DEBUG & 0x4
 		trilobite_debug ("checking %s", pack->name);
 #else
-		g_message ("checking feature consistency of %s", pack->name);
+		g_message (_("checking feature consistency of %s"), pack->name);
 #endif
 		eazel_install_emit_feature_consistency_check (service, pack);
 
@@ -2200,6 +2249,25 @@ check_feature_consistency (EazelInstall *service,
 					for (break_it = required_by; break_it; break_it = g_list_next (break_it)) {
 						PackageFeatureMissing *feature_missing = packagefeaturemissing_new ();
 						PackageData *pack_broken = PACKAGEDATA (break_it->data);
+						
+						if (eazel_install_package_compare (pack_broken, pack_modified)==0) {
+#if EI2_DEBUG & 0x4
+							trilobite_debug ("It's my child");
+#endif
+							continue;
+							
+						}
+
+						if (g_list_find_custom (pack->breaks, pack_broken,
+									(GCompareFunc)find_break_by_package_name)) {
+#if EI2_DEBUG & 0x4
+							trilobite_debug ("Already marked as borked");
+#endif
+							continue;
+
+						}
+
+						feature_missing = packagefeaturemissing_new ();
 
 #if EI2_DEBUG & 0x4
 						trilobite_debug ("%p %s is broken by %p %s modifying %p %s", 
@@ -2207,7 +2275,7 @@ check_feature_consistency (EazelInstall *service,
 								 pack, pack->name,
 								 pack_modified, pack_modified->name);
 #else
-						g_message ("feature missing : %s breaks, if %s is installed (feature %s would be lost",
+						g_message (_("feature missing : %s breaks if %s is installed (feature %s would be lost"),
 							   pack_broken->name,
 							   pack->name,
 							   feature);
@@ -2261,6 +2329,7 @@ do_file_conflict_check (EazelInstall *service,
 	   feature consistency */
 	if (*extra_packages==NULL) {
 		check_feature_consistency (service, *packages);
+		check_tree_for_conflicts (service, packages, extra_packages);
 		prune_failed_packages (service, packages);
 	} else {
 #if EI2_DEBUG & 0x4
@@ -2284,7 +2353,7 @@ download_packages (EazelInstall *service,
 	gboolean result = TRUE;
 	
 	flat_packages = flatten_packagedata_dependency_tree (packages);
-	g_message ("downloading %d packages", g_list_length (flat_packages));
+	g_message (_("downloading %d packages"), g_list_length (flat_packages));
 
 	service->private->cancel_download = FALSE;
 	for (iterator = flat_packages; iterator; iterator = g_list_next (iterator)) {
@@ -2542,10 +2611,28 @@ check_uninst_vs_downgrade (GList **inst,
 }
 
 static void
-debug_revert (PackageData *pack, char *str)
+debug_revert (PackageData *pack, gpointer modr)
 {
+	PackageModification mod = GPOINTER_TO_INT (modr);
 	char *name = packagedata_get_readable_name (pack);
-	g_message ("will %s %s", str, name);
+
+	switch (mod) {
+	case PACKAGE_MOD_UPGRADED:
+		g_message (_("will upgrade %s"), name);
+		break;
+	case PACKAGE_MOD_DOWNGRADED:
+		g_message (_("will downgrade %s"), name);
+		break;
+	case PACKAGE_MOD_INSTALLED:
+		g_message (_("will install %s"), name);
+		break;
+	case PACKAGE_MOD_UNINSTALLED:
+		g_message (_("will uninstall %s"), name);
+		break;
+	default: break;
+			
+	};
+
 	g_free (name);
 }
 
@@ -2578,7 +2665,7 @@ eazel_uninstall_upward_traverse (EazelInstall *service,
 	  for all break, add to packages and recurse
 	 */
 #if EI2_DEBUG & 0x4
-	trilobite_debug ("--> eazel_uninstall_upward_traverse");
+	trilobite_debug ("--> eazel_uninstall_upward_traverse %d packages", g_list_length (*packages));
 #endif
 
 	g_assert (packages!=NULL);
@@ -2619,7 +2706,14 @@ eazel_uninstall_upward_traverse (EazelInstall *service,
 					 requiredby, requiredby->name, 
 					 pack, pack->name);
 #else
-			g_message ("%s requires %s", requiredby_name, pack->name);
+			{
+				char *a, *b;
+				a = packagedata_get_readable_name (requiredby);
+				b = packagedata_get_readable_name (pack);
+				g_message (_("%s requires %s"), a, b);
+				g_free (a);
+				g_free (b);
+			}
 #endif
 
 			/* If the broken package is in packages, just continue */
@@ -2673,6 +2767,10 @@ eazel_uninstall_upward_traverse (EazelInstall *service,
 		(*packages) = g_list_remove (*packages, iterator->data);
 	}
 
+#if EI2_DEBUG & 0x1
+	trilobite_debug ("post uninstall upward tree");
+	dump_tree (*packages);
+#endif
 #if EI2_DEBUG & 0x4
 	trilobite_debug ("<-- eazel_uninstall_upward_traverse");
 #endif
@@ -2743,7 +2841,9 @@ eazel_uninstall_globber (EazelInstall *service,
 	  add all from &tmp to packages
 	*/
 
-	trilobite_debug ("--> eazel_uninstall_globber");
+#if EI2_DEBUG & 0x4
+	trilobite_debug ("--> eazel_uninstall_globber %d packages", g_list_length (*packages));
+#endif
 
 	tmp = NULL;
 
@@ -2768,8 +2868,16 @@ eazel_uninstall_globber (EazelInstall *service,
 #endif
 		for (iterator = *failed; iterator; iterator = g_list_next (iterator)) {
 			PackageData *pack = (PackageData*)iterator->data;
+#if EI2_DEBUG & 0x4
 			trilobite_debug ("failed %p %s", pack, pack->name);
-			//dump_one_package (GTK_OBJECT (pack), "");
+#else
+			{
+				char *a;
+				a = packagedata_get_readable_name (pack);
+				g_message (_("failed %s"), a);
+				g_free (a);
+			}
+#endif
 			eazel_install_emit_uninstall_failed (service, pack);
 		}
 		g_list_foreach (*failed, (GFunc)gtk_object_unref, NULL);
@@ -2777,7 +2885,9 @@ eazel_uninstall_globber (EazelInstall *service,
 		g_list_free (tmp);
 	}
 
+#if EI2_DEBUG & 0x4
 	trilobite_debug ("<-- eazel_uninstall_glob");
+#endif
 }
 
 
@@ -2861,7 +2971,9 @@ uninstall_packages (EazelInstall *service, GList *categories)
 
 	eazel_softcat_reset_server_update_flag (service->private->softcat);
 
+#if EI2_DEBUG & 0x4
 	trilobite_debug ("--> uninstall_packages");
+#endif
 	packages = packagedata_list_copy (categorylist_flatten_to_packagelist (categories), TRUE);	
 	eazel_uninstall_globber (service, &packages, &failed);
 	
@@ -2877,9 +2989,11 @@ uninstall_packages (EazelInstall *service, GList *categories)
 	g_list_foreach (packages, (GFunc)gtk_object_unref, NULL);
 	g_list_free (packages);
 
-	trilobite_debug ("uninstall returns returning %s", 
+#if EI2_DEBUG & 0x4
+	trilobite_debug ("\tuninstall returns returning %s", 
 			 result == EAZEL_INSTALL_UNINSTALL_OK ? "OK" : "FAILED");
 	trilobite_debug ("<-- uninstall_all_packages");
+#endif
 	return result;
 }
 
@@ -2899,10 +3013,10 @@ revert_transaction (EazelInstall *service,
 
 	check_uninst_vs_downgrade (&uninst, &downgrade);
 
-	g_list_foreach (uninst, (GFunc)debug_revert, "uninstall");
-	g_list_foreach (inst, (GFunc)debug_revert, "install");
-	g_list_foreach (downgrade, (GFunc)debug_revert, "downgrade");
-	g_list_foreach (upgrade, (GFunc)debug_revert, "upgrade");
+	g_list_foreach (uninst, (GFunc)debug_revert, GINT_TO_POINTER (PACKAGE_MOD_UNINSTALLED));
+	g_list_foreach (inst, (GFunc)debug_revert, GINT_TO_POINTER (PACKAGE_MOD_INSTALLED));
+	g_list_foreach (downgrade, (GFunc)debug_revert, GINT_TO_POINTER (PACKAGE_MOD_DOWNGRADED));
+	g_list_foreach (upgrade, (GFunc)debug_revert, GINT_TO_POINTER (PACKAGE_MOD_UPGRADED));
 
 	cat = categorydata_new ();
 	categories = g_list_prepend (NULL, cat);

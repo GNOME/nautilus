@@ -363,22 +363,25 @@ eazel_download_progress_signal (EazelInstallCallback *service,
 					old_pct = pct;
 				}
 				/* I18N note: %s is a package name, %d/%d is bytes/totalbytes,
-				   the next %d is a percentage completed, %1.f is a KB/s, and the
-				   trailing spaces must be present to overwrite KB/s if it changes 
-				   radically */
-				fprintf (stdout, _("\rDownloading %s... (%d/%d) = %d%% %.1f KB/s     \r"), 
+				   the next %d is a percentage completed, %1.f is a KB/s */
+				fprintf (stdout, "\r");
+				fprintf (stdout, _("Downloading %s... (%d/%d) = %d%% %.1f KB/s"), 
 					 pack->name,
 					 amount, total, pct,
 					 ks);
+				fprintf (stdout, "        \r");
+
 			} else {
-				fprintf (stdout, _("\rDownloading %s... (%d/%d) = %d%%"), 
+				fprintf (stdout, "\r");
+				fprintf (stdout, _("Downloading %s... (%d/%d) = %d%%"), 
 					 pack->name,
 					 amount, total, pct);
 			}
 		}
 	} else if (amount == total && total!=0) {
 		if (arg_no_pct==0) {
-			fprintf (stdout, _("\rDownloading %s... (%d/%d) %.1f KB/s Done      \n"),
+			fprintf (stdout, "\r");
+			fprintf (stdout, _("Downloading %s... (%d/%d) %.1f KB/s Done      \n"),
 				 pack->name,
 				 amount, total, 
 				 ks);
@@ -410,14 +413,16 @@ eazel_install_progress_signal (EazelInstallCallback *service,
 		if (arg_no_pct==0) {
 			if (!arg_machine) {
 				if (strcasecmp (title, "Installing")==0) {
-					fprintf (stdout, _("\rInstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"), 
+					fprintf (stdout, "\r");
+					fprintf (stdout, _("Installing %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"), 
 						 packname,
 						 package_num, num_packages,
 						 total_size_completed, total_size,
 						 amount, total,
 						 amount / (total / 100));
 				} else {
-					fprintf (stdout, _("\rUninstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"), 
+					fprintf (stdout, "\r");
+					fprintf (stdout, _("Uninstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"), 
 						 packname,
 						 package_num, num_packages,
 						 total_size_completed, total_size,
@@ -438,13 +443,15 @@ eazel_install_progress_signal (EazelInstallCallback *service,
 		} else {
 			if (arg_no_pct==0) {
 				if (strcasecmp (title, "Installing")==0) {					
-					fprintf (stdout, _("\rInstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"),
+					fprintf (stdout, "\r");
+					fprintf (stdout, _("Installing %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"),
 						 packname,
 						 package_num, num_packages,
 						 total_size_completed, total_size,
 						 amount, total, 100);
 				} else {
-					fprintf (stdout, _("\rUnnstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"),
+					fprintf (stdout, "\r");
+					fprintf (stdout, _("Unnstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"),
 						 packname,
 						 package_num, num_packages,
 						 total_size_completed, total_size,
@@ -614,6 +621,9 @@ something_failed (EazelInstallCallback *service,
 			GList *extra_cases = NULL;
 			GList *it;
 			for (it = stuff; it; it = g_list_next (it)) {
+				/* I18N note: \xB7 is a dot */
+				fprintf (stdout, _("\t\xB7 Problem : %s\n"), (char*)(it->data));
+				/* I18N note: \xB7 is a dot */
 				fprintf (stdout, _("\t\xB7 Problem : %s\n"), (char*)(it->data));
 			}
 			eazel_install_problem_tree_to_case (problem, pd, uninstall, &extra_cases);
@@ -622,6 +632,7 @@ something_failed (EazelInstallCallback *service,
 				if (stuff) {
 					GList *it;
 					for (it = stuff; it; it = g_list_next (it)) {
+						/* I18N note: \xB7 is a dot */
 						fprintf (stdout, _("\t\xB7 Action : %s\n"), (char*)(it->data));
 					}
 				}
@@ -698,10 +709,10 @@ eazel_preflight_check_signal (EazelInstallCallback *service,
 		} else {
 			char *name = packagedata_get_readable_name (pack);
 			if (pack->depends) {
-				/* I18N note: %s is a package name */
+				/* I18N note: %s is a package name, \xB7 is a dot */
 				printf (_("\t\xB7 %s and it's dependencies\n"), name);
 			} else {
-				/* I18N note: %s is a package name */
+				/* I18N note: %s is a package name, \xB7 is a dot */
 				printf (_("\t\xB7 %s\n"), name);
 			}
 			g_free (name);
@@ -743,9 +754,9 @@ md5_check_failed (EazelInstallCallback *service,
 	if (arg_silent) { printf ("\n"); }
 	/* I18N note: %s is a package name */
 	fprintf (stdout, _("Package %s failed md5 check!\n"), package->name);
-	/* I18N note: %s is a 32 bytes hex numbers */
+	/* I18N note: %s is a 32 bytes hex numbers, \xB7 is a dot */
 	fprintf (stdout, _("\t\xB7 server MD5 checksum is %s\n"), package->md5);
-	/* I18N note: %s is a 32 bytes hex numbers */
+	/* I18N note: %s is a 32 bytes hex numbers, \xB7 is a dot */
 	fprintf (stdout, _("\t\xB7 actual MD5 checksum is %s\n"), actual_md5);
 }
 
@@ -853,7 +864,7 @@ delete_files (EazelInstallCallback *service, EazelInstallProblem *problem)
 		   If you eg. translate this to Danish : "Fortsæt (j/n " and
 		   translated the "y" later to "j", da_DK users can respond with
 		   "j" "ja" "JA" etc. */
-		printf (_("Should i delete the RPM files? (y/n) "));
+		printf (_("Should I delete the RPM files? (y/n) "));
 		fflush (stdout);
 		if (arg_batch) {			
 			fprintf (stdout, "yes\n");
