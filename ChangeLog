@@ -1,3 +1,11 @@
+2001-02-15  Eric Fischer  <eric@eazel.com>
+
+	* nautilus.spec.in:
+	Building the installer into RPMs doesn't work, because I got
+	something in the Makefiles wrong.  Revert the changes to the
+	spec file so tinderbox comes back to life.  Will try again
+	once I think I have it right.
+
 2001-02-15  Robey Pointer  <robey@eazel.com>
 
 	reviewed by: Robin * Slomkowski  <rslomkow@eazel.com>
@@ -68,13 +76,13 @@
 
 2001-02-15  Eric Fischer  <eric@eazel.com>
 
-        * nautilus.spec.in:
-        Start building the eazel installer, and put it into its own RPM.
-        (This should eventually be separate from building nautilus)
+	* nautilus.spec.in:
+	Start building the eazel installer, and put it into its own RPM.
+	(This should eventually be separate from building nautilus)
 
-        * nautilus-installer/libtrilobite/Makefile.am:
-        Add a dependency to create the .h files, since gmake complains
-        otherwise.
+	* nautilus-installer/libtrilobite/Makefile.am:
+	Add a dependency to create the .h files, since gmake complains
+	otherwise.
 
 2001-02-15  Andy Hertzfeld  <andy@eazel.com>
 

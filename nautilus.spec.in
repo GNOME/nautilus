@@ -78,10 +78,6 @@ Requires:	%name-extras = %{PACKAGE_VERSION}
 Requires:	mozilla-mail = 0.7
 Requires:	mozilla-psm = 0.7
 
-%package installer
-Summary:	Eazel installer
-Group:		User Interface/Desktop
-
 %description devel
 This package provides the necessary development libraries and include
 files to allow you to develop Nautilus components.
@@ -100,9 +96,6 @@ Nautilus, and getting multimedia to work, such as eog and mpg123.
 
 %description extras
 This is a meta-package that requires useful add-ons for Nautilus.
-
-%description installer
-This is the Eazel installer.
 
 %changelog
 * Tue Oct 10 2000 Robin Slomkowski <rslomkow@eazel.com>
@@ -129,7 +122,6 @@ export LC_ALL LINGUAS LANG
 ## continuation character, or else the rpm demons will eat you.
 CFLAGS="$RPM_OPT_FLAGS -DENABLE_SCROLLKEEPER_SUPPORT" ./configure $MYARCH_FLAGS --prefix=%{prefix} \
 	--enable-eazel-services \
-	--enable-installer \
 	--enable-more-warnings \
 	--sysconfdir=%{sysconfdir}
 
@@ -333,7 +325,3 @@ fi
 %defattr(0444, bin, bin)
 %{prefix}/share/nautilus/nautilus-suggested.placeholder
 
-%files installer
-
-%defattr(0555, bin, bin)
-%{prefix}/bin/eazel-installer.sh
