@@ -1,3 +1,13 @@
+2002-06-20  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(icon_container_set_workarea): impl method to set icon
+	container margins from workarea geometries.
+	(net_wm_workarea_changed): renamed from panel_desktop_area_changed
+	and uses _NET_WM_WORKAREA instead of GNOME_PANEL_DESKTOP_AREA.
+	(desktop_icon_view_property_filter), (fm_desktop_icon_view_init):
+	update.
+
 2002-06-17  Dave Camp  <dave@ximian.com>
 
 	* libnautilus-private/nautilus-icon-container.c:

@@ -148,9 +148,39 @@ get_icon_container (FMDesktopIconView *icon_view)
 }
 
 static void
-panel_desktop_area_changed (FMDesktopIconView *icon_view)
+icon_container_set_workarea (NautilusIconContainer *icon_container,
+			     long                  *workareas,
+			     int                    n_items)
 {
-	long *borders = NULL;
+	int left, right, top, bottom;
+	int screen_width, screen_height;
+	int i;
+
+	left = right = top = bottom = 0;
+
+	screen_width  = gdk_screen_width ();
+	screen_height = gdk_screen_height ();
+
+	for (i = 0; i < n_items; i += 4) {
+		int x      = workareas [i];
+		int y      = workareas [i + 1];
+		int width  = workareas [i + 2];
+		int height = workareas [i + 3];
+
+		left   = MAX (left, x);
+		right  = MAX (right, screen_width - width - x);
+		top    = MAX (top, y);
+		bottom = MAX (bottom, screen_height - height - y);
+	}
+
+	nautilus_icon_container_set_margins (icon_container,
+					     left, right, top, bottom);
+}
+
+static void
+net_wm_workarea_changed (FMDesktopIconView *icon_view)
+{
+	long *workareas = NULL;
 	Atom type_returned;
 	int format_returned;
 	unsigned long items_returned;
@@ -164,38 +194,33 @@ panel_desktop_area_changed (FMDesktopIconView *icon_view)
 	gdk_error_trap_push ();
 	if (XGetWindowProperty (GDK_DISPLAY (),
 				GDK_ROOT_WINDOW (),
-				gdk_x11_get_xatom_by_name ("GNOME_PANEL_DESKTOP_AREA"),
-				0 /* long_offset */, 
-				4 /* long_length */,
-				False /* delete */,
+				gdk_x11_get_xatom_by_name ("_NET_WM_WORKAREA"),
+				0, G_MAXLONG, False,
 				XA_CARDINAL,
 				&type_returned,
 				&format_returned,
 				&items_returned,
 				&bytes_after_return,
-				(unsigned char **)&borders) != Success) {
-		if (borders != NULL)
-			XFree (borders);
-		borders = NULL;
+				(unsigned char **)&workareas) != Success) {
+		if (workareas != NULL)
+			XFree (workareas);
+		workareas = NULL;
 	}
 			    
 	if (gdk_error_trap_pop ()
-	    || borders == NULL
+	    || workareas == NULL
 	    || type_returned != XA_CARDINAL
-	    || items_returned != 4
+	    || (items_returned % 4) != 0
 	    || format_returned != 32) {
 		nautilus_icon_container_set_margins (icon_container,
 						     0, 0, 0, 0);
 	} else {
-		nautilus_icon_container_set_margins (icon_container,
-						     borders[0 /* left */],
-						     borders[1 /* right */],
-						     borders[2 /* top */],
-						     borders[3 /* bottom */]);
+		icon_container_set_workarea (
+				icon_container, workareas, items_returned);
 	}
 
-	if (borders != NULL)
-		XFree (borders);
+	if (workareas != NULL)
+		XFree (workareas);
 }
 
 static GdkFilterReturn
@@ -210,9 +235,8 @@ desktop_icon_view_property_filter (GdkXEvent *gdk_xevent,
   
 	switch (xevent->type) {
 	case PropertyNotify:
-		if (xevent->xproperty.atom == gdk_x11_get_xatom_by_name ("GNOME_PANEL_DESKTOP_AREA")) {
-			panel_desktop_area_changed (icon_view);
-		}
+		if (xevent->xproperty.atom == gdk_x11_get_xatom_by_name ("_NET_WM_WORKAREA"))
+			net_wm_workarea_changed (icon_view);
 		break;
 	default:
 		break;
@@ -684,9 +708,8 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	default_zoom_level_changed (desktop_icon_view);
 	fm_desktop_icon_view_update_icon_container_fonts (desktop_icon_view);
 
-	/* Read out the panel desktop area and update the icon container
-	 * accordingly */
-	panel_desktop_area_changed (desktop_icon_view);
+	/* Read out the workarea geometry and update the icon container accordingly */
+	net_wm_workarea_changed (desktop_icon_view);
 
 	/* Setup the property filter */
 	XSelectInput (GDK_DISPLAY (), GDK_ROOT_WINDOW (), PropertyChangeMask);
