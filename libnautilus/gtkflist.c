@@ -158,6 +158,13 @@ gtk_flist_initialize_class (GtkFListClass *class)
 	widget_class->drag_data_received = gtk_flist_drag_data_received;
 }
 
+static void
+select_or_unselect_row_cb (GtkCList *clist, gint row, gint column, GdkEvent *event)
+{
+	/* This is the one bottleneck for all selection changes */
+	gtk_signal_emit (GTK_OBJECT (clist), flist_signals[SELECTION_CHANGED]);
+}
+
 /* Standard object initialization function */
 static void
 gtk_flist_initialize (GtkFList *flist)
@@ -178,6 +185,16 @@ gtk_flist_initialize (GtkFList *flist)
 			   gtk_flist_dnd_target_table,
 			   NAUTILUS_N_ELEMENTS (gtk_flist_dnd_target_table),
 			   GDK_ACTION_COPY);
+
+	/* Emit "selection changed" signal when parent class changes selection */
+	gtk_signal_connect (GTK_OBJECT (flist),
+			    "select_row",
+			    select_or_unselect_row_cb,
+			    flist);
+	gtk_signal_connect (GTK_OBJECT (flist),
+			    "unselect_row",
+			    select_or_unselect_row_cb,
+			    flist);
 }
 
 static void
@@ -250,8 +267,6 @@ select_row (GtkFList *flist, int row, guint state)
 		flist->details->anchor_row = row;
 	} else
 		select_range (flist, row);
-
-	gtk_signal_emit (GTK_OBJECT (flist), flist_signals[SELECTION_CHANGED]);
 }
 
 /* Our handler for button_press events.  We override all of GtkCList's broken

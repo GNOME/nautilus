@@ -1,3 +1,16 @@
+2000-02-01  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug where selection info didn't appear in the status bar when
+	Select All was performed in the list view.
+
+	* libnautilus/gtkflist.c:
+	(select_or_unselect_row_cb): New function, emits SELECTION_CHANGED
+	signal.
+	(gtk_flist_initialize): Connect parent class's "select_row" and
+	"unselect_row" signals to select_or_unselect_row_cb.
+	(select_row): Remove emission of SELECTION_CHANGED signal here since
+	it's now handled at the correct bottleneck.
+
 2000-02-01  Darin Adler  <darin@eazel.com>
 
 	Started work on icon stretching. In the process, I am doing some
