@@ -107,6 +107,8 @@ static GtkTargetEntry drop_types [] = {
 	{ NAUTILUS_ICON_DND_KEYWORD_TYPE, 0, NAUTILUS_ICON_DND_KEYWORD }
 };
 
+static GtkTargetList *drop_types_list = NULL;
+
 
 static GnomeCanvasItem *
 create_selection_shadow (NautilusIconContainer *container,
@@ -461,6 +463,31 @@ drag_data_received_callback (GtkWidget *widget,
 
 }
 
+/* FIXME bugzilla.eazel.com 7445: Needs to become a shared function */
+static void
+get_data_on_first_target_we_support (GtkWidget *widget, GdkDragContext *context, guint32 time)
+{
+	GList *target;
+
+	if (drop_types_list == NULL)
+		drop_types_list = gtk_target_list_new (drop_types,
+						       NAUTILUS_N_ELEMENTS (drop_types));
+
+	for (target = context->targets; target != NULL; target = target->next) {
+		guint dummy_info;
+		GdkAtom target_atom = GPOINTER_TO_UINT (target->data);
+
+		if (gtk_target_list_find (drop_types_list, 
+					  target_atom,
+					  &dummy_info)) {
+			gtk_drag_get_data (GTK_WIDGET (widget), context,
+					   target_atom,
+					   time);
+			break;
+		}
+	}
+}
+
 static void
 nautilus_icon_container_ensure_drag_data (NautilusIconContainer *container,
 					  GdkDragContext *context,
@@ -471,9 +498,7 @@ nautilus_icon_container_ensure_drag_data (NautilusIconContainer *container,
 	dnd_info = container->details->dnd_info;
 
 	if (!dnd_info->drag_info.got_drop_data_type) {
-		gtk_drag_get_data (GTK_WIDGET (container), context,
-				   GPOINTER_TO_INT (context->targets->data),
-				   time);
+		get_data_on_first_target_we_support (GTK_WIDGET (container), context, time);
 	}
 }
 
@@ -1339,9 +1364,8 @@ drag_drop_callback (GtkWidget *widget,
 	   make sure it is going to be called at least once.
 	*/
 	dnd_info->drag_info.drop_occured = TRUE;
-	gtk_drag_get_data (GTK_WIDGET (widget), context,
-			   GPOINTER_TO_INT (context->targets->data),
-			   time);
+
+	get_data_on_first_target_we_support (widget, context, time);
 
 	return FALSE;
 }

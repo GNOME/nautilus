@@ -1,3 +1,28 @@
+Tue Mar 06 12:24:24 2001  George Lebl <jirka@5z.com>
+
+	Darin <darin@eazel.com> said that while this patch causes fungal
+	growth between the toes, it is ok to apply.
+
+	* components/tree/nautilus-tree-view-dnd.c (do_get_data)
+	  (nautilus_tree_view_drag_drop)
+	  (nautilus_tree_view_ensure_drag_data)
+	  libnautilus-extensions/nautilus-icon-dnd.c (do_get_data)
+	  (nautilus_icon_container_ensure_drag_data)
+	  (drag_drop_callback)
+	  libnautilus-extensions/nautilus-list.c (do_get_data)
+	  (nautilus_list_ensure_drag_data)
+	  (nautilus_list_drag_drop):
+	  When doing gtk_drag_get_data, first find a target we support rather
+	  then just grabbing the first one.  We need to make a target list
+	  and do some gtk voodoo.  At some later date, this should be more
+	  generalized and stuffed somewhere in libnautilus-extentions.
+	  Fixes #7312
+
+	* libnautilus-extensions/nautilus-file-operations.c
+	  (parse_previous_duplicate_name):  s/strdup/g_strdup/ as the
+	  string will be later g_free'd
+	  Fixes #7440
+
 2001-03-06  Eric Fischer  <eric@eazel.com>
 
 	reviewed by: Christian Meyer <chrisime@gnome.org>

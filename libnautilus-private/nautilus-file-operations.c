@@ -1344,7 +1344,7 @@ parse_previous_duplicate_name (const char *name,
 	if (**suffix != '\0') {
 		*name_base = extract_string_until (name, *suffix);
 	} else {
-		*name_base = strdup (name);
+		*name_base = g_strdup (name);
 	}
 }
 

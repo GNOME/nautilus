@@ -207,6 +207,8 @@ static GtkTargetEntry nautilus_list_dnd_target_table[] = {
 	{ NAUTILUS_ICON_DND_KEYWORD_TYPE, 0, NAUTILUS_ICON_DND_KEYWORD }
 };
 
+static GtkTargetList *nautilus_list_dnd_target_list = NULL;
+
 static void     activate_row                            (NautilusList         *list,
 							 int                   row);
 static int      get_cell_horizontal_start_position      (NautilusCList        *clist,
@@ -3170,6 +3172,31 @@ nautilus_list_column_resize_track_end (GtkWidget *widget, int column_index)
 	clist->drag_pos = -1;
 }
 
+/* FIXME bugzilla.eazel.com 7445: Needs to become a shared function */
+static void
+get_data_on_first_target_we_support (GtkWidget *widget, GdkDragContext *context, guint32 time)
+{
+	GList *target;
+
+	if (nautilus_list_dnd_target_list == NULL)
+		nautilus_list_dnd_target_list = gtk_target_list_new (nautilus_list_dnd_target_table,
+								     NAUTILUS_N_ELEMENTS (nautilus_list_dnd_target_table));
+
+	for (target = context->targets; target != NULL; target = target->next) {
+		guint dummy_info;
+		GdkAtom target_atom = GPOINTER_TO_UINT (target->data);
+
+		if (gtk_target_list_find (nautilus_list_dnd_target_list, 
+					  target_atom,
+					  &dummy_info)) {
+			gtk_drag_get_data (GTK_WIDGET (widget), context,
+					   target_atom,
+					   time);
+			break;
+		}
+	}
+}
+
 
 static void
 nautilus_list_ensure_drag_data (NautilusList *list,
@@ -3177,9 +3204,7 @@ nautilus_list_ensure_drag_data (NautilusList *list,
 				guint32 time)
 {
 	if (!list->details->drag_info->got_drop_data_type) {
-		gtk_drag_get_data (GTK_WIDGET (list), context,
-				   GPOINTER_TO_INT (context->targets->data),
-				   time);
+		get_data_on_first_target_we_support (GTK_WIDGET (list), context, time);
 	}
 }
 
@@ -3377,9 +3402,7 @@ nautilus_list_drag_drop (GtkWidget *widget, GdkDragContext *context,
 	/* make sure that drag_data_received is going to be called
 	   after this event and will do the actual actions */
 	list->details->drag_info->drop_occured = TRUE;
-	gtk_drag_get_data (GTK_WIDGET (widget), context,
-			   GPOINTER_TO_INT (context->targets->data),
-			   time);
+	get_data_on_first_target_we_support (widget, context, time);
 
 	return FALSE;
 }

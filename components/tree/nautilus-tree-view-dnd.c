@@ -153,6 +153,8 @@ static GtkTargetEntry nautilus_tree_view_dnd_target_table[] = {
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST }
 };
 
+static GtkTargetList *nautilus_tree_view_dnd_target_list = NULL;
+
 
 static void 
 tree_view_realize_callback (GtkWidget *widget, gpointer user_data) 
@@ -394,6 +396,30 @@ nautilus_tree_view_drag_motion (GtkWidget *widget, GdkDragContext *context,
 	return TRUE;
 }
 
+/* FIXME bugzilla.eazel.com 7445: Needs to become a shared function */
+static void
+get_data_on_first_target_we_support (GtkWidget *widget, GdkDragContext *context, guint32 time)
+{
+	GList *target;
+
+	if (nautilus_tree_view_dnd_target_list == NULL)
+		nautilus_tree_view_dnd_target_list = gtk_target_list_new (nautilus_tree_view_dnd_target_table,
+									  NAUTILUS_N_ELEMENTS (nautilus_tree_view_dnd_target_table));
+
+	for (target = context->targets; target != NULL; target = target->next) {
+		guint dummy_info;
+		GdkAtom target_atom = GPOINTER_TO_UINT (target->data);
+
+		if (gtk_target_list_find (nautilus_tree_view_dnd_target_list, 
+					  target_atom,
+					  &dummy_info)) {
+			gtk_drag_get_data (GTK_WIDGET (widget), context,
+					   target_atom,
+					   time);
+			break;
+		}
+	}
+}
 
 static gboolean 
 nautilus_tree_view_drag_drop (GtkWidget *widget,
@@ -413,9 +439,7 @@ nautilus_tree_view_drag_drop (GtkWidget *widget,
 	 * drop occured.
 	 */
 	dnd->drag_info->drop_occured = TRUE;
-	gtk_drag_get_data (GTK_WIDGET (widget), context,
-			   GPOINTER_TO_INT (context->targets->data),
-			   time);
+	get_data_on_first_target_we_support (widget, context, time);
 
 	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget),
 				      "drag_drop");
@@ -1045,9 +1069,9 @@ nautilus_tree_view_ensure_drag_data (NautilusTreeView *tree_view,
 	drag_info = tree_view->details->dnd->drag_info;
 
 	if (!drag_info->got_drop_data_type) {
-		gtk_drag_get_data (GTK_WIDGET (tree_view->details->tree), context,
-				   GPOINTER_TO_INT (context->targets->data),
-				   time);
+		get_data_on_first_target_we_support (GTK_WIDGET (tree_view->details->tree),
+						     context,
+						     time);
 	}
 }
 
