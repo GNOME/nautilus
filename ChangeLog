@@ -1,3 +1,16 @@
+2000-10-07  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-window-toolbars.c: (set_up_button),
+	(set_up_toolbar_images), (set_up_throbber_frame_type):
+	made themed toolbar buttons work properly with new UI handler;
+	you must get a new Bonobo for it to work.  Also, made the
+	"Search Web" button get the right image, and other clean-ups.
+	
+	* src/nautilus-shell-ui.xml:
+	made toolbar button separators work properly.  Also, removed
+	"Service" button from xml file since it can't be conditionally
+	added from there.
+	
 2000-10-06  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 3517 (Sample component's merged items don't appear)

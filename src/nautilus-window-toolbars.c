@@ -182,9 +182,9 @@ set_up_button (NautilusWindow *window, const char *item_name, const char* icon_n
 	bonobo_path = g_strdup_printf ("/Tool Bar/%s", item_name);	
 
 	/* set up the toolbar component with the new image */
-	
-	/* disabled for now until bonobo is debugged...
-	
+
+	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
+		
 	bonobo_ui_component_set_prop (window->details->shell_ui, 
 				      bonobo_path,
 				      "pixtype",
@@ -196,7 +196,9 @@ set_up_button (NautilusWindow *window, const char *item_name, const char* icon_n
 				      "pixname",
 				      full_name == NULL ? icon_name : full_name,
 			      	      NULL);
-	*/
+	
+	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
+
 	g_free (bonobo_path);
 	g_free (full_name);
 }
@@ -211,7 +213,7 @@ set_up_toolbar_images (NautilusWindow *window)
 	set_up_button (window, "Home", "Home");
 	set_up_button (window, "Reload", "Refresh");
 	set_up_button (window, "Toggle Find Mode", "Search");
-	set_up_button (window, "Go to Web Search", "WebSearch");
+	set_up_button (window, "Go to Web Search", "SearchWeb");
 	set_up_button (window, "Stop", "Stop");
 }
 
@@ -239,7 +241,7 @@ set_up_throbber_frame_type (NautilusWindow *window)
 	
 	g_free (frame_type);	
 	gtk_frame_set_shadow_type (GTK_FRAME (frame), shadow_type);
-
+	
 	return frame;
 }
 
