@@ -66,6 +66,7 @@
 
 /* Preference for http proxy settings */
 #define GNOME_VFS_PREFERENCES_HTTP_PROXY "/system/gnome-vfs/http-proxy"
+#define GNOME_VFS_PREFERENCES_USE_HTTP_PROXY "/system/gnome-vfs/use-http-proxy"
 
 #define READ_FILE_HANDLE_TAG "Nautilus first time druid read file handle"
 
@@ -1038,6 +1039,7 @@ set_http_proxy (const char *proxy_url)
 	}
 
 	nautilus_preferences_set (GNOME_VFS_PREFERENCES_HTTP_PROXY, proxy_host_port);
+	nautilus_preferences_set_boolean (GNOME_VFS_PREFERENCES_USE_HTTP_PROXY, TRUE);
 
 	/* Keep it around for check_network_connectivity, trimming off the :port */
 	if (http_proxy_host) {
