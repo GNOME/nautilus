@@ -525,6 +525,7 @@ nautilus_gnome_open_terminal (const char *command)
 {
 	char *terminal_path;
 	char *terminal_path_with_flags;
+	const char *terminal_flags = " --login";
 	char *shell;
 	gboolean quote_all;
 	char *command_line;
@@ -577,7 +578,7 @@ nautilus_gnome_open_terminal (const char *command)
 		g_free (command_line);
 	} else {
 	        if (quote_all) {
-			terminal_path_with_flags = g_strconcat (terminal_path, " --login", NULL);
+			terminal_path_with_flags = g_strconcat (terminal_path, terminal_flags,  NULL);
 		        nautilus_gnome_terminal_shell_execute (shell, terminal_path_with_flags);
 		        g_free (terminal_path_with_flags);
 		} else {
