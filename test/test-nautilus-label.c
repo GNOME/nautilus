@@ -564,6 +564,50 @@ background_changed_callback (NautilusStringPicker *string_picker, gpointer clien
 	g_free (string);
 }
 
+static void
+justification_changed_callback (NautilusStringPicker *string_picker, gpointer client_data)
+{
+	GtkJustification justification;
+	char *string;
+
+	g_return_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker));
+	g_return_if_fail (NAUTILUS_IS_LABEL (client_data));
+
+ 	string = nautilus_string_picker_get_selected_string (string_picker);
+
+	if (nautilus_str_is_equal (string, "Left")) {
+		justification = GTK_JUSTIFY_LEFT;
+	}
+	else if (nautilus_str_has_prefix (string, "Center")) {
+		justification = GTK_JUSTIFY_CENTER;
+	}
+	else if (nautilus_str_has_prefix (string, "Right")) {
+		justification = GTK_JUSTIFY_RIGHT;
+	}
+
+	nautilus_label_set_text_justification (NAUTILUS_LABEL (client_data), justification);
+	
+	g_free (string);
+}
+
+static void
+drop_shadow_offset_changed_callback (NautilusStringPicker *string_picker, gpointer client_data)
+{
+	char *string;
+	int   drop_shadow_offset;
+
+	g_return_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker));
+	g_return_if_fail (NAUTILUS_IS_LABEL (client_data));
+
+ 	string = nautilus_string_picker_get_selected_string (string_picker);
+
+	if (nautilus_eat_str_to_int (string, &drop_shadow_offset)) {
+		nautilus_label_set_drop_shadow_offset (NAUTILUS_LABEL (client_data), drop_shadow_offset);
+	}
+
+	g_free (string);
+}
+
 static GtkWidget*
 create_background_frame (const char	*title,
 			 GtkSignalFunc	background_changed_callback,
@@ -606,6 +650,77 @@ create_background_frame (const char	*title,
 	return frame;
 }
 
+static GtkWidget*
+create_justification_frame (const char		*title,
+			    GtkSignalFunc	justification_changed_callback,
+			    gpointer		callback_data)
+{
+	GtkWidget *frame;
+	GtkWidget *vbox;
+	GtkWidget *justification_picker;
+
+	g_return_val_if_fail (title != NULL, NULL);
+ 	g_return_val_if_fail (justification_changed_callback != NULL, NULL);
+	
+	vbox = gtk_vbox_new (FALSE, 0);
+	frame = gtk_frame_new (title);
+
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 2);
+	gtk_container_add (GTK_CONTAINER (frame), vbox);
+
+	justification_picker = nautilus_string_picker_new ();
+	nautilus_string_picker_insert_string (NAUTILUS_STRING_PICKER (justification_picker), "Left");
+	nautilus_string_picker_insert_string (NAUTILUS_STRING_PICKER (justification_picker), "Center");
+	nautilus_string_picker_insert_string (NAUTILUS_STRING_PICKER (justification_picker), "Right");
+
+ 	nautilus_caption_set_show_title (NAUTILUS_CAPTION (justification_picker), FALSE);
+
+	gtk_signal_connect (GTK_OBJECT (justification_picker), "changed", justification_changed_callback, callback_data);
+
+	gtk_box_pack_start (GTK_BOX (vbox), justification_picker, FALSE, FALSE, 0);
+
+	gtk_widget_show_all (vbox);
+
+	return frame;
+}
+
+static GtkWidget*
+create_drop_shadow_offset_frame (const char	*title,
+				 GtkSignalFunc	drop_shadow_changed_callback,
+				 gpointer	callback_data)
+{
+	GtkWidget *frame;
+	GtkWidget *vbox;
+	GtkWidget *drop_shadow_offset_picker;
+
+	g_return_val_if_fail (title != NULL, NULL);
+ 	g_return_val_if_fail (drop_shadow_changed_callback != NULL, NULL);
+	
+	vbox = gtk_vbox_new (FALSE, 0);
+	frame = gtk_frame_new (title);
+
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 2);
+	gtk_container_add (GTK_CONTAINER (frame), vbox);
+
+	drop_shadow_offset_picker = nautilus_string_picker_new ();
+	nautilus_string_picker_insert_string (NAUTILUS_STRING_PICKER (drop_shadow_offset_picker), "0");
+	nautilus_string_picker_insert_string (NAUTILUS_STRING_PICKER (drop_shadow_offset_picker), "1");
+	nautilus_string_picker_insert_string (NAUTILUS_STRING_PICKER (drop_shadow_offset_picker), "2");
+	nautilus_string_picker_insert_string (NAUTILUS_STRING_PICKER (drop_shadow_offset_picker), "3");
+	nautilus_string_picker_insert_string (NAUTILUS_STRING_PICKER (drop_shadow_offset_picker), "4");
+	nautilus_string_picker_insert_string (NAUTILUS_STRING_PICKER (drop_shadow_offset_picker), "5");
+
+ 	nautilus_caption_set_show_title (NAUTILUS_CAPTION (drop_shadow_offset_picker), FALSE);
+
+	gtk_signal_connect (GTK_OBJECT (drop_shadow_offset_picker), "changed", drop_shadow_changed_callback, callback_data);
+
+	gtk_box_pack_start (GTK_BOX (vbox), drop_shadow_offset_picker, FALSE, FALSE, 0);
+
+	gtk_widget_show_all (vbox);
+
+	return frame;
+}
+
 int 
 main (int argc, char* argv[])
 {
@@ -622,6 +737,9 @@ main (int argc, char* argv[])
 	GtkWidget		*font_picker_frame;
 	GtkWidget		*text_caption_frame;
 	GtkWidget		*background_frame;
+	GtkWidget		*justification_frame;
+	GtkWidget		*drop_shadow_offset_frame;
+	GtkWidget		*middle_box;
 
 	gtk_init (&argc, &argv);
 	gdk_rgb_init ();
@@ -635,7 +753,7 @@ main (int argc, char* argv[])
 	main_box = gtk_vbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (window), main_box);
 
-	label = nautilus_label_new ("Label that doesn't suck\nFoo\nBar");
+	label = nautilus_label_new ("Label that \ndoesn't suck\nFoo\nBar");
 
 	bottom_box = gtk_vbox_new (FALSE, 4);
 
@@ -678,13 +796,26 @@ main (int argc, char* argv[])
 	text_caption_frame = create_text_caption_frame ("Text",
 							text_caption_changed_callback,
 							label);
-
+	
 	background_frame = create_background_frame ("Background",
 						    background_changed_callback,
 						    label);
 
+	justification_frame = create_justification_frame ("Justification",
+							  justification_changed_callback,
+							  label);
+
+	drop_shadow_offset_frame = create_drop_shadow_offset_frame ("Drop Shadow Offset",
+								    drop_shadow_offset_changed_callback,
+								    label);
+	
+	middle_box = gtk_vbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (middle_box), background_frame, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (middle_box), drop_shadow_offset_frame, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX (middle_box), justification_frame, FALSE, FALSE, 0);
+
 	gtk_box_pack_start (GTK_BOX (color_tool_box), label_color_picker_frame, FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (color_tool_box), background_frame, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (color_tool_box), middle_box, FALSE, FALSE, 0);
 	gtk_box_pack_end (GTK_BOX (color_tool_box), background_color_picker_frame, FALSE, FALSE, 0);
 
 	gtk_box_pack_start (GTK_BOX (tool_box1), color_tool_box, FALSE, FALSE, 0);
