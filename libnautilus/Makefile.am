@@ -53,7 +53,7 @@ libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 
 libnautilus_la_LDFLAGS=$(GNOME_LIBS) \
 		       $(GNORBA_LIBS) \
-		       $(GDK_PIXBUF_LIBS)
+		       $(GDK_PIXBUF_LIBS) -lcanvas_pixbuf
 
 $(nautilus_idl_sources): nautilus_idl_stamp
 $(fsextension_idl_sources): fsextension_idl_stamp
