@@ -1,3 +1,9 @@
+2000-11-17  Michael Engber  <engber@eazel.com>
+
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_ensure_gradient_buffered):
+	Fixed off by one error in gradient calculation (bug 4759)
+
 2000-11-17  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug with "Disks" submenu in desktop context menu where
