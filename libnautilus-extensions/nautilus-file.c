@@ -348,7 +348,7 @@ nautilus_file_denies_access_permission (NautilusFile *file,
 	 * there be garbage there? What will it do for non-local files?
 	 */
 	if (user_id == file->details->info->uid) {
-		return (file->details->info->permissions & owner_permission) != 0;
+		return (file->details->info->permissions & owner_permission) == 0;
 	}
 
 	/* No need to free result of getpwuid. */
@@ -361,11 +361,11 @@ nautilus_file_denies_access_permission (NautilusFile *file,
 	 */
 	if (password_info != NULL
 	    && password_info->pw_gid == file->details->info->gid) {
-		return (file->details->info->permissions & group_permission) != 0;
+		return (file->details->info->permissions & group_permission) == 0;
 	}
 
 	/* Other users' access is governed by the other bits. */
-	return (file->details->info->permissions & other_permission) != 0;
+	return (file->details->info->permissions & other_permission) == 0;
 }
 
 /**
@@ -1369,6 +1369,7 @@ nautilus_file_can_set_permissions (NautilusFile *file)
 		return FALSE;
 	}
 
+	/* Check the user. */
 	user_id = geteuid();
 
 	/* Owner is allowed to set permissions. */

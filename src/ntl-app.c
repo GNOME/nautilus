@@ -326,8 +326,6 @@ display_caveat (GtkWindow *parent_window)
   	gnome_dialog_set_parent (GNOME_DIALOG (dialog), parent_window);
 
 	gtk_widget_show (GTK_WIDGET (dialog));
-
-	nautilus_warning_dialog ("This is a long test of the very long dialog which is longer than you can believe I say.");
 }
 
 void
