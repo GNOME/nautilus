@@ -508,6 +508,8 @@ nautilus_window_destroy (GtkObject *object)
 	
 	window = NAUTILUS_WINDOW (object);
 
+	cancel_view_as_callback (window);
+	
 	nautilus_window_manage_views_destroy (window);
 
 	if (window->content_view) {

@@ -5899,6 +5899,12 @@ clipboard_targets_received (GtkClipboard     *clipboard,
 	view = FM_DIRECTORY_VIEW (user_data);
 	can_paste = FALSE;
 
+	if (view->details->window == NULL) {
+		/* We've been destroyed since call */
+		g_object_unref (view);
+		return;
+	}
+	
 	if (gtk_selection_data_get_targets (selection_data, &targets, &n_targets)) {
 		for (i=0; i < n_targets; i++) {
 			if (targets[i] == copied_files_atom) {

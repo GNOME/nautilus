@@ -1,3 +1,14 @@
+2005-02-01  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(clipboard_targets_received):
+	Handle destroyed windows
+	
+	* src/nautilus-window.c: (nautilus_window_destroy):
+	cancel outstanding view as callbacks
+
+	Fixes #165938
+
 2005-01-31  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* libnautilus-private/nautilus-directory-background.c:
