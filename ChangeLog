@@ -1,3 +1,46 @@
+2001-01-21  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fix bug 5809 - Nautilus is slow to startup because of prefernces
+	setup code.  The reason for the slowdown was the constant
+	suggestion to gconf to sync.  Now, we sync only after setters that
+	ara result of an operation in Nautilus.  All internal setters, such
+	as defaults and visibilities happen with no sync in between each
+	one, making things a lot faster.
+
+	* libnautilus-extensions/nautilus-gconf-extensions.c:
+	(nautilus_gconf_set_boolean), (nautilus_gconf_set_integer),
+	(nautilus_gconf_set_string), (nautilus_gconf_set_string_list),
+	(nautilus_gconf_monitor_directory), (nautilus_gconf_suggest_sync):
+	* libnautilus-extensions/nautilus-gconf-extensions.h:
+	Dont suggest a sync after each set.  Instead make a new function
+	to let callers decide when to suggest a sync.  For example, after
+	a batch of many operations.
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_descriptions),
+	(global_preferences_install_defaults),
+	(global_preferences_get_dialog),
+	(global_preferences_install_sidebar_panel_defaults),
+	(global_preferences_install_sidebar_panel_descriptions),
+	(global_preferences_install_home_location_defaults),
+	(nautilus_global_preferences_initialize):
+	Don't install the descriptions until needed when the dialog is
+	about to be created.  Split the sidebar defaults installer into a
+	defaults and a descriptions installer.  Remove the proxy defaults
+	installer which was superfluous.  My last change simplified the
+	usage of proxy settings and a whole separate function for that is
+	no longer needed.
+	
+	* libnautilus-extensions/nautilus-preferences.c:
+	(nautilus_preferences_set_boolean),
+	(nautilus_preferences_set_integer), (nautilus_preferences_set),
+	(nautilus_preferences_set_string_list),
+	(nautilus_preferences_set_user_level):
+	Suggest a gconf sync right after all the setters.
+	(preferences_something_changed_notice): Add a fixme.  Also remove
+	unused variables and tweak a tiny bit.
+
 2001-01-21  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/command-line/Makefile.am:

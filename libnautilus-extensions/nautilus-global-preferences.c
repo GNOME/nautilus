@@ -57,9 +57,9 @@ static GList *    global_preferences_get_sidebar_panel_view_identifiers  (void);
 static gboolean   global_preferences_close_dialog_callback               (GtkWidget     *dialog,
 									  gpointer       user_data);
 static void       global_preferences_install_sidebar_panel_defaults      (void);
+static void       global_preferences_install_sidebar_panel_descriptions  (void);
 static void       global_preferences_install_defaults                    (void);
 static void       global_preferences_install_visibility                  (void);
-static void       global_preferences_install_proxy_defaults              (void);
 static void       global_preferences_install_speed_tradeoff_descriptions (const char    *name,
 									  const char    *description);
 static void       global_preferences_install_home_location_defaults      (void);
@@ -189,14 +189,18 @@ global_preferences_install_descriptions (void)
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
 					      _("Don't include the built-in bookmarks"));
 	
-	/* Sidebar panels */
-	global_preferences_install_sidebar_panel_defaults ();
-	
-	/* Proxy */
-	global_preferences_install_proxy_defaults ();
 
 	/* Home location */
-	global_preferences_install_home_location_defaults ();
+	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_HOME_URI,
+					      _("Home Location"));
+
+	/* Sidebar panel descriptions */
+	global_preferences_install_sidebar_panel_descriptions ();
+	
+	/* Proxy descriptions */
+	nautilus_preferences_set_description (USE_PROXY_KEY, _("Use HTTP Proxy"));
+	nautilus_preferences_set_description (PROXY_HOST_KEY, _("HTTP Proxy"));
+	nautilus_preferences_set_description (PROXY_PORT_KEY, _("HTTP Proxy Port"));
 }
 
 /**
@@ -324,6 +328,23 @@ global_preferences_install_defaults (void)
 	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
 						  NAUTILUS_USER_LEVEL_NOVICE,
 						  FALSE);
+
+	/* Add the gnome-vfs path to the list of monitored directories - for proxy settings */
+	nautilus_preferences_monitor_directory (SYSTEM_GNOME_VFS_PATH);
+	
+	/* Proxy defaults */
+	nautilus_preferences_default_set_boolean (USE_PROXY_KEY,
+						  NAUTILUS_USER_LEVEL_NOVICE,
+						  FALSE);
+	nautilus_preferences_default_set_integer (PROXY_PORT_KEY,
+						  NAUTILUS_USER_LEVEL_NOVICE,
+						  8080);
+
+	/* Sidebar panel defaults */
+	global_preferences_install_sidebar_panel_defaults ();
+
+	/* Home location */
+	global_preferences_install_home_location_defaults ();
 }
 
 /**
@@ -779,6 +800,11 @@ global_preferences_get_dialog (void)
 	nautilus_global_preferences_initialize ();
 
 	if (global_prefs_dialog == NULL) {
+		/* Install descriptions right before creating the dialog.
+		 * The descriptions are only used within the preferences
+		 * dialog.
+		 */
+		global_preferences_install_descriptions ();
 		global_prefs_dialog = global_preferences_create_dialog ();
 	}
 
@@ -808,29 +834,8 @@ static struct
 static void
 global_preferences_install_sidebar_panel_defaults (void)
 {
- 	GList *view_identifiers;
- 	GList *p;
 	guint i;
 	
-	/* Install the descriptions for the available sidebar panels */
- 	view_identifiers = global_preferences_get_sidebar_panel_view_identifiers ();
-
- 	for (p = view_identifiers; p != NULL; p = p->next) {
- 		NautilusViewIdentifier *identifier;
- 		char *key;
-
- 		identifier = p->data;
- 		g_return_if_fail (identifier != NULL);
-		
- 		key = global_preferences_get_sidebar_panel_key (identifier->iid);
- 		g_return_if_fail (key != NULL);
-		
- 		nautilus_preferences_set_description (key, identifier->name);
- 		g_free (key);
- 	}
-
- 	nautilus_view_identifier_list_free (view_identifiers);
-
 	/* Install the user level on/off defaults for known sidebar panels */
 	for (i = 0; i < NAUTILUS_N_ELEMENTS (known_sidebar_panels); i++) {
 		char *key = global_preferences_get_sidebar_panel_key (known_sidebar_panels[i].name);
@@ -850,6 +855,32 @@ global_preferences_install_sidebar_panel_defaults (void)
 
 		g_free (key);
 	}
+}
+
+static void
+global_preferences_install_sidebar_panel_descriptions (void)
+{
+ 	GList *view_identifiers;
+ 	GList *iterator;
+	
+	/* Install the descriptions for the available sidebar panels */
+ 	view_identifiers = global_preferences_get_sidebar_panel_view_identifiers ();
+
+ 	for (iterator = view_identifiers; iterator != NULL; iterator = iterator->next) {
+ 		NautilusViewIdentifier *identifier;
+ 		char *key;
+
+ 		identifier = iterator->data;
+ 		g_return_if_fail (identifier != NULL);
+		
+ 		key = global_preferences_get_sidebar_panel_key (identifier->iid);
+ 		g_return_if_fail (key != NULL);
+		
+ 		nautilus_preferences_set_description (key, identifier->name);
+ 		g_free (key);
+ 	}
+
+ 	nautilus_view_identifier_list_free (view_identifiers);
 }
 
 static char *
@@ -904,33 +935,12 @@ global_preferences_install_speed_tradeoff_descriptions (const char *name,
 }							  
 
 static void
-global_preferences_install_proxy_defaults (void)
-{
-	/* Add the gnome-vfs path to the list of monitored directories */
-	nautilus_preferences_monitor_directory (SYSTEM_GNOME_VFS_PATH);
-	
-	nautilus_preferences_default_set_boolean (USE_PROXY_KEY,
-						  NAUTILUS_USER_LEVEL_NOVICE,
-						  FALSE);
-	nautilus_preferences_default_set_integer (PROXY_PORT_KEY,
-						  NAUTILUS_USER_LEVEL_NOVICE,
-						  8080);
-	
-	nautilus_preferences_set_description (USE_PROXY_KEY, _("Use HTTP Proxy"));
-	nautilus_preferences_set_description (PROXY_HOST_KEY, _("HTTP Proxy"));
-	nautilus_preferences_set_description (PROXY_PORT_KEY, _("HTTP Proxy Port"));
-}
-
-static void
 global_preferences_install_home_location_defaults (void)
 {
 	char *default_novice_home_uri;
 	char *default_intermediate_home_uri;
 	char *user_main_directory;		
 	
-	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_HOME_URI,
-					      _("Home Location"));
-
 	user_main_directory = nautilus_get_user_main_directory ();
 	
 	default_novice_home_uri = gnome_vfs_get_uri_from_local_path (user_main_directory);
@@ -993,7 +1003,7 @@ void
 nautilus_global_preferences_initialize (void)
 {
 	static gboolean initialized = FALSE;
-	
+
 	if (initialized) {
 		return;
 	}
@@ -1005,7 +1015,4 @@ nautilus_global_preferences_initialize (void)
 
 	/* Install visiblities */
 	global_preferences_install_visibility ();
-
-	/* Install descriptions */
-	global_preferences_install_descriptions ();
 }

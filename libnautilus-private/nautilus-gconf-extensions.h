@@ -47,6 +47,7 @@ void          nautilus_gconf_set_string_list   (const char  *key,
 						GSList      *string_list_value);
 gboolean      nautilus_gconf_is_default        (const char  *key);
 gboolean      nautilus_gconf_monitor_directory (const char  *directory);
+void          nautilus_gconf_suggest_sync      (void);
 
 END_GNOME_DECLS
 

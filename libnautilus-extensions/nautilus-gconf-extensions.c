@@ -115,10 +115,6 @@ nautilus_gconf_set_boolean (const char *key,
 	
 	gconf_client_set_bool (client, key, boolean_value, &error);
 	nautilus_gconf_handle_error (&error);
-	error = NULL;
-	
-	gconf_client_suggest_sync (client, &error);
-	nautilus_gconf_handle_error (&error);
 }
 
 gboolean
@@ -155,10 +151,6 @@ nautilus_gconf_set_integer (const char *key,
 	g_return_if_fail (client != NULL);
 	
 	gconf_client_set_int (client, key, int_value, &error);
-	nautilus_gconf_handle_error (&error);
-	error = NULL;
-	
-	gconf_client_suggest_sync (client, &error);
 	nautilus_gconf_handle_error (&error);
 }
 
@@ -197,10 +189,6 @@ nautilus_gconf_set_string (const char *key,
 	
 	gconf_client_set_string (client, key, string_value, &error);
 	nautilus_gconf_handle_error (&error);
-	error = NULL;
-	
-	gconf_client_suggest_sync (client, &error);
-	nautilus_gconf_handle_error (&error);
 }
 
 char *
@@ -237,10 +225,6 @@ nautilus_gconf_set_string_list (const char *key,
 	g_return_if_fail (client != NULL);
 
 	gconf_client_set_list (client, key, GCONF_VALUE_STRING, string_list_value, &error);
-	nautilus_gconf_handle_error (&error);
-	error = NULL;
-	
-	gconf_client_suggest_sync (client, &error);
 	nautilus_gconf_handle_error (&error);
 }
 
@@ -308,10 +292,23 @@ nautilus_gconf_monitor_directory (const char *directory)
 			      directory,
 			      GCONF_CLIENT_PRELOAD_NONE,
 			      &error);
-
+	
 	if (nautilus_gconf_handle_error (&error)) {
 		return FALSE;
 	}
 
 	return TRUE;
+}
+
+void
+nautilus_gconf_suggest_sync (void)
+{
+	GConfClient *client;
+	GError *error = NULL;
+
+	client = nautilus_gconf_client_get_global ();
+	g_return_if_fail (client != NULL);
+	
+	gconf_client_suggest_sync (client, &error);
+	nautilus_gconf_handle_error (&error);
 }

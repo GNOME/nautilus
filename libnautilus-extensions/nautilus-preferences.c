@@ -411,6 +411,8 @@ nautilus_preferences_set_boolean (const char *name,
 	key = preferences_key_make (name);
 	nautilus_gconf_set_boolean (key, boolean_value);
 	g_free (key);
+
+	nautilus_gconf_suggest_sync ();
 }
 
 static char *
@@ -455,6 +457,8 @@ nautilus_preferences_set_integer (const char *name,
 	key = preferences_key_make (name);
 	nautilus_gconf_set_integer (key, int_value);
 	g_free (key);
+
+	nautilus_gconf_suggest_sync ();
 }
 
 int
@@ -484,6 +488,8 @@ nautilus_preferences_set (const char *name,
 	key = preferences_key_make (name);
 	nautilus_gconf_set_string (key, string_value);
 	g_free (key);
+
+	nautilus_gconf_suggest_sync ();
 }
 
 char *
@@ -516,6 +522,8 @@ nautilus_preferences_set_string_list (const char *name,
 	key = preferences_key_make (name);
 	nautilus_gconf_set_string_list (key, string_list_value);
 	g_free (key);
+
+	nautilus_gconf_suggest_sync ();
 }
 
 GSList *
@@ -577,6 +585,8 @@ nautilus_preferences_set_user_level (int user_level)
 	user_level_key = preferences_get_user_level_key ();
 	nautilus_gconf_set_string (user_level_key, user_level_names_for_storage[user_level]);
 	g_free (user_level_key);
+
+	nautilus_gconf_suggest_sync ();
 }
 
 void
@@ -722,28 +732,25 @@ preferences_callback_entry_invoke_function (gpointer data,
 
 static void
 preferences_something_changed_notice (GConfClient *client, 
-				  guint connection_id, 
-				  GConfEntry *gconf_entry, 
-				  gpointer user_data)
+				      guint connection_id, 
+				      GConfEntry *entry, 
+				      gpointer notice_data)
 {
-	PreferencesEntry *entry;
-	GError *error = NULL;
-	const char *key;
+	PreferencesEntry *preferences_entry;
 
-	g_return_if_fail (user_data != NULL);
-	g_return_if_fail (gconf_entry != NULL);
-	g_return_if_fail (gconf_entry->key != NULL);
-	g_return_if_fail (user_data != NULL);
+	g_return_if_fail (entry != NULL);
+	g_return_if_fail (entry->key != NULL);
+	g_return_if_fail (notice_data != NULL);
 	
-	entry = user_data;
-	key = gconf_entry->key;
-
-	gconf_client_suggest_sync (client, &error);
-	nautilus_gconf_handle_error (&error);
-
+	preferences_entry = notice_data;
+	
+	/* FIXME bugzilla.eazel.com 5875: 
+	 * We need to make sure that the value has actually changed before 
+	 * invoking the callbacks.
+	 */
 	/* Invoke callbacks for this entry */
-	if (entry->callback_list) {
-		g_list_foreach (entry->callback_list,
+	if (preferences_entry->callback_list) {
+		g_list_foreach (preferences_entry->callback_list,
 				preferences_callback_entry_invoke_function,
 				NULL);
 	}
