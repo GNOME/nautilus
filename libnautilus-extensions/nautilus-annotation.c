@@ -682,7 +682,7 @@ got_annotations_callback (GnomeVFSResult result,
 	buffer[file_size] = '\0';
 	annotations = xmlParseMemory (buffer, file_size);
 	g_free (buffer);
-	
+
 	/* iterate through the xml document, handling each annotation entry */	
 	if (annotations != NULL) {
 		next_annotation = xmlDocGetRootElement (annotations)->childs;
@@ -870,6 +870,7 @@ int	nautilus_annotation_has_annotation (NautilusFile *file)
 	int count;
 	
 	digest_info = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_NOTES_INFO, NULL);
+	
 	if (digest_info != NULL) {
 		digits = strrchr (digest_info, ':');
 		count = atoi (digits + 1);

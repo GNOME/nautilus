@@ -1,3 +1,16 @@
+2001-03-01  Andy Hertzfeld  <andy@eazel.com>
+
+	added "notes" emblem and made one show up if annotations are
+	available
+	
+	* icons/Makefile.am:
+	* icons/emblem-note.png:
+	* libnautilus-extensions/nautilus-annotation.c:
+	(got_annotations_callback), (nautilus_annotation_has_annotation):
+	* libnautilus-extensions/nautilus-file.c:
+	(prepend_automatic_emblem_names):
+	* libnautilus-extensions/nautilus-file.h:
+
 2001-02-27  Andy Hertzfeld  <andy@eazel.com>
 
 	fixed bug 7019, emblem names not vertically aligned

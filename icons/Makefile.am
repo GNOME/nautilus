@@ -45,6 +45,7 @@ icon_DATA =\
 	emblem-important.svg \
 	emblem-new.svg \
 	emblem-noread.svg \
+	emblem-note.png \
 	emblem-nowrite.svg \
 	emblem-ohno.svg \
 	emblem-personal.svg \
