@@ -226,7 +226,6 @@ preferences_hash_node_add_callback (PreferencesHashNode		*node,
 	{
 		if (node->gconf_connections[i] == 0) {
 			char *key;
-			g_assert (key);
 			g_assert (node->name != NULL);
 			g_assert (node->gconf_connections[i] == 0);
 			
