@@ -1746,6 +1746,7 @@ open_location_prefer_existing_window_callback (NautilusViewFrame *view,
 {
         NautilusWindow *existing_window;
 	GList *node;
+        const char *existing_location;
 
         g_assert (NAUTILUS_IS_WINDOW (window));
 
@@ -1755,7 +1756,11 @@ open_location_prefer_existing_window_callback (NautilusViewFrame *view,
         for (node = nautilus_application_get_window_list ();
              node != NULL; node = node->next) {
                 existing_window = NAUTILUS_WINDOW (node->data);
-                if (nautilus_uris_match (existing_window->details->location, location)) {
+                existing_location = existing_window->details->pending_location;
+                if (existing_location == NULL) {
+                        existing_location = existing_window->details->location;
+                }
+                if (nautilus_uris_match (existing_location, location)) {
                         nautilus_gtk_window_present (GTK_WINDOW (existing_window));
                         return;
                 }

@@ -1,3 +1,15 @@
+2001-02-26  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fix bug 7023 (Multi-window mode opens second instance of same
+	window.)
+
+	* src/nautilus-window-manage-views.c:
+	(open_location_prefer_existing_window_callback): For windows that
+	are changing locations, we want to reuse them if the pending
+	location is the one we are trying to open.
+
 2001-02-26  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>
