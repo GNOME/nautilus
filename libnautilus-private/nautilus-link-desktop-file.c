@@ -314,6 +314,7 @@ nautilus_link_desktop_file_get_link_uri_from_desktop (NautilusDesktopFile *deskt
 							"Desktop Entry",
 							"Exec",
 							&launch_string)) {
+			g_free (type);
 			return NULL;
 		}
 
@@ -345,6 +346,8 @@ nautilus_link_desktop_file_get_link_uri_from_desktop (NautilusDesktopFile *deskt
 						  "URL",
 						  &retval);
 	}
+
+	g_free (type);
 	return retval;
 }
 

@@ -63,6 +63,7 @@ nautilus_bookmark_new_from_node (xmlNodePtr node)
 	xmlFree (uri);
 	xmlFree (icon_uri);
 	xmlFree (icon_name);
-
+	xmlFree (icon_mime_type);
+	
 	return new_bookmark;
 }

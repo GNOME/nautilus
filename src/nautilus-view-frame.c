@@ -886,7 +886,8 @@ nautilus_view_frame_selection_changed (NautilusViewFrame *view,
 	CORBA_exception_init (&ev);
 
 	arg = bonobo_arg_new_from (TC_Nautilus_URIList, uri_list);
-
+	CORBA_free (uri_list);
+	
 	bonobo_event_source_notify_listeners (
 		view->details->event_source,
 		"Bonobo/Property:change:selection", arg, &ev);
@@ -1355,6 +1356,8 @@ send_history (NautilusViewFrame *view)
 
 	arg = bonobo_arg_new_from (TC_Nautilus_History, history);
 
+	CORBA_free (history);
+	
 	bonobo_event_source_notify_listeners (
 		view->details->event_source,
 		"Bonobo/Property:change:history", arg, &ev);

@@ -2066,6 +2066,7 @@ get_icon_text_callback (NautilusIconContainer *container,
  		*additional_text = NULL;
 		if (path != NULL) {
 			description = nautilus_link_local_get_additional_text (path);
+			g_free (path);
 			if (description)
 				*additional_text = g_strdup_printf (" \n%s\n ", description);
 			g_free (description);
