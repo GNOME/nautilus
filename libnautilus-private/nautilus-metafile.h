@@ -23,7 +23,10 @@
 #ifndef NAUTILUS_METAFILE_H
 #define NAUTILUS_METAFILE_H
 
+#include "nautilus-metafile-server.h"
+
 #include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-xobject.h>
 #include <gnome-xml/tree.h>
 
 #include "nautilus-directory.h"
@@ -37,7 +40,7 @@
 typedef struct NautilusMetafileDetails NautilusMetafileDetails;
 
 typedef struct {
-	BonoboObject parent_slot;
+	BonoboXObject parent_slot;
 	NautilusMetafileDetails *details;
 } NautilusMetafile;
 
@@ -52,7 +55,8 @@ struct NautilusMetafileDetails {
 };
 
 typedef struct {
-	BonoboObjectClass parent_slot;
+	BonoboXObjectClass parent_slot;
+	POA_Nautilus_Metafile__epv epv;
 } NautilusMetafileClass;
 
 GtkType nautilus_metafile_get_type (void);

@@ -22,21 +22,21 @@
 
 #include <config.h>
 #include "nautilus-directory-metafile-monitor.h"
-#include "nautilus-metafile-server.h"
 
 #include "nautilus-directory-private.h"
 #include "nautilus-file-private.h"
 
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus/nautilus-bonobo-workarounds.h>
 
 struct NautilusMetafileMonitorDetails {
 	NautilusDirectory *directory;
 };
 
-static void nautilus_metafile_monitor_initialize       (NautilusMetafileMonitor      *monitor);
-static void nautilus_metafile_monitor_initialize_class (NautilusMetafileMonitorClass *klass);
+static void nautilus_metafile_monitor_init       (NautilusMetafileMonitor      *monitor);
+static void nautilus_metafile_monitor_class_init (NautilusMetafileMonitorClass *klass);
 
 static void destroy (GtkObject *monitor);
 
@@ -47,64 +47,21 @@ static void corba_metafile_changed (PortableServer_Servant       servant,
 static void corba_metafile_ready   (PortableServer_Servant       servant,
 				    CORBA_Environment           *ev);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusMetafileMonitor, nautilus_metafile_monitor, BONOBO_OBJECT_TYPE)
+NAUTILUS_BONOBO_X_BOILERPLATE (NautilusMetafileMonitor, Nautilus_MetafileMonitor, BONOBO_X_OBJECT_TYPE, nautilus_metafile_monitor)
 
 static void
-nautilus_metafile_monitor_initialize_class (NautilusMetafileMonitorClass *klass)
+nautilus_metafile_monitor_class_init (NautilusMetafileMonitorClass *klass)
 {
 	GTK_OBJECT_CLASS (klass)->destroy = destroy;
-}
 
-static POA_Nautilus_MetafileMonitor__epv *
-nautilus_metafile_monitor_get_epv (void)
-{
-	static POA_Nautilus_MetafileMonitor__epv epv;
-
-	epv.metafile_changed = corba_metafile_changed;
-	epv.metafile_ready = corba_metafile_ready;
-	
-	return &epv;
-}
-
-static POA_Nautilus_MetafileMonitor__vepv *
-nautilus_metafile_monitor_get_vepv (void)
-{
-	static POA_Nautilus_MetafileMonitor__vepv vepv;
-
-	vepv.Bonobo_Unknown_epv = nautilus_bonobo_object_get_epv ();
-	vepv.Nautilus_MetafileMonitor_epv = nautilus_metafile_monitor_get_epv ();
-
-	return &vepv;
-}
-
-static POA_Nautilus_MetafileMonitor *
-nautilus_metafile_monitor_create_servant (void)
-{
-	POA_Nautilus_MetafileMonitor *servant;
-	CORBA_Environment ev;
-
-	servant = (POA_Nautilus_MetafileMonitor *) g_new0 (BonoboObjectServant, 1);
-	servant->vepv = nautilus_metafile_monitor_get_vepv ();
-	CORBA_exception_init (&ev);
-	POA_Nautilus_MetafileMonitor__init ((PortableServer_Servant) servant, &ev);
-	if (ev._major != CORBA_NO_EXCEPTION){
-		g_error ("can't initialize Nautilus metafile monitor");
-	}
-	CORBA_exception_free (&ev);
-
-	return servant;
+	klass->epv.metafile_changed = corba_metafile_changed;
+	klass->epv.metafile_ready   = corba_metafile_ready;
 }
 
 static void
-nautilus_metafile_monitor_initialize (NautilusMetafileMonitor *monitor)
+nautilus_metafile_monitor_init (NautilusMetafileMonitor *monitor)
 {
-	Nautilus_MetafileMonitor corba_monitor;
-
 	monitor->details = g_new0 (NautilusMetafileMonitorDetails, 1);
-
-	corba_monitor = bonobo_object_activate_servant
-		(BONOBO_OBJECT (monitor), nautilus_metafile_monitor_create_servant ());
-	bonobo_object_construct (BONOBO_OBJECT (monitor), corba_monitor);
 }
 
 static void

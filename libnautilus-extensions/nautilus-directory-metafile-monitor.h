@@ -23,7 +23,10 @@
 #ifndef NAUTILUS_METAFILE_MONITOR_H
 #define NAUTILUS_METAFILE_MONITOR_H
 
+#include "nautilus-metafile-server.h"
+
 #include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-xobject.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 
 #define NAUTILUS_TYPE_METAFILE_MONITOR	          (nautilus_metafile_monitor_get_type ())
@@ -35,12 +38,13 @@
 typedef struct NautilusMetafileMonitorDetails NautilusMetafileMonitorDetails;
 
 typedef struct {
-	BonoboObject parent_slot;
+	BonoboXObject parent_slot;
 	NautilusMetafileMonitorDetails *details;
 } NautilusMetafileMonitor;
 
 typedef struct {
-	BonoboObjectClass parent_slot;
+	BonoboXObjectClass parent_slot;
+	POA_Nautilus_MetafileMonitor__epv epv;
 } NautilusMetafileMonitorClass;
 
 GtkType nautilus_metafile_monitor_get_type (void);

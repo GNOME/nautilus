@@ -44,9 +44,9 @@ int
 main(int argc, char **argv)
 {
 	gzFile f = NULL;
+	int bz = 0;
 #ifdef HAVE_LIBBZ2
 	BZFILE *bf=NULL;
-	int bz = 0;
 #endif
 	char line[250];
 	poptContext ctx;
@@ -168,47 +168,57 @@ main(int argc, char **argv)
 	/* No need to store all nodes, etc since we let web server */
 	/* handle resolving tags!                                  */
 	for (;1 || !foundit || !requested_nodename;) {
-#ifdef HAVE_LIBBZ2	 
-	  if(bz && !bf) {
-	     if(args && args[curarg])
-	      {
-		bf = bzopen(args[curarg++], "r");
-		if(!f)
-		  break;
-		num_files_left = args[curarg]?1:0;
-		for(work_line_number = 0, bzread(bf, line, sizeof(line)); *line != INFO_COOKIE;
-		    bzread(bf, line, sizeof(line)), work_line_number++)
-		  /**/ ;
-	      }
-	    else
-	      break;
-	  }
-	  if(!bzread(bf, line, sizeof(line)))
+	  if(bz)
 	    {
-	      bzclose(bf);
-	      bf = NULL;
-	      continue;
-	    }	
+#ifdef HAVE_LIBBZ2
+	      if(!bf)
+		{
+		  if(args && args[curarg])
+		    {
+		      bf = bzopen(args[curarg++], "r");
+		      if(!f)
+			break;
+		      num_files_left = args[curarg]?1:0;
+		      for(work_line_number = 0, bzread(bf, line, sizeof(line)); *line != INFO_COOKIE;
+			  bzread(bf, line, sizeof(line)), work_line_number++)
+			/**/ ;
+		    }
+		  else
+		    break;
+		}
+	      if(!bzread(bf, line, sizeof(line)))
+		{
+		  bzclose(bf);
+		  bf = NULL;
+		  continue;
+		}
+#else
+	      g_assert_not_reached();
 #endif
-	  if(!f) {
-	    if(args && args[curarg])
-	      {
-		f = gzopen(args[curarg++], "r");
-		if(!f)
-		  break;
-		num_files_left = args[curarg]?1:0;
-		for(work_line_number = 0, gzgets(f, line, sizeof(line)); *line != INFO_COOKIE;
-		    gzgets(f, line, sizeof(line)), work_line_number++)
-		  /**/ ;
-	      }
-	    else
-	      break;
-	  }
-	  if(!gzgets(f, line, sizeof(line)))
+	    }
+	  else
 	    {
-	      gzclose(f);
-	      f = NULL;
-	      continue;
+	      if(!f)
+		{
+		  if(args && args[curarg])
+		    {
+		      f = gzopen(args[curarg++], "r");
+		      if(!f)
+			break;
+		      num_files_left = args[curarg]?1:0;
+		      for(work_line_number = 0, gzgets(f, line, sizeof(line)); *line != INFO_COOKIE;
+			  gzgets(f, line, sizeof(line)), work_line_number++)
+			/**/ ;
+		    }
+		  else
+		    break;
+		}
+	      if(!gzgets(f, line, sizeof(line)))
+		{
+		  gzclose(f);
+		  f = NULL;
+		  continue;
+		}
 	    }
 		
 	  work_line_number++;

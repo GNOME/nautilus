@@ -1,3 +1,40 @@
+2001-03-06  John Sullivan  <sullivan@eazel.com>
+
+	Merge from HEAD:
+
+	==============================================================
+
+	From 2001-03-06  Darin Adler  <darin@eazel.com>
+
+	Fixed bug 7328 (info pages no longer work):
+	
+	* components/help/converters/gnome-info2html2/main.c: (main):
+	Fixed broken logic for handling both bzip and gzip.
+
+	==============================================================
+
+	From 2001-03-06  Michael Engber  <engber@eazel.com>
+
+	* libnautilus-extensions/nautilus-bonobo-extensions.h:
+	Added NAUTILUS_BONOBO_X_BOILERPLATE.
+
+	* libnautilus-extensions/nautilus-directory-metafile-monitor.c:
+	(nautilus_metafile_monitor_class_init),
+	(nautilus_metafile_monitor_init):
+	* libnautilus-extensions/nautilus-directory-metafile-monitor.h:
+	* libnautilus-extensions/nautilus-metafile-factory.c:
+	(nautilus_metafile_factory_class_init),
+	(nautilus_metafile_factory_init):
+	* libnautilus-extensions/nautilus-metafile-factory.h:
+	* libnautilus-extensions/nautilus-metafile.c:
+	(nautilus_metafile_class_init), (nautilus_metafile_init):
+	* libnautilus-extensions/nautilus-metafile.h:
+	Switched NautilusMetafile, MetafileMonitor, and Metafile factory
+	to be based on BonoboXObject - this causes our corba object to
+	get freed properly - bug 7335.
+
+	==============================================================
+
 2001-03-06  Pavel Cisler  <pavel@eazel.com>
 
 	Merge from HEAD:
