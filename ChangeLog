@@ -1,3 +1,20 @@
+2000-09-19  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-lib-self-check-functions.h:
+	fixed build problem where someone apparently deleted nautilus-queue
+	without deleting its self check function.  Fixed by deleting the check.
+	
+	* components/music/mpg123_handler.c: (start_playing_file):
+	fixed bug 2262, nautilus doesn't play variable bit rate mp3s properly, by
+	adding the "-y" parameter to the mpg123 invocation, as suggested to me
+	by Jamie Manley in email.  This might also have fixed bug 2227, but I
+	don't have vbr files to test with.
+	
+	* src/file-manager/fm-icon-view.c: (play_file):
+	added the "-y" parameter to mpg123 invocations to play variable bit
+	rate files better.  Also, fixed bug 2529 by checking for non-local
+	files and not trying to play them.
+	
 2000-09-19  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 3019, renaming special icons should be

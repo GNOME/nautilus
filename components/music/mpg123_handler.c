@@ -639,7 +639,7 @@ void start_playing_file(gchar* filename, gboolean start_from_beginning)
 {
 	pid_t frk_pid;
 	gchar cmd_arguments[16][512];
-	gchar *cmd_ptr[16];
+	gchar *cmd_ptr[17];
 	gint cmd_cnt = 0;
 
 	if (mpg123_status == STATUS_PLAY) return;
@@ -654,6 +654,10 @@ void start_playing_file(gchar* filename, gboolean start_from_beginning)
 	cmd_cnt++;
 
 	strcpy(cmd_arguments[cmd_cnt],"-v");
+	cmd_ptr[cmd_cnt] = cmd_arguments[cmd_cnt];
+	cmd_cnt++;
+
+	strcpy(cmd_arguments[cmd_cnt],"-y");
 	cmd_ptr[cmd_cnt] = cmd_arguments[cmd_cnt];
 	cmd_cnt++;
 

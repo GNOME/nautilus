@@ -1741,20 +1741,21 @@ play_file (NautilusFile *file)
 	if (mp3_pid == (pid_t) 0) {
 		file_uri = nautilus_file_get_uri (file);
 		file_path = gnome_vfs_get_local_path_from_uri (file_uri);
-		/* FIXME bugzilla.eazel.com 2529: This can return NULL for non-local files. */
+		
+		if (file_path != NULL) {
+			mime_type = nautilus_file_get_mime_type (file);
 
-		mime_type = nautilus_file_get_mime_type (file);
-
-		/* set the group (session) id to this process for future killing */
-		setsid();
-		if (nautilus_strcasecmp (mime_type, "audio/x-mp3") == 0) {
-			execlp ("mpg123", "mpg123", "-q", file_path, NULL);
-		} else {
-			execlp ("play", "play", file_path, NULL);
+			/* set the group (session) id to this process for future killing */
+			setsid();
+			if (nautilus_strcasecmp (mime_type, "audio/x-mp3") == 0) {
+				execlp ("mpg123", "mpg123", "-y", "-q", file_path, NULL);
+			} else {
+				execlp ("play", "play", file_path, NULL);
+			}
+		
 		}
-
-		g_free (mime_type);
 		g_free (file_path);
+		g_free (mime_type);
 		g_free (file_uri);
 
 		_exit (0);
