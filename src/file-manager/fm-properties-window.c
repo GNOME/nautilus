@@ -45,8 +45,9 @@
 
 #include <libnautilus/nautilus-glib-extensions.h>
 #include <libnautilus/nautilus-icon-factory.h>
+#include <libnautilus/nautilus-string.h>
 
-/* static GHashTable *windows; */
+static GHashTable *windows;
 
 static const char * const property_names[] =
 {
@@ -161,10 +162,10 @@ name_field_done_editing (GtkWidget *widget,
 }
 
 static void
-name_field_update (GtkEntry *name_field)
+name_field_update_to_match_file (GtkEntry *name_field)
 {
 	NautilusFile *file;
-	char *name;
+	char *original_name, *current_name;
 
 	file = gtk_object_get_data (GTK_OBJECT (name_field), "nautilus_file");
 
@@ -174,9 +175,25 @@ name_field_update (GtkEntry *name_field)
 		return;
 	}
 
-	name = nautilus_file_get_name (file);
-	gtk_entry_set_text (name_field, name);
-	g_free (name);
+	original_name = (char *)gtk_object_get_data (GTK_OBJECT (name_field),
+						     "original_name");
+
+	/* If the file name has changed since the original name was stored,
+	 * update the text in the text field, possibly (deliberately) clobbering
+	 * an edit in progress. If the name hasn't changed (but some other
+	 * aspect of the file might have), then don't clobber changes.
+	 */
+	current_name = nautilus_file_get_name (file);
+	if (nautilus_strcmp (original_name, current_name) != 0) {
+		gtk_object_set_data_full (GTK_OBJECT (name_field),
+					  "original_name",
+					  current_name,
+					  g_free);
+
+		gtk_entry_set_text (name_field, current_name);
+	} else {
+		g_free (original_name);
+	}
 
 	/* 
 	 * The UI would look better here if the name were just drawn as
@@ -331,13 +348,17 @@ create_properties_window (NautilusFile *file)
 				  (GtkDestroyNotify) nautilus_file_unref);
 
 	/* Update name field initially before hooking up changed signal. */
-	name_field_update (GTK_ENTRY (name_field));
+	name_field_update_to_match_file (GTK_ENTRY (name_field));
 
 	gtk_signal_connect (GTK_OBJECT (name_field), "focus_out_event",
       	              	    GTK_SIGNAL_FUNC (name_field_done_editing),
-                            NULL);                            			    
-	/* FIXME: react to name (file) changes from elsewhere */
-
+                            NULL);
+                      			    
+	/* React to name changes from elsewhere. */
+	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
+					       "changed",
+					       name_field_update_to_match_file,
+					       GTK_OBJECT (name_field));
 
 	/* Create the Emblems Page. */
 	emblems_page_vbox = gtk_vbox_new (FALSE, 0);
@@ -407,8 +428,42 @@ create_properties_window (NautilusFile *file)
 	return window;
 }
 
+static void
+remove_properties_window_from_hash_table (gpointer data, gpointer user_data)
+{
+	NautilusFile *file;
+
+	g_assert (GTK_IS_WINDOW (data));
+	g_assert (NAUTILUS_IS_FILE (user_data));
+
+	file = NAUTILUS_FILE (user_data);
+	g_hash_table_remove (windows, file);
+	nautilus_file_unref (file);
+}
+
 GtkWindow *
 fm_properties_window_get_or_create (NautilusFile *file)
 {
-	return create_properties_window (file);
+	GtkWindow *window;
+
+	/* Create the hash table first time through. */
+	if (windows == NULL) {
+		windows = g_hash_table_new (g_direct_hash, g_direct_equal);
+	}
+
+	/* Look to see if object is already in the hash table. */
+	window = g_hash_table_lookup (windows, file);
+
+	if (window == NULL) {
+		window = create_properties_window (file);
+		nautilus_file_ref (file);
+		g_hash_table_insert (windows, file, window);
+	
+		gtk_signal_connect (GTK_OBJECT (window),
+				    "destroy",
+				    remove_properties_window_from_hash_table,
+				    file);
+	}
+
+	return window;
 }

@@ -616,9 +616,9 @@ fm_list_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 
 	/* Remove and re-add file to get new text/icon values and sort correctly. */
 	gtk_clist_remove (GTK_CLIST (nautilus_list), old_row);
-	nautilus_file_unref (file);
 
 	if (!nautilus_file_is_gone (file)) {
+		nautilus_file_unref (file);
 		new_row = add_to_list (list_view, file);
 	}
 

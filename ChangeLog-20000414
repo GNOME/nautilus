@@ -1,3 +1,19 @@
+2000-04-06  John Sullivan  <sullivan@eazel.com>
+
+	* src/file-manager/fm-list-view.c:
+	(fm_list_view_file_changed): Only call nautilus_file_unref if
+	the file isn't gone. This cures some GTK-CRITICALS I ran into.
+
+	* src/file-manager/fm-properties-window.c:
+	(name_field_update): Renamed to name_field_update_to_match_file;
+	handle case where file name was changed elsewhere.
+	(create_properties_window): Hook up name_field_update_to_match_file
+	to get called when file changes externally.
+	(remove_properties_window_from_hash_table): New function.
+	(fm_properties_window_get_or_create): Use hash table so there's
+	only one Properties window per file. This was intended to be the
+	design but we forgot to implement it earlier.
+
 2000-04-05  Andy Hertzfeld <andy@eazel.com>
 
 	* components/services/startup/nautilus-service-startup-view.c:
