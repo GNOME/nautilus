@@ -32,6 +32,7 @@
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <stdio.h>
+#include <string.h>
 
 enum {
 	NODE_ADDED,

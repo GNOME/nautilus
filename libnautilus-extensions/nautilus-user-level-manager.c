@@ -36,6 +36,8 @@
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
 
+#include <string.h>
+
 #define NAUTILUS_TYPE_USER_LEVEL_MANAGER            (nautilus_user_level_manager_get_type ())
 #define NAUTILUS_USER_LEVEL_MANAGER(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_USER_LEVEL_MANAGER, NautilusUserLevelManager))
 #define NAUTILUS_USER_LEVEL_MANAGER_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_USER_LEVEL_MANAGER, NautilusUserLevelManagerClass))

@@ -27,6 +27,8 @@
 
 #include "nautilus-gtk-macros.h"
 
+#include <stdlib.h>
+
 struct NautilusHorizontalSplitterDetails {
 	gboolean down;
 	double down_position;

@@ -1,3 +1,26 @@
+2000-09-29  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/help/converters/gnome-info2html2/html.c:
+	* components/music/mpg123_handler.h:
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c
+	: (trilobite_open_uri), (trilobite_debug):
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.h
+	:
+	* components/tree/nautilus-tree-model.c:
+	* libnautilus-extensions/nautilus-ctree.c:
+	* libnautilus-extensions/nautilus-debug.c:
+	* libnautilus-extensions/nautilus-directory-background.h:
+	* libnautilus-extensions/nautilus-horizontal-splitter.c:
+	* libnautilus-extensions/nautilus-self-checks.c:
+	* libnautilus-extensions/nautilus-user-level-manager.c:
+	* src/nautilus-main.h:
+
+	Checking lots of little fixes to make the new RedHat 7.0 compiler
+	work.  Mostly newlines and including string.h and/or stdlib.h.
+	Serveral functions like strcmp are not inlined anymore.
+	the mozilla component and rpm related code still doesn't build but
+	all dependencies work now too.
+
 2000-09-29  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-global-preferences.c:

@@ -35,3 +35,4 @@ void nautilus_connect_desktop_background_to_directory_metadata (GtkWidget       
 void nautilus_connect_background_to_directory_metadata_by_uri  (GtkWidget         *widget,
                                                                 const char        *uri);
 gboolean nautilus_directory_background_is_set		       (NautilusBackground *background);
+

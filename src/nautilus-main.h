@@ -34,3 +34,4 @@ gboolean nautilus_main_is_event_loop_mainstay (GtkObject* object);
 void nautilus_main_event_loop_quit (void);
 
 #endif /* NAUTILUS_MAIN_H */
+

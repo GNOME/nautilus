@@ -208,6 +208,7 @@ trilobite_open_uri (const char *uri_text)
 
 	err = gnome_vfs_open_uri (&handle, uri, GNOME_VFS_OPEN_READ);
 	if (err != GNOME_VFS_OK) {
+
 		trilobite_debug ("fetch-uri: open failed: %s", gnome_vfs_result_to_string (err));
 		handle = NULL;
 	}
@@ -524,3 +525,13 @@ trilobite_setenv (const char *name, const char *value, gboolean overwrite)
 	return putenv (string);
 #endif
 }
+
+void
+trilobite_debug (const gchar *format, ...)
+{
+	va_list args;
+	va_start (args, format);
+	g_logv (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, format, args);
+	va_end (args);
+}
+

@@ -28,6 +28,7 @@
 #include <glib.h>
 #include <signal.h>
 #include <stdio.h>
+#include <string.h>
 
 /* Raise a SIGINT signal to get the attention of the debugger.
    When not running under the debugger, we don't want to stop,

@@ -36,4 +36,4 @@ void	pause_playing_file (void);
 int	get_play_status(void);
 int	get_current_frame(void);
 void	set_current_frame(int new_frame);
-	
+

@@ -39,6 +39,7 @@
 #include <gdk/gdkx.h>
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
+#include <stdlib.h>
 
 #define PM_SIZE                    8
 #define TAB_SIZE                   (PM_SIZE + 6)

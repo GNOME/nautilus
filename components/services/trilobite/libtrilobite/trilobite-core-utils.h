@@ -31,24 +31,9 @@
 #ifndef TRILOBITE_CORE_UTILS_H
 #define TRILOBITE_CORE_UTILS_H
 
-#ifdef __GNUC__
 
-#define trilobite_debug(format, args...) \
-	g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, format, ##args)
 
-#else	/* __GNUC__ */
-
-static void
-trilobite_debug (const gchar *format, ...)
-{
-	va_list args;
-	va_start (args, format);
-	g_logv (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, format, args);
-	va_end (args);
-}
-
-#endif
-
+void trilobite_debug (const gchar *format, ...);
 
 int trilobite_pexec (const char *path, 
 		     char * const argv[], 
