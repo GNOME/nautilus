@@ -1,3 +1,8 @@
+2001-07-19  Alex Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-container.c (nautilus_icon_container_clear):
+	Clear details->drop_target. This should fix a hard to trigger DnD segfault.
+
 2001-07-16  Darin Adler  <darin@bentspoon.com>
 
 	* THANKS:
@@ -118,7 +123,6 @@
 	getpid() returns an int. Instead cast it to unsigned long for
 	printing.
 
->>>>>>> 1.4689
 2001-07-11  Alex Larsson  <alexl@redhat.com>
 
 	* acconfig.h:
