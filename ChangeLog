@@ -1,3 +1,10 @@
+2003-03-25  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-thumbnails.c (thumbnail_thread_start):
+	Fix race on thumbnail creation. If a thumbnail was being created when the file
+	was modified the request wouldn't be entered in the queue, but the created
+	thumbnail has the wrong mtime.
+
 2003-03-24  Gaute Lindkvist <lindkvis@stud.ntnu.no>
 
 	* libnautilus-private/nautilus-file.h:
