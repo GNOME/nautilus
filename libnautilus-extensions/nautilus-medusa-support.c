@@ -1,6 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* nautilus-system-preferences.c - Preferences that cannot be managed with gconf
+/* nautilus-medusa-support.c - Covers for access to medusa
+   from nautilus
 
    Copyright (C) 2001 Eazel, Inc.
 
@@ -19,35 +20,23 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Authors: Rebecca Schulman <rebecka@eazel.com>
+   Authors: Ramiro Estrugo <ramiro@eazel.com>
+            Rebecca Schulman <rebecka@eazel.com>
 */
 
 #include <config.h>
 #include <glib.h>
 #include <string.h>
 
-#include "nautilus-global-preferences.h"
-#include "nautilus-system-preferences.h"
+#include "nautilus-medusa-support.h"
 
 #ifdef HAVE_MEDUSA
 #include <libmedusa/medusa-system-state.h>
 #endif HAVE_MEDUSA
 
-
 gboolean
-nautilus_is_system_preference (const char *preference_name)
+nautilus_medusa_services_have_been_enabled_by_user (void)
 {
-	g_return_val_if_fail (preference_name != NULL, FALSE);
-
-	return strcmp (preference_name, NAUTILUS_PREFERENCES_USE_FAST_SEARCH) == 0;
-}
-
-gboolean
-nautilus_system_preference_get_boolean (const char *preference_name)
-{
-	g_return_val_if_fail (preference_name != NULL, FALSE);
-	g_return_val_if_fail (nautilus_is_system_preference (preference_name), FALSE);
-
 #ifdef HAVE_MEDUSA
 	return medusa_system_services_have_been_enabled_by_user (g_get_user_name ());
 #else
@@ -55,16 +44,33 @@ nautilus_system_preference_get_boolean (const char *preference_name)
 #endif
 }
 
-void
-nautilus_system_preference_set_boolean (const char *preference_name,
-					gboolean value)
+gboolean
+nautilus_medusa_blocked (void)
 {
-	g_return_if_fail (preference_name != NULL);
-	g_return_if_fail (nautilus_is_system_preference (preference_name));
-
 #ifdef HAVE_MEDUSA
-	medusa_enable_medusa_services (value);
+	return FALSE;
+#else
+	return TRUE;
 #endif
 }
 
+void
+nautilus_medusa_enable_services (gboolean enable)
+{
+#ifdef HAVE_MEDUSA
+	medusa_enable_medusa_services (enable);
+#endif
+}
 
+void
+nautilus_medusa_add_system_state_changed_callback (NautilusMedusaChangedCallback callback,
+						  gpointer callback_data)
+{
+#ifdef HAVE_MEDUSA
+	medusa_execute_when_system_state_changes (MEDUSA_SYSTEM_STATE_ENABLED
+						  | MEDUSA_SYSTEM_STATE_DISABLED
+						  | MEDUSA_SYSTEM_STATE_BLOCKED,
+						  callback,
+						  callback_data);
+#endif
+}

@@ -90,9 +90,9 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY		"directory-view/font_family"
 
 /* File Indexing */
-#define NAUTILUS_PREFERENCES_USE_FAST_SEARCH                    "preferences/use_medusa"
-#define NAUTILUS_PREFERENCES_USE_BACKUP_SEARCH	         	"preferences/use_backup_search"
 #define NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE			"preferences/search_bar_type"
+#define NAUTILUS_PREFERENCES_MEDUSA_BLOCKED                     "preferences/medusa_blocked"
+#define NAUTILUS_PREFERENCES_USE_FAST_SEARCH                    "preferences/use_fast_search"
 
 /* searching */
 #define NAUTILUS_PREFERENCES_SEARCH_WEB_URI			"preferences/search_web_uri"			

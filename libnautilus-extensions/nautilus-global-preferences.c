@@ -32,7 +32,7 @@
 #include "nautilus-preferences-group.h"
 #include "nautilus-preferences-item.h"
 #include "nautilus-string.h"
-#include "nautilus-system-preferences.h"
+#include "nautilus-medusa-support.h"
 #include "nautilus-view-identifier.h"
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
@@ -64,6 +64,7 @@ static void       global_preferences_install_visibility                  (void);
 static void       global_preferences_install_speed_tradeoff_descriptions (const char    *name,
 									  const char    *description);
 static void       global_preferences_install_home_location_defaults      (void);
+static void       global_preferences_install_medusa_defaults             (void);
 static void       global_preferences_install_descriptions                (void);
 static int        compare_view_identifiers                               (gconstpointer  a,
 									  gconstpointer  b);
@@ -172,11 +173,6 @@ global_preferences_install_descriptions (void)
 					      _("Enable fast search (indexes your hard drive)\n"
 						"Turns on the Medusa daemon, which indexes your hard disk\n"
 						"when your computer is idle."));
-
-
-	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_USE_BACKUP_SEARCH,
-					      _("Do slower but more complete search whenever possible\n"
-						"(slower search is not available when searching by content)"));
 
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
 					      _("search type to do by default"));
@@ -309,10 +305,6 @@ global_preferences_install_defaults (void)
 	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP,
 						  NAUTILUS_USER_LEVEL_NOVICE,
 						  TRUE);
-	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_USE_BACKUP_SEARCH,
-						  NAUTILUS_USER_LEVEL_NOVICE,
-						  TRUE);
-
 	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_CAN_ADD_CONTENT,
 						  NAUTILUS_USER_LEVEL_NOVICE,
 						  FALSE);
@@ -382,6 +374,9 @@ global_preferences_install_defaults (void)
 
 	/* Home location */
 	global_preferences_install_home_location_defaults ();
+
+	/* Medusa */
+	global_preferences_install_medusa_defaults ();
 }
 
 /**
@@ -463,9 +458,6 @@ global_preferences_install_visibility (void)
 						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
 
 	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_USE_FAST_SEARCH,
-						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
-
-	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_USE_BACKUP_SEARCH,
 						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
 
 	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SEARCH_WEB_URI,
@@ -697,14 +689,6 @@ global_preferences_create_dialog (void)
 							1,
 							NAUTILUS_PREFERENCES_USE_FAST_SEARCH,
 							NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
-					     _("Search Tradeoffs"));
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
-							 1,
-							 NAUTILUS_PREFERENCES_USE_BACKUP_SEARCH,
-							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
-	
-	
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
 					     _("Search Locations"));
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
@@ -1035,6 +1019,56 @@ global_preferences_install_home_location_defaults (void)
 	g_free (user_main_directory);
 	g_free (default_novice_home_uri);
 	g_free (default_intermediate_home_uri);
+}
+
+static void
+global_preferences_use_fast_search_changed_callback (gpointer callback_data)
+{
+	gboolean use_fast_search;
+
+	use_fast_search = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_USE_FAST_SEARCH);
+
+	nautilus_medusa_enable_services (use_fast_search);
+}
+
+static void 
+global_preferences_medusa_state_changed_callback (gpointer callback_data)
+{
+	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_USE_FAST_SEARCH,
+					  nautilus_medusa_services_have_been_enabled_by_user ());
+
+	/* FIXME: after preference sensitivity is added, this preference will
+	   control the sensitivity of the FAST_SEARCH preference */
+	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_MEDUSA_BLOCKED,
+					  !nautilus_medusa_blocked ());
+}
+
+static void
+global_preferences_install_medusa_defaults (void)
+{
+	gboolean medusa_blocked;
+	gboolean use_fast_search;
+
+	medusa_blocked = nautilus_medusa_blocked ();
+	use_fast_search = nautilus_medusa_services_have_been_enabled_by_user ();
+
+	/* This one controls the sensitivity */
+	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_MEDUSA_BLOCKED,
+						  NAUTILUS_USER_LEVEL_NOVICE,
+						  !medusa_blocked);
+
+	/* This is the one that appears in the preferences dialog */
+	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_USE_FAST_SEARCH,
+						  NAUTILUS_USER_LEVEL_NOVICE,
+						  use_fast_search);
+
+
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_USE_FAST_SEARCH,
+					   global_preferences_use_fast_search_changed_callback,
+					   NULL);
+
+	nautilus_medusa_add_system_state_changed_callback (global_preferences_medusa_state_changed_callback,
+							   NULL);
 }
 
 static gboolean

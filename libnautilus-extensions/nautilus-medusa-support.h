@@ -1,7 +1,8 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* nautilus-system-preferences.h - Preferences that cannot be managed 
-   with gconf
+/* nautilus-medusa-support.h - Covers for access to medusa
+   from nautilus
+
 
    Copyright (C) 2001 Eazel, Inc.
 
@@ -20,25 +21,23 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Authors: Rebecca Schulman <rebecka@eazel.com>
+   Authors: Ramiro Estrugo <ramiro@eazel.com>
+            Rebecca Schulman <rebecka@eazel.com>
 */
 
-#ifndef NAUTILUS_SYSTEM_PREFERENCES_H
-#define NAUTILUS_SYSTEM_PREFERENCES_H
+#ifndef NAUTILUS_MEDUSA_SUPPORT_H
+#define NAUTILUS_MEDUSA_SUPPORT_H
 
 #include <glib.h>
 
-gboolean        nautilus_is_system_preference                                  (const char *preference_name);
+typedef void (* NautilusMedusaChangedCallback)     (gpointer data);
 
-gboolean        nautilus_system_preference_get_boolean                         (const char *preference_name);
-void            nautilus_system_preference_set_boolean                         (const char *preference_name,
-										gboolean preference_value);
-
-void            nautilus_system_preferences_initialize                         (void);
-
-/* Set up callbacks that will change system preferences if they are changed at the command line. */
-void            nautilus_system_preferences_check_for_system_level_changes     (void);
+gboolean nautilus_medusa_services_have_been_enabled_by_user (void);
+gboolean nautilus_medusa_blocked                            (void);
+void     nautilus_medusa_enable_services                    (gboolean enable);
+void     nautilus_medusa_add_system_state_changed_callback  (NautilusMedusaChangedCallback callback,
+							     gpointer callback_data);
 
 
-#endif /* NAUTILUS_SYSTEM_PREFERENCES_H */
+#endif /* NAUTILUS_MEDUSA_SUPPORT_H */
 

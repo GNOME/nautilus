@@ -1,3 +1,48 @@
+2001-02-21  Rebecca Schulman  <rebecka@eazel.com>
+	Remove the "backup unindexed search" preference for 1.0, which is
+	bugzilla.eazel.com bug 6775.  We will not be doing backup
+	searches, and with Ramiro's help redo preference changes more
+	cleanly, and to be more compatible with his preference changes.
+
+	reviewed by: Ramiro Estrugo <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_descriptions),
+	(global_preferences_install_defaults),
+	(global_preferences_install_visibility),
+	(global_preferences_create_dialog),
+	(global_preferences_install_home_location_defaults),
+	(global_preferences_use_fast_search_changed_callback),
+	(global_preferences_medusa_state_changed_callback),
+	(global_preferences_install_medusa_defaults):
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	Remove the old BACKUP_SEARCH preference, and add functions
+	to install medusa preference defaults, and to synchronize
+	the gconf value of the preference with the system configuration
+	file used by medusa.
+	
+	* libnautilus-extensions/nautilus-preferences.c:
+	(nautilus_preferences_set_boolean),
+	(nautilus_preferences_get_boolean):
+	Remove old system preferences calls
+
+	* libnautilus-extensions/Makefile.am:	
+	* libnautilus-extensions/nautilus-system-preferences.c:
+	* libnautilus-extensions/nautilus-system-preferences.h:
+	Remove these
+	* libnautilus-extensions/nautilus-medusa-support.c:
+	(nautilus_medusa_services_have_been_enabled_by_user),
+	(nautilus_medusa_blocked), (nautilus_medusa_enable_services),
+	(nautilus_medusa_add_system_state_changed_callback):
+	* libnautilus-extensions/nautilus-medusa-support.h:
+	Add this file to hide potentially ifdef'd out medusa 
+	code.
+	
+	* src/file-manager/fm-search-list-view.c: (load_location_callback):
+	* src/nautilus-complex-search-bar.c:
+	(nautilus_complex_search_bar_get_location):
+	Remove logic related to the BACKUP_SEARCH feature.
+
 2001-02-21  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* nautilus.spec.in: moved documentation to
@@ -17,6 +62,7 @@
 	so that they do not expand in strange ways or change their position
 	when a custom image is added.
 		
+>>>>>>> 1.3858
 2001-02-21  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Mike Fleming <mfleming@eazel.com>

@@ -120,6 +120,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-link.c				\
 	nautilus-list-column-title.c		\
 	nautilus-list.c                         \
+	nautilus-medusa-support.c		\
 	nautilus-merged-directory.c		\
 	nautilus-metafile-factory.c             \
 	nautilus-metafile.c                     \
@@ -145,7 +146,6 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-string-map.c			\
 	nautilus-string-picker.c		\
 	nautilus-string.c			\
-	nautilus-system-preferences.c		\
 	nautilus-tabs.c				\
 	nautilus-text-caption.c			\
 	nautilus-text-layout.c			\
@@ -238,6 +238,7 @@ noinst_HEADERS =				\
 	nautilus-link.h				\
 	nautilus-list-column-title.h		\
 	nautilus-list.h                         \
+	nautilus-medusa-support.h		\
 	nautilus-merged-directory.h		\
 	nautilus-metadata.h			\
 	nautilus-metafile-factory.h             \
@@ -267,7 +268,6 @@ noinst_HEADERS =				\
 	nautilus-string-map.h			\
 	nautilus-string-picker.h		\
 	nautilus-string.h			\
-	nautilus-system-preferences.h		\
 	nautilus-tabs.h				\
 	nautilus-text-caption.h			\
 	nautilus-text-layout.h			\
