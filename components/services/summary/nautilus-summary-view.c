@@ -573,7 +573,7 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 
 	/* Generate first column with service icon */
 	view->details->services_icon_container = gtk_hbox_new (TRUE, 4);
-	view->details->services_icon_widget = create_image_widget (view->details->services_icon_name, DEFAULT_BACKGROUND_COLOR);
+	view->details->services_icon_widget = create_image_widget (view->details->services_icon_name, DEFAULT_SUMMARY_BACKGROUND_COLOR);
 	g_assert (view->details->services_icon_widget != NULL);
 	gtk_box_pack_start (GTK_BOX (view->details->services_icon_container), view->details->services_icon_widget, 0, 0, 0);
 	gtk_widget_show (view->details->services_icon_widget);
@@ -628,7 +628,7 @@ generate_eazel_news_entry_row  (NautilusSummaryView	*view, int	row)
 
 	/* Generate first column with icon */
 	view->details->news_icon_container = gtk_hbox_new (TRUE, 4);
-	view->details->news_icon_widget = create_image_widget (view->details->news_icon_name, DEFAULT_BACKGROUND_COLOR);
+	view->details->news_icon_widget = create_image_widget (view->details->news_icon_name, DEFAULT_SUMMARY_BACKGROUND_COLOR);
 	g_assert (view->details->news_icon_widget != NULL);
 	gtk_box_pack_start (GTK_BOX (view->details->news_icon_container), view->details->news_icon_widget, 0, 0, 0);
 	gtk_widget_show (view->details->news_icon_widget);
@@ -651,7 +651,7 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 
 	/* Generate first column with icon */
 	view->details->update_icon_container = gtk_hbox_new (TRUE, 4);
-	view->details->update_icon_widget = create_image_widget (view->details->update_icon_name, DEFAULT_BACKGROUND_COLOR);
+	view->details->update_icon_widget = create_image_widget (view->details->update_icon_name, DEFAULT_SUMMARY_BACKGROUND_COLOR);
 	g_assert (view->details->update_icon_widget != NULL);
 	gtk_box_pack_start (GTK_BOX (view->details->update_icon_container), view->details->update_icon_widget, 0, 0, 0);
 	gtk_widget_show (view->details->update_icon_widget);
@@ -937,7 +937,7 @@ nautilus_summary_view_initialize (NautilusSummaryView *view)
 			    view);
 
 	background = nautilus_get_widget_background (GTK_WIDGET (view));
-	nautilus_background_set_color (background, SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
+	nautilus_background_set_color (background, DEFAULT_BACKGROUND_COLOR);
 
 	view->details->user_control = (EazelProxy_UserControl) oaf_activate_from_id (IID_EAZELPROXY, 0, NULL, &ev);
 
