@@ -134,8 +134,6 @@ bookmark_activated_cb(GtkMenuItem* item, gpointer func_data)
 	nautilus_window_goto_uri(menu->window, 
 				 nautilus_bookmark_get_uri(
 				 	nautilus_bookmarklist_item_at(bookmarks, item_index)));
-
-	/* FIXME: bookmark created for this signal is never destroyed. */
 }
 
 static void
@@ -144,11 +142,13 @@ edit_bookmarks_cb(GtkMenuItem* item, gpointer ignored)
 	GtkWidget *gtk_window = get_bookmarks_window();
 	if (GTK_WIDGET_VISIBLE(gtk_window))
     {
-        // Handle behind-other-windows and iconified cases.
-        // This successfully leaves the window in its original position
-        // on top of other windows, but unfortunately does not always leave the
-        // window with focus. Changing window focus programatically is an
-        // X no-no that we'd like to find a workaround for.
+    	/*
+         * Handle behind-other-windows and iconified cases.
+         * This successfully leaves the window in its original position
+         * on top of other windows, but unfortunately does not always leave the
+         * window with focus. Changing window focus programatically is an
+         * X no-no that we'd like to find a workaround for.
+         */
 	gdk_window_show(gtk_window->window);
     }
     else

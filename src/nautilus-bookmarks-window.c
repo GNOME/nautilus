@@ -173,6 +173,9 @@ create_bookmarks_window(NautilusBookmarklist *list)
 	gtk_box_pack_start (GTK_BOX (right_side), hbox2, FALSE, FALSE, 0);
 
 	remove_button = gtk_button_new_with_label (_("Remove"));
+	gtk_misc_set_padding (GTK_MISC (GTK_BIN(remove_button)->child), 
+			      GNOME_PAD_SMALL, 
+			      GNOME_PAD_SMALL);
 	gtk_widget_ref (remove_button);
 	gtk_widget_show (remove_button);
 	gtk_box_pack_start (GTK_BOX (hbox2), remove_button, TRUE, FALSE, 0);
@@ -284,7 +287,19 @@ static void
 on_remove_button_clicked (GtkButton *button,
                           gpointer   user_data)
 {
+	g_assert(GTK_IS_CLIST(bookmark_list_widget));
+
+	/* Turn off list updating since we're handling the list widget explicitly.
+	 * This allows the selection to move to the next row, instead of leaping
+	 * back to the top.
+	 */
+	gtk_signal_handler_block(GTK_OBJECT(bookmarks), 
+				 bookmarklist_changed_signalID);
 	nautilus_bookmarklist_delete_item_at(bookmarks, get_selected_row());
+	gtk_signal_handler_unblock(GTK_OBJECT(bookmarks), 
+				   bookmarklist_changed_signalID);
+
+	gtk_clist_remove(GTK_CLIST(bookmark_list_widget), get_selected_row());
 }
 
 
@@ -295,10 +310,6 @@ on_row_move (GtkCList *clist,
 	     gpointer  user_data)
 {
 	NautilusBookmark *bookmark;
-
-	g_assert(clist == GTK_CLIST(bookmark_list_widget));
-	g_assert(GTK_IS_ENTRY(name_field));
-	g_assert(GTK_IS_ENTRY(uri_field));
 
 	bookmark = nautilus_bookmark_copy(
 		nautilus_bookmarklist_item_at(bookmarks, old_row));
@@ -325,7 +336,6 @@ on_select_row (GtkCList	       *clist,
 {
 	const NautilusBookmark *selected;
 
-	g_assert(clist == GTK_CLIST(bookmark_list_widget));
 	g_assert(GTK_IS_ENTRY(name_field));
 	g_assert(GTK_IS_ENTRY(uri_field));
 

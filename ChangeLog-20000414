@@ -1,3 +1,15 @@
+2000-01-04  John Sullivan  <sullivan@eazel.com>
+
+	* src/nautilus-bookmarks-menu.c: comment changes only
+
+	* src/nautilus-bookmarks-window.c:
+	(create_bookmarks_window): added padding to "Remove" button
+	so it isn't so scrawny.
+	(on_remove_button_clicked): Removed item from clist explicitly
+	instead of relying on notification that bookmark list changed;
+	this correctly moves the selection to the next item instead of
+	jumping it back to the top of the list.
+
 2000-01-04  Darin Adler  <darin@eazel.com>
 
 	A couple of quick fixes to make "make check" work again.
