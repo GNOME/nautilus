@@ -1,3 +1,18 @@
+2001-02-23  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Seth Nickel <seth@eazel.com>
+
+	* libnautilus-extensions/nautilus-labeled-image.c:
+	(nautilus_labeled_image_destroy):
+	Fix bug 6590 - Segmentation fault when enabling smooth graphics
+	while displaying background color chooser or emblems chooser.
+	The problem was that we were leaking the image and label widgets
+	of a labeled image.  The leakage meant that the widgets were not
+	unregistered from the smooth widget machinery.  This caused them
+	to be in limbo.  Half dead, but still receiving smooth graphics
+	changed callbacks.  They tried to respon to the callbacks, the
+	poor things.
+	
 2001-02-23  Laszlo Kovacs  <laszlo.kovacs@sun.com>
 	* components/help/topleveldocs.xml:
 	Nautilus User's Guide added

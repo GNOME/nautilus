@@ -219,6 +219,16 @@ nautilus_labeled_image_destroy (GtkObject *object)
 
 	labeled_image = NAUTILUS_LABELED_IMAGE (object);
 
+	if (labeled_image->details->image != NULL) {
+		gtk_widget_destroy (labeled_image->details->image);
+		labeled_image->details->image = NULL;
+	}
+
+	if (labeled_image->details->label != NULL) {
+		gtk_widget_destroy (labeled_image->details->label);
+		labeled_image->details->label = NULL;
+	}
+
 	g_free (labeled_image->details);
 
 	/* Chain destroy */
