@@ -1,3 +1,17 @@
+2000-05-18  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/music/Makefile.am:
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize), (format_play_time),
+	(button_callback), (slider_press_callback),
+	(slider_moved_callback), (slider_release_callback),
+	(volume_callback), (xpm_label_box), (add_play_controls),
+	(nautilus_music_view_update_from_uri):
+	added a "bitrate" column to the music view, started adding the play controls, but
+	not yet finished, so they're disabled for now
+	* components/music/pixmaps.h:
+	some inline images for the buttons
+		
 2000-05-17  Eskil Heyn Olsen  <eskil@eazel.om>
 
 	* components/services/trilobite/sample/service/sample-service-impl.c:

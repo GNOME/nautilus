@@ -22,7 +22,8 @@ bin_PROGRAMS =					\
 nautilus_music_view_SOURCES =		        \
 	nautilus-music-view.c			\
 	nautilus-music-view.h			\
-	main.c
+	main.c					\
+	pixmaps.h
 
 nautilus_music_view_LDFLAGS =			\
 	$(top_builddir)/nautilus-widgets/libnautilus-widgets.la \
