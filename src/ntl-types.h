@@ -62,7 +62,7 @@ typedef enum _NautilusNavigationResult NautilusNavigationResult;
 struct _NautilusNavigationInfo {
 	Nautilus_NavigationInfo navinfo;
 
-	const char *default_content_iid;
+	char *initial_content_iid;
 	GSList *content_identifiers;	/* list of NautilusViewIdentifiers */
 	GSList *meta_iids;	/* list of iid strings */
 	NautilusNavigationResult result_code;

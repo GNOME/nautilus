@@ -37,6 +37,7 @@
 #include "explorer-location-bar.h"
 #include <libnautilus/nautilus-bookmark.h>
 #include <libnautilus/nautilus-gtk-extensions.h>
+#include <libnautilus/nautilus-metadata.h>
 #include <libnautilus/nautilus-string.h>
 #include <stdarg.h>
 
@@ -682,7 +683,7 @@ nautilus_window_update_state(gpointer data)
       if(window->pending_ni && !window->new_content_view && !window->cv_progress_error
          && !window->view_activation_complete)
         {
-          window->new_content_view = nautilus_window_load_content_view(window, window->pending_ni->default_content_iid,
+          window->new_content_view = nautilus_window_load_content_view(window, window->pending_ni->initial_content_iid,
                                                                        &window->pending_ni->navinfo,
                                                                        &window->new_requesting_view);
 
@@ -1019,6 +1020,7 @@ view_menu_switch_views_cb (GtkWidget *widget, gpointer data)
 {
   NautilusWindow *window;
   NautilusView *view;
+  NautilusDirectory *directory;
   char *iid;
 
   g_return_if_fail (GTK_IS_MENU_ITEM (widget));
@@ -1029,6 +1031,14 @@ view_menu_switch_views_cb (GtkWidget *widget, gpointer data)
   g_assert (window->ni != NULL);
 
   iid = (char *)data;
+
+  directory = nautilus_directory_get (window->ni->requested_uri);
+  g_assert (directory != NULL);
+  nautilus_directory_set_metadata (directory,
+  				   NAUTILUS_INITIAL_VIEW_METADATA_KEY,
+  				   NULL,
+  				   iid);
+  
   nautilus_window_allow_stop(window, TRUE);
 
   view = nautilus_window_load_content_view (window, iid, window->ni, NULL);
@@ -1069,7 +1079,7 @@ nautilus_window_load_content_view_menu (NautilusWindow *window, NautilusNavigati
       menu_item = gtk_menu_item_new_with_label (menu_label);
       g_free (menu_label);
     
-      if (strcmp (identifier->iid, ni->default_content_iid) == 0)
+      if (strcmp (identifier->iid, ni->initial_content_iid) == 0)
         {
           default_view_index = index;
         }

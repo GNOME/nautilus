@@ -97,6 +97,55 @@ get_nautilus_navigation_result_from_gnome_vfs_result (GnomeVFSResult gnome_vfs_r
       }
 }
 
+/* GCompareFunc-style function for checking whether a given string matches
+ * the iid of a NautilusViewIdentifier. Returns 0 if there is a match.
+ */
+static int
+check_iid (gconstpointer a, gconstpointer b)
+{
+	NautilusViewIdentifier *identifier;
+	char *string;
+
+	identifier = (NautilusViewIdentifier *)a;
+	string = (char *)b;
+
+	return strcmp (identifier->iid, string) != 0;
+}
+
+static void
+set_initial_content_iid (NautilusNavigationInfo *navinfo,
+			 const char *fallback_value)
+{
+	NautilusDirectory *directory;
+	char *remembered_value;
+	const char *value;
+
+	g_assert (fallback_value != NULL);
+	g_assert (g_slist_length (navinfo->content_identifiers) > 0);
+	
+	value = fallback_value;
+
+	directory = nautilus_directory_get (navinfo->navinfo.requested_uri);
+	if (directory != NULL) {
+		remembered_value = nautilus_directory_get_metadata (directory,
+								    NAUTILUS_INITIAL_VIEW_METADATA_KEY,
+							 	    NULL);
+
+		/* Use the remembered value if it's non-NULL and in the list of choices. */
+		if (remembered_value != NULL) {
+			if (g_slist_find_custom (navinfo->content_identifiers, remembered_value, check_iid)) {
+				value = remembered_value;
+			} else {
+				g_message ("Unknown iid \"%s\" stored for %s", remembered_value, navinfo->navinfo.requested_uri);
+			}
+		}
+	}
+
+	navinfo->initial_content_iid = g_strdup (value);
+
+	g_free (remembered_value);
+}
+
 static void
 my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
                      GnomeVFSFileInfo *vfs_fileinfo,
@@ -105,6 +154,7 @@ my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
   NautilusNavigationInfo *navinfo = data;
   NautilusNavigationInfoFunc notify_ready = navinfo->notify_ready;
   gpointer notify_ready_data = navinfo->data;
+  const char *fallback_iid;
 
   if (navinfo->ah) {
     gnome_vfs_async_cancel (navinfo->ah);
@@ -164,7 +214,7 @@ my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
 
   if(!strcmp(navinfo->navinfo.content_type, "text/html"))
     {
-      navinfo->default_content_iid = "ntl_web_browser";
+      fallback_iid = "ntl_web_browser";
       navinfo->content_identifiers = g_slist_append (
                                                      navinfo->content_identifiers, 
                                                      nautilus_view_identifier_new ("ntl_web_browser", "Web Page"));
@@ -174,29 +224,29 @@ my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
     }
   else if(!strcmp(navinfo->navinfo.content_type, "text/plain"))
     {
-      navinfo->default_content_iid = "embeddable:text-plain";
+      fallback_iid = "embeddable:text-plain";
       navinfo->content_identifiers = g_slist_append (
                                                      navinfo->content_identifiers, 
-                                                     nautilus_view_identifier_new (navinfo->default_content_iid, "Text"));
+                                                     nautilus_view_identifier_new ("embeddable:text-plain", "Text"));
     }
   else if(!strncmp(navinfo->navinfo.content_type, "image/", 6))
     {
-      navinfo->default_content_iid = "eog-image-viewer";
+      fallback_iid = "eog-image-viewer";
       navinfo->content_identifiers = g_slist_append (
                                                      navinfo->content_identifiers, 
-                                                     nautilus_view_identifier_new (navinfo->default_content_iid, "Image"));
+                                                     nautilus_view_identifier_new ("eog-image-viewer", "Image"));
     }
   else if(!strcmp(navinfo->navinfo.content_type, "special/x-irc-session"))
     {
-      navinfo->default_content_iid = "xchat";
+      fallback_iid = "xchat";
       navinfo->content_identifiers = g_slist_append (
                                                      navinfo->content_identifiers, 
-                                                     nautilus_view_identifier_new (navinfo->default_content_iid, "Chat room"));
+                                                     nautilus_view_identifier_new ("xchat", "Chat room"));
     }
   else if(!strcmp(navinfo->navinfo.content_type, "special/directory")
           || !strcmp(navinfo->navinfo.content_type, "application/x-nautilus-vdir"))
     {
-      navinfo->default_content_iid = "ntl_file_manager_icon_view";
+      fallback_iid = "ntl_file_manager_icon_view";
       navinfo->content_identifiers = g_slist_append (
                                                      navinfo->content_identifiers, 
                                                      nautilus_view_identifier_new ("ntl_file_manager_icon_view", "Icons"));
@@ -212,8 +262,7 @@ my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
     }
   else if(!strcmp(navinfo->navinfo.content_type, "special/webdav-directory"))
     {
-      navinfo->default_content_iid = "ntl_web_browser";
-
+      fallback_iid = "ntl_web_browser";
       navinfo->content_identifiers = g_slist_append (navinfo->content_identifiers, 
                                                      nautilus_view_identifier_new ("ntl_web_browser", "Web Page"));
       navinfo->content_identifiers = g_slist_append (navinfo->content_identifiers, 
@@ -238,9 +287,14 @@ my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
     }
   
   /* FIXME: Should do this only when in some special testing mode or something. */
-
   navinfo->content_identifiers = g_slist_append (navinfo->content_identifiers, 
                                                  nautilus_view_identifier_new ("nautilus_sample_content_view", "Sample"));
+
+  /* Now that all the content_identifiers are in place, we're ready to choose
+   * the initial one.
+   */
+  g_assert (fallback_iid != NULL);
+  set_initial_content_iid (navinfo, fallback_iid);
 
   add_meta_view_iids_from_preferences (navinfo);
 
@@ -384,6 +438,7 @@ nautilus_navinfo_free(NautilusNavigationInfo *navinfo)
   g_slist_free(navinfo->content_identifiers);
   g_slist_foreach(navinfo->meta_iids, (GFunc)g_free, NULL);
   g_slist_free(navinfo->meta_iids);
+  g_free(navinfo->initial_content_iid);
   g_free(navinfo->navinfo.requested_uri);
   g_free(navinfo->navinfo.actual_uri);
   g_free(navinfo->navinfo.content_type);

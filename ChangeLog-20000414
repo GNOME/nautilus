@@ -1,5 +1,32 @@
 2000-03-14  John Sullivan  <sullivan@eazel.com>
 
+	Directories now start out using the same view they were
+	last displayed with.
+
+	* libnautilus/nautilus-metadata.h: added #define for
+	NAUTILUS_INITIAL_VIEW_METADATA_KEY
+	* src/ntl-types.h: renamed field default_content_iid to
+	initial_content_iid, to avoid ambiguity with other uses
+	of default (e.g. default metadata value). Also made this
+	a char * instead of a const char *.
+	* src/ntl-uri-map.c: 
+	(nautilus_window_load_content_view_menu),
+	(nautilus_window_update_state): Updated for name change.
+	(view_menu_switch_views_cb): Save iid of new view in metadata.
+	* src/ntl-window-msgs.c:
+	(check_iid): New GCompareFunc-type function, used by to
+	check whether a string matches the iid of any 
+	NautilusViewIdentifier in a list.
+	(set_initial_content_iid): New function, gets stored iid
+	from metadata and uses it if it's non-NULL and matches one
+	of the available viewers (otherwise uses a fallback iid).
+	(my_notify_when_ready): Call set_initial_content_iid after
+	constructing the list of available viewers.
+	(nautilus_navinfo_free): free initial_content_iid, which was
+	created in set_initial_content_iid.
+
+2000-03-14  John Sullivan  <sullivan@eazel.com>
+
         * libnautilus/gnome-icon-container.c: (icon_destroy):
         Send SELECTION_CHANGED signal when destroying an icon
         that had been selected. This fixes bug Elliot reported
