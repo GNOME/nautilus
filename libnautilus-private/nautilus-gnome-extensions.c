@@ -196,7 +196,7 @@ nautilus_gnome_canvas_item_get_world_bounds (GnomeCanvasItem *item,
 }
 
 static void
-nautilus_gnome_canvas_draw_pixmap_helper (art_u8 *dst, int dst_rowstride, const art_u8 *src, int src_rowstride, int copy_width, int copy_height)
+nautilus_gnome_canvas_draw_pixbuf_helper (art_u8 *dst, int dst_rowstride, const art_u8 *src, int src_rowstride, int copy_width, int copy_height)
 {
 	art_u8 *dst_limit = dst + copy_height * dst_rowstride;
 	int dst_bytes_per_row = copy_width * 3;
@@ -209,7 +209,7 @@ nautilus_gnome_canvas_draw_pixmap_helper (art_u8 *dst, int dst_rowstride, const 
 }
 
 static void
-nautilus_gnome_canvas_draw_pixmap_helper_alpha (art_u8 *dst, int dst_rowstride, const art_u8 *src, int src_rowstride, int copy_width, int copy_height)
+nautilus_gnome_canvas_draw_pixbuf_helper_alpha (art_u8 *dst, int dst_rowstride, const art_u8 *src, int src_rowstride, int copy_width, int copy_height)
 {
 	art_u8 *dst_limit = dst + copy_height * dst_rowstride;
 	int dst_bytes_per_row = copy_width * 3;
@@ -256,7 +256,7 @@ nautilus_gnome_canvas_draw_pixmap_helper_alpha (art_u8 *dst, int dst_rowstride, 
  * of the pixbuf in canvas space (NOT relative to the canvas buffer).
  */
 void
-nautilus_gnome_canvas_draw_pixmap (GnomeCanvasBuf *buf, GdkPixbuf *pixbuf, int x, int y)
+nautilus_gnome_canvas_draw_pixbuf (GnomeCanvasBuf *buf, const GdkPixbuf *pixbuf, int x, int y)
 {
 	art_u8 *dst;
 	int pixbuf_width, pixbuf_height;
@@ -306,7 +306,7 @@ nautilus_gnome_canvas_draw_pixmap (GnomeCanvasBuf *buf, GdkPixbuf *pixbuf, int x
 	}
 
 	if (gdk_pixbuf_get_has_alpha (pixbuf)) {
-		nautilus_gnome_canvas_draw_pixmap_helper_alpha (
+		nautilus_gnome_canvas_draw_pixbuf_helper_alpha (
 			dst,
 			buf->buf_rowstride,
 			gdk_pixbuf_get_pixels (pixbuf) + copy_left * 4 + copy_top * gdk_pixbuf_get_rowstride (pixbuf),
@@ -314,7 +314,7 @@ nautilus_gnome_canvas_draw_pixmap (GnomeCanvasBuf *buf, GdkPixbuf *pixbuf, int x
 			copy_right - copy_left,
 			copy_bottom - copy_top);
 	} else {
-		nautilus_gnome_canvas_draw_pixmap_helper (
+		nautilus_gnome_canvas_draw_pixbuf_helper (
 			dst,
 			buf->buf_rowstride,
 			gdk_pixbuf_get_pixels (pixbuf) + copy_left * 3 + copy_top * gdk_pixbuf_get_rowstride (pixbuf),

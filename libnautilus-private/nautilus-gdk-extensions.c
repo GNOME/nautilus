@@ -84,73 +84,6 @@ nautilus_fill_rectangle_with_color (GdkDrawable *drawable,
 }
 
 /**
- * nautilus_fill_rectangle_with_gradient:
- * @drawable: Target to draw into.
- * @gc: Graphics context (mainly for clip).
- * @rectangle: Rectangle to draw gradient in.
- * @start_color: Color for the left or top; pixel value does not matter.
- * @end_color: Color for the right or bottom; pixel value does not matter.
- * @horizontal: TRUE if the color changes from left to right. FALSE if from top to bottom.
- *
- * Fill the rectangle with a gradient.
- * The color changes from start_color to end_color.
- * This effect works best on true color displays.
- */
-void
-nautilus_fill_rectangle_with_gradient (GdkDrawable *drawable,
-				       GdkGC *gc,
-				       const GdkRectangle *rectangle,
-				       guint32 start_rgb,
-				       guint32 end_rgb,
-				       gboolean horizontal)
-{
-	GdkRectangle band_box;
-	gint16 *position;
-	guint16 *size;
-	gint num_bands;
-	guint16 last_band_size;
-	gdouble multiplier;
-	gint band;
-	guint32 band_rgb;
-
-	g_return_if_fail (drawable != NULL);
-	g_return_if_fail (gc != NULL);
-	g_return_if_fail (rectangle != NULL);
-	g_return_if_fail (horizontal == FALSE || horizontal == TRUE);
-
-	/* Set up the band box so we can access it the same way for horizontal or vertical. */
-	band_box = *rectangle;
-	position = horizontal ? &band_box.x : &band_box.y;
-	size = horizontal ? &band_box.width : &band_box.height;
-
-	/* Figure out how many bands we will need. */
-	num_bands = (*size + GRADIENT_BAND_SIZE - 1) / GRADIENT_BAND_SIZE;
-	last_band_size = GRADIENT_BAND_SIZE - (GRADIENT_BAND_SIZE * num_bands - *size);
-
-	/* Change the band box to be the size of a single band. */
-	*size = GRADIENT_BAND_SIZE;
-
-	/* Set up a multiplier to use to interpolate the colors as we go. */
-	multiplier = num_bands <= 1 ? 0.0 : 1.0 / (num_bands - 1);
-	
-	/* Fill each band with a separate nautilus_draw_rectangle call. */
-	for (band = 0; band < num_bands; band++) {
-		/* Compute a new color value for each band. */
-		band_rgb = nautilus_interpolate_color (band * multiplier, start_rgb, end_rgb);
-
-		/* Last band may need to be a bit smaller to avoid writing outside the box.
-		 * This is more efficient than changing and restoring the clip.
-		 */
-		if (band == num_bands - 1) {
-			*size = last_band_size;
-		}
-		
-		nautilus_fill_rectangle_with_color (drawable, gc, &band_box, band_rgb);
-		*position += *size;
-	}
-}
-
-/**
  * nautilus_rectangle_contains:
  * @rectangle: Rectangle possibly containing a point.
  * @x: X coordinate of a point.
@@ -508,6 +441,24 @@ nautilus_parse_rgb_with_white_default (const char *color_spec)
 		| ((color.blue >> 8) & NAUTILUS_RGB_COLOR_BLUE);
 }
 
+guint32
+nautilus_rgb16_to_rgb (gushort r, gushort g, gushort b)
+{
+	guint32 result;
+
+	result = (0xff0000 | (r & 0xff00));
+	result <<= 8;
+	result |= ((g & 0xff00) | (b >> 8));
+
+	return result;
+}
+
+guint32
+nautilus_rgb8_to_rgb (guchar r, guchar g, guchar b)
+{
+	return nautilus_rgb16_to_rgb (r << 8, g << 8, b << 8);
+}
+
 /**
  * nautilus_gdk_color_to_rgb
  * @color: A GdkColor style color.
@@ -519,17 +470,11 @@ nautilus_parse_rgb_with_white_default (const char *color_spec)
 guint32
 nautilus_gdk_color_to_rgb (const GdkColor *color)
 {
-	guint32 result;
-
-	result = (0xff0000 | (color->red & 0xff00));
-	result <<= 8;
-	result |= ((color->green & 0xff00) | (color->blue >> 8));
-
-	return result;
+	return nautilus_rgb16_to_rgb (color->red, color->green, color->blue);
 }
 
 /**
- * nautilus_gdk_color_to_rgb
+ * nautilus_gdk_rgb_to_color
  * @color: a gdk_rgb style value.
  *
  * Converts from a gdk_rgb value style to a GdkColor one.

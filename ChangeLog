@@ -1,3 +1,39 @@
+2000-10-02  Michael Engber  <engber@eazel.com>
+
+	More background drawing speedups - this time mainly for
+	the non-aa case.
+	* libnautilus-extensions/nautilus-background-canvas-group.c:
+	(nautilus_background_canvas_group_initialize_class),
+	(nautilus_background_canvas_group_update),
+	(nautilus_background_canvas_group_draw),
+	(nautilus_background_canvas_group_render):
+	* libnautilus-extensions/nautilus-background.c:
+	(canvas_gradient_helper_v), (canvas_gradient_helper_h),
+	(fill_canvas_from_gradient_buffer), (drawable_gradient_helper_v),
+	(drawable_gradient_helper_h), (fill_drawable_from_gradient_buffer),
+	(draw_pixbuf_tiled), (canvas_buf_from_pixbuf),
+	(ensure_image_scaled), (nautilus_background_pre_draw),
+	(nautilus_background_draw), (nautilus_background_draw_to_drawable),
+	(draw_pixbuf_tiled_aa), (nautilus_background_draw_aa),
+	(nautilus_background_draw_to_canvas),
+	(nautilus_background_draw_flat_box):
+	* libnautilus-extensions/nautilus-background.h:
+	* libnautilus-extensions/nautilus-buffered-widget.c:
+	(create_background_pixbuf_from_ancestor):
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(image_loading_done_callback), (saved_settings_changed_callback):
+	* libnautilus-extensions/nautilus-gdk-extensions.c:
+	(nautilus_rgb16_to_rgb), (nautilus_rgb8_to_rgb),
+	(nautilus_gdk_color_to_rgb):
+	* libnautilus-extensions/nautilus-gdk-extensions.h:
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h:
+	* libnautilus-extensions/nautilus-gnome-extensions.c:
+	(nautilus_gnome_canvas_draw_pixbuf_helper),
+	(nautilus_gnome_canvas_draw_pixbuf_helper_alpha),
+	(nautilus_gnome_canvas_draw_pixbuf):
+	* libnautilus-extensions/nautilus-gnome-extensions.h:
+
 2000-10-02  Arlo Rose  <arlo@eazel.com>
 
 	* icons/throbber/Makefile.am:

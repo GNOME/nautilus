@@ -281,63 +281,9 @@ nautilus_cancel_gdk_pixbuf_load (NautilusPixbufLoadHandle *handle)
 	free_pixbuf_load_handle (handle);
 }
 
-void
-nautilus_gdk_pixbuf_render_to_drawable_tiled (GdkPixbuf *pixbuf,
-					      GdkDrawable *drawable,
-					      GdkGC *gc,
-					      const GdkRectangle *rect,
-					      GdkRgbDither dither,
-					      int x_dither,
-					      int y_dither)
-{
-	int x, y;
-	int start_x, start_y;
-	int end_x, end_y;
-	int tile_x, tile_y;
-	int blit_x, blit_y;
-	int tile_width, tile_height;
-	int blit_width, blit_height;
-	int tile_offset_x, tile_offset_y;
-
-	tile_width = gdk_pixbuf_get_width (pixbuf);
-	tile_height = gdk_pixbuf_get_height (pixbuf);
-
-	tile_offset_x = (rect->x - x_dither) % tile_width;
-	if (tile_offset_x < 0) {
-		tile_offset_x += tile_width;
-	}
-	g_assert (tile_offset_x >= 0 && tile_offset_x < tile_width);
-
-	tile_offset_y = (rect->y - y_dither) % tile_height;
-	if (tile_offset_y < 0) {
-		tile_offset_y += tile_height;
-	}
-	g_assert (tile_offset_y >= 0 && tile_offset_y < tile_height);
-
-	start_x = rect->x - tile_offset_x;
-	start_y = rect->y - tile_offset_y;
-
-	end_x = rect->x + rect->width;
-	end_y = rect->y + rect->height;
-
-	for (x = start_x; x < end_x; x += tile_width) {
-		blit_x = MAX (x, rect->x);
-		tile_x = blit_x - x;
-		blit_width = MIN (tile_width, end_x - x) - tile_x;
-		
-		for (y = start_y; y < end_y; y += tile_height) {
-			blit_y = MAX (y, rect->y);
-			tile_y = blit_y - y;
-			blit_height = MIN (tile_height, end_y - y) - tile_y;
-			
-			gdk_pixbuf_render_to_drawable (pixbuf, drawable, gc,
-						       tile_x, tile_y,
-						       blit_x, blit_y, blit_width, blit_height,
-						       dither, x_dither, y_dither);
-		}
-	}
-}
-
+/* FIXME
+ * This fn is only used by some test code, it should probably be removed
+ */
 void
 nautilus_gdk_pixbuf_render_to_pixbuf_tiled (GdkPixbuf *source_pixbuf,
 					    GdkPixbuf *destination_pixbuf,

@@ -556,25 +556,24 @@ create_background_pixbuf_from_ancestor (const NautilusBufferedWidget *buffered_w
 	if (background_ancestor != NULL) {
 		NautilusBackground	*background;
 		GdkPixmap		*pixmap;
-		GdkRectangle		background_area;
 		
 		background = nautilus_get_widget_background (background_ancestor);
 		g_assert (NAUTILUS_IS_BACKGROUND (background));
-		
-		background_area.x = 0;
-		background_area.y = 0;
-		background_area.width = background_ancestor->allocation.width;
-		background_area.height = background_ancestor->allocation.height;
-		
-		pixmap = gdk_pixmap_new (widget->window, background_area.width, background_area.height, -1);
-		
-		nautilus_background_draw (background, pixmap, buffered_widget->detail->copy_area_gc, &background_area, 0, 0);
+				
+		pixmap = gdk_pixmap_new (widget->window, widget->allocation.width, widget->allocation.height, -1);
+	
+		nautilus_background_draw_to_drawable (background,
+					  pixmap,
+					  buffered_widget->detail->copy_area_gc,
+					  widget->allocation.x, widget->allocation.y,
+					  widget->allocation.width, widget->allocation.height,
+					  background_ancestor->allocation.width, background_ancestor->allocation.height);
 		
 		pixbuf = gdk_pixbuf_get_from_drawable (NULL,
 						       pixmap,
 						       gdk_rgb_get_cmap (),
-						       widget->allocation.x,
-						       widget->allocation.y,
+						       0,
+						       0,
 						       0,
 						       0,
 						       widget->allocation.width,

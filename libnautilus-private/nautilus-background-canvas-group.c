@@ -34,23 +34,32 @@
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-gtk-macros.h"
 
+#include <stdio.h>
+
 static void nautilus_background_canvas_group_initialize_class (gpointer         klass);
 static void nautilus_background_canvas_group_initialize       (gpointer         object,
-							       gpointer         klass);
-static void nautilus_background_canvas_group_draw             (GnomeCanvasItem *item,
-							       GdkDrawable     *drawable,
-							       int              x,
-							       int              y,
-							       int              width,
-							       int              height);
-static void nautilus_background_canvas_group_render           (GnomeCanvasItem *item,
-							       GnomeCanvasBuf  *buffer);
+															   gpointer         klass);
+
+static void nautilus_background_canvas_group_update (GnomeCanvasItem	*item,
+													 double				 affine[6],
+													 ArtSVP				*clip_path,
+													 gint				 flags);
+													 
+static void nautilus_background_canvas_group_draw	(GnomeCanvasItem	*item,
+							       					 GdkDrawable		*drawable,
+											         int				 x,
+											         int				 y,
+											         int				 width,
+											         int				 height);
+static void nautilus_background_canvas_group_render	(GnomeCanvasItem	*item,
+													 GnomeCanvasBuf		*buffer);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusBackgroundCanvasGroup, nautilus_background_canvas_group, GNOME_TYPE_CANVAS_GROUP)
 
 static void
 nautilus_background_canvas_group_initialize_class (gpointer klass)
 {
+	GNOME_CANVAS_ITEM_CLASS (klass)->update = nautilus_background_canvas_group_update;
 	GNOME_CANVAS_ITEM_CLASS (klass)->draw = nautilus_background_canvas_group_draw;
 	GNOME_CANVAS_ITEM_CLASS (klass)->render = nautilus_background_canvas_group_render;
 }
@@ -61,13 +70,30 @@ nautilus_background_canvas_group_initialize (gpointer object, gpointer klass)
 }
 
 static void
-nautilus_background_canvas_group_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
-				       int drawable_corner_x, int drawable_corner_y,
-				       int drawable_width, int drawable_height)
+nautilus_background_canvas_group_update (GnomeCanvasItem	*item,
+										 double				 affine[6],
+										 ArtSVP				*clip_path,
+										 gint				 flags)
+{
+	NautilusBackground *background = nautilus_get_widget_background (GTK_WIDGET (item->canvas));
+
+	nautilus_background_pre_draw (background,
+								  GTK_WIDGET (item->canvas)->allocation.width,
+								  GTK_WIDGET (item->canvas)->allocation.height);
+
+	NAUTILUS_CALL_PARENT_CLASS (GNOME_CANVAS_ITEM_CLASS, update, (item, affine, clip_path, flags));				     
+}
+
+static void
+nautilus_background_canvas_group_draw (GnomeCanvasItem *item,
+									   GdkDrawable *drawable,
+									   int x,
+									   int y,
+									   int width,
+									   int height)
 {
 	NautilusBackground *background;
 	GdkGC *gc;
-	GdkRectangle rectangle;
 
 	/* Draw the background. */
 	background = nautilus_get_widget_background (GTK_WIDGET (item->canvas));
@@ -83,21 +109,17 @@ nautilus_background_canvas_group_draw (GnomeCanvasItem *item, GdkDrawable *drawa
 		 */
 		gc = gdk_gc_new (drawable);
 
-		/* The rectangle is the size of the entire viewed area
-		 * of the canvas. The corner is determined by the
-		 * current scroll position of the GtkLayout, and the
-		 * size is determined by the current size of the
-		 * widget. Since 0,0 is the corner of the drawable,
-		 * we need to offset the rectangle so it's relative to
-		 * the drawable's coordinates.
+		/* FIXME bugzilla.eazel.com 2280:
+		 * It shouldn't be necessary to call nautilus_background_pre_draw here.
+		 * However, nautilus_background_canvas_group_update (who should be the one
+		 * spot we call nautilus_background_pre_draw from) doesn't seemed to get
+		 * called prior to all drawing.
 		 */
-	       	rectangle.x = GTK_LAYOUT (item->canvas)->xoffset - drawable_corner_x;
-		rectangle.y = GTK_LAYOUT (item->canvas)->yoffset - drawable_corner_y;
-		rectangle.width = GTK_WIDGET (item->canvas)->allocation.width;
-		rectangle.height = GTK_WIDGET (item->canvas)->allocation.height;
+		nautilus_background_pre_draw (background,
+									  GTK_WIDGET (item->canvas)->allocation.width,
+									  GTK_WIDGET (item->canvas)->allocation.height);
 
-		nautilus_background_draw (background, drawable, gc, &rectangle,
-					  -drawable_corner_x, -drawable_corner_y);
+		nautilus_background_draw (background, drawable, gc, x, y, width, height);
 
 		gdk_gc_unref (gc);
 	}
@@ -105,10 +127,7 @@ nautilus_background_canvas_group_draw (GnomeCanvasItem *item, GdkDrawable *drawa
 	/* Call through to the GnomeCanvasGroup implementation, which
 	 * will draw all the canvas items.
 	 */
-	NAUTILUS_CALL_PARENT_CLASS (GNOME_CANVAS_ITEM_CLASS, draw,
-				    (item, drawable,
-				     drawable_corner_x, drawable_corner_y,
-				     drawable_width, drawable_height));				     
+	NAUTILUS_CALL_PARENT_CLASS (GNOME_CANVAS_ITEM_CLASS, draw, (item, drawable, x, y, width, height));				     
 }
 
 
@@ -120,10 +139,17 @@ nautilus_background_canvas_group_render (GnomeCanvasItem *item, GnomeCanvasBuf *
 			
 	background = nautilus_get_widget_background (GTK_WIDGET (item->canvas));
 	if (background != NULL) {
-		nautilus_background_draw_aa (background,
-					     buffer,
-					     GTK_WIDGET (item->canvas)->allocation.width,
-					     GTK_WIDGET (item->canvas)->allocation.height);
+		/* FIXME bugzilla.eazel.com 2280:
+		 * It shouldn't be necessary to call nautilus_background_pre_draw here.
+		 * However, nautilus_background_canvas_group_update (who should be the one
+		 * spot we call nautilus_background_pre_draw from) doesn't seemed to get
+		 * called prior to all drawing.
+		 */
+		nautilus_background_pre_draw (background,
+									  GTK_WIDGET (item->canvas)->allocation.width,
+									  GTK_WIDGET (item->canvas)->allocation.height);
+
+		nautilus_background_draw_aa (background, buffer);
 	}
 	
 	/* Call through to the GnomeCanvasGroup implementation, which will draw all

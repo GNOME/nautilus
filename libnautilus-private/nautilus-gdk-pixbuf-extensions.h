@@ -55,13 +55,6 @@ void                      nautilus_cancel_gdk_pixbuf_load                  (Naut
 
 
 /* Draw a GdkPixbuf tiled. */
-void                      nautilus_gdk_pixbuf_render_to_drawable_tiled     (GdkPixbuf                  *pixbuf,
-									    GdkDrawable                *drawable,
-									    GdkGC                      *gc,
-									    const GdkRectangle         *destination_rectangle,
-									    GdkRgbDither                dither,
-									    int                         x_dither,
-									    int                         y_dither);
 void                      nautilus_gdk_pixbuf_render_to_pixbuf_tiled       (GdkPixbuf                  *source_pixbuf,
 									    GdkPixbuf                  *destination_pixbuf,
 									    const GdkRectangle         *rect,

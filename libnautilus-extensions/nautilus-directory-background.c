@@ -481,7 +481,8 @@ image_loading_done_callback (NautilusBackground *background, gboolean successful
 {
 	GdkGC        *gc;
 	GdkPixmap    *bg_pixmap;
-	GdkRectangle  screen_rectangle;
+	int	      width;
+	int	      height;
 
         g_assert (NAUTILUS_IS_BACKGROUND (background));
 
@@ -494,15 +495,13 @@ image_loading_done_callback (NautilusBackground *background, gboolean successful
 	/* need to update the root view whether loading succeeded or not
 	 */
 	
-	screen_rectangle.x = 0;
-	screen_rectangle.y = 0;
-	screen_rectangle.width  = gdk_screen_width ();
-	screen_rectangle.height = gdk_screen_height ();
+	width  = gdk_screen_width ();
+	height = gdk_screen_height ();
 	
-	bg_pixmap = make_root_pixmap (screen_rectangle.width, screen_rectangle.height);
+	bg_pixmap = make_root_pixmap (width, height);
 	gc = gdk_gc_new (bg_pixmap);
 
-	nautilus_background_draw (background, bg_pixmap, gc, &screen_rectangle, 0, 0);
+	nautilus_background_draw_to_drawable (background, bg_pixmap, gc, 0, 0, width, height, width, height);
 			    
 	set_root_pixmap (bg_pixmap);
 	
@@ -653,8 +652,8 @@ saved_settings_changed_callback (NautilusDirectory *directory,
                                           background_changed_callback,
                                           directory);
 
-	nautilus_background_set_color (background, color);     
-	nautilus_background_set_image_uri (background, image);
+		nautilus_background_set_color (background, color);     
+		nautilus_background_set_image_uri (background, image);
         nautilus_background_set_combine_mode (background, combine);
         nautilus_background_set_image_placement (background, placement);
 	

@@ -91,20 +91,56 @@ gboolean                         nautilus_background_is_set                     
 gboolean                         nautilus_background_is_loaded                        (NautilusBackground               *background);
 
 
-/* Explicitly fills a rectangle with a background. */
-void                             nautilus_background_draw                             (NautilusBackground               *background,
-										       GdkDrawable                      *drawable,
-										       GdkGC                            *gc,
-										       const GdkRectangle               *rectangle,
-										       int                               origin_x,
-										       int                               origin_y);
+/* For preping the background to be used in one of the two calls
+ * below. Only intended to be called by nautilus_background_canvas_group_update.
+ */
+void	nautilus_background_pre_draw	(NautilusBackground				*background,
+									  	 int							 entire_width,
+									  	 int							 entire_height);
+
+/* For updating the canvas, non-aa case. Note: nautilus_background_pre_draw
+ * must have been previously called. Only intended to be called by
+ * nautilus_background_canvas_group_draw.
+ */
+void	nautilus_background_draw		(NautilusBackground	*background,
+										 GdkDrawable					*drawable,
+										 GdkGC							*gc,
+										 int							 drawable_x,
+										 int							 drawable_y,
+										 int							 drawable_width,
+										 int							 drawable_height);
+
+/* For updating the canvas, aa case. Note: nautilus_background_pre_draw
+ * must have been previously called. Only intended to be called by
+ * nautilus_background_canvas_group_render.
+ */
+void	nautilus_background_draw_aa		(NautilusBackground				*background,
+										 GnomeCanvasBuf					*buffer);
+
+/* Used to fill a drawable with a background.
+ *  - entire_width/height describe the total area the background covers
+ *  - drawable_x/y/width/height describe the portion of that area the drawable covers
+ */
+void	nautilus_background_draw_to_drawable	(NautilusBackground		*background,
+			  							         GdkDrawable			*drawable,
+										         GdkGC					*gc,
+										         int					 drawable_x,
+										         int					 drawable_y,
+										         int					 drawable_width,
+										         int					 drawable_height,
+										         int					 entire_width,
+										         int					 entire_height);
+
+/* Used to fill a drawable with a background.
+ *  - entire_width/height describe the total area the background covers
+ *  - buffer is a portion of that area
+ */
+void	nautilus_background_draw_to_canvas		(NautilusBackground		*background,
+												 GnomeCanvasBuf			*buffer,
+										         int					 entire_width,
+										         int					 entire_height);
 
 
-/* Explicitly fills a rectangle with a background on the anti-aliased canvas. */
-void                             nautilus_background_draw_aa                          (NautilusBackground               *background,
-										       GnomeCanvasBuf                   *buffer,
-										       int                               entire_width,
-										       int                               entire_height);
 
 							       
 /* Handles a dragged color being dropped on a widget to change the background color. */

@@ -85,6 +85,8 @@ guint32    nautilus_parse_rgb_with_default             (const char         *colo
 guint32    nautilus_parse_rgb_with_white_default       (const char         *color_spec);
 guint32    nautilus_rgb_shift_color                    (guint32             color,
 							float               shift_by);
+guint32    nautilus_rgb16_to_rgb					   (gushort r, gushort g, gushort b);
+guint32    nautilus_rgb8_to_rgb						   (guchar r, guchar g, guchar b);
 guint32    nautilus_gdk_color_to_rgb                   (const GdkColor     *color);
 GdkColor * nautilus_gdk_rgb_to_color                   (const guint32       color);
 
@@ -96,12 +98,6 @@ void       nautilus_fill_rectangle_with_color          (GdkDrawable        *draw
 							GdkGC              *gc,
 							const GdkRectangle *rectangle,
 							guint32             rgb);
-void       nautilus_fill_rectangle_with_gradient       (GdkDrawable        *drawable,
-							GdkGC              *gc,
-							const GdkRectangle *rectangle,
-							guint32             start_rgb,
-							guint32             end_rgb,
-							gboolean            horizontal_gradient);
 
 /* A routine to get a 50% gray stippled bitmap for use in some types of highlighting. */
 GdkBitmap *nautilus_stipple_bitmap                     (void);

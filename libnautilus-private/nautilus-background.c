@@ -95,6 +95,16 @@ struct NautilusBackgroundDetails {
 	NautilusPixbufLoadHandle *load_image_handle;
 	gboolean combine_mode;
 	NautilusBackgroundImagePlacement image_placement;
+
+	/* The image_rect is the area (canvas relative) the image will cover.
+	 * Note: image_rect_width/height are not always the same as the image's
+	 * width and height - e.g. if the image is tiled the image rect covers
+	 * the whole background.
+	 */
+	int image_rect_x;
+	int image_rect_y;
+	int image_rect_width;
+	int image_rect_height;
 };
 
 static void
@@ -326,7 +336,7 @@ ensure_gradient_buffered (NautilusBackground *background, int dest_width, int de
 }
 
 static void
-gradient_helper_v (GnomeCanvasBuf *buf, art_u8 *gradient_buff)
+canvas_gradient_helper_v (const GnomeCanvasBuf *buf, const art_u8 *gradient_buff)
 {
 	int width  = buf->rect.x1 - buf->rect.x0;
 	int height = buf->rect.y1 - buf->rect.y0;
@@ -346,7 +356,7 @@ gradient_helper_v (GnomeCanvasBuf *buf, art_u8 *gradient_buff)
 }
 
 static void
-gradient_helper_h (GnomeCanvasBuf *buf, art_u8 *gradient_buff)
+canvas_gradient_helper_h (const GnomeCanvasBuf *buf, const art_u8 *gradient_buff)
 {
 	int width  = buf->rect.x1 - buf->rect.x0;
 	int height = buf->rect.y1 - buf->rect.y0;
@@ -365,14 +375,12 @@ gradient_helper_h (GnomeCanvasBuf *buf, art_u8 *gradient_buff)
 }
 
 static void
-fill_canvas_from_gradient_buffer (GnomeCanvasBuf *buf, NautilusBackground *background)
+fill_canvas_from_gradient_buffer (const GnomeCanvasBuf *buf, const NautilusBackground *background)
 {
-	int buf_edge;
-	
 	g_return_if_fail (background->details->gradient_buffer != NULL);
 
-	/* FIXME bugzilla.eazel.com 415: This hack is needed till we fix it so the
-	 * background doesn't scroll.
+	/* FIXME bugzilla.eazel.com 415: This hack is needed till we fix background
+	 * scolling.
 	 *
 	 * I.e. currently you can scroll off the end of the gradient - and we
 	 * handle this by pegging it the the last rgb value.
@@ -382,20 +390,147 @@ fill_canvas_from_gradient_buffer (GnomeCanvasBuf *buf, NautilusBackground *backg
 	 * window size) then when dragging an icon you might scroll off the
 	 * end of the gradient - which will get recaluated after the drop.
 	 */
-	buf_edge = background->details->gradient_is_horizontal ? buf->rect.x1 : buf->rect.y1;
-	if (buf_edge > background->details->gradient_num_pixels) {
-		art_u8 *rgb = background->details->gradient_buffer + (background->details->gradient_num_pixels - 1) * 3;
-		nautilus_gnome_canvas_fill_rgb (buf, rgb[0], rgb[1], rgb[2]);
-		return;
+	if (background->details->gradient_is_horizontal) {
+		if (buf->rect.x1 > background->details->gradient_num_pixels) {
+			art_u8 *rgb888 = background->details->gradient_buffer + (background->details->gradient_num_pixels - 1) * 3;
+			GnomeCanvasBuf gradient = *buf;
+			GnomeCanvasBuf overflow = *buf;
+			gradient.rect.x1 =  gradient.rect.x0 < background->details->gradient_num_pixels ? background->details->gradient_num_pixels : gradient.rect.x0;
+			overflow.buf += (gradient.rect.x1 - gradient.rect.x0) * 3;
+			overflow.rect.x0 = gradient.rect.x1;
+			nautilus_gnome_canvas_fill_rgb (&overflow, rgb888[0], rgb888[1], rgb888[2]);
+			canvas_gradient_helper_h (&gradient, background->details->gradient_buffer);
+			return;
+		}
+	} else {
+		if (buf->rect.y1 > background->details->gradient_num_pixels) {
+			art_u8 *rgb888 = background->details->gradient_buffer + (background->details->gradient_num_pixels - 1) * 3;
+			GnomeCanvasBuf gradient = *buf;
+			GnomeCanvasBuf overflow = *buf;
+			gradient.rect.y1 = gradient.rect.y0 < background->details->gradient_num_pixels ? background->details->gradient_num_pixels : gradient.rect.y0;
+			overflow.buf += (gradient.rect.y1 - gradient.rect.y0) * gradient.buf_rowstride;
+			overflow.rect.y0 = gradient.rect.y1;
+			nautilus_gnome_canvas_fill_rgb (&overflow, rgb888[0], rgb888[1], rgb888[2]);
+			canvas_gradient_helper_v (&gradient, background->details->gradient_buffer);
+			return;
+		}
 	}
 
-	(background->details->gradient_is_horizontal ? gradient_helper_h : gradient_helper_v) (buf, background->details->gradient_buffer);
+	(background->details->gradient_is_horizontal ? canvas_gradient_helper_h : canvas_gradient_helper_v) (buf, background->details->gradient_buffer);
+}
+
+static void
+drawable_gradient_helper_v (GdkDrawable *drawable, GdkGC *gc, const GdkRectangle *rect, art_u8 *gradient_buff)
+{
+	int y;
+
+	gradient_buff += rect->y * 3;
+
+	for (y = 0; y < rect->height; ++y) {
+		art_u8 r = *gradient_buff++;
+		art_u8 g = *gradient_buff++;
+		art_u8 b = *gradient_buff++;
+		GdkColor color = {0, r << 8, g << 8, b << 8};
+		gdk_colormap_alloc_color (gdk_colormap_get_system (), &color, FALSE, TRUE);
+		gdk_gc_set_foreground (gc, &color);
+		gdk_draw_line (drawable, gc, 0, y, rect->width, y);
+	}	
+}
+
+static void
+drawable_gradient_helper_h (GdkDrawable *drawable, GdkGC *gc, const GdkRectangle *rect, art_u8 *gradient_buff)
+{
+	gradient_buff += rect->x * 3;
+
+	/* We can do the fill with a single call to gdk_draw_rgb_image_dithalign
+	 * because we pass a rowstride of zero. Zero rowstride make gradient_buff
+	 * act like a pixbuf of infinite height - with all identical rows.
+	 */
+	gdk_draw_rgb_image_dithalign (drawable, gc, 0, 0, rect->width, rect->height, GDK_RGB_DITHER_NONE, gradient_buff, 0, 0, 0);
+}
+
+static void
+fill_drawable_from_gradient_buffer (GdkDrawable *drawable, GdkGC *gc,
+			  	    int drawable_x, int drawable_y,
+			  	    int drawable_width, int drawable_height,
+			 	    NautilusBackground *background)
+
+{
+	GdkRectangle rect = {drawable_x, drawable_y, drawable_width, drawable_height};
+	
+	g_return_if_fail (background->details->gradient_buffer != NULL);
+
+	/* FIXME bugzilla.eazel.com 415: This hack is needed till we fix background
+	 * scolling.
+	 *
+	 * I.e. currently you can scroll off the end of the gradient - and we
+	 * handle this by pegging it the the last rgb value.
+	 *
+	 * It might be needed permanently after depending on how this is fixed.
+	 * If we tie gradients to the boundry of icon placement (as opposed to
+	 * window size) then when dragging an icon you might scroll off the
+	 * end of the gradient - which will get recaluated after the drop.
+	 */
+	if (background->details->gradient_is_horizontal) {
+		int drawable_end = rect.x + rect.width;
+		if (drawable_end > background->details->gradient_num_pixels) {
+			art_u8 *rgb888 = background->details->gradient_buffer + (background->details->gradient_num_pixels - 1) * 3;
+			GdkRectangle overflow;
+			rect.width =  rect.x < background->details->gradient_num_pixels ? background->details->gradient_num_pixels - rect.x : 0;
+			/* overflow is in drawable relative coords (as opposed to canvas relative) */
+			overflow.x = rect.width;
+			overflow.y = 0;
+			overflow.width = drawable_width - rect.width;
+			overflow.height = drawable_height;
+			nautilus_fill_rectangle_with_color (drawable, gc, &overflow, nautilus_rgb8_to_rgb (rgb888[0], rgb888[1], rgb888[2]));
+		}
+	} else {
+		int drawable_end = rect.y + rect.height;
+		if (drawable_end > background->details->gradient_num_pixels) {
+			art_u8 *rgb888 = background->details->gradient_buffer + (background->details->gradient_num_pixels - 1) * 3;
+			GdkRectangle overflow;
+			rect.height = rect.y < background->details->gradient_num_pixels ? background->details->gradient_num_pixels - rect.y : 0;
+			/* overflow is in drawable relative coords (as opposed to canvas relative) */
+			overflow.x = 0;
+			overflow.y = rect.height;
+			overflow.width = drawable_width;
+			overflow.height = drawable_height - rect.height;
+			nautilus_fill_rectangle_with_color (drawable, gc, &overflow, nautilus_rgb8_to_rgb (rgb888[0], rgb888[1], rgb888[2]));
+		}
+	}
+
+	(background->details->gradient_is_horizontal ? drawable_gradient_helper_h : drawable_gradient_helper_v)
+		(drawable, gc, &rect, background->details->gradient_buffer);
+}
+
+/* fill the canvas buffer with a tiled pixbuf */
+static void
+draw_pixbuf_tiled (GdkPixbuf *pixbuf, GdkDrawable *drawable, GdkGC *gc, int drawable_x, int drawable_y, int drawable_width, int drawable_height)
+{
+	int x, y;
+	int start_x, start_y;
+	int end_x, end_y;
+	int tile_width, tile_height;
+	
+	tile_width = gdk_pixbuf_get_width (pixbuf);
+	tile_height = gdk_pixbuf_get_height (pixbuf);
+	
+	start_x = -(drawable_x  % tile_width);
+	start_y = -(drawable_y  % tile_height);
+	end_x = drawable_x + drawable_width;
+	end_y = drawable_y + drawable_height;
+
+	for (y = start_y; y < end_y; y += tile_height) {
+		for (x = start_x; x < end_x; x += tile_width) {
+			gdk_pixbuf_render_to_drawable (pixbuf, drawable, gc, 0, 0, x, y, tile_width, tile_height, GDK_RGB_DITHER_NONE, 0, 0);
+		}
+	}
 }
 
 /* Initializes a pseudo-canvas buf so canvas drawing routines can be used to draw into a pixbuf.
  */
 static void
-canvas_buf_from_pixmap (GnomeCanvasBuf* buf, GdkPixbuf *pixbuf, int x, int y, int width, int height)
+canvas_buf_from_pixbuf (GnomeCanvasBuf* buf, GdkPixbuf *pixbuf, int x, int y, int width, int height)
 {
 	buf->buf =  gdk_pixbuf_get_pixels (pixbuf);
 	buf->buf_rowstride =  gdk_pixbuf_get_rowstride (pixbuf);
@@ -409,13 +544,13 @@ canvas_buf_from_pixmap (GnomeCanvasBuf* buf, GdkPixbuf *pixbuf, int x, int y, in
 }
 
 static void
-ensure_image_scaled (NautilusBackground *background, int dest_width, int dest_height, GdkRectangle *image_rect)
+ensure_image_scaled (NautilusBackground *background, int dest_width, int dest_height)
 {
 	if (background->details->image == NULL) {
-		image_rect->x = 0;
-		image_rect->y = 0;
-		image_rect->width = 0;
-		image_rect->height = 0;
+		background->details->image_rect_x = 0;
+		background->details->image_rect_y = 0;
+		background->details->image_rect_width = 0;
+		background->details->image_rect_height = 0;
 	} else {
 		int image_width;
 		int image_height;
@@ -467,147 +602,158 @@ ensure_image_scaled (NautilusBackground *background, int dest_width, int dest_he
 			gdk_pixbuf_unref (background->details->image);
 			background->details->image = NULL;
 			start_loading_image (background);
-			image_rect->x = 0;
-			image_rect->y = 0;
-			image_rect->width = 0;
-			image_rect->height = 0;
+			background->details->image_rect_x = 0;
+			background->details->image_rect_y = 0;
+			background->details->image_rect_width = 0;
+			background->details->image_rect_height = 0;
 		} else if (background->details->image_placement == NAUTILUS_BACKGROUND_TILED) {
-			image_rect->x = 0;
-			image_rect->y = 0;
-			image_rect->width = dest_width;
-			image_rect->height = dest_height;
+			background->details->image_rect_x = 0;
+			background->details->image_rect_y = 0;
+			background->details->image_rect_width = dest_width;
+			background->details->image_rect_height = dest_height;
 		} else {
-			image_rect->x = (dest_width - image_width) / 2;
-			image_rect->y = (dest_height - image_height) / 2;
-			image_rect->width = image_width;
-			image_rect->height = image_height;
+			background->details->image_rect_x = (dest_width - image_width) / 2;
+			background->details->image_rect_y = (dest_height - image_height) / 2;
+			background->details->image_rect_width = image_width;
+			background->details->image_rect_height = image_height;
 		}
 	}
 }
 
+void
+nautilus_background_pre_draw (NautilusBackground *background, int entire_width, int entire_height)
+{
+	ensure_image_scaled (background, entire_width, entire_height);
+	ensure_gradient_buffered (background, entire_width, entire_height);
+}
+ 
 /* This routine is for gdk style rendering, which doesn't naturally
  * support transparency, so we draw into a pixbuf offscreen if
  * necessary.
  */
 void
 nautilus_background_draw (NautilusBackground *background,
-			  GdkDrawable *drawable,			  
-			  GdkGC *gc,
-			  const GdkRectangle *rectangle,
-			  int origin_x,
-			  int origin_y)
+						  GdkDrawable *drawable, GdkGC *gc,
+						  int drawable_x, int drawable_y,
+						  int drawable_width, int drawable_height)
 {
-	GdkRectangle image_rect;
-	GdkPixbuf *pixbuf;
-	GnomeCanvasBuf buffer;
-	int image_width;
-	int image_height;
-	char *start_color_spec, *end_color_spec;
-	guint32 start_rgb, end_rgb;
-	gboolean horizontal_gradient;
+	int drawable_right;
+	int drawable_bottom;
+	int image_rect_right;
+	int image_rect_bottom;
 
 	g_return_if_fail (NAUTILUS_IS_BACKGROUND (background));
 
 	if (background->details->combine_mode) {
+		GdkPixbuf *pixbuf;
+		GnomeCanvasBuf buffer;
+		
 		/* allocate a pixbuf the size of the rectangle */
-		pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, rectangle->width, rectangle->height);
+		pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, drawable_width, drawable_height);
 		
 		/* contrive a CanvasBuf structure to point to it */
-		canvas_buf_from_pixmap (&buffer, pixbuf, rectangle->x, rectangle->y, rectangle->width, rectangle->height);
+		canvas_buf_from_pixbuf (&buffer, pixbuf, drawable_x, drawable_y, drawable_width, drawable_height);
 		
 		/* invoke the anti-aliased code to do the work */
-		nautilus_background_draw_aa (background, &buffer, rectangle->width, rectangle->height);
+		nautilus_background_draw_aa (background, &buffer);
 		
 		/* blit the pixbuf to the drawable */
 		gdk_pixbuf_render_to_drawable (pixbuf, drawable, gc,
 					       0, 0,
-					       rectangle->x, rectangle->y, rectangle->width, rectangle->height,
-					       GDK_RGB_DITHER_NORMAL, origin_x, origin_y);
+					       0, 0,
+					       drawable_width, drawable_height,
+					       GDK_RGB_DITHER_NONE, 0, 0);
 		
 		/* free things up and we're done */
 		gdk_pixbuf_unref (pixbuf);
 		
 		return;
 	}
-	
-	ensure_image_scaled (background, rectangle->width, rectangle->height, &image_rect);
 
-	/* FIXME bugzill.eazel.com 2280:
-	 * The rectangle we get passed here seems to be bogus.
-	 * It works since we end up drawing the whole image every time.
-	 * I think if we fix up the call (made in nautilus-background-canvas-group.c)
-	 * to pass the rect that needs updating, then we can optimize this.
-	 */
+	drawable_right  = drawable_x + drawable_width;
+	drawable_bottom = drawable_y + drawable_height;
 	
-	if (!background->details->image || image_rect.width < rectangle->width || image_rect.height < rectangle->height) {
-		start_color_spec = nautilus_gradient_get_start_color_spec (background->details->color);
-		end_color_spec = nautilus_gradient_get_end_color_spec (background->details->color);
-		horizontal_gradient = nautilus_gradient_is_horizontal (background->details->color);
-
-		start_rgb = nautilus_parse_rgb_with_white_default (start_color_spec);
-		end_rgb = nautilus_parse_rgb_with_white_default (end_color_spec);
-		
-		g_free (start_color_spec);
-		g_free (end_color_spec);
-		
-		nautilus_fill_rectangle_with_gradient (drawable,
-						       gc,
-						       rectangle,
-						       start_rgb,
-						       end_rgb,
-						       horizontal_gradient);
+	image_rect_right  = background->details->image_rect_x + background->details->image_rect_width;
+	image_rect_bottom = background->details->image_rect_y + background->details->image_rect_height;
+	
+	if (!background->details->image ||
+	    drawable_x  < background->details->image_rect_x ||
+	    drawable_y  < background->details->image_rect_y ||
+	    drawable_right > image_rect_right ||
+	    drawable_bottom > image_rect_bottom) {
+		if (background->details->is_solid_color) {
+			GdkRectangle rect = {0 , 0, drawable_width, drawable_height};
+			nautilus_fill_rectangle_with_color (drawable, gc, &rect, nautilus_gdk_color_to_rgb (&background->details->solid_color));
+		} else {
+			fill_drawable_from_gradient_buffer (drawable, gc, drawable_x, drawable_y, drawable_width, drawable_height, background);
+		}
 	}
 
 	if (background->details->image != NULL) {
 		switch (background->details->image_placement) {
 		case NAUTILUS_BACKGROUND_TILED:
-			nautilus_gdk_pixbuf_render_to_drawable_tiled (background->details->image,
-								      drawable,
-								      gc,
-								      rectangle,
-								      GDK_RGB_DITHER_NORMAL,
-								      origin_x, origin_y);
+			draw_pixbuf_tiled (background->details->image, drawable, gc, drawable_x, drawable_y, drawable_width, drawable_height);
 			break;
-		default:
-			g_assert_not_reached ();
-			/* fall through */
 		case NAUTILUS_BACKGROUND_CENTERED:
 		case NAUTILUS_BACKGROUND_SCALED:
 		case NAUTILUS_BACKGROUND_SCALED_ASPECT:
-			/* Since the image has already been scaled, all these cases
-			 * can be treated identically.
+			/* Since the image has already been scaled, all these cases can be treated identically.
 			 */
-			image_width = gdk_pixbuf_get_width (background->details->image);
-			image_height = gdk_pixbuf_get_height (background->details->image);
-			gdk_pixbuf_render_to_drawable (background->details->image, drawable, gc,
-						       0, 0,
-						       rectangle->x + (rectangle->width - image_width)/2,
-						       rectangle->y + (rectangle->height - image_height)/2,
-						       image_width, image_height,
-						       GDK_RGB_DITHER_NORMAL, 0, 0);
+			if (drawable_x < image_rect_right &&
+				drawable_y < image_rect_bottom &&
+				drawable_right > background->details->image_rect_x &&
+				drawable_bottom > background->details->image_rect_y) {
+				int src_offset_x;
+				int src_offset_y;
+				int dst_offset_x;
+				int dst_offset_y;
+				int copy_width;
+				int copy_height;
+				
+				if (drawable_x < background->details->image_rect_x) {
+					src_offset_x = 0;
+					dst_offset_x = background->details->image_rect_x - drawable_x;
+				} else {
+					src_offset_x = drawable_x - background->details->image_rect_x;
+					dst_offset_x = 0;
+				}
+				
+				copy_width = drawable_right < image_rect_right ? drawable_width - dst_offset_x : image_rect_right - drawable_x;
+				
+				if (drawable_y < background->details->image_rect_y) {
+					src_offset_y = 0;
+					dst_offset_y = background->details->image_rect_y - drawable_y;
+				} else {
+					src_offset_y = drawable_y - background->details->image_rect_y;
+					dst_offset_y = 0;
+				}
+						
+				copy_height = drawable_bottom < image_rect_bottom ? drawable_height - dst_offset_y : image_rect_bottom - drawable_y;
+				
+				gdk_pixbuf_render_to_drawable (background->details->image, drawable, gc,
+											   src_offset_x, src_offset_y,
+											   dst_offset_x, dst_offset_y,
+											   copy_width, copy_height,
+											   GDK_RGB_DITHER_NONE, 0, 0);
+			}
 			break;
 		}
 	}
 }
 
-static void
-draw_pixbuf_centered_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer,
-			 int entire_width, int entire_height)
+void
+nautilus_background_draw_to_drawable (NautilusBackground *background,
+						 			  GdkDrawable *drawable, GdkGC *gc,
+									  int drawable_x, int drawable_y,
+									  int drawable_width, int drawable_height,
+									  int entire_width, int entire_height)
 {
-	int image_width;
-	int image_height;
-	int image_left;
-	int image_top;
-
-	image_width = gdk_pixbuf_get_width (pixbuf);
-	image_height = gdk_pixbuf_get_height (pixbuf);
-	image_left = (entire_width - image_width) / 2;
-	image_top = (entire_height - image_height) / 2;
-
-	nautilus_gnome_canvas_draw_pixmap (buffer, pixbuf, image_left, image_top);
+	nautilus_background_pre_draw (background, entire_width, entire_height);
+	nautilus_background_draw (background, drawable, gc, drawable_x, drawable_y, drawable_width, drawable_height);
 }
 
-/* fill the canvas buffer with a tiled pixmap */
+
+/* fill the canvas buffer with a tiled pixbuf */
 static void
 draw_pixbuf_tiled_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer)
 {
@@ -623,23 +769,16 @@ draw_pixbuf_tiled_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer)
 
 	for (y = start_y; y < buffer->rect.y1; y += tile_height) {
 		for (x = start_x; x < buffer->rect.x1; x += tile_width) {
-			nautilus_gnome_canvas_draw_pixmap (buffer, pixbuf, x, y);
+			nautilus_gnome_canvas_draw_pixbuf (buffer, pixbuf, x, y);
 		}
 	}
 }
 
 /* draw the background on the anti-aliased canvas */
 void
-nautilus_background_draw_aa (NautilusBackground *background,
-			     GnomeCanvasBuf *buffer,
-			     int entire_width,
-			     int entire_height)
-{
-	GdkRectangle image_rect;
-	
+nautilus_background_draw_aa (NautilusBackground *background, GnomeCanvasBuf *buffer)
+{	
 	g_return_if_fail (NAUTILUS_IS_BACKGROUND (background));
-
-	ensure_image_scaled (background, entire_width, entire_height, &image_rect);
 
 	/* If the image has alpha - we always draw the gradient behind it.
 	 * In principle, we could do better by having already drawn gradient behind
@@ -648,20 +787,18 @@ nautilus_background_draw_aa (NautilusBackground *background,
 	 * scaled image to a location on the screen because it holds a gradient.
 	 * This is especially problematic for tiled images with alpha.
 	 */
-
 	if (!background->details->image ||
 	     gdk_pixbuf_get_has_alpha (background->details->image) ||
-	     buffer->rect.x0  < image_rect.x ||
-	     buffer->rect.y0  < image_rect.y ||
-	     buffer->rect.x1  > (image_rect.x + image_rect.width) ||
-	     buffer->rect.y1  > (image_rect.y + image_rect.height)) {
+	     buffer->rect.x0  < background->details->image_rect_x ||
+	     buffer->rect.y0  < background->details->image_rect_y ||
+	     buffer->rect.x1  > (background->details->image_rect_x + background->details->image_rect_width) ||
+	     buffer->rect.y1  > (background->details->image_rect_y + background->details->image_rect_height)) {
 		if (background->details->is_solid_color) {
 			nautilus_gnome_canvas_fill_rgb (buffer,
-							background->details->solid_color.red,
-							background->details->solid_color.green,
-							background->details->solid_color.blue);
+							background->details->solid_color.red >> 8,
+							background->details->solid_color.green >> 8,
+							background->details->solid_color.blue >> 8);
 		} else {
-			ensure_gradient_buffered (background, entire_width, entire_height);
 			fill_canvas_from_gradient_buffer (buffer, background);
 		}
 	}
@@ -680,13 +817,26 @@ nautilus_background_draw_aa (NautilusBackground *background,
 			/* Since the image has already been scaled, all these cases
 			 * can be treated identically.
 			 */
-			draw_pixbuf_centered_aa (background->details->image, buffer, entire_width, entire_height);
+			nautilus_gnome_canvas_draw_pixbuf (buffer,
+											   background->details->image,
+											   background->details->image_rect_x,
+											   background->details->image_rect_y);
 			break;
 		}
 	}
 					
 	buffer->is_bg  = FALSE;
 	buffer->is_buf = TRUE;
+}
+
+void
+nautilus_background_draw_to_canvas (NautilusBackground *background,
+								    GnomeCanvasBuf *buffer,
+									int entire_width,
+									int entire_height)
+{
+	nautilus_background_pre_draw (background, entire_width, entire_height);
+	nautilus_background_draw_aa (background, buffer);
 }
 
 char *
@@ -870,7 +1020,6 @@ nautilus_background_draw_flat_box (GtkStyle *style,
 	gboolean call_parent;
 	NautilusBackground *background;
 	GdkGC *gc;
-	GdkRectangle rectangle;
 
 	call_parent = TRUE;
 
@@ -893,15 +1042,9 @@ nautilus_background_draw_flat_box (GtkStyle *style,
 	if (area)
 		gdk_gc_set_clip_rectangle (gc, area);
 
-
 	nautilus_gdk_window_update_sizes (window, &width, &height);	
-	rectangle.x = x;
-	rectangle.y = y;
-	rectangle.width = width;
-	rectangle.height = height;
-	
-	nautilus_background_draw (background, window, gc,
-				  &rectangle, 0, 0);	
+
+	nautilus_background_draw_to_drawable (background, window, gc, 0, 0, width, height, widget->allocation.width, widget->allocation.height);
 }
 
 static GtkStyleClass *

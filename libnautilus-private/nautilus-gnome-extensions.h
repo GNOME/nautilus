@@ -94,8 +94,8 @@ void       nautilus_gnome_canvas_request_redraw_rectangle       (GnomeCanvas    
  */
 void       nautilus_gnome_canvas_item_request_redraw            (GnomeCanvasItem *item);
 
-void	   nautilus_gnome_canvas_draw_pixmap			(GnomeCanvasBuf *buf,
-								 GdkPixbuf *pixbuf,
+void	   nautilus_gnome_canvas_draw_pixbuf			(GnomeCanvasBuf *buf,
+								 const GdkPixbuf *pixbuf,
 								 int x,
 								 int y);
 								 
