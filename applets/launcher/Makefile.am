@@ -20,6 +20,9 @@ nautilus_launcher_applet_LDADD =	\
 	$(APPLETS_LIBS) \
 	$(NULL)
 
+gnorbadir  = $(sysconfdir)/CORBA/servers
+gnorba_DATA = nautilus-launcher-applet.gnorba
+
 EXTRA_DIST =\
 	nautilus-launcher-applet.gnorba \
 	$(NULL)

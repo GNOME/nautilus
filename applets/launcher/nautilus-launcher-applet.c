@@ -150,12 +150,12 @@ main (int argc, char **argv)
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
 	
-	applet_widget_init ("nautilus-icon-applet", VERSION, argc,
+	applet_widget_init ("nautilus_launcher_applet", VERSION, argc,
 			    argv, NULL, 0, NULL);
 
-	applet = applet_widget_new ("nauilus-icon-applet");
+	applet = applet_widget_new ("nautilus_launcher_applet");
 	if (applet == NULL)
-		g_error (_("Can't create nautilus-icon-applet!"));
+		g_error (_("Can't create nautilus-launcher-applet!"));
 
 	create_pixbufs ();
 
