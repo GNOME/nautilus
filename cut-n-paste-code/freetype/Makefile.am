@@ -4,7 +4,7 @@ noinst_LTLIBRARIES = libfreetype2.la
 
 libfreetype2_la_LDFLAGS = -static
 
-CFLAGS=-DFT_FLAT_COMPILE
+INCLUDES=-DFT_FLAT_COMPILE
 
 libfreetype2_la_SOURCES = \
 	cff.c \

@@ -47,6 +47,7 @@
 #undef  FT_COMPONENT
 #define FT_COMPONENT  trace_extend
 
+#ifdef FT_CONFIG_OPTION_EXTEND_ENGINE
 
   typedef struct  FT_Extension_Registry_
   {
@@ -336,6 +337,8 @@
 
     return error;
   }
+
+#endif
 
 
 /* END */

@@ -26,6 +26,9 @@
   /*     `freetype/config/ftmodule.h'.  See the document `FreeType 2.0     */
   /*     Build System' for more information.                               */
   /*                                                                       */
+  /*  Note added by raph: I've renamed freetype/config/ftmodule.h to       */
+  /*  ftmodule-list.h so as to avoid collision with freetype/ftmodule.h    */
+  /*                                                                       */
   /*  FT_Init_FreeType():                                                  */
   /*     This function creates a system object for the current platform,   */
   /*     builds a library out of it, then calls FT_Default_Drivers().      */
@@ -67,7 +70,7 @@
 
 #ifdef FT_FLAT_COMPILE
 
-#include "ftmodule.h"
+#include "ftmodule-list.h"
 
 #else
 
@@ -83,7 +86,7 @@ const FT_Module_Class*  ft_default_modules[] =
   {
 #ifdef FT_FLAT_COMPILE
 
-#include "ftmodule.h"
+#include "ftmodule-list.h"
 
 #else
 

@@ -47,6 +47,13 @@
 #include <string.h>
 
 
+/* It seems to me these should be in the .h file instead. Why they're
+   not in the original codebase is beyond me. */
+  FT_EXPORT_FUNC( FT_Error )  FT_New_Stream( const char*  filepathname,
+                                             FT_Stream    stream );
+
+  FT_EXPORT_FUNC( FT_Memory )  FT_New_Memory( void );
+
   /*************************************************************************/
   /*                                                                       */
   /*                       MEMORY MANAGEMENT INTERFACE                     */
@@ -60,6 +67,7 @@
   /* routines like FT_Alloc() or FT_Realloc().                             */
   /*                                                                       */
   /*************************************************************************/
+
 
 
   /*************************************************************************/
@@ -221,6 +229,7 @@
 
     return (unsigned long)fread( buffer, 1, count, file );
   }
+
 
 
   /*************************************************************************/

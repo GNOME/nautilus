@@ -1841,7 +1841,7 @@
   }
 
 
-  extern
+  static
   int  grays_raster_render( PRaster            raster,
                             FT_Raster_Params*  params )
   {
