@@ -1,3 +1,11 @@
+2000-05-20  Andy Hertzfeld  <andy@eazel.com>
+
+	After Maciej's checkin, I didn't kill oafd so I was getting OAFIIDs as sidebar panel labels.
+	We should never show the user OAFIIDs, even as a fallback, so I added a little code
+	to clean them up before displaying them.
+	* libnautilus-extensions/nautilus-view-identifier.c:
+	(nautilus_view_identifier_new_from_oaf_server_info):
+
 2000-05-19 Andy Hertzfeld  <andy@eazel.com>
 
 	* components/music/mpg123_handler.c: (parse_header_info),

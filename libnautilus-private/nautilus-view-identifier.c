@@ -26,6 +26,7 @@
 #include "nautilus-view-identifier.h"
 
 #include "nautilus-glib-extensions.h"
+#include "nautilus-string.h"
 #include <glib.h>
 #include <stdlib.h>
 
@@ -76,13 +77,12 @@ get_lang_list (void)
 NautilusViewIdentifier *
 nautilus_view_identifier_new_from_oaf_server_info (OAF_ServerInfo *server, char *name_attribute)
 {
-        const char *view_as_name;
+        const char *view_as_name;       
         GSList *langs;
 
         langs = get_lang_list ();
-        
         view_as_name = oaf_server_info_attr_lookup (server, name_attribute, langs);
-
+		
         if (view_as_name == NULL) {
                 view_as_name = oaf_server_info_attr_lookup (server, "name", langs);
         }
@@ -93,6 +93,22 @@ nautilus_view_identifier_new_from_oaf_server_info (OAF_ServerInfo *server, char 
        
         g_slist_free (langs);
 
+	/* if the name is an OAFIID, clean it up for display */
+	if (nautilus_str_has_prefix (view_as_name, "OAFIID:")) {
+		char *display_name, *colon_ptr;
+		NautilusViewIdentifier *new_identifier;
+		
+		display_name = g_strdup (view_as_name + 7);
+		colon_ptr = strchr (display_name, ':');
+		if (colon_ptr) {
+			*colon_ptr = '\0';
+		}
+		
+		new_identifier = nautilus_view_identifier_new (server->iid, display_name);
+		g_free(display_name);
+		return new_identifier;					
+	}
+		
         return nautilus_view_identifier_new (server->iid, view_as_name);
 }
 
