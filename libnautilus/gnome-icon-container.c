@@ -40,6 +40,9 @@
 
 #include "nautilus-gtk-macros.h"
 
+/* for memset */
+#include <string.h>
+
 /* Interval for updating the rubberband selection, in milliseconds.  */
 #define RUBBERBAND_TIMEOUT_INTERVAL 10
 
