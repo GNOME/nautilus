@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus CVS-HEAD\n"
-"POT-Creation-Date: 2001-02-26 12:44+0100\n"
+"POT-Creation-Date: 2001-02-27 10:17+0100\n"
 "PO-Revision-Date: 2001-02-26 13:02+01:00\n"
 "Last-Translator: Emese Kovacs <emese@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
@@ -2114,10 +2114,10 @@ msgstr "Csomag tartalma"
 msgid "Package Title"
 msgstr "Csomag címe"
 
-# components/rpmview/nautilus-rpm-view.c:192
+# components/rpmview/nautilus-rpm-view.c:204
 #: components/rpmview/nautilus-rpm-view.c:190
-msgid "Size: "
-msgstr "Méret: "
+msgid "Installed Size: "
+msgstr "Méret telepítés után: "
 
 # components/rpmview/nautilus-rpm-view.c:198
 #: components/rpmview/nautilus-rpm-view.c:196
@@ -3043,72 +3043,72 @@ msgstr ""
 msgid "Duplicate file : %s occurs in %s and %s"
 msgstr "A %s fájl több csomagban elõfordul: %s és %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:1969
+#: components/services/install/lib/eazel-install-logic2.c:1968
 #, c-format
 msgid "(there were %d other conflicts)"
 msgstr "(még %d probléma van)"
 
-#: components/services/install/lib/eazel-install-logic2.c:2064
+#: components/services/install/lib/eazel-install-logic2.c:2063
 #, c-format
 msgid "file conflict checking %s"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-logic2.c:2112
+#: components/services/install/lib/eazel-install-logic2.c:2111
 #, c-format
 msgid "file conflict : package %s already provides file %s also provided by %s"
 msgstr ""
 
 #. the owner of this file is a package that we're upgrading, and the
 #. * new version no longer has this file, so everything's okay.
-#: components/services/install/lib/eazel-install-logic2.c:2122
+#: components/services/install/lib/eazel-install-logic2.c:2121
 #, c-format
 msgid "...but it is okay, we're upgrading %s and it ditched that file"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-logic2.c:2212
+#: components/services/install/lib/eazel-install-logic2.c:2211
 #, c-format
 msgid "checking feature consistency of %s"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-logic2.c:2278
+#: components/services/install/lib/eazel-install-logic2.c:2277
 #, c-format
 msgid ""
 "feature missing : %s breaks if %s is installed (feature %s would be lost"
 msgstr ""
 
 # components/services/install/nautilus-view/nautilus-service-install-view.c:1614
-#: components/services/install/lib/eazel-install-logic2.c:2356
+#: components/services/install/lib/eazel-install-logic2.c:2355
 #, c-format
 msgid "downloading %d packages"
 msgstr "%d csomago letöltése"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:133
 # components/services/install/lib/eazel-install-problem.c:969
-#: components/services/install/lib/eazel-install-logic2.c:2621
+#: components/services/install/lib/eazel-install-logic2.c:2620
 #, c-format
 msgid "will upgrade %s"
 msgstr "frissíteni fogja a következõt: %s"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:110
-#: components/services/install/lib/eazel-install-logic2.c:2624
+#: components/services/install/lib/eazel-install-logic2.c:2623
 #, c-format
 msgid "will downgrade %s"
 msgstr "csökkenteni fogja %s verzióját"
 
-#: components/services/install/lib/eazel-install-logic2.c:2627
+#: components/services/install/lib/eazel-install-logic2.c:2626
 #, c-format
 msgid "will install %s"
 msgstr "telepíteni fogja a következõt: %s"
 
 # components/rpmview/nautilus-rpm-view.c:310
-#: components/services/install/lib/eazel-install-logic2.c:2630
+#: components/services/install/lib/eazel-install-logic2.c:2629
 #, c-format
 msgid "will uninstall %s"
 msgstr "el fogja távolítani a következõt: %s"
 
 # components/services/install/lib/eazel-install-problem.c:312
 # components/services/install/lib/eazel-install-problem.c:315
-#: components/services/install/lib/eazel-install-logic2.c:2713
+#: components/services/install/lib/eazel-install-logic2.c:2712
 #: components/services/install/lib/eazel-install-problem.c:335
 #: components/services/install/lib/eazel-install-problem.c:338
 #, c-format
@@ -3116,7 +3116,7 @@ msgid "%s requires %s"
 msgstr "%s igényli a következõt: %s"
 
 # components/rpmview/nautilus-rpm-verify-window.c:207
-#: components/services/install/lib/eazel-install-logic2.c:2877
+#: components/services/install/lib/eazel-install-logic2.c:2876
 #, c-format
 msgid "failed %s"
 msgstr "sikertelen: %s"
@@ -5356,7 +5356,7 @@ msgstr "link (törött)"
 #. "From" dialog label, source path gets placed next to it in the dialog
 #: libnautilus-extensions/nautilus-file-operations.c:385
 msgid "From:"
-msgstr "Feladó:"
+msgstr "Forrás:"
 
 # libnautilus-extensions/nautilus-file-operations.c:400
 #. "To" dialog label, source path gets placed next to it in the dialog
@@ -9427,7 +9427,7 @@ msgstr ""
 #: src/nautilus-application.c:441 src/nautilus-application.c:459
 #: src/nautilus-application.c:466
 msgid "Nautilus can't be used now, due to an unexpected error."
-msgstr "A Nautilus nem lehet most használni, váratlan hiba miatt."
+msgstr "A Nautilus most nem használható. Ok: váratlan hiba."
 
 # src/nautilus-application.c:435
 #: src/nautilus-application.c:442
@@ -9543,6 +9543,8 @@ msgid ""
 "For users who have no previous experience with GNOME\n"
 "and Linux."
 msgstr ""
+"Olyan felhasználóknak, akinek nincs tapasztalatuk a\n"
+"GNOME-mal és a Linuxszal."
 
 # src/nautilus-first-time-druid.c:459
 #: src/nautilus-first-time-druid.c:488
@@ -9629,6 +9631,9 @@ msgid ""
 "these settings move your desktop icons to Nautilus and\n"
 "make Nautilus the default desktop.\n"
 msgstr ""
+"Ha régebben a GNOME Midnight Commandert (gmc) használtad,\n"
+"a Nautilus átveszi a munkafelületed beállításait és\n"
+"a Nautilus lesz az alapértelmezett fájlkezelõ.\n"
 
 # libnautilus-extensions/nautilus-global-preferences.c:167
 #: src/nautilus-first-time-druid.c:880
@@ -9945,7 +9950,7 @@ msgstr "Minta telepítése sikertelen"
 # src/nautilus-property-browser.c:1055
 #: src/nautilus-property-browser.c:1055
 msgid "Sorry, but you can't replace the reset image."
-msgstr ""
+msgstr "Sajnálom, de nem cserélheted le a \"Reset\" képet."
 
 # src/nautilus-property-browser.c:1086
 #: src/nautilus-property-browser.c:1086
@@ -11401,6 +11406,10 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*-r-"
 #: src/nautilus-zoom-control.c:592
 msgid "%d%%"
 msgstr "%d%%"
+
+# components/rpmview/nautilus-rpm-view.c:192
+#~ msgid "Size: "
+#~ msgstr "Méret: "
 
 # components/services/vault/command-line/main.c:38
 #~ msgid "Enable debugging"
