@@ -142,6 +142,7 @@ close_and_give_up:
 }
 
 
+#ifndef TRILOBITE_SLIM
 static FILE *saved_logf = NULL;
 static int do_debug_log = 0;
 
@@ -181,6 +182,7 @@ trilobite_close_log (void)
 		fclose (saved_logf);
 	}
 }
+#endif	/* TRILOBITE_SLIM */
 
 
 #ifndef TRILOBITE_SLIM
@@ -359,7 +361,7 @@ gboolean trilobite_fetch_uri (const char *uri_text,
         }
 
         while (result && (status = ghttp_process (request)) == ghttp_not_done) {
-                ghttp_current_status curStat = ghttp_get_status (request);
+		/*                ghttp_current_status curStat = ghttp_get_status (request); */
 		g_main_iteration (FALSE);
         }
 
