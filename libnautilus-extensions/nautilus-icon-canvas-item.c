@@ -1883,7 +1883,7 @@ create_annotation (NautilusIconCanvasItem *icon_item, int emblem_index)
 	left = icon_rect.x0 + 8.0;
 	top = icon_rect.y0 + 8.0;
 		
-	fill_color = 0xFFFF75E5;
+	fill_color = 0xFFFF75E0;
 	outline_color = 0x000000FF;
 	
 	canvas = GNOME_CANVAS_ITEM (icon_item)->canvas;
@@ -1958,7 +1958,7 @@ nautilus_icon_canvas_item_set_note_state (NautilusIconCanvasItem *icon_item, int
 	
 	/* add a timeout to create the new annotation */
 	if (new_state > 0) {
-		icon_item->details->annotation_time_out = gtk_timeout_add (1000, create_annotation_timeout_callback, icon_item);
+		icon_item->details->annotation_time_out = gtk_timeout_add (750, create_annotation_timeout_callback, icon_item);
 	}	
 }
 
