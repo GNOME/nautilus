@@ -33,6 +33,8 @@
 #include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>
 
+#include <libgnomevfs/gnome-vfs-utils.h>
+
 #include <eel/eel-background.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
@@ -1105,16 +1107,24 @@ has_matching_uri (GList *items, const char *target_uri)
 {
 	GList *current_item;
 	RSSItemData *item_data;
+	char *mapped_target_uri, *mapped_item_uri;
+	gboolean found_match;
+	
+	mapped_target_uri = gnome_vfs_make_uri_canonical (target_uri);
 	
 	current_item = items;
-	while (current_item != NULL) {
+	found_match = FALSE;
+	while (current_item != NULL && !found_match) {
 		item_data = (RSSItemData*) current_item->data;
-		if (eel_strcasecmp (item_data->item_url, target_uri) == 0) {
-			return TRUE;
+		mapped_item_uri = gnome_vfs_make_uri_canonical (item_data->item_url);
+		if (eel_strcasecmp (mapped_item_uri, target_uri) == 0) {
+			found_match = TRUE;
 		}	
+		g_free (mapped_item_uri);
 		current_item = current_item->next;
 	}
-	return FALSE;
+	g_free (mapped_target_uri);
+	return found_match;
 }
 
 /* take a look at the newly generated items in the passed-in channel,
@@ -1305,6 +1315,13 @@ nautilus_news_make_new_channel (News *news_data,
 	return channel_data;	
 }
 
+/* comparison routine to put channels in alphabetical order */
+static gint
+compare_channel_names (RSSChannelData *channel_1, RSSChannelData *channel_2)
+{
+	return strcmp (channel_1->name, channel_2->name);
+}
+
 /* add the channels defined in the passed in xml document to the channel list,
  * and start fetching the actual channel data
  */
@@ -1336,7 +1353,9 @@ nautilus_news_add_channels (News *news_data, xmlDocPtr channels)
 									       is_open, is_showing);
 				xmlFree (uri);
 				if (channel_data != NULL) {
-					news_data->channel_list = g_list_append (news_data->channel_list, channel_data);
+					news_data->channel_list = g_list_insert_sorted (news_data->channel_list,
+											channel_data,
+											(GCompareFunc) compare_channel_names);
 				}
 			}
 			xmlFree (open_str);
@@ -1522,12 +1541,17 @@ add_site_from_fields (GtkWidget *widget, News *news)
 
 	channel_data = nautilus_news_make_new_channel (news, site_name, site_location, TRUE, TRUE);
 	if (channel_data != NULL) {
-		news->channel_list = g_list_append (news->channel_list, channel_data);
+		news->channel_list = g_list_insert_sorted (news->channel_list,
+							   channel_data,
+							   (GCompareFunc) compare_channel_names);
 		channel_count = g_list_length (news->channel_list);
 		add_channel_entry (news, site_name, channel_count, TRUE);
 		add_channel_to_remove_list (news, site_name);
-
 	}
+	/* clear fields for next time */
+	gtk_editable_delete_text (GTK_EDITABLE (news->item_name_field), 0, -1);
+	gtk_editable_delete_text (GTK_EDITABLE (news->item_location_field), 0, -1);
+		
 	/* back to configure mode */
 	configure_button_clicked (widget, news);
 }
@@ -1650,12 +1674,39 @@ nautilus_news_load_location (NautilusView *view, const char *location, News *new
 	update_size_and_redraw (news);
 }
 
+/* utility routine to determine the sort position of a checkbox */
+static int
+determine_sort_position (GtkWidget *container, const char *name)
+{
+	GList *checkboxes, *current_item;
+	char *current_name;
+	int index;
+	
+	checkboxes = gtk_container_children (GTK_CONTAINER (container));
+	index = 0;
+	current_item = checkboxes;
+	while (current_item != NULL) {
+		current_name = gtk_object_get_data (GTK_OBJECT (current_item->data), "channel_name");
+		
+		if (eel_strcasecmp (current_name, name) > 0) {
+			g_list_free (checkboxes);
+			return index;
+		}
+		
+		index += 1;
+		current_item = current_item->next;
+	}	
+	g_list_free (checkboxes);
+	return index;
+}
+
 /* utility routine to add a check-box entry to the channel list */
 static void
 add_channel_entry (News *news_data, const char *channel_name, int index, gboolean is_showing)
 {
 	GtkWidget *check_button;
 	RSSChannelData *channel_data;
+	int sort_position;
 	
 	check_button = gtk_check_button_new_with_label (channel_name);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button), is_showing);
@@ -1665,6 +1716,10 @@ add_channel_entry (News *news_data, const char *channel_name, int index, gboolea
       	              	    			GTK_SIGNAL_FUNC (check_button_toggled_callback),
                             			news_data);
 
+	/* reorder newly added button so it's sorted by it's name */
+	sort_position = determine_sort_position (news_data->checkbox_list, channel_name);
+	gtk_box_reorder_child (GTK_BOX (news_data->checkbox_list), check_button, sort_position);	
+	
 	/* set up pointer in channel object to checkbox, so we can delete it */
 	channel_data = get_channel_from_name (news_data, channel_name);
 	if (channel_data != NULL) {
@@ -1764,6 +1819,8 @@ make_remove_widgets (News *news, GtkWidget *container)
 	gtk_clist_column_titles_hide (GTK_CLIST (news->remove_site_list));
 	gtk_clist_set_column_width (GTK_CLIST (news->remove_site_list), 0, 108);
 	gtk_clist_set_selection_mode (GTK_CLIST (news->remove_site_list), GTK_SELECTION_BROWSE);		
+	gtk_clist_set_auto_sort (GTK_CLIST (news->remove_site_list), TRUE);
+	
 	gtk_signal_connect (GTK_OBJECT (news->remove_site_list), "select_row",
 			    GTK_SIGNAL_FUNC (select_row_in_remove_list), news);
 			    

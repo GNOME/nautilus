@@ -1,3 +1,31 @@
+2001-04-23  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/news/nautilus-news.c: (has_matching_uri),
+	(compare_channel_names), (nautilus_news_add_channels),
+	(add_site_from_fields), (determine_sort_position),
+	(add_channel_entry), (make_remove_widgets):
+	
+	made it maintain the channel lists in alphabetical order, and
+	improved uri matching by canonicalizing them before comparison.
+		
+	* components/news/news_channels.xml:
+	added some new channels
+	
+	* nautilus-spec.in:
+	added news panel to spec file.
+	
+2001-04-23  Andy Hertzfeld  <andy@eazel.com>
+
+	made the disclosure triangles reflect the changed state by using
+	different images when the channel changed; currently, I'm using
+	placeholder images, but Arlo will give me the real ones soon.
+		
+	* components/news/nautilus-news-pixmaps.h:
+	added images for triangles to reflect the changed state
+	* components/news/nautilus-news.c: (do_destroy), (draw_triangle),
+	(rss_logo_callback), (nautilus_news_load_images):
+	load the new images, release on destroy, and display when appropriate
+	
 2001-04-23  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>
@@ -77,6 +105,7 @@
 	* libnautilus-extensions/nautilus-program-choosing.c:
 	(get_xalf_prefix): Implemented, but not tested with xalf.
 
+>>>>>>> 1.4478
 2001-04-23  John Harper  <jsh@eazel.com>
 
 	* components/news/nautilus-news.c (set_up_configure_widgets):
