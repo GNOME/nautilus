@@ -39,6 +39,7 @@
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
 
 struct NautilusComplexSearchBarDetails {
 	GtkVBox *bar_container;

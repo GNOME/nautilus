@@ -30,13 +30,15 @@
 
 #include "nautilus-search-bar-criterion.h"
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libnautilus-extensions/nautilus-entry.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-search-uri.h>
 #include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
 
 struct NautilusSimpleSearchBarDetails {
-	GtkEntry *entry;
+	NautilusEntry *entry;
 	GtkWidget *find_button;
 };
 
@@ -96,7 +98,10 @@ nautilus_simple_search_bar_initialize (NautilusSimpleSearchBar *bar)
 	/* Create button first so we can use it for auto_click */
 	bar->details->find_button = gtk_button_new_with_label (_("Find Them!"));
 
-	bar->details->entry = GTK_ENTRY (gtk_entry_new ());
+	bar->details->entry = NAUTILUS_ENTRY (nautilus_entry_new ());
+	nautilus_undo_set_up_nautilus_entry_for_undo (bar->details->entry);
+	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (bar->details->entry), TRUE);
+	
 	gtk_signal_connect_object (GTK_OBJECT (bar->details->entry), "activate",
 				   nautilus_gtk_button_auto_click, 
 				   GTK_OBJECT (bar->details->find_button));
@@ -119,7 +124,15 @@ nautilus_simple_search_bar_initialize (NautilusSimpleSearchBar *bar)
 static void
 nautilus_simple_search_bar_destroy (GtkObject *object)
 {
-	g_free (NAUTILUS_SIMPLE_SEARCH_BAR (object)->details);
+	NautilusSimpleSearchBar *bar;
+
+	bar = NAUTILUS_SIMPLE_SEARCH_BAR (object);
+	
+	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (bar->details->entry), FALSE);
+	nautilus_undo_tear_down_nautilus_entry_for_undo (bar->details->entry);
+
+	g_free (bar->details);
+	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
@@ -143,7 +156,7 @@ nautilus_simple_search_bar_set_location (NautilusNavigationBar *navigation_bar,
 
 	/* Set the words in the box to be the words originally done in the search */ 
 	criteria = nautilus_search_uri_to_simple_search_criteria (location);
-	gtk_entry_set_text (bar->details->entry, criteria);
+	nautilus_entry_set_text (bar->details->entry, criteria);
 	g_free (criteria);
 }
 
@@ -154,7 +167,7 @@ nautilus_simple_search_bar_get_location (NautilusNavigationBar *navigation_bar)
 	char *search_entry_text;
 
 	bar = NAUTILUS_SIMPLE_SEARCH_BAR (navigation_bar);
-	search_entry_text = gtk_entry_get_text (bar->details->entry);
+	search_entry_text = gtk_entry_get_text (GTK_ENTRY (bar->details->entry));
 	return nautilus_simple_search_criteria_to_search_uri (search_entry_text);
 }
 

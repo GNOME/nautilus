@@ -28,7 +28,7 @@
 #define NAUTILUS_SEARCH_BAR_CRITERION_H
 
 #include <gtk/gtkoptionmenu.h>
-#include <gtk/gtkentry.h>
+#include <libnautilus-extensions/nautilus-entry.h>
 
 
 typedef enum {

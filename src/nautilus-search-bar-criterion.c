@@ -46,8 +46,10 @@
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-label.h>
+#include <libnautilus-extensions/nautilus-entry.h>
 #include <libnautilus-extensions/nautilus-search-uri.h>
 #include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -168,6 +170,9 @@ nautilus_search_bar_criterion_destroy (NautilusSearchBarCriterion *criterion)
 	/* FIXME bugzilla.eazel.com 2437: need more freeage */
 	gtk_signal_disconnect_by_data (GTK_OBJECT (nautilus_signaller_get_current ()),
 				       criterion);
+	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (criterion->details->value_entry), FALSE);
+	nautilus_undo_tear_down_nautilus_entry_for_undo (criterion->details->value_entry);
+	
 	g_free (criterion->details);
 	g_free (criterion);
 }
@@ -277,8 +282,10 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 	g_assert (! (use_value_entry && use_value_menu));
 	criterion->details->use_value_entry = use_value_entry;
 	if (use_value_entry) {
-		criterion->details->value_entry = GTK_ENTRY (gtk_entry_new ());
+		criterion->details->value_entry = NAUTILUS_ENTRY (nautilus_entry_new ());
 		gtk_widget_show_all(GTK_WIDGET(criterion->details->value_entry));
+		nautilus_undo_set_up_nautilus_entry_for_undo (criterion->details->value_entry);
+		nautilus_undo_editable_set_undo_key (GTK_EDITABLE (criterion->details->value_entry), TRUE);
 	}
 	criterion->details->use_value_menu = use_value_menu;
 	if (use_value_menu && criterion->details->type != NAUTILUS_EMBLEM_SEARCH_CRITERION) {

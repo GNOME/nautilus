@@ -1,3 +1,26 @@
+2000-09-06  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 2011, Numeric keypad enter key doesn't work
+	right in Search field.
+
+	Fixed bug 2012, Undo doesn't work in search 
+	text-entry fields.
+
+	I switched the GtkEntry items to be NautilusEntry items
+	and wired up the undo signal handlers.
+	
+	* src/nautilus-complex-search-bar.c:
+	* src/nautilus-search-bar-criterion-private.h:
+	* src/nautilus-search-bar-criterion.c:
+	(nautilus_search_bar_criterion_destroy),
+	(nautilus_search_bar_criterion_new_from_values):
+	* src/nautilus-search-bar-criterion.h:
+	* src/nautilus-simple-search-bar.c:
+	(nautilus_simple_search_bar_initialize),
+	(nautilus_simple_search_bar_destroy),
+	(nautilus_simple_search_bar_set_location),
+	(nautilus_simple_search_bar_get_location):
+
 2000-09-06  John Sullivan  <sullivan@eazel.com>
 
 	I almost fixed bug 2598 ("Select All Files" enabled when the

@@ -41,7 +41,7 @@ struct NautilusSearchBarCriterionDetails {
 	GtkOptionMenu *available_criteria;
 	GtkOptionMenu *relation_menu;
 	gboolean use_value_entry;
-	GtkEntry *value_entry;
+	NautilusEntry *value_entry;
 	gboolean use_value_menu;
 	GtkOptionMenu *value_menu;
 	gboolean use_value_suffix;
