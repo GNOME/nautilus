@@ -131,7 +131,10 @@ endif
 
 # stuff
 
-EXTRA_DIST = eazel-install-query-lex.l
+EXTRA_DIST = \
+	eazel-install-query-lex.l		\
+	eazel-package-system-rpm3-private.h	\
+	$(NULL)
 
 eazel-install-query-lex.c: $(srcdir)/eazel-install-query-lex.l eazel-install-query-parse.h
 	@rm -f $@
