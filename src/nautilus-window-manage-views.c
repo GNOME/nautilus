@@ -33,7 +33,6 @@
 #include "nautilus-information-panel.h"
 #include "nautilus-location-bar.h"
 #include "nautilus-main.h"
-#include "nautilus-theme.h"
 #include "nautilus-window-private.h"
 #include "nautilus-zoom-control.h"
 #include <bonobo/bonobo-exception.h>
@@ -64,6 +63,7 @@
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-monitor.h>
 #include <libnautilus-private/nautilus-search-uri.h>
+#include <libnautilus-private/nautilus-theme.h>
 
 /* FIXME bugzilla.gnome.org 41243: 
  * We should use inheritance instead of these special cases
