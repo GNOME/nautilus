@@ -43,10 +43,9 @@ main (int argc, char *argv[])
         GtkWidget *window;
         GtkWidget *canvas;
 
-#if 0
-        bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
-        textdomain (PACKAGE);
-#endif   
+        (void) bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
+        (void) textdomain (PACKAGE);
+        
         gnome_init ("gnome-desktop", VERSION, argc, argv);
         
         window = desktop_window_new();
