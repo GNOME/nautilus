@@ -1,3 +1,22 @@
+2000-05-24  Gene Z. Ragan  <gzr@eazel.com>
+
+	* components/notes/ntl-notes.c: 
+	(notes_notify_location_change):
+	Removed undo manager test code.
+	
+	* components/websearch/ntl-web-search.c: 
+	(make_obj):
+	Added undo functionality to web search component.
+	
+	* libnautilus/nautilus-undo-context.c:
+	(impl_Nautilus_Undo_Context__get_undo_manager):
+	Added ref code to call CORBA_object_duplicate()
+	
+	* libnautilus/nautilus-undo-manager.c:
+	(impl_Nautilus_Undo_Manager__append), (nautilus_undo_manager_redo),
+	(nautilus_undo_manager_add_transaction):
+	Added ref code to call CORBA_object_duplicate()
+	
 2000-05-24  John Sullivan  <sullivan@eazel.com>
 
 	* src/ntl-app.c: (display_caveat), (nautilus_app_startup):

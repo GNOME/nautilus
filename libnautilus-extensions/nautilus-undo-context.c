@@ -72,7 +72,6 @@ impl_Nautilus_Undo_Context__destroy (BonoboObject *obj, impl_POA_Nautilus_Undo_C
 	void (*servant_destroy_func) (PortableServer_Servant servant, CORBA_Environment *ev);
 
   	CORBA_exception_init (&ev);
-
   	servant_destroy_func = NAUTILUS_UNDO_CONTEXT_CLASS
 		(GTK_OBJECT (servant->bonobo_object)->klass)->servant_destroy_func;
 
@@ -121,7 +120,9 @@ impl_Nautilus_Undo_Context__get_undo_manager (PortableServer_Servant servant,
 					      CORBA_Environment *ev)
 {
 	NautilusUndoContext *context;
-
+	
+	//g_assert (NAUTILUS_IS_UNDO_CONTEXT (servant->bonobo_object));
+	//context = NAUTILUS_UNDO_CONTEXT (servant->gtk_object);
 	context = ((impl_POA_Nautilus_Undo_Context *) servant)->bonobo_object;
 
 	g_assert (NAUTILUS_IS_UNDO_CONTEXT (context));
