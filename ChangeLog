@@ -1,5 +1,12 @@
 2002-03-10  Alexander Larsson  <alla@lysator.liu.se>
 
+	* libnautilus-private/nautilus-file.c: (have_broken_filenames),
+	(nautilus_file_rename), (nautilus_file_get_display_name):
+	Cache the value of getenv("G_BROKEN_FILENAMES"), as this getenv
+	showed up as 3.6% and nr 2 in profiles.
+
+2002-03-10  Alexander Larsson  <alla@lysator.liu.se>
+
 	* src/nautilus-property-browser.c (element_clicked_callback):
 	Pass event->event to gtk_drag_begin in order get the right time
 	for the grab. This avoids a race with the ungrab that could lead

@@ -1034,6 +1034,23 @@ rename_guts (NautilusFile *file,
 	gnome_vfs_uri_unref (vfs_uri);
 }
 
+static gboolean
+have_broken_filenames (void)
+{
+	static gboolean initialized = FALSE;
+	static gboolean broken;
+  
+	if (initialized) {
+		return broken;
+	}
+
+	broken = g_getenv ("G_BROKEN_FILENAMES") != NULL;
+  
+	initialized = TRUE;
+  
+	return broken;
+}
+
 void
 nautilus_file_rename (NautilusFile *file,
 		      const char *new_name,
@@ -1042,7 +1059,7 @@ nautilus_file_rename (NautilusFile *file,
 {
 	char *locale_name;
 
-	if (!has_local_path (file) || g_getenv ("G_BROKEN_FILENAMES") == NULL) {
+	if (!has_local_path (file) || !have_broken_filenames ()) {
 		rename_guts (file, new_name, callback, callback_data);
 		return;
 	}
@@ -2220,7 +2237,7 @@ nautilus_file_get_display_name (NautilusFile *file)
 			 * validate as good UTF-8.
 			 */
 			if (has_local_path (file)) {
-				if (g_getenv ("G_BROKEN_FILENAMES") != NULL
+				if (have_broken_filenames ()
 				    || !g_utf8_validate (name, -1, NULL)) {
 					utf8_name = g_locale_to_utf8 (name, -1, NULL, NULL, NULL);
 					if (utf8_name != NULL) {
