@@ -69,7 +69,6 @@ nautilus_SOURCES = \
 	nautilus-location-bar.c         	\
 	nautilus-main.c 			\
 	nautilus-navigation-bar.c         	\
-	nautilus-preferences-dialog.c		\
 	nautilus-profiler.c			\
 	nautilus-property-browser.c     	\
 	nautilus-search-bar-criterion.c		\
@@ -82,7 +81,6 @@ nautilus_SOURCES = \
 	nautilus-simple-search-bar.c		\
 	nautilus-switchable-navigation-bar.c	\
 	nautilus-switchable-search-bar.c	\
-	nautilus-theme-selector.c		\
 	nautilus-view-frame-corba.c		\
 	nautilus-view-frame.c			\
 	nautilus-window-manage-views.c		\
@@ -103,7 +101,6 @@ nautilus_SOURCES = \
 	nautilus-location-bar.h			\
 	nautilus-main.h				\
 	nautilus-navigation-bar.h		\
-	nautilus-preferences-dialog.h		\
 	nautilus-profiler.h			\
 	nautilus-property-browser.h		\
 	nautilus-search-bar-criterion-private.h	\
@@ -118,7 +115,6 @@ nautilus_SOURCES = \
 	nautilus-simple-search-bar.h		\
 	nautilus-switchable-navigation-bar.h	\
 	nautilus-switchable-search-bar.h	\
-	nautilus-theme-selector.h		\
 	nautilus-view-frame-private.h		\
 	nautilus-view-frame.h			\
 	nautilus-window-manage-views.h		\

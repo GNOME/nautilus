@@ -34,7 +34,6 @@
 #include "nautilus-bookmark-parsing.h"
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-file-management-properties.h"
-#include "nautilus-preferences-dialog.h"
 #include "nautilus-property-browser.h"
 #include "nautilus-signaller.h"
 #include "nautilus-switchable-navigation-bar.h"

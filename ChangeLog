@@ -1,3 +1,14 @@
+2002-11-05  Diego Gonzalez  <diego@pemas.net>
+
+	* po/POTFILES.in: remove nautilus-preferences-dialog.c and
+	nautilus-theme-selector.c
+
+	* src/Makefile.am: remove nautilus-preferences-dialog.[c-h] and 
+	nautilus-theme-selector.[c-h] from the built, as they are not used anymore
+
+	* src/nautilus-window-menus.c: remove nautilus-preferences-dialog.h
+	from the includes
+
 2002-11-04  Diego González  <diego@pemas.net>
 
 	* src/nautilus-window-toolbars.c: (throbber_set_throbbing):
