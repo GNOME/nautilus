@@ -160,8 +160,33 @@ nautilus_index_panel_new (void)
 static void  
 nautilus_index_panel_drag_data_received(GtkWidget *widget, GdkDragContext *context, gint x, gint y, GtkSelectionData *selection_data, guint info, guint time)
 {
-  /* FIXME: set up the new color here */
-  printf("something dropped on index panel: %d\n", info);
+  gchar temp_str[512];
+  guint16 *data = (guint16 *)selection_data->data;
+  switch (info)
+    {
+  	  case TARGET_URI_LIST: 	
+  	    printf("dropped data on index panel: %s", selection_data->data);
+  			
+  		/* handle background images and keywords soon */
+  			
+  		/* handle images dropped on the logo specially */
+  			
+  		/* handle files by setting the location to the file */
+  			
+  		break;
+  		
+  		
+  		/* handle colors - for now, just use a simple color, and don't save it in the meta-data yet */
+  			
+		case TARGET_COLOR:
+          g_snprintf(temp_str, sizeof(temp_str), "rgb:%2x/%2x/%2x", data[0], data[1], data[2]);
+		  nautilus_index_panel_set_up_background(widget, temp_str);
+		 break;
+		
+		default:
+			printf("unknown drop type: %d\n", info);
+			break;	
+	}
 }
 
 /* add a new meta-view to the index panel */
