@@ -415,6 +415,39 @@ nautilus_pop_up_context_menu (GtkMenu	*menu,
 	gtk_object_sink (GTK_OBJECT(menu));
 }
 
+GtkMenuItem *
+nautilus_gtk_menu_append_separator (GtkMenu *menu)
+{
+	GtkWidget *menu_item;
+
+	menu_item = gtk_menu_item_new ();
+	gtk_widget_set_sensitive (menu_item, FALSE);
+	gtk_widget_show (menu_item);
+	gtk_menu_append (menu, menu_item);
+
+	return GTK_MENU_ITEM (menu_item);
+}
+
+void
+nautilus_gtk_menu_set_item_visibility (GtkMenu *menu, int index, gboolean visible)
+{
+	GList *children;
+	GtkWidget *menu_item;
+
+	g_return_if_fail (GTK_IS_MENU (menu));
+
+	children = gtk_container_children (GTK_CONTAINER (menu));
+	g_return_if_fail (index >= 0 && index < g_list_length (children));
+
+	menu_item = GTK_WIDGET (g_list_nth_data (children, index));
+	if (visible) {
+		gtk_widget_show (menu_item);
+	} else {
+		gtk_widget_hide (menu_item);
+	}
+
+	g_list_free (children);
+}
 
 void
 nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE (GtkObject *object,

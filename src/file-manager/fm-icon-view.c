@@ -519,27 +519,15 @@ static void
 fm_icon_view_create_background_context_menu_items (FMDirectoryView *view,
 						   GtkMenu *menu)
 {
-	GtkWidget *menu_item;
-
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	g_assert (GTK_IS_MENU (menu));
+
+	/* FIXME bugzilla.eazel.com 1794: Add layout items here. */
 
 	NAUTILUS_CALL_PARENT_CLASS
 		(FM_DIRECTORY_VIEW_CLASS, 
 		 create_background_context_menu_items, 
 		 (view, menu));
-	
-	/* Put a separator before this item, since previous items are
-	 * window-specific and this one is global.
-	 */
-	menu_item = gtk_menu_item_new ();
-	gtk_widget_show (menu_item);
-	gtk_menu_append (menu, menu_item);
-
-        append_one_context_menu_item
-		(FM_ICON_VIEW (view), menu, NULL, 
-		 MENU_PATH_CUSTOMIZE_ICON_TEXT, 
-		 GTK_SIGNAL_FUNC (customize_icon_text_callback));
 }
 
 static void

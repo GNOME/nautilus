@@ -65,12 +65,6 @@ static void     fm_desktop_icon_view_create_background_context_menu_items (FMDir
 static void	fm_desktop_icon_view_create_selection_context_menu_items  (FMDirectoryView 	  *view, 
 									   GtkMenu 		  *menu, 
 									   GList 		  *files);
-static void     fm_desktop_icon_view_create_background_context_menu_zoom_items
-                                                                          (FMDirectoryView        *view,
-									   GtkMenu                *menu);
-static void     fm_desktop_icon_view_create_background_context_menu_background_items
-                                                                          (FMDirectoryView        *view,
-									   GtkMenu                *menu);
 static char *   fm_desktop_icon_view_get_directory_sort_by                (FMIconView             *icon_view,
 									   NautilusDirectory      *directory);
 static void     fm_desktop_icon_view_set_directory_sort_by                (FMIconView             *icon_view,
@@ -105,13 +99,8 @@ static int      desktop_icons_compare_callback                            (Nauti
 									   FMDesktopIconView      *icon_view);
 static void	create_or_rename_trash 					  (void);
 								   
-static void	bump_zoom_level 					  (FMDirectoryView 	  *view, 
-									   int 			   zoom_increment);
-static void	zoom_to_level 						  (FMDirectoryView 	  *view, 
-									   int 			   zoom_level);
-static void	restore_default_zoom_level 				  (FMDirectoryView 	  *view);
-static gboolean can_zoom_in 						  (FMDirectoryView 	  *view);
-static gboolean can_zoom_out 						  (FMDirectoryView 	  *view);
+static gboolean real_supports_zooming 	     	 		  	  (FMDirectoryView  *view);
+
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDesktopIconView,
 				   fm_desktop_icon_view,
@@ -157,14 +146,8 @@ fm_desktop_icon_view_initialize_class (FMDesktopIconViewClass *klass)
 	object_class->destroy = fm_desktop_icon_view_destroy;
 
         fm_directory_view_class->create_background_context_menu_items = fm_desktop_icon_view_create_background_context_menu_items;
-	fm_directory_view_class->create_background_context_menu_background_items = fm_desktop_icon_view_create_background_context_menu_background_items;
-	fm_directory_view_class->create_background_context_menu_zoom_items = fm_desktop_icon_view_create_background_context_menu_zoom_items;
 	fm_directory_view_class->create_selection_context_menu_items = fm_desktop_icon_view_create_selection_context_menu_items;
-	fm_directory_view_class->bump_zoom_level = bump_zoom_level;
-	fm_directory_view_class->zoom_to_level = zoom_to_level;
-	fm_directory_view_class->restore_default_zoom_level = restore_default_zoom_level;
-	fm_directory_view_class->can_zoom_in = can_zoom_in;
-	fm_directory_view_class->can_zoom_out = can_zoom_out;
+	fm_directory_view_class->supports_zooming = real_supports_zooming;
 
         fm_icon_view_class->get_directory_sort_by       = fm_desktop_icon_view_get_directory_sort_by;
         fm_icon_view_class->set_directory_sort_by       = fm_desktop_icon_view_set_directory_sort_by;
@@ -346,13 +329,6 @@ new_terminal_menu_item_callback (GtkMenuItem *item, FMDirectoryView *view)
 }
 
 static void
-new_folder_menu_item_callback (GtkMenuItem *item, FMDirectoryView *directory_view)
-{
-	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
-	fm_directory_view_new_folder (directory_view);
-}
-
-static void
 reset_desktop_background_menu_item_callback (GtkMenuItem *item, FMDirectoryView *view)
 {
 	nautilus_background_reset (fm_directory_view_get_background (view));
@@ -362,33 +338,6 @@ static void
 change_desktop_background_menu_item_callback (GtkMenuItem *item, FMDirectoryView *view)
 {
 	nautilus_launch_application_from_command ("background-properties-capplet", NULL);
-}
-
-static void
-fm_desktop_icon_view_create_background_context_menu_zoom_items (FMDirectoryView *view, GtkMenu *menu)
-{
-	/* Do nothing - the desktop does not support zooming.
-	 */
-}
-
-static void
-fm_desktop_icon_view_create_background_context_menu_background_items (FMDirectoryView *view, GtkMenu *menu)
-{
-	GtkWidget *menu_item;
-
-	menu_item = gtk_menu_item_new_with_label (_("Reset Desktop Background"));
-	gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
-			    GTK_SIGNAL_FUNC (reset_desktop_background_menu_item_callback), view);
-	gtk_widget_set_sensitive (menu_item,
-				  nautilus_directory_background_is_set (fm_directory_view_get_background (view)));
-	gtk_widget_show (menu_item);
-	gtk_menu_append (menu, menu_item);
-
-	menu_item = gtk_menu_item_new_with_label (_("Change Desktop Background"));
-	gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
-			    GTK_SIGNAL_FUNC (change_desktop_background_menu_item_callback), view);
-	gtk_widget_show (menu_item);
-	gtk_menu_append (menu, menu_item);
 }
 
 static void 
@@ -461,24 +410,30 @@ fm_desktop_icon_view_create_selection_context_menu_items (FMDirectoryView *view,
 
 static void
 fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view, GtkMenu *menu)
-{
+{	
 	GtkWidget *menu_item;
-	
+	int position;
+
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	g_assert (GTK_IS_MENU (menu));
 
-	/* We are not calling the parent class because we don't want the zoom menu items here.
-	 * Is there a better way to do this? */
-	fm_directory_view_add_context_menu_item (view, menu, _("_New Folder"), NULL, new_folder_menu_item_callback,
-		       			 TRUE);
+	NAUTILUS_CALL_PARENT_CLASS
+		(FM_DIRECTORY_VIEW_CLASS, 
+		 create_background_context_menu_items, 
+		 (view, menu));
 
-	fm_directory_view_add_context_menu_item (view, menu, _("New Terminal"), NULL, new_terminal_menu_item_callback,
-					 TRUE);
+	position = fm_directory_view_get_context_menu_index
+			(menu, FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER) + 1;
+	fm_directory_view_insert_context_menu_item 
+		(view, menu, 
+		 _("New Terminal"), 
+		 NULL, 
+		 position,
+		 new_terminal_menu_item_callback,
+		 TRUE);
 
 	/* Add Disks item to show state of removable volumes */
-	menu_item = gtk_menu_item_new ();
-	gtk_widget_show (menu_item);
-	gtk_menu_append (menu, menu_item);
+	nautilus_gtk_menu_append_separator (menu);
 
 	menu_item = gtk_menu_item_new_with_label (_("Disks"));
 	gtk_widget_show (menu_item);
@@ -530,14 +485,26 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 		g_list_free (disk_list);
 	}
 	
-	/* Add seperator */
-	menu_item = gtk_menu_item_new ();
-	gtk_widget_show (menu_item);
-	gtk_menu_append (menu, menu_item);
+	position = fm_directory_view_get_context_menu_index
+			(menu, FM_DIRECTORY_VIEW_MENU_PATH_RESET_BACKGROUND);
+	/* Hide the old Reset Background item so we can replace it with one of our own */
+	nautilus_gtk_menu_set_item_visibility (menu, position, FALSE);
+	
+	fm_directory_view_insert_context_menu_item 
+		(view, menu, 
+		 _("Reset Desktop Background"), 
+		 NULL, 
+		 position++,
+		 reset_desktop_background_menu_item_callback,
+		 nautilus_directory_background_is_set (fm_directory_view_get_background (view)));
 
-	/* Desktop background items */
-	fm_desktop_icon_view_create_background_context_menu_background_items (view, menu);
-
+	fm_directory_view_insert_context_menu_item 
+		(view, menu, 
+		 _("Change Desktop Background"), 
+		 NULL, 
+		 position,
+		 change_desktop_background_menu_item_callback,
+		 TRUE);
 }
 
 static char *
@@ -940,34 +907,14 @@ desktop_icons_compare_callback (NautilusIconContainer *container,
 	}
 }
 
-
-/** Turn off all the zoom handling, so there's no 
- * sneaky backdoor way to zoom the desktop.
- */
-static void
-bump_zoom_level (FMDirectoryView *view, int zoom_increment)
+static gboolean
+real_supports_zooming (FMDirectoryView *view)
 {
-}
-
-static void
-zoom_to_level (FMDirectoryView *view, int zoom_level)
-{
-}
-
-static void
-restore_default_zoom_level (FMDirectoryView *view)
-{
-}
-
-static gboolean 
-can_zoom_in (FMDirectoryView *view) 
-{
+	/* Can't zoom on the desktop, because doing so would cause all
+	 * sorts of complications involving the fixed-size window.
+	 */
 	return FALSE;
 }
 
-static gboolean 
-can_zoom_out (FMDirectoryView *view) 
-{
-	return FALSE;
-}
+
 

@@ -29,6 +29,7 @@
 
 #include <gtk/gtkclist.h>
 #include <gtk/gtkmenu.h>
+#include <gtk/gtkmenuitem.h>
 #include <gtk/gtkpixmap.h>
 #include <gtk/gtkwindow.h>
 
@@ -103,6 +104,12 @@ void              nautilus_pop_up_context_menu                 (GtkMenu         
 								gint16                  offset_x,
 								gint16                  offset_y,
 								int                     button);
+
+GtkMenuItem	 *nautilus_gtk_menu_append_separator	       (GtkMenu		       *menu);
+
+void		  nautilus_gtk_menu_set_item_visibility	       (GtkMenu		       *menu,
+								int			index,
+								gboolean		visible);
 /* GtkStyle */
 void              nautilus_gtk_style_set_font                  (GtkStyle               *style,
 								GdkFont                *font);

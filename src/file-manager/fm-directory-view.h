@@ -140,18 +140,6 @@ struct FMDirectoryViewClass {
 	 
 	/* Function pointers that don't have corresponding signals */
 
-	/* This method adds the items relating to zooming to the
-	 * background context menu. It's there to be overridden (by the desktop
-	 * icon view) to not add any items since zooming the desktop isn't supported.
-	 */
-	void (* create_background_context_menu_zoom_items) (FMDirectoryView *view, GtkMenu *menu);
-
-	/* This method adds the items relating to changed background to the
-	 * background context menu. It's there to be overridden (by the desktop
-	 * icon view) to add different items.
-	 */
-	void (* create_background_context_menu_background_items) (FMDirectoryView *view, GtkMenu *menu);
-
 	/* get_selection is not a signal; it is just a function pointer for
 	 * subclasses to replace (override). Subclasses must replace it
 	 * with a function that returns a newly-allocated GList of
@@ -233,6 +221,13 @@ struct FMDirectoryViewClass {
 	 */
 	gboolean (* supports_properties)	(FMDirectoryView *view);
 
+	/* supports_zooming is a function pointer that subclasses may
+	 * override to control whether or not the zooming control and
+	 * menu items should be enabled. The default implementation
+	 * returns TRUE.
+	 */
+	gboolean (* supports_zooming)		(FMDirectoryView *view);
+
 	void	(* start_renaming_item)	 	(FMDirectoryView *view,
 					  	 const char *uri);
 
@@ -276,6 +271,7 @@ void               fm_directory_view_select_all                     (FMDirectory
 void               fm_directory_view_set_selection                  (FMDirectoryView       *view,
 								     GList                 *selection);
 gboolean	   fm_directory_view_supports_properties	    (FMDirectoryView	   *view);
+gboolean	   fm_directory_view_supports_zooming	    	    (FMDirectoryView	   *view);
 void               fm_directory_view_move_copy_items                (const GList           *item_uris,
 								     const GdkPoint        *relative_item_points,
 								     const char            *target_uri,
@@ -309,11 +305,12 @@ NautilusBackground *fm_directory_view_get_background		    (FMDirectoryView 	   *
 void               fm_directory_view_pop_up_background_context_menu (FMDirectoryView       *view);
 void               fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView       *view); 
 void               fm_directory_view_update_menus                   (FMDirectoryView       *view);
-void		   fm_directory_view_add_context_menu_item	    (FMDirectoryView 	   *view, 
+GtkMenuItem 	  *fm_directory_view_insert_context_menu_item	    (FMDirectoryView 	   *view, 
 								     GtkMenu 		   *menu, 
 								     const char 	   *label,
-								     const char 	   *path,
-								     void 		  (* activate_handler) (GtkMenuItem *, FMDirectoryView *),
+								     const char 	   *identifier,
+								     int		    position,
+								     void 		  (* callback) (GtkMenuItem *, FMDirectoryView *),
 								     gboolean 		   sensitive);
 void		   fm_directory_view_new_folder			    (FMDirectoryView       *view);
 

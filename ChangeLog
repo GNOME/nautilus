@@ -1,3 +1,89 @@
+2000-09-05  John Sullivan  <sullivan@eazel.com>
+
+	Much context-menu-related cleanup and some bug fixes.
+
+	2734: comment fm_directory_view_add_context_menu_item
+
+	* libnautilus-extensions/nautilus-gtk-extensions.h,
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_menu_append_separator): New convenience function
+	for appending a separator to a GtkMenu.
+	(nautilus_gtk_menu_set_item_visibility): New convenience function
+	for hiding/showing a menu item in a GtkMenu.
+	
+	* src/file-manager/fm-directory-view.h:
+	Removed overridable function pointers for 
+	create_background_context_menu_zoom_items and
+	create_background_context_menu_background_items; I made sure the
+	API supports what these were used for in a more general way.
+	Added overridable function pointer for supports_zooming. Now the
+	base class handles disabling/removing things for subclasses that
+	don't support zooming.
+	Changed fm_directory_view_add_context_menu_item to
+	_insert_context_menu_item and gave it a position parameter.
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize_class): removed function pointer
+	assignment for deleted calls; added function pointer assignment
+	for new supports_zooming call.
+	(select_all_callback): Removed this function because I removed
+	the item from the context menu (as per bug 1794).
+	(fm_directory_view_bump_zoom_level),
+	(fm_directory_view_zoom_to_level),
+	(fm_directory_view_set_zoom_level),
+	(fm_directory_view_restore_default_zoom_level),
+	(fm_directory_view_can_zoom_in), (fm_directory_view_can_zoom_out):
+	Bail out without calling overridable function pointer for these
+	calls if supports_zooming is FALSE.
+	(finish_inserting_menu_item): New function, generalization of
+	finish_appending_menu_item that takes a position.
+	(finish_appending_menu_item): Now calls finish_inserting_menu_item.
+	Also, renamed this from finish_adding_menu_item.
+	(compute_menu_item_info): Removed ellipsis from "Show Properties"
+	and added comment explaining why it needs no ellipsis.
+	(append_gtk_menu_item_with_view),
+	(append_selection_menu_subtree): Update for adding -> appending rename.
+	(fm_directory_view_insert_context_menu_item): Generalization of
+	_append_context_menu_item that takes a position parameter.
+	(fm_directory_view_append_context_menu_item): Renamed from
+	_add_context_menu_item, and now calls _insert_context_menu_item.
+	(real_create_background_context_menu_zoom_items),
+	(real_create_background_context_menu_background_items):
+	Removed these functions. These menu items are no longer treated as
+	special cases.
+	(fm_directory_view_real_create_background_context_menu_items):
+	Now inserts zooming items only if supports_zooming is TRUE;
+	resurrected the accidentally-obliterated "Reset Background" item.
+	(add_separator): Removed this function in favor of 
+	nautilus_gtk_menu_append_separator.
+	(add_application_to_gtk_menu), (add_component_to_gtk_menu),
+	(create_open_with_gtk_menu),
+	Update for API renames.
+	(fm_directory_view_real_create_selection_context_menu_items):
+	Use nautilus_gtk_menu_append_separator.
+	(fm_directory_view_supports_zooming): New function, calls 
+	virtual function.
+	(fm_directory_view_real_supports_zooming): New function,
+	returns TRUE.
+
+	* src/file-manager/fm-icon-view.c:
+	(fm_icon_view_create_background_context_menu_items):
+	Remove "Icon Captions..." item per bug 1794
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_create_background_context_menu_zoom_items),
+	(fm_desktop_icon_view_create_background_context_menu_background_items),
+	(bump_zoom_level), (zoom_to_level), (restore_default_zoom_level),
+	(can_zoom_in), (can_zoom_out): Removed these functions due to
+	reworking the responsibilities of super- and subclass.
+	(real_supports_zooming): New function, returns FALSE.	
+	(fm_desktop_icon_view_initialize_class): Remove overrides of various
+	functions; add override for supports_zooming.
+	(new_folder_menu_item_callback): Removed this now that it inherits
+	New Folder from parent.
+	(fm_desktop_icon_view_create_background_context_menu_items):
+	Cleaned this up to start with inherited and make modifications
+	as necessary rather than reimplementing the whole thing.
+
 2000-09-05  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-protocols.c:
