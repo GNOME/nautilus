@@ -1764,8 +1764,7 @@ create_emblems_page (FMPropertiesWindow *window)
 	NautilusFile *file;
 	GList *icons, *l;
 
-	
-	file = window->details->target_file;
+	file = window->details->original_file;
 
 	/* The emblems wrapped table */
 	scroller = eel_scrolled_wrap_table_new (TRUE, &emblems_table);
