@@ -25,102 +25,34 @@
  * view component.
  */
 
+/* WHAT YOU NEED TO CHANGE: You need to change include
+ * component-specific header below the include of config.h. Then look
+ * for the CHANGE comments below and change the #defines.
+ */
+
 #include <config.h>
-
-#include <libgnome/gnome-defs.h> /* must come before gnome-init.h */
-#include <libgnomeui/gnome-init.h> /* must come before liboaf.h */
-
 #include "nautilus-sample-content-view.h"
-#include <bonobo/bonobo-generic-factory.h>
-#include <bonobo/bonobo-main.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtksignal.h>
-#include <liboaf/liboaf.h>
-#include <stdlib.h>
+#include <libnautilus/nautilus-view-standard-main.h>
 
-#define FACTORY_IID "OAFIID:nautilus_sample_content_view_factory:3df6b028-be44-4a18-95c3-7720f50ca0c5"
-#define VIEW_IID    "OAFIID:nautilus_sample_content_view:45c746bc-7d64-4346-90d5-6410463b43ae"
+/* CHANGE: Replace these OAFIIDs with the new ones you put in the
+ * .oafinfo file. 
+ */
+#define FACTORY_IID     "OAFIID:nautilus_sample_content_view_factory:3df6b028-be44-4a18-95c3-7720f50ca0c5"
+#define VIEW_IID        "OAFIID:nautilus_sample_content_view:45c746bc-7d64-4346-90d5-6410463b43ae"
 
-static int object_count = 0;
+/* CHANGE: Change to your executable name */
+#define EXECUTABLE_NAME "nautilus-sample-content-view"
 
-static void
-sample_object_destroyed (GtkObject *object)
-{
-	g_assert (GTK_IS_OBJECT (object));
+/* CHANGE: Change to the get_type function for your view class */
+#define GET_TYPE_FUNCTION nautilus_sample_content_view_get_type
 
-	object_count--;
-	if (object_count <= 0) {
-		gtk_main_quit ();
-	}
-}
-
-static BonoboObject *
-sample_make_object (BonoboGenericFactory *factory, 
-		    const char *iid, 
-		    gpointer callback_data)
-{
-	NautilusSampleContentView *widget;
-	NautilusView *view;
-
-	g_assert (BONOBO_IS_GENERIC_FACTORY (factory));
-	g_assert (iid != NULL);
-	g_assert (callback_data == NULL);
-
-	/* Check that this is the one type of object we know how to
-	 * create.
-	 */
-	if (strcmp (iid, VIEW_IID) != 0) {
-		return NULL;
-	}
-
-	/* Create the view. The way this sample is set up, we create a
-	 * widget which makes the NautilusView object as part of it's
-	 * initialization. This is a bit backwards as it's the view
-	 * that owns the widget.
-	 */
-	widget = NAUTILUS_SAMPLE_CONTENT_VIEW (gtk_object_new (NAUTILUS_TYPE_SAMPLE_CONTENT_VIEW, NULL));
-	view = nautilus_sample_content_view_get_nautilus_view (widget);
-
-	/* Connect a handler that will get us out of the main loop
-         * when there are no more objects outstanding.
-	 */
-	object_count++;
-	gtk_signal_connect (GTK_OBJECT (view), "destroy",
-			    sample_object_destroyed, NULL);
-
-	return BONOBO_OBJECT (view);
-}
 
 int
 main (int argc, char *argv[])
 {
-	CORBA_ORB orb;
-	BonoboGenericFactory *factory;
-	char *registration_id;
-
-	/* Initialize libraries. */
-        gnome_init_with_popt_table ("nautilus-sample-content-view", VERSION, 
-				    argc, argv,
-				    oaf_popt_options, 0, NULL); 
-	orb = oaf_init (argc, argv);
-	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
-
-
-	/* Create the factory. */
-        registration_id = oaf_make_registration_id (FACTORY_IID, getenv ("DISPLAY"));
-	factory = bonobo_generic_factory_new_multi (registration_id, 
-						    sample_make_object,
-						    NULL);
-	g_free (registration_id);
-
-	
-	/* Loop until we have no more objects. */
-	do {
-		bonobo_main ();
-	} while (object_count > 0);
-
-	/* Let the factory go. */
-	bonobo_object_unref (BONOBO_OBJECT (factory));
-
-	return EXIT_SUCCESS;
+	return nautilus_view_standard_main (EXECUTABLE_NAME, VERSION,
+					    argc, argv,
+					    FACTORY_IID, VIEW_IID,
+					    nautilus_view_create_from_get_type,
+					    GET_TYPE_FUNCTION);
 }

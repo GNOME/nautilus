@@ -43,6 +43,7 @@ libnautilusinclude_HEADERS=			\
 	nautilus-distributed-undo.h		\
 	nautilus-view-component.h		\
 	nautilus-view.h				\
+	nautilus-view-standard-main.h		\
 	nautilus-undo.h				\
 	nautilus-undo-private.h			\
 	$(NULL)
@@ -56,6 +57,7 @@ libnautilus_la_SOURCES=					\
 	nautilus-undo-transaction.h			\
 	nautilus-undo.c					\
 	nautilus-view.c					\
+	nautilus-view-standard-main.c			\
 	$(NULL)
 
 $(nautilus_view_component_idl_sources): nautilus_view_component_idl_stamp

@@ -36,33 +36,33 @@
    so it can be an expression, even an expression that contains a function call.
 */
 #define NAUTILUS_DEFINE_CLASS_BOILERPLATE(class_name, class_name_in_function_format, parent_class_type) \
-\
-static gpointer parent_class; \
-\
-GtkType \
-class_name_in_function_format##_get_type (void) \
-{ \
-	GtkType parent_type; \
-	static GtkType type; \
-        \
-	if (type == 0) { \
-		static GtkTypeInfo info = { \
-			#class_name, \
-			sizeof (class_name), \
-			sizeof (class_name##Class), \
-			(GtkClassInitFunc)class_name_in_function_format##_initialize_class, \
-			(GtkObjectInitFunc)class_name_in_function_format##_initialize, \
-			NULL, \
-			NULL, \
-			NULL \
-		}; \
-		\
-		parent_type = (parent_class_type); \
-		type = gtk_type_unique (parent_type, &info); \
-		parent_class = gtk_type_class (parent_type); \
-	} \
-        \
-	return type; \
+                                                                                                        \
+static gpointer parent_class;                                                                           \
+                                                                                                        \
+GtkType                                                                                                 \
+class_name_in_function_format##_get_type (void)                                                         \
+{                                                                                                       \
+	GtkType parent_type;                                                                            \
+	static GtkType type;                                                                            \
+                                                                                                        \
+	if (type == 0) {                                                                                \
+		static GtkTypeInfo info = {                                                             \
+			#class_name,                                                                    \
+			sizeof (class_name),                                                            \
+			sizeof (class_name##Class),                                                     \
+			(GtkClassInitFunc)class_name_in_function_format##_initialize_class,             \
+			(GtkObjectInitFunc)class_name_in_function_format##_initialize,                  \
+			NULL,                                                                           \
+			NULL,                                                                           \
+			NULL                                                                            \
+		};                                                                                      \
+                                                                                           		\
+		parent_type = (parent_class_type);                                                      \
+		type = gtk_type_unique (parent_type, &info);                                            \
+		parent_class = gtk_type_class (parent_type);                                            \
+	}                                                                                               \
+                                                                                                        \
+	return type;                                                                                    \
 }
 
 /* Call a parent class version of a virtual function (or default
@@ -72,19 +72,19 @@ class_name_in_function_format##_get_type (void) \
  * name "parent_class" as the boilerplate macro above does it.
  */
 #define NAUTILUS_CALL_PARENT_CLASS(parent_class_cast_macro, signal, parameters) \
-\
-(parent_class_cast_macro (parent_class)->signal == NULL) \
-	? 0 \
+                                                                                \
+(parent_class_cast_macro (parent_class)->signal == NULL)                        \
+	? 0                                                                     \
 	: ((* parent_class_cast_macro (parent_class)->signal) parameters)
 
 /* Call a virtual function. Useful when the virtual function is not a
  * signal, otherwise you want to gtk_signal emit. Nice because it
  * documents what it's doing and there is less chance for a typo.
  */
-#define NAUTILUS_CALL_VIRTUAL(class_cast_macro, object, signal, parameters) \
-\
-(class_cast_macro (GTK_OBJECT (object)->klass)->signal == NULL) \
-	? 0 \
+#define NAUTILUS_CALL_VIRTUAL(class_cast_macro, object, signal, parameters)        \
+                                                                                   \
+(class_cast_macro (GTK_OBJECT (object)->klass)->signal == NULL)                    \
+	? 0                                                                        \
 	: ((* class_cast_macro (GTK_OBJECT (object)->klass)->signal) parameters)
 
 #ifndef G_DISABLE_ASSERT
@@ -98,8 +98,8 @@ class_name_in_function_format##_get_type (void) \
  *					 fm_directory_view,
  *					 clear); 
  */
-#define NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL(class_pointer, class_name_in_function_format, signal) \
-\
+#define NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL(class_pointer, class_name_in_function_format, signal)     \
+                                                                                                       \
 * (void (**)(void)) & (class_pointer)->signal = class_name_in_function_format##_unimplemented_##signal
 
 /* Provide a debug-only implementation of a signal that must be implemented
@@ -109,11 +109,11 @@ class_name_in_function_format##_get_type (void) \
  * 
  * NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, clear);
  */
-#define NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL(class_name_in_function_format, signal) \
-\
-static void \
-class_name_in_function_format##_unimplemented_##signal (void) \
-{ \
+#define NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL(class_name_in_function_format, signal)        \
+                                                                                              \
+static void                                                                                   \
+class_name_in_function_format##_unimplemented_##signal (void)                                 \
+{                                                                                             \
 	g_warning ("failed to override signal " #class_name_in_function_format "->" #signal); \
 }
 

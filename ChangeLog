@@ -1,3 +1,53 @@
+2000-12-21  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	* libnautilus/nautilus-view.c, libnautilus/nautilus-view.h
+	(nautilus_view_construct,
+	nautilus_view_construct_from_bonobo_control): New construct
+	functions so it's possible for view implementations to be
+	subclasses of NautilusView.
+	(nautilus_view_new_from_bonobo_control): Implement in terms of construct function.
+	* libnautilus/nautilus-view-standard-main.h,
+	libnautilus/nautilus-view-standard-main.c:
+	(nautilus_view_standard_main_multi, nautilus_view_standard_main,
+	nautilus_view_create_from_get_type): New convenience functions
+	that encapsulate and librarify most of the cut and pasted main.c
+	code that is in every nautilus view.
+	(object_destroyed, make_object): Helper functions. 
+	* libnautilus/Makefile.am: Add nautilus-view-standard-main.[ch] to
+	build.
+	* libnautilus/nautilus-view-component.idl: Add license header
+	comment.
+
+	* libnautilus-extensions/nautilus-gtk-macros.h: Lined up the
+	backslashes to make it easier to read and edit the multi-line
+	macros.
+
+	* components/sample/README: Explain that all files in this
+	directory have "WHAT YOU NEED TO CHANGE" comments.
+	* components/sample/main.c (main): Implement in terms of
+	`nautilus_view_standard_main' and removed most of the rest of this
+	file. Now all you have to change when writing your own view is an
+	include and some defines at the top of the file. Added "WHAT YOU
+	NEED TO CHANGE" comment.
+	* components/sample/nautilus-sample-content-view.h,
+	components/sample/nautilus-sample-content-view.c: Added "WHAT YOU
+	NEED TO CHANGE" comments.
+	(nautilus_sample_content_view_get_type,
+	nautilus_sample_content_view_initialize,
+	nautilus_sample_content_view_destroy, load_location,
+	sample_load_location_callback, bonobo_sample_callback,
+	sample_merge_bonobo_items_callback): Changed everything around so
+	NautilusSampleContentView inherits from Nautilus view, not
+	GtkLabel (the widget that happens to be in the main content
+	area). This makes a lot more sense. Also fix bug 2410 but
+	including alternative code to nautilus-only macros.
+	
+	* components/sample/nautilus-sample-content-view.oafinfo: Added
+	"WHAT YOU NEED TO CHANGE" comment.
+	* components/sample/Makefile.am: Added "WHAT YOU NEED TO CHANGE" comment.
+
 2000-12-21  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus-extensions/nautilus-search-uri.c:

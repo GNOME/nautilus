@@ -27,6 +27,11 @@
  * Nautilus view components.
  */
 
+/* WHAT YOU NEED TO CHANGE: You should be able to leave this header
+ * pretty much unchanged except for renaming everything to match your
+ * component.
+ */
+
 #ifndef NAUTILUS_SAMPLE_CONTENT_VIEW_H
 #define NAUTILUS_SAMPLE_CONTENT_VIEW_H
 
@@ -42,18 +47,15 @@
 typedef struct NautilusSampleContentViewDetails NautilusSampleContentViewDetails;
 
 typedef struct {
-	GtkLabel parent_slot;
+	NautilusView parent;
 	NautilusSampleContentViewDetails *details;
 } NautilusSampleContentView;
 
 typedef struct {
-	GtkLabelClass parent_slot;
+	NautilusViewClass parent;
 } NautilusSampleContentViewClass;
 
 /* GtkObject support */
 GtkType       nautilus_sample_content_view_get_type          (void);
-
-/* Component embedding support */
-NautilusView *nautilus_sample_content_view_get_nautilus_view (NautilusSampleContentView *view);
 
 #endif /* NAUTILUS_SAMPLE_CONTENT_VIEW_H */

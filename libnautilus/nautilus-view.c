@@ -20,7 +20,8 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  Author: Elliot Lee <sopwith@redhat.com>
+ *  Authors: Elliot Lee <sopwith@redhat.com>
+ *           Maciej Stachowiak <mjs@eazel.com>
  *
  */
 
@@ -285,15 +286,35 @@ nautilus_view_new (GtkWidget *widget)
 NautilusView *
 nautilus_view_new_from_bonobo_control (BonoboControl *control)
 {
-	NautilusView *view;
-	
-	view = NAUTILUS_VIEW (gtk_object_new (NAUTILUS_TYPE_VIEW, NULL));
+	return nautilus_view_construct_from_bonobo_control 
+		(NAUTILUS_VIEW (gtk_object_new (NAUTILUS_TYPE_VIEW, NULL)), 
+		 control);
+}
+
+NautilusView *
+nautilus_view_construct (NautilusView   *view,
+			 GtkWidget      *widget)
+{
+	return nautilus_view_construct_from_bonobo_control
+		(view, bonobo_control_new (widget));
+}
+
+
+NautilusView *
+nautilus_view_construct_from_bonobo_control (NautilusView   *view,
+					     BonoboControl  *control)
+{
+	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
+	g_return_val_if_fail (BONOBO_IS_CONTROL (control), NULL);
+
 	view->details->control = control;
 	bonobo_object_add_interface (BONOBO_OBJECT (view), BONOBO_OBJECT (control));
 	nautilus_undo_set_up_bonobo_control (control);
 
 	return view;
 }
+
+
 
 static void
 nautilus_view_destroy (GtkObject *object)

@@ -1,4 +1,10 @@
-include $(top_srcdir)/Makefile.shared
+
+# WHAT YOU NEED TO CHANGE: Change all the filenames to refer to your
+# component.  Also add whatever libraries, include paths, etc you want,
+# and change the G_LOG_DOMAIN.
+
+# (does not include nautilus Makefile.shared so it's usable outside nautilus)
+NULL =
 
 INCLUDES =					\
 	-DPREFIX=\"$(prefix)\"			\

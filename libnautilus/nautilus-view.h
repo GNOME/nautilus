@@ -20,7 +20,8 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  Author: Elliot Lee <sopwith@redhat.com>
+ *  Authors: Elliot Lee <sopwith@redhat.com>
+ *           Maciej Stachowiak <mjs@eazel.com>
  *
  */
 
@@ -64,6 +65,8 @@ typedef struct {
 GtkType            nautilus_view_get_type                             (void);
 NautilusView *     nautilus_view_new                                  (GtkWidget              *widget);
 NautilusView *     nautilus_view_new_from_bonobo_control              (BonoboControl          *bonobo_control);
+
+
 BonoboControl *    nautilus_view_get_bonobo_control                   (NautilusView           *view);
 
 /* Calls to the Nautilus shell via the view frame. See the IDL for detailed comments. */
@@ -98,6 +101,14 @@ BonoboUIComponent *nautilus_view_set_up_ui                            (NautilusV
 								       const char             *datadir,
 								       const char             *ui_xml_file_name,
 								       const char             *application_name);
+
+
+/* `protected' functions for use by subclasses only. */
+NautilusView *     nautilus_view_construct                            (NautilusView           *view,
+								       GtkWidget              *widget);
+NautilusView *     nautilus_view_construct_from_bonobo_control        (NautilusView           *view,
+								       BonoboControl          *bonobo_control);
+
 
 #ifdef __cplusplus
 }
