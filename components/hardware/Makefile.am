@@ -35,3 +35,6 @@ nautilus_hardware_view_LDADD =				\
 
 EXTRA_DIST = $(server_in_files) $(nautilus_hardware_view_SOURCES)
 
+if ENABLE_HARDWARE_VIEW
+CLEANFILES = $(server_DATA) $(server_DATA).in
+endif

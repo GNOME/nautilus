@@ -72,3 +72,4 @@ EXTRA_DIST=$(server_in_files) $(platform_source) \
 	fileinfo.c				\
 	getbits.c				\
 	$(NULL)
+CLEANFILES = $(server_DATA) $(server_DATA).in
