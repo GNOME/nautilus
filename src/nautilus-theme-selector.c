@@ -127,9 +127,6 @@ static void  clear_style_for_all_rows			(NautilusThemeSelector *theme_selector);
 #define THEME_SELECTOR_WIDTH  460
 #define THEME_SELECTOR_HEIGHT 264
 
-#define SELECTOR_BACKGROUND_COLOR "rgb:FFFF/FFFF/FFFF"
-#define SELECTOR_TITLE_BAR_COLOR  "rgb:D6D6/D6D6/D6D6"
-
 static NautilusThemeSelector *main_theme_selector = NULL;
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusThemeSelector, nautilus_theme_selector, GTK_TYPE_WINDOW)
@@ -150,7 +147,6 @@ nautilus_theme_selector_initialize_class (GtkObjectClass *object_klass)
 static void
 nautilus_theme_selector_initialize (GtkObject *object)
 {
-	NautilusBackground *background;
  	NautilusThemeSelector *theme_selector;
  	GtkWidget* widget, *temp_box, *temp_hbox, *temp_frame;
 	GtkWidget *scrollwindow;
@@ -171,10 +167,6 @@ nautilus_theme_selector_initialize (GtkObject *object)
 	gtk_window_set_wmclass(GTK_WINDOW(widget), "theme_selector", "Nautilus");
 	nautilus_gtk_window_set_up_close_accelerator (GTK_WINDOW (widget));
 	
-	/* set up the background */	
-	background = nautilus_get_widget_background (GTK_WIDGET (theme_selector));
-	nautilus_background_set_color (background, SELECTOR_BACKGROUND_COLOR);	
-	
 	/* create the container box */  
   	theme_selector->details->container =  gtk_vbox_new (FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (theme_selector->details->container), 0);				
@@ -187,14 +179,11 @@ nautilus_theme_selector_initialize (GtkObject *object)
   	title_box = gtk_event_box_new();
 	gtk_container_set_border_width (GTK_CONTAINER (title_box), 0);				
  
- 	background = nautilus_get_widget_background (GTK_WIDGET (title_box));
-	nautilus_background_set_color (background, SELECTOR_TITLE_BAR_COLOR);	
-
   	gtk_widget_show(title_box);
 	gtk_box_pack_start (GTK_BOX(theme_selector->details->container), title_box, FALSE, FALSE, 0);
   	
   	temp_frame = gtk_frame_new(NULL);
-  	gtk_frame_set_shadow_type(GTK_FRAME(temp_frame), GTK_SHADOW_OUT);
+  	gtk_frame_set_shadow_type(GTK_FRAME(temp_frame), GTK_SHADOW_NONE);
   	gtk_widget_show(temp_frame);
   	gtk_container_add(GTK_CONTAINER(title_box), temp_frame);
   	
@@ -204,7 +193,8 @@ nautilus_theme_selector_initialize (GtkObject *object)
  	
 	/* add the title label */
 	theme_selector->details->title_label = nautilus_label_new (_("Nautilus Theme:"));
-	nautilus_label_make_larger (NAUTILUS_LABEL (theme_selector->details->title_label), 4);
+	nautilus_label_make_larger (NAUTILUS_LABEL (theme_selector->details->title_label), 2);
+	nautilus_label_make_bold (NAUTILUS_LABEL (theme_selector->details->title_label));
 
   	gtk_widget_show(theme_selector->details->title_label);
 	gtk_box_pack_start (GTK_BOX(temp_hbox), theme_selector->details->title_label, FALSE, FALSE, 8);
@@ -212,7 +202,10 @@ nautilus_theme_selector_initialize (GtkObject *object)
  	/* add the help label */
 	theme_selector->details->help_label = nautilus_label_new ("");
 	set_help_label (theme_selector, FALSE);
-  	gtk_widget_show(theme_selector->details->help_label);
+	nautilus_label_make_smaller (NAUTILUS_LABEL (theme_selector->details->help_label), 2);
+	nautilus_label_set_justify (NAUTILUS_LABEL (theme_selector->details->help_label), GTK_JUSTIFY_RIGHT);
+  	
+	gtk_widget_show(theme_selector->details->help_label);
 	gtk_box_pack_end (GTK_BOX(temp_hbox), theme_selector->details->help_label, FALSE, FALSE, 8);
  
  	/* add the main part of the content, which is a list view, embedded in a scrollwindow */
@@ -223,11 +216,12 @@ nautilus_theme_selector_initialize (GtkObject *object)
 	gtk_clist_set_column_width (GTK_CLIST(theme_selector->details->theme_list), 1, 80);
 	gtk_clist_set_column_width (GTK_CLIST(theme_selector->details->theme_list), 2, 180);
 	
-	gtk_clist_set_shadow_type  (GTK_CLIST (theme_selector->details->theme_list), GTK_SHADOW_NONE);
+	gtk_clist_set_shadow_type  (GTK_CLIST (theme_selector->details->theme_list), GTK_SHADOW_IN);
 			
 	scrollwindow = gtk_scrolled_window_new (NULL, gtk_clist_get_vadjustment (GTK_CLIST (theme_selector->details->theme_list)));
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_container_add (GTK_CONTAINER (scrollwindow), theme_selector->details->theme_list);	
+	gtk_container_set_border_width (GTK_CONTAINER (scrollwindow), 6);
 	gtk_clist_set_selection_mode (GTK_CLIST (theme_selector->details->theme_list), GTK_SELECTION_BROWSE);
 
 	gtk_box_pack_start (GTK_BOX (theme_selector->details->container), scrollwindow, TRUE, TRUE, 0);	
@@ -252,16 +246,14 @@ nautilus_theme_selector_initialize (GtkObject *object)
 	gtk_container_set_border_width (GTK_CONTAINER (temp_box), 0);				
   	gtk_widget_show(temp_box);
 
- 	background = nautilus_get_widget_background (GTK_WIDGET (temp_box));
-	nautilus_background_set_color (background, SELECTOR_TITLE_BAR_COLOR);	
-
   	temp_frame = gtk_frame_new(NULL);
-  	gtk_frame_set_shadow_type(GTK_FRAME(temp_frame), GTK_SHADOW_IN);
+  	gtk_frame_set_shadow_type(GTK_FRAME(temp_frame), GTK_SHADOW_NONE);
   	gtk_widget_show(temp_frame);
   	gtk_container_add(GTK_CONTAINER(temp_box), temp_frame);
 
-  	bottom_box = gtk_hbox_new(FALSE, 0);
-  	gtk_widget_show(bottom_box);
+  	bottom_box = gtk_hbox_new (FALSE, 0);
+  	gtk_widget_show (bottom_box);
+	gtk_container_set_border_width (GTK_CONTAINER (bottom_box), 4);
 	gtk_box_pack_end (GTK_BOX(theme_selector->details->container), temp_box, FALSE, FALSE, 0);
   	gtk_container_add (GTK_CONTAINER (temp_frame), bottom_box);
   	
@@ -269,19 +261,18 @@ nautilus_theme_selector_initialize (GtkObject *object)
   	theme_selector->details->add_button = gtk_button_new ();
 	gtk_widget_show(theme_selector->details->add_button);
 	
-	theme_selector->details->add_button_label = nautilus_label_new (_("Add new theme"));
-	nautilus_label_make_larger (NAUTILUS_LABEL (theme_selector->details->add_button_label), 2);
+	theme_selector->details->add_button_label = gtk_label_new (_("  Add new theme  "));
 
 	gtk_widget_show(theme_selector->details->add_button_label);
 	gtk_container_add (GTK_CONTAINER(theme_selector->details->add_button), theme_selector->details->add_button_label);
-	gtk_box_pack_end (GTK_BOX(bottom_box), theme_selector->details->add_button, FALSE, FALSE, 4);
+	gtk_box_pack_end (GTK_BOX (bottom_box), theme_selector->details->add_button, FALSE, FALSE, 4);
  	  
  	gtk_signal_connect(GTK_OBJECT (theme_selector->details->add_button), "clicked", GTK_SIGNAL_FUNC (add_new_theme_button_callback), theme_selector);
 	
 	/* now create the "remove" button */
   	theme_selector->details->remove_button = gtk_button_new();
 	
-	theme_selector->details->remove_button_label = nautilus_label_new (_("Remove theme"));
+	theme_selector->details->remove_button_label = nautilus_label_new (_("  Remove theme  "));
 	nautilus_label_make_larger (NAUTILUS_LABEL (theme_selector->details->remove_button_label), 2);
 	
 	gtk_widget_show(theme_selector->details->remove_button_label);

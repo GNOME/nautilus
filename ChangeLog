@@ -1,3 +1,17 @@
+2001-01-20  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize), (make_property_tile),
+	(nautilus_property_browser_update_contents):
+	fixed bug 3165, Customization Dialog needs layout tweaking, by
+	working with Arlo to improve it.  We also made it more GTK-theme
+	compliant
+	
+	* src/nautilus-theme-selector.c:
+	(nautilus_theme_selector_initialize):
+	Arlo and I also improved the theme selector in a similar fashion,
+	including making it GTK-theme complaint.
+	
 2001-01-20  Kenneth Christiansen  <kenneth@gnu.org>
 
 	* nautilus.desktop.in: Added new file

@@ -181,7 +181,6 @@ static void     emit_emblems_changed_signal                     (void);
 static char *   strip_extension                                 (const char              *string_to_strip);
 
 #define BROWSER_BACKGROUND_COLOR "rgb:FFFF/FFFF/FFFF"
-#define BROWSER_TITLE_BAR_COLOR  "rgb:D6D6/D6D6/D6D6"
 
 #define THEME_SELECT_COLOR "rgb:FFFF/9999/9999"
 
@@ -232,7 +231,6 @@ nautilus_property_browser_initialize_class (GtkObjectClass *object_klass)
 static void
 nautilus_property_browser_initialize (GtkObject *object)
 {
-	NautilusBackground *background;
  	NautilusPropertyBrowser *property_browser;
  	GtkWidget* widget, *temp_box, *temp_hbox, *temp_frame;
 	GtkWidget* temp_button, *temp_label;
@@ -260,12 +258,7 @@ nautilus_property_browser_initialize (GtkObject *object)
 	gtk_window_set_title (GTK_WINDOW (widget), _("Backgrounds and Emblems"));
 	gtk_window_set_wmclass (GTK_WINDOW (widget), "property_browser", "Nautilus");
 	nautilus_gtk_window_set_up_close_accelerator (GTK_WINDOW (widget));
-	
-	/* set up the background */
-	
-	background = nautilus_get_widget_background (GTK_WIDGET (property_browser));
-	nautilus_background_set_color (background, BROWSER_BACKGROUND_COLOR);	
-	
+		
 	/* create the container box */  
   	property_browser->details->container = GTK_HBOX (gtk_hbox_new (FALSE, 0));
 	gtk_container_set_border_width (GTK_CONTAINER (property_browser->details->container), 0);				
@@ -278,12 +271,9 @@ nautilus_property_browser_initialize (GtkObject *object)
 	gtk_container_set_border_width (GTK_CONTAINER (property_browser->details->category_container), 0 );				
  	property_browser->details->category_position = -1;	
  	
- 	viewport = gtk_viewport_new(NULL, NULL);
-	background = nautilus_get_widget_background (GTK_WIDGET (viewport));
-	nautilus_background_set_color (background, BROWSER_TITLE_BAR_COLOR);	
-	
+ 	viewport = gtk_viewport_new(NULL, NULL);	
 	gtk_widget_show (viewport);
-	gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_OUT);
+	gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_NONE);
 	gtk_widget_set_usize (viewport, 76, -1);
 
 	gtk_box_pack_start (GTK_BOX (property_browser->details->container),
@@ -306,38 +296,37 @@ nautilus_property_browser_initialize (GtkObject *object)
 			    TRUE, TRUE, 0);
 	
   	/* create the title box */
-  	
   	property_browser->details->title_box = gtk_event_box_new();
 	gtk_container_set_border_width (GTK_CONTAINER (property_browser->details->title_box), 0);				
  	
-  	background = nautilus_get_widget_background (GTK_WIDGET (property_browser->details->title_box));
-	nautilus_background_set_color (background, BROWSER_TITLE_BAR_COLOR);	
-
   	gtk_widget_show(property_browser->details->title_box);
 	gtk_box_pack_start (GTK_BOX(property_browser->details->content_container),
 			    property_browser->details->title_box,
 			    FALSE, FALSE, 0);
   	
   	temp_frame = gtk_frame_new(NULL);
-  	gtk_frame_set_shadow_type(GTK_FRAME(temp_frame), GTK_SHADOW_OUT);
+  	gtk_frame_set_shadow_type(GTK_FRAME(temp_frame), GTK_SHADOW_NONE);
   	gtk_widget_show(temp_frame);
   	gtk_container_add(GTK_CONTAINER(property_browser->details->title_box), temp_frame);
   	
   	temp_hbox = gtk_hbox_new(FALSE, 0);
   	gtk_widget_show(temp_hbox);
- 	gtk_container_set_border_width (GTK_CONTAINER (temp_hbox), 2);				
+ 	gtk_container_set_border_width (GTK_CONTAINER (temp_hbox), 4);				
  
   	gtk_container_add(GTK_CONTAINER(temp_frame), temp_hbox);
  	
 	/* add the title label */
 	property_browser->details->title_label = nautilus_label_new ("");
 	nautilus_label_make_larger (NAUTILUS_LABEL (property_browser->details->title_label), 4);
- 	gtk_widget_show(property_browser->details->title_label);
+	nautilus_label_make_bold   (NAUTILUS_LABEL (property_browser->details->title_label));
+ 	
+	gtk_widget_show(property_browser->details->title_label);
 	gtk_box_pack_start (GTK_BOX(temp_hbox), property_browser->details->title_label, FALSE, FALSE, 8);
  
  	/* add the help label */
 	property_browser->details->help_label = nautilus_label_new  ("");
 	gtk_widget_show(property_browser->details->help_label);
+	nautilus_label_make_smaller (NAUTILUS_LABEL (property_browser->details->help_label), 2);
 	gtk_box_pack_end (GTK_BOX(temp_hbox), property_browser->details->help_label, FALSE, FALSE, 8);
  	 	
   	/* add the bottom box to hold the command buttons */
@@ -345,16 +334,15 @@ nautilus_property_browser_initialize (GtkObject *object)
 	gtk_container_set_border_width (GTK_CONTAINER (temp_box), 0);				
   	gtk_widget_show(temp_box);
 
-  	background = nautilus_get_widget_background (temp_box);
-	nautilus_background_set_color (background, BROWSER_TITLE_BAR_COLOR);	
-
   	temp_frame = gtk_frame_new(NULL);
-  	gtk_frame_set_shadow_type(GTK_FRAME(temp_frame), GTK_SHADOW_IN);
+  	gtk_frame_set_shadow_type(GTK_FRAME(temp_frame), GTK_SHADOW_NONE);
   	gtk_widget_show(temp_frame);
   	gtk_container_add(GTK_CONTAINER(temp_box), temp_frame);
 
-  	property_browser->details->bottom_box = gtk_hbox_new(FALSE, 0);
-  	gtk_widget_show(property_browser->details->bottom_box);
+  	property_browser->details->bottom_box = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (property_browser->details->bottom_box);
+	gtk_container_set_border_width (GTK_CONTAINER (property_browser->details->bottom_box), 4);
+	
 	gtk_box_pack_end (GTK_BOX(property_browser->details->content_container), temp_box, FALSE, FALSE, 0);
   	gtk_container_add (GTK_CONTAINER (temp_frame), property_browser->details->bottom_box);
   	
@@ -362,7 +350,7 @@ nautilus_property_browser_initialize (GtkObject *object)
  	temp_button = gtk_button_new ();
 	gtk_widget_show(temp_button);
 	
-	temp_label = gtk_label_new (_("Done"));
+	temp_label = gtk_label_new (_("  Done  "));
 	gtk_widget_show(temp_label);
 	gtk_container_add (GTK_CONTAINER(temp_button), temp_label);
 	gtk_box_pack_end (GTK_BOX(property_browser->details->bottom_box), temp_button, FALSE, FALSE, 4);  
@@ -372,7 +360,7 @@ nautilus_property_browser_initialize (GtkObject *object)
   	property_browser->details->add_button = gtk_button_new ();
 	gtk_widget_show(property_browser->details->add_button);
 	
-	property_browser->details->add_button_label = gtk_label_new (_("Add new..."));
+	property_browser->details->add_button_label = gtk_label_new (_("  Add new...  "));
 	gtk_widget_show(property_browser->details->add_button_label);
 	gtk_container_add (GTK_CONTAINER(property_browser->details->add_button),
 			   property_browser->details->add_button_label);
@@ -386,7 +374,7 @@ nautilus_property_browser_initialize (GtkObject *object)
   	property_browser->details->remove_button = gtk_button_new();
 	gtk_widget_show(property_browser->details->remove_button);
 	
-	property_browser->details->remove_button_label = gtk_label_new (_("Remove..."));	
+	property_browser->details->remove_button_label = gtk_label_new (_("  Remove...  "));	
 	gtk_widget_show(property_browser->details->remove_button_label);
 	gtk_container_add (GTK_CONTAINER(property_browser->details->remove_button),
 			   property_browser->details->remove_button_label);
@@ -1704,7 +1692,7 @@ make_property_tile (NautilusPropertyBrowser *property_browser,
 			(NAUTILUS_LABEL (label), NAUTILUS_SMOOTH_BACKGROUND_SOLID_COLOR);
 		nautilus_label_set_solid_background_color
 			(NAUTILUS_LABEL (label), NAUTILUS_RGB_COLOR_WHITE);		
-
+		nautilus_label_make_smaller (NAUTILUS_LABEL (label), 2);
 		gtk_box_pack_end (GTK_BOX (temp_vbox), label, FALSE, FALSE, 2);
 		gtk_widget_show (label);
 	}
@@ -2096,7 +2084,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
  	
  	viewport = gtk_viewport_new(NULL, NULL);
 	gtk_widget_show(viewport);
-	gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_NONE);
+	gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_IN);
 	background = nautilus_get_widget_background (viewport);
 	nautilus_background_set_color (background, BROWSER_BACKGROUND_COLOR);	
 	gtk_container_add (GTK_CONTAINER (property_browser->details->content_container), property_browser->details->content_frame);
@@ -2178,13 +2166,13 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		} else {
 			switch (property_browser->details->category_type) {
 			case NAUTILUS_PROPERTY_PATTERN:
-				text = _("Add a new pattern");
+				text = _("  Add a new pattern  ");
 				break;
 			case NAUTILUS_PROPERTY_COLOR:
-				text = _("Add a new color");
+				text = _("  Add a new color  ");
 				break;
 			case NAUTILUS_PROPERTY_EMBLEM:
-				text = _("Add a new emblem");
+				text = _("  Add a new emblem  ");
 				break;
 			default:
 				text = NULL;
@@ -2246,13 +2234,13 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		/* case out instead of substituting to provide flexibilty for other languages */
 		switch (property_browser->details->category_type) {
 		case NAUTILUS_PROPERTY_PATTERN:
-			text = _("Remove a pattern");
+			text = _("  Remove a pattern  ");
 			break;
 		case NAUTILUS_PROPERTY_COLOR:
-			text = _("Remove a color");
+			text = _("  Remove a color  ");
 			break;
 		case NAUTILUS_PROPERTY_EMBLEM:
-			text = _("Remove an emblem");
+			text = _("  Remove an emblem  ");
 			break;
 		default:
 			text = NULL;
