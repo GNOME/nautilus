@@ -81,6 +81,8 @@ static void     add_command_buttons                     (NautilusIndexPanel *ind
 							 GList              *command_list);
 
 #define DEFAULT_BACKGROUND_COLOR "rgb:DDDD/DDDD/FFFF"
+#define DEFAULT_TAB_COLOR "rgb:9999/9999/9999"
+
 #define INDEX_PANEL_WIDTH 136
 #define INDEX_PANEL_HEIGHT 400
 
@@ -185,7 +187,7 @@ nautilus_index_panel_initialize (GtkObject *object)
   	index_panel->details->notebook = GTK_NOTEBOOK (gtk_notebook_new ());
 	gtk_object_ref (GTK_OBJECT (index_panel->details->notebook));
 	gtk_object_sink (GTK_OBJECT (index_panel->details->notebook));
-	gtk_widget_set_usize (GTK_WIDGET (index_panel->details->notebook), INDEX_PANEL_WIDTH, 200);
+		
 	gtk_notebook_set_show_tabs (index_panel->details->notebook, FALSE);
 	
 	/* allocate and install the command button container */
@@ -310,6 +312,17 @@ receive_dropped_color (NautilusIndexPanel *index_panel,
 		       int x, int y,
 		       GtkSelectionData *selection_data)
 {
+	guint16 *channels;
+	char *color_spec;
+
+	if (selection_data->length != 8 || selection_data->format != 16) {
+		g_warning ("received invalid color data");
+		return;
+	}
+	
+	channels = (guint16 *) selection_data->data;
+	color_spec = g_strdup_printf ("rgb:%04hX/%04hX/%04hX", channels[0], channels[1], channels[2]);
+
 	switch (hit_test (index_panel, x, y)) {
 	case NO_PART:
 		g_warning ("dropped color, but not on any part of sidebar");
@@ -319,12 +332,23 @@ receive_dropped_color (NautilusIndexPanel *index_panel,
 		nautilus_index_tabs_receive_dropped_color
 			(index_panel->details->index_tabs,
 			 x, y, selection_data);
+		
+		nautilus_directory_set_metadata (index_panel->details->directory,
+					 NAUTILUS_METADATA_KEY_SIDEBAR_TAB_COLOR,
+					 DEFAULT_TAB_COLOR,
+					 color_spec);
+		
 		break;
 	case TITLE_TAB_PART:
 		/* color dropped on title tab */
 		nautilus_index_tabs_receive_dropped_color
 			(index_panel->details->title_tab,
 			 x, y, selection_data);
+		
+		nautilus_directory_set_metadata (index_panel->details->directory,
+					 NAUTILUS_METADATA_KEY_SIDEBAR_TITLE_TAB_COLOR,
+					 DEFAULT_TAB_COLOR,
+					 color_spec);
 		break;
 	case ICON_PART:
 	case BACKGROUND_PART:
@@ -334,6 +358,7 @@ receive_dropped_color (NautilusIndexPanel *index_panel,
 			 GTK_WIDGET (index_panel), x, y, selection_data);
 		break;
 	}
+	g_free(color_spec);
 }
 
 static void  
@@ -427,7 +452,7 @@ nautilus_index_panel_activate_meta_view (NautilusIndexPanel *index_panel, int wh
 		if (GTK_WIDGET (notebook)->parent == NULL) {
 			gtk_box_pack_end (GTK_BOX (index_panel->details->container),
 					  GTK_WIDGET (notebook),
-					  FALSE, FALSE, 0);
+					  TRUE, TRUE, 2);
 		}
 		
 		gtk_widget_show (GTK_WIDGET (index_panel->details->title_tab));
@@ -689,7 +714,7 @@ nautilus_index_panel_update_info (NautilusIndexPanel *index_panel,
 {
 	NautilusDirectory *directory;
 	NautilusBackground *background;
-	char *background_color;
+	char *background_color, *color_spec;
 
 	directory = nautilus_directory_get (index_panel->details->uri);
 	nautilus_directory_unref (index_panel->details->directory);
@@ -711,6 +736,22 @@ nautilus_index_panel_update_info (NautilusIndexPanel *index_panel,
 							    DEFAULT_BACKGROUND_COLOR);
 	nautilus_background_set_color (background, background_color);
 	g_free (background_color);
+	
+	
+	/* set up the color for the tabs */
+	color_spec = nautilus_directory_get_metadata (directory,
+							    NAUTILUS_METADATA_KEY_SIDEBAR_TAB_COLOR,
+							    DEFAULT_TAB_COLOR);
+	g_message("setting tab color to %s", color_spec);
+	nautilus_index_tabs_set_color(index_panel->details->index_tabs, color_spec);
+	g_free (color_spec);
+
+	color_spec = nautilus_directory_get_metadata (directory,
+							    NAUTILUS_METADATA_KEY_SIDEBAR_TITLE_TAB_COLOR,
+							    DEFAULT_TAB_COLOR);
+	nautilus_index_tabs_set_color(index_panel->details->title_tab, color_spec);
+	g_free (color_spec);
+
 	
 	/* tell the title widget about it */
 	nautilus_index_title_set_uri (index_panel->details->title,

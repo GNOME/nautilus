@@ -527,6 +527,19 @@ nautilus_index_tabs_select_tab (NautilusIndexTabs *index_tabs, int which_tab)
 	gtk_widget_queue_draw(GTK_WIDGET(index_tabs));	
 }
 
+/* set the background color associated with a tab */
+
+void
+nautilus_index_tabs_set_color (NautilusIndexTabs *index_tabs,
+			       const char *color_spec)
+{
+	gdk_color_parse (color_spec, &index_tabs->details->tab_color);
+	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (index_tabs)), 
+				  &index_tabs->details->tab_color, FALSE, TRUE);
+	gtk_widget_queue_draw (GTK_WIDGET(index_tabs));	
+}
+ 
+
 /* receive a dropped color */
 
 void

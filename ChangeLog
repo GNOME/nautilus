@@ -1,4 +1,23 @@
-2000-04-23  J. Shane Culpepper  <pepper@eazel.com>
+2000-04-25  Andy Hertzfeld
+
+	fixed bug 519: dead space in sidebar
+	
+	* src/ntl-index-panel.c:
+	removed set_usize call that was setting the meta-views to a fixed size;
+	instead, set the expand and fill parameters to the box pack call to
+	true, so the metaview is sized to fill the available space
+	
+	fixed bug 362: tab color is settable but not remembered
+	
+	* libnautilus-extensions/nautilus-metadata.h:
+	added new metadata tags for the main tab and title tab colors
+	* src/nautilus-index-tabs.c,h:
+	added nautilus_index_tabs_set_color to set the tab color
+	* src/ntl-index-panel.c:
+	set the metadata in receive_dropped_color and set the tab color
+	from the stored metadata in index_panel_update_info
+	
+2000-04-25  J. Shane Culpepper  <pepper@eazel.com>
 	
 	* components/services/install/eazel-install.c
 	* components/services/install/eazel-install-lib-rpm.c

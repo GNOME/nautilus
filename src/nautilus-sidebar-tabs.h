@@ -63,6 +63,9 @@ char *     nautilus_index_tabs_get_title_from_index  (NautilusIndexTabs *index_t
 int        nautilus_index_tabs_hit_test              (NautilusIndexTabs *index_tabs,
 						      int                x,
 						      int                y);
+void	   nautilus_index_tabs_set_color	     (NautilusIndexTabs *index_tabs,
+						      const char *color_spec);
+						      
 void       nautilus_index_tabs_receive_dropped_color (NautilusIndexTabs *index_tabs,
 						      int                x,
 						      int                y,
