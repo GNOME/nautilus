@@ -1403,9 +1403,27 @@ nautilus_window_begin_location_change (NautilusWindow *window,
         }
 }
 
+static void
+stop_loading (NautilusViewFrame *view)
+{
+        if (view != NULL) {
+                nautilus_view_frame_stop_loading (view);
+        }
+}
+
+static void
+stop_loading_cover (gpointer data, gpointer callback_data)
+{
+        g_assert (callback_data == NULL);
+        stop_loading (NAUTILUS_VIEW_FRAME (data));
+}
+
 void
 nautilus_window_stop_loading (NautilusWindow *window)
 {
+        stop_loading (window->content_view);
+        stop_loading (window->new_content_view);
+        g_list_foreach (window->sidebar_panels, stop_loading_cover, NULL);
         nautilus_window_set_state_info (window, RESET_TO_IDLE, 0);
 }
 

@@ -1,6 +1,13 @@
 2000-10-12  Darin Adler  <darin@eazel.com>
 
-	Fixed two bugs that got in Pavel's and my way as we were testing
+	* src/nautilus-window-manage-views.c: (stop_loading),
+	(stop_loading_cover), (nautilus_window_stop_loading): Add calls to
+	tell views to stop loading. Fixes bug 2939 (NautilusView stop call
+	never made when stop button pressed).
+
+2000-10-12  Darin Adler  <darin@eazel.com>
+
+ 	Fixed two bugs that got in Pavel's and my way as we were testing
 	our bug fixes.
 	
 	* libnautilus-extensions/nautilus-directory.c:
