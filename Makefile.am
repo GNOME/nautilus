@@ -4,8 +4,11 @@ include $(top_srcdir)/Makefile.shared
 
 DESKTOP_IN_FILES= 					\
 	nautilus.desktop.in				\
+	nautilus-file-management-properties.desktop.in
+DESKTOP_APPLICATIONS_FILES=		\
+	nautilus.desktop
+DESKTOP_SETTINGS_FILES=				\
 	nautilus-file-management-properties.desktop
-DESKTOP_FILES=$(DESKTOP_IN_FILES:.desktop.in=.desktop)
 
 SUBDIRS =			\
 	libnautilus 		\
@@ -40,11 +43,15 @@ EXTRA_DIST=					\
 	Makefile.shared				\
 	add-include-prefix			\
 	$(DESKTOP_IN_FILES)			\
-	$(DESKTOP_FILES)			\
+	$(DESKTOP_APPLICATIONS_FILES)			\
+	$(DESKTOP_SETTINGS_FILES)			\
 	$(NULL)
 
 Applicationsdir = $(datadir)/applications
-Applications_DATA = $(DESKTOP_FILES)
+Applications_DATA = $(DESKTOP_APPLICATIONS_FILES)
+
+Settingsdir = $(datadir)/control-center-2.0/capplets
+Settings_DATA = $(DESKTOP_SETTINGS_FILES)
 
 dist-hook: nautilus.spec
 	cp nautilus.spec $(distdir)
