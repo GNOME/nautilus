@@ -120,7 +120,7 @@ export LC_ALL LINGUAS LANG
 
 ## Warning!  Make sure there are no spaces or tabs after the \ 
 ## continuation character, or else the rpm demons will eat you.
-CFLAGS="$RPM_OPT_FLAGS" ./configure $MYARCH_FLAGS --prefix=%{prefix} \
+CFLAGS="$RPM_OPT_FLAGS -DENABLE_SCROLLKEEPER_SUPPORT" ./configure $MYARCH_FLAGS --prefix=%{prefix} \
 	--enable-eazel-services \
 	--enable-more-warnings \
 	--sysconfdir=%{sysconfdir}
