@@ -1,3 +1,17 @@
+2000-09-14  Darin Adler  <darin@eazel.com>
+
+	Another cut at getting the tinderbox to be happy.
+	
+	* configure.in: Remove websearch directory.
+	* nautilus.spec.in: Remove ntl-web-browser, ntl-web-search, and
+	websearch directory pattern.
+	* components/services/trilobite/sample/nautilus-view/Makefile.am:
+	Fix typo (SUBDIR instead of SUBDIRS).
+	
+	* src/file-manager/fm-directory-view.c: (schedule_update_menus):
+	Only schedule an update if the menus are already merged.
+	Also made cosmetic changes.
+
 2000-09-14  Josh Barrow  <linuxfan@ionet.net>
 
 	* icons/Makefile.am:

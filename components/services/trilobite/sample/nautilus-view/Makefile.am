@@ -1,6 +1,6 @@
 NULL =
 
-SUBDIR = icons
+SUBDIRS = icons
 
 CPPFLAGS =							\
 	-DPREFIX=\"$(prefix)\"					\

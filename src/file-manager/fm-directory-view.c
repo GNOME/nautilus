@@ -3307,10 +3307,12 @@ schedule_update_menus (FMDirectoryView *view)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
-	if (view->details->update_menus_idle_id == 0)
+	if (view->details->menus_merged
+	    && view->details->update_menus_idle_id == 0) {
 		view->details->update_menus_idle_id
 			= gtk_idle_add (update_menus_idle_callback,
 					view);
+	}
 }
 
 /**
@@ -3356,11 +3358,12 @@ report_broken_symbolic_link (FMDirectoryView *view, NautilusFile *file)
 
 	target_path = nautilus_file_get_symbolic_link_target_path (file);
 	if (target_path == NULL) {
-		prompt = g_strdup_printf (_("This link can't be used, because it has no target. Do you want "
-		"to put this link in the trash?"));
+		prompt = g_strdup_printf (_("This link can't be used, because it has no target. "
+					    "Do you want to put this link in the trash?"));
 	} else {
 		prompt = g_strdup_printf (_("This link can't be used, because its target \"%s\" doesn't exist. "
-				 	    "Do you want to put this link in the trash?"), target_path);
+				 	    "Do you want to put this link in the trash?"),
+					  target_path);
 	}
 
 	dialog = nautilus_yes_no_dialog (prompt,
@@ -3414,9 +3417,9 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 
 	performed_special_handling = FALSE;
 
-	/* Note that we check for FILE_TYPE_SYMBOLIC_LINK only here, not specifically
-	 * for broken-ness, because the file type will be the target's file type
-	 * in the non-broken case.
+	/* Note that we check for FILE_TYPE_SYMBOLIC_LINK only here,
+	 * not specifically for broken-ness, because the file type
+	 * will be the target's file type in the non-broken case.
 	 */
 	if (nautilus_file_is_broken_symbolic_link (file)) {
 		report_broken_symbolic_link (view, file);
@@ -3428,14 +3431,16 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 		g_free (command);
 		performed_special_handling = TRUE;
 	} else if (file_is_launchable (file)) {
-		/* FIXME bugzilla.eazel.com 2391: This should check if the activation URI points to
-		 * something launchable, not the original file. Also, for
-		 * symbolic links we need to check the X bit on the target
-		 * file, not on the original.
+		/* FIXME bugzilla.eazel.com 2391: This should check if
+		 * the activation URI points to something launchable,
+		 * not the original file. Also, for symbolic links we
+		 * need to check the X bit on the target file, not on
+		 * the original.
 		 */
 		/* Launch executables to activate them. */
-		/* FIXME bugzilla.eazel.com 1773: This is a lame way to
-		 * run command-line tools.
+		/* FIXME bugzilla.eazel.com 1773: This is a lame way
+		 * to run command-line tools, since there's no
+		 * terminal for the output.
 		 */
 		executable_path = gnome_vfs_get_local_path_from_uri (uri);
 
@@ -3451,10 +3456,12 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 
 	if (!performed_special_handling) {
 		action_type = nautilus_mime_get_default_action_type_for_uri (uri);
-
-		/* We need to check for the case of having GNOME_VFS_MIME_ACTION_TYPE_APPLICATION as the action
-		 * but having a NULL application returned. */
 		application = nautilus_mime_get_default_application_for_uri (uri);
+
+		/* We need to check for the case of having
+		 * GNOME_VFS_MIME_ACTION_TYPE_APPLICATION as the
+		 * action but having a NULL application returned.
+		 */
 		if (action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION && application == NULL) {			
 			action_type = GNOME_VFS_MIME_ACTION_TYPE_COMPONENT;
 		}
@@ -3468,9 +3475,9 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 			 * viewers or apps, or there are errors in the
 			 * mime.keys files.
 			 */
-			g_assert (action_type == GNOME_VFS_MIME_ACTION_TYPE_NONE ||
-				  action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT);
-
+			g_assert (action_type == GNOME_VFS_MIME_ACTION_TYPE_NONE
+				  || action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT);
+			
 			fm_directory_view_switch_location
 				(view, uri, parameters->use_new_window);
 		}
@@ -3580,12 +3587,11 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 	fm_directory_view_stop (view);
 	fm_directory_view_clear (view);
 
-	/* update menus when directory is empty, before
-	 * going to new location, so they won't have any
-	 * false lingering knowledge of old selection. */
-	if (view->details->menus_merged) {
-		schedule_update_menus (view);
-	}
+	/* Update menus when directory is empty, before going to new
+	 * location, so they won't have any false lingering knowledge
+	 * of old selection.
+	 */
+	schedule_update_menus (view);
 
 	disconnect_model_handlers (view);
 
@@ -4033,7 +4039,7 @@ fm_directory_view_get_context_menu_index (GtkMenu *menu, const char *menu_path)
 
 static void
 fm_directory_view_trash_state_changed_callback (NautilusTrashMonitor *trash_monitor,
-	gboolean state, gpointer callback_data)
+						gboolean state, gpointer callback_data)
 {
 	FMDirectoryView *view;
 
