@@ -205,7 +205,7 @@ async_job_end (NautilusDirectory *directory,
 	async_job_count -= 1;
 }
 
-/* Helper to extract one value from a hash table. */
+/* Helper to get one value from a hash table. */
 static void
 get_one_value_callback (gpointer key, gpointer value, gpointer callback_data)
 {
@@ -215,7 +215,7 @@ get_one_value_callback (gpointer key, gpointer value, gpointer callback_data)
 	*returned_value = value;
 }
 
-/* Extract a single value from a hash table. */
+/* return a single value from a hash table. */
 static gpointer
 get_one_value (GHashTable *table)
 {
@@ -250,10 +250,11 @@ async_job_wake_up (void)
 		if (value == NULL) {
 			break;
 		}
+		g_hash_table_remove (waiting_directories, value);
 		nautilus_directory_async_state_changed
 			(NAUTILUS_DIRECTORY (value));
 	}
-	already_waking_up = TRUE;
+	already_waking_up = FALSE;
 }
 
 static void

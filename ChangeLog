@@ -1,3 +1,13 @@
+2000-10-20  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 3902 (Some search results do not have file
+	info displayed)
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(async_job_wake_up): Remove directory from hash table
+	when it's awoken; clear already_waking_up boolean at
+	end of routine.
+
 2000-10-20  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/nautilus-sidebar-title.c: (update_font):
