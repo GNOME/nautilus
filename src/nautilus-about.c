@@ -391,14 +391,15 @@ nautilus_about_draw_info (
 void
 nautilus_about_update_authors (NautilusAbout *about)
 {
-	GdkRectangle author_area;
+	ArtIRect author_area;
 	NautilusScalableFont *plain_font;
 	
 	/* clear the author area */
-	author_area.x = AUTHOR_LEFT_POS - 24;
-	author_area.y = AUTHOR_TOP_POS;
-	author_area.width = 2 * AUTHOR_COLUMN_WIDTH;
-	author_area.height = AUTHOR_LINE_HEIGHT * ITEMS_PER_COLUMN;
+	nautilus_art_irect_assign (&author_area,
+				   AUTHOR_LEFT_POS - 24,
+				   AUTHOR_TOP_POS,
+				   2 * AUTHOR_COLUMN_WIDTH,
+				   AUTHOR_LINE_HEIGHT * ITEMS_PER_COLUMN);
 	
 	nautilus_gdk_pixbuf_fill_rectangle_with_color
 		(about->details->background_pixbuf,

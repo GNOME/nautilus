@@ -20,6 +20,7 @@
    Boston, MA 02111-1307, USA.
 
    Authors: Darin Adler <darin@eazel.com>
+            Ramiro Estrugo <ramiro@eazel.com>
 */
 
 #ifndef NAUTILUS_ART_EXTENSIONS_H
@@ -36,15 +37,26 @@ typedef struct {
 	int y;
 } NautilusArtIPoint;
 
+extern ArtIRect NAUTILUS_ART_IRECT_EMPTY;
+extern NautilusArtIPoint NAUTILUS_ART_IPOINT_ZERO;
+
 /* More functions for ArtIRect and ArtDRect. */
-gboolean nautilus_art_irect_equal          (const ArtIRect *rect_a,
-					    const ArtIRect *rect_b);
-gboolean nautilus_art_drect_equal          (const ArtDRect *rect_a,
-					    const ArtDRect *rect_b);
-gboolean nautilus_art_irect_hits_irect     (const ArtIRect *rect_a,
-					    const ArtIRect *rect_b);
-gboolean nautilus_art_irect_contains_irect (const ArtIRect *outer_rect,
-					    const ArtIRect *inner_rect);
+gboolean nautilus_art_irect_equal          (const ArtIRect    *rect_a,
+					    const ArtIRect    *rect_b);
+gboolean nautilus_art_drect_equal          (const ArtDRect    *rect_a,
+					    const ArtDRect    *rect_b);
+gboolean nautilus_art_irect_hits_irect     (const ArtIRect    *rect_a,
+					    const ArtIRect    *rect_b);
+gboolean nautilus_art_irect_contains_irect (const ArtIRect    *outer_rect,
+					    const ArtIRect    *inner_rect);
+void     nautilus_art_irect_assign         (ArtIRect          *rect,
+					    int                x,
+					    int                y,
+					    int                width,
+					    int                height);
+void     nautilus_art_ipoint_assign        (NautilusArtIPoint *point,
+					    int                x,
+					    int                y);
 
 END_GNOME_DECLS
 

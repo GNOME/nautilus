@@ -1,3 +1,94 @@
+2000-12-19  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+	
+	* libnautilus-extensions/nautilus-art-extensions.h:
+	* libnautilus-extensions/nautilus-art-extensions.c:
+	(nautilus_art_irect_assign),
+	Convenience function to assign x,y,width,height values to an
+	ArtIRect.
+
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h:
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	(nautilus_gdk_pixbuf_is_valid),
+	A simple private function that returns whether a pixbuf is "valid"
+	or not.  Vailidy is meassured as not null, with valid pixel data
+	and non zero dimensions.
+	
+	(nautilus_gdk_pixbuf_get_frame),
+	Private function to return the frame of a GdkPixbuf in a stucture for
+	better readability.
+
+	(nautilus_gdk_pixbuf_fill_rectangle_with_color),
+	Changed it to use ArtIRect's instead of GdkRectangles to avoid
+	using unsigned and short integers.  Also, use art_irect_interset()
+	to do clipping.
+
+	(nautilus_gdk_pixbuf_save_to_file),
+	Changed the pixbuf parameter to be const.
+
+	(nautilus_gdk_pixbuf_unref_if_not_null),
+
+	(nautilus_gdk_window_get_frame),
+	Private function to return the frame of a GdkWindow in a stucture for
+	better readability.
+	
+	(nautilus_gdk_pixbuf_draw_to_drawable),
+	Renamed function to be consitent with the other pixbuf drawing
+	functions.  Also made it use ArtIRect's instead of GdkRectangles
+	to avoid using unsigned and short integers.  Rewrote the clipping
+	operations using art_irect_intersect() for better readability.
+
+	(nautilus_gdk_pixbuf_draw_to_pixbuf),
+	Renamed function to be consitent with the other pixbuf drawing
+	functions.  Also made it use ArtIRect's instead of GdkRectangles
+	to avoid using unsigned and short integers.  Rewrote the clipping
+	operations using art_irect_intersect() for better readability.
+
+	(nautilus_gdk_pixbuf_draw_to_pixbuf_alpha),
+	Renamed function to be consitent with the other pixbuf drawing
+	functions.  Also made it use ArtIRect's instead of GdkRectangles
+	to avoid using unsigned and short integers.  Changed the
+	implementation to honor all parameters including the source_x and
+	source_y.  This is needed to work around limitation in
+	gdk_pixbuf_composite().  Rewrote the clipping operations using
+	art_irect_intersect() for better readability.
+
+	(nautilus_gdk_pixbuf_new_from_pixbuf_sub_area),
+	(pixbuf_destroy_callback),
+	New function to create pixbuf from a sub area.  The pixel data is
+	shared an all memory bookeeping is taken care of for the caller by
+	simply unreffing the resulting pixbuf.
+	
+	(nautilus_gdk_pixbuf_draw_to_pixbuf_tiled),
+	Renamed function to be consitent with the other pixbuf drawing
+	functions.  Made the implementation work and honor all its
+	parameters including the origin.   Rewrote the clipping
+	operations using art_irect_intersect() for better readability.
+
+	There was a bug (5077) about this function claiming it was not
+	used except in test code.  This was true, but now that it works im
+	planning on using it in NautilusImage shortly.  I have marked that
+	bug fixed.
+	
+	(nautilus_gdk_pixbuf_show_in_eog):
+	New function to show a pixbuf externally in eog.  Useful for
+	debugging pixbuf stuff.
+
+	* libnautilus-extensions/nautilus-buffered-widget.c:
+	(nautilus_buffered_widget_draw), (nautilus_gdk_pixbuf_tile_alpha):
+	Use new gdk-pixbuf extension functions.
+	
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(nautilus_text_layout_paint):
+	Update for changes in fill_rectangle_with_color() api.
+	
+	* src/nautilus-about.c: (nautilus_about_update_authors):
+	Update for changes in fill_rectangle_with_color() api.
+
+	* test/test-nautilus-font.c: (main):
+	Update for changes in pixbuf extensions.
+
 2000-12-19  Darin Adler  <darin@eazel.com>
 
 	* components/tree/nautilus-tree-model.c: (dump_one_file_node):

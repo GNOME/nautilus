@@ -229,9 +229,8 @@ nautilus_buffered_widget_realize (GtkWidget *widget)
 static void
 nautilus_buffered_widget_draw (GtkWidget *widget, GdkRectangle *area)
 {
-	NautilusBufferedWidget	*buffered_widget;
-	GdkPoint	source_point;
-	GdkRectangle	destination_area;
+	NautilusBufferedWidget *buffered_widget;
+	ArtIRect destination_area;
 
 	g_return_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (widget));
 	g_return_if_fail (area != NULL);
@@ -245,20 +244,21 @@ nautilus_buffered_widget_draw (GtkWidget *widget, GdkRectangle *area)
 		buffered_widget_update_pixbuf (buffered_widget);
  	}
 
-	source_point.x = 0;
-	source_point.y = 0;
-
-	destination_area.x = widget->allocation.x;
-	destination_area.y = widget->allocation.y;
-	destination_area.width = widget->allocation.width;
-	destination_area.height = widget->allocation.height;
-
-	nautilus_gdk_pixbuf_render_to_drawable (buffered_widget->detail->buffer_pixbuf,
-						widget->window,
-						buffered_widget->detail->copy_area_gc,
-						&source_point,
-						&destination_area,
-						GDK_INTERP_BILINEAR);
+	nautilus_art_irect_assign (&destination_area,
+				   widget->allocation.x,
+				   widget->allocation.y,
+				   (int) widget->allocation.width,
+				   (int) widget->allocation.height);
+	
+	nautilus_gdk_pixbuf_draw_to_drawable (buffered_widget->detail->buffer_pixbuf,
+					      widget->window,
+					      buffered_widget->detail->copy_area_gc,
+					      0,
+					      0,
+					      &destination_area,
+					      GDK_RGB_DITHER_NONE,
+					      GDK_PIXBUF_ALPHA_BILEVEL,
+					      NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
 }
 
 static void
@@ -379,18 +379,21 @@ nautilus_gdk_pixbuf_tile_alpha (GdkPixbuf		*pixbuf,
 			}
 
 			if (copy_width > 0 && copy_height > 0) {
-				GdkRectangle destination_area;
+				ArtIRect destination_area;
 
-				destination_area.x = dst_x;
-				destination_area.y = dst_y;
-				destination_area.width = copy_width;
-				destination_area.height = copy_height;
-				
-				nautilus_gdk_pixbuf_render_to_pixbuf_alpha (tile_pixbuf,
-									    pixbuf,
-									    &destination_area,
-									    interpolation_mode,
-									    overall_alpha);
+				nautilus_art_irect_assign (&destination_area,
+							   dst_x,
+							   dst_y,
+							   copy_width,
+							   copy_height);
+
+				nautilus_gdk_pixbuf_draw_to_pixbuf_alpha (tile_pixbuf,
+									  pixbuf,
+									  0,
+									  0,
+									  &destination_area,
+									  NAUTILUS_OPACITY_NONE,
+									  GDK_INTERP_BILINEAR);
 			}
 
 			x += tile_width;

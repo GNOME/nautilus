@@ -365,14 +365,13 @@ main (int argc, char* argv[])
 	 */
 	{
 		ArtIRect composited_area;
-		GdkPixbuf *background_pixbuf;
+		GdkPixbuf *tile_pixbuf;
 		GdkPixbuf *text_pixbuf;
-		GdkRectangle dest_rect;
 
 		const char *text = "Foo Bar";
 		const guint font_size = 50;
 
-		background_pixbuf = create_named_background ("pale_coins.png");
+		tile_pixbuf = create_named_background ("pale_coins.png");
 		
 		composited_area.x0 = 270;
 		composited_area.y0 = 80;
@@ -381,18 +380,17 @@ main (int argc, char* argv[])
 		
 		pixbuf_draw_rectangle_around (pixbuf, &composited_area, RED);
 		
-		dest_rect.x = composited_area.x0;
-		dest_rect.y = composited_area.y0;
-		dest_rect.width = composited_area.x1 - composited_area.x0;
-		dest_rect.height = composited_area.y1 - composited_area.y0;
-
-		nautilus_gdk_pixbuf_render_to_pixbuf_tiled (background_pixbuf,
-							    pixbuf,
-							    &dest_rect,
-							    0,
-							    0);
-
-		gdk_pixbuf_unref (background_pixbuf);
+		nautilus_gdk_pixbuf_draw_to_pixbuf_tiled (tile_pixbuf,
+							  pixbuf,
+							  &composited_area,
+							  gdk_pixbuf_get_width (tile_pixbuf),
+							  gdk_pixbuf_get_height (tile_pixbuf),
+							  0,
+							  0,
+							  NAUTILUS_OPACITY_NONE,
+							  GDK_INTERP_BILINEAR);
+		
+		gdk_pixbuf_unref (tile_pixbuf);
 
 		text_pixbuf = nautilus_gdk_pixbuf_new_from_text (font,
 								 font_size,
@@ -404,18 +402,13 @@ main (int argc, char* argv[])
 								 FALSE);
 		g_assert (text_pixbuf != NULL);
 
-		gdk_pixbuf_composite (text_pixbuf,
-				      pixbuf,
-				      composited_area.x0,
-				      composited_area.y0,
-				      gdk_pixbuf_get_width (text_pixbuf),
-				      gdk_pixbuf_get_height (text_pixbuf),
-				      (double) composited_area.x0,
-				      (double) composited_area.y0,
-				      1.0,
-				      1.0,
-				      GDK_INTERP_BILINEAR,
-				      255);
+		nautilus_gdk_pixbuf_draw_to_pixbuf_alpha (text_pixbuf,
+							  pixbuf,
+							  0,
+							  0,
+							  &composited_area,
+							  128,
+							  GDK_INTERP_BILINEAR);
 
 		gdk_pixbuf_unref (text_pixbuf);
 	}
@@ -524,10 +517,8 @@ main (int argc, char* argv[])
 		nautilus_text_layout_free (text_layout);
 	}
 
-	nautilus_gdk_pixbuf_save_to_file (pixbuf, "font_test.png");
-
-	g_print ("saving test png file to font_test.png\n");
-		
+	nautilus_gdk_pixbuf_show_in_eog (pixbuf);
+	
 	gdk_pixbuf_unref (pixbuf);
 
 	gnome_vfs_shutdown ();

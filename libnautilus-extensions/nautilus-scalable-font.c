@@ -1703,22 +1703,23 @@ nautilus_text_layout_paint (const NautilusTextLayout	*text_layout,
 
 			/* Underline the text if needed */
 			if (underlined) {
-				GdkRectangle underline_rect;
+				ArtIRect underline_rect;
 
 				/* FIXME bugzilla.eazel.com 2865: This underlining code should
 				 * take into account the baseline for the rendered string rather
 				 * that doing the '-2' nonsense.
 				 */
-				underline_rect.x = x + xpos;
-				underline_rect.y = y + text_layout->font_size - 2;
-				underline_rect.width = row->width;
-				underline_rect.height = 1;
+				nautilus_art_irect_assign (&underline_rect,
+							   x + xpos,
+							   y + text_layout->font_size - 2,
+							   row->width,
+							   1);
 
 				nautilus_gdk_pixbuf_fill_rectangle_with_color (destination_pixbuf,
 									       &underline_rect,
 									       color);
 			}
-
+			
 			y += text_layout->baseline_skip;
 		} else
 			y += text_layout->baseline_skip / 2;

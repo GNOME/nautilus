@@ -20,11 +20,15 @@
    Boston, MA 02111-1307, USA.
 
    Authors: Darin Adler <darin@eazel.com>
+            Ramiro Estrugo <ramiro@eazel.com>
 */
 
 #include <config.h>
 
 #include "nautilus-art-extensions.h"
+
+ArtIRect NAUTILUS_ART_IRECT_EMPTY = { 0, 0, 0, 0 };
+NautilusArtIPoint NAUTILUS_ART_IPOINT_ZERO = { 0, 0 };
 
 gboolean
 nautilus_art_irect_contains_irect (const ArtIRect *outer_rect,
@@ -76,4 +80,30 @@ nautilus_art_drect_equal (const ArtDRect *rect_a,
 		&& rect_a->y0 == rect_b->y0
 		&& rect_a->x1 == rect_b->x1
 		&& rect_a->y1 == rect_b->y1;
+}
+
+void
+nautilus_art_irect_assign (ArtIRect *rect,
+			   int x,
+			   int y,
+			   int width,
+			   int height)
+{
+	g_return_if_fail (rect != NULL);
+
+	rect->x0 = x;
+	rect->y0 = y;
+	rect->x1 = rect->x0 + width;
+	rect->y1 = rect->y0 + height;
+}
+
+void
+nautilus_art_ipoint_assign (NautilusArtIPoint *point,
+			   int x,
+			   int y)
+{
+	g_return_if_fail (point != NULL);
+
+	point->x = x;
+	point->y = y;
 }

@@ -35,6 +35,7 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <math.h>
 #include <png.h>
+#include <stdlib.h>
 
 #define LOAD_BUFFER_SIZE 4096
 
@@ -268,102 +269,6 @@ nautilus_cancel_gdk_pixbuf_load (NautilusPixbufLoadHandle *handle)
 	free_pixbuf_load_handle (handle);
 }
 
-/* FIXME bugzilla.eazel.com 5077:
- * This fn is only used by some test code, it should probably be removed
- */
-void
-nautilus_gdk_pixbuf_render_to_pixbuf_tiled (GdkPixbuf *source_pixbuf,
-					    GdkPixbuf *destination_pixbuf,
-					    const GdkRectangle *rect,
-					    int x_dither,
-					    int y_dither)
-{
-	int x, y;
-	int start_x, start_y;
-	int end_x, end_y;
-	int tile_x, tile_y;
-	int blit_x, blit_y;
-	int tile_width, tile_height;
-	int blit_width, blit_height;
-	int tile_offset_x, tile_offset_y;
-
-	tile_width = gdk_pixbuf_get_width (source_pixbuf);
-	tile_height = gdk_pixbuf_get_height (source_pixbuf);
-
-	tile_offset_x = (rect->x - x_dither) % tile_width;
-	if (tile_offset_x < 0) {
-		tile_offset_x += tile_width;
-	}
-	g_assert (tile_offset_x >= 0 && tile_offset_x < tile_width);
-
-	tile_offset_y = (rect->y - y_dither) % tile_height;
-	if (tile_offset_y < 0) {
-		tile_offset_y += tile_height;
-	}
-	g_assert (tile_offset_y >= 0 && tile_offset_y < tile_height);
-
-	start_x = rect->x - tile_offset_x;
-	start_y = rect->y - tile_offset_y;
-
-	end_x = rect->x + rect->width;
-	end_y = rect->y + rect->height;
-
-	for (x = start_x; x < end_x; x += tile_width) {
-		blit_x = MAX (x, rect->x);
-		tile_x = blit_x - x;
-		blit_width = MIN (tile_width, end_x - x) - tile_x;
-		
-		for (y = start_y; y < end_y; y += tile_height) {
-			blit_y = MAX (y, rect->y);
-			tile_y = blit_y - y;
-			blit_height = MIN (tile_height, end_y - y) - tile_y;
-			
-// 			gdk_pixbuf_render_to_drawable (pixbuf, drawable, gc,
-// 						       tile_x, tile_y,
-// 						       blit_x, blit_y, blit_width, blit_height,
-// 						       dither, x_dither, y_dither);
-
-// 			gdk_pixbuf_render_to_drawable (pixbuf, drawable, gc,
-// 						       tile_x, tile_y,
-// 						       blit_x, blit_y, blit_width, blit_height,
-// 						       dither, x_dither, y_dither);
-
-			gdk_pixbuf_copy_area (source_pixbuf,
-					      tile_x, 
-					      tile_y,
-					      blit_width,
-					      blit_height,
-					      destination_pixbuf,
-					      blit_x,
-					      blit_y);
-
-// 		/* blit the pixbuf to the drawable */
-// 		gdk_pixbuf_render_to_drawable (pixbuf,
-// 					       drawable,
-// 					       gc,
-// 					       0,
-// 					       0,
-// 					       rectangle->x,
-// 					       rectangle->y,
-// 					       rectangle->width,
-// 					       rectangle->height,
-// 					       GDK_RGB_DITHER_NORMAL,
-// 					       origin_x,
-// 					       origin_y);
-
-// 		gdk_pixbuf_copy_area (pixbuf,
-// 				      0,
-// 				      0,
-// 				      rectangle->width,
-// 				      rectangle->height,
-// 				      destination_pixbuf,
-// 				      rectangle->x,
-// 				      rectangle->y);
-
-		}
-	}
-}
-
 /* return the average value of each component */
 void 
 nautilus_gdk_pixbuf_average_value (GdkPixbuf *pixbuf, GdkColor *color)
@@ -460,10 +365,34 @@ nautilus_gdk_pixbuf_scale_down_to_fit (GdkPixbuf *pixbuf, int max_width, int max
 	}
 }
 
+static gboolean
+nautilus_gdk_pixbuf_is_valid (const GdkPixbuf *pixbuf)
+{
+	return ((pixbuf != NULL)
+		&& (gdk_pixbuf_get_pixels (pixbuf) != NULL)
+		&& (gdk_pixbuf_get_width (pixbuf) > 0)
+		&& (gdk_pixbuf_get_height (pixbuf) > 0));
+}
+
+static ArtIRect
+nautilus_gdk_pixbuf_get_frame (const GdkPixbuf *pixbuf)
+{
+	ArtIRect frame;
+
+	g_return_val_if_fail (nautilus_gdk_pixbuf_is_valid (pixbuf), NAUTILUS_ART_IRECT_EMPTY);
+
+	frame.x0 = 0;
+	frame.y0 = 0;
+	frame.x1 = gdk_pixbuf_get_width (pixbuf);
+	frame.y1 = gdk_pixbuf_get_height (pixbuf);
+
+	return frame;
+}
+
 /**
  * nautilus_gdk_pixbuf_fill_rectangle:
  * @pixbuf: Target pixbuf to fill into.
- * @rectangle: Rectangle to fill.
+ * @area: Rectangle to fill.
  * @color: The color to use.
  *
  * Fill the rectangle with the the given color.
@@ -471,78 +400,62 @@ nautilus_gdk_pixbuf_scale_down_to_fit (GdkPixbuf *pixbuf, int max_width, int max
  * If rectangle is NULL, fill the whole pixbuf.
  */
 void
-nautilus_gdk_pixbuf_fill_rectangle_with_color (GdkPixbuf		*pixbuf,
-					       const GdkRectangle	*rectangle,
-					       guint32			color)
+nautilus_gdk_pixbuf_fill_rectangle_with_color (GdkPixbuf *pixbuf,
+					       const ArtIRect *area,
+					       guint32 color)
 {
-	GdkRectangle	area;
-	guchar		red;
-	guchar		green;
-	guchar		blue;
-	guchar		alpha;
+	ArtIRect frame;
+	ArtIRect target;
+	guchar red;
+	guchar green;
+	guchar blue;
+	guchar alpha;
+	guchar *pixels;
+	gboolean has_alpha;
+	guint pixel_offset;
+	guint rowstride;
+	guchar *row_offset;
+	int x;
+	int y;
 
-	guint		width;
-	guint		height;
-	guchar		*pixels;
-	gboolean	has_alpha;
-	guint		pixel_offset;
-	guint		rowstride;
+	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (pixbuf));
 
-	int		x;
-	int		y;
+	frame = nautilus_gdk_pixbuf_get_frame (pixbuf);
 
-	int		x1;
-	int		y1;
-	int		x2;
-	int		y2;
-	guchar		*row_offset;
-
-	g_return_if_fail (pixbuf != NULL);
-
-	width = gdk_pixbuf_get_width (pixbuf);
-	height = gdk_pixbuf_get_height (pixbuf);
 	pixels = gdk_pixbuf_get_pixels (pixbuf);
 	rowstride = gdk_pixbuf_get_rowstride (pixbuf);
 	has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
-
 	pixel_offset = has_alpha ? 4 : 3;
 
-	if (rectangle != NULL)
-	{
-		area = *rectangle;
-	}
-	else
-	{
-		area.x = 0;
-		area.y = 0;
-		area.width = width;
-		area.height = height;
-	}
+	/* If an area is given, make sure its clipped to the pixbuf frame */
+	if (area != NULL) {
+		
+		art_irect_intersect (&target, area, &frame);
 
+		if (art_irect_empty (&target)) {
+			return;
+		}
+	/* If no area is given, then use the whole pixbuf frame */
+	} else {
+		target = frame;
+	}
+	
 	red = NAUTILUS_RGBA_COLOR_GET_R (color);
 	green = NAUTILUS_RGBA_COLOR_GET_G (color);
 	blue = NAUTILUS_RGBA_COLOR_GET_B (color);
 	alpha = NAUTILUS_RGBA_COLOR_GET_A (color);
 
-	x1 = area.x;
-	y1 = area.y;
-	x2 = area.x + area.width;
-	y2 = area.y + area.height;
+	row_offset = pixels + target.y0 * rowstride;
 
-	row_offset = pixels + y1 * rowstride;
-
-	for (y = y1; y < y2; y++)
-	{
-		guchar *offset = row_offset + (x1 * pixel_offset);
+	for (y = target.y0; y < target.y1; y++) {
+		guchar *offset = row_offset + (target.x0 * pixel_offset);
 		
-		for (x = x1; x < x2; x++)
-		{
+		for (x = target.x0; x < target.x1; x++) {
 			*(offset++) = red;
 			*(offset++) = green;
 			*(offset++) = blue;
 			
-			if (has_alpha)
-			{
+			if (has_alpha) {
 				*(offset++) = alpha;
 			}
 			
@@ -552,193 +465,13 @@ nautilus_gdk_pixbuf_fill_rectangle_with_color (GdkPixbuf		*pixbuf,
 	}
 }
 
-void
-nautilus_gdk_pixbuf_render_to_drawable (const GdkPixbuf		*pixbuf,
-					GdkDrawable		*drawable,
-					GdkGC			*gc,
-					const GdkPoint		*source_point,
-					const GdkRectangle	*destination_area,
-					GdkRgbDither		dither)
-{
-	GdkPoint	src;
-	GdkRectangle	dst;
-	GdkPoint	end;
-
-	g_return_if_fail (pixbuf != NULL);
-	g_return_if_fail (drawable != NULL);
-	g_return_if_fail (gc != NULL);
-	g_return_if_fail (source_point != NULL);
-	g_return_if_fail (destination_area != NULL);
- 	g_return_if_fail (destination_area->width > 0);
- 	g_return_if_fail (destination_area->height > 0);
-	g_return_if_fail (source_point->x >= 0);
-	g_return_if_fail (source_point->y >= 0);
-
-	g_assert (gdk_pixbuf_get_width (pixbuf) > 0);
-	g_assert (gdk_pixbuf_get_height (pixbuf) > 0);
-
-	src = *source_point;
-	dst = *destination_area;
-
-	/* Clip to the left edge of the drawable */
-	if (dst.x < 0)
-	{
-		src.x += ABS (dst.x);
-		dst.x = 0;
-	}
-
-	/* Clip to the top edge of the drawable */
-	if (dst.y < 0)
-	{
-		src.y += ABS (dst.y);
-		dst.y = 0;
-	}
-	
-	end.x = src.x + dst.width;
-	end.y = src.y + dst.height;
-	
-	if (end.x >= gdk_pixbuf_get_width (pixbuf))
-	{
-		g_assert (dst.width >= (end.x - gdk_pixbuf_get_width (pixbuf)));
-		
-		dst.width -= (end.x - gdk_pixbuf_get_width (pixbuf));
-	}
-
-	if (end.y >= gdk_pixbuf_get_height (pixbuf))
-	{
-		g_assert (dst.height >= (end.y - gdk_pixbuf_get_height (pixbuf)));
-
-		dst.height -= (end.y - gdk_pixbuf_get_height (pixbuf));
-	}
-
-	if (gdk_pixbuf_get_has_alpha (pixbuf)) {
-		gdk_pixbuf_render_to_drawable_alpha ((GdkPixbuf *) pixbuf,
-				       drawable,
-				       src.x,
-				       src.y,
-				       dst.x,
-				       dst.y,
-				       dst.width,
-				       dst.height,
-				       GDK_PIXBUF_ALPHA_FULL,
-				       128,
-				       dither,
-				       0,
-				       0);
-
-	} else {
-		gdk_pixbuf_render_to_drawable ((GdkPixbuf *) pixbuf,
-				       drawable,
-				       gc,
-				       src.x,
-				       src.y,
-				       dst.x,
-				       dst.y,
-				       dst.width,
-				       dst.height,
-				       dither,
-				       0,
-				       0);
-	}
-}
-
-void
-nautilus_gdk_pixbuf_render_to_pixbuf (const GdkPixbuf		*pixbuf,
-				      GdkPixbuf			*destination_pixbuf,
-				      const GdkPoint		*source_point,
-				      const GdkRectangle	*destination_area)
-{
-	GdkPoint	src;
-	GdkRectangle	dst;
-	GdkPoint	end;
-
-	g_return_if_fail (pixbuf != NULL);
-	g_return_if_fail (destination_pixbuf != NULL);
-	g_return_if_fail (source_point != NULL);
-	g_return_if_fail (source_point->x >= 0);
-	g_return_if_fail (source_point->y >= 0);
-	g_return_if_fail (destination_area != NULL);
-	g_return_if_fail (destination_area->width > 0);
-	g_return_if_fail (destination_area->height > 0);
-
-	src = *source_point;
-	dst = *destination_area;
-
-	/* Clip to the left edge of the drawable */
-	if (dst.x < 0)
-	{
-		src.x += ABS (dst.x);
-		dst.x = 0;
-	}
-
-	/* Clip to the top edge of the drawable */
-	if (dst.y < 0)
-	{
-		src.y += ABS (dst.y);
-		dst.y = 0;
-	}
-	
-	end.x = src.x + dst.width;
-	end.y = src.y + dst.height;
-	
-	if (end.x >= gdk_pixbuf_get_width (pixbuf))
-	{
-		g_assert (dst.width >= (end.x - gdk_pixbuf_get_width (pixbuf)));
-
-		dst.width -= (end.x - gdk_pixbuf_get_width (pixbuf));
-	}
-
-	if (end.y >= gdk_pixbuf_get_height (pixbuf))
-	{
-		g_assert (dst.height >= (end.y - gdk_pixbuf_get_height (pixbuf)));
-
-		dst.height -= (end.y - gdk_pixbuf_get_height (pixbuf));
-	}
-
-	gdk_pixbuf_copy_area ((GdkPixbuf *) pixbuf,
-			      src.x,
-			      src.y,
-			      dst.width,
-			      dst.height,
-			      destination_pixbuf,
-			      dst.x,
-			      dst.y);
-}
-
-void
-nautilus_gdk_pixbuf_render_to_pixbuf_alpha (const GdkPixbuf	*pixbuf,
-					    GdkPixbuf		*destination_pixbuf,
-					    const GdkRectangle	*destination_area,
-					    GdkInterpType	interpolation_mode,
-					    guchar		overall_alpha)
-{
-	g_return_if_fail (pixbuf != NULL);
-	g_return_if_fail (destination_pixbuf != NULL);
-	g_return_if_fail (destination_area != NULL);
-	g_return_if_fail (destination_area->width > 0);
-	g_return_if_fail (destination_area->height > 0);
-
-	gdk_pixbuf_composite (pixbuf,
-			      destination_pixbuf,
-			      destination_area->x,
-			      destination_area->y,
-			      destination_area->width,
-			      destination_area->height,
-			      (double) destination_area->x,
-			      (double) destination_area->y,
-			      1.0,
-			      1.0,
-			      interpolation_mode,
-			      overall_alpha);
-}
-
 /* utility routine for saving a pixbuf to a png file.
  * This was adapted from Iain Holmes' code in gnome-iconedit, and probably
  * should be in a utility library, possibly in gdk-pixbuf itself.
  */
 gboolean
-nautilus_gdk_pixbuf_save_to_file (GdkPixbuf                  *pixbuf,
-				  const char                 *file_name)
+nautilus_gdk_pixbuf_save_to_file (const GdkPixbuf *pixbuf,
+				  const char *file_name)
 {
 	FILE *handle;
   	char *buffer;
@@ -856,4 +589,532 @@ nautilus_gdk_pixbuf_unref_if_not_null (GdkPixbuf *pixbuf_or_null)
 	if (pixbuf_or_null != NULL) {
 		gdk_pixbuf_unref (pixbuf_or_null);
 	}
+}
+
+static ArtIRect
+nautilus_gdk_window_get_frame (const GdkWindow *window)
+{
+	ArtIRect frame;
+	
+	g_return_val_if_fail (window != NULL, NAUTILUS_ART_IRECT_EMPTY);
+
+	frame.x0 = 0;
+	frame.y0 = 0;
+	gdk_window_get_size ((GdkWindow *) window, &frame.x1, &frame.y1);
+
+	return frame;
+}
+
+void
+nautilus_gdk_pixbuf_draw_to_drawable (const GdkPixbuf *pixbuf,
+				      GdkDrawable *drawable,
+				      GdkGC *gc,
+				      int source_x,
+				      int source_y,
+				      const ArtIRect *destination_area,
+				      GdkRgbDither dither,
+				      GdkPixbufAlphaMode alpha_compositing_mode,
+				      int alpha_threshold)
+{
+	ArtIRect frame;
+	ArtIRect target;
+	ArtIRect source;
+	ArtIRect destination_frame;
+	int target_width;
+	int target_height;
+	int source_width;
+	int source_height;
+
+	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (pixbuf));
+	g_return_if_fail (drawable != NULL);
+	g_return_if_fail (gc != NULL);
+	g_return_if_fail (destination_area != NULL);
+ 	g_return_if_fail (destination_area->x1 > destination_area->x0);
+ 	g_return_if_fail (destination_area->y1 > destination_area->y0);
+ 	g_return_if_fail (alpha_threshold > NAUTILUS_OPACITY_FULL);
+ 	g_return_if_fail (alpha_threshold <= NAUTILUS_OPACITY_NONE);
+ 	g_return_if_fail (alpha_compositing_mode >= GDK_PIXBUF_ALPHA_BILEVEL);
+ 	g_return_if_fail (alpha_compositing_mode <= GDK_PIXBUF_ALPHA_FULL);
+
+	frame = nautilus_gdk_pixbuf_get_frame (pixbuf);
+	destination_frame = nautilus_gdk_window_get_frame (drawable);
+	
+	g_return_if_fail (source_x >= 0);
+	g_return_if_fail (source_y >= 0);
+	g_return_if_fail (source_x < (frame.x1 - frame.x0));
+	g_return_if_fail (source_y < (frame.y1 - frame.y0));
+
+	/* Clip the destination area to the destination pixbuf frame */
+	art_irect_intersect (&target, destination_area, &destination_frame);
+	if (art_irect_empty (&target)) {
+ 		return;
+ 	}
+
+	/* Assign the source area */
+	nautilus_art_irect_assign (&source,
+				   source_x,
+				   source_y,
+				   frame.x1 - frame.x0 - source_x,
+				   frame.y1 - frame.y0 - source_y);
+
+	/* Adjust the target width if the source area is smaller than the
+	 * source pixbuf frame */
+	target_width = target.x1 - target.x0;
+	target_height = target.y1 - target.y0;
+	source_width = source.x1 - source.x0;
+	source_height = source.y1 - source.y0;
+
+	target.x1 = target.x0 + MIN (target_width, source_width);
+	target.y1 = target.y0 + MIN (target_height, source_height);
+
+	if (gdk_pixbuf_get_has_alpha (pixbuf)) {
+		gdk_pixbuf_render_to_drawable_alpha ((GdkPixbuf *) pixbuf,
+						     drawable,
+						     source.x0,
+						     source.y0,
+						     target.x0,
+						     target.y0,
+						     target.x1 - target.x0,
+						     target.y1 - target.y0,
+						     alpha_compositing_mode,
+						     alpha_threshold,
+						     dither,
+						     0,
+						     0);
+	} else {
+		gdk_pixbuf_render_to_drawable ((GdkPixbuf *) pixbuf,
+					       drawable,
+					       gc,
+					       source.x0,
+					       source.y0,
+					       target.x0,
+					       target.y0,
+					       target.x1 - target.x0,
+					       target.y1 - target.y0,
+					       dither,
+					       0,
+					       0);
+	}
+
+}
+
+/**
+ * nautilus_gdk_pixbuf_draw_to_pixbuf:
+ * @pixbuf: The source pixbuf to draw.
+ * @destination_pixbuf: The destination pixbuf.
+ * @source_x: The source pixbuf x coordiate to composite from.
+ * @source_y: The source pixbuf y coordiate to composite from.
+ * @destination_area: The destination area within the destination pixbuf.
+ *                    This area will be clipped if invalid in any way.
+ *
+ * Copy one pixbuf onto another another.  This function has some advantages
+ * over plain gdk_pixbuf_composite():
+ *
+ *   Composition paramters (source coordinate, destination area) are
+ *   given in a way that is consistent with the rest of the extensions
+ *   in this file.  That is, it matches the declaration of
+ *   nautilus_gdk_pixbuf_draw_to_pixbuf_alpha() and 
+ *   nautilus_gdk_pixbuf_draw_to_drawable() very closely.
+ *
+ *   All values are clipped to make sure the are valid.
+ *
+ */
+void
+nautilus_gdk_pixbuf_draw_to_pixbuf (const GdkPixbuf *pixbuf,
+				    GdkPixbuf *destination_pixbuf,
+				    int source_x,
+				    int source_y,
+				    const ArtIRect *destination_area)
+{
+	ArtIRect frame;
+	ArtIRect target;
+	ArtIRect source;
+	ArtIRect destination_frame;
+	int target_width;
+	int target_height;
+	int source_width;
+	int source_height;
+	
+	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (pixbuf));
+	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (destination_pixbuf));
+	g_return_if_fail (destination_area != NULL);
+	g_return_if_fail (destination_area->x1 > destination_area->x0);
+	g_return_if_fail (destination_area->y1 > destination_area->y0);
+	
+	frame = nautilus_gdk_pixbuf_get_frame (pixbuf);
+	destination_frame = nautilus_gdk_pixbuf_get_frame (destination_pixbuf);
+
+	g_return_if_fail (source_x >= 0);
+	g_return_if_fail (source_y >= 0);
+	g_return_if_fail (source_x < (frame.x1 - frame.x0));
+	g_return_if_fail (source_y < (frame.y1 - frame.y0));
+
+	/* Clip the destination area to the destination pixbuf frame */
+ 	art_irect_intersect (&target, destination_area, &destination_frame);
+	if (art_irect_empty (&target)) {
+ 		return;
+ 	}
+
+	/* Assign the source area */
+	nautilus_art_irect_assign (&source,
+				   source_x,
+				   source_y,
+				   frame.x1 - frame.x0 - source_x,
+				   frame.y1 - frame.y0 - source_y);
+
+	/* Adjust the target width if the source area is smaller than the
+	 * source pixbuf frame */
+	target_width = target.x1 - target.x0;
+	target_height = target.y1 - target.y0;
+	source_width = source.x1 - source.x0;
+	source_height = source.y1 - source.y0;
+
+	target.x1 = target.x0 + MIN (target_width, source_width);
+	target.y1 = target.y0 + MIN (target_height, source_height);
+
+	gdk_pixbuf_copy_area (pixbuf,
+			      source.x0,
+			      source.y0,
+			      target.x1 - target.x0,
+			      target.y1 - target.y0,
+			      destination_pixbuf,
+			      target.x0,
+			      target.y0);
+}
+
+/**
+ * nautilus_gdk_pixbuf_draw_to_pixbuf_alpha:
+ * @pixbuf: The source pixbuf to draw.
+ * @destination_pixbuf: The destination pixbuf.
+ * @source_x: The source pixbuf x coordiate to composite from.
+ * @source_y: The source pixbuf y coordiate to composite from.
+ * @destination_area: The destination area within the destination pixbuf.
+ *                    This area will be clipped if invalid in any way.
+ * @opacity: The opacity of the drawn tiles where 0 <= opacity <= 255.
+ * @interpolation_mode: The interpolation mode.  See <gdk-pixbuf.h>
+ *
+ * Composite one pixbuf over another.  This function has some advantages
+ * over plain gdk_pixbuf_composite():
+ *
+ *   Composition paramters (source coordinate, destination area) are
+ *   given in a way that is consistent with the rest of the extensions
+ *   in this file.  That is, it matches the declaration of
+ *   nautilus_gdk_pixbuf_draw_to_pixbuf() and 
+ *   nautilus_gdk_pixbuf_draw_to_drawable() very closely.
+ *
+ *   All values are clipped to make sure the are valid.
+ *
+ *   Workaround a limitation in gdk_pixbuf_composite() that does not allow
+ *   the source (x,y) to be greater than (0,0)
+ * 
+ */
+void
+nautilus_gdk_pixbuf_draw_to_pixbuf_alpha (const GdkPixbuf *pixbuf,
+					  GdkPixbuf *destination_pixbuf,
+					  int source_x,
+					  int source_y,
+					  const ArtIRect *destination_area,
+					  int opacity,
+					  GdkInterpType interpolation_mode)
+{
+	ArtIRect frame;
+	ArtIRect target;
+	ArtIRect source;
+	ArtIRect destination_frame;
+	int target_width;
+	int target_height;
+	int source_width;
+	int source_height;
+
+	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (pixbuf));
+	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (destination_pixbuf));
+	g_return_if_fail (destination_area != NULL);
+	g_return_if_fail (destination_area->x1 > destination_area->x0);
+	g_return_if_fail (destination_area->y1 > destination_area->y0);
+	g_return_if_fail (opacity >= NAUTILUS_OPACITY_FULL);
+	g_return_if_fail (opacity <= NAUTILUS_OPACITY_NONE);
+	g_return_if_fail (interpolation_mode >= GDK_INTERP_NEAREST);
+	g_return_if_fail (interpolation_mode <= GDK_INTERP_HYPER);
+	
+	frame = nautilus_gdk_pixbuf_get_frame (pixbuf);
+	destination_frame = nautilus_gdk_pixbuf_get_frame (destination_pixbuf);
+
+	g_return_if_fail (source_x >= 0);
+	g_return_if_fail (source_y >= 0);
+	g_return_if_fail (source_x < (frame.x1 - frame.x0));
+	g_return_if_fail (source_x < (frame.y1 - frame.y0));
+
+	/* Clip the destination area to the destination pixbuf frame */
+ 	art_irect_intersect (&target, destination_area, &destination_frame);
+ 	if (art_irect_empty (&target)) {
+ 		return;
+ 	}
+
+	/* Assign the source area */
+	nautilus_art_irect_assign (&source,
+				   source_x,
+				   source_y,
+				   frame.x1 - frame.x0 - source_x,
+				   frame.y1 - frame.y0 - source_y);
+	
+	/* Adjust the target width if the source area is smaller than the
+	 * source pixbuf frame */
+	target_width = target.x1 - target.x0;
+	target_height = target.y1 - target.y0;
+	source_width = source.x1 - source.x0;
+	source_height = source.y1 - source.y0;
+
+	target.x1 = target.x0 + MIN (target_width, source_width);
+	target.y1 = target.y0 + MIN (target_height, source_height);
+	
+	/* If the source point is not (0,0), then we need to create a sub pixbuf
+	 * with only the source area.  This is needed to work around a limitation
+	 * in gdk_pixbuf_composite() that requires the source area to be (0,0). */
+	if (source.x0 != 0 || source.y0 != 0) {
+		ArtIRect area;
+		int width;
+		int height;
+
+		width = frame.x1 - frame.x0 - source.x0;
+		height = frame.y1 - frame.y0 - source.y0;
+		
+		area.x0 = source.x0;
+		area.y0 = source.y0;
+		area.x1 = area.x0 + width;
+		area.y1 = area.y0 + height;
+		
+		pixbuf = nautilus_gdk_pixbuf_new_from_pixbuf_sub_area ((GdkPixbuf *) pixbuf, &area);
+	} else {
+		gdk_pixbuf_ref ((GdkPixbuf *) pixbuf);
+	}
+	
+	gdk_pixbuf_composite (pixbuf,
+			      destination_pixbuf,
+			      target.x0,
+			      target.y0,
+			      target.x1 - target.x0,
+			      target.y1 - target.y0,
+			      target.x0,
+			      target.y0,
+			      1.0,
+			      1.0,
+			      interpolation_mode,
+			      opacity);
+
+	gdk_pixbuf_unref ((GdkPixbuf *) pixbuf);
+}
+
+static void
+pixbuf_destroy_callback (guchar *pixels,
+			 gpointer callback_data)
+{
+	g_return_if_fail (pixels != NULL);
+	g_return_if_fail (callback_data != NULL);
+
+	gdk_pixbuf_unref ((GdkPixbuf *) callback_data);
+}
+
+/**
+ * nautilus_gdk_pixbuf_new_from_pixbuf_sub_area:
+ * @pixbuf: The source pixbuf.
+ * @area: The area within the source pixbuf to use for the sub pixbuf.
+ *        This area needs to be contained within the bounds of the 
+ *        source pixbuf, otherwise it will be clipped to that. 
+ *
+ * Return value: A newly allocated pixbuf that shares the pixel data
+ *               of the source pixbuf in order to represent a sub area.
+ *
+ * Create a pixbuf from a sub area of another pixbuf.  The resulting pixbuf
+ * will share the pixel data of the source pixbuf.  Memory bookeeping is
+ * all taken care for the caller.  All you need to do is gdk_pixbuf_unref()
+ * the resulting pixbuf to properly free resources.
+ */
+GdkPixbuf *
+nautilus_gdk_pixbuf_new_from_pixbuf_sub_area (GdkPixbuf *pixbuf,
+					      const ArtIRect *area)
+{
+	GdkPixbuf *sub_pixbuf;
+	ArtIRect frame;
+	ArtIRect target;
+	guchar *pixels;
+	
+	g_return_val_if_fail (nautilus_gdk_pixbuf_is_valid (pixbuf), NULL);
+	g_return_val_if_fail (area != NULL, NULL);
+	g_return_val_if_fail (area->x1 > area->x0, NULL);
+	g_return_val_if_fail (area->y1 > area->y0, NULL);
+	
+	frame = nautilus_gdk_pixbuf_get_frame (pixbuf);
+
+ 	art_irect_intersect (&target, area, &frame);
+ 	if (art_irect_empty (&target)) {
+ 		return NULL;
+ 	}
+
+	/* Since we are going to be sharing the given pixbuf's data, we need 
+	 * to ref it.  It will be unreffed in the destroy function above */
+	gdk_pixbuf_ref (pixbuf);
+
+	/* Compute the offset into the pixel data */
+	pixels = 
+		gdk_pixbuf_get_pixels (pixbuf)
+		+ (target.y0 * gdk_pixbuf_get_rowstride (pixbuf))
+		+ (target.x0 * (gdk_pixbuf_get_has_alpha (pixbuf) ? 4 : 3));
+	
+	/* Make a pixbuf pretending its real estate is the sub area */
+	sub_pixbuf = gdk_pixbuf_new_from_data (pixels,
+					       GDK_COLORSPACE_RGB,
+					       gdk_pixbuf_get_has_alpha (pixbuf),
+					       8,
+					       target.x1 - target.x0,
+					       target.y1 - target.y0,
+					       gdk_pixbuf_get_rowstride (pixbuf),
+					       pixbuf_destroy_callback,
+					       pixbuf);
+
+	return sub_pixbuf;
+}
+
+/**
+ * nautilus_gdk_pixbuf_draw_to_pixbuf_tiled:
+ * @pixbuf: Source tile pixbuf.
+ * @destination_pixbuf: Destination pixbuf.
+ * @destination_area: Area of the destination pixbuf to tile.
+ * @tile_width: Width of the tile.  This can be less than width of the
+ *              tile pixbuf, but not greater.
+ * @tile_height: Height of the tile.  This can be less than width of the
+ *               tile pixbuf, but not greater.
+ * @tile_origin_x: The x coordinate of the tile origin.  Can be negative.
+ * @tile_origin_y: The y coordinate of the tile origin.  Can be negative.
+ * @opacity: The opacity of the drawn tiles where 0 <= opacity <= 255.
+ * @interpolation_mode: The interpolation mode.  See <gdk-pixbuf.h>
+ *
+ * Fill an area of a pixbuf with a tile.
+ */
+void
+nautilus_gdk_pixbuf_draw_to_pixbuf_tiled (const GdkPixbuf *pixbuf,
+					  GdkPixbuf *destination_pixbuf,
+					  const ArtIRect *destination_area,
+					  int tile_width,
+					  int tile_height,
+					  int tile_origin_x,
+					  int tile_origin_y,
+					  guchar opacity,
+					  GdkInterpType interpolation_mode)
+{
+	ArtIRect frame;
+	ArtIRect target;
+	int x;
+	int y;
+	NautilusArtIPoint min_point;
+	NautilusArtIPoint max_point;
+	int num_left;
+	int num_above;
+
+	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (destination_pixbuf));
+	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (pixbuf));
+	g_return_if_fail (tile_width > 0);
+	g_return_if_fail (tile_height > 0);
+	g_return_if_fail (tile_width <= gdk_pixbuf_get_width (pixbuf));
+	g_return_if_fail (tile_height <= gdk_pixbuf_get_height (pixbuf));
+	g_return_if_fail (opacity != NAUTILUS_OPACITY_FULL);
+	g_return_if_fail (interpolation_mode >= GDK_INTERP_NEAREST);
+	g_return_if_fail (interpolation_mode <= GDK_INTERP_HYPER);
+
+	frame = nautilus_gdk_pixbuf_get_frame (destination_pixbuf);
+
+	if (destination_area != NULL) {
+		art_irect_intersect (&target, destination_area, &frame);
+
+		if (art_irect_empty (&target)) {
+			return;
+		}
+	} else {
+		target = frame;
+	}
+
+	/* The number of tiles left and above the target area */
+	num_left = (target.x0 - tile_origin_x) / tile_width;
+	num_above = (target.y0 - tile_origin_y) / tile_height;
+	
+	nautilus_art_ipoint_assign (&min_point,
+				    tile_origin_x - tile_width + (num_left * tile_width),
+				    tile_origin_y - tile_height + (num_above * tile_height));
+	
+	nautilus_art_ipoint_assign (&max_point,
+				    (target.x1 + 2 * tile_width),
+				    (target.y1 + 2 * tile_height));
+	
+	for (y = min_point.y; y <= max_point.y; y += tile_height) {
+		for (x = min_point.x; x <= max_point.x; x += tile_width) {
+			ArtIRect current;
+			ArtIRect area;
+
+			nautilus_art_irect_assign (&current, x, y, tile_width, tile_height);
+
+			/* FIXME: A potential speed improvement here would be to clip only the
+			 * first and last rectangles, not the ones in between.  
+			 */
+			art_irect_intersect (&area, &target, &current);
+
+			if (!art_irect_empty (&area)) {
+				g_assert (area.x0 >= x);
+				g_assert (area.y0 >= y);
+
+				if (opacity == NAUTILUS_OPACITY_NONE) {
+					nautilus_gdk_pixbuf_draw_to_pixbuf (pixbuf,
+									    destination_pixbuf,
+									    area.x0 - x,
+									    area.y0 - y,
+									    &area);
+				} else {
+					nautilus_gdk_pixbuf_draw_to_pixbuf_alpha (pixbuf,
+										  destination_pixbuf,
+										  area.x0 - x,
+										  area.y0 - y,
+										  &area,
+										  opacity,
+										  interpolation_mode);
+				}
+			}
+		}
+	}
+}
+
+/**
+ * nautilus_gdk_pixbuf_show_in_eog:
+ * @pixbuf: Pixbuf to show.
+ *
+ * Show the given pixbuf in eog.  This is very useful for debugging pixbuf
+ * stuff.  Perhaps this function should be #ifdef DEBUG or something like that.
+ */
+void
+nautilus_gdk_pixbuf_show_in_eog (const GdkPixbuf *pixbuf)
+{
+	char *command;
+	char *file_name;
+	gboolean save_result;
+
+	g_return_if_fail (pixbuf != NULL);
+
+	file_name = g_strdup ("/tmp/nautilus-debug-png-file-XXXXXX");
+
+	if (mktemp (file_name) != file_name) {
+		g_free (file_name);
+		file_name = g_strdup_printf ("/tmp/isis-debug-png-file.%d", getpid ());
+	}
+
+	save_result = nautilus_gdk_pixbuf_save_to_file (pixbuf, file_name);
+
+	if (save_result == FALSE) {
+		g_warning ("Failed to save '%s'", file_name);
+		g_free (file_name);
+		return;
+	}
+	
+	command = g_strdup_printf ("eog %s", file_name);
+
+	system (command);
+	g_free (command);
+	remove (file_name);
+	g_free (file_name);
 }
