@@ -1,3 +1,19 @@
+2002-07-08  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* libnautilus-private/filesystem-attributes.xml:
+	* libnautilus-private/nautilus-volume-monitor.c:
+	(has_removable_mntent_options), (get_removable_volumes),
+	(entry_is_supermounted_volume), (volume_is_removable),
+	(mount_volume_make_cdrom_name), (get_mount_list),
+	(mount_unmount_callback),
+	(nautilus_volume_monitor_mount_unmount_removable),
+	(finish_creating_volume):
+	Add support for supermount.
+	
+	* libnautilus-private/nautilus-volume-monitor.c:
+	(eject_device):
+	Fix crash when eject media.
+
 2002-07-05  Dave Camp  <dave@ximian.com>
 
 	* src/nautilus-sidebar.c (nautilus_sidebar_create_context_menu):

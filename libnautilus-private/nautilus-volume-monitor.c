@@ -220,6 +220,8 @@ static int             get_cdrom_type                           (const char     
 								 int                        *fd);
 static void            nautilus_volume_free                     (NautilusVolume             *volume);
 static void            nautilus_file_system_type_free           (NautilusFileSystemType     *type);
+static gboolean        entry_is_supermounted_volume             (const MountTableEntry *ent, 
+								 const NautilusVolume *volume);
 
 #ifdef HAVE_CDDA
 static gboolean        locate_audio_cd                          (void);
@@ -493,7 +495,8 @@ has_removable_mntent_options (MountTableEntry *ent)
 	/* Use "owner" or "user" or "users" as our way of determining a removable volume */
 	if (hasmntopt (ent, "user") != NULL
 	    || hasmntopt (ent, "users") != NULL
-	    || hasmntopt (ent, "owner") != NULL) {
+	    || hasmntopt (ent, "owner") != NULL
+	    || eel_strcmp("supermount", ent->mnt_type) == 0) {
 		return TRUE;
 	}
 #endif
@@ -522,6 +525,7 @@ get_removable_volumes (NautilusVolumeMonitor *monitor)
 	GList *volumes;
 	MountTableEntry *ent;
 	NautilusVolume *volume;
+	char * fs_opt;
 #ifdef HAVE_SYS_MNTTAB_H
         MountTableEntry ent_storage;
 #endif
@@ -563,7 +567,20 @@ get_removable_volumes (NautilusVolumeMonitor *monitor)
 #elif defined (HAVE_MNTENT_H)
 	while ((ent = getmntent (file)) != NULL) {
 		if (has_removable_mntent_options (ent)) {
-			volume = create_volume (ent->mnt_fsname, ent->mnt_dir);
+#if defined (HAVE_HASMNTOPT)
+
+			if (eel_strcmp("supermount", ent->mnt_type) == 0) {
+				fs_opt = eel_str_strip_substring_and_after (hasmntopt (ent, "dev="),
+									    ",");
+				volume = create_volume (fs_opt+strlen("dev="), ent->mnt_dir);
+				g_free (fs_opt);
+
+			} else {
+#endif
+				volume = create_volume (ent->mnt_fsname, ent->mnt_dir);
+#if defined (HAVE_HASMNTOPT)
+			}
+#endif
 			volumes = finish_creating_volume_and_prepend
 				(monitor, volume, ent->mnt_type, volumes);
 		}
@@ -581,6 +598,21 @@ get_removable_volumes (NautilusVolumeMonitor *monitor)
 	
 	/* Move all floppy mounts to top of list */
 	return g_list_sort (g_list_reverse (volumes), (GCompareFunc) floppy_sort);
+}
+
+static gboolean
+entry_is_supermounted_volume (const MountTableEntry *ent, const NautilusVolume *volume)
+{
+      char * fs_opt;
+      gboolean result = FALSE;
+
+      if (strcmp (ent->mnt_type, "supermount") == 0) {
+              fs_opt = eel_str_strip_substring_and_after (hasmntopt (ent, "dev="),
+                                                          ",");
+              result = strcmp (volume->device_path, fs_opt + strlen ("dev=")) == 0;
+              g_free (fs_opt);
+      }
+      return result;
 }
 
 #ifndef SOLARIS_MNT
@@ -617,7 +649,9 @@ volume_is_removable (const NautilusVolume *volume)
 	}
 #elif defined (HAVE_MNTENT_H)
 	while ((ent = getmntent (file)) != NULL) {
-		if (strcmp (volume->device_path, ent->mnt_fsname) == 0
+		if ((strcmp (volume->device_path, ent->mnt_fsname) == 0
+		     || entry_is_supermounted_volume (ent, volume))
+		    && strcmp (volume->mount_path, ent->mnt_dir) == 0
 		    && has_removable_mntent_options (ent)) {
 			removable = TRUE;
 			break;
@@ -772,7 +806,7 @@ mount_volume_make_cdrom_name (NautilusVolume *volume)
 		break;
 
 	default:
-		name = NULL;
+		name = g_strdup (_("CD-ROM"));
   	}
 	
 	close (fd);
@@ -822,7 +856,7 @@ mount_volume_activate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 
 
 static void
-eject_device (char *path)
+eject_device (const char *path)
 {
 	char *command;	
 	
@@ -830,7 +864,6 @@ eject_device (char *path)
 		command = g_strdup_printf ("eject %s", path);	
 		eel_gnome_shell_execute (command);
 		g_free (command);
-		g_free (path);
 	}
 }
 
@@ -967,6 +1000,7 @@ get_mount_list (NautilusVolumeMonitor *monitor)
 	static time_t last_mtime = 0;
         static FILE *fh = NULL;
         static GList *saved_list = NULL;
+	GList * removable_list;				
         const char *file_name;
 	const char *separator;
 	char line[PATH_MAX * 3];
@@ -1027,6 +1061,19 @@ get_mount_list (NautilusVolumeMonitor *monitor)
                         device_path = eel_string_list_nth (list, 0);
                         mount_path = eel_string_list_nth (list, 1);
                         file_system_type_name = eel_string_list_nth (list, 2);
+ 			/* For supermount, search info in removable list */
+ 			if (eel_strcmp ("supermount", file_system_type_name) == 0) {
+ 				removable_list = monitor->details->removable_volumes;
+ 				while (removable_list) {
+ 					volume = (NautilusVolume *) removable_list->data;
+ 					if (eel_strcmp (mount_path, volume->mount_path) == 0) {
+						g_free (device_path);
+ 						device_path = g_strdup (volume->device_path);
+ 						break;
+ 					}
+ 					removable_list = removable_list->next;
+ 				}				
+ 			}
                         volume = create_volume (device_path, mount_path);
 			if (eel_string_list_get_length (list) >= 4 &&
 			    option_list_has_option (eel_string_list_peek_nth (list, 3), MNTOPT_RO))
@@ -1501,10 +1548,13 @@ mount_unmount_callback (void *arg)
 		old_locale = g_getenv ("LC_ALL");
 		eel_setenv ("LC_ALL", "C", TRUE);
 
-		open_error_pipe ();
-		file = popen (info->command, "r");
-		close_error_pipe (info->should_mount, info->mount_point);
-		pclose (file);
+		if (info->command != NULL) {
+			open_error_pipe ();
+			file = popen (info->command, "r");
+			close_error_pipe (info->should_mount, info->mount_point);
+			pclose (file);
+			g_free (info->command);
+		}
 
 		if (info->should_eject) {
 			eject_device (info->device_path?info->device_path:info->mount_point);
@@ -1516,7 +1566,6 @@ mount_unmount_callback (void *arg)
 			eel_unsetenv("LC_ALL");
 		}
 
-		g_free (info->command);
 		g_free (info->mount_point);
 		g_free (info->device_path);
 		g_free (info);
@@ -1579,7 +1628,11 @@ nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
        }
 
 	mount_info = g_new0 (MountThreadInfo, 1);
-	mount_info->command = g_strdup (command_string);	
+       /* Don't run mount/umount on supermount mount point, it is useless */
+        if ((volume->file_system_type == NULL) 
+	    || (strcmp (volume->file_system_type->name,"supermount") != 0)) {
+		mount_info->command = g_strdup (command_string);	
+	}
 	mount_info->mount_point = g_strdup (mount_point);
 	if (volume) {
 		mount_info->device_path = g_strdup (volume->device_path);
