@@ -300,6 +300,10 @@ nautilus_volume_monitor_get_volume_name (const NautilusVolume *volume)
 	int index;
 	char *name;
 
+	if (volume->volume_name == NULL) {
+		return NULL;
+	}
+	
 	name = g_strdup (volume->volume_name);
 
 	/* Strip whitespace from the end of the name. */

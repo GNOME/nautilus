@@ -1,3 +1,16 @@
+2000-11-13  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 4700, ejecting an audio cd kills Nautilus
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(nautilus_volume_monitor_get_volume_name):
+	Check for NULL string before using it.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(volume_unmounted_callback):
+	Don't bother emiting signal if volume was never mounted
+	in the first place.
+
 2000-11-13  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>

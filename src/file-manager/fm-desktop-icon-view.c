@@ -582,11 +582,22 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor,
 	GnomeVFSResult result;
 	char *link_path, *link_uri, *desktop_path, *volume_name;
 	GList dummy_list;
+
+	g_assert (volume);
 	
 	desktop_path = nautilus_get_desktop_directory ();
 	volume_name = nautilus_volume_monitor_get_volume_name (volume);
+	if (volume_name == NULL) {
+		return;
+	}
+	
 	link_path = nautilus_make_path (desktop_path, volume_name);
 	link_uri = gnome_vfs_get_uri_from_local_path (link_path);
+	if (link_uri == NULL) {
+		g_free (link_path);
+		g_free (volume_name);
+		return;
+	}
 	
 	/* Remove mounted device icon from desktop */
 	dummy_list.data = link_uri;
