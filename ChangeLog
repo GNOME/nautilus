@@ -1,3 +1,16 @@
+2000-07-14  Gene Z. Ragan  <gzr@eazel.com>
+
+	* components/help/help-method.c: (transform_absolute_file):
+	* libnautilus-extensions/nautilus-stock-dialogs.c:
+	(nautilus_timed_wait_start):
+	Initialize dialog variable in TimeWait structure to NULL.  
+	Other code checks to see if it is NULL before performing
+	operations on the dialog.  Carbamide exposed this bug when
+	trying to rename an icon item in place.
+	
+	* src/nautilus-window-manage-views.c: (open_location):
+	Added a check for a NULL location string.
+	
 2000-07-14  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-list.c: (nautilus_list_destroy),

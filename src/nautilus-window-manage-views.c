@@ -667,7 +667,7 @@ open_location (NautilusWindow *window,
 		 */                 
 		for (element = nautilus_application_windows (); element != NULL; element = element->next) {
 			traverse_window = element->data;
-			if (strcmp (traverse_window->location, location) == 0) {
+			if (traverse_window->location != NULL && strcmp (traverse_window->location, location) == 0) {
 				gtk_widget_show_now (GTK_WIDGET (traverse_window));
 				nautilus_gdk_window_bring_to_front (GTK_WIDGET (traverse_window)->window);								
 				return;

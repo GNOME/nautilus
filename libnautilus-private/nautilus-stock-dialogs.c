@@ -189,6 +189,8 @@ nautilus_timed_wait_start (NautilusCancelCallback cancel_callback,
 	wait->cancel_callback = cancel_callback;
 	wait->callback_data = callback_data;
 	wait->parent_window = parent_window;
+	wait->dialog = NULL;
+	
 	if (parent_window != NULL) {
 		gtk_widget_ref (GTK_WIDGET (parent_window));
 	}
