@@ -40,6 +40,7 @@ trilobite_eazel_sample_service_SOURCES =			\
 trilobite_eazel_sample_service_LDADD =				\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(top_builddir)/components/services/trilobite/sample/lib/libsample_corba.a \
+	$(BONOBO_LIBS) \
 	$(NULL)
 
 EXTRA_DIST = 							\

@@ -23,6 +23,7 @@ INCLUDES = \
 LDADD =                                           \
         $(top_builddir)/components/services/install/lib/libeazelinstall.la\
         $(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
+	$(BONOBO_LIBS) \
 	$(GNOME_LIBS)                                                     \
 	$(GCONF_LIBS)                                                     \
 	$(GHTTP_LIBS)                                                     \

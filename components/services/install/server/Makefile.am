@@ -51,6 +51,7 @@ trilobite_eazel_install_service_SOURCES =	\
 trilobite_eazel_install_service_LDADD =							\
 	$(top_builddir)/components/services/install/lib/libeazelinstall.la 		\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la 	\
+	$(BONOBO_LIBS) \
 	$(NULL)
 
 
