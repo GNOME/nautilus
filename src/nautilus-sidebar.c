@@ -117,7 +117,6 @@ static void     nautilus_sidebar_drag_data_received    (GtkWidget        *widget
 static void     nautilus_sidebar_read_theme            (NautilusSidebar  *sidebar);
 static void     nautilus_sidebar_size_allocate         (GtkWidget        *widget,
 							GtkAllocation    *allocation);
-static void     nautilus_sidebar_realize               (GtkWidget        *widget);
 static void     nautilus_sidebar_theme_changed         (gpointer          user_data);
 static void     nautilus_sidebar_confirm_trash_changed (gpointer          user_data);
 static void     nautilus_sidebar_update_appearance     (NautilusSidebar  *sidebar);
@@ -195,7 +194,6 @@ nautilus_sidebar_class_init (GtkObjectClass *object_klass)
 	widget_class->button_press_event  = nautilus_sidebar_press_event;
 	widget_class->button_release_event  = nautilus_sidebar_release_event;
 	widget_class->size_allocate = nautilus_sidebar_size_allocate;
-	widget_class->realize = nautilus_sidebar_realize;
 
 	/* add the "location changed" signal */
 	signals[LOCATION_CHANGED] = g_signal_new
@@ -1695,16 +1693,4 @@ nautilus_sidebar_size_allocate (GtkWidget *widget,
  		eel_preferences_set_integer (NAUTILUS_PREFERENCES_SIDEBAR_WIDTH,
 					     widget->allocation.width);
 	}	
-}
-
-static void
-nautilus_sidebar_realize (GtkWidget *widget)
-{
-	g_return_if_fail (NAUTILUS_IS_SIDEBAR (widget));
-	
-	/* Superclass does the actual realize */
-	EEL_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
-	
-	/* Tell X not to erase the window contents when resizing */
-	gdk_window_set_static_gravities (widget->window, TRUE);
 }

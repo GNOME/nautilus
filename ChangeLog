@@ -1,3 +1,11 @@
+2002-02-28  Alexander Larsson  <alla@lysator.liu.se>
+
+	* src/nautilus-sidebar.c (nautilus_sidebar_class_init):
+	(nautilus_sidebar_realize): Don't call
+	gdk_window_set_static_gravities(). That old anti-flicker
+	trick was just causing lots of flashing.
+	Remove all traces of nautilus_sidebar_realize.
+
 2002-02-28  Darin Adler  <darin@bentspoon.com>
 
 	* libnautilus-private/nautilus-link-desktop-file.c:
