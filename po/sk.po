@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.0.4\n"
-"POT-Creation-Date: 2001-07-18 15:25-0400\n"
+"POT-Creation-Date: 2001-07-24 15:45-0400\n"
 "PO-Revision-Date: 2001-07-17 16:17CET\n"
 "Last-Translator: Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>\n"
 "Language-Team: Slovak <sk-i18n@linux.sk>\n"
@@ -41,6 +41,30 @@ msgstr "Spusti»"
 #: applets/preferences-applet/nautilus-preferences-applet.c:259
 msgid "Restart"
 msgstr "Znovuspusti»"
+
+#: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:1
+msgid "Factory for Nautilus component adapter factories"
+msgstr ""
+"Vytváracie rozhranie pre vytváracie rozhranie pre komponentové adaptéry "
+"Nautilus"
+
+#: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:2
+msgid "Factory for Nautilus component adapter factories "
+msgstr ""
+"Vytváracie rozhranie pre vytváracie rozhranie pre komponentové adaptéry "
+"Nautilus "
+
+#: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:3
+msgid ""
+"Factory for objects that wrap ordinary Bonobo Controls or Embeddables to "
+"look like Nautilus Views"
+msgstr ""
+"Vytváracie rozhranie pre objekty, ktoré obaµujú ¹tandardné objekty Bonobo "
+"Control alebo Embedable, aby vyzerali ako pohµady Nautilu"
+
+#: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:4
+msgid "Nautilus component adapter factory"
+msgstr "Vytváracie rozhranie pre komponentové adaptéry Nautilus"
 
 #: components/hardware/nautilus-hardware-view.c:180
 msgid "name of icon for the hardware view"
@@ -103,9 +127,31 @@ msgstr "Sem patrí stránka pre pamä»."
 msgid "This is a placeholder for the IDE page."
 msgstr "Sem patrí stránka pre IDE."
 
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:2
 #: components/hardware/nautilus-hardware-view.c:750
+#: data/static_bookmarks.xml.h:16
 msgid "Hardware"
 msgstr "Hardware"
+
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:1
+msgid "Factory for hardware view"
+msgstr "Vytváracie rozhranie pre hardwarový pohµad"
+
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:3
+msgid "Hardware Viewer"
+msgstr "Prehliadaè hardvéru"
+
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:4
+msgid "Hardware view"
+msgstr "Hardvérový pohµad"
+
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:5
+msgid "View as Hardware"
+msgstr "Zobrazi» ako hardvér"
+
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:6
+msgid "hardware view"
+msgstr "hardvérový pohµad"
 
 #: components/help/converters/gnome-db2html2/gdb3html.c:712
 #: components/music/nautilus-music-view.c:1530
@@ -113,7 +159,7 @@ msgid "Previous"
 msgstr "Predchádzajúca"
 
 #: components/help/converters/gnome-db2html2/gdb3html.c:721
-#: src/nautilus-preferences-dialog.c:291
+#: src/nautilus-preferences-dialog.c:291 src/nautilus-shell-ui.xml.h:37
 msgid "Home"
 msgstr "Domov"
 
@@ -123,6 +169,7 @@ msgid "Next"
 msgstr "Nasledujúca"
 
 #: components/help/converters/gnome-db2html2/sect-elements.c:260
+#: components/notes/Nautilus_View_notes.oaf.in.h:2
 msgid "Notes"
 msgstr "Poznámky"
 
@@ -257,7 +304,7 @@ msgid "Manual"
 msgstr "Manuálové stránky UNIX"
 
 #: components/help/hyperbola-filefmt.c:528
-#: components/help/hyperbola-filefmt.c:859
+#: components/help/hyperbola-filefmt.c:859 data/linksets/apps.xml.h:1
 msgid "Applications"
 msgstr "Aplikácie"
 
@@ -332,9 +379,85 @@ msgstr " (viï \""
 msgid " (see also \""
 msgstr " (viï tie¾ \""
 
+#: components/help/Nautilus_View_help.oaf.in.h:1
+msgid "Help"
+msgstr "Pomocník"
+
+#: components/help/Nautilus_View_help.oaf.in.h:2
+msgid "Help Index"
+msgstr "Index Pomocníka"
+
+#: components/help/Nautilus_View_help.oaf.in.h:3
+msgid "Help Index sidebar panel"
+msgstr "Panel Index Pomocníka pre boèný panel"
+
+#: components/help/Nautilus_View_help.oaf.in.h:4
+msgid "Help Navigation Tree"
+msgstr "Navigaèný strom pomocníka"
+
+#: components/help/Nautilus_View_help.oaf.in.h:5
+msgid "Help Search"
+msgstr "Hµadanie v Pomocníkovi"
+
+#: components/help/Nautilus_View_help.oaf.in.h:6
+msgid "Help Search sidebar panel"
+msgstr "Panel Hµadanie v Pomocníkovi pre boèný panel"
+
+#: components/help/Nautilus_View_help.oaf.in.h:7
+msgid "Help sidebar panel"
+msgstr "Pomocník pre boèný panel"
+
+#: components/help/Nautilus_View_help.oaf.in.h:8
+msgid "Internal use only"
+msgstr "Len pre interné pou¾itie"
+
+#: components/history/Nautilus_View_history.oaf.in.h:1
+msgid "Factory for history views"
+msgstr "Vytváracie rozhranie pre pohµady História"
+
+#: components/history/Nautilus_View_history.oaf.in.h:2
+msgid "History"
+msgstr "História"
+
+#: components/history/Nautilus_View_history.oaf.in.h:3
+msgid "History sidebar panel"
+msgstr "Panel histórie pre boèný panel"
+
+#: components/history/Nautilus_View_history.oaf.in.h:4
+msgid "History sidebar panel for Nautilus"
+msgstr "Panel histórie pre boèný panel Nautilu"
+
 #: components/image-viewer/nautilus-image-view.c:834
 msgid "I could not initialize Bonobo"
 msgstr "Nie je mo¾né inicializova» Bonobo"
+
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:1
+msgid "Generic Image Viewer"
+msgstr "V¹eobecný prehliadaè obrázkov"
+
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:2
+msgid "Generic image control factory"
+msgstr "Vytváracie rozhranie pre v¹eobecné prvok obrázkov"
+
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:3
+msgid "Image"
+msgstr "Obrázok"
+
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:4
+msgid "Image Viewer"
+msgstr "Prehliadaè obrázkov"
+
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:5
+msgid "Nautilus Image Viewer"
+msgstr "Prehliadaè obrázkov pre Nautilus"
+
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:6
+msgid "Nautilus Image viewer factory"
+msgstr "Vytváracie rozhranie pre Prehliadaè obrázkov pre Nautilus"
+
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:7
+msgid "View as Image"
+msgstr "Zobrazi» ako obrázok"
 
 #: components/loser/content/nautilus-content-loser.c:140
 #, c-format
@@ -351,6 +474,53 @@ msgstr ""
 msgid "You have tried to kill the Content Loser"
 msgstr "Pokúsili ste sa zabi» Zábudlivca obsahu"
 
+#: components/loser/content/nautilus-content-loser-ui.xml.h:1
+msgid "Kill Content Loser"
+msgstr "Zabi» Zábudlivca obsahu"
+
+#: components/loser/content/nautilus-content-loser-ui.xml.h:2
+msgid "Kill the Loser content view"
+msgstr "Zabi» pohµad zábudlivca obsahu"
+
+#: components/loser/content/nautilus-content-loser-ui.xml.h:3
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:3
+#: components/sample/nautilus-sample-content-view-ui.xml.h:4
+#: src/nautilus-shell-ui.xml.h:80
+msgid "_File"
+msgstr "_Súbor"
+
+#: components/loser/content/nautilus-content-loser-ui.xml.h:4
+msgid "_Kill Content Loser"
+msgstr "_Zabi» Zábudlivca obsahu"
+
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:1
+msgid "Content Loser"
+msgstr "Zábudlivec obsahu"
+
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:2
+msgid "Content Loser Viewer"
+msgstr "Zábudlivec obsahu"
+
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:3
+msgid "Nautilus Content Loser"
+msgstr "Zábudlivec obsahu pre Nautilus"
+
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:4
+msgid "Nautilus content loser component's factory"
+msgstr "Vytváracie rozhranie pre komponent Zábudlivec obsahu pre Nautilus"
+
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:5
+msgid "Nautilus content loser factory"
+msgstr "Vytváracie rozhranie pre Zábudlivca obsahu pre Nautilus"
+
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:6
+msgid "Nautilus content view that fails on command"
+msgstr "Pohµad pre Nautilus, ktorý zlyhá pri príkazoch"
+
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:7
+msgid "View as Content Loser"
+msgstr "Zobrazi» ako Zábudlivca obsahu"
+
 #: components/loser/sidebar/nautilus-sidebar-loser.c:143
 #, c-format
 msgid ""
@@ -365,6 +535,39 @@ msgstr ""
 #: components/loser/sidebar/nautilus-sidebar-loser.c:192
 msgid "You have tried to kill the Sidebar Loser"
 msgstr "Pokúsili ste sa zabi» Zábudlivca pre boèný panel"
+
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:1
+msgid "Kill Sidebar Loser"
+msgstr "Zabi» Zábudlivca pre boèný panel"
+
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:2
+msgid "Kill the Loser sidebar panel"
+msgstr "Zabije Zábudlivca pre boèný panel"
+
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:4
+msgid "_Kill Sidebar Loser"
+msgstr "_Zabi» Zábudlivca pre boèný panel"
+
+#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:1
+msgid "Nautilus Sidebar Loser"
+msgstr "Zábudlivec pre boèný panel pre Nautilus"
+
+#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:2
+msgid "Nautilus sidebar loser component's factory"
+msgstr ""
+"Vytváracie rozhranie pre komponent Zábudlivec pre boèný panel pre Nautilus"
+
+#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:3
+msgid "Nautilus sidebar loser factory"
+msgstr "Vytváracie rozhranie Zábudlivca pre boèný panel pre Nautilus"
+
+#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:4
+msgid "Nautilus sidebar view that fails on command"
+msgstr "Pohµad pre boèný panel Nautilu, ktorý zlyhá pri príkazoch"
+
+#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:5
+msgid "Sidebar Loser"
+msgstr "Zábudlivec pre boèný panel"
 
 #: components/mozilla/mozilla-preferences.cpp:126
 #, c-format
@@ -746,6 +949,38 @@ msgstr ""
 #: components/mozilla/nautilus-mozilla-content-view.c:836
 msgid "Nautilus JavaScript Warning"
 msgstr "Varovanie pre JavaScript"
+
+#: components/mozilla/nautilus-mozilla-ui.xml.h:1
+msgid "Charset Encoding"
+msgstr "Znaková sada"
+
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:1
+msgid "Mozilla Nautilus view"
+msgstr "Mozilla pre Nautilus"
+
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:2
+msgid "Mozilla Nautilus view factory"
+msgstr "Vytváracie rozhranie pre pohµad Mozilla pre Nautilus"
+
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:3
+msgid "Mozilla content view component"
+msgstr "Komponent pre pohµad Mozilla"
+
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:4
+msgid "Mozilla content view component's factory"
+msgstr "Vytváracie rozhranie pre komponent pohµadu Mozilla"
+
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:5
+msgid "View as Web Page"
+msgstr "Zobrazi» ako WWW stránku"
+
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:6
+msgid "Web Page"
+msgstr "WWW stránka"
+
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:7
+msgid "Web Page Viewer"
+msgstr "Prehliadaè WWW stránok"
 
 #: components/music/mpg123.c:29
 msgid "Blues"
@@ -1449,6 +1684,7 @@ msgstr "Pauza"
 #: libnautilus-private/nautilus-file-operations.c:964
 #: libnautilus-private/nautilus-file-operations.c:979
 #: libnautilus-private/nautilus-file-operations.c:998
+#: src/nautilus-shell-ui.xml.h:55
 msgid "Stop"
 msgstr "Stop"
 
@@ -1473,6 +1709,30 @@ msgstr "Mono"
 #, c-format
 msgid "%s - %s"
 msgstr "%s - %s"
+
+#: components/music/Nautilus_View_music.oaf.in.h:1
+msgid "Factory for music view"
+msgstr "Vytváracie rozhranie pre hudobný pohµad"
+
+#: components/music/Nautilus_View_music.oaf.in.h:2
+msgid "Music"
+msgstr "Hudba"
+
+#: components/music/Nautilus_View_music.oaf.in.h:3
+msgid "Music Viewer"
+msgstr "Hudobný pohµad"
+
+#: components/music/Nautilus_View_music.oaf.in.h:4
+msgid "Music view"
+msgstr "Hudobný pohµad"
+
+#: components/music/Nautilus_View_music.oaf.in.h:5
+msgid "Music view factory"
+msgstr "Vytváracie rozhranie pre hudobný pohµad"
+
+#: components/music/Nautilus_View_music.oaf.in.h:6
+msgid "View as Music"
+msgstr "Zobrazi» ako hudbu"
 
 #: components/news/nautilus-news.c:1327
 #, c-format
@@ -1577,6 +1837,34 @@ msgstr "Vybra» servery"
 msgid "image indicating that the news has changed"
 msgstr "obrázok informujúci, ¾e boli zmenené diskusné skupiny"
 
+#: components/news/Nautilus_View_news.oaf.in.h:1
+msgid "Factory for news view"
+msgstr "Vytváracie rozhranie pre pohµad noviniek"
+
+#: components/news/Nautilus_View_news.oaf.in.h:2
+msgid "News"
+msgstr "Novinky"
+
+#: components/news/Nautilus_View_news.oaf.in.h:3
+msgid "News sidebar panel"
+msgstr "Panel Novinky pre boèný panel"
+
+#: components/news/Nautilus_View_news.oaf.in.h:4
+msgid "News sidebar panel fetches and displays RSS feeds"
+msgstr "Panel Novinky pre boèný panel s»ahuje a zobrazuje zdroje RSS"
+
+#: components/notes/Nautilus_View_notes.oaf.in.h:1
+msgid "Factory for annotation view"
+msgstr "Vytváracie rozhranie pre pohµad Poznámky"
+
+#: components/notes/Nautilus_View_notes.oaf.in.h:3
+msgid "Notes sidebar panel"
+msgstr "Panel Poznámky pre boèný panel"
+
+#: components/notes/Nautilus_View_notes.oaf.in.h:4
+msgid "Notes sidebar panel for Nautilus"
+msgstr "Panel poznámok pre boèný panel Nautilu"
+
 #: components/sample/nautilus-sample-content-view.c:136
 msgid "(none)"
 msgstr "(niè)"
@@ -1603,6 +1891,47 @@ msgstr ""
 "\n"
 "Stlaèili ste uká¾kové tlaèidlo v nástrojovom paneli."
 
+#: components/sample/Nautilus_View_sample.oaf.in.h:3
+#: components/sample/nautilus-sample-content-view-ui.xml.h:1
+msgid "Sample"
+msgstr "Uká¾ka"
+
+#: components/sample/nautilus-sample-content-view-ui.xml.h:2
+msgid "This is a sample merged menu item"
+msgstr "Toto je vlo¾ená uká¾ková polo¾ka menu"
+
+#: components/sample/nautilus-sample-content-view-ui.xml.h:3
+msgid "This is a sample merged toolbar button"
+msgstr "Toto je vlo¾ené uká¾kové tlaèidlo panelu nástrojov"
+
+#: components/sample/nautilus-sample-content-view-ui.xml.h:5
+msgid "_Sample"
+msgstr "_Uká¾ka"
+
+#: components/sample/Nautilus_View_sample.oaf.in.h:1
+msgid "Nautilus Sample view"
+msgstr "Uká¾kový pohµad pre Nautilus"
+
+#: components/sample/Nautilus_View_sample.oaf.in.h:2
+msgid "Nautilus Sample view factory"
+msgstr "Vytváracie rozhranie pre Uká¾kový pohµad pre Nautilus"
+
+#: components/sample/Nautilus_View_sample.oaf.in.h:4
+msgid "Sample Viewer"
+msgstr "Uká¾kový prehliadaè"
+
+#: components/sample/Nautilus_View_sample.oaf.in.h:5
+msgid "Sample content view component"
+msgstr "Komponent Uká¾kového pohµadu"
+
+#: components/sample/Nautilus_View_sample.oaf.in.h:6
+msgid "Sample content view component's factory"
+msgstr "Vytváracie rozhranie pre komponent Uká¾kového pohµadu"
+
+#: components/sample/Nautilus_View_sample.oaf.in.h:7
+msgid "View as Sample"
+msgstr "Zobrazi» ako uká¾ku"
+
 #: components/text/nautilus-text-view.c:332
 #, c-format
 msgid "Sorry, but %s is too large for Nautilus to load all of it."
@@ -1612,6 +1941,731 @@ msgstr ""
 #: components/text/nautilus-text-view.c:335
 msgid "File too large"
 msgstr "Súbor príli¹ veµký"
+
+#: components/text/nautilus-text-view-ui.xml.h:1
+msgid "F_onts"
+msgstr "_Písma"
+
+#: components/text/nautilus-text-view-ui.xml.h:2
+msgid "Lucida"
+msgstr "Lucida"
+
+#: components/text/nautilus-text-view-ui.xml.h:3 data/linksets/home.xml.h:3
+#: src/nautilus-service-ui.xml.h:4
+msgid "Services"
+msgstr "Slu¾by"
+
+#: components/text/Nautilus_View_text.oaf.in.h:4
+#: components/text/nautilus-text-view-ui.xml.h:4
+msgid "Text view"
+msgstr "Textový pohµad"
+
+#: components/text/nautilus-text-view-ui.xml.h:5
+msgid "Use the Courier Font"
+msgstr "Pou¾i» písmo Courier"
+
+#: components/text/nautilus-text-view-ui.xml.h:6
+msgid "Use the Fixed Font"
+msgstr "Pou¾i» písmo neproporcionálne písmo"
+
+#: components/text/nautilus-text-view-ui.xml.h:7
+msgid "Use the GTK System Font"
+msgstr "Pou¾i» systémové písmo GTK"
+
+#: components/text/nautilus-text-view-ui.xml.h:8
+msgid "Use the Helvetica Font"
+msgstr "Pou¾i» písmo Helvetica"
+
+#: components/text/nautilus-text-view-ui.xml.h:9
+msgid "Use the Lucida Font"
+msgstr "Pou¾i» písmo Lucida"
+
+#: components/text/nautilus-text-view-ui.xml.h:10
+msgid "Use the Times Font"
+msgstr "Pou¾i» písmo Times"
+
+#: components/text/nautilus-text-view-ui.xml.h:11
+msgid "_Courier"
+msgstr "_Courier"
+
+#: components/text/nautilus-text-view-ui.xml.h:12
+msgid "_Fixed"
+msgstr "_Neproporcionálne"
+
+#: components/text/nautilus-text-view-ui.xml.h:13
+msgid "_GTK System Font"
+msgstr "Systémové písmo _GTK"
+
+#: components/text/nautilus-text-view-ui.xml.h:14
+msgid "_Helvetica"
+msgstr "_Helvetica"
+
+#: components/text/nautilus-text-view-ui.xml.h:15
+msgid "_Times"
+msgstr "_Times"
+
+#: components/text/Nautilus_View_text.oaf.in.h:1
+msgid "Factory for text view"
+msgstr "Vytváracie rozhranie pre textový pohµad"
+
+#: components/text/Nautilus_View_text.oaf.in.h:2
+msgid "Text"
+msgstr "Text"
+
+#: components/text/Nautilus_View_text.oaf.in.h:3
+msgid "Text Viewer"
+msgstr "Textový pohµad"
+
+#: components/text/Nautilus_View_text.oaf.in.h:5
+msgid "Text view factory"
+msgstr "Vytváracie rozhranie pre Textový pohµad"
+
+#: components/text/Nautilus_View_text.oaf.in.h:6
+msgid "View as Text"
+msgstr "Zobrazi» ako text"
+
+#: components/text/services/google.xml.h:1
+msgid "Search Google for Selected Text"
+msgstr "Nájs» vybraný text pomocou Google"
+
+#: components/text/services/google.xml.h:2
+msgid "Use Google to search the web for the selected text"
+msgstr "Pou¾ije Google pre hµadanie vybraného textu na Webe"
+
+#: components/text/services/webster.xml.h:1
+msgid "Look Up Selected Text in Dictionary"
+msgstr "Nájs» vybraný text v slovníku"
+
+#: components/text/services/webster.xml.h:2
+msgid "Look up the selected text in the Merriam-Webster dictionary"
+msgstr "Nájde vybraný text v slovníku Merriam-Webster"
+
+#: components/throbber/Nautilus_Control_throbber.oaf.in.h:1
+msgid "animation to indicate on-going activity"
+msgstr "animova» pre zobrazenie aktivity"
+
+#: components/throbber/Nautilus_Control_throbber.oaf.in.h:2
+msgid "throbber"
+msgstr "Pulzovaè"
+
+#: components/throbber/Nautilus_Control_throbber.oaf.in.h:3
+msgid "throbber factory"
+msgstr "Vytváracie rozhranie pre Pulzovaè"
+
+#: components/throbber/Nautilus_Control_throbber.oaf.in.h:4
+msgid "throbber object factory"
+msgstr "Vytváracie rozhranie pre Pulzovaè"
+
+#: components/tree/Nautilus_View_tree.oaf.in.h:1
+msgid "Nautilus Tree sidebar panel"
+msgstr "Boèný panel Strom pre Nautilus"
+
+#: components/tree/Nautilus_View_tree.oaf.in.h:2
+msgid "Nautilus Tree view"
+msgstr "Stromový pohµad pre Nautilus"
+
+#: components/tree/Nautilus_View_tree.oaf.in.h:3
+#: src/nautilus-preferences-dialog.c:386
+msgid "Tree"
+msgstr "Strom"
+
+#: data/browser.xml.h:1
+msgid "Apparition"
+msgstr "Zhmotnenie"
+
+#: data/browser.xml.h:2
+msgid "Azul"
+msgstr "Azul"
+
+#: data/browser.xml.h:3
+msgid "Black"
+msgstr "Èierna"
+
+#: data/browser.xml.h:4
+msgid "Blue Ridge"
+msgstr "Modrá brázda"
+
+#: data/browser.xml.h:5
+msgid "Blue Rough"
+msgstr "Drsná modrá"
+
+#: data/browser.xml.h:6
+msgid "Blue Type"
+msgstr "Modrý typ"
+
+#: data/browser.xml.h:7
+msgid "Brushed Metal"
+msgstr "Le¹tený kov"
+
+#: data/browser.xml.h:8
+msgid "Bubble Gum"
+msgstr "®uvaèková"
+
+#: data/browser.xml.h:9
+msgid "Burlap"
+msgstr "Plátno"
+
+#: data/browser.xml.h:10
+msgid "Camouflage"
+msgstr "Kamuflá¾"
+
+#: data/browser.xml.h:11
+msgid "Certified"
+msgstr "Overené"
+
+#: data/browser.xml.h:12
+msgid "Chalk"
+msgstr "Krieda"
+
+#: data/browser.xml.h:13
+msgid "Charcoal"
+msgstr "Drevené uhlie"
+
+#: data/browser.xml.h:14
+msgid "Colors"
+msgstr "Farby"
+
+#: data/browser.xml.h:15
+msgid "Concrete"
+msgstr "Hmota"
+
+#: data/browser.xml.h:16
+msgid "Cool"
+msgstr "Cool"
+
+#: data/browser.xml.h:17
+msgid "Cork"
+msgstr "Korok"
+
+#: data/browser.xml.h:18
+msgid "Countertop"
+msgstr "Naopak"
+
+#: data/browser.xml.h:19
+msgid "Danger"
+msgstr "Nebezpeèné"
+
+#: data/browser.xml.h:20
+msgid "Danube"
+msgstr "Dunaj"
+
+#: data/browser.xml.h:21
+msgid "Dark Cork"
+msgstr "Tmavý korok"
+
+#: data/browser.xml.h:22
+msgid "Dark GNOME"
+msgstr "Tmavé GNOME"
+
+#: data/browser.xml.h:23
+msgid "Deep Teal"
+msgstr "Tmavá modrozelená"
+
+#: data/browser.xml.h:24
+msgid "Distinguished"
+msgstr "Fantastické"
+
+#: data/browser.xml.h:25
+msgid "Dots"
+msgstr "Bodky"
+
+#: data/browser.xml.h:26
+msgid "Draft"
+msgstr "Návrh"
+
+#: data/browser.xml.h:27
+msgid "Drag a color to an object to change it to that color"
+msgstr "«ahajte farbu na objekt, ktorý chcete zmeni»"
+
+#: data/browser.xml.h:28
+msgid "Drag a pattern tile to an object to change it"
+msgstr "«ahajte vzorku na objekt, ktorý chcete zmeni»"
+
+#: data/browser.xml.h:29
+msgid "Drag an emblem to an object to add it to the object"
+msgstr "«ahajte emblém na objekt, ktorý chcete zmeni»"
+
+#: data/browser.xml.h:30
+msgid "Eclipse"
+msgstr "Zatmenie"
+
+#: data/browser.xml.h:31 src/file-manager/fm-list-view.c:2285
+#: src/file-manager/fm-properties-window.c:1620
+#: src/file-manager/fm-search-list-view.c:499
+msgid "Emblems"
+msgstr "Emblémy"
+
+#: data/browser.xml.h:32
+msgid "Envy"
+msgstr "Závis»"
+
+#: data/browser.xml.h:33
+msgid "Erase"
+msgstr "Zmazané"
+
+#: data/browser.xml.h:34
+msgid "Favorite"
+msgstr "Obµúbené"
+
+#: data/browser.xml.h:35
+msgid "Fibers"
+msgstr "Vlákna"
+
+#: data/browser.xml.h:36
+msgid "Fire Engine"
+msgstr "Po¾iarnici"
+
+#: data/browser.xml.h:37
+msgid "Fleur De Lis"
+msgstr "Fleur De Lis"
+
+#: data/browser.xml.h:38
+msgid "Floral"
+msgstr "Kvety"
+
+#: data/browser.xml.h:39
+msgid "Fossil"
+msgstr "Fosílie"
+
+#: data/browser.xml.h:40 icons/gnome/gnome.xml.h:2
+msgid "GNOME"
+msgstr "GNOME"
+
+#: data/browser.xml.h:41
+msgid "Granite"
+msgstr "®ula"
+
+#: data/browser.xml.h:42
+msgid "Grapefruit"
+msgstr "Grapefruit"
+
+#: data/browser.xml.h:43
+msgid "Green Weave"
+msgstr "Zelená vlna"
+
+#: data/browser.xml.h:44
+msgid "Ice"
+msgstr "¥ad"
+
+#: data/browser.xml.h:45
+msgid "Important"
+msgstr "Dôle¾ité"
+
+#: data/browser.xml.h:46
+msgid "Indigo"
+msgstr "Indigo"
+
+#: data/browser.xml.h:47
+msgid "Leaf"
+msgstr "List"
+
+#: data/browser.xml.h:48
+msgid "Lemon"
+msgstr "Citrón"
+
+#: data/browser.xml.h:49
+msgid "Mango"
+msgstr "Mango"
+
+#: data/browser.xml.h:50
+msgid "Manila Paper"
+msgstr "Manilský papier"
+
+#: data/browser.xml.h:51
+msgid "Moss Ridge"
+msgstr "Moss Ridge"
+
+#: data/browser.xml.h:52
+msgid "Mud"
+msgstr "Blato"
+
+#: data/browser.xml.h:53
+msgid "New"
+msgstr "Nové"
+
+#: data/browser.xml.h:54
+msgid "Numbers"
+msgstr "Èísla"
+
+#: data/browser.xml.h:55 libnautilus-private/nautilus-file-operations.c:1087
+msgid "OK"
+msgstr "OK"
+
+#: data/browser.xml.h:56
+msgid "Ocean Strips"
+msgstr "Vodné pruhy"
+
+#: data/browser.xml.h:57
+msgid "Oh No"
+msgstr "Ach nie"
+
+#: data/browser.xml.h:58
+msgid "Onyx"
+msgstr "Onyx"
+
+#: data/browser.xml.h:59
+msgid "Orange"
+msgstr "Pomaranè"
+
+#: data/browser.xml.h:60
+msgid "Pale Blue"
+msgstr "Bledomodrá"
+
+#: data/browser.xml.h:61
+msgid "Patterns"
+msgstr "Vzorky"
+
+#: data/browser.xml.h:62
+msgid "Personal"
+msgstr "Osobné"
+
+#: data/browser.xml.h:63
+msgid "Purple Marble"
+msgstr "Fialový mramor"
+
+#: data/browser.xml.h:64
+msgid "Ridged Paper"
+msgstr "Kartón"
+
+#: data/browser.xml.h:65
+msgid "Rough Paper"
+msgstr "Hrubý papier"
+
+#: data/browser.xml.h:66
+msgid "Ruby"
+msgstr "Rubín"
+
+#: data/browser.xml.h:67
+msgid "Sea Foam"
+msgstr "Morská pena"
+
+#: data/browser.xml.h:68
+msgid "Shale"
+msgstr "Pieskovec"
+
+#: data/browser.xml.h:69
+msgid "Silver"
+msgstr "Striebro"
+
+#: data/browser.xml.h:70
+msgid "Sky"
+msgstr "Obloha"
+
+#: data/browser.xml.h:71
+msgid "Sky Ridge"
+msgstr "Sky Ridge"
+
+#: data/browser.xml.h:72
+msgid "Snow Ridge"
+msgstr "Snehová brázda"
+
+#: data/browser.xml.h:73
+msgid "Special"
+msgstr "©peciálne"
+
+#: data/browser.xml.h:74
+msgid "Stucco"
+msgstr "Stucco"
+
+#: data/browser.xml.h:75
+msgid "Tangerine"
+msgstr "Mandarínka"
+
+#: data/browser.xml.h:76
+msgid "Terracotta"
+msgstr "Terracotta"
+
+#: data/browser.xml.h:77
+msgid "Urgent"
+msgstr "Naliehavé"
+
+#: data/browser.xml.h:78
+msgid "Violet"
+msgstr "Fialová"
+
+#: data/browser.xml.h:79
+msgid "Wavy White"
+msgstr "Vlniaca sa biela"
+
+#: data/browser.xml.h:80
+msgid "White"
+msgstr "Biela"
+
+#: data/browser.xml.h:81
+msgid "White Ribs"
+msgstr "Biele pruhy"
+
+#: data/linksets/apps.xml.h:2
+msgid "Gnumeric"
+msgstr "Gnumeric"
+
+#: data/linksets/apps.xml.h:3
+msgid "Netscape"
+msgstr "Netscape"
+
+#: data/linksets/apps.xml.h:4
+msgid "The Gimp"
+msgstr "Gimp"
+
+#: data/linksets/desktop.xml.h:1 src/nautilus-preferences-dialog.c:80
+#: src/nautilus-preferences-dialog.c:85
+msgid "Desktop"
+msgstr "Plocha"
+
+#: data/linksets/desktop.xml.h:2 libnautilus-private/nautilus-file.c:5191
+#: libnautilus-private/nautilus-trash-directory.c:383
+#: src/file-manager/fm-desktop-icon-view.c:71
+msgid "Trash"
+msgstr "Odpadky"
+
+#: data/linksets/home.xml.h:1
+msgid "Computer"
+msgstr "Poèítaè"
+
+#: data/linksets/home.xml.h:2
+msgid "Home Directory"
+msgstr "Domovský prieèinok"
+
+#: data/linksets/portals.xml.h:1
+msgid "Excite"
+msgstr "Excite"
+
+#: data/linksets/portals.xml.h:2
+msgid "Portals"
+msgstr "Portály"
+
+#: data/linksets/portals.xml.h:3
+msgid "Yahoo"
+msgstr "Yahoo"
+
+#: data/linksets/search_engines.xml.h:1
+msgid "Alta Vista"
+msgstr "Alta Vista"
+
+#: data/linksets/search_engines.xml.h:2
+msgid "Google"
+msgstr "Google"
+
+#: data/linksets/search_engines.xml.h:3 src/nautilus-preferences-dialog.c:282
+msgid "Search Engines"
+msgstr "Vyhµadávacie slu¾by"
+
+#: data/static_bookmarks.xml.h:1
+msgid "Allaire"
+msgstr "Allaire"
+
+#: data/static_bookmarks.xml.h:2
+msgid "Binary Freedom"
+msgstr "Binary Freedom"
+
+#: data/static_bookmarks.xml.h:3
+msgid "Borland"
+msgstr "Borland"
+
+#: data/static_bookmarks.xml.h:4
+msgid "CNET Computers.com"
+msgstr "CNET Computers.com"
+
+#: data/static_bookmarks.xml.h:5
+msgid "CNET Linux Center"
+msgstr "CNET Linux Center"
+
+#: data/static_bookmarks.xml.h:6
+msgid "CollabNet"
+msgstr "CollabNet"
+
+#: data/static_bookmarks.xml.h:7
+msgid "Compaq"
+msgstr "Compaq"
+
+#: data/static_bookmarks.xml.h:8
+msgid "Conectiva"
+msgstr "Conectiva"
+
+#: data/static_bookmarks.xml.h:9
+msgid "Covalent"
+msgstr "Covalent"
+
+#: data/static_bookmarks.xml.h:10
+msgid "Debian.org"
+msgstr "Debian.org"
+
+#: data/static_bookmarks.xml.h:11
+msgid "Dell"
+msgstr "Dell"
+
+#: data/static_bookmarks.xml.h:12
+msgid "Eazel"
+msgstr "Eazel"
+
+#: data/static_bookmarks.xml.h:13
+msgid "Freshmeat.net"
+msgstr "Freshmeat.net"
+
+#: data/static_bookmarks.xml.h:14
+msgid "GNOME.org"
+msgstr "GNOME.org"
+
+#: data/static_bookmarks.xml.h:15
+msgid "GNU.org"
+msgstr "GNU.org"
+
+#: data/static_bookmarks.xml.h:17
+msgid "International"
+msgstr "International"
+
+#: data/static_bookmarks.xml.h:18
+msgid "Linux Documentation Project"
+msgstr "Linux Dokumentaèný projekt"
+
+#: data/static_bookmarks.xml.h:19
+msgid "Linux One"
+msgstr "Linux One"
+
+#: data/static_bookmarks.xml.h:20
+msgid "Linux Online"
+msgstr "Linux Online"
+
+#: data/static_bookmarks.xml.h:21
+msgid "Linux Resources"
+msgstr "Zdroje pre Linux"
+
+#: data/static_bookmarks.xml.h:22
+msgid "Linux Weekly News"
+msgstr "Linux Weekly News"
+
+#: data/static_bookmarks.xml.h:23
+msgid "LinuxNewbie.org"
+msgstr "LinuxNewbie.org"
+
+#: data/static_bookmarks.xml.h:24
+msgid "LinuxOrbit.com"
+msgstr "LinuxOrbit.com"
+
+#: data/static_bookmarks.xml.h:25
+msgid "MandrakeSoft"
+msgstr "MandrakeSoft"
+
+#: data/static_bookmarks.xml.h:26
+msgid "Netraverse"
+msgstr "Netraverse"
+
+#: data/static_bookmarks.xml.h:27
+msgid "News and Media"
+msgstr "Správy a médiá"
+
+#: data/static_bookmarks.xml.h:28
+msgid "O'Reilly"
+msgstr "O'Reilly"
+
+#: data/static_bookmarks.xml.h:29
+msgid "OSDN"
+msgstr "OSDN"
+
+#: data/static_bookmarks.xml.h:30
+msgid "Open Source Asia"
+msgstr "Open Source Asia"
+
+#: data/static_bookmarks.xml.h:31
+msgid "OpenOffice"
+msgstr "OpenOffice"
+
+#: data/static_bookmarks.xml.h:32
+msgid "Penguin Computing"
+msgstr "Penguin Computing"
+
+#: data/static_bookmarks.xml.h:33
+msgid "Rackspace"
+msgstr "Rackspace"
+
+#: data/static_bookmarks.xml.h:34
+msgid "Red Hat"
+msgstr "Red Hat"
+
+#: data/static_bookmarks.xml.h:35
+msgid "Red Hat Network"
+msgstr "Red Hat Network"
+
+#: data/static_bookmarks.xml.h:36
+msgid "RedFlag Linux"
+msgstr "RedFlag Linux"
+
+#: data/static_bookmarks.xml.h:37
+msgid "Software"
+msgstr "Softvér"
+
+#: data/static_bookmarks.xml.h:38
+msgid "SourceForge"
+msgstr "SourceForge"
+
+#: data/static_bookmarks.xml.h:39
+msgid "Sun StarOffice"
+msgstr "Sun StarOffice"
+
+#: data/static_bookmarks.xml.h:40
+msgid "Sun Wah Linux"
+msgstr "Sun Wah Linux"
+
+#: data/static_bookmarks.xml.h:41
+msgid "Web Services"
+msgstr "Slu¾by WWW"
+
+#: data/static_bookmarks.xml.h:42
+msgid "ZDNet Linux Hardware Database"
+msgstr "ZDNet Linux Hardware Database"
+
+#: data/static_bookmarks.xml.h:43
+msgid "ZDNet Linux Resource Center"
+msgstr "ZDNet Linux Resource Center"
+
+#: data/static_bookmarks.xml.h:44
+msgid "Zero-Knowledge"
+msgstr "Zero-Knowledge"
+
+#: icons/crux_eggplant/crux_eggplant.xml.h:1
+msgid "An Eggplant variation of the Crux theme."
+msgstr "Eggplant variácia témy Crux."
+
+#: icons/crux_eggplant/crux_eggplant.xml.h:2
+msgid "Crux-Eggplant"
+msgstr "Crux-Eggplant"
+
+#: icons/crux_teal/crux_teal.xml.h:1
+msgid "A Teal variation of the Crux theme."
+msgstr "Modrozelená variácia témy Crux."
+
+#: icons/crux_teal/crux_teal.xml.h:2
+msgid "Crux-Teal"
+msgstr "Crux-Modrozelená"
+
+#: icons/default.xml.h:1
+msgid "Default"
+msgstr "©tandard"
+
+#: icons/default.xml.h:2
+msgid "This is the default theme for Nautilus."
+msgstr "Toto je ¹tandardná téma pre Nautilus."
+
+#: icons/gnome/gnome.xml.h:1
+msgid "A theme designed to fit well with the classic GNOME environment"
+msgstr ""
+"Táto téma je vytvorená tak, aby dobre vyzerala v klasickom prostredí GNOME."
+
+#: icons/sierra/sierra.xml.h:1
+msgid "Sierra"
+msgstr "Sierra"
+
+#: icons/sierra/sierra.xml.h:2
+msgid "Uses manila folders and gray-green backgrounds."
+msgstr "Pou¾íva manilové prieèinky a ¹edozelené pozadie."
+
+#: icons/tahoe/tahoe.xml.h:1
+msgid "Tahoe"
+msgstr "Tahoe"
+
+#: icons/tahoe/tahoe.xml.h:2
+msgid "This theme uses photo-realistic folders."
+msgstr "Táto téma pou¾íva fotorealistické prieèinky."
 
 #. Note to localizers: this font is used for text items in Druid pages
 #: libnautilus-private/nautilus-druid-page-eazel.c:381
@@ -1638,64 +2692,64 @@ msgstr "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2432
+#: libnautilus-private/nautilus-file.c:2433
 msgid "today at 00:00:00 PM"
 msgstr "dnes o 0:0:0"
 
-#: libnautilus-private/nautilus-file.c:2433
+#: libnautilus-private/nautilus-file.c:2434
 msgid "today at %-I:%M:%S %p"
 msgstr "dnes o %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2435
+#: libnautilus-private/nautilus-file.c:2436
 msgid "today at 00:00 PM"
 msgstr "dnes o 0:0"
 
-#: libnautilus-private/nautilus-file.c:2436
+#: libnautilus-private/nautilus-file.c:2437
 msgid "today at %-I:%M %p"
 msgstr "dnes o %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2438
+#: libnautilus-private/nautilus-file.c:2439
 msgid "today, 00:00 PM"
 msgstr "dnes o 12:00"
 
-#: libnautilus-private/nautilus-file.c:2439
+#: libnautilus-private/nautilus-file.c:2440
 msgid "today, %-I:%M %p"
 msgstr "dnes o %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2441
 #: libnautilus-private/nautilus-file.c:2442
+#: libnautilus-private/nautilus-file.c:2443
 msgid "today"
 msgstr "dnes"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2451
+#: libnautilus-private/nautilus-file.c:2452
 msgid "yesterday at 00:00:00 PM"
 msgstr "vèera o 12:00"
 
-#: libnautilus-private/nautilus-file.c:2452
+#: libnautilus-private/nautilus-file.c:2453
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "vèera o %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2454
+#: libnautilus-private/nautilus-file.c:2455
 msgid "yesterday at 00:00 PM"
 msgstr "vèera o 12:00"
 
-#: libnautilus-private/nautilus-file.c:2455
+#: libnautilus-private/nautilus-file.c:2456
 msgid "yesterday at %-I:%M %p"
 msgstr "vèera o %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2457
+#: libnautilus-private/nautilus-file.c:2458
 msgid "yesterday, 00:00 PM"
 msgstr "vèera o 12:00"
 
-#: libnautilus-private/nautilus-file.c:2458
+#: libnautilus-private/nautilus-file.c:2459
 msgid "yesterday, %-I:%M %p"
 msgstr "vèera o %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2460
 #: libnautilus-private/nautilus-file.c:2461
+#: libnautilus-private/nautilus-file.c:2462
 msgid "yesterday"
 msgstr "vèera"
 
@@ -1704,132 +2758,132 @@ msgstr "vèera"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2472
+#: libnautilus-private/nautilus-file.c:2473
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Streda, 00. septembra 0000 o 12:00"
 
-#: libnautilus-private/nautilus-file.c:2473
+#: libnautilus-private/nautilus-file.c:2474
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %B %-d.%-m.%y o %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2475
+#: libnautilus-private/nautilus-file.c:2476
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Pod, 00. Okt 0000 o 12:00"
 
-#: libnautilus-private/nautilus-file.c:2476
+#: libnautilus-private/nautilus-file.c:2477
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%A %-d.%-m.%y o %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2478
+#: libnautilus-private/nautilus-file.c:2479
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Pon, 00. Okt 0000 o 12:00"
 
-#: libnautilus-private/nautilus-file.c:2479
+#: libnautilus-private/nautilus-file.c:2480
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %b %-d %Y o %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2481
+#: libnautilus-private/nautilus-file.c:2482
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "00. Okt 0000 o 00:00"
 
-#: libnautilus-private/nautilus-file.c:2482
+#: libnautilus-private/nautilus-file.c:2483
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%b %-d %Y o %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2484
+#: libnautilus-private/nautilus-file.c:2485
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "00. Okt 0000, 12:00"
 
-#: libnautilus-private/nautilus-file.c:2485
+#: libnautilus-private/nautilus-file.c:2486
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%b %-d %Y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2487
+#: libnautilus-private/nautilus-file.c:2488
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 12:00"
 
-#: libnautilus-private/nautilus-file.c:2488
+#: libnautilus-private/nautilus-file.c:2489
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d/%m/%y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2490
+#: libnautilus-private/nautilus-file.c:2491
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-private/nautilus-file.c:2491
+#: libnautilus-private/nautilus-file.c:2492
 msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
-#: libnautilus-private/nautilus-file.c:3762
+#: libnautilus-private/nautilus-file.c:3763
 msgid "0 items"
 msgstr "0 polo¾iek"
 
-#: libnautilus-private/nautilus-file.c:3762
+#: libnautilus-private/nautilus-file.c:3763
 msgid "0 folders"
 msgstr "0 prieèinkov"
 
-#: libnautilus-private/nautilus-file.c:3763
+#: libnautilus-private/nautilus-file.c:3764
 msgid "0 files"
 msgstr "0 súborov"
 
-#: libnautilus-private/nautilus-file.c:3767
+#: libnautilus-private/nautilus-file.c:3768
 msgid "1 item"
 msgstr "1 polo¾ka"
 
-#: libnautilus-private/nautilus-file.c:3767
+#: libnautilus-private/nautilus-file.c:3768
 msgid "1 folder"
 msgstr "1 prieèinok"
 
-#: libnautilus-private/nautilus-file.c:3768
+#: libnautilus-private/nautilus-file.c:3769
 msgid "1 file"
 msgstr "1 súbor"
 
-#: libnautilus-private/nautilus-file.c:3771
+#: libnautilus-private/nautilus-file.c:3772
 #, c-format
 msgid "%u items"
 msgstr "%u polo¾iek"
 
-#: libnautilus-private/nautilus-file.c:3771
+#: libnautilus-private/nautilus-file.c:3772
 #, c-format
 msgid "%u folders"
 msgstr "%u prieèinkov"
 
-#: libnautilus-private/nautilus-file.c:3772
+#: libnautilus-private/nautilus-file.c:3773
 #, c-format
 msgid "%u files"
 msgstr "%u súborov"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4079
-#: libnautilus-private/nautilus-file.c:4095
+#: libnautilus-private/nautilus-file.c:4080
+#: libnautilus-private/nautilus-file.c:4096
 msgid "? items"
 msgstr "? polo¾iek"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4085
+#: libnautilus-private/nautilus-file.c:4086
 msgid "? bytes"
 msgstr "? bajtov"
 
-#: libnautilus-private/nautilus-file.c:4100
+#: libnautilus-private/nautilus-file.c:4101
 msgid "unknown type"
 msgstr "neznámy typ"
 
-#: libnautilus-private/nautilus-file.c:4103
+#: libnautilus-private/nautilus-file.c:4104
 msgid "unknown MIME type"
 msgstr "neznámy typ MIME"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4109
+#: libnautilus-private/nautilus-file.c:4110
 msgid "unknown"
 msgstr "neznámy"
 
-#: libnautilus-private/nautilus-file.c:4141
+#: libnautilus-private/nautilus-file.c:4142
 msgid "program"
 msgstr "program"
 
-#: libnautilus-private/nautilus-file.c:4153
+#: libnautilus-private/nautilus-file.c:4154
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -1839,7 +2893,7 @@ msgstr ""
 "súbor gnome-vfs.keys nie je na správnom mieste alebo z nejakého iného dôvodu "
 "sa nedá nájs»."
 
-#: libnautilus-private/nautilus-file.c:4157
+#: libnautilus-private/nautilus-file.c:4158
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -1848,7 +2902,7 @@ msgstr ""
 "Pre typ MIME \"%s\" (súbor je \"%s\") nebol nájdený ¾iadny popis. Oznámte to "
 "v konferencii gnome-vfs."
 
-#: libnautilus-private/nautilus-file.c:4171
+#: libnautilus-private/nautilus-file.c:4172
 msgid "link"
 msgstr "odkaz"
 
@@ -1857,20 +2911,14 @@ msgstr "odkaz"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: libnautilus-private/nautilus-file-operations.c:1172
-#: libnautilus-private/nautilus-file.c:4177
+#: libnautilus-private/nautilus-file.c:4178
 #, c-format
 msgid "link to %s"
 msgstr "odkaz na %s"
 
-#: libnautilus-private/nautilus-file.c:4191
+#: libnautilus-private/nautilus-file.c:4192
 msgid "link (broken)"
 msgstr "odkaz (neplatný)"
-
-#: libnautilus-private/nautilus-file.c:5189
-#: libnautilus-private/nautilus-trash-directory.c:383
-#: src/file-manager/fm-desktop-icon-view.c:71
-msgid "Trash"
-msgstr "Odpadky"
 
 #. "From" dialog label, source path gets placed next to it in the dialog
 #: libnautilus-private/nautilus-file-operations.c:414
@@ -2197,10 +3245,6 @@ msgstr ""
 #: libnautilus-private/nautilus-file-operations.c:1087
 msgid "Unable to replace file."
 msgstr "Nepodarilo sa nahradi» súbor."
-
-#: libnautilus-private/nautilus-file-operations.c:1087
-msgid "OK"
-msgstr "OK"
 
 #: libnautilus-private/nautilus-file-operations.c:1097
 #, c-format
@@ -2927,31 +3971,37 @@ msgid "List View"
 msgstr "Pohµad zoznam"
 
 #: libnautilus-private/nautilus-global-preferences.c:157
+#: src/file-manager/nautilus-icon-view-ui.xml.h:21
 msgid "Manually"
 msgstr "Ruène"
 
 #: libnautilus-private/nautilus-global-preferences.c:159
 #: libnautilus-private/nautilus-global-preferences.c:168
+#: src/file-manager/nautilus-icon-view-ui.xml.h:4
 msgid "By Name"
 msgstr "podµa Mena"
 
 #: libnautilus-private/nautilus-global-preferences.c:160
 #: libnautilus-private/nautilus-global-preferences.c:169
+#: src/file-manager/nautilus-icon-view-ui.xml.h:5
 msgid "By Size"
 msgstr "podµa Veµkosti"
 
 #: libnautilus-private/nautilus-global-preferences.c:161
 #: libnautilus-private/nautilus-global-preferences.c:170
+#: src/file-manager/nautilus-icon-view-ui.xml.h:6
 msgid "By Type"
 msgstr "podµa Typu"
 
 #: libnautilus-private/nautilus-global-preferences.c:162
 #: libnautilus-private/nautilus-global-preferences.c:171
+#: src/file-manager/nautilus-icon-view-ui.xml.h:2
 msgid "By Modification Date"
 msgstr "podµa Dátumu zmeny"
 
 #: libnautilus-private/nautilus-global-preferences.c:163
 #: libnautilus-private/nautilus-global-preferences.c:172
+#: src/file-manager/nautilus-icon-view-ui.xml.h:1
 msgid "By Emblems"
 msgstr "podµa Emblémov"
 
@@ -3085,6 +4135,7 @@ msgid "Switch"
 msgstr "Prepnú»"
 
 #: libnautilus-private/nautilus-icon-text-item.c:1584
+#: src/file-manager/nautilus-icon-view-ui.xml.h:23
 msgid "Rename"
 msgstr "Premenova»"
 
@@ -3775,6 +4826,166 @@ msgstr "Nautilus nemohol odpoji» vybraný disk."
 msgid "ISO 9660 Volume"
 msgstr "Disk ISO 9660"
 
+#: libnautilus/nautilus-clipboard-ui.xml.h:1 src/nautilus-shell-ui.xml.h:5
+msgid "C_lear Text"
+msgstr "Vy_maza» text"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:2
+msgid "Clear Text"
+msgstr "Vymaza» text"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:3
+msgid "Copy Text"
+msgstr "Kopírova» text"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:4
+msgid "Copy the selected text to the clipboard"
+msgstr "Kopíruje vybraný text do schránky"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:5
+msgid "Cut Text"
+msgstr "Vystrihnú» text"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:6 src/nautilus-shell-ui.xml.h:15
+msgid "Cut _Text"
+msgstr "Vystrihnú» _text"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:7
+msgid "Cut the selected text to the clipboard"
+msgstr "Vystrihne vybraný text do schránky"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:8
+msgid "Paste Text"
+msgstr "Vlo¾i» text"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:9
+msgid "Paste the text stored on the clipboard"
+msgstr "Vlo¾í text ulo¾ený v schránke"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:10
+msgid "Remove the selected text without putting it on the clipboard"
+msgstr "Odstráni» vybraný text bez vlo¾enia do schránky"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:11
+msgid "Select All"
+msgstr "Vybra» v¹etko"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:12 src/nautilus-shell-ui.xml.h:50
+msgid "Select _All"
+msgstr "Vybra» v¹etk_o"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:13
+msgid "Select all the text in a text field"
+msgstr "Vybra» celý text v textovom poli"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:14 src/nautilus-shell-ui.xml.h:76
+msgid "_Copy Text"
+msgstr "_Kopírova» text"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:15 src/nautilus-shell-ui.xml.h:88
+msgid "_Paste Text"
+msgstr "V_lo¾i» text"
+
+#: nautilus.desktop.in.h:1 src/nautilus-window-manage-views.c:256
+#: src/nautilus-window-menus.c:657
+msgid "Nautilus"
+msgstr "Nautilus"
+
+#: nautilus.desktop.in.h:2
+msgid "Nautilus File Manager and Graphic Shell"
+msgstr "Správca súborov a grafický shell Nautilus"
+
+#: src/Nautilus_shell.oaf.in.h:1
+msgid "Factory for Nautilus shell and file manager"
+msgstr "Vytváracie rozhranie pre shell Nautilus a správcu súborov"
+
+#: src/Nautilus_shell.oaf.in.h:2
+msgid "Icons"
+msgstr "Ikony"
+
+#: src/Nautilus_shell.oaf.in.h:3
+msgid "Icons Viewer"
+msgstr "Pohµad Ikony"
+
+#: src/Nautilus_shell.oaf.in.h:4
+msgid "List"
+msgstr "Zoznam"
+
+#: src/Nautilus_shell.oaf.in.h:5
+msgid "List Viewer"
+msgstr "Pohµad zoznam"
+
+#: src/Nautilus_shell.oaf.in.h:6
+msgid "Nautilus factory"
+msgstr "Vytváracie rozhranie pre Nautilus"
+
+#: src/Nautilus_shell.oaf.in.h:7
+msgid "Nautilus file manager component that shows a scrollable list"
+msgstr "Komponent správca súborov, ktorý zobrazuje posuvný zoznam."
+
+#: src/Nautilus_shell.oaf.in.h:8
+msgid ""
+"Nautilus file manager component that shows a scrollable list for search "
+"results"
+msgstr ""
+"Komponent správca súborov, ktorý zobrazuje posuvný zoznam pre výsledky "
+"hµadania."
+
+#: src/Nautilus_shell.oaf.in.h:9
+msgid "Nautilus file manager component that shows a two-dimensional icon space"
+msgstr "Komponent správca súborov, ktorý zobrazuje dvojrozmerný priestor ikon."
+
+#: src/Nautilus_shell.oaf.in.h:10
+msgid "Nautilus file manager component that shows icons on the desktop"
+msgstr "Komponent Správca súborov Nautilus, ktorý zobrazuje ikony na ploche"
+
+#: src/Nautilus_shell.oaf.in.h:11
+msgid "Nautilus file manager desktop icon view"
+msgstr "Pohµad správcu súborov na ikony plochy"
+
+#: src/Nautilus_shell.oaf.in.h:12
+msgid "Nautilus file manager icon view"
+msgstr "Pohµad správcu súborov na ikony"
+
+#: src/Nautilus_shell.oaf.in.h:13
+msgid "Nautilus file manager list view"
+msgstr "Pohµad správcu súborov ako zoznam"
+
+#: src/Nautilus_shell.oaf.in.h:14
+msgid "Nautilus file manager search results list view"
+msgstr "Pohµad správcu súborov ako zoznam výsledkov hµadania"
+
+#: src/Nautilus_shell.oaf.in.h:15
+msgid "Nautilus metafile factory"
+msgstr "Vytváracie rozhranie pre meta-súbory pre Nautilus"
+
+#: src/Nautilus_shell.oaf.in.h:16
+msgid "Nautilus shell"
+msgstr "Nautilus shell"
+
+#: src/Nautilus_shell.oaf.in.h:17
+msgid ""
+"Nautilus shell operations that can be done from subsequent command-line "
+"invocations"
+msgstr ""
+"Operácie shellu Nautilus, ktoré je mo¾né neskôr vykona» z príkazového riadku."
+
+#: src/Nautilus_shell.oaf.in.h:18
+msgid "Produces metafile objects for accessing Nautilus metadata"
+msgstr "Vytvorí objekty meta-súborov pre prístup k meta-údajom Nautilusu."
+
+#: src/Nautilus_shell.oaf.in.h:19
+msgid "Search List"
+msgstr "Zoznam hµadania"
+
+#: src/Nautilus_shell.oaf.in.h:20
+msgid "View as Icons"
+msgstr "Zobrazi» ako ikony"
+
+#: src/Nautilus_shell.oaf.in.h:21
+msgid "View as List"
+msgstr "Zobrazi» ako zoznam"
+
 #: src/file-manager/fm-desktop-icon-view.c:670
 msgid "Background"
 msgstr "Pozadie"
@@ -3798,7 +5009,10 @@ msgstr ""
 msgid "Empty Trash..."
 msgstr "Vyprázdni» odpadky..."
 
-#: src/file-manager/fm-desktop-icon-view.c:1268 src/nautilus-sidebar.c:1485
+#: src/file-manager/fm-desktop-icon-view.c:1268
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
+#: src/file-manager/nautilus-directory-view-ui.xml.h:15
+#: src/nautilus-sidebar.c:1485
 msgid "Empty Trash"
 msgstr "Vyprázdni» odpadky"
 
@@ -3833,6 +5047,7 @@ msgstr "Odstráni»?"
 #: src/file-manager/fm-directory-view.c:773
 #: src/file-manager/fm-directory-view.c:2846
 #: src/file-manager/fm-directory-view.c:2886
+#: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Delete"
 msgstr "Odstráni»"
 
@@ -3976,6 +5191,7 @@ msgid "Use \"%s\" to open the selected item"
 msgstr "Pou¾i» \"%s\" pre otvorenie vybranej polo¾ky"
 
 #: src/file-manager/fm-directory-view.c:3305
+#: src/file-manager/nautilus-directory-view-ui.xml.h:32
 msgid "Other _Application..."
 msgstr "Iná _aplikácia..."
 
@@ -3984,6 +5200,7 @@ msgid "An _Application..."
 msgstr "_Aplikácia..."
 
 #: src/file-manager/fm-directory-view.c:3311
+#: src/file-manager/nautilus-directory-view-ui.xml.h:33
 msgid "Other _Viewer..."
 msgstr "Iný program pre _zobrazenie..."
 
@@ -4094,6 +5311,7 @@ msgid "Open _in This Window"
 msgstr "Otvori» v _tomto okne"
 
 #: src/file-manager/fm-directory-view.c:4015
+#: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "Open _in New Window"
 msgstr "Otvori» v _novom okne"
 
@@ -4115,6 +5333,7 @@ msgid "Delete all selected items permanently"
 msgstr "Odstráni» úplne v¹etky vybrané polo¾ky"
 
 #: src/file-manager/fm-directory-view.c:4040
+#: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Move to _Trash"
 msgstr "Presunú» do _Odpadkov"
 
@@ -4127,6 +5346,7 @@ msgid "De_lete..."
 msgstr "O_dstráni»..."
 
 #: src/file-manager/fm-directory-view.c:4069
+#: src/file-manager/nautilus-directory-view-ui.xml.h:9
 msgid "De_lete"
 msgstr "O_dstráni»"
 
@@ -4143,10 +5363,12 @@ msgid "_Empty Trash..."
 msgstr "_Vyprázdni» Odpadky..."
 
 #: src/file-manager/fm-directory-view.c:4107
+#: src/file-manager/nautilus-directory-view-ui.xml.h:58
 msgid "_Empty Trash"
 msgstr "_Vyprázdni» Odpadky"
 
 #: src/file-manager/fm-directory-view.c:4118
+#: src/file-manager/nautilus-directory-view-ui.xml.h:37
 msgid "R_emove Custom Images"
 msgstr "Odstráni» _vlastné obrázky"
 
@@ -4159,6 +5381,7 @@ msgid "Cu_t File"
 msgstr "Vystri_hnú» súbor"
 
 #: src/file-manager/fm-directory-view.c:4134
+#: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Cu_t Files"
 msgstr "Vystri_hnú» súbory"
 
@@ -4167,6 +5390,7 @@ msgid "_Copy File"
 msgstr "_Kopírova» súbor"
 
 #: src/file-manager/fm-directory-view.c:4145
+#: src/file-manager/nautilus-directory-view-ui.xml.h:56
 msgid "_Copy Files"
 msgstr "_Kopírova» súbory"
 
@@ -4368,64 +5592,64 @@ msgstr "Premenovávam \"%s\" na \"%s\"."
 msgid "Cancel Rename?"
 msgstr "Zru¹i» premenovanie?"
 
-#: src/file-manager/fm-icon-view.c:177
+#: src/file-manager/fm-icon-view.c:185
 msgid "by _Name"
 msgstr "podµa _mena"
 
-#: src/file-manager/fm-icon-view.c:178
+#: src/file-manager/fm-icon-view.c:186
+#: src/file-manager/nautilus-icon-view-ui.xml.h:15
 msgid "Keep icons sorted by name in rows"
 msgstr "Udr¾iava» ikony zoradené podµa mena v riadkoch"
 
-#: src/file-manager/fm-icon-view.c:184
+#: src/file-manager/fm-icon-view.c:192
 msgid "by _Size"
 msgstr "podµa _veµkosti"
 
-#: src/file-manager/fm-icon-view.c:185
+#: src/file-manager/fm-icon-view.c:193
+#: src/file-manager/nautilus-icon-view-ui.xml.h:16
 msgid "Keep icons sorted by size in rows"
 msgstr "Udr¾iava» ikony zoradené podµa veµkosti v riadkoch"
 
-#: src/file-manager/fm-icon-view.c:191
+#: src/file-manager/fm-icon-view.c:199
 msgid "by _Type"
 msgstr "podµa _typu"
 
-#: src/file-manager/fm-icon-view.c:192
+#: src/file-manager/fm-icon-view.c:200
+#: src/file-manager/nautilus-icon-view-ui.xml.h:17
 msgid "Keep icons sorted by type in rows"
 msgstr "Udr¾iava» ikony zoradené podµa typu v riadkoch"
 
-#: src/file-manager/fm-icon-view.c:198
+#: src/file-manager/fm-icon-view.c:206
 msgid "by Modification _Date"
 msgstr "podµa dátumu _zmeny"
 
-#: src/file-manager/fm-icon-view.c:199
+#: src/file-manager/fm-icon-view.c:207
+#: src/file-manager/nautilus-icon-view-ui.xml.h:14
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Udr¾iava» ikony zoradené podµa dátum zmeny v riadkoch"
 
-#: src/file-manager/fm-icon-view.c:205
+#: src/file-manager/fm-icon-view.c:213
 msgid "by _Emblems"
 msgstr "podµa _emblémov"
 
-#: src/file-manager/fm-icon-view.c:206
+#: src/file-manager/fm-icon-view.c:214
+#: src/file-manager/nautilus-icon-view-ui.xml.h:13
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Udr¾iava» ikony zoradené podµa emblémov v riadkoch"
 
-#: src/file-manager/fm-icon-view.c:1416
+#: src/file-manager/fm-icon-view.c:1424
+#: src/file-manager/nautilus-icon-view-ui.xml.h:37
 msgid "_Restore Icons' Original Sizes"
 msgstr "_Obnovi» pôvodnú veµkos» ikon"
 
-#: src/file-manager/fm-icon-view.c:1417
+#: src/file-manager/fm-icon-view.c:1425
 msgid "_Restore Icon's Original Size"
 msgstr "_Obnovi» pôvodnú veµkos» ikony"
 
-#: src/file-manager/fm-icon-view.c:1709
+#: src/file-manager/fm-icon-view.c:1717
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "ukazujúci na \"%s\""
-
-#: src/file-manager/fm-list-view.c:2285
-#: src/file-manager/fm-properties-window.c:1620
-#: src/file-manager/fm-search-list-view.c:499
-msgid "Emblems"
-msgstr "Emblémy"
 
 #: src/file-manager/fm-list-view.c:2291
 #: src/file-manager/fm-search-list-view.c:511
@@ -4808,6 +6032,7 @@ msgstr "Umiestnenie"
 #. * is to inform translators of this tricky concept).
 #.
 #: src/file-manager/fm-search-list-view.c:557
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
 msgid "_Reveal in New Window"
 msgstr "_Zobrazi» v novom okne"
 
@@ -4837,6 +6062,359 @@ msgstr ""
 #: src/file-manager/fm-search-list-view.c:679
 msgid "Too Many Matches"
 msgstr "Príli¹ veµa odpovedajúcich"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:1
+msgid "Change Desktop Background"
+msgstr "Zmeni» pozadie plochy"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:2
+#: src/file-manager/nautilus-directory-view-ui.xml.h:11
+msgid "Delete all items in the Trash"
+msgstr "Odstráni v¹etky polo¾ky v Odpadkoch"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:3
+msgid "Disks"
+msgstr "Disky"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
+msgid "Mount or unmount disks"
+msgstr "Pripojí alebo odpojí disky"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:6
+msgid "New Terminal"
+msgstr "Nový terminál"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:7
+msgid "Open a new GNOME terminal window"
+msgstr "Otvorí nové okno s GNOME terminálom"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:8
+msgid "Remove any custom pattern or color from the desktop background"
+msgstr "Odstráni vlastné vzorky alebo farby z pozadia plochy"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:9
+msgid "Reset Desktop Background"
+msgstr "Nastavi» ¹tandardné pozadie"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:10
+msgid ""
+"Show a window that lets you set your desktop background's pattern or color"
+msgstr "Zobrazí okno,ktoré umo¾ní nastavi» vzorku alebo farbu pozadia plochy"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:1
+msgid "Choose a program with which to open the selected item"
+msgstr "Vyberte program, ktorým chcete otvori» vybranú polo¾ku"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:2
+msgid "Choose another application with which to open the selected item"
+msgstr "Vyberte iný program, ktorým chcete otvori» vybranú polo¾ku"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:3
+msgid "Choose another viewer with which to view the selected item"
+msgstr "Vyberte iný program, ktorým chcete zobrazi» vybranú polo¾ku"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:4
+msgid "Copy Files"
+msgstr "Kopírova» súbory"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:5
+msgid "Create a new empty folder inside this folder"
+msgstr "Vytvorí nový prázdny prieèinok v tomto prieèinku"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:6
+msgid "Create a symbolic link for each selected item"
+msgstr "Vytvorí symbolický odkaz pre ka¾dú vybranú polo¾ku"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:8
+msgid "Cut Files"
+msgstr "Vystrihnú» súbory"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:12
+msgid "Delete each selected item, without moving to the Trash"
+msgstr "Odstráni ka¾dú vybranú polo¾ku bez presunu do Odpadkov"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:13
+msgid "Duplicate"
+msgstr "Duplikova»"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:14
+msgid "Duplicate each selected item"
+msgstr "Vytvorí kópiu ka¾dej vybranej polo¾ky"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:16
+msgid "Make Link"
+msgstr "Vytvori» odkaz"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:17
+msgid "Move each selected item to the Trash"
+msgstr "Presunie ka¾dú vybranú polo¾ku do Odpadkov"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:18
+msgid ""
+"Move or copy files previously selected by a Cut Files or Copy Files command"
+msgstr ""
+"Presunie alebo skopíruje súbory vybrané predcházajúcim príkazom Vystrihnú» "
+"súbory alebo Kopírova» súbory"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:19
+msgid "Move to Trash"
+msgstr "Presunú» do Odpadkov"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:21
+msgid "New Folder"
+msgstr "Nový prieèinok"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:22
+msgid "Open"
+msgstr "Otvori»"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:23
+msgid "Open Scripts Folder"
+msgstr "Otvori» prieèinok skriptov"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:24
+msgid "Open Wit_h"
+msgstr "Otvori» _pomocou"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:25
+msgid "Open With"
+msgstr "Otvori» s "
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:27
+msgid "Open each selected item in a new window"
+msgstr "Otvorí ka¾dú vybranú polo¾ku v novom okne"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:28
+msgid "Open in New Window"
+msgstr "Otvori» v novom okne"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:29
+msgid "Open the selected item in this window"
+msgstr "Otvorí vybranú polo¾ku v tomto okne"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:30
+msgid "Other Application..."
+msgstr "Iná aplikácia..."
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:31
+msgid "Other Viewer..."
+msgstr "Iný program pre zobrazenie..."
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:34
+msgid "Paste Files"
+msgstr "Vlo¾i» text"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:35
+msgid "Prepare the selected files to be copied with a Paste Files command"
+msgstr "Pripravi» vybrané súbory pre kopírovanie príkazom Vlo¾i» súbory"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:36
+msgid "Prepare the selected files to be moved with a Paste Files command"
+msgstr "Pripravi» vybrané súbory pre presun príkazom Vlo¾i» súbory"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:38
+msgid "Remove Custom Images"
+msgstr "Odstráni» vlastné obrázky"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:39
+msgid "Remove any custom images from selected icons"
+msgstr "Odstráni v¹etky vlastné obrázky z vybraných ikon"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:40
+msgid "Remove any custom pattern or color from the background of this location"
+msgstr "Odstráni v¹etky vlastné vzorky alebo farby z pozadia tohoto miesta"
+
+#. add the reset background item, possibly disabled
+#: src/file-manager/nautilus-directory-view-ui.xml.h:41
+#: src/nautilus-sidebar.c:542
+msgid "Reset Background"
+msgstr "©tandardné pozadie"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:42
+msgid "Reset View to Match Preferences"
+msgstr "Návrat k nastaveniu pohµadu"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:43
+msgid "Reset View to Match _Preferences"
+msgstr "Ná_vrat k nastaveniu pohµadu"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:44
+msgid "Reset sorting order and zoom level to match preferences for this view"
+msgstr ""
+"Návrat k triedeniu a úrovni lupy odpovedajúcim nastaveniu tohto pohµadu"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:45
+msgid "Run or manage scripts from ~/Nautilus/scripts"
+msgstr "Spustí alebo upravuje skripty z ~/Nautilus/scripts"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:46
+msgid "Scripts"
+msgstr "Skripty"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:47
+msgid "Select All Files"
+msgstr "Vybra» v¹etky súbory"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:48
+msgid "Select _All Files"
+msgstr "Vybra» v¹e_tky súbory"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:49
+msgid "Select all items in this window"
+msgstr "Vyberie v¹etky polo¾ky v tomto okne"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:50
+msgid "Show Properties"
+msgstr "Zobrazi» Vlastnosti"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:51
+msgid "Show Trash"
+msgstr "Zobrazi» Odpadky"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:52
+msgid "Show _Properties"
+msgstr "Zobrazi» _Vlastnosti"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:53
+msgid "Show the contents of the Trash"
+msgstr "Zobrazí obsah Odpadkov"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:54
+msgid "Show the folder containing the scripts that appear in this menu"
+msgstr "Uká¾e prieèinok obsahujúci skripty, ktoré sú v tomto menu"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:55
+msgid "View or modify the properties of each selected item"
+msgstr "Zobrazí alebo upraví vlastnosti ka¾dej vybranej polo¾ky"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:57
+msgid "_Duplicate"
+msgstr "_Duplikova»"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:59
+msgid "_Make Link"
+msgstr "_Vytvori» odkaz"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:60
+msgid "_New Folder"
+msgstr "Nový _prieèinok"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:61
+msgid "_Open"
+msgstr "_Otvori»"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:62
+msgid "_Open Scripts Folder"
+msgstr "_Otvori» prieèinok skriptov"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:63
+msgid "_Paste Files"
+msgstr "V_lo¾i» súbory"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:64
+msgid "_Show Trash"
+msgstr "_Zobrazi» Odpadky"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:3
+msgid "By Modification _Date"
+msgstr "podµa dátumu _zmeny"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:7
+msgid "By _Emblems"
+msgstr "podµa _emblémov"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:8
+msgid "By _Name"
+msgstr "podµa _mena"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:9
+msgid "By _Size"
+msgstr "podµa _veµkosti"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:10
+msgid "By _Type"
+msgstr "podµa _typu"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:11
+msgid "Clean Up by Name"
+msgstr "Vyèisti» podµa mena"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:12
+msgid "Display icons in the opposite order"
+msgstr "Zobrazi» ikony v opaènom poradí"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:18
+msgid "Lay Out Items"
+msgstr "Rozlo¾enie polo¾iek"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:19
+msgid "Leave icons wherever they are dropped"
+msgstr "Necha» ikony tam, kde budú pustené"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:20
+msgid "Make the selected icon stretchable"
+msgstr "Urobi» vybranú ikonu roz»ahovateµnou"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:22
+msgid "Re_versed Order"
+msgstr "_Opaèné poradie"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:24
+msgid "Rename selected icon"
+msgstr "Premenova» vybranú ikonu"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:25
+msgid "Reposition icons to better fit in the window and avoid overlapping"
+msgstr ""
+"Popresúva» ikony tak, aby lep¹ie odpovedali oknu a zabránili prekrývaniu sa"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:26
+msgid "Restore Icons' Original Sizes"
+msgstr "Obnovi» pôvodnú veµkos» ikony"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:27
+msgid "Restore each selected icon to its original size"
+msgstr "Obnoví pre ka¾dú vybranú ikonu jej pôvodnú veµkos»"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:28
+msgid "Reversed Order"
+msgstr "Opaèné poradie"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:29
+msgid "Stretch Icon"
+msgstr "Roztiahnu» ikonu"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:30
+msgid "Tighter Layout"
+msgstr "Bli¾¹ie k sebe"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:31
+msgid "Tighter _Layout"
+msgstr "_Bli¾¹ie k sebe"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:32
+msgid "Toggle using a tighter layout scheme"
+msgstr "Prepnú» pomocou schémy pre zobrazenie bli¾¹ie k sebe"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:33
+msgid "_Clean Up by Name"
+msgstr "_Vyèisti» podµa mena"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:34
+msgid "_Lay Out Items"
+msgstr "_Rozlo¾enie polo¾iek"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:35
+msgid "_Manually"
+msgstr "_Ruène"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:36
+msgid "_Rename"
+msgstr "_Premenova»"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:38
+msgid "_Stretch Icon"
+msgstr "_Roztiahnu» ikonu"
 
 #: src/file-manager/nautilus-indexing-info.c:88
 #, c-format
@@ -4889,6 +6467,26 @@ msgstr "¥utujem, ale vyhµadávacia slu¾by medusa nie je k dispozícii."
 #: src/file-manager/nautilus-indexing-info.c:316
 msgid "%I:%M %p, %x"
 msgstr "%I:%M %p, %x"
+
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:1
+msgid "Reveal each selected item in its original folder"
+msgstr "Ukáza» ka¾dú vybranú polo¾ku v jej pôvodnom prieèinku"
+
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:2
+msgid "Reveal in New Window"
+msgstr "Ukáza» v novom okne"
+
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:3
+msgid "Show Indexing Status"
+msgstr "Ukáza» stav indexovania"
+
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:4
+msgid "Show _Indexing Status"
+msgstr "Ukáza» stav _indexovania"
+
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:5
+msgid "Show status of indexing used when searching"
+msgstr "Pri hµadaní ukazova» stav pou¾itého indexovania"
 
 #. set the window title and standard close key accelerator
 #: src/nautilus-about.c:141
@@ -5415,10 +7013,6 @@ msgstr "©tandardné hrubé písmo:"
 msgid "Nautilus Themes"
 msgstr "Témy Nautilus"
 
-#: src/nautilus-preferences-dialog.c:80 src/nautilus-preferences-dialog.c:85
-msgid "Desktop"
-msgstr "Plocha"
-
 #: src/nautilus-preferences-dialog.c:82
 msgid "Use Nautilus to draw the desktop"
 msgstr "Pou¾i» Nautilus pre kreslenie plochy"
@@ -5579,10 +7173,6 @@ msgstr "Nastavenie zlo¾itosti hµadania"
 msgid "search type to do by default"
 msgstr "©tandardný typ hµadania"
 
-#: src/nautilus-preferences-dialog.c:282
-msgid "Search Engines"
-msgstr "Vyhµadávacie slu¾by"
-
 #: src/nautilus-preferences-dialog.c:284
 msgid "Search Engine Location"
 msgstr "Miesto pre prehµadávanie WWW"
@@ -5645,10 +7235,6 @@ msgstr "Detaily vzhµadu prieèinku sú verejné"
 #: src/nautilus-preferences-dialog.c:377
 msgid "Tabs"
 msgstr "Zálo¾ky"
-
-#: src/nautilus-preferences-dialog.c:386
-msgid "Tree"
-msgstr "Strom"
 
 #: src/nautilus-preferences-dialog.c:388
 msgid "Show only folders (no files) in the tree"
@@ -6057,6 +7643,415 @@ msgstr "[Vlastník súboru] je [root]"
 msgid "[File owner] is not [root]"
 msgstr "[Vlastník súboru] nie je [root]"
 
+#: src/nautilus-service-ui.xml.h:1
+msgid "Go to the Eazel Services Summary Page"
+msgstr "Prejs» na Súhrnnú stránku Eazel Services"
+
+#: src/nautilus-service-ui.xml.h:2
+msgid "Go to the Eazel Software Catalog"
+msgstr "Prejs» na softvérový katalóg Eazel Software Catalog"
+
+#: src/nautilus-service-ui.xml.h:3
+msgid "Go to your online storage repository"
+msgstr "Prejs» do vá¹ho on-line priestoru"
+
+#: src/nautilus-service-ui.xml.h:5
+msgid "Software _Catalog"
+msgstr "_Katalóg softvéru"
+
+#: src/nautilus-service-ui.xml.h:6
+msgid "_Eazel Services Home"
+msgstr "_Slu¾by Eazel Services"
+
+#: src/nautilus-service-ui.xml.h:7
+msgid "_Online Storage"
+msgstr "_On-line priestor"
+
+#: src/nautilus-service-ui.xml.h:8
+msgid "_Services"
+msgstr "_Slu¾by"
+
+#: src/nautilus-shell-ui.xml.h:1
+msgid " _Advanced"
+msgstr " _Pokroèilý"
+
+#: src/nautilus-shell-ui.xml.h:2
+msgid " _Beginner"
+msgstr " _Zaèiatoèník"
+
+#: src/nautilus-shell-ui.xml.h:3
+msgid " _Intermediate"
+msgstr " Prie_merný"
+
+#: src/nautilus-shell-ui.xml.h:4
+msgid "Add a bookmark for the current location to this menu"
+msgstr "Pridá zálo¾ku pre aktuálne umiestnenie do tohoto menu"
+
+#: src/nautilus-shell-ui.xml.h:6
+msgid "Change the visibility of this window's location bar"
+msgstr "Zmení viditeµnos» pruhu umiestnenia tohoto okna"
+
+#: src/nautilus-shell-ui.xml.h:7
+msgid "Change the visibility of this window's sidebar"
+msgstr "Zmení viditeµnos» boèného panelu tohoto okna"
+
+#: src/nautilus-shell-ui.xml.h:8
+msgid "Change the visibility of this window's status bar"
+msgstr "Zmení viditeµnos» stavového riadku tohoto okna"
+
+#: src/nautilus-shell-ui.xml.h:9
+msgid "Change the visibility of this window's toolbar"
+msgstr "Zmení viditeµnos» panelu nástrojov tohto okna"
+
+#: src/nautilus-shell-ui.xml.h:10
+msgid "Choose a view for the current location, or modify the set of views"
+msgstr "Vyberte pohµad pre aktuálne umiestnenie alebo zmeòte pohµady"
+
+#: src/nautilus-shell-ui.xml.h:11
+msgid "Clear contents of Go menu and Back/Forward lists"
+msgstr "Vyma¾e obsah menu Prejs» a zoznamy Dopredu/Dozadu"
+
+#: src/nautilus-shell-ui.xml.h:12
+msgid "Close _All Windows"
+msgstr "Zavrie» _v¹etky okná"
+
+#: src/nautilus-shell-ui.xml.h:13
+msgid "Close all Nautilus windows"
+msgstr "Zatvorí v¹etky okná programu Nautilus"
+
+#: src/nautilus-shell-ui.xml.h:14
+msgid "Close this window"
+msgstr "Zavrie» toto okno"
+
+#: src/nautilus-shell-ui.xml.h:16
+msgid "Display a window that allows editing the bookmarks in this menu"
+msgstr "Zobrazí okno, ktoré umo¾òuje upravi» zálo¾ky v tomto menu"
+
+#: src/nautilus-shell-ui.xml.h:17
+msgid "Display credits for the creators of Nautilus"
+msgstr "Zobrazí zoznam tvorcov programu Nautilus"
+
+#: src/nautilus-shell-ui.xml.h:18
+msgid "Display information on technical support"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:19
+msgid "Display on-line help for Nautilus"
+msgstr "Zobrazí on-line pomocníka pre Nautilus"
+
+#: src/nautilus-shell-ui.xml.h:20
+msgid ""
+"Display patterns, colors, and emblems that can be used to customize "
+"appearance"
+msgstr ""
+"Zobrazí vzorky, farby a emblémy, ktoré je mo¾né pou¾i» pre prispôsobenie "
+"vzhµadu"
+
+#: src/nautilus-shell-ui.xml.h:21
+msgid "Display quick reference pages for Nautilus"
+msgstr "Zobrazí rýchlu referenènú príruèku programu Nautilus"
+
+#: src/nautilus-shell-ui.xml.h:22
+msgid "Display release notes for Nautilus"
+msgstr "Zobrazí poznámky Nautilusu"
+
+#: src/nautilus-shell-ui.xml.h:23
+msgid "Display the latest contents of the current location"
+msgstr "Zobrazí najnov¹í obsah aktuálneho miesta"
+
+#: src/nautilus-shell-ui.xml.h:24
+msgid "Edit various Nautilus preferences"
+msgstr "Upraví rôzne nastavenia Nautilu"
+
+#: src/nautilus-shell-ui.xml.h:25
+msgid "Find"
+msgstr "Nájs»"
+
+#: src/nautilus-shell-ui.xml.h:26
+msgid "For_get History"
+msgstr "Za_budnú» históriu"
+
+#: src/nautilus-shell-ui.xml.h:27
+msgid "Go to Eazel Services"
+msgstr "Prejs» na Eazel Services"
+
+#: src/nautilus-shell-ui.xml.h:28
+#, fuzzy
+msgid "Go to the Start Here folder"
+msgstr "[Polo¾ky, ktoré sú ]prieèinky"
+
+#: src/nautilus-shell-ui.xml.h:29
+msgid "Go to the home location"
+msgstr "Prejs» domov"
+
+#: src/nautilus-shell-ui.xml.h:30
+msgid "Go to the next visited location"
+msgstr "Prejs» na nasledujúce nav¹tívené miesto"
+
+#: src/nautilus-shell-ui.xml.h:31
+msgid "Go to the previous visited location"
+msgstr "Prejs» na predchádzajúce nav¹tívené miesto"
+
+#: src/nautilus-shell-ui.xml.h:32
+msgid "Go up to the location that contains the displayed location"
+msgstr "Prejs» o úroveò vy¹¹ie na miesto, ktoré obsahuje toto miesto"
+
+#: src/nautilus-shell-ui.xml.h:33 src/nautilus-window-menus.c:502
+msgid "Hide Location _Bar"
+msgstr "Skry» pruh _umiestnenia"
+
+#: src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:484
+msgid "Hide St_atus Bar"
+msgstr "Skry» _stavový riadok"
+
+#: src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:490
+msgid "Hide _Sidebar"
+msgstr "Skry» _boèný panel"
+
+#: src/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:496
+msgid "Hide _Toolbar"
+msgstr "Skry» panel _nástrojov"
+
+#: src/nautilus-shell-ui.xml.h:38
+msgid "Nautilus Quick _Reference"
+msgstr "Rýchla _referenèná príruèka Nautilusu"
+
+#: src/nautilus-shell-ui.xml.h:39
+msgid "Nautilus Release _Notes"
+msgstr "Po_známky Nautilusu"
+
+#: src/nautilus-shell-ui.xml.h:40
+msgid "Nautilus User _Manual"
+msgstr "_Pou¾ívateµský manuál Nautilusu"
+
+#: src/nautilus-shell-ui.xml.h:41
+msgid "New Window"
+msgstr "Nové okno"
+
+#: src/nautilus-shell-ui.xml.h:42
+msgid "New _Window"
+msgstr "Nové _okno"
+
+#: src/nautilus-shell-ui.xml.h:43
+msgid "Normal Size"
+msgstr "Normálna veµkos»"
+
+#: src/nautilus-shell-ui.xml.h:44
+msgid "Open another Nautilus window for the displayed location"
+msgstr "Otvorí ïal¹ie okno pre zobrazené miesto"
+
+#: src/nautilus-shell-ui.xml.h:45
+msgid "Refresh"
+msgstr "Obnovi»"
+
+#: src/nautilus-shell-ui.xml.h:46
+msgid "Report Profiling"
+msgstr "Oznámi» výsledky profilovania"
+
+#: src/nautilus-shell-ui.xml.h:47
+msgid "Reset Profiling"
+msgstr "Vyèisti» výsledky profilovania"
+
+#: src/nautilus-shell-ui.xml.h:48
+msgid "Search the World Wide Web"
+msgstr "Nájs» na WWW"
+
+#: src/nautilus-shell-ui.xml.h:49
+msgid "Search this computer for files"
+msgstr "Nájs» súbory na tomto poèítaèi"
+
+#: src/nautilus-shell-ui.xml.h:51
+msgid "Show the contents at the normal size"
+msgstr "Zobrazí obsah v normálnej veµkosti"
+
+#: src/nautilus-shell-ui.xml.h:52
+msgid "Show the contents in less detail"
+msgstr "Zobrazí obsah s menej detailami"
+
+#: src/nautilus-shell-ui.xml.h:53
+msgid "Show the contents in more detail"
+msgstr "Zobrazí obsah detailnej¹ie"
+
+#: src/nautilus-shell-ui.xml.h:54
+msgid "Start Profiling"
+msgstr "Spusti» profilovanie"
+
+#: src/nautilus-shell-ui.xml.h:56
+msgid "Stop Profiling"
+msgstr "Zastavi» profilovanie"
+
+#: src/nautilus-shell-ui.xml.h:57
+msgid "Stop loading this location"
+msgstr "Zastaví naèítavanie tohoto miesta"
+
+#: src/nautilus-shell-ui.xml.h:58
+msgid "Undo the last text change"
+msgstr "Vráti spä» poslednú zmenu textu"
+
+#: src/nautilus-shell-ui.xml.h:59
+msgid "Up"
+msgstr "Hore"
+
+#: src/nautilus-shell-ui.xml.h:60
+msgid "Use preferences appropriate for beginners"
+msgstr "Pou¾i» nastavenie vhodné pre zaèiatoèníkov"
+
+#: src/nautilus-shell-ui.xml.h:61
+msgid "Use preferences appropriate for experts"
+msgstr "Pou¾i» nastavenie vhodné pre expertov"
+
+#: src/nautilus-shell-ui.xml.h:62
+msgid "Use preferences appropriate for most people"
+msgstr "Pou¾i» nastavenie vhodné pre väè¹inu µudí"
+
+#. Add "View as..." extra bonus choice.
+#: src/nautilus-shell-ui.xml.h:63 src/nautilus-window.c:647
+#: src/nautilus-window.c:1545
+msgid "View as..."
+msgstr "Zobrazi» ako..."
+
+#: src/nautilus-shell-ui.xml.h:64
+msgid "We_b Search"
+msgstr "Nájs» na _WWW"
+
+#: src/nautilus-shell-ui.xml.h:65
+msgid "Web Search"
+msgstr "Nájs» na WWW"
+
+#: src/nautilus-shell-ui.xml.h:66
+msgid "Zoom In"
+msgstr "Zväè¹i»"
+
+#: src/nautilus-shell-ui.xml.h:67
+msgid "Zoom Out"
+msgstr "Zmen¹i»"
+
+#: src/nautilus-shell-ui.xml.h:68
+msgid "Zoom _In"
+msgstr "Z_väè¹i»"
+
+#: src/nautilus-shell-ui.xml.h:69
+msgid "Zoom _Out"
+msgstr "Z_men¹i»"
+
+#: src/nautilus-shell-ui.xml.h:70
+msgid "_About Nautilus..."
+msgstr "_O programe Nautilus..."
+
+#: src/nautilus-shell-ui.xml.h:71
+msgid "_Add Bookmark"
+msgstr "_Prida» zálo¾ku"
+
+#: src/nautilus-shell-ui.xml.h:72
+msgid "_Back"
+msgstr "_Dozadu"
+
+#: src/nautilus-shell-ui.xml.h:73
+msgid "_Backgrounds and Emblems..."
+msgstr "_Pozadia a emblémy..."
+
+#: src/nautilus-shell-ui.xml.h:74
+msgid "_Bookmarks"
+msgstr "_Zálo¾ky"
+
+#: src/nautilus-shell-ui.xml.h:75
+msgid "_Close Window"
+msgstr "_Zavrie» okno"
+
+#: src/nautilus-shell-ui.xml.h:77
+msgid "_Edit"
+msgstr "_Upravi»"
+
+#: src/nautilus-shell-ui.xml.h:78
+msgid "_Edit Bookmarks..."
+msgstr "_Upravi» zálo¾ky..."
+
+#: src/nautilus-shell-ui.xml.h:79
+msgid "_Edit Preferences..."
+msgstr "_Upravi» nastavenie..."
+
+#: src/nautilus-shell-ui.xml.h:81
+msgid "_Find"
+msgstr "_Nájs»"
+
+#: src/nautilus-shell-ui.xml.h:82
+msgid "_Forward"
+msgstr "_Dopredu"
+
+#: src/nautilus-shell-ui.xml.h:83
+msgid "_Go"
+msgstr "_Prejs» na"
+
+#: src/nautilus-shell-ui.xml.h:84
+msgid "_Help"
+msgstr "_Pomocník"
+
+#: src/nautilus-shell-ui.xml.h:85
+msgid "_Home"
+msgstr "_Domov"
+
+#: src/nautilus-shell-ui.xml.h:86
+msgid "_Location..."
+msgstr "U_miestnenie..."
+
+#: src/nautilus-shell-ui.xml.h:87
+msgid "_Normal Size"
+msgstr "_Normálna veµkos»"
+
+#: src/nautilus-shell-ui.xml.h:89
+msgid "_Preferences"
+msgstr "_Nastavenie"
+
+#: src/nautilus-shell-ui.xml.h:90
+msgid "_Profiler"
+msgstr "_Profiler"
+
+#: src/nautilus-shell-ui.xml.h:91
+msgid "_Refresh"
+msgstr "_Obnovi»"
+
+#: src/nautilus-shell-ui.xml.h:92
+msgid "_Report Profiling"
+msgstr "_Oznámi» výsledky profilovania"
+
+#: src/nautilus-shell-ui.xml.h:93
+msgid "_Reset Profiling"
+msgstr "_Vyèisti» výsledky profilovania"
+
+#: src/nautilus-shell-ui.xml.h:94
+#, fuzzy
+msgid "_Start Here"
+msgstr "Spusti»"
+
+#: src/nautilus-shell-ui.xml.h:95
+msgid "_Start Profiling"
+msgstr "_Spusti» profilovanie"
+
+#: src/nautilus-shell-ui.xml.h:96
+msgid "_Stop Profiling"
+msgstr "_Zastavi» profilovanie"
+
+#: src/nautilus-shell-ui.xml.h:97
+#, fuzzy
+msgid "_Support"
+msgstr "_Podpora komunity"
+
+#: src/nautilus-shell-ui.xml.h:98
+msgid "_Undo"
+msgstr "_Spä»"
+
+#: src/nautilus-shell-ui.xml.h:99
+msgid "_Up a Level"
+msgstr "O jednu úroveò v_y¹¹ie"
+
+#: src/nautilus-shell-ui.xml.h:100
+msgid "_View"
+msgstr "_Zobrazi»"
+
+#: src/nautilus-shell-ui.xml.h:101
+msgid "_View as..."
+msgstr "_Zobrazi» ako..."
+
 #: src/nautilus-shell.c:188
 msgid "Caveat"
 msgstr "Výstraha"
@@ -6082,11 +8077,6 @@ msgstr ""
 "\n"
 "Prosím, nav¹tívte http:/www.eazel.com/feedback.html a prípadne nám napí¹te "
 "va¹e pripomienky, námety a komentáre."
-
-#. add the reset background item, possibly disabled
-#: src/nautilus-sidebar.c:542
-msgid "Reset Background"
-msgstr "©tandardné pozadie"
 
 #: src/nautilus-sidebar.c:722
 msgid ""
@@ -6205,10 +8195,6 @@ msgstr "Nie je mo¾né odstráni» tému"
 #, c-format
 msgid "Preview Release %s: %s"
 msgstr "Uká¾ková verzia %s: %s"
-
-#: src/nautilus-window-manage-views.c:256 src/nautilus-window-menus.c:657
-msgid "Nautilus"
-msgstr "Nautilus"
 
 #: src/nautilus-window-manage-views.c:813
 msgid "View Failed"
@@ -6360,33 +8346,17 @@ msgstr "Zabudnú» históriu?"
 msgid "Forget"
 msgstr "Zabudnú»"
 
-#: src/nautilus-window-menus.c:484
-msgid "Hide St_atus Bar"
-msgstr "Skry» _stavový riadok"
-
 #: src/nautilus-window-menus.c:485
 msgid "Show St_atus Bar"
 msgstr "Zobrazi» _stavový riadok"
-
-#: src/nautilus-window-menus.c:490
-msgid "Hide _Sidebar"
-msgstr "Skry» _boèný panel"
 
 #: src/nautilus-window-menus.c:491
 msgid "Show _Sidebar"
 msgstr "Zobrazi» _boèný panel"
 
-#: src/nautilus-window-menus.c:496
-msgid "Hide _Toolbar"
-msgstr "Skry» panel _nástrojov"
-
 #: src/nautilus-window-menus.c:497
 msgid "Show _Toolbar"
 msgstr "Zobrazi» panel _nástrojov"
-
-#: src/nautilus-window-menus.c:502
-msgid "Hide Location _Bar"
-msgstr "Skry» pruh _umiestnenia"
 
 #: src/nautilus-window-menus.c:503
 msgid "Show Location _Bar"
@@ -6455,11 +8425,6 @@ msgstr "Dozadu"
 msgid "Forward"
 msgstr "Dopredu"
 
-#. Add "View as..." extra bonus choice.
-#: src/nautilus-window.c:647 src/nautilus-window.c:1545
-msgid "View as..."
-msgstr "Zobrazi» ako..."
-
 #: src/nautilus-window.c:1251
 #, c-format
 msgid "Display this location with \"%s\""
@@ -6481,1322 +8446,11 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 msgid "%d%%"
 msgstr "%d%%"
 
-#~ msgid "Factory for Nautilus component adapter factories"
-#~ msgstr ""
-#~ "Vytváracie rozhranie pre vytváracie rozhranie pre komponentové adaptéry "
-#~ "Nautilus"
-
-#~ msgid "Factory for Nautilus component adapter factories "
-#~ msgstr ""
-#~ "Vytváracie rozhranie pre vytváracie rozhranie pre komponentové adaptéry "
-#~ "Nautilus "
-
-#~ msgid ""
-#~ "Factory for objects that wrap ordinary Bonobo Controls or Embeddables to "
-#~ "look like Nautilus Views"
-#~ msgstr ""
-#~ "Vytváracie rozhranie pre objekty, ktoré obaµujú ¹tandardné objekty Bonobo "
-#~ "Control alebo Embedable, aby vyzerali ako pohµady Nautilu"
-
-#~ msgid "Nautilus component adapter factory"
-#~ msgstr "Vytváracie rozhranie pre komponentové adaptéry Nautilus"
-
-#~ msgid "Factory for hardware view"
-#~ msgstr "Vytváracie rozhranie pre hardwarový pohµad"
-
-#~ msgid "Hardware Viewer"
-#~ msgstr "Prehliadaè hardvéru"
-
-#~ msgid "Hardware view"
-#~ msgstr "Hardvérový pohµad"
-
-#~ msgid "View as Hardware"
-#~ msgstr "Zobrazi» ako hardvér"
-
-#~ msgid "hardware view"
-#~ msgstr "hardvérový pohµad"
-
-#~ msgid "Help"
-#~ msgstr "Pomocník"
-
-#~ msgid "Help Index"
-#~ msgstr "Index Pomocníka"
-
-#~ msgid "Help Index sidebar panel"
-#~ msgstr "Panel Index Pomocníka pre boèný panel"
-
-#~ msgid "Help Navigation Tree"
-#~ msgstr "Navigaèný strom pomocníka"
-
-#~ msgid "Help Search"
-#~ msgstr "Hµadanie v Pomocníkovi"
-
-#~ msgid "Help Search sidebar panel"
-#~ msgstr "Panel Hµadanie v Pomocníkovi pre boèný panel"
-
-#~ msgid "Help sidebar panel"
-#~ msgstr "Pomocník pre boèný panel"
-
-#~ msgid "Internal use only"
-#~ msgstr "Len pre interné pou¾itie"
-
-#~ msgid "Factory for history views"
-#~ msgstr "Vytváracie rozhranie pre pohµady História"
-
-#~ msgid "History"
-#~ msgstr "História"
-
-#~ msgid "History sidebar panel"
-#~ msgstr "Panel histórie pre boèný panel"
-
-#~ msgid "History sidebar panel for Nautilus"
-#~ msgstr "Panel histórie pre boèný panel Nautilu"
-
-#~ msgid "Generic Image Viewer"
-#~ msgstr "V¹eobecný prehliadaè obrázkov"
-
-#~ msgid "Generic image control factory"
-#~ msgstr "Vytváracie rozhranie pre v¹eobecné prvok obrázkov"
-
-#~ msgid "Image"
-#~ msgstr "Obrázok"
-
-#~ msgid "Image Viewer"
-#~ msgstr "Prehliadaè obrázkov"
-
-#~ msgid "Nautilus Image Viewer"
-#~ msgstr "Prehliadaè obrázkov pre Nautilus"
-
-#~ msgid "Nautilus Image viewer factory"
-#~ msgstr "Vytváracie rozhranie pre Prehliadaè obrázkov pre Nautilus"
-
-#~ msgid "View as Image"
-#~ msgstr "Zobrazi» ako obrázok"
-
-#~ msgid "Kill Content Loser"
-#~ msgstr "Zabi» Zábudlivca obsahu"
-
-#~ msgid "Kill the Loser content view"
-#~ msgstr "Zabi» pohµad zábudlivca obsahu"
-
-#~ msgid "_File"
-#~ msgstr "_Súbor"
-
-#~ msgid "_Kill Content Loser"
-#~ msgstr "_Zabi» Zábudlivca obsahu"
-
-#~ msgid "Content Loser"
-#~ msgstr "Zábudlivec obsahu"
-
-#~ msgid "Content Loser Viewer"
-#~ msgstr "Zábudlivec obsahu"
-
-#~ msgid "Nautilus Content Loser"
-#~ msgstr "Zábudlivec obsahu pre Nautilus"
-
-#~ msgid "Nautilus content loser component's factory"
-#~ msgstr "Vytváracie rozhranie pre komponent Zábudlivec obsahu pre Nautilus"
-
-#~ msgid "Nautilus content loser factory"
-#~ msgstr "Vytváracie rozhranie pre Zábudlivca obsahu pre Nautilus"
-
-#~ msgid "Nautilus content view that fails on command"
-#~ msgstr "Pohµad pre Nautilus, ktorý zlyhá pri príkazoch"
-
-#~ msgid "View as Content Loser"
-#~ msgstr "Zobrazi» ako Zábudlivca obsahu"
-
-#~ msgid "Kill Sidebar Loser"
-#~ msgstr "Zabi» Zábudlivca pre boèný panel"
-
-#~ msgid "Kill the Loser sidebar panel"
-#~ msgstr "Zabije Zábudlivca pre boèný panel"
-
-#~ msgid "_Kill Sidebar Loser"
-#~ msgstr "_Zabi» Zábudlivca pre boèný panel"
-
-#~ msgid "Nautilus Sidebar Loser"
-#~ msgstr "Zábudlivec pre boèný panel pre Nautilus"
-
-#~ msgid "Nautilus sidebar loser component's factory"
-#~ msgstr ""
-#~ "Vytváracie rozhranie pre komponent Zábudlivec pre boèný panel pre Nautilus"
-
-#~ msgid "Nautilus sidebar loser factory"
-#~ msgstr "Vytváracie rozhranie Zábudlivca pre boèný panel pre Nautilus"
-
-#~ msgid "Nautilus sidebar view that fails on command"
-#~ msgstr "Pohµad pre boèný panel Nautilu, ktorý zlyhá pri príkazoch"
-
-#~ msgid "Sidebar Loser"
-#~ msgstr "Zábudlivec pre boèný panel"
-
-#~ msgid "Charset Encoding"
-#~ msgstr "Znaková sada"
-
-#~ msgid "Mozilla Nautilus view"
-#~ msgstr "Mozilla pre Nautilus"
-
-#~ msgid "Mozilla Nautilus view factory"
-#~ msgstr "Vytváracie rozhranie pre pohµad Mozilla pre Nautilus"
-
-#~ msgid "Mozilla content view component"
-#~ msgstr "Komponent pre pohµad Mozilla"
-
-#~ msgid "Mozilla content view component's factory"
-#~ msgstr "Vytváracie rozhranie pre komponent pohµadu Mozilla"
-
-#~ msgid "View as Web Page"
-#~ msgstr "Zobrazi» ako WWW stránku"
-
-#~ msgid "Web Page"
-#~ msgstr "WWW stránka"
-
-#~ msgid "Web Page Viewer"
-#~ msgstr "Prehliadaè WWW stránok"
-
-#~ msgid "Factory for music view"
-#~ msgstr "Vytváracie rozhranie pre hudobný pohµad"
-
-#~ msgid "Music"
-#~ msgstr "Hudba"
-
-#~ msgid "Music Viewer"
-#~ msgstr "Hudobný pohµad"
-
-#~ msgid "Music view"
-#~ msgstr "Hudobný pohµad"
-
-#~ msgid "Music view factory"
-#~ msgstr "Vytváracie rozhranie pre hudobný pohµad"
-
-#~ msgid "View as Music"
-#~ msgstr "Zobrazi» ako hudbu"
-
-#~ msgid "Factory for news view"
-#~ msgstr "Vytváracie rozhranie pre pohµad noviniek"
-
-#~ msgid "News"
-#~ msgstr "Novinky"
-
-#~ msgid "News sidebar panel"
-#~ msgstr "Panel Novinky pre boèný panel"
-
-#~ msgid "News sidebar panel fetches and displays RSS feeds"
-#~ msgstr "Panel Novinky pre boèný panel s»ahuje a zobrazuje zdroje RSS"
-
-#~ msgid "Factory for annotation view"
-#~ msgstr "Vytváracie rozhranie pre pohµad Poznámky"
-
-#~ msgid "Notes sidebar panel"
-#~ msgstr "Panel Poznámky pre boèný panel"
-
-#~ msgid "Notes sidebar panel for Nautilus"
-#~ msgstr "Panel poznámok pre boèný panel Nautilu"
-
-#~ msgid "Sample"
-#~ msgstr "Uká¾ka"
-
-#~ msgid "This is a sample merged menu item"
-#~ msgstr "Toto je vlo¾ená uká¾ková polo¾ka menu"
-
-#~ msgid "This is a sample merged toolbar button"
-#~ msgstr "Toto je vlo¾ené uká¾kové tlaèidlo panelu nástrojov"
-
-#~ msgid "_Sample"
-#~ msgstr "_Uká¾ka"
-
-#~ msgid "Nautilus Sample view"
-#~ msgstr "Uká¾kový pohµad pre Nautilus"
-
-#~ msgid "Nautilus Sample view factory"
-#~ msgstr "Vytváracie rozhranie pre Uká¾kový pohµad pre Nautilus"
-
-#~ msgid "Sample Viewer"
-#~ msgstr "Uká¾kový prehliadaè"
-
-#~ msgid "Sample content view component"
-#~ msgstr "Komponent Uká¾kového pohµadu"
-
-#~ msgid "Sample content view component's factory"
-#~ msgstr "Vytváracie rozhranie pre komponent Uká¾kového pohµadu"
-
-#~ msgid "View as Sample"
-#~ msgstr "Zobrazi» ako uká¾ku"
-
-#~ msgid "F_onts"
-#~ msgstr "_Písma"
-
-#~ msgid "Lucida"
-#~ msgstr "Lucida"
-
-#~ msgid "Services"
-#~ msgstr "Slu¾by"
-
-#~ msgid "Text view"
-#~ msgstr "Textový pohµad"
-
-#~ msgid "Use the Courier Font"
-#~ msgstr "Pou¾i» písmo Courier"
-
-#~ msgid "Use the Fixed Font"
-#~ msgstr "Pou¾i» písmo neproporcionálne písmo"
-
-#~ msgid "Use the GTK System Font"
-#~ msgstr "Pou¾i» systémové písmo GTK"
-
-#~ msgid "Use the Helvetica Font"
-#~ msgstr "Pou¾i» písmo Helvetica"
-
-#~ msgid "Use the Lucida Font"
-#~ msgstr "Pou¾i» písmo Lucida"
-
-#~ msgid "Use the Times Font"
-#~ msgstr "Pou¾i» písmo Times"
-
-#~ msgid "_Courier"
-#~ msgstr "_Courier"
-
-#~ msgid "_Fixed"
-#~ msgstr "_Neproporcionálne"
-
-#~ msgid "_GTK System Font"
-#~ msgstr "Systémové písmo _GTK"
-
-#~ msgid "_Helvetica"
-#~ msgstr "_Helvetica"
-
-#~ msgid "_Times"
-#~ msgstr "_Times"
-
-#~ msgid "Factory for text view"
-#~ msgstr "Vytváracie rozhranie pre textový pohµad"
-
-#~ msgid "Text"
-#~ msgstr "Text"
-
-#~ msgid "Text Viewer"
-#~ msgstr "Textový pohµad"
-
-#~ msgid "Text view factory"
-#~ msgstr "Vytváracie rozhranie pre Textový pohµad"
-
-#~ msgid "View as Text"
-#~ msgstr "Zobrazi» ako text"
-
-#~ msgid "Search Google for Selected Text"
-#~ msgstr "Nájs» vybraný text pomocou Google"
-
-#~ msgid "Use Google to search the web for the selected text"
-#~ msgstr "Pou¾ije Google pre hµadanie vybraného textu na Webe"
-
-#~ msgid "Look Up Selected Text in Dictionary"
-#~ msgstr "Nájs» vybraný text v slovníku"
-
-#~ msgid "Look up the selected text in the Merriam-Webster dictionary"
-#~ msgstr "Nájde vybraný text v slovníku Merriam-Webster"
-
-#~ msgid "animation to indicate on-going activity"
-#~ msgstr "animova» pre zobrazenie aktivity"
-
-#~ msgid "throbber"
-#~ msgstr "Pulzovaè"
-
-#~ msgid "throbber factory"
-#~ msgstr "Vytváracie rozhranie pre Pulzovaè"
-
-#~ msgid "throbber object factory"
-#~ msgstr "Vytváracie rozhranie pre Pulzovaè"
-
-#~ msgid "Nautilus Tree sidebar panel"
-#~ msgstr "Boèný panel Strom pre Nautilus"
-
-#~ msgid "Nautilus Tree view"
-#~ msgstr "Stromový pohµad pre Nautilus"
-
-#~ msgid "Apparition"
-#~ msgstr "Zhmotnenie"
-
-#~ msgid "Azul"
-#~ msgstr "Azul"
-
-#~ msgid "Black"
-#~ msgstr "Èierna"
-
-#~ msgid "Blue Ridge"
-#~ msgstr "Modrá brázda"
-
-#~ msgid "Blue Rough"
-#~ msgstr "Drsná modrá"
-
-#~ msgid "Blue Type"
-#~ msgstr "Modrý typ"
-
-#~ msgid "Brushed Metal"
-#~ msgstr "Le¹tený kov"
-
-#~ msgid "Bubble Gum"
-#~ msgstr "®uvaèková"
-
-#~ msgid "Burlap"
-#~ msgstr "Plátno"
-
-#~ msgid "Camouflage"
-#~ msgstr "Kamuflá¾"
-
-#~ msgid "Certified"
-#~ msgstr "Overené"
-
-#~ msgid "Chalk"
-#~ msgstr "Krieda"
-
-#~ msgid "Charcoal"
-#~ msgstr "Drevené uhlie"
-
-#~ msgid "Colors"
-#~ msgstr "Farby"
-
-#~ msgid "Concrete"
-#~ msgstr "Hmota"
-
-#~ msgid "Cool"
-#~ msgstr "Cool"
-
-#~ msgid "Cork"
-#~ msgstr "Korok"
-
-#~ msgid "Countertop"
-#~ msgstr "Naopak"
-
-#~ msgid "Danger"
-#~ msgstr "Nebezpeèné"
-
-#~ msgid "Danube"
-#~ msgstr "Dunaj"
-
-#~ msgid "Dark Cork"
-#~ msgstr "Tmavý korok"
-
-#~ msgid "Dark GNOME"
-#~ msgstr "Tmavé GNOME"
-
-#~ msgid "Deep Teal"
-#~ msgstr "Tmavá modrozelená"
-
-#~ msgid "Distinguished"
-#~ msgstr "Fantastické"
-
-#~ msgid "Dots"
-#~ msgstr "Bodky"
-
-#~ msgid "Draft"
-#~ msgstr "Návrh"
-
-#~ msgid "Drag a color to an object to change it to that color"
-#~ msgstr "«ahajte farbu na objekt, ktorý chcete zmeni»"
-
-#~ msgid "Drag a pattern tile to an object to change it"
-#~ msgstr "«ahajte vzorku na objekt, ktorý chcete zmeni»"
-
-#~ msgid "Drag an emblem to an object to add it to the object"
-#~ msgstr "«ahajte emblém na objekt, ktorý chcete zmeni»"
-
-#~ msgid "Eclipse"
-#~ msgstr "Zatmenie"
-
-#~ msgid "Envy"
-#~ msgstr "Závis»"
-
-#~ msgid "Erase"
-#~ msgstr "Zmazané"
-
-#~ msgid "Favorite"
-#~ msgstr "Obµúbené"
-
-#~ msgid "Fibers"
-#~ msgstr "Vlákna"
-
-#~ msgid "Fire Engine"
-#~ msgstr "Po¾iarnici"
-
-#~ msgid "Fleur De Lis"
-#~ msgstr "Fleur De Lis"
-
-#~ msgid "Floral"
-#~ msgstr "Kvety"
-
-#~ msgid "Fossil"
-#~ msgstr "Fosílie"
-
-#~ msgid "GNOME"
-#~ msgstr "GNOME"
-
-#~ msgid "Granite"
-#~ msgstr "®ula"
-
-#~ msgid "Grapefruit"
-#~ msgstr "Grapefruit"
-
-#~ msgid "Green Weave"
-#~ msgstr "Zelená vlna"
-
-#~ msgid "Ice"
-#~ msgstr "¥ad"
-
-#~ msgid "Important"
-#~ msgstr "Dôle¾ité"
-
-#~ msgid "Indigo"
-#~ msgstr "Indigo"
-
-#~ msgid "Leaf"
-#~ msgstr "List"
-
-#~ msgid "Lemon"
-#~ msgstr "Citrón"
-
-#~ msgid "Mango"
-#~ msgstr "Mango"
-
-#~ msgid "Manila Paper"
-#~ msgstr "Manilský papier"
-
-#~ msgid "Moss Ridge"
-#~ msgstr "Moss Ridge"
-
-#~ msgid "Mud"
-#~ msgstr "Blato"
-
-#~ msgid "New"
-#~ msgstr "Nové"
-
-#~ msgid "Numbers"
-#~ msgstr "Èísla"
-
-#~ msgid "Ocean Strips"
-#~ msgstr "Vodné pruhy"
-
-#~ msgid "Oh No"
-#~ msgstr "Ach nie"
-
-#~ msgid "Onyx"
-#~ msgstr "Onyx"
-
-#~ msgid "Orange"
-#~ msgstr "Pomaranè"
-
-#~ msgid "Pale Blue"
-#~ msgstr "Bledomodrá"
-
-#~ msgid "Patterns"
-#~ msgstr "Vzorky"
-
-#~ msgid "Personal"
-#~ msgstr "Osobné"
-
-#~ msgid "Purple Marble"
-#~ msgstr "Fialový mramor"
-
-#~ msgid "Ridged Paper"
-#~ msgstr "Kartón"
-
-#~ msgid "Rough Paper"
-#~ msgstr "Hrubý papier"
-
-#~ msgid "Ruby"
-#~ msgstr "Rubín"
-
-#~ msgid "Sea Foam"
-#~ msgstr "Morská pena"
-
-#~ msgid "Shale"
-#~ msgstr "Pieskovec"
-
-#~ msgid "Silver"
-#~ msgstr "Striebro"
-
-#~ msgid "Sky"
-#~ msgstr "Obloha"
-
-#~ msgid "Sky Ridge"
-#~ msgstr "Sky Ridge"
-
-#~ msgid "Snow Ridge"
-#~ msgstr "Snehová brázda"
-
-#~ msgid "Special"
-#~ msgstr "©peciálne"
-
-#~ msgid "Stucco"
-#~ msgstr "Stucco"
-
-#~ msgid "Tangerine"
-#~ msgstr "Mandarínka"
-
-#~ msgid "Terracotta"
-#~ msgstr "Terracotta"
-
-#~ msgid "Urgent"
-#~ msgstr "Naliehavé"
-
-#~ msgid "Violet"
-#~ msgstr "Fialová"
-
-#~ msgid "Wavy White"
-#~ msgstr "Vlniaca sa biela"
-
-#~ msgid "White"
-#~ msgstr "Biela"
-
-#~ msgid "White Ribs"
-#~ msgstr "Biele pruhy"
-
-#~ msgid "Gnumeric"
-#~ msgstr "Gnumeric"
-
-#~ msgid "Netscape"
-#~ msgstr "Netscape"
-
-#~ msgid "The Gimp"
-#~ msgstr "Gimp"
-
-#~ msgid "Computer"
-#~ msgstr "Poèítaè"
-
-#~ msgid "Home Directory"
-#~ msgstr "Domovský prieèinok"
-
-#~ msgid "Excite"
-#~ msgstr "Excite"
-
-#~ msgid "Portals"
-#~ msgstr "Portály"
-
-#~ msgid "Yahoo"
-#~ msgstr "Yahoo"
-
-#~ msgid "Alta Vista"
-#~ msgstr "Alta Vista"
-
-#~ msgid "Google"
-#~ msgstr "Google"
-
-#~ msgid "Allaire"
-#~ msgstr "Allaire"
-
-#~ msgid "Binary Freedom"
-#~ msgstr "Binary Freedom"
-
-#~ msgid "Borland"
-#~ msgstr "Borland"
-
-#~ msgid "CNET Computers.com"
-#~ msgstr "CNET Computers.com"
-
-#~ msgid "CNET Linux Center"
-#~ msgstr "CNET Linux Center"
-
-#~ msgid "CollabNet"
-#~ msgstr "CollabNet"
-
-#~ msgid "Compaq"
-#~ msgstr "Compaq"
-
-#~ msgid "Conectiva"
-#~ msgstr "Conectiva"
-
-#~ msgid "Covalent"
-#~ msgstr "Covalent"
-
-#~ msgid "Debian.org"
-#~ msgstr "Debian.org"
-
-#~ msgid "Dell"
-#~ msgstr "Dell"
-
-#~ msgid "Eazel"
-#~ msgstr "Eazel"
-
-#~ msgid "Freshmeat.net"
-#~ msgstr "Freshmeat.net"
-
-#~ msgid "GNOME.org"
-#~ msgstr "GNOME.org"
-
-#~ msgid "GNU.org"
-#~ msgstr "GNU.org"
-
-#~ msgid "International"
-#~ msgstr "International"
-
-#~ msgid "Linux Documentation Project"
-#~ msgstr "Linux Dokumentaèný projekt"
-
-#~ msgid "Linux One"
-#~ msgstr "Linux One"
-
-#~ msgid "Linux Online"
-#~ msgstr "Linux Online"
-
-#~ msgid "Linux Resources"
-#~ msgstr "Zdroje pre Linux"
-
-#~ msgid "Linux Weekly News"
-#~ msgstr "Linux Weekly News"
-
-#~ msgid "LinuxNewbie.org"
-#~ msgstr "LinuxNewbie.org"
-
-#~ msgid "LinuxOrbit.com"
-#~ msgstr "LinuxOrbit.com"
-
-#~ msgid "MandrakeSoft"
-#~ msgstr "MandrakeSoft"
-
-#~ msgid "Netraverse"
-#~ msgstr "Netraverse"
-
-#~ msgid "News and Media"
-#~ msgstr "Správy a médiá"
-
-#~ msgid "O'Reilly"
-#~ msgstr "O'Reilly"
-
-#~ msgid "OSDN"
-#~ msgstr "OSDN"
-
-#~ msgid "Open Source Asia"
-#~ msgstr "Open Source Asia"
-
-#~ msgid "OpenOffice"
-#~ msgstr "OpenOffice"
-
-#~ msgid "Penguin Computing"
-#~ msgstr "Penguin Computing"
-
-#~ msgid "Rackspace"
-#~ msgstr "Rackspace"
-
-#~ msgid "Red Hat"
-#~ msgstr "Red Hat"
-
-#~ msgid "Red Hat Network"
-#~ msgstr "Red Hat Network"
-
-#~ msgid "RedFlag Linux"
-#~ msgstr "RedFlag Linux"
-
-#~ msgid "Software"
-#~ msgstr "Softvér"
-
-#~ msgid "SourceForge"
-#~ msgstr "SourceForge"
-
-#~ msgid "Sun StarOffice"
-#~ msgstr "Sun StarOffice"
-
-#~ msgid "Sun Wah Linux"
-#~ msgstr "Sun Wah Linux"
-
-#~ msgid "Web Services"
-#~ msgstr "Slu¾by WWW"
-
-#~ msgid "ZDNet Linux Hardware Database"
-#~ msgstr "ZDNet Linux Hardware Database"
-
-#~ msgid "ZDNet Linux Resource Center"
-#~ msgstr "ZDNet Linux Resource Center"
-
-#~ msgid "Zero-Knowledge"
-#~ msgstr "Zero-Knowledge"
-
-#~ msgid "An Eggplant variation of the Crux theme."
-#~ msgstr "Eggplant variácia témy Crux."
-
-#~ msgid "Crux-Eggplant"
-#~ msgstr "Crux-Eggplant"
-
-#~ msgid "A Teal variation of the Crux theme."
-#~ msgstr "Modrozelená variácia témy Crux."
-
-#~ msgid "Crux-Teal"
-#~ msgstr "Crux-Modrozelená"
-
-#~ msgid "Default"
-#~ msgstr "©tandard"
-
-#~ msgid "This is the default theme for Nautilus."
-#~ msgstr "Toto je ¹tandardná téma pre Nautilus."
-
-#~ msgid "A theme designed to fit well with the classic GNOME environment"
-#~ msgstr ""
-#~ "Táto téma je vytvorená tak, aby dobre vyzerala v klasickom prostredí "
-#~ "GNOME."
-
-#~ msgid "Sierra"
-#~ msgstr "Sierra"
-
-#~ msgid "Uses manila folders and gray-green backgrounds."
-#~ msgstr "Pou¾íva manilové prieèinky a ¹edozelené pozadie."
-
-#~ msgid "Tahoe"
-#~ msgstr "Tahoe"
-
-#~ msgid "This theme uses photo-realistic folders."
-#~ msgstr "Táto téma pou¾íva fotorealistické prieèinky."
-
-#~ msgid "C_lear Text"
-#~ msgstr "Vy_maza» text"
-
-#~ msgid "Clear Text"
-#~ msgstr "Vymaza» text"
-
-#~ msgid "Copy Text"
-#~ msgstr "Kopírova» text"
-
-#~ msgid "Copy the selected text to the clipboard"
-#~ msgstr "Kopíruje vybraný text do schránky"
-
-#~ msgid "Cut Text"
-#~ msgstr "Vystrihnú» text"
-
-#~ msgid "Cut _Text"
-#~ msgstr "Vystrihnú» _text"
-
-#~ msgid "Cut the selected text to the clipboard"
-#~ msgstr "Vystrihne vybraný text do schránky"
-
-#~ msgid "Paste Text"
-#~ msgstr "Vlo¾i» text"
-
-#~ msgid "Paste the text stored on the clipboard"
-#~ msgstr "Vlo¾í text ulo¾ený v schránke"
-
-#~ msgid "Remove the selected text without putting it on the clipboard"
-#~ msgstr "Odstráni» vybraný text bez vlo¾enia do schránky"
-
-#~ msgid "Select All"
-#~ msgstr "Vybra» v¹etko"
-
-#~ msgid "Select _All"
-#~ msgstr "Vybra» v¹etk_o"
-
-#~ msgid "Select all the text in a text field"
-#~ msgstr "Vybra» celý text v textovom poli"
-
-#~ msgid "_Copy Text"
-#~ msgstr "_Kopírova» text"
-
-#~ msgid "_Paste Text"
-#~ msgstr "V_lo¾i» text"
-
-#~ msgid "Nautilus File Manager and Graphic Shell"
-#~ msgstr "Správca súborov a grafický shell Nautilus"
-
-#~ msgid "Factory for Nautilus shell and file manager"
-#~ msgstr "Vytváracie rozhranie pre shell Nautilus a správcu súborov"
-
-#~ msgid "Icons"
-#~ msgstr "Ikony"
-
-#~ msgid "Icons Viewer"
-#~ msgstr "Pohµad Ikony"
-
-#~ msgid "List"
-#~ msgstr "Zoznam"
-
-#~ msgid "List Viewer"
-#~ msgstr "Pohµad zoznam"
-
-#~ msgid "Nautilus factory"
-#~ msgstr "Vytváracie rozhranie pre Nautilus"
-
-#~ msgid "Nautilus file manager component that shows a scrollable list"
-#~ msgstr "Komponent správca súborov, ktorý zobrazuje posuvný zoznam."
-
-#~ msgid ""
-#~ "Nautilus file manager component that shows a scrollable list for search "
-#~ "results"
-#~ msgstr ""
-#~ "Komponent správca súborov, ktorý zobrazuje posuvný zoznam pre výsledky "
-#~ "hµadania."
-
-#~ msgid ""
-#~ "Nautilus file manager component that shows a two-dimensional icon space"
-#~ msgstr ""
-#~ "Komponent správca súborov, ktorý zobrazuje dvojrozmerný priestor ikon."
-
-#~ msgid "Nautilus file manager component that shows icons on the desktop"
-#~ msgstr "Komponent Správca súborov Nautilus, ktorý zobrazuje ikony na ploche"
-
-#~ msgid "Nautilus file manager desktop icon view"
-#~ msgstr "Pohµad správcu súborov na ikony plochy"
-
-#~ msgid "Nautilus file manager icon view"
-#~ msgstr "Pohµad správcu súborov na ikony"
-
-#~ msgid "Nautilus file manager list view"
-#~ msgstr "Pohµad správcu súborov ako zoznam"
-
-#~ msgid "Nautilus file manager search results list view"
-#~ msgstr "Pohµad správcu súborov ako zoznam výsledkov hµadania"
-
-#~ msgid "Nautilus metafile factory"
-#~ msgstr "Vytváracie rozhranie pre meta-súbory pre Nautilus"
-
-#~ msgid "Nautilus shell"
-#~ msgstr "Nautilus shell"
-
-#~ msgid ""
-#~ "Nautilus shell operations that can be done from subsequent command-line "
-#~ "invocations"
-#~ msgstr ""
-#~ "Operácie shellu Nautilus, ktoré je mo¾né neskôr vykona» z príkazového "
-#~ "riadku."
-
-#~ msgid "Produces metafile objects for accessing Nautilus metadata"
-#~ msgstr "Vytvorí objekty meta-súborov pre prístup k meta-údajom Nautilusu."
-
-#~ msgid "Search List"
-#~ msgstr "Zoznam hµadania"
-
-#~ msgid "View as Icons"
-#~ msgstr "Zobrazi» ako ikony"
-
-#~ msgid "View as List"
-#~ msgstr "Zobrazi» ako zoznam"
-
 #~ msgid "scripts"
 #~ msgstr "skripty"
 
-#~ msgid "Change Desktop Background"
-#~ msgstr "Zmeni» pozadie plochy"
-
-#~ msgid "Delete all items in the Trash"
-#~ msgstr "Odstráni v¹etky polo¾ky v Odpadkoch"
-
-#~ msgid "Disks"
-#~ msgstr "Disky"
-
-#~ msgid "Mount or unmount disks"
-#~ msgstr "Pripojí alebo odpojí disky"
-
-#~ msgid "New Terminal"
-#~ msgstr "Nový terminál"
-
-#~ msgid "Open a new GNOME terminal window"
-#~ msgstr "Otvorí nové okno s GNOME terminálom"
-
-#~ msgid "Remove any custom pattern or color from the desktop background"
-#~ msgstr "Odstráni vlastné vzorky alebo farby z pozadia plochy"
-
-#~ msgid "Reset Desktop Background"
-#~ msgstr "Nastavi» ¹tandardné pozadie"
-
-#~ msgid ""
-#~ "Show a window that lets you set your desktop background's pattern or color"
-#~ msgstr ""
-#~ "Zobrazí okno,ktoré umo¾ní nastavi» vzorku alebo farbu pozadia plochy"
-
-#~ msgid "Choose a program with which to open the selected item"
-#~ msgstr "Vyberte program, ktorým chcete otvori» vybranú polo¾ku"
-
-#~ msgid "Choose another application with which to open the selected item"
-#~ msgstr "Vyberte iný program, ktorým chcete otvori» vybranú polo¾ku"
-
-#~ msgid "Choose another viewer with which to view the selected item"
-#~ msgstr "Vyberte iný program, ktorým chcete zobrazi» vybranú polo¾ku"
-
-#~ msgid "Copy Files"
-#~ msgstr "Kopírova» súbory"
-
-#~ msgid "Create a new empty folder inside this folder"
-#~ msgstr "Vytvorí nový prázdny prieèinok v tomto prieèinku"
-
-#~ msgid "Create a symbolic link for each selected item"
-#~ msgstr "Vytvorí symbolický odkaz pre ka¾dú vybranú polo¾ku"
-
-#~ msgid "Cut Files"
-#~ msgstr "Vystrihnú» súbory"
-
-#~ msgid "Delete each selected item, without moving to the Trash"
-#~ msgstr "Odstráni ka¾dú vybranú polo¾ku bez presunu do Odpadkov"
-
-#~ msgid "Duplicate"
-#~ msgstr "Duplikova»"
-
-#~ msgid "Duplicate each selected item"
-#~ msgstr "Vytvorí kópiu ka¾dej vybranej polo¾ky"
-
-#~ msgid "Make Link"
-#~ msgstr "Vytvori» odkaz"
-
-#~ msgid "Move each selected item to the Trash"
-#~ msgstr "Presunie ka¾dú vybranú polo¾ku do Odpadkov"
-
-#~ msgid ""
-#~ "Move or copy files previously selected by a Cut Files or Copy Files "
-#~ "command"
-#~ msgstr ""
-#~ "Presunie alebo skopíruje súbory vybrané predcházajúcim príkazom "
-#~ "Vystrihnú» súbory alebo Kopírova» súbory"
-
-#~ msgid "Move to Trash"
-#~ msgstr "Presunú» do Odpadkov"
-
-#~ msgid "New Folder"
-#~ msgstr "Nový prieèinok"
-
-#~ msgid "Open"
-#~ msgstr "Otvori»"
-
-#~ msgid "Open Scripts Folder"
-#~ msgstr "Otvori» prieèinok skriptov"
-
-#~ msgid "Open Wit_h"
-#~ msgstr "Otvori» _pomocou"
-
-#~ msgid "Open With"
-#~ msgstr "Otvori» s "
-
-#~ msgid "Open each selected item in a new window"
-#~ msgstr "Otvorí ka¾dú vybranú polo¾ku v novom okne"
-
-#~ msgid "Open in New Window"
-#~ msgstr "Otvori» v novom okne"
-
-#~ msgid "Open the selected item in this window"
-#~ msgstr "Otvorí vybranú polo¾ku v tomto okne"
-
-#~ msgid "Other Application..."
-#~ msgstr "Iná aplikácia..."
-
-#~ msgid "Other Viewer..."
-#~ msgstr "Iný program pre zobrazenie..."
-
-#~ msgid "Paste Files"
-#~ msgstr "Vlo¾i» text"
-
-#~ msgid "Prepare the selected files to be copied with a Paste Files command"
-#~ msgstr "Pripravi» vybrané súbory pre kopírovanie príkazom Vlo¾i» súbory"
-
-#~ msgid "Prepare the selected files to be moved with a Paste Files command"
-#~ msgstr "Pripravi» vybrané súbory pre presun príkazom Vlo¾i» súbory"
-
-#~ msgid "Remove Custom Images"
-#~ msgstr "Odstráni» vlastné obrázky"
-
-#~ msgid "Remove any custom images from selected icons"
-#~ msgstr "Odstráni v¹etky vlastné obrázky z vybraných ikon"
-
-#~ msgid ""
-#~ "Remove any custom pattern or color from the background of this location"
-#~ msgstr "Odstráni v¹etky vlastné vzorky alebo farby z pozadia tohoto miesta"
-
-#~ msgid "Reset View to Match Preferences"
-#~ msgstr "Návrat k nastaveniu pohµadu"
-
-#~ msgid "Reset View to Match _Preferences"
-#~ msgstr "Ná_vrat k nastaveniu pohµadu"
-
-#~ msgid ""
-#~ "Reset sorting order and zoom level to match preferences for this view"
-#~ msgstr ""
-#~ "Návrat k triedeniu a úrovni lupy odpovedajúcim nastaveniu tohto pohµadu"
-
-#~ msgid "Run or manage scripts from ~/Nautilus/scripts"
-#~ msgstr "Spustí alebo upravuje skripty z ~/Nautilus/scripts"
-
-#~ msgid "Scripts"
-#~ msgstr "Skripty"
-
-#~ msgid "Select All Files"
-#~ msgstr "Vybra» v¹etky súbory"
-
-#~ msgid "Select _All Files"
-#~ msgstr "Vybra» v¹e_tky súbory"
-
-#~ msgid "Select all items in this window"
-#~ msgstr "Vyberie v¹etky polo¾ky v tomto okne"
-
-#~ msgid "Show Properties"
-#~ msgstr "Zobrazi» Vlastnosti"
-
-#~ msgid "Show Trash"
-#~ msgstr "Zobrazi» Odpadky"
-
-#~ msgid "Show _Properties"
-#~ msgstr "Zobrazi» _Vlastnosti"
-
-#~ msgid "Show the contents of the Trash"
-#~ msgstr "Zobrazí obsah Odpadkov"
-
-#~ msgid "Show the folder containing the scripts that appear in this menu"
-#~ msgstr "Uká¾e prieèinok obsahujúci skripty, ktoré sú v tomto menu"
-
-#~ msgid "View or modify the properties of each selected item"
-#~ msgstr "Zobrazí alebo upraví vlastnosti ka¾dej vybranej polo¾ky"
-
-#~ msgid "_Duplicate"
-#~ msgstr "_Duplikova»"
-
-#~ msgid "_Make Link"
-#~ msgstr "_Vytvori» odkaz"
-
-#~ msgid "_New Folder"
-#~ msgstr "Nový _prieèinok"
-
-#~ msgid "_Open"
-#~ msgstr "_Otvori»"
-
-#~ msgid "_Open Scripts Folder"
-#~ msgstr "_Otvori» prieèinok skriptov"
-
-#~ msgid "_Paste Files"
-#~ msgstr "V_lo¾i» súbory"
-
-#~ msgid "_Show Trash"
-#~ msgstr "_Zobrazi» Odpadky"
-
-#~ msgid "By Modification _Date"
-#~ msgstr "podµa dátumu _zmeny"
-
-#~ msgid "By _Emblems"
-#~ msgstr "podµa _emblémov"
-
-#~ msgid "By _Name"
-#~ msgstr "podµa _mena"
-
-#~ msgid "By _Size"
-#~ msgstr "podµa _veµkosti"
-
-#~ msgid "By _Type"
-#~ msgstr "podµa _typu"
-
-#~ msgid "Clean Up by Name"
-#~ msgstr "Vyèisti» podµa mena"
-
-#~ msgid "Display icons in the opposite order"
-#~ msgstr "Zobrazi» ikony v opaènom poradí"
-
-#~ msgid "Lay Out Items"
-#~ msgstr "Rozlo¾enie polo¾iek"
-
-#~ msgid "Leave icons wherever they are dropped"
-#~ msgstr "Necha» ikony tam, kde budú pustené"
-
-#~ msgid "Make the selected icon stretchable"
-#~ msgstr "Urobi» vybranú ikonu roz»ahovateµnou"
-
-#~ msgid "Re_versed Order"
-#~ msgstr "_Opaèné poradie"
-
-#~ msgid "Rename selected icon"
-#~ msgstr "Premenova» vybranú ikonu"
-
-#~ msgid "Reposition icons to better fit in the window and avoid overlapping"
-#~ msgstr ""
-#~ "Popresúva» ikony tak, aby lep¹ie odpovedali oknu a zabránili prekrývaniu "
-#~ "sa"
-
-#~ msgid "Restore Icons' Original Sizes"
-#~ msgstr "Obnovi» pôvodnú veµkos» ikony"
-
-#~ msgid "Restore each selected icon to its original size"
-#~ msgstr "Obnoví pre ka¾dú vybranú ikonu jej pôvodnú veµkos»"
-
-#~ msgid "Reversed Order"
-#~ msgstr "Opaèné poradie"
-
-#~ msgid "Stretch Icon"
-#~ msgstr "Roztiahnu» ikonu"
-
-#~ msgid "Tighter Layout"
-#~ msgstr "Bli¾¹ie k sebe"
-
-#~ msgid "Tighter _Layout"
-#~ msgstr "_Bli¾¹ie k sebe"
-
-#~ msgid "Toggle using a tighter layout scheme"
-#~ msgstr "Prepnú» pomocou schémy pre zobrazenie bli¾¹ie k sebe"
-
-#~ msgid "_Clean Up by Name"
-#~ msgstr "_Vyèisti» podµa mena"
-
-#~ msgid "_Lay Out Items"
-#~ msgstr "_Rozlo¾enie polo¾iek"
-
-#~ msgid "_Manually"
-#~ msgstr "_Ruène"
-
-#~ msgid "_Rename"
-#~ msgstr "_Premenova»"
-
-#~ msgid "_Stretch Icon"
-#~ msgstr "_Roztiahnu» ikonu"
-
-#~ msgid "Reveal each selected item in its original folder"
-#~ msgstr "Ukáza» ka¾dú vybranú polo¾ku v jej pôvodnom prieèinku"
-
-#~ msgid "Reveal in New Window"
-#~ msgstr "Ukáza» v novom okne"
-
-#~ msgid "Show Indexing Status"
-#~ msgstr "Ukáza» stav indexovania"
-
-#~ msgid "Show _Indexing Status"
-#~ msgstr "Ukáza» stav _indexovania"
-
-#~ msgid "Show status of indexing used when searching"
-#~ msgstr "Pri hµadaní ukazova» stav pou¾itého indexovania"
-
-#~ msgid "Go to the Eazel Services Summary Page"
-#~ msgstr "Prejs» na Súhrnnú stránku Eazel Services"
-
-#~ msgid "Go to the Eazel Software Catalog"
-#~ msgstr "Prejs» na softvérový katalóg Eazel Software Catalog"
-
-#~ msgid "Go to your online storage repository"
-#~ msgstr "Prejs» do vá¹ho on-line priestoru"
-
-#~ msgid "Software _Catalog"
-#~ msgstr "_Katalóg softvéru"
-
-#~ msgid "_Eazel Services Home"
-#~ msgstr "_Slu¾by Eazel Services"
-
-#~ msgid "_Online Storage"
-#~ msgstr "_On-line priestor"
-
-#~ msgid "_Services"
-#~ msgstr "_Slu¾by"
-
-#~ msgid " _Advanced"
-#~ msgstr " _Pokroèilý"
-
-#~ msgid " _Beginner"
-#~ msgstr " _Zaèiatoèník"
-
-#~ msgid " _Intermediate"
-#~ msgstr " Prie_merný"
-
-#~ msgid "Add a bookmark for the current location to this menu"
-#~ msgstr "Pridá zálo¾ku pre aktuálne umiestnenie do tohoto menu"
-
-#~ msgid "Change the visibility of this window's location bar"
-#~ msgstr "Zmení viditeµnos» pruhu umiestnenia tohoto okna"
-
-#~ msgid "Change the visibility of this window's sidebar"
-#~ msgstr "Zmení viditeµnos» boèného panelu tohoto okna"
-
-#~ msgid "Change the visibility of this window's status bar"
-#~ msgstr "Zmení viditeµnos» stavového riadku tohoto okna"
-
-#~ msgid "Change the visibility of this window's toolbar"
-#~ msgstr "Zmení viditeµnos» panelu nástrojov tohto okna"
-
-#~ msgid "Choose a view for the current location, or modify the set of views"
-#~ msgstr "Vyberte pohµad pre aktuálne umiestnenie alebo zmeòte pohµady"
-
-#~ msgid "Clear contents of Go menu and Back/Forward lists"
-#~ msgstr "Vyma¾e obsah menu Prejs» a zoznamy Dopredu/Dozadu"
-
-#~ msgid "Close _All Windows"
-#~ msgstr "Zavrie» _v¹etky okná"
-
-#~ msgid "Close all Nautilus windows"
-#~ msgstr "Zatvorí v¹etky okná programu Nautilus"
-
-#~ msgid "Close this window"
-#~ msgstr "Zavrie» toto okno"
-
-#~ msgid "Display a window that allows editing the bookmarks in this menu"
-#~ msgstr "Zobrazí okno, ktoré umo¾òuje upravi» zálo¾ky v tomto menu"
-
-#~ msgid "Display credits for the creators of Nautilus"
-#~ msgstr "Zobrazí zoznam tvorcov programu Nautilus"
-
-#~ msgid "Display on-line help for Nautilus"
-#~ msgstr "Zobrazí on-line pomocníka pre Nautilus"
-
-#~ msgid ""
-#~ "Display patterns, colors, and emblems that can be used to customize "
-#~ "appearance"
-#~ msgstr ""
-#~ "Zobrazí vzorky, farby a emblémy, ktoré je mo¾né pou¾i» pre prispôsobenie "
-#~ "vzhµadu"
-
-#~ msgid "Display quick reference pages for Nautilus"
-#~ msgstr "Zobrazí rýchlu referenènú príruèku programu Nautilus"
-
-#~ msgid "Display release notes for Nautilus"
-#~ msgstr "Zobrazí poznámky Nautilusu"
-
 #~ msgid "Display support information for Nautilus and Eazel Services"
 #~ msgstr "Zobrazí informácie o podpore pre Nautilus a Slu¾by Eazel"
-
-#~ msgid "Display the latest contents of the current location"
-#~ msgstr "Zobrazí najnov¹í obsah aktuálneho miesta"
-
-#~ msgid "Edit various Nautilus preferences"
-#~ msgstr "Upraví rôzne nastavenia Nautilu"
-
-#~ msgid "Find"
-#~ msgstr "Nájs»"
-
-#~ msgid "For_get History"
-#~ msgstr "Za_budnú» históriu"
-
-#~ msgid "Go to Eazel Services"
-#~ msgstr "Prejs» na Eazel Services"
-
-#~ msgid "Go to the home location"
-#~ msgstr "Prejs» domov"
-
-#~ msgid "Go to the next visited location"
-#~ msgstr "Prejs» na nasledujúce nav¹tívené miesto"
-
-#~ msgid "Go to the previous visited location"
-#~ msgstr "Prejs» na predchádzajúce nav¹tívené miesto"
-
-#~ msgid "Go up to the location that contains the displayed location"
-#~ msgstr "Prejs» o úroveò vy¹¹ie na miesto, ktoré obsahuje toto miesto"
-
-#~ msgid "Nautilus Quick _Reference"
-#~ msgstr "Rýchla _referenèná príruèka Nautilusu"
-
-#~ msgid "Nautilus Release _Notes"
-#~ msgstr "Po_známky Nautilusu"
-
-#~ msgid "Nautilus User _Manual"
-#~ msgstr "_Pou¾ívateµský manuál Nautilusu"
-
-#~ msgid "New Window"
-#~ msgstr "Nové okno"
-
-#~ msgid "New _Window"
-#~ msgstr "Nové _okno"
-
-#~ msgid "Normal Size"
-#~ msgstr "Normálna veµkos»"
-
-#~ msgid "Open another Nautilus window for the displayed location"
-#~ msgstr "Otvorí ïal¹ie okno pre zobrazené miesto"
-
-#~ msgid "Refresh"
-#~ msgstr "Obnovi»"
-
-#~ msgid "Report Profiling"
-#~ msgstr "Oznámi» výsledky profilovania"
-
-#~ msgid "Reset Profiling"
-#~ msgstr "Vyèisti» výsledky profilovania"
-
-#~ msgid "Search the World Wide Web"
-#~ msgstr "Nájs» na WWW"
-
-#~ msgid "Search this computer for files"
-#~ msgstr "Nájs» súbory na tomto poèítaèi"
 
 #~ msgid ""
 #~ "Show a page from which you can send feedback about Nautilus and Eazel "
@@ -7805,140 +8459,5 @@ msgstr "%d%%"
 #~ "Zobrazí stránku, z ktorej je mo¾né posla» komentáre o programe Nautilus a "
 #~ "o Eazel Services"
 
-#~ msgid "Show the contents at the normal size"
-#~ msgstr "Zobrazí obsah v normálnej veµkosti"
-
-#~ msgid "Show the contents in less detail"
-#~ msgstr "Zobrazí obsah s menej detailami"
-
-#~ msgid "Show the contents in more detail"
-#~ msgstr "Zobrazí obsah detailnej¹ie"
-
-#~ msgid "Start Profiling"
-#~ msgstr "Spusti» profilovanie"
-
-#~ msgid "Stop Profiling"
-#~ msgstr "Zastavi» profilovanie"
-
-#~ msgid "Stop loading this location"
-#~ msgstr "Zastaví naèítavanie tohoto miesta"
-
-#~ msgid "Undo the last text change"
-#~ msgstr "Vráti spä» poslednú zmenu textu"
-
-#~ msgid "Up"
-#~ msgstr "Hore"
-
-#~ msgid "Use preferences appropriate for beginners"
-#~ msgstr "Pou¾i» nastavenie vhodné pre zaèiatoèníkov"
-
-#~ msgid "Use preferences appropriate for experts"
-#~ msgstr "Pou¾i» nastavenie vhodné pre expertov"
-
-#~ msgid "Use preferences appropriate for most people"
-#~ msgstr "Pou¾i» nastavenie vhodné pre väè¹inu µudí"
-
-#~ msgid "We_b Search"
-#~ msgstr "Nájs» na _WWW"
-
-#~ msgid "Web Search"
-#~ msgstr "Nájs» na WWW"
-
-#~ msgid "Zoom In"
-#~ msgstr "Zväè¹i»"
-
-#~ msgid "Zoom Out"
-#~ msgstr "Zmen¹i»"
-
-#~ msgid "Zoom _In"
-#~ msgstr "Z_väè¹i»"
-
-#~ msgid "Zoom _Out"
-#~ msgstr "Z_men¹i»"
-
-#~ msgid "_About Nautilus..."
-#~ msgstr "_O programe Nautilus..."
-
-#~ msgid "_Add Bookmark"
-#~ msgstr "_Prida» zálo¾ku"
-
-#~ msgid "_Back"
-#~ msgstr "_Dozadu"
-
-#~ msgid "_Backgrounds and Emblems..."
-#~ msgstr "_Pozadia a emblémy..."
-
-#~ msgid "_Bookmarks"
-#~ msgstr "_Zálo¾ky"
-
-#~ msgid "_Close Window"
-#~ msgstr "_Zavrie» okno"
-
-#~ msgid "_Community Support"
-#~ msgstr "_Podpora komunity"
-
-#~ msgid "_Edit"
-#~ msgstr "_Upravi»"
-
-#~ msgid "_Edit Bookmarks..."
-#~ msgstr "_Upravi» zálo¾ky..."
-
-#~ msgid "_Edit Preferences..."
-#~ msgstr "_Upravi» nastavenie..."
-
 #~ msgid "_Feedback"
 #~ msgstr "_Komentáre"
-
-#~ msgid "_Find"
-#~ msgstr "_Nájs»"
-
-#~ msgid "_Forward"
-#~ msgstr "_Dopredu"
-
-#~ msgid "_Go"
-#~ msgstr "_Prejs» na"
-
-#~ msgid "_Help"
-#~ msgstr "_Pomocník"
-
-#~ msgid "_Home"
-#~ msgstr "_Domov"
-
-#~ msgid "_Location..."
-#~ msgstr "U_miestnenie..."
-
-#~ msgid "_Normal Size"
-#~ msgstr "_Normálna veµkos»"
-
-#~ msgid "_Preferences"
-#~ msgstr "_Nastavenie"
-
-#~ msgid "_Profiler"
-#~ msgstr "_Profiler"
-
-#~ msgid "_Refresh"
-#~ msgstr "_Obnovi»"
-
-#~ msgid "_Report Profiling"
-#~ msgstr "_Oznámi» výsledky profilovania"
-
-#~ msgid "_Reset Profiling"
-#~ msgstr "_Vyèisti» výsledky profilovania"
-
-#~ msgid "_Start Profiling"
-#~ msgstr "_Spusti» profilovanie"
-
-#~ msgid "_Stop Profiling"
-#~ msgstr "_Zastavi» profilovanie"
-
-#~ msgid "_Undo"
-#~ msgstr "_Spä»"
-
-#~ msgid "_Up a Level"
-#~ msgstr "O jednu úroveò v_y¹¹ie"
-
-#~ msgid "_View"
-#~ msgstr "_Zobrazi»"
-
-#~ msgid "_View as..."
-#~ msgstr "_Zobrazi» ako..."

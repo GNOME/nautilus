@@ -258,9 +258,9 @@ nautilus_monitor_active (void)
 #endif
 }
 
-char * fixup_local_path (const char *uri_text);
+static char * fixup_local_path (const char *uri_text);
 
-char *
+static char *
 fixup_local_path (const char *uri_text)
 {
 	GnomeVFSURI *uri;

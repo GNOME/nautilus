@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 1.0.4\n"
-"POT-Creation-Date: 2001-07-18 15:25-0400\n"
+"POT-Creation-Date: 2001-07-24 15:45-0400\n"
 "PO-Revision-Date: 2001-06-23 01:42+0200\n"
 "Last-Translator: Gediminas Paulauskas <menesis@delfi.lt>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
@@ -43,6 +43,25 @@ msgstr "Paleisti"
 #: applets/preferences-applet/nautilus-preferences-applet.c:259
 msgid "Restart"
 msgstr "Paleisti ið naujo"
+
+#: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:1
+msgid "Factory for Nautilus component adapter factories"
+msgstr ""
+
+#: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:2
+msgid "Factory for Nautilus component adapter factories "
+msgstr ""
+
+#: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:3
+msgid ""
+"Factory for objects that wrap ordinary Bonobo Controls or Embeddables to "
+"look like Nautilus Views"
+msgstr ""
+
+#: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:4
+#, fuzzy
+msgid "Nautilus component adapter factory"
+msgstr "Nautilus metafile gamykla"
 
 #: components/hardware/nautilus-hardware-view.c:180
 #, fuzzy
@@ -107,9 +126,32 @@ msgstr ""
 msgid "This is a placeholder for the IDE page."
 msgstr ""
 
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:2
 #: components/hardware/nautilus-hardware-view.c:750
+#: data/static_bookmarks.xml.h:16
 msgid "Hardware"
 msgstr "Áranga"
+
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:1
+#, fuzzy
+msgid "Factory for hardware view"
+msgstr "Árangos þiûryklë"
+
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:3
+msgid "Hardware Viewer"
+msgstr "Árangos þiûryklë"
+
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:4
+msgid "Hardware view"
+msgstr "Árangos vaizdas"
+
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:5
+msgid "View as Hardware"
+msgstr "Árangos vaizdas"
+
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:6
+msgid "hardware view"
+msgstr "Árangos vaizdas"
 
 #: components/help/converters/gnome-db2html2/gdb3html.c:712
 #: components/music/nautilus-music-view.c:1530
@@ -117,7 +159,7 @@ msgid "Previous"
 msgstr "Praeitas"
 
 #: components/help/converters/gnome-db2html2/gdb3html.c:721
-#: src/nautilus-preferences-dialog.c:291
+#: src/nautilus-preferences-dialog.c:291 src/nautilus-shell-ui.xml.h:37
 msgid "Home"
 msgstr "Namai"
 
@@ -127,6 +169,7 @@ msgid "Next"
 msgstr "Kitas"
 
 #: components/help/converters/gnome-db2html2/sect-elements.c:260
+#: components/notes/Nautilus_View_notes.oaf.in.h:2
 msgid "Notes"
 msgstr "Uþraðai"
 
@@ -261,7 +304,7 @@ msgid "Manual"
 msgstr "Þinynas"
 
 #: components/help/hyperbola-filefmt.c:528
-#: components/help/hyperbola-filefmt.c:859
+#: components/help/hyperbola-filefmt.c:859 data/linksets/apps.xml.h:1
 msgid "Applications"
 msgstr "Programos"
 
@@ -336,9 +379,85 @@ msgstr "(þiûrëk \""
 msgid " (see also \""
 msgstr "(taip pat þiûrëk \""
 
+#: components/help/Nautilus_View_help.oaf.in.h:1
+msgid "Help"
+msgstr "Pagalba"
+
+#: components/help/Nautilus_View_help.oaf.in.h:2
+msgid "Help Index"
+msgstr "Pagalbos rodyklë"
+
+#: components/help/Nautilus_View_help.oaf.in.h:3
+msgid "Help Index sidebar panel"
+msgstr "Pagalbos rodyklës ðoninis skydelis"
+
+#: components/help/Nautilus_View_help.oaf.in.h:4
+msgid "Help Navigation Tree"
+msgstr "Pagalbos medis"
+
+#: components/help/Nautilus_View_help.oaf.in.h:5
+msgid "Help Search"
+msgstr "Paieðka pagalboje"
+
+#: components/help/Nautilus_View_help.oaf.in.h:6
+msgid "Help Search sidebar panel"
+msgstr "Paieðkos pagalboje ðoninis skydelis"
+
+#: components/help/Nautilus_View_help.oaf.in.h:7
+msgid "Help sidebar panel"
+msgstr "Pagalbos ðoninis skydelis"
+
+#: components/help/Nautilus_View_help.oaf.in.h:8
+msgid "Internal use only"
+msgstr "Tik vidiniam naudojimui"
+
+#: components/history/Nautilus_View_history.oaf.in.h:1
+msgid "Factory for history views"
+msgstr "Istorijos þiûryklës gamykla"
+
+#: components/history/Nautilus_View_history.oaf.in.h:2
+msgid "History"
+msgstr "Istorija"
+
+#: components/history/Nautilus_View_history.oaf.in.h:3
+msgid "History sidebar panel"
+msgstr "Istorijos ðoninis skydelis"
+
+#: components/history/Nautilus_View_history.oaf.in.h:4
+msgid "History sidebar panel for Nautilus"
+msgstr "Istorijos ðoninis skydelis Nautiliui"
+
 #: components/image-viewer/nautilus-image-view.c:834
 msgid "I could not initialize Bonobo"
 msgstr "Negalëjau inicializuoti Bonobo"
+
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:1
+msgid "Generic Image Viewer"
+msgstr "Paprasta paveikslëliø þiûryklë"
+
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:2
+msgid "Generic image control factory"
+msgstr "Bazinë paveikslëliø komponento gamykla"
+
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:3
+msgid "Image"
+msgstr "Paveikslëlis"
+
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:4
+msgid "Image Viewer"
+msgstr "Paveikslëliø þiûryklë"
+
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:5
+msgid "Nautilus Image Viewer"
+msgstr "Nautilus paveikslëliø þiûryklë"
+
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:6
+msgid "Nautilus Image viewer factory"
+msgstr "Nautilus paveikslëliø þiûryklës gamykla"
+
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:7
+msgid "View as Image"
+msgstr "Paveikslëliø vaizdas"
 
 #: components/loser/content/nautilus-content-loser.c:140
 #, c-format
@@ -352,6 +471,60 @@ msgstr ""
 msgid "You have tried to kill the Content Loser"
 msgstr ""
 
+#: components/loser/content/nautilus-content-loser-ui.xml.h:1
+msgid "Kill Content Loser"
+msgstr ""
+
+#: components/loser/content/nautilus-content-loser-ui.xml.h:2
+#, fuzzy
+msgid "Kill the Loser content view"
+msgstr "Istorijos ðoninis skydelis"
+
+#: components/loser/content/nautilus-content-loser-ui.xml.h:3
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:3
+#: components/sample/nautilus-sample-content-view-ui.xml.h:4
+#: src/nautilus-shell-ui.xml.h:80
+msgid "_File"
+msgstr "_Byla"
+
+#: components/loser/content/nautilus-content-loser-ui.xml.h:4
+msgid "_Kill Content Loser"
+msgstr ""
+
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:1
+#, fuzzy
+msgid "Content Loser"
+msgstr "Turinys:"
+
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:2
+#, fuzzy
+msgid "Content Loser Viewer"
+msgstr "Piktogramø þiûryklë"
+
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:3
+#, fuzzy
+msgid "Nautilus Content Loser"
+msgstr "Nautilus medþio ðoninis skydelis"
+
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:4
+#, fuzzy
+msgid "Nautilus content loser component's factory"
+msgstr "Pavyzdinio turinio perþiûros komponento gamykla"
+
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:5
+#, fuzzy
+msgid "Nautilus content loser factory"
+msgstr "Nautilus medþio ðoninis skydelis"
+
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:6
+msgid "Nautilus content view that fails on command"
+msgstr ""
+
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:7
+#, fuzzy
+msgid "View as Content Loser"
+msgstr "Kitoks vaizdas"
+
 #: components/loser/sidebar/nautilus-sidebar-loser.c:143
 #, c-format
 msgid ""
@@ -363,6 +536,46 @@ msgstr ""
 #: components/loser/sidebar/nautilus-sidebar-loser.c:192
 msgid "You have tried to kill the Sidebar Loser"
 msgstr ""
+
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:1
+#, fuzzy
+msgid "Kill Sidebar Loser"
+msgstr "Nautilus medþio ðoninis skydelis"
+
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:2
+#, fuzzy
+msgid "Kill the Loser sidebar panel"
+msgstr "Istorijos ðoninis skydelis"
+
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:4
+#, fuzzy
+msgid "_Kill Sidebar Loser"
+msgstr "Nautilus medþio ðoninis skydelis"
+
+#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:1
+#, fuzzy
+msgid "Nautilus Sidebar Loser"
+msgstr "Nautilus medþio ðoninis skydelis"
+
+#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:2
+#, fuzzy
+msgid "Nautilus sidebar loser component's factory"
+msgstr "Nautilus medþio ðoninis skydelis"
+
+#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:3
+#, fuzzy
+msgid "Nautilus sidebar loser factory"
+msgstr "Nautilus medþio ðoninis skydelis"
+
+#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:4
+#, fuzzy
+msgid "Nautilus sidebar view that fails on command"
+msgstr "Nautilus medþio ðoninis skydelis"
+
+#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:5
+#, fuzzy
+msgid "Sidebar Loser"
+msgstr "Nautilus medþio ðoninis skydelis"
 
 #: components/mozilla/mozilla-preferences.cpp:126
 #, c-format
@@ -746,6 +959,38 @@ msgstr ""
 #: components/mozilla/nautilus-mozilla-content-view.c:836
 msgid "Nautilus JavaScript Warning"
 msgstr "Nautilus JavaScript áspëjimas"
+
+#: components/mozilla/nautilus-mozilla-ui.xml.h:1
+msgid "Charset Encoding"
+msgstr "Simboliø kodavimas"
+
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:1
+msgid "Mozilla Nautilus view"
+msgstr "Mozillos Nautilus vaizdas"
+
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:2
+msgid "Mozilla Nautilus view factory"
+msgstr "Mozilla Nautilus vaizdo gamykla"
+
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:3
+msgid "Mozilla content view component"
+msgstr "Mozilla turinio perþiûros komponentas"
+
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:4
+msgid "Mozilla content view component's factory"
+msgstr "Mozilla turinio perþiûros komponento gamykla"
+
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:5
+msgid "View as Web Page"
+msgstr "Þiûrëti kaip tinklalapá"
+
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:6
+msgid "Web Page"
+msgstr "Tinklalapis"
+
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:7
+msgid "Web Page Viewer"
+msgstr "Tinklalapiø þiûryklë"
 
 #: components/music/mpg123.c:29
 msgid "Blues"
@@ -1448,6 +1693,7 @@ msgstr "Pauzë"
 #: libnautilus-private/nautilus-file-operations.c:964
 #: libnautilus-private/nautilus-file-operations.c:979
 #: libnautilus-private/nautilus-file-operations.c:998
+#: src/nautilus-shell-ui.xml.h:55
 msgid "Stop"
 msgstr "Sustabdyti"
 
@@ -1472,6 +1718,30 @@ msgstr "Mono"
 #, c-format
 msgid "%s - %s"
 msgstr "%s - %s"
+
+#: components/music/Nautilus_View_music.oaf.in.h:1
+msgid "Factory for music view"
+msgstr "Muzikos vaizdo gamykla"
+
+#: components/music/Nautilus_View_music.oaf.in.h:2
+msgid "Music"
+msgstr "Muzika"
+
+#: components/music/Nautilus_View_music.oaf.in.h:3
+msgid "Music Viewer"
+msgstr "Muzikos þiûryklë"
+
+#: components/music/Nautilus_View_music.oaf.in.h:4
+msgid "Music view"
+msgstr "Muzikos vaizdas"
+
+#: components/music/Nautilus_View_music.oaf.in.h:5
+msgid "Music view factory"
+msgstr "Muzikos vaizdo gamykla"
+
+#: components/music/Nautilus_View_music.oaf.in.h:6
+msgid "View as Music"
+msgstr "Muzikos vaizdas"
 
 #: components/news/nautilus-news.c:1327
 #, c-format
@@ -1579,6 +1849,35 @@ msgstr "Paþymëti visas bylas"
 msgid "image indicating that the news has changed"
 msgstr ""
 
+#: components/news/Nautilus_View_news.oaf.in.h:1
+msgid "Factory for news view"
+msgstr "Árangos þiûryklë"
+
+#: components/news/Nautilus_View_news.oaf.in.h:2
+msgid "News"
+msgstr "Naujienos"
+
+#: components/news/Nautilus_View_news.oaf.in.h:3
+msgid "News sidebar panel"
+msgstr "Naujienø ðoninis skydelis"
+
+#: components/news/Nautilus_View_news.oaf.in.h:4
+msgid "News sidebar panel fetches and displays RSS feeds"
+msgstr ""
+
+#: components/notes/Nautilus_View_notes.oaf.in.h:1
+#, fuzzy
+msgid "Factory for annotation view"
+msgstr "Árangos þiûryklë"
+
+#: components/notes/Nautilus_View_notes.oaf.in.h:3
+msgid "Notes sidebar panel"
+msgstr "Uþraðø ðoninis skydelis"
+
+#: components/notes/Nautilus_View_notes.oaf.in.h:4
+msgid "Notes sidebar panel for Nautilus"
+msgstr "Nautilus uþraðø ðoninis skydelis"
+
 #: components/sample/nautilus-sample-content-view.c:136
 msgid "(none)"
 msgstr "(jokio)"
@@ -1602,6 +1901,51 @@ msgstr ""
 "\n"
 "Paspaudëte pavyzdþiø mygtukø juostos mygtukà."
 
+#: components/sample/Nautilus_View_sample.oaf.in.h:3
+#: components/sample/nautilus-sample-content-view-ui.xml.h:1
+msgid "Sample"
+msgstr "Pavyzdys"
+
+#: components/sample/nautilus-sample-content-view-ui.xml.h:2
+msgid "This is a sample merged menu item"
+msgstr ""
+
+#: components/sample/nautilus-sample-content-view-ui.xml.h:3
+#, fuzzy
+msgid "This is a sample merged toolbar button"
+msgstr ""
+"%s\n"
+"\n"
+"Paspaudëte pavyzdþiø mygtukø juostos mygtukà."
+
+#: components/sample/nautilus-sample-content-view-ui.xml.h:5
+msgid "_Sample"
+msgstr "_Pavyzdys"
+
+#: components/sample/Nautilus_View_sample.oaf.in.h:1
+msgid "Nautilus Sample view"
+msgstr "Nautilus pavyzdinis vaizdas"
+
+#: components/sample/Nautilus_View_sample.oaf.in.h:2
+msgid "Nautilus Sample view factory"
+msgstr "Nautilus pavyzdinio vaizdo gamykla"
+
+#: components/sample/Nautilus_View_sample.oaf.in.h:4
+msgid "Sample Viewer"
+msgstr "Pavyzdinë þiûryklë"
+
+#: components/sample/Nautilus_View_sample.oaf.in.h:5
+msgid "Sample content view component"
+msgstr "Pavyzdinis turinio perþiûros komponentas"
+
+#: components/sample/Nautilus_View_sample.oaf.in.h:6
+msgid "Sample content view component's factory"
+msgstr "Pavyzdinio turinio perþiûros komponento gamykla"
+
+#: components/sample/Nautilus_View_sample.oaf.in.h:7
+msgid "View as Sample"
+msgstr "Pavyzdinis vaizdas"
+
 #: components/text/nautilus-text-view.c:332
 #, c-format
 msgid "Sorry, but %s is too large for Nautilus to load all of it."
@@ -1610,6 +1954,755 @@ msgstr "Atsipraðau, bet %s yra per didelis, kad Nautilus galëtø uþkrauti visà."
 #: components/text/nautilus-text-view.c:335
 msgid "File too large"
 msgstr "Byla per didelë"
+
+#: components/text/nautilus-text-view-ui.xml.h:1
+msgid "F_onts"
+msgstr "Ðri_ftai"
+
+#: components/text/nautilus-text-view-ui.xml.h:2
+msgid "Lucida"
+msgstr "Lucida"
+
+#: components/text/nautilus-text-view-ui.xml.h:3 data/linksets/home.xml.h:3
+#: src/nautilus-service-ui.xml.h:4
+msgid "Services"
+msgstr "Paslaugos"
+
+#: components/text/Nautilus_View_text.oaf.in.h:4
+#: components/text/nautilus-text-view-ui.xml.h:4
+msgid "Text view"
+msgstr "Teksto vaizdas"
+
+#: components/text/nautilus-text-view-ui.xml.h:5
+msgid "Use the Courier Font"
+msgstr "Naudoti Courier ðriftà"
+
+#: components/text/nautilus-text-view-ui.xml.h:6
+msgid "Use the Fixed Font"
+msgstr "Naudoti Fixed ðriftà"
+
+#: components/text/nautilus-text-view-ui.xml.h:7
+msgid "Use the GTK System Font"
+msgstr "Naudoti GTK sisteminá ðriftà"
+
+#: components/text/nautilus-text-view-ui.xml.h:8
+msgid "Use the Helvetica Font"
+msgstr "Naudoti Helvetica ðriftà"
+
+#: components/text/nautilus-text-view-ui.xml.h:9
+msgid "Use the Lucida Font"
+msgstr "Naudoti Lucida ðriftà"
+
+#: components/text/nautilus-text-view-ui.xml.h:10
+msgid "Use the Times Font"
+msgstr "Naudoti Times ðriftà"
+
+#: components/text/nautilus-text-view-ui.xml.h:11
+msgid "_Courier"
+msgstr "_Courier"
+
+#: components/text/nautilus-text-view-ui.xml.h:12
+msgid "_Fixed"
+msgstr "_Fixed"
+
+#: components/text/nautilus-text-view-ui.xml.h:13
+msgid "_GTK System Font"
+msgstr "_GTK Sisteminis ðriftas"
+
+#: components/text/nautilus-text-view-ui.xml.h:14
+msgid "_Helvetica"
+msgstr "_Helvetica"
+
+#: components/text/nautilus-text-view-ui.xml.h:15
+msgid "_Times"
+msgstr "_Times"
+
+#: components/text/Nautilus_View_text.oaf.in.h:1
+#, fuzzy
+msgid "Factory for text view"
+msgstr "Árangos þiûryklë"
+
+#: components/text/Nautilus_View_text.oaf.in.h:2
+msgid "Text"
+msgstr "Tekstas"
+
+#: components/text/Nautilus_View_text.oaf.in.h:3
+msgid "Text Viewer"
+msgstr "Teksto þiûryklë"
+
+#: components/text/Nautilus_View_text.oaf.in.h:5
+msgid "Text view factory"
+msgstr "Tekstinio vaizdo gamykla"
+
+#: components/text/Nautilus_View_text.oaf.in.h:6
+msgid "View as Text"
+msgstr "Teksto vaizdas"
+
+#: components/text/services/google.xml.h:1
+msgid "Search Google for Selected Text"
+msgstr "Paþymëto teksto ieðkoti Google paieðkos sistemoje "
+
+#: components/text/services/google.xml.h:2
+msgid "Use Google to search the web for the selected text"
+msgstr "Naudoti Google paþymëto teksto ieðkojimui internete"
+
+#: components/text/services/webster.xml.h:1
+msgid "Look Up Selected Text in Dictionary"
+msgstr "Paþymëto teksto ieðkok þodyne"
+
+#: components/text/services/webster.xml.h:2
+msgid "Look up the selected text in the Merriam-Webster dictionary"
+msgstr "Paþymëto teksto ieðkok Merriam-Webster þodyne"
+
+#: components/throbber/Nautilus_Control_throbber.oaf.in.h:1
+msgid "animation to indicate on-going activity"
+msgstr "animacija, rodanti aktyvumà"
+
+#: components/throbber/Nautilus_Control_throbber.oaf.in.h:2
+msgid "throbber"
+msgstr "uþimtumo indikatorius"
+
+#: components/throbber/Nautilus_Control_throbber.oaf.in.h:3
+msgid "throbber factory"
+msgstr "uþimtumo indikatoriaus gamykla"
+
+#: components/throbber/Nautilus_Control_throbber.oaf.in.h:4
+msgid "throbber object factory"
+msgstr "uþimtumo indikatoriaus objektø gamykla"
+
+#: components/tree/Nautilus_View_tree.oaf.in.h:1
+msgid "Nautilus Tree sidebar panel"
+msgstr "Nautilus medþio ðoninis skydelis"
+
+#: components/tree/Nautilus_View_tree.oaf.in.h:2
+msgid "Nautilus Tree view"
+msgstr "Nautilus medþio vaizdas"
+
+#: components/tree/Nautilus_View_tree.oaf.in.h:3
+#: src/nautilus-preferences-dialog.c:386
+msgid "Tree"
+msgstr "Medis"
+
+#: data/browser.xml.h:1
+msgid "Apparition"
+msgstr "Vaiduoklis"
+
+#: data/browser.xml.h:2
+msgid "Azul"
+msgstr ""
+
+#: data/browser.xml.h:3
+msgid "Black"
+msgstr "Juodas"
+
+#: data/browser.xml.h:4
+msgid "Blue Ridge"
+msgstr ""
+
+#: data/browser.xml.h:5
+msgid "Blue Rough"
+msgstr ""
+
+#: data/browser.xml.h:6
+#, fuzzy
+msgid "Blue Type"
+msgstr "Pagal tipà"
+
+#: data/browser.xml.h:7
+msgid "Brushed Metal"
+msgstr ""
+
+#: data/browser.xml.h:8
+msgid "Bubble Gum"
+msgstr ""
+
+#: data/browser.xml.h:9
+#, fuzzy
+msgid "Burlap"
+msgstr "Borland"
+
+#: data/browser.xml.h:10
+msgid "Camouflage"
+msgstr ""
+
+#: data/browser.xml.h:11
+msgid "Certified"
+msgstr ""
+
+#: data/browser.xml.h:12
+msgid "Chalk"
+msgstr "Kreida"
+
+#: data/browser.xml.h:13
+#, fuzzy
+msgid "Charcoal"
+msgstr "Kreida"
+
+#: data/browser.xml.h:14
+msgid "Colors"
+msgstr "Spalvos"
+
+#: data/browser.xml.h:15
+msgid "Concrete"
+msgstr ""
+
+#: data/browser.xml.h:16
+#, fuzzy
+msgid "Cool"
+msgstr "Google"
+
+#: data/browser.xml.h:17
+#, fuzzy
+msgid "Cork"
+msgstr "Spalvos"
+
+#: data/browser.xml.h:18
+#, fuzzy
+msgid "Countertop"
+msgstr "Kantri"
+
+#: data/browser.xml.h:19
+msgid "Danger"
+msgstr "Pavojus"
+
+#: data/browser.xml.h:20
+#, fuzzy
+msgid "Danube"
+msgstr "Ðokiø"
+
+#: data/browser.xml.h:21
+msgid "Dark Cork"
+msgstr ""
+
+#: data/browser.xml.h:22
+msgid "Dark GNOME"
+msgstr "Tamsus GNOME"
+
+#: data/browser.xml.h:23
+msgid "Deep Teal"
+msgstr ""
+
+#: data/browser.xml.h:24
+#, fuzzy
+msgid "Distinguished"
+msgstr "Baigta"
+
+#: data/browser.xml.h:25
+msgid "Dots"
+msgstr "Taðkai"
+
+#: data/browser.xml.h:26
+msgid "Draft"
+msgstr "Juodraðtis"
+
+#: data/browser.xml.h:27
+msgid "Drag a color to an object to change it to that color"
+msgstr "Norint pakeisti objekto spalvà, nutempk norimà spalvà ant jo"
+
+#: data/browser.xml.h:28
+msgid "Drag a pattern tile to an object to change it"
+msgstr "Kad pakeistum objektà, nutempk ðablono elementà ant jo"
+
+#: data/browser.xml.h:29
+msgid "Drag an emblem to an object to add it to the object"
+msgstr "Norint pridëti objektui emblemà, nutempk jà ant objekto"
+
+#: data/browser.xml.h:30
+msgid "Eclipse"
+msgstr ""
+
+#: data/browser.xml.h:31 src/file-manager/fm-list-view.c:2285
+#: src/file-manager/fm-properties-window.c:1620
+#: src/file-manager/fm-search-list-view.c:499
+msgid "Emblems"
+msgstr "Emblemos"
+
+#: data/browser.xml.h:32
+msgid "Envy"
+msgstr ""
+
+#: data/browser.xml.h:33
+msgid "Erase"
+msgstr "Iðtrinti"
+
+#: data/browser.xml.h:34
+msgid "Favorite"
+msgstr "Mëgstamiausias"
+
+#: data/browser.xml.h:35
+#, fuzzy
+msgid "Fibers"
+msgstr "Skaièiai"
+
+#: data/browser.xml.h:36
+#, fuzzy
+msgid "Fire Engine"
+msgstr "Paieðkos varikliai"
+
+#: data/browser.xml.h:37
+msgid "Fleur De Lis"
+msgstr ""
+
+#: data/browser.xml.h:38
+#, fuzzy
+msgid "Floral"
+msgstr "Pirmyn"
+
+#: data/browser.xml.h:39
+msgid "Fossil"
+msgstr ""
+
+#: data/browser.xml.h:40 icons/gnome/gnome.xml.h:2
+msgid "GNOME"
+msgstr "GNOME"
+
+#: data/browser.xml.h:41
+msgid "Granite"
+msgstr "Granitas"
+
+#: data/browser.xml.h:42
+msgid "Grapefruit"
+msgstr "Greipfrutas"
+
+#: data/browser.xml.h:43
+msgid "Green Weave"
+msgstr ""
+
+#: data/browser.xml.h:44
+msgid "Ice"
+msgstr "Ledas"
+
+#: data/browser.xml.h:45
+msgid "Important"
+msgstr "Svarbu"
+
+#: data/browser.xml.h:46
+#, fuzzy
+msgid "Indigo"
+msgstr "Indie"
+
+#: data/browser.xml.h:47
+msgid "Leaf"
+msgstr "Lapas"
+
+#: data/browser.xml.h:48
+msgid "Lemon"
+msgstr "Citrina"
+
+#: data/browser.xml.h:49
+#, fuzzy
+msgid "Mango"
+msgstr "Tango"
+
+#: data/browser.xml.h:50
+msgid "Manila Paper"
+msgstr ""
+
+#: data/browser.xml.h:51
+msgid "Moss Ridge"
+msgstr ""
+
+#: data/browser.xml.h:52
+msgid "Mud"
+msgstr "Purvas"
+
+#: data/browser.xml.h:53
+msgid "New"
+msgstr "Naujas"
+
+#: data/browser.xml.h:54
+msgid "Numbers"
+msgstr "Skaièiai"
+
+#: data/browser.xml.h:55 libnautilus-private/nautilus-file-operations.c:1087
+msgid "OK"
+msgstr "Gerai"
+
+#: data/browser.xml.h:56
+msgid "Ocean Strips"
+msgstr ""
+
+#: data/browser.xml.h:57
+msgid "Oh No"
+msgstr "O, ne!"
+
+#: data/browser.xml.h:58
+msgid "Onyx"
+msgstr ""
+
+#: data/browser.xml.h:59
+msgid "Orange"
+msgstr "Apelsinas"
+
+#: data/browser.xml.h:60
+#, fuzzy
+msgid "Pale Blue"
+msgstr "Ádëti bylas"
+
+#: data/browser.xml.h:61
+msgid "Patterns"
+msgstr "Ðablonai"
+
+#: data/browser.xml.h:62
+msgid "Personal"
+msgstr "Asmeninis"
+
+#: data/browser.xml.h:63
+#, fuzzy
+msgid "Purple Marble"
+msgstr "neáskaitomas"
+
+#: data/browser.xml.h:64
+msgid "Ridged Paper"
+msgstr ""
+
+#: data/browser.xml.h:65
+msgid "Rough Paper"
+msgstr ""
+
+#: data/browser.xml.h:66
+msgid "Ruby"
+msgstr ""
+
+#: data/browser.xml.h:67
+msgid "Sea Foam"
+msgstr "Jûros puta"
+
+#: data/browser.xml.h:68
+#, fuzzy
+msgid "Shale"
+msgstr "Pavyzdys"
+
+#: data/browser.xml.h:69
+msgid "Silver"
+msgstr "Sidabras"
+
+#: data/browser.xml.h:70
+msgid "Sky"
+msgstr "Dangus"
+
+#: data/browser.xml.h:71
+msgid "Sky Ridge"
+msgstr ""
+
+#: data/browser.xml.h:72
+#, fuzzy
+msgid "Snow Ridge"
+msgstr "Rodyti Ðoniná _Skydelá"
+
+#: data/browser.xml.h:73
+msgid "Special"
+msgstr "Ypatingas"
+
+#: data/browser.xml.h:74
+#, fuzzy
+msgid "Stucco"
+msgstr "Sustabdyti"
+
+#: data/browser.xml.h:75
+#, fuzzy
+msgid "Tangerine"
+msgstr "Pavojus"
+
+#: data/browser.xml.h:76
+#, fuzzy
+msgid "Terracotta"
+msgstr "Terror"
+
+#: data/browser.xml.h:77
+msgid "Urgent"
+msgstr "Skubus"
+
+#: data/browser.xml.h:78
+msgid "Violet"
+msgstr ""
+
+#: data/browser.xml.h:79
+#, fuzzy
+msgid "Wavy White"
+msgstr "Baltas"
+
+#: data/browser.xml.h:80
+msgid "White"
+msgstr "Baltas"
+
+#: data/browser.xml.h:81
+#, fuzzy
+msgid "White Ribs"
+msgstr "Baltas"
+
+#: data/linksets/apps.xml.h:2
+msgid "Gnumeric"
+msgstr "Gnumeric elektoninë lentelë"
+
+#: data/linksets/apps.xml.h:3
+msgid "Netscape"
+msgstr "Netscape"
+
+#: data/linksets/apps.xml.h:4
+msgid "The Gimp"
+msgstr "GIMP vaizdø apdorojimo programa"
+
+#: data/linksets/desktop.xml.h:1 src/nautilus-preferences-dialog.c:80
+#: src/nautilus-preferences-dialog.c:85
+msgid "Desktop"
+msgstr "Darbastalis"
+
+#: data/linksets/desktop.xml.h:2 libnautilus-private/nautilus-file.c:5191
+#: libnautilus-private/nautilus-trash-directory.c:383
+#: src/file-manager/fm-desktop-icon-view.c:71
+msgid "Trash"
+msgstr "Ðiukðlinë"
+
+#: data/linksets/home.xml.h:1
+msgid "Computer"
+msgstr "Kompiuteris"
+
+#: data/linksets/home.xml.h:2
+msgid "Home Directory"
+msgstr "Namø direktorija"
+
+#: data/linksets/portals.xml.h:1
+#, fuzzy
+msgid "Excite"
+msgstr "Vykdymas"
+
+#: data/linksets/portals.xml.h:2
+msgid "Portals"
+msgstr "Portalai"
+
+#: data/linksets/portals.xml.h:3
+msgid "Yahoo"
+msgstr "Yahoo"
+
+#: data/linksets/search_engines.xml.h:1
+msgid "Alta Vista"
+msgstr "Alta Vista"
+
+#: data/linksets/search_engines.xml.h:2
+msgid "Google"
+msgstr "Google"
+
+#: data/linksets/search_engines.xml.h:3 src/nautilus-preferences-dialog.c:282
+msgid "Search Engines"
+msgstr "Paieðkos varikliai"
+
+#: data/static_bookmarks.xml.h:1
+msgid "Allaire"
+msgstr "Allaire"
+
+#: data/static_bookmarks.xml.h:2
+msgid "Binary Freedom"
+msgstr "Binary Freedom"
+
+#: data/static_bookmarks.xml.h:3
+msgid "Borland"
+msgstr "Borland"
+
+#: data/static_bookmarks.xml.h:4
+msgid "CNET Computers.com"
+msgstr "CNET Computers.com"
+
+#: data/static_bookmarks.xml.h:5
+msgid "CNET Linux Center"
+msgstr "CNET Linux Center"
+
+#: data/static_bookmarks.xml.h:6
+msgid "CollabNet"
+msgstr "CollabNet"
+
+#: data/static_bookmarks.xml.h:7
+msgid "Compaq"
+msgstr "Compaq"
+
+#: data/static_bookmarks.xml.h:8
+msgid "Conectiva"
+msgstr "Conectiva"
+
+#: data/static_bookmarks.xml.h:9
+msgid "Covalent"
+msgstr "Covalent"
+
+#: data/static_bookmarks.xml.h:10
+msgid "Debian.org"
+msgstr "Debian.org"
+
+#: data/static_bookmarks.xml.h:11
+msgid "Dell"
+msgstr "Dell"
+
+#: data/static_bookmarks.xml.h:12
+msgid "Eazel"
+msgstr "Eazel"
+
+#: data/static_bookmarks.xml.h:13
+msgid "Freshmeat.net"
+msgstr "Freshmeat.net"
+
+#: data/static_bookmarks.xml.h:14
+msgid "GNOME.org"
+msgstr "GNOME.org"
+
+#: data/static_bookmarks.xml.h:15
+msgid "GNU.org"
+msgstr "GNU.org"
+
+#: data/static_bookmarks.xml.h:17
+msgid "International"
+msgstr "Tarptautinis"
+
+#: data/static_bookmarks.xml.h:18
+msgid "Linux Documentation Project"
+msgstr "Linux dokumentacijos projektas"
+
+#: data/static_bookmarks.xml.h:19
+msgid "Linux One"
+msgstr "Linux One"
+
+#: data/static_bookmarks.xml.h:20
+msgid "Linux Online"
+msgstr "Linux Online"
+
+#: data/static_bookmarks.xml.h:21
+msgid "Linux Resources"
+msgstr "Linux Resources"
+
+#: data/static_bookmarks.xml.h:22
+msgid "Linux Weekly News"
+msgstr "Linux savaitinës naujienos"
+
+#: data/static_bookmarks.xml.h:23
+msgid "LinuxNewbie.org"
+msgstr "LinuxNewbie.org"
+
+#: data/static_bookmarks.xml.h:24
+msgid "LinuxOrbit.com"
+msgstr "LinuxOrbit.com"
+
+#: data/static_bookmarks.xml.h:25
+msgid "MandrakeSoft"
+msgstr "MandrakeSoft"
+
+#: data/static_bookmarks.xml.h:26
+msgid "Netraverse"
+msgstr "Netraverse"
+
+#: data/static_bookmarks.xml.h:27
+msgid "News and Media"
+msgstr "Naujienos ir Media"
+
+#: data/static_bookmarks.xml.h:28
+msgid "O'Reilly"
+msgstr "O'Reilly"
+
+#: data/static_bookmarks.xml.h:29
+msgid "OSDN"
+msgstr "OSDN"
+
+#: data/static_bookmarks.xml.h:30
+msgid "Open Source Asia"
+msgstr "Open Source Asia"
+
+#: data/static_bookmarks.xml.h:31
+msgid "OpenOffice"
+msgstr "OpenOffice"
+
+#: data/static_bookmarks.xml.h:32
+msgid "Penguin Computing"
+msgstr "Penguin Computing"
+
+#: data/static_bookmarks.xml.h:33
+msgid "Rackspace"
+msgstr "Rackspace"
+
+#: data/static_bookmarks.xml.h:34
+msgid "Red Hat"
+msgstr "Red Hat"
+
+#: data/static_bookmarks.xml.h:35
+msgid "Red Hat Network"
+msgstr "Red Hat Network"
+
+#: data/static_bookmarks.xml.h:36
+msgid "RedFlag Linux"
+msgstr "RedFlag Linux"
+
+#: data/static_bookmarks.xml.h:37
+msgid "Software"
+msgstr "Programos"
+
+#: data/static_bookmarks.xml.h:38
+msgid "SourceForge"
+msgstr "SourceForge"
+
+#: data/static_bookmarks.xml.h:39
+msgid "Sun StarOffice"
+msgstr "Sun StarOffice"
+
+#: data/static_bookmarks.xml.h:40
+msgid "Sun Wah Linux"
+msgstr "Sun Wah Linux"
+
+#: data/static_bookmarks.xml.h:41
+msgid "Web Services"
+msgstr "Interneto paslaugos"
+
+#: data/static_bookmarks.xml.h:42
+msgid "ZDNet Linux Hardware Database"
+msgstr "ZDNet Linux Hardware Database"
+
+#: data/static_bookmarks.xml.h:43
+msgid "ZDNet Linux Resource Center"
+msgstr "ZDNet Linux Resource Center"
+
+#: data/static_bookmarks.xml.h:44
+msgid "Zero-Knowledge"
+msgstr "Zero-Knowledge"
+
+#: icons/crux_eggplant/crux_eggplant.xml.h:1
+msgid "An Eggplant variation of the Crux theme."
+msgstr ""
+
+#: icons/crux_eggplant/crux_eggplant.xml.h:2
+msgid "Crux-Eggplant"
+msgstr "Crux-Eggplant"
+
+#: icons/crux_teal/crux_teal.xml.h:1
+msgid "A Teal variation of the Crux theme."
+msgstr ""
+
+#: icons/crux_teal/crux_teal.xml.h:2
+msgid "Crux-Teal"
+msgstr "Crux-Teal"
+
+#: icons/default.xml.h:1
+msgid "Default"
+msgstr "Áprasta"
+
+#: icons/default.xml.h:2
+msgid "This is the default theme for Nautilus."
+msgstr "Tai yra áprasta Nautilus tema."
+
+#: icons/gnome/gnome.xml.h:1
+msgid "A theme designed to fit well with the classic GNOME environment"
+msgstr ""
+"Tema, sukurta taip, kad gerai prisiderintø prie klasikinës GNOME aplinkos."
+
+#: icons/sierra/sierra.xml.h:1
+msgid "Sierra"
+msgstr "Sierra"
+
+#: icons/sierra/sierra.xml.h:2
+msgid "Uses manila folders and gray-green backgrounds."
+msgstr ""
+
+#: icons/tahoe/tahoe.xml.h:1
+msgid "Tahoe"
+msgstr "Tahoe"
+
+#: icons/tahoe/tahoe.xml.h:2
+msgid "This theme uses photo-realistic folders."
+msgstr "Ðita tema naudoja fotorealistinius katalogus"
 
 #. Note to localizers: this font is used for text items in Druid pages
 #: libnautilus-private/nautilus-druid-page-eazel.c:381
@@ -1636,64 +2729,64 @@ msgstr "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-13,*-r-*"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2432
+#: libnautilus-private/nautilus-file.c:2433
 msgid "today at 00:00:00 PM"
 msgstr "ðiandien 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2433
+#: libnautilus-private/nautilus-file.c:2434
 msgid "today at %-I:%M:%S %p"
 msgstr "ðiandien %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2435
+#: libnautilus-private/nautilus-file.c:2436
 msgid "today at 00:00 PM"
 msgstr "ðiandien 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2436
+#: libnautilus-private/nautilus-file.c:2437
 msgid "today at %-I:%M %p"
 msgstr "ðiendien %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2438
+#: libnautilus-private/nautilus-file.c:2439
 msgid "today, 00:00 PM"
 msgstr "ðiandien, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2439
+#: libnautilus-private/nautilus-file.c:2440
 msgid "today, %-I:%M %p"
 msgstr "ðiandien, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2441
 #: libnautilus-private/nautilus-file.c:2442
+#: libnautilus-private/nautilus-file.c:2443
 msgid "today"
 msgstr "ðiandien"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2451
+#: libnautilus-private/nautilus-file.c:2452
 msgid "yesterday at 00:00:00 PM"
 msgstr "vakar 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2452
+#: libnautilus-private/nautilus-file.c:2453
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "vakar %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2454
+#: libnautilus-private/nautilus-file.c:2455
 msgid "yesterday at 00:00 PM"
 msgstr "vakar 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2455
+#: libnautilus-private/nautilus-file.c:2456
 msgid "yesterday at %-I:%M %p"
 msgstr "vakar %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2457
+#: libnautilus-private/nautilus-file.c:2458
 msgid "yesterday, 00:00 PM"
 msgstr "vakar, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2458
+#: libnautilus-private/nautilus-file.c:2459
 msgid "yesterday, %-I:%M %p"
 msgstr "vakar, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2460
 #: libnautilus-private/nautilus-file.c:2461
+#: libnautilus-private/nautilus-file.c:2462
 msgid "yesterday"
 msgstr "vakar"
 
@@ -1702,134 +2795,134 @@ msgstr "vakar"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2472
+#: libnautilus-private/nautilus-file.c:2473
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:2473
+#: libnautilus-private/nautilus-file.c:2474
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:2475
+#: libnautilus-private/nautilus-file.c:2476
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:2476
+#: libnautilus-private/nautilus-file.c:2477
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:2478
+#: libnautilus-private/nautilus-file.c:2479
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:2479
+#: libnautilus-private/nautilus-file.c:2480
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:2481
+#: libnautilus-private/nautilus-file.c:2482
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:2482
+#: libnautilus-private/nautilus-file.c:2483
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:2484
+#: libnautilus-private/nautilus-file.c:2485
 #, fuzzy
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "01/01/00, 01:00 iki pietø"
 
-#: libnautilus-private/nautilus-file.c:2485
+#: libnautilus-private/nautilus-file.c:2486
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:2487
+#: libnautilus-private/nautilus-file.c:2488
 #, fuzzy
 msgid "00/00/00, 00:00 PM"
 msgstr "01/01/00, 01:00 iki pietø"
 
-#: libnautilus-private/nautilus-file.c:2488
+#: libnautilus-private/nautilus-file.c:2489
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:2490
+#: libnautilus-private/nautilus-file.c:2491
 msgid "00/00/00"
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:2491
+#: libnautilus-private/nautilus-file.c:2492
 msgid "%m/%d/%y"
 msgstr ""
 
-#: libnautilus-private/nautilus-file.c:3762
+#: libnautilus-private/nautilus-file.c:3763
 msgid "0 items"
 msgstr "0 elementø"
 
-#: libnautilus-private/nautilus-file.c:3762
+#: libnautilus-private/nautilus-file.c:3763
 msgid "0 folders"
 msgstr "0 katalogø"
 
-#: libnautilus-private/nautilus-file.c:3763
+#: libnautilus-private/nautilus-file.c:3764
 msgid "0 files"
 msgstr "0 bylø"
 
-#: libnautilus-private/nautilus-file.c:3767
+#: libnautilus-private/nautilus-file.c:3768
 msgid "1 item"
 msgstr "1 elementas"
 
-#: libnautilus-private/nautilus-file.c:3767
+#: libnautilus-private/nautilus-file.c:3768
 msgid "1 folder"
 msgstr "1 katalogas"
 
-#: libnautilus-private/nautilus-file.c:3768
+#: libnautilus-private/nautilus-file.c:3769
 msgid "1 file"
 msgstr "1 byla"
 
-#: libnautilus-private/nautilus-file.c:3771
+#: libnautilus-private/nautilus-file.c:3772
 #, c-format
 msgid "%u items"
 msgstr "%u elementai"
 
-#: libnautilus-private/nautilus-file.c:3771
+#: libnautilus-private/nautilus-file.c:3772
 #, c-format
 msgid "%u folders"
 msgstr "%u katalogai"
 
-#: libnautilus-private/nautilus-file.c:3772
+#: libnautilus-private/nautilus-file.c:3773
 #, c-format
 msgid "%u files"
 msgstr "%u bylos"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4079
-#: libnautilus-private/nautilus-file.c:4095
+#: libnautilus-private/nautilus-file.c:4080
+#: libnautilus-private/nautilus-file.c:4096
 msgid "? items"
 msgstr "? elementø"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4085
+#: libnautilus-private/nautilus-file.c:4086
 msgid "? bytes"
 msgstr "? baitø"
 
-#: libnautilus-private/nautilus-file.c:4100
+#: libnautilus-private/nautilus-file.c:4101
 msgid "unknown type"
 msgstr "neþinomas tipas"
 
-#: libnautilus-private/nautilus-file.c:4103
+#: libnautilus-private/nautilus-file.c:4104
 msgid "unknown MIME type"
 msgstr "neþinomas MIME tipas"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4109
+#: libnautilus-private/nautilus-file.c:4110
 msgid "unknown"
 msgstr "neþinomas"
 
-#: libnautilus-private/nautilus-file.c:4141
+#: libnautilus-private/nautilus-file.c:4142
 msgid "program"
 msgstr "programa"
 
-#: libnautilus-private/nautilus-file.c:4153
+#: libnautilus-private/nautilus-file.c:4154
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -1838,7 +2931,7 @@ msgstr ""
 "Nerandu netgi \"x-directory/normal\" apraðymo. Greièiausiai, kad jûsø gnome-"
 "vfs.keys byla yra netinkamoje vietoje arba nerandama dël kitø prieþasèiø."
 
-#: libnautilus-private/nautilus-file.c:4157
+#: libnautilus-private/nautilus-file.c:4158
 #, fuzzy, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -1847,7 +2940,7 @@ msgstr ""
 "Nerandama apraðymø mime tipui \"%s\" (byla yra \"%s\"), praneðti aaron@eazel."
 "com"
 
-#: libnautilus-private/nautilus-file.c:4171
+#: libnautilus-private/nautilus-file.c:4172
 msgid "link"
 msgstr "nuoroda"
 
@@ -1856,20 +2949,14 @@ msgstr "nuoroda"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: libnautilus-private/nautilus-file-operations.c:1172
-#: libnautilus-private/nautilus-file.c:4177
+#: libnautilus-private/nautilus-file.c:4178
 #, c-format
 msgid "link to %s"
 msgstr "padaryti nuorodà á %s"
 
-#: libnautilus-private/nautilus-file.c:4191
+#: libnautilus-private/nautilus-file.c:4192
 msgid "link (broken)"
 msgstr "nuoroda (sugadinta)"
-
-#: libnautilus-private/nautilus-file.c:5189
-#: libnautilus-private/nautilus-trash-directory.c:383
-#: src/file-manager/fm-desktop-icon-view.c:71
-msgid "Trash"
-msgstr "Ðiukðlinë"
 
 #. "From" dialog label, source path gets placed next to it in the dialog
 #: libnautilus-private/nautilus-file-operations.c:414
@@ -2198,10 +3285,6 @@ msgstr ""
 #: libnautilus-private/nautilus-file-operations.c:1087
 msgid "Unable to replace file."
 msgstr "Negalima pakeisti bylos."
-
-#: libnautilus-private/nautilus-file-operations.c:1087
-msgid "OK"
-msgstr "Gerai"
 
 #: libnautilus-private/nautilus-file-operations.c:1097
 #, c-format
@@ -2928,31 +4011,37 @@ msgid "List View"
 msgstr "Sàraðo vaizdas"
 
 #: libnautilus-private/nautilus-global-preferences.c:157
+#: src/file-manager/nautilus-icon-view-ui.xml.h:21
 msgid "Manually"
 msgstr "Rankiniu bûdu"
 
 #: libnautilus-private/nautilus-global-preferences.c:159
 #: libnautilus-private/nautilus-global-preferences.c:168
+#: src/file-manager/nautilus-icon-view-ui.xml.h:4
 msgid "By Name"
 msgstr "Pagal vardà"
 
 #: libnautilus-private/nautilus-global-preferences.c:160
 #: libnautilus-private/nautilus-global-preferences.c:169
+#: src/file-manager/nautilus-icon-view-ui.xml.h:5
 msgid "By Size"
 msgstr "Pagal dydá"
 
 #: libnautilus-private/nautilus-global-preferences.c:161
 #: libnautilus-private/nautilus-global-preferences.c:170
+#: src/file-manager/nautilus-icon-view-ui.xml.h:6
 msgid "By Type"
 msgstr "Pagal tipà"
 
 #: libnautilus-private/nautilus-global-preferences.c:162
 #: libnautilus-private/nautilus-global-preferences.c:171
+#: src/file-manager/nautilus-icon-view-ui.xml.h:2
 msgid "By Modification Date"
 msgstr "Pagal keitimo datà"
 
 #: libnautilus-private/nautilus-global-preferences.c:163
 #: libnautilus-private/nautilus-global-preferences.c:172
+#: src/file-manager/nautilus-icon-view-ui.xml.h:1
 msgid "By Emblems"
 msgstr "Pagal Emblemas"
 
@@ -3086,6 +4175,7 @@ msgid "Switch"
 msgstr "Perjungti"
 
 #: libnautilus-private/nautilus-icon-text-item.c:1584
+#: src/file-manager/nautilus-icon-view-ui.xml.h:23
 msgid "Rename"
 msgstr "Pervadinti"
 
@@ -3765,6 +4855,167 @@ msgstr "Nautilus'ui nepavyko numontuoti nurodyto skirsnio."
 msgid "ISO 9660 Volume"
 msgstr "ISO 9660 Skirsnis"
 
+#: libnautilus/nautilus-clipboard-ui.xml.h:1 src/nautilus-shell-ui.xml.h:5
+msgid "C_lear Text"
+msgstr "Iðva_lyti tekstà"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:2
+msgid "Clear Text"
+msgstr "Iðvalyti tekstà"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:3
+msgid "Copy Text"
+msgstr "Kopijuoti tekstà"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:4
+msgid "Copy the selected text to the clipboard"
+msgstr "Kopijuoti paþymëtà tekstà á krepðá"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:5
+msgid "Cut Text"
+msgstr "Iðkirpti tekstà"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:6 src/nautilus-shell-ui.xml.h:15
+msgid "Cut _Text"
+msgstr "Iðkirpti _tekstà"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:7
+msgid "Cut the selected text to the clipboard"
+msgstr "Paþymëtà tekstà iðkirpti á krepðá"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:8
+msgid "Paste Text"
+msgstr "Ádëti tekstà"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:9
+msgid "Paste the text stored on the clipboard"
+msgstr "Ádëti tekstà, saugomà krepðyje"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:10
+msgid "Remove the selected text without putting it on the clipboard"
+msgstr "Paðalinti paþymëtà tekstà, nededant á krepðá"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:11
+msgid "Select All"
+msgstr "Paþymëti visus"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:12 src/nautilus-shell-ui.xml.h:50
+msgid "Select _All"
+msgstr "Paþymëti _visus"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:13
+msgid "Select all the text in a text field"
+msgstr "Paþymëti visà tekstà, esantá teksto lauke"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:14 src/nautilus-shell-ui.xml.h:76
+msgid "_Copy Text"
+msgstr "_Nukopijuoti tekstà"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:15 src/nautilus-shell-ui.xml.h:88
+msgid "_Paste Text"
+msgstr "_Ádëti tekstà"
+
+#: nautilus.desktop.in.h:1 src/nautilus-window-manage-views.c:256
+#: src/nautilus-window-menus.c:657
+msgid "Nautilus"
+msgstr "Nautilus "
+
+#: nautilus.desktop.in.h:2
+msgid "Nautilus File Manager and Graphic Shell"
+msgstr "Nautilus bylø tvarkytojas ir grafinë aplinka"
+
+#: src/Nautilus_shell.oaf.in.h:1
+msgid "Factory for Nautilus shell and file manager"
+msgstr ""
+
+#: src/Nautilus_shell.oaf.in.h:2
+msgid "Icons"
+msgstr "Piktogramos"
+
+#: src/Nautilus_shell.oaf.in.h:3
+msgid "Icons Viewer"
+msgstr "Piktogramø þiûryklë"
+
+#: src/Nautilus_shell.oaf.in.h:4
+msgid "List"
+msgstr "Sàraðas"
+
+#: src/Nautilus_shell.oaf.in.h:5
+msgid "List Viewer"
+msgstr "Sàraðo þiûryklë"
+
+#: src/Nautilus_shell.oaf.in.h:6
+msgid "Nautilus factory"
+msgstr "Nautilus gamykla"
+
+#: src/Nautilus_shell.oaf.in.h:7
+msgid "Nautilus file manager component that shows a scrollable list"
+msgstr "Nautilus bylø tvarkytojo komponentas, rodantis slankojamà sàraðà"
+
+#: src/Nautilus_shell.oaf.in.h:8
+msgid ""
+"Nautilus file manager component that shows a scrollable list for search "
+"results"
+msgstr ""
+"Nautilus bylø tvarkytojo komponentas, rodantis slankojamà paieðkos rezultatø "
+"sàraðà"
+
+#: src/Nautilus_shell.oaf.in.h:9
+msgid "Nautilus file manager component that shows a two-dimensional icon space"
+msgstr ""
+"Nautilus bylø tvarkytojo komponentas, rodantis dvimaèià piktogramø erdvæ"
+
+#: src/Nautilus_shell.oaf.in.h:10
+msgid "Nautilus file manager component that shows icons on the desktop"
+msgstr ""
+"Nautilus bylø tvarkytojo komponentas, rodantis piktogramas darbalaukyje"
+
+#: src/Nautilus_shell.oaf.in.h:11
+msgid "Nautilus file manager desktop icon view"
+msgstr "Nautilus bylø tvarkytojo darbalaukio piktogramø vaizdas"
+
+#: src/Nautilus_shell.oaf.in.h:12
+msgid "Nautilus file manager icon view"
+msgstr "Nautilus bylø tvarkytojo piktogramø vaizdas"
+
+#: src/Nautilus_shell.oaf.in.h:13
+msgid "Nautilus file manager list view"
+msgstr "Nautilus bylø tvarkytojo sàraðo vaizdas"
+
+#: src/Nautilus_shell.oaf.in.h:14
+msgid "Nautilus file manager search results list view"
+msgstr "Nautilus bylø tvarkytojo paieðkos rezultatø vaizdas"
+
+#: src/Nautilus_shell.oaf.in.h:15
+msgid "Nautilus metafile factory"
+msgstr "Nautilus metafile gamykla"
+
+#: src/Nautilus_shell.oaf.in.h:16
+msgid "Nautilus shell"
+msgstr "Nautilus aplinka"
+
+#: src/Nautilus_shell.oaf.in.h:17
+msgid ""
+"Nautilus shell operations that can be done from subsequent command-line "
+"invocations"
+msgstr ""
+
+#: src/Nautilus_shell.oaf.in.h:18
+msgid "Produces metafile objects for accessing Nautilus metadata"
+msgstr ""
+
+#: src/Nautilus_shell.oaf.in.h:19
+msgid "Search List"
+msgstr "Paieðkos sàraðas"
+
+#: src/Nautilus_shell.oaf.in.h:20
+msgid "View as Icons"
+msgstr "Piktogramø vaizdas"
+
+#: src/Nautilus_shell.oaf.in.h:21
+msgid "View as List"
+msgstr "Sàraðo vaizdas"
+
 #: src/file-manager/fm-desktop-icon-view.c:670
 msgid "Background"
 msgstr "Fonas"
@@ -3786,7 +5037,10 @@ msgstr "%s's namai"
 msgid "Empty Trash..."
 msgstr "Iðvalyti ðiukðlinæ..."
 
-#: src/file-manager/fm-desktop-icon-view.c:1268 src/nautilus-sidebar.c:1485
+#: src/file-manager/fm-desktop-icon-view.c:1268
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
+#: src/file-manager/nautilus-directory-view-ui.xml.h:15
+#: src/nautilus-sidebar.c:1485
 msgid "Empty Trash"
 msgstr "Iðvalyti ðiukðlinæ"
 
@@ -3821,6 +5075,7 @@ msgstr "Iðtrinti?"
 #: src/file-manager/fm-directory-view.c:773
 #: src/file-manager/fm-directory-view.c:2846
 #: src/file-manager/fm-directory-view.c:2886
+#: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Delete"
 msgstr "Iðtrinti"
 
@@ -3968,6 +5223,7 @@ msgid "Use \"%s\" to open the selected item"
 msgstr "Naudoti \"%s\" atidaryti paþymëtam elementui"
 
 #: src/file-manager/fm-directory-view.c:3305
+#: src/file-manager/nautilus-directory-view-ui.xml.h:32
 msgid "Other _Application..."
 msgstr "Kita _programa..."
 
@@ -3976,6 +5232,7 @@ msgid "An _Application..."
 msgstr "_Programa..."
 
 #: src/file-manager/fm-directory-view.c:3311
+#: src/file-manager/nautilus-directory-view-ui.xml.h:33
 msgid "Other _Viewer..."
 msgstr "Kita p_erþiûros programa..."
 
@@ -4066,6 +5323,7 @@ msgid "Open _in This Window"
 msgstr "Atidaryt_i ðiame lange"
 
 #: src/file-manager/fm-directory-view.c:4015
+#: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "Open _in New Window"
 msgstr "Atidaryt_i naujame lange"
 
@@ -4087,6 +5345,7 @@ msgid "Delete all selected items permanently"
 msgstr "Visiðkai iðtrinti visus paþymëtus elementus"
 
 #: src/file-manager/fm-directory-view.c:4040
+#: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Move to _Trash"
 msgstr "Perkelti á _ðiukðlinæ"
 
@@ -4099,6 +5358,7 @@ msgid "De_lete..."
 msgstr "Ið_trinti..."
 
 #: src/file-manager/fm-directory-view.c:4069
+#: src/file-manager/nautilus-directory-view-ui.xml.h:9
 msgid "De_lete"
 msgstr "Ið_trinti"
 
@@ -4115,10 +5375,12 @@ msgid "_Empty Trash..."
 msgstr "_Iðvalyti ðiukðlinæ..."
 
 #: src/file-manager/fm-directory-view.c:4107
+#: src/file-manager/nautilus-directory-view-ui.xml.h:58
 msgid "_Empty Trash"
 msgstr "_Iðvalyti ðiukðlinæ"
 
 #: src/file-manager/fm-directory-view.c:4118
+#: src/file-manager/nautilus-directory-view-ui.xml.h:37
 msgid "R_emove Custom Images"
 msgstr "Ið_trinti pasirinktus (papildomus) paveikslëlius"
 
@@ -4131,6 +5393,7 @@ msgid "Cu_t File"
 msgstr "Ið_kirpti Bylà"
 
 #: src/file-manager/fm-directory-view.c:4134
+#: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Cu_t Files"
 msgstr "Ið_kirpti Bylas"
 
@@ -4139,6 +5402,7 @@ msgid "_Copy File"
 msgstr "_Kopijuoti bylà"
 
 #: src/file-manager/fm-directory-view.c:4145
+#: src/file-manager/nautilus-directory-view-ui.xml.h:56
 msgid "_Copy Files"
 msgstr "_Kopijuoti bylas"
 
@@ -4339,64 +5603,64 @@ msgstr "Pervadinimas \"%s\" á \"%s\"."
 msgid "Cancel Rename?"
 msgstr "Nutraukti pervadinimà?"
 
-#: src/file-manager/fm-icon-view.c:177
+#: src/file-manager/fm-icon-view.c:185
 msgid "by _Name"
 msgstr "Pagal _vardà"
 
-#: src/file-manager/fm-icon-view.c:178
+#: src/file-manager/fm-icon-view.c:186
+#: src/file-manager/nautilus-icon-view-ui.xml.h:15
 msgid "Keep icons sorted by name in rows"
 msgstr "Piktogramas eilutëse rikiuoti pagal vardà"
 
-#: src/file-manager/fm-icon-view.c:184
+#: src/file-manager/fm-icon-view.c:192
 msgid "by _Size"
 msgstr "Pagal _dydá"
 
-#: src/file-manager/fm-icon-view.c:185
+#: src/file-manager/fm-icon-view.c:193
+#: src/file-manager/nautilus-icon-view-ui.xml.h:16
 msgid "Keep icons sorted by size in rows"
 msgstr "Piktogramas eilutëse rikiuoti pagal dydá"
 
-#: src/file-manager/fm-icon-view.c:191
+#: src/file-manager/fm-icon-view.c:199
 msgid "by _Type"
 msgstr "Pagal _tipà"
 
-#: src/file-manager/fm-icon-view.c:192
+#: src/file-manager/fm-icon-view.c:200
+#: src/file-manager/nautilus-icon-view-ui.xml.h:17
 msgid "Keep icons sorted by type in rows"
 msgstr "Piktogramas eilutëse rikiuoti pagal tipà"
 
-#: src/file-manager/fm-icon-view.c:198
+#: src/file-manager/fm-icon-view.c:206
 msgid "by Modification _Date"
 msgstr "Pagal Keitimo _Datà"
 
-#: src/file-manager/fm-icon-view.c:199
+#: src/file-manager/fm-icon-view.c:207
+#: src/file-manager/nautilus-icon-view-ui.xml.h:14
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Piktogramas eilutëse rikiuoti pagal keitimo datà"
 
-#: src/file-manager/fm-icon-view.c:205
+#: src/file-manager/fm-icon-view.c:213
 msgid "by _Emblems"
 msgstr "pagal _Emblemas"
 
-#: src/file-manager/fm-icon-view.c:206
+#: src/file-manager/fm-icon-view.c:214
+#: src/file-manager/nautilus-icon-view-ui.xml.h:13
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Piktogramas eilutëse rikiuoti pagal emblemas"
 
-#: src/file-manager/fm-icon-view.c:1416
+#: src/file-manager/fm-icon-view.c:1424
+#: src/file-manager/nautilus-icon-view-ui.xml.h:37
 msgid "_Restore Icons' Original Sizes"
 msgstr "_Atstatyti originalø piktogramø dydá"
 
-#: src/file-manager/fm-icon-view.c:1417
+#: src/file-manager/fm-icon-view.c:1425
 msgid "_Restore Icon's Original Size"
 msgstr "_Atstatyti piktogramos originalø dydá"
 
-#: src/file-manager/fm-icon-view.c:1709
+#: src/file-manager/fm-icon-view.c:1717
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "rodo á \"%s\""
-
-#: src/file-manager/fm-list-view.c:2285
-#: src/file-manager/fm-properties-window.c:1620
-#: src/file-manager/fm-search-list-view.c:499
-msgid "Emblems"
-msgstr "Emblemos"
 
 #: src/file-manager/fm-list-view.c:2291
 #: src/file-manager/fm-search-list-view.c:511
@@ -4778,6 +6042,7 @@ msgstr "Kur"
 #. * is to inform translators of this tricky concept).
 #.
 #: src/file-manager/fm-search-list-view.c:557
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
 msgid "_Reveal in New Window"
 msgstr "_Atidaryti Naujame lange"
 
@@ -4807,6 +6072,366 @@ msgstr ""
 #: src/file-manager/fm-search-list-view.c:679
 msgid "Too Many Matches"
 msgstr "Per daug atitikmenø"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:1
+msgid "Change Desktop Background"
+msgstr "Keisti Darbalaukio fonà"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:2
+#: src/file-manager/nautilus-directory-view-ui.xml.h:11
+msgid "Delete all items in the Trash"
+msgstr "Iðtrinti visus elementus ið ðiukðlinës"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:3
+msgid "Disks"
+msgstr "Diskai"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
+msgid "Mount or unmount disks"
+msgstr "Primontuoti ir iðmontuoti diskus"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:6
+msgid "New Terminal"
+msgstr "Naujas terminalas"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:7
+msgid "Open a new GNOME terminal window"
+msgstr "Atidaryti naujà Gnome terminalo langà"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:8
+msgid "Remove any custom pattern or color from the desktop background"
+msgstr ""
+"Ið darbalaukio fono iðmesti bet koká vartotojo pasirinktà (papildomà) "
+"ðablonà ar spalvà"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:9
+msgid "Reset Desktop Background"
+msgstr "Atstatyti darbalaukio fonà"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:10
+msgid ""
+"Show a window that lets you set your desktop background's pattern or color"
+msgstr ""
+"Parodyti langà, kuris leis jums nustatyti darbalaukio fono ðablonà ar spalvà"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:1
+msgid "Choose a program with which to open the selected item"
+msgstr "Pasirinkti programà, su kuria atidaryti paþymëtà elementà"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:2
+msgid "Choose another application with which to open the selected item"
+msgstr "Pasirinkti kità programà, su kuria atidaryti paþymëtà elementà"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:3
+msgid "Choose another viewer with which to view the selected item"
+msgstr "Pasirinkti kità þiûryklæ, su kuria perþiûrëti paþymëtà elementà"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:4
+msgid "Copy Files"
+msgstr "Kopijuoti bylas"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:5
+msgid "Create a new empty folder inside this folder"
+msgstr "Ðiame kataloge sukurti naujà tuðèià katalogà"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:6
+msgid "Create a symbolic link for each selected item"
+msgstr "Sukurti simbolinæ nuorodà, kiekvienam paþymëtam elementui"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:8
+msgid "Cut Files"
+msgstr "Iðkirpti bylas"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:12
+msgid "Delete each selected item, without moving to the Trash"
+msgstr "Iðtrinti kiekvienà paþymëtà elementà, neperkeliant á ðiukðlinæ"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:13
+msgid "Duplicate"
+msgstr "Dublikuoti"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:14
+msgid "Duplicate each selected item"
+msgstr "Dublikuoti kiekvienà paþymëtà elementà"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:16
+msgid "Make Link"
+msgstr "Padaryti nuorodà"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:17
+msgid "Move each selected item to the Trash"
+msgstr "Perkelti visas paþymëtas bylas á ðiukðlinæ"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:18
+msgid ""
+"Move or copy files previously selected by a Cut Files or Copy Files command"
+msgstr ""
+"Perkelti arba kopijuoti bylas, prieð tai paþymëtas Iðkirpti bylas arba "
+"Kopijuoti bylas komandomis"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:19
+msgid "Move to Trash"
+msgstr "Perkelti á ðiukðlinæ"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:21
+msgid "New Folder"
+msgstr "Naujas katalogas"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:22
+msgid "Open"
+msgstr "Atidaryti"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:23
+#, fuzzy
+msgid "Open Scripts Folder"
+msgstr "_Atidaryti skriptø katalogà"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:24
+msgid "Open Wit_h"
+msgstr "Atidaryti s_u"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:25
+msgid "Open With"
+msgstr "Atidaryti su"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:27
+msgid "Open each selected item in a new window"
+msgstr "Visus paþymëtus elementus atidaryti naujame lange"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:28
+msgid "Open in New Window"
+msgstr "Atidaryti naujame lange"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:29
+msgid "Open the selected item in this window"
+msgstr "Pasirinktà elementà atidaryti ðiame lange"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:30
+msgid "Other Application..."
+msgstr "Kita programa..."
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:31
+msgid "Other Viewer..."
+msgstr "Kita þiûryklë..."
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:34
+msgid "Paste Files"
+msgstr "Ádëti bylas"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:35
+msgid "Prepare the selected files to be copied with a Paste Files command"
+msgstr "Paþymëtas bylas paruoðti kopijavimui su Ádëti bylas komanda"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:36
+msgid "Prepare the selected files to be moved with a Paste Files command"
+msgstr "Paþymëtas bylas paruoðti perkëlimui su Ádëti bylas komanda"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:38
+msgid "Remove Custom Images"
+msgstr "Iðmesti vartotojo pasirinktus (papildomus) pieðinëlius"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:39
+msgid "Remove any custom images from selected icons"
+msgstr ""
+"Paþymëtoms piktogramoms iðmesti vartotojo pasirinktus (papildomus) "
+"pieðinëlius"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:40
+msgid "Remove any custom pattern or color from the background of this location"
+msgstr ""
+"Iðmesti, ið ðitos vietos, bet koká vartotojo pasirinktà fono ðablonà ar "
+"spalvà"
+
+#. add the reset background item, possibly disabled
+#: src/file-manager/nautilus-directory-view-ui.xml.h:41
+#: src/nautilus-sidebar.c:542
+msgid "Reset Background"
+msgstr "Atstatyti fonà"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:42
+msgid "Reset View to Match Preferences"
+msgstr "Atstatyti vaizdà pagal nustatymus"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:43
+msgid "Reset View to Match _Preferences"
+msgstr "Atstatyti vaizdà pagal nus_tatymus"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:44
+msgid "Reset sorting order and zoom level to match preferences for this view"
+msgstr ""
+"Atstatyti rikiavimo tvarkà bei mastelá pagal nustatytà ðio vaizdo standartà"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:45
+msgid "Run or manage scripts from ~/Nautilus/scripts"
+msgstr ""
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:46
+msgid "Scripts"
+msgstr "Skriptai"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:47
+msgid "Select All Files"
+msgstr "Paþymëti visas bylas"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:48
+msgid "Select _All Files"
+msgstr "Paþymëti _visas bylas"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:49
+msgid "Select all items in this window"
+msgstr "Paþymëti visus elementus ðiame lange"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:50
+msgid "Show Properties"
+msgstr "Rodyti savybes"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:51
+msgid "Show Trash"
+msgstr "Rodyti ðiukðlinæ"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:52
+msgid "Show _Properties"
+msgstr "Rodyti _savybes"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:53
+msgid "Show the contents of the Trash"
+msgstr "Rodyti ðiukðlinës turiná"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:54
+msgid "Show the folder containing the scripts that appear in this menu"
+msgstr ""
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:55
+msgid "View or modify the properties of each selected item"
+msgstr "Þiûrëti ar keisti kiekvieno paþymëto elemento savybes"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:57
+msgid "_Duplicate"
+msgstr "_Dublikuoti"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:59
+msgid "_Make Link"
+msgstr "Padaryti _nuorodà"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:60
+msgid "_New Folder"
+msgstr "_Naujas katalogas"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:61
+msgid "_Open"
+msgstr "_Atidaryti"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:62
+msgid "_Open Scripts Folder"
+msgstr "_Atidaryti skriptø katalogà"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:63
+msgid "_Paste Files"
+msgstr "_Ádëti bylas"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:64
+msgid "_Show Trash"
+msgstr "_Rodyti ðiukðlinæ"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:3
+msgid "By Modification _Date"
+msgstr "Pagal keitimo _datà"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:7
+msgid "By _Emblems"
+msgstr "Pagal _emblemas"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:8
+msgid "By _Name"
+msgstr "Pagal _vardà"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:9
+msgid "By _Size"
+msgstr "Pagal _dydá"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:10
+msgid "By _Type"
+msgstr "Pagal _tipà"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:11
+msgid "Clean Up by Name"
+msgstr "Iðvalyti pagal vardà"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:12
+msgid "Display icons in the opposite order"
+msgstr "Rodyti piktogramas atvirkðtine tvarka"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:18
+msgid "Lay Out Items"
+msgstr "Sulygiuoti elementus"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:19
+msgid "Leave icons wherever they are dropped"
+msgstr "Palikti piktogramas ten kur jos padëtos"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:20
+msgid "Make the selected icon stretchable"
+msgstr "Paþymëtas piktogramas padaryti kintamo dydþio"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:22
+msgid "Re_versed Order"
+msgstr "At_virkðtinë tvarka"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:24
+msgid "Rename selected icon"
+msgstr "Pervadinti paþymëtas piktogramas"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:25
+msgid "Reposition icons to better fit in the window and avoid overlapping"
+msgstr "Pertvarkyti piktogramas, kad jos geriau tilptø lange ir nepersidengtø"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:26
+msgid "Restore Icons' Original Sizes"
+msgstr "Atstatyti piktogramø originalius dydþius"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:27
+msgid "Restore each selected icon to its original size"
+msgstr "Atstatyti visø paþymëtø piktogramø originalius dydþius"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:28
+msgid "Reversed Order"
+msgstr "Atvirkðtinë tvarka"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:29
+msgid "Stretch Icon"
+msgstr "Keisti piktogramos dydá"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:30
+msgid "Tighter Layout"
+msgstr "Glaustesnis iðdëstymas"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:31
+msgid "Tighter _Layout"
+msgstr "Glaustesnis ið_dëstymas"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:32
+msgid "Toggle using a tighter layout scheme"
+msgstr "Nustatyti glaustesnio iðdëstymo shemà"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:33
+msgid "_Clean Up by Name"
+msgstr "_Iðvalyti pagal vardà"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:34
+msgid "_Lay Out Items"
+msgstr "_Iðdëstyti elementus"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:35
+msgid "_Manually"
+msgstr "_Rankiniu bûdu"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:36
+msgid "_Rename"
+msgstr "_Pervadinti"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:38
+msgid "_Stretch Icon"
+msgstr "_Keisti piktogramos dydá"
 
 #: src/file-manager/nautilus-indexing-info.c:88
 #, c-format
@@ -4860,6 +6485,26 @@ msgstr "Atsipraðau, bet Medusa paieðkos paslaugos negalimos."
 #: src/file-manager/nautilus-indexing-info.c:316
 msgid "%I:%M %p, %x"
 msgstr "%H:%M, %x"
+
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:1
+msgid "Reveal each selected item in its original folder"
+msgstr "Atidaryti kiekvienà paþymëtà elementà jo paties kataloge"
+
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:2
+msgid "Reveal in New Window"
+msgstr "Atidaryti naujame lange"
+
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:3
+msgid "Show Indexing Status"
+msgstr "Rodyti indeksavimo bûsenà"
+
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:4
+msgid "Show _Indexing Status"
+msgstr "Rodyti _indeksavimo bûsenà"
+
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:5
+msgid "Show status of indexing used when searching"
+msgstr "Rodyti indeksavimo, naudojamo paieðkant, bûsenà"
 
 #. set the window title and standard close key accelerator
 #: src/nautilus-about.c:141
@@ -5377,10 +7022,6 @@ msgstr "Standartinis neglodus ðriftas:"
 msgid "Nautilus Themes"
 msgstr "Nautilus Temos"
 
-#: src/nautilus-preferences-dialog.c:80 src/nautilus-preferences-dialog.c:85
-msgid "Desktop"
-msgstr "Darbastalis"
-
 #: src/nautilus-preferences-dialog.c:82
 msgid "Use Nautilus to draw the desktop"
 msgstr "Naudoti Nautilus darbalaukiui paiðyti"
@@ -5540,10 +7181,6 @@ msgstr "Paieðkos sudëtingumo nustatymai"
 msgid "search type to do by default"
 msgstr "áprastas paieðkos bûdas"
 
-#: src/nautilus-preferences-dialog.c:282
-msgid "Search Engines"
-msgstr "Paieðkos varikliai"
-
 #: src/nautilus-preferences-dialog.c:284
 msgid "Search Engine Location"
 msgstr "Paieðkos variklio vieta"
@@ -5606,10 +7243,6 @@ msgstr "Pavieðinti katalogø iðvaizdos parametrus"
 #: src/nautilus-preferences-dialog.c:377
 msgid "Tabs"
 msgstr "Kortelës"
-
-#: src/nautilus-preferences-dialog.c:386
-msgid "Tree"
-msgstr "Medis"
 
 #: src/nautilus-preferences-dialog.c:388
 msgid "Show only folders (no files) in the tree"
@@ -6016,6 +7649,417 @@ msgstr "[File owner] yra [root]"
 msgid "[File owner] is not [root]"
 msgstr "[File owner] nëra [root]"
 
+#: src/nautilus-service-ui.xml.h:1
+#, fuzzy
+msgid "Go to the Eazel Services Summary Page"
+msgstr "Eiti á Eazel interneto paslaugas"
+
+#: src/nautilus-service-ui.xml.h:2
+#, fuzzy
+msgid "Go to the Eazel Software Catalog"
+msgstr "Programø _Katalogas"
+
+#: src/nautilus-service-ui.xml.h:3
+msgid "Go to your online storage repository"
+msgstr ""
+
+#: src/nautilus-service-ui.xml.h:5
+msgid "Software _Catalog"
+msgstr "Programø _Katalogas"
+
+#: src/nautilus-service-ui.xml.h:6
+msgid "_Eazel Services Home"
+msgstr "_Eazel Interneto paslaugø namai"
+
+#: src/nautilus-service-ui.xml.h:7
+msgid "_Online Storage"
+msgstr ""
+
+#: src/nautilus-service-ui.xml.h:8
+msgid "_Services"
+msgstr "_Paslaugos"
+
+#: src/nautilus-shell-ui.xml.h:1
+msgid " _Advanced"
+msgstr " Pa_tyræs"
+
+#: src/nautilus-shell-ui.xml.h:2
+msgid " _Beginner"
+msgstr " _Pradedantis"
+
+#: src/nautilus-shell-ui.xml.h:3
+msgid " _Intermediate"
+msgstr " _Vidutinis"
+
+#: src/nautilus-shell-ui.xml.h:4
+#, fuzzy
+msgid "Add a bookmark for the current location to this menu"
+msgstr "Nustatyti esamos vietos vaizdà arba keisti vaizdø aibæ"
+
+#: src/nautilus-shell-ui.xml.h:6
+msgid "Change the visibility of this window's location bar"
+msgstr "Pakeisti ðio lango adreso juostos matomumà"
+
+#: src/nautilus-shell-ui.xml.h:7
+msgid "Change the visibility of this window's sidebar"
+msgstr "Pakeisti ðio lango ðoninio skydelio matomumà"
+
+#: src/nautilus-shell-ui.xml.h:8
+msgid "Change the visibility of this window's status bar"
+msgstr "Pakeisti ðio lango bûsenos juostos matomumà"
+
+#: src/nautilus-shell-ui.xml.h:9
+msgid "Change the visibility of this window's toolbar"
+msgstr "Pakeisti ðio lango mygtukø juostos matomumà"
+
+#: src/nautilus-shell-ui.xml.h:10
+msgid "Choose a view for the current location, or modify the set of views"
+msgstr "Nustatyti esamos vietos vaizdà arba keisti vaizdø aibæ"
+
+#: src/nautilus-shell-ui.xml.h:11
+msgid "Clear contents of Go menu and Back/Forward lists"
+msgstr "Iðvalyti \"Eiti\" meniu bei \"Atgal\"/\"Pirmyn\" sàraðø turiná"
+
+#: src/nautilus-shell-ui.xml.h:12
+msgid "Close _All Windows"
+msgstr "Uþdaryti _visus langus"
+
+#: src/nautilus-shell-ui.xml.h:13
+msgid "Close all Nautilus windows"
+msgstr "Uþdaryti visus Nautilus langus"
+
+#: src/nautilus-shell-ui.xml.h:14
+msgid "Close this window"
+msgstr "Uþdaryti ðá langà"
+
+#: src/nautilus-shell-ui.xml.h:16
+msgid "Display a window that allows editing the bookmarks in this menu"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:17
+msgid "Display credits for the creators of Nautilus"
+msgstr "Rodyti Nautilus kûrëjus"
+
+#: src/nautilus-shell-ui.xml.h:18
+msgid "Display information on technical support"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:19
+msgid "Display on-line help for Nautilus"
+msgstr "Rodyti on-line Nautilus pagalbà"
+
+#: src/nautilus-shell-ui.xml.h:20
+msgid ""
+"Display patterns, colors, and emblems that can be used to customize "
+"appearance"
+msgstr ""
+"Rodyti ðablonus, spalvas ir emblemas, kurios gali bûti naudojamos "
+"prisitaikant iðvaizdà"
+
+#: src/nautilus-shell-ui.xml.h:21
+msgid "Display quick reference pages for Nautilus"
+msgstr "Rodyti Nautilus greito þinyno puslapius"
+
+#: src/nautilus-shell-ui.xml.h:22
+msgid "Display release notes for Nautilus"
+msgstr "Rodyti Nautilius iðleidimo pastabas"
+
+#: src/nautilus-shell-ui.xml.h:23
+msgid "Display the latest contents of the current location"
+msgstr "Rodyti naujausià esamos vietos turiná"
+
+#: src/nautilus-shell-ui.xml.h:24
+msgid "Edit various Nautilus preferences"
+msgstr "Keisti ávairias Nautilus savybes"
+
+#: src/nautilus-shell-ui.xml.h:25
+msgid "Find"
+msgstr "Rasti"
+
+#: src/nautilus-shell-ui.xml.h:26
+msgid "For_get History"
+msgstr "Pa_mirðti Istorijà"
+
+#: src/nautilus-shell-ui.xml.h:27
+msgid "Go to Eazel Services"
+msgstr "Eiti á Eazel interneto paslaugas"
+
+#: src/nautilus-shell-ui.xml.h:28
+#, fuzzy
+msgid "Go to the Start Here folder"
+msgstr "[Elementai, kurie yra] katalogai"
+
+#: src/nautilus-shell-ui.xml.h:29
+msgid "Go to the home location"
+msgstr "Eiti namo"
+
+#: src/nautilus-shell-ui.xml.h:30
+msgid "Go to the next visited location"
+msgstr "Eiti á sekanèià aplankytà vietà"
+
+#: src/nautilus-shell-ui.xml.h:31
+msgid "Go to the previous visited location"
+msgstr "Eiti á prieð tai aplankytà vietà"
+
+#: src/nautilus-shell-ui.xml.h:32
+msgid "Go up to the location that contains the displayed location"
+msgstr "Eiti á aukðtesnæ vietà, kurioje yra dabar rodoma vieta"
+
+#: src/nautilus-shell-ui.xml.h:33 src/nautilus-window-menus.c:502
+msgid "Hide Location _Bar"
+msgstr "Paslëpti adreso _juostà"
+
+#: src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:484
+msgid "Hide St_atus Bar"
+msgstr "Paslëpti _bûsenos juostà"
+
+#: src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:490
+msgid "Hide _Sidebar"
+msgstr "Paslëpti Ðoniná skydelá"
+
+#: src/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:496
+msgid "Hide _Toolbar"
+msgstr "Paslëpti _Mygtukø juostà"
+
+#: src/nautilus-shell-ui.xml.h:38
+msgid "Nautilus Quick _Reference"
+msgstr "Nautilus greitas þinynas"
+
+#: src/nautilus-shell-ui.xml.h:39
+msgid "Nautilus Release _Notes"
+msgstr "Nautilus iðleidimo _pastabos"
+
+#: src/nautilus-shell-ui.xml.h:40
+msgid "Nautilus User _Manual"
+msgstr "Nautilus Vartotojo vadovas"
+
+#: src/nautilus-shell-ui.xml.h:41
+msgid "New Window"
+msgstr "Naujas langas"
+
+#: src/nautilus-shell-ui.xml.h:42
+msgid "New _Window"
+msgstr "Naujas _langas"
+
+#: src/nautilus-shell-ui.xml.h:43
+msgid "Normal Size"
+msgstr "Normalaus dydþio"
+
+#: src/nautilus-shell-ui.xml.h:44
+msgid "Open another Nautilus window for the displayed location"
+msgstr "Rodomai vietai atidaryti kità Nautilus langà."
+
+#: src/nautilus-shell-ui.xml.h:45
+msgid "Refresh"
+msgstr "Atnaujinti"
+
+#: src/nautilus-shell-ui.xml.h:46
+msgid "Report Profiling"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:47
+msgid "Reset Profiling"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:48
+msgid "Search the World Wide Web"
+msgstr "Ieðkoti internete (WWW)"
+
+#: src/nautilus-shell-ui.xml.h:49
+msgid "Search this computer for files"
+msgstr "Ieðkoti bylø ðiame kompiuteryje"
+
+#: src/nautilus-shell-ui.xml.h:51
+msgid "Show the contents at the normal size"
+msgstr "Rodyti turiná normaliu dydþiu"
+
+#: src/nautilus-shell-ui.xml.h:52
+msgid "Show the contents in less detail"
+msgstr "Rodyti turiná su maþiau smulkmenø"
+
+#: src/nautilus-shell-ui.xml.h:53
+msgid "Show the contents in more detail"
+msgstr "Rodyti turiná su daugiau smulkmenø"
+
+#: src/nautilus-shell-ui.xml.h:54
+msgid "Start Profiling"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:56
+msgid "Stop Profiling"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:57
+msgid "Stop loading this location"
+msgstr "Sustabdyti ðios vietos krovimàsi"
+
+#: src/nautilus-shell-ui.xml.h:58
+msgid "Undo the last text change"
+msgstr "Atðaukti paskutiná teksto pakeitimà"
+
+#: src/nautilus-shell-ui.xml.h:59
+msgid "Up"
+msgstr "Aukðtyn"
+
+#: src/nautilus-shell-ui.xml.h:60
+msgid "Use preferences appropriate for beginners"
+msgstr "Naudoti savybes tinkamas pradedantiesiems"
+
+#: src/nautilus-shell-ui.xml.h:61
+msgid "Use preferences appropriate for experts"
+msgstr "Naudoti savybes tinkamas ekspertams"
+
+#: src/nautilus-shell-ui.xml.h:62
+msgid "Use preferences appropriate for most people"
+msgstr "Naudoti savybes tinkamas daugumai þmoniø"
+
+#. Add "View as..." extra bonus choice.
+#: src/nautilus-shell-ui.xml.h:63 src/nautilus-window.c:647
+#: src/nautilus-window.c:1545
+msgid "View as..."
+msgstr "Þiûrëti kaip ..."
+
+#: src/nautilus-shell-ui.xml.h:64
+msgid "We_b Search"
+msgstr "Paieðka _internete"
+
+#: src/nautilus-shell-ui.xml.h:65
+msgid "Web Search"
+msgstr "Paieðka internete"
+
+#: src/nautilus-shell-ui.xml.h:66
+msgid "Zoom In"
+msgstr "Padidinti"
+
+#: src/nautilus-shell-ui.xml.h:67
+msgid "Zoom Out"
+msgstr "Sumaþinti"
+
+#: src/nautilus-shell-ui.xml.h:68
+msgid "Zoom _In"
+msgstr "Pa_didinti"
+
+#: src/nautilus-shell-ui.xml.h:69
+msgid "Zoom _Out"
+msgstr "Su_maþinti"
+
+#: src/nautilus-shell-ui.xml.h:70
+msgid "_About Nautilus..."
+msgstr "_Apie Nautilus..."
+
+#: src/nautilus-shell-ui.xml.h:71
+msgid "_Add Bookmark"
+msgstr "_Pridëti þymelæ"
+
+#: src/nautilus-shell-ui.xml.h:72
+msgid "_Back"
+msgstr "_Atgal"
+
+#: src/nautilus-shell-ui.xml.h:73
+msgid "_Backgrounds and Emblems..."
+msgstr "_Fonas ir Emblemos"
+
+#: src/nautilus-shell-ui.xml.h:74
+msgid "_Bookmarks"
+msgstr "Þy_melës"
+
+#: src/nautilus-shell-ui.xml.h:75
+msgid "_Close Window"
+msgstr "_Uþdaryti langà"
+
+#: src/nautilus-shell-ui.xml.h:77
+msgid "_Edit"
+msgstr "_Keisti"
+
+#: src/nautilus-shell-ui.xml.h:78
+msgid "_Edit Bookmarks..."
+msgstr "_Redaguoti þymeles"
+
+#: src/nautilus-shell-ui.xml.h:79
+msgid "_Edit Preferences..."
+msgstr "_Keisti nuostatas..."
+
+#: src/nautilus-shell-ui.xml.h:81
+msgid "_Find"
+msgstr "_Rasti"
+
+#: src/nautilus-shell-ui.xml.h:82
+msgid "_Forward"
+msgstr "_Pirmyn"
+
+#: src/nautilus-shell-ui.xml.h:83
+msgid "_Go"
+msgstr "_Eiti"
+
+#: src/nautilus-shell-ui.xml.h:84
+msgid "_Help"
+msgstr "_Pagalba"
+
+#: src/nautilus-shell-ui.xml.h:85
+msgid "_Home"
+msgstr "_Namai"
+
+#: src/nautilus-shell-ui.xml.h:86
+msgid "_Location..."
+msgstr "_Vieta..."
+
+#: src/nautilus-shell-ui.xml.h:87
+msgid "_Normal Size"
+msgstr "_Normalaus dydþio"
+
+#: src/nautilus-shell-ui.xml.h:89
+msgid "_Preferences"
+msgstr "_Nuostatos"
+
+#: src/nautilus-shell-ui.xml.h:90
+msgid "_Profiler"
+msgstr "_Optimizatorius (Profiler)"
+
+#: src/nautilus-shell-ui.xml.h:91
+msgid "_Refresh"
+msgstr "_Atnaujinti"
+
+#: src/nautilus-shell-ui.xml.h:92
+msgid "_Report Profiling"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:93
+msgid "_Reset Profiling"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:94
+#, fuzzy
+msgid "_Start Here"
+msgstr "Paleisti"
+
+#: src/nautilus-shell-ui.xml.h:95
+msgid "_Start Profiling"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:96
+msgid "_Stop Profiling"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:97
+msgid "_Support"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:98
+msgid "_Undo"
+msgstr "_Atðaukti"
+
+#: src/nautilus-shell-ui.xml.h:99
+msgid "_Up a Level"
+msgstr "Aukðtyn"
+
+#: src/nautilus-shell-ui.xml.h:100
+msgid "_View"
+msgstr "_Vaizdas"
+
+#: src/nautilus-shell-ui.xml.h:101
+msgid "_View as..."
+msgstr "Þiû_rëti kaip ..."
+
 #: src/nautilus-shell.c:188
 msgid "Caveat"
 msgstr "Áspëjimas"
@@ -6041,11 +8085,6 @@ msgstr ""
 "\n"
 "Apsilankytite http://www.eazel.com/feedback.html ir pateikite trûkumus, "
 "komentarus bei pasiûlymus."
-
-#. add the reset background item, possibly disabled
-#: src/nautilus-sidebar.c:542
-msgid "Reset Background"
-msgstr "Atstatyti fonà"
 
 #: src/nautilus-sidebar.c:722
 msgid ""
@@ -6164,10 +8203,6 @@ msgstr "Negaliu iðmesti temos"
 #, c-format
 msgid "Preview Release %s: %s"
 msgstr "Bandomoji Versija %s: %s"
-
-#: src/nautilus-window-manage-views.c:256 src/nautilus-window-menus.c:657
-msgid "Nautilus"
-msgstr "Nautilus "
 
 #: src/nautilus-window-manage-views.c:813
 msgid "View Failed"
@@ -6313,33 +8348,17 @@ msgstr "Pamirðti istorijà ?"
 msgid "Forget"
 msgstr "Pamirðti"
 
-#: src/nautilus-window-menus.c:484
-msgid "Hide St_atus Bar"
-msgstr "Paslëpti _bûsenos juostà"
-
 #: src/nautilus-window-menus.c:485
 msgid "Show St_atus Bar"
 msgstr "Rodyti bûsen_os juostà"
-
-#: src/nautilus-window-menus.c:490
-msgid "Hide _Sidebar"
-msgstr "Paslëpti Ðoniná skydelá"
 
 #: src/nautilus-window-menus.c:491
 msgid "Show _Sidebar"
 msgstr "Rodyti Ðoniná _Skydelá"
 
-#: src/nautilus-window-menus.c:496
-msgid "Hide _Toolbar"
-msgstr "Paslëpti _Mygtukø juostà"
-
 #: src/nautilus-window-menus.c:497
 msgid "Show _Toolbar"
 msgstr "Rodyti _Mygtukø juostà"
-
-#: src/nautilus-window-menus.c:502
-msgid "Hide Location _Bar"
-msgstr "Paslëpti adreso _juostà"
 
 #: src/nautilus-window-menus.c:503
 msgid "Show Location _Bar"
@@ -6410,11 +8429,6 @@ msgstr "Atgal"
 msgid "Forward"
 msgstr "Pirmyn"
 
-#. Add "View as..." extra bonus choice.
-#: src/nautilus-window.c:647 src/nautilus-window.c:1545
-msgid "View as..."
-msgstr "Þiûrëti kaip ..."
-
 #: src/nautilus-window.c:1251
 #, c-format
 msgid "Display this location with \"%s\""
@@ -6436,1166 +8450,11 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 msgid "%d%%"
 msgstr "%d%%"
 
-#~ msgid "Hardware Viewer"
-#~ msgstr "Árangos þiûryklë"
-
-#~ msgid "Hardware view"
-#~ msgstr "Árangos vaizdas"
-
-#~ msgid "View as Hardware"
-#~ msgstr "Árangos vaizdas"
-
-#~ msgid "hardware view"
-#~ msgstr "Árangos vaizdas"
-
-#~ msgid "Help"
-#~ msgstr "Pagalba"
-
-#~ msgid "Help Index"
-#~ msgstr "Pagalbos rodyklë"
-
-#~ msgid "Help Index sidebar panel"
-#~ msgstr "Pagalbos rodyklës ðoninis skydelis"
-
-#~ msgid "Help Navigation Tree"
-#~ msgstr "Pagalbos medis"
-
-#~ msgid "Help Search"
-#~ msgstr "Paieðka pagalboje"
-
-#~ msgid "Help Search sidebar panel"
-#~ msgstr "Paieðkos pagalboje ðoninis skydelis"
-
-#~ msgid "Help sidebar panel"
-#~ msgstr "Pagalbos ðoninis skydelis"
-
-#~ msgid "Internal use only"
-#~ msgstr "Tik vidiniam naudojimui"
-
-#~ msgid "Factory for history views"
-#~ msgstr "Istorijos þiûryklës gamykla"
-
-#~ msgid "History"
-#~ msgstr "Istorija"
-
-#~ msgid "History sidebar panel"
-#~ msgstr "Istorijos ðoninis skydelis"
-
-#~ msgid "History sidebar panel for Nautilus"
-#~ msgstr "Istorijos ðoninis skydelis Nautiliui"
-
-#~ msgid "Generic Image Viewer"
-#~ msgstr "Paprasta paveikslëliø þiûryklë"
-
-#~ msgid "Generic image control factory"
-#~ msgstr "Bazinë paveikslëliø komponento gamykla"
-
-#~ msgid "Image"
-#~ msgstr "Paveikslëlis"
-
-#~ msgid "Image Viewer"
-#~ msgstr "Paveikslëliø þiûryklë"
-
-#~ msgid "Nautilus Image Viewer"
-#~ msgstr "Nautilus paveikslëliø þiûryklë"
-
-#~ msgid "Nautilus Image viewer factory"
-#~ msgstr "Nautilus paveikslëliø þiûryklës gamykla"
-
-#~ msgid "View as Image"
-#~ msgstr "Paveikslëliø vaizdas"
-
-#~ msgid "_File"
-#~ msgstr "_Byla"
-
-#, fuzzy
-#~ msgid "Kill the Loser sidebar panel"
-#~ msgstr "Istorijos ðoninis skydelis"
-
-#, fuzzy
-#~ msgid "Nautilus Sidebar Loser"
-#~ msgstr "Nautilus medþio ðoninis skydelis"
-
-#, fuzzy
-#~ msgid "Nautilus sidebar loser factory"
-#~ msgstr "Nautilus medþio ðoninis skydelis"
-
-#~ msgid "Charset Encoding"
-#~ msgstr "Simboliø kodavimas"
-
-#~ msgid "Mozilla Nautilus view"
-#~ msgstr "Mozillos Nautilus vaizdas"
-
-#~ msgid "Mozilla Nautilus view factory"
-#~ msgstr "Mozilla Nautilus vaizdo gamykla"
-
-#~ msgid "Mozilla content view component"
-#~ msgstr "Mozilla turinio perþiûros komponentas"
-
-#~ msgid "Mozilla content view component's factory"
-#~ msgstr "Mozilla turinio perþiûros komponento gamykla"
-
-#~ msgid "View as Web Page"
-#~ msgstr "Þiûrëti kaip tinklalapá"
-
-#~ msgid "Web Page"
-#~ msgstr "Tinklalapis"
-
-#~ msgid "Web Page Viewer"
-#~ msgstr "Tinklalapiø þiûryklë"
-
-#~ msgid "Factory for music view"
-#~ msgstr "Muzikos vaizdo gamykla"
-
-#~ msgid "Music"
-#~ msgstr "Muzika"
-
-#~ msgid "Music Viewer"
-#~ msgstr "Muzikos þiûryklë"
-
-#~ msgid "Music view"
-#~ msgstr "Muzikos vaizdas"
-
-#~ msgid "Music view factory"
-#~ msgstr "Muzikos vaizdo gamykla"
-
-#~ msgid "View as Music"
-#~ msgstr "Muzikos vaizdas"
-
-#~ msgid "Factory for news view"
-#~ msgstr "Árangos þiûryklë"
-
-#~ msgid "News"
-#~ msgstr "Naujienos"
-
-#~ msgid "News sidebar panel"
-#~ msgstr "Naujienø ðoninis skydelis"
-
-#~ msgid "Notes sidebar panel"
-#~ msgstr "Uþraðø ðoninis skydelis"
-
-#~ msgid "Notes sidebar panel for Nautilus"
-#~ msgstr "Nautilus uþraðø ðoninis skydelis"
-
-#~ msgid "Sample"
-#~ msgstr "Pavyzdys"
-
-#~ msgid "_Sample"
-#~ msgstr "_Pavyzdys"
-
-#~ msgid "Nautilus Sample view"
-#~ msgstr "Nautilus pavyzdinis vaizdas"
-
-#~ msgid "Nautilus Sample view factory"
-#~ msgstr "Nautilus pavyzdinio vaizdo gamykla"
-
-#~ msgid "Sample Viewer"
-#~ msgstr "Pavyzdinë þiûryklë"
-
-#~ msgid "Sample content view component"
-#~ msgstr "Pavyzdinis turinio perþiûros komponentas"
-
-#~ msgid "Sample content view component's factory"
-#~ msgstr "Pavyzdinio turinio perþiûros komponento gamykla"
-
-#~ msgid "View as Sample"
-#~ msgstr "Pavyzdinis vaizdas"
-
-#~ msgid "F_onts"
-#~ msgstr "Ðri_ftai"
-
-#~ msgid "Lucida"
-#~ msgstr "Lucida"
-
-#~ msgid "Use the Courier Font"
-#~ msgstr "Naudoti Courier ðriftà"
-
-#~ msgid "Use the Fixed Font"
-#~ msgstr "Naudoti Fixed ðriftà"
-
-#~ msgid "Use the GTK System Font"
-#~ msgstr "Naudoti GTK sisteminá ðriftà"
-
-#~ msgid "Use the Helvetica Font"
-#~ msgstr "Naudoti Helvetica ðriftà"
-
-#~ msgid "Use the Lucida Font"
-#~ msgstr "Naudoti Lucida ðriftà"
-
-#~ msgid "Use the Times Font"
-#~ msgstr "Naudoti Times ðriftà"
-
-#~ msgid "_Courier"
-#~ msgstr "_Courier"
-
-#~ msgid "_Fixed"
-#~ msgstr "_Fixed"
-
-#~ msgid "_GTK System Font"
-#~ msgstr "_GTK Sisteminis ðriftas"
-
-#~ msgid "_Helvetica"
-#~ msgstr "_Helvetica"
-
-#~ msgid "_Times"
-#~ msgstr "_Times"
-
-#~ msgid "Text"
-#~ msgstr "Tekstas"
-
-#~ msgid "Text Viewer"
-#~ msgstr "Teksto þiûryklë"
-
-#~ msgid "Text view"
-#~ msgstr "Teksto vaizdas"
-
-#~ msgid "Text view factory"
-#~ msgstr "Tekstinio vaizdo gamykla"
-
-#~ msgid "View as Text"
-#~ msgstr "Teksto vaizdas"
-
-#~ msgid "Search Google for Selected Text"
-#~ msgstr "Paþymëto teksto ieðkoti Google paieðkos sistemoje "
-
-#~ msgid "Use Google to search the web for the selected text"
-#~ msgstr "Naudoti Google paþymëto teksto ieðkojimui internete"
-
-#~ msgid "Look Up Selected Text in Dictionary"
-#~ msgstr "Paþymëto teksto ieðkok þodyne"
-
-#~ msgid "Look up the selected text in the Merriam-Webster dictionary"
-#~ msgstr "Paþymëto teksto ieðkok Merriam-Webster þodyne"
-
-#~ msgid "animation to indicate on-going activity"
-#~ msgstr "animacija, rodanti aktyvumà"
-
-#~ msgid "throbber"
-#~ msgstr "uþimtumo indikatorius"
-
-#~ msgid "throbber factory"
-#~ msgstr "uþimtumo indikatoriaus gamykla"
-
-#~ msgid "throbber object factory"
-#~ msgstr "uþimtumo indikatoriaus objektø gamykla"
-
-#~ msgid "Nautilus Tree sidebar panel"
-#~ msgstr "Nautilus medþio ðoninis skydelis"
-
-#~ msgid "Nautilus Tree view"
-#~ msgstr "Nautilus medþio vaizdas"
-
-#~ msgid "Apparition"
-#~ msgstr "Vaiduoklis"
-
-#~ msgid "Black"
-#~ msgstr "Juodas"
-
-#~ msgid "Chalk"
-#~ msgstr "Kreida"
-
-#~ msgid "Colors"
-#~ msgstr "Spalvos"
-
-#~ msgid "Danger"
-#~ msgstr "Pavojus"
-
-#~ msgid "Dark GNOME"
-#~ msgstr "Tamsus GNOME"
-
-#~ msgid "Dots"
-#~ msgstr "Taðkai"
-
-#~ msgid "Draft"
-#~ msgstr "Juodraðtis"
-
-#~ msgid "Drag a color to an object to change it to that color"
-#~ msgstr "Norint pakeisti objekto spalvà, nutempk norimà spalvà ant jo"
-
-#~ msgid "Drag a pattern tile to an object to change it"
-#~ msgstr "Kad pakeistum objektà, nutempk ðablono elementà ant jo"
-
-#~ msgid "Drag an emblem to an object to add it to the object"
-#~ msgstr "Norint pridëti objektui emblemà, nutempk jà ant objekto"
-
-#~ msgid "Erase"
-#~ msgstr "Iðtrinti"
-
-#~ msgid "Favorite"
-#~ msgstr "Mëgstamiausias"
-
-#~ msgid "GNOME"
-#~ msgstr "GNOME"
-
-#~ msgid "Granite"
-#~ msgstr "Granitas"
-
-#~ msgid "Grapefruit"
-#~ msgstr "Greipfrutas"
-
-#~ msgid "Ice"
-#~ msgstr "Ledas"
-
-#~ msgid "Important"
-#~ msgstr "Svarbu"
-
-#~ msgid "Leaf"
-#~ msgstr "Lapas"
-
-#~ msgid "Lemon"
-#~ msgstr "Citrina"
-
-#~ msgid "Mud"
-#~ msgstr "Purvas"
-
-#~ msgid "New"
-#~ msgstr "Naujas"
-
-#~ msgid "Numbers"
-#~ msgstr "Skaièiai"
-
-#~ msgid "Oh No"
-#~ msgstr "O, ne!"
-
-#~ msgid "Orange"
-#~ msgstr "Apelsinas"
-
-#~ msgid "Patterns"
-#~ msgstr "Ðablonai"
-
-#~ msgid "Personal"
-#~ msgstr "Asmeninis"
-
-#~ msgid "Sea Foam"
-#~ msgstr "Jûros puta"
-
-#~ msgid "Silver"
-#~ msgstr "Sidabras"
-
-#~ msgid "Sky"
-#~ msgstr "Dangus"
-
-#~ msgid "Special"
-#~ msgstr "Ypatingas"
-
-#~ msgid "Urgent"
-#~ msgstr "Skubus"
-
-#~ msgid "White"
-#~ msgstr "Baltas"
-
-#~ msgid "Gnumeric"
-#~ msgstr "Gnumeric elektoninë lentelë"
-
-#~ msgid "Netscape"
-#~ msgstr "Netscape"
-
-#~ msgid "The Gimp"
-#~ msgstr "GIMP vaizdø apdorojimo programa"
-
-#~ msgid "Computer"
-#~ msgstr "Kompiuteris"
-
-#~ msgid "Home Directory"
-#~ msgstr "Namø direktorija"
-
-#~ msgid "Services"
-#~ msgstr "Paslaugos"
-
-#~ msgid "Portals"
-#~ msgstr "Portalai"
-
-#~ msgid "Yahoo"
-#~ msgstr "Yahoo"
-
-#~ msgid "Alta Vista"
-#~ msgstr "Alta Vista"
-
-#~ msgid "Google"
-#~ msgstr "Google"
-
-#~ msgid "Allaire"
-#~ msgstr "Allaire"
-
-#~ msgid "Binary Freedom"
-#~ msgstr "Binary Freedom"
-
-#~ msgid "Borland"
-#~ msgstr "Borland"
-
-#~ msgid "CNET Computers.com"
-#~ msgstr "CNET Computers.com"
-
-#~ msgid "CNET Linux Center"
-#~ msgstr "CNET Linux Center"
-
-#~ msgid "CollabNet"
-#~ msgstr "CollabNet"
-
-#~ msgid "Compaq"
-#~ msgstr "Compaq"
-
-#~ msgid "Conectiva"
-#~ msgstr "Conectiva"
-
-#~ msgid "Covalent"
-#~ msgstr "Covalent"
-
-#~ msgid "Debian.org"
-#~ msgstr "Debian.org"
-
-#~ msgid "Dell"
-#~ msgstr "Dell"
-
-#~ msgid "Eazel"
-#~ msgstr "Eazel"
-
-#~ msgid "Freshmeat.net"
-#~ msgstr "Freshmeat.net"
-
-#~ msgid "GNOME.org"
-#~ msgstr "GNOME.org"
-
-#~ msgid "GNU.org"
-#~ msgstr "GNU.org"
-
-#~ msgid "International"
-#~ msgstr "Tarptautinis"
-
-#~ msgid "Linux Documentation Project"
-#~ msgstr "Linux dokumentacijos projektas"
-
-#~ msgid "Linux One"
-#~ msgstr "Linux One"
-
-#~ msgid "Linux Online"
-#~ msgstr "Linux Online"
-
-#~ msgid "Linux Resources"
-#~ msgstr "Linux Resources"
-
-#~ msgid "Linux Weekly News"
-#~ msgstr "Linux savaitinës naujienos"
-
-#~ msgid "LinuxNewbie.org"
-#~ msgstr "LinuxNewbie.org"
-
-#~ msgid "LinuxOrbit.com"
-#~ msgstr "LinuxOrbit.com"
-
-#~ msgid "MandrakeSoft"
-#~ msgstr "MandrakeSoft"
-
-#~ msgid "Netraverse"
-#~ msgstr "Netraverse"
-
-#~ msgid "News and Media"
-#~ msgstr "Naujienos ir Media"
-
-#~ msgid "O'Reilly"
-#~ msgstr "O'Reilly"
-
-#~ msgid "OSDN"
-#~ msgstr "OSDN"
-
-#~ msgid "Open Source Asia"
-#~ msgstr "Open Source Asia"
-
-#~ msgid "OpenOffice"
-#~ msgstr "OpenOffice"
-
-#~ msgid "Penguin Computing"
-#~ msgstr "Penguin Computing"
-
-#~ msgid "Rackspace"
-#~ msgstr "Rackspace"
-
-#~ msgid "Red Hat"
-#~ msgstr "Red Hat"
-
-#~ msgid "Red Hat Network"
-#~ msgstr "Red Hat Network"
-
-#~ msgid "RedFlag Linux"
-#~ msgstr "RedFlag Linux"
-
-#~ msgid "Software"
-#~ msgstr "Programos"
-
-#~ msgid "SourceForge"
-#~ msgstr "SourceForge"
-
-#~ msgid "Sun StarOffice"
-#~ msgstr "Sun StarOffice"
-
-#~ msgid "Sun Wah Linux"
-#~ msgstr "Sun Wah Linux"
-
-#~ msgid "Web Services"
-#~ msgstr "Interneto paslaugos"
-
-#~ msgid "ZDNet Linux Hardware Database"
-#~ msgstr "ZDNet Linux Hardware Database"
-
-#~ msgid "ZDNet Linux Resource Center"
-#~ msgstr "ZDNet Linux Resource Center"
-
-#~ msgid "Zero-Knowledge"
-#~ msgstr "Zero-Knowledge"
-
-#~ msgid "Crux-Eggplant"
-#~ msgstr "Crux-Eggplant"
-
-#~ msgid "Crux-Teal"
-#~ msgstr "Crux-Teal"
-
-#~ msgid "Default"
-#~ msgstr "Áprasta"
-
-#~ msgid "This is the default theme for Nautilus."
-#~ msgstr "Tai yra áprasta Nautilus tema."
-
-#~ msgid "A theme designed to fit well with the classic GNOME environment"
-#~ msgstr ""
-#~ "Tema, sukurta taip, kad gerai prisiderintø prie klasikinës GNOME aplinkos."
-
-#~ msgid "Sierra"
-#~ msgstr "Sierra"
-
-#~ msgid "Tahoe"
-#~ msgstr "Tahoe"
-
-#~ msgid "This theme uses photo-realistic folders."
-#~ msgstr "Ðita tema naudoja fotorealistinius katalogus"
-
-#~ msgid "C_lear Text"
-#~ msgstr "Iðva_lyti tekstà"
-
-#~ msgid "Clear Text"
-#~ msgstr "Iðvalyti tekstà"
-
-#~ msgid "Copy Text"
-#~ msgstr "Kopijuoti tekstà"
-
-#~ msgid "Copy the selected text to the clipboard"
-#~ msgstr "Kopijuoti paþymëtà tekstà á krepðá"
-
-#~ msgid "Cut Text"
-#~ msgstr "Iðkirpti tekstà"
-
-#~ msgid "Cut _Text"
-#~ msgstr "Iðkirpti _tekstà"
-
-#~ msgid "Cut the selected text to the clipboard"
-#~ msgstr "Paþymëtà tekstà iðkirpti á krepðá"
-
-#~ msgid "Paste Text"
-#~ msgstr "Ádëti tekstà"
-
-#~ msgid "Paste the text stored on the clipboard"
-#~ msgstr "Ádëti tekstà, saugomà krepðyje"
-
-#~ msgid "Remove the selected text without putting it on the clipboard"
-#~ msgstr "Paðalinti paþymëtà tekstà, nededant á krepðá"
-
-#~ msgid "Select All"
-#~ msgstr "Paþymëti visus"
-
-#~ msgid "Select _All"
-#~ msgstr "Paþymëti _visus"
-
-#~ msgid "Select all the text in a text field"
-#~ msgstr "Paþymëti visà tekstà, esantá teksto lauke"
-
-#~ msgid "_Copy Text"
-#~ msgstr "_Nukopijuoti tekstà"
-
-#~ msgid "_Paste Text"
-#~ msgstr "_Ádëti tekstà"
-
-#~ msgid "Nautilus File Manager and Graphic Shell"
-#~ msgstr "Nautilus bylø tvarkytojas ir grafinë aplinka"
-
-#~ msgid "Icons"
-#~ msgstr "Piktogramos"
-
-#~ msgid "Icons Viewer"
-#~ msgstr "Piktogramø þiûryklë"
-
-#~ msgid "List"
-#~ msgstr "Sàraðas"
-
-#~ msgid "List Viewer"
-#~ msgstr "Sàraðo þiûryklë"
-
-#~ msgid "Nautilus factory"
-#~ msgstr "Nautilus gamykla"
-
-#~ msgid "Nautilus file manager component that shows a scrollable list"
-#~ msgstr "Nautilus bylø tvarkytojo komponentas, rodantis slankojamà sàraðà"
-
-#~ msgid ""
-#~ "Nautilus file manager component that shows a scrollable list for search "
-#~ "results"
-#~ msgstr ""
-#~ "Nautilus bylø tvarkytojo komponentas, rodantis slankojamà paieðkos "
-#~ "rezultatø sàraðà"
-
-#~ msgid ""
-#~ "Nautilus file manager component that shows a two-dimensional icon space"
-#~ msgstr ""
-#~ "Nautilus bylø tvarkytojo komponentas, rodantis dvimaèià piktogramø erdvæ"
-
-#~ msgid "Nautilus file manager component that shows icons on the desktop"
-#~ msgstr ""
-#~ "Nautilus bylø tvarkytojo komponentas, rodantis piktogramas darbalaukyje"
-
-#~ msgid "Nautilus file manager desktop icon view"
-#~ msgstr "Nautilus bylø tvarkytojo darbalaukio piktogramø vaizdas"
-
-#~ msgid "Nautilus file manager icon view"
-#~ msgstr "Nautilus bylø tvarkytojo piktogramø vaizdas"
-
-#~ msgid "Nautilus file manager list view"
-#~ msgstr "Nautilus bylø tvarkytojo sàraðo vaizdas"
-
-#~ msgid "Nautilus file manager search results list view"
-#~ msgstr "Nautilus bylø tvarkytojo paieðkos rezultatø vaizdas"
-
-#~ msgid "Nautilus metafile factory"
-#~ msgstr "Nautilus metafile gamykla"
-
-#~ msgid "Nautilus shell"
-#~ msgstr "Nautilus aplinka"
-
-#~ msgid "Search List"
-#~ msgstr "Paieðkos sàraðas"
-
-#~ msgid "View as Icons"
-#~ msgstr "Piktogramø vaizdas"
-
-#~ msgid "View as List"
-#~ msgstr "Sàraðo vaizdas"
-
-#~ msgid "Change Desktop Background"
-#~ msgstr "Keisti Darbalaukio fonà"
-
-#~ msgid "Delete all items in the Trash"
-#~ msgstr "Iðtrinti visus elementus ið ðiukðlinës"
-
-#~ msgid "Disks"
-#~ msgstr "Diskai"
-
-#~ msgid "Mount or unmount disks"
-#~ msgstr "Primontuoti ir iðmontuoti diskus"
-
-#~ msgid "New Terminal"
-#~ msgstr "Naujas terminalas"
-
-#~ msgid "Open a new GNOME terminal window"
-#~ msgstr "Atidaryti naujà Gnome terminalo langà"
-
-#~ msgid "Remove any custom pattern or color from the desktop background"
-#~ msgstr ""
-#~ "Ið darbalaukio fono iðmesti bet koká vartotojo pasirinktà (papildomà) "
-#~ "ðablonà ar spalvà"
-
-#~ msgid "Reset Desktop Background"
-#~ msgstr "Atstatyti darbalaukio fonà"
-
-#~ msgid ""
-#~ "Show a window that lets you set your desktop background's pattern or color"
-#~ msgstr ""
-#~ "Parodyti langà, kuris leis jums nustatyti darbalaukio fono ðablonà ar "
-#~ "spalvà"
-
-#~ msgid "Choose a program with which to open the selected item"
-#~ msgstr "Pasirinkti programà, su kuria atidaryti paþymëtà elementà"
-
-#~ msgid "Choose another application with which to open the selected item"
-#~ msgstr "Pasirinkti kità programà, su kuria atidaryti paþymëtà elementà"
-
-#~ msgid "Choose another viewer with which to view the selected item"
-#~ msgstr "Pasirinkti kità þiûryklæ, su kuria perþiûrëti paþymëtà elementà"
-
-#~ msgid "Copy Files"
-#~ msgstr "Kopijuoti bylas"
-
-#~ msgid "Create a new empty folder inside this folder"
-#~ msgstr "Ðiame kataloge sukurti naujà tuðèià katalogà"
-
-#~ msgid "Create a symbolic link for each selected item"
-#~ msgstr "Sukurti simbolinæ nuorodà, kiekvienam paþymëtam elementui"
-
-#~ msgid "Cut Files"
-#~ msgstr "Iðkirpti bylas"
-
-#~ msgid "Delete each selected item, without moving to the Trash"
-#~ msgstr "Iðtrinti kiekvienà paþymëtà elementà, neperkeliant á ðiukðlinæ"
-
-#~ msgid "Duplicate"
-#~ msgstr "Dublikuoti"
-
-#~ msgid "Duplicate each selected item"
-#~ msgstr "Dublikuoti kiekvienà paþymëtà elementà"
-
-#~ msgid "Make Link"
-#~ msgstr "Padaryti nuorodà"
-
-#~ msgid "Move each selected item to the Trash"
-#~ msgstr "Perkelti visas paþymëtas bylas á ðiukðlinæ"
-
-#~ msgid ""
-#~ "Move or copy files previously selected by a Cut Files or Copy Files "
-#~ "command"
-#~ msgstr ""
-#~ "Perkelti arba kopijuoti bylas, prieð tai paþymëtas Iðkirpti bylas arba "
-#~ "Kopijuoti bylas komandomis"
-
-#~ msgid "Move to Trash"
-#~ msgstr "Perkelti á ðiukðlinæ"
-
-#~ msgid "New Folder"
-#~ msgstr "Naujas katalogas"
-
-#~ msgid "Open"
-#~ msgstr "Atidaryti"
-
-#~ msgid "Open Wit_h"
-#~ msgstr "Atidaryti s_u"
-
-#~ msgid "Open With"
-#~ msgstr "Atidaryti su"
-
-#~ msgid "Open each selected item in a new window"
-#~ msgstr "Visus paþymëtus elementus atidaryti naujame lange"
-
-#~ msgid "Open in New Window"
-#~ msgstr "Atidaryti naujame lange"
-
-#~ msgid "Open the selected item in this window"
-#~ msgstr "Pasirinktà elementà atidaryti ðiame lange"
-
-#~ msgid "Other Application..."
-#~ msgstr "Kita programa..."
-
-#~ msgid "Other Viewer..."
-#~ msgstr "Kita þiûryklë..."
-
-#~ msgid "Paste Files"
-#~ msgstr "Ádëti bylas"
-
-#~ msgid "Prepare the selected files to be copied with a Paste Files command"
-#~ msgstr "Paþymëtas bylas paruoðti kopijavimui su Ádëti bylas komanda"
-
-#~ msgid "Prepare the selected files to be moved with a Paste Files command"
-#~ msgstr "Paþymëtas bylas paruoðti perkëlimui su Ádëti bylas komanda"
-
-#~ msgid "Remove Custom Images"
-#~ msgstr "Iðmesti vartotojo pasirinktus (papildomus) pieðinëlius"
-
-#~ msgid "Remove any custom images from selected icons"
-#~ msgstr ""
-#~ "Paþymëtoms piktogramoms iðmesti vartotojo pasirinktus (papildomus) "
-#~ "pieðinëlius"
-
-#~ msgid ""
-#~ "Remove any custom pattern or color from the background of this location"
-#~ msgstr ""
-#~ "Iðmesti, ið ðitos vietos, bet koká vartotojo pasirinktà fono ðablonà ar "
-#~ "spalvà"
-
-#~ msgid "Reset View to Match Preferences"
-#~ msgstr "Atstatyti vaizdà pagal nustatymus"
-
-#~ msgid "Reset View to Match _Preferences"
-#~ msgstr "Atstatyti vaizdà pagal nus_tatymus"
-
-#~ msgid ""
-#~ "Reset sorting order and zoom level to match preferences for this view"
-#~ msgstr ""
-#~ "Atstatyti rikiavimo tvarkà bei mastelá pagal nustatytà ðio vaizdo "
-#~ "standartà"
-
-#~ msgid "Scripts"
-#~ msgstr "Skriptai"
-
-#~ msgid "Select All Files"
-#~ msgstr "Paþymëti visas bylas"
-
-#~ msgid "Select _All Files"
-#~ msgstr "Paþymëti _visas bylas"
-
-#~ msgid "Select all items in this window"
-#~ msgstr "Paþymëti visus elementus ðiame lange"
-
-#~ msgid "Show Properties"
-#~ msgstr "Rodyti savybes"
-
-#~ msgid "Show Trash"
-#~ msgstr "Rodyti ðiukðlinæ"
-
-#~ msgid "Show _Properties"
-#~ msgstr "Rodyti _savybes"
-
-#~ msgid "Show the contents of the Trash"
-#~ msgstr "Rodyti ðiukðlinës turiná"
-
-#~ msgid "View or modify the properties of each selected item"
-#~ msgstr "Þiûrëti ar keisti kiekvieno paþymëto elemento savybes"
-
-#~ msgid "_Duplicate"
-#~ msgstr "_Dublikuoti"
-
-#~ msgid "_Make Link"
-#~ msgstr "Padaryti _nuorodà"
-
-#~ msgid "_New Folder"
-#~ msgstr "_Naujas katalogas"
-
-#~ msgid "_Open"
-#~ msgstr "_Atidaryti"
-
-#~ msgid "_Open Scripts Folder"
-#~ msgstr "_Atidaryti skriptø katalogà"
-
-#~ msgid "_Paste Files"
-#~ msgstr "_Ádëti bylas"
-
-#~ msgid "_Show Trash"
-#~ msgstr "_Rodyti ðiukðlinæ"
-
-#~ msgid "By Modification _Date"
-#~ msgstr "Pagal keitimo _datà"
-
-#~ msgid "By _Emblems"
-#~ msgstr "Pagal _emblemas"
-
-#~ msgid "By _Name"
-#~ msgstr "Pagal _vardà"
-
-#~ msgid "By _Size"
-#~ msgstr "Pagal _dydá"
-
-#~ msgid "By _Type"
-#~ msgstr "Pagal _tipà"
-
-#~ msgid "Clean Up by Name"
-#~ msgstr "Iðvalyti pagal vardà"
-
-#~ msgid "Display icons in the opposite order"
-#~ msgstr "Rodyti piktogramas atvirkðtine tvarka"
-
-#~ msgid "Lay Out Items"
-#~ msgstr "Sulygiuoti elementus"
-
-#~ msgid "Leave icons wherever they are dropped"
-#~ msgstr "Palikti piktogramas ten kur jos padëtos"
-
-#~ msgid "Make the selected icon stretchable"
-#~ msgstr "Paþymëtas piktogramas padaryti kintamo dydþio"
-
-#~ msgid "Re_versed Order"
-#~ msgstr "At_virkðtinë tvarka"
-
-#~ msgid "Rename selected icon"
-#~ msgstr "Pervadinti paþymëtas piktogramas"
-
-#~ msgid "Reposition icons to better fit in the window and avoid overlapping"
-#~ msgstr ""
-#~ "Pertvarkyti piktogramas, kad jos geriau tilptø lange ir nepersidengtø"
-
-#~ msgid "Restore Icons' Original Sizes"
-#~ msgstr "Atstatyti piktogramø originalius dydþius"
-
-#~ msgid "Restore each selected icon to its original size"
-#~ msgstr "Atstatyti visø paþymëtø piktogramø originalius dydþius"
-
-#~ msgid "Reversed Order"
-#~ msgstr "Atvirkðtinë tvarka"
-
-#~ msgid "Stretch Icon"
-#~ msgstr "Keisti piktogramos dydá"
-
-#~ msgid "Tighter Layout"
-#~ msgstr "Glaustesnis iðdëstymas"
-
-#~ msgid "Tighter _Layout"
-#~ msgstr "Glaustesnis ið_dëstymas"
-
-#~ msgid "Toggle using a tighter layout scheme"
-#~ msgstr "Nustatyti glaustesnio iðdëstymo shemà"
-
-#~ msgid "_Clean Up by Name"
-#~ msgstr "_Iðvalyti pagal vardà"
-
-#~ msgid "_Lay Out Items"
-#~ msgstr "_Iðdëstyti elementus"
-
-#~ msgid "_Manually"
-#~ msgstr "_Rankiniu bûdu"
-
-#~ msgid "_Rename"
-#~ msgstr "_Pervadinti"
-
-#~ msgid "_Stretch Icon"
-#~ msgstr "_Keisti piktogramos dydá"
-
-#~ msgid "Reveal each selected item in its original folder"
-#~ msgstr "Atidaryti kiekvienà paþymëtà elementà jo paties kataloge"
-
-#~ msgid "Reveal in New Window"
-#~ msgstr "Atidaryti naujame lange"
-
-#~ msgid "Show Indexing Status"
-#~ msgstr "Rodyti indeksavimo bûsenà"
-
-#~ msgid "Show _Indexing Status"
-#~ msgstr "Rodyti _indeksavimo bûsenà"
-
-#~ msgid "Show status of indexing used when searching"
-#~ msgstr "Rodyti indeksavimo, naudojamo paieðkant, bûsenà"
-
 #~ msgid "Eazel Services"
 #~ msgstr "Eazel paslaugos"
 
-#~ msgid "Software _Catalog"
-#~ msgstr "Programø _Katalogas"
-
-#~ msgid "_Eazel Services Home"
-#~ msgstr "_Eazel Interneto paslaugø namai"
-
-#~ msgid "_Services"
-#~ msgstr "_Paslaugos"
-
-#~ msgid " _Advanced"
-#~ msgstr " Pa_tyræs"
-
-#~ msgid " _Beginner"
-#~ msgstr " _Pradedantis"
-
-#~ msgid " _Intermediate"
-#~ msgstr " _Vidutinis"
-
-#~ msgid "Change the visibility of this window's location bar"
-#~ msgstr "Pakeisti ðio lango adreso juostos matomumà"
-
-#~ msgid "Change the visibility of this window's sidebar"
-#~ msgstr "Pakeisti ðio lango ðoninio skydelio matomumà"
-
-#~ msgid "Change the visibility of this window's status bar"
-#~ msgstr "Pakeisti ðio lango bûsenos juostos matomumà"
-
-#~ msgid "Change the visibility of this window's toolbar"
-#~ msgstr "Pakeisti ðio lango mygtukø juostos matomumà"
-
-#~ msgid "Choose a view for the current location, or modify the set of views"
-#~ msgstr "Nustatyti esamos vietos vaizdà arba keisti vaizdø aibæ"
-
-#~ msgid "Clear contents of Go menu and Back/Forward lists"
-#~ msgstr "Iðvalyti \"Eiti\" meniu bei \"Atgal\"/\"Pirmyn\" sàraðø turiná"
-
-#~ msgid "Close _All Windows"
-#~ msgstr "Uþdaryti _visus langus"
-
-#~ msgid "Close all Nautilus windows"
-#~ msgstr "Uþdaryti visus Nautilus langus"
-
-#~ msgid "Close this window"
-#~ msgstr "Uþdaryti ðá langà"
-
-#~ msgid "Display credits for the creators of Nautilus"
-#~ msgstr "Rodyti Nautilus kûrëjus"
-
-#~ msgid "Display on-line help for Nautilus"
-#~ msgstr "Rodyti on-line Nautilus pagalbà"
-
-#~ msgid ""
-#~ "Display patterns, colors, and emblems that can be used to customize "
-#~ "appearance"
-#~ msgstr ""
-#~ "Rodyti ðablonus, spalvas ir emblemas, kurios gali bûti naudojamos "
-#~ "prisitaikant iðvaizdà"
-
-#~ msgid "Display quick reference pages for Nautilus"
-#~ msgstr "Rodyti Nautilus greito þinyno puslapius"
-
-#~ msgid "Display release notes for Nautilus"
-#~ msgstr "Rodyti Nautilius iðleidimo pastabas"
-
 #~ msgid "Display support information for Nautilus and Eazel Services"
 #~ msgstr "Rodyti Nautilius ir Eazel paslaugø palaikymo informacijà"
-
-#~ msgid "Display the latest contents of the current location"
-#~ msgstr "Rodyti naujausià esamos vietos turiná"
-
-#~ msgid "Edit various Nautilus preferences"
-#~ msgstr "Keisti ávairias Nautilus savybes"
-
-#~ msgid "Find"
-#~ msgstr "Rasti"
-
-#~ msgid "For_get History"
-#~ msgstr "Pa_mirðti Istorijà"
-
-#~ msgid "Go to Eazel Services"
-#~ msgstr "Eiti á Eazel interneto paslaugas"
-
-#~ msgid "Go to the home location"
-#~ msgstr "Eiti namo"
-
-#~ msgid "Go to the next visited location"
-#~ msgstr "Eiti á sekanèià aplankytà vietà"
-
-#~ msgid "Go to the previous visited location"
-#~ msgstr "Eiti á prieð tai aplankytà vietà"
-
-#~ msgid "Go up to the location that contains the displayed location"
-#~ msgstr "Eiti á aukðtesnæ vietà, kurioje yra dabar rodoma vieta"
-
-#~ msgid "Nautilus Quick _Reference"
-#~ msgstr "Nautilus greitas þinynas"
-
-#~ msgid "Nautilus Release _Notes"
-#~ msgstr "Nautilus iðleidimo _pastabos"
-
-#~ msgid "Nautilus User _Manual"
-#~ msgstr "Nautilus Vartotojo vadovas"
-
-#~ msgid "New Window"
-#~ msgstr "Naujas langas"
-
-#~ msgid "New _Window"
-#~ msgstr "Naujas _langas"
-
-#~ msgid "Normal Size"
-#~ msgstr "Normalaus dydþio"
-
-#~ msgid "Open another Nautilus window for the displayed location"
-#~ msgstr "Rodomai vietai atidaryti kità Nautilus langà."
-
-#~ msgid "Refresh"
-#~ msgstr "Atnaujinti"
-
-#~ msgid "Search the World Wide Web"
-#~ msgstr "Ieðkoti internete (WWW)"
-
-#~ msgid "Search this computer for files"
-#~ msgstr "Ieðkoti bylø ðiame kompiuteryje"
-
-#~ msgid "Show the contents at the normal size"
-#~ msgstr "Rodyti turiná normaliu dydþiu"
-
-#~ msgid "Show the contents in less detail"
-#~ msgstr "Rodyti turiná su maþiau smulkmenø"
-
-#~ msgid "Show the contents in more detail"
-#~ msgstr "Rodyti turiná su daugiau smulkmenø"
-
-#~ msgid "Stop loading this location"
-#~ msgstr "Sustabdyti ðios vietos krovimàsi"
-
-#~ msgid "Undo the last text change"
-#~ msgstr "Atðaukti paskutiná teksto pakeitimà"
-
-#~ msgid "Up"
-#~ msgstr "Aukðtyn"
-
-#~ msgid "Use preferences appropriate for beginners"
-#~ msgstr "Naudoti savybes tinkamas pradedantiesiems"
-
-#~ msgid "Use preferences appropriate for experts"
-#~ msgstr "Naudoti savybes tinkamas ekspertams"
-
-#~ msgid "Use preferences appropriate for most people"
-#~ msgstr "Naudoti savybes tinkamas daugumai þmoniø"
-
-#~ msgid "We_b Search"
-#~ msgstr "Paieðka _internete"
-
-#~ msgid "Web Search"
-#~ msgstr "Paieðka internete"
-
-#~ msgid "Zoom In"
-#~ msgstr "Padidinti"
-
-#~ msgid "Zoom Out"
-#~ msgstr "Sumaþinti"
-
-#~ msgid "Zoom _In"
-#~ msgstr "Pa_didinti"
-
-#~ msgid "Zoom _Out"
-#~ msgstr "Su_maþinti"
-
-#~ msgid "_About Nautilus..."
-#~ msgstr "_Apie Nautilus..."
-
-#~ msgid "_Add Bookmark"
-#~ msgstr "_Pridëti þymelæ"
-
-#~ msgid "_Back"
-#~ msgstr "_Atgal"
-
-#~ msgid "_Backgrounds and Emblems..."
-#~ msgstr "_Fonas ir Emblemos"
-
-#~ msgid "_Bookmarks"
-#~ msgstr "Þy_melës"
-
-#~ msgid "_Close Window"
-#~ msgstr "_Uþdaryti langà"
-
-#~ msgid "_Edit"
-#~ msgstr "_Keisti"
-
-#~ msgid "_Edit Bookmarks..."
-#~ msgstr "_Redaguoti þymeles"
-
-#~ msgid "_Edit Preferences..."
-#~ msgstr "_Keisti nuostatas..."
-
-#~ msgid "_Find"
-#~ msgstr "_Rasti"
-
-#~ msgid "_Forward"
-#~ msgstr "_Pirmyn"
-
-#~ msgid "_Go"
-#~ msgstr "_Eiti"
-
-#~ msgid "_Help"
-#~ msgstr "_Pagalba"
-
-#~ msgid "_Home"
-#~ msgstr "_Namai"
-
-#~ msgid "_Location..."
-#~ msgstr "_Vieta..."
-
-#~ msgid "_Normal Size"
-#~ msgstr "_Normalaus dydþio"
-
-#~ msgid "_Preferences"
-#~ msgstr "_Nuostatos"
-
-#~ msgid "_Profiler"
-#~ msgstr "_Optimizatorius (Profiler)"
-
-#~ msgid "_Refresh"
-#~ msgstr "_Atnaujinti"
-
-#~ msgid "_Undo"
-#~ msgstr "_Atðaukti"
-
-#~ msgid "_Up a Level"
-#~ msgstr "Aukðtyn"
-
-#~ msgid "_View"
-#~ msgstr "_Vaizdas"
-
-#~ msgid "_View as..."
-#~ msgstr "Þiû_rëti kaip ..."
 
 #~ msgid "GConf Error"
 #~ msgstr "GConf klaida"

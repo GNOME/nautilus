@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.0.4.1\n"
-"POT-Creation-Date: 2001-07-18 15:25-0400\n"
+"POT-Creation-Date: 2001-07-24 15:45-0400\n"
 "PO-Revision-Date: 2001-04-07 11:46+0200\n"
 "Last-Translator: Görkem Cetin <gorkem@gelecek.com.tr>\n"
 "Language-Team: GNOME Turk <gnome-turk@gnome.org>\n"
@@ -48,6 +48,27 @@ msgstr "Baþlat"
 #: applets/preferences-applet/nautilus-preferences-applet.c:259
 msgid "Restart"
 msgstr "Yeniden Baþlat"
+
+# components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:1
+#: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:1
+msgid "Factory for Nautilus component adapter factories"
+msgstr "Nautilus bileþen denetleyici mimarileri"
+
+# components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:2
+#: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:2
+msgid "Factory for Nautilus component adapter factories "
+msgstr "Nautilus bileþen denetleyici mimarileri"
+
+#: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:3
+msgid ""
+"Factory for objects that wrap ordinary Bonobo Controls or Embeddables to "
+"look like Nautilus Views"
+msgstr ""
+
+# components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:4
+#: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:4
+msgid "Nautilus component adapter factory"
+msgstr "Nautilus bileþen denetleyici mimarisi"
 
 # components/hardware/Nautilus_View_hardware.oaf.in.h:1
 #: components/hardware/nautilus-hardware-view.c:180
@@ -122,9 +143,38 @@ msgstr "IDE sayfasýna giden yol"
 
 # components/hardware/Nautilus_View_hardware.oaf.in.h:2
 # data/static_bookmarks.xml.h:12
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:2
 #: components/hardware/nautilus-hardware-view.c:750
+#: data/static_bookmarks.xml.h:16
 msgid "Hardware"
 msgstr "Donaným"
+
+# components/text/Nautilus_View_text.oaf.in.h:1
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:1
+#, fuzzy
+msgid "Factory for hardware view"
+msgstr "Haber görüntüleme mimarisi"
+
+# components/hardware/Nautilus_View_hardware.oaf.in.h:3
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:3
+msgid "Hardware Viewer"
+msgstr "Donaným Görüntüleyici"
+
+# components/hardware/Nautilus_View_hardware.oaf.in.h:3
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:4
+msgid "Hardware view"
+msgstr "Donaným görünümü"
+
+# components/hardware/Nautilus_View_hardware.oaf.in.h:2
+# data/static_bookmarks.xml.h:12
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:5
+msgid "View as Hardware"
+msgstr "Donaným olarak Görüntüle"
+
+# components/hardware/Nautilus_View_hardware.oaf.in.h:4
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:6
+msgid "hardware view"
+msgstr "donaným görünümü"
 
 # components/help/converters/gnome-db2html2/gdb3html.c:708
 # components/music/nautilus-music-view.c:1536
@@ -136,7 +186,7 @@ msgstr "Geri"
 # components/help/converters/gnome-db2html2/gdb3html.c:717
 # src/nautilus-shell-ui.xml.h:37
 #: components/help/converters/gnome-db2html2/gdb3html.c:721
-#: src/nautilus-preferences-dialog.c:291
+#: src/nautilus-preferences-dialog.c:291 src/nautilus-shell-ui.xml.h:37
 msgid "Home"
 msgstr "Baþlangýç"
 
@@ -150,6 +200,7 @@ msgstr "Ýleri"
 # components/help/converters/gnome-db2html2/sect-elements.c:254
 # components/notes/Nautilus_View_notes.oaf.in.h:2
 #: components/help/converters/gnome-db2html2/sect-elements.c:260
+#: components/notes/Nautilus_View_notes.oaf.in.h:2
 msgid "Notes"
 msgstr "Notlar"
 
@@ -306,7 +357,7 @@ msgstr "Kýlavuz"
 # components/help/hyperbola-filefmt.c:470
 # components/help/hyperbola-filefmt.c:758 data/linksets/apps.xml.h:1
 #: components/help/hyperbola-filefmt.c:528
-#: components/help/hyperbola-filefmt.c:859
+#: components/help/hyperbola-filefmt.c:859 data/linksets/apps.xml.h:1
 msgid "Applications"
 msgstr "Uygulamalar"
 
@@ -395,10 +446,107 @@ msgstr " ( bakýnýz: \""
 msgid " (see also \""
 msgstr " (ayrýca bakýnýz \""
 
+# components/help/Nautilus_View_help.oaf.in.h:1
+# components/services/summary/nautilus-view/nautilus-summary-dialogs.c:104
+#: components/help/Nautilus_View_help.oaf.in.h:1
+msgid "Help"
+msgstr "Yardým"
+
+# components/help/Nautilus_View_help.oaf.in.h:2
+#: components/help/Nautilus_View_help.oaf.in.h:2
+msgid "Help Index"
+msgstr "Yardým Ýçeriði"
+
+# components/help/Nautilus_View_help.oaf.in.h:3
+#: components/help/Nautilus_View_help.oaf.in.h:3
+msgid "Help Index sidebar panel"
+msgstr "Yardým Ýçeriði yan paneli"
+
+# components/help/Nautilus_View_help.oaf.in.h:4
+#: components/help/Nautilus_View_help.oaf.in.h:4
+msgid "Help Navigation Tree"
+msgstr "Yardým Gezgin Aðacý"
+
+# components/help/Nautilus_View_help.oaf.in.h:5
+#: components/help/Nautilus_View_help.oaf.in.h:5
+msgid "Help Search"
+msgstr "Yardým Aramasý"
+
+# components/help/Nautilus_View_help.oaf.in.h:6
+#: components/help/Nautilus_View_help.oaf.in.h:6
+msgid "Help Search sidebar panel"
+msgstr "Yardým Arama Yan Paneli"
+
+# components/help/Nautilus_View_help.oaf.in.h:7
+#: components/help/Nautilus_View_help.oaf.in.h:7
+msgid "Help sidebar panel"
+msgstr "Yardým yan paneli"
+
+# components/help/Nautilus_View_help.oaf.in.h:8
+#: components/help/Nautilus_View_help.oaf.in.h:8
+msgid "Internal use only"
+msgstr "Sadece iç kullaným için"
+
+# components/history/Nautilus_View_history.oaf.in.h:1
+#: components/history/Nautilus_View_history.oaf.in.h:1
+msgid "Factory for history views"
+msgstr "Geçmiþ görünümleri için mimari"
+
+# components/history/Nautilus_View_history.oaf.in.h:2
+#: components/history/Nautilus_View_history.oaf.in.h:2
+msgid "History"
+msgstr "Geçmiþ"
+
+# components/history/Nautilus_View_history.oaf.in.h:3
+#: components/history/Nautilus_View_history.oaf.in.h:3
+msgid "History sidebar panel"
+msgstr "Geçmiþ yan çubuk paneli"
+
+# components/history/Nautilus_View_history.oaf.in.h:4
+#: components/history/Nautilus_View_history.oaf.in.h:4
+msgid "History sidebar panel for Nautilus"
+msgstr "Nautilus için geçmiþ yan çubuk paneli"
+
 # components/image-viewer/nautilus-image-view.c:829
 #: components/image-viewer/nautilus-image-view.c:834
 msgid "I could not initialize Bonobo"
 msgstr "Bonobo baþlatýlamadý"
+
+# components/image-viewer/Nautilus_View_image.oaf.in.h:1
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:1
+msgid "Generic Image Viewer"
+msgstr "Resim Görüntüleyici"
+
+# components/image-viewer/Nautilus_View_image.oaf.in.h:2
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:2
+msgid "Generic image control factory"
+msgstr "Genel resim kontrol mimarisi"
+
+# components/image-viewer/Nautilus_View_image.oaf.in.h:3
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:3
+msgid "Image"
+msgstr "Resim"
+
+# components/image-viewer/Nautilus_View_image.oaf.in.h:1
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:4
+msgid "Image Viewer"
+msgstr "Resim Görüntüleyici"
+
+# components/image-viewer/Nautilus_View_image.oaf.in.h:4
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:5
+msgid "Nautilus Image Viewer"
+msgstr "Nautilus Resim Görüntüleyici"
+
+# components/image-viewer/Nautilus_View_image.oaf.in.h:5
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:6
+msgid "Nautilus Image viewer factory"
+msgstr "Nautilus Resim Görüntüleme Mimarisi"
+
+# libnautilus-private/nautilus-program-chooser.c:186
+# src/nautilus-window.c:860 src/nautilus-window.c:1096
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:7
+msgid "View as Image"
+msgstr "Resim Olarak Göster"
 
 # components/loser/content/nautilus-content-loser.c:140
 #: components/loser/content/nautilus-content-loser.c:140
@@ -417,6 +565,71 @@ msgstr ""
 msgid "You have tried to kill the Content Loser"
 msgstr "Ýçerik izleyicisini kapatmak istediniz"
 
+# components/loser/content/nautilus-content-loser-ui.xml.h:1
+#: components/loser/content/nautilus-content-loser-ui.xml.h:1
+msgid "Kill Content Loser"
+msgstr "Ýçerik Ýzleyicisini Öldür"
+
+# components/loser/content/nautilus-content-loser-ui.xml.h:2
+#: components/loser/content/nautilus-content-loser-ui.xml.h:2
+msgid "Kill the Loser content view"
+msgstr "Ýçerik izleme görüntüsünü öldür"
+
+# components/loser/content/nautilus-content-loser-ui.xml.h:3
+# components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:3
+# components/mozilla/nautilus-mozilla-ui.xml.h:4
+# components/sample/nautilus-sample-content-view-ui.xml.h:4
+# src/nautilus-shell-ui.xml.h:78
+#: components/loser/content/nautilus-content-loser-ui.xml.h:3
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:3
+#: components/sample/nautilus-sample-content-view-ui.xml.h:4
+#: src/nautilus-shell-ui.xml.h:80
+msgid "_File"
+msgstr "_Dosya"
+
+# components/loser/content/nautilus-content-loser-ui.xml.h:4
+#: components/loser/content/nautilus-content-loser-ui.xml.h:4
+msgid "_Kill Content Loser"
+msgstr "_Içerik Ýzleyicisini Öldür"
+
+# components/loser/content/nautilus-content-loser-ui.xml.h:1
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:1
+#, fuzzy
+msgid "Content Loser"
+msgstr "Ýçerik Ýzleyicisini Öldür"
+
+# components/loser/content/nautilus-content-loser-ui.xml.h:1
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:2
+#, fuzzy
+msgid "Content Loser Viewer"
+msgstr "Ýçerik Ýzleyicisini Öldür"
+
+# components/loser/content/Nautilus_View_content-loser.oaf.in.h:2
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:3
+msgid "Nautilus Content Loser"
+msgstr "Nautilus Ýçerik Ýzleyici"
+
+# components/loser/content/Nautilus_View_content-loser.oaf.in.h:3
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:4
+msgid "Nautilus content loser component's factory"
+msgstr "Nautilus içerik izleme bileþen mimarisi"
+
+# components/loser/content/Nautilus_View_content-loser.oaf.in.h:4
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:5
+msgid "Nautilus content loser factory"
+msgstr "Nautilus içerik izleme mimarisi"
+
+# components/loser/content/Nautilus_View_content-loser.oaf.in.h:5
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:6
+msgid "Nautilus content view that fails on command"
+msgstr "Nautilus içerik görüntüleyici"
+
+# components/loser/content/nautilus-content-loser-ui.xml.h:1
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:7
+#, fuzzy
+msgid "View as Content Loser"
+msgstr "Ýçerik Ýzleyicisini Öldür"
+
 # components/loser/sidebar/nautilus-sidebar-loser.c:143
 #: components/loser/sidebar/nautilus-sidebar-loser.c:143
 #, c-format
@@ -433,6 +646,46 @@ msgstr ""
 #: components/loser/sidebar/nautilus-sidebar-loser.c:192
 msgid "You have tried to kill the Sidebar Loser"
 msgstr "Yançubuk izleyicisini kapatmaya çalýþtýnýz"
+
+# components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:1
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:1
+msgid "Kill Sidebar Loser"
+msgstr "_Yançubuk Ýzleyicisini Öldür"
+
+# components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:2
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:2
+msgid "Kill the Loser sidebar panel"
+msgstr "Yançubuk izleyicisini öldür"
+
+# components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:4
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:4
+msgid "_Kill Sidebar Loser"
+msgstr "_Yançubuk izleyicisini öldür"
+
+# components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:1
+#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:1
+msgid "Nautilus Sidebar Loser"
+msgstr "Nautilus Yançubuk Ýzleyici"
+
+# components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:2
+#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:2
+msgid "Nautilus sidebar loser component's factory"
+msgstr "Nautilus yançubuk izleyici bileþen mimarisi"
+
+# components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:3
+#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:3
+msgid "Nautilus sidebar loser factory"
+msgstr "Nautilus yançubuk izleyici mimarisi"
+
+# components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:4
+#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:4
+msgid "Nautilus sidebar view that fails on command"
+msgstr "Nautilus yançubuk izleyicisi"
+
+# components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:5
+#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:5
+msgid "Sidebar Loser"
+msgstr "Yançubuk Ýzleyici"
 
 # components/mozilla/mozilla-preferences.cpp:118
 #: components/mozilla/mozilla-preferences.cpp:126
@@ -828,6 +1081,45 @@ msgstr ""
 #: components/mozilla/nautilus-mozilla-content-view.c:836
 msgid "Nautilus JavaScript Warning"
 msgstr "Nautilus JavaScript Uyarýsý"
+
+#: components/mozilla/nautilus-mozilla-ui.xml.h:1
+msgid "Charset Encoding"
+msgstr "Karakter Kümesi Kodlamasý"
+
+# components/mozilla/Nautilus_View_mozilla.oaf.in.h:1
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:1
+msgid "Mozilla Nautilus view"
+msgstr "Mozilla Nautilus görüntüsü"
+
+# components/mozilla/Nautilus_View_mozilla.oaf.in.h:2
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:2
+msgid "Mozilla Nautilus view factory"
+msgstr "Mozilla Nautilus izleme mimarisi"
+
+# components/mozilla/Nautilus_View_mozilla.oaf.in.h:3
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:3
+msgid "Mozilla content view component"
+msgstr "Mozilla içerik izleme bileþeni"
+
+# components/mozilla/Nautilus_View_mozilla.oaf.in.h:4
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:4
+msgid "Mozilla content view component's factory"
+msgstr "Mozilla içerik görünüm bileþen mimarisi"
+
+# components/mozilla/Nautilus_View_mozilla.oaf.in.h:5
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:5
+msgid "View as Web Page"
+msgstr "Web Sayfasý Olarak Görüntüle"
+
+# components/mozilla/Nautilus_View_mozilla.oaf.in.h:5
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:6
+msgid "Web Page"
+msgstr "Web Sayfasý"
+
+# components/mozilla/Nautilus_View_mozilla.oaf.in.h:5
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:7
+msgid "Web Page Viewer"
+msgstr "Web Sayfasý Görüntüleyici"
 
 # components/music/mpg123.c:29
 #: components/music/mpg123.c:29
@@ -1707,6 +1999,7 @@ msgstr "Beklet"
 #: libnautilus-private/nautilus-file-operations.c:964
 #: libnautilus-private/nautilus-file-operations.c:979
 #: libnautilus-private/nautilus-file-operations.c:998
+#: src/nautilus-shell-ui.xml.h:55
 msgid "Stop"
 msgstr "Dur"
 
@@ -1736,6 +2029,37 @@ msgstr "Mono"
 #, c-format
 msgid "%s - %s"
 msgstr "%s - %s"
+
+# components/music/Nautilus_View_music.oaf.in.h:1
+#: components/music/Nautilus_View_music.oaf.in.h:1
+msgid "Factory for music view"
+msgstr "Müzik görüntüsü için mimari"
+
+# components/music/Nautilus_View_music.oaf.in.h:2
+#: components/music/Nautilus_View_music.oaf.in.h:2
+msgid "Music"
+msgstr "Müzik"
+
+# components/music/Nautilus_View_music.oaf.in.h:3
+#: components/music/Nautilus_View_music.oaf.in.h:3
+msgid "Music Viewer"
+msgstr "Müzik Görüntüleyici"
+
+# components/music/Nautilus_View_music.oaf.in.h:3
+#: components/music/Nautilus_View_music.oaf.in.h:4
+msgid "Music view"
+msgstr "Müzik görüntüsü"
+
+# components/music/Nautilus_View_music.oaf.in.h:4
+#: components/music/Nautilus_View_music.oaf.in.h:5
+msgid "Music view factory"
+msgstr "Müzik görünüm mimarisi"
+
+# libnautilus-private/nautilus-program-chooser.c:186
+# src/nautilus-window.c:860 src/nautilus-window.c:1096
+#: components/music/Nautilus_View_music.oaf.in.h:6
+msgid "View as Music"
+msgstr "Müzik olarak göster"
 
 # src/nautilus-theme-selector.c:397
 #: components/news/nautilus-news.c:1327
@@ -1850,6 +2174,40 @@ msgstr "Adresleri Seçin"
 msgid "image indicating that the news has changed"
 msgstr ""
 
+# components/text/Nautilus_View_text.oaf.in.h:1
+#: components/news/Nautilus_View_news.oaf.in.h:1
+msgid "Factory for news view"
+msgstr "Haber görüntüleme mimarisi"
+
+# data/browser.xml.h:55
+#: components/news/Nautilus_View_news.oaf.in.h:2
+msgid "News"
+msgstr "Haberler"
+
+# components/notes/Nautilus_View_notes.oaf.in.h:3
+#: components/news/Nautilus_View_news.oaf.in.h:3
+msgid "News sidebar panel"
+msgstr "Haberler yan çubuk paneli"
+
+#: components/news/Nautilus_View_news.oaf.in.h:4
+msgid "News sidebar panel fetches and displays RSS feeds"
+msgstr ""
+
+# components/notes/Nautilus_View_notes.oaf.in.h:1
+#: components/notes/Nautilus_View_notes.oaf.in.h:1
+msgid "Factory for annotation view"
+msgstr "Anotasyon görünümü için mimari"
+
+# components/notes/Nautilus_View_notes.oaf.in.h:3
+#: components/notes/Nautilus_View_notes.oaf.in.h:3
+msgid "Notes sidebar panel"
+msgstr "Not paneli"
+
+# components/notes/Nautilus_View_notes.oaf.in.h:4
+#: components/notes/Nautilus_View_notes.oaf.in.h:4
+msgid "Notes sidebar panel for Nautilus"
+msgstr "Nautilus için not paneli"
+
 # components/sample/nautilus-sample-content-view.c:136
 #: components/sample/nautilus-sample-content-view.c:136
 msgid "(none)"
@@ -1879,6 +2237,60 @@ msgstr ""
 "\n"
 "Örnek araç çubuðu düðmesine týkladýnýz."
 
+# components/sample/Nautilus_View_sample.oaf.in.h:3
+# components/sample/nautilus-sample-content-view-ui.xml.h:1
+# components/services/trilobite/sample/service/Trilobite_Service_sample.oaf.in.h:2
+#: components/sample/Nautilus_View_sample.oaf.in.h:3
+#: components/sample/nautilus-sample-content-view-ui.xml.h:1
+msgid "Sample"
+msgstr "Örnek"
+
+# components/sample/nautilus-sample-content-view-ui.xml.h:2
+#: components/sample/nautilus-sample-content-view-ui.xml.h:2
+msgid "This is a sample merged menu item"
+msgstr "Bu örnek bir birleþtirilmiþ menü öðesidir"
+
+# components/sample/nautilus-sample-content-view-ui.xml.h:3
+#: components/sample/nautilus-sample-content-view-ui.xml.h:3
+msgid "This is a sample merged toolbar button"
+msgstr "Bu örnek bir birleþtirilmiþ araç çubuðu düðmesidir"
+
+# components/sample/nautilus-sample-content-view-ui.xml.h:5
+#: components/sample/nautilus-sample-content-view-ui.xml.h:5
+msgid "_Sample"
+msgstr "Ö_rnek"
+
+# components/sample/Nautilus_View_sample.oaf.in.h:1
+#: components/sample/Nautilus_View_sample.oaf.in.h:1
+msgid "Nautilus Sample view"
+msgstr "Nautilus Örnek Görünüm"
+
+# components/sample/Nautilus_View_sample.oaf.in.h:2
+#: components/sample/Nautilus_View_sample.oaf.in.h:2
+msgid "Nautilus Sample view factory"
+msgstr "Nautilus Örnek görünüm mimarisi"
+
+# components/music/nautilus-music-view.c:233
+#: components/sample/Nautilus_View_sample.oaf.in.h:4
+msgid "Sample Viewer"
+msgstr "Örnek Görüntüleyici"
+
+# components/sample/Nautilus_View_sample.oaf.in.h:4
+#: components/sample/Nautilus_View_sample.oaf.in.h:5
+msgid "Sample content view component"
+msgstr "Örnek içerik görünüm bileþeni"
+
+# components/sample/Nautilus_View_sample.oaf.in.h:5
+#: components/sample/Nautilus_View_sample.oaf.in.h:6
+msgid "Sample content view component's factory"
+msgstr "Örnek içerik görünüm bileþen mimarisi"
+
+# libnautilus-private/nautilus-program-chooser.c:186
+# src/nautilus-window.c:860 src/nautilus-window.c:1096
+#: components/sample/Nautilus_View_sample.oaf.in.h:7
+msgid "View as Sample"
+msgstr "Örnek olarak göster"
+
 # components/text/nautilus-text-view.c:316
 #: components/text/nautilus-text-view.c:332
 #, c-format
@@ -1889,6 +2301,882 @@ msgstr "Üzgünüm, ancak Nautilus'un yüklemesi için %s çok büyük."
 #: components/text/nautilus-text-view.c:335
 msgid "File too large"
 msgstr "Dosya çok büyük"
+
+# libnautilus-private/nautilus-global-preferences.c:564
+#: components/text/nautilus-text-view-ui.xml.h:1
+msgid "F_onts"
+msgstr "_Yazýtipleri"
+
+# components/text/nautilus-text-view-ui.xml.h:1
+#: components/text/nautilus-text-view-ui.xml.h:2
+msgid "Lucida"
+msgstr "Lucida"
+
+# src/nautilus-service-ui.xml.h:5
+#: components/text/nautilus-text-view-ui.xml.h:3 data/linksets/home.xml.h:3
+#: src/nautilus-service-ui.xml.h:4
+msgid "Services"
+msgstr "Servisler"
+
+# components/text/Nautilus_View_text.oaf.in.h:3
+#: components/text/Nautilus_View_text.oaf.in.h:4
+#: components/text/nautilus-text-view-ui.xml.h:4
+msgid "Text view"
+msgstr "Metin görünüm"
+
+# components/text/nautilus-text-view-ui.xml.h:2
+#: components/text/nautilus-text-view-ui.xml.h:5
+msgid "Use the Courier Font"
+msgstr "Courier Yazýtipi kullan"
+
+# components/text/nautilus-text-view-ui.xml.h:5
+#: components/text/nautilus-text-view-ui.xml.h:6
+msgid "Use the Fixed Font"
+msgstr "Fixed Yazýtipi Kullan"
+
+# components/text/nautilus-text-view-ui.xml.h:5
+#: components/text/nautilus-text-view-ui.xml.h:7
+msgid "Use the GTK System Font"
+msgstr "GTK Sistem Yazýtipi Kullan"
+
+# components/text/nautilus-text-view-ui.xml.h:3
+#: components/text/nautilus-text-view-ui.xml.h:8
+msgid "Use the Helvetica Font"
+msgstr "Helvetica Yazýtipi Kullan"
+
+# components/text/nautilus-text-view-ui.xml.h:4
+#: components/text/nautilus-text-view-ui.xml.h:9
+msgid "Use the Lucida Font"
+msgstr "Lucida Yazýtipi Kullan"
+
+# components/text/nautilus-text-view-ui.xml.h:5
+#: components/text/nautilus-text-view-ui.xml.h:10
+msgid "Use the Times Font"
+msgstr "Times Yazýtipi Kullan"
+
+# components/text/nautilus-text-view-ui.xml.h:6
+#: components/text/nautilus-text-view-ui.xml.h:11
+msgid "_Courier"
+msgstr "_Courier"
+
+# components/loser/content/nautilus-content-loser-ui.xml.h:3
+# components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:3
+# components/mozilla/nautilus-mozilla-ui.xml.h:4
+# components/sample/nautilus-sample-content-view-ui.xml.h:4
+# src/nautilus-shell-ui.xml.h:78
+#: components/text/nautilus-text-view-ui.xml.h:12
+msgid "_Fixed"
+msgstr "_Fixed"
+
+#: components/text/nautilus-text-view-ui.xml.h:13
+msgid "_GTK System Font"
+msgstr "_GTK Sistem Yazýtipi"
+
+# components/text/nautilus-text-view-ui.xml.h:8
+#: components/text/nautilus-text-view-ui.xml.h:14
+msgid "_Helvetica"
+msgstr "_Helvetica"
+
+# components/text/nautilus-text-view-ui.xml.h:9
+#: components/text/nautilus-text-view-ui.xml.h:15
+msgid "_Times"
+msgstr "_Times"
+
+# components/text/Nautilus_View_text.oaf.in.h:1
+#: components/text/Nautilus_View_text.oaf.in.h:1
+msgid "Factory for text view"
+msgstr "Metin görüntüleme mimarisi"
+
+# components/text/Nautilus_View_text.oaf.in.h:2
+#: components/text/Nautilus_View_text.oaf.in.h:2
+msgid "Text"
+msgstr "Metin"
+
+# src/file-manager/fm-properties-window.c:1790
+#: components/text/Nautilus_View_text.oaf.in.h:3
+msgid "Text Viewer"
+msgstr "Metin Görüntüleyici"
+
+# components/text/Nautilus_View_text.oaf.in.h:4
+#: components/text/Nautilus_View_text.oaf.in.h:5
+msgid "Text view factory"
+msgstr "Metin görünüm mimarisi"
+
+# libnautilus-private/nautilus-program-chooser.c:186
+# src/nautilus-window.c:860 src/nautilus-window.c:1096
+#: components/text/Nautilus_View_text.oaf.in.h:6
+msgid "View as Text"
+msgstr "Metin Olarak Göster"
+
+#: components/text/services/google.xml.h:1
+msgid "Search Google for Selected Text"
+msgstr "Seçili Metni Google'da Ara"
+
+#: components/text/services/google.xml.h:2
+msgid "Use Google to search the web for the selected text"
+msgstr "Seçili metni Google'da ara"
+
+#: components/text/services/webster.xml.h:1
+msgid "Look Up Selected Text in Dictionary"
+msgstr "Seçili Metni Sözlükte Ara"
+
+# libnautilus/nautilus-clipboard-ui.xml.h:2 src/nautilus-shell-ui.xml.h:15
+#: components/text/services/webster.xml.h:2
+msgid "Look up the selected text in the Merriam-Webster dictionary"
+msgstr "Seçili metne Merriam-Webster sözlüðünde bak"
+
+#: components/throbber/Nautilus_Control_throbber.oaf.in.h:1
+msgid "animation to indicate on-going activity"
+msgstr "etkinliði gösteren animasyon"
+
+# components/music/mpg123.c:32
+#: components/throbber/Nautilus_Control_throbber.oaf.in.h:2
+#, fuzzy
+msgid "throbber"
+msgstr "Diðer"
+
+# components/text/Nautilus_View_text.oaf.in.h:4
+#: components/throbber/Nautilus_Control_throbber.oaf.in.h:3
+#, fuzzy
+msgid "throbber factory"
+msgstr "Metin görünüm mimarisi"
+
+# components/text/Nautilus_View_text.oaf.in.h:4
+#: components/throbber/Nautilus_Control_throbber.oaf.in.h:4
+#, fuzzy
+msgid "throbber object factory"
+msgstr "Metin görünüm mimarisi"
+
+# components/tree/Nautilus_View_tree.oaf.in.h:1
+#: components/tree/Nautilus_View_tree.oaf.in.h:1
+msgid "Nautilus Tree sidebar panel"
+msgstr "Nautilus yan paneli"
+
+# components/tree/Nautilus_View_tree.oaf.in.h:2
+#: components/tree/Nautilus_View_tree.oaf.in.h:2
+msgid "Nautilus Tree view"
+msgstr "Nautilus Aðaç görünümü"
+
+# components/tree/Nautilus_View_tree.oaf.in.h:3
+#: components/tree/Nautilus_View_tree.oaf.in.h:3
+#: src/nautilus-preferences-dialog.c:386
+msgid "Tree"
+msgstr "Aðaç"
+
+# data/browser.xml.h:2
+#: data/browser.xml.h:1
+msgid "Apparition"
+msgstr "Apparition"
+
+# data/browser.xml.h:3
+#: data/browser.xml.h:2
+msgid "Azul"
+msgstr "Azul"
+
+# data/browser.xml.h:5
+#: data/browser.xml.h:3
+msgid "Black"
+msgstr "Siyah"
+
+#: data/browser.xml.h:4
+msgid "Blue Ridge"
+msgstr "Kabartma Mavi"
+
+# data/browser.xml.h:6
+#: data/browser.xml.h:5
+msgid "Blue Rough"
+msgstr "Pürüzlü Mavi"
+
+# data/browser.xml.h:7
+#: data/browser.xml.h:6
+msgid "Blue Type"
+msgstr "Mavi Tür"
+
+# components/music/mpg123.c:70
+#: data/browser.xml.h:7
+msgid "Brushed Metal"
+msgstr "Cilalý Metal"
+
+# data/browser.xml.h:10
+#: data/browser.xml.h:8
+msgid "Bubble Gum"
+msgstr "Sakýz"
+
+# data/browser.xml.h:13
+#: data/browser.xml.h:9
+msgid "Burlap"
+msgstr "Kumaþ"
+
+# data/browser.xml.h:14
+#: data/browser.xml.h:10
+msgid "Camouflage"
+msgstr "Kamuflaj"
+
+# data/browser.xml.h:15
+#: data/browser.xml.h:11
+msgid "Certified"
+msgstr "Sertifika"
+
+# data/browser.xml.h:16
+#: data/browser.xml.h:12
+msgid "Chalk"
+msgstr "Tebeþir"
+
+# data/browser.xml.h:17
+#: data/browser.xml.h:13
+msgid "Charcoal"
+msgstr "Kömür"
+
+# data/browser.xml.h:19
+#: data/browser.xml.h:14
+msgid "Colors"
+msgstr "Renkler"
+
+# data/browser.xml.h:20
+#: data/browser.xml.h:15
+msgid "Concrete"
+msgstr "Beton"
+
+# data/browser.xml.h:21
+#: data/browser.xml.h:16
+msgid "Cool"
+msgstr "Þýk"
+
+# data/browser.xml.h:22
+#: data/browser.xml.h:17
+msgid "Cork"
+msgstr "Mantar"
+
+# components/music/mpg123.c:29
+#: data/browser.xml.h:18
+msgid "Countertop"
+msgstr "Countertop"
+
+# data/browser.xml.h:23
+#: data/browser.xml.h:19
+msgid "Danger"
+msgstr "Tehlike"
+
+# data/browser.xml.h:24
+#: data/browser.xml.h:20
+msgid "Danube"
+msgstr "Danube"
+
+# data/browser.xml.h:25
+#: data/browser.xml.h:21
+msgid "Dark Cork"
+msgstr "Mantar"
+
+# data/browser.xml.h:26
+#: data/browser.xml.h:22
+msgid "Dark GNOME"
+msgstr "Koyu GNOME"
+
+# data/browser.xml.h:27
+#: data/browser.xml.h:23
+msgid "Deep Teal"
+msgstr "Çamur"
+
+# data/browser.xml.h:28
+#: data/browser.xml.h:24
+msgid "Distinguished"
+msgstr "Seçici"
+
+# components/help/converters/gnome-db2html2/sect-elements.c:254
+# components/notes/Nautilus_View_notes.oaf.in.h:2
+#: data/browser.xml.h:25
+msgid "Dots"
+msgstr "Noktalar"
+
+# data/browser.xml.h:29
+#: data/browser.xml.h:26
+msgid "Draft"
+msgstr "Taslak"
+
+# data/browser.xml.h:30
+#: data/browser.xml.h:27
+msgid "Drag a color to an object to change it to that color"
+msgstr "Nesnenin rengini deðiþtirmek için rengi nesneye doðru sürükleyin"
+
+# data/browser.xml.h:31
+#: data/browser.xml.h:28
+msgid "Drag a pattern tile to an object to change it"
+msgstr "Deðiþtirmek için deseni nesnenin üzerine doðru sürükleyin"
+
+# data/browser.xml.h:32
+#: data/browser.xml.h:29
+msgid "Drag an emblem to an object to add it to the object"
+msgstr "Nesneye eklemek için logoyu nesneye sürükleyin."
+
+# data/browser.xml.h:33
+#: data/browser.xml.h:30
+msgid "Eclipse"
+msgstr "Karartý"
+
+# data/browser.xml.h:34 src/file-manager/fm-properties-window.c:1376
+#: data/browser.xml.h:31 src/file-manager/fm-list-view.c:2285
+#: src/file-manager/fm-properties-window.c:1620
+#: src/file-manager/fm-search-list-view.c:499
+msgid "Emblems"
+msgstr "Logolar"
+
+# data/browser.xml.h:35
+#: data/browser.xml.h:32
+msgid "Envy"
+msgstr "Görkemli"
+
+# data/browser.xml.h:36
+#: data/browser.xml.h:33
+msgid "Erase"
+msgstr "Sil"
+
+# data/browser.xml.h:37
+#: data/browser.xml.h:34
+msgid "Favorite"
+msgstr "Favori"
+
+# data/browser.xml.h:56
+#: data/browser.xml.h:35
+msgid "Fibers"
+msgstr "Ýplik"
+
+# data/browser.xml.h:38
+#: data/browser.xml.h:36
+msgid "Fire Engine"
+msgstr "Alev Makinesi"
+
+# data/browser.xml.h:39
+#: data/browser.xml.h:37
+msgid "Fleur De Lis"
+msgstr "Fleur De Lis"
+
+# data/linksets/portals.xml.h:2
+#: data/browser.xml.h:38
+msgid "Floral"
+msgstr "Bitki"
+
+# components/music/mpg123.c:50
+#: data/browser.xml.h:39
+msgid "Fossil"
+msgstr "Fosil"
+
+# data/browser.xml.h:41 icons/gnome/gnome.xml.h:1
+#: data/browser.xml.h:40 icons/gnome/gnome.xml.h:2
+msgid "GNOME"
+msgstr "GNOME"
+
+# data/browser.xml.h:43
+#: data/browser.xml.h:41
+msgid "Granite"
+msgstr "Granit"
+
+# data/browser.xml.h:44
+#: data/browser.xml.h:42
+msgid "Grapefruit"
+msgstr "Greyfurt"
+
+# components/music/mpg123.c:47
+#: data/browser.xml.h:43
+msgid "Green Weave"
+msgstr "Yeþil Dalga"
+
+# data/browser.xml.h:45
+#: data/browser.xml.h:44
+msgid "Ice"
+msgstr "Buz"
+
+# data/browser.xml.h:46
+#: data/browser.xml.h:45
+msgid "Important"
+msgstr "Önemli"
+
+# data/browser.xml.h:47
+#: data/browser.xml.h:46
+msgid "Indigo"
+msgstr "Indigo"
+
+# data/browser.xml.h:49
+#: data/browser.xml.h:47
+msgid "Leaf"
+msgstr "Yaprak"
+
+# data/browser.xml.h:51
+#: data/browser.xml.h:48
+msgid "Lemon"
+msgstr "Limon"
+
+# data/browser.xml.h:52
+#: data/browser.xml.h:49
+msgid "Mango"
+msgstr "Mango"
+
+# data/browser.xml.h:53
+#: data/browser.xml.h:50
+msgid "Manila Paper"
+msgstr "Kaðýt"
+
+#: data/browser.xml.h:51
+msgid "Moss Ridge"
+msgstr "Yosun Sýrtý"
+
+# data/browser.xml.h:54
+#: data/browser.xml.h:52
+msgid "Mud"
+msgstr "Çamur"
+
+# data/browser.xml.h:55
+#: data/browser.xml.h:53
+msgid "New"
+msgstr "Yeni"
+
+# data/browser.xml.h:56
+#: data/browser.xml.h:54
+msgid "Numbers"
+msgstr "Sayýlar"
+
+# data/browser.xml.h:57
+# libnautilus-private/nautilus-file-operations.c:1021
+#: data/browser.xml.h:55 libnautilus-private/nautilus-file-operations.c:1087
+msgid "OK"
+msgstr "Tamam"
+
+#: data/browser.xml.h:56
+msgid "Ocean Strips"
+msgstr "Okyanus Dalgasý"
+
+# data/browser.xml.h:58
+#: data/browser.xml.h:57
+msgid "Oh No"
+msgstr "Hayýr!"
+
+# data/browser.xml.h:59
+#: data/browser.xml.h:58
+msgid "Onyx"
+msgstr "Onyx"
+
+# data/browser.xml.h:60
+#: data/browser.xml.h:59
+msgid "Orange"
+msgstr "Portakal"
+
+# data/browser.xml.h:61
+#: data/browser.xml.h:60
+msgid "Pale Blue"
+msgstr "Açýk Mavi"
+
+# data/browser.xml.h:65
+#: data/browser.xml.h:61
+msgid "Patterns"
+msgstr "Desenler"
+
+# data/browser.xml.h:66
+#: data/browser.xml.h:62
+msgid "Personal"
+msgstr "Kiþisel"
+
+# data/browser.xml.h:86
+#: data/browser.xml.h:63
+msgid "Purple Marble"
+msgstr "Mor Mermer"
+
+# data/browser.xml.h:69
+#: data/browser.xml.h:64
+msgid "Ridged Paper"
+msgstr "Ýnce Kaðýt"
+
+# data/browser.xml.h:70
+#: data/browser.xml.h:65
+msgid "Rough Paper"
+msgstr "Kalýn Kaðýt"
+
+# data/browser.xml.h:71
+#: data/browser.xml.h:66
+msgid "Ruby"
+msgstr "Yakut"
+
+# data/browser.xml.h:73
+#: data/browser.xml.h:67
+msgid "Sea Foam"
+msgstr "Deniz"
+
+# data/browser.xml.h:75
+#: data/browser.xml.h:68
+msgid "Shale"
+msgstr "Petrol"
+
+# data/browser.xml.h:77
+#: data/browser.xml.h:69
+msgid "Silver"
+msgstr "Gümüþ"
+
+# data/browser.xml.h:78
+#: data/browser.xml.h:70
+msgid "Sky"
+msgstr "Gökyüzü"
+
+#: data/browser.xml.h:71
+msgid "Sky Ridge"
+msgstr "Gökyüzü 2"
+
+# src/nautilus-window-menus.c:422
+#: data/browser.xml.h:72
+msgid "Snow Ridge"
+msgstr "Kar"
+
+# data/browser.xml.h:79
+#: data/browser.xml.h:73
+msgid "Special"
+msgstr "Özel"
+
+# data/browser.xml.h:80
+#: data/browser.xml.h:74
+msgid "Stucco"
+msgstr "Stucco"
+
+# data/browser.xml.h:81
+#: data/browser.xml.h:75
+msgid "Tangerine"
+msgstr "Mandalina"
+
+# components/music/mpg123.c:66
+#: data/browser.xml.h:76
+msgid "Terracotta"
+msgstr "Terracotta"
+
+# data/browser.xml.h:82
+#: data/browser.xml.h:77
+msgid "Urgent"
+msgstr "Önemli"
+
+# data/browser.xml.h:83
+#: data/browser.xml.h:78
+msgid "Violet"
+msgstr "Mor"
+
+# data/browser.xml.h:84
+#: data/browser.xml.h:79
+msgid "Wavy White"
+msgstr "Dalgalý Beyaz"
+
+# data/browser.xml.h:85
+#: data/browser.xml.h:80
+msgid "White"
+msgstr "Beyaz"
+
+# data/browser.xml.h:88
+#: data/browser.xml.h:81
+msgid "White Ribs"
+msgstr "Beyaz Damar"
+
+# data/linksets/apps.xml.h:2
+#: data/linksets/apps.xml.h:2
+msgid "Gnumeric"
+msgstr "Gnumeric"
+
+# data/linksets/apps.xml.h:3
+#: data/linksets/apps.xml.h:3
+msgid "Netscape"
+msgstr "Netscape"
+
+# data/linksets/apps.xml.h:4
+#: data/linksets/apps.xml.h:4
+msgid "The Gimp"
+msgstr "Gimp"
+
+# data/linksets/desktop.xml.h:1
+# libnautilus-private/nautilus-global-preferences.c:588
+#: data/linksets/desktop.xml.h:1 src/nautilus-preferences-dialog.c:80
+#: src/nautilus-preferences-dialog.c:85
+msgid "Desktop"
+msgstr "Masaüstü"
+
+# data/linksets/desktop.xml.h:2 libnautilus-private/nautilus-file.c:4642
+# libnautilus-private/nautilus-trash-directory.c:301
+# src/file-manager/fm-desktop-icon-view.c:66
+#: data/linksets/desktop.xml.h:2 libnautilus-private/nautilus-file.c:5191
+#: libnautilus-private/nautilus-trash-directory.c:383
+#: src/file-manager/fm-desktop-icon-view.c:71
+msgid "Trash"
+msgstr "Çöp"
+
+# components/services/install/nautilus-view/nautilus-service-install-view.c:714
+# components/services/install/nautilus-view/nautilus-service-install-view.c:897
+#: data/linksets/home.xml.h:1
+msgid "Computer"
+msgstr "Bilgisayar"
+
+#: data/linksets/home.xml.h:2
+msgid "Home Directory"
+msgstr "Baþlangýç Dizini"
+
+# data/linksets/portals.xml.h:1
+#: data/linksets/portals.xml.h:1
+msgid "Excite"
+msgstr "Excite"
+
+# data/linksets/portals.xml.h:2
+#: data/linksets/portals.xml.h:2
+msgid "Portals"
+msgstr "Portaller"
+
+# data/linksets/portals.xml.h:3
+#: data/linksets/portals.xml.h:3
+msgid "Yahoo"
+msgstr "Yahoo"
+
+# data/linksets/search_engines.xml.h:1
+#: data/linksets/search_engines.xml.h:1
+msgid "Alta Vista"
+msgstr "Alta Vista"
+
+# data/linksets/search_engines.xml.h:2
+#: data/linksets/search_engines.xml.h:2
+msgid "Google"
+msgstr "Google"
+
+# data/linksets/search_engines.xml.h:3
+#: data/linksets/search_engines.xml.h:3 src/nautilus-preferences-dialog.c:282
+msgid "Search Engines"
+msgstr "Tarama Motorlarý"
+
+# components/music/mpg123.c:60
+#: data/static_bookmarks.xml.h:1
+msgid "Allaire"
+msgstr "Allaire"
+
+#: data/static_bookmarks.xml.h:2
+msgid "Binary Freedom"
+msgstr "Binary Freedom"
+
+# components/music/mpg123.c:61
+#: data/static_bookmarks.xml.h:3
+msgid "Borland"
+msgstr "Borland"
+
+#: data/static_bookmarks.xml.h:4
+msgid "CNET Computers.com"
+msgstr "CNET Computers.com"
+
+#: data/static_bookmarks.xml.h:5
+msgid "CNET Linux Center"
+msgstr "CNET Linux Merkezi"
+
+# components/music/mpg123.c:47
+#: data/static_bookmarks.xml.h:6
+msgid "CollabNet"
+msgstr "CollabNet"
+
+#: data/static_bookmarks.xml.h:7
+msgid "Compaq"
+msgstr "Compaq"
+
+#: data/static_bookmarks.xml.h:8
+msgid "Conectiva"
+msgstr "Conectiva"
+
+# components/music/nautilus-music-view.c:233
+#: data/static_bookmarks.xml.h:9
+msgid "Covalent"
+msgstr "Covalent"
+
+#: data/static_bookmarks.xml.h:10
+msgid "Debian.org"
+msgstr "Debian.org"
+
+# src/file-manager/fm-directory-view.c:2609
+# src/file-manager/fm-directory-view.c:2650
+#: data/static_bookmarks.xml.h:11
+msgid "Dell"
+msgstr "Dell"
+
+# data/browser.xml.h:36
+#: data/static_bookmarks.xml.h:12
+msgid "Eazel"
+msgstr "Eazel"
+
+#: data/static_bookmarks.xml.h:13
+msgid "Freshmeat.net"
+msgstr "Freshmeat.net"
+
+# data/browser.xml.h:41 icons/gnome/gnome.xml.h:1
+#: data/static_bookmarks.xml.h:14
+msgid "GNOME.org"
+msgstr "GNOME.org"
+
+#: data/static_bookmarks.xml.h:15
+msgid "GNU.org"
+msgstr "GNU.org"
+
+# components/help/Nautilus_View_help.oaf.in.h:8
+#: data/static_bookmarks.xml.h:17
+msgid "International"
+msgstr "Uluslararasý"
+
+# components/help/converters/gnome-db2html2/toc-elements.c:315
+#: data/static_bookmarks.xml.h:18
+msgid "Linux Documentation Project"
+msgstr "Linux Belgeleme Projesi"
+
+#: data/static_bookmarks.xml.h:19
+msgid "Linux One"
+msgstr "Linux One"
+
+#: data/static_bookmarks.xml.h:20
+msgid "Linux Online"
+msgstr "Linux Online"
+
+#: data/static_bookmarks.xml.h:21
+msgid "Linux Resources"
+msgstr "Linux Kaynaklarý"
+
+#: data/static_bookmarks.xml.h:22
+msgid "Linux Weekly News"
+msgstr "Linux Weekly News"
+
+#: data/static_bookmarks.xml.h:23
+msgid "LinuxNewbie.org"
+msgstr "LinuxNewbie.org"
+
+#: data/static_bookmarks.xml.h:24
+msgid "LinuxOrbit.com"
+msgstr "LinuxOrbit.com"
+
+#: data/static_bookmarks.xml.h:25
+msgid "MandrakeSoft"
+msgstr "MandrakeSoft"
+
+# libnautilus-private/nautilus-global-preferences.c:894
+#: data/static_bookmarks.xml.h:26
+msgid "Netraverse"
+msgstr "Netraverse"
+
+#: data/static_bookmarks.xml.h:27
+msgid "News and Media"
+msgstr "Haberler"
+
+#: data/static_bookmarks.xml.h:28
+msgid "O'Reilly"
+msgstr "O'Reilly"
+
+#: data/static_bookmarks.xml.h:29
+msgid "OSDN"
+msgstr "OSDN"
+
+#: data/static_bookmarks.xml.h:30
+msgid "Open Source Asia"
+msgstr "Open Source Asia"
+
+#: data/static_bookmarks.xml.h:31
+msgid "OpenOffice"
+msgstr "OpenOffice"
+
+#: data/static_bookmarks.xml.h:32
+msgid "Penguin Computing"
+msgstr "Penguin Computing"
+
+# components/rpmview/Nautilus_View_rpm.oaf.in.h:2
+#: data/static_bookmarks.xml.h:33
+msgid "Rackspace"
+msgstr "Rackspace"
+
+# libnautilus-private/nautilus-undo-signal-handlers.c:178
+#: data/static_bookmarks.xml.h:34
+msgid "Red Hat"
+msgstr "Red Hat"
+
+# libnautilus-private/nautilus-undo-signal-handlers.c:178
+#: data/static_bookmarks.xml.h:35
+msgid "Red Hat Network"
+msgstr "Red Hat Network"
+
+#: data/static_bookmarks.xml.h:36
+msgid "RedFlag Linux"
+msgstr "RedFlag Linux"
+
+# src/nautilus-service-ui.xml.h:6
+#: data/static_bookmarks.xml.h:37
+msgid "Software"
+msgstr "Yazýlým"
+
+#: data/static_bookmarks.xml.h:38
+msgid "SourceForge"
+msgstr "SourceForge"
+
+#: data/static_bookmarks.xml.h:39
+msgid "Sun StarOffice"
+msgstr "Sun StarOffice"
+
+#: data/static_bookmarks.xml.h:40
+msgid "Sun Wah Linux"
+msgstr "Sun Wah Linux"
+
+# src/nautilus-service-ui.xml.h:5
+#: data/static_bookmarks.xml.h:41
+msgid "Web Services"
+msgstr "Web Servisleri"
+
+#: data/static_bookmarks.xml.h:42
+msgid "ZDNet Linux Hardware Database"
+msgstr "ZDNet Linux Donaným Veritabaný"
+
+#: data/static_bookmarks.xml.h:43
+msgid "ZDNet Linux Resource Center"
+msgstr "ZDNet Linux Kaynaklarý Merkezi"
+
+#: data/static_bookmarks.xml.h:44
+msgid "Zero-Knowledge"
+msgstr "Zero-Knowledge"
+
+#: icons/crux_eggplant/crux_eggplant.xml.h:1
+msgid "An Eggplant variation of the Crux theme."
+msgstr "Crux temasýnýn Eggplant sürümü."
+
+#: icons/crux_eggplant/crux_eggplant.xml.h:2
+msgid "Crux-Eggplant"
+msgstr "Crux-Eggplant"
+
+#: icons/crux_teal/crux_teal.xml.h:1
+msgid "A Teal variation of the Crux theme."
+msgstr "Crux temasýnýn deðiþik bir sürümü."
+
+# icons/arlo/arlo.xml.h:2
+#: icons/crux_teal/crux_teal.xml.h:2
+msgid "Crux-Teal"
+msgstr "Crux-Teal"
+
+# icons/default.xml.h:1
+#: icons/default.xml.h:1
+msgid "Default"
+msgstr "Öntanýmlý"
+
+# icons/default.xml.h:2
+#: icons/default.xml.h:2
+msgid "This is the default theme for Nautilus."
+msgstr "Bu tema Nautilus için öntanýmlýdýr."
+
+# icons/gnome/gnome.xml.h:2
+#: icons/gnome/gnome.xml.h:1
+msgid "A theme designed to fit well with the classic GNOME environment"
+msgstr "Klasik GNOME ortamýyla uyumlu bir tema."
+
+# icons/villanova/villanova.xml.h:1
+#: icons/sierra/sierra.xml.h:1
+msgid "Sierra"
+msgstr "Sierra"
+
+#: icons/sierra/sierra.xml.h:2
+msgid "Uses manila folders and gray-green backgrounds."
+msgstr "Manila dizini ve gri-yeþil arkaplan kullan"
+
+# components/music/mpg123.c:60
+#: icons/tahoe/tahoe.xml.h:1
+msgid "Tahoe"
+msgstr "Tahoe"
+
+# icons/ardmore/ardmore.xml.h:2
+#: icons/tahoe/tahoe.xml.h:2
+msgid "This theme uses photo-realistic folders."
+msgstr "Bu tema gerçek görünümlü dizinler kullanýr."
 
 # libnautilus-private/nautilus-druid-page-eazel.c:352
 #. Note to localizers: this font is used for text items in Druid pages
@@ -1917,36 +3205,36 @@ msgstr "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2432
+#: libnautilus-private/nautilus-file.c:2433
 msgid "today at 00:00:00 PM"
 msgstr "bugün, 00:00:00 ÖS"
 
 # libnautilus-private/nautilus-file.c:2242
-#: libnautilus-private/nautilus-file.c:2433
+#: libnautilus-private/nautilus-file.c:2434
 msgid "today at %-I:%M:%S %p"
 msgstr "bugün, %-I:%M %S %p"
 
 # libnautilus-private/nautilus-file.c:2242
-#: libnautilus-private/nautilus-file.c:2435
+#: libnautilus-private/nautilus-file.c:2436
 msgid "today at 00:00 PM"
 msgstr "bugün, 00:00 ÖS"
 
 # libnautilus-private/nautilus-file.c:2242
-#: libnautilus-private/nautilus-file.c:2436
+#: libnautilus-private/nautilus-file.c:2437
 msgid "today at %-I:%M %p"
 msgstr "bugün, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2438
+#: libnautilus-private/nautilus-file.c:2439
 msgid "today, 00:00 PM"
 msgstr "bugün, 00:00 ÖS"
 
 # libnautilus-private/nautilus-file.c:2242
-#: libnautilus-private/nautilus-file.c:2439
+#: libnautilus-private/nautilus-file.c:2440
 msgid "today, %-I:%M %p"
 msgstr "bugün, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2441
 #: libnautilus-private/nautilus-file.c:2442
+#: libnautilus-private/nautilus-file.c:2443
 msgid "today"
 msgstr "bugün"
 
@@ -1954,37 +3242,37 @@ msgstr "bugün"
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2451
+#: libnautilus-private/nautilus-file.c:2452
 msgid "yesterday at 00:00:00 PM"
 msgstr "dün, 00:00:00 ÖS"
 
 # libnautilus-private/nautilus-file.c:2247
-#: libnautilus-private/nautilus-file.c:2452
+#: libnautilus-private/nautilus-file.c:2453
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "dün, %-I:%M:%S %p"
 
 # libnautilus-private/nautilus-file.c:2247
-#: libnautilus-private/nautilus-file.c:2454
+#: libnautilus-private/nautilus-file.c:2455
 msgid "yesterday at 00:00 PM"
 msgstr "dün, 00:00 ÖS"
 
 # libnautilus-private/nautilus-file.c:2247
-#: libnautilus-private/nautilus-file.c:2455
+#: libnautilus-private/nautilus-file.c:2456
 msgid "yesterday at %-I:%M %p"
 msgstr "dün saat %-H:%M'de %p"
 
-#: libnautilus-private/nautilus-file.c:2457
+#: libnautilus-private/nautilus-file.c:2458
 msgid "yesterday, 00:00 PM"
 msgstr "dün, 00:00 ÖS"
 
 # libnautilus-private/nautilus-file.c:2247
-#: libnautilus-private/nautilus-file.c:2458
+#: libnautilus-private/nautilus-file.c:2459
 msgid "yesterday, %-I:%M %p"
 msgstr "dün, %-I:%M %p"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:118
-#: libnautilus-private/nautilus-file.c:2460
 #: libnautilus-private/nautilus-file.c:2461
+#: libnautilus-private/nautilus-file.c:2462
 msgid "yesterday"
 msgstr "dün"
 
@@ -1993,112 +3281,112 @@ msgstr "dün"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2472
+#: libnautilus-private/nautilus-file.c:2473
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr ""
 
 # libnautilus-private/nautilus-file.c:2252
-#: libnautilus-private/nautilus-file.c:2473
+#: libnautilus-private/nautilus-file.c:2474
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%-d %B %Y %A, saat %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2475
+#: libnautilus-private/nautilus-file.c:2476
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr ""
 
 # libnautilus-private/nautilus-file.c:2252
-#: libnautilus-private/nautilus-file.c:2476
+#: libnautilus-private/nautilus-file.c:2477
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%-d %b %Y %a, saat %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2478
+#: libnautilus-private/nautilus-file.c:2479
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr ""
 
 # libnautilus-private/nautilus-file.c:2252
-#: libnautilus-private/nautilus-file.c:2479
+#: libnautilus-private/nautilus-file.c:2480
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%-d %b %Y %a, saat %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2481
+#: libnautilus-private/nautilus-file.c:2482
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "Eki 00 0000 saat 00:00 ÖS"
 
 # libnautilus-private/nautilus-file.c:2257
-#: libnautilus-private/nautilus-file.c:2482
+#: libnautilus-private/nautilus-file.c:2483
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d %m %Y saat %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2484
+#: libnautilus-private/nautilus-file.c:2485
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "Eki 00 0000, 00:00 ÖS"
 
 # libnautilus-private/nautilus-file.c:2257
-#: libnautilus-private/nautilus-file.c:2485
+#: libnautilus-private/nautilus-file.c:2486
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d %b %Y %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2487
+#: libnautilus-private/nautilus-file.c:2488
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00:00 ÖS"
 
 # libnautilus-private/nautilus-file.c:2257
-#: libnautilus-private/nautilus-file.c:2488
+#: libnautilus-private/nautilus-file.c:2489
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d/%m/%y %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2490
+#: libnautilus-private/nautilus-file.c:2491
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-private/nautilus-file.c:2491
+#: libnautilus-private/nautilus-file.c:2492
 msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
 # libnautilus-private/nautilus-file.c:3294
-#: libnautilus-private/nautilus-file.c:3762
+#: libnautilus-private/nautilus-file.c:3763
 msgid "0 items"
 msgstr "0 öðe"
 
 # libnautilus-private/nautilus-file.c:3294
-#: libnautilus-private/nautilus-file.c:3762
+#: libnautilus-private/nautilus-file.c:3763
 msgid "0 folders"
 msgstr "0 dosya"
 
 # libnautilus-private/nautilus-file.c:3295
-#: libnautilus-private/nautilus-file.c:3763
+#: libnautilus-private/nautilus-file.c:3764
 msgid "0 files"
 msgstr "0 dosya"
 
 # libnautilus-private/nautilus-file.c:3299
-#: libnautilus-private/nautilus-file.c:3767
+#: libnautilus-private/nautilus-file.c:3768
 msgid "1 item"
 msgstr "1 öðe"
 
 # libnautilus-private/nautilus-file.c:3299
-#: libnautilus-private/nautilus-file.c:3767
+#: libnautilus-private/nautilus-file.c:3768
 msgid "1 folder"
 msgstr "1 dizin"
 
 # libnautilus-private/nautilus-file.c:3300
-#: libnautilus-private/nautilus-file.c:3768
+#: libnautilus-private/nautilus-file.c:3769
 msgid "1 file"
 msgstr "1 dosya"
 
 # libnautilus-private/nautilus-file.c:3303
-#: libnautilus-private/nautilus-file.c:3771
+#: libnautilus-private/nautilus-file.c:3772
 #, c-format
 msgid "%u items"
 msgstr "Toplam %u"
 
 # libnautilus-private/nautilus-file.c:3303
-#: libnautilus-private/nautilus-file.c:3771
+#: libnautilus-private/nautilus-file.c:3772
 #, c-format
 msgid "%u folders"
 msgstr "%u dizin"
 
 # libnautilus-private/nautilus-file.c:3304
-#: libnautilus-private/nautilus-file.c:3772
+#: libnautilus-private/nautilus-file.c:3773
 #, c-format
 msgid "%u files"
 msgstr "%u dosya"
@@ -2106,25 +3394,25 @@ msgstr "%u dosya"
 # libnautilus-private/nautilus-file.c:3604
 # libnautilus-private/nautilus-file.c:3618
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4079
-#: libnautilus-private/nautilus-file.c:4095
+#: libnautilus-private/nautilus-file.c:4080
+#: libnautilus-private/nautilus-file.c:4096
 msgid "? items"
 msgstr "? öðe"
 
 # libnautilus-private/nautilus-file.c:3604
 # libnautilus-private/nautilus-file.c:3618
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4085
+#: libnautilus-private/nautilus-file.c:4086
 msgid "? bytes"
 msgstr "? bayt"
 
 # libnautilus-private/nautilus-file.c:3622
-#: libnautilus-private/nautilus-file.c:4100
+#: libnautilus-private/nautilus-file.c:4101
 msgid "unknown type"
 msgstr "bilinmeyen tip"
 
 # libnautilus-private/nautilus-file.c:3624
-#: libnautilus-private/nautilus-file.c:4103
+#: libnautilus-private/nautilus-file.c:4104
 msgid "unknown MIME type"
 msgstr "bilinmeyen MIME türü"
 
@@ -2132,16 +3420,16 @@ msgstr "bilinmeyen MIME türü"
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4109
+#: libnautilus-private/nautilus-file.c:4110
 msgid "unknown"
 msgstr "bilinmiyor"
 
 # libnautilus-private/nautilus-file.c:3664
-#: libnautilus-private/nautilus-file.c:4141
+#: libnautilus-private/nautilus-file.c:4142
 msgid "program"
 msgstr "program"
 
-#: libnautilus-private/nautilus-file.c:4153
+#: libnautilus-private/nautilus-file.c:4154
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2150,7 +3438,7 @@ msgstr ""
 "\"x-directory/normal\" için bir açýklama bulunamadý. Bunun anlamý, gnome-vfs."
 "keys dosyasýnýn bulunamamasý ya da hatalý bir yerde bulunmasýdýr."
 
-#: libnautilus-private/nautilus-file.c:4157
+#: libnautilus-private/nautilus-file.c:4158
 #, fuzzy, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2160,7 +3448,7 @@ msgstr ""
 "aaron@azel.com adresine iletin."
 
 # libnautilus-private/nautilus-file.c:3693
-#: libnautilus-private/nautilus-file.c:4171
+#: libnautilus-private/nautilus-file.c:4172
 msgid "link"
 msgstr "baðlantý"
 
@@ -2171,24 +3459,15 @@ msgstr "baðlantý"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: libnautilus-private/nautilus-file-operations.c:1172
-#: libnautilus-private/nautilus-file.c:4177
+#: libnautilus-private/nautilus-file.c:4178
 #, c-format
 msgid "link to %s"
 msgstr "%s'e baðlantý yap"
 
 # libnautilus-private/nautilus-file.c:3713
-#: libnautilus-private/nautilus-file.c:4191
+#: libnautilus-private/nautilus-file.c:4192
 msgid "link (broken)"
 msgstr "link (kýrýk)"
-
-# data/linksets/desktop.xml.h:2 libnautilus-private/nautilus-file.c:4642
-# libnautilus-private/nautilus-trash-directory.c:301
-# src/file-manager/fm-desktop-icon-view.c:66
-#: libnautilus-private/nautilus-file.c:5189
-#: libnautilus-private/nautilus-trash-directory.c:383
-#: src/file-manager/fm-desktop-icon-view.c:71
-msgid "Trash"
-msgstr "Çöp"
 
 # libnautilus-private/nautilus-file-operations.c:342
 #. "From" dialog label, source path gets placed next to it in the dialog
@@ -2553,12 +3832,6 @@ msgstr ""
 #: libnautilus-private/nautilus-file-operations.c:1087
 msgid "Unable to replace file."
 msgstr "Dosyanýn üzerine yazýlamýyor."
-
-# data/browser.xml.h:57
-# libnautilus-private/nautilus-file-operations.c:1021
-#: libnautilus-private/nautilus-file-operations.c:1087
-msgid "OK"
-msgstr "Tamam"
 
 # libnautilus-private/nautilus-file-operations.c:1031
 #: libnautilus-private/nautilus-file-operations.c:1097
@@ -3453,36 +4726,42 @@ msgstr "Liste Görünümü"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:41
 #: libnautilus-private/nautilus-global-preferences.c:157
+#: src/file-manager/nautilus-icon-view-ui.xml.h:21
 msgid "Manually"
 msgstr "Elle"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:34
 #: libnautilus-private/nautilus-global-preferences.c:159
 #: libnautilus-private/nautilus-global-preferences.c:168
+#: src/file-manager/nautilus-icon-view-ui.xml.h:4
 msgid "By Name"
 msgstr "Ýsme Göre"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:35
 #: libnautilus-private/nautilus-global-preferences.c:160
 #: libnautilus-private/nautilus-global-preferences.c:169
+#: src/file-manager/nautilus-icon-view-ui.xml.h:5
 msgid "By Size"
 msgstr "Boya Göre"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:36
 #: libnautilus-private/nautilus-global-preferences.c:161
 #: libnautilus-private/nautilus-global-preferences.c:170
+#: src/file-manager/nautilus-icon-view-ui.xml.h:6
 msgid "By Type"
 msgstr "Türe Göre"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:32
 #: libnautilus-private/nautilus-global-preferences.c:162
 #: libnautilus-private/nautilus-global-preferences.c:171
+#: src/file-manager/nautilus-icon-view-ui.xml.h:2
 msgid "By Modification Date"
 msgstr "Deðiþim Tarihine Göre"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:31
 #: libnautilus-private/nautilus-global-preferences.c:163
 #: libnautilus-private/nautilus-global-preferences.c:172
+#: src/file-manager/nautilus-icon-view-ui.xml.h:1
 msgid "By Emblems"
 msgstr "Logoya Göre"
 
@@ -3634,6 +4913,7 @@ msgstr "Geç"
 # libnautilus-private/nautilus-icon-text-item.c:1546
 # src/file-manager/nautilus-icon-view-ui.xml.h:14
 #: libnautilus-private/nautilus-icon-text-item.c:1584
+#: src/file-manager/nautilus-icon-view-ui.xml.h:23
 msgid "Rename"
 msgstr "Yeniden adlandýr"
 
@@ -4416,6 +5696,204 @@ msgstr "Nautilus seçilen aygýtý ayýramadý."
 msgid "ISO 9660 Volume"
 msgstr "ISO 9660 Formatý"
 
+# libnautilus/nautilus-clipboard-ui.xml.h:1 src/nautilus-shell-ui.xml.h:6
+#: libnautilus/nautilus-clipboard-ui.xml.h:1 src/nautilus-shell-ui.xml.h:5
+msgid "C_lear Text"
+msgstr "Metni _Temizle"
+
+# libnautilus/nautilus-clipboard-ui.xml.h:1 src/nautilus-shell-ui.xml.h:6
+#: libnautilus/nautilus-clipboard-ui.xml.h:2
+msgid "Clear Text"
+msgstr "Metni Temizle"
+
+# libnautilus/nautilus-clipboard-ui.xml.h:6 src/nautilus-shell-ui.xml.h:74
+#: libnautilus/nautilus-clipboard-ui.xml.h:3
+msgid "Copy Text"
+msgstr "Metni Kopyala"
+
+# libnautilus/nautilus-clipboard-ui.xml.h:2 src/nautilus-shell-ui.xml.h:15
+#: libnautilus/nautilus-clipboard-ui.xml.h:4
+msgid "Copy the selected text to the clipboard"
+msgstr "Seçili metni panoya kopyala"
+
+# src/nautilus-shell-ui.xml.h:16
+#: libnautilus/nautilus-clipboard-ui.xml.h:5
+msgid "Cut Text"
+msgstr "Metni Kes"
+
+# src/nautilus-shell-ui.xml.h:16
+#: libnautilus/nautilus-clipboard-ui.xml.h:6 src/nautilus-shell-ui.xml.h:15
+msgid "Cut _Text"
+msgstr "Metni _Kes"
+
+# libnautilus/nautilus-clipboard-ui.xml.h:3 src/nautilus-shell-ui.xml.h:17
+#: libnautilus/nautilus-clipboard-ui.xml.h:7
+msgid "Cut the selected text to the clipboard"
+msgstr "Seçili metni panoya kes"
+
+# libnautilus/nautilus-clipboard-ui.xml.h:8 src/nautilus-shell-ui.xml.h:87
+#: libnautilus/nautilus-clipboard-ui.xml.h:8
+msgid "Paste Text"
+msgstr "Metni Yapýþtýr"
+
+# libnautilus/nautilus-clipboard-ui.xml.h:4 src/nautilus-shell-ui.xml.h:42
+#: libnautilus/nautilus-clipboard-ui.xml.h:9
+msgid "Paste the text stored on the clipboard"
+msgstr "Panoda seçilen metni yapýþtýr"
+
+# libnautilus/nautilus-clipboard-ui.xml.h:5
+#: libnautilus/nautilus-clipboard-ui.xml.h:10
+msgid "Remove the selected text without putting it on the clipboard"
+msgstr "Seçili metni panoya yerleþtirmeden sil"
+
+# src/nautilus-shell-ui.xml.h:92
+#: libnautilus/nautilus-clipboard-ui.xml.h:11
+msgid "Select All"
+msgstr "Hepsini Seç"
+
+# src/nautilus-shell-ui.xml.h:92
+#: libnautilus/nautilus-clipboard-ui.xml.h:12 src/nautilus-shell-ui.xml.h:50
+msgid "Select _All"
+msgstr "_Hepsini Seç"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:32
+#: libnautilus/nautilus-clipboard-ui.xml.h:13
+msgid "Select all the text in a text field"
+msgstr "Bu satýrdaki tüm metni seç"
+
+# libnautilus/nautilus-clipboard-ui.xml.h:6 src/nautilus-shell-ui.xml.h:74
+#: libnautilus/nautilus-clipboard-ui.xml.h:14 src/nautilus-shell-ui.xml.h:76
+msgid "_Copy Text"
+msgstr "Metni K_opyala"
+
+# libnautilus/nautilus-clipboard-ui.xml.h:8 src/nautilus-shell-ui.xml.h:87
+#: libnautilus/nautilus-clipboard-ui.xml.h:15 src/nautilus-shell-ui.xml.h:88
+msgid "_Paste Text"
+msgstr "Metni _Yapýþtýr"
+
+# data/static_bookmarks.xml.h:25 src/nautilus-window-manage-views.c:235
+# src/nautilus-window-menus.c:552
+#: nautilus.desktop.in.h:1 src/nautilus-window-manage-views.c:256
+#: src/nautilus-window-menus.c:657
+msgid "Nautilus"
+msgstr "Nautilus"
+
+# src/Nautilus_shell.oaf.in.h:10
+#: nautilus.desktop.in.h:2
+msgid "Nautilus File Manager and Graphic Shell"
+msgstr "Nautilus Dosya Yöneticisi Grafiksel Kabuðu"
+
+# src/Nautilus_shell.oaf.in.h:1
+#: src/Nautilus_shell.oaf.in.h:1
+msgid "Factory for Nautilus shell and file manager"
+msgstr "Nautilus kabuk ve dosya yöneticisi mimarisi"
+
+# src/Nautilus_shell.oaf.in.h:2
+#: src/Nautilus_shell.oaf.in.h:2
+msgid "Icons"
+msgstr "Simgeler"
+
+# src/file-manager/fm-directory-view.c:2961
+#: src/Nautilus_shell.oaf.in.h:3
+msgid "Icons Viewer"
+msgstr "Simge Görüntüleyici"
+
+# src/Nautilus_shell.oaf.in.h:3
+#: src/Nautilus_shell.oaf.in.h:4
+msgid "List"
+msgstr "Liste"
+
+# src/file-manager/fm-directory-view.c:2961
+#: src/Nautilus_shell.oaf.in.h:5
+msgid "List Viewer"
+msgstr "Liste Görüntüleyici"
+
+# src/Nautilus_shell.oaf.in.h:4
+#: src/Nautilus_shell.oaf.in.h:6
+msgid "Nautilus factory"
+msgstr "Nautilus mimarisi"
+
+# src/Nautilus_shell.oaf.in.h:5
+#: src/Nautilus_shell.oaf.in.h:7
+msgid "Nautilus file manager component that shows a scrollable list"
+msgstr "Nautilus dosya yönetici bileþeni"
+
+# src/Nautilus_shell.oaf.in.h:6
+#: src/Nautilus_shell.oaf.in.h:8
+msgid ""
+"Nautilus file manager component that shows a scrollable list for search "
+"results"
+msgstr ""
+"Arama sonuçlarýný liste halinde gösteren Nautilus dosya yönetici bileþeni"
+
+# src/Nautilus_shell.oaf.in.h:7
+#: src/Nautilus_shell.oaf.in.h:9
+msgid "Nautilus file manager component that shows a two-dimensional icon space"
+msgstr "Ýki boyutlu simge ortamýný gösteren Nautilus dosya yönetici bileþeni"
+
+# src/Nautilus_shell.oaf.in.h:8
+#: src/Nautilus_shell.oaf.in.h:10
+msgid "Nautilus file manager component that shows icons on the desktop"
+msgstr "Masaüstündeki simgeleri gösteren Nautilus dosya yöneticisi bileþeni"
+
+# src/Nautilus_shell.oaf.in.h:9
+#: src/Nautilus_shell.oaf.in.h:11
+msgid "Nautilus file manager desktop icon view"
+msgstr "Nautilus dosya yöneticisi masaüstü simge görünümü"
+
+# src/Nautilus_shell.oaf.in.h:10
+#: src/Nautilus_shell.oaf.in.h:12
+msgid "Nautilus file manager icon view"
+msgstr "Nautilus dosya yöneticisi simge görünümü"
+
+# src/Nautilus_shell.oaf.in.h:11
+#: src/Nautilus_shell.oaf.in.h:13
+msgid "Nautilus file manager list view"
+msgstr "Nautilus dosya yöneticisi liste görünümü"
+
+# src/Nautilus_shell.oaf.in.h:12
+#: src/Nautilus_shell.oaf.in.h:14
+msgid "Nautilus file manager search results list view"
+msgstr "Nautilus dosya yöneticisi arama sonucu görünümü"
+
+# components/sample/Nautilus_View_sample.oaf.in.h:2
+#: src/Nautilus_shell.oaf.in.h:15
+msgid "Nautilus metafile factory"
+msgstr "Nautilus meta dosya mimarisi"
+
+# src/Nautilus_shell.oaf.in.h:13
+#: src/Nautilus_shell.oaf.in.h:16
+msgid "Nautilus shell"
+msgstr "Nautilus kabuðu"
+
+# src/Nautilus_shell.oaf.in.h:14
+#: src/Nautilus_shell.oaf.in.h:17
+msgid ""
+"Nautilus shell operations that can be done from subsequent command-line "
+"invocations"
+msgstr "Komut satýrýndan yapýlabilecek Nautilus kabuk iþlemleri"
+
+#: src/Nautilus_shell.oaf.in.h:18
+msgid "Produces metafile objects for accessing Nautilus metadata"
+msgstr "Nautilus meta verilerine ulaþmak için meta dosya nesneleri yaratýr"
+
+# src/Nautilus_shell.oaf.in.h:15
+#: src/Nautilus_shell.oaf.in.h:19
+msgid "Search List"
+msgstr "Arama Listesi"
+
+# libnautilus-private/nautilus-program-chooser.c:186
+# src/nautilus-window.c:860 src/nautilus-window.c:1096
+#: src/Nautilus_shell.oaf.in.h:20
+msgid "View as Icons"
+msgstr "Simge olarak göster"
+
+# libnautilus-private/nautilus-program-chooser.c:186
+# src/nautilus-window.c:860 src/nautilus-window.c:1096
+#: src/Nautilus_shell.oaf.in.h:21
+msgid "View as List"
+msgstr "Liste olarak göster"
+
 # src/file-manager/nautilus-directory-view-ui.xml.h:30
 # src/nautilus-sidebar.c:482
 #: src/file-manager/fm-desktop-icon-view.c:670
@@ -4444,7 +5922,10 @@ msgstr "Çöp Kutusunu Boþalt..."
 # src/file-manager/fm-desktop-icon-view.c:1093
 # src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
 # src/file-manager/nautilus-directory-view-ui.xml.h:11
-#: src/file-manager/fm-desktop-icon-view.c:1268 src/nautilus-sidebar.c:1485
+#: src/file-manager/fm-desktop-icon-view.c:1268
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
+#: src/file-manager/nautilus-directory-view-ui.xml.h:15
+#: src/nautilus-sidebar.c:1485
 msgid "Empty Trash"
 msgstr "Çöpü Boþalt"
 
@@ -4488,6 +5969,7 @@ msgstr "Sil?"
 #: src/file-manager/fm-directory-view.c:773
 #: src/file-manager/fm-directory-view.c:2846
 #: src/file-manager/fm-directory-view.c:2886
+#: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Delete"
 msgstr "Sil"
 
@@ -4657,6 +6139,7 @@ msgstr "Seçili dosyayý açmak için \"%s\" kullan"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:24
 #: src/file-manager/fm-directory-view.c:3305
+#: src/file-manager/nautilus-directory-view-ui.xml.h:32
 msgid "Other _Application..."
 msgstr "Baþka _Uygulama..."
 
@@ -4667,6 +6150,7 @@ msgstr "Bir _Uygulama..."
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:25
 #: src/file-manager/fm-directory-view.c:3311
+#: src/file-manager/nautilus-directory-view-ui.xml.h:33
 msgid "Other _Viewer..."
 msgstr "Baþka Ý_zleyici..."
 
@@ -4766,6 +6250,7 @@ msgstr "_Bu Pencerede Aç"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:20
 #: src/file-manager/fm-directory-view.c:4015
+#: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "Open _in New Window"
 msgstr "_Yeni Pencerede Aç"
 
@@ -4793,6 +6278,7 @@ msgstr "Seçili öðeleri tamamen sil"
 # src/file-manager/fm-directory-view.c:3190
 # src/file-manager/nautilus-directory-view-ui.xml.h:14
 #: src/file-manager/fm-directory-view.c:4040
+#: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Move to _Trash"
 msgstr "Çöp _Kutusuna Taþý"
 
@@ -4810,6 +6296,7 @@ msgstr "_Sil..."
 # src/file-manager/fm-directory-view.c:2609
 # src/file-manager/fm-directory-view.c:2650
 #: src/file-manager/fm-directory-view.c:4069
+#: src/file-manager/nautilus-directory-view-ui.xml.h:9
 msgid "De_lete"
 msgstr "_Sil"
 
@@ -4832,12 +6319,14 @@ msgstr "Çöp _Kutusunu Boþalt..."
 # src/file-manager/fm-directory-view.c:3239
 # src/file-manager/nautilus-directory-view-ui.xml.h:39
 #: src/file-manager/fm-directory-view.c:4107
+#: src/file-manager/nautilus-directory-view-ui.xml.h:58
 msgid "_Empty Trash"
 msgstr "Çöp _Kutusunu Boþalt"
 
 # src/file-manager/fm-directory-view.c:3250
 # src/file-manager/nautilus-directory-view-ui.xml.h:26
 #: src/file-manager/fm-directory-view.c:4118
+#: src/file-manager/nautilus-directory-view-ui.xml.h:37
 msgid "R_emove Custom Images"
 msgstr "Özel _Resimleri Sil"
 
@@ -4857,6 +6346,7 @@ msgstr "_Dosyayý Kes"
 
 # libnautilus-private/nautilus-file.c:3304
 #: src/file-manager/fm-directory-view.c:4134
+#: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Cu_t Files"
 msgstr "_Dosyalarý Kes"
 
@@ -4867,6 +6357,7 @@ msgstr "Dosyayý K_opyala"
 
 # libnautilus-private/nautilus-file-operations.c:1782
 #: src/file-manager/fm-directory-view.c:4145
+#: src/file-manager/nautilus-directory-view-ui.xml.h:56
 msgid "_Copy Files"
 msgstr "Dosyalarý K_opyala"
 
@@ -5107,87 +6598,86 @@ msgstr "Yeniden adlandýrmayý iptal edeyim mi ?"
 
 # src/file-manager/fm-icon-view.c:156
 # src/file-manager/nautilus-icon-view-ui.xml.h:38
-#: src/file-manager/fm-icon-view.c:177
+#: src/file-manager/fm-icon-view.c:185
 msgid "by _Name"
 msgstr "Ý_sme göre"
 
 # src/file-manager/fm-icon-view.c:157
 # src/file-manager/nautilus-icon-view-ui.xml.h:7
-#: src/file-manager/fm-icon-view.c:178
+#: src/file-manager/fm-icon-view.c:186
+#: src/file-manager/nautilus-icon-view-ui.xml.h:15
 msgid "Keep icons sorted by name in rows"
 msgstr "Simgeleri isimlerine göre sýrala"
 
 # src/file-manager/fm-icon-view.c:163
 # src/file-manager/nautilus-icon-view-ui.xml.h:39
-#: src/file-manager/fm-icon-view.c:184
+#: src/file-manager/fm-icon-view.c:192
 msgid "by _Size"
 msgstr "_Büyüklüðe göre"
 
 # src/file-manager/fm-icon-view.c:164
 # src/file-manager/nautilus-icon-view-ui.xml.h:8
-#: src/file-manager/fm-icon-view.c:185
+#: src/file-manager/fm-icon-view.c:193
+#: src/file-manager/nautilus-icon-view-ui.xml.h:16
 msgid "Keep icons sorted by size in rows"
 msgstr "Simgeleri büyüklüklerine göre sýrala"
 
 # src/file-manager/fm-icon-view.c:170
 # src/file-manager/nautilus-icon-view-ui.xml.h:40
-#: src/file-manager/fm-icon-view.c:191
+#: src/file-manager/fm-icon-view.c:199
 msgid "by _Type"
 msgstr "_Türe göre"
 
 # src/file-manager/fm-icon-view.c:171
 # src/file-manager/nautilus-icon-view-ui.xml.h:9
-#: src/file-manager/fm-icon-view.c:192
+#: src/file-manager/fm-icon-view.c:200
+#: src/file-manager/nautilus-icon-view-ui.xml.h:17
 msgid "Keep icons sorted by type in rows"
 msgstr "Simgeleri tiplerine göre sýrala"
 
 # src/file-manager/fm-icon-view.c:177
 # src/file-manager/nautilus-icon-view-ui.xml.h:33
-#: src/file-manager/fm-icon-view.c:198
+#: src/file-manager/fm-icon-view.c:206
 msgid "by Modification _Date"
 msgstr "_Deðiþim tarihine göre"
 
 # src/file-manager/fm-icon-view.c:178
 # src/file-manager/nautilus-icon-view-ui.xml.h:6
-#: src/file-manager/fm-icon-view.c:199
+#: src/file-manager/fm-icon-view.c:207
+#: src/file-manager/nautilus-icon-view-ui.xml.h:14
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Simgeleri deðiþim tarihlerine göre sýrala"
 
 # src/file-manager/fm-icon-view.c:184
 # src/file-manager/nautilus-icon-view-ui.xml.h:37
-#: src/file-manager/fm-icon-view.c:205
+#: src/file-manager/fm-icon-view.c:213
 msgid "by _Emblems"
 msgstr "_Logolara Göre"
 
 # src/file-manager/fm-icon-view.c:185
 # src/file-manager/nautilus-icon-view-ui.xml.h:5
-#: src/file-manager/fm-icon-view.c:206
+#: src/file-manager/fm-icon-view.c:214
+#: src/file-manager/nautilus-icon-view-ui.xml.h:13
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Simgeleri logolara göre sýrala"
 
 # src/file-manager/fm-icon-view.c:1241
 # src/file-manager/nautilus-icon-view-ui.xml.h:27
-#: src/file-manager/fm-icon-view.c:1416
+#: src/file-manager/fm-icon-view.c:1424
+#: src/file-manager/nautilus-icon-view-ui.xml.h:37
 msgid "_Restore Icons' Original Sizes"
 msgstr "_Simgeleri Asýl Boyutlarýna Getir"
 
 # src/file-manager/fm-icon-view.c:1242
-#: src/file-manager/fm-icon-view.c:1417
+#: src/file-manager/fm-icon-view.c:1425
 msgid "_Restore Icon's Original Size"
 msgstr "_Simgeleri Asýl Boyutlarýna Getir"
 
 # src/file-manager/fm-icon-view.c:1457
-#: src/file-manager/fm-icon-view.c:1709
+#: src/file-manager/fm-icon-view.c:1717
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "\"%s\" gösteriliyor"
-
-# data/browser.xml.h:34 src/file-manager/fm-properties-window.c:1376
-#: src/file-manager/fm-list-view.c:2285
-#: src/file-manager/fm-properties-window.c:1620
-#: src/file-manager/fm-search-list-view.c:499
-msgid "Emblems"
-msgstr "Logolar"
 
 # src/file-manager/fm-list-view.c:1924
 # src/file-manager/fm-search-list-view.c:346
@@ -5637,6 +7127,7 @@ msgstr "Konum"
 #. * is to inform translators of this tricky concept).
 #.
 #: src/file-manager/fm-search-list-view.c:557
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
 msgid "_Reveal in New Window"
 msgstr "_Yeni Pencerede Aç"
 
@@ -5669,6 +7160,443 @@ msgstr ""
 #: src/file-manager/fm-search-list-view.c:679
 msgid "Too Many Matches"
 msgstr "Çok Fazla Eþleþme"
+
+# src/file-manager/nautilus-desktop-icon-view-ui.xml.h:1
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:1
+msgid "Change Desktop Background"
+msgstr "Masaüstü Arkaplanýný Deðiþtir"
+
+# src/file-manager/nautilus-desktop-icon-view-ui.xml.h:2
+# src/file-manager/nautilus-directory-view-ui.xml.h:8
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:2
+#: src/file-manager/nautilus-directory-view-ui.xml.h:11
+msgid "Delete all items in the Trash"
+msgstr "Çöp kutusundaki tüm öðeleri sil"
+
+# src/file-manager/nautilus-desktop-icon-view-ui.xml.h:3
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:3
+msgid "Disks"
+msgstr "Disk"
+
+# src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
+msgid "Mount or unmount disks"
+msgstr "Diski baðla/ayýr"
+
+# src/file-manager/nautilus-desktop-icon-view-ui.xml.h:6
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:6
+msgid "New Terminal"
+msgstr "Yeni Terminal"
+
+# src/file-manager/nautilus-desktop-icon-view-ui.xml.h:7
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:7
+msgid "Open a new GNOME terminal window"
+msgstr "Yeni bir GNOME terminali aç"
+
+# src/file-manager/nautilus-desktop-icon-view-ui.xml.h:8
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:8
+msgid "Remove any custom pattern or color from the desktop background"
+msgstr "Masaüstü arkaplanýndaki tüm özel desen ya da rengi sil"
+
+# src/file-manager/nautilus-desktop-icon-view-ui.xml.h:9
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:9
+msgid "Reset Desktop Background"
+msgstr "Masaüstü Arkaplanýný Sýfýrla"
+
+# src/file-manager/nautilus-desktop-icon-view-ui.xml.h:10
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:10
+msgid ""
+"Show a window that lets you set your desktop background's pattern or color"
+msgstr "Masaüstü arkaplaný rengi ya da desenini ayarlayacak pencere aç"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:1
+#: src/file-manager/nautilus-directory-view-ui.xml.h:1
+msgid "Choose a program with which to open the selected item"
+msgstr "Seçili dosyayý açacak uygulamayý seç"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:2
+#: src/file-manager/nautilus-directory-view-ui.xml.h:2
+msgid "Choose another application with which to open the selected item"
+msgstr "Seçili dosyayý açacak baþka bir uygulamayý seç"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:3
+#: src/file-manager/nautilus-directory-view-ui.xml.h:3
+msgid "Choose another viewer with which to view the selected item"
+msgstr "Seçili dosyayý gösterecek baþka bir izleyici seç"
+
+# libnautilus-private/nautilus-file-operations.c:1782
+#: src/file-manager/nautilus-directory-view-ui.xml.h:4
+msgid "Copy Files"
+msgstr "Dosyalarý Kopyala"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:6
+#: src/file-manager/nautilus-directory-view-ui.xml.h:5
+msgid "Create a new empty folder inside this folder"
+msgstr "Bu dizin içinde boþ bir dizin yarat"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:7
+#: src/file-manager/nautilus-directory-view-ui.xml.h:6
+msgid "Create a symbolic link for each selected item"
+msgstr "Seçilen her dosya için sembolik baðlantý yarat"
+
+# libnautilus-private/nautilus-file.c:3304
+#: src/file-manager/nautilus-directory-view-ui.xml.h:8
+msgid "Cut Files"
+msgstr "Dosyalarý Kes"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:12
+#: src/file-manager/nautilus-directory-view-ui.xml.h:12
+msgid "Delete each selected item, without moving to the Trash"
+msgstr "Tüm seçilen öðeleri Çöpe göndermeden sil"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:9
+#: src/file-manager/nautilus-directory-view-ui.xml.h:13
+msgid "Duplicate"
+msgstr "Ýkizle"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:10
+#: src/file-manager/nautilus-directory-view-ui.xml.h:14
+msgid "Duplicate each selected item"
+msgstr "Her seçili öðeyi ikizle"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:4
+#: src/file-manager/nautilus-directory-view-ui.xml.h:16
+msgid "Make Link"
+msgstr "Baðlantý Yarat"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:12
+#: src/file-manager/nautilus-directory-view-ui.xml.h:17
+msgid "Move each selected item to the Trash"
+msgstr "Tüm seçilenleri çöp kutusuna taþý"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:18
+msgid ""
+"Move or copy files previously selected by a Cut Files or Copy Files command"
+msgstr ""
+"Daha önce Dosyalarý Kes ya da Dosyalarý Kopyala komutu yardýmýyla seçilen "
+"dosyalarý taþý ya da kopyala"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:13
+#: src/file-manager/nautilus-directory-view-ui.xml.h:19
+msgid "Move to Trash"
+msgstr "Çöpe _Taþý"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:15
+#: src/file-manager/nautilus-directory-view-ui.xml.h:21
+msgid "New Folder"
+msgstr "Yeni Dizin"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:17
+#: src/file-manager/nautilus-directory-view-ui.xml.h:22
+msgid "Open"
+msgstr "Aç"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:23
+msgid "Open Scripts Folder"
+msgstr "Betik Dizinini Aç"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:18
+#: src/file-manager/nautilus-directory-view-ui.xml.h:24
+msgid "Open Wit_h"
+msgstr "_Birlikte Aç"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:18
+#: src/file-manager/nautilus-directory-view-ui.xml.h:25
+msgid "Open With"
+msgstr "Birlikte Aç"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:19
+#: src/file-manager/nautilus-directory-view-ui.xml.h:27
+msgid "Open each selected item in a new window"
+msgstr "Seçili her dosyayý yeni pencerede aç"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:20
+#: src/file-manager/nautilus-directory-view-ui.xml.h:28
+msgid "Open in New Window"
+msgstr "Yeni Pencerede Aç"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:21
+#: src/file-manager/nautilus-directory-view-ui.xml.h:29
+msgid "Open the selected item in this window"
+msgstr "Seçili dosyayý bu pencerede aç"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:22
+#: src/file-manager/nautilus-directory-view-ui.xml.h:30
+msgid "Other Application..."
+msgstr "Baþka Uygulama..."
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:23
+#: src/file-manager/nautilus-directory-view-ui.xml.h:31
+msgid "Other Viewer..."
+msgstr "Baþka Görüntüleyici..."
+
+# libnautilus/nautilus-clipboard-ui.xml.h:8 src/nautilus-shell-ui.xml.h:87
+#: src/file-manager/nautilus-directory-view-ui.xml.h:34
+msgid "Paste Files"
+msgstr "Dosyalarý _Yapýþtýr"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:35
+msgid "Prepare the selected files to be copied with a Paste Files command"
+msgstr "Seçili dosyalarý 'Dosyalarý Yapýþtýr' komutuyla kopyalamaya hazýrla"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:36
+msgid "Prepare the selected files to be moved with a Paste Files command"
+msgstr "Seçili dosyalarý 'Dosyalarý Yapýþtýr' komutuyla taþýmaya hazýrla"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:27
+#: src/file-manager/nautilus-directory-view-ui.xml.h:38
+msgid "Remove Custom Images"
+msgstr "Özel Resimleri Sil"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:28
+#: src/file-manager/nautilus-directory-view-ui.xml.h:39
+msgid "Remove any custom images from selected icons"
+msgstr "Seçili simgelerden özel resimleri sil"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:29
+#: src/file-manager/nautilus-directory-view-ui.xml.h:40
+msgid "Remove any custom pattern or color from the background of this location"
+msgstr "Bu konumun arkaplanýnda yeralan desen ya da renkleri kaldýr"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:30
+# src/nautilus-sidebar.c:482
+#. add the reset background item, possibly disabled
+#: src/file-manager/nautilus-directory-view-ui.xml.h:41
+#: src/nautilus-sidebar.c:542
+msgid "Reset Background"
+msgstr "Arkaplaný Sýfýrla"
+
+# components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:4
+#: src/file-manager/nautilus-directory-view-ui.xml.h:42
+msgid "Reset View to Match Preferences"
+msgstr "Tercihleri Yüklemek Ýçin Görünümü Yenileyin"
+
+# components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:4
+#: src/file-manager/nautilus-directory-view-ui.xml.h:43
+msgid "Reset View to Match _Preferences"
+msgstr "_Tercihleri Yüklemek Ýçin Görünümü Yenileyin"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:44
+msgid "Reset sorting order and zoom level to match preferences for this view"
+msgstr ""
+"Bu görünüm için tercihlerle uyuþmak için sýralamayý ve odaklama oranýný "
+"deðiþtir"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:45
+msgid "Run or manage scripts from ~/Nautilus/scripts"
+msgstr "~/Nautilus/scripts'ten bir betik çalýþtýr/yönet"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:46
+msgid "Scripts"
+msgstr "Betikler"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:31
+#: src/file-manager/nautilus-directory-view-ui.xml.h:47
+msgid "Select All Files"
+msgstr "Tüm Dosyalarý Seç"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:31
+#: src/file-manager/nautilus-directory-view-ui.xml.h:48
+msgid "Select _All Files"
+msgstr "_Tüm Dosyalarý Seç"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:32
+#: src/file-manager/nautilus-directory-view-ui.xml.h:49
+msgid "Select all items in this window"
+msgstr "Bu penceredeki tüm öðeleri seç"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:33
+#: src/file-manager/nautilus-directory-view-ui.xml.h:50
+msgid "Show Properties"
+msgstr "Özellikleri Göster"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:34
+#: src/file-manager/nautilus-directory-view-ui.xml.h:51
+msgid "Show Trash"
+msgstr "Çöpü Göster"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:35
+#: src/file-manager/nautilus-directory-view-ui.xml.h:52
+msgid "Show _Properties"
+msgstr "Özellikleri _Göster"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:36
+#: src/file-manager/nautilus-directory-view-ui.xml.h:53
+msgid "Show the contents of the Trash"
+msgstr "Çöp kutusunun içeriðini göster"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:54
+msgid "Show the folder containing the scripts that appear in this menu"
+msgstr "Bu menüde görüntülenen betikleri içeren dizini göster"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:37
+#: src/file-manager/nautilus-directory-view-ui.xml.h:55
+msgid "View or modify the properties of each selected item"
+msgstr "Seçili her öðenin özelliklerini göster ya da deðiþtir"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:38
+#: src/file-manager/nautilus-directory-view-ui.xml.h:57
+msgid "_Duplicate"
+msgstr "Ý_kizle"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:4
+#: src/file-manager/nautilus-directory-view-ui.xml.h:59
+msgid "_Make Link"
+msgstr "_Baðlantý Yarat"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:15
+#: src/file-manager/nautilus-directory-view-ui.xml.h:60
+msgid "_New Folder"
+msgstr "_Yeni Dizin"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:40
+#: src/file-manager/nautilus-directory-view-ui.xml.h:61
+msgid "_Open"
+msgstr "_Aç"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:62
+msgid "_Open Scripts Folder"
+msgstr "_Betikler Dizinini Göster"
+
+# libnautilus/nautilus-clipboard-ui.xml.h:8 src/nautilus-shell-ui.xml.h:87
+#: src/file-manager/nautilus-directory-view-ui.xml.h:63
+msgid "_Paste Files"
+msgstr "Dosyalarý _Yapýþtýr"
+
+# src/file-manager/nautilus-directory-view-ui.xml.h:34
+#: src/file-manager/nautilus-directory-view-ui.xml.h:64
+msgid "_Show Trash"
+msgstr "Çöpü _Göster"
+
+# src/file-manager/fm-icon-view.c:177
+# src/file-manager/nautilus-icon-view-ui.xml.h:33
+#: src/file-manager/nautilus-icon-view-ui.xml.h:3
+msgid "By Modification _Date"
+msgstr "_Deðiþim Tarihine Göre"
+
+# src/file-manager/fm-icon-view.c:184
+# src/file-manager/nautilus-icon-view-ui.xml.h:37
+#: src/file-manager/nautilus-icon-view-ui.xml.h:7
+msgid "By _Emblems"
+msgstr "_Logolara Göre"
+
+# src/file-manager/fm-icon-view.c:156
+# src/file-manager/nautilus-icon-view-ui.xml.h:38
+#: src/file-manager/nautilus-icon-view-ui.xml.h:8
+msgid "By _Name"
+msgstr "Ý_sme Göre"
+
+# src/file-manager/fm-icon-view.c:163
+# src/file-manager/nautilus-icon-view-ui.xml.h:39
+#: src/file-manager/nautilus-icon-view-ui.xml.h:9
+msgid "By _Size"
+msgstr "_Büyüklüðe Göre"
+
+# src/file-manager/fm-icon-view.c:170
+# src/file-manager/nautilus-icon-view-ui.xml.h:40
+#: src/file-manager/nautilus-icon-view-ui.xml.h:10
+msgid "By _Type"
+msgstr "_Türe Göre"
+
+# src/file-manager/nautilus-icon-view-ui.xml.h:2
+#: src/file-manager/nautilus-icon-view-ui.xml.h:11
+msgid "Clean Up by Name"
+msgstr "Ýsme Göre Temizle"
+
+# src/file-manager/nautilus-icon-view-ui.xml.h:3
+#: src/file-manager/nautilus-icon-view-ui.xml.h:12
+msgid "Display icons in the opposite order"
+msgstr "Simgeleri ters sýra ile göster"
+
+# src/file-manager/nautilus-icon-view-ui.xml.h:10
+#: src/file-manager/nautilus-icon-view-ui.xml.h:18
+msgid "Lay Out Items"
+msgstr "Öðeleri Düzenle"
+
+# src/file-manager/nautilus-icon-view-ui.xml.h:11
+#: src/file-manager/nautilus-icon-view-ui.xml.h:19
+msgid "Leave icons wherever they are dropped"
+msgstr "Simgeleri býrakýldýðý yerde býrak"
+
+# src/file-manager/nautilus-icon-view-ui.xml.h:12
+#: src/file-manager/nautilus-icon-view-ui.xml.h:20
+msgid "Make the selected icon stretchable"
+msgstr "Seçili simgeyi oynanabilinir duruma getir"
+
+# src/file-manager/nautilus-icon-view-ui.xml.h:13
+#: src/file-manager/nautilus-icon-view-ui.xml.h:22
+msgid "Re_versed Order"
+msgstr "_Ters Sýra"
+
+# src/file-manager/nautilus-icon-view-ui.xml.h:15
+#: src/file-manager/nautilus-icon-view-ui.xml.h:24
+msgid "Rename selected icon"
+msgstr "Seçili simgeri yeniden adlandýr"
+
+# src/file-manager/nautilus-icon-view-ui.xml.h:16
+#: src/file-manager/nautilus-icon-view-ui.xml.h:25
+msgid "Reposition icons to better fit in the window and avoid overlapping"
+msgstr "Simgeleri pencere içinde daha uygun bir þekilde konumlandýr"
+
+# src/file-manager/nautilus-icon-view-ui.xml.h:17
+#: src/file-manager/nautilus-icon-view-ui.xml.h:26
+msgid "Restore Icons' Original Sizes"
+msgstr "Simgeleri Asýl Boyutlarýna Getir"
+
+# src/file-manager/nautilus-icon-view-ui.xml.h:18
+#: src/file-manager/nautilus-icon-view-ui.xml.h:27
+msgid "Restore each selected icon to its original size"
+msgstr "Her seçili simgeyi eski konumuna getir"
+
+# src/file-manager/nautilus-icon-view-ui.xml.h:19
+#: src/file-manager/nautilus-icon-view-ui.xml.h:28
+msgid "Reversed Order"
+msgstr "Ters Sýra"
+
+# src/file-manager/nautilus-icon-view-ui.xml.h:20
+#: src/file-manager/nautilus-icon-view-ui.xml.h:29
+msgid "Stretch Icon"
+msgstr "_Simgeyle Oyna"
+
+# src/file-manager/nautilus-icon-view-ui.xml.h:21
+#: src/file-manager/nautilus-icon-view-ui.xml.h:30
+msgid "Tighter Layout"
+msgstr "Daha Sýkýþýk Görünüm"
+
+# src/file-manager/nautilus-icon-view-ui.xml.h:21
+#: src/file-manager/nautilus-icon-view-ui.xml.h:31
+msgid "Tighter _Layout"
+msgstr "Daha Sýkýþý_k Görünüm"
+
+# src/file-manager/nautilus-icon-view-ui.xml.h:22
+#: src/file-manager/nautilus-icon-view-ui.xml.h:32
+msgid "Toggle using a tighter layout scheme"
+msgstr "Daha sýkýþýk bir ortam yarat"
+
+# src/file-manager/nautilus-icon-view-ui.xml.h:23
+#: src/file-manager/nautilus-icon-view-ui.xml.h:33
+msgid "_Clean Up by Name"
+msgstr "Ý_sme Göre Temizle"
+
+# src/file-manager/nautilus-icon-view-ui.xml.h:25
+#: src/file-manager/nautilus-icon-view-ui.xml.h:34
+msgid "_Lay Out Items"
+msgstr "_Öðeleri Düzenle"
+
+# src/file-manager/nautilus-icon-view-ui.xml.h:30
+#: src/file-manager/nautilus-icon-view-ui.xml.h:35
+msgid "_Manually"
+msgstr "_Elle"
+
+# src/file-manager/nautilus-icon-view-ui.xml.h:26
+#: src/file-manager/nautilus-icon-view-ui.xml.h:36
+msgid "_Rename"
+msgstr "Ye_niden adlandýr"
+
+# src/file-manager/nautilus-icon-view-ui.xml.h:28
+#: src/file-manager/nautilus-icon-view-ui.xml.h:38
+msgid "_Stretch Icon"
+msgstr "_Simgeyle Oyna"
 
 # src/file-manager/nautilus-indexing-info.c:60
 #: src/file-manager/nautilus-indexing-info.c:88
@@ -5730,6 +7658,31 @@ msgstr "Üzgünüm, ancak medusa arama servisi kullanýlamaz."
 #: src/file-manager/nautilus-indexing-info.c:316
 msgid "%I:%M %p, %x"
 msgstr "%I:%M %p, %x"
+
+# src/file-manager/nautilus-search-list-view-ui.xml.h:1
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:1
+msgid "Reveal each selected item in its original folder"
+msgstr "Her seçili dosyayý kendi dizininde göster"
+
+# src/file-manager/nautilus-search-list-view-ui.xml.h:2
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:2
+msgid "Reveal in New Window"
+msgstr "Yeni Pencerede Aç"
+
+# src/file-manager/nautilus-search-list-view-ui.xml.h:3
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:3
+msgid "Show Indexing Status"
+msgstr "Ýndeksleme Durumunu Göster"
+
+# src/file-manager/nautilus-search-list-view-ui.xml.h:4
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:4
+msgid "Show _Indexing Status"
+msgstr "Ý_ndeksleme Durumunu Göster"
+
+# src/file-manager/nautilus-search-list-view-ui.xml.h:5
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:5
+msgid "Show status of indexing used when searching"
+msgstr "Arama sýrasýnda indeksleme durumunu göster"
 
 # src/nautilus-about.c:139
 #. set the window title and standard close key accelerator
@@ -6300,12 +8253,6 @@ msgstr "Öntanýmlý keskin yazýtipi:"
 msgid "Nautilus Themes"
 msgstr "Nautilus Temalarý"
 
-# data/linksets/desktop.xml.h:1
-# libnautilus-private/nautilus-global-preferences.c:588
-#: src/nautilus-preferences-dialog.c:80 src/nautilus-preferences-dialog.c:85
-msgid "Desktop"
-msgstr "Masaüstü"
-
 # libnautilus-private/nautilus-global-preferences.c:148
 #: src/nautilus-preferences-dialog.c:82
 msgid "Use Nautilus to draw the desktop"
@@ -6492,11 +8439,6 @@ msgstr "Arama Detay Seçenekleri"
 msgid "search type to do by default"
 msgstr "öntanýmlý arama tipi"
 
-# data/linksets/search_engines.xml.h:3
-#: src/nautilus-preferences-dialog.c:282
-msgid "Search Engines"
-msgstr "Tarama Motorlarý"
-
 # libnautilus-private/nautilus-global-preferences.c:170
 #: src/nautilus-preferences-dialog.c:284
 msgid "Search Engine Location"
@@ -6573,11 +8515,6 @@ msgstr "Dizin Görünüm Detaylarýný Aç"
 #: src/nautilus-preferences-dialog.c:377
 msgid "Tabs"
 msgstr "Sekmeler"
-
-# components/tree/Nautilus_View_tree.oaf.in.h:3
-#: src/nautilus-preferences-dialog.c:386
-msgid "Tree"
-msgstr "Aðaç"
 
 # libnautilus-private/nautilus-global-preferences.c:183
 #: src/nautilus-preferences-dialog.c:388
@@ -7047,6 +8984,510 @@ msgstr " "
 msgid "[File owner] is not [root]"
 msgstr "deðil"
 
+# src/nautilus-service-ui.xml.h:2
+#: src/nautilus-service-ui.xml.h:1
+msgid "Go to the Eazel Services Summary Page"
+msgstr "Eazel Servislerine Git"
+
+# src/nautilus-service-ui.xml.h:3
+#: src/nautilus-service-ui.xml.h:2
+msgid "Go to the Eazel Software Catalog"
+msgstr "Eazel Yazýlým Kataloðuna Git"
+
+# src/nautilus-service-ui.xml.h:4
+#: src/nautilus-service-ui.xml.h:3
+msgid "Go to your online storage repository"
+msgstr "Kendi Ýnternet depona git"
+
+# src/nautilus-service-ui.xml.h:6
+#: src/nautilus-service-ui.xml.h:5
+msgid "Software _Catalog"
+msgstr "_Yazýlým Kataloðu"
+
+# src/nautilus-service-ui.xml.h:7
+#: src/nautilus-service-ui.xml.h:6
+msgid "_Eazel Services Home"
+msgstr "_Eazel Servisleri Sayfasý"
+
+# src/nautilus-service-ui.xml.h:8
+#: src/nautilus-service-ui.xml.h:7
+msgid "_Online Storage"
+msgstr "Çevrimiçi _Depo"
+
+# src/nautilus-service-ui.xml.h:9
+#: src/nautilus-service-ui.xml.h:8
+msgid "_Services"
+msgstr "_Servisler"
+
+# src/nautilus-shell-ui.xml.h:1
+#: src/nautilus-shell-ui.xml.h:1
+msgid " _Advanced"
+msgstr "_Uzman"
+
+# src/nautilus-shell-ui.xml.h:2
+#: src/nautilus-shell-ui.xml.h:2
+msgid " _Beginner"
+msgstr "_Baþlangýç"
+
+# src/nautilus-shell-ui.xml.h:3
+#: src/nautilus-shell-ui.xml.h:3
+msgid " _Intermediate"
+msgstr "_Normal"
+
+# src/nautilus-shell-ui.xml.h:4
+#: src/nautilus-shell-ui.xml.h:4
+msgid "Add a bookmark for the current location to this menu"
+msgstr "Burasý için bir niþan ekle"
+
+# src/nautilus-shell-ui.xml.h:7
+#: src/nautilus-shell-ui.xml.h:6
+msgid "Change the visibility of this window's location bar"
+msgstr "Bu pencerenin konum çubuðunun görüntüsünü deðiþtir"
+
+# src/nautilus-shell-ui.xml.h:8
+#: src/nautilus-shell-ui.xml.h:7
+msgid "Change the visibility of this window's sidebar"
+msgstr "Bu pencerenin yan çubuðunun görüntüsünü deðiþtir"
+
+# src/nautilus-shell-ui.xml.h:9
+#: src/nautilus-shell-ui.xml.h:8
+msgid "Change the visibility of this window's status bar"
+msgstr "Bu pencerenin durum çubuðunun görüntüsünü deðiþtir"
+
+# src/nautilus-shell-ui.xml.h:10
+#: src/nautilus-shell-ui.xml.h:9
+msgid "Change the visibility of this window's toolbar"
+msgstr "Bu pencerenin araç çubuðunun görüntüsünü deðiþtir"
+
+# src/nautilus-shell-ui.xml.h:4
+#: src/nautilus-shell-ui.xml.h:10
+msgid "Choose a view for the current location, or modify the set of views"
+msgstr ""
+"Þimdiki konum için bir görünüm ekleyin, ya da görünüm listesini düzenleyin."
+
+# src/nautilus-shell-ui.xml.h:11
+#: src/nautilus-shell-ui.xml.h:11
+msgid "Clear contents of Go menu and Back/Forward lists"
+msgstr "Git menüsünün ve Ýleri/Geri listesinin içeriðini temizle"
+
+# src/nautilus-shell-ui.xml.h:12
+#: src/nautilus-shell-ui.xml.h:12
+msgid "Close _All Windows"
+msgstr "_Tüm Pencereleri Kapat"
+
+# src/nautilus-shell-ui.xml.h:13
+#: src/nautilus-shell-ui.xml.h:13
+msgid "Close all Nautilus windows"
+msgstr "Tüm Nautilus pencerelerini kapat"
+
+# src/nautilus-shell-ui.xml.h:14
+#: src/nautilus-shell-ui.xml.h:14
+msgid "Close this window"
+msgstr "Bu pencereyi kapat"
+
+# src/nautilus-shell-ui.xml.h:18
+#: src/nautilus-shell-ui.xml.h:16
+msgid "Display a window that allows editing the bookmarks in this menu"
+msgstr "Bu menüdeki yer imlerini düzenlemek için pencere göster"
+
+# src/nautilus-shell-ui.xml.h:19
+#: src/nautilus-shell-ui.xml.h:17
+msgid "Display credits for the creators of Nautilus"
+msgstr "Nautilus'u yazanlar hakkýnda bilgi ver"
+
+#: src/nautilus-shell-ui.xml.h:18
+msgid "Display information on technical support"
+msgstr ""
+
+# src/nautilus-shell-ui.xml.h:20
+#: src/nautilus-shell-ui.xml.h:19
+msgid "Display on-line help for Nautilus"
+msgstr "Nautilus için yardým bilgilerini ver"
+
+# src/nautilus-shell-ui.xml.h:21
+#: src/nautilus-shell-ui.xml.h:20
+msgid ""
+"Display patterns, colors, and emblems that can be used to customize "
+"appearance"
+msgstr "Görünümü deðiþtirmeye yarayan desen, renk ve logolarý gösterir."
+
+# src/nautilus-shell-ui.xml.h:23
+#: src/nautilus-shell-ui.xml.h:21
+msgid "Display quick reference pages for Nautilus"
+msgstr "Nautilus için hýzlý yardým sayfalarýný göster"
+
+# src/nautilus-shell-ui.xml.h:20
+#: src/nautilus-shell-ui.xml.h:22
+msgid "Display release notes for Nautilus"
+msgstr "Nautilus için sürüm bilgilerini göster"
+
+# src/nautilus-shell-ui.xml.h:22
+#: src/nautilus-shell-ui.xml.h:23
+msgid "Display the latest contents of the current location"
+msgstr "Güncel konum için son içeriði görüntüle"
+
+# src/nautilus-shell-ui.xml.h:25
+#: src/nautilus-shell-ui.xml.h:24
+msgid "Edit various Nautilus preferences"
+msgstr "Çeþitli Nautilus tercihlerini düzenle"
+
+# src/nautilus-shell-ui.xml.h:26
+#: src/nautilus-shell-ui.xml.h:25
+msgid "Find"
+msgstr "Bul"
+
+# src/nautilus-shell-ui.xml.h:27
+#: src/nautilus-shell-ui.xml.h:26
+msgid "For_get History"
+msgstr "_Geçmiþi Unut"
+
+# src/nautilus-shell-ui.xml.h:28
+#: src/nautilus-shell-ui.xml.h:27
+msgid "Go to Eazel Services"
+msgstr "Eazel Servislerine Git"
+
+# libnautilus-private/nautilus-search-uri.c:249
+#: src/nautilus-shell-ui.xml.h:28
+#, fuzzy
+msgid "Go to the Start Here folder"
+msgstr "dizin"
+
+# src/nautilus-shell-ui.xml.h:29
+#: src/nautilus-shell-ui.xml.h:29
+msgid "Go to the home location"
+msgstr "Baþlangýç dizinine git"
+
+# src/nautilus-shell-ui.xml.h:31
+#: src/nautilus-shell-ui.xml.h:30
+msgid "Go to the next visited location"
+msgstr "Ýlerideki yere git"
+
+# src/nautilus-shell-ui.xml.h:32
+#: src/nautilus-shell-ui.xml.h:31
+msgid "Go to the previous visited location"
+msgstr "Önceki yere git"
+
+# src/nautilus-shell-ui.xml.h:30
+#: src/nautilus-shell-ui.xml.h:32
+msgid "Go up to the location that contains the displayed location"
+msgstr "Görüntülenen konuma doðru yukarý git"
+
+# src/nautilus-shell-ui.xml.h:33 src/nautilus-window-menus.c:433
+#: src/nautilus-shell-ui.xml.h:33 src/nautilus-window-menus.c:502
+msgid "Hide Location _Bar"
+msgstr "_Konum Çubuðunu Gizle"
+
+# src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:415
+#: src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:484
+msgid "Hide St_atus Bar"
+msgstr "_Durum Çubuðunu Gizle"
+
+# src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:421
+#: src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:490
+msgid "Hide _Sidebar"
+msgstr "_Yan Çubuðunu Gizle"
+
+# src/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:427
+#: src/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:496
+msgid "Hide _Toolbar"
+msgstr "_Araç Çubuðunu Gizle"
+
+# libnautilus-private/nautilus-global-preferences.c:44
+#: src/nautilus-shell-ui.xml.h:38
+msgid "Nautilus Quick _Reference"
+msgstr "_Nautilus için Hýzlý Yardým"
+
+# libnautilus-private/nautilus-global-preferences.c:44
+#: src/nautilus-shell-ui.xml.h:39
+msgid "Nautilus Release _Notes"
+msgstr "Nautilus _Sürüm Notlarý"
+
+# src/nautilus-shell-ui.xml.h:84
+#: src/nautilus-shell-ui.xml.h:40
+msgid "Nautilus User _Manual"
+msgstr "N_autilus Kullanýcý Kýlavuzu"
+
+# src/nautilus-shell-ui.xml.h:39
+#: src/nautilus-shell-ui.xml.h:41
+msgid "New Window"
+msgstr "_Yeni Pencere"
+
+# src/nautilus-shell-ui.xml.h:39
+#: src/nautilus-shell-ui.xml.h:42
+msgid "New _Window"
+msgstr "Yeni _Pencere"
+
+# src/nautilus-shell-ui.xml.h:40
+#: src/nautilus-shell-ui.xml.h:43
+msgid "Normal Size"
+msgstr "Normal Boyut"
+
+# src/nautilus-shell-ui.xml.h:41
+#: src/nautilus-shell-ui.xml.h:44
+msgid "Open another Nautilus window for the displayed location"
+msgstr "Görüntülenen konum için baþka bir Nautilus penceresi aç"
+
+# src/nautilus-shell-ui.xml.h:44
+#: src/nautilus-shell-ui.xml.h:45
+msgid "Refresh"
+msgstr "Yeniden yükle"
+
+# src/nautilus-shell-ui.xml.h:46
+#: src/nautilus-shell-ui.xml.h:46
+msgid "Report Profiling"
+msgstr "Profil Oluþtur"
+
+# src/nautilus-shell-ui.xml.h:47
+#: src/nautilus-shell-ui.xml.h:47
+msgid "Reset Profiling"
+msgstr "Profili Sýfýrla"
+
+# src/nautilus-shell-ui.xml.h:48
+#: src/nautilus-shell-ui.xml.h:48
+msgid "Search the World Wide Web"
+msgstr "Web üzerinde ara"
+
+# src/nautilus-shell-ui.xml.h:49
+#: src/nautilus-shell-ui.xml.h:49
+msgid "Search this computer for files"
+msgstr "Dosyalarý bu bilgisayarda ara"
+
+# src/nautilus-shell-ui.xml.h:51
+#: src/nautilus-shell-ui.xml.h:51
+msgid "Show the contents at the normal size"
+msgstr "Ýçeriði normal boyutta göster"
+
+# src/nautilus-shell-ui.xml.h:52
+#: src/nautilus-shell-ui.xml.h:52
+msgid "Show the contents in less detail"
+msgstr "Ýçeriði az detay ile göster"
+
+# src/nautilus-shell-ui.xml.h:53
+#: src/nautilus-shell-ui.xml.h:53
+msgid "Show the contents in more detail"
+msgstr "Ýçeriði detaylý göster"
+
+# src/nautilus-shell-ui.xml.h:54
+#: src/nautilus-shell-ui.xml.h:54
+msgid "Start Profiling"
+msgstr "Profili Kapat"
+
+# src/nautilus-shell-ui.xml.h:56
+#: src/nautilus-shell-ui.xml.h:56
+msgid "Stop Profiling"
+msgstr "Profili Baþlat"
+
+# src/nautilus-shell-ui.xml.h:57
+#: src/nautilus-shell-ui.xml.h:57
+msgid "Stop loading this location"
+msgstr "Bu konumu yüklemeyi durdur"
+
+# src/nautilus-shell-ui.xml.h:58
+#: src/nautilus-shell-ui.xml.h:58
+msgid "Undo the last text change"
+msgstr "Son metin deðiþikliðini geri al"
+
+# src/nautilus-shell-ui.xml.h:59
+#: src/nautilus-shell-ui.xml.h:59
+msgid "Up"
+msgstr "Yukarý"
+
+#: src/nautilus-shell-ui.xml.h:60
+msgid "Use preferences appropriate for beginners"
+msgstr "Baþlangýç seviyesindekiler için uygun olan tercihleri kullan"
+
+#: src/nautilus-shell-ui.xml.h:61
+msgid "Use preferences appropriate for experts"
+msgstr "Uzmanlar için uygun olan tercihleri kullan"
+
+#: src/nautilus-shell-ui.xml.h:62
+msgid "Use preferences appropriate for most people"
+msgstr "Pek çok kullanýcý için uygun olan tercihleri kullan"
+
+# src/nautilus-window.c:1118
+#. Add "View as..." extra bonus choice.
+#: src/nautilus-shell-ui.xml.h:63 src/nautilus-window.c:647
+#: src/nautilus-window.c:1545
+msgid "View as..."
+msgstr "Farklý görüntüle..."
+
+# src/nautilus-shell-ui.xml.h:63
+#: src/nautilus-shell-ui.xml.h:64
+msgid "We_b Search"
+msgstr "Web'de _Ara"
+
+# src/nautilus-shell-ui.xml.h:63
+#: src/nautilus-shell-ui.xml.h:65
+msgid "Web Search"
+msgstr "Web'de Ara"
+
+# src/nautilus-shell-ui.xml.h:64
+#: src/nautilus-shell-ui.xml.h:66
+msgid "Zoom In"
+msgstr "Yakýnlaþ"
+
+# src/nautilus-shell-ui.xml.h:65
+#: src/nautilus-shell-ui.xml.h:67
+msgid "Zoom Out"
+msgstr "Uzaklaþ"
+
+# src/nautilus-shell-ui.xml.h:66
+#: src/nautilus-shell-ui.xml.h:68
+msgid "Zoom _In"
+msgstr "_Yakýnlaþ"
+
+# src/nautilus-shell-ui.xml.h:67
+#: src/nautilus-shell-ui.xml.h:69
+msgid "Zoom _Out"
+msgstr "_Uzaklaþ"
+
+# src/nautilus-shell-ui.xml.h:68
+#: src/nautilus-shell-ui.xml.h:70
+msgid "_About Nautilus..."
+msgstr "_Nautilus Hakkýnda..."
+
+# src/nautilus-shell-ui.xml.h:69
+#: src/nautilus-shell-ui.xml.h:71
+msgid "_Add Bookmark"
+msgstr "_Yer imi ekle"
+
+# src/nautilus-shell-ui.xml.h:70
+#: src/nautilus-shell-ui.xml.h:72
+msgid "_Back"
+msgstr "_Geri"
+
+# src/nautilus-shell-ui.xml.h:71
+#: src/nautilus-shell-ui.xml.h:73
+msgid "_Backgrounds and Emblems..."
+msgstr "_Arkaplanlar..."
+
+# src/nautilus-shell-ui.xml.h:72
+#: src/nautilus-shell-ui.xml.h:74
+msgid "_Bookmarks"
+msgstr "_Yer imleri"
+
+# src/nautilus-shell-ui.xml.h:73
+#: src/nautilus-shell-ui.xml.h:75
+msgid "_Close Window"
+msgstr "Pencereyi _Kapat"
+
+# src/nautilus-shell-ui.xml.h:75
+#: src/nautilus-shell-ui.xml.h:77
+msgid "_Edit"
+msgstr "_Deðiþtir"
+
+# src/nautilus-shell-ui.xml.h:76
+#: src/nautilus-shell-ui.xml.h:78
+msgid "_Edit Bookmarks..."
+msgstr "Yer imlerini _düzenle..."
+
+# src/nautilus-shell-ui.xml.h:43
+#: src/nautilus-shell-ui.xml.h:79
+msgid "_Edit Preferences..."
+msgstr "Tercihleri Düzenle..."
+
+# src/nautilus-shell-ui.xml.h:79 src/nautilus-window-menus.c:1239
+#: src/nautilus-shell-ui.xml.h:81
+msgid "_Find"
+msgstr "_Bul"
+
+# src/nautilus-shell-ui.xml.h:80
+#: src/nautilus-shell-ui.xml.h:82
+msgid "_Forward"
+msgstr "_Ýleri"
+
+# src/nautilus-shell-ui.xml.h:81
+#: src/nautilus-shell-ui.xml.h:83
+msgid "_Go"
+msgstr "G_it"
+
+# src/nautilus-shell-ui.xml.h:82
+#: src/nautilus-shell-ui.xml.h:84
+msgid "_Help"
+msgstr "_Yardým"
+
+# src/nautilus-shell-ui.xml.h:83
+#: src/nautilus-shell-ui.xml.h:85
+msgid "_Home"
+msgstr "_Baþlangýç"
+
+# src/nautilus-bookmarks-window.c:177
+#: src/nautilus-shell-ui.xml.h:86
+msgid "_Location..."
+msgstr "_Adres..."
+
+# src/nautilus-shell-ui.xml.h:86
+#: src/nautilus-shell-ui.xml.h:87
+msgid "_Normal Size"
+msgstr "_Normal Boyut"
+
+# src/nautilus-window-menus.c:483
+#: src/nautilus-shell-ui.xml.h:89
+msgid "_Preferences"
+msgstr "_Tercihler"
+
+# src/nautilus-shell-ui.xml.h:88
+#: src/nautilus-shell-ui.xml.h:90
+msgid "_Profiler"
+msgstr "_Profiller"
+
+# src/nautilus-shell-ui.xml.h:89
+#: src/nautilus-shell-ui.xml.h:91
+msgid "_Refresh"
+msgstr "_Yeniden Yükle"
+
+# src/nautilus-shell-ui.xml.h:90
+#: src/nautilus-shell-ui.xml.h:92
+msgid "_Report Profiling"
+msgstr "Profil _Oluþtur"
+
+# src/nautilus-shell-ui.xml.h:91
+#: src/nautilus-shell-ui.xml.h:93
+msgid "_Reset Profiling"
+msgstr "Profillleri _Sýfýrla"
+
+# libnautilus-private/nautilus-program-chooser.c:1168
+#: src/nautilus-shell-ui.xml.h:94
+#, fuzzy
+msgid "_Start Here"
+msgstr "Baþlat"
+
+# src/nautilus-shell-ui.xml.h:93
+#: src/nautilus-shell-ui.xml.h:95
+msgid "_Start Profiling"
+msgstr "Profile _Baþlat"
+
+# src/nautilus-shell-ui.xml.h:94
+#: src/nautilus-shell-ui.xml.h:96
+msgid "_Stop Profiling"
+msgstr "Profil _Durdur"
+
+# src/nautilus-service-ui.xml.h:10
+#: src/nautilus-shell-ui.xml.h:97
+#, fuzzy
+msgid "_Support"
+msgstr "_Kullanýcý Desteði"
+
+# src/nautilus-shell-ui.xml.h:95
+#: src/nautilus-shell-ui.xml.h:98
+msgid "_Undo"
+msgstr "_Geri Al"
+
+# src/nautilus-shell-ui.xml.h:96
+#: src/nautilus-shell-ui.xml.h:99
+msgid "_Up a Level"
+msgstr "_Bir Seviye Yukarý"
+
+# src/nautilus-shell-ui.xml.h:97
+#: src/nautilus-shell-ui.xml.h:100
+msgid "_View"
+msgstr "_Bakýþ"
+
+# src/nautilus-window.c:1118
+#: src/nautilus-shell-ui.xml.h:101
+msgid "_View as..."
+msgstr "_Farklý görüntüle..."
+
 # src/nautilus-shell.c:174
 #: src/nautilus-shell.c:188
 msgid "Caveat"
@@ -7073,13 +9514,6 @@ msgstr ""
 "\n"
 "Lütfen daha fazla bilgi için http://www.eazel.com/feedback.html adresine göz "
 "atýn."
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:30
-# src/nautilus-sidebar.c:482
-#. add the reset background item, possibly disabled
-#: src/nautilus-sidebar.c:542
-msgid "Reset Background"
-msgstr "Arkaplaný Sýfýrla"
 
 # src/nautilus-sidebar.c:655
 #: src/nautilus-sidebar.c:722
@@ -7220,12 +9654,6 @@ msgstr "Tema silinemedi"
 #, c-format
 msgid "Preview Release %s: %s"
 msgstr "Deneme Sürümü %s: %s"
-
-# data/static_bookmarks.xml.h:25 src/nautilus-window-manage-views.c:235
-# src/nautilus-window-menus.c:552
-#: src/nautilus-window-manage-views.c:256 src/nautilus-window-menus.c:657
-msgid "Nautilus"
-msgstr "Nautilus"
 
 # src/nautilus-window-manage-views.c:777
 #: src/nautilus-window-manage-views.c:813
@@ -7393,40 +9821,20 @@ msgstr "Geçmiþ Silinsin Mi?"
 msgid "Forget"
 msgstr "Sil"
 
-# src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:415
-#: src/nautilus-window-menus.c:484
-msgid "Hide St_atus Bar"
-msgstr "_Durum Çubuðunu Gizle"
-
 # src/nautilus-window-menus.c:416
 #: src/nautilus-window-menus.c:485
 msgid "Show St_atus Bar"
 msgstr "_Durum Çubuðunu Göster"
-
-# src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:421
-#: src/nautilus-window-menus.c:490
-msgid "Hide _Sidebar"
-msgstr "_Yan Çubuðunu Gizle"
 
 # src/nautilus-window-menus.c:422
 #: src/nautilus-window-menus.c:491
 msgid "Show _Sidebar"
 msgstr "_Yan Çubuðu Göster"
 
-# src/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:427
-#: src/nautilus-window-menus.c:496
-msgid "Hide _Toolbar"
-msgstr "_Araç Çubuðunu Gizle"
-
 # src/nautilus-window-menus.c:428
 #: src/nautilus-window-menus.c:497
 msgid "Show _Toolbar"
 msgstr "_Araç Çubuðunu Göster"
-
-# src/nautilus-shell-ui.xml.h:33 src/nautilus-window-menus.c:433
-#: src/nautilus-window-menus.c:502
-msgid "Hide Location _Bar"
-msgstr "_Konum Çubuðunu Gizle"
 
 # src/nautilus-window-menus.c:434
 #: src/nautilus-window-menus.c:503
@@ -7506,12 +9914,6 @@ msgstr "Geri"
 msgid "Forward"
 msgstr "Ýleri"
 
-# src/nautilus-window.c:1118
-#. Add "View as..." extra bonus choice.
-#: src/nautilus-window.c:647 src/nautilus-window.c:1545
-msgid "View as..."
-msgstr "Farklý görüntüle..."
-
 # libnautilus-private/nautilus-global-preferences.c:139
 #: src/nautilus-window.c:1251
 #, c-format
@@ -7537,1680 +9939,12 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-9"
 msgid "%d%%"
 msgstr "%%%d"
 
-# components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:1
-#~ msgid "Factory for Nautilus component adapter factories"
-#~ msgstr "Nautilus bileþen denetleyici mimarileri"
-
-# components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:2
-#~ msgid "Factory for Nautilus component adapter factories "
-#~ msgstr "Nautilus bileþen denetleyici mimarileri"
-
-# components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:4
-#~ msgid "Nautilus component adapter factory"
-#~ msgstr "Nautilus bileþen denetleyici mimarisi"
-
-# components/hardware/Nautilus_View_hardware.oaf.in.h:3
-#~ msgid "Hardware Viewer"
-#~ msgstr "Donaným Görüntüleyici"
-
-# components/hardware/Nautilus_View_hardware.oaf.in.h:3
-#~ msgid "Hardware view"
-#~ msgstr "Donaným görünümü"
-
-# components/hardware/Nautilus_View_hardware.oaf.in.h:2
-# data/static_bookmarks.xml.h:12
-#~ msgid "View as Hardware"
-#~ msgstr "Donaným olarak Görüntüle"
-
-# components/hardware/Nautilus_View_hardware.oaf.in.h:4
-#~ msgid "hardware view"
-#~ msgstr "donaným görünümü"
-
-# components/help/Nautilus_View_help.oaf.in.h:1
-# components/services/summary/nautilus-view/nautilus-summary-dialogs.c:104
-#~ msgid "Help"
-#~ msgstr "Yardým"
-
-# components/help/Nautilus_View_help.oaf.in.h:2
-#~ msgid "Help Index"
-#~ msgstr "Yardým Ýçeriði"
-
-# components/help/Nautilus_View_help.oaf.in.h:3
-#~ msgid "Help Index sidebar panel"
-#~ msgstr "Yardým Ýçeriði yan paneli"
-
-# components/help/Nautilus_View_help.oaf.in.h:4
-#~ msgid "Help Navigation Tree"
-#~ msgstr "Yardým Gezgin Aðacý"
-
-# components/help/Nautilus_View_help.oaf.in.h:5
-#~ msgid "Help Search"
-#~ msgstr "Yardým Aramasý"
-
-# components/help/Nautilus_View_help.oaf.in.h:6
-#~ msgid "Help Search sidebar panel"
-#~ msgstr "Yardým Arama Yan Paneli"
-
-# components/help/Nautilus_View_help.oaf.in.h:7
-#~ msgid "Help sidebar panel"
-#~ msgstr "Yardým yan paneli"
-
-# components/help/Nautilus_View_help.oaf.in.h:8
-#~ msgid "Internal use only"
-#~ msgstr "Sadece iç kullaným için"
-
-# components/history/Nautilus_View_history.oaf.in.h:1
-#~ msgid "Factory for history views"
-#~ msgstr "Geçmiþ görünümleri için mimari"
-
-# components/history/Nautilus_View_history.oaf.in.h:2
-#~ msgid "History"
-#~ msgstr "Geçmiþ"
-
-# components/history/Nautilus_View_history.oaf.in.h:3
-#~ msgid "History sidebar panel"
-#~ msgstr "Geçmiþ yan çubuk paneli"
-
-# components/history/Nautilus_View_history.oaf.in.h:4
-#~ msgid "History sidebar panel for Nautilus"
-#~ msgstr "Nautilus için geçmiþ yan çubuk paneli"
-
-# components/image-viewer/Nautilus_View_image.oaf.in.h:1
-#~ msgid "Generic Image Viewer"
-#~ msgstr "Resim Görüntüleyici"
-
-# components/image-viewer/Nautilus_View_image.oaf.in.h:2
-#~ msgid "Generic image control factory"
-#~ msgstr "Genel resim kontrol mimarisi"
-
-# components/image-viewer/Nautilus_View_image.oaf.in.h:3
-#~ msgid "Image"
-#~ msgstr "Resim"
-
-# components/image-viewer/Nautilus_View_image.oaf.in.h:1
-#~ msgid "Image Viewer"
-#~ msgstr "Resim Görüntüleyici"
-
-# components/image-viewer/Nautilus_View_image.oaf.in.h:4
-#~ msgid "Nautilus Image Viewer"
-#~ msgstr "Nautilus Resim Görüntüleyici"
-
-# components/image-viewer/Nautilus_View_image.oaf.in.h:5
-#~ msgid "Nautilus Image viewer factory"
-#~ msgstr "Nautilus Resim Görüntüleme Mimarisi"
-
-# libnautilus-private/nautilus-program-chooser.c:186
-# src/nautilus-window.c:860 src/nautilus-window.c:1096
-#~ msgid "View as Image"
-#~ msgstr "Resim Olarak Göster"
-
-# components/loser/content/nautilus-content-loser-ui.xml.h:1
-#~ msgid "Kill Content Loser"
-#~ msgstr "Ýçerik Ýzleyicisini Öldür"
-
-# components/loser/content/nautilus-content-loser-ui.xml.h:2
-#~ msgid "Kill the Loser content view"
-#~ msgstr "Ýçerik izleme görüntüsünü öldür"
-
-# components/loser/content/nautilus-content-loser-ui.xml.h:3
-# components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:3
-# components/mozilla/nautilus-mozilla-ui.xml.h:4
-# components/sample/nautilus-sample-content-view-ui.xml.h:4
-# src/nautilus-shell-ui.xml.h:78
-#~ msgid "_File"
-#~ msgstr "_Dosya"
-
-# components/loser/content/nautilus-content-loser-ui.xml.h:4
-#~ msgid "_Kill Content Loser"
-#~ msgstr "_Içerik Ýzleyicisini Öldür"
-
-# components/loser/content/Nautilus_View_content-loser.oaf.in.h:2
-#~ msgid "Nautilus Content Loser"
-#~ msgstr "Nautilus Ýçerik Ýzleyici"
-
-# components/loser/content/Nautilus_View_content-loser.oaf.in.h:3
-#~ msgid "Nautilus content loser component's factory"
-#~ msgstr "Nautilus içerik izleme bileþen mimarisi"
-
-# components/loser/content/Nautilus_View_content-loser.oaf.in.h:4
-#~ msgid "Nautilus content loser factory"
-#~ msgstr "Nautilus içerik izleme mimarisi"
-
-# components/loser/content/Nautilus_View_content-loser.oaf.in.h:5
-#~ msgid "Nautilus content view that fails on command"
-#~ msgstr "Nautilus içerik görüntüleyici"
-
-# components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:1
-#~ msgid "Kill Sidebar Loser"
-#~ msgstr "_Yançubuk Ýzleyicisini Öldür"
-
-# components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:2
-#~ msgid "Kill the Loser sidebar panel"
-#~ msgstr "Yançubuk izleyicisini öldür"
-
-# components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:4
-#~ msgid "_Kill Sidebar Loser"
-#~ msgstr "_Yançubuk izleyicisini öldür"
-
-# components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:1
-#~ msgid "Nautilus Sidebar Loser"
-#~ msgstr "Nautilus Yançubuk Ýzleyici"
-
-# components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:2
-#~ msgid "Nautilus sidebar loser component's factory"
-#~ msgstr "Nautilus yançubuk izleyici bileþen mimarisi"
-
-# components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:3
-#~ msgid "Nautilus sidebar loser factory"
-#~ msgstr "Nautilus yançubuk izleyici mimarisi"
-
-# components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:4
-#~ msgid "Nautilus sidebar view that fails on command"
-#~ msgstr "Nautilus yançubuk izleyicisi"
-
-# components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:5
-#~ msgid "Sidebar Loser"
-#~ msgstr "Yançubuk Ýzleyici"
-
-#~ msgid "Charset Encoding"
-#~ msgstr "Karakter Kümesi Kodlamasý"
-
-# components/mozilla/Nautilus_View_mozilla.oaf.in.h:1
-#~ msgid "Mozilla Nautilus view"
-#~ msgstr "Mozilla Nautilus görüntüsü"
-
-# components/mozilla/Nautilus_View_mozilla.oaf.in.h:2
-#~ msgid "Mozilla Nautilus view factory"
-#~ msgstr "Mozilla Nautilus izleme mimarisi"
-
-# components/mozilla/Nautilus_View_mozilla.oaf.in.h:3
-#~ msgid "Mozilla content view component"
-#~ msgstr "Mozilla içerik izleme bileþeni"
-
-# components/mozilla/Nautilus_View_mozilla.oaf.in.h:4
-#~ msgid "Mozilla content view component's factory"
-#~ msgstr "Mozilla içerik görünüm bileþen mimarisi"
-
-# components/mozilla/Nautilus_View_mozilla.oaf.in.h:5
-#~ msgid "View as Web Page"
-#~ msgstr "Web Sayfasý Olarak Görüntüle"
-
-# components/mozilla/Nautilus_View_mozilla.oaf.in.h:5
-#~ msgid "Web Page"
-#~ msgstr "Web Sayfasý"
-
-# components/mozilla/Nautilus_View_mozilla.oaf.in.h:5
-#~ msgid "Web Page Viewer"
-#~ msgstr "Web Sayfasý Görüntüleyici"
-
-# components/music/Nautilus_View_music.oaf.in.h:1
-#~ msgid "Factory for music view"
-#~ msgstr "Müzik görüntüsü için mimari"
-
-# components/music/Nautilus_View_music.oaf.in.h:2
-#~ msgid "Music"
-#~ msgstr "Müzik"
-
-# components/music/Nautilus_View_music.oaf.in.h:3
-#~ msgid "Music Viewer"
-#~ msgstr "Müzik Görüntüleyici"
-
-# components/music/Nautilus_View_music.oaf.in.h:3
-#~ msgid "Music view"
-#~ msgstr "Müzik görüntüsü"
-
-# components/music/Nautilus_View_music.oaf.in.h:4
-#~ msgid "Music view factory"
-#~ msgstr "Müzik görünüm mimarisi"
-
-# libnautilus-private/nautilus-program-chooser.c:186
-# src/nautilus-window.c:860 src/nautilus-window.c:1096
-#~ msgid "View as Music"
-#~ msgstr "Müzik olarak göster"
-
-# components/text/Nautilus_View_text.oaf.in.h:1
-#~ msgid "Factory for news view"
-#~ msgstr "Haber görüntüleme mimarisi"
-
-# data/browser.xml.h:55
-#~ msgid "News"
-#~ msgstr "Haberler"
-
-# components/notes/Nautilus_View_notes.oaf.in.h:3
-#~ msgid "News sidebar panel"
-#~ msgstr "Haberler yan çubuk paneli"
-
-# components/notes/Nautilus_View_notes.oaf.in.h:1
-#~ msgid "Factory for annotation view"
-#~ msgstr "Anotasyon görünümü için mimari"
-
-# components/notes/Nautilus_View_notes.oaf.in.h:3
-#~ msgid "Notes sidebar panel"
-#~ msgstr "Not paneli"
-
-# components/notes/Nautilus_View_notes.oaf.in.h:4
-#~ msgid "Notes sidebar panel for Nautilus"
-#~ msgstr "Nautilus için not paneli"
-
-# components/sample/Nautilus_View_sample.oaf.in.h:3
-# components/sample/nautilus-sample-content-view-ui.xml.h:1
-# components/services/trilobite/sample/service/Trilobite_Service_sample.oaf.in.h:2
-#~ msgid "Sample"
-#~ msgstr "Örnek"
-
-# components/sample/nautilus-sample-content-view-ui.xml.h:2
-#~ msgid "This is a sample merged menu item"
-#~ msgstr "Bu örnek bir birleþtirilmiþ menü öðesidir"
-
-# components/sample/nautilus-sample-content-view-ui.xml.h:3
-#~ msgid "This is a sample merged toolbar button"
-#~ msgstr "Bu örnek bir birleþtirilmiþ araç çubuðu düðmesidir"
-
-# components/sample/nautilus-sample-content-view-ui.xml.h:5
-#~ msgid "_Sample"
-#~ msgstr "Ö_rnek"
-
-# components/sample/Nautilus_View_sample.oaf.in.h:1
-#~ msgid "Nautilus Sample view"
-#~ msgstr "Nautilus Örnek Görünüm"
-
-# components/sample/Nautilus_View_sample.oaf.in.h:2
-#~ msgid "Nautilus Sample view factory"
-#~ msgstr "Nautilus Örnek görünüm mimarisi"
-
-# components/music/nautilus-music-view.c:233
-#~ msgid "Sample Viewer"
-#~ msgstr "Örnek Görüntüleyici"
-
-# components/sample/Nautilus_View_sample.oaf.in.h:4
-#~ msgid "Sample content view component"
-#~ msgstr "Örnek içerik görünüm bileþeni"
-
-# components/sample/Nautilus_View_sample.oaf.in.h:5
-#~ msgid "Sample content view component's factory"
-#~ msgstr "Örnek içerik görünüm bileþen mimarisi"
-
-# libnautilus-private/nautilus-program-chooser.c:186
-# src/nautilus-window.c:860 src/nautilus-window.c:1096
-#~ msgid "View as Sample"
-#~ msgstr "Örnek olarak göster"
-
-# libnautilus-private/nautilus-global-preferences.c:564
-#~ msgid "F_onts"
-#~ msgstr "_Yazýtipleri"
-
-# components/text/nautilus-text-view-ui.xml.h:1
-#~ msgid "Lucida"
-#~ msgstr "Lucida"
-
-# src/nautilus-service-ui.xml.h:5
-#~ msgid "Services"
-#~ msgstr "Servisler"
-
-# components/text/Nautilus_View_text.oaf.in.h:3
-#~ msgid "Text view"
-#~ msgstr "Metin görünüm"
-
-# components/text/nautilus-text-view-ui.xml.h:2
-#~ msgid "Use the Courier Font"
-#~ msgstr "Courier Yazýtipi kullan"
-
-# components/text/nautilus-text-view-ui.xml.h:5
-#~ msgid "Use the Fixed Font"
-#~ msgstr "Fixed Yazýtipi Kullan"
-
-# components/text/nautilus-text-view-ui.xml.h:5
-#~ msgid "Use the GTK System Font"
-#~ msgstr "GTK Sistem Yazýtipi Kullan"
-
-# components/text/nautilus-text-view-ui.xml.h:3
-#~ msgid "Use the Helvetica Font"
-#~ msgstr "Helvetica Yazýtipi Kullan"
-
-# components/text/nautilus-text-view-ui.xml.h:4
-#~ msgid "Use the Lucida Font"
-#~ msgstr "Lucida Yazýtipi Kullan"
-
-# components/text/nautilus-text-view-ui.xml.h:5
-#~ msgid "Use the Times Font"
-#~ msgstr "Times Yazýtipi Kullan"
-
-# components/text/nautilus-text-view-ui.xml.h:6
-#~ msgid "_Courier"
-#~ msgstr "_Courier"
-
-# components/loser/content/nautilus-content-loser-ui.xml.h:3
-# components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:3
-# components/mozilla/nautilus-mozilla-ui.xml.h:4
-# components/sample/nautilus-sample-content-view-ui.xml.h:4
-# src/nautilus-shell-ui.xml.h:78
-#~ msgid "_Fixed"
-#~ msgstr "_Fixed"
-
-#~ msgid "_GTK System Font"
-#~ msgstr "_GTK Sistem Yazýtipi"
-
-# components/text/nautilus-text-view-ui.xml.h:8
-#~ msgid "_Helvetica"
-#~ msgstr "_Helvetica"
-
-# components/text/nautilus-text-view-ui.xml.h:9
-#~ msgid "_Times"
-#~ msgstr "_Times"
-
-# components/text/Nautilus_View_text.oaf.in.h:1
-#~ msgid "Factory for text view"
-#~ msgstr "Metin görüntüleme mimarisi"
-
-# components/text/Nautilus_View_text.oaf.in.h:2
-#~ msgid "Text"
-#~ msgstr "Metin"
-
-# src/file-manager/fm-properties-window.c:1790
-#~ msgid "Text Viewer"
-#~ msgstr "Metin Görüntüleyici"
-
-# components/text/Nautilus_View_text.oaf.in.h:4
-#~ msgid "Text view factory"
-#~ msgstr "Metin görünüm mimarisi"
-
-# libnautilus-private/nautilus-program-chooser.c:186
-# src/nautilus-window.c:860 src/nautilus-window.c:1096
-#~ msgid "View as Text"
-#~ msgstr "Metin Olarak Göster"
-
-#~ msgid "Search Google for Selected Text"
-#~ msgstr "Seçili Metni Google'da Ara"
-
-#~ msgid "Use Google to search the web for the selected text"
-#~ msgstr "Seçili metni Google'da ara"
-
-#~ msgid "Look Up Selected Text in Dictionary"
-#~ msgstr "Seçili Metni Sözlükte Ara"
-
-# libnautilus/nautilus-clipboard-ui.xml.h:2 src/nautilus-shell-ui.xml.h:15
-#~ msgid "Look up the selected text in the Merriam-Webster dictionary"
-#~ msgstr "Seçili metne Merriam-Webster sözlüðünde bak"
-
-#~ msgid "animation to indicate on-going activity"
-#~ msgstr "etkinliði gösteren animasyon"
-
-# components/music/mpg123.c:32
-#, fuzzy
-#~ msgid "throbber"
-#~ msgstr "Diðer"
-
-# components/text/Nautilus_View_text.oaf.in.h:4
-#, fuzzy
-#~ msgid "throbber factory"
-#~ msgstr "Metin görünüm mimarisi"
-
-# components/tree/Nautilus_View_tree.oaf.in.h:1
-#~ msgid "Nautilus Tree sidebar panel"
-#~ msgstr "Nautilus yan paneli"
-
-# components/tree/Nautilus_View_tree.oaf.in.h:2
-#~ msgid "Nautilus Tree view"
-#~ msgstr "Nautilus Aðaç görünümü"
-
-# data/browser.xml.h:2
-#~ msgid "Apparition"
-#~ msgstr "Apparition"
-
-# data/browser.xml.h:3
-#~ msgid "Azul"
-#~ msgstr "Azul"
-
-# data/browser.xml.h:5
-#~ msgid "Black"
-#~ msgstr "Siyah"
-
-#~ msgid "Blue Ridge"
-#~ msgstr "Kabartma Mavi"
-
-# data/browser.xml.h:6
-#~ msgid "Blue Rough"
-#~ msgstr "Pürüzlü Mavi"
-
-# data/browser.xml.h:7
-#~ msgid "Blue Type"
-#~ msgstr "Mavi Tür"
-
-# components/music/mpg123.c:70
-#~ msgid "Brushed Metal"
-#~ msgstr "Cilalý Metal"
-
-# data/browser.xml.h:10
-#~ msgid "Bubble Gum"
-#~ msgstr "Sakýz"
-
-# data/browser.xml.h:13
-#~ msgid "Burlap"
-#~ msgstr "Kumaþ"
-
-# data/browser.xml.h:14
-#~ msgid "Camouflage"
-#~ msgstr "Kamuflaj"
-
-# data/browser.xml.h:15
-#~ msgid "Certified"
-#~ msgstr "Sertifika"
-
-# data/browser.xml.h:16
-#~ msgid "Chalk"
-#~ msgstr "Tebeþir"
-
-# data/browser.xml.h:17
-#~ msgid "Charcoal"
-#~ msgstr "Kömür"
-
-# data/browser.xml.h:19
-#~ msgid "Colors"
-#~ msgstr "Renkler"
-
-# data/browser.xml.h:20
-#~ msgid "Concrete"
-#~ msgstr "Beton"
-
-# data/browser.xml.h:21
-#~ msgid "Cool"
-#~ msgstr "Þýk"
-
-# data/browser.xml.h:22
-#~ msgid "Cork"
-#~ msgstr "Mantar"
-
-# components/music/mpg123.c:29
-#~ msgid "Countertop"
-#~ msgstr "Countertop"
-
-# data/browser.xml.h:23
-#~ msgid "Danger"
-#~ msgstr "Tehlike"
-
-# data/browser.xml.h:24
-#~ msgid "Danube"
-#~ msgstr "Danube"
-
-# data/browser.xml.h:25
-#~ msgid "Dark Cork"
-#~ msgstr "Mantar"
-
-# data/browser.xml.h:26
-#~ msgid "Dark GNOME"
-#~ msgstr "Koyu GNOME"
-
-# data/browser.xml.h:27
-#~ msgid "Deep Teal"
-#~ msgstr "Çamur"
-
-# data/browser.xml.h:28
-#~ msgid "Distinguished"
-#~ msgstr "Seçici"
-
-# components/help/converters/gnome-db2html2/sect-elements.c:254
-# components/notes/Nautilus_View_notes.oaf.in.h:2
-#~ msgid "Dots"
-#~ msgstr "Noktalar"
-
-# data/browser.xml.h:29
-#~ msgid "Draft"
-#~ msgstr "Taslak"
-
-# data/browser.xml.h:30
-#~ msgid "Drag a color to an object to change it to that color"
-#~ msgstr "Nesnenin rengini deðiþtirmek için rengi nesneye doðru sürükleyin"
-
-# data/browser.xml.h:31
-#~ msgid "Drag a pattern tile to an object to change it"
-#~ msgstr "Deðiþtirmek için deseni nesnenin üzerine doðru sürükleyin"
-
-# data/browser.xml.h:32
-#~ msgid "Drag an emblem to an object to add it to the object"
-#~ msgstr "Nesneye eklemek için logoyu nesneye sürükleyin."
-
-# data/browser.xml.h:33
-#~ msgid "Eclipse"
-#~ msgstr "Karartý"
-
-# data/browser.xml.h:35
-#~ msgid "Envy"
-#~ msgstr "Görkemli"
-
-# data/browser.xml.h:36
-#~ msgid "Erase"
-#~ msgstr "Sil"
-
-# data/browser.xml.h:37
-#~ msgid "Favorite"
-#~ msgstr "Favori"
-
-# data/browser.xml.h:56
-#~ msgid "Fibers"
-#~ msgstr "Ýplik"
-
-# data/browser.xml.h:38
-#~ msgid "Fire Engine"
-#~ msgstr "Alev Makinesi"
-
-# data/browser.xml.h:39
-#~ msgid "Fleur De Lis"
-#~ msgstr "Fleur De Lis"
-
-# data/linksets/portals.xml.h:2
-#~ msgid "Floral"
-#~ msgstr "Bitki"
-
-# components/music/mpg123.c:50
-#~ msgid "Fossil"
-#~ msgstr "Fosil"
-
-# data/browser.xml.h:41 icons/gnome/gnome.xml.h:1
-#~ msgid "GNOME"
-#~ msgstr "GNOME"
-
-# data/browser.xml.h:43
-#~ msgid "Granite"
-#~ msgstr "Granit"
-
-# data/browser.xml.h:44
-#~ msgid "Grapefruit"
-#~ msgstr "Greyfurt"
-
-# components/music/mpg123.c:47
-#~ msgid "Green Weave"
-#~ msgstr "Yeþil Dalga"
-
-# data/browser.xml.h:45
-#~ msgid "Ice"
-#~ msgstr "Buz"
-
-# data/browser.xml.h:46
-#~ msgid "Important"
-#~ msgstr "Önemli"
-
-# data/browser.xml.h:47
-#~ msgid "Indigo"
-#~ msgstr "Indigo"
-
-# data/browser.xml.h:49
-#~ msgid "Leaf"
-#~ msgstr "Yaprak"
-
-# data/browser.xml.h:51
-#~ msgid "Lemon"
-#~ msgstr "Limon"
-
-# data/browser.xml.h:52
-#~ msgid "Mango"
-#~ msgstr "Mango"
-
-# data/browser.xml.h:53
-#~ msgid "Manila Paper"
-#~ msgstr "Kaðýt"
-
-#~ msgid "Moss Ridge"
-#~ msgstr "Yosun Sýrtý"
-
-# data/browser.xml.h:54
-#~ msgid "Mud"
-#~ msgstr "Çamur"
-
-# data/browser.xml.h:55
-#~ msgid "New"
-#~ msgstr "Yeni"
-
-# data/browser.xml.h:56
-#~ msgid "Numbers"
-#~ msgstr "Sayýlar"
-
-#~ msgid "Ocean Strips"
-#~ msgstr "Okyanus Dalgasý"
-
-# data/browser.xml.h:58
-#~ msgid "Oh No"
-#~ msgstr "Hayýr!"
-
-# data/browser.xml.h:59
-#~ msgid "Onyx"
-#~ msgstr "Onyx"
-
-# data/browser.xml.h:60
-#~ msgid "Orange"
-#~ msgstr "Portakal"
-
-# data/browser.xml.h:61
-#~ msgid "Pale Blue"
-#~ msgstr "Açýk Mavi"
-
-# data/browser.xml.h:65
-#~ msgid "Patterns"
-#~ msgstr "Desenler"
-
-# data/browser.xml.h:66
-#~ msgid "Personal"
-#~ msgstr "Kiþisel"
-
-# data/browser.xml.h:86
-#~ msgid "Purple Marble"
-#~ msgstr "Mor Mermer"
-
-# data/browser.xml.h:69
-#~ msgid "Ridged Paper"
-#~ msgstr "Ýnce Kaðýt"
-
-# data/browser.xml.h:70
-#~ msgid "Rough Paper"
-#~ msgstr "Kalýn Kaðýt"
-
-# data/browser.xml.h:71
-#~ msgid "Ruby"
-#~ msgstr "Yakut"
-
-# data/browser.xml.h:73
-#~ msgid "Sea Foam"
-#~ msgstr "Deniz"
-
-# data/browser.xml.h:75
-#~ msgid "Shale"
-#~ msgstr "Petrol"
-
-# data/browser.xml.h:77
-#~ msgid "Silver"
-#~ msgstr "Gümüþ"
-
-# data/browser.xml.h:78
-#~ msgid "Sky"
-#~ msgstr "Gökyüzü"
-
-#~ msgid "Sky Ridge"
-#~ msgstr "Gökyüzü 2"
-
-# src/nautilus-window-menus.c:422
-#~ msgid "Snow Ridge"
-#~ msgstr "Kar"
-
-# data/browser.xml.h:79
-#~ msgid "Special"
-#~ msgstr "Özel"
-
-# data/browser.xml.h:80
-#~ msgid "Stucco"
-#~ msgstr "Stucco"
-
-# data/browser.xml.h:81
-#~ msgid "Tangerine"
-#~ msgstr "Mandalina"
-
-# components/music/mpg123.c:66
-#~ msgid "Terracotta"
-#~ msgstr "Terracotta"
-
-# data/browser.xml.h:82
-#~ msgid "Urgent"
-#~ msgstr "Önemli"
-
-# data/browser.xml.h:83
-#~ msgid "Violet"
-#~ msgstr "Mor"
-
-# data/browser.xml.h:84
-#~ msgid "Wavy White"
-#~ msgstr "Dalgalý Beyaz"
-
-# data/browser.xml.h:85
-#~ msgid "White"
-#~ msgstr "Beyaz"
-
-# data/browser.xml.h:88
-#~ msgid "White Ribs"
-#~ msgstr "Beyaz Damar"
-
-# data/linksets/apps.xml.h:2
-#~ msgid "Gnumeric"
-#~ msgstr "Gnumeric"
-
-# data/linksets/apps.xml.h:3
-#~ msgid "Netscape"
-#~ msgstr "Netscape"
-
-# data/linksets/apps.xml.h:4
-#~ msgid "The Gimp"
-#~ msgstr "Gimp"
-
-# components/services/install/nautilus-view/nautilus-service-install-view.c:714
-# components/services/install/nautilus-view/nautilus-service-install-view.c:897
-#~ msgid "Computer"
-#~ msgstr "Bilgisayar"
-
-#~ msgid "Home Directory"
-#~ msgstr "Baþlangýç Dizini"
-
-# data/linksets/portals.xml.h:1
-#~ msgid "Excite"
-#~ msgstr "Excite"
-
-# data/linksets/portals.xml.h:2
-#~ msgid "Portals"
-#~ msgstr "Portaller"
-
-# data/linksets/portals.xml.h:3
-#~ msgid "Yahoo"
-#~ msgstr "Yahoo"
-
-# data/linksets/search_engines.xml.h:1
-#~ msgid "Alta Vista"
-#~ msgstr "Alta Vista"
-
-# data/linksets/search_engines.xml.h:2
-#~ msgid "Google"
-#~ msgstr "Google"
-
-# components/music/mpg123.c:60
-#~ msgid "Allaire"
-#~ msgstr "Allaire"
-
-#~ msgid "Binary Freedom"
-#~ msgstr "Binary Freedom"
-
-# components/music/mpg123.c:61
-#~ msgid "Borland"
-#~ msgstr "Borland"
-
-#~ msgid "CNET Computers.com"
-#~ msgstr "CNET Computers.com"
-
-#~ msgid "CNET Linux Center"
-#~ msgstr "CNET Linux Merkezi"
-
-# components/music/mpg123.c:47
-#~ msgid "CollabNet"
-#~ msgstr "CollabNet"
-
-#~ msgid "Compaq"
-#~ msgstr "Compaq"
-
-#~ msgid "Conectiva"
-#~ msgstr "Conectiva"
-
-# components/music/nautilus-music-view.c:233
-#~ msgid "Covalent"
-#~ msgstr "Covalent"
-
-#~ msgid "Debian.org"
-#~ msgstr "Debian.org"
-
-# src/file-manager/fm-directory-view.c:2609
-# src/file-manager/fm-directory-view.c:2650
-#~ msgid "Dell"
-#~ msgstr "Dell"
-
-# data/browser.xml.h:36
-#~ msgid "Eazel"
-#~ msgstr "Eazel"
-
-#~ msgid "Freshmeat.net"
-#~ msgstr "Freshmeat.net"
-
-# data/browser.xml.h:41 icons/gnome/gnome.xml.h:1
-#~ msgid "GNOME.org"
-#~ msgstr "GNOME.org"
-
-#~ msgid "GNU.org"
-#~ msgstr "GNU.org"
-
-# components/help/Nautilus_View_help.oaf.in.h:8
-#~ msgid "International"
-#~ msgstr "Uluslararasý"
-
-# components/help/converters/gnome-db2html2/toc-elements.c:315
-#~ msgid "Linux Documentation Project"
-#~ msgstr "Linux Belgeleme Projesi"
-
-#~ msgid "Linux One"
-#~ msgstr "Linux One"
-
-#~ msgid "Linux Online"
-#~ msgstr "Linux Online"
-
-#~ msgid "Linux Resources"
-#~ msgstr "Linux Kaynaklarý"
-
-#~ msgid "Linux Weekly News"
-#~ msgstr "Linux Weekly News"
-
-#~ msgid "LinuxNewbie.org"
-#~ msgstr "LinuxNewbie.org"
-
-#~ msgid "LinuxOrbit.com"
-#~ msgstr "LinuxOrbit.com"
-
-#~ msgid "MandrakeSoft"
-#~ msgstr "MandrakeSoft"
-
-# libnautilus-private/nautilus-global-preferences.c:894
-#~ msgid "Netraverse"
-#~ msgstr "Netraverse"
-
-#~ msgid "News and Media"
-#~ msgstr "Haberler"
-
-#~ msgid "O'Reilly"
-#~ msgstr "O'Reilly"
-
-#~ msgid "OSDN"
-#~ msgstr "OSDN"
-
-#~ msgid "Open Source Asia"
-#~ msgstr "Open Source Asia"
-
-#~ msgid "OpenOffice"
-#~ msgstr "OpenOffice"
-
-#~ msgid "Penguin Computing"
-#~ msgstr "Penguin Computing"
-
-# components/rpmview/Nautilus_View_rpm.oaf.in.h:2
-#~ msgid "Rackspace"
-#~ msgstr "Rackspace"
-
-# libnautilus-private/nautilus-undo-signal-handlers.c:178
-#~ msgid "Red Hat"
-#~ msgstr "Red Hat"
-
-# libnautilus-private/nautilus-undo-signal-handlers.c:178
-#~ msgid "Red Hat Network"
-#~ msgstr "Red Hat Network"
-
-#~ msgid "RedFlag Linux"
-#~ msgstr "RedFlag Linux"
-
-# src/nautilus-service-ui.xml.h:6
-#~ msgid "Software"
-#~ msgstr "Yazýlým"
-
-#~ msgid "SourceForge"
-#~ msgstr "SourceForge"
-
-#~ msgid "Sun StarOffice"
-#~ msgstr "Sun StarOffice"
-
-#~ msgid "Sun Wah Linux"
-#~ msgstr "Sun Wah Linux"
-
-# src/nautilus-service-ui.xml.h:5
-#~ msgid "Web Services"
-#~ msgstr "Web Servisleri"
-
-#~ msgid "ZDNet Linux Hardware Database"
-#~ msgstr "ZDNet Linux Donaným Veritabaný"
-
-#~ msgid "ZDNet Linux Resource Center"
-#~ msgstr "ZDNet Linux Kaynaklarý Merkezi"
-
-#~ msgid "Zero-Knowledge"
-#~ msgstr "Zero-Knowledge"
-
-#~ msgid "An Eggplant variation of the Crux theme."
-#~ msgstr "Crux temasýnýn Eggplant sürümü."
-
-#~ msgid "Crux-Eggplant"
-#~ msgstr "Crux-Eggplant"
-
-#~ msgid "A Teal variation of the Crux theme."
-#~ msgstr "Crux temasýnýn deðiþik bir sürümü."
-
-# icons/arlo/arlo.xml.h:2
-#~ msgid "Crux-Teal"
-#~ msgstr "Crux-Teal"
-
-# icons/default.xml.h:1
-#~ msgid "Default"
-#~ msgstr "Öntanýmlý"
-
-# icons/default.xml.h:2
-#~ msgid "This is the default theme for Nautilus."
-#~ msgstr "Bu tema Nautilus için öntanýmlýdýr."
-
-# icons/gnome/gnome.xml.h:2
-#~ msgid "A theme designed to fit well with the classic GNOME environment"
-#~ msgstr "Klasik GNOME ortamýyla uyumlu bir tema."
-
-# icons/villanova/villanova.xml.h:1
-#~ msgid "Sierra"
-#~ msgstr "Sierra"
-
-#~ msgid "Uses manila folders and gray-green backgrounds."
-#~ msgstr "Manila dizini ve gri-yeþil arkaplan kullan"
-
-# components/music/mpg123.c:60
-#~ msgid "Tahoe"
-#~ msgstr "Tahoe"
-
-# icons/ardmore/ardmore.xml.h:2
-#~ msgid "This theme uses photo-realistic folders."
-#~ msgstr "Bu tema gerçek görünümlü dizinler kullanýr."
-
-# libnautilus/nautilus-clipboard-ui.xml.h:1 src/nautilus-shell-ui.xml.h:6
-#~ msgid "C_lear Text"
-#~ msgstr "Metni _Temizle"
-
-# libnautilus/nautilus-clipboard-ui.xml.h:1 src/nautilus-shell-ui.xml.h:6
-#~ msgid "Clear Text"
-#~ msgstr "Metni Temizle"
-
-# libnautilus/nautilus-clipboard-ui.xml.h:6 src/nautilus-shell-ui.xml.h:74
-#~ msgid "Copy Text"
-#~ msgstr "Metni Kopyala"
-
-# libnautilus/nautilus-clipboard-ui.xml.h:2 src/nautilus-shell-ui.xml.h:15
-#~ msgid "Copy the selected text to the clipboard"
-#~ msgstr "Seçili metni panoya kopyala"
-
-# src/nautilus-shell-ui.xml.h:16
-#~ msgid "Cut Text"
-#~ msgstr "Metni Kes"
-
-# src/nautilus-shell-ui.xml.h:16
-#~ msgid "Cut _Text"
-#~ msgstr "Metni _Kes"
-
-# libnautilus/nautilus-clipboard-ui.xml.h:3 src/nautilus-shell-ui.xml.h:17
-#~ msgid "Cut the selected text to the clipboard"
-#~ msgstr "Seçili metni panoya kes"
-
-# libnautilus/nautilus-clipboard-ui.xml.h:8 src/nautilus-shell-ui.xml.h:87
-#~ msgid "Paste Text"
-#~ msgstr "Metni Yapýþtýr"
-
-# libnautilus/nautilus-clipboard-ui.xml.h:4 src/nautilus-shell-ui.xml.h:42
-#~ msgid "Paste the text stored on the clipboard"
-#~ msgstr "Panoda seçilen metni yapýþtýr"
-
-# libnautilus/nautilus-clipboard-ui.xml.h:5
-#~ msgid "Remove the selected text without putting it on the clipboard"
-#~ msgstr "Seçili metni panoya yerleþtirmeden sil"
-
-# src/nautilus-shell-ui.xml.h:92
-#~ msgid "Select All"
-#~ msgstr "Hepsini Seç"
-
-# src/nautilus-shell-ui.xml.h:92
-#~ msgid "Select _All"
-#~ msgstr "_Hepsini Seç"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:32
-#~ msgid "Select all the text in a text field"
-#~ msgstr "Bu satýrdaki tüm metni seç"
-
-# libnautilus/nautilus-clipboard-ui.xml.h:6 src/nautilus-shell-ui.xml.h:74
-#~ msgid "_Copy Text"
-#~ msgstr "Metni K_opyala"
-
-# libnautilus/nautilus-clipboard-ui.xml.h:8 src/nautilus-shell-ui.xml.h:87
-#~ msgid "_Paste Text"
-#~ msgstr "Metni _Yapýþtýr"
-
-# src/Nautilus_shell.oaf.in.h:10
-#~ msgid "Nautilus File Manager and Graphic Shell"
-#~ msgstr "Nautilus Dosya Yöneticisi Grafiksel Kabuðu"
-
-# src/Nautilus_shell.oaf.in.h:1
-#~ msgid "Factory for Nautilus shell and file manager"
-#~ msgstr "Nautilus kabuk ve dosya yöneticisi mimarisi"
-
-# src/Nautilus_shell.oaf.in.h:2
-#~ msgid "Icons"
-#~ msgstr "Simgeler"
-
-# src/file-manager/fm-directory-view.c:2961
-#~ msgid "Icons Viewer"
-#~ msgstr "Simge Görüntüleyici"
-
-# src/Nautilus_shell.oaf.in.h:3
-#~ msgid "List"
-#~ msgstr "Liste"
-
-# src/file-manager/fm-directory-view.c:2961
-#~ msgid "List Viewer"
-#~ msgstr "Liste Görüntüleyici"
-
-# src/Nautilus_shell.oaf.in.h:4
-#~ msgid "Nautilus factory"
-#~ msgstr "Nautilus mimarisi"
-
-# src/Nautilus_shell.oaf.in.h:5
-#~ msgid "Nautilus file manager component that shows a scrollable list"
-#~ msgstr "Nautilus dosya yönetici bileþeni"
-
-# src/Nautilus_shell.oaf.in.h:6
-#~ msgid ""
-#~ "Nautilus file manager component that shows a scrollable list for search "
-#~ "results"
-#~ msgstr ""
-#~ "Arama sonuçlarýný liste halinde gösteren Nautilus dosya yönetici bileþeni"
-
-# src/Nautilus_shell.oaf.in.h:7
-#~ msgid ""
-#~ "Nautilus file manager component that shows a two-dimensional icon space"
-#~ msgstr ""
-#~ "Ýki boyutlu simge ortamýný gösteren Nautilus dosya yönetici bileþeni"
-
-# src/Nautilus_shell.oaf.in.h:8
-#~ msgid "Nautilus file manager component that shows icons on the desktop"
-#~ msgstr "Masaüstündeki simgeleri gösteren Nautilus dosya yöneticisi bileþeni"
-
-# src/Nautilus_shell.oaf.in.h:9
-#~ msgid "Nautilus file manager desktop icon view"
-#~ msgstr "Nautilus dosya yöneticisi masaüstü simge görünümü"
-
-# src/Nautilus_shell.oaf.in.h:10
-#~ msgid "Nautilus file manager icon view"
-#~ msgstr "Nautilus dosya yöneticisi simge görünümü"
-
-# src/Nautilus_shell.oaf.in.h:11
-#~ msgid "Nautilus file manager list view"
-#~ msgstr "Nautilus dosya yöneticisi liste görünümü"
-
-# src/Nautilus_shell.oaf.in.h:12
-#~ msgid "Nautilus file manager search results list view"
-#~ msgstr "Nautilus dosya yöneticisi arama sonucu görünümü"
-
-# components/sample/Nautilus_View_sample.oaf.in.h:2
-#~ msgid "Nautilus metafile factory"
-#~ msgstr "Nautilus meta dosya mimarisi"
-
-# src/Nautilus_shell.oaf.in.h:13
-#~ msgid "Nautilus shell"
-#~ msgstr "Nautilus kabuðu"
-
-# src/Nautilus_shell.oaf.in.h:14
-#~ msgid ""
-#~ "Nautilus shell operations that can be done from subsequent command-line "
-#~ "invocations"
-#~ msgstr "Komut satýrýndan yapýlabilecek Nautilus kabuk iþlemleri"
-
-#~ msgid "Produces metafile objects for accessing Nautilus metadata"
-#~ msgstr "Nautilus meta verilerine ulaþmak için meta dosya nesneleri yaratýr"
-
-# src/Nautilus_shell.oaf.in.h:15
-#~ msgid "Search List"
-#~ msgstr "Arama Listesi"
-
-# libnautilus-private/nautilus-program-chooser.c:186
-# src/nautilus-window.c:860 src/nautilus-window.c:1096
-#~ msgid "View as Icons"
-#~ msgstr "Simge olarak göster"
-
-# libnautilus-private/nautilus-program-chooser.c:186
-# src/nautilus-window.c:860 src/nautilus-window.c:1096
-#~ msgid "View as List"
-#~ msgstr "Liste olarak göster"
-
 #~ msgid "scripts"
 #~ msgstr "betikler"
-
-# src/file-manager/nautilus-desktop-icon-view-ui.xml.h:1
-#~ msgid "Change Desktop Background"
-#~ msgstr "Masaüstü Arkaplanýný Deðiþtir"
-
-# src/file-manager/nautilus-desktop-icon-view-ui.xml.h:2
-# src/file-manager/nautilus-directory-view-ui.xml.h:8
-#~ msgid "Delete all items in the Trash"
-#~ msgstr "Çöp kutusundaki tüm öðeleri sil"
-
-# src/file-manager/nautilus-desktop-icon-view-ui.xml.h:3
-#~ msgid "Disks"
-#~ msgstr "Disk"
-
-# src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
-#~ msgid "Mount or unmount disks"
-#~ msgstr "Diski baðla/ayýr"
-
-# src/file-manager/nautilus-desktop-icon-view-ui.xml.h:6
-#~ msgid "New Terminal"
-#~ msgstr "Yeni Terminal"
-
-# src/file-manager/nautilus-desktop-icon-view-ui.xml.h:7
-#~ msgid "Open a new GNOME terminal window"
-#~ msgstr "Yeni bir GNOME terminali aç"
-
-# src/file-manager/nautilus-desktop-icon-view-ui.xml.h:8
-#~ msgid "Remove any custom pattern or color from the desktop background"
-#~ msgstr "Masaüstü arkaplanýndaki tüm özel desen ya da rengi sil"
-
-# src/file-manager/nautilus-desktop-icon-view-ui.xml.h:9
-#~ msgid "Reset Desktop Background"
-#~ msgstr "Masaüstü Arkaplanýný Sýfýrla"
-
-# src/file-manager/nautilus-desktop-icon-view-ui.xml.h:10
-#~ msgid ""
-#~ "Show a window that lets you set your desktop background's pattern or color"
-#~ msgstr "Masaüstü arkaplaný rengi ya da desenini ayarlayacak pencere aç"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:1
-#~ msgid "Choose a program with which to open the selected item"
-#~ msgstr "Seçili dosyayý açacak uygulamayý seç"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:2
-#~ msgid "Choose another application with which to open the selected item"
-#~ msgstr "Seçili dosyayý açacak baþka bir uygulamayý seç"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:3
-#~ msgid "Choose another viewer with which to view the selected item"
-#~ msgstr "Seçili dosyayý gösterecek baþka bir izleyici seç"
-
-# libnautilus-private/nautilus-file-operations.c:1782
-#~ msgid "Copy Files"
-#~ msgstr "Dosyalarý Kopyala"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:6
-#~ msgid "Create a new empty folder inside this folder"
-#~ msgstr "Bu dizin içinde boþ bir dizin yarat"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:7
-#~ msgid "Create a symbolic link for each selected item"
-#~ msgstr "Seçilen her dosya için sembolik baðlantý yarat"
-
-# libnautilus-private/nautilus-file.c:3304
-#~ msgid "Cut Files"
-#~ msgstr "Dosyalarý Kes"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:12
-#~ msgid "Delete each selected item, without moving to the Trash"
-#~ msgstr "Tüm seçilen öðeleri Çöpe göndermeden sil"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:9
-#~ msgid "Duplicate"
-#~ msgstr "Ýkizle"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:10
-#~ msgid "Duplicate each selected item"
-#~ msgstr "Her seçili öðeyi ikizle"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:4
-#~ msgid "Make Link"
-#~ msgstr "Baðlantý Yarat"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:12
-#~ msgid "Move each selected item to the Trash"
-#~ msgstr "Tüm seçilenleri çöp kutusuna taþý"
-
-#~ msgid ""
-#~ "Move or copy files previously selected by a Cut Files or Copy Files "
-#~ "command"
-#~ msgstr ""
-#~ "Daha önce Dosyalarý Kes ya da Dosyalarý Kopyala komutu yardýmýyla seçilen "
-#~ "dosyalarý taþý ya da kopyala"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:13
-#~ msgid "Move to Trash"
-#~ msgstr "Çöpe _Taþý"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:15
-#~ msgid "New Folder"
-#~ msgstr "Yeni Dizin"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:17
-#~ msgid "Open"
-#~ msgstr "Aç"
-
-#~ msgid "Open Scripts Folder"
-#~ msgstr "Betik Dizinini Aç"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:18
-#~ msgid "Open Wit_h"
-#~ msgstr "_Birlikte Aç"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:18
-#~ msgid "Open With"
-#~ msgstr "Birlikte Aç"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:19
-#~ msgid "Open each selected item in a new window"
-#~ msgstr "Seçili her dosyayý yeni pencerede aç"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:20
-#~ msgid "Open in New Window"
-#~ msgstr "Yeni Pencerede Aç"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:21
-#~ msgid "Open the selected item in this window"
-#~ msgstr "Seçili dosyayý bu pencerede aç"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:22
-#~ msgid "Other Application..."
-#~ msgstr "Baþka Uygulama..."
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:23
-#~ msgid "Other Viewer..."
-#~ msgstr "Baþka Görüntüleyici..."
-
-# libnautilus/nautilus-clipboard-ui.xml.h:8 src/nautilus-shell-ui.xml.h:87
-#~ msgid "Paste Files"
-#~ msgstr "Dosyalarý _Yapýþtýr"
-
-#~ msgid "Prepare the selected files to be copied with a Paste Files command"
-#~ msgstr "Seçili dosyalarý 'Dosyalarý Yapýþtýr' komutuyla kopyalamaya hazýrla"
-
-#~ msgid "Prepare the selected files to be moved with a Paste Files command"
-#~ msgstr "Seçili dosyalarý 'Dosyalarý Yapýþtýr' komutuyla taþýmaya hazýrla"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:27
-#~ msgid "Remove Custom Images"
-#~ msgstr "Özel Resimleri Sil"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:28
-#~ msgid "Remove any custom images from selected icons"
-#~ msgstr "Seçili simgelerden özel resimleri sil"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:29
-#~ msgid ""
-#~ "Remove any custom pattern or color from the background of this location"
-#~ msgstr "Bu konumun arkaplanýnda yeralan desen ya da renkleri kaldýr"
-
-# components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:4
-#~ msgid "Reset View to Match Preferences"
-#~ msgstr "Tercihleri Yüklemek Ýçin Görünümü Yenileyin"
-
-# components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:4
-#~ msgid "Reset View to Match _Preferences"
-#~ msgstr "_Tercihleri Yüklemek Ýçin Görünümü Yenileyin"
-
-#~ msgid ""
-#~ "Reset sorting order and zoom level to match preferences for this view"
-#~ msgstr ""
-#~ "Bu görünüm için tercihlerle uyuþmak için sýralamayý ve odaklama oranýný "
-#~ "deðiþtir"
-
-#~ msgid "Run or manage scripts from ~/Nautilus/scripts"
-#~ msgstr "~/Nautilus/scripts'ten bir betik çalýþtýr/yönet"
-
-#~ msgid "Scripts"
-#~ msgstr "Betikler"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:31
-#~ msgid "Select All Files"
-#~ msgstr "Tüm Dosyalarý Seç"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:31
-#~ msgid "Select _All Files"
-#~ msgstr "_Tüm Dosyalarý Seç"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:32
-#~ msgid "Select all items in this window"
-#~ msgstr "Bu penceredeki tüm öðeleri seç"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:33
-#~ msgid "Show Properties"
-#~ msgstr "Özellikleri Göster"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:34
-#~ msgid "Show Trash"
-#~ msgstr "Çöpü Göster"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:35
-#~ msgid "Show _Properties"
-#~ msgstr "Özellikleri _Göster"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:36
-#~ msgid "Show the contents of the Trash"
-#~ msgstr "Çöp kutusunun içeriðini göster"
-
-#~ msgid "Show the folder containing the scripts that appear in this menu"
-#~ msgstr "Bu menüde görüntülenen betikleri içeren dizini göster"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:37
-#~ msgid "View or modify the properties of each selected item"
-#~ msgstr "Seçili her öðenin özelliklerini göster ya da deðiþtir"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:38
-#~ msgid "_Duplicate"
-#~ msgstr "Ý_kizle"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:4
-#~ msgid "_Make Link"
-#~ msgstr "_Baðlantý Yarat"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:15
-#~ msgid "_New Folder"
-#~ msgstr "_Yeni Dizin"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:40
-#~ msgid "_Open"
-#~ msgstr "_Aç"
-
-#~ msgid "_Open Scripts Folder"
-#~ msgstr "_Betikler Dizinini Göster"
-
-# libnautilus/nautilus-clipboard-ui.xml.h:8 src/nautilus-shell-ui.xml.h:87
-#~ msgid "_Paste Files"
-#~ msgstr "Dosyalarý _Yapýþtýr"
-
-# src/file-manager/nautilus-directory-view-ui.xml.h:34
-#~ msgid "_Show Trash"
-#~ msgstr "Çöpü _Göster"
-
-# src/file-manager/fm-icon-view.c:177
-# src/file-manager/nautilus-icon-view-ui.xml.h:33
-#~ msgid "By Modification _Date"
-#~ msgstr "_Deðiþim Tarihine Göre"
-
-# src/file-manager/fm-icon-view.c:184
-# src/file-manager/nautilus-icon-view-ui.xml.h:37
-#~ msgid "By _Emblems"
-#~ msgstr "_Logolara Göre"
-
-# src/file-manager/fm-icon-view.c:156
-# src/file-manager/nautilus-icon-view-ui.xml.h:38
-#~ msgid "By _Name"
-#~ msgstr "Ý_sme Göre"
-
-# src/file-manager/fm-icon-view.c:163
-# src/file-manager/nautilus-icon-view-ui.xml.h:39
-#~ msgid "By _Size"
-#~ msgstr "_Büyüklüðe Göre"
-
-# src/file-manager/fm-icon-view.c:170
-# src/file-manager/nautilus-icon-view-ui.xml.h:40
-#~ msgid "By _Type"
-#~ msgstr "_Türe Göre"
-
-# src/file-manager/nautilus-icon-view-ui.xml.h:2
-#~ msgid "Clean Up by Name"
-#~ msgstr "Ýsme Göre Temizle"
-
-# src/file-manager/nautilus-icon-view-ui.xml.h:3
-#~ msgid "Display icons in the opposite order"
-#~ msgstr "Simgeleri ters sýra ile göster"
-
-# src/file-manager/nautilus-icon-view-ui.xml.h:10
-#~ msgid "Lay Out Items"
-#~ msgstr "Öðeleri Düzenle"
-
-# src/file-manager/nautilus-icon-view-ui.xml.h:11
-#~ msgid "Leave icons wherever they are dropped"
-#~ msgstr "Simgeleri býrakýldýðý yerde býrak"
-
-# src/file-manager/nautilus-icon-view-ui.xml.h:12
-#~ msgid "Make the selected icon stretchable"
-#~ msgstr "Seçili simgeyi oynanabilinir duruma getir"
-
-# src/file-manager/nautilus-icon-view-ui.xml.h:13
-#~ msgid "Re_versed Order"
-#~ msgstr "_Ters Sýra"
-
-# src/file-manager/nautilus-icon-view-ui.xml.h:15
-#~ msgid "Rename selected icon"
-#~ msgstr "Seçili simgeri yeniden adlandýr"
-
-# src/file-manager/nautilus-icon-view-ui.xml.h:16
-#~ msgid "Reposition icons to better fit in the window and avoid overlapping"
-#~ msgstr "Simgeleri pencere içinde daha uygun bir þekilde konumlandýr"
-
-# src/file-manager/nautilus-icon-view-ui.xml.h:17
-#~ msgid "Restore Icons' Original Sizes"
-#~ msgstr "Simgeleri Asýl Boyutlarýna Getir"
-
-# src/file-manager/nautilus-icon-view-ui.xml.h:18
-#~ msgid "Restore each selected icon to its original size"
-#~ msgstr "Her seçili simgeyi eski konumuna getir"
-
-# src/file-manager/nautilus-icon-view-ui.xml.h:19
-#~ msgid "Reversed Order"
-#~ msgstr "Ters Sýra"
-
-# src/file-manager/nautilus-icon-view-ui.xml.h:20
-#~ msgid "Stretch Icon"
-#~ msgstr "_Simgeyle Oyna"
-
-# src/file-manager/nautilus-icon-view-ui.xml.h:21
-#~ msgid "Tighter Layout"
-#~ msgstr "Daha Sýkýþýk Görünüm"
-
-# src/file-manager/nautilus-icon-view-ui.xml.h:21
-#~ msgid "Tighter _Layout"
-#~ msgstr "Daha Sýkýþý_k Görünüm"
-
-# src/file-manager/nautilus-icon-view-ui.xml.h:22
-#~ msgid "Toggle using a tighter layout scheme"
-#~ msgstr "Daha sýkýþýk bir ortam yarat"
-
-# src/file-manager/nautilus-icon-view-ui.xml.h:23
-#~ msgid "_Clean Up by Name"
-#~ msgstr "Ý_sme Göre Temizle"
-
-# src/file-manager/nautilus-icon-view-ui.xml.h:25
-#~ msgid "_Lay Out Items"
-#~ msgstr "_Öðeleri Düzenle"
-
-# src/file-manager/nautilus-icon-view-ui.xml.h:30
-#~ msgid "_Manually"
-#~ msgstr "_Elle"
-
-# src/file-manager/nautilus-icon-view-ui.xml.h:26
-#~ msgid "_Rename"
-#~ msgstr "Ye_niden adlandýr"
-
-# src/file-manager/nautilus-icon-view-ui.xml.h:28
-#~ msgid "_Stretch Icon"
-#~ msgstr "_Simgeyle Oyna"
-
-# src/file-manager/nautilus-search-list-view-ui.xml.h:1
-#~ msgid "Reveal each selected item in its original folder"
-#~ msgstr "Her seçili dosyayý kendi dizininde göster"
-
-# src/file-manager/nautilus-search-list-view-ui.xml.h:2
-#~ msgid "Reveal in New Window"
-#~ msgstr "Yeni Pencerede Aç"
-
-# src/file-manager/nautilus-search-list-view-ui.xml.h:3
-#~ msgid "Show Indexing Status"
-#~ msgstr "Ýndeksleme Durumunu Göster"
-
-# src/file-manager/nautilus-search-list-view-ui.xml.h:4
-#~ msgid "Show _Indexing Status"
-#~ msgstr "Ý_ndeksleme Durumunu Göster"
-
-# src/file-manager/nautilus-search-list-view-ui.xml.h:5
-#~ msgid "Show status of indexing used when searching"
-#~ msgstr "Arama sýrasýnda indeksleme durumunu göster"
-
-# src/nautilus-service-ui.xml.h:2
-#~ msgid "Go to the Eazel Services Summary Page"
-#~ msgstr "Eazel Servislerine Git"
-
-# src/nautilus-service-ui.xml.h:3
-#~ msgid "Go to the Eazel Software Catalog"
-#~ msgstr "Eazel Yazýlým Kataloðuna Git"
-
-# src/nautilus-service-ui.xml.h:4
-#~ msgid "Go to your online storage repository"
-#~ msgstr "Kendi Ýnternet depona git"
-
-# src/nautilus-service-ui.xml.h:6
-#~ msgid "Software _Catalog"
-#~ msgstr "_Yazýlým Kataloðu"
-
-# src/nautilus-service-ui.xml.h:7
-#~ msgid "_Eazel Services Home"
-#~ msgstr "_Eazel Servisleri Sayfasý"
-
-# src/nautilus-service-ui.xml.h:8
-#~ msgid "_Online Storage"
-#~ msgstr "Çevrimiçi _Depo"
-
-# src/nautilus-service-ui.xml.h:9
-#~ msgid "_Services"
-#~ msgstr "_Servisler"
-
-# src/nautilus-shell-ui.xml.h:1
-#~ msgid " _Advanced"
-#~ msgstr "_Uzman"
-
-# src/nautilus-shell-ui.xml.h:2
-#~ msgid " _Beginner"
-#~ msgstr "_Baþlangýç"
-
-# src/nautilus-shell-ui.xml.h:3
-#~ msgid " _Intermediate"
-#~ msgstr "_Normal"
-
-# src/nautilus-shell-ui.xml.h:4
-#~ msgid "Add a bookmark for the current location to this menu"
-#~ msgstr "Burasý için bir niþan ekle"
-
-# src/nautilus-shell-ui.xml.h:7
-#~ msgid "Change the visibility of this window's location bar"
-#~ msgstr "Bu pencerenin konum çubuðunun görüntüsünü deðiþtir"
-
-# src/nautilus-shell-ui.xml.h:8
-#~ msgid "Change the visibility of this window's sidebar"
-#~ msgstr "Bu pencerenin yan çubuðunun görüntüsünü deðiþtir"
-
-# src/nautilus-shell-ui.xml.h:9
-#~ msgid "Change the visibility of this window's status bar"
-#~ msgstr "Bu pencerenin durum çubuðunun görüntüsünü deðiþtir"
-
-# src/nautilus-shell-ui.xml.h:10
-#~ msgid "Change the visibility of this window's toolbar"
-#~ msgstr "Bu pencerenin araç çubuðunun görüntüsünü deðiþtir"
-
-# src/nautilus-shell-ui.xml.h:4
-#~ msgid "Choose a view for the current location, or modify the set of views"
-#~ msgstr ""
-#~ "Þimdiki konum için bir görünüm ekleyin, ya da görünüm listesini "
-#~ "düzenleyin."
-
-# src/nautilus-shell-ui.xml.h:11
-#~ msgid "Clear contents of Go menu and Back/Forward lists"
-#~ msgstr "Git menüsünün ve Ýleri/Geri listesinin içeriðini temizle"
-
-# src/nautilus-shell-ui.xml.h:12
-#~ msgid "Close _All Windows"
-#~ msgstr "_Tüm Pencereleri Kapat"
-
-# src/nautilus-shell-ui.xml.h:13
-#~ msgid "Close all Nautilus windows"
-#~ msgstr "Tüm Nautilus pencerelerini kapat"
-
-# src/nautilus-shell-ui.xml.h:14
-#~ msgid "Close this window"
-#~ msgstr "Bu pencereyi kapat"
-
-# src/nautilus-shell-ui.xml.h:18
-#~ msgid "Display a window that allows editing the bookmarks in this menu"
-#~ msgstr "Bu menüdeki yer imlerini düzenlemek için pencere göster"
-
-# src/nautilus-shell-ui.xml.h:19
-#~ msgid "Display credits for the creators of Nautilus"
-#~ msgstr "Nautilus'u yazanlar hakkýnda bilgi ver"
-
-# src/nautilus-shell-ui.xml.h:20
-#~ msgid "Display on-line help for Nautilus"
-#~ msgstr "Nautilus için yardým bilgilerini ver"
-
-# src/nautilus-shell-ui.xml.h:21
-#~ msgid ""
-#~ "Display patterns, colors, and emblems that can be used to customize "
-#~ "appearance"
-#~ msgstr "Görünümü deðiþtirmeye yarayan desen, renk ve logolarý gösterir."
-
-# src/nautilus-shell-ui.xml.h:23
-#~ msgid "Display quick reference pages for Nautilus"
-#~ msgstr "Nautilus için hýzlý yardým sayfalarýný göster"
-
-# src/nautilus-shell-ui.xml.h:20
-#~ msgid "Display release notes for Nautilus"
-#~ msgstr "Nautilus için sürüm bilgilerini göster"
 
 # src/nautilus-service-ui.xml.h:1
 #~ msgid "Display support information for Nautilus and Eazel Services"
 #~ msgstr "Nautilus ve Eazel Servisleri destek bilgisini göster"
-
-# src/nautilus-shell-ui.xml.h:22
-#~ msgid "Display the latest contents of the current location"
-#~ msgstr "Güncel konum için son içeriði görüntüle"
-
-# src/nautilus-shell-ui.xml.h:25
-#~ msgid "Edit various Nautilus preferences"
-#~ msgstr "Çeþitli Nautilus tercihlerini düzenle"
-
-# src/nautilus-shell-ui.xml.h:26
-#~ msgid "Find"
-#~ msgstr "Bul"
-
-# src/nautilus-shell-ui.xml.h:27
-#~ msgid "For_get History"
-#~ msgstr "_Geçmiþi Unut"
-
-# src/nautilus-shell-ui.xml.h:28
-#~ msgid "Go to Eazel Services"
-#~ msgstr "Eazel Servislerine Git"
-
-# src/nautilus-shell-ui.xml.h:29
-#~ msgid "Go to the home location"
-#~ msgstr "Baþlangýç dizinine git"
-
-# src/nautilus-shell-ui.xml.h:31
-#~ msgid "Go to the next visited location"
-#~ msgstr "Ýlerideki yere git"
-
-# src/nautilus-shell-ui.xml.h:32
-#~ msgid "Go to the previous visited location"
-#~ msgstr "Önceki yere git"
-
-# src/nautilus-shell-ui.xml.h:30
-#~ msgid "Go up to the location that contains the displayed location"
-#~ msgstr "Görüntülenen konuma doðru yukarý git"
-
-# libnautilus-private/nautilus-global-preferences.c:44
-#~ msgid "Nautilus Quick _Reference"
-#~ msgstr "_Nautilus için Hýzlý Yardým"
-
-# libnautilus-private/nautilus-global-preferences.c:44
-#~ msgid "Nautilus Release _Notes"
-#~ msgstr "Nautilus _Sürüm Notlarý"
-
-# src/nautilus-shell-ui.xml.h:84
-#~ msgid "Nautilus User _Manual"
-#~ msgstr "N_autilus Kullanýcý Kýlavuzu"
-
-# src/nautilus-shell-ui.xml.h:39
-#~ msgid "New Window"
-#~ msgstr "_Yeni Pencere"
-
-# src/nautilus-shell-ui.xml.h:39
-#~ msgid "New _Window"
-#~ msgstr "Yeni _Pencere"
-
-# src/nautilus-shell-ui.xml.h:40
-#~ msgid "Normal Size"
-#~ msgstr "Normal Boyut"
-
-# src/nautilus-shell-ui.xml.h:41
-#~ msgid "Open another Nautilus window for the displayed location"
-#~ msgstr "Görüntülenen konum için baþka bir Nautilus penceresi aç"
-
-# src/nautilus-shell-ui.xml.h:44
-#~ msgid "Refresh"
-#~ msgstr "Yeniden yükle"
-
-# src/nautilus-shell-ui.xml.h:46
-#~ msgid "Report Profiling"
-#~ msgstr "Profil Oluþtur"
-
-# src/nautilus-shell-ui.xml.h:47
-#~ msgid "Reset Profiling"
-#~ msgstr "Profili Sýfýrla"
-
-# src/nautilus-shell-ui.xml.h:48
-#~ msgid "Search the World Wide Web"
-#~ msgstr "Web üzerinde ara"
-
-# src/nautilus-shell-ui.xml.h:49
-#~ msgid "Search this computer for files"
-#~ msgstr "Dosyalarý bu bilgisayarda ara"
 
 # src/nautilus-shell-ui.xml.h:50
 #~ msgid ""
@@ -9220,183 +9954,6 @@ msgstr "%%%d"
 #~ "Nautilus ve Eazel servisleri hakkýnda geribildirim göndermek için "
 #~ "kullanýlabilecek bir pencere göster"
 
-# src/nautilus-shell-ui.xml.h:51
-#~ msgid "Show the contents at the normal size"
-#~ msgstr "Ýçeriði normal boyutta göster"
-
-# src/nautilus-shell-ui.xml.h:52
-#~ msgid "Show the contents in less detail"
-#~ msgstr "Ýçeriði az detay ile göster"
-
-# src/nautilus-shell-ui.xml.h:53
-#~ msgid "Show the contents in more detail"
-#~ msgstr "Ýçeriði detaylý göster"
-
-# src/nautilus-shell-ui.xml.h:54
-#~ msgid "Start Profiling"
-#~ msgstr "Profili Kapat"
-
-# src/nautilus-shell-ui.xml.h:56
-#~ msgid "Stop Profiling"
-#~ msgstr "Profili Baþlat"
-
-# src/nautilus-shell-ui.xml.h:57
-#~ msgid "Stop loading this location"
-#~ msgstr "Bu konumu yüklemeyi durdur"
-
-# src/nautilus-shell-ui.xml.h:58
-#~ msgid "Undo the last text change"
-#~ msgstr "Son metin deðiþikliðini geri al"
-
-# src/nautilus-shell-ui.xml.h:59
-#~ msgid "Up"
-#~ msgstr "Yukarý"
-
-#~ msgid "Use preferences appropriate for beginners"
-#~ msgstr "Baþlangýç seviyesindekiler için uygun olan tercihleri kullan"
-
-#~ msgid "Use preferences appropriate for experts"
-#~ msgstr "Uzmanlar için uygun olan tercihleri kullan"
-
-#~ msgid "Use preferences appropriate for most people"
-#~ msgstr "Pek çok kullanýcý için uygun olan tercihleri kullan"
-
-# src/nautilus-shell-ui.xml.h:63
-#~ msgid "We_b Search"
-#~ msgstr "Web'de _Ara"
-
-# src/nautilus-shell-ui.xml.h:63
-#~ msgid "Web Search"
-#~ msgstr "Web'de Ara"
-
-# src/nautilus-shell-ui.xml.h:64
-#~ msgid "Zoom In"
-#~ msgstr "Yakýnlaþ"
-
-# src/nautilus-shell-ui.xml.h:65
-#~ msgid "Zoom Out"
-#~ msgstr "Uzaklaþ"
-
-# src/nautilus-shell-ui.xml.h:66
-#~ msgid "Zoom _In"
-#~ msgstr "_Yakýnlaþ"
-
-# src/nautilus-shell-ui.xml.h:67
-#~ msgid "Zoom _Out"
-#~ msgstr "_Uzaklaþ"
-
-# src/nautilus-shell-ui.xml.h:68
-#~ msgid "_About Nautilus..."
-#~ msgstr "_Nautilus Hakkýnda..."
-
-# src/nautilus-shell-ui.xml.h:69
-#~ msgid "_Add Bookmark"
-#~ msgstr "_Yer imi ekle"
-
-# src/nautilus-shell-ui.xml.h:70
-#~ msgid "_Back"
-#~ msgstr "_Geri"
-
-# src/nautilus-shell-ui.xml.h:71
-#~ msgid "_Backgrounds and Emblems..."
-#~ msgstr "_Arkaplanlar..."
-
-# src/nautilus-shell-ui.xml.h:72
-#~ msgid "_Bookmarks"
-#~ msgstr "_Yer imleri"
-
-# src/nautilus-shell-ui.xml.h:73
-#~ msgid "_Close Window"
-#~ msgstr "Pencereyi _Kapat"
-
-# src/nautilus-service-ui.xml.h:10
-#~ msgid "_Community Support"
-#~ msgstr "_Kullanýcý Desteði"
-
-# src/nautilus-shell-ui.xml.h:75
-#~ msgid "_Edit"
-#~ msgstr "_Deðiþtir"
-
-# src/nautilus-shell-ui.xml.h:76
-#~ msgid "_Edit Bookmarks..."
-#~ msgstr "Yer imlerini _düzenle..."
-
-# src/nautilus-shell-ui.xml.h:43
-#~ msgid "_Edit Preferences..."
-#~ msgstr "Tercihleri Düzenle..."
-
 # src/nautilus-shell-ui.xml.h:77
 #~ msgid "_Feedback"
 #~ msgstr "_Geribildirim"
-
-# src/nautilus-shell-ui.xml.h:79 src/nautilus-window-menus.c:1239
-#~ msgid "_Find"
-#~ msgstr "_Bul"
-
-# src/nautilus-shell-ui.xml.h:80
-#~ msgid "_Forward"
-#~ msgstr "_Ýleri"
-
-# src/nautilus-shell-ui.xml.h:81
-#~ msgid "_Go"
-#~ msgstr "G_it"
-
-# src/nautilus-shell-ui.xml.h:82
-#~ msgid "_Help"
-#~ msgstr "_Yardým"
-
-# src/nautilus-shell-ui.xml.h:83
-#~ msgid "_Home"
-#~ msgstr "_Baþlangýç"
-
-# src/nautilus-bookmarks-window.c:177
-#~ msgid "_Location..."
-#~ msgstr "_Adres..."
-
-# src/nautilus-shell-ui.xml.h:86
-#~ msgid "_Normal Size"
-#~ msgstr "_Normal Boyut"
-
-# src/nautilus-window-menus.c:483
-#~ msgid "_Preferences"
-#~ msgstr "_Tercihler"
-
-# src/nautilus-shell-ui.xml.h:88
-#~ msgid "_Profiler"
-#~ msgstr "_Profiller"
-
-# src/nautilus-shell-ui.xml.h:89
-#~ msgid "_Refresh"
-#~ msgstr "_Yeniden Yükle"
-
-# src/nautilus-shell-ui.xml.h:90
-#~ msgid "_Report Profiling"
-#~ msgstr "Profil _Oluþtur"
-
-# src/nautilus-shell-ui.xml.h:91
-#~ msgid "_Reset Profiling"
-#~ msgstr "Profillleri _Sýfýrla"
-
-# src/nautilus-shell-ui.xml.h:93
-#~ msgid "_Start Profiling"
-#~ msgstr "Profile _Baþlat"
-
-# src/nautilus-shell-ui.xml.h:94
-#~ msgid "_Stop Profiling"
-#~ msgstr "Profil _Durdur"
-
-# src/nautilus-shell-ui.xml.h:95
-#~ msgid "_Undo"
-#~ msgstr "_Geri Al"
-
-# src/nautilus-shell-ui.xml.h:96
-#~ msgid "_Up a Level"
-#~ msgstr "_Bir Seviye Yukarý"
-
-# src/nautilus-shell-ui.xml.h:97
-#~ msgid "_View"
-#~ msgstr "_Bakýþ"
-
-# src/nautilus-window.c:1118
-#~ msgid "_View as..."
-#~ msgstr "_Farklý görüntüle..."
