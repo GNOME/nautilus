@@ -67,8 +67,8 @@ void                         nautilus_label_set_smooth_font                (Naut
 									    NautilusScalableFont         *font);
 NautilusScalableFont *       nautilus_label_get_smooth_font                (const NautilusLabel          *label);
 void                         nautilus_label_set_smooth_font_size           (NautilusLabel                *label,
-									    guint                         font_size);
-guint                        nautilus_label_get_smooth_font_size           (const NautilusLabel          *label);
+									    int                           font_size);
+int                          nautilus_label_get_smooth_font_size           (const NautilusLabel          *label);
 void                         nautilus_label_set_text_opacity               (NautilusLabel                *label,
 									    int                           opacity);
 int                          nautilus_label_get_text_opacity               (const NautilusLabel          *label);
@@ -82,8 +82,8 @@ void                         nautilus_label_set_text_color                 (Naut
 									    guint32                       color);
 guint32                      nautilus_label_get_text_color                 (const NautilusLabel          *label);
 void                         nautilus_label_set_smooth_drop_shadow_offset  (NautilusLabel                *label,
-									    guint                         offset);
-guint                        nautilus_label_get_smooth_drop_shadow_offset  (const NautilusLabel          *label);
+									    int                           offset);
+int                          nautilus_label_get_smooth_drop_shadow_offset  (const NautilusLabel          *label);
 void                         nautilus_label_set_smooth_drop_shadow_color   (NautilusLabel                *label,
 									    guint32                       color);
 guint32                      nautilus_label_get_smooth_drop_shadow_color   (const NautilusLabel          *label);
@@ -100,7 +100,7 @@ void                         nautilus_label_set_wrap                       (Naut
 									    gboolean                      line_wrap);
 gboolean                     nautilus_label_get_wrap                       (const NautilusLabel          *label);
 GtkWidget *                  nautilus_label_new_solid                      (const char                   *text,
-									    guint                         drop_shadow_offset,
+									    int                           drop_shadow_offset,
 									    guint32                       drop_shadow_color,
 									    guint32                       text_color,
 									    float                         xalign,

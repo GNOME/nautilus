@@ -1,3 +1,74 @@
+2001-02-22  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Gene Z. Ragan <gzr@eazel.com>
+
+	Fix bugs:
+
+	2784 - NautilusScalableFont text clipping is broken.
+	2831 - Icon container redraw performance is poor in smooth mode.
+	Optimized this case some.  Its still not as good as we
+	would like it to be.  Thanks to the following changes, it
+	is possible to optimize it even more - by caching the
+	layouts of icons for example.  We need to profile with the
+	new changes.
+	
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(measure_label_text), (draw_or_measure_label_text_aa),
+	(draw_label_text_aa):
+	* libnautilus-extensions/nautilus-icon-factory.c: (embed_text):
+	Use NautilusSmoothTextLayout instead of NautilusTextLayout.
+
+	* libnautilus-extensions/nautilus-label.h:
+	* libnautilus-extensions/nautilus-label.c:
+	(nautilus_label_initialize_class), (nautilus_label_initialize),
+	(nautilus_label_destroy), (nautilus_label_set_arg),
+	(nautilus_label_get_arg), (nautilus_label_size_allocate),
+	(label_composite_pixbuf_callback), (label_get_text_dimensions),
+	(label_smooth_text_ensure), (label_smooth_text_clear),
+	(nautilus_label_set_smooth_font),
+	(nautilus_label_set_smooth_font_size),
+	(nautilus_label_set_is_smooth),
+	(nautilus_label_set_smooth_line_wrap_width),
+	(nautilus_label_set_smooth_drop_shadow_offset),
+	(nautilus_label_set_text), (nautilus_label_set_wrap),
+	(nautilus_label_new_solid), (nautilus_label_make_bold),
+	(nautilus_label_make_larger), (nautilus_label_make_smaller),
+	(nautilus_label_set_never_smooth):
+	Simplified.  Use NautilusSmoothTextLayout to handle laying
+	out the text.
+	
+	* libnautilus-extensions/nautilus-scalable-font.h:
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(nautilus_scalable_font_new),
+	(nautilus_scalable_font_measure_text),
+	(nautilus_scalable_font_draw_text),
+	(initialize_global_stuff_if_needed),
+	(nautilus_scalable_font_get_underline_height),
+	(nautilus_scalable_font_get_baseline):
+	Simplified.  Use NautilusSmoothTextLayout.  Remove no longer
+	needed functions.
+
+	* libnautilus-extensions/nautilus-smooth-text-layout.h:
+	* libnautilus-extensions/nautilus-smooth-text-layout.c:
+	New class to handle smooth text layout needs.  Layout details are
+	private to make it easirt to fix bugs in the future.
+	
+	* libnautilus-extensions/nautilus-text-layout.c:
+	* libnautilus-extensions/nautilus-text-layout.h:
+	Retire.
+	
+	* test/.cvsignore:
+	* test/Makefile.am:
+	* test/test-nautilus-font-simple.c: (main):
+	* test/test-nautilus-font.c: (main):
+	* test/test-nautilus-glyph-simple.c: (glyph_new), (main):
+	* test/test-nautilus-label-simple.c: (main):
+	* test/test-nautilus-label-wrapped.c: (create_nautilus_label),
+	(main):
+	* test/test-nautilus-smooth-text-layout.c: (main):
+	New smooth text layout test.  Update test for smooth layout changes.
+
 2001-02-23  John Harper  <jsh@eazel.com>
 
 	reviewed by: Arik Devens  <arik@eazel.com>

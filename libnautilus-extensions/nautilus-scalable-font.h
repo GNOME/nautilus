@@ -73,76 +73,45 @@ struct _NautilusScalableFontClass
 	GtkObjectClass		parent_class;
 };
 
-GtkType                nautilus_scalable_font_get_type                        (void);
-NautilusScalableFont  *nautilus_scalable_font_new                             (const char                  *family,
-									       const char                  *weight,
-									       const char                  *slant,
-									       const char                  *set_width);
-NautilusDimensions     nautilus_scalable_font_measure_text                    (const NautilusScalableFont  *font,
-									       int                          font_size,
-									       const char                  *text,
-									       guint                        text_length);
-int                    nautilus_scalable_font_text_width                      (const NautilusScalableFont  *font,
-									       int                          font_size,
-									       const char                  *text,
-									       guint                        text_length);
-void                   nautilus_scalable_font_draw_text                       (const NautilusScalableFont  *font,
-									       GdkPixbuf                   *destination_pixbuf,
-									       int                          x,
-									       int                          y,
-									       const ArtIRect              *clip_area,
-									       int                          font_size,
-									       const char                  *text,
-									       guint                        text_length,
-									       guint32                      color,
-									       int                          opacity);
-void                   nautilus_scalable_font_measure_text_lines              (const NautilusScalableFont  *font,
-									       int                          font_size,
-									       const char                  *text,
-									       guint                        num_text_lines,
-									       double                       empty_line_height,
-									       NautilusDimensions           text_line_dimensions[],
-									       int                         *max_width_out,
-									       int                         *total_height_out);
-void                   nautilus_scalable_font_draw_text_lines_with_dimensions (const NautilusScalableFont  *font,
-									       GdkPixbuf                   *destination_pixbuf,
-									       int                          x,
-									       int                          y,
-									       const ArtIRect              *clip_area,
-									       int                          font_size,
-									       const char                  *text,
-									       guint                        num_text_lines,
-									       const NautilusDimensions    *text_line_dimensions,
-									       GtkJustification             justification,
-									       int                          line_offset,
-									       double                       empty_line_height,
-									       guint32                      color,
-									       int                          opacity);
-void                   nautilus_scalable_font_draw_text_lines                 (const NautilusScalableFont  *font,
-									       GdkPixbuf                   *destination_pixbuf,
-									       int                          x,
-									       int                          y,
-									       const ArtIRect              *clip_area,
-									       int                          font_size,
-									       const char                  *text,
-									       GtkJustification             justification,
-									       int                          line_offset,
-									       double                       empty_line_height,
-									       guint32                      color,
-									       int                          opacity);
-int                    nautilus_scalable_font_largest_fitting_font_size       (const NautilusScalableFont  *font,
-									       const char                  *text,
-									       int                          available_width,
-									       int                          minimum_acceptable_font_size,
-									       int                          maximum_acceptable_font_size);
-NautilusScalableFont  *nautilus_scalable_font_get_default_font                (void);
-NautilusStringList *   nautilus_scalable_font_get_font_family_list            (void);
-gboolean               nautilus_scalable_font_query_font                      (const char                  *family,
-									       NautilusStringList         **weights,
-									       NautilusStringList         **slants,
-									       NautilusStringList         **set_widths);
-NautilusScalableFont  *nautilus_scalable_font_make_bold                       (NautilusScalableFont        *font);
-
+GtkType                nautilus_scalable_font_get_type                  (void);
+NautilusScalableFont  *nautilus_scalable_font_new                       (const char                  *family,
+									 const char                  *weight,
+									 const char                  *slant,
+									 const char                  *set_width);
+NautilusDimensions     nautilus_scalable_font_measure_text              (const NautilusScalableFont  *font,
+									 int                          font_size,
+									 const char                  *text,
+									 guint                        text_length);
+int                    nautilus_scalable_font_text_width                (const NautilusScalableFont  *font,
+									 int                          font_size,
+									 const char                  *text,
+									 guint                        text_length);
+void                   nautilus_scalable_font_draw_text                 (const NautilusScalableFont  *font,
+									 GdkPixbuf                   *destination_pixbuf,
+									 int                          x,
+									 int                          y,
+									 const ArtIRect              *clip_area,
+									 int                          font_size,
+									 const char                  *text,
+									 guint                        text_length,
+									 guint32                      color,
+									 int                          opacity);
+int                    nautilus_scalable_font_largest_fitting_font_size (const NautilusScalableFont  *font,
+									 const char                  *text,
+									 int                          available_width,
+									 int                          minimum_acceptable_font_size,
+									 int                          maximum_acceptable_font_size);
+NautilusScalableFont  *nautilus_scalable_font_get_default_font          (void);
+NautilusStringList *   nautilus_scalable_font_get_font_family_list      (void);
+gboolean               nautilus_scalable_font_query_font                (const char                  *family,
+									 NautilusStringList         **weights,
+									 NautilusStringList         **slants,
+									 NautilusStringList         **set_widths);
+NautilusScalableFont  *nautilus_scalable_font_make_bold                 (NautilusScalableFont        *font);
+int                    nautilus_scalable_font_get_underline_height      (const NautilusScalableFont  *font,
+									 int                          font_size);
+int                    nautilus_scalable_font_get_baseline              (const NautilusScalableFont  *font,
+									 int                          font_size);
 END_GNOME_DECLS
 
 #endif /* NAUTILUS_SCALABLE_FONT_H */

@@ -75,6 +75,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-default-file-icon.c		\
 	nautilus-directory-async.c		\
 	nautilus-directory-background.c		\
+	nautilus-directory-metafile-monitor.c   \
 	nautilus-directory-metafile.c		\
 	nautilus-directory.c			\
 	nautilus-drag-window.c			\
@@ -122,9 +123,8 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-list.c                         \
 	nautilus-medusa-support.c		\
 	nautilus-merged-directory.c		\
-	nautilus-metafile.c                     \
 	nautilus-metafile-factory.c             \
-	nautilus-directory-metafile-monitor.c   \
+	nautilus-metafile.c                     \
 	nautilus-mime-actions.c			\
 	nautilus-password-dialog.c		\
 	nautilus-preferences-box.c		\
@@ -140,6 +140,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-scalable-font.c		\
 	nautilus-search-uri.c			\
 	nautilus-self-checks.c			\
+	nautilus-smooth-text-layout.c		\
 	nautilus-smooth-widget.c		\
 	nautilus-sound.c			\
 	nautilus-stock-dialogs.c		\
@@ -149,7 +150,6 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-string.c			\
 	nautilus-tabs.c				\
 	nautilus-text-caption.c			\
-	nautilus-text-layout.c			\
 	nautilus-theme.c			\
 	nautilus-thumbnails.c			\
 	nautilus-trash-directory.c		\
@@ -186,6 +186,7 @@ noinst_HEADERS =				\
 	nautilus-debug.h			\
 	nautilus-default-file-icon.h		\
 	nautilus-directory-background.h		\
+	nautilus-directory-metafile-monitor.h   \
 	nautilus-directory-metafile.h		\
 	nautilus-directory-notify.h		\
 	nautilus-directory-private.h		\
@@ -242,9 +243,8 @@ noinst_HEADERS =				\
 	nautilus-medusa-support.h		\
 	nautilus-merged-directory.h		\
 	nautilus-metadata.h			\
-	nautilus-metafile.h                     \
 	nautilus-metafile-factory.h             \
-	nautilus-directory-metafile-monitor.h   \
+	nautilus-metafile.h                     \
 	nautilus-mime-actions.h			\
 	nautilus-password-dialog.h		\
 	nautilus-preferences-box.h		\
@@ -263,6 +263,7 @@ noinst_HEADERS =				\
 	nautilus-scalable-font.h		\
 	nautilus-search-uri.h			\
 	nautilus-self-checks.h			\
+	nautilus-smooth-text-layout.h		\
 	nautilus-smooth-widget.h		\
 	nautilus-sound.h			\
 	nautilus-stock-dialogs.h		\
@@ -272,7 +273,6 @@ noinst_HEADERS =				\
 	nautilus-string.h			\
 	nautilus-tabs.h				\
 	nautilus-text-caption.h			\
-	nautilus-text-layout.h			\
 	nautilus-theme.h			\
 	nautilus-thumbnails.h			\
 	nautilus-trash-directory.h		\

@@ -38,12 +38,6 @@
 
 #include <librsvg/rsvg-ft.h>
 
-#include <libart_lgpl/art_misc.h>
-#include <libart_lgpl/art_alphagamma.h>
-#include <libart_lgpl/art_affine.h>
-#include <librsvg/art_render.h>
-#include <librsvg/art_render_mask.h>
-
 #include <stdio.h>
 #include <libgnome/gnome-util.h>
 #include <ctype.h>
@@ -599,12 +593,11 @@ nautilus_scalable_font_new (const char *family,
 	/* 'Intern' the rsvg font handle if needed */
 	if (font_entry->font_handle == NAUTILUS_SCALABLE_FONT_UNDEFINED_HANDLE) {
 		font_entry->font_handle = rsvg_ft_intern (global_rsvg_ft_context, font_entry->path);
-
 	}
 
 #if 0
-	g_print ("%s (%s, %s, %s %s) handle = %d\n" , 
-		 __FUNCTION__, family, weight, slant, set_width, font_entry->font_handle);
+	g_print ("%s (%s, %s, %s %s) handle = %d, path = %s\n" , 
+		 __FUNCTION__, family, weight, slant, set_width, font_entry->font_handle, font_entry->path);
 #endif
 	
 	font = NAUTILUS_SCALABLE_FONT (gtk_object_new (nautilus_scalable_font_get_type (), NULL));
@@ -658,9 +651,7 @@ nautilus_scalable_font_measure_text (const NautilusScalableFont *font,
 				     guint text_length)
 {
 	NautilusDimensions dimensions;
- 	double affine[6];
-	int glyph_xy[2];
-	unsigned int tmp[2];
+	NautilusGlyph *glyph;
 
 	g_return_val_if_fail (NAUTILUS_IS_SCALABLE_FONT (font), NAUTILUS_DIMENSIONS_EMPTY);
 	g_return_val_if_fail (font_size > 0, NAUTILUS_DIMENSIONS_EMPTY);
@@ -671,20 +662,9 @@ nautilus_scalable_font_measure_text (const NautilusScalableFont *font,
 
 	g_return_val_if_fail (text_length <= strlen (text), NAUTILUS_DIMENSIONS_EMPTY);
 
-	art_affine_identity (affine);
-
-	rsvg_ft_measure_string (global_rsvg_ft_context,
-				font->detail->font_handle,
-				text,
-				text_length,
-				font_size,
-				font_size,
-				affine,
-				glyph_xy,
-				tmp);
-
-	dimensions.width = tmp[0];
-	dimensions.height = tmp[1];
+	glyph = nautilus_glyph_new (font, font_size, text, text_length);
+	dimensions = nautilus_glyph_get_dimensions (glyph);
+	nautilus_glyph_free (glyph);
 
 	return dimensions;
 }
@@ -723,11 +703,7 @@ nautilus_scalable_font_draw_text (const NautilusScalableFont *font,
 				  guint32 color,
 				  int opacity)
 {
-	RsvgFTGlyph *glyph;
- 	double affine[6];
-	int glyph_xy[2];
-	ArtIRect render_area;
-	ArtIRect glyph_area;
+	NautilusGlyph *glyph;
 
 	g_return_if_fail (NAUTILUS_IS_SCALABLE_FONT (font));
 	g_return_if_fail (destination_pixbuf != NULL);
@@ -741,357 +717,17 @@ nautilus_scalable_font_draw_text (const NautilusScalableFont *font,
 
 	g_return_if_fail (text_length <= strlen (text));
 
-	if (clip_area != NULL) {
-		g_return_if_fail (clip_area->x1 > clip_area->x0);
-		g_return_if_fail (clip_area->y1 > clip_area->y0);
-	}
+	glyph = nautilus_glyph_new (font, font_size, text, text_length);
 
-	art_affine_identity (affine);
+	nautilus_glyph_draw_to_pixbuf (glyph,
+				       destination_pixbuf,
+				       x,
+				       y,
+				       clip_area,
+				       color,
+				       opacity);
 
-	/* Make a glyph for the given string  */
-	glyph = rsvg_ft_render_string (global_rsvg_ft_context,
-				       font->detail->font_handle,
-				       text,
-				       text_length,
-				       font_size,
-				       font_size,
-				       affine,
-				       glyph_xy);
-	g_assert (glyph != NULL);
-
-   	glyph_xy[0] = 0;
-   	glyph_xy[1] = 0;
-	
-	glyph_area.x0 = glyph_xy[0];
-	glyph_area.y0 = glyph_xy[1];
-	glyph_area.x1 = glyph_area.x0 + glyph->width;
-	glyph_area.y1 = glyph_area.y0 + glyph->height;
-	
-	/* Translate the glyph area to the (x,y) where its to be rendered */
-	glyph_area.x0 += x;
-	glyph_area.y0 += y;
-	glyph_area.x1 += x;
-	glyph_area.y1 += y;
-
-	/* Clip the glyph_area against the clip_area if needed */
-	if (clip_area != NULL) {
-		art_irect_intersect (&render_area, &glyph_area, clip_area);
-	}
-	else {
-		render_area = glyph_area;
-	}
-
-	/* Render the glyph */
-	if (!art_irect_empty (&render_area)) {
-		int pixbuf_width;
-		int pixbuf_height;
-		int pixbuf_rowstride;
-		guchar *pixbuf_pixels;
-		ArtRender *art_render;
-		ArtPixMaxDepth art_color_array[3];
-		ArtAlphaType alpha_type;
-		
-		pixbuf_width = gdk_pixbuf_get_width (destination_pixbuf);
-		pixbuf_height = gdk_pixbuf_get_height (destination_pixbuf);
-		pixbuf_rowstride = gdk_pixbuf_get_rowstride (destination_pixbuf);
-		pixbuf_pixels = gdk_pixbuf_get_pixels (destination_pixbuf);
-		
-		alpha_type = gdk_pixbuf_get_has_alpha (destination_pixbuf) ? 
-			ART_ALPHA_SEPARATE : 
-			ART_ALPHA_NONE;
-		
-		art_render = art_render_new (0,
-					     0,
-					     pixbuf_width,
-					     pixbuf_height,
-					     pixbuf_pixels,
-					     pixbuf_rowstride,
-					     3,
-					     8,
-					     alpha_type,
-					     NULL);
-		
-		art_color_array[0] = ART_PIX_MAX_FROM_8 (NAUTILUS_RGBA_COLOR_GET_R (color));
-		art_color_array[1] = ART_PIX_MAX_FROM_8 (NAUTILUS_RGBA_COLOR_GET_G (color));
-		art_color_array[2] = ART_PIX_MAX_FROM_8 (NAUTILUS_RGBA_COLOR_GET_B (color));
-		
-		art_render_mask_solid (art_render, (opacity << 8) + opacity + (opacity >> 7));
-		art_render_image_solid (art_render, art_color_array);
-
-		art_render_mask (art_render,
-				 render_area.x0,
-				 render_area.y0,
-				 render_area.x1,
-				 render_area.y1,
-				 glyph->buf, 
-				 glyph->rowstride);
-		art_render_invoke (art_render);
-	}
-	
-	rsvg_ft_glyph_unref (glyph);
-}
-
-void
-nautilus_scalable_font_measure_text_lines (const NautilusScalableFont *font,
-					   int font_size,
-					   const char *text,
-					   guint num_text_lines,
-					   double empty_line_height,
-					   NautilusDimensions text_line_dimensions[],
-					   int *max_width_out,
-					   int *total_height_out)
-{
-	guint i;
-	const char *line;
-
-	g_return_if_fail (NAUTILUS_IS_SCALABLE_FONT (font));
-	g_return_if_fail (font_size > 0);
-	g_return_if_fail (text != NULL);
-	g_return_if_fail (text_line_dimensions != NULL);
-	g_return_if_fail (num_text_lines > 0);
-	g_return_if_fail (num_text_lines <= (nautilus_str_count_characters (text, '\n') + 1));
-
-	if (max_width_out != NULL) {
-		*max_width_out = 0;
-	}
-
-	if (total_height_out != NULL) {
-		*total_height_out = 0;
-	}
-
-	line = text;
-
-	/*
-	 * We can safely iterate for 'num_text_lines' since we already checked that the 
-	 * string does indeed contain as many lines.
-	 */
-	for (i = 0; i < num_text_lines; i++) {
-		const char *next_new_line;
-		int length;
-
-		g_assert (line != NULL);
-
-		/* Look for the next new line */
-		next_new_line = strchr (line, '\n');
-
-		if (next_new_line != NULL) {
-			length = (next_new_line - line);
-		}
-		else {
-			length = strlen (line);
-		}
-		
-		/* Deal with empty lines */
-		if (length == 0) {
-			text_line_dimensions[i].width = 0;
-			text_line_dimensions[i].height = empty_line_height;
-		}
-		else {
-			text_line_dimensions[i] = nautilus_scalable_font_measure_text (font,
-										       font_size,
-										       line,
-										       length);
-		}
-		
-		if (next_new_line != NULL) {
-			line = next_new_line + 1;
-		}
-		else {
-			line = NULL;
-		}
-		
-		/* Keep track of total height */
- 		if (total_height_out != NULL) {
- 			*total_height_out += text_line_dimensions[i].height;
- 		}
-		
-		/* Keep track of max width */
- 		if (max_width_out != NULL) {
- 			*max_width_out = MAX (*max_width_out, text_line_dimensions[i].width);
- 		}
-	}
-}
-
-void
-nautilus_scalable_font_draw_text_lines_with_dimensions (const NautilusScalableFont *font,
-							GdkPixbuf *destination_pixbuf,
-							int x,
-							int y,
-							const ArtIRect *clip_area,
-							int font_size,
-							const char *text,
-							guint num_text_lines,
-							const NautilusDimensions *text_line_dimensions,
-							GtkJustification justification,
-							int line_offset,
-							double empty_line_height,
-							guint32 color,
-							int opacity)
-{
-	guint i;
-	const char *line;
-	int available_width;
-	int available_height;
-
-	g_return_if_fail (NAUTILUS_IS_SCALABLE_FONT (font));
-	g_return_if_fail (destination_pixbuf != NULL);
-	g_return_if_fail (clip_area != NULL);
-	g_return_if_fail (font_size > 0);
-	g_return_if_fail (justification >= GTK_JUSTIFY_LEFT && justification <= GTK_JUSTIFY_FILL);
-	g_return_if_fail (clip_area->x1 > clip_area->x0);
-	g_return_if_fail (clip_area->y1 > clip_area->y0);
-	g_return_if_fail (num_text_lines > 0);
-	g_return_if_fail (num_text_lines <= (nautilus_str_count_characters (text, '\n') + 1));
-	g_return_if_fail (text_line_dimensions != NULL);
-	g_return_if_fail (opacity >= NAUTILUS_OPACITY_FULLY_TRANSPARENT);
-	g_return_if_fail (opacity <= NAUTILUS_OPACITY_FULLY_OPAQUE);
-
-	available_width = clip_area->x1 - clip_area->x0;
-	available_height = clip_area->y1 - clip_area->y0;
-
-	line = text;
-
-	/*
-	 * We can safely iterate for 'num_text_lines' since we already checked that the 
-	 * string does indeed contain as many lines.
-	 */
-	for (i = 0; i < num_text_lines; i++) {
-		const char *next_new_line;
-		int length;
-
-		g_assert (line != NULL);
-
-		/* Look for the next new line */
-		next_new_line = strchr (line, '\n');
-
-		if (next_new_line != NULL) {
-			length = (next_new_line - line);
-		}
-		else {
-			length = strlen (line);
-		}
-		
-		/* Deal with empty lines */
-		if (length == 0) {
-			y += (line_offset + text_line_dimensions[i].height);
-		}
-		else {
-			int text_x;
-			int text_y;
-			
-			switch (justification) {
-			case GTK_JUSTIFY_LEFT:
-				text_x = x;
-				break;
-				
-			case GTK_JUSTIFY_CENTER:
-			case GTK_JUSTIFY_FILL:
-				if (text_line_dimensions[i].width <= available_width) {
-					text_x = x + ((available_width - text_line_dimensions[i].width) / 2);
-				}
-				else {
-					text_x = x - ((text_line_dimensions[i].width - available_width) / 2);
-				}
-				break;
-
-			case GTK_JUSTIFY_RIGHT:
-				text_x = x + available_width - text_line_dimensions[i].width;
-				break;
-				
-			default:
-				g_assert_not_reached ();
-				text_x = 0;
-			}
-			
-			text_y = y;
-			
-			nautilus_scalable_font_draw_text (font,
-							  destination_pixbuf,
-							  text_x,
-							  text_y,
-							  clip_area,
-							  font_size,
-							  line,
-							  length,
-							  color,
-							  opacity);
-			
-			y += (line_offset + text_line_dimensions[i].height);
-		}
-		
-		if (next_new_line != NULL) {
-			line = next_new_line + 1;
-		}
-		else {
-			line = NULL;
-		}
-	}
-}
-
-void
-nautilus_scalable_font_draw_text_lines (const NautilusScalableFont *font,
-					GdkPixbuf *destination_pixbuf,
-					int x,
-					int y,
-					const ArtIRect *clip_area,
-					int font_size,
-					const char *text,
-					GtkJustification justification,
-					int line_offset,
-					double empty_line_height,
-					guint32 color,
-					int opacity)
-{
-	guint num_text_lines;
-	NautilusDimensions *text_line_dimensions;
-
-	g_return_if_fail (NAUTILUS_IS_SCALABLE_FONT (font));
-	g_return_if_fail (destination_pixbuf != NULL);
-	g_return_if_fail (clip_area != NULL);
-	g_return_if_fail (font_size > 0);
-	g_return_if_fail (justification >= GTK_JUSTIFY_LEFT && justification <= GTK_JUSTIFY_FILL);
-	g_return_if_fail (clip_area->x1 > clip_area->x0);
-	g_return_if_fail (clip_area->y1 > clip_area->y0);
-	g_return_if_fail (opacity >= NAUTILUS_OPACITY_FULLY_TRANSPARENT);
-	g_return_if_fail (opacity <= NAUTILUS_OPACITY_FULLY_OPAQUE);
-
- 	if (text == NULL || text[0] == '\0') {
- 		return;
- 	}
-
-	/* FIXME bugzilla.eazel.com 2785: We need to optimize this code to measure a minimum
-	 * number of text lines.  We need to look at the clip rectangle and compute the 
-	 * maximum number of text lines that actually fit.
-	 */
-
- 	num_text_lines = nautilus_str_count_characters (text, '\n') + 1;
-	text_line_dimensions = g_new (NautilusDimensions, num_text_lines);
-	
-	nautilus_scalable_font_measure_text_lines (font,
-						   font_size,
-						   text,
-						   num_text_lines,
-						   empty_line_height,
-						   text_line_dimensions,
-						   NULL,
-						   NULL);
-
-	nautilus_scalable_font_draw_text_lines_with_dimensions (font,
-								destination_pixbuf,
-								x,
-								y,
-								clip_area,
-								font_size,
-								text,
-								num_text_lines,
-								text_line_dimensions,
-								justification,
-								line_offset,
-								empty_line_height,
-								color,
-								opacity);
-	
-	g_free (text_line_dimensions);
+	nautilus_glyph_free (glyph);
 }
 
 /**
@@ -1351,6 +987,31 @@ initialize_global_stuff_if_needed (void)
 
 		g_atexit (font_family_string_map_at_exit_destructor);
 	}
+}
+
+int
+nautilus_scalable_font_get_underline_height (const NautilusScalableFont *font,
+					     int font_size)
+{
+	g_return_val_if_fail (NAUTILUS_IS_SCALABLE_FONT (font), 0);
+	g_return_val_if_fail (font_size > 0, 0);
+
+	/* FIXME bugzilla.eazel.com 2865: This underlining code should
+	 * take into account the baseline for the rendered string rather
+	 * that doing the '1' nonsense.
+	 */
+	return 1;
+}
+
+int
+nautilus_scalable_font_get_baseline (const NautilusScalableFont *font,
+				     int font_size)
+{
+	/* FIXME bugzilla.eazel.com 2865: This underlining code should
+	 * take into account the baseline for the rendered string rather
+	 * that doing the '-2' nonsense.
+	 */
+	return -2;
 }
 
 /* Private NautilusScalableFont things */

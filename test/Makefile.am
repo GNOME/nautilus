@@ -58,6 +58,7 @@ noinst_PROGRAMS =\
 	test-nautilus-preferences-change \
 	test-nautilus-preferences-display \
 	test-nautilus-smooth-graphics \
+	test-nautilus-smooth-text-layout \
 	test-nautilus-widgets \
 	test-nautilus-wrap-table \
 	test-nautilus-viewport-constraint \
@@ -92,6 +93,7 @@ test_nautilus_pixbuf_tile_SOURCES = test-nautilus-pixbuf-tile.c test.c
 test_nautilus_preferences_change_SOURCES = test-nautilus-preferences-change.c test.c
 test_nautilus_preferences_display_SOURCES = test-nautilus-preferences-display.c test.c
 test_nautilus_smooth_graphics_SOURCES = test-nautilus-smooth-graphics.c
+test_nautilus_smooth_text_layout_SOURCES = test-nautilus-smooth-text-layout.c test.c
 test_nautilus_widgets_SOURCES = test-nautilus-widgets.c
 test_nautilus_wrap_table_SOURCES = test-nautilus-wrap-table.c test.c
 

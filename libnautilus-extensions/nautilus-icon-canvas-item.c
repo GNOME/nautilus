@@ -51,7 +51,7 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-icon-factory.h"
 #include "nautilus-theme.h"
-#include "nautilus-text-layout.h"
+#include "nautilus-smooth-text-layout.h"
 
 /* Comment this out if the new smooth fonts code give you problems
  * This isnt meant to be permanent.  Its just a precaution.
@@ -1323,7 +1323,7 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 	GnomeCanvasItem *canvas_item;
 	int max_text_width;
 	int icon_width, text_left, box_left;
-	NautilusTextLayout *icon_text_layout;
+	NautilusSmoothTextLayout *smooth_text_layout;
 	char **pieces;
 	const char *text_piece;
 	int i;
@@ -1414,19 +1414,22 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 		if (text_piece[0] == '\0') {
 			text_piece = " ";
 		}
-		
-		icon_text_layout = nautilus_text_layout_new (details->smooth_font,
-							     details->smooth_font_size,
-							     text_piece,
-							     LINE_BREAK_CHARACTERS,
-							     max_text_width, 
-							     TRUE);
+
+		smooth_text_layout = nautilus_smooth_text_layout_new (text_piece,
+								      strlen (text_piece),
+								      details->smooth_font,
+								      details->smooth_font_size,
+								      TRUE);
+		nautilus_smooth_text_layout_set_line_spacing (smooth_text_layout, 2);
+		nautilus_smooth_text_layout_set_empty_line_height (smooth_text_layout, 20);
+		nautilus_smooth_text_layout_set_line_wrap_width (smooth_text_layout, max_text_width);
 		
 		/* Draw text if we are not in user rename mode */
 		if (destination_pixbuf != NULL && !details->is_renaming) {
 			gboolean underlined;
+			ArtIRect destination_area;
 
-			text_left = icon_left + (icon_width - icon_text_layout->width) / 2;
+			text_left = icon_left + (icon_width - nautilus_smooth_text_layout_get_width (smooth_text_layout)) / 2;
 			
 			/* if it's prelit, and we're in click-to-activate mode, underline the text */
 			underlined = (details->is_prelit && in_single_click_mode ());
@@ -1435,41 +1438,59 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 			if (needs_highlight) {
 				icon_bottom += 1; /* leave some space for selection frame */
 				text_left -= 1;
-				nautilus_text_layout_paint (icon_text_layout, 
-							    destination_pixbuf, 
-							    text_left + 2, 
-							    icon_bottom + height_so_far + 1,
-							    GTK_JUSTIFY_CENTER,
-							    NAUTILUS_RGB_COLOR_BLACK,
-							    underlined);
+				
+				destination_area.x0 = text_left + 2;
+				destination_area.y0 = icon_bottom + height_so_far + 1;
+				destination_area.x1 = destination_area.x0 + nautilus_smooth_text_layout_get_width (smooth_text_layout);
+				destination_area.y1 = destination_area.y0 + nautilus_smooth_text_layout_get_height (smooth_text_layout);
+				nautilus_smooth_text_layout_draw_to_pixbuf (smooth_text_layout,
+									    destination_pixbuf,
+									    0,
+									    0,
+									    &destination_area,
+									    GTK_JUSTIFY_CENTER,
+									    underlined,
+									    NAUTILUS_RGB_COLOR_BLACK,
+									    0xff);
 			}
-						
 			
-			nautilus_text_layout_paint (icon_text_layout, 
-						    destination_pixbuf, 
-						    text_left,
-						    icon_bottom + height_so_far,
-						    GTK_JUSTIFY_CENTER,
-						    label_color,
-						    underlined);
+			destination_area.x0 = text_left;
+			destination_area.y0 = icon_bottom + height_so_far;
+			destination_area.x1 = destination_area.x0 + nautilus_smooth_text_layout_get_width (smooth_text_layout);
+			destination_area.y1 = destination_area.y0 + nautilus_smooth_text_layout_get_height (smooth_text_layout);
+			nautilus_smooth_text_layout_draw_to_pixbuf (smooth_text_layout,
+								    destination_pixbuf,
+								    0,
+								    0,
+								    &destination_area,
+								    GTK_JUSTIFY_CENTER,
+								    underlined,
+								    label_color,
+								    0xff);
 			
 			/* if it's highlighted, embolden by drawing twice */
 			if (needs_highlight) {
-				nautilus_text_layout_paint (icon_text_layout, 
-							    destination_pixbuf, 
-							    text_left + 1, 
-							    icon_bottom + height_so_far,
-							    GTK_JUSTIFY_CENTER,
-							    label_color,
-							    underlined);
+				destination_area.x0 = text_left + 1;
+				destination_area.y0 = icon_bottom + height_so_far;
+				destination_area.x1 = destination_area.x0 + nautilus_smooth_text_layout_get_width (smooth_text_layout);
+				destination_area.y1 = destination_area.y0 + nautilus_smooth_text_layout_get_height (smooth_text_layout);
+				nautilus_smooth_text_layout_draw_to_pixbuf (smooth_text_layout,
+									    destination_pixbuf,
+									    0,
+									    0,
+									    &destination_area,
+									    GTK_JUSTIFY_CENTER,
+									    underlined,
+									    label_color,
+									    0xff);
 			}
 			
 		}
-
-		width_so_far = MAX (width_so_far, (guint) icon_text_layout->width);
-		height_so_far += icon_text_layout->height;
 		
-		nautilus_text_layout_free (icon_text_layout);
+		width_so_far = MAX (width_so_far, (guint) nautilus_smooth_text_layout_get_width (smooth_text_layout));
+		height_so_far += nautilus_smooth_text_layout_get_height (smooth_text_layout);
+		
+		gtk_object_unref (GTK_OBJECT (smooth_text_layout));
 	}
 	g_strfreev (pieces);
 	
@@ -1580,12 +1601,11 @@ draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, int 
 	 * measureable speed improvement, but only by around 5%.
 	 * draw_or_measure_label_text_aa accounts for about 90% of the time.
 	 */
-	text_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
-				TRUE,
-				8,
-				icon_item->details->text_width,
-				icon_item->details->text_height);
-
+ 	text_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
+ 				      TRUE,
+ 				      8,
+ 				      icon_item->details->text_width,
+ 				      icon_item->details->text_height);
 	if (needs_highlight) {
 		container = NAUTILUS_ICON_CONTAINER (GNOME_CANVAS_ITEM (icon_item)->canvas);	
 		nautilus_gdk_pixbuf_fill_rectangle_with_color (text_pixbuf, NULL,
