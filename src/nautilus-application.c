@@ -181,6 +181,8 @@ nautilus_application_instance_init (NautilusApplication *application)
 	/* Watch for volume unmounts so we can close open windows */
 	g_signal_connect_object (gnome_vfs_get_volume_monitor (), "volume_unmounted",
 				 G_CALLBACK (volume_unmounted_callback), application, 0);
+	g_signal_connect_object (gnome_vfs_get_volume_monitor (), "volume_pre_unmount",
+				 G_CALLBACK (volume_unmounted_callback), application, 0);
 	g_signal_connect_object (gnome_vfs_get_volume_monitor (), "volume_mounted",
 				 G_CALLBACK (volume_mounted_callback), application, 0);
 
@@ -1123,6 +1125,8 @@ volume_mounted_callback (GnomeVFSVolumeMonitor *monitor,
 /* Called whenever a volume is unmounted. Check and see if there are any windows open
  * displaying contents on the volume. If there are, close them.
  * It would also be cool to save open window and position info.
+ *
+ * This is also called on pre_unmount.
  */
 static void
 volume_unmounted_callback (GnomeVFSVolumeMonitor *monitor,
@@ -1131,12 +1135,16 @@ volume_unmounted_callback (GnomeVFSVolumeMonitor *monitor,
 {
 	GList *window_list, *node, *close_list;
 	NautilusWindow *window;
-	char *uri, *activation_uri;
-		
+	char *uri, *activation_uri, *path;
+	GnomeVFSVolumeMonitor *volume_monitor;
+	GnomeVFSVolume *window_volume;
+	
 	close_list = NULL;
 	
 	/* Check and see if any of the open windows are displaying contents from the unmounted volume */
 	window_list = nautilus_application_get_window_list ();
+
+	volume_monitor = gnome_vfs_get_volume_monitor ();
 
 	activation_uri = gnome_vfs_volume_get_activation_uri (volume);
 	/* Construct a list of windows to be closed. Do not add the non-closable windows to the list. */
@@ -1146,6 +1154,18 @@ volume_unmounted_callback (GnomeVFSVolumeMonitor *monitor,
 			uri = nautilus_window_get_location (window);
 			if (eel_str_has_prefix (uri, activation_uri)) {
 				close_list = g_list_prepend (close_list, window);
+			} else {
+				path = gnome_vfs_get_local_path_from_uri (uri);
+				if (path != NULL) {
+					window_volume = gnome_vfs_volume_monitor_get_volume_for_path (volume_monitor,
+												      path);
+					if (window_volume != NULL && window_volume == volume) {
+						close_list = g_list_prepend (close_list, window);
+					}
+					gnome_vfs_volume_unref (window_volume);
+					g_free (path);
+				}
+				
 			}
 			g_free (uri);
 		}
