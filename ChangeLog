@@ -1,3 +1,14 @@
+2002-04-01  Havoc Pennington  <hp@redhat.com>
+
+	* libnautilus-private/nautilus-thumbnails.c: backport fix to use 
+	an idle instead of a timeout, and avoid looping infinitely in case 
+	where we had a local thumbnail but couldn't update it.
+
+	* libnautilus-private/nautilus-metafile.c: backport fix for 
+	security issue with tmp race. only change was to remove priority 
+	arg to some eel-vfs functions, and replace some g_build_filename 
+	with g_strconcat - pretty sure these were safe changes.
+
 2002-03-20  Havoc Pennington  <hp@redhat.com>
 
 	* libnautilus-private/nautilus-thumbnails.c: Add patch to
