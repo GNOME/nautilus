@@ -1,3 +1,286 @@
+2001-03-28  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Fix bugs:
+
+	7343 - Fonts checks should work even when nautilus has not
+	undergone 'make install'
+
+	7703 - index status dialog is mixing gnome dialog font and
+	nautilus custom font
+
+	7204 - Need a better way to pick a fallback font
+
+	1102 - Embedded text should use preferences to determine the font
+	it uses
+
+	7357 - Preferences dialog spews critical in the ja_JP locale
+
+	7344 - NautilusScalable should not be doing any preferences
+	peeking
+
+	7345 - Default font "helvetica" hard coded and marked for
+	translatation in many places
+
+	7834 - Should mark selected style in font picker menu
+
+	5239 - Please make the text viewer use a fixed-width font
+
+	7401 - Non smooth font family picker should have a "GTK System
+	Font" entry
+
+	Work in progress for related bugs:
+
+	5101 - font sizes hard-coded in icon view
+	5456 - Sidebar tabs use hard coded font families
+	7670 - Font size is small in list view.
+
+	reviewed by: Glynn Foster <glynn.foster@ireland.sun.com>
+
+	* components/notes/nautilus-notes.c: (make_notes_view):
+	Dont translate the font name.
+	
+	* components/text/nautilus-text-view-ui.xml:
+	Add default and fixed entries.
+
+	* components/text/nautilus-text-view.c:
+	(nautilus_text_view_initialize_class),
+	(nautilus_text_view_initialize), (nautilus_text_view_destroy),
+	(nautilus_text_view_update_font), (handle_ui_event),
+	(merge_bonobo_menu_items), (nautilus_text_view_zoom_to_level),
+	(zoomable_zoom_to_fit_callback), (font_changed_callback):
+	Dont store the font name and size.  Compute these as needed.  Use
+	deltas instead of hard coded font sizes to compute the font size
+	for a given zoom level.  Store the font changes in preferences.
+	
+	* libnautilus-extensions/nautilus-caption.c:
+	(nautilus_caption_initialize), (nautilus_caption_set_title_label),
+	(nautilus_caption_get_title_label),
+	(nautilus_caption_get_title_label_width),
+	(nautilus_caption_set_child), (nautilus_caption_set_spacing):
+	* libnautilus-extensions/nautilus-caption.h:
+	Add support for nice caption alignments.
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	(add_preferences_callbacks), (remove_preferences_callbacks):
+	A bit of a hack.  Keep track of changes in the default smooth font
+	so that embedded icon text previews can be updated as needed.
+	
+	* libnautilus-extensions/nautilus-font-factory.c:
+	(nautilus_font_factory_get_font_by_family),
+	A temporary hack for default system font usage.  In a future
+	checkin this will not be needed anymore.
+	
+	(nautilus_font_factory_get_font_from_preferences):
+	Dont translate font names anymore.
+	
+	* libnautilus-extensions/nautilus-font-manager.c:
+	(font_description_new), (font_description_free),
+	(font_description_get_char_set), (font_description_table_for_each),
+	(font_list_find_bold_callback), (get_test_font_dir),
+	(nautilus_self_check_font_manager):
+	* libnautilus-extensions/nautilus-font-manager.h:
+	Merge char_set_registry and char_set_encoding into one string
+	'char_set.'  Make the font checks work even if nautilus has not
+	undergone 'make install'
+	
+	* libnautilus-extensions/nautilus-font-picker.c:
+	(nautilus_font_picker_initialize), (nautilus_font_picker_destroy),
+	(font_picker_populate), (font_make_style_name),
+	(font_style_entry_new), (compare_style),
+	(global_font_list_populate_callback):
+	* libnautilus-extensions/nautilus-font-picker.h:
+	Sublcass the font picker from NautilusCaption so that it will
+	nicely align in the preferences dialog.
+	Mark selected style in font picker menus by using radio buttons.
+	Fix a storage leak on destruction.
+	
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(nautilus_compare_integer), (nautilus_self_check_glib_extensions):
+	* libnautilus-extensions/nautilus-glib-extensions.h:
+	New GCompare function for integers.
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_defaults),
+	(global_preferences_create_dialog),
+	(global_preferences_create_search_pane),
+	(global_preferences_create_sidebar_panels_pane),
+	(global_preferences_pane_update_callback),
+	(global_preferences_get_dialog),
+	(global_preferences_install_sidebar_panel_defaults),
+	(global_preferences_make_sidebar_panel_key),
+	(global_preferences_is_sidebar_panel_enabled),
+	(global_preferences_install_home_location_defaults),
+	(global_preferences_install_font_defaults),
+	(global_preferences_install_medusa_defaults),
+	(global_preferences_populate_pane),
+	(global_preferences_get_smooth_font),
+	(global_preferences_get_smooth_bold_font),
+	(nautilus_global_preferences_get_icon_view_smooth_font),
+	(nautilus_global_preferences_get_default_smooth_font),
+	(nautilus_global_preferences_get_default_smooth_bold_font),
+	(nautilus_global_preferences_initialize):
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	Simplify the creation of preferences by using structures to
+	describe both preferences and preference fialog entries.
+	
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_get_system_font):
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	New function to obtain the "Gtk System Font."
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_initialize_class),
+	(nautilus_icon_canvas_item_set_arg),
+	(nautilus_icon_canvas_item_get_arg),
+	(nautilus_icon_canvas_item_set_smooth_font_size):
+	* libnautilus-extensions/nautilus-icon-canvas-item.h:
+	Use signed integers for the font dimensions.
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_initialize),
+	(nautilus_icon_container_update_icon),
+	(nautilus_icon_container_theme_changed),
+	(nautilus_icon_container_set_font_size_table):
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* libnautilus-extensions/nautilus-icon-private.h:
+	Dont translate the font names.  Rename the font size table to
+	better reflect its purpose.  Use signed integers for font sizes.
+	
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(embedded_text_font_changed_callback), (embedded_text_font_free),
+	(embed_text):
+	Keep track of changes in the smooth font used for embedded text so
+	that the icon text previews will update as needed.
+	
+	* libnautilus-extensions/nautilus-preferences-box.c:
+	(nautilus_preferences_box_find_pane):
+	* libnautilus-extensions/nautilus-preferences-box.h:
+	New function to find a named pane.
+	
+	* libnautilus-extensions/nautilus-preferences-group.c:
+	(preferences_group_align_captions),
+	(nautilus_preferences_group_update),
+	(nautilus_preferences_group_get_title_label):
+	* libnautilus-extensions/nautilus-preferences-group.h:
+	Add support for aligning captions.
+	
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(nautilus_preferences_item_initialize),
+	(preferences_item_construct), (preferences_item_update_enum),
+	(preferences_item_create_enum),
+	(preferences_item_update_short_enum),
+	(preferences_item_create_short_enum),
+	(preferences_item_update_boolean),
+	(preferences_item_create_boolean),
+	(preferences_item_update_editable_string),
+	(preferences_item_create_editable_string),
+	(preferences_item_update_editable_integer),
+	(preferences_item_create_editable_integer),
+	(preferences_item_update_constrained_integer),
+	(preferences_item_create_constrained_integer),
+	(preferences_item_update_font), (preferences_item_create_font),
+	(preferences_item_update_smooth_font),
+	(preferences_item_create_smooth_font),
+	(nautilus_preferences_item_new),
+	(enum_radio_group_changed_callback),
+	(boolean_button_toggled_callback), (font_item_changed_callback),
+	(editable_string_changed_callback),
+	(editable_integer_changed_callback),
+	(constrained_integer_changed_callback),
+	(nautilus_preferences_item_update_displayed_value),
+	(preferences_item_update_editable_integer_settings_at_idle),
+	(nautilus_preferences_item_get_control_showing),
+	(nautilus_preferences_item_set_constrained_integer_paramaters),
+	(nautilus_preferences_item_child_is_caption),
+	(nautilus_preferences_item_get_caption_title_label_width),
+	(nautilus_preferences_item_set_caption_spacing):
+	* libnautilus-extensions/nautilus-preferences-item.h:
+	Add a new CONSTRAINED INTEGER item type.  Add support for aligning
+	captions.
+	Dont translate font names.
+	
+	* libnautilus-extensions/nautilus-preferences-pane.c:
+	(nautilus_preferences_pane_add_group),
+	(nautilus_preferences_pane_add_item_to_nth_group),
+	(nautilus_preferences_pane_get_num_visible_groups),
+	(nautilus_preferences_pane_get_num_groups),
+	(nautilus_preferences_pane_find_group):
+	* libnautilus-extensions/nautilus-preferences-pane.h:
+	Add a function for finding a named group.
+	
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(nautilus_scalable_font_get_default_font),
+	(nautilus_scalable_font_get_default_bold_font):
+	Dont peek preferences for the default fonts.  These are now
+	handled in nautilus-global-preferences.
+	
+	* libnautilus-extensions/nautilus-smooth-text-layout.c:
+	(smooth_text_layout_line_list_new),
+	(smooth_text_layout_line_list_new_wrapped),
+	(nautilus_smooth_text_layout_new),
+	(nautilus_smooth_text_layout_set_font_size):
+	Use signed integers for font sizes.
+
+	* libnautilus-extensions/nautilus-string-picker.c:
+	(nautilus_string_picker_initialize),
+	(nautilus_string_picker_set_string_list):
+	Update for Caption superclass changes.  Dont make singleton
+	choices insensitive.
+	
+	* libnautilus-extensions/nautilus-text-caption.c:
+	(nautilus_text_caption_initialize):
+	* libnautilus-extensions/nautilus-text-caption.h:
+	Update for Caption superclass changes.  Fix errors in header comments.
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize), (fm_directory_view_destroy):
+	* src/file-manager/fm-directory-view.h:
+	Remove knowledge of font stuff.  The fonts for icon and list view
+	are now handled separately so each subclass will have to do its
+	own preferences listening.
+	
+	* src/file-manager/fm-icon-view.c: (set_sort_criterion_by_id),
+	(font_changed_callback), (smooth_font_changed_callback),
+	(standard_font_size_changed_callback),
+	(fm_icon_view_initialize_class), (fm_icon_view_initialize),
+	(fm_icon_view_update_icon_container_font_size_table),
+	(fm_icon_view_update_icon_container_smooth_font),
+	(create_icon_container):
+	Keep track of icon view font changes.  Use deltas to compute the
+	font sizes instead of hard coded point sizes.
+	
+	* src/file-manager/fm-list-view.c: (fm_list_view_initialize_class),
+	(fm_list_view_initialize), (fm_list_view_update_font),
+	(font_or_font_size_changed_callback),
+	(fm_list_view_image_display_policy_changed):
+	Keep track of list view font changes.  Use deltas to compute the
+	font sizes instead of hard coded point sizes.
+
+	* src/file-manager/nautilus-indexing-info.c:
+	(last_index_time_and_reindex_button_dialog_new),
+	(index_progress_dialog_new):
+	Dont use smooth labels mixed in with regular gtk labels.
+
+	* src/nautilus-sidebar-tabs.c:
+	(nautilus_sidebar_tabs_load_theme_data),
+	(smooth_font_changed_callback), (nautilus_sidebar_tabs_initialize),
+	(nautilus_sidebar_tabs_destroy):
+	Add macros and FIXME for hard coded font size.  NULL out the tab_font
+	when its unreffed, otherwise all hell breaks lose when user level
+	changes.  Update for default font changes.
+	
+	* src/nautilus-sidebar-title.c: (smooth_font_changed_callback),
+	(nautilus_sidebar_title_initialize),
+	(nautilus_sidebar_title_destroy), (update_font):
+	Keep track of smooth font changes.  Update for default font changes.
+	
+	* test/test-nautilus-font-manager.c: (font_iterator_callback):
+	* test/test-nautilus-font-picker.c: (update_font),
+	(print_selected_font_callback), (main):
+	* test/test-nautilus-label-simple.c: (use_system_font_callback),
+	(use_system_font_bold_callback), (main):
+	Update for font picker and font manager changes.
+	
 2001-03-27  Darin Adler  <darin@eazel.com>
 
 	reviewed (a bit) by: John Sullivan <sullivan@eazel.com>

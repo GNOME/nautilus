@@ -300,16 +300,7 @@ nautilus_scalable_font_get_default_font (void)
 	char *default_font_file_name;
 	NautilusScalableFont *default_font;
 
-	/* FIXME bugzilla.eazel.com 7344:
-	 * Its evil that we have to peek preferences here to
-	 * find the default smooth font, but so it goes.
-	 */
-	default_font_file_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_SMOOTH_FONT);
-	if (!g_file_exists (default_font_file_name)) {
-		g_free (default_font_file_name);
-		default_font_file_name = nautilus_font_manager_get_default_font ();
-	}
-
+	default_font_file_name = nautilus_font_manager_get_default_font ();
 	g_assert (default_font_file_name != NULL);
 	default_font = nautilus_scalable_font_new (default_font_file_name);
 	g_free (default_font_file_name);
@@ -323,16 +314,7 @@ nautilus_scalable_font_get_default_bold_font (void)
 	char *default_bold_font_file_name;
 	NautilusScalableFont *default_bold_font;
 
-	/* FIXME bugzilla.eazel.com 7344:
-	 * Its evil that we have to peek preferences here to
-	 * find the default smooth font, but so it goes.
-	 */
-	default_bold_font_file_name = nautilus_preferences_get ("directory-view/smooth_font");
-	if (!g_file_exists (default_bold_font_file_name)) {
-		g_free (default_bold_font_file_name);
-		default_bold_font_file_name = nautilus_font_manager_get_default_bold_font ();
-	}
-
+	default_bold_font_file_name = nautilus_font_manager_get_default_bold_font ();
 	g_assert (default_bold_font_file_name != NULL);
 	default_bold_font = nautilus_scalable_font_new (default_bold_font_file_name);
 	g_free (default_bold_font_file_name);

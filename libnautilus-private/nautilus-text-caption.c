@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* nautilus-string-picker.c - A widget to pick a string from a list.
+/* nautilus-text-caption.c - A text caption widget.
 
    Copyright (C) 1999, 2000 Eazel, Inc.
 
@@ -111,11 +111,13 @@ nautilus_text_caption_initialize (NautilusTextCaption *text_caption)
 	gtk_box_set_spacing (GTK_BOX (text_caption), TEXT_CAPTION_SPACING);
 
 	text_caption->detail->text = gtk_entry_new ();
-
+	
 	gtk_entry_set_editable (GTK_ENTRY (text_caption->detail->text), TRUE);
-
+	
 	nautilus_caption_set_child (NAUTILUS_CAPTION (text_caption),
-				    text_caption->detail->text);
+				    text_caption->detail->text,
+				    TRUE,
+				    TRUE);
 
 	gtk_signal_connect (GTK_OBJECT (text_caption->detail->text),
 			    "changed",

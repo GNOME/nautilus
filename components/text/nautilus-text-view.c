@@ -47,6 +47,7 @@
 #include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-xml-extensions.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 
 #include <gnome.h>
 #include <gtk/gtkeventbox.h>
@@ -63,6 +64,9 @@
 
 #define ADDITIONAL_SERVICES_MENU_PATH	"/menu/Services Placeholder/Services/Service Items"
 
+#define NAUTILUS_PREFERENCES_TEXT_VIEW_FONT                     "components/text_view/font"
+#define NAUTILUS_PREFERENCES_TEXT_VIEW_STANDARD_FONT_SIZE       "components/text_view/standard_font_size"
+
 struct NautilusTextViewDetails {
 	NautilusFile *file;
         GtkWidget *event_box;
@@ -74,9 +78,6 @@ struct NautilusTextViewDetails {
 	
 	GtkWidget *container;
 	GtkWidget *text_display;
-	
-	char *font_name;
-	GdkFont *current_font;
 	
 	int service_item_count;
 	GnomeVFSFileSize file_size;
@@ -90,44 +91,39 @@ typedef struct {
 	char *source_mode;
 } ServiceMenuItemParameters;
 
-static void nautilus_text_view_initialize_class			(NautilusTextViewClass *klass);
-static void nautilus_text_view_initialize			(NautilusTextView      *view);
-static void nautilus_text_view_destroy				(GtkObject              *object);
-static void nautilus_text_view_update				(NautilusTextView      *text_view);
-static void text_view_load_location_callback			(NautilusView           *view,
-								 const char             *location,
-								 NautilusTextView      *text_view);
-
-static void  merge_bonobo_menu_items				(BonoboControl *control,
-								 gboolean state,
-								 gpointer user_data);
-
-static void nautilus_text_view_update_font			(NautilusTextView *text_view);
-
-static int  update_service_menu_items 				(GtkWidget *widget,
-								 GdkEventButton *event,
-								 gpointer *user_data);
-
-static void zoomable_set_zoom_level_callback			(BonoboZoomable       *zoomable,
-								 float                 level,
-								 NautilusTextView      *view);
-static void zoomable_zoom_in_callback				(BonoboZoomable       *zoomable,
-								 NautilusTextView      *directory_view);
-static void zoomable_zoom_out_callback				(BonoboZoomable       *zoomable,
-								 NautilusTextView      *directory_view);
-static void zoomable_zoom_to_fit_callback			(BonoboZoomable       *zoomable,
-								 NautilusTextView      *directory_view);
-
-static void nautilus_text_view_load_uri                         (NautilusTextView *view,
-                                                                 const char *uri);
+static void nautilus_text_view_initialize_class (NautilusTextViewClass *klass);
+static void nautilus_text_view_initialize       (NautilusTextView      *view);
+static void nautilus_text_view_destroy          (GtkObject             *object);
+static void nautilus_text_view_update           (NautilusTextView      *text_view);
+static void text_view_load_location_callback    (NautilusView          *view,
+						 const char            *location,
+						 NautilusTextView      *text_view);
+static void merge_bonobo_menu_items             (BonoboControl         *control,
+						 gboolean               state,
+						 gpointer               user_data);
+static void nautilus_text_view_update_font      (NautilusTextView      *text_view);
+static int  update_service_menu_items           (GtkWidget             *widget,
+						 GdkEventButton        *event,
+						 gpointer              *user_data);
+static void zoomable_set_zoom_level_callback    (BonoboZoomable        *zoomable,
+						 float                  level,
+						 NautilusTextView      *view);
+static void zoomable_zoom_in_callback           (BonoboZoomable        *zoomable,
+						 NautilusTextView      *directory_view);
+static void zoomable_zoom_out_callback          (BonoboZoomable        *zoomable,
+						 NautilusTextView      *directory_view);
+static void zoomable_zoom_to_fit_callback       (BonoboZoomable        *zoomable,
+						 NautilusTextView      *directory_view);
+static void nautilus_text_view_load_uri         (NautilusTextView      *view,
+						 const char            *uri);
+static void font_changed_callback               (gpointer               callback_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTextView,
                                    nautilus_text_view,
                                    NAUTILUS_TYPE_VIEW)
 
 static float text_view_preferred_zoom_levels[] = { .25, .50, .75, 1.0, 1.5, 2.0, 4.0 };
-static int   text_view_preferred_font_sizes[] = { 9, 10, 12, 14, 18, 24, 36 };
-
+static int   text_view_font_size_deltas[] = { -6, -4, -2, 0, +4, +10, +22 };
 static const int max_preferred_zoom_levels = (sizeof (text_view_preferred_zoom_levels) /
                                               sizeof (float)) - 1;
 
@@ -139,6 +135,14 @@ nautilus_text_view_initialize_class (NautilusTextViewClass *klass)
 	object_class = GTK_OBJECT_CLASS (klass);
 	
 	object_class->destroy = nautilus_text_view_destroy;
+
+	/* Text view component fonts */
+	nautilus_preferences_default_set_string (NAUTILUS_PREFERENCES_TEXT_VIEW_FONT,
+						 NAUTILUS_USER_LEVEL_INTERMEDIATE,
+						 "fixed");
+	nautilus_preferences_default_set_integer (NAUTILUS_PREFERENCES_TEXT_VIEW_STANDARD_FONT_SIZE,
+						  NAUTILUS_USER_LEVEL_INTERMEDIATE,
+						  14);
 }
 
 /* initialize ourselves by connecting to the location change signal and allocating our subviews */
@@ -181,12 +185,7 @@ nautilus_text_view_initialize (NautilusTextView *text_view)
 			    text_view_load_location_callback, 
 			    text_view);
 			    	
-        /* FIXME: eventually, get this from preferences */
-	/* set up the default font */
-	text_view->details->font_name = g_strdup (_("helvetica")); 
-
 	/* allocate a vbox to contain the text widget */
-	
 	text_view->details->container = gtk_vbox_new (FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (text_view->details->container), 0);
 	gtk_container_add (GTK_CONTAINER (text_view->details->event_box), GTK_WIDGET (text_view->details->container));
@@ -208,6 +207,16 @@ nautilus_text_view_initialize (NautilusTextView *text_view)
 
 	/* set the font of the text object */
 	nautilus_text_view_update_font (text_view);
+
+	/* Keep track of font changes */
+	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_TEXT_VIEW_FONT,
+                                                       font_changed_callback,
+                                                       text_view,
+                                                       GTK_OBJECT (text_view));
+	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_TEXT_VIEW_STANDARD_FONT_SIZE,
+                                                       font_changed_callback,
+                                                       text_view,
+                                                       GTK_OBJECT (text_view));
 	
 	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),
@@ -242,7 +251,6 @@ nautilus_text_view_destroy (GtkObject *object)
         text_view = NAUTILUS_TEXT_VIEW (object);
 
         detach_file (text_view);
-	gdk_font_unref (text_view->details->current_font);
 
 	if (text_view->details->file_handle) {
 		gnome_vfs_async_cancel (text_view->details->file_handle);
@@ -250,7 +258,7 @@ nautilus_text_view_destroy (GtkObject *object)
 	
         gtk_widget_unref (text_view->details->text_display);
 	g_free (text_view->details->buffer);
-	 
+
 	g_free (text_view->details);
 
 	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
@@ -419,22 +427,41 @@ text_view_load_location_callback (NautilusView *view,
 static void
 nautilus_text_view_update_font (NautilusTextView *text_view)
 {
-	int point_size;
-	point_size = text_view_preferred_font_sizes[text_view->details->zoom_index];
+	char *font_name;
+	GdkFont *font;
+	int font_size;
 
-	if (text_view->details->current_font != NULL) {
-		gdk_font_unref (text_view->details->current_font);
-	}
+	font_size = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_TEXT_VIEW_STANDARD_FONT_SIZE);
+
+	font_size += text_view_font_size_deltas[text_view->details->zoom_index];
+
+	font_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_TEXT_VIEW_FONT);
+	g_return_if_fail (font_name != NULL);
+
+	font = nautilus_font_factory_get_font_by_family (font_name, font_size);
+	g_free (font_name);
+
+	g_return_if_fail (font != NULL);
 	
-	text_view->details->current_font = nautilus_font_factory_get_font_by_family
-                (text_view->details->font_name, point_size);
-	nautilus_gtk_widget_set_font (text_view->details->text_display,
-                                      text_view->details->current_font);
+	nautilus_gtk_widget_set_font (text_view->details->text_display, font);
+	gdk_font_unref (font);
 
 	gtk_editable_changed (GTK_EDITABLE (text_view->details->text_display));
 }
 
 /* handle merging in the menu items */
+static void
+handle_ui_event (BonoboUIComponent *ui,
+		 const char *id,
+		 Bonobo_UIComponent_EventType type,
+		 const char *state,
+		 NautilusTextView *view)
+{
+	if (type == Bonobo_UIComponent_STATE_CHANGED
+            && nautilus_str_is_equal (state, "1")) {
+                nautilus_preferences_set (NAUTILUS_PREFERENCES_TEXT_VIEW_FONT, id);
+	}
+}
 
 static char *
 get_selected_text (GtkEditable *text_widget)
@@ -499,38 +526,6 @@ handle_service_menu_item (BonoboUIComponent *ui, gpointer user_data, const char 
 			g_free (mapped_text);
 		}
 		
-	}
-}
-
-/* handle the font menu items */
-static void
-nautilus_text_view_set_font (NautilusTextView *text_view, const char *font_family)
-{
-        /* FIXME: It is just plain strange to call gettext on the font
-         * family passed in here. This is a confused mess. The gettext
-         * framework should not be used to map one font onto another in
-         * this way, since the font name could come from the UI.
-         */
-	if (nautilus_strcmp (text_view->details->font_name, _(font_family)) == 0) {
-		return;
-	}
-
-	g_free (text_view->details->font_name);
-	text_view->details->font_name = g_strdup (_(font_family));
-	
-	nautilus_text_view_update_font (text_view);				
-}
-
-static void
-handle_ui_event (BonoboUIComponent *ui,
-		 const char *id,
-		 Bonobo_UIComponent_EventType type,
-		 const char *state,
-		 NautilusTextView *view)
-{
-	if (type == Bonobo_UIComponent_STATE_CHANGED
-	    && strcmp (state, "1") == 0) {
-		nautilus_text_view_set_font (NAUTILUS_TEXT_VIEW (view), id);
 	}
 }
 
@@ -770,16 +765,20 @@ merge_bonobo_menu_items (BonoboControl *control, gboolean state, gpointer user_d
 	text_view = NAUTILUS_TEXT_VIEW (user_data);
 
 	if (state) {
+                /* FIXME bugzilla.eazel.com 1274:
+                 * See nautilus-text-view-ui.xml.  Need to query system for
+                 * available fonts instead of hard coding the font list
+                 */
 		nautilus_view_set_up_ui (NAUTILUS_VIEW (text_view),
 				         DATADIR,
 					 "nautilus-text-view-ui.xml",
 					 "nautilus-text-view");
-					 	
+
 		nautilus_text_view_build_service_menu (text_view, control);
-		
-		gtk_signal_connect (GTK_OBJECT (bonobo_control_get_ui_component (control)),
-			    "ui_event", handle_ui_event, text_view);
-	
+
+                gtk_signal_connect (GTK_OBJECT (bonobo_control_get_ui_component (control)),
+                                    "ui_event", handle_ui_event, text_view);
+                
 		nautilus_clipboard_set_up_editable_in_control (GTK_EDITABLE (text_view->details->text_display),
 						       		control,
 						       		FALSE);
@@ -808,7 +807,7 @@ nautilus_text_view_zoom_to_level (NautilusTextView *text_view, int zoom_index)
 		text_view->details->zoom_index = pinned_zoom_index;
 		bonobo_zoomable_report_zoom_level_changed (text_view->details->zoomable,
                                                            text_view_preferred_zoom_levels[pinned_zoom_index]);		
-		nautilus_text_view_update_font (text_view);		
+		nautilus_text_view_update_font (text_view);
 	}
  }
 
@@ -859,4 +858,12 @@ static void
 zoomable_zoom_to_fit_callback (BonoboZoomable *zoomable, NautilusTextView *view)
 {
 	nautilus_text_view_zoom_to_level (view, zoom_index_from_float (1.0));
+}
+
+static void
+font_changed_callback (gpointer callback_data)
+{
+	g_return_if_fail (NAUTILUS_IS_TEXT_VIEW (callback_data));
+
+	nautilus_text_view_update_font (NAUTILUS_TEXT_VIEW (callback_data));
 }

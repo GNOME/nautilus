@@ -249,7 +249,7 @@ smooth_text_layout_line_list_new (const char *text,
 
 	g_return_val_if_fail (NAUTILUS_IS_SCALABLE_FONT (font), NULL);
 	g_return_val_if_fail (text_length >= 0, NULL);
-	g_return_val_if_fail (font_size > MIN_FONT_SIZE, NULL);
+	g_return_val_if_fail (font_size >= MIN_FONT_SIZE, NULL);
 
 	end = text + text_length;
 	
@@ -402,7 +402,7 @@ smooth_text_layout_line_list_new_wrapped (const char *text,
 
 	g_return_val_if_fail (NAUTILUS_IS_SCALABLE_FONT (font), NULL);
 	g_return_val_if_fail (text_length >= 0, NULL);
-	g_return_val_if_fail (font_size > MIN_FONT_SIZE, NULL);
+	g_return_val_if_fail (font_size >= MIN_FONT_SIZE, NULL);
 	g_return_val_if_fail (max_width > 0, NULL);
 	g_return_val_if_fail (line_break_characters != NULL, NULL);
 	g_return_val_if_fail (line_break_characters[0] != '\0', NULL);
@@ -605,7 +605,7 @@ nautilus_smooth_text_layout_new (const char *text,
 	NautilusSmoothTextLayout *smooth_text_layout;
 
 	g_return_val_if_fail (NAUTILUS_IS_SCALABLE_FONT (font), NULL);
-	g_return_val_if_fail (font_size > MIN_FONT_SIZE, NULL);
+	g_return_val_if_fail (font_size >= MIN_FONT_SIZE, NULL);
 
 	smooth_text_layout = NAUTILUS_SMOOTH_TEXT_LAYOUT (gtk_object_new (nautilus_smooth_text_layout_get_type (), NULL));
 	gtk_object_ref (GTK_OBJECT (smooth_text_layout));
@@ -896,7 +896,7 @@ nautilus_smooth_text_layout_set_font_size (NautilusSmoothTextLayout *smooth_text
 					   int font_size)
 {
 	g_return_if_fail (NAUTILUS_IS_SMOOTH_TEXT_LAYOUT (smooth_text_layout));
-	g_return_if_fail (font_size > MIN_FONT_SIZE);
+	g_return_if_fail (font_size >= MIN_FONT_SIZE);
 
 	if (smooth_text_layout->details->font_size == font_size) {
 		return;

@@ -17,7 +17,7 @@ update_font (NautilusLabel *label,
 	nautilus_label_set_smooth_font (NAUTILUS_LABEL (label), font);
 	gtk_object_unref (GTK_OBJECT (font));
 
-	nautilus_preferences_set (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_SMOOTH_FONT, font_file_name);
+	nautilus_preferences_set (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT, font_file_name);
 }
 
 static void
@@ -117,8 +117,6 @@ print_selected_font_callback (GtkWidget *button,
 
 	selected_font = nautilus_font_picker_get_selected_font (NAUTILUS_FONT_PICKER (callback_data));
 
-	g_print ("selected_font = '%s'\n", selected_font);
-
 	g_free (selected_font);
 }
 
@@ -144,6 +142,8 @@ main (int argc, char * argv[])
 
 	test_init (&argc, &argv);
 
+	nautilus_global_preferences_initialize ();
+
 	window = test_window_new ("Font Picker Test", 10);
 
 	vbox = gtk_vbox_new (FALSE, 0);
@@ -154,7 +154,7 @@ main (int argc, char * argv[])
 
 	font_picker = nautilus_font_picker_new ();
 
-	current_font = nautilus_preferences_get (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_SMOOTH_FONT);
+	current_font = nautilus_preferences_get (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT);
 	nautilus_font_picker_set_selected_font (NAUTILUS_FONT_PICKER (font_picker),
 						current_font);
 

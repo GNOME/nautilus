@@ -27,6 +27,7 @@
 #include "nautilus-preferences-pane.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-gtk-extensions.h"
+#include "nautilus-string.h"
 
 #include <gtk/gtkhbox.h>
 
@@ -115,19 +116,18 @@ nautilus_preferences_pane_new (void)
 }
 
 GtkWidget *
-nautilus_preferences_pane_add_group (NautilusPreferencesPane	*preferences_pane,
-				     const char			*group_title)
+nautilus_preferences_pane_add_group (NautilusPreferencesPane *preferences_pane,
+				     const char *group_title)
 {
 	GtkWidget *group;
-
-	g_return_val_if_fail (preferences_pane != NULL, NULL);
+	
 	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_PANE (preferences_pane), NULL);
 	g_return_val_if_fail (group_title != NULL, NULL);
 
 	group = nautilus_preferences_group_new (group_title);
 
 	preferences_pane->details->groups = g_list_append (preferences_pane->details->groups,
-						     (gpointer) group);
+							   group);
 
 	gtk_box_pack_start (GTK_BOX (preferences_pane->details->groups_box),
 			    group,
@@ -149,9 +149,7 @@ nautilus_preferences_pane_add_item_to_nth_group (NautilusPreferencesPane	*prefer
 	GtkWidget *item;
 	GtkWidget *group;
 
-	g_return_val_if_fail (preferences_pane != NULL, NULL);
 	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_PANE (preferences_pane), NULL);
-
 	g_return_val_if_fail (preference_name != NULL, NULL);
 
 	if (!preferences_pane->details->groups) {
@@ -208,4 +206,36 @@ nautilus_preferences_pane_get_num_visible_groups (const NautilusPreferencesPane 
 	}
 
 	return n;
+}
+
+guint
+nautilus_preferences_pane_get_num_groups (const NautilusPreferencesPane *pane)
+{
+	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_PANE (pane), 0);
+
+	return g_list_length (pane->details->groups);
+}
+
+GtkWidget *
+nautilus_preferences_pane_find_group (const NautilusPreferencesPane *pane,
+				      const char *group_title)
+{
+	GList *node;
+	char *title;
+
+	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_PANE (pane), 0);
+
+	for (node = pane->details->groups; node != NULL; node = node->next) {
+		g_assert (NAUTILUS_IS_PREFERENCES_GROUP (node->data));
+
+		title = nautilus_preferences_group_get_title_label (NAUTILUS_PREFERENCES_GROUP (node->data));
+		if (nautilus_str_is_equal (title, group_title)) {
+			g_free (title);
+			return node->data;
+		}
+
+		g_free (title);
+	}
+	
+	return NULL;
 }

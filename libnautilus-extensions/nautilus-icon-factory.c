@@ -129,7 +129,9 @@ static const char *icon_file_name_suffixes[] =
 #define MAXIMUM_ICON_SIZE                96
 
 /* Embedded text font size and text line settings */
-#define EMBEDDED_TEXT_FONT_SIZE         9
+
+/* FIXME; Hard coded font size */
+#define EMBEDDED_TEXT_FONT_SIZE 9
 #define EMBEDDED_TEXT_LINE_SPACING      1
 #define EMBEDDED_TEXT_EMPTY_LINE_HEIGHT 4
 
@@ -2368,12 +2370,37 @@ embedded_text_rect_usable (const ArtIRect *embedded_text_rect)
 	return TRUE;
 }
 
+static gboolean embedded_text_preferences_callbacks_added = FALSE;
+static NautilusScalableFont *embedded_text_font = NULL;
+
+static void
+embedded_text_font_changed_callback (gpointer callback_data)
+{
+	gboolean clear_cache = GPOINTER_TO_INT (callback_data);
+
+	embedded_text_font = nautilus_global_preferences_get_default_smooth_font ();
+
+	if (clear_cache) {
+		nautilus_icon_factory_clear ();
+	}
+}
+
+static void
+embedded_text_font_free (void)
+{
+	if (embedded_text_font == NULL) {
+		return;
+	}
+	
+	gtk_object_unref (GTK_OBJECT (embedded_text_font));
+	embedded_text_font = NULL;
+}
+
 static GdkPixbuf *
 embed_text (GdkPixbuf *pixbuf_without_text,
 	    const ArtIRect *embedded_text_rect,
 	    const char *text)
 {
-	NautilusScalableFont *smooth_font;
 	NautilusSmoothTextLayout *smooth_text_layout;
 	GdkPixbuf *pixbuf_with_text;
 	
@@ -2387,21 +2414,23 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 		return NULL;
 	}
 
-	/* FIXME bugzilla.eazel.com 1102: Embedded text should use preferences to determine
-	 * the font it uses
-	 */
+	/* Listen for changes in embedded text (icon text preview) font preferences */
+	if (embedded_text_preferences_callbacks_added == FALSE) {
+		embedded_text_preferences_callbacks_added = TRUE;
 
-	/* FIXME bugzilla.eazel.com 2783: It would be nice if embedded didnt always draw
-	 * anti aliased based on the user's smooth graphics preference.  It is however
-	 * a questionable improvement since at that tiny font size, anti aliased fonts
-	 * probably give a better preview of the content than non anti-aliased fonts.
-	 */
-	smooth_font = nautilus_scalable_font_get_default_font ();
-	g_return_val_if_fail (NAUTILUS_IS_SCALABLE_FONT (smooth_font), NULL);
+		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
+						   embedded_text_font_changed_callback,
+						   GINT_TO_POINTER (TRUE));
+		embedded_text_font_changed_callback (GINT_TO_POINTER (FALSE));
+
+		g_atexit (embedded_text_font_free);
+	}
+
+	g_return_val_if_fail (NAUTILUS_IS_SCALABLE_FONT (embedded_text_font), NULL);
 	
 	smooth_text_layout = nautilus_smooth_text_layout_new (text,
 							      nautilus_strlen (text),
-							      smooth_font,
+							      embedded_text_font,
 							      EMBEDDED_TEXT_FONT_SIZE,
 							      FALSE);
 	g_return_val_if_fail (NAUTILUS_IS_SMOOTH_TEXT_LAYOUT (smooth_text_layout), NULL);
@@ -2421,7 +2450,6 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 						    NAUTILUS_OPACITY_FULLY_OPAQUE);
 	
 	gtk_object_unref (GTK_OBJECT (smooth_text_layout));
-	gtk_object_unref (GTK_OBJECT (smooth_font));
 
 	return pixbuf_with_text;
 }

@@ -177,7 +177,7 @@ struct NautilusIconContainerDetails {
 
 	/* font used to draw labels in smooth mode */
 	NautilusScalableFont *smooth_label_font;
-	guint smooth_font_size[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
+	int font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
 
 	/* pixbuf and color for label highlighting */
 	GdkPixbuf *highlight_frame;

@@ -29,6 +29,7 @@
 #include "nautilus-gtk-macros.h"
 #include "nautilus-string.h"
 #include "nautilus-gdk-font-extensions.h"
+#include "nautilus-gtk-extensions.h"
 #include <pthread.h>
 #include <unistd.h>
 
@@ -218,6 +219,10 @@ nautilus_font_factory_get_font_by_family (const char *family,
 	g_return_val_if_fail (family != NULL, NULL);
 	g_return_val_if_fail (size_in_pixels > 0, NULL);
 
+	if (nautilus_str_is_equal (family, "default")) {
+		return nautilus_gtk_get_system_font ();
+	}
+
 	fontset = g_strsplit (family, ",", 5);
 	iter = fontset;
 
@@ -268,10 +273,8 @@ nautilus_font_factory_get_font_from_preferences (guint size_in_pixels)
 	char	*family;
 	GdkFont *font;
 
-	family = nautilus_preferences_get (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY);
-
-	font = nautilus_font_factory_get_font_by_family (_(family), size_in_pixels);
-
+	family = nautilus_preferences_get (NAUTILUS_PREFERENCES_ICON_VIEW_FONT);
+	font = nautilus_font_factory_get_font_by_family (family, size_in_pixels);
 	g_free (family);
 
 	return font;

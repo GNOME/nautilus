@@ -58,44 +58,51 @@ struct _NautilusPreferencesItemDetails
 	guint change_signal_ID;
 	char *control_preference_name;
 	NautilusPreferencesItemControlAction control_action;
+	int constrained_integer_lower;
+	int constrained_integer_upper;
+	int constrained_integer_increment;
 };
 
 /* GtkObjectClass methods */
-static void nautilus_preferences_item_initialize_class       (NautilusPreferencesItemClass *preferences_item_class);
-static void nautilus_preferences_item_initialize             (NautilusPreferencesItem      *preferences_item);
-static void preferences_item_destroy                         (GtkObject                    *object);
+static void nautilus_preferences_item_initialize_class                (NautilusPreferencesItemClass *preferences_item_class);
+static void nautilus_preferences_item_initialize                      (NautilusPreferencesItem      *preferences_item);
+static void preferences_item_destroy                                  (GtkObject                    *object);
 
 /* Private stuff */
-static void preferences_item_construct                       (NautilusPreferencesItem      *item,
-							      const char                   *preference_name,
-							      NautilusPreferencesItemType   item_type);
-static void preferences_item_create_enum                     (NautilusPreferencesItem      *item,
-							      const char                   *preference_name);
-static void preferences_item_create_short_enum               (NautilusPreferencesItem      *item,
-							      const char                   *preference_name);
-static void preferences_item_create_boolean                  (NautilusPreferencesItem      *item,
-							      const char                   *preference_name);
-static void preferences_item_create_editable_string          (NautilusPreferencesItem      *item,
-							      const char                   *preference_name);
-static void preferences_item_create_integer                  (NautilusPreferencesItem      *item,
-							      const char                   *preference_name);
-static void preferences_item_create_font_family              (NautilusPreferencesItem      *item,
-							      const char                   *preference_name);
-static void preferences_item_create_smooth_font              (NautilusPreferencesItem      *item,
-							      const char                   *preference_name);
-static void preferences_item_update_text_settings_at_idle    (NautilusPreferencesItem      *preferences_item);
-static void preferences_item_update_integer_settings_at_idle (NautilusPreferencesItem      *preferences_item);
-static void enum_radio_group_changed_callback                (GtkWidget                    *button_group,
-							      GtkWidget                    *button,
-							      gpointer                      user_data);
-static void boolean_button_toggled_callback                  (GtkWidget                    *button_group,
-							      gpointer                      user_data);
-static void editable_string_changed_callback                 (GtkWidget                    *caption,
-							      gpointer                      user_data);
-static void integer_changed_callback                         (GtkWidget                    *caption,
-							      gpointer                      user_data);
-static void font_family_item_changed_callback                (GtkWidget                    *caption,
-							      gpointer                      user_data);
+static void preferences_item_construct                                (NautilusPreferencesItem      *item,
+								       const char                   *preference_name,
+								       NautilusPreferencesItemType   item_type);
+static void preferences_item_create_enum                              (NautilusPreferencesItem      *item,
+								       const char                   *preference_name);
+static void preferences_item_create_short_enum                        (NautilusPreferencesItem      *item,
+								       const char                   *preference_name);
+static void preferences_item_create_boolean                           (NautilusPreferencesItem      *item,
+								       const char                   *preference_name);
+static void preferences_item_create_editable_string                   (NautilusPreferencesItem      *item,
+								       const char                   *preference_name);
+static void preferences_item_create_editable_integer                  (NautilusPreferencesItem      *item,
+								       const char                   *preference_name);
+static void preferences_item_create_constrained_integer               (NautilusPreferencesItem      *item,
+								       const char                   *preference_name);
+static void preferences_item_create_font                              (NautilusPreferencesItem      *item,
+								       const char                   *preference_name);
+static void preferences_item_create_smooth_font                       (NautilusPreferencesItem      *item,
+								       const char                   *preference_name);
+static void preferences_item_update_text_settings_at_idle             (NautilusPreferencesItem      *preferences_item);
+static void preferences_item_update_editable_integer_settings_at_idle (NautilusPreferencesItem      *preferences_item);
+static void enum_radio_group_changed_callback                         (GtkWidget                    *button_group,
+								       GtkWidget                    *button,
+								       gpointer                      user_data);
+static void boolean_button_toggled_callback                           (GtkWidget                    *button_group,
+								       gpointer                      user_data);
+static void editable_string_changed_callback                          (GtkWidget                    *caption,
+								       gpointer                      user_data);
+static void editable_integer_changed_callback                         (GtkWidget                    *caption,
+								       gpointer                      user_data);
+static void constrained_integer_changed_callback                      (NautilusStringPicker         *string_picker,
+								       NautilusPreferencesItem      *item);
+static void font_item_changed_callback                                (GtkWidget                    *caption,
+								       gpointer                      user_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPreferencesItem, nautilus_preferences_item, GTK_TYPE_VBOX)
 
@@ -120,6 +127,10 @@ nautilus_preferences_item_initialize (NautilusPreferencesItem *item)
 {
 	item->details = g_new0 (NautilusPreferencesItemDetails, 1);
 	item->details->item_type = PREFERENCES_ITEM_UNDEFINED_ITEM;
+
+	item->details->constrained_integer_lower = 0;
+	item->details->constrained_integer_upper = 10;
+	item->details->constrained_integer_increment = 1;
 }
 
 /* GtkObjectClass methods */
@@ -144,7 +155,7 @@ preferences_item_destroy (GtkObject *object)
  * Private stuff
  */
 static void
-preferences_item_construct (NautilusPreferencesItem	*item,
+preferences_item_construct (NautilusPreferencesItem *item,
 			    const char			*preference_name,
 			    NautilusPreferencesItemType	item_type)
 {
@@ -175,8 +186,8 @@ preferences_item_construct (NautilusPreferencesItem	*item,
 		preferences_item_create_short_enum (item, preference_name);
 		break;
 
-	case NAUTILUS_PREFERENCE_ITEM_FONT_FAMILY:
-		preferences_item_create_font_family (item, preference_name);
+	case NAUTILUS_PREFERENCE_ITEM_FONT:
+		preferences_item_create_font (item, preference_name);
 		break;
 	
 	case NAUTILUS_PREFERENCE_ITEM_SMOOTH_FONT:
@@ -187,8 +198,12 @@ preferences_item_construct (NautilusPreferencesItem	*item,
 		preferences_item_create_editable_string (item, preference_name);
 		break;	
 
-	case NAUTILUS_PREFERENCE_ITEM_INTEGER:
-		preferences_item_create_integer (item, preference_name);
+	case NAUTILUS_PREFERENCE_ITEM_EDITABLE_INTEGER:
+		preferences_item_create_editable_integer (item, preference_name);
+		break;	
+
+	case NAUTILUS_PREFERENCE_ITEM_CONSTRAINED_INTEGER:
+		preferences_item_create_constrained_integer (item, preference_name);
 		break;	
 	}
 
@@ -207,7 +222,7 @@ preferences_item_construct (NautilusPreferencesItem	*item,
 }
 
 static void
-preferences_item_update_enum (const NautilusPreferencesItem *item)
+preferences_item_update_enum (NautilusPreferencesItem *item)
 {
 	int value;
 	char *preference_name;
@@ -227,8 +242,8 @@ preferences_item_update_enum (const NautilusPreferencesItem *item)
 }
 
 static void
-preferences_item_create_enum (NautilusPreferencesItem	*item,
-			      const char 	*preference_name)
+preferences_item_create_enum (NautilusPreferencesItem *item,
+			      const char *preference_name)
 {
 	guint	i;
 
@@ -256,11 +271,11 @@ preferences_item_create_enum (NautilusPreferencesItem	*item,
 		gtk_signal_connect (GTK_OBJECT (item->details->child),
 			    	    "changed",
 			    	    GTK_SIGNAL_FUNC (enum_radio_group_changed_callback),
-			    	    (gpointer) item);
+			    	    item);
 }
 
 static void
-preferences_item_update_short_enum (const NautilusPreferencesItem *item)
+preferences_item_update_short_enum (NautilusPreferencesItem *item)
 {
 	int value;
 	char *preference_name;
@@ -284,8 +299,8 @@ preferences_item_update_short_enum (const NautilusPreferencesItem *item)
  * only with short text for the choices).
  */
 static void
-preferences_item_create_short_enum (NautilusPreferencesItem	*item,
-			      	    const char 	*preference_name)
+preferences_item_create_short_enum (NautilusPreferencesItem *item,
+			      	    const char *preference_name)
 {
 	guint	i;
 
@@ -313,11 +328,11 @@ preferences_item_create_short_enum (NautilusPreferencesItem	*item,
 		gtk_signal_connect (GTK_OBJECT (item->details->child),
 			    	    "changed",
 			    	    GTK_SIGNAL_FUNC (enum_radio_group_changed_callback),
-			    	    (gpointer) item);
+			    	    item);
 }
 
 static void
-preferences_item_update_boolean (const NautilusPreferencesItem *item)
+preferences_item_update_boolean (NautilusPreferencesItem *item)
 {
 	gboolean value;
 
@@ -329,8 +344,8 @@ preferences_item_update_boolean (const NautilusPreferencesItem *item)
 }
 
 static void
-preferences_item_create_boolean (NautilusPreferencesItem	*item,
-				 const char 	*preference_name)
+preferences_item_create_boolean (NautilusPreferencesItem *item,
+				 const char *preference_name)
 {
 	char		*description;
 
@@ -351,11 +366,11 @@ preferences_item_create_boolean (NautilusPreferencesItem	*item,
 		gtk_signal_connect (GTK_OBJECT (item->details->child),
 			    	    "toggled",
 			    	    GTK_SIGNAL_FUNC (boolean_button_toggled_callback),
-			    	    (gpointer) item);
+			    	    item);
 }
 
 static void
-preferences_item_update_editable_string (const NautilusPreferencesItem *item)
+preferences_item_update_editable_string (NautilusPreferencesItem *item)
 {
 	char	*current_value;
 
@@ -370,8 +385,8 @@ preferences_item_update_editable_string (const NautilusPreferencesItem *item)
 }
 
 static void
-preferences_item_create_editable_string (NautilusPreferencesItem	*item,
-					 const char 	*preference_name)
+preferences_item_create_editable_string (NautilusPreferencesItem *item,
+					 const char *preference_name)
 {
 	char	*description;
 	
@@ -398,16 +413,16 @@ preferences_item_create_editable_string (NautilusPreferencesItem	*item,
 		gtk_signal_connect (GTK_OBJECT (item->details->child),
 	 			    "changed",
 	 			    GTK_SIGNAL_FUNC (editable_string_changed_callback),
-			    	    (gpointer) item);
+			    	    item);
 }
 
 static void
-preferences_item_update_integer (const NautilusPreferencesItem *item)
+preferences_item_update_editable_integer (NautilusPreferencesItem *item)
 {
 	char *current_value;
 
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (item));
-	g_return_if_fail (item->details->item_type == NAUTILUS_PREFERENCE_ITEM_INTEGER);
+	g_return_if_fail (item->details->item_type == NAUTILUS_PREFERENCE_ITEM_EDITABLE_INTEGER);
 
 	current_value = g_strdup_printf ("%d", nautilus_preferences_get_integer (item->details->preference_name));
 
@@ -417,10 +432,10 @@ preferences_item_update_integer (const NautilusPreferencesItem *item)
 }
 
 static void
-preferences_item_create_integer (NautilusPreferencesItem	*item,
-				 const char 	*preference_name)
+preferences_item_create_editable_integer (NautilusPreferencesItem *item,
+					  const char *preference_name)
 {
-	char	*description;
+	char *description;
 	
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (item));
 	g_return_if_fail (nautilus_strlen (preference_name) > 0);
@@ -438,29 +453,95 @@ preferences_item_create_integer (NautilusPreferencesItem	*item,
 	item->details->change_signal_ID = 
 		gtk_signal_connect (GTK_OBJECT (item->details->child),
 	 			    "changed",
-	 			    GTK_SIGNAL_FUNC (integer_changed_callback),
-			    	    (gpointer) item);
+	 			    GTK_SIGNAL_FUNC (editable_integer_changed_callback),
+			    	    item);
 }
 
 static void
-preferences_item_update_font_family (const NautilusPreferencesItem *item)
+preferences_item_update_constrained_integer (NautilusPreferencesItem *item)
+{
+	char *current_value_string;
+	int current_value;
+
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (item));
+	g_return_if_fail (item->details->item_type == NAUTILUS_PREFERENCE_ITEM_CONSTRAINED_INTEGER);
+
+	current_value = nautilus_preferences_get_integer (item->details->preference_name);
+	current_value_string = g_strdup_printf ("%d", current_value);
+
+	if (nautilus_string_picker_contains (NAUTILUS_STRING_PICKER (item->details->child), current_value_string)) {
+		nautilus_string_picker_set_selected_string (NAUTILUS_STRING_PICKER (item->details->child),
+							    current_value_string);
+	}
+
+	g_free (current_value_string);
+}
+
+static void
+preferences_item_create_constrained_integer (NautilusPreferencesItem *item,
+					     const char *preference_name)
+{
+	char *description;
+	NautilusStringList *size_list;
+	int i;
+	char *number;
+	
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (item));
+	g_return_if_fail (nautilus_strlen (preference_name) > 0);
+
+	description = nautilus_preferences_get_description (preference_name);
+	g_return_if_fail (description != NULL);
+	
+	item->details->child = nautilus_string_picker_new ();
+	nautilus_caption_set_title_label (NAUTILUS_CAPTION (item->details->child), description);
+	g_free (description);
+
+	size_list = nautilus_string_list_new (TRUE);
+
+	for (i = item->details->constrained_integer_lower;
+	     i <= item->details->constrained_integer_upper;
+	     i += item->details->constrained_integer_increment) {
+		number = g_strdup_printf ("%d", i);
+		nautilus_string_list_insert (size_list, number);
+		g_free (number);
+	}
+	
+	nautilus_string_picker_set_string_list (NAUTILUS_STRING_PICKER (item->details->child), size_list);
+	nautilus_string_list_free (size_list);
+	
+	item->details->change_signal_ID = gtk_signal_connect (GTK_OBJECT (item->details->child),
+							      "changed",
+							      GTK_SIGNAL_FUNC (constrained_integer_changed_callback),
+							      item);
+}
+
+static void
+preferences_item_update_font (NautilusPreferencesItem *item)
 {
 	char *current_value;
 
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (item));
-	g_return_if_fail (item->details->item_type == NAUTILUS_PREFERENCE_ITEM_FONT_FAMILY);
+	g_return_if_fail (item->details->item_type == NAUTILUS_PREFERENCE_ITEM_FONT);
 
 	current_value = nautilus_preferences_get (item->details->preference_name);
 	g_assert (current_value != NULL);
 
-	nautilus_string_picker_set_selected_string (NAUTILUS_STRING_PICKER (item->details->child), current_value);
+	/* The value of the gconf preference can be anything.  In theory garbage could
+	 * be used for the preference using a third party tool.  So we make sure that
+	 * it is one of the choice before trying to select it, otherwise we would get
+	 * assertions.
+	 */
+	if (nautilus_string_picker_contains (NAUTILUS_STRING_PICKER (item->details->child), current_value)) {
+		nautilus_string_picker_set_selected_string (NAUTILUS_STRING_PICKER (item->details->child),
+							    current_value);
+	}
 
 	g_free (current_value);
 }
 
 static void
-preferences_item_create_font_family (NautilusPreferencesItem *item,
-				     const char *preference_name)
+preferences_item_create_font (NautilusPreferencesItem *item,
+			      const char *preference_name)
 {
 	char *description;
 	NautilusStringList *font_list;
@@ -479,23 +560,34 @@ preferences_item_create_font_family (NautilusPreferencesItem *item,
 	/* FIXME bugzilla.eazel.com 1274: Need to query system for available fonts */
 	font_list = nautilus_string_list_new (TRUE);
 
-	nautilus_string_list_insert (font_list, _("helvetica"));
-	nautilus_string_list_insert (font_list, _("times"));
-	nautilus_string_list_insert (font_list, _("courier"));
-	nautilus_string_list_insert (font_list, _("lucida"));
+	/* Once upon a time we had a bug in Nautilus that caused crashes with the "fixed" 
+	 * font.  That bug (2256) was fixed by removing the "fixed" choice from this menu
+	 * below.  Subsequently we fixed many font bugs in nautilus (such hard coded font sizes)
+	 * that would cause both crashes and ugliness. Bug 2256 seems to have been fixed by
+	 * these changes as well.
+	 *
+	 * Anyhow, the "fixed" font choice is not very interesting because the other fonts 
+	 * look much better.  However, in multi byte locales, the fixed font is usually the
+	 * only one that is available at the right encoding.
+	 */
+	nautilus_string_list_insert (font_list, "default");
+	nautilus_string_list_insert (font_list, "fixed");
+	nautilus_string_list_insert (font_list, "helvetica");
+	nautilus_string_list_insert (font_list, "times");
+	nautilus_string_list_insert (font_list, "courier");
+	nautilus_string_list_insert (font_list, "lucida");
 
 	nautilus_string_picker_set_string_list (NAUTILUS_STRING_PICKER (item->details->child), font_list);
 	nautilus_string_list_free (font_list);
 
 	item->details->change_signal_ID = gtk_signal_connect (GTK_OBJECT (item->details->child),
 							      "changed",
-							      GTK_SIGNAL_FUNC (font_family_item_changed_callback),
+							      GTK_SIGNAL_FUNC (font_item_changed_callback),
 							      item);
 }
 
-
 static void
-preferences_item_update_smooth_font (const NautilusPreferencesItem *item)
+preferences_item_update_smooth_font (NautilusPreferencesItem *item)
 {
  	char *current_value;
 
@@ -540,8 +632,8 @@ preferences_item_create_smooth_font (NautilusPreferencesItem *item,
 	g_return_if_fail (description != NULL);
 	
 	item->details->child = nautilus_font_picker_new ();
-	nautilus_font_picker_set_title_label (NAUTILUS_FONT_PICKER (item->details->child),
-					      description);
+	nautilus_caption_set_title_label (NAUTILUS_CAPTION (item->details->child),
+					  description);
 	
 	g_free (description);
 
@@ -553,8 +645,8 @@ preferences_item_create_smooth_font (NautilusPreferencesItem *item,
 
 /* NautilusPreferencesItem public methods */
 GtkWidget *
-nautilus_preferences_item_new (const char			*preference_name,
-			       NautilusPreferencesItemType	item_type)
+nautilus_preferences_item_new (const char *preference_name,
+			       NautilusPreferencesItemType item_type)
 {
 	NautilusPreferencesItem * item;
 
@@ -573,7 +665,7 @@ nautilus_preferences_item_new (const char			*preference_name,
 static void
 enum_radio_group_changed_callback (GtkWidget *buttons, GtkWidget * button, gpointer user_data)
 {
-	NautilusPreferencesItem	*item;
+	NautilusPreferencesItem *item;
 	int i;
 
 	g_assert (user_data != NULL);
@@ -592,7 +684,7 @@ enum_radio_group_changed_callback (GtkWidget *buttons, GtkWidget * button, gpoin
 static void
 boolean_button_toggled_callback (GtkWidget *button, gpointer user_data)
 {
-	NautilusPreferencesItem	*item;
+	NautilusPreferencesItem *item;
 	gboolean		active_state;
 
 	g_assert (user_data != NULL);
@@ -606,9 +698,9 @@ boolean_button_toggled_callback (GtkWidget *button, gpointer user_data)
 }
 
 static void
-font_family_item_changed_callback (GtkWidget *string_picker, gpointer user_data)
+font_item_changed_callback (GtkWidget *string_picker, gpointer user_data)
 {
-	NautilusPreferencesItem	*item;
+	NautilusPreferencesItem *item;
 	char *selected_string;
 
 	g_return_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker));
@@ -629,7 +721,7 @@ font_family_item_changed_callback (GtkWidget *string_picker, gpointer user_data)
 static void
 editable_string_changed_callback (GtkWidget *button, gpointer user_data)
 {
-	NautilusPreferencesItem	*item;
+	NautilusPreferencesItem *item;
 	
 	g_assert (user_data != NULL);
 	g_assert (NAUTILUS_IS_PREFERENCES_ITEM (user_data));
@@ -643,9 +735,9 @@ editable_string_changed_callback (GtkWidget *button, gpointer user_data)
 }
 
 static void
-integer_changed_callback (GtkWidget *button, gpointer user_data)
+editable_integer_changed_callback (GtkWidget *button, gpointer user_data)
 {
-	NautilusPreferencesItem	*item;
+	NautilusPreferencesItem *item;
 	
 	g_assert (user_data != NULL);
 	g_assert (NAUTILUS_IS_PREFERENCES_ITEM (user_data));
@@ -655,7 +747,25 @@ integer_changed_callback (GtkWidget *button, gpointer user_data)
 	g_assert (item->details->child != NULL);
 	g_assert (NAUTILUS_IS_TEXT_CAPTION (item->details->child));
 
-	preferences_item_update_integer_settings_at_idle (item);
+	preferences_item_update_editable_integer_settings_at_idle (item);
+}
+
+static void
+constrained_integer_changed_callback (NautilusStringPicker *string_picker,
+				      NautilusPreferencesItem *item)
+{
+ 	char *new_value_string;
+	int new_value;
+
+	g_return_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker));
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (item));
+
+ 	new_value_string = nautilus_string_picker_get_selected_string (string_picker);
+ 	g_assert (new_value_string != NULL);
+	
+	if (nautilus_eat_str_to_int (new_value_string, &new_value)) {
+		nautilus_preferences_set_integer (item->details->preference_name, new_value);
+	}
 }
 
 char *
@@ -667,7 +777,7 @@ nautilus_preferences_item_get_name (const NautilusPreferencesItem *preferences_i
 }
 
 void
-nautilus_preferences_item_update_displayed_value (const NautilusPreferencesItem *item)
+nautilus_preferences_item_update_displayed_value (NautilusPreferencesItem *item)
 {
 	NautilusPreferencesItemType item_type;
 	
@@ -698,8 +808,8 @@ nautilus_preferences_item_update_displayed_value (const NautilusPreferencesItem 
 		preferences_item_update_short_enum (item);
 		break;
 
-	case NAUTILUS_PREFERENCE_ITEM_FONT_FAMILY:
-		preferences_item_update_font_family (item);
+	case NAUTILUS_PREFERENCE_ITEM_FONT:
+		preferences_item_update_font (item);
 		break;
 	
 	case NAUTILUS_PREFERENCE_ITEM_SMOOTH_FONT:
@@ -710,8 +820,12 @@ nautilus_preferences_item_update_displayed_value (const NautilusPreferencesItem 
 		preferences_item_update_editable_string (item);
 		break;	
 
-	case NAUTILUS_PREFERENCE_ITEM_INTEGER:
-		preferences_item_update_integer (item);
+	case NAUTILUS_PREFERENCE_ITEM_EDITABLE_INTEGER:
+		preferences_item_update_editable_integer (item);
+		break;
+
+	case NAUTILUS_PREFERENCE_ITEM_CONSTRAINED_INTEGER:
+		preferences_item_update_constrained_integer (item);
 		break;
 	default:
 		g_assert_not_reached ();
@@ -769,7 +883,7 @@ update_integer_settings_at_idle (NautilusPreferencesItem *preferences_item)
 }
 
 static void
-preferences_item_update_integer_settings_at_idle (NautilusPreferencesItem *preferences_item)
+preferences_item_update_editable_integer_settings_at_idle (NautilusPreferencesItem *preferences_item)
 {
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (preferences_item));
 
@@ -831,4 +945,71 @@ nautilus_preferences_item_get_control_showing (const NautilusPreferencesItem *pr
 	}
 
 	return !value;
+}
+
+void
+nautilus_preferences_item_set_constrained_integer_paramaters (NautilusPreferencesItem *item,
+							      int lower,
+							      int upper,
+							      int increment)
+{
+	NautilusStringList *size_list;
+	int i;
+	char *number;
+
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (item));
+	g_return_if_fail (item->details->item_type == NAUTILUS_PREFERENCE_ITEM_CONSTRAINED_INTEGER);
+	g_return_if_fail (upper >= lower);
+	g_return_if_fail (increment > 0);
+	
+	item->details->constrained_integer_lower = lower;
+	item->details->constrained_integer_upper = upper;
+	item->details->constrained_integer_increment = increment;
+
+	size_list = nautilus_string_list_new (TRUE);
+
+	for (i = item->details->constrained_integer_lower;
+	     i <= item->details->constrained_integer_upper;
+	     i += item->details->constrained_integer_increment) {
+		number = g_strdup_printf ("%d", i);
+		nautilus_string_list_insert (size_list, number);
+		g_free (number);
+	}
+	
+	nautilus_string_picker_set_string_list (NAUTILUS_STRING_PICKER (item->details->child), size_list);
+	nautilus_string_list_free (size_list);
+}
+
+gboolean
+nautilus_preferences_item_child_is_caption (const NautilusPreferencesItem *item)
+{
+	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (item), FALSE);
+
+	return NAUTILUS_IS_CAPTION (item->details->child);
+}
+
+int
+nautilus_preferences_item_get_caption_title_label_width (const NautilusPreferencesItem *item)
+{
+	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (item), 0);
+
+	if (!nautilus_preferences_item_child_is_caption (item)) {
+		return 0;
+	}
+
+	return nautilus_caption_get_title_label_width (NAUTILUS_CAPTION (item->details->child));
+}
+
+void
+nautilus_preferences_item_set_caption_spacing (NautilusPreferencesItem *item,
+					       int spacing)
+{
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (item));
+	g_return_if_fail (spacing >= 0);
+
+	if (!nautilus_preferences_item_child_is_caption (item)) {
+		return;
+	}
+
+	return nautilus_caption_set_spacing (NAUTILUS_CAPTION (item->details->child), spacing);
 }

@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* nautilus-string-picker.h - A widget to pick a string from a list.
+/* nautilus-text-caption.c - A text caption widget.
 
    Copyright (C) 1999, 2000 Eazel, Inc.
 
@@ -48,31 +48,30 @@ typedef struct _NautilusTextCaptionDetail     NautilusTextCaptionDetail;
 struct _NautilusTextCaption
 {
 	/* Super Class */
-	NautilusCaption			caption;
+	NautilusCaption caption;
 	
 	/* Private stuff */
-	NautilusTextCaptionDetail	*detail;
+	NautilusTextCaptionDetail *detail;
 };
 
 struct _NautilusTextCaptionClass
 {
-	NautilusCaptionClass		parent_class;
+	NautilusCaptionClass parent_class;
 };
 
 GtkType    nautilus_text_caption_get_type        (void);
 GtkWidget* nautilus_text_caption_new             (void);
 
 /* Entry text accesor. */
-char *nautilus_text_caption_get_text     (const NautilusTextCaption *text_caption);
+char *nautilus_text_caption_get_text         (const NautilusTextCaption *text_caption);
 
 /* Entry text mutator. */
-void  nautilus_text_caption_set_text     (NautilusTextCaption *text_caption,
-					  const char          *text);
-void  nautilus_text_caption_set_editable (NautilusTextCaption *text_caption,
-					  gboolean             editable);
-
-void  nautilus_text_caption_set_expand_tilde (NautilusTextCaption *text_caption,
-                                             gboolean             expand_tilde);
+void  nautilus_text_caption_set_text         (NautilusTextCaption       *text_caption,
+					      const char                *text);
+void  nautilus_text_caption_set_editable     (NautilusTextCaption       *text_caption,
+					      gboolean                   editable);
+void  nautilus_text_caption_set_expand_tilde (NautilusTextCaption       *text_caption,
+					      gboolean                   expand_tilde);
 
 END_GNOME_DECLS
 

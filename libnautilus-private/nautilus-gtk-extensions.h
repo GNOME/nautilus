@@ -105,6 +105,8 @@ void              nautilus_gtk_widget_set_foreground_color             (GtkWidge
 GtkWidget        *nautilus_gtk_widget_find_windowed_ancestor           (GtkWidget                *widget);
 guint             nautilus_get_current_event_time                      (void);
 
+GdkFont          *nautilus_gtk_get_system_font                         (void);
+
 /* GtkContainer */
 GtkWidget        *nautilus_gtk_container_get_first_child               (GtkContainer             *container);
 void              nautilus_gtk_container_foreach_deep                  (GtkContainer             *container,

@@ -25,8 +25,8 @@
 #ifndef NAUTILUS_FONT_PICKER_H
 #define NAUTILUS_FONT_PICKER_H
 
-#include <gtk/gtkhbox.h>
 #include <libnautilus-extensions/nautilus-scalable-font.h>
+#include <libnautilus-extensions/nautilus-caption.h>
 
 BEGIN_GNOME_DECLS
 
@@ -42,7 +42,7 @@ typedef struct NautilusFontPickerDetails     NautilusFontPickerDetails;
 struct NautilusFontPicker
 {
 	/* Super Class */
-	GtkHBox hbox;
+	NautilusCaption caption;
 	
 	/* Private stuff */
 	NautilusFontPickerDetails *details;
@@ -50,7 +50,7 @@ struct NautilusFontPicker
 
 struct NautilusFontPickerClass
 {
-	GtkHBoxClass parent_class;
+	NautilusCaptionClass parent_class;
 };
 
 GtkType    nautilus_font_picker_get_type                    (void);
@@ -58,8 +58,6 @@ GtkWidget* nautilus_font_picker_new                         (void);
 char *     nautilus_font_picker_get_selected_font           (const NautilusFontPicker *font_picker);
 void       nautilus_font_picker_set_selected_font           (NautilusFontPicker       *font_picker,
 							     const char               *font);
-void       nautilus_font_picker_set_title_label             (NautilusFontPicker       *font_picker,
-							     const char               *title_label);
 END_GNOME_DECLS
 
 #endif /* NAUTILUS_FONT_PICKER_H */

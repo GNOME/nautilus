@@ -33,6 +33,7 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_THEME				"preferences/theme"
 /* Which text attributes appear beneath icon names */
 #define NAUTILUS_PREFERENCES_ICON_CAPTIONS			"icon_view/captions"
+
 /* How wide the sidebar is (or how wide it will be when expanded) */
 #define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  			"preferences/sidebar_width"
 
@@ -58,6 +59,8 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES  		"preferences/show_hidden_files"
 #define NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES  		"preferences/show_backup_files"
 #define NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS			"preferences/show_special_flags"
+
+/* Sidebar panels  */
 #define NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES         "sidebar-panels/tree/show_only_directories"
 
 /* Navigation  */
@@ -71,6 +74,11 @@ BEGIN_GNOME_DECLS
 
 /* adding/removing from property browser */
 #define NAUTILUS_PREFERENCES_CAN_ADD_CONTENT			"preferences/can_add_content"
+
+/* Content fonts */
+#define NAUTILUS_PREFERENCES_DEFAULT_FONT			"preferences/default_font"
+#define NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT		"preferences/default_smooth_font"
+#define NAUTILUS_PREFERENCES_DEFAULT_FONT_SIZE			"preferences/default_font_size"
 
 /* Single/Double click preference  */
 #define NAUTILUS_PREFERENCES_CLICK_POLICY			"preferences/click_policy"
@@ -96,9 +104,14 @@ BEGIN_GNOME_DECLS
 /* Sorting order */
 #define NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST		"preferences/sort_directories_first"
 
-/* Directory view */
-#define NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY		"directory-view/font_family"
-#define NAUTILUS_PREFERENCES_DIRECTORY_VIEW_SMOOTH_FONT		"directory-view/smooth_font"
+/* Icon View */
+#define NAUTILUS_PREFERENCES_ICON_VIEW_FONT			"icon-view/font"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT		"icon-view/smooth_font"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_STANDARD_FONT_SIZE	"icon-view/standard_font_size"
+
+/* List View */
+#define NAUTILUS_PREFERENCES_LIST_VIEW_FONT			"list-view/font"
+#define NAUTILUS_PREFERENCES_LIST_VIEW_STANDARD_FONT_SIZE	"list-view/standard_font_size"
 
 /* File Indexing */
 #define NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE			"preferences/search_bar_type"
@@ -150,8 +163,9 @@ void                         nautilus_global_preferences_set_dialog_title       
 
 /* Sidebar */
 GList *                      nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers (void);
-struct NautilusScalableFont *nautilus_global_preferences_get_smooth_font                            (void);
-struct NautilusScalableFont *nautilus_global_preferences_get_smooth_bold_font                       (void);
+struct NautilusScalableFont *nautilus_global_preferences_get_icon_view_smooth_font                  (void);
+struct NautilusScalableFont *nautilus_global_preferences_get_default_smooth_font                    (void);
+struct NautilusScalableFont *nautilus_global_preferences_get_default_smooth_bold_font               (void);
 
 END_GNOME_DECLS
 

@@ -97,7 +97,7 @@ struct NautilusIconCanvasItemDetails {
 	gboolean is_renaming;
 
 	/* Font stuff whilst in smooth mode */
-	guint		     smooth_font_size;
+	int smooth_font_size;
 	NautilusScalableFont *smooth_font;
 	
 	/* Cached rectangle in canvas coordinates */
@@ -259,7 +259,7 @@ nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass *class)
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::highlighted_for_drop",
 				 GTK_TYPE_BOOL, GTK_ARG_READWRITE, ARG_HIGHLIGHTED_FOR_DROP);
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::smooth_font_size",
-				 GTK_TYPE_UINT, GTK_ARG_READWRITE, ARG_SMOOTH_FONT_SIZE);
+				 GTK_TYPE_INT, GTK_ARG_READWRITE, ARG_SMOOTH_FONT_SIZE);
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::smooth_font",
 				 GTK_TYPE_OBJECT, GTK_ARG_READWRITE, ARG_SMOOTH_FONT);
 
@@ -446,7 +446,7 @@ nautilus_icon_canvas_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 
         case ARG_SMOOTH_FONT_SIZE:
 		nautilus_icon_canvas_item_set_smooth_font_size (NAUTILUS_ICON_CANVAS_ITEM (object),
-								GTK_VALUE_UINT (*arg));
+								GTK_VALUE_INT (*arg));
 		break;
         
 	default:
@@ -497,7 +497,7 @@ nautilus_icon_canvas_item_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 		break;
 
         case ARG_SMOOTH_FONT_SIZE:
-                GTK_VALUE_UINT (*arg) = details->smooth_font_size;
+                GTK_VALUE_INT (*arg) = details->smooth_font_size;
 		break;
         
         default:
@@ -2168,8 +2168,8 @@ nautilus_icon_canvas_item_set_smooth_font (NautilusIconCanvasItem	*icon_item,
 }
 
 void
-nautilus_icon_canvas_item_set_smooth_font_size (NautilusIconCanvasItem	*icon_item,
-						guint			font_size)
+nautilus_icon_canvas_item_set_smooth_font_size (NautilusIconCanvasItem *icon_item,
+						int font_size)
 {
 	g_return_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (icon_item));
 	g_return_if_fail (font_size > 0);

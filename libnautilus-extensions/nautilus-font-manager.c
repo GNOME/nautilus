@@ -120,8 +120,7 @@ typedef struct {
 	char *weight;
 	char *slant;
 	char *set_width;
-	char *char_set_registry;
-	char *char_set_encoding;
+	char *char_set;
 	gboolean is_ignored;
 } FontDescription;
 
@@ -156,8 +155,7 @@ static char                   *font_description_get_family              (const F
 static char                   *font_description_get_weight              (const FontDescription       *description);
 static char                   *font_description_get_slant               (const FontDescription       *description);
 static char                   *font_description_get_set_width           (const FontDescription       *description);
-static char                   *font_description_get_char_set_registry   (const FontDescription       *description);
-static char                   *font_description_get_char_set_encoding   (const FontDescription       *description);
+static char                   *font_description_get_char_set            (const FontDescription       *description);
 static FontDescriptionTable *  font_description_table_new               (const char                  *font_directory,
 									 const GList                 *postscript_font_list,
 									 const GList                 *true_type_font_list);
@@ -254,6 +252,8 @@ font_description_new (const char *font_file_name,
 {
 	FontDescription *description = NULL;
 	NautilusStringList *tokenized_xlfd;
+	char *char_set_registry;
+	char *char_set_encoding;
 
 	g_return_val_if_fail (string_is_valid (font_file_name), NULL);
 	g_return_val_if_fail (string_is_valid (xlfd_string), NULL);
@@ -271,8 +271,13 @@ font_description_new (const char *font_file_name,
 		description->weight = nautilus_string_list_nth (tokenized_xlfd, XLFD_INDEX_WEIGHT);
 		description->slant = nautilus_string_list_nth (tokenized_xlfd, XLFD_INDEX_SLANT);
 		description->set_width = nautilus_string_list_nth (tokenized_xlfd, XLFD_INDEX_SET_WIDTH);
-		description->char_set_registry = nautilus_string_list_nth (tokenized_xlfd, XLFD_INDEX_CHAR_SET_REGISTRY);
-		description->char_set_encoding = nautilus_string_list_nth (tokenized_xlfd, XLFD_INDEX_CHAR_SET_ENCODING);
+
+		char_set_registry = nautilus_string_list_nth (tokenized_xlfd, XLFD_INDEX_CHAR_SET_REGISTRY);
+		char_set_encoding = nautilus_string_list_nth (tokenized_xlfd, XLFD_INDEX_CHAR_SET_ENCODING);
+		description->char_set = g_strdup_printf ("%s-%s", char_set_registry, char_set_encoding);
+		g_free (char_set_registry);
+		g_free (char_set_encoding);
+
 		description->is_ignored = 
 			font_foundry_is_ignored (description->foundry) || font_family_is_ignored (description->family);
 	} else {
@@ -295,8 +300,7 @@ font_description_free (FontDescription *description)
 	g_free (description->weight);
 	g_free (description->slant);
 	g_free (description->set_width);
-	g_free (description->char_set_registry);
-	g_free (description->char_set_encoding);
+	g_free (description->char_set);
 	g_free (description);
 }
 
@@ -349,19 +353,11 @@ font_description_get_set_width (const FontDescription *description)
 }
 
 static char *
-font_description_get_char_set_registry (const FontDescription *description)
+font_description_get_char_set (const FontDescription *description)
 {
 	g_return_val_if_fail (description != NULL, NULL);
 
-	return g_strdup (description->char_set_registry);
-}
-
-static char *
-font_description_get_char_set_encoding (const FontDescription *description)
-{
-	g_return_val_if_fail (description != NULL, NULL);
-
-	return g_strdup (description->char_set_encoding);
+	return g_strdup (description->char_set);
 }
 
 static guint
@@ -565,8 +561,7 @@ font_description_table_for_each (const FontDescriptionTable *table,
 					     description->weight,
 					     description->slant,
 					     description->set_width,
-					     description->char_set_registry,
-					     description->char_set_encoding,
+					     description->char_set,
 					     callback_data);
 		}
 		
@@ -1250,8 +1245,7 @@ font_list_find_bold_callback (const char *font_file_name,
 			      const char *weight,
 			      const char *slant,
 			      const char *set_width,
-			      const char *char_set_registry,
-			      const char *char_set_encoding,
+			      const char *char_set,
 			      gpointer callback_data)
 {
 	FindData *data;
@@ -1262,8 +1256,7 @@ font_list_find_bold_callback (const char *font_file_name,
 	g_return_val_if_fail (weight != NULL, FALSE);
 	g_return_val_if_fail (slant != NULL, FALSE);
 	g_return_val_if_fail (set_width != NULL, FALSE);
-	g_return_val_if_fail (char_set_registry != NULL, FALSE);
-	g_return_val_if_fail (char_set_encoding != NULL, FALSE);
+	g_return_val_if_fail (char_set != NULL, FALSE);
 	g_return_val_if_fail (callback_data != NULL, FALSE);
 
 	data = callback_data;
@@ -1275,8 +1268,7 @@ font_list_find_bold_callback (const char *font_file_name,
 	    && nautilus_istr_is_equal (data->description->family, family)
 	    && nautilus_istr_is_equal (data->description->slant, slant)
 	    && nautilus_istr_is_equal (data->description->set_width, set_width)
-	    && nautilus_istr_is_equal (data->description->char_set_registry, char_set_registry)
-	    && nautilus_istr_is_equal (data->description->char_set_encoding, char_set_encoding)
+	    && nautilus_istr_is_equal (data->description->char_set, char_set)
 	    && nautilus_font_manager_weight_is_bold (weight)) {
 		data->found_file_name = g_strdup (font_file_name);
 	}
@@ -1331,7 +1323,31 @@ call_chop_off_comments (const char *input)
 	return test_copy;
 }
 
-#define TEST_FONT_DIR "/usr/share/fonts/default/Type1"
+static char *
+get_test_font_dir (void)
+{
+	char *test_font_dir;
+	char *uri;
+	char *base_uri;
+	char *relative_part;
+	char *current_dir;
+	
+	current_dir = g_get_current_dir ();
+	
+	base_uri = g_strdup_printf ("file://%s/", current_dir);
+	relative_part = g_strdup_printf ("%s/%s", SOURCE_DATADIR, "/fonts/urw");
+	
+	uri = nautilus_uri_make_full_from_relative (base_uri, relative_part);
+	
+	test_font_dir = g_strdup (uri + strlen ("file://"));
+	
+	g_free (base_uri);
+	g_free (relative_part);
+	g_free (uri);
+	g_free (current_dir);
+
+	return test_font_dir;
+}
 
 void
 nautilus_self_check_font_manager (void)
@@ -1339,6 +1355,8 @@ nautilus_self_check_font_manager (void)
 	FontDescriptionTable *table;
 	const FontDescription *description;
 	GList *font_table_list = NULL;
+	char *test_font_dir;
+	char *font_name_table[4];
 
 	/* chop_off_comments() */
 	NAUTILUS_CHECK_STRING_RESULT (call_chop_off_comments ("foo bar"), "foo bar");
@@ -1349,67 +1367,73 @@ nautilus_self_check_font_manager (void)
 	NAUTILUS_CHECK_STRING_RESULT (call_chop_off_comments ("\\#foo bar"), "\\#foo bar");
 	NAUTILUS_CHECK_STRING_RESULT (call_chop_off_comments ("\\##foo bar"), "\\#");
 
-	/* Its too hard to get these font manager checks to work in tinderbox
-	 * without bug 7343 being fixed.  So im going to fix 7343 instead of
-	 * messing around with tinderbox.
-	 */
-	return;
+	test_font_dir = get_test_font_dir ();
 
-	if (!g_file_exists (TEST_FONT_DIR)) {
-		return;
-	}
+	g_return_if_fail (g_file_exists (test_font_dir));
 
-	font_manager_collect_font_tables (TEST_FONT_DIR, &font_table_list);
+ 	font_name_table[0] = g_strdup_printf ("%s/%s", test_font_dir, "n019003l.pfb");
+ 	font_name_table[1] = g_strdup_printf ("%s/%s", test_font_dir, "n019004l.pfb");
+ 	font_name_table[2] = g_strdup_printf ("%s/%s", test_font_dir, "n019023l.pfb");
+ 	font_name_table[3] = g_strdup_printf ("%s/%s", test_font_dir, "n019024l.pfb");
+
+	g_return_if_fail (g_file_exists (font_name_table[0]));
+	g_return_if_fail (g_file_exists (font_name_table[1]));
+	g_return_if_fail (g_file_exists (font_name_table[2]));
+	g_return_if_fail (g_file_exists (font_name_table[3]));
+
+	font_manager_collect_font_tables (test_font_dir, &font_table_list);
 	g_return_if_fail (font_table_list != NULL);
 
 	g_return_if_fail (g_list_nth_data (font_table_list, 0) != NULL);
 	table = g_list_nth_data (font_table_list, 0);
 
- 	NAUTILUS_CHECK_INTEGER_RESULT (font_description_table_get_length (table), 35);
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_table_get_nth_file_name (table, 0), TEST_FONT_DIR "/a010013l.pfb");
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_table_get_nth_file_name (table, 1), TEST_FONT_DIR "/a010015l.pfb");
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_table_get_nth_file_name (table, 2), TEST_FONT_DIR "/a010033l.pfb");
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_table_get_nth_file_name (table, 3), TEST_FONT_DIR "/a010035l.pfb");
+ 	NAUTILUS_CHECK_INTEGER_RESULT (font_description_table_get_length (table), 4);
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_table_get_nth_file_name (table, 0), font_name_table[0]);
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_table_get_nth_file_name (table, 1), font_name_table[1]);
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_table_get_nth_file_name (table, 2), font_name_table[2]);
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_table_get_nth_file_name (table, 3), font_name_table[3]);
 
 	description = font_description_table_peek_nth (table, 0);
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_file_name (description), TEST_FONT_DIR "/a010013l.pfb");
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_file_name (description), font_name_table[0]);
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_foundry (description), "URW");
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_family (description), "Avantgarde");
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_weight (description), "book");
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_family (description), "Helvetica Default");
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_weight (description), "medium");
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_slant (description), "r");
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_set_width (description), "normal");
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_char_set_encoding (description), "1");
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_char_set_registry (description), "iso8859");
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_char_set (description), "iso8859-1");
 
 	description = font_description_table_peek_nth (table, 1);
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_file_name (description), TEST_FONT_DIR "/a010015l.pfb");
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_file_name (description), font_name_table[1]);
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_foundry (description), "URW");
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_family (description), "Avantgarde");
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_weight (description), "demibold");
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_family (description), "Helvetica Default");
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_weight (description), "bold");
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_slant (description), "r");
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_set_width (description), "normal");
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_char_set_encoding (description), "1");
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_char_set_registry (description), "iso8859");
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_char_set (description), "iso8859-1");
 
 	description = font_description_table_peek_nth (table, 2);
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_file_name (description), TEST_FONT_DIR "/a010033l.pfb");
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_file_name (description), font_name_table[2]);
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_foundry (description), "URW");
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_family (description), "Avantgarde");
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_weight (description), "book");
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_family (description), "Helvetica Default");
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_weight (description), "medium");
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_slant (description), "o");
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_set_width (description), "normal");
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_char_set_encoding (description), "1");
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_char_set_registry (description), "iso8859");
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_char_set (description), "iso8859-1");
 
 	description = font_description_table_peek_nth (table, 3);
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_file_name (description), TEST_FONT_DIR "/a010035l.pfb");
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_file_name (description), font_name_table[3]);
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_foundry (description), "URW");
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_family (description), "Avantgarde");
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_weight (description), "demibold");
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_family (description), "Helvetica Default");
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_weight (description), "bold");
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_slant (description), "o");
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_set_width (description), "normal");
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_char_set_encoding (description), "1");
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_char_set_registry (description), "iso8859");
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_char_set (description), "iso8859-1");
+
+ 	g_free (font_name_table[0]);
+ 	g_free (font_name_table[1]);
+ 	g_free (font_name_table[2]);
+ 	g_free (font_name_table[3]);
+	g_free (test_font_dir);
 
 	font_table_list_free (font_table_list);
 }

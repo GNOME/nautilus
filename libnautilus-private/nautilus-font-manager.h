@@ -46,8 +46,7 @@ typedef gboolean (*NautilusFontManagerCallback) (const char *font_file_name,
 						 const char *weight,
 						 const char *slant,
 						 const char *set_width,
-						 const char *char_set_registry,
-						 const char *char_set_encoding,
+						 const char *char_set,
 						 gpointer callback_data);
 
 void     nautilus_font_manager_for_each_font         (NautilusFontManagerCallback  callback,

@@ -952,30 +952,6 @@ image_display_policy_changed_callback (gpointer callback_data)
 }
 
 static void
-directory_view_font_family_changed_callback (gpointer callback_data)
-{
-	FMDirectoryView *view;
-
-	view = FM_DIRECTORY_VIEW (callback_data);
-
-	NAUTILUS_CALL_METHOD
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 font_family_changed, (view));
-}
-
-static void
-directory_view_smooth_font_changed_callback (gpointer callback_data)
-{
-	FMDirectoryView *view;
-
-	view = FM_DIRECTORY_VIEW (callback_data);
-
-	NAUTILUS_CALL_METHOD
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 smooth_font_changed, (view));
-}
-
-static void
 click_policy_changed_callback (gpointer callback_data)
 {
 	FMDirectoryView *view;
@@ -1202,12 +1178,6 @@ fm_directory_view_initialize (FMDirectoryView *view)
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
 					   image_display_policy_changed_callback,
 					   view);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
-					   directory_view_font_family_changed_callback, 
-					   view);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_SMOOTH_FONT,
-					   directory_view_smooth_font_changed_callback, 
-					   view);
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
 					   click_policy_changed_callback,
 					   view);
@@ -1277,12 +1247,6 @@ fm_directory_view_destroy (GtkObject *object)
 					      view);
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
 					      image_display_policy_changed_callback,
-					      view);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
-					      directory_view_font_family_changed_callback,
-					      view);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_SMOOTH_FONT,
-					      directory_view_smooth_font_changed_callback,
 					      view);
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
 					      click_policy_changed_callback,

@@ -93,7 +93,7 @@ void        nautilus_icon_canvas_item_update_bounds            (NautilusIconCanv
 void        nautilus_icon_canvas_item_set_smooth_font          (NautilusIconCanvasItem     *item,
 								NautilusScalableFont       *font);
 void        nautilus_icon_canvas_item_set_smooth_font_size     (NautilusIconCanvasItem     *item,
-								guint                       font_size);
+								int                         font_size);
 
 END_GNOME_DECLS
 

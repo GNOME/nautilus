@@ -1247,6 +1247,23 @@ nautilus_dumb_down_for_multi_byte_locale_hack (void)
 	return is_multi_byte_locale;
 }
 
+int
+nautilus_compare_integer (gconstpointer a,
+			  gconstpointer b)
+{
+	int int_a;
+	int int_b;
+
+	int_a = GPOINTER_TO_INT (a);
+	int_b = GPOINTER_TO_INT (b);
+
+	if (int_a == int_b) {
+		return 0;
+	}
+
+	return int_a < int_b ? -1 : 1;
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 static void 
@@ -1437,6 +1454,14 @@ nautilus_self_check_glib_extensions (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_shell_quote ("'a"), "''\\''a'");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_shell_quote ("a'"), "'a'\\'''");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_shell_quote ("a'a"), "'a'\\''a'");
+
+	/* nautilus_compare_integer */
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_compare_integer (GINT_TO_POINTER (0), GINT_TO_POINTER (0)), 0);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_compare_integer (GINT_TO_POINTER (0), GINT_TO_POINTER (1)), -1);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_compare_integer (GINT_TO_POINTER (1), GINT_TO_POINTER (0)), 1);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_compare_integer (GINT_TO_POINTER (-1), GINT_TO_POINTER (0)), -1);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_compare_integer (GINT_TO_POINTER (0), GINT_TO_POINTER (-1)), 1);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_compare_integer (GINT_TO_POINTER (-1), GINT_TO_POINTER (-1)), 0);
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

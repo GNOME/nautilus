@@ -56,17 +56,18 @@ struct _NautilusPreferencesGroupDetails
 static const gint PREFERENCES_GROUP_NOT_FOUND = -1;
 
 /* NautilusPreferencesGroupClass methods */
-static void        nautilus_preferences_group_initialize_class (NautilusPreferencesGroupClass *klass);
-static void        nautilus_preferences_group_initialize       (NautilusPreferencesGroup      *preferences_group);
+static void nautilus_preferences_group_initialize_class (NautilusPreferencesGroupClass *klass);
+static void nautilus_preferences_group_initialize       (NautilusPreferencesGroup      *preferences_group);
 
 
 /* GtkObjectClass methods */
-static void        nautilus_preferences_group_destroy          (GtkObject                    *object);
+static void nautilus_preferences_group_destroy          (GtkObject                     *object);
 
 
 /* Private stuff */
-static void        preferences_group_construct                 (NautilusPreferencesGroup *prefs_group,
-								const gchar * title);
+static void preferences_group_construct                 (NautilusPreferencesGroup      *prefs_group,
+							 const gchar                   *title);
+static void preferences_group_align_captions            (NautilusPreferencesGroup      *group);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPreferencesGroup,
 				   nautilus_preferences_group,
@@ -183,6 +184,42 @@ preferences_group_construct (NautilusPreferencesGroup *group,
 	gtk_widget_show (group->details->main_box);
 }
 
+static void
+preferences_group_align_captions (NautilusPreferencesGroup *group)
+{
+	GList *node;
+	NautilusPreferencesItem *item;
+	int max_title_width = 0;
+	int width;
+
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_GROUP (group));
+
+	/* Compute the max caption title label width */
+	for (node = group->details->items; node != NULL; node = node->next) {
+		g_assert (NAUTILUS_IS_PREFERENCES_ITEM (node->data));
+		item = NAUTILUS_PREFERENCES_ITEM (node->data);
+		
+		if (GTK_WIDGET_VISIBLE (item) && nautilus_preferences_item_child_is_caption (item)) {
+			max_title_width = MAX (max_title_width,
+					       nautilus_preferences_item_get_caption_title_label_width (item));
+		}
+	}
+	
+	/* Set the spacing on all the captions accordingly */
+	for (node = group->details->items; node != NULL; node = node->next) {
+		g_assert (NAUTILUS_IS_PREFERENCES_ITEM (node->data));
+		item = NAUTILUS_PREFERENCES_ITEM (node->data);
+
+		if (GTK_WIDGET_VISIBLE (item) && nautilus_preferences_item_child_is_caption (item)) {
+			width = nautilus_preferences_item_get_caption_title_label_width (item);
+
+			g_assert (width <= max_title_width);
+			
+			nautilus_preferences_item_set_caption_spacing (item, max_title_width - width);
+		}
+	}
+}
+
 /*
  * NautilusPreferencesGroup public methods
  */
@@ -255,6 +292,8 @@ nautilus_preferences_group_update (NautilusPreferencesGroup *group)
 		
 		g_free (name);
 	}
+
+	preferences_group_align_captions (group);
 }
 
 guint
@@ -276,3 +315,12 @@ nautilus_preferences_group_get_num_visible_items (const NautilusPreferencesGroup
 
 	return n;
 }
+
+char *
+nautilus_preferences_group_get_title_label (const NautilusPreferencesGroup *group)
+{
+	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_GROUP (group), NULL);
+
+	return g_strdup (GTK_FRAME (group)->label);
+}
+

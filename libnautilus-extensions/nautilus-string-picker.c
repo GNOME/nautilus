@@ -109,7 +109,9 @@ nautilus_string_picker_initialize (NautilusStringPicker *string_picker)
 	string_picker->detail->option_menu = gtk_option_menu_new ();
 
 	nautilus_caption_set_child (NAUTILUS_CAPTION (string_picker),
-				    string_picker->detail->option_menu);
+				    string_picker->detail->option_menu,
+				    FALSE,
+				    FALSE);
 
 	gtk_widget_show (string_picker->detail->option_menu);
 }
@@ -212,14 +214,6 @@ nautilus_string_picker_set_string_list (NautilusStringPicker		*string_picker,
 			gtk_menu_append (GTK_MENU (string_picker->detail->menu), menu_item);
 		}
 
-	}
-
-	/* Allow the string picker to be sensitive only if there is a choice */
-	if (nautilus_string_list_get_length (string_picker->detail->string_list) > 1) {
-		gtk_widget_set_sensitive (GTK_WIDGET (string_picker), TRUE);
-	}
-	else {
-		gtk_widget_set_sensitive (GTK_WIDGET (string_picker), FALSE);
 	}
 
 	/* Attatch the menu to the option button */

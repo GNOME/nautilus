@@ -19,12 +19,6 @@ font_type_to_string (NautilusFontType font_type)
 	return "unknown";
 }
 
-// microsoft Webdings
-// microsoft Wingdings
-// monotype OCR
-// URW Zapf
-// xfree86 cursor
-
 typedef struct
 {
 	char *key;
@@ -48,8 +42,7 @@ font_iterator_callback (const char *font_file_name,
 			const char *weight,
 			const char *slant,
 			const char *set_width,
-			const char *char_set_registry,
-			const char *char_set_encoding,
+			const char *char_set,
 			gpointer callback_data)
 {
 	char *key;
@@ -64,8 +57,7 @@ font_iterator_callback (const char *font_file_name,
 	g_return_val_if_fail (weight != NULL, FALSE);
 	g_return_val_if_fail (slant != NULL, FALSE);
 	g_return_val_if_fail (set_width != NULL, FALSE);
-	g_return_val_if_fail (char_set_registry != NULL, FALSE);
-	g_return_val_if_fail (char_set_encoding != NULL, FALSE);
+	g_return_val_if_fail (char_set != NULL, FALSE);
 	g_return_val_if_fail (callback_data != NULL, FALSE);
 
 	font_table = callback_data;
@@ -93,7 +85,7 @@ font_iterator_callback (const char *font_file_name,
 	entry->style_list = g_list_append (entry->style_list, style);
 
 	if (1) {
-		g_print ("%s %s %s-%s-%s-%s-%s-%s-%s\n",
+		g_print ("%s %s %s-%s-%s-%s-%s-%s\n",
 			 font_type_to_string (font_type),
 			 font_file_name,
 			 foundry,
@@ -101,8 +93,7 @@ font_iterator_callback (const char *font_file_name,
 			 weight,
 			 slant,
 			 set_width,
-			 char_set_registry,
-			 char_set_encoding);
+			 char_set);
 	}
 
 	return TRUE;

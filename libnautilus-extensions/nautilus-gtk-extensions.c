@@ -2068,6 +2068,32 @@ nautilus_get_window_list_ordered_front_to_back (void)
 	return windows;
 }
 
+/* nautilus_gtk_get_system_font:
+ *
+ * Return the system font as selected in the control center.  Need to 
+ * gdk_font_unref() the result when done with it.
+ *
+ * Perhaps there is a better way to figure out what that font is, but
+ * the following is simple enough and it works.
+ */
+GdkFont *
+nautilus_gtk_get_system_font (void)
+{
+	GtkWidget *label;
+	GdkFont *font;
+
+	label = gtk_label_new ("");
+	
+	gtk_widget_ensure_style (label);
+
+	font = label->style->font;
+	gdk_font_ref (font);
+
+ 	gtk_widget_destroy (label);
+
+	return font;
+}
+
 static guint
 event_get_time (GdkEvent *event)
 {

@@ -283,6 +283,9 @@ add_preferences_callbacks (void)
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
 					   async_data_preference_changed_callback,
 					   NULL);
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
+					   async_data_preference_changed_callback,
+					   NULL);
 }
 
 static void
@@ -298,6 +301,9 @@ remove_preferences_callbacks (void)
 					      async_data_preference_changed_callback,
 					      NULL);
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
+					      async_data_preference_changed_callback,
+					      NULL);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
 					      async_data_preference_changed_callback,
 					      NULL);
 }

@@ -373,3 +373,24 @@ nautilus_preferences_box_update (NautilusPreferencesBox	*preferences_box)
 
 	preferences_box_category_list_recreate (preferences_box);
 }
+
+GtkWidget *
+nautilus_preferences_box_find_pane (const NautilusPreferencesBox *preferences_box,
+				    const char *pane_name)
+{
+	GList *node;
+	PaneInfo *info;
+
+	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_BOX (preferences_box), FALSE);
+
+	for (node = preferences_box->details->panes; node != NULL; node = node->next) {
+		g_assert (node->data != NULL);
+		info = node->data;
+		if (nautilus_str_is_equal (info->pane_name, pane_name)) {
+			return info->pane_widget;
+		}
+	}
+
+	return NULL;
+}
+

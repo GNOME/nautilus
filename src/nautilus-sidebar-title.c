@@ -135,8 +135,8 @@ smooth_font_changed_callback (gpointer callback_data)
 
 	sidebar_title = NAUTILUS_SIDEBAR_TITLE (callback_data);
 	
-	new_font = nautilus_global_preferences_get_smooth_font ();
-	new_bold_font = nautilus_global_preferences_get_smooth_bold_font ();
+	new_font = nautilus_global_preferences_get_default_smooth_font ();
+	new_bold_font = nautilus_global_preferences_get_default_smooth_bold_font ();
 
 	nautilus_label_set_smooth_font (NAUTILUS_LABEL (sidebar_title->details->title_label), new_bold_font);
 	nautilus_label_set_smooth_font (NAUTILUS_LABEL (sidebar_title->details->more_info_label), new_font);
@@ -188,19 +188,26 @@ nautilus_sidebar_title_initialize (NautilusSidebarTitle *sidebar_title)
 
 	/* Keep track of changes in graphics trade offs */
 	update_all (sidebar_title);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
-					   update_all_cover, 
-					   sidebar_title);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
-					   update_all_cover,
-					   sidebar_title);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_SMOOTH_FONT,
-					   smooth_font_changed_callback,
-					   sidebar_title);
+	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
+						       update_all_cover, 
+						       sidebar_title,
+						       GTK_OBJECT (sidebar_title));
+	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DEFAULT_FONT,
+						       update_all_cover,
+						       sidebar_title,
+						       GTK_OBJECT (sidebar_title));
+	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
+						       smooth_font_changed_callback,
+						       sidebar_title,
+						       GTK_OBJECT (sidebar_title));
+	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_THEME,
+						       nautilus_sidebar_title_theme_changed,
+						       sidebar_title,
+						       GTK_OBJECT (sidebar_title));
 
 	/* set up the label colors according to the theme, and get notified of changes */
 	nautilus_sidebar_title_theme_changed (sidebar_title);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, nautilus_sidebar_title_theme_changed, sidebar_title);
+	smooth_font_changed_callback (sidebar_title);
 }
 
 /* destroy by throwing away private storage */
@@ -233,19 +240,6 @@ nautilus_sidebar_title_destroy (GtkObject *object)
 	g_free (sidebar_title->details->title_text);
 	g_free (sidebar_title->details);
 
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME, 
-					      nautilus_sidebar_title_theme_changed, 
-					      sidebar_title);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
-					      update_all_cover, 
-					      sidebar_title);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY, 
-					      update_all_cover, 
-					      sidebar_title);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_SMOOTH_FONT,
-					      smooth_font_changed_callback,
-					      sidebar_title);
-  	
 	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
@@ -470,6 +464,7 @@ update_font (NautilusSidebarTitle *sidebar_title)
 	GdkFont *largest_fitting_font;
 	int largest_fitting_smooth_font_size;
 	NautilusScalableFont *smooth_font;
+	char *font_name;
 
 	/* Make sure theres work to do */
 	if (nautilus_strlen (sidebar_title->details->title_text) < 1) {
@@ -484,20 +479,22 @@ update_font (NautilusSidebarTitle *sidebar_title)
 	}
 	
 	/* Update the smooth font */
-	smooth_font = nautilus_label_get_smooth_font (NAUTILUS_LABEL (sidebar_title->details->title_label));
+	smooth_font = nautilus_global_preferences_get_default_smooth_font ();
 	largest_fitting_smooth_font_size = nautilus_scalable_font_largest_fitting_font_size (smooth_font,
 											     sidebar_title->details->title_text,
 											     available_width,
 											     minimum_acceptable_font_size,
 											     maximum_acceptable_font_size);
+
+	nautilus_label_set_smooth_font (NAUTILUS_LABEL (sidebar_title->details->title_label), smooth_font);
+	nautilus_label_set_smooth_font_size (NAUTILUS_LABEL (sidebar_title->details->title_label), largest_fitting_smooth_font_size);
+	
 	gtk_object_unref (GTK_OBJECT (smooth_font));
 
-	nautilus_label_set_smooth_font_size (NAUTILUS_LABEL (sidebar_title->details->title_label), largest_fitting_smooth_font_size);
-
-	/* FIXME bugzilla.eazel.com 1103: Hard coded font family. */
-	
 	/* Update the regular font */
-	template_font = nautilus_font_factory_get_font_by_family (_("helvetica"), maximum_acceptable_font_size);
+	font_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_DEFAULT_FONT);
+	template_font = nautilus_font_factory_get_font_by_family (font_name, maximum_acceptable_font_size);
+	g_free (font_name);
 	g_assert (template_font != NULL);
 
 	bold_template_font = nautilus_gdk_font_get_bold (template_font);

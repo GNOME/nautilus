@@ -3337,28 +3337,26 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 	/* FIXME bugzilla.eazel.com 5093: Font name is hard-coded here. */
 	/* FIXME bugzilla.eazel.com 5101: Font size is hard-coded here. */
 
-	/* FIXME bugzilla.eazel.com 7345:
-	 * Default font "helvetica" hard coded and marked for translatation in many
-	 * placesFonts hard marked for localization in disparate places.
-	 */
-        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLEST] = nautilus_font_factory_get_font_by_family (_("helvetica"), 8);
-        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLER] = nautilus_font_factory_get_font_by_family (_("helvetica"), 8);
-        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALL] = nautilus_font_factory_get_font_by_family (_("helvetica"), 10);
-        details->label_font[NAUTILUS_ZOOM_LEVEL_STANDARD] = nautilus_font_factory_get_font_by_family (_("helvetica"), 12);
-        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGE] = nautilus_font_factory_get_font_by_family (_("helvetica"), 14);
-        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGER] = nautilus_font_factory_get_font_by_family (_("helvetica"), 18);
-        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGEST] = nautilus_font_factory_get_font_by_family (_("helvetica"), 18);
+        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLEST] = nautilus_font_factory_get_font_by_family ("helvetica", 8);
+        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLER] = nautilus_font_factory_get_font_by_family ("helvetica", 8);
+        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALL] = nautilus_font_factory_get_font_by_family ("helvetica", 10);
+        details->label_font[NAUTILUS_ZOOM_LEVEL_STANDARD] = nautilus_font_factory_get_font_by_family ("helvetica", 12);
+        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGE] = nautilus_font_factory_get_font_by_family ("helvetica", 14);
+        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGER] = nautilus_font_factory_get_font_by_family ("helvetica", 18);
+        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGEST] = nautilus_font_factory_get_font_by_family ("helvetica", 18);
 
         details->smooth_label_font = nautilus_scalable_font_get_default_font ();
-
-	/* FIXME bugzilla.eazel.com 5101: Font size is hard-coded here. */
-        details->smooth_font_size[NAUTILUS_ZOOM_LEVEL_SMALLEST] = 8;
-        details->smooth_font_size[NAUTILUS_ZOOM_LEVEL_SMALLER] = 8;
-        details->smooth_font_size[NAUTILUS_ZOOM_LEVEL_SMALL] = 10;
-        details->smooth_font_size[NAUTILUS_ZOOM_LEVEL_STANDARD] = 12;
-        details->smooth_font_size[NAUTILUS_ZOOM_LEVEL_LARGE] = 14;
-        details->smooth_font_size[NAUTILUS_ZOOM_LEVEL_LARGER] = 18;
-        details->smooth_font_size[NAUTILUS_ZOOM_LEVEL_LARGEST] = 18;
+	
+	/* These are the default font sizes.  The font sizes are configurable via
+	 * nautilus_icon_container_set_font_size_table() 
+	 */
+        details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = 8;
+        details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER] = 8;
+        details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL] = 10;
+        details->font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] = 12;
+        details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE] = 14;
+        details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER] = 18;
+        details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST] = 18;
 
 	container->details = details;
 
@@ -3721,7 +3719,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	GList *emblem_scalable_icons, *emblem_pixbufs, *p;
 	char *editable_text, *additional_text;
 	GdkFont *font;
-	guint smooth_font_size;
+	int smooth_font_size;
 
 	if (icon == NULL) {
 		return;
@@ -3814,7 +3812,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	
 	font = details->label_font[details->zoom_level];
 
-	smooth_font_size = details->smooth_font_size[details->zoom_level];
+	smooth_font_size = details->font_size_table[details->zoom_level];
         
 	gnome_canvas_item_set (GNOME_CANVAS_ITEM (icon->item),
 			       "editable_text", editable_text,
@@ -5142,6 +5140,20 @@ nautilus_icon_container_theme_changed (gpointer user_data)
 			container->details->highlight_color = strtoul (highlight_color_str, NULL, 0);
 			g_free (highlight_color_str);
 		}
+}
+
+void
+nautilus_icon_container_set_font_size_table (NautilusIconContainer *container,
+					     const int font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1])
+{
+	int i;
+	
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+	g_return_if_fail (font_size_table != NULL);
+	
+	for (i = 0; i <= NAUTILUS_ZOOM_LEVEL_LARGEST; i++) {
+		container->details->font_size_table[i] = font_size_table[i];
+	}
 }
 
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)

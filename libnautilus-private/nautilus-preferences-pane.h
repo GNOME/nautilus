@@ -64,7 +64,10 @@ GtkWidget *nautilus_preferences_pane_add_item_to_nth_group  (NautilusPreferences
 							     const char                    *preference_name,
 							     NautilusPreferencesItemType    item_type);
 void       nautilus_preferences_pane_update                 (NautilusPreferencesPane       *preferences_pane);
+guint      nautilus_preferences_pane_get_num_groups         (const NautilusPreferencesPane *pane);
 guint      nautilus_preferences_pane_get_num_visible_groups (const NautilusPreferencesPane *pane);
+GtkWidget* nautilus_preferences_pane_find_group             (const NautilusPreferencesPane *preferences_pane,
+							     const char                    *group_title);
 
 END_GNOME_DECLS
 

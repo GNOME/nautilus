@@ -63,6 +63,7 @@ GtkWidget* nautilus_preferences_group_add_item              (NautilusPreferences
 							     NautilusPreferencesItemType     item_type);
 void       nautilus_preferences_group_update                (NautilusPreferencesGroup       *group);
 guint      nautilus_preferences_group_get_num_visible_items (const NautilusPreferencesGroup *group);
+char *     nautilus_preferences_group_get_title_label       (const NautilusPreferencesGroup *group);
 
 END_GNOME_DECLS
 

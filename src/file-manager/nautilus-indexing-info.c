@@ -238,6 +238,7 @@ last_index_time_and_reindex_button_dialog_new (void)
         g_free (time_str);
         
         label = nautilus_label_new (label_str);
+        nautilus_label_set_never_smooth (NAUTILUS_LABEL (label), TRUE);
         nautilus_label_set_justify (NAUTILUS_LABEL (label), GTK_JUSTIFY_LEFT);
         nautilus_label_make_bold (NAUTILUS_LABEL (label));
         gtk_box_pack_start (GTK_BOX (dialog->vbox), label,
@@ -291,6 +292,7 @@ index_progress_dialog_new (void)
 
         progress_string = get_text_for_progress_label ();
         progress_label = nautilus_label_new (progress_string);
+        nautilus_label_set_never_smooth (NAUTILUS_LABEL (progress_label), TRUE);
         g_free (progress_string);
         nautilus_label_set_justify (NAUTILUS_LABEL (progress_label), GTK_JUSTIFY_LEFT);
         gtk_box_pack_start (GTK_BOX (embedded_vbox), progress_label, FALSE, FALSE, 0);

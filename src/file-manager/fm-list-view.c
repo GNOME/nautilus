@@ -99,95 +99,95 @@ struct FMListViewDetails {
 #define DOWN_INDICATOR_VALUE		2
 
 /* forward declarations */
-static void                 list_activate_callback                    (NautilusList      *list,
-								       GList             *file_list,
-								       gpointer           data);
-static void                 list_selection_changed_callback           (NautilusList      *list,
-								       gpointer           data);
-static void	            fm_list_view_add_file                     (FMDirectoryView   *view,
-								       NautilusFile      *file);
-static void                 fm_list_view_reset_row_height             (FMListView        *list_view);
-static void                 fm_list_view_file_changed                 (FMDirectoryView   *view,
-								       NautilusFile      *file);
-static void		    fm_list_view_adding_file 	      	      (FMListView 	 *view, 
-								       NautilusFile 	 *file);
-static void		    fm_list_view_removing_file		      (FMListView	 *view,
-								       NautilusFile	 *file);
-static gboolean             fm_list_view_display_pending_files        (FMDirectoryView   *view,
+static void                 list_activate_callback                    (NautilusList       *list,
+								       GList              *file_list,
+								       gpointer            data);
+static void                 list_selection_changed_callback           (NautilusList       *list,
+								       gpointer            data);
+static void                 fm_list_view_add_file                     (FMDirectoryView    *view,
+								       NautilusFile       *file);
+static void                 fm_list_view_reset_row_height             (FMListView         *list_view);
+static void                 fm_list_view_file_changed                 (FMDirectoryView    *view,
+								       NautilusFile       *file);
+static void                 fm_list_view_adding_file                  (FMListView         *view,
+								       NautilusFile       *file);
+static void                 fm_list_view_removing_file                (FMListView         *view,
+								       NautilusFile       *file);
+static gboolean             fm_list_view_display_pending_files        (FMDirectoryView    *view,
 								       GList             **pending_files_added,
 								       GList             **pending_files_changed);
-static gboolean		    fm_list_view_file_still_belongs 	      (FMListView 	 *view, 
-								       NautilusFile 	 *file);
-static void                 fm_list_view_begin_adding_files           (FMDirectoryView   *view);
-static void                 fm_list_view_begin_loading                (FMDirectoryView   *view);
-static void                 fm_list_view_bump_zoom_level              (FMDirectoryView   *view,
-								       int                zoom_increment);
-static void                 fm_list_view_zoom_to_level                (FMDirectoryView   *view,
-								       int                zoom_level);
-static void                 fm_list_view_restore_default_zoom_level   (FMDirectoryView   *view);
-static gboolean             fm_list_view_can_zoom_in                  (FMDirectoryView   *view);
-static gboolean             fm_list_view_can_zoom_out                 (FMDirectoryView   *view);
-static GtkWidget *          fm_list_view_get_background_widget        (FMDirectoryView   *view);
-static void                 fm_list_view_clear                        (FMDirectoryView   *view);
-static GList *              fm_list_view_get_selection                (FMDirectoryView   *view);
-static NautilusZoomLevel    fm_list_view_get_zoom_level               (FMListView        *list_view);
-static void                 fm_list_view_initialize                   (gpointer           object,
-								       gpointer           klass);
-static void                 fm_list_view_initialize_class             (gpointer           klass);
-static void                 fm_list_view_destroy                      (GtkObject         *object);
-static void                 fm_list_view_done_adding_files            (FMDirectoryView   *view);
-static void                 fm_list_view_select_all                   (FMDirectoryView   *view);
-static void                 fm_list_view_font_family_changed   		  (FMDirectoryView   *view);
-static void                 fm_list_view_set_selection                (FMDirectoryView   *view,
-								       GList             *selection);
-static void                 fm_list_view_reveal_selection             (FMDirectoryView   *view);
-static GArray * 	    fm_list_view_get_selected_icon_locations  (FMDirectoryView   *view);
-static void                 fm_list_view_set_zoom_level               (FMListView        *list_view,
-								       NautilusZoomLevel  new_level,
-								       gboolean           always_set_level);
-static void                 fm_list_view_sort_items                   (FMListView        *list_view,
-								       int                column,
-								       gboolean           reversed);
-static void		    fm_list_view_update_smooth_graphics_mode  (FMDirectoryView   *directory_view);
-static void                 fm_list_view_update_click_mode            (FMDirectoryView   *view);
-static void                 fm_list_view_embedded_text_policy_changed (FMDirectoryView   *view);
-static void                 fm_list_view_image_display_policy_changed (FMDirectoryView   *view);
-static void                 install_row_images                        (FMListView        *list_view,
-								       guint              row);
-static void                 set_up_list                               (FMListView        *list_view);
-static int                  get_column_from_attribute                 (FMListView        *list_view,
-								       const char        *attribute);
-static int                  get_sort_column_from_attribute            (FMListView        *list_view,
-								       const char        *attribute);
-static NautilusList *       get_list                                  (FMListView        *list_view);
-static void                 update_icons                              (FMListView        *list_view);
-static int                  get_number_of_columns                     (FMListView        *list_view);
-static int                  get_link_column                           (FMListView        *list_view);
-static char *		    get_default_sort_attribute		      (FMListView	 *list_view);
-static void                 get_column_specification                  (FMListView        *list_view,
-								       int                column_number,
-								       FMListViewColumn  *specification);
-static const char **        get_column_titles                         (FMListView        *list_view);
-static const char *         get_column_attribute                      (FMListView        *list_view,
-								       int                column_number);
-static NautilusFileSortType get_column_sort_criterion                 (FMListView        *list_view,
-								       int                column_number);
-static void		    real_adding_file 			      (FMListView 	 *view, 
-								       NautilusFile 	 *file);
-static void		    real_removing_file 			      (FMListView 	 *view, 
-								       NautilusFile 	 *file);
-static gboolean		    real_file_still_belongs 		      (FMListView 	 *view, 
-								       NautilusFile 	 *file);
-static int                  real_get_number_of_columns                (FMListView        *list_view);
-static int                  real_get_link_column                      (FMListView        *list_view);
-static char *               real_get_default_sort_attribute           (FMListView        *list_view);
-static void                 real_get_column_specification             (FMListView        *list_view,
-								       int                column_number,
-								       FMListViewColumn  *specification);
-static gboolean		    real_is_empty			      (FMDirectoryView	 *view);
-static void		    real_sort_directories_first_changed	      (FMDirectoryView   *view);
-static void		    real_start_renaming_item  		      (FMDirectoryView   *view, 
-								       const char 	 *uri);
+static gboolean             fm_list_view_file_still_belongs           (FMListView         *view,
+								       NautilusFile       *file);
+static void                 fm_list_view_begin_adding_files           (FMDirectoryView    *view);
+static void                 fm_list_view_begin_loading                (FMDirectoryView    *view);
+static void                 fm_list_view_bump_zoom_level              (FMDirectoryView    *view,
+								       int                 zoom_increment);
+static void                 fm_list_view_zoom_to_level                (FMDirectoryView    *view,
+								       int                 zoom_level);
+static void                 fm_list_view_restore_default_zoom_level   (FMDirectoryView    *view);
+static gboolean             fm_list_view_can_zoom_in                  (FMDirectoryView    *view);
+static gboolean             fm_list_view_can_zoom_out                 (FMDirectoryView    *view);
+static GtkWidget *          fm_list_view_get_background_widget        (FMDirectoryView    *view);
+static void                 fm_list_view_clear                        (FMDirectoryView    *view);
+static GList *              fm_list_view_get_selection                (FMDirectoryView    *view);
+static NautilusZoomLevel    fm_list_view_get_zoom_level               (FMListView         *list_view);
+static void                 fm_list_view_initialize                   (gpointer            object,
+								       gpointer            klass);
+static void                 fm_list_view_initialize_class             (gpointer            klass);
+static void                 fm_list_view_destroy                      (GtkObject          *object);
+static void                 fm_list_view_done_adding_files            (FMDirectoryView    *view);
+static void                 fm_list_view_select_all                   (FMDirectoryView    *view);
+static void                 fm_list_view_set_selection                (FMDirectoryView    *view,
+								       GList              *selection);
+static void                 fm_list_view_reveal_selection             (FMDirectoryView    *view);
+static GArray *             fm_list_view_get_selected_icon_locations  (FMDirectoryView    *view);
+static void                 fm_list_view_set_zoom_level               (FMListView         *list_view,
+								       NautilusZoomLevel   new_level,
+								       gboolean            always_set_level);
+static void                 fm_list_view_sort_items                   (FMListView         *list_view,
+								       int                 column,
+								       gboolean            reversed);
+static void                 fm_list_view_update_smooth_graphics_mode  (FMDirectoryView    *directory_view);
+static void                 fm_list_view_update_click_mode            (FMDirectoryView    *view);
+static void                 fm_list_view_embedded_text_policy_changed (FMDirectoryView    *view);
+static void                 fm_list_view_image_display_policy_changed (FMDirectoryView    *view);
+static void                 install_row_images                        (FMListView         *list_view,
+								       guint               row);
+static void                 set_up_list                               (FMListView         *list_view);
+static int                  get_column_from_attribute                 (FMListView         *list_view,
+								       const char         *attribute);
+static int                  get_sort_column_from_attribute            (FMListView         *list_view,
+								       const char         *attribute);
+static NautilusList *       get_list                                  (FMListView         *list_view);
+static void                 update_icons                              (FMListView         *list_view);
+static int                  get_number_of_columns                     (FMListView         *list_view);
+static int                  get_link_column                           (FMListView         *list_view);
+static char *               get_default_sort_attribute                (FMListView         *list_view);
+static void                 get_column_specification                  (FMListView         *list_view,
+								       int                 column_number,
+								       FMListViewColumn   *specification);
+static const char **        get_column_titles                         (FMListView         *list_view);
+static const char *         get_column_attribute                      (FMListView         *list_view,
+								       int                 column_number);
+static NautilusFileSortType get_column_sort_criterion                 (FMListView         *list_view,
+								       int                 column_number);
+static void                 real_adding_file                          (FMListView         *view,
+								       NautilusFile       *file);
+static void                 real_removing_file                        (FMListView         *view,
+								       NautilusFile       *file);
+static gboolean             real_file_still_belongs                   (FMListView         *view,
+								       NautilusFile       *file);
+static int                  real_get_number_of_columns                (FMListView         *list_view);
+static int                  real_get_link_column                      (FMListView         *list_view);
+static char *               real_get_default_sort_attribute           (FMListView         *list_view);
+static void                 real_get_column_specification             (FMListView         *list_view,
+								       int                 column_number,
+								       FMListViewColumn   *specification);
+static gboolean             real_is_empty                             (FMDirectoryView    *view);
+static void                 real_sort_directories_first_changed       (FMDirectoryView    *view);
+static void                 real_start_renaming_item                  (FMDirectoryView    *view,
+								       const char         *uri);
+static void                 font_or_font_size_changed_callback        (gpointer            callback_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMListView,
 				   fm_list_view,
@@ -231,7 +231,6 @@ fm_list_view_initialize_class (gpointer klass)
         fm_directory_view_class->click_policy_changed = fm_list_view_update_click_mode;
         fm_directory_view_class->embedded_text_policy_changed = fm_list_view_embedded_text_policy_changed;
         fm_directory_view_class->image_display_policy_changed = fm_list_view_image_display_policy_changed;
-        fm_directory_view_class->font_family_changed = fm_list_view_font_family_changed;
         fm_directory_view_class->smooth_graphics_mode_changed = fm_list_view_update_smooth_graphics_mode;
         fm_directory_view_class->sort_directories_first_changed = real_sort_directories_first_changed;
 
@@ -269,6 +268,15 @@ fm_list_view_initialize (gpointer object, gpointer klass)
 					       update_icons,
 					       GTK_OBJECT (list_view));	
 
+	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_FONT,
+						       font_or_font_size_changed_callback, 
+						       list_view,
+						       GTK_OBJECT (list_view));
+	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_STANDARD_FONT_SIZE,
+						       font_or_font_size_changed_callback, 
+						       list_view,
+						       GTK_OBJECT (list_view));
+	
 	/* It's important to not create the NautilusList (with a call
 	 * to create_list) until later, when the function pointers
 	 * have been initialized by the subclass.
@@ -1019,18 +1027,38 @@ create_list (FMListView *list_view)
 static void
 fm_list_view_update_font (FMListView *list_view)
 {
- 	/* Note that these aren't exactly the same sizes as used
- 	 * in icon view, on purpose.
+ 	/* Note that these deltas aren't exactly the same as those used
+ 	 * in the icon view, on purpose.
  	 */
-	static guint font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1] = {
-		8, 10, 12, 12, 14, 18, 18 };
+	static int font_size_delta_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1] = {
+		-4, -2, 0, 0, +2, +6, +6 };
+	
+	char *font_name;
+	int standard_font_size;
+	int font_size;
+
 	GdkFont *font;
 
-	font = nautilus_font_factory_get_font_from_preferences 
-		(font_size_table[list_view->details->zoom_level]);
+	g_return_if_fail (FM_IS_LIST_VIEW (list_view));
+
+	font_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_LIST_VIEW_FONT);
+	standard_font_size = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_LIST_VIEW_STANDARD_FONT_SIZE);
+	
+	font_size = standard_font_size + font_size_delta_table[list_view->details->zoom_level];
+
+	font = nautilus_font_factory_get_font_by_family (font_name, font_size);
 	g_assert (font != NULL);
 	nautilus_gtk_widget_set_font (GTK_WIDGET (get_list (list_view)), font);
 	gdk_font_unref (font);
+	g_free (font_name);
+}
+
+static void
+font_or_font_size_changed_callback (gpointer callback_data)
+{
+	g_return_if_fail (FM_IS_LIST_VIEW (callback_data));
+
+	fm_list_view_update_font (FM_LIST_VIEW (callback_data));
 }
 
 void
@@ -1997,12 +2025,6 @@ static void
 fm_list_view_image_display_policy_changed (FMDirectoryView *view)
 {
 	update_icons (FM_LIST_VIEW (view));
-}
-
-static void
-fm_list_view_font_family_changed (FMDirectoryView *view)
-{
-	fm_list_view_update_font (FM_LIST_VIEW (view));
 }
 
 static int

@@ -113,38 +113,42 @@ typedef enum {
 } MenuItemType;
 
 /* forward declarations */
-static void                 create_icon_container                          (FMIconView        *icon_view);
-static void                 fm_icon_view_initialize                        (FMIconView        *icon_view);
-static void                 fm_icon_view_initialize_class                  (FMIconViewClass   *klass);
-static gboolean             fm_icon_view_is_empty                          (FMDirectoryView   *view);
-static void                 fm_icon_view_set_directory_sort_by             (FMIconView        *icon_view,
-									    NautilusFile      *file,
-									    const char        *sort_by);
-static void                 fm_icon_view_set_zoom_level                    (FMIconView        *view,
-									    NautilusZoomLevel  new_level,
-									    gboolean           always_set_level);
-gboolean                    fm_icon_view_supports_auto_layout              (FMIconView        *view);
-static void                 fm_icon_view_update_icon_container_fonts       (FMIconView        *icon_view);
-static void                 fm_icon_view_update_icon_container_smooth_font (FMIconView        *icon_view);
-static void                 fm_icon_view_update_click_mode                 (FMIconView        *icon_view);
-static void                 fm_icon_view_update_smooth_graphics_mode       (FMIconView        *icon_view);
-static gboolean             fm_icon_view_using_tighter_layout              (FMIconView        *icon_view);
-static gboolean             fm_icon_view_get_directory_tighter_layout      (FMIconView        *icon_view,
-									    NautilusFile      *file);
-static void                 fm_icon_view_set_directory_tighter_layout      (FMIconView        *icon_view,
-									    NautilusFile      *file,
-									    gboolean           tighter_layout);
-static gboolean             real_supports_auto_layout                      (FMIconView        *view);
-static const SortCriterion *get_sort_criterion_by_id                       (const char        *id);
-static void                 set_sort_criterion_by_id                       (FMIconView        *icon_view,
-									    const char        *id);
-static gboolean             set_sort_reversed                              (FMIconView        *icon_view,
-									    gboolean           new_value);
-static void                 switch_to_manual_layout                        (FMIconView        *view);
-static void                 preview_audio                                  (FMIconView 	      *icon_view,
-									    NautilusFile      *file,
-									    gboolean           start_flag);
-static void                 update_layout_menus                            (FMIconView        *view);
+static void                 create_icon_container                              (FMIconView        *icon_view);
+static void                 fm_icon_view_initialize                            (FMIconView        *icon_view);
+static void                 fm_icon_view_initialize_class                      (FMIconViewClass   *klass);
+static gboolean             fm_icon_view_is_empty                              (FMDirectoryView   *view);
+static void                 fm_icon_view_set_directory_sort_by                 (FMIconView        *icon_view,
+										NautilusFile      *file,
+										const char        *sort_by);
+static void                 fm_icon_view_set_zoom_level                        (FMIconView        *view,
+										NautilusZoomLevel  new_level,
+										gboolean           always_set_level);
+gboolean                    fm_icon_view_supports_auto_layout                  (FMIconView        *view);
+static void                 fm_icon_view_update_icon_container_fonts           (FMIconView        *icon_view);
+static void                 fm_icon_view_update_icon_container_smooth_font     (FMIconView        *icon_view);
+static void                 fm_icon_view_update_icon_container_font_size_table (FMIconView        *icon_view);
+static void                 fm_icon_view_update_click_mode                     (FMIconView        *icon_view);
+static void                 fm_icon_view_update_smooth_graphics_mode           (FMIconView        *icon_view);
+static gboolean             fm_icon_view_using_tighter_layout                  (FMIconView        *icon_view);
+static gboolean             fm_icon_view_get_directory_tighter_layout          (FMIconView        *icon_view,
+										NautilusFile      *file);
+static void                 fm_icon_view_set_directory_tighter_layout          (FMIconView        *icon_view,
+										NautilusFile      *file,
+										gboolean           tighter_layout);
+static gboolean             real_supports_auto_layout                          (FMIconView        *view);
+static const SortCriterion *get_sort_criterion_by_id                           (const char        *id);
+static void                 set_sort_criterion_by_id                           (FMIconView        *icon_view,
+										const char        *id);
+static gboolean             set_sort_reversed                                  (FMIconView        *icon_view,
+										gboolean           new_value);
+static void                 switch_to_manual_layout                            (FMIconView        *view);
+static void                 preview_audio                                      (FMIconView        *icon_view,
+										NautilusFile      *file,
+										gboolean           start_flag);
+static void                 update_layout_menus                                (FMIconView        *view);
+static void font_changed_callback (gpointer callback_data);
+static void smooth_font_changed_callback (gpointer callback_data);
+static void standard_font_size_changed_callback (gpointer callback_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMIconView,
 				   fm_icon_view,
@@ -1054,7 +1058,7 @@ set_sort_criterion_by_id (FMIconView *icon_view, const char *id)
 
 	sort = get_sort_criterion_by_id (id);
 	g_return_if_fail (sort != NULL);
-
+	
 	if (sort == icon_view->details->sort
 	    && fm_icon_view_using_auto_layout (icon_view)) {
 		return;
@@ -1863,19 +1867,27 @@ fm_icon_view_image_display_policy_changed (FMDirectoryView *directory_view)
 }
 
 static void
-fm_icon_view_font_family_changed (FMDirectoryView *directory_view)
+font_changed_callback (gpointer callback_data)
 {
-	g_assert (FM_IS_ICON_VIEW (directory_view));
+ 	g_return_if_fail (FM_IS_ICON_VIEW (callback_data));
 
-	fm_icon_view_update_icon_container_fonts (FM_ICON_VIEW (directory_view));
+	fm_icon_view_update_icon_container_fonts (FM_ICON_VIEW (callback_data));
 }
 
 static void
-fm_icon_view_smooth_font_changed (FMDirectoryView *directory_view)
+smooth_font_changed_callback (gpointer callback_data)
 {
-	g_assert (FM_IS_ICON_VIEW (directory_view));
+ 	g_return_if_fail (FM_IS_ICON_VIEW (callback_data));
 
-	fm_icon_view_update_icon_container_smooth_font (FM_ICON_VIEW (directory_view));
+	fm_icon_view_update_icon_container_smooth_font (FM_ICON_VIEW (callback_data));
+}
+
+static void
+standard_font_size_changed_callback (gpointer callback_data)
+{
+ 	g_return_if_fail (FM_IS_ICON_VIEW (callback_data));
+
+	fm_icon_view_update_icon_container_font_size_table (FM_ICON_VIEW (callback_data));
 }
 
 static void
@@ -1943,8 +1955,6 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
         fm_directory_view_class->text_attribute_names_changed = fm_icon_view_text_attribute_names_changed;
         fm_directory_view_class->embedded_text_policy_changed = fm_icon_view_embedded_text_policy_changed;
         fm_directory_view_class->image_display_policy_changed = fm_icon_view_image_display_policy_changed;
-        fm_directory_view_class->font_family_changed = fm_icon_view_font_family_changed;
-        fm_directory_view_class->smooth_font_changed = fm_icon_view_smooth_font_changed;
         fm_directory_view_class->click_policy_changed = fm_icon_view_click_policy_changed;
         fm_directory_view_class->smooth_graphics_mode_changed = fm_icon_view_smooth_graphics_mode_changed;
         fm_directory_view_class->sort_directories_first_changed = fm_icon_view_sort_directories_first_changed;
@@ -1974,6 +1984,19 @@ fm_icon_view_initialize (FMIconView *icon_view)
 	icon_view->details->timeout = -1;
 	icon_view->details->audio_preview_file = NULL;
 	create_icon_container (icon_view);
+
+	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_FONT,
+						       font_changed_callback, 
+						       icon_view,
+						       GTK_OBJECT (icon_view));
+	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT,
+						       smooth_font_changed_callback, 
+						       icon_view,
+						       GTK_OBJECT (icon_view));
+	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_STANDARD_FONT_SIZE,
+						       standard_font_size_changed_callback,
+						       icon_view,
+						       GTK_OBJECT (icon_view));
 }
 
 static gboolean
@@ -2030,6 +2053,32 @@ fm_icon_view_update_icon_container_fonts (FMIconView *icon_view)
 }
 
 static void
+fm_icon_view_update_icon_container_font_size_table (FMIconView *icon_view)
+{
+	/* Deltas in points from the standard font size for each of the 
+	 * zoom levels.
+	 */
+	static int font_size_delta_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1] = {
+		-4, -4, -2, 0, +2, +4, +4 };
+	int font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
+	NautilusIconContainer *icon_container;
+	int standard_font_size;
+	int i;
+
+	icon_container = get_icon_container (icon_view);
+	g_assert (icon_container != NULL);
+	
+	standard_font_size = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_ICON_VIEW_STANDARD_FONT_SIZE);
+	
+	for (i = 0; i <= NAUTILUS_ZOOM_LEVEL_LARGEST; i++) {
+		font_size_table[i] = standard_font_size + font_size_delta_table[i];
+	}
+	
+	nautilus_icon_container_set_font_size_table (icon_container, font_size_table);
+	nautilus_icon_container_request_update_all (icon_container);
+}
+
+static void
 fm_icon_view_update_icon_container_smooth_font (FMIconView *icon_view)
 {
 	NautilusIconContainer *icon_container;
@@ -2038,7 +2087,7 @@ fm_icon_view_update_icon_container_smooth_font (FMIconView *icon_view)
 	icon_container = get_icon_container (icon_view);
 	g_assert (icon_container != NULL);
 	
-	scalable_font = nautilus_global_preferences_get_smooth_font ();
+	scalable_font = nautilus_global_preferences_get_icon_view_smooth_font ();
 	g_assert (NAUTILUS_IS_SCALABLE_FONT (scalable_font));
 
 	nautilus_icon_container_set_smooth_label_font (icon_container,
@@ -2187,6 +2236,7 @@ create_icon_container (FMIconView *icon_view)
 
 	fm_icon_view_update_icon_container_fonts (icon_view);
 	fm_icon_view_update_icon_container_smooth_font (icon_view);
+	fm_icon_view_update_icon_container_font_size_table (icon_view);
 	fm_icon_view_update_click_mode (icon_view);
 	fm_icon_view_update_smooth_graphics_mode (icon_view);
 
