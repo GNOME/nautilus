@@ -56,6 +56,8 @@ typedef struct {
 	GList *attributes;
 
 	GList *non_ready_files;
+
+	gboolean initializing;
 } TrashCallback;
 
 typedef struct {
@@ -111,7 +113,7 @@ static void
 trash_callback_check_done (TrashCallback *trash_callback)
 {
 	/* Check if we are ready. */
-	if (trash_callback->non_ready_files != NULL) {
+	if (trash_callback->initializing || trash_callback->non_ready_files != NULL) {
 		return;
 	}
 
@@ -318,6 +320,8 @@ trash_file_call_when_ready (NautilusFile *file,
 	trash_callback->callback = callback;
 	trash_callback->callback_data = callback_data;
 	trash_callback->attributes = nautilus_g_str_list_copy (file_attributes);
+	trash_callback->initializing = TRUE;
+
 	for (node = trash->details->files; node != NULL; node = node->next) {
 		trash_callback->non_ready_files = g_list_prepend
 			(trash_callback->non_ready_files, node->data);
@@ -327,11 +331,6 @@ trash_file_call_when_ready (NautilusFile *file,
 	g_hash_table_insert (trash->details->callbacks,
 			     trash_callback, trash_callback);
 
-	/* Handle the pathological case where there are no files. */
-	if (trash->details->files == NULL) {
-		trash_callback_check_done (trash_callback);
-	}
-
 	/* Now connect to each file's call_when_ready. */
 	for (node = trash->details->files; node != NULL; node = node->next) {
 		nautilus_file_call_when_ready
@@ -339,6 +338,14 @@ trash_file_call_when_ready (NautilusFile *file,
 			 trash_callback->attributes,
 			 ready_callback, trash_callback);
 	}
+
+	trash_callback->initializing = FALSE;
+
+	/* Check if any files became read while we were connecting up
+	 * the call_when_ready callbacks (also handles the pathological
+	 * case where there are no files at all).
+	 */
+	trash_callback_check_done (trash_callback);
 }
 
 static void
