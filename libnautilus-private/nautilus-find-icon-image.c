@@ -49,7 +49,8 @@ static const char *icon_file_name_suffixes[] =
 static char *
 make_full_icon_path (const char *path,
 		     const char *suffix,
-		     gboolean theme_is_in_user_directory)
+		     gboolean theme_is_in_user_directory,
+		     gboolean document_type_icon)
 {
 	char *partial_path, *full_path;
 	char *user_directory, *themes_directory;
@@ -67,6 +68,13 @@ make_full_icon_path (const char *path,
 		full_path = nautilus_make_path (themes_directory, partial_path);
 		g_free (user_directory);
 		g_free (themes_directory);
+
+		if (!g_file_exists (full_path)) {
+			g_free (full_path);
+			full_path = NULL;
+		}
+	} else if (document_type_icon) {
+		full_path = nautilus_make_path (DATADIR "/pixmaps/document-icons/", partial_path);
 		if (!g_file_exists (full_path)) {
 			g_free (full_path);
 			full_path = NULL;
@@ -78,6 +86,8 @@ make_full_icon_path (const char *path,
 	if (full_path == NULL) {
 		full_path = gnome_vfs_icon_path_from_filename (partial_path);
 	}
+
+
 
 	g_free (partial_path);
 	return full_path;
@@ -172,17 +182,23 @@ get_themed_icon_file_path (const NautilusIconTheme *icon_theme,
 			   NautilusIconDetails *details)
 {
 	guint i;
-	gboolean include_size, in_user_directory;
+	gboolean include_size, in_user_directory, document_type_icon;
 	char *themed_icon_name, *partial_path, *path, *xml_path;
 	
 	g_assert (icon_name != NULL);
 
-	if (icon_theme == NULL || icon_theme->name == NULL || icon_name[0] == '/') {
+	if (icon_name[0] == '/') {
 		themed_icon_name = g_strdup (icon_name);
 		in_user_directory = FALSE;
+		document_type_icon = FALSE;
+	} else if (icon_theme == NULL || icon_theme->name == NULL) {
+		themed_icon_name = g_strdup (icon_name);
+		in_user_directory = FALSE;
+		document_type_icon = TRUE;
 	} else {
 		themed_icon_name = g_strconcat (icon_theme->name, "/", icon_name, NULL);
 		in_user_directory = icon_theme->is_in_user_directory;
+		document_type_icon = FALSE;
 	}
 
 	include_size = icon_size != NAUTILUS_ICON_SIZE_STANDARD;
@@ -198,9 +214,11 @@ get_themed_icon_file_path (const NautilusIconTheme *icon_theme,
 			partial_path = g_strdup (themed_icon_name);
 		}
 		
+
 		path = make_full_icon_path (partial_path,
 					    icon_file_name_suffixes[i],
-					    in_user_directory);
+					    in_user_directory,
+					    document_type_icon);
 		g_free (partial_path);
 
 		/* Return the path if the file exists. */
@@ -216,7 +234,8 @@ get_themed_icon_file_path (const NautilusIconTheme *icon_theme,
 	if (path != NULL && details != NULL) {
 		xml_path = make_full_icon_path (themed_icon_name,
 						".xml",
-						in_user_directory);
+						in_user_directory,
+						document_type_icon);
 		read_details (xml_path, icon_size, details);
 		g_free (xml_path);
 	}
@@ -327,7 +346,7 @@ nautilus_get_icon_file_name (const NautilusIconThemeSpecifications *theme_specs,
 	}
 
 	theme = choose_theme (theme_specs, name);
- 	
+
 	/* If there's a modifier, try the modified icon first. */
 	if (modifier != NULL && modifier[0] != '\0') {
 		name_with_modifier = g_strconcat (name, "-", modifier, NULL);

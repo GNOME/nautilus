@@ -1,3 +1,257 @@
+2002-01-22  Seth Nickell  <snickell@stanford.edu>
+
+	Seperate document icons from the themes so they
+	can be moved into gnome-mime-data and used by
+	other applications more cleanly.
+
+	* configure.in:
+
+	* icons/Makefile.am:
+	* icons/default.xml:
+	* icons/default/.cvsignore:
+	* icons/default/Back.png:
+	* icons/default/Forward.png:
+	* icons/default/Home.png:
+	* icons/default/Makefile:
+	* icons/default/Makefile.am:
+	* icons/default/Makefile.in:
+	* icons/default/Refresh.png:
+	* icons/default/Search.png:
+	* icons/default/SearchWeb.png:
+	* icons/default/Stop.png:
+	* icons/default/Up.png:
+	* icons/default/decrement.png:
+	* icons/default/default.xml:
+	* icons/default/home.png:
+	* icons/default/i-bookmark-20.png:
+	* icons/default/i-bookmark-missing-20.png:
+	* icons/default/i-bookmark-missing.png:
+	* icons/default/i-bookmark.png:
+	* icons/default/i-broken-image.png:
+	* icons/default/i-directory-12.png:
+	* icons/default/i-directory-24.png:
+	* icons/default/i-directory-36.png:
+	* icons/default/i-directory-72.png:
+	* icons/default/i-directory-96.png:
+	* icons/default/i-directory-accept-12.png:
+	* icons/default/i-directory-accept-24.png:
+	* icons/default/i-directory-accept-36.png:
+	* icons/default/i-directory-accept-72.png:
+	* icons/default/i-directory-accept-96.png:
+	* icons/default/i-directory-accept.png:
+	* icons/default/i-directory-accept.xml:
+	* icons/default/i-directory.png:
+	* icons/default/i-directory.xml:
+	* icons/default/i-regular-12.png:
+	* icons/default/i-regular-24.png:
+	* icons/default/i-regular-36.png:
+	* icons/default/i-regular-72.png:
+	* icons/default/i-regular-96.png:
+	* icons/default/i-regular.png:
+	* icons/default/i-regular.xml:
+	* icons/default/i-search-72.png:
+	* icons/default/i-spreadsheet.png:
+	* icons/default/i-stalled.png:
+	* icons/default/i-symlink.png:
+	* icons/default/i-web-72.png:
+	* icons/default/increment.png:
+	* icons/default/loading.png:
+	* icons/default/manual.png:
+	* icons/default/number_strip.png:
+	* icons/default/side_bar_image.png:
+	* icons/default/temp-home.png:
+	* icons/default/theme_preview.png:
+	* icons/default/trash-empty.png:
+	* icons/default/trash-full.png:
+	* icons/default/zoom_body.png:
+
+	Move default theme from icons/ into icons/default.
+	
+	* icons/gnome-application-encapsulated_postscript.png:
+	* icons/gnome-application-pdf-192.png:
+	* icons/gnome-application-pdf.png:
+	* icons/gnome-application-pgp-192.png:
+	* icons/gnome-application-pgp.png:
+	* icons/gnome-application-postscript-192.png:
+	* icons/gnome-application-postscript-72.png:
+	* icons/gnome-application-postscript-96.png:
+	* icons/gnome-application-postscript.png:
+	* icons/gnome-application-x-c-header.png:
+	* icons/gnome-application-x-c-source.png:
+	* icons/gnome-application-x-cc-source.png:
+	* icons/gnome-application-x-e-theme.png:
+	* icons/gnome-application-x-generic-spreadsheet.png:
+	* icons/gnome-application-x-gnome-app-info.png:
+	* icons/gnome-application-x-java-source.png:
+	* icons/gnome-application-x-kde-app-info.png:
+	* icons/gnome-application-x-php.png:
+	* icons/gnome-application-x-reject.png:
+	* icons/gnome-application-x-scheme-source.png:
+	* icons/gnome-application-x-sql.png:
+	* icons/gnome-audio-basic.png:
+	* icons/gnome-audio-midi.png:
+	* icons/gnome-audio-ulaw.png:
+	* icons/gnome-audio-x-aiff.png:
+	* icons/gnome-audio-x-mod-192.png:
+	* icons/gnome-audio-x-mod.png:
+	* icons/gnome-audio-x-mp3-192.png:
+	* icons/gnome-audio-x-mp3.png:
+	* icons/gnome-audio-x-ogg-192.png:
+	* icons/gnome-audio-x-ogg.png:
+	* icons/gnome-audio-x-pn-realaudio.png:
+	* icons/gnome-audio-x-real-192.png:
+	* icons/gnome-audio-x-s3m-192.png:
+	* icons/gnome-audio-x-s3m.png:
+	* icons/gnome-audio-x-stm-192.png:
+	* icons/gnome-audio-x-stm.png:
+	* icons/gnome-audio-x-voc.png:
+	* icons/gnome-audio-x-wav.png:
+	* icons/gnome-audio-x-xi-192.png:
+	* icons/gnome-audio-x-xi.png:
+	* icons/gnome-audio-x-xm.png:
+	* icons/gnome-audio.png:
+	* icons/gnome-compressed-192.png:
+	* icons/gnome-compressed.png:
+	* icons/gnome-core.png:
+	* icons/gnome-emacs-192.png:
+	* icons/gnome-font-afm.png:
+	* icons/gnome-font-ttf.png:
+	* icons/gnome-font-x-pcf.png:
+	* icons/gnome-gimp.png:
+	* icons/gnome-gnumeric.png:
+	* icons/gnome-http-url.png:
+	* icons/gnome-image-bmp.png:
+	* icons/gnome-image-generic.png:
+	* icons/gnome-image-gif.png:
+	* icons/gnome-image-ief.png:
+	* icons/gnome-image-jpeg.png:
+	* icons/gnome-image-pbm.png:
+	* icons/gnome-image-pgm.png:
+	* icons/gnome-image-png.png:
+	* icons/gnome-image-pnm.png:
+	* icons/gnome-image-ppm.png:
+	* icons/gnome-image-psd.png:
+	* icons/gnome-image-ras.png:
+	* icons/gnome-image-rgb.png:
+	* icons/gnome-image-tga.png:
+	* icons/gnome-image-tiff.png:
+	* icons/gnome-image-x-xfig.png:
+	* icons/gnome-image-xbm.png:
+	* icons/gnome-image-xcf.png:
+	* icons/gnome-image-xpm.png:
+	* icons/gnome-image-xwd.png:
+	* icons/gnome-library.png:
+	* icons/gnome-manpage.png:
+	* icons/gnome-objectfile.png:
+	* icons/gnome-pack-deb.png:
+	* icons/gnome-pack-rpm.png:
+	* icons/gnome-package.png:
+	* icons/gnome-tex-192.png:
+	* icons/gnome-tex.png:
+	* icons/gnome-text-html-192.png:
+	* icons/gnome-text-html.png:
+	* icons/gnome-text-x-authors.png:
+	* icons/gnome-text-x-copying.png:
+	* icons/gnome-text-x-credits.png:
+	* icons/gnome-text-x-install.png:
+	* icons/gnome-text-x-makefile-192.png:
+	* icons/gnome-text-x-makefile.png:
+	* icons/gnome-text-x-readme.png:
+	* icons/gnome-textfile.png:
+	* icons/gnome-video-mpeg.png:
+	* icons/gnome-video-quicktime.png:
+	* icons/gnome-video-x-msvideo.png:
+	* icons/gnome-word-192.png:
+	* icons/i-blockdev.png:
+	* icons/i-bookmark-20.png:
+	* icons/i-bookmark-missing-20.png:
+	* icons/i-bookmark-missing.png:
+	* icons/i-bookmark.png:
+	* icons/i-broken-image.png:
+	* icons/i-cdrom-192.png:
+	* icons/i-cdrom.png:
+	* icons/i-chardev.png:
+	* icons/i-core.png:
+	* icons/i-device.png:
+	* icons/i-dirclosed.png:
+	* icons/i-directory-12.png:
+	* icons/i-directory-24.png:
+	* icons/i-directory-36.png:
+	* icons/i-directory-72.png:
+	* icons/i-directory-96.png:
+	* icons/i-directory-accept-12.png:
+	* icons/i-directory-accept-24.png:
+	* icons/i-directory-accept-36.png:
+	* icons/i-directory-accept-72.png:
+	* icons/i-directory-accept-96.png:
+	* icons/i-directory-accept.png:
+	* icons/i-directory-accept.xml:
+	* icons/i-directory.png:
+	* icons/i-directory.xml:
+	* icons/i-executable.png:
+	* icons/i-fifo.png:
+	* icons/i-floppy.png:
+	* icons/i-harddisk.png:
+	* icons/i-music-12.png:
+	* icons/i-music-24.png:
+	* icons/i-music-36.png:
+	* icons/i-music.png:
+	* icons/i-nfs.png:
+	* icons/i-printer.png:
+	* icons/i-regular-12.png:
+	* icons/i-regular-24.png:
+	* icons/i-regular-36.png:
+	* icons/i-regular-72.png:
+	* icons/i-regular-96.png:
+	* icons/i-regular.png:
+	* icons/i-regular.xml:
+	* icons/i-search-72.png:
+	* icons/i-sock.png:
+	* icons/i-spreadsheet.png:
+	* icons/i-stalled.png:
+	* icons/i-symlink.png:
+	* icons/i-web-72.png:
+	* icons/i-zip.png:
+	* icons/i-zipdisk.png:
+	* icons/i-zipdisk2.png:
+	* icons/loading.png:
+	* icons/manual.png:
+	* icons/temp-home.png:
+	* icons/trash-empty.png:
+	* icons/trash-full.png:
+
+	Move icons to either gnome-mime-data/icons or, perhaps,
+	nautilus/icons/default
+
+	* libnautilus-private/nautilus-find-icon-image.c:
+	(make_full_icon_path), (get_themed_icon_file_path),
+	(nautilus_get_icon_file_name):
+
+	Add support for looking in DATADIR/share/pixmaps/document-icons
+	as a fallback for the current theme and the fallback theme.
+
+	Remove hardcoded "default" theme stuff.
+	
+	* libnautilus-private/nautilus-icon-factory.c:
+	(icon_theme_changed_callback):
+
+	If a theme doesn't have a fallback theme listed, use the
+	"default" theme as the fallback. Should be the only default
+	theme hardcoding left.
+	
+	* libnautilus-private/nautilus-theme.c: (load_theme_document),
+	(nautilus_theme_get_theme_data_from_theme),
+	(nautilus_theme_get_image_path_from_theme),
+	(nautilus_theme_make_preview_pixbuf), (has_image_file),
+	(theme_get_property), (nautilus_theme_for_each_theme):
+
+	Remove hardcoding of default theme.
+	
+	* icons/crux_eggplant/crux_eggplant.xml:
+
+	Remove inheritance clause which was pointing to "arlo",
+	a theme which does not exist anymore.
+	
 2002-01-16  Havoc Pennington  <hp@redhat.com>
 
 	* libnautilus-private/nautilus-file-operations.c

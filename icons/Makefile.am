@@ -3,6 +3,7 @@ NULL=
 SUBDIRS =\
 	crux_eggplant \
 	crux_teal \
+	default \
 	gnome \
 	sidebar_tab_pieces \
 	sierra \
@@ -35,7 +36,6 @@ icon_DATA =\
 	computer.png \
 	computer.svg \
 	decrement.png \
-	default.xml \
 	druid_header.png \
 	druid_header_stretch.png \
 	druid_sidebar.png \
@@ -64,141 +64,15 @@ icon_DATA =\
 	emblems.png \
 	expert-selected.png \
 	expert.png \
-	gnome-application-encapsulated_postscript.png \
-	gnome-application-pdf.png \
-	gnome-application-pgp.png \
-	gnome-application-postscript.png \
-	gnome-application-x-c-header.png \
-	gnome-application-x-c-source.png \
-	gnome-application-x-cc-source.png \
-	gnome-application-x-e-theme.png \
-	gnome-application-x-generic-spreadsheet.png \
-	gnome-application-x-gnome-app-info.png \
-	gnome-application-x-java-source.png \
-	gnome-application-x-kde-app-info.png \
-	gnome-application-x-php.png \
-	gnome-application-x-reject.png \
-	gnome-application-x-scheme-source.png \
-	gnome-application-x-sql.png \
-	gnome-audio-basic.png \
-	gnome-audio-midi.png \
-	gnome-audio-ulaw.png \
-	gnome-audio-x-aiff.png \
-	gnome-audio-x-mod.png \
-	gnome-audio-x-pn-realaudio.png \
-	gnome-audio-x-s3m.png \
-	gnome-audio-x-stm.png \
-	gnome-audio-x-voc.png \
-	gnome-audio-x-wav.png \
-	gnome-audio-x-xi.png \
-	gnome-audio-x-xm.png \
-	gnome-audio.png \
-	gnome-compressed.png \
-	gnome-font-afm.png \
-	gnome-font-ttf.png \
-	gnome-font-x-pcf.png \
-	gnome-gimp.png \
-	gnome-gnumeric.png \
-	gnome-http-url.png \
-	gnome-image-bmp.png \
-	gnome-image-generic.png \
-	gnome-image-gif.png \
-	gnome-image-ief.png \
-	gnome-image-jpeg.png \
-	gnome-image-pbm.png \
-	gnome-image-pgm.png \
-	gnome-image-png.png \
-	gnome-image-pnm.png \
-	gnome-image-ppm.png \
-	gnome-image-psd.png \
-	gnome-image-ras.png \
-	gnome-image-rgb.png \
-	gnome-image-tga.png \
-	gnome-image-tiff.png \
-	gnome-image-x-xfig.png \
-	gnome-image-xbm.png \
-	gnome-image-xcf.png \
-	gnome-image-xpm.png \
-	gnome-image-xwd.png \
-	gnome-library.png \
-	gnome-manpage.png \
-	gnome-objectfile.png \
-	gnome-pack-deb.png \
-	gnome-pack-rpm.png \
-	gnome-package.png \
-	gnome-tex.png \
-	gnome-text-html.png \
-	gnome-text-x-authors.png \
-	gnome-text-x-copying.png \
-	gnome-text-x-credits.png \
-	gnome-text-x-install.png \
-	gnome-text-x-makefile.png \
-	gnome-text-x-readme.png \
-	gnome-textfile.png \
-	gnome-video-mpeg.png \
-	gnome-video-quicktime.png \
-	gnome-video-x-msvideo.png \
 	hand.png \
 	hand-72.png \
 	hand-96.png \
 	home.png \
-	i-blockdev.png \
-	i-bookmark-20.png \
-	i-bookmark-missing-20.png \
-	i-bookmark-missing.png \
-	i-bookmark.png \
-	i-broken-image.png \
-	i-cdrom.png \
-	i-chardev.png \
-	i-core.png \
-	i-device.png \
-	i-dirclosed.png \
-	i-directory-12.png \
-	i-directory-24.png \
-	i-directory-36.png \
-	i-directory-72.png \
-	i-directory-96.png \
-	i-directory.png \
-	i-directory-accept-12.png \
-	i-directory-accept-24.png \
-	i-directory-accept-36.png \
-	i-directory-accept-72.png \
-	i-directory-accept-96.png \
-	i-directory-accept.png \
-	i-directory.xml \
-	i-directory-accept.xml \
-	i-executable.png \
-	i-fifo.png \
-	i-floppy.png \
-	i-harddisk.png \
-	i-music-12.png \
-	i-music-24.png \
-	i-music-36.png \
-	i-music.png \
-	i-nfs.png \
-	i-printer.png \
-	i-regular-12.png \
-	i-regular-24.png \
-	i-regular-36.png \
-	i-regular-72.png \
-	i-regular-96.png \
-	i-regular.png \
-	i-regular.xml \
-	i-search-72.png \
-	i-sock.png \
-	i-spreadsheet.png \
-	i-stalled.png \
-	i-symlink.png \
-	i-web-72.png \
-	i-zipdisk.png \
-	i-zipdisk2.png \
 	increment.png \
 	intermediate-selected.png \
 	intermediate.png \
 	knob.png \
 	leftarrow.png \
-	loading.png \
-	manual.png \
 	multi-ok.png \
 	nautilus-mini-logo.png \
 	netscape.png \
@@ -211,14 +85,11 @@ icon_DATA =\
 	search.png \
 	services-rpm-72.png \
 	side_bar_image.png \
-	temp-home.png \
 	text-selection-frame.png \
 	text-selection-frame-aa.png \
 	theme_preview.png \
 	thumbnail_frame.png \
 	tiny-alert.png \
-	trash-empty.png \
-	trash-full.png \
 	uparrow.png \
 	zoom_body.png \
 	$(NULL)

@@ -833,6 +833,10 @@ icon_theme_changed_callback (gpointer user_data)
 	}
 	icon_fallback_theme = nautilus_theme_get_theme_data ("icon-images", "default_theme");
 
+	if (icon_fallback_theme == NULL) {
+		icon_fallback_theme = g_strdup ("default");
+	}
+
 	factory = get_icon_factory ();
 
 	if (eel_strcmp (icon_theme, factory->theme.current.name) != 0
