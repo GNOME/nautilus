@@ -1,3 +1,13 @@
+2004-06-24  Alexander Larsson  <alexl@redhat.com>
+
+	Patch from Elijah Newren
+	
+	* libnautilus-private/nautilus-program-choosing.c:
+	(slowly_and_stupidly_obtain_timestamp),
+	(nautilus_launch_show_file), (nautilus_launch_application):
+	Pass some event time to startup notify.
+	This is the wrong approach, and should be replaced eventually.
+
 2004-06-21  Alexander Larsson  <alexl@redhat.com>
 
         Based on patch by Jamie McCracken <jamiemcc@blueyonder.co.uk>

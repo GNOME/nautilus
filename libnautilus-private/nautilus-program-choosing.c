@@ -799,6 +799,61 @@ add_startup_timeout (GdkScreen         *screen,
 						  data);		
 	}
 }
+
+/* FIXME: This is the wrong way to do this; there should be some event
+ * (e.g. button press) available with a good time.  A function like
+ * this should not be needed.
+ */
+static Time
+slowly_and_stupidly_obtain_timestamp(SnDisplay *display)
+{
+  Window xwindow;
+  Display *xdisplay;
+  XEvent event;
+
+  xdisplay = sn_display_get_x_display (display);
+
+  {
+    XSetWindowAttributes attrs;
+    Atom atom_name;
+    Atom atom_type;
+    char* name;
+
+    attrs.override_redirect = True;
+    attrs.event_mask = PropertyChangeMask | StructureNotifyMask;
+
+    xwindow =
+      XCreateWindow (xdisplay,
+                     RootWindow (xdisplay, 0),
+                     -100, -100, 1, 1,
+                     0,
+                     CopyFromParent,
+                     CopyFromParent,
+                     CopyFromParent,
+                     CWOverrideRedirect | CWEventMask,
+                     &attrs);
+
+    atom_name = XInternAtom (xdisplay, "WM_NAME", TRUE);
+    g_assert (atom_name != None);
+    atom_type = XInternAtom (xdisplay, "STRING", TRUE);
+    g_assert (atom_type != None);
+
+    name = "Fake Window";
+    XChangeProperty (xdisplay, 
+                     xwindow, atom_name,
+                     atom_type,
+                     8, PropModeReplace, name, strlen (name));
+  }
+  
+  XWindowEvent (xdisplay,
+                xwindow,
+                PropertyChangeMask,
+                &event);
+
+  XDestroyWindow(xdisplay, xwindow);
+
+  return event.xproperty.time;
+}
 #endif /* HAVE_STARTUP_NOTIFICATION */
 
 
@@ -895,6 +950,9 @@ void nautilus_launch_show_file (NautilusFile *file,
 		if (!sn_launcher_context_get_initiated (sn_context)) {
 			const char *binary_name;
 			char **old_envp;
+			Time timestamp;
+
+			timestamp = slowly_and_stupidly_obtain_timestamp (sn_display);
 
 			binary_name = action->action.application->command;
 		
@@ -904,7 +962,7 @@ void nautilus_launch_show_file (NautilusFile *file,
 			sn_launcher_context_initiate (sn_context,
 						      g_get_prgname () ? g_get_prgname () : "unknown",
 						      binary_name,
-						      CurrentTime);
+						      timestamp);
 
 			old_envp = envp;
 			envp = make_spawn_environment_for_sn_context (sn_context, envp);
@@ -1180,6 +1238,9 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 		if (!sn_launcher_context_get_initiated (sn_context)) {
 			const char *binary_name;
 			char **old_envp;
+			Time timestamp;
+
+			timestamp = slowly_and_stupidly_obtain_timestamp (sn_display);
 			
 			binary_name = application->command;
 		
@@ -1189,7 +1250,7 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 			sn_launcher_context_initiate (sn_context,
 						      g_get_prgname () ? g_get_prgname () : "unknown",
 						      binary_name,
-						      CurrentTime);
+						      timestamp);
 
 			old_envp = envp;
 			envp = make_spawn_environment_for_sn_context (sn_context, envp);
