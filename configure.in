@@ -60,6 +60,23 @@ AC_CHECK_HEADERS(sys/mnttab.h sys/vfstab.h)
 
 
 dnl ====================================
+dnl = Optionally build the installer
+dnl ====================================
+
+ENABLE_INSTALLER=
+AC_ARG_ENABLE(installer,
+[  --enable-installer		Create Nautilus installer],
+echo lksdjflsjdfklsjdklfjsdklfjskldfjklasjflsdj
+ENABLE_INSTALLER=1
+AC_DEFINE(ENABLE_INSTALLER))
+
+AC_SUBST(ENABLE_INSTALLER)
+AM_CONDITIONAL(ENABLE_INSTALLER, test "x$ENABLE_INSTALLER" = "x1")
+
+
+
+
+dnl ====================================
 dnl = Begin tests for eazel-services
 dnl ====================================
 AC_ARG_ENABLE(
@@ -428,6 +445,10 @@ then
 			dnl wouldn't need this shite.
 			PACKAGESYSTEM="libeazelpackagesystem-rpm3.la"
 			AC_SUBST(PACKAGESYSTEM)
+			PACKAGE_SYSTEM_OBJECT="eazel-package-system-rpm3.o"
+			AC_SUBST(PACKAGE_SYSTEM_OBJECT)
+			PACKAGE_SYSTEM_SOURCE="eazel-package-system-rpm3.c"
+			AC_SUBST(PACKAGE_SYSTEM_SOURCE)
 		;;
 		4.*)
 			AC_DEFINE(HAVE_RPM_40)
@@ -435,6 +456,10 @@ then
 			AM_CONDITIONAL(COMPILE_RPM_40, true)
 			PACKAGESYSTEM="libeazelpackagesystem-rpm4.la"
 			AC_SUBST(PACKAGESYSTEM)
+			PACKAGE_SYSTEM_OBJECT="eazel-package-system-rpm4.o eazel-package-system-rpm3.o"
+			AC_SUBST(PACKAGE_SYSTEM_OBJECT)
+			PACKAGE_SYSTEM_SOURCE="eazel-package-system-rpm4.c eazel-package-system-rpm3.c"
+			AC_SUBST(PACKAGE_SYSTEM_SOURCE)
 		;;
 	  esac
 
@@ -790,9 +815,12 @@ librsvg/Makefile
 libnautilus/Makefile
 libnautilus-adapter/Makefile
 libnautilus-extensions/Makefile
+nautilus-installer/Makefile
+nautilus-installer/libtrilobite/Makefile
+nautilus-installer/install-lib/Makefile
+nautilus-installer/src/Makefile
 src/Makefile
 src/file-manager/Makefile
-nautilus-installer/src/Makefile
 components/Makefile
 components/adapter/Makefile
 components/hardware/Makefile

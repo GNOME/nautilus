@@ -2,6 +2,26 @@
 
 NULL = 
 
+OGFLAG = -g
+#OGFLAG = -O
+
+WARN_FLAG = -Wall -Werror
+BUILD_DATE = `date +%d%b%y-%H%M`
+
+if ENABLE_INSTALLER
+INSTALLER_NOINSTPROGRAMS = eazel-installer
+INSTALLER_BINSCRIPTS = eazel-installer.sh
+endif
+
+if COMPILE_RPM_30
+RPM_MAJOR = 3
+endif
+if COMPILE_RPM_40
+RPM_MAJOR = 4
+endif
+
+EXTRA_DIST = create-eazel-installer.sh prescript
+
 INCLUDES = \
 	-I$(top_srcdir)/libnautilus-extensions		 	\
 	-I$(top_srcdir)/components/services/install/lib 	\
@@ -18,22 +38,29 @@ INCLUDES = \
 	-DNO_TEXT_BOX						\
 	$(NULL)
 
-bin_PROGRAMS = eazel-installer
+bin_SCRIPTS = $(INSTALLER_BINSCRIPTS)
+noinst_PROGRAMS = $(INSTALLER_NOINSTPROGRAMS)
 
-eazel_installer_SOURCES = \
-	main.c \
-	package-tree.c \
-	gtk-hackery.c \
-	callbacks.c callbacks.h \
-	proxy.c proxy.h \
+eazel_installer_SOURCES = 			\
+	main.c 					\
+	package-tree.c 				\
+	gtk-hackery.c 				\
+	callbacks.c callbacks.h 		\
+	proxy.c proxy.h 			\
 	installer.c installer.h 
+
+CFLAGS = 					\
+	$(OG_FLAG)				\
+	$(WARN_FLAG) 				\
+	-DBUILD_DATE=\"$(BUILD_DATE)\" 		\
+	-DRPM_MAJOR=$(RPM_MAJOR)
 
 eazel_installer_LDFLAGS = -all-static
 
 eazel_installer_LDADD = 	\
         $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o 	\
-	$(top_builddir)/components/services/install/lib/libeazelinstall_minimal.a			\
-	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite_minimal.a		\
+	../install-lib/libeazelinstall_minimal.a			\
+	../libtrilobite/libtrilobite_minimal.a		\
 	$(top_builddir)/libnautilus-extensions/nautilus-druid.o						\
 	$(top_builddir)/libnautilus-extensions/nautilus-druid-page-eazel.o				\
 	$(RPM_LIBS) \
@@ -64,3 +91,5 @@ eazel_installer_LDADD = 	\
 #	$(RPM_LIBS)		\
 #	$(NULL)
 
+eazel-installer.sh: eazel-installer prescript
+	sh create-eazel-installer.sh

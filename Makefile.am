@@ -23,6 +23,7 @@ SUBDIRS =			\
 	src 			\
 	components		\
 	$(APPLETS_SUBDIRS)	\
+	nautilus-installer	\
 	test 			\
 	user-guide		\
 	po 			\

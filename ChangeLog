@@ -1,3 +1,40 @@
+2001-02-14  Eric Fischer <eric@eazel.com>
+
+	This is a bunch of changes leading up to Bug 6515, so
+	the installer can get built by just an extra flag to
+	configure rather than its own script.
+
+	* Makefile.am:
+	Add nautilus-installer to SUBDIRS
+
+	* acconfig.h:
+	Add ENABLE_INSTALLER to things that can be configured
+
+	* configure.in:
+	Add --enable-installer command line flag.  Set PACKAGE_SYSTEM_OBJECT
+	and PACKAGE_SYSTEM_SOURCE based on whether rpm 3 or 4 is installed.
+	Create nautilus-installer Makefiles
+
+	* nautilus-installer/Makefile.am:
+	Remove things that Robey said were no longer used.  Add libtrilobite
+	and install-lib to SUBDIRS that need to be built.
+
+	* nautilus-installer/install-lib/Makefile.am:
+	New Makefile that builds a second copy of the installer libraries
+	with weird flags as needed by the installer.
+
+	* nautilus-installer/libtrilobite/Makefile.am:
+	New Makefile that builds a second copy of the trilobite libraries
+	with weird flags as needed by the installer.
+	
+	* nautilus-installer/src/Makefile.am:
+	Do in the Makefile what formerly had been done in link.sh (build
+	the installer, and create a self-extracting version of it).
+
+	* nautilus-installer/src/create-eazel-installer.sh:
+	Script, adapted from what's in link.sh, to create a self-extracting
+	installer.
+
 2001-02-14  Josh Barrow  <josh@eazel.com>
 
 	* README:
