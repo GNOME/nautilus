@@ -29,12 +29,6 @@
 
 BEGIN_GNOME_DECLS
 
-/*
- * The following preferences exist independently of the user level. 
- *
- * Note that the configuration path is fully qualified 
- */
-
 /* Which theme is active */
 #define NAUTILUS_PREFERENCES_THEME				"preferences/theme"
 /* Which text attributes appear beneath icon names */
@@ -44,14 +38,6 @@ BEGIN_GNOME_DECLS
 /* Keep track of the sound playing process */
 #define NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE		"preferences/sound_state"
 
-/*
- * The following preferences are coupled to the user level.
- *
- * Note that the configuration path does include the nautilus gconf 
- * prefix.  The nautilus_preferences_* api will fill in the missing
- * prefix according to the current user level.
- */
-
 /* Window options */
 #define NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW			"preferences/window_always_new"
 
@@ -59,11 +45,7 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_CONFIRM_TRASH			"preferences/confirm_trash"
 
 /* Desktop options */
-/*  - NAUTILUS_PREFERENCES_SHOW_DESKTOP used to be "preferences/show_desktop"
- *    The name was changed because the default changed (to TRUE), but was still
- *    in existing user gconf data.
- */
-#define NAUTILUS_PREFERENCES_SHOW_DESKTOP			"preferences/open_desktop_at_startup"
+#define NAUTILUS_PREFERENCES_SHOW_DESKTOP			"preferences/show_desktop"
 
 /* Display  */
 #define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES  		"preferences/show_hidden_files"
@@ -96,8 +78,8 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_START_WITH_SIDEBAR		 	"preferences/start_with_sidebar"
 
 /* The sidebar panel preferences are computed from their oafids, which aren't known at
- * compile time. We publish the namespace for all of them so interested parties can
- * monitor changes to all of them collectively, without having to know any oafids. 
+ * compile time. We publish the namespace so that interested parties can monitor changes
+ * to all of them collectively, without having to know the exact oaf iids.
  */
 #define NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE		"sidebar-panels"
 

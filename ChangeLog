@@ -1,3 +1,17 @@
+2001-01-18  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_descriptions),
+	(global_preferences_install_defaults),
+	(global_preferences_install_visibility),
+	(global_preferences_install_proxy_defaults),
+	(global_preferences_install_home_location_defaults),
+	(nautilus_global_preferences_initialize):
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	Make comments reflect reality more.  Changed the structure of the
+	file a bit to have the defaults, descriptions and visibility
+	installing functions be at the top.
+	
 2001-01-18  Pavel Cisler <pavel@eazel.com>
 
 	Fix 4221 (Pressing Cancel button does not cancel)
