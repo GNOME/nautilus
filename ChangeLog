@@ -1,3 +1,11 @@
+2002-04-19  Anders Carlsson  <andersca@gnu.org>
+
+	* components/throbber/nautilus-throbber.c: (get_bonobo_properties),
+	(set_bonobo_properties), (nautilus_throbber_instance_init),
+	(load_themed_image), (nautilus_throbber_load_images):
+	Make the throbber smaller if we're using a toolbar without 
+	text labels. Fixes #47777.
+	
 2002-04-18  Michael Meeks  <michael@ximian.com>
 
 	* *.server.in, *.c: replace all the OAFIIDs with more

@@ -28,6 +28,7 @@
 #include <config.h>
 #include "nautilus-throbber.h"
 
+#include <bonobo/bonobo-ui-toolbar-item.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-graphic-effects.h>
@@ -82,6 +83,7 @@ GNOME_CLASS_BOILERPLATE (NautilusThrobber, nautilus_throbber,
 /* routines to handle setting and getting the configuration properties of the Bonobo control */
 
 enum {
+	STYLE,
 	THROBBING,
 	LOCATION
 } MyArgs;
@@ -103,24 +105,24 @@ get_bonobo_properties (BonoboPropertyBag *bag,
 	NautilusThrobber *throbber = NAUTILUS_THROBBER (user_data);
 
 	switch (arg_id) {
-		case THROBBING:
-		{
-			BONOBO_ARG_SET_BOOLEAN (arg, throbber->details->timer_task != 0);
-			break;
-		}
+	case THROBBING:
+	{
+		BONOBO_ARG_SET_BOOLEAN (arg, throbber->details->timer_task != 0);
+		break;
+	}
 
-		case LOCATION:
-		{
-			char *location = nautilus_theme_get_theme_data ("throbber", "url");
-			if (location != NULL) {
-				BONOBO_ARG_SET_STRING (arg, location);
-				g_free (location);
-			} else {
-				BONOBO_ARG_SET_STRING (arg, "");			
-			}
-		
+	case LOCATION:
+	{
+		char *location = nautilus_theme_get_theme_data ("throbber", "url");
+		if (location != NULL) {
+			BONOBO_ARG_SET_STRING (arg, location);
+			g_free (location);
+		} else {
+			BONOBO_ARG_SET_STRING (arg, "");			
 		}
 		
+	}
+
 		default:
 			g_warning ("Unhandled arg %d", arg_id);
 			break;
@@ -136,23 +138,28 @@ set_bonobo_properties (BonoboPropertyBag *bag,
 {
 	NautilusThrobber *throbber = NAUTILUS_THROBBER (user_data);
 	switch (arg_id) {
-		case THROBBING:
-		{
-			gboolean throbbing;
-
-			throbbing = BONOBO_ARG_GET_BOOLEAN (arg);
-			
-			if (throbbing != is_throbbing (throbber)) {
+	case THROBBING:
+	{
+		gboolean throbbing;
+		
+		throbbing = BONOBO_ARG_GET_BOOLEAN (arg);
+		
+		if (throbbing != is_throbbing (throbber)) {
 				if (throbbing) {
 					nautilus_throbber_start (throbber);
 				} else {
 					nautilus_throbber_stop (throbber);
 				}
-			}
-						
-			break;
 		}
-
+		
+		break;
+	}
+	case STYLE:
+	{
+		nautilus_throbber_set_small_mode (throbber, BONOBO_ARG_GET_INT (arg) !=
+						  BONOBO_UI_TOOLBAR_ITEM_STYLE_ICON_AND_TEXT_VERTICAL);
+		break;
+	}
 		default:
 			g_warning ("Unhandled arg %d", arg_id);
 			break;
@@ -241,7 +248,8 @@ nautilus_throbber_instance_init (NautilusThrobber *throbber)
 				 "Throbber active", 0);
 	bonobo_property_bag_add (throbber->details->property_bag, "location", LOCATION, BONOBO_ARG_STRING, NULL,
 				 "associated URL", 0);
-	
+	bonobo_property_bag_add (throbber->details->property_bag, "style", STYLE, BONOBO_ARG_INT, NULL, NULL,
+				 Bonobo_PROPERTY_WRITEABLE);
 	nautilus_throbber_load_images (throbber);
 	gtk_widget_show (widget);
 
@@ -465,8 +473,8 @@ load_themed_image (const char *file_name, const char *image_theme, gboolean smal
 		
 		if (small_mode && pixbuf) {
 			temp_pixbuf = gdk_pixbuf_scale_simple (pixbuf,
-							       gdk_pixbuf_get_width (pixbuf) / 2,
-							       gdk_pixbuf_get_height (pixbuf) / 2,
+							       gdk_pixbuf_get_width (pixbuf) * 2 / 3,
+							       gdk_pixbuf_get_height (pixbuf) * 2 / 3,
 							       GDK_INTERP_BILINEAR);
 			g_object_unref (pixbuf);
 			pixbuf = temp_pixbuf;
@@ -514,6 +522,7 @@ nautilus_throbber_load_images (NautilusThrobber *throbber)
 	for (index = 1; index <= throbber->details->max_frame; index++) {
 		throbber_frame_name = make_throbber_frame_name (index);
 		pixbuf = load_themed_image (throbber_frame_name, image_theme, throbber->details->small_mode);
+
 		g_free (throbber_frame_name);
 		if (pixbuf == NULL) {
 			throbber->details->max_frame = index - 1;
