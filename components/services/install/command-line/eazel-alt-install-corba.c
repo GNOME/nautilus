@@ -177,8 +177,8 @@ set_parameters_from_command_line (GNOME_Trilobite_Eazel_Install service)
 		GNOME_Trilobite_Eazel_Install__set_protocol (service, GNOME_Trilobite_Eazel_PROTOCOL_HTTP, &ev);
 		check_ev ("set_protocol");
 	}
-	if (arg_downgrade + arg_upgrade + arg_erase +arg_revert > 1) {
-			fprintf (stderr, "*** Upgrade, downgrade, revert and erase ? This is not a all-in-one tool");
+	if (arg_erase + arg_revert > 1) {
+			fprintf (stderr, "*** Erase and revert ?  Somebody set us up the bomb!\n");
 			exit (1);
 	}
 	if (arg_upgrade) {
@@ -959,7 +959,7 @@ int main(int argc, char *argv[]) {
 			    GTK_SIGNAL_FUNC (done), 
 			    problem);
 
-	if (arg_erase + arg_query + arg_downgrade + arg_upgrade + arg_revert > 1) {
+	if (arg_erase + arg_query + arg_revert > 1) {
 		g_error ("Only one operation at a time please.");
 	}
 

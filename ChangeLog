@@ -1,3 +1,14 @@
+2001-02-22  Robey Pointer  <robey@eazel.com>
+
+	reviewed by: Stephane Miller  <stephane@eazel.com>
+
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (set_parameters_from_command_line), (main):
+
+	Remove eazel-install's restrictions on doing an upgrade and
+	downgrade at the same time, since it's perfectly capable of doing
+	that (covering all bases) and it's useful to labs.
+
 2001-02-22  Arlo Rose  <arlo@eazel.com>
 
 	* icons/druid_header.png:
