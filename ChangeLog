@@ -1,3 +1,22 @@
+2002-03-18  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-application.c
+	(nautilus_application_create_desktop_window):
+	guard window creation to avoid re-enterancy, via.
+	other shell calls to create windows.
+
+	* src/nautilus-main.c (main): vfs and bonobo init
+	is done for us by gnome_program_init.
+
+	* src/nautilus-view-frame.c
+	(nautilus_view_frame_selection_changed),
+	(send_history): check we have a listener before
+	constructing potentially large and slow change
+	notifications.
+
+	* configure.in: require bonobo 1.113.0 where we have
+	the event source acceleration.
+
 2002-03-17  Darin Adler  <darin@bentspoon.com>
 
 	* configure.in: Bump required versions.

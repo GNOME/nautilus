@@ -5700,7 +5700,6 @@ real_size_allocate (GtkWidget *widget,
 	GtkAllocation allocation_to_fool_scrolled_window;
 
 	/* Trick GtkScrolledWindow into working. */
-
 	allocation_to_fool_scrolled_window.x = 0;
 	allocation_to_fool_scrolled_window.y = 0;
 	allocation_to_fool_scrolled_window.width = allocation->width;

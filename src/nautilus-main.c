@@ -216,8 +216,6 @@ main (int argc, char *argv[])
 
 	/* Initialize the services that we use. */
 	LIBXML_TEST_VERSION
-	gnome_vfs_init ();
-	bonobo_ui_init ("nautilus", VERSION, &argc, argv);
 
 	if (g_getenv ("NAUTILUS_ENABLE_TEST_COMPONENTS") != NULL) {
 		bonobo_activation_set_test_components_enabled (TRUE);

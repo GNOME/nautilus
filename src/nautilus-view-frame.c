@@ -153,10 +153,14 @@ nautilus_view_frame_init (NautilusViewFrame *view)
 
 	view->details->idle_queue = nautilus_idle_queue_new ();
 
-	g_signal_connect_object (nautilus_signaller_get_current (), "history_list_changed",
-				 G_CALLBACK (send_history), view, G_CONNECT_SWAPPED);
-	g_signal_connect_object (nautilus_icon_factory_get (), "icons_changed",
-				 G_CALLBACK (send_history), view, G_CONNECT_SWAPPED);
+	g_signal_connect_object (nautilus_signaller_get_current (),
+				 "history_list_changed",
+				 G_CALLBACK (send_history),
+				 view, G_CONNECT_SWAPPED);
+	g_signal_connect_object (nautilus_icon_factory_get (),
+				 "icons_changed",
+				 G_CALLBACK (send_history),
+				 view, G_CONNECT_SWAPPED);
 }
 
 static void
@@ -854,6 +858,12 @@ nautilus_view_frame_selection_changed (NautilusViewFrame *view,
 		return;
 	}
 
+	if (!bonobo_event_source_has_listener
+	    (view->details->event_source,
+	     "Bonobo/Property:change:selection")) {
+		return;
+	}
+
 	uri_list = nautilus_uri_list_from_g_list (selection);
 	
 	CORBA_exception_init (&ev);
@@ -1316,6 +1326,12 @@ send_history (NautilusViewFrame *view)
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 
 	if (view->details->view == CORBA_OBJECT_NIL) {
+		return;
+	}
+
+	if (!bonobo_event_source_has_listener
+	    (view->details->event_source,
+	     "Bonobo/Property:change:history")) {
 		return;
 	}
 

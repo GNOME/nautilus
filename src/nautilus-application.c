@@ -576,10 +576,21 @@ nautilus_application_startup (NautilusApplication *application,
 static void
 nautilus_application_create_desktop_window (NautilusApplication *application)
 {
+	static gboolean create_in_progress = FALSE;
+
 	g_return_if_fail (nautilus_application_desktop_window == NULL);
 	g_return_if_fail (NAUTILUS_IS_APPLICATION (application));
 
+	if (create_in_progress) {
+		return;
+	}
+
+	create_in_progress = TRUE;
+
 	nautilus_application_desktop_window = nautilus_desktop_window_new (application);
+
+	create_in_progress = FALSE;
+
 	gtk_widget_show (GTK_WIDGET (nautilus_application_desktop_window));
 }
 
