@@ -781,7 +781,10 @@ rsvg_text_handler_characters (RsvgSaxHandler *self, const xmlChar *ch, int len)
   memcpy (string, ch + beg, end - beg);
   string[end - beg] = 0;
 
+
+#ifdef VERBOSE
   fprintf (stderr, "text characters(%s, %d)\n", string, len);
+#endif
 
   if (ctx->ft_ctx == NULL)
     ctx->ft_ctx = rsvg_ft_ctx_new ();
@@ -818,7 +821,9 @@ rsvg_text_handler_characters (RsvgSaxHandler *self, const xmlChar *ch, int len)
 
       rsvg_render_paint_server (render, state->fill, NULL); /* todo: paint server ctx */
       opacity = state->fill_opacity;
+#ifdef VERBOSE
       fprintf (stderr, "opacity = %d\n", opacity);
+#endif
       art_render_mask_solid (render, (opacity << 8) + opacity + (opacity >> 7));
       art_render_mask (render,
 		       glyph_xy[0], glyph_xy[1],
@@ -846,7 +851,9 @@ rsvg_start_text (RsvgCtx *ctx, const xmlChar **atts)
 
   rsvg_parse_style_attrs (ctx, atts);
   ctx->handler = &handler->super;
+#ifdef VERBOSE
   fprintf (stderr, "begin text!\n");
+#endif
 }
 
 /* end text */
