@@ -1924,6 +1924,22 @@ static char
 	} else {
 		i=V(c[0],c[1]);
 		switch (i) {
+		case V('`',' '):
+			out_html(change_to_font('B'));
+			out_html("`");
+			trans_char(c,'"','\a');
+			c=c+j;
+			if (*c!='\n')
+				c++;
+			c=scan_troff(c, 1, NULL);
+			out_html("'");
+			out_html(change_to_font('R'));
+			out_html(NEWLINE);
+			if (fillout)
+				curpos++;
+			else
+				curpos=0;
+			break;
 		case V('a','b'):
 			h=c+j;
 			while (*h && *h !='\n')

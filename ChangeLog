@@ -1,3 +1,14 @@
+Thu Feb 22 04:13:13 2001  George Lebl <jirka@5z.com>
+
+	Approval sucker: Maciej <mjs@eazel.com>
+
+	* components/help/converters/gnome-man2html2/gnome-man2html.c
+	  (scan_request): Fix bug #3334, by handling the ".' " troff request.
+
+	* libnautilus-extensions/nautilus-directory-async.c
+	  (nautilus_directory_async_state_changed): the unref could be
+	  the last one, so don't access the directory afterwards.
+
 2001-02-22  Arlo Rose  <arlo@eazel.com>
 
 	* icons/Makefile.am:

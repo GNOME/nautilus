@@ -3278,8 +3278,8 @@ nautilus_directory_async_state_changed (NautilusDirectory *directory)
 			directory->details->state_changed = TRUE;
 		}
 	} while (directory->details->state_changed);
-	nautilus_directory_unref (directory);
 	directory->details->in_async_service_loop = FALSE;
+	nautilus_directory_unref (directory);
 
 	/* Check if any directories should wake up. */
 	async_job_wake_up ();
