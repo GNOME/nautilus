@@ -1,3 +1,13 @@
+2001-01-25  Michael Engber  <engber@eazel.com>
+
+	reviewed by: John Harper
+
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(initialize_background_from_settings),
+	(saved_settings_changed_callback),
+	(nautilus_connect_background_to_file_metadata):
+	Fixed trying to set the background on a window before it was realized. 
+
 2001-01-25  Mike Fleming  <mfleming@eazel.com>
  
 	reviewed by: <sullivan@eazel.com>

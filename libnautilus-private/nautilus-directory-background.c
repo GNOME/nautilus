@@ -824,10 +824,9 @@ background_changed_callback (NautilusBackground *background,
 	}
 }
 
-/* handle the file changed signal */
 static void
-saved_settings_changed_callback (NautilusFile *file,
-                                 NautilusBackground *background)
+initialize_background_from_settings (NautilusFile *file,
+				     NautilusBackground *background)
 {
         char *color;
         char *image;
@@ -878,7 +877,15 @@ saved_settings_changed_callback (NautilusFile *file,
 	
 	g_free (color);
 	g_free (image);
+}
 
+/* handle the file changed signal */
+static void
+saved_settings_changed_callback (NautilusFile *file,
+                                 NautilusBackground *background)
+{
+	initialize_background_from_settings (file, background);
+	
 	if (nautilus_background_is_desktop (background)) {
 		nautilus_file_update_desktop_pixmaps (background);
 	}
@@ -1026,7 +1033,7 @@ nautilus_connect_background_to_file_metadata (GtkWidget    *widget,
 	}
 
         /* Update the background based on the file metadata. */
-        saved_settings_changed_callback (file, background);
+        initialize_background_from_settings (file, background);
 }
 
 void
