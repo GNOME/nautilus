@@ -2096,14 +2096,17 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 	URIPair *pair;
 	NautilusFile *file;
 	NautilusDirectory *old_directory, *new_directory;
-	GList *new_files_list;
+	GList *new_files_list, *unref_list;
 	GHashTable *added_lists, *changed_lists;
 	GList **files;
+	GnomeVFSFileInfo *info;
+	GnomeVFSResult result;
 
 	/* Make a list of added and changed files in each directory. */
 	new_files_list = NULL;
 	added_lists = g_hash_table_new (g_direct_hash, g_direct_equal);
 	changed_lists = g_hash_table_new (g_direct_hash, g_direct_equal);
+	unref_list = NULL;
 
 	for (p = uri_pairs; p != NULL; p = p->next) {
 		pair = p->data;
@@ -2114,7 +2117,7 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 
 		/* Move an existing file. */
 		file = get_file_if_exists (pair->from_uri);
-		if (file != NULL) {
+		if (file == NULL) {
 			/* Handle this as it it was a new file. */
 			new_files_list = g_list_prepend (new_files_list,
 							 pair->to_uri);
@@ -2127,21 +2130,53 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 
 			/* Locate the new directory. */
 			new_directory = get_parent_directory (pair->to_uri);
+			g_assert (new_directory != NULL);
+
+			/* Point the file at the new directory.
+			 * We already have a ref to it from the get_parent_directory
+			 * function so we don't have to ref. We do have to unref
+			 * the old directory, but we better not do that before
+			 * the code below runs.
+			 */
+			file->details->directory = new_directory;
+
+
+			/* If the file is moving, between directories, there
+			 * is more to do.
+			 */
 			if (new_directory != old_directory) {
 				/* Remove from old directory. */
 				files = &old_directory->details->files;
 				g_assert (g_list_find (*files, file) != NULL);
 				*files = g_list_remove (*files, file);
 				
-				/* Add to new directory. */
-				files = &new_directory->details->files;
-				g_assert (g_list_find (*files, file) == NULL);
-				*files = g_list_prepend (*files, file);
-				
-				/* Handle notification in the new directory. */
-				hash_table_list_prepend (added_lists,
-							 new_directory,
-							 file);
+				/* FIXME: Need to call get info in async mode. */
+				info = gnome_vfs_file_info_new ();
+				result = gnome_vfs_get_file_info (pair->to_uri, info, 
+								  GNOME_VFS_FILE_INFO_DEFAULT, 
+								  NULL);
+				if (result == GNOME_VFS_OK) {
+					gnome_vfs_file_info_ref (info);
+					nautilus_file_update (file, info);
+
+					/* Add to new directory. */
+					files = &new_directory->details->files;
+					g_assert (g_list_find (*files, file) == NULL);
+					*files = g_list_prepend (*files, file);
+					
+					/* Handle notification in the new directory. */
+					hash_table_list_prepend (added_lists,
+								 new_directory,
+								 file);
+				}
+				gnome_vfs_file_info_unref (info);
+			}
+
+			/* If the old directory was monitoring files, then it
+			 * may have been the only one with a ref to the file.
+			 */
+			if (is_file_list_monitored (old_directory)) {
+				unref_list = g_list_prepend (unref_list, file);
 			}
 			
 			/* Done with the old directory. */
@@ -2154,6 +2189,10 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 	g_hash_table_destroy (changed_lists);
 	g_hash_table_foreach (added_lists, call_files_added, NULL);
 	g_hash_table_destroy (added_lists);
+
+	/* Let the file objects go. */
+	g_list_foreach (unref_list, (GFunc) nautilus_file_unref, NULL);
+	g_list_free (unref_list);
 
 	/* Separate handling for brand new file objects. */
 	nautilus_directory_notify_files_added (new_files_list);

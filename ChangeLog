@@ -1,3 +1,16 @@
+2000-04-20  Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_notify_files_moved):
+	Darin helped me finish implementing the missing parts of the call, including
+	updating the reference to the new directory object, updating the
+	file info structure to match the file's new location.
+	Fixed a silly bug in an if statement.
+	
+	* libnautilus-extensions/nautilus-file-changes-queue.c:
+	Fixed another silly bug where 'file moved' notifications were
+	misinterpreted as file-removed ones.
+	
 2000-04-20  Andy Hertzfeld <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-gtk-extensions.c,h:

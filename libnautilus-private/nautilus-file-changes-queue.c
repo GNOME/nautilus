@@ -145,7 +145,7 @@ nautilus_file_changes_queue_file_moved (const char *from, const char *to)
 	g_assert (queue);
 
 	new_item = g_new (NautilusFileChange, 1);
-	new_item->kind = CHANGE_FILE_REMOVED;
+	new_item->kind = CHANGE_FILE_MOVED;
 	new_item->from_uri = g_strdup (from);
 	new_item->to_uri = g_strdup (to);
 	nautilus_file_changes_queue_add_common (queue, new_item);
