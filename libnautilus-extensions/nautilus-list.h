@@ -29,7 +29,8 @@
 #ifndef NAUTILUS_LIST_H
 #define NAUTILUS_LIST_H
 
-#include <gtk/gtkclist.h>
+#include <libgnome/gnome-defs.h>
+#include <widgets/gtkclist/gtkclist.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
 /* This class was originally derived from the GtkFList class in gmc.

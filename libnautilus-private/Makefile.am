@@ -24,6 +24,7 @@ INCLUDES = 						\
 
 dependency_static_libs =								\
 	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la 			\
+	$(top_builddir)/cut-n-paste-code/widgets/gtkclist/libgtkclist.la 		\
 	$(top_builddir)/librsvg/librsvg.la 						\
 	$(top_builddir)/cut-n-paste-code/freetype/libfreetype2.la 			\
 	$(NULL)

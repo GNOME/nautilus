@@ -2,16 +2,17 @@ NULL =
 
 noinst_LTLIBRARIES=libnautilus-file-manager.la
 
-INCLUDES = 				\
-	-I$(top_srcdir) 		\
-	-I$(top_builddir) 		\
-	$(BONOBO_CFLAGS) 		\
-	$(MEDUSA_CFLAGS)		\
-	$(OAF_CFLAGS) 			\
-	$(GNOMEUI_CFLAGS) 		\
-	$(VFS_CFLAGS) 			\
-	-DVERSION="\"$(VERSION)\"" 	\
-	-D_REENTRANT 			\
+INCLUDES = 					\
+	-I$(top_srcdir) 			\
+	-I$(top_builddir) 			\
+	-I$(top_srcdir)/cut-n-paste-code 	\
+	$(BONOBO_CFLAGS) 			\
+	$(MEDUSA_CFLAGS)			\
+	$(OAF_CFLAGS) 				\
+	$(GNOMEUI_CFLAGS) 			\
+	$(VFS_CFLAGS) 				\
+	-DVERSION="\"$(VERSION)\"" 		\
+	-D_REENTRANT 				\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
 	$(NULL)	
 

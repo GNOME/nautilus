@@ -1447,6 +1447,7 @@ wants_activation_uri (const Request *request)
 	return request->activation_uri;
 }
 
+
 static gboolean
 has_problem (NautilusDirectory *directory, NautilusFile *file, FileCheck problem)
 {
@@ -1845,6 +1846,28 @@ select_needy_file (NautilusDirectory *directory,
 	return NULL;
 }
 
+
+
+static GnomeVFSDirectoryFilterOptions
+get_filter_options_for_directory_count (NautilusFile *file)
+{
+	GnomeVFSDirectoryFilterOptions filter_options;
+	
+	filter_options = GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR | 
+		GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR;
+	
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES, FALSE) == FALSE) {
+		filter_options |= GNOME_VFS_DIRECTORY_FILTER_NODOTFILES;
+	}
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES, FALSE) == FALSE) {
+		filter_options |= GNOME_VFS_DIRECTORY_FILTER_NOBACKUPFILES;
+	}
+
+	return filter_options;
+}
+
+
+
 static void
 start_getting_directory_counts (NautilusDirectory *directory)
 {
@@ -1888,8 +1911,7 @@ start_getting_directory_counts (NautilusDirectory *directory)
 		 NULL,
 		 FALSE,
 		 GNOME_VFS_DIRECTORY_FILTER_NONE,
-		 (GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR
-		  | GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR),
+		 get_filter_options_for_directory_count (file),
 		 NULL,
 		 G_MAXINT,
 		 directory_count_callback,

@@ -1,3 +1,55 @@
+2000-09-21  Rebecca Schulman  <rebecka@eazel.com>
+	Cut and pasted the gtkclist widget into
+	nautilus.  Fixed bugzilla.eazel.com 481,
+	to reflect user file filtering preferences
+	in directory counts, and in the process,
+	fixed bug 480.
+
+	* configure.in:
+	* cut-n-paste-code/widgets/.cvsignore:
+	* cut-n-paste-code/widgets/Makefile.am:
+	* cut-n-paste-code/widgets/gtkclist/.cvsignore:
+	* cut-n-paste-code/widgets/gtkclist/Makefile.am:
+	* cut-n-paste-code/widgets/gtkclist/gtkclist.c:
+	* cut-n-paste-code/widgets/gtkclist/gtkclist.h:
+	(COLUMN_FROM_XPIXEL), (LIST_WIDTH), (gtk_clist_get_type),
+	(gtk_clist_class_init), (gtk_clist_set_arg), (gtk_clist_get_arg),
+	(gtk_clist_init), (gtk_clist_construct), (gtk_clist_new),
+	(gtk_clist_new_with_titles), (gtk_clist_set_hadjustment),
+	(gtk_clist_get_hadjustment), (gtk_clist_set_vadjustment),
+	(gtk_clist_get_vadjustment), (gtk_clist_set_scroll_adjustments),
+	(gtk_clist_set_shadow_type), (gtk_clist_set_selection_mode),
+	(gtk_clist_freeze), (gtk_clist_thaw),
+	(gtk_clist_column_titles_show), (gtk_clist_column_titles_hide),
+	(gtk_clist_column_title_active), (gtk_clist_column_title_passive),
+	(gtk_clist_column_titles_active),
+	(gtk_clist_column_titles_passive), (gtk_clist_set_column_title),
+	(gtk_clist_get_column_title), (gtk_clist_set_column_widget),
+	(gtk_clist_get_column_widget),
+	(gtk_clist_set_column_justification),
+	(gtk_clist_set_column_visibility),
+	(gtk_clist_set_column_resizeable),
+	(gtk_clist_set_column_auto_resize), (gtk_clist_columns_autosize),
+	(gtk_clist_optimal_column_width):
+	* src/file-manager/Makefile.am:
+	Add include of the cut-n-paste-code directory,
+	so we can access the clist.
+	* libnautilus-extensions/Makefile.am:
+	include the new static gtkclist library
+	* libnautilus-extensions/nautilus-list.h:
+	include the cut and pasted widget instead
+	of the gtk one.
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(get_filter_options_for_directory_count),
+	(start_getting_directory_counts):
+	Add command to get filtering options for gnome-vfs 
+	based on user preferences.  This works niftily
+	when preferences change thanks to the callbacks
+	in fm_directory_view
+
+
+
 2000-09-21  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 2090, Sidebar panel shrinks when back from text
