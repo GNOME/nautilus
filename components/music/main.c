@@ -26,27 +26,26 @@
  */
 
 #include <config.h>
-#include <gnome.h>
+
 #include "nautilus-music-view.h"
 #include <libnautilus/nautilus-view-standard-main.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 
 #define FACTORY_IID     "OAFIID:nautilus_music_view_factory:1be0c129-87cd-4daa-9d3a-94397de9bce2"
 #define VIEW_IID        "OAFIID:nautilus_music_view:9456b5d2-60a8-407f-a56e-d561e1821391"
-#define EXECUTABLE_NAME "nautilus-music-view"
-#define GET_TYPE_FUNCTION nautilus_music_view_get_type
 
 int
 main (int argc, char *argv[])
 {
-/* Initialize gettext support */
-#ifdef ENABLE_NLS
-	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
-	textdomain (PACKAGE);
-#endif
-
-	return nautilus_view_standard_main (EXECUTABLE_NAME, VERSION,
-					    argc, argv,
-					    FACTORY_IID, VIEW_IID,
+	return nautilus_view_standard_main ("nautilus-music-view",
+					    VERSION,
+					    PACKAGE,
+					    GNOMELOCALEDIR,
+					    argc,
+					    argv,
+					    FACTORY_IID,
+					    VIEW_IID,
 					    nautilus_view_create_from_get_type_function,
-					    GET_TYPE_FUNCTION);
+					    nautilus_global_preferences_initialize,
+					    nautilus_music_view_get_type);
 }

@@ -25,21 +25,21 @@
 
 #include "nautilus-tree-view-iids.h"
 #include "nautilus-tree-view.h"
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus/nautilus-view-standard-main.h>
 
 int
 main (int argc, char *argv[])
 {
-	/* Initialize gettext support */
-#ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
-	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
-	textdomain (PACKAGE);
-#endif
-
-	return nautilus_view_standard_main ("nautilus-tree-view", VERSION,
-					    argc, argv,
+	return nautilus_view_standard_main ("nautilus-tree-view",
+					    VERSION,
+					    PACKAGE,
+					    GNOMELOCALEDIR,
+					    argc,
+					    argv,
 					    TREE_VIEW_FACTORY_IID,
 					    TREE_VIEW_IID,
 					    nautilus_view_create_from_get_type_function,
+					    nautilus_global_preferences_initialize,
 					    nautilus_tree_view_get_type);
 }

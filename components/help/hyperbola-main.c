@@ -25,6 +25,7 @@
 #include <bonobo.h>
 #include <gnome.h>
 #include <liboaf/liboaf.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 
 #include "hyperbola-nav.h"
 
@@ -103,6 +104,8 @@ main (int argc, char *argv[])
 		bonobo_generic_factory_new_multi (registration_id, make_obj,
 						  NULL);
 	g_free (registration_id);
+
+	nautilus_global_preferences_initialize ();
 
 	do {
 		bonobo_main ();

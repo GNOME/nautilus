@@ -26,27 +26,26 @@
  */
 
 #include <config.h>
-#include <gnome.h>
+
 #include "nautilus-text-view.h"
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus/nautilus-view-standard-main.h>
 
 #define FACTORY_IID       "OAFIID:nautilus_text_view_factory:124ae209-d356-418f-8757-54e071cb3a21"
 #define VIEW_IID          "OAFIID:nautilus_text_view:fa466311-17c1-435c-8231-c9fc434b6437"
-#define EXECUTABLE_NAME   "nautilus-text-view"
-#define GET_TYPE_FUNCTION nautilus_text_view_get_type
 
 int
 main (int argc, char *argv[])
 {
-/* Initialize gettext support */
-#ifdef ENABLE_NLS
-	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
-	textdomain (PACKAGE);
-#endif
-
-	return nautilus_view_standard_main (EXECUTABLE_NAME, VERSION,
-					    argc, argv,
-					    FACTORY_IID, VIEW_IID,
+	return nautilus_view_standard_main ("nautilus-text-view",
+					    VERSION,
+					    PACKAGE,
+					    GNOMELOCALEDIR,
+					    argc,
+					    argv,
+					    FACTORY_IID,
+					    VIEW_IID,
 					    nautilus_view_create_from_get_type_function,
-					    GET_TYPE_FUNCTION);
+					    nautilus_global_preferences_initialize,
+					    nautilus_text_view_get_type);
 }

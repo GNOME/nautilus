@@ -34,11 +34,10 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtktext.h>
 #include <gtk/gtkvbox.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus/nautilus-clipboard.h>
 #include <libnautilus/nautilus-view-standard-main.h>
@@ -429,16 +428,15 @@ main(int argc, char *argv[])
 			(G_LOG_DOMAIN, g_log_domain_glib, "Gdk", "Gtk", "GnomeVFS", "GnomeUI", "Bonobo", NULL);
 	}
 	
-	/* Initialize gettext support */
-#ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
-	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
-	textdomain (PACKAGE);
-#endif
-	
-        return nautilus_view_standard_main ("nautilus-notes", VERSION,
-                                            argc, argv,
+        return nautilus_view_standard_main ("nautilus-notes",
+                                            VERSION,
+                                            PACKAGE,
+                                            GNOMELOCALEDIR,
+                                            argc,
+                                            argv,
                                             "OAFIID:nautilus_notes_view_factory:4b39e388-3ca2-4d68-9f3d-c137ee62d5b0",
                                             "OAFIID:nautilus_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185",
                                             make_notes_view,
+                                            nautilus_global_preferences_initialize,
                                             NULL);
 }

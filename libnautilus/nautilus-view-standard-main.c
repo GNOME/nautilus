@@ -30,11 +30,13 @@
 #include <config.h>
 #include "nautilus-view-standard-main.h"
 
-#include <libgnomeui/gnome-init.h>
 #include <bonobo/bonobo-generic-factory.h>
 #include <bonobo/bonobo-main.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-init.h>
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <liboaf/liboaf.h>
 #include <stdlib.h>
@@ -94,21 +96,74 @@ make_object (BonoboGenericFactory *factory,
 	return BONOBO_OBJECT (view);
 }
 
-
+/**
+ * nautilus_view_standard_main_multi
+ *
+ * A version of nautilus_view_standard_main that accepts multiple view
+ * IIDs.
+ *
+ * @executable_name: The name of the executable binary.
+ * @version: Component version.  Usually VERSION.
+ * @gettext_package_name: Package name for gettext support.  Usually PACKAGE.
+ *                        Can be NULL, in which case the component will not
+ *                        have gettext support and translations might not
+ *                        work
+ * @gettext_locale_directory: Locale directory for gettext support.  Usually
+ *                            GNOMELOCALEDIR.  Must not be NULL if
+ *                            @gettext_package_name is not NULL.
+ * @argc: Command line argument count.
+ * @argv: Command line argument vector.
+ * @factory_iid: The components's factory IID.
+ * @view_iids: A GList of NautilusView IIDs.
+ * @create_function: Function called to create the NautilusView instance.
+ * @post_initialize_callback: An optional callback which is invoked after
+ *                            all modules have been initialized (gtk, bonobo,
+ *                            gnome-vfs, etc.) but before the execution of 
+ *                            the main event loop.
+ * @user_data:                User data for @create_function.
+ **/
 int
-nautilus_view_standard_main_multi (const char                 *executable_name,
-				   const char                 *version,
-				   int                         argc,
-				   char                      **argv,
-				   const char                 *factory_iid,
-				   GList                      *view_iids,
-				   NautilusViewCreateFunction  create_function,
-				   void                       *user_data)
+nautilus_view_standard_main_multi (const char *executable_name,
+				   const char *version,
+				   const char *gettext_package_name,
+				   const char *gettext_locale_directory,
+				   int argc,
+				   char **argv,
+				   const char *factory_iid,
+				   GList *view_iids,
+				   NautilusViewCreateFunction create_function,
+				   GVoidFunc post_initialize_callback,
+				   void *user_data)
 {
 	CORBA_ORB orb;
 	BonoboGenericFactory *factory;
 	CallbackData callback_data;
 	char *registration_id;
+
+	g_return_val_if_fail (executable_name != NULL, EXIT_FAILURE);
+	g_return_val_if_fail (version != NULL, EXIT_FAILURE);
+	g_return_val_if_fail (argc > 0, EXIT_FAILURE);
+	g_return_val_if_fail (argv != NULL, EXIT_FAILURE);
+	g_return_val_if_fail (argv[0] != NULL, EXIT_FAILURE);
+	g_return_val_if_fail (factory_iid != NULL, EXIT_FAILURE);
+	g_return_val_if_fail (g_list_length (view_iids) > 0, EXIT_FAILURE);
+	g_return_val_if_fail (create_function != NULL, EXIT_FAILURE);
+
+	if (gettext_package_name != NULL) {
+		g_return_val_if_fail (gettext_locale_directory != NULL, EXIT_FAILURE);
+	}
+	if (gettext_locale_directory != NULL) {
+		g_return_val_if_fail (gettext_package_name != NULL, EXIT_FAILURE);
+	}
+
+	/* Initialize gettext support if needed  */
+#ifdef ENABLE_NLS
+	if (gettext_package_name != NULL
+	    && gettext_locale_directory != NULL) {
+		bindtextdomain (gettext_package_name, gettext_locale_directory);
+		textdomain (gettext_package_name);
+	}
+#endif
 
 	/* Disable session manager connection */
 	gnome_client_disable_master_connection ();
@@ -117,8 +172,7 @@ nautilus_view_standard_main_multi (const char                 *executable_name,
 	orb = oaf_init (argc, argv);
 
 	/* Initialize libraries. */
-        gnome_init (executable_name, version, 
-		    argc, argv); 
+        gnome_init (executable_name, version, argc, argv); 
 	gdk_rgb_init ();
 	g_thread_init (NULL);
 	gnome_vfs_init ();
@@ -137,6 +191,9 @@ nautilus_view_standard_main_multi (const char                 *executable_name,
 						    &callback_data);
 	g_free (registration_id);
 
+	if (post_initialize_callback != NULL) {
+		(* post_initialize_callback) ();
+	}
 	
 	/* Loop until we have no more objects. */
 	do {
@@ -151,31 +208,82 @@ nautilus_view_standard_main_multi (const char                 *executable_name,
 	return EXIT_SUCCESS;
 }
 
-
-
+/**
+ * nautilus_view_standard_main
+ *
+ * An implementation of most of a typical main.c file for Nautilus views.
+ * Just call the function from main and pass it the right arguments. This
+ * should make writing Nautilus views simpler.
+ *
+ * @executable_name: The name of the executable binary.
+ * @version: Component version.  Usually VERSION.
+ * @gettext_package_name: Package name for gettext support.  Usually PACKAGE.
+ *                        Can be NULL, in which case the component will not
+ *                        have gettext support and translations might not
+ *                        work
+ * @gettext_locale_directory: Locale directory for gettext support.  Usually
+ *                            GNOMELOCALEDIR.  Must not be NULL if
+ *                            @gettext_package_name is not NULL.
+ * @argc: Command line argument count.
+ * @argv: Command line argument vector.
+ * @factory_iid: The components's factory IID.
+ * @view_iid: The component's NautilusView IID.
+ * @create_function: Function called to create the NautilusView instance.
+ * @post_initialize_callback: An optional callback which is invoked after
+ *                            all modules have been initialized (gtk, bonobo,
+ *                            gnome-vfs, etc.) but before the execution of 
+ *                            the main event loop.
+ * @user_data:                User data for @create_function.
+ **/
 int
-nautilus_view_standard_main (const char                 *executable_name,
-			     const char                 *version,
-			     int                         argc,
-			     char                      **argv,
-			     const char                 *factory_iid,
-			     const char                 *view_iid,
-			     NautilusViewCreateFunction  create_function,
-			     void                       *user_data)
+nautilus_view_standard_main (const char *executable_name,
+			     const char *version,
+			     const char *gettext_package_name,
+			     const char *gettext_locale_directory,
+			     int argc,
+			     char **argv,
+			     const char *factory_iid,
+			     const char *view_iid,
+			     NautilusViewCreateFunction create_function,
+			     GVoidFunc post_initialize_callback,
+			     void *user_data)
 {
-	GList       node;
+	GList node;
+
+	g_return_val_if_fail (executable_name != NULL, EXIT_FAILURE);
+	g_return_val_if_fail (version != NULL, EXIT_FAILURE);
+	g_return_val_if_fail (argc > 0, EXIT_FAILURE);
+	g_return_val_if_fail (argv != NULL, EXIT_FAILURE);
+	g_return_val_if_fail (argv[0] != NULL, EXIT_FAILURE);
+	g_return_val_if_fail (factory_iid != NULL, EXIT_FAILURE);
+	g_return_val_if_fail (view_iid != NULL, EXIT_FAILURE);
+	g_return_val_if_fail (create_function != NULL, EXIT_FAILURE);
+
+	if (gettext_package_name != NULL) {
+		g_return_val_if_fail (gettext_locale_directory != NULL, EXIT_FAILURE);
+	}
+	if (gettext_locale_directory != NULL) {
+		g_return_val_if_fail (gettext_package_name != NULL, EXIT_FAILURE);
+	}
 
 	node.data = (gpointer) view_iid;
+	node.next = NULL;
+	node.prev = NULL;
 
-	return nautilus_view_standard_main_multi (executable_name, version, 
-						  argc, argv,
-						  factory_iid, &node, 
-						  create_function, user_data);
+	return nautilus_view_standard_main_multi (executable_name,
+						  version,
+						  gettext_package_name,
+						  gettext_locale_directory,
+						  argc,
+						  argv,
+						  factory_iid,
+						  &node, 
+						  create_function,
+						  post_initialize_callback,
+						  user_data);
 }
 
 typedef GtkType (* TypeFunc) (void);
-
-
 
 NautilusView *
 nautilus_view_create_from_get_type_function (const char *iid, void *user_data)

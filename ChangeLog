@@ -1,3 +1,30 @@
+2001-04-12  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus/nautilus-view-standard-main.h:
+	* libnautilus/nautilus-view-standard-main.c:
+	(nautilus_view_standard_main_multi), (nautilus_view_standard_main):
+	Add support for gettext.  Add a post initialize callback so that
+	callers can initialize any component specific stuff before the
+	main even loop begins (nautilus preferences for example)
+	Update for standard main changes.
+	Add documentation for these functions.  Also add criticals to make
+	the code a little bit more robust.
+
+	* components/help/hyperbola-main.c: (main):
+	* components/history/nautilus-history-view.c: (main):
+	* components/music/main.c: (main):
+	* components/notes/nautilus-notes.c: (main):
+	* components/sample/main.c: (main):
+	* components/text/main.c: (main):
+	* components/tree/main.c: (main):
+	Update for standard main changes.  Make these a little simpler by
+	putting gettext support in standard main itself.  Also, make sure
+	that components that use preferences initialize them.
+	
+	* src/nautilus-main.c: (main):
+	Dont do the preferences initialization if we are about to kill the
+	nautilus shell.
+	
 2001-04-12  Seth Nickell  <snickell@stanford.edu>
 
 	* libnautilus-extensions/Makefile.am:

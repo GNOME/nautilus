@@ -41,20 +41,26 @@ typedef NautilusView * (*NautilusViewCreateFunction) (const char *iid, void *use
 
 int nautilus_view_standard_main        (const char                 *executable_name,
 					const char                 *version,
+					const char                 *gettext_package_name,
+					const char                 *gettext_locale_directory,
 					int                         argc,
 					char                      **argv,
 					const char                 *factory_iid,
 					const char                 *view_iid,
 					NautilusViewCreateFunction  create_function,
+					GVoidFunc                   post_initialize_callback,
 					void                       *user_data);
 
 int nautilus_view_standard_main_multi  (const char                 *executable_name,
 					const char                 *version,
+					const char                 *gettext_package_name,
+					const char                 *gettext_locale_directory,
 					int                         argc,
 					char                      **argv,
 					const char                 *factory_iid,
 					GList                      *view_iids,       /* GList<const char *> */
 					NautilusViewCreateFunction  create_function,
+					GVoidFunc                   post_initialize_callback,
 					void                       *user_data);
 
 /* standard handy create function (pass the _get_type function for the

@@ -31,6 +31,7 @@
  */
 
 #include <config.h>
+
 #include "nautilus-sample-content-view.h"
 #include <libnautilus/nautilus-view-standard-main.h>
 
@@ -46,13 +47,18 @@
 /* CHANGE: Change to the get_type function for your view class */
 #define GET_TYPE_FUNCTION nautilus_sample_content_view_get_type
 
-
 int
 main (int argc, char *argv[])
 {
-	return nautilus_view_standard_main (EXECUTABLE_NAME, VERSION,
-					    argc, argv,
-					    FACTORY_IID, VIEW_IID,
+	return nautilus_view_standard_main (EXECUTABLE_NAME,
+					    VERSION,
+					    NULL,	/* Could be PACKAGE */
+					    NULL,	/* Could be GNOMELOCALEDIR */
+					    argc,
+					    argv,
+					    FACTORY_IID,
+					    VIEW_IID,
 					    nautilus_view_create_from_get_type_function,
+					    NULL,
 					    GET_TYPE_FUNCTION);
 }

@@ -240,11 +240,15 @@ main (int argc, char *argv[])
 
 	/* Initialize preferences. This is needed so that proper 
 	 * defaults are available before any preference peeking 
-	 * happens.
+	 * happens.  Do this only if we are not goinh to kill the
+	 * nautilus shell.
 	 */
-	nautilus_global_preferences_initialize ();
-
-	start_desktop = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP);
+	if (!kill_shell) {
+		nautilus_global_preferences_initialize ();
+		start_desktop = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP);
+	} else {
+		start_desktop = FALSE;
+	}
 		
 	/* Do either the self-check or the real work. */
 	if (perform_self_check) {

@@ -28,14 +28,16 @@
 #include <config.h>
 
 #include <bonobo/bonobo-ui-util.h>
-#include <gtk/gtkclist.h>
-#include <gtk/gtkscrolledwindow.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
-#include <libnautilus-extensions/nautilus-bookmark.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-gtk-macros.h>
+#include <gtk/gtkclist.h>
+#include <gtk/gtkscrolledwindow.h>
+#include <libnautilus-extensions/nautilus-bookmark.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus/nautilus-view-standard-main.h>
+
+#define FACTORY_IID	"OAFIID:nautilus_history_view_factory:912d6634-d18f-40b6-bb83-bdfe16f1d15e"
+#define VIEW_IID	"OAFIID:nautilus_history_view:a7a85bdd-2ecf-4bc1-be7c-ed328a29aacb"
 
 #define NAUTILUS_TYPE_HISTORY_VIEW            (nautilus_history_view_get_type ())
 #define NAUTILUS_HISTORY_VIEW(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_HISTORY_VIEW, NautilusHistoryView))
@@ -331,16 +333,15 @@ nautilus_history_view_destroy (GtkObject *object)
 int
 main (int argc, char *argv[])
 {
-	/* Initialize gettext support */
-#ifdef ENABLE_NLS
-	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
-	textdomain (PACKAGE);
-#endif
-
-	return nautilus_view_standard_main ("nautilus_history-view", VERSION,
-					    argc, argv,
-					    "OAFIID:nautilus_history_view_factory:912d6634-d18f-40b6-bb83-bdfe16f1d15e",
-					    "OAFIID:nautilus_history_view:a7a85bdd-2ecf-4bc1-be7c-ed328a29aacb",
+	return nautilus_view_standard_main ("nautilus_history-view",
+					    VERSION,
+					    PACKAGE,
+					    GNOMELOCALEDIR,
+					    argc,
+					    argv,
+					    FACTORY_IID,
+					    VIEW_IID,
 					    nautilus_view_create_from_get_type_function,
+					    nautilus_global_preferences_initialize,
 					    nautilus_history_view_get_type);
 }
