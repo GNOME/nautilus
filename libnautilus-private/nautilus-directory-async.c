@@ -2606,6 +2606,7 @@ top_left_start (NautilusDirectory *directory,
 
 	if (!nautilus_file_contains_text (file)) {
 		g_free (file->details->top_left_text);
+		file->details->top_left_text = NULL;
 		file->details->got_top_left_text = FALSE;
 		file->details->top_left_text_is_up_to_date = TRUE;
 

@@ -1,5 +1,10 @@
 2002-03-18  Michael Meeks  <michael@ximian.com>
 
+	* libnautilus-private/nautilus-directory-async.c
+	(top_left_start): NULL top_left_text after free.
+
+2002-03-18  Michael Meeks  <michael@ximian.com>
+
 	* src/nautilus-application.c
 	(nautilus_application_create_desktop_window):
 	guard window creation to avoid re-enterancy, via.
