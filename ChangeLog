@@ -1,5 +1,12 @@
 2001-02-20  Andy Hertzfeld  <andy@eazel.com>
 
+	* src/nautilus-location-bar.c: (try_to_expand_path):
+	fixed bug 6717, problem editing a uri with a '#' in the middle,
+	by adding a check to the auto-complete code to not substitute
+	zero length strings.
+	
+2001-02-20  Andy Hertzfeld  <andy@eazel.com>
+
 	* components/text/nautilus-text-view.c: (file_close_callback),
 	(done_file_read):
 	fixed bug 6732, can't unmount volumes after viewing text files;

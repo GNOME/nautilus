@@ -296,7 +296,7 @@ try_to_expand_path (NautilusLocationBar *bar)
 	GnomeVFSURI *uri;
 	GtkEditable *editable;
 	
-	int base_length;
+	uint base_length;
 	int current_path_length;
 	int offset;
 	const char *base_name_ptr;
@@ -374,8 +374,9 @@ try_to_expand_path (NautilusLocationBar *bar)
 	}
 	
 	/* if we've got something, add it to the entry */	
-	if (expand_text && !nautilus_str_has_suffix (current_path, expand_text)) {
-	        gtk_entry_append_text (GTK_ENTRY (editable), expand_text + base_length);
+	if (expand_text && !nautilus_str_has_suffix (current_path, expand_text)
+	    && base_length < strlen (expand_text)) {
+		gtk_entry_append_text (GTK_ENTRY (editable), expand_text + base_length);
 		gtk_entry_select_region (GTK_ENTRY (editable), current_path_length - offset,
 					 current_path_length + strlen (expand_text) - base_length - offset);
 		g_free (expand_text);
