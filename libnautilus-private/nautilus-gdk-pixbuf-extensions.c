@@ -60,7 +60,7 @@ static void file_closed_callback (GnomeVFSAsyncHandle      *handle,
 				  gpointer                  callback_data);
 static void load_done            (NautilusPixbufLoadHandle *handle,
 				  GnomeVFSResult            result,
-				  GdkPixbuf                *pixbuf);
+				  gboolean		    get_pixbuf);
 
 /**
  * nautilus_gdk_pixbuf_list_ref
@@ -174,7 +174,7 @@ file_opened_callback (GnomeVFSAsyncHandle *vfs_handle,
 	g_assert (handle->vfs_handle == vfs_handle);
 
 	if (result != GNOME_VFS_OK) {
-		load_done (handle, result, NULL);
+		load_done (handle, result, FALSE);
 		return;
 	}
 
@@ -196,7 +196,6 @@ file_read_callback (GnomeVFSAsyncHandle *vfs_handle,
 		    gpointer callback_data)
 {
 	NautilusPixbufLoadHandle *handle;
-	GdkPixbuf *pixbuf;
 
 	handle = callback_data;
 	g_assert (handle->vfs_handle == vfs_handle);
@@ -216,13 +215,7 @@ file_read_callback (GnomeVFSAsyncHandle *vfs_handle,
 		return;
 	}
 
-	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_EOF) {
-		pixbuf = NULL;
-	} else {
-		pixbuf = gdk_pixbuf_loader_get_pixbuf (handle->loader);
-	}
-
-	load_done (handle, result, pixbuf);
+	load_done (handle, result, result == GNOME_VFS_OK || result == GNOME_VFS_ERROR_EOF);
 }
 
 static void
@@ -243,14 +236,20 @@ free_pixbuf_load_handle (NautilusPixbufLoadHandle *handle)
 }
 
 static void
-load_done (NautilusPixbufLoadHandle *handle,
-	   GnomeVFSResult result,
-	   GdkPixbuf *pixbuf)
+load_done (NautilusPixbufLoadHandle *handle, GnomeVFSResult result, gboolean get_pixbuf)
 {
+	GdkPixbuf *pixbuf;
+
+	gdk_pixbuf_loader_close (handle->loader);
+
+	pixbuf = get_pixbuf ? gdk_pixbuf_loader_get_pixbuf (handle->loader) : NULL;
+	
 	if (handle->vfs_handle != NULL) {
 		gnome_vfs_async_close (handle->vfs_handle, file_closed_callback, NULL);
 	}
-	(* handle->callback) (result, pixbuf, handle->callback_data);
+
+	handle->callback (result, pixbuf, handle->callback_data);
+
 	free_pixbuf_load_handle (handle);
 }
 

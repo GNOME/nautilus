@@ -1,3 +1,11 @@
+2000-10-30  Michael Engber  <engber@eazel.com>
+
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	(file_opened_callback), (file_read_callback), (load_done):
+	
+	Fixed nautilus_gdk_pixbuf_load_async bug that would cause
+	it to fail loading xpm files. (bug 4140)
+
 2000-10-30  Rebecca Schulman  <rebecka@eazel.com>
 	Fixed bug 4176, that files remaining to be
 	copied goes up instead of down.  The short
