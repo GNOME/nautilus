@@ -70,9 +70,10 @@ AM_CONDITIONAL(TREE_VIEW_EXE_SERVER, test "x$TREE_VIEW_EXE_SERVER" = "x1")
 dnl ====================================
 dnl = Begin tests for eazel-services
 dnl ====================================
+dnl FIXME: change the "1" to yes/no
 EAZEL_SERVICES=
 AC_ARG_ENABLE(eazel-services,
-[  --enable-eazel-services		Eazel services],
+[  --enable-eazel-services={1|0}		Eazel services],
 EAZEL_SERVICES=1
 AC_DEFINE(EAZEL_SERVICES))
 
@@ -94,32 +95,39 @@ _found_freetype2_lib="no"
 _found_freetype2_header="no"
 _found_freetype2="no"
 
-dnl FIXME
-_freetype2_place="/usr"
+AC_ARG_WITH(freetype2, 
+[  --with-freetype2-lib-prefix=PREFIX		freetype2 library path],
+freetype2_lib_prefix=$withval,
+freetype2_lib_prefix="/usr/lib")
 
-_freetype2_include_dir="$_freetype2_place/include/freetype2"
+AC_ARG_WITH(freetype2, 
+[  --with-freetype2-include-prefix=PREFIX	freetype2 include path],
+freetype2_include_prefix=$withval,
+freetype2_include_prefix="/usr/include/freetype2")
+
 
 _save_cpp="$CPP"
-CPP="$_save_cpp -I$_freetype2_include_dir"
+CPP="$_save_cpp -I$freetype2_include_prefix"
 AC_CHECK_HEADER(freetype/freetype.h, _found_freetype2_header="yes")
 AC_CHECK_LIB(freetype, FT_Init_FreeType, [_found_freetype2_lib="yes"])
 CPP="$_save_cpp"
 
-if test "$_found_freetype2_lib" = "yes" -a \
-	"$_found_freetype2_header" = "yes"
+if test "x$_found_freetype2_lib" = "xyes" -a \
+	"x$_found_freetype2_header" = "xyes"
 then
   _found_freetype2="yes"
 fi
 
-if test "$_found_freetype2" != "yes" 
+if test "x$_found_freetype2" != "xyes" 
 then
 AC_MSG_ERROR([
 *** FreeType2 is required. You can obtain a packaged version of FreeType2
-*** over here: http://developer.eazel.com/eazel-hacking/updates/freetype2])
+*** over here: http://developer.eazel.com/eazel-hacking/updates/freetype2
+*** source versions are available from ftp://ftp.freetype.org])
 fi
 
-FREETYPE2_CFLAGS="-I$_freetype2_include_dir"
-FREETYPE2_LIBS="-L$_freetype2_place/lib -lfreetype"
+FREETYPE2_CFLAGS="-I$freetype2_include_prefix"
+FREETYPE2_LIBS="-L$freetype2_lib_prefix -lfreetype"
 
 AC_SUBST(FREETYPE2_CFLAGS)
 AC_SUBST(FREETYPE2_LIBS)
