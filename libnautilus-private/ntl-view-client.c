@@ -58,6 +58,10 @@ impl_Nautilus_View_notify_selection_change(impl_POA_Nautilus_View * servant,
 					   Nautilus_SelectionInfo * selinfo,
 					   CORBA_Environment * ev);
 
+static void
+impl_Nautilus_View_stop_location_change(impl_POA_Nautilus_View * servant,
+					CORBA_Environment * ev);
+
 POA_Nautilus_View__epv libnautilus_Nautilus_View_epv =
 {
   NULL,			/* _private */
@@ -65,7 +69,8 @@ POA_Nautilus_View__epv libnautilus_Nautilus_View_epv =
   (gpointer) & impl_Nautilus_View_load_state,
   (gpointer) & impl_Nautilus_View_notify_location_change,
   (gpointer) & impl_Nautilus_View_show_properties,
-  (gpointer) & impl_Nautilus_View_notify_selection_change
+  (gpointer) & impl_Nautilus_View_notify_selection_change,
+  (gpointer) & impl_Nautilus_View_stop_location_change
 };
 
 static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL };
@@ -114,6 +119,13 @@ impl_Nautilus_View_notify_selection_change(impl_POA_Nautilus_View * servant,
 					   CORBA_Environment * ev)
 {
   gtk_signal_emit_by_name(GTK_OBJECT(servant->view), "notify_selection_change", selinfo);
+}
+
+static void
+impl_Nautilus_View_stop_location_change(impl_POA_Nautilus_View * servant,
+					CORBA_Environment * ev)
+{
+  gtk_signal_emit_by_name(GTK_OBJECT(servant->view), "stop_location_change");
 }
 
 
@@ -276,6 +288,12 @@ nautilus_view_client_class_init (NautilusViewClientClass *klass)
 						   GTK_SIGNAL_OFFSET (NautilusViewClientClass, notify_selection_change),
 						   gtk_marshal_NONE__BOXED,
 						   GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
+  klass->view_client_signals[i++] = gtk_signal_new("stop_location_change",
+						   GTK_RUN_LAST,
+						   object_class->type,
+						   GTK_SIGNAL_OFFSET (NautilusViewClientClass, stop_location_change),
+						   gtk_marshal_NONE__BOXED,
+						   GTK_TYPE_NONE, 0);
   gtk_object_class_add_signals (object_class, klass->view_client_signals, i);
 }
 

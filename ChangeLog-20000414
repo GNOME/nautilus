@@ -1,5 +1,30 @@
 2000-01-03  Maciej Stachowiak  <mjs@eazel.com>
 
+	* idl/nautilus.idl: Added stop_location_change method to NautilusView interface.
+	* ntl-view-client.c, ntl-view-client.h (stop_location_change): New
+	signal, triggered on receipt of stop_location_change request via
+	CORBA.
+
+	* ntl-view.c, ntl-view.h, ntl-view-private.h, ntl-view-nautilus.c,
+	ntl-view-bonobo-control.c, ntl-view-bonobo-subdoc.c
+	(nautilus_view_stop_location_change): Added this function; also
+	added implementation to nautilus view type function table and
+	NULL'd out for now for Bonobo control and subdoc view types (need
+	to find out if loading is synchronous or asynchronous for those,
+	and if there is a way to abort).
+
+	* ntl-window.c: Stop loading for all views when Stop button is
+	pressed.
+	
+	* ntl-window-msgs.c: Enable stop button when we start loading;
+	enable Stop button when
+
+	* src/file-manager/fm-directory-view.c: Call
+	request_progress_change() when loading is done or an error is
+	reached; implement handler for stop_location_change signal.
+	
+2000-01-03  Maciej Stachowiak  <mjs@eazel.com>
+
 	* src/ntl-prefs.c: Fix warnings.
 
 	* src/ntl-view.c, src/ntl-view.h, src/ntl-view-frame-svr.c

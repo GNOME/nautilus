@@ -44,6 +44,8 @@ module Nautilus {
     oneway void show_properties(); // Requests that the client show its properties
 
     oneway void notify_selection_change(in SelectionInfo selinfo);
+
+    oneway void stop_location_change();
   };
 
   interface MetaView : View {

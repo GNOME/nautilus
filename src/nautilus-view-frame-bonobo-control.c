@@ -62,5 +62,6 @@ NautilusViewComponentType bonobo_control_component_type = {
   NULL, /* load_state */
   NULL, /* notify_location_change */
   NULL, /* notify_selection_change */
+  NULL, /* stop_location_change */
   &bonobo_control_get_label /* get_label */
 };

@@ -504,6 +504,13 @@ real_location_change(NautilusViewClient *directory_view, Nautilus_NavigationInfo
 	fm_directory_view_load_uri(FM_DIRECTORY_VIEW(directory_view), nav_context->requested_uri);
 }
 
+static void
+real_stop_location_change(NautilusViewClient *directory_view)
+{
+	g_message("Directory view is stopping");
+	fm_directory_view_stop(FM_DIRECTORY_VIEW(directory_view));
+}
+
 /* GtkObject methods.  */
 
 static void
@@ -550,6 +557,7 @@ class_init (FMDirectoryViewClass *class)
 	object_class->destroy = destroy;
 
 	vc->notify_location_change = real_location_change;
+	vc->stop_location_change = real_stop_location_change;
 }
 
 static void
@@ -594,8 +602,10 @@ init (FMDirectoryView *directory_view)
 /* Utility functions.  */
 
 static void
-stop_load (FMDirectoryView *view)
+stop_load (FMDirectoryView *view, gboolean error)
 {
+	Nautilus_ProgressRequestInfo pri;
+
 	if (view->vfs_async_handle != NULL) {
 		gnome_vfs_async_cancel (view->vfs_async_handle);
 		view->vfs_async_handle = NULL;
@@ -609,6 +619,12 @@ stop_load (FMDirectoryView *view)
 	view->current_position = GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
 	view->entries_to_display = 0;
 	view->directory_list = NULL;
+
+	pri.amount = 100.0;
+	pri.type = error ? Nautilus_PROGRESS_DONE_ERROR : Nautilus_PROGRESS_DONE_OK;
+	
+	nautilus_view_client_request_progress_change(NAUTILUS_VIEW_CLIENT(view),
+						     &pri);
 }
 
 
@@ -704,7 +720,7 @@ static gboolean
 display_timeout_cb (gpointer data)
 {
 	FMDirectoryView *view;
-
+	
 	FM_DEBUG (("Entering function"));
 
 	view = FM_DIRECTORY_VIEW (data);
@@ -783,10 +799,10 @@ directory_load_cb (GnomeVFSAsyncHandle *handle,
 	if (result == GNOME_VFS_ERROR_EOF) {
 		display_pending_entries (view);
 		display_icons_not_in_layout (view);
-		stop_load (view);
+		stop_load (view, FALSE);
 		/* gtk_signal_emit (GTK_OBJECT (view), signals[LOAD_DONE]); */
 	} else if (result != GNOME_VFS_OK) {
-		stop_load (view);
+		stop_load (view, TRUE);
 		/* gtk_signal_emit (GTK_OBJECT (view), signals[LOAD_FAILED],
 		   result); */
 		return;
@@ -937,7 +953,9 @@ fm_directory_view_stop (FMDirectoryView *view)
 	if (view->vfs_async_handle == NULL)
 		return;
 
-	stop_load (view);
+	display_pending_entries (view);
+	display_icons_not_in_layout (view);
+	stop_load (view, FALSE);
 }
 
 

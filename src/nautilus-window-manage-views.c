@@ -83,6 +83,9 @@ nautilus_window_request_progress_change(NautilusWindow *window,
   if(requesting_view != window->content_view)
     return; /* Only pay attention to progress information from the main view, for now */
   
+  if (loc->type == Nautilus_PROGRESS_DONE_OK || loc->type == Nautilus_PROGRESS_DONE_ERROR) {
+    nautilus_window_allow_stop(window, FALSE);
+  }
   g_message("Progress is %f", loc->amount);
 }
 
@@ -198,6 +201,7 @@ nautilus_window_load_content_view(NautilusWindow *window,
     {
       loci->navinfo.content_view = nautilus_view_get_client_objref(window->content_view);
 
+      nautilus_window_allow_stop(window, TRUE);
       nautilus_window_update_view(window, window->content_view, loci, *requesting_view);
     }
   else

@@ -53,6 +53,7 @@ struct _NautilusViewClientClass
   void (*load_state)                    (NautilusViewClient *view, const char *config_path);
   void (*save_state)                    (NautilusViewClient *view, const char *config_path);
   void (*show_properties)               (NautilusViewClient *view);
+  void (*stop_location_change)          (NautilusViewClient *view);
 
   GtkBinClass *parent_class;
 

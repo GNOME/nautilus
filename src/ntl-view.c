@@ -462,6 +462,23 @@ nautilus_view_show_properties(NautilusView *view)
   CORBA_exception_free(&ev);
 }
 
+void
+nautilus_view_stop_location_change(NautilusView *view)
+{
+  CORBA_Environment ev;
+
+  g_return_if_fail(view);
+  g_return_if_fail(view->component_class);
+
+  CORBA_exception_init(&ev);
+
+  if(view->component_class->stop_location_change)
+    view->component_class->stop_location_change(view, &ev);
+
+  CORBA_exception_free(&ev);
+}
+
+
 const char *
 nautilus_view_get_iid(NautilusView *view)
 {

@@ -883,8 +883,19 @@ nautilus_window_home (GtkWidget *btn, NautilusWindow *window)
 }
 
 static void
+nv_stop_location_change_adapter(NautilusView *view, gpointer dummy)
+{
+    nautilus_view_stop_location_change (view);
+}
+
+static void
 nautilus_window_stop (GtkWidget *btn, NautilusWindow *window)
 {
+  if (window->content_view != NULL) {
+    nautilus_view_stop_location_change (window->content_view);
+  }
+
+  g_slist_foreach(window->meta_views, (GFunc) nv_stop_location_change_adapter, NULL);
 
 }
 

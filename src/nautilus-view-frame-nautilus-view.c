@@ -95,6 +95,15 @@ nv_notify_selection_change(NautilusView *view, Nautilus_SelectionInfo *nav_ctx, 
   Nautilus_View_notify_selection_change(nvi->view_client, nav_ctx, ev);
 }
 
+static void
+nv_stop_location_change(NautilusView *view, CORBA_Environment *ev)
+{
+  NautilusViewInfo *nvi = view->component_data;
+
+  Nautilus_View_stop_location_change(nvi->view_client, ev);
+}
+
+
 static char *
 nv_get_label(NautilusView *view, CORBA_Environment *ev)
 {
@@ -134,5 +143,6 @@ NautilusViewComponentType nautilus_view_component_type = {
   &nv_load_state, /* load_state */
   &nv_notify_location_change, /* notify_location_change */
   &nv_notify_selection_change, /* notify_selection_change */
+  &nv_stop_location_change, /* stop_location_change */
   &nv_get_label /* get_label */
 };

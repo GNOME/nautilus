@@ -112,7 +112,7 @@ void nautilus_view_load_state                   (NautilusView *view,
 void nautilus_view_save_state                   (NautilusView *view, 
                                                  const char *config_path);
 void nautilus_view_show_properties              (NautilusView *view);
-
+void nautilus_view_stop_location_change         (NautilusView *view);
 
 
 
