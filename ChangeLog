@@ -1,3 +1,22 @@
+2000-09-20  Darin Adler  <darin@eazel.com>
+
+	* cut-n-paste-code/freetype/ftdebug.h: Fixed compiling with newer
+	gcc. Freetype was trying to use token pasting to attach the name
+	of a function (FTMessage) onto the parameters to that
+	function. There's no need to attempt this, and it's incorrect. I
+	removed the token pasting attempt. Perhaps Raph should get this
+	rolled back into the main freetype soruces.
+	
+	* libnautilus-extensions/bonobo-stream-vfs.c: Cleaned up the code
+	a bit to match Nautilus coding style and remove some redundant
+	stuff.
+	
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(nautilus_bookmark_update_icon): Fixed a place where we unref the
+	old value before ref'ing the new one. It's not really a bug, but
+	it's a good habit to ref the new value first. Ran into this when
+	I started looking for NautilusScalableIcon leaks.
+
 2000-09-20  John Sullivan  <sullivan@eazel.com>
 
 	* src/nautilus-complex-search-bar.c: (fewer_options_callback):
