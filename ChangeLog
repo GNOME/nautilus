@@ -1,3 +1,12 @@
+2001-02-13  Michael Engber  <engber@eazel.com>
+
+	reviewed by: John Sullivan
+
+	* libnautilus-extensions/nautilus-directory-metafile.c:
+	(nautilus_directory_set_file_metadata_list):
+	Fix call to CORBA_sequence_set_release on the wrong
+	(non-CORBA) list - bug 6575.
+
 2001-02-13  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>
