@@ -7,6 +7,7 @@
 
 quiet=no
 extreme=no
+medusa=no
 
 if [ $# -gt 0 ]
 then
@@ -18,6 +19,9 @@ then
     elif [ "$arg" = "-x" ]
     then
 	extreme=yes
+    elif [ "$arg" = "-m" ]
+    then
+	medusa=yes
     fi
 fi
 
@@ -31,6 +35,25 @@ then
     elif [ "$arg" = "-x" ]
     then
 	extreme=yes
+    elif [ "$arg" = "-m" ]
+    then
+	medusa=yes
+    fi
+fi
+
+if [ $# -gt 2 ]
+then
+    arg=$3
+
+    if [ "$arg" = "-q" ]
+    then
+	quiet=yes
+    elif [ "$arg" = "-x" ]
+    then
+	extreme=yes
+    elif [ "$arg" = "-m" ]
+    then
+	medusa=yes
     fi
 fi
 
@@ -93,7 +116,16 @@ for NAME in $AUX_PROGS; do
     fi
 done
 
-
 if [ -z $FOUND_ANY ]; then
     echo_unless_quiet "nautilus-clean: No stale processes found."
 fi
+
+
+if [ "$medusa" = "yes" ]; then
+    if [ -f `which medusa-restart 2> /dev/null || echo xxx` ]; then
+	echo_unless_quiet "Restarting medusa search and index servers."
+	medusa-restart
+    fi
+fi
+
+
