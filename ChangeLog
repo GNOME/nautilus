@@ -1,3 +1,15 @@
+2002-01-28  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* libnautilus-private/nautilus-directory.c,
+	libnautilus-private/nautilus-icon-container.c: use g_list_copy
+	instead of eel version
+	* src/nautilus-preferences-dialog.c,
+	src/nautilus-property-browser.c,
+	src/nautilus-window-manage-views.c,
+	src/nautilus-window-menus.c,
+	src/file-manager/fm-properties-window.c: use gtk_window_present
+	instead of eel version.
+
 2002-01-28  Seth Nickell  <snickell@stanford.edu>
 
 	* libnautilus-private/nautilus-global-preferences.c:

@@ -242,7 +242,7 @@ emit_change_signals_for_all_files (NautilusDirectory *directory)
 {
 	GList *files;
 
-	files = eel_g_list_copy (directory->details->file_list);
+	files = g_list_copy (directory->details->file_list);
 	if (directory->details->as_file != NULL) {
 		files = g_list_prepend (files, directory->details->as_file);
 	}

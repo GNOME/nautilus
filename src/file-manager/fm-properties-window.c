@@ -2332,7 +2332,7 @@ create_properties_window_callback (NautilusFile *file, gpointer callback_data)
 	nautilus_undo_share_undo_manager (GTK_OBJECT (new_window),
 					  GTK_OBJECT (callback_data));
 #endif	
-	eel_gtk_window_present (GTK_WINDOW (new_window));
+	gtk_window_present (GTK_WINDOW (new_window));
 }
 
 static void
@@ -2398,7 +2398,7 @@ fm_properties_window_present (NautilusFile *original_file, FMDirectoryView *dire
 	/* Look to see if there's already a window for this file. */
 	existing_window = g_hash_table_lookup (windows, original_file);
 	if (existing_window != NULL) {
-		eel_gtk_window_present (existing_window);
+		gtk_window_present (existing_window);
 		return;
 	}
 

@@ -1821,7 +1821,7 @@ open_location_prefer_existing_window_callback (NautilusViewFrame *view,
                         existing_location = existing_window->details->location;
                 }
                 if (eel_uris_match (existing_location, location)) {
-                        eel_gtk_window_present (GTK_WINDOW (existing_window));
+                        gtk_window_present (GTK_WINDOW (existing_window));
                         return;
                 }
         }

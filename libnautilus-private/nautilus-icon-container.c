@@ -36,7 +36,6 @@
 #include <eel/eel-background.h>
 #include <eel/eel-canvas-rect.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
-#include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
@@ -2245,7 +2244,7 @@ build_icon_list_sorted_by_name (NautilusIconContainer *container)
 		return NULL;
 	}
 
-	result = eel_g_list_copy (container->details->icons);
+	result = g_list_copy (container->details->icons);
 	sort_icons_by_name (container, &result);
 
 	return result;

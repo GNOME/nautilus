@@ -642,7 +642,7 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 		g_free (build_message);
 	}
 	
-	eel_gtk_window_present (GTK_WINDOW (about));
+	gtk_window_present (GTK_WINDOW (about));
 }
 
 static void
@@ -1018,7 +1018,7 @@ add_bookmark_for_current_location (NautilusWindow *window)
 static void
 edit_bookmarks (NautilusWindow *window)
 {
-        eel_gtk_window_present
+        gtk_window_present
 		(get_or_create_bookmarks_window (G_OBJECT (window)));
 }
 

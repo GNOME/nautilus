@@ -587,5 +587,5 @@ global_preferences_get_dialog (void)
 void
 nautilus_preferences_dialog_show (void)
 {
-	eel_gtk_window_present (GTK_WINDOW (global_preferences_get_dialog ()));
+	gtk_window_present (GTK_WINDOW (global_preferences_get_dialog ()));
 }
