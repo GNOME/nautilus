@@ -27,7 +27,7 @@
 #include <config.h>
 #include <applet-widget.h>
 #include <eel/eel-image.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <gtk/gtkvbox.h>

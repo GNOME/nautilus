@@ -52,7 +52,7 @@ nautilus_adapter_SOURCES =				\
 nautilus_adapter_LDADD =							\
 	$(top_builddir)/libnautilus/libnautilus.la				\
 	$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la		\
-	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
+	$(top_builddir)/libnautilus-private/libnautilus-private.la	\
 	$(NAUTILUS_PRIVATE_LIBS) \
 	$(NULL)
 

@@ -16,7 +16,7 @@ SUBDIRS =			\
 	cut-n-paste-code 	\
 	libnautilus 		\
 	libnautilus-adapter	\
-	libnautilus-extensions 	\
+	libnautilus-private 	\
 	helper-utilities 	\
 	helper-scripts		\
 	src 			\

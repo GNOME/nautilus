@@ -41,7 +41,7 @@
 #include <libgnomeui/gnome-stock.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <eel/eel-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-generous-bin.h>
+#include <libnautilus-private/nautilus-generous-bin.h>
 #include <libnautilus-adapter/nautilus-adapter-factory.h>
 
 struct NautilusAdapterDetails {
