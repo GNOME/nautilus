@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2002-07-06 01:28+0200\n"
-"PO-Revision-Date: 2002-07-06 01:28+0200\n"
+"POT-Creation-Date: 2002-07-09 02:09+0200\n"
+"PO-Revision-Date: 2002-07-09 02:09+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -867,7 +867,7 @@ msgid "Synthpop"
 msgstr "Synthpop"
 
 #: components/music/nautilus-music-view.c:296
-#: libnautilus-private/nautilus-volume-monitor.c:638
+#: libnautilus-private/nautilus-volume-monitor.c:672
 msgid "Unknown"
 msgstr "Okänd"
 
@@ -901,7 +901,7 @@ msgid "Sorry, but '%s' is not a usable image file."
 msgstr "Tyvärr, \"%s\" är inte en användbar bildfil."
 
 #: components/music/nautilus-music-view.c:736
-#: src/nautilus-property-browser.c:1115 src/nautilus-property-browser.c:1363
+#: src/nautilus-property-browser.c:1116 src/nautilus-property-browser.c:1364
 msgid "Not an Image"
 msgstr "Inte en bild"
 
@@ -1053,76 +1053,76 @@ msgstr "Kunde inte läsa in %s"
 msgid "Loading %s"
 msgstr "Läser in %s"
 
-#: components/news/nautilus-news.c:1756
+#: components/news/nautilus-news.c:1758
 msgid "Sorry, but you have not specified a name for the site!"
 msgstr "Tyvärr, du har inte angivit ett namn på webbplatsen!"
 
-#: components/news/nautilus-news.c:1756
+#: components/news/nautilus-news.c:1758
 msgid "Missing Site Name Error"
 msgstr "Fel på grund av saknat namn på webbplatsen"
 
-#: components/news/nautilus-news.c:1760
+#: components/news/nautilus-news.c:1762
 msgid "Sorry, but you have not specified a URL for the site!"
 msgstr "Tyvärr, du har inte angivit en URL för webbplatsen!"
 
-#: components/news/nautilus-news.c:1760
+#: components/news/nautilus-news.c:1762
 msgid "Missing URL Error"
 msgstr "Fel på grund av saknad URL"
 
-#: components/news/nautilus-news.c:1777
+#: components/news/nautilus-news.c:1779
 msgid "Sorry, but the specified url doesn't seem to be a valid RSS file!"
 msgstr "Tyvärr, den angivna url:en verkar inte vara en giltig RSS-fil!"
 
-#: components/news/nautilus-news.c:1777
+#: components/news/nautilus-news.c:1779
 msgid "Invalid RSS URL"
 msgstr "Ogiltig RSS-URL"
 
-#: components/news/nautilus-news.c:1870
+#: components/news/nautilus-news.c:1872
 msgid "Edi_t"
 msgstr "_Redigera"
 
-#: components/news/nautilus-news.c:2145
+#: components/news/nautilus-news.c:2147
 msgid "Site Name"
 msgstr "Namn på webbplats"
 
-#: components/news/nautilus-news.c:2171
+#: components/news/nautilus-news.c:2173
 msgid "_Remove Site"
 msgstr "_Ta bort webbplats"
 
 #. allocate the name field
-#: components/news/nautilus-news.c:2197
+#: components/news/nautilus-news.c:2199
 msgid "Site _Name:"
 msgstr "_Namn på webbplats:"
 
-#: components/news/nautilus-news.c:2215
+#: components/news/nautilus-news.c:2217
 msgid "Site _RSS URL:"
 msgstr "_RSS-URL för webbplats:"
 
-#: components/news/nautilus-news.c:2235
+#: components/news/nautilus-news.c:2237
 msgid "_Add New Site"
 msgstr "_Lägg till ny webbplats"
 
 #. make the add new site label
-#: components/news/nautilus-news.c:2265
+#: components/news/nautilus-news.c:2267
 msgid "Add a New Site:"
 msgstr "Lägg till en ny webbplats:"
 
-#: components/news/nautilus-news.c:2276
+#: components/news/nautilus-news.c:2278
 msgid "Remove a _Site:"
 msgstr "Ta bort en _webbplats:"
 
 #. add a descriptive label
-#: components/news/nautilus-news.c:2326
+#: components/news/nautilus-news.c:2328
 msgid "_Select Sites:"
 msgstr "_Välj webbplatser:"
 
 #. allocate the button box for the done button
-#: components/news/nautilus-news.c:2356
+#: components/news/nautilus-news.c:2358
 msgid "_Done"
 msgstr "_Klar"
 
 #. add the empty message
-#: components/news/nautilus-news.c:2427
+#: components/news/nautilus-news.c:2429
 msgid ""
 "The News panel displays current headlines from your favorite websites.  "
 "Click the 'Select Sites' button to select the sites to display."
@@ -1132,11 +1132,11 @@ msgstr ""
 "visas."
 
 #. create a button box to hold the command buttons
-#: components/news/nautilus-news.c:2448
+#: components/news/nautilus-news.c:2450
 msgid "_Select Sites"
 msgstr "_Välj webbplatser"
 
-#: components/news/nautilus-news.c:2515
+#: components/news/nautilus-news.c:2517
 msgid "image indicating that the news has changed"
 msgstr "bild som visar att nyheterna har ändrats"
 
@@ -2089,34 +2089,38 @@ msgid "Solaris/BSD Volume"
 msgstr "Solaris/BSD-volym"
 
 #: libnautilus-private/filesystem-attributes.xml.h:21
+msgid "SuperMount Volume"
+msgstr "SuperMount-volym"
+
+#: libnautilus-private/filesystem-attributes.xml.h:22
 msgid "System Volume"
 msgstr "Systemvolym"
 
-#: libnautilus-private/filesystem-attributes.xml.h:22
+#: libnautilus-private/filesystem-attributes.xml.h:23
 msgid "Udfs Solaris Volume"
 msgstr "Udfs Solaris-volym"
 
-#: libnautilus-private/filesystem-attributes.xml.h:23
+#: libnautilus-private/filesystem-attributes.xml.h:24
 msgid "Windows NT Volume"
 msgstr "Windows NT-volym"
 
-#: libnautilus-private/filesystem-attributes.xml.h:24
+#: libnautilus-private/filesystem-attributes.xml.h:25
 msgid "Windows Shared Volume"
 msgstr "Delad Windows-volym"
 
-#: libnautilus-private/filesystem-attributes.xml.h:25
+#: libnautilus-private/filesystem-attributes.xml.h:26
 msgid "Windows VFAT Volume"
 msgstr "Windows VFAT-volym"
 
-#: libnautilus-private/filesystem-attributes.xml.h:26
+#: libnautilus-private/filesystem-attributes.xml.h:27
 msgid "XFS Linux Volume"
 msgstr "XFS Linux-volym"
 
-#: libnautilus-private/filesystem-attributes.xml.h:27
+#: libnautilus-private/filesystem-attributes.xml.h:28
 msgid "XIAFS Volume"
 msgstr "XIAFS-volym"
 
-#: libnautilus-private/filesystem-attributes.xml.h:28
+#: libnautilus-private/filesystem-attributes.xml.h:29
 msgid "Xenix Volume"
 msgstr "Xenix-volym"
 
@@ -2147,7 +2151,7 @@ msgstr "Ditt lösenord kommer att skickas krypterat."
 msgid "Authentication Required"
 msgstr "Autentisering krävs"
 
-#: libnautilus-private/nautilus-customization-data.c:372
+#: libnautilus-private/nautilus-customization-data.c:374
 msgid "reset"
 msgstr "återst."
 
@@ -4296,37 +4300,38 @@ msgid "%s Viewer"
 msgstr "%s-visare"
 
 #. Populate table with items we know localized names for.
-#: libnautilus-private/nautilus-volume-monitor.c:745
+#: libnautilus-private/nautilus-volume-monitor.c:779
 msgid "Floppy"
 msgstr "Diskett"
 
-#: libnautilus-private/nautilus-volume-monitor.c:746
+#: libnautilus-private/nautilus-volume-monitor.c:780
+#: libnautilus-private/nautilus-volume-monitor.c:809
 msgid "CD-ROM"
 msgstr "Cd-rom"
 
-#: libnautilus-private/nautilus-volume-monitor.c:747
+#: libnautilus-private/nautilus-volume-monitor.c:781
 msgid "Zip Drive"
 msgstr "Zip-enhet"
 
-#: libnautilus-private/nautilus-volume-monitor.c:762
-#: libnautilus-private/nautilus-volume-monitor.c:806
+#: libnautilus-private/nautilus-volume-monitor.c:796
+#: libnautilus-private/nautilus-volume-monitor.c:840
 msgid "Audio CD"
 msgstr "Ljud-cd"
 
-#: libnautilus-private/nautilus-volume-monitor.c:797
+#: libnautilus-private/nautilus-volume-monitor.c:831
 msgid "Root Volume"
 msgstr "Rotvolym"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1379
+#: libnautilus-private/nautilus-volume-monitor.c:1426
 msgid "Mount Error"
 msgstr "Monteringsfel"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1379
+#: libnautilus-private/nautilus-volume-monitor.c:1426
 msgid "Unmount Error"
 msgstr "Avmonteringsfel"
 
 #. Handle floppy case
-#: libnautilus-private/nautilus-volume-monitor.c:1452
+#: libnautilus-private/nautilus-volume-monitor.c:1499
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
@@ -4335,7 +4340,7 @@ msgstr ""
 "diskett i enheten."
 
 #. All others
-#: libnautilus-private/nautilus-volume-monitor.c:1456
+#: libnautilus-private/nautilus-volume-monitor.c:1503
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
@@ -4343,7 +4348,7 @@ msgstr ""
 "Nautilus kunde inte montera volymen. Det finns antagligen inget media i "
 "enheten."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1462
+#: libnautilus-private/nautilus-volume-monitor.c:1509
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
@@ -4351,7 +4356,7 @@ msgstr ""
 "Nautilus kunde inte montera diskettstationen. Disketten är antagligen i ett "
 "format som inte kan monteras."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1465
+#: libnautilus-private/nautilus-volume-monitor.c:1512
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
@@ -4359,20 +4364,20 @@ msgstr ""
 "Nautilus kunde inte montera den valda volymen. Volymen är antagligen i ett "
 "format som inte kan monteras."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1470
+#: libnautilus-private/nautilus-volume-monitor.c:1517
 msgid "Nautilus was unable to mount the selected floppy drive."
 msgstr "Nautilus kunde inte montera den valda diskettstationen."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1472
+#: libnautilus-private/nautilus-volume-monitor.c:1519
 msgid "Nautilus was unable to mount the selected volume."
 msgstr "Nautilus kunde inte montera den valda volymen."
 
 #. FIXME: Should we parse this message and report something more meaningful?
-#: libnautilus-private/nautilus-volume-monitor.c:1477
+#: libnautilus-private/nautilus-volume-monitor.c:1524
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr "Nautilus kunde inte avmontera den valda volymen."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1676
+#: libnautilus-private/nautilus-volume-monitor.c:1729
 msgid "ISO 9660 Volume"
 msgstr "ISO9660-volym"
 
@@ -6067,7 +6072,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:440
+#: src/nautilus-application.c:441
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -6078,7 +6083,7 @@ msgstr ""
 "eller installera om Nautilus."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:446
+#: src/nautilus-application.c:447
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -6124,12 +6129,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:476 src/nautilus-application.c:494
-#: src/nautilus-application.c:501
+#: src/nautilus-application.c:477 src/nautilus-application.c:495
+#: src/nautilus-application.c:502
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus kan inte användas just nu på grund av ett oväntat fel."
 
-#: src/nautilus-application.c:477
+#: src/nautilus-application.c:478
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -6137,7 +6142,7 @@ msgstr ""
 "Nautilus kan inte användas just nu på grund av ett oväntat fel från Bonobo "
 "inträffade när ett försök gjordes att registrera filhanterarens vyserver."
 
-#: src/nautilus-application.c:495
+#: src/nautilus-application.c:496
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -6147,7 +6152,7 @@ msgstr ""
 "när den skulle hitta fabriken. Om du dödar bonobo-activation-server och "
 "startar om Nautilus kanske problemet löser sig."
 
-#: src/nautilus-application.c:502
+#: src/nautilus-application.c:503
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -6158,7 +6163,7 @@ msgstr ""
 "startar om Nautilus kanske problemet löser sig."
 
 #: src/nautilus-bookmarks-window.c:137 src/nautilus-preferences-dialog.c:367
-#: src/nautilus-property-browser.c:1518 src/nautilus-window-menus.c:688
+#: src/nautilus-property-browser.c:1520 src/nautilus-window-menus.c:688
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -6557,124 +6562,124 @@ msgid "Profile Dump"
 msgstr "Dump av profil"
 
 #. set the title and standard close accelerator
-#: src/nautilus-property-browser.c:273
+#: src/nautilus-property-browser.c:274
 msgid "Backgrounds and Emblems"
 msgstr "Bakgrunder och emblem"
 
-#: src/nautilus-property-browser.c:390
+#: src/nautilus-property-browser.c:391
 msgid "_Remove..."
 msgstr "_Ta bort..."
 
-#: src/nautilus-property-browser.c:411
+#: src/nautilus-property-browser.c:412
 msgid "_Add new..."
 msgstr "_Lägg till ny..."
 
-#: src/nautilus-property-browser.c:912
+#: src/nautilus-property-browser.c:913
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
 msgstr "Tyvärr, mönstret %s kunde inte tas bort."
 
-#: src/nautilus-property-browser.c:913 src/nautilus-property-browser.c:942
+#: src/nautilus-property-browser.c:914 src/nautilus-property-browser.c:943
 msgid "Couldn't delete pattern"
 msgstr "Kunde inte ta bort mönster"
 
-#: src/nautilus-property-browser.c:941
+#: src/nautilus-property-browser.c:942
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
 msgstr "Tyvärr, emblemet %s kunde inte tas bort."
 
-#: src/nautilus-property-browser.c:980
+#: src/nautilus-property-browser.c:981
 msgid "Create a New Emblem:"
 msgstr "Skapa ett nytt emblem:"
 
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:993
+#: src/nautilus-property-browser.c:994
 msgid "_Keyword:"
 msgstr "_Nyckelord:"
 
 #. set up a gnome icon entry to pick the image file
-#: src/nautilus-property-browser.c:1011
+#: src/nautilus-property-browser.c:1012
 msgid "_Image:"
 msgstr "_Bild:"
 
-#: src/nautilus-property-browser.c:1015
+#: src/nautilus-property-browser.c:1016
 msgid "Select an image file for the new emblem:"
 msgstr "Välj en bildfil för det nya emblemet:"
 
-#: src/nautilus-property-browser.c:1039
+#: src/nautilus-property-browser.c:1040
 msgid "Create a New Color:"
 msgstr "Skapa en ny färg:"
 
 # SUN CHANGED MESSAGE
 #. make the name label and field
-#: src/nautilus-property-browser.c:1053
+#: src/nautilus-property-browser.c:1054
 msgid "Color _name:"
 msgstr "Färg_namn:"
 
 # SUN CHANGED MESSAGE
-#: src/nautilus-property-browser.c:1069
+#: src/nautilus-property-browser.c:1070
 msgid "Color _value:"
 msgstr "Färg_värde:"
 
-#: src/nautilus-property-browser.c:1100
+#: src/nautilus-property-browser.c:1101
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
 msgstr "Tyvärr, \"%s\" är inte ett giltigt filnamn."
 
-#: src/nautilus-property-browser.c:1102
+#: src/nautilus-property-browser.c:1103
 msgid "Sorry, but you did not supply a valid file name."
 msgstr "Tyvärr, du angav inte ett giltigt filnamn."
 
-#: src/nautilus-property-browser.c:1104 src/nautilus-property-browser.c:1147
+#: src/nautilus-property-browser.c:1105 src/nautilus-property-browser.c:1148
 msgid "Couldn't install pattern"
 msgstr "Kunde inte installera mönster"
 
-#: src/nautilus-property-browser.c:1115
+#: src/nautilus-property-browser.c:1116
 msgid "Sorry, but you can't replace the reset image."
 msgstr "Tyvärr, du kan inte ersätta återställningsbilden."
 
-#: src/nautilus-property-browser.c:1146
+#: src/nautilus-property-browser.c:1147
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "Tyvärr, mönstret %s kunde inte installeras."
 
-#: src/nautilus-property-browser.c:1166
+#: src/nautilus-property-browser.c:1167
 msgid "Select an image file to add as a pattern"
 msgstr "Välj en bildfil att lägga till som mönster"
 
-#: src/nautilus-property-browser.c:1227
+#: src/nautilus-property-browser.c:1228
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Tyvärr, du måste ange ett icke-tomt namn för den nya färgen."
 
-#: src/nautilus-property-browser.c:1228
+#: src/nautilus-property-browser.c:1229
 msgid "Couldn't install color"
 msgstr "Kunde inte installera färg"
 
-#: src/nautilus-property-browser.c:1280
+#: src/nautilus-property-browser.c:1281
 msgid "Select a color to add"
 msgstr "Välj en färg att lägga till"
 
-#: src/nautilus-property-browser.c:1362
+#: src/nautilus-property-browser.c:1363
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Tyvärr, \"%s\" är inte en användbar bildfil!"
 
-#: src/nautilus-property-browser.c:1380
+#: src/nautilus-property-browser.c:1381
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
 msgstr "Tyvärr, du måste ange ett icke-tomt nyckelord för det nya emblemet."
 
-#: src/nautilus-property-browser.c:1381 src/nautilus-property-browser.c:1384
-#: src/nautilus-property-browser.c:1388 src/nautilus-property-browser.c:1418
+#: src/nautilus-property-browser.c:1382 src/nautilus-property-browser.c:1385
+#: src/nautilus-property-browser.c:1389 src/nautilus-property-browser.c:1420
 msgid "Couldn't install emblem"
 msgstr "Kunde inte installera emblem"
 
-#: src/nautilus-property-browser.c:1383
+#: src/nautilus-property-browser.c:1384
 msgid ""
 "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
 "Tyvärr, emblemnyckelord kan bara innehålla bokstäver, blanksteg och siffror."
 
-#: src/nautilus-property-browser.c:1386
+#: src/nautilus-property-browser.c:1387
 #, c-format
 msgid ""
 "Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
@@ -6683,12 +6688,12 @@ msgstr ""
 "Tyvärr, namnet \"%s\" är ett redan existerande nyckelord. Välj ett annat "
 "namn på det."
 
-#: src/nautilus-property-browser.c:1417
+#: src/nautilus-property-browser.c:1419
 #, c-format
 msgid "Sorry, but the image at %s couldn't be installed as an emblem."
 msgstr "Tyvärr, bilden i %s kunde inte installeras som ett emblem."
 
-#: src/nautilus-property-browser.c:2075
+#: src/nautilus-property-browser.c:2123
 msgid "Select A Category:"
 msgstr "Välj en kategori:"
 
@@ -6698,61 +6703,61 @@ msgstr "Välj en kategori:"
 # Jag vill ha "A_vbryt borttagning"
 # men jag går med på ändringen.
 #
-#: src/nautilus-property-browser.c:2084
+#: src/nautilus-property-browser.c:2132
 msgid "C_ancel Remove"
 msgstr "A_vbryt ta bort"
 
 # SUN CHANGED MESSAGE
-#: src/nautilus-property-browser.c:2090
+#: src/nautilus-property-browser.c:2138
 msgid "_Add a New Pattern..."
 msgstr "_Lägg till ett nytt mönster..."
 
 # SUN CHANGED MESSAGE
-#: src/nautilus-property-browser.c:2093
+#: src/nautilus-property-browser.c:2141
 msgid "_Add a New Color..."
 msgstr "_Lägg till en ny färg..."
 
 # SUN CHANGED MESSAGE
-#: src/nautilus-property-browser.c:2096
+#: src/nautilus-property-browser.c:2144
 msgid "_Add a New Emblem..."
 msgstr "_Lägg till ett nytt emblem..."
 
-#: src/nautilus-property-browser.c:2119
+#: src/nautilus-property-browser.c:2167
 msgid "Click on a pattern to remove it"
 msgstr "Klicka på ett mönster för att ta bort det"
 
-#: src/nautilus-property-browser.c:2122
+#: src/nautilus-property-browser.c:2170
 msgid "Click on a color to remove it"
 msgstr "Klicka på en färg för att ta bort den"
 
-#: src/nautilus-property-browser.c:2125
+#: src/nautilus-property-browser.c:2173
 msgid "Click on an emblem to remove it"
 msgstr "Klicka på ett emblem för att ta bort det"
 
-#: src/nautilus-property-browser.c:2134
+#: src/nautilus-property-browser.c:2182
 msgid "Patterns:"
 msgstr "Mönster:"
 
-#: src/nautilus-property-browser.c:2137
+#: src/nautilus-property-browser.c:2185
 msgid "Colors:"
 msgstr "Färger:"
 
-#: src/nautilus-property-browser.c:2140
+#: src/nautilus-property-browser.c:2188
 msgid "Emblems:"
 msgstr "Emblem:"
 
 # SUN CHANGED MESSAGE
-#: src/nautilus-property-browser.c:2160
+#: src/nautilus-property-browser.c:2208
 msgid "_Remove a Pattern..."
 msgstr "_Ta bort ett mönster..."
 
 # SUN CHANGED MESSAGE
-#: src/nautilus-property-browser.c:2163
+#: src/nautilus-property-browser.c:2211
 msgid "_Remove a Color..."
 msgstr "_Ta bort en färg..."
 
 # SUN CHANGED MESSAGE
-#: src/nautilus-property-browser.c:2166
+#: src/nautilus-property-browser.c:2214
 msgid "_Remove an Emblem..."
 msgstr "_Ta bort ett emblem..."
 
@@ -7572,11 +7577,11 @@ msgstr "Zooma så att det passar"
 msgid "Try to fit in window"
 msgstr "Försök att passa i fönster"
 
-#: src/nautilus-zoom-control.c:1082
+#: src/nautilus-zoom-control.c:1084
 msgid "Zoom"
 msgstr "Zooma"
 
-#: src/nautilus-zoom-control.c:1088
+#: src/nautilus-zoom-control.c:1090
 msgid "Set the zoom level of the current view"
 msgstr "Ställ in zoomnivån på den aktuella vyn"
 
