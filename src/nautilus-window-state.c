@@ -44,9 +44,6 @@ nautilus_window_set_initial_state (NautilusWindow *window, const char *initial_u
 		user_level = nautilus_prefs_get_enum (nautilus_prefs_global_get_prefs (),
 						      NAUTILUS_PREFS_USER_LEVEL);
 
-#define ANDY_WILL_FIX_THIS_IN_A_BIT 1
-
-
 #if ANDY_WILL_FIX_THIS_IN_A_BIT
 		switch (user_level)
 		{
