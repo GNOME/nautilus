@@ -7,3 +7,7 @@ The components/services/install/lib/Makefile.am has some evil stuff to
 create a libeazelinstall_minimal without the corba cruft. It's evil, since
 it rebuils the lib every time.
 
+The same goes to libtrilobite now.
+
+UPDATE: link.sh does all this magic for you now, but still
+rebuilds the library from scratch every time.

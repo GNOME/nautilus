@@ -634,7 +634,10 @@ parse_osd_xml_from_memory (const char *mem,
 	}
 	
 	result = osd_parse_shared (doc);	
-	xmlFreeDoc (doc);
+        /* FIXME: bugzilla.eazel.com 2975
+	   this coredumps within libc_malloc stuff. Looks like
+	   the stack got corrupted ? */
+	/* xmlFreeDoc (doc); */
 
 	g_free (docptr);
 	return result;

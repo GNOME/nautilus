@@ -54,15 +54,7 @@ typedef gboolean (*eazel_install_file_fetch_function) (gpointer *obj,
    It should contain a %s for the server name, and later 
    a %d for the portnumber. In this order, no other
    order */
-#ifndef EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
-#define EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
-#endif /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
-
-#ifdef EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
-#define CGI_BASE "http://%s:%d/cgi-bin/rpmsearch.cgi" 
-#else /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
 #define CGI_BASE "http://%s:%d/catalog/find" 
-#endif /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
 
 #ifdef EAZEL_INSTALL_SLIM	       
 
@@ -645,9 +637,14 @@ get_url_for_package  (EazelInstall *service,
 	trilobite_debug ("Search URL: %s", search_url);
 
 	{
+		/* NOTE: uses snprintf, as this memory ends up somewhere in libc */
 		char *tmp;
-		tmp = g_strdup_printf ("GNOME_VFS_HTTP_USER_AGENT=%s", 
-				       trilobite_get_useragent_string (FALSE, NULL));
+		int len;
+
+		len = 28+strlen (trilobite_get_useragent_string (FALSE, NULL));
+		tmp = (char*)malloc (len);
+		snprintf (tmp, len-1, "GNOME_VFS_HTTP_USER_AGENT=%s", 
+			  trilobite_get_useragent_string (FALSE, NULL));
 		putenv (tmp);
 		/* NOTE: tmp is now owned by env, wonder if it's leaked everytime
 		   I set it...
@@ -686,7 +683,7 @@ get_url_for_package  (EazelInstall *service,
 			url = g_strdup (body);
 		}
 #endif /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
-		g_free (body);
+		g_free (body);				
 	} else {
 		switch (entry) {
 		case RPMSEARCH_ENTRY_NAME:

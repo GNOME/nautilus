@@ -540,90 +540,74 @@ eazel_download_progress (EazelInstall *service,
 }
 
 static void
-install_failed_helper (EazelInstall *service,
-		       const PackageData *pd,
-		       char *indent,
-		       char **str)
+get_detailed_errors_foreach (const PackageData *pack, char **result)
 {
-	GList *iterator;
-
-	if (pd->toplevel) {
-		char *tmp;
-		tmp = g_strdup_printf ("%s\n***The package %s failed. Here's the dep tree\n", 
-				       (*str)?*str:"", pd->name ? pd->name : pd->filename);
-		g_free (*str);
-		(*str) = tmp;
-	}
-	switch (pd->status) {
-	case PACKAGE_DEPENDENCY_FAIL: {
-		char *tmp;
-		tmp = g_strdup_printf ("%s%s-%s failed\n", 
-				       (*str)?*str:"", indent, pd->name ? pd->name : pd->filename);
-		g_free (*str);
-		(*str) = tmp;
+	char *tmp = *result;;
+	switch (pack->status) {
+	case PACKAGE_UNKNOWN_STATUS:
+		break;
+	case PACKAGE_SOURCE_NOT_SUPPORTED:
+		break;
+	case PACKAGE_FILE_CONFLICT:
+		tmp = g_strdup_printf ("%s\n%s %s",
+				       *result, 
+				       pack->name, 
+				       _("which had file conflict"));
+		g_free (*result);
+		break;
+	case PACKAGE_DEPENDENCY_FAIL:
+		tmp = g_strdup_printf ("%s\n%s %s",
+				       *result, 
+				       pack->name, 
+				       _("would not work anymore"));
+		g_free (*result);
+		break;
+	case PACKAGE_BREAKS_DEPENDENCY:
+		break;
+	case PACKAGE_INVALID:
+		break;
+	case PACKAGE_CANNOT_OPEN:
+		tmp = g_strdup_printf ("%s\n%s %s",
+				       *result, 
+				       pack->name, 
+				       _("is needed, but could not be found"));
+		g_free (*result);
+		break;
+	case PACKAGE_PARTLY_RESOLVED:
+		break;
+	case PACKAGE_ALREADY_INSTALLED:
+		 tmp = g_strdup_printf ("%s\n%s %s",
+					*result, 
+					pack->name, 
+					_("was already installed"));
+		g_free (*result);
+		break;
+	case PACKAGE_RESOLVED:
 		break;
 	}
-	case PACKAGE_CANNOT_OPEN: {
-		char *tmp;
-		tmp = g_strdup_printf ("%s%s-%s NOT FOUND\n", 
-				       (*str)?*str:"", indent, pd->name ? pd->name : pd->filename);
-		g_free (*str);
-		(*str) = tmp;
-		break;		
-	}
-	case PACKAGE_SOURCE_NOT_SUPPORTED: {
-		char *tmp;
-		tmp = g_strdup_printf ("%s%s-%s is a source\n", 
-				       (*str)?*str:"", indent, pd->name ? pd->name : pd->filename);
-		g_free (*str);
-		(*str) = tmp;
-		break;
-	}
-	case PACKAGE_BREAKS_DEPENDENCY: {
-		char *tmp;
-		tmp = g_strdup_printf ("%s%s-%s breaks\n", 
-				       (*str)?*str:"", indent, pd->name ? pd->name : pd->filename);
-		g_free (*str);
-		(*str) = tmp;
-		break;
-	}
-	default: {
-		char *tmp;
-		tmp = g_strdup_printf ("%s%s-%s\n", 
-				       (*str)?*str:"", indent, pd->name ? pd->name : pd->filename);
-		g_free (*str);
-		(*str) = tmp;
-		break;
-	}
-	}
-	
-	for (iterator = pd->soft_depends; iterator; iterator = iterator->next) {			
-		PackageData *pack;
-		char *indent2;
-		indent2 = g_strconcat (indent, iterator->next ? " |" : "  " , NULL);
-		pack = (PackageData*)iterator->data;
-		install_failed_helper (service, pack, indent2, str);
-		g_free (indent2);
-	}
-	for (iterator = pd->breaks; iterator; iterator = iterator->next) {			
-		PackageData *pack;
-		char *indent2;
-		indent2 = g_strconcat (indent, iterator->next ? " |" : "  " , NULL);
-		pack = (PackageData*)iterator->data;
-		install_failed_helper (service, pack, indent2, str);
-		g_free (indent2);
-	}
+	(*result) = tmp;
 }
 
+static char*
+get_detailed_errors (const PackageData *pack)
+{
+	char *result;
+
+	result = g_strdup_printf (_("%s failed because of the following issue(s):"), pack->name);
+	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_errors_foreach, &result);
+	g_list_foreach (pack->hard_depends, (GFunc)get_detailed_errors_foreach, &result);
+	g_list_foreach (pack->modifies, (GFunc)get_detailed_errors_foreach, &result);
+	g_list_foreach (pack->breaks, (GFunc)get_detailed_errors_foreach, &result);
+
+	return result;
+}
 
 static void
 install_failed (EazelInstall *service,
 		const PackageData *pd,
 		EazelInstaller *installer)
 {
-	if (pd->toplevel == TRUE) {
-		install_failed_helper (service, pd, g_strdup (""), &installer->failure_info);
-	}
+	installer->failure_info = get_detailed_errors (pd);		
 }
 
 static void
@@ -642,8 +626,9 @@ download_failed (EazelInstall *service,
 	installer->failure_info = output;
 }
 
-static void
+static gboolean
 eazel_install_preflight (EazelInstall *service,
+			 const GList *packages,
 			 int total_size,
 			 int num_packages,
 			 EazelInstaller *installer)
@@ -675,6 +660,7 @@ eazel_install_preflight (EazelInstall *service,
 	gtk_label_set_text (package_label, tmp);
 	gtk_label_set_text (GTK_LABEL (summary), summary_string);
 	g_main_iteration (FALSE);
+	return TRUE;
 }
 
 static void

@@ -361,7 +361,8 @@ gboolean trilobite_fetch_uri (const char *uri_text,
         }
 	if (result && (ghttp_status_code (request) != 404)) {
 		(*length) = ghttp_get_body_len (request);
-		(*body) = ghttp_get_body (request);
+		(*body) = g_new0 (char, *length);
+		memcpy (*body, ghttp_get_body (request), *length);
 	} else {
 		result = FALSE;
 	}

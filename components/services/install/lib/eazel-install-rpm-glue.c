@@ -245,6 +245,7 @@ eazel_install_download_packages (EazelInstall *service,
 			*/
 			int inst_status = eazel_install_check_existing_packages (service, package);
 			if (inst_status == -1 && eazel_install_get_downgrade) {
+				g_message (_("Will download %s"), package->name);
 				/* must download... */
 			} else if (inst_status <= 0) {
 				/* Nuke the modifies list again, since we don't want to see them */
@@ -262,7 +263,6 @@ eazel_install_download_packages (EazelInstall *service,
 		} 
 
 		if (fetch_package) {
-			g_message (_("Will download %s"), package->name);
 			if (eazel_install_fetch_package (service, package)==FALSE) {
 				remove_list = g_list_prepend (remove_list, package);
 			} else {
@@ -302,6 +302,13 @@ eazel_install_check_for_file_conflicts (EazelInstall *service,
 	
 	for (iterator = pack->provides; iterator; glist_step (iterator)) {
 		char *filename = (char*)iterator->data;		
+
+		/* many packages will supply some dirs, eg /usr/share/locale/../LC_MESSAGES
+		   dirs, so don't check those */
+		if (g_file_test (filename, G_FILE_TEST_ISDIR)) {
+			continue;
+		}
+
 		owners = eazel_install_simple_query (service,
 						     filename,
 						     EI_SIMPLE_QUERY_OWNS,
@@ -316,9 +323,17 @@ eazel_install_check_for_file_conflicts (EazelInstall *service,
 		} else if (g_list_length (owners) == 1) {
 			PackageData *owner = (PackageData*)owners->data;
 			
-			result = FALSE;
-			owner->status = PACKAGE_FILE_CONFLICT;
-			pack->breaks = g_list_prepend (pack->breaks, owner);
+			/* FIXME: bugzilla.eazel.com 2986
+			   Ideally, this should be done by checking that owner
+			   does not appear in pack->modifes, so we
+			   can use the Obsoltes thingy in rpm */
+			if (strcmp (pack->name, owner->name)) {
+				trilobite_debug ("file %s from package %s conflicts with file from package %s", 
+						 filename, pack->name, owner->name);
+				result = FALSE;
+				owner->status = PACKAGE_FILE_CONFLICT;
+				pack->breaks = g_list_prepend (pack->breaks, owner);
+			} /* else it's the same package and it's okay */
 		} 
 	}
 	return result;
@@ -835,7 +850,6 @@ eazel_install_monitor_rpm_propcess_pipe (GIOChannel *source,
 					/* read next byte */
 				g_io_channel_read (source, &tmp, 1, &bytes_read);
 				if (tmp=='\n') {
-					trilobite_debug ("panic ensues!");
 					package_name[0] = '\0';
 					break;
 				}
@@ -1785,9 +1799,8 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 				g_assert (dep!=NULL);
 				
 				/* Here I check to see if I'm breaking the -devel package, if so,
-				   request it */
-				/* FIXME: bugzilla.eazel.com 2596
-				   It should handle z=x-y instead of only z=x-devel when x breaks z */
+				   request it. It does a pretty generic check to see
+				   if dep is on the form x-z and pack is x[-y] */
 
 				if (eazel_install_check_if_related_package (service, pack, dep)) {
 					trilobite_debug ("check_if_related_package returned TRUE");
@@ -1869,6 +1882,9 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 				packagedata_remove_soft_dep (dep, pack);
 				continue;
 			}
+
+			/* Sets the modifies thingy */
+			eazel_install_check_existing_packages (service, pack);
 
 			if (eazel_install_check_for_file_conflicts (service, dep)) {
 				/* FIXME bugzilla.eazel.com 2584:

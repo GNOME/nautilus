@@ -100,6 +100,9 @@ corba_packagedatastruct_from_packagedata (const PackageData *pack)
 	case PACKAGE_RESOLVED:
 		corbapack->status = Trilobite_Eazel_RESOLVED;
 		break;
+	case PACKAGE_ALREADY_INSTALLED:
+		corbapack->status = Trilobite_Eazel_ALREADY_INSTALLED;
+		break;
 	}
 /*
   FIXME bugzilla.eazel.com 1542:
@@ -185,6 +188,9 @@ packagedata_from_corba_packagedatastruct (const Trilobite_Eazel_PackageDataStruc
 		break;
 	case Trilobite_Eazel_PARTLY_RESOLVED:
 		pack->status = PACKAGE_PARTLY_RESOLVED;
+		break;
+	case Trilobite_Eazel_ALREADY_INSTALLED:
+		pack->status = PACKAGE_ALREADY_INSTALLED;
 		break;
 	case Trilobite_Eazel_RESOLVED:
 		pack->status = PACKAGE_RESOLVED;

@@ -28,10 +28,14 @@
  */
 
 #include <config.h>
-#include <gconf/gconf.h>
-#include <gconf/gconf-engine.h>
 #include "eazel-install-metadata.h"
 #include <libtrilobite/trilobite-core-utils.h>
+
+#ifndef EAZEL_INSTALL_SLIM
+#include <gconf/gconf.h>
+#include <gconf/gconf-engine.h>
+static GConfEngine *conf_engine = NULL;
+#endif /* EAZEL_INSTALL_SLIM */
 
 #define INSTALL_GCONF_PATH	"/apps/eazel-trilobite/install"
 
@@ -40,19 +44,20 @@
 #define DEFAULT_PORT		8888
 
 
-static GConfEngine *conf_engine = NULL;
-
 
 /* called by atexit so we can close the gconf connection */
 static void
 done_with_gconf (void)
 {
+#ifndef EAZEL_INSTALL_SLIM
 	gconf_engine_unref (conf_engine);
+#endif /* EAZEL_INSTALL_SLIM */
 }
 
 static void
 check_gconf_init (void)
 {
+#ifndef EAZEL_INSTALL_SLIM
 	GConfError *error = NULL;
 
 	if (! gconf_is_initialized ()) {
@@ -69,11 +74,13 @@ check_gconf_init (void)
 		conf_engine = gconf_engine_get_default ();
 		g_atexit (done_with_gconf);
 	}
+#endif /* EAZEL_INSTALL_SLIM */
 }
 
 static char *
 get_conf_string (const char *key, const char *default_value)
 {
+#ifndef EAZEL_INSTALL_SLIM
 	char *full_key;
 	char *value;
 
@@ -86,11 +93,15 @@ get_conf_string (const char *key, const char *default_value)
 	}
 	g_free (full_key);
 	return value;
+#else /* EAZEL_INSTALL_SLIM */
+	return g_strdup (default_value);
+#endif /* EAZEL_INSTALL_SLIM */
 }
 
 static int
 get_conf_int (const char *key, int default_value)
 {
+#ifndef EAZEL_INSTALL_SLIM
 	char *full_key;
 	GConfValue *value;
 	int out;
@@ -111,11 +122,15 @@ get_conf_int (const char *key, int default_value)
 
 	g_free (full_key);
 	return out;
+#else /* EAZEL_INSTALL_SLIM */
+	return default_value;
+#endif /* EAZEL_INSTALL_SLIM */
 }
 
 static gboolean
 get_conf_boolean (const char *key, gboolean default_value)
 {
+#ifndef EAZEL_INSTALL_SLIM
 	char *full_key;
 	GConfValue *value;
 	gboolean out;
@@ -137,6 +152,9 @@ get_conf_boolean (const char *key, gboolean default_value)
 
 	g_free (full_key);
 	return out;
+#else /* EAZEL_INSTALL_SLIM */
+	return default_value;
+#endif  /* EAZEL_INSTALL_SLIM */
 }
 
 static URLType
