@@ -1,3 +1,9 @@
+2004-09-06  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-list-view.c: (fm_list_view_clear):
+	Don't call gtk_cell_editable_editing_done when model is NULL.
+	Patch by Martin Wehner (#143830)
+
 2004-09-03  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-metafile.c (remove_file_metadata):
