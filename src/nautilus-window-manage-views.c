@@ -678,6 +678,11 @@ location_has_really_changed (NautilusWindow *window)
         update_title (window);
 }
 
+static gboolean
+use_saved_window_positions (void)
+{
+        return eel_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW);
+}
 
 static void
 open_location (NautilusWindow *window,
@@ -712,6 +717,9 @@ open_location (NautilusWindow *window,
 
         if (create_new_window) {
                 target_window = nautilus_application_create_window (window->application);
+                if (!use_saved_window_positions ()) {
+                        gtk_widget_show (GTK_WIDGET (target_window));
+                }
         }
 
 	eel_g_list_free_deep (target_window->details->pending_selection);
@@ -1121,7 +1129,7 @@ position_and_show_window_callback (NautilusFile *file,
         
 	window = NAUTILUS_WINDOW (callback_data);
 
-	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW)) {
+	if (use_saved_window_positions ()) {
 		geometry_string = nautilus_file_get_metadata 
 			(file, NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY, NULL);
 		if (geometry_string != NULL) {
@@ -1181,15 +1189,19 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
 		 * windows), position and show it only after we've got the
 		 * metadata (since position info is stored there).
 		 */
-                if (!GTK_WIDGET_VISIBLE (window)) {
-	                file = nautilus_file_get (location);
-
-                        attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
-			nautilus_file_call_when_ready (file,
-                                                       attributes,
-                                                       position_and_show_window_callback,
-                                                       window);
-                        g_list_free (attributes);
+                if (!use_saved_window_positions ()) {
+                        gtk_widget_show (GTK_WIDGET (window));
+                } else {
+                        if (!GTK_WIDGET_VISIBLE (window)) {
+                                file = nautilus_file_get (location);
+                                
+                                attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
+                                nautilus_file_call_when_ready (file,
+                                                               attributes,
+                                                               position_and_show_window_callback,
+                                                               window);
+                                g_list_free (attributes);
+                        }
                 }
 
                 load_content_view (window, initial_view);

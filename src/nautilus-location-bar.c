@@ -522,7 +522,7 @@ editable_key_press_callback (GtkObject *object,
 	 * you can't move through the text a character at a
 	 * time. Seems like a bad idea.
 	 */
-	if (event->keyval == GDK_Right
+	if ((event->keyval == GDK_Right || event->keyval == GDK_End)
 	    && gtk_editable_get_selection_bounds (editable, NULL, NULL)) {
 		set_position_and_selection_to_end (editable);
 	}

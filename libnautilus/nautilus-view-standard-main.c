@@ -222,6 +222,7 @@ nautilus_view_standard_main_multi (const char *executable_name,
 
 	if (factory != NULL) {
 		/* Loop until we have no more objects. */
+		bonobo_activate ();
 		do {
 			gtk_main ();
 		} while (callback_data.object_count > 0 || callback_data.delayed_quit_timeout_id != 0);

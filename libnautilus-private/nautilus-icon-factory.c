@@ -1609,6 +1609,8 @@ load_specific_icon (NautilusScalableIcon *scalable_icon,
 	return icon;
 }
 
+#if GNOME2_CONVESION_COMPLETE
+
 static void
 destroy_fallback_icon (void)
 {
@@ -1620,6 +1622,8 @@ destroy_fallback_icon (void)
 	fallback_icon = NULL;
 	cache_icon_unref (icon);
 }
+
+#endif
 
 /* This load function is not allowed to return NULL. */
 static CacheIcon *
@@ -1671,7 +1675,9 @@ load_icon_for_scaling (NautilusScalableIcon *scalable_icon,
 			 NULL);
 		fallback_icon = cache_icon_new (pixbuf, FALSE, FALSE, NULL);
 		fallback_icon->is_fallback = TRUE;
+#if GNOME2_CONVERSION_COMPLETE
 		eel_debug_call_at_shutdown (destroy_fallback_icon);
+#endif
 	}
 
 	*actual_size_result = NAUTILUS_ICON_SIZE_STANDARD;

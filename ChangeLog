@@ -1,3 +1,24 @@
+2002-01-22  Darin Adler  <darin@bentspoon.com>
+
+	* libnautilus-private/nautilus-icon-factory.c:
+	(load_icon_for_scaling): Disable the code that destroys the fallback
+	icon at shutdown time since it was hitting some snags.
+
+	* libnautilus/nautilus-view-standard-main.c:
+	(nautilus_view_standard_main_multi): Add a bonobo_activate to try
+	to reduce the complaints at quit time.
+
+	* src/nautilus-location-bar.c: (editable_key_press_callback):
+	Make the End key do what the right arrow key did.
+
+	* src/nautilus-window-manage-views.c: (use_saved_window_positions),
+	(open_location), (position_and_show_window_callback),
+	(determined_initial_view_callback): Open windows right away unless
+	we are using saved window positions.
+
+	* icons/default/Makefile: Remove.
+	* icons/default/Makefile.in: Remove.
+
 2002-01-22  Josh Barrow  <drleary@mac.com>
 
 	* icons/crux_eggplant/crux_eggplant.xml:
