@@ -140,6 +140,13 @@ trilobite_redirect_parse_xml (char *blob, int length)
 	g_return_if_fail (blob != NULL);
 	g_return_if_fail (length > 0);
 
+	/* <rant> libxml will have a temper tantrum if there is whitespace before the
+	 * first tag.  so we must babysit it.
+	 */
+	while ((length > 0) && (*blob <= ' ')) {
+		blob++, length--;
+	}
+
 	doc = xmlParseMemory (blob, length);
 	if (doc == NULL) {
 		g_warning ("trilobite redirect: bad XML: '%s'", blob);

@@ -192,6 +192,8 @@ trilobite_open_uri (const char *uri_text)
 	GnomeVFSHandle *handle = NULL;
 
 	if (! gnome_vfs_initialized ()) {
+		setenv ("GNOME_VFS_HTTP_USER_AGENT", trilobite_get_useragent_string (FALSE, NULL), 1);
+
 		if (! gnome_vfs_init ()) {
 			g_warning ("cannot initialize gnome-vfs!");
 			return NULL;
