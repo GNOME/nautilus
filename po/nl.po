@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-07-07 13:14+0200\n"
+"POT-Creation-Date: 2003-07-16 15:48+0200\n"
 "PO-Revision-Date: 2003-07-03 19:00+0100\n"
 "Last-Translator: Reinout van Schouwen <reinout@cs.vu.nl>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
@@ -47,7 +47,7 @@ msgid "bonobo_ui_init() failed."
 msgstr "bonobo_ui_init() niet gelukt."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
-#: src/file-manager/fm-properties-window.c:2355
+#: src/file-manager/fm-properties-window.c:2380
 #: src/file-manager/fm-search-list-view.c:500
 msgid "Emblems"
 msgstr "Emblemen"
@@ -295,7 +295,7 @@ msgstr "Bezig met laden..."
 
 #: components/image_properties/nautilus-image-properties-view.c:268
 msgid "URI currently displayed"
-msgstr "URI momenteel weergegeven"
+msgstr "Huidig weergegeven URI"
 
 #: components/notes/Nautilus_View_notes.server.in.in.h:1
 msgid "Notes"
@@ -1816,7 +1816,7 @@ msgid "Can't delete volume"
 msgstr "Kan volume niet verwijderen"
 
 #: libnautilus-private/nautilus-desktop-link.c:139
-#: libnautilus-private/nautilus-file.c:5589
+#: libnautilus-private/nautilus-file.c:5592
 #: libnautilus-private/nautilus-global-preferences.c:545
 #: libnautilus-private/nautilus-trash-directory.c:383
 msgid "Trash"
@@ -1905,7 +1905,7 @@ msgstr "Van:"
 #. "To" dialog label, source path gets placed next to it in the dialog
 #: libnautilus-private/nautilus-file-operations.c:365
 msgid "To:"
-msgstr "Naar:"
+msgstr "Aan:"
 
 #: libnautilus-private/nautilus-file-operations.c:545
 #, c-format
@@ -2268,7 +2268,7 @@ msgstr "Alles vervangen"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1130
-#: libnautilus-private/nautilus-file.c:4419
+#: libnautilus-private/nautilus-file.c:4420
 #, c-format
 msgid "link to %s"
 msgstr "verwijzing naar %s"
@@ -2594,7 +2594,7 @@ msgid "Preparing to Empty the Trash..."
 msgstr "Bezig met voorbereiden van Prullenbak legen..."
 
 #: libnautilus-private/nautilus-file-operations.c:2263
-#: src/file-manager/fm-desktop-icon-view.c:987
+#: src/file-manager/fm-desktop-icon-view.c:999
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:6
 msgid "Empty Trash"
 msgstr "Prullenbak legen"
@@ -2887,64 +2887,64 @@ msgstr "foo (124e kopie).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2658
+#: libnautilus-private/nautilus-file.c:2659
 msgid "today at 00:00:00 PM"
 msgstr "vandaag om 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2659
+#: libnautilus-private/nautilus-file.c:2660
 msgid "today at %-I:%M:%S %p"
 msgstr "vandaag om %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2661
+#: libnautilus-private/nautilus-file.c:2662
 msgid "today at 00:00 PM"
 msgstr "vandaag om %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2662
+#: libnautilus-private/nautilus-file.c:2663
 msgid "today at %-I:%M %p"
 msgstr "vandaag om %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2664
+#: libnautilus-private/nautilus-file.c:2665
 msgid "today, 00:00 PM"
 msgstr "vandaag, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2665
+#: libnautilus-private/nautilus-file.c:2666
 msgid "today, %-I:%M %p"
 msgstr "vandaag om %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2667
 #: libnautilus-private/nautilus-file.c:2668
+#: libnautilus-private/nautilus-file.c:2669
 msgid "today"
 msgstr "vandaag"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2677
+#: libnautilus-private/nautilus-file.c:2678
 msgid "yesterday at 00:00:00 PM"
 msgstr "gisteren om %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2678
+#: libnautilus-private/nautilus-file.c:2679
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "gisteren om %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2680
+#: libnautilus-private/nautilus-file.c:2681
 msgid "yesterday at 00:00 PM"
 msgstr "gisteren om %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2681
+#: libnautilus-private/nautilus-file.c:2682
 msgid "yesterday at %-I:%M %p"
 msgstr "gisteren om %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2683
+#: libnautilus-private/nautilus-file.c:2684
 msgid "yesterday, 00:00 PM"
 msgstr "gisteren, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2684
+#: libnautilus-private/nautilus-file.c:2685
 msgid "yesterday, %-I:%M %p"
 msgstr "gisteren om %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2686
 #: libnautilus-private/nautilus-file.c:2687
+#: libnautilus-private/nautilus-file.c:2688
 msgid "yesterday"
 msgstr "Westers"
 
@@ -2953,133 +2953,133 @@ msgstr "Westers"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2698
+#: libnautilus-private/nautilus-file.c:2699
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Woensdag 00 September 00 0000 om 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2699
+#: libnautilus-private/nautilus-file.c:2700
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %-d %B %Y om %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2701
+#: libnautilus-private/nautilus-file.c:2702
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Maa 00 Oct 0000 om 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2702
+#: libnautilus-private/nautilus-file.c:2703
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a %-d %b %Y om %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2704
+#: libnautilus-private/nautilus-file.c:2705
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Maa 00 Oct 0000 om 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2705
+#: libnautilus-private/nautilus-file.c:2706
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a %-d %b %Y at %-I:%M %"
 
-#: libnautilus-private/nautilus-file.c:2707
+#: libnautilus-private/nautilus-file.c:2708
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "00 Oct 0000 om 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2708
+#: libnautilus-private/nautilus-file.c:2709
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d %b %Y om %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2710
+#: libnautilus-private/nautilus-file.c:2711
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "00 Oct 0000, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2711
+#: libnautilus-private/nautilus-file.c:2712
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d %b %Y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2713
+#: libnautilus-private/nautilus-file.c:2714
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2714
+#: libnautilus-private/nautilus-file.c:2715
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d/%m/%y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2716
+#: libnautilus-private/nautilus-file.c:2717
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-private/nautilus-file.c:2717
+#: libnautilus-private/nautilus-file.c:2718
 msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
-#: libnautilus-private/nautilus-file.c:3999
+#: libnautilus-private/nautilus-file.c:4000
 msgid "0 items"
 msgstr "0 items"
 
-#: libnautilus-private/nautilus-file.c:3999
+#: libnautilus-private/nautilus-file.c:4000
 msgid "0 folders"
 msgstr "0 mappen"
 
-#: libnautilus-private/nautilus-file.c:4000
+#: libnautilus-private/nautilus-file.c:4001
 msgid "0 files"
 msgstr "0 bestanden"
 
-#: libnautilus-private/nautilus-file.c:4004
+#: libnautilus-private/nautilus-file.c:4005
 msgid "1 item"
 msgstr "1 item"
 
-#: libnautilus-private/nautilus-file.c:4004
+#: libnautilus-private/nautilus-file.c:4005
 msgid "1 folder"
 msgstr "1 map"
 
-#: libnautilus-private/nautilus-file.c:4005
+#: libnautilus-private/nautilus-file.c:4006
 msgid "1 file"
 msgstr "1 bestand"
 
-#: libnautilus-private/nautilus-file.c:4008
+#: libnautilus-private/nautilus-file.c:4009
 #, c-format
 msgid "%u items"
 msgstr "%u items"
 
-#: libnautilus-private/nautilus-file.c:4008
+#: libnautilus-private/nautilus-file.c:4009
 #, c-format
 msgid "%u folders"
 msgstr "%u mappen"
 
-#: libnautilus-private/nautilus-file.c:4009
+#: libnautilus-private/nautilus-file.c:4010
 #, c-format
 msgid "%u files"
 msgstr "%u bestanden"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4321
-#: libnautilus-private/nautilus-file.c:4337
+#: libnautilus-private/nautilus-file.c:4322
+#: libnautilus-private/nautilus-file.c:4338
 msgid "? items"
 msgstr "? items"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4327
+#: libnautilus-private/nautilus-file.c:4328
 msgid "? bytes"
 msgstr "? bytes"
 
-#: libnautilus-private/nautilus-file.c:4342
+#: libnautilus-private/nautilus-file.c:4343
 msgid "unknown type"
 msgstr "onbekend type"
 
-#: libnautilus-private/nautilus-file.c:4345
+#: libnautilus-private/nautilus-file.c:4346
 msgid "unknown MIME type"
 msgstr "onbekend MIME-type"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4351
-#: src/file-manager/fm-properties-window.c:1126
+#: libnautilus-private/nautilus-file.c:4352
+#: src/file-manager/fm-properties-window.c:1127
 msgid "unknown"
 msgstr "onbekend"
 
-#: libnautilus-private/nautilus-file.c:4383
+#: libnautilus-private/nautilus-file.c:4384
 msgid "program"
 msgstr "programma"
 
-#: libnautilus-private/nautilus-file.c:4395
+#: libnautilus-private/nautilus-file.c:4396
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -3089,7 +3089,7 @@ msgstr ""
 "waarschijnlijk dat uw gnome-vfs.keys bestand op de verkeerde plaats staat, "
 "of niet gevonden kon worden vanwege een andere reden."
 
-#: libnautilus-private/nautilus-file.c:4399
+#: libnautilus-private/nautilus-file.c:4400
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -3098,11 +3098,11 @@ msgstr ""
 "Geen beschrijving gevonden voor MIME-type \"%s\" (bestand is \"%s\"), "
 "gelieve dit door te geven aan de gnome-vfs mailing lijst."
 
-#: libnautilus-private/nautilus-file.c:4413
+#: libnautilus-private/nautilus-file.c:4414
 msgid "link"
 msgstr "verwijzing"
 
-#: libnautilus-private/nautilus-file.c:4433
+#: libnautilus-private/nautilus-file.c:4434
 msgid "link (broken)"
 msgstr "verwijzing (gebroken)"
 
@@ -3369,47 +3369,47 @@ msgstr "geen"
 msgid "%s's Home"
 msgstr "%s's persoonlijke map"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2123
+#: libnautilus-private/nautilus-icon-canvas-item.c:2147
 msgid "file icon"
 msgstr "bestandspictogram"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2496
+#: libnautilus-private/nautilus-icon-canvas-item.c:2520
 msgid "editable text"
 msgstr "bewerkbare tekst"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2497
+#: libnautilus-private/nautilus-icon-canvas-item.c:2521
 msgid "the editable label"
 msgstr "het bewerkbare bijschrift"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2504
+#: libnautilus-private/nautilus-icon-canvas-item.c:2528
 msgid "additional text"
 msgstr "aanvullende tekst"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2505
+#: libnautilus-private/nautilus-icon-canvas-item.c:2529
 msgid "some more text"
 msgstr "wat meer tekst"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2512
+#: libnautilus-private/nautilus-icon-canvas-item.c:2536
 msgid "highlighted for selection"
 msgstr "gemarkeerd voor selectie"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2513
+#: libnautilus-private/nautilus-icon-canvas-item.c:2537
 msgid "whether we are highlighted for a selection"
 msgstr "of we gemarkeerd voor selectie zijn"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2520
+#: libnautilus-private/nautilus-icon-canvas-item.c:2544
 msgid "highlighted as keyboard focus"
 msgstr "gemarkeerd als toetsenbordfocus"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2521
+#: libnautilus-private/nautilus-icon-canvas-item.c:2545
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "of we gemarkeerd zijn om de toetsenbordfocus terug te geven"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2529
+#: libnautilus-private/nautilus-icon-canvas-item.c:2553
 msgid "highlighted for drop"
 msgstr "gemarkeerd voor loslaten"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2530
+#: libnautilus-private/nautilus-icon-canvas-item.c:2554
 msgid "whether we are highlighted for a D&D drop"
 msgstr "of we gemarkeerd zijn voor sleepactie loslaten"
 
@@ -4190,43 +4190,43 @@ msgstr "%s-weergave"
 msgid "%s Viewer"
 msgstr "%s-weergave"
 
-#: libnautilus-private/nautilus-volume-monitor.c:831
+#: libnautilus-private/nautilus-volume-monitor.c:897
 msgid "Unknown"
 msgstr "Onbekend"
 
 #. Populate table with items we know localized names for.
-#: libnautilus-private/nautilus-volume-monitor.c:1004
+#: libnautilus-private/nautilus-volume-monitor.c:1070
 msgid "Floppy"
 msgstr "Diskette"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1005
-#: libnautilus-private/nautilus-volume-monitor.c:1034
+#: libnautilus-private/nautilus-volume-monitor.c:1071
+#: libnautilus-private/nautilus-volume-monitor.c:1100
 msgid "CD-ROM"
 msgstr "CD-ROM"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1006
+#: libnautilus-private/nautilus-volume-monitor.c:1072
 msgid "Zip Drive"
 msgstr "Zip-drive"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1021
-#: libnautilus-private/nautilus-volume-monitor.c:1065
+#: libnautilus-private/nautilus-volume-monitor.c:1087
+#: libnautilus-private/nautilus-volume-monitor.c:1131
 msgid "Audio CD"
 msgstr "Audio-CD"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1056
+#: libnautilus-private/nautilus-volume-monitor.c:1122
 msgid "Root Volume"
 msgstr "Root Volume"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1735
+#: libnautilus-private/nautilus-volume-monitor.c:1801
 msgid "Mount Error"
 msgstr "Aankoppelingsfout"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1735
+#: libnautilus-private/nautilus-volume-monitor.c:1801
 msgid "Unmount Error"
 msgstr "Afkoppelingsfout"
 
 #. Handle floppy case
-#: libnautilus-private/nautilus-volume-monitor.c:1808
+#: libnautilus-private/nautilus-volume-monitor.c:1874
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
@@ -4235,7 +4235,7 @@ msgstr ""
 "diskette in het station."
 
 #. All others
-#: libnautilus-private/nautilus-volume-monitor.c:1812
+#: libnautilus-private/nautilus-volume-monitor.c:1878
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
@@ -4243,7 +4243,7 @@ msgstr ""
 "Nautilus was niet in staat het volume aan te koppelen. Er zit waarschijnlijk "
 "geen medium in het apparaat"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1818
+#: libnautilus-private/nautilus-volume-monitor.c:1884
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
@@ -4251,7 +4251,7 @@ msgstr ""
 "Nautilus was niet in staat het diskettestation aan te koppelen. De diskette "
 "heeft waarschijnlijk een niet-ondersteund formaat."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1821
+#: libnautilus-private/nautilus-volume-monitor.c:1887
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
@@ -4259,20 +4259,20 @@ msgstr ""
 "Nautilus was niet instaat in het geselecteerde volume aan te koppelen. Het "
 "volume heeft waarschijnlijk een niet-ondersteund formaat."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1826
+#: libnautilus-private/nautilus-volume-monitor.c:1892
 msgid "Nautilus was unable to mount the selected floppy drive."
 msgstr "Nautilus kan de geselecteerde diskette niet koppelen."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1828
+#: libnautilus-private/nautilus-volume-monitor.c:1894
 msgid "Nautilus was unable to mount the selected volume."
 msgstr "Nautilus kan het geselecteerde volume niet koppelen."
 
 #. FIXME: Should we parse this message and report something more meaningful?
-#: libnautilus-private/nautilus-volume-monitor.c:1833
+#: libnautilus-private/nautilus-volume-monitor.c:1899
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr "Nautilus kan het geselecteerde volume niet ontkoppelen."
 
-#: libnautilus-private/nautilus-volume-monitor.c:2038
+#: libnautilus-private/nautilus-volume-monitor.c:2104
 msgid "ISO 9660 Volume"
 msgstr "ISO9660-volume"
 
@@ -4424,20 +4424,20 @@ msgstr "P_ictogrammenweergave"
 msgid "View as _List"
 msgstr "_Lijstweergave"
 
-#: src/file-manager/fm-desktop-icon-view.c:574
+#: src/file-manager/fm-desktop-icon-view.c:579
 msgid "Background"
 msgstr "Achtergrond"
 
-#: src/file-manager/fm-desktop-icon-view.c:744
+#: src/file-manager/fm-desktop-icon-view.c:749
 #, c-format
 msgid "Error executing utility program '%s': %s"
 msgstr "Fout bij het uitvoeren van hulpprogramma '%s': %s"
 
-#: src/file-manager/fm-desktop-icon-view.c:1005
+#: src/file-manager/fm-desktop-icon-view.c:1017
 msgid "E_ject"
 msgstr "Uit_werpen"
 
-#: src/file-manager/fm-desktop-icon-view.c:1105
+#: src/file-manager/fm-desktop-icon-view.c:1117
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
 msgid "_Unmount Volume"
 msgstr "Volume _ontkoppelen"
@@ -4636,12 +4636,12 @@ msgstr "Kan aangegeven actie niet voltooien: %s"
 msgid "Could not complete specified action."
 msgstr "Kan aangegeven actie niet voltooien."
 
-#: src/file-manager/fm-directory-view.c:4123
+#: src/file-manager/fm-directory-view.c:4130
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Voer \"%s\" uit op ieder geselecteerde item"
 
-#: src/file-manager/fm-directory-view.c:4340
+#: src/file-manager/fm-directory-view.c:4347
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script with any selected items "
@@ -4651,11 +4651,11 @@ msgstr ""
 "menu. Door een script te kiezen uit het menu wordt het script uitgevoerd met "
 "de geselecteerde items als invoer."
 
-#: src/file-manager/fm-directory-view.c:4343
+#: src/file-manager/fm-directory-view.c:4350
 msgid "About Scripts"
 msgstr "Scripts info"
 
-#: src/file-manager/fm-directory-view.c:4344
+#: src/file-manager/fm-directory-view.c:4351
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4698,17 +4698,17 @@ msgstr ""
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: positie en afmetingen van het huidige "
 "venster"
 
-#: src/file-manager/fm-directory-view.c:4465
+#: src/file-manager/fm-directory-view.c:4472
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "\"%s\" wordt verplaatst als u de opdracht 'Plak Bestanden' geeft"
 
-#: src/file-manager/fm-directory-view.c:4469
+#: src/file-manager/fm-directory-view.c:4476
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\" wordt gekopieerd als u de opdracht 'Plak Bestanden' geeft"
 
-#: src/file-manager/fm-directory-view.c:4476
+#: src/file-manager/fm-directory-view.c:4483
 #, c-format
 msgid ""
 "The %d selected items will be moved if you select the Paste Files command"
@@ -4716,7 +4716,7 @@ msgstr ""
 "De %d geselecteerde items worden verplaatst als u de opdracht 'Plak "
 "Bestanden' geeft"
 
-#: src/file-manager/fm-directory-view.c:4480
+#: src/file-manager/fm-directory-view.c:4487
 #, c-format
 msgid ""
 "The %d selected items will be copied if you select the Paste Files command"
@@ -4724,81 +4724,81 @@ msgstr ""
 "De %d geselecteerde items worden gekopieeerd als u de opdracht 'Plak "
 "Bestanden' geeft"
 
-#: src/file-manager/fm-directory-view.c:4559
+#: src/file-manager/fm-directory-view.c:4566
 msgid "There is nothing on the clipboard to paste."
 msgstr "Er staat niets op het klembord om te plakken."
 
-#: src/file-manager/fm-directory-view.c:4816
+#: src/file-manager/fm-directory-view.c:4823
 msgid "Open _in This Window"
 msgstr "Openen _in dit venster"
 
-#: src/file-manager/fm-directory-view.c:4819
+#: src/file-manager/fm-directory-view.c:4826
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Open _in New Window"
 msgstr "_Openen in nieuw venster"
 
-#: src/file-manager/fm-directory-view.c:4821
+#: src/file-manager/fm-directory-view.c:4828
 #, c-format
 msgid "Open _in %d New Windows"
 msgstr "Openen in %d _Nieuwe Vensters"
 
-#: src/file-manager/fm-directory-view.c:4839
+#: src/file-manager/fm-directory-view.c:4846
 msgid "_Delete from Trash"
 msgstr "Verwijderen uit de _Prullenbak"
 
-#: src/file-manager/fm-directory-view.c:4841
+#: src/file-manager/fm-directory-view.c:4848
 msgid "Delete all selected items permanently"
 msgstr "Verwijder alle geselecteerde items blijvend"
 
-#: src/file-manager/fm-directory-view.c:4844
-#: src/file-manager/fm-directory-view.c:5125
+#: src/file-manager/fm-directory-view.c:4851
+#: src/file-manager/fm-directory-view.c:5132
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
 msgid "Mo_ve to Trash"
 msgstr "_Verplaatsen naar Prullenbak"
 
-#: src/file-manager/fm-directory-view.c:4846
+#: src/file-manager/fm-directory-view.c:4853
 #: src/file-manager/nautilus-directory-view-ui.xml.h:18
 msgid "Move each selected item to the Trash"
 msgstr "Verplaats alle geselecteerde items naar de Prullenbak"
 
-#: src/file-manager/fm-directory-view.c:4870
+#: src/file-manager/fm-directory-view.c:4877
 #: src/file-manager/nautilus-directory-view-ui.xml.h:40
 msgid "_Delete"
 msgstr "_Verwijderen"
 
-#: src/file-manager/fm-directory-view.c:4890
+#: src/file-manager/fm-directory-view.c:4897
 msgid "Ma_ke Links"
 msgstr "Verwijzingen ma_ken"
 
-#: src/file-manager/fm-directory-view.c:4891
+#: src/file-manager/fm-directory-view.c:4898
 #: src/file-manager/nautilus-directory-view-ui.xml.h:16
 msgid "Ma_ke Link"
 msgstr "Verwijzing ma_ken"
 
-#: src/file-manager/fm-directory-view.c:4904
+#: src/file-manager/fm-directory-view.c:4911
 #: src/file-manager/nautilus-directory-view-ui.xml.h:41
 msgid "_Empty Trash"
 msgstr "Prullenbak _legen"
 
-#: src/file-manager/fm-directory-view.c:4917
+#: src/file-manager/fm-directory-view.c:4924
 msgid "Cu_t File"
 msgstr "Bestand _knippen"
 
-#: src/file-manager/fm-directory-view.c:4918
+#: src/file-manager/fm-directory-view.c:4925
 #: src/file-manager/nautilus-directory-view-ui.xml.h:9
 msgid "Cu_t Files"
 msgstr "Bestanden k_nippen"
 
-#: src/file-manager/fm-directory-view.c:4927
+#: src/file-manager/fm-directory-view.c:4934
 msgid "_Copy File"
 msgstr "Bestand _kopiëren"
 
-#: src/file-manager/fm-directory-view.c:4928
+#: src/file-manager/fm-directory-view.c:4935
 #: src/file-manager/nautilus-directory-view-ui.xml.h:39
 msgid "_Copy Files"
 msgstr "Bestanden _kopiëren"
 
-#: src/file-manager/fm-directory-view.c:5116
+#: src/file-manager/fm-directory-view.c:5123
 msgid ""
 "This link can't be used, because it has no target. Do you want to move this "
 "link to the Trash?"
@@ -4806,7 +4806,7 @@ msgstr ""
 "Deze verwijzing kan niet gebruikt worden, omdat het doel ontbreekt. Wilt u "
 "de verwijzing in de Prullenbak gooien?"
 
-#: src/file-manager/fm-directory-view.c:5119
+#: src/file-manager/fm-directory-view.c:5126
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -4815,11 +4815,11 @@ msgstr ""
 "Deze verwijzing kan niet gebruikt worden, omdat haar doel \"%s\"ontbreekt. "
 "Wilt u de verwijzing in de Prullenbak gooien?"
 
-#: src/file-manager/fm-directory-view.c:5125
+#: src/file-manager/fm-directory-view.c:5132
 msgid "Broken Link"
 msgstr "Loze verwijzing"
 
-#: src/file-manager/fm-directory-view.c:5182
+#: src/file-manager/fm-directory-view.c:5189
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
@@ -4828,28 +4828,28 @@ msgstr ""
 "\"%s\"is een uitvoerbaar tekstbestand. Wilt u het uitvoeren, of de inhoud "
 "bekijken?"
 
-#: src/file-manager/fm-directory-view.c:5188
+#: src/file-manager/fm-directory-view.c:5195
 msgid "Run or Display?"
 msgstr "Uitvoeren of weergeven?"
 
-#: src/file-manager/fm-directory-view.c:5189
+#: src/file-manager/fm-directory-view.c:5196
 msgid "_Display"
 msgstr "_Weergeven"
 
-#: src/file-manager/fm-directory-view.c:5190
+#: src/file-manager/fm-directory-view.c:5197
 msgid "Run in _Terminal"
 msgstr "Uitvoeren in _Terminalvenster"
 
-#: src/file-manager/fm-directory-view.c:5193
+#: src/file-manager/fm-directory-view.c:5200
 msgid "_Run"
 msgstr "_Uitvoeren"
 
-#: src/file-manager/fm-directory-view.c:5396
+#: src/file-manager/fm-directory-view.c:5403
 #, c-format
 msgid "Opening \"%s\""
 msgstr "Bezig met openenen: \"%s\""
 
-#: src/file-manager/fm-directory-view.c:5402
+#: src/file-manager/fm-directory-view.c:5409
 msgid "Cancel Open?"
 msgstr "Openen afbreken?"
 
@@ -5075,7 +5075,7 @@ msgstr "Type"
 msgid "Date Modified"
 msgstr "Wijzigingsdatum"
 
-#: src/file-manager/fm-properties-window.c:456
+#: src/file-manager/fm-properties-window.c:457
 #: src/nautilus-information-panel.c:506
 msgid ""
 "You can't assign more than one custom icon at a time! Please drag just one "
@@ -5084,12 +5084,12 @@ msgstr ""
 "U kunt niet meer dan één eigen pictogram per keer toekennen! Sleep één "
 "afbeelding om een aangepast pictogram in te stellen."
 
-#: src/file-manager/fm-properties-window.c:458
+#: src/file-manager/fm-properties-window.c:459
 #: src/nautilus-information-panel.c:508
 msgid "More Than One Image"
 msgstr "Meer dan één afbeelding"
 
-#: src/file-manager/fm-properties-window.c:467
+#: src/file-manager/fm-properties-window.c:468
 #: src/nautilus-information-panel.c:527
 msgid ""
 "The file that you dropped is not local.  You can only use local images as "
@@ -5098,12 +5098,12 @@ msgstr ""
 "Het bestand dat u versleepte is niet lokaal. U kunt alleen lokale "
 "afbeeldingen als aangepaste pictogrammen gebruiken."
 
-#: src/file-manager/fm-properties-window.c:469
+#: src/file-manager/fm-properties-window.c:470
 #: src/nautilus-information-panel.c:529
 msgid "Local Images Only"
 msgstr "Alleen lokale afbeeldingen"
 
-#: src/file-manager/fm-properties-window.c:474
+#: src/file-manager/fm-properties-window.c:475
 #: src/nautilus-information-panel.c:534
 msgid ""
 "The file that you dropped is not an image.  You can only use local images as "
@@ -5112,76 +5112,77 @@ msgstr ""
 "Het bestand dat u versleepte is geen afbeelding. U kunt alleen lokale "
 "afbeeldingen als aangepast pictogrammen gebruiken."
 
-#: src/file-manager/fm-properties-window.c:476
+#: src/file-manager/fm-properties-window.c:477
 #: src/nautilus-information-panel.c:536
 msgid "Images Only"
 msgstr "Alleen afbeeldingen"
 
-#: src/file-manager/fm-properties-window.c:893
+#: src/file-manager/fm-properties-window.c:894
 msgid "Properties"
 msgstr "Eigenschappen"
 
-#: src/file-manager/fm-properties-window.c:896
+#: src/file-manager/fm-properties-window.c:897
 #, c-format
 msgid "%s Properties"
 msgstr "%s Eigenschappen"
 
-#: src/file-manager/fm-properties-window.c:1357
+#: src/file-manager/fm-properties-window.c:1358
 msgid "Cancel Group Change?"
 msgstr "Verandering van groep annuleren?"
 
-#: src/file-manager/fm-properties-window.c:1358
+#: src/file-manager/fm-properties-window.c:1359
 msgid "Changing group"
 msgstr "Bezig met veranderen groep"
 
-#: src/file-manager/fm-properties-window.c:1519
+#: src/file-manager/fm-properties-window.c:1520
 msgid "Cancel Owner Change?"
 msgstr "Verandering van eigenaar annuleren?"
 
-#: src/file-manager/fm-properties-window.c:1520
+#: src/file-manager/fm-properties-window.c:1521
 msgid "Changing owner"
 msgstr "bezig met veranderen eigenaar"
 
-#: src/file-manager/fm-properties-window.c:1708
+#: src/file-manager/fm-properties-window.c:1726
 msgid "nothing"
 msgstr "niets"
 
-#: src/file-manager/fm-properties-window.c:1710
+#: src/file-manager/fm-properties-window.c:1728
 msgid "unreadable"
 msgstr "onleesbaar"
 
-#: src/file-manager/fm-properties-window.c:1719
+#: src/file-manager/fm-properties-window.c:1739
 #, c-format
 msgid "1 item, with size %s"
 msgstr "1 item, met grootte %s"
 
-#: src/file-manager/fm-properties-window.c:1721
+#: src/file-manager/fm-properties-window.c:1742
 #, c-format
 msgid "%d items, totalling %s"
 msgstr "%d items, totaal %s"
 
-#: src/file-manager/fm-properties-window.c:1727
+#: src/file-manager/fm-properties-window.c:1750
 msgid "(some contents unreadable)"
 msgstr "(sommige inhoud niet leesbaar)"
 
-#. Also set the title field here, with a trailing carriage return & space
-#. * if the value field has two lines. This is a hack to get the
-#. * "Contents:" title to line up with the first line of the 2-line value.
-#. * Maybe there's a better way to do this, but I couldn't think of one.
+#. Also set the title field here, with a trailing carriage return &
+#. * space if the value field has two lines. This is a hack to get the
+#. * "Contents:" title to line up with the first line of the
+#. * 2-line value. Maybe there's a better way to do this, but I
+#. * couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:1741
+#: src/file-manager/fm-properties-window.c:1767
 msgid "Contents:"
 msgstr "Inhoud:"
 
-#: src/file-manager/fm-properties-window.c:2129
+#: src/file-manager/fm-properties-window.c:2158
 msgid "Basic"
 msgstr "Basis"
 
-#: src/file-manager/fm-properties-window.c:2157
+#: src/file-manager/fm-properties-window.c:2186
 msgid "_Names:"
 msgstr "_Namen:"
 
-#: src/file-manager/fm-properties-window.c:2159
+#: src/file-manager/fm-properties-window.c:2188
 msgid "_Name:"
 msgstr "_Naam:"
 
@@ -5189,20 +5190,20 @@ msgstr "_Naam:"
 msgid "Type:"
 msgstr "Type:"
 
-#: src/file-manager/fm-properties-window.c:2210
-#: src/file-manager/fm-properties-window.c:2224
-#: src/file-manager/fm-properties-window.c:2230
-#: src/file-manager/fm-properties-window.c:2237
-#: src/file-manager/fm-properties-window.c:2241
+#: src/file-manager/fm-properties-window.c:2239
 #: src/file-manager/fm-properties-window.c:2249
 #: src/file-manager/fm-properties-window.c:2255
-#: src/file-manager/fm-properties-window.c:2264
-#: src/file-manager/fm-properties-window.c:2270
-#: src/file-manager/fm-properties-window.c:2822
-#: src/file-manager/fm-properties-window.c:2843
-#: src/file-manager/fm-properties-window.c:2925
-#: src/file-manager/fm-properties-window.c:2929
-#: src/file-manager/fm-properties-window.c:2933
+#: src/file-manager/fm-properties-window.c:2262
+#: src/file-manager/fm-properties-window.c:2266
+#: src/file-manager/fm-properties-window.c:2274
+#: src/file-manager/fm-properties-window.c:2280
+#: src/file-manager/fm-properties-window.c:2289
+#: src/file-manager/fm-properties-window.c:2295
+#: src/file-manager/fm-properties-window.c:2847
+#: src/file-manager/fm-properties-window.c:2868
+#: src/file-manager/fm-properties-window.c:2950
+#: src/file-manager/fm-properties-window.c:2954
+#: src/file-manager/fm-properties-window.c:2958
 msgid "--"
 msgstr "--"
 
@@ -5210,126 +5211,126 @@ msgstr "--"
 msgid "Size:"
 msgstr "Grootte:"
 
-#: src/file-manager/fm-properties-window.c:2228 src/nautilus-location-bar.c:61
+#: src/file-manager/fm-properties-window.c:2253 src/nautilus-location-bar.c:61
 msgid "Location:"
 msgstr "Lokatie:"
 
 # Nog eens een betere vertaling vinden voor 'Volume'?!
-#: src/file-manager/fm-properties-window.c:2235
+#: src/file-manager/fm-properties-window.c:2260
 msgid "Volume:"
 msgstr "Volume:"
 
-#: src/file-manager/fm-properties-window.c:2239
+#: src/file-manager/fm-properties-window.c:2264
 msgid "Free space:"
 msgstr "Vrije ruimte:"
 
-#: src/file-manager/fm-properties-window.c:2247
+#: src/file-manager/fm-properties-window.c:2272
 msgid "Link target:"
 msgstr "Verwijzingsdoel:"
 
-#: src/file-manager/fm-properties-window.c:2253
+#: src/file-manager/fm-properties-window.c:2278
 msgid "MIME type:"
 msgstr "MIME-type:"
 
-#: src/file-manager/fm-properties-window.c:2262
+#: src/file-manager/fm-properties-window.c:2287
 msgid "Modified:"
 msgstr "Gewijzigd:"
 
-#: src/file-manager/fm-properties-window.c:2268
+#: src/file-manager/fm-properties-window.c:2293
 msgid "Accessed:"
 msgstr "Gebruikt:"
 
-#: src/file-manager/fm-properties-window.c:2284
+#: src/file-manager/fm-properties-window.c:2309
 msgid "_Select Custom Icon..."
 msgstr "_Aangepast pictogram selecteren..."
 
-#: src/file-manager/fm-properties-window.c:2290
+#: src/file-manager/fm-properties-window.c:2315
 msgid "_Remove Custom Icon"
 msgstr "Aangepast pictogram _verwijderen"
 
-#: src/file-manager/fm-properties-window.c:2613
+#: src/file-manager/fm-properties-window.c:2638
 msgid "_Read"
 msgstr "_Lezen"
 
-#: src/file-manager/fm-properties-window.c:2615
+#: src/file-manager/fm-properties-window.c:2640
 msgid "_Write"
 msgstr "_Schrijven"
 
-#: src/file-manager/fm-properties-window.c:2617
+#: src/file-manager/fm-properties-window.c:2642
 msgid "E_xecute"
 msgstr "_Uitvoeren"
 
-#: src/file-manager/fm-properties-window.c:2694
+#: src/file-manager/fm-properties-window.c:2719
 msgid "Set _user ID"
 msgstr "Gebruikers-ID instellen"
 
-#: src/file-manager/fm-properties-window.c:2699
+#: src/file-manager/fm-properties-window.c:2724
 msgid "Special flags:"
 msgstr "Speciale vlaggen:"
 
-#: src/file-manager/fm-properties-window.c:2702
+#: src/file-manager/fm-properties-window.c:2727
 msgid "Set gro_up ID"
 msgstr "Groeps-ID instellen"
 
-#: src/file-manager/fm-properties-window.c:2704
+#: src/file-manager/fm-properties-window.c:2729
 msgid "_Sticky"
 msgstr "_Vast"
 
-#: src/file-manager/fm-properties-window.c:2788
+#: src/file-manager/fm-properties-window.c:2813
 msgid "Permissions"
 msgstr "Rechten"
 
-#: src/file-manager/fm-properties-window.c:2798
+#: src/file-manager/fm-properties-window.c:2823
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "U bent niet de eigenaar en kunt dus geen eigenschappen wijzigen."
 
-#: src/file-manager/fm-properties-window.c:2811
+#: src/file-manager/fm-properties-window.c:2836
 msgid "File owner:"
 msgstr "Bestandseigenaar:"
 
-#: src/file-manager/fm-properties-window.c:2828
+#: src/file-manager/fm-properties-window.c:2853
 msgid "_File group:"
 msgstr "_Bestandsgroep:"
 
-#: src/file-manager/fm-properties-window.c:2837
+#: src/file-manager/fm-properties-window.c:2862
 msgid "File group:"
 msgstr "Bestandsgroep:"
 
-#: src/file-manager/fm-properties-window.c:2849
+#: src/file-manager/fm-properties-window.c:2874
 msgid "Owner:"
 msgstr "Eigenaar:"
 
-#: src/file-manager/fm-properties-window.c:2850
+#: src/file-manager/fm-properties-window.c:2875
 msgid "Group:"
 msgstr "Groep:"
 
-#: src/file-manager/fm-properties-window.c:2851
+#: src/file-manager/fm-properties-window.c:2876
 msgid "Others:"
 msgstr "Anderen:"
 
-#: src/file-manager/fm-properties-window.c:2924
+#: src/file-manager/fm-properties-window.c:2949
 msgid "Text view:"
 msgstr "Tekstweergave:"
 
-#: src/file-manager/fm-properties-window.c:2928
+#: src/file-manager/fm-properties-window.c:2953
 msgid "Number view:"
 msgstr "Numerieke weergave:"
 
-#: src/file-manager/fm-properties-window.c:2932
+#: src/file-manager/fm-properties-window.c:2957
 msgid "Last changed:"
 msgstr "Laatst gewijzigd:"
 
-#: src/file-manager/fm-properties-window.c:2938
+#: src/file-manager/fm-properties-window.c:2963
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "De eigenschappen van \"%s\" kunnen niet worden bepaald."
 
-#: src/file-manager/fm-properties-window.c:2941
+#: src/file-manager/fm-properties-window.c:2966
 msgid "The permissions of the selected file could not be determined."
 msgstr ""
 "De eigenschappen van het geselecteerde bestand kunnen niet worden bepaald."
 
-#: src/file-manager/fm-properties-window.c:3257
+#: src/file-manager/fm-properties-window.c:3282
 #: src/nautilus-bookmarks-window.c:146
 #: src/nautilus-file-management-properties.c:237
 #: src/nautilus-property-browser.c:1446 src/nautilus-window-menus.c:769
@@ -5341,19 +5342,19 @@ msgstr ""
 "Er is een fout opgetreden bij het weergeven van hulptekst:\n"
 "%s"
 
-#: src/file-manager/fm-properties-window.c:3259
+#: src/file-manager/fm-properties-window.c:3284
 msgid "Couldn't show help"
 msgstr "Kan hulptekst niet tonen"
 
-#: src/file-manager/fm-properties-window.c:3595
+#: src/file-manager/fm-properties-window.c:3620
 msgid "Cancel Showing Properties Window?"
 msgstr "Eigenschappenvenster annuleren?"
 
-#: src/file-manager/fm-properties-window.c:3596
+#: src/file-manager/fm-properties-window.c:3621
 msgid "Creating Properties window"
 msgstr "Bezig met aanmaken eigenschappenvenster"
 
-#: src/file-manager/fm-properties-window.c:3717
+#: src/file-manager/fm-properties-window.c:3742
 msgid "Select an icon"
 msgstr "Kies een pictogram"
 
@@ -5801,13 +5802,13 @@ msgstr "Bestanden _plakken"
 msgid "_Paste Files Into Folder"
 msgstr "Bestanden in map _plakken"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:44
+#: src/file-manager/nautilus-directory-view-ui.xml.h:46
 msgid "_Properties"
 msgstr "_Eigenschappen"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:47
 msgid "_Rename..."
-msgstr "He_rnoemen..."
+msgstr "_Hernoemen..."
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:48
 msgid "_Scripts"
@@ -7486,7 +7487,7 @@ msgstr "Zoomen naar passend"
 msgid "Try to fit in window"
 msgstr "In venster trachten in te passen"
 
-#: src/nautilus-zoom-control.c:794
+#: src/nautilus-zoom-control.c:796
 msgid "Zoom"
 msgstr "Zoomen"
 
