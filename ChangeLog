@@ -1,3 +1,12 @@
+2000-05-31  Seth Nickell  <snickell@stanford.edu>
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(construct_alternate_metafile_uri), (nautilus_directory_new):
+	* libnautilus-extensions/nautilus-file.c: 
+	(nautilus_file_matches_uri), (nautilus_file_get_uri):
+	Changed calls to gnome_vfs_append_path to use the similar
+	but more specific gnome_vfs_append_file_name instead.
+	
 2000-05-31  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-file.c:

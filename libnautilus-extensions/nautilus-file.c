@@ -675,7 +675,7 @@ nautilus_file_matches_uri (NautilusFile *file, const char *uri_string)
 		return FALSE;
 
 	result = FALSE;
-	file_uri = gnome_vfs_uri_append_path (file->details->directory->details->uri,
+	file_uri = gnome_vfs_uri_append_file_name (file->details->directory->details->uri,
 					      file->details->info->name);
 
 	if (match_uri != NULL) {
@@ -1196,7 +1196,7 @@ nautilus_file_get_uri (NautilusFile *file)
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-	uri = gnome_vfs_uri_append_path
+	uri = gnome_vfs_uri_append_file_name
 		(file->details->directory->details->uri,
 		 file->details->info->name);
 	uri_text = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
