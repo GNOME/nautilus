@@ -1,3 +1,25 @@
+s2000-10-10  Gene Z. Ragan  <gzr@eazel.com>
+
+	Work on making bookmarks and history work with new bonobo
+	UI code.
+	
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	* libnautilus-extensions/nautilus-bonobo-extensions.h:
+	(nautilus_bonobo_add_menu_item), (nautilus_bonobo_add_submenu),
+	(nautilus_bonobo_add_menu_separator),
+	(nautilus_bonobo_get_menu_item_verb_name):
+	New utility funcitons to make menu manipulation easier.
+		
+	* src/nautilus-window-menus.c: (activate_bookmark_in_menu_item),
+	(append_bookmark_to_menu), (append_separator),
+	(create_menu_item_from_node), (append_static_bookmarks),
+	(refresh_bookmarks_menu), (nautilus_window_initialize_menus),
+	(nautilus_window_remove_bookmarks_menu_items),
+	(nautilus_window_remove_go_menu_items), (append_dynamic_bookmarks),
+	(refresh_go_menu):
+	Modified functions and removed code in an effort to make bookmarks
+	and history be happy once more.
+
 2000-10-10  Mike Fleming  <mfleming@eazel.com>
 
 	* components/mozilla/Makefile.am:

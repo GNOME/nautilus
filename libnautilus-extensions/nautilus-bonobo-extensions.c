@@ -27,6 +27,8 @@
 #include <config.h>
 #include "nautilus-bonobo-extensions.h"
 
+#include <libgnomevfs/gnome-vfs-utils.h>
+
 void
 nautilus_bonobo_set_accelerator (BonoboUIComponent *ui,
 			   	 const char *path,
@@ -124,16 +126,51 @@ nautilus_bonobo_get_hidden (BonoboUIComponent *ui,
 void
 nautilus_bonobo_add_menu_item (BonoboUIComponent *ui, const char *path, const char *label)
 {
-	CORBA_Environment  ev;
-	char *xml_string;
-		
-	CORBA_exception_init (&ev);
+	char *xml_string, *escaped_label;
 
-	xml_string = g_strdup_printf ("<menuitem name=\"name:%s\" label=\"%s\" verb=\"verb:%s\"/>\n", label, label, label);
-	bonobo_ui_component_set (ui, path, xml_string, &ev);
+	escaped_label = gnome_vfs_escape_string (label);
+	
+	xml_string = g_strdup_printf ("<menuitem name=\"%s\" label=\"%s\" verb=\"verb:%s\"/>\n", 
+				        escaped_label, label, escaped_label);
+	bonobo_ui_component_set (ui, path, xml_string, NULL);
 
 	g_free (xml_string);
-	CORBA_exception_free (&ev);
+	g_free (escaped_label);
+}
+
+void
+nautilus_bonobo_add_submenu (BonoboUIComponent *ui, const char *path, const char *label)
+{
+	char *xml_string, *escaped_label;
+
+	escaped_label = gnome_vfs_escape_string (label);
+
+	xml_string = g_strdup_printf ("<submenu name=\"%s\" label=\"%s\"/>\n", 
+				        escaped_label, label);
+	bonobo_ui_component_set (ui, path, xml_string, NULL);
+
+	g_free (escaped_label);
+	g_free (xml_string);
+}
+
+void
+nautilus_bonobo_add_menu_separator (BonoboUIComponent *ui, const char *path)
+{
+	bonobo_ui_component_set (ui, path, "<separator/>", NULL);
+}
+
+char *
+nautilus_bonobo_get_menu_item_verb_name (const char *label)
+{
+	char *verb_name, *escaped_label;
+	
+	escaped_label = gnome_vfs_escape_string (label);
+
+	verb_name = g_strdup_printf ("verb:%s", escaped_label);
+
+	g_free (escaped_label);
+	
+	return verb_name;
 }
 
 /**

@@ -3062,7 +3062,7 @@ add_open_with_app_bonobo_menu_item (BonoboUIComponent *ui,
 	nautilus_bonobo_add_menu_item (ui, FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER, 
 				       escaped_label);
 
-	verb_name = g_strdup_printf ("verb:%s", label);
+	verb_name = nautilus_bonobo_get_menu_item_verb_name (label);
 	bonobo_ui_component_add_verb_full (ui, verb_name, callback, callback_data, destroy_notify);
 				   	   
 	g_free (escaped_label);

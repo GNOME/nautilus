@@ -34,7 +34,7 @@
 #include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
 #include <gnome.h>
 
-
+
 /* Static variables to keep track of window state. If there were
  * more than one bookmark-editing window, these would be struct or
  * class fields. 
@@ -50,7 +50,6 @@ static gboolean		     text_changed = FALSE;
 static GtkWidget	    *uri_field = NULL;
 static int		     uri_field_changed_signalID;
 
-
 /* forward declarations */
 static NautilusBookmark *get_selected_bookmark (void);
 static guint	get_selected_row	      (void);
@@ -86,9 +85,6 @@ static void	repopulate		      (void);
 static void	update_built_in_bookmarks_checkbox_to_match_preference (gpointer user_data);
 static void	update_built_in_bookmarks_preference_to_match_checkbox (gpointer user_data);
 
-
-
-
 #define BOOKMARK_LIST_COLUMN_ICON		0
 #define BOOKMARK_LIST_COLUMN_NAME		1
 #define BOOKMARK_LIST_COLUMN_COUNT		2
@@ -103,7 +99,7 @@ static void	update_built_in_bookmarks_preference_to_match_checkbox (gpointer use
 #define BOOKMARKS_WINDOW_INITIAL_WIDTH	500
 #define BOOKMARKS_WINDOW_INITIAL_HEIGHT	200
 
-
+
 /**
  * create_bookmarks_window:
  * 
