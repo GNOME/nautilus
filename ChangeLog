@@ -1,3 +1,46 @@
+2000-08-22  John Sullivan  <sullivan@eazel.com>
+
+	More work on bug 1653 (new menu layout)
+	Fixed bug 1995 (No way to enter/leave search mode from keyboard)
+	Fixed bug 1999 (No way to reload from keyboard)
+
+	* libnautilus/nautilus-bonobo-ui.h: Added more placeholders.
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_real_merge_menus): Position "Empty Trash"
+	menu item and separator using placeholder.
+	* src/file-manager/fm-icon-view.c: (compute_menu_item_info):
+	Fixed bug where "Restore Icon's Original Size" was using the
+	wrong plurality.
+	(insert_bonobo_menu_item): Renamed this from append_ and gave
+	it a position parameter.
+	(fm_icon_view_merge_menus): Used placeholders to put the menu
+	items in the order specified by bug 1653.
+	* src/nautilus-switchable-navigation-bar.h:
+	* src/nautilus-switchable-navigation-bar.c:
+	(nautilus_switchable_navigation_bar_get_mode): New function;
+	formerly there was a public setter but no public getter.
+	* src/nautilus-window-menus.c: 
+	(file_menu_close_window_callback): Removed redundant assert.
+	(file_menu_toggle_find_mode_callback): New function, toggles
+	whether we're in search mode.
+	(go_menu_reload_callback): New function, reloads.
+	(nautilus_window_initialize_menus): Tweaked hint for "Close All Windows",
+	added Find/Browse menu item; Changed "Up" to "Up a Level" to
+	match bug 1653; added "Reload" to Go menu.
+	(nautilus_window_update_find_menu_item): New function, sets the
+	label of the Find/Browse menu item based on search mode's state.
+	* src/nautilus-window-private.h: added #define for 
+	NAUTILUS_MENU_PATH_RELOAD_ITEM; added prototype for 
+	nautilus_window_update_find_menu_item.
+	* src/nautilus-window-toolbars.c: Changed "Search" to "Find"
+	to match menu item (and Arlo's design).
+	* src/nautilus-window.h,
+	* src/nautilus-window.c: 
+	(navigation_bar_mode_changed_callback): Update Find menu item.
+	(nautilus_window_get_search_mode): New function; formerly there
+	was a public setter but no public getter.
+	(nautilus_window_allow_reload): Update menu item sensitivity.
+
 2000-08-22  Andy Hertzfeld  <andy@eazel.com>
 
 	fixed bugs 643 and 605, by not accepting multiple or remote images

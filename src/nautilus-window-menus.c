@@ -63,6 +63,8 @@
 #define NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM		"/File/New Window"
 #define NAUTILUS_MENU_PATH_CLOSE_ITEM			"/File/Close"
 #define NAUTILUS_MENU_PATH_CLOSE_ALL_WINDOWS_ITEM	"/File/Close All Windows"
+#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_FIND	"/File/Separator before Find"
+#define NAUTILUS_MENU_PATH_TOGGLE_FIND_MODE		"/File/Toggle Find Mode"
 
 #define NAUTILUS_MENU_PATH_UNDO_ITEM			"/Edit/Undo"
 #define NAUTILUS_MENU_PATH_SEPARATOR_AFTER_UNDO		"/Edit/Separator after Undo"
@@ -156,7 +158,9 @@ bookmark_holder_free (BookmarkHolder *bookmark_holder)
  */
 
 #define NAUTILUS_MENU_PATH_CUSTOMIZE_ITEM			"/Edit/Customize"
-#define NAUTILUS_MENU_PATH_CHANGE_APPEARANCE_ITEM	"/Edit/Change_Appearance"
+#define NAUTILUS_MENU_PATH_CHANGE_APPEARANCE_ITEM		"/Edit/Change_Appearance"
+
+#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_RELOAD		"/Go/Separator before Reload"
 
 #define NAUTILUS_MENU_PATH_USER_LEVEL				"/UserLevel"
 #define NAUTILUS_MENU_PATH_NOVICE_ITEM				"/UserLevel/Novice"
@@ -195,7 +199,6 @@ file_menu_close_window_callback (BonoboUIHandler *ui_handler,
 			         gpointer user_data, 
 			         const char *path)
 {
-        g_assert (NAUTILUS_IS_WINDOW (user_data));
 	nautilus_window_close (NAUTILUS_WINDOW (user_data));
 }
 
@@ -205,6 +208,19 @@ file_menu_close_all_windows_callback (BonoboUIHandler *ui_handler,
 			         const char *path)
 {
 	nautilus_application_close_all_windows ();
+}
+
+static void
+file_menu_toggle_find_mode_callback (BonoboUIHandler *ui_handler, 
+			             gpointer user_data, 
+			             const char *path)
+{
+	NautilusWindow *window;
+
+	window = NAUTILUS_WINDOW (user_data);
+
+	nautilus_window_set_search_mode 
+		(window, !nautilus_window_get_search_mode (window));
 }
 
 static void
@@ -303,6 +319,14 @@ go_menu_home_callback (BonoboUIHandler *ui_handler,
 		       const char *path) 
 {
 	nautilus_window_go_home (NAUTILUS_WINDOW (user_data));
+}
+
+static void
+go_menu_reload_callback (BonoboUIHandler *ui_handler, 
+		         gpointer user_data,
+		         const char *path) 
+{
+	nautilus_window_reload (NAUTILUS_WINDOW (user_data));
 }
 
 static void
@@ -1082,7 +1106,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         bonobo_ui_handler_menu_new_item (ui_handler,
         				 NAUTILUS_MENU_PATH_CLOSE_ALL_WINDOWS_ITEM,
         				 _("Close All Windows"),
-        				 _("Close all windows"),
+        				 _("Close all Nautilus windows"),
         				 -1,
         				 BONOBO_UI_HANDLER_PIXMAP_NONE,
         				 NULL,
@@ -1092,7 +1116,24 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 NULL);
 
         append_placeholder (window, NAUTILUS_MENU_PATH_FILE_ITEMS_PLACEHOLDER);
+
+	append_separator (window, NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_FIND);
+
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_TOGGLE_FIND_MODE,
+        				 "", /* No initial text; set in update_find_menu_item */
+        				 _("Show the searching controls instead of the location"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
+        				 NULL,
+        				 0,
+        				 GDK_CONTROL_MASK,
+        				 file_menu_toggle_find_mode_callback,
+        				 window);
+        nautilus_window_update_find_menu_item (window);
         				 
+        append_placeholder (window, NAUTILUS_MENU_PATH_GLOBAL_FILE_ITEMS_PLACEHOLDER);
+
 	/* Edit menu */
         new_top_level_menu (window, NAUTILUS_MENU_PATH_EDIT_MENU, _("_Edit"));
 
@@ -1201,6 +1242,8 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 change_appearance_callback,
         				 NULL);
 
+        append_placeholder (window, NAUTILUS_MENU_PATH_GLOBAL_EDIT_ITEMS_PLACEHOLDER);
+        append_placeholder (window, NAUTILUS_MENU_PATH_EDIT_ITEMS_PLACEHOLDER);
 
 	/* Go menu */
         new_top_level_menu (window, NAUTILUS_MENU_PATH_GO_MENU, _("_Go"));
@@ -1231,7 +1274,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 
         bonobo_ui_handler_menu_new_item (ui_handler,
         				 NAUTILUS_MENU_PATH_UP_ITEM,
-        				 _("_Up"),
+        				 _("_Up a Level"),
         				 _("Go to the location that contains this one"),
         				 -1,
         				 BONOBO_UI_HANDLER_PIXMAP_NONE,
@@ -1251,6 +1294,20 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 'H',
         				 GDK_CONTROL_MASK,
         				 go_menu_home_callback,
+        				 window);
+
+	append_separator (window, NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_RELOAD);
+
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_RELOAD_ITEM,
+        				 _("_Reload"),
+        				 _("Display the latest contents of the current location"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
+        				 NULL,
+        				 'R',
+        				 GDK_CONTROL_MASK,
+        				 go_menu_reload_callback,
         				 window);
 
         append_placeholder (window, NAUTILUS_MENU_PATH_HISTORY_ITEMS_PLACEHOLDER);
@@ -1497,6 +1554,23 @@ nautilus_window_remove_go_menu_items (NautilusWindow *window)
 	remove_bookmarks_after (window, 
 				NAUTILUS_MENU_PATH_GO_MENU, 
 				NAUTILUS_MENU_PATH_HISTORY_ITEMS_PLACEHOLDER);
+}
+
+void
+nautilus_window_update_find_menu_item (NautilusWindow *window)
+{
+	char *label_string;
+
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+
+	label_string = g_strdup 
+		(nautilus_window_get_search_mode (window) 
+			? _("_Browse") 
+			: _("_Find"));
+	bonobo_ui_handler_menu_set_label (window->ui_handler, 
+					  NAUTILUS_MENU_PATH_TOGGLE_FIND_MODE, 
+					  label_string);
+	g_free (label_string);	
 }
 
 static void

@@ -65,7 +65,6 @@
 /* Paths to use when creating & referring to Bonobo menu items */
 #define MENU_PATH_STRETCH_ICON 			"/Edit/Stretch"
 #define MENU_PATH_UNSTRETCH_ICONS 		"/Edit/Unstretch"
-#define MENU_PATH_AFTER_STRETCH_SEPARATOR 	"/Edit/After Stretch Separator"
 #define MENU_PATH_CUSTOMIZE_ICON_TEXT 		"/Edit/Icon Text"
 #define MENU_PATH_LAYOUT_MENU 			"/Layout"
 #define MENU_PATH_MANUAL_LAYOUT 		"/Layout/Manual Layout"
@@ -315,9 +314,9 @@ compute_menu_item_info (FMIconView *view,
 			&& !nautilus_icon_container_has_stretch_handles (icon_container);
 	} else if (strcmp (MENU_PATH_UNSTRETCH_ICONS, menu_path) == 0) {
                 if (nautilus_g_list_more_than_one_item (selection)) {
-                        name = g_strdup (_("_Restore Icon's Original Size"));
-                } else {
                         name = g_strdup (_("_Restore Icons' Original Sizes"));
+                } else {
+                        name = g_strdup (_("_Restore Icon's Original Size"));
                 }
         	*sensitive_return = nautilus_icon_container_is_stretched (icon_container);
 	} else if (strcmp (MENU_PATH_CUSTOMIZE_ICON_TEXT, menu_path) == 0) {
@@ -941,11 +940,12 @@ fm_icon_view_get_selection (FMDirectoryView *view)
 }
 
 static void
-append_bonobo_menu_item (FMIconView *view, 
+insert_bonobo_menu_item (FMIconView *view, 
                          BonoboUIHandler *ui_handler,
                          GList *selection,
                          const char *path,
                          const char *hint,
+                         int pos,
                          BonoboUIHandlerCallback callback,
                          gpointer callback_data)
 {
@@ -955,7 +955,7 @@ append_bonobo_menu_item (FMIconView *view,
         compute_menu_item_info (view, selection, path, TRUE, &label, &sensitive);
         bonobo_ui_handler_menu_new_item
 		(ui_handler, path, label, hint, 
-		 -1,                            /* Position, -1 means at end */
+		 pos,                            /* Position, -1 means at end */
 		 BONOBO_UI_HANDLER_PIXMAP_NONE, /* Pixmap type */
 		 NULL,                          /* Pixmap data */
 		 0,                             /* Accelerator key */
@@ -1057,26 +1057,25 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
         selection = fm_directory_view_get_selection (view);
         ui_handler = fm_directory_view_get_bonobo_ui_handler (view);
 
-	/* Settings menu. */
-        append_bonobo_menu_item
-		(icon_view, ui_handler, selection,
-		 MENU_PATH_STRETCH_ICON,
-		 _("Make the selected icon stretchable"),
-		 (BonoboUIHandlerCallback) show_stretch_handles_callback, view);
-        append_bonobo_menu_item
-		(icon_view, ui_handler, selection,
-		 MENU_PATH_UNSTRETCH_ICONS,
-		 _("Restore each selected icon to its original size"),
-		 (BonoboUIHandlerCallback) unstretch_icons_callback, view);
-        bonobo_ui_handler_menu_new_separator
-		(ui_handler,
-		 MENU_PATH_AFTER_STRETCH_SEPARATOR,
-		 -1);
-        append_bonobo_menu_item
+	/* Edit menu. */
+        insert_bonobo_menu_item
 		(icon_view, ui_handler, selection,
 		 MENU_PATH_CUSTOMIZE_ICON_TEXT,
 		 _("Choose which information appears beneath each icon's name"),
+		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_GLOBAL_EDIT_ITEMS_PLACEHOLDER) + 1,
 		 (BonoboUIHandlerCallback) customize_icon_text_callback, view);
+        insert_bonobo_menu_item
+		(icon_view, ui_handler, selection,
+		 MENU_PATH_STRETCH_ICON,
+		 _("Make the selected icon stretchable"),
+		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_EDIT_ITEMS_PLACEHOLDER) + 1,
+		 (BonoboUIHandlerCallback) show_stretch_handles_callback, view);
+        insert_bonobo_menu_item
+		(icon_view, ui_handler, selection,
+		 MENU_PATH_UNSTRETCH_ICONS,
+		 _("Restore each selected icon to its original size"),
+		 bonobo_ui_handler_menu_get_pos (ui_handler, MENU_PATH_STRETCH_ICON + 1),
+		 (BonoboUIHandlerCallback) unstretch_icons_callback, view);
 
 	/* Layout menu. */
 	/* Put it just after the Settings menu, which is just before

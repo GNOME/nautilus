@@ -137,7 +137,7 @@ static GnomeUIInfo toolbar_info[] = {
 	 NAUTILUS_PIXMAPDIR "/eazel/Home.png"),
 	
 	NAUTILUS_GNOMEUIINFO_TOGGLEITEM_STOCK
-	(N_("Search"), N_("Search this computer for files"),
+	(N_("Find"), N_("Search this computer for files"),
 	 toolbar_search_local_callback,
 	 NAUTILUS_PIXMAPDIR "/eazel/Search.png"),
 	

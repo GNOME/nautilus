@@ -209,6 +209,8 @@ navigation_bar_mode_changed_callback (GtkWidget *widget,
 				      NautilusSwitchableNavigationBarMode mode,
 				      GtkWidget *window)
 {
+	nautilus_window_update_find_menu_item (NAUTILUS_WINDOW (window));
+
 	switch (mode) {
 	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION:
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (NAUTILUS_WINDOW (window)->search_local_button), FALSE);
@@ -1003,6 +1005,16 @@ nautilus_window_set_search_mode (NautilusWindow *window,
 		 search_mode
 		 ? NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH
 		 : NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION);
+
+	
+}
+
+gboolean
+nautilus_window_get_search_mode (NautilusWindow *window)
+{
+	return nautilus_switchable_navigation_bar_get_mode 
+		(NAUTILUS_SWITCHABLE_NAVIGATION_BAR (window->navigation_bar)) 
+	== NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH;
 }
 
 void
@@ -1059,6 +1071,8 @@ void
 nautilus_window_allow_reload (NautilusWindow *window, gboolean allow)
 {
 	gtk_widget_set_sensitive (window->reload_button, allow); 
+	bonobo_ui_handler_menu_set_sensitivity
+		(window->ui_handler, NAUTILUS_MENU_PATH_RELOAD_ITEM, allow);
 }
 
 void

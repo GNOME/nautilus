@@ -117,6 +117,12 @@ nautilus_switchable_navigation_bar_new (void)
 	return gtk_widget_new (NAUTILUS_TYPE_SWITCHABLE_NAVIGATION_BAR, NULL);
 }
 
+NautilusSwitchableNavigationBarMode
+nautilus_switchable_navigation_bar_get_mode (NautilusSwitchableNavigationBar     *bar)
+{
+	return bar->mode;
+}
+
 void
 nautilus_switchable_navigation_bar_set_mode (NautilusSwitchableNavigationBar     *bar,
 					     NautilusSwitchableNavigationBarMode  mode)

@@ -154,6 +154,7 @@ void             nautilus_window_remove_sidebar_panel (NautilusWindow    *window
                                                        NautilusViewFrame *sidebar_panel);
 void             nautilus_window_goto_uri             (NautilusWindow    *window,
                                                        const char        *uri);
+gboolean         nautilus_window_get_search_mode      (NautilusWindow    *window);
 void             nautilus_window_set_search_mode      (NautilusWindow    *window,
                                                        gboolean           search_mode);
 void             nautilus_window_go_home              (NautilusWindow    *window);

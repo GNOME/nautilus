@@ -2992,14 +2992,14 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
         bonobo_ui_handler_menu_new_separator
 		(ui_handler,
 		 FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_EMPTY_TRASH,
-		 -1);
+		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_GLOBAL_FILE_ITEMS_PLACEHOLDER) + 1);
 
 	insert_bonobo_menu_item 
 		(view,
 		 ui_handler, selection,
 		 FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH,
 		 _("Delete all items in the trash"),
-		 -1,
+		 bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_EMPTY_TRASH) + 1,
 		  0, 0,
 		 bonobo_menu_empty_trash_callback, view);
 	insert_bonobo_menu_item 
@@ -3014,14 +3014,14 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
         bonobo_ui_handler_menu_new_separator
 		(ui_handler,
 		 FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_RESET,
-		 -1);
+		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_EDIT_ITEMS_PLACEHOLDER));
 
 	insert_bonobo_menu_item 
 		(view,
 		 ui_handler, selection,
 		 FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS,
 		 _("Remove the custom image from each selected icon"),
-		 -1,
+		 bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_RESET) + 1,
 		  0, 0,
 		 (BonoboUIHandlerCallback) remove_custom_icons_callback, view);
 

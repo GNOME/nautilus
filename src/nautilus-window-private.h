@@ -52,6 +52,7 @@ struct NautilusWindowDetails
 #define NAUTILUS_MENU_PATH_BACK_ITEM			"/Go/Back"
 #define NAUTILUS_MENU_PATH_FORWARD_ITEM			"/Go/Forward"
 #define NAUTILUS_MENU_PATH_UP_ITEM			"/Go/Up"
+#define NAUTILUS_MENU_PATH_RELOAD_ITEM			"/Go/Reload"
 
 void                 nautilus_window_set_state_info                    (NautilusWindow             *window,
 									... /* things to set, plus optional parameters */);
@@ -77,6 +78,7 @@ void                 nautilus_window_initialize_toolbars               (Nautilus
 void                 nautilus_window_go_back                           (NautilusWindow             *window);
 void                 nautilus_window_go_forward                        (NautilusWindow             *window);
 void                 nautilus_window_go_up                             (NautilusWindow             *window);
+void		     nautilus_window_update_find_menu_item	       (NautilusWindow		   *window);
 void                 nautilus_window_toolbar_remove_theme_callback     (NautilusWindow             *window);
 NautilusUndoManager *nautilus_window_get_undo_manager                  (NautilusWindow             *window);
 void                 nautilus_window_begin_location_change             (NautilusWindow             *window,

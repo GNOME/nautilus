@@ -69,10 +69,28 @@
 #define NAUTILUS_MENU_PATH_OPEN_PLACEHOLDER		"/File/Open Placeholder"
 
 /**
- * Use the "file items" placeholder to insert other menu items dealing with
+ * Use the "file items" placeholder to insert other File menu items dealing with
  * individual files, such as "Show Properties" and "Rename"
  */
 #define NAUTILUS_MENU_PATH_FILE_ITEMS_PLACEHOLDER	"/File/File Items Placeholder"
+
+/**
+ * Use the "global file items" placeholder to insert other File menu items 
+ * dealing with nautilus as a whole, such as "Empty Trash".
+ */
+#define NAUTILUS_MENU_PATH_GLOBAL_FILE_ITEMS_PLACEHOLDER "/File/Global File Items Placeholder"
+
+/**
+ * Use the "global edit items" placeholder to insert other Edit menu items 
+ * dealing with nautilus as a whole, such as "Icon Captions...".
+ */
+#define NAUTILUS_MENU_PATH_GLOBAL_EDIT_ITEMS_PLACEHOLDER "/Edit/Global Edit Items Placeholder"
+
+/**
+ * Use the "edit items" placeholder to insert other Edit menu items dealing with
+ * individual files, such as "Remove Custom Image"
+ */
+#define NAUTILUS_MENU_PATH_EDIT_ITEMS_PLACEHOLDER	"/Edit/Edit Items Placeholder"
 
 /* Use the "extra help items" placeholder to add help-related items */
 #define NAUTILUS_MENU_PATH_EXTRA_HELP_ITEMS_PLACEHOLDER	"/Help/Extra Help Items"
