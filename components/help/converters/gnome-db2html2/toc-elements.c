@@ -128,6 +128,7 @@ ElementInfo toc_elements[] = {
 	{ ANSWER, "answer", NULL, NULL, NULL},
 	{ CHAPTER, "chapter", (startElementSAXFunc) toc_sect_start_element, (endElementSAXFunc) toc_sect_end_element, NULL},
 	{ PREFACE, "preface", (startElementSAXFunc) toc_sect_start_element, (endElementSAXFunc) toc_sect_end_element, NULL},
+	{ TERM, "term", NULL, NULL, NULL},
 	{ APPENDIX, "appendix", (startElementSAXFunc) toc_sect_start_element, (endElementSAXFunc) toc_sect_end_element, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };

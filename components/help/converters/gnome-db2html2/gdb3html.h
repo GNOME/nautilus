@@ -117,8 +117,9 @@ typedef enum ElementIndex {
 	ANSWER, /* 105 */
 	CHAPTER,
 	PREFACE,
+	TERM,
 	APPENDIX,
-	UNDEFINED /* 109 */
+	UNDEFINED /* 110 */
 } ElementIndex;
 
 typedef struct _ElementInfo ElementInfo;

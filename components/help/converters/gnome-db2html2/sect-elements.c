@@ -112,6 +112,7 @@ ElementInfo sect_elements[] = {
 	{ ANSWER, "answer", (startElementSAXFunc) sect_answer_start_element, (endElementSAXFunc) sect_formalpara_end_element, NULL /* charactersSAXFunc) sect_write_characters */},
 	{ CHAPTER, "chapter", (startElementSAXFunc) sect_sect_start_element, (endElementSAXFunc) sect_sect_end_element, NULL},
 	{ PREFACE, "preface", (startElementSAXFunc) sect_sect_start_element, (endElementSAXFunc) sect_sect_end_element, NULL},
+	{ TERM, "term", NULL, NULL, (charactersSAXFunc) sect_write_characters},
 	{ APPENDIX, "appendix", (startElementSAXFunc) sect_sect_start_element, (endElementSAXFunc) sect_sect_end_element, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
