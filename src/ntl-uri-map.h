@@ -34,7 +34,8 @@ void nautilus_navinfo_init(void);
 gpointer nautilus_navinfo_new(Nautilus_NavigationRequestInfo *nri,
                               Nautilus_NavigationInfo *old_navinfo,
                               NautilusNavigationInfoFunc notify_when_ready,
-                              gpointer notify_data);
+                              gpointer notify_data,
+                              const char *referring_iid);
 void nautilus_navinfo_free(NautilusNavigationInfo *navinfo);
 
 #endif

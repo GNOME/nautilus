@@ -1,5 +1,29 @@
 2000-03-14  John Sullivan  <sullivan@eazel.com>
 
+	When a directory with no explicitly-chosen viewer is
+	visited, the currently-displayed viewer is used if
+	possible. This matches the behavior of zooming. Darin
+	doesn't like this and would prefer a single global
+	setting with some possibly obscure way to set up values
+	for specific locations, which wouldn't affect subsequent
+	navigation. Let's try it for awhile and see if we can
+	agree on a better solution.
+
+	* src/ntl-types.h: added referring_iid field to 
+	NautilusNavigationInfo
+	* src/ntl-uri-map.h,
+	* src/ntl-uri-map.c: 
+	(nautilus_navinfo_new): Added a referring_iid parameter,
+	a copy of which is stored in the new struct.
+	(nautilus_navinfo_free): free the referring_iid string.
+	(set_initial_content_iid): Use the referring_iid if there's
+	no valid remembered iid.
+	* src/ntl-window-msgs.c:
+	(nautilus_window_change_location): Get the iid from the current
+	content view and pass it to nautilus_navinfo_new.
+
+2000-03-14  John Sullivan  <sullivan@eazel.com>
+
 	Directories now start out using the same view they were
 	last displayed with.
 

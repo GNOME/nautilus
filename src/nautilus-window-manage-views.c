@@ -997,6 +997,10 @@ nautilus_window_change_location(NautilusWindow *window,
 				gboolean is_back,
                                 gboolean is_reload)
 {
+  const char *current_iid;
+
+  g_assert (NAUTILUS_IS_WINDOW (window));
+  
   nautilus_window_set_state_info(window, (NautilusWindowStateItem)RESET_TO_IDLE, (NautilusWindowStateItem)SYNC_STATE, (NautilusWindowStateItem)0);
 
   while (gdk_events_pending())
@@ -1009,8 +1013,14 @@ nautilus_window_change_location(NautilusWindow *window,
 
   nautilus_window_allow_stop(window, TRUE);
 
+  current_iid = NULL;
+  if (window->content_view != NULL) 
+    {
+      current_iid = nautilus_view_get_iid (window->content_view);
+    }
+
   window->cancel_tag =
-    nautilus_navinfo_new(loc, window->ni, nautilus_window_change_location_2, window);
+    nautilus_navinfo_new(loc, window->ni, nautilus_window_change_location_2, window, current_iid);
 }
 
 

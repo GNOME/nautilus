@@ -112,6 +112,17 @@ check_iid (gconstpointer a, gconstpointer b)
 	return strcmp (identifier->iid, string) != 0;
 }
 
+/**
+ * set_initial_content_iid:
+ * 
+ * Sets the iid that will determine which content view to use when
+ * a URI is displayed.
+ * 
+ * @navinfo: The NautilusNavigationInfo representing the URI that's about
+ * to be displayed.
+ * @fallback_value: The iid to use for the content view if no better
+ * one can be determined.
+ */
 static void
 set_initial_content_iid (NautilusNavigationInfo *navinfo,
 			 const char *fallback_value)
@@ -122,8 +133,14 @@ set_initial_content_iid (NautilusNavigationInfo *navinfo,
 
 	g_assert (fallback_value != NULL);
 	g_assert (g_slist_length (navinfo->content_identifiers) > 0);
+
+	/* NOTE: Darin doesn't like the unpredictability of this three-choice system.
+	 * He'd prefer a global setting and perhaps an explicit location-specific
+	 * setting that doesn't affect any other locations. Maybe we should change
+	 * this to work that way.
+	 */
 	
-	value = fallback_value;
+	value = NULL;
 
 	directory = nautilus_directory_get (navinfo->navinfo.requested_uri);
 	if (directory != NULL) {
@@ -139,6 +156,22 @@ set_initial_content_iid (NautilusNavigationInfo *navinfo,
 				g_message ("Unknown iid \"%s\" stored for %s", remembered_value, navinfo->navinfo.requested_uri);
 			}
 		}
+	}
+
+	if (value == NULL) {
+		/* Can't use remembered value, use referring value if 
+		 * it's non-NULL and in the list of choices. 
+		 */
+		if (navinfo->referring_iid != NULL) {
+			if (g_slist_find_custom (navinfo->content_identifiers, navinfo->referring_iid, check_iid)) {
+				value = navinfo->referring_iid;
+			}
+		}
+
+		/* Can't use remembered or referring value, use fallback value. */
+		if (value == NULL) {
+			value = fallback_value;
+		}		
 	}
 
 	navinfo->initial_content_iid = g_strdup (value);
@@ -388,7 +421,8 @@ gpointer
 nautilus_navinfo_new(Nautilus_NavigationRequestInfo *nri,
                      Nautilus_NavigationInfo *old_navinfo,
                      NautilusNavigationInfoFunc notify_when_ready,
-                     gpointer notify_data)
+                     gpointer notify_data,
+                     const char *referring_iid)
 {
   GnomeVFSResult res;
   const char *meta_keys[] = {"icon-filename", NULL};
@@ -405,6 +439,9 @@ nautilus_navinfo_new(Nautilus_NavigationRequestInfo *nri,
       navinfo->navinfo.actual_referring_uri = old_navinfo->actual_uri;
       navinfo->navinfo.referring_content_type = old_navinfo->content_type;
     }
+
+  if (referring_iid != NULL)
+    navinfo->referring_iid = g_strdup (referring_iid);
 
   navinfo->navinfo.requested_uri = g_strdup(nri->requested_uri);
 
@@ -438,6 +475,7 @@ nautilus_navinfo_free(NautilusNavigationInfo *navinfo)
   g_slist_free(navinfo->content_identifiers);
   g_slist_foreach(navinfo->meta_iids, (GFunc)g_free, NULL);
   g_slist_free(navinfo->meta_iids);
+  g_free(navinfo->referring_iid);
   g_free(navinfo->initial_content_iid);
   g_free(navinfo->navinfo.requested_uri);
   g_free(navinfo->navinfo.actual_uri);
