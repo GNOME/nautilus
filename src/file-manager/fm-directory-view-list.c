@@ -30,6 +30,8 @@
 
 #include "fm-icon-cache.h"
 #include <gtk/gtkhbox.h>
+#include <gtk/gtkmenu.h>
+#include <gtk/gtkmenuitem.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-pixmap.h>
 #include <libgnomeui/gnome-uidefs.h>
@@ -62,6 +64,11 @@ static void add_to_flist 			    (FMDirectoryViewList *list_view,
 static void column_clicked_cb 			    (GtkCList *clist,
 			       	 		     gint column,
 			       	 		     gpointer user_data);
+static void context_click_row_cb		    (GtkCList *clist,
+						     gint row,
+						     FMDirectoryViewList *list_view);
+static void context_click_background_cb		    (GtkCList *clist,
+						     FMDirectoryViewList *list_view);
 static GtkFList *create_flist 			    (FMDirectoryViewList *list_view);
 static void flist_activate_cb 			    (GtkFList *flist,
 			       	 		     gpointer entry_data,
@@ -220,6 +227,32 @@ column_clicked_cb (GtkCList *clist, gint column, gpointer user_data)
 				list_view->details->sort_reversed);
 }
 
+
+
+static void context_click_row_cb		    (GtkCList *clist,
+						     gint row,
+						     FMDirectoryViewList *list_view)
+{
+	NautilusFile * file;
+
+	g_assert (GTK_IS_CLIST (clist));
+	g_assert (FM_IS_DIRECTORY_VIEW_LIST (list_view));
+
+	file = NAUTILUS_FILE(gtk_clist_get_row_data (clist, clist->rows - 1));
+
+	fm_directory_view_popup_item_context_menu (FM_DIRECTORY_VIEW (list_view), file);
+}
+
+
+static void context_click_background_cb		    (GtkCList *clist,
+						     FMDirectoryViewList *list_view)
+{
+	g_assert (FM_IS_DIRECTORY_VIEW_LIST (list_view));
+
+	fm_directory_view_popup_background_context_menu (FM_DIRECTORY_VIEW (list_view));
+}
+
+
 static GtkFList *
 create_flist (FMDirectoryViewList *list_view)
 {
@@ -303,11 +336,22 @@ create_flist (FMDirectoryViewList *list_view)
 			    "click_column",
 			    column_clicked_cb,
 			    list_view);
+	gtk_signal_connect (GTK_OBJECT (flist),
+			    "context_click_row",
+			    context_click_row_cb,
+			    list_view);
+	gtk_signal_connect (GTK_OBJECT (flist),
+			    "context_click_background",
+			    context_click_background_cb,
+			    list_view);
+
 
 	gtk_signal_connect (GTK_OBJECT (nautilus_get_widget_background (GTK_WIDGET (flist))),
 			    "changed",
 			    GTK_SIGNAL_FUNC (fm_directory_view_list_background_changed_cb),
 			    list_view);
+
+
 
 	gtk_container_add (GTK_CONTAINER (list_view), GTK_WIDGET (flist));
 
@@ -317,6 +361,11 @@ create_flist (FMDirectoryViewList *list_view)
 
 	return flist;
 }
+
+/* FIXME - this code was cut and pasted from fm-directory-view-list.c */
+
+
+
 
 static void
 flist_activate_cb (GtkFList *flist,
@@ -545,4 +594,3 @@ show_sort_indicator (GtkFList *flist, gint column, gboolean sort_reversed)
 
 	gtk_widget_show (get_sort_indicator (flist, column, sort_reversed));
 }
-

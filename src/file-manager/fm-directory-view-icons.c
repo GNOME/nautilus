@@ -39,6 +39,7 @@
 #include <libnautilus/nautilus-gtk-macros.h>
 #include <libnautilus/nautilus-string.h>
 #include <libnautilus/nautilus-background.h>
+#include <libnautilus/nautilus-directory.h>
 
 #define DEFAULT_BACKGROUND_COLOR "rgb:FFFF/FFFF/FFFF"
 
@@ -48,9 +49,6 @@ static void add_icon_at_free_position		 (FMDirectoryViewIcons *icon_view,
 		       				  NautilusFile *file);
 static void add_icon_if_already_positioned	 (FMDirectoryViewIcons *icon_view,
 		       				  NautilusFile *file);
-static GtkMenu *create_background_context_menu   (FMDirectoryViewIcons *icon_view);
-static GtkMenu *create_item_context_menu         (FMDirectoryViewIcons *icon_view,
-						  NautilusFile *file);
 static GnomeIconContainer *create_icon_container (FMDirectoryViewIcons *icon_view);
 static void display_icons_not_already_positioned (FMDirectoryViewIcons *icon_view);
 static void fm_directory_view_icons_icon_moved_cb (GnomeIconContainer *container,
@@ -90,7 +88,6 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryViewIcons, fm_directory_view_icons
 struct _FMDirectoryViewIconsDetails
 {
 	NautilusFileList *icons_not_positioned;
-	GtkMenu *background_context_menu;
 };
 
 
@@ -128,10 +125,6 @@ fm_directory_view_icons_initialize (FMDirectoryViewIcons *icon_view)
 
 	icon_view->details = g_new0 (FMDirectoryViewIconsDetails, 1);
 
-	icon_view->details->background_context_menu = 
-		create_background_context_menu (icon_view);
-	
-
 	icon_container = create_icon_container (icon_view);
 }
 
@@ -145,62 +138,10 @@ fm_directory_view_icons_destroy (GtkObject *object)
 	g_list_free (icon_view->details->icons_not_positioned);
 	icon_view->details->icons_not_positioned = NULL;
 
-	gtk_object_unref(GTK_OBJECT(icon_view->details->background_context_menu));
-
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 
-static GtkMenu *
-create_background_context_menu (FMDirectoryViewIcons *icon_view)
-{
-	GtkMenu *menu;
-	GtkWidget *menu_item;
-
-	menu = GTK_MENU (gtk_menu_new ());
-
-	menu_item = gtk_menu_item_new_with_label ("Select all");
-	gtk_widget_set_sensitive (menu_item, FALSE);
-	gtk_widget_show (menu_item);
-	gtk_menu_append (menu, menu_item);
-
-	menu_item = gtk_menu_item_new_with_label ("Zoom in");
-	gtk_widget_set_sensitive (menu_item, FALSE);
-	gtk_widget_show (menu_item);
-	gtk_menu_append (menu, menu_item);
-
-	menu_item = gtk_menu_item_new_with_label ("Zoom out");
-	gtk_widget_set_sensitive (menu_item, FALSE);
-	gtk_widget_show (menu_item);
-	gtk_menu_append (menu, menu_item);
-
-	gtk_object_ref(GTK_OBJECT(menu));
-	gtk_object_sink(GTK_OBJECT(menu));
-	return menu;
-}
-
-static GtkMenu *
-create_item_context_menu (FMDirectoryViewIcons *icon_view,
-			  NautilusFile *file) 
-{
-	GtkMenu *menu;
-	GtkWidget *menu_item;
-	
-	menu = GTK_MENU (gtk_menu_new ());
-
-	menu_item = gtk_menu_item_new_with_label ("Open");
-	gtk_widget_set_sensitive (menu_item, FALSE);
-	gtk_widget_show (menu_item);
-	gtk_menu_append (menu, menu_item);
-
-	menu_item = gtk_menu_item_new_with_label ("Delete");
-	gtk_widget_set_sensitive (menu_item, FALSE);
-	gtk_widget_show (menu_item);
-	gtk_menu_append (menu, menu_item);
-
-	return menu;
-}
-
 static GnomeIconContainer *
 create_icon_container (FMDirectoryViewIcons *icon_view)
 {
@@ -397,37 +338,25 @@ icon_container_selection_changed_cb (GnomeIconContainer *container,
 }
 
 static void
-popup_context_menu (GtkMenu *menu)
-{
-	gtk_menu_popup (menu, NULL, NULL, NULL,
-			NULL, 3, GDK_CURRENT_TIME);
-}
-
-static void
 icon_container_context_click_icon_cb (GnomeIconContainer *container,
 				      NautilusFile *file,
 				      FMDirectoryViewIcons *icon_view)
 {
-	GtkMenu *menu;
+	g_assert (GNOME_IS_ICON_CONTAINER (container));
+	/* g_assert (NAUTILUS_IS_FILE (file)); */
 	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (icon_view));
 
-	menu = create_item_context_menu (icon_view, file);
-
-	gtk_object_ref (GTK_OBJECT(menu));
-	gtk_object_sink (GTK_OBJECT(menu));
-
-	popup_context_menu (menu);
-
-	gtk_object_unref (GTK_OBJECT(menu));
+	fm_directory_view_popup_item_context_menu (FM_DIRECTORY_VIEW (icon_view), file);
 }
 
 static void
 icon_container_context_click_background_cb (GnomeIconContainer *container,
 					    FMDirectoryViewIcons *icon_view)
 {
+	g_assert (GNOME_IS_ICON_CONTAINER (container));
 	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (icon_view));
 
-	popup_context_menu (icon_view->details->background_context_menu);
+	fm_directory_view_popup_background_context_menu(FM_DIRECTORY_VIEW (icon_view));
 }
 
 static void

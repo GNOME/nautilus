@@ -1,5 +1,16 @@
 2000-01-24  Maciej Stachowiak  <mjs@eazel.com>
 
+	* src/file-manager/fm-directory-view.c,
+	src/file-manager/fm-directory-view.h
+	(fm_directory_view_popup_item_context_menu,
+	fm_directory_view_popup_background_context_menu): New functions
+	for subclasses to call, to implement right-click menus. Most of
+	the guts are here now. Machinery to merge view-specific items with
+	generic ones will be added here.
+	* src/file-manager/fm-directory-view-icons.c,
+	src/file-manager/fm-directory-view-list.c: Use the new interface
+	for right-click stuff.
+
 	* src/file-manager/fm-directory-view-icons.c: Corrected memory
 	management for background and item popup menus.
 

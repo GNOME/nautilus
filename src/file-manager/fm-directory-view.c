@@ -30,6 +30,8 @@
 
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmain.h>
+#include <gtk/gtkmenu.h>
+#include <gtk/gtkmenuitem.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-directory-list.h>
@@ -72,6 +74,8 @@ struct _FMDirectoryViewDetails
 	GnomeVFSURI *uri;
 
 	NautilusDirectory *model;
+
+	GtkMenu *background_context_menu;
 };
 
 /* forward declarations */
@@ -80,6 +84,9 @@ static void display_selection_info 		(FMDirectoryView *view);
 static void fm_directory_view_initialize_class	(FMDirectoryViewClass *klass);
 static void fm_directory_view_initialize 	(FMDirectoryView *view);
 static void fm_directory_view_destroy 		(GtkObject *object);
+static GtkMenu *create_item_context_menu        (FMDirectoryView *view,
+						 NautilusFile *file);
+static GtkMenu *create_background_context_menu  (FMDirectoryView *view);
 static void stop_location_change_cb 		(NautilusViewFrame *view_frame, 
 						 FMDirectoryView *directory_view);
 static void notify_location_change_cb 		(NautilusViewFrame *view_frame, 
@@ -160,6 +167,8 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 
 #endif
 
+	directory_view->details->background_context_menu = create_background_context_menu(directory_view);
+
 	directory_view->details->view_frame = NAUTILUS_CONTENT_VIEW_FRAME
 		(gtk_widget_new (nautilus_content_view_frame_get_type(), NULL));
 
@@ -172,6 +181,7 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 			    "notify_location_change",
 			    GTK_SIGNAL_FUNC (notify_location_change_cb), 
 			    directory_view);
+
 
 	gtk_widget_show (GTK_WIDGET (directory_view));
 
@@ -200,6 +210,9 @@ fm_directory_view_destroy (GtkObject *object)
 
 	if (view->details->model != NULL)
 		gtk_object_unref (GTK_OBJECT (view->details->model));
+
+	if (view->details->background_context_menu != NULL)
+		gtk_object_unref(GTK_OBJECT(view->details->background_context_menu));
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -626,6 +639,123 @@ fm_directory_view_get_model (FMDirectoryView *view)
 
 	return view->details->model;
 }
+
+static void
+popup_context_menu (GtkMenu *menu)
+{
+	gtk_menu_popup (menu, NULL, NULL, NULL,
+			NULL, 3, GDK_CURRENT_TIME);
+}
+
+static void
+popup_temporary_context_menu (GtkMenu *menu)
+{
+	gtk_object_ref (GTK_OBJECT(menu));
+	gtk_object_sink (GTK_OBJECT(menu));
+
+	popup_context_menu (menu);
+
+	gtk_object_unref (GTK_OBJECT(menu));
+}
+
+/* FIXME - need better architecture for setting these. Also need to
+   merge per-view items. */
+
+static GtkMenu *
+create_item_context_menu (FMDirectoryView *view,
+			  NautilusFile *file) 
+{
+	GtkMenu *menu;
+	GtkWidget *menu_item;
+	
+	menu = GTK_MENU (gtk_menu_new ());
+
+	menu_item = gtk_menu_item_new_with_label ("Open");
+	gtk_widget_set_sensitive (menu_item, FALSE);
+	gtk_widget_show (menu_item);
+	gtk_menu_append (menu, menu_item);
+
+	menu_item = gtk_menu_item_new_with_label ("Delete");
+	gtk_widget_set_sensitive (menu_item, FALSE);
+	gtk_widget_show (menu_item);
+	gtk_menu_append (menu, menu_item);
+
+	return menu;
+}
+
+/* FIXME - need a way for specific views to add custom commands here. */
+
+static GtkMenu *
+create_background_context_menu (FMDirectoryView *view)
+{
+	GtkMenu *menu;
+	GtkWidget *menu_item;
+
+	menu = GTK_MENU (gtk_menu_new ());
+
+	menu_item = gtk_menu_item_new_with_label ("Select all");
+	gtk_widget_set_sensitive (menu_item, FALSE);
+	gtk_widget_show (menu_item);
+	gtk_menu_append (menu, menu_item);
+
+	menu_item = gtk_menu_item_new_with_label ("Zoom in");
+	gtk_widget_set_sensitive (menu_item, FALSE);
+	gtk_widget_show (menu_item);
+	gtk_menu_append (menu, menu_item);
+
+	menu_item = gtk_menu_item_new_with_label ("Zoom out");
+	gtk_widget_set_sensitive (menu_item, FALSE);
+	gtk_widget_show (menu_item);
+	gtk_menu_append (menu, menu_item);
+
+	gtk_object_ref(GTK_OBJECT(menu));
+	gtk_object_sink(GTK_OBJECT(menu));
+	return menu;
+}
+
+
+/**
+ * fm_directory_view_popup_item_context_menu
+ *
+ * Pop up a context menu appropriate to a specific view item at the last right click location.
+ * @view: FMDirectoryView of interest.
+ * @file: The model object for which a menu should be popped up.
+ * 
+ * Return value: NautilusDirectory for this view.
+ * 
+ **/
+
+void 
+fm_directory_view_popup_item_context_menu  (FMDirectoryView *view,
+					    NautilusFile *file)
+{
+	GtkMenu *menu;
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	/* g_assert (NAUTILUS_IS_FILE (file)); */
+	
+	menu = create_item_context_menu (view, file);
+
+	popup_temporary_context_menu (menu);
+}
+
+/**
+ * fm_directory_view_popup_background_context_menu
+ *
+ * Pop up a context menu appropriate to the view globally at the last right click location.
+ * @view: FMDirectoryView of interest.
+ * 
+ * Return value: NautilusDirectory for this view.
+ * 
+ **/
+
+void 
+fm_directory_view_popup_background_context_menu  (FMDirectoryView *view)
+{
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	
+	popup_context_menu (view->details->background_context_menu);
+}
+
 
 /**
  * fm_directory_view_notify_selection_changed:

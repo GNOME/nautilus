@@ -139,5 +139,8 @@ void                      fm_directory_view_activate_entry           (FMDirector
 void                      fm_directory_view_notify_selection_changed (FMDirectoryView         *view);
 void                      fm_directory_view_populate                 (FMDirectoryView         *view);
 NautilusDirectory *       fm_directory_view_get_model                (FMDirectoryView         *view);
+void                      fm_directory_view_popup_background_context_menu  (FMDirectoryView *view);
+void                      fm_directory_view_popup_item_context_menu  (FMDirectoryView *view,
+								      NautilusFile *file); 
 
 #endif /* FM_DIRECTORY_VIEW_H */
