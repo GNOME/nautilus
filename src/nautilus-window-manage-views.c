@@ -2012,9 +2012,16 @@ nautilus_window_back_or_forward (NautilusWindow *window, gboolean back, guint di
 void
 nautilus_window_reload (NautilusWindow *window)
 {
+	char *location;
+	
         g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
+	/* window->details->location can be free'd during the processing
+	 * of begin_location_change, so make a copy
+	 */
+	location = g_strdup (window->details->location);
 	begin_location_change
-		(window, window->details->location,
+		(window, location,
 		 NAUTILUS_LOCATION_CHANGE_RELOAD, 0);
+	g_free (location);
 }
