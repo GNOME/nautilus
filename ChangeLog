@@ -1,3 +1,22 @@
+2001-02-08  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 5946 (minimum Nautilus window size is too large)
+
+	* src/nautilus-window-private.h: Made the minimum window
+	size much much smaller. This exposes layout problems in
+	some of the bars & such at very small sizes, but none of
+	these layout problems seem like 1.0 show-stoppers. Better to
+	allow the user who wants to use a stripped-down window at
+	minimum size do so than to prevent this because it looks bad
+	with some bars showing. Note that other Linux apps don't stop
+	you from reducing the window down to nothing at all (the
+	Nautilus limit is somewhat larger than "nothing at all").
+
+	* src/nautilus-switchable-search-bar.c:
+	(nautilus_switchable_search_bar_new): With Rebecca's OK,
+	changed "Search For:" to "Find:" in order to save precious
+	horizontal screen real estate.
+
 2001-02-08  Gene Z. Ragan  <gzr@eazel.com>
 
 	reviewed by: Mike Engber <angber@eazel.com>

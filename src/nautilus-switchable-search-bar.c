@@ -129,7 +129,7 @@ nautilus_switchable_search_bar_new (NautilusWindow *window)
 					GNOME_PAD_SMALL);
 	
 	vbox = gtk_vbox_new (0, FALSE);
-	label = gtk_label_new (_("Search For:"));
+	label = gtk_label_new (_("Find:"));
 	gtk_container_add (GTK_CONTAINER (event_box), label);
 	
 	gtk_box_pack_start (GTK_BOX (hbox), event_box, FALSE, TRUE, GNOME_PAD_SMALL);	

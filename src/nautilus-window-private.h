@@ -96,8 +96,12 @@ struct NautilusWindowDetails
 #define NAUTILUS_COMMAND_ZOOM_NORMAL			"/commands/Zoom Normal"
 
 /* window geometry */
-#define NAUTILUS_WINDOW_MIN_WIDTH			480
-#define NAUTILUS_WINDOW_MIN_HEIGHT			350
+/* These are very small, and a Nautilus window at this tiny size is *almost*
+ * completely unusable. However, if all the extra bits (sidebar, location bar, etc)
+ * are turned off, you can see an icon or two at this size. See bug 5946.
+ */
+#define NAUTILUS_WINDOW_MIN_WIDTH			200
+#define NAUTILUS_WINDOW_MIN_HEIGHT			200
 
 #define NAUTILUS_WINDOW_DEFAULT_WIDTH			800
 #define NAUTILUS_WINDOW_DEFAULT_HEIGHT			550
