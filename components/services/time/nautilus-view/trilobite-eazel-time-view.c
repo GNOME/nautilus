@@ -40,6 +40,7 @@
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-password-dialog.h>
+#include <glade/glade.h>
 
 #include <libtrilobite/libtrilobite.h>
 
