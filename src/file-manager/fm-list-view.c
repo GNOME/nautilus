@@ -51,17 +51,6 @@ enum {
 	LAST_SIGNAL
 };
 
-static guint signals[LAST_SIGNAL];
-
-struct FMListViewDetails
-{
-	int sort_column;
-	gboolean sort_reversed;
-	gboolean search_directory;
-	gboolean list_instantiated;
-	guint zoom_level;
-	NautilusZoomLevel default_zoom_level;
-};
 
 /* 
  * Emblems should never get so small that they're illegible,
@@ -114,7 +103,7 @@ static int               add_to_list                              (FMListView   
 static void              column_clicked_callback                  (GtkCList           *clist,
 								   int                 column,
 								   gpointer            user_data);
-static int               compare_rows                             (GtkCList           *clist,
+static int               fm_list_view_compare_rows                (GtkCList           *clist,
 								   gconstpointer       ptr1,
 								   gconstpointer       ptr2);
 static void              context_click_selection_callback         (GtkCList           *clist,
@@ -167,12 +156,20 @@ static void              fm_list_view_update_click_mode           (FMDirectoryVi
 static void              fm_list_view_create_list                 (FMListView *list_view);
 
 
-static const char *     get_attribute_from_column                 (int                 column);
+void                     fm_list_view_install_row_images          (FMListView         *list_view,
+								   guint               row);
+void		         fm_list_view_setup_list                  (FMListView         *list_view);
+gboolean                 fm_list_view_list_is_instantiated        (FMListView         *list_view);
+void                     fm_list_view_set_instantiated            (FMListView         *list_view);
+
+static const char *     fm_list_view_get_attribute_from_column        (int                 column);
+static int              fm_list_view_get_sort_criterion_from_column   (int                 column);
+static gboolean         fm_list_view_column_is_right_justified        (int                 column);
 int                     get_column_from_attribute                 (const char         *value);
 int                     get_sort_column_from_attribute            (const char         *value);
 static NautilusList *   get_list                                  (FMListView         *list_view);
 
-static int              sort_criterion_from_column                (int                 column);
+
 static void             update_icons                              (FMListView         *list_view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMListView, fm_list_view, FM_TYPE_DIRECTORY_VIEW);
@@ -213,16 +210,9 @@ fm_list_view_initialize_class (gpointer klass)
 
 	object_class->destroy = fm_list_view_destroy;
 
-	signals[CREATE_LIST] = 
-		gtk_signal_new ("create_list",
-				GTK_RUN_FIRST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (FMListViewClass, create_list),
-				gtk_marshal_NONE__BOXED,
-				GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
-
-	fm_list_view_klass->create_list = fm_list_view_create_list;
-	
+	fm_list_view_klass->get_attribute_from_column = fm_list_view_get_attribute_from_column;
+	fm_list_view_klass->compare_rows = fm_list_view_compare_rows;
+	fm_list_view_klass->column_is_right_justified = fm_list_view_column_is_right_justified;
 }
 
 static void
@@ -243,6 +233,41 @@ fm_list_view_initialize (gpointer object, gpointer klass)
 	list_view->details->zoom_level = NAUTILUS_ZOOM_LEVEL_SMALLER;
 	list_view->details->sort_column = LIST_VIEW_COLUMN_NONE;
 	list_view->details->default_zoom_level = NAUTILUS_ZOOM_LEVEL_SMALLER;
+	
+	list_view->details->number_of_columns = LIST_VIEW_COLUMN_COUNT;
+	
+	list_view->details->column_titles = g_new0 (char *, list_view->details->number_of_columns);
+	list_view->details->column_titles[LIST_VIEW_COLUMN_ICON] = NULL;
+	list_view->details->column_titles[LIST_VIEW_COLUMN_EMBLEMS] = NULL;
+	list_view->details->column_titles[LIST_VIEW_COLUMN_NAME] = _("Name");
+	list_view->details->column_titles[LIST_VIEW_COLUMN_SIZE] = _("Size");
+	list_view->details->column_titles[LIST_VIEW_COLUMN_MIME_TYPE] =_("Type");
+	list_view->details->column_titles[LIST_VIEW_COLUMN_DATE_MODIFIED] = _("Date Modified");
+
+	list_view->details->column_width = g_new0 (int, list_view->details->number_of_columns);
+	list_view->details->column_width[LIST_VIEW_COLUMN_ICON] = fm_list_view_get_icon_size (list_view);
+	list_view->details->column_width[LIST_VIEW_COLUMN_EMBLEMS] = 40;
+	list_view->details->column_width[LIST_VIEW_COLUMN_NAME] = 130;
+	list_view->details->column_width[LIST_VIEW_COLUMN_SIZE] = 55;
+	list_view->details->column_width[LIST_VIEW_COLUMN_MIME_TYPE] = 95;
+	list_view->details->column_width[LIST_VIEW_COLUMN_DATE_MODIFIED] = 100;
+
+	list_view->details->minimum_column_width = g_new0 (int, list_view->details->number_of_columns);
+	list_view->details->minimum_column_width[LIST_VIEW_COLUMN_ICON] = fm_list_view_get_icon_size (list_view);
+	list_view->details->minimum_column_width[LIST_VIEW_COLUMN_EMBLEMS] = 20;
+	list_view->details->minimum_column_width[LIST_VIEW_COLUMN_NAME] = 30;
+	list_view->details->minimum_column_width[LIST_VIEW_COLUMN_SIZE] = 20;
+	list_view->details->minimum_column_width[LIST_VIEW_COLUMN_MIME_TYPE] = 20;
+	list_view->details->minimum_column_width[LIST_VIEW_COLUMN_DATE_MODIFIED] = 30;
+
+	list_view->details->maximum_column_width = g_new0 (int, list_view->details->number_of_columns);
+	list_view->details->maximum_column_width[LIST_VIEW_COLUMN_ICON] = fm_list_view_get_icon_size (list_view);
+	list_view->details->maximum_column_width[LIST_VIEW_COLUMN_EMBLEMS] = 300;
+	list_view->details->maximum_column_width[LIST_VIEW_COLUMN_NAME] = 300;
+	list_view->details->maximum_column_width[LIST_VIEW_COLUMN_SIZE] = 80;
+	list_view->details->maximum_column_width[LIST_VIEW_COLUMN_MIME_TYPE] = 200;
+	list_view->details->maximum_column_width[LIST_VIEW_COLUMN_DATE_MODIFIED] = 200;
+
 	list_view->details->list_instantiated = FALSE;
 
 	/* Register to find out about icon theme changes */
@@ -284,9 +309,9 @@ column_clicked_callback (GtkCList *clist, int column, gpointer user_data)
 }
 
 static int
-compare_rows (GtkCList *clist,
-	      gconstpointer ptr1,
-	      gconstpointer ptr2)
+fm_list_view_compare_rows (GtkCList *clist,
+			   gconstpointer ptr1,
+			   gconstpointer ptr2)
 {
 	GtkCListRow *row1;
 	GtkCListRow *row2;
@@ -316,7 +341,7 @@ compare_rows (GtkCList *clist,
 	}
 	g_assert (file1 != NULL && file2 != NULL);
 	
-	sort_criterion = sort_criterion_from_column (clist->sort_column);
+	sort_criterion = fm_list_view_get_sort_criterion_from_column (clist->sort_column);
 
 	return nautilus_file_compare_for_sort (file1, file2, sort_criterion);
 }
@@ -702,62 +727,28 @@ fm_list_view_create_list (FMListView *list_view)
 	 * not being usable as a sort order criteria, etc.
 	 * for now just set up name, min, max and current width
 	 */	
-	const char * const titles[] = {
-		NULL,		/* Icon */
-		NULL,		/* Emblems */
-		_("Name"),
-		_("Size"),
-		_("Type"),
-		_("Date Modified"),
-	};
-	
-	guint widths[] = {
-		 fm_list_view_get_icon_size (list_view),	/* Icon */
-		 40,	/* Emblems */
-		130,	/* Name */
-		 55,	/* Size */
-		 95,	/* Type */
-		100,	/* Modified */
-	};
-
-	guint min_widths[] = {
-		 fm_list_view_get_icon_size (list_view),	/* Icon */
-		 20,	/* Emblems */
-		 30,	/* Name */
-		 20,	/* Size */
-		 20,	/* Type */
-		 30,	/* Modified */
-	};
-
-	guint max_widths[] = {
-		fm_list_view_get_icon_size (list_view),	/* Icon */
-		300,	/* Emblems */
-		300,	/* Name */
-		 80,	/* Size */
-		200,	/* Type */
-		200,	/* Modified */
-	};
 
 	int i;
 
-
-	list = NAUTILUS_LIST (nautilus_list_new_with_titles (LIST_VIEW_COLUMN_COUNT, titles));
+	
+	list = NAUTILUS_LIST (nautilus_list_new_with_titles (list_view->details->number_of_columns, 
+							     (const char **) list_view->details->column_titles));
 	clist = GTK_CLIST (list);
 
-	for (i = 0; i < LIST_VIEW_COLUMN_COUNT; ++i) {
+	for (i = 0; i < list_view->details->number_of_columns; ++i) {
 		gboolean right_justified;
 
 		right_justified = (i == LIST_VIEW_COLUMN_SIZE);
 
-		gtk_clist_set_column_max_width (clist, i, max_widths[i]);
-		gtk_clist_set_column_min_width (clist, i, min_widths[i]);
+		gtk_clist_set_column_max_width (clist, i, list_view->details->maximum_column_width[i]);
+		gtk_clist_set_column_min_width (clist, i, list_view->details->minimum_column_width[i]);
 		/* work around broken GtkCList that pins the max_width to be no less than
 		 * the min_width instead of bumping min_width down too
 		 */
-		gtk_clist_set_column_max_width (clist, i, max_widths[i]);
-		gtk_clist_set_column_width (clist, i, widths[i]);
-
-
+		gtk_clist_set_column_max_width (clist, i, list_view->details->maximum_column_width[i]);
+		gtk_clist_set_column_width (clist, i, list_view->details->column_width[i]);
+		
+		
 		if (right_justified) {
 			/* hack around a problem where gtk_clist_set_column_justification
 			 * crashes if there is a column title but now
@@ -773,7 +764,7 @@ fm_list_view_create_list (FMListView *list_view)
 
 	}
 	gtk_clist_set_auto_sort (clist, TRUE);
-	gtk_clist_set_compare_func (clist, compare_rows);
+	gtk_clist_set_compare_func (clist, fm_list_view_compare_rows);
 	fm_list_view_set_instantiated (list_view);
 
 	gtk_container_add (GTK_CONTAINER (list_view), GTK_WIDGET (list));
@@ -896,14 +887,17 @@ add_to_list (FMListView *list_view, NautilusFile *file)
 	nautilus_file_ref (file);
 
 	/* One extra slot so it's NULL-terminated */
-	text = g_new0 (char *, LIST_VIEW_COLUMN_COUNT+1);
+	text = g_new0 (char *, list_view->details->number_of_columns+1);
 
-	for (column = 0; column < LIST_VIEW_COLUMN_COUNT; ++column) {
+	for (column = 0; column < list_view->details->number_of_columns; ++column) {
 		/* No text in icon column */
+		/* This should work for regular and search list views,
+		   since the icon is first in both of them */
 		if (column != LIST_VIEW_COLUMN_ICON) {
 			text[column] = 
 				nautilus_file_get_string_attribute_with_default 
-					(file, get_attribute_from_column (column));
+					(file, 
+					 (* FM_LIST_VIEW_CLASS  (GTK_OBJECT (list_view)->klass)->get_attribute_from_column) (column));
 		}
 	}
 
@@ -933,9 +927,10 @@ get_list (FMListView *list_view)
 {
 	g_return_val_if_fail (FM_IS_LIST_VIEW (list_view), NULL);
 	if (fm_list_view_list_is_instantiated (list_view) == FALSE) {
-		(* FM_LIST_VIEW_CLASS (GTK_OBJECT (list_view)->klass)->create_list) (list_view);
+		fm_list_view_create_list (list_view);
 		fm_list_view_set_instantiated (list_view);
 	}
+	
 	g_return_val_if_fail (NAUTILUS_IS_LIST (GTK_BIN (list_view)->child), NULL);
 
 	return NAUTILUS_LIST (GTK_BIN (list_view)->child);
@@ -1300,7 +1295,7 @@ fm_list_view_sort_items (FMListView *list_view,
 		directory,
 		NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN,
 		LIST_VIEW_DEFAULT_SORTING_ATTRIBUTE,
-		get_attribute_from_column (column));
+		(* FM_LIST_VIEW_CLASS  (GTK_OBJECT (list_view)->klass)->get_attribute_from_column) (column));
 	nautilus_directory_set_boolean_metadata (
 		directory,
 		NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED,
@@ -1334,7 +1329,7 @@ fm_list_view_sort_items (FMListView *list_view,
  * Return value: The string to be saved in the metadata.
  */
 static const char *
-get_attribute_from_column (int column)
+fm_list_view_get_attribute_from_column (int column)
 {
 	switch (column) {
 	case LIST_VIEW_COLUMN_ICON:
@@ -1477,7 +1472,7 @@ fm_list_view_install_row_images (FMListView *list_view, guint row)
 }
 
 static int
-sort_criterion_from_column (int column)
+fm_list_view_get_sort_criterion_from_column (int column)
 {
 	switch (column)	{
 	case LIST_VIEW_COLUMN_ICON:	
@@ -1495,6 +1490,12 @@ sort_criterion_from_column (int column)
 	default: 
 		return NAUTILUS_FILE_SORT_NONE;
 	}
+}
+
+static gboolean         
+fm_list_view_column_is_right_justified (int column)
+{
+	return column == LIST_VIEW_COLUMN_SIZE;
 }
 
 static void 

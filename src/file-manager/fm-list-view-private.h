@@ -24,9 +24,23 @@
 
 */
 
-guint             fm_list_view_get_icon_size               (FMListView         *list_view);
-void              fm_list_view_install_row_images          (FMListView         *list_view,
-							    guint               row);
-void		  fm_list_view_setup_list                  (FMListView         *list_view);
-gboolean          fm_list_view_list_is_instantiated        (FMListView         *list_view);
-void              fm_list_view_set_instantiated            (FMListView         *list_view);
+
+struct FMListViewDetails
+{
+	int number_of_columns;
+	char **column_titles;
+	int *column_width;
+	int *minimum_column_width;
+	int *maximum_column_width;
+
+	int default_sort_column;
+	
+	gboolean list_instantiated; 
+	int sort_column;
+	gboolean sort_reversed;
+
+	guint zoom_level;
+	NautilusZoomLevel default_zoom_level;
+};
+
+guint                    fm_list_view_get_icon_size               (FMListView         *list_view);

@@ -48,10 +48,12 @@ struct FMListView {
 struct FMListViewClass {
 	FMDirectoryViewClass parent_class;
 
-	/* 'create_list' sets up the columns.  Subclasses
-	   can use this to create a list view with different columns
-	   than the standard */
-	void     (* create_list)           (FMListView *list_view);
+	const char *     (* get_attribute_from_column)       (int column);
+	int              (* compare_rows)                    (GtkCList *clist,
+							      gconstpointer ptr1,
+							      gconstpointer ptr2);
+	gboolean         (* column_is_right_justified)       (int column);
+	
 
 };
 

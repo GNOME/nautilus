@@ -47,8 +47,8 @@
 
 #define SEARCH_LIST_VIEW_COLUMN_ICON		0
 #define SEARCH_LIST_VIEW_COLUMN_EMBLEMS 	1
-#define SEARCH_LIST_VIEW_COLUMN_ACTUAL_PATH     2
 #define SEARCH_LIST_VIEW_COLUMN_NAME		3
+#define SEARCH_LIST_VIEW_COLUMN_ACTUAL_PATH     2
 #define SEARCH_LIST_VIEW_COLUMN_SIZE		4
 #define SEARCH_LIST_VIEW_COLUMN_MIME_TYPE	5
 #define SEARCH_LIST_VIEW_COLUMN_DATE_MODIFIED	6
@@ -64,26 +64,25 @@
 
 #define LIST_VIEW_DEFAULT_SORTING_ATTRIBUTE	LIST_VIEW_NAME_ATTRIBUTE
 
+struct FMSearchListViewDetails {
+	
+};
 
-static void              fm_search_list_view_create_list                (FMListView *list_view);
 
 static void              fm_search_list_view_initialize                 (gpointer            object,
 									 gpointer            klass);
 static void              fm_search_list_view_initialize_class           (gpointer            klass);
-static void              fm_search_list_view_add_file                   (FMDirectoryView *list_view,
-									 NautilusFile *file);
 static void              fm_search_list_view_destroy                    (GtkObject *object);
-static int               compare_rows                                   (GtkCList *clist,
-									 gconstpointer ptr1,
-									 gconstpointer ptr2);
-static NautilusList *    get_list                                       (FMSearchListView         *list_view);
-static int               add_to_list                                    (FMSearchListView *list_view, 
-									 NautilusFile *file);
-static int               sort_criterion_from_column                     (int column);
-const char *             get_attribute_from_column                      (int column);
 
-
+const char *             fm_search_list_view_get_attribute_from_column        (int column);
+static gboolean          fm_search_list_view_column_is_right_justified        (int column);
+static int               fm_search_list_view_compare_rows                     (GtkCList *clist,
+									       gconstpointer ptr1,
+									       gconstpointer ptr2);
+static int               fm_search_list_view_get_sort_criterion_from_column   (int column);
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMSearchListView, fm_search_list_view, FM_TYPE_LIST_VIEW);
+
+
 
 static void
 fm_search_list_view_initialize_class (gpointer klass)
@@ -91,14 +90,17 @@ fm_search_list_view_initialize_class (gpointer klass)
 	GtkObjectClass *object_class;
 	FMDirectoryViewClass *fm_directory_view_class;
 	FMListViewClass *fm_list_view_class;
-
+	
 	object_class = GTK_OBJECT_CLASS (klass);
 	fm_directory_view_class = FM_DIRECTORY_VIEW_CLASS (klass);
 	fm_list_view_class = FM_LIST_VIEW_CLASS (klass);
   
-	/* Override list view's add_file method */
-	fm_directory_view_class->add_file = fm_search_list_view_add_file;
-	fm_list_view_class->create_list = fm_search_list_view_create_list;
+	fm_list_view_class->compare_rows = fm_search_list_view_compare_rows;
+	fm_list_view_class->get_attribute_from_column = fm_search_list_view_get_attribute_from_column;
+	fm_list_view_class->column_is_right_justified = fm_search_list_view_column_is_right_justified;
+
+
+
 	
 	object_class->destroy = fm_search_list_view_destroy;
   
@@ -109,187 +111,123 @@ static void
 fm_search_list_view_initialize (gpointer object,
 				gpointer klass)
 {
-
-}
-
-
-static void
-fm_search_list_view_add_file (FMDirectoryView *view, NautilusFile *file)
-{
-	g_return_if_fail (FM_IS_SEARCH_LIST_VIEW (view));
-
-	/* We are allowed to get the same icon twice, so don't re-add it. */
-	if (gtk_clist_find_row_from_data (GTK_CLIST (get_list (FM_SEARCH_LIST_VIEW (view))), file) < 0) {
-		add_to_list (FM_SEARCH_LIST_VIEW (view), file);
-	}
-}
-
-
-static int
-add_to_list (FMSearchListView *list_view, NautilusFile *file)
-{
-	NautilusList *list;
-	GtkCList *clist;
-	char **text;
-	int new_row;
-	int column;
-
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (list_view), -1);
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), -1);
-
-	nautilus_file_ref (file);
-
-	/* One extra slot so it's NULL-terminated */
-	text = g_new0 (char *, SEARCH_LIST_VIEW_COLUMN_COUNT+1);
-
-	for (column = 0; column < SEARCH_LIST_VIEW_COLUMN_COUNT; ++column) {
-		/* No text in icon column */
-		if (column != SEARCH_LIST_VIEW_COLUMN_ICON) {
-			text[column] = 
-				nautilus_file_get_string_attribute_with_default 
-					(file, get_attribute_from_column (column));
-
-		}
-	}
-
-	list = get_list (list_view);
-	clist = GTK_CLIST (list);
-
-	/* Temporarily set user data value as hack for the problem
-	 * that compare_rows is called before the row data can be set.
-	 */
-	gtk_object_set_data (GTK_OBJECT (clist), PENDING_USER_DATA_KEY, file);
-	/* Note that since list is auto-sorted new_row isn't necessarily last row. */
-
-	new_row = gtk_clist_append (clist, text);
-	gtk_clist_set_row_data (clist, new_row, file);
-	nautilus_list_mark_cell_as_link (list, new_row, SEARCH_LIST_VIEW_COLUMN_NAME);
-	gtk_object_set_data (GTK_OBJECT (clist), PENDING_USER_DATA_KEY, NULL);
-
-	fm_list_view_install_row_images (FM_LIST_VIEW (list_view), new_row);
-
-	g_strfreev (text);
-
-	return new_row;
-}
-
-
-static NautilusList *
-get_list (FMSearchListView *list_view)
-{
-
-	g_return_val_if_fail (FM_IS_SEARCH_LIST_VIEW (list_view), NULL);
-	if (fm_list_view_list_is_instantiated (FM_LIST_VIEW (list_view)) == FALSE) {
-		fm_search_list_view_create_list (FM_LIST_VIEW (list_view));
-	}
-	g_return_val_if_fail (NAUTILUS_IS_LIST (GTK_BIN (list_view)->child), NULL);
-
-	return NAUTILUS_LIST (GTK_BIN (list_view)->child);
-}
-
-
-static void
-fm_search_list_view_create_list (FMListView *search_list_view)
-{
-	NautilusList *list;
-	GtkCList *clist;
-
-	/* FIXME bugzilla.eazel.com 666:
-	 * title setup should allow for columns not being resizable at all,
-	 * justification, editable or not, type/format,
-	 * not being usable as a sort order criteria, etc.
-	 * for now just set up name, min, max and current width
-	 */	
-	const char * const titles[] = {
-		NULL,		/* Icon */
-		NULL,		/* Emblems */
-		_("Directory"),
-		_("Name"),
-		_("Size"),
-		_("Type"),
-		_("Date Modified"),
-	};
-	
-	guint widths[] = {
-		fm_list_view_get_icon_size (FM_LIST_VIEW (search_list_view)),	/* Icon */
-		40,	/* Emblems */
-		200,   /* Directory Name */
-		130,	/* File Name */
-		55,	/* Size */
-		95,	/* Type */
-		100,	/* Modified */
-	};
-
-	guint min_widths[] = {
-		fm_list_view_get_icon_size (FM_LIST_VIEW (search_list_view)),	/* Icon */
-		20,	/* Emblems */
-		30,    /* Directory Name */
-		30,	/* File Name */
-		20,	/* Size */
-		20,	/* Type */
-		30,	/* Modified */
-	};
-
-	guint max_widths[] = {
-		fm_list_view_get_icon_size (FM_LIST_VIEW (search_list_view)),	/* Icon */
-		300,	/* Emblems */
-		300,    /* Directory Name */
-		300,	/* File Name */
-		80,	/* Size */
-		200,	/* Type */
-		200,	/* Modified */
-	};
-
+	FMListView *list_view;
 	int i;
 
-	g_return_if_fail (FM_IS_SEARCH_LIST_VIEW (search_list_view));
 
-	list = NAUTILUS_LIST (nautilus_list_new_with_titles (SEARCH_LIST_VIEW_COLUMN_COUNT, titles));
-	clist = GTK_CLIST (list);
+	g_return_if_fail (FM_IS_SEARCH_LIST_VIEW (object));
+	g_return_if_fail (GTK_BIN (object)->child == NULL);
 
-	for (i = 0; i < SEARCH_LIST_VIEW_COLUMN_COUNT; ++i) {
-		gboolean right_justified;
+	list_view = FM_LIST_VIEW (object);
 
-		right_justified = (i == SEARCH_LIST_VIEW_COLUMN_SIZE);
+	/* FIXME:  This would probably be neater with get a set
+	   functions, but this will do for now */
 
-		gtk_clist_set_column_max_width (clist, i, max_widths[i]);
-		gtk_clist_set_column_min_width (clist, i, min_widths[i]);
-		/* work around broken GtkCList that pins the max_width to be no less than
-		 * the min_width instead of bumping min_width down too
-		 */
-		gtk_clist_set_column_max_width (clist, i, max_widths[i]);
-		gtk_clist_set_column_width (clist, i, widths[i]);
-
-
-		if (right_justified) {
-			/* hack around a problem where gtk_clist_set_column_justification
-			 * crashes if there is a column title but now
-			 * column button (it should really be checking if it has a button instead)
-			 * this is an easy, dirty fix for now, will get straightened out
-			 * with a replacement list view (alternatively, we'd fix this in GtkCList)
-			 */
-			char *tmp_title = clist->column[i].title;
-			clist->column[i].title = NULL;
-			gtk_clist_set_column_justification (clist, i, GTK_JUSTIFY_RIGHT);
-			clist->column[i].title = tmp_title;
+	/* These have already been allocated, so free the old values before
+	   overwriting new ones */
+	for (i = 0; i < list_view->details->number_of_columns; i++) {
+		if (list_view->details->column_titles[i] != NULL) {
+			g_free (list_view->details->column_titles[i]);
 		}
-
 	}
-	gtk_container_add (GTK_CONTAINER (search_list_view), GTK_WIDGET (list));
+	g_free (list_view->details->column_titles);
+	g_free (list_view->details->column_width);
+	g_free (list_view->details->maximum_column_width);
+	g_free (list_view->details->minimum_column_width);
 
-	gtk_clist_set_auto_sort (clist, TRUE);
-	gtk_clist_set_compare_func (clist, compare_rows);
-	fm_list_view_set_instantiated (FM_LIST_VIEW (search_list_view));
+	list_view->details->number_of_columns = SEARCH_LIST_VIEW_COLUMN_COUNT;
+	list_view->details->column_titles = g_new0 (char *, list_view->details->number_of_columns);
+	list_view->details->column_titles[SEARCH_LIST_VIEW_COLUMN_ICON] = NULL;
+	list_view->details->column_titles[SEARCH_LIST_VIEW_COLUMN_EMBLEMS] = NULL;
+	list_view->details->column_titles[SEARCH_LIST_VIEW_COLUMN_NAME] = _("Name");
+	list_view->details->column_titles[SEARCH_LIST_VIEW_COLUMN_ACTUAL_PATH] = _("Directory");
+	list_view->details->column_titles[SEARCH_LIST_VIEW_COLUMN_SIZE] = _("Size");
+	list_view->details->column_titles[SEARCH_LIST_VIEW_COLUMN_MIME_TYPE] = 	_("Type");
+	list_view->details->column_titles[SEARCH_LIST_VIEW_COLUMN_DATE_MODIFIED] = _("Date Modified");
 
-	fm_list_view_setup_list (FM_LIST_VIEW (search_list_view));
+	list_view->details->column_width = g_new0 (int, list_view->details->number_of_columns);
+	list_view->details->column_width[SEARCH_LIST_VIEW_COLUMN_ICON] = fm_list_view_get_icon_size (FM_LIST_VIEW (list_view));
+	list_view->details->column_width[SEARCH_LIST_VIEW_COLUMN_EMBLEMS] = 40;
+	list_view->details->column_width[SEARCH_LIST_VIEW_COLUMN_NAME] = 200;
+	list_view->details->column_width[SEARCH_LIST_VIEW_COLUMN_ACTUAL_PATH] = 130;
+	list_view->details->column_width[SEARCH_LIST_VIEW_COLUMN_SIZE] = 55;
+	list_view->details->column_width[SEARCH_LIST_VIEW_COLUMN_MIME_TYPE] = 95;
+	list_view->details->column_width[SEARCH_LIST_VIEW_COLUMN_DATE_MODIFIED] = 95;
+
+	list_view->details->minimum_column_width = g_new0 (int, list_view->details->number_of_columns);
+	list_view->details->minimum_column_width[SEARCH_LIST_VIEW_COLUMN_ICON] = fm_list_view_get_icon_size (FM_LIST_VIEW (list_view));
+	list_view->details->minimum_column_width[SEARCH_LIST_VIEW_COLUMN_EMBLEMS] = 20;
+	list_view->details->minimum_column_width[SEARCH_LIST_VIEW_COLUMN_NAME] = 30;
+	list_view->details->minimum_column_width[SEARCH_LIST_VIEW_COLUMN_ACTUAL_PATH] = 30;
+	list_view->details->minimum_column_width[SEARCH_LIST_VIEW_COLUMN_SIZE] = 20;
+	list_view->details->minimum_column_width[SEARCH_LIST_VIEW_COLUMN_MIME_TYPE] = 20;
+	list_view->details->minimum_column_width[SEARCH_LIST_VIEW_COLUMN_DATE_MODIFIED] = 30;
+
+	list_view->details->maximum_column_width = g_new0 (int, list_view->details->number_of_columns);
+	list_view->details->maximum_column_width[SEARCH_LIST_VIEW_COLUMN_ICON] = fm_list_view_get_icon_size (FM_LIST_VIEW (list_view));
+	list_view->details->maximum_column_width[SEARCH_LIST_VIEW_COLUMN_EMBLEMS] =  300;
+	list_view->details->maximum_column_width[SEARCH_LIST_VIEW_COLUMN_NAME] = 300;
+	list_view->details->maximum_column_width[SEARCH_LIST_VIEW_COLUMN_ACTUAL_PATH] = 500;
+	list_view->details->maximum_column_width[SEARCH_LIST_VIEW_COLUMN_SIZE] = 80;
+	list_view->details->maximum_column_width[SEARCH_LIST_VIEW_COLUMN_MIME_TYPE] = 200;
+	list_view->details->maximum_column_width[SEARCH_LIST_VIEW_COLUMN_DATE_MODIFIED] = 200;
 }
 
 
 
+
+
 static int
-compare_rows (GtkCList *clist,
-	      gconstpointer ptr1,
-	      gconstpointer ptr2)
+fm_search_list_view_get_sort_criterion_from_column (int column)
+{
+	switch (column)	{
+	case SEARCH_LIST_VIEW_COLUMN_ICON:	
+		return NAUTILUS_FILE_SORT_BY_TYPE;
+	case SEARCH_LIST_VIEW_COLUMN_NAME:
+		return NAUTILUS_FILE_SORT_BY_NAME;
+	case SEARCH_LIST_VIEW_COLUMN_ACTUAL_PATH:
+		return NAUTILUS_FILE_SORT_BY_DIRECTORY;
+	case SEARCH_LIST_VIEW_COLUMN_EMBLEMS:
+		return NAUTILUS_FILE_SORT_BY_EMBLEMS;
+	case SEARCH_LIST_VIEW_COLUMN_SIZE:
+		return NAUTILUS_FILE_SORT_BY_SIZE;
+	case SEARCH_LIST_VIEW_COLUMN_DATE_MODIFIED:
+		return NAUTILUS_FILE_SORT_BY_MTIME;
+	case SEARCH_LIST_VIEW_COLUMN_MIME_TYPE:
+		return NAUTILUS_FILE_SORT_BY_TYPE;
+	default: 
+		return NAUTILUS_FILE_SORT_NONE;
+	}
+}
+
+const char *
+fm_search_list_view_get_attribute_from_column (int column)
+{
+	switch (column) {
+	case SEARCH_LIST_VIEW_COLUMN_ICON:
+		return SEARCH_LIST_VIEW_ICON_ATTRIBUTE;
+	case SEARCH_LIST_VIEW_COLUMN_NAME:
+		return SEARCH_LIST_VIEW_NAME_ATTRIBUTE;
+	case SEARCH_LIST_VIEW_COLUMN_ACTUAL_PATH:
+		return SEARCH_LIST_VIEW_ACTUAL_PATH_ATTRIBUTE;
+	case SEARCH_LIST_VIEW_COLUMN_EMBLEMS:
+		return SEARCH_LIST_VIEW_EMBLEMS_ATTRIBUTE;
+	case SEARCH_LIST_VIEW_COLUMN_SIZE:
+		return SEARCH_LIST_VIEW_SIZE_ATTRIBUTE;
+	case SEARCH_LIST_VIEW_COLUMN_MIME_TYPE:
+		return SEARCH_LIST_VIEW_MIME_TYPE_ATTRIBUTE;
+	case SEARCH_LIST_VIEW_COLUMN_DATE_MODIFIED:
+		return SEARCH_LIST_VIEW_DATE_MODIFIED_ATTRIBUTE;
+	default:
+		g_assert_not_reached ();
+		return NULL;
+	}
+}
+
+static int
+fm_search_list_view_compare_rows (GtkCList *clist,
+				  gconstpointer ptr1,
+				  gconstpointer ptr2)
 {
 	GtkCListRow *row1;
 	GtkCListRow *row2;
@@ -319,56 +257,16 @@ compare_rows (GtkCList *clist,
 	}
 	g_assert (file1 != NULL && file2 != NULL);
 	
-	sort_criterion = sort_criterion_from_column (clist->sort_column);
+	sort_criterion = fm_search_list_view_get_sort_criterion_from_column (clist->sort_column);
+
 	return nautilus_file_compare_for_sort (file1, file2, sort_criterion);
 }
 
 
-static int
-sort_criterion_from_column (int column)
+static gboolean          
+fm_search_list_view_column_is_right_justified (int column)
 {
-	switch (column)	{
-	case SEARCH_LIST_VIEW_COLUMN_ICON:	
-		return NAUTILUS_FILE_SORT_BY_TYPE;
-	case SEARCH_LIST_VIEW_COLUMN_NAME:
-		return NAUTILUS_FILE_SORT_BY_NAME;
-	case SEARCH_LIST_VIEW_COLUMN_ACTUAL_PATH:
-		return NAUTILUS_FILE_SORT_BY_DIRECTORY;
-	case SEARCH_LIST_VIEW_COLUMN_EMBLEMS:
-		return NAUTILUS_FILE_SORT_BY_EMBLEMS;
-	case SEARCH_LIST_VIEW_COLUMN_SIZE:
-		return NAUTILUS_FILE_SORT_BY_SIZE;
-	case SEARCH_LIST_VIEW_COLUMN_DATE_MODIFIED:
-		return NAUTILUS_FILE_SORT_BY_MTIME;
-	case SEARCH_LIST_VIEW_COLUMN_MIME_TYPE:
-		return NAUTILUS_FILE_SORT_BY_TYPE;
-	default: 
-		return NAUTILUS_FILE_SORT_NONE;
-	}
-}
-
-const char *
-get_attribute_from_column (int column)
-{
-	switch (column) {
-	case SEARCH_LIST_VIEW_COLUMN_ICON:
-		return SEARCH_LIST_VIEW_ICON_ATTRIBUTE;
-	case SEARCH_LIST_VIEW_COLUMN_NAME:
-		return SEARCH_LIST_VIEW_NAME_ATTRIBUTE;
-	case SEARCH_LIST_VIEW_COLUMN_ACTUAL_PATH:
-		return SEARCH_LIST_VIEW_ACTUAL_PATH_ATTRIBUTE;
-	case SEARCH_LIST_VIEW_COLUMN_EMBLEMS:
-		return SEARCH_LIST_VIEW_EMBLEMS_ATTRIBUTE;
-	case SEARCH_LIST_VIEW_COLUMN_SIZE:
-		return SEARCH_LIST_VIEW_SIZE_ATTRIBUTE;
-	case SEARCH_LIST_VIEW_COLUMN_MIME_TYPE:
-		return SEARCH_LIST_VIEW_MIME_TYPE_ATTRIBUTE;
-	case SEARCH_LIST_VIEW_COLUMN_DATE_MODIFIED:
-		return SEARCH_LIST_VIEW_DATE_MODIFIED_ATTRIBUTE;
-	default:
-		g_assert_not_reached ();
-		return NULL;
-	}
+	return column == SEARCH_LIST_VIEW_COLUMN_SIZE;
 }
 
 static void

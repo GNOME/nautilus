@@ -1,24 +1,27 @@
-2000-07-31  Gene Z. Ragan  <gzr@eazel.com>
+2000-07-31  Rebecca Schulman  <rebecka@eazel.com>
+	Rewrote the search list view subclass to be
+	more functional, and fixed most of the inheritance
+	issues.  The search results are displayed in the
+	wrong columns still, but the data in them is readable
+	and correct.
 
-	More work in progress on handling the mounting of removable media
-	
-	* src/file-manager/fm-desktop-icon-view.c:
-	(fm_desktop_icon_view_create_background_context_menu_items):
-	Removed old rescan item and added a submenu of possible 
-	removable media.
-	
-	* src/file-manager/fm-desktop-mounting.c:
-	(fm_desktop_rescan_floppy), (fm_desktop_get_removable_list),
-	(fm_desktop_mount_unmount_removable),
-	(fm_desktop_volume_is_mounted), (mount_device_mount),
-	(mount_device_activate_cdrom), (mount_device_activate_floppy),
-	(mount_device_check_change), (mount_devices_update_is_mounted),
-	(check_permissions), (mount_device_floppy_add),
-	(mount_device_ext2_add), (cdrom_ioctl_frenzy), (add_mount_device),
-	(mntent_is_removable_fs), (fm_desktop_find_mount_devices),
-	(remove_mount_link), (fm_desktop_place_home_directory):
-	Cleaned up functions and added support for the new mount
-	point context menu item.
+	* src/file-manager/fm-list-view-private.h:
+	* src/file-manager/fm-list-view.c: (fm_list_view_initialize_class),
+	(fm_list_view_initialize), (fm_list_view_compare_rows),
+	(fm_list_view_create_list), (add_to_list), (get_list),
+	(fm_list_view_sort_items),
+	(fm_list_view_get_attribute_from_column),
+	(fm_list_view_get_sort_criterion_from_column),
+	(fm_list_view_column_is_right_justified):
+	* src/file-manager/fm-list-view.h:
+	* src/file-manager/fm-search-list-view.c:
+	(fm_search_list_view_initialize_class),
+	(fm_search_list_view_initialize),
+	(fm_search_list_view_get_sort_criterion_from_column),
+	(fm_search_list_view_get_attribute_from_column),
+	(fm_search_list_view_compare_rows),
+	(fm_search_list_view_column_is_right_justified):
+
 
 2000-07-31  Andy Hertzfeld  <andy@eazel.com>
 
