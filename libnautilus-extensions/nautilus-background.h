@@ -123,6 +123,12 @@ struct NautilusBackgroundClass
 	 * altered or when an image is loaded.
 	 */
 	void (* appearance_changed) (NautilusBackground *);
+
+	/* This signal is emitted when the background is reset by receiving
+	   the reset property from a drag */
+	
+	void (* reset) (NautilusBackground *);
+
 };
 
 #endif /* NAUTILUS_BACKGROUND_H */

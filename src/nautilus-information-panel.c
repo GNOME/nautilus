@@ -72,7 +72,8 @@ struct NautilusSidebarDetails {
 	int selected_index;
 	NautilusDirectory *directory;
 	int background_connection;
-    int old_width;
+	int reset_connection;
+	int old_width;
 };
 
 /* button assignments */
@@ -386,7 +387,28 @@ nautilus_sidebar_add_panel_items(NautilusSidebar *sidebar, GtkWidget *menu)
 	
 	CORBA_exception_free (&ev);
 }
- 
+
+/* check to see if the background matches the default */
+static gboolean
+nautilus_sidebar_background_is_default (NautilusSidebar *sidebar)
+{
+	char *background_color, *background_image;
+	gboolean is_default;
+	
+	background_color = nautilus_directory_get_metadata (sidebar->details->directory,
+							    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
+							    NULL);
+	background_image = nautilus_directory_get_metadata (sidebar->details->directory,
+							    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
+								    NULL);
+	
+	is_default = background_color == NULL && background_image == NULL;
+	g_free (background_color);
+	g_free (background_image);
+	
+	return is_default;
+}
+
 /* create the context menu */
 GtkWidget *
 nautilus_sidebar_create_context_menu (NautilusSidebar *sidebar)
@@ -396,7 +418,7 @@ nautilus_sidebar_create_context_menu (NautilusSidebar *sidebar)
 	gboolean has_background;
 
 	background = nautilus_get_widget_background (GTK_WIDGET(sidebar));
-	has_background = background && nautilus_background_is_set (background);
+	has_background = background && !nautilus_sidebar_background_is_default (sidebar);
 	
 	menu = gtk_menu_new ();
 	
@@ -936,6 +958,8 @@ nautilus_sidebar_press_event (GtkWidget *widget, GdkEventButton *event)
 	return TRUE;
 }
 
+/* handle the background changed signal by writing out the settings to metadata */
+
 static void
 nautilus_sidebar_background_changed (NautilusSidebar *sidebar)
 {
@@ -961,6 +985,73 @@ nautilus_sidebar_background_changed (NautilusSidebar *sidebar)
 					 sidebar->details->default_background_image,
 					 image);	
 	g_free (image);
+}
+
+/* we generally want to ignore the appearance changed signal, but we need it to redraw the
+   the sidebar in the case where we're loading the background image, so check for that */
+
+static void
+nautilus_sidebar_appearance_changed (NautilusSidebar *sidebar)
+{
+	gboolean is_default_color, is_default_image;
+	char *title, *background_image, *background_color;
+
+	background_color = nautilus_directory_get_metadata (sidebar->details->directory,
+							    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
+							    sidebar->details->default_background_color);
+
+	background_image = nautilus_directory_get_metadata (sidebar->details->directory,
+							    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
+							    sidebar->details->default_background_image);
+	
+	is_default_color = !nautilus_strcmp(background_color, sidebar->details->default_background_color);
+	is_default_image = !nautilus_strcmp(background_image, sidebar->details->default_background_image);
+	
+	if (is_default_color && is_default_image) {
+		title = nautilus_sidebar_title_get_text (sidebar->details->title);
+		nautilus_sidebar_update_info (sidebar, title);  	
+		g_free(title);
+	}
+	g_free (background_color);
+	g_free (background_image);
+}
+
+/* handle the background reset signal by writing out NULL to metadata and setting the backgrounds
+   fields to their default values */
+static void
+nautilus_sidebar_background_reset (NautilusSidebar *sidebar)
+{
+	NautilusBackground *background;
+	
+	if (sidebar->details->directory == NULL) {
+		return;
+	}
+	
+	background = nautilus_get_widget_background (GTK_WIDGET (sidebar));
+	
+	/* set up the defaults, making sure the background changed signal doesn't fire */
+	
+	gtk_signal_handler_block_by_func (GTK_OBJECT(background),
+					   nautilus_sidebar_background_changed,
+					   sidebar);
+	
+				   
+	nautilus_background_set_color (background, sidebar->details->default_background_color);	
+	nautilus_background_set_tile_image_uri (background, sidebar->details->default_background_image);
+	gtk_signal_handler_unblock_by_func (GTK_OBJECT(background),
+					   nautilus_sidebar_background_changed,
+					   sidebar);
+					   
+	/* reset the metadata */
+	nautilus_directory_set_metadata (sidebar->details->directory,
+					 NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
+					 sidebar->details->default_background_color,
+					 NULL);
+
+	nautilus_directory_set_metadata (sidebar->details->directory,
+					 NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
+					 sidebar->details->default_background_image,
+					 NULL);		
 }
 
 static void
@@ -1191,23 +1282,41 @@ nautilus_sidebar_update_info (NautilusSidebar *sidebar,
 	
 	/* Connect the background changed signal to code that writes the color. */
 	background = nautilus_get_widget_background (GTK_WIDGET (sidebar));
-        if (sidebar->details->background_connection == 0) {
+        
+	if (sidebar->details->background_connection == 0) {
 		sidebar->details->background_connection =
 			gtk_signal_connect_object (GTK_OBJECT (background),
 						   "settings_changed",
 						   nautilus_sidebar_background_changed,
 						   GTK_OBJECT (sidebar));
+			
+			gtk_signal_connect_object (GTK_OBJECT (background),
+						   "appearance_changed",
+						   nautilus_sidebar_appearance_changed,
+						   GTK_OBJECT (sidebar));
 	}
 
+	/* Connect the background reset signal as well */
+	if (sidebar->details->reset_connection == 0) {
+		sidebar->details->reset_connection =
+			gtk_signal_connect_object (GTK_OBJECT (background),
+						   "reset",
+						   nautilus_sidebar_background_reset,
+						   GTK_OBJECT (sidebar));
+	}
+	
 	/* Set up the background color and image from the metadata. */
+	background_image = NULL;
 	background_color = nautilus_directory_get_metadata (directory,
 							    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
-							    sidebar->details->default_background_color);
-		
-	background_image = nautilus_directory_get_metadata (directory,
+							    NULL);
+	if (background_color == NULL) {
+		background_color = g_strdup (sidebar->details->default_background_color);
+		background_image = nautilus_directory_get_metadata (directory,
 							    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
 							    sidebar->details->default_background_image);
-		
+	}	
+	
 	if (background_image && !nautilus_str_has_prefix (background_image, "file://")) {
 		temp_str = g_strdup_printf ("%s/%s",
 						 NAUTILUS_DATADIR,

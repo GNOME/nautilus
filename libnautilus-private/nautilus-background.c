@@ -61,6 +61,7 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusBackground, nautilus_background, GTK_
 enum {
 	APPEARANCE_CHANGED,
 	SETTINGS_CHANGED,
+	RESET,
 	LAST_SIGNAL
 };
 
@@ -92,12 +93,23 @@ nautilus_background_initialize_class (gpointer klass)
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE,
 				0);
+	
 	signals[SETTINGS_CHANGED] =
 		gtk_signal_new ("settings_changed",
 				GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusBackgroundClass,
 						   settings_changed),
+				gtk_marshal_NONE__NONE,
+				GTK_TYPE_NONE,
+				0);
+
+	signals[RESET] =
+		gtk_signal_new ("reset",
+				GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (NautilusBackgroundClass,
+						   reset),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE,
 				0);
@@ -379,13 +391,14 @@ nautilus_background_set_tile_image_uri (NautilusBackground *background,
 	nautilus_cancel_gdk_pixbuf_load (background->details->load_tile_image_handle);
 	background->details->load_tile_image_handle = NULL;
 
-	g_free (background->details->tile_image_uri);
-	
+
 	/* special case the reset background image */
 	if (nautilus_str_has_suffix(image_uri, RESET_BACKGROUND_IMAGE)) {
-		nautilus_background_set_color (background, NULL);
-		image_uri = NULL;
+		nautilus_background_reset (background);
+		return;
 	}
+
+	g_free (background->details->tile_image_uri);
 	
 	if (background->details->tile_image != NULL) {
 		gdk_pixbuf_unref (background->details->tile_image);
@@ -549,13 +562,18 @@ nautilus_background_is_set (NautilusBackground *background)
 /**
  * nautilus_background_reset:
  * 
- * Forget any color or image that has been set previously.
+ * emit the reset signal to forget any color or image that has been set previously.
  */
 void
 nautilus_background_reset (NautilusBackground *background)
 {
-	nautilus_background_set_color (background, NULL);
-	nautilus_background_set_tile_image_uri (background, NULL);
+		gtk_signal_emit (GTK_OBJECT (background),
+			 signals[RESET]);
+
+		gtk_signal_emit (GTK_OBJECT (background),
+			 signals[SETTINGS_CHANGED]);
+		gtk_signal_emit (GTK_OBJECT (background),
+			 signals[APPEARANCE_CHANGED]);
 }
 
 static void

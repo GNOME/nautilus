@@ -1,3 +1,22 @@
+2000-06-27  Andy Hertzfeld  <andy@eazel.com>
+
+	made the sidebar draw the background determined by the current
+	theme when reset. 
+	
+	* libnautilus-extensions/nautilus-background.c,h:
+	(nautilus_background_initialize_class),
+	(nautilus_background_set_tile_image_uri),
+	(nautilus_background_reset):
+	added a "reset" signal to nautilus_background, which fires when
+	the background is reset.
+	* libnautilus-extensions/nautilus-background.h:
+	* src/nautilus-sidebar.c: (nautilus_sidebar_background_is_default),
+	(nautilus_sidebar_create_context_menu),
+	(nautilus_sidebar_appearance_changed),
+	(nautilus_sidebar_background_reset),
+	(nautilus_sidebar_update_info):
+	attach to the background reset signal and handle it properly
+	
 2000-06-27  Michael Engber  <engber@eazel.com>
 
 	* libnautilus/nautilus-view-component.idl:
