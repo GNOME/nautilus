@@ -374,6 +374,23 @@
 	GNOME2_CONVERSION_COMPLETE code for setting the window
 	icon.
 
+2002-02-27  Jody Goldberg <jody@gnome.org>
+
+	* components/music/configure.c : misc minor deprecation removals.
+	* components/music/fileinfo.c : ditto.
+	(nautilus_music_view_update) : reconnect the background.
+	* components/music/nautilus-music-view.c (play_current_file) : convert
+	  to gconf.
+	* src/file-manager/fm-icon-view.c (preview_audio) : convert to gconf.
+
+	* components/hardware/nautilus-hardware-view.c
+	s/gtk_label_set_wrap/gtk_label_set_line_wrap/
+	(setup_overview_form) : Use gnome_program_locate_file to find iconf
+	  from gnome-mime-data.
+	* components/hardware/main.c (main) : use nautilus_view_standard_main.
+	(cb_create_hardware_view) : new work around the odd inheritance of the
+	  view.
+
 2002-02-22  Gediminas Paulauskas <menesis@delfi.lt>
 
 	* configure.in: remove obsolete

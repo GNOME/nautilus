@@ -1686,8 +1686,15 @@ preview_audio (FMIconView *icon_view, NautilusFile *file, gboolean start_flag)
 static gboolean
 should_preview_sound (NautilusFile *file) {
 
+	GConfClient *client;
+	gboolean enable_esd = FALSE;
+        
+	client = gconf_client_get_default ();
+	enable_esd = gconf_client_get_bool (client, "/desktop/gnome/sound/enable_esd", NULL);
+	g_object_unref (G_OBJECT (client));
+
 	/* Check gnome config sound preference */
-	if (!gnome_config_get_bool ("/sound/system/settings/start_esd=true")) {
+	if (!enable_esd) {
 		return FALSE;
 	}
 

@@ -576,7 +576,10 @@ setup_overview_form (NautilusHardwareView *view)
                                 
                                 /* Set the icon depending on the type of device */
                                 if (strcmp (ide_media, "disk\n") == 0) {
-                                        file_name = nautilus_pixmap_file ("i-harddisk.png");
+                                        file_name = gnome_program_locate_file (NULL,
+						GNOME_FILE_DOMAIN_PIXMAP,
+						"document-icons/i-harddisk.png",
+						TRUE, NULL);
                                 } else if (strcmp (ide_media, "cdrom\n") == 0) {
                                         file_name = nautilus_pixmap_file ("CD_drive.png");
                                 } else {
@@ -636,7 +639,7 @@ setup_CPU_form (NautilusHardwareView *view)
 	message = _("This is a placeholder for the CPU page.");
 	temp_widget = gtk_label_new (message);
 	eel_gtk_label_set_scale (GTK_LABEL (temp_widget), PANGO_SCALE_LARGE);
- 	gtk_label_set_wrap (GTK_LABEL (temp_widget), TRUE);
+ 	gtk_label_set_line_wrap (GTK_LABEL (temp_widget), TRUE);
 	
 	gtk_box_pack_start(GTK_BOX(view->details->form), temp_widget, 0, 0, 12);			
  	gtk_widget_show (temp_widget);
@@ -661,7 +664,7 @@ setup_RAM_form (NautilusHardwareView *view)
 	message = _("This is a placeholder for the RAM page.");
 	temp_widget = gtk_label_new (message);
 	eel_gtk_label_set_scale (GTK_LABEL (temp_widget), PANGO_SCALE_LARGE);
- 	gtk_label_set_wrap (GTK_LABEL (temp_widget), TRUE);
+ 	gtk_label_set_line_wrap (GTK_LABEL (temp_widget), TRUE);
 	
 	gtk_box_pack_start(GTK_BOX(view->details->form), temp_widget, 0, 0, 12);			
  	gtk_widget_show (temp_widget);
@@ -686,7 +689,7 @@ setup_IDE_form (NautilusHardwareView *view)
         message = _("This is a placeholder for the IDE page.");
         temp_widget = gtk_label_new (message);
 	eel_gtk_label_set_scale (GTK_LABEL (temp_widget), PANGO_SCALE_LARGE);
-        gtk_label_set_wrap (GTK_LABEL (temp_widget), TRUE);
+        gtk_label_set_line_wrap (GTK_LABEL (temp_widget), TRUE);
         
         gtk_box_pack_start(GTK_BOX(view->details->form), temp_widget, 0, 0, 12);            
         gtk_widget_show (temp_widget);

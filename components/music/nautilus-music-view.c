@@ -1175,9 +1175,15 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 	int length;
         char *path_uri;
         GtkTreeIter iter;
+	gboolean enable_esd = FALSE;
+	GConfClient *client;
         
-	/* Check gnome config sound preference */
-	if (!gnome_config_get_bool ("/sound/system/settings/start_esd=true")) {
+	/* Check gconf sound preference */
+	client = gconf_client_get_default ();
+	enable_esd = gconf_client_get_bool (client, "/desktop/gnome/sound/enable_esd", NULL);
+	g_object_unref (G_OBJECT (client));
+
+	if (!enable_esd) {
 		eel_show_error_dialog (_("Sorry, but the music view is unable to play back sound right now. "
 					      "This is because the Enable sound server startup setting "
 					      "in the Sound section of the Control Center is turned off."),
@@ -1687,10 +1693,8 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 	/* connect the music view background to directory metadata */
 	nautilus_connect_background_to_file_metadata (GTK_WIDGET (music_view->details->event_box), 
                                                       music_view->details->file);
-#ifdef GNOME2_CONVERSION_COMPLETE
-	nautilus_connect_background_to_file_metadata (GTK_WIDGET (music_view->details->song_list),
+	nautilus_connect_background_to_file_metadata (GTK_WIDGET (music_view->details->tree_view),
                                                       music_view->details->file);
-#endif
 	/* iterate through the directory, collecting mp3 files and extracting id3 data if present */
 	result = gnome_vfs_directory_list_load (&list, uri,
 						GNOME_VFS_FILE_INFO_GET_MIME_TYPE

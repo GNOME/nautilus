@@ -22,75 +22,40 @@
 
 /* main.c - main function and object activation function for the hardware view component. */
 
-#define IID "OAFIID:nautilus_hardware_view_factory:8c80e55a-5c03-4403-9e51-3a5711b8a5ce" 
+#define FACTORY_IID	"OAFIID:nautilus_hardware_view_factory:8c80e55a-5c03-4403-9e51-3a5711b8a5ce" 
+#define VIEW_IID	"OAFIID:nautilus_hardware_view:4a3f3793-bab4-4640-9f56-e7871fe8e150"
 
 #include <config.h>
-#include <string.h>
+
 #include "nautilus-hardware-view.h"
-
-#include <bonobo.h>
+#include <libnautilus/nautilus-view-standard-main.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 #include <eel/eel-debug.h>
-#include <gnome.h>
-#include <libgnomevfs/gnome-vfs.h>
-#include <bonobo-activation/bonobo-activation.h>
 
-static int object_count = 0;
-
-static void
-hardware_view_object_destroyed(GtkObject *obj)
+static NautilusView *
+cb_create_hardware_view (const char *ignore0, void *ignore1)
 {
-	object_count--;
-	if (object_count <= 0) {
-		gtk_main_quit ();
-	}
+	NautilusHardwareView *hardware_view =
+		g_object_new (NAUTILUS_TYPE_HARDWARE_VIEW, NULL);
+	return nautilus_hardware_view_get_nautilus_view (hardware_view);
+
 }
-
-static BonoboObject *
-hardware_view_make_object (BonoboGenericFactory *factory, 
-			   const char *bonobo_activation_iid, 
-			   void *closure)
+int
+main (int argc, char *argv[])
 {
-	NautilusView *view;
-
-	if (strcmp (bonobo_activation_iid,
-		    "OAFIID:nautilus_hardware_view:4a3f3793-bab4-4640-9f56-e7871fe8e150")) {
-		return NULL;
-	}
-	
-	view = nautilus_hardware_view_get_nautilus_view (NAUTILUS_HARDWARE_VIEW (g_object_new (NAUTILUS_TYPE_HARDWARE_VIEW, NULL)));
-
-	object_count++;
-
-	g_signal_connect (view, "destroy", G_CALLBACK (hardware_view_object_destroyed), NULL);
-
-	return BONOBO_OBJECT (view);
-}
-
-int main(int argc, char *argv[])
-{
-	BonoboGenericFactory *factory;
-	char *registration_id;
-	
-	/* Initialize gettext support */
-	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
-	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-	textdomain (GETTEXT_PACKAGE);
-
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
 		eel_make_warnings_and_criticals_stop_in_debugger ();
 	}
-	
-	bonobo_ui_init ("nautilus-hardware-view", VERSION, &argc, argv);
 
-        registration_id = bonobo_activation_make_registration_id (IID, getenv ("DISPLAY"));
-	factory = bonobo_generic_factory_new (registration_id, hardware_view_make_object, NULL);
-	g_free (registration_id);
-	
-	bonobo_activate ();
-	do {
-		gtk_main ();
-	} while (object_count > 0);
-	
-        gnome_vfs_shutdown ();
-	return 0;
+	return nautilus_view_standard_main ("nautilus-hardware-view",
+					    VERSION,
+					    GETTEXT_PACKAGE,
+					    GNOMELOCALEDIR,
+					    argc,
+					    argv,
+					    FACTORY_IID,
+					    VIEW_IID,
+					    cb_create_hardware_view,
+					    nautilus_global_preferences_init,
+					    NULL);
 }
