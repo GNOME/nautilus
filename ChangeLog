@@ -1,3 +1,13 @@
+2001-04-18  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fix bug 8102, with Nautilus running, CDs get ejected
+	(wrong and makes the kernel unhappy)
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(mount_volume_iso9660_add):
+	Remove ioctls that are not needed and may cause the
+	cd to allow ejecting even with a mounted volume.
+
 2001-04-18  Josh Barrow  <josh@whitecape.org>
 
 	* po/POTFILES.in:

@@ -1205,14 +1205,6 @@ get_cdrom_type (const char *vol_dev_path, int* fd)
 #endif
 }
 
-static void
-cdrom_ioctl_get_info (int fd)
-{
-	ioctl (fd, CDROM_CLEAR_OPTIONS, CDO_LOCK | CDO_AUTO_CLOSE | CDO_AUTO_EJECT);
-	ioctl (fd, CDROM_SET_OPTIONS, CDO_USE_FFLAGS | CDO_CHECK_TYPE);
-	ioctl (fd, CDROM_LOCKDOOR, 0);
-}
-
 static gboolean
 mount_volume_iso9660_add (NautilusVolume *volume)
 {
@@ -1228,8 +1220,6 @@ mount_volume_iso9660_add (NautilusVolume *volume)
 	if (ioctl (fd, CDROM_DRIVE_STATUS, CDSL_CURRENT) < 0) {
     		return FALSE;
     	}
-
-	cdrom_ioctl_get_info (fd);
 	close (fd);
 #endif
 
