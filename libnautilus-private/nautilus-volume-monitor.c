@@ -74,7 +74,9 @@
 #endif
 
 #ifdef SOLARIS_MNT
-#define USE_VOLRMMOUNT
+#define USE_VOLRMMOUNT 1
+#else
+#define USE_VOLRMMOUNT 0
 #endif
 
 
@@ -1383,7 +1385,7 @@ nautilus_volume_monitor_volume_is_mounted (NautilusVolumeMonitor *monitor,
 }						 
 
 
-#ifdef USE_VOLRMMOUNT
+#if USE_VOLRMMOUNT
 
 static const char *volrmmount_locations [] = {
        "/usr/bin/volrmmount",
@@ -1628,7 +1630,7 @@ nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
        }
 #else
        name = mount_point;
-#endif
+#endif /* USE_VOLRMMOUNT */
 
        if (should_mount) {
 
