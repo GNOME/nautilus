@@ -56,6 +56,7 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
+#include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
@@ -79,7 +80,6 @@ struct NautilusThemeSelectorDetails {
 	GtkWidget *add_button;
 	GtkWidget *add_button_label;	
 	GtkWidget *remove_button;
-	GtkWidget *remove_button_label;
 
 	GdkColor main_row_color;
 	GdkColor alt_row_color;
@@ -154,7 +154,7 @@ nautilus_theme_selector_initialize (GtkObject *object)
  	GtkWidget* widget, *temp_hbox;
 	GtkWidget *scrollwindow;
 	GtkWidget *bottom_box;
-	GtkWidget *temp_button, *temp_label;
+	GtkWidget *temp_button;
 	
 	theme_selector = NAUTILUS_THEME_SELECTOR (object);
 	widget = GTK_WIDGET (object);
@@ -236,42 +236,36 @@ nautilus_theme_selector_initialize (GtkObject *object)
 
   	bottom_box = gtk_hbox_new (FALSE, 0);
   	gtk_widget_show (bottom_box);
-	gtk_container_set_border_width (GTK_CONTAINER (bottom_box), 4);
+	gtk_container_set_border_width (GTK_CONTAINER (bottom_box), GNOME_PAD_SMALL);
 	gtk_box_pack_end (GTK_BOX(theme_selector->details->container), bottom_box, FALSE, FALSE, 0);
 
  	/* create the done button */
- 	temp_button = gtk_button_new ();
+ 	temp_button = gtk_button_new_with_label (_("Done"));
+  	eel_gtk_button_set_padding (GTK_BUTTON (temp_button), GNOME_PAD_SMALL);
 	gtk_widget_show(temp_button);
-	/* FIXME: Using spaces to add padding is not good design. */
-	temp_label = gtk_label_new (_("  Done  "));
-	gtk_widget_show(temp_label);
-	gtk_container_add (GTK_CONTAINER(temp_button), temp_label);
-	gtk_box_pack_end (GTK_BOX(bottom_box), temp_button, FALSE, FALSE, 4);  
+	gtk_box_pack_end (GTK_BOX(bottom_box), temp_button, FALSE, FALSE, GNOME_PAD_SMALL);  
  	gtk_signal_connect(GTK_OBJECT (temp_button), "clicked", GTK_SIGNAL_FUNC (done_button_callback), theme_selector);
  	
   	/* create the "add new" button */
   	theme_selector->details->add_button = gtk_button_new ();
 	gtk_widget_show(theme_selector->details->add_button);
 	
-	/* FIXME: Using spaces to add padding is not good design. */
-	theme_selector->details->add_button_label = gtk_label_new (_("  Add New Theme  "));
+	theme_selector->details->add_button_label = gtk_label_new (_("Add New Theme..."));
 	gtk_widget_show(theme_selector->details->add_button_label);
 	gtk_container_add (GTK_CONTAINER(theme_selector->details->add_button), theme_selector->details->add_button_label);
-	gtk_box_pack_end (GTK_BOX (bottom_box), theme_selector->details->add_button, FALSE, FALSE, 4);
+  	eel_gtk_button_set_padding (GTK_BUTTON (theme_selector->details->add_button), GNOME_PAD_SMALL);
+	gtk_box_pack_end (GTK_BOX (bottom_box), theme_selector->details->add_button, FALSE, FALSE, GNOME_PAD_SMALL);
  	  
  	gtk_signal_connect(GTK_OBJECT (theme_selector->details->add_button), "clicked", GTK_SIGNAL_FUNC (add_new_theme_button_callback), theme_selector);
 	
 	/* now create the "remove" button */
-  	theme_selector->details->remove_button = gtk_button_new();
-	/* FIXME: Using spaces to add padding is not good design. */
-	theme_selector->details->remove_button_label = gtk_label_new (_("  Remove Theme  "));
-	gtk_widget_show(theme_selector->details->remove_button_label);
-	gtk_container_add (GTK_CONTAINER(theme_selector->details->remove_button), theme_selector->details->remove_button_label);
+  	theme_selector->details->remove_button = gtk_button_new_with_label (_("Remove Theme..."));
+  	eel_gtk_button_set_padding (GTK_BUTTON (theme_selector->details->remove_button), GNOME_PAD_SMALL);
 	gtk_box_pack_end (GTK_BOX (bottom_box),
 			  theme_selector->details->remove_button,
 			  FALSE,
 			  FALSE,
-			  4);
+			  GNOME_PAD_SMALL);
 	
  	gtk_signal_connect (GTK_OBJECT (theme_selector->details->remove_button),
 			    "clicked",
@@ -534,7 +528,7 @@ exit_remove_mode (NautilusThemeSelector *theme_selector)
 	set_help_label (theme_selector, FALSE);
 	
 	/* change the add button label back to it's normal state */
-	gtk_label_set_text (GTK_LABEL (theme_selector->details->add_button_label), _("Add New Theme"));
+	gtk_label_set_text (GTK_LABEL (theme_selector->details->add_button_label), _("Add New Theme..."));
 	populate_list_with_themes (theme_selector);	
 }
 

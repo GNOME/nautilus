@@ -1,3 +1,25 @@
+2001-04-04  John Sullivan  <sullivan@eazel.com>
+
+	Various little tweaky cleanups.
+
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize),
+	(nautilus_emblem_dialog_new),
+	(nautilus_color_selection_dialog_new),
+	(nautilus_property_browser_update_contents):
+	* src/nautilus-sidebar.c: (nautilus_sidebar_initialize_class),
+	(nautilus_sidebar_update_buttons):
+	* src/nautilus-theme-selector.c:
+	(nautilus_theme_selector_initialize), (exit_remove_mode):
+	Changed code that was making buttons wider by using
+	bracketing spaces (e.g. "  Done  ") to set the button
+	padding instead. Simplified some places that were unnecessarily
+	creating button labels explicitly to instead just use
+	gtk_button_new_with_label. Added a few ellipses in button
+	labels that needed them. Made the "Empty Trash" button in
+	the sidebar check the preference to decide whether to use
+	ellipses or not.
+
 2001-04-04  John Harper  <jsh@eazel.com>
 
 	Fixed bug 7950 (After running First-Time Druid there are two

@@ -240,7 +240,7 @@ nautilus_property_browser_initialize (GtkObject *object)
 {
  	NautilusPropertyBrowser *property_browser;
  	GtkWidget* widget, *temp_box, *temp_hbox, *temp_frame;
-	GtkWidget* temp_button, *temp_label;
+	GtkWidget* temp_button;
 	GtkWidget *viewport;
 	char *temp_str;
 	
@@ -291,7 +291,7 @@ nautilus_property_browser_initialize (GtkObject *object)
 
 	/* allocate a table to hold the category selector */
   	property_browser->details->category_box = gtk_vbox_new (FALSE, 0);
-	gtk_container_set_border_width ( GTK_CONTAINER (property_browser->details->category_box), 4);
+	gtk_container_set_border_width ( GTK_CONTAINER (property_browser->details->category_box), GNOME_PAD_SMALL);
 	gtk_container_add(GTK_CONTAINER(viewport), property_browser->details->category_box); 
 	gtk_container_add (GTK_CONTAINER (property_browser->details->category_container), viewport);
 	gtk_widget_show (GTK_WIDGET (property_browser->details->category_box));
@@ -319,7 +319,7 @@ nautilus_property_browser_initialize (GtkObject *object)
   	
   	temp_hbox = gtk_hbox_new(FALSE, 0);
   	gtk_widget_show(temp_hbox);
- 	gtk_container_set_border_width (GTK_CONTAINER (temp_hbox), 4);				
+ 	gtk_container_set_border_width (GTK_CONTAINER (temp_hbox), GNOME_PAD_SMALL);				
  
   	gtk_container_add(GTK_CONTAINER(temp_frame), temp_hbox);
  	
@@ -349,33 +349,29 @@ nautilus_property_browser_initialize (GtkObject *object)
 
   	property_browser->details->bottom_box = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (property_browser->details->bottom_box);
-	gtk_container_set_border_width (GTK_CONTAINER (property_browser->details->bottom_box), 4);
+	gtk_container_set_border_width (GTK_CONTAINER (property_browser->details->bottom_box), GNOME_PAD_SMALL);
 	
 	gtk_box_pack_end (GTK_BOX(property_browser->details->content_container), temp_box, FALSE, FALSE, 0);
   	gtk_container_add (GTK_CONTAINER (temp_frame), property_browser->details->bottom_box);
   	
   	/* create the "done" button */
- 	temp_button = gtk_button_new ();
+ 	temp_button = gtk_button_new_with_label (_("Done"));
+	eel_gtk_button_set_padding (GTK_BUTTON (temp_button), GNOME_PAD_SMALL);
 	gtk_widget_show(temp_button);
-	
-	/* FIXME: Using spaces to add padding is not good design. */
-	temp_label = gtk_label_new (_("  Done  "));
-	gtk_widget_show(temp_label);
-	gtk_container_add (GTK_CONTAINER(temp_button), temp_label);
-	gtk_box_pack_end (GTK_BOX(property_browser->details->bottom_box), temp_button, FALSE, FALSE, 4);  
+	gtk_box_pack_end (GTK_BOX(property_browser->details->bottom_box), temp_button, FALSE, FALSE, GNOME_PAD_SMALL);  
  	gtk_signal_connect(GTK_OBJECT (temp_button), "clicked", GTK_SIGNAL_FUNC (done_button_callback), property_browser);
   	
   	/* create the "add new" button */
   	property_browser->details->add_button = gtk_button_new ();
 	gtk_widget_show(property_browser->details->add_button);
 	
-	/* FIXME: Using spaces to add padding is not good design. */
-	property_browser->details->add_button_label = gtk_label_new (_("  Add new...  "));
+	property_browser->details->add_button_label = gtk_label_new (_("Add new..."));
 	gtk_widget_show(property_browser->details->add_button_label);
 	gtk_container_add (GTK_CONTAINER(property_browser->details->add_button),
 			   property_browser->details->add_button_label);
+	eel_gtk_button_set_padding (GTK_BUTTON (property_browser->details->add_button), GNOME_PAD_SMALL);
 	gtk_box_pack_end (GTK_BOX(property_browser->details->bottom_box),
-			  property_browser->details->add_button, FALSE, FALSE, 4);
+			  property_browser->details->add_button, FALSE, FALSE, GNOME_PAD_SMALL);
  	  
  	gtk_signal_connect(GTK_OBJECT (property_browser->details->add_button), "clicked",
 			   add_new_button_callback, property_browser);
@@ -385,15 +381,16 @@ nautilus_property_browser_initialize (GtkObject *object)
 	gtk_widget_show(property_browser->details->remove_button);
 	
 	/* FIXME: Using spaces to add padding is not good design. */
-	property_browser->details->remove_button_label = gtk_label_new (_("  Remove...  "));	
+	property_browser->details->remove_button_label = gtk_label_new (_("Remove..."));	
 	gtk_widget_show(property_browser->details->remove_button_label);
 	gtk_container_add (GTK_CONTAINER(property_browser->details->remove_button),
 			   property_browser->details->remove_button_label);
+	eel_gtk_button_set_padding (GTK_BUTTON (property_browser->details->remove_button), GNOME_PAD_SMALL);
 	gtk_box_pack_end (GTK_BOX (property_browser->details->bottom_box),
 			  property_browser->details->remove_button,
 			  FALSE,
 			  FALSE,
-			  4);
+			  GNOME_PAD_SMALL);
 	
  	gtk_signal_connect (GTK_OBJECT (property_browser->details->remove_button),
 			    "clicked",
@@ -948,11 +945,11 @@ nautilus_emblem_dialog_new (NautilusPropertyBrowser *property_browser)
 	
 	widget = gtk_label_new(_("Keyword:"));
 	gtk_widget_show(widget);
-	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 4, 4);
+	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 0, 1, GTK_FILL, GTK_FILL, GNOME_PAD_SMALL, GNOME_PAD_SMALL);
 	
   	property_browser->details->keyword = gtk_entry_new_with_max_length (24);
 	gtk_widget_show(property_browser->details->keyword);
-	gtk_table_attach(GTK_TABLE(table), property_browser->details->keyword, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 4, 4);
+	gtk_table_attach(GTK_TABLE(table), property_browser->details->keyword, 1, 2, 0, 1, GTK_FILL, GTK_FILL, GNOME_PAD_SMALL, GNOME_PAD_SMALL);
 
 	/* default image is the generic emblem */
 	g_free(property_browser->details->image_path);		
@@ -961,7 +958,7 @@ nautilus_emblem_dialog_new (NautilusPropertyBrowser *property_browser)
 	/* set up a gnome icon entry to pick the image file */
 	widget = gtk_label_new(_("Image:"));
 	gtk_widget_show(widget);
-	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 4, 4);
+	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 1, 2, GTK_FILL, GTK_FILL, GNOME_PAD_SMALL, GNOME_PAD_SMALL);
 
 	property_browser->details->file_entry = gnome_icon_entry_new (NULL, _("Select an image file for the new emblem:"));
 	gnome_icon_entry_set_pixmap_subdir (GNOME_ICON_ENTRY(property_browser->details->file_entry),
@@ -970,7 +967,7 @@ nautilus_emblem_dialog_new (NautilusPropertyBrowser *property_browser)
 					property_browser->details->image_path);
 	
 	gtk_widget_show(property_browser->details->file_entry);
-	gtk_table_attach(GTK_TABLE(table), property_browser->details->file_entry, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 4, 4);
+	gtk_table_attach(GTK_TABLE(table), property_browser->details->file_entry, 1, 2, 1, 2, GTK_FILL, GTK_FILL, GNOME_PAD_SMALL, GNOME_PAD_SMALL);
 	
 	entry = gnome_icon_entry_gtk_entry (GNOME_ICON_ENTRY(property_browser->details->file_entry));
 	gtk_entry_set_text(GTK_ENTRY(entry), property_browser->details->image_path);
@@ -997,25 +994,25 @@ nautilus_color_selection_dialog_new (NautilusPropertyBrowser *property_browser)
 	
 	widget = gtk_label_new(_("Color name:"));
 	gtk_widget_show(widget);
-	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 4, 4);
+	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 0, 1, GTK_FILL, GTK_FILL, GNOME_PAD_SMALL, GNOME_PAD_SMALL);
 	
   	property_browser->details->color_name = gtk_entry_new_with_max_length (24);
 	gtk_widget_show(property_browser->details->color_name);
-	gtk_table_attach(GTK_TABLE(table), property_browser->details->color_name, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 4, 4);
+	gtk_table_attach(GTK_TABLE(table), property_browser->details->color_name, 1, 2, 0, 1, GTK_FILL, GTK_FILL, GNOME_PAD_SMALL, GNOME_PAD_SMALL);
 
 	/* default image is the generic emblem */
 	g_free(property_browser->details->image_path);
 		
 	widget = gtk_label_new(_("Color value:"));
 	gtk_widget_show(widget);
-	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 4, 4);
+	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 1, 2, GTK_FILL, GTK_FILL, GNOME_PAD_SMALL, GNOME_PAD_SMALL);
  
 	/* set up a gnome file entry to pick the image file */
 	property_browser->details->color_picker = gnome_color_picker_new ();
 	gtk_widget_show (property_browser->details->color_picker);
 	
 	gtk_widget_show(property_browser->details->color_picker);
-	gtk_table_attach(GTK_TABLE(table), property_browser->details->color_picker, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 4, 4);
+	gtk_table_attach(GTK_TABLE(table), property_browser->details->color_picker, 1, 2, 1, 2, GTK_FILL, GTK_FILL, GNOME_PAD_SMALL, GNOME_PAD_SMALL);
 		
 	/* install the table in the dialog */
 	
@@ -2034,13 +2031,13 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 			/* FIXME: Using spaces to add padding is not good design. */
 			switch (property_browser->details->category_type) {
 			case NAUTILUS_PROPERTY_PATTERN:
-				text = _("  Add a New Pattern  ");
+				text = _("Add a New Pattern...");
 				break;
 			case NAUTILUS_PROPERTY_COLOR:
-				text = _("  Add a New Color  ");
+				text = _("Add a New Color...");
 				break;
 			case NAUTILUS_PROPERTY_EMBLEM:
-				text = _("  Add a New Emblem  ");
+				text = _("Add a New Emblem...");
 				break;
 			default:
 				text = NULL;
@@ -2103,13 +2100,13 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		/* FIXME: Using spaces to add padding is not good design. */
 		switch (property_browser->details->category_type) {
 		case NAUTILUS_PROPERTY_PATTERN:
-			text = _("  Remove a Pattern  ");
+			text = _("Remove a Pattern...");
 			break;
 		case NAUTILUS_PROPERTY_COLOR:
-			text = _("  Remove a Color  ");
+			text = _("Remove a Color...");
 			break;
 		case NAUTILUS_PROPERTY_EMBLEM:
-			text = _("  Remove an Emblem  ");
+			text = _("Remove an Emblem...");
 			break;
 		default:
 			text = NULL;

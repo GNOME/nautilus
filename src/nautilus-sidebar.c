@@ -159,6 +159,8 @@ typedef enum {
 	TABS_PART
 } SidebarPart;
 
+static gboolean confirm_trash_auto_value;
+
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusSidebar, nautilus_sidebar, GTK_TYPE_EVENT_BOX)
 
@@ -194,6 +196,9 @@ nautilus_sidebar_initialize_class (GtkObjectClass *object_klass)
 		 GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
 
 	gtk_object_class_add_signals (object_klass, signals, LAST_SIGNAL);
+
+	nautilus_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
+					       &confirm_trash_auto_value);
 }
 
 /* utility routine to allocate the box the holds the command buttons */
@@ -1421,7 +1426,10 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 	 * need a framework to allow protocols to add commands buttons */
 	if (eel_istr_has_prefix (sidebar->details->uri, "trash:")) {
 		/* FIXME: We don't use spaces to pad labels! */
-		temp_button = gtk_button_new_with_label (_("  Empty Trash  "));		    
+		temp_button = gtk_button_new_with_label (confirm_trash_auto_value 
+							 ? _("Empty Trash...") 
+							 : _("Empty Trash"));
+		eel_gtk_button_set_standard_padding (GTK_BUTTON (temp_button));
 		gtk_box_pack_start (GTK_BOX (sidebar->details->button_box), 
 					temp_button, FALSE, FALSE, 0);
 		gtk_widget_set_sensitive (temp_button, !nautilus_trash_monitor_is_empty ());
