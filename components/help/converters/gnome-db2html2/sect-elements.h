@@ -126,4 +126,6 @@ void sect_inlinegraphic_start_element (Context *context, const char *name, const
 void sect_legalnotice_start_element (Context *context, const char *name, const xmlChar **atrs);
 void sect_legalnotice_end_element (Context *context, const char *name);
 void sect_legalnotice_characters (Context *context, const char *chars, int len);
+void sect_question_start_element (Context *context, const char *name, const xmlChar **atrs);
+void sect_answer_start_element (Context *context, const char *name, const xmlChar **atrs);
 #endif
