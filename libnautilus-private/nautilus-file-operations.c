@@ -2497,6 +2497,7 @@ confirm_empty_trash (GtkWidget *parent_view)
 	parent_window = GTK_WINDOW (gtk_widget_get_toplevel (parent_view));
 
 	dialog = gtk_dialog_new ();
+	atk_object_set_role (gtk_widget_get_accessible (dialog), ATK_ROLE_ALERT);
 	gtk_window_set_title (GTK_WINDOW (dialog), "");
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
