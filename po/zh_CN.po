@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-28 12:43+0100\n"
+"POT-Creation-Date: 2005-01-31 14:06+0100\n"
 "PO-Revision-Date: 2005-01-29 03:10+0800\n"
 "Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
@@ -1814,7 +1814,7 @@ msgstr "全部替换(_A)"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: libnautilus-private/nautilus-file-operations.c:1195
-#: libnautilus-private/nautilus-file.c:4748
+#: libnautilus-private/nautilus-file.c:4749
 #: src/file-manager/fm-directory-view.c:7897
 #, c-format
 msgid "link to %s"
@@ -1960,8 +1960,8 @@ msgstr "将文件移动到回收站"
 
 #. localizers: label prepended to the progress count
 #: libnautilus-private/nautilus-file-operations.c:1933
-msgid "Files thrown out:"
-msgstr "丢弃的文件："
+msgid "Throwing out file:"
+msgstr "丢弃文件："
 
 #. localizers: label prepended to the name of the current file moved
 #: libnautilus-private/nautilus-file-operations.c:1935
@@ -1980,8 +1980,8 @@ msgstr "移动文件"
 
 #. localizers: label prepended to the progress count
 #: libnautilus-private/nautilus-file-operations.c:1944
-msgid "Files moved:"
-msgstr "移动的文件："
+msgid "Moving file:"
+msgstr "移动文件："
 
 #: libnautilus-private/nautilus-file-operations.c:1947
 msgid "Preparing To Move..."
@@ -1998,8 +1998,8 @@ msgstr "创建文件的链接"
 
 #. localizers: label prepended to the progress count
 #: libnautilus-private/nautilus-file-operations.c:1958
-msgid "Files linked:"
-msgstr "链接的文件："
+msgid "Linking file:"
+msgstr "链接文件："
 
 #. localizers: label prepended to the name of the current file linked
 #: libnautilus-private/nautilus-file-operations.c:1960
@@ -2021,8 +2021,8 @@ msgstr "复制文件"
 
 #. localizers: label prepended to the progress count
 #: libnautilus-private/nautilus-file-operations.c:1970
-msgid "Files copied:"
-msgstr "复制的文件："
+msgid "Copying file:"
+msgstr "复制文件："
 
 #. localizers: label prepended to the name of the current file copied
 #: libnautilus-private/nautilus-file-operations.c:1972
@@ -2236,65 +2236,65 @@ msgstr "服务于"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2964
+#: libnautilus-private/nautilus-file.c:2965
 msgid "today at 00:00:00 PM"
 msgstr "今天 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2965
+#: libnautilus-private/nautilus-file.c:2966
 #: src/nautilus-file-management-properties.c:493
 msgid "today at %-I:%M:%S %p"
 msgstr "今天 %H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2967
+#: libnautilus-private/nautilus-file.c:2968
 msgid "today at 00:00 PM"
 msgstr "今天 00:00"
 
-#: libnautilus-private/nautilus-file.c:2968
+#: libnautilus-private/nautilus-file.c:2969
 msgid "today at %-I:%M %p"
 msgstr "今天 %H:%M"
 
-#: libnautilus-private/nautilus-file.c:2970
+#: libnautilus-private/nautilus-file.c:2971
 msgid "today, 00:00 PM"
 msgstr "今天，00:00"
 
-#: libnautilus-private/nautilus-file.c:2971
+#: libnautilus-private/nautilus-file.c:2972
 msgid "today, %-I:%M %p"
 msgstr "今天，%H:%M"
 
-#: libnautilus-private/nautilus-file.c:2973
 #: libnautilus-private/nautilus-file.c:2974
+#: libnautilus-private/nautilus-file.c:2975
 msgid "today"
 msgstr "今天"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2983
+#: libnautilus-private/nautilus-file.c:2984
 msgid "yesterday at 00:00:00 PM"
 msgstr "昨天 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2984
+#: libnautilus-private/nautilus-file.c:2985
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "昨天 %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2986
+#: libnautilus-private/nautilus-file.c:2987
 msgid "yesterday at 00:00 PM"
 msgstr "昨天 00:00"
 
-#: libnautilus-private/nautilus-file.c:2987
+#: libnautilus-private/nautilus-file.c:2988
 msgid "yesterday at %-I:%M %p"
 msgstr "昨天 %H:%M"
 
-#: libnautilus-private/nautilus-file.c:2989
+#: libnautilus-private/nautilus-file.c:2990
 msgid "yesterday, 00:00 PM"
 msgstr "昨天，00:00"
 
-#: libnautilus-private/nautilus-file.c:2990
+#: libnautilus-private/nautilus-file.c:2991
 msgid "yesterday, %-I:%M %p"
 msgstr "昨天，%H:%M"
 
-#: libnautilus-private/nautilus-file.c:2992
 #: libnautilus-private/nautilus-file.c:2993
+#: libnautilus-private/nautilus-file.c:2994
 msgid "yesterday"
 msgstr "昨天"
 
@@ -2303,113 +2303,113 @@ msgstr "昨天"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:3004
+#: libnautilus-private/nautilus-file.c:3005
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "0000年9月0日星期三，00:00:00"
 
-#: libnautilus-private/nautilus-file.c:3005
+#: libnautilus-private/nautilus-file.c:3006
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%Y年%-m月%-d日%A，%-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:3007
+#: libnautilus-private/nautilus-file.c:3008
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "0000年10月0日星期一，00:00:00"
 
-#: libnautilus-private/nautilus-file.c:3008
+#: libnautilus-private/nautilus-file.c:3009
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%Y年%-m月%-d日%A，%-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:3010
+#: libnautilus-private/nautilus-file.c:3011
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "0000年10月0日周一，00:00"
 
-#: libnautilus-private/nautilus-file.c:3011
+#: libnautilus-private/nautilus-file.c:3012
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%Y年%-m月%-d日%a，%-H:%M"
 
-#: libnautilus-private/nautilus-file.c:3013
+#: libnautilus-private/nautilus-file.c:3014
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "0000年10月0日，00:00:00"
 
-#: libnautilus-private/nautilus-file.c:3014
+#: libnautilus-private/nautilus-file.c:3015
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%Y年%-m月%-d日，%H:%M"
 
-#: libnautilus-private/nautilus-file.c:3016
+#: libnautilus-private/nautilus-file.c:3017
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "0000年0月0日，00:00"
 
-#: libnautilus-private/nautilus-file.c:3017
+#: libnautilus-private/nautilus-file.c:3018
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%Y年%-m月%-d日，%H:%M"
 
-#: libnautilus-private/nautilus-file.c:3019
+#: libnautilus-private/nautilus-file.c:3020
 msgid "00/00/00, 00:00 PM"
 msgstr "00-00-00，00:00"
 
-#: libnautilus-private/nautilus-file.c:3020
+#: libnautilus-private/nautilus-file.c:3021
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%Y-%-m-%-d，%H:%M"
 
-#: libnautilus-private/nautilus-file.c:3022
+#: libnautilus-private/nautilus-file.c:3023
 msgid "00/00/00"
 msgstr "00-00-00"
 
-#: libnautilus-private/nautilus-file.c:3023
+#: libnautilus-private/nautilus-file.c:3024
 msgid "%m/%d/%y"
 msgstr "%Y-%m-%d"
 
-#: libnautilus-private/nautilus-file.c:4314
+#: libnautilus-private/nautilus-file.c:4315
 #: src/file-manager/fm-directory-view.c:1859
 #, c-format
 msgid "%u item"
 msgid_plural "%u items"
 msgstr[0] "%u 项"
 
-#: libnautilus-private/nautilus-file.c:4315
+#: libnautilus-private/nautilus-file.c:4316
 #, c-format
 msgid "%u folder"
 msgid_plural "%u folders"
 msgstr[0] "%u 个文件夹"
 
-#: libnautilus-private/nautilus-file.c:4316
+#: libnautilus-private/nautilus-file.c:4317
 #, c-format
 msgid "%u file"
 msgid_plural "%u files"
 msgstr[0] "%u 个文件"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4641
-#: libnautilus-private/nautilus-file.c:4657
+#: libnautilus-private/nautilus-file.c:4642
+#: libnautilus-private/nautilus-file.c:4658
 msgid "? items"
 msgstr "? 项"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4647
+#: libnautilus-private/nautilus-file.c:4648
 msgid "? bytes"
 msgstr "? 字节"
 
-#: libnautilus-private/nautilus-file.c:4662
+#: libnautilus-private/nautilus-file.c:4663
 msgid "unknown type"
 msgstr "未知类型"
 
-#: libnautilus-private/nautilus-file.c:4665
+#: libnautilus-private/nautilus-file.c:4666
 msgid "unknown MIME type"
 msgstr "未知 MIME 类型"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4671
+#: libnautilus-private/nautilus-file.c:4672
 #: src/file-manager/fm-properties-window.c:1208
 msgid "unknown"
 msgstr "未知"
 
-#: libnautilus-private/nautilus-file.c:4704
+#: libnautilus-private/nautilus-file.c:4705
 msgid "program"
 msgstr "程序"
 
-#: libnautilus-private/nautilus-file.c:4722
+#: libnautilus-private/nautilus-file.c:4723
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2418,22 +2418,22 @@ msgstr ""
 "甚至找不到关于“x-directory/normal”的描述。这可能意味着您的 gnome-vfs.keys 文"
 "件位置不对，或者由于其它原因才找不到。"
 
-#: libnautilus-private/nautilus-file.c:4726
+#: libnautilus-private/nautilus-file.c:4727
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
 "gnome-vfs mailing list."
 msgstr "找不到 MIME 类型“%s” (文件为“%s”) 的描述，请通知 gnome-vfs 邮件列表。"
 
-#: libnautilus-private/nautilus-file.c:4742
+#: libnautilus-private/nautilus-file.c:4743
 msgid "link"
 msgstr "链接"
 
-#: libnautilus-private/nautilus-file.c:4762
+#: libnautilus-private/nautilus-file.c:4763
 msgid "link (broken)"
 msgstr "链接(不正确)"
 
-#: libnautilus-private/nautilus-file.c:6190
+#: libnautilus-private/nautilus-file.c:6191
 #: libnautilus-private/nautilus-global-preferences.c:540
 #: libnautilus-private/nautilus-trash-directory.c:343
 msgid "Trash"
