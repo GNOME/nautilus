@@ -1,7 +1,35 @@
+2000-12-19  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fixed bug 2233 (proper icon not selected switching views after
+	rename) by re-sending selection when the selection items change
+	since they might have changed names.
+	
+	* src/file-manager/fm-directory-view.c: (done_loading): Moved
+	more of the done_loading code here for clarity.
+	(compare_pointers), (sort_and_check_for_intersection): Added
+	functions that quickly find if there's an intersection in two
+	GLists of NautilusFile objects.
+	(display_pending_files): Move some of the done_loading code into a
+	new function, do it after processing file changes, and add code to
+	send out the selection if a file change comes in for any items in
+	the selection (in case the name changed).
+	(display_selection_info_idle_callback),
+	(update_menus_idle_callback), (display_pending_idle_callback):
+	Make all of these more robust by keeping the NautilusView object
+	in a local variable.
+	(display_pending_timeout_callback): Do the "ref the NautilusView"
+	thing in this function too.
+
+	* check-POTFILES.pl: Added support for .xml and .cpp files and
+	also updated special cases for directory environment variables.
+	* check-THANKS.pl: Added a special case and fixed some things in
+	the ChangeLog too to make this output fewer false positives.
+
 2000-12-19  Mike Fleming  <mfleming@eazel.com>
 
-	* components/services/nautilus-dependent-shared/shared-service-widg
-	ets.c:
+	* components/services/nautilus-dependent-shared/shared-service-widgets.c:
 	Added fixme
 
 	* components/mozilla/main.c: (main):
@@ -2634,7 +2662,7 @@
 
 	More minor cleaning to make the summary view more managable.
 
-2000-12-09  Andy Hertzfeld  <and@eazel.com>
+2000-12-09  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/file-manager/fm-properties-window.c: (create_basic_page),
 	(create_properties_window), (ensure_uri_is_image),
@@ -6202,7 +6230,7 @@ John Fleck <jfleck@inkstain.net>
 	(size_allocate_callback): Scroll to the selected node, if any, on
 	the first size_allocate only.
 
-2000-11-18 John Fleck <jfleck@inkstain.net:
+2000-11-18 John Fleck <jfleck@inkstain.net>
 
 	components/help/converters/gnome-db2html2/gdb3html.c:
 	changing output of &percnt; entity to &#37; so Mozilla will 

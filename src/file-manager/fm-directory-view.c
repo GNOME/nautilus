@@ -1399,9 +1399,12 @@ check_for_directory_hard_limit (FMDirectoryView *view)
 static void
 done_loading (FMDirectoryView *view)
 {
+	GList *uris_selected, *selection;
+
 	if (!view->details->loading) {
 		return;
 	}
+
 	/* This can be called during destruction, in which case there
 	 * is no NautilusView any more.
 	 */
@@ -1409,6 +1412,19 @@ done_loading (FMDirectoryView *view)
 		nautilus_view_report_load_complete (view->details->nautilus_view);
 		schedule_update_menus (view);
 		check_for_directory_hard_limit (view);
+
+		uris_selected = view->details->pending_uris_selected;
+		if (uris_selected != NULL) {
+			view->details->pending_uris_selected = NULL;
+			
+			selection = file_list_from_uri_list (uris_selected);
+			nautilus_g_list_free_deep (uris_selected);
+			
+			fm_directory_view_set_selection (view, selection);
+			fm_directory_view_reveal_selection (view);
+			
+			nautilus_file_list_free (selection);
+		}
 	}
 
 	view->details->loading = FALSE;
@@ -1635,66 +1651,103 @@ copy_move_done_callback (GHashTable *debuting_uris, gpointer data)
 	}
 }
 
+static int
+compare_pointers (gconstpointer pointer_1, gconstpointer pointer_2)
+{
+	if ((const char *) pointer_1 < (const char *) pointer_2) {
+		return -1;
+	}
+	if ((const char *) pointer_1 > (const char *) pointer_2) {
+		return +1;
+	}
+	return 0;
+}
+
+static gboolean
+sort_and_check_for_intersection (GList **list_1, GList **list_2)
+{
+	GList *node_1, *node_2;
+	int compare_result;
+
+	*list_1 = g_list_sort (*list_1, compare_pointers);
+	*list_2 = g_list_sort (*list_2, compare_pointers);
+
+	node_1 = *list_1;
+	node_2 = *list_2;
+
+	while (node_1 != NULL && node_2 != NULL) {
+		compare_result = compare_pointers (node_1->data, node_2->data);
+		if (compare_result == 0) {
+			return TRUE;
+		}
+		if (compare_result <= 0) {
+			node_1 = node_1->next;
+		}
+		if (compare_result >= 0) {
+			node_2 = node_2->next;
+		}
+	}
+
+	return FALSE;
+}
+
 static gboolean
 display_pending_files (FMDirectoryView *view)
 {
-	GList *files_added, *files_changed, *uris_selected, *p;
+	GList *files_added, *files_changed, *node;
 	NautilusFile *file;
 	GList *selection;
+	gboolean send_selection_change;
 
-	selection = NULL;
+	send_selection_change = FALSE;
+
+	files_added = view->details->pending_files_added;
+	files_changed = view->details->pending_files_changed;
+
+	if (files_added != NULL || files_changed != NULL) {
+		view->details->pending_files_added = NULL;
+		view->details->pending_files_changed = NULL;
+		
+		gtk_signal_emit (GTK_OBJECT (view), signals[BEGIN_ADDING_FILES]);
+		
+		for (node = files_added; node != NULL; node = node->next) {
+			file = NAUTILUS_FILE (node->data);
+			
+			if (nautilus_directory_contains_file (view->details->model, file)) {
+				gtk_signal_emit (GTK_OBJECT (view),
+						 signals[ADD_FILE],
+						 file);
+			}
+		}
+		
+		for (node = files_changed; node != NULL; node = node->next) {
+			file = NAUTILUS_FILE (node->data);
+			
+			gtk_signal_emit (GTK_OBJECT (view),
+					 signals[FILE_CHANGED],
+					 file);
+		}
+		
+		gtk_signal_emit (GTK_OBJECT (view), signals[DONE_ADDING_FILES]);
+
+		if (files_changed != NULL) {
+			selection = fm_directory_view_get_selection (view);
+			send_selection_change = sort_and_check_for_intersection
+				(&files_changed, &selection);
+			nautilus_file_list_free (selection);
+		}
+
+		nautilus_file_list_free (files_added);
+		nautilus_file_list_free (files_changed);
+	}
 
 	if (view->details->model != NULL
 	    && nautilus_directory_are_all_files_seen (view->details->model)) {
 		done_loading (view);
 	}
 
-	files_added = view->details->pending_files_added;
-	files_changed = view->details->pending_files_changed;
-	uris_selected = view->details->pending_uris_selected;
-
-	if (files_added == NULL && files_changed == NULL && uris_selected == NULL) {
-		return FALSE;
-	}
-	view->details->pending_files_added = NULL;
-	view->details->pending_files_changed = NULL;
-
-	gtk_signal_emit (GTK_OBJECT (view), signals[BEGIN_ADDING_FILES]);
-
-	for (p = files_added; p != NULL; p = p->next) {
-		file = NAUTILUS_FILE (p->data);
-		
-		if (nautilus_directory_contains_file (view->details->model, file)) {
-			gtk_signal_emit (GTK_OBJECT (view),
-					 signals[ADD_FILE],
-					 file);
-		}
-	}
-
-	for (p = files_changed; p != NULL; p = p->next) {
-		file = NAUTILUS_FILE (p->data);
-		
-		gtk_signal_emit (GTK_OBJECT (view),
-				 signals[FILE_CHANGED],
-				 file);
-	}
-
-	gtk_signal_emit (GTK_OBJECT (view), signals[DONE_ADDING_FILES]);
-
-	nautilus_file_list_free (files_added);
-	nautilus_file_list_free (files_changed);
-
-	if (nautilus_directory_are_all_files_seen (view->details->model)
-	    && uris_selected != NULL) {
-		view->details->pending_uris_selected = NULL;
-		
-		selection = file_list_from_uri_list (uris_selected);
-		nautilus_g_list_free_deep (uris_selected);
-
-		fm_directory_view_set_selection (view, selection);
-		fm_directory_view_reveal_selection (view);
-
-		nautilus_file_list_free (selection);
+	if (send_selection_change) {
+		fm_directory_view_send_selection_change (view);
 	}
 
 	return TRUE;
@@ -1704,19 +1757,21 @@ static gboolean
 display_selection_info_idle_callback (gpointer data)
 {
 	FMDirectoryView *view;
+	BonoboObject *nautilus_view;
 	
 	view = FM_DIRECTORY_VIEW (data);
+	nautilus_view = BONOBO_OBJECT (view->details->nautilus_view);
 
 	/* Ref the view so that the widget can't be destroyed during
 	 * idle processing.
 	 */
-	bonobo_object_ref (BONOBO_OBJECT (view->details->nautilus_view));
+	bonobo_object_ref (nautilus_view);
 
 	view->details->display_selection_idle_id = 0;
 	fm_directory_view_display_selection_info (view);
 	fm_directory_view_send_selection_change (view);
 
-	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
+	bonobo_object_unref (nautilus_view);
 
 	return FALSE;
 }
@@ -1725,18 +1780,20 @@ static gboolean
 update_menus_idle_callback (gpointer data)
 {
 	FMDirectoryView *view;
+	BonoboObject *nautilus_view;
 	
 	view = FM_DIRECTORY_VIEW (data);
+	nautilus_view = BONOBO_OBJECT (view->details->nautilus_view);
 
 	/* Ref the view so that the widget can't be destroyed during
 	 * idle processing.
 	 */
-	bonobo_object_ref (BONOBO_OBJECT (view->details->nautilus_view));
+	bonobo_object_ref (nautilus_view);
 
 	view->details->update_menus_idle_id = 0;
 	fm_directory_view_update_menus (view);
 
-	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
+	bonobo_object_unref (nautilus_view);
 
 	return FALSE;
 }
@@ -1744,21 +1801,23 @@ update_menus_idle_callback (gpointer data)
 static gboolean
 display_pending_idle_callback (gpointer data)
 {
-	/* Don't do another idle until we receive more files. */
-
 	FMDirectoryView *view;
-
+	BonoboObject *nautilus_view;
+	
 	view = FM_DIRECTORY_VIEW (data);
+	nautilus_view = BONOBO_OBJECT (view->details->nautilus_view);
 
 	/* Ref the view so that the widget can't be destroyed during
 	 * idle processing.
 	 */
-	bonobo_object_ref (BONOBO_OBJECT (view->details->nautilus_view));
+	bonobo_object_ref (nautilus_view);
 
 	view->details->display_pending_idle_id = 0;
 	display_pending_files (view);
 
-	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
+	bonobo_object_unref (nautilus_view);
+
+	/* Don't do another idle until we receive more files. */
 
 	return FALSE;
 }
@@ -1766,23 +1825,30 @@ display_pending_idle_callback (gpointer data)
 static gboolean
 display_pending_timeout_callback (gpointer data)
 {
-	/* Do another timeout if we displayed some files.
-	 * Once we get all the files, we'll start using
-	 * idle instead.
-	 */
-
 	FMDirectoryView *view;
 	gboolean displayed_some;
+	BonoboObject *nautilus_view;
 
 	view = FM_DIRECTORY_VIEW (data);
+	nautilus_view = BONOBO_OBJECT (view->details->nautilus_view);
+
+	/* Ref the view so that the widget can't be destroyed during
+	 * idle processing.
+	 */
+	bonobo_object_ref (nautilus_view);
+
+	/* Do another timeout if we displayed some files. Once we get
+	 * all the files, we'll start using idle instead.
+	 */
 
 	displayed_some = display_pending_files (view);
-	if (displayed_some) {
-		return TRUE;
+	if (!displayed_some) {
+		view->details->display_pending_timeout_id = 0;
 	}
 
-	view->details->display_pending_timeout_id = 0;
-	return FALSE;
+	bonobo_object_unref (nautilus_view);
+
+	return displayed_some;
 }
 
 
@@ -3242,10 +3308,11 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
 	/* Schedule a display of the new selection. */
-	if (view->details->display_selection_idle_id == 0)
+	if (view->details->display_selection_idle_id == 0) {
 		view->details->display_selection_idle_id
 			= gtk_idle_add (display_selection_info_idle_callback,
 					view);
+	}
 
 	if (view->details->batching_selection_level != 0) {
 		view->details->selection_changed_while_batched = TRUE;

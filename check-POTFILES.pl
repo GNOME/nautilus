@@ -33,7 +33,9 @@ my @directories = (".");
 
 my %exceptions =
   (
+   '$(APPLETS_SUBDIRS)' => 'applets',
    '$(AUTHENTICATE_HELPER_SUBDIRS)' => 'authenticate',
+   '$(INSTALL_SERVICE)' => 'install',
    '$(MOZILLA_COMPONENT_SUBDIRS)' => 'mozilla',
    '$(NULL)' => '',
    '$(RPMVIEW_COMPONENT_SUBDIRS)' => 'rpmview',
@@ -86,7 +88,7 @@ while (@directories)
                 die "can't parse SUBDIRS in $directory\n";
               }
           }
-	while (s/([-_a-zA-Z0-9]+\.[ch])\W//)
+	while (s/([-_a-zA-Z0-9]+\.(c|h|xml|cpp))\W//)
 	  {
 	    $files{$prefix . $1} = $1;
 	  }

@@ -41,6 +41,7 @@ my %name_map = ("Darin as Andy" => "Darin Adler",
                 "Mike Engber" => "Michael Engber",
                 "Pavel Cisler" => "Pavel Císler",
                 "Pavel" => "Pavel Císler",
+                "Eskil Olsen" => "Eskil Heyn Olsen",
                 "Robin Slomkowski" => "Robin * Slomkowski");
 
 # Map from alternate email addresses of some users to canonical versions
