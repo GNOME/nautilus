@@ -179,9 +179,9 @@ BUILT_SOURCES = \
 	$(ui_msgs)				\
 	$(NULL)
 
-install-data-hook: run-nautilus
+install-data-hook: run-nautilus launch-nautilus
 	$(mkinstalldirs) $(DESTDIR)/$(prefix)/bin
-	@list='run-nautilus'; for p in $$list; do\
+	@list='run-nautilus launch-nautilus'; for p in $$list; do\
 	  if test -f $$p; then \
 	    echo "  $(INSTALL_PROGRAM) $(srcdir)/$$p $(DESTDIR)/$(prefix)/bin/$$p"; \
 	    $(INSTALL_PROGRAM) $$p $(DESTDIR)/$(prefix)/bin/$$p; \
