@@ -1,3 +1,9 @@
+2002-05-10  Damon Chaplin  <damon@ximian.com>
+
+	* libnautilus-private/nautilus-directory-async.c (link_info_read_done):
+	moved the nautilus_file_unref() to the end of the function.
+	Hopefully fixes bug #80207.
+
 2002-05-09  Damon Chaplin  <damon@ximian.com>
 
 	* components/text/nautilus-text-view.c (read_file_callback): if the

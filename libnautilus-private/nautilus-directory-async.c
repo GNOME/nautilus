@@ -2804,11 +2804,12 @@ link_info_read_done (NautilusDirectory *directory,
 	nautilus_file_ref (file);
 	link_info_done (directory, file, uri, name, icon);
 	nautilus_file_changed (file);
-	nautilus_file_unref (file);
 
 	if (!should_read_link_info_sync (file)) {
 		async_job_end (directory, "link info");
 	}
+
+	nautilus_file_unref (file);
 }
 
 
