@@ -163,7 +163,7 @@ read_proc_info(const gchar* proc_filename)
 	}
 	fclose(thisFile);
 	
-	result = strdup(string_data->str);
+	result = g_strdup(string_data->str);
 	g_string_free(string_data, TRUE);
 	g_free(path_name);
 
@@ -199,7 +199,7 @@ extract_info(gchar* data, const gchar *field_name, gint nth)
 	/* add the requested node if the field was found */
 	if (field_data == NULL)
 		return NULL;
-	field_data = strdup(field_data);
+	field_data = g_strdup(field_data);
 	g_strfreev(info_array);
 	return field_data;
 }
@@ -213,12 +213,14 @@ get_CPU_description(gint nth)
 	GString* string_data = g_string_new("");
 	char* proc_data = read_proc_info("cpuinfo");
 
-	if(extract_info(proc_data, "processor", nth) == NULL) {
+	temp_str = extract_info(proc_data, "processor", nth);
+	if(temp_str == NULL) {
 		/* can't find nth processor */
 		g_free(proc_data);
 		g_string_free(string_data, TRUE);
 		return NULL;
 	}
+	g_free (temp_str);
 	
 	temp_str = extract_info(proc_data, "model name", nth);
 	g_string_append(string_data, temp_str);
@@ -236,7 +238,7 @@ get_CPU_description(gint nth)
 	g_free(temp_str);
 		
 	g_free(proc_data);
-	result = strdup(string_data->str);
+	result = g_strdup(string_data->str);
 	g_string_free(string_data, TRUE);
 
 	return result;	
@@ -263,7 +265,7 @@ get_RAM_description (void)
 	g_free(temp_str);
 
 	g_free(proc_data);
-	result = strdup(string_data->str);
+	result = g_strdup(string_data->str);
 	g_string_free(string_data, TRUE);
 
 	return result;

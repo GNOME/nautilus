@@ -1,3 +1,35 @@
+Fri Aug 18 21:22:17 2000  George Lebl <jirka@5z.com>
+
+	* components/hardware/nautilus-hardware-view.c
+	  (read_proc_info) (extract_info) (get_CPU_description)
+	  (get_RAM_description):
+	  Use g_strdup instead of strdup
+	  (get_CPU_description):
+	  Free allocated data when returning due to an error
+
+	* components/music/nautilus-music-view.c
+	  (nautilus_music_view_update_from_uri):
+	  Initialize clist_entry in a loop, use g_strdup_printf instead
+	  of malloc and sprintf, and properly free allocated data after use
+
+	* components/services/inventory/lib/eazel-inventory-shared.c
+	  (read_proc_info) 
+	  components/services/inventory/nautilus-view/nautilus-inventory-view.c
+	  (gather_config_button_cb)
+	  libnautilus-extensions/nautilus-string.c
+	  (nautilus_str_middle_truncate)
+	  librsvg/rsvg.c (rsvg_ctx_free):
+	  Use g_strdup instead of strdup and g_free instead of free to
+	  prevent crashes with glib compiled with --enable-mem-check 
+	
+	* src/file-manager/Makefile.am,
+	  src/file-manager/nautilus-indexing-info.[ch],
+	  src/file-manager/fm-search-list-view.c (indexing_info_callback)
+	  (real_merge_menus):
+	  Bug #1369: Add a dialog for indexing info to the file menu.  The
+	  dialog shows the last time the indexing was done and allows to
+	  update the indexes.  Only shown on the file search result dialog
+
 2000-08-18  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-volume-monitor.c:

@@ -28,6 +28,7 @@
 
 #include "fm-directory-view.h"
 #include "fm-list-view-private.h"
+#include "nautilus-indexing-info.h"
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
@@ -41,6 +42,7 @@
 #include <libgnome/gnome-i18n.h>
 
 /* Paths to use when creating & referring to Bonobo menu items */
+#define MENU_PATH_INDEXING_INFO			"/File/Indexing Info..."
 #define MENU_PATH_REVEAL_IN_NEW_WINDOW 		"/File/Reveal"
 
 static void 	fm_search_list_view_initialize       	 (gpointer          object,
@@ -258,6 +260,12 @@ real_get_column_specification (FMListView *view,
 }
 
 static void
+indexing_info_callback (gpointer ignored, gpointer data)
+{
+	nautilus_indexing_info_show_dialog ();
+}
+
+static void
 compute_reveal_item_name_and_sensitivity (GList *selected_files,
 					  gboolean include_accelerator_underbars,
 					  char **return_name,
@@ -409,6 +417,7 @@ real_merge_menus (FMDirectoryView *view)
 	GList *selected_files;
 	char *name;
 	gboolean sensitive;
+	int position;
 
 	g_assert (FM_IS_LIST_VIEW (view));
 
@@ -416,6 +425,23 @@ real_merge_menus (FMDirectoryView *view)
 
 	ui_handler = fm_directory_view_get_bonobo_ui_handler (view);
 	selected_files = fm_directory_view_get_selection (view);
+
+	/* Indexing Info.. goes right after the Show Properties item that
+	 * fm-directory-view places in the File menu.
+	 */
+	position = bonobo_ui_handler_menu_get_pos
+		(ui_handler,
+		 FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES) + 1,
+        bonobo_ui_handler_menu_new_item
+		(ui_handler,
+		 MENU_PATH_INDEXING_INFO,
+		 _("Indexing Info..."),
+		 _("Show indexing info dialog"),
+		 position,
+		 BONOBO_UI_HANDLER_PIXMAP_NONE,
+		 NULL, 0, 0,
+		 (BonoboUIHandlerCallback) indexing_info_callback, NULL);
+
 
 	compute_reveal_item_name_and_sensitivity (selected_files, TRUE, &name, &sensitive);
 

@@ -190,12 +190,12 @@ rsvg_ctx_free (RsvgCtx *ctx)
 
   for (i = 0; i < ctx->n_state; i++)
     rsvg_state_finalize (&ctx->state[i]);
-  free (ctx->state);
+  g_free (ctx->state);
 
   g_hash_table_foreach (ctx->entities, rsvg_ctx_free_helper, NULL);
   g_hash_table_destroy (ctx->entities);
 
-  free (ctx);
+  g_free (ctx);
 }
 
 static void

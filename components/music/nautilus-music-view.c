@@ -1263,24 +1263,15 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	gtk_clist_clear (GTK_CLIST (music_view->details->song_list));
 	
 	for (p = song_list; p != NULL; p = p->next) {
+		int i;
 		info = (SongInfo *) p->data;
+
+		for (i = 0; i < 10; i ++) {
+			clist_entry[i] = NULL;
+		}
 		
-		clist_entry[0] = malloc(4);
 		if (info->track_number > 0)
-			sprintf(clist_entry[0], "%d ", info->track_number);
-		else	
-			clist_entry[0] = '\0';
-			
-		clist_entry[1] = NULL;
-		clist_entry[2] = NULL;
-		clist_entry[3] = NULL;
-		clist_entry[4] = NULL;
-		clist_entry[5] = NULL;
-		clist_entry[6] = NULL;
-		clist_entry[7] = NULL;
-		clist_entry[8] = NULL;
-		clist_entry[9] = NULL;
-		
+			clist_entry[0] = g_strdup_printf("%d ", info->track_number);
 		if (info->title)
 			clist_entry[1] = g_strdup(info->title);
 		if (info->artist)
@@ -1302,6 +1293,11 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 		gtk_clist_append(GTK_CLIST(music_view->details->song_list), clist_entry);
 		gtk_clist_set_row_data(GTK_CLIST(music_view->details->song_list),
 					track_index, g_strdup(info->path_uri));
+
+		for (i = 0; i < 10; i ++) {
+			g_free (clist_entry[i]);
+			clist_entry[i] = NULL;
+		}
 		
 		track_index += 1;
 	}

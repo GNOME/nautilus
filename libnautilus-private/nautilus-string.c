@@ -511,14 +511,14 @@ nautilus_str_middle_truncate (const char *string,
 	 * side)
 	 */
 	if (truncate_length < min_truncate_length) {
-		return strdup (string);
+		return g_strdup (string);
 	}
 
 	length = strlen (string);
 
 	/* Make sure the string is not already small enough. */
 	if (length <= truncate_length) {
-		return strdup (string);
+		return g_strdup (string);
 	}
 
 	/* Find the 'middle' where the truncation will occur. */

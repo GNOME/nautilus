@@ -138,7 +138,7 @@ read_proc_info	(const char	*proc_filename) {
 	}
 	fclose (thisFile);
 	
-	result = strdup (string_data->str);
+	result = g_strdup (string_data->str);
 	g_string_free (string_data, TRUE);
 	g_free (path_name);
 

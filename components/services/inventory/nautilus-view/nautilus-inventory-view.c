@@ -210,7 +210,7 @@ gather_config_button_cb (GtkWidget	*button, NautilusInventoryView	*view) {
 		g_string_append (config_data, buffer);
 	}
 	fclose (config_file);
-	config_string = strdup (config_data->str);
+	config_string = g_strdup (config_data->str);
 	g_string_free(config_data, TRUE);
 	g_free (config_file_name);
 
