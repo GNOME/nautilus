@@ -716,7 +716,6 @@ bonobo_object_factory (BonoboGenericFactory *this, const char *oaf_iid,
 	bonobo_object_data_t *bod;
 
 	g_return_val_if_fail (this != NULL, NULL);
-	g_return_val_if_fail (this->goad_id != NULL, NULL);
 
 	/*
 	 * Creates the BonoboObject server

@@ -1,5 +1,11 @@
 2000-12-14  Darin Adler  <darin@eazel.com>
 
+	* components/image-viewer/nautilus-image-view.c:
+	(bonobo_object_factory): Remove unnecessary return_if_fail
+	that was referring to a field now renamed in Bonobo.
+
+2000-12-14  Darin Adler  <darin@eazel.com>
+
 	reviewed by: John Sullivan <sullivan@eazel.com>
 
 	Fix bug 2807 (support metadata removal for cases where we
