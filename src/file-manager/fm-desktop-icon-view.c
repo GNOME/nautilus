@@ -899,7 +899,7 @@ update_home_link_and_delete_copies (void)
 					    home_uri)) {
 		nautilus_link_local_create (desktop_directory,
 					    home_link_name,
-					    "temp-home", 
+					    "desktop-home", 
 					    home_uri,
 					    NULL,
 					    NAUTILUS_LINK_HOME);

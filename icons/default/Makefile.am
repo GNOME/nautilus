@@ -13,6 +13,7 @@ icon_DATA =\
 	SearchWeb.png \
 	decrement.png \
 	default.xml \
+	desktop-home.png \
 	emblem-OK.svg \
 	emblem-broken-link.png \
 	emblem-certified.svg \
@@ -35,7 +36,6 @@ icon_DATA =\
         emblem-symbolic-link-36.png \
 	emblem-trash.png \
 	emblem-urgent.svg \
-	home.png \
 	i-directory-12.png \
 	i-directory-24.png \
 	i-directory-36.png \
@@ -72,7 +72,6 @@ icon_DATA =\
 	manual.png \
 	number_strip.png \
 	side_bar_image.png \
-	temp-home.png \
 	theme_preview.png \
 	trash-empty.png \
 	trash-full.png \

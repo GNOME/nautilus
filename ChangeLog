@@ -1,3 +1,70 @@
+2002-02-28  Josh Barrow  <drleary@mac.com>
+
+	* icons/Makefile.am:
+	* icons/Services.png:
+	No-one uses services anymore, remove
+
+	* icons/bubble-LL.png:
+	* icons/bubble-LR.png:
+	* icons/bubble-UL.png:
+	* icons/bubble-UR.png:
+	All of these were for a non-realized Services project.
+	Remove.
+
+	* icons/bullet.png:
+	This was for the aa version of the stretch handles.  If we
+	decide to make the stretch handles aa, we can "cvs bring them back"
+
+	* icons/computer.png:
+	* icons/computer.svg:
+	These were both for the ~/Nautilus thing.  ~/Nautilus doesn't
+	exist anymore.
+
+	* icons/default/desktop_home.png:
+	* icons/default/temp-home.png:
+	Rename temp-home.png to desktop_home.png as it's not very temporary.
+	It's been there for over a year.
+
+	* icons/druid_header.png:
+	* icons/druid_header_stretch.png:
+	* icons/druid_sidebar.png:
+	There's nolonger a first time druid.  Remove these.
+
+	* icons/expert-selected.png:
+	* icons/expert.png:
+	* icons/intermediate-selected.png:
+	* icons/intermediate.png:
+	* icons/novice-selected.png:
+	* icons/novice.png:
+	There are nolonger user levels.  Remove these
+
+	* icons/home.png:
+	* icons/leftarrow.png:
+	* icons/rightarrow.png:
+	* icons/uparrow.png:
+	* icons/search.png:
+	If I recall, these were from the very first try at theming
+	support in Nautilus.  They haven't been used for a *very* long
+	time.  Remove them.
+
+	* icons/netscape.png:
+	This was used in ~/Nautilus, remove it.
+
+	* icons/text-selection-frame.png:
+	Not used now that there's not an aa v. non-aa thing going on.
+
+	* icons/theme_preview.png:
+	This is now in the default theme folder.
+
+	* icons/tiny-alert.png:
+	* icons/multi-ok.png:
+	* icons/not.png:
+	No clue what these were, but I'm certain they're not used anywhere.
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(update_home_link_and_delete_copies):
+	Change instance of "temp-home" to "desktop_home"
+
 2002-02-28  Darin Adler  <darin@bentspoon.com>
 
 	* libnautilus-private/nautilus-file.c: (in_filesystem): New.
