@@ -1,5 +1,20 @@
 2000-05-26  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* components/help/hyperbola-nav-index.c:
+	(hyperbola_navigation_index_new):
+	* components/help/hyperbola-nav-search.c:
+	(hyperbola_navigation_search_new):
+
+	Fix the annoying as hell assertions coming from these components.
+	Dont install the entry widgets as the titles for the clist.  You
+	cant do this cause they have already be added to the vbox
+	container and thus the barfing in gtk_container_add() about the
+	widget already having a parent.  There doesnt seem to be any
+	noticeable ui change because of this.  The help search/index
+	continue to work as "good" as before.
+	
+2000-05-26  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* nautilus-widgets/nautilus-preferences.c:
 	(pref_hash_node_add_callback), (pref_hash_node_remove_callback),
 	(preferences_gconf_callback):

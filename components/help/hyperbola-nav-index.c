@@ -701,7 +701,7 @@ BonoboObject *hyperbola_navigation_index_new(void)
   hni->clist = gtk_clist_new(1);
   gtk_clist_freeze(GTK_CLIST(hni->clist));
   gtk_clist_set_selection_mode(GTK_CLIST(hni->clist), GTK_SELECTION_BROWSE);
-  gtk_clist_set_column_widget(GTK_CLIST(hni->clist), 0, hni->ent);
+
   gtk_signal_connect(GTK_OBJECT(hni->clist), "select_row", hyperbola_navigation_index_select_row, hni);
 
   wtmp = gtk_scrolled_window_new(gtk_clist_get_hadjustment(GTK_CLIST(hni->clist)),
