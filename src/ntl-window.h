@@ -90,6 +90,7 @@ struct _NautilusWindow {
 
   gboolean changes_pending : 1;
   gboolean is_back : 1;
+  gboolean is_reload : 1;
   gboolean views_shown : 1;
   gboolean view_bombed_out : 1;
   gboolean view_activation_complete : 1;

@@ -180,36 +180,39 @@ nautilus_window_update_internals(NautilusWindow *window, NautilusNavigationInfo 
       Nautilus_NavigationInfo *newni;
 
       /* Maintain history lists. */
-      if (window->is_back)
+      if(!window->is_reload)
         {
-          /* Going back. Remove one item from the prev list and add the current item to the next list. */
-
-          g_assert(window->uris_prev);
-          g_assert(!strcmp((const char*)window->uris_prev->data, loci->navinfo.requested_uri));
-          g_assert(window->ni);
-
-          window->uris_next = g_slist_prepend(window->uris_next, g_strdup(window->ni->requested_uri));
-          g_free(window->uris_prev->data);
-          window->uris_prev = g_slist_remove_link(window->uris_prev, window->uris_prev);
-        }
-      else
-        {
-          /* Going forward. Remove one item from the next if it's the same as the the request.
-             Otherwise, clobber the entire next list.
-          */
-
-          if (window->uris_next && !strcmp(loci->navinfo.requested_uri, (const char*)window->uris_next->data))
+          if (window->is_back)
             {
-              g_free(window->uris_next->data);
-              window->uris_next = g_slist_remove_link(window->uris_next, window->uris_next);
+              /* Going back. Remove one item from the prev list and add the current item to the next list. */
+
+              g_assert(window->uris_prev);
+              g_assert(!strcmp((const char*)window->uris_prev->data, loci->navinfo.requested_uri));
+              g_assert(window->ni);
+
+              window->uris_next = g_slist_prepend(window->uris_next, g_strdup(window->ni->requested_uri));
+              g_free(window->uris_prev->data);
+              window->uris_prev = g_slist_remove_link(window->uris_prev, window->uris_prev);
             }
           else
             {
-              g_slist_foreach(window->uris_next, (GFunc)g_free, NULL);
-              g_slist_free(window->uris_next); window->uris_next = NULL;
+              /* Going forward. Remove one item from the next if it's the same as the the request.
+                 Otherwise, clobber the entire next list.
+          */
+
+              if (window->uris_next && !strcmp(loci->navinfo.requested_uri, (const char*)window->uris_next->data))
+                {
+                  g_free(window->uris_next->data);
+                  window->uris_next = g_slist_remove_link(window->uris_next, window->uris_next);
+                }
+              else
+                {
+                  g_slist_foreach(window->uris_next, (GFunc)g_free, NULL);
+                  g_slist_free(window->uris_next); window->uris_next = NULL;
+                }
+              if (window->ni)
+                window->uris_prev = g_slist_prepend(window->uris_prev, g_strdup(window->ni->requested_uri));
             }
-          if (window->ni)
-            window->uris_prev = g_slist_prepend(window->uris_prev, g_strdup(window->ni->requested_uri));
         }
 
       new_uri = gnome_vfs_uri_new (loci->navinfo.requested_uri);
@@ -421,7 +424,7 @@ nautilus_window_request_location_change(NautilusWindow *window,
 					Nautilus_NavigationRequestInfo *loc,
 					NautilusView *requesting_view)
 {  
-  nautilus_window_change_location(window, loc, requesting_view, FALSE);
+  nautilus_window_change_location(window, loc, requesting_view, FALSE, FALSE);
 }
 
 static NautilusView *
@@ -828,7 +831,8 @@ void
 nautilus_window_change_location(NautilusWindow *window,
 				Nautilus_NavigationRequestInfo *loc,
 				NautilusView *requesting_view,
-				gboolean is_back)
+				gboolean is_back,
+                                gboolean is_reload)
 {
   nautilus_window_set_state_info(window, (NautilusWindowStateItem)RESET_TO_IDLE, (NautilusWindowStateItem)0);
 
@@ -839,6 +843,7 @@ nautilus_window_change_location(NautilusWindow *window,
 
   nautilus_window_progress_indicate(window, PROGRESS_INITIAL, 0, _("Gathering information"));
   window->is_back = is_back;
+  window->is_reload = is_reload;
   window->new_requesting_view = requesting_view;
 
   window->cancel_tag =
@@ -866,6 +871,8 @@ view_menu_switch_views_cb (GtkWidget *widget, gpointer data)
 
   view = nautilus_window_load_content_view (window, iid, window->ni, NULL);
   nautilus_window_set_state_info(window, (NautilusWindowStateItem)NEW_CONTENT_VIEW_ACTIVATED, view, (NautilusWindowStateItem)0);
+  window->is_back = FALSE;
+  window->is_reload = TRUE;
 }
 
 /*

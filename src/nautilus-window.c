@@ -424,6 +424,8 @@ nautilus_window_constructed(NautilusWindow *window)
   window->btn_back = toolbar_info[0].widget;
   window->btn_fwd = toolbar_info[1].widget;
   nautilus_window_allow_stop(window, FALSE);
+  gtk_widget_set_sensitive(window->btn_back, FALSE);
+  gtk_widget_set_sensitive(window->btn_fwd, FALSE);
 
   /* set up location bar */
 
@@ -741,7 +743,7 @@ nautilus_window_back (GtkWidget *btn, NautilusWindow *window)
   nri.requested_uri = window->uris_prev->data;
   nri.new_window_default = nri.new_window_suggested = nri.new_window_enforced = Nautilus_V_FALSE;
 
-  nautilus_window_change_location(window, &nri, NULL, TRUE);
+  nautilus_window_change_location(window, &nri, NULL, TRUE, FALSE);
 }
 
 static void
@@ -754,7 +756,7 @@ nautilus_window_fwd (GtkWidget *btn, NautilusWindow *window)
   memset(&nri, 0, sizeof(nri));
   nri.requested_uri = window->uris_next->data;
   nri.new_window_default = nri.new_window_suggested = nri.new_window_enforced = Nautilus_V_FALSE;
-  nautilus_window_change_location(window, &nri, NULL, FALSE);
+  nautilus_window_change_location(window, &nri, NULL, FALSE, FALSE);
 }
 
 const char *
@@ -790,9 +792,12 @@ nautilus_window_up (GtkWidget *btn, NautilusWindow *window)
 static void
 nautilus_window_reload (GtkWidget *btn, NautilusWindow *window)
 {
-  /* Should enforce same window! */
-  nautilus_window_goto_uri (window,
-                           nautilus_window_get_requested_uri(window));
+  Nautilus_NavigationRequestInfo nri;
+
+  memset(&nri, 0, sizeof(nri));
+  nri.requested_uri = (char *)nautilus_window_get_requested_uri(window);
+  nri.new_window_default = nri.new_window_suggested = nri.new_window_enforced = Nautilus_V_FALSE;
+  nautilus_window_change_location(window, &nri, NULL, FALSE, TRUE);
 }
 
 static void

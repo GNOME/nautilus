@@ -35,7 +35,8 @@ void nautilus_window_set_status(NautilusWindow *window, const char *txt);
 void nautilus_window_change_location(NautilusWindow *window,
 				     Nautilus_NavigationRequestInfo *loc,
 				     NautilusView *requesting_view,
-				     gboolean is_back);
+				     gboolean is_back,
+				     gboolean is_reload);
 void nautilus_window_remove_meta_view_real(NautilusWindow *window, NautilusView *meta_view);
 void nautilus_window_end_location_change(NautilusWindow *window);
 void nautilus_window_connect_view (NautilusWindow *window, 
