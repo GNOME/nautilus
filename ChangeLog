@@ -1,3 +1,10 @@
+2000-08-04  Robin * Slomkowski  <rslomkow@eazel.com>
+
+	* src/nautilus-window-menus.c: (help_menu_about_nautilus_callback):
+	fix 1997, So you have time in the about box.
+	* acconfig.h: added undef for NAUTILUS_TIMESTAMP
+	* configure.in: added define for NAUTILUS_TIMESTAMP
+
 2000-08-04  John Sullivan  <sullivan@eazel.com>
 
 	Fixed unreported crash-at-boot bug I ran into when
@@ -20,6 +27,7 @@
 	Fixed the mysterious resizing flashing bug. lay_down_icons
 	computed canvas_width wrong. bug #1929
 
+>>>>>>> 1.1261
 2000-08-04  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-canvas-item.c:

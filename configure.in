@@ -393,6 +393,11 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+dnl
+dnl Do the timestamp
+dnl
+AC_DEFINE_UNQUOTED(NAUTILUS_TIMESTAMP,"`date`")
+
 AC_OUTPUT([
 nautilus.spec
 Makefile

@@ -410,6 +410,8 @@ help_menu_about_nautilus_callback (BonoboUIHandler *ui_handler,
 	static GtkWidget *aboot = NULL;
 
 	if (aboot == NULL) {
+		char *about_string;
+
 		const char *authors[] = {
 			"Darin Adler",
 			"Pavel Císler",
@@ -426,12 +428,17 @@ help_menu_about_nautilus_callback (BonoboUIHandler *ui_handler,
 			NULL
 		};
 
+		about_string = g_strdup_printf (_("The Gnome Shell\n%s"),
+				       		NAUTILUS_TIMESTAMP);
+
 		aboot = gnome_about_new(_("Nautilus"),
 					VERSION,
 					"Copyright (C) 1999, 2000",
 					authors,
-					_("The Gnome Shell"),
+					about_string,
 					"nautilus/About_Image.png");
+
+		g_free (about_string);
 
 		gnome_dialog_close_hides (GNOME_DIALOG (aboot), TRUE);
 	}

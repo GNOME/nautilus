@@ -18,4 +18,4 @@
 #undef HAVE_RPM
 #undef HAVE_STPCPY
 #undef USING_OAF
-
+#undef NAUTILUS_TIMESTAMP
