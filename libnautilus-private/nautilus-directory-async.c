@@ -2261,7 +2261,7 @@ deep_count_start (NautilusDirectory *directory,
 	}
 
 	if (!nautilus_file_is_directory (file)) {
-		file->details->deep_counts_status = NAUTILUS_REQUEST_NOT_STARTED;
+		file->details->deep_counts_status = NAUTILUS_REQUEST_DONE;
 
 		nautilus_directory_async_state_changed (directory);
 		return;

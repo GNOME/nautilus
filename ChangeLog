@@ -1,3 +1,10 @@
+2001-10-01  Darin Adler  <darin@bentspoon.com>
+
+	* libnautilus-private/nautilus-directory-async.c:
+	(deep_count_start): Say that the deep count of a non-directory is
+	"done" rather "not started". This was causing an infinite loop when
+	doing the directory self-check.
+
 2001-10-01  Benedikt Roth  <Benedikt.Roth@gmx.net>
 
 	* libnautilus-private/nautilus-file-operations.c:
