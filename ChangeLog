@@ -1,5 +1,11 @@
 2002-03-06  Darin Adler  <darin@bentspoon.com>
 
+	* src/file-manager/fm-list-model.c: (fm_list_model_remove_file):
+	Don't warn when asked to remove a file that's not in the list.
+	That happens relatively often.
+
+2002-03-06  Darin Adler  <darin@bentspoon.com>
+
 	* libnautilus-private/nautilus-icon-container.c:
 	(nautilus_icon_container_instance_init): Use g_signal_connect_object
 	instead of g_signal_connnect to make sure we don't get called once

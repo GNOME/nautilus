@@ -652,15 +652,10 @@ void
 fm_list_model_remove_file (FMListModel *model, NautilusFile *file)
 {
 	GtkTreeIter iter;
-	gboolean found;
 
-	found = fm_list_model_get_tree_iter_from_file (model, file, &iter);
-	if (!found) {
-		g_warning ("trying to remove NautilusFile that isn't there");
-		return;
+	if (fm_list_model_get_tree_iter_from_file (model, file, &iter)) {
+		fm_list_model_remove (model, &iter);
 	}
-
-	fm_list_model_remove (model, &iter);
 }
 
 void
