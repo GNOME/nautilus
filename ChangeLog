@@ -1,3 +1,12 @@
+2001-05-01  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/news/nautilus-news.c: (has_matching_uri),
+	(mark_new_items):
+	fixed problem where the new flag wasn't being maintained
+	properly after updating, since it was using a whole new item
+	list.  Fixed by propogating the new flag from the corresponding
+	old item.
+	
 2001-05-01  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

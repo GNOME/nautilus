@@ -1190,12 +1190,14 @@ update_size_and_redraw (News* news_data)
 
 /* utility routine to search for the passed-in url in an item list */
 static gboolean
-has_matching_uri (GList *items, const char *target_uri)
+has_matching_uri (GList *items, const char *target_uri, gboolean *old_changed_flag)
 {
 	GList *current_item;
 	RSSItemData *item_data;
 	char *mapped_target_uri, *mapped_item_uri;
 	gboolean found_match;
+	
+	*old_changed_flag = FALSE;
 	
 	if (target_uri == NULL) {
 		return FALSE;
@@ -1210,6 +1212,7 @@ has_matching_uri (GList *items, const char *target_uri)
 		mapped_item_uri = gnome_vfs_make_uri_canonical (item_data->item_url);
 		if (eel_strcasecmp (mapped_item_uri, target_uri) == 0) {
 			found_match = TRUE;
+			*old_changed_flag = item_data->new_item;
 		}	
 		g_free (mapped_item_uri);
 		current_item = current_item->next;
@@ -1227,17 +1230,21 @@ mark_new_items (RSSChannelData *channel_data, GList *old_items)
 	GList *current_item;
 	RSSItemData *item_data;
 	int changed_count;
+	gboolean old_changed_flag;
 	
 	current_item = channel_data->items;
 	changed_count = 0;
 	while (current_item != NULL) {	
 		item_data = (RSSItemData*) current_item->data;
-		if (!has_matching_uri (old_items, item_data->item_url) && !channel_data->initial_load_flag) {
+		if (!has_matching_uri (old_items, item_data->item_url, &old_changed_flag) && !channel_data->initial_load_flag) {
 			item_data->new_item = TRUE;	
 			channel_data->channel_changed = TRUE;
 			nautilus_news_set_news_changed (channel_data->owner, TRUE);
 			changed_count += 1;
+		} else {
+			item_data->new_item = old_changed_flag;
 		}
+		
 		current_item = current_item->next;
 	}	
 	return changed_count;
