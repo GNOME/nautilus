@@ -17,8 +17,6 @@ SUBDIRS =			\
 	po 			\
 	data 			\
 	icons 			\
-	user-guide		\
-	help			\
 	docs			\
 	$(NULL)
 
