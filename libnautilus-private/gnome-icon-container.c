@@ -19,7 +19,7 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Author: Ettore Perazzoli <ettore@gnu.org>
+   Authors: Ettore Perazzoli <ettore@gnu.org>, Darin Adler <darin@eazel.com>
 */
 
 #include <config.h>
@@ -92,12 +92,16 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (GnomeIconContainer, gnome_icon_container, GNO
 
 /* The GnomeIconContainer signals.  */
 enum {
-	SELECTION_CHANGED,
-	BUTTON_PRESS,
 	ACTIVATE,
-	CONTEXT_CLICK_SELECTION,
+	BUTTON_PRESS,
 	CONTEXT_CLICK_BACKGROUND,
+	CONTEXT_CLICK_SELECTION,
+	GET_ICON_IMAGES,
+	GET_ICON_PROPERTY,
+	GET_ICON_TEXT,
+	GET_ICON_URI,
 	ICON_CHANGED,
+	SELECTION_CHANGED,
 	LAST_SIGNAL
 };
 static guint signals[LAST_SIGNAL];
@@ -118,7 +122,7 @@ icon_free (GnomeIconContainerIcon *icon)
 
 static GnomeIconContainerIcon *
 icon_new (GnomeIconContainer *container,
-	  NautilusControllerIcon *data)
+	  GnomeIconContainerIconData *data)
 {
 	GnomeIconContainerIcon *new;
         GnomeCanvas *canvas;
@@ -2199,6 +2203,44 @@ gnome_icon_container_initialize_class (GnomeIconContainerClass *class)
 				  GTK_TYPE_INT,
 				  GTK_TYPE_DOUBLE,
 				  GTK_TYPE_DOUBLE);
+	signals[GET_ICON_IMAGES]
+		= gtk_signal_new ("get_icon_images",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (GnomeIconContainerClass,
+						     get_icon_images),
+				  nautilus_gtk_marshal_POINTER__POINTER_POINTER,
+				  GTK_TYPE_POINTER, 2,
+				  GTK_TYPE_POINTER,
+				  GTK_TYPE_POINTER);
+	signals[GET_ICON_TEXT]
+		= gtk_signal_new ("get_icon_text",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (GnomeIconContainerClass,
+						     get_icon_text),
+				  nautilus_gtk_marshal_STRING__POINTER,
+				  GTK_TYPE_STRING, 1,
+				  GTK_TYPE_POINTER);
+	signals[GET_ICON_URI]
+		= gtk_signal_new ("get_icon_uri",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (GnomeIconContainerClass,
+						     get_icon_uri),
+				  nautilus_gtk_marshal_STRING__POINTER,
+				  GTK_TYPE_STRING, 1,
+				  GTK_TYPE_POINTER);
+	signals[GET_ICON_PROPERTY]
+		= gtk_signal_new ("get_icon_property",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (GnomeIconContainerClass,
+						     get_icon_property),
+				  nautilus_gtk_marshal_STRING__POINTER_STRING,
+				  GTK_TYPE_STRING, 2,
+				  GTK_TYPE_POINTER,
+				  GTK_TYPE_STRING);
 
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
@@ -2459,7 +2501,7 @@ item_event_cb (GnomeCanvasItem *item,
 }
 
 GtkWidget *
-gnome_icon_container_new (NautilusIconsController *controller)
+gnome_icon_container_new (void)
 {
 	GtkWidget *new;
 
@@ -2470,8 +2512,6 @@ gnome_icon_container_new (NautilusIconsController *controller)
 
 	gtk_widget_pop_visual ();
 	gtk_widget_pop_colormap ();
-
-	GNOME_ICON_CONTAINER (new)->details->controller = controller;
 
 	return new;
 }
@@ -2595,8 +2635,13 @@ update_icon (GnomeIconContainer *container, GnomeIconContainerIcon *icon)
 	details = container->details;
 
 	/* Get the icons. */
-	scalable_icon = nautilus_icons_controller_get_icon_image
-		(details->controller, icon->data, &emblem_icons);
+	scalable_icon = NULL;
+	gtk_signal_emit (GTK_OBJECT (container),
+			 signals[GET_ICON_IMAGES],
+			 icon->data,
+			 &emblem_icons,
+			 &scalable_icon);
+	g_assert (scalable_icon != NULL);
 
 	/* Get the corresponding pixbufs for this size. */
 	icon_get_size (container, icon, &icon_size_x, &icon_size_y);
@@ -2617,19 +2662,25 @@ update_icon (GnomeIconContainer *container, GnomeIconContainerIcon *icon)
 	nautilus_scalable_icon_unref (scalable_icon);
 	nautilus_scalable_icon_list_free (emblem_icons);
 
-	label = nautilus_icons_controller_get_icon_text
-		(details->controller, icon->data);
+	label = NULL;
+	gtk_signal_emit (GTK_OBJECT (container),
+			 signals[GET_ICON_TEXT],
+			 icon->data,
+			 &label);
 
 	font = details->label_font[details->zoom_level];
         
         /* Choose to show mini-text based on this icon's size, not zoom level,
          * since icon may be stretched big or small.
          */
-	if (icon_size_x < NAUTILUS_ICON_SIZE_STANDARD || icon_size_y < NAUTILUS_ICON_SIZE_STANDARD) {
-		contents_as_text = NULL;
-	} else {
-		contents_as_text = nautilus_icons_controller_get_icon_property  
-			(details->controller, icon->data, "contents_as_text");
+	contents_as_text = NULL;
+	if (icon_size_x >= NAUTILUS_ICON_SIZE_STANDARD
+	    && icon_size_y >= NAUTILUS_ICON_SIZE_STANDARD) {
+		gtk_signal_emit (GTK_OBJECT (container),
+				 signals[GET_ICON_PROPERTY],
+				 icon->data,
+				 "contents_as_text",
+				 &contents_as_text);
 	}
 	
 	gnome_canvas_item_set (GNOME_CANVAS_ITEM (icon->item),
@@ -2650,7 +2701,7 @@ update_icon (GnomeIconContainer *container, GnomeIconContainerIcon *icon)
 
 void
 gnome_icon_container_add (GnomeIconContainer *container,
-			  NautilusControllerIcon *data,
+			  GnomeIconContainerIconData *data,
 			  int x, int y, double scale_x, double scale_y)
 {
 	GnomeIconContainerDetails *details;
@@ -2688,14 +2739,14 @@ gnome_icon_container_add (GnomeIconContainer *container,
 /**
  * gnome_icon_container_add_auto:
  * @container: A GnomeIconContainer
- * @data: Icon from the controller.
+ * @data: Icon data.
  * 
  * Add @image with caption @text and data @data to @container, in the first
  * empty spot available.
  **/
 void
 gnome_icon_container_add_auto (GnomeIconContainer *container,
-			       NautilusControllerIcon *data)
+			       GnomeIconContainerIconData *data)
 {
 	GnomeIconContainerIcon *new_icon;
 	guint grid_x, grid_y;
@@ -2719,13 +2770,13 @@ gnome_icon_container_add_auto (GnomeIconContainer *container,
 /**
  * gnome_icon_container_remove:
  * @container: A GnomeIconContainer.
- * @data: Icon from the controller.
+ * @data: Icon data.
  * 
  * Remove the icon with this data.
  **/
 gboolean
 gnome_icon_container_remove (GnomeIconContainer *container,
-			     NautilusControllerIcon *data)
+			     GnomeIconContainerIconData *data)
 {
 	GnomeIconContainerIcon *icon;
 	GList *p;
@@ -2744,15 +2795,15 @@ gnome_icon_container_remove (GnomeIconContainer *container,
 }
 
 /**
- * gnome_icon_container_update:
+ * gnome_icon_container_request_update:
  * @container: A GnomeIconContainer.
- * @data: Icon from the controller.
+ * @data: Icon data.
  * 
  * Update the icon with this data.
  **/
 void
-gnome_icon_container_update (GnomeIconContainer *container,
-			     NautilusControllerIcon *data)
+gnome_icon_container_request_update (GnomeIconContainer *container,
+				     GnomeIconContainerIconData *data)
 {
 	GnomeIconContainerIcon *icon;
 	GList *p;
@@ -3225,13 +3276,14 @@ gnome_icon_container_get_icon_by_uri (GnomeIconContainer *container,
 
 		icon = p->data;
 
-		icon_uri = nautilus_icons_controller_get_icon_uri
-			(details->controller, icon->data);
+		icon_uri = gnome_icon_container_get_icon_uri
+			(container, icon);
 		is_match = strcmp (uri, icon_uri) == 0;
 		g_free (icon_uri);
 
-		if (is_match)
+		if (is_match) {
 			return icon;
+		}
 	}
 
 	return NULL;
@@ -3378,6 +3430,20 @@ compute_stretch (StretchState *start,
 	if (!bottom) {
 		current->icon_y += start->icon_size - current->icon_size;
 	}
+}
+
+char *
+gnome_icon_container_get_icon_uri (GnomeIconContainer *container,
+				   GnomeIconContainerIcon *icon)
+{
+	char *uri;
+
+	uri = NULL;
+	gtk_signal_emit (GTK_OBJECT (container),
+			 signals[GET_ICON_URI],
+			 icon->data,
+			 &uri);
+	return uri;
 }
 
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)

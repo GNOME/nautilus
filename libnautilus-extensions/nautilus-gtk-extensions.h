@@ -32,7 +32,12 @@
 #include <gtk/gtktypeutils.h>
 #include <gtk/gtkobject.h>
 
-#define gtk_marshal_NONE__BOXED_BOXED gtk_marshal_NONE__POINTER_POINTER
+#define nautilus_gtk_marshal_NONE__BOXED_BOXED gtk_marshal_NONE__POINTER_POINTER
+#define nautilus_gtk_marshal_STRING__POINTER nautilus_gtk_marshal_POINTER__POINTER
+#define nautilus_gtk_marshal_STRING__POINTER_POINTER nautilus_gtk_marshal_POINTER__POINTER_POINTER
+#define nautilus_gtk_marshal_STRING__POINTER_STRING nautilus_gtk_marshal_POINTER__POINTER_POINTER
+#define nautilus_gtk_marshal_STRING__POINTER_POINTER_POINTER nautilus_gtk_marshal_POINTER__POINTER_POINTER_POINTER
+#define nautilus_gtk_marshal_STRING__POINTER_POINTER_STRING nautilus_gtk_marshal_POINTER__POINTER_POINTER_POINTER
 
 #define NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT 2
 
@@ -55,6 +60,10 @@ void              nautilus_pop_up_context_menu                             (GtkM
 									    gint16                  offset_y);
 
 /* marshals */
+void              nautilus_gtk_marshal_NONE__DOUBLE                        (GtkObject              *object,
+									    GtkSignalFunc           func,
+									    gpointer                func_data,
+									    GtkArg                 *args);
 void              nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE        (GtkObject              *object,
 									    GtkSignalFunc           func,
 									    gpointer                func_data,
@@ -63,10 +72,17 @@ void              nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE (GtkO
 									    GtkSignalFunc           func,
 									    gpointer                func_data,
 									    GtkArg                 *args);
-void              nautilus_gtk_marshal_NONE__DOUBLE                        (GtkObject              *object,
+void              nautilus_gtk_marshal_POINTER__POINTER                    (GtkObject              *object,
 									    GtkSignalFunc           func,
 									    gpointer                func_data,
 									    GtkArg                 *args);
-
+void              nautilus_gtk_marshal_POINTER__POINTER_POINTER            (GtkObject              *object,
+									    GtkSignalFunc           func,
+									    gpointer                func_data,
+									    GtkArg                 *args);
+void              nautilus_gtk_marshal_POINTER__POINTER_POINTER_POINTER    (GtkObject              *object,
+									    GtkSignalFunc           func,
+									    gpointer                func_data,
+									    GtkArg                 *args);
 
 #endif /* NAUTILUS_GTK_EXTENSIONS_H */

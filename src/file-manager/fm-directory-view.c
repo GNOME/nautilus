@@ -216,7 +216,7 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
        				GTK_RUN_FIRST,
                     		object_class->type,
                     		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, append_selection_context_menu_items),
-		    		gtk_marshal_NONE__BOXED_BOXED,
+		    		nautilus_gtk_marshal_NONE__BOXED_BOXED,
 		    		GTK_TYPE_NONE, 2, GTK_TYPE_BOXED, GTK_TYPE_BOXED);
 	signals[APPEND_BACKGROUND_CONTEXT_MENU_ITEMS] =
 		gtk_signal_new ("append_background_context_menu_items",

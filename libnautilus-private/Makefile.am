@@ -43,7 +43,6 @@ libnautilusinclude_HEADERS=			\
 	nautilus-gnome-extensions.h		\
 	nautilus-gtk-extensions.h		\
 	nautilus-icon-factory.h			\
-	nautilus-icons-controller.h		\
 	nautilus-icons-view-icon-item.h         \
 	nautilus-metadata.h			\
 	nautilus-mime-type.h			\
@@ -74,7 +73,6 @@ libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	nautilus-gnome-extensions.c		\
 	nautilus-gtk-extensions.c		\
 	nautilus-icon-factory.c			\
-	nautilus-icons-controller.c		\
 	nautilus-icons-view-icon-item.c         \
 	nautilus-lib-self-check-functions.c	\
 	nautilus-mime-type.c			\

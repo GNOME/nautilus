@@ -54,7 +54,7 @@ typedef struct {
 	/* Whether this item was selected before rubberbanding. */
 	gboolean was_selected_before_rubberband : 1;
 
-	NautilusControllerIcon *data;
+	GnomeIconContainerIconData *data;
 } GnomeIconContainerIcon;
 
 
@@ -114,9 +114,7 @@ typedef struct {
 	guint icon_size;
 } StretchState;
 
-struct _GnomeIconContainerDetails {
-	NautilusIconsController *controller;
-
+struct GnomeIconContainerDetails {
 	/* linger selection mode setting. */
 	gboolean linger_selection_mode;
 
@@ -205,5 +203,7 @@ void                    gnome_icon_container_move_icon                   (GnomeI
 									  gboolean                raise);
 void                    gnome_icon_container_select_list_unselect_others (GnomeIconContainer     *container,
 									  GList                  *icons);
+char *                  gnome_icon_container_get_icon_uri                (GnomeIconContainer     *container,
+									  GnomeIconContainerIcon *icon);
 
 #endif /* GNOME_ICON_CONTAINER_PRIVATE_H */

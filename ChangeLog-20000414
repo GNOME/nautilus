@@ -1,3 +1,39 @@
+2000-03-10  Darin Adler  <darin@eazel.com>
+
+	* libnautilus/nautilus-icons-view-icon-item.c
+	(nautilus_icons_view_icon_item_point):
+	Fixed typo that broke all hit testing except for rubber band
+	selection! (Sorry.)
+	
+	* libnautilus/gnome-icon-container-dnd.c
+	(set_gnome_icon_list_selection, set_uri_list_selection),
+	libnautilus/gnome-icon-container-private.h,
+	libnautilus/gnome-icon-container.h,
+	libnautilus/gnome-icon-container.c
+	(gnome_icon_container_get_icon_uri,
+	gnome_icon_container_initialize_class, gnome_icon_container_new,
+	update_icon, gnome_icon_container_update,
+	gnome_icon_container_request_update),
+	src/file-manager/fm-directory-view-icons.c (create_icon_container,
+	get_icon_images_cb, get_icon_uri_cb, get_icon_text_cb,
+	get_icon_property_cb): Change code that used to use a separate
+	controller object to just use signals on the icon container
+	instead.
+
+	* libnautilus/nautilus-gtk-extensions.h,
+	libnautilus/nautilus-gtk-extensions.c,
+	src/file-manager/fm-directory-view.c: Add new signal marshal
+	functions as needed and changed the name of one of the old
+	functions.
+
+	* libnautilus/Makefile.am,
+	libnautilus/nautilus-icons-controller.h,
+	libnautilus/nautilus-icons-controller.c,
+	src/file-manager/Makefile.am,
+	src/file-manager/fm-icons-controller.h,
+	src/file-manager/fm-icons-controller.c: Removed the old controller
+	object, it was a bad idea.
+
 2000-03-10  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/Makefile.am

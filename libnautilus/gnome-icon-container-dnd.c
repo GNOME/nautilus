@@ -210,27 +210,32 @@ set_gnome_icon_list_selection (GnomeIconContainer *container,
 		char *s;
 
 		icon = p->data;
-		if (!icon->is_selected)
+		if (!icon->is_selected) {
 			continue;
+		}
 
 		nautilus_icons_view_icon_item_get_icon_rectangle
 			(icon->item, &world_rect);
 		nautilus_gnome_canvas_world_to_window_rectangle
 			(GNOME_CANVAS (container), &world_rect, &window_rect);
-		uri = nautilus_icons_controller_get_icon_uri
-			(details->controller, icon->data);
 
-		s = g_strdup_printf ("%s\r%d:%d:%hu:%hu\r\n",
-				     uri,
-				     (int) (window_rect.x0 - details->dnd_info->start_x),
-				     (int) (window_rect.y0 - details->dnd_info->start_y),
-				     window_rect.x1 - window_rect.x0,
-				     window_rect.y1 - window_rect.y0);
+		uri = gnome_icon_container_get_icon_uri (container, icon);
 
-		g_free (uri);
-
-		g_string_append (data, s);
-		g_free (s);
+		if (uri == NULL) {
+			g_warning ("no URI for one of the dragged items");
+		} else {
+			s = g_strdup_printf ("%s\r%d:%d:%hu:%hu\r\n",
+					     uri,
+					     (int) (window_rect.x0 - details->dnd_info->start_x),
+					     (int) (window_rect.y0 - details->dnd_info->start_y),
+					     window_rect.x1 - window_rect.x0,
+					     window_rect.y1 - window_rect.y0);
+			
+			g_free (uri);
+			
+			g_string_append (data, s);
+			g_free (s);
+		}
 	}
 
 	gtk_selection_data_set (selection_data,
@@ -261,7 +266,7 @@ set_uri_list_selection (GnomeIconContainer *container,
 		if (!icon->is_selected)
 			continue;
 
-		uri = nautilus_icons_controller_get_icon_uri (details->controller, icon->data);
+		uri = gnome_icon_container_get_icon_uri (container, icon);
 		g_string_append (data, uri);
 		g_free (uri);
 

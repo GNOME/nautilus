@@ -1075,8 +1075,8 @@ nautilus_icons_view_icon_item_point (GnomeCanvasItem *item, double x, double y, 
 	*actual_item = item;
 	canvas_rect.x0 = cx;
 	canvas_rect.y0 = cy;
-	canvas_rect.x0 = cx + 1;
-	canvas_rect.y0 = cy + 1;
+	canvas_rect.x1 = cx + 1;
+	canvas_rect.y1 = cy + 1;
 	if (hit_test (NAUTILUS_ICONS_VIEW_ICON_ITEM (item), &canvas_rect)) {
 		return 0.0;
 	} else {

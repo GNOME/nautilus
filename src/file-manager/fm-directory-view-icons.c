@@ -26,7 +26,6 @@
 #include "fm-directory-view-icons.h"
 
 #include "fm-icon-text-window.h"
-#include "fm-icons-controller.h"
 #include "fm-signaller.h"
 
 #include <ctype.h>
@@ -57,62 +56,76 @@
 
 
 /* forward declarations */
-static void                add_icon_at_free_position                                    (FMDirectoryViewIcons      *icon_view,
-											 NautilusFile              *file);
-static void                add_icon_if_already_positioned                               (FMDirectoryViewIcons      *icon_view,
-											 NautilusFile              *file);
-static GnomeIconContainer *create_icon_container                                        (FMDirectoryViewIcons      *icon_view);
-static void                display_icons_not_already_positioned                         (FMDirectoryViewIcons      *icon_view);
-static void                fm_directory_view_icons_icon_changed_cb                      (GnomeIconContainer        *container,
-											 NautilusFile              *icon_data,
-											 int                        x,
-											 int                        y,
-											 double                     scale_x,
-											 double                     scale_y,
-											 FMDirectoryViewIcons      *icon_view);
-static void                fm_directory_view_icons_add_file                             (FMDirectoryView           *view,
-											 NautilusFile              *file);
-static void                fm_directory_view_icons_remove_file                          (FMDirectoryView           *view,
-											 NautilusFile              *file);
-static void                fm_directory_view_icons_file_changed                         (FMDirectoryView           *view,
-											 NautilusFile              *file);
-static void                fm_directory_view_icons_append_background_context_menu_items (FMDirectoryView           *view,
-											 GtkMenu                   *menu);
-static void                fm_directory_view_icons_append_selection_context_menu_items  (FMDirectoryView           *view,
-											 GtkMenu                   *menu,
-											 GList                     *files);
-static void                fm_directory_view_icons_background_changed_cb                (NautilusBackground        *background,
-											 FMDirectoryViewIcons      *icon_view);
-static void                fm_directory_view_icons_begin_loading                        (FMDirectoryView           *view);
-static void                fm_directory_view_icons_bump_zoom_level                      (FMDirectoryView           *view,
-											 gint                       zoom_increment);
-static gboolean            fm_directory_view_icons_can_zoom_in                          (FMDirectoryView           *view);
-static gboolean            fm_directory_view_icons_can_zoom_out                         (FMDirectoryView           *view);
-static void                fm_directory_view_icons_clear                                (FMDirectoryView           *view);
-static void                fm_directory_view_icons_destroy                              (GtkObject                 *view);
-static void                fm_directory_view_icons_done_adding_files                    (FMDirectoryView           *view);
-static GList *             fm_directory_view_icons_get_selection                        (FMDirectoryView           *view);
-static NautilusZoomLevel   fm_directory_view_icons_get_zoom_level                       (FMDirectoryViewIcons      *view);
-static void                fm_directory_view_icons_initialize                           (FMDirectoryViewIcons      *icon_view);
-static void                fm_directory_view_icons_initialize_class                     (FMDirectoryViewIconsClass *klass);
-static void                fm_directory_view_icons_merge_menus                          (FMDirectoryView           *view);
-static gboolean            fm_directory_view_icons_react_to_icon_change_idle_cb         (gpointer                   data);
-static void                fm_directory_view_icons_select_all                           (FMDirectoryView           *view);
-static void                fm_directory_view_icons_set_zoom_level                       (FMDirectoryViewIcons      *view,
-											 NautilusZoomLevel          new_level);
-static void                fm_directory_view_icons_update_menus                         (FMDirectoryView           *view);
-static GnomeIconContainer *get_icon_container                                           (FMDirectoryViewIcons      *icon_view);
-static void                icon_container_activate_cb                                   (GnomeIconContainer        *container,
-											 NautilusFile              *icon_data,
-											 FMDirectoryViewIcons      *icon_view);
-static void                icon_container_selection_changed_cb                          (GnomeIconContainer        *container,
-											 FMDirectoryViewIcons      *icon_view);
-static void                icon_container_context_click_selection_cb                    (GnomeIconContainer        *container,
-											 FMDirectoryViewIcons      *icon_view);
-static void                icon_container_context_click_background_cb                   (GnomeIconContainer        *container,
-											 FMDirectoryViewIcons      *icon_view);
-static void                icon_text_changed_cb                                         (FMSignaller               *signaller,
-											 FMDirectoryViewIcons      *icon_view);
+static void                  add_icon_at_free_position                                    (FMDirectoryViewIcons        *icon_view,
+											   NautilusFile                *file);
+static void                  add_icon_if_already_positioned                               (FMDirectoryViewIcons        *icon_view,
+											   NautilusFile                *file);
+static GnomeIconContainer *  create_icon_container                                        (FMDirectoryViewIcons        *icon_view);
+static void                  display_icons_not_already_positioned                         (FMDirectoryViewIcons        *icon_view);
+static void                  fm_directory_view_icons_icon_changed_cb                      (GnomeIconContainer          *container,
+											   NautilusFile                *icon_data,
+											   int                          x,
+											   int                          y,
+											   double                       scale_x,
+											   double                       scale_y,
+											   FMDirectoryViewIcons        *icon_view);
+static void                  fm_directory_view_icons_add_file                             (FMDirectoryView             *view,
+											   NautilusFile                *file);
+static void                  fm_directory_view_icons_remove_file                          (FMDirectoryView             *view,
+											   NautilusFile                *file);
+static void                  fm_directory_view_icons_file_changed                         (FMDirectoryView             *view,
+											   NautilusFile                *file);
+static void                  fm_directory_view_icons_append_background_context_menu_items (FMDirectoryView             *view,
+											   GtkMenu                     *menu);
+static void                  fm_directory_view_icons_append_selection_context_menu_items  (FMDirectoryView             *view,
+											   GtkMenu                     *menu,
+											   GList                       *files);
+static void                  fm_directory_view_icons_background_changed_cb                (NautilusBackground          *background,
+											   FMDirectoryViewIcons        *icon_view);
+static void                  fm_directory_view_icons_begin_loading                        (FMDirectoryView             *view);
+static void                  fm_directory_view_icons_bump_zoom_level                      (FMDirectoryView             *view,
+											   gint                         zoom_increment);
+static gboolean              fm_directory_view_icons_can_zoom_in                          (FMDirectoryView             *view);
+static gboolean              fm_directory_view_icons_can_zoom_out                         (FMDirectoryView             *view);
+static void                  fm_directory_view_icons_clear                                (FMDirectoryView             *view);
+static void                  fm_directory_view_icons_destroy                              (GtkObject                   *view);
+static void                  fm_directory_view_icons_done_adding_files                    (FMDirectoryView             *view);
+static GList *               fm_directory_view_icons_get_selection                        (FMDirectoryView             *view);
+static NautilusZoomLevel     fm_directory_view_icons_get_zoom_level                       (FMDirectoryViewIcons        *view);
+static void                  fm_directory_view_icons_initialize                           (FMDirectoryViewIcons        *icon_view);
+static void                  fm_directory_view_icons_initialize_class                     (FMDirectoryViewIconsClass   *klass);
+static void                  fm_directory_view_icons_merge_menus                          (FMDirectoryView             *view);
+static gboolean              fm_directory_view_icons_react_to_icon_change_idle_cb         (gpointer                     data);
+static void                  fm_directory_view_icons_select_all                           (FMDirectoryView             *view);
+static void                  fm_directory_view_icons_set_zoom_level                       (FMDirectoryViewIcons        *view,
+											   NautilusZoomLevel            new_level);
+static void                  fm_directory_view_icons_update_menus                         (FMDirectoryView             *view);
+static GnomeIconContainer *  get_icon_container                                           (FMDirectoryViewIcons        *icon_view);
+static void                  icon_container_activate_cb                                   (GnomeIconContainer          *container,
+											   NautilusFile                *icon_data,
+											   FMDirectoryViewIcons        *icon_view);
+static void                  icon_container_selection_changed_cb                          (GnomeIconContainer          *container,
+											   FMDirectoryViewIcons        *icon_view);
+static void                  icon_container_context_click_selection_cb                    (GnomeIconContainer          *container,
+											   FMDirectoryViewIcons        *icon_view);
+static void                  icon_container_context_click_background_cb                   (GnomeIconContainer          *container,
+											   FMDirectoryViewIcons        *icon_view);
+static void                  icon_text_changed_cb                                         (FMSignaller                 *signaller,
+											   FMDirectoryViewIcons        *icon_view);
+static NautilusScalableIcon *get_icon_images_cb                                           (GnomeIconContainer          *container,
+											   NautilusFile                *icon_data,
+											   GList                      **emblem_icons,
+											   FMDirectoryViewIcons        *icon_view);
+static char *                get_icon_uri_cb                                              (GnomeIconContainer          *container,
+											   NautilusFile                *icon_data,
+											   FMDirectoryViewIcons        *icon_view);
+static char *                get_icon_text_cb                                             (GnomeIconContainer          *container,
+											   NautilusFile                *icon_data,
+											   FMDirectoryViewIcons        *icon_view);
+static char *                get_icon_property_cb                                         (GnomeIconContainer          *container,
+											   NautilusFile                *icon_data,
+											   const char                  *property_name,
+											   FMDirectoryViewIcons        *icon_view);
 
 static char * default_icon_text_attribute_names = NULL;
 
@@ -202,11 +215,8 @@ static GnomeIconContainer *
 create_icon_container (FMDirectoryViewIcons *icon_view)
 {
 	GnomeIconContainer *icon_container;
-	FMIconsController *controller;
 
-	controller = fm_icons_controller_new (icon_view);
-	
-	icon_container = GNOME_ICON_CONTAINER (gnome_icon_container_new (NAUTILUS_ICONS_CONTROLLER (controller)));
+	icon_container = GNOME_ICON_CONTAINER (gnome_icon_container_new ());
 	
 	GTK_WIDGET_SET_FLAGS (icon_container, GTK_CAN_FOCUS);
 	
@@ -214,25 +224,37 @@ create_icon_container (FMDirectoryViewIcons *icon_view)
 			    "activate",
 			    GTK_SIGNAL_FUNC (icon_container_activate_cb),
 			    icon_view);
-
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "context_click_selection",
 			    GTK_SIGNAL_FUNC (icon_container_context_click_selection_cb),
 			    icon_view);
-
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "context_click_background",
 			    GTK_SIGNAL_FUNC (icon_container_context_click_background_cb),
 			    icon_view);
-	
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "icon_changed",
 			    GTK_SIGNAL_FUNC (fm_directory_view_icons_icon_changed_cb),
 			    icon_view);
-
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "selection_changed",
 			    GTK_SIGNAL_FUNC (icon_container_selection_changed_cb),
+			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "get_icon_images",
+			    GTK_SIGNAL_FUNC (get_icon_images_cb),
+			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "get_icon_uri",
+			    GTK_SIGNAL_FUNC (get_icon_uri_cb),
+			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "get_icon_text",
+			    GTK_SIGNAL_FUNC (get_icon_text_cb),
+			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "get_icon_property",
+			    GTK_SIGNAL_FUNC (get_icon_property_cb),
 			    icon_view);
 
 	gtk_signal_connect (GTK_OBJECT (nautilus_get_widget_background (GTK_WIDGET (icon_container))),
@@ -298,7 +320,7 @@ add_icon_if_already_positioned (FMDirectoryViewIcons *icon_view,
 	}
 
 	gnome_icon_container_add (get_icon_container (icon_view),
-				  NAUTILUS_CONTROLLER_ICON (file),
+				  GNOME_ICON_CONTAINER_ICON_DATA (file),
 				  x, y, scale_x, scale_y);
 }
 
@@ -307,7 +329,7 @@ add_icon_at_free_position (FMDirectoryViewIcons *icon_view,
 			   NautilusFile *file)
 {
 	gnome_icon_container_add_auto (get_icon_container (icon_view),
-				       NAUTILUS_CONTROLLER_ICON (file));
+				       GNOME_ICON_CONTAINER_ICON_DATA (file));
 }
 
 /**
@@ -505,7 +527,7 @@ static void
 fm_directory_view_icons_remove_file (FMDirectoryView *view, NautilusFile *file)
 {
 	if (gnome_icon_container_remove (get_icon_container (FM_DIRECTORY_VIEW_ICONS (view)),
-					 NAUTILUS_CONTROLLER_ICON (file))) {
+					 GNOME_ICON_CONTAINER_ICON_DATA (file))) {
 		nautilus_file_unref (file);
 	}
 }
@@ -513,8 +535,8 @@ fm_directory_view_icons_remove_file (FMDirectoryView *view, NautilusFile *file)
 static void
 fm_directory_view_icons_file_changed (FMDirectoryView *view, NautilusFile *file)
 {
-	gnome_icon_container_update (get_icon_container (FM_DIRECTORY_VIEW_ICONS (view)),
-				     NAUTILUS_CONTROLLER_ICON (file));
+	gnome_icon_container_request_update (get_icon_container (FM_DIRECTORY_VIEW_ICONS (view)),
+					     GNOME_ICON_CONTAINER_ICON_DATA (file));
 }
 
 static void
@@ -1021,4 +1043,114 @@ fm_directory_view_icons_icon_changed_cb (GnomeIconContainer *container,
 
 	g_free (position_string);
 	g_free (scale_string);
+}
+
+static NautilusScalableIcon *
+get_icon_images_cb (GnomeIconContainer *container,
+		    NautilusFile *file,
+		    GList **emblem_icons,
+		    FMDirectoryViewIcons *icon_view)
+{
+	g_assert (GNOME_IS_ICON_CONTAINER (container));
+	g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (emblem_icons != NULL);
+	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (icon_view));
+
+	/* Get the appropriate images for the file. */
+	if (emblem_icons != NULL) {
+		*emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file);
+	}
+	return nautilus_icon_factory_get_icon_for_file (file);
+}
+
+static char *
+get_icon_uri_cb (GnomeIconContainer *container,
+		 NautilusFile *file,
+		 FMDirectoryViewIcons *icon_view)
+{
+	g_assert (GNOME_IS_ICON_CONTAINER (container));
+	g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (icon_view));
+
+	return nautilus_file_get_uri (file);
+}
+
+static char *
+get_icon_text_cb (GnomeIconContainer *container,
+		  NautilusFile *file,
+		  FMDirectoryViewIcons *icon_view)
+{
+	char *attribute_names;
+	char **text_array;
+	char *result;
+	int i;
+
+	g_assert (GNOME_IS_ICON_CONTAINER (container));
+	g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (icon_view));
+
+	attribute_names = fm_directory_view_icons_get_icon_text_attribute_names
+		(icon_view);
+	text_array = g_strsplit (attribute_names, "|", 0);
+	g_free (attribute_names);
+
+	for (i = 0; text_array[i] != NULL; i++)
+	{
+		char *attribute_string;
+
+		attribute_string = nautilus_file_get_string_attribute
+			(file, text_array[i]);
+		
+		/* Unknown attributes get turned into blank lines (also note that
+		 * leaving a NULL in text_array would cause it to be incompletely
+		 * freed).
+		 */
+		if (attribute_string == NULL) {
+			attribute_string = g_strdup ("");
+		}
+
+		/* Replace each attribute name in the array with its string value */
+		g_free (text_array[i]);
+		text_array[i] = attribute_string;
+	}
+
+	result = g_strjoinv ("\n", text_array);
+
+	g_strfreev (text_array);
+
+	return result;
+}
+
+static char *
+get_icon_property_cb (GnomeIconContainer *container,
+		      NautilusFile *file,
+		      const char *property_name,
+		      FMDirectoryViewIcons *icon_view)
+{
+	g_assert (GNOME_IS_ICON_CONTAINER (container));
+	g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (property_name != NULL);
+	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (icon_view));
+
+	if (strcmp (property_name, "contents_as_text") == 0) {
+		const char *mime_type;
+		char *theme_name;
+		gboolean use_text;
+
+		/* FIXME: We need a better way to know when to use the mini-text than 
+		 * the theme name starting with eazel.
+		 */
+		theme_name = nautilus_icon_factory_get_theme ();
+		use_text = nautilus_str_has_prefix (theme_name, "eazel");
+		g_free (theme_name);
+		
+		mime_type = nautilus_file_get_mime_type (file);
+		if (use_text && (mime_type == NULL || nautilus_str_has_prefix (mime_type, "text/"))) {
+			return nautilus_file_get_uri (file);
+		}
+	}
+	
+	/* nothing applied, so return an empty string */
+	 
+	return g_strdup ("");		
 }

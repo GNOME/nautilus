@@ -217,33 +217,13 @@ nautilus_pop_up_context_menu (GtkMenu	*menu,
 }
 
 
-typedef void (*NautilusGtkSignal_NONE__POINTER_INT_INT_DOUBLE) (GtkObject * object,
-								gpointer arg1,
-								int arg2,
-								int arg3,
-								double arg4,
-								gpointer user_data);
-
-typedef void (*NautilusGtkSignal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE) (GtkObject * object,
-								       gpointer arg1,
-								       int arg2,
-								       int arg3,
-								       double arg4,
-								       double arg5,
-								       gpointer user_data);
-
-
-typedef void (*NautilusGtkSignal_NONE__DOUBLE) (GtkObject * object,
-						double arg1,
-						gpointer user_data);
-
 void
-nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE (GtkObject * object,
+nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE (GtkObject *object,
 						   GtkSignalFunc func,
 						   gpointer func_data,
-						   GtkArg * args)
+						   GtkArg *args)
 {
-	(* (NautilusGtkSignal_NONE__POINTER_INT_INT_DOUBLE) func)
+	(* (void (*)(GtkObject *, gpointer, int, int, double, gpointer)) func)
 		(object,
 		 GTK_VALUE_POINTER (args[0]),
 		 GTK_VALUE_INT (args[1]),
@@ -253,12 +233,12 @@ nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE (GtkObject * object,
 }
 
 void
-nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE (GtkObject * object,
+nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE (GtkObject *object,
 							  GtkSignalFunc func,
 							  gpointer func_data,
-							  GtkArg * args)
+							  GtkArg *args)
 {
-	(* (NautilusGtkSignal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE) func)
+	(* (void (*)(GtkObject *, gpointer, int, int, double, double, gpointer)) func)
 		(object,
 		 GTK_VALUE_POINTER (args[0]),
 		 GTK_VALUE_INT (args[1]), 
@@ -268,16 +248,56 @@ nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE (GtkObject * object,
 		 func_data);
 }
 
-
-
 void
-nautilus_gtk_marshal_NONE__DOUBLE (GtkObject    *object,
+nautilus_gtk_marshal_NONE__DOUBLE (GtkObject *object,
 				   GtkSignalFunc func,
-				   gpointer      func_data,
-				   GtkArg        *args)
+				   gpointer func_data,
+				   GtkArg *args)
 {
-	(* (NautilusGtkSignal_NONE__DOUBLE) func)
+	(* (void (*)(GtkObject *, double, gpointer)) func)
 		(object,
 		 GTK_VALUE_DOUBLE (args[0]),
+		 func_data);
+}
+
+void
+nautilus_gtk_marshal_POINTER__POINTER (GtkObject *object,
+				       GtkSignalFunc func,
+				       gpointer func_data,
+				       GtkArg *args)
+{
+	* GTK_RETLOC_POINTER (args[1]) =
+		(* (gpointer (*)(GtkObject *, gpointer, gpointer)) func)
+		(object,
+		 GTK_VALUE_POINTER (args[0]),
+		 func_data);
+}
+
+void
+nautilus_gtk_marshal_POINTER__POINTER_POINTER (GtkObject *object,
+					       GtkSignalFunc func,
+					       gpointer func_data,
+					       GtkArg *args)
+{
+	* GTK_RETLOC_POINTER (args[2]) =
+		(* (gpointer (*)(GtkObject *, gpointer, gpointer, gpointer)) func)
+		(object,
+		 GTK_VALUE_POINTER (args[0]),
+		 GTK_VALUE_POINTER (args[1]),
+		 func_data);
+}
+
+void
+nautilus_gtk_marshal_POINTER__POINTER_POINTER_POINTER (GtkObject *object,
+						       GtkSignalFunc func,
+						       gpointer func_data,
+						       GtkArg *args)
+{
+	* GTK_RETLOC_POINTER (args[3]) =
+		(* (gpointer (*)(GtkObject *, gpointer, gpointer, gpointer, gpointer)) func)
+		(object,
+		 GTK_VALUE_POINTER (args[0]),
+		 GTK_VALUE_POINTER (args[1]),
+		 GTK_VALUE_POINTER (args[2]),
 		 func_data);
 }
