@@ -1,3 +1,18 @@
+2000-11-02  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* configure.in:
+	* helper-utilities/Makefile.am:
+	* helper-utilities/error-dialog/.cvsignore:
+	* helper-utilities/error-dialog/Makefile.am:
+	* helper-utilities/error-dialog/nautilus-error-dialog.c: (main):
+	* nautilus.spec.in:
+	Add a error dialog helper utility that can be called from shell
+	scripts to display errors to the user.
+
+	* components/services/nautilus-dependent-shared/eazel-services-footer.c:
+	Pavel made me do this at gun point.  Make the links activate on
+	mouse up not down.
+	
 2000-11-02  Arlo Rose  <arlo@eazel.com>
 
 	* src/nautilus-first-time-druid.c: (set_up_user_level_page),

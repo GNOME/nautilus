@@ -6,4 +6,5 @@ endif
 
 SUBDIRS = \
 	$(AUTHENTICATE_HELPER_SUBDIRS) \
+	error-dialog \
 	$(NULL)
