@@ -1634,23 +1634,6 @@ fm_directory_view_destroy (GtkObject *object)
 		view->details->display_selection_idle_id = 0;
 	}
 
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-					 filtering_changed_callback, view);
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
-					 filtering_changed_callback, view);
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
-					 schedule_update_menus_callback, view);
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_ENABLE_DELETE,
-					 schedule_update_menus_callback, view);
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
-					 text_attribute_names_changed_callback, view);
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
-					 image_display_policy_changed_callback, view);
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
-					 click_policy_changed_callback, view);
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
-					 sort_directories_first_changed_callback, view);
-
 	if (view->details->model) {
 		nautilus_directory_unref (view->details->model);
 		view->details->model = NULL;
@@ -1674,6 +1657,23 @@ fm_directory_view_finalize (GObject *object)
 	FMDirectoryView *view;
 
 	view = FM_DIRECTORY_VIEW (object);
+
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+					 filtering_changed_callback, view);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
+					 filtering_changed_callback, view);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
+					 schedule_update_menus_callback, view);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_ENABLE_DELETE,
+					 schedule_update_menus_callback, view);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
+					 text_attribute_names_changed_callback, view);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
+					 image_display_policy_changed_callback, view);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
+					 click_policy_changed_callback, view);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
+					 sort_directories_first_changed_callback, view);
 
 	g_hash_table_destroy (view->details->non_ready_files);
 

@@ -1,5 +1,12 @@
 2004-08-19  Martin Wehner  <martin.wehner@epost.de>
 
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_destroy), (fm_directory_view_finalize):
+	Move eel_preferences_remove_callback() calls into finalize()
+	to prevent them from being called twice on shutdown.
+
+2004-08-19  Martin Wehner  <martin.wehner@epost.de>
+
 	* libnautilus-private/nautilus-file-operations-progress.c (time_remaining_callback):
 	Don't crash over a division by zero when the transfer rate approaches zero.
 	Fixes bug #148791.
