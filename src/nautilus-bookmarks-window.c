@@ -116,7 +116,31 @@ nautilus_bookmarks_window_response_callback (GtkDialog *dialog,
 					     int response_id,
 					     gpointer callback_data)
 {
-	gtk_widget_hide (GTK_WIDGET (dialog));
+	if (response_id == GTK_RESPONSE_HELP) {
+		GError *error = NULL;
+
+		gnome_help_display_desktop (NULL,
+					    "user-guide",
+					    "wgosnautilus.xml", "gosnautilus-36",
+					    &error);
+		if (error) {
+			GtkWidget *err_dialog;
+			err_dialog = gtk_message_dialog_new (GTK_WINDOW (dialog),
+							     GTK_DIALOG_DESTROY_WITH_PARENT,
+							     GTK_MESSAGE_ERROR,
+							     GTK_BUTTONS_CLOSE,
+							     _("There was an error displaying help: %s"),
+							     error->message);
+
+			g_signal_connect (G_OBJECT (err_dialog),
+					  "response", G_CALLBACK (gtk_widget_destroy),
+					  NULL);
+			gtk_window_set_resizable (GTK_WINDOW (err_dialog), FALSE);
+			gtk_widget_show (err_dialog);
+			g_error_free (error);
+		}
+	} else
+		gtk_widget_hide (GTK_WIDGET (dialog));
 }
 
 /**
@@ -145,6 +169,7 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 	bookmarks = list;
 
 	window = gtk_dialog_new_with_buttons (_("Bookmarks"), NULL, 0,
+					      GTK_STOCK_HELP, GTK_RESPONSE_HELP,
 					      GTK_STOCK_CLOSE, GTK_RESPONSE_OK,
 					      NULL);
 	gtk_dialog_set_has_separator (GTK_DIALOG (window), FALSE);
