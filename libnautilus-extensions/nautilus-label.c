@@ -998,7 +998,8 @@ nautilus_label_set_line_wrap_separators (NautilusLabel	*label,
 	if (nautilus_str_is_equal (label->detail->line_wrap_separators, line_wrap_separators)) {
 		return;
 	}
-	
+
+	g_free (label->detail->line_wrap_separators);
 	label->detail->line_wrap_separators = g_strdup (line_wrap_separators);
 
 	label_recompute_line_geometries (label);
