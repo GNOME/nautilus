@@ -362,6 +362,16 @@ motion_notify_callback (GtkWidget *widget,
 	return TRUE;
 }
 
+static void
+do_popup_menu (GtkWidget *widget, FMListView *view, GdkEventButton *event)
+{
+ 	if (tree_view_has_selection (GTK_TREE_VIEW (widget))) {
+		fm_directory_view_pop_up_selection_context_menu (FM_DIRECTORY_VIEW (view), event);
+	} else {
+                fm_directory_view_pop_up_background_context_menu (FM_DIRECTORY_VIEW (view), event);
+	}
+}
+
 static gboolean
 button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callback_data)
 {
@@ -460,11 +470,7 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 		}
 
 		if (event->button == 3) {
-			if (tree_view_has_selection (tree_view)) {
-				fm_directory_view_pop_up_selection_context_menu (FM_DIRECTORY_VIEW (view), (GdkEventButton *) event);
-			} else {
-				fm_directory_view_pop_up_background_context_menu (FM_DIRECTORY_VIEW (view), (GdkEventButton *) event);
-			}
+			do_popup_menu (widget, view, event);
 		}
 
 		gtk_tree_path_free (path);
@@ -499,6 +505,16 @@ button_release_callback (GtkWidget *widget,
 }
 
 static gboolean
+popup_menu_callback (GtkWidget *widget, gpointer callback_data)
+{
+ 	FMListView *view;
+
+	view = FM_LIST_VIEW (callback_data);
+
+	do_popup_menu (widget, view, NULL);
+}
+
+static gboolean
 key_press_callback (GtkWidget *widget, GdkEventKey *event, gpointer callback_data)
 {
 	FMDirectoryView *view;
@@ -510,12 +526,6 @@ key_press_callback (GtkWidget *widget, GdkEventKey *event, gpointer callback_dat
 	case GDK_F10:
 		if (event->state & GDK_CONTROL_MASK) {
 			fm_directory_view_pop_up_background_context_menu (view, &button_event);
-		} else if (event->state & GDK_SHIFT_MASK) {
-			if (tree_view_has_selection (GTK_TREE_VIEW (widget))) {
-				fm_directory_view_pop_up_selection_context_menu (view, &button_event);
-			} else {
-				fm_directory_view_pop_up_background_context_menu (view, &button_event);
-			}
 		}
 		break;
 	case GDK_space:
@@ -693,6 +703,8 @@ create_and_set_up_tree_view (FMListView *view)
 				 G_CALLBACK (button_release_callback), view, 0);
 	g_signal_connect_object (view->details->tree_view, "key_press_event",
 				 G_CALLBACK (key_press_callback), view, 0);
+	g_signal_connect_object (view->details->tree_view, "popup_menu",
+                                 G_CALLBACK (popup_menu_callback), view, 0);
 	
 	view->details->model = g_object_new (FM_TYPE_LIST_MODEL, NULL);
 	gtk_tree_view_set_model (view->details->tree_view, GTK_TREE_MODEL (view->details->model));
