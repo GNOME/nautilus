@@ -123,8 +123,12 @@ select_all_callback (BonoboUIComponent *ui,
 
 	source = g_idle_source_new ();
 	g_source_set_callback (source, select_all_idle_callback, editable, NULL);
-	g_signal_connect_object (editable, "destroy",
-				 G_CALLBACK (g_source_destroy), source, G_CONNECT_SWAPPED);
+	g_signal_connect_closure
+		(editable, "destroy",
+		 g_cclosure_new_swap (
+			 G_CALLBACK (g_source_destroy),
+			 source, NULL),
+		 0);
 	g_source_attach (source, NULL);
 	g_source_unref (source);
 }
