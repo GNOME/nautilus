@@ -1,3 +1,17 @@
+2000-04-18  Andy Hertzfeld <andy@eazel.com>
+
+	made clicking on gmc-style URL files redirect to the specified URL.
+	
+	* libnautilus-extensions/nautilus-file.c,h:
+	added nautilus_file_get_mapped_uri, which checks for gmc-style URL files
+	and returns the URL they reference in that case; otherwise, just return
+	the file's URI.
+	* src/file-manager/fm-directory-view.c:
+	called nautilus_file_get_mapped_uri in fm_directory_view_activate_file_internal
+	* data/mime/nautilus.keys:
+	added icons to a few MIME types that I forgot last time.  Also, just
+	use relative paths to reference the icons.
+
 2000-04-18  Kjartan Maraas  <kmaraas@online.no>
 
 	* configure.in: Added "no" to ALL_LINGUAS.

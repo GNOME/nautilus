@@ -705,6 +705,13 @@ nautilus_file_set_metadata (NautilusFile *file,
 	nautilus_file_changed (file);
 }
 
+char *
+nautilus_file_get_name (NautilusFile *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+	return g_strdup (file->details->info->name);
+}
+   
 void             
 nautilus_file_monitor_add (NautilusFile         *file,
 			   gconstpointer         client,
@@ -720,13 +727,50 @@ nautilus_file_monitor_remove (NautilusFile         *file,
 }			      
 
 
+/* return the uri associated with the passed-in file, which may not be the actual uri if
+   the file is an old-style gmc link or a nautilus xml file */
+
 char *
-nautilus_file_get_name (NautilusFile *file)
+nautilus_file_get_mapped_uri(NautilusFile *file)
 {
+	char* actual_uri;
+	GnomeVFSResult result;
+	GnomeVFSHandle *handle;
+	char buffer[512];
+	GnomeVFSFileSize bytes_read;
+
+	/* first get the actual uri */
+	
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-	return g_strdup (file->details->info->name);
+		
+	actual_uri = nautilus_file_get_uri(file);
+	if (actual_uri == NULL)
+		return NULL;
+		
+	/* see if it's a gmc style URI by reading the first part of the file */
+
+	result = gnome_vfs_open (&handle, actual_uri, GNOME_VFS_OPEN_READ);
+	if (result == GNOME_VFS_OK) {
+		result = gnome_vfs_read (handle, buffer, sizeof (buffer), &bytes_read);
+		if (result == GNOME_VFS_OK || result == GNOME_VFS_ERROR_EOF) {
+			if (nautilus_str_has_prefix(buffer, "URL: ")) {
+				char *eol = strchr(buffer, '\n');
+				if (eol)
+					*eol = '\0';
+				if (strlen(buffer) <= bytes_read) {
+					g_free(actual_uri);
+					actual_uri = g_strdup(buffer + 5);
+				}
+			}
+		}
+		gnome_vfs_close (handle);
+	}
+		
+	/* all done so return the result */
+	return actual_uri;
 }
 
+/* return the actual uri associated with the passed-in file */
 char *
 nautilus_file_get_uri (NautilusFile *file)
 {

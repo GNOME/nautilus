@@ -93,6 +93,7 @@ void             nautilus_file_cancel_callback           (NautilusFile         *
 /* Basic attributes for file objects. */
 char *           nautilus_file_get_name                  (NautilusFile         *file);
 char *           nautilus_file_get_uri                   (NautilusFile         *file);
+char *           nautilus_file_get_mapped_uri            (NautilusFile         *file);
 GnomeVFSFileSize nautilus_file_get_size                  (NautilusFile         *file);
 GnomeVFSFileType nautilus_file_get_file_type             (NautilusFile         *file);
 const char *     nautilus_file_get_mime_type             (NautilusFile         *file);
