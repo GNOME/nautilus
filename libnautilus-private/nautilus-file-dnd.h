@@ -25,7 +25,6 @@
 #ifndef NAUTILUS_FILE_DND_H
 #define NAUTILUS_FILE_DND_H
 
-#include <eel/eel-dnd.h>
 #include <libnautilus-private/nautilus-file.h>
 
 #define NAUTILUS_FILE_DND_ERASE_KEYWORD "erase"

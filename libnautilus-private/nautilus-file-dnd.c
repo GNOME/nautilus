@@ -26,6 +26,7 @@
 #include <config.h>
 #include "nautilus-file-dnd.h"
 
+#include "nautilus-dnd.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 
@@ -73,7 +74,7 @@ nautilus_drag_can_accept_items (NautilusFile *drop_target_item,
 	 */
 	for (max = 100; items != NULL && max >= 0; items = items->next, max--) {
 		if (!nautilus_drag_can_accept_item (drop_target_item, 
-			((EelDragSelectionItem *)items->data)->uri)) {
+			((NautilusDragSelectionItem *)items->data)->uri)) {
 			return FALSE;
 		}
 	}

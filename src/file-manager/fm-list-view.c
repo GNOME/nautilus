@@ -29,7 +29,6 @@
 
 #include "fm-list-model.h"
 #include <eel/eel-cell-renderer-pixbuf-list.h>
-#include <eel/eel-dnd.h>
 #include <gtk/gtkcellrendererpixbuf.h>
 #include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtktreeselection.h>
@@ -37,6 +36,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-macros.h>
 #include <libnautilus-private/nautilus-directory-background.h>
+#include <libnautilus-private/nautilus-dnd.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-metadata.h>
 
@@ -46,9 +46,9 @@ struct FMListViewDetails {
 };
 
 static GtkTargetEntry drag_types [] = {
-	{ EEL_ICON_DND_GNOME_ICON_LIST_TYPE, 0, EEL_ICON_DND_GNOME_ICON_LIST },
-	{ EEL_ICON_DND_URI_LIST_TYPE, 0, EEL_ICON_DND_URI_LIST },
-	{ EEL_ICON_DND_URL_TYPE, 0, EEL_ICON_DND_URL }
+	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
+	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
+	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL }
 };
 
 /*

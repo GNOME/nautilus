@@ -29,12 +29,12 @@
 #define NAUTILUS_ICON_DND_H
 
 #include "nautilus-icon-container.h"
-#include <eel/eel-dnd.h>
+#include "nautilus-dnd.h"
 
 /* DnD-related information. */
 typedef struct {
 	/* inherited drag info context */
-	EelDragInfo drag_info;
+	NautilusDragInfo drag_info;
 
 	/* Shadow for the icons being dragged.  */
 	GnomeCanvasItem *shadow;

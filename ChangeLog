@@ -1,3 +1,28 @@
+2002-02-05  Darin Adler  <darin@bentspoon.com>
+
+	* components/tree/nautilus-tree-change-queue.c: Remove.
+	* components/tree/nautilus-tree-change-queue.h: Remove.
+	* components/tree/nautilus-tree-view-dnd.c: Remove.
+	* components/tree/nautilus-tree-view-dnd.h: Remove.
+	* components/tree/nautilus-tree-view-private.h: Remove.
+
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-dnd.c:
+	* libnautilus-private/nautilus-dnd.h:
+	Move eel-dnd.[ch] back into Nautilus, because it currently is
+	completely file-manager-specific.
+
+	* libnautilus-private/nautilus-file-dnd.c:
+	* libnautilus-private/nautilus-file-dnd.h:
+	* libnautilus-private/nautilus-icon-dnd.c:
+	* libnautilus-private/nautilus-icon-dnd.h:
+	* src/file-manager/fm-icon-view.c:
+	* src/file-manager/fm-list-view.c:
+	Change to use eel-dnd.[ch] in their new location in Nautilus.
+
+	* src/file-manager/fm-directory-view.c: Add included needed due
+	to include changes.
+
 2002-02-05  Anders Carlsson  <andersca@gnu.org>
 
 	* components/tree/Makefile.am:

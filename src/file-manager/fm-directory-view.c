@@ -47,6 +47,7 @@
 #include <gtk/gtkcheckmenuitem.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkmenu.h>
+#include <gtk/gtkselection.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkstock.h>
 #include <libgnome/gnome-i18n.h>

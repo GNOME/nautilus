@@ -33,7 +33,6 @@
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
-#include <eel/eel-dnd.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <errno.h>
@@ -55,6 +54,7 @@
 #include <libnautilus-private/nautilus-bonobo-extensions.h>
 #include <libnautilus-private/nautilus-directory-background.h>
 #include <libnautilus-private/nautilus-directory.h>
+#include <libnautilus-private/nautilus-dnd.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-icon-container.h>
@@ -2575,7 +2575,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 	}
 
 	if (action == GDK_ACTION_ASK) {
-		action = eel_drag_drop_action_ask 
+		action = nautilus_drag_drop_action_ask 
 			(GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
 	}
 	

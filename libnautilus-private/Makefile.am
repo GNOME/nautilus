@@ -59,6 +59,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-directory-private.h \
 	nautilus-directory.c \
 	nautilus-directory.h \
+	nautilus-dnd.c \
+	nautilus-dnd.h \
 	nautilus-drag-window.c \
 	nautilus-drag-window.h \
 	nautilus-entry.c \
