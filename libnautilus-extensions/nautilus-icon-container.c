@@ -75,6 +75,9 @@
 #define MAXIMUM_IMAGE_SIZE 1000
 #define MAXIMUM_EMBLEM_SIZE 100
 
+/* for now, anti-aliased mode is a compile time option, defaulted off */
+#define ANTI_ALIASED 0
+
 static void          activate_selected_items                  (NautilusIconContainer      *container);
 static void          nautilus_icon_container_initialize_class (NautilusIconContainerClass *class);
 static void          nautilus_icon_container_initialize       (NautilusIconContainer      *container);
@@ -886,20 +889,36 @@ start_rubberbanding (NautilusIconContainer *container,
 		 event->x, event->y,
 		 &band_info->start_x, &band_info->start_y);
 
-	band_info->selection_rectangle = gnome_canvas_item_new
-		(gnome_canvas_root
-		 (GNOME_CANVAS (container)),
-		 gnome_canvas_rect_get_type (),
-		 "x1", band_info->start_x,
-		 "y1", band_info->start_y,
-		 "x2", band_info->start_x,
-		 "y2", band_info->start_y,
-		 "fill_color", "lightblue",
-		 "fill_stipple", stipple,
-		 "outline_color", "lightblue",
-		 "width_pixels", 1,
-		 NULL);
-
+	if (GNOME_CANVAS(container)->aa) {
+		band_info->selection_rectangle = gnome_canvas_item_new
+			(gnome_canvas_root
+		 	(GNOME_CANVAS (container)),
+		 	gnome_canvas_rect_get_type (),
+		 	"x1", band_info->start_x,
+		 	"y1", band_info->start_y,
+		 	"x2", band_info->start_x,
+		 	"y2", band_info->start_y,
+		 	"fill_color_rgba", 0x77bbdd80,
+		 	"outline_color_rgba", 0x77bbddFF,
+		 	"width_pixels", 1,
+		 	NULL);
+	
+	} else {
+		band_info->selection_rectangle = gnome_canvas_item_new
+			(gnome_canvas_root
+		 	(GNOME_CANVAS (container)),
+		 	gnome_canvas_rect_get_type (),
+		 	"x1", band_info->start_x,
+		 	"y1", band_info->start_y,
+		 	"x2", band_info->start_x,
+		 	"y2", band_info->start_y,
+		 	"fill_color", "lightblue",
+		 	"fill_stipple", stipple,
+		 	"outline_color", "lightblue",
+		 	"width_pixels", 1,
+		 	NULL);
+	}
+	
 	band_info->prev_x = event->x;
 	band_info->prev_y = event->y;
 
@@ -2595,16 +2614,21 @@ item_event_callback (GnomeCanvasItem *item,
 GtkWidget *
 nautilus_icon_container_new (void)
 {
+	GnomeCanvas *canvas;
 	GtkWidget *new;
 
 	gtk_widget_push_visual (gdk_rgb_get_visual ());
 	gtk_widget_push_colormap (gdk_rgb_get_cmap ());
 
 	new = gtk_type_new (nautilus_icon_container_get_type ());
-
+	
 	gtk_widget_pop_visual ();
 	gtk_widget_pop_colormap ();
 
+	canvas = GNOME_CANVAS(new);
+	if (ANTI_ALIASED)
+		canvas->aa = TRUE;
+	
 	return new;
 }
 

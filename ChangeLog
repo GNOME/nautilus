@@ -1,3 +1,26 @@
+2000-05-22  Andy Hertzfeld  <andy@eazel.com>
+
+	first, incomplete attempt to use the anti-aliased canvas.
+	For now, it's a compile-time flag in nautilus-icon-container to
+	optionally enable it, and there's no text drawing in aa mode yet.
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_initialize_class), (draw_pixbuf),
+	(nautilus_icon_canvas_item_render):
+	added a render method to draw the item in anti-aliased mode
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(start_rubberbanding), (nautilus_icon_container_new):
+	optionally put the canvas in anti-aliased mode if a compile-time
+	flag is set; added code to make the selection rectangle semi-transparent
+	in anti-aliased mode.
+	
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_dnd_begin_drag):
+	at Arlo's suggestion, changed the alpha threshold used to compute
+	the pixmap to drag from the pixbuf, so it doesn't look so lumpy when
+	there's lots of information in the alpha channel
+	
 2000-05-22  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/time/service/.cvsignore: Adding .cvsignore.

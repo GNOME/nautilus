@@ -33,6 +33,8 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-canvas-util.h>
 #include <libgnomeui/gnome-icon-text.h>
+#include <libart_lgpl/art_rgb_affine.h>
+#include <libart_lgpl/art_rgb_rgba_affine.h>
 #include "nautilus-icon-private.h"
 #include "nautilus-string.h"
 #include "nautilus-glib-extensions.h"
@@ -131,6 +133,8 @@ static void     nautilus_icon_canvas_item_draw             (GnomeCanvasItem     
 							    int                           y,
 							    int                           width,
 							    int                           height);
+static void	nautilus_icon_canvas_item_render	   (GnomeCanvasItem		 *item,
+							    GnomeCanvasBuf 		*buffer);
 static double   nautilus_icon_canvas_item_point            (GnomeCanvasItem              *item,
 							    double                        x,
 							    double                        y,
@@ -210,6 +214,7 @@ nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass *class)
 
 	item_class->update = nautilus_icon_canvas_item_update;
 	item_class->draw = nautilus_icon_canvas_item_draw;
+	item_class->render = nautilus_icon_canvas_item_render;
 	item_class->point = nautilus_icon_canvas_item_point;
 	item_class->bounds = nautilus_icon_canvas_item_bounds;
 	item_class->event = nautilus_icon_canvas_item_event;
@@ -921,10 +926,9 @@ draw_pixbuf (GdkPixbuf *pixbuf, GdkDrawable *drawable, int x, int y)
 					     gdk_pixbuf_get_height (pixbuf),
 					     GDK_PIXBUF_ALPHA_BILEVEL, 128, GDK_RGB_DITHER_MAX,
 					     0, 0);
-
 }
 
-/* Draw the icon item. */
+/* Draw the icon item for non-anti-aliased mode. */
 static void
 nautilus_icon_canvas_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 				int x, int y, int width, int height)
@@ -985,6 +989,51 @@ nautilus_icon_canvas_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 	/* Draw the label text. */
 	draw_label_text (icon_item, drawable, icon_rect.x0, icon_rect.y1);
 }
+
+
+/* draw the item for anti-aliased mode */
+
+static void
+nautilus_icon_canvas_item_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
+{
+	
+	GdkPixbuf *pixbuf;
+	NautilusIconCanvasItem *icon_item;
+	double i2c[6];
+
+	icon_item = NAUTILUS_ICON_CANVAS_ITEM (item);
+	pixbuf = icon_item->details->pixbuf;
+
+	if (!pixbuf)
+		return;
+
+	gnome_canvas_item_i2c_affine (item, i2c);
+        gnome_canvas_buf_ensure_buf (buf);
+
+	if (gdk_pixbuf_get_has_alpha(pixbuf))
+		art_rgb_rgba_affine (buf->buf,
+				     buf->rect.x0, buf->rect.y0, buf->rect.x1, buf->rect.y1,
+				     buf->buf_rowstride,
+				     gdk_pixbuf_get_pixels(pixbuf),
+				     gdk_pixbuf_get_width(pixbuf), gdk_pixbuf_get_height(pixbuf),
+				     gdk_pixbuf_get_rowstride(pixbuf),
+				     i2c,
+				     ART_FILTER_NEAREST,
+				     NULL);
+	else
+		art_rgb_affine (buf->buf,
+				buf->rect.x0, buf->rect.y0, buf->rect.x1, buf->rect.y1,
+				buf->buf_rowstride,
+				gdk_pixbuf_get_pixels(pixbuf),
+				gdk_pixbuf_get_width(pixbuf), gdk_pixbuf_get_height(pixbuf),
+				gdk_pixbuf_get_rowstride(pixbuf),
+				i2c,
+				ART_FILTER_NEAREST,
+				NULL);
+
+	buf->is_bg = FALSE;
+}
+
 
 /* handle events */
 
