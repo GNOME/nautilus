@@ -378,10 +378,10 @@ check_installed(gchar *package_name, gchar *package_version, gchar *package_rele
 	gint result = 0;
 	gchar *version_ptr, *release_ptr;
 	
- 	rpmReadConfigFiles(NULL, NULL);   
-    	rpm_result = rpmdbOpen("", &rpm_db, O_RDONLY, 0644);
+ 	rpmReadConfigFiles (NULL, NULL);   
+    	rpm_result = rpmdbOpen ("", &rpm_db, O_RDONLY, 0644);
 	if (rpm_result != 0) {
-		g_message("couldn't open package database: %d", rpm_result);
+		g_message ("couldn't open package database: %d", rpm_result);
 		return 0;
 	}
 	
@@ -429,7 +429,7 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 	gint iterator_tag, type, data_size, result, index, file_count;
 	gchar *data_ptr, *temp_str;
 	gboolean is_installed;
-	gint file_descriptor;
+	FD_t file_descriptor;
 	gint *integer_ptr;
   	
 	gchar **path = NULL;
@@ -440,12 +440,12 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 	
 	const char *path_name = uri + 7;
 	
-	file_descriptor = open(path_name, O_RDONLY, 0644);
+	file_descriptor = fdOpen (path_name, O_RDONLY, 0644);
 	 
-	if (file_descriptor >= 0) {
+	if (fdValid (file_descriptor)) {
                 
 		/* read out the appropriate fields, and set them up in the view */
-		result = rpmReadPackageInfo((FD_t)&file_descriptor, &signature, &header_info);
+		result = rpmReadPackageInfo (file_descriptor, &signature, &header_info);
 		if (result) {
 			g_message("couldnt read package!");
 			return;
@@ -456,9 +456,9 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 			integer_ptr = (int*) data_ptr;
 			switch (iterator_tag) {
                         case RPMTAG_NAME:
-                                package_name = strdup(data_ptr);
+                                package_name = g_strdup(data_ptr);
                                 temp_str = g_strdup_printf("Package \"%s\" ", data_ptr);
-                                gtk_label_set (GTK_LABEL (rpm_view->details->package_title), temp_str);				 
+                                gtk_label_set (GTK_LABEL (rpm_view->details->package_title), temp_str);
                                 g_free(temp_str);
                                 break;
                         case RPMTAG_VERSION:
@@ -468,14 +468,14 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
                                 temp_release = g_strdup(data_ptr);
                                 break;
                         case RPMTAG_SUMMARY:
-                                gtk_label_set (GTK_LABEL (rpm_view->details->package_summary), data_ptr+4);				 
+                                gtk_label_set (GTK_LABEL (rpm_view->details->package_summary), data_ptr+4);
                                 break;
                         case RPMTAG_DESCRIPTION:
-                                gtk_label_set (GTK_LABEL (rpm_view->details->package_description), data_ptr+4);				 
+                                gtk_label_set (GTK_LABEL (rpm_view->details->package_description), data_ptr+4);
                                 break;
                         case RPMTAG_SIZE:
                                 temp_str = gnome_vfs_file_size_to_string (*integer_ptr);
-                                gtk_label_set (GTK_LABEL (rpm_view->details->package_size), temp_str);				 
+                                gtk_label_set (GTK_LABEL (rpm_view->details->package_size), temp_str);
                                 g_free(temp_str);					
                                 break;
                         case RPMTAG_DISTRIBUTION:
@@ -508,21 +508,21 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 		}
 		
 		if (temp_version) {
-			temp_str = g_strdup_printf("version %s-%s", temp_version, temp_release);
+			temp_str = g_strdup_printf ("version %s-%s", temp_version, temp_release);
 			gtk_label_set (GTK_LABEL (rpm_view->details->package_release), temp_str);				 
-			g_free(temp_str);
+			g_free (temp_str);
 		}
 		
-		headerFreeIterator(iterator);			
+		headerFreeIterator (iterator);
+
 		/* close the package */
-		close(file_descriptor);	
+		fdClose (file_descriptor);
 	}
 	
 	/* determine if the package is installed */
 	is_installed = check_installed(package_name, temp_version, temp_release);
 			
 	/* set up the install message and buttons */
-
 	if (is_installed)
 		gtk_label_set(GTK_LABEL(rpm_view->details->package_installed_message), "This package is currently installed");	
 	else 

@@ -1,3 +1,22 @@
+2000-04-25  Darin Adler  <darin@eazel.com>
+
+	This change requires a new gnome-vfs.
+
+	* HACKING: Updated URL for popt.
+	
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_update_from_uri):
+	Changed to use FD_t for real instead of casting a pointer to a
+	raw file descriptor to it.
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	Told it to load 32 items at a time instead of 1.
+	I think it's time we try this. It seems to work.
+
+	* src/ntl-uri-map.c (my_notify_when_ready),
+	(got_metadata_callback): Change to use the new version of
+	async. get_file_info.
+
 2000-04-25  Andy Hertzfeld <andy@eazel.com>
 
 	made drag and drop to and from the location bar work properly
@@ -9,7 +28,7 @@
 	the result from gtk_entry_get_text, since it's not a copy.  Made it
 	actually go to the dropped in uri by emitting the location changed
 	signal.
-	
+
 2000-04-25  John Sullivan  <sullivan@eazel.com>
 
 	* data/mime/nautilus.keys

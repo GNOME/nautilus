@@ -40,7 +40,7 @@
 			      | GNOME_VFS_PERM_GROUP_READ | GNOME_VFS_PERM_GROUP_WRITE \
 			      | GNOME_VFS_PERM_OTHER_READ | GNOME_VFS_PERM_OTHER_WRITE)
 
-#define DIRECTORY_LOAD_ITEMS_PER_CALLBACK 1
+#define DIRECTORY_LOAD_ITEMS_PER_CALLBACK 32
 
 struct MetafileReadState {
 	GnomeVFSAsyncHandle *handle;
@@ -678,7 +678,7 @@ nautilus_directory_file_monitor_add_internal (NautilusDirectory *directory,
 		  | GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR),
 		 NULL,                                            /* filter_pattern */
 		 DIRECTORY_LOAD_ITEMS_PER_CALLBACK,               /* items_per_notification */
-		 directory_load_callback,                /* callback */
+		 directory_load_callback,                         /* callback */
 		 directory);
 }
 

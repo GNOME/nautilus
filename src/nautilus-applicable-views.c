@@ -186,15 +186,20 @@ set_initial_content_iid (NautilusNavigationInfo *navinfo,
 
 static void
 my_notify_when_ready (GnomeVFSAsyncHandle *ah,
-                      GnomeVFSResult result,
-                      GnomeVFSFileInfo *vfs_fileinfo,
+                      GList *result_list,
                       gpointer data)
 {
+        GnomeVFSGetFileInfoResult *file_result;
+        GnomeVFSResult vfs_result_code;
         NautilusNavigationInfo *navinfo;
         NautilusNavigationCallback notify_ready;
         gpointer notify_ready_data;
         const char *fallback_iid;
         NautilusNavigationResult result_code;
+
+        g_assert (result_list != NULL);
+        g_assert (result_list->data != NULL);
+        g_assert (result_list->next == NULL);
 
         navinfo = data;
 
@@ -204,31 +209,34 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
         notify_ready_data = navinfo->callback_data;
 
         /* Get the content type. */
-        if (result == GNOME_VFS_OK) {
-                navinfo->navinfo.content_type = g_strdup (gnome_vfs_file_info_get_mime_type (vfs_fileinfo));
-        } else if (result == GNOME_VFS_ERROR_NOTSUPPORTED
-                   || result == GNOME_VFS_ERROR_INVALIDURI) {
+        file_result = result_list->data;
+        vfs_result_code = file_result->result;
+        if (vfs_result_code == GNOME_VFS_OK) {
+                navinfo->navinfo.content_type = g_strdup
+                        (gnome_vfs_file_info_get_mime_type (file_result->file_info));
+        } else if (vfs_result_code == GNOME_VFS_ERROR_NOTSUPPORTED
+                   || vfs_result_code == GNOME_VFS_ERROR_INVALIDURI) {
                 /* Special scheme mapping stuff */
                 if (nautilus_str_has_prefix (navinfo->navinfo.requested_uri, "irc://")) {
                         navinfo->navinfo.content_type = g_strdup ("special/x-irc-session");
-                        result = GNOME_VFS_OK;
+                        vfs_result_code = GNOME_VFS_OK;
                 } else if (nautilus_str_has_prefix (navinfo->navinfo.requested_uri, "eazel:")) {
                         navinfo->navinfo.content_type = g_strdup ("special/eazel-service");
-                        result = GNOME_VFS_OK;
+                        vfs_result_code = GNOME_VFS_OK;
                 } else if (nautilus_str_has_prefix (navinfo->navinfo.requested_uri, "hardware:")) {
                         navinfo->navinfo.content_type = g_strdup ("special/hardware");
-                        result = GNOME_VFS_OK;
+                        vfs_result_code = GNOME_VFS_OK;
                 /* FIXME: This mozilla-hack should be short lived until http issues are solved */
                 } else if (nautilus_str_has_prefix (navinfo->navinfo.requested_uri, "moz:")) {
                         navinfo->navinfo.content_type = g_strdup ("special/mozilla-hack");
-                        result = GNOME_VFS_OK;
+                        vfs_result_code = GNOME_VFS_OK;
                 }
         }
                         
         /* Map GnomeVFSResult to one of the types that Nautilus knows how to handle. */
-        result_code = get_nautilus_navigation_result_from_gnome_vfs_result (result);
+        result_code = get_nautilus_navigation_result_from_gnome_vfs_result (vfs_result_code);
   
-        if (result != GNOME_VFS_OK) {
+        if (vfs_result_code != GNOME_VFS_OK) {
                 /* Leave navinfo intact so notify_ready function can access the uri.
                  * (notify_ready function is responsible for freeing navinfo).
                  */
@@ -316,8 +324,7 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
 	   
                 /* FIXME:  for now, we just do this for directories but it should apply to all places with available metadata */
                 add_components_from_metadata (navinfo);
-        }
-        else if (strcmp (navinfo->navinfo.content_type, "application/x-rpm") == 0
+        } else if (strcmp (navinfo->navinfo.content_type, "application/x-rpm") == 0
                  || nautilus_str_has_suffix (navinfo->navinfo.requested_uri, ".rpm")) {
                 fallback_iid = "OAFIID:nautilus_rpm_view:22ea002c-11e6-44fd-b13c-9445175a5e70";
                 navinfo->content_identifiers = g_slist_append
@@ -445,17 +452,41 @@ got_metadata_callback (NautilusDirectory *directory,
                        gpointer callback_data)
 {
         NautilusNavigationInfo *info;
+        GnomeVFSURI *vfs_uri;
+        GList uri_list;
+        GList result_list;
+        GnomeVFSGetFileInfoResult result_item;
 
         info = callback_data;
         g_assert (info->directory == directory);
         
+        vfs_uri = gnome_vfs_uri_new (info->navinfo.requested_uri);
+        if (vfs_uri == NULL) {
+                /* Report the error. */
+
+                result_item.uri = NULL;
+                result_item.result = GNOME_VFS_ERROR_INVALIDURI;
+                result_item.file_info = NULL;
+
+                result_list.data = &result_item;
+                result_list.next = NULL;
+
+                my_notify_when_ready (NULL, &result_list, info);
+
+                return;
+        }
+
+        uri_list.data = vfs_uri;
+        uri_list.next = NULL;
         gnome_vfs_async_get_file_info (&info->ah,
-                                       info->navinfo.requested_uri,
+                                       &uri_list,
                                        (GNOME_VFS_FILE_INFO_GETMIMETYPE
                                         | GNOME_VFS_FILE_INFO_FOLLOWLINKS),
                                        NULL,
                                        my_notify_when_ready,
                                        info);
+
+        gnome_vfs_uri_unref (vfs_uri);
 }
 
 /* NautilusNavigationInfo */
