@@ -302,7 +302,7 @@ nautilus_search_bar_criterion_next_new (NautilusSearchBarCriterionType criterion
 	NautilusSearchBarCriterion *new_criterion;
 	NautilusSearchBarCriterionType next_type;
 
-	next_type = criterion_type + 1;
+	next_type = (criterion_type + 1) % NAUTILUS_LAST_CRITERION;
 
 	switch(next_type) {
 	case NAUTILUS_FILE_NAME_SEARCH_CRITERION:
