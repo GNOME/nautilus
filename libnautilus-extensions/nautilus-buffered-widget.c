@@ -32,21 +32,7 @@
 #include "nautilus-glib-extensions.h"
 #include "nautilus-string.h"
 #include "nautilus-background.h"
-
-#include <gtk/gtksignal.h>
-
-#include <librsvg/rsvg-ft.h>
-
-#include <libart_lgpl/art_misc.h>
-#include <libart_lgpl/art_rect.h>
-#include <libart_lgpl/art_alphagamma.h>
-#include <libart_lgpl/art_affine.h>
-
-#include <librsvg/art_render.h>
-#include <librsvg/art_render_mask.h>
-
 #include <math.h>
-#include <string.h>
 
 /* Arguments */
 enum
