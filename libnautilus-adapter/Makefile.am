@@ -12,6 +12,7 @@ INCLUDES=-I$(top_srcdir) -I$(top_builddir) -I. \
 	-D_REENTRANT
 
 libnautilus_adapter_la_LDFLAGS= \
+	$(top_builddir)/libnautilus/libnautilus.la \
 	$(GNOME_LIBS) \
 	$(OAF_LIBS) \
 	$(BONOBOX_LIBS) \

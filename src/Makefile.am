@@ -25,6 +25,7 @@ INCLUDES =\
 LDADD =\
 	$(top_builddir)/src/file-manager/libnautilus-file-manager.la \
 	$(top_builddir)/libnautilus/libnautilus.la \
+	$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la \
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la  \
 	$(BONOBO_LIBS) \
 	$(OAF_LIBS) \
@@ -51,6 +52,7 @@ noinst_HEADERS = \
 	nautilus-bookmark-parsing.h		\
 	nautilus-bookmarks-window.h		\
 	nautilus-complex-search-bar.h		\
+	nautilus-component-adapter-factory.h	\
 	nautilus-desktop-window.h		\
 	nautilus-first-time-druid.h		\
 	nautilus-history-frame.h		\
@@ -91,6 +93,7 @@ nautilus_SOURCES = \
 	nautilus-bookmark-parsing.c		\
 	nautilus-bookmarks-window.c		\
 	nautilus-complex-search-bar.c		\
+	nautilus-component-adapter-factory.c	\
 	nautilus-desktop-window.c		\
 	nautilus-first-time-druid.c		\
 	nautilus-history-frame.c		\

@@ -1,3 +1,18 @@
+2000-09-07  Maciej Stachowiak  <mjs@eazel.com>
+
+	* libnautilus-adapter/Makefile.am: Link against libnautilus.
+
+	* src/nautilus-component-adapter-factory.h,
+	src/nautilus-component-adapter-factory.c: Fist cut at the easy to
+	use wrapper interface for the soon to come adapter component (part
+	of the work for bugzilla.eazel.com 1994). I made this a singleton
+	object with the object actually exposed, but maybe I should hide
+	the object details completely and just expose the actually useful
+	function (which will instantiate the singleton when/if
+	appropriate).
+
+	* src/Makefile.am: Add to the build. Link against libnautilus-adapter.
+
 2000-09-07  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-scalable-font.c:
