@@ -1,6 +1,6 @@
 NULL = 
 
-#SUBDIRS = eazel-protocol-handler
+SUBDIRS = eazel-protocol-handler
 
 CPPFLAGS = \
 	-DPREFIX=\"$(prefix)\" \
