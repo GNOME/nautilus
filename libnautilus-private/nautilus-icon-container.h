@@ -61,6 +61,11 @@ typedef enum {
 	NAUTILUS_ICON_LAYOUT_T_B_R_L
 } NautilusIconLayoutMode;
 
+typedef enum {
+	NAUTILUS_ICON_LABEL_POSITION_UNDER,
+	NAUTILUS_ICON_LABEL_POSITION_BESIDE
+} NautilusIconLabelPosition;
+
 typedef struct NautilusIconContainerDetails NautilusIconContainerDetails;
 
 typedef struct {
@@ -211,6 +216,8 @@ void              nautilus_icon_container_set_keep_aligned              (Nautilu
 									 gboolean                keep_aligned);
 void              nautilus_icon_container_set_layout_mode               (NautilusIconContainer  *container,
 									 NautilusIconLayoutMode  mode);
+void              nautilus_icon_container_set_label_position            (NautilusIconContainer  *container,
+									 NautilusIconLabelPosition pos);
 void              nautilus_icon_container_sort                          (NautilusIconContainer  *container);
 void              nautilus_icon_container_freeze_icon_positions         (NautilusIconContainer  *container);
 

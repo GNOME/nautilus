@@ -63,6 +63,7 @@
 
 #define MAX_TEXT_WIDTH_STANDARD 135
 #define MAX_TEXT_WIDTH_TIGHTER 80
+#define MAX_TEXT_WIDTH_BESIDE 90
 
 /* Private part of the NautilusIconCanvasItem structure. */
 struct NautilusIconCanvasItemDetails {
@@ -148,12 +149,10 @@ static void     nautilus_icon_canvas_item_init       (NautilusIconCanvasItem    
 /* private */
 static void     draw_or_measure_label_text           (NautilusIconCanvasItem        *item,
 						      GdkDrawable                   *drawable,
-						      int                            icon_left,
-						      int                            icon_bottom);
+						      ArtIRect                       icon_rect);
 static void     draw_label_text                      (NautilusIconCanvasItem        *item,
 						      GdkDrawable                   *drawable,
-						      int                            icon_left,
-						      int                            icon_bottom);
+						      ArtIRect                       icon_rect);
 static void     measure_label_text                   (NautilusIconCanvasItem        *item);
 static void     get_icon_canvas_rectangle            (NautilusIconCanvasItem        *item,
 						      ArtIRect                      *rect);
@@ -569,22 +568,35 @@ recompute_bounding_box (NautilusIconCanvasItem *icon_item,
 }
 
 static ArtIRect
-compute_text_rectangle (NautilusIconCanvasItem *item,
-			ArtIRect icon_rectangle)
+compute_text_rectangle (const NautilusIconCanvasItem *item,
+			ArtIRect icon_rectangle,
+			gboolean canvas_coords)
 {
 	ArtIRect text_rectangle;
 	double pixels_per_unit;
 	double text_width, text_height;
 
 	pixels_per_unit = EEL_CANVAS_ITEM (item)->canvas->pixels_per_unit;
-	text_width = item->details->text_width / pixels_per_unit;
-	text_height = item->details->text_height / pixels_per_unit;
-
-	/* Compute text rectangle. */
-	text_rectangle.x0 = (icon_rectangle.x0 + icon_rectangle.x1) / 2 - text_width / 2;
-	text_rectangle.y0 = icon_rectangle.y1;
-	text_rectangle.x1 = text_rectangle.x0 + text_width;
-	text_rectangle.y1 = text_rectangle.y0 + text_height + LABEL_OFFSET / pixels_per_unit;
+	if (canvas_coords) {
+		text_width = item->details->text_width;
+		text_height = item->details->text_height;
+	} else {
+		text_width = item->details->text_width / pixels_per_unit;
+		text_height = item->details->text_height / pixels_per_unit;
+	}
+	
+	if (NAUTILUS_ICON_CONTAINER (EEL_CANVAS_ITEM (item)->canvas)->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
+                text_rectangle.x0 = icon_rectangle.x1;
+                text_rectangle.x1 = text_rectangle.x0 + text_width;
+                text_rectangle.y0 = icon_rectangle.y0;
+                text_rectangle.y1 = text_rectangle.y0 + text_height + LABEL_OFFSET / pixels_per_unit;
+	} else {
+                text_rectangle.x0 = (icon_rectangle.x0 + icon_rectangle.x1) / 2
+			- text_width / 2;
+                text_rectangle.y0 = icon_rectangle.y1;
+                text_rectangle.x1 = text_rectangle.x0 + text_width;
+                text_rectangle.y1 = text_rectangle.y0 + text_height + LABEL_OFFSET / pixels_per_unit;
+        }
 
 	return text_rectangle;
 }
@@ -627,7 +639,7 @@ nautilus_icon_canvas_item_update_bounds (NautilusIconCanvasItem *item,
 	
 	/* Update canvas and text rect cache */
 	get_icon_canvas_rectangle (item, &item->details->canvas_rect);
-	item->details->text_rect = compute_text_rectangle (item, item->details->canvas_rect);
+	item->details->text_rect = compute_text_rectangle (item, item->details->canvas_rect, FALSE);
 	
 	/* Update emblem rect cache */
 	item->details->emblem_rect.x0 = 0;
@@ -761,8 +773,7 @@ draw_frame (NautilusIconCanvasItem *item,
 static void
 draw_or_measure_label_text (NautilusIconCanvasItem *item,
 			    GdkDrawable *drawable,
-			    int icon_left,
-			    int icon_bottom)
+			    ArtIRect icon_rect)
 {
 	NautilusIconCanvasItemDetails *details;
 	NautilusIconContainer *container;
@@ -774,12 +785,14 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	GdkColor *label_color;
 	int icon_width;
 	gboolean have_editable, have_additional, needs_highlight, needs_frame;
-	int max_text_width, box_left;
+	int max_text_width;
+	int x;
 	GdkGC *gc;
+	ArtIRect text_rect;
 	
 	icon_width = 0;
 	gc = NULL;
-	
+
 	details = item->details;
 	needs_highlight = details->is_highlighted_for_selection || details->is_highlighted_for_drop;
 
@@ -871,6 +884,8 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 
 		return;
 	}
+
+	text_rect = compute_text_rectangle (item, icon_rect, TRUE);
 	
 	/* if the icon is highlighted, do some set-up */
 	if (needs_highlight && !details->is_renaming &&
@@ -878,12 +893,19 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		draw_frame (item,
 			    drawable,
 			    GTK_WIDGET_HAS_FOCUS (GTK_WIDGET (container)) ? container->details->highlight_color_rgba : container->details->active_color_rgba,
-			    icon_left + (icon_width - details->text_width) / 2,
-			    icon_bottom,
-			    details->text_width, 
-			    details->text_height);
+			    text_rect.x0,
+			    text_rect.y0,
+			    text_rect.x1 - text_rect.x0,
+			    text_rect.y1 - text_rect.y0);
 	}
 
+		
+	if (container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
+		x = text_rect.x0 + 2;
+	} else {
+		x = text_rect.x0 + ((text_rect.x1 - text_rect.x0) - max_text_width) / 2;
+	}
+	
 	if (have_editable) {
 		gtk_widget_style_get (GTK_WIDGET (container),
 				      "frame_text", &needs_frame,
@@ -892,21 +914,21 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 			draw_frame (item, 
 				    drawable,
 				    eel_gdk_color_to_rgb (&GTK_WIDGET (container)->style->base[GTK_STATE_NORMAL]),
-				    icon_left + (icon_width - details->text_width) / 2,
-				    icon_bottom,
-				    details->text_width, 
-				    details->text_height);	    
+				    text_rect.x0,
+				    text_rect.y0,
+				    text_rect.x1 - text_rect.x0,
+				    text_rect.y1 - text_rect.y0);
 		}
 		
 		gc = nautilus_icon_container_get_label_color_and_gc
 			(NAUTILUS_ICON_CONTAINER (canvas_item->canvas),
 			 &label_color, TRUE, needs_highlight);
-		
+
 		draw_label_layout (item, drawable,
 				   editable_layout, needs_highlight,
 				   label_color,
-				   icon_left + (icon_width - max_text_width) / 2,
-				   icon_bottom, gc);
+				   x,
+				   text_rect.y0, gc);
 	}
 
 	if (have_additional) {
@@ -917,11 +939,9 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		draw_label_layout (item, drawable,
 				   additional_layout, needs_highlight,
 				   label_color,
-				   icon_left + (icon_width - max_text_width) / 2,
-				   icon_bottom + editable_height + LABEL_LINE_SPACING, gc);
+				   x,
+				   text_rect.y0 + editable_height + LABEL_LINE_SPACING, gc);
 	}
-
-	box_left = icon_left + (icon_width - details->text_width) / 2;
 
 	if (item->details->is_highlighted_as_keyboard_focus) {
 		gtk_paint_focus (GTK_WIDGET (EEL_CANVAS_ITEM (item)->canvas)->style,
@@ -930,10 +950,10 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 				 NULL,
 				 GTK_WIDGET (EEL_CANVAS_ITEM (item)->canvas),
 				 "icon-container",
-				 box_left,
-				 icon_bottom,
-				 details->text_width,
-				 details->text_height);
+				 text_rect.x0,
+				 text_rect.y0,
+				 text_rect.x1 - text_rect.x0,
+				 text_rect.y1 - text_rect.y0);
 	}
 
 	if (editable_layout) {
@@ -948,6 +968,8 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 static void
 measure_label_text (NautilusIconCanvasItem *item)
 {
+	ArtIRect rect = {0, };
+	
 	/* check to see if the cached values are still valid; if so, there's
 	 * no work necessary
 	 */
@@ -956,14 +978,14 @@ measure_label_text (NautilusIconCanvasItem *item)
 		return;
 	}
 	
-	draw_or_measure_label_text (item, NULL, 0, 0);
+	draw_or_measure_label_text (item, NULL, rect);
 }
 
 static void
 draw_label_text (NautilusIconCanvasItem *item, GdkDrawable *drawable,
-		 int icon_left, int icon_bottom)
+		 ArtIRect icon_rect)
 {
-	draw_or_measure_label_text (item, drawable, icon_left, icon_bottom + LABEL_OFFSET);
+	draw_or_measure_label_text (item, drawable, icon_rect);
 }
 
 static void
@@ -1331,7 +1353,7 @@ nautilus_icon_canvas_item_draw (EelCanvasItem *item, GdkDrawable *drawable,
 	draw_stretch_handles (icon_item, drawable, &icon_rect);
 	
 	/* Draw the label text. */
-	draw_label_text (icon_item, drawable, icon_rect.x0, icon_rect.y1);
+	draw_label_text (icon_item, drawable, icon_rect);
 }
 
 static PangoLayout *
@@ -1352,7 +1374,13 @@ create_label_layout (NautilusIconCanvasItem *item,
 
 	pango_layout_set_text (layout, text, -1);
 	pango_layout_set_width (layout, floor (nautilus_icon_canvas_item_get_max_text_width (item)) * PANGO_SCALE);
-	pango_layout_set_alignment (layout, PANGO_ALIGN_CENTER);
+			
+	if (container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
+		pango_layout_set_alignment (layout, PANGO_ALIGN_LEFT);
+	} else {
+		pango_layout_set_alignment (layout, PANGO_ALIGN_CENTER);
+	}
+
 	pango_layout_set_spacing (layout, LABEL_LINE_SPACING);
 	pango_layout_set_wrap (layout, PANGO_WRAP_WORD_CHAR);
 
@@ -1693,7 +1721,7 @@ nautilus_icon_canvas_item_bounds (EelCanvasItem *item,
 	}
 	
 	/* Compute text rectangle. */
-	text_rect = compute_text_rectangle (icon_item, icon_rect);
+	text_rect = compute_text_rectangle (icon_item, icon_rect, FALSE);
 
 	/* Compute total rectangle, adding in emblem rectangles. */
 	art_irect_union (&total_rect, &icon_rect, &text_rect);
@@ -1737,6 +1765,45 @@ nautilus_icon_canvas_item_get_icon_rectangle (const NautilusIconCanvasItem *item
 
 	return rectangle;
 }
+
+ArtDRect
+nautilus_icon_canvas_item_get_text_rectangle (const NautilusIconCanvasItem *item)
+{
+	/* FIXME */
+	ArtIRect icon_rectangle;
+	ArtIRect text_rectangle;
+	ArtDRect ret;
+	double pixels_per_unit;
+	GdkPixbuf *pixbuf;
+	
+	g_return_val_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item), eel_art_drect_empty);
+
+	icon_rectangle.x0 = item->details->x;
+	icon_rectangle.y0 = item->details->y;
+	
+	pixbuf = item->details->pixbuf;
+	
+	pixels_per_unit = EEL_CANVAS_ITEM (item)->canvas->pixels_per_unit;
+	icon_rectangle.x1 = icon_rectangle.x0 + (pixbuf == NULL ? 0 : gdk_pixbuf_get_width (pixbuf)) / pixels_per_unit;
+	icon_rectangle.y1 = icon_rectangle.y0 + (pixbuf == NULL ? 0 : gdk_pixbuf_get_height (pixbuf)) / pixels_per_unit;
+
+	text_rectangle = compute_text_rectangle (item, icon_rectangle, FALSE);
+ 
+	ret.x0 = text_rectangle.x0;
+	ret.y0 = text_rectangle.y0;
+	ret.x1 = text_rectangle.x1;
+	ret.y1 = text_rectangle.y1;
+
+        eel_canvas_item_i2w (EEL_CANVAS_ITEM (item),
+                             &ret.x0,
+                             &ret.y0);
+        eel_canvas_item_i2w (EEL_CANVAS_ITEM (item),
+                             &ret.x1,
+                             &ret.y1);
+ 
+        return ret;
+}
+
 
 /* Get the rectangle of the icon only, in canvas coordinates. */
 static void
@@ -1875,7 +1942,14 @@ nautilus_icon_canvas_item_get_max_text_width (NautilusIconCanvasItem *item)
 	if (nautilus_icon_container_is_tighter_layout (NAUTILUS_ICON_CONTAINER (canvas_item->canvas))) {
 		return MAX_TEXT_WIDTH_TIGHTER * canvas_item->canvas->pixels_per_unit;
 	} else {
-		return MAX_TEXT_WIDTH_STANDARD * canvas_item->canvas->pixels_per_unit;
+				
+                if (NAUTILUS_ICON_CONTAINER (canvas_item->canvas)->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
+			return MAX_TEXT_WIDTH_BESIDE * canvas_item->canvas->pixels_per_unit;
+                } else {
+			return MAX_TEXT_WIDTH_STANDARD * canvas_item->canvas->pixels_per_unit;
+                }
+
+
 	}
 
 }

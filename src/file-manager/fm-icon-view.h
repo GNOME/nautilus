@@ -90,6 +90,11 @@ struct FMIconViewClass {
 	 */
 	gboolean (* supports_keep_aligned)	 (FMIconView *view);
 
+	/* supports_auto_layout is a function pointer that subclasses may
+	 * override to control whether snap-to-grid mode
+	 * should be enabled. The default implementation returns FALSE.
+	 */
+	gboolean (* supports_labels_beside_icons)	 (FMIconView *view);
 };
 
 /* GObject support */

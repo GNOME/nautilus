@@ -108,6 +108,9 @@ enum
 #define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL		"icon_view/default_zoom_level"
 #define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT	"icon_view/default_use_manual_layout"
 
+#define NAUTILUS_PREFERENCES_ICON_VIEW_LABELS_BESIDE_ICONS      	"icon_view/labels_beside_icons"
+
+
 /* The icon view uses 2 variables to store the sort order and
  * whether to use manual layout.  However, the UI for these
  * preferences presensts them as single option menu.  So we

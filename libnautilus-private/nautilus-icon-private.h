@@ -218,6 +218,9 @@ struct NautilusIconContainerDetails {
 	/* Layout mode */
 	NautilusIconLayoutMode layout_mode;
 
+	/* Label position */
+	NautilusIconLabelPosition label_position;
+
 	/* Should the container keep icons aligned to a grid */
 	gboolean keep_aligned;
 

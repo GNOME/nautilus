@@ -102,6 +102,7 @@ static void     fm_desktop_icon_view_class_init             (FMDesktopIconViewCl
 static void     default_zoom_level_changed                        (gpointer                user_data);
 static gboolean real_supports_auto_layout                         (FMIconView             *view);
 static gboolean real_supports_keep_aligned                        (FMIconView             *view);
+static gboolean real_supports_labels_beside_icons                 (FMIconView             *view);
 static void     real_merge_menus                                  (FMDirectoryView        *view);
 static void     real_update_menus                                 (FMDirectoryView        *view);
 static gboolean real_supports_zooming                             (FMDirectoryView        *view);
@@ -273,6 +274,7 @@ fm_desktop_icon_view_class_init (FMDesktopIconViewClass *class)
 
 	FM_ICON_VIEW_CLASS (class)->supports_auto_layout = real_supports_auto_layout;
 	FM_ICON_VIEW_CLASS (class)->supports_keep_aligned = real_supports_keep_aligned;
+	FM_ICON_VIEW_CLASS (class)->supports_labels_beside_icons = real_supports_labels_beside_icons;
 }
 
 static void
@@ -1183,6 +1185,12 @@ static gboolean
 real_supports_keep_aligned (FMIconView *view)
 {
 	return TRUE;
+}
+
+static gboolean
+real_supports_labels_beside_icons (FMIconView *view)
+{
+	return FALSE;
 }
 
 static gboolean

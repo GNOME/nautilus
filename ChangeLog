@@ -1,3 +1,40 @@
+2003-06-09  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(compute_text_rectangle),
+	(nautilus_icon_canvas_item_update_bounds),
+	(draw_or_measure_label_text), (measure_label_text),
+	(draw_label_text), (nautilus_icon_canvas_item_draw),
+	(create_label_layout), (nautilus_icon_canvas_item_bounds),
+	(nautilus_icon_canvas_item_get_text_rectangle),
+	(nautilus_icon_canvas_item_get_max_text_width):
+	* libnautilus-private/nautilus-icon-canvas-item.h:
+	* libnautilus-private/nautilus-icon-container.c: (get_grid_width),
+	(lay_down_icons_horizontal),
+	(nautilus_icon_container_set_label_position):
+	* libnautilus-private/nautilus-icon-container.h:
+	* libnautilus-private/nautilus-icon-private.h:  Add a mode for
+	text-beside-icons.
+
+	* libnautilus-private/apps_nautilus_preferences.schemas.in:
+	* libnautilus-private/nautilus-global-preferences.h: 
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_class_init), (real_supports_keep_aligned),
+	(real_supports_labels_beside_icons):
+	* src/file-manager/fm-icon-view.c:
+	(fm_icon_view_supports_labels_beside_icons),
+	(real_supports_labels_beside_icons), (set_labels_beside_icons),
+	(fm_icon_view_begin_loading),
+	(labels_beside_icons_changed_callback), (fm_icon_view_class_init),
+	(fm_icon_view_instance_init):
+	* src/file-manager/fm-icon-view.h: Add a "text beside icons" 
+	preference.
+
+	* src/nautilus-file-management-properties.c:
+	(nautilus_file_management_properties_dialog_setup):
+	* src/nautilus-file-management-properties.glade: Add the pref
+	to the dialog.
+	
 2003-06-08  Dave Camp  <dave@ximian.com>
 
 	* components/adapter/main.c: (main): Call

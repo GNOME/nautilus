@@ -590,6 +590,16 @@ fm_icon_view_supports_keep_aligned (FMIconView *view)
 		 supports_keep_aligned, (view));
 }
 
+static gboolean
+fm_icon_view_supports_labels_beside_icons (FMIconView *view)
+{
+	g_return_val_if_fail (FM_IS_ICON_VIEW (view), FALSE);
+
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_ICON_VIEW_CLASS, view,
+		 supports_labels_beside_icons, (view));
+}
+
 static void
 update_layout_menus (FMIconView *view)
 {
@@ -947,6 +957,14 @@ real_supports_keep_aligned (FMIconView *view)
 }
 
 static gboolean
+real_supports_labels_beside_icons (FMIconView *view)
+{
+	g_return_val_if_fail (FM_IS_ICON_VIEW (view), TRUE);
+
+	return TRUE;
+}
+
+static gboolean
 set_sort_reversed (FMIconView *icon_view, gboolean new_value)
 {
 	if (icon_view->details->sort_reversed == new_value) {
@@ -1023,6 +1041,26 @@ get_default_zoom_level (void)
 }
 
 static void
+set_labels_beside_icons (FMIconView *icon_view)
+{
+	gboolean labels_beside;
+
+	if (fm_icon_view_supports_labels_beside_icons (icon_view)) {
+		labels_beside = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ICON_VIEW_LABELS_BESIDE_ICONS);
+		
+		if (labels_beside) {
+			nautilus_icon_container_set_label_position
+				(get_icon_container (icon_view), 
+				 NAUTILUS_ICON_LABEL_POSITION_BESIDE);
+		} else {
+			nautilus_icon_container_set_label_position
+				(get_icon_container (icon_view), 
+				 NAUTILUS_ICON_LABEL_POSITION_UNDER);
+		}
+	}
+}
+
+static void
 fm_icon_view_begin_loading (FMDirectoryView *view)
 {
 	FMIconView *icon_view;
@@ -1078,6 +1116,8 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	nautilus_icon_container_set_tighter_layout
 		(get_icon_container (icon_view), 
 		 fm_icon_view_get_directory_tighter_layout (icon_view, file));
+
+	set_labels_beside_icons (icon_view);
 
 	/* We must set auto-layout last, because it invokes the layout_changed 
 	 * callback, which works incorrectly if the other layout criteria are
@@ -2310,6 +2350,18 @@ default_zoom_level_changed_callback (gpointer callback_data)
 }
 
 static void
+labels_beside_icons_changed_callback (gpointer callback_data)
+{
+	FMIconView *icon_view;
+
+	g_return_if_fail (FM_IS_ICON_VIEW (callback_data));
+
+	icon_view = FM_ICON_VIEW (callback_data);
+
+	set_labels_beside_icons (icon_view);
+}
+
+static void
 fm_icon_view_sort_directories_first_changed (FMDirectoryView *directory_view)
 {
 	FMIconView *icon_view;
@@ -2665,6 +2717,7 @@ fm_icon_view_class_init (FMIconViewClass *klass)
 	klass->clean_up = fm_icon_view_real_clean_up;
 	klass->supports_auto_layout = real_supports_auto_layout;
 	klass->supports_keep_aligned = real_supports_keep_aligned;
+	klass->supports_labels_beside_icons = real_supports_labels_beside_icons;
         klass->get_directory_auto_layout = fm_icon_view_real_get_directory_auto_layout;
         klass->get_directory_sort_by = fm_icon_view_real_get_directory_sort_by;
         klass->get_directory_sort_reversed = fm_icon_view_real_get_directory_sort_reversed;
@@ -2719,6 +2772,9 @@ fm_icon_view_instance_init (FMIconView *icon_view)
 						  icon_view, G_OBJECT (icon_view));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
 						  default_zoom_level_changed_callback,
+						  icon_view, G_OBJECT (icon_view));
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_LABELS_BESIDE_ICONS,
+						  labels_beside_icons_changed_callback,
 						  icon_view, G_OBJECT (icon_view));
 
 	g_signal_connect_object (get_icon_container (icon_view), "handle_uri_list",

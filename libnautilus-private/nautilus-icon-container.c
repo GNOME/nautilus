@@ -100,6 +100,8 @@
 
 #define STANDARD_ICON_GRID_WIDTH 155
 
+#define TEXT_BESIDE_ICON_GRID_WIDTH 205
+
 /* Desktop layout mode defines */
 #define DESKTOP_PAD_HORIZONTAL 	10
 #define DESKTOP_PAD_VERTICAL 	10
@@ -869,7 +871,11 @@ resort (NautilusIconContainer *container)
 static double
 get_grid_width (NautilusIconContainer *container)
 {
-	return STANDARD_ICON_GRID_WIDTH;
+	if (container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
+		return TEXT_BESIDE_ICON_GRID_WIDTH;
+	} else {
+		return STANDARD_ICON_GRID_WIDTH;
+	}
 }
 
 typedef struct {
@@ -922,6 +928,7 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 	IconPositions *position;
 	ArtDRect bounds;
 	ArtDRect icon_bounds;
+	ArtDRect text_bounds;
 	EelCanvasItem *item;
 	double max_height_above, max_height_below;
 	double height_above, height_below;
@@ -965,13 +972,16 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 					      &bounds.x0, &bounds.y0,
 					      &bounds.x1, &bounds.y1);
 
+		icon_bounds = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
+		text_bounds = nautilus_icon_canvas_item_get_text_rectangle (icon->item);
+
 		if (gridded_layout) {
 			icon_width = ceil ((bounds.x1 - bounds.x0)/grid_width) * grid_width;
+
+
 		} else {
 			icon_width = ICON_PAD_LEFT + (bounds.x1 - bounds.x0) + ICON_PAD_RIGHT + 8; /* 8 pixels extra for fancy selection box */
-		}
-		
-		icon_bounds = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
+		}		
 
 		/* Calculate size above/below baseline */
 		height_above = icon_bounds.y1 - bounds.y0;
@@ -984,14 +994,22 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 		 * the first column?
 		 */
 		if (line_start != p && line_width + icon_width - ICON_PAD_RIGHT > canvas_width ) {
-			/* Advance to the baseline. */
-			y += ICON_PAD_TOP + max_height_above;
+			if (container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
+				y += ICON_PAD_TOP;
+			} else {
+				/* Advance to the baseline. */
+				y += ICON_PAD_TOP + max_height_above;
+			}
 			
 			lay_down_one_line (container, line_start, p, y, positions);
 			
-			/* Advance to next line. */
-			y += max_height_below + ICON_PAD_BOTTOM;
-
+			if (container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
+			y += max_height_above + max_height_below + ICON_PAD_BOTTOM;
+			} else {
+				/* Advance to next line. */
+				y += max_height_below + ICON_PAD_BOTTOM;
+			}
+			
 			line_width = 0;
 			line_start = p;
 			i = 0;
@@ -1010,8 +1028,14 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 		g_array_set_size (positions, i + 1);
 		position = &g_array_index (positions, IconPositions, i++);
 		position->width = icon_width;
-		position->x_offset = (icon_width - (icon_bounds.x1 - icon_bounds.x0)) / 2;
-		position->y_offset = icon_bounds.y0 - icon_bounds.y1;
+		
+		if (container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
+			position->x_offset = (MAXIMUM_IMAGE_SIZE - (icon_bounds.x1 - icon_bounds.x0));
+			position->y_offset = 0;
+		} else {
+			position->x_offset = (icon_width - (icon_bounds.x1 - icon_bounds.x0)) / 2;
+			position->y_offset = icon_bounds.y0 - icon_bounds.y1;
+		}
 
 		/* Add this icon. */
 		line_width += icon_width;
@@ -1019,8 +1043,12 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 
 	/* Lay down that last line of icons. */
 	if (line_start != NULL) {
-		/* Advance to the baseline. */
-		y += ICON_PAD_TOP + max_height_above;
+			if (container->details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
+				y += ICON_PAD_TOP;
+			} else {
+				/* Advance to the baseline. */
+				y += ICON_PAD_TOP + max_height_above;
+			}
 		
 		lay_down_one_line (container, line_start, NULL, y, positions);
 		
@@ -5535,6 +5563,21 @@ nautilus_icon_container_set_layout_mode (NautilusIconContainer *container,
 	g_signal_emit (container, signals[LAYOUT_CHANGED], 0);
 }
 
+void
+nautilus_icon_container_set_label_position (NautilusIconContainer *container,
+					    NautilusIconLabelPosition position)
+{
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+
+	if (container->details->label_position != position) {
+		container->details->label_position = position;
+
+		invalidate_label_sizes (container);
+		nautilus_icon_container_request_update_all (container);
+
+		schedule_redo_layout (container);
+	}
+}
 
 /* Switch from automatic to manual layout, freezing all the icons in their
  * current positions instead of restoring icon positions from the last manual
@@ -5751,14 +5794,23 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	
 	width = nautilus_icon_canvas_item_get_max_text_width (icon->item);
 
-	eel_canvas_w2c (EEL_CANVAS_ITEM (icon->item)->canvas,
-			(icon_rect.x0 + icon_rect.x1) / 2,
-			icon_rect.y1,
-			&x, &y);
+
+	if (details->label_position == NAUTILUS_ICON_LABEL_POSITION_BESIDE) {
+		eel_canvas_w2c (EEL_CANVAS_ITEM (icon->item)->canvas,
+				icon_rect.x1,
+				icon_rect.y0,
+				&x, &y);
+	} else {
+		eel_canvas_w2c (EEL_CANVAS_ITEM (icon->item)->canvas,
+				(icon_rect.x0 + icon_rect.x1) / 2,
+				icon_rect.y1,
+				&x, &y);
+		x = x - width / 2 - 1;
+	}
 
 	gtk_layout_move (GTK_LAYOUT (container),
 			 details->rename_widget,
-			 x - width/2 - 1, y);
+			 x, y);
 	
 	gtk_widget_set_size_request (details->rename_widget,
 				     width, -1);
