@@ -966,21 +966,6 @@ get_current_mount_list (NautilusVolumeMonitor *monitor)
 }
 
 
-static void
-update_modifed_volume_name (GList *mount_list, NautilusVolume *volume)
-{
-	GList *node;
-	NautilusVolume *found_volume;
-	
-	for (node = mount_list; node != NULL; node = node->next) {
-		found_volume = node->data;
-		if (strcmp (volume->device_path, found_volume->device_path) == 0) {
-			g_free (volume->volume_name);
-			volume->volume_name = g_strdup (found_volume->volume_name);
-		}
-	}
-}
-
 static gboolean
 mount_lists_are_identical (GList *list_a, GList *list_b)
 {
@@ -1016,24 +1001,17 @@ verify_current_mount_state (NautilusVolumeMonitor *monitor)
 		return;
 	}
 		
+	/* Process list results to check for a properties that require opening files on disk. */
+	load_additional_mount_list_info (current_mounts);
+	
 	/* Create list of new and old mounts */
 	new_mounts = build_volume_list_delta (current_mounts, monitor->details->mounts);
 	old_mounts = build_volume_list_delta (monitor->details->mounts, current_mounts);  		
 		
-	/* Stash a copy of the current mount list for updating mount names later. */
-	saved_mount_list = monitor->details->mounts;
-		
 	/* Free previous mount list and replace with new */
+	free_mount_list (monitor->details->mounts);
 	monitor->details->mounts = current_mounts;
 
-	/* Process list results to check for a properties that require opening files on disk. */
-	load_additional_mount_list_info (new_mounts);
-	
-	if (old_mounts != NULL) {
-		load_additional_mount_list_info (old_mounts);
-		load_additional_mount_list_info (saved_mount_list);
-	}
-	
 	/* Check and see if we have new mounts to add */
 	for (node = new_mounts; node != NULL; node = node->next) {
 		mount_volume_activate (monitor, node->data);
@@ -1041,20 +1019,11 @@ verify_current_mount_state (NautilusVolumeMonitor *monitor)
 	
 	/* Check and see if we have old mounts to remove */
 	for (node = old_mounts; node != NULL; node = node->next) {
-		/* First we need to update the volume names in this list with modified names in the old list. Names in
-		 * the old list may have been modifed due to icon name conflicts.  The list of old mounts is unable
-		 * take this into account when it is created
-		 */			
-		update_modifed_volume_name (saved_mount_list, node->data);
-		
-		/* Deactivate the volume. */
 		mount_volume_deactivate (monitor, node->data);
 	}
 	
 	free_mount_list (old_mounts);
 	free_mount_list (new_mounts);
-	
-	free_mount_list (saved_mount_list);
 }
 
 static int

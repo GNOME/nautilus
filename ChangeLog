@@ -1,3 +1,16 @@
+2001-09-06  Owen Taylor  <otaylor@redhat.com>
+
+	* libnautilus-private/nautilus-volume-monitor.c (verify_current_mount_state): 
+	Fix bug where the mount list was stored without full mount
+	names. Don't call mount_volume_make_name() on volumes that
+	might not be on the system any more. Remove code that 
+	(unsuccesfully) tried to fix the old volume names up, since
+	we now have the correct old volume names.
+
+	Effect of these changes is to fix a race condition where
+	'unmount /mnt/cdrom; eject /dev/cdrom' would leave a left-over
+	icon on the deskop.
+
 2001-09-05  Maciej Stachowiak  <mjs@noisehavoc.org>
 
 	* libnautilus-private/nautilus-authn-manager.c:
