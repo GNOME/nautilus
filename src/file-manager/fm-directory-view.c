@@ -4999,7 +4999,12 @@ finish_loading (FMDirectoryView *view)
 	 */
 	fm_directory_view_begin_loading (view);
 
-	schedule_timeout_display_of_pending_files (view);
+	if (nautilus_directory_are_all_files_seen (view->details->model)) {
+		schedule_idle_display_of_pending_files (view);		
+	} else {
+		schedule_timeout_display_of_pending_files (view);
+	}
+	
 	view->details->loading = TRUE;
 
 	/* Start loading. */
