@@ -93,5 +93,15 @@ fi
 
 $srcdir/configure --enable-maintainer-mode "$@" $SOPWITH_FLAGS_HACK
 
-echo 
-echo "Now type 'make' to compile $PROJECT."
+rv=$?
+
+if [ $rv -eq 0 ]
+then
+    echo
+    echo "Now type 'make' to compile $PROJECT."
+    exit 0
+fi
+
+echo
+echo "There was a problem running $srcdir/configure for $PROJECT."
+exit 1

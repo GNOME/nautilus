@@ -1,3 +1,11 @@
+2001-05-02  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* autogen.sh:
+	Detect whether the invocation of configure failed and print a
+	message accordingly.  We used to always assume that configure was
+	successful and print misleading "now type make to build $PROJECT"
+	messages.
+	
 2001-05-01  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* configure.in:
