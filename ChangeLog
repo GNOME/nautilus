@@ -1,3 +1,18 @@
+2000-08-16  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(icon_toggle_selected), (icon_destroy),
+	(nautilus_icon_container_remove):
+	Fixed bug 2197, moving a file to trash while in renaming mode
+	leaves renaiming item behind.
+	Call end_renaming_mode in nautilus_icon_container_remove.
+	
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_container_free_drag_data):
+	Changed gtk_object_unref call to gtk_object_destroy to
+	fix a crash.  Hopefully this didn't
+	introduce a memory leak.
+	
 2000-08-16  Darin Adler  <darin@eazel.com>
 
 	* README: Don't use tabs any more. Spell check.

@@ -270,7 +270,7 @@ static void
 icon_toggle_selected (NautilusIconContainer *container,
 		      NautilusIcon *icon)
 {		
-	end_renaming_mode(container, TRUE);
+	end_renaming_mode (container, TRUE);
 
 	icon->is_selected = !icon->is_selected;
 	gnome_canvas_item_set (GNOME_CANVAS_ITEM (icon->item),
@@ -3195,7 +3195,7 @@ icon_destroy (NautilusIconContainer *container,
 	details = container->details;
 
 	details->icons = g_list_remove (details->icons, icon);
-
+		
 	was_selected = icon->is_selected;
 
 	if (details->keyboard_focus == icon) {
@@ -3495,6 +3495,8 @@ nautilus_icon_container_remove (NautilusIconContainer *container,
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), FALSE);
 	g_return_val_if_fail (data != NULL, FALSE);
 
+	end_renaming_mode (container, FALSE);
+		
 	/* FIXME bugzilla.eazel.com 1288: 
 	 * I guess we need to use an indexed data structure to avoid this loop.
 	 */
