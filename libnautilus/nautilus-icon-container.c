@@ -1654,7 +1654,7 @@ motion_notify_event (GtkWidget *widget,
 						      &world_x, &world_y);
 			
 			if (abs (details->drag_x - world_x) >= SNAP_RESISTANCE
-			    && abs (details->drag_y - world_y) >= SNAP_RESISTANCE) {
+			    || abs (details->drag_y - world_y) >= SNAP_RESISTANCE) {
 				
 				details->drag_started = TRUE;
 				

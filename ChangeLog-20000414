@@ -1,3 +1,12 @@
+2000-03-21  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus/nautilus-icon-container.c
+	(motion_notify_event):
+	Fixed an annoying bug that would sometimes cause the drag&drop feedback
+	to come up delayed. Turned out to be a silly mistake in the drag
+	snap resistance test that caused the snap resistance to be infinite when
+	you dragged near-horizontaly or near-vertically.
+
 2000-03-21  Darin Adler  <darin@eazel.com>
 
 	Did some of the items from RENAMING.
