@@ -1565,9 +1565,9 @@ nautilus_text_layout_new (const NautilusScalableFont *font,
 						row->width = nautilus_scalable_font_text_width (font, font_size, font_size, 
 												sub_text, 
 												strlen (sub_text));
-						row->text = g_strdup (sub_text);
-						if (row->text == NULL)
+						if (row->text == NULL) {
 							row->text = g_strdup("");
+						}
 
 						text_layout->rows = g_list_append (text_layout->rows, row);
 
@@ -1620,9 +1620,9 @@ nautilus_text_layout_new (const NautilusScalableFont *font,
 			row->text = sub_text;
 			row->text_length = sub_len;
 			row->width = nautilus_scalable_font_text_width (font, font_size, font_size, sub_text, sub_len);
-			row->text = g_strdup (sub_text);
-			if (row->text == NULL)
+			if (row->text == NULL) {
 				row->text = g_strdup("");
+			}
 
 			text_layout->rows = g_list_append (text_layout->rows, row);
 

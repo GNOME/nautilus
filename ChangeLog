@@ -1,3 +1,10 @@
+2000-09-14  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(nautilus_text_layout_new):
+	Remove a brain fart of mine that was causing a serious memory leak
+	everytime the icon layout was computed.
+
 2000-09-14  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed a crashing bug in the preligting code.
