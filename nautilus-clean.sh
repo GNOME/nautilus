@@ -59,8 +59,6 @@ nautilus-rpm-view \
 nautilus-sample-content-view \
 nautilus-service-startup-view \
 nautilus-sidebar-loser \
-nautilus-web-browser \
-nautilus-web-search \
 ntl-history-view \
 ntl-notes \
 ntl-web-search \
