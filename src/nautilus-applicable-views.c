@@ -456,17 +456,17 @@ nautilus_view_identifier_new_from_oaf_server_info (OAF_ServerInfo *server)
 
         langs = get_lang_list ();
         
-        view_as_name = oaf_server_info_attr_lookup (server, "nautilus:view_as_name", langs);
+        view_as_name = oaf_server_info_attr_lookup (server, "nautilus:view_as_name", NULL);
 
         if (view_as_name == NULL) {
-                view_as_name = oaf_server_info_attr_lookup (server, "name", langs);
+                view_as_name = oaf_server_info_attr_lookup (server, "name", NULL);
         }
 
         if (view_as_name == NULL) {
                 view_as_name = server->iid;
         }
        
-        g_free (langs);
+        // g_free (langs);
 
         return nautilus_view_identifier_new (server->iid, view_as_name);
 }
