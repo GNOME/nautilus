@@ -68,7 +68,9 @@ enum _GnomeIconContainerSignalNumber {
 	SELECTION_CHANGED,
 	BUTTON_PRESS,
 	ACTIVATE,
-	CONTEXT_CLICK,
+	CONTEXT_CLICK_ICON,
+	CONTEXT_CLICK_BACKGROUND,
+	ICON_MOVED,
 	LAST_SIGNAL
 };
 typedef enum _GnomeIconContainerSignalNumber GnomeIconContainerSignalNumber;
@@ -1162,6 +1164,9 @@ move_icon (GnomeIconContainer *container,
 		icon_grid_add (priv->grid, icon, new_grid_x + 1, new_grid_y + 1);
 
 	icon_position (icon, container, x, y);
+
+	gtk_signal_emit (GTK_OBJECT (container), signals[ICON_MOVED],
+			 icon->text, icon->data, x, y);
 }
 
 static void
@@ -1893,6 +1898,12 @@ button_press_event (GtkWidget *widget,
 		return TRUE;
 	}
 
+	if (event->button == 3) {
+		gtk_signal_emit (GTK_OBJECT (widget),
+				 signals[CONTEXT_CLICK_BACKGROUND]);
+		return TRUE;
+	}
+
 	gtk_signal_emit (GTK_OBJECT (widget), signals[BUTTON_PRESS], event,
 			 &return_value);
 
@@ -2092,16 +2103,36 @@ class_init (GnomeIconContainerClass *class)
 				  GTK_TYPE_NONE, 2,
 				  GTK_TYPE_STRING,
 				  GTK_TYPE_POINTER);
-	signals[CONTEXT_CLICK]
-		= gtk_signal_new ("context_click",
+	signals[CONTEXT_CLICK_ICON]
+		= gtk_signal_new ("context_click_icon",
 				  GTK_RUN_LAST,
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (GnomeIconContainerClass,
-						     activate),
+						     context_click_icon),
 				  gtk_marshal_NONE__POINTER_POINTER,
 				  GTK_TYPE_NONE, 2,
 				  GTK_TYPE_STRING,
 				  GTK_TYPE_POINTER);
+	signals[CONTEXT_CLICK_BACKGROUND]
+		= gtk_signal_new ("context_click_background",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (GnomeIconContainerClass,
+						     context_click_background),
+				  gtk_marshal_NONE__NONE,
+				  GTK_TYPE_NONE, 0);
+	signals[ICON_MOVED]
+		= gtk_signal_new ("icon_moved",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (GnomeIconContainerClass,
+						     icon_moved),
+				  gtk_marshal_NONE__POINTER_POINTER_INT_INT,
+				  GTK_TYPE_NONE, 4,
+				  GTK_TYPE_STRING,
+				  GTK_TYPE_POINTER,
+				  GTK_TYPE_INT,
+				  GTK_TYPE_INT);
 
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
@@ -2236,7 +2267,7 @@ handle_icon_button_press (GnomeIconContainer *container,
 		priv->drag_icon = NULL;
 
 		gtk_signal_emit (GTK_OBJECT (container),
-				 signals[CONTEXT_CLICK],
+				 signals[CONTEXT_CLICK_ICON],
 				 icon->text, icon->data);
 
 		return TRUE;

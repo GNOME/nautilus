@@ -72,12 +72,19 @@ struct _GnomeIconContainerClass {
 	gint (* button_press) 		(GnomeIconContainer *container,
 					 GdkEventButton *event);
 	void (* activate)		(GnomeIconContainer *container,
-					 const gchar *name,
-					 gpointer data);
+					 const gchar *icon_name,
+					 gpointer icon_data);
 
-	void (* context_click)		(GnomeIconContainer *container,
-					 const gchar *name,
-					 gpointer data);
+	void (* context_click_icon)	(GnomeIconContainer *container,
+					 const gchar *icon_name,
+					 gpointer icon_data);
+
+	void (* context_click_background) (GnomeIconContainer *container);
+
+	void (* icon_moved)		(GnomeIconContainer *container,
+					 const gchar *icon_name,
+					 gpointer icon_data,
+					 int x, int y);
 };
 
 

@@ -29,7 +29,11 @@
 #include "fm-directory-view-icons.h"
 #include "fm-icon-cache.h"
 #include <libnautilus/nautilus-gtk-macros.h>
+#include <libnautilus/nautilus-string.h>
 #include <libnautilus/nautilus-background.h>
+
+#include <ctype.h>
+#include <errno.h>
 
 #define DEFAULT_BACKGROUND_COLOR "rgb:FFFF/FFFF/FFFF"
 
@@ -42,10 +46,15 @@ static void add_to_icon_container 		 (FMDirectoryViewIcons *icon_view,
 		       				  gboolean with_layout);
 static GnomeIconContainer *create_icon_container (FMDirectoryViewIcons *icon_view);
 static void display_icons_not_in_layout 	 (FMDirectoryViewIcons *icon_view);
+static void fm_directory_view_icons_icon_moved_cb (GnomeIconContainer *container,
+						   const char *icon_name,
+						   GnomeVFSFileInfo *icon_data,
+						   int x, int y,
+						   FMDirectoryViewIcons *icon_view);
 static void fm_directory_view_icons_add_entry    (FMDirectoryView *view, 
 					          GnomeVFSFileInfo *info);
 static void fm_directory_view_icons_background_changed_cb (NautilusBackground *background,
-							   gpointer data);
+							   FMDirectoryViewIcons *icon_view);
 static void fm_directory_view_icons_begin_loading
 				          	 (FMDirectoryView *view);
 static void fm_directory_view_icons_clear 	 (FMDirectoryView *view);
@@ -56,12 +65,12 @@ static GList * fm_directory_view_icons_get_selection
 static void fm_directory_view_icons_initialize   (FMDirectoryViewIcons *icon_view);
 static void fm_directory_view_icons_initialize_class (FMDirectoryViewIconsClass *klass);
 static GnomeIconContainer *get_icon_container 	 (FMDirectoryViewIcons *icon_view);
-static void icon_container_activate_cb 		 (GnomeIconContainer *ignored,
-						  const gchar *name,
-						  gpointer icon_data,
-						  gpointer data);
+static void icon_container_activate_cb 		 (GnomeIconContainer *container,
+						  const gchar *icon_name,
+						  GnomeVFSFileInfo *icon_data,
+						  FMDirectoryViewIcons *icon_view);
 static void icon_container_selection_changed_cb  (GnomeIconContainer *container,
-						  gpointer data);
+						  FMDirectoryViewIcons *icon_view);
 
 static void set_up_base_uri			 (FMDirectoryViewIcons *icon_view);
 
@@ -144,6 +153,10 @@ create_icon_container (FMDirectoryViewIcons *icon_view)
 			    GTK_SIGNAL_FUNC (icon_container_activate_cb),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "icon_moved",
+			    GTK_SIGNAL_FUNC (fm_directory_view_icons_icon_moved_cb),
+			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "selection_changed",
 			    GTK_SIGNAL_FUNC (icon_container_selection_changed_cb),
 			    icon_view);
@@ -208,18 +221,31 @@ add_to_icon_container (FMDirectoryViewIcons *icon_view,
 		       GnomeVFSFileInfo *info,
 		       gboolean with_layout)
 {
+	NautilusDirectory *directory;
+	gboolean x_good, y_good;
+	int x, y;
 	GdkPixbuf *image;
 
 	g_return_if_fail(info);
 
+	/* Get the current position of this icon from the metadata. */
+	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view));
+	x_good = nautilus_eat_string_to_int (nautilus_directory_get_file_metadata
+					     (directory, info->name, "x", NULL), &x);
+	y_good = nautilus_eat_string_to_int (nautilus_directory_get_file_metadata
+					     (directory, info->name, "y", NULL), &y);
+
+	/* Get the appropriate image for this icon. */
 	image = fm_icon_cache_get_icon (icon_manager, info);
 
-	if (! with_layout || icon_view->details->icon_layout == NULL) {
+	/* Add the icon to the appropriate place in the container. */
+	if (x_good && y_good)
+		gnome_icon_container_add_pixbuf (icon_container,
+						 image, info->name, x, y, info);
+	else if (! with_layout || icon_view->details->icon_layout == NULL)
 		gnome_icon_container_add_pixbuf_auto (icon_container,
-						     image,
-						     info->name,
-						     info);
-	} else {
+						      image, info->name, info);
+	else {
 		gboolean result;
 
 		result = gnome_icon_container_add_pixbuf_with_layout
@@ -360,7 +386,7 @@ fm_directory_view_icons_get_icon_layout (FMDirectoryViewIcons *view)
  **/
 void
 fm_directory_view_icons_set_icon_layout (FMDirectoryViewIcons *view,
-				   const GnomeIconContainerLayout *layout)
+					 const GnomeIconContainerLayout *layout)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view));
 
@@ -384,44 +410,74 @@ fm_directory_view_icons_line_up_icons (FMDirectoryViewIcons *icon_view)
 }
 
 static void
-icon_container_activate_cb (GnomeIconContainer *ignored,
+icon_container_activate_cb (GnomeIconContainer *container,
 			    const gchar *name,
-			    gpointer entry_data,
-			    gpointer data)
+			    GnomeVFSFileInfo *entry_data,
+			    FMDirectoryViewIcons *icon_view)
 {
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (data));
-	g_return_if_fail (entry_data != NULL);
-	/* Name from icon container had better match name in file info */
-	g_return_if_fail (strcmp (name, ((GnomeVFSFileInfo *)entry_data)->name) == 0);
+	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (icon_view));
+	g_assert (container == get_icon_container (icon_view));
+	g_assert (entry_data != NULL);
 
-	fm_directory_view_activate_entry (FM_DIRECTORY_VIEW (data),
-					  (GnomeVFSFileInfo *) entry_data);
+	/* Name from icon container had better match name in file info */
+	g_assert (strcmp (name, entry_data->name) == 0);
+
+	fm_directory_view_activate_entry (FM_DIRECTORY_VIEW (icon_view), entry_data);
 }
 
 static void
 icon_container_selection_changed_cb (GnomeIconContainer *container,
-				     gpointer data)
+				     FMDirectoryViewIcons *icon_view)
 {
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (data));
-	g_return_if_fail (container == get_icon_container (FM_DIRECTORY_VIEW_ICONS (data)));
+	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (icon_view));
+	g_assert (container == get_icon_container (icon_view));
 
-	fm_directory_view_notify_selection_changed (FM_DIRECTORY_VIEW (data));
+	fm_directory_view_notify_selection_changed (FM_DIRECTORY_VIEW (icon_view));
 }
 
 static void
 fm_directory_view_icons_background_changed_cb (NautilusBackground *background,
-					       gpointer data)
+					       FMDirectoryViewIcons *icon_view)
 {
+	NautilusDirectory *directory;
 	char *color_spec;
 
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (data));
-	g_return_if_fail (background == nautilus_get_widget_background
-			  (GTK_WIDGET (get_icon_container (FM_DIRECTORY_VIEW_ICONS (data)))));
+	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (icon_view));
+	g_assert (background == nautilus_get_widget_background
+			  (GTK_WIDGET (get_icon_container (FM_DIRECTORY_VIEW_ICONS (icon_view)))));
 
+	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view));
+	if (directory == NULL)
+		return;
+	
 	color_spec = nautilus_background_get_color (background);
-	nautilus_directory_set_metadata (fm_directory_view_get_model (FM_DIRECTORY_VIEW (data)),
+	nautilus_directory_set_metadata (directory,
 					 "icon_view_background_color",
 					 DEFAULT_BACKGROUND_COLOR,
 					 color_spec);
 	g_free (color_spec);
+}
+
+static void
+fm_directory_view_icons_icon_moved_cb (GnomeIconContainer *container,
+				       const char *icon_name,
+				       GnomeVFSFileInfo *icon_data,
+				       int x, int y,
+				       FMDirectoryViewIcons *icon_view)
+{
+	NautilusDirectory *directory;
+	char *x_as_string, *y_as_string;
+
+	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (icon_view));
+	g_assert (container == get_icon_container (FM_DIRECTORY_VIEW_ICONS (icon_view)));
+	g_assert (icon_data != NULL);
+
+	/* Store the new position of the icon in the metadata. */
+	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view));
+	x_as_string = g_strdup_printf ("%d", x);
+	y_as_string = g_strdup_printf ("%d", y);
+	nautilus_directory_set_file_metadata (directory, icon_name, "x", NULL, x_as_string);
+	nautilus_directory_set_file_metadata (directory, icon_name, "y", NULL, y_as_string);
+	g_free (x_as_string);
+	g_free (y_as_string);
 }

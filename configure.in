@@ -28,7 +28,7 @@ set_more_warnings="$enableval", set_more_warnings=yes)
 if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 	echo "enable compile warnings = $set_more_warnings"
 	CFLAGS="$CFLAGS \
-	-W -Wall -Wno-unused \
+	-Wall \
 	-Wchar-subscripts -Wmissing-declarations -Wmissing-prototypes \
 	-Wnested-externs -Wpointer-arith \
 	-Wno-sign-compare -Wsign-promo"

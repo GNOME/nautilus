@@ -25,13 +25,24 @@
 #ifndef NAUTILUS_STRING_H
 #define NAUTILUS_STRING_H
 
+#include <glib.h>
 #include <string.h>
 
 /* Versions of basic string functions that allow NULL. */
-size_t nautilus_strlen (const char *string_null_allowed);
-char * nautilus_strchr (const char *haystack_null_allowed,
-			char        needle);
-int    nautilus_strcmp (const char *string_a_null_allowed,
-			const char *string_b_null_allowed);
+size_t   nautilus_strlen            (const char *string_null_allowed);
+char *   nautilus_strchr            (const char *haystack_null_allowed,
+				     char        needle);
+int      nautilus_strcmp            (const char *string_a_null_allowed,
+				     const char *string_b_null_allowed);
+
+/* Versions of basic string functions that free their parameters. */
+int      nautilus_eat_strcmp        (char       *string_a_null_allowed_gets_freed,
+				     const char *string_b_null_allowed);
+
+/* Conversions to and from strings. */
+gboolean nautilus_string_to_int     (const char *string,
+				     int        *integer);
+gboolean nautilus_eat_string_to_int (char       *string_gets_freed,
+				     int        *integer);
 
 #endif /* NAUTILUS_STRING_H */

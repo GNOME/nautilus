@@ -521,25 +521,18 @@ nautilus_directory_get_files (NautilusDirectory *directory,
 			      callback_data);
 }
 
-char *
-nautilus_directory_get_metadata (NautilusDirectory *directory,
-				 const char *tag,
-				 const char *default_metadata)
+static char *
+nautilus_directory_get_metadata_from_node (xmlNode *node,
+					   const char *tag,
+					   const char *default_metadata)
 {
-	xmlNode *root;
 	xmlChar *property;
 	char *result;
 
 	g_return_val_if_fail (tag, NULL);
 	g_return_val_if_fail (tag[0], NULL);
 
-	/* It's legal to call this on a NULL directory. */
-	if (directory == NULL)
-		return NULL;
-	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
-
-	root = xmlDocGetRootElement (directory->details->metafile_tree);
-	property = xmlGetProp (root, tag);
+	property = xmlGetProp (node, tag);
 	if (property == NULL)
 		result = g_strdup (default_metadata);
 	else
@@ -547,6 +540,38 @@ nautilus_directory_get_metadata (NautilusDirectory *directory,
 	xmlFree (property);
 
 	return result;
+}
+
+static xmlNode *
+nautilus_directory_create_metafile_tree_root (NautilusDirectory *directory)
+{
+	xmlNode *root;
+
+	if (directory->details->metafile_tree == NULL)
+		directory->details->metafile_tree = xmlNewDoc (METAFILE_XML_VERSION);
+	root = xmlDocGetRootElement (directory->details->metafile_tree);
+	if (root == NULL) {
+		root = xmlNewDocNode (directory->details->metafile_tree, NULL, "DIRECTORY", NULL);
+		xmlDocSetRootElement (directory->details->metafile_tree, root);
+	}
+
+	return root;
+}
+
+char *
+nautilus_directory_get_metadata (NautilusDirectory *directory,
+				 const char *tag,
+				 const char *default_metadata)
+{
+	/* It's legal to call this on a NULL directory. */
+	if (directory == NULL)
+		return NULL;
+	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
+
+	/* The root itself represents the directory. */
+	return nautilus_directory_get_metadata_from_node
+		(xmlDocGetRootElement (directory->details->metafile_tree),
+		 tag, default_metadata);
 }
 
 void
@@ -581,19 +606,109 @@ nautilus_directory_set_metadata (NautilusDirectory *directory,
 		value = metadata;
 
 	/* Get at the tree. */
-	if (directory->details->metafile_tree == NULL)
-		directory->details->metafile_tree = xmlNewDoc (METAFILE_XML_VERSION);
-	root = xmlDocGetRootElement (directory->details->metafile_tree);
-	if (root == NULL) {
-		root = xmlNewDocNode (directory->details->metafile_tree, NULL, "DIRECTORY", NULL);
-		xmlDocSetRootElement (directory->details->metafile_tree, root);
-	}
+	root = nautilus_directory_create_metafile_tree_root (directory);
 
 	/* Add or remove an attribute node. */
 	property_node = xmlSetProp (root, tag, value);
 	if (value == NULL)
 		xmlRemoveProp (property_node);
 
+	/* Since we changed the tree, arrange for it to be written. */
+	nautilus_directory_request_write_metafile (directory);
+}
+
+char *
+nautilus_directory_get_file_metadata (NautilusDirectory *directory,
+				      const char *file_name,
+				      const char *tag,
+				      const char *default_metadata)
+{
+	xmlNode *root, *child;
+	xmlChar *property;
+
+	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
+
+	/* The root itself represents the directory. */
+	root = xmlDocGetRootElement (directory->details->metafile_tree);
+
+	/* The children represent the files.
+	   This linear search is temporary.
+	   Eventually, we'll have a pointer from the FMFile right to
+	   the corresponding XML node, or we won't have the XML tree
+	   in memory at all.
+	*/
+	for (child = root->childs; child != NULL; child = child->next)
+		if (strcmp (child->name, "FILE") == 0) {
+			property = xmlGetProp (child, "NAME");
+			if (nautilus_eat_strcmp (property, file_name) == 0)
+				break;
+		}
+
+	/* If we found a child, we can get the data from it. */
+	return nautilus_directory_get_metadata_from_node
+		(child, tag, default_metadata);
+}
+
+void
+nautilus_directory_set_file_metadata (NautilusDirectory *directory,
+				      const char *file_name,
+				      const char *tag,
+				      const char *default_metadata,
+				      const char *metadata)
+{
+	char *old_metadata;
+	gboolean old_metadata_matches;
+	xmlNode *root, *child;
+	const char *value;
+	xmlChar *property;
+	xmlAttr *property_node;
+
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+	g_return_if_fail (tag);
+	g_return_if_fail (tag[0]);
+
+	/* If the data in the metafile is already correct, do nothing. */
+	old_metadata = nautilus_directory_get_file_metadata
+		(directory, file_name, tag, default_metadata);
+	old_metadata_matches = nautilus_strcmp (old_metadata, metadata) == 0;
+	g_free (old_metadata);
+	if (old_metadata_matches)
+		return;
+
+	/* Data that matches the default is represented in the tree by
+	   the lack of an attribute.
+	*/
+	if (nautilus_strcmp (default_metadata, metadata) == 0)
+		value = NULL;
+	else
+		value = metadata;
+
+	/* The root itself represents the directory. */
+	root = nautilus_directory_create_metafile_tree_root (directory);
+	
+	/* The children represent the files.
+	   This linear search is temporary.
+	   Eventually, we'll have a pointer from the FMFile right to
+	   the corresponding XML node, or we won't have the XML tree
+	   in memory at all.
+	*/
+	for (child = root->childs; child != NULL; child = child->next)
+		if (strcmp (child->name, "FILE") == 0) {
+			property = xmlGetProp (child, "NAME");
+			if (nautilus_eat_strcmp (property, file_name) == 0)
+				break;
+		}
+	if (child == NULL) {
+		g_assert (value != NULL);
+		child = xmlNewChild (root, NULL, "FILE", NULL);
+		xmlSetProp (child, "NAME", file_name);
+	}
+
+	/* Add or remove an attribute node. */
+	property_node = xmlSetProp (child, tag, value);
+	if (value == NULL)
+		xmlRemoveProp (property_node);
+	
 	/* Since we changed the tree, arrange for it to be written. */
 	nautilus_directory_request_write_metafile (directory);
 }

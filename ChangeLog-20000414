@@ -1,3 +1,40 @@
+2000-01-19  Darin Adler  <darin@eazel.com>
+
+	Icon positions are now written out when you drag an icon,
+	and read in when you visit a directory. But the code then
+	immediately re-lays out the icons, so the position is lost!
+
+	* src/file-manager/fm-directory-view-icons.c:
+	(fm_directory_view_icons_icon_moved_cb):
+	(fm_directory_view_icons_initialize): (add_container_icon): Save
+	icon position when an icon is moved. Get icon position when an
+	icon is first created.
+
+	* libnautilus/nautilus-directory.c:
+	(nautilus_directory_get_metadata_from_node):
+	(nautilus_directory_get_metadata):
+	(nautilus_directory_create_metafile_tree_root):
+	(nautilus_directory_get_metadata):
+	(nautilus_directory_set_metadata):
+	(nautilus_directory_get_file_metadata):
+	(nautilus_directory_set_file_metadata): Added the routines to get
+	and set metadata for individual files.
+
+	* libnautilus/nautilus-string.h: libnautilus/nautilus-string.c:
+	(nautilus_eat_strcmp): (nautilus_string_to_int):
+	(nautilus_eat_string_to_int): Made new string functions that free
+	the existing strings, and a function to convert an int to a
+	string.
+
+	* libnautilus/gnome-icon-container.h:
+	libnautilus/gnome-icon-container.c: (move_icon): (class_init):
+	(handle_icon_button_press): Added context_click_background and
+	icon_moved signals, and renamed context_click to
+	context_click_icon.
+
+	* configure.in: Turned -Wunused back on. I had to turn -W off,
+	but I think it's worth it.
+
 2000-01-19  John Sullivan  <sullivan@eazel.com>
 
 	* src/file-manager/fm-directory-view.c:
