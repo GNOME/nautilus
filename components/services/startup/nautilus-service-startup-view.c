@@ -61,7 +61,7 @@ struct _NautilusServicesContentViewDetails {
 
 
 #define SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR  "rgb:BBBB/DDDD/FFFF"
-/* FIXME: the service domain name should be settable and kept with the other preferences. */
+/* FIXME bugzilla.eazel.com 728: the service domain name should be settable and kept with the other preferences. */
 #define SERVICE_DOMAIN_NAME		       "eazel24.eazel.com"
 
 static void nautilus_service_startup_view_initialize_class (NautilusServicesContentViewClass *klass);
@@ -140,7 +140,7 @@ make_http_post_request(char *uri, char *post_body, char *auth_token)
     ghttp_set_header(request, http_hdr_Accept, "text/xml");
     ghttp_set_header(request, http_hdr_Content_Type, "text/xml");
     ghttp_set_header(request, http_hdr_Host, SERVICE_DOMAIN_NAME);
-    /* FIXME: user agent version and OS should be substituted on the fly */
+    /* FIXME bugzilla.eazel.com 726: user agent version and OS should be substituted on the fly */
     ghttp_set_header(request, http_hdr_User_Agent, "Nautilus/0.1 (Linux)");   
     
     if (auth_token)
@@ -184,7 +184,7 @@ show_feedback(NautilusServicesContentView *view, char* error_message)
 /* callback to handle the configuration button.  First, make the configuration xml file,
    then feed it to the service over HTTP.  Display an error message, or move on to the summary
    screen if successful */
-/* FIXME: text strings should be gotten from a file */      
+/* FIXME bugzilla.eazel.com 727: text strings should be gotten from a file */      
 
 static void
 gather_config_button_cb (GtkWidget *button, NautilusServicesContentView *view)
@@ -266,7 +266,7 @@ gather_config_button_cb (GtkWidget *button, NautilusServicesContentView *view)
 }
 
 /* handle the registration command */
-/* FIXME: get error messages from a file somewhere */
+/* FIXME bugzilla.eazel.com 727: get error messages from a file somewhere */
    
 static void
 register_button_cb (GtkWidget *button, NautilusServicesContentView *view)
@@ -372,7 +372,9 @@ register_button_cb (GtkWidget *button, NautilusServicesContentView *view)
   		go_to_uri(view, "eazel:config?signup");
 }
 
-/* FIXME: this routine should be somewhere else, and should take user preferences into account */
+/* FIXME bugzilla.eazel.com 729: 
+ * this routine should be somewhere else, and should take user preferences into account 
+ */
 static char*
 get_home_uri (void)
 {
@@ -443,7 +445,7 @@ static void setup_form_title(NautilusServicesContentView *view, const char* titl
   	g_free (file_name);
 
  	view->details->form_title = gtk_label_new (title_text);
-	/* FIXME: don't use hardwired font like this */
+	/* FIXME bugzilla.eazel.com 667: don't use hardwired font like this */
 	nautilus_gtk_widget_set_font_by_name (view->details->form_title,
 					      "-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*"); ;
 	gtk_box_pack_start (GTK_BOX (temp_container), view->details->form_title, 0, 0, 8);			 	
@@ -468,7 +470,7 @@ static void setup_signup_form(NautilusServicesContentView *view)
 	setup_form_title(view, "Eazel Service Registration Form");
 	
 	/* display an image and a descriptive message */
-	/* FIXME: get the text from a file or from the service */
+	/* FIXME bugzilla.eazel.com 727: get the text from a file or from the service */
 	temp_box = gtk_hbox_new(FALSE, 4);
 	gtk_box_pack_start(GTK_BOX(view->details->form), temp_box, 0, 0, 12);			
  	gtk_widget_show (temp_box);
@@ -581,7 +583,7 @@ static void setup_config_form(NautilusServicesContentView *view)
 	setup_form_title(view, "Eazel Service Configuration Gathering");
 
 	/* if we came from signup, add a congrats message */
-	/* FIXME: get the text from a file or from the service */
+	/* FIXME bugzilla.eazel.com 727: get the text from a file or from the service */
 	
 	if (nautilus_str_has_suffix(view->details->uri, "signup")) {
 		message = "Congratulations, you have successfully signed up with the Eazel service!";
@@ -592,7 +594,7 @@ static void setup_config_form(NautilusServicesContentView *view)
 	}
 	
 	/* make label containing text about uploading the configuration data */
-	/* FIXME: It should get this text from a file or from the service */
+	/* FIXME bugzilla.eazel.com 727: It should get this text from a file or from the service */
 	
 	temp_box = gtk_hbox_new(FALSE, 4);
 	gtk_box_pack_start(GTK_BOX(view->details->form), temp_box, 0, 0, 12);			
@@ -662,7 +664,7 @@ static void setup_overview_form(NautilusServicesContentView *view)
 	setup_form_title(view, "Eazel Service Overview");
 
 	/* if we came from signup, add a congrats message */
-	/* FIXME: get the text from a file or from the service */
+	/* FIXME bugzilla.eazel.com 727: get the text from a file or from the service */
 	
 	if (nautilus_str_has_suffix(view->details->uri, "config")) {
 		message = "Congratulations, you have successfully transmitted your configuration!";

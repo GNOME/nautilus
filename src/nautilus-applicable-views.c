@@ -272,7 +272,7 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
         query = NULL;
 
         if (vfs_result_code == GNOME_VFS_OK) {
-                /* FIXME: disgusting hack to make rpm view work. Why
+                /* FIXME bugzilla.eazel.com 697: disgusting hack to make rpm view work. Why
                    is the mime type not being detected properly in the
                    first place? */
 
@@ -283,7 +283,8 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
                                 (gnome_vfs_file_info_get_mime_type (file_result->file_info));
                 }
 
-                /* FIXME: hack for lack of good type descriptions. Can
+                /* FIXME bugzilla.eazel.com 699: 
+                   hack for lack of good type descriptions. Can
                    we remove this now? */
 
 
@@ -307,7 +308,7 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
                          " bonobo:supported_mime_types.has('*/*')) AND (NOT bonobo:supported_uri_schemes.defined()"
                          " OR bonobo:supported_uri_schemes.has('%s') OR bonobo:supported_uri_schemes.has('*')) "
                          " AND nautilus:view_as_name.defined()"
-                         /* FIXME: hack until music view is handled right. */
+                         /* FIXME bugzilla.eazel.com 701: hack until music view is handled right. */
                          " AND iid != 'OAFIID:nautilus_music_view:9456b5d2-60a8-407f-a56e-d561e1821391'"
 
                          , mime_type, mime_supertype, uri_scheme);
@@ -354,7 +355,7 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
                         for (i = 0; i < oaf_result->_length; i++) {
                                 server = &oaf_result->_buffer[i];
                                 iid = server->iid;
-                                /* FIXME MJS: need to pass proper set of languages as 
+                                /* FIXME bugzilla.eazel.com 694: need to pass proper set of languages as 
                                    the last arg for i18 purposes */
                                 view_as_name = oaf_server_info_attr_lookup (server, "nautilus:view_as_name", NULL);
                                 if (view_as_name == NULL) {

@@ -81,7 +81,7 @@ AC_ARG_WITH(mozilla,
 	fi
 )
 
-dnl FIXME: there obviously needs to be a better test that checking for libxpcom.so
+dnl FIXME bugzilla.eazel.com 724: there obviously needs to be a better test that checking for libxpcom.so
 if test "$try_mozilla" = "true"
 then
 	found_mozilla="false"

@@ -361,7 +361,7 @@ user_level_changed_callback (gpointer user_data)
 	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_SHOW_REAL_FILE_NAME,
 					  show_real_file_name);
 
-	/* FIXME: This call needs to be spanked to conform.  Should return a strduped string */
+	/* FIXME bugzilla.eazel.com 715: This call needs to be spanked to conform.  Should return a strduped string */
 	user_main_directory = nautilus_user_main_directory ();
 	
 	if (use_real_home)

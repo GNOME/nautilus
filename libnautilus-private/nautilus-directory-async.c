@@ -190,7 +190,8 @@ metafile_read_complete (NautilusDirectory *directory)
 
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 	
-	/* FIXME: the following assertion shouldn't be disabled, but
+	/* FIXME bugzilla.eazel.com 720: 
+	 * The following assertion shouldn't be disabled, but
 	 * it gets in the way when you set metadata before the
 	 * metafile is completely read. Currently, the old metadata
 	 * in the file will be lost. One way to test this is to
@@ -241,7 +242,8 @@ metafile_read_callback (GnomeVFSAsyncHandle *handle,
 
 	directory->details->read_state->bytes_read += bytes_read;
 
-	/* FIXME: Is the call allowed to return fewer bytes than I requested
+	/* FIXME bugzilla.eazel.com 719: 
+	 * Is the call allowed to return fewer bytes than I requested
 	 * when I'm not at the end of the file? If so, then I need to fix this
 	 * check. I don't want to stop until the end of the file.
 	 */

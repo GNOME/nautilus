@@ -216,7 +216,7 @@ nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass *class)
 	item_class->bounds = nautilus_icon_canvas_item_bounds;
 	item_class->event = nautilus_icon_canvas_item_event;
 
-        /* FIXME: the font shouldn't be hard-wired like this */
+        /* FIXME bugzilla.eazel.com 667: the font shouldn't be hard-wired like this */
         embedded_text_font = gdk_font_load("-bitstream-charter-medium-r-normal-*-9-*-*-*-*-*-*-*");
 }
 
@@ -722,10 +722,10 @@ draw_label_text (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 }
 
 /* utility routine to draw the mini-text inside text files */
-/* FIXME: We should cache the text in the object instead
+/* FIXME bugzilla.eazel.com 709: We should cache the text in the object instead
  * of reading each time we draw, so we can work well over the network.
  */
-/* FIXME: The text reading does not belong here at all, but rather in the caller. */
+/* FIXME bugzilla.eazel.com 711: The text reading does not belong here at all, but rather in the caller. */
 
 static void
 nautilus_art_irect_to_gdk_rectangle (GdkRectangle *destination,
@@ -756,7 +756,7 @@ draw_embedded_text (GnomeCanvasItem* item,
 	details = icon_item->details;
 
 	/* Draw the first few lines of the text file until we fill up the icon */
-	/* FIXME: need to use gnome_vfs to read the file  */
+	/* FIXME bugzilla.eazel.com 713: need to use gnome_vfs to read the file  */
 	
 	file_name = details->embedded_text_file_URI;
 	if (file_name == NULL) {
@@ -969,7 +969,9 @@ emblem_layout_next (EmblemLayout *layout,
 static void
 draw_pixbuf (GdkPixbuf *pixbuf, GdkDrawable *drawable, int x, int y)
 {
-	/* FIXME: Dither would be better if we passed dither values. */
+	/* FIXME bugzilla.eazel.com 703: 
+	 * Dither would be better if we passed dither values. 
+	 */
 	gdk_pixbuf_render_to_drawable_alpha (pixbuf, drawable, 0, 0, x, y,
 					     gdk_pixbuf_get_width (pixbuf),
 					     gdk_pixbuf_get_height (pixbuf),
