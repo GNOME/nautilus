@@ -54,7 +54,8 @@ struct _NautilusMusicViewDetails {
         NautilusContentViewFrame *view_frame;
         
         int background_connection;
-        
+        int sort_mode;
+	
         GtkVBox   *album_container;
         GtkWidget *album_title;
         GtkWidget *song_list;
@@ -62,10 +63,12 @@ struct _NautilusMusicViewDetails {
         GtkWidget *control_box;
 };
 
+
 /* structure for holding song info */
 
 typedef struct {
 	int track_number;
+	int track_time;
 	char *title;
 	char *artist;
 	char *album;
@@ -79,6 +82,15 @@ enum {
 	TARGET_COLOR,  
 	TARGET_BGIMAGE,
         TARGET_GNOME_URI_LIST
+};
+
+/* sort modes */
+
+enum {
+	SORT_BY_NUMBER,
+	SORT_BY_TITLE,
+	SORT_BY_ARTIST,
+	SORT_BY_TIME
 };
 
 static GtkTargetEntry music_dnd_target_table[] = {
@@ -100,6 +112,8 @@ static void nautilus_music_view_drag_data_received     (GtkWidget               
 static void nautilus_music_view_initialize_class       (NautilusMusicViewClass   *klass);
 static void nautilus_music_view_initialize             (NautilusMusicView        *view);
 static void nautilus_music_view_destroy                (GtkObject                *object);
+static void nautilus_music_view_update_from_uri        (NautilusMusicView *music_view, 
+							const char *uri);
 static void music_view_notify_location_change_callback (NautilusContentViewFrame *view,
                                                         Nautilus_NavigationInfo  *navinfo,
                                                         NautilusMusicView        *music_view);
@@ -107,6 +121,8 @@ static void selection_callback                         (GtkCList                
                                                         int                       row,
                                                         int                       column,
                                                         GdkEventButton           *event);
+
+static void click_column_callback(GtkCList * clist, gint column, NautilusMusicView *music_view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusMusicView, nautilus_music_view, GTK_TYPE_EVENT_BOX)
 
@@ -134,7 +150,8 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	music_view->details = g_new0 (NautilusMusicViewDetails, 1);
 
 	music_view->details->view_frame = nautilus_content_view_frame_new (GTK_WIDGET (music_view));
-
+	music_view->details->sort_mode = SORT_BY_NUMBER;
+	
 	gtk_signal_connect (GTK_OBJECT (music_view->details->view_frame), 
 			    "notify_location_change",
 			    GTK_SIGNAL_FUNC (music_view_notify_location_change_callback), 
@@ -177,6 +194,10 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), scrollwindow, TRUE, TRUE, 2);	
 	gtk_widget_show (music_view->details->song_list);
 	gtk_widget_show (scrollwindow);
+
+	/* connect a signal to let us know when the column titles are clicked */
+	gtk_signal_connect(GTK_OBJECT(music_view->details->song_list), "click_column",
+				GTK_SIGNAL_FUNC(click_column_callback), music_view);
 
 	/* make an hbox to hold the optional cover and other controls */
 	
@@ -231,6 +252,15 @@ selection_callback(GtkCList * clist, int row, int column, GdkEventButton * event
    	}		
 } 
 
+/* handle clicks in the songlist columns */
+
+static void click_column_callback (GtkCList * clist, gint column, NautilusMusicView *music_view)
+{
+	if (music_view->details->sort_mode == column)
+		return;
+	music_view->details->sort_mode = column;
+	nautilus_music_view_update_from_uri (music_view, music_view->details->uri);
+}
 
 /* Component embedding support */
 NautilusContentViewFrame *
@@ -325,6 +355,28 @@ read_id_tag (const char *song_path, SongInfo *song_info)
 	return TRUE;
 }
 
+/* fetch_play_time takes the pathname to a file and returns the play time in seconds */
+/* FIXME bugzilla.eazel.com 723: assumes 128k bits/second.  Must read header and factor in bitrate */
+static int
+fetch_play_time (const char *song_path_name)
+{
+	NautilusFile *file = nautilus_file_get (song_path_name);
+ 	GnomeVFSFileSize file_size = nautilus_file_get_size (file);       			
+	nautilus_file_unref(file);
+	return (file_size - 512) / 16384;
+}
+
+/* format_play_time takes the pathname to a file and returns the play time formated as mm:ss */
+static char *
+format_play_time (const char *song_path_name)
+{
+	int seconds = fetch_play_time(song_path_name);
+	int minutes = seconds / 60;
+	int remain_seconds = seconds - (60 * minutes);
+	char *result = g_strdup_printf ("%d:%02d", minutes, remain_seconds);
+	return result;
+}
+
 /* allocate a return a song info record, from an mp3 tag if present, or from intrinsic info */
 
 static SongInfo *
@@ -350,26 +402,11 @@ fetch_song_info (const char *song_path, int file_order)
 		info->track_number = file_order;
 	}	
 	
+	info->track_time = fetch_play_time(song_path);
 	return	info;
 }
 
-/* format_play_time takes the pathname to a file and returns the play time formated as mm:ss */
-/* FIXME bugzilla.eazel.com 723: assumes 128k bits/second.  Must read header and factor in bitrate */
-
-static char *
-format_play_time (const char *song_path_name)
-{
-	NautilusFile *file = nautilus_file_get (song_path_name);
- 	GnomeVFSFileSize file_size = nautilus_file_get_size (file);       			
-	int seconds = (file_size - 512) / 16384;
-	int minutes = seconds / 60;
-	int remain_seconds = seconds - (60 * minutes);
-	char *result = g_strdup_printf ("%d:%02d", minutes, remain_seconds);
-	nautilus_file_unref (file);
-	return result;
-}
-
-/* sort comparison routine - for now, just sort by track number */
+/* sort comparison routines */
 
 static int
 sort_by_track_number (gconstpointer ap, gconstpointer bp)
@@ -380,6 +417,39 @@ sort_by_track_number (gconstpointer ap, gconstpointer bp)
 	b = (SongInfo *) bp;
 
 	return (int) a->track_number - b->track_number;
+}
+
+static int
+sort_by_title (gconstpointer ap, gconstpointer bp)
+{
+	SongInfo *a, *b;
+
+	a = (SongInfo *) ap;
+	b = (SongInfo *) bp;
+
+	return strcmp(a->title, b->title);
+}
+
+static int
+sort_by_artist (gconstpointer ap, gconstpointer bp)
+{
+	SongInfo *a, *b;
+
+	a = (SongInfo *) ap;
+	b = (SongInfo *) bp;
+
+	return strcmp(a->artist, b->artist);
+}
+
+static int
+sort_by_time (gconstpointer ap, gconstpointer bp)
+{
+	SongInfo *a, *b;
+
+	a = (SongInfo *) ap;
+	b = (SongInfo *) bp;
+
+	return a->track_time - b->track_time;
 }
 
 /* utility routine to determine most common attribute in song list.  The passed in boolean selects
@@ -470,6 +540,32 @@ nautilus_music_view_set_up_background (NautilusMusicView *music_view, const char
 	g_free (background_image);
 }
 
+/* utility routine to sort the song list */
+static GList *
+sort_song_list(NautilusMusicView *music_view, GList* song_list)
+{
+	/* sort by the specified criteria */	
+	switch (music_view->details->sort_mode) {
+		case SORT_BY_NUMBER:
+			song_list = g_list_sort (song_list, sort_by_track_number);
+			break;
+		case SORT_BY_TITLE:
+			song_list = g_list_sort (song_list, sort_by_title);
+			break;
+		case SORT_BY_ARTIST:
+			song_list = g_list_sort (song_list, sort_by_artist);
+			break;
+		case SORT_BY_TIME:
+			song_list = g_list_sort (song_list, sort_by_time);
+			break;
+		default:
+			g_warning("unknown sort mode");
+			break;
+	}
+	
+	return song_list;
+}
+
 /* here's where we do most of the real work of populating the view with info from the new uri */
 /* FIXME bugzilla.eazel.com 722: need to use gnome-vfs for iterating the directory */
 
@@ -540,9 +636,8 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 		closedir(dir);
 	 }
 	
-	/* sort by track number */	
-	song_list = g_list_sort (song_list, sort_by_track_number);
-	
+	song_list = sort_song_list(music_view, song_list);
+		
 	/* populate the clist */
 	
 	gtk_clist_clear (GTK_CLIST (music_view->details->song_list));
@@ -626,7 +721,7 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 		info = (SongInfo *) p->data;
 		release_song_info(info);
 	}
-	
+	g_list_free (song_list);	
 }
 
 

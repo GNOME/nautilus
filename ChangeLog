@@ -1,3 +1,16 @@
+2000-05-16  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize), (click_column_callback),
+	(fetch_play_time), (format_play_time), (fetch_song_info),
+	(sort_by_track_number), (sort_by_title), (sort_by_artist),
+	(sort_by_time), (sort_song_list),
+	(nautilus_music_view_update_from_uri):
+	fixed bug #891, clicking on the tabs in the music view doesn't sort,
+	by adding the appropriate sorting functions and a callback
+	to switch the sort mode when you click the column header.  Also, a
+	bit of restructuring and clean up.
+	
 2000-05-16  Pavel Cisler  <pavel@eazel.com>
 
 	* src/file-manager/fm-list-view.c: (make_sorted_row_array),
