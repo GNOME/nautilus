@@ -181,6 +181,10 @@ void                      fm_directory_view_load_uri                       (FMDi
 /* Functions callable from the user interface and elsewhere. */
 char *                    fm_directory_view_get_container_uri              (NautilusIconContainer *container,
 									    FMDirectoryView       *view);
+gboolean                  fm_directory_view_can_accept_item                (NautilusIconContainer *container,
+									    NautilusFile 	  *target_item,
+									    const char 		  *item_uri,
+									    FMDirectoryView       *view);
 GList *                   fm_directory_view_get_selection                  (FMDirectoryView       *view);
 void                      fm_directory_view_stop                           (FMDirectoryView       *view);
 gboolean                  fm_directory_view_can_zoom_in                    (FMDirectoryView       *view);

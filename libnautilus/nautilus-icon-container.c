@@ -106,6 +106,7 @@ enum {
 	SELECTION_CHANGED,
 	MOVE_COPY_ITEMS,
 	GET_CONTAINER_URI,
+	CAN_ACCEPT_ITEM,
 	LAST_SIGNAL
 };
 static guint signals[LAST_SIGNAL];
@@ -1868,6 +1869,16 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
                     		 		    get_container_uri),
 		    		 nautilus_gtk_marshal_STRING__NONE,
 		    		 GTK_TYPE_STRING, 0);
+	signals[CAN_ACCEPT_ITEM] 
+		= gtk_signal_new ("can_accept_item",
+       				 GTK_RUN_LAST,
+                    		 object_class->type,
+                    		 GTK_SIGNAL_OFFSET (NautilusIconContainerClass, 
+                    		 		    can_accept_item),
+		    		 nautilus_gtk_marshal_INT__POINTER_STRING,
+		    		 GTK_TYPE_INT, 2,
+		    		 GTK_TYPE_POINTER,
+		    		 GTK_TYPE_STRING);
 
 
 
@@ -2041,6 +2052,19 @@ item_event_callback (GnomeCanvasItem *item,
 	g_return_val_if_fail (icon != NULL, FALSE);
 
 	switch (event->type) {
+	case GDK_ENTER_NOTIFY:
+		if (details->drag_button != 0) {
+			/* Drag motion callback will take care of the 
+			 * necessary update -- don't let the signal reach
+			 * the canvas item and cause a prelight.
+			 * We let the GDK_LEAVE_NOTIFY fly through here to
+			 * cause the "can_accept_drop" state to get turned off
+			 */
+	    		gtk_signal_emit_stop_by_name (GTK_OBJECT (item), "event");
+			return TRUE;
+		}
+		return FALSE;		
+
 	case GDK_BUTTON_PRESS:
 	case GDK_2BUTTON_PRESS:
 		if (handle_icon_button_press (container, icon, &event->button)) {

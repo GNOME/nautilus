@@ -38,6 +38,7 @@
 #define nautilus_gtk_marshal_STRING__POINTER_STRING nautilus_gtk_marshal_POINTER__POINTER_POINTER
 #define nautilus_gtk_marshal_STRING__POINTER_POINTER_POINTER nautilus_gtk_marshal_POINTER__POINTER_POINTER_POINTER
 #define nautilus_gtk_marshal_STRING__POINTER_POINTER_STRING nautilus_gtk_marshal_POINTER__POINTER_POINTER_POINTER
+#define nautilus_gtk_marshal_INT__POINTER_STRING nautilus_gtk_marshal_INT__POINTER_POINTER
 
 #define NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT 2
 
@@ -98,6 +99,10 @@ void              nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE      
 										  gpointer                func_data,
 										  GtkArg                 *args);
 void              nautilus_gtk_marshal_POINTER__POINTER                          (GtkObject              *object,
+										  GtkSignalFunc           func,
+										  gpointer                func_data,
+										  GtkArg                 *args);
+void              nautilus_gtk_marshal_INT__POINTER_POINTER                       (GtkObject              *object,
 										  GtkSignalFunc           func,
 										  gpointer                func_data,
 										  GtkArg                 *args);

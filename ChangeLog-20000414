@@ -1,3 +1,53 @@
+2000-04-11  Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus/nautilus-icon-dnd.c:
+	* libnautilus/nautilus-icon-dnd.h:
+	(nautilus_icon_dnd_update_drop_target):
+	Determine if a drop target can accept drop, update highlight for
+	drop accordingly.
+	(nautilus_icon_dnd_update_drop_target):
+	Add drop highlighting for dragged items that can be accepted by a
+	drop target.
+	(nautilus_icon_canvas_item_can_accept_item):
+	Implement the call.
+	(nautilus_icon_canvas_item_can_accept_items):
+	Put a cap on the number of items checked as accepted by drop target
+	to not lock up the machine when dragging lots of items.
+	(nautilus_icon_dnd_modifier_based_action):
+	Tweak the modifier keys -- use Alt to force copy.
+		
+	* libnautilus/nautilus-icon-container.c:
+	* libnautilus/nautilus-icon-container.h:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-icon-view.c:
+	(can_accept_item), (fm_directory_view_can_accept_item):
+	New signal -- helps figuring out if potential drop target can
+	accept dropped URIs. For now returns TRUE for any directory that
+	doesn't match the dragged item.
+	
+	* libnautilus/nautilus-icon-container.c:
+	(item_event_callback):
+	Support for turning the "highlight for drop" state of an icon on/off --
+	during drag&drop don't let the "enter notify" signal reach the canvas item
+	so that the item won't get prelit.
+	
+	* libnautilus/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_event):
+	Turn off highlight for drop as well as prelight on leave event.
+	This is a fallback in case the drag&drop for some reason leaves
+	the target icon highlighted for drop after a drag ends.
+	
+	* libnautilus/nautilus-gtk-extensions.c:
+	* libnautilus/nautilus-gtk-extensions.h:
+	(nautilus_gtk_marshal_INT__POINTER_POINTER):
+	Added another binder function.
+	
+	* libnautilus/nautilus-file.c:
+	* libnautilus/nautilus-file.h:
+	(nautilus_file_matches_uri): Added a utility call used to detect 
+	a drop on self.
+	
 2000-04-10  Andy Hertzfeld <andy@eazel.com>
 
 	* components/rpmview/nautilus-rpmview.c:

@@ -2115,6 +2115,30 @@ fm_directory_view_move_copy_items (NautilusIconContainer *container,
 		GTK_WIDGET (view));
 }
 
+gboolean
+fm_directory_view_can_accept_item (NautilusIconContainer *container,
+				   NautilusFile *target_item,
+				   const char *item_uri,
+				   FMDirectoryView *view)
+{
+	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
+	g_assert (NAUTILUS_IS_FILE (target_item));
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
+	/* FIXME:
+	 * elaborate here some more
+	 * should consider permissions, handle symlinks to directories, etc.
+	 * 
+	 * for now just allways return true if dropping into a directory
+	 */
+	if (nautilus_file_get_file_type (target_item) != GNOME_VFS_FILE_TYPE_DIRECTORY) {
+		return FALSE;
+	}
+
+	/* target is a directory, find out if it matches the item */
+	return !nautilus_file_matches_uri (target_item, item_uri);
+}
+
 
 static void
 add_nautilus_file_to_uri_map (FMDirectoryView *view,

@@ -1018,8 +1018,14 @@ nautilus_icon_canvas_item_event (GnomeCanvasItem *item, GdkEvent *event)
 		return TRUE;
 		
 	case GDK_LEAVE_NOTIFY:
-		if (icon_item->details->is_prelit) {
+		if (icon_item->details->is_prelit 
+			|| icon_item->details->is_highlighted_for_drop) {
+			/* When leaving, turn of the prelight state and the
+			 * higlighted for drop. The latter gets turned on
+			 * by the drag&drop motion callback.
+			 */
 			icon_item->details->is_prelit = FALSE;
+			icon_item->details->is_highlighted_for_drop = FALSE;
 			gnome_canvas_item_request_update (item);
 		}
 		return TRUE;

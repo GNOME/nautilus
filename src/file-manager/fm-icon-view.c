@@ -282,6 +282,10 @@ create_icon_container (FMIconView *icon_view)
 			    "get_container_uri",
 			    GTK_SIGNAL_FUNC (fm_directory_view_get_container_uri),
 			    directory_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "can_accept_item",
+			    GTK_SIGNAL_FUNC (fm_directory_view_can_accept_item),
+			    directory_view);
 
 	gtk_container_add (GTK_CONTAINER (icon_view), GTK_WIDGET (icon_container));
 

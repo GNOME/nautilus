@@ -360,6 +360,34 @@ nautilus_file_rename (NautilusFile *file, const char *new_name)
 	return result;
 }
 
+gboolean         
+nautilus_file_matches_uri (NautilusFile *file, const char *uri_string)
+{
+	GnomeVFSURI *match_uri;
+	GnomeVFSURI *file_uri;
+	gboolean result;
+	
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+	g_return_val_if_fail (uri_string != NULL, FALSE);
+
+	match_uri = gnome_vfs_uri_new (uri_string);
+	if (match_uri == NULL)
+		return FALSE;
+
+	result = FALSE;
+	file_uri = gnome_vfs_uri_append_path (file->details->directory->details->uri,
+					      file->details->info->name);
+
+	if (match_uri != NULL) {
+		result = gnome_vfs_uri_equal (file_uri, match_uri);
+	}
+
+	gnome_vfs_uri_unref (file_uri);
+	gnome_vfs_uri_unref (match_uri);
+
+	return result;
+}
+
 static int
 nautilus_file_compare_by_size_with_directories (NautilusFile *file_1, NautilusFile *file_2)
 {

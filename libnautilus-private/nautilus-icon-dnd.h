@@ -79,6 +79,9 @@ struct NautilusIconDndInfo {
 	 * interface gets added to gtkdnd to do this in a clean way
 	 */
 	gpointer saved_drag_source_info;
+
+	/* last highlighted drop target*/
+	gpointer current_drop_target_icon;
 };
 
 void nautilus_icon_dnd_init       (NautilusIconContainer *container,

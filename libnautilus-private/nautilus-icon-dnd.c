@@ -45,10 +45,16 @@
 #include <libgnomeui/gnome-canvas-rect-ellipse.h>
 #include "nautilus-icon-private.h"
 
-static int 	nautilus_icon_drag_key_callback (GtkWidget *widget, GdkEventKey *event, 
-		 				 gpointer data);
-static gboolean	drag_drop_callback 		(GtkWidget *widget, GdkDragContext *context,
-		 				 int x, int y, guint32 time, gpointer data);
+static int 	nautilus_icon_drag_key_callback 	(GtkWidget *widget, GdkEventKey *event, 
+		 				 	 gpointer data);
+static gboolean	drag_drop_callback 			(GtkWidget *widget, 
+							 GdkDragContext *context,
+		 				 	 int x, int y, 
+		 				 	 guint32 time, gpointer data);
+static void 	nautilus_icon_dnd_update_drop_target 	(NautilusIconContainer *container, 
+				      			 GdkDragContext *context,
+				      			 int x, int y);
+
 
 typedef struct {
 	char *uri;
@@ -510,9 +516,9 @@ drag_motion_callback (GtkWidget *widget,
 		      guint32 time)
 {
 	nautilus_icon_dnd_update_drop_action (widget);
-
 	nautilus_icon_container_ensure_drag_data (NAUTILUS_ICON_CONTAINER (widget), context, time);
 	nautilus_icon_container_position_shadow (NAUTILUS_ICON_CONTAINER (widget), x, y);
+	nautilus_icon_dnd_update_drop_target (NAUTILUS_ICON_CONTAINER (widget), context, x, y);
 
 	gdk_drag_status (context, context->suggested_action, time);
 
@@ -628,16 +634,18 @@ nautilus_icon_container_selection_items_local (const NautilusIconContainer *cont
 }
 
 static gboolean
-nautilus_icon_canvas_item_can_accept_item (const NautilusIcon *drop_target_item,
+nautilus_icon_canvas_item_can_accept_item (NautilusIconContainer *container,
+					   const NautilusIcon *drop_target_item,
 					   const char *item_uri)
 {
-	/* FIXME:
-	 * 
-	 * should have NautilusFile answer whether it can handle icon URI
-	 * 
-	 * For now:
-	 */
-	return TRUE;
+	gboolean result;
+
+	gtk_signal_emit_by_name (GTK_OBJECT (container),
+			 "can_accept_item",
+			 drop_target_item->data,
+			 item_uri,
+			 &result);
+	return result;
 }
 					       
 static gboolean
@@ -645,10 +653,17 @@ nautilus_icon_canvas_item_can_accept_items (NautilusIconContainer *container,
 					    const NautilusIcon *drop_target_item,
 					    const GList *items)
 {
-	for (; items != NULL; items = items->next) {
-		if (!nautilus_icon_canvas_item_can_accept_item (drop_target_item, 
-						((DndSelectionItem *)items->data)->uri))
+	int max;
+
+	/* Iterate through selection checking if item will get accepted by the
+	 * drop target. If more than 100 items selected, return an over-optimisic
+	 * result
+	 */
+	for (max = 100; items != NULL && max >=0 ; items = items->next, max--) {
+		if (!nautilus_icon_canvas_item_can_accept_item (container, drop_target_item, 
+						((DndSelectionItem *)items->data)->uri)) {
 			return FALSE;
+		}
 	}
 
 	return TRUE;		
@@ -805,6 +820,53 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 
 	destroy_selection_list (container->details->dnd_info->selection_list);
 	container->details->dnd_info->selection_list = NULL;
+}
+
+static void
+nautilus_icon_dnd_update_drop_target (NautilusIconContainer *container, 
+				      GdkDragContext *context,
+				      int x, int y)
+{
+	NautilusIcon *drop_target_icon;
+	double world_x, world_y;
+	
+	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
+	if (container->details->dnd_info->selection_list == NULL) {
+		return;
+	}
+
+  	gnome_canvas_window_to_world (GNOME_CANVAS (container),
+				      x, y, &world_x, &world_y);
+
+
+	/* Find the item we hit with our drop, if any. */
+	drop_target_icon = nautilus_icon_container_item_at (container, world_x, world_y);
+
+
+	/* Find if target icon accepts our drop. */
+	if (drop_target_icon != NULL
+		&& !nautilus_icon_canvas_item_can_accept_items 
+		(container, drop_target_icon, container->details->dnd_info->selection_list)) {
+		drop_target_icon = NULL;
+	}
+
+	/* Check if current drop target changed, update icon drop higlight if needed. */
+	if (drop_target_icon != container->details->dnd_info->current_drop_target_icon) {
+		/* Turn on new target, if any. */
+		if (drop_target_icon != NULL) {
+			gnome_canvas_item_set (GNOME_CANVAS_ITEM (drop_target_icon->item),
+					       "highlighted_for_drop", TRUE,
+					       NULL);
+		}
+		/* Turn off old target, if any. */
+		if (container->details->dnd_info->current_drop_target_icon != NULL) {
+			gnome_canvas_item_set (GNOME_CANVAS_ITEM (((NautilusIcon *)container->details->
+							dnd_info->current_drop_target_icon)->item),
+					       "highlighted_for_drop", FALSE, NULL);
+		}
+		/* Remember the new drop target for the next round. */
+		container->details->dnd_info->current_drop_target_icon = drop_target_icon;
+	}
 }
 
 static void
@@ -1013,6 +1075,8 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 			    GTK_SIGNAL_FUNC (nautilus_icon_drag_key_callback), info);
 
 
+	container->details->dnd_info->current_drop_target_icon = NULL;
+
         /* create a pixmap and mask to drag with */
         pixbuf = nautilus_icon_canvas_item_get_image (container->details->drag_icon->item, NULL);
         
@@ -1095,6 +1159,7 @@ drag_drop_callback (GtkWidget *widget,
 	}
 
 	NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info->saved_drag_source_info = NULL;
+	NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info->current_drop_target_icon = NULL;
 
 	return FALSE;
 }
@@ -1120,13 +1185,13 @@ nautilus_icon_dnd_modifier_based_action ()
 	GdkModifierType modifiers;
 	gdk_window_get_pointer (NULL, NULL, NULL, &modifiers);
 
-	if ((modifiers & GDK_CONTROL_MASK) != 0) {
+	if ((modifiers & GDK_MOD1_MASK) != 0) {
 		return GDK_ACTION_COPY;
 #if 0
 	/* FIXME:
 	 * don't know how to do links yet
 	 */
-	 } else if ((modifiers & GDK_MOD1_MASK) != 0) {
+	 } else if ((modifiers & GDK_CONTROL_MASK) != 0) {
 		return GDK_ACTION_LINK;
 #endif
 	}

@@ -122,6 +122,10 @@ void             nautilus_file_set_metadata              (NautilusFile         *
 char *           nautilus_file_get_string_attribute      (NautilusFile         *file,
 							  const char           *attribute_name);
 
+/* Matching with another URI*/
+gboolean         nautilus_file_matches_uri               (NautilusFile         *file,
+							  const char 	       *uri);
+
 /* Comparing two file objects for sorting */
 int              nautilus_file_compare_for_sort          (NautilusFile         *file_1,
 							  NautilusFile         *file_2,

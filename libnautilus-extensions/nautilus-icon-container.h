@@ -68,6 +68,9 @@ struct NautilusIconContainerClass {
 							     double scale_x, double scale_y);
 	
 	char *		       (* get_container_uri)	    (NautilusIconContainer *container);
+	gboolean	       (* can_accept_item)	    (NautilusIconContainer *container,
+							     const NautilusIconData *target_uri, 
+							     const char *item_uri);
 
 	/* Connect to these signals to supply information about icons.
 	 * They are called as needed after the icons are inserted.
