@@ -425,6 +425,8 @@ static void
 viewed_file_changed_callback (NautilusFile *file,
                               NautilusWindow *window)
 {
+        char *new_location;
+
         g_assert (NAUTILUS_IS_FILE (file));
 	g_assert (NAUTILUS_IS_WINDOW (window));
 	g_assert (window->details->viewed_file == file);
@@ -442,7 +444,26 @@ viewed_file_changed_callback (NautilusFile *file,
                  * for all cases?
                  */
 		nautilus_window_close (window);
-	}
+	} else {
+                new_location = nautilus_file_get_uri (file);
+
+                /* if the file was renamed, update location 
+                   and/or title */
+                if (!nautilus_uris_match (new_location,
+                                          window->location)) {
+                        g_free (window->location);
+                        window->location = new_location;
+
+                        /* Check if we can go up. */
+                        update_up_button (window);
+                        /* Change the location bar to match the current location. */
+                        nautilus_navigation_bar_set_location (NAUTILUS_NAVIGATION_BAR (window->navigation_bar),
+                                                              window->location);
+                        update_title (window);
+                } else {
+                        g_free (new_location);
+                }
+        }
 }
 
 static void

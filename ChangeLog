@@ -1,3 +1,19 @@
+2000-12-14  Maciej Stachowiak  <mjs@eazel.com>
+
+	sort of reviewed by: Mathieu Lacage  <mathieu@eazel.com>
+
+	* src/nautilus-window-manage-views.c
+	(viewed_file_changed_callback): If the file we are viewing got
+	renamed, update the window's concept of it's location, the up
+	button sensitivity, the navigation bar location and the
+	title. This fixes bug 807 (File name in sidebar doesn't update
+	when file is renamed).
+
+	* libnautilus-extensions/nautilus-directory-async.c
+	(get_info_callback): Make sure not to free an already NULL file
+	info. This pathological case was being tirggered sometime when
+	doing a Refresh on a viewed location that got renamed.
+
 2000-12-14  Arlo Rose  <arlo@eazel.com>
 
 	* icons/eazel/eazel.xml:

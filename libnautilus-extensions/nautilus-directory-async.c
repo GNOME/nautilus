@@ -2875,8 +2875,10 @@ get_info_callback (GnomeVFSAsyncHandle *handle,
 
 	if (result->result != GNOME_VFS_OK) {
 		get_info_file->details->file_info_is_up_to_date = TRUE;
-		gnome_vfs_file_info_unref (get_info_file->details->info);
-		get_info_file->details->info = NULL;
+		if (get_info_file->details->info != NULL) {
+			gnome_vfs_file_info_unref (get_info_file->details->info);
+			get_info_file->details->info = NULL;
+		}
 		get_info_file->details->get_info_failed = TRUE;
 		get_info_file->details->get_info_error = result->result;
 		if (result->result == GNOME_VFS_ERROR_NOT_FOUND) {
