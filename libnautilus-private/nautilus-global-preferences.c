@@ -40,6 +40,9 @@
 /* Constants */
 #define GLOBAL_PREFERENCES_DIALOG_TITLE _("Nautilus Preferences")
 
+/* default web search uri - this will soon be changed to point to our service */
+#define DEFAULT_SEARCH_WEB_URI "http://www.google.com"
+
 /* Private stuff */
 static GtkWidget *global_preferences_create_dialog                      (void);
 static GtkWidget *global_preferences_get_dialog                         (void);
@@ -255,8 +258,14 @@ global_preferences_create_dialog (void)
 							 1,
 							 NAUTILUS_PREFERENCES_SEARCH_METHOD,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
-
-
+	
+	
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
+					     "Search Locations");
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
+							 2,
+							 NAUTILUS_PREFERENCES_SEARCH_WEB_URI,
+							 NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING);
 					
 	/*
 	 * Navigation
@@ -590,6 +599,13 @@ global_preferences_register_for_ui (void)
 						     "search by text and properties",
 						     "Search for files by text and by their properties",
 						     NAUTILUS_COMPLEX_SEARCH_BAR);
+
+	/* web search uri  */
+	global_preferences_register_string_with_defaults (NAUTILUS_PREFERENCES_SEARCH_WEB_URI,
+							 "Search Web Location",
+							 DEFAULT_SEARCH_WEB_URI,
+							 DEFAULT_SEARCH_WEB_URI,
+							 DEFAULT_SEARCH_WEB_URI);
 
 	/*
 	 * FIXME: These dont have a UI (yet ? maybe in the advanced settings ?).

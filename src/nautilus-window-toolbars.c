@@ -24,6 +24,7 @@
 */
 
 #include <config.h>
+#include "nautilus-toolbar.h"
 #include "nautilus-window.h"
 #include "nautilus-window-private.h"
 #include "nautilus-application.h"
@@ -43,23 +44,24 @@ static void toolbar_services_callback (GtkWidget *widget, NautilusWindow *window
 
 /* toolbar definitions */
 
-#define TOOLBAR_BACK_BUTTON_INDEX	0
-#define TOOLBAR_FORWARD_BUTTON_INDEX	1
-#define TOOLBAR_UP_BUTTON_INDEX		2
-#define TOOLBAR_RELOAD_BUTTON_INDEX	3
+#define TOOLBAR_BACK_BUTTON_INDEX		0
+#define TOOLBAR_FORWARD_BUTTON_INDEX		1
+#define TOOLBAR_UP_BUTTON_INDEX			2
+#define TOOLBAR_RELOAD_BUTTON_INDEX		3
 /* separator */
-#define TOOLBAR_HOME_BUTTON_INDEX	5
-#define TOOLBAR_SEARCH_BUTTON_INDEX     6
+#define TOOLBAR_HOME_BUTTON_INDEX		5
+#define TOOLBAR_SEARCH_LOCAL_BUTTON_INDEX	6
+#define TOOLBAR_SEARCH_WEB_BUTTON_INDEX		7
 /* separator */
-#define TOOLBAR_STOP_BUTTON_INDEX	8
-#define TOOLBAR_SERVICES_INDEX		9
+#define TOOLBAR_STOP_BUTTON_INDEX		9
+#define TOOLBAR_SERVICES_INDEX			10
 
 static void
 toolbar_clear_search_mode(NautilusWindow *window)
 {
   GtkToggleButton *button;
   
-  button = GTK_TOGGLE_BUTTON(window->search_button);
+  button = GTK_TOGGLE_BUTTON(window->search_local_button);
   if (button->active) {
   	nautilus_window_set_search_mode (window, FALSE);
   	gtk_toggle_button_set_active(button, FALSE);
@@ -93,9 +95,15 @@ toolbar_home_callback (GtkWidget *widget, NautilusWindow *window)
 
 
 static void
-toolbar_search_callback (GtkWidget *widget, NautilusWindow *window)
+toolbar_search_local_callback (GtkWidget *widget, NautilusWindow *window)
 {
 	nautilus_window_set_search_mode (window, GTK_TOGGLE_BUTTON (widget)->active);
+}
+
+static void
+toolbar_search_web_callback (GtkWidget *widget, NautilusWindow *window)
+{
+	nautilus_window_go_web_search (window);
 }
 
 #define NAUTILUS_GNOMEUIINFO_TOGGLEITEM_STOCK(label, tooltip, callback, stock_id) \
@@ -107,23 +115,35 @@ static GnomeUIInfo toolbar_info[] = {
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Back"), N_("Go to the previously visited directory"),
 	 toolbar_back_callback, "nautilus/eazel/Back.png"),
+	
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Forward"), N_("Go to the next directory"),
 	 toolbar_forward_callback, "nautilus/eazel/Forward.png"),
+	
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Up"), N_("Go up a level in the directory hierarchy"),
 	 toolbar_up_callback, "nautilus/eazel/Up.png"),
+	
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Reload"), N_("Reload this view"),
 	 toolbar_reload_callback, "nautilus/eazel/Refresh.png"),
+	
 	GNOMEUIINFO_SEPARATOR,
+	
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Home"), N_("Go to your home directory"),
 	 toolbar_home_callback, "nautilus/eazel/Home.png"),
+	
 	NAUTILUS_GNOMEUIINFO_TOGGLEITEM_STOCK
-	(N_("Search"), N_("Search for files"),
-	 toolbar_search_callback, "nautilus/eazel/Search.png"),
+	(N_("Search"), N_("Search this computer for files"),
+	 toolbar_search_local_callback, "nautilus/eazel/Search.png"),
+	
+	GNOMEUIINFO_ITEM_STOCK
+	(N_("Web Search"), N_("Search the web"),
+	 toolbar_search_web_callback, "nautilus/eazel/Search.png"),
+	
 	GNOMEUIINFO_SEPARATOR,
+	
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Stop"), N_("Interrupt loading"),
 	 toolbar_stop_callback, "nautilus/eazel/Stop.png"),
@@ -230,7 +250,8 @@ remember_buttons(NautilusWindow *window, GnomeUIInfo current_toolbar_info[])
 	window->forward_button = current_toolbar_info[TOOLBAR_FORWARD_BUTTON_INDEX].widget;
 	window->up_button = current_toolbar_info[TOOLBAR_UP_BUTTON_INDEX].widget;
 	window->reload_button = current_toolbar_info[TOOLBAR_RELOAD_BUTTON_INDEX].widget;
-	window->search_button = current_toolbar_info[TOOLBAR_SEARCH_BUTTON_INDEX].widget;
+	window->search_local_button = current_toolbar_info[TOOLBAR_SEARCH_LOCAL_BUTTON_INDEX].widget;
+	window->search_web_button = current_toolbar_info[TOOLBAR_SEARCH_WEB_BUTTON_INDEX].widget;
 	window->stop_button = current_toolbar_info[TOOLBAR_STOP_BUTTON_INDEX].widget;	
 	window->home_button = current_toolbar_info[TOOLBAR_HOME_BUTTON_INDEX].widget;	
 }
@@ -293,7 +314,8 @@ setup_toolbar_images(NautilusWindow *window)
 	setup_button (window->up_button, theme_name, GNOME_STOCK_PIXMAP_UP);
 	setup_button (window->home_button, theme_name,  GNOME_STOCK_PIXMAP_HOME);
 	setup_button (window->reload_button, theme_name,  GNOME_STOCK_PIXMAP_REFRESH);
-	setup_button (window->search_button, theme_name, GNOME_STOCK_PIXMAP_SEARCH);
+	setup_button (window->search_local_button, theme_name, GNOME_STOCK_PIXMAP_SEARCH);
+	setup_button (window->search_web_button, theme_name, GNOME_STOCK_PIXMAP_SEARCH);
 	setup_button (window->stop_button, theme_name, GNOME_STOCK_PIXMAP_STOP);
 
 	g_free(theme_name);
@@ -308,8 +330,12 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 	
 	app = GNOME_APP (window);	
 	
-	toolbar = gtk_toolbar_new (GTK_ORIENTATION_HORIZONTAL, GTK_TOOLBAR_BOTH);	
-        gnome_app_fill_toolbar_with_data (GTK_TOOLBAR (toolbar), toolbar_info, app->accel_group, app);	
+	toolbar = nautilus_toolbar_new ();	
+        gtk_toolbar_set_orientation (GTK_TOOLBAR (toolbar), GTK_ORIENTATION_HORIZONTAL); 
+        gtk_toolbar_set_style (GTK_TOOLBAR (toolbar), GTK_TOOLBAR_BOTH); 
+	nautilus_toolbar_set_button_spacing (NAUTILUS_TOOLBAR (toolbar), 50);
+	
+	gnome_app_fill_toolbar_with_data (GTK_TOOLBAR (toolbar), toolbar_info, app->accel_group, app);	
 	remember_buttons(window, toolbar_info);
 	setup_toolbar_images(window);
 

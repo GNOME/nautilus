@@ -1,3 +1,41 @@
+2000-07-10  Andy Hertzfeld  <andy@eazel.com>
+
+	added a "web search" button to the toolbar
+	
+	* libnautilus-extensions/nautilus-global-preferences.c,h:
+	(global_preferences_create_dialog),
+	(global_preferences_register_for_ui):
+	added a preference for the web search uri.
+	
+	* src/Makefile.am:
+	* src/nautilus-toolbar.c,h: (nautilus_toolbar_new),
+	(nautilus_toolbar_initialize_class), (nautilus_toolbar_initialize),
+	(nautilus_toolbar_set_button_spacing),
+	(nautilus_toolbar_size_allocate):
+	added a new nautilus_toolbar class to overcome the problem that
+	the normal toolbar uses the maximum width for all the buttons,
+	because the "web search" button has a longer name than usual
+	
+	* src/nautilus-window-toolbars.c: (toolbar_clear_search_mode),
+	(toolbar_search_local_callback), (toolbar_search_web_callback),
+	(remember_buttons), (setup_toolbar_images),
+	(nautilus_window_initialize_toolbars):
+	used nautilus_toolbar instead of gtk_toolbar;
+	added a "web search" button to the toolbar
+	
+	* src/nautilus-window.c,h: (navigation_bar_mode_changed_callback),
+	(nautilus_window_set_search_mode), (nautilus_window_go_web_search):
+	added the semantics for web search, which is to invoke the
+	location specified by the web search uri
+	
+	* src/nautilus-property-browser.c: (remove_color),
+	(nautilus_property_browser_remove_element),
+	(make_properties_from_xml_node):
+	some minor clean-ups
+	* data/browser.xml:
+	capitalized titles for Arlo
+
+
 2000-07-10  Robey Pointer  <robey@eazel.com>
 
 	* components/services/trilobite/helper/.cvsignore:

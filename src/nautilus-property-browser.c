@@ -541,7 +541,7 @@ title_clicked_callback (GtkWidget *widget, GdkEventButton *event, NautilusProper
 /* having trouble removing nodes, so instead I'll mark it invisible - eventually this needs to be fixed */
 
 static void
-remove_color(NautilusPropertyBrowser *property_browser, const char* color_value)
+remove_color (NautilusPropertyBrowser *property_browser, const char* color_value)
 {
 	/* load the local xml file to remove the color */
 	xmlNodePtr cur_node;
@@ -645,7 +645,7 @@ remove_emblem(NautilusPropertyBrowser *property_browser, const char* emblem_name
 /* handle removing the passed in element */
 
 static void
-nautilus_property_browser_remove_element(NautilusPropertyBrowser *property_browser, const char* element_name)
+nautilus_property_browser_remove_element (NautilusPropertyBrowser *property_browser, const char* element_name)
 {
 	/* lookup category and get mode, then case out and handle the modes */
 	if (!strcmp(property_browser->details->category, "backgrounds")) {
@@ -1392,8 +1392,8 @@ make_properties_from_xml_node (NautilusPropertyBrowser *property_browser, xmlNod
 			
 		if (!deleted && (!local_only || (local != NULL))) {
 			GtkWidget *event_box = gtk_event_box_new();
-			gtk_widget_set_usize(event_box, 48, 32);
-			gtk_widget_show(event_box);
+			gtk_widget_set_usize (event_box, 48, 32);
+			gtk_widget_show (event_box);
 
 			frame = gtk_frame_new(NULL);
   			gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_OUT);
@@ -1437,7 +1437,7 @@ make_properties_from_xml_node (NautilusPropertyBrowser *property_browser, xmlNod
 				 FALSE,
 				 FALSE);
 
-			add_to_content_table(property_browser, frame, index++, 12);				
+			add_to_content_table (property_browser, frame, index++, 12);				
 		}
 	}
 }

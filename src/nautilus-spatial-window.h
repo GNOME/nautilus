@@ -110,7 +110,8 @@ struct NautilusWindow {
   GtkWidget *forward_button;
   GtkWidget *up_button;
   GtkWidget *reload_button;
-  GtkWidget *search_button;
+  GtkWidget *search_local_button;
+  GtkWidget *search_web_button;
   GtkWidget *stop_button;
   GtkWidget *home_button;
   
@@ -157,6 +158,7 @@ void             nautilus_window_goto_uri             (NautilusWindow    *window
 void             nautilus_window_set_search_mode      (NautilusWindow    *window,
                                                        gboolean           search_mode);
 void             nautilus_window_go_home              (NautilusWindow    *window);
+void		 nautilus_window_go_web_search	      (NautilusWindow    *window);
 void             nautilus_window_display_error        (NautilusWindow    *window,
                                                        const char        *error_msg);
 void             nautilus_window_allow_back           (NautilusWindow    *window,

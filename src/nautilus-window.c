@@ -68,6 +68,9 @@
 /* GNOME Dock Items */
 #define URI_ENTRY_DOCK_ITEM	"uri_entry"
 
+/* default web search uri - this will soon be changed to point to our service */
+#define DEFAULT_SEARCH_WEB_URI "http://www.google.com"
+
 enum {
 	ARG_0,
 	ARG_APP_ID,
@@ -183,10 +186,10 @@ navigation_bar_mode_changed_callback (GtkWidget *widget,
 {
 	switch (mode) {
 	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION:
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (NAUTILUS_WINDOW (window)->search_button), FALSE);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (NAUTILUS_WINDOW (window)->search_local_button), FALSE);
 		break;
 	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH:
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (NAUTILUS_WINDOW (window)->search_button), TRUE);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (NAUTILUS_WINDOW (window)->search_local_button), TRUE);
 		break;
 	default:
 	}
@@ -967,6 +970,18 @@ nautilus_window_set_search_mode (NautilusWindow *window,
 		nautilus_switchable_navigation_bar_set_mode (NAUTILUS_SWITCHABLE_NAVIGATION_BAR (window->navigation_bar),
 							     NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION);
 	}
+}
+
+void
+nautilus_window_go_web_search (NautilusWindow *window)
+{
+	char *search_web_uri;
+
+	search_web_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_SEARCH_WEB_URI, DEFAULT_SEARCH_WEB_URI);
+	g_assert (search_web_uri != NULL);
+	
+	nautilus_window_goto_uri (window, search_web_uri);
+	g_free (search_web_uri);
 }
 
 void

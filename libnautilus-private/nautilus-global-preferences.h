@@ -66,8 +66,11 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_THEME				"preferences/theme"
 
 /* File Indexing */
-#define NAUTILUS_PREFERENCES_SEARCH_METHOD                       "preferences/also_do_slow_search"
-#define NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE                     "preferences/search_bar_type"
+#define NAUTILUS_PREFERENCES_SEARCH_METHOD			"preferences/also_do_slow_search"
+#define NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE			"preferences/search_bar_type"
+
+/* searching */
+#define NAUTILUS_PREFERENCES_SEARCH_WEB_URI			"preferences/search_web_uri"			
 
 enum
 {
