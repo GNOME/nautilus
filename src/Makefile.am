@@ -7,6 +7,7 @@ bin_PROGRAMS=nautilus
 INCLUDES =\
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
+	-I$(top_builddir)/cut-n-paste-code \
 	$(BONOBO_CFLAGS) \
 	$(OAF_CFLAGS) \
 	$(GCONF_CFLAGS) \
@@ -22,9 +23,10 @@ INCLUDES =\
 
 LDADD =\
 	file-manager/libntl-file-manager.la \
-	../libnautilus/libnautilus.la \
-	../libnautilus-extensions/libnautilus-extensions.la \
-	../librsvg/librsvg.la \
+	$(top_builddir)/libnautilus/libnautilus.la \
+	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la  \
+	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la \
+	$(top_builddir)/librsvg/librsvg.la                                \
 	$(BONOBO_LIBS) \
 	$(OAF_LIBS) \
 	$(GCONF_LIBS) \

@@ -5,6 +5,7 @@ SUBDIRS =\
 	icons \
 	idl \
 	intl \
+	cut-n-paste-code \
 	libnautilus \
 	libnautilus-extensions \
 	librsvg \
