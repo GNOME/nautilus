@@ -3,7 +3,7 @@ NULL=
 emblemsdir = $(datadir)/nautilus/emblems
 
 emblems_DATA = \
-	confidential.gif \
+	cool.png \
 	distinguished.png \
 	draft.png \
 	erase.png \
@@ -13,6 +13,7 @@ emblems_DATA = \
 	ohno.png \
 	OK.png \
 	personal.png \
+	secret.png \
 	special.png \
 	shared.png \
 	urgent.png \

@@ -21,7 +21,7 @@ icon_DATA =\
 	eazel-logo.gif \
 	emblem-certified.gif \
 	emblem-changed.gif \
-	emblem-confidential.gif \
+	emblem-cool.svg \
 	emblem-distinguished.svg \
 	emblem-draft.svg \
 	emblem-encrypted.gif \
@@ -36,6 +36,7 @@ icon_DATA =\
 	emblem-personal.svg \
 	emblem-remote.gif \
 	emblem-trash.png \
+	emblem-secret.svg \
 	emblem-shared.svg \
 	emblem-special.svg \
 	emblem-symbolic-link.png \
