@@ -2161,6 +2161,10 @@ destroy (GtkObject *object)
 	if (container->details->highlight_frame != NULL) {
 		gdk_pixbuf_unref (container->details->highlight_frame);
 	}
+
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
+					      nautilus_icon_container_theme_changed,
+					      container);
 	
 	nautilus_icon_container_flush_typeselect_state (container);
 	
@@ -3388,10 +3392,6 @@ icon_destroy (NautilusIconContainer *container,
 	if (details->drop_target == icon) {
 		details->drop_target = NULL;
 	}
-
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
-					      nautilus_icon_container_theme_changed,
-					      container);
 
 	icon_free (icon);
 

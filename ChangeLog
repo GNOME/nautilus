@@ -1,3 +1,13 @@
+2000-10-26  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c: (destroy),
+	(icon_destroy):
+	fixed bug 4108, changing themes in the list view crashes nautilus.
+	Fixed by removing the call to preferences_remove_callback from
+	icon_destroy and putting it into the widget's destroy method like
+	it should have been.  This also could have been hurting performance
+	and causing other weird problems.
+	
 2000-10-26  Arlo Rose  <arlo@eazel.com>
 
 	* components/services/nautilus-dependent-shared/eazel-services-exte
