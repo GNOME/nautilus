@@ -1,3 +1,16 @@
+2001-04-20  John Harper  <jsh@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	* src/nautilus-window-manage-views.c
+	(get_topmost_nautilus_window): call
+	eel_gtk_window_is_on_current_workspace_and_area () when
+	searching for a window to reuse.
+
+	Also renamed this as
+	get_topmost_nautilus_window_in_current_workspace_and_area (),
+	and changed the single caller
+
 2001-04-20  Darin Adler  <darin@eazel.com>
 
 	Fixed bug where toggling the "desktop is home" preference would

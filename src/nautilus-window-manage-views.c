@@ -674,7 +674,7 @@ location_has_really_changed (NautilusWindow *window)
 
 
 static NautilusWindow *
-get_topmost_nautilus_window (void)
+get_topmost_nautilus_window_in_current_workspace_and_area (void)
 {
         GList *window_list, *node;
         NautilusWindow *result;
@@ -683,7 +683,8 @@ get_topmost_nautilus_window (void)
 
         result = NULL;
         for (node = window_list; node != NULL; node = node->next) {
-                if (NAUTILUS_IS_WINDOW (node->data)) {
+                if (NAUTILUS_IS_WINDOW (node->data)
+		    && eel_gtk_window_is_on_current_workspace_and_area (GTK_WINDOW (node->data))) {
                         result = NAUTILUS_WINDOW (node->data);
                         break;
                 }
@@ -717,7 +718,7 @@ open_location (NautilusWindow *window,
          */
         if (!create_new_window && NAUTILUS_IS_DESKTOP_WINDOW (window)) {
                 if (NAUTILUS_DESKTOP_WINDOW(window)->affect_desktop_on_next_location_change == FALSE) {
-                        target_window = get_topmost_nautilus_window ();
+                        target_window = get_topmost_nautilus_window_in_current_workspace_and_area ();
                         if (target_window == window) {
                                 create_new_window = TRUE;
                         } else {
