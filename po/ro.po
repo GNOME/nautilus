@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.2\n"
-"POT-Creation-Date: 2003-01-22 18:31-0500\n"
-"PO-Revision-Date: 2003-01-16 21:56+0200\n"
+"POT-Creation-Date: 2003-01-22 12:14+0100\n"
+"PO-Revision-Date: 2003-01-23 21:56+0200\n"
 "Last-Translator: Marius Andreiana <marius galuna.ro>\n"
 "Language-Team: Română <ro@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -294,7 +294,6 @@ msgid "Notes side pane"
 msgstr "Panou lateral Note"
 
 #: components/notes/Nautilus_View_notes.server.in.in.h:3
-#, fuzzy
 msgid "Notes side pane for Nautilus"
 msgstr "Panou lateral Note pentru Nautilus"
 
@@ -1239,14 +1238,12 @@ msgid "Cancel"
 msgstr "Renunţă"
 
 #: libnautilus-private/nautilus-dnd.c:628
-#, fuzzy
 msgid "Set as background for _all folders"
 msgstr "Setează ca fundal pentru to_ate dosarele"
 
 #: libnautilus-private/nautilus-dnd.c:633
-#, fuzzy
 msgid "Set as background for _this folder"
-msgstr "Foloseşte ca fundal pentru acest dosar"
+msgstr "Foloseşte ca fundal pentru aces_t dosar"
 
 #: libnautilus-private/nautilus-emblem-utils.c:194
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
@@ -1352,7 +1349,7 @@ msgstr ""
 "părinte al său."
 
 #: libnautilus-private/nautilus-file-operations.c:595
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Error while moving.\n"
 "\n"
@@ -1361,7 +1358,7 @@ msgid ""
 msgstr ""
 "Eroare la mutare.\n"
 "\n"
-"\"%s\" nu poate fi mutat deoarece este pe un disc doar-citire."
+"\"%s\" nu poate fi mutat deoarece el sau dosarul părinte este conţinut în destinaţie."
 
 #: libnautilus-private/nautilus-file-operations.c:605
 #, c-format
@@ -3710,14 +3707,12 @@ msgid "Search List"
 msgstr "Listă căutare"
 
 #: src/Nautilus_shell.server.in.h:20
-#, fuzzy
 msgid "View as Icons"
-msgstr "Vizualizează ca _iconuri"
+msgstr "Vizualizează ca iconuri"
 
 #: src/Nautilus_shell.server.in.h:21
-#, fuzzy
 msgid "View as List"
-msgstr "Vizualizează ca _listă"
+msgstr "Vizualizează ca listă"
 
 #: src/Nautilus_shell.server.in.h:22
 msgid "View as _Icons"
@@ -4362,7 +4357,7 @@ msgstr "Eroare tragere şi plasare"
 
 #: src/file-manager/fm-icon-view.c:2321
 msgid "An invalid drag type was used."
-msgstr ""
+msgstr "A fost folosit un tip de tragere invalid."
 
 #: src/file-manager/fm-list-view.c:408
 msgid "File name"
@@ -4475,7 +4470,7 @@ msgstr "(o parte din conţinut necitibil)"
 #.
 #: src/file-manager/fm-properties-window.c:1250
 msgid "Contents:"
-msgstr "Conţinut:"
+msgstr "Cuprins:"
 
 #: src/file-manager/fm-properties-window.c:1603
 msgid "Basic"
@@ -5323,14 +5318,12 @@ msgid "    "
 msgstr "    "
 
 #: src/nautilus-file-management-properties.glade.h:4
-#, fuzzy
 msgid "100 KB"
-msgstr "100 K"
+msgstr "100 KB"
 
 #: src/nautilus-file-management-properties.glade.h:20
-#, fuzzy
 msgid "500 KB"
-msgstr "500 K"
+msgstr "500 KB"
 
 #: src/nautilus-file-management-properties.glade.h:23
 msgid "<span weight=\"bold\">Behaviour</span>"
@@ -5389,9 +5382,8 @@ msgid "Ask before _emptying the Trash or deleting files"
 msgstr "Într_eabă înainte de golirea gunoiului sau ştergerea fişierelor"
 
 #: src/nautilus-file-management-properties.glade.h:37
-#, fuzzy
 msgid "Behavior"
-msgstr "Comportament Gunoi"
+msgstr "Comportament"
 
 #: src/nautilus-file-management-properties.glade.h:43
 msgid ""
@@ -5402,9 +5394,8 @@ msgstr ""
 "Mai multă informaţie este disponibilă pe măsură ce măriţi vizualizarea"
 
 #: src/nautilus-file-management-properties.glade.h:44
-#, fuzzy
 msgid "Count _number of items:"
-msgstr "Arată _numărul de elemente:"
+msgstr "Numără _numărul de elemente:"
 
 #: src/nautilus-file-management-properties.glade.h:45
 msgid "Default _zoom level:"
@@ -5480,34 +5471,31 @@ msgstr "_Nivel zoom implicit:"
 
 #: src/nautilus-file-management-properties.glade.h:68
 msgid "_Double click to activate items"
-msgstr ""
+msgstr "Clic _dublu pentru a activa elementele"
 
 #: src/nautilus-file-management-properties.glade.h:69
 msgid "_Only for files smaller than:"
-msgstr "Doar pentru fişiere mai mici de:"
+msgstr "D_oar pentru fişiere mai mici de:"
 
 #: src/nautilus-file-management-properties.glade.h:70
-#, fuzzy
 msgid "_Open activated item in a new window"
-msgstr "Deschide fiecare element selectat într-o fereastră nouă"
+msgstr "Deschide elementul activat într-o _fereastră nouă"
 
 #: src/nautilus-file-management-properties.glade.h:71
-#, fuzzy
 msgid "_Run executable text files when they are clicked"
-msgstr "E_xecută fişierele când sunt click-ate"
+msgstr "E_xecută fişierele când sunt clicate"
 
 #: src/nautilus-file-management-properties.glade.h:72
 msgid "_Single click to activate items"
-msgstr ""
+msgstr "Clic _simplu pentru a activa elementele"
 
 #: src/nautilus-file-management-properties.glade.h:73
 msgid "_Use compact layout"
 msgstr "Foloseşte o aranjare mai _strânsă"
 
 #: src/nautilus-file-management-properties.glade.h:74
-#, fuzzy
 msgid "_View executable text files when they are clicked"
-msgstr "E_xecută fişierele când sunt click-ate"
+msgstr "_Vizualizează fişierele executabile când sunt clicate"
 
 #: src/nautilus-first-time-druid.c:40
 msgid ""
@@ -5529,9 +5517,8 @@ msgstr "Deschide cu..."
 
 #. FIXME: We don't use spaces to pad labels!
 #: src/nautilus-information-panel.c:1018
-#, fuzzy
 msgid "Empty _Trash"
-msgstr "Goleşte gunoiul"
+msgstr "Goleşte _gunoiul"
 
 #: src/nautilus-location-bar.c:62
 msgid "Go To:"
@@ -5634,7 +5621,7 @@ msgstr "Îmi pare rău, dar %s nu a putut fi şters."
 
 #: src/nautilus-property-browser.c:908 src/nautilus-property-browser.c:937
 msgid "Couldn't delete pattern"
-msgstr "N-am putu şterge modelul"
+msgstr "N-am putut şterge modelul"
 
 #: src/nautilus-property-browser.c:936
 #, c-format
@@ -6504,8 +6491,8 @@ msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
 msgstr ""
-"Nautilus este un shell grafic pentru GNOME ce uşurează managementul "
-"fişierelorşi sistemului dvs."
+"Nautilus este un shell grafic pentru GNOME ce uşurează administrarea "
+"fişierelor şi sistemului dvs."
 
 #: src/nautilus-window-menus.c:754
 #, c-format
