@@ -406,7 +406,7 @@ nautilus_icon_factory_load_icon (const char *name, gboolean is_symbolic_link)
 	image = nautilus_icon_factory_load_file (name);
 	if (image == NULL)
 		/* This is the fallback icon. */
-		image = gdk_pixbuf_new_from_data ((char *)nautilus_default_file_icon,
+		image = gdk_pixbuf_new_from_data (nautilus_default_file_icon,
 						  ART_PIX_RGB,
 						  nautilus_default_file_icon_has_alpha,
 						  nautilus_default_file_icon_width,

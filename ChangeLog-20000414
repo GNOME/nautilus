@@ -2,6 +2,13 @@
 
 	* libnautilus/nautilus-icon-factory.c:
 	(nautilus_icon_factory_load_icon):
+	Just noticed that Elliot checked in a gdk-pixbuf fix, so I can
+	roll the cast back out.
+	
+2000-02-14  Darin Adler  <darin@eazel.com>
+
+	* libnautilus/nautilus-icon-factory.c:
+	(nautilus_icon_factory_load_icon):
 	Need a cast in here so people can build while I wait for the OK
 	from Federico to check in my const change to gdk-pixbuf.
 	
