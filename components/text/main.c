@@ -50,7 +50,7 @@ text_view_make_object (BonoboGenericFactory *factory,
 	NautilusTextView *text_view;
 	NautilusView *nautilus_view;
 
-	if (strcmp (iid, "OAFIID:nautilus_text_view:112200")) {
+	if (strcmp (iid, "OAFIID:nautilus_text_view:fa466311-17c1-435c-8231-c9fc434b6437")) {
 		return NULL;
 	}
 	
@@ -111,7 +111,7 @@ main (int argc, char *argv[])
 	g_thread_init (NULL);
 	gnome_vfs_init ();
 	
-        registration_id = oaf_make_registration_id ("OAFIID:nautilus_text_view_factory:112200", getenv ("DISPLAY"));
+        registration_id = oaf_make_registration_id ("OAFIID:nautilus_text_view_factory:124ae209-d356-418f-8757-54e071cb3a21", getenv ("DISPLAY"));
 	factory = bonobo_generic_factory_new_multi (registration_id, 
 						    text_view_make_object,
 						    NULL);

@@ -44,12 +44,12 @@ hardware_view_object_destroyed(GtkObject *obj)
 
 static BonoboObject *
 hardware_view_make_object (BonoboGenericFactory *factory, 
-			   const char *goad_id, 
+			   const char *oaf_iid, 
 			   void *closure)
 {
 	NautilusView *view;
 
-	if (strcmp (goad_id, "OAFIID:nautilus_hardware_view:20000422-2250")) {
+	if (strcmp (oaf_iid, "OAFIID:nautilus_hardware_view:4a3f3793-bab4-4640-9f56-e7871fe8e150")) {
 		return NULL;
 	}
 	
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
 	g_thread_init (NULL);
 	gnome_vfs_init ();
 
-        registration_id = oaf_make_registration_id ("OAFIID:nautilus_hardware_view_factory:20000422-2250", 
+        registration_id = oaf_make_registration_id ("OAFIID:nautilus_hardware_view_factory:8c80e55a-5c03-4403-9e51-3a5711b8a5ce", 
 						    getenv ("DISPLAY"));
 	factory = bonobo_generic_factory_new_multi (registration_id, 
 						    hardware_view_make_object,
