@@ -807,6 +807,11 @@ delete_files (EazelInstallCallback *service, EazelInstallProblem *problem)
 		gboolean cont = FALSE;
 
 		if (auto_cont == FALSE) {
+			/* I18N note: the (y/n) is translateable. There is later a 1 character
+			   string with the context "y" which is the "yes" indicator.
+			   If you eg. translate this to Danish : "Fortsæt (j/n " and
+			   translated the "y" later to "j", da_DK users can respond with
+			   "j" "ja" "JA" etc. */
 			printf (_("Continue? (y/n) "));
 			fflush (stdout);
 			if (arg_batch) {			
@@ -843,6 +848,11 @@ delete_files (EazelInstallCallback *service, EazelInstallProblem *problem)
 	} 
 
 	if (downloaded_files && !arg_query && !arg_erase && !arg_file && ask_delete) {
+		/* I18N note: the (y/n) is translateable. There is later a 1 character
+		   string with the context "y" which is the "yes" indicator.
+		   If you eg. translate this to Danish : "Fortsæt (j/n " and
+		   translated the "y" later to "j", da_DK users can respond with
+		   "j" "ja" "JA" etc. */
 		printf (_("Should i delete the RPM files? (y/n) "));
 		fflush (stdout);
 		if (arg_batch) {			
