@@ -1,3 +1,26 @@
+2001-01-10  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/text/nautilus-text-view.c:
+	(nautilus_text_view_initialize), (nautilus_text_view_destroy),
+	(done_file_read), (file_read_callback), (file_opened_callback),
+	(nautilus_text_view_update):
+	fixed bug 3256, loading a huge text file crashes nautilus.  Now,
+	if the file size exceeds a predetermined threshold, currently
+	set at a megabyte, it truncates it to the threshold amount and
+	warns the user with an error dialog.  As part of this, I made
+	the text view load files asynchronously and progressively, as
+	Maciej suggested; however, we won't see the benefit of this
+	until Pavel checks in some gnome-vfs optimizations he's working
+	on since currently gnome-vfs doesn't give the main loop much
+	time to run if it has ongoing activity.
+	
+	* components/text/services/Makefile.am:
+	* components/text/services/french_to_english.xml:
+	at Bud's request, checked in the "frech to english" text service
+	
+	* src/file-manager/fm-properties-window.c: (create_emblems_page):
+	removed debug message that I accidentally checked in.
+	
 2001-01-10  Gene Z. Ragan  <gzr@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>

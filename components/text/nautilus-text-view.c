@@ -45,6 +45,7 @@
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
+#include <libnautilus-extensions/nautilus-stock-dialogs.h>
 
 #include <gnome.h>
 #include <libgnomevfs/gnome-vfs.h>
@@ -54,10 +55,15 @@
 #include <ghttp.h>
 
 #define MAX_SERVICE_ITEMS 32
+#define TEXT_VIEW_CHUNK_SIZE 65536
+#define MAX_FILE_SIZE	1024*1024
 
 struct _NautilusTextViewDetails {
 	NautilusFile *file;
 	NautilusView *nautilus_view;
+	GnomeVFSAsyncHandle *file_handle;	
+	char *buffer;
+	
 	BonoboZoomable *zoomable;
 	int zoom_index;
 	
@@ -68,6 +74,7 @@ struct _NautilusTextViewDetails {
 	GdkFont *current_font;
 	
 	int service_item_count;
+	GnomeVFSFileSize file_size;
 	gboolean service_item_uses_selection[MAX_SERVICE_ITEMS];
 };
 
@@ -178,11 +185,8 @@ nautilus_text_view_initialize (NautilusTextView *text_view)
 	gtk_container_set_border_width (GTK_CONTAINER (text_view->details->container), 0);
 	gtk_container_add (GTK_CONTAINER (text_view), GTK_WIDGET (text_view->details->container));
 	
-	gtk_widget_show (GTK_WIDGET (text_view->details->container));
-
 	/* allocate the text object */
 	text_view->details->text_display = gtk_text_new (NULL, NULL);
-	gtk_widget_show (text_view->details->text_display);
 	gtk_text_set_editable (GTK_TEXT (text_view->details->text_display), FALSE);
 
 	/* add signal handlers to the text field to enable/disable the service menu items */
@@ -203,7 +207,6 @@ nautilus_text_view_initialize (NautilusTextView *text_view)
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
 	gtk_container_add (GTK_CONTAINER (scrolled_window), text_view->details->text_display);
-	gtk_widget_show (scrolled_window);
 	gtk_container_add (GTK_CONTAINER (text_view->details->container), scrolled_window);
 
 	/* get notified when we are activated so we can merge in our menu items */
@@ -213,8 +216,8 @@ nautilus_text_view_initialize (NautilusTextView *text_view)
                             merge_bonobo_menu_items,
                             text_view);
 		 	
-	/* finally, show the view itself */	
-	gtk_widget_show (GTK_WIDGET (text_view));
+	/* finally, we can show everything */	
+	gtk_widget_show_all (GTK_WIDGET (text_view));
 }
 
 static void
@@ -235,6 +238,12 @@ nautilus_text_view_destroy (GtkObject *object)
 
         detach_file (text_view);
 	gdk_font_unref (text_view->details->current_font);
+
+	if (text_view->details->file_handle) {
+		gnome_vfs_async_cancel (text_view->details->file_handle);
+	}
+	
+	g_free (text_view->details->buffer);
 	 
 	g_free (text_view->details);
 
@@ -249,29 +258,127 @@ nautilus_text_view_get_nautilus_view (NautilusTextView *text_view)
 	return text_view->details->nautilus_view;
 }
 
-
-/* here's where we do the real work of inserting the text from the file into the view */
+/* this routine is called when we're finished reading to deallocate the buffer and
+ * put up an error message if necessary
+ */
 static void
-nautilus_text_view_update (NautilusTextView *text_view) 
+done_file_read (NautilusTextView *text_view, gboolean succeeded)
 {
-        char *uri;
-	int text_size;
-        int position;
-	char *text_ptr;
-	
-        uri = nautilus_file_get_uri (text_view->details->file);
-        gtk_editable_delete_text (GTK_EDITABLE (text_view->details->text_display), 0, -1);   
+	if (text_view->details->buffer != NULL) {
+		g_free (text_view->details->buffer);
+		text_view->details->buffer = NULL;		
+	}
+}
+ 
+/* this callback handles the next chunk of data from the file by copying it into the
+ * text field and reading more if necessary */
+static void
+file_read_callback (GnomeVFSAsyncHandle *vfs_handle,
+		    GnomeVFSResult result,
+		    gpointer buffer,
+		    GnomeVFSFileSize bytes_requested,
+		    GnomeVFSFileSize bytes_read,
+		    gpointer callback_data)
+{
+	int byte_count;
+	NautilusTextView *text_view;
+	text_view = NAUTILUS_TEXT_VIEW (callback_data);
 
-	if (nautilus_read_entire_file (uri, &text_size, &text_ptr) == GNOME_VFS_OK) {
-        	position = 0; 
+	byte_count = bytes_read;
+	text_view->details->file_size += bytes_read;
+	
+	if (result == GNOME_VFS_OK && bytes_read != 0) {
+		/* write the buffer into the text field */	
+		gtk_text_freeze (GTK_TEXT (text_view->details->text_display));
+	
+		gtk_text_set_point (GTK_TEXT (text_view->details->text_display),
+			    gtk_text_get_length (GTK_TEXT (text_view->details->text_display)));
 
 		gtk_text_insert (GTK_TEXT (text_view->details->text_display),
 			 NULL, NULL, NULL,
-			 text_ptr, text_size);
-        			
-		g_free (text_ptr);
-	}
+			 buffer, bytes_read);
+
+		gtk_text_set_point (GTK_TEXT (text_view->details->text_display), 0);		
+		gtk_text_thaw (GTK_TEXT (text_view->details->text_display));
 				
+		/* read more if necessary */		
+		if (text_view->details->file_size < MAX_FILE_SIZE) {
+			if (bytes_read == bytes_requested) {
+				gnome_vfs_async_read (text_view->details->file_handle,
+				      text_view->details->buffer,
+				      TEXT_VIEW_CHUNK_SIZE,
+				      file_read_callback,
+				      callback_data);
+				return;
+			}
+		} else {
+			char *filename = nautilus_file_get_name(text_view->details->file);
+			char *message = g_strdup_printf (_("Sorry, but %s is too large for Nautilus to load all of it."), filename);
+			nautilus_error_dialog (message, _("Couldn't delete pattern"),
+							  GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (text_view))));
+			g_free (filename);
+			g_free (message);
+		}
+		
+	}
+
+	done_file_read (text_view, result == GNOME_VFS_OK || result == GNOME_VFS_ERROR_EOF);
+}
+
+
+/* this callback gets invoked when the open call has completed */
+static void
+file_opened_callback (GnomeVFSAsyncHandle *vfs_handle,
+		      GnomeVFSResult result,
+		      gpointer callback_data)
+{
+	NautilusTextView *text_view;
+	text_view = NAUTILUS_TEXT_VIEW (callback_data);
+	
+	if (result != GNOME_VFS_OK) {
+		text_view->details->file_handle = NULL;
+		done_file_read (text_view, FALSE);
+		return;
+	}
+
+	text_view->details->file_size = 0;
+	
+	/* read the next chunck of the file */
+	gnome_vfs_async_read (text_view->details->file_handle,
+			      text_view->details->buffer,
+			      TEXT_VIEW_CHUNK_SIZE,
+			      file_read_callback,
+			      callback_data);
+}
+
+/* callback to handle reading a chunk of the file
+ * here's where we do the real work of inserting the text from the file into the view
+ * Since the file may be large, and possibly remote, we load the text asynchronously and
+ * progressively, one chunk at a time.
+ */
+static void
+nautilus_text_view_update (NautilusTextView *text_view) 
+{
+	char *uri;
+	
+	uri = nautilus_file_get_uri (text_view->details->file);
+	gtk_editable_delete_text (GTK_EDITABLE (text_view->details->text_display), 0, -1);   
+
+	if (text_view->details->file_handle) {
+		gnome_vfs_async_cancel (text_view->details->file_handle);
+	}
+	
+	/* if necessary, allocate the buffer */
+	if (text_view->details->buffer == NULL) {
+		text_view->details->buffer = g_malloc (TEXT_VIEW_CHUNK_SIZE);
+	}
+	
+	/* kick things off by opening the file asynchronously */
+	gnome_vfs_async_open (&text_view->details->file_handle,
+			      uri,
+			      GNOME_VFS_OPEN_READ,
+			      file_opened_callback,
+			      text_view);
         g_free (uri);
 }
 

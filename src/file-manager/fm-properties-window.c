@@ -1349,7 +1349,6 @@ create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 			continue;
 		}
 		
-		g_message ("emblem name is %s", emblem_name);
 		button = gtk_check_button_new ();
 
 		image_and_label_table = gtk_table_new (2, 1, FALSE);
