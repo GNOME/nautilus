@@ -26,6 +26,6 @@ figs = \
 docname=nautilus-user-manual
 lang = C
 omffile=nautilus-user-manual-C.omf
-sgml_ents =
-include $(top_srcdir)/help/sgmldocs.make
+entities =
+include $(top_srcdir)/help/xmldocs.make
 dist-hook: app-dist-hook

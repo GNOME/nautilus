@@ -1,2 +1,2 @@
-SUBDIRS = C es ko
+SUBDIRS = C
 
