@@ -5,13 +5,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus for latvian\n"
-"POT-Creation-Date: 2002-08-28 18:10+0200\n"
-"PO-Revision-Date: 2002-08-19 11:34+0200\n"
-"Last-Translator: Artis Trops <hornet@navigators.lv>\n"
-"Language-Team: Latvian <ll10nt@inbox.lv>\n"
+"POT-Creation-Date: 2002-08-26 05:11+0200\n"
+"PO-Revision-Date: 2002-08-27 01:01GMT+0020\n"
+"Last-Translator: Pēteris Krišjānis <peteris.krisjanis@os.lv>\n"
+"Language-Team: Latvian <ll10nt@os.lv>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.5\n"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -862,7 +863,7 @@ msgid "Synthpop"
 msgstr "Sintētiskais Pops"
 
 #: components/music/nautilus-music-view.c:296
-#: libnautilus-private/nautilus-volume-monitor.c:676
+#: libnautilus-private/nautilus-volume-monitor.c:678
 msgid "Unknown"
 msgstr "Nezināms"
 
@@ -2720,8 +2721,7 @@ msgid "Empty Trash"
 msgstr "Tukšot Atkritumkasti"
 
 #: libnautilus-private/nautilus-file-operations.c:2222
-msgid ""
-"Are you sure you want to permanently delete all of the items in the Trash?"
+msgid "Are you sure you want to permanently delete all of the items in the Trash?"
 msgstr "Jūs tiešām vēlaties nekavējoties dzēst visus failus Atkritumkastē?"
 
 #: libnautilus-private/nautilus-file-operations.c:2232
@@ -3225,7 +3225,7 @@ msgid "link (broken)"
 msgstr "saite (pārrauta)"
 
 #: libnautilus-private/nautilus-file.c:5319
-#: libnautilus-private/nautilus-trash-directory.c:377
+#: libnautilus-private/nautilus-trash-directory.c:373
 #: src/file-manager/fm-desktop-icon-view.c:70
 msgid "Trash"
 msgstr "Atkritumkaste"
@@ -3499,13 +3499,12 @@ msgid "The selection rectangle"
 msgstr "Izvēles taisnstūris"
 
 #: libnautilus-private/nautilus-icon-container.c:3414
-#, fuzzy
 msgid "Frame Text"
-msgstr "Ielikt Tekstu"
+msgstr "Ierāmēt Tekstu"
 
 #: libnautilus-private/nautilus-icon-container.c:3415
 msgid "Draw a frame around unselected text"
-msgstr ""
+msgstr "Uzzīmēt rāmi apkārt neizvēlētajam tekstam"
 
 #: libnautilus-private/nautilus-icon-dnd.c:625
 msgid ""
@@ -4096,8 +4095,7 @@ msgstr "Priekšmeti, kas ir regulāri faili"
 
 #: libnautilus-private/nautilus-search-uri.c:705
 msgid "Items containing \"stuff\" in their names and that are regular files"
-msgstr ""
-"Priekšmeti, kas satur \"kaut ko\" to nosaukumos un kas ir parasti faili"
+msgstr "Priekšmeti, kas satur \"kaut ko\" to nosaukumos un kas ir parasti faili"
 
 #: libnautilus-private/nautilus-search-uri.c:709
 msgid ""
@@ -4159,38 +4157,38 @@ msgid "%s Viewer"
 msgstr "%s Skatītājs"
 
 #. Populate table with items we know localized names for.
-#: libnautilus-private/nautilus-volume-monitor.c:803
+#: libnautilus-private/nautilus-volume-monitor.c:785
 msgid "Floppy"
 msgstr "Diskete"
 
-#: libnautilus-private/nautilus-volume-monitor.c:804
-#: libnautilus-private/nautilus-volume-monitor.c:833
+#: libnautilus-private/nautilus-volume-monitor.c:786
+#: libnautilus-private/nautilus-volume-monitor.c:815
 msgid "CD-ROM"
 msgstr "CD-ROM"
 
-#: libnautilus-private/nautilus-volume-monitor.c:805
+#: libnautilus-private/nautilus-volume-monitor.c:787
 msgid "Zip Drive"
 msgstr "Zip Iekārta"
 
-#: libnautilus-private/nautilus-volume-monitor.c:820
-#: libnautilus-private/nautilus-volume-monitor.c:864
+#: libnautilus-private/nautilus-volume-monitor.c:802
+#: libnautilus-private/nautilus-volume-monitor.c:846
 msgid "Audio CD"
 msgstr "Audio CD"
 
-#: libnautilus-private/nautilus-volume-monitor.c:855
+#: libnautilus-private/nautilus-volume-monitor.c:837
 msgid "Root Volume"
 msgstr "Saknes Partīcija"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1450
+#: libnautilus-private/nautilus-volume-monitor.c:1432
 msgid "Mount Error"
 msgstr "Montēšanas Kļūda"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1450
+#: libnautilus-private/nautilus-volume-monitor.c:1432
 msgid "Unmount Error"
 msgstr "Nomontēšanas Kļūda"
 
 #. Handle floppy case
-#: libnautilus-private/nautilus-volume-monitor.c:1523
+#: libnautilus-private/nautilus-volume-monitor.c:1505
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
@@ -4199,14 +4197,13 @@ msgstr ""
 "disketes."
 
 #. All others
-#: libnautilus-private/nautilus-volume-monitor.c:1527
+#: libnautilus-private/nautilus-volume-monitor.c:1509
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
-msgstr ""
-"Nautilus nevarēja piemontēt partīciju. Iespējams, iekārtā nebija mēdija."
+msgstr "Nautilus nevarēja piemontēt partīciju. Iespējams, iekārtā nebija mēdija."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1533
+#: libnautilus-private/nautilus-volume-monitor.c:1515
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
@@ -4214,7 +4211,7 @@ msgstr ""
 "Nautilus nevarēja piemontēt disketes iekārtu. Iespējams, diskete ir formātā, "
 "kas nevar tikt piemontēts."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1536
+#: libnautilus-private/nautilus-volume-monitor.c:1518
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
@@ -4222,20 +4219,20 @@ msgstr ""
 "Nautilus nevarēja piemontēt izvēlēto partīciju. Iespējams, partīcija ir "
 "formātā, kas nevar tikt montēta."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1541
+#: libnautilus-private/nautilus-volume-monitor.c:1523
 msgid "Nautilus was unable to mount the selected floppy drive."
 msgstr "Nautilus nevarēja piemontēt izvēlēto disketes iekārtu."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1543
+#: libnautilus-private/nautilus-volume-monitor.c:1525
 msgid "Nautilus was unable to mount the selected volume."
 msgstr "Nautilus nevarēja piemontēt izvēlēto partīciju."
 
 #. FIXME: Should we parse this message and report something more meaningful?
-#: libnautilus-private/nautilus-volume-monitor.c:1548
+#: libnautilus-private/nautilus-volume-monitor.c:1530
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr "Nautilus nevarēja nomontēt izvēlēto partīciju."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1753
+#: libnautilus-private/nautilus-volume-monitor.c:1735
 msgid "ISO 9660 Volume"
 msgstr "ISO 9660 Partīcija"
 
@@ -4351,8 +4348,7 @@ msgstr ""
 
 #: src/Nautilus_shell.server.in.h:10
 msgid "Nautilus file manager component that shows icons on the desktop"
-msgstr ""
-"Nautilus failu pārvaldnieka komponents, kas parāda ikonas uz darba virsmas"
+msgstr "Nautilus failu pārvaldnieka komponents, kas parāda ikonas uz darba virsmas"
 
 #: src/Nautilus_shell.server.in.h:11
 msgid "Nautilus file manager desktop icon view"
@@ -4436,8 +4432,7 @@ msgstr "%s Mājas"
 #: src/file-manager/fm-directory-view.c:476
 #, c-format
 msgid "This will open %d separate windows. Are you sure you want to do this?"
-msgstr ""
-"Šis atvērs %d atsevišķus logus. Vai esi pārliecināts, ka vēlies to darīt?"
+msgstr "Šis atvērs %d atsevišķus logus. Vai esi pārliecināts, ka vēlies to darīt?"
 
 #: src/file-manager/fm-directory-view.c:478
 #, c-format
@@ -4452,8 +4447,7 @@ msgstr "Vai esat pārliesināts, ka vēlaties pavisam izdzēst \"%s\"?"
 #: src/file-manager/fm-directory-view.c:825
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected items?"
-msgstr ""
-"Vai esat pārliesināts, ka vēlaties pavisam izdzēst %d izvēlētos priekšmetus?"
+msgstr "Vai esat pārliesināts, ka vēlaties pavisam izdzēst %d izvēlētos priekšmetus?"
 
 #: src/file-manager/fm-directory-view.c:831
 msgid "Delete?"
@@ -4556,10 +4550,8 @@ msgstr "Parāk Daudz Failu"
 
 #: src/file-manager/fm-directory-view.c:2997
 #, c-format
-msgid ""
-"\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
-msgstr ""
-"\"%s\" nevar tikt pārvietots uz Atkritumkasti. Vai vēlaties to tūliņ izdzēst?"
+msgid "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
+msgstr "\"%s\" nevar tikt pārvietots uz Atkritumkasti. Vai vēlaties to tūliņ izdzēst?"
 
 #: src/file-manager/fm-directory-view.c:3002
 #, c-format
@@ -4586,8 +4578,7 @@ msgstr "Dzēst Nekavējoties?"
 #: src/file-manager/fm-directory-view.c:3046
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the Trash?"
-msgstr ""
-"Vai esat pārliecināts, ka vēlaties pavisam izdzēst \"%s\" no Atkritumkastes?"
+msgstr "Vai esat pārliecināts, ka vēlaties pavisam izdzēst \"%s\" no Atkritumkastes?"
 
 #: src/file-manager/fm-directory-view.c:3050
 #, c-format
@@ -4698,18 +4689,15 @@ msgstr "\"%s\" tiks kopēts, ja izvēlēsieties Ievietot Failus komandu"
 
 #: src/file-manager/fm-directory-view.c:4059
 #, c-format
-msgid ""
-"The %d selected items will be moved if you select the Paste Files command"
+msgid "The %d selected items will be moved if you select the Paste Files command"
 msgstr ""
 "%d izvēlētie priekšmeti tiks pārvietoti, ja izvēlēsieties Ievietot Failus "
 "komandu"
 
 #: src/file-manager/fm-directory-view.c:4063
 #, c-format
-msgid ""
-"The %d selected items will be copied if you select the Paste Files command"
-msgstr ""
-"%d izvēlētie priekšmeti tiks kopēti, ja izvēlēsieties Ievietot Failus komandu"
+msgid "The %d selected items will be copied if you select the Paste Files command"
+msgstr "%d izvēlētie priekšmeti tiks kopēti, ja izvēlēsieties Ievietot Failus komandu"
 
 #: src/file-manager/fm-directory-view.c:4148
 msgid "There is nothing on the clipboard to paste."
@@ -4856,8 +4844,7 @@ msgstr "Atsaukt Atvēršanu?"
 
 #: src/file-manager/fm-error-reporting.c:57
 #, c-format
-msgid ""
-"You do not have the permissions necessary to view the contents of \"%s\"."
+msgid "You do not have the permissions necessary to view the contents of \"%s\"."
 msgstr "Jums nav nepieciešamo atļauju, lai apskatītu \"%s\" saturu."
 
 #: src/file-manager/fm-error-reporting.c:61
@@ -4876,14 +4863,12 @@ msgstr "Kļūda Rādot Mapi"
 
 #: src/file-manager/fm-error-reporting.c:102
 #, c-format
-msgid ""
-"The name \"%s\" is already used in this folder. Please use a different name."
+msgid "The name \"%s\" is already used in this folder. Please use a different name."
 msgstr "Nosaukums \"%s\" jau ir lietots šajā mapē. Lūdzu lieto citu nosaukumu."
 
 #: src/file-manager/fm-error-reporting.c:107
 #, c-format
-msgid ""
-"There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
+msgid "There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
 msgstr "Šajā mapē nav \"%s\". Varbūt tas tika nesen pārvietots vai izdzēsts?"
 
 #: src/file-manager/fm-error-reporting.c:112
@@ -4923,8 +4908,7 @@ msgstr "Pārsaukšanas Kļūda"
 
 #: src/file-manager/fm-error-reporting.c:163
 #, c-format
-msgid ""
-"You do not have the permissions necessary to change the group of \"%s\"."
+msgid "You do not have the permissions necessary to change the group of \"%s\"."
 msgstr "Jums nav nepieciešamo atļauju, lai mainītu \"%s\" grupu."
 
 #: src/file-manager/fm-error-reporting.c:167
@@ -4961,8 +4945,7 @@ msgstr "Kļūda Uzstādot Īpašnieku"
 
 #: src/file-manager/fm-error-reporting.c:233
 #, c-format
-msgid ""
-"Couldn't change the permissions of \"%s\" because it is on a read-only disk"
+msgid "Couldn't change the permissions of \"%s\" because it is on a read-only disk"
 msgstr ""
 "Nevarēju mainīt \"%s\" atļaujas, jo tas atrodas uz tikai nolasīšanai "
 "paredzēta diska"
@@ -5577,10 +5560,8 @@ msgid "Protect the selected volume"
 msgstr "Aizsargāt izvēlēto partīciju"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:14
-msgid ""
-"Show a window that lets you set your desktop background's pattern or color"
-msgstr ""
-"Parādīt logu, kas ļauj jums iestatīt jūsu darba virsmas rakstu vai krāsu"
+msgid "Show a window that lets you set your desktop background's pattern or color"
+msgstr "Parādīt logu, kas ļauj jums iestatīt jūsu darba virsmas rakstu vai krāsu"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:15
 msgid "Show media properties for the selected volume"
@@ -5646,8 +5627,7 @@ msgid "Edit the launcher information"
 msgstr "Rediģēt palaidēja informāciju"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
-msgid ""
-"Move or copy files previously selected by a Cut Files or Copy Files command"
+msgid "Move or copy files previously selected by a Cut Files or Copy Files command"
 msgstr ""
 "Pārvietot vai kopēt failus, kas iepriekš izvēlēti at Izgriezt Failus vai "
 "Kopēt Failus komandu"
@@ -6525,8 +6505,7 @@ msgid "Couldn't install emblem"
 msgstr "Nevar uzstādīt emblēmu"
 
 #: src/nautilus-property-browser.c:1362
-msgid ""
-"Sorry, but emblem keywords can only contain letters, spaces and numbers."
+msgid "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
 "Piedodiet, bet emblēmu atslēgvārdi var saturēt tikai burtus, tukšumus un "
 "skaitļus."
@@ -7215,8 +7194,7 @@ msgstr ""
 
 #: src/nautilus-window-manage-views.c:1264
 #, c-format
-msgid ""
-"\"%s\" is not a valid location. Please check the spelling and try again."
+msgid "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr ""
 "\"%s\" nav pareiza lokācija. Lūdzu pārbaudiet, vai tā ir pareiza un mēģinat "
 "vēlreiz."
@@ -7239,8 +7217,7 @@ msgstr "Nautilus nav uzstādīts skatītājs, kas spētu parādīt \"%s\"."
 #: src/nautilus-window-manage-views.c:1298
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
-msgstr ""
-"Nevarēja attēlot \"%s\", tādēļ ka Nautilus nevar pārvaldīt %s: lokācijas."
+msgstr "Nevarēja attēlot \"%s\", tādēļ ka Nautilus nevar pārvaldīt %s: lokācijas."
 
 #: src/nautilus-window-manage-views.c:1304
 #, c-format
@@ -7326,8 +7303,7 @@ msgstr ""
 
 #: src/nautilus-window-menus.c:363
 msgid "Are you sure you want to clear the list of locations you have visited?"
-msgstr ""
-"Vai esat pārliecināts, ka vēlaties attīrīt apmeklēto lokāciju sarakstu?"
+msgstr "Vai esat pārliecināts, ka vēlaties attīrīt apmeklēto lokāciju sarakstu?"
 
 #: src/nautilus-window-menus.c:368
 msgid "Clear History"
@@ -7441,3 +7417,4 @@ msgstr "Mainīt izmēru"
 #: src/nautilus-zoom-control.c:1090
 msgid "Set the zoom level of the current view"
 msgstr "Uzstādīt izmēra līmeni pašreizējam skatam"
+
