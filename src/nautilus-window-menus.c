@@ -123,8 +123,8 @@ static GnomeUIInfo file_menu_info[] = {
   GNOMEUIINFO_END
 };
 
-/* FIXME: These all need implementation, though we might end up doing that
- * separately for each content view (and merging with the insensitive items here)
+/* These items are always present, but they're insensitive unless
+ * a component has merged a sensitive item over them.
  */
 static GnomeUIInfo edit_menu_info[] = {
   GNOMEUIINFO_MENU_UNDO_ITEM(NULL, NULL),

@@ -226,7 +226,9 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
                 } else if (nautilus_str_has_prefix (navinfo->navinfo.requested_uri, "hardware:")) {
                         navinfo->navinfo.content_type = g_strdup ("special/hardware");
                         vfs_result_code = GNOME_VFS_OK;
-                /* FIXME: This mozilla-hack should be short lived until http issues are solved */
+                /* FIXME bugzilla.eazel.com 522: 
+                 * This mozilla-hack should be short lived until http issues are solved 
+                 */
                 } else if (nautilus_str_has_prefix (navinfo->navinfo.requested_uri, "moz:")) {
                         navinfo->navinfo.content_type = g_strdup ("special/mozilla-hack");
                         vfs_result_code = GNOME_VFS_OK;
@@ -302,7 +304,10 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
                 /* besides the information in OAF/GConf, we also want to offer components that are specifically refered to in the metadata,
                    so we ask the metadata for content views here and add them accordingly.  */      
                 
-                /* FIXME:  for now, we just do this for directories but it should apply to all places with available metadata */
+                /* FIXME bugzilla.eazel.com 673:  
+                 * for now, we just do this for directories but it should apply to 
+                 * all places with available metadata 
+                 */
                 add_components_from_metadata (navinfo);
         } else if (strcmp (navinfo->navinfo.content_type, "special/webdav-directory") == 0) {
                 fallback_iid = "OAFIID:ntl_web_browser:0ce1a736-c939-4ac7-b12c-19d72bf1510b";
@@ -322,7 +327,10 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
                 /* besides the information in OAF/GConf, we also want to offer components that are specifically refered to in the metadata,
                    so we ask the metadata for content views here and add them accordingly.  */      
 	   
-                /* FIXME:  for now, we just do this for directories but it should apply to all places with available metadata */
+                /* FIXME bugzilla.eazel.com 673:  
+                 * for now, we just do this for directories but it should apply to 
+                 * all places with available metadata 
+                 */
                 add_components_from_metadata (navinfo);
         } else if (strcmp (navinfo->navinfo.content_type, "application/x-rpm") == 0
                  || nautilus_str_has_suffix (navinfo->navinfo.requested_uri, ".rpm")) {
@@ -341,7 +349,9 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
                 navinfo->content_identifiers = g_slist_append
                         (navinfo->content_identifiers, 
                          nautilus_view_identifier_new ("OAFIID:nautilus_hardware_view:20000422-2250", "Hardware"));      
-        /* FIXME: This mozilla-hack should be short lived until http issues are solved */
+        /* FIXME bugzilla.eazel.com 522: 
+         * This mozilla-hack should be short lived until http issues are solved 
+         */
         } else if (strcmp(navinfo->navinfo.content_type, "special/mozilla-hack") == 0) {
                 fallback_iid = "OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1";
                 navinfo->content_identifiers = g_slist_append
@@ -359,7 +369,9 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
                 goto out;
         }
         
-        /* FIXME: Should do this only when in some special testing mode or something. */
+        /* FIXME bugzilla.eazel.com 674: 
+         * Should do this only when in some special testing mode or something. 
+         */
         navinfo->content_identifiers = g_slist_append
                 (navinfo->content_identifiers, 
                  nautilus_view_identifier_new ("OAFIID:nautilus_sample_content_view:45c746bd-7d64-4346-90d5-6410463b43ae", "Sample"));

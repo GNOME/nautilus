@@ -75,8 +75,10 @@ main(int argc, char *argv[])
 				   options, 0, &ctx); 
 	orb = oaf_init (argc, argv);
 
-	/* FIXME: Need better error reporting if this fails.  BUT, is it too
-	 * early to post a dialog here ? */
+	/* FIXME bugzilla.eazel.com 672: 
+	 * Need better error reporting if this fails.  BUT, is it too
+	 * early to post a dialog here ? Also, shouldn't put non-debug
+	 * code inside an assert! */
 	g_assert (nautilus_preferences_initialize (argc, argv));
 	
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);

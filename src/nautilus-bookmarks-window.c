@@ -336,7 +336,8 @@ nautilus_bookmarks_window_restore_geometry (GtkWidget *window)
 			height = CLAMP (height, BOOKMARKS_WINDOW_MIN_HEIGHT, gdk_screen_height());
 
 			top = CLAMP (top, 0, gdk_screen_height() - MINIMUM_ON_SCREEN_HEIGHT);
-			/* FIXME: If window has negative left coordinate, set_uposition sends it
+			/* FIXME bugzilla.eazel.com 669: 
+			 * If window has negative left coordinate, set_uposition sends it
 			 * somewhere else entirely. Not sure what level contains this bug (XWindows?).
 			 * Hacked around by pinning the left edge to zero.
 			 */

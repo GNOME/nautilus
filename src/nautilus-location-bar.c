@@ -102,7 +102,9 @@ drag_data_received_cb (GtkWidget *widget,
 		return;
 	}
 
-	/* FIXME: When more than one URI is dragged here, should we make windows? */
+	/* FIXME bugzilla.eazel.com 670: 
+	 * When more than one URI is dragged here, should we make windows? 
+	 */
 	if (nautilus_g_list_more_than_one_item (names)) {
 		g_warning ("Should we make more windows?");
 	}
