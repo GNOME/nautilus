@@ -63,11 +63,13 @@ GtkType    nautilus_text_caption_get_type        (void);
 GtkWidget* nautilus_text_caption_new             (void);
 
 /* Entry text accesor. */
-char *nautilus_text_caption_get_text        (NautilusTextCaption      *text_caption);
+char *nautilus_text_caption_get_text     (const NautilusTextCaption *text_caption);
 
 /* Entry text mutator. */
-void  nautilus_text_caption_set_text        (NautilusTextCaption      *text_caption,
-					     const char               *text);
+void  nautilus_text_caption_set_text     (NautilusTextCaption *text_caption,
+					  const char          *text);
+void  nautilus_text_caption_set_editable (NautilusTextCaption *text_caption,
+					  gboolean             editable);
 
 END_GNOME_DECLS
 

@@ -80,6 +80,8 @@ char *              nautilus_string_picker_get_selected_string (NautilusStringPi
 /* Set the selected string.  The internal string list needs to contain the 'string'. */
 void                nautilus_string_picker_set_selected_string (NautilusStringPicker       *string_picker,
 								const char                 *string);
+void                nautilus_string_picker_set_selected_string_index (NautilusStringPicker       *string_picker,
+								      guint index);
 
 /* Add a new string to the picker. */
 void                nautilus_string_picker_insert_string       (NautilusStringPicker       *string_picker,
@@ -89,6 +91,9 @@ void                nautilus_string_picker_insert_string       (NautilusStringPi
 gboolean            nautilus_string_picker_contains            (const NautilusStringPicker *string_picker,
 								const char                 *string);
 
+/* Return the index of the given string */
+int                 nautilus_string_picker_get_index_for_string    (const NautilusStringPicker *string_picker,
+								const char                 *string);
 
 END_GNOME_DECLS
 

@@ -329,7 +329,9 @@ nautilus_string_list_find_by_function (const NautilusStringList *string_list,
 guint
 nautilus_string_list_get_length (const NautilusStringList *string_list)
 {
-	g_return_val_if_fail (string_list != NULL, 0);
+	if (string_list == NULL) {
+		return 0;
+	}
 
 	return g_list_length (string_list->strings);
 }

@@ -1,3 +1,23 @@
+2001-01-16  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-string-list.c:
+	(nautilus_string_list_get_length):
+	Allow for NULL to be treated as a zero length string list.
+	
+	* libnautilus-extensions/nautilus-string-picker.h:
+	* libnautilus-extensions/nautilus-string-picker.c:
+	(nautilus_string_picker_set_selected_string_index),
+	(nautilus_string_picker_get_index_for_string):
+	Two new functions to manipulate the string picker using indeces.
+	
+	* libnautilus-extensions/nautilus-text-caption.h:
+	* libnautilus-extensions/nautilus-text-caption.c:
+	(nautilus_text_caption_get_text), (nautilus_text_caption_set_text):
+	Make the signature of get_text() use a const object.
+	
+	(nautilus_text_caption_set_editable): New function to change
+	whether the caption's text is editable.
+
 2001-01-16  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-window-manage-views.c: (change_state_at_idle),

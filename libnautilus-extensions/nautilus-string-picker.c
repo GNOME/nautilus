@@ -293,6 +293,23 @@ nautilus_string_picker_set_selected_string (NautilusStringPicker	*string_picker,
 }
 
 /**
+ * nautilus_string_picker_set_selected_string_index
+ * @string_picker: A NautilusStringPicker
+ * @index: Index of selected string.
+ *
+ * Set the selected entry corresponding to the given index.
+ */
+void
+nautilus_string_picker_set_selected_string_index (NautilusStringPicker *string_picker,
+						  guint index)
+{
+	g_return_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker));
+	g_return_if_fail (index < nautilus_string_list_get_length (string_picker->detail->string_list));
+	
+	gtk_option_menu_set_history (GTK_OPTION_MENU (string_picker->detail->option_menu), index);
+}
+
+/**
  * nautilus_string_picker_insert_string
  * @string_picker: A NautilusStringPicker
  * @string: The string to insert.
@@ -329,3 +346,19 @@ nautilus_string_picker_contains (const NautilusStringPicker       *string_picker
 	return nautilus_string_list_contains (string_picker->detail->string_list, string);
 }
 
+/**
+ * nautilus_string_picker_get_index_for_string
+ * @string_picker: A NautilusStringPicker
+ * @string: String to find.
+ *
+ * Return the index for the given string.  
+ * Return NAUTILUS_STRING_LIST_NOT_FOUND if the string is not found.
+ */
+int 
+nautilus_string_picker_get_index_for_string (const NautilusStringPicker *string_picker,
+					     const char *string)
+{
+	g_return_val_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker), NAUTILUS_STRING_LIST_NOT_FOUND);
+
+	return nautilus_string_list_get_index_for_string (string_picker->detail->string_list, string);
+}

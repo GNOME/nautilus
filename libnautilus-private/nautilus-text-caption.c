@@ -165,7 +165,7 @@ nautilus_text_caption_new (void)
  * Returns: A copy of the currently selected text.  Need to g_free() it.
  */
 char *
-nautilus_text_caption_get_text (NautilusTextCaption *text_caption)
+nautilus_text_caption_get_text (const NautilusTextCaption *text_caption)
 {
 	const char *entry_text;
 
@@ -189,4 +189,13 @@ nautilus_text_caption_set_text (NautilusTextCaption	*text_caption,
 	g_return_if_fail (NAUTILUS_IS_TEXT_CAPTION (text_caption));
 
 	gtk_entry_set_text (GTK_ENTRY (text_caption->detail->text), text);
+}
+
+void
+nautilus_text_caption_set_editable (NautilusTextCaption *text_caption,
+				    gboolean editable)
+{
+	g_return_if_fail (NAUTILUS_IS_TEXT_CAPTION (text_caption));
+
+	gtk_entry_set_editable (GTK_ENTRY (text_caption->detail->text), editable);
 }
