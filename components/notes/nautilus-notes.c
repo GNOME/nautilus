@@ -64,25 +64,34 @@ typedef struct {
 static int notes_object_count = 0;
 
 static void
-finish_loading_note (NautilusFile *file,
-                     gpointer callback_data)
+set_note_text_from_metadata (NautilusFile *file,
+                     Notes *notes)
 {
-        Notes *notes;
         int position;
-        char *notes_text;
+        char *saved_text;
+        char *current_text;
 
         g_assert (NAUTILUS_IS_FILE (file));
-
-        notes = callback_data;
         g_assert (notes->file == file);
 
-        notes_text = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_ANNOTATION, "");
-        position = 0;
-        gtk_editable_insert_text (GTK_EDITABLE (notes->note_text_field),
-                                  notes_text,
-                                  strlen (notes_text),
-                                  &position);
-	g_free (notes_text);
+        saved_text = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_ANNOTATION, "");
+	current_text = gtk_editable_get_chars (GTK_EDITABLE (notes->note_text_field), 0, -1);
+
+	/* This fn is called for any change signal on the file, so make sure that the
+	 * metadata has actually changed.
+	 */
+        if (strcmp (saved_text, current_text) != 0) {
+	        gtk_editable_delete_text (GTK_EDITABLE (notes->note_text_field), 0, -1);
+	        
+	        position = 0;
+	        gtk_editable_insert_text (GTK_EDITABLE (notes->note_text_field),
+	                                  saved_text,
+	                                  strlen (saved_text),
+	                                  &position);
+	}
+	
+	g_free (saved_text);
+	g_free (current_text);
 
 /* FIXME bugzilla.eazel.com 4436: 
  * Undo not working in notes-view.
@@ -95,8 +104,13 @@ finish_loading_note (NautilusFile *file,
 static void
 done_with_file (Notes *notes)
 {
-        nautilus_file_cancel_call_when_ready (notes->file, finish_loading_note, notes);
-        nautilus_file_unref (notes->file);
+	if (notes->file != NULL) {
+		nautilus_file_monitor_remove (notes->file, notes);
+		gtk_signal_disconnect_by_func (GTK_OBJECT (notes->file),
+					       GTK_SIGNAL_FUNC (set_note_text_from_metadata),
+					       notes);
+	        nautilus_file_unref (notes->file);
+        }
 }
 
 static void
@@ -108,15 +122,24 @@ notes_load_metainfo (Notes *notes)
         
         done_with_file (notes);
         notes->file = nautilus_file_get (notes->uri);
+
         if (notes->file == NULL) {
                 return;
         }
 
-        /* FIXME bugzilla.eazel.com 4422: should monitor file metadata, not just call_when_ready */
-
         attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
-        nautilus_file_call_when_ready (notes->file, attributes, finish_loading_note, notes);
+        nautilus_file_monitor_add (notes->file, notes, attributes);
+
+	if (nautilus_file_check_if_ready (notes->file, attributes)) {
+		set_note_text_from_metadata (notes->file, notes);
+	}
+	
         g_list_free (attributes);
+        
+	gtk_signal_connect (GTK_OBJECT (notes->file),
+			    "changed",
+			    GTK_SIGNAL_FUNC (set_note_text_from_metadata),
+			    notes);
 }
 
 /* save the metainfo corresponding to the current uri, if any, into the text field */
@@ -130,9 +153,19 @@ notes_save_metainfo (Notes *notes)
                 return;
         }
 
+        /* Block the handler, so we don't respond to our own change.
+         */
+        gtk_signal_handler_block_by_func (GTK_OBJECT (notes->file),
+                                          set_note_text_from_metadata,
+                                          notes);
+                                          
         notes_text = gtk_editable_get_chars (GTK_EDITABLE (notes->note_text_field), 0 , -1);
         nautilus_file_set_metadata (notes->file, NAUTILUS_METADATA_KEY_ANNOTATION, NULL, notes_text);
         g_free (notes_text);
+        
+        gtk_signal_handler_unblock_by_func (GTK_OBJECT (notes->file),
+                                            set_note_text_from_metadata,
+                                            notes);
 }
 
 static void
@@ -169,6 +202,17 @@ on_text_field_focus_out_event (GtkWidget *widget,
 static void
 do_destroy (GtkObject *obj, Notes *notes)
 {
+	/* If the widget is being destroyed first, make sure the bonobo object
+	 * that owns it is not destroyed half-way through the widget destroy
+	 * process by reffing the bonobo object and only unreffing it at idle
+	 * time. If the bonobo object is being destroyed first, then don't do
+	 * this because it exposes a bonobo bug.
+	 */
+	if (!GTK_OBJECT_DESTROYED (GTK_OBJECT (notes->view))) {
+		bonobo_object_ref (BONOBO_OBJECT (notes->view));
+		bonobo_object_idle_unref (BONOBO_OBJECT (notes->view));
+        }
+	
         done_with_file (notes);
         g_free (notes->uri);
         g_free (notes);
