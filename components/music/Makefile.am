@@ -1,3 +1,5 @@
+NULL =
+
 INCLUDES =					\
 	-DPREFIX=\"$(prefix)\"			\
 	-DG_LOG_DOMAIN=\"Nautilus-Music\"	\
@@ -9,12 +11,6 @@ INCLUDES =					\
 	$(OAF_CFLAGS)				\
 	$(BONOBO_CFLAGS)			\
 	$(VFS_CFLAGS)
-
-oafdir = $(datadir)/oaf
-
-oaf_DATA =					\
-	nautilus-music-view.oafinfo
-
 
 bin_PROGRAMS =					\
 	nautilus-music-view
@@ -64,4 +60,14 @@ nautilus_music_view_LDADD =			\
 	$(VFS_LIBS)					\
 	$(GNORBA_LIBS)
 
-EXTRA_DIST = $(oaf_DATA)
+oafdir = $(datadir)/oaf
+
+oaf_in_files =					\
+	Nautilus_View_music.oaf.in		\
+	$(NULL)
+
+oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+
+@XML_I18N_MERGE_OAF_RULE@
+
+EXTRA_DIST=$(oaf_DATA) $(oaf_in_files)

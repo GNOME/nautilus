@@ -35,19 +35,6 @@ hyperbola_SOURCES=		\
 	hyperbola-nav-index.c	\
 	hyperbola-nav-search.c
 
-oafdir=$(datadir)/oaf
-
-# These are broken:
-#
-#	help-search.oafinfo
-#	help-index.oafinfo
-#
-
-oaf_DATA=\
-	help-factory.oafinfo \
-	help-contents.oafinfo \
-	$(NULL)
-
 mapdatadir=$(datadir)/hyperbola/maps
 mapdata_DATA=pages.map
 
@@ -61,5 +48,14 @@ libvfs_help_la_LIBADD  = $(GLIB_LIBS)
 modulesconfdir=$(sysconfdir)/vfs/modules
 modulesconf_DATA = help-methods.conf
 
-EXTRA_DIST=pages.map $(oaf_DATA) help-methods.conf
+oafdir = $(datadir)/oaf
+oaf_in_files =					\
+	Nautilus_View_help.oaf.in		\
+	$(NULL)
+oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+
+@XML_I18N_MERGE_OAF_RULE@
+
+
+EXTRA_DIST=pages.map $(oaf_in_files) $(oaf_DATA) help-methods.conf
 

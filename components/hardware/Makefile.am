@@ -1,21 +1,28 @@
+NULL=
+
 SUBDIRS=icons
 
-INCLUDES =					\
-	-DPREFIX=\"$(prefix)\"			\
-	-DG_LOG_DOMAIN=\"Nautilus-Hardware\"	\
-	-I$(top_srcdir)				\
-	-I$(top_builddir)			\
-	$(GCONF_CFLAGS) 			\
-	$(VFS_CFLAGS) 				\
-	$(BONOBO_CFLAGS)			\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	$(GNOMEUI_CFLAGS)
+INCLUDES =						\
+	-DPREFIX=\"$(prefix)\"				\
+	-DG_LOG_DOMAIN=\"Nautilus-Hardware\"		\
+	-I$(top_srcdir)					\
+	-I$(top_builddir)				\
+	$(GCONF_CFLAGS)					\
+	$(VFS_CFLAGS)					\
+	$(BONOBO_CFLAGS)				\
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
+	$(GNOMEUI_CFLAGS)				\
+	$(NULL)
 
 oafdir = $(datadir)/oaf
 
-oaf_DATA =					\
-	nautilus-hardware-view.oafinfo
+oaf_in_files =					\
+	Nautilus_View_hardware.oaf.in		\
+	$(NULL)
 
+oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+
+@XML_I18N_MERGE_OAF_RULE@
 
 bin_PROGRAMS =					\
 	nautilus-hardware-view
@@ -34,4 +41,5 @@ nautilus_hardware_view_LDADD =			\
 	$(VFS_LIBS)					\
 	$(GNORBA_LIBS)
 
-EXTRA_DIST = $(oaf_DATA)
+EXTRA_DIST = $(oaf_DATA) $(oaf_in_files)
+

@@ -23,19 +23,22 @@ SUBDIRS =			\
 	po 			\
 	$(NULL)
 
-EXTRA_DIST=			\
-	COPYING.LIB 		\
-	RPMs-README		\
-	HACKING			\
-	MAINTAINERS		\
-	nautilus.spec.in 	\
-	nautilus-clean.sh	\
-	nautilus.desktop	\
-	nautilus-launch-icon.png \
-	ChangeLog-200001018	\
-	ChangeLog-20000414	\
-	ChangeLog-20000625	\
-	ChangeLog-20000831	\
+EXTRA_DIST=					\
+	COPYING.LIB				\
+	RPMs-README				\
+	HACKING					\
+	MAINTAINERS				\
+	nautilus.spec.in			\
+	nautilus-clean.sh			\
+	nautilus.desktop			\
+	nautilus-launch-icon.png		\
+	ChangeLog-200001018			\
+	ChangeLog-20000414			\
+	ChangeLog-20000625			\
+	ChangeLog-20000831			\
+	xml-i18n-extract			\
+	xml-i18n-merge				\
+	xml-i18n-update				\
 	$(NULL)
 
 appicondir = $(datadir)/pixmaps

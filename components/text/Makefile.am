@@ -16,13 +16,6 @@ INCLUDES =					\
 	$(BONOBO_CFLAGS)			\
 	$(VFS_CFLAGS)
 
-oafdir = $(datadir)/oaf
-oaf_DATA =					\
-	nautilus-text-view.oafinfo
-
-uidir = $(datadir)/gnome/ui
-ui_DATA = nautilus-text-view-ui.xml
-
 bin_PROGRAMS =					\
 	nautilus-text-view
 
@@ -42,7 +35,17 @@ nautilus_text_view_LDADD =			\
 
 OBJECT_DIRECTORY_LIBS = $(GNOME_LIBS) $(OAF_LIBS)
 
-EXTRA_DIST = 			\
-	$(oaf_DATA)		\
-	$(ui_DATA)		\
+uidir = $(datadir)/gnome/ui
+ui_DATA = nautilus-text-view-ui.xml
+
+oafdir = $(datadir)/oaf
+oaf_in_files =					\
+	Nautilus_View_text.oaf.in		\
 	$(NULL)
+oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+
+@XML_I18N_MERGE_OAF_RULE@
+
+EXTRA_DIST = $(oaf_in_files) $(oaf_DATA) $(ui_DATA) 
+
+

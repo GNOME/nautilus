@@ -14,12 +14,6 @@ INCLUDES =								\
 	$(VFS_CFLAGS) 							\
 	$(NULL)
 
-oafdir = $(datadir)/oaf
-
-oaf_DATA =								\
-	nautilus-change-password-view.oafinfo
-
-
 bin_PROGRAMS =								\
 	nautilus-change-password-view
 
@@ -42,5 +36,11 @@ nautilus_change_password_view_LDADD =						\
 	$(OAF_LIBS)							\
 	$(AMMONITE_LIBS)						\
 	$(NULL)
+
+oafdir = $(datadir)/oaf
+oaf_in_files = Nautilus_View_change-password.oaf.in
+oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+
+@XML_I18N_MERGE_OAF_RULE@
 
 EXTRA_DIST = $(oaf_DATA)

@@ -9,7 +9,6 @@ SUBDIRS = \
 	trilobite \
 	nautilus-dependent-shared \
 	$(INSTALL_SERVICE) \
-	time \
 	login \
 	summary \
 	vault \

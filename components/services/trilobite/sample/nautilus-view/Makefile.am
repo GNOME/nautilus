@@ -13,12 +13,6 @@ INCLUDES =								\
 	$(GCONF_CFLAGS) 						\
 	$(NULL)
 
-oafdir = $(datadir)/oaf
-
-oaf_DATA =								\
-	nautilus-sample-service-view.oafinfo
-
-
 bin_PROGRAMS =								\
 	nautilus-sample-service-view
 
@@ -41,4 +35,14 @@ nautilus_sample_service_view_LDADD =				\
 	$(OAF_LIBS)					\
 	$(NULL)
 
-EXTRA_DIST = $(oaf_DATA)
+
+oafdir = $(datadir)/oaf
+oaf_in_files =					\
+	Nautilus_View_service-sample.oaf.in		\
+	$(NULL)
+oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+
+@XML_I18N_MERGE_OAF_RULE@
+
+
+EXTRA_DIST = $(oaf_in_files) $(oaf_DATA)

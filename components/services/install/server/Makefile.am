@@ -25,11 +25,6 @@ INCLUDES = \
 pixmapdir = $(datadir)/pixmaps
 pixmap_DATA = trilobite-eazel-install-service.png
 
-# CORBA magic
-
-oafdir = $(datadir)/oaf
-oaf_DATA = trilobite-eazel-install-service.oafinfo
-
 # make the auto-generated files depend on a installstamp file.
 # this is to ensure the individual files wait for each other before
 # proceeding which is needed in parallel makes
@@ -54,10 +49,20 @@ trilobite_eazel_install_service_LDADD =								\
 	$(BONOBO_LIBS) 										\
 	$(NULL)
 
+# CORBA magic
+
+oafdir = $(datadir)/oaf
+oaf_in_files =					\
+	Trilobite_Service_install.oaf.in	\
+	$(NULL)
+oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+
+@XML_I18N_MERGE_OAF_RULE@
 
 ## Extra stuff
 
-EXTRA_DIST = \
-	$(oaf_DATA)		\
-	$(pixmap_DATA) 		\
+EXTRA_DIST =					\
+	$(oaf_in_files)				\
+	$(oaf_DATA)				\
+	$(pixmap_DATA)				\
 	$(NULL)

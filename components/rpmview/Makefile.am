@@ -16,9 +16,6 @@ INCLUDES = \
 	$(VFS_CFLAGS) \
 	$(NULL)
 
-oafdir = $(datadir)/oaf
-oaf_DATA = nautilus-rpm-view.oafinfo
-
 bin_PROGRAMS = nautilus-rpm-view
 
 if EAZEL_SERVICES
@@ -53,4 +50,16 @@ nautilus_rpm_view_LDADD =			\
 	$(RPM_LIBS) 				\
 	$(NULL)
 
-EXTRA_DIST = $(oaf_DATA)
+
+oafdir = $(datadir)/oaf
+
+oaf_in_files =					\
+	Nautilus_View_rpm.oaf.in		\
+	$(NULL)
+
+oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+
+@XML_I18N_MERGE_OAF_RULE@
+
+EXTRA_DIST=$(oaf_DATA) $(oaf_in_files)
+

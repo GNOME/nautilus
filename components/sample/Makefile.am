@@ -17,12 +17,6 @@ INCLUDES =					\
 	$(BONOBO_CFLAGS)			\
 	$(OAF_CFLAGS)
 
-oafdir = $(datadir)/oaf
-oaf_DATA = nautilus-sample-content-view.oafinfo
-
-uidir = $(datadir)/gnome/ui
-ui_DATA = nautilus-sample-content-view-ui.xml
-
 bin_PROGRAMS =					\
 	nautilus-sample-content-view
 
@@ -39,4 +33,16 @@ nautilus_sample_content_view_LDADD =		\
 	$(VFS_LIBS)				\
 	$(OAF_LIBS)
 
-EXTRA_DIST = $(oaf_DATA) $(ui_DATA)
+uidir = $(datadir)/gnome/ui
+ui_DATA = nautilus-sample-content-view-ui.xml
+
+oafdir = $(datadir)/oaf
+oaf_in_files =					\
+	Nautilus_View_sample.oaf.in		\
+	$(NULL)
+oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+
+@XML_I18N_MERGE_OAF_RULE@
+
+
+EXTRA_DIST = $(oaf_in_files) $(oaf_DATA) $(ui_DATA) 

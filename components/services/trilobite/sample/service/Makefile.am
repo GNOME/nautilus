@@ -20,10 +20,6 @@ INCLUDES =								\
 	$(XML_CFLAGS) 							\
 	$(NULL)
 
-oafdir = $(datadir)/oaf
-
-oaf_DATA = trilobite-eazel-sample-service.oafinfo
-
 bin_PROGRAMS = trilobite-eazel-sample-service
 
 trilobite_eazel_sample_service_SOURCES =			\
@@ -38,6 +34,16 @@ trilobite_eazel_sample_service_LDADD =				\
 	$(BONOBO_LIBS) \
 	$(NULL)
 
-EXTRA_DIST = 							\
-	$(oaf_DATA)						\
+oafdir = $(datadir)/oaf
+oaf_in_files = Trilobite_Service_sample.oaf.in
+oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+
+@XML_I18N_MERGE_OAF_RULE@
+
+EXTRA_DIST =					\
+	$(oaf_in_files)				\
+	$(oaf_DATA)				\
 	$(NULL)
+
+
+

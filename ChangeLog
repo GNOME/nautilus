@@ -1,3 +1,114 @@
+2001-01-05  Maciej Stachowiak  <mjs@eazel.com>
+
+	xml-i18n-toolized Nautilus (plus a bit of other cleanup) as part
+	of resolving bug 2693 (I will consider my work done once I have
+	also handled Bonobo).
+
+	* autogen.sh, configure.in: xml-i18n-toolize
+	* .cvsignore: ignore xml-i18n scripts
+	* Makefile.am: distribute xml-i18n-scripts
+
+	* components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in:
+	Renamed from components/adapter/nautilus-adapter.oafinfo; mark
+	translatable strings transalatable.
+	* components/adapter/Makefile.am: Deal w/ oaf file rename, do
+	merge.
+	* components/adapter/.cvsignore: Ignore .oaf file.
+
+	* components/hardware/.cvsignore, components/hardware/Makefile.am,
+	components/hardware/Nautilus_View_hardware.oaf.in,
+	components/hardware/nautilus-hardware-view.oafinfo: Ditto.
+	* components/history/.cvsignore, components/history/Makefile.am,
+	components/history/Nautilus_View_history.oaf.in,
+	components/history/nautilus-history-view.oafinfo: Ditto.
+	
+	* components/image-viewer/.cvsignore,
+	components/image-viewer/Makefile.am,
+	components/image-viewer/Nautilus_View_image.oaf.in,
+	components/image-viewer/nautilus-image-view.oafinfo: Ditto.
+
+	* components/loser/content/.cvsignore,
+	components/loser/content/Makefile.am,
+	components/loser/content/Nautilus_View_content-loser.oaf.in,
+	components/loser/content/nautilus-content-loser.oafinfo: Ditto.
+	
+	* components/loser/sidebar/.cvsignore,
+	components/loser/sidebar/Makefile.am,
+	components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in,
+	components/loser/sidebar/nautilus-sidebar-loser.oafinfo: Ditto.
+	* components/mozilla/.cvsignore, components/mozilla/Makefile.am,
+	components/mozilla/Nautilus_View_mozilla.oaf.in,
+	components/mozilla/nautilus-mozilla-content-view.oafinfo: Ditto.
+	* components/music/.cvsignore, components/music/Makefile.am,
+	components/music/Nautilus_View_music.oaf.in,
+	components/music/nautilus-music-view.oafinfo: Ditto.
+	* components/notes/.cvsignore, components/notes/Makefile.am,
+	components/notes/Nautilus_View_notes.oaf.in,
+	components/notes/nautilus-notes.oafinfo: Ditto.
+	* components/rpmview/.cvsignore, components/rpmview/Makefile.am,
+	components/rpmview/Nautilus_View_rpm.oaf.in,
+	components/rpmview/nautilus-rpm-view.oafinfo: Ditto.
+	* components/sample/.cvsignore, components/sample/Makefile.am,
+	components/sample/Nautilus_View_sample.oaf.in,
+	components/sample/nautilus-sample-content-view.oafinfo: Ditto.
+	* components/services/install/nautilus-view/.cvsignore,
+	components/services/install/nautilus-view/Makefile.am,
+	components/services/install/nautilus-view/Nautilus_View_install.oaf.in,
+	components/services/install/nautilus-view/nautilus-service-install-view.oafinfo:
+	Ditto.
+	* components/services/install/server/.cvsignore,
+	components/services/install/server/Makefile.am,
+	components/services/install/server/Trilobite_Service_install.oaf.in,
+	components/services/install/server/trilobite-eazel-install-service.oafinfo:
+	Ditto.
+	* components/services/login/nautilus-view/.cvsignore,
+	components/services/login/nautilus-view/Makefile.am,
+	components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in,
+	components/services/login/nautilus-view/nautilus-change-password-view.oafinfo:
+	Ditto.
+	* components/services/summary/nautilus-view/.cvsignore,
+	components/services/summary/nautilus-view/Makefile.am,
+	components/services/summary/nautilus-view/Nautilus_View_services-summary.oaf.in,
+	components/services/summary/nautilus-view/nautilus-summary-view.oafinfo: Ditto.
+	* components/services/trilobite/sample/.cvsignore,
+	components/services/trilobite/sample/nautilus-view/Makefile.am,
+	components/services/trilobite/sample/nautilus-view/Nautilus_View_service-sample.oaf.in,
+	components/services/trilobite/sample/nautilus-view/nautilus-sample-service-view.oafinfo:
+	Ditto.
+	* components/services/trilobite/sample/service/.cvsignore,
+	components/services/trilobite/sample/service/Makefile.am,
+	components/services/trilobite/sample/service/Trilobite_Service_sample.oaf.in,
+	components/services/trilobite/sample/service/trilobite-eazel-sample-service.oafinfo:
+	Ditto.
+	* components/text/.cvsignore, components/text/Makefile.am,
+	components/text/Nautilus_View_text.oaf.in,
+	components/text/nautilus-text-view.oafinfo: Ditto.
+	* src/.cvsignore, src/Makefile.am, src/Nautilus_shell.oaf.in,
+	src/nautilus.oafinfo: Ditto.
+	* components/tree/.cvsignore, components/tree/Makefile.am,
+	components/tree/Nautilus_View_tree.oaf.in,
+	components/tree/nautilus-tree-view.oafinfo.shlib: Ditto, and
+	removed ability to build tree view as an exe component (no one was
+	really using it anyway).
+	* components/tree/nautilus-tree-view.oafinfo.exe: Removed.
+	* components/help/.cvsignore, components/help/Makefile.am,
+	components/help/Nautilus_View_help.oaf.in:
+	components/help/help-contents.oafinfo: Ditto, and merged other
+	oafinfo files into Nautilus_View_help.oaf.in, commented out.
+	* components/help/help-factory.oafinfo,
+	components/help/help-index.oafinfo,
+	components/help/help-search.oafinfo: Removed.
+
+	* po/POTFILES.in: Added .oaf.in files.
+	* po/README.tools, po/ui-extract.pl, po/ui-testcases.glade,
+	po/ui-testcases.xml, po/update.pl, po/update.sh: Removed these
+	now-obsolete files.
+
+	* components/services/Makefile.am: Removed time service from build.
+	* components/html/*, components/websearch/*: cvs deleted these
+	obsolete long since non-built components.
+	* ChangeLog-200001018: Renamed to ChangeLog-20001018 (whoops)
+	
 2001-01-04  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-factory.c:

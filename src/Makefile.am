@@ -143,7 +143,10 @@ nautilus_shell_interface_idl_stamp: $(ORBIT_IDL) nautilus-shell-interface.idl $(
 TESTS=check-nautilus
 
 oafdir = $(datadir)/oaf
-oaf_DATA = nautilus.oafinfo
+oaf_in_files = Nautilus_shell.oaf.in
+oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+
+@XML_I18N_MERGE_OAF_RULE@
 
 uidir = $(datadir)/gnome/ui
 ui_DATA = 					\
@@ -156,7 +159,8 @@ CLEANFILES = \
 	nautilus_shell_interface_idl_stamp	\
 	$(NULL)
 
-EXTRA_DIST = \
+EXTRA_DIST =					\
+	$(oaf_in_files)				\
 	$(oaf_DATA)				\
 	$(ui_DATA)				\
 	check-nautilus				\

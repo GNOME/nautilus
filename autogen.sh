@@ -37,6 +37,11 @@ DIE=0
 	DIE=1
 }
 
+(xml-i18n-toolize --version) < /dev/null > /dev/null 2>&1 || {
+	echo
+	echo "You must have xml-i18n-tools installed to compile $PROJECT."
+}
+
 if test "$DIE" -eq 1; then
 	exit 1
 fi
@@ -61,6 +66,9 @@ echo "Running gettextize...  Ignore non-fatal messages."
 # while making dist.
 echo "no" | gettextize --copy --force
 
+echo "Running xml-i18n-toolize... Ignore non-fatal messages."
+xml-i18n-toolize --copy --force --automake
+
 echo "Running libtoolize"
 libtoolize --copy --force
 
@@ -74,13 +82,6 @@ aclocal $ACLOCAL_FLAGS
 (autoheader --version)  < /dev/null > /dev/null 2>&1 && autoheader
 
 automake -a $am_opt
-
-if [ -r po/Makefile.i18npatch ]; then
-	if grep GENPOT po/Makefile.in.in >/dev/null; 
-	then echo "no need for patching file \`Makefile.in.in'"; 
-	else patch po/Makefile.in.in < po/Makefile.i18npatch; 
-	fi;
-fi 
 
 autoconf
 

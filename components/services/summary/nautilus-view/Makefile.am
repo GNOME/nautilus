@@ -17,9 +17,6 @@ INCLUDES =								\
 	$(VFS_CFLAGS) 							\
 	$(NULL)
 
-oafdir = $(datadir)/oaf
-oaf_DATA = nautilus-summary-view.oafinfo
-
 uidir = $(datadir)/gnome/ui
 ui_DATA = nautilus-summary-view-ui.xml
 
@@ -56,4 +53,12 @@ nautilus_summary_view_LDADD =						\
 	$(AMMONITE_LIBS)						\
 	$(NULL)
 
-EXTRA_DIST = $(oaf_DATA) $(ui_DATA)
+oafdir = $(datadir)/oaf
+oaf_in_files =					\
+	Nautilus_View_services-summary.oaf.in	\
+	$(NULL)
+oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+
+@XML_I18N_MERGE_OAF_RULE@
+
+EXTRA_DIST = $(oaf_in_files) $(oaf_DATA) $(ui_DATA) 
