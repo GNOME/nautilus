@@ -1153,7 +1153,6 @@ cancel_location_change (NautilusWindow *window)
         end_location_change (window);
 }
 
-
 static gboolean
 pending_location_already_showing (NautilusWindow *window)
 {
@@ -1179,6 +1178,23 @@ pending_location_already_showing (NautilusWindow *window)
 	
 	return FALSE;
 }
+
+static gboolean
+another_navigation_window_already_showing (NautilusWindow *the_window)
+{
+	GList *list, *item;
+	
+	list = nautilus_application_get_window_list ();
+	for (item = list; item != NULL; item = item->next) {
+		if (item->data != the_window &&
+		    NAUTILUS_IS_NAVIGATION_WINDOW (item->data)) {
+			return TRUE;
+		}
+	}
+	
+	return FALSE;
+}
+
 
 static void
 load_directory_metadata_callback (NautilusFile *file,
@@ -1248,6 +1264,23 @@ load_directory_metadata_callback (NautilusFile *file,
 		}
         }
 #endif
+        if (NAUTILUS_IS_NAVIGATION_WINDOW (window)) {
+		geometry_string = eel_preferences_get
+				(NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_SAVED_GEOMETRY);
+                if (geometry_string != NULL) {
+			/* Ignore saved window position if a window with the same
+			 * location is already showing. That way the two windows
+			 * wont appear at the exact same location on the screen.
+			 */
+                        eel_gtk_window_set_initial_geometry_from_string 
+                                (GTK_WINDOW (window), 
+                                 geometry_string,
+                                 NAUTILUS_WINDOW_MIN_WIDTH, 
+                                 NAUTILUS_WINDOW_MIN_HEIGHT,
+				 another_navigation_window_already_showing (window));
+                }
+                g_free (geometry_string);
+	}
 
 	
 	/* finish loading the view */

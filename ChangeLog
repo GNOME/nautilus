@@ -1,5 +1,20 @@
 2004-10-26  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-global-preferences.[ch]:
+	Add saved geometry pref
+	
+	* src/nautilus-navigation-window.c:
+	(nautilus_navigation_window_save_geometry), (real_window_close),
+	(nautilus_navigation_window_class_init):
+	Save geometry on window close
+	
+	* src/nautilus-window-manage-views.c:
+	(another_navigation_window_already_showing),
+	(load_directory_metadata_callback):
+	load geometry on open
+
+2004-10-26  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-tree-model.[ch]:
 	Handle volumes for root nodes
 	

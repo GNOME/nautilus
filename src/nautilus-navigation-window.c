@@ -1451,6 +1451,34 @@ nautilus_navigation_window_show (GtkWidget *widget)
 	GTK_WIDGET_CLASS (parent_class)->show (widget);
 }
 
+static void
+nautilus_navigation_window_save_geometry (NautilusNavigationWindow *window)
+{
+	char *geometry_string;
+
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	if (GTK_WIDGET(window)->window &&
+	    !(gdk_window_get_state (GTK_WIDGET(window)->window) & GDK_WINDOW_STATE_MAXIMIZED)) {
+		geometry_string = eel_gtk_window_get_geometry_string (GTK_WINDOW (window));
+		
+		if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_SAVED_GEOMETRY)) {
+			eel_preferences_set
+				(NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_SAVED_GEOMETRY, 
+				 geometry_string);
+		}
+		g_free (geometry_string);
+	}
+}
+
+
+
+static void
+real_window_close (NautilusWindow *window)
+{
+	nautilus_navigation_window_save_geometry (NAUTILUS_NAVIGATION_WINDOW (window));
+}
+
 static void 
 real_get_default_size(NautilusWindow *window, guint *default_width, guint *default_height)
 {
@@ -1481,4 +1509,5 @@ nautilus_navigation_window_class_init (NautilusNavigationWindowClass *class)
 	NAUTILUS_WINDOW_CLASS (class)->prompt_for_location = real_prompt_for_location;
 	NAUTILUS_WINDOW_CLASS (class)->set_title = real_set_title;
 	NAUTILUS_WINDOW_CLASS(class)->get_default_size = real_get_default_size;
+	NAUTILUS_WINDOW_CLASS (class)->close = real_window_close;
 }
