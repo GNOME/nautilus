@@ -28,7 +28,18 @@
  */
 
 #include <config.h>
-#include <gnome.h>
+
+#include <gtk/gtkcheckbutton.h>
+#include <gtk/gtkdrawingarea.h>
+#include <gtk/gtkframe.h>
+#include <gtk/gtkhbbox.h>
+#include <gtk/gtkmain.h>
+#include <gtk/gtkscrolledwindow.h>
+#include <gtk/gtkvbox.h>
+
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-util.h>
 
 #include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>

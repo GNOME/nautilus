@@ -1,3 +1,115 @@
+2001-04-26  Darin Adler  <darin@eazel.com>
+
+	Integrated Miguel's patches that he included in Ximian's version
+	of Nautilus 1.0 after fixing some bugs, fixing all warnings, and
+	adding code to not do the reload of the desktop every 4 seconds if
+	FAM is working. The patch does a lot of things, mostly so that
+	people can switch back and forth between gmc and nautilus more
+	easily.
+	
+	* components/news/nautilus-news.c: Tweaked includes.
+	* src/nautilus-view-frame.c: Tweaked a comment.
+
+Here are notes Miguel included in the patch about the changes he made:
+
+- 2001-04-19  Miguel de Icaza  <miguel@ximian.com>
+
+	* libnautilus-extensions/nautilus-file.c (nautilus_file_get_name):
+	Only return name when we actually loaded the name from the desktop
+	entry.
+
+	* libnautilus-extensions/nautilus-icon-factory.c
+	(nautilus_icon_factory_get_icon_for_file): Compute file_path from
+	file_uri, it was missing in this code path.
+
+- 2001-04-16  Miguel de Icaza  <miguel@ximian.com>
+
+	* libnautilus-extensions/nautilus-file.c
+	(is_special_desktop_gmc_file): Use strcmp not strncmp here. 
+
+	* src/nautilus-window.c (nautilus_window_realize): Use gnome-logo
+	here. 
+
+	* src/file-manager/fm-directory-view.c (activate_callback): Launch
+	desktop entries here. 
+
+- 2001-04-11  Miguel de Icaza  <miguel@ximian.com>
+
+	* src/file-manager/fm-icon-view.c
+	(get_stored_icon_position_callback): Try to load position
+	information from GNOME metadata as well.
+	(icon_position_changed_callback): Store metadata changes to the
+	desktop as well.
+
+	* src/nautilus-first-time-druid.c
+	(nautilus_first_time_druid_show): Disable GMC transition page, as
+	we now share the desktop directory and the data files.
+	(druid_finished): Remove desktop link to Eazel services.
+
+	* libnautilus-extensions/nautilus-file.c
+	(nautilus_file_can_rename): Do not allow to rename x-gnome-apps. 
+	(nautilus_file_get_name): Return the translated name of a desktop
+	file instead of the file name.  
+	Handle URL files in .gnome-desktop directories. 
+	(is_special_desktop_gmc_file): New function: Returns true if a
+	file should be hidden from the desktop-directory display (for
+	sharing the directory with gmc).
+	(filter_hidden_and_backup_partition_callback): If we are scanning
+	the desktop directory, hide gmc metadata files or legacy files.
+
+	* libnautilus-extensions/nautilus-directory-async.c
+	(activation_uri_gmc_link_read_callback): Handle GMC link files
+	correctly (skip the prefix "URL: ")
+
+	* libnautilus-extensions/nautilus-icon-factory.c
+	(nautilus_icon_factory_get_icon_for_file): Load icons from the
+	gnome-metadata for files on the ~/.gnome-desktop directory.
+	(nautilus_icon_factory_get_icon_for_file): Load icons for GNOME
+	.desktop files.
+
+- 2001-04-11  Miguel de Icaza  <miguel@ximian.com>
+
+	* libnautilus-extensions/nautilus-directory-async.c
+	(activation_uri_gmc_link_read_callback): Handle gmc URL
+	links correctly.
+
+- 2001-04-10  Miguel de Icaza  <miguel@ximian.com>
+
+	* libnautilus-extensions/nautilus-file-utilities.c
+	(DESKTOP_DIRECTORY_NAME): Make it .gnome-desktop.
+	(nautilus_get_desktop_directory): Modified to make the nautilus
+	home directory be the normal one.
+
+- 2001-04-09  Miguel de Icaza  <miguel@ximian.com>
+
+	* src/file-manager/fm-desktop-icon-view.c: Eliminated all over the
+	place the loading of the desktop_directory directory from the
+	nautilus api call, and instead just load this value once.
+
+Here are changes that Miguel made, but did not mention in his notes:
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c: Changed
+	the interval for polling to every 4 seconds instead of every 2.
+
+	* libnautilus-extensions/nautilus-file.c: (nautilus_file_rename):
+	Rename GMC URLs by changing their metadata only. This leaves no
+	way to change the real name of the GMC URL file.
+	(nautilus_file_is_in_desktop): New function. Returns TRUE if a
+	file seems to be in the desktop. Uses a simple rule that might
+	give some false positives, but works even for other people's
+	desktop.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_destroy), (do_desktop_rescan),
+	(done_loading), (delayed_init), (fm_desktop_icon_view_initialize):
+	Set up a callback to reload the desktop every 4 seconds.
+	
+	* src/nautilus-application.c: (migrate_gmc_trash),
+	(migrate_old_nautilus_files), (nautilus_application_startup):
+	Rename ~/.gnome-desktop/Trash to ~/.gnome-desktop/Trash-gmc if
+	it's a directory. Move files from ~/.nautilus/desktop to
+	~/.gnome-desktop.
+	
 2001-04-26  Dan Mueth  <dan@eazel.com>
 
 	Updated Nautilus Release Notes for Nautilus 1.0.3.  It
@@ -198,7 +310,7 @@
 2001-04-25  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* nautilus.spec.in: removed mozilla-mail and mozilla-psm dependency
-                            http://bugzilla.eazel.com/show_bug.cgi?id=8020
+	                    http://bugzilla.eazel.com/show_bug.cgi?id=8020
 
 2001-04-25  Dan Mueth  <dan@eazel.com>
 
