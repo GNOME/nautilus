@@ -164,14 +164,14 @@ real_activate (NautilusNavigationBar *navigation_bar)
 	bar = NAUTILUS_SWITCHABLE_SEARCH_BAR (navigation_bar);
 
 	switch (bar->mode) {
+	default:
+		g_assert_not_reached();
 	case NAUTILUS_SIMPLE_SEARCH_BAR:
 		bar_to_activate = NAUTILUS_NAVIGATION_BAR (bar->simple_search_bar);
 		break;
 	case NAUTILUS_COMPLEX_SEARCH_BAR:
 		bar_to_activate = NAUTILUS_NAVIGATION_BAR (bar->complex_search_bar);
 		break;
-	default:
-		g_assert_not_reached();
 	}
 
 	g_assert (bar_to_activate != NULL);

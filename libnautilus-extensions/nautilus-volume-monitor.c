@@ -919,6 +919,7 @@ nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
 	found_volume = FALSE;
 	
 	/* Locate NautilusVolume for mount point */
+	volume = NULL;
 	for (p = monitor->details->volumes; p != NULL; p = p->next) {
 		volume = p->data;
 

@@ -1274,7 +1274,9 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 	height_so_far = 0;
 
 	canvas_item = GNOME_CANVAS_ITEM (item);
-	if (destination_pixbuf != NULL) {
+	if (destination_pixbuf == NULL ) {
+		icon_width = 0;
+	} else {
 		icon_width = details->pixbuf == NULL ? 0 : gdk_pixbuf_get_width (details->pixbuf);
 	}
 	

@@ -555,6 +555,7 @@ insert_one_context_menu_item (FMIconView *view,
 	MenuItemType type;
         
         compute_menu_item_info (view, selection, menu_path, FALSE, &label, &sensitive, &type);
+
         switch (type) {
         case MENU_ITEM_TYPE_CHECK:
         	menu_item = gtk_check_menu_item_new_with_label (label);
@@ -572,7 +573,9 @@ insert_one_context_menu_item (FMIconView *view,
 	case MENU_ITEM_TYPE_RADIO:	/* Not handled here due to required group parameter */
         default:
         	g_assert_not_reached ();
+		menu_item = NULL;
         }
+
         g_free (label);
         gtk_widget_set_sensitive (menu_item, sensitive);
 	gtk_widget_show (menu_item);

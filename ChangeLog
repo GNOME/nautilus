@@ -1,5 +1,23 @@
 2000-09-13  Darin Adler  <darin@eazel.com>
 
+	Fixed uninitialized variable problems found by compiling with -O
+	on. Thanks to Michael Meeks for pointing these out.
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_or_measure_label_text_aa): Added some otherwise-gratuitous
+	code that will make the uninitialized-variable warning quiet down.
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(nautilus_volume_monitor_mount_unmount_removable): Added some
+	otherwise-gratuitous code that will make the
+	uninitialized-variable warning quiet down.
+	* src/file-manager/fm-icon-view.c: (insert_one_context_menu_item):
+	Initialize a variable even in the "not reached" case.
+	* src/nautilus-switchable-search-bar.c: (real_activate): Moved the
+	default "not reached" case so that when asserts are off we don't
+	have an uninitialized variable bug.
+
+2000-09-13  Darin Adler  <darin@eazel.com>
+
 	Fixed the ref. count problem that was causing crash on startup
 	with sidebar panels on. Sorry, I was a bit careless with my
 	earlier check-in.
