@@ -1,16 +1,18 @@
-2001-03-06  Darin Adler  <darin@eazel.com>
-
-	* README: Note that we now use gnome-vfs HEAD, not a branch
-	any more.
-
-2001-03-06  Eskil Heyn Olsen  <eskil@eazel.com>
+2001-03-06  Eskil Heyn Olsen  <eskil@eazel.com>	
 
 	reviewed by: Robey Pointer <robey@eazel.com>
 
+	Fixes 7215 (in the HEAD)
+	
 	* components/services/install/lib/eazel-install-logic2.c:
 	(prune_failed_packages_helper):
 	Fixed a logic error from yesterday (doh, need rest) that would
 	cause unwanted pruning of packages. I should be spanked.
+	
+2001-03-06  Darin Adler  <darin@eazel.com>
+
+	* README: Note that we now use gnome-vfs HEAD, not a branch
+	any more.
 
 2001-03-06  Darin Adler  <darin@eazel.com>
 
