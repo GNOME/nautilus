@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-16 16:53+0200\n"
-"PO-Revision-Date: 2004-08-13 23:45+0000\n"
+"POT-Creation-Date: 2004-08-17 00:00+0100\n"
+"PO-Revision-Date: 2004-08-17 00:05+0000\n"
 "Last-Translator: Duarte Loreto <happyguy_pt@hotmail.com>\n"
 "Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -1179,9 +1179,8 @@ msgid "Default zoom level used by the list view."
 msgstr "Nível de zomm por omissão utilizado na vista de lista."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
-#, fuzzy
 msgid "Desktop computer icon name"
-msgstr "Nome do ícone de área de trabalho para a pasta pessoal"
+msgstr "Nome do ícone de área de trabalho para o computador"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
 msgid "Desktop font"
@@ -1614,13 +1613,12 @@ msgid "The side pane view to show in newly opened windows."
 msgstr "A vista de painel lateral a apresentar em novas janelas."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
-#, fuzzy
 msgid ""
 "This name can be set if you want a custom name for the computer icon on the "
 "desktop."
 msgstr ""
 "Este nome pode ser definido caso deseje um nome personalizado para o ícone "
-"de pasta pessoal na área de trabalho."
+"de computador na área de trabalho."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
 msgid ""
@@ -2142,7 +2140,6 @@ msgstr "atalho"
 #. * (e.g. "folder", "plain text") to file type for symbolic link
 #. * to that kind of file (e.g. "link to folder").
 #.
-#. appended to new link file
 #: libnautilus-private/nautilus-file.c:4744
 #: libnautilus-private/nautilus-file-operations.c:1187
 #, c-format
@@ -2476,9 +2473,6 @@ msgid " (another copy)"
 msgstr " (outra cópia)"
 
 #. localizers: tag used to detect the x11th copy of a file
-#. localizers: tag used to detect the x12th copy of a file
-#. localizers: tag used to detect the x13th copy of a file
-#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1245
 #: libnautilus-private/nautilus-file-operations.c:1247
 #: libnautilus-private/nautilus-file-operations.c:1249
@@ -2514,9 +2508,6 @@ msgid "%s (another copy)%s"
 msgstr "%s (outra cópia)%s"
 
 #. localizers: appended to x11th file copy
-#. localizers: appended to x12th file copy
-#. localizers: appended to x13th file copy
-#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1278
 #: libnautilus-private/nautilus-file-operations.c:1280
 #: libnautilus-private/nautilus-file-operations.c:1282
@@ -3485,7 +3476,6 @@ msgstr "A abrir %s"
 #. TODO: These strings suck pretty badly, but we're in string-freeze,
 #. * and I found these in other places to reuse. We should make them
 #. * better later.
-#. Shouldn't have gotten this error unless there's a : separator.
 #: libnautilus-private/nautilus-program-choosing.c:591
 #: libnautilus-private/nautilus-program-choosing.c:599
 #: libnautilus-private/nautilus-program-choosing.c:604
@@ -3642,9 +3632,8 @@ msgid "Browse the filesystem with the file manager"
 msgstr "Navegar no sistema de ficheiros com o gestor de ficheiros"
 
 #: nautilus.desktop.in.h:2
-#, fuzzy
 msgid "File Browser"
-msgstr "Navegador de Ficheiro: %s"
+msgstr "Navegador de Ficheiros"
 
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
@@ -5232,7 +5221,6 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#. FIXME bugzilla.gnome.org 42538: When can this happen?
 #: src/nautilus-application.c:542 src/nautilus-application.c:560
 #: src/nautilus-application.c:567
 msgid "Nautilus can't be used now, due to an unexpected error."
@@ -5317,87 +5305,76 @@ msgid "%s on %s"
 msgstr "%s em %s"
 
 #: src/nautilus-connect-server-dialog.c:380
-#, fuzzy
 msgid "_Location (URI):"
-msgstr "_Localização (URL):"
+msgstr "_Localização (URI):"
 
 #: src/nautilus-connect-server-dialog.c:424
-#, fuzzy
 msgid "_Server:"
-msgstr "_Nunca"
+msgstr "_Servidor:"
 
 #: src/nautilus-connect-server-dialog.c:443
-#, fuzzy
 msgid "Optional information:"
-msgstr "Informação"
+msgstr "Informação opcional:"
 
 #: src/nautilus-connect-server-dialog.c:455
-#, fuzzy
 msgid "_Share:"
-msgstr "Xisto"
+msgstr "Partil_ha:"
 
 #: src/nautilus-connect-server-dialog.c:476
-#, fuzzy
 msgid "_Port:"
-msgstr "_Formato:"
+msgstr "_Porto:"
 
 #: src/nautilus-connect-server-dialog.c:496
-#, fuzzy
 msgid "_Folder:"
-msgstr "Cortar Pasta"
+msgstr "P_asta"
 
 #: src/nautilus-connect-server-dialog.c:516
-#, fuzzy
 msgid "_User Name:"
-msgstr "_Nome:"
+msgstr "_Utilizador:"
 
 #: src/nautilus-connect-server-dialog.c:543
 msgid "_Name to use for connection:"
-msgstr ""
+msgstr "_Nome a utilizar para a ligação:"
 
 #: src/nautilus-connect-server-dialog.c:600
 msgid "Connect to Server"
 msgstr "Ligar-se a Servidores"
 
 #: src/nautilus-connect-server-dialog.c:612
-#, fuzzy
 msgid "Service _type:"
-msgstr "Serviços em"
+msgstr "_Tipo de serviço:"
 
 #: src/nautilus-connect-server-dialog.c:621
 msgid "SSH"
-msgstr ""
+msgstr "SSH"
 
 #: src/nautilus-connect-server-dialog.c:623
 msgid "Public FTP"
-msgstr ""
+msgstr "FTP público"
 
 #: src/nautilus-connect-server-dialog.c:625
 msgid "FTP (with login)"
-msgstr ""
+msgstr "FTP (com autenticação)"
 
 #: src/nautilus-connect-server-dialog.c:627
-#, fuzzy
 msgid "Windows share"
-msgstr "Unidade Windows Partilhada"
+msgstr "Partilha Windows"
 
 #: src/nautilus-connect-server-dialog.c:629
 msgid "WebDAV (HTTP)"
-msgstr ""
+msgstr "WebDAV (HTTP)"
 
 #: src/nautilus-connect-server-dialog.c:631
 msgid "Secure WebDAV (HTTPS)"
-msgstr ""
+msgstr "WebDAV seguro (HTTPS)"
 
 #: src/nautilus-connect-server-dialog.c:633
-#, fuzzy
 msgid "Custom Location"
-msgstr "Localização:"
+msgstr "Localização Personalizada"
 
 #: src/nautilus-connect-server-dialog.c:684
-#, fuzzy
 msgid "Browse _Network"
-msgstr "Rede Windows"
+msgstr "_Navegar na Rede"
 
 #: src/nautilus-connect-server-dialog.c:690
 msgid "C_onnect"
@@ -5797,12 +5774,10 @@ msgid "nautilus: %s cannot be used with URIs.\n"
 msgstr "nautilus: %s não pode ser utilizado com URIs.\n"
 
 #: src/nautilus-main.c:265
-#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check não pode ser utilizado com outras opções.\n"
 
 #: src/nautilus-main.c:279
-#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry não pode ser utilizado com mais do que um URI.\n"
 
