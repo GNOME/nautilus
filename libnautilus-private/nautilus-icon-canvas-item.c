@@ -38,6 +38,7 @@
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-graphic-effects.h>
 #include <eel/eel-gtk-macros.h>
+#include <eel/eel-pango-extensions.h>
 #include <eel/eel-string.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtksignal.h>
@@ -1273,8 +1274,6 @@ create_label_layout (NautilusIconCanvasItem *item,
 		     const char *text)
 {
 	PangoLayout *layout;
-	PangoAttrList *attr_list;
-	PangoAttribute *attr;
 
 	layout = pango_layout_new (eel_gnome_canvas_get_pango_context (GNOME_CANVAS_ITEM (item)->canvas));
 
@@ -1285,13 +1284,7 @@ create_label_layout (NautilusIconCanvasItem *item,
 
 	/* if it's prelit, and we're in click-to-activate mode, underline the text */
 	if (item->details->is_prelit && in_single_click_mode ()) {
-		attr_list = pango_attr_list_new ();
-		attr = pango_attr_underline_new (PANGO_UNDERLINE_SINGLE);
-		attr->start_index = 0;
-		attr->end_index = strlen (text);
-		pango_attr_list_insert (attr_list, attr);
-		pango_layout_set_attributes (layout, attr_list);
-		pango_attr_list_unref (attr_list);
+		eel_pango_layout_set_underline (layout, PANGO_UNDERLINE_SINGLE);
 	}
 	
 	return layout;

@@ -1,5 +1,16 @@
 2002-01-03  Darin Adler  <darin@bentspoon.com>
 
+	* TODO: Updated.
+
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(create_label_layout): Use eel_pango_layout_set_underline.
+
+	* components/music/nautilus-music-view.c:
+	Don't include EelList.
+
+
+2002-01-03  Darin Adler  <darin@bentspoon.com>
+
 	* libnautilus-private/nautilus-icon-container.c:
 	(start_rubberbanding):
 	Use GnomeCanvasRect instead of EelCanvasRect. We can redo the
