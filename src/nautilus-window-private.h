@@ -18,6 +18,14 @@ typedef enum {
   SYNC_STATE /* Not a real item - a flag */
 } NautilusWindowStateItem;
 
+/* FIXME: Need to migrate window fields into here. */
+struct NautilusWindowDetails
+{
+	guint refresh_bookmarks_menu_idle_id;
+	guint refresh_go_menu_idle_id;
+};
+
+
 void                 nautilus_window_set_state_info                    (NautilusWindow             *window,
 									... /* things to set, plus optional parameters */);
 void                 nautilus_window_set_status                        (NautilusWindow             *window,
@@ -49,5 +57,7 @@ void                 nautilus_window_begin_location_change             (Nautilus
 									NautilusViewFrame          *requesting_view,
 									NautilusLocationChangeType  type,
 									guint                       distance);
+void		     nautilus_window_remove_bookmarks_menu_callback    (NautilusWindow 		   *window);
+void		     nautilus_window_remove_go_menu_callback 	       (NautilusWindow 		   *window);
 
 #endif /* NAUTILUS_WINDOW_PRIVATE_H */

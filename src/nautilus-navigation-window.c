@@ -173,6 +173,8 @@ nautilus_window_class_init (NautilusWindowClass *klass)
 static void
 nautilus_window_init (NautilusWindow *window)
 {
+	window->details = g_new0 (NautilusWindowDetails, 1);
+
 	gtk_quit_add_destroy (1, GTK_OBJECT (window));
 	
 	/* Keep track of sidebar panel changes */
@@ -459,8 +461,11 @@ nautilus_window_destroy (NautilusWindow *window)
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE,
 					      sidebar_panels_changed_callback,
 					      NULL);
-	
+
+	nautilus_window_remove_bookmarks_menu_callback (window);
+	nautilus_window_remove_go_menu_callback (window);
 	nautilus_window_toolbar_remove_theme_callback();
+
 	g_list_free (window->sidebar_panels);
 
 	nautilus_view_identifier_free (window->content_view_id);

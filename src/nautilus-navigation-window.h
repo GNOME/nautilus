@@ -63,8 +63,12 @@ typedef enum {
   NAUTILUS_LOCATION_CHANGE_RELOAD
 } NautilusLocationChangeType;
 
+typedef struct NautilusWindowDetails NautilusWindowDetails;
+
 struct NautilusWindow {
   GnomeApp parent_object;
+
+  NautilusWindowDetails *details;
 
   /** UI stuff **/
   NautilusSidebar *sidebar;

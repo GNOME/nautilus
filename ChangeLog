@@ -1,3 +1,47 @@
+2000-06-16  John Sullivan  <sullivan@eazel.com>
+
+	Some work towards bug 1401 (bookmark icon never updates).
+	No visible effect yet.
+
+	* libnautilus-extensions/nautilus-bookmark.h:
+	Added nautilus_bookmark_get_file prototype, not yet
+	called or implemented.
+	
+	* libnautilus-extensions/nautilus-file.h,
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_check_if_ready): New function, does
+	nothing yet.
+
+	* libnautilus-extensions/nautilus-icon-factory.h:
+	Added nautilus_icon_factory_is_icon_ready_for_file
+	prototype, not yet called or implemented.
+		
+	* src/nautilus-window-menus.c:
+	(nautilus_window_initialize_bookmarks_menu),
+	(nautilus_window_initialize_go_menu),
+	(nautilus_window_remove_bookmarks_menu_callback),
+	(nautilus_window_remove_go_menu_callback),
+	(refresh_bookmarks_menu), 
+	(refresh_bookmarks_menu_idle_callback),
+	(schedule_refresh_bookmarks_menu), (refresh_go_menu),
+	(refresh_go_menu_idle_callback), (schedule_refresh_go_menu):
+	Made the code that rebuilds the Go and Bookmarks menus when
+	there's been a change to the bookmarks use idle handling to
+	batch up requests. This will be important when bookmarks
+	broadcast updates for their icons.
+	
+	* src/nautilus-window-private.h: Defined NautilusWindowDetails
+	struct. We should eventually migrate all of the fields
+	of NautilusWindow in here, but I didn't do that now.
+	Added two fields used by bookmark-menu-updating code.
+	* src/nautilus-window.h: Made a details field using
+	NautilusWindowDetails.
+
+	* src/nautilus-window.c: 
+	(nautilus_window_init): Create details field.
+	(nautilus_window_destroy): Clean up any pending idle bookmark
+	refreshing stuff.
+
 2000-06-16  Rebecka Schulman  <rebecka@eazel.com>
 
 	* libnautilus-extensions/nautilus-global-preferences.c:
@@ -7,7 +51,6 @@
 	* src/nautilus-search-bar.c: (nautilus_search_bar_initialize):
 	* src/nautilus-search-bar.h: 
 	Changed search preferences, and fixed search icon
-	
 	
 2000-06-16  Darin Adler  <darin@eazel.com>
 
@@ -359,7 +402,7 @@
 	* icons/emblem-nowrite.png:
 	new icons from Susan
 	
-2000-06-14  Rebecka Schulman  <rebecka@eazel.com
+2000-06-14  Rebecka Schulman  <rebecka@eazel.com>
 
 	* libnautilus-extensions/nautilus-global-preferences.c:
 	(global_preferences_create_dialog),

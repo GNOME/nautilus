@@ -57,8 +57,10 @@ static void                  clear_appended_bookmark_items                  (Nau
 									     const char             *menu_path,
 									     const char             *last_static_item_path);
 static NautilusBookmarkList *get_bookmark_list                              (void);
-static void                  refresh_bookmarks_in_go_menu                   (NautilusWindow         *window);
-static void                  refresh_bookmarks_in_bookmarks_menu            (NautilusWindow         *window);
+static void                  refresh_go_menu                   		    (NautilusWindow         *window);
+static void                  refresh_bookmarks_menu            		    (NautilusWindow         *window);
+static void		     schedule_refresh_go_menu 		    	    (NautilusWindow 	    *window);
+static void		     schedule_refresh_bookmarks_menu 		    (NautilusWindow 	    *window);
 static void                  edit_bookmarks                                 (NautilusWindow         *window);
 
 
@@ -610,19 +612,19 @@ static void
 nautilus_window_initialize_bookmarks_menu (NautilusWindow *window)
 {
         /* Add current set of bookmarks */
-        refresh_bookmarks_in_bookmarks_menu (window);
+        refresh_bookmarks_menu (window);
 
 	/* Recreate bookmarks part of menu if bookmark list changes
 	 * or if icon theme changes.
 	 */
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (get_bookmark_list ()),
 			                       "contents_changed",
-			                       refresh_bookmarks_in_bookmarks_menu,
+			                       schedule_refresh_bookmarks_menu,
 			   	               GTK_OBJECT (window));
 	 
 	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
 					       "icons_changed",
-					       refresh_bookmarks_in_bookmarks_menu,
+					       schedule_refresh_bookmarks_menu,
 					       GTK_OBJECT (window));
 
 }
@@ -640,12 +642,12 @@ nautilus_window_initialize_go_menu (NautilusWindow *window)
 	 */
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (nautilus_signaller_get_current ()),
 			                       "history_list_changed",
-			                       refresh_bookmarks_in_go_menu,
+			                       schedule_refresh_go_menu,
 			   	               GTK_OBJECT (window));
 	 
 	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
 					       "icons_changed",
-					       refresh_bookmarks_in_go_menu,
+					       schedule_refresh_go_menu,
 					       GTK_OBJECT (window));
 
 }
@@ -1001,20 +1003,41 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         nautilus_window_initialize_go_menu (window);
 }
 
+void
+nautilus_window_remove_bookmarks_menu_callback (NautilusWindow *window)
+{
+        if (window->details->refresh_bookmarks_menu_idle_id != 0) {
+                gtk_idle_remove (window->details->refresh_bookmarks_menu_idle_id);
+		window->details->refresh_bookmarks_menu_idle_id = 0;
+        }
+}
+
+void
+nautilus_window_remove_go_menu_callback (NautilusWindow *window)
+{
+        if (window->details->refresh_go_menu_idle_id != 0) {
+                gtk_idle_remove (window->details->refresh_go_menu_idle_id);
+		window->details->refresh_go_menu_idle_id = 0;
+        }
+}
+
 /**
- * refresh_bookmarks_in_bookmarks_menu:
+ * refresh_bookmarks_menu:
  * 
  * Refresh list of bookmarks at end of Bookmarks menu to match centralized list.
  * @window: The NautilusWindow whose Bookmarks menu will be refreshed.
  **/
 static void
-refresh_bookmarks_in_bookmarks_menu (NautilusWindow *window)
+refresh_bookmarks_menu (NautilusWindow *window)
 {
         NautilusBookmarkList *bookmarks;
 	guint 	bookmark_count;
 	guint	index;
 	
 	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	/* Unregister any pending call to this function. */
+	nautilus_window_remove_bookmarks_menu_callback (window);
 
 	bookmarks = get_bookmark_list ();
 
@@ -1044,19 +1067,45 @@ refresh_bookmarks_in_bookmarks_menu (NautilusWindow *window)
 	}	
 }
 
+static gboolean
+refresh_bookmarks_menu_idle_callback (gpointer data)
+{
+	g_assert (NAUTILUS_IS_WINDOW (data));
+
+	refresh_bookmarks_menu (NAUTILUS_WINDOW (data));
+
+        /* Don't call this again (unless rescheduled) */
+        return FALSE;
+}
+
+static void
+schedule_refresh_bookmarks_menu (NautilusWindow *window)
+{
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	if (window->details->refresh_bookmarks_menu_idle_id == 0) {
+                window->details->refresh_bookmarks_menu_idle_id
+                        = gtk_idle_add (refresh_bookmarks_menu_idle_callback,
+                                        window);
+	}	
+}
+
 /**
- * refresh_bookmarks_in_go_menu:
+ * refresh_go_menu:
  * 
  * Refresh list of bookmarks at end of Go menu to match centralized history list.
  * @window: The NautilusWindow whose Go menu will be refreshed.
  **/
 static void
-refresh_bookmarks_in_go_menu (NautilusWindow *window)
+refresh_go_menu (NautilusWindow *window)
 {
 	GSList *p;
 	int index;
 
 	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	/* Unregister any pending call to this function. */
+	nautilus_window_remove_go_menu_callback (window);
 
 	/* Remove old set of history items. */
 	clear_appended_bookmark_items (window, 
@@ -1076,6 +1125,29 @@ refresh_bookmarks_in_go_menu (NautilusWindow *window)
                 g_free (path);
 
                 ++index;
+	}	
+}
+
+static gboolean
+refresh_go_menu_idle_callback (gpointer data)
+{
+	g_assert (NAUTILUS_IS_WINDOW (data));
+
+	refresh_go_menu (NAUTILUS_WINDOW (data));
+
+        /* Don't call this again (unless rescheduled) */
+        return FALSE;
+}
+
+static void
+schedule_refresh_go_menu (NautilusWindow *window)
+{
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	if (window->details->refresh_go_menu_idle_id == 0) {
+                window->details->refresh_go_menu_idle_id
+                        = gtk_idle_add (refresh_go_menu_idle_callback,
+                                        window);
 	}	
 }
 

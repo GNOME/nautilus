@@ -2191,6 +2191,14 @@ nautilus_file_activate_custom (NautilusFile *file, gboolean use_new_window)
 	return FALSE;
 }
 
+gboolean
+nautilus_file_check_if_ready (NautilusFile *file,
+			      GList *file_attributes)
+{
+	/* FIXME: placeholder, need to implement this. */
+	return TRUE;
+}			      
+
 
 void
 nautilus_file_call_when_ready (NautilusFile *file,

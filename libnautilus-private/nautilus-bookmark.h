@@ -66,6 +66,7 @@ NautilusBookmark *    nautilus_bookmark_new_with_icon	    (const char		  *uri,
 							     const char		  *name,
 							     NautilusScalableIcon *icon);
 NautilusBookmark *    nautilus_bookmark_copy                (NautilusBookmark     *bookmark);
+NautilusFile *	      nautilus_bookmark_get_file	    (NautilusBookmark	  *bookmark);
 char *                nautilus_bookmark_get_name            (NautilusBookmark     *bookmark);
 char *                nautilus_bookmark_get_uri             (NautilusBookmark     *bookmark);
 NautilusScalableIcon *nautilus_bookmark_get_icon	    (NautilusBookmark     *bookmark);

@@ -97,6 +97,8 @@ void                    nautilus_file_call_when_ready           (NautilusFile   
 void                    nautilus_file_cancel_callback           (NautilusFile                  *file,
 								 NautilusFileCallback           callback,
 								 gpointer                       callback_data);
+gboolean		nautilus_file_check_if_ready		(NautilusFile		       *file,
+								 GList			       *attributes);
 
 /* Basic attributes for file objects. */
 char *                  nautilus_file_get_name                  (NautilusFile                  *file);
