@@ -52,6 +52,14 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#undef NAUTILUS_FILE_DEBUG_REF
+
+#ifdef NAUTILUS_FILE_DEBUG_REF
+extern void eazel_dump_stack_trace	(const char    *print_prefix,
+					 int		num_levels);
+/* from libleakcheck.so */
+#endif
+
 typedef enum {
 	NAUTILUS_DATE_TYPE_MODIFIED,
 	NAUTILUS_DATE_TYPE_CHANGED,
@@ -103,6 +111,7 @@ nautilus_file_initialize (NautilusFile *file)
 	file->details = g_new0 (NautilusFileDetails, 1);
 }
 
+
 static NautilusFile *
 nautilus_file_new_from_name (NautilusDirectory *directory,
 			     const char *name)
@@ -116,6 +125,11 @@ nautilus_file_new_from_name (NautilusDirectory *directory,
 	file = NAUTILUS_FILE (gtk_object_new (NAUTILUS_TYPE_FILE, NULL));
 	gtk_object_ref (GTK_OBJECT (file));
 	gtk_object_sink (GTK_OBJECT (file));
+
+#ifdef NAUTILUS_FILE_DEBUG_REF
+	printf("%10p ref'd\n", file);
+	eazel_dump_stack_trace ("\t", 10);
+#endif
 
 	nautilus_directory_ref (directory);
 
@@ -221,6 +235,12 @@ nautilus_file_new_from_info (NautilusDirectory *directory,
 	g_return_val_if_fail (info != NULL, NULL);
 
 	file = NAUTILUS_FILE (gtk_object_new (NAUTILUS_TYPE_FILE, NULL));
+
+#ifdef NAUTILUS_FILE_DEBUG_REF
+	printf("%10p ref'd\n", file);
+	eazel_dump_stack_trace ("\t", 10);
+#endif
+
 	gtk_object_ref (GTK_OBJECT (file));
 	gtk_object_sink (GTK_OBJECT (file));
 
@@ -401,6 +421,7 @@ destroy (GtkObject *object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
+
 NautilusFile *
 nautilus_file_ref (NautilusFile *file)
 {
@@ -408,6 +429,12 @@ nautilus_file_ref (NautilusFile *file)
 		return NULL;
 	}
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+#ifdef NAUTILUS_FILE_DEBUG_REF
+	printf("%10p ref'd\n", file);
+	eazel_dump_stack_trace ("\t", 10);
+#endif
+
 	gtk_object_ref (GTK_OBJECT (file));
 	return file;
 }
@@ -420,6 +447,11 @@ nautilus_file_unref (NautilusFile *file)
 	}
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
+
+#ifdef NAUTILUS_FILE_DEBUG_REF
+	printf("%10p unref'd\n", file);
+	eazel_dump_stack_trace ("\t", 10);
+#endif
 
 	gtk_object_unref (GTK_OBJECT (file));
 }
@@ -3933,7 +3965,8 @@ nautilus_file_dump (NautilusFile *file)
 GList *
 nautilus_file_list_ref (GList *list)
 {
-	return nautilus_gtk_object_list_ref (list);
+	g_list_foreach (list, (GFunc) nautilus_file_ref, NULL);
+	return list;
 }
 
 /**
@@ -3945,7 +3978,7 @@ nautilus_file_list_ref (GList *list)
 void
 nautilus_file_list_unref (GList *list)
 {
-	nautilus_gtk_object_list_unref (list);
+	g_list_foreach (list, (GFunc) nautilus_file_unref, NULL);
 }
 
 /**
@@ -3957,7 +3990,8 @@ nautilus_file_list_unref (GList *list)
 void
 nautilus_file_list_free (GList *list)
 {
-	nautilus_gtk_object_list_free (list);
+	nautilus_file_list_unref (list);
+	g_list_free (list);
 }
 
 /**
@@ -3969,7 +4003,7 @@ nautilus_file_list_free (GList *list)
 GList *
 nautilus_file_list_copy (GList *list)
 {
-	return nautilus_gtk_object_list_copy (list);
+	return g_list_copy (nautilus_file_list_ref (list));
 }
 
 /* Extract the top left part of the read-in text. */

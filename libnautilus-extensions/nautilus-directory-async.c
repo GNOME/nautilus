@@ -907,6 +907,12 @@ dequeue_pending_idle_callback (gpointer callback_data)
 				g_list_free_1 (p);
 
 				if (!nautilus_directory_is_file_list_monitored (directory)) {
+					/* FIXME: is this right?
+					 * I would expect to have to ref a file if the directory is monitored,
+					 * not the other way around.
+					 * 
+					 * If it's correct, a comment here would help.
+					 */
 					nautilus_file_ref (file);
 				}
 				changed_files = g_list_prepend (changed_files, file);

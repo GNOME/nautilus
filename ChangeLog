@@ -1,3 +1,35 @@
+2000-10-07  Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(dequeue_pending_idle_callback):
+	Add a FIXME to some unclear or wrong code.
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_notify_files_added),
+	(nautilus_directory_notify_files_removed),
+	(nautilus_directory_notify_files_moved):
+	Fix 3050 - Memory trashing during drag&drop.
+	Files removed from monitored directories did get an
+	unref but they didn't get a ref when added to new
+	monitored directories.s
+	Add FIXMEs to some unclear, wrong or missing code.
+	
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_new_from_name), (nautilus_file_new_from_info),
+	(nautilus_file_ref), (nautilus_file_unref):
+	Add debugging code to help find ref-counting bugs with
+	NautilusFile. Sadly this is not the full ref/unref balance
+	debugger I had originally in mind as it seems to be way harder 
+	to match up refs/unrefs than I thought.
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_list_ref), (nautilus_file_list_unref),
+	(nautilus_file_list_free), (nautilus_file_list_copy):
+	Make these files call nautilus_file_ref/nautilus_file_unref
+	instead of gtk_object_ref/gtk_object_unref. We should either
+	stick to using nautilus_file_ref/unref or get rid of them. 
+	Using both pairs of calls is a mess.
+	
 2000-10-07  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-shell-ui.xml:
