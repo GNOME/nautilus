@@ -522,7 +522,7 @@ static void
 set_initial_window_geometry (NautilusWindow *window)
 {
 	GdkScreen *screen;
-	guint max_width_for_screen, max_height_for_screen;
+	guint max_width_for_screen, max_height_for_screen, min_width, min_height;
 	guint default_width, default_height;
 	
 	screen = gtk_window_get_screen (GTK_WINDOW (window));
@@ -546,10 +546,18 @@ set_initial_window_geometry (NautilusWindow *window)
 	max_width_for_screen = get_max_forced_width (screen);
 	max_height_for_screen = get_max_forced_height (screen);
 
+	if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
+		min_width = NAUTILUS_SPATIAL_WINDOW_MIN_WIDTH;
+		min_height = NAUTILUS_SPATIAL_WINDOW_MIN_HEIGHT;
+	} else {
+		min_width = NAUTILUS_WINDOW_MIN_WIDTH;
+		min_height = NAUTILUS_WINDOW_MIN_HEIGHT;
+	}
+		
 	gtk_widget_set_size_request (GTK_WIDGET (window), 
-				     MIN (NAUTILUS_WINDOW_MIN_WIDTH, 
+				     MIN (min_width, 
 					  max_width_for_screen),
-				     MIN (NAUTILUS_WINDOW_MIN_HEIGHT, 
+				     MIN (min_height, 
 					  max_height_for_screen));
 					  
 	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,

@@ -1199,8 +1199,8 @@ position_and_show_window_callback (NautilusFile *file,
                         eel_gtk_window_set_initial_geometry_from_string 
                                 (GTK_WINDOW (window), 
                                  geometry_string,
-                                 NAUTILUS_WINDOW_MIN_WIDTH, 
-                                 NAUTILUS_WINDOW_MIN_HEIGHT,
+                                 NAUTILUS_SPATIAL_WINDOW_MIN_WIDTH, 
+                                 NAUTILUS_SPATIAL_WINDOW_MIN_HEIGHT,
 				 pending_location_already_showing (window));
                 }
                 g_free (geometry_string);
