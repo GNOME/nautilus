@@ -69,15 +69,8 @@
 static const char *icon_file_name_suffixes[] =
 {
 	".svg",
-	".SVG",
 	".png",
-	".PNG",
-	".gif",
-	".GIF",
 	".jpg",
-	".JPG",
-	".xpm",
-	".XPM"
 };
 
 #define ICON_NAME_BLOCK_DEVICE          "i-blockdev"

@@ -1,5 +1,11 @@
 2001-10-05  Darin Adler  <darin@bentspoon.com>
 
+	* libnautilus-private/nautilus-icon-factory.c: Remove gratuitous
+	suffixes from the icon file search. We now look only for .svg and
+	.png and .jpg files. Lets use .png files most of the time.
+
+2001-10-05  Darin Adler  <darin@bentspoon.com>
+
 	* eazel-logos: removed
 	* libnautilus-private/nautilus-file-utilities.c:
 	(nautilus_pixmap_file): Remove the code to look for Eazel logos.
