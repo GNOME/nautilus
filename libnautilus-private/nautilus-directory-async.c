@@ -106,17 +106,6 @@ static gboolean request_is_satisfied (NautilusDirectory *directory,
 		      		      Request 		*request);
 
 static void
-empty_close_callback (GnomeVFSAsyncHandle *handle,
-		      GnomeVFSResult result,
-		      gpointer callback_data)
-{
-	if (result != GNOME_VFS_OK) {
-		g_warning ("close failed");
-	}
-	/* Do nothing. */
-}
-
-static void
 cancel_directory_counts (NautilusDirectory *directory)
 {
 	if (directory->details->count_in_progress != NULL) {
@@ -476,25 +465,26 @@ metafile_write_failed (NautilusDirectory *directory)
 }
 
 static void
-metafile_write_callback (GnomeVFSAsyncHandle *handle,
-			 GnomeVFSResult result,
-			 gconstpointer buffer,
-			 GnomeVFSFileSize bytes_requested,
-			 GnomeVFSFileSize bytes_read,
-			 gpointer callback_data)
+metafile_write_failure_close_callback (GnomeVFSAsyncHandle *handle,
+				       GnomeVFSResult result,
+				       gpointer callback_data)
 {
 	NautilusDirectory *directory;
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
-	g_assert (directory->details->metafile_write_state->handle == handle);
-	g_assert (directory->details->metafile_write_state->buffer == buffer);
-	g_assert (directory->details->metafile_write_state->size == bytes_requested);
 
-	g_assert (directory->details->metafile_write_state->handle != NULL);
-	gnome_vfs_async_close (directory->details->metafile_write_state->handle,
-			       empty_close_callback,
-			       directory);
-	directory->details->metafile_write_state->handle = NULL;
+	metafile_write_failed (directory);
+}
+
+static void
+metafile_write_success_close_callback (GnomeVFSAsyncHandle *handle,
+				       GnomeVFSResult result,
+				       gpointer callback_data)
+{
+	NautilusDirectory *directory;
+
+	directory = NAUTILUS_DIRECTORY (callback_data);
+	g_assert (directory->details->metafile_write_state->handle == NULL);
 
 	if (result != GNOME_VFS_OK) {
 		metafile_write_failed (directory);
@@ -512,6 +502,30 @@ metafile_write_callback (GnomeVFSAsyncHandle *handle,
 	}
 
 	metafile_write_done (directory);
+}
+
+static void
+metafile_write_callback (GnomeVFSAsyncHandle *handle,
+			 GnomeVFSResult result,
+			 gconstpointer buffer,
+			 GnomeVFSFileSize bytes_requested,
+			 GnomeVFSFileSize bytes_read,
+			 gpointer callback_data)
+{
+	NautilusDirectory *directory;
+
+	directory = NAUTILUS_DIRECTORY (callback_data);
+	g_assert (directory->details->metafile_write_state->handle == handle);
+	g_assert (directory->details->metafile_write_state->buffer == buffer);
+	g_assert (directory->details->metafile_write_state->size == bytes_requested);
+
+	g_assert (directory->details->metafile_write_state->handle != NULL);
+	gnome_vfs_async_close (directory->details->metafile_write_state->handle,
+			       result == GNOME_VFS_OK
+			       ? metafile_write_success_close_callback
+			       : metafile_write_failure_close_callback,
+			       directory);
+	directory->details->metafile_write_state->handle = NULL;
 }
 
 static void

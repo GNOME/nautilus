@@ -61,5 +61,7 @@ void                 nautilus_window_begin_location_change             (Nautilus
 									guint                       distance);
 void		     nautilus_window_remove_bookmarks_menu_callback    (NautilusWindow 		   *window);
 void		     nautilus_window_remove_go_menu_callback 	       (NautilusWindow 		   *window);
+void		     nautilus_window_remove_bookmarks_menu_items       (NautilusWindow 		   *window);
+void		     nautilus_window_remove_go_menu_items 	       (NautilusWindow 		   *window);
 
 #endif /* NAUTILUS_WINDOW_PRIVATE_H */

@@ -644,12 +644,11 @@ append_bookmark_to_menu (NautilusWindow *window,
 		 bookmark_holder, (GDestroyNotify) bookmark_holder_free);
 
 	/* Let's get notified whenever a bookmark changes. */
-	gtk_signal_connect_object_while_alive
-		(GTK_OBJECT (bookmark), "changed",
-		 is_bookmarks_menu
-		 ? schedule_refresh_dynamic_bookmarks
-		 : schedule_refresh_go_menu,
-		 GTK_OBJECT (window));
+	gtk_signal_connect_object (GTK_OBJECT (bookmark), "changed",
+				   is_bookmarks_menu
+				   ? schedule_refresh_dynamic_bookmarks
+				   : schedule_refresh_go_menu,
+				   GTK_OBJECT (window));
 }
 
 static char *
@@ -1417,6 +1416,22 @@ nautilus_window_remove_go_menu_callback (NautilusWindow *window)
                 gtk_idle_remove (window->details->refresh_go_menu_idle_id);
 		window->details->refresh_go_menu_idle_id = 0;
         }
+}
+
+void
+nautilus_window_remove_bookmarks_menu_items (NautilusWindow *window)
+{
+	remove_bookmarks_after (window, 
+				NAUTILUS_MENU_PATH_BOOKMARKS_MENU, 
+				NAUTILUS_MENU_PATH_EDIT_BOOKMARKS_ITEM);
+}
+
+void
+nautilus_window_remove_go_menu_items (NautilusWindow *window)
+{
+	remove_bookmarks_after (window, 
+				NAUTILUS_MENU_PATH_GO_MENU, 
+				NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_HISTORY);
 }
 
 static void

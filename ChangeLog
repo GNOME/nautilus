@@ -1,3 +1,28 @@
+2000-08-04  Darin Adler  <darin@eazel.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(bonobo_control_activate_callback): Fix bug where we would leak
+	a remote UI handler. This caused bad problems when opening and
+	closing windows with the undo management. This fixes bugs 1949
+	and 1259.
+	
+	* src/nautilus-window-private.h:
+	* src/nautilus-window.c: (nautilus_window_destroy):
+	* src/nautilus-window-menus.c: (append_bookmark_to_menu),
+	(nautilus_window_remove_go_menu_callback),
+	(nautilus_window_remove_bookmarks_menu_items),
+	(nautilus_window_remove_go_menu_items):
+	Fix bookmark signals to properly disconnect when the window goes
+	away. The old way of using connect_while_alive would not work
+	because we need to disconnect the signals one at a time sometimes
+	too and it's illegal to disconnect a "while_alive" signal any
+	other way.
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(metafile_write_failure_close_callback),
+	(metafile_write_success_close_callback), (metafile_write_callback):
+	Fix handling of error codes from close when writing a metafile.
+	
 2000-08-04  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/tree/nautilus-tree-view.c: (insert_hack_node,
