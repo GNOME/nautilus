@@ -76,6 +76,7 @@ struct _NautilusServiceInstallViewDetails {
 	guint		cylon_timer;
 	int		using_local_file;
 	gboolean	failure;
+	gboolean	cancelled;
 };
 
 

@@ -75,6 +75,8 @@ static void       nautilus_service_install_view_destroy          (GtkObject				*
 static void       service_install_load_location_callback         (NautilusView				*nautilus_view,
 								  const char				*location,
 								  NautilusServiceInstallView		*view);
+static void	  service_install_stop_loading_callback		 (NautilusView				*nautilus_view,
+								  NautilusServiceInstallView		*view);
 static void       generate_install_form                          (NautilusServiceInstallView		*view);
 static void       nautilus_service_install_view_update_from_uri  (NautilusServiceInstallView		*view,
 								  const char				*uri);
@@ -237,12 +239,15 @@ nautilus_service_install_view_initialize (NautilusServiceInstallView *view)
 			    "load_location",
 			    GTK_SIGNAL_FUNC (service_install_load_location_callback), 
 			    view);
+	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view),
+			    "stop_loading",
+			    GTK_SIGNAL_FUNC (service_install_stop_loading_callback),
+			    view);
 
 	background = nautilus_get_widget_background (GTK_WIDGET (view));
 	nautilus_background_set_color (background, SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
 
 	gtk_widget_show (GTK_WIDGET (view));
-
 }
 
 static void
@@ -574,12 +579,77 @@ nautilus_service_install_dependency_check (EazelInstallCallback *cb, const Packa
 }
 
 
-/* comment from above applies here too. */
-static void 
-nautilus_service_install_preflight_check (EazelInstallCallback *cb, int total_bytes, int total_packages,
+/* do what gnome ought to do automatically */
+static void
+reply_callback (int reply, gboolean *answer)
+{
+	*answer = (reply == 0);
+}
+
+static gboolean
+nautilus_service_install_preflight_check (EazelInstallCallback *cb, const GList *packages,
+					  int total_bytes, int total_packages,
 					  NautilusServiceInstallView *view)
 {
+	GtkWidget *dialog;
+	GtkWidget *toplevel;
+	GString *message;
+	gboolean answer;
+	PackageData *package;
+	GList *iter;
+	GList *package_list;
 	char *out;
+
+	/* no longer "loading" anything */
+	nautilus_view_report_load_complete (view->details->nautilus_view);
+	/* turn off the cylon and show "real" progress */
+	turn_cylon_off (view, 0.0);
+
+	toplevel = gtk_widget_get_toplevel (view->details->message_box);
+
+	/* assemble initial list of packages to browse */
+	package_list = NULL;
+	for (iter = g_list_first ((GList *)packages); iter; iter = g_list_next (iter)) {
+		package_list = g_list_append (package_list, iter->data);
+	}
+
+	message = g_string_new ("");
+	message = g_string_append (message, _("I'm about to install the following packages:\n\n"));
+
+	/* treat package_list as a stack -- remove one package, print it, and then prepend any dependent
+	 * packages back to the stack for processing.
+	 */
+	while (package_list) {
+		package = (PackageData *) (package_list->data);
+		package_list = g_list_remove (package_list, package_list->data);
+	        g_string_sprintfa (message, "%s %s\n", package->name, package->version);
+
+		for (iter = g_list_first (package->soft_depends); iter; iter = g_list_next (iter)) {
+			package_list = g_list_prepend (package_list, iter->data);
+		}
+		for (iter = g_list_first (package->hard_depends); iter; iter = g_list_next (iter)) {
+			package_list = g_list_prepend (package_list, iter->data);
+		}
+	}
+
+	message = g_string_append (message, _("\nIs this okay?"));
+
+	if (GTK_IS_WINDOW (toplevel)) {
+		dialog = gnome_ok_cancel_dialog_parented (message->str, (GnomeReplyCallback)reply_callback,
+							  &answer, GTK_WINDOW (toplevel));
+	} else {
+		dialog = gnome_ok_cancel_dialog (message->str, (GnomeReplyCallback)reply_callback,
+						 &answer);
+	}
+	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+
+	gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+	g_string_free (message, TRUE);
+
+	if (answer == FALSE) {
+		view->details->cancelled = TRUE;
+		return answer;
+	}
 
 	if (total_packages == 1) {
 		out = g_strdup (_("Preparing to install 1 package"));
@@ -590,9 +660,7 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb, int total_by
 	g_free (out);
 
 	view->details->current_package = 0;
-
-	/* turn off the cylon and show "real" progress */
-	turn_cylon_off (view, 0.0);
+	return answer;
 }
 
 
@@ -603,6 +671,9 @@ nautilus_service_install_download_failed (EazelInstallCallback *cb, const char *
 	char *out;
 
 	turn_cylon_off (view, 0.0);
+
+	/* no longer "loading" anything */
+	nautilus_view_report_load_complete (view->details->nautilus_view);
 
 	out = g_strdup_printf (_("Download of package %s failed!"), name);
 	show_overall_feedback (view, out);
@@ -685,6 +756,9 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 {
 	char *message;
 
+	/* no longer "loading" anything */
+	nautilus_view_report_load_complete (view->details->nautilus_view);
+
 	if (view->details->failure) {
 		success = FALSE;
 		view->details->failure = FALSE;
@@ -696,6 +770,8 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 
 	if (success) {
 		message = _("Installation complete!");
+	} else if (view->details->cancelled) {
+		message = _("Installation aborted.");
 	} else {
 		message = _("Installation failed!");
 	}
@@ -708,6 +784,8 @@ static void
 nautilus_service_install_failed (EazelInstallCallback *cb, const PackageData *pack, NautilusServiceInstallView *view)
 {
 	char *message;
+
+	g_assert (NAUTILUS_IS_SERVICE_INSTALL_VIEW (view));
 
 	turn_cylon_off (view, 0.0);
 
@@ -724,6 +802,38 @@ nautilus_service_install_failed (EazelInstallCallback *cb, const PackageData *pa
 	message = _("Installation failed!\n(Probably a dependency issue.)");
 	show_overall_feedback (view, message);
 	show_dialog_and_run_away (view, message);
+}
+
+
+static gboolean
+nautilus_service_install_delete_files (EazelInstallCallback *cb, NautilusServiceInstallView *view)
+{
+	GtkWidget *toplevel;
+	GtkWidget *dialog;
+	gboolean answer;
+	const char *message;
+
+	g_assert (NAUTILUS_IS_SERVICE_INSTALL_VIEW (view));
+
+	message = _("Should I delete the leftover RPM files?");
+
+	if (view->details->cancelled ||
+	    view->details->failure) {
+		/* don't bother to ask on failure -- just clean up */
+		return TRUE;
+	}
+
+	toplevel = gtk_widget_get_toplevel (view->details->message_box);
+	if (GTK_IS_WINDOW (toplevel)) {
+		dialog = gnome_question_dialog_parented (message, (GnomeReplyCallback)reply_callback,
+							 &answer, GTK_WINDOW (toplevel));
+	} else {
+		dialog = gnome_question_dialog (message, (GnomeReplyCallback)reply_callback, &answer);
+	}
+	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+
+	gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+	return answer;
 }
 
 
@@ -866,19 +976,21 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	Trilobite_Eazel_Install__set_test_mode (service, FALSE, &ev);
 
 	gtk_signal_connect (GTK_OBJECT (view->details->installer), "download_progress",
-			    nautilus_service_install_downloading, view);
+			    GTK_SIGNAL_FUNC (nautilus_service_install_downloading), view);
 	gtk_signal_connect (GTK_OBJECT (view->details->installer), "download_failed",
 			    nautilus_service_install_download_failed, view);
 	gtk_signal_connect (GTK_OBJECT (view->details->installer), "dependency_check",
 			    nautilus_service_install_dependency_check, view);
 	gtk_signal_connect (GTK_OBJECT (view->details->installer), "preflight_check",
-			    nautilus_service_install_preflight_check, view);
+			    GTK_SIGNAL_FUNC (nautilus_service_install_preflight_check), view);
 	gtk_signal_connect (GTK_OBJECT (view->details->installer), "install_progress",
 			    nautilus_service_install_installing, view);
 	gtk_signal_connect (GTK_OBJECT (view->details->installer), "install_failed",
 			    nautilus_service_install_failed, view);
 	gtk_signal_connect (GTK_OBJECT (view->details->installer), "done",
 			    nautilus_service_install_done, view);
+	gtk_signal_connect (GTK_OBJECT (view->details->installer), "delete_files",
+			    GTK_SIGNAL_FUNC (nautilus_service_install_delete_files), view);
 	eazel_install_callback_install_packages (view->details->installer, categories, NULL, &ev);
 
 	CORBA_exception_free (&ev);
@@ -907,7 +1019,6 @@ nautilus_service_install_view_load_uri (NautilusServiceInstallView	*view,
 
 	generate_install_form (view);
 	nautilus_service_install_view_update_from_uri (view, uri);
-
 }
 
 static void
@@ -921,11 +1032,13 @@ service_install_load_location_callback (NautilusView			*nautilus_view,
 	nautilus_view_report_load_underway (nautilus_view);
 	
 	nautilus_service_install_view_load_uri (view, location);
-	
-	nautilus_view_report_load_complete (nautilus_view);
+}
 
-#if 0
-	go_to_uri (nautilus_view, NEXT_SERVICE_VIEW);
-#endif
+static void
+service_install_stop_loading_callback (NautilusView *nautilus_view, NautilusServiceInstallView *view)
+{
+	g_assert (nautilus_view == view->details->nautilus_view);
 
+	g_warning (">>> trying to stop!");
+	*(char *)0L = 23;
 }
