@@ -3867,17 +3867,13 @@ key_press_event (GtkWidget *widget,
 			handled = TRUE;
 			break;
 		case GDK_F10:
+			/* handle Ctrl+F10 because we want to display the
+			 * background popup even if something is selected.
+			 * The other cases are handled by popup_menu().
+			 */
 			if (event->state & GDK_CONTROL_MASK) {
 				handled = handle_popups (container, event,
 							 "context_click_background");
-			} else if (event->state & GDK_SHIFT_MASK) {
-				if (has_selection (container)) {
-					handled = handle_popups (container, event,
-								 "context_click_selection");
-				} else {
-					handled = handle_popups (container, event,
-								 "context_click_background");
-				}
 			}
 			break;
 		default:
@@ -3900,6 +3896,24 @@ key_press_event (GtkWidget *widget,
 	}
 
 	return handled;
+}
+
+static gboolean
+popup_menu (GtkWidget *widget)
+{
+	NautilusIconContainer *container;
+
+	container = NAUTILUS_ICON_CONTAINER (widget);
+
+	if (has_selection (container)) {
+		handle_popups (container, NULL,
+			       "context_click_selection");
+	} else {
+		handle_popups (container, NULL,
+			       "context_click_background");
+	}
+
+	return TRUE;
 }
 
 static void
@@ -4242,6 +4256,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 	widget_class->button_release_event = button_release_event;
 	widget_class->motion_notify_event = motion_notify_event;
 	widget_class->key_press_event = key_press_event;
+	widget_class->popup_menu = popup_menu;
 	widget_class->get_accessible = get_accessible;
 	widget_class->style_set = style_set;
 	widget_class->expose_event = expose_event;
