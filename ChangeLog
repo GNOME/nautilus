@@ -1,3 +1,31 @@
+2000-05-02  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(load_specific_image_svg): Open .svg file in binary mode.
+	(load_specific_image): Factor out some shared code.
+
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-directory-view.c:
+	Renamed *_cb to *_callback.
+	(remove_custom_icon), (files_have_any_custom_images),
+	(remove_custom_icons_callback), (finish_adding_menu_item),
+	(fm_directory_view_real_append_background_context_menu_items):
+	(append_selection_menu_item),
+	(fm_directory_view_real_append_selection_context_menu_items),
+	(fm_directory_view_real_merge_menus), (update_one_menu_item),
+	(fm_directory_view_real_update_menus),
+	(create_selection_context_menu):
+	Added the "Remove Custom Image" command.
+	(compute_menu_item_info): Made more similar to the one in
+	FMIconView.
+
+	* src/file-manager/fm-icon-view.c (compute_menu_item_info),
+	(append_one_context_menu_item), (insert_one_context_menu_item),
+	(fm_icon_view_append_selection_context_menu_items),
+	(append_bonobo_menu_item), (fm_icon_view_merge_menus),
+	(update_one_menu_item), (fm_icon_view_update_menus):
+	Made more similar to code in FMDirectoryView.
+
 2000-05-02  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c

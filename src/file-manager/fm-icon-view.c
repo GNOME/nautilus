@@ -55,11 +55,10 @@
 #include <libnautilus-extensions/nautilus-icon-container.h>
 
 /* Paths to use when creating & referring to bonobo menu items */
-#define MENU_PATH_BEFORE_STRETCH_SEPARATOR   "/Settings/Before Stretch Separator"
-#define MENU_PATH_STRETCH_ICON   "/Settings/Stretch"
-#define MENU_PATH_RESTORE_STRETCHED_ICONS   "/Settings/Restore"
-#define MENU_PATH_AFTER_STRETCH_SEPARATOR   "/Settings/After Stretch Separator"
-#define MENU_PATH_CUSTOMIZE_ICON_TEXT   "/Settings/Icon Text"
+#define MENU_PATH_STRETCH_ICON "/Settings/Stretch"
+#define MENU_PATH_UNSTRETCH_ICONS "/Settings/Unstretch"
+#define MENU_PATH_AFTER_STRETCH_SEPARATOR "/Settings/After Stretch Separator"
+#define MENU_PATH_CUSTOMIZE_ICON_TEXT "/Settings/Icon Text"
 #define MENU_PATH_AFTER_CUSTOMIZE_SEPARATOR "/Settings/After Customize Separator"
 #define MENU_PATH_LAYOUT_GROUP "/Settings/Layout"
 #define MENU_PATH_AUTO_LAYOUT "/Settings/Auto Layout"
@@ -386,7 +385,7 @@ show_stretch_handles_callback (gpointer ignored, gpointer view)
 	nautilus_icon_container_show_stretch_handles
 		(get_icon_container (FM_ICON_VIEW (view)));
 
-        /* Update menus because Restore item may have changed state */
+        /* Update menus because Stretch and Unstretch items have changed state */
 	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (view));
 }
 
@@ -402,7 +401,7 @@ unstretch_icons_callback (gpointer ignored, gpointer view)
 	nautilus_icon_container_unstretch
 		(get_icon_container (FM_ICON_VIEW (view)));
 
-        /* Update menus because Stretch item may have changed state */
+        /* Update menus because Stretch and Unstretch items have changed state */
 	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (view));
 }
 
@@ -423,12 +422,12 @@ rename_icon_callback (gpointer ignored, gpointer view)
 
 
 static void
-fm_icon_view_compute_menu_item_info (FMIconView *view, 
-				     GList *files, 
-				     const char *menu_path,
-				     gboolean include_accelerator_underbars,
-				     char **return_name,
-				     gboolean *sensitive_return)
+compute_menu_item_info (FMIconView *view, 
+			GList *selection, 
+			const char *menu_path,
+			gboolean include_accelerator_underbars,
+			char **return_name,
+			gboolean *sensitive_return)
 {
 	NautilusIconContainer *icon_container;
 	char *name, *stripped;
@@ -442,10 +441,10 @@ fm_icon_view_compute_menu_item_info (FMIconView *view,
 		/* Current stretching UI only works on one item at a time, so we'll
 		 * desensitize the menu item if that's not the case.
 		 */
-        	*sensitive_return = nautilus_g_list_exactly_one_item (files)
+        	*sensitive_return = nautilus_g_list_exactly_one_item (selection)
 			&& !nautilus_icon_container_has_stretch_handles (icon_container);
-	} else if (strcmp (MENU_PATH_RESTORE_STRETCHED_ICONS, menu_path) == 0) {
-                if (nautilus_g_list_more_than_one_item (files)) {
+	} else if (strcmp (MENU_PATH_UNSTRETCH_ICONS, menu_path) == 0) {
+                if (nautilus_g_list_more_than_one_item (selection)) {
                         name = g_strdup (_("_Restore Icons to Unstretched Size"));
                 } else {
                         name = g_strdup (_("_Restore Icon to Unstretched Size"));
@@ -458,8 +457,8 @@ fm_icon_view_compute_menu_item_info (FMIconView *view,
 	} else if (strcmp (MENU_PATH_RENAME, menu_path) == 0) {
 		/* Modify file name. We only allow this on a single file selection. */
 		name = g_strdup (_("_Rename"));
-		*sensitive_return = nautilus_g_list_exactly_one_item (files)
-			&& nautilus_file_can_rename (files->data);
+		*sensitive_return = nautilus_g_list_exactly_one_item (selection)
+			&& nautilus_file_can_rename (selection->data);
 	} else {
 
 		g_assert_not_reached ();
@@ -477,7 +476,7 @@ fm_icon_view_compute_menu_item_info (FMIconView *view,
 static void
 append_one_context_menu_item (FMIconView *view,
                               GtkMenu *menu,
-                              GList *files,
+                              GList *selection,
                               const char *menu_path,
                               GtkSignalFunc callback)
 {
@@ -485,12 +484,7 @@ append_one_context_menu_item (FMIconView *view,
 	char *label;
 	gboolean sensitive;
         
-        fm_icon_view_compute_menu_item_info (view, 
-					     files, 
-					     menu_path, 
-					     FALSE, 
-					     &label, 
-					     &sensitive); 
+        compute_menu_item_info (view, selection, menu_path, FALSE, &label, &sensitive); 
         menu_item = gtk_menu_item_new_with_label (label);
         g_free (label);
         gtk_widget_set_sensitive (menu_item, sensitive);
@@ -503,7 +497,7 @@ append_one_context_menu_item (FMIconView *view,
 static void
 insert_one_context_menu_item (FMIconView *view,
                               GtkMenu *menu,
-                              GList *files,
+                              GList *selection,
                               const char *menu_path,
                               gint position,
                               GtkSignalFunc callback)
@@ -512,12 +506,7 @@ insert_one_context_menu_item (FMIconView *view,
 	char *label;
 	gboolean sensitive;
         
-        fm_icon_view_compute_menu_item_info (view, 
-					     files, 
-					     menu_path, 
-					     FALSE, 
-					     &label, 
-					     &sensitive); 
+        compute_menu_item_info (view, selection, menu_path, FALSE, &label, &sensitive); 
         menu_item = gtk_menu_item_new_with_label (label);
         g_free (label);
         gtk_widget_set_sensitive (menu_item, sensitive);
@@ -529,7 +518,7 @@ insert_one_context_menu_item (FMIconView *view,
 static void
 fm_icon_view_append_selection_context_menu_items (FMDirectoryView *view,
 						  GtkMenu *menu,
-						  GList *files)
+						  GList *selection)
 {
 	gint position;
 	
@@ -538,28 +527,26 @@ fm_icon_view_append_selection_context_menu_items (FMDirectoryView *view,
 
 	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, 
 				    append_selection_context_menu_items, 
-				    (view, menu, files));
+				    (view, menu, selection));
 
-        append_one_context_menu_item (FM_ICON_VIEW (view), menu, files, 
-                                      MENU_PATH_STRETCH_ICON, 
+        append_one_context_menu_item (FM_ICON_VIEW (view), menu, selection,
+                                      MENU_PATH_STRETCH_ICON,
                                       GTK_SIGNAL_FUNC (show_stretch_handles_callback));
-        append_one_context_menu_item (FM_ICON_VIEW (view), menu, files, 
-                                      MENU_PATH_RESTORE_STRETCHED_ICONS, 
+        append_one_context_menu_item (FM_ICON_VIEW (view), menu, selection,
+                                      MENU_PATH_UNSTRETCH_ICONS,
                                       GTK_SIGNAL_FUNC (unstretch_icons_callback));
 
-
 	/* The Rename item is inserted directly after the Duplicate item created by the FMDirectoryView */
-	position = fm_directory_view_get_context_menu_index(FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE);
-
+	position = fm_directory_view_get_context_menu_index (FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE);
 	if (position == -1) {
-		append_one_context_menu_item (FM_ICON_VIEW (view), menu, files, 
-                                      MENU_PATH_RENAME, 
-                                      GTK_SIGNAL_FUNC (rename_icon_callback));
+		append_one_context_menu_item (FM_ICON_VIEW (view), menu, selection, 
+					      MENU_PATH_RENAME, 
+					      GTK_SIGNAL_FUNC (rename_icon_callback));
 	} else {
 		position++;
-     		insert_one_context_menu_item (FM_ICON_VIEW (view), menu, files, 
-                                      MENU_PATH_RENAME, position,
-                                      GTK_SIGNAL_FUNC (rename_icon_callback));
+     		insert_one_context_menu_item (FM_ICON_VIEW (view), menu, selection, 
+					      MENU_PATH_RENAME, position,
+					      GTK_SIGNAL_FUNC (rename_icon_callback));
 	}
 }
 
@@ -837,7 +824,7 @@ fm_icon_view_get_selection (FMDirectoryView *view)
 static void
 append_bonobo_menu_item (FMIconView *view, 
                          BonoboUIHandler *ui_handler,
-                         GList *files,
+                         GList *selection,
                          const char *path,
                          const char *hint,
                          BonoboUIHandlerCallbackFunc callback,
@@ -846,7 +833,7 @@ append_bonobo_menu_item (FMIconView *view,
         char *label;
         gboolean sensitive;
         
-        fm_icon_view_compute_menu_item_info (view, files, path, TRUE, &label, &sensitive);
+        compute_menu_item_info (view, selection, path, TRUE, &label, &sensitive);
         bonobo_ui_handler_menu_new_item (ui_handler, path, label, hint, 
                                          -1,                            /* Position, -1 means at end */
                                          BONOBO_UI_HANDLER_PIXMAP_NONE, /* Pixmap type */
@@ -899,16 +886,12 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
         selection = fm_directory_view_get_selection (view);
         ui_handler = fm_directory_view_get_bonobo_ui_handler (view);
 
-        bonobo_ui_handler_menu_new_separator (ui_handler,
-                                              MENU_PATH_BEFORE_STRETCH_SEPARATOR,
-                                              -1); 
-
         append_bonobo_menu_item (FM_ICON_VIEW (view), ui_handler, selection,
                                  MENU_PATH_STRETCH_ICON,
                                  _("Make the selected icon stretchable"),
                                  (BonoboUIHandlerCallbackFunc) show_stretch_handles_callback, view);
         append_bonobo_menu_item (FM_ICON_VIEW (view), ui_handler, selection,
-                                 MENU_PATH_RESTORE_STRETCHED_ICONS,
+                                 MENU_PATH_UNSTRETCH_ICONS,
                                  _("Restore each selected icon to its original size"),
                                  (BonoboUIHandlerCallbackFunc) unstretch_icons_callback, view);
 
@@ -963,15 +946,15 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 }
 
 static void
-update_bonobo_menu_item (FMIconView *view, 
-                         BonoboUIHandler *ui_handler,
-                         GList *files,
-                         const char *menu_path)
+update_one_menu_item (FMIconView *view, 
+		      BonoboUIHandler *ui_handler,
+		      GList *selection,
+		      const char *menu_path)
 {
 	char *label;
 	gboolean sensitive;
 
-	fm_icon_view_compute_menu_item_info (view, files, menu_path, TRUE, &label, &sensitive);
+	compute_menu_item_info (view, selection, menu_path, TRUE, &label, &sensitive);
 	bonobo_ui_handler_menu_set_sensitivity (ui_handler, menu_path, sensitive);
 	bonobo_ui_handler_menu_set_label (ui_handler, menu_path, label);
 	g_free (label);
@@ -980,22 +963,20 @@ update_bonobo_menu_item (FMIconView *view,
 static void
 fm_icon_view_update_menus (FMDirectoryView *view)
 {
+        BonoboUIHandler *handler;
         GList *selection;
-        BonoboUIHandler *ui_handler;
-		int count;
 	
 	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
 
-        ui_handler = fm_directory_view_get_bonobo_ui_handler (view);
+        handler = fm_directory_view_get_bonobo_ui_handler (view);
         selection = fm_directory_view_get_selection (view);
-    	count = g_list_length (selection);
                 
-        update_bonobo_menu_item (FM_ICON_VIEW (view), ui_handler, selection, 
-                                 MENU_PATH_STRETCH_ICON);
-        update_bonobo_menu_item (FM_ICON_VIEW (view), ui_handler, selection, 
-                                 MENU_PATH_RESTORE_STRETCHED_ICONS);
-        update_bonobo_menu_item (FM_ICON_VIEW (view), ui_handler, selection, 
-                                 MENU_PATH_RENAME);
+        update_one_menu_item (FM_ICON_VIEW (view), handler, selection, 
+			      MENU_PATH_STRETCH_ICON);
+        update_one_menu_item (FM_ICON_VIEW (view), handler, selection, 
+			      MENU_PATH_UNSTRETCH_ICONS);
+        update_one_menu_item (FM_ICON_VIEW (view), handler, selection, 
+			      MENU_PATH_RENAME);
 	
 	nautilus_file_list_free (selection);
 }

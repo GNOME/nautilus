@@ -616,7 +616,7 @@ get_icon_file_path (const char *name, const char* modifier, guint size_in_pixels
 	/* if there's a modifier, try using that first */
 	
 	if (modifier && strlen(modifier)) {
-		gchar* modified_name = g_strdup_printf("%s-%s", name, modifier);
+		char* modified_name = g_strdup_printf("%s-%s", name, modifier);
 		path = get_themed_icon_file_path (use_theme_icon ? theme_name : NULL,
 					  		modified_name,
 					  		size_in_pixels, 
@@ -761,7 +761,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 	
 	/* if there is a custom image in the metadata, use that. */
 	uri = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
-	file_uri = nautilus_file_get_uri(file);
+	file_uri = nautilus_file_get_uri (file);
 	
 	/* if the file is an image, either use the image itself as the icon if it's small enough,
 	   or use a thumbnail if one exists.  If a thumbnail is required, but does not yet exist,
@@ -804,7 +804,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 	scalable_icon = nautilus_scalable_icon_get (uri, icon_name, modifier);
 	g_free (uri);
 	g_free (icon_name);
-		
+	
 	return scalable_icon;
 }
 
@@ -903,7 +903,7 @@ make_thumbnail_path (const char *image_uri, gboolean directory_only, gboolean us
 		GnomeVFSResult result;
 		GnomeVFSURI  *thumbnail_directory_uri;
 	        	
-	        gchar *escaped_uri = nautilus_str_escape_slashes (directory_name);		
+	        char *escaped_uri = nautilus_str_escape_slashes (directory_name);		
 		thumbnail_uri = g_strdup_printf("file://%s/.nautilus/thumbnails/%s", g_get_home_dir(), escaped_uri);
 		g_free(escaped_uri);
 		
@@ -916,14 +916,14 @@ make_thumbnail_path (const char *image_uri, gboolean directory_only, gboolean us
 	
 	/* append the file name if necessary */
 	if (!directory_only) {
-		gchar* old_uri = thumbnail_uri;
+		char* old_uri = thumbnail_uri;
 		thumbnail_uri = g_strdup_printf("%s/%s", thumbnail_uri, last_slash + 1);
 		g_free(old_uri);			
 	}
 	
 	/* append an image suffix if the correct one isn't already present */
 	if (!nautilus_str_has_suffix (image_uri, ".png") && !nautilus_str_has_suffix (image_uri, ".PNG")) {		
-		gchar* old_uri = thumbnail_uri;
+		char* old_uri = thumbnail_uri;
 		thumbnail_uri = g_strdup_printf("%s/%s", thumbnail_uri, last_slash + 1);
 		g_free(old_uri);			
 	}
@@ -1127,7 +1127,7 @@ load_specific_image_svg (const char *path, guint size_in_pixels)
 	FILE *f;
 	GdkPixbuf *result;
 
-	f = fopen (path, "r");
+	f = fopen (path, "rb");
 	if (f == NULL) {
 		return NULL;
 	}
@@ -1163,19 +1163,17 @@ load_specific_image (NautilusScalableIcon *scalable_icon,
 	if (custom) {
 		/* Custom icon. */
 
+		memset (text_rect, 0, sizeof (*text_rect));
+
 		/* FIXME bugzilla.eazel.com 643: This works only with file:// images, because there's
 		 * no convenience function for loading an image with gnome-vfs
 		 * and gdk-pixbuf. And there's the same problem with the rsvg_render_file library.
 		 */
 		if (nautilus_str_has_prefix (scalable_icon->uri, "file://")) {
-			/* Handle SVG files */
 			if (path_represents_svg_image (scalable_icon->uri)) {
-				memset (text_rect, 0, sizeof (*text_rect));
 				return load_specific_image_svg (scalable_icon->uri + 7, size_in_pixels);
 			}
-
 			if (size_in_pixels == NAUTILUS_ICON_SIZE_STANDARD) {
-				memset (text_rect, 0, sizeof (*text_rect));
 				return gdk_pixbuf_new_from_file (scalable_icon->uri + 7);
 			}
 		}
@@ -1834,7 +1832,7 @@ check_for_thumbnails (NautilusIconFactory *factory)
 static void
 draw_thumbnail_frame (GdkPixbuf *frame_pixbuf)
 {
-	gint index, width, height, depth, rowstride, fill_value;
+	int index, width, height, depth, rowstride, fill_value;
   	guchar *pixels, *temp_pixels;
 	
 	width = gdk_pixbuf_get_width (frame_pixbuf);

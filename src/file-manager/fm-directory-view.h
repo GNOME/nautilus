@@ -48,7 +48,8 @@ typedef struct FMDirectoryViewClass FMDirectoryViewClass;
 #define FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE                 	"/File/Duplicate"
 #define FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH                	"/File/Empty Trash"
 #define FM_DIRECTORY_VIEW_MENU_PATH_SET_PROPERTIES            	"/File/Set Properties"
-
+#define FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_ICONS      "/Settings/Before Icons"
+#define FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS         "/Settings/Remove Custom Icons"
 
 #define FM_TYPE_DIRECTORY_VIEW			(fm_directory_view_get_type ())
 #define FM_DIRECTORY_VIEW(obj)			(GTK_CHECK_CAST ((obj), FM_TYPE_DIRECTORY_VIEW, FMDirectoryView))
