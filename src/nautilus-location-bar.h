@@ -58,6 +58,6 @@ GtkType    nautilus_location_bar_get_type     	(void);
 GtkWidget* nautilus_location_bar_new          	(void);
 void       nautilus_location_bar_set_location 	(NautilusLocationBar *bar,
 					       	 const char          *location);
-
+gchar *    nautilus_location_bar_get_location   (NautilusLocationBar *bar);
 
 #endif /* NAUTILUS_LOCATION_BAR_H */

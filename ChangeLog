@@ -1,3 +1,16 @@
+2000-06-16  Seth Nickell  <seth@eazel.com>
+
+	* src/nautilus-location-bar.h:
+	* src/nautilus-location-bar.c: (nautilus_location_bar_get_location)
+	Added function nautilus_location_bar_get_location
+	* src/nautilus-location-bar.c: (drag_data_received_callback),
+	(drag_data_get_callback), (editable_activated_callback),
+	Changed to call nautilus_location_bar_get_location. An incidental effect (well
+	actually intentional) is that nautilus-location-bar.c no longer uses gtk_entry_get_text.
+	Hopefully this function will keep people adding code "mid-stream" to the URL bar (eg
+	before activation, such as the auto-completion code) from being confused by the disparity
+	between URIs and what the user is allowed to type.
+
 2000-06-16  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/trilobite/idl/sample-service.idl:

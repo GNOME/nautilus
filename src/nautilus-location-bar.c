@@ -112,7 +112,7 @@ drag_data_received_callback (GtkWidget *widget,
 		g_warning ("Should we make more windows?");
 	}
 
-	uri = nautilus_make_uri_from_input (gtk_entry_get_text (GTK_ENTRY (NAUTILUS_LOCATION_BAR (widget)->entry)));
+	uri = nautilus_location_bar_get_location (NAUTILUS_LOCATION_BAR (widget));
 
 	nautilus_location_bar_set_location (NAUTILUS_LOCATION_BAR (widget),
 					    names->data);
@@ -137,7 +137,7 @@ drag_data_get_callback (GtkWidget *widget,
 
 	g_assert (selection_data != NULL);
 
-	entry_text = nautilus_make_uri_from_input (gtk_entry_get_text (NAUTILUS_LOCATION_BAR (widget->parent)->entry));
+	entry_text = nautilus_location_bar_get_location (NAUTILUS_LOCATION_BAR (widget->parent));
 	
 	switch (info) {
 	case NAUTILUS_DND_URI_LIST:
@@ -163,7 +163,7 @@ editable_activated_callback (GtkEditable *editable,
 	g_assert (GTK_IS_EDITABLE (editable));
 	g_assert (NAUTILUS_IS_LOCATION_BAR (bar));
 
-	uri = nautilus_make_uri_from_input (gtk_entry_get_text (GTK_ENTRY (editable)));
+	uri = nautilus_location_bar_get_location (NAUTILUS_LOCATION_BAR (bar));
 	gtk_signal_emit (GTK_OBJECT (bar),
 			 signals[LOCATION_CHANGED],
 			 uri);
@@ -400,3 +400,26 @@ nautilus_location_bar_set_location (NautilusLocationBar *bar,
 	g_free (formatted_location);
 }
 
+/**
+ * nautilus_location_bar_get_location
+ *
+ * Get the "URI" represented by the text in the location bar.
+ *
+ * @bar: A NautilusLocationBar.
+ *
+ * returns a newly allocated "string" containing the mangled
+ * (by nautilus_make_uri_from_input) text that the user typed in...maybe a URI 
+ * but not garunteed.
+ *
+ **/
+
+gchar *
+nautilus_location_bar_get_location (NautilusLocationBar *bar) {
+	gchar *user_location, *best_uri;
+	
+	user_location = gtk_editable_get_chars (GTK_EDITABLE (bar->entry), 0, -1);
+	best_uri = nautilus_make_uri_from_input (user_location);
+	g_free (user_location);
+	return best_uri;
+}
+	       
