@@ -93,6 +93,12 @@ typedef enum {
 	Pending_Login,
 } SummaryPendingOperationType;
 
+typedef enum {
+	initial,
+	retry,
+	fail,
+} SummaryLoginAttemptType;
+
 
 struct _ServicesButtonCallbackData {
 	NautilusView	*nautilus_view;
@@ -116,6 +122,8 @@ struct _NautilusSummaryViewDetails {
 	volatile gboolean	logged_in;
 
 	GtkWidget		*caption_table;
+	SummaryLoginAttemptType	current_attempt;
+	int			attempt_number;
 
 	/* Services control panel */
 	int		current_service_row;
@@ -772,6 +780,7 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 	gtk_box_pack_start (GTK_BOX (view->details->update_button_container), view->details->update_softcat_goto_button, FALSE, FALSE, 4);
 	cbdata->nautilus_view = view->details->nautilus_view;
 	cbdata->uri = view->details->update_softcat_redirects[view->details->current_update_row - 1];
+	g_print ("%s\n", view->details->update_softcat_redirects[view->details->current_update_row - 1]);
 	gtk_signal_connect (GTK_OBJECT (view->details->update_softcat_goto_button), "clicked", GTK_SIGNAL_FUNC (goto_update_cb), cbdata);
 	gtk_box_pack_start (GTK_BOX (temp_vbox), view->details->update_button_container, FALSE, FALSE, 4);
 
@@ -849,7 +858,7 @@ authn_cb_failed (const EazelProxy_User *user, const EazelProxy_AuthnFailInfo *in
 	
 	update_menu_items (view, FALSE);
 	
-	generate_error_dialog (view, _("Login failed! Please try again."));
+	generate_login_dialog (view);
 	
 	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
 }
@@ -906,6 +915,14 @@ login_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 	}
 	
 	CORBA_exception_free (&ev);
+
+	view->details->attempt_number++;
+	if (view->details->attempt_number > 0 && view->details->attempt_number < 5) {
+		view->details->current_attempt = retry;
+	}	
+	else {
+		view->details->current_attempt = fail;
+	}
 
 }
 
@@ -1184,11 +1201,13 @@ generate_login_dialog (NautilusSummaryView	*view)
 	GtkWidget	*hbox;
 	GtkWidget	*pixmap;
 	GtkWidget	*message;
+	char		*message_text;
+	char		*pixmap_name;
 
 	dialog = NULL;
 	pixmap = NULL;
 
-	dialog = gnome_dialog_new (_("Services Login"), _("I forgot my password"), GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, NULL);
+	dialog = gnome_dialog_new (_("Services Login"), _("Register Now"), GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, NULL);
 
 	gtk_signal_connect (GTK_OBJECT (dialog), "destroy", GTK_SIGNAL_FUNC (gtk_widget_destroyed), &dialog);
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), GNOME_PAD);
@@ -1211,7 +1230,25 @@ generate_login_dialog (NautilusSummaryView	*view)
 					     FALSE,
 					     FALSE);
 
-	pixmap = create_image_widget ("nautilus-logo.png", DEFAULT_SUMMARY_BACKGROUND_COLOR);
+	switch (view->details->current_attempt) {
+		case initial:
+			pixmap_name = "big_services_icon.png";
+			message_text = _("Please login to eazel services");
+			break;
+		case retry:
+			pixmap_name = "serv_dialog_alert.png";
+			message_text = _("Opps! Your user name or password were not correct. Please try again:");
+			break;
+		case fail:
+			pixmap_name = "serv_dialog_alert.png";
+			message_text = _("We're sorry, but your name and password are still not recognized.");
+			break;
+		default:
+			pixmap_name = "serv_dialog_alert.png";
+			message_text = _("Please login to eazel services");
+	}
+
+	pixmap = create_image_widget (pixmap_name, DEFAULT_SUMMARY_BACKGROUND_COLOR);
 	hbox = gtk_hbox_new (FALSE, 5);
 	gtk_widget_show (hbox);
 
@@ -1223,7 +1260,11 @@ generate_login_dialog (NautilusSummaryView	*view)
 
 	gtk_box_set_spacing (GTK_BOX (GNOME_DIALOG (dialog)->vbox), 10);
 
-	message = nautilus_label_new (_("Please log in to Eazel services"));
+	message = nautilus_label_new (message_text);
+	nautilus_label_set_text_justification (NAUTILUS_LABEL (message), GTK_JUSTIFY_LEFT);
+	nautilus_label_set_line_wrap (NAUTILUS_LABEL (message), TRUE);
+	/* FIXME: setting a fixed size here seems so hackish, but the results are so ugly otherwise. */
+	nautilus_label_set_line_wrap_width (NAUTILUS_LABEL (message), 300);
 	gtk_widget_show (message);
 
 	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox),
@@ -1367,6 +1408,10 @@ nautilus_summary_view_load_uri (NautilusSummaryView	*view,
 	gboolean	got_url_table;
 
 	url = NULL;
+
+	/* set up some sanity values for error control */
+	view->details->attempt_number = 0;
+	view->details->current_attempt = initial;
 
 	/* dispose of any old uri and copy in the new one */	
 	g_free (view->details->uri);
