@@ -90,7 +90,8 @@ nautilus_navigation_bar_get_location (NautilusNavigationBar *bar)
 {
 	g_return_val_if_fail (NAUTILUS_IS_NAVIGATION_BAR (bar), NULL);
 
-	return (* NAUTILUS_NAVIGATION_BAR_CLASS (GTK_OBJECT (bar)->klass)->get_location) (bar);
+	return NAUTILUS_CALL_VIRTUAL (NAUTILUS_NAVIGATION_BAR_CLASS, bar,
+				      get_location, (bar));
 }
 
 /**
@@ -107,7 +108,8 @@ nautilus_navigation_bar_set_location (NautilusNavigationBar *bar,
 {
 	g_return_if_fail (NAUTILUS_IS_NAVIGATION_BAR (bar));
 
-	(* NAUTILUS_NAVIGATION_BAR_CLASS (GTK_OBJECT (bar)->klass)->set_location) (bar, location);
+	NAUTILUS_CALL_VIRTUAL (NAUTILUS_NAVIGATION_BAR_CLASS, bar,
+			       set_location, (bar, location));
 }
 
 /**

@@ -216,59 +216,56 @@ impl_Nautilus_Zoomable_zoom_in (impl_POA_Nautilus_Zoomable *servant,
 
 static void
 impl_Nautilus_Zoomable_zoom_out (impl_POA_Nautilus_Zoomable *servant,
-				 CORBA_Environment          *ev)
+				 CORBA_Environment *ev)
 {
 	gtk_signal_emit (GTK_OBJECT (servant->gtk_object), signals[ZOOM_OUT]);
 }
 
 static void
 impl_Nautilus_Zoomable_zoom_to_fit (impl_POA_Nautilus_Zoomable *servant,
-				    CORBA_Environment      *ev)
+				    CORBA_Environment *ev)
 {
 	gtk_signal_emit (GTK_OBJECT (servant->gtk_object), signals[ZOOM_TO_FIT]);
 }
 
 static void
-impl_Nautilus_Zoomable__destroy(BonoboObject *obj, impl_POA_Nautilus_Zoomable *servant)
+impl_Nautilus_Zoomable__destroy (BonoboObject *obj,
+				 impl_POA_Nautilus_Zoomable *servant)
 {
 	PortableServer_ObjectId *objid;
 	CORBA_Environment ev;
-	void (*servant_destroy_func) (PortableServer_Servant servant, CORBA_Environment *ev);
 	
 	CORBA_exception_init(&ev);
 	
-	servant_destroy_func = NAUTILUS_ZOOMABLE_CLASS (GTK_OBJECT (servant->gtk_object)->klass)->servant_destroy_func;
 	objid = PortableServer_POA_servant_to_id (bonobo_poa (), servant, &ev);
 	PortableServer_POA_deactivate_object (bonobo_poa (), objid, &ev);
 	CORBA_free (objid);
 	obj->servant = NULL;
 	
-	servant_destroy_func ((PortableServer_Servant) servant, &ev);
+	POA_Nautilus_Zoomable__fini ((PortableServer_Servant) servant, &ev);
 	g_free (servant);
 	CORBA_exception_free(&ev);
 }
 
 static Nautilus_Zoomable
-impl_Nautilus_Zoomable__create(NautilusZoomable *zoomable, CORBA_Environment * ev)
+impl_Nautilus_Zoomable__create (NautilusZoomable *zoomable, CORBA_Environment * ev)
 {
 	Nautilus_Zoomable retval;
 	impl_POA_Nautilus_Zoomable *servant;
-	void (*servant_init_func) (PortableServer_Servant servant, CORBA_Environment *ev);
 	
 	NautilusZoomableClass *zoomable_class = NAUTILUS_ZOOMABLE_CLASS (GTK_OBJECT(zoomable)->klass);
 	
-	servant_init_func = zoomable_class->servant_init_func;
 	servant = g_new0 (impl_POA_Nautilus_Zoomable, 1);
 	servant->servant.vepv = zoomable_class->vepv;
 	if (!servant->servant.vepv->Bonobo_Unknown_epv)
 		servant->servant.vepv->Bonobo_Unknown_epv = bonobo_object_get_epv ();
-	servant_init_func ((PortableServer_Servant) servant, ev);
+	POA_Nautilus_Zoomable__init ((PortableServer_Servant) servant, ev);
 	
 	servant->gtk_object = zoomable;
 	
 	retval = bonobo_object_activate_servant (BONOBO_OBJECT (zoomable), servant);
 	
-	gtk_signal_connect (GTK_OBJECT (zoomable), "destroy", GTK_SIGNAL_FUNC (impl_Nautilus_Zoomable__destroy), servant);
+	gtk_signal_connect (GTK_OBJECT (zoomable), "destroy", impl_Nautilus_Zoomable__destroy, servant);
 	
 	return retval;
 }
@@ -310,8 +307,6 @@ nautilus_zoomable_initialize_class (NautilusZoomableClass *klass)
 	
 	parent_class = gtk_type_class (gtk_type_parent (object_class->type));
 	
-	klass->servant_init_func = POA_Nautilus_Zoomable__init;
-	klass->servant_destroy_func = POA_Nautilus_Zoomable__fini;
 	klass->vepv = &impl_Nautilus_Zoomable_vepv;
 	
 	signals[SET_ZOOM_LEVEL] =

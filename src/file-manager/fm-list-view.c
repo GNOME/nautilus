@@ -1094,7 +1094,8 @@ real_adding_file (FMListView *view, NautilusFile *file)
 static void
 fm_list_view_adding_file (FMListView *view, NautilusFile *file)
 {
-	(* FM_LIST_VIEW_CLASS (GTK_OBJECT (view)->klass)->adding_file) (view, file);
+	NAUTILUS_CALL_VIRTUAL (FM_LIST_VIEW_CLASS, view,
+			       adding_file, (view, file));
 }
 
 static void
@@ -1106,13 +1107,15 @@ real_removing_file (FMListView *view, NautilusFile *file)
 static void
 fm_list_view_removing_file (FMListView *view, NautilusFile *file)
 {
-	(* FM_LIST_VIEW_CLASS (GTK_OBJECT (view)->klass)->removing_file) (view, file);
+	NAUTILUS_CALL_VIRTUAL (FM_LIST_VIEW_CLASS, view,
+			       removing_file, (view, file));
 }
 
 static gboolean
 fm_list_view_file_still_belongs (FMListView *view, NautilusFile *file)
 {
-	return (* FM_LIST_VIEW_CLASS (GTK_OBJECT (view)->klass)->file_still_belongs) (view, file);
+	return NAUTILUS_CALL_VIRTUAL (FM_LIST_VIEW_CLASS, view,
+				      file_still_belongs, (view, file));
 }
 
 static gboolean
@@ -1522,31 +1525,22 @@ fm_list_view_font_family_changed (FMDirectoryView *view)
 static int
 get_number_of_columns (FMListView *list_view)
 {
-	/* For now, we just use the function pointer.
-	 * It might be better to use a signal later.
-	 */
-	return (* FM_LIST_VIEW_CLASS (GTK_OBJECT (list_view)->klass)
-		->get_number_of_columns) (list_view);
+	return NAUTILUS_CALL_VIRTUAL (FM_LIST_VIEW_CLASS, list_view,
+				      get_number_of_columns, (list_view));
 }
 
 static int
 get_link_column (FMListView *list_view)
 {
-	/* For now, we just use the function pointer.
-	 * It might be better to use a signal later.
-	 */
-	return (* FM_LIST_VIEW_CLASS (GTK_OBJECT (list_view)->klass)
-		->get_link_column) (list_view);
+	return NAUTILUS_CALL_VIRTUAL (FM_LIST_VIEW_CLASS, list_view,
+				      get_link_column, (list_view));
 }
 
 static char *
 get_default_sort_attribute (FMListView *list_view)
 {
-	/* For now, we just use the function pointer.
-	 * It might be better to use a signal later.
-	 */
-	return (* FM_LIST_VIEW_CLASS (GTK_OBJECT (list_view)->klass)
-		->get_default_sort_attribute) (list_view);
+	return NAUTILUS_CALL_VIRTUAL (FM_LIST_VIEW_CLASS, list_view,
+				      get_default_sort_attribute, (list_view));
 }
 
 static void
@@ -1556,13 +1550,9 @@ get_column_specification (FMListView *list_view,
 {
 	guint icon_size;
 
-	/* For now, we just use the function pointer.
-	 * It might be better to use a signal later.
-	 */
-	(* FM_LIST_VIEW_CLASS (GTK_OBJECT (list_view)->klass)
-	 ->get_column_specification) (list_view,
-				      column_number,
-				      specification);
+	NAUTILUS_CALL_VIRTUAL (FM_LIST_VIEW_CLASS, list_view,
+			       get_column_specification,
+			       (list_view, column_number, specification));
 
 	/* We have a special case for the width of the icons
 	 * column.

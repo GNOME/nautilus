@@ -91,9 +91,6 @@ impl_Nautilus_ViewFrame__destroy (BonoboObject *object,
 {
 	PortableServer_ObjectId *object_id;
 	CORBA_Environment ev;
-	NautilusViewFrameClass *klass;
-	
-	klass = NAUTILUS_VIEW_FRAME_CLASS (GTK_OBJECT (servant->view)->klass);
 	
 	CORBA_exception_init (&ev);
 	

@@ -157,9 +157,9 @@ static void           open_callback                                             
 static void           open_in_new_window_callback                                 (GtkMenuItem              *item,
 										   GList                    *files);
 static void           open_one_in_new_window                                      (gpointer                  data,
-										   gpointer                  user_data);
+										   gpointer                  callback_data);
 static void           open_one_properties_window                                  (gpointer                  data,
-										   gpointer                  user_data);
+										   gpointer                  callback_data);
 static void	      zoomable_set_zoom_level_callback				  (NautilusZoomable *zoomable,
 										   double level,
 										   FMDirectoryView *view);
@@ -175,7 +175,7 @@ static void           schedule_timeout_display_of_pending_files                 
 static void           unschedule_timeout_display_of_pending_files                 (FMDirectoryView          *view);
 static void           unschedule_display_of_pending_files                         (FMDirectoryView          *view);
 static void           disconnect_model_handlers                                   (FMDirectoryView          *view);
-static void           show_hidden_files_changed_callback                          (gpointer                  user_data);
+static void           show_hidden_files_changed_callback                          (gpointer                  callback_data);
 static void           get_required_metadata_keys                                  (FMDirectoryView          *view,
 										   GList                   **directory_keys_result,
 										   GList                   **file_keys_result);
@@ -359,14 +359,14 @@ viewer_launch_parameters_free (ViewerLaunchParameters *parameters)
 }			      
 
 static void
-bonobo_menu_open_callback (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
+bonobo_menu_open_callback (BonoboUIHandler *ui_handler, gpointer callback_data, const char *path)
 {
         FMDirectoryView *view;
         GList *selection;
         
-        g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
-        view = FM_DIRECTORY_VIEW (user_data);
+        view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
 
         /* UI should have prevented this from being called unless exactly
@@ -382,14 +382,14 @@ bonobo_menu_open_callback (BonoboUIHandler *ui_handler, gpointer user_data, cons
 }
 
 static void
-bonobo_menu_open_in_new_window_callback (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
+bonobo_menu_open_in_new_window_callback (BonoboUIHandler *ui_handler, gpointer callback_data, const char *path)
 {
         FMDirectoryView *view;
         GList *selection;
         
-        g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
-        view = FM_DIRECTORY_VIEW (user_data);
+        view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
 	g_list_foreach (selection, open_one_in_new_window, view);
 
@@ -550,15 +550,15 @@ choose_component (FMDirectoryView *view,
 
 static void
 bonobo_menu_other_program_callback (BonoboUIHandler *ui_handler, 
-				    gpointer user_data, 
+				    gpointer callback_data, 
 				    const char *path)
 {
         FMDirectoryView *view;
         GList *selection;
         
-        g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
-        view = FM_DIRECTORY_VIEW (user_data);
+        view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
 
         /* UI should have prevented this from being called unless exactly
@@ -578,15 +578,15 @@ bonobo_menu_other_program_callback (BonoboUIHandler *ui_handler,
 
 static void
 bonobo_menu_move_to_trash_callback (BonoboUIHandler *ui_handler,
-				    gpointer user_data,
+				    gpointer callback_data,
 				    const char *path)
 {
         FMDirectoryView *view;
         GList *selection;
         
-        g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
-        view = FM_DIRECTORY_VIEW (user_data);
+        view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
         fm_directory_view_trash_or_delete_selection (view, selection);
 
@@ -594,14 +594,14 @@ bonobo_menu_move_to_trash_callback (BonoboUIHandler *ui_handler,
 }
 
 static void
-bonobo_menu_duplicate_callback (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
+bonobo_menu_duplicate_callback (BonoboUIHandler *ui_handler, gpointer callback_data, const char *path)
 {
         FMDirectoryView *view;
         GList *selection;
         
-        g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
-        view = FM_DIRECTORY_VIEW (user_data);
+        view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
 
         /* UI should have prevented this from being called unless at least
@@ -615,27 +615,27 @@ bonobo_menu_duplicate_callback (BonoboUIHandler *ui_handler, gpointer user_data,
 }
 
 static void
-bonobo_menu_select_all_callback (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
+bonobo_menu_select_all_callback (BonoboUIHandler *ui_handler, gpointer callback_data, const char *path)
 {
-	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
-	fm_directory_view_select_all (user_data);
+	fm_directory_view_select_all (callback_data);
 }
 
 static void
-bonobo_menu_empty_trash_callback (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
+bonobo_menu_empty_trash_callback (BonoboUIHandler *ui_handler, gpointer callback_data, const char *path)
 {                
-        g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
-	fs_empty_trash (GTK_WIDGET (FM_DIRECTORY_VIEW (user_data)));
+	fs_empty_trash (GTK_WIDGET (FM_DIRECTORY_VIEW (callback_data)));
 }
 
 static void
-bonobo_menu_new_folder_callback (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
+bonobo_menu_new_folder_callback (BonoboUIHandler *ui_handler, gpointer callback_data, const char *path)
 {                
-        g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
-	fm_directory_view_new_folder (FM_DIRECTORY_VIEW (user_data));
+	fm_directory_view_new_folder (FM_DIRECTORY_VIEW (callback_data));
 }
 
 static void
@@ -646,14 +646,14 @@ new_folder_menu_item_callback (GtkMenuItem *item, FMDirectoryView *directory_vie
 }
 
 static void
-bonobo_menu_open_properties_window_callback (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
+bonobo_menu_open_properties_window_callback (BonoboUIHandler *ui_handler, gpointer callback_data, const char *path)
 {
         FMDirectoryView *view;
         GList *selection;
         
-        g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
-        view = FM_DIRECTORY_VIEW (user_data);
+        view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
 
         /* UI should have prevented this from being called unless at least
@@ -674,16 +674,16 @@ get_bonobo_control (FMDirectoryView *view)
 }
 
 static void
-bonobo_control_activate_callback (BonoboObject *control, gboolean state, gpointer user_data)
+bonobo_control_activate_callback (BonoboObject *control, gboolean state, gpointer callback_data)
 {
         FMDirectoryView *view;
         BonoboUIHandler *local_ui_handler;
 	Bonobo_UIHandler remote_ui_handler;
 	CORBA_Environment ev;
 
-        g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
-        view = FM_DIRECTORY_VIEW (user_data);
+        view = FM_DIRECTORY_VIEW (callback_data);
 
         local_ui_handler = bonobo_control_get_ui_handler (BONOBO_CONTROL (control));
 
@@ -709,14 +709,15 @@ bonobo_control_activate_callback (BonoboObject *control, gboolean state, gpointe
 
 /* Preferences changed callbacks */
 static void
-text_attribute_names_changed_callback (gpointer user_data)
+text_attribute_names_changed_callback (gpointer callback_data)
 {
-	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+	FMDirectoryView *view;
 
-	if ((FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (user_data)->klass)->text_attribute_names_changed) != NULL) {
-		(FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (user_data)->klass)->text_attribute_names_changed) 
-			(FM_DIRECTORY_VIEW (user_data));
-	}
+	view = FM_DIRECTORY_VIEW (callback_data);
+
+	NAUTILUS_CALL_VIRTUAL
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 text_attribute_names_changed, (view));
 }
 
 /* FIXME bugzilla.eazel.com 1856: 
@@ -727,62 +728,67 @@ text_attribute_names_changed_callback (gpointer user_data)
  */
 #include <libnautilus-extensions/nautilus-directory-private.h>
 static void
-embedded_text_policy_changed_callback (gpointer user_data)
+embedded_text_policy_changed_callback (gpointer callback_data)
 {
-	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+	FMDirectoryView *view;
 
-	if ((FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (user_data)->klass)->embedded_text_policy_changed) != NULL) {
-		(FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (user_data)->klass)->embedded_text_policy_changed) 
-			(FM_DIRECTORY_VIEW (user_data));
-	}
+	view = FM_DIRECTORY_VIEW (callback_data);
 
+	NAUTILUS_CALL_VIRTUAL
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 embedded_text_policy_changed, (view));
 	
-	nautilus_directory_async_state_changed (fm_directory_view_get_model (FM_DIRECTORY_VIEW (user_data)));
+	nautilus_directory_async_state_changed
+		(fm_directory_view_get_model (view));
 
 }
 
 static void
-image_display_policy_changed_callback (gpointer user_data)
+image_display_policy_changed_callback (gpointer callback_data)
 {
-	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+	FMDirectoryView *view;
 
-	if ((FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (user_data)->klass)->image_display_policy_changed) != NULL) {
-		(FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (user_data)->klass)->image_display_policy_changed) 
-			(FM_DIRECTORY_VIEW (user_data));
-	}
+	view = FM_DIRECTORY_VIEW (callback_data);
+
+	NAUTILUS_CALL_VIRTUAL
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 image_display_policy_changed, (view));
 }
 
 static void
-directory_view_font_family_changed_callback (gpointer user_data)
+directory_view_font_family_changed_callback (gpointer callback_data)
 {
-	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
-	
-	if ((FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (user_data)->klass)->font_family_changed) != NULL) {
-		(FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (user_data)->klass)->font_family_changed) 
-			(FM_DIRECTORY_VIEW (user_data));
-	}
+	FMDirectoryView *view;
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+
+	NAUTILUS_CALL_VIRTUAL
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 font_family_changed, (view));
 }
 
 static void
-click_policy_changed_callback (gpointer user_data)
+click_policy_changed_callback (gpointer callback_data)
 {
-	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+	FMDirectoryView *view;
 
-	if ((FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (user_data)->klass)->click_policy_changed) != NULL) {
-		(FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (user_data)->klass)->click_policy_changed) 
-			(FM_DIRECTORY_VIEW (user_data));
-	}
+	view = FM_DIRECTORY_VIEW (callback_data);
+
+	NAUTILUS_CALL_VIRTUAL
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 click_policy_changed, (view));
 }
 
 static void
-anti_aliased_mode_changed_callback (gpointer user_data)
+anti_aliased_mode_changed_callback (gpointer callback_data)
 {
-	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+	FMDirectoryView *view;
 
-	if ((FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (user_data)->klass)->anti_aliased_mode_changed) != NULL) {
-		(FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (user_data)->klass)->anti_aliased_mode_changed) 
-			(FM_DIRECTORY_VIEW (user_data));
-	}
+	view = FM_DIRECTORY_VIEW (callback_data);
+
+	NAUTILUS_CALL_VIRTUAL
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 anti_aliased_mode_changed, (view));
 }
 
 static double fm_directory_view_preferred_zoom_levels[] = {
@@ -1613,7 +1619,9 @@ fm_directory_view_bump_zoom_level (FMDirectoryView *view, int zoom_increment)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	(* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->bump_zoom_level) (view, zoom_increment);
+	NAUTILUS_CALL_VIRTUAL
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 bump_zoom_level, (view, zoom_increment));
 }
 
 /**
@@ -1627,7 +1635,9 @@ fm_directory_view_zoom_to_level (FMDirectoryView *view, int zoom_level)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	(* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->zoom_to_level) (view, zoom_level);
+	NAUTILUS_CALL_VIRTUAL
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 zoom_to_level, (view, zoom_level));
 }
 
 
@@ -1635,8 +1645,11 @@ void
 fm_directory_view_set_zoom_level (FMDirectoryView *view, int zoom_level)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-	nautilus_zoomable_set_zoom_level (view->details->zoomable,
-					 (double) nautilus_get_icon_size_for_zoom_level (zoom_level) / NAUTILUS_ICON_SIZE_STANDARD);
+
+	nautilus_zoomable_set_zoom_level
+		(view->details->zoomable,
+		 (double) nautilus_get_icon_size_for_zoom_level (zoom_level)
+		 / NAUTILUS_ICON_SIZE_STANDARD);
 }
 
 /**
@@ -1650,9 +1663,10 @@ fm_directory_view_restore_default_zoom_level (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	(* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->restore_default_zoom_level) (view);
+	NAUTILUS_CALL_VIRTUAL
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 restore_default_zoom_level, (view));
 }
-
 
 /**
  * fm_directory_view_can_zoom_in:
@@ -1668,7 +1682,9 @@ fm_directory_view_can_zoom_in (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
-	return (* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->can_zoom_in) (view);
+	return NAUTILUS_CALL_VIRTUAL
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 can_zoom_in, (view));
 }
 
 /**
@@ -1685,7 +1701,9 @@ fm_directory_view_can_zoom_out (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
-	return (* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->can_zoom_out) (view);
+	return NAUTILUS_CALL_VIRTUAL
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 can_zoom_out, (view));
 }
 
 GtkWidget *
@@ -1693,7 +1711,9 @@ fm_directory_view_get_background_widget (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
 
-	return (* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->get_background_widget) (view);
+	return NAUTILUS_CALL_VIRTUAL
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 get_background_widget, (view));
 }
 
 static NautilusBackground *
@@ -1719,7 +1739,9 @@ fm_directory_view_get_selection (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
 
-	return (* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->get_selection) (view);
+	return NAUTILUS_CALL_VIRTUAL
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 get_selection, (view));
 }
 
 /**
@@ -1777,14 +1799,15 @@ fm_directory_view_get_model (FMDirectoryView *view)
 }
 
 static void
-append_uri_one (gpointer data, gpointer user_data)
+append_uri_one (gpointer data, gpointer callback_data)
 {
 	NautilusFile *file;
 	GList **result;
 	
 	g_assert (NAUTILUS_IS_FILE (data));
+	g_assert (callback_data != NULL);
 
-	result = (GList **) user_data;
+	result = (GList **) callback_data;
 	file = (NautilusFile *) data;
 	*result = g_list_append (*result, nautilus_file_get_uri (file));
 }
@@ -1846,20 +1869,26 @@ fm_directory_can_move_to_trash (FMDirectoryView *view)
 	GnomeVFSURI *trash_dir_uri;
 	gboolean result;
 
-	trash_dir_uri = NULL;
 	directory = fm_directory_view_get_uri (view);
-	directory_uri = gnome_vfs_uri_new (directory);
-
-	result = gnome_vfs_find_directory (directory_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
-		&trash_dir_uri, TRUE, FALSE, 0777) == GNOME_VFS_OK;
-
-	if (result && (gnome_vfs_uri_equal (trash_dir_uri, directory_uri)
-		|| gnome_vfs_uri_is_parent (trash_dir_uri, directory_uri, TRUE))) {
-		/* don't allow trashing items already in the Trash */
-		result = FALSE;
+	if (directory == NULL) {
+		return FALSE;
 	}
-	if (trash_dir_uri)
+	directory_uri = gnome_vfs_uri_new (directory);
+	
+	/* FIXME: Does this do I/O? If so we might need to find a way
+	 * of doing this based on a list of known trash directories
+	 * instead.
+	 */
+	result = gnome_vfs_find_directory (directory_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
+					   &trash_dir_uri, TRUE, FALSE, 0777) == GNOME_VFS_OK;
+	if (result) {
+		if (gnome_vfs_uri_equal (trash_dir_uri, directory_uri)
+		    || gnome_vfs_uri_is_parent (trash_dir_uri, directory_uri, TRUE)) {
+			/* don't allow trashing items already in the Trash */
+			result = FALSE;
+		}
 		gnome_vfs_uri_unref (trash_dir_uri);
+	}
 	gnome_vfs_uri_unref (directory_uri);
 	g_free (directory);
 
@@ -1889,16 +1918,16 @@ fm_directory_view_confirm_deletion (FMDirectoryView *view, GList *files)
 
 		short_name = gnome_vfs_uri_extract_short_name (uri);
 		prompt = g_strdup_printf (_("Are you sure you want to permanently "
-			"remove item \"%s\"?"), short_name);
+					    "remove item \"%s\"?"), short_name);
 		g_free (short_name);
 		gnome_vfs_uri_unref (uri);
 	} else {
 		prompt = g_strdup_printf (_("Are you sure you want to permanently "
-			"remove the %d selected items?"), file_count);
+					    "remove the %d selected items?"), file_count);
 	}
 
 	result = nautilus_simple_dialog (GTK_WIDGET (view), prompt, _("Deleting items"),
-		_("Delete"), _("Cancel"), NULL) == 0;
+					 _("Delete"), _("Cancel"), NULL) == 0;
 
 	g_free (prompt);
 	return result;
@@ -1967,12 +1996,15 @@ typedef struct {
 } RenameLaterParameters;
 
 static gboolean
-new_folder_rename_later (void *data)
+new_folder_rename_later (void *callback_data)
 {
-	RenameLaterParameters *parameters = (RenameLaterParameters *)data;
+	RenameLaterParameters *parameters;
 
-	(* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (parameters->view)->klass)->start_renaming_item) 
-		(parameters->view, parameters->uri);
+	parameters = callback_data;
+
+	NAUTILUS_CALL_VIRTUAL
+		(FM_DIRECTORY_VIEW_CLASS, parameters->view,
+		 start_renaming_item, (parameters->view, parameters->uri));
 
 	g_free (parameters->uri);
 	g_free (parameters);
@@ -2031,12 +2063,12 @@ open_callback (GtkMenuItem *item, GList *files)
 }
 
 static void
-open_one_in_new_window (gpointer data, gpointer user_data)
+open_one_in_new_window (gpointer data, gpointer callback_data)
 {
 	g_assert (NAUTILUS_IS_FILE (data));
-	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
-	fm_directory_view_activate_file (FM_DIRECTORY_VIEW (user_data), NAUTILUS_FILE (data), TRUE);
+	fm_directory_view_activate_file (FM_DIRECTORY_VIEW (callback_data), NAUTILUS_FILE (data), TRUE);
 }
 
 static void
@@ -2050,12 +2082,12 @@ open_in_new_window_callback (GtkMenuItem *item, GList *files)
 }
 
 static void
-open_one_properties_window (gpointer data, gpointer user_data)
+open_one_properties_window (gpointer data, gpointer callback_data)
 {
 	g_assert (NAUTILUS_IS_FILE (data));
-	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
-	fm_properties_window_present (data, user_data);
+	fm_properties_window_present (data, callback_data);
 }
 
 static void
@@ -2355,14 +2387,14 @@ add_open_with_gtk_menu_item (GtkMenu *menu, const char *label)
 }
 
 static void
-launch_application_from_menu_item (GtkMenuItem *menu_item, gpointer user_data)
+launch_application_from_menu_item (GtkMenuItem *menu_item, gpointer callback_data)
 {
 	ApplicationLaunchParameters *launch_parameters;
 
 	g_assert (GTK_IS_MENU_ITEM (menu_item));
-	g_assert (user_data != NULL);
+	g_assert (callback_data != NULL);
 
-	launch_parameters = (ApplicationLaunchParameters *)user_data;
+	launch_parameters = (ApplicationLaunchParameters *)callback_data;
 
 	fm_directory_view_launch_application 
 		(launch_parameters->application, 
@@ -2371,14 +2403,14 @@ launch_application_from_menu_item (GtkMenuItem *menu_item, gpointer user_data)
 }
 
 static void
-view_uri_from_menu_item (GtkMenuItem *menu_item, gpointer user_data)
+view_uri_from_menu_item (GtkMenuItem *menu_item, gpointer callback_data)
 {
 	ViewerLaunchParameters *launch_parameters;
 
 	g_assert (GTK_IS_MENU_ITEM (menu_item));
-	g_assert (user_data != NULL);
+	g_assert (callback_data != NULL);
 
-	launch_parameters = (ViewerLaunchParameters *)user_data;
+	launch_parameters = (ViewerLaunchParameters *)callback_data;
 
 	switch_location_and_view (launch_parameters->identifier,
 				  launch_parameters->uri,
@@ -2620,12 +2652,12 @@ add_open_with_bonobo_menu_item (BonoboUIHandler *ui_handler,
 
 static void
 bonobo_launch_application_callback (BonoboUIHandler *ui_handler, 
-				    gpointer user_data, 
+				    gpointer callback_data, 
 				    const char *path)
 {
 	ApplicationLaunchParameters *launch_parameters;
 
-	launch_parameters = (ApplicationLaunchParameters *)user_data;
+	launch_parameters = (ApplicationLaunchParameters *)callback_data;
 
 	fm_directory_view_launch_application 
 		(launch_parameters->application,
@@ -2653,12 +2685,12 @@ add_application_to_bonobo_menu (BonoboUIHandler *ui_handler,
 
 static void
 bonobo_open_location_with_viewer_callback (BonoboUIHandler *ui_handler, 
-				    	   gpointer user_data, 
+				    	   gpointer callback_data, 
 				    	   const char *path)
 {
 	ViewerLaunchParameters *launch_parameters;
 
-	launch_parameters = (ViewerLaunchParameters *)user_data;
+	launch_parameters = (ViewerLaunchParameters *)callback_data;
 
 	switch_location_and_view (launch_parameters->identifier,
 				  launch_parameters->uri,
@@ -3350,7 +3382,9 @@ fm_directory_view_get_emblem_names_to_exclude (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
 
-	return (* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->get_emblem_names_to_exclude) (view);
+	return NAUTILUS_CALL_VIRTUAL
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 get_emblem_names_to_exclude, (view));
 }
 
 static NautilusStringList *
@@ -3372,7 +3406,9 @@ fm_directory_view_merge_menus (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	(* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->merge_menus) (view);
+	NAUTILUS_CALL_VIRTUAL
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 merge_menus, (view));
 }
 
 static void
@@ -3408,7 +3444,9 @@ fm_directory_view_select_all (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	(* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->select_all) (view);
+	NAUTILUS_CALL_VIRTUAL
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 select_all, (view));
 }
 
 /**
@@ -3423,7 +3461,9 @@ fm_directory_view_set_selection (FMDirectoryView *view, GList *selection)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	(* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->set_selection) (view, selection);
+	NAUTILUS_CALL_VIRTUAL
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 set_selection, (view, selection));
 }
 
 /**
@@ -3452,7 +3492,9 @@ fm_directory_view_supports_properties (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
-	return (* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->supports_properties) (view);
+	return NAUTILUS_CALL_VIRTUAL
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 supports_properties, (view));
 }
 
 static gboolean
@@ -3474,18 +3516,18 @@ fm_directory_view_update_menus (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	(* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->update_menus) (view);
+	NAUTILUS_CALL_VIRTUAL
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 update_menus, (view));
 }
 
 static void
-show_hidden_files_changed_callback (gpointer user_data)
+show_hidden_files_changed_callback (gpointer callback_data)
 {
 	FMDirectoryView	*directory_view;
 	char *same_uri;
 
-	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
-
-	directory_view = FM_DIRECTORY_VIEW (user_data);
+	directory_view = FM_DIRECTORY_VIEW (callback_data);
 
 	directory_view->details->show_hidden_files = 
 		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES, FALSE);
@@ -3502,7 +3544,10 @@ show_hidden_files_changed_callback (gpointer user_data)
 char *
 fm_directory_view_get_uri (FMDirectoryView *view)
 {
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), g_strdup (""));
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
+	if (view->details->model == NULL) {
+		return NULL;
+	}
 	return nautilus_directory_get_uri (view->details->model);
 }
 

@@ -63,9 +63,6 @@ impl_Nautilus_ZoomableFrame__destroy (BonoboObject *object,
 {
    PortableServer_ObjectId *object_id;
    CORBA_Environment ev;
-   NautilusViewFrameClass *klass;
-
-   klass = NAUTILUS_VIEW_FRAME_CLASS (GTK_OBJECT (servant->view)->klass);
 
    CORBA_exception_init (&ev);
 
@@ -86,9 +83,7 @@ impl_Nautilus_ZoomableFrame__create (NautilusViewFrame *view,
 {
    BonoboObject *retval;
    impl_POA_Nautilus_ZoomableFrame *newservant;
-   NautilusViewFrameClass *klass;
 
-   klass = NAUTILUS_VIEW_FRAME_CLASS (GTK_OBJECT (view)->klass);
    newservant = g_new0 (impl_POA_Nautilus_ZoomableFrame, 1);
 
    impl_Nautilus_ZoomableFrame_vepv.Bonobo_Unknown_epv = bonobo_object_get_epv();

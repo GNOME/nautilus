@@ -1006,8 +1006,7 @@ nautilus_icon_container_free_drag_data (NautilusIconContainer *container)
 	dnd_info->drag_info.got_drop_data_type = FALSE;
 	
 	if (dnd_info->shadow != NULL) {
-		/* FIXME: Is a destroy really sufficient here? Who does the unref? */
-		gtk_object_destroy (GTK_OBJECT (dnd_info->shadow));
+		gtk_object_unref (GTK_OBJECT (dnd_info->shadow));
 		dnd_info->shadow = NULL;
 	}
 

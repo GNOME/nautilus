@@ -545,75 +545,109 @@ update_layout_menus (FMIconView *view)
 
 
 static char *
-fm_icon_view_get_directory_sort_by (FMIconView *icon_view, NautilusDirectory *directory)
+fm_icon_view_get_directory_sort_by (FMIconView *icon_view,
+				    NautilusDirectory *directory)
 {
-	return (* FM_ICON_VIEW_CLASS (GTK_OBJECT (icon_view)->klass)->get_directory_sort_by) (icon_view, directory);
+	return NAUTILUS_CALL_VIRTUAL (FM_ICON_VIEW_CLASS, icon_view,
+				      get_directory_sort_by, (icon_view, directory));
 }
 
 static char *
-fm_icon_view_real_get_directory_sort_by (FMIconView *icon_view, NautilusDirectory *directory)
+fm_icon_view_real_get_directory_sort_by (FMIconView *icon_view,
+					 NautilusDirectory *directory)
 {
-	return nautilus_directory_get_metadata (directory, NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY, sort_criteria[0].metadata_text);
+	return nautilus_directory_get_metadata
+		(directory, NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
+		 sort_criteria[0].metadata_text);
 }
 
 static void
-fm_icon_view_set_directory_sort_by (FMIconView *icon_view, NautilusDirectory *directory, const char* sort_by)
+fm_icon_view_set_directory_sort_by (FMIconView *icon_view, NautilusDirectory *directory, const char *sort_by)
 {
-	(* FM_ICON_VIEW_CLASS (GTK_OBJECT (icon_view)->klass)->set_directory_sort_by) (icon_view, directory, sort_by);
+	NAUTILUS_CALL_VIRTUAL (FM_ICON_VIEW_CLASS, icon_view,
+			       set_directory_sort_by, (icon_view, directory, sort_by));
 }
 
 static void
-fm_icon_view_real_set_directory_sort_by (FMIconView *icon_view, NautilusDirectory *directory, const char* sort_by)
+fm_icon_view_real_set_directory_sort_by (FMIconView *icon_view,
+					 NautilusDirectory *directory,
+					 const char *sort_by)
 {
-	nautilus_directory_set_metadata (directory, NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY, sort_criteria[0].metadata_text, sort_by);
+	nautilus_directory_set_metadata
+		(directory, NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
+		 sort_criteria[0].metadata_text,
+		 sort_by);
 }
 
 static gboolean
-fm_icon_view_get_directory_sort_reversed (FMIconView *icon_view, NautilusDirectory *directory)
+fm_icon_view_get_directory_sort_reversed (FMIconView *icon_view,
+					  NautilusDirectory *directory)
 {
-	return (* FM_ICON_VIEW_CLASS (GTK_OBJECT (icon_view)->klass)->get_directory_sort_reversed) (icon_view, directory);
+	return NAUTILUS_CALL_VIRTUAL (FM_ICON_VIEW_CLASS, icon_view,
+				      get_directory_sort_reversed, (icon_view, directory));
 }
 
 static gboolean
-fm_icon_view_real_get_directory_sort_reversed (FMIconView *icon_view, NautilusDirectory *directory)
+fm_icon_view_real_get_directory_sort_reversed (FMIconView *icon_view,
+					       NautilusDirectory *directory)
 {
-	return  nautilus_directory_get_boolean_metadata (directory, NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED, FALSE);
+	return  nautilus_directory_get_boolean_metadata
+		(directory, NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED, FALSE);
 }
 
 static void
-fm_icon_view_set_directory_sort_reversed (FMIconView *icon_view, NautilusDirectory *directory, gboolean sort_reversed)
+fm_icon_view_set_directory_sort_reversed (FMIconView *icon_view,
+					  NautilusDirectory *directory,
+					  gboolean sort_reversed)
 {
-	(* FM_ICON_VIEW_CLASS (GTK_OBJECT (icon_view)->klass)->set_directory_sort_reversed) (icon_view, directory, sort_reversed);
+	NAUTILUS_CALL_VIRTUAL (FM_ICON_VIEW_CLASS, icon_view,
+			       set_directory_sort_reversed,
+			       (icon_view, directory, sort_reversed));
 }
 
 static void
-fm_icon_view_real_set_directory_sort_reversed (FMIconView *icon_view, NautilusDirectory *directory, gboolean sort_reversed)
+fm_icon_view_real_set_directory_sort_reversed (FMIconView *icon_view,
+					       NautilusDirectory *directory,
+					       gboolean sort_reversed)
 {
-	nautilus_directory_set_boolean_metadata (directory, NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED, FALSE, sort_reversed);
+	nautilus_directory_set_boolean_metadata
+		(directory, NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED, FALSE,
+		 sort_reversed);
 }
 
 static gboolean
-fm_icon_view_get_directory_auto_layout (FMIconView *icon_view, NautilusDirectory *directory)
+fm_icon_view_get_directory_auto_layout (FMIconView *icon_view,
+					NautilusDirectory *directory)
 {
-	return (* FM_ICON_VIEW_CLASS (GTK_OBJECT (icon_view)->klass)->get_directory_auto_layout) (icon_view, directory);
+	return NAUTILUS_CALL_VIRTUAL (FM_ICON_VIEW_CLASS, icon_view,
+				      get_directory_auto_layout, (icon_view, directory));
 }
 
 static gboolean
-fm_icon_view_real_get_directory_auto_layout (FMIconView *icon_view, NautilusDirectory *directory)
+fm_icon_view_real_get_directory_auto_layout (FMIconView *icon_view,
+					     NautilusDirectory *directory)
 {
-	return nautilus_directory_get_boolean_metadata (directory, NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT, TRUE);
+	return nautilus_directory_get_boolean_metadata
+		(directory, NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT, TRUE);
 }
 
 static void
-fm_icon_view_set_directory_auto_layout (FMIconView *icon_view, NautilusDirectory *directory, gboolean auto_layout)
+fm_icon_view_set_directory_auto_layout (FMIconView *icon_view,
+					NautilusDirectory *directory,
+					gboolean auto_layout)
 {
-	(* FM_ICON_VIEW_CLASS (GTK_OBJECT (icon_view)->klass)->set_directory_auto_layout) (icon_view, directory, auto_layout);
+	NAUTILUS_CALL_VIRTUAL (FM_ICON_VIEW_CLASS, icon_view,
+			       set_directory_auto_layout, (icon_view, directory, auto_layout));
 }
 
 static void
-fm_icon_view_real_set_directory_auto_layout (FMIconView *icon_view, NautilusDirectory *directory, gboolean auto_layout)
+fm_icon_view_real_set_directory_auto_layout (FMIconView *icon_view,
+					     NautilusDirectory *directory,
+					     gboolean auto_layout)
 {
-	nautilus_directory_set_boolean_metadata (directory, NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT, TRUE, auto_layout);
+	nautilus_directory_set_boolean_metadata
+		(directory, NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT, TRUE,
+		 auto_layout);
 }
 
 static gboolean

@@ -2595,18 +2595,18 @@ nautilus_list_drag_start (GtkWidget *widget, GdkEventMotion *event)
 	list->details->drag_started = TRUE;
 	list->details->dnd_select_pending = FALSE;
 	context = gtk_drag_begin (widget, list->details->drag_info->target_list,
-		list->details->dnd_press_button == CONTEXTUAL_MENU_BUTTON
-			? GDK_ACTION_ASK
-			: GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK | GDK_ACTION_ASK,
-		list->details->dnd_press_button,
-		(GdkEvent *) event);
+				  list->details->dnd_press_button == CONTEXTUAL_MENU_BUTTON
+				  ? GDK_ACTION_ASK
+				  : GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK | GDK_ACTION_ASK,
+				  list->details->dnd_press_button,
+				  (GdkEvent *) event);
 
 	x_offset = 10;
 	y_offset = 10;
 
 	gtk_signal_emit (GTK_OBJECT (list), list_signals[GET_DRAG_PIXMAP], 
-		list->details->button_down_row, &pixmap_for_dragged_file, 
-		&mask_for_dragged_file);
+			 list->details->button_down_row, &pixmap_for_dragged_file, 
+			 &mask_for_dragged_file);
 
 	if (pixmap_for_dragged_file) {
 	        /* set the pixmap and mask for dragging */
@@ -2796,7 +2796,7 @@ nautilus_list_drag_motion (GtkWidget *widget, GdkDragContext *context,
 
 static gboolean
 nautilus_list_drag_drop (GtkWidget *widget, GdkDragContext *context,
-		     int x, int y, guint time)
+			 int x, int y, guint time)
 {
 	NautilusList *list;
 	GList *selected_items;
@@ -2807,15 +2807,14 @@ nautilus_list_drag_drop (GtkWidget *widget, GdkDragContext *context,
 
 	switch (list->details->data_type) {
 	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
-		/** 
-		 * Put selection list in local variable and NULL the global one
+		/* Put selection list in local variable and NULL the global one
 		 * so it doesn't get munged in a modal popup-menu event loop
 		 * in the handle_dropped_icons handler.
 		 */
 		selected_items = list->details->selection_list;
 		list->details->selection_list = NULL;
 		gtk_signal_emit (GTK_OBJECT (list), list_signals[HANDLE_DROPPED_ICONS],
-			 selected_items, x, y, context->action);			
+				 selected_items, x, y, context->action);			
 		nautilus_drag_destroy_selection_list (selected_items);
 		gtk_drag_finish (context, TRUE, FALSE, time);
 		break;
@@ -2832,8 +2831,8 @@ nautilus_list_drag_drop (GtkWidget *widget, GdkDragContext *context,
 
 static void
 nautilus_list_drag_data_received (GtkWidget *widget, GdkDragContext *context,
-			      int x, int y, GtkSelectionData *data,
-			      guint info, guint time)
+				  int x, int y, GtkSelectionData *data,
+				  guint info, guint time)
 {
 	NautilusList *list;
 
@@ -2915,7 +2914,7 @@ nautilus_list_row_at (NautilusList *list, int y)
 
 	clist = GTK_CLIST (list);
 	y -= (GTK_CONTAINER (list)->border_width +
-		GTK_WIDGET(list)->style->klass->ythickness +
+		GTK_WIDGET (list)->style->klass->ythickness +
 		clist->column_title_area.height);
 	
 	if (!gtk_clist_get_selection_info (clist, 10, y, &row_index, &column_index)) {

@@ -1,3 +1,80 @@
+2000-08-15  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-trash-directory.c:
+	(nautilus_trash_directory_initialize), (trash_destroy),
+	(callback_hash), (callback_equal), (trash_contains_file),
+	(call_when_ready_state_destroy),
+	(call_when_ready_state_check_done), (directory_ready_callback),
+	(trash_call_when_ready), (trash_cancel_callback),
+	(trash_files_callback), (trash_file_monitor_add),
+	(trash_file_monitor_remove), (trash_are_all_files_seen),
+	(trash_is_not_empty): More of the implementation of all the
+	trash functions. About 1/3 done now.
+	
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_container_free_drag_data):
+	Use gtk_object_unref so it really gets rid of the object
+	instead of gtk_object_destroy that doesn't free it.
+	
+	* libnautilus-extensions/nautilus-list.c: Reformatting.
+	
+	* libnautilus/nautilus-zoomable.c:
+	(impl_Nautilus_Zoomable_zoom_out),
+	(impl_Nautilus_Zoomable_zoom_to_fit),
+	(impl_Nautilus_Zoomable__destroy),
+	(impl_Nautilus_Zoomable__create),
+	(nautilus_zoomable_initialize_class):
+	Clean out some old cruft. More cleanup needed.
+	
+	* src/file-manager/fm-directory-view.c:
+	(text_attribute_names_changed_callback),
+	(embedded_text_policy_changed_callback),
+	(image_display_policy_changed_callback),
+	(directory_view_font_family_changed_callback),
+	(click_policy_changed_callback),
+	(anti_aliased_mode_changed_callback),
+	(fm_directory_view_bump_zoom_level),
+	(fm_directory_view_zoom_to_level),
+	(fm_directory_view_restore_default_zoom_level),
+	(fm_directory_view_can_zoom_in), (fm_directory_view_can_zoom_out),
+	(fm_directory_view_get_background_widget),
+	(fm_directory_view_get_selection): Use NAUTILUS_CALL_VIRTUAL.
+	(fm_directory_can_move_to_trash): Fix handling of NULL directory.
+	(new_folder_rename_later),
+	(fm_directory_view_get_emblem_names_to_exclude),
+	(fm_directory_view_merge_menus), (fm_directory_view_select_all),
+	(fm_directory_view_set_selection),
+	(fm_directory_view_supports_properties),
+	(fm_directory_view_update_menus): Use NAUTILUS_CALL_VIRTUAL.
+	(fm_directory_view_get_uri): Handle NULL directory.
+	
+	* src/file-manager/fm-icon-view.c:
+	(fm_icon_view_get_directory_sort_by),
+	(fm_icon_view_set_directory_sort_by),
+	(fm_icon_view_get_directory_sort_reversed),
+	(fm_icon_view_set_directory_sort_reversed),
+	(fm_icon_view_get_directory_auto_layout),
+	(fm_icon_view_set_directory_auto_layout):
+	Use NAUTILUS_CALL_VIRTUAL.
+	
+	* src/file-manager/fm-list-view.c: (fm_list_view_adding_file),
+	(fm_list_view_removing_file), (fm_list_view_file_still_belongs),
+	(get_number_of_columns), (get_link_column),
+	(get_default_sort_attribute), (get_column_specification):
+	Use NAUTILUS_CALL_VIRTUAL.
+	
+	* src/nautilus-navigation-bar.c:
+	(nautilus_navigation_bar_get_location),
+	(nautilus_navigation_bar_set_location):
+	Use NAUTILUS_CALL_VIRTUAL.
+
+	* src/nautilus-view-frame-corba.c:
+	(impl_Nautilus_ViewFrame__destroy):
+	* src/nautilus-zoomable-frame-corba.c:
+	(impl_Nautilus_ZoomableFrame__destroy),
+	(impl_Nautilus_ZoomableFrame__create):
+	Remove some unused code.
+
 2000-08-15  Arlo Rose  <arlo@eazel.com>
 
 	* AUTHORS:
