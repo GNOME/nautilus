@@ -97,6 +97,8 @@ static void begin_location_change  (NautilusWindow             *window,
 static void free_location_change   (NautilusWindow             *window);
 static void end_location_change    (NautilusWindow             *window);
 static void cancel_location_change (NautilusWindow             *window);
+static void position_and_show_window_callback (NautilusFile *file,
+					       gpointer callback_data);
 
 static void
 change_selection (NautilusWindow *window,
@@ -484,6 +486,7 @@ update_history (NautilusWindow *window,
 {
         switch (type) {
         case NAUTILUS_LOCATION_CHANGE_STANDARD:
+        case NAUTILUS_LOCATION_CHANGE_FALLBACK:
                 nautilus_window_add_current_location_to_history_list (window);
                 handle_go_elsewhere (window, new_location);
                 return;
@@ -1018,9 +1021,15 @@ static void
 handle_view_failure (NautilusWindow *window,
                      NautilusViewFrame *view)
 {
+	gboolean do_close_window;
+	char *fallback_load_location;
         g_warning ("A view failed. The UI will handle this with a dialog but this should be debugged.");
 
-        if (view == window->content_view) {
+
+	do_close_window = FALSE;
+	fallback_load_location = NULL;
+	
+	if (view == window->content_view) {
                 disconnect_view(window, window->content_view);			
                 nautilus_window_set_content_view_widget (window, NULL);
 			
@@ -1031,15 +1040,46 @@ handle_view_failure (NautilusWindow *window,
                  */
                 report_current_content_view_failure_to_user (window, view);
         } else {
-                /* FIXME bugzilla.gnome.org 45039: We need a
-                 * way to report the specific error that
-                 * happens in this case - adapter factory not
-                 * found, component failed to load, etc.
-                 */
-                report_nascent_content_view_failure_to_user (window, view);
+		/* Only report error on first try */
+		if (window->details->location_change_type != NAUTILUS_LOCATION_CHANGE_FALLBACK) {
+			/* FIXME bugzilla.gnome.org 45039: We need a
+			 * way to report the specific error that
+			 * happens in this case - adapter factory not
+			 * found, component failed to load, etc.
+			 */
+			report_nascent_content_view_failure_to_user (window, view);
+
+			fallback_load_location = g_strdup (window->details->pending_location);
+		} else {
+			if (!GTK_WIDGET_VISIBLE (window)) {
+				do_close_window = TRUE;
+			}
+		}
         }
         
         cancel_location_change (window);
+
+	if (fallback_load_location != NULL) {
+		begin_location_change (window, fallback_load_location,
+				       NAUTILUS_LOCATION_CHANGE_FALLBACK, 0, NULL);
+		g_free (fallback_load_location);
+	}
+
+	if (do_close_window) {
+		NautilusFile *file;
+		
+		if (window->details->pending_file_for_position != NULL) {
+			file = window->details->pending_file_for_position;
+			window->details->pending_file_for_position = NULL;
+			
+			nautilus_file_cancel_call_when_ready (file,
+							      position_and_show_window_callback,
+							      window);
+			nautilus_file_unref (file);
+		}
+
+		gtk_widget_destroy (GTK_WIDGET (window));
+	}
 }
 
 static void
@@ -1142,6 +1182,8 @@ position_and_show_window_callback (NautilusFile *file,
    
 	window = NAUTILUS_WINDOW (callback_data);
 
+	g_assert (window->details->pending_file_for_position == file);
+	
 #if !NEW_UI_COMPLETE
         if (NAUTILUS_IS_SPATIAL_WINDOW (window) && !NAUTILUS_IS_DESKTOP_WINDOW (window)) {
                 /* load the saved window geometry */
@@ -1180,6 +1222,7 @@ position_and_show_window_callback (NautilusFile *file,
         
         /* This object was ref'd when starting the callback. */
         nautilus_file_unref (file);
+	window->details->pending_file_for_position = NULL;
 } 
 
 /* utility routine that returns true if there's one or fewer windows in the window list */
@@ -1233,6 +1276,7 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
                                                        attributes,
                                                        position_and_show_window_callback,
                                                        window);
+			window->details->pending_file_for_position = file;
 		}
 
 		load_content_view (window, initial_view);
@@ -1499,7 +1543,8 @@ begin_location_change (NautilusWindow *window,
         }
         
         window->details->determine_view_handle = nautilus_determine_initial_view
-                (location, determined_initial_view_callback, window);
+                (location, type == NAUTILUS_LOCATION_CHANGE_FALLBACK,
+		 determined_initial_view_callback, window);
 
         g_object_unref (window);
 }

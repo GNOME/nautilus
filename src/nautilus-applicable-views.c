@@ -42,6 +42,7 @@ struct NautilusDetermineViewHandle {
 	NautilusDetermineViewCallback callback;
 	gpointer callback_data;
         NautilusFile *file;
+        gboolean fallback;
 };
 
 static NautilusDetermineViewResult
@@ -109,7 +110,11 @@ got_file_info_callback (NautilusFile *file,
         if (vfs_result_code == GNOME_VFS_OK
             || vfs_result_code == GNOME_VFS_ERROR_NOT_SUPPORTED
             || vfs_result_code == GNOME_VFS_ERROR_INVALID_URI) {
-                default_component = nautilus_mime_get_default_component_for_file (handle->file);
+                if (handle->fallback) {
+                        default_component = nautilus_mime_get_default_fallback_component_for_file (handle->file);
+                } else {
+                        default_component = nautilus_mime_get_default_component_for_file (handle->file);
+                }
                 if (default_component != NULL) {
                         default_id = nautilus_view_identifier_new_from_content_view (default_component);
                         CORBA_free (default_component);
@@ -139,6 +144,7 @@ got_file_info_callback (NautilusFile *file,
 
 NautilusDetermineViewHandle *
 nautilus_determine_initial_view (const char *location,
+                                 gboolean fallback,
                                  NautilusDetermineViewCallback callback,
                                  gpointer callback_data)
 {
@@ -154,6 +160,7 @@ nautilus_determine_initial_view (const char *location,
 
         handle->callback = callback;
         handle->callback_data = callback_data;
+        handle->fallback = fallback;
         
         handle->file = nautilus_file_get (location);
 

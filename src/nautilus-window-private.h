@@ -42,7 +42,8 @@ typedef enum {
         NAUTILUS_LOCATION_CHANGE_BACK,
         NAUTILUS_LOCATION_CHANGE_FORWARD,
         NAUTILUS_LOCATION_CHANGE_RELOAD,
-        NAUTILUS_LOCATION_CHANGE_REDIRECT
+        NAUTILUS_LOCATION_CHANGE_REDIRECT,
+        NAUTILUS_LOCATION_CHANGE_FALLBACK
 } NautilusLocationChangeType;
 
 /* FIXME bugzilla.gnome.org 42575: Migrate more fields into here. */
@@ -76,6 +77,7 @@ struct NautilusWindowDetails
         char *pending_scroll_to;
         GList *pending_selection;
         NautilusDetermineViewHandle *determine_view_handle;
+        NautilusFile *pending_file_for_position;
 
         /* View As choices */
         GList *short_list_viewers;

@@ -323,6 +323,7 @@ nautilus_mime_get_default_component_sort_conditions (NautilusFile *file, char *d
 
 static Bonobo_ServerInfo *
 nautilus_mime_get_default_component_for_file_internal (NautilusFile *file,
+						       gboolean      fallback,
 						       gboolean     *user_chosen)
 {
 	GList *info_list;
@@ -357,8 +358,11 @@ nautilus_mime_get_default_component_for_file_internal (NautilusFile *file,
 		item_mime_types = NULL;
 	}
 
-	default_component_string = nautilus_file_get_metadata 
-		(file, NAUTILUS_METADATA_KEY_DEFAULT_COMPONENT, NULL);
+	default_component_string = NULL;
+	if (!fallback) {
+		default_component_string = nautilus_file_get_metadata 
+			(file, NAUTILUS_METADATA_KEY_DEFAULT_COMPONENT, NULL);
+	} 
 
     	if (default_component_string == NULL) {
 		metadata_default = FALSE;
@@ -424,8 +428,15 @@ nautilus_mime_get_default_component_for_file_internal (NautilusFile *file,
 Bonobo_ServerInfo *
 nautilus_mime_get_default_component_for_file (NautilusFile      *file)
 {
-	return nautilus_mime_get_default_component_for_file_internal (file, NULL);
+	return nautilus_mime_get_default_component_for_file_internal (file, FALSE, NULL);
 }
+
+Bonobo_ServerInfo *
+nautilus_mime_get_default_fallback_component_for_file (NautilusFile      *file)
+{
+	return nautilus_mime_get_default_component_for_file_internal (file, TRUE, NULL);
+}
+
 
 gboolean
 nautilus_mime_is_default_component_for_file_user_chosen (NautilusFile      *file)
@@ -433,7 +444,7 @@ nautilus_mime_is_default_component_for_file_user_chosen (NautilusFile      *file
 	Bonobo_ServerInfo *component;
 	gboolean user_chosen;
 
-	component = nautilus_mime_get_default_component_for_file_internal (file, &user_chosen);
+	component = nautilus_mime_get_default_component_for_file_internal (file, FALSE, &user_chosen);
 
 	/* Doesn't count as user chosen if the user-specified data is bogus and doesn't
 	 * result in an actual component.

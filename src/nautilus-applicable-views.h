@@ -63,6 +63,7 @@ typedef void (* NautilusDetermineViewCallback) (NautilusDetermineViewHandle  *ha
                                                 gpointer                      callback_data);
 
 NautilusDetermineViewHandle *nautilus_determine_initial_view        (const char                    *location,
+                                                                     gboolean                       fallback,
                                                                      NautilusDetermineViewCallback  callback,
                                                                      gpointer                       callback_data);
 void                         nautilus_determine_initial_view_cancel (NautilusDetermineViewHandle   *handle);

@@ -1,3 +1,18 @@
+2004-03-05  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-mime-actions.[ch]:
+	Add nautilus_mime_get_default_fallback_component_for_file which
+	ignores the metadata specified component.
+	
+	* src/nautilus-applicable-views.[ch]:
+	Add fallback argument to nautilus_determine_initial_view.
+	
+	* src/nautilus-window-private.h:
+	* src/nautilus-window-manage-views.c:
+	If the view fails to load, fall back to the non-metadata one.
+	If that fails also, make sure to destroy the window if this
+	was a new (non-visible) window.
+
 2004-03-04  Dave Camp  <dave@ximian.com>
 
 	* libnautilus-extension/nautilus-file-info.c:
