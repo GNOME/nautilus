@@ -86,27 +86,39 @@ help_uri_new ()
 static gchar *
 help_uri_to_string (HelpURI *help_uri)
 {
-	gchar *retval = NULL;
-#ifdef ALI_DEBUG
-	g_print ("help_uri->file is %s, help_uri->section is %s\n", help_uri->file, help_uri->section);
-#endif
+	gchar *retval;
+	gchar *after_method;
+	gchar *escaped_uri;
+
+	retval = NULL;
+	after_method = NULL;
+	escaped_uri = NULL;
+	
 	switch (help_uri->type) {
 	case SGML_FILE:
 		if (help_uri->section) {
-			retval = g_strdup_printf ("pipe:gnome-db2html2 %s?%s",
+			after_method = g_strdup_printf ("gnome-db2html2 %s?%s;mime-type=text/html",
 						  help_uri->file, help_uri->section);
+			escaped_uri = gnome_vfs_escape_string (after_method);
+			retval = g_strconcat ("pipe:",  escaped_uri);		
                 } else {
-			retval = g_strdup_printf ("pipe:gnome-db2html2 %s",
+			after_method = g_strdup_printf ("gnome-db2html2 %s;mime-type=text/html",
 						  help_uri->file);
+			escaped_uri = gnome_vfs_escape_string (after_method);
+			retval = g_strconcat ("pipe:", escaped_uri);
                 }
 		break;
 	case MAN_FILE:
-		retval = g_strdup_printf ("pipe:gnome-man2html2 %s",
+		after_method = g_strdup_printf ("gnome-man2html2 %s;mime-type=text/html",
 					  help_uri->file);
+		escaped_uri = gnome_vfs_escape_string (after_method);
+		retval = g_strconcat ("pipe:", escaped_uri);
 		break;
 	case INFO_FILE:
-		retval = g_strdup_printf ("pipe:gnome-info2html2 %s",
+		after_method = g_strdup_printf ("gnome-info2html2 %s;mime-type=text/html",
 					  help_uri->file);
+		escaped_uri = gnome_vfs_escape_string (after_method);
+		retval = g_strconcat ("pipe:", escaped_uri);
 		break;
 	case HTML_FILE:
 		if (help_uri->section) {
@@ -116,7 +128,15 @@ help_uri_to_string (HelpURI *help_uri)
                 }
 		break;
 	default:
+		/* FIXME: This needs to be removed so things can be handled more
+		 * gracefully */
 		g_assert_not_reached ();
+	}
+	if (after_method != NULL) {
+		g_free (after_method);
+	}
+	if (escaped_uri != NULL) {
+		g_free (escaped_uri);
 	}
 
 	return retval;
@@ -151,21 +171,12 @@ convert_file_to_uri (HelpURI *help_uri, gchar *file)
 {
 	const gchar *mime_type;
 	
-#ifdef ALI_DEBUG
-        g_print ("file is: %s and does it exist ? %d\n",file,g_file_exists(file));
-#endif
 	if (!g_file_test (file, G_FILE_TEST_ISFILE | G_FILE_TEST_ISLINK)) { 
-#ifdef ALI_DEBUG
-		g_print ("*** g_file_test has failed\n");
-#endif
 		return FALSE;
 	}
 
 	help_uri->file = file;
 	mime_type = gnome_vfs_get_file_mime_type (file, NULL, FALSE);
-#ifdef ALI_DEBUG
-	g_print ("*** the file's mime_type is: %s\n",mime_type);
-#endif
 		
 	if (strcmp (mime_type, "text/sgml") == 0 ||
 	    strcmp (mime_type, "exported SGML document text") == 0) {
@@ -209,9 +220,6 @@ transform_absolute_file (const gchar *file)
 		/* we do not want trailing spaces or it can screw things up */
 		temp_file_base = g_strdup (g_strchomp ((gchar *) file));
 	}
-#ifdef ALI_DEBUG
-	g_print ("*** temp_file_base is: %s\n",temp_file_base);
-#endif
 
 	/* First we try the file directly */
 	/* FIXME bugzilla.eazel.com 696: we need to deal with locale, too */
@@ -241,6 +249,7 @@ transform_absolute_file (const gchar *file)
 		g_free (temp_file_base);
 		return help_uri;
 	}
+	
 	return NULL;
 }
 
@@ -259,24 +268,12 @@ help_do_transform (GnomeVFSTransform *transform,
 	HelpURI *help_uri;
 	*new_uri = NULL;
 
-#ifdef ALI_DEBUG
-	                g_print ("*** in help_do_transform ***\nURI is: %s\n",old_uri);
-#endif
 
 	if (old_uri == NULL || *old_uri == '\000')
 		return GNOME_VFS_ERROR_NOT_FOUND;
 
 	if (old_uri[0] == '/') {
 		help_uri = transform_absolute_file (old_uri);
-#ifdef ALI_DEBUG
-		g_print ("*** Doing transform_absolute_file\n");
-		if (help_uri != NULL) {
-			g_print ("*** The return help_uri->file is: %s\n",help_uri->file);
-			g_print ("*** the return help_uri->section is: %s\n",help_uri->section);
-		}
-		else
-			g_print ("*** help_uri is NULL\n");
-#endif
 	}
 	else
 		help_uri = transform_relative_file (old_uri);
@@ -286,9 +283,7 @@ help_do_transform (GnomeVFSTransform *transform,
 
 	*new_uri = help_uri_to_string (help_uri);
 	help_uri_free (help_uri);
-#ifdef ALI_DEBUG
-	g_print ("*** new_uri is %s\n", *new_uri);
-#endif
+	
 	return GNOME_VFS_OK;
 }
 
@@ -300,9 +295,7 @@ GnomeVFSTransform *
 vfs_module_transform (const char *method_name, const char *args)
 {
 	init_help_module ();
-#ifdef ALI_DEBUG
-	g_print ("Loading libvfs-help.so...\n");
-#endif
+	
 	return &transform;
 }
 

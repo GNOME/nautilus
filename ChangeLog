@@ -1,3 +1,12 @@
+2000-07-19  Ali Abdin  <aliabdin@aucegypt.edu>
+
+	* components/help/help-method.c:
+	(help_uri_to_string):
+	Cleaned it up to fit Eazel style guidelines. Changed the URI's so they
+	pass the mime-type to pipe and are escaped. Fixes bug #698.
+
+	I also removed a lot of #ifdef DEBUG_ALI cruft left lying around.
+
 2000-07-18  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-file.c: (nautilus_file_dump):
