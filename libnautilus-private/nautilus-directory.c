@@ -404,7 +404,7 @@ real_get_name_for_self_as_new_file (NautilusDirectory *directory)
 	directory_uri = directory->details->uri;
 
 	colon = strchr (directory_uri, ':');
-	if (colon == NULL) {
+	if (colon == NULL || colon == directory_uri) {
 		name = g_strdup (directory_uri);
 	} else {
 		name = g_strndup (directory_uri, colon - directory_uri);

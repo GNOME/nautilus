@@ -1,3 +1,15 @@
+2000-11-08  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 4485 (":" as location caused odd error messages)
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(real_get_name_for_self_as_new_file): Now checks for
+	initial-colon as well as missing-colon.
+	
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_self_check_file): Added a few self check tests
+	for default file naming from bogus directories.
+
 2000-11-08  Ali Abdin  <aliabdin@aucegypt.edu>
 
 	* components/music/nautilus-music-view.c:

@@ -4251,6 +4251,18 @@ nautilus_self_check_file (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), "home");
 	nautilus_file_unref (file_1);
 
+	file_1 = nautilus_file_get (":");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), ":");
+	nautilus_file_unref (file_1);
+
+	file_1 = nautilus_file_get ("eazel:");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), "eazel");
+	nautilus_file_unref (file_1);
+
+	file_1 = nautilus_file_get ("trash:");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), _("Trash"));
+	nautilus_file_unref (file_1);
+
 	/* sorting */
 	file_1 = nautilus_file_get ("file:///etc");
 	file_2 = nautilus_file_get ("file:///usr");
