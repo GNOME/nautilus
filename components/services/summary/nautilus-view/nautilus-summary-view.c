@@ -58,6 +58,8 @@ struct _NautilusSummaryViewDetails {
 	GtkWidget	*login_label;
 	GtkWidget	*maintenance_button;
 	GtkWidget	*maintenance_label;
+	GtkWidget	*logout_button;
+	GtkWidget	*logout_label;
 
 	GtkWidget	*feedback_text;
 };
@@ -73,6 +75,8 @@ static void	login_button_cb				(GtkWidget			*button,
 							 NautilusSummaryView		*view); 
 static void	maintenance_button_cb			(GtkWidget			*button,
 							 NautilusSummaryView		*view); 
+static void	logout_button_cb			(GtkWidget			*button,
+							 NautilusSummaryView		*view);
 static void	entry_changed_cb			(GtkWidget			*entry,
 							 NautilusSummaryView		*view);
 static void	goto_vault_cb				(GtkWidget			*button,
@@ -240,6 +244,19 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_widget_show (button_box);
 	gtk_box_pack_start (GTK_BOX (temp_box), button_box, FALSE, FALSE, 4);
 
+	/* logout button */
+	view->details->logout_button = gtk_button_new ();
+	view->details->logout_label = gtk_label_new (" Log me out! ");
+	gtk_widget_show (view->details->logout_label);
+	gtk_container_add (GTK_CONTAINER (view->details->logout_button), view->details->logout_label);
+	button_box = gtk_hbox_new (TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (button_box), view->details->logout_button, FALSE, FALSE, 21);
+	gtk_box_pack_start (GTK_BOX (temp_box), view->details->logout_button, FALSE, FALSE, 1);
+	gtk_signal_connect (GTK_OBJECT (view->details->logout_button), "clicked", GTK_SIGNAL_FUNC (logout_button_cb), view);
+	gtk_widget_show (view->details->logout_button);
+	gtk_widget_show (button_box);
+	gtk_box_pack_start (GTK_BOX (temp_box), button_box, FALSE, FALSE, 4);
+
 	/* draw parent vbox and connect it to the login frame */
 	gtk_widget_show (temp_box);
 	gtk_container_add (GTK_CONTAINER (frame), temp_box);
@@ -256,7 +273,7 @@ generate_summary_form (NautilusSummaryView	*view)
 			  GTK_FILL | GTK_EXPAND,
 			  0, 0);
 
-	/* create the parent login box and a table to hold the labels and text entries */
+	/* create the parent service news box and a table to hold the data */
 	temp_box = gtk_vbox_new (FALSE, 0);
 	service_news_table = GTK_TABLE (gtk_table_new (4, 2, FALSE));
 
@@ -359,6 +376,15 @@ entry_changed_cb (GtkWidget	*entry, NautilusSummaryView	*view)
 /* callback to handle the login button.  Right now only does a simple redirect. */
 static void
 login_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
+{
+
+	go_to_uri (view->details->nautilus_view, "eazel-inventory:");
+
+}
+
+/* callback to handle the logout button.  Right now only does a simple redirect. */
+static void
+logout_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 {
 
 	go_to_uri (view->details->nautilus_view, "eazel-inventory:");
