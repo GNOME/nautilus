@@ -1,8 +1,8 @@
-# Swedish messages for Nautilus.
-# Copyright (C) 2000, 2001, 2002, 2003 Free Software Foundation, Inc.
+# Swedish messages for nautilus.
+# Copyright (C) 2000, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
 # Andreas Hyden <a.hyden@cyberpoint.se>, 2000.
 # Richard Hult <rhult@hem.passagen.se>, 2000.
-# Christian Rose <menthos@menthos.com>, 2000, 2001, 2002, 2003.
+# Christian Rose <menthos@menthos.com>, 2000, 2001, 2002, 2003, 2004.
 # Martin Norbäck <d95mback@dtek.chalmers.se>, 2000, 2001.
 #
 # $Id$
@@ -10,14 +10,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-30 13:04+0100\n"
-"PO-Revision-Date: 2003-09-28 22:43+0200\n"
+"POT-Creation-Date: 2004-02-10 01:18+0100\n"
+"PO-Revision-Date: 2004-02-10 01:18+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -58,40 +59,36 @@ msgid "Nautilus Emblem view"
 msgstr "Nautilus emblemvy"
 
 #: components/emblem/nautilus-emblem-view.c:203
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't remove emblem with name '%s'."
-msgstr "Kunde inte ta bort emblem"
+msgstr "Kunde inte ta bort emblemet med namnet \"%s\"."
 
 #: components/emblem/nautilus-emblem-view.c:204
-#, fuzzy
 msgid ""
 "This is probably because the emblem is a permanent one, and not one you "
 "added yourself."
 msgstr ""
-"Kunde inte ta bort emblemet med namnet \"%s\". Detta beror troligtvis på att "
-"emblemet är permanent och inte något du lade till själv."
+"Detta beror troligtvis på att emblemet är permanent och inte något du lade "
+"till själv."
 
 #: components/emblem/nautilus-emblem-view.c:205
-#, fuzzy
 msgid "Couldn't Remove Emblem"
 msgstr "Kunde inte ta bort emblem"
 
 #: components/emblem/nautilus-emblem-view.c:239
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't rename emblem with name '%s'."
-msgstr "Kunde inte byta namn på emblem"
+msgstr "Kunde inte byta namn på emblemet med namnet \"%s\"."
 
 #: components/emblem/nautilus-emblem-view.c:240
-#, fuzzy
 msgid ""
 "This is probably because the emblem is a permanent one, and not one that you "
 "added yourself."
 msgstr ""
-"Kunde inte byta namn på emblemet med namnet \"%s\". Detta beror troligtvis "
-"på att emblemet är permanent och inte något du lade till själv."
+"Detta beror troligtvis på att emblemet är permanent och inte något du lade "
+"till själv."
 
 #: components/emblem/nautilus-emblem-view.c:241
-#, fuzzy
 msgid "Couldn't Rename Emblem"
 msgstr "Kunde inte byta namn på emblem"
 
@@ -128,34 +125,28 @@ msgstr ""
 "på andra ställen för att identifiera emblemet."
 
 #: components/emblem/nautilus-emblem-view.c:742
-#, fuzzy
 msgid "Some of the files could not be added as emblems."
-msgstr "Tyvärr, bilden i %s kunde inte installeras som ett emblem."
+msgstr "En del av filerna kunde inte läggas till som emblem."
 
 #: components/emblem/nautilus-emblem-view.c:742
 #: components/emblem/nautilus-emblem-view.c:744
-#, fuzzy
 msgid "The emblems do not appear to be valid images."
-msgstr "Filen \"%s\" verkar inte vara en giltig bild."
+msgstr "Emblemen verkar inte vara giltiga bilder."
 
 #: components/emblem/nautilus-emblem-view.c:742
 #: components/emblem/nautilus-emblem-view.c:744
-#, fuzzy
 msgid "Couldn't Add Emblems"
 msgstr "Kunde inte lägga till emblem"
 
 #: components/emblem/nautilus-emblem-view.c:744
-#, fuzzy
 msgid "None of the files could be added as emblems."
-msgstr ""
-"Inga av filerna kunde läggas till som emblem eftersom de inte verkar vara "
-"giltiga bilder."
+msgstr "En del av filerna kunde läggas till som emblem."
 
 #: components/emblem/nautilus-emblem-view.c:765
 #: components/emblem/nautilus-emblem-view.c:790
 #: components/emblem/nautilus-emblem-view.c:840
 msgid "The emblem cannot be added."
-msgstr ""
+msgstr "Emblemet kan inte läggas till."
 
 #: components/emblem/nautilus-emblem-view.c:765
 msgid "The dragged text was not a valid file location."
@@ -164,7 +155,6 @@ msgstr "Den dragna texten var ingen giltig filplats."
 #: components/emblem/nautilus-emblem-view.c:765
 #: components/emblem/nautilus-emblem-view.c:790
 #: components/emblem/nautilus-emblem-view.c:840
-#, fuzzy
 msgid "Couldn't Add Emblem"
 msgstr "Kunde inte lägga till emblem"
 
@@ -208,52 +198,48 @@ msgid "Nautilus Image Properties view"
 msgstr "Nautilus bildegenskapervy"
 
 #: components/image_properties/nautilus-image-properties-view.c:192
-#, fuzzy
 msgid "Camera Brand"
-msgstr "Kamera"
+msgstr "Kameramärke"
 
 #: components/image_properties/nautilus-image-properties-view.c:193
-#, fuzzy
 msgid "Camera Model"
-msgstr "Kamera"
+msgstr "Kameramodell"
 
 #: components/image_properties/nautilus-image-properties-view.c:194
 msgid "Date Taken"
-msgstr ""
+msgstr "Datum för tagning"
 
 #: components/image_properties/nautilus-image-properties-view.c:195
 msgid "Exposure Time"
-msgstr ""
+msgstr "Exponeringstid"
 
 #: components/image_properties/nautilus-image-properties-view.c:196
-#, fuzzy
 msgid "Exposure Program"
-msgstr "program"
+msgstr "Exponeringsprogram"
 
 #: components/image_properties/nautilus-image-properties-view.c:197
 msgid "Aperture Value"
-msgstr ""
+msgstr "Bländarvärde"
 
 #: components/image_properties/nautilus-image-properties-view.c:198
 msgid "Metering Mode"
-msgstr ""
+msgstr "Mätmetod"
 
 #: components/image_properties/nautilus-image-properties-view.c:199
 msgid "Flash Fired"
-msgstr ""
+msgstr "Blixt använd"
 
 #: components/image_properties/nautilus-image-properties-view.c:200
-#, fuzzy
 msgid "Focal Length"
-msgstr "Covalent"
+msgstr "Brännvidd"
 
 #: components/image_properties/nautilus-image-properties-view.c:201
 msgid "Shutter Speed"
-msgstr ""
+msgstr "Slutarhastighet"
 
 #: components/image_properties/nautilus-image-properties-view.c:202
 msgid "ISO Speed Rating"
-msgstr ""
+msgstr "ISO-hastighetsgradering"
 
 #: components/image_properties/nautilus-image-properties-view.c:203
 #: data/static_bookmarks.xml.h:36
@@ -261,7 +247,7 @@ msgid "Software"
 msgstr "Programvara"
 
 #: components/image_properties/nautilus-image-properties-view.c:222
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
@@ -270,7 +256,7 @@ msgid_plural ""
 "<b>Resolution:</b> %dx%d pixels\n"
 msgstr[0] ""
 "<b>Bildtyp:</b>    %s (%s)\n"
-"<b>Upplösning:</b> %d×%d bildpunkter\n"
+"<b>Upplösning:</b> %d×%d bildpunkt\n"
 msgstr[1] ""
 "<b>Bildtyp:</b>    %s (%s)\n"
 "<b>Upplösning:</b> %d×%d bildpunkter\n"
@@ -995,113 +981,104 @@ msgstr "Förhandsgranskning"
 #: libnautilus-extension/nautilus-property-page.c:176
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
+#: src/file-manager/fm-list-view.c:1052
 #: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Namn"
 
 #: libnautilus-extension/nautilus-column.c:176
 msgid "Name of the column"
-msgstr ""
+msgstr "Namn på kolumnen"
 
 #: libnautilus-extension/nautilus-column.c:182
 msgid "Attribute"
-msgstr ""
+msgstr "Attribut"
 
 #: libnautilus-extension/nautilus-column.c:183
 msgid "The attribute name to display"
-msgstr ""
+msgstr "Attributnamnet att visa"
 
 #: libnautilus-extension/nautilus-column.c:189
 #: libnautilus-extension/nautilus-menu-item.c:213
 #: libnautilus-extension/nautilus-property-page.c:183
-#, fuzzy
 msgid "Label"
-msgstr "Eazel"
+msgstr "Etikett"
 
 #: libnautilus-extension/nautilus-column.c:190
 msgid "Label to display in the column"
-msgstr ""
+msgstr "Etikett att visa i kolumnen"
 
 #: libnautilus-extension/nautilus-column.c:196
-#, fuzzy
 msgid "Description"
-msgstr "skript"
+msgstr "Beskrivning"
 
 #: libnautilus-extension/nautilus-column.c:197
 msgid "A user-visible description of the column"
-msgstr ""
+msgstr "En beskrivning av kolumnen som är synlig för användaren"
 
 #: libnautilus-extension/nautilus-column.c:204
-#, fuzzy
 msgid "xalign"
-msgstr "länk"
+msgstr "x-justering"
 
 #: libnautilus-extension/nautilus-column.c:205
 msgid "The x-alignment of the column"
-msgstr ""
+msgstr "Justeringen i x-led för kolumnen"
 
 #: libnautilus-extension/nautilus-menu-item.c:207
-#, fuzzy
 msgid "Name of the item"
-msgstr "Gör om redigeringen"
+msgstr "Namn på objektet"
 
 #: libnautilus-extension/nautilus-menu-item.c:214
 msgid "Label to display to the user"
-msgstr ""
+msgstr "Etikett att visa för användaren"
 
 #: libnautilus-extension/nautilus-menu-item.c:220
 msgid "Tip"
-msgstr ""
+msgstr "Tips"
 
 #: libnautilus-extension/nautilus-menu-item.c:221
 msgid "Tooltip for the menu item"
-msgstr ""
+msgstr "Verktygstips för menyposten"
 
 #: libnautilus-extension/nautilus-menu-item.c:227
-#, fuzzy
 msgid "Icon"
-msgstr "Ikoner"
+msgstr "Ikon"
 
 #: libnautilus-extension/nautilus-menu-item.c:228
 msgid "Name of the icon to display in the menu item"
-msgstr ""
+msgstr "Namn på ikonen att visa i menyposten"
 
 #: libnautilus-extension/nautilus-menu-item.c:235
-#, fuzzy
 msgid "Sensitive"
-msgstr "Meditativt"
+msgstr "Känslig"
 
 #: libnautilus-extension/nautilus-menu-item.c:236
 msgid "Whether the menu item is sensitive"
-msgstr ""
+msgstr "Huruvida menyposten är käsnlig"
 
 #: libnautilus-extension/nautilus-menu-item.c:242
-#, fuzzy
 msgid "Priority"
-msgstr "Skriv ut"
+msgstr "Prioritet"
 
 #: libnautilus-extension/nautilus-menu-item.c:243
-#, fuzzy
 msgid "Show priority text in toolbars"
-msgstr "Visa te_xt i ikoner:"
+msgstr "Visa prioritetstext i verktygsrader"
 
 #: libnautilus-extension/nautilus-property-page.c:177
 msgid "Name of the page"
-msgstr ""
+msgstr "Namn på sidan"
 
 #: libnautilus-extension/nautilus-property-page.c:184
 msgid "Label widget to display in the notebook tab"
-msgstr ""
+msgstr "Etikettwidget att visa i flikhäftesfliken"
 
 #: libnautilus-extension/nautilus-property-page.c:190
-#, fuzzy
 msgid "Page"
-msgstr "Paket"
+msgstr "Sida"
 
 #: libnautilus-extension/nautilus-property-page.c:191
-#, fuzzy
 msgid "Widget for the property page"
-msgstr "Bredd på sidopanelen"
+msgstr "Widget för egenskapssidan"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:1
 msgid ""
@@ -1125,9 +1102,8 @@ msgid "Bring up a new window for every opened file"
 msgstr "Visa ett nytt fönster för varje öppnad fil"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:4
-#, fuzzy
 msgid "Computer icon visible on desktop"
-msgstr "Hemikon synlig på skrivbordet"
+msgstr "Datorikon synlig på skrivbordet"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:5
 msgid "Criteria for search bar searching"
@@ -1174,14 +1150,12 @@ msgid "Default Side Pane Background Filename"
 msgstr "Filnamn för sidopanelens standardbakgrund"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:14
-#, fuzzy
 msgid "Default column order in the list view"
-msgstr "Standardzoomnivå som används av listvyn"
+msgstr "Standardkolumnsortering i listvyn"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:15
-#, fuzzy
 msgid "Default column order in the list view."
-msgstr "Standardzoomnivå som används av listvyn."
+msgstr "Standardkolumnsortering i listvyn."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:16
 msgid "Default folder viewer"
@@ -1192,14 +1166,12 @@ msgid "Default icon zoom level"
 msgstr "Standardikonzoomnivå"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:18
-#, fuzzy
 msgid "Default list of columns visible in the list view"
-msgstr "Standardzoomnivå som används av listvyn"
+msgstr "Standardlista med kolumner synliga i listvyn"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:19
-#, fuzzy
 msgid "Default list of columns visible in the list view."
-msgstr "Standardzoomnivå som används av listvyn."
+msgstr "Standardlista med kolumner synliga i listvyn."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:20
 msgid "Default list zoom level"
@@ -1234,13 +1206,11 @@ msgid "Enable 'special' flags in file preferences dialog"
 msgstr "Aktivera \"specialflaggor\" i filegenskapsfönstret"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
-#, fuzzy
 msgid ""
 "Filename for the default folder background. Only used if background_set is "
 "true."
 msgstr ""
-"Filnamn för standardskrivbordsbakgrunden. Används endast om background_set "
-"är sant."
+"Filnamn för standardmappbakgrunden. Används endast om background_set är sant."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
 msgid ""
@@ -1251,18 +1221,17 @@ msgstr ""
 "side_pane_background_set är sant."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
-#, fuzzy
 msgid ""
 "Folders over this size will be truncated to around this size. The purpose of "
 "this is to avoid unintentionally blowing the heap and killing Nautilus on "
 "massive folders. A negative value denotes no limit. The limit is approximate "
 "due to the reading of folders chunk-wise."
 msgstr ""
-"Kataloger över denna storlek kommer att trunkeras till ungefärligen denna "
+"Mappar över denna storlek kommer att trunkeras till ungefärligen denna "
 "storlek. Avsikten med detta är att undvika att oavsiktligen spåra ur och "
-"använda för mycket minne och döda Nautilus med mycket stora kataloger. Ett "
+"använda för mycket minne och döda Nautilus med mycket stora mappar. Ett "
 "negativt värde innebär att ingen gräns finns. Gränsen är ungefärlig på grund "
-"av den styckvisa inläsningen av kataloger."
+"av den styckvisa inläsningen av mappar."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:31
 msgid "Hide default bookmarks in the bookmark menu"
@@ -1273,13 +1242,12 @@ msgid "Home icon visible on desktop"
 msgstr "Hemikon synlig på skrivbordet"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:33
-#, fuzzy
 msgid ""
 "If set to true, Nautilus will only show folders in the tree side pane. "
 "Otherwise it will show both folders and files."
 msgstr ""
-"Om detta är sant kommer Nautilus endast att visa kataloger i "
-"trädsidopanelen. Annars kommer Nautilus att visa både kataloger och filer."
+"Om detta är sant kommer Nautilus endast att visa mappar i trädsidopanelen. "
+"Annars kommer Nautilus att visa både mappar och filer."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:34
 msgid ""
@@ -1308,12 +1276,11 @@ msgstr ""
 "exotiska filalternativen i dialogrutan filinställningar."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:39
-#, fuzzy
 msgid ""
 "If set to true, then Nautilus shows folders prior to showing files in the "
 "icon and list views."
 msgstr ""
-"Om detta är sant visar Nautilus kataloger innan filer i ikon- och listvyerna."
+"Om detta är sant visar Nautilus mappar innan filer i ikon- och listvyerna."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
 msgid ""
@@ -1354,12 +1321,11 @@ msgstr ""
 "bokmärkesmenyn."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
-#, fuzzy
 msgid ""
 "If set to true, then Nautilus will use the user's home folder as the "
 "desktop. If it is false, then it will use ~/Desktop as the desktop."
 msgstr ""
-"Om detta är sant kommer Nautilus att använda användarens hemkatalog som "
+"Om detta är sant kommer Nautilus att använda användarens hemmapp som "
 "skrivbord. Om det är falskt kommer det att använda ~/Desktop som skrivbord."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
@@ -1373,13 +1339,12 @@ msgstr ""
 "tildetecken (~) som säkerhetskopior."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
-#, fuzzy
 msgid ""
 "If set to true, then hidden files are shown in the file manager. Hidden "
 "files are either dotfiles or are listed in the folder's .hidden file."
 msgstr ""
 "Om detta är sant kommer dolda filer att visas i filhanteraren. Dolda filer "
-"är antingen punktfiler eller är listade i katalogens .hidden-fil."
+"är antingen punktfiler eller är listade i mappens .hidden-fil."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid ""
@@ -1391,21 +1356,19 @@ msgstr ""
 "loggar in."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
-#, fuzzy
 msgid ""
 "If this is set to true, an icon linking to the computer location will be put "
 "on the desktop."
 msgstr ""
-"Om detta är sant kommer en ikon som länkar till papperskorgen att placeras "
+"Om detta är sant kommer en ikon som länkar till datorns plats att placeras "
 "på skrivbordet."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
-#, fuzzy
 msgid ""
 "If this is set to true, an icon linking to the home folder will be put on "
 "the desktop."
 msgstr ""
-"Om detta är sant kommer en ikon som länkar till hemkatalogen att placeras på "
+"Om detta är sant kommer en ikon som länkar till hemmappen att placeras på "
 "skrivbordet."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
@@ -1440,7 +1403,6 @@ msgstr ""
 "för efter minskande storlek."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
-#, fuzzy
 msgid "If true, icons will be laid out tighter by default in new windows."
 msgstr ""
 "Om detta är sant kommer ikoner att placeras tätare som standard i nya "
@@ -1473,9 +1435,8 @@ msgid "List of possible captions on icons"
 msgstr "Lista med möjliga rubriker på ikoner"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
-#, fuzzy
 msgid "Maximum handled files in a folder"
-msgstr "Maximalt antal hanterade filer i katalog"
+msgstr "Maximalt antal hanterade filer i en mapp"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
 msgid "Maximum image size for thumbnailing"
@@ -1494,14 +1455,12 @@ msgid "Nautilus handles drawing the desktop"
 msgstr "Nautilus hanterar ritandet av skrivbordet"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
-#, fuzzy
 msgid "Nautilus uses the users home folder as the desktop"
-msgstr "Nautilus använder användarens hemkatalog som skrivbord"
+msgstr "Nautilus använder användarens hemmapp som skrivbord"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
-#, fuzzy
 msgid "Only show folders in the tree sidebar"
-msgstr "Visa endast kataloger i trädsidopanelen"
+msgstr "Visa endast mappar i trädsidopanelen"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
 msgid ""
@@ -1558,7 +1517,6 @@ msgstr ""
 "att spelas."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
-#, fuzzy
 msgid ""
 "Speed tradeoff for when to show a preview of text file contents in the "
 "file's icon. If set to \"always\" then always show previews, even if the "
@@ -1568,13 +1526,12 @@ msgid ""
 msgstr ""
 "Hastighetskompromiss för när en förhandsvisning av en textfil ska visas i "
 "filens ikon. Om detta är satt till \"always\" kommer förhandsvisningar "
-"alltid att visas, även om katalogen är på en fjärrserver. Om detta är satt "
-"till \"local_only\" kommer endast förhandsvisningar att visas för lokala "
+"alltid att visas, även om mappen är på en fjärrserver. Om detta är satt till "
+"\"local_only\" kommer endast förhandsvisningar att visas för lokala "
 "filsystem. Om detta är satt till \"never\" kommer förhandsvisningsdata "
 "aldrig att läsas in."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
-#, fuzzy
 msgid ""
 "Speed tradeoff for when to show an image file as a thumbnail. If set to "
 "\"always\" then always thumbnail, even if the folder is on a remote server. "
@@ -1584,24 +1541,23 @@ msgid ""
 msgstr ""
 "Hastighetskompromiss för när en bildfil ska visas som en miniatyrbild. Om "
 "detta är satt till \"always\" kommer en miniatyrbild alltid att skapas, även "
-"om filen är på en fjärrserver. Om detta är satt till \"local_only\" kommer "
+"om mappen är på en fjärrserver. Om detta är satt till \"local_only\" kommer "
 "endast miniatyrbilder att visas för lokala filsystem. Om detta är satt till "
 "\"never\" kommer miniatyrbilder aldrig att skapas utan endast en allmän ikon "
 "att användas."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
-#, fuzzy
 msgid ""
 "Speed tradeoff for when to show the number of items in a folder. If set to "
 "\"always\" then always show item counts, even if the folder is on a remote "
 "server. If set to \"local_only\" then only show counts for local "
 "filesystems. If set to \"never\" then never bother to compute item counts."
 msgstr ""
-"Hastighetskompromiss för när antalet objekt ska visas i en katalog. Om detta "
-"är satt till \"always\" kommer objektantal alltid att visas, även om "
-"katalogen är på en fjärrserver. Om detta är satt till \"local_only\" kommer "
-"endast antal att visas för lokala filsystem. Om detta är satt till \"never\" "
-"kommer objektantal aldrig att beräknas."
+"Hastighetskompromiss för när antalet objekt ska visas i en mapp. Om detta är "
+"satt till \"always\" kommer objektantal alltid att visas, även om mappen är "
+"på en fjärrserver. Om detta är satt till \"local_only\" kommer endast antal "
+"att visas för lokala filsystem. Om detta är satt till \"never\" kommer "
+"objektantal aldrig att beräknas."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
 msgid ""
@@ -1612,12 +1568,11 @@ msgstr ""
 "\", \"size\", \"type\", \"modification_date\" och \"emblems\"."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
-#, fuzzy
 msgid ""
 "The default sort-order for the items in the list view. Possible values are "
 "\"name\", \"size\", \"type\", and \"modification_date\"."
 msgstr ""
-"Standardsorteringsordningen för objekt i listvyn. Möjliga värden är \"name"
+"Standardsorteringsordningen för objekten i listvyn. Möjliga värden är \"name"
 "\", \"size\", \"type\" och \"modification_date\"."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
@@ -1661,7 +1616,6 @@ msgid "Use manual layout in new windows"
 msgstr "Använd manuell layout i nya fönster"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
-#, fuzzy
 msgid "Use tighter layout in new windows"
 msgstr "Använd kompaktare layout i nya fönster"
 
@@ -1691,9 +1645,8 @@ msgstr ""
 "för denna mapp. Möjliga värden är \"list_view\" och \"icon_view\"."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:92
-#, fuzzy
 msgid "When to show number of items in a folder"
-msgstr "När antalet antalet objekt i en katalog ska visas"
+msgstr "När antalet antalet objekt i en mapp ska visas"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:93
 msgid "When to show preview text in icons"
@@ -1704,9 +1657,8 @@ msgid "When to show thumbnails of image files"
 msgstr "När miniatyrbilder för bildfiler ska visas"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:95
-#, fuzzy
 msgid "Whether a custom default folder background has been set."
-msgstr "Huruvida en standardkatalogbakgrund har ställts in."
+msgstr "Huruvida en standardmappbakgrund har ställts in."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:96
 msgid "Whether a custom default side pane background has been set."
@@ -1855,9 +1807,8 @@ msgid "Xenix Volume"
 msgstr "Xenix-volym"
 
 #: libnautilus-private/nautilus-column-utilities.c:44
-#, fuzzy
 msgid "The name and icon of the file."
-msgstr "namn på ikonen för mozillavyn"
+msgstr "Namnet på filen och ikonen för den."
 
 #: libnautilus-private/nautilus-column-utilities.c:50
 #: src/file-manager/fm-search-list-view.c:519
@@ -1866,7 +1817,7 @@ msgstr "Storlek"
 
 #: libnautilus-private/nautilus-column-utilities.c:51
 msgid "The size of the file."
-msgstr ""
+msgstr "Storleken på filen."
 
 #: libnautilus-private/nautilus-column-utilities.c:58
 #: src/file-manager/fm-search-list-view.c:525
@@ -1874,9 +1825,8 @@ msgid "Type"
 msgstr "Typ"
 
 #: libnautilus-private/nautilus-column-utilities.c:59
-#, fuzzy
 msgid "The type of the file."
-msgstr "[Filtyp är] textfil"
+msgstr "Typen av fil."
 
 #: libnautilus-private/nautilus-column-utilities.c:65
 #: src/file-manager/fm-search-list-view.c:531
@@ -1884,38 +1834,32 @@ msgid "Date Modified"
 msgstr "Modifieringsdatum"
 
 #: libnautilus-private/nautilus-column-utilities.c:66
-#, fuzzy
 msgid "The date the file was modified."
-msgstr "Kunde inte visa \"%s\", eftersom inloggningsförsöket misslyckades."
+msgstr "Datumet då filen modifierades."
 
 #: libnautilus-private/nautilus-column-utilities.c:73
-#, fuzzy
 msgid "Date Accessed"
-msgstr "åtkomstdatum"
+msgstr "Åtkomstdatum"
 
 #: libnautilus-private/nautilus-column-utilities.c:74
 msgid "The date the file was accessed."
-msgstr ""
+msgstr "Datumet då filen senast användes."
 
 #: libnautilus-private/nautilus-column-utilities.c:81
-#, fuzzy
 msgid "Owner"
-msgstr "Ägare:"
+msgstr "Ägare"
 
 #: libnautilus-private/nautilus-column-utilities.c:82
-#, fuzzy
 msgid "The owner of the file."
-msgstr "Rättigheterna för \"%s\" kunde inte fastställas."
+msgstr "Filens ägare."
 
 #: libnautilus-private/nautilus-column-utilities.c:89
-#, fuzzy
 msgid "Group"
-msgstr "Grupp:"
+msgstr "Grupp"
 
 #: libnautilus-private/nautilus-column-utilities.c:90
-#, fuzzy
 msgid "The group of the file."
-msgstr "Rättigheterna för \"%s\" kunde inte fastställas."
+msgstr "Filens grupp."
 
 #: libnautilus-private/nautilus-column-utilities.c:97
 #: src/file-manager/fm-properties-window.c:2865
@@ -1923,29 +1867,24 @@ msgid "Permissions"
 msgstr "Rättigheter"
 
 #: libnautilus-private/nautilus-column-utilities.c:98
-#, fuzzy
 msgid "The permissions of the file."
-msgstr "Rättigheterna för \"%s\" kunde inte fastställas."
+msgstr "Rättigheterna för filen."
 
 #: libnautilus-private/nautilus-column-utilities.c:105
-#, fuzzy
 msgid "Octal Permissions"
-msgstr "rättigheter på oktal form"
+msgstr "Rättigheter på oktal form"
 
 #: libnautilus-private/nautilus-column-utilities.c:106
-#, fuzzy
 msgid "The permissions of the file, in octal notation."
-msgstr "Rättigheterna för den markerade filen kunde inte fastställas."
+msgstr "Rättigheterna för filen med oktal notation."
 
 #: libnautilus-private/nautilus-column-utilities.c:113
-#, fuzzy
 msgid "MIME Type"
-msgstr "MIME-typ:"
+msgstr "MIME-typ"
 
 #: libnautilus-private/nautilus-column-utilities.c:114
-#, fuzzy
 msgid "The mime type of the file."
-msgstr "[Filtyp är] textfil"
+msgstr "Mime-typen för filen."
 
 #: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
@@ -1958,21 +1897,18 @@ msgid "on the desktop"
 msgstr "på skrivbordet"
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:105
-#, fuzzy
 msgid "You cannot delete a volume icon."
-msgstr "Kan inte ta bort volym"
+msgstr "Du kan inte ta bort en volymikon."
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:106
-#, fuzzy
 msgid ""
 "If you want to eject the volume, please use Eject in the right-click menu of "
 "the volume."
 msgstr ""
-"Du kan inte ta bort en volymikon. Om du vill mata ut volymen bör du använda "
-"Mata ut i högerklicksmenyn för volymen."
+"Om du vill mata ut volymen bör du använda Mata ut i högerklicksmenyn för "
+"volymen."
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:108
-#, fuzzy
 msgid "Can't Delete Volume"
 msgstr "Kan inte ta bort volym"
 
@@ -2016,9 +1952,8 @@ msgstr "Ställ in som bakgrund för _denna mapp"
 #: libnautilus-private/nautilus-emblem-utils.c:202
 #: libnautilus-private/nautilus-emblem-utils.c:257
 #: libnautilus-private/nautilus-emblem-utils.c:274
-#, fuzzy
 msgid "The emblem cannot be installed."
-msgstr "Tyvärr, temat \"%s\" kunde inte installeras."
+msgstr "Emblemet kan inte installeras."
 
 #: libnautilus-private/nautilus-emblem-utils.c:198
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
@@ -2028,7 +1963,6 @@ msgstr "Tyvärr, du måste ange ett icke-tomt nyckelord för det nya emblemet."
 #: libnautilus-private/nautilus-emblem-utils.c:204
 #: libnautilus-private/nautilus-emblem-utils.c:259
 #: libnautilus-private/nautilus-emblem-utils.c:276
-#, fuzzy
 msgid "Couldn't Install Emblem"
 msgstr "Kunde inte installera emblem"
 
@@ -2043,15 +1977,13 @@ msgstr ""
 #. * keyword to us anyway
 #.
 #: libnautilus-private/nautilus-emblem-utils.c:213
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, but there is already an emblem named \"%s\"."
-msgstr ""
-"Tyvärr, det finns redan ett emblem med namnet \"%s\". Välj ett annat namn på "
-"det."
+msgstr "Tyvärr, det finns redan ett emblem med namnet \"%s\"."
 
 #: libnautilus-private/nautilus-emblem-utils.c:214
 msgid "Please choose a different emblem name."
-msgstr ""
+msgstr "Välj ett annat namn på emblemet."
 
 #: libnautilus-private/nautilus-emblem-utils.c:215
 msgid "Couldn't install emblem"
@@ -2087,12 +2019,9 @@ msgid "Error while moving."
 msgstr "Fel vid flyttning."
 
 #: libnautilus-private/nautilus-file-operations.c:552
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" cannot be moved because it is on a read-only disk."
-msgstr ""
-"Fel vid flyttning.\n"
-"\n"
-"\"%s\" kan inte flyttas eftersom den är på en skrivskyddad disk."
+msgstr "\"%s\" kan inte flyttas eftersom den är på en skrivskyddad disk."
 
 #: libnautilus-private/nautilus-file-operations.c:562
 #: libnautilus-private/nautilus-file-operations.c:568
@@ -2100,137 +2029,111 @@ msgid "Error while deleting."
 msgstr "Fel vid borttagning."
 
 #: libnautilus-private/nautilus-file-operations.c:563
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" cannot be deleted because you do not have permissions to modify its "
 "parent folder."
 msgstr ""
-"Fel vid borttagning.\n"
-"\n"
 "\"%s\" kan inte tas bort eftersom du inte har de nödvändiga rättigheterna "
 "för att ändra dess föräldermapp."
 
 #: libnautilus-private/nautilus-file-operations.c:569
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" cannot be deleted because it is on a read-only disk."
-msgstr ""
-"Fel vid borttagning.\n"
-"\n"
-"\"%s\" kan inte tas bort eftersom den är på en skrivskyddad disk."
+msgstr "\"%s\" kan inte tas bort eftersom den är på en skrivskyddad disk."
 
 #: libnautilus-private/nautilus-file-operations.c:600
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" cannot be moved because you do not have permissions to change it or "
 "its parent folder."
 msgstr ""
-"Fel vid flyttning.\n"
-"\n"
 "\"%s\" kan inte flyttas eftersom du inte har de nödvändiga rättigheterna för "
 "att ändra den eller dess föräldermapp."
 
 #: libnautilus-private/nautilus-file-operations.c:604
-#, fuzzy
 msgid "Error while moving. "
-msgstr "Fel vid flyttning."
+msgstr "Fel vid flyttning. "
 
 #: libnautilus-private/nautilus-file-operations.c:605
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Cannot move \"%s\" because it or its parent folder are contained in the "
 "destination."
 msgstr ""
-"Fel vid flyttning.\n"
-"\n"
-"\"%s\" kan inte flyttas eftersom den eller dess föräldermapp finns i målet."
+"Kan inte flytta \"%s\" eftersom den eller dess föräldermapp finns i målet."
 
 #: libnautilus-private/nautilus-file-operations.c:615
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Cannot move \"%s\" to the trash because you do not have permissions to "
 "change it or its parent folder."
 msgstr ""
-"Fel vid flyttning.\n"
-"\n"
-"\"%s\" kan inte flyttas till papperskorgen eftersom du inte har de "
-"nödvändiga rättigheterna för att ändra den eller dess föräldermapp."
+"Kan inte flytta \"%s\" till papperskorgen eftersom du inte har de nödvändiga "
+"rättigheterna för att ändra den eller dess föräldermapp."
 
 #: libnautilus-private/nautilus-file-operations.c:637
 msgid "Error while copying."
 msgstr "Fel vid kopiering."
 
 #: libnautilus-private/nautilus-file-operations.c:638
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" cannot be copied because you do not have permissions to read it."
 msgstr ""
-"Fel vid kopiering.\n"
-"\n"
 "\"%s\" kan inte kopieras eftersom du inte har de nödvändiga rättigheterna "
 "för att läsa den."
 
 #: libnautilus-private/nautilus-file-operations.c:658
 #: libnautilus-private/nautilus-file-operations.c:679
 #: libnautilus-private/nautilus-file-operations.c:683
-#, fuzzy, c-format
+#, c-format
 msgid "Error while copying to \"%s\"."
-msgstr "Fel vid kopiering."
+msgstr "Fel vid kopiering till \"%s\"."
 
 #: libnautilus-private/nautilus-file-operations.c:659
 #: libnautilus-private/nautilus-file-operations.c:664
 #: libnautilus-private/nautilus-file-operations.c:668
-#, fuzzy
 msgid "There is not enough space on the destination."
-msgstr ""
-"Fel vid flyttning till \"%s\".\n"
-"\n"
-"Det finns inte tillräckligt med utrymme på målet."
+msgstr "Det finns inte tillräckligt med utrymme på målet."
 
 #: libnautilus-private/nautilus-file-operations.c:663
-#, fuzzy, c-format
+#, c-format
 msgid "Error while moving to \"%s\"."
-msgstr "Fel vid flyttning."
+msgstr "Fel vid flyttning till \"%s\"."
 
 #: libnautilus-private/nautilus-file-operations.c:667
-#, fuzzy, c-format
+#, c-format
 msgid "Error while creating link in \"%s\"."
-msgstr "Fel vid länkning."
+msgstr "Fel vid skapande av länk i \"%s\"."
 
 #: libnautilus-private/nautilus-file-operations.c:680
 #: libnautilus-private/nautilus-file-operations.c:691
 #: libnautilus-private/nautilus-file-operations.c:702
-#, fuzzy
 msgid "You do not have permissions to write to this folder."
-msgstr ""
-"Fel vid kopiering till \"%s\".\n"
-"\n"
-"Du har inte de nödvändiga rättigheterna för att skriva i denna mapp."
+msgstr "Du har inte de nödvändiga rättigheterna för att skriva i denna mapp."
 
 #: libnautilus-private/nautilus-file-operations.c:684
 #: libnautilus-private/nautilus-file-operations.c:695
 #: libnautilus-private/nautilus-file-operations.c:706
-#, fuzzy
 msgid "The destination disk is read-only."
-msgstr ""
-"Fel vid kopiering till \"%s\".\n"
-"\n"
-"Målet är skrivskyddat."
+msgstr "Målet är skrivskyddat."
 
 #: libnautilus-private/nautilus-file-operations.c:690
 #: libnautilus-private/nautilus-file-operations.c:694
-#, fuzzy, c-format
+#, c-format
 msgid "Error while moving items to \"%s\"."
-msgstr "Fel vid flyttning."
+msgstr "Fel vid flyttning av objekt till \"%s\"."
 
 #: libnautilus-private/nautilus-file-operations.c:701
 #: libnautilus-private/nautilus-file-operations.c:705
-#, fuzzy, c-format
+#, c-format
 msgid "Error while creating links in \"%s\"."
-msgstr "Fel vid länkning."
+msgstr "Fel vid skapande av länkar i \"%s\"."
 
 #: libnautilus-private/nautilus-file-operations.c:733
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while copying \"%s\"."
-msgstr "Fel vid kopiering."
+msgstr "Fel \"%s\" vid kopiering av \"%s\"."
 
 #: libnautilus-private/nautilus-file-operations.c:734
 #: libnautilus-private/nautilus-file-operations.c:738
@@ -2240,150 +2143,126 @@ msgstr "Fel vid kopiering."
 #: libnautilus-private/nautilus-file-operations.c:767
 #: libnautilus-private/nautilus-file-operations.c:771
 #: libnautilus-private/nautilus-file-operations.c:777
-#, fuzzy
 msgid "Would you like to continue?"
-msgstr ""
-"Fel \"%s\" vid flyttning.\n"
-"\n"
-"Vill du fortsätta?"
+msgstr "Vill du fortsätta?"
 
 #: libnautilus-private/nautilus-file-operations.c:737
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while moving \"%s\"."
-msgstr "Fel vid flyttning."
+msgstr "Fel \"%s\" vid flyttning av \"%s\"."
 
 #: libnautilus-private/nautilus-file-operations.c:741
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while creating a link to \"%s\"."
-msgstr ""
-"Fel \"%s\" vid skapande av en länk till \"%s\".\n"
-"\n"
-"Vill du fortsätta?"
+msgstr "Fel \"%s\" vid skapande av en länk till \"%s\"."
 
 #: libnautilus-private/nautilus-file-operations.c:747
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while deleting \"%s\"."
-msgstr "Fel vid borttagning."
+msgstr "Fel \"%s\" vid borttagning av \"%s\"."
 
 #: libnautilus-private/nautilus-file-operations.c:762
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while copying."
-msgstr "Fel vid kopiering."
+msgstr "Fel \"%s\" vid kopiering."
 
 #: libnautilus-private/nautilus-file-operations.c:766
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while moving."
-msgstr "Fel vid flyttning."
+msgstr "Fel \"%s\" vid flyttning."
 
 #: libnautilus-private/nautilus-file-operations.c:770
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while linking."
-msgstr "Fel vid länkning."
+msgstr "Fel \"%s\" vid länkning."
 
 #: libnautilus-private/nautilus-file-operations.c:776
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while deleting."
-msgstr "Fel vid borttagning."
+msgstr "Fel \"%s\" vid borttagning."
 
 #: libnautilus-private/nautilus-file-operations.c:902
-#, fuzzy
 msgid "Error While Copying"
-msgstr "Fel vid kopiering."
+msgstr "Fel vid kopiering"
 
 #: libnautilus-private/nautilus-file-operations.c:905
-#, fuzzy
 msgid "Error While Moving"
-msgstr "Fel vid flyttning."
+msgstr "Fel vid flyttning"
 
 #: libnautilus-private/nautilus-file-operations.c:908
-#, fuzzy
 msgid "Error While Linking"
-msgstr "Fel vid länkning."
+msgstr "Fel vid länkning"
 
 #: libnautilus-private/nautilus-file-operations.c:913
-#, fuzzy
 msgid "Error While Deleting"
-msgstr "Fel vid borttagning."
+msgstr "Fel vid borttagning"
 
 #: libnautilus-private/nautilus-file-operations.c:940
 #: libnautilus-private/nautilus-file-operations.c:961
 #: libnautilus-private/nautilus-file-operations.c:1071
 #: libnautilus-private/nautilus-file-operations.c:1090
-#, fuzzy
 msgid "_Skip"
-msgstr "Hoppa över"
+msgstr "_Hoppa över"
 
 #: libnautilus-private/nautilus-file-operations.c:961
-#, fuzzy
 msgid "_Retry"
-msgstr "Försök igen"
+msgstr "_Försök igen"
 
 #: libnautilus-private/nautilus-file-operations.c:1027
-#, fuzzy, c-format
+#, c-format
 msgid "Could not move \"%s\" to the new location."
-msgstr "Kunde inte färdigställa angiven åtgärd."
+msgstr "Kunde inte flytta \"%s\" till den nya platsen."
 
 #: libnautilus-private/nautilus-file-operations.c:1030
-#, fuzzy
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to move the item, rename it and try again."
 msgstr ""
-"\"%s\" kunde inte flyttas till den nya platsen eftersom namnet redan används "
-"för ett speciellt objekt som inte kan flyttas eller ersättas.\n"
-"\n"
-"Om du fortfarande vill flytta \"%s\" bör du döpa om det och försöka igen."
+"Namnet används redan för ett speciellt objekt som inte kan flyttas eller "
+"ersättas. Om du fortfarande vill flytta objektet bör du byta namn på det och "
+"försöka igen."
 
 #: libnautilus-private/nautilus-file-operations.c:1034
-#, fuzzy, c-format
+#, c-format
 msgid "Could not copy \"%s\" to the new location."
-msgstr "Kunde inte färdigställa angiven åtgärd."
+msgstr "Kunde inte kopiera \"%s\" till den nya platsen."
 
 #: libnautilus-private/nautilus-file-operations.c:1037
-#, fuzzy
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to copy the item, rename it and try again."
 msgstr ""
-"\"%s\" kunde inte kopieras till den nya platsen eftersom namnet redan "
-"används för ett speciellt objekt som inte kan flyttas eller ersättas.\n"
-"\n"
-"Om du fortfarande vill kopiera \"%s\" bör du döpa om det och försöka igen."
+"Namnet används redan för ett speciellt objekt som inte kan flyttas eller "
+"ersättas. Om du fortfarande vill kopiera objektet bör du byta namn på det "
+"och försöka igen."
 
 #: libnautilus-private/nautilus-file-operations.c:1043
-#, fuzzy
 msgid "Unable to Replace File"
-msgstr "Kan inte ersätta fil."
+msgstr "Kan inte ersätta fil"
 
 #: libnautilus-private/nautilus-file-operations.c:1056
-#, fuzzy, c-format
+#, c-format
 msgid "The file \"%s\" already exists.  Would you like to replace it?"
-msgstr ""
-"Filen \"%s\" finns redan.\n"
-"\n"
-"Vill du ersätta den?"
+msgstr "Filen \"%s\" finns redan. Vill du ersätta den?"
 
 #: libnautilus-private/nautilus-file-operations.c:1069
 #: libnautilus-private/nautilus-file-operations.c:1088
 msgid "If you replace an existing file, its contents will be overwritten."
-msgstr ""
+msgstr "Om du ersätter en befintlig fil kommer dess innehåll att skrivas över."
 
 #: libnautilus-private/nautilus-file-operations.c:1070
 #: libnautilus-private/nautilus-file-operations.c:1089
-#, fuzzy
 msgid "Conflict While Copying"
 msgstr "Konflikt vid kopiering"
 
 #: libnautilus-private/nautilus-file-operations.c:1071
 #: libnautilus-private/nautilus-file-operations.c:1090
-#, fuzzy
 msgid "_Replace"
-msgstr "Ersätt"
+msgstr "_Ersätt"
 
 #: libnautilus-private/nautilus-file-operations.c:1090
-#, fuzzy
 msgid "Replace _All"
-msgstr "Ersätt alla"
+msgstr "Ersätt _alla"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1148
@@ -2600,18 +2479,16 @@ msgid "Preparing To Copy..."
 msgstr "Förbereder kopiering..."
 
 #: libnautilus-private/nautilus-file-operations.c:1930
-#, fuzzy
 msgid "You cannot copy items into the trash."
 msgstr "Du kan inte kopiera objekt till papperskorgen."
 
 #: libnautilus-private/nautilus-file-operations.c:1931
-#, fuzzy
 msgid "You cannot create links inside the trash."
-msgstr "Du kan inte kopiera objekt till papperskorgen."
+msgstr "Du kan inte skapa länkar inuti papperskorgen."
 
 #: libnautilus-private/nautilus-file-operations.c:1932
 msgid "Files and folders can only be moved into the trash."
-msgstr ""
+msgstr "Endast filer och mappar kan flyttas till papperskorgen."
 
 #: libnautilus-private/nautilus-file-operations.c:1956
 msgid "You cannot move this trash folder."
@@ -2642,9 +2519,8 @@ msgid "You cannot copy a folder into itself."
 msgstr "Du kan inte kopiera en mapp in i sig själv."
 
 #: libnautilus-private/nautilus-file-operations.c:1987
-#, fuzzy
 msgid "The destination folder is inside the source folder."
-msgstr "Skapa en ny tom mapp inuti denna mapp"
+msgstr "Målmappen är inuti källmappen."
 
 #: libnautilus-private/nautilus-file-operations.c:1989
 msgid "Can't Move Into Self"
@@ -2660,7 +2536,7 @@ msgstr "Du kan inte kopiera en fil över sig själv."
 
 #: libnautilus-private/nautilus-file-operations.c:2004
 msgid "The destination and source are the same file."
-msgstr ""
+msgstr "Målet och källan är samma fil."
 
 #: libnautilus-private/nautilus-file-operations.c:2005
 msgid "Can't Copy Over Self"
@@ -2668,21 +2544,13 @@ msgstr "Kan inte kopiera över sig själv"
 
 #: libnautilus-private/nautilus-file-operations.c:2057
 #: libnautilus-private/nautilus-file-operations.c:2197
-#, fuzzy
 msgid "You do not have permissions to write to the destination."
-msgstr ""
-"Fel vid skapande av ny mapp.\n"
-"\n"
-"Du har inte de nödvändiga rättigheterna för att skriva till målet."
+msgstr "Du har inte de nödvändiga rättigheterna för att skriva till målet."
 
 #: libnautilus-private/nautilus-file-operations.c:2059
 #: libnautilus-private/nautilus-file-operations.c:2199
-#, fuzzy
 msgid "There is no space on the destination."
-msgstr ""
-"Fel vid skapande av ny mapp.\n"
-"\n"
-"Det finns inget utrymme på målet."
+msgstr "Det finns inget utrymme på målet."
 
 #: libnautilus-private/nautilus-file-operations.c:2061
 #, c-format
@@ -2690,12 +2558,10 @@ msgid "Error \"%s\" creating new folder."
 msgstr "Fel \"%s\" vid skapande av ny mapp."
 
 #: libnautilus-private/nautilus-file-operations.c:2066
-#, fuzzy
 msgid "Error creating new folder."
-msgstr "Fel vid skapande av ny mapp"
+msgstr "Fel vid skapande av ny mapp."
 
 #: libnautilus-private/nautilus-file-operations.c:2066
-#, fuzzy
 msgid "Error Creating New Folder"
 msgstr "Fel vid skapande av ny mapp"
 
@@ -2705,24 +2571,21 @@ msgid "untitled folder"
 msgstr "namnlös mapp"
 
 #: libnautilus-private/nautilus-file-operations.c:2201
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" creating new document."
-msgstr "Fel \"%s\" vid skapande av ny mapp."
+msgstr "Fel \"%s\" vid skapande av nytt dokument."
 
 #: libnautilus-private/nautilus-file-operations.c:2206
-#, fuzzy
 msgid "Error creating new document."
-msgstr "Fel vid skapande av ny mapp"
+msgstr "Fel vid skapande av nytt dokument."
 
 #: libnautilus-private/nautilus-file-operations.c:2206
-#, fuzzy
 msgid "Error Creating New Document"
-msgstr "Fel vid skapande av ny mapp"
+msgstr "Fel vid skapande av nytt dokument"
 
 #: libnautilus-private/nautilus-file-operations.c:2353
-#, fuzzy
 msgid "new file"
-msgstr "1 fil"
+msgstr "ny fil"
 
 #. localizers: progress dialog title
 #: libnautilus-private/nautilus-file-operations.c:2425
@@ -2754,16 +2617,15 @@ msgstr "Tömmer papperskorgen"
 msgid "Preparing to Empty the Trash..."
 msgstr "Förbereder tömning av papperskorgen..."
 
-#: libnautilus-private/nautilus-file-operations.c:2528
-#, fuzzy
+#: libnautilus-private/nautilus-file-operations.c:2529
 msgid "Are you sure you want to empty all of the items from the trash?"
-msgstr "Är du säker att du vill ta bort alla objekt i papperskorgen permanent?"
+msgstr "Är du säker att du vill tömma alla objekt i papperskorgen?"
 
-#: libnautilus-private/nautilus-file-operations.c:2542
+#: libnautilus-private/nautilus-file-operations.c:2543
 msgid "If you empty the trash, items will be permanently deleted."
-msgstr ""
+msgstr "Om du tömmer papperskorgen kommer objekten att tas bort permanent."
 
-#: libnautilus-private/nautilus-file-operations.c:2554
+#: libnautilus-private/nautilus-file-operations.c:2555
 msgid "_Empty"
 msgstr "_Töm"
 
@@ -2774,9 +2636,8 @@ msgid "Computer"
 msgstr "Dator"
 
 #: libnautilus-private/nautilus-file-utilities.c:370
-#, fuzzy
 msgid "Network"
-msgstr "Red Hat Network"
+msgstr "Nätverk"
 
 #: libnautilus-private/nautilus-file-utilities.c:372
 msgid "Fonts"
@@ -2787,14 +2648,12 @@ msgid "Themes"
 msgstr "Teman"
 
 #: libnautilus-private/nautilus-file-utilities.c:376
-#, fuzzy
 msgid "CD Creator"
-msgstr "_Cd-skapare"
+msgstr "Cd-skapare"
 
 #: libnautilus-private/nautilus-file-utilities.c:378
-#, fuzzy
 msgid "Windows Network"
-msgstr "Fönster"
+msgstr "Windows-nätverk"
 
 #. Today, use special word.
 #. * strftime patterns preceeded with the widest
@@ -2935,24 +2794,24 @@ msgstr "%Y-%m-%d"
 
 #: libnautilus-private/nautilus-file.c:4265
 #: src/file-manager/fm-directory-view.c:1806
-#, fuzzy, c-format
+#, c-format
 msgid "%u item"
 msgid_plural "%u items"
 msgstr[0] "%u objekt"
 msgstr[1] "%u objekt"
 
 #: libnautilus-private/nautilus-file.c:4266
-#, fuzzy, c-format
+#, c-format
 msgid "%u folder"
 msgid_plural "%u folders"
-msgstr[0] "%u mappar"
+msgstr[0] "%u mapp"
 msgstr[1] "%u mappar"
 
 #: libnautilus-private/nautilus-file.c:4267
-#, fuzzy, c-format
+#, c-format
 msgid "%u file"
 msgid_plural "%u files"
-msgstr[0] "%u filer"
+msgstr[0] "%u fil"
 msgstr[1] "%u filer"
 
 #. This means no contents at all were readable
@@ -3263,98 +3122,90 @@ msgstr "huruvida vi är färgmarkerade för ett drag-och-släpp"
 msgid "The selection rectangle"
 msgstr "Markeringsrektangeln"
 
-#: libnautilus-private/nautilus-icon-container.c:4176
+#: libnautilus-private/nautilus-icon-container.c:4175
 msgid "Frame Text"
 msgstr "Rama in text"
 
-#: libnautilus-private/nautilus-icon-container.c:4177
+#: libnautilus-private/nautilus-icon-container.c:4176
 msgid "Draw a frame around unselected text"
 msgstr "Rita en ram runt omarkerad text"
 
-#: libnautilus-private/nautilus-icon-container.c:4183
+#: libnautilus-private/nautilus-icon-container.c:4182
 msgid "Selection Box Color"
 msgstr "Färg på markeringsruta"
 
-#: libnautilus-private/nautilus-icon-container.c:4184
+#: libnautilus-private/nautilus-icon-container.c:4183
 msgid "Color of the selection box"
 msgstr "Färg på markeringsrutan"
 
-#: libnautilus-private/nautilus-icon-container.c:4189
+#: libnautilus-private/nautilus-icon-container.c:4188
 msgid "Selection Box Alpha"
 msgstr "Alfa för markeringsruta"
 
-#: libnautilus-private/nautilus-icon-container.c:4190
+#: libnautilus-private/nautilus-icon-container.c:4189
 msgid "Opacity of the selection box"
 msgstr "Opacitet för markeringsrutan"
 
-#: libnautilus-private/nautilus-icon-container.c:4197
+#: libnautilus-private/nautilus-icon-container.c:4196
 msgid "Highlight Alpha"
 msgstr "Färgmarkeringsalfa"
 
-#: libnautilus-private/nautilus-icon-container.c:4198
+#: libnautilus-private/nautilus-icon-container.c:4197
 msgid "Opacity of the highlight for selected icons"
 msgstr "Opacitet för färgmarkeringen för markerade ikoner"
 
-#: libnautilus-private/nautilus-icon-container.c:4204
+#: libnautilus-private/nautilus-icon-container.c:4203
 msgid "Light Info Color"
 msgstr "Ljus informationsfärg"
 
-#: libnautilus-private/nautilus-icon-container.c:4205
+#: libnautilus-private/nautilus-icon-container.c:4204
 msgid "Color used for information text against a dark background"
 msgstr "Färg som används för informationstext mot en mörk bakgrund"
 
-#: libnautilus-private/nautilus-icon-container.c:4210
+#: libnautilus-private/nautilus-icon-container.c:4209
 msgid "Dark Info Color"
 msgstr "Mörk informationsfärg"
 
-#: libnautilus-private/nautilus-icon-container.c:4211
+#: libnautilus-private/nautilus-icon-container.c:4210
 msgid "Color used for information text against a light background"
 msgstr "Färg som används för informationstext mot en ljus bakgrund"
 
 #: libnautilus-private/nautilus-icon-dnd.c:732
-#, fuzzy
 msgid ""
 "Do you want to switch to manual layout and leave this item where you dropped "
 "it? This will clobber the stored manual layout."
 msgstr ""
-"Denna mapp använder automatisk layout. Vill du byta till manuell layout och "
-"lämna objektet där du släppte det? Detta kommer att skriva över den lagrade "
-"manuella layouten."
+"Vill du byta till manuell layout och lämna objektet där du släppte det? "
+"Detta kommer att skriva över den lagrade manuella layouten."
 
 #: libnautilus-private/nautilus-icon-dnd.c:734
 #: libnautilus-private/nautilus-icon-dnd.c:738
 #: libnautilus-private/nautilus-icon-dnd.c:743
 #: libnautilus-private/nautilus-icon-dnd.c:746
 msgid "This folder uses automatic layout."
-msgstr ""
+msgstr "Denna mapp använder automatisk layout."
 
 #: libnautilus-private/nautilus-icon-dnd.c:736
-#, fuzzy
 msgid ""
 "Do you want to switch to manual layout and leave these items where you "
 "dropped them? This will clobber the stored manual layout."
 msgstr ""
-"Denna mapp använder automatisk layout. Vill du byta till manuell layout och "
-"lämna dessa objekt där du släppte dem? Detta kommer att skriva över den "
-"lagrade manuella layouten."
+"Vill du byta till manuell layout och lämna dessa objekt där du släppte dem? "
+"Detta kommer att skriva över den lagrade manuella layouten."
 
 #: libnautilus-private/nautilus-icon-dnd.c:742
-#, fuzzy
 msgid ""
 "Do you want to switch to manual layout and leave this item where you dropped "
 "it?"
 msgstr ""
-"Denna mapp använder automatisk layout. Vill du byta till manuell layout och "
-"lämna detta objekt där du släppte det?"
+"Vill du byta till manuell layout och lämna detta objekt där du släppte det?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:745
-#, fuzzy
 msgid ""
 "Do you want to switch to manual layout and leave these items where you "
 "dropped them?"
 msgstr ""
-"Denna mapp använder automatisk layout. Vill du byta till manuell layout och "
-"lämna dessa objekt där du släppte dem?"
+"Vill du byta till manuell layout och lämna dessa objekt där du släppte dem?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:751
 msgid "Switch to Manual Layout?"
@@ -3583,20 +3434,16 @@ msgstr "Ingen åtgärd är associerad"
 #. * (They can add applications though.)
 #.
 #: libnautilus-private/nautilus-program-chooser.c:1605
-#, fuzzy
 msgid ""
 "You can configure GNOME to associate applications with file types. Do you "
 "want to associate an application with this file type now?"
 msgstr ""
-"%s\n"
-"\n"
 "Du kan konfigurera GNOME att associera program med filtyper. Vill du "
 "associera ett program med denna filtyp nu?"
 
 #: libnautilus-private/nautilus-program-chooser.c:1610
-#, fuzzy
 msgid "_Associate Application"
-msgstr "Associera program"
+msgstr "_Associera program"
 
 #: libnautilus-private/nautilus-program-chooser.c:1639
 #, c-format
@@ -3626,51 +3473,44 @@ msgid "Invalid Action Associated"
 msgstr "Ogiltig åtgärd associerad"
 
 #: libnautilus-private/nautilus-program-chooser.c:1649
-#, fuzzy
 msgid ""
 "You can configure GNOME to associate a different application or viewer with "
 "this file type. Do you want to associate an application or viewer with this "
 "file type now?"
 msgstr ""
-"%s\n"
-"\n"
 "Du kan konfigurera GNOME att associera ett annat program eller visare med "
 "denna filtyp. Vill du associera ett program eller en visare med denna filtyp "
 "nu?"
 
 #: libnautilus-private/nautilus-program-chooser.c:1654
-#, fuzzy
 msgid "_Associate Action"
-msgstr "Associera åtgärd"
+msgstr "_Associera åtgärd"
 
 #: libnautilus-private/nautilus-program-choosing.c:529
-#, fuzzy
 msgid "Open Failed, would you like to choose another application?"
-msgstr ""
-"\"%s\" kan inte öppna \"%s\" eftersom \"%s\" inte kan komma åt filer på \"%s"
-"\"-platser. Vill du välja ett annat program?"
+msgstr "Öppnande misslyckades, vill du välja ett annat program?"
 
 #: libnautilus-private/nautilus-program-choosing.c:530
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
 "locations."
 msgstr ""
 "\"%s\" kan inte öppna \"%s\" eftersom \"%s\" inte kan komma åt filer på \"%s"
-"\"-platser. Vill du välja ett annat program?"
+"\"-platser."
 
 #: libnautilus-private/nautilus-program-choosing.c:535
 msgid "Open Failed, would you like to choose another action?"
-msgstr ""
+msgstr "Öppnande misslyckades, vill du välja en annan åtgärd?"
 
 #: libnautilus-private/nautilus-program-choosing.c:536
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
 "locations."
 msgstr ""
 "Standardåtgärden kan inte öppna \"%s\" eftersom den inte kan komma åt filer "
-"på \"%s\"-platser. Vill du välja en annan åtgärd?"
+"på \"%s\"-platser."
 
 #: libnautilus-private/nautilus-program-choosing.c:543
 #: libnautilus-private/nautilus-program-choosing.c:576
@@ -3678,42 +3518,38 @@ msgid "Can't Open Location"
 msgstr "Kan inte öppna plats"
 
 #: libnautilus-private/nautilus-program-choosing.c:562
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\"."
 "locations."
 msgstr ""
 "\"%s\" kan inte öppna \"%s\" eftersom \"%s\" inte kan komma åt filer på \"%s"
-"\"-platser. Vill du välja ett annat program?"
+"\"-platser."
 
 #: libnautilus-private/nautilus-program-choosing.c:565
-#, fuzzy
 msgid ""
 "No other applications are available to view this file.  If you copy this "
 "file onto your computer, you may be able to open it."
 msgstr ""
-"\"%s\" kan inte öppna \"%s\" eftersom \"%s\" inte kan komma åt filer på \"%s"
-"\"-platser. Det finns inga andra tillgängliga program som kan visa denna "
-"fil. Om du kopierar denna fil till din dator kan du kanske öppna den."
+"Det finns inga andra tillgängliga program som kan visa denna fil. Om du "
+"kopierar denna fil till din dator kan du kanske öppna den."
 
 #: libnautilus-private/nautilus-program-choosing.c:569
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\"."
 "locations."
 msgstr ""
 "Standardåtgärden kan inte öppna \"%s\" eftersom den inte kan komma åt filer "
-"på \"%s\"-platser. Vill du välja en annan åtgärd?"
+"på \"%s\"-platser."
 
 #: libnautilus-private/nautilus-program-choosing.c:571
-#, fuzzy
 msgid ""
 "No other actions are available to view this file.  If you copy this file "
 "onto your computer, you may be able to open it."
 msgstr ""
-"\"%s\" kan inte öppna \"%s\" eftersom \"%s\" inte kan komma åt filer på \"%s"
-"\"-platser. Det finns inga andra tillgängliga program som kan visa denna "
-"fil. Om du kopierar denna fil till din dator kan du kanske öppna den."
+"Det finns inga andra tillgängliga program som kan visa denna fil. Om du "
+"kopierar denna fil till din dator kan du kanske öppna den."
 
 #: libnautilus-private/nautilus-program-choosing.c:830
 #: libnautilus-private/nautilus-program-choosing.c:1047
@@ -3722,71 +3558,54 @@ msgid "Opening %s"
 msgstr "Öppnar %s"
 
 #: libnautilus-private/nautilus-program-choosing.c:1191
-#, fuzzy
 msgid "Sorry, but you can't execute commands from a remote site."
-msgstr ""
-"Tyvärr, men du kan inte köra kommandon från en fjärrplats på grund av "
-"säkerhetsskäl."
+msgstr "Tyvärr, men du kan inte köra kommandon från en fjärrplats."
 
 #: libnautilus-private/nautilus-program-choosing.c:1193
 msgid "This is disabled due to security considerations."
-msgstr ""
+msgstr "Detta är inaktiverat på grund av säkerhetsskäl."
 
 #: libnautilus-private/nautilus-program-choosing.c:1194
-#, fuzzy
 msgid "Can't Execute Remote Links"
 msgstr "Kunde inte köra fjärrlänkar"
 
 #: libnautilus-private/nautilus-program-choosing.c:1204
 #: libnautilus-private/nautilus-program-choosing.c:1270
 msgid "Details: "
-msgstr ""
+msgstr "Detaljer: "
 
 #: libnautilus-private/nautilus-program-choosing.c:1206
 #: libnautilus-private/nautilus-program-choosing.c:1272
-#, fuzzy
 msgid "There was an error launching the application."
-msgstr ""
-"Det inträffade ett fel vid start av programmet.\n"
-"\n"
-"Detaljer: "
+msgstr "Det inträffade ett fel vid start av programmet."
 
 #: libnautilus-private/nautilus-program-choosing.c:1208
 #: libnautilus-private/nautilus-program-choosing.c:1274
-#, fuzzy
 msgid "Error Launching Application"
 msgstr "Fel vid start av program"
 
 #: libnautilus-private/nautilus-program-choosing.c:1236
 #: libnautilus-private/nautilus-program-choosing.c:1248
-#, fuzzy
 msgid "This drop target only supports local files."
-msgstr "Släppmål stöder endast lokala filer"
+msgstr "Detta släppmål stöder endast lokala filer."
 
 #: libnautilus-private/nautilus-program-choosing.c:1237
-#, fuzzy
 msgid ""
 "To open non-local files copy them to a local folder and then drop them again."
 msgstr ""
-"Detta släppmål stöder endast lokala filer.\n"
-"\n"
 "För att öppna icke-lokala filer kopierar du dem till en lokal mapp och "
 "släpper dem sedan igen."
 
 #: libnautilus-private/nautilus-program-choosing.c:1239
 #: libnautilus-private/nautilus-program-choosing.c:1251
-#, fuzzy
 msgid "Drop Target Only Supports Local Files"
 msgstr "Släppmål stöder endast lokala filer"
 
 #: libnautilus-private/nautilus-program-choosing.c:1249
-#, fuzzy
 msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
 msgstr ""
-"Detta släppmål stöder endast lokala filer.\n"
-"\n"
 "För att öppna icke-lokala filer kopierar du dem till en lokal mapp och "
 "släpper sedan dem igen. De lokala filerna du släppte har redan öppnats."
 
@@ -4105,7 +3924,7 @@ msgstr "K_listra in text"
 
 #: nautilus-computer.desktop.in.h:2
 msgid "View your computer storage"
-msgstr ""
+msgstr "Visa din datorlagringsplats"
 
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
@@ -4124,13 +3943,12 @@ msgid "View your home folder in the Nautilus file manager"
 msgstr "Visa din hemmapp i filhanteraren Nautilus"
 
 #: nautilus.desktop.in.h:1
-#, fuzzy
 msgid "Browse Filesystem"
-msgstr "Filsystem"
+msgstr "Bläddra i filsystemet"
 
 #: nautilus.desktop.in.h:2
 msgid "Browse the filesystem with the file manager"
-msgstr ""
+msgstr "Bläddra i filsystemet med filhanteraren"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -4153,7 +3971,6 @@ msgid "List Viewer"
 msgstr "Listvisare"
 
 #: src/Nautilus_shell.server.in.h:6
-#, fuzzy
 msgid "Nautilus Tree View"
 msgstr "Nautilus trädvy"
 
@@ -4263,27 +4080,22 @@ msgid "Empty Trash"
 msgstr "Töm papperskorgen"
 
 #: src/file-manager/fm-directory-view.c:536
-#, fuzzy, c-format
+#, c-format
 msgid "Open %d Window?"
 msgid_plural "Open %d Windows?"
 msgstr[0] "Öppna %d fönster?"
 msgstr[1] "Öppna %d fönster?"
 
 #: src/file-manager/fm-directory-view.c:537
-#, fuzzy
 msgid "Are you sure you want to open all files?"
-msgstr "Är du säker att du vill ta bort \"%s\" permanent?"
+msgstr "Är du säker att du vill öppna alla filer?"
 
 #: src/file-manager/fm-directory-view.c:538 src/nautilus-location-bar.c:158
-#, fuzzy, c-format
+#, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
-msgstr[0] ""
-"Detta kommer att öppna %d separata fönster. Är du säker på att du vill göra "
-"detta?"
-msgstr[1] ""
-"Detta kommer att öppna %d separata fönster. Är du säker på att du vill göra "
-"detta?"
+msgstr[0] "Detta kommer att öppna %d separat fönster."
+msgstr[1] "Detta kommer att öppna %d separata fönster."
 
 #: src/file-manager/fm-directory-view.c:885
 #, c-format
@@ -4291,31 +4103,28 @@ msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Är du säker att du vill ta bort \"%s\" permanent?"
 
 #: src/file-manager/fm-directory-view.c:889
-#, fuzzy, c-format
+#, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items?"
-msgstr[0] "Är du säker att du vill ta bort de %d markerade objekten permanent?"
+msgstr[0] "Är du säker att du vill ta bort det markerade objektet permanent?"
 msgstr[1] "Är du säker att du vill ta bort de %d markerade objekten permanent?"
 
 #: src/file-manager/fm-directory-view.c:897
-#, fuzzy
 msgid "If you delete an item, it is permanently lost."
-msgstr "Ta bort alla markerade objekt permanent"
+msgstr "Om du tar bort ett objekt är det borta för alltid."
 
 #: src/file-manager/fm-directory-view.c:898
 msgid "Delete?"
 msgstr "Ta bort?"
 
 #: src/file-manager/fm-directory-view.c:1037
-#, fuzzy
 msgid "Select Pattern"
-msgstr "Välj en kategori:"
+msgstr "Välj mönster"
 
 #: src/file-manager/fm-directory-view.c:1053
-#, fuzzy
 msgid "_Pattern:"
-msgstr "Mönster:"
+msgstr "_Mönster:"
 
 #: src/file-manager/fm-directory-view.c:1738
 #, c-format
@@ -4323,14 +4132,14 @@ msgid "\"%s\" selected"
 msgstr "\"%s\" markerad"
 
 #: src/file-manager/fm-directory-view.c:1740
-#, fuzzy, c-format
+#, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
-msgstr[0] "%d mappar markerade"
+msgstr[0] "%d mapp markerad"
 msgstr[1] "%d mappar markerade"
 
 #: src/file-manager/fm-directory-view.c:1750
-#, fuzzy, c-format
+#, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
 msgstr[0] " (innehåller %d objekt)"
@@ -4338,11 +4147,11 @@ msgstr[1] " (innehåller %d objekt)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
 #: src/file-manager/fm-directory-view.c:1761
-#, fuzzy, c-format
+#, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
-msgstr[0] " (innehåller totalt %d objekt)"
-msgstr[1] " (innehåller totalt %d objekt)"
+msgstr[0] " (innehållandes totalt %d objekt)"
+msgstr[1] " (innehållandes totalt %d objekt)"
 
 #: src/file-manager/fm-directory-view.c:1777
 #, c-format
@@ -4350,24 +4159,24 @@ msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" markerad (%s)"
 
 #: src/file-manager/fm-directory-view.c:1781
-#, fuzzy, c-format
+#, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
-msgstr[0] "%d objekt markerade (%s)"
+msgstr[0] "%d objekt markerat (%s)"
 msgstr[1] "%d objekt markerade (%s)"
 
 #. Folders selected also, use "other" terminology
 #: src/file-manager/fm-directory-view.c:1789
-#, fuzzy, c-format
+#, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
-msgstr[0] "%d andra objekt markerade (%s)"
+msgstr[0] "%d annat objekt markerat (%s)"
 msgstr[1] "%d andra objekt markerade (%s)"
 
 #: src/file-manager/fm-directory-view.c:1810
-#, fuzzy, c-format
+#, c-format
 msgid "%s, Free space: %s"
-msgstr "Ledigt utrymme:"
+msgstr "%s, ledigt utrymme: %s"
 
 #. This is marked for translation in case a localizer
 #. * needs to change ", " to something else. The comma
@@ -4386,15 +4195,13 @@ msgstr "%s%s, %s"
 #. * no more than the constant limit are displayed.
 #.
 #: src/file-manager/fm-directory-view.c:1960
-#, fuzzy, c-format
+#, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
-msgstr ""
-"Mappen \"%s\" innehåller fler filer än Nautilus kan visa. En del filer "
-"kommer inte att visas."
+msgstr "Mappen \"%s\" innehåller fler filer än Nautilus kan visa."
 
 #: src/file-manager/fm-directory-view.c:1966
 msgid "Some files will not be displayed."
-msgstr ""
+msgstr "En del filer kommer inte att visas."
 
 #: src/file-manager/fm-directory-view.c:1967
 msgid "Too Many Files"
@@ -4952,33 +4759,29 @@ msgstr "_Återställ ikonernas originalstorlekar"
 msgid "Restore Icon's Original Si_ze"
 msgstr "_Återställ ikonens originalstorlek"
 
-#: src/file-manager/fm-icon-view.c:1989
+#: src/file-manager/fm-icon-view.c:1990
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "pekar på \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2572 src/file-manager/fm-icon-view.c:2596
+#: src/file-manager/fm-icon-view.c:2573 src/file-manager/fm-icon-view.c:2597
 #, fuzzy
 msgid "Drag and drop is not supported."
 msgstr "Dra och släpp stöds endast på lokala filsystem."
 
-#: src/file-manager/fm-icon-view.c:2573
+#: src/file-manager/fm-icon-view.c:2574
 #, fuzzy
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Dra och släpp stöds endast på lokala filsystem."
 
-#: src/file-manager/fm-icon-view.c:2574 src/file-manager/fm-icon-view.c:2598
+#: src/file-manager/fm-icon-view.c:2575 src/file-manager/fm-icon-view.c:2599
 #, fuzzy
 msgid "Drag and Drop Error"
 msgstr "Fel med dra och släpp"
 
-#: src/file-manager/fm-icon-view.c:2597
+#: src/file-manager/fm-icon-view.c:2598
 msgid "An invalid drag type was used."
 msgstr "En ogiltig dragtyp användes."
-
-#: src/file-manager/fm-list-view.c:1052
-msgid "File name"
-msgstr "Filnamn"
 
 #: src/file-manager/fm-list-view.c:1512
 #, c-format
@@ -6295,7 +6098,7 @@ msgstr "Nätverksservrar"
 
 #: src/nautilus-connect-server-dialog.c:191
 #, fuzzy
-msgid "Link _Name:"
+msgid "Link _name:"
 msgstr "_Namn på webbplats:"
 
 #: src/nautilus-connect-server-dialog.c:210
@@ -7868,6 +7671,42 @@ msgstr "Nätverksservrar"
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Visa dina nätverksservrar i filhanteraren Nautilus"
 
+#~ msgid "Skip"
+#~ msgstr "Hoppa över"
+
+#~ msgid "Retry"
+#~ msgstr "Försök igen"
+
+#~ msgid "Replace"
+#~ msgstr "Ersätt"
+
+#~ msgid "Replace All"
+#~ msgstr "Ersätt alla"
+
+#~ msgid "Associate Application"
+#~ msgstr "Associera program"
+
+#~ msgid "Associate Action"
+#~ msgstr "Associera åtgärd"
+
+#~ msgid "Details:"
+#~ msgstr "Detaljer:"
+
+#~ msgid "Pattern:"
+#~ msgstr "Mönster:"
+
+#~ msgid "Free Space:"
+#~ msgstr "Ledigt utrymme:"
+
+#~ msgid "Free space: %s"
+#~ msgstr "Ledigt utrymme: %s"
+
+#~ msgid "Free Space"
+#~ msgstr "Ledigt utrymme"
+
+#~ msgid "File name"
+#~ msgstr "Filnamn"
+
 #~ msgid "Search Google for Selected Text"
 #~ msgstr "Sök med Google efter den markerade texten"
 
@@ -9371,7 +9210,7 @@ msgstr "Visa dina nätverksservrar i filhanteraren Nautilus"
 #~ msgstr "Visa som exempel"
 
 #~ msgid "This is a sample merged menu item"
-#~ msgstr "Detta är ett sammanslaget exempelmenyalternativ"
+#~ msgstr "Detta är en sammanslagen exempelmenypost"
 
 #~ msgid "This is a sample merged toolbar button"
 #~ msgstr "Detta är en sammanslagen exempelverktygsradsknapp"
