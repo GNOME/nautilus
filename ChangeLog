@@ -1,3 +1,35 @@
+2000-05-08  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-list.c
+	* libnautilus-extensions/nautilus-icon-container.c
+	(realize), (unrealize), (nautilus_list_realize),
+	(nautilus_list_unrealize),
+	(nautilus_icon_container_initialize_class),
+	(nautilus_list_initialize_class),
+	(nautilus_list_realize),
+	(nautilus_list_unrealize):
+	Fix 296 - properly set the default focus to the icon and
+	list views so that keyboard navigation works right away.
+	Properly defocus the icon and list view when switching 
+	between the two views. 
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(keyboard_arrow_key), (keyboard_right), (keyboard_left),
+	(keyboard_down), (keyboard_up):
+	Properly handle the first keyboard arrow press when we have no selection
+	yet. To do this pass in a new empty_start predicate.
+	
+	* libnautilus-extensions/nautilus-icon-container.c
+	* libnautilus-extensions/nautilus-list.c
+	(nautilus_list_initialize),
+	(select_row_from_mouse),
+	(nautilus_list_keyboard_navigation_key_press),
+	(nautilus_list_key_press):
+	Properly handle the first keyboard arrow press when we have no selection
+	yet (this will only start working when 454 gets fixed).
+	Make it so that the keyboard focus gets collapsed with the selection
+	when selecting an item with a mouse.
+
 2000-05-08  Darin Adler  <darin@eazel.com>
 
 	* check-FIXME.pl:
@@ -126,7 +158,7 @@
 	* nautilus-clean.sh: Added pdf component to list. Added -x option
 	to also kill oafd and gconfd.
 
-2000-05-08  Pavel  <pavel@eazel.com>
+2000-05-08  Pavel Cisler <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c:
 	* libnautilus-extensions/nautilus-icon-private.h:

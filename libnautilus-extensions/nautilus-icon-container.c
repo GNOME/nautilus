@@ -1272,6 +1272,7 @@ keyboard_arrow_key (NautilusIconContainer *container,
 		    GdkEventKey *event,
 		    Axis axis,
 		    IsBetterIconFunction better_start,
+		    IsBetterIconFunction empty_start,
 		    IsBetterIconFunction better_destination)
 {
 	NautilusIcon *icon;
@@ -1300,7 +1301,7 @@ keyboard_arrow_key (NautilusIconContainer *container,
 		container->details->arrow_key_axis = AXIS_NONE;
 		icon = find_best_icon (container,
 				       NULL,
-				       better_start,
+				       empty_start,
 				       NULL);
 	} else {
 		record_arrow_key_start (container, icon, axis);
@@ -1324,6 +1325,7 @@ keyboard_right (NautilusIconContainer *container,
 			    event,
 			    AXIS_HORIZONTAL,
 			    rightmost_in_bottom_row,
+			    leftmost_in_top_row,
 			    same_row_right_side_leftmost);
 }
 
@@ -1338,6 +1340,7 @@ keyboard_left (NautilusIconContainer *container,
 			    event,
 			    AXIS_HORIZONTAL,
 			    leftmost_in_top_row,
+			    rightmost_in_bottom_row,
 			    same_row_left_side_rightmost);
 }
 
@@ -1352,6 +1355,7 @@ keyboard_down (NautilusIconContainer *container,
 			    event,
 			    AXIS_VERTICAL,
 			    rightmost_in_bottom_row,
+			    leftmost_in_top_row,
 			    same_column_below_highest);
 }
 
@@ -1366,6 +1370,7 @@ keyboard_up (NautilusIconContainer *container,
 			    event,
 			    AXIS_VERTICAL,
 			    leftmost_in_top_row,
+			    rightmost_in_bottom_row,
 			    same_column_above_lowest);
 }
 
@@ -1619,6 +1624,7 @@ static void
 realize (GtkWidget *widget)
 {
 	GtkStyle *style;
+	GtkWindow *window;
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
 
@@ -1628,6 +1634,22 @@ realize (GtkWidget *widget)
 
 	gdk_window_set_background (GTK_LAYOUT (widget)->bin_window,
 				   & widget->style->bg [GTK_STATE_NORMAL]);
+
+ 	/* make us the focused widget */
+ 	g_assert (GTK_IS_WINDOW (gtk_widget_get_toplevel (widget)));
+	window = GTK_WINDOW (gtk_widget_get_toplevel (widget));
+	gtk_window_set_focus (window, widget);
+}
+
+static void
+unrealize (GtkWidget *widget)
+{
+	GtkWindow *window;
+        g_assert (GTK_IS_WINDOW (gtk_widget_get_toplevel (widget)));
+        window = GTK_WINDOW (gtk_widget_get_toplevel (widget));
+	gtk_window_set_focus (window, NULL);
+
+	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, unrealize, (widget));
 }
 
 static gboolean
@@ -2251,6 +2273,7 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 	widget_class->size_request = size_request;
 	widget_class->size_allocate = size_allocate;
 	widget_class->realize = realize;
+	widget_class->unrealize = unrealize;
 	widget_class->button_press_event = button_press_event;
 	widget_class->button_release_event = button_release_event;
 	widget_class->motion_notify_event = motion_notify_event;

@@ -216,6 +216,7 @@ static void     draw_row                                (GtkCList             *l
 							 gint                  row,
 							 GtkCListRow          *clist_row);
 static void     nautilus_list_realize                   (GtkWidget            *widget);
+static void     nautilus_list_unrealize                 (GtkWidget            *widget);
 static void     nautilus_list_set_cell_contents         (GtkCList             *clist,
 							 GtkCListRow          *clist_row,
 							 gint                  column,
@@ -362,6 +363,7 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 	widget_class->draw_focus = nautilus_list_draw_focus;
 	widget_class->key_press_event = nautilus_list_key_press;
 	widget_class->realize = nautilus_list_realize;
+	widget_class->unrealize = nautilus_list_unrealize;
 	widget_class->size_request = nautilus_list_size_request;
 
 	object_class->destroy = nautilus_list_destroy;
@@ -405,6 +407,7 @@ nautilus_list_initialize (NautilusList *list)
 	nautilus_preferences_add_enum_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
 						click_policy_changed_callback,
 						list);
+
 }
 
 static void
@@ -502,6 +505,8 @@ select_row_from_mouse (NautilusList *list, int row, guint state)
 
 	range = (state & GDK_SHIFT_MASK) != 0;
 	additive = (state & GDK_CONTROL_MASK) != 0;
+
+	nautilus_list_clear_keyboard_focus (list);
 
 	if (!additive) {
 		selection_changed |= select_row_unselect_others (list, -1);
@@ -942,7 +947,7 @@ nautilus_list_keyboard_navigation_key_press (NautilusList *list, GdkEventKey *ev
 		 * If there's a selection, use the selected row farthest toward the end.
 		 */
 
-		if (GTK_CLIST (list)->focus_row >= 0) {
+		if (clist->focus_row >= 0) {
 			start_row = clist->focus_row;
 		} else {
 			start_row = (scroll_type == GTK_SCROLL_STEP_FORWARD || scroll_type == GTK_SCROLL_PAGE_FORWARD ?
@@ -954,9 +959,8 @@ nautilus_list_keyboard_navigation_key_press (NautilusList *list, GdkEventKey *ev
 		 * If there is a row to start with, select the next row in the arrow direction.
 		 */
 		if (start_row < 0) {
-			destination_row = (scroll_type == GTK_SCROLL_STEP_FORWARD || scroll_type == GTK_SCROLL_PAGE_FORWARD ?
-					   clist->rows - 1 :
-					   0);
+			destination_row = (scroll_type == GTK_SCROLL_STEP_FORWARD || scroll_type == GTK_SCROLL_PAGE_FORWARD 
+					   ? 0 : clist->rows - 1);
 		} else if (scroll_type == GTK_SCROLL_STEP_FORWARD) {
 			destination_row = MIN (clist->rows - 1, start_row + 1);
 		} else if (scroll_type == GTK_SCROLL_STEP_BACKWARD) {
@@ -1088,11 +1092,7 @@ nautilus_list_key_press (GtkWidget *widget,
 		nautilus_list_activate_selected_items (list);
 		break;
 	default:
-		if (NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, key_press_event, (widget, event))) {
-			return TRUE;
-		} else {
-			return FALSE;
-		}
+		return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, key_press_event, (widget, event));
 	}
 
 	return TRUE;
@@ -1103,6 +1103,7 @@ nautilus_list_realize (GtkWidget *widget)
 {
 	NautilusList *list;
 	GtkCList *clist;
+	GtkWindow *window;
 
 	g_return_if_fail (NAUTILUS_IS_LIST (widget));
 
@@ -1118,8 +1119,24 @@ nautilus_list_realize (GtkWidget *widget)
 	}
 	gtk_widget_set_parent (list->details->title, GTK_WIDGET (clist));
 	gtk_widget_show (list->details->title);
+
+	/* make us the focused widget */
+        g_assert (GTK_IS_WINDOW (gtk_widget_get_toplevel (widget)));
+        window = GTK_WINDOW (gtk_widget_get_toplevel (widget));
+	gtk_window_set_focus (window, widget);
 	
 	GTK_CLIST_SET_FLAG (clist, CLIST_SHOW_TITLES);
+}
+
+static void
+nautilus_list_unrealize (GtkWidget *widget)
+{
+	GtkWindow *window;
+        g_assert (GTK_IS_WINDOW (gtk_widget_get_toplevel (widget)));
+        window = GTK_WINDOW (gtk_widget_get_toplevel (widget));
+	gtk_window_set_focus (window, NULL);
+
+	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, unrealize, (widget));
 }
 
 /* this is here just temporarily */
