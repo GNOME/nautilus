@@ -40,10 +40,13 @@
 #include "mozilla-events.h"
 
 #include <bonobo/bonobo-control.h>
+#include <gconf/gconf.h>
+#include <gconf/gconf-client.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <stdlib.h>
 
 struct NautilusMozillaContentViewDetails {
 	char				 *uri;
@@ -52,6 +55,9 @@ struct NautilusMozillaContentViewDetails {
 	GdkCursor			 *busy_cursor;
 	gboolean                          got_called_by_nautilus;
 };
+
+static const char PROXY_KEY[] = "/system/gnome-vfs/http-proxy";
+static const char USE_PROXY_KEY[] = "/system/gnome-vfs/use-http-proxy";
 
 static void     nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass *klass);
 static void     nautilus_mozilla_content_view_initialize       (NautilusMozillaContentView      *view);
@@ -127,6 +133,11 @@ static gboolean mozilla_one_time_happenings = FALSE;
 static void
 nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 {
+	GConfClient *gconf_client;
+  	GConfError *error = NULL;
+  	char *argv[] = { "nautilus-mozilla-component", NULL };
+  	char *proxy_string = NULL;
+  	
 	view->details = g_new0 (NautilusMozillaContentViewDetails, 1);
 
 	view->details->uri = NULL;
@@ -146,11 +157,38 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 		mozilla_preference_set_boolean ("nglayout.widget.gfxscrollbars", FALSE);
 		mozilla_preference_set_boolean ("security.checkloaduri", FALSE);
 		mozilla_preference_set ("general.useragent.misc", "Nautilus");
-		/* mozilla_preference_set ("network.proxy.http", "proxy"); */
-		/* mozilla_preference_set_int ("network.proxy.http_port", 80); */
-		/* mozilla_preference_set_int ("network.proxy.type", 1); */
 
+		/* Locate and set proxy preferences */
+		if (gconf_init (1, argv, &error)) {
+			gconf_client = gconf_client_get_default ();
+			if (gconf_client != NULL) {
+				if (gconf_client_get_bool (gconf_client, USE_PROXY_KEY, &error)) {
+					proxy_string = gconf_client_get_string (gconf_client, PROXY_KEY, &error);
+					if (proxy_string != NULL) {
+						char *proxy, *port;						
+						port = strchr (proxy_string, ':');
+						if (port != NULL) {
+							proxy = g_strdup (proxy_string);
+							proxy [port - proxy_string] = '\0';
+							port++;							
 
+							mozilla_preference_set ("network.proxy.http", proxy);
+							mozilla_preference_set_int ("network.proxy.http_port", atoi (port));
+
+							/* 1, Configure proxy settings manually */
+							mozilla_preference_set_int ("network.proxy.type", 1);
+							
+							g_free (proxy_string);
+							g_free (proxy);
+						}
+					}
+				} else {
+					/* Default is 3, which conects to internet hosts directly */
+					mozilla_preference_set_int ("network.proxy.type", 3);
+				}
+				gtk_object_unref (GTK_OBJECT (gconf_client));
+			}
+		}
 /*
  * For M17, we register a necko protocol handler to deal with eazel: uris
  */

@@ -34,6 +34,8 @@
 #include "nautilus-string.h"
 #include "nautilus-user-level-manager.h"
 #include "nautilus-view-identifier.h"
+#include <gconf/gconf.h>
+#include <gconf/gconf-client.h>
 #include <gtk/gtkbox.h>
 #include <liboaf/liboaf.h>
 
@@ -42,6 +44,9 @@
 
 /* default web search uri - this will soon be changed to point to our service */
 #define DEFAULT_SEARCH_WEB_URI "http://www.google.com"
+
+static const char PROXY_KEY[] = "/system/gnome-vfs/http-proxy";
+static const char USE_PROXY_KEY[] = "/system/gnome-vfs/use-http-proxy";
 
 /* Forward declarations */
 static char *     global_preferences_get_sidebar_panel_key              (const char             *panel_iid);
@@ -678,6 +683,40 @@ global_preferences_register_speed_tradeoff_with_defaults (const char		     *name
 	
 }							  
 
+
+/* These three callbacks should go away in the future when we can handle system wide prefs */
+static void
+use_proxy_changed (gpointer user_data)
+{
+	gboolean use_proxy;
+	
+	use_proxy = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_HTTP_USE_PROXY, FALSE);
+}
+
+static void
+proxy_changed (gpointer user_data)
+{
+	char *proxy, *port, *new_proxy;
+	
+	proxy = nautilus_preferences_get (NAUTILUS_PREFERENCES_HTTP_PROXY, "");
+	port = nautilus_preferences_get (NAUTILUS_PREFERENCES_HTTP_PROXY_PORT, "");
+
+	new_proxy = g_strdup_printf ("%s:%s", proxy, port);
+	
+	nautilus_preferences_set (PROXY_KEY, new_proxy);
+
+	if (proxy != NULL) {
+		g_free (proxy);
+	}
+	if (port != NULL) {
+		g_free (port);
+	}
+	if (new_proxy != NULL) {
+		g_free (new_proxy);
+	}
+}
+
+
 /**
  * global_preferences_register
  *
@@ -898,24 +937,68 @@ global_preferences_register (void)
 	}
 
 	{
+	gboolean use_proxy;
+	char *proxy_string, *port, *proxy;
+	GConfClient *gconf_client;
+  	GConfError *error = NULL;
+
+	use_proxy = FALSE;
+	proxy = NULL;
+	port = NULL;
+	proxy_string = NULL;
 	
+	gconf_client = gconf_client_get_default ();
+	if (gconf_client != NULL) {
+		/* Get system level proxy values from gconf */
+		use_proxy = gconf_client_get_bool (gconf_client, USE_PROXY_KEY, &error);
+		proxy_string = gconf_client_get_string (gconf_client, PROXY_KEY, &error);
+		if (proxy_string != NULL) {			
+			port = strchr (proxy_string, ':');
+			if (port != NULL) {
+				proxy = g_strdup (proxy_string);
+				proxy [port - proxy_string] = '\0';
+				port++;								
+			}
+
+		}						
+		gtk_object_unref (GTK_OBJECT (gconf_client));
+	}
+
+	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_HTTP_USE_PROXY, use_proxy);
+	nautilus_preferences_set (NAUTILUS_PREFERENCES_HTTP_PROXY, proxy);
+	nautilus_preferences_set (NAUTILUS_PREFERENCES_HTTP_PROXY_PORT, port);
+
 	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_HTTP_USE_PROXY,
 							   _("Use HTTP Proxy"),
-							   FALSE,
-							   FALSE,
-							   FALSE);
+							   use_proxy,
+							   use_proxy,
+							   use_proxy);
 
 	global_preferences_register_string_with_defaults (NAUTILUS_PREFERENCES_HTTP_PROXY,
 								  _("HTTP Proxy"),
-								  "",
-								  "",
-								  "");
+								  proxy,
+								  proxy,
+								  proxy);
 
 	global_preferences_register_string_with_defaults (NAUTILUS_PREFERENCES_HTTP_PROXY_PORT,
 								  _("HTTP Proxy Port"),
-								  "",
-								  "",
-								  "");
+								  port,
+								  port,
+								  port);
+								  
+	if (proxy != NULL) {
+		g_free (proxy);
+	}
+	if (proxy_string != NULL) {
+		g_free (proxy_string);
+	}
+
+	/* Add a callbacks to update the system setting with the new local setting. This should go away when the
+	 * prefs mechanism can handle system wide prefs.
+	 */
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_HTTP_USE_PROXY, use_proxy_changed, NULL);
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_HTTP_PROXY, proxy_changed, NULL);
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_HTTP_PROXY_PORT, proxy_changed, NULL);
 	}
 }
 

@@ -1,3 +1,24 @@
+2000-09-29  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 2602, Integrate gnome-vfs http proxy setting into Mozilla
+	component.
+	
+	* components/mozilla/Makefile.am:
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(nautilus_mozilla_content_view_initialize):
+	Check for proxy settings and init mozilla to use them.
+	
+	Fixed bug 2692, Need to let user specify a proxy for Mozilla
+	component.
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(use_proxy_changed), (proxy_changed),
+	(global_preferences_register):
+
+	When the Nautilus preferences mechanism supports system wide settings,
+	we should revisit this code and remove the gconf system prefs retrieval
+	code.
+
 2000-09-29  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-thumbnails.c:

@@ -14,6 +14,7 @@ INCLUDES = \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
 	$(BONOBO_CFLAGS) \
+	$(GCONF_CFLAGS) \
 	$(GNOMEUI_CFLAGS) \
 	$(MOZILLA_COMPONENT_CFLAGS) \
 	-DMOZILLA_MILESTONE=$(MOZILLA_MILESTONE) \
@@ -42,6 +43,7 @@ noinst_HEADERS =\
 nautilus_mozilla_content_view_LDADD = \
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(BONOBO_LIBS) \
+	$(GCONF_LIBS) \
 	$(GNOMEUI_LIBS) \
 	$(VFS_LIBS) \
 	$(OAF_LIBS) \

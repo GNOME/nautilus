@@ -38,6 +38,10 @@
 #include "nautilus-shell.h"
 #include "nautilus-main.h"
 #include <bonobo.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-util.h>
+#include <libgnomeui/gnome-messagebox.h>
+#include <libgnomeui/gnome-stock.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
