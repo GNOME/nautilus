@@ -1,3 +1,23 @@
+2000-08-28  Rebecca Schulman  <rebecka@eazel.com>
+	Work on task 1969, allow content searches to
+	be done by looking for "All of the words" or
+	"any of the words"
+	The work to correct the Search results titles
+	still needs to be done.
+
+	* libnautilus-extensions/nautilus-search-bar-criterion.c:
+	(nautilus_search_bar_criterion_new_from_values),
+	(nautilus_search_bar_criterion_next_new),
+	(get_next_default_search_criterion_type),
+	(get_content_location_for):
+	Change content information.  Also removed location criterion
+	because we are not shipping vault searching for 1.0, so the
+	location is always "my computer"
+	* libnautilus-extensions/nautilus-search-bar-criterion.h:
+	* src/nautilus-complex-search-bar.c:
+	(unattach_criterion_from_search_bar):
+	Fixed bug that would not detach date criteria correctly
+
 2000-08-28  Ramiro Estrugo  <ramiro@eazel.com>
 
 	Complete task 1511.  Icons not AA in properties dialog.

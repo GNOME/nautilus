@@ -355,8 +355,9 @@ unattach_criterion_from_search_bar (NautilusComplexSearchBar *bar,
 
 	gtk_container_remove (GTK_CONTAINER (bar->details->table),
 			      GTK_WIDGET (criterion->details->relation_menu));
-	g_assert (criterion->details->use_value_entry + 
-		  criterion->details->use_value_menu == 1);
+	g_assert ((criterion->details->use_value_entry + 
+		   criterion->details->use_value_menu == 1) ||
+		  criterion->details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION);
 	if (criterion->details->use_value_entry 
 	    && !criterion->details->use_value_suffix) {
 		gtk_container_remove (GTK_CONTAINER (bar->details->table),
@@ -370,6 +371,10 @@ unattach_criterion_from_search_bar (NautilusComplexSearchBar *bar,
 		gtk_container_remove (GTK_CONTAINER (bar->details->table),
 				      GTK_WIDGET (criterion->details->value_suffix)->parent);
 	}	
+	if (criterion->details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION) {
+		gtk_container_remove (GTK_CONTAINER (bar->details->table),
+				      GTK_WIDGET (criterion->details->date));
+	}
 	gtk_table_resize (bar->details->table, 
 			  g_slist_length (bar->details->search_criteria) - 1, 
 			  3);

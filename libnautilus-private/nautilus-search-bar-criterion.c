@@ -50,7 +50,6 @@ static char * criteria_titles [] = {
 	  N_("Name"),
 	  N_("Content"),
 	  N_("Type"),
-	  N_("Stored"),
 	  N_("Size"),
 	  N_("With Emblem"),
 	  N_("Last Modified"),
@@ -69,8 +68,10 @@ static char *name_relations [] = {
 };
 
 static char *content_relations [] = {
-	N_("includes"),
-	N_("does not include"),
+	N_("includes all of"),
+	N_("includes any of"),
+	N_("does not include all of"),
+	N_("includes none of"),
 	NULL
 
 };
@@ -87,17 +88,6 @@ static char *type_objects [] = {
 	N_("application"),
 	N_("directory"),
 	N_("music"),
-	NULL
-};
-
-static char *location_relations [] = {
-	N_("is"),
-	NULL
-};
-
-static char *location_objects [] = {
-	N_("on this computer"),
-	N_("in my vault"),
 	NULL
 };
 
@@ -276,7 +266,7 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 	}
 	criterion->details->use_value_menu = use_value_menu;
 	if (use_value_menu) {
-		g_return_val_if_fail (value_menu != NULL, NULL);
+		g_return_val_if_fail (value_options != NULL, NULL);
 		value_option_menu = gtk_option_menu_new ();
 		value_menu = gtk_menu_new ();
 		for (i = 0; value_options[i] != NULL; i++) {
@@ -339,15 +329,6 @@ nautilus_search_bar_criterion_next_new (NautilusSearchBarCriterionType criterion
 									       FALSE,
 									       TRUE,
 									       type_objects,
-									       FALSE,
-									       NULL);
-		break;
-	case NAUTILUS_LOCATION_SEARCH_CRITERION:
-		new_criterion = nautilus_search_bar_criterion_new_from_values (NAUTILUS_LOCATION_SEARCH_CRITERION,
-									       location_relations,
-									       FALSE,
-									       TRUE,
-									       location_objects,
 									       FALSE,
 									       NULL);
 		break;
@@ -486,8 +467,6 @@ get_next_default_search_criterion_type (NautilusSearchBarCriterionType type)
 	case NAUTILUS_CONTENT_SEARCH_CRITERION:
 		return NAUTILUS_FILE_TYPE_SEARCH_CRITERION;
 	case NAUTILUS_FILE_TYPE_SEARCH_CRITERION:
-		return NAUTILUS_LOCATION_SEARCH_CRITERION;
-	case NAUTILUS_LOCATION_SEARCH_CRITERION:
 		return NAUTILUS_SIZE_SEARCH_CRITERION;
 	case NAUTILUS_SIZE_SEARCH_CRITERION:
 		return NAUTILUS_SIZE_SEARCH_CRITERION;
@@ -590,10 +569,13 @@ get_name_location_for (int relation_number, char *name_text)
 static char *                              
 get_content_location_for (int relation_number, char *name_text)
 {
-	const char *possible_relations[] = { "includes",
-					    "does_not_include" };
+	const char *possible_relations[] = { "includes_all_of",
+					     "includes_any_of",
+					     "does_not_include_all_of",
+					     "does_not_include_any_of" };
 	
-	g_assert (relation_number == 0 || relation_number == 1);
+	g_assert (relation_number>= 0);
+	g_assert (relation_number < 4);
 
 	return g_strdup_printf ("%s %s %s", NAUTILUS_SEARCH_URI_TEXT_CONTENT, 
 				possible_relations[relation_number],
