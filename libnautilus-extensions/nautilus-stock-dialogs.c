@@ -252,13 +252,26 @@ convert_varargs_to_name_array (va_list args)
 	return plain_ole_array;
 }
 
+static gboolean
+delete_event_callback (gpointer data,
+		       gpointer user_data)
+{
+	g_return_val_if_fail (GNOME_IS_DIALOG (data), FALSE);
+	gtk_signal_emit_stop_by_name (GTK_OBJECT (data),
+				      "delete_event");
+	return TRUE;
+}
+
 int
-nautilus_simple_dialog (GtkWidget *parent, const char *text, const char *title, ...)
+nautilus_simple_dialog (GtkWidget *parent, gboolean ignore_close_box,
+			const char *text, const char *title, ...)
 {
 	va_list button_title_args;
 	const char **button_titles;
         GtkWidget *dialog;
         GtkWidget *top_widget;
+	int result;
+
 	
 	/* Create the dialog. */
 	va_start (button_title_args, title);
@@ -268,8 +281,17 @@ nautilus_simple_dialog (GtkWidget *parent, const char *text, const char *title, 
 	g_free (button_titles);
 	
 	/* Allow close. */
-        gnome_dialog_set_close (GNOME_DIALOG (dialog), TRUE);
+	if (ignore_close_box) {
+		gtk_signal_connect (GTK_OBJECT (dialog),
+				    "delete_event",
+				    GTK_SIGNAL_FUNC (delete_event_callback),
+				    NULL);
+
+	}
 	
+        gnome_dialog_set_close (GNOME_DIALOG (dialog), TRUE);
+
+
 	/* Parent it if asked to. */
         if (parent != NULL) {
 		top_widget = gtk_widget_get_toplevel (parent);
@@ -280,10 +302,16 @@ nautilus_simple_dialog (GtkWidget *parent, const char *text, const char *title, 
 	
 	/* Title it if asked to. */
 	add_label_to_dialog (GNOME_DIALOG (dialog), text);
-	
+
 	/* Run it. */
         gtk_widget_show_all (dialog);
-        return gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+        result = gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+	while (result == -1 && ignore_close_box) {
+		gtk_widget_show (GTK_WIDGET (dialog));
+		result = gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+	}
+
+	return result;
 }
 
 static void

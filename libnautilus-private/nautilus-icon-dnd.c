@@ -692,7 +692,7 @@ confirm_switch_to_manual_layout (NautilusIconContainer *container)
 	}
 
 	return nautilus_simple_dialog
-		(GTK_WIDGET (container), message,
+		(GTK_WIDGET (container), TRUE, message,
 		 _("Switch to Manual Layout?"),
 		 _("Switch"), GNOME_STOCK_BUTTON_CANCEL, NULL) == 0;
 }

@@ -361,29 +361,25 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 		    || progress_info->vfs_status == GNOME_VFS_ERROR_READ_ONLY
 		    || progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED) {
 			
-			if (progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED) {
-				text = g_strdup_printf
-					(_("Error while %s \"%s\".\n"
-					   "The destination is read-only. "
-					   "Would you like to continue?"),
-					 current_operation,
-					 unescaped_name);
-			} else {
-				text = g_strdup_printf
-					(_("Error while %s \"%s\".\n"
-					   "The destination is read-only. "
-					   "Would you like to continue?"),
-					 current_operation,
-					 unescaped_name);
-			}
+			text = g_strdup_printf
+				(_("Error while %s \"%s\".\n"
+				   "The destination is read-only. "
+				   "Would you like to continue?"),
+				 current_operation,
+				 unescaped_name);
 			g_free (current_operation);
 			g_free (unescaped_name);
 			
 			result = nautilus_simple_dialog
-				(xfer_info->parent_view, text, 
-				 _("Error while Copying"),
+				(xfer_info->parent_view, TRUE, text, 
+					 _("Error while Copying"),
 				 _("Skip"), _("Stop"), NULL);
-
+			while (result == -1) {
+				result = nautilus_simple_dialog
+					(xfer_info->parent_view, TRUE, text, 
+					 _("Error while Copying"),
+					 _("Skip"), _("Stop"), NULL);
+			}
 			g_free (text);
 
 			switch (result) {
@@ -407,7 +403,7 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 			g_free (unescaped_name);
 
 			result = nautilus_simple_dialog
-				(xfer_info->parent_view, text, 
+				(xfer_info->parent_view, TRUE, text, 
 				 _("Error while Copying"),
 				 _("Skip"), _("Retry"), _("Stop"), NULL);
 			g_free (text);
@@ -458,7 +454,7 @@ handle_xfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 		 * Replace All
 		 */
 		result = nautilus_simple_dialog
-			(xfer_info->parent_view, text, 
+			(xfer_info->parent_view, TRUE, text, 
 			 _("Conflict while Copying"),
 			 _("Replace"), _("Skip"), NULL);
 		switch (result) {
@@ -472,7 +468,7 @@ handle_xfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 		}
 	} else {
 		result = nautilus_simple_dialog
-			(xfer_info->parent_view, text, 
+			(xfer_info->parent_view, TRUE, text, 
 			 _("Conflict while Copying"),
 			 _("Replace All"), _("Replace"), _("Skip"), NULL);
 
@@ -1135,6 +1131,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		if (check_target_directory_is_or_in_trash (trash_dir_uri, target_dir_uri)) {
 			nautilus_simple_dialog
 				(view, 
+				 FALSE,
 				 _("You cannot copy items into the Trash."), 
 				 _("Can't Copy to Trash"),
 				 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
@@ -1150,6 +1147,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 			if (trash_dir_uri != NULL && gnome_vfs_uri_equal (uri, trash_dir_uri)) {
 				nautilus_simple_dialog
 					(view, 
+					 FALSE,
 					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
 					 ? _("The Trash must remain on the desktop.")
 					 : _("You cannot copy the Trash."), 
@@ -1171,6 +1169,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 					|| gnome_vfs_uri_is_parent (uri, target_dir_uri, TRUE))) {
 				nautilus_simple_dialog
 					(view, 
+					 FALSE,
 					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
 					 ? _("You cannot move a folder into itself.")
 					 : _("You cannot copy a folder into itself."), 
@@ -1330,6 +1329,7 @@ nautilus_file_operations_move_to_trash (const GList *item_uris,
 		if (gnome_vfs_uri_equal (source_uri, trash_dir_uri)) {
 			nautilus_simple_dialog
 				(parent_view, 
+				 FALSE,
 				 _("The Trash must remain on the desktop."), 
 				 _("Can't Change Trash Location"),
 				 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
@@ -1341,7 +1341,7 @@ nautilus_file_operations_move_to_trash (const GList *item_uris,
 				(_("You cannot throw \"%s\" into the Trash."),
 				 item_name);
 			nautilus_simple_dialog
-				(parent_view, text, 
+				(parent_view, FALSE, text,
 				 _("Error Moving to Trash"),
 				 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
 			bail = TRUE;

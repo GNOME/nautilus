@@ -1,3 +1,23 @@
+2000-09-28  Rebecca Schulman  <rebecka@eazel.com>
+        Fixed bug 3231, which crashed nautilus when file dialogs
+	were closed without choosing an option.  Added a parameter
+	to nautilus_simple_dialog to allow the close button to be ignored
+	
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(handle_xfer_vfs_error), (handle_xfer_overwrite),
+	(nautilus_file_operations_copy_move),
+	(nautilus_file_operations_move_to_trash):
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(confirm_switch_to_manual_layout):
+	* src/nautilus-location-bar.c: (drag_data_received_callback):
+	Switched dialogs which really should receive a response from
+	the user to use dialog boxes which ignore the close box
+
+	* libnautilus-extensions/nautilus-stock-dialogs.c:
+	* libnautilus-extensions/nautilus-stock-dialogs.h:
+	(delete_event_callback), (nautilus_simple_dialog):
+	Made the dialog ignore delete events.
+
 2000-09-28  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c

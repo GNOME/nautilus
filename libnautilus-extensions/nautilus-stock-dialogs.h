@@ -40,6 +40,7 @@ void         nautilus_timed_wait_stop           (NautilusCancelCallback  cancel_
 
 /* Basic dialog with buttons. */
 int          nautilus_simple_dialog             (GtkWidget              *parent,
+						 gboolean               ignore_close_box,
 						 const char             *text,
 						 const char             *title,
 						 ...);

@@ -133,6 +133,7 @@ drag_data_received_callback (GtkWidget *widget,
 					  name_count);
 		new_windows_for_extras = nautilus_simple_dialog 
 			(GTK_WIDGET (nautilus_location_bar_get_window (widget)),
+			 TRUE,
 			 prompt,
 			 _("View in Multiple Windows?"),
 			 GNOME_STOCK_BUTTON_OK,
