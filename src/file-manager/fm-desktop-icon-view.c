@@ -1155,7 +1155,6 @@ mount_parameters_new (FMDesktopIconView *view, const char *mount_path)
 	g_assert (!eel_str_is_empty (mount_path)); 
 
 	new_parameters = g_new (MountParameters, 1);
-	g_object_ref (view);
 	new_parameters->view = view;
 	new_parameters->mount_path = g_strdup (mount_path);
 
@@ -1167,7 +1166,6 @@ mount_parameters_free (MountParameters *parameters)
 {
 	g_assert (parameters != NULL);
 
-	g_object_unref (parameters->view);
 	g_free (parameters->mount_path);
 	g_free (parameters);
 }
