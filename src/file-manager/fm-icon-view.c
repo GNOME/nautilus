@@ -1771,8 +1771,9 @@ play_file (gpointer callback_data)
 	file_uri = nautilus_file_get_uri (file);
 	mime_type = nautilus_file_get_mime_type (file);
 	is_mp3 = eel_strcasecmp (mime_type, "audio/mpeg") == 0;
-	is_ogg = eel_strcasecmp (mime_type, "application/x-ogg") == 0;
-
+	is_ogg = eel_strcasecmp (mime_type, "application/x-ogg") == 0 ||
+                eel_strcasecmp (mime_type, "application/ogg") == 0;
+	
 	mp3_pid = fork ();
 	if (mp3_pid == (pid_t) 0) {
 		/* Set the group (session) id to this process for future killing. */
