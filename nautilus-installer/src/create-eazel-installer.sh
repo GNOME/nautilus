@@ -1,14 +1,15 @@
 #!/bin/sh
 
+cp eazel-installer hest
+
 echo $CFLAGS | grep -q "DEBUG"
 if [ $? != 0 ]; then
 	echo "* Stripping"
-	strip eazel-installer
+	strip hest
 fi
 
 echo "* Packing"
 
-cp eazel-installer hest
 gzexe hest
 
 echo "* Patching"

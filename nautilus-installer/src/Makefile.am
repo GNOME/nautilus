@@ -9,7 +9,7 @@ WARN_FLAG = -Wall -Werror
 BUILD_DATE = $(shell date +%d%b%y-%H%M)
 
 if ENABLE_INSTALLER
-INSTALLER_NOINSTPROGRAMS = eazel-installer
+INSTALLER_BINPROGRAMS = eazel-installer
 INSTALLER_BINSCRIPTS = eazel-installer.sh
 endif
 
@@ -39,7 +39,7 @@ INCLUDES = \
 	$(NULL)
 
 bin_SCRIPTS = $(INSTALLER_BINSCRIPTS)
-noinst_PROGRAMS = $(INSTALLER_NOINSTPROGRAMS)
+bin_PROGRAMS = $(INSTALLER_BINPROGRAMS)
 
 eazel_installer_SOURCES = 			\
 	main.c 					\

@@ -1,3 +1,17 @@
+2001-03-06  Eric Fischer  <eric@eazel.com>
+
+	reviewed by: Robin * Slomkowski <rslomkow@eazel.com>
+
+	* nautilus-installer.spec.in:
+	Also include uncompressed, unstripped eazel-installer.
+
+	* nautilus-installer/src/Makefile.am:
+	Install uncompressed, unstripped eazel-installer rather than
+	discarding it.
+
+	* nautilus-installer/src/create-eazel-installer.sh:
+	Only strip the copy of the installer that is to be compressed.
+
 2001-03-06  Pavel Cisler  <pavel@eazel.com>
 
 	reviewed by: John Harper <jsh@eazel.com>
