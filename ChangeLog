@@ -1,3 +1,17 @@
+2000-07-11  Gene Z. Ragan  <gzr@eazel.com>
+
+	* components/history/nautilus-history-view.c:
+	(history_load_location), (history_button_press),
+	(history_button_release), (make_obj):
+	Removed drag move from list.  Changed navigation
+	to occur on mouse up, not on select row.  This is
+	because select row is called on rows during a drag.
+	Tghis can be annoying if you are trying to drag a
+	row item and Nautilus is navigating to the item you
+	ared dragging over.  This behavior happens even if we 
+	are not supporting drag move of items. Now navigation
+	occurs on the mouse up.
+
 2000-07-11  Michael Engber  <engber@eazel.com>
 
 	* libnautilus/nautilus-view-component.idl:

@@ -41,7 +41,7 @@ typedef struct {
 	GtkCList *clist;
 
 	gint notify_count;
-
+	gint press_row;
 	BonoboUIHandler *uih;
 } HistoryView;
 
@@ -129,7 +129,7 @@ get_history_list (HistoryView *hview)
 }
 
 static void
-hyperbola_navigation_history_load_location (NautilusView *view,
+history_load_location (NautilusView *view,
                                             const char *location,
                                             HistoryView *hview)
 {
@@ -147,7 +147,6 @@ hyperbola_navigation_history_load_location (NautilusView *view,
 	gtk_clist_freeze (clist);
 
 	/* Clear out list */
-	/* FIXME: Storage leak of column names here. */
 	gtk_clist_clear (clist);
 
 	/* Populate with data from main history list */	
@@ -157,8 +156,7 @@ hyperbola_navigation_history_load_location (NautilusView *view,
 		bookmark = nautilus_bookmark_new (item->location, item->title);
 		
 		cols[HISTORY_VIEW_COLUMN_ICON] = NULL;
-		/* FIXME: Storage leak of column names when list goes away. */
-		cols[HISTORY_VIEW_COLUMN_NAME] = g_strdup (item->title);
+		cols[HISTORY_VIEW_COLUMN_NAME] = item->title;
 
 		new_rownum = gtk_clist_append (clist, cols);
 		
@@ -181,33 +179,47 @@ hyperbola_navigation_history_load_location (NautilusView *view,
   	hview->notify_count--;
 }
 
+
 static void
-hyperbola_navigation_history_select_row(GtkCList *clist, gint row, gint column, GdkEvent *event,
-					HistoryView *hview)
+history_button_press (GtkCList *clist, GdkEventButton *event, HistoryView *hview)
+{
+	int row, column;
+		
+	/* Get row and column */
+	gtk_clist_get_selection_info (clist, event->x, event->y, &row, &column);
+
+	hview->press_row = row;
+}
+
+static void
+history_button_release (GtkCList *clist, GdkEventButton *event, HistoryView *hview)
 {
 	char *uri;
+	int row, column;
 	
 	if(hview->notify_count > 0) {
 		return;
 	}
+	
+	/* Get row and column */
+	gtk_clist_get_selection_info (clist, event->x, event->y, &row, &column);
 
-	/* First row is always current location, by definition, so don't activate */
-	if (row == 0) {
-      		return;
-      	}
-
-  	/* FIXME bugzilla.eazel.com 702: There are bugs here if you drag up & down */
-  	gtk_clist_freeze(clist);
-
-  	if(gtk_clist_row_is_visible(clist, row) != GTK_VISIBILITY_FULL) {
-    		gtk_clist_moveto(clist, row, -1, 0.5, 0.0);
-    	}
-
-  	uri = get_uri_from_row (clist, row);
-  	nautilus_view_open_location (hview->view, uri);
-  	g_free (uri);
-
-  	gtk_clist_thaw(clist);
+	/* Do nothing if row is zero.  A click either in the top list item
+	 * or in the history content view is ignored. 
+	 */
+	if (row <= 0) {
+		return;
+	}
+	
+ 	/* Return if the row does not match the rwo we stashed on the mouse down. */
+	if (row != hview->press_row) {
+		return;
+	}
+	
+	/* Navigate to uri */
+	uri = get_uri_from_row (clist, row);
+	nautilus_view_open_location (hview->view, uri);
+	g_free (uri);
 }
 
 static int object_count = 0;
@@ -237,8 +249,9 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
   	clist = GTK_CLIST (gtk_clist_new (HISTORY_VIEW_COLUMN_COUNT));
   	gtk_clist_column_titles_hide (clist);
 	gtk_clist_set_row_height (clist, NAUTILUS_ICON_SIZE_SMALLER);
-	gtk_clist_set_selection_mode(clist, GTK_SELECTION_BROWSE);
-	gtk_clist_columns_autosize(clist);
+	gtk_clist_set_selection_mode (clist, GTK_SELECTION_BROWSE);
+	gtk_clist_columns_autosize (clist);
+	
 	wtmp = gtk_scrolled_window_new (gtk_clist_get_hadjustment (clist),
 					gtk_clist_get_vadjustment (clist));
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (wtmp),
@@ -256,9 +269,11 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
 	hview->clist = (GtkCList *)clist;
 
 	/* handle events */
-	gtk_signal_connect(GTK_OBJECT(hview->view), "load_location",
-			   hyperbola_navigation_history_load_location, hview);
-	gtk_signal_connect(GTK_OBJECT(clist), "select_row", hyperbola_navigation_history_select_row, hview);
+	gtk_signal_connect(GTK_OBJECT(hview->view), "load_location", 
+			   history_load_location, hview);
+
+	gtk_signal_connect(GTK_OBJECT(clist), "button-press-event", history_button_press, hview);
+	gtk_signal_connect(GTK_OBJECT(clist), "button-release-event", history_button_release, hview);
 
 	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
 					 "icons_changed",
