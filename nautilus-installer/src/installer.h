@@ -80,7 +80,6 @@ struct _EazelInstaller
 	gboolean uninstalling;
 	gboolean downloaded_anything;
 
-	unsigned long total_bytes_downloaded;
 	unsigned long last_KB;
 
 	gboolean successful;
@@ -92,8 +91,9 @@ struct _EazelInstaller
 	GList *packages_possible_broken;
 
 	int total_packages;
-	int total_size;
-	int total_mb;
+	unsigned long total_bytes;
+	unsigned long total_bytes_downloaded;
+	unsigned long total_mb;
 };
 
 GtkType            eazel_installer_get_type(void);

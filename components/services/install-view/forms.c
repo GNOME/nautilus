@@ -1,4 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 8; tab-width: 8 -*- */
 
 /* 
  * Copyright (C) 2000, 2001  Eazel, Inc
@@ -36,7 +36,7 @@
 
 
 /* gtk rulez */
-static void
+static GtkWidget *
 add_padding_to_box (GtkWidget *box, int pad_x, int pad_y)
 {
 	GtkWidget *filler;
@@ -45,6 +45,7 @@ add_padding_to_box (GtkWidget *box, int pad_x, int pad_y)
 	gtk_widget_set_usize (filler, pad_x ? pad_x : 1, pad_y ? pad_y : 1);
 	gtk_widget_show (filler);
 	gtk_box_pack_start (GTK_BOX (box), filler, FALSE, FALSE, 0);
+	return filler;
 }
 
 static gboolean
@@ -260,7 +261,7 @@ generate_install_form (NautilusServiceInstallView *view)
 	add_padding_to_box (temp_box, 30, 0);
 	gtk_box_pack_start (GTK_BOX (temp_box), view->details->overall_feedback_text, TRUE, TRUE, 0);
 
-	add_padding_to_box (view->details->form, 0, 10);
+	view->details->spacing = add_padding_to_box (view->details->form, 0, 10);
 
 	/* Package Description */
 	temp_box = gtk_hbox_new (FALSE, 0);
@@ -277,10 +278,26 @@ generate_install_form (NautilusServiceInstallView *view)
 	gtk_box_pack_start (GTK_BOX (temp_box), view->details->package_details, FALSE, FALSE, 15);
 	gtk_widget_show (view->details->package_details);
 
-	/* query box: for asking the user questions during the preflight signal */
+	/* query pane: for asking the user questions during the preflight signal */
+	view->details->query_pane = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (view->details->query_pane),
+					GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	viewport = nautilus_viewport_new (NULL, NULL);
+	gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);
+	gtk_container_add (GTK_CONTAINER (view->details->query_pane), viewport);
+	gtk_widget_show (viewport);
+	background = nautilus_get_widget_background (viewport);
+	nautilus_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
+	gtk_widget_hide (view->details->query_pane);
+	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->query_pane, TRUE, TRUE, 0);
+
+	temp_box = gtk_hbox_new (FALSE, 0);
+	gtk_container_add (GTK_CONTAINER (viewport), temp_box);
 	view->details->query_box = gtk_vbox_new (FALSE, 0);
+	add_padding_to_box (temp_box, 30, 0);
 	gtk_box_pack_start (GTK_BOX (temp_box), view->details->query_box, FALSE, FALSE, 0);
-	gtk_widget_hide (view->details->query_box);
+	gtk_widget_show (view->details->query_box);
+	gtk_widget_show (temp_box);
 
 	/* filler blob to separate the top from the bottom */
 	gtk_box_pack_start (GTK_BOX (view->details->form), gtk_label_new (""), TRUE, FALSE, 0);
@@ -292,7 +309,8 @@ generate_install_form (NautilusServiceInstallView *view)
 	gtk_box_pack_end (GTK_BOX (view->details->message_box), filler, TRUE, TRUE, 0);
 
 	view->details->pane = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (view->details->pane), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (view->details->pane),
+					GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	viewport = nautilus_viewport_new (NULL, NULL);
 	gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);
 	gtk_container_add (GTK_CONTAINER (view->details->pane), viewport);
@@ -491,7 +509,8 @@ make_query_box (NautilusServiceInstallView *view, EazelInstallCallbackOperation 
         gtk_box_pack_start (GTK_BOX (view->details->query_box), bottom_label, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (view->details->query_box), bottom_label_2, FALSE, FALSE, 15);
         gtk_box_pack_start (GTK_BOX (view->details->query_box), hbox_buttons, FALSE, FALSE, 0);
-        gtk_widget_show (view->details->query_box);
+	add_padding_to_box (view->details->query_box, 0, 10);
+        gtk_widget_show (view->details->query_pane);
 
         gtk_container_set_focus_child (GTK_CONTAINER (view->details->form), button_ok);
 }

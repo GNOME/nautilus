@@ -176,7 +176,7 @@ char *text_labels[LAST_LABEL];
 
 /* FIXME -- CHANGE THIS BEFORE RELEASING! */
 int installer_debug = 1;
-char *installer_server = "triggerfish.eazel.com";
+char *installer_server = "hourly.eazel.com";
 int installer_server_port = 8888;
 
 int installer_spam = 0;		/* dump logging stuff to stderr (automatically adds --debug) */
@@ -799,11 +799,11 @@ eazel_install_progress (EazelInstall *service,
 		g_message ("Installing: %s", package->name);
 	}
 
-	percent = (double)((amount * 100.0) / (total ? total : 0.1));
-	gtk_progress_set_value (GTK_PROGRESS (progressbar), percent);
-	percent = (double)((total_size_completed * 50.0) / (total_size ? total_size : 0.1));
-	percent += 50.0;
-	gtk_progress_set_value (GTK_PROGRESS (progress_overall), percent);
+	percent = ((double)amount / (double)(total ? total : 0.1));
+	gtk_progress_set_percentage (GTK_PROGRESS (progressbar), percent);
+	percent = ((double)total_size_completed / (double)(total_size ? total_size : 0.1)) / 2;
+	percent += 0.5;
+	gtk_progress_set_percentage (GTK_PROGRESS (progress_overall), percent);
 
 	temp = g_strdup_printf (_("Installing %d packages (%d MB)"), installer->total_packages, installer->total_mb);
 	gtk_label_set_text (GTK_LABEL (label_overall), temp);
@@ -862,7 +862,7 @@ eazel_download_progress (EazelInstall *service,
 
 	if (amount == 0) {
 		gtk_progress_configure (GTK_PROGRESS (progress_single), 0, 0, (float)total);
-		gtk_progress_configure (GTK_PROGRESS (progress_overall), 0, 0, (float)installer->total_size);
+		gtk_progress_configure (GTK_PROGRESS (progress_overall), 0, 0, (float)(installer->total_bytes * 2));
 		temp = g_strdup_printf ("Getting package \"%s\"  ", package->name);
 		gtk_label_set_text (GTK_LABEL (label_single), temp); 
 		g_free (temp);
@@ -993,6 +993,11 @@ install_failed (EazelInstall *service,
 		PackageData *pd,
 		EazelInstaller *installer)
 {
+        if (pd->status == PACKAGE_ALREADY_INSTALLED) {
+                /* not really an important failure */
+                return;
+        }
+
 	g_message ("INSTALL FAILED.");
 	
 	report_unusual_errors (pd, installer);
@@ -1039,8 +1044,10 @@ eazel_install_preflight (EazelInstall *service,
 	GtkWidget *label_overall;
 	GtkWidget *label_top;
 	GtkWidget *header_single;
+        GList *package_list;
+        GList *iter;
+        PackageData *package;
 	char *temp;
-	int total_mb;
 
 	if (0) {
 		jump_to_package_tree_page (installer, (GList *)packages);
@@ -1067,6 +1074,15 @@ eazel_install_preflight (EazelInstall *service,
 	g_assert (progress_overall != NULL);
 	g_assert (header_single != NULL);
 
+        /* count the total bytes */
+        package_list = flatten_packagedata_dependency_tree ((GList *)packages);
+	package_list = g_list_reverse (package_list);
+        installer->total_bytes = installer->total_bytes_downloaded = 0;
+	for (iter = g_list_first (package_list); iter != NULL; iter = g_list_next (iter)) {
+		package = PACKAGEDATA (iter->data);
+		installer->total_bytes += (package->filesize > 0 ? package->filesize : package->bytesize);
+	}
+
 	/* please wait for blah blah. */
 	gtk_label_set_text (GTK_LABEL (label_top), text_labels [WAIT_LABEL_2]);
 
@@ -1077,21 +1093,19 @@ eazel_install_preflight (EazelInstall *service,
 
 	gtk_progress_set_percentage (GTK_PROGRESS (progress_single), 0.0);
 
-	total_mb = (total_size + (512*1024)) / (1024*1024);
+	installer->total_mb = (installer->total_bytes + (512*1024)) / (1024*1024);
 	if (num_packages == 1) {
 		if (installer->uninstalling) {
 			temp = g_strdup_printf (_("Uninstalling 1 package"));
 		} else {
-			temp = g_strdup_printf (_("Downloading 1 package (%d MB)"), total_mb);
-			gtk_progress_configure (GTK_PROGRESS (progress_overall), 0.0, 0.0, 100.0);
+			temp = g_strdup_printf (_("Downloading 1 package (%d MB)"), installer->total_mb);
 		}
 	} else {
 		if (installer->uninstalling) {
 			temp = g_strdup_printf (_("Uninstalling %d packages"), num_packages);
-			gtk_progress_configure (GTK_PROGRESS (progress_overall), 0.0, 0.0, 100.0);
 		} else {
-			temp = g_strdup_printf (_("Downloading %d packages (%d MB)"), num_packages, total_mb);
-			gtk_progress_configure (GTK_PROGRESS (progress_overall), 0.0, 0.0, 100.0);
+			temp = g_strdup_printf (_("Downloading %d packages (%d MB)"),
+                                                num_packages, installer->total_mb);
 		}
 	}
 	gtk_label_set_text (GTK_LABEL (label_overall), temp);
@@ -1100,13 +1114,12 @@ eazel_install_preflight (EazelInstall *service,
 
 	installer->downloaded_anything = TRUE;
 	installer->total_packages = num_packages;
-	installer->total_size = total_size;
-	installer->total_mb = total_mb;
 
 	while (gtk_events_pending ()) {
 		gtk_main_iteration ();
 	}
-	
+
+        g_list_free (package_list);
 	return TRUE;
 }
 

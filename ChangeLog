@@ -1,3 +1,26 @@
+2001-02-26  Robey Pointer  <robey@eazel.com>
+
+	reviewed by: Eskil Heyn Olsen <eskil@eazel.com>
+
+	* components/services/install-view/callbacks.c:
+	(nautilus_service_install_preflight_check):
+	* components/services/install-view/forms.c: (add_padding_to_box),
+	(generate_install_form), (make_query_box):
+	* components/services/install-view/nautilus-service-install-view.c:
+	* components/services/install-view/nautilus-service-install-view.h:
+
+	Put the preflight query into a pane so it can be made scrollable
+	if the list of packages gets too long.
+	
+	* nautilus-installer/src/installer.c: (eazel_install_progress),
+	(eazel_download_progress), (install_failed),
+	(eazel_install_preflight):
+	* nautilus-installer/src/installer.h:
+
+	Fix the progress bars to make sense.  The fact that they even
+	looked like they were 90% working before is just a bizarre
+	coincidence.
+
 2001-02-26  Arik Devens  <arik@eazel.com>
 
 	reviewed by: Maciej Stachowiak  <mjs@eazel.com>

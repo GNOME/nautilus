@@ -1,4 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 8; tab-width: 8 -*- */
 
 /* 
  * Copyright (C) 2000, 2001  Eazel, Inc
@@ -124,6 +124,9 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb,
         /* draw the query box, and spin in gtk_main waiting for an answer */
         make_query_box (view, op, package_list);
         gtk_widget_hide (view->details->overall_feedback_text);
+        gtk_widget_hide (view->details->spacing);
+        gtk_widget_hide (view->details->package_details);
+	gtk_widget_hide (view->details->pane);
 
 	nautilus_view_report_load_complete (view->details->nautilus_view);
         gtk_widget_ref (GTK_WIDGET (view));
@@ -141,7 +144,10 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb,
         }
         gtk_widget_unref (GTK_WIDGET (view));
 
-        gtk_widget_hide (view->details->query_box);
+        gtk_widget_hide (view->details->query_pane);
+        gtk_widget_show (view->details->spacing);
+        gtk_widget_show (view->details->package_details);
+	gtk_widget_show (view->details->pane);
 	nautilus_view_report_load_underway (view->details->nautilus_view);
         answer = (view->details->preflight_status == PREFLIGHT_OK) ? TRUE : FALSE;
 

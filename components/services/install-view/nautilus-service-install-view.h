@@ -1,4 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 8; tab-width: 8 -*- */
 /* 
  * Copyright (C) 2000 Eazel, Inc
  *
@@ -86,6 +86,8 @@ struct _NautilusServiceInstallViewDetails {
 	GtkWidget	*pane;
 	GtkWidget	*middle_title;
 	GtkWidget	*query_box;
+	GtkWidget	*query_pane;
+	GtkWidget	*spacing;
 
 	char		*current_rpm;
 	int		current_package;
