@@ -31,6 +31,7 @@
 #ifdef HAVE_LIBFAM
 
 #include "nautilus-file-changes-queue.h"
+#include "nautilus-volume-monitor.h"
 #include <fam.h>
 #include <gdk/gdk.h>
 #include <gmodule.h>
@@ -232,6 +233,17 @@ nautilus_monitor_active (void)
 #endif
 }
 
+static gboolean
+path_is_on_readonly_volume (const char *path)
+{
+	NautilusVolumeMonitor *volume_monitor;
+	NautilusVolume *volume;
+
+	volume_monitor = nautilus_volume_monitor_get ();
+	volume = nautilus_volume_monitor_get_volume_for_path (volume_monitor, path);
+	return (volume != NULL) && nautilus_volume_is_read_only (volume);
+}
+
 NautilusMonitor *
 nautilus_monitor_file (const char *uri)
 {
@@ -251,7 +263,16 @@ nautilus_monitor_file (const char *uri)
 	if (path == NULL) {
 		return NULL;
 	}
-        
+
+	/* Check to see if the file system is readonly. If so, don't monitor --
+	 * there is no point, and we'll just keep the file system busy for
+	 * no reason, preventing unmounting
+	 */
+        if (path_is_on_readonly_volume (path)) {
+		g_free (path);
+		return NULL;
+	}
+	
 	monitor = g_new0 (NautilusMonitor, 1);
 	FAMMonitorFile (connection, path, &monitor->request, NULL);
 
@@ -283,6 +304,15 @@ nautilus_monitor_directory (const char *uri)
 		return NULL;
 	}
         
+	/* Check to see if the file system is readonly. If so, don't monitor --
+	 * there is no point, and we'll just keep the file system busy for
+	 * no reason, preventing unmounting
+	 */
+        if (path_is_on_readonly_volume (path)) {
+		g_free (path);
+		return NULL;
+	}
+	
 	monitor = g_new0 (NautilusMonitor, 1);
 	FAMMonitorDirectory (connection, path, &monitor->request, NULL);
 

@@ -47,7 +47,6 @@
 #include <gtk/gtkwindow.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-config.h>
-#include <libgnome/gnome-metadata.h>
 #include <libgnome/gnome-mime.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
@@ -283,9 +282,6 @@ get_stored_icon_position_callback (NautilusIconContainer *container,
 	char *position_string, *scale_string;
 	gboolean position_good, scale_good;
 	char *locale;
-	char *path, *uri;
-	int res, size;
-	char *buf;
 
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_assert (NAUTILUS_IS_FILE (file));
@@ -310,25 +306,6 @@ get_stored_icon_position_callback (NautilusIconContainer *container,
 
 	/* If it is the desktop directory, maybe the gnome-libs metadata has information about it */
 
-	if (!position_good) {
-		if (nautilus_file_is_local (file) && nautilus_file_is_in_desktop (file)) {
-			uri = nautilus_file_get_uri (file);
-			path = gnome_vfs_get_local_path_from_uri (uri);
-
-			if (path != NULL) {
-				res = gnome_metadata_get (path, "icon-position", &size, &buf);
-				if (res == 0) {
-					if (sscanf (buf, "%d%d", &position->x, &position->y) == 2) {
-						position_good = TRUE;
-					}
-					g_free (buf);
-				}
-			}
-			g_free (path);
-			g_free (uri);
-		}
-	}
-	
 	/* Get the scale of the icon from the metadata. */
 	scale_string = nautilus_file_get_metadata
 		(file, NAUTILUS_METADATA_KEY_ICON_SCALE, "1");
@@ -1850,8 +1827,6 @@ icon_position_changed_callback (NautilusIconContainer *container,
 	char *position_string;
 	char *scale_string, *scale_string_x, *scale_string_y;
 	char *locale;
-	char *uri, *path;
-	char buf [128];
 
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 	g_assert (container == get_icon_container (icon_view));
@@ -1886,19 +1861,6 @@ icon_position_changed_callback (NautilusIconContainer *container,
 			(file, NAUTILUS_METADATA_KEY_ICON_POSITION, 
 			 NULL, position_string);
 		g_free (position_string);
-
-		if (nautilus_file_is_local (file) && nautilus_file_is_in_desktop (file)) {
-			uri = nautilus_file_get_uri (file);
-			path = gnome_vfs_get_local_path_from_uri (uri);
-
-			if (path != NULL) {
-				g_snprintf (buf, sizeof (buf), "%d %d", position->x, position->y);
-				gnome_metadata_set (path, "icon-position", strlen (buf) + 1, buf);
-			}
-
-			g_free (uri);
-			g_free (path);
-		}
 	}
 
 	/* FIXME bugzilla.eazel.com 662: 

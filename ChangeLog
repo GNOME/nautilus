@@ -1,3 +1,42 @@
+2001-09-05  Alex Larsson  <alexl@redhat.com>
+	
+	Merge some stuff from the redhat-outstanding-patches branch
+
+	* eazel-logos/default.xml:
+	* icons/default.xml:
+	don't hardcode the title, title info, and
+	shadow colors; this prevented the auto-color-selection stuff
+	in nautilus-sidebar-title.c from working properly.
+	And the hardcoded values were the same thing the autoselector
+	would have chosen anyhow.
+
+	* libnautilus-private/nautilus-monitor.c:
+	Don't monitor files on read only volumes, they never change, and
+	will keep cdroms from being unmounted because fam has open file
+	descriptors on them.
+
+	* libnautilus-private/nautilus-thumbnails.c:
+	Always look for local thumbnails first.
+
+	* libnautilus-private/nautilus-volume-monitor.[ch]:
+	Add nautilus_volume_is_read_only() and
+	nautilus_volume_monitor_get_volume_for_path()
+
+	* src/nautilus-desktop-window.c:
+	(set_wmspec_desktop_hint): function to set _NET_WM_WINDOW_TYPE, to
+	avoid confusing kwin so badly, and also to go ahead and support
+	the Window Manager Hints Of The Future.
+	(set_gdk_window_background): only set root background to a pixel
+	if we retrieved a pixel property
+	(map): Set background of our child widgets in addition to our
+	own background. This gets rid of the last of the ugliness during
+	Nautilus startup, I believe.
+
+	* src/file-manager/fm-icon-view.c:
+	Don't read GMC position meta data -- it is never right for nautilus,
+	due to different size icons, additional icons, different placement
+	policies, so falling back to normal automatic placement works better.
+	
 2001-09-07  Darin Adler  <darin@bentspoon.com>
 
 	* .cvsignore:

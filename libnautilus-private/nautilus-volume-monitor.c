@@ -157,7 +157,9 @@ struct NautilusVolume {
 	char *device_path;
 	char *mount_path;
 	char *volume_name;
-
+	dev_t device;
+	
+	gboolean is_read_only;
 	gboolean is_removable;
 	gboolean is_audio_cd;
 };
@@ -211,6 +213,7 @@ static GList *         finish_creating_volume_and_prepend       (NautilusVolumeM
 static NautilusVolume *copy_volume                              (const NautilusVolume       *volume);
 static void            find_volumes                             (NautilusVolumeMonitor      *monitor);
 static void            free_mount_list                          (GList                      *mount_list);
+static GList *         copy_mount_list                          (GList                      *mount_list);
 static GList *         get_removable_volumes                    (NautilusVolumeMonitor      *monitor);
 static GHashTable *    create_readable_mount_point_name_table   (void);
 static int             get_cdrom_type                           (const char                 *vol_dev_path,
@@ -419,6 +422,13 @@ nautilus_volume_is_removable (const NautilusVolume *volume)
 	return volume->is_removable;
 }
 
+gboolean
+nautilus_volume_is_read_only (const NautilusVolume  *volume)
+{
+	return volume->is_read_only;
+}
+
+
 /* nautilus_volume_monitor_get_removable_volumes
  *
  * Accessor. List and internal data is not to be freed.
@@ -430,6 +440,40 @@ nautilus_volume_monitor_get_removable_volumes (NautilusVolumeMonitor *monitor)
 	return monitor->details->removable_volumes;
 }
 
+/**
+ * nautilus_volume_monitor_get_volume_for_path:
+ * @path: a local filesystem path
+ * 
+ * Find the volume in which @path resides.
+ * 
+ * Return value: a NautilusVolume for @path, or %NULL if the operation
+ *   fails, probably because stat() fails on @path.
+ *    
+ **/
+NautilusVolume *
+nautilus_volume_monitor_get_volume_for_path (NautilusVolumeMonitor *monitor,
+					     const char            *path)
+{
+	struct stat statbuf;
+	dev_t device;
+	GList *p;
+	NautilusVolume *volume;
+
+	if (stat (path, &statbuf) != 0)
+		return NULL;
+
+	device = statbuf.st_dev;
+
+	for (p = monitor->details->mounts; p != NULL; p = p->next) {
+		volume = (NautilusVolume *) p->data;
+
+		if (volume->device == device) {
+			return volume;
+		}
+	}
+
+	return NULL;
+}
 
 #if defined (HAVE_GETMNTINFO) || defined (HAVE_MNTENT_H) || defined (SOLARIS_MNT)
 
@@ -805,6 +849,23 @@ free_mount_list (GList *mount_list)
 	g_list_free (mount_list);
 }
 
+static GList *
+copy_mount_list (GList *mount_list)
+{
+	GList *new_list = NULL;
+	GList *list =  mount_list;
+	NautilusVolume *volume;
+		
+	while (list) {
+		volume = list->data;
+
+		new_list = g_list_prepend (new_list, copy_volume (volume));
+				
+		list = list->next;
+	}
+	
+	return g_list_reverse (new_list);
+}
 
 /* List returned, but not the data it contains, must be freed by caller */
 static GList *
@@ -876,18 +937,43 @@ get_mount_list (NautilusVolumeMonitor *monitor)
 
 #else /* !SOLARIS_MNT */
 
+static gboolean
+option_list_has_option (const char *optlist,
+			const char *option)
+{
+        gboolean retval = FALSE;
+        char **options;
+        int i;
+	
+        options = g_strsplit (optlist, ",", -1);
+	
+        for (i = 0; options[i]; i++) {
+                if (!strcmp (options[i], option)) {
+                        retval = TRUE;
+                        break;
+                }
+        }
+	
+        g_strfreev (options);
+	
+	return retval;
+}
+
 static GList *
 get_mount_list (NautilusVolumeMonitor *monitor) 
 {
         GList *volumes;
         NautilusVolume *volume;
+	static time_t last_mtime = 0;
         static FILE *fh = NULL;
+        static GList *saved_list = NULL;
         const char *file_name;
 	const char *separator;
 	char line[PATH_MAX * 3];
 	char device_name[sizeof (line)];
 	EelStringList *list;
 	char *device_path, *mount_path, *file_system_type_name;
+	struct stat sb;
 
 	volumes = NULL;
         
@@ -898,6 +984,21 @@ get_mount_list (NautilusVolumeMonitor *monitor)
 		file_name = "/proc/mounts";
 		separator = " ";
 	}
+
+	/* /proc/mounts mtime never changes, so stat /etc/mtab.
+	 * Isn't this lame?
+	 */
+	if (stat ("/etc/mtab", &sb) < 0) {
+		g_warning ("Unable to stat %s: %s", file_name,
+			   g_strerror (errno));
+		return NULL;
+	}
+	
+	if (sb.st_mtime == last_mtime) {
+		return copy_mount_list (saved_list);
+	}
+
+	last_mtime = sb.st_mtime;
 	
 	if (fh == NULL) {
                 fh = fopen (file_name, "r");
@@ -905,7 +1006,7 @@ get_mount_list (NautilusVolumeMonitor *monitor)
                         g_warning ("Unable to open %s: %s", file_name, strerror (errno));
                         return NULL;
                 }
-        } else {
+        } else {		
                 rewind (fh);
         }
 
@@ -927,8 +1028,12 @@ get_mount_list (NautilusVolumeMonitor *monitor)
                         mount_path = eel_string_list_nth (list, 1);
                         file_system_type_name = eel_string_list_nth (list, 2);
                         volume = create_volume (device_path, mount_path);
+			if (eel_string_list_get_length (list) >= 4 &&
+			    option_list_has_option (eel_string_list_nth (list, 3), MNTOPT_RO))
+				volume->is_read_only = TRUE;
                         volumes = finish_creating_volume_and_prepend
 				(monitor, volume, file_system_type_name, volumes);
+ 			
                         g_free (device_path);
                         g_free (mount_path);
                         g_free (file_system_type_name);
@@ -936,8 +1041,11 @@ get_mount_list (NautilusVolumeMonitor *monitor)
 
 		eel_string_list_free (list);
   	}
-        
-        return volumes;
+
+	free_mount_list (saved_list);
+        saved_list = volumes;
+	
+        return copy_mount_list (volumes);
 }
 
 #endif /* !SOLARIS_MNT */
@@ -1508,7 +1616,8 @@ copy_volume (const NautilusVolume *volume)
 	new_volume->device_path = g_strdup (volume->device_path);
 	new_volume->mount_path = g_strdup (volume->mount_path);
 	new_volume->volume_name = g_strdup (volume->volume_name);
-
+	new_volume->device = volume->device;
+	
 	new_volume->is_removable = volume->is_removable;
 	new_volume->is_audio_cd = volume->is_audio_cd;
 
@@ -1563,6 +1672,7 @@ finish_creating_volume (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 {
 	gboolean ok;
 	const char *name;
+	struct stat statbuf;
 	
 	volume->file_system_type = g_hash_table_lookup
 		(monitor->details->file_system_table, file_system_type_name);
@@ -1581,6 +1691,10 @@ finish_creating_volume (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 	
 	if (!ok) {
 		return FALSE;
+	}
+
+	if (stat (volume->mount_path, &statbuf) == 0) {
+		volume->device = statbuf.st_dev;
 	}
 
 	/* Identify device type */

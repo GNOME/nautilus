@@ -39,6 +39,7 @@
 #include <libnautilus-private/nautilus-link.h>
 #include <X11/Xatom.h>
 #include <gdk/gdkx.h>
+#include <gtk/gtklayout.h>
 
 struct NautilusDesktopWindowDetails {
 	GList *unref_list;
@@ -48,7 +49,11 @@ static void nautilus_desktop_window_initialize_class (NautilusDesktopWindowClass
 static void nautilus_desktop_window_initialize       (NautilusDesktopWindow      *window);
 static void destroy                                  (GtkObject                  *object);
 static void realize                                  (GtkWidget                  *widget);
+static void map                                      (GtkWidget                  *widget);
 static void real_add_current_location_to_history_list (NautilusWindow		 *window);
+
+
+static void set_wmspec_desktop_hint                   (GdkWindow *window);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusDesktopWindow, nautilus_desktop_window, NAUTILUS_TYPE_WINDOW)
 
@@ -57,6 +62,7 @@ nautilus_desktop_window_initialize_class (NautilusDesktopWindowClass *klass)
 {
 	GTK_OBJECT_CLASS (klass)->destroy = destroy;
 	GTK_WIDGET_CLASS (klass)->realize = realize;
+	GTK_WIDGET_CLASS (klass)->map = map;
 	NAUTILUS_WINDOW_CLASS (klass)->add_current_location_to_history_list 
 		= real_add_current_location_to_history_list;
 }
@@ -170,15 +176,113 @@ destroy (GtkObject *object)
 }
 
 static void
-realize (GtkWidget *widget)
+set_gdk_window_background (GdkWindow *window,
+			   gboolean   have_pixel,
+			   Pixmap     pixmap,
+			   gulong     pixel)
 {
-	NautilusDesktopWindow *window;
+	Window w;
+
+	w = GDK_WINDOW_XWINDOW (window);
+
+	if (pixmap != None) {
+		XSetWindowBackgroundPixmap (GDK_DISPLAY (), w,
+					    pixmap);
+	} else if (have_pixel) {
+		XSetWindowBackground (GDK_DISPLAY (), w,
+				      pixel);
+	} else {
+		XSetWindowBackgroundPixmap (GDK_DISPLAY (), w,
+					    None);
+	}
+}
+
+static void
+set_window_background (GtkWidget *widget,
+		       gboolean   already_have_root_bg,
+		       gboolean   have_pixel,
+		       Pixmap     pixmap,
+		       gulong     pixel)
+{
 	GdkAtom type;
 	gulong nitems, bytes_after;
 	gint format;
 	guchar *data;
-	gboolean have_set_background;
-	Window w;
+	
+	/* Set the background to show the root window to avoid a flash that
+	 * would otherwise occur.
+	 */
+
+	if (GTK_IS_WINDOW (widget)) {
+		gtk_widget_set_app_paintable (widget, TRUE);
+	}
+	
+	if (!already_have_root_bg) {
+		have_pixel = FALSE;
+		already_have_root_bg = TRUE;
+		
+		/* We want to do this round-trip-to-server work only
+		 * for the first invocation, not on recursions
+		 */
+		
+		XGetWindowProperty (GDK_DISPLAY (), GDK_ROOT_WINDOW (),
+				    gdk_atom_intern ("_XROOTPMAP_ID", FALSE),
+				    0L, 1L, False, XA_PIXMAP,
+				    &type, &format, &nitems, &bytes_after,
+				    &data);
+  
+		if (type == XA_PIXMAP) {
+			if (format == 32 && nitems == 1 && bytes_after == 0) {
+				pixmap = *(Pixmap *) data;
+			}
+  
+			XFree (data);
+		}
+
+		if (pixmap == None) {
+			XGetWindowProperty (GDK_DISPLAY (), GDK_ROOT_WINDOW (),
+					    gdk_atom_intern ("_XROOTCOLOR_PIXEL", FALSE),
+					    0L, 1L, False, AnyPropertyType,
+					    &type, &format, &nitems, &bytes_after,
+					    &data);
+			
+			if (type != None) {
+				if (format == 32 && nitems == 1 && bytes_after == 0) {
+					pixel = *(gulong *) data;
+					have_pixel = TRUE;
+				}
+				
+				XFree (data);
+			}
+		}
+	}
+	
+	set_gdk_window_background (widget->window,
+				   have_pixel, pixmap, pixel);
+	
+	if (GTK_IS_BIN (widget) &&
+	    GTK_BIN (widget)->child) {
+		/* Ensure we're realized */
+		gtk_widget_realize (GTK_BIN (widget)->child);
+		
+		set_window_background (GTK_BIN (widget)->child,
+				       already_have_root_bg, have_pixel,
+				       pixmap, pixel);
+	}
+
+	/* For both parent and child, if it's a layout then set on the
+	 * bin window as well.
+	 */
+	if (GTK_IS_LAYOUT (widget))
+		set_gdk_window_background (GTK_LAYOUT (widget)->bin_window,
+					   have_pixel,
+					   pixmap, pixel);
+}
+
+static void
+realize (GtkWidget *widget)
+{
+	NautilusDesktopWindow *window;
 
 	window = NAUTILUS_DESKTOP_WINDOW (widget);
 
@@ -189,17 +293,14 @@ realize (GtkWidget *widget)
 	/* Do the work of realizing. */
 	EEL_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
 
-	/* FIXME bugzilla.eazel.com 1253: 
-	 * Looking at the gnome_win_hints implementation,
-	 * it looks like you can call these with an unmapped window,
-	 * but when I tried doing it in initialize it didn't work.
-	 * We'd like to set these earlier so the window doesn't show
-	 * up in front of everything before going to the back.
-	 */
-
+	/* This is the new way to set up the desktop window */
+	set_wmspec_desktop_hint (widget->window);
+	
+	/* FIXME all this gnome_win_hints stuff is legacy cruft */
+	
 	/* Put this window behind all the others. */
 	gnome_win_hints_set_layer (widget, WIN_LAYER_DESKTOP);
-
+	
 	/* Make things like the task list ignore this window and make
 	 * it clear that it it's at its full size.
 	 *
@@ -232,56 +333,6 @@ realize (GtkWidget *widget)
 				gdk_screen_width (),
 				gdk_screen_height ());
 
-	/* Set the background to show the root window to avoid a flash that
-	 * would otherwise occur.
-	 */
-	have_set_background = FALSE;
-
-	gtk_widget_set_app_paintable (widget, TRUE);
-	w = GDK_WINDOW_XWINDOW (widget->window);
-	XGetWindowProperty (GDK_DISPLAY (), GDK_ROOT_WINDOW (),
-			    gdk_atom_intern ("_XROOTPMAP_ID", FALSE),
-			    0L, 1L, False, XA_PIXMAP,
-			    &type, &format, &nitems, &bytes_after,
-			    &data);
-  
-	if (type == XA_PIXMAP) {
-		if (format == 32 && nitems == 1 && bytes_after == 0) {
-			gdk_error_trap_push ();
-			XSetWindowBackgroundPixmap (GDK_DISPLAY (), w,
-						    *(Pixmap *)data);
-			gdk_flush ();
-			if (!gdk_error_trap_pop ())
-				have_set_background = TRUE;
-		}
-  
-		XFree (data);
-	}
-
-	if (!have_set_background) {
-		XGetWindowProperty (GDK_DISPLAY (), GDK_ROOT_WINDOW (),
-				    gdk_atom_intern ("_XROOTCOLOR_PIXEL", FALSE),
-				    0L, 1L, False, AnyPropertyType,
-				    &type, &format, &nitems, &bytes_after,
-				    &data);
-  
-		if (type != None) {
-			if (format == 32 && nitems == 1 && bytes_after == 0) {
-				XSetWindowBackground (GDK_DISPLAY (), w,
-						      *(gulong *)data);
-				have_set_background = TRUE;
-			}
-  
-			XFree (data);
-		}
-	}
-
-	if (!have_set_background) {
-		XSetWindowBackgroundPixmap (GDK_DISPLAY (), w,
-					    None);
-	}
-	
-
 	/* Get rid of the things that window managers add to resize
 	 * and otherwise manipulate the window.
 	 */
@@ -290,9 +341,40 @@ realize (GtkWidget *widget)
 }
 
 static void
+map (GtkWidget *widget)
+{
+	NautilusDesktopWindow *window;
+
+	window = NAUTILUS_DESKTOP_WINDOW (widget);
+	
+	set_window_background (widget, FALSE, FALSE, None, 0);
+	
+	/* Chain up to realize our children */
+	EEL_CALL_PARENT (GTK_WIDGET_CLASS, map, (widget));
+}
+
+static void
 real_add_current_location_to_history_list (NautilusWindow *window)
 {
 	/* Do nothing. The desktop window's location should not
 	 * show up in the history list.
 	 */
+}
+
+static void
+set_wmspec_desktop_hint (GdkWindow *window)
+{
+        Atom atom;
+        
+        atom = XInternAtom (gdk_display,
+                            "_NET_WM_WINDOW_TYPE_DESKTOP",
+                            False);
+
+        XChangeProperty (GDK_WINDOW_XDISPLAY (window),
+                         GDK_WINDOW_XWINDOW (window),
+                         XInternAtom (gdk_display,
+                                      "_NET_WM_WINDOW_TYPE",
+                                      False),
+                         XA_ATOM, 32, PropModeReplace,
+                         (guchar *)&atom, 1);
 }

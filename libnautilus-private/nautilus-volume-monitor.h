@@ -87,11 +87,14 @@ char *                   nautilus_volume_monitor_get_mount_name_for_display (Nau
 void                     nautilus_volume_monitor_set_volume_name            (NautilusVolumeMonitor      *monitor,
 									     const NautilusVolume       *volume,
 									     const char                 *volume_name);
+NautilusVolume          *nautilus_volume_monitor_get_volume_for_path        (NautilusVolumeMonitor      *monitor,
+									     const char                 *path);
 
 /* Volume operations. */
 char *                   nautilus_volume_get_name                           (const NautilusVolume       *volume);
 NautilusDeviceType       nautilus_volume_get_device_type                    (const NautilusVolume       *volume);
 gboolean                 nautilus_volume_is_removable                       (const NautilusVolume       *volume);
+gboolean                 nautilus_volume_is_read_only                       (const NautilusVolume       *volume);
 gboolean                 nautilus_volume_should_integrate_trash             (const NautilusVolume       *volume);
 const char *             nautilus_volume_get_mount_path                     (const NautilusVolume       *volume);
 char *                   nautilus_volume_get_target_uri                     (const NautilusVolume       *volume);

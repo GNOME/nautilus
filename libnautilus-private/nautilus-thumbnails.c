@@ -94,7 +94,7 @@ uri_is_local (const char *uri)
 	is_local = gnome_vfs_uri_is_local (vfs_uri);
 	gnome_vfs_uri_unref (vfs_uri);
 
-	return is_local;	
+	return is_local;
 }
 
 static gboolean
@@ -327,7 +327,7 @@ nautilus_get_thumbnail_uri (NautilusFile *file)
 	
 	file_uri = nautilus_file_get_uri (file);
 		
-	thumbnail_uri = make_thumbnail_uri (file_uri, FALSE, uri_is_local (file_uri), TRUE);
+	thumbnail_uri = make_thumbnail_uri (file_uri, FALSE, TRUE, TRUE);
 		
 	/* if the thumbnail file already exists locally, simply return the uri */
 	
