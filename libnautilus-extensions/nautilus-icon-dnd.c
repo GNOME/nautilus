@@ -839,29 +839,30 @@ nautilus_icon_container_find_drop_target (NautilusIconContainer *container,
 
 /* FIXME bugzilla.eazel.com 2485: This belongs in FMDirectoryView, not here. */
 static gboolean
-selection_includes_trash (GList *selection_list)
+selection_includes_special_link (GList *selection_list)
 {
 	GList *node;
 	char *uri, *local_path;
-	gboolean trash_in_selection;
+	gboolean link_in_selection;
 
-	trash_in_selection = FALSE;
+	link_in_selection = FALSE;
 
 	for (node = selection_list; node != NULL; node = node->next) {
 		uri = ((DragSelectionItem *) node->data)->uri;
 
 		/* FIXME bugzilla.eazel.com 3020: This does sync. I/O and works only locally. */
 		local_path = gnome_vfs_get_local_path_from_uri (uri);
-		trash_in_selection = local_path != NULL
-			&& nautilus_link_local_is_trash_link (local_path);
+		link_in_selection = local_path != NULL
+			&& (nautilus_link_local_is_trash_link (local_path) || nautilus_link_local_is_home_link (local_path) ||
+			nautilus_link_local_is_volume_link (local_path));
 		g_free (local_path);
 		
-		if (trash_in_selection) {
+		if (link_in_selection) {
 			break;
 		}
 	}
 	
-	return trash_in_selection;
+	return link_in_selection;
 }
 
 static void
@@ -884,7 +885,7 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 	if (context->action == GDK_ACTION_ASK) {
 		/* FIXME bugzilla.eazel.com 2485: This belongs in FMDirectoryView, not here. */
 		/* Check for special case items in selection list */
-		if (selection_includes_trash (container->details->dnd_info->drag_info.selection_list)) {
+		if (selection_includes_special_link (container->details->dnd_info->drag_info.selection_list)) {
 			/* We only want to move the trash */
 			action = GDK_ACTION_MOVE;
 		} else {

@@ -2037,16 +2037,16 @@ fm_directory_all_selected_items_in_trash (FMDirectoryView *view)
 }
 
 gboolean
-fm_directory_trash_link_in_selection (FMDirectoryView *view)
+fm_directory_link_type_in_selection (FMDirectoryView *view, NautilusLinkType link_type)
 {
-	gboolean saw_trash_link;
+	gboolean saw_link;
 	GList *selection, *node;
 	NautilusFile *file;
 	char *uri, *path;
 
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
-	saw_trash_link = FALSE;
+	saw_link = FALSE;
 
 	selection = fm_directory_view_get_selection (FM_DIRECTORY_VIEW (view));
 	for (node = selection; node != NULL; node = node->next) {
@@ -2057,22 +2057,69 @@ fm_directory_trash_link_in_selection (FMDirectoryView *view)
 		}
 		uri = nautilus_file_get_uri (file);
 		path = gnome_vfs_get_local_path_from_uri (uri);
-		/* It's probably OK that this ignores trash links that
-                 * are not local since the trash link we care about is
-		 * on the desktop.
-		 */
-		saw_trash_link = path != NULL
-			&& nautilus_link_local_is_trash_link (path);
+
+		switch (link_type) {
+			case NAUTILUS_LINK_TRASH:
+				/* It's probably OK that this ignores trash links that
+                 	 	* are not local since the trash link we care about is
+		 	 	* on the desktop.
+		 	 	*/
+				saw_link = path != NULL && nautilus_link_local_is_trash_link (path);
+				if (saw_link) {
+					break;
+				}
+				break;
+
+			case NAUTILUS_LINK_MOUNT:
+				saw_link = path != NULL && nautilus_link_local_is_volume_link (path);
+				if (saw_link) {
+					break;
+				}
+				break;
+				
+			case NAUTILUS_LINK_HOME:
+				saw_link = path != NULL && nautilus_link_local_is_home_link (path);
+				if (saw_link) {
+					break;
+				}
+				break;
+
+			default:
+				break;
+
+		}
 		g_free (path);
 		g_free (uri);
-
-		if (saw_trash_link) {
-			break;
-		}
 	}
+	
 	nautilus_file_list_free (selection);
 	
-	return saw_trash_link;
+	return saw_link;
+}
+
+/* special_link_in_selection
+ * 
+ * Return TRUE is one of our special links is the selection.
+ * Special links include the following: 
+ *	 NAUTILUS_LINK_TRASH, NAUTILUS_LINK_HOME, NAUTILUS_LINK_MOUNT
+ */
+ 
+static gboolean
+special_link_in_selection (FMDirectoryView *view)
+{
+	if (fm_directory_link_type_in_selection (view, NAUTILUS_LINK_TRASH)) {
+		return TRUE;
+	}
+
+	if (fm_directory_link_type_in_selection (view, NAUTILUS_LINK_HOME)) {
+		return TRUE;
+	}
+
+	if (fm_directory_link_type_in_selection (view, NAUTILUS_LINK_MOUNT)) {
+		return TRUE;
+	}
+
+	return FALSE;
 }
 
 static gboolean
@@ -2848,9 +2895,10 @@ fm_directory_view_real_create_selection_context_menu_items (FMDirectoryView *vie
 							    GtkMenu *menu,
 						       	    GList *files)
 {
-	gboolean trash_in_selection;
+	gboolean link_in_selection;
 
-	trash_in_selection = fm_directory_trash_link_in_selection (view);
+	/* Check for special links */
+	link_in_selection = special_link_in_selection (view);
 	
 	append_gtk_menu_item (view, menu, files,
 			      FM_DIRECTORY_VIEW_MENU_PATH_OPEN,
@@ -2865,7 +2913,7 @@ fm_directory_view_real_create_selection_context_menu_items (FMDirectoryView *vie
 	nautilus_gtk_menu_append_separator (menu);
 
 	/* Don't add item if Trash link is in selection */
-	if (!trash_in_selection) {
+	if (!link_in_selection) {
 		/* Trash menu item handled specially. See comment above reset_bonobo_trash_delete_menu. */
 		if (!fm_directory_all_selected_items_in_trash (view)) {
 			append_gtk_menu_item (view, menu, files,
@@ -2878,7 +2926,7 @@ fm_directory_view_real_create_selection_context_menu_items (FMDirectoryView *vie
 		}
 	}
 
-	if (!trash_in_selection) {
+	if (!link_in_selection) {
 		append_gtk_menu_item (view, menu, files,
 				      FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE,
 				      duplicate_callback);

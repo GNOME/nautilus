@@ -33,6 +33,7 @@
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-icon-container.h>
+#include <libnautilus-extensions/nautilus-link.h>
 #include <libnautilus-extensions/nautilus-string-list.h>
 
 typedef struct FMDirectoryView FMDirectoryView;
@@ -314,7 +315,8 @@ void               fm_directory_view_move_copy_items                (const GList
 								     FMDirectoryView       *view);
 gint               fm_directory_view_get_context_menu_index         (GtkMenu 		   *menu,
 								     const char            *menu_name);
-gboolean	   fm_directory_trash_link_in_selection 	    (FMDirectoryView 	   *view);
+gboolean	   fm_directory_link_type_in_selection 		    (FMDirectoryView 	   *view, 
+								     NautilusLinkType 	   link_type);
 
 /* Wrappers for signal emitters. These are normally called 
  * only by FMDirectoryView itself. They have corresponding signals

@@ -606,7 +606,8 @@ fm_icon_view_create_selection_context_menu_items (FMDirectoryView *view,
 	g_assert (FM_IS_ICON_VIEW (view));
 	g_assert (GTK_IS_MENU (menu));
 
-	trash_in_selection = fm_directory_trash_link_in_selection (view);
+	/* Check for special links */
+	trash_in_selection = fm_directory_link_type_in_selection (view, NAUTILUS_LINK_TRASH);
 
 	NAUTILUS_CALL_PARENT_CLASS
 		(FM_DIRECTORY_VIEW_CLASS, 

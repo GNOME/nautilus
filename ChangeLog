@@ -1,3 +1,22 @@
+2000-09-18  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 3017, should not be able to copy desktop items
+
+	Check for special desktop link types when specifying
+	drag and drop actions.
+
+	Disable Duplicate menu item.
+	
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(selection_includes_special_link),
+	(nautilus_icon_container_receive_dropped_icons):
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_link_type_in_selection), (special_link_in_selection),
+	(fm_directory_view_real_create_selection_context_menu_items):
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-icon-view.c:
+	(fm_icon_view_create_selection_context_menu_items):
+
 2000-09-18  Josh Barrow  <linuxfan@ionet.net>
 
 	* README:
