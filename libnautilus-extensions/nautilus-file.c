@@ -36,6 +36,7 @@
 #include "nautilus-trash-directory.h"
 #include "nautilus-trash-file.h"
 #include "nautilus-vfs-file.h"
+#include "nautilus-file-utilities.h"
 #include <ctype.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
@@ -302,7 +303,7 @@ nautilus_file_get_internal (const char *uri, gboolean create)
 	/* Maybe we wouldn't need this if the gnome-vfs canonical
 	 * stuff was strong enough.
 	 */
-	canonical_uri = nautilus_make_uri_canonical (uri);
+	canonical_uri = eel_make_uri_canonical (uri);
 
 	/* Make VFS version of URI. */
 	vfs_uri = gnome_vfs_uri_new (canonical_uri);
@@ -497,7 +498,7 @@ nautilus_file_get_parent_uri_for_display (NautilusFile *file)
 	g_assert (NAUTILUS_IS_FILE (file));
 	
 	raw_uri = nautilus_file_get_parent_uri (file);
-	result = nautilus_format_uri_for_display (raw_uri);
+	result = eel_format_uri_for_display (raw_uri);
 	g_free (raw_uri);
 
 	return result;
@@ -754,7 +755,7 @@ nautilus_file_can_rename (NautilusFile *file)
 	}
 	
 	/* Nautilus trash directories cannot be renamed */
-	if (nautilus_uri_is_trash_folder (uri)) {
+	if (eel_uri_is_trash_folder (uri)) {
 		can_rename = FALSE;
 	}
 
@@ -2175,7 +2176,7 @@ nautilus_file_get_uri_scheme (NautilusFile *file)
 		return NULL;
 	}
 
-	return nautilus_uri_get_scheme (file->details->directory->details->uri);
+	return eel_uri_get_scheme (file->details->directory->details->uri);
 }
 
 gboolean
@@ -4121,7 +4122,7 @@ nautilus_file_is_in_trash (NautilusFile *file)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-	return nautilus_uri_is_in_trash (file->details->directory->details->uri);
+	return eel_uri_is_in_trash (file->details->directory->details->uri);
 }
 
 GnomeVFSResult
@@ -4830,7 +4831,7 @@ nautilus_self_check_file (void)
 	EEL_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), "eazel");
 	nautilus_file_unref (file_1);
 
-	file_1 = nautilus_file_get (NAUTILUS_TRASH_URI);
+	file_1 = nautilus_file_get (EEL_TRASH_URI);
 	EEL_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), _("Trash"));
 	nautilus_file_unref (file_1);
 

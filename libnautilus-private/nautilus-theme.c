@@ -31,6 +31,7 @@
 #include "nautilus-metadata.h"
 #include "nautilus-preferences.h"
 #include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
 #include <eel/eel-xml-extensions.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gnome-xml/parser.h>

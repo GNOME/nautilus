@@ -316,7 +316,7 @@ nautilus_directory_make_uri_canonical (const char *uri)
 	char *with_slashes;
 	size_t length;
 
-	canonical_maybe_trailing_slash = nautilus_make_uri_canonical (uri);
+	canonical_maybe_trailing_slash = eel_make_uri_canonical (uri);
 
 	/* To NautilusDirectory, a uri with or without a trailing
 	 * / is equivalent. This is necessary to prevent separate
@@ -495,7 +495,7 @@ nautilus_directory_new (const char *uri)
 
 	g_assert (uri != NULL);
 
-	if (nautilus_uri_is_trash (uri)) {
+	if (eel_uri_is_trash (uri)) {
 		directory = NAUTILUS_DIRECTORY (gtk_object_new (NAUTILUS_TYPE_TRASH_DIRECTORY, NULL));
 	} else {
 		directory = NAUTILUS_DIRECTORY (gtk_object_new (NAUTILUS_TYPE_VFS_DIRECTORY, NULL));
@@ -1208,7 +1208,7 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 			nautilus_directory_unref (new_directory);
 
 			/* Update the file's name. */
-			name = nautilus_uri_get_basename (pair->to_uri);
+			name = eel_uri_get_basename (pair->to_uri);
 			nautilus_file_update_name (file, name);
 			g_free (name);
 
@@ -1631,10 +1631,10 @@ nautilus_self_check_directory (void)
 	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical (""), "file:///");
 	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("file:/"), "file:///");
 	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("file:///"), "file:///");
-	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("TRASH:XXX"), NAUTILUS_TRASH_URI);
-	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("trash:xxx"), NAUTILUS_TRASH_URI);
-	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("GNOME-TRASH:XXX"), NAUTILUS_TRASH_URI);
-	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("gnome-trash:xxx"), NAUTILUS_TRASH_URI);
+	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("TRASH:XXX"), EEL_TRASH_URI);
+	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("trash:xxx"), EEL_TRASH_URI);
+	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("GNOME-TRASH:XXX"), EEL_TRASH_URI);
+	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("gnome-trash:xxx"), EEL_TRASH_URI);
 	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("file:///home/mathieu/"), "file:///home/mathieu");
 	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("file:///home/mathieu"), "file:///home/mathieu");
 	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("ftp://mathieu:password@le-hackeur.org"), "ftp://mathieu:password@le-hackeur.org");

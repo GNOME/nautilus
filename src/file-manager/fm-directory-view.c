@@ -33,8 +33,16 @@
 #include "fm-error-reporting.h"
 #include "fm-properties-window.h"
 #include <bonobo/bonobo-control.h>
-#include <bonobo/bonobo-zoomable.h>
 #include <bonobo/bonobo-win.h>
+#include <bonobo/bonobo-zoomable.h>
+#include <eel/eel-background.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gnome-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
 #include <gtk/gtkcheckmenuitem.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkmenu.h>
@@ -49,7 +57,6 @@
 #include <libgnomevfs/gnome-vfs-result.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <eel/eel-background.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
 #include <libnautilus-extensions/nautilus-directory.h>
@@ -57,18 +64,12 @@
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file-operations.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <eel/eel-gnome-extensions.h>
-#include <eel/eel-gtk-extensions.h>
-#include <eel/eel-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-link.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-mime-actions.h>
 #include <libnautilus-extensions/nautilus-program-choosing.h>
-#include <eel/eel-stock-dialogs.h>
-#include <eel/eel-string.h>
 #include <libnautilus-extensions/nautilus-trash-monitor.h>
 #include <libnautilus-extensions/nautilus-view-identifier.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
@@ -858,7 +859,7 @@ show_trash_callback (BonoboUIComponent *component,
 
 	view = FM_DIRECTORY_VIEW (callback_data);          
 
-	open_location (view, NAUTILUS_TRASH_URI, RESPECT_PREFERENCE);
+	open_location (view, EEL_TRASH_URI, RESPECT_PREFERENCE);
 }
 
 static void
@@ -2849,7 +2850,7 @@ trash_or_delete_files_common (const GList *file_uris,
 		
 		if (fm_directory_view_can_move_uri_to_trash (view, file_uri)) {
 			moveable_uris = g_list_prepend (moveable_uris, g_strdup (file_uri));
-		} else if (nautilus_uri_is_in_trash (file_uri)) {
+		} else if (eel_uri_is_in_trash (file_uri)) {
 			in_trash_uris = g_list_prepend (in_trash_uris, g_strdup (file_uri));
 		} else {
 			unmoveable_uris = g_list_prepend (unmoveable_uris, g_strdup (file_uri));
@@ -2896,7 +2897,7 @@ fm_directory_view_trash_or_delete_files (const GList *files,
 	}
 	
 	file_uris = g_list_reverse (file_uris);
-	trash_or_delete_files_common (file_uris, NULL, NAUTILUS_TRASH_URI,
+	trash_or_delete_files_common (file_uris, NULL, EEL_TRASH_URI,
 				      GDK_ACTION_MOVE, view);					 
 	eel_g_list_free_deep (file_uris);
 }
@@ -5228,7 +5229,7 @@ fm_directory_view_move_copy_items (const GList *item_uris,
 		return;
 	}
 	
-	if (nautilus_uri_is_trash (target_uri)) {
+	if (eel_uri_is_trash (target_uri)) {
 		trash_or_delete_files_common (item_uris, relative_item_points, 
 				              target_uri, copy_action,
 				              view);

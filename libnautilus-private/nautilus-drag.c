@@ -27,22 +27,21 @@
 #include <config.h>
 #include "nautilus-drag.h"
 
+#include "nautilus-link.h"
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
+#include <gtk/gtkmain.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-popup-menu.h>
+#include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-find-directory.h>
+#include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
-#include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <libgnomeui/gnome-uidefs.h>
-#include <libgnomeui/gnome-popup-menu.h>
-#include <libgnome/gnome-i18n.h>
 #include <stdio.h>
 #include <string.h>
-#include <gtk/gtkmain.h>
-
-#include <eel/eel-glib-extensions.h>
-#include "nautilus-link.h"
-#include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <eel/eel-string.h>
 
 #define NAUTILUS_COMMAND_SPECIFIER "command:"
 
@@ -225,7 +224,7 @@ nautilus_drag_items_in_trash (const GList *selection_list)
 	 * we should really test each item but that would be slow for large selections
 	 * and currently dropped items can only be from the same container
 	 */
-	return nautilus_uri_is_in_trash (((DragSelectionItem *)selection_list->data)->uri);
+	return eel_uri_is_in_trash (((DragSelectionItem *)selection_list->data)->uri);
 }
 
 gboolean
@@ -314,7 +313,7 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 	}
 
 	/* Check for trash URI.  We do a find_directory for any Trash directory. */
-	if (nautilus_uri_is_trash (target_uri_string)) {
+	if (eel_uri_is_trash (target_uri_string)) {
 		result = gnome_vfs_find_directory (NULL, GNOME_VFS_DIRECTORY_KIND_TRASH,
 						   &target_uri, FALSE, FALSE, 0777);
 		if (result != GNOME_VFS_OK) {

@@ -39,6 +39,14 @@
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include <bonobo/bonobo-ui-util.h>
+#include <eel/eel-debug.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gnome-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
+#include <eel/eel-xml-extensions.h>
 #include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>
 #include <gtk/gtkmain.h>
@@ -48,17 +56,10 @@
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
-#include <eel/eel-debug.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <eel/eel-gnome-extensions.h>
-#include <eel/eel-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
-#include <eel/eel-stock-dialogs.h>
-#include <eel/eel-string.h>
 #include <libnautilus-extensions/nautilus-undo-manager.h>
-#include <eel/eel-xml-extensions.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 
 #ifdef ENABLE_PROFILER
@@ -783,7 +784,7 @@ show_bogus_bookmark_window (BookmarkHolder *holder)
 	char *prompt;
 
 	uri = nautilus_bookmark_get_uri (holder->bookmark);
-	uri_for_display = nautilus_format_uri_for_display (uri);
+	uri_for_display = eel_format_uri_for_display (uri);
 
 	if (holder->prompt_for_removal) {
 		prompt = g_strdup_printf (_("The location \"%s\" does not exist. Do you "

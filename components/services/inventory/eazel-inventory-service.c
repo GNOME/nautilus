@@ -22,31 +22,25 @@
  */
 
 #include <config.h>
-#include <gnome.h>
-#include <liboaf/liboaf.h>
+#include "eazel-inventory-service.h"
+
+#include "eazel-inventory-service-interface.h"
+#include "eazel-inventory-utils.h"
 #include <bonobo.h>
-#include <ghttp.h>
-
-#include <libgnomevfs/gnome-vfs.h>
-
-#define DEBUG(X...) g_print("eazel-inventory-service: " X)
-
-
+#include <eel/eel-vfs-extensions.h>
 #include <gconf/gconf-client.h>
-
-#include <libtrilobite/libtrilobite.h>
+#include <ghttp.h>
+#include <gnome.h>
+#include <libgnomevfs/gnome-vfs.h>
+#include <liboaf/liboaf.h>
+#include <libtrilobite/libammonite.h>
 #include <libtrilobite/libtrilobite-service.h>
-
-#include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libtrilobite/libtrilobite.h>
 
 /* FIXME: crack */
 /*#include <libammonite/libammonite.h>*/
-#include <libtrilobite/libammonite.h>
 
-#include "eazel-inventory-utils.h"
-
-#include "eazel-inventory-service.h"
-#include "eazel-inventory-service-interface.h"
+#define DEBUG(X...) g_print("eazel-inventory-service: " X)
 
 #define KEY_GCONF_EAZEL_INVENTORY_ENABLED "/apps/eazel-trilobite/inventory/enabled"
 
@@ -264,7 +258,7 @@ impl_Trilobite_Eazel_Inventory_upload (PortableServer_Servant servant,
 	/* TODO: store new MD5 */
 
 	path = eazel_inventory_local_path ();	
-	result = nautilus_read_entire_file (path, &file_size, &file_contents);
+	result = eel_read_entire_file (path, &file_size, &file_contents);
 	g_free (path);
 	if (result != GNOME_VFS_OK) {
 		/* g_warning(_("can't open tempory file hell\n")); */

@@ -1,4 +1,4 @@
-/* -*- Mode: IDL; tab-width: 8; indent-tabs-mode: 8; c-basic-offset: 8 -*- */
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-*/
 
 /* nautilus-metafile.c - server side of Nautilus::Metafile
  *
@@ -23,29 +23,27 @@
 #include <config.h>
 #include "nautilus-metafile.h"
 
-#include <eel/eel-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-directory.h>
-#include <libnautilus-extensions/nautilus-bonobo-extensions.h>
-#include <libnautilus/nautilus-bonobo-workarounds.h>
-
-#include <libgnomevfs/gnome-vfs-types.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
-#include <libgnomevfs/gnome-vfs-file-info.h>
-
-#include <eel/eel-string.h>
-#include "nautilus-metadata.h"
-#include "nautilus-thumbnails.h"
-#include <eel/eel-xml-extensions.h>
-#include <eel/eel-glib-extensions.h>
+#include "nautilus-bonobo-extensions.h"
 #include "nautilus-directory.h"
-#include "nautilus-global-preferences.h"
+#include "nautilus-directory.h"
 #include "nautilus-file-private.h"
+#include "nautilus-global-preferences.h"
+#include "nautilus-metadata.h"
 #include "nautilus-search-uri.h"
-
-#include <stdlib.h>
+#include "nautilus-thumbnails.h"
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
+#include <eel/eel-xml-extensions.h>
 #include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>
 #include <gtk/gtkmain.h>
+#include <libgnomevfs/gnome-vfs-file-info.h>
+#include <libgnomevfs/gnome-vfs-types.h>
+#include <libgnomevfs/gnome-vfs-uri.h>
+#include <libnautilus/nautilus-bonobo-workarounds.h>
+#include <stdlib.h>
 
 #define METAFILE_XML_VERSION "1.0"
 
@@ -162,7 +160,7 @@ NAUTILUS_BONOBO_X_BOILERPLATE (NautilusMetafile, Nautilus_Metafile, BONOBO_X_OBJ
 
 typedef struct MetafileReadState {
 	gboolean use_public_metafile;
-	NautilusReadFileHandle *handle;
+	EelReadFileHandle *handle;
 	GnomeVFSAsyncHandle *get_file_info_handle;
 } MetafileReadState;
 
@@ -270,7 +268,7 @@ construct_private_metafile_vfs_uri (const char *uri)
 	metafiles_directory_uri = gnome_vfs_uri_append_file_name (user_directory_uri,
 								  METAFILES_DIRECTORY_NAME);
 	gnome_vfs_uri_unref (user_directory_uri);
-	result = nautilus_make_directory_and_parents (metafiles_directory_uri,
+	result = eel_make_directory_and_parents (metafiles_directory_uri,
 						      METAFILES_DIRECTORY_PERMISSIONS);
 	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_FILE_EXISTS) {
 		gnome_vfs_uri_unref (metafiles_directory_uri);
@@ -1658,7 +1656,7 @@ metafile_read_cancel (NautilusMetafile *metafile)
 {
 	if (metafile->details->read_state != NULL) {
 		if (metafile->details->read_state->handle != NULL) {
-			nautilus_read_file_cancel (metafile->details->read_state->handle);
+			eel_read_file_cancel (metafile->details->read_state->handle);
 		}
 		if (metafile->details->read_state->get_file_info_handle != NULL) {
 			gnome_vfs_async_cancel (metafile->details->read_state->get_file_info_handle);
@@ -1869,7 +1867,7 @@ metafile_read_restart (NautilusMetafile *metafile)
 		 : metafile->details->private_vfs_uri,
 		 GNOME_VFS_URI_HIDE_NONE);
 
-	metafile->details->read_state->handle = nautilus_read_entire_file_async
+	metafile->details->read_state->handle = eel_read_entire_file_async
 		(text_uri, metafile_read_done_callback, metafile);
 
 	g_free (text_uri);

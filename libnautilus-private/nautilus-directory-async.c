@@ -65,12 +65,12 @@
 
 struct TopLeftTextReadState {
 	NautilusFile *file;
-	NautilusReadFileHandle *handle;
+	EelReadFileHandle *handle;
 };
 
 struct ActivationURIReadState {
 	NautilusFile *file;
-	NautilusReadFileHandle *handle;
+	EelReadFileHandle *handle;
 };
 
 typedef struct {
@@ -367,7 +367,7 @@ static void
 top_left_cancel (NautilusDirectory *directory)
 {
 	if (directory->details->top_left_read_state != NULL) {
-		nautilus_read_file_cancel (directory->details->top_left_read_state->handle);
+		eel_read_file_cancel (directory->details->top_left_read_state->handle);
 		g_free (directory->details->top_left_read_state);
 		directory->details->top_left_read_state = NULL;
 
@@ -379,7 +379,7 @@ static void
 activation_uri_cancel (NautilusDirectory *directory)
 {
 	if (directory->details->activation_uri_read_state != NULL) {
-		nautilus_read_file_cancel (directory->details->activation_uri_read_state->handle);
+		eel_read_file_cancel (directory->details->activation_uri_read_state->handle);
 		g_free (directory->details->activation_uri_read_state);
 		directory->details->activation_uri_read_state = NULL;
 
@@ -2467,7 +2467,7 @@ top_left_start (NautilusDirectory *directory)
 	directory->details->top_left_read_state = g_new0 (TopLeftTextReadState, 1);
 	directory->details->top_left_read_state->file = file;
 	uri = nautilus_file_get_uri (file);
-	directory->details->top_left_read_state->handle = nautilus_read_file_async
+	directory->details->top_left_read_state->handle = eel_read_file_async
 		(uri,
 		 top_left_read_callback,
 		 top_left_read_more_callback,
@@ -2751,13 +2751,13 @@ activation_uri_start (NautilusDirectory *directory)
 		directory->details->activation_uri_read_state->file = file;
 		uri = nautilus_file_get_uri (file);
 		if (gmc_style_link) {
-			directory->details->activation_uri_read_state->handle = nautilus_read_file_async
+			directory->details->activation_uri_read_state->handle = eel_read_file_async
 				(uri,
 				 activation_uri_gmc_link_read_callback,
 				 activation_uri_gmc_link_read_more_callback,
 				 directory);
 		} else {
-			directory->details->activation_uri_read_state->handle = nautilus_read_entire_file_async
+			directory->details->activation_uri_read_state->handle = eel_read_entire_file_async
 				(uri,
 				 activation_uri_nautilus_link_read_callback,
 				 directory);

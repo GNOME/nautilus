@@ -25,20 +25,20 @@
 #include <config.h>
 #include "nautilus-thumbnails.h"
 
-#include <libgnomevfs/gnome-vfs-file-info.h>
-#include <string.h>
-#include "nautilus-file-utilities.h"
-#include <eel/eel-string.h>
-#include <gtk/gtkmain.h>
-#include "nautilus-icon-factory-private.h"
 #include "nautilus-directory-notify.h"
+#include "nautilus-icon-factory-private.h"
 #include "nautilus-theme.h"
-#include <stdio.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
-#include <unistd.h>
-#include <sys/wait.h>
-#include <librsvg/rsvg.h>
 #include <eel/eel-graphic-effects.h>
+#include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
+#include <gtk/gtkmain.h>
+#include <libgnomevfs/gnome-vfs-file-info.h>
+#include <librsvg/rsvg.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
 /* permissions for thumbnail directory */
 #define THUMBNAIL_DIR_PERMISSIONS (GNOME_VFS_PERM_USER_ALL \
@@ -128,7 +128,7 @@ make_thumbnail_uri (const char *image_uri, gboolean directory_only, gboolean use
                    looks like the URI will be local-only, but best to
                    make sure. */
 
-		result = nautilus_make_directory_and_parents (thumbnail_directory_uri, THUMBNAIL_DIR_PERMISSIONS);
+		result = eel_make_directory_and_parents (thumbnail_directory_uri, THUMBNAIL_DIR_PERMISSIONS);
 		gnome_vfs_uri_unref (thumbnail_directory_uri);
 	}
 	

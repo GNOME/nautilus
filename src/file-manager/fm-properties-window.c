@@ -26,6 +26,19 @@
 #include "fm-properties-window.h"
 
 #include "fm-error-reporting.h"
+#include <eel/eel-ellipsizing-label.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gnome-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-image.h>
+#include <eel/eel-labeled-image.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
+#include <eel/eel-viewport.h>
+#include <eel/eel-wrap-table.h>
 #include <gtk/gtkcheckbutton.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtkfilesel.h>
@@ -46,27 +59,14 @@
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-extensions/nautilus-customization-data.h>
-#include <eel/eel-ellipsizing-label.h>
 #include <libnautilus-extensions/nautilus-entry.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <eel/eel-gdk-pixbuf-extensions.h>
-#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <eel/eel-gnome-extensions.h>
-#include <eel/eel-gtk-extensions.h>
-#include <eel/eel-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
-#include <eel/eel-image.h>
 #include <libnautilus-extensions/nautilus-link.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
-#include <eel/eel-stock-dialogs.h>
-#include <eel/eel-string.h>
 #include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
 #include <libnautilus/nautilus-undo.h>
-#include <eel/eel-wrap-table.h>
-#include <eel/eel-labeled-image.h>
-#include <eel/eel-viewport.h>
 #include <string.h>
 
 static GHashTable *windows;
@@ -1355,7 +1355,7 @@ is_merged_trash_directory (NautilusFile *file)
 	gboolean result;
 
 	file_uri = nautilus_file_get_uri (file);
-	result = nautilus_uris_match (file_uri, NAUTILUS_TRASH_URI);
+	result = eel_uris_match (file_uri, EEL_TRASH_URI);
 	g_free (file_uri);
 
 	return result;

@@ -34,6 +34,8 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-stock-dialogs.h>
+#include <eel/eel-vfs-extensions.h>
+
 #include <gnome.h>
 #include <gtk/gtklabel.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
@@ -43,10 +45,9 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-file-changes-queue.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-link.h>
-#include <libnautilus-extensions/nautilus-trash-monitor.h>
+#include "nautilus-global-preferences.h"
+#include "nautilus-link.h"
+#include "nautilus-trash-monitor.h"
 
 typedef enum {
 	TRANSFER_MOVE,
@@ -247,7 +248,7 @@ format_and_ellipsize_uri_for_dialog (const char *uri)
 {
 	char *unescaped, *result;
 
-	unescaped = nautilus_format_uri_for_display (uri);
+	unescaped = eel_format_uri_for_display (uri);
 	result = ellipsize_string_for_dialog (unescaped);
 	g_free (unescaped);
 
@@ -1726,7 +1727,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	move_options = GNOME_VFS_XFER_RECURSIVE;
 
 	if (target_dir != NULL) {
-		if (nautilus_uri_is_trash (target_dir)) {
+		if (eel_uri_is_trash (target_dir)) {
 			target_is_trash = TRUE;
 		} else {
 			target_dir_uri = gnome_vfs_uri_new (target_dir);

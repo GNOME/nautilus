@@ -31,7 +31,7 @@
 #include <gnome-xml/tree.h>
 
 #include "nautilus-file.h"
-#include "nautilus-file-utilities.h"
+#include <eel/eel-vfs-extensions.h>
 #include "nautilus-directory-metafile-monitor.h"
 #include "nautilus-metafile-server.h"
 #include <libnautilus/nautilus-idle-queue.h>

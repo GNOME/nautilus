@@ -26,12 +26,12 @@
 #include <config.h>
 #include "nautilus-trash-monitor.h"
 
-#include "nautilus-directory.h"
 #include "nautilus-directory-notify.h"
+#include "nautilus-directory.h"
 #include "nautilus-file-attributes.h"
-#include "nautilus-file-utilities.h"
-#include <eel/eel-gtk-macros.h>
 #include "nautilus-volume-monitor.h"
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-vfs-extensions.h>
 #include <gtk/gtksignal.h>
 #include <libgnomevfs/gnome-vfs-find-directory.h>
 #include <libgnomevfs/gnome-vfs-types.h>
@@ -97,7 +97,7 @@ nautilus_trash_files_changed_callback (NautilusDirectory *directory, GList *file
 	trash_monitor->details->empty = !nautilus_directory_is_not_empty (directory);
 
 	if (old_empty_state != trash_monitor->details->empty) {
-		file = nautilus_file_get (NAUTILUS_TRASH_URI);
+		file = nautilus_file_get (EEL_TRASH_URI);
 		nautilus_file_changed (file);
 		nautilus_file_unref (file);
 
@@ -119,7 +119,7 @@ nautilus_trash_monitor_initialize (gpointer object, gpointer klass)
 
 	/* set up a NautilusDirectory for the Trash directory to monitor */
 
-	trash_directory = nautilus_directory_get (NAUTILUS_TRASH_URI);
+	trash_directory = nautilus_directory_get (EEL_TRASH_URI);
 
 	trash_monitor->details = g_new0 (NautilusTrashMonitorDetails, 1);
 	trash_monitor->details->trash_directory = trash_directory;

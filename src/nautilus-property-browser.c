@@ -33,6 +33,22 @@
 
 #include "nautilus-signaller.h"
 #include <ctype.h>
+#include <eel/eel-background.h>
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gnome-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-image-table.h>
+#include <eel/eel-image.h>
+#include <eel/eel-label.h>
+#include <eel/eel-labeled-image.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
+#include <eel/eel-viewport.h>
+#include <eel/eel-xml-extensions.h>
 #include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>
 #include <gtk/gtkcolorsel.h>
@@ -57,30 +73,14 @@
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <eel/eel-background.h>
 #include <libnautilus-extensions/nautilus-customization-data.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-drag-window.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-file.h>
-#include <libnautilus-extensions/nautilus-font-factory.h>
-#include <eel/eel-gdk-extensions.h>
-#include <eel/eel-gdk-pixbuf-extensions.h>
-#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <eel/eel-gnome-extensions.h>
-#include <eel/eel-gtk-extensions.h>
-#include <eel/eel-gtk-macros.h>
-#include <eel/eel-image.h>
-#include <eel/eel-label.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
-#include <eel/eel-stock-dialogs.h>
-#include <eel/eel-string.h>
 #include <libnautilus-extensions/nautilus-theme.h>
-#include <eel/eel-xml-extensions.h>
-#include <eel/eel-labeled-image.h>
-#include <eel/eel-image-table.h>
-#include <eel/eel-viewport.h>
 #include <math.h>
 
 /* property types */
@@ -1055,7 +1055,7 @@ add_pattern_to_browser (const char *path_name, gpointer *data)
 	path_uri = gnome_vfs_get_uri_from_local_path (path_name);	
 
 	/* don't allow the user to change the reset image */
-	basename = nautilus_uri_get_basename (path_uri);
+	basename = eel_uri_get_basename (path_uri);
 	if (basename && eel_strcmp (basename, RESET_IMAGE_NAME) == 0) {
 		eel_show_error_dialog (_("Sorry, but you can't replace the reset image."), _("Not an Image"), NULL);
 		g_free (path_uri);
@@ -1086,7 +1086,7 @@ add_pattern_to_browser (const char *path_name, gpointer *data)
 		
 	g_free (directory_path);
 		
-	result = nautilus_copy_uri_simple (path_name, destination_name);		
+	result = eel_copy_uri_simple (path_name, destination_name);		
 	if (result != GNOME_VFS_OK) {
 		char *message = g_strdup_printf (_("Sorry, but the pattern %s couldn't be installed."), path_name);
 		eel_show_error_dialog (message, _("Couldn't install pattern"), GTK_WINDOW (property_browser));
@@ -1359,7 +1359,7 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 			g_free(directory_path);
 				
 			/* perform the actual copy */
-			result = nautilus_copy_uri_simple (property_browser->details->image_path, destination_name);		
+			result = eel_copy_uri_simple (property_browser->details->image_path, destination_name);		
 		
 			if (result != GNOME_VFS_OK) {
 				char *message = g_strdup_printf (_("Sorry, but the image at %s couldn't be installed as an emblem."), property_browser->details->image_path);

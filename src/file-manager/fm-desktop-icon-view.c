@@ -26,12 +26,19 @@
 #include <config.h>
 #include "fm-desktop-icon-view.h"
 
+#include <X11/Xatom.h>
+#include <bonobo/bonobo-ui-util.h>
 #include <ctype.h>
 #include <dirent.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gnome-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
 #include <fcntl.h>
-#include <bonobo/bonobo-ui-util.h>
 #include <gdk/gdkx.h>
-#include <X11/Xatom.h>
 #include <gtk/gtkcheckmenuitem.h>
 #include <libgnome/gnome-dentry.h>
 #include <libgnome/gnome-i18n.h>
@@ -44,16 +51,10 @@
 #include <libnautilus-extensions/nautilus-file-changes-queue.h>
 #include <libnautilus-extensions/nautilus-file-operations.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <eel/eel-gnome-extensions.h>
-#include <eel/eel-gtk-extensions.h>
-#include <eel/eel-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-link.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-program-choosing.h>
-#include <eel/eel-stock-dialogs.h>
-#include <eel/eel-string.h>
 #include <libnautilus-extensions/nautilus-trash-monitor.h>
 #include <libnautilus-extensions/nautilus-volume-monitor.h>
 #include <limits.h>
@@ -911,7 +912,7 @@ update_trash_link_and_delete_copies (void)
 	/* Check for trash link */
 	if (update_link_and_delete_copies (nautilus_link_local_is_trash_link,
 					   TRASH_LINK_NAME,
-					   NAUTILUS_TRASH_URI)) {
+					   EEL_TRASH_URI)) {
 		return;
 	}
 
@@ -919,7 +920,7 @@ update_trash_link_and_delete_copies (void)
 	nautilus_link_local_create (desktop_path,
 				    TRASH_LINK_NAME,
 				    "trash-empty.png", 
-				    NAUTILUS_TRASH_URI,
+				    EEL_TRASH_URI,
 				    NULL,
 				    NAUTILUS_LINK_TRASH);				    				    
 	g_free (desktop_path);

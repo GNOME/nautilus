@@ -33,6 +33,13 @@
 #include "nautilus-link-set-window.h"
 #include "nautilus-sidebar-tabs.h"
 #include "nautilus-sidebar-title.h"
+#include <eel/eel-background.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gnome-xml/parser.h>
 #include <gtk/gtkcheckmenuitem.h>
@@ -46,24 +53,17 @@
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <eel/eel-background.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-drag.h>
-#include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-file-operations.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <eel/eel-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <eel/eel-gtk-extensions.h>
-#include <eel/eel-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-keep-last-vertical-box.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-mime-actions.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
 #include <libnautilus-extensions/nautilus-program-choosing.h>
 #include <libnautilus-extensions/nautilus-sidebar-functions.h>
-#include <eel/eel-stock-dialogs.h>
-#include <eel/eel-string.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 #include <libnautilus-extensions/nautilus-trash-monitor.h>
 #include <math.h>
@@ -710,7 +710,7 @@ receive_dropped_uri_list (NautilusSidebar *sidebar,
 							    NULL);
 			}
 		} else {	
-			if (nautilus_is_remote_uri (uris[0])) {
+			if (eel_is_remote_uri (uris[0])) {
 				eel_show_error_dialog (
 					_("The file that you dropped is not local.  "
 					  "You can only use local images as custom icons."), 

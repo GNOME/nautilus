@@ -30,32 +30,33 @@
 
 #include "nautilus-applicable-views.h"
 #include "nautilus-application.h"
-#include "nautilus-main.h"
 #include "nautilus-location-bar.h"
+#include "nautilus-main.h"
 #include "nautilus-window-private.h"
 #include "nautilus-zoom-control.h"
-#include <gtk/gtksignal.h>
-#include <gtk/gtkmain.h>
 #include <bonobo/bonobo-ui-util.h>
+#include <eel/eel-debug.h>
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
+#include <gtk/gtkmain.h>
+#include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-dialog-util.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
-#include <eel/eel-debug.h>
-#include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <eel/eel-gdk-extensions.h>
-#include <eel/eel-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <eel/eel-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-mime-actions.h>
 #include <libnautilus-extensions/nautilus-search-uri.h>
-#include <eel/eel-stock-dialogs.h>
-#include <eel/eel-string.h>
 
 /* FIXME bugzilla.eazel.com 1243: 
  * We should use inheritance instead of these special cases
@@ -298,7 +299,7 @@ set_displayed_location (NautilusWindow *window, const char *location)
                 recreate = TRUE;
         } else {
                 bookmark_uri = nautilus_bookmark_get_uri (window->current_location_bookmark);
-                recreate = !nautilus_uris_match (bookmark_uri, location);
+                recreate = !eel_uris_match (bookmark_uri, location);
                 g_free (bookmark_uri);
         }
         
@@ -321,7 +322,7 @@ check_bookmark_location_matches (NautilusBookmark *bookmark, const char *uri)
 	char *bookmark_uri;
 
 	bookmark_uri = nautilus_bookmark_get_uri (bookmark);
-	if (!nautilus_uris_match (uri, bookmark_uri)) {
+	if (!eel_uris_match (uri, bookmark_uri)) {
 		g_warning ("bookmark uri is %s, but expected %s", bookmark_uri, uri);
 	}
 	g_free (bookmark_uri);
@@ -423,7 +424,7 @@ handle_go_elsewhere (NautilusWindow *window, const char *location)
                  * This also avoids a problem where set_displayed_location
                  * didn't update last_location_bookmark since the uri didn't change.
                  */
-                if (!nautilus_uris_match (window->details->location, location)) {
+                if (!eel_uris_match (window->details->location, location)) {
                         /* Store bookmark for current location in back list, unless there is no current location */
 	                check_last_bookmark_location_matches_window (window);
                         
@@ -506,7 +507,7 @@ viewed_file_changed_callback (NautilusFile *file,
                  * title. Ignore fragments in this comparison, because
                  * NautilusFile omits the fragment part.
                  */
-                if (!nautilus_uris_match_ignore_fragments (new_location,
+                if (!eel_uris_match_ignore_fragments (new_location,
                                                            window->details->location)) {
                         g_free (window->details->location);
                         window->details->location = new_location;
@@ -1207,7 +1208,7 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
         }
         
         /* Some sort of failure occurred. How 'bout we tell the user? */
-        full_uri_for_display = nautilus_format_uri_for_display (location);
+        full_uri_for_display = eel_format_uri_for_display (location);
 	/* Truncate the URI so it doesn't get insanely wide. Note that even
 	 * though the dialog uses wrapped text, if the URI doesn't contain
 	 * white space then the text-wrapping code is too stupid to wrap it.
@@ -1334,7 +1335,7 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
 			   better test for that */
 			
 			home_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
-			if (!nautilus_uris_match (home_uri, location)) {	
+			if (!eel_uris_match (home_uri, location)) {	
 				nautilus_window_go_home (NAUTILUS_WINDOW (window));
 			} else {
 				/* the last fallback is to go to a known place that can't be deleted! */
@@ -1800,7 +1801,7 @@ open_location_prefer_existing_window_callback (NautilusViewFrame *view,
                 if (existing_location == NULL) {
                         existing_location = existing_window->details->location;
                 }
-                if (nautilus_uris_match (existing_location, location)) {
+                if (eel_uris_match (existing_location, location)) {
                         eel_gtk_window_present (GTK_WINDOW (existing_window));
                         return;
                 }
@@ -1870,7 +1871,7 @@ report_redirect_callback (NautilusViewFrame *view,
                 existing_location = window->details->location;
         }
         if (existing_location == NULL
-            || !nautilus_uris_match (existing_location, from_location)) {
+            || !eel_uris_match (existing_location, from_location)) {
                 return;
         }
 

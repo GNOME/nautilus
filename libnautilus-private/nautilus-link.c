@@ -27,15 +27,14 @@
 
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory.h"
-#include "nautilus-file-utilities.h"
-#include "nautilus-file.h"
 #include "nautilus-file-attributes.h"
-#include "nautilus-global-preferences.h"
-#include <eel/eel-gnome-extensions.h>
+#include "nautilus-file.h"
 #include "nautilus-metadata.h"
-#include "nautilus-preferences.h"
+#include "nautilus-file-utilities.h"
+#include <eel/eel-gnome-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
 #include <eel/eel-xml-extensions.h>
 #include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>
@@ -418,7 +417,7 @@ nautilus_link_local_get_image_uri (const char *path)
 	}
 	
 	/* if the image is remote, see if we can find it in our local cache */
-	if (nautilus_is_remote_uri (icon_uri)) {
+	if (eel_is_remote_uri (icon_uri)) {
 		local_path = make_local_path (icon_uri);
 		if (local_path == NULL) {
 			g_free (icon_uri);
@@ -435,7 +434,7 @@ nautilus_link_local_get_image_uri (const char *path)
 	        info = g_new0 (NautilusLinkIconNotificationInfo, 1);
 		info->link_uri = gnome_vfs_get_uri_from_local_path (path);
 		info->file_path = g_strdup (local_path);
-		nautilus_read_entire_file_async (icon_uri, icon_read_done_callback, info);
+		eel_read_entire_file_async (icon_uri, icon_read_done_callback, info);
 		
 		g_free (icon_uri);
   		g_free (local_path);

@@ -28,6 +28,8 @@
 
 #include "eazel-inventory-collect-hardware.h"
 
+#include <eel/eel-string.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -404,29 +406,6 @@ Host: scsi0 Channel: 00 Id: 04 Lun: 00
 	return bus_node;
 }
 
-
-/* ripped straight out of libnautilus-extensions because we didn't want the
- * dependency for one small function
- */
-static gboolean
-str_has_prefix (const char *haystack, const char *needle)
-{
-	const char *h, *n;
-
-	/* Eat one character at a time. */
-	h = haystack == NULL ? "" : haystack;
-	n = needle == NULL ? "" : needle;
-	do {
-		if (*n == '\0') {
-			return TRUE;
-		}
-		if (*h == '\0') {
-			return FALSE;
-		}
-	} while (*h++ == *n++);
-	return FALSE;
-}
-
 /* utility routine to extract information from a string and add it to an XML node */
 static void
 add_info (xmlNodePtr	node_ptr, 
@@ -447,7 +426,7 @@ add_info (xmlNodePtr	node_ptr,
 	for (index = 0; index < 32; index++) {
 		if (info_array[index] == NULL)
 			break;
-		if (str_has_prefix (info_array[index], field_name)) {
+		if (eel_str_has_prefix (info_array[index], field_name)) {
 			field_data = info_array[index] + strlen (field_name);
 			field_data = strchr (field_data, ':') + 1;
 			field_data = g_strchug (field_data);

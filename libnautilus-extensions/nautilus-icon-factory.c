@@ -48,6 +48,7 @@
 #include <eel/eel-smooth-text-layout.h>
 #include <eel/eel-string.h>
 #include <eel/eel-xml-extensions.h>
+#include <eel/eel-vfs-extensions.h>
 #include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>
 #include <gtk/gtksignal.h>
@@ -807,7 +808,7 @@ nautilus_icon_factory_get_icon_name_for_file (NautilusFile *file)
 	char *uri;
 	
 	uri = nautilus_file_get_uri (file);
-	if (strcmp (uri, NAUTILUS_TRASH_URI) == 0) {
+	if (strcmp (uri, EEL_TRASH_URI) == 0) {
 		g_free (uri);
 		return nautilus_trash_monitor_is_empty ()
 			? ICON_NAME_TRASH_EMPTY : ICON_NAME_TRASH_NOT_EMPTY;
@@ -1547,7 +1548,7 @@ nautilus_icon_factory_get_emblem_icons_for_file (NautilusFile *file,
 	 * lily.
 	 */
 	uri = nautilus_file_get_uri (file);
-	file_is_trash = strcmp (uri, NAUTILUS_TRASH_URI) == 0;
+	file_is_trash = strcmp (uri, EEL_TRASH_URI) == 0;
 	g_free (uri);
 
 	icons = NULL;

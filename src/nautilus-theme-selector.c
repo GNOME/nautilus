@@ -31,41 +31,41 @@
 #include "nautilus-theme-selector.h"
 
 #include <ctype.h>
+#include <eel/eel-background.h>
+#include <eel/eel-gdk-extensions.h>
+#include <eel/eel-gdk-font-extensions.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-label.h>
+#include <eel/eel-scalable-font.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
+#include <eel/eel-xml-extensions.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gnome-xml/parser.h>
+#include <gnome-xml/xmlmemory.h>
 #include <gtk/gtkeventbox.h>
 #include <gtk/gtkfilesel.h>
 #include <gtk/gtkframe.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkvbox.h>
-#include <gnome-xml/parser.h>
-#include <gnome-xml/xmlmemory.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
-#include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
+#include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <eel/eel-background.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-file.h>
-#include <libnautilus-extensions/nautilus-font-factory.h>
-#include <eel/eel-gdk-extensions.h>
-#include <eel/eel-gdk-font-extensions.h>
-#include <eel/eel-gdk-pixbuf-extensions.h>
-#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <eel/eel-gtk-extensions.h>
-#include <eel/eel-gtk-macros.h>
-#include <eel/eel-label.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
-#include <eel/eel-scalable-font.h>
-#include <eel/eel-stock-dialogs.h>
-#include <eel/eel-string.h>
 #include <libnautilus-extensions/nautilus-theme.h>
-#include <eel/eel-xml-extensions.h>
 #include <math.h>
 
 struct NautilusThemeSelectorDetails {
@@ -390,7 +390,7 @@ add_theme_to_icons (GtkWidget *widget, gpointer *data)
 	theme_selector->details->dialog = NULL;
 		
 	/* make sure it's a valid theme directory  - check for xml file */
-	theme_name = nautilus_uri_get_basename (theme_path);
+	theme_name = eel_uri_get_basename (theme_path);
 	
 	temp_path = nautilus_make_path (theme_path, theme_name);
 	xml_path = g_strconcat (temp_path, ".xml", NULL);
@@ -420,7 +420,7 @@ add_theme_to_icons (GtkWidget *widget, gpointer *data)
 			
 		/* copy the new theme into the themes directory */
 		if (result == GNOME_VFS_OK) {
-			result = nautilus_copy_uri_simple (theme_path, theme_destination_path);
+			result = eel_copy_uri_simple (theme_path, theme_destination_path);
 		}
 		
 		g_free (theme_destination_path);

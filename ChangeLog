@@ -1,5 +1,94 @@
 2001-04-04  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	* libnautilus-extensions/nautilus-file-utilities.h:
+	Move vfs extensions to eel.
+	
+	* components/services/install-view/nautilus-service-install-view.c:
+	* components/services/install/server/main.c:
+	* components/services/inventory/eazel-inventory-collect-hardware.c:
+	(add_info):
+	* components/services/inventory/eazel-inventory-service.c:
+	(impl_Trilobite_Eazel_Inventory_upload):
+	* components/text/nautilus-text-view.c: (handle_service_menu_item):
+	* components/tree/nautilus-tree-view.c: (select_current_location),
+	(tree_load_location_callback), (got_activation_uri_callback):
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(nautilus_bookmark_compare_with), (nautilus_bookmark_compare_uris),
+	(bookmark_file_changed_callback):
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(top_left_cancel), (activation_uri_cancel), (top_left_start),
+	(activation_uri_start):
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_make_uri_canonical), (nautilus_directory_new),
+	(nautilus_directory_notify_files_moved),
+	(nautilus_self_check_directory):
+	* libnautilus-extensions/nautilus-drag.c:
+	(nautilus_drag_items_in_trash),
+	(nautilus_drag_default_drop_action_for_icons):
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(format_and_ellipsize_uri_for_dialog),
+	(nautilus_file_operations_copy_move):
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_internal),
+	(nautilus_file_get_parent_uri_for_display),
+	(nautilus_file_can_rename), (nautilus_file_get_uri_scheme),
+	(nautilus_file_is_in_trash), (nautilus_self_check_file):
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_container_selection_items_local):
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_name_for_file),
+	(nautilus_icon_factory_get_emblem_icons_for_file):
+	* libnautilus-extensions/nautilus-link.c:
+	(nautilus_link_local_get_image_uri):
+	* libnautilus-extensions/nautilus-metafile.c:
+	(construct_private_metafile_vfs_uri), (metafile_read_cancel),
+	(metafile_read_restart):
+	* libnautilus-extensions/nautilus-tabs.c:
+	* libnautilus-extensions/nautilus-theme.c:
+	* libnautilus-extensions/nautilus-thumbnails.c:
+	(make_thumbnail_uri):
+	* libnautilus-extensions/nautilus-trash-file.c:
+	(nautilus_trash_file_initialize):
+	* libnautilus-extensions/nautilus-trash-monitor.c:
+	(nautilus_trash_files_changed_callback),
+	(nautilus_trash_monitor_initialize):
+	* src/file-manager/fm-desktop-icon-view.c:
+	(update_trash_link_and_delete_copies):
+	* src/file-manager/fm-directory-view.c: (show_trash_callback),
+	(trash_or_delete_files_common),
+	(fm_directory_view_trash_or_delete_files),
+	(fm_directory_view_move_copy_items):
+	* src/file-manager/fm-properties-window.c:
+	(is_merged_trash_directory):
+	* src/nautilus-application.c:
+	(nautilus_make_uri_list_from_shell_strv):
+	* src/nautilus-first-time-druid.c: (read_file_handle_cancel_cover),
+	(initiate_file_download):
+	* src/nautilus-location-bar.c: (try_to_expand_path),
+	(nautilus_location_bar_set_location),
+	(nautilus_location_bar_get_location),
+	(nautilus_location_bar_update_label):
+	* src/nautilus-profiler.c:
+	(nautilus_profiler_bonobo_ui_report_callback):
+	* src/nautilus-property-browser.c: (add_pattern_to_browser),
+	(emblem_dialog_clicked):
+	* src/nautilus-sidebar.c: (receive_dropped_uri_list):
+	* src/nautilus-theme-selector.c: (add_theme_to_icons):
+	* src/nautilus-window-manage-views.c: (set_displayed_location),
+	(check_bookmark_location_matches), (handle_go_elsewhere),
+	(viewed_file_changed_callback), (determined_initial_view_callback),
+	(open_location_prefer_existing_window_callback),
+	(report_redirect_callback):
+	* src/nautilus-window-menus.c: (show_bogus_bookmark_window):
+	Update for vfs extensions move to eel.  Also cleanup the #include
+	state of some of these files.  Removed unused #includes.  Remove
+	some cut-n-paste code in services components and use the
+	extensions in eel directly.
+	
+2001-04-04  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* README:
 	Add new librsvg and eel dependency entries.
 

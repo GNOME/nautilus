@@ -28,26 +28,26 @@
 
 #include <ctype.h>
 #include <dirent.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gnome.h>
-#include <libgnomevfs/gnome-vfs.h>
 #include <eel/eel-background.h>
-#include <libnautilus-extensions/nautilus-druid-page-eazel.h>
-#include <libnautilus-extensions/nautilus-druid.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-image.h>
 #include <eel/eel-label.h>
+#include <eel/eel-radio-button-group.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gnome.h>
+#include <libgnomevfs/gnome-vfs.h>
+#include <libnautilus-extensions/nautilus-druid-page-eazel.h>
+#include <libnautilus-extensions/nautilus-druid.h>
+#include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-link.h>
 #include <libnautilus-extensions/nautilus-medusa-support.h>
-#include <libnautilus-extensions/nautilus-preferences.h>
-#include <eel/eel-radio-button-group.h>
-#include <eel/eel-string.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <eel/eel-stock-dialogs.h>
 #include <nautilus-main.h>
 #include <netdb.h>
 #include <signal.h>
@@ -1382,16 +1382,16 @@ download_callback (GnomeVFSResult result,
 static void
 read_file_handle_cancel_cover (gpointer data)
 {
-	NautilusReadFileHandle *handle;
+	EelReadFileHandle *handle;
 
 	handle = data;
-	nautilus_read_file_cancel (handle);
+	eel_read_file_cancel (handle);
 }
 
 static void
 initiate_file_download (GnomeDruid *druid)
 {
-	NautilusReadFileHandle *handle;
+	EelReadFileHandle *handle;
 	static gboolean prevent_re_entry = FALSE;
 
 	/* We exercise the event loop below, so we need to make sure that 
@@ -1428,7 +1428,7 @@ initiate_file_download (GnomeDruid *druid)
 
 	if (check_network_connectivity ()) {
 		/* initiate the file transfer */
-		handle = nautilus_read_entire_file_async
+		handle = eel_read_entire_file_async
 			(WELCOME_PACKAGE_URI, download_callback, druid);
 		if (handle != NULL) {
 			/* cancel the transfer if the druid goes away */

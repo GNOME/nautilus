@@ -25,9 +25,12 @@
 #include <config.h>
 #include "nautilus-bookmark.h"
 
-#include <eel/eel-gtk-macros.h>
 #include "nautilus-icon-factory.h"
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
 #include <gtk/gtkaccellabel.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-defs.h>
@@ -36,9 +39,6 @@
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <eel/eel-gdk-pixbuf-extensions.h>
-#include <eel/eel-gtk-extensions.h>
 
 enum {
 	APPEARANCE_CHANGED,
@@ -152,7 +152,7 @@ nautilus_bookmark_compare_with (gconstpointer a, gconstpointer b)
 		return 1;
 	}
 
-	if (!nautilus_uris_match (bookmark_a->details->uri,
+	if (!eel_uris_match (bookmark_a->details->uri,
 		    		  bookmark_b->details->uri)) {
 		return 1;
 	}
@@ -182,7 +182,7 @@ nautilus_bookmark_compare_uris (gconstpointer a, gconstpointer b)
 	bookmark_a = NAUTILUS_BOOKMARK (a);
 	bookmark_b = NAUTILUS_BOOKMARK (b);
 
-	return !nautilus_uris_match (bookmark_a->details->uri,
+	return !eel_uris_match (bookmark_a->details->uri,
 		    		     bookmark_b->details->uri);
 }
 
@@ -380,7 +380,7 @@ bookmark_file_changed_callback (NautilusFile *file, NautilusBookmark *bookmark)
 	should_emit_contents_changed_signal = FALSE;
 	file_uri = nautilus_file_get_uri (file);
 
-	if (!nautilus_uris_match (bookmark->details->uri, file_uri)) {
+	if (!eel_uris_match (bookmark->details->uri, file_uri)) {
 		g_free (bookmark->details->uri);
 		bookmark->details->uri = file_uri;
 		should_emit_contents_changed_signal = TRUE;

@@ -26,35 +26,32 @@
 #include <config.h>
 #include "nautilus-text-view.h"
 
-#include <gnome-xml/parser.h>
-#include <gnome-xml/xmlmemory.h>
-
-#include <bonobo/bonobo-zoomable.h>
 #include <bonobo/bonobo-control.h>
-
-#include <libnautilus/libnautilus.h>
-#include <libnautilus/nautilus-clipboard.h>
+#include <bonobo/bonobo-zoomable.h>
 #include <eel/eel-background.h>
-#include <libnautilus-extensions/nautilus-bonobo-extensions.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-file.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
-#include <eel/eel-string.h>
-#include <libnautilus-extensions/nautilus-font-factory.h>
 #include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
 #include <eel/eel-xml-extensions.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
-
+#include <ghttp.h>
+#include <gnome-xml/parser.h>
+#include <gnome-xml/xmlmemory.h>
 #include <gnome.h>
 #include <gtk/gtkeventbox.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <ghttp.h>
-
+#include <libnautilus-extensions/nautilus-bonobo-extensions.h>
+#include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-extensions/nautilus-font-factory.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus/libnautilus.h>
+#include <libnautilus/nautilus-clipboard.h>
 #include <limits.h>
 
 #define MAX_SERVICE_ITEMS 32
@@ -495,7 +492,7 @@ handle_service_menu_item (BonoboUIComponent *ui, gpointer user_data, const char 
 			
 			/* load the resultant page through gnome-vfs */
                         /* FIXME: This uses sync. I/O. */
-			if (nautilus_read_entire_file (uri, &text_size, &text_ptr) == GNOME_VFS_OK) {
+			if (eel_read_entire_file (uri, &text_size, &text_ptr) == GNOME_VFS_OK) {
  				gtk_editable_delete_text (GTK_EDITABLE (parameters->text_view->details->text_display), 0, -1);   
 				gtk_text_insert (GTK_TEXT (parameters->text_view->details->text_display),
                                                  NULL, NULL, NULL,

@@ -30,6 +30,11 @@
 
 #include "nautilus-tree-view-private.h"
 #include <bonobo/bonobo-control.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkscrolledwindow.h>
@@ -39,12 +44,8 @@
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-file.h>
-#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <eel/eel-gtk-extensions.h>
-#include <eel/eel-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
-#include <eel/eel-string.h>
 #include <stdio.h>
 
 #define DISPLAY_TIMEOUT_INTERVAL_MSECS 500
@@ -1357,7 +1358,7 @@ select_current_location (NautilusTreeView *view)
 	cancel_selection_in_progress (view);
 
 	/* FIXME bugzilla.eazel.com 6801: it seems likely that either
-	 * nautilus_uris_match or nautilus_uris_match_ignore_fragments
+	 * eel_uris_match or eel_uris_match_ignore_fragments
 	 * should be used here.
 	 */
 	if (eel_strcmp (view->details->current_main_view_uri,
@@ -1380,7 +1381,7 @@ tree_load_location_callback (NautilusView *nautilus_view,
 	nautilus_view_report_load_complete (nautilus_view);
 
 	g_free (view->details->current_main_view_uri);
-	view->details->current_main_view_uri = nautilus_make_uri_canonical (location);
+	view->details->current_main_view_uri = eel_make_uri_canonical (location);
 
 	select_current_location (view);
 }
@@ -1528,7 +1529,7 @@ got_activation_uri_callback (NautilusFile *file,
 		uri = nautilus_file_get_activation_uri (file);
 		
 		if (uri != NULL &&
-		    !nautilus_uris_match_ignore_fragments (view->details->current_main_view_uri, uri) &&
+		    !eel_uris_match_ignore_fragments (view->details->current_main_view_uri, uri) &&
 		    strncmp (uri, "command:", strlen ("command:")) != 0) {
 			nautilus_view_open_location_in_this_window (NAUTILUS_VIEW (view), uri);
 			g_free (view->details->selected_uri);

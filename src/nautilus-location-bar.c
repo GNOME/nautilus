@@ -34,8 +34,13 @@
 #include <config.h>
 #include "nautilus-location-bar.h"
 
-#include "nautilus-window.h"
 #include "nautilus-window-private.h"
+#include "nautilus-window.h"
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkeventbox.h>
 #include <gtk/gtksignal.h>
@@ -45,13 +50,8 @@
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <libnautilus/nautilus-clipboard.h>
 #include <libnautilus-extensions/nautilus-entry.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <eel/eel-glib-extensions.h>
-#include <eel/eel-gtk-macros.h>
-#include <eel/eel-stock-dialogs.h>
-#include <eel/eel-string.h>
+#include <libnautilus/nautilus-clipboard.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -321,7 +321,7 @@ try_to_expand_path (gpointer callback_data)
 		g_free (user_location);
 		return FALSE;
 	}
-	current_path = nautilus_make_uri_from_input (user_location);
+	current_path = eel_make_uri_from_input (user_location);
 
 	if (!eel_istr_has_prefix (current_path, "file://")) {
 		g_free (user_location);
@@ -717,7 +717,7 @@ nautilus_location_bar_set_location (NautilusNavigationBar *navigation_bar,
 	/* Note: This is called in reaction to external changes, and 
 	 * thus should not emit the LOCATION_CHANGED signal.*/
 	
-	formatted_location = nautilus_format_uri_for_display (location);
+	formatted_location = eel_format_uri_for_display (location);
 	nautilus_entry_set_text (NAUTILUS_ENTRY (bar->details->entry),
 				 formatted_location);
 	g_free (formatted_location);
@@ -748,7 +748,7 @@ nautilus_location_bar_set_location (NautilusNavigationBar *navigation_bar,
  * @bar: A NautilusLocationBar.
  *
  * returns a newly allocated "string" containing the mangled
- * (by nautilus_make_uri_from_input) text that the user typed in...maybe a URI 
+ * (by eel_make_uri_from_input) text that the user typed in...maybe a URI 
  * but not guaranteed.
  *
  **/
@@ -761,7 +761,7 @@ nautilus_location_bar_get_location (NautilusNavigationBar *navigation_bar)
 	bar = NAUTILUS_LOCATION_BAR (navigation_bar);
 	
 	user_location = gtk_editable_get_chars (GTK_EDITABLE (bar->details->entry), 0, -1);
-	best_uri = nautilus_make_uri_from_input (user_location);
+	best_uri = eel_make_uri_from_input (user_location);
 	g_free (user_location);
 	return best_uri;
 }
@@ -778,9 +778,9 @@ nautilus_location_bar_update_label (NautilusLocationBar *bar)
 	char *current_text, *current_location;
 	
 	current_text = gtk_entry_get_text (GTK_ENTRY (bar->details->entry));
-	current_location = nautilus_make_uri_from_input (current_text);
+	current_location = eel_make_uri_from_input (current_text);
 	
-	if (nautilus_uris_match (bar->details->last_location, current_location)) {
+	if (eel_uris_match (bar->details->last_location, current_location)) {
 		gtk_label_set_text (GTK_LABEL (bar->details->label), LOCATION_LABEL);
 	} else {		 
 		gtk_label_set_text (GTK_LABEL (bar->details->label), GO_TO_LABEL);

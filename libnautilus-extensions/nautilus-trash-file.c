@@ -743,7 +743,7 @@ nautilus_trash_file_initialize (gpointer object, gpointer klass)
 
 	trash_file = NAUTILUS_TRASH_FILE (object);
 
-	trash_directory = NAUTILUS_TRASH_DIRECTORY (nautilus_directory_get (NAUTILUS_TRASH_URI));
+	trash_directory = NAUTILUS_TRASH_DIRECTORY (nautilus_directory_get (EEL_TRASH_URI));
 
 	trash_file->details = g_new0 (NautilusTrashFileDetails, 1);
 	trash_file->details->trash_directory = trash_directory;

@@ -31,13 +31,13 @@
 #include "nautilus-icon-dnd.h"
 
 #include <eel/eel-background.h>
-#include "nautilus-file-utilities.h"
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-graphic-effects.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
+#include <eel/eel-vfs-extensions.h>
 #include "nautilus-icon-private.h"
 #include "nautilus-link.h"
 #include <eel/eel-stock-dialogs.h>
@@ -586,7 +586,7 @@ nautilus_icon_container_selection_items_local (const NautilusIconContainer *cont
 	/* get the URI associated with the container */
 	container_uri_string = get_container_uri (container);
 	
-	if (nautilus_uri_is_trash (container_uri_string)) {
+	if (eel_uri_is_trash (container_uri_string)) {
 		/* Special-case "trash:" because the nautilus_drag_items_local
 		 * would not work for it.
 		 */

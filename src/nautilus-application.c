@@ -39,26 +39,27 @@
 #include "nautilus-shell.h"
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-object.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string-list.h>
+#include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-config.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
-#include <libgnomeui/gnome-messagebox.h>
 #include <libgnomeui/gnome-client.h>
+#include <libgnomeui/gnome-messagebox.h>
 #include <libgnomeui/gnome-stock.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <eel/eel-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <libnautilus-extensions/nautilus-metafile-factory.h>
 #include <libnautilus-extensions/nautilus-sound.h>
-#include <eel/eel-stock-dialogs.h>
-#include <eel/eel-string.h>
-#include <eel/eel-string-list.h>
 #include <libnautilus-extensions/nautilus-undo-manager.h>
 #include <libnautilus-extensions/nautilus-volume-monitor.h>
-#include <libnautilus-extensions/nautilus-metafile-factory.h>
 #include <liboaf/liboaf.h>
 
 #define FACTORY_IID	     "OAFIID:nautilus_factory:bd1e1862-92d7-4391-963e-37583f0daef3"
@@ -323,7 +324,7 @@ nautilus_make_uri_list_from_shell_strv (const char * const *strv)
 	uri_list->_length = length;
 	uri_list->_buffer = CORBA_sequence_Nautilus_URI_allocbuf (length);
 	for (i = 0; i < length; i++) {
-		translated_uri = nautilus_make_uri_from_shell_arg (strv[i]);
+		translated_uri = eel_make_uri_from_shell_arg (strv[i]);
 		uri_list->_buffer[i] = CORBA_string_dup (translated_uri);
 		g_free (translated_uri);
 		translated_uri = NULL;

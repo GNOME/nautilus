@@ -34,8 +34,8 @@
 
 #ifdef STOP_IN_DEBUG
 /* Also add 
-	$(top_builddir)/libnautilus-extensions/nautilus-debug.o				 	\
-to the ldadd line in Makefile.am
+	$(EEL_LIBS) \
+   to the LDADD line in Makefile.am
 */
 #include <eel/eel-debug.h>
 #endif
