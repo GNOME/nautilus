@@ -1,3 +1,17 @@
+Sat Feb 24 12:49:43 2001  George Lebl <jirka@5z.com>
+
+	Gene Z. Ragan  <gzr@eazel.com> says it won't cause global warming if
+	this is applied.
+
+	* components/help/converters/gnome-db2html2/sect-elements.c
+	  (sect_sect_start_element) (sect_sect_end_element)
+	  (sect_legalnotice_start_element) (sect_legalnotice_end_element)
+	  (sect_legalnotice_characters):
+	  Use g_strcasecmp to compare "legalnotice" and section id's.  This
+	  Fixes the bug where panel help would not be displayed at all.
+	  Since the HTML sections have been converted to uppercase and thus
+	  going back to sgml wouldn't work
+
 2001-02-24  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	reviewed by: Gene Z. Ragan  <gzr@eazel.com>

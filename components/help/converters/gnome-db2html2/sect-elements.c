@@ -415,7 +415,7 @@ sect_sect_start_element (Context *context,
 			((StackElement *)context->stack->data)->atrs = g_new0 (gchar *, 3);
 			((StackElement *)context->stack->data)->atrs[0] = g_strdup ("id");
 			((StackElement *)context->stack->data)->atrs[1] = g_strdup (*atrs_ptr);
-			if (!strcmp (*atrs_ptr, context->target_section))
+			if (!g_strcasecmp (*atrs_ptr, context->target_section))
 				sect_context->state = LOOKING_FOR_SECT_TITLE;
 			break;
 		}
@@ -528,7 +528,7 @@ sect_sect_end_element (Context *context,
 	while (atrs_ptr && *atrs_ptr) {
 		if (!g_strcasecmp (*atrs_ptr, "id")) {
 			atrs_ptr++;
-			if (!strcmp (*atrs_ptr, context->target_section)) {
+			if (!g_strcasecmp (*atrs_ptr, context->target_section)) {
 				((SectContext *)context->data)->state = LOOKING_FOR_POST_SECT;
 			}
 			break;
@@ -2058,7 +2058,7 @@ sect_legalnotice_start_element (Context *context,
 
 	sect_context = (SectContext *)context->data;
 
-	if ((strcmp (context->target_section, "legalnotice") != 0) || IS_IN_SECT (context)) {
+	if ((g_strcasecmp (context->target_section, "legalnotice") != 0) || IS_IN_SECT (context)) {
 		/* If we are not searching for the legalnotice or we are
 		 * currently in a sect then abort */
 		return;
@@ -2080,7 +2080,7 @@ sect_legalnotice_end_element (Context *context,
 	
 	sect_context = (SectContext *)context->data;
 
-	if (strcmp (context->target_section, "legalnotice") != 0) {
+	if (g_strcasecmp (context->target_section, "legalnotice") != 0) {
 		return;
 	}
 
@@ -2097,7 +2097,7 @@ sect_legalnotice_characters (Context *context,
 			     const char *chars,
 			     int len)
 {
-	if (strcmp (context->target_section, "legalnotice") != 0) {
+	if (g_strcasecmp (context->target_section, "legalnotice") != 0) {
 		return;
 	}
 
