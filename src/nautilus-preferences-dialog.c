@@ -68,17 +68,7 @@ static EelPreferencesItemDescription appearance_items[] = {
 	{ NULL }
 };
 
-static EelPreferencesItemDescription windows_and_desktop_items[] = {
-	{ N_("Desktop"),
-	  NAUTILUS_PREFERENCES_SHOW_DESKTOP,
-	  N_("Use Nautilus to draw the desktop"),
-	  EEL_PREFERENCE_ITEM_BOOLEAN
-	},
-        { N_("Desktop"),
-	  NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
-	  N_("Use your home folder as the desktop"),
-	  EEL_PREFERENCE_ITEM_BOOLEAN
-	},
+static EelPreferencesItemDescription windows_items[] = {
 	{ N_("Opening New Windows"),
 	  NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
 	  N_("Open each file or folder in a separate window"),
@@ -102,6 +92,20 @@ static EelPreferencesItemDescription windows_and_desktop_items[] = {
 	{ N_("Opening New Windows"),
 	  NAUTILUS_PREFERENCES_START_WITH_SIDEBAR,
 	  N_("Display sidebar in new windows"),
+	  EEL_PREFERENCE_ITEM_BOOLEAN
+	},
+	{ NULL }
+};
+
+static EelPreferencesItemDescription desktop_and_trash_items[] = {
+	{ N_("Desktop"),
+	  NAUTILUS_PREFERENCES_SHOW_DESKTOP,
+	  N_("Use Nautilus to draw the desktop"),
+	  EEL_PREFERENCE_ITEM_BOOLEAN
+	},
+        { N_("Desktop"),
+	  NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
+	  N_("Use your home folder as the desktop"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Trash Behavior"),
@@ -379,7 +383,8 @@ static EelPreferencesItemDescription news_panel_items[] = {
 static EelPreferencesPaneDescription panes[] = {
 	{ N_("View Preferences"),	  view_preferences_items },
 	{ N_("Appearance"),		  appearance_items },
-	{ N_("Windows & Desktop"),	  windows_and_desktop_items },
+	{ N_("Windows"),	  	  windows_items },
+	{ N_("Desktop & Trash"),	  desktop_and_trash_items },
 	{ N_("Icon & List Views"),	  directory_views_items },
 	{ N_("Icon Captions"),		  icon_captions_items },
 	{ N_("Sidebar Panels"),		  sidebar_items },
