@@ -214,9 +214,9 @@ nautilus_bookmarks_menu_clear_bookmarks (NautilusBookmarksMenu *menu)
 	GList *iter;
 	gboolean found_dynamic_items;
 
-	g_return_if_fail(NAUTILUS_IS_BOOKMARKS_MENU(menu));
+	g_return_if_fail (NAUTILUS_IS_BOOKMARKS_MENU (menu));
 
-	children = gtk_container_children(GTK_CONTAINER(menu));
+	children = gtk_container_children (GTK_CONTAINER (menu));
 	iter = children;
 
 	found_dynamic_items = FALSE;
@@ -224,16 +224,16 @@ nautilus_bookmarks_menu_clear_bookmarks (NautilusBookmarksMenu *menu)
 	{
 		if (found_dynamic_items)
 		{
-			gtk_container_remove(GTK_CONTAINER(menu), iter->data);
+			gtk_container_remove (GTK_CONTAINER (menu), iter->data);
 		}
-		else if (gtk_object_get_data(iter->data, LAST_STATIC_ITEM))
+		else if (gtk_object_get_data (iter->data, LAST_STATIC_ITEM))
 		{
 			found_dynamic_items = TRUE;
 		}
-		iter = g_list_next(iter);
+		iter = g_list_next (iter);
 	}
 	
-	g_list_free(children);
+	g_list_free (children);
 }
 
 /**

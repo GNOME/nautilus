@@ -24,24 +24,24 @@
 */
 
 #include <config.h>
-#include <libnautilus/nautilus-directory.h>
-#include <libnautilus/nautilus-string.h>
-
 #include "fm-icons-controller.h"
 
+#include <libnautilus/nautilus-directory.h>
+#include <libnautilus/nautilus-string.h>
 #include <libnautilus/nautilus-gtk-macros.h>
 
-static void                  fm_icons_controller_initialize_class (FMIconsControllerClass  *klass);
-static void                  fm_icons_controller_initialize       (FMIconsController       *controller);
-static NautilusScalableIcon *fm_icons_controller_get_icon_image   (NautilusIconsController *controller,
-								   NautilusControllerIcon  *icon);
-static char *		     fm_icons_controller_get_icon_property (NautilusIconsController *controller,
-								   NautilusControllerIcon  *icon,
-								   const gchar *property_name);
-static char *                fm_icons_controller_get_icon_text    (NautilusIconsController *controller,
-								   NautilusControllerIcon  *icon);
-static char *                fm_icons_controller_get_icon_uri     (NautilusIconsController *controller,
-								   NautilusControllerIcon  *icon);
+static void                  fm_icons_controller_initialize_class  (FMIconsControllerClass   *klass);
+static void                  fm_icons_controller_initialize        (FMIconsController        *controller);
+static NautilusScalableIcon *fm_icons_controller_get_icon_image    (NautilusIconsController  *controller,
+								    NautilusControllerIcon   *icon,
+								    GList                   **emblem_icons);
+static char *                fm_icons_controller_get_icon_property (NautilusIconsController  *controller,
+								    NautilusControllerIcon   *icon,
+								    const char               *property_name);
+static char *                fm_icons_controller_get_icon_text     (NautilusIconsController  *controller,
+								    NautilusControllerIcon   *icon);
+static char *                fm_icons_controller_get_icon_uri      (NautilusIconsController  *controller,
+								    NautilusControllerIcon   *icon);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMIconsController, fm_icons_controller, NAUTILUS_TYPE_ICONS_CONTROLLER)
 
@@ -70,7 +70,7 @@ fm_icons_controller_new (FMDirectoryViewIcons *icons)
 
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (icons), NULL);
 
-	controller = FM_ICONS_CONTROLLER(gtk_object_new (FM_TYPE_ICONS_CONTROLLER, NULL));
+	controller = FM_ICONS_CONTROLLER (gtk_object_new (FM_TYPE_ICONS_CONTROLLER, NULL));
 	controller->icons = icons;
 
 	return controller;
@@ -78,9 +78,13 @@ fm_icons_controller_new (FMDirectoryViewIcons *icons)
 
 static NautilusScalableIcon *
 fm_icons_controller_get_icon_image (NautilusIconsController *controller,
-				    NautilusControllerIcon *icon)
+				    NautilusControllerIcon *icon,
+				    GList **emblems)
 {
-	/* Get the appropriate image for the file. */
+	/* Get the appropriate images for the file. */
+	if (emblems != NULL) {
+		*emblems = nautilus_icon_factory_get_emblem_icons_for_file (NAUTILUS_FILE (icon));
+	}
 	return nautilus_icon_factory_get_icon_for_file (NAUTILUS_FILE (icon));
 }
 
@@ -90,28 +94,32 @@ fm_icons_controller_get_icon_image (NautilusIconsController *controller,
 /* We live dangerously, and consider files with NULL mime types to be text files; we can stop doing
    this when we have better mime-type routines */
    
-/* FIXME: we need a better way to know when to use the mini-text than 
-   the theme name starting with eazel... */
-  
 static char *
 fm_icons_controller_get_icon_property (NautilusIconsController *controller,
-				   NautilusControllerIcon *icon,
-				   const gchar *property_name)
+				       NautilusControllerIcon *icon,
+				       const char *property_name)
 {
-	if (!strcmp(property_name, "contents_as_text")) {
-		const gchar *mime_type;
-		gchar *theme_name = nautilus_icon_factory_get_theme();
-		gboolean use_text = nautilus_has_prefix(theme_name, "eazel");
-		g_free(theme_name);
+	if (strcmp (property_name, "contents_as_text") == 0) {
+		const char *mime_type;
+		char *theme_name;
+		gboolean use_text;
+
+		/* FIXME: We need a better way to know when to use the mini-text than 
+		 * the theme name starting with eazel.
+		 */
+		theme_name = nautilus_icon_factory_get_theme ();
+		use_text = nautilus_has_prefix (theme_name, "eazel");
+		g_free (theme_name);
 		
-		mime_type = nautilus_file_get_mime_type(NAUTILUS_FILE(icon));
-		if (use_text && (!mime_type || nautilus_has_prefix(mime_type, "text/")))
-			return nautilus_file_get_uri(NAUTILUS_FILE(icon));
+		mime_type = nautilus_file_get_mime_type (NAUTILUS_FILE (icon));
+		if (use_text && (mime_type == NULL || nautilus_has_prefix (mime_type, "text/"))) {
+			return nautilus_file_get_uri (NAUTILUS_FILE (icon));
+		}
 	}
 	
 	/* nothing applied, so return an empty string */
 	 
-	return strdup("");		
+	return g_strdup ("");		
 }
 
 static char *
@@ -139,8 +147,9 @@ fm_icons_controller_get_icon_text (NautilusIconsController *controller,
 		 * leaving a NULL in text_array would cause it to be incompletely
 		 * freed).
 		 */
-		if (attribute_string == NULL)
+		if (attribute_string == NULL) {
 			attribute_string = g_strdup ("");
+		}
 
 		/* Replace each attribute name in the array with its string value */
 		g_free (text_array[index]);

@@ -69,7 +69,7 @@ struct _FMDirectoryViewDetails
 	
 	guint add_files_handler_id;
 	
-	NautilusFileList *pending_list;
+	GList *pending_list;
 
 	gboolean loading;
 };
@@ -89,7 +89,7 @@ static void fm_directory_view_real_append_background_context_menu_items
 static void fm_directory_view_real_append_selection_context_menu_items 		
 						(FMDirectoryView *view,
 						 GtkMenu *menu,
-						 NautilusFileList *files);
+						 GList *files);
 static GtkMenu *create_selection_context_menu   (FMDirectoryView *view);
 static GtkMenu *create_background_context_menu  (FMDirectoryView *view);
 static void stop_location_change_cb 		(NautilusViewFrame *view_frame, 
@@ -98,7 +98,7 @@ static void notify_location_change_cb 		(NautilusViewFrame *view_frame,
 						 Nautilus_NavigationInfo *nav_context, 
 						 FMDirectoryView *directory_view);
 static void open_cb 				(GtkMenuItem *item, NautilusFile *file);
-static void open_in_new_window_cb 		(GtkMenuItem *item, NautilusFileList *files);
+static void open_in_new_window_cb 		(GtkMenuItem *item, GList *files);
 static void select_all_cb                       (GtkMenuItem *item, FMDirectoryView *directory_view);
 static void zoom_in_cb                          (GtkMenuItem *item, FMDirectoryView *directory_view);
 static void zoom_out_cb                         (GtkMenuItem *item, FMDirectoryView *directory_view);
@@ -253,17 +253,17 @@ fm_directory_view_destroy (GtkObject *object)
 static void
 display_selection_info (FMDirectoryView *view)
 {
-	NautilusFileList *selection;
+	GList *selection;
 	GnomeVFSFileSize non_folder_size;
 	guint non_folder_count;
 	guint folder_count;
 	guint folder_item_count;
-	NautilusFileList *p;
+	GList *p;
 	char *first_item_name;
 	char *non_folder_str;
 	char *folder_count_str;
 	char *folder_item_count_str;
-	Nautilus_StatusRequestInfo sri;
+	Nautilus_StatusRequestInfo request;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
@@ -282,13 +282,10 @@ display_selection_info (FMDirectoryView *view)
 		NautilusFile *file;
 
 		file = p->data;
-		if (nautilus_file_is_directory (file))
-		{
+		if (nautilus_file_is_directory (file)) {
 			folder_count++;
 			folder_item_count += nautilus_file_get_directory_item_count (file, FALSE);
-		}
-		else
-		{
+		} else {
 			non_folder_count++;
 			non_folder_size += nautilus_file_get_size (file);
 		}
@@ -297,78 +294,56 @@ display_selection_info (FMDirectoryView *view)
 			first_item_name = nautilus_file_get_name (file);
 	}
 		
-	g_list_free (selection);
+	nautilus_file_list_free (selection);
 	
-	memset(&sri, 0, sizeof(sri));
-
+	memset (&request, 0, sizeof (request));
 
 	/* Break out cases for localization's sake. But note that there are still pieces
-	 * being assembled in a particular order. 
+	 * being assembled in a particular order, which may be a problem for some localizers.
 	 */
 
-	if (folder_count != 0)
-	{
-		if (folder_count == 1)
-		{
-			if (non_folder_count == 0)
-			{
+	if (folder_count != 0) {
+		if (folder_count == 1) {
+			if (non_folder_count == 0) {
 				folder_count_str = g_strdup_printf (_("\"%s\" selected"), first_item_name);
-			}
-			else
-			{
+			} else {
 				folder_count_str = g_strdup (_("1 directory selected"));
 			}
-		}
-		else
-		{
+		} else {
 			folder_count_str = g_strdup_printf (_("%d directories selected"), folder_count);
 		}
 
-		if (folder_item_count == 0)
-		{
+		if (folder_item_count == 0) {
 			folder_item_count_str = g_strdup (_("(containing 0 items)"));
 		}
-		else if (folder_item_count == 1)
-		{
+		else if (folder_item_count == 1) {
 			folder_item_count_str = g_strdup (_("(containing 1 item)"));
-		}
-		else
-		{
+		} else {
 			folder_item_count_str = g_strdup_printf (_("(containing %d items)"), folder_item_count);
 		}
 	}
 
-	if (non_folder_count != 0)
-	{
+	if (non_folder_count != 0) {
 		char *size_string;
 
 		size_string = gnome_vfs_file_size_to_string (non_folder_size);
 
-		if (folder_count == 0)
-		{
-			if (non_folder_count == 1)
-			{
+		if (folder_count == 0) {
+			if (non_folder_count == 1) {
 				non_folder_str = g_strdup_printf (_("\"%s\" selected (%s)"), 
 								  first_item_name,
 								  size_string);
-			}
-			else
-			{
+			} else {
 				non_folder_str = g_strdup_printf (_("%d items selected (%s)"), 
 								  non_folder_count, 
 								  size_string);
 			}
-		}
-		else
-		{
+		} else {
 			/* Folders selected also, use "other" terminology */
-			if (non_folder_count == 1)
-			{
+			if (non_folder_count == 1) {
 				non_folder_str = g_strdup_printf (_("1 other item selected (%s)"), 
 								  size_string);
-			}
-			else
-			{
+			} else {
 				non_folder_str = g_strdup_printf (_("%d other items selected (%s)"), 
 								  non_folder_count, 
 								  size_string);
@@ -378,26 +353,19 @@ display_selection_info (FMDirectoryView *view)
 		g_free (size_string);
 	}
 
-	if (folder_count == 0 && non_folder_count == 0)
-	{
-		sri.status_string = g_strdup ("");
-	}
-	else if (folder_count == 0)
-	{
-		sri.status_string = g_strdup (non_folder_str);
-	}
-	else if (non_folder_count == 0)
-	{
-		sri.status_string = g_strdup_printf (_("%s %s"), 
-						     folder_count_str, 
-						     folder_item_count_str);
-	}
-	else
-	{
-		sri.status_string = g_strdup_printf (_("%s %s, %s"), 
-						     folder_count_str, 
-						     folder_item_count_str,
-						     non_folder_str);
+	if (folder_count == 0 && non_folder_count == 0)	{
+		request.status_string = g_strdup ("");
+	} else if (folder_count == 0) {
+		request.status_string = g_strdup (non_folder_str);
+	} else if (non_folder_count == 0) {
+		request.status_string = g_strdup_printf (_("%s %s"), 
+							 folder_count_str, 
+							 folder_item_count_str);
+	} else {
+		request.status_string = g_strdup_printf (_("%s %s, %s"), 
+							 folder_count_str, 
+							 folder_item_count_str,
+							 non_folder_str);
 	}
 
 	g_free (first_item_name);
@@ -406,17 +374,17 @@ display_selection_info (FMDirectoryView *view)
 	g_free (non_folder_str);
 
 	nautilus_view_frame_request_status_change
-		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &sri);
+		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &request);
 
-	g_free (sri.status_string);
+	g_free (request.status_string);
 }
 
 static void
 fm_directory_view_send_selection_change (FMDirectoryView *view)
 {
 	Nautilus_SelectionRequestInfo request;
-	NautilusFileList *selection;
-	NautilusFileList *p;
+	GList *selection;
+	GList *p;
 	int i;
 
 	memset (&request, 0, sizeof (request));
@@ -424,18 +392,20 @@ fm_directory_view_send_selection_change (FMDirectoryView *view)
 	/* Collect a list of URIs. */
 	selection = fm_directory_view_get_selection (view);
 	request.selected_uris._buffer = g_alloca (g_list_length (selection) * sizeof (char *));
-	for (p = selection; p != NULL; p = p->next)
+	for (p = selection; p != NULL; p = p->next) {
 		request.selected_uris._buffer[request.selected_uris._length++]
 			= nautilus_file_get_uri (p->data);
-	g_list_free (selection);
+	}
+	nautilus_file_list_free (selection);
 
 	/* Send the selection change. */
 	nautilus_view_frame_request_selection_change
 		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &request);
 
 	/* Free the URIs. */
-	for (i = 0; i < request.selected_uris._length; i++)
+	for (i = 0; i < request.selected_uris._length; i++) {
 		g_free (request.selected_uris._buffer[i]);
+	}
 }
 
 
@@ -469,7 +439,7 @@ stop_load (FMDirectoryView *view, gboolean error)
 
 	nautilus_directory_stop_monitoring (view->details->model);
 	
-	memset(&progress, 0, sizeof(progress));
+	memset (&progress, 0, sizeof (progress));
 	progress.amount = 100.0;
 	progress.type = error ? Nautilus_PROGRESS_DONE_ERROR : Nautilus_PROGRESS_DONE_OK;
 	nautilus_view_frame_request_progress_change
@@ -506,38 +476,40 @@ use_eazel_theme_icons_cb (GtkCheckMenuItem *item, FMDirectoryView *directory_vie
 	char *theme;
 
 	theme = nautilus_icon_factory_get_theme ();
-	if (nautilus_strcmp (theme, "eazel") == 0)
+	if (nautilus_strcmp (theme, "eazel") == 0) {
 		nautilus_icon_factory_set_theme (NULL);
-	else
+	} else {
 		nautilus_icon_factory_set_theme ("eazel");
+	}
 	g_free (theme);
 }
 
 static gboolean
 display_pending_files (FMDirectoryView *view)
 {
-	NautilusFileList *pending_list;
-	NautilusFileList *p;
+	GList *pending_list;
+	GList *p;
 
 	if (view->details->model != NULL
-	    && nautilus_directory_are_all_files_seen (view->details->model))
+	    && nautilus_directory_are_all_files_seen (view->details->model)) {
 		stop_load (view, FALSE);
+	}
 
 	pending_list = view->details->pending_list;
-	if (pending_list == NULL)
+	if (pending_list == NULL) {
 		return FALSE;
+	}
 	view->details->pending_list = NULL;
 
 	fm_directory_view_begin_adding_entries (view);
 
 	for (p = pending_list; p != NULL; p = p->next) {
 		fm_directory_view_add_entry (view, p->data);
-		nautilus_file_unref (p->data);
 	}
 
 	fm_directory_view_done_adding_entries (view);
 
-	g_list_free (pending_list);
+	nautilus_file_list_free (pending_list);
 
 	return TRUE;
 }
@@ -587,8 +559,9 @@ display_pending_timeout_cb (gpointer data)
 	view = FM_DIRECTORY_VIEW (data);
 
 	displayed_some = display_pending_files (view);
-	if (displayed_some)
+	if (displayed_some) {
 		return TRUE;
+	}
 
 	view->details->display_pending_timeout_id = 0;
 	return FALSE;
@@ -600,8 +573,9 @@ static void
 schedule_idle_display_of_pending_files (FMDirectoryView *view)
 {
 	/* No need to schedule an idle if there's already one pending. */
-	if (view->details->display_pending_idle_id != 0)
+	if (view->details->display_pending_idle_id != 0) {
 		return;
+	}
 
 	/* An idle takes precedence over a timeout. */
 	unschedule_timeout_display_of_pending_files (view);
@@ -614,12 +588,14 @@ static void
 schedule_timeout_display_of_pending_files (FMDirectoryView *view)
 {
 	/* No need to schedule a timeout if there's already one pending. */
-	if (view->details->display_pending_timeout_id != 0)
+	if (view->details->display_pending_timeout_id != 0) {
 		return;
+	}
 
 	/* An idle takes precedence over a timeout. */
-	if (view->details->display_pending_idle_id != 0)
+	if (view->details->display_pending_idle_id != 0) {
 		return;
+	}
 
 	view->details->display_pending_timeout_id =
 		gtk_timeout_add (DISPLAY_TIMEOUT_INTERVAL_MSECS,
@@ -657,11 +633,10 @@ unschedule_display_of_pending_files (FMDirectoryView *view)
 
 static void
 add_files_cb (NautilusDirectory *directory,
-	      NautilusFileList *files,
+	      GList *files,
 	      gpointer callback_data)
 {
 	FMDirectoryView *view;
-	NautilusFileList *p;
 
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 	g_assert (files != NULL);
@@ -671,8 +646,7 @@ add_files_cb (NautilusDirectory *directory,
 	g_assert (directory == view->details->model);
 
 	/* Put the files on the pending list. */
-	for (p = files; p != NULL; p = p->next)
-		nautilus_file_ref (p->data);
+	nautilus_file_list_ref (files);
 	view->details->pending_list = g_list_concat
 		(view->details->pending_list, g_list_copy (files));
 	
@@ -680,10 +654,11 @@ add_files_cb (NautilusDirectory *directory,
 	   timeout to fire. If we have seen all the files, then we'll use
 	   an idle instead.
 	*/
-	if (nautilus_directory_are_all_files_seen (view->details->model))
+	if (nautilus_directory_are_all_files_seen (view->details->model)) {
 		schedule_idle_display_of_pending_files (view);
-	else
+	} else {
 		schedule_timeout_display_of_pending_files (view);
+	}
 }
 
 
@@ -897,7 +872,7 @@ open_one_in_new_window (gpointer data, gpointer user_data)
 }
 
 static void
-open_in_new_window_cb (GtkMenuItem *item, NautilusFileList *files)
+open_in_new_window_cb (GtkMenuItem *item, GList *files)
 {
 	FMDirectoryView *directory_view;
 
@@ -965,7 +940,7 @@ fm_directory_view_real_append_background_context_menu_items (FMDirectoryView *vi
 static void
 fm_directory_view_real_append_selection_context_menu_items (FMDirectoryView *view,
 							    GtkMenu *menu,
-						       	    NautilusFileList *files)
+						       	    GList *files)
 {
 	GtkWidget *menu_item;
 	gboolean exactly_one_item_selected;
@@ -1015,7 +990,7 @@ create_selection_context_menu (FMDirectoryView *view)
 {
 	GtkMenu *menu;
 	GtkWidget *menu_item;
-	NautilusFileList *selected_files;
+	GList *selected_files;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	
@@ -1024,12 +999,12 @@ create_selection_context_menu (FMDirectoryView *view)
 	if (selected_files != NULL)
 	{
 		/* Attach selection to menu, and free it when menu is freed.
-		 * This lets menu item callbacks use the files parameter.
+		 * This lets menu item callbacks hold onto the files parameter.
 		 */
 		gtk_object_set_data_full (GTK_OBJECT (menu),
 					  "selected_items",
 					  selected_files,
-					  (GtkDestroyNotify)g_list_free);
+					  (GtkDestroyNotify) nautilus_file_list_free);
 
 		gtk_signal_emit (GTK_OBJECT (view),
 				 fm_directory_view_signals[APPEND_SELECTION_CONTEXT_MENU_ITEMS], 
@@ -1208,7 +1183,7 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 	if (old_model != NULL)
 		gtk_object_unref (GTK_OBJECT (old_model));
 
-	memset(&progress, 0, sizeof(progress));
+	memset (&progress, 0, sizeof (progress));
 	progress.type = Nautilus_PROGRESS_UNDERWAY;
 	nautilus_view_frame_request_progress_change
 		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &progress);
@@ -1269,7 +1244,6 @@ fm_directory_view_select_all (FMDirectoryView *view)
 void
 fm_directory_view_stop (FMDirectoryView *view)
 {
-	g_return_if_fail (view != NULL);
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
 	unschedule_display_of_pending_files (view);

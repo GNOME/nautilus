@@ -84,4 +84,9 @@ void     nautilus_interpolate_color                  (gdouble             ratio,
 gboolean nautilus_gdk_font_equal                     (GdkFont            *font_a_null_allowed,
 						      GdkFont            *font_b_null_allowed);
 
+/* Convenience functions for lists of GdkPixbuf objects. */
+void     nautilus_gdk_pixbuf_list_ref                (GList              *pixbuf_list);
+void     nautilus_gdk_pixbuf_list_unref              (GList              *pixbuf_list);
+void     nautilus_gdk_pixbuf_list_free               (GList              *pixbuf_list);
+
 #endif /* GDK_EXTENSIONS_H */

@@ -33,6 +33,7 @@
 #include <libgnomeui/gnome-canvas-rect-ellipse.h>
 #include <gdk-pixbuf/gnome-canvas-pixbuf.h>
 
+#include "gdk-extensions.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-lib-self-check-functions.h"
@@ -2350,18 +2351,32 @@ update_icon (GnomeIconContainer *container, GnomeIconContainerIcon *icon)
 {
 	GnomeIconContainerDetails *details;
 	NautilusScalableIcon *scalable_icon;
+	guint icon_size;
 	GdkPixbuf *pixbuf;
+	GList *emblem_icons, *emblem_pixbufs, *p;
 	char *label;
 	char *contents_as_text;
 	GdkFont *font;
 
 	details = container->details;
 
+	/* Get the icons. */
 	scalable_icon = nautilus_icons_controller_get_icon_image
-		(details->controller, icon->data);
+		(details->controller, icon->data, &emblem_icons);
+
+	/* Get the corresponding pixbufs for this size. */
+	icon_size = icon_get_size (container, icon);
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
-		(scalable_icon, icon_get_size (container, icon));
+		(scalable_icon, icon_size);
+	emblem_pixbufs = NULL;
+	for (p = emblem_icons; p != NULL; p = p->next) {
+		emblem_pixbufs = g_list_prepend
+			(emblem_pixbufs, nautilus_icon_factory_get_pixbuf_for_icon (p->data, icon_size));
+	}
+
+	/* Let the icons go. */
 	nautilus_scalable_icon_unref (scalable_icon);
+	nautilus_scalable_icon_list_free (emblem_icons);
 
 	label = nautilus_icons_controller_get_icon_text
 		(details->controller, icon->data);
@@ -2377,8 +2392,12 @@ update_icon (GnomeIconContainer *container, GnomeIconContainerIcon *icon)
 			       "font", font,
 			       "text_source", contents_as_text,
 			       NULL);
-	
+	nautilus_icons_view_icon_item_set_emblems (icon->item, emblem_pixbufs);
+
+	/* Let the pixbufs go. */
 	gdk_pixbuf_unref (pixbuf);
+	nautilus_gdk_pixbuf_list_free (emblem_pixbufs);
+
 	g_free (label);
         g_free (contents_as_text);
 }

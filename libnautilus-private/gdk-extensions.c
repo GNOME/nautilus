@@ -25,6 +25,7 @@
 #include <config.h>
 #include "gdk-extensions.h"
 
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-string.h"
 
@@ -409,6 +410,31 @@ nautilus_gdk_font_equal (GdkFont *font_a_null_allowed,
 	if (font_b_null_allowed == NULL)
 		return FALSE;
 	return gdk_font_equal (font_a_null_allowed, font_b_null_allowed);
+}
+
+/**
+ * nautilus_gdk_pixbuf_list_ref
+ * @pixbuf_list: A list of GdkPixbuf objects.
+ *
+ * Refs all the pixbufs.
+ **/
+void
+nautilus_gdk_pixbuf_list_ref (GList *pixbuf_list)
+{
+	g_list_foreach (pixbuf_list, (GFunc) gdk_pixbuf_ref, NULL);
+}
+
+/**
+ * nautilus_gdk_pixbuf_list_free
+ * @pixbuf_list: A list of GdkPixbuf objects.
+ *
+ * Unrefs all the pixbufs, then frees the list.
+ **/
+void
+nautilus_gdk_pixbuf_list_free (GList *pixbuf_list)
+{
+	g_list_foreach (pixbuf_list, (GFunc) gdk_pixbuf_unref, NULL);
+	g_list_free (pixbuf_list);
 }
 
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)

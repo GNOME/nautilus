@@ -43,8 +43,8 @@
           information available from other means.
 */
 
-typedef struct _NautilusDirectory NautilusDirectory;
-typedef struct _NautilusDirectoryClass NautilusDirectoryClass;
+typedef struct NautilusDirectory NautilusDirectory;
+typedef struct NautilusDirectoryClass NautilusDirectoryClass;
 
 #define NAUTILUS_TYPE_DIRECTORY \
 	(nautilus_directory_get_type ())
@@ -60,126 +60,123 @@ typedef struct _NautilusDirectoryClass NautilusDirectoryClass;
 #define NAUTILUS_IS_FILE(object) \
 	((object) != NULL)
 
-enum _NautilusFileSortType {
+typedef enum {
 	NAUTILUS_FILE_SORT_NONE,
 	NAUTILUS_FILE_SORT_BY_NAME,
 	NAUTILUS_FILE_SORT_BY_SIZE,
 	NAUTILUS_FILE_SORT_BY_TYPE,
 	NAUTILUS_FILE_SORT_BY_MTIME
-};
-typedef enum _NautilusFileSortType NautilusFileSortType;	
+} NautilusFileSortType;	
 
-typedef struct _NautilusFile NautilusFile;
-typedef GList NautilusFileList;
+typedef struct NautilusFile NautilusFile;
 
 #define NAUTILUS_FILE(file) ((NautilusFile *)(file))
 
 typedef void (*NautilusFileListCallback) (NautilusDirectory *directory,
-					  NautilusFileList  *files,
+					  GList             *files,
 					  gpointer           callback_data);
 
 /* Basic GtkObject requirements. */
-GtkType            nautilus_directory_get_type            (void);
+GtkType            nautilus_directory_get_type             (void);
 
 /* Get a directory given a uri.
    Creates the appropriate subclass given the uri mappings.
    Returns a referenced object, not a floating one. Unref when finished.
    If two windows are viewing the same uri, the directory object is shared.
 */
-NautilusDirectory *nautilus_directory_get                 (const char               *uri);
-
-char *             nautilus_directory_get_uri             (NautilusDirectory        *directory);
+NautilusDirectory *nautilus_directory_get                  (const char               *uri);
+char *             nautilus_directory_get_uri              (NautilusDirectory        *directory);
 
 /* Simple preliminary interface for getting and setting metadata. */
-char *             nautilus_directory_get_metadata        (NautilusDirectory        *directory,
-							   const char               *tag,
-							   const char               *default_metadata);
-void               nautilus_directory_set_metadata        (NautilusDirectory        *directory,
-							   const char               *tag,
-							   const char               *default_metadata,
-							   const char               *metadata);
-
-gboolean	   nautilus_directory_get_boolean_metadata (NautilusDirectory	    *directory,
-							    const char		    *tag,
-							    gboolean		    default_metadata);
-void               nautilus_directory_set_boolean_metadata (NautilusDirectory       *directory,
-							   const char               *tag,
-							   gboolean		    default_metadata,
-							   gboolean                 metadata);
-
-int	   	   nautilus_directory_get_integer_metadata (NautilusDirectory	    *directory,
-							    const char		    *tag,
-							    int		            default_metadata);
-void               nautilus_directory_set_integer_metadata (NautilusDirectory       *directory,
-							   const char               *tag,
-							   int		    	    default_metadata,
-							   int			    metadata);
+char *             nautilus_directory_get_metadata         (NautilusDirectory        *directory,
+							    const char               *tag,
+							    const char               *default_metadata);
+void               nautilus_directory_set_metadata         (NautilusDirectory        *directory,
+							    const char               *tag,
+							    const char               *default_metadata,
+							    const char               *metadata);
+gboolean           nautilus_directory_get_boolean_metadata (NautilusDirectory        *directory,
+							    const char               *tag,
+							    gboolean                  default_metadata);
+void               nautilus_directory_set_boolean_metadata (NautilusDirectory        *directory,
+							    const char               *tag,
+							    gboolean                  default_metadata,
+							    gboolean                  metadata);
+int                nautilus_directory_get_integer_metadata (NautilusDirectory        *directory,
+							    const char               *tag,
+							    int                       default_metadata);
+void               nautilus_directory_set_integer_metadata (NautilusDirectory        *directory,
+							    const char               *tag,
+							    int                       default_metadata,
+							    int                       metadata);
 
 /* Monitor the files in a directory.
    Since there's a monitoring ref. count, you must call nautilus_directory_stop_monitoring
    if you called nautilus_directory_start_monitoring.
 */
-void               nautilus_directory_start_monitoring    (NautilusDirectory        *directory,
-							   NautilusFileListCallback  initial_files_callback,
-							   gpointer                  callback_data);
-void               nautilus_directory_stop_monitoring     (NautilusDirectory        *directory);
+void               nautilus_directory_start_monitoring     (NautilusDirectory        *directory,
+							    NautilusFileListCallback  initial_files_callback,
+							    gpointer                  callback_data);
+void               nautilus_directory_stop_monitoring      (NautilusDirectory        *directory);
 
 /* Return true if the directory has information about all the files.
    This will be false until the directory has been read at least once.
 */
-gboolean           nautilus_directory_are_all_files_seen  (NautilusDirectory        *directory);
+gboolean           nautilus_directory_are_all_files_seen   (NautilusDirectory        *directory);
 
 /* Getting at a single file. */
-NautilusFile *     nautilus_file_get                      (const char               *uri);
+NautilusFile *     nautilus_file_get                       (const char               *uri);
 
 /* Basic operations on file objects. */
-void               nautilus_file_ref                      (NautilusFile             *file);
-void               nautilus_file_unref                    (NautilusFile             *file);
+void               nautilus_file_ref                       (NautilusFile             *file);
+void               nautilus_file_unref                     (NautilusFile             *file);
 
 /* Basic attributes for file objects. */
-char *             nautilus_file_get_name                 (NautilusFile             *file);
-char *             nautilus_file_get_uri                  (NautilusFile             *file);
-GnomeVFSFileSize   nautilus_file_get_size                 (NautilusFile             *file);
-GnomeVFSFileType   nautilus_file_get_type                 (NautilusFile             *file);
-const char *	   nautilus_file_get_mime_type            (NautilusFile             *file);
-gboolean           nautilus_file_is_symbolic_link	  (NautilusFile             *file);
-gboolean           nautilus_file_is_executable            (NautilusFile             *file);
-gboolean	   nautilus_file_is_directory		  (NautilusFile		    *file);
-guint		   nautilus_file_get_directory_item_count (NautilusFile		    *file,
-							   gboolean		     ignore_invisible_items);
-
+char *             nautilus_file_get_name                  (NautilusFile             *file);
+char *             nautilus_file_get_uri                   (NautilusFile             *file);
+GnomeVFSFileSize   nautilus_file_get_size                  (NautilusFile             *file);
+GnomeVFSFileType   nautilus_file_get_type                  (NautilusFile             *file);
+const char *       nautilus_file_get_mime_type             (NautilusFile             *file);
+gboolean           nautilus_file_is_symbolic_link          (NautilusFile             *file);
+gboolean           nautilus_file_is_executable             (NautilusFile             *file);
+gboolean           nautilus_file_is_directory              (NautilusFile             *file);
+guint              nautilus_file_get_directory_item_count  (NautilusFile             *file,
+							    gboolean                  ignore_invisible_items);
 /* Simple getting and setting top-level metadata. */
-char *             nautilus_file_get_metadata             (NautilusFile             *file,
-							   const char               *tag,
-							   const char               *default_metadata);
-void               nautilus_file_set_metadata             (NautilusFile             *file,
-							   const char               *tag,
-							   const char               *default_metadata,
-							   const char               *metadata);
+char *             nautilus_file_get_metadata              (NautilusFile             *file,
+							    const char               *tag,
+							    const char               *default_metadata);
+void               nautilus_file_set_metadata              (NautilusFile             *file,
+							    const char               *tag,
+							    const char               *default_metadata,
+							    const char               *metadata);
 
 /* Attributes for file objects as user-displayable strings. */
-char *		   nautilus_file_get_string_attribute	  (NautilusFile		    *file,
-							   const char		    *attribute_name);
+char *             nautilus_file_get_string_attribute      (NautilusFile             *file,
+							    const char               *attribute_name);
 
 /* Comparing two file objects for sorting */
-int		   nautilus_file_compare_for_sort	  (NautilusFile		    *file_1,
-							   NautilusFile		    *file_2,
-							   NautilusFileSortType     sort_type);
+int                nautilus_file_compare_for_sort          (NautilusFile             *file_1,
+							    NautilusFile             *file_2,
+							    NautilusFileSortType      sort_type);
+int                nautilus_file_compare_for_sort_reversed (NautilusFile             *file_1,
+							    NautilusFile             *file_2,
+							    NautilusFileSortType      sort_type);
 
-int		   nautilus_file_compare_for_sort_reversed (NautilusFile	    *file_1,
-							   NautilusFile		    *file_2,
-							   NautilusFileSortType     sort_type);
-							   
+/* Convenience functions for dealing with a list of NautilusFile objects that each have a ref. */
+void               nautilus_file_list_ref                  (GList                    *file_list);
+void               nautilus_file_list_unref                (GList                    *file_list);
+void               nautilus_file_list_free                 (GList                    *file_list);
 
 /* Return true if this file has already been deleted.
    This object will be unref'd after sending the files_removed signal,
    but it could hang around longer if someone ref'd it.
 */
-gboolean           nautilus_file_is_gone                  (NautilusFile             *file);
+gboolean           nautilus_file_is_gone                   (NautilusFile             *file);
 
-typedef struct _NautilusDirectoryDetails NautilusDirectoryDetails;
+typedef struct NautilusDirectoryDetails NautilusDirectoryDetails;
 
-struct _NautilusDirectory
+struct NautilusDirectory
 {
 	GtkObject object;
 
@@ -187,7 +184,7 @@ struct _NautilusDirectory
 	NautilusDirectoryDetails *details;
 };
 
-struct _NautilusDirectoryClass
+struct NautilusDirectoryClass
 {
 	GtkObjectClass parent_class;
 
@@ -200,9 +197,9 @@ struct _NautilusDirectoryClass
 	   which are about to be unref'd.
 	*/
 	void   (* files_added)     (NautilusDirectory        *directory,
-				    NautilusFileList         *added_files);
+				    GList                    *added_files);
 	void   (* files_removed)   (NautilusDirectory        *directory,
-				    NautilusFileList         *removed_files);
+				    GList                    *removed_files);
 
 	/* The files_changed signal is emitted as changes occur to
 	   existing files that are noticed by the synchronization framework.
@@ -210,7 +207,7 @@ struct _NautilusDirectoryClass
 	   in. Changes to other attributes are not reported via the signal.
 	*/
 	void   (* files_changed)    (NautilusDirectory       *directory,
-				     NautilusFileList        *changed_files);
+				     GList                   *changed_files);
 
 	/* The ready_for_layout signal is emitted when the directory
 	   model judges that enough files are available for the layout

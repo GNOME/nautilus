@@ -237,18 +237,18 @@ nautilus_bookmarklist_delete_item_at (NautilusBookmarklist *bookmarks,
 {
 	GList *doomed;
 
-	g_return_if_fail(NAUTILUS_IS_BOOKMARKLIST (bookmarks));
-	g_return_if_fail(index < g_list_length(bookmarks->list));
+	g_return_if_fail (NAUTILUS_IS_BOOKMARKLIST (bookmarks));
+	g_return_if_fail (index < g_list_length (bookmarks->list));
 
 	doomed = g_list_nth (bookmarks->list, index);
 	bookmarks->list = g_list_remove_link (bookmarks->list, doomed);
 
-	g_assert(NAUTILUS_IS_BOOKMARK(doomed->data));
-	gtk_object_destroy(GTK_OBJECT(doomed->data));
+	g_assert (NAUTILUS_IS_BOOKMARK (doomed->data));
+	gtk_object_destroy (GTK_OBJECT (doomed->data));
 	
-	g_list_free(doomed);
+	g_list_free (doomed);
 	
-	nautilus_bookmarklist_contents_changed(bookmarks);
+	nautilus_bookmarklist_contents_changed (bookmarks);
 }
 
 static const gchar *
@@ -351,8 +351,8 @@ nautilus_bookmarklist_load_file (NautilusBookmarklist *bookmarks)
 	xmlNodePtr	node;
 
 	/* Wipe out old list. */
-	g_list_foreach(bookmarks->list, destroy_bookmark, NULL);
-	g_list_free(bookmarks->list);
+	g_list_foreach (bookmarks->list, destroy_bookmark, NULL);
+	g_list_free (bookmarks->list);
 	bookmarks->list = NULL;
 
 	/* Read new list from file */

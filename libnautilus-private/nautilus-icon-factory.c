@@ -51,7 +51,7 @@
 #define ICON_NAME_BLOCK_DEVICE          "i-blockdev.png"
 #define ICON_NAME_BROKEN_SYMBOLIC_LINK  "i-brokenlink.png"
 
-#define ICON_NAME_SYMBOLIC_LINK_OVERLAY "i-symlink.png"
+#define ICON_NAME_SYMBOLIC_LINK_EMBLEM  "i-symlink.png"
 
 /* This used to be called ICON_CACHE_MAX_ENTRIES, but it's misleading
  * to call it that, since we can have any number of entries in the
@@ -104,12 +104,6 @@ typedef struct {
 	NautilusCircularList recently_used_dummy_head;
 	guint recently_used_count;
         guint sweep_timer;
-        
-	/* An overlay for symbolic link icons. This is probably going
-	 * to go away when we switch to using little icon badges for
-	 * various keywords.
-	 */
-        GdkPixbuf *symbolic_link_overlay;
 } NautilusIconFactory;
 
 typedef struct {
@@ -130,7 +124,6 @@ struct _NautilusScalableIcon {
 
 	char *uri;
 	char *name;
-	gboolean is_symbolic_link;
 };
 
 /* The key to a hash table that holds the scaled icons as pixbufs.
@@ -155,8 +148,7 @@ static void                  nautilus_icon_factory_initialize       (NautilusIco
 static NautilusIconFactory * nautilus_get_current_icon_factory      (void);
 static NautilusIconFactory * nautilus_icon_factory_new              (const char               *theme_name);
 static NautilusScalableIcon *nautilus_scalable_icon_get             (const char               *uri,
-								     const char               *name,
-								     gboolean                  is_symbolic_link);
+								     const char               *name);
 static guint                 nautilus_scalable_icon_hash            (gconstpointer             p);
 static gboolean              nautilus_scalable_icon_equal           (gconstpointer             a,
 								     gconstpointer             b);
@@ -256,11 +248,6 @@ nautilus_icon_factory_clear (void)
 	factory->recently_used_dummy_head.next = &factory->recently_used_dummy_head;
 	factory->recently_used_dummy_head.prev = &factory->recently_used_dummy_head;
 	factory->recently_used_count = 0;
-
-        if (factory->symbolic_link_overlay != NULL) {
-                gdk_pixbuf_unref (factory->symbolic_link_overlay);
-                factory->symbolic_link_overlay = NULL;
-        }
 }
 
 #if 0
@@ -490,71 +477,10 @@ get_icon_file_path (const char *name, guint size_in_pixels)
 	return path;
 }
 
-/* Given the icon name, load the pixbuf. */
-static GdkPixbuf *
-nautilus_icon_factory_load_file (const char *name, guint size_in_pixels)
-{
-	char *path;
-	GdkPixbuf *image;
-	
-	path = get_icon_file_path (name, size_in_pixels);
-	if (path == NULL) {
-		return NULL;
-	}
-        image = gdk_pixbuf_new_from_file (path);
-        g_free (path);
-        return image;
-}
-
-/* Splats one on top of the other, putting the src image
- * in the lower left corner of the dest image.
- */
-static void
-nautilus_gdk_pixbuf_composite_corner (GdkPixbuf *dest, GdkPixbuf *src)
-{
-        int dx, dy, dw, dh;
-
-        dw = MIN (dest->art_pixbuf->width, src->art_pixbuf->width);
-        dh = MIN (dest->art_pixbuf->width, src->art_pixbuf->width);
-        dx = dw - src->art_pixbuf->width;
-        dy = dh - src->art_pixbuf->height;
-
-	gdk_pixbuf_composite (src, dest, dx, dy, dw, dh, 0, 0, 1, 1, ART_FILTER_BILINEAR, 255);
-}
-
-/* Given the icon name, load the pixbuf, falling back to the fallback
- * icon if necessary. Also composite the symbolic link symbol as needed.
- */
-static GdkPixbuf *
-nautilus_icon_factory_load_icon (const char *name, guint size_in_pixels, gboolean is_symbolic_link)
-{
-        GdkPixbuf *image;
-	NautilusIconFactory *factory;
-
-	/* Load the image. */
-	image = nautilus_icon_factory_load_file (name, size_in_pixels);
-	if (image == NULL)
-		return NULL;
-
-	/* Overlay the symbolic link symbol on top of the image. */
-	if (is_symbolic_link) {
-		factory = nautilus_get_current_icon_factory ();
-		if (factory->symbolic_link_overlay == NULL)
-			factory->symbolic_link_overlay = nautilus_icon_factory_load_file
-				(ICON_NAME_SYMBOLIC_LINK_OVERLAY, size_in_pixels);
-		if (factory->symbolic_link_overlay != NULL)
-			nautilus_gdk_pixbuf_composite_corner
-				(image, factory->symbolic_link_overlay);
-	}
-
-        return image;
-}
-
 /* Get or create a scalable icon. */
 static NautilusScalableIcon *
 nautilus_scalable_icon_get (const char *uri,
-			    const char *name,
-			    gboolean is_symbolic_link)
+			    const char *name)
 {
 	GHashTable *hash_table;
 	NautilusScalableIcon icon_key, *icon;
@@ -565,14 +491,12 @@ nautilus_scalable_icon_get (const char *uri,
 	/* Check to see if it's already in the table. */
 	icon_key.uri = (char *)uri;
 	icon_key.name = (char *)name;
-	icon_key.is_symbolic_link = is_symbolic_link;
 	icon = g_hash_table_lookup (hash_table, &icon_key);
 	if (icon == NULL) {
 		/* Not in the table, so create it and put it in. */
 		icon = g_new0 (NautilusScalableIcon, 1);
 		icon->uri = g_strdup (uri);
 		icon->name = g_strdup (name);
-		icon->is_symbolic_link = is_symbolic_link;
 		g_hash_table_insert (hash_table, icon, icon);
 	}
 
@@ -624,9 +548,6 @@ nautilus_scalable_icon_hash (gconstpointer p)
 	if (icon->name != NULL)
 		hash ^= g_str_hash (icon->name);
 
-	hash <<= 1;
-	hash |= icon->is_symbolic_link;
-
 	return hash;
 }
 
@@ -640,8 +561,7 @@ nautilus_scalable_icon_equal (gconstpointer a,
 	icon_b = b;
 
 	return nautilus_strcmp (icon_a->uri, icon_b->uri) == 0
-		&& nautilus_strcmp (icon_a->name, icon_b->name) == 0
-		&& icon_a->is_symbolic_link == icon_b->is_symbolic_link;
+		&& nautilus_strcmp (icon_a->name, icon_b->name) == 0;
 }
 
 NautilusScalableIcon *
@@ -649,7 +569,6 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
 {
 	char *uri;
         const char *name;
-        gboolean is_symbolic_link;
 	NautilusScalableIcon *scalable_icon;
 	
 	if (file == NULL)
@@ -660,7 +579,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
 	 * The check for using the image is currently based on the file
 	 * size, but that will change to a more sophisticated scheme later.
 	 */
-	uri = nautilus_file_get_metadata(file, NAUTILUS_CUSTOM_ICON_METADATA_KEY, NULL);
+	uri = nautilus_file_get_metadata (file, NAUTILUS_CUSTOM_ICON_METADATA_KEY, NULL);
 	if (uri == NULL
 	    && nautilus_has_prefix (nautilus_file_get_mime_type (file), "image/")
 	    && nautilus_file_get_size (file) < SELF_THUMBNAIL_SIZE_THRESHOLD)
@@ -669,17 +588,27 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
 	/* Get the generic icon set for this file. */
         name = nautilus_icon_factory_get_icon_name_for_file (file);
 	
-	/* Also record whether it's a symbolic link or not.
-	 * Later, we'll probably use a separate icon badge for this,
-	 * outside the icon factory machinery. But for now, we'll keep it.
-	 */
-        is_symbolic_link = nautilus_file_is_symbolic_link (file);
-	
 	/* Create the icon or find it in the cache if it's already there. */
-	scalable_icon = nautilus_scalable_icon_get (uri, name, is_symbolic_link);
+	scalable_icon = nautilus_scalable_icon_get (uri, name);
 	g_free (uri);
 	
 	return scalable_icon;
+}
+
+GList *
+nautilus_icon_factory_get_emblem_icons_for_file (NautilusFile *file)
+{
+	GList *list;
+
+	list = NULL;
+
+	if (nautilus_file_is_symbolic_link (file)) {
+		list = g_list_prepend (list,
+				       nautilus_scalable_icon_get (NULL,
+								   ICON_NAME_SYMBOLIC_LINK_EMBLEM));
+	}
+
+	return list;
 }
 
 static guint
@@ -782,9 +711,17 @@ load_specific_image (NautilusScalableIcon *scalable_icon,
 		return NULL;
 	} else {
 		/* Standard icon. */
-		return nautilus_icon_factory_load_icon	(scalable_icon->name,
-							 size_in_pixels,
-							 scalable_icon->is_symbolic_link);
+		char *path;
+		GdkPixbuf *image;
+		
+		path = get_icon_file_path (scalable_icon->name,
+					   size_in_pixels);
+		if (path == NULL) {
+			return NULL;
+		}
+		image = gdk_pixbuf_new_from_file (path);
+		g_free (path);
+		return image;
 	}
 }
 
@@ -1101,6 +1038,14 @@ nautilus_icon_factory_get_pixmap_and_mask_for_file (NautilusFile *file,
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (file, size_in_pixels);
 	gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap, mask, 128);
 	gdk_pixbuf_unref (pixbuf);
+}
+
+/* Convenience function for unrefing and then freeing an entire list. */
+void
+nautilus_scalable_icon_list_free (GList *icon_list)
+{
+	g_list_foreach (icon_list, (GFunc) nautilus_scalable_icon_unref, NULL);
+	g_list_free (icon_list);
 }
 
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)

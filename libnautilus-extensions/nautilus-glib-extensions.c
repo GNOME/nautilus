@@ -75,6 +75,29 @@ nautilus_strdup_strftime (const char *format, struct tm *time_pieces)
 	return result;
 }
 
+/**
+ * nautilus_g_list_equal
+ *
+ * Compares two lists to see if they are equal.
+ * @list_a: First list.
+ * @list_b: Second list.
+ *
+ * Return value: TRUE if the lists are the same length with the same elements.
+ **/
+gboolean
+nautilus_g_list_equal (GList *list_a, GList *list_b)
+{
+	GList *p, *q;
+
+	for (p = list_a, q = list_b; p != NULL && q != NULL; p = p->next, q = q->next) {
+		if (p->data != q->data) {
+			return FALSE;
+		}
+	}
+	return p == NULL && q == NULL;
+}
+
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 static void 

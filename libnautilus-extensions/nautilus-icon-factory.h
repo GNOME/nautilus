@@ -90,6 +90,7 @@ void                  nautilus_icon_factory_set_theme                    (const 
 /* Choose the appropriate icon, but don't render it yet. */
 NautilusScalableIcon *nautilus_icon_factory_get_icon_for_file            (NautilusFile          *file);
 NautilusScalableIcon *nautilus_icon_factory_get_icon_by_name             (const char            *icon_name);
+GList *               nautilus_icon_factory_get_emblem_icons_for_file    (NautilusFile          *file);
 
 /* Render an icon to a particular size.
  * Ownership of a ref. count in this pixbuf comes with the deal.
@@ -129,5 +130,10 @@ void                  nautilus_scalable_icon_unref                       (Nautil
  * This is a quick way to record the result of getting an icon by name.
  */
 char *                nautilus_scalable_icon_get_name                    (NautilusScalableIcon  *scalable_icon);
+
+/* Convenience function for freeing a list of scalable icons.
+ * Unrefs all the icons before freeing the list.
+ */
+void                  nautilus_scalable_icon_list_free                   (GList                 *scalable_icon_list);
 
 #endif /* NAUTILUS_ICON_FACTORY_H */

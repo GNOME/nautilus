@@ -91,7 +91,7 @@ struct _FMDirectoryViewClass {
 	void 	(* append_selection_context_menu_items) 	 
 					 (FMDirectoryView *view,
 					  GtkMenu *menu,
-					  NautilusFileList *files);
+					  GList *files);
 
 	/* The 'append_background_context_menu_items' signal is emitted 
 	 * when creating a context menu, either an item-specific one or
@@ -109,8 +109,7 @@ struct _FMDirectoryViewClass {
 	 * with a function that returns a newly-allocated GList of
 	 * NautilusFile pointers.
 	 */
-	NautilusFileList *
-		(* get_selection) 	 (FMDirectoryView *view);
+	GList *	(* get_selection) 	 (FMDirectoryView *view);
 
         /* bump_zoom_level is a function pointer that subclasses must override
          * to change the zoom level of an object. */

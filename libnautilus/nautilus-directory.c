@@ -120,7 +120,7 @@ static NautilusFile *nautilus_directory_new_file (NautilusDirectory *directory,
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusDirectory, nautilus_directory, GTK_TYPE_OBJECT)
 
-struct _NautilusDirectoryDetails
+struct NautilusDirectoryDetails
 {
 	char *uri_text;
 	GnomeVFSURI *uri;
@@ -140,10 +140,10 @@ struct _NautilusDirectoryDetails
 
 	gboolean directory_loaded;
 
-	NautilusFileList *files;
+	GList *files;
 };
 
-struct _NautilusFile
+struct NautilusFile
 {
 	guint ref_count;
 
@@ -654,7 +654,7 @@ dequeue_pending_idle_cb (gpointer callback_data)
 	GList *pending_file_info;
 	GList *p;
 	NautilusFile *file;
-	NautilusFileList *pending_files;
+	GList *pending_files;
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
 
@@ -1893,13 +1893,50 @@ nautilus_file_is_executable (NautilusFile *file)
 				     | GNOME_VFS_PERM_OTHER_EXEC)) != 0;
 }
 
+/**
+ * nautilus_file_list_ref
+ *
+ * Ref all the files in a list.
+ * @file_list: GList of files.
+ **/
+void
+nautilus_file_list_ref (GList *file_list)
+{
+	g_list_foreach (file_list, (GFunc) nautilus_file_ref, NULL);
+}
+
+/**
+ * nautilus_file_list_unref
+ *
+ * Unref all the files in a list.
+ * @file_list: GList of files.
+ **/
+void
+nautilus_file_list_unref (GList *file_list)
+{
+	g_list_foreach (file_list, (GFunc) nautilus_file_ref, NULL);
+}
+
+/**
+ * nautilus_file_list_free
+ *
+ * Free a list of files after unrefing them.
+ * @file_list: GList of files.
+ **/
+void
+nautilus_file_list_free (GList *file_list)
+{
+	nautilus_file_list_unref (file_list);
+	g_list_free (file_list);
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 static int data_dummy;
 static guint file_count;
 
 static void
-get_files_cb (NautilusDirectory *directory, NautilusFileList *files, gpointer data)
+get_files_cb (NautilusDirectory *directory, GList *files, gpointer data)
 {
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 	g_assert (files);

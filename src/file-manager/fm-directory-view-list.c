@@ -629,9 +629,13 @@ fm_directory_view_list_get_icon_size (FMDirectoryViewList *list_view)
 static GList *
 fm_directory_view_list_get_selection (FMDirectoryView *view)
 {
+	GList *list;
+
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW_LIST (view), NULL);
 
-	return gtk_flist_get_selection (get_flist (FM_DIRECTORY_VIEW_LIST (view)));
+	list = gtk_flist_get_selection (get_flist (FM_DIRECTORY_VIEW_LIST (view)));
+	nautilus_file_list_ref (list);
+	return list;
 }
 
 static NautilusZoomLevel

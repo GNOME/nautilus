@@ -34,8 +34,12 @@
 #define NAUTILUS_N_ELEMENTS(array) (sizeof (array) / sizeof ((array)[0]))
 
 /* Date & time functions. */
-GDate * nautilus_g_date_new_tm 	 (struct tm *time_pieces);
-char *	nautilus_strdup_strftime (const char *format, 
-				  struct tm *time_pieces);
+GDate *  nautilus_g_date_new_tm   (struct tm  *time_pieces);
+char *   nautilus_strdup_strftime (const char *format,
+				   struct tm  *time_pieces);
+
+/* List functions. */
+gboolean nautilus_g_list_equal    (GList      *list_a,
+				   GList      *list_b);
 
 #endif /* NAUTILUS_GLIB_EXTENSIONS_H */

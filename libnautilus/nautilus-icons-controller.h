@@ -35,8 +35,8 @@
    uses to manipulate the icons.
 */
 
-typedef struct _NautilusIconsController NautilusIconsController;
-typedef struct _NautilusIconsControllerClass NautilusIconsControllerClass;
+typedef struct NautilusIconsController NautilusIconsController;
+typedef struct NautilusIconsControllerClass NautilusIconsControllerClass;
 
 #define NAUTILUS_TYPE_ICONS_CONTROLLER \
 	(nautilus_icons_controller_get_type ())
@@ -52,40 +52,42 @@ typedef struct _NautilusIconsControllerClass NautilusIconsControllerClass;
 typedef struct NautilusControllerIconDummy NautilusControllerIcon;
 
 #define NAUTILUS_CONTROLLER_ICON(icon) \
-	((NautilusControllerIcon *)(icon))
+	((NautilusControllerIcon *) (icon))
 
 /* Basic GtkObject requirements. */
-GtkType               nautilus_icons_controller_get_type       (void);
+GtkType               nautilus_icons_controller_get_type          (void);
 
 /* Icon operations. */
-NautilusScalableIcon *nautilus_icons_controller_get_icon_image (NautilusIconsController *controller,
-								NautilusControllerIcon  *icon);
-char *	              nautilus_icons_controller_get_icon_property (NautilusIconsController *controller,
-								NautilusControllerIcon  *icon,
-								const gchar *property_name);
-char *                nautilus_icons_controller_get_icon_text  (NautilusIconsController *controller,
-								NautilusControllerIcon  *icon);
-char *                nautilus_icons_controller_get_icon_uri   (NautilusIconsController *controller,
-								NautilusControllerIcon  *icon);
+NautilusScalableIcon *nautilus_icons_controller_get_icon_image    (NautilusIconsController  *controller,
+								   NautilusControllerIcon   *icon,
+								   GList                   **emblem_images);
+char *                nautilus_icons_controller_get_icon_property (NautilusIconsController  *controller,
+								   NautilusControllerIcon   *icon,
+								   const char               *property_name);
+char *                nautilus_icons_controller_get_icon_text     (NautilusIconsController  *controller,
+								   NautilusControllerIcon   *icon);
+char *                nautilus_icons_controller_get_icon_uri      (NautilusIconsController  *controller,
+								   NautilusControllerIcon   *icon);
 
-struct _NautilusIconsController
+struct NautilusIconsController
 {
 	GtkObject object;
 };
 
-struct _NautilusIconsControllerClass
+struct NautilusIconsControllerClass
 {
 	GtkObjectClass parent_class;
 
-	NautilusScalableIcon * (*get_icon_image) (NautilusIconsController *controller,
-				                  NautilusControllerIcon  *icon);
-	char *  	       (* get_icon_property) (NautilusIconsController *controller,
-						  NautilusControllerIcon  *icon,
-						  const gchar *property_name);
-	char *                 (* get_icon_text) (NautilusIconsController *controller,
-						  NautilusControllerIcon  *icon);
-	char *                 (* get_icon_uri)  (NautilusIconsController *controller,
-						  NautilusControllerIcon  *icon);
+	NautilusScalableIcon * (* get_icon_image)    (NautilusIconsController  *controller,
+						      NautilusControllerIcon   *icon,
+						      GList                   **emblem_images);
+	char *  	       (* get_icon_property) (NautilusIconsController  *controller,
+						      NautilusControllerIcon   *icon,
+						      const char               *property_name);
+	char *                 (* get_icon_text)     (NautilusIconsController  *controller,
+						      NautilusControllerIcon   *icon);
+	char *                 (* get_icon_uri)      (NautilusIconsController  *controller,
+						      NautilusControllerIcon   *icon);
 };
 
 #endif /* NAUTILUS_ICONS_CONTROLLER_H */

@@ -33,18 +33,18 @@ static void nautilus_icons_controller_initialize (NautilusIconsController *contr
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconsController, nautilus_icons_controller, GTK_TYPE_OBJECT)
 
-NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL(nautilus_icons_controller, get_icon_image)
-NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL(nautilus_icons_controller, get_icon_property)
-NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL(nautilus_icons_controller, get_icon_text)
-NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL(nautilus_icons_controller, get_icon_uri)
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_icons_controller, get_icon_image)
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_icons_controller, get_icon_property)
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_icons_controller, get_icon_text)
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_icons_controller, get_icon_uri)
 
 static void
 nautilus_icons_controller_initialize_class (NautilusIconsControllerClass *klass)
 {
-	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL(klass, nautilus_icons_controller, get_icon_image);
-	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL(klass, nautilus_icons_controller, get_icon_property);
-	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL(klass, nautilus_icons_controller, get_icon_text);
-	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL(klass, nautilus_icons_controller, get_icon_uri);
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_icons_controller, get_icon_image);
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_icons_controller, get_icon_property);
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_icons_controller, get_icon_text);
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_icons_controller, get_icon_uri);
 }
 
 static void
@@ -54,10 +54,11 @@ nautilus_icons_controller_initialize (NautilusIconsController *controller)
 
 NautilusScalableIcon *
 nautilus_icons_controller_get_icon_image (NautilusIconsController *controller,
-					  NautilusControllerIcon *icon)
+					  NautilusControllerIcon *icon,
+					  GList **emblem_images)
 {
 	return (* NAUTILUS_ICONS_CONTROLLER_CLASS (controller->object.klass)->get_icon_image)
-		(controller, icon);
+		(controller, icon, emblem_images);
 }
 
 char *

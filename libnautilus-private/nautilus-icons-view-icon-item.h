@@ -42,20 +42,23 @@ BEGIN_GNOME_DECLS
 	(GTK_CHECK_CLASS_TYPE ((klass),	NAUTILUS_TYPE_ICONS_VIEW_ICON_ITEM))
 
 
-typedef struct _NautilusIconsViewIconItem NautilusIconsViewIconItem;
-typedef struct _NautilusIconsViewIconItemClass NautilusIconsViewIconItemClass;
-typedef struct _NautilusIconsViewIconItemDetails NautilusIconsViewIconItemDetails;
+typedef struct NautilusIconsViewIconItem NautilusIconsViewIconItem;
+typedef struct NautilusIconsViewIconItemClass NautilusIconsViewIconItemClass;
+typedef struct NautilusIconsViewIconItemDetails NautilusIconsViewIconItemDetails;
 
-struct _NautilusIconsViewIconItem {
+struct NautilusIconsViewIconItem {
 	GnomeCanvasItem item;
 	NautilusIconsViewIconItemDetails *details;
 };
 
-struct _NautilusIconsViewIconItemClass {
+struct NautilusIconsViewIconItemClass {
 	GnomeCanvasItemClass parent_class;
 };
 
 GtkType  nautilus_icons_view_icon_item_get_type                  (void);
+
+void     nautilus_icons_view_icon_item_set_emblems               (NautilusIconsViewIconItem *item,
+								  GList *emblem_pixbufs);
 
 void     nautilus_icons_view_icon_item_get_icon_world_rectangle  (NautilusIconsViewIconItem *item,
 								  ArtDRect                  *world_rectangle);

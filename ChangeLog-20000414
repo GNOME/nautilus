@@ -1,11 +1,93 @@
+2000-02-23  Darin Adler  <darin@eazel.com>
+
+	Some of the underlying work to prepare for emblems on the icons.
+
+	* style-guide.html: Some minor updates to the style guide,
+	including rules about headers.
+
+	* libnautilus/nautilus-icon-factory.h,
+	libnautilus/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_emblem_icons_for_file),
+	(nautilus_scalable_icon_get), (nautilus_icon_factor_clear),
+	(nautilus_icon_factory_load_file),
+	(nautilus_gdk_pixbuf_composite_corner),
+	(nautilus_icon_factor_load_icon), (nautilus_scalable_icon_hash),
+	(nautilus_scalable_icon_equal),
+	(nautilus_icon_factory_get_icon_for_file), (load_specific_image):
+	Added interface for getting emblem icons for a file, and got rid
+	of the symbolic-link overlay that was previously built into the
+	icon.
+
+	* libnautilus/gnome-icon-container.c (update_icon):
+	Get pixbufs for all emblems and pass into the icon object.
+
+	* libnautilus/nautilus-icons-controller.c
+	(nautius_icons_controller_get_icon_image):
+	src/file-manager/fm-icons-controller.h,
+	src/file-manager/fm-icons-controller.c
+	(fm_icons_controller_get_icon_image): Return a list of emblem
+	images along with the main image.
+
+	* libnautilus/nautilus-icons-view-icon-item.h,
+	libnautilus/nautilus-icons-view-icon-item.c
+	(nautilus_icons_view_icon_item_set_emblems),
+	(nautilus_icons_view_icon_item_destroy): Keep a list of emblem
+	pixbufs in each icon. We don't draw them quite yet.
+
+	* libnautilus/gdk-extensions.h, libnautilus/gdk-extensions.c:
+	(nautilus_gdk_pixbuf_list_ref), (nautilus_gdk_pixbuf_list_unref),
+	(nautilus_gdk_pixbuf_list_free): Convenience functions for
+	manipulating lists of GdkPixbuf objects.
+
+	* libnautilus/nautilus-directory.h,
+	libnautilus/nautilus-directory.c: (nautilus_file_list_ref),
+	(nautilus_file_list_unref), (nautilus_file_list_free): Convenience
+	functions for manipulating lists of NautilusFile objects. Also got
+	rid of NautilusFileList typedef.
+
+	* libnautilus/nautilus-icon-factory.h,
+	libnautilus/nautilus-icon-factory.h:
+	(nautilus_scalable_icon_list_free): Convenience function for
+	manipulating lists of NautilusScalableIcon objects.
+
+	* libnautilus/nautilus-glib-extensions.h,
+	libnautilus/nautilus-glib-extensions.c: (nautilus_g_list_equal):
+	Function to compare two GLists to see if they are
+	identical. Particularly useful with lists of reference-counted
+	objects.
+
+	* src/file-manager/fm-directory-view-icons.c
+	(fm_directory_view_icons_destroy),
+	(add_icon_if_already_positioned),
+	(fm_directory_view_icons_append_selection_context_menu_items),
+	(display_icons_not_already_positioned),
+	(fm_direectory_view_icons_get_selection):
+	src/file-manager/fm-directory-view-list.c
+	(fm_directory_view_list_get_selection):
+	src/file-manager/fm-directory-view.c (display_selection_info),
+	(display_pending_files), (add_files_cb), (open_in_new_window_cb),
+	(fm_directory_view_real_append_selection_context_menu_items): Got
+	rid of use of NautilusFileList typedef, corrected ref. counting of
+	files in the lists by using new calls.
+	
+	* src/nautilus-bookmarklist.c, src/nautilus-bookmarks-menu.c,
+	src/nautilus-index-tabs.c,
+	src/file-manager/fm-directory-view-icons.c,
+	src/file-manager/fm-directory-view.c,
+	src/file-manager/fm-icons-controller.c: A bit of reformatting.
+
 2000-02-23  Andy Hertzfeld <andy@eazel.com>
-	* icons/i-directory.png, i-directory-36.png, i-regular.png,i-regular-36.png:
-        this completes Kenneth's set of icons for the generic document and folder
+	
+	* icons/i-directory.png, icons/i-directory-36.png,
+	* icons/i-regular.png, icons/i-regular-36.png:
+        This completes Kenneth's set of icons for the generic document and folder
 	* icons/Makefile.am:
-	added the 36 pixel versions
+	Added the 36 pixel versions.
 	
 2000-02-23  Elliot Lee  <sopwith@redhat.com>
-	* autogen.sh: Finish the hack to not make people get gnome.m4 from gnome-libs any more.
+	
+	* autogen.sh: Finish the hack to not make people get gnome.m4 from
+	gnome-libs any more.
 
 2000-02-22  Andy Hertzfeld <andy@eazel.com>
 	
@@ -98,7 +180,9 @@
 
 2000-02-22  Andy Hertzfeld <andy@eazel.com>
 
-	* icons/i-folder-192.png, icons/i-folder-96.png, icons/i-folder-72.png
+	* icons/i-directory-192.png
+	* icons/i-directory-96.png
+	* icons/i-directory-72.png
 	Hi-res versions of the standard gnome folder icon,
 	contributed by Kenneth Christiansen.
 	* icons/Makefile.am
@@ -106,8 +190,9 @@
 
 2000-02-21  Andy Hertzfeld <andy@eazel.com>
 
-	* icons/i-regular-192.png, icons/i-regular-96.png,
-	icons/i-regular-72.png
+	* icons/i-regular-192.png
+	* icons/i-regular-96.png
+	* icons/i-regular-72.png
 	Hi-res versions of the standard gnome generic document icon,
 	contributed by Kenneth Christiansen
 	* icons/Makefile.am
@@ -134,7 +219,7 @@
 	
 2000-02-21  Andy Hertzfeld <andy@eazel.com>
 
-    added document icons to eazel icons theme in 4 sizes
+	added document icons to eazel icons theme in 4 sizes
     
 	* icons/eazel/i-regular.png, i-regular-36.png, i-regular-72.png,
 	  i-regular-96.png:
