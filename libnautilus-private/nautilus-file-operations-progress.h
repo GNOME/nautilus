@@ -55,7 +55,8 @@ NautilusFileOperationsProgress *nautilus_file_operations_progress_new           
 											const char                     *from_prefix,
 											const char                     *to_prefix,
 											gulong                          files_total,
-											gulong                          bytes_total);
+											gulong                          bytes_total,
+											gboolean			use_timeout);
 void                            nautilus_file_operations_progress_done                 (NautilusFileOperationsProgress *dialog);
 void                            nautilus_file_operations_progress_set_progress_title   (NautilusFileOperationsProgress *dialog,
 											const char                     *progress_title);
@@ -77,5 +78,7 @@ void                            nautilus_file_operations_progress_new_file      
 void                            nautilus_file_operations_progress_update_sizes         (NautilusFileOperationsProgress *dialog,
 											gulong                          bytes_done_in_file,
 											gulong                          bytes_done);
+void				nautilus_file_operations_progress_pause_timeout	       (NautilusFileOperationsProgress *progress);
+void				nautilus_file_operations_progress_resume_timeout       (NautilusFileOperationsProgress *progress);
 
 #endif /* NAUTILUS_FILE_OPERATIONS_PROGRESS_H */

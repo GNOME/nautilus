@@ -1,3 +1,22 @@
+2002-08-11  Frank Worsley  <fworsley@shaw.ca>
+
+	* libnautilus-private/nautilus-file-operations-progress.h:
+	* libnautilus-private/nautilus-file-operations-progress.c:
+	(nautilus_file_operations_progress_update),
+	(nautilus_file_operations_progress_destroy), (map_callback),
+	(delayed_show_callback), (nautilus_file_operations_progress_new),
+	(nautilus_file_operations_progress_new_file),
+	(nautilus_file_operations_progress_done),
+	(nautilus_file_operations_progress_pause_timeout),
+	(nautilus_file_operations_progress_resume_timeout):
+	use a timeout for showing the progress dialog
+
+	* libnautilus-private/nautilus-file-operations.c:
+	(create_transfer_dialog), (handle_transfer_vfs_error),
+	(handle_transfer_overwrite), (nautilus_file_operations_copy_move),
+	(nautilus_file_operations_delete), (do_empty_trash):
+	modified to support timeout
+
 2002-07-10  Jody Goldberg <jody@gnome.org>
 
 	* libnautilus-private/nautilus-directory-async.c

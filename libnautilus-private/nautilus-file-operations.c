@@ -73,7 +73,6 @@ typedef struct {
 	GnomeVFSXferOverwriteMode overwrite_mode;
 	GtkWidget *parent_view;
 	TransferKind kind;
-	gboolean show_progress_dialog;
 	void (* done_callback) (GHashTable *debuting_uris, gpointer data);
 	gpointer done_callback_data;
 	GHashTable *debuting_uris;
@@ -280,14 +279,10 @@ static void
 create_transfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
 			TransferInfo *transfer_info)
 {
-	if (!transfer_info->show_progress_dialog) {
-		return;
-	}
-
 	g_return_if_fail (transfer_info->progress_dialog == NULL);
 
 	transfer_info->progress_dialog = nautilus_file_operations_progress_new 
-		(transfer_info->operation_title, "", "", "", 0, 0);
+		(transfer_info->operation_title, "", "", "", 0, 0, TRUE);
 
 	/* Treat clicking on the close box or use of the escape key
 	 * the same as clicking cancel.
@@ -307,8 +302,6 @@ create_transfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
 			GTK_WINDOW (transfer_info->progress_dialog), 
 			GTK_WINDOW (gtk_widget_get_toplevel (transfer_info->parent_view)));
 	}
-
-	gtk_widget_show (GTK_WIDGET (transfer_info->progress_dialog));
 }
 
 static void
@@ -796,6 +789,9 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 
 		/* transfer error, prompt the user to continue or stop */
 
+		/* stop timeout while waiting for user */
+		nautilus_file_operations_progress_pause_timeout (transfer_info->progress_dialog);
+
 		formatted_source_name = NULL;
 		formatted_target_name = NULL;
 
@@ -954,6 +950,8 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 		g_free (formatted_source_name);
 		g_free (formatted_target_name);
 
+		nautilus_file_operations_progress_resume_timeout (transfer_info->progress_dialog);
+
 		return error_dialog_result;
 
 	case GNOME_VFS_XFER_ERROR_MODE_ABORT:
@@ -995,6 +993,8 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 	int result;
 	char *text, *formatted_name;
 
+	nautilus_file_operations_progress_pause_timeout (transfer_info->progress_dialog);	
+
 	/* Handle special case files such as Trash, mount links and home directory */	
 	if (is_special_link (progress_info->target_name)) {
 		formatted_name = extract_and_ellipsize_file_name_for_dialog
@@ -1021,6 +1021,8 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 		g_free (text);
 		g_free (formatted_name);
 
+		nautilus_file_operations_progress_resume_timeout (transfer_info->progress_dialog);
+
 		return GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP;
 	}
 	
@@ -1040,6 +1042,9 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 			(parent_for_error_dialog (transfer_info), TRUE, text, 
 			 _("Conflict while copying"),
 			 _("Replace"), _("Skip"), NULL);
+			 
+		nautilus_file_operations_progress_resume_timeout (transfer_info->progress_dialog);
+					 
 		switch (result) {
 		case 0:
 			return GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE;
@@ -1054,6 +1059,8 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 			(parent_for_error_dialog (transfer_info), TRUE, text, 
 			 _("Conflict while copying"),
 			 _("Replace All"), _("Replace"), _("Skip"), NULL);
+
+		nautilus_file_operations_progress_resume_timeout (transfer_info->progress_dialog);
 
 		switch (result) {
 		case 0:
@@ -1684,7 +1691,6 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	gboolean target_is_trash;
 	gboolean is_desktop_trash_link;
 	gboolean duplicate;
-	gboolean all_local;
 	
 	IconPositionIterator *icon_position_iterator;
 
@@ -1708,7 +1714,6 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	 */
 	source_uri_list = NULL;
 	target_uri_list = NULL;
-	all_local = TRUE;
 	duplicate = copy_action != GDK_ACTION_MOVE;
 	for (p = item_uris; p != NULL; p = p->next) {
 		/* Filter out special Nautilus link files */
@@ -1745,11 +1750,6 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 
 			target_uri_list = g_list_prepend (target_uri_list, target_uri);
 			source_uri_list = g_list_prepend (source_uri_list, source_uri);
-
-			if (all_local && (!gnome_vfs_uri_is_local (source_uri)
-					  || !gnome_vfs_uri_is_local (target_uri))) {
-				all_local = FALSE;
-			}
 
 			if (duplicate
 			    && !gnome_vfs_uri_equal (source_dir_uri, target_dir_uri)) {
@@ -1819,11 +1819,6 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 
 		transfer_info->kind = TRANSFER_MOVE_TO_TRASH;
 
-		/* Do an arbitrary guess that an operation will take very little
-		 * time and the progress shouldn't be shown.
-		 */
-		transfer_info->show_progress_dialog = 
-			!all_local || g_list_length ((GList *) item_uris) > 20;
 	} else if ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) {
 		/* localizers: progress dialog title */
 		transfer_info->operation_title = _("Moving files");
@@ -1836,11 +1831,6 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 
 		transfer_info->kind = TRANSFER_MOVE;
 
-		/* Do an arbitrary guess that an operation will take very little
-		 * time and the progress shouldn't be shown.
-		 */
-		transfer_info->show_progress_dialog = 
-			!all_local || g_list_length ((GList *) item_uris) > 20;
 	} else if ((move_options & GNOME_VFS_XFER_LINK_ITEMS) != 0) {
 		/* when creating links, handle name conflicts automatically */
 		move_options |= GNOME_VFS_XFER_USE_UNIQUE_NAMES;
@@ -1854,8 +1844,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		transfer_info->cleanup_name = _("Finishing Creating Links...");
 
 		transfer_info->kind = TRANSFER_LINK;
-		transfer_info->show_progress_dialog =
-			g_list_length ((GList *)item_uris) > 20;
+
 	} else {
 		/* localizers: progress dialog title */
 		transfer_info->operation_title = _("Copying files");
@@ -1867,8 +1856,6 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		transfer_info->cleanup_name = "";
 
 		transfer_info->kind = TRANSFER_COPY;
-		/* always show progress during copy */
-		transfer_info->show_progress_dialog = TRUE;
 	}
 
 	/* we'll need to check for copy into Trash and for moving/copying the Trash itself */
@@ -2136,7 +2123,6 @@ nautilus_file_operations_delete (const GList *item_uris,
 	uri_list = g_list_reverse (uri_list);
 
 	transfer_info = transfer_info_new (parent_view);
-	transfer_info->show_progress_dialog = TRUE;
 
 	/* localizers: progress dialog title */
 	transfer_info->operation_title = _("Deleting files");
@@ -2172,7 +2158,6 @@ do_empty_trash (GtkWidget *parent_view)
 	if (trash_dir_list != NULL) {
 		/* set up the move parameters */
 		transfer_info = transfer_info_new (parent_view);
-		transfer_info->show_progress_dialog = TRUE;
 
 		/* localizers: progress dialog title */
 		transfer_info->operation_title = _("Emptying the Trash");
