@@ -57,6 +57,10 @@ strip_uri_begenning (const char *location_uri)
         const char *ret_val;
 
         first_token = g_strsplit (location_uri, " ", 1);
+        if (first_token[0] == NULL) {
+                g_strfreev (first_token);                
+                return NULL;
+        }
 
         /* parse the first token from the end to the begenning. 
            to extract the search:[] part.
@@ -124,6 +128,9 @@ tokenize_uri (const char *string)
         criterion_list = NULL;
 
         string = strip_uri_begenning (string);
+        if (string == NULL) {
+                return NULL;
+        }
 
         /* make sure we can handle this uri */
         if ( strchr (string , '(') != NULL
@@ -397,6 +404,11 @@ get_translated_criterion (const GSList *criterion)
         value_criterion_item *value_table;
         char *ret_val;
 
+        /* make sure we got a valid criterion */
+        if (g_slist_length ((GSList *) criterion) != 3) {
+                return NULL;
+        }
+
 
         /* get through begening of criterion structure */
         item_number = get_item_number (main_table, (char *)criterion->data);
@@ -548,13 +560,12 @@ parse_uri (const char *search_uri)
         }
 
         /* processes the first criterion and add the necessary "whose" prefix */
-        translated_prefix = get_first_criterion_prefix (criteria);
         translated_criterion = get_translated_criterion ((GSList *)criteria->data);
         if (translated_criterion == NULL) {
                 free_tokenized_uri (criteria);
-                g_free (translated_prefix);
                 return NULL;
         }
+        translated_prefix = get_first_criterion_prefix (criteria);
         translated_suffix = get_first_criterion_suffix (criteria);
         ret_val = g_strdup_printf (_("Search results for items %s %s%s"), 
                                    translated_prefix, translated_criterion, translated_suffix);
@@ -628,9 +639,39 @@ void
 nautilus_self_check_search_uri (void)
 {
 	/* search_uri_to_human */
-	/* FIXME: This test results in a core dump. */
-        /* NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human (""), ""); */
+        /* make sure that it does not accept non-supported uris.*/
+
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("xxx:yyy"), "xxx:yyy");
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human (""), ""); 
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("s"), "s");
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]"), "search:[][]");
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]fi"), "search:[][]fi");
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name"), 
+                                      "search:[][]file_name");
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name cont"), 
+                                      "search:[][]file_name cont");
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains"), 
+                                      "search:[][]file_name contains");
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name c stuff"), 
+                                      "search:[][]file_name c stuff");
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]&"), 
+                                      "search:[][]&");
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]f & s"), 
+                                      "search:[][]f & s");
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & f"), 
+                                      "search:[][]file_name contains stuff & f");
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type i"), 
+                                      "search:[][]file_name contains stuff & file_type i");
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type is f"), 
+                                      "search:[][]file_name contains stuff & file_type is f");
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stu)ff & file_type is file"), 
+                                      "search:[][]file_name contains stu)ff & file_type is file");
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stu(ff & file_type is file"), 
+                                      "search:[][]file_name contains stu(ff & file_type is file");
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stu|ff & file_type is file"), 
+                                      "search:[][]file_name contains stu|ff & file_type is file");
+
+
         /* FIXME: Need a lot more tests. */
 
         /* is_search_uri */
