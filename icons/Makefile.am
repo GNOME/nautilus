@@ -54,6 +54,7 @@ icon_DATA =					\
 	i-zipdisk2.png				\
 	loading.png				\
 	multi-ok.png				\
+	nautilus-logo.png			\
 	nautilus3.jpg				\
 	not.png					\
 	tableft.png				\

@@ -29,9 +29,11 @@
 #include <sys/stat.h>
 #include <string.h>
 #include <stdlib.h>
+#include "nautilus-file.h"
+#include "nautilus-metadata.h"
 
 const char* const nautilus_user_directory_name = ".nautilus";
-const char* const nautilus_user_top_directory_name = "top";
+const char* const nautilus_user_main_directory_name = "Nautilus";
 const unsigned default_nautilus_directory_mode = 0755;
 
 
@@ -103,19 +105,20 @@ nautilus_user_directory()
 }
 
 /**
- * nautilus_user_top_directory:
+ * nautilus_user_main_directory:
  * 
- * Get the path for the user's top directory.  
- * Usually ~/.nautilus/top
+ * Get the path for the user's main Nautilus directory.  
+ * Usually ~/Nautilus
  *
  * Return value: the directory path.
  **/
 const char *
-nautilus_user_top_directory (void)
+nautilus_user_main_directory (void)
 {
-	static char *user_top_directory;
-
-	if (user_top_directory == NULL)
+	static char *user_main_directory;
+	NautilusFile *file;
+	
+	if (user_main_directory == NULL)
 	{
 		const char * user_directory;
 		
@@ -123,18 +126,19 @@ nautilus_user_top_directory (void)
 
 		g_assert (user_directory != NULL);
 
-		user_top_directory = nautilus_make_path (user_directory,
-							 nautilus_user_top_directory_name);
-
-		if (!g_file_exists (user_top_directory))
+		user_main_directory = g_strdup_printf ("%s/%s",
+							g_get_home_dir(),
+							nautilus_user_main_directory_name);
+												
+		if (!g_file_exists (user_main_directory))
 		{
 			char	   *src;
 			char	   *command;
-
+			char	   *file_uri, *image_uri, *temp_str;
 
 			src = gnome_datadir_file ("nautilus/top");
 
-			command = g_strdup_printf ("cp -R %s %s", src, user_top_directory);
+			command = g_strdup_printf ("cp -R %s %s", src, user_main_directory);
 
 			if (system (command) != 0)
 			{
@@ -144,10 +148,27 @@ nautilus_user_top_directory (void)
 			
 			g_free (src);
 			g_free (command);
+		
+			/* assign a custom image for the directory icon */
+			file_uri = g_strdup_printf("file://%s", user_main_directory);
+			temp_str = gnome_pixmap_file ("nautilus/nautilus-logo.png");
+			image_uri = g_strdup_printf("file://%s", temp_str);
+			g_free(temp_str);
+			
+			file = nautilus_file_get (file_uri);
+			if (file != NULL) {
+				nautilus_file_set_metadata (file,
+							    NAUTILUS_METADATA_KEY_CUSTOM_ICON,
+							    NULL,
+							    image_uri);
+				nautilus_file_unref (file);
+			}
+			g_free(file_uri);
+			g_free(image_uri);
 		}
 	}
 
-	if (!g_file_test (user_top_directory, G_FILE_TEST_ISDIR))
+	if (!g_file_test (user_main_directory, G_FILE_TEST_ISDIR))
 	{
 		/* Bad news, directory still isn't there.
 		 * FIXME: Report this to user somehow. 
@@ -156,5 +177,5 @@ nautilus_user_top_directory (void)
 
 	}
 
-	return user_top_directory;
+	return user_main_directory;
 }

@@ -1,3 +1,24 @@
+2000-04-24  Andy Hertzfeld <andy@eazel.com>
+
+	changed the location of the novice home directory, and gave it
+	a custom icon
+	
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	renamed routines from "top" to "main", and changed the install location
+	from ~/.nautilus/top to ~/Nautilus, and set a custom icon for it
+	* libnautilus-extensions/nautilus-file-utilities.h:
+	changed nautilus_user_top_directory to nautilus_user_main_directory
+	* libnautilus-extensions/nautilus-directory.c
+	disabled assert that was firing due to async metadata reading, but
+	tagged it with a FIXME so we can put it back when the framework is
+	completed
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	made it use newly renamed routine to access directory
+	* icons/nautilus-logo.png:
+	added new icon for the novice home directory
+	* icons/Makefile.am:
+	added new icon to build
+	
 2000-04-24  J. Shane Culpepper  <pepper@eazel.com>
 	*configure.in
 	*components/services/install/Makefile.am

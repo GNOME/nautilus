@@ -360,7 +360,7 @@ user_level_changed_callback (gpointer user_data)
 	gboolean		show_hidden_files = FALSE;
 	gboolean		use_real_home = TRUE;
 
-	const char		*user_top_directory;
+	const char		*user_main_directory;
 
 	preferences = nautilus_preferences_get_global_preferences ();
 
@@ -394,12 +394,12 @@ user_level_changed_callback (gpointer user_data)
 					  show_hidden_files);
 
 	/* FIXME: This call needs to be spanked to conform.  Should return a strduped string */
-	user_top_directory = nautilus_user_top_directory ();
+	user_main_directory = nautilus_user_main_directory ();
 	
 	if (use_real_home)
 		home_uri_string = g_strdup_printf ("file://%s", g_get_home_dir());
 	else
-		home_uri_string = g_strdup_printf ("file://%s", user_top_directory);
+		home_uri_string = g_strdup_printf ("file://%s", user_main_directory);
 
 	g_assert (home_uri_string != NULL);
 	

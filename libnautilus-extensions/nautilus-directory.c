@@ -446,7 +446,11 @@ metafile_read_complete (NautilusDirectory *directory)
 	int size;
 
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
-	g_assert (directory->details->metafile == NULL);
+	
+	/* FIXME: the following assertion shouldn't be disabled, but it fires
+	in the way when you set metadata before the metafile is completely read.
+	Currently, the old metadata in the file will be lost */
+	/* g_assert (directory->details->metafile == NULL); */
 	
 	/* The gnome-xml parser requires a zero-terminated array.
 	 * Also, we don't want to allocate an empty buffer

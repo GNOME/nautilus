@@ -30,6 +30,6 @@
 char *      nautilus_make_path          (const char *path,
 					 const char *name);
 const char *nautilus_user_directory     (void);
-const char *nautilus_user_top_directory (void);
+const char *nautilus_user_main_directory (void);
 
 #endif /* NAUTILUS_FILE_UTILITIES_H */
