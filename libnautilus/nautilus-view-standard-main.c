@@ -220,6 +220,7 @@ make_object (BonoboGenericFactory *factory,
 	if ((control = bonobo_object_query_local_interface
 	             (view, "IDL:Bonobo/Control:1.0"))) {
 		nautilus_view_instrument_for_failure (control, callback_data);
+		bonobo_object_unref (control);
 	}
 
 	return BONOBO_OBJECT (view);
