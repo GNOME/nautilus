@@ -1,3 +1,8 @@
+2001-08-01  Alex Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-container.c (lay_down_icons_tblr):
+	64bit clean. Use sizeof (int *), not sizeof (int). 
+
 Wed Aug  1 04:58:35 2001  Jonathan Blandford  <jrb@redhat.com>
 
 	* libnautilus-private/nautilus-link.c: Fix a crash when some files
@@ -267,7 +272,6 @@ Tue Jul 24 19:58:15 2001  Jonathan Blandford  <jrb@redhat.com>
 	getpid() returns an int. Instead cast it to unsigned long for
 	printing.
 
->>>>>>> 1.4689
 2001-07-11  Alex Larsson  <alexl@redhat.com>
 
 	* acconfig.h:
