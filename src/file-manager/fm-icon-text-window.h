@@ -30,7 +30,5 @@
 #include <gtk/gtkwindow.h>
 
 GtkWidget * fm_icon_text_window_get_or_create (void);
-void	    fm_icon_text_window_set_view      (GtkWindow *window,
-					       FMDirectoryViewIcons *view);
 
 #endif /* FM_ICON_TEXT_WINDOW_H */
