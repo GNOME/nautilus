@@ -1,3 +1,9 @@
+2004-01-04  Martin Wehner  <martin.wehner@epost.de>
+
+	* libnautilus-private/nautilus-file-operations-progress.[ch]:
+	Use GnomeVFSFileSize instead of gulong to store file sizes.
+	Prevents an overflow with transfers > 4GB. Fixes bug #96734.
+	
 2004-01-02  Martin Wehner  <martin.wehner@epost.de>
 
 	* libnautilus-private/nautilus-file-operations.c:
