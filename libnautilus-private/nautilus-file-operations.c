@@ -1008,12 +1008,36 @@ is_special_link (const char *uri)
 	return eel_uri_is_desktop (uri);
 }
 
+static gboolean
+is_directory (const char *uri)
+{
+	GnomeVFSFileInfo *info;
+	GnomeVFSResult result;
+	gboolean is_dir;
+
+	is_dir = FALSE;
+	
+	info = gnome_vfs_file_info_new ();
+	result = gnome_vfs_get_file_info (uri, info, GNOME_VFS_FILE_INFO_DEFAULT);
+
+	if (result == GNOME_VFS_OK &&
+	    info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_TYPE) {
+		is_dir = (info->type == GNOME_VFS_FILE_TYPE_DIRECTORY);
+	}
+	
+	gnome_vfs_file_info_unref (info);
+
+	return is_dir;
+}
+
+
 static int
 handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 		           TransferInfo *transfer_info)
 {
 	int result;
 	char *text, *primary_text, *secondary_text, *formatted_name;
+	gboolean is_merge, target_is_dir;
 
 	nautilus_file_operations_progress_pause_timeout (transfer_info->progress_dialog);	
 
@@ -1053,10 +1077,25 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 	/* transfer conflict, prompt the user to replace or skip */
 	formatted_name = format_and_ellipsize_uri_for_dialog (
 		parent_for_error_dialog (transfer_info), progress_info->target_name);
-	text = g_strdup_printf (_("The file \"%s\" already exists.  Would you like to replace it?"), 
-	                        formatted_name);
+
+	target_is_dir = is_directory (progress_info->target_name);
+	if (target_is_dir) {
+		text = g_strdup_printf (_("The folder \"%s\" already exists.  Would you like to replace it?"), 
+					formatted_name);
+	} else {
+		text = g_strdup_printf (_("The file \"%s\" already exists.  Would you like to replace it?"), 
+					formatted_name);
+	}
 	g_free (formatted_name);
 
+	is_merge =  target_is_dir && is_directory (progress_info->source_name);
+
+	if (is_merge) {
+		secondary_text = _("If you replace the existing folder, any files in it that conflicts with the files being copied will be overwritten.");
+	} else {
+		secondary_text = _("If you replace an existing file, its contents will be overwritten.");
+	}
+	
 	if (progress_info->duplicate_count == 1) {
 		/* we are going to only get one duplicate alert, don't offer
 		 * Replace All
@@ -1066,7 +1105,7 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 			 TRUE,
 			 GTK_MESSAGE_QUESTION, 
 			 text, 
-			 _("If you replace an existing file, its contents will be overwritten."), 
+			 secondary_text, 
 			 _("Conflict While Copying"),
 			 _("_Skip"), _("_Replace"), NULL);
 		g_free (text);	 
@@ -1085,7 +1124,7 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 	} else {
 		result = eel_run_simple_dialog
 			(parent_for_error_dialog (transfer_info), TRUE, GTK_MESSAGE_QUESTION, text, 
-			 _("If you replace an existing file, its contents will be overwritten."),  
+			 secondary_text, 
 			 _("Conflict While Copying"),
 			 _("Replace _All"), _("_Skip"), _("_Replace"), NULL);
 		g_free (text);
