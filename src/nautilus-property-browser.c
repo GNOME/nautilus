@@ -604,18 +604,24 @@ make_properties_from_xml_node(NautilusPropertyBrowser *property_browser, xmlNode
 	int index = 0;
 	while (current_node != NULL) {
 		NautilusBackground *background;
+		GtkWidget *frame;
 		char* color_str = xmlNodeGetContent(current_node);
 		GtkWidget *event_box = gtk_event_box_new();
 		gtk_widget_set_usize(event_box, 48, 48);
 		gtk_widget_show(event_box);
 
+		frame = gtk_frame_new(NULL);
+  		gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_OUT);
+		gtk_widget_show(frame);
+		gtk_container_add(GTK_CONTAINER(frame), event_box);
+		
 		background = nautilus_get_widget_background (GTK_WIDGET (event_box));
 		nautilus_background_set_color (background, color_str);	
 			
 		gtk_signal_connect(GTK_OBJECT (event_box), "button_press_event", 
 					GTK_SIGNAL_FUNC(element_clicked_cb), g_strdup(color_str));
                 gtk_object_set_user_data(GTK_OBJECT(event_box), property_browser);
-		add_to_content_table(property_browser, event_box, index++, 12);				
+		add_to_content_table(property_browser, frame, index++, 12);				
 		
 		current_node = current_node->next;
 	}
