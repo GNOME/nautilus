@@ -61,6 +61,7 @@ static int		     uri_field_changed_signal_id;
 static int		     row_changed_signal_id;
 static int		     row_deleted_signal_id;
 static int                   row_activated_signal_id;
+static int                   key_pressed_signal_id;
 
 /* forward declarations */
 static guint    get_selected_row                            (void);
@@ -85,6 +86,9 @@ static void	on_row_deleted				    (GtkListStore	  *store,
 static void	on_row_activated			    (GtkTreeView	  *view,
 							     GtkTreePath	  *path,
                                                              GtkTreeViewColumn    *column,
+							     gpointer		   user_data);
+static gboolean	on_key_pressed                              (GtkTreeView	  *view,
+                                                             GdkEventKey          *event,
 							     gpointer		   user_data);
 static void     on_selection_changed                        (GtkTreeSelection     *treeselection,
 							     gpointer              user_data);
@@ -306,6 +310,9 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
         row_activated_signal_id =
                 g_signal_connect (bookmark_list_widget, "row_activated",
                                   G_CALLBACK (on_row_activated), undo_manager_source);
+        key_pressed_signal_id =
+                g_signal_connect (bookmark_list_widget, "key_press_event",
+                                  G_CALLBACK (on_key_pressed), NULL);
 	selection_changed_id =
 		g_signal_connect (bookmark_selection, "changed",
 				  G_CALLBACK (on_selection_changed), NULL);	
@@ -503,8 +510,7 @@ on_jump_button_clicked (GtkButton *button,
 }
 
 static void
-on_remove_button_clicked (GtkButton *button,
-                          gpointer   user_data)
+bookmarks_delete_bookmark ()
 {
 	GtkTreeIter iter;
 	GtkTreePath *path;
@@ -538,6 +544,14 @@ on_remove_button_clicked (GtkButton *button,
 		gtk_tree_selection_select_iter (bookmark_selection, &iter);
 	}
 }
+
+static void
+on_remove_button_clicked (GtkButton *button,
+                          gpointer   user_data)
+{
+        bookmarks_delete_bookmark ();
+}
+
 
 /* This is a bit of a kludge to get DnD to work. We check if the row in the
    GtkListStore matches the one in the bookmark list. If it doesn't, we assume
@@ -586,6 +600,19 @@ on_row_changed (GtkListStore *store,
 				    -1);
 		g_signal_handler_unblock (store, row_changed_signal_id);
 	}
+}
+
+static gboolean
+on_key_pressed (GtkTreeView *view,
+                GdkEventKey *event,
+                gpointer user_data)
+{
+        if (event->keyval == GDK_Delete || event->keyval == GDK_KP_Delete) {
+                bookmarks_delete_bookmark ();
+                return TRUE;
+        }
+
+        return FALSE;
 }
 
 static void
@@ -785,11 +812,15 @@ repopulate (void)
 				row_deleted_signal_id);
         g_signal_handler_block (bookmark_list_widget,
                                 row_activated_signal_id);
+        g_signal_handler_block (bookmark_list_widget,
+                                key_pressed_signal_id);
 
 	gtk_list_store_clear (store);
 	
 	g_signal_handler_unblock (bookmark_list_widget,
 				  row_activated_signal_id);
+        g_signal_handler_unblock (bookmark_list_widget,
+                                  key_pressed_signal_id);
 	g_signal_handler_unblock (bookmark_list_store,
 				  row_deleted_signal_id);
 	g_signal_handler_unblock (bookmark_selection,
