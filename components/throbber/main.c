@@ -23,6 +23,7 @@
 /* main.c - main function and object activation function for the throbber component. */
 
 #include <config.h>
+#include <string.h>
 #include "nautilus-throbber.h"
 
 #include <eel/eel-debug.h>
