@@ -734,6 +734,24 @@ display_timeout_cb (gpointer data)
 }
 
 
+/* Set up the base URI for Drag & Drop operations.  */
+static void
+setup_base_uri (ExplorerDirectoryView *view)
+{
+	GnomeIconContainer *icon_container;
+	gchar *txt_uri;
+
+	txt_uri = gnome_vfs_uri_to_string (view->uri, 0);
+	if (txt_uri == NULL)
+		return;
+
+	icon_container = get_icon_container (view);
+	if (icon_container != NULL)
+		gnome_icon_container_set_base_uri (icon_container, txt_uri);
+
+	g_free (txt_uri);
+}
+
 static void
 directory_load_cb (GnomeVFSAsyncHandle *handle,
 		   GnomeVFSResult result,
@@ -751,6 +769,9 @@ directory_load_cb (GnomeVFSAsyncHandle *handle,
 	if (view->directory_list == NULL) {
 		if (result == GNOME_VFS_OK || result == GNOME_VFS_ERROR_EOF) {
 			gtk_signal_emit (GTK_OBJECT (view), signals[OPEN_DONE]);
+
+			setup_base_uri (view);
+
 			view->directory_list = list;
 
 			/* FIXME just to make sure.  But these should be
