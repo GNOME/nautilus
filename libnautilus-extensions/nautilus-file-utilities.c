@@ -110,13 +110,28 @@ nautilus_format_uri_for_display (const char *uri)
 char *
 nautilus_make_uri_from_input (const char *location)
 {
-	gchar *toreturn;
+	char *toreturn, *escaped;
+	const char *no_method;
+	int method_length;
 
-	/* FIXME: add escaping logic to this function */
 	if (location[0] == '/') {
-		toreturn = g_strconcat (DEFAULT_SCHEME, location, NULL);
+		escaped = gnome_vfs_escape_path_string (location);
+		toreturn = g_strconcat (DEFAULT_SCHEME, escaped, NULL);
+		g_free (escaped);
 	} else {
-		toreturn = strdup (location);
+		no_method = strchr (location, ':');
+		if (no_method == NULL) {
+			no_method = location;
+		} else {
+			no_method++;
+		}
+
+		method_length = (no_method - location);
+		escaped = gnome_vfs_escape_path_string (no_method);
+		toreturn = g_new (char, strlen (escaped) + method_length + 1);
+		toreturn[0] = '\0';
+		strncat (toreturn, location, method_length);
+		strcat (toreturn, escaped);
 	}
 
 	return toreturn;
