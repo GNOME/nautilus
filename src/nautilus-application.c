@@ -338,8 +338,8 @@ void
 nautilus_application_startup (NautilusApplication *application,
 			      gboolean kill_shell,
 			      gboolean restart_shell,
-			      gboolean start_desktop,
 			      gboolean no_default_window,
+			      gboolean no_desktop,
 			      gboolean do_first_time_druid_check,
 			      const char *geometry,
 			      const char *urls[])
@@ -371,7 +371,7 @@ nautilus_application_startup (NautilusApplication *application,
 
 	/* Run the first time startup druid if needed. */
 	if (do_first_time_druid_check && need_to_show_first_time_druid ()) {
-		nautilus_first_time_druid_show (application, start_desktop, urls);
+		nautilus_first_time_druid_show (application, urls);
 		return;
 	}
 	
@@ -489,7 +489,7 @@ nautilus_application_startup (NautilusApplication *application,
 	} else if (restart_shell) {
 		Nautilus_Shell_restart (shell, &ev);
 	} else {
-		if (start_desktop) {
+		if (!no_desktop && nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP)) {
 			Nautilus_Shell_start_desktop (shell, &ev);
 		}
 		

@@ -824,13 +824,15 @@ default_default_folder_viewer_callback (int user_level)
 	int result;
 
 	oaf_info = gnome_vfs_mime_get_default_component ("x-directory/normal");
-	g_return_val_if_fail (oaf_info != NULL, NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW);
-
-	result = get_default_folder_viewer_preference_from_iid (oaf_info->iid);
-	if (result == NAUTILUS_DEFAULT_FOLDER_VIEWER_OTHER) {
+	if (oaf_info == NULL) {
 		result = NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW;
+	} else {
+		result = get_default_folder_viewer_preference_from_iid (oaf_info->iid);
+		if (result == NAUTILUS_DEFAULT_FOLDER_VIEWER_OTHER) {
+			result = NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW;
+		}
+		CORBA_free (oaf_info);
 	}
-	CORBA_free (oaf_info);
 
 	return GINT_TO_POINTER (result);
 }

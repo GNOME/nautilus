@@ -2,7 +2,7 @@
 
 /* nautilus-prefs-box.h - Implementation for preferences box component.
 
-   Copyright (C) 1999, 2000 Eazel, Inc.
+   Copyright (C) 1999, 2000, 2001 Eazel, Inc.
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -81,10 +81,9 @@ static void      category_list_select_row_callback         (GtkCList            
 							    gpointer                     user_data);
 
 /* Convience functions */
-int              preferences_box_find_row                  (GtkCList                    *clist,
+static int       preferences_box_find_row                  (GtkCList                    *clist,
 							    char                        *pane_name);
-
-static void user_level_changed_callback                  (gpointer                        callback_data);
+static void      user_level_changed_callback               (gpointer                     callback_data);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusPreferencesBox, nautilus_preferences_box, GTK_TYPE_HBOX)
 
@@ -186,7 +185,7 @@ preferences_box_select_pane (NautilusPreferencesBox *preferences_box,
 	g_warning ("Pane '%s' could not be found.", pane_name);
 }
 
-int
+static int
 preferences_box_find_row (GtkCList *clist, char *pane_name)
 {
 	int i;
@@ -430,6 +429,7 @@ preferences_box_populate_pane (NautilusPreferencesBox *preferences_box,
 	NautilusPreferencesGroup *group;
 	NautilusPreferencesItem *item;
 	EelStringList *group_names;
+	const char *translated_group_name;
 	guint i;
 
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_BOX (preferences_box));
@@ -437,18 +437,19 @@ preferences_box_populate_pane (NautilusPreferencesBox *preferences_box,
 	g_return_if_fail (items != NULL);
 
 	/* Create the pane if needed */
-	pane = preferences_box_find_pane (preferences_box, _(pane_name));
+	pane = preferences_box_find_pane (preferences_box, pane_name);
 	if (pane == NULL) {
-		pane = NAUTILUS_PREFERENCES_PANE (preferences_box_add_pane (preferences_box, _(pane_name)));
+		pane = NAUTILUS_PREFERENCES_PANE (preferences_box_add_pane (preferences_box, pane_name));
 	}
 
 	group_names = eel_string_list_new (TRUE);
 
 	for (i = 0; items[i].group_name != NULL; i++) {
-		if (!eel_string_list_contains (group_names, _(items[i].group_name))) {
-			eel_string_list_insert (group_names, _(items[i].group_name));
+		translated_group_name = _(items[i].group_name);
+		if (!eel_string_list_contains (group_names, translated_group_name)) {
+			eel_string_list_insert (group_names, translated_group_name);
 			nautilus_preferences_pane_add_group (pane,
-							     _(items[i].group_name));
+							     translated_group_name);
 		}
 	}
 
@@ -457,12 +458,12 @@ preferences_box_populate_pane (NautilusPreferencesBox *preferences_box,
 											  _(items[i].group_name)));
 		g_return_if_fail (NAUTILUS_IS_PREFERENCES_GROUP (group));
 
-		if (items[i].preference_description != NULL) {
-			nautilus_preferences_set_description (items[i].preference_name,
-							      _(items[i].preference_description));
-		}
-		
 		if (items[i].preference_name != NULL) {
+			if (items[i].preference_description != NULL) {
+				nautilus_preferences_set_description (items[i].preference_name,
+								      _(items[i].preference_description));
+			}
+		
 			item = NAUTILUS_PREFERENCES_ITEM (nautilus_preferences_group_add_item (group,
 											       items[i].preference_name,
 											       items[i].item_type,
@@ -473,11 +474,9 @@ preferences_box_populate_pane (NautilusPreferencesBox *preferences_box,
 				nautilus_preferences_item_set_control_preference (item,
 										  items[i].control_preference_name);
 				nautilus_preferences_item_set_control_action (item,
-									      items[i].control_action);
-				
+									      items[i].control_action);				
 				nautilus_preferences_pane_add_control_preference (pane,
 										  items[i].control_preference_name);
-				
 			}
 			
 			/* Install exceptions to enum lists uniqueness rule */
@@ -524,17 +523,14 @@ user_level_changed_callback (gpointer callback_data)
 	nautilus_preferences_box_update (NAUTILUS_PREFERENCES_BOX (callback_data));
 }
 
-static const gchar *stock_buttons[] = {
-	GNOME_STOCK_BUTTON_OK,
-	NULL
-};
-
-#define DEFAULT_BUTTON 0
-
 GtkWidget *
 nautilus_preferences_dialog_new (const char *title,
 				 const NautilusPreferencesPaneDescription *panes)
 {
+	static const char *stock_buttons[] = {
+		GNOME_STOCK_BUTTON_OK,
+		NULL
+	};
 	GtkWidget *dialog;
 	GtkWidget *preference_box;
 	GtkWidget *vbox;
@@ -550,9 +546,9 @@ nautilus_preferences_dialog_new (const char *title,
 			       TRUE,	/* allow_grow */
 			       FALSE);	/* auto_shrink */
 
-  	gtk_container_set_border_width (GTK_CONTAINER(dialog), 0);
+  	gtk_container_set_border_width (GTK_CONTAINER (dialog), 0);
 	
-	gnome_dialog_set_default (GNOME_DIALOG(dialog), DEFAULT_BUTTON);
+	gnome_dialog_set_default (GNOME_DIALOG(dialog), 0);
 
 	eel_gtk_window_set_up_close_accelerator (GTK_WINDOW (dialog));
 

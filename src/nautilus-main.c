@@ -128,8 +128,8 @@ main (int argc, char *argv[])
 {
 	gboolean kill_shell;
 	gboolean restart_shell;
-	gboolean start_desktop;
 	gboolean no_default_window;
+	gboolean no_desktop;
 	char *geometry;
 	gboolean perform_self_check;
 	poptContext popt_context;
@@ -147,6 +147,8 @@ main (int argc, char *argv[])
 		  N_("Create the initial window with the given geometry."), N_("GEOMETRY") },
 		{ "no-default-window", 'n', POPT_ARG_NONE, &no_default_window, 0,
 		  N_("Only create windows for explicitly specified URIs."), NULL },
+		{ "no-desktop", '\0', POPT_ARG_NONE, &no_desktop, 0,
+		  N_("Do not manage the desktop (ignore the preference set in the preferences dialog)."), NULL },
 		{ "quit", 'q', POPT_ARG_NONE, &kill_shell, 0,
 		  N_("Quit Nautilus."), NULL },
 		{ "restart", '\0', POPT_ARG_NONE | POPT_ARGFLAG_DOC_HIDDEN, &restart_shell, 0,
@@ -190,6 +192,7 @@ main (int argc, char *argv[])
 	geometry = NULL;
 	kill_shell = FALSE;
 	no_default_window = FALSE;
+	no_desktop = FALSE;
 	perform_self_check = FALSE;
 	restart_shell = FALSE;
 
@@ -239,26 +242,24 @@ main (int argc, char *argv[])
 
 	/* Initialize preferences. This is needed so that proper 
 	 * defaults are available before any preference peeking 
-	 * happens.  Do this only if we are not goinh to kill the
+	 * happens.  Do this only if we are not going to kill the
 	 * nautilus shell.
 	 */
 	if (!kill_shell) {
 		nautilus_global_preferences_initialize ();
-		start_desktop = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP);
-	} else {
-		start_desktop = FALSE;
+		if (no_desktop) {
+			nautilus_preferences_set_is_invisible
+				(NAUTILUS_PREFERENCES_SHOW_DESKTOP, TRUE);
+			nautilus_preferences_set_is_invisible
+				(NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR, TRUE);
+		}
 	}
 		
 	/* Do either the self-check or the real work. */
 	if (perform_self_check) {
 #ifndef NAUTILUS_OMIT_SELF_CHECK
-		/* Run the checks (each twice) for:
-		 *
-		 * nautilus
-		 * eel
-		 * libnautilus-extensions
-		 *
-		 */
+		/* Run the checks (each twice) for nautilus and libnautilus-extensions. */
+
 		nautilus_directory_use_self_contained_metafile_factory ();
 
 		nautilus_run_self_checks ();
@@ -274,7 +275,7 @@ main (int argc, char *argv[])
 		application = nautilus_application_new ();
 		nautilus_application_startup
 			(application,
-			 kill_shell, restart_shell, start_desktop, no_default_window,
+			 kill_shell, restart_shell, no_default_window, no_desktop,
 			 !(kill_shell || restart_shell),
 			 geometry,
 			 args);

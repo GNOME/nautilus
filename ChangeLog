@@ -1,3 +1,50 @@
+2001-04-23  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+	
+	Add a new command-line option "--no-desktop" as requested by
+	fcrozat on behalf of people who want to run Nautilus under KDE as
+	well as under GNOME. The option has no effect if Nautilus is
+	already running, but if it's the first invocation of Nautilus,
+	then no desktop-related preferences show up and the desktop is
+	not shown regardless of the setting of those preferences.
+	
+	* src/nautilus-main.c: (main): Add the no-desktop option. Make the
+	desktop-related preferences invisible if it's on, and pass it down
+	to the NautilusApplication.
+
+	* src/nautilus-application.h:
+	* src/nautilus-application.c: (nautilus_application_startup):
+	Don't start the desktop if no_desktop is passed in. Otherwise
+	decide based on the preference.
+
+	* libnautilus-extensions/nautilus-preferences-box.c:
+	(preferences_box_find_row): Mark this private function static.
+	(preferences_box_populate_pane): Get rid of code that would
+	translate the pane_name twice.
+	(nautilus_preferences_dialog_new): Simplified this code a bit.
+	
+	* libnautilus-extensions/nautilus-preferences.h:
+	* libnautilus-extensions/nautilus-preferences.c:
+	(preferences_make_user_level_filtered_key),
+	(nautilus_preferences_get_is_invisible),
+	(nautilus_preferences_set_is_invisible),
+	(preferences_key_make_for_getter),
+	(nautilus_preferences_visible_in_current_user_level),
+	(nautilus_preferences_is_visible): Added new flag to make a
+	preference invisible.
+
+	* src/nautilus-first-time-druid.h:
+	* src/nautilus-first-time-druid.c: (set_up_gmc_transition_page),
+	(nautilus_first_time_druid_show): Removed code that used to make
+	the druid default based on the desktop preference.
+
+	Fixed the Tinderbox.
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(default_default_folder_viewer_callback): Allow NULL because that
+	happens during self-check.
+
 2001-04-23  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/news/nautilus-news.c: (has_matching_uri),

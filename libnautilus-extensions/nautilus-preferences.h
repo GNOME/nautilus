@@ -123,6 +123,9 @@ void           nautilus_preferences_remove_auto_boolean             (const char 
 int            nautilus_preferences_get_visible_user_level          (const char                   *name);
 void           nautilus_preferences_set_visible_user_level          (const char                   *name,
 								     int                           visible_user_level);
+gboolean       nautilus_preferences_get_is_invisible                (const char                   *name);
+void           nautilus_preferences_set_is_invisible                (const char                   *name,
+								     gboolean                      invisible);
 char *         nautilus_preferences_get_description                 (const char                   *name);
 void           nautilus_preferences_set_description                 (const char                   *name,
 								     const char                   *description);
@@ -130,6 +133,7 @@ char *         nautilus_preferences_get_enumeration_id              (const char 
 void           nautilus_preferences_set_enumeration_id              (const char                   *name,
 								     const char                   *enumeration_id);
 gboolean       nautilus_preferences_monitor_directory               (const char                   *directory);
+gboolean       nautilus_preferences_visible_in_current_user_level   (const char                   *name);
 gboolean       nautilus_preferences_is_visible                      (const char                   *name);
 void           nautilus_preferences_initialize                      (const char                   *storage_path);
 

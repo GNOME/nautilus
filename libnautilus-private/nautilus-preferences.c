@@ -65,6 +65,7 @@ typedef struct {
 	char *name;
 	char *description;
 	PreferenceType type;
+	gboolean invisible;
 	GList *callback_list;
 	gboolean callbacks_blocked;
 	GList *auto_storage_list;
@@ -320,7 +321,7 @@ preferences_make_user_level_filtered_key (const char *name)
 	
 	g_return_val_if_fail (name != NULL, NULL);
 
-	if (nautilus_preferences_is_visible (name)) {
+	if (nautilus_preferences_visible_in_current_user_level (name)) {
 		key = preferences_key_make (name);
 	} else {
 		key = preferences_key_make_for_default (name, nautilus_preferences_get_user_level ());
@@ -388,6 +389,25 @@ nautilus_preferences_set_visible_user_level (const char *name,
 	g_free (visible_key);
 }
 
+gboolean
+nautilus_preferences_get_is_invisible (const char *name)
+{
+	g_return_val_if_fail (name != NULL, FALSE);
+	g_return_val_if_fail (preferences_is_initialized (), FALSE);
+
+	return preferences_global_table_lookup_or_insert (name)->invisible;
+}
+
+void
+nautilus_preferences_set_is_invisible (const char *name,
+				       gboolean is_invisible)
+{
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (preferences_is_initialized ());
+
+	preferences_global_table_lookup_or_insert (name)->invisible = is_invisible;
+}
+
 void
 nautilus_preferences_set_boolean (const char *name,
 				  gboolean boolean_value)
@@ -412,7 +432,7 @@ preferences_key_make_for_getter (const char *name)
 	g_return_val_if_fail (name != NULL, NULL);
 	g_return_val_if_fail (preferences_is_initialized (), NULL);
 
-	if (preferences_preference_is_default (name) || !nautilus_preferences_is_visible (name)) {
+	if (preferences_preference_is_default (name) || !nautilus_preferences_visible_in_current_user_level (name)) {
 		key = preferences_key_make_for_default_getter (name, nautilus_preferences_get_user_level ());
 	} else {
 		key = preferences_make_user_level_filtered_key (name);
@@ -1730,7 +1750,7 @@ nautilus_preferences_monitor_directory (const char *directory)
 }
 
 gboolean
-nautilus_preferences_is_visible (const char *name)
+nautilus_preferences_visible_in_current_user_level (const char *name)
 {
 	int user_level;
 	int visible_user_level;
@@ -1742,6 +1762,19 @@ nautilus_preferences_is_visible (const char *name)
 	visible_user_level = nautilus_preferences_get_visible_user_level (name);
 
 	return visible_user_level <= user_level;
+}
+
+gboolean
+nautilus_preferences_is_visible (const char *name)
+{
+	g_return_val_if_fail (name != NULL, FALSE);
+	g_return_val_if_fail (preferences_is_initialized (), FALSE);
+
+	if (!nautilus_preferences_visible_in_current_user_level (name)) {
+		return FALSE;
+	}
+
+	return !preferences_global_table_lookup_or_insert (name)->invisible;
 }
 
 static void

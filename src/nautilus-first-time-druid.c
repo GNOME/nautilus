@@ -97,7 +97,6 @@ enum {
 
 /* globals */
 static NautilusApplication *save_application;
-static gboolean save_manage_desktop;
 
 static GtkWidget *start_page;
 static GtkWidget *finish_page;
@@ -292,7 +291,7 @@ set_up_background (NautilusDruidPageEazel *page, const char *background_color)
 }
 
 static void
-update_draw_desktop_checkbox_state ()
+update_draw_desktop_checkbox_state (void)
 {
 	if (current_user_level == NAUTILUS_USER_LEVEL_NOVICE) {
 		gtk_widget_hide (draw_desktop_checkbox_widget);
@@ -897,7 +896,7 @@ set_up_gmc_transition_page (NautilusDruidPageEazel *page)
 	GtkWidget *checkbox, *label;
 	GtkWidget *container, *main_box, *hbox;
 
-	draw_desktop = save_manage_desktop;
+	draw_desktop = TRUE;
 	add_to_session = TRUE;
 	transfer_gmc_icons = TRUE;
 
@@ -1037,7 +1036,7 @@ update_finished_label (void)
 }
 
 GtkWidget *
-nautilus_first_time_druid_show (NautilusApplication *application, gboolean manage_desktop, const char *urls[])
+nautilus_first_time_druid_show (NautilusApplication *application, const char *urls[])
 {	
 	GtkWidget *dialog;
 	GtkWidget *druid;
@@ -1046,7 +1045,6 @@ nautilus_first_time_druid_show (NautilusApplication *application, gboolean manag
 	
 	/* remember parameters for later window invocation */
 	save_application = application;
-	save_manage_desktop = manage_desktop;
 
 	current_user_level = nautilus_preferences_get_user_level ();
 

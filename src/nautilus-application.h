@@ -57,8 +57,8 @@ NautilusApplication *nautilus_application_new               (void);
 void                 nautilus_application_startup           (NautilusApplication *application,
 							     gboolean             kill_shell,
 							     gboolean             restart_shell,
-							     gboolean             start_desktop,
 							     gboolean             no_default_window,
+							     gboolean             no_desktop,
 							     gboolean             do_first_time_druid_check,
 							     const char          *default_geometry,
 							     const char          *urls[]);
