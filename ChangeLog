@@ -1,3 +1,18 @@
+2000-12-11  Michael Engber  <engber@eazel.com>
+
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_set_image_placement_no_emit),
+	(nautilus_background_set_image_placement),
+	(nautilus_background_receive_dropped_background_image):
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(nautilus_file_background_get_default_settings),
+	(nautilus_file_background_write_desktop_settings):
+	Fixed dragging a new background image onto the dekstop
+	so that it; writes out the new color (white) instead of
+	leaving the old, wrong, color setting; sets the image
+	placement to tiled, since all Nautilus images are
+	currently meant to be tiled. Bugs 3477 & 3022.
+
 2000-12-11  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	reviewed by: A donkey with a rather large shrubbery

@@ -235,16 +235,16 @@ nautilus_background_get_image_placement (NautilusBackground *background)
 	return background->details->image_placement;
 }
 
-void
-nautilus_background_set_image_placement (NautilusBackground *background,
-					 NautilusBackgroundImagePlacement new_placement)
+static gboolean
+nautilus_background_set_image_placement_no_emit (NautilusBackground *background,
+						 NautilusBackgroundImagePlacement new_placement)
 {
-	g_return_if_fail (NAUTILUS_IS_BACKGROUND (background));
+	g_return_val_if_fail (NAUTILUS_IS_BACKGROUND (background), FALSE);
 
 	if (new_placement != background->details->image_placement) {
 
 		if (nautilus_background_is_image_load_in_progress (background)) {
-			/* We try to smart and keep using the current image for updates
+			/* We try to be smart and keep using the current image for updates
 			 * while a new image is loading. However, changing the placement
 			 * foils these plans.
 			 */
@@ -252,7 +252,17 @@ nautilus_background_set_image_placement (NautilusBackground *background,
 		}
 
 		background->details->image_placement = new_placement;
-		
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
+void
+nautilus_background_set_image_placement (NautilusBackground *background,
+					 NautilusBackgroundImagePlacement new_placement)
+{
+	if (nautilus_background_set_image_placement_no_emit (background, new_placement)) {
 		gtk_signal_emit (GTK_OBJECT (background),
 			 signals[SETTINGS_CHANGED]);
 		gtk_signal_emit (GTK_OBJECT (background),
@@ -1110,6 +1120,12 @@ nautilus_background_receive_dropped_background_image (NautilusBackground *backgr
 	if (nautilus_str_has_suffix (image_uri, "/" RESET_BACKGROUND_MAGIC_IMAGE_NAME)) {
 		nautilus_background_reset (background);
 	} else {
+		/* Currently, we only support tiled images. So we set the placement.
+		 * We rely on nautilus_background_set_image_uri_and_color to emit
+		 * the SETTINGS_CHANGED & APPEARANCE_CHANGE signals.
+		 */
+		nautilus_background_set_image_placement_no_emit (background, NAUTILUS_BACKGROUND_TILED);
+
 		nautilus_background_set_image_uri_and_color (background, image_uri, NULL);
 	}
 }

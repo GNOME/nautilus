@@ -42,6 +42,9 @@
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 
+/* mse-evil */
+#include <stdio.h>
+
 static void background_changed_callback     (NautilusBackground *background, 
                                              NautilusFile       *file);
 static void background_reset_callback       (NautilusBackground *background, 
@@ -122,17 +125,25 @@ nautilus_file_background_get_default_settings (const char* theme_source,
 	char *combine_str;
 	char *image_local_path;
 
-	*placement = NAUTILUS_BACKGROUND_TILED;
-	
-	*color = nautilus_theme_get_theme_data (theme_source, NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_COLOR);
+	if (placement != NULL) {
+		*placement = NAUTILUS_BACKGROUND_TILED;
+	}
 
-	image_local_path = nautilus_theme_get_theme_data (theme_source, NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_IMAGE);
-	*image = theme_image_path_to_uri (image_local_path);
-	g_free (image_local_path);
+	if (color != NULL) {
+		*color = nautilus_theme_get_theme_data (theme_source, NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_COLOR);
+	}
 
-	combine_str = nautilus_theme_get_theme_data (theme_source, "COMBINE");
-	*combine = combine_str != NULL;
-	g_free (combine_str);	
+	if (image != NULL) {
+		image_local_path = nautilus_theme_get_theme_data (theme_source, NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_IMAGE);
+		*image = theme_image_path_to_uri (image_local_path);
+		g_free (image_local_path);
+	}
+
+	if (combine != NULL) {
+		combine_str = nautilus_theme_get_theme_data (theme_source, "COMBINE");
+		*combine = combine_str != NULL;
+		g_free (combine_str);
+	}
 }
 
 static gboolean
@@ -262,6 +273,14 @@ nautilus_file_background_write_desktop_settings (char *color, char *image, Nauti
 
 		gnome_config_set_string ("/Background/Default/simple", nautilus_gradient_is_gradient (color) ? "gradient" : "solid");
 		gnome_config_set_string ("/Background/Default/gradient", nautilus_gradient_is_horizontal (color) ? "horizontal" : "vertical");
+	} else {
+		/* We set it to white here because that's how backgrounds with a NULL color
+		 * are drawn by Nautilus - due to usage of nautilus_gdk_color_parse_with_white_default.
+		 */
+		gnome_config_set_string ("/Background/Default/color1", "rgb:FFFF/FFFF/FFFF");		
+		gnome_config_set_string ("/Background/Default/color2", "rgb:FFFF/FFFF/FFFF");		
+		gnome_config_set_string ("/Background/Default/simple", "solid");
+		gnome_config_set_string ("/Background/Default/gradient", "vertical");
 	}
 
 	if (image != NULL) {
