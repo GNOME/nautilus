@@ -1,3 +1,29 @@
+2000-07-17  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 1021, Should be able to hide toolbar, sidebar
+	and locationbar.
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog),
+	(global_preferences_register_for_ui):
+	Added new items for showing/hiding window views.
+	
+	* src/nautilus-window-menus.c: (file_menu_new_window_callback):
+	* src/nautilus-window.c: (nautilus_window_initialize),
+	(nautilus_window_constructed), (nautilus_window_destroy),
+	(sidebar_panels_changed_callback),
+	(toolbar_visibility_changed_callback),
+	(locationbar_visibility_changed_callback),
+	(statusbar_visibility_changed_callback),
+	(sidebar_visibility_changed_callback):
+	New callbacks to dynamically respong to user prefs changes when
+	showing/hiding window views.
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(button_press_event):
+	Added a simple double-click test to fix annoying double open bug
+	when double clicking an icon in single click mode.
+	
 2000-07-17  Mathieu Lacage <mathieu@eazel.com>
 
 	* configure.in: add a check for medusa. It is 

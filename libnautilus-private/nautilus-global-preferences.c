@@ -218,6 +218,26 @@ global_preferences_create_dialog (void)
 							 1,
 							 NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
 							 NAUTILUS_PREFERENCE_ITEM_FONT_FAMILY);
+
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane), "Views");
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
+							 2,
+							 NAUTILUS_PREFERENCES_DISPLAY_TOOLBAR,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
+							 2,
+							 NAUTILUS_PREFERENCES_DISPLAY_LOCATIONBAR,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
+							 2,
+							 NAUTILUS_PREFERENCES_DISPLAY_STATUSBAR,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
+							 2,
+							 NAUTILUS_PREFERENCES_DISPLAY_SIDEBAR,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+	
+
 	
 	/*
 	 * Tradeoffs
@@ -570,6 +590,33 @@ global_preferences_register_for_ui (void)
 							  "helvetica",
 							  "helvetica",
 							  "helvetica");
+
+
+	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_DISPLAY_TOOLBAR,
+							   _("Display Toolbar"),
+							   TRUE,
+							   TRUE,
+							   TRUE);
+
+	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_DISPLAY_LOCATIONBAR,
+							   _("Display Locationbar"),
+							   TRUE,
+							   TRUE,
+							   TRUE);
+
+	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_DISPLAY_STATUSBAR,
+							   _("Display Statusbar"),
+							   TRUE,
+							   TRUE,
+							   TRUE);
+
+	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_DISPLAY_SIDEBAR,
+							   _("Display Sidebar"),
+							   TRUE,
+							   TRUE,
+							   TRUE);
+
+								  
 	/* search tradeoffs */
 	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_SEARCH_METHOD,
 							   "Always do slow, complete search",

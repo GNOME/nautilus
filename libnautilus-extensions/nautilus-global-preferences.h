@@ -56,6 +56,12 @@ BEGIN_GNOME_DECLS
 /* use anti-aliased canvas */
 #define NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS		"preferences/anti_aliased_canvas"
 
+/* Display views */
+#define NAUTILUS_PREFERENCES_DISPLAY_TOOLBAR			"preferences/display_toolbar"
+#define NAUTILUS_PREFERENCES_DISPLAY_LOCATIONBAR		"preferences/display_locationbar"
+#define NAUTILUS_PREFERENCES_DISPLAY_STATUSBAR			"preferences/display_statusbar"
+#define NAUTILUS_PREFERENCES_DISPLAY_SIDEBAR		 	"preferences/display_sidebar"
+
 /* Sidebar panels */
 #define NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE		"sidebar-panels"
 

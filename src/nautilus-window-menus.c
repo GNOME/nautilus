@@ -147,7 +147,7 @@ file_menu_new_window_callback (BonoboUIHandler *ui_handler,
 	current_window = NAUTILUS_WINDOW (user_data);
 	new_window = nautilus_application_create_window (current_window->application);
 	nautilus_window_goto_uri (new_window, current_window->location);
-	gtk_widget_show (GTK_WIDGET (new_window));
+	gtk_widget_show (GTK_WIDGET (new_window));	
 }
 
 static void

@@ -39,6 +39,7 @@
 
 #include "nautilus-gdk-pixbuf-extensions.h"
 #include "nautilus-glib-extensions.h"
+#include "nautilus-global-preferences.h"
 #include "nautilus-gnome-extensions.h"
 #include "nautilus-gtk-extensions.h"
 #include "nautilus-gtk-macros.h"
@@ -50,6 +51,9 @@
 
 /* Interval for updating the rubberband selection, in milliseconds.  */
 #define RUBBERBAND_TIMEOUT_INTERVAL 10
+
+/* Internal double click time contant */
+#define DOUBLE_CLICK_TIME 500000
 
 /* Timeout for making the icon currently selected for keyboard operation visible. */
 /* FIXME bugzilla.eazel.com 611: This *must* be higher than the double-click 
@@ -1722,6 +1726,28 @@ button_press_event (GtkWidget *widget,
 	NautilusIconContainer *container;
 	gboolean selection_changed;
 	gboolean return_value;
+	int click_mode;
+	gint64 current_time;
+	static gint64 last_click_time = 0;
+	static gint click_count = 0;
+	
+	/* Determine click count */
+	current_time = nautilus_get_system_time ();
+	if (current_time - last_click_time < DOUBLE_CLICK_TIME) {
+		click_count++;
+	} else {
+		click_count = 0;
+	}
+
+	/* Stash time for next compare */
+	last_click_time = current_time;
+
+	/* Ignore double click if we are in single click mode */
+	click_mode = nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
+						    NAUTILUS_CLICK_POLICY_SINGLE);						    
+	if (click_mode == NAUTILUS_CLICK_POLICY_SINGLE && click_count >= 2) {		
+		return TRUE;
+	}
 
 	container = NAUTILUS_ICON_CONTAINER (widget);
         container->details->button_down_time = event->time;
@@ -1734,7 +1760,7 @@ button_press_event (GtkWidget *widget,
 	
 	/* Forget the typeahead state. */
 	nautilus_icon_container_flush_typeselect_state (container);
-
+	
 	/* Invoke the canvas event handler and see if an item picks up the event. */
 	if (NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, button_press_event, (widget, event))) {
 		return TRUE;

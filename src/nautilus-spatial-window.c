@@ -82,19 +82,23 @@ enum {
 /* Other static variables */
 static GSList *history_list = NULL;
 
-static void nautilus_window_initialize_class      (NautilusWindowClass *klass);
-static void nautilus_window_initialize            (NautilusWindow      *window);
-static void nautilus_window_destroy               (GtkObject           *object);
-static void nautilus_window_set_arg               (GtkObject           *object,
-						   GtkArg              *arg,
-						   guint                arg_id);
-static void nautilus_window_get_arg               (GtkObject           *object,
-						   GtkArg              *arg,
-						   guint                arg_id);
-static void nautilus_window_realize               (GtkWidget           *widget);
-static void nautilus_window_real_set_content_view (NautilusWindow      *window,
-						   NautilusViewFrame   *new_view);
-static void sidebar_panels_changed_callback       (gpointer             user_data);
+static void nautilus_window_initialize_class      	(NautilusWindowClass 	*klass);
+static void nautilus_window_initialize            	(NautilusWindow      	*window);
+static void nautilus_window_destroy               	(GtkObject          	*object);
+static void nautilus_window_set_arg               	(GtkObject           	*object,
+						   	 GtkArg               	*arg,
+						  	 guint               	arg_id);
+static void nautilus_window_get_arg               	(GtkObject           	*object,
+						   	 GtkArg              	*arg,
+						  	 guint                	arg_id);
+static void nautilus_window_realize               	(GtkWidget           	*widget);
+static void nautilus_window_real_set_content_view 	(NautilusWindow      	*window,
+						   	 NautilusViewFrame   	*new_view);
+static void sidebar_panels_changed_callback       	(gpointer             	user_data);
+static void toolbar_visibility_changed_callback   	(gpointer		user_data);
+static void locationbar_visibility_changed_callback   	(gpointer		user_data);
+static void statusbar_visibility_changed_callback   	(gpointer		user_data);
+static void sidebar_visibility_changed_callback   	(gpointer		user_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusWindow,
 				   nautilus_window,
@@ -142,6 +146,21 @@ nautilus_window_initialize (NautilusWindow *window)
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE,
 					   sidebar_panels_changed_callback,
 					   window);
+
+	/* Keep track of view item visibility changes */
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DISPLAY_TOOLBAR,
+					   toolbar_visibility_changed_callback,
+					   window);
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DISPLAY_LOCATIONBAR,
+					   locationbar_visibility_changed_callback,
+					   window);
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DISPLAY_STATUSBAR,
+					   statusbar_visibility_changed_callback,
+					   window);
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DISPLAY_SIDEBAR,
+					   sidebar_visibility_changed_callback,
+					   window);
+
 }
 
 static gboolean
@@ -356,6 +375,36 @@ nautilus_window_constructed (NautilusWindow *window)
 
 	/* Set up undo manager */
 	nautilus_undo_manager_attach (window->application->undo_manager, GTK_OBJECT (window));
+	
+	/* Show or hide views based on preferences */
+
+	/* Do a quick show/hide.  This forces the GnomeApp to set a parent for the dock */
+	gtk_widget_show (GTK_WIDGET (window));
+	gtk_widget_hide (GTK_WIDGET (window));
+		
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DISPLAY_TOOLBAR, TRUE)) {
+		nautilus_window_show_toolbar (window);
+	} else {
+		nautilus_window_hide_toolbar (window);
+	}
+
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DISPLAY_LOCATIONBAR, TRUE)) {
+		nautilus_window_show_locationbar (window);
+	} else {
+		nautilus_window_hide_locationbar (window);
+	}
+
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DISPLAY_STATUSBAR, TRUE)) {
+		nautilus_window_show_statusbar (window);
+	} else {
+		nautilus_window_hide_statusbar (window);
+	}
+
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DISPLAY_SIDEBAR, TRUE)) {
+		nautilus_window_show_sidebar (window);
+	} else {
+		nautilus_window_hide_sidebar (window);
+	}	
 }
 
 static void
@@ -431,6 +480,20 @@ nautilus_window_destroy (GtkObject *object)
 	/* Dont keep track of sidebar panel changes no more */
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE,
 					      sidebar_panels_changed_callback,
+					      NULL);
+
+	/* Don't keep track of window view changes */
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DISPLAY_TOOLBAR,
+					      toolbar_visibility_changed_callback,
+					      NULL);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DISPLAY_LOCATIONBAR,
+					      locationbar_visibility_changed_callback,
+					      NULL);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DISPLAY_STATUSBAR,
+					      statusbar_visibility_changed_callback,
+					      NULL);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DISPLAY_SIDEBAR,
+					      sidebar_visibility_changed_callback,
 					      NULL);
 
 	nautilus_window_remove_bookmarks_menu_callback (window);
@@ -1418,6 +1481,70 @@ static void
 sidebar_panels_changed_callback (gpointer user_data)
 {
 	window_update_sidebar_panels_from_preferences (NAUTILUS_WINDOW (user_data));
+}
+
+/**
+ * toolbar_visibility_changed_callback:
+ * @user_data:	Callback data
+ *
+ * Called when eshow/hide preferences change for the toolbar
+ */
+static void
+toolbar_visibility_changed_callback (gpointer user_data)
+{
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DISPLAY_TOOLBAR, TRUE)) {
+		nautilus_window_show_toolbar (NAUTILUS_WINDOW (user_data));
+	} else {
+		nautilus_window_hide_toolbar (NAUTILUS_WINDOW (user_data));
+	}
+}
+
+/**
+ * locationbar_visibility_changed_callback:
+ * @user_data:	Callback data
+ *
+ * Called when eshow/hide preferences change for the locationbar
+ */
+static void
+locationbar_visibility_changed_callback (gpointer user_data)
+{
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DISPLAY_LOCATIONBAR, TRUE)) {
+		nautilus_window_show_locationbar (NAUTILUS_WINDOW (user_data));
+	} else {
+		nautilus_window_hide_locationbar (NAUTILUS_WINDOW (user_data));
+	}
+}
+
+/**
+ * statusbar_visibility_changed_callback:
+ * @user_data:	Callback data
+ *
+ * Called when eshow/hide preferences change for the statusbar
+ */
+static void
+statusbar_visibility_changed_callback (gpointer user_data)
+{
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DISPLAY_STATUSBAR, TRUE)) {
+		nautilus_window_show_statusbar (NAUTILUS_WINDOW (user_data));
+	} else {
+		nautilus_window_hide_statusbar (NAUTILUS_WINDOW (user_data));
+	}
+}
+
+/**
+ * sidebar_visibility_changed_callback:
+ * @user_data:	Callback data
+ *
+ * Called when eshow/hide preferences change for the sidebar
+ */
+static void
+sidebar_visibility_changed_callback (gpointer user_data)
+{
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DISPLAY_SIDEBAR, TRUE)) {
+		nautilus_window_show_sidebar (NAUTILUS_WINDOW (user_data));
+	} else {
+		nautilus_window_hide_sidebar (NAUTILUS_WINDOW (user_data));
+	}	
 }
 
 

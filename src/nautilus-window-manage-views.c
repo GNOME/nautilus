@@ -809,7 +809,7 @@ nautilus_window_update_state (gpointer data)
         NautilusWindow *window;
         GList *p;
         gboolean result;
-
+	
         window = data;
 
         if (window->making_changes) {
