@@ -39,6 +39,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-app.h>
 #include <libgnomeui/gnome-app-helper.h>
+#include <libgnomeui/gnome-preferences.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-bookmark.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
@@ -236,7 +237,7 @@ allocate_throbber (void)
 	gtk_widget_show (frame);
 	gtk_container_add (GTK_CONTAINER (frame), throbber);
 			
-	small_mode = FALSE; /* for now - want to query the toolbar's style soon */
+	small_mode = !gnome_preferences_get_toolbar_labels ();
 	nautilus_throbber_set_small_mode (NAUTILUS_THROBBER (throbber), small_mode);
 	
 	return throbber;
@@ -249,9 +250,11 @@ theme_changed_callback (gpointer callback_data)
 	set_up_toolbar_images (NAUTILUS_WINDOW (callback_data));
 	set_up_throbber_frame_type (NAUTILUS_WINDOW (callback_data));
 
-	/* make sure we resize the toolbar to get the throbber positioned properly */
-	nautilus_window_hide_tool_bar (NAUTILUS_WINDOW (callback_data));
-	nautilus_window_show_tool_bar (NAUTILUS_WINDOW (callback_data));
+	/* FIXME bugzilla.eazel.com 4982:
+	 * Need to get the toolbar to re-layout somehow here, to position the
+	 * throbber properly. Before big Bonobo changes we did this by hiding
+	 * and showing the tool bar, but that doesn't work anymore.
+	 */
 }
 
 /* initialize the toolbar */

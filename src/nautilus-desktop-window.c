@@ -155,35 +155,8 @@ static void
 realize (GtkWidget *widget)
 {
 	NautilusDesktopWindow *window;
-#ifdef UIH
-	GtkContainer *dock_as_container;
-	GList *children, *p;
-	GtkWidget *child;
-#endif
 
 	window = NAUTILUS_DESKTOP_WINDOW (widget);
-
-	/* Hide unused pieces of the BonoboWindow.
-	 * We don't want a menu bar, toolbars, or status bar on the desktop.
-	 * But we don't want to hide the client area!
-	 */
-#ifdef UIH
-	gtk_widget_hide (GNOME_APP (window)->menubar);
-	gtk_widget_hide (GNOME_APP (window)->statusbar);
-	dock_as_container = GTK_CONTAINER (GNOME_APP (window)->dock);
-	children = gtk_container_children (dock_as_container);
-	for (p = children; p != NULL; p = p->next) {
-		child = p->data;
-		
-		if (child != gnome_dock_get_client_area (GNOME_DOCK (dock_as_container))) {
-			gtk_widget_ref (child);
-			window->details->unref_list = g_list_prepend
-				(window->details->unref_list, child);
-			gtk_container_remove (dock_as_container, child);
-		}
-	}
-	g_list_free (children);
-#endif
 
 	/* Make sure we get keyboard events */
 	gtk_widget_set_events (widget, gtk_widget_get_events (widget) 

@@ -1,3 +1,30 @@
+2000-12-05  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 3586 (Nautilus tool bar doesn't respect
+	"no labels" setting in gnomecc)
+
+	I fixed the Bonobo part of this bug earlier; this is the
+	little leftover Nautilus-specific part.
+
+	* src/nautilus-shell-ui.xml: Remove 'look="both"' from
+	tool bar definition. This was formerly needed due to
+	Bonobo behavior where you would get icons-only without this,
+	but now this prevents the preference from kicking in.
+	* src/nautilus-window-toolbars.c: 
+	(allocate_throbber): Use small throbber if gnome preference is 
+	for unlabelled tool bar buttons. This makes the throbber 
+	appearance fit in well when tool bar labels are off.
+	(theme_changed_callback): Remove hide/show toolbar and replace
+	it with FIXME about how the throbber doesn't reposition
+	correctly when theme changes. The hide/show was a hack that
+	worked in the old Bonobo but doesn't in the new one.
+
+	* src/nautilus-desktop-window.c: (realize):
+	Removed some leftover #ifdef UIH code that was functionally
+	replaced a while back.
+
 2000-12-04  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-metadata.c:
