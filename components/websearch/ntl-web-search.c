@@ -182,7 +182,6 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
   gtk_container_add(GTK_CONTAINER(frame), vbox);
 
   hview->btn_search = gnome_pixmap_button(gnome_stock_pixmap_widget(frame, GNOME_STOCK_PIXMAP_SEARCH), _("Search"));
-  gnome_button_can_default(GTK_BUTTON(hview->btn_search), TRUE);
   gtk_signal_connect(GTK_OBJECT(hview->btn_search), "clicked", do_search, hview);
   gtk_box_pack_start(GTK_BOX(vbox), hview->btn_search, FALSE, FALSE, GNOME_PAD);
 

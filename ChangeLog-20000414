@@ -1,3 +1,17 @@
+2000-02-07  Elliot Lee  <sopwith@redhat.com>
+	* components/help/Makefile.am: Build converters. Stop installing
+	the now-unneeded .schemes file.
+
+	* components/websearch/ntl-web-search.c: Get rid of
+	gnome_button_can_default()
+
+	* libnautilus/nautilus-icons-view-icon-item.c: Get rid of missing
+	prototypes and associated warnings by including needed headers.
+
+	* src/ntl-types.h, src/ntl-uri-map.[ch], src/ntl-window.h,
+	src/ntl-window-msgs.c: Remove scheme mapping functionality (now
+	done in gnome-vfs). Use asynchronous version of get_file_info.
+
 2000-02-04  John Sullivan <sullivan@eazel.com>
 
 	Zooming now shows different information at different

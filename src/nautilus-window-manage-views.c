@@ -379,7 +379,7 @@ nautilus_window_free_load_info(NautilusWindow *window)
   window->error_views = NULL;
   window->new_meta_views = NULL;
   window->new_content_view = NULL;
-  window->cancel_tag = 0;
+  window->cancel_tag = NULL;
   window->action_tag = 0;
   window->made_changes = 0;
   window->state = NW_IDLE;
@@ -577,7 +577,12 @@ nautilus_window_update_state(gpointer data)
       window->reset_to_idle = FALSE;
 
       if(window->cancel_tag)
-        g_source_remove(window->cancel_tag);
+        {
+          gnome_vfs_async_cancel(window->cancel_tag);
+          if(window->pending_ni)
+            window->pending_ni->ah = NULL;
+          window->cancel_tag = NULL;
+        }
 
       if(window->pending_ni)
         {
@@ -743,7 +748,7 @@ nautilus_window_set_state_info(NautilusWindow *window, ...)
           g_message("NAVINFO_RECEIVED"); 
 #endif
           window->pending_ni = va_arg(args, NautilusNavigationInfo*);
-          window->cancel_tag = 0;
+          window->cancel_tag = NULL;
           window->changes_pending = TRUE;
           break;
         case VIEW_ERROR:
@@ -850,7 +855,7 @@ nautilus_window_change_location_2(NautilusNavigationInfo *navi, gpointer data)
 
   /* Do various error checking here */
 
-  window->cancel_tag = 0;
+  window->cancel_tag = NULL;
 
   if(!navi)
     {

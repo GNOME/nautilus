@@ -26,11 +26,13 @@
 #include "nautilus-icons-view-icon-item.h"
 
 #include <math.h>
+#include <string.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libart_lgpl/art_rgb_pixbuf_affine.h>
 #include <libgnomeui/gnome-canvas-util.h>
 #include "gnome-icon-container-private.h"
 #include "nautilus-gtk-macros.h"
+#include "nautilus-string.h"
 
 /* Private part of the NautilusIconsViewIconItem structure */
 struct _NautilusIconsViewIconItemDetails {

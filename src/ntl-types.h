@@ -50,9 +50,11 @@ struct _NautilusNavigationInfo {
   GSList *content_identifiers;	/* list of NautilusViewIdentifiers */
   GSList *meta_iids;	/* list of iid strings */
 
-  guint notify_tag;
+  /* internal usage */
   NautilusNavigationInfoFunc notify_ready;
   gpointer data;
+
+  GnomeVFSAsyncHandle *ah;
 };
 
 #endif
