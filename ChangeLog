@@ -1,3 +1,13 @@
+2001-02-08  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* src/nautilus-sidebar-title.c:
+	(nautilus_sidebar_title_size_allocate): Found useful
+	optimization while investigating sidebar flashiness:
+	now it only recomputes the sidebar font in
+	size_allocate if the width actually changed.
+
 2001-02-08  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* nautilus.spec.in: updated to note that

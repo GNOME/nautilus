@@ -681,10 +681,16 @@ static void
 nautilus_sidebar_title_size_allocate (GtkWidget *widget,
 				      GtkAllocation *allocation)
 {
+	guint16 old_width;
+
+	old_width = widget->allocation.width;
+
 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
-	
-	/* Need to update the font if the width changes. */
-	update_font (NAUTILUS_SIDEBAR_TITLE (widget));
+
+	if (old_width != widget->allocation.width) {
+		/* Need to update the font if the width changes. */
+		update_font (NAUTILUS_SIDEBAR_TITLE (widget));
+	}
 }
 
 gboolean
