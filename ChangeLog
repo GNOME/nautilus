@@ -1,5 +1,13 @@
 2000-10-05  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* src/nautilus-profiler.c: (scrolled_text_new),
+	(window_delete_event), (window_print_button_callback),
+	(window_save_button_callback), (dump_dialog_new),
+	(dump_dialog_show), (nautilus_profiler_bonobo_ui_report_callback):
+	Make the profile report show up in a scrolling text window.
+	
+2000-10-05  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* src/Makefile.am:
 	Build profiler hooks if ENABLE_PROFILER is enabled.
 	
