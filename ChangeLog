@@ -1,3 +1,16 @@
+2000-05-19  John Sullivan  <sullivan@eazel.com>
+
+	A few tweaks to this new class inspired by Darin's
+	review.
+
+	* libnautilus-extensions/nautilus-keep-last-vertical-box.c:
+	(nautilus_keep_last_vertical_box_new): More comments.
+	(nautilus_keep_last_vertical_box_size_allocate): More comments.
+	Also now handles the case where the last item doesn't fit
+	even all by itself by moving & shrinking it to fit. Previously 
+	the last item would be left at its original position & size in 
+	this case.
+
 2000-05-19  Gene Z. Ragan  <gzr@eazel.com>
 
 	More undo framework work.  Still incomplete.

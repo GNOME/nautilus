@@ -73,6 +73,12 @@ nautilus_keep_last_vertical_box_new (gint spacing)
 	box = gtk_type_new (nautilus_keep_last_vertical_box_get_type ());
 
 	GTK_BOX (box)->spacing = spacing;
+
+	/* If homogeneous is TRUE and there are too many items to fit
+	 * naturally, they will be squashed together to fit in the space.
+	 * We want the ones that don't fit to be not shown at all, so
+	 * we set homogeneous to FALSE.
+	 */
 	GTK_BOX (box)->homogeneous = FALSE;
 
 	return GTK_WIDGET (box);
@@ -113,10 +119,17 @@ nautilus_keep_last_vertical_box_size_allocate (GtkWidget *widget,
 
 				child_allocation = child->widget->allocation;
 
-				/* Reposition this child so that it does not appear.
+				/* Reallocate this child's position so that it does not appear.
 				 * Setting the width & height to 0 is not enough, as
 				 * one pixel is still drawn. Must also move it outside
-				 * visible range.
+				 * visible range. For the cases I've seen, -1, -1 works fine.
+				 * This might not work in all future cases. Alternatively, the
+				 * items that don't fit could be hidden, but that would interfere
+				 * with having other hidden children.
+				 * 
+				 * Note that these children are having their size allocated twice,
+				 * once by gtk_vbox_size_allocate and then again here. I don't
+				 * know of any problems with this, but holler if you do.
 				 */
 				tiny_allocation.x = tiny_allocation.y = -1;
 				tiny_allocation.height = tiny_allocation.width = 0;
@@ -128,6 +141,17 @@ nautilus_keep_last_vertical_box_size_allocate (GtkWidget *widget,
 					last_child_allocation.y = child_allocation.y;
 					gtk_widget_size_allocate (last_child->widget, &last_child_allocation);
 					break;
+				}
+
+				/* If the special last item still doesn't fit, but we've
+				 * run out of earlier items, then the special last item is
+				 * just too darn tall. Let's squash it down to fit in the box's
+				 * allocation.
+				 */
+				if (children == NULL) {
+					last_child_allocation.y = allocation->y;
+					last_child_allocation.height = allocation->height;
+					gtk_widget_size_allocate (last_child->widget, &last_child_allocation);
 				}
 			}
 		}
