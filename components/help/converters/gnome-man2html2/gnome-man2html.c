@@ -3621,7 +3621,7 @@ static char
     return ret;
 }
 
-void 
+int
 main(int argc, char **argv)
 {
 	char *t=NULL;
@@ -3718,4 +3718,6 @@ main(int argc, char **argv)
 
 	if (buf)
 		free(buf);
+
+	return 0;
 }
