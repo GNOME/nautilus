@@ -368,7 +368,7 @@ mpg123_id3v1_to_id3v2 (struct id3v1tag_t *v1, struct id3tag_t *v2)
 	strncpy(v2->album, v1->album, 30);
 	strncpy(v2->year, v1->year, 4);
 	strncpy(v2->comment, v1->comment, 28);
-	strncpy(v2->track, v1->track, 2);
+	g_snprintf(v2->track, sizeof v2->track, "%d", v1->track);
 	strncpy(v2->genre, get_id3_genre(v1->genre), sizeof (v2->genre));
 	mpg123_strip_spaces(v2->title, 30);
 	mpg123_strip_spaces(v2->artist, 30);

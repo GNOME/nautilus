@@ -1,3 +1,16 @@
+2001-05-18  Jon K Hellan  <hellan@acm.org>
+
+	Code reviewed by Darin Adler <darin@bentspoon.com>
+
+	* components/music/mpg123.h (struct id3v1tag_t): Fix track info.
+	(struct id3tag_t): Fix track info. Not tested for v2, but big
+	enough for what can be represented in v1.1.
+
+	* components/music/mpg123.c (mpg123_id3v1_to_id3v2): Fix track
+	info. Track in id3v1.1 is an 8 bit integer, not a string.
+	Track is still unimplemented for id3v2. I did not fix it, as I
+	don't have examples to test with.
+
 2001-05-18  Yoann Vandoorselaere  <yoann@mandrakesoft.com>
 
 	Code reviewed by Darin Adler <darin@bentspoon.com>,
