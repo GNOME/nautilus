@@ -4964,7 +4964,6 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	width = gdk_pixbuf_get_width (pixbuf);
 	height = gdk_pixbuf_get_height (pixbuf);
 	if (width < min_image_size && height < min_image_size) {
-		g_print ("to small (%dx%d, scaling up\n", width, height);
 		scale_factor = MAX (min_image_size  / (double) width, min_image_size / (double) height);
 		/* don't let it exceed the maximum width in the other dimension */
 		scale_factor = MIN (scale_factor, max_image_size / width);
