@@ -302,6 +302,13 @@ fm_directory_view_icons_append_background_context_menu_items (FMDirectoryView *v
 				    append_background_context_menu_items, 
 				    (view, menu));
 
+	/* Put a separator before this item, since previous items are
+	 * window-specific and this one is global.
+	 */
+	menu_item = gtk_menu_item_new ();
+	gtk_widget_show (menu_item);
+	gtk_menu_append (menu, menu_item);
+
 	menu_item = gtk_menu_item_new_with_label (_("Customize Icon Text..."));
 	gtk_widget_show (menu_item);
 	gtk_signal_connect(GTK_OBJECT (menu_item), "activate",
