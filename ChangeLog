@@ -1,3 +1,24 @@
+2002-03-12  Alexander Larsson  <alla@lysator.liu.se>
+
+	* components/music/nautilus-music-view.c:
+	(music_view_set_selected_song_title,nautilus_music_view_update):
+	Escape text that is parsed as markup that could
+	have ampersands etc. in it.
+	(fetch_song_info): Use display filename for title when
+	the title is missing. This handles nice conversion to
+	utf8.
+
+2002-03-10  Diego González  <dggonz@yahoo.com>
+
+	* components/music/nautilus-music-vew.c (read_id_tag): convert
+	title, comments, artist and album to UTF-8
+
+2002-03-11 Diego González  <dggonz@yahoo.com>
+
+	* components/music/nautilus-music-view.c (go_to_next_track):
+	Fix a crash where the music view would crash after playing the
+	last song of a list. Correct indentation.
+
 2002-03-11  Anders Carlsson  <andersca@gnu.org>
 
 	* libnautilus-private/Makefile.am:

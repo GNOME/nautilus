@@ -645,12 +645,15 @@ music_view_set_selected_song_title (NautilusMusicView *music_view, int row)
 {
 	char *label_text;
 	char *temp_str;
-	
+	char *escaped_label_text;
+        
 	music_view->details->selected_index = row;
 	
 	label_text = get_song_text (music_view, row);
 
-        temp_str = g_strdup_printf ("<span size=\"x-large\">%s</span>", label_text);
+        escaped_label_text = g_markup_escape_text (label_text, -1);
+        temp_str = g_strdup_printf ("<span size=\"x-large\">%s</span>", escaped_label_text);
+        g_free (escaped_label_text);
         
 	gtk_label_set_markup (GTK_LABEL(music_view->details->song_label), temp_str);
 	g_free (label_text);
@@ -886,11 +889,28 @@ read_id_tag (const char *song_uri, SongInfo *song_info)
 	}
 	
 	/* Copy data from tag into our info struct */
-	song_info->title = g_strdup (tag.title);
-	song_info->artist = g_strdup (tag.artist);
-	song_info->album = g_strdup (tag.album); 
-        song_info->year = filter_out_unset_year (tag.year);
-	song_info->comment = g_strdup (tag.comment);
+	if (!g_utf8_validate (tag.title, -1, NULL)) {
+		song_info->title = g_convert (tag.title, -1, "UTF8", "ISO-8859-1", NULL, NULL, NULL);
+	} else {
+		song_info->title = g_strdup (tag.title);
+	}
+	if (!g_utf8_validate (tag.album, -1, NULL)) {
+		song_info->album = g_convert (tag.album, -1, "UTF8", "ISO-8859-1", NULL, NULL, NULL);
+	} else {
+		song_info->album = g_strdup (tag.album);
+	}
+	if (!g_utf8_validate (tag.artist, -1, NULL)) {
+		song_info->artist = g_convert (tag.artist, -1, "UTF8", "ISO-8859-1", NULL, NULL, NULL);
+	} else {
+		song_info->artist = g_strdup (tag.artist);
+	}
+	if (!g_utf8_validate (tag.comment, -1, NULL)) {
+		song_info->comment = g_convert (tag.comment, -1, "UTF8", "ISO-8859-1", NULL, NULL, NULL);
+	} else {
+		song_info->comment = g_strdup (tag.comment);
+	}
+
+	song_info->year = filter_out_unset_year (tag.year);
 	song_info->track_number = atoi (tag.track);
 
 	/* Clean up */
@@ -955,6 +975,7 @@ fetch_song_info (const char *song_uri, GnomeVFSFileInfo *file_info, int file_ord
 	GnomeVFSFileSize length_read;
 	ID3V2Header v2header;
 	long header_size;
+        NautilusFile *file;
 
 	if (!is_mp3_file (file_info)) {
 		return NULL;
@@ -973,7 +994,9 @@ fetch_song_info (const char *song_uri, GnomeVFSFileInfo *file_info, int file_ord
 		  	
 	/* there was no id3 tag, so set up the info heuristically from the file name and file order */
 	if (!has_info) {
-		info->title = g_strdup (file_info->name);
+                file = nautilus_file_get (song_uri);
+                info->title = nautilus_file_get_display_name (file);
+                nautilus_file_unref (file);
 	}	
 
 	result = gnome_vfs_open (&mp3_file, song_uri, GNOME_VFS_OPEN_READ);
@@ -1201,10 +1224,10 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
         gtk_tree_selection_select_iter (gtk_tree_view_get_selection (GTK_TREE_VIEW (music_view->details->tree_view)),
                                         &iter);
         
-	song_filename = gnome_vfs_get_local_path_from_uri (path_uri);
+        song_filename = gnome_vfs_get_local_path_from_uri (path_uri);
 
 	/* for now, we can only play local files, so apologize to the user and give up */	
-	if (song_filename == NULL) {
+        if (song_filename == NULL) {
                 eel_show_error_dialog
                         ( _("Sorry, but the music view can't play non-local files yet."),
                           _("Can't Play Remote Files"),
@@ -1221,7 +1244,7 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 	if (result != GNOME_VFS_OK) {
 		/* File must be unavailable for some reason. Let's yank it from the list */
                 gtk_list_store_remove (music_view->details->list_store, &iter);
-		g_free (song_filename);
+                g_free (song_filename);
 		music_view->details->selected_index -= 1;
 		go_to_next_track (music_view);
 		return;
@@ -1237,22 +1260,21 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 	music_view->details->status_timeout = gtk_timeout_add (900, (GtkFunction) play_status_display, music_view);
 
 	start_playing_file (music_view, song_filename);
-
-	g_free (song_filename);
+        g_free (song_filename);
 }
 
 
 static void
 go_to_next_track (NautilusMusicView *music_view)
 {
-        int num_rows;
+	int num_rows;
         
 	mpg123_stop ();
 
-        num_rows = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (music_view->details->list_store), NULL);
+	num_rows = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (music_view->details->list_store), NULL);
         
-	if (music_view->details->selected_index < num_rows) {
-		music_view->details->selected_index += 1;		
+	if ((music_view->details->selected_index + 1) < num_rows) {
+		music_view->details->selected_index += 1;
 		play_current_file (music_view, TRUE);
 	} else {  
 		update_play_controls_status (music_view, get_player_state (music_view));
@@ -1772,6 +1794,7 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 	/* determine the album title/artist line */	
 	if (music_view->details->album_title) {
 		char *basename, *album_name, *artist_name, *temp_str;
+                char *escaped_album_name, *escaped_artist_name;
 
                 album_name = determine_attribute (song_list, FALSE);
 		if (album_name == NULL) {
@@ -1780,13 +1803,18 @@ nautilus_music_view_update (NautilusMusicView *music_view)
                         g_free (basename);
                 }
 		
+                escaped_album_name = g_markup_escape_text (album_name, -1);
 		artist_name = determine_attribute (song_list, TRUE);
 		if (artist_name != NULL) {
-			temp_str = g_strdup_printf (_("<span size=\"xx-large\">%s - %s</span>"), album_name, artist_name);
+                        escaped_artist_name = g_markup_escape_text (artist_name, -1);
+
+			temp_str = g_strdup_printf (_("<span size=\"xx-large\">%s - %s</span>"), escaped_album_name, escaped_artist_name);
+			g_free (escaped_artist_name);
 			g_free (artist_name);
 		} else {
-			temp_str = g_strdup_printf ("<span size=\"xx-large\">%s</span>", album_name);
+			temp_str = g_strdup_printf ("<span size=\"xx-large\">%s</span>", escaped_album_name);
                 }
+                g_free (escaped_album_name);
 		gtk_label_set_markup (GTK_LABEL (music_view->details->album_title), temp_str);
 		
 		g_free (temp_str);
