@@ -1,7 +1,12 @@
+2000-07-04  Michael Meeks  <michael@helixcode.com>
+
+	* libnautilus-extensions/bonobo-stream-vfs.c (vfs_read): update
+	for new bonobo code; why is this code duplicated here in a worse
+	condition to that in Bonobo/storage-modules ?
+
 2000-07-04  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/startup/nautilus-view/icons/Makefile.am:
-	*
 	components/services/startup/nautilus-view/nautilus-service-startup-
 	view.c: (generate_startup_form), (progress_timeout_cb),
 	(go_to_uri), (generate_form_title):

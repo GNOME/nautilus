@@ -51,10 +51,10 @@ vfs_write (BonoboStream *stream, const Bonobo_Stream_iobuf *buffer,
 	return written;
 }
 
-static CORBA_long
+static void
 vfs_read (BonoboStream *stream, CORBA_long count,
-	 Bonobo_Stream_iobuf ** buffer,
-	 CORBA_Environment *ev)
+	  Bonobo_Stream_iobuf ** buffer,
+	  CORBA_Environment *ev)
 {
 	BonoboStreamVFS *sfs = BONOBO_STREAM_VFS (stream);
 	CORBA_octet *data;
@@ -70,11 +70,14 @@ vfs_read (BonoboStream *stream, CORBA_long count,
 	if (res == GNOME_VFS_OK){
 		(*buffer)->_buffer = data;
 		(*buffer)->_length = nread;
-	} else
+	} else {
 		CORBA_free (data);
+		CORBA_free (*buffer);
+		*buffer = NULL;
+		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+				     ex_Bonobo_Stream_IOError, NULL);
+	}
 	sfs->got_eof = (res == GNOME_VFS_ERROR_EOF);
-
-	return nread;
 }
 
 static CORBA_long
