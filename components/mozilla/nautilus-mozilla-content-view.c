@@ -211,12 +211,10 @@ nautilus_mozilla_content_view_load_uri (NautilusMozillaContentView	*view,
 		g_free (view->detail->uri);
 
 	/* FIXME bugzilla.eazel.com 522: This is a temporary dumbass hack */
-	if (strncmp (uri, "moz:", strlen ("moz:")) == 0)
-	{
+	if (strncmp (uri, "moz:", strlen ("moz:")) == 0) {
 		view->detail->uri = g_strdup_printf ("http:%s", uri + strlen ("moz:"));
 	}
-	else
-	{
+	else {
 		view->detail->uri = g_strdup (uri);
 	}
 
@@ -282,6 +280,14 @@ mozilla_notify_location_change_callback (NautilusContentViewFrame	*view_frame,
 					 NautilusMozillaContentView	*view)
 {
 	g_assert (view_frame == view->detail->view_frame);
+	
+	g_assert (navinfo != NULL);
+	if (navinfo->self_originated) {
+#ifdef DEBUG_ramiro
+		g_print ("ignoring self_originating location change for '%s'\n", navinfo->actual_uri);
+#endif
+		return;
+	}
 	
 	/* 
 	 * It's mandatory to send a PROGRESS_UNDERWAY message once the
@@ -420,6 +426,8 @@ mozilla_location_changed_callback (GtkWidget *widget, gpointer user_data)
 {
  	NautilusMozillaContentView	*view;
 	char				*new_location;
+	char				*hacked_location;
+	Nautilus_NavigationRequestInfo	navigation_request;
 
         g_assert (user_data != NULL);
         g_assert (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (user_data));
@@ -428,10 +436,28 @@ mozilla_location_changed_callback (GtkWidget *widget, gpointer user_data)
 
 	new_location = gtk_moz_embed_get_location (GTK_MOZ_EMBED (view->detail->mozilla));
 
+	memset (&navigation_request, 0, sizeof (navigation_request));
+
+
+	/* FIXME bugzilla.eazel.com 522: This is a temporary dumbass hack */
+	if (strncmp (new_location, "http:", strlen ("http:")) == 0) {
+		hacked_location = g_strdup_printf ("moz:%s", new_location + strlen ("http:"));
+	}
+	else {
+		hacked_location = g_strdup (new_location);
+	}
+
+	navigation_request.requested_uri = hacked_location;
+
+	nautilus_view_frame_request_location_change (NAUTILUS_VIEW_FRAME (view->detail->view_frame), 
+						     &navigation_request);
+	
 #ifdef DEBUG_ramiro
-	g_print ("mozilla_location_changed_callback (%s)\n", new_location);
+	g_print ("mozilla_location_changed_callback (%s)\n", hacked_location);
 #endif
+
 	g_free (new_location);
+	g_free (hacked_location);
 }
 
 static void

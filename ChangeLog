@@ -1,3 +1,12 @@
+2000-05-09  Ramiro Estrugo  <set EMAIL_ADDRESS environment variable>
+
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(nautilus_mozilla_content_view_load_uri),
+	(mozilla_notify_location_change_callback),
+	(mozilla_location_changed_callback):
+	Notify nautilus when the location changes so that back/forward
+	navigation and history work as expected.
+
 2000-05-09  John Sullivan  <sullivan@eazel.com>
 
 	Work on task 842 (Finish emblems UI in property window)
