@@ -41,13 +41,17 @@
  */
 static int		     bookmark_list_changed_signal_id;
 static NautilusBookmarkList *bookmarks = NULL;
-static GtkWidget	    *bookmark_list_widget = NULL; /* awkward name to distinguish from NautilusBookmarkList */
+static GtkTreeView	    *bookmark_list_widget = NULL; /* awkward name to distinguish from NautilusBookmarkList */
+static GtkListStore	    *bookmark_list_store = NULL;
+static GtkTreeSelection     *bookmark_selection = NULL;
+static int                   selection_changed_id = 0;
 static GtkWidget	    *name_field = NULL;
 static int		     name_field_changed_signal_id;
 static GtkWidget	    *remove_button = NULL;
 static gboolean		     text_changed = FALSE;
 static GtkWidget	    *uri_field = NULL;
 static int		     uri_field_changed_signal_id;
+
 
 /* forward declarations */
 static guint    get_selected_row                            (void);
@@ -60,15 +64,15 @@ static void     on_name_field_changed                       (GtkEditable        
 							     gpointer              user_data);
 static void     on_remove_button_clicked                    (GtkButton            *button,
 							     gpointer              user_data);
+#if GNOME2_CONVERSION_COMPLETE
 static void     on_row_move                                 (GtkCList             *clist,
 							     int                   old_row,
 							     int                   new_row,
 							     gpointer              user_data);
-static void     on_select_row                               (GtkCList             *clist,
-							     int                   row,
-							     int                   column,
-							     GdkEventButton       *event,
+#endif
+static void     on_selection_changed                        (GtkTreeSelection     *treeselection,
 							     gpointer              user_data);
+
 static gboolean on_text_field_focus_out_event               (GtkWidget            *widget,
 							     GdkEventFocus        *event,
 							     gpointer              user_data);
@@ -117,15 +121,17 @@ nautilus_bookmarks_window_response_callback (GtkDialog *dialog,
 GtkWindow *
 create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_source)
 {
-	GtkWidget *window;
-	GtkWidget *content_area;
-	GtkWidget *list_scroller;
-	GtkWidget *right_side;
-	GtkWidget *vbox3;
-	GtkWidget *name_label;
-	GtkWidget *vbox4;
-	GtkWidget *url_label;
-	GtkWidget *hbox2;
+	GtkWidget         *window;
+	GtkWidget         *content_area;
+	GtkWidget         *list_scroller;
+	GtkWidget         *right_side;
+	GtkWidget         *vbox3;
+	GtkWidget         *name_label;
+	GtkWidget         *vbox4;
+	GtkWidget         *url_label;
+	GtkWidget         *hbox2;
+	GtkTreeViewColumn *col;
+	GtkCellRenderer   *rend;
 
 	bookmarks = list;
 
@@ -150,19 +156,48 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 	gtk_widget_show (list_scroller);
 	gtk_box_pack_start (GTK_BOX (content_area), list_scroller, TRUE, TRUE, 0);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (list_scroller), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (list_scroller), GTK_SHADOW_IN);
+	gtk_container_set_border_width (GTK_CONTAINER (list_scroller), 7);
 
-	bookmark_list_widget = gtk_clist_new (BOOKMARK_LIST_COLUMN_COUNT);
-	gtk_widget_show (bookmark_list_widget);
-	gtk_container_add (GTK_CONTAINER (list_scroller), bookmark_list_widget);
-	gtk_clist_column_titles_hide (GTK_CLIST (bookmark_list_widget));
-	gtk_clist_set_column_width (GTK_CLIST (bookmark_list_widget),
-				    BOOKMARK_LIST_COLUMN_ICON,
-				    NAUTILUS_ICON_SIZE_SMALLER);
-	gtk_clist_set_row_height (GTK_CLIST (bookmark_list_widget),
-				  NAUTILUS_ICON_SIZE_SMALLER);
-	gtk_clist_set_reorderable(GTK_CLIST (bookmark_list_widget), TRUE);
-	gtk_clist_set_use_drag_icons(GTK_CLIST (bookmark_list_widget), FALSE);
-
+	bookmark_list_widget = GTK_TREE_VIEW (gtk_tree_view_new ());
+	gtk_widget_show (GTK_WIDGET (bookmark_list_widget));
+	gtk_container_add (GTK_CONTAINER (list_scroller), 
+			   GTK_WIDGET (bookmark_list_widget));
+	gtk_widget_set_size_request (GTK_WIDGET (bookmark_list_widget), -1, 120);
+	gtk_tree_view_set_headers_visible (bookmark_list_widget, FALSE);
+	gtk_tree_view_set_reorderable (bookmark_list_widget, TRUE);
+		
+	rend = gtk_cell_renderer_pixbuf_new ();
+	col = gtk_tree_view_column_new_with_attributes ("Icon", 
+							rend,
+							"pixbuf", 
+							BOOKMARK_LIST_COLUMN_ICON,
+							NULL);
+	gtk_tree_view_append_column (bookmark_list_widget,
+				     GTK_TREE_VIEW_COLUMN (col));
+	gtk_tree_view_column_set_fixed_width (GTK_TREE_VIEW_COLUMN (col),
+					      NAUTILUS_ICON_SIZE_SMALLER);
+	
+	rend = gtk_cell_renderer_text_new ();
+	col = gtk_tree_view_column_new ();
+	col = gtk_tree_view_column_new_with_attributes ("Icon", 
+							rend,
+							"text", 
+							BOOKMARK_LIST_COLUMN_NAME,
+							NULL);
+	gtk_tree_view_append_column (bookmark_list_widget,
+				     GTK_TREE_VIEW_COLUMN (col));
+	
+	bookmark_list_store = gtk_list_store_new (BOOKMARK_LIST_COLUMN_COUNT,
+						  GDK_TYPE_PIXBUF,
+						  G_TYPE_STRING,
+						  G_TYPE_INT);
+	gtk_tree_view_set_model (bookmark_list_widget,
+				 GTK_TREE_MODEL (bookmark_list_store));
+	
+	bookmark_selection =
+		GTK_TREE_SELECTION (gtk_tree_view_get_selection (bookmark_list_widget));
+	
 	right_side = gtk_vbox_new (FALSE, GNOME_PAD);
 	gtk_widget_show (right_side);
 	gtk_box_pack_start (GTK_BOX (content_area), right_side, TRUE, TRUE, 0);
@@ -205,12 +240,13 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 	bookmark_list_changed_signal_id =
 		g_signal_connect (bookmarks, "contents_changed",
 				  G_CALLBACK (on_bookmark_list_changed), NULL);
-				    
+#if GNOME2_CONVERSION_COMPLETE
 	g_signal_connect (bookmark_list_widget, "row_move",
 			  G_CALLBACK (on_row_move), NULL);
-	
-	g_signal_connect (bookmark_list_widget, "select_row",
-			  G_CALLBACK (on_select_row), NULL);
+#endif	
+	selection_changed_id =
+		g_signal_connect (bookmark_selection, "changed",
+				  G_CALLBACK (on_selection_changed), NULL);	
 
 	g_signal_connect (window, "delete_event",
 			  G_CALLBACK (on_window_delete_event), NULL);
@@ -252,11 +288,9 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (), "icons_changed",
 					       repopulate, GTK_OBJECT (window));
                       	    
-
-	/* Set selection mode after connecting signal to notice initial selected row. */
-	gtk_clist_set_selection_mode (GTK_CLIST (bookmark_list_widget), 
-				      GTK_SELECTION_BROWSE);
-
+	gtk_tree_selection_set_mode (bookmark_selection,
+				     GTK_SELECTION_BROWSE);
+	
 	/* Fill in list widget with bookmarks, must be after signals are wired up. */
 	repopulate();
 
@@ -274,36 +308,25 @@ get_selected_bookmark (void)
 static guint
 get_selected_row (void)
 {
+	GtkTreeIter       iter;
+	GtkTreePath      *path;
+	GtkTreeModel     *model;
+	
 	g_assert (get_selection_exists());
-	return GPOINTER_TO_UINT (g_list_nth_data (GTK_CLIST (bookmark_list_widget)->selection, 0));
+	
+	model = GTK_TREE_MODEL (bookmark_list_store);
+	gtk_tree_selection_get_selected (bookmark_selection,
+					 &model,
+					 &iter);
+	
+	path = gtk_tree_model_get_path (model, &iter);
+	return atoi (gtk_tree_path_to_string (path));
 }
 
 static gboolean
 get_selection_exists (void)
 {
-	g_assert (GTK_CLIST(bookmark_list_widget)->selection_mode 
-		  == GTK_SELECTION_BROWSE);
-	return GTK_CLIST(bookmark_list_widget)->rows > 0;
-}
-
-static void
-install_bookmark_icon (NautilusBookmark *bookmark, int row)
-{
-	GdkPixmap *pixmap;
-	GdkBitmap *bitmap;
-
-	if (!nautilus_bookmark_get_pixmap_and_mask (bookmark,
-		  				    NAUTILUS_ICON_SIZE_SMALLER,
-						    &pixmap,
-						    &bitmap)) {
-		return;
-	}
-
-	gtk_clist_set_pixmap (GTK_CLIST (bookmark_list_widget),	
-			      row,
-			      BOOKMARK_LIST_COLUMN_ICON,
-			      pixmap,
-			      bitmap);
+	return gtk_tree_selection_get_selected (bookmark_selection, NULL, NULL);
 }
 
 static void
@@ -367,16 +390,22 @@ static void
 on_name_field_changed (GtkEditable *editable,
 		       gpointer     user_data)
 {
-	g_return_if_fail(GTK_IS_CLIST(bookmark_list_widget));
+	GtkTreeIter   iter;
+	g_return_if_fail(GTK_IS_TREE_VIEW(bookmark_list_widget));
 	g_return_if_fail(GTK_IS_ENTRY(name_field));
 	g_return_if_fail(get_selection_exists());
 
 	/* Update text displayed in list instantly. Also remember that 
 	 * user has changed text so we update real bookmark later. 
 	 */
-	gtk_clist_set_text(GTK_CLIST(bookmark_list_widget), 
-			   get_selected_row(), BOOKMARK_LIST_COLUMN_NAME, 
-			   gtk_entry_get_text(GTK_ENTRY(name_field)));
+	gtk_tree_selection_get_selected (bookmark_selection,
+					 NULL,
+					 &iter);
+	
+	gtk_list_store_set (bookmark_list_store, 
+			    &iter, BOOKMARK_LIST_COLUMN_NAME, 
+			    gtk_entry_get_text (GTK_ENTRY (name_field)),
+			    -1);
 	text_changed = TRUE;
 }
 
@@ -385,7 +414,13 @@ static void
 on_remove_button_clicked (GtkButton *button,
                           gpointer   user_data)
 {
-	g_assert(GTK_IS_CLIST(bookmark_list_widget));
+	GtkTreeIter iter;
+	guint       selected_row;
+	guint       list_length;
+	gchar      *row_path;
+
+	g_assert (GTK_IS_TREE_VIEW (bookmark_list_widget));
+	
 
 	/* Turn off list updating since we're handling the list widget explicitly.
 	 * This allows the selection to move to the next row, instead of leaping
@@ -393,11 +428,10 @@ on_remove_button_clicked (GtkButton *button,
 	 */
 	gtk_signal_handler_block(GTK_OBJECT(bookmarks), 
 				 bookmark_list_changed_signal_id);
+	selected_row = get_selected_row ();
 	nautilus_bookmark_list_delete_item_at(bookmarks, get_selected_row());
 	gtk_signal_handler_unblock(GTK_OBJECT(bookmarks), 
 				   bookmark_list_changed_signal_id);
-
-	gtk_clist_remove(GTK_CLIST(bookmark_list_widget), get_selected_row());
 
 	/*
 	 * If removing the selected row selected the next row, then we'll
@@ -405,12 +439,40 @@ on_remove_button_clicked (GtkButton *button,
 	 * callback, which will leave the Remove button and text fields
 	 * in the wrong state unless we fix them explicitly here.
 	 */
-	if (nautilus_bookmark_list_length (bookmarks) == 0) {
+	list_length = nautilus_bookmark_list_length (bookmarks);
+	if (!list_length) {
 		repopulate ();
+		return;
 	}
+	gtk_tree_selection_get_selected (bookmark_selection,
+					 NULL,
+					 &iter);
+
+	/* Block signals, so our on_selection_changed won't be called */
+	g_signal_handler_block (bookmark_selection,
+				selection_changed_id);
+	
+	gtk_list_store_remove (bookmark_list_store, &iter);
+
+	g_signal_handler_unblock (bookmark_selection,
+				  selection_changed_id);
+
+	/* If the last item was just removed,
+	 * we need to select the previous one
+	 */
+	if (selected_row >= list_length) {
+		row_path = g_strdup_printf ("%d", selected_row-1);
+		gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL (bookmark_list_store),
+						     &iter,
+						     row_path);
+		g_free (row_path);
+	}
+	
+	gtk_tree_selection_select_iter (bookmark_selection, &iter);
+	
 }
 
-
+#if GNOME2_CONVERSION_COMPLETE
 static void
 on_row_move (GtkCList *clist,
 	     int      old_row,
@@ -419,6 +481,7 @@ on_row_move (GtkCList *clist,
 {
 	NautilusBookmark *bookmark;
 
+	puts (__FUNCTION__);
 	bookmark = nautilus_bookmark_copy(
 		nautilus_bookmark_list_item_at(bookmarks, old_row));
 
@@ -434,24 +497,17 @@ on_row_move (GtkCList *clist,
 
 	g_object_unref (bookmark);
 }
+#endif
 
 static void
-on_select_row (GtkCList	       *clist,
-	       int		row,
-	       int	 	column,
-	       GdkEventButton  *event,
-	       gpointer		user_data)
+on_selection_changed (GtkTreeSelection *treeselection,
+		      gpointer user_data)
 {
 	NautilusBookmark *selected;
 	char *name, *uri;
-
+	
 	g_assert (GTK_IS_ENTRY (name_field));
 	g_assert (GTK_IS_ENTRY (uri_field));
-
-	/* Workaround for apparent GtkCList bug. See bugzilla.gnome.org 47846. */
-	if (clist->rows <= row) {
-		return;
-	}
 
 	selected = get_selected_bookmark ();
 	name = nautilus_bookmark_get_name (selected);
@@ -569,40 +625,56 @@ on_window_destroy_event (GtkWidget *widget,
 static void
 repopulate (void)
 {
-	GtkCList *clist;
-	guint index;
-	gboolean selection_exists;
-
-	g_assert (GTK_IS_CLIST (bookmark_list_widget));
+	GtkListStore *store;
+	guint         index;
+	GtkTreeIter   iter;
+	gboolean      selection_exists;
+	
+	g_assert (GTK_IS_TREE_VIEW (bookmark_list_widget));
 	g_assert (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
 	
-	clist = GTK_CLIST (bookmark_list_widget);
+	store = GTK_LIST_STORE (bookmark_list_store);
 
-	/* Freeze while mucking with content so it's not flashy */
-	gtk_clist_freeze (clist);
-	    
-	/* Empty the list. */
-	gtk_clist_clear (clist);
-	   
+	g_signal_handler_block (bookmark_selection,
+				selection_changed_id);
+	
+	gtk_list_store_clear (store);
+	
+	g_signal_handler_unblock (bookmark_selection,
+				  selection_changed_id);
+	
 	/* Fill the list in with the bookmark names. */
 	for (index = 0; index < nautilus_bookmark_list_length(bookmarks); ++index) {
-		char *text[BOOKMARK_LIST_COLUMN_COUNT];
-		char *bookmark_name;
 		NautilusBookmark *bookmark;
-		int new_row;
+		char             *bookmark_name;
+		GdkPixbuf        *bookmark_pixbuf;
+		GtkTreeIter       iter;
 
-		bookmark = nautilus_bookmark_list_item_at(bookmarks, index);
+		bookmark = nautilus_bookmark_list_item_at (bookmarks, index);
 		bookmark_name = nautilus_bookmark_get_name (bookmark);
-		text[BOOKMARK_LIST_COLUMN_ICON] = NULL;
-		text[BOOKMARK_LIST_COLUMN_NAME] = bookmark_name;
-		new_row = gtk_clist_append (clist, text);
-		g_free (bookmark_name);
+		bookmark_pixbuf = nautilus_bookmark_get_pixbuf (bookmark,
+								NAUTILUS_ICON_SIZE_SMALLER,
+								TRUE);
 		
-		install_bookmark_icon (bookmark, new_row);
+		gtk_list_store_append (store, &iter);
+		gtk_list_store_set (store, &iter, 
+				    BOOKMARK_LIST_COLUMN_ICON, bookmark_pixbuf,
+				    BOOKMARK_LIST_COLUMN_NAME, bookmark_name,
+				    -1);
+		
+		g_free (bookmark_name);
+		g_object_unref (bookmark_pixbuf);
+		
+	}
+
+	/* Select the first row on start-up */
+	if (index) {
+		gtk_tree_model_get_iter_root (GTK_TREE_MODEL (bookmark_list_store), &iter);
+		gtk_tree_selection_select_iter (bookmark_selection, &iter);
 	}
 	
 	/* Set the sensitivity of widgets that require a selection */
-	selection_exists = get_selection_exists();
+	selection_exists = get_selection_exists ();
 	gtk_widget_set_sensitive (remove_button, selection_exists);
 	gtk_widget_set_sensitive (name_field, selection_exists);
 	gtk_widget_set_sensitive (uri_field, selection_exists);
@@ -622,7 +694,6 @@ repopulate (void)
 					    uri_field_changed_signal_id);
 	}
 	  
-	gtk_clist_thaw (GTK_CLIST (bookmark_list_widget));
 }
 
 static int
