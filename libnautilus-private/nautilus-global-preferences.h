@@ -26,7 +26,7 @@
 #define NAUTILUS_PREFS_GLOBAL_H
 
 #include <gnome.h>
-#include <nautilus-widgets/nautilus-preferences.h>
+#include <libnautilus-extensions/nautilus-preferences.h>
 
 BEGIN_GNOME_DECLS
 

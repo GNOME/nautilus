@@ -28,13 +28,13 @@
 
 #include <gtk/gtkbox.h>
 
-#include <nautilus-widgets/nautilus-preferences-group.h>
-#include <nautilus-widgets/nautilus-preferences-item.h>
-#include <nautilus-widgets/nautilus-preferences-dialog.h>
-#include <nautilus-widgets/nautilus-user-level-manager.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-view-identifier.h>
+#include "nautilus-preferences-group.h"
+#include "nautilus-preferences-item.h"
+#include "nautilus-preferences-dialog.h"
+#include "nautilus-user-level-manager.h"
+#include "nautilus-glib-extensions.h"
+#include "nautilus-file-utilities.h"
+#include "nautilus-view-identifier.h"
 
 /* Constants */
 #define GLOBAL_PREFERENCES_DIALOG_TITLE _("Nautilus Preferences")
