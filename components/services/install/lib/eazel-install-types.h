@@ -122,11 +122,11 @@ struct _InstallOptions {
 	char* pkg_list;            /* Local path to package-list.xml */
 	char* transaction_dir;                     /* Local directory to store transactions */
 	gboolean mode_verbose;     /* print extra information */
-	gboolean mode_silent;      /* FIXME bugzilla.eazel.com 731: print all information to a logfile */
+	gboolean mode_silent;      /* print all information to a logfile */
 	gboolean mode_debug;       /* Internal testing mode for debugging */
 	gboolean mode_test;        /* dry run mode */
 	gboolean mode_force;       /* Force the action to be performed */
-	gboolean mode_depend;      /* FIXME bugzilla.eazel.com 731: print all dependancies */
+	gboolean mode_depend;      /* print all dependancies */
 	gboolean mode_update;      /* If package is already installed, update it */
 	gboolean mode_uninstall;   /* Uninstall the package list */
 	gboolean mode_downgrade;   /* Downgrade the packages to previous version*/
