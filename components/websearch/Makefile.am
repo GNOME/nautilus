@@ -1,4 +1,4 @@
-bin_PROGRAMS=ntl-web-search
+k	k	bin_PROGRAMS=ntl-web-search
 
 INCLUDES=\
 	-I$(top_srcdir) 			\
@@ -24,7 +24,7 @@ ntl_web_search_SOURCES=ntl-web-search.c
 oafdir=$(datadir)/oaf
 oaf_DATA=ntl-web-search.oafinfo
 
-enginesdir=$(datadir)/ntl-web-search
+enginesdir=$(datadir)/websearch
 engines_DATA=standard.eng
 
 EXTRA_DIST=$(oaf_DATA) $(engines_DATA)
