@@ -12,11 +12,6 @@
 	 _tip="Go to the previous visited location"/>
 	<cmd name="Forward" accel="*Control*bracketright"
 	 _tip="Go to the next visited location"/>
-	<cmd name="Find" accel="*Control*f"
-	 _tip="Search this computer for files"/>
-	<cmd name="Toggle Find Mode" 
-	 _label="Find"
-	 _tip="Search this computer for files"/>
 	<cmd name="New Window"
 	 _label="New Window"
 	 _tip="Open another Nautilus window for the displayed location"/>
@@ -68,18 +63,6 @@
 		<placeholder name="General Status Placeholder" delimit="top"/>
 		<placeholder name="File Items Placeholder" delimit="top"/>
 		<placeholder name="Dangerous File Items Placeholder" delimit="top"/>
-
-		<separator/>
-
-		<menuitem name="Find"
-			  _label="_Find"
-			  verb="Find"/>
-		<menuitem name="Go to Web Search"
-			  _label="We_b Search"
-			  _tip="Search the World Wide Web"
-			  accel="*Control**Shift*f"
-			  verb="Go to Web Search"/>
-
 		<placeholder name="Global File Items Placeholder" delimit="top"/>
 	</submenu>
 
@@ -316,16 +299,6 @@
 	          min_width="48"
 	          pixtype="stock" pixname="gtk-home"
 		  verb="Home"/>
-	<toolitem name="Toggle Find Mode"
-	          min_width="48"
-	          type="toggle"
-	          pixtype="stock" pixname="gtk-find"
-		  verb="Toggle Find Mode"/>
-	<toolitem name="Go to Web Search"
-		  _label="Web Search"
-		  _tip="Search the World Wide Web"
-	          pixtype="stock" pixname="gtk-find"
-		  verb="Go to Web Search"/>
 
 	<separator/>
 

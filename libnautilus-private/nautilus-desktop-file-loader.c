@@ -102,7 +102,6 @@ void                         nautilus_desktop_file_foreach_key     (NautilusDesk
 								    NautilusDesktopFileForeachFunc   func,
 								    gpointer                         user_data);
 
-static NautilusDesktopFile *        nautilus_desktop_file_new             (void);
 static void                         hash_lines                            (NautilusDesktopFile             *df);
 static NautilusDesktopFileSection*  section_new                           (const char                      *name,
 									   char                           **start_line);
@@ -115,7 +114,7 @@ static NautilusDesktopFileAddition* addition_new                          (Nauti
 static void                         addition_free                         (NautilusDesktopFileAddition     *addition);
 
 
-static NautilusDesktopFile*
+NautilusDesktopFile*
 nautilus_desktop_file_new (void)
 {
         NautilusDesktopFile *df;
@@ -1099,8 +1098,7 @@ nautilus_desktop_file_launch (NautilusDesktopFile *df)
 	char *url;
 	char *exec;
 	char *subst;
-		
-		
+	char *name;
 
 	if (!nautilus_desktop_file_get_string (df, NULL, "Type", &type)) {
 		return;
@@ -1126,11 +1124,13 @@ nautilus_desktop_file_launch (NautilusDesktopFile *df)
 
 			in_terminal = FALSE;
 			nautilus_desktop_file_get_boolean (df, NULL, "Terminal", &in_terminal);
+			nautilus_desktop_file_get_locale_string (df, NULL, "Name", &name);
 
-			nautilus_launch_application_from_command ("",
+			nautilus_launch_application_from_command (name,
 								  subst,
 								  NULL,
 								  in_terminal);
+			g_free (name);
 			g_free (subst);
 		}
 

@@ -40,6 +40,7 @@ typedef struct NautilusDesktopFile NautilusDesktopFile;
  * and put it in another library for use by the panel, nautilus etc.
  */
 
+NautilusDesktopFile *nautilus_desktop_file_new             (void);
 GnomeVFSResult       nautilus_desktop_file_load            (const char                      *uri,
 							    NautilusDesktopFile            **desktop_file);
 NautilusDesktopFile *nautilus_desktop_file_from_string     (const char                      *data);

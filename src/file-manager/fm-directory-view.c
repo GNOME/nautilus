@@ -74,6 +74,7 @@
 #include <libnautilus-private/nautilus-trash-directory.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
 #include <libnautilus-private/nautilus-view-identifier.h>
+#include <libnautilus-private/nautilus-desktop-file-loader.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <math.h>
 #include <unistd.h>
@@ -4627,6 +4628,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 	char *uri, *command, *executable_path, *quoted_path, *name;
 	GnomeVFSMimeApplication *application;
 	ActivationAction action;
+	NautilusDesktopFile *df; 
 	
 	parameters = callback_data;
 
@@ -4658,13 +4660,42 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 				 fm_directory_view_get_containing_window (view));
 			action = ACTIVATION_ACTION_DO_NOTHING;
 		} else {
-			/* As an additional precaution, only execute
-			 * commands without any parameters, which is
-			 * enforced by using a call that uses
-			 * fork/execlp instead of system.
+			name = nautilus_file_get_uri (file); 
+			df = nautilus_desktop_file_new ();
+
+			/* As desktop file loader only test gnome vfs result, we have
+			 * to also test for a valid desktop file by querying the hash
 			 */
-			command = uri + strlen (NAUTILUS_COMMAND_SPECIFIER);
-			eel_gnome_shell_execute (command);
+			if (df &&
+			    nautilus_desktop_file_load (name, &df) == GNOME_VFS_OK &&
+			    nautilus_desktop_file_get_string (df, NULL, "Exec", &command)) 
+			{
+				g_free (name); 
+				g_free (command); 
+				nautilus_desktop_file_launch (df);
+				nautilus_desktop_file_free (df);
+			}
+			else 
+			{
+				/* desktop file alloc failed or not a desktop file */
+				if (df) 
+				{
+					nautilus_desktop_file_free (df);
+				}
+				
+				/* As an additional precaution, only execute
+				 * commands without any parameters, which is
+				 * enforced by using a call that uses
+				 * fork/execlp instead of system.
+				 * cf.: nautilus-program-choosing.c
+				 */
+				command = uri + strlen (NAUTILUS_COMMAND_SPECIFIER);
+				nautilus_launch_application_from_command ("",
+									  command,
+									  NULL, /* param */
+									  FALSE);
+				g_free (name); 
+			}
 			action = ACTIVATION_ACTION_DO_NOTHING;
 		}
 	}
