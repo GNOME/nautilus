@@ -1,3 +1,13 @@
+2001-03-22  John Harper  <jsh@eazel.com>
+
+	Fixed bug 7366 (Smooth text layout cache checks take too long):
+
+	* libnautilus-extensions/nautilus-smooth-text-layout-cache.c
+	(nautilus_self_check_smooth_text_layout_cache): only do a small
+	number of iterations by default. The
+	NAUTILUS_LAYOUT_CACHE_TESTS environment variable can be used to
+	set a larger value. Also, don't print any progress messages
+
 2001-03-22  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>

@@ -574,8 +574,8 @@ struct test_case {
 /* I chose 1 1/2 here so that we get both cache reuse and ejection */
 #define TOTAL_CASES ((DEFAULT_MAXIMUM_SIZE * 3) / 2)
 
-/* I'd prefer to do more than 10, here. But it takes too long */
-#define TOTAL_TESTS (TOTAL_CASES * 10)
+/* I'd prefer to do more than 2, here. But it takes too long */
+#define DEFAULT_TOTAL_TESTS (TOTAL_CASES * 2)
 
 static int
 random_integer (int min, int max)
@@ -722,9 +722,20 @@ nautilus_self_check_smooth_text_layout_cache (void)
 {
 	struct test_case cases[TOTAL_CASES];
 	int i, index;
+	int total_tests;
+	char *tem;
 
 	test_cache = nautilus_smooth_text_layout_cache_new ();
 	test_font = nautilus_scalable_font_get_default_font ();
+
+	/* decide how many tests we're going to do.. */
+	tem = getenv ("NAUTILUS_LAYOUT_CACHE_TESTS");
+	if (tem != NULL) {
+		total_tests = strtol (tem, 0, 0);
+		total_tests = MAX (total_tests, DEFAULT_TOTAL_TESTS);
+	} else {
+		total_tests = DEFAULT_TOTAL_TESTS;
+	}
 
 	/* initialize the random number generator to a known state */
 	srandom (1);
@@ -736,19 +747,14 @@ nautilus_self_check_smooth_text_layout_cache (void)
 		randomize_test_case (cases + i, cases + (i - TOTAL_CASES / 2));
 	}
 
-	for (i = 0; i < TOTAL_TESTS; i++) {
+	for (i = 0; i < total_tests; i++) {
 		index = random_integer (0, TOTAL_CASES);
 		if (!check_one (cases + index)) {
 			/* hmm.. */
 			fprintf (stderr, "\nNautilusSmoothTextLayoutCache test %d failed\n", i);
 			NAUTILUS_CHECK_BOOLEAN_RESULT (FALSE, TRUE);
 		}
-		if (i % 100 == 0) {
-			fprintf (stderr, "[%d] ", i);
-			fflush (stderr);
-		}
 	}
-	fputc ('\n', stderr);
 
 	for (i = 0; i < TOTAL_CASES; i++) {
 		free_test_case (cases + i);
