@@ -97,6 +97,7 @@ typedef struct {
 	GdkPixbuf *open_triangle;
 	GdkPixbuf *open_triangle_changed;
 	GdkPixbuf *bullet;
+	GdkPixbuf *changed_bullet;
 	
 	GtkWidget *main_box;
 	GtkWidget *news_display;
@@ -164,7 +165,6 @@ typedef struct {
 	int items_end_y;
 	
 	time_t last_update;
-	uint   update_interval;
 	
 	gboolean is_open;	
 	gboolean is_showing;
@@ -203,8 +203,10 @@ static char* get_xml_path (const char *file_name, gboolean force_local);
 static int check_for_updates (gpointer callback_data);
 static RSSChannelData* get_channel_from_name (News *news_data, const char *channel_name);
 static void nautilus_news_clear_changed_flags (News* news_data);
+static void clear_channel_changed_flags (RSSChannelData *channel_data);
 static void set_views_for_mode (News *news);
 static void max_items_changed (gpointer user_data);
+static void update_interval_changed (gpointer user_data);
 
 static void add_channel_entry (News *news_data, const char *channel_name,
 			       int index, gboolean is_showing);
@@ -329,11 +331,18 @@ do_destroy (GtkObject *obj, News *news)
 		gdk_pixbuf_unref (news->bullet);
 	}	
 	
+	if (news->changed_bullet != NULL) {
+		gdk_pixbuf_unref (news->changed_bullet);
+	}	
+	
 	/* free all the channel data */
 	nautilus_news_free_channel_list (news);
 
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS,
 					      max_items_changed,
+					      news);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_NEWS_UPDATE_INTERVAL,
+					      update_interval_changed,
 					      news);
 	
         g_free (news);
@@ -530,6 +539,7 @@ draw_rss_items (RSSChannelData *channel_data,
 	EelSmoothTextLayout *smooth_text_layout;
 	EelDimensions text_dimensions;
 	EelScalableFont *font;
+	GdkPixbuf *bullet;
 	
 	if (channel_data->owner->bullet) {
 		bullet_width = gdk_pixbuf_get_width (channel_data->owner->bullet);
@@ -552,6 +562,12 @@ draw_rss_items (RSSChannelData *channel_data,
 		} else {
 			text_color = EEL_RGB_COLOR_BLACK;
 			bullet_alpha = 192;
+		}
+		
+		if (item_data->new_item && (channel_data->owner->changed_bullet != NULL)) {
+			bullet = channel_data->owner->changed_bullet;
+		} else {
+			bullet = channel_data->owner->bullet;
 		}
 		
 		font_size = ITEM_FONT_SIZE;	
@@ -586,10 +602,10 @@ draw_rss_items (RSSChannelData *channel_data,
 		 		 	EEL_OPACITY_FULLY_OPAQUE);
 									
 				/* draw the bullet */	
-				if (channel_data->owner->bullet) {
+				if (bullet != NULL) {
 					bullet_x_pos = ITEM_POSITION - bullet_width - 2;
 					bullet_y_pos = v_offset + 2;
-					pixbuf_composite (channel_data->owner->bullet, pixbuf,
+					pixbuf_composite (bullet, pixbuf,
 						  bullet_x_pos, bullet_y_pos, bullet_alpha);
 				}	
 			}
@@ -741,7 +757,7 @@ toggle_open_state (RSSChannelData *channel_data)
 {
 	channel_data->is_open = !channel_data->is_open;
 	if (!channel_data->is_open) {
-		channel_data->channel_changed = FALSE;
+		clear_channel_changed_flags (channel_data);
 	}
 	
 	update_size_and_redraw (channel_data->owner);	
@@ -1349,7 +1365,6 @@ nautilus_news_make_new_channel (News *news_data,
  	channel_data->name = g_strdup (name);
 	channel_data->uri = g_strdup (channel_uri);
  	channel_data->owner = news_data;
- 	channel_data->update_interval = news_data->update_interval;
  	channel_data->prelight_index = -1;
 	channel_data->is_open = is_open;
 	channel_data->is_showing = is_showing;
@@ -1477,7 +1492,7 @@ check_for_updates (gpointer callback_data)
 	current_item = news_data->channel_list;
 	while (current_item != NULL) {
 		channel_data = (RSSChannelData*) current_item->data;	
-		next_update_time = channel_data->last_update + channel_data->update_interval;
+		next_update_time = channel_data->last_update + channel_data->owner->update_interval;
 		
 		if (current_time > next_update_time && !channel_data->update_in_progress && channel_data->is_showing) {
 			nautilus_news_load_channel (news_data, channel_data);
@@ -1529,6 +1544,17 @@ nautilus_news_load_images (News *news_data)
 		news_data->bullet = gdk_pixbuf_new_from_file (news_bullet_path);
 		g_free (news_bullet_path);
 	}
+
+	if (news_data->changed_bullet != NULL) {
+		gdk_pixbuf_unref (news_data->changed_bullet);
+	}
+	
+	news_bullet_path = nautilus_theme_get_image_path ("changed_bullet.png");	
+	if (news_bullet_path != NULL) {
+		news_data->changed_bullet = gdk_pixbuf_new_from_file (news_bullet_path);
+		g_free (news_bullet_path);
+	}
+
 }
 
 /* handle preference changes */
@@ -1544,6 +1570,19 @@ max_items_changed (gpointer user_data)
 		news->max_item_count = 2;		
 	}
 	update_size_and_redraw (news);
+}
+
+static void
+update_interval_changed (gpointer user_data)
+{
+	News *news;
+	
+	news = (News*) user_data;
+	
+	news->update_interval = 60 * nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_NEWS_UPDATE_INTERVAL);
+	if (news->update_interval < 60) {
+		news->update_interval = 60;		
+	}
 }
 
 /* utility to count the visible channels */
@@ -2174,7 +2213,7 @@ make_news_view (const char *iid, gpointer callback_data)
        	
 	/* get preferences and sanity check them */
 	news->max_item_count = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS);
-	news->update_interval = 60 * nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS);	
+	news->update_interval = 60 * nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_NEWS_UPDATE_INTERVAL);	
 	
 	if (news->max_item_count <= 0) {
 		news->max_item_count = 2;		
@@ -2183,6 +2222,7 @@ make_news_view (const char *iid, gpointer callback_data)
 		news->update_interval = 60;		
 	}
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS, max_items_changed, news);	
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_NEWS_UPDATE_INTERVAL, update_interval_changed, news);
 	
 	/* load some images */
 	nautilus_news_load_images (news);

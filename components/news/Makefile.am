@@ -33,7 +33,8 @@ nautilusdir = $(datadir)/nautilus
 nautilus_DATA = news_channels.xml
 
 nautiluspixmapdir = $(datadir)/pixmaps/nautilus
-nautiluspixmap_DATA = news_bullet.png
+nautiluspixmap_DATA = news_bullet.png		\
+		      changed_bullet.png
 
 oafdir = $(datadir)/oaf
 oaf_in_files =					\

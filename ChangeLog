@@ -1,3 +1,17 @@
+2001-04-27  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/news/Makefile.am:
+	* components/news/changed_bullet.png:
+	added a placed holder "new article" bullet; hopefully, Arlo will
+	provide us with a real one soon.
+	
+	* components/news/nautilus-news.c: (do_destroy), (draw_rss_items),
+	(toggle_open_state), (nautilus_news_make_new_channel),
+	(check_for_updates), (nautilus_news_load_images),
+	(update_interval_changed), (make_news_view):
+	made it use the changed bullet when appropriate; also, completed
+	the preferences work by making it watch the update interval preference.
+	
 2001-04-27  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-thumbnails-jpeg.c:
