@@ -45,13 +45,13 @@ Group:		Development/Libraries
 Requires:	%name = %{PACKAGE_VERSION}
 
 %package mozilla
-Summary:        Component for use with mozilla
+Summary:        Nautilus component for use with Mozilla
 Group:          User Interface/Desktop
 Requires:       %name = %{PACKAGE_VERSION}
 Requires:	mozilla >= M18
 
 %package trilobite
-Summary:        Component for use with installation service
+Summary:        Nautilus component framework for services
 Group:          User Interface/Desktop
 Requires:       %name = %{PACKAGE_VERSION}
 Requires:	ammonite >= 0.1
@@ -74,20 +74,22 @@ Requires:	%name-extras = %{PACKAGE_VERSION}
 
 %description devel
 This package provides the necessary development libraries and include
-files to allow you to develop nautilus components.
+files to allow you to develop Nautilus components.
 
 %description mozilla
-This enables the uses of embedded mozilla.
+This enables the use of embedded Mozilla as a Nautilus component.
 
 %description trilobite
-This enables the use of the install rpm functionality 
+This is a framework library for service components in Nautilus.  It is
+required by all Eazel services, including the package installer, and
+can be used to develop new services.
 
 %description suggested
-This is a meta package that requires packages usefull for running
-nautilus, and getting multi media to work such as eog and mpg123
+This is a meta-package that requires packages useful for running
+Nautilus, and getting multimedia to work, such as eog and mpg123.
 
 %description extras
-This is usefull utilities to use with nautilus such as 
+This is a meta-package that requires useful add-ons for Nautilus.
 
 %changelog
 * Tue Oct 10 2000 Robin Slomkowski <rslomkow@eazel.com>
