@@ -1,3 +1,9 @@
+2000-10-10  Darin Adler  <darin@eazel.com>
+
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(mozilla_translate_uri_if_needed): Fix ifdef so that
+	--disable-eazel-services builds will work.
+
 2000-10-10  Arlo Rose  <arlo@eazel.com>
 
 	* icons/arlo/Makefile.am:
@@ -81,7 +87,7 @@
 	
 	* src/nautilus-window.c: Cosmetic changes.
 
-s2000-10-10  Gene Z. Ragan  <gzr@eazel.com>
+2000-10-10  Gene Z. Ragan  <gzr@eazel.com>
 
 	Work on making bookmarks and history work with new bonobo
 	UI code.
@@ -91,7 +97,7 @@ s2000-10-10  Gene Z. Ragan  <gzr@eazel.com>
 	(nautilus_bonobo_add_menu_item), (nautilus_bonobo_add_submenu),
 	(nautilus_bonobo_add_menu_separator),
 	(nautilus_bonobo_get_menu_item_verb_name):
-	New utility funcitons to make menu manipulation easier.
+	New utility functions to make menu manipulation easier.
 		
 	* src/nautilus-window-menus.c: (activate_bookmark_in_menu_item),
 	(append_bookmark_to_menu), (append_separator),

@@ -1123,6 +1123,7 @@ mozilla_translate_uri_if_needed (NautilusMozillaContentView *view, const char *u
 	g_return_val_if_fail (uri != NULL, NULL);
 
 
+#if (MOZILLA_MILESTONE >= 18) && EAZEL_SERVICES
 	if (0 == strncmp (uri, "eazel-services:", strlen ("eazel-services:"))) {
 		ret = eazel_services_scheme_translate (view, uri, FALSE);
 
@@ -1130,7 +1131,9 @@ mozilla_translate_uri_if_needed (NautilusMozillaContentView *view, const char *u
 		g_message ("Mozilla: translated uri '%s' to '%s'", uri, ret ? ret : "<no such page>");
 #endif
 
-	} else {
+	} else
+#endif /* (MOZILLA_MILESTONE >= 18) && EAZEL_SERVICES */
+		{
 		ret = g_strdup (uri);
 	}
 
