@@ -1030,7 +1030,8 @@ nearest_preferred (NautilusZoomControl *zoom_control, float value)
 	}
 
 	last_value = * (float *)zoom_control->details->preferred_zoom_levels->data;
-
+	current_value = last_value;
+	
 	for (l = zoom_control->details->preferred_zoom_levels; l != NULL; l = l->next) {
 		current_value = * (float*)l->data;
 		
