@@ -43,6 +43,7 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-undo-manager.h>
 
 #define NAUTILUS_DND_URI_LIST_TYPE 	  "text/uri-list"
 #define NAUTILUS_DND_TEXT_PLAIN_TYPE 	  "text/plain"
@@ -77,17 +78,21 @@ static GtkTargetEntry drop_types [] = {
 static void nautilus_location_bar_initialize_class (NautilusLocationBarClass *class);
 static void nautilus_location_bar_initialize       (NautilusLocationBar      *bar);
 
+/* Signal callbacks */
+static void save_undo_snapshot_callback (NautilusUndoable *object);
+static void restore_from_undo_snapshot_callback (NautilusUndoable *object);
+
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusLocationBar, nautilus_location_bar, GTK_TYPE_HBOX)
 
 
 static void
-drag_data_received_cb (GtkWidget *widget,
-		       GdkDragContext *context,
-		       int x,
-		       int y,
-		       GtkSelectionData *data,
-		       guint info,
-		       guint32 time)
+drag_data_received_callback (GtkWidget *widget,
+		       	     GdkDragContext *context,
+		       	     int x,
+		       	     int y,
+		       	     GtkSelectionData *data,
+		             guint info,
+		             guint32 time)
 {
 	GList *names;
 
@@ -121,11 +126,11 @@ drag_data_received_cb (GtkWidget *widget,
 }
 
 static void
-drag_data_get_cb (GtkWidget *widget,
-		  GdkDragContext *context,
-		  GtkSelectionData *selection_data,
-		  guint info,
-		  guint32 time)
+drag_data_get_callback (GtkWidget *widget,
+		  	GdkDragContext *context,
+		  	GtkSelectionData *selection_data,
+		  	guint info,
+		 	guint32 time)
 {
 	char *entry_text;
 
@@ -148,8 +153,8 @@ drag_data_get_cb (GtkWidget *widget,
 }
 
 static void
-editable_activated_cb (GtkEditable *editable,
-		       NautilusLocationBar *bar)
+editable_activated_callback (GtkEditable *editable,
+		       	     NautilusLocationBar *bar)
 {
 	g_assert (GTK_IS_EDITABLE (editable));
 	g_assert (NAUTILUS_IS_LOCATION_BAR (bar));
@@ -157,6 +162,23 @@ editable_activated_cb (GtkEditable *editable,
 	gtk_signal_emit (GTK_OBJECT (bar),
 			 signals[LOCATION_CHANGED],
 			 gtk_entry_get_text (GTK_ENTRY (editable)));
+}	
+
+static void
+editable_changed_callback (GtkEditable *editable, NautilusLocationBar *bar)
+{
+	g_assert (GTK_IS_EDITABLE (editable));
+	g_assert (NAUTILUS_IS_LOCATION_BAR (bar));
+
+	/* Register undo transaction */	
+	if (!bar->undo_registered) {	
+		nautilus_undo_manager_begin_transaction ("Edit Location");
+		nautilus_undoable_save_undo_snapshot (GTK_OBJECT(bar), save_undo_snapshot_callback,
+					      restore_from_undo_snapshot_callback);
+		nautilus_undo_manager_end_transaction ();
+
+		bar->undo_registered = TRUE;
+	}
 }	
 
 
@@ -170,6 +192,10 @@ destroy (GtkObject *object)
 	gtk_widget_destroy (GTK_WIDGET (bar->label));
 	gtk_widget_destroy (GTK_WIDGET (bar->entry));
 
+	if (bar->undo_text != NULL) {
+		g_free(bar->undo_text);
+	}
+
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
@@ -178,11 +204,10 @@ static void
 nautilus_location_bar_initialize_class (NautilusLocationBarClass *class)
 {
 	GtkObjectClass *object_class;
-
+	
 	object_class = GTK_OBJECT_CLASS (class);
-
 	object_class->destroy = destroy;
-
+	
 	signals[LOCATION_CHANGED]
 		= gtk_signal_new ("location_changed",
 				  GTK_RUN_FIRST,
@@ -201,7 +226,7 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 	GtkWidget *label;
 	GtkWidget *entry;
 	GtkWidget *event_box;
-
+	
 	event_box = gtk_event_box_new ();
 	gtk_container_set_border_width (GTK_CONTAINER (event_box),
 					GNOME_PAD_SMALL);
@@ -212,7 +237,9 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 
 	entry = nautilus_entry_new ();
 	gtk_signal_connect (GTK_OBJECT (entry), "activate",
-			    editable_activated_cb, bar);
+			    editable_activated_callback, bar);
+	gtk_signal_connect (GTK_OBJECT (entry), "changed",
+			    editable_changed_callback, bar);
 	gtk_box_pack_start (GTK_BOX (bar), entry, TRUE, TRUE, 0);
 
 	/* Drag source */
@@ -221,7 +248,7 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 			     drag_types, NAUTILUS_N_ELEMENTS (drag_types),
 			     GDK_ACTION_LINK);
 	gtk_signal_connect  (GTK_OBJECT (event_box), "drag_data_get",
-			     GTK_SIGNAL_FUNC (drag_data_get_cb),
+			     GTK_SIGNAL_FUNC (drag_data_get_callback),
 			     bar);
 
 	/* Drag dest. */
@@ -230,7 +257,7 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 			    drop_types, NAUTILUS_N_ELEMENTS (drop_types),
 			    GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK);
 	gtk_signal_connect (GTK_OBJECT (bar), "drag_data_received",
-			    GTK_SIGNAL_FUNC (drag_data_received_cb),
+			    GTK_SIGNAL_FUNC (drag_data_received_callback),
 			    NULL);
 
 	gtk_widget_show (entry);
@@ -238,6 +265,8 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 
 	bar->label = GTK_LABEL (label);
 	bar->entry = GTK_ENTRY (entry);
+	bar->undo_text = NULL;
+	bar->undo_registered = TRUE;
 }
 
 
@@ -260,9 +289,71 @@ nautilus_location_bar_set_location (NautilusLocationBar *bar,
 				    const char *location)
 {
 	g_return_if_fail (NAUTILUS_IS_LOCATION_BAR (bar));
-
+	
 	/* Note: This is called in reaction to external changes, and 
 	 * thus should not emit the LOCATION_CHANGED signal.*/
 	gtk_entry_set_text (bar->entry,
 			    location == NULL ? "" : location);
+
+	/* Set up undo variables */
+	if (location != NULL) {
+		if (bar->undo_text != NULL) { 
+			g_free(bar->undo_text);
+		}
+		bar->undo_registered = FALSE;
+		bar->undo_text = g_strdup(location);
+	}
 }
+
+
+/* save_undo_snapshot_callback
+ * 
+ * Get text at start of edit operation and store in undo data as 
+ * string with a key of "undo_text".
+ */
+static void
+save_undo_snapshot_callback(NautilusUndoable *undoable)
+{
+	char *undo_text;
+	NautilusLocationBar *target;
+
+	target = NAUTILUS_LOCATION_BAR(undoable->undo_target_class);
+	
+	/* Add some data to the data list */
+	undo_text = g_strdup(target->undo_text);
+	g_datalist_set_data(&undoable->undo_data, "undo_text", undo_text);
+}
+
+
+/* restore_from_undo_snapshot_callback
+ * 
+ * Restore edited text to data stored in undoable.  Data is stored as 
+ * a string with a key of "undo_text".
+ */
+static void
+restore_from_undo_snapshot_callback(NautilusUndoable *undoable)
+{		
+	char *undo_text;
+	NautilusLocationBar *bar;
+
+	bar = NAUTILUS_LOCATION_BAR(undoable->undo_target_class);
+
+	/* Register undo transaction */	
+	if (bar->undo_text != NULL) {
+		g_free(bar->undo_text);
+	}
+	bar->undo_text = g_strdup(gtk_entry_get_text (bar->entry));
+
+	nautilus_undo_manager_begin_transaction ("Edit Location");
+	nautilus_undoable_save_undo_snapshot (GTK_OBJECT(bar), save_undo_snapshot_callback,
+						      restore_from_undo_snapshot_callback);
+	nautilus_undo_manager_end_transaction ();
+
+	undo_text = g_datalist_get_data (&undoable->undo_data, "undo_text");
+	if (undo_text != NULL) {
+		gtk_entry_set_text(bar->entry, undo_text);
+	}
+
+	bar->undo_registered = FALSE;
+}
+

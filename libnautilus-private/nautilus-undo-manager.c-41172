@@ -46,8 +46,8 @@ static void     nautilus_undo_manager_initialize_class  (NautilusUndoManagerClas
 static void     nautilus_undo_manager_initialize        (NautilusUndoManager       *item);
 static void	destroy 			   	(GtkObject *object);
 
-static void	free_undo_manager_list_data 		(GList *list);
-static void	prune_undo_manager_list 		(GList *list, gint items);
+static GList	*free_undo_manager_list_data 		(GList *list);
+static GList	*prune_undo_manager_list 		(GList *list, gint items);
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusUndoManager, nautilus_undo_manager, GTK_TYPE_OBJECT)
@@ -120,7 +120,7 @@ nautilus_undo_manager_transaction_in_progress (void)
 
 
 /* nautilus_undo_manager_get_current_transaction
- * Return current undo tranaction
+ * Return current undo transaction
  */
 NautilusUndoTransaction *
 nautilus_undo_manager_get_current_transaction (void)
@@ -255,7 +255,7 @@ nautilus_undo_manager_add_undoable_to_transaction (NautilusUndoable *undoable)
 
 /* nautilus_undo_manager_remove_transaction */
 gboolean 
-nautilus_undo_manager_remove_transaction (NautilusUndoTransaction *tranaction)
+nautilus_undo_manager_remove_transaction (NautilusUndoTransaction *transaction)
 {
 	/* Verify a transaction is not in progress */
 	if (global_undo_manager->details->transaction_in_progress) {
@@ -263,26 +263,26 @@ nautilus_undo_manager_remove_transaction (NautilusUndoTransaction *tranaction)
 		return FALSE;
 	}
 
-	g_return_val_if_fail(tranaction != NULL, FALSE);
+	g_return_val_if_fail(transaction != NULL, FALSE);
 	
 	/* Remove transaction from undo list */	
 	global_undo_manager->details->undo_list = g_list_remove(global_undo_manager->details->undo_list, 
-								tranaction);
+								transaction);
 
 	/* Remove transaction from redo list */	
 	global_undo_manager->details->redo_list = g_list_remove(global_undo_manager->details->redo_list, 
-								tranaction);
+								transaction);
 
 	/* Fire off signal informing that an undo transaction has occurred */
 	gtk_signal_emit (GTK_OBJECT (global_undo_manager), signals[UNDO_TRANSACTION_OCCURED]);
-
+	
 	return TRUE;
 }
 
 
 /* nautilus_undo_manager_add_undo_transaction */
 gboolean 
-nautilus_undo_manager_add_undo_transaction (NautilusUndoTransaction *tranaction)
+nautilus_undo_manager_add_undo_transaction (NautilusUndoTransaction *transaction)
 {
 	int length;
 	
@@ -292,18 +292,20 @@ nautilus_undo_manager_add_undo_transaction (NautilusUndoTransaction *tranaction)
 		return FALSE;
 	}
 
-	g_return_val_if_fail(tranaction != NULL, FALSE);
+	g_return_val_if_fail(transaction != NULL, FALSE);
 
 	/* Check and see if we are over our queue limit */
 	length = g_list_length(global_undo_manager->details->undo_list);
+			
 	if (length >= global_undo_manager->details->queue_depth) {
-		prune_undo_manager_list (global_undo_manager->details->undo_list, 
-					length - global_undo_manager->details->queue_depth);
+		global_undo_manager->details->undo_list = prune_undo_manager_list (
+							  global_undo_manager->details->undo_list, 
+							  (length - global_undo_manager->details->queue_depth) + 1);
 	}
 	
 	/* Add transaction to undo list */
 	global_undo_manager->details->undo_list = g_list_append(global_undo_manager->details->undo_list, 
-								tranaction);
+								transaction);
 
 	/* Fire off signal informing that an undo transaction has occurred */
 	gtk_signal_emit (GTK_OBJECT (global_undo_manager), signals[UNDO_TRANSACTION_OCCURED]);
@@ -313,9 +315,9 @@ nautilus_undo_manager_add_undo_transaction (NautilusUndoTransaction *tranaction)
 
 /* nautilus_undo_manager_add_redo_transaction */
 gboolean 
-nautilus_undo_manager_add_redo_transaction (NautilusUndoTransaction *tranaction)
+nautilus_undo_manager_add_redo_transaction (NautilusUndoTransaction *transaction)
 {
-	g_return_val_if_fail(tranaction != NULL, FALSE);
+	g_return_val_if_fail(transaction != NULL, FALSE);
 
 	/* Verify a transaction is not in progress */
 	if (global_undo_manager->details->transaction_in_progress) {
@@ -330,7 +332,7 @@ nautilus_undo_manager_add_redo_transaction (NautilusUndoTransaction *tranaction)
 
 	/* Add transaction to undo list */	
 	global_undo_manager->details->undo_list = g_list_append(global_undo_manager->details->undo_list, 
-								tranaction);
+								transaction);
 
 	/* Fire off signal informing that an redo transaction has occurred */
 	gtk_signal_emit (GTK_OBJECT (global_undo_manager), signals[UNDO_TRANSACTION_OCCURED]);
@@ -448,8 +450,8 @@ destroy (GtkObject *object)
 	g_return_if_fail (NAUTILUS_IS_UNDO_MANAGER (object));
 
 	/* Clear lists */
-	free_undo_manager_list_data(global_undo_manager->details->undo_list);
-	free_undo_manager_list_data(global_undo_manager->details->redo_list);
+	global_undo_manager->details->undo_list = free_undo_manager_list_data(global_undo_manager->details->undo_list);
+	global_undo_manager->details->redo_list = free_undo_manager_list_data(global_undo_manager->details->redo_list);
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -515,11 +517,13 @@ nautilus_undo_manager_set_queue_depth (gint depth)
 	/* Prune lists */
 	length = g_list_length (global_undo_manager->details->undo_list);
 	if (length > depth) {
-		prune_undo_manager_list (global_undo_manager->details->undo_list, length - depth);
+		global_undo_manager->details->undo_list = prune_undo_manager_list (global_undo_manager->details->undo_list, 
+										   length - depth);
 	}
 	length = g_list_length (global_undo_manager->details->redo_list);
 	if (length > depth) {
-		prune_undo_manager_list (global_undo_manager->details->redo_list, length - depth);
+		global_undo_manager->details->undo_list = prune_undo_manager_list (global_undo_manager->details->redo_list, 
+										   length - depth);
 	}
 		
 	return TRUE;	
@@ -530,7 +534,7 @@ nautilus_undo_manager_set_queue_depth (gint depth)
  * Clear undo data from list
  */
  
-static void
+static GList *
 free_undo_manager_list_data (GList *list)
 {
 	int length, index;
@@ -545,6 +549,8 @@ free_undo_manager_list_data (GList *list)
 			nautilus_undo_transaction_destroy(transaction);
 		}
 	}
+
+	return list;
 }
 
 
@@ -553,7 +559,7 @@ free_undo_manager_list_data (GList *list)
  * Prune n items from start of list 
  */
  
-static void
+static GList *
 prune_undo_manager_list (GList *list, gint items)
 {
 	gint index;
@@ -567,5 +573,7 @@ prune_undo_manager_list (GList *list, gint items)
 			nautilus_undo_transaction_destroy(transaction);
 		}
 	}
+
+	return list;
 }
 

@@ -1,3 +1,40 @@
+2000-05-01  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-text-item.c 
+	* libnautilus-extensions/nautilus-icon-private.h
+	(iti_event),
+	(nautilus_icon_text_item_configure),
+	(nautilus_icon_text_item_start_editing),
+	(save_undo_snapshot_callback),
+	(restore_from_undo_snapshot_callback):
+	
+	* libnautilus-extensions/nautilus-undo-manager.c
+	(nautilus_undo_manager_remove_transaction),
+	(nautilus_undo_manager_add_undo_transaction),
+	(nautilus_undo_manager_add_redo_transaction), 
+	(prune_undo_manager_list):
+	Fixed bug in above functions where GList was not getting properly updated 		
+	after an insert or remove operation.
+	
+	* src/nautilus-location-bar.c 
+	(nautilus_location_bar_initialize_class):
+	Added signal connection to the "changed" signal of the GtkEntry item.
+	(editable_changed_callback): 
+	Added undo operation functionality.
+	Original location text is cached in anticipation of an undo operation.
+	(nautilus_location_bar_initialize):
+	Added two new memeber variables, undo_text and undo_registered.  undo_text is
+	a char * that keeps a cache of the location text before editing.
+	undo_registered is a boolean that is set when an undo can be registered.
+	(nautilus_location_bar_set_location):
+	undo_registered is set to FALSE and undo_text is updated. 
+	(save_undo_snapshot_callback):
+	Callback called to create undo transaction
+	(restore_from_undo_snapshot_callback):
+	Callback called to restore the location bar text.
+	(destroy):
+	undo_text is freed if it has been allocated.
+
 2000-05-01  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 575 (Make Nautilus use gnome-vfs-mime)

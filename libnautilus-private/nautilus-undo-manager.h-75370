@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* NautilusUndoManager - Manages undo and redo tranactions.
+/* NautilusUndoManager - Manages undo and redo transactions.
  *
  * Copyright (C) 2000 Eazel, Inc.
  *
@@ -66,11 +66,11 @@ gboolean 		nautilus_undo_manager_redo_last_undone_transaction	 (void);
 NautilusUndoTransaction *nautilus_undo_manager_get_current_transaction 	 	 (void);
 gboolean 		nautilus_undo_manager_transaction_in_progress 		 (void);
 gboolean 		nautilus_undo_manager_add_undo_transaction 		 (NautilusUndoTransaction 
-										  *tranaction);
+										  *transaction);
 gboolean 		nautilus_undo_manager_add_redo_transaction 		 (NautilusUndoTransaction
-										  *tranaction);
+										  *transaction);
 gboolean 		nautilus_undo_manager_remove_transaction 		 (NautilusUndoTransaction 
-										  *tranaction);
+										  *transaction);
 gboolean 		nautilus_undo_manager_can_undo 		 		 (void);
 gboolean 		nautilus_undo_manager_can_redo 		 		 (void);
 gint			nautilus_undo_manager_get_current_undo_transaction_name	 (gchar *name, gint max_length);

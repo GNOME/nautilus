@@ -41,7 +41,7 @@ typedef NautilusIconTextItem Iti;
 
 /* Signal callbacks */
 static void	save_undo_snapshot_callback (NautilusUndoable *object);
-static void	restore_from_undo_snapshot_callback(NautilusUndoable *object);
+static void	restore_from_undo_snapshot_callback (NautilusUndoable *object);
 
 
 /* Private part of the NautilusIconTextItem structure */
@@ -70,7 +70,10 @@ typedef struct {
 
 	/* Store min width and height.  These are used when the text entry is empty. */
 	guint min_width;
-	guint min_height;	
+	guint min_height;
+
+	gboolean undo_registered;
+		
 } ItiPrivate;
 
 
@@ -828,11 +831,21 @@ iti_event (GnomeCanvasItem *item, GdkEvent *event)
 				return FALSE;
 			}
 
+			/* Register undo transaction if neccessary */	
+			if (!priv->undo_registered) {
+				priv->undo_registered = TRUE;
+
+				nautilus_undo_manager_begin_transaction ("Rename");
+				nautilus_undoable_save_undo_snapshot (GTK_OBJECT(iti), save_undo_snapshot_callback,
+							      restore_from_undo_snapshot_callback);
+				nautilus_undo_manager_end_transaction ();
+			}
+
 			/* Handle any events that reach us */
 			gtk_widget_event (GTK_WIDGET (priv->entry), event);
 			break;
 		}
-
+		
 		/* Update text item to reflect changes */
 		layout_text (iti);
 		priv->need_text_update = TRUE;
@@ -1102,6 +1115,8 @@ nautilus_icon_text_item_configure (NautilusIconTextItem *iti, int x, int y,
 	priv->min_height = min_text_info->height + 2 * MARGIN_Y;
 	gnome_icon_text_info_free(min_text_info);
 
+	priv->undo_registered = FALSE;
+
 	/* Request update */
 	priv->need_pos_update = TRUE;
 	priv->need_font_update = TRUE;
@@ -1240,12 +1255,6 @@ nautilus_icon_text_item_start_editing (NautilusIconTextItem *iti)
 	iti->selected = TRUE; /* Ensure that we are selected */
 	gnome_canvas_item_grab_focus (GNOME_CANVAS_ITEM (iti));
 	iti_start_editing (iti);
-
-	/* Register undo transaction */	
-	nautilus_undo_manager_begin_transaction ("Rename Icon");
-	nautilus_undoable_save_undo_snapshot (GTK_OBJECT(iti), save_undo_snapshot_callback,
-					      restore_from_undo_snapshot_callback);
-	nautilus_undo_manager_end_transaction ();
 }
 
 /**
@@ -1348,9 +1357,9 @@ save_undo_snapshot_callback(NautilusUndoable *undoable)
 	
 	iti = NAUTILUS_ICON_TEXT_ITEM(undoable->undo_target_class);
 	priv = iti->priv;
-	
-	/* Add some data to the data list */
-	undo_text = g_strdup(iti->text);
+
+	/* Add undo data to the data list */
+	undo_text = g_strdup(gtk_entry_get_text (GTK_ENTRY(priv->entry)));
 	g_datalist_set_data(&undoable->undo_data, "undo_text", undo_text);
 }
 
@@ -1366,19 +1375,23 @@ restore_from_undo_snapshot_callback(NautilusUndoable *undoable)
 	char *undo_text;
 	NautilusIconTextItem *iti;
 	ItiPrivate *priv;
-
+	
 	iti = NAUTILUS_ICON_TEXT_ITEM(undoable->undo_target_class);
 	priv = iti->priv;
-	
+
+	/* Register undo transaction */	
+	nautilus_undo_manager_begin_transaction ("Rename");
+	nautilus_undoable_save_undo_snapshot (GTK_OBJECT(iti), save_undo_snapshot_callback,
+						      restore_from_undo_snapshot_callback);
+	nautilus_undo_manager_end_transaction ();
+		
 	undo_text = g_datalist_get_data(&undoable->undo_data, "undo_text");
 	if (undo_text != NULL) {
+		/* Restore to undo text */
 		nautilus_icon_text_item_set_text (iti, undo_text);
+
 	}
 
-	/* Re-register undo transaction */	
-	nautilus_undo_manager_begin_transaction ("Rename Icon");
-	nautilus_undoable_save_undo_snapshot (GTK_OBJECT(iti), save_undo_snapshot_callback,
-					      restore_from_undo_snapshot_callback);
-	nautilus_undo_manager_end_transaction ();
+	priv->undo_registered = FALSE;
 }
 

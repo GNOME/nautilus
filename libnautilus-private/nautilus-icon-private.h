@@ -135,7 +135,7 @@ struct NautilusIconContainerDetails {
 	/* Renaming Details */
 	gboolean renaming;
 	NautilusIconTextItem *rename_widget;	/* Editable text item */
-	gchar *original_text;					/* Copy of editable text for later compare */
+	gchar *original_text;			/* Copy of editable text for later compare */
 	
 	/* Idle ID. */
 	guint idle_id;
