@@ -370,10 +370,11 @@ nautilus_sidebar_add_panel_items(NautilusSidebar *sidebar, GtkWidget *menu)
 				name_list = g_list_append (name_list, g_strdup (id->name));
 			
 				/* add a check menu item */
-				menu_item = gtk_check_menu_item_new_with_label(id->name);
-				enabled = nautilus_sidebar_sidebar_panel_enabled(id->iid);
-				gtk_check_menu_item_set_show_toggle(GTK_CHECK_MENU_ITEM(menu_item), enabled);
-				gtk_widget_show(menu_item);
+				menu_item = gtk_check_menu_item_new_with_label (id->name);
+				enabled = nautilus_sidebar_sidebar_panel_enabled (id->iid);
+				gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM(menu_item), TRUE);
+				gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), enabled);
+				gtk_widget_show (menu_item);
 				gtk_menu_append (GTK_MENU(menu), menu_item);
 				gtk_signal_connect_full (GTK_OBJECT (menu_item), "activate",
 							 GTK_SIGNAL_FUNC (toggle_sidebar_panel),

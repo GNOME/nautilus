@@ -66,9 +66,9 @@ struct FMListViewDetails {
 #define LIST_VIEW_MINIMUM_ROW_HEIGHT	20
 
 /* We hard-code that first column must contain an icon and the second
- * must contain emblems and the third must contain the name. The rest
- * can be controlled by the subclass. Also, many details of these
- * columns are controlled by the subclass; not too much is hard-coded.
+ * must contain emblems. The rest can be controlled by the subclass. 
+ * Also, many details of these columns are controlled by the subclass; 
+ * not too much is hard-coded.
  */
 #define LIST_VIEW_COLUMN_NONE		(-1)
 #define LIST_VIEW_COLUMN_ICON		0

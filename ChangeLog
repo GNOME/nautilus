@@ -1,3 +1,14 @@
+2000-09-11  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 2317 (Right-click on sidebar uses menu items in
+	a confusing way)
+
+	* src/nautilus-sidebar.c: (nautilus_sidebar_add_panel_items):
+	The bug was confusion over the gtk_check_menu_item API. It had
+	been calling set_show_toggle when it meant set_active.
+
+	* src/file-manager/fm-list-view.c: Updated a comment.
+
 2000-09-11  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-first-time-druid.c: (set_up_user_level_page),
