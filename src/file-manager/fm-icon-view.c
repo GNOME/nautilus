@@ -209,6 +209,9 @@ fm_icon_view_destroy (GtkObject *object)
 
 	icon_view = FM_ICON_VIEW (object);
 
+	/* don't try to update menus during the destroy process */
+	icon_view->details->menus_ready = FALSE;
+
 	if (icon_view->details->ui != NULL) {
 		bonobo_ui_component_unset_container (icon_view->details->ui);
 		bonobo_object_unref (BONOBO_OBJECT (icon_view->details->ui));

@@ -1,3 +1,12 @@
+2000-10-16  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_destroy):
+	fixed a problem where we generated a zillion bonobo criticals
+	when the view changed. The problem was that the fm-icon-view
+	was trying to update the layout menus while it was being destroyed,
+	after the menus were already gone.  The fix is clearing the
+	"menus_ready" boolean at the start of the destroy method.
+	 
 2000-10-16  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* nautilus.spec.in:
