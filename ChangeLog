@@ -1,3 +1,20 @@
+2000-12-26  Michael Engber  <engber@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(desktop_background_realized), (nautilus_background_set_desktop),
+	(nautilus_background_is_desktop),
+	(nautilus_background_get_desktop_background_window),
+	(image_loading_done_callback),
+	(nautilus_file_update_desktop_pixmaps),
+	(background_changed_callback), (saved_settings_changed_callback),
+	(background_reset_callback),
+	(nautilus_connect_desktop_background_to_file_metadata):
+	* libnautilus-extensions/nautilus-directory-background.h:
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_begin_loading):
+	Set the background pixmap of the desktop xwindow so that the
+	window manager paints background behind nautilus windows instead
+	of leaving trails.
+
 2000-12-26  Gene Z. Ragan  <gzr@eazel.com>
 
 	* src/file-manager/fm-desktop-icon-view.c: (volume_in_black_list),
