@@ -44,6 +44,10 @@ void 		nautilus_bonobo_set_label 			(BonoboUIComponent 	*ui_component,
 					 	 		 const char        	*path,
 					 	 		 const char	  	*label);
 
+void		nautilus_bonobo_set_tip 			(BonoboUIComponent 	*ui,
+			 					 const char 		*path,
+			 					 const char 		*tip);
+
 void 		nautilus_bonobo_set_sensitive 			(BonoboUIComponent 	*ui_component,
 				    	 	 		 const char        	*path,
 				    	 	 		 gboolean           	sensitive);

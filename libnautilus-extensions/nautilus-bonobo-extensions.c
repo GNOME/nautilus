@@ -66,6 +66,18 @@ nautilus_bonobo_set_label (BonoboUIComponent *ui,
 }
 
 void
+nautilus_bonobo_set_tip (BonoboUIComponent *ui,
+			 const char *path,
+			 const char *tip)
+{
+	g_return_if_fail (ui != NULL);
+	bonobo_ui_component_set_prop (ui, path,
+				      "tip",
+				      tip,
+				      NULL);
+}
+
+void
 nautilus_bonobo_set_sensitive (BonoboUIComponent *ui,
 			       const char *path,
 			       gboolean sensitive)
