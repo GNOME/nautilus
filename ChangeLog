@@ -1,3 +1,21 @@
+2002-06-03  David Emory Watson  <dwatson@cs.ucr.edu>
+
+	* src/file-manager/fm-list-view.c:
+	(get_derfault_zoom_level): New, protects us from illegal preferences.
+	(set_zoom_level_from_metadata_and_preferences),
+	(fm_list_view_reset_to_defaults),
+	(fm_list_view_set_zoom_level),
+	(fm_list_view_restore_default_zoom_level): Update.
+	(fm_list_view_scale_font_size): Replace switch with loop and always
+	use default font at default zoom level.
+	(click_policy_changed_callback): Make underlines appear or disappear
+	when the click policy changes.
+
+2002-06-02  David Emory Watson  <dwatson@cs.ucr.edu>
+
+	* components/text/nautilus-text-view.c:
+	(nautilus_text_view_instance_init): Turn on word wrapping.
+
 2002-06-12  Alexander Larsson  <alla@lysator.liu.se>
 
 	* libnautilus-private/nautilus-program-chooser.c: change

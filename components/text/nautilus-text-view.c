@@ -186,6 +186,7 @@ nautilus_text_view_instance_init (NautilusTextView *view)
         
         text_view = gtk_text_view_new ();
         gtk_text_view_set_editable (GTK_TEXT_VIEW (text_view), FALSE);
+        gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (text_view), GTK_WRAP_WORD);
 
         scrolled_window = gtk_scrolled_window_new (NULL, NULL);
         gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),

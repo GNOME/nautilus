@@ -424,6 +424,20 @@ list_view_changed_foreach (GtkTreeModel *model,
 	return FALSE;
 }
 
+static NautilusZoomLevel
+get_default_zoom_level (void) {
+	NautilusZoomLevel default_zoom_level;
+
+	default_zoom_level = default_zoom_level_auto_value;
+
+	if (default_zoom_level <  NAUTILUS_ZOOM_LEVEL_SMALLEST
+	    || NAUTILUS_ZOOM_LEVEL_LARGEST < default_zoom_level) {
+		default_zoom_level = NAUTILUS_ZOOM_LEVEL_SMALL;
+	}
+
+	return default_zoom_level;
+}
+
 static void
 set_zoom_level_from_metadata_and_preferences (FMListView *list_view)
 {
@@ -434,7 +448,7 @@ set_zoom_level_from_metadata_and_preferences (FMListView *list_view)
 		file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (list_view));
 		level = nautilus_file_get_integer_metadata (file,
 							    NAUTILUS_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL, 
-							    default_zoom_level_auto_value);
+							    get_default_zoom_level ());
 		fm_list_view_set_zoom_level (list_view, level, TRUE);
 		
 		/* reset the font size table for the new default zoom level */
@@ -569,99 +583,32 @@ fm_list_view_reset_to_defaults (FMDirectoryView *view)
 		 fm_list_model_get_sort_column_id_from_sort_type (default_sort_order_auto_value),
 		 default_sort_reversed_auto_value ? GTK_SORT_DESCENDING : GTK_SORT_ASCENDING);
 
-	fm_list_view_set_zoom_level (FM_LIST_VIEW (view), default_zoom_level_auto_value, FALSE);
+	fm_list_view_set_zoom_level (FM_LIST_VIEW (view), get_default_zoom_level (), FALSE);
 }
 
 static void
 fm_list_view_scale_font_size (FMListView *view, 
-					NautilusZoomLevel new_level,
-					gboolean update_size_table)
+			      NautilusZoomLevel new_level,
+			      gboolean update_size_table)
 {
 	static gboolean first_time = TRUE;
-	static double pango_scale[7];	
+	static double pango_scale[7];
+	int default_zoom_level, i;
+
+	g_return_if_fail (new_level >= NAUTILUS_ZOOM_LEVEL_SMALLEST &&
+			  new_level <= NAUTILUS_ZOOM_LEVEL_LARGEST);
 
 	if (update_size_table || first_time) {
 		first_time = FALSE;
-	
-		switch (default_zoom_level_auto_value)
-		{
-		case NAUTILUS_ZOOM_LEVEL_LARGEST:
-			pango_scale[0] = (1 / 1.2) * (1 / 1.2) * PANGO_SCALE_XX_SMALL;
-			pango_scale[1] = (1 / 1.2) * PANGO_SCALE_XX_SMALL;
-			pango_scale[2] = PANGO_SCALE_XX_SMALL;
-			pango_scale[3] = PANGO_SCALE_X_SMALL;
-			pango_scale[4] = PANGO_SCALE_SMALL;
-			pango_scale[5] = PANGO_SCALE_MEDIUM;
-			pango_scale[6] = PANGO_SCALE_LARGE;
-			break;
-		case NAUTILUS_ZOOM_LEVEL_LARGER:
-			pango_scale[0] = (1 / 1.2) * PANGO_SCALE_XX_SMALL;
-			pango_scale[1] = PANGO_SCALE_XX_SMALL;
-			pango_scale[2] = PANGO_SCALE_X_SMALL;
-			pango_scale[3] = PANGO_SCALE_SMALL;
-			pango_scale[4] = PANGO_SCALE_MEDIUM;
-			pango_scale[5] = PANGO_SCALE_LARGE;
-			pango_scale[6] = PANGO_SCALE_X_LARGE;
-			break;
-		case NAUTILUS_ZOOM_LEVEL_LARGE:
-			pango_scale[0] = PANGO_SCALE_XX_SMALL;
-			pango_scale[1] = PANGO_SCALE_X_SMALL;
-			pango_scale[2] = PANGO_SCALE_SMALL;
-			pango_scale[3] = PANGO_SCALE_MEDIUM;
-			pango_scale[4] = PANGO_SCALE_LARGE;
-			pango_scale[5] = PANGO_SCALE_X_LARGE;
-			pango_scale[6] = PANGO_SCALE_XX_LARGE;
-			break;
-		case NAUTILUS_ZOOM_LEVEL_STANDARD:
-			pango_scale[0] = PANGO_SCALE_X_SMALL;
-			pango_scale[1] = PANGO_SCALE_SMALL;
-			pango_scale[2] = PANGO_SCALE_MEDIUM;
-			pango_scale[3] = PANGO_SCALE_LARGE;
-			pango_scale[4] = PANGO_SCALE_X_LARGE;
-			pango_scale[5] = PANGO_SCALE_XX_LARGE;
-			pango_scale[6] = 1.2 * PANGO_SCALE_XX_LARGE;
-			break;
-		case NAUTILUS_ZOOM_LEVEL_SMALL:
-			pango_scale[0] = PANGO_SCALE_SMALL;
-			pango_scale[1] = PANGO_SCALE_MEDIUM;
-			pango_scale[2] = PANGO_SCALE_LARGE;
-			pango_scale[3] = PANGO_SCALE_X_LARGE;
-			pango_scale[4] = PANGO_SCALE_XX_LARGE;
-			pango_scale[5] = 1.2 * PANGO_SCALE_XX_LARGE;
-			pango_scale[6] = 1.2 * 1.2 * PANGO_SCALE_XX_LARGE;
-			break;
-		case NAUTILUS_ZOOM_LEVEL_SMALLER:
-			/* From here on down we use PANGO_SCALE_MEDIUM for the
-			 * default zoom. Since the icons are now smaller this 
-			 * looks better at default zoom.
-			 */
-			pango_scale[0] = PANGO_SCALE_SMALL;
-			pango_scale[1] = PANGO_SCALE_MEDIUM;
-			pango_scale[2] = PANGO_SCALE_LARGE;
-			pango_scale[3] = PANGO_SCALE_X_LARGE;
-			pango_scale[4] = PANGO_SCALE_XX_LARGE;
-			pango_scale[5] = 1.2 * PANGO_SCALE_XX_LARGE;
-			pango_scale[6] = 1.2 * 1.2 * PANGO_SCALE_XX_LARGE;
-			break;
-		case NAUTILUS_ZOOM_LEVEL_SMALLEST:
-			pango_scale[0] = PANGO_SCALE_MEDIUM;
-			pango_scale[1] = PANGO_SCALE_LARGE;
-			pango_scale[2] = PANGO_SCALE_X_LARGE;
-			pango_scale[3] = PANGO_SCALE_XX_LARGE;
-			pango_scale[4] = 1.2 * PANGO_SCALE_XX_LARGE;
-			pango_scale[5] = 1.2 * 1.2 * PANGO_SCALE_XX_LARGE;
-			pango_scale[6] = 1.2 * 1.2 * 1.2 * PANGO_SCALE_XX_LARGE;
-			break;
-		default:
-			g_warning ("invalid default list-view zoom level");
-			pango_scale[0] = PANGO_SCALE_X_SMALL;
-			pango_scale[1] = PANGO_SCALE_SMALL;
-			pango_scale[2] = PANGO_SCALE_MEDIUM;
-			pango_scale[3] = PANGO_SCALE_LARGE;
-			pango_scale[4] = PANGO_SCALE_X_LARGE;
-			pango_scale[5] = PANGO_SCALE_XX_LARGE;
-			pango_scale[6] = 1.2 * PANGO_SCALE_XX_LARGE;
-			break;
+
+		default_zoom_level = get_default_zoom_level ();
+
+		pango_scale[default_zoom_level] = PANGO_SCALE_MEDIUM;
+		for (i = default_zoom_level; i > NAUTILUS_ZOOM_LEVEL_SMALLEST; i--) {
+			pango_scale[i - 1] = (1 / 1.2) * pango_scale[i];
+		}
+		for (i = default_zoom_level; i < NAUTILUS_ZOOM_LEVEL_LARGEST; i++) {
+			pango_scale[i + 1] = 1.2 * pango_scale[i];
 		}
 	}
 					 
@@ -704,7 +651,7 @@ fm_list_view_set_zoom_level (FMListView *view,
 	nautilus_file_set_integer_metadata
 		(fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (view)), 
 		 NAUTILUS_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL, 
-		 default_zoom_level_auto_value,
+		 get_default_zoom_level (),
 		 new_level);
 
 	/* Select correctly scaled icons. */
@@ -763,7 +710,7 @@ fm_list_view_restore_default_zoom_level (FMDirectoryView *view)
 
 	list_view = FM_LIST_VIEW (view);
 
-	fm_list_view_set_zoom_level (list_view, default_zoom_level_auto_value, FALSE);
+	fm_list_view_set_zoom_level (list_view, get_default_zoom_level (), FALSE);
 }
 
 static gboolean 
@@ -819,6 +766,9 @@ click_policy_changed_callback (gpointer callback_data)
 			      "underline", PANGO_UNDERLINE_NONE,
 			      NULL);
 	}
+
+	gtk_tree_model_foreach (GTK_TREE_MODEL (view->details->model),
+				list_view_changed_foreach, NULL);
 }
 
 static void
