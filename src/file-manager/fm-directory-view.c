@@ -974,6 +974,8 @@ pattern_select_response_cb (GtkWidget *dialog, int response, gpointer user_data)
 		if (selection) {
 			fm_directory_view_set_selection(view, selection);
 			nautilus_file_list_free (selection);
+
+			fm_directory_view_reveal_selection(view);
 		}
 	}
 
