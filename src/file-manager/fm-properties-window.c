@@ -2381,7 +2381,6 @@ create_properties_window (StartupData *startup_data)
 	gtk_window_set_resizable (GTK_WINDOW (window), FALSE);
 	gtk_window_set_screen (GTK_WINDOW (window),
 			       gtk_widget_get_screen (GTK_WIDGET (startup_data->directory_view)));
-	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_MOUSE);
 
 	/* Set initial window title */
 	update_properties_window_title (GTK_WINDOW (window), window->details->target_file);
