@@ -478,19 +478,26 @@ sect_sect_end_element (Context *context,
 	switch (name[4]) {
 	case 'a':
 	        context->chapter = 0;
+		break;
 	case 't':
 		context->sect1 = 0;
+		break;
 	case '1':
 		context->sect2 = 0;
+		break;
 	case '2':
 		context->sect3 = 0;
+		break;
 	case '3':
 		context->sect4 = 0;
+		break;
 	case '4':
 		context->sect5 = 0;
+		break;
 	case 'n':
-		context->appendix = 0;
-		context->sect1 = 0;
+		/* Nothing should come after the appendix tag */
+		/* context->appendix = 0; */
+		break;
 	default:
 		break;
 	}
