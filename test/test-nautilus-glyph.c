@@ -99,10 +99,10 @@ main (int argc, char* argv[])
 		const int opacity = NAUTILUS_OPACITY_FULLY_OPAQUE;
 
 		nautilus_art_irect_assign (&clip_area,
-					   0,
-					   0,
-					   1000,
-					   1000);
+					   50,
+					   30,
+					   200,
+					   80);
 		
 		nautilus_debug_pixbuf_draw_rectangle (pixbuf,
 						      FALSE,
@@ -119,7 +119,7 @@ main (int argc, char* argv[])
 						pixbuf,
 						x,
 						y,
-						NULL,
+						&clip_area,//NULL,
 						NAUTILUS_RGBA_COLOR_OPAQUE_RED,
 						opacity);
 		

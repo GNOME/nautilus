@@ -22,6 +22,7 @@ main (int argc, char* argv[])
 		gtk_box_pack_start (GTK_BOX (main_vbox), frame, TRUE, TRUE, 0);
 	} else {
 		label = nautilus_label_new ("This is a very intersting label\nThat has more\nthan one line.");
+		nautilus_label_make_larger (NAUTILUS_LABEL (label), 40);
 		gtk_container_add (GTK_CONTAINER (window), label);
 	}
 
