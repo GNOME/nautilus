@@ -46,7 +46,6 @@
 #include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-lib-self-check-functions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <eel/eel-lib-self-check-functions.h>
 #include <eel/eel-self-checks.h>
 #include <libnautilus-extensions/nautilus-directory-metafile.h>
 #include <liboaf/liboaf.h>
@@ -263,12 +262,10 @@ main (int argc, char *argv[])
 		nautilus_directory_use_self_contained_metafile_factory ();
 
 		nautilus_run_self_checks ();
-		eel_run_lib_self_checks ();
 		nautilus_run_lib_self_checks ();
 		eel_exit_if_self_checks_failed ();
 
 		nautilus_run_self_checks ();
-		eel_run_lib_self_checks ();
 		nautilus_run_lib_self_checks ();
 		eel_exit_if_self_checks_failed ();
 #endif
