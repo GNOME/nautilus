@@ -114,6 +114,8 @@ static void nautilus_window_fwd (GtkWidget *btn, NautilusWindow *window);
 static void nautilus_window_up (GtkWidget *btn, NautilusWindow *window);
 static void nautilus_window_reload (GtkWidget *btn, NautilusWindow *window);
 static void nautilus_window_home (GtkWidget *btn, NautilusWindow *window);
+static void nautilus_window_color_confirm (GtkWidget *widget);
+static void nautilus_window_show_color_picker (GtkWidget *btn, NautilusWindow *window);
 static void nautilus_window_stop (GtkWidget *btn, NautilusWindow *window);
 static void nautilus_window_set_arg (GtkObject      *object,
                                      GtkArg         *arg,
@@ -230,6 +232,11 @@ static GnomeUIInfo help_menu_info[] = {
   GNOMEUIINFO_END
 };
 
+static GnomeUIInfo debug_menu_info [] = {
+	GNOMEUIINFO_ITEM_NONE (N_("Show Color selector..."), N_("Show the color picker window"), nautilus_window_show_color_picker),
+	GNOMEUIINFO_END
+};
+
 
 #define BOOKMARKS_MENU_INDEX	2
 static GnomeUIInfo main_menu[] = {
@@ -237,6 +244,7 @@ static GnomeUIInfo main_menu[] = {
   GNOMEUIINFO_MENU_EDIT_TREE (edit_menu_info),
   GNOMEUIINFO_SUBTREE(N_("_Bookmarks"), bookmarks_menu_info),
   GNOMEUIINFO_MENU_HELP_TREE (help_menu_info),
+  GNOMEUIINFO_SUBTREE(N_("_Debug"), debug_menu_info),
   GNOMEUIINFO_END
 };
 
@@ -796,11 +804,33 @@ nautilus_window_home (GtkWidget *btn, NautilusWindow *window)
   nautilus_window_set_initial_state(window, NULL);
 }
 
+/* handle the OK button being pushed on the color selector */
+/* for now, just vanquish it, since it's only for testing */
+static void
+nautilus_window_color_confirm (GtkWidget *widget)
+{
+	gtk_widget_destroy (gtk_widget_get_toplevel (widget));
+}
+
+static void nautilus_window_show_color_picker (GtkWidget *btn, NautilusWindow *window)
+{
+	GtkWidget *c;
+
+	c = gtk_color_selection_dialog_new (_("Color selector"));
+	gtk_signal_connect (GTK_OBJECT (GTK_COLOR_SELECTION_DIALOG (c)->ok_button),
+			    "clicked", GTK_SIGNAL_FUNC (nautilus_window_color_confirm), c);
+	gtk_widget_hide (GTK_COLOR_SELECTION_DIALOG (c)->cancel_button);
+	gtk_widget_hide (GTK_COLOR_SELECTION_DIALOG (c)->help_button);
+	gtk_widget_show (c);
+}
+
+
 static void
 nautilus_window_stop (GtkWidget *btn, NautilusWindow *window)
 {
   nautilus_window_end_location_change(window);
 }
+
 
 /**
  * nautilus_window_about_cb:
