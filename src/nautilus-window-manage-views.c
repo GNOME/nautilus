@@ -711,6 +711,11 @@ nautilus_window_load_content_view (NautilusWindow *window,
         
         g_return_val_if_fail(id, NULL);
         
+        /* Assume new content is not zoomable. When/if it sends a zoom_level_changed
+         * the zoom_control will get shown.
+         */
+	gtk_widget_hide (window->zoom_control);
+        
         content_view = window->content_view;
         if (!NAUTILUS_IS_VIEW_FRAME (content_view)
             || strcmp (nautilus_view_frame_get_iid (content_view), id->iid) != 0) {

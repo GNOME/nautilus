@@ -313,9 +313,10 @@ nautilus_window_constructed (NautilusWindow *window)
 	gtk_box_pack_end (GTK_BOX (location_bar_box), window->view_as_option_menu, FALSE, FALSE, GNOME_PAD_SMALL);
 	gtk_widget_show(window->view_as_option_menu);
 	
-	/* allocate the zoom control and place on the right next to the menu */
+	/* Allocate the zoom control and place on the right next to the menu.
+	 * It gets shown later, if the view-frame contains something zoomable.
+	 */
 	window->zoom_control = nautilus_zoom_control_new ();
-	gtk_widget_show (window->zoom_control);
 	gtk_signal_connect (GTK_OBJECT (window->zoom_control), "zoom_in", zoom_in_callback, window);
 	gtk_signal_connect (GTK_OBJECT (window->zoom_control), "zoom_out", zoom_out_callback, window);
 	gtk_signal_connect (GTK_OBJECT (window->zoom_control), "zoom_to_level", zoom_to_level_callback, window);
@@ -1132,6 +1133,11 @@ nautilus_window_zoom_level_changed_callback (NautilusViewFrame *view,
                                     	     NautilusWindow *window)
 {
 	nautilus_zoom_control_set_zoom_level (NAUTILUS_ZOOM_CONTROL (window->zoom_control), zoom_level);
+
+	/* We rely on the initial zoom_level_change signal to inform us that the
+	 * view-frame is showing something zoombale (i.e. we need a zoom control).
+	 */
+	gtk_widget_show (window->zoom_control);
 }
 
 void
