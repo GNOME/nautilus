@@ -35,6 +35,7 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-stock-dialogs.h>
+#include <gtk/gtkmessagedialog.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkstock.h>
 #include <libgnome/gnome-i18n.h>
