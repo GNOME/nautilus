@@ -3522,6 +3522,7 @@ handle_icon_button_press (NautilusIconContainer *container,
 			  GdkEventButton *event)
 {
 	NautilusIconContainerDetails *details;
+	int click_location;
 	
 	if (event->button != DRAG_BUTTON
 	    && event->button != CONTEXTUAL_MENU_BUTTON) {
@@ -3580,8 +3581,9 @@ handle_icon_button_press (NautilusIconContainer *container,
 		/* Double clicking does not trigger a D&D action. */
 		details->drag_button = 0;
 		details->drag_icon = NULL;
-
-		activate_selected_items (container, 0);
+		
+		click_location = hit_test_item (icon->item, event);
+		activate_selected_items (container, click_location);
 	}
 
 	return TRUE;
