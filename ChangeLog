@@ -1,3 +1,42 @@
+2001-03-18  Andy Hertzfeld  <andy@eazel.com>
+
+	restructured annotation; made annotation for emblems work;
+	started on annotation canvas item, based on rect item
+	
+	* components/rss-control/nautilus-rss-control.c:
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-canvas-note-item.c:
+	(nautilus_canvas_note_item_get_type),
+	(nautilus_canvas_note_item_class_init),
+	(nautilus_canvas_note_item_init),
+	(nautilus_canvas_note_item_destroy), (get_bounds),
+	(set_gc_foreground), (set_stipple), (set_outline_gc_width),
+	(nautilus_canvas_note_item_set_fill),
+	(nautilus_canvas_note_item_set_outline),
+	(nautilus_canvas_note_item_set_arg), (get_color_arg),
+	(nautilus_canvas_note_item_get_arg),
+	(nautilus_canvas_note_item_realize),
+	(nautilus_canvas_note_item_unrealize),
+	(nautilus_canvas_note_item_translate),
+	(nautilus_canvas_note_item_bounds),
+	(nautilus_canvas_note_item_render),
+	(nautilus_canvas_note_item_draw),
+	(nautilus_canvas_note_item_point),
+	(nautilus_canvas_note_item_update):
+	* libnautilus-extensions/nautilus-canvas-note-item.h:
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_marshal_POINTER__POINTER_INT):
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(create_annotation), (remove_annotation):
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_initialize_class),
+	(nautilus_icon_container_get_note_text):
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* libnautilus-extensions/nautilus-icon-private.h:
+	* src/file-manager/fm-icon-view.c: (get_icon_annotation_callback),
+	(create_icon_container):
+
 2001-03-14  Andy Hertzfeld  <andy@eazel.com>
 
 	added preferences to control annotation fetching and display

@@ -40,6 +40,7 @@
 #include "nautilus-icon-private.h"
 #include "nautilus-string.h"
 #include "nautilus-art-extensions.h"
+#include "nautilus-canvas-note-item.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-gdk-font-extensions.h"
@@ -1861,6 +1862,8 @@ create_annotation (NautilusIconCanvasItem *icon_item, int emblem_index)
 	uint fill_color, outline_color;
 	double top, left, bottom, right;
 	ArtDRect icon_rect;
+	char *note_text;
+	GnomeCanvas *canvas;
 	
 	/* compute the position for the top left of the annotation */
 
@@ -1873,20 +1876,23 @@ create_annotation (NautilusIconCanvasItem *icon_item, int emblem_index)
 	fill_color = 0xDDDD99E0;
 	outline_color = 0x000000FF;
 	
-	g_message ("making note - %f %f %f %f", left, top, right, bottom);
-	
+	canvas = GNOME_CANVAS_ITEM (icon_item)->canvas;
+	note_text = nautilus_icon_container_get_note_text (NAUTILUS_ICON_CONTAINER (canvas), icon_item->user_data, emblem_index);
+
 	icon_item->details->annotation = gnome_canvas_item_new
-			(gnome_canvas_root (GNOME_CANVAS_ITEM (icon_item)->canvas),
-		 	gnome_canvas_rect_get_type (),
+			(gnome_canvas_root (canvas),
+		 	nautilus_canvas_note_item_get_type (),
 		 	"x1", left,
 		 	"y1", top,
 		 	"x2", right,
 		 	"y2", bottom,
 		 	"fill_color_rgba", fill_color,
 		 	"outline_color_rgba", outline_color,
+		 	"note_text", note_text,
 		 	"width_pixels", 1,
 		 	NULL);
 
+	g_free (note_text);
 	gnome_canvas_item_raise_to_top (icon_item->details->annotation);	
 }
 
@@ -1895,8 +1901,6 @@ static void
 remove_annotation (NautilusIconCanvasItem *icon_item)
 {
 	if (icon_item->details->annotation != NULL) {
-		g_message ("remove annotation");
-
 		gtk_object_destroy (GTK_OBJECT (icon_item->details->annotation));
 		icon_item->details->annotation = NULL;	
 		icon_item->details->note_state = 0;

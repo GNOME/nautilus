@@ -63,6 +63,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-background.c			\
 	nautilus-bonobo-extensions.c		\
 	nautilus-bookmark.c			\
+	nautilus-canvas-note-item.c		\
 	nautilus-caption-table.c		\
 	nautilus-caption.c			\
 	nautilus-clickable-image.c		\
@@ -177,6 +178,7 @@ noinst_HEADERS =				\
 	nautilus-background.h			\
 	nautilus-bonobo-extensions.h		\
 	nautilus-bookmark.h			\
+	nautilus-canvas-note-item.h		\
 	nautilus-caption-table.h		\
 	nautilus-caption.h			\
 	nautilus-cdrom-extensions.h		\

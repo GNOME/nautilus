@@ -248,4 +248,8 @@ void          nautilus_icon_container_update_scroll_region        (NautilusIconC
 guint32       nautilus_icon_container_get_label_color             (NautilusIconContainer *container,
 								   gboolean               first_line);
 
+char *	      nautilus_icon_container_get_note_text 		  (NautilusIconContainer *container, 
+								   gpointer		 user_data,
+								   int			 emblem_index);
+
 #endif /* NAUTILUS_ICON_CONTAINER_PRIVATE_H */

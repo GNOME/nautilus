@@ -171,6 +171,7 @@ enum {
 	GET_ICON_TEXT,
 	GET_ICON_URI,
 	GET_ICON_DROP_TARGET_URI,
+	GET_ICON_ANNOTATION,
 	GET_STORED_ICON_POSITION,
 	ICON_POSITION_CHANGED,
 	ICON_TEXT_CHANGED,
@@ -3192,6 +3193,16 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  nautilus_gtk_marshal_STRING__POINTER,
 				  GTK_TYPE_STRING, 1,
 				  GTK_TYPE_POINTER);
+	signals[GET_ICON_ANNOTATION]
+		= gtk_signal_new ("get_icon_annotation",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+						     get_icon_annotation),
+				  nautilus_gtk_marshal_STRING__POINTER_INT,
+				  GTK_TYPE_STRING, 2,
+				  GTK_TYPE_POINTER,
+				  GTK_TYPE_INT);
 	signals[COMPARE_ICONS]
 		= gtk_signal_new ("compare_icons",
 				  GTK_RUN_LAST,
@@ -5100,6 +5111,26 @@ nautilus_icon_container_annotation_changed (gpointer user_data)
 	nautilus_icon_container_request_update_all (NAUTILUS_ICON_CONTAINER (user_data));
 }
 
+
+/* handle fetching annotation info from the controller */
+char *
+nautilus_icon_container_get_note_text (NautilusIconContainer *container, 
+				   gpointer		 user_data,
+				   int			 emblem_index)
+{
+	NautilusIcon *icon;
+	char *note_text;
+	note_text = NULL;
+	
+	icon = (NautilusIcon*) user_data;	
+	gtk_signal_emit (GTK_OBJECT (container),
+			 signals[GET_ICON_ANNOTATION],
+			 icon->data,
+			 emblem_index,
+			 &note_text);
+
+	return note_text;
+}
 
 /* Return if the icon container is a fixed size */
 gboolean

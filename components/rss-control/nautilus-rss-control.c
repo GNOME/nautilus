@@ -777,6 +777,7 @@ nautilus_rss_control_leave_event (GtkWidget *widget, GdkEventCrossing *event)
 }
 
 /* handle size requests by requesting a fixed size */
+/* should size according to the number of items */
 static void
 nautilus_rss_control_size_request (GtkWidget *widget, GtkRequisition *request)
 {

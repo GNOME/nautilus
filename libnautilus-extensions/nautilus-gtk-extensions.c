@@ -1007,6 +1007,20 @@ nautilus_gtk_marshal_POINTER__POINTER_POINTER (GtkObject *object,
 }
 
 void
+nautilus_gtk_marshal_POINTER__POINTER_INT (GtkObject *object,
+					       GtkSignalFunc func,
+					       gpointer func_data,
+					       GtkArg *args)
+{
+	* GTK_RETLOC_POINTER (args[2]) =
+		(* (gpointer (*)(GtkObject *, gpointer, int, gpointer)) func)
+		(object,
+		 GTK_VALUE_POINTER (args[0]),
+		 GTK_VALUE_INT (args[1]),
+		 func_data);
+}
+
+void
 nautilus_gtk_marshal_POINTER__POINTER_POINTER_POINTER (GtkObject *object,
 						       GtkSignalFunc func,
 						       gpointer func_data,

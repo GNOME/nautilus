@@ -124,6 +124,9 @@ typedef struct {
 						   NautilusIconData *data);
 	char *       (* get_icon_drop_target_uri) (NautilusIconContainer *container,
 						   NautilusIconData *data);
+	char *	     (* get_icon_annotation)	  (NautilusIconContainer *container,
+						   NautilusIconData *data,
+						   int annotation_index);
 	int          (* compare_icons)            (NautilusIconContainer *container,
 						   NautilusIconData *icon_a,
 						   NautilusIconData *icon_b);

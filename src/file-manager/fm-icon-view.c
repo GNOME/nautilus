@@ -1838,6 +1838,32 @@ get_icon_text_callback (NautilusIconContainer *container,
 	g_strfreev (text_array);
 }
 
+/* this callback returns the annotation text associated with the passed-in file and emblem index */
+static char *
+get_icon_annotation_callback (NautilusIconContainer *container,
+		       		   NautilusFile *file,
+		       		   int emblem_index,
+		       		   FMIconView *icon_view)
+{
+	GList *keyword_list, *selected_keyword;
+	char  *keyword;
+		
+	keyword_list = nautilus_file_get_keywords (file);
+	if (keyword_list == NULL) {
+		return NULL;
+	}
+	
+	selected_keyword = g_list_nth (keyword_list, emblem_index - 1);
+	if (selected_keyword == NULL) {
+		nautilus_g_list_free_deep (keyword_list);	
+		return NULL;
+	}
+	
+	keyword = g_strdup (selected_keyword->data);	
+	nautilus_g_list_free_deep (keyword_list);
+	return keyword;
+}
+
 /* Preferences changed callbacks */
 static void
 fm_icon_view_text_attribute_names_changed (FMDirectoryView *directory_view)
@@ -2133,6 +2159,10 @@ create_icon_container (FMIconView *icon_view)
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "get_icon_text",
 			    GTK_SIGNAL_FUNC (get_icon_text_callback),
+			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "get_icon_annotation",
+			    GTK_SIGNAL_FUNC (get_icon_annotation_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "move_copy_items",
