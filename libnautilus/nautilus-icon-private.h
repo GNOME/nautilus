@@ -148,7 +148,8 @@ struct NautilusIconContainerDetails {
 	
 	/* default fonts used to draw labels */
 	GdkFont *label_font[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
-
+	GdkFont *hilite_font[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
+	
 	/* State used so arrow keys don't wander if icons aren't lined up.
 	 * Keeps track of last axis arrow key was used on.
 	 */

@@ -52,6 +52,7 @@ struct NautilusIconCanvasItemDetails {
 	GList *emblem_pixbufs;
 	char *text;
 	GdkFont *font;
+	GdkFont *highlight_font;
 	ArtIRect embedded_text_rect;
 	char *embedded_text_file_URI;
 	
@@ -72,6 +73,7 @@ enum {
 	ARG_0,
 	ARG_TEXT,
 	ARG_FONT,
+    	ARG_HIGHLIGHT_FONT,
     	ARG_HIGHLIGHTED_FOR_SELECTION,
     	ARG_HIGHLIGHTED_AS_KEYBOARD_FOCUS,
     	ARG_HIGHLIGHTED_FOR_DROP,
@@ -182,6 +184,9 @@ nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass *class)
 				 GTK_TYPE_STRING, GTK_ARG_READWRITE, ARG_TEXT);
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::font",
 				 GTK_TYPE_BOXED, GTK_ARG_READWRITE, ARG_FONT);
+	gtk_object_add_arg_type	("NautilusIconCanvasItem::highlight_font",
+				 GTK_TYPE_BOXED, GTK_ARG_READWRITE, ARG_HIGHLIGHT_FONT);
+	
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::highlighted_for_selection",
 				 GTK_TYPE_BOOL, GTK_ARG_READWRITE, ARG_HIGHLIGHTED_FOR_SELECTION);
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::highlighted_as_keyboard_focus",
@@ -251,10 +256,11 @@ nautilus_icon_canvas_item_destroy (GtkObject *object)
 	}
 	nautilus_gdk_pixbuf_list_free (details->emblem_pixbufs);
 	g_free (details->text);
-	if (details->font != NULL) {
+	if (details->font != NULL)
 		gdk_font_unref (details->font);
-	}
-	
+	if (details->highlight_font != NULL)
+		gdk_font_unref (details->highlight_font);
+			
 	g_free (details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
@@ -306,6 +312,21 @@ nautilus_icon_canvas_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 			gdk_font_unref (details->font);
 		}
 		details->font = font;
+		break;
+
+	case ARG_HIGHLIGHT_FONT:
+		font = GTK_VALUE_BOXED (*arg);
+		if (nautilus_gdk_font_equal (font, details->highlight_font)) {
+			return;
+		}
+
+		if (font != NULL) {
+			gdk_font_ref (font);
+		}
+		if (details->highlight_font != NULL) {
+			gdk_font_unref (details->highlight_font);
+		}
+		details->highlight_font = font;
 		break;
 
 	case ARG_HIGHLIGHTED_FOR_SELECTION:
@@ -362,6 +383,10 @@ nautilus_icon_canvas_item_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 		
 	case ARG_FONT:
 		GTK_VALUE_BOXED (*arg) = details->font;
+		break;
+		
+	case ARG_HIGHLIGHT_FONT:
+		GTK_VALUE_BOXED (*arg) = details->highlight_font;
 		break;
 		
         case ARG_HIGHLIGHTED_FOR_SELECTION:
@@ -552,6 +577,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	NautilusIconCanvasItemDetails *details;
         int width_so_far, height_so_far;
         GdkGC* gc;
+	GdkFont *font;
 	int max_text_width;
 	int icon_width, text_left, box_left;
 	GnomeIconTextInfo *icon_text_info;
@@ -561,7 +587,12 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 
 	details = item->details;
 
-	if (details->font == NULL || details->text == NULL || details->text[0] == '\0') {
+	if (details->is_highlighted_for_selection)
+		font = details->highlight_font;
+	else
+		font = details->font;
+
+	if (font == NULL || details->text == NULL || details->text[0] == '\0') {
 		details->text_height = 0;
 		details->text_width = 0;
 		return;
@@ -587,9 +618,9 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		}
 		
 		icon_text_info = gnome_icon_layout_text
-			(details->font, text_piece, " -_,;.?/&", max_text_width, TRUE);
+			(font, text_piece, " -_,;.?/&", max_text_width, TRUE);
 		
-		if (drawable != NULL) {
+		if (drawable != NULL) {			
 			text_left = icon_left + (icon_width - icon_text_info->width) / 2;
 			gnome_icon_paint_text (icon_text_info, drawable, gc,
 					       text_left, icon_bottom + height_so_far, GTK_JUSTIFY_CENTER);
@@ -615,15 +646,6 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		g_assert (width_so_far == details->text_width);
 	
 		box_left = icon_left + (icon_width - width_so_far) / 2;
-
-		/* invert to indicate selection if necessary */
-		if (details->is_highlighted_for_selection) {
-			gdk_gc_set_function (gc, GDK_INVERT);
-			gdk_draw_rectangle (drawable, gc, TRUE,
-					    box_left, icon_bottom - 2,
-					    width_so_far, 2 + height_so_far);
-			gdk_gc_set_function (gc, GDK_COPY);
-		}
 		
 		/* indicate keyboard selection by framing the text with a gray-stippled rectangle */
 		if (details->is_highlighted_as_keyboard_focus) {
@@ -923,7 +945,7 @@ nautilus_icon_canvas_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 	NautilusIconCanvasItemDetails *details;
 	ArtIRect icon_rect, emblem_rect;
 	EmblemLayout emblem_layout;
-	GdkPixbuf *emblem_pixbuf, *prelit_pixbuf;
+	GdkPixbuf *emblem_pixbuf, *prelit_pixbuf, *selected_pixbuf;
 	
 	icon_item = NAUTILUS_ICON_CANVAS_ITEM (item);
 	details = icon_item->details;
@@ -940,12 +962,18 @@ nautilus_icon_canvas_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 	icon_rect.x1 -= x;
 	icon_rect.y1 -= y;
 
-	/* if the pre-lit flag is set, make a pre-lit pixbuf and draw that instead */
+	/* if the pre-lit or selection flag is set, make a pre-lit or darkened pixbuf and draw that instead */
 	
 	if (details->is_prelit) {
 		prelit_pixbuf = create_spotlight_pixbuf (details->pixbuf);
 		draw_pixbuf (prelit_pixbuf, drawable, icon_rect.x0, icon_rect.y0);
 		gdk_pixbuf_unref (prelit_pixbuf);
+	}
+	else if (details->is_highlighted_for_selection) {
+		selected_pixbuf = create_darkened_pixbuf (details->pixbuf, (int)(0.6*255), (int)(0.6*255));
+		draw_pixbuf (selected_pixbuf, drawable, icon_rect.x0, icon_rect.y0);
+		gdk_pixbuf_unref (selected_pixbuf);	
+
 	} else {
 		draw_pixbuf (details->pixbuf, drawable, icon_rect.x0, icon_rect.y0);
 	}
@@ -959,7 +987,7 @@ nautilus_icon_canvas_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 	/* Draw stretching handles (if necessary). */
 	draw_stretch_handles (icon_item, drawable, &icon_rect);
 	
-	/* Draw embedded text. */
+	/* Draw embedded text (if necessary) */
 	draw_embedded_text (item, drawable, &icon_rect);
 	
 	/* Draw the label text. */

@@ -32,6 +32,9 @@
 /* return a lightened pixbuf for pre-lighting */
 GdkPixbuf* create_spotlight_pixbuf (GdkPixbuf* source_pixbuf);
 
+/* return a darkened pixbuf for selection hiliting */
+GdkPixbuf* create_darkened_pixbuf (GdkPixbuf *src, int saturation, int darken);
+
 /* return a semi-transparent pixbuf from the source pixbuf using a checkboard
    stipple in the alpha channel (so it can be converted to an alpha-less pixmap) */
 GdkPixbuf* make_semi_transparent(GdkPixbuf *source_pixbuf);

@@ -1,3 +1,16 @@
+2000-03-25  Andy Hertzfeld <andy@eazel.com>
+
+	Improved selection highlighting.
+	
+	* libnautilus/nautilus-graphic-effects.c,h:
+	added create_darkened_pixbuf routine based on one in panel
+	* libnautilus/icon-private.h:
+	added field for highlight_font
+	* libnautilus/icon-container.c:
+	loads and maintain highlight font
+	* libnautilus/icon-canvas-item:
+	if item is selected, darken the icon and use the highlight font
+	
 2000-03-24  Darin Adler  <darin@eazel.com>
 
 	Fixed bug 337 (Crash on userlevel change).

@@ -1352,9 +1352,10 @@ destroy (GtkObject *object)
 		gtk_idle_remove (container->details->idle_id);
 	}
         for (i = 0; i < NAUTILUS_N_ELEMENTS (container->details->label_font); i++) {
-        	if (container->details->label_font[i] != NULL) {
-                	gdk_font_unref (container->details->label_font[i]);
-		}
+       		if (container->details->label_font[i] != NULL)
+        		gdk_font_unref (container->details->label_font[i]);
+        	if (container->details->hilite_font[i] != NULL)
+                	gdk_font_unref (container->details->hilite_font[i]);
 	}
 	
 	g_free (container->details);
@@ -1890,6 +1891,14 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
         details->label_font[NAUTILUS_ZOOM_LEVEL_LARGER] = load_font ("-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*");
         details->label_font[NAUTILUS_ZOOM_LEVEL_LARGEST] = load_font ("-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*");
 
+        details->hilite_font[NAUTILUS_ZOOM_LEVEL_SMALLEST] = load_font ("-*-helvetica-bold-r-normal-*-8-*-*-*-*-*-*-*");
+        details->hilite_font[NAUTILUS_ZOOM_LEVEL_SMALLER] = load_font ("-*-helvetica-bold-r-normal-*-8-*-*-*-*-*-*-*");
+        details->hilite_font[NAUTILUS_ZOOM_LEVEL_SMALL] = load_font ("-*-helvetica-bold-r-normal-*-10-*-*-*-*-*-*-*");
+        details->hilite_font[NAUTILUS_ZOOM_LEVEL_STANDARD] = load_font ("-*-helvetica-bold-r-normal-*-12-*-*-*-*-*-*-*");
+        details->hilite_font[NAUTILUS_ZOOM_LEVEL_LARGE] = load_font ("-*-helvetica-bold-r-normal-*-14-*-*-*-*-*-*-*");
+        details->hilite_font[NAUTILUS_ZOOM_LEVEL_LARGER] = load_font ("-*-helvetica-bold-r-normal-*-18-*-*-*-*-*-*-*");
+        details->hilite_font[NAUTILUS_ZOOM_LEVEL_LARGEST] = load_font ("-*-helvetica-bold-r-normal-*-18-*-*-*-*-*-*-*");
+
 	/* FIXME: Read this from preferences. */
 	details->single_click_mode = TRUE;
 
@@ -2166,7 +2175,7 @@ update_icon (NautilusIconContainer *container, NautilusIcon *icon)
 	GList *emblem_icons, *emblem_pixbufs, *p;
 	char *label;
 	char *contents_as_text;
-	GdkFont *font;
+	GdkFont *font, *item_hilite_font;
 
 	details = container->details;
 
@@ -2205,6 +2214,7 @@ update_icon (NautilusIconContainer *container, NautilusIcon *icon)
 			 &label);
 
 	font = details->label_font[details->zoom_level];
+	item_hilite_font = details->hilite_font[details->zoom_level];
         
         /* Choose to show mini-text based on this icon's requested size,
 	 * not zoom level, since icon may be stretched big or small.
@@ -2223,6 +2233,7 @@ update_icon (NautilusIconContainer *container, NautilusIcon *icon)
 	gnome_canvas_item_set (GNOME_CANVAS_ITEM (icon->item),
 			       "text", label,
 			       "font", font,
+			       "highlight_font", item_hilite_font,
 			       "text_source", contents_as_text,
 			       NULL);
 	nautilus_icon_canvas_item_set_image (icon->item, pixbuf, &text_rect);

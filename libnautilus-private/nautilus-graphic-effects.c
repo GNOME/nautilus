@@ -33,7 +33,7 @@
 
 #include "nautilus-graphic-effects.h"
 
-/* graphics routine to lighten a pixbuf */
+/* utility routine to bump the level of a color component with pinning */
 
 static guchar
 lighten_component (guchar cur_value)
@@ -45,8 +45,8 @@ lighten_component (guchar cur_value)
 	return (guchar) new_value;
 }
 
-static void
-do_lighten (GdkPixbuf *dest, GdkPixbuf *src)
+GdkPixbuf *
+create_spotlight_pixbuf (GdkPixbuf* src)
 {
 	int i, j;
 	int width, height, has_alpha, src_rowstride, dst_rowstride;
@@ -54,6 +54,13 @@ do_lighten (GdkPixbuf *dest, GdkPixbuf *src)
 	guchar *original_pixels;
 	guchar *pixsrc;
 	guchar *pixdest;
+	GdkPixbuf *dest;
+	
+	dest = gdk_pixbuf_new (gdk_pixbuf_get_format (src),
+					 gdk_pixbuf_get_has_alpha (src),
+					 gdk_pixbuf_get_bits_per_sample (src),
+					 gdk_pixbuf_get_width (src),
+					 gdk_pixbuf_get_height (src));
 	
 	has_alpha = gdk_pixbuf_get_has_alpha (src);
 	width = gdk_pixbuf_get_width (src);
@@ -75,22 +82,64 @@ do_lighten (GdkPixbuf *dest, GdkPixbuf *src)
 			}
 		}
 	}
+	return dest;
 }
 
-/* utility routine to lighten a pixbuf for pre-lighting */
+
+/* the following routine was stolen from the panel to darken a pixbuf, by manipulating the saturation */
+
+#define INTENSITY(r, g, b) (((r)*77 + (g)*150 + (b)*28)>>8)
+
+/* saturation is 0-255, darken is 0-255 */
 
 GdkPixbuf *
-create_spotlight_pixbuf (GdkPixbuf* source_pixbuf)
+create_darkened_pixbuf (GdkPixbuf *src, int saturation, int darken)
 {
-	GdkPixbuf *new = gdk_pixbuf_new (gdk_pixbuf_get_format (source_pixbuf),
-					 gdk_pixbuf_get_has_alpha (source_pixbuf),
-					 gdk_pixbuf_get_bits_per_sample (source_pixbuf),
-					 gdk_pixbuf_get_width (source_pixbuf),
-					 gdk_pixbuf_get_height (source_pixbuf));
-	do_lighten (new, source_pixbuf);
+	gint i, j;
+	gint width, height, has_alpha, rowstride;
+	guchar *target_pixels;
+	guchar *original_pixels;
+	guchar *pixsrc;
+	guchar *pixdest;
+	guchar intensity;
+	guchar alpha;
+	guchar negalpha;
+	guchar r,g,b;
+	GdkPixbuf *dest;
 
-	return new;
+	dest = gdk_pixbuf_new (gdk_pixbuf_get_format (src),
+					 gdk_pixbuf_get_has_alpha (src),
+					 gdk_pixbuf_get_bits_per_sample (src),
+					 gdk_pixbuf_get_width (src),
+					 gdk_pixbuf_get_height (src));
+
+	has_alpha = gdk_pixbuf_get_has_alpha (src);
+	width = gdk_pixbuf_get_width (src);
+	height = gdk_pixbuf_get_height (src);
+	rowstride = gdk_pixbuf_get_rowstride (src);
+	target_pixels = gdk_pixbuf_get_pixels (dest);
+	original_pixels = gdk_pixbuf_get_pixels (src);
+
+	for (i = 0; i < height; i++) {
+		pixdest = target_pixels + i*rowstride;
+		pixsrc = original_pixels + i*rowstride;
+		for (j = 0; j < width; j++) {
+			r = *(pixsrc++);
+			g = *(pixsrc++);
+			b = *(pixsrc++);
+			intensity = INTENSITY(r,g,b);
+			negalpha = ((255 - saturation)*darken)>>8;
+			alpha = (saturation*darken)>>8;
+			*(pixdest++) = (negalpha * intensity + alpha * r) >> 8;
+			*(pixdest++) = (negalpha * intensity + alpha * g) >> 8;
+			*(pixdest++) = (negalpha * intensity + alpha * b) >> 8;
+			if (has_alpha)
+				*(pixdest++) = *(pixsrc++);
+		}
+	}
+	return dest;
 }
+#undef INTENSITY
 
 /* this routine takes the source pixbuf and returns a new one that's semi-transparent, by
    clearing every other pixel's alpha value in a checkerboard grip.  We have to do the
