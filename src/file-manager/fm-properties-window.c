@@ -40,6 +40,7 @@
 #include <gtk/gtklabel.h>
 #include <gtk/gtknotebook.h>
 #include <gtk/gtkpixmap.h>
+#include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtkvbox.h>
@@ -614,6 +615,7 @@ create_image_widget_for_emblem (const char *emblem_name) {
 	GdkPixbuf *pixbuf;
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
+	GtkWidget *image_widget;
 
 	icon = nautilus_icon_factory_get_emblem_icon_by_name (emblem_name);
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon (icon,
@@ -626,21 +628,35 @@ create_image_widget_for_emblem (const char *emblem_name) {
 	gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
 	gdk_pixbuf_unref (pixbuf);
 
-	return gtk_pixmap_new (pixmap, mask);
+	image_widget = gtk_pixmap_new (pixmap, mask);
+	gtk_widget_show (image_widget);
+
+	return image_widget;
 }
 
 static void
 create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 {
-	GtkWidget *emblems_page_vbox, *button;
+	GtkWidget *emblems_page_vbox, *button, *scroller;
 	GtkWidget *check_buttons_box, *left_buttons_box, *right_buttons_box;
-	GtkWidget *image_widget;
+	GtkWidget *image_widget, *label, *image_and_label_table;
 	int i;
 
 	emblems_page_vbox = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (emblems_page_vbox);
 	gtk_container_set_border_width (GTK_CONTAINER (emblems_page_vbox), GNOME_PAD);
-	gtk_notebook_append_page (notebook, emblems_page_vbox, gtk_label_new (_("Emblems")));
+
+	scroller = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroller),
+					GTK_POLICY_NEVER,
+					GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (scroller), 
+					       emblems_page_vbox);
+	gtk_viewport_set_shadow_type (GTK_VIEWPORT (GTK_BIN (scroller)->child), 
+				      GTK_SHADOW_NONE);
+	gtk_widget_show (scroller);
+
+	gtk_notebook_append_page (notebook, scroller, gtk_label_new (_("Emblems")));
 	
 	/* Holder for two columns of check buttons. */
 	check_buttons_box = gtk_hbox_new (TRUE, 0);
@@ -659,9 +675,30 @@ create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 
 	/* The check buttons themselves. */
 	for (i = 0; i < NAUTILUS_N_ELEMENTS (property_names); i++) {
-		button = gtk_check_button_new_with_label (_(property_names[i]));
+		button = gtk_check_button_new ();
+
+		/* Make 3-column homogeneous table with 1/3 for image, 2/3 text.
+		 * This allows text to line up nicely.
+		 */
+		image_and_label_table = gtk_table_new (1, 3, TRUE);
+		gtk_widget_show (image_and_label_table);
+		
 		image_widget = create_image_widget_for_emblem (property_names[i]);
-		/* gtk_container_add (GTK_CONTAINER (button), image_widget); */
+		gtk_table_attach_defaults (GTK_TABLE (image_and_label_table), image_widget,
+					   0, 1,
+					   0, 1);
+					
+		label = gtk_label_new (_(property_names[i]));
+		/* Move label to left edge. */
+		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+		gtk_widget_show (label);
+		gtk_table_attach (GTK_TABLE (image_and_label_table), label,
+				  1, 3,
+				  0, 1,
+				  GTK_FILL, 0,
+				  0, 0);
+
+		gtk_container_add (GTK_CONTAINER (button), image_and_label_table);
 		gtk_widget_show (button);
 
 		/* Attach parameters and signal handler. */
@@ -686,9 +723,6 @@ create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 			gtk_box_pack_start (GTK_BOX (right_buttons_box), button, FALSE, FALSE, 0);
 		}
 	}
-
-	add_prompt_and_separator (GTK_VBOX (emblems_page_vbox),
-				  _("Images and a complete list of available emblems coming soon."));
 }
 
 static void
