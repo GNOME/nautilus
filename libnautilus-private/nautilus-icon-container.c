@@ -4542,6 +4542,7 @@ nautilus_icon_container_get_first_visible_icon (NautilusIconContainer *container
 	return NULL;
 }
 
+/* puts the icon at the top of the screen */
 void
 nautilus_icon_container_scroll_to_icon (NautilusIconContainer  *container,
 					NautilusIconData       *data)
@@ -6166,6 +6167,12 @@ end_renaming_mode (NautilusIconContainer *container, gboolean commit)
 	container->details->renaming = FALSE;
 	nautilus_icon_canvas_item_set_renaming (icon->item, FALSE);
 
+	if (commit) {
+		set_pending_icon_to_reveal (container, icon);
+	}
+
+	gtk_widget_grab_focus (GTK_WIDGET (container));
+	
 	if (commit) {
 		/* Verify that text has been modified before signalling change. */			
 		changed_text = eel_editable_label_get_text (EEL_EDITABLE_LABEL (container->details->rename_widget));
