@@ -95,6 +95,7 @@
 #define COMMAND_SHOW_HIDE_TOOLBAR                       "/commands/Show Hide Toolbar"
 #define COMMAND_SHOW_HIDE_LOCATION_BAR                  "/commands/Show Hide Location Bar"
 #define COMMAND_SHOW_HIDE_STATUS_BAR                    "/commands/Show Hide Statusbar"
+#define COMMAND_GO_BURN_CD				"/commands/Go to Burn CD"
 
 #define ID_SHOW_HIDE_SIDEBAR                            "Show Hide Sidebar"
 #define ID_SHOW_HIDE_TOOLBAR                            "Show Hide Toolbar"
@@ -233,6 +234,24 @@ file_menu_burn_cd_callback (BonoboUIComponent *component,
 		g_error_free (error);
 	}
 
+}
+
+static gboolean
+have_burn_uri (void)
+{
+	static gboolean initialized = FALSE;
+	static gboolean res;
+	GnomeVFSURI *uri;
+
+	if (!initialized) {
+		uri = gnome_vfs_uri_new ("burn:///");
+		res = uri != NULL;
+		if (uri != NULL) {
+			gnome_vfs_uri_unref (uri);
+		}
+		initialized = TRUE;
+	}
+	return res;
 }
 
 static void
@@ -1279,6 +1298,12 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 				 G_CALLBACK (nautilus_window_handle_ui_event_callback), window, 0);
 
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
+	
+	if (!have_burn_uri ()) {
+		nautilus_bonobo_set_hidden (window->details->shell_ui,
+					    COMMAND_GO_BURN_CD,
+					    TRUE);
+	}
 	
 #ifndef ENABLE_PROFILER
 	nautilus_bonobo_set_hidden (window->details->shell_ui, NAUTILUS_MENU_PATH_PROFILER, TRUE);

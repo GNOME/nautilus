@@ -65,6 +65,10 @@ to be a problem.</p>
 is usually to use a while loop. It's true that
 "easy to read" is a subjective thing.</p>
 
+<p><b>We declare local variables at the beginning of a block.</b> C99 allows you
+to declare variables anywhere in a function, but a lot of compilers still do not
+support C99.</p>
+
 <p><b>We do not initialize local variables in their declarations.</b> C allows you
 to initialize a local variable when declaring it. But no other code can run before
 this, because the other statements in a function must be after all the declarations.
