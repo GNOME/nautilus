@@ -100,6 +100,7 @@ libeazelpackagesystem_skeleton_la_SOURCES = 	\
 # libeazelpackagesystem-rpm3
 
 libeazelpackagesystem_rpm3_la_SOURCES = 	\
+	eazel-package-system-rpm3-private.h	\
 	eazel-package-system-rpm3.h		\
 	eazel-package-system-rpm3.c		\
 	$(NULL)
