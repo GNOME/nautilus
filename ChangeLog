@@ -1,3 +1,21 @@
+2001-02-22  John Harper  <jsh@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Partially fixed bug 6863 (tree view slow to load):
+
+	* libnautilus-extensions/nautilus-ctree.c (set_node_info):
+	don't sort each node in auto-sort mode
+	(nautilus_ctree_set_node_info): sort each node in auto-sort
+	mode, but use the function that only sorts a single node, not
+	the entire branch
+
+	* components/tree/nautilus-tree-view.c
+	(nautilus_tree_view_insert_model_node): temporarily turn off
+	auto-sort mode while inserting nodes (do this by twiddling the
+	bit by hand, since the function to set this flag automatically
+	sorts the tree)
+
 2001-02-22  Mike Fleming  <mfleming@eazel.com>
 
 	Bug 6761: promote html help uris in the {gnome-,g,}help

@@ -3206,12 +3206,6 @@ set_node_info (NautilusCTree     *ctree,
   else 
     nautilus_ctree_node_set_pixtext (ctree, node, ctree->tree_column,
 				text, spacing, pixmap_closed, mask_closed);
-
-  if (GTK_CLIST_AUTO_SORT (GTK_CLIST (ctree))
-      && NAUTILUS_CTREE_ROW (node)->parent != NULL)
-    {
-      nautilus_ctree_sort_node (ctree, NAUTILUS_CTREE_ROW (node)->parent);
-    }
 }
 
 static void
@@ -4896,6 +4890,12 @@ nautilus_ctree_set_node_info (NautilusCTree     *ctree,
 
   NAUTILUS_CTREE_ROW (node)->expanded = (is_leaf) ? FALSE : expanded;
   
+  if (GTK_CLIST_AUTO_SORT (GTK_CLIST (ctree))
+      && NAUTILUS_CTREE_ROW (node)->parent != NULL)
+    {
+      nautilus_ctree_sort_single_node (ctree, NAUTILUS_CTREE_ROW (node)->parent);
+    }
+
   tree_draw_node (ctree, node);
 }
 

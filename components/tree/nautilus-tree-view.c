@@ -276,6 +276,8 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 
 
 			view->details->inserting_node = TRUE;
+			GTK_CLIST_UNSET_FLAG (GTK_CLIST (view->details->tree),
+					      CLIST_AUTO_SORT);
 			view_node = nautilus_ctree_insert_node (NAUTILUS_CTREE (view->details->tree),
 								parent_view_node, 
 								NULL,
@@ -284,6 +286,8 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 								closed_pixmap, closed_mask, open_pixmap, open_mask,
 								! nautilus_file_is_directory (file),
 								FALSE);
+			GTK_CLIST_SET_FLAG (GTK_CLIST (view->details->tree),
+					    CLIST_AUTO_SORT);
 			view->details->inserting_node = FALSE;
 
 			gdk_pixmap_unref (closed_pixmap);
