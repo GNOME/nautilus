@@ -14,7 +14,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2003-08-11 22:43+0100\n"
+"POT-Creation-Date: 2003-08-13 00:17+0100\n"
 "PO-Revision-Date: 2003-08-11 22:44+0100\n"
 "Last-Translator: Bryn Salisbury <brs@llgc.org.uk>\n"
 "Language-Team: Cymraeg <gnome-cy@pengwyn.linux.org.uk>\n"
@@ -2459,41 +2459,44 @@ msgid ""
 "\n"
 "There is no space on the destination."
 msgstr ""
+"Gwall tra'n creu blygell newydd.\n"
+"\n"
+"Nid oes digon o lle ar y cyrchfan."
 
 #: libnautilus-private/nautilus-file-operations.c:2035
 #, c-format
 msgid "Error \"%s\" creating new folder."
-msgstr ""
+msgstr "Gwall \"%s\" creu blygell newydd."
 
 #: libnautilus-private/nautilus-file-operations.c:2039
 msgid "Error creating new folder"
-msgstr ""
+msgstr "Gwall creu blygell newydd"
 
 #. localizers: the initial name of a new folder
 #: libnautilus-private/nautilus-file-operations.c:2128
 msgid "untitled folder"
-msgstr ""
+msgstr "blygell di-deitl"
 
 #. localizers: progress dialog title
 #: libnautilus-private/nautilus-file-operations.c:2189
 msgid "Deleting files"
-msgstr ""
+msgstr "Dileu ffeil"
 
 #. localizers: label prepended to the progress count
 #: libnautilus-private/nautilus-file-operations.c:2191
 #: libnautilus-private/nautilus-file-operations.c:2226
 msgid "Files deleted:"
-msgstr ""
+msgstr "Ffeil wedi ei dileu"
 
 #. localizers: label prepended to the name of the current file deleted
 #: libnautilus-private/nautilus-file-operations.c:2193
 #: libnautilus-private/nautilus-file-operations.c:2228
 msgid "Deleting"
-msgstr ""
+msgstr "Dileu"
 
 #: libnautilus-private/nautilus-file-operations.c:2194
 msgid "Preparing to Delete files..."
-msgstr ""
+msgstr "Paratoi i dileu ffeiliau..."
 
 #. localizers: progress dialog title
 #: libnautilus-private/nautilus-file-operations.c:2224
@@ -3002,6 +3005,8 @@ msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
 "gnome-vfs mailing list."
 msgstr ""
+"Dim disgrifiad ar gyfer y math mime \"%s\" (ffeil ydi \"%s\"), dwedwch wrth "
+"y rhestr e-bost gnome-vfs os gwelwch yn dda."
 
 #: libnautilus-private/nautilus-file.c:4414
 msgid "link"
@@ -3121,11 +3126,11 @@ msgstr "_Gofyn bob tro"
 
 #: libnautilus-private/nautilus-global-preferences.c:166
 msgid "Search for files by file name only"
-msgstr ""
+msgstr "Chwilio am ffeiliau wrth enw yn unig"
 
 #: libnautilus-private/nautilus-global-preferences.c:170
 msgid "Search for files by file name and file properties"
-msgstr ""
+msgstr "Chwilio am ffeiliau wrth enw ac priodweddau ffeiliau"
 
 #: libnautilus-private/nautilus-global-preferences.c:177
 #: src/nautilus-file-management-properties.glade.h:50
@@ -3220,7 +3225,7 @@ msgstr "math"
 #: libnautilus-private/nautilus-global-preferences.c:218
 #: src/nautilus-file-management-properties.glade.h:76
 msgid "date modified"
-msgstr ""
+msgstr "dyddiad addaswyd"
 
 #: libnautilus-private/nautilus-global-preferences.c:219
 msgid "date changed"
@@ -3229,7 +3234,7 @@ msgstr "dyddiad newidiwyd"
 #: libnautilus-private/nautilus-global-preferences.c:220
 #: src/nautilus-file-management-properties.glade.h:75
 msgid "date accessed"
-msgstr ""
+msgstr "dyddiad hygyrchwyd"
 
 #: libnautilus-private/nautilus-global-preferences.c:221
 #: src/nautilus-file-management-properties.glade.h:80
@@ -3284,7 +3289,7 @@ msgstr "testun golygadwy"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2521
 msgid "the editable label"
-msgstr ""
+msgstr "Y label golygadwy"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2528
 msgid "additional text"
@@ -3296,27 +3301,27 @@ msgstr "mwy o destun"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2536
 msgid "highlighted for selection"
-msgstr ""
+msgstr "amlygir i ddewis"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2537
 msgid "whether we are highlighted for a selection"
-msgstr ""
+msgstr "os ydym wedi amlygir i ddewis"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2544
 msgid "highlighted as keyboard focus"
-msgstr ""
+msgstr "amlygir fel canolbwyntio bysellfwrdd"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2545
 msgid "whether we are highlighted to render keyboard focus"
-msgstr ""
+msgstr "os ydym wedi amlygir i llunio canolbwyntio bysellfwrdd"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2553
 msgid "highlighted for drop"
-msgstr ""
+msgstr "amlygir i gollwng"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2554
 msgid "whether we are highlighted for a D&D drop"
-msgstr ""
+msgstr "Os ydym wedi amlygir am gollwng D&D"
 
 #: libnautilus-private/nautilus-icon-container.c:2009
 msgid "The selection rectangle"
@@ -3376,6 +3381,9 @@ msgid ""
 "and leave this item where you dropped it? This will clobber the stored "
 "manual layout."
 msgstr ""
+"Mae y blygell yma yn defynyddio cynllun ymysgogol. Ydych eisiau newid i "
+"cynllun â llaw ac adael yr eitem yma yn lle gollynwyd? Bydd hyn yn "
+"trosysgrifo y cynllun â llaw cadwyd"
 
 #: libnautilus-private/nautilus-icon-dnd.c:735
 msgid ""
@@ -3383,26 +3391,33 @@ msgid ""
 "and leave these items where you dropped them? This will clobber the stored "
 "manual layout."
 msgstr ""
+"Mae y blygell yma yn defynyddio cynllun ymysgogol. Ydych eisiau newid i "
+"cynllun â llaw ac adael yr eitemau yma yn lle gollynwyd? Bydd hyn yn "
+"trosysgrifo y cynllun â llaw cadwyd"
 
 #: libnautilus-private/nautilus-icon-dnd.c:741
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it?"
 msgstr ""
+"Mae y blygell yma yn defynyddio cynllun ymysgogol. Ydych eisiau newid i "
+"cynllun â llaw ac adael yr eitem yma yn lle gollynwyd?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:744
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them?"
 msgstr ""
+"Mae y blygell yma yn defynyddio cynllun ymysgogol. Ydych eisiau newid i "
+"cynllun â llaw ac adael yr eitemau yma yn lle gollynwyd?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:749
 msgid "Switch to Manual Layout?"
-msgstr ""
+msgstr "Newid i Cynllun â Llaw?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:750
 msgid "Switch"
-msgstr ""
+msgstr "Newid"
 
 #: libnautilus-private/nautilus-medusa-support.c:123
 #, c-format
@@ -3572,6 +3587,8 @@ msgid ""
 "You can configure which programs are offered for which file types in the "
 "File Types and Programs dialog."
 msgstr ""
+"Fe allwch ffurfweddu pa rhaglenni sydd yn cael ei cynnig i pa math ffeiliau "
+"yn y blwch ymgom Math Ffeiliau a Rhaglenni."
 
 #: libnautilus-private/nautilus-program-chooser.c:1493
 msgid "Open with Other Application"
@@ -3630,6 +3647,10 @@ msgid ""
 "You can configure GNOME to associate applications with file types. Do you "
 "want to associate an application with this file type now?"
 msgstr ""
+"%s\n"
+"\n"
+"Fe allwch ffurfweddu GNOME i cysylltu cymhwysiadau hefo math ffeilau. Ydych "
+"eisiau cysylltu cymhwysiad hefo'r math ffeil yma nawr?"
 
 #: libnautilus-private/nautilus-program-chooser.c:1622
 msgid "Associate Application"
@@ -3671,6 +3692,11 @@ msgid ""
 "this file type. Do you want to associate an application or viewer with this "
 "file type now?"
 msgstr ""
+"%s\n"
+"\n"
+"Fe allwch ffurfweddu GNOME i cysylltu gwahanol cymhwysiadau neu gwelydd hefo "
+"y math ffeil yma. Ydych eisiau cysylltu cymhwysiad neu gwelydd hefo'r math "
+"ffeil yma nawr?"
 
 #: libnautilus-private/nautilus-program-chooser.c:1665
 msgid "Associate Action"
@@ -3682,6 +3708,8 @@ msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
 "locations.  Would you like to choose another application?"
 msgstr ""
+"\"%s\" methu agor \"%s\" achos \"%s\" methu cyrchu ffeiliau yn lleoliad \"%s"
+"\". Ydych eisiau dewis cymhwysiad arall?"
 
 #: libnautilus-private/nautilus-program-choosing.c:509
 #, c-format
@@ -3689,6 +3717,8 @@ msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
 "locations.  Would you like to choose another action?"
 msgstr ""
+"Nid ydy yr gweithred rhagosod yn gallu agor \"%s\" achos nad yw yn gallu "
+"cyrchu y ffeiliau yn lleoliad \"%s\". Ydych eisiau dewis gweithred arall?"
 
 #: libnautilus-private/nautilus-program-choosing.c:515
 #: libnautilus-private/nautilus-program-choosing.c:546
@@ -3702,6 +3732,9 @@ msgid ""
 "locations.  No other applications are available to view this file.  If you "
 "copy this file onto your computer, you may be able to open it."
 msgstr ""
+"\"%s\" yn methu agor \"%s\" achos bod \"%s\" methu cyrchu y ffeiliau yn "
+"lleoliad \"%s\". Does dim cymhwysiad arall ar gael i olygu y ffeil. Os "
+"gwnewch copïo'r ffeil i'ch cyfrifiadur, bydych efallai yn galu ei hagor."
 
 #: libnautilus-private/nautilus-program-choosing.c:540
 #, c-format
@@ -3710,6 +3743,10 @@ msgid ""
 "locations.  No other actions are available to view this file.  If you copy "
 "this file onto your computer, you may be able to open it."
 msgstr ""
+"Nid ydy y gweithred rhagosod yn gallu agor \"%s\" achos bod o methu cyrchu y "
+"ffeiliau yn lleoliad \"%s\". Does dim gweithred arall ar gael i olygu y "
+"ffeil. Os gwnewch copïo'r ffeil i'ch cyfrifiadur, bydych efallai yn galu ei "
+"hagor."
 
 #: libnautilus-private/nautilus-program-choosing.c:800
 #: libnautilus-private/nautilus-program-choosing.c:1017
@@ -3722,6 +3759,8 @@ msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
 msgstr ""
+"Ymddiheuriad, ni allwch gweithredu gorchmynion o safle pell oherwydd "
+"ystyriedaethau diogelwch,"
 
 #: libnautilus-private/nautilus-program-choosing.c:1163
 msgid "Can't execute remote links"
@@ -3749,6 +3788,10 @@ msgid ""
 "\n"
 "To open non-local files copy them to a local folder and then drop them again."
 msgstr ""
+"Mae'r targed gollwng ond yn cynnal ffeiliau lleol.\n"
+"\n"
+"I agor ffeilau di-lleol copïwch nhw i cyfeiriadur lleol a ceisiwch gollwng "
+"nhw eto."
 
 #: libnautilus-private/nautilus-program-choosing.c:1208
 #: libnautilus-private/nautilus-program-choosing.c:1220
@@ -3762,6 +3805,10 @@ msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
 msgstr ""
+"Mae'r targed gollwng ond yn cynnal ffeiliau lleol.\n"
+"\n"
+"I agor ffeilau di-lleol copïwch nhw i cyfeiriadur lleol a ceisiwch gollwng "
+"nhw eto. Mae'r ffeiliau lleol a gollynwyd wedi agor yn barod."
 
 #. Human readable description for a criterion in a search for
 #. files. Bracketed items are context, and are message
@@ -3820,53 +3867,53 @@ msgstr "ffeliau testun"
 
 #: libnautilus-private/nautilus-search-uri.c:253
 msgid "[Items that are ]applications"
-msgstr ""
+msgstr "cymhwysiadau"
 
 #: libnautilus-private/nautilus-search-uri.c:256
 msgid "[Items that are ]folders"
-msgstr ""
+msgstr "plygelli"
 
 #: libnautilus-private/nautilus-search-uri.c:259
 msgid "[Items that are ]music"
-msgstr ""
+msgstr "cerddoriaeth"
 
 #. "%s" here is a word describing a file type, for example
 #. "folder"
 #: libnautilus-private/nautilus-search-uri.c:267
 #, c-format
 msgid "[Items ]that are not %s"
-msgstr ""
+msgstr "nad ydynt yn %s"
 
 #. "%s" here is a word describing a file type, for example
 #. "folder"
 #: libnautilus-private/nautilus-search-uri.c:272
 #, c-format
 msgid "[Items ]that are %s"
-msgstr ""
+msgstr "sydd yn %s"
 
 #. "%s" here is the name of user on a Linux machine, such as
 #. "root"
 #: libnautilus-private/nautilus-search-uri.c:286
 #, c-format
 msgid "[Items ]not owned by \"%s\""
-msgstr ""
+msgstr "nid perchen i \"%s\""
 
 #. "%s" here is the name of user on a Linux machine, such as
 #. "root"
 #: libnautilus-private/nautilus-search-uri.c:291
 #, c-format
 msgid "[Items ]owned by \"%s\""
-msgstr ""
+msgstr "yn perchen i \"%s\""
 
 #: libnautilus-private/nautilus-search-uri.c:294
 #, c-format
 msgid "[Items ]with owner UID \"%s\""
-msgstr ""
+msgstr "hefo'r UID perchen \"%s\""
 
 #: libnautilus-private/nautilus-search-uri.c:297
 #, c-format
 msgid "[Items ]with owner UID other than \"%s\""
-msgstr ""
+msgstr "hefo UID perchen arall nag \"%s\""
 
 #: libnautilus-private/nautilus-search-uri.c:308
 #, c-format
@@ -3899,39 +3946,39 @@ msgstr "wedi'u newid ar %s"
 #: libnautilus-private/nautilus-search-uri.c:333
 #, c-format
 msgid "[Items ]not modified on %s"
-msgstr ""
+msgstr "heb addasu ar %s"
 
 #: libnautilus-private/nautilus-search-uri.c:336
 #, c-format
 msgid "[Items ]modified before %s"
-msgstr ""
+msgstr "addaswyd cyn %s"
 
 #: libnautilus-private/nautilus-search-uri.c:339
 #, c-format
 msgid "[Items ]modified after %s"
-msgstr ""
+msgstr "addaswyd ar ôl %s"
 
 #: libnautilus-private/nautilus-search-uri.c:342
 #, c-format
 msgid "[Items ]modified within a week of %s"
-msgstr ""
+msgstr "addaswyd o fewn wythnos o %s"
 
 #: libnautilus-private/nautilus-search-uri.c:345
 #, c-format
 msgid "[Items ]modified within a month of %s"
-msgstr ""
+msgstr "addaswyd o fewn mis o %s"
 
 #. "%s" here is the name of an Emblem
 #: libnautilus-private/nautilus-search-uri.c:358
 #, c-format
 msgid "[Items ]marked with \"%s\""
-msgstr ""
+msgstr "nodwyd efo \"%s\""
 
 #. "%s" here is the name of an Emblem
 #: libnautilus-private/nautilus-search-uri.c:362
 #, c-format
 msgid "[Items ]not marked with \"%s\""
-msgstr ""
+msgstr "heb nodi hefo \"%s\""
 
 #. "%s" here is a word or words present in the file, for
 #. example "nautilus" or "apple orange"
@@ -4086,6 +4133,8 @@ msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
 msgstr ""
+"Nid oedd Nautilus yn gallu arosod y gyrriant disgen hyblyg. Mae'n tebygol "
+"nad oes disgen yn y gyrriant."
 
 #. All others
 #: libnautilus-private/nautilus-volume-monitor.c:1878
@@ -4093,31 +4142,37 @@ msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
 msgstr ""
+"Nid oedd Nautilus yn gallu arosod y cyfrol. Mae'n tebygol nad oes cyfrwng yn "
+"y dyfais."
 
 #: libnautilus-private/nautilus-volume-monitor.c:1884
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
 msgstr ""
+"Nid oedd Nautilus yn gallu arosod y gyrriant meddal. Mae'n tebygol bod y "
+"disg meddal mewn fformat na ellir ei arosod."
 
 #: libnautilus-private/nautilus-volume-monitor.c:1887
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
 msgstr ""
+"Nid oedd Nautilus yn gallu arosod y cyfrol dewisiedig. Mae'n tebygol bod y "
+"cyfrol mewn fformat na ellir ei arosid."
 
 #: libnautilus-private/nautilus-volume-monitor.c:1892
 msgid "Nautilus was unable to mount the selected floppy drive."
-msgstr ""
+msgstr "Nid oedd Nautilus yn gallu arosod y gyrriant meddal dewisiedig."
 
 #: libnautilus-private/nautilus-volume-monitor.c:1894
 msgid "Nautilus was unable to mount the selected volume."
-msgstr ""
+msgstr "Nid oedd Nautilus yn gallu arosod y cyfrol dewisiedig."
 
 #. FIXME: Should we parse this message and report something more meaningful?
 #: libnautilus-private/nautilus-volume-monitor.c:1899
 msgid "Nautilus was unable to unmount the selected volume."
-msgstr ""
+msgstr "Nid oedd Nautilus yn gallu di-arosod y cyfrol dewisiedig."
 
 #: libnautilus-private/nautilus-volume-monitor.c:2104
 msgid "ISO 9660 Volume"
@@ -4173,7 +4228,7 @@ msgstr "Gweld eich plygell cartred yn y rheolwr ffeiliau Nautilus"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
-msgstr ""
+msgstr "Ffatri i'r plisgyn a trefnydd ffeiliau Nautilus "
 
 #: src/Nautilus_shell.server.in.h:2
 msgid "Icons"
@@ -4197,25 +4252,29 @@ msgstr "ffatri Nautilus"
 
 #: src/Nautilus_shell.server.in.h:7
 msgid "Nautilus file manager component that shows a scrollable list"
-msgstr ""
+msgstr "Cydran trefnydd ffeiliau Nautilus a ddangosir mewn rhestr graddadwy"
 
 #: src/Nautilus_shell.server.in.h:8
 msgid ""
 "Nautilus file manager component that shows a scrollable list for search "
 "results"
 msgstr ""
+"Cydran trefnydd ffeiliau Nautilus a ddangosir mewn rhestr graddadwy ar gyfer "
+"canlyniadau chwilio"
 
 #: src/Nautilus_shell.server.in.h:9
 msgid "Nautilus file manager component that shows a two-dimensional icon space"
 msgstr ""
+"Cydran trefnydd ffeiliau Nautiuls sydd yn dangos rhestr gofod eicon dau "
+"dimensiwn"
 
 #: src/Nautilus_shell.server.in.h:10
 msgid "Nautilus file manager component that shows icons on the desktop"
-msgstr ""
+msgstr "Cydran trefnydd ffeiliau Nautilus sydd yn dangos eiconau ar y penbwrdd"
 
 #: src/Nautilus_shell.server.in.h:11
 msgid "Nautilus file manager desktop icon view"
-msgstr ""
+msgstr "Golwg eicon penbwrdd y Trefnydd ffeiliau Nautilus"
 
 #: src/Nautilus_shell.server.in.h:12
 msgid "Nautilus file manager icon view"
@@ -4231,21 +4290,23 @@ msgstr "Golwg rhestr canlyniadau chwilio y rheolwr ffeiliau Nautilus"
 
 #: src/Nautilus_shell.server.in.h:15
 msgid "Nautilus metafile factory"
-msgstr ""
+msgstr "Ffatri fetaffeil Nautilus"
 
 #: src/Nautilus_shell.server.in.h:16
 msgid "Nautilus shell"
-msgstr ""
+msgstr "Plisgyn Nautilus"
 
 #: src/Nautilus_shell.server.in.h:17
 msgid ""
 "Nautilus shell operations that can be done from subsequent command-line "
 "invocations"
 msgstr ""
+"Weithredoedd plisgyn Nautilus sydd yn gallu ei gwneud o'r gweithrediadau "
+"wedyn o'r llinell orchymyn"
 
 #: src/Nautilus_shell.server.in.h:18
 msgid "Produces metafile objects for accessing Nautilus metadata"
-msgstr ""
+msgstr "Creu fetaffeil gwrthrychau ar gyfer cyrchu metadata Nautilus"
 
 #: src/Nautilus_shell.server.in.h:19
 msgid "Search List"
@@ -4274,7 +4335,7 @@ msgstr "Cefndir"
 #: src/file-manager/fm-desktop-icon-view.c:749
 #, c-format
 msgid "Error executing utility program '%s': %s"
-msgstr ""
+msgstr "Gwall yn gweithredu rhaglen cyfleuster '%s': %s"
 
 #: src/file-manager/fm-desktop-icon-view.c:1017
 msgid "E_ject"
@@ -4283,31 +4344,32 @@ msgstr "Bwrw _Allan"
 #: src/file-manager/fm-desktop-icon-view.c:1117
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
 msgid "_Unmount Volume"
-msgstr ""
+msgstr "_Datosod Cyfrol"
 
 #: src/file-manager/fm-directory-view.c:493
 #, c-format
 msgid "This will open %d separate windows. Are you sure you want to do this?"
 msgstr ""
+"Gwneith hyn agor %d ffenest ar-wahan. Ydych yn siwr bod chi eisiau hyn?"
 
 #: src/file-manager/fm-directory-view.c:495
 #, c-format
 msgid "Open %d Windows?"
-msgstr ""
+msgstr "Agor %d ffenest?"
 
 #: src/file-manager/fm-directory-view.c:848
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
-msgstr ""
+msgstr "Ydych yn siwr bod chi eisiau dileu \"%s\" am byth?"
 
 #: src/file-manager/fm-directory-view.c:852
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected items?"
-msgstr ""
+msgstr "Ydych yn siwr bod chi eisiau dileu y %d eitem a dewisied am byth?"
 
 #: src/file-manager/fm-directory-view.c:858
 msgid "Delete?"
-msgstr ""
+msgstr "Dileu?"
 
 #: src/file-manager/fm-directory-view.c:1541
 #, c-format
