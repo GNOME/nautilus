@@ -52,6 +52,7 @@
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
+#include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-tabs.h>
 #include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-viewport.h>
@@ -76,6 +77,9 @@
 	#undef URL_REDIRECT_TABLE_HOME
 	#define URL_REDIRECT_TABLE_HOME		"http://localhost/redirects.xml"
 #endif
+
+
+#define NAUTILUS_COMMAND_SPECIFIER "command:"
 
 #define SUMMARY_TEXT_HEADER_SIZE_REL (0)
 #define SUMMARY_TEXT_BODY_SIZE_REL (-2)
@@ -209,8 +213,14 @@ static void
 summary_view_button_callback (GtkWidget                  *button, 
 			      ServicesButtonCallbackData *cbdata)
 {
-	
-	nautilus_view_open_location_in_this_window (cbdata->view, cbdata->uri);
+	const char *command;
+
+	if (nautilus_istr_has_prefix (cbdata->uri, NAUTILUS_COMMAND_SPECIFIER)) {
+		command = cbdata->uri + strlen (NAUTILUS_COMMAND_SPECIFIER);
+		nautilus_gnome_shell_execute (command);
+	} else {
+		nautilus_view_open_location_in_this_window (cbdata->view, cbdata->uri);
+	}
 }
 
 static void
@@ -388,24 +398,30 @@ summary_view_update_pane (NautilusSummaryView          *view,
 			  GList                        *data,
 			  SummaryViewItemCreateFunction item_create)
 {
-	GtkWidget     *item;
-	GList         *node;
+	GtkWidget *item;
+	GList     *node;
+	gboolean   added_one;     
 
 	/* clear existing news. */
 	gtk_container_foreach (GTK_CONTAINER (vbox), 
 			       (GtkCallback) gtk_widget_destroy, NULL);
 
 	/* build the eazel news table from the xml file */
+	added_one = FALSE;
+
 	for (node = data; node != NULL; node = node->next) {
 		item = (*item_create) (view, node->data);
 
-		gtk_widget_show (item);
-		gtk_box_pack_start (GTK_BOX (vbox), 
-				    GTK_WIDGET (item), 
-				    FALSE, FALSE, 0);
-		
-		if (node->next != NULL) {
-			append_hseparator_to_vbox (vbox);
+		if (item != NULL) {
+			if (added_one) {
+				append_hseparator_to_vbox (vbox);
+			}
+
+			gtk_widget_show (item);
+			gtk_box_pack_start (GTK_BOX (vbox), 
+					    GTK_WIDGET (item), 
+					    FALSE, FALSE, 0);
+			added_one = TRUE;
 		}
 	}
 }
@@ -458,6 +474,12 @@ create_news_pane (NautilusSummaryView *view)
 		(view, &view->details->news_item_vbox);
 }
 
+static gboolean
+program_uri_for_nonexistent_program (const char *uri)
+{
+	return nautilus_istr_has_prefix (uri, NAUTILUS_COMMAND_SPECIFIER) &&
+		!gnome_is_program_in_path (uri + strlen (NAUTILUS_COMMAND_SPECIFIER));
+}
 
 static GtkWidget *
 generate_service_entry_row  (NautilusSummaryView *view,
@@ -475,6 +497,10 @@ generate_service_entry_row  (NautilusSummaryView *view,
 	ServicesData *services_node;
 
 	services_node = data;
+
+	if (program_uri_for_nonexistent_program (services_node->uri)) {
+		return NULL;
+	}
 
 	services_row = gtk_hbox_new (FALSE, 0);
 
@@ -762,7 +788,6 @@ nautilus_summary_view_initialize (NautilusSummaryView *view)
 			    view);
 
 
-
 	view->details->user_control = ammonite_get_user_control ();
 
 	if (CORBA_NO_EXCEPTION != ev._major) {
@@ -1003,7 +1028,6 @@ summary_load_location_callback (NautilusView		*nautilus_view,
 	
 	nautilus_summary_view_load_uri (view, location);
 }
-
 
 
 static void
