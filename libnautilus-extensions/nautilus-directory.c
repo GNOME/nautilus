@@ -230,7 +230,8 @@ nautilus_directory_get (const char *uri)
 
 	g_return_val_if_fail (uri != NULL, NULL);
 
-	/* FIXME: This currently ignores the issue of two uris that are not identical but point
+	/* FIXME bugzilla.eazel.com 648: 
+	 * This currently ignores the issue of two uris that are not identical but point
 	 * to the same data except for the specific case of trailing '/' characters.
 	 */
 	canonical_uri = nautilus_str_strip_trailing_chr (uri, '/');
@@ -513,7 +514,7 @@ nautilus_directory_get_boolean_metadata (NautilusDirectory *directory,
 		 key,
 		 default_metadata ? "TRUE" : "FALSE");
 	
-	/* FIXME: Allow "true" and "false"? */
+	/* FIXME bugzilla.eazel.com 649: Allow "true" and "false"? */
 	if (strcmp (result_as_string, "TRUE") == 0) {
 		result = TRUE;
 	} else if (strcmp (result_as_string, "FALSE") == 0) {
@@ -600,7 +601,8 @@ nautilus_directory_get_file_metadata_node (NautilusDirectory *directory,
 	
 	/* The root itself represents the directory.
 	 * The children represent the files.
-	 * FIXME: This linear search may not be fast enough.
+	 * FIXME bugzilla.eazel.com 650: 
+	 * This linear search may not be fast enough.
 	 * Eventually, we'll have a pointer from the NautilusFile right to
 	 * the corresponding XML node, or we won't have the XML tree
 	 * in memory at all.
@@ -859,7 +861,8 @@ nautilus_directory_notify_files_added (GList *uris)
 	const char *uri;
 	GnomeVFSResult result;
 
-	/* FIXME: gnome_vfs_file_info calls need to be
+	/* FIXME bugzilla.eazel.com 651: 
+	   gnome_vfs_file_info calls need to be
 	   called asynchronously. We probably need a new gnome_vfs call that 
 	   takes a list of URIs and generates a list of file info structures.
 	 */
@@ -1014,7 +1017,9 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 				g_assert (g_list_find (*files, file) != NULL);
 				*files = g_list_remove (*files, file);
 				
-				/* FIXME: Need to call get info in async mode. */
+				/* FIXME bugzilla.eazel.com 652: 
+				 * Need to call get info in async mode. 
+				 */
 				info = gnome_vfs_file_info_new ();
 				result = gnome_vfs_get_file_info (pair->to_uri, info, 
 								  GNOME_VFS_FILE_INFO_DEFAULT, 

@@ -318,12 +318,20 @@ nautilus_file_denies_access_permission (NautilusFile *file,
 	}
 	
 	/* Check whether user's ID matches file's. */
+	/* FIXME bugzilla.eazel.com 644: 
+	 * Can we trust the uid in the file info? Might
+	 * there be garbage there? What will it do for non-local files?
+	 */
 	if ((file->details->info->permissions & owner_permission)
 	    && getuid() == file->details->info->uid) {
 		return FALSE;
 	}
 
 	/* Check whether user's group ID matches file's. */
+	/* FIXME bugzilla.eazel.com 644: 
+	 * Can we trust the gid in the file info? Might
+	 * there be garbage there? What will it do for non-local files?
+	 */
 	if ((file->details->info->permissions & group_permission)
 	    && getpwuid (getuid())->pw_gid == file->details->info->gid) {
 		return FALSE;
@@ -468,7 +476,9 @@ nautilus_file_rename (NautilusFile *file, const char *new_name)
 	new_uri_text = gnome_vfs_uri_to_string (new_uri, GNOME_VFS_URI_HIDE_NONE);
 	gnome_vfs_uri_unref (new_uri);
 
-	/* FIXME: Should handle possibility of slow asynch call here. */
+	/* FIXME bugzilla.eazel.com 435: 
+	 * Should handle possibility of slow asynch call here. 
+	 */
 	result = gnome_vfs_move (old_uri_text, new_uri_text, FALSE);
 	if (result == GNOME_VFS_OK) {
 		file_node = nautilus_directory_get_file_metadata_node 
@@ -481,8 +491,9 @@ nautilus_file_rename (NautilusFile *file, const char *new_name)
 			nautilus_directory_request_write_metafile (file->details->directory);
 		}
 		
-		/* FIXME: Make sure this does something sensible with incoming names containing
-		 * path separators.
+		/* FIXME bugzilla.eazel.com 645: 
+		 * Make sure this does something sensible with incoming names 
+		 * containing path separators.
 		 */
 		g_free (file->details->info->name);
 		file->details->info->name = g_strdup (new_name);
@@ -1149,7 +1160,8 @@ nautilus_file_get_owner_as_string (NautilusFile *file)
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-	/* FIXME: Can we trust the uid in the file info? Might
+	/* FIXME bugzilla.eazel.com 644: 
+	 * Can we trust the uid in the file info? Might
 	 * there be garbage there? What will it do for non-local files?
 	 */
 	/* No need to free result of getpwuid */
@@ -1179,7 +1191,8 @@ nautilus_file_get_group_as_string (NautilusFile *file)
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-	/* FIXME: Can we trust the gid in the file info? Might
+	/* FIXME bugzilla.eazel.com 644: 
+	 * Can we trust the gid in the file info? Might
 	 * there be garbage there? What will it do for non-local files?
 	 */
 	/* No need to free result of getgrgid */
@@ -1272,7 +1285,9 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-	/* FIXME: Use hash table and switch statement or function pointers for speed? */
+	/* FIXME bugzilla.eazel.com 646: 
+	 * Use hash table and switch statement or function pointers for speed? 
+	 */
 
 	if (strcmp (attribute_name, "name") == 0) {
 		return nautilus_link_get_display_name(nautilus_file_get_name (file));

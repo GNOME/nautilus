@@ -351,7 +351,8 @@ nautilus_icon_factory_possibly_free_cached_image (gpointer key,
 	/* Don't free a cache entry if the image is still in use. */
 	image = value;
 
-	/* FIXME: We treat all entries as "in use", until we get a hook we can use
+	/* FIXME bugzilla.eazel.com 640: 
+	 * We treat all entries as "in use", until we get a hook we can use
 	 * in GdkPixbuf.
 	 */
 	return FALSE;
@@ -793,8 +794,10 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 	}
 	
 	/* handle .svg files */
-	/* FIXME: we should be checking the mime-type but for now we use the suffix, as the mime-type
-	   isn't defined in standard setups */
+	/* FIXME bugzilla.eazel.com 641: 
+	 * we should be checking the mime-type but for now we use the suffix, 
+	 * as the mime-type isn't defined in standard setups 
+	 */
 	if (uri == NULL && nautilus_str_has_suffix(file_uri,".svg")) {
 		uri = g_strdup(file_uri);
 	}
@@ -961,7 +964,8 @@ compare_thumbnail_info (gconstpointer a, gconstpointer b)
 
 /* routine that takes a uri of a large image file and returns the uri of its corresponding thumbnail.
    If no thumbnail is available, put the image on the thumbnail queue so one is eventually made. */
-/* FIXME: Most of this thumbnail machinery belongs in NautilusFile, not here.
+/* FIXME bugzilla.eazel.com 642: 
+ * Most of this thumbnail machinery belongs in NautilusFile, not here.
  */
 
 static char *
@@ -1148,11 +1152,11 @@ load_specific_image (NautilusScalableIcon *scalable_icon,
 	if (custom) {
 		/* Custom icon. */
 
-		/* FIXME: This works only with file:// images, because there's
+		/* FIXME bugzilla.eazel.com 643: This works only with file:// images, because there's
 		 * no convenience function for loading an image with gnome-vfs
 		 * and gdk-pixbuf.
 		 */
-		/* FIXME: should use MIME-type instead of suffix */
+		/* FIXME bugzilla.eazel.com 641: should use MIME-type instead of suffix */
 		if (nautilus_str_has_suffix(scalable_icon->uri, ".svg")) {
 			memset (text_rect, 0, sizeof (*text_rect));
 			return load_specific_image_svg (scalable_icon->uri + 7, size_in_pixels);

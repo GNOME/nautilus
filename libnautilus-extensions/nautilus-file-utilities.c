@@ -96,7 +96,7 @@ nautilus_user_directory()
 	if (!g_file_test (user_directory, G_FILE_TEST_ISDIR))
 	{
 		/* Bad news, directory still isn't there.
-		 * FIXME: Report this to user somehow. 
+		 * FIXME bugzilla.eazel.com 647: Report this to user somehow. 
 		 */
 		g_assert_not_reached();
 	}
@@ -171,7 +171,7 @@ nautilus_user_main_directory (void)
 	if (!g_file_test (user_main_directory, G_FILE_TEST_ISDIR))
 	{
 		/* Bad news, directory still isn't there.
-		 * FIXME: Report this to user somehow. 
+		 * FIXME bugzilla.eazel.com 647: Report this to user somehow. 
 		 */
 		g_assert_not_reached();
 
