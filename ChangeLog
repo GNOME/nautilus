@@ -1,3 +1,80 @@
+2000-06-28  Darin Adler  <darin@eazel.com>
+
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_drag_data_received):
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(receive_dropped_tile_image):
+	* src/nautilus-sidebar.c: (receive_dropped_uri_list):
+	Changed to use new call that's for receiving dropped images.
+	
+	* src/nautilus-sidebar.c: (background_settings_changed_callback),
+	(background_appearance_changed_callback),
+	(background_reset_callback), (nautilus_sidebar_update_info):
+	Changed signal handlers to use the normal form instead of
+	connect_object. Changed the reset callback to stop the reset
+	signal from going any further now that there's a default handler
+	for reset.
+
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(background_reset_callback): Add a call to stop the reset signal
+	from going any further now that there's a default handler for
+	reset.
+
+	* libnautilus-extensions/nautilus-background.h:
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_initialize_class),
+	(nautilus_background_receive_dropped_background_image),
+	(nautilus_background_set_tile_image_uri),
+	(nautilus_background_reset), (nautilus_background_real_reset):
+	Made nautilus_background_reset set the color and image to NULL by
+	default instead of doing nothing. Also added a new call to receive
+	a dropped background image and only pay attention to the special
+	"reset" image name there instead of hacking it into
+	_set_tile_image_uri itself.
+	
+	* libnautilus-extensions/nautilus-stock-dialogs.h:
+	* libnautilus-extensions/nautilus-stock-dialogs.c:
+	(find_message_label), (find_message_label_callback),
+	(show_message_box), (show_ok_box), (nautilus_info_dialog),
+	(nautilus_warning_dialog), (nautilus_error_dialog),
+	(clicked_callback), (nautilus_error_dialog_with_details),
+	(nautilus_yes_no_dialog): Change the API for stock dialogs
+	to be a little simpler, getting rid of the separate parented
+	variant. Also added a new dialog for errors that have a second
+	more detailed error message.
+	
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(nautilus_program_chooser_show_no_choices_message):
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	(nautilus_launch_application_parented):
+	* src/file-manager/fm-error-reporting.c:
+	(fm_report_error_renaming_file), (fm_report_error_setting_group),
+	(fm_report_error_setting_owner),
+	(fm_report_error_setting_permissions):
+	* src/nautilus-property-browser.c: (emblem_image_file_changed),
+	(add_background_to_browser):
+	* src/nautilus-window-manage-views.c:
+	(handle_unreadable_location),
+	(nautilus_window_end_location_change_callback),
+	(report_content_view_failure_to_user),
+	(report_sidebar_panel_failure_to_user):
+	* src/nautilus-window-menus.c: (show_bogus_bookmark_window):
+	Change to use new API for stock dialogs.
+	
+	* src/nautilus-application.c: (create_factory),
+	(nautilus_application_initialize),
+	(nautilus_application_check_user_directories),
+	(nautilus_application_startup):
+	Moved OAF registration to application_startup and added some
+	error handling for the case where we have two copies of Nautilus.
+	
+	* libnautilus-extensions/nautilus-file.h: Move get_mapped_uri
+	out of the "good part" of the header and add a FIXME.
+	
+	* components/services/install/lib/.cvsignore:
+	Ignore some new generated files. Maybe some day I can get Eskil to
+	make these himself as he adds new things.
+	
 2000-06-28  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus-extensions/nautilus-file.c:

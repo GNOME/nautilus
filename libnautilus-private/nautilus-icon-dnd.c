@@ -467,8 +467,8 @@ nautilus_icon_container_selection_items_local (const NautilusIconContainer *cont
 static void
 receive_dropped_tile_image (NautilusIconContainer *container, gpointer data)
 {
-	g_assert(data != NULL);
-	nautilus_background_set_tile_image_uri
+	g_assert (data != NULL);
+	nautilus_background_receive_dropped_background_image
 		(nautilus_get_widget_background (GTK_WIDGET (container)), data);
 }
 

@@ -1459,7 +1459,7 @@ nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType action_
 	char *prompt;
 	char *unavailable_message;
 	char *file_name;
-	GtkWidget *dialog;
+	GnomeDialog *dialog;
 
 	file_name = nautilus_file_get_name (file);
 
@@ -1479,15 +1479,10 @@ nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType action_
 				  "for which file types with the \"File Types and "
 				  "Programs\" part of the Gnome Control Center. Do "
 				  "you want to go there now?", unavailable_message);
-	if (parent_window) {
-		dialog = nautilus_yes_no_dialog_parented 
-			(prompt, GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, parent_window);
-	} else {
-		dialog = nautilus_yes_no_dialog 
-			(prompt, GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL);
-	}
+	dialog = nautilus_yes_no_dialog 
+		(prompt, GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, parent_window);
 
-	gnome_dialog_button_connect (GNOME_DIALOG (dialog), GNOME_OK, launch_mime_capplet, NULL);
+	gnome_dialog_button_connect (dialog, GNOME_OK, launch_mime_capplet, NULL);
 
 	g_free (unavailable_message);
 	g_free (file_name);

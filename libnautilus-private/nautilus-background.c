@@ -55,6 +55,7 @@ static void nautilus_background_draw_flat_box    (GtkStyle           *style,
 						  int                 y,
 						  int                 width,
 						  int                 height);
+static void nautilus_background_real_reset       (NautilusBackground *background);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusBackground, nautilus_background, GTK_TYPE_OBJECT)
 
@@ -65,7 +66,7 @@ enum {
 	LAST_SIGNAL
 };
 
-#define	RESET_BACKGROUND_IMAGE	"reset.png"
+#define	RESET_BACKGROUND_MAGIC_IMAGE_NAME "reset.png"
 
 static guint signals[LAST_SIGNAL];
 
@@ -81,8 +82,10 @@ static void
 nautilus_background_initialize_class (gpointer klass)
 {
 	GtkObjectClass *object_class;
+	NautilusBackgroundClass *background_class;
 
 	object_class = GTK_OBJECT_CLASS (klass);
+	background_class = NAUTILUS_BACKGROUND_CLASS (klass);
 
 	signals[APPEARANCE_CHANGED] =
 		gtk_signal_new ("appearance_changed",
@@ -93,7 +96,6 @@ nautilus_background_initialize_class (gpointer klass)
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE,
 				0);
-	
 	signals[SETTINGS_CHANGED] =
 		gtk_signal_new ("settings_changed",
 				GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,
@@ -103,7 +105,6 @@ nautilus_background_initialize_class (gpointer klass)
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE,
 				0);
-
 	signals[RESET] =
 		gtk_signal_new ("reset",
 				GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,
@@ -117,6 +118,7 @@ nautilus_background_initialize_class (gpointer klass)
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
 	object_class->destroy = nautilus_background_destroy;
+	background_class->reset = nautilus_background_real_reset;
 }
 
 static void
@@ -295,8 +297,10 @@ void nautilus_background_draw_aa (NautilusBackground *background,
 			g_free (end_color_spec);
 		
 			if (start_rgb != end_rgb) {
-				nautilus_gnome_canvas_fill_with_gradient(buffer, entire_width, entire_height, start_rgb, end_rgb,
-								  horizontal_gradient);
+				nautilus_gnome_canvas_fill_with_gradient
+					(buffer, entire_width, entire_height,
+					 start_rgb, end_rgb,
+					 horizontal_gradient);
 			} else
 				gnome_canvas_buf_ensure_buf(buffer);
 		}
@@ -379,6 +383,18 @@ start_loading_tile_image (NautilusBackground *background)
 }
 
 void
+nautilus_background_receive_dropped_background_image (NautilusBackground *background,
+						      const char *image_uri)
+{
+	/* Special case the reset-background image by file name. */
+	if (nautilus_str_has_suffix (image_uri, "/" RESET_BACKGROUND_MAGIC_IMAGE_NAME)) {
+		nautilus_background_reset (background);
+	} else {
+		nautilus_background_set_tile_image_uri (background, image_uri);
+	}
+}
+
+void
 nautilus_background_set_tile_image_uri (NautilusBackground *background,
 					const char *image_uri)
 {
@@ -390,13 +406,6 @@ nautilus_background_set_tile_image_uri (NautilusBackground *background,
 
 	nautilus_cancel_gdk_pixbuf_load (background->details->load_tile_image_handle);
 	background->details->load_tile_image_handle = NULL;
-
-
-	/* special case the reset background image */
-	if (nautilus_str_has_suffix(image_uri, RESET_BACKGROUND_IMAGE)) {
-		nautilus_background_reset (background);
-		return;
-	}
 
 	g_free (background->details->tile_image_uri);
 	
@@ -561,19 +570,22 @@ nautilus_background_is_set (NautilusBackground *background)
 
 /**
  * nautilus_background_reset:
- * 
- * emit the reset signal to forget any color or image that has been set previously.
+ *
+ * Emit the reset signal to forget any color or image that has been
+ * set previously.
  */
 void
 nautilus_background_reset (NautilusBackground *background)
 {
-		gtk_signal_emit (GTK_OBJECT (background),
+	gtk_signal_emit (GTK_OBJECT (background),
 			 signals[RESET]);
+}
 
-		gtk_signal_emit (GTK_OBJECT (background),
-			 signals[SETTINGS_CHANGED]);
-		gtk_signal_emit (GTK_OBJECT (background),
-			 signals[APPEARANCE_CHANGED]);
+static void
+nautilus_background_real_reset (NautilusBackground *background)
+{
+	nautilus_background_set_color (background, NULL);
+	nautilus_background_set_tile_image_uri (background, NULL);
 }
 
 static void

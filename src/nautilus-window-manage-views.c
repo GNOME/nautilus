@@ -768,7 +768,7 @@ static void
 report_sidebar_panel_failure_to_user (NautilusWindow *window, NautilusViewFrame *panel)
 {
 	/* FIXME bugzilla.eazel.com 762: Need real message here */
-	nautilus_error_dialog_parented ("Sidebar panel died.", GTK_WINDOW (window));
+	nautilus_error_dialog ("Sidebar panel died.", GTK_WINDOW (window));
 }
 
 static gboolean

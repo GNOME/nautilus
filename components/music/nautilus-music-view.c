@@ -1433,7 +1433,7 @@ nautilus_music_view_drag_data_received (GtkWidget *widget, GdkDragContext *conte
                 break;
   
   	case TARGET_BGIMAGE:
-		nautilus_background_set_tile_image_uri
+		nautilus_background_receive_dropped_background_image
 			(nautilus_get_widget_background (widget),
                          uris[0]);
   		break;              

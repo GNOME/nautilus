@@ -27,10 +27,13 @@
 
 #include <gtk/gtkbox.h>
 #include <gtk/gtklabel.h>
+#include <gtk/gtksignal.h>
+#include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-messagebox.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include "nautilus-string.h"
+#include "nautilus-gnome-extensions.h"
 
 struct NautilusTimedWait {
 	char *window_title;
@@ -41,7 +44,7 @@ struct NautilusTimedWait {
 	GtkWindow *parent_window;
 };
 
-static void turn_on_line_wrap_flag_callback (GtkWidget *widget, gpointer callback_data);
+static void find_message_label_callback (GtkWidget *widget, gpointer callback_data);
 
 NautilusTimedWait *
 nautilus_timed_wait_start (const char *window_title,
@@ -166,7 +169,7 @@ nautilus_simple_dialog (GtkWidget *parent, const char *text, const char *title, 
 }
 
 static void
-turn_on_line_wrap_flag (GtkWidget *widget, const char *message)
+find_message_label (GtkWidget *widget, const char *message)
 {
 	char *text;
 
@@ -176,110 +179,126 @@ turn_on_line_wrap_flag (GtkWidget *widget, const char *message)
 	if (GTK_IS_LABEL (widget)) {
 		gtk_label_get (GTK_LABEL (widget), &text);
 		if (nautilus_strcmp (text, message) == 0) {
-			gtk_label_set_line_wrap (GTK_LABEL (widget), TRUE);
+			gtk_object_set_data (GTK_OBJECT (gtk_widget_get_toplevel (widget)),
+					     "message label", widget);
 		}
 	}
 
 	/* Recurse for children. */
 	if (GTK_IS_CONTAINER (widget)) {
 		gtk_container_foreach (GTK_CONTAINER (widget),
-				       turn_on_line_wrap_flag_callback,
+				       find_message_label_callback,
 				       (char *) message);
 	}
 }
 
 static void
-turn_on_line_wrap_flag_callback (GtkWidget *widget, gpointer callback_data)
+find_message_label_callback (GtkWidget *widget, gpointer callback_data)
 {
-	turn_on_line_wrap_flag (widget, callback_data);
+	find_message_label (widget, callback_data);
 }
 
-/* Shamelessly stolen from gnome-dialog-util.c: */
-static GtkWidget *
+/* Shamelessly stolen from gnome-dialog-utils.c: */
+static GnomeDialog *
+show_message_box (const char *message,
+		  const char *type,
+		  const char *button_one,
+		  const char *button_two,
+		  GtkWindow *parent)
+{  
+	GtkWidget *box;
+	GtkLabel *message_label;
+
+	box = gnome_message_box_new (message, type, button_one, button_two, NULL);
+	
+	/* A bit of a hack. We want to use gnome_message_box_new,
+	 * but we want the message to be wrapped. So, we search
+	 * for the label with this message so we can mark it.
+	 */
+	find_message_label (box, message);
+	message_label = GTK_LABEL (gtk_object_get_data (GTK_OBJECT (box), "message label"));
+	gtk_label_set_line_wrap (message_label, TRUE);
+
+	if (parent != NULL) {
+		gnome_dialog_set_parent (GNOME_DIALOG (box), parent);
+	}
+	gtk_widget_show (box);
+	return GNOME_DIALOG (box);
+}
+
+static GnomeDialog *
 show_ok_box (const char *message,
 	     const char *type,
 	     GtkWindow *parent)
 {  
-	GtkWidget *box;
-
-	box = gnome_message_box_new
-		(message, type, GNOME_STOCK_BUTTON_OK, NULL);
-	
-	/* A bit of a hack. We want to use gnome_message_box_new,
-	 * but we want the message to be wrapped. So, we search
-	 * for the label with this message so we can mark it.
-	 */
-	turn_on_line_wrap_flag (box, message);
-
-	if (parent != NULL) {
-		gnome_dialog_set_parent (GNOME_DIALOG(box), parent);
-	}
-	gtk_widget_show (box);
-	return box;
+	return show_message_box	(message, type, GNOME_STOCK_BUTTON_OK, NULL, parent);
 }
 
-static GtkWidget *
-show_yes_no_box (const char *message,
-	     	 const char *type,
-	     	 const char *yes_label,
-	     	 const char *no_label,
-	     	 GtkWindow *parent)
-{  
-	GtkWidget *box;
-
-	box = gnome_message_box_new
-		(message, type, yes_label, no_label, NULL);
-	
-	/* A bit of a hack. We want to use gnome_message_box_new,
-	 * but we want the message to be wrapped. So, we search
-	 * for the label with this message so we can mark it.
-	 */
-	turn_on_line_wrap_flag (box, message);
-
-	if (parent != NULL) {
-		gnome_dialog_set_parent (GNOME_DIALOG(box), parent);
-	}
-	gtk_widget_show (box);
-	return box;
-}
-
-GtkWidget *
-nautilus_info_dialog (const char *info)
-{
-	return show_ok_box (info, GNOME_MESSAGE_BOX_INFO, NULL);
-}
-
-GtkWidget *
-nautilus_info_dialog_parented (const char *info,
-			       GtkWindow *parent)
+GnomeDialog *
+nautilus_info_dialog (const char *info,
+		      GtkWindow *parent)
 {
 	return show_ok_box (info, GNOME_MESSAGE_BOX_INFO, parent);
 }
 
-GtkWidget *
-nautilus_warning_dialog (const char *warning)
-{
-	return show_ok_box (warning, GNOME_MESSAGE_BOX_WARNING, NULL);
-}
-
-GtkWidget *
-nautilus_warning_dialog_parented (const char *warning,
-				  GtkWindow *parent)
+GnomeDialog *
+nautilus_warning_dialog (const char *warning,
+			 GtkWindow *parent)
 {
 	return show_ok_box (warning, GNOME_MESSAGE_BOX_WARNING, parent);
 }
 
-GtkWidget *
-nautilus_error_dialog (const char *error)
-{
-	return show_ok_box (error, GNOME_MESSAGE_BOX_ERROR, NULL);
-}
-
-GtkWidget *
-nautilus_error_dialog_parented (const char *error,
-				GtkWindow *parent)
+GnomeDialog *
+nautilus_error_dialog (const char *error,
+		       GtkWindow *parent)
 {
 	return show_ok_box (error, GNOME_MESSAGE_BOX_ERROR, parent);
+}
+
+static void
+clicked_callback (GnomeDialog *dialog,
+		  int button_number,
+		  const char *detailed_error_message)
+{
+	GtkLabel *label;
+
+	switch (button_number) {
+	case 0: /* Details */
+		label = GTK_LABEL (gtk_object_get_data (GTK_OBJECT (dialog), "message label"));
+		gtk_label_set_text (label, detailed_error_message);
+		gtk_widget_hide (GTK_WIDGET (nautilus_gnome_dialog_get_button_by_index (dialog, 0)));
+		break;
+	case 1: /* OK */
+		gnome_dialog_close (dialog);
+		break;
+	}
+}
+
+GnomeDialog *
+nautilus_error_dialog_with_details (const char *error_message,
+				    const char *detailed_error_message,
+				    GtkWindow *parent)
+{
+	GnomeDialog *dialog;
+
+	g_return_val_if_fail (error_message != NULL, NULL);
+	g_return_val_if_fail (parent == NULL || GTK_IS_WINDOW (parent), NULL);
+
+	if (detailed_error_message == NULL
+	    || strcmp (error_message, detailed_error_message) == 0) {
+		return nautilus_error_dialog (error_message, parent);
+	}
+
+	dialog = show_message_box (error_message, GNOME_MESSAGE_BOX_ERROR,
+				   _("Details"), GNOME_STOCK_BUTTON_OK, parent);
+
+	/* Show the details when you click on the details button. */
+	gnome_dialog_set_close (dialog, FALSE);
+	gtk_signal_connect_full (GTK_OBJECT (dialog), "clicked",
+				 clicked_callback, NULL, g_strdup (detailed_error_message),
+				 g_free, FALSE, FALSE);
+
+	return dialog;
 }
 
 /**
@@ -291,39 +310,17 @@ nautilus_error_dialog_parented (const char *error,
  * @question: The text of the question.
  * @yes_label: The label of the "yes" button.
  * @no_label: The label of the "no" button.
- */
-GtkWidget *
-nautilus_yes_no_dialog (const char *question, 
-			const char *yes_label,
-			const char *no_label)
-{
-	return show_yes_no_box (question, 
-			        GNOME_MESSAGE_BOX_QUESTION,
-			        yes_label,
-			        no_label,
-			        NULL);
-}
-
-/**
- * nautilus_yes_no_dialog_parented:
- * 
- * Create a parented dialog asking a question with two choices.
- * The caller needs to set up any necessary callbacks 
- * for the buttons.
- * @question: The text of the question.
- * @yes_label: The label of the "yes" button.
- * @no_label: The label of the "no" button.
  * @parent: The parent window for this dialog.
  */
-GtkWidget *
-nautilus_yes_no_dialog_parented (const char *question, 
-			     	 const char *yes_label,
-			    	 const char *no_label,
-			    	 GtkWindow *parent)
+GnomeDialog *
+nautilus_yes_no_dialog (const char *question, 
+			const char *yes_label,
+			const char *no_label,
+			GtkWindow *parent)
 {
-	return show_yes_no_box (question, 
-			        GNOME_MESSAGE_BOX_QUESTION,
-			        yes_label,
-			        no_label,
-			        parent);
+	return show_message_box (question, 
+				 GNOME_MESSAGE_BOX_QUESTION,
+				 yes_label,
+				 no_label,
+				 parent);
 }

@@ -71,8 +71,7 @@ struct NautilusSidebarDetails {
 	char *default_background_image;
 	int selected_index;
 	NautilusDirectory *directory;
-	int background_connection;
-	int reset_connection;
+	gboolean background_connected;
 	int old_width;
 };
 
@@ -549,12 +548,14 @@ receive_dropped_uri_list (NautilusSidebar *sidebar,
 	switch (hit_test (sidebar, x, y)) {
 	case NO_PART:
 	case BACKGROUND_PART:
+		/* FIXME: Does this work for all images, or only background images?
+		 * Other views handle background images differently from other URIs.
+		 */
 		if (exactly_one && uri_is_local_image (uris[0])) {
-			nautilus_background_set_tile_image_uri
+			nautilus_background_receive_dropped_background_image
 				(nautilus_get_widget_background (GTK_WIDGET (sidebar)),
 				 uris[0]);
-		}
-		else if (exactly_one) {
+		} else if (exactly_one) {
 			gtk_signal_emit (GTK_OBJECT (sidebar),
 					 signals[LOCATION_CHANGED],
 			 		 uris[0]);	
@@ -932,18 +933,17 @@ nautilus_sidebar_press_event (GtkWidget *widget, GdkEventButton *event)
 }
 
 /* handle the background changed signal by writing out the settings to metadata */
-
 static void
-nautilus_sidebar_background_changed (NautilusSidebar *sidebar)
+background_settings_changed_callback (NautilusBackground *background, NautilusSidebar *sidebar)
 {
-	NautilusBackground *background;
 	char *color_spec, *image;
-	
+
+	g_assert (NAUTILUS_IS_BACKGROUND (background));
+	g_assert (NAUTILUS_IS_SIDEBAR (sidebar));
+
 	if (sidebar->details->directory == NULL) {
 		return;
 	}
-	
-	background = nautilus_get_widget_background (GTK_WIDGET (sidebar));
 	
 	color_spec = nautilus_background_get_color (background);
 	nautilus_directory_set_metadata (sidebar->details->directory,
@@ -962,9 +962,8 @@ nautilus_sidebar_background_changed (NautilusSidebar *sidebar)
 
 /* we generally want to ignore the appearance changed signal, but we need it to redraw the
    the sidebar in the case where we're loading the background image, so check for that */
-
 static void
-nautilus_sidebar_appearance_changed (NautilusSidebar *sidebar)
+background_appearance_changed_callback (NautilusBackground *background, NautilusSidebar *sidebar)
 {
 	gboolean is_default_color, is_default_image;
 	char *title, *background_image, *background_color;
@@ -992,39 +991,34 @@ nautilus_sidebar_appearance_changed (NautilusSidebar *sidebar)
 /* handle the background reset signal by writing out NULL to metadata and setting the backgrounds
    fields to their default values */
 static void
-nautilus_sidebar_background_reset (NautilusSidebar *sidebar)
+background_reset_callback (NautilusBackground *background, NautilusSidebar *sidebar)
 {
-	NautilusBackground *background;
-	
 	if (sidebar->details->directory == NULL) {
 		return;
 	}
 	
-	background = nautilus_get_widget_background (GTK_WIDGET (sidebar));
-	
-	/* set up the defaults, making sure the background changed signal doesn't fire */
-	
+	/* set up the defaults, but don't write the metdata */
 	gtk_signal_handler_block_by_func (GTK_OBJECT(background),
-					   nautilus_sidebar_background_changed,
-					   sidebar);
-	
-				   
+					  background_settings_changed_callback,
+					  sidebar);
 	nautilus_background_set_color (background, sidebar->details->default_background_color);	
 	nautilus_background_set_tile_image_uri (background, sidebar->details->default_background_image);
 	gtk_signal_handler_unblock_by_func (GTK_OBJECT(background),
-					   nautilus_sidebar_background_changed,
-					   sidebar);
+					    background_settings_changed_callback,
+					    sidebar);
 					   
 	/* reset the metadata */
 	nautilus_directory_set_metadata (sidebar->details->directory,
 					 NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
 					 sidebar->details->default_background_color,
 					 NULL);
-
 	nautilus_directory_set_metadata (sidebar->details->directory,
 					 NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
 					 sidebar->details->default_background_image,
-					 NULL);		
+					 NULL);
+
+	gtk_signal_emit_stop_by_name (GTK_OBJECT (background),
+				      "reset");
 }
 
 static void
@@ -1259,27 +1253,20 @@ nautilus_sidebar_update_info (NautilusSidebar *sidebar,
 	
 	/* Connect the background changed signal to code that writes the color. */
 	background = nautilus_get_widget_background (GTK_WIDGET (sidebar));
-        
-	if (sidebar->details->background_connection == 0) {
-		sidebar->details->background_connection =
-			gtk_signal_connect_object (GTK_OBJECT (background),
-						   "settings_changed",
-						   nautilus_sidebar_background_changed,
-						   GTK_OBJECT (sidebar));
-			
-			gtk_signal_connect_object (GTK_OBJECT (background),
-						   "appearance_changed",
-						   nautilus_sidebar_appearance_changed,
-						   GTK_OBJECT (sidebar));
-	}
-
-	/* Connect the background reset signal as well */
-	if (sidebar->details->reset_connection == 0) {
-		sidebar->details->reset_connection =
-			gtk_signal_connect_object (GTK_OBJECT (background),
-						   "reset",
-						   nautilus_sidebar_background_reset,
-						   GTK_OBJECT (sidebar));
+	if (!sidebar->details->background_connected) {
+		sidebar->details->background_connected = TRUE;
+		gtk_signal_connect (GTK_OBJECT (background),
+				    "settings_changed",
+				    background_settings_changed_callback,
+				    sidebar);
+		gtk_signal_connect (GTK_OBJECT (background),
+				    "appearance_changed",
+				    background_appearance_changed_callback,
+				    sidebar);
+		gtk_signal_connect (GTK_OBJECT (background),
+				    "reset",
+				    background_reset_callback,
+				    sidebar);
 	}
 	
 	/* Set up the background color and image from the metadata. */
@@ -1296,19 +1283,19 @@ nautilus_sidebar_update_info (NautilusSidebar *sidebar,
 	
 	if (background_image && !nautilus_str_has_prefix (background_image, "file://")) {
 		temp_str = g_strdup_printf ("%s/%s",
-						 NAUTILUS_DATADIR,
-						 background_image);
+					    NAUTILUS_DATADIR,
+					    background_image);
 		g_free (background_image);
 		background_image = nautilus_get_uri_from_local_path (temp_str);
 		g_free (temp_str);
 	}
 	
-	/* disable the settings_changed signal, so the background doesn't get
+	/* disable the settings_changed callback, so the background doesn't get
 	   written out, since it might be the theme-dependent default */
-	gtk_signal_handler_block_by_func (GTK_OBJECT(background),
-					   nautilus_sidebar_background_changed,
-					   sidebar);
-					   
+	gtk_signal_handler_block_by_func (GTK_OBJECT (background),
+					  background_settings_changed_callback,
+					  sidebar);
+	
 	nautilus_background_set_color (background, background_color);	
 	g_free (background_color);
 	
@@ -1329,9 +1316,9 @@ nautilus_sidebar_update_info (NautilusSidebar *sidebar,
 	g_free (color_spec);
 
 	/* re-enable the background_changed signal */
-	gtk_signal_handler_unblock_by_func (GTK_OBJECT(background),
-					   nautilus_sidebar_background_changed,
-					   sidebar);
+	gtk_signal_handler_unblock_by_func (GTK_OBJECT (background),
+					    background_settings_changed_callback,
+					    sidebar);
 	
 	/* tell the title widget about it */
 	nautilus_sidebar_title_set_uri (sidebar->details->title,

@@ -62,7 +62,7 @@ fm_report_error_renaming_file (NautilusFile *file,
 		g_free (original_name);
 	}
 
-	nautilus_error_dialog (message);
+	nautilus_error_dialog (message, NULL);
 	g_free (message);
 }
 
@@ -84,7 +84,7 @@ fm_report_error_setting_group (NautilusFile *file,
 		g_free (file_name);
 	}
 
-	nautilus_error_dialog (message);
+	nautilus_error_dialog (message, NULL);
 	g_free (message);
 }		
 
@@ -106,7 +106,7 @@ fm_report_error_setting_owner (NautilusFile *file,
 		g_free (file_name);
 	}
 
-	nautilus_error_dialog (message);
+	nautilus_error_dialog (message, NULL);
 	g_free (message);
 }		
 
@@ -128,6 +128,6 @@ fm_report_error_setting_permissions (NautilusFile *file,
 		g_free (file_name);
 	}
 
-	nautilus_error_dialog (message);
+	nautilus_error_dialog (message, NULL);
 	g_free (message);
 }		

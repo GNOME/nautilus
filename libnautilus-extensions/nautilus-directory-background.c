@@ -122,10 +122,12 @@ directory_changed_callback (NautilusDirectory *directory,
    but for now, just use NULL */
 static void
 background_reset_callback (NautilusBackground *background,
-                           NautilusDirectory  *directory)
+                           NautilusDirectory *directory)
 {
 	nautilus_background_set_color (background, NULL);
 	nautilus_background_set_tile_image_uri (background, NULL);
+	gtk_signal_emit_stop_by_name (GTK_OBJECT (background),
+				      "reset");
 }
 
 /* handle the background destroyed signal */

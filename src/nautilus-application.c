@@ -39,11 +39,6 @@
 #include <liboaf/liboaf.h>
 #include "nautilus-desktop-window.h"
 
-typedef struct {
-	POA_Bonobo_GenericFactory servant;
- 	NautilusApplication *bonobo_object;
-} impl_POA_Nautilus_Application;
-
 static CORBA_boolean manufactures                                (PortableServer_Servant    servant,
 								  const CORBA_char         *iid,
 								  CORBA_Environment        *ev);
@@ -104,10 +99,10 @@ create_factory (PortableServer_POA poa,
 		NautilusApplication *bonobo_object,
 		CORBA_Environment *ev)
 {
-	impl_POA_Nautilus_Application *servant;
+	POA_Bonobo_GenericFactory *servant;
 
-	servant = g_new0 (impl_POA_Nautilus_Application, 1);
-	servant->servant.vepv = &vepv;
+	servant = g_new0 (POA_Bonobo_GenericFactory, 1);
+	servant->vepv = &vepv;
 	POA_Bonobo_GenericFactory__init ((PortableServer_Servant) servant, ev);
 	return bonobo_object_activate_servant (BONOBO_OBJECT (bonobo_object), servant);
 }
@@ -123,19 +118,14 @@ nautilus_application_initialize (NautilusApplication *application)
 {
 	CORBA_Environment ev;
 	CORBA_Object corba_object;
-	OAF_RegistrationResult result;
 	
+	/* Create an undo manager */
+	application->undo_manager = nautilus_undo_manager_new ();
+
 	CORBA_exception_init (&ev);
 
 	corba_object = create_factory (bonobo_poa (), application, &ev);
-	result = oaf_active_server_register ("OAFIID:nautilus_file_manager_factory:bd1e1862-92d7-4391-963e-37583f0daef3",
-					     corba_object);
-	/* FIXME: Report this error somehow. */
-	g_assert (result == OAF_REG_SUCCESS);
 	bonobo_object_construct (BONOBO_OBJECT (application), corba_object);
-
-	/* Create an undo manager */
-	application->undo_manager = nautilus_undo_manager_new ();
 
 	CORBA_exception_free (&ev);
 }
@@ -266,7 +256,7 @@ nautilus_application_check_user_directories (NautilusApplication *application)
 						dir_list_concatenated,
 						"Please restart Nautilus to fix this problem.");
 
-		nautilus_error_dialog (error_string);
+		nautilus_error_dialog (error_string, NULL);
 
 		g_free (dir_list_concatenated);
 		g_free (error_string);
@@ -280,12 +270,77 @@ nautilus_application_startup (NautilusApplication *application,
 			      gboolean manage_desktop,
 			      const char *urls[])
 {
+	OAF_RegistrationResult result;
+	const char *message, *detailed_message;
+	GnomeDialog *dialog;
 	const char **p;
 	NautilusWindow *window;
 	NautilusWindow *first_window;
 
-	/* Check the user's ~/.nautilus directories and post warnings if there
-	 * are problems
+	/* Try to register the file manager view factory with OAF. */
+	result = oaf_active_server_register
+		("OAFIID:nautilus_file_manager_factory:bd1e1862-92d7-4391-963e-37583f0daef3",
+		 bonobo_object_corba_objref (BONOBO_OBJECT (application)));
+	switch (result) {
+	case OAF_REG_SUCCESS:
+		/* We are registered with OAF and all is right with the world. */
+		message = NULL;
+		break;
+	case OAF_REG_NOT_LISTED:
+		/* Can't register myself due to trouble locating the
+		 * nautilus.oafinfo file. This has happened when you
+		 * launch Nautilus with a PATH that doesn't include
+		 * directory containg the oafd executable and oafd is
+		 * not already running. It could also happen if the
+		 * nautilus.oafinfo file was not present for some
+		 * reason. Sometimes killing oafd and gconfd fixes
+		 * this problem but we don't exactly understand why,
+		 * since neither of the above causes explain it.
+		 */
+		message = _("Nautilus can't be used now. "
+			    "Rebooting the computer or installing "
+			    "Nautilus again may fix the problem.");
+		/* FIXME: Add technical details here. They should come
+		 * in the form of more detailed message that replaces
+		 * the novice message if you press a button. The more
+		 * detailed message should be complete and stand alone
+		 * since it replaces the novice message.
+		 */
+		detailed_message = _("Nautilus can't be used now. "
+				     "Rebooting the computer or installing "
+				     "Nautilus again may fix the problem. "
+				     "Check out all of this excellent detail!");
+		break;
+	case OAF_REG_ALREADY_ACTIVE:
+		/* Another copy of Nautilus is already
+		 * running. Eventually we want to "glom on" to this
+		 * old copy.
+		 */
+		message = _("Nautilus is already running. Soon, instead of presenting this dialog, the already-running copy of Nautilus will respond by opening windows.");
+		detailed_message = NULL;
+		break;
+	default:
+		/* This should never happen. */
+		g_warning ("bad error code from oaf_active_server_register");
+	case OAF_REG_ERROR:
+		/* Some misc. error (can never happen with current
+		 * version of OAF). Show dialog and terminate the
+		 * program.
+		 */
+		message = _("Nautilus can't be used now, due to an unexpected error.");
+		detailed_message = NULL;
+		break;
+	}
+	if (message != NULL) {
+		dialog = nautilus_error_dialog_with_details
+			(message, detailed_message, NULL);
+		gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
+				    gtk_main_quit, NULL);
+		return;
+	}
+
+	/* Check the user's ~/.nautilus directories and post warnings
+	 * if there are problems
 	 */
 	nautilus_application_check_user_directories (application);
 
@@ -317,7 +372,9 @@ nautilus_application_startup (NautilusApplication *application,
 	/* Show the "not ready for prime time" dialog after the first
 	 * window appears, so it's on top.
 	 */
-	/* FIXME bugzilla.eazel.com 1256: It's not on top of the other windows. */
+	/* FIXME bugzilla.eazel.com 1256: It's not on top of the
+         * windows other than the first one.
+	 */
 	if (g_getenv ("NAUTILUS_NO_CAVEAT_DIALOG") == NULL) {
 	  	if (first_window == NULL) {
 			display_caveat (NULL);
