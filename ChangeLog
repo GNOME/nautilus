@@ -1,3 +1,21 @@
+2001-02-20  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 6029, No option to mount zip drive in desktop menu.
+	Fixed bug 6751, Nautilus does not detect all of my removable disks.
+	Fixed bug 6194, SCSI CD-ROM drives are not displayed on desktop.
+	Fixed bug 6396, cd-rom not detected
+	
+	Special thanks to liblit@acm.org for persisting and looking at the
+	code. The check permissions code is an artifact from when we were
+	considering having a mount daemon.  I don't think it is needed at all
+	because the volume monitor is not running as root.  I wil mark
+	the bugs fixed and wait for status but I think this will work.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(mount_volume_ext2_add), (mount_volume_udf_add),
+	(mount_volume_vfat_add), (mount_volume_msdos_add):
+	Remove old check_permissions code.
+
 2001-02-20  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 6785 ("Trash" should be capitalized)

@@ -945,42 +945,6 @@ mount_volumes_check_status (NautilusVolumeMonitor *monitor)
 	return TRUE;
 }
 
-
-/* Like access, but a bit more accurate in one way - access will let
- * root do anything. Less accurate in other ways: does not get
- * read-only or no-exec filesystems right, and returns FALSE if
- * there's an error.
- */
-static gboolean
-check_permissions (const char *filename, int mode)
-{
-	guint euid, egid;
-	struct stat statbuf;
-
-	euid = geteuid ();
-	egid = getegid ();
-	if (stat (filename, &statbuf) == 0) {
-		if ((mode & R_OK) &&
-		    !((statbuf.st_mode & S_IROTH) ||
-		      ((statbuf.st_mode & S_IRUSR) && euid == statbuf.st_uid) ||
-		      ((statbuf.st_mode & S_IRGRP) && egid == statbuf.st_gid)))
-			return FALSE;
-		if ((mode & W_OK) &&
-		    !((statbuf.st_mode & S_IWOTH) ||
-		      ((statbuf.st_mode & S_IWUSR) && euid == statbuf.st_uid) ||
-		      ((statbuf.st_mode & S_IWGRP) && egid == statbuf.st_gid)))
-			return FALSE;
-		if ((mode & X_OK) &&
-		    !((statbuf.st_mode & S_IXOTH) ||
-		      ((statbuf.st_mode & S_IXUSR) && euid == statbuf.st_uid) ||
-		      ((statbuf.st_mode & S_IXGRP) && egid == statbuf.st_gid)))
-			return FALSE;
-
-		return TRUE;
-	}
-	return FALSE;
-}
-
 static gboolean
 mount_volume_floppy_add (NautilusVolume *volume)
 {
@@ -991,10 +955,6 @@ mount_volume_floppy_add (NautilusVolume *volume)
 static gboolean
 mount_volume_ext2_add (NautilusVolume *volume)
 {		
-	if (check_permissions (volume->device_path, R_OK)) {		
-		return FALSE;
-	}
-
 	volume->type = NAUTILUS_VOLUME_EXT2;
 		
 	return TRUE;
@@ -1003,10 +963,6 @@ mount_volume_ext2_add (NautilusVolume *volume)
 static gboolean
 mount_volume_udf_add (NautilusVolume *volume)
 {		
-	if (check_permissions (volume->device_path, R_OK)) {		
-		return FALSE;
-	}
-
 	volume->type = NAUTILUS_VOLUME_UDF;
 		
 	return TRUE;
@@ -1015,10 +971,6 @@ mount_volume_udf_add (NautilusVolume *volume)
 static gboolean
 mount_volume_vfat_add (NautilusVolume *volume)
 {		
-	if (check_permissions (volume->device_path, R_OK)) {		
-		return FALSE;
-	}
-
 	volume->type = NAUTILUS_VOLUME_VFAT;
 		
 	return TRUE;
@@ -1027,10 +979,6 @@ mount_volume_vfat_add (NautilusVolume *volume)
 static gboolean
 mount_volume_msdos_add (NautilusVolume *volume)
 {		
-	if (check_permissions (volume->device_path, R_OK)) {		
-		return FALSE;
-	}
-
 	volume->type = NAUTILUS_VOLUME_MSDOS;
 		
 	return TRUE;
