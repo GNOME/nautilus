@@ -224,11 +224,11 @@ static void
 set_up_standard_bonobo_button (NautilusWindow *window, 
 			       const char *item_path, 
 			       const char *icon_name,
-			       gboolean is_custom)
+			       const char *stock_item_fallback)
 {
 	char *file_name;
 
-	file_name = get_file_name_from_icon_name (icon_name, is_custom);
+	file_name = get_file_name_from_icon_name (icon_name, (stock_item_fallback == NULL));
 		
 	/* set up the toolbar component with the new image */
 	bonobo_ui_component_set_prop (window->details->shell_ui, 
@@ -239,7 +239,7 @@ set_up_standard_bonobo_button (NautilusWindow *window,
 	bonobo_ui_component_set_prop (window->details->shell_ui, 
 				      item_path,
 				      "pixname",
-				      file_name == NULL ? icon_name : file_name,
+				      file_name == NULL ? stock_item_fallback : file_name,
 			      	      NULL);
 
 	g_free (file_name);
@@ -252,22 +252,32 @@ static void
 set_up_special_bonobo_button (NautilusWindow            *window,
 			      BonoboUIToolbarButtonItem *item,
 			      const char                *control_path,
-			      const char                *icon_name)
+			      const char                *icon_name,
+			      const char                *stock_item_fallback)
 {
 	char *icon_file_name;
-	GdkPixbuf *pixbuf;	
+	GtkWidget *image;
+	GtkStockItem stock_item;
+
+	image = NULL;
 
 	icon_file_name = get_file_name_from_icon_name (icon_name, FALSE);
 
 	if (icon_file_name == NULL) {
-		return;
+		if (gtk_stock_lookup (stock_item_fallback, &stock_item)) {
+			image = gtk_image_new_from_stock (stock_item_fallback, 
+							  GTK_ICON_SIZE_BUTTON);
+		}
+	} else {
+		image = gtk_image_new_from_file (icon_file_name);
+		g_free (icon_file_name);
 	}
 
-	pixbuf = gdk_pixbuf_new_from_file (icon_file_name, NULL);
-	g_free (icon_file_name);
+	if (image == NULL) {
+		return;
+	}
 	
-	bonobo_ui_toolbar_button_item_set_image (item, pixbuf);
-	g_object_unref (pixbuf);
+	bonobo_ui_toolbar_button_item_set_image (item, image);
 }			      
 
 static void
@@ -277,15 +287,17 @@ set_up_toolbar_images (NautilusWindow *window)
 
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 
-	set_up_special_bonobo_button (window, window->details->back_button_item, "/Toolbar/BackWrapper", "Back");
-	set_up_special_bonobo_button (window, window->details->forward_button_item, "/Toolbar/ForwardWrapper", "Forward");
+	set_up_special_bonobo_button (window, window->details->back_button_item, 
+				      "/Toolbar/BackWrapper", "Back", GTK_STOCK_GO_BACK);
+	set_up_special_bonobo_button (window, window->details->forward_button_item, 
+				      "/Toolbar/ForwardWrapper", "Forward", GTK_STOCK_GO_FORWARD);
 	
-	set_up_standard_bonobo_button (window, "/Toolbar/Up", "Up", FALSE);
-	set_up_standard_bonobo_button (window, "/Toolbar/Home", "Home", FALSE);
-	set_up_standard_bonobo_button (window, "/Toolbar/Reload", "Refresh", FALSE);
-	set_up_standard_bonobo_button (window, "/Toolbar/Toggle Find Mode", "Search", FALSE);
-	set_up_standard_bonobo_button (window, "/Toolbar/Go to Web Search", "SearchWeb", TRUE);
-	set_up_standard_bonobo_button (window, "/Toolbar/Stop", "Stop", FALSE);
+	set_up_standard_bonobo_button (window, "/Toolbar/Up", "Up", GTK_STOCK_GO_UP);
+	set_up_standard_bonobo_button (window, "/Toolbar/Home", "Home", GTK_STOCK_HOME);
+	set_up_standard_bonobo_button (window, "/Toolbar/Reload", "Refresh", GTK_STOCK_REFRESH);
+	set_up_standard_bonobo_button (window, "/Toolbar/Toggle Find Mode", "Search", GTK_STOCK_FIND);
+	set_up_standard_bonobo_button (window, "/Toolbar/Go to Web Search", "SearchWeb", NULL);
+	set_up_standard_bonobo_button (window, "/Toolbar/Stop", "Stop", GTK_STOCK_STOP);
 
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 

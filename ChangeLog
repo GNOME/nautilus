@@ -1,3 +1,11 @@
+2002-02-20  Jens Finke <jens@triq.net>
+
+	* src/nautilus-window-toolbars.c
+	(set_up_standard_bonobo_button),
+	(set_up_special_bonobo_button): Added gtk stock item fallback
+	which is used if a custom icon wasn't found.
+	(set_up_toolbar_images): Define proper stock item replacements.
+
 2002-02-20  David Emory Watson  <dwatson@cs.ucr.edu>
 
 	* src/file-manager/fm-directory-view.c:
