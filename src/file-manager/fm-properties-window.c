@@ -2530,7 +2530,7 @@ permission_button_toggled (GtkToggleButton *button,
 			nautilus_file_set_permissions
 				(file, permissions,
 				 permission_change_callback,
-				 NULL);
+				 window);
 		}
 		
 	}
@@ -2549,7 +2549,7 @@ permission_button_toggled (GtkToggleButton *button,
 			nautilus_file_set_permissions
 				(file, permissions,
 				 permission_change_callback,
-				 NULL);
+				 window);
 		}
 	}	
 
