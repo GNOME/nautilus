@@ -1,3 +1,13 @@
+2000-10-26  Rebecca Schulman  <rebecka@eazel.com>
+
+	* nautilus.spec.in:  Moved the spec file entry
+	from the binaries section to the data section,
+	so the manual files' permissions will be set
+	correctly, and changed *.sgml to * so
+	we'll get the associated .css files (they're
+	style sheets, I think?) and the images 
+	installed, too.
+
 2000-10-26  Mathieu Lacage  <mathieu@eazel.com>
 
 	* nautilus.spec.in: add sgml files in rpms
