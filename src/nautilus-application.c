@@ -132,6 +132,17 @@ create_factory (PortableServer_POA poa,
 	return bonobo_object_activate_servant (BONOBO_OBJECT (bonobo_object), servant);
 }
 
+/* Keeps track of the one and only desktop window. */
+static NautilusDesktopWindow *nautilus_application_desktop;
+
+/* Keeps track of all the nautilus windows. */
+static GSList *nautilus_application_window_list;
+
+GSList *nautilus_application_windows (void)
+{
+	return nautilus_application_window_list;
+}
+
 static void
 nautilus_application_initialize_class (NautilusApplicationClass *klass)
 {
@@ -401,22 +412,60 @@ nautilus_application_startup (NautilusApplication *application,
 
  out:
 	CORBA_exception_free (&ev);
-	return application->windows != NULL || application->has_desktop;
+	return nautilus_application_window_list != NULL || nautilus_application_desktop != NULL;
+}
+
+static void
+nautilus_application_destroy_desktop_window (GtkObject *obj, NautilusApplication *application)
+{
+	nautilus_application_desktop = NULL;
+}
+
+static NautilusDesktopWindow *
+nautilus_application_create_desktop_window (NautilusApplication *application)
+{
+	NautilusDesktopWindow *window;
+	
+	g_return_val_if_fail (NAUTILUS_IS_APPLICATION (application), NULL);
+
+	window = nautilus_desktop_window_new (application);
+
+	gtk_signal_connect (GTK_OBJECT (window),
+			    "destroy", nautilus_application_destroy_desktop_window,
+			    application);
+
+	nautilus_application_desktop = window;
+
+	return window;
+}
+
+void
+nautilus_application_open_desktop (NautilusApplication *application)
+{
+	NautilusDesktopWindow *desktop_window;
+
+	if (nautilus_application_desktop == NULL) {
+		desktop_window = nautilus_application_create_desktop_window (application);
+	}
+	gtk_widget_show (GTK_WIDGET (desktop_window));
+}
+
+void
+nautilus_application_close_desktop (void)
+{
+	gtk_widget_destroy (GTK_WIDGET (nautilus_application_desktop));
+	if (nautilus_application_window_list == NULL) {
+		gtk_main_quit ();
+	}
 }
 
 static void
 nautilus_application_destroy_window (GtkObject *obj, NautilusApplication *application)
 {
-	application->windows = g_slist_remove (application->windows, obj);
-	if (application->windows == NULL && !application->has_desktop) {
+	nautilus_application_window_list = g_slist_remove (nautilus_application_window_list, obj);
+	if (nautilus_application_window_list == NULL && nautilus_application_desktop == NULL) {
 		gtk_main_quit ();
 	}
-}
-
-void 
-nautilus_application_quit (void)
-{
-	gtk_main_quit ();
 }
 
 NautilusWindow *
@@ -433,7 +482,7 @@ nautilus_application_create_window (NautilusApplication *application)
 			    "destroy", nautilus_application_destroy_window,
 			    application);
 
-	application->windows = g_slist_prepend (application->windows, window);
+	nautilus_application_window_list = g_slist_prepend (nautilus_application_window_list, window);
 
 	/* Do not yet show the window. It will be shown later on if it can
 	 * successfully display its initial URI. Otherwise it will be destroyed

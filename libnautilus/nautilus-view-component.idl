@@ -85,9 +85,6 @@ module Nautilus {
 
 		/* Called by a view component to change the title. */
 		oneway void set_title (in string new_title);
-
-		/* Called by a view component to quit nautilus */
-		oneway void quit_nautilus ();
 	};
 	
 	typedef double ZoomLevel;

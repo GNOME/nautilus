@@ -98,7 +98,6 @@ typedef struct {
         void (* report_load_failed)          (NautilusViewFrame *view);
         void (* set_title)                   (NautilusViewFrame *view,
                                               const char *title);
-        void (* quit_nautilus)		     (NautilusViewFrame *view);
 
         /* Part of Nautilus::ZoomableFrame CORBA interface. */
         void (* zoom_level_changed)         (NautilusViewFrame *view,

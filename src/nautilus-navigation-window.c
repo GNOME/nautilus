@@ -1096,13 +1096,6 @@ nautilus_window_set_title_callback (NautilusViewFrame *view,
 }
 
 static void
-nautilus_window_quit_nautilus_callback (NautilusViewFrame *view,
-					NautilusWindow *window)
-{
-	nautilus_application_quit ();
-}
-
-static void
 nautilus_window_zoom_level_changed_callback (NautilusViewFrame *view,
                                     	     double zoom_level,
                                     	     NautilusWindow *window)
@@ -1181,7 +1174,6 @@ nautilus_window_connect_view (NautilusWindow *window, NautilusViewFrame *view)
 	CONNECT (report_load_complete);
 	CONNECT (report_load_failed);
 	CONNECT (set_title);
-	CONNECT (quit_nautilus);
 	CONNECT (zoom_level_changed);
 	CONNECT (get_history_list);
 

@@ -259,14 +259,11 @@ static void
 corba_manage_desktop (PortableServer_Servant servant,
 		      CORBA_Environment *ev)
 {
-	NautilusShell *shell;
-	static NautilusDesktopWindow *desktop_window;
+	NautilusShell	      *shell;
+	NautilusApplication   *application;
 
-	shell = NAUTILUS_SHELL (((BonoboObjectServant *) servant)->bonobo_object);
-
-	/* Create a desktop window. */
-	if (desktop_window == NULL) {
-		desktop_window = nautilus_desktop_window_new (shell->details->application);
-	}
-	gtk_widget_show (GTK_WIDGET (desktop_window));
+	shell	    = NAUTILUS_SHELL (((BonoboObjectServant *) servant)->bonobo_object);
+	application = NAUTILUS_APPLICATION (shell->details->application);
+	
+	nautilus_application_open_desktop (application);
 }

@@ -40,8 +40,6 @@ typedef struct NautilusWindow NautilusWindow;
 
 typedef struct {
 	BonoboObject parent;
-	GSList *windows;
-	gboolean has_desktop;
 	NautilusUndoManager *undo_manager;
 } NautilusApplication;
 
@@ -54,7 +52,15 @@ NautilusApplication *nautilus_application_new           (void);
 gboolean             nautilus_application_startup       (NautilusApplication *application,
 							 gboolean             manage_desktop,
 							 const char          *urls[]);
-NautilusWindow *     nautilus_application_create_window (NautilusApplication *application);
-void                 nautilus_application_quit          (void);
+						 
+GSList		*nautilus_application_windows (void);
+NautilusWindow	*nautilus_application_create_window (NautilusApplication *application);
+
+void	nautilus_application_open_desktop (NautilusApplication *application);
+void	nautilus_application_close_desktop (void);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* NAUTILUS_APPLICATION_H */

@@ -1,3 +1,38 @@
+2000-07-13  Michael Engber  <engber@eazel.com>
+
+	* libnautilus/nautilus-view-component.idl:
+	* libnautilus/nautilus-view.c:
+	* libnautilus/nautilus-view.h:
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_close_desktop_menu_item_callback),
+	(fm_desktop_icon_view_create_background_context_menu_items):
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_close_desktop):
+	* src/file-manager/fm-directory-view.h:
+	* src/nautilus-application.c: (nautilus_application_windows),
+	(nautilus_application_startup),
+	(nautilus_application_destroy_desktop_window),
+	(nautilus_application_create_desktop_window),
+	(nautilus_application_open_desktop),
+	(nautilus_application_close_desktop),
+	(nautilus_application_destroy_window),
+	(nautilus_application_create_window):
+	* src/nautilus-application.h:
+	* src/nautilus-desktop-window.c: (nautilus_desktop_window_new):
+	* src/nautilus-shell.c: (corba_manage_desktop):
+	* src/nautilus-view-frame-corba.c:
+	(impl_Nautilus_ViewFrame_set_title):
+	* src/nautilus-view-frame-private.h:
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_initialize_class),
+	(nautilus_view_frame_set_title):
+	* src/nautilus-view-frame.h:
+	* src/nautilus-window-manage-views.c: (open_location):
+	* src/nautilus-window.c: (nautilus_window_connect_view):
+	Changed desktop menu to offer close desktop instead of
+	quit nautilus. Also, changed the menu item's action to
+	use a direct fn call instead of CORBA.
+
 2000-07-13  Gene Z. Ragan  <gzr@eazel.com>
 
 	* components/history/nautilus-history-view.c: (install_icon),

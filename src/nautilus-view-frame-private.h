@@ -65,6 +65,7 @@ void          nautilus_view_frame_report_load_failed          (NautilusViewFrame
 void          nautilus_view_frame_set_title                   (NautilusViewFrame *view,
                                                                const char        *title);
 void          nautilus_view_frame_quit_nautilus		      (NautilusViewFrame *view);
+void          nautilus_view_frame_close_desktop		      (NautilusViewFrame *view);
 
 /* Zoomable */
 void          nautilus_view_frame_zoom_level_changed          (NautilusViewFrame *view,

@@ -83,7 +83,6 @@ void              nautilus_view_report_load_complete        (NautilusView       
 void              nautilus_view_report_load_failed          (NautilusView           *view);
 void              nautilus_view_set_title                   (NautilusView           *view,
 							     const char             *title);
-void		  nautilus_view_quit_nautilus		    (NautilusView *view);
 
 /* Some utility functions useful for doing the CORBA work directly.
  * Not needed by most components, but shared with the view frame code,

@@ -52,7 +52,6 @@ enum {
 	REPORT_LOAD_COMPLETE,
 	REPORT_LOAD_FAILED,
 	SET_TITLE,
-	QUIT_NAUTILUS,
 	ZOOM_LEVEL_CHANGED,
 	CLIENT_GONE,
 	GET_HISTORY_LIST,
@@ -155,14 +154,6 @@ nautilus_view_frame_initialize_class (NautilusViewFrameClass *klass)
 						   set_title),
 				gtk_marshal_NONE__STRING,
 				GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
-	signals[QUIT_NAUTILUS] =
-		gtk_signal_new ("quit_nautilus",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
-						   quit_nautilus),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
 	
 	signals[ZOOM_LEVEL_CHANGED] =
 		gtk_signal_new ("zoom_level_changed",
@@ -722,13 +713,6 @@ nautilus_view_frame_set_title (NautilusViewFrame *view,
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 	gtk_signal_emit (GTK_OBJECT (view), signals[SET_TITLE], title);
-}
-
-void
-nautilus_view_frame_quit_nautilus (NautilusViewFrame *view)
-{
-	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
-	gtk_signal_emit (GTK_OBJECT (view), signals[QUIT_NAUTILUS]);
 }
 
 void

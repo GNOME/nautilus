@@ -57,9 +57,9 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 }
 
 static void
-fm_desktop_icon_view_quit_menu_item_callback (GtkMenuItem *item, gpointer callback_data)
+fm_desktop_icon_view_close_desktop_menu_item_callback (GtkMenuItem *item, gpointer callback_data)
 {
-	fm_directory_view_quit_nautilus (FM_DIRECTORY_VIEW (callback_data));
+	fm_directory_view_close_desktop (FM_DIRECTORY_VIEW (callback_data));
 }
 
 static void
@@ -75,10 +75,10 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 		 create_background_context_menu_items, 
 		 (view, menu));
 
-        menu_item = gtk_menu_item_new_with_label (_("Quit Nautilus"));
+        menu_item = gtk_menu_item_new_with_label (_("Close Nautilus Desktop"));
 	gtk_signal_connect (GTK_OBJECT (menu_item),
 			    "activate",
-			    GTK_SIGNAL_FUNC (fm_desktop_icon_view_quit_menu_item_callback),
+			    GTK_SIGNAL_FUNC (fm_desktop_icon_view_close_desktop_menu_item_callback),
 			    view);
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);

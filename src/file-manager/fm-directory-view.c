@@ -49,6 +49,8 @@
 #include <libnautilus/nautilus-undo.h>
 #include <libnautilus/nautilus-zoomable.h>
 
+#include <src/nautilus-application.h>
+
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
@@ -3264,8 +3266,8 @@ fm_directory_view_get_context_menu_index(const char *menu_name)
 }
 
 void
-fm_directory_view_quit_nautilus (FMDirectoryView *view)
+fm_directory_view_close_desktop (FMDirectoryView *view)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
-	nautilus_view_quit_nautilus (view->details->nautilus_view);	
+	nautilus_application_close_desktop ();
 }

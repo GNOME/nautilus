@@ -665,7 +665,7 @@ open_location (NautilusWindow *window,
 		/* FIXME: This may be the desired bahavior, but the prefs UI still says open
 		 * new window.  How can we resolve this inconsistancy?
 		 */                 
-		for (element = window->application->windows; element != NULL; element = element->next) {
+		for (element = nautilus_application_windows (); element != NULL; element = element->next) {
 			traverse_window = element->data;
 			if (strcmp (traverse_window->location, location) == 0) {
 				gtk_widget_show_now (GTK_WIDGET (traverse_window));
