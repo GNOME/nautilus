@@ -2114,7 +2114,6 @@ draw_cell_pixbuf (NautilusCList *clist, GdkWindow *window, GdkRectangle *clip_re
 	GdkRectangle image_rectangle;
 	GdkRectangle intersect_rectangle;
 	GdkPixbuf *composited;
-	gboolean anti_aliased_mode;
 
 	image_rectangle.width = gdk_pixbuf_get_width (pixbuf);
 	image_rectangle.height = gdk_pixbuf_get_height (pixbuf);
