@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.2\n"
-"POT-Creation-Date: 2001-03-01 00:43+0100\n"
-"PO-Revision-Date: 2001-03-01 00:46+01:00\n"
+"POT-Creation-Date: 2001-03-01 09:23+0100\n"
+"PO-Revision-Date: 2001-03-01 08:35+01:00\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,6 +20,27 @@ msgstr "Kan ikke opprette nautilus-launcher-applet!"
 #: applets/preferences-applet/nautilus-preferences-applet.c:211
 msgid "Can't create nautilus-preferences-applet!"
 msgstr "Kan ikke opprette nautilus-preferences-applet!"
+
+#: applets/preferences-applet/nautilus-preferences-applet.c:226
+msgid "Show Desktop"
+msgstr "Vis skrivebord"
+
+#: applets/preferences-applet/nautilus-preferences-applet.c:230
+msgid "Smooth Graphics"
+msgstr "Jevn grafikk"
+
+#: applets/preferences-applet/nautilus-preferences-applet.c:243
+#: src/nautilus-application.c:638
+msgid "Quit"
+msgstr "Avslutt"
+
+#: applets/preferences-applet/nautilus-preferences-applet.c:251
+msgid "Start"
+msgstr "Start"
+
+#: applets/preferences-applet/nautilus-preferences-applet.c:259
+msgid "Restart"
+msgstr "Start på nytt"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -76,6 +97,18 @@ msgstr "%lu MB"
 #: components/hardware/nautilus-hardware-view.c:407
 msgid "Hardware Overview"
 msgstr "Oversikt over maskinvare"
+
+#: components/hardware/nautilus-hardware-view.c:520
+msgid "This is a placeholder for the CPU page."
+msgstr "Dette er en plassholder for CPU-siden."
+
+#: components/hardware/nautilus-hardware-view.c:545
+msgid "This is a placeholder for the RAM page."
+msgstr "Dette er en plassholder for RAM-siden."
+
+#: components/hardware/nautilus-hardware-view.c:570
+msgid "This is a placeholder for the IDE page."
+msgstr "Dette er en plassholder for IDE-siden."
 
 #: components/hardware/Nautilus_View_hardware.oaf.in.h:2
 #: components/hardware/nautilus-hardware-view.c:631
@@ -1673,20 +1706,33 @@ msgstr "Sidelinjepanel for notater"
 msgid "Notes sidebar panel for Nautilus"
 msgstr "Sidelinjepanel for notater"
 
+#. buttons
+#: components/rpmview/nautilus-rpm-verify-window.c:155
+#: components/services/install-view/forms.c:478
+msgid "Continue"
+msgstr "Fortsett"
+
+#: components/rpmview/nautilus-rpm-verify-window.c:160
+#: components/services/install-view/forms.c:482
+#: libnautilus-extensions/nautilus-drag.c:493
+#: src/file-manager/fm-directory-view.c:3503
+msgid "Cancel"
+msgstr "Avbryt"
+
 #. set up the window title
-#: components/rpmview/nautilus-rpm-verify-window.c:183
+#: components/rpmview/nautilus-rpm-verify-window.c:185
 #, c-format
 msgid "Verifying %s..."
 msgstr "Verifiserer %s..."
 
-#: components/rpmview/nautilus-rpm-verify-window.c:207
+#: components/rpmview/nautilus-rpm-verify-window.c:209
 #, c-format
 msgid "Failed on \"%s\""
 msgstr "Feilet på \"%s\""
 
 #. TRANSLATORS: this is printed while verifying files from packages,
 #. %s is the filename, %d/%d is filenumber of total-number-of-files
-#: components/rpmview/nautilus-rpm-verify-window.c:211
+#: components/rpmview/nautilus-rpm-verify-window.c:213
 #, c-format
 msgid "Checking \"%s\" (%ld/%ld)"
 msgstr "Sjekker \"%s\" (%ld/%ld)"
@@ -1973,239 +2019,235 @@ msgid "RPM args are filename"
 msgstr "RPM argumenter er filnavn"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:115
-msgid "Force install"
-msgstr "Tvungen installasjon"
-
-#: components/services/install/command-line/eazel-alt-install-corba.c:116
 msgid "Use ftp"
 msgstr "Bruk ftp"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:117
+#: components/services/install/command-line/eazel-alt-install-corba.c:116
 msgid "Use local"
 msgstr "Bruk lokal"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:118
+#: components/services/install/command-line/eazel-alt-install-corba.c:117
 msgid "Use http"
 msgstr "Bruk http"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:119
+#: components/services/install/command-line/eazel-alt-install-corba.c:118
 msgid "RPM args are Eazel Ids"
 msgstr "RPM argumenter er Eazel Id'er"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:120
+#: components/services/install/command-line/eazel-alt-install-corba.c:119
 msgid "machine readable output"
 msgstr "maskinlesbare data"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:121
+#: components/services/install/command-line/eazel-alt-install-corba.c:120
 msgid "Don't print fancy percent output"
 msgstr "Ikke skriv ut fancy prosentdata"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:122
+#: components/services/install/command-line/eazel-alt-install-corba.c:121
 msgid "don't use eazel auth stuff"
 msgstr "ikke bruk eazel autentisering"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:123
+#: components/services/install/command-line/eazel-alt-install-corba.c:122
 msgid "Specify package file"
 msgstr "Spesifisér pakkefil"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:124
+#: components/services/install/command-line/eazel-alt-install-corba.c:123
 msgid "RPM args are needed files"
 msgstr "RPM argumenter er nødvendige filnavn"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:125
+#: components/services/install/command-line/eazel-alt-install-corba.c:124
 msgid "Run Query"
 msgstr "Kjør spørring"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:126
+#: components/services/install/command-line/eazel-alt-install-corba.c:125
 msgid "Revert"
 msgstr "Forkast"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:127
+#: components/services/install/command-line/eazel-alt-install-corba.c:126
 msgid "Set root"
 msgstr "Sett rot"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:128
+#: components/services/install/command-line/eazel-alt-install-corba.c:127
 msgid "Specify server"
 msgstr "Spesifisér tjener"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:129
+#: components/services/install/command-line/eazel-alt-install-corba.c:128
 msgid "Dont print too much, just problems and download"
 msgstr "Ikke skriv ut for mye, bare problemer og nedlasting"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:130
+#: components/services/install/command-line/eazel-alt-install-corba.c:129
 msgid "Perform ssl renaming"
 msgstr "Utfør ssl-omdøping"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:131
+#: components/services/install/command-line/eazel-alt-install-corba.c:130
 msgid "argument is a suite id"
 msgstr "argumentet er en suite-id"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:132
+#: components/services/install/command-line/eazel-alt-install-corba.c:131
 msgid "Test run"
 msgstr "Testkjøring"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:133
+#: components/services/install/command-line/eazel-alt-install-corba.c:132
 msgid "Allow username"
 msgstr "Tillat brukernavn"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:134
+#: components/services/install/command-line/eazel-alt-install-corba.c:133
 #: components/services/install/lib/eazel-install-problem.c:1009
 msgid "Allow upgrades"
 msgstr "Tillat oppgraderinger"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:135
+#: components/services/install/command-line/eazel-alt-install-corba.c:134
 msgid "Verbose output"
 msgstr "Utfyllende utskrift"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:136
+#: components/services/install/command-line/eazel-alt-install-corba.c:135
 msgid "Install a specific package version"
 msgstr "Installér en spesifikk pakkeversjon"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:167
+#: components/services/install/command-line/eazel-alt-install-corba.c:158
 msgid "*** You cannot specify more then one protocol type.\n"
 msgstr "*** Du kan ikke spesifisere mer enn én type protokoll.\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:184
+#: components/services/install/command-line/eazel-alt-install-corba.c:175
 msgid "*** Erase and revert ?  Somebody set up us the bomb!\n"
 msgstr "*** Slett og forkast? Noen har laget en bombe til oss!\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:293
+#: components/services/install/command-line/eazel-alt-install-corba.c:284
 #, c-format
 msgid "File conflict checking %s...\n"
 msgstr "Sjekk etter filkonflikt %s...\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:307
+#: components/services/install/command-line/eazel-alt-install-corba.c:298
 #, c-format
 msgid "File uniqueness checking %s...\n"
 msgstr "Sjekker om filen er unik %s...\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:321
+#: components/services/install/command-line/eazel-alt-install-corba.c:312
 #, c-format
 msgid "Feature consistency checking %s...\n"
 msgstr "Sjekker etter konsistente funksjoner %s...\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:352
+#: components/services/install/command-line/eazel-alt-install-corba.c:343
 #: components/services/install/lib/eazel-install-protocols.c:110
 #: components/services/install/lib/eazel-install-protocols.c:248
 #, c-format
 msgid "Downloading %s..."
 msgstr "Laster ned %s..."
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:368
+#: components/services/install/command-line/eazel-alt-install-corba.c:359
 msgid "Downloading %s... (%d/%d) = %d%% %.1f KB/s"
 msgstr "Laster ned %s... (%d/%d) = %d%% %.1f KB/s"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:376
+#: components/services/install/command-line/eazel-alt-install-corba.c:367
 msgid "Downloading %s... (%d/%d) = %d%%"
 msgstr "Laster ned %s... (%d/%d) = %d%%"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:384
+#: components/services/install/command-line/eazel-alt-install-corba.c:375
 #, c-format
 msgid "Downloading %s... (%d/%d) %.1f KB/s Done      \n"
 msgstr "Laster ned %s... (%d/%d) %.1f KB/s Ferdig     \n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:389
+#: components/services/install/command-line/eazel-alt-install-corba.c:380
 #, c-format
 msgid "Downloading %s... %3.1f KB/s Done\n"
 msgstr "Laster ned %s... %3.1f KB/s Ferdig\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:417
+#: components/services/install/command-line/eazel-alt-install-corba.c:408
 msgid "Installing %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
 msgstr "Installerer %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:425
+#: components/services/install/command-line/eazel-alt-install-corba.c:416
 msgid "Uninstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
 msgstr "Avinstallerer %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:447
+#: components/services/install/command-line/eazel-alt-install-corba.c:438
 msgid "Installing %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"
 msgstr "Installerer %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Ferdig\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:454
+#: components/services/install/command-line/eazel-alt-install-corba.c:445
 msgid "Uninstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"
 msgstr "Avinstallerer %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Ferdig\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:462
+#: components/services/install/command-line/eazel-alt-install-corba.c:453
 msgid "Done\n"
 msgstr "Ferdig\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:482
+#: components/services/install/command-line/eazel-alt-install-corba.c:473
 #, c-format
 msgid "Download of %s FAILED\n"
 msgstr "Nedlasting av %s FEILET\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:602
+#: components/services/install/command-line/eazel-alt-install-corba.c:495
 #, c-format
 msgid "Package %s failed to uninstall.\n"
 msgstr "Feilet avinstallering for pakke %s.\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:604
+#: components/services/install/command-line/eazel-alt-install-corba.c:497
 #, c-format
 msgid "Package %s failed to install.\n"
 msgstr "Feilet installering for pakke %s.\n"
 
 #. I18N note: \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:625
+#: components/services/install/command-line/eazel-alt-install-corba.c:518
 #, c-format
 msgid "\t· Problem : %s\n"
 msgstr "\t· Problem: %s\n"
 
 #. I18N note: \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:634
+#: components/services/install/command-line/eazel-alt-install-corba.c:527
 #, c-format
 msgid "\t· Action : %s\n"
 msgstr "\t· Handling: %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:677
+#: components/services/install/command-line/eazel-alt-install-corba.c:570
 msgid "Cancelling operation\n"
 msgstr "Avbryter operasjon\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:688
+#: components/services/install/command-line/eazel-alt-install-corba.c:581
 #, c-format
 msgid "About to install a total of %d packages, %dKB\n"
 msgstr "I ferd med å installere totalt %d pakker, %dKB\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:692
+#: components/services/install/command-line/eazel-alt-install-corba.c:585
 #, c-format
 msgid "About to uninstall a total of %d packages, %dKB\n"
 msgstr "I ferd med å avinstallere totalt %d pakker, %dKB\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:696
+#: components/services/install/command-line/eazel-alt-install-corba.c:589
 #, c-format
 msgid "About to revert a total of %d packages, %d KB\n"
 msgstr "I ferd med å forkaste totalt %d pakker, %dKB\n"
 
 #. I18N note: %s is a package name, \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:711
+#: components/services/install/command-line/eazel-alt-install-corba.c:606
 #, c-format
 msgid "\t· %s and it's dependencies\n"
 msgstr "\t· %s med avhengigheter\n"
 
 #. I18N note: %s is a package name, \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:714
+#: components/services/install/command-line/eazel-alt-install-corba.c:609
 #, c-format
 msgid "\t· %s\n"
 msgstr "\t· %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:736
+#: components/services/install/command-line/eazel-alt-install-corba.c:631
 #, c-format
 msgid "Dependency : %s needs %s\n"
 msgstr "Avhengighet: %s trenger %s\n"
 
 #. I18N note: %s is a package name
-#: components/services/install/command-line/eazel-alt-install-corba.c:754
+#: components/services/install/command-line/eazel-alt-install-corba.c:649
 #, c-format
 msgid "Package %s failed md5 check!\n"
 msgstr "Pakke %s feilet md5 sjekk!\n"
 
 #. I18N note: %s is a 32 bytes hex numbers, \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:756
+#: components/services/install/command-line/eazel-alt-install-corba.c:651
 #, c-format
 msgid "\t· server MD5 checksum is %s\n"
 msgstr "\t· tjeners MD5-sjekksum er %s\n"
 
 #. I18N note: %s is a 32 bytes hex numbers, \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:758
+#: components/services/install/command-line/eazel-alt-install-corba.c:653
 #, c-format
 msgid "\t· actual MD5 checksum is %s\n"
 msgstr "\t· faktisk MD5-sjekksum er %s\n"
@@ -2215,15 +2257,15 @@ msgstr "\t· faktisk MD5-sjekksum er %s\n"
 #. If you eg. translate this to Danish : "Fortsæt (j/n " and
 #. translated the "y" later to "j", da_DK users can respond with
 #. "j" "ja" "JA" etc.
-#: components/services/install/command-line/eazel-alt-install-corba.c:824
+#: components/services/install/command-line/eazel-alt-install-corba.c:719
 msgid "Continue? (y/n) "
 msgstr "Fortsett? (j/n) "
 
 #. I18N note: y is the letter for the word Yes. This is
 #. used in the response for a yes/no questions. Your translation
 #. must be 1 character only.
-#: components/services/install/command-line/eazel-alt-install-corba.c:835
-#: components/services/install/command-line/eazel-alt-install-corba.c:877
+#: components/services/install/command-line/eazel-alt-install-corba.c:730
+#: components/services/install/command-line/eazel-alt-install-corba.c:772
 msgid "y"
 msgstr "j"
 
@@ -2232,83 +2274,83 @@ msgstr "j"
 #. If you eg. translate this to Danish : "Fortsæt (j/n " and
 #. translated the "y" later to "j", da_DK users can respond with
 #. "j" "ja" "JA" etc.
-#: components/services/install/command-line/eazel-alt-install-corba.c:865
+#: components/services/install/command-line/eazel-alt-install-corba.c:760
 msgid "Should I delete the RPM files? (y/n) "
 msgstr "Skal jeg slette RPM-filene? (y/n) "
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:897
+#: components/services/install/command-line/eazel-alt-install-corba.c:792
 msgid "Operation ok\n"
 msgstr "Operasjon ok\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:899
+#: components/services/install/command-line/eazel-alt-install-corba.c:794
 msgid "Operation failed\n"
 msgstr "Operasjonen feilet\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1016
+#: components/services/install/command-line/eazel-alt-install-corba.c:911
 msgid "Installing"
 msgstr "Installerer"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1025
+#: components/services/install/command-line/eazel-alt-install-corba.c:920
 msgid "Uninstalling"
 msgstr "Avinstallerer"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1040
+#: components/services/install/command-line/eazel-alt-install-corba.c:935
 msgid "Only one operation at a time please."
 msgstr "Kun en operasjon om gangen er du snill."
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1045
-#: components/services/install/command-line/eazel-alt-install-corba.c:1053
-#: components/services/install/command-line/eazel-alt-install-corba.c:1097
-#: components/services/install/command-line/eazel-alt-install-corba.c:1104
+#: components/services/install/command-line/eazel-alt-install-corba.c:940
+#: components/services/install/command-line/eazel-alt-install-corba.c:948
+#: components/services/install/command-line/eazel-alt-install-corba.c:992
+#: components/services/install/command-line/eazel-alt-install-corba.c:999
 #, c-format
 msgid "%s: --help for usage\n"
 msgstr "%s: --help for bruksmelding\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1069
+#: components/services/install/command-line/eazel-alt-install-corba.c:964
 #, c-format
 msgid "Name         : %s\n"
 msgstr "Navn         : %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1070
+#: components/services/install/command-line/eazel-alt-install-corba.c:965
 #, c-format
 msgid "Version      : %s\n"
 msgstr "Versjon      : %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1071
+#: components/services/install/command-line/eazel-alt-install-corba.c:966
 #, c-format
 msgid "Minor        : %s\n"
 msgstr "Mindre       : %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1073
+#: components/services/install/command-line/eazel-alt-install-corba.c:968
 #, c-format
 msgid "Size         : %d\n"
 msgstr "Størrelse    : %d\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1074
+#: components/services/install/command-line/eazel-alt-install-corba.c:969
 #, c-format
 msgid "Arch         : %s\n"
 msgstr "Ark          : %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1075
+#: components/services/install/command-line/eazel-alt-install-corba.c:970
 #, c-format
 msgid "Distribution : %s\n"
 msgstr "Distribusjon : %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1076
+#: components/services/install/command-line/eazel-alt-install-corba.c:971
 #, c-format
 msgid "Description  : %s\n"
 msgstr "Beskrivelse  : %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1078
+#: components/services/install/command-line/eazel-alt-install-corba.c:973
 #, c-format
 msgid "Install root : %s\n"
 msgstr "Installasjonsrot :  %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1081
+#: components/services/install/command-line/eazel-alt-install-corba.c:976
 msgid "Provides     : \n"
 msgstr "Tilbyr       : \n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1123
+#: components/services/install/command-line/eazel-alt-install-corba.c:1018
 #, c-format
 msgid "exit code %d\n"
 msgstr "avsluttende kode %d\n"
@@ -2367,78 +2409,78 @@ msgstr "bruk sjekkfunksjon (for feilsøking)"
 msgid "Show detailed sub-package info"
 msgstr "Vis detaljert underpakkeinformasjon"
 
-#: components/services/install/lib/eazel-install-logic2.c:143
+#: components/services/install/lib/eazel-install-logic2.c:99
 msgid "Failed to lock the downloaded file"
 msgstr "Kunne ikke låse nedlastingsfilen"
 
-#: components/services/install/lib/eazel-install-logic2.c:160
+#: components/services/install/lib/eazel-install-logic2.c:116
 #, c-format
 msgid "MD5 mismatch, package %s may be compromised"
 msgstr "MD5-feil, pakke %s kan være tuklet med"
 
-#: components/services/install/lib/eazel-install-logic2.c:176
+#: components/services/install/lib/eazel-install-logic2.c:132
 #, c-format
 msgid "No MD5 available for %s"
 msgstr "Ingen MD5-sum tilgjengelig for %s"
 
 #. I18N note: "%is is ok" in the sense that %s=package name and the
 #. package is intact
-#: components/services/install/lib/eazel-install-logic2.c:360
+#: components/services/install/lib/eazel-install-logic2.c:317
 #, c-format
 msgid "%s is ok"
 msgstr "%s er ok"
 
-#: components/services/install/lib/eazel-install-logic2.c:466
+#: components/services/install/lib/eazel-install-logic2.c:423
 #, c-format
 msgid "%s-%s version %s-%s already installed"
 msgstr "%s-%s versjon %s-%s er allerede installert"
 
-#: components/services/install/lib/eazel-install-logic2.c:470
+#: components/services/install/lib/eazel-install-logic2.c:427
 #, c-format
 msgid "%s version %s already installed"
 msgstr "%s versjon %s er allerede installert"
 
-#: components/services/install/lib/eazel-install-logic2.c:479
-#: components/services/install/lib/eazel-install-logic2.c:484
+#: components/services/install/lib/eazel-install-logic2.c:436
+#: components/services/install/lib/eazel-install-logic2.c:441
 #, c-format
 msgid "%s upgrades from version %s-%s to %s-%s"
 msgstr "%s oppgraderinger fra versjon %s-%s til %s-%s"
 
-#: components/services/install/lib/eazel-install-logic2.c:493
+#: components/services/install/lib/eazel-install-logic2.c:450
 #, c-format
 msgid "%s downgrades from version %s-%s to %s-%s"
 msgstr "%s nedgraderinger fra versjon %s-%s til %s-%s"
 
-#: components/services/install/lib/eazel-install-logic2.c:498
+#: components/services/install/lib/eazel-install-logic2.c:455
 #, c-format
 msgid "%s downgrades from version %s to %s"
 msgstr "%s nedgraderinger fra versjon %s til %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:551
+#: components/services/install/lib/eazel-install-logic2.c:508
 #, c-format
 msgid "%s installs version %s-%s"
 msgstr "%s installerer versjon %s-%s"
 
-#: components/services/install/lib/eazel-install-logic2.c:556
+#: components/services/install/lib/eazel-install-logic2.c:513
 #, c-format
 msgid "%s installs version %s"
 msgstr "%s installerer versjon %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:628
+#: components/services/install/lib/eazel-install-logic2.c:663
 #, c-format
 msgid "Loading package info from file %s"
 msgstr "Leser pakkeinformasjon fra fil %s"
 
 #. I18N note: ok is for "package dependencies are ok", "not ok".. well guess...
-#: components/services/install/lib/eazel-install-logic2.c:996
+#: components/services/install/lib/eazel-install-logic2.c:973
 msgid "ok"
 msgstr "ok"
 
-#: components/services/install/lib/eazel-install-logic2.c:996
+#: components/services/install/lib/eazel-install-logic2.c:973
 msgid "not ok"
 msgstr "ikke ok"
 
-#: components/services/install/lib/eazel-install-logic2.c:1160
+#: components/services/install/lib/eazel-install-logic2.c:1137
 #, c-format
 msgid "Checking dependencies for %s"
 msgstr "Sjekker avhengigheter for %s"
@@ -2446,64 +2488,64 @@ msgstr "Sjekker avhengigheter for %s"
 #. I18N note: both %s' are package names.
 #. related is in the sense that the two packages apparently
 #. are connected somehow, eg. foo and foo-devel
-#: components/services/install/lib/eazel-install-logic2.c:1719
+#: components/services/install/lib/eazel-install-logic2.c:1698
 #, c-format
 msgid "%s is related to %s"
 msgstr "%s er relatert til %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:1773
+#: components/services/install/lib/eazel-install-logic2.c:1758
 #, c-format
 msgid "updating %s to version %s-%s solves conflict"
 msgstr "oppdatering av %s til versjon %s-%s løser konflikt"
 
-#: components/services/install/lib/eazel-install-logic2.c:1789
+#: components/services/install/lib/eazel-install-logic2.c:1774
 #, c-format
 msgid "available update to %s (%s-%s) does not solves conflict"
 msgstr "tilgjengelig oppdatering for %s (%s-%s) løser ikke konflikt"
 
-#: components/services/install/lib/eazel-install-logic2.c:1796
+#: components/services/install/lib/eazel-install-logic2.c:1781
 #, c-format
 msgid "could not revive %s"
 msgstr "kunne ikke gjenopplive %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:1932
+#: components/services/install/lib/eazel-install-logic2.c:1917
 #, c-format
 msgid "file uniqueness checking %s"
 msgstr "Sjekker om filen er unik %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:1953
+#: components/services/install/lib/eazel-install-logic2.c:1938
 #, c-format
 msgid "Duplicate file : %s occurs in %s and %s"
 msgstr "Duplikatfil : %s finnes i %s og %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:1971
+#: components/services/install/lib/eazel-install-logic2.c:1956
 #, c-format
 msgid "(there were %d other conflicts)"
 msgstr "(fant %d andre konflikter)"
 
-#: components/services/install/lib/eazel-install-logic2.c:2066
+#: components/services/install/lib/eazel-install-logic2.c:2051
 #, c-format
 msgid "file conflict checking %s"
 msgstr "sjekk etter filkonflikt %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2103
+#: components/services/install/lib/eazel-install-logic2.c:2088
 #, c-format
 msgid "file conflict : package %s already provides file %s also provided by %s"
 msgstr "filkonflikt : pakke %s inneholder allerede fil %s som også finnes i %s"
 
 #. the owner of this file is a package that we're upgrading, and the
 #. * new version no longer has this file, so everything's okay.
-#: components/services/install/lib/eazel-install-logic2.c:2113
+#: components/services/install/lib/eazel-install-logic2.c:2098
 #, c-format
 msgid "...but it is okay, we're upgrading %s and it ditched that file"
 msgstr "...men det er ok, vi oppgraderer %s og den forkastet den filen"
 
-#: components/services/install/lib/eazel-install-logic2.c:2203
+#: components/services/install/lib/eazel-install-logic2.c:2188
 #, c-format
 msgid "checking feature consistency of %s"
 msgstr "sjekker etter konsistente funksjoner i %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2271
+#: components/services/install/lib/eazel-install-logic2.c:2256
 #, c-format
 msgid ""
 "feature missing : %s breaks if %s is installed (feature %s would be lost"
@@ -2511,39 +2553,39 @@ msgstr ""
 "manglende funksjon : %s blir ødelagt hvis %s installeres (funksjon %s ville "
 "gå tapt)"
 
-#: components/services/install/lib/eazel-install-logic2.c:2349
+#: components/services/install/lib/eazel-install-logic2.c:2334
 #, c-format
 msgid "downloading %d packages"
 msgstr "laster ned %d pakker"
 
-#: components/services/install/lib/eazel-install-logic2.c:2614
+#: components/services/install/lib/eazel-install-logic2.c:2599
 #, c-format
 msgid "will upgrade %s"
 msgstr "vil oppgradere %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2617
+#: components/services/install/lib/eazel-install-logic2.c:2602
 #, c-format
 msgid "will downgrade %s"
 msgstr "vil nedgradere %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2620
+#: components/services/install/lib/eazel-install-logic2.c:2605
 #, c-format
 msgid "will install %s"
 msgstr "vil installere %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2623
+#: components/services/install/lib/eazel-install-logic2.c:2608
 #, c-format
 msgid "will uninstall %s"
 msgstr "vil avinstallere %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2706
+#: components/services/install/lib/eazel-install-logic2.c:2691
 #: components/services/install/lib/eazel-install-problem.c:335
 #: components/services/install/lib/eazel-install-problem.c:338
 #, c-format
 msgid "%s requires %s"
 msgstr "%s er avhengig av %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2870
+#: components/services/install/lib/eazel-install-logic2.c:2855
 #, c-format
 msgid "failed %s"
 msgstr "feilet %s"
@@ -2909,6 +2951,245 @@ msgstr "Lukker db for %s (ikke åpen)"
 msgid "Cannot open %s"
 msgstr "Kan ikke åpne %s"
 
+#. this stuff flies by so fast, it's probably enough to just say "info"
+#: components/services/install-view/callbacks.c:63
+msgid "Getting package information ..."
+msgstr "Henter pakkeinformasjon..."
+
+#: components/services/install-view/callbacks.c:81
+#, c-format
+msgid "Checking \"%s\" for conflicts..."
+msgstr "Sjekker \"%s\" for konflikter..."
+
+#: components/services/install-view/callbacks.c:174
+#, c-format
+msgid "Downloading 1 package (%s)"
+msgstr "Laster ned 1 pakke (%s)"
+
+#: components/services/install-view/callbacks.c:176
+#, c-format
+msgid "Downloading %d packages (%s)"
+msgstr "Laster ned %d pakker (%s)"
+
+#: components/services/install-view/callbacks.c:225
+#, c-format
+msgid "Downloading \"%s\""
+msgstr "Laster ned \"%s\""
+
+#: components/services/install-view/callbacks.c:231
+#, c-format
+msgid "0K of %dK"
+msgstr "0K av %dK"
+
+#: components/services/install-view/callbacks.c:238
+#, c-format
+msgid ""
+"The package \"%s\" requires \"%s\" to run.\n"
+"Downloading \"%s\" now."
+msgstr ""
+"Pakke \"%s\" trenger \"%s\" for å kjøre.\n"
+"Laster ned \"%s\" nå."
+
+#: components/services/install-view/callbacks.c:241
+#, c-format
+msgid "Attempting to download package \"%s\"."
+msgstr "Prøver å laste ned pakke \"%s\"."
+
+#: components/services/install-view/callbacks.c:251
+#: components/services/install-view/callbacks.c:322
+msgid "Complete"
+msgstr "Fullført"
+
+#: components/services/install-view/callbacks.c:255
+#, c-format
+msgid ""
+"The package \"%s\" requires \"%s\" to run.\n"
+"\"%s\" has been successfully downloaded."
+msgstr ""
+"Pakken \"%s\" krever \"%s\" for å kjøre.\n"
+"Har fullført nedlasting av \"%s\"."
+
+#: components/services/install-view/callbacks.c:258
+#, c-format
+msgid "The package \"%s\" has been successfully downloaded."
+msgstr "Nedlasting av pakke \"%s\" fullført."
+
+#: components/services/install-view/callbacks.c:276
+#, c-format
+msgid "%dK of %dK"
+msgstr "%dK av %dK"
+
+#: components/services/install-view/callbacks.c:305
+#, c-format
+msgid "Download of package \"%s\" failed!"
+msgstr "Nedlasting av pakke \"%s\" feilet!"
+
+#: components/services/install-view/callbacks.c:327
+#, c-format
+msgid ""
+"The package \"%s\" requires \"%s\" to run.\n"
+"\"%s\" has been successfully downloaded and installed."
+msgstr ""
+"Pakke \"%s\" krever \"%s\" for å kjøre.\n"
+"\"%s\" er lastet ned og installert."
+
+#: components/services/install-view/callbacks.c:330
+#, c-format
+msgid "\"%s\" has been successfully downloaded and installed."
+msgstr "Fullført nedlasting og installasjon av \"%s\"."
+
+#. starting a new package -- create new progress indicator
+#: components/services/install-view/callbacks.c:358
+#, c-format
+msgid "Installing package %d of %d"
+msgstr "Installerer pakke %d av %d"
+
+#: components/services/install-view/callbacks.c:385
+#, c-format
+msgid ""
+"The package \"%s\" requires \"%s\" to run.\n"
+"\"%s\" is now being installed."
+msgstr ""
+"Pakke \"%s\" krever \"%s\" for å kjøre.\n"
+"Installerer \"%s\" nå."
+
+#: components/services/install-view/callbacks.c:388
+#, c-format
+msgid "Now installing package \"%s\"."
+msgstr "Installerer pakke \"%s\"."
+
+#: components/services/install-view/callbacks.c:396
+#: components/services/install-view/nautilus-service-install-view.c:640
+#, c-format
+msgid "Installing \"%s\""
+msgstr "Installerer \"%s\""
+
+#: components/services/install-view/callbacks.c:404
+#: src/nautilus-zoom-control.c:592
+msgid "%d%%"
+msgstr "%d%%"
+
+#: components/services/install-view/callbacks.c:432
+#, c-format
+msgid "Installation failed on %s"
+msgstr "Installasjonen feilet på %s"
+
+#: components/services/install-view/callbacks.c:460
+msgid "I ran into problems while installing."
+msgstr "Det oppstod problemer under installasjonen."
+
+#: components/services/install-view/callbacks.c:461
+msgid "I'd like to try the following :"
+msgstr "Vil gjerne forsøke følgende :"
+
+#: components/services/install-view/callbacks.c:470
+msgid "Is this ok ?"
+msgstr "Er dette ok?"
+
+#: components/services/install-view/callbacks.c:545
+msgid "Installation cancelled."
+msgstr "Installasjon avbrutt."
+
+#: components/services/install-view/callbacks.c:547
+msgid "This package has already been installed."
+msgstr "Denne pakken er allerede installert."
+
+#: components/services/install-view/callbacks.c:549
+msgid "Installation complete."
+msgstr "Installasjon fullført."
+
+#: components/services/install-view/callbacks.c:553
+msgid "Installation failed."
+msgstr "Installasjonen feilet."
+
+#. some succeeded; some failed
+#: components/services/install-view/callbacks.c:557
+msgid "Some packages installed successfully:"
+msgstr "Noen pakker fullførte installasjon:"
+
+#: components/services/install-view/callbacks.c:566
+msgid ""
+"\n"
+"Some packages failed:"
+msgstr ""
+"\n"
+"Noen pakker feilet:"
+
+#: components/services/install-view/callbacks.c:609
+msgid "Erase the RPM files?"
+msgstr "Slett RPM-filene?"
+
+#: components/services/install-view/callbacks.c:611
+msgid "Erase the leftover RPM files?"
+msgstr "Slette RPM-filene som er til overs?"
+
+#: components/services/install-view/callbacks.c:645
+msgid ""
+"A core package of Nautilus has been\n"
+"updated.  You should restart Nautilus.\n"
+"\n"
+"Do you wish to do that now?"
+msgstr ""
+"En av nautilus kjernepakker er oppdatert.\n"
+"Du bør starte nautilus på nytt.\n"
+"\n"
+"Vil du gjøre det nå?"
+
+#. Setup the title
+#: components/services/install-view/forms.c:201
+msgid "Easy Install"
+msgstr "Enkel installasjon"
+
+#. Setup the progress header
+#. FIXME: the middle header is all fubar now, so we just say "messages", but the spec
+#. * shows "progress" over the 2nd column of the message box.  it's just too hard to get
+#. * it aligned currently.
+#.
+#: components/services/install-view/forms.c:327
+msgid "Messages"
+msgstr "Meldinger"
+
+#: components/services/install-view/forms.c:358
+#: components/services/summary/nautilus-summary-view.c:643
+#, c-format
+msgid "Version: %s"
+msgstr "Versjon: %s"
+
+#: components/services/install-view/forms.c:407
+msgid "These packages are ready to be downloaded and installed:"
+msgstr "Disse pakkene er klar til å bli lastet ned og installert:"
+
+#: components/services/install-view/forms.c:408
+msgid "If you wish to download and install these packages, click Continue."
+msgstr ""
+"Hvis du ønsker å laste ned og installere disse pakkene, klikk Fortsett."
+
+#: components/services/install-view/forms.c:411
+msgid "These packages are ready to be uninstalled:"
+msgstr "Disse pakkene er klar til avinstallering:"
+
+#: components/services/install-view/forms.c:412
+msgid "If you wish to uninstall these packages, click Continue."
+msgstr "Hvis du ønser å avinstallere disse pakkene, klitt Fortsett."
+
+#: components/services/install-view/forms.c:415
+msgid "These packages are ready to be reverted:"
+msgstr "Disse pakkene er klar til å bli forkastet:"
+
+#: components/services/install-view/forms.c:416
+msgid "If you wish to revert these packages, click Continue."
+msgstr "Hvis du ønsker å forkaste disse pakkene, klikk Fortsett."
+
+#: components/services/install-view/forms.c:464
+#, c-format
+msgid "for a total of %ld MB."
+msgstr "totalt %ld MB."
+
+#: components/services/install-view/forms.c:466
+#, c-format
+msgid "for a total of %ld KB."
+msgstr "totalt %ld KB."
+
 #: components/services/install-view/nautilus-service-install-view.c:418
 #, c-format
 msgid " · %s is in the GNOME footprint menu under %s"
@@ -2935,11 +3216,6 @@ msgstr "Installerer pakker"
 #: components/services/install-view/nautilus-service-install-view.c:638
 msgid "Installing remote package"
 msgstr "Innstallerer ekstern pakke"
-
-#: components/services/install-view/nautilus-service-install-view.c:640
-#, c-format
-msgid "Installing \"%s\""
-msgstr "Installerer \"%s\""
 
 #: components/services/install-view/nautilus-service-install-view.c:642
 msgid "Installing some package"
@@ -3244,10 +3520,12 @@ msgid "Services Login"
 msgstr "Innlogging til tjenester"
 
 #: components/services/summary/nautilus-summary-dialogs.c:131
+#: libnautilus-extensions/nautilus-password-dialog.c:269
 msgid "Username:"
 msgstr "Brukernavn:"
 
 #: components/services/summary/nautilus-summary-dialogs.c:138
+#: libnautilus-extensions/nautilus-password-dialog.c:276
 msgid "Password:"
 msgstr "Passord:"
 
@@ -3307,11 +3585,6 @@ msgstr "Du er ikke logget inn"
 #: components/services/summary/nautilus-summary-view.c:181
 msgid "Connecting to Eazel Services..."
 msgstr "Kobler til Eazel tjenester..."
-
-#: components/services/summary/nautilus-summary-view.c:643
-#, c-format
-msgid "Version: %s"
-msgstr "Versjon: %s"
 
 #: components/services/summary/nautilus-summary-view.c:737
 #: data/linksets/home.xml.h:3 src/nautilus-service-ui.xml.h:4
@@ -4069,78 +4342,82 @@ msgid "LinuxOrbit.com"
 msgstr "LinuxOrbit.com"
 
 #: data/static_bookmarks.xml.h:25
+msgid "MandrakeSoft"
+msgstr "MandrakeSoft"
+
+#: data/static_bookmarks.xml.h:26
 msgid "Netraverse"
 msgstr "Netraverse"
 
-#: data/static_bookmarks.xml.h:26
+#: data/static_bookmarks.xml.h:27
 msgid "News and Media"
 msgstr "Nyheter og media"
 
-#: data/static_bookmarks.xml.h:27
+#: data/static_bookmarks.xml.h:28
 msgid "O'Reilly"
 msgstr "O'Reilly"
 
-#: data/static_bookmarks.xml.h:28
+#: data/static_bookmarks.xml.h:29
 msgid "OSDN"
 msgstr "OSDN"
 
-#: data/static_bookmarks.xml.h:29
+#: data/static_bookmarks.xml.h:30
 msgid "Open Source Asia"
 msgstr "Open Source Asia"
 
-#: data/static_bookmarks.xml.h:30
+#: data/static_bookmarks.xml.h:31
 msgid "OpenOffice"
 msgstr "OpenOffice"
 
-#: data/static_bookmarks.xml.h:31
+#: data/static_bookmarks.xml.h:32
 msgid "Penguin Computing"
 msgstr "Penguin Computing"
 
-#: data/static_bookmarks.xml.h:32
+#: data/static_bookmarks.xml.h:33
 msgid "Rackspace"
 msgstr "Rackspace"
 
-#: data/static_bookmarks.xml.h:33
+#: data/static_bookmarks.xml.h:34
 msgid "Red Hat"
 msgstr "Red Hat"
 
-#: data/static_bookmarks.xml.h:34
+#: data/static_bookmarks.xml.h:35
 msgid "Red Hat Network"
 msgstr "Red Hat Network"
 
-#: data/static_bookmarks.xml.h:35
+#: data/static_bookmarks.xml.h:36
 msgid "RedFlag Linux"
 msgstr "RedFlag Linux"
 
-#: data/static_bookmarks.xml.h:36
+#: data/static_bookmarks.xml.h:37
 msgid "Software"
 msgstr "Programvare"
 
-#: data/static_bookmarks.xml.h:37
+#: data/static_bookmarks.xml.h:38
 msgid "SourceForge"
 msgstr "SourceForge"
 
-#: data/static_bookmarks.xml.h:38
+#: data/static_bookmarks.xml.h:39
 msgid "Sun StarOffice"
 msgstr "Sun StarOffice"
 
-#: data/static_bookmarks.xml.h:39
+#: data/static_bookmarks.xml.h:40
 msgid "Sun Wah Linux"
 msgstr "Sun Wah Linux"
 
-#: data/static_bookmarks.xml.h:40
+#: data/static_bookmarks.xml.h:41
 msgid "Web Services"
 msgstr "Web-tjenester"
 
-#: data/static_bookmarks.xml.h:41
+#: data/static_bookmarks.xml.h:42
 msgid "ZDNet Linux Hardware Database"
 msgstr "ZDNet Linux maskinvaredatabase"
 
-#: data/static_bookmarks.xml.h:42
+#: data/static_bookmarks.xml.h:43
 msgid "ZDNet Linux Resource Center"
 msgstr "ZDNET Linux ressurssenter"
 
-#: data/static_bookmarks.xml.h:43
+#: data/static_bookmarks.xml.h:44
 msgid "Zero-Knowledge"
 msgstr "Zero-Knowledge"
 
@@ -4199,11 +4476,6 @@ msgstr "_Kopier hit"
 #: libnautilus-extensions/nautilus-drag.c:491
 msgid "_Link here"
 msgstr "_Lag lenke hit"
-
-#: libnautilus-extensions/nautilus-drag.c:493
-#: src/file-manager/fm-directory-view.c:3503
-msgid "Cancel"
-msgstr "Avbryt"
 
 #. Note to localizers: this font is used for text items in Druid pages
 #: libnautilus-extensions/nautilus-druid-page-eazel.c:381
@@ -5595,6 +5867,14 @@ msgstr "aldri"
 msgid "Never"
 msgstr "Aldri"
 
+#: libnautilus-extensions/nautilus-gnome-extensions.c:640
+msgid "No image was selected.  You must click on an image to select it."
+msgstr "Ingen bilder ble valgt. Du må klikke på et bilde for å velge det."
+
+#: libnautilus-extensions/nautilus-gnome-extensions.c:641
+msgid "No selection made"
+msgstr "Ingen valgt gjort"
+
 #. The list of characters that cause line breaks can be localized.
 #: libnautilus-extensions/nautilus-icon-canvas-item.c:69
 msgid " -_,;.?/&"
@@ -5665,6 +5945,10 @@ msgstr "Gjenopprett inntasting"
 msgid "Restore the changed name"
 msgstr "Gjenopprett det endrede navnet"
 
+#: libnautilus-extensions/nautilus-password-dialog.c:306
+msgid "Remember this password"
+msgstr "Husk dette passordet"
+
 #: libnautilus-extensions/nautilus-preferences.c:76
 msgid "Beginner"
 msgstr "Begynner"
@@ -5677,7 +5961,7 @@ msgstr "Viderekommen"
 msgid "Advanced"
 msgstr "Avansert"
 
-#: libnautilus-extensions/nautilus-preferences-dialog.c:205
+#: libnautilus-extensions/nautilus-preferences-dialog.c:202
 msgid "Prefs Box"
 msgstr "Brukervalg-boks"
 
@@ -5828,6 +6112,42 @@ msgid ""
 msgstr ""
 "Du kan konfigurere hvilke programmer som foreslås for hvilke filtyper i "
 "GNOME kontrollsenter."
+
+#: libnautilus-extensions/nautilus-program-chooser.c:1485
+#, c-format
+msgid "No viewers are available for \"%s\"."
+msgstr "Ingen visninger tilgjengelig for \"%s\"."
+
+#: libnautilus-extensions/nautilus-program-chooser.c:1486
+msgid "No Viewers Available"
+msgstr "Ingen visninger tilgjengelig"
+
+#: libnautilus-extensions/nautilus-program-chooser.c:1489
+#, c-format
+msgid "No applications are available for \"%s\"."
+msgstr "Ingen tilgjengelige applikasjoner for \"%s\"."
+
+#: libnautilus-extensions/nautilus-program-chooser.c:1490
+msgid "No Applications Available"
+msgstr "Ingen applikasjoner tilgjengelig"
+
+#. Note: This might be misleading in the components case, since the
+#. * user can't add components to the complete list even from the capplet.
+#. * (They can add applications though.)
+#.
+#: libnautilus-extensions/nautilus-program-chooser.c:1497
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"You can configure which programs are offered for which file types with the "
+"\"File Types and Programs\" part of the GNOME Control Center. Do you want to "
+"go there now?"
+msgstr ""
+"%s\n"
+"\n"
+"Du kan konfigurere hvilke programmer som foreslås for hvilke filtyper med "
+"\"Filtyper og programmer\" delen av GNOME kontrollsenter. Vil du gå dit nå?"
 
 #: libnautilus-extensions/nautilus-program-choosing.c:516
 #, c-format
@@ -6150,6 +6470,16 @@ msgstr "Gjenopprett redigering"
 #: libnautilus-extensions/nautilus-undo-signal-handlers.c:179
 msgid "Redo the edit"
 msgstr "Gjenopprett redigeringen"
+
+#: libnautilus-extensions/nautilus-view-identifier.c:61
+#, c-format
+msgid "View as %s"
+msgstr "Vis som %s"
+
+#: libnautilus-extensions/nautilus-view-identifier.c:64
+#, c-format
+msgid "%s Viewer"
+msgstr "%s-visning"
 
 #: libnautilus-extensions/nautilus-volume-monitor.c:514
 #: libnautilus-extensions/nautilus-volume-monitor.c:533
@@ -7762,7 +8092,10 @@ msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
 "Nautilus, please create this folder, or set permissions such that Nautilus "
 "can create it."
-msgstr "Nautilus kunne ikke opprette den nødvendige mappen \"%s\". Opprett denne mappen før du kjører Nautilus, eller endre rettighetene slik at Nautilus kan opprette den."
+msgstr ""
+"Nautilus kunne ikke opprette den nødvendige mappen \"%s\". Opprett denne "
+"mappen før du kjører Nautilus, eller endre rettighetene slik at Nautilus kan "
+"opprette den."
 
 #: src/nautilus-application.c:280
 msgid "Couldn't Create Required Folders"
@@ -7782,7 +8115,8 @@ msgstr ""
 "\n"
 "%s\n"
 "\n"
-"Vennligst opprett disse mappene før du kjører Nautilus, eller sett rettigheter slik at Nautilus kan opprette dem."
+"Vennligst opprett disse mappene før du kjører Nautilus, eller sett "
+"rettigheter slik at Nautilus kan opprette dem."
 
 #. Can't register myself due to trouble locating the
 #. * Nautilus_Shell.oaf file. This has happened when you
@@ -7893,10 +8227,6 @@ msgstr ""
 "\n"
 "Du kan, som root, ødelegge ditt system hvis du ikke er forsiktig, og\n"
 "Nautilus vil ikke hindre deg i å gjøre dette."
-
-#: src/nautilus-application.c:638
-msgid "Quit"
-msgstr "Avslutt"
 
 #: src/nautilus-bookmarks-window.c:127
 msgid "Bookmarks"
@@ -9522,9 +9852,20 @@ msgstr "Fremover"
 msgid "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 
-#: src/nautilus-zoom-control.c:592
-msgid "%d%%"
-msgstr "%d%%"
+#~ msgid "Disable Inventory [FIXME]"
+#~ msgstr "Slå av inventar"
+
+#~ msgid "An explanation of how why and what we're doing here."
+#~ msgstr "En forklaring av hva vi gjør og hvorfor passer her."
+
+#~ msgid "Yes"
+#~ msgstr "Ja"
+
+#~ msgid "No"
+#~ msgstr "Nei"
+
+#~ msgid "Force install"
+#~ msgstr "Tvungen installasjon"
 
 #~ msgid "Secret"
 #~ msgstr "Hemmelig"
@@ -9811,144 +10152,8 @@ msgstr "%d%%"
 #~ msgid "Package %s had version %s and not %s"
 #~ msgstr "Pakke %s hadde versjon %s og ikke %s"
 
-#~ msgid "Messages"
-#~ msgstr "Meldinger"
-
-#~ msgid "Checking \"%s\" for conflicts..."
-#~ msgstr "Sjekker \"%s\" for konflikter..."
-
-#~ msgid "Downloading \"%s\""
-#~ msgstr "Laster ned \"%s\""
-
-#~ msgid "0K of %dK"
-#~ msgstr "0K av %dK"
-
-#~ msgid ""
-#~ "The package \"%s\" requires \"%s\" to run.\n"
-#~ "Downloading \"%s\" now."
-#~ msgstr ""
-#~ "Pakke \"%s\" trenger \"%s\" for å kjøre.\n"
-#~ "Laster ned \"%s\" nå."
-
-#~ msgid "Attempting to download package \"%s\"."
-#~ msgstr "Prøver å laste ned pakke \"%s\"."
-
-#~ msgid "Complete"
-#~ msgstr "Fullført"
-
-#~ msgid ""
-#~ "The package \"%s\" requires \"%s\" to run.\n"
-#~ "\"%s\" has been successfully downloaded."
-#~ msgstr ""
-#~ "Pakken \"%s\" krever \"%s\" for å kjøre.\n"
-#~ "Har fullført nedlasting av \"%s\"."
-
-#~ msgid "The package \"%s\" has been successfully downloaded."
-#~ msgstr "Nedlasting av pakke \"%s\" fullført."
-
-#~ msgid "%dK of %dK"
-#~ msgstr "%dK av %dK"
-
 #~ msgid "Preparing to download packages..."
 #~ msgstr "Forbereder nedlasting av pakker..."
-
-#~ msgid ""
-#~ "These packages are about to be downloaded and installed:\n"
-#~ "\n"
-#~ msgstr ""
-#~ "Disse pakkene er i ferd med å bli lastet ned og installert:\n"
-#~ "\n"
-
-#~ msgid ""
-#~ "These packages are about to be reverted:\n"
-#~ "\n"
-#~ msgstr ""
-#~ "Disse pakkene er i ferd med å bli forkastet:\n"
-#~ "\n"
-
-#~ msgid "for a total of %ld MB."
-#~ msgstr "totalt %ld MB."
-
-#~ msgid "for a total of %ld KB."
-#~ msgstr "totalt %ld KB."
-
-#~ msgid ""
-#~ "\n"
-#~ "Is this okay?"
-#~ msgstr ""
-#~ "\n"
-#~ "Er dette ok?"
-
-#~ msgid "Downloading 1 package (%s)"
-#~ msgstr "Laster ned 1 pakke (%s)"
-
-#~ msgid "Downloading %d packages (%s)"
-#~ msgstr "Laster ned %d pakker (%s)"
-
-#~ msgid "Download of package \"%s\" failed!"
-#~ msgstr "Nedlasting av pakke \"%s\" feilet!"
-
-#~ msgid ""
-#~ "The package \"%s\" requires \"%s\" to run.\n"
-#~ "\"%s\" has been successfully downloaded and installed."
-#~ msgstr ""
-#~ "Pakke \"%s\" krever \"%s\" for å kjøre.\n"
-#~ "\"%s\" er lastet ned og installert."
-
-#~ msgid "\"%s\" has been successfully downloaded and installed."
-#~ msgstr "Fullført nedlasting og installasjon av \"%s\"."
-
-#~ msgid ""
-#~ "The package \"%s\" requires \"%s\" to run.\n"
-#~ "\"%s\" is now being installed."
-#~ msgstr ""
-#~ "Pakke \"%s\" krever \"%s\" for å kjøre.\n"
-#~ "Installerer \"%s\" nå."
-
-#~ msgid "Now installing package \"%s\"."
-#~ msgstr "Installerer pakke \"%s\"."
-
-#~ msgid "I ran into problems while installing."
-#~ msgstr "Det oppstod problemer under installasjonen."
-
-#~ msgid "I'd like to try the following :"
-#~ msgstr "Vil gjerne forsøke følgende :"
-
-#~ msgid "Installation aborted."
-#~ msgstr "Installasjon avbrutt."
-
-#~ msgid "Installation complete."
-#~ msgstr "Installasjon fullført."
-
-#~ msgid "Some packages installed successfully:"
-#~ msgstr "Noen pakker fullførte installasjon:"
-
-#~ msgid ""
-#~ "\n"
-#~ "Some packages failed:"
-#~ msgstr ""
-#~ "\n"
-#~ "Noen pakker feilet:"
-
-#~ msgid "Erase the RPM files?"
-#~ msgstr "Slett RPM-filene?"
-
-#~ msgid "Erase the leftover RPM files?"
-#~ msgstr "Slette RPM-filene som er til overs?"
-
-#~ msgid ""
-#~ "A core package of Nautilus has been\n"
-#~ "updated.  You should restart Nautilus.\n"
-#~ "\n"
-#~ "Do you wish to do that now?"
-#~ msgstr ""
-#~ "En av nautilus kjernepakker er oppdatert.\n"
-#~ "Du bør starte nautilus på nytt.\n"
-#~ "\n"
-#~ "Vil du gjøre det nå?"
-
-#~ msgid "Installation failed on %s"
-#~ msgstr "Installasjonen feilet på %s"
 
 #~ msgid "Could not find a valid boolean value for grey_out!"
 #~ msgstr "Kunne ikke finne en gyldig bolsk verdi for grey_out!"
@@ -10106,13 +10311,6 @@ msgstr "%d%%"
 
 #~ msgid "Getting information about package \"%s\" ..."
 #~ msgstr "Henter informasjon om pakke \"%s\"..."
-
-#~ msgid ""
-#~ "I'm about to download and install the following packages:\n"
-#~ "\n"
-#~ msgstr ""
-#~ "I ferd med å laste ned og installere følgende pakker:\n"
-#~ "\n"
 
 #~ msgid "I've downloaded and installed package \"%s\"."
 #~ msgstr "Pakke \"%s\" er lastet ned og installert."
