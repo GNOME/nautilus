@@ -81,10 +81,10 @@ static void  notify_listeners_if_changed (Notes      *notes,
 
 static void
 get_bonobo_properties (BonoboPropertyBag *bag,
-			BonoboArg *arg,
-			guint arg_id,
-			CORBA_Environment *ev,
-			gpointer callback_data)
+                       BonoboArg         *arg,
+                       guint              arg_id,
+                       CORBA_Environment *ev,
+                       gpointer           callback_data)
 {
         char *indicator_image;
         Notes *notes;

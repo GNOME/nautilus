@@ -85,9 +85,14 @@ typedef struct {
 	char *indicator_pixbuf_name;
 	GdkPixbuf *indicator_pixbuf;
 	int notebook_page;
-	Bonobo_Listener listener;
 	GtkWidget *tab_view;
 	GdkRectangle tab_rect;
+
+	NautilusSidebarTabs *parent;
+
+	BonoboListener      *listener;
+	Bonobo_PropertyBag   property_bag;
+	Bonobo_EventSource   event_source;
 } TabItem;
 
 struct NautilusSidebarTabsDetails {
@@ -123,8 +128,8 @@ struct NautilusSidebarTabsDetails {
 
 /* headers */
 
-static void     nautilus_sidebar_tabs_class_init  (NautilusSidebarTabsClass *klass);
-static void     nautilus_sidebar_tabs_init        (NautilusSidebarTabs      *pixmap);
+static void     nautilus_sidebar_tabs_class_init        (NautilusSidebarTabsClass *klass);
+static void     nautilus_sidebar_tabs_init              (NautilusSidebarTabs      *pixmap);
 static int      nautilus_sidebar_tabs_expose            (GtkWidget                *widget,
 							 GdkEventExpose           *event);
 static void     nautilus_sidebar_tabs_destroy           (GtkObject                *object);
@@ -139,6 +144,11 @@ static TabItem* tab_item_find_by_name                   (NautilusSidebarTabs    
 							 const char               *name);
 static void     style_set                               (GtkWidget                *widget,
 							 GtkStyle                 *previous_style);
+static void     tab_indicator_changed_callback          (BonoboListener           *listener,
+							 const char               *event_name,
+							 const CORBA_any          *arg,
+							 CORBA_Environment        *ev,
+							 gpointer                  callback_data);
 
 EEL_CLASS_BOILERPLATE (NautilusSidebarTabs, nautilus_sidebar_tabs, GTK_TYPE_WIDGET)
 
@@ -302,30 +312,34 @@ get_property_bag (TabItem *item)
 {
 	Bonobo_Control control;
 	CORBA_Environment ev;
-	Bonobo_PropertyBag property_bag;
 
-	if (item->tab_view == NULL) {
-		return CORBA_OBJECT_NIL;
-	}
-	control = nautilus_view_frame_get_control (NAUTILUS_VIEW_FRAME (item->tab_view));	
-	if (control == NULL) {
-		return CORBA_OBJECT_NIL;
+	if (item->property_bag == CORBA_OBJECT_NIL) {
+		if (item->tab_view == NULL) {
+			return CORBA_OBJECT_NIL;
+		}
+
+		control = nautilus_view_frame_get_control
+			(NAUTILUS_VIEW_FRAME (item->tab_view));	
+		if (control == NULL) {
+			return CORBA_OBJECT_NIL;
+		}
+
+		CORBA_exception_init (&ev);
+		item->property_bag = Bonobo_Control_getProperties (control, &ev);
+		if (BONOBO_EX (&ev)) {
+			item->property_bag = CORBA_OBJECT_NIL;
+		}
+		CORBA_exception_free (&ev);
 	}
 
-	CORBA_exception_init (&ev);
-	property_bag = Bonobo_Control_getProperties (control, &ev);
-	if (BONOBO_EX (&ev)) {
-		property_bag = CORBA_OBJECT_NIL;
-	}
-	CORBA_exception_free (&ev);
-	return property_bag;
+	return item->property_bag;
 }
 
 /* utility to destroy all the storage used by a tab item */
 static void
 tab_item_destroy (TabItem *item)
 {
-	Bonobo_PropertyBag property_bag;
+	BonoboListener *listener;
 	CORBA_Environment ev;
 
 	g_free (item->tab_text);
@@ -335,18 +349,34 @@ tab_item_destroy (TabItem *item)
 		g_object_unref (item->indicator_pixbuf);
 	}
 
-	if (item->listener != CORBA_OBJECT_NIL) {
-		CORBA_exception_init (&ev);
+	CORBA_exception_init (&ev);
 
-		property_bag = get_property_bag (item);
-		if (property_bag != CORBA_OBJECT_NIL) {
-			bonobo_event_source_client_remove_listener
-				(property_bag, item->listener, &ev);
-			bonobo_object_release_unref (property_bag, &ev);
-		}
-		CORBA_Object_release (item->listener, &ev);
+	if ((listener = item->listener)) {
+		g_signal_handlers_disconnect_matched (
+			item->listener, G_SIGNAL_MATCH_FUNC,
+			0, 0, NULL, G_CALLBACK (tab_indicator_changed_callback), NULL);
+		item->listener = NULL;
+	}
 
-		CORBA_exception_free (&ev);
+	if (listener != NULL &&
+	    item->event_source != CORBA_OBJECT_NIL) {
+		Bonobo_EventSource_removeListener
+			(item->event_source,
+			 BONOBO_OBJREF (listener),
+			 &ev);
+	}
+
+	if (item->event_source != CORBA_OBJECT_NIL) {
+		CORBA_Object_release (item->event_source, &ev);
+	}
+
+	if (item->property_bag != CORBA_OBJECT_NIL) {
+		CORBA_Object_release (item->property_bag, &ev);
+	}
+	CORBA_exception_free (&ev);
+
+	if (listener) {
+		bonobo_object_unref (BONOBO_OBJECT (listener));
 	}
 
 	eel_remove_weak_pointer (&item->tab_view);
@@ -456,7 +486,8 @@ nautilus_sidebar_tabs_load_tab_pieces (NautilusSidebarTabs *sidebar_tabs, const 
 /* determine the tab associated with the passed-in coordinates, and pass back the notebook
    page index associated with it.  */
 
-int nautilus_sidebar_tabs_hit_test (NautilusSidebarTabs *sidebar_tabs, int x, int y)
+int
+nautilus_sidebar_tabs_hit_test (NautilusSidebarTabs *sidebar_tabs, int x, int y)
 {
 	GList *current_item;
 	TabItem *tab_item;
@@ -1318,17 +1349,27 @@ get_tab_image_name (TabItem *tab_item)
 
 	tab_image_name = bonobo_property_bag_client_get_value_string
 		(property_bag, "tab_image", NULL);
-	bonobo_object_release_unref (property_bag, NULL);
+
 	return tab_image_name;
 }
 
 /* update the indicator image for the passed in tab */
 static void
-nautilus_sidebar_tabs_update_tab_item (NautilusSidebarTabs *sidebar_tabs, TabItem *tab_item)
+nautilus_sidebar_tabs_update_tab_item (TabItem    *tab_item,
+				       const char *opt_new_image_name)
 {
+	NautilusSidebarTabs *sidebar_tabs;
 	char *tab_image_name, *image_path;
 	
-	tab_image_name = get_tab_image_name (tab_item);
+	g_return_if_fail (tab_item != NULL);
+	sidebar_tabs = tab_item->parent;
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs));
+
+	if (opt_new_image_name) {
+		tab_image_name = g_strdup (opt_new_image_name);
+	} else {
+		tab_image_name = get_tab_image_name (tab_item);
+	}
 
 	/* see if the indicator icon changed; if so, fetch the new one */
 	if (eel_strcmp (tab_image_name, tab_item->indicator_pixbuf_name) != 0) {
@@ -1370,53 +1411,31 @@ get_tab_item_from_view (NautilusSidebarTabs *sidebar_tabs, GtkWidget *view)
 	return NULL;
 }
 
-/* check all of the tabs to see if their indicator pixmaps are ready for updating */
 static void
-nautilus_sidebar_tabs_update_all_indicators (NautilusSidebarTabs *sidebar_tabs)
-{
-	GList *node;
-	TabItem *tab_item;
-
-	for (node = sidebar_tabs->details->tab_items; node != NULL; node = node->next) {
-		tab_item = node->data;
-		nautilus_sidebar_tabs_update_tab_item (sidebar_tabs, tab_item);				
-	}
-}
-
-/* check all of the tabs to see if their indicator pixmaps are ready for updating */
-static void
-nautilus_sidebar_tabs_update_indicator (NautilusSidebarTabs *sidebar_tabs, GtkWidget *view)
-{
-	GList *node;
-	TabItem *tab_item;
-	
-	for (node = sidebar_tabs->details->tab_items; node != NULL; node = node->next) {
-		tab_item = node->data;
-		if (tab_item->tab_view == view) {
-			nautilus_sidebar_tabs_update_tab_item (sidebar_tabs, tab_item);
-			break;
-		}
-	}
-}
-
-static void
-tab_indicator_changed_callback (BonoboListener *listener,
-				const char *event_name,
-				const CORBA_any *arg,
+tab_indicator_changed_callback (BonoboListener    *listener,
+				const char        *event_name,
+				const CORBA_any   *arg,
 				CORBA_Environment *ev,
-				gpointer callback_data)
+				gpointer           callback_data)
 {
-	NautilusSidebarTabs *sidebar_tabs;
+	TabItem *tab_item;
 
-	sidebar_tabs = NAUTILUS_SIDEBAR_TABS (callback_data);
-	nautilus_sidebar_tabs_update_all_indicators (sidebar_tabs);	
+	tab_item = callback_data;
+
+	g_return_if_fail (bonobo_arg_type_is_equal
+			  (arg->_type, TC_CORBA_string, NULL));
+
+	nautilus_sidebar_tabs_update_tab_item
+		(tab_item, BONOBO_ARG_GET_STRING (arg));
 }
 
 /* listen for changes on the tab_image property */
 void
-nautilus_sidebar_tabs_connect_view (NautilusSidebarTabs *sidebar_tabs, GtkWidget *view)
+nautilus_sidebar_tabs_connect_view (NautilusSidebarTabs *sidebar_tabs,
+				    GtkWidget           *view)
 {
 	TabItem *tab_item;
+	CORBA_Environment ev;
 	Bonobo_PropertyBag property_bag;
 
 	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs));
@@ -1426,18 +1445,52 @@ nautilus_sidebar_tabs_connect_view (NautilusSidebarTabs *sidebar_tabs, GtkWidget
 	if (tab_item == NULL) {
 		return;
 	}
-	
+
+	g_object_ref (G_OBJECT (sidebar_tabs));
+
 	property_bag = get_property_bag (tab_item);
 	if (property_bag != CORBA_OBJECT_NIL) {
-		tab_item->listener = bonobo_event_source_client_add_listener_full
-			(property_bag,
-			 g_cclosure_new (G_CALLBACK (tab_indicator_changed_callback),
-					 sidebar_tabs, NULL), 
-			 "Bonobo/Property:change:tab_image", NULL); 
-		bonobo_object_release_unref (property_bag, NULL);
+		CORBA_exception_init (&ev);
+
+		tab_item->listener = g_object_new (BONOBO_TYPE_LISTENER, NULL);
+		g_signal_connect (tab_item->listener, "event_notify",
+				  G_CALLBACK (tab_indicator_changed_callback),
+				  tab_item);
+
+		tab_item->event_source = Bonobo_Unknown_queryInterface
+			(property_bag, "IDL:Bonobo/EventSource:1.0", &ev);
+		if (BONOBO_EX (&ev)) {
+			tab_item->event_source = CORBA_OBJECT_NIL;
+		}
+
+		/* FIXME: it would be nice to be able to dispose
+		 * the BonoboListener explicitely
+		 */
+		if (tab_item->event_source != CORBA_OBJECT_NIL) {
+			Bonobo_EventSource_addListenerWithMask
+				(tab_item->event_source,
+				 BONOBO_OBJREF (tab_item->listener),
+				 "Bonobo/Property:change:tab_image",
+				 &ev); 
+
+			Bonobo_Unknown_unref (tab_item->event_source, &ev);
+		} else {
+			bonobo_object_unref (BONOBO_OBJECT (tab_item->listener));
+			tab_item->listener = NULL;
+		}
+
+		CORBA_exception_free (&ev);
 	}
 
-	nautilus_sidebar_tabs_update_indicator (sidebar_tabs, view);
+	/* might have strangely re-entered ? */
+	tab_item = get_tab_item_from_view (sidebar_tabs, view);
+	if (tab_item == NULL) {
+		return;
+	}
+
+	nautilus_sidebar_tabs_update_tab_item (tab_item, NULL);
+
+	g_object_unref (G_OBJECT (sidebar_tabs));
 }
 
 /* add a new tab entry, return TRUE if we succeed */
@@ -1461,6 +1514,7 @@ nautilus_sidebar_tabs_add_view (NautilusSidebarTabs *sidebar_tabs,
 	
 	/* allocate a new entry, and initialize it */
 	new_tab_item = g_new0 (TabItem, 1);
+	new_tab_item->parent = sidebar_tabs;
 	new_tab_item->tab_text = g_strdup (name);
 	new_tab_item->visible = TRUE;
 	new_tab_item->tab_view = new_view;

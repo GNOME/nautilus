@@ -1,5 +1,21 @@
 2002-05-21  Michael Meeks  <michael@ximian.com>
 
+	* src/nautilus-sidebar-tabs.c (get_property_bag):
+	cache the property bag item, so we're not forever
+	querying for it.
+	(tab_item_destroy): re-write, belt and braces.
+	(nautilus_sidebar_tabs_connect_view): update.
+	(get_tab_image_name): don't release the property bag.
+	(nautilus_sidebar_tabs_update_indicator): kill, unused.
+	(nautilus_sidebar_tabs_add_view): associate the tab
+	with it's parent.
+	(tab_indicator_changed_callback): update just 1 tab.
+	(nautilus_sidebar_tabs_update_all_indicators): remove,
+	not what we wanted anyway.
+	(nautilus_sidebar_tabs_update_tab_item): update sig.
+
+2002-05-21  Michael Meeks  <michael@ximian.com>
+
 	* src/file-manager/fm-list-view.c
 	(list_activate_callback): move this code
 	(event_after_callback): into here, it seems we get
