@@ -137,8 +137,9 @@ char *installer_server =NULL;
 int installer_server_port = 0;
 char *installer_cgi_path = NULL;
 char *installer_tmpdir = NULL;
-static void check_if_next_okay (GnomeDruidPage *page, void *unused, EazelInstaller *installer);
+char *installer_homedir = NULL;
 
+static void check_if_next_okay (GnomeDruidPage *page, void *unused, EazelInstaller *installer);
 static GtkObjectClass *eazel_installer_parent_class;
 
 
@@ -864,7 +865,7 @@ jump_to_retry_page (EazelInstaller *installer)
 		break;
 		case REMOVE: {
 			char *required = packagedata_get_readable_name (rcase->u.remove.pack);
-			temp = g_strdup_printf ("%s could not be solved, will be forcefully removed.", 
+			temp = g_strdup_printf ("%s doesn't seem to have a more recent version -- will be forcefully removed.", 
 						required);
 			g_free (required);
 		}
@@ -1998,7 +1999,7 @@ eazel_install_get_depends (EazelInstaller *installer, const char *dest_dir)
 	if (! eazel_install_fetch_file (installer->service, url, "package list", destination)) {
 		/* try again with proxy config */
 		unlink (destination);
-		if (! attempt_http_proxy_autoconfigure () ||
+		if (! attempt_http_proxy_autoconfigure (installer_homedir) ||
 		    ! eazel_install_fetch_file (installer->service, url, "package list", destination)) {
 			jump_to_error_page (installer, NULL, ERROR_NEED_TO_SET_PROXY, "");
 			rmdir (installer->tmpdir);
