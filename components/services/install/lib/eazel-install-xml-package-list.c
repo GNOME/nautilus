@@ -37,6 +37,7 @@
 static PackageData* parse_package (xmlNode* package, gboolean set_toplevel);
 static CategoryData* parse_category (xmlNode* cat);
 static int parse_pkg_template (const char* pkg_template_file, char** result);
+static PackageData* osd_parse_softpkg (xmlNodePtr softpkg);
 
 
 static PackageData*
@@ -44,6 +45,7 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 
 	xmlNodePtr dep;
 	PackageData* rv;
+	char *temp;
 
 	rv = packagedata_new ();
 
@@ -58,15 +60,13 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 		rv->modify_status = packagedata_modstatus_str_to_enum (xml_get_value (package, "MODSTATUS"));
 	}
 
-	{
-		char *tmp;
-		tmp = xml_get_value (package, "BYTESIZE");
-		if (tmp) {
-			rv->bytesize = atoi (tmp);
-		} else {
-			rv->bytesize = 0;
-		}
+	temp = xml_get_value (package, "BYTESIZE");
+	if (temp) {
+		rv->bytesize = atoi (temp);
+	} else {
+		rv->bytesize = 0;
 	}
+
 	rv->description = g_strdup (xml_get_value (package, "SUMMARY"));
 	rv->distribution = trilobite_get_distribution ();
 	if (set_toplevel) {
@@ -159,6 +159,10 @@ parse_category (xmlNode* cat) {
 				}
 				pkg2 = pkg2->next;
 			}
+		} else if (g_strcasecmp (pkg->name, "DESCRIPTION") == 0) {
+			text = xmlNodeGetContent (pkg);
+			category->description = g_strdup (text);
+			free (text);
 		} else {
 			g_error (_("*** Unknown node type '%s'"), pkg->name);
 		}
@@ -169,31 +173,27 @@ parse_category (xmlNode* cat) {
 
 } /* end parse_category */
 
-GList* parse_shared (xmlDocPtr doc) 
+/* parse the contents of the CATEGORIES node */
+static GList* parse_shared (xmlNodePtr base) 
 {
-	xmlNodePtr base;
 	xmlNodePtr category;
 	GList* rv;
 
 	rv = NULL;
-	base = doc->root;
 	if (base == NULL) {
-		xmlFreeDoc (doc);
 		g_warning (_("*** The pkg list file contains no data! ***\n"));
 		return NULL;
 	}
 	
-	if (g_strcasecmp (base->name, "CATEGORIES")) {
+	if (g_strcasecmp (base->name, "CATEGORIES") != 0) {
 		g_print (_("*** Cannot find the CATEGORIES xmlnode! ***\n"));
-		xmlFreeDoc (doc);
 		g_warning (_("*** Bailing from categories parse! ***\n"));
 		return NULL;
 	}
 	
-	category = doc->root->childs;
-	if(category == NULL) {
+	category = base->childs;
+	if (category == NULL) {
 		g_print (_("*** No Categories! ***\n"));
-		xmlFreeDoc (doc);
 		g_warning (_("*** Bailing from category parse! ***\n"));
 		return NULL;
 	}
@@ -206,26 +206,29 @@ GList* parse_shared (xmlDocPtr doc)
 		category = category->next;
 	}
 
-	xmlFreeDoc (doc);
 	return rv;
 }
 
-GList* parse_memory_xml_package_list (const char *mem, int size) {
+GList*
+parse_memory_xml_package_list (const char *mem, int size)
+{
 	xmlDocPtr doc;
+	GList *list;
 
 	g_return_val_if_fail (mem!=NULL, NULL);
 
 	doc = xmlParseMemory ((char*)mem, size);
-
 	if (doc == NULL) {
 		xmlFreeDoc (doc);
 		return NULL;
 	}
-	
-	return parse_shared (doc);
+
+	list = parse_shared (doc->root);
+	xmlFreeDoc (doc);
+	return list;
 }
 
-GList* 
+GList*
 parse_memory_transaction_file (const char *mem, 
 			       int size)
 {
@@ -264,26 +267,60 @@ parse_memory_transaction_file (const char *mem,
 		pack = parse_package (packages, TRUE);
 		rv = g_list_append (rv, pack);
 		packages = packages->next;
-	}	
+	}
+	return rv;
 }
 
 GList*
-parse_local_xml_package_list (const char* pkg_list_file) {
+parse_local_xml_package_list (const char* pkg_list_file, char **splash_text)
+{
 	xmlDocPtr doc;
+	xmlNodePtr base, node;
+	GList *list;
+	CategoryData *catdat;
+	char *text;
 
-	g_return_val_if_fail (pkg_list_file!=NULL, NULL);
+	g_return_val_if_fail (pkg_list_file != NULL, NULL);
 
 	doc = xmlParseFile (pkg_list_file);
-	
+	list = NULL;
+
 	if (doc == NULL) {
-		fprintf (stderr, "***Unable to open pkg list file %s\n", pkg_list_file);
-		xmlFreeDoc (doc);
-		return NULL;
+		fprintf (stderr, "*** Unable to open pkg list file %s\n", pkg_list_file);
+		goto out;
 	}
 
-	return parse_shared (doc);
-	
-} /*end fetch_xml_packages_local */
+	base = doc->root;
+	if (base == NULL) {
+		g_print (_("*** No category nodes! ***"));
+		goto out;
+	}
+	if (g_strcasecmp (base->name, "CATEGORIES") != 0) {
+		g_print (_("*** Cannot find the CATEGORIES xmlnode! ***"));
+		goto out;
+	}
+	node = base->childs;
+	list = NULL;
+	while (node) {
+		if (g_strcasecmp (node->name, "CATEGORY") == 0) {
+			catdat = parse_category (node);
+			list = g_list_append (list, catdat);
+		} else if (g_strcasecmp (node->name, "SPLASH-TEXT") == 0) {
+			if (splash_text != NULL) {
+				text = xmlNodeGetContent (node);
+				*splash_text = g_strdup (text);
+				free (text);
+			}
+		} else {
+			g_print (_("*** Unknown node %s"), node->name);
+		}
+		node = node->next;
+	}
+
+out:
+	xmlFreeDoc (doc);
+	return list;
+}
 
 gboolean
 generate_xml_package_list (const char* pkg_template_file,
@@ -512,11 +549,37 @@ eazel_install_categorydata_to_xml (const CategoryData *category)
 	return node;
 }
 
-void
+static void
+osd_parse_dependency (PackageData *pack, xmlNodePtr node)
+{
+	xmlNodePtr child;
+	PackageData *softpack;
+
+	child = node->childs;
+	while (child) {
+		if (g_strcasecmp (child->name, "PROVIDES") == 0) {
+			/* do nothing yet.  maybe someday? */
+		} else if (g_strcasecmp (child->name, "SOFTPKG") == 0) {
+			/* dependent softpkg */
+			softpack = osd_parse_softpkg (child);
+			if (softpack != NULL) {
+				pack->soft_depends = g_list_prepend (pack->soft_depends, softpack);
+			} else {
+				trilobite_debug ("SOFTPKG dependency parse failed");
+			}
+		} else {
+			/* unparsed part of dependency */
+		}
+		child = child->next;
+	}
+}
+
+static void
 osd_parse_implementation (PackageData *pack,
 			  xmlNodePtr node)
 {
 	xmlNodePtr child;
+	char *temp;
 
 	child = node->childs;
 	while (child) {
@@ -530,16 +593,17 @@ osd_parse_implementation (PackageData *pack,
 			} 
 			g_free (dtmp);
 		} else if (g_strcasecmp (child->name, "CODEBASE")==0) {			
-			pack->filename = xml_get_value (child, "HREF");
-			{
-				char *stmp = xml_get_value (child, "SIZE");
-				if (stmp) {
-					pack->bytesize = atoi (stmp);
-				} else {
-					pack->bytesize = 0;
-				}
-				g_free (stmp);
+			pack->remote_url = xml_get_value (child, "HREF");
+			temp = xml_get_value (child, "SIZE");
+			if (temp) {
+				pack->bytesize = atoi (temp);
+			} else {
+				pack->bytesize = 0;
 			}
+			g_free (temp);
+		} else if (g_strcasecmp (child->name, "DEPENDENCY")==0) {
+			/* presume this is a soft-depends */
+			osd_parse_dependency (pack, child);
 		} else {
 			/* trilobite_debug ("unparsed tag \"%s\" in IMPLEMENTATION", child->name); */
 		}
@@ -550,7 +614,7 @@ osd_parse_implementation (PackageData *pack,
 	
 }
 
-PackageData*
+static PackageData*
 osd_parse_softpkg (xmlNodePtr softpkg)
 {
 	PackageData *result;
@@ -577,7 +641,7 @@ osd_parse_softpkg (xmlNodePtr softpkg)
 	return result;
 }
 
-GList*
+static GList*
 osd_parse_shared (xmlDocPtr doc)
 {
 	GList *result;
@@ -591,7 +655,7 @@ osd_parse_shared (xmlDocPtr doc)
 		return result;
 	}
 
-	if (g_strcasecmp (base->name, "PACKAGES")) {
+	if (g_strcasecmp (base->name, "PACKAGES") != 0) {
 		g_warning (_("*** Bailing from osd parse! ***\n"));
 		return result;
 	}
@@ -656,6 +720,4 @@ parse_osd_xml_from_memory (const char *mem,
 	g_free (docptr);
 	return result;
 }
-
-
 
