@@ -1491,7 +1491,7 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *class)
 		 G_TYPE_FROM_CLASS (class),
 		 G_SIGNAL_RUN_LAST,
 		 G_STRUCT_OFFSET (NautilusViewFrameClass, 
-				  open_location_in_this_window),
+				  open_location_prefer_existing_window),
 		 NULL, NULL,
 		 g_cclosure_marshal_VOID__STRING,
 		 G_TYPE_NONE, 1, G_TYPE_STRING);
