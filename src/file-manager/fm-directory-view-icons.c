@@ -467,11 +467,6 @@ fm_directory_view_icons_get_full_icon_text_attribute_names (FMDirectoryViewIcons
 	 * for consistency and possible future expansion.
 	 */
 
-	/* Don't let callers get away with using a non-NULL value here since
-	 * it probably means they're expecting something directory-specific.
-	 */
-	g_assert (view == NULL);
-	 
 	return g_strdup (default_icon_text_attribute_names);
 }
 
@@ -496,11 +491,8 @@ fm_directory_view_icons_set_full_icon_text_attribute_names (FMDirectoryViewIcons
 	 * for consistency and possible future expansion.
 	 */
 
-	/* Don't let callers get away with using a non-NULL value here since
-	 * it probably means they're expecting something directory-specific.
-	 */
-	g_assert (view == NULL);
-	 
+	g_return_if_fail (new_names != NULL);
+
 	if (strcmp (new_names, default_icon_text_attribute_names) == 0)
 		return;
 
