@@ -91,6 +91,7 @@ struct NautilusPropertyBrowserDetails {
 	char *image_path;
 	
 	int category_position;
+	int content_table_width;
 	
 	gboolean remove_mode;
 	gboolean keep_around;
@@ -146,7 +147,6 @@ static char *get_xml_path                               (NautilusPropertyBrowser
 #define MAX_ICON_WIDTH 64
 #define MAX_ICON_HEIGHT 64
 
-#define CONTENT_TABLE_WIDTH 5
 #define CONTENT_TABLE_HEIGHT 4
 
 enum {
@@ -1329,10 +1329,10 @@ nautilus_property_browser_preferences_changed (NautilusPropertyBrowser *property
 /* utility routine to add the passed-in widget to the content table */
 
 static void
-add_to_content_table(NautilusPropertyBrowser *property_browser, GtkWidget* widget, int position, int padding)
+add_to_content_table (NautilusPropertyBrowser *property_browser, GtkWidget* widget, int position, int padding)
 {
-	int column_pos = position % CONTENT_TABLE_WIDTH;
-	int row_pos = position / CONTENT_TABLE_WIDTH;
+	int column_pos = position % property_browser->details->content_table_width;
+	int row_pos = position / property_browser->details->content_table_width;
   	
 	gtk_table_attach (GTK_TABLE (property_browser->details->content_table),
 			  widget, column_pos, column_pos + 1, row_pos ,row_pos + 1, 
@@ -1734,10 +1734,10 @@ make_properties_from_themes (NautilusPropertyBrowser *property_browser, xmlNodeP
 	
 	/* iterate the pixmap directory to find other installed themes */	
 	pixmap_directory = nautilus_get_pixmap_directory ();
-	index = CONTENT_TABLE_WIDTH;
-	add_theme_selector (property_browser, pixmap_directory, "default", current_theme, index++);
+	index = 0;
 
 	/* add a theme element for the default theme */
+	add_theme_selector (property_browser, pixmap_directory, "default", current_theme, index++);
 
 	/* get the uri for the images directory */
 	directory_uri = nautilus_get_uri_from_local_path (pixmap_directory);
@@ -1844,7 +1844,32 @@ make_category_link(NautilusPropertyBrowser *property_browser, char* name, char *
 	
 	g_free (file_name);
 }
- 
+
+/* extract the number of columns for the current category from the xml file */
+static void
+set_up_category_width (NautilusPropertyBrowser *property_browser, xmlDocPtr document)
+{
+	char *column_str, *category_name;
+	xmlNodePtr cur_node;
+	
+	/* set up the default */
+	property_browser->details->content_table_width = 5;
+	
+	for (cur_node = nautilus_xml_get_children (xmlDocGetRootElement (document));
+	     cur_node != NULL; cur_node = cur_node->next) {
+		if (strcmp(cur_node->name, "category") == 0) {
+			category_name =  xmlGetProp (cur_node, "name");
+			if (!nautilus_strcmp (category_name, property_browser->details->category)) {
+				column_str = xmlGetProp (cur_node, "columns");
+				if (column_str) {
+					property_browser->details->content_table_width = atoi (column_str);	
+					return;
+				}
+			}
+		}
+	}
+}
+
 /* update_contents populates the property browser with information specified by the path and other state variables */
 void
 nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_browser)
@@ -1870,6 +1895,9 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		gtk_widget_destroy(property_browser->details->content_frame);
 	}
 	
+	/* set up the content_table_width field so we know how many columns to put in the table */
+	set_up_category_width (property_browser, document);
+	
 	/* allocate a new container, with a scrollwindow and viewport */
 	
 	property_browser->details->content_frame = gtk_scrolled_window_new (NULL, NULL);
@@ -1885,7 +1913,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (property_browser->details->content_frame), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
 	/* allocate a table to hold the content widgets */
-  	property_browser->details->content_table = gtk_table_new(CONTENT_TABLE_WIDTH, CONTENT_TABLE_HEIGHT, FALSE);
+  	property_browser->details->content_table = gtk_table_new(property_browser->details->content_table_width, CONTENT_TABLE_HEIGHT, FALSE);
 	gtk_container_add(GTK_CONTAINER(viewport), property_browser->details->content_table); 
 	gtk_container_add (GTK_CONTAINER (property_browser->details->content_frame), viewport);
 	gtk_widget_show (GTK_WIDGET (property_browser->details->content_table));

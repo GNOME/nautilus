@@ -1,3 +1,14 @@
+2000-07-26  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-property-browser.c: (add_to_content_table),
+	(make_properties_from_themes), (set_up_category_width),
+	(nautilus_property_browser_update_contents):
+	added the capability for different categories to have a
+	different number of columns, so we can make everything fit nicely
+	
+	* data/browser.xml:
+	added columns field to all of the categories
+
 2000-07-26  Gene Z. Ragan  <gzr@eazel.com>
 
 	* src/file-manager/fm-cdrom-extensions.h:
