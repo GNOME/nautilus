@@ -853,6 +853,7 @@ rsvg_ft_measure_or_render_string (RsvgFTCtx *ctx,
 	pixel_underline_thickness = MAX (1, pixel_underline_thickness);
 
 	bbox.x0 = bbox.x1 = 0;
+	bbox.y0 = bbox.y1 = 0;
 
 	glyphs = g_new (RsvgFTGlyph *, length);
 	glyph_xy = g_new (int, length * 2);
@@ -915,32 +916,34 @@ rsvg_ft_measure_or_render_string (RsvgFTCtx *ctx,
 			glyph_affine[5] += glyph_affine[1] * kx +
 				glyph_affine[3] * ky;
 		}
-		if (glyph_index != 0)
+		if (glyph_index != 0) {
 			last_glyph = glyph_index;
-		
-		glyph = rsvg_ft_get_glyph_cached (ctx, fh, glyph_index,
-						  sx, sy, glyph_affine,
-						  glyph_xy + n_glyphs * 2);
-		if (glyph != NULL) {
-			glyphs[n_glyphs] = glyph;
 
-			glyph_bbox.x0 = glyph_xy[i * 2];
-			glyph_bbox.y0 = glyph_xy[i * 2 + 1];
-			glyph_bbox.x1 = glyph_bbox.x0 + glyph->width;
-			glyph_bbox.y1 = glyph_bbox.y0 + glyph->height;
+			glyph = rsvg_ft_get_glyph_cached (ctx, fh, glyph_index,
+							  sx, sy, glyph_affine,
+							  glyph_xy + n_glyphs * 2);
+			if (glyph != NULL) {
+				glyphs[n_glyphs] = glyph;
 
-			art_irect_union (&bbox, &bbox, &glyph_bbox);
+				glyph_bbox.x0 = glyph_xy[n_glyphs * 2];
+				glyph_bbox.y0 = glyph_xy[n_glyphs * 2 + 1];
+				glyph_bbox.x1 = glyph_bbox.x0 + glyph->width;
+				glyph_bbox.y1 = glyph_bbox.y0 + glyph->height;
+
+				art_irect_union (&bbox, &bbox, &glyph_bbox);
+
 #ifdef VERBOSE
-			g_print ("char '%c' bbox: (%d, %d) - (%d, %d)\n",
-				 str[i],
-				 glyph_bbox.x0, glyph_bbox.y0,
-				 glyph_bbox.x1, glyph_bbox.y1);
+				g_print ("char '%c' bbox: (%d, %d) - (%d, %d)\n",
+					 str[i],
+					 glyph_bbox.x0, glyph_bbox.y0,
+					 glyph_bbox.x1, glyph_bbox.y1);
 #endif
 
-			glyph_affine[4] += glyph->xpen;
-			glyph_affine[5] += glyph->ypen;
+				glyph_affine[4] += glyph->xpen;
+				glyph_affine[5] += glyph->ypen;
 
-			n_glyphs++;
+				n_glyphs++;
+			}
 		} else {
 			g_print ("no glyph loaded for character '%c'\n",
 				 str[i]);

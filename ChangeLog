@@ -1,3 +1,17 @@
+2001-03-05  John Harper  <jsh@eazel.com>
+
+	reviewed by: Ramiro Estrugo <ramiro@eazel.com>
+
+	Fixed bug 7380 (Nautilus crashes when I choose "Microsoft Sans
+	Serif" font):
+
+	* librsvg/rsvg-ft.c (rsvg_ft_measure_or_render_string):
+	initialize y components of bbox. Don't call
+	rsvg_ft_get_glyph_cached with a zero index (non-existent
+	glyph). Use `n_glyphs' to index `glyph_xy' array instead of
+	`i' (this is what fixes the bug - when one or more glyphs don't
+	exist `i' points too far into the array)
+
 2001-03-03  Rebecca Schulman  <rebecka@eazel.com>
 	Complete most of bug 5520, that turning medusa on when cron
 	isn't running should tell the user this, and, if possible,
@@ -864,7 +878,6 @@
 	supported type for the trash folder creation and
 	detection code.
 	
->>>>>>> 1.4154
 2001-03-02  Frederic Crozat <fcrozat@mandrakesoft.com>
 
 	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
