@@ -64,7 +64,8 @@ LANG=""
 export LC_ALL LINGUAS LANG
 
 CFLAGS="$RPM_OPT_FLAGS" ./configure $MYARCH_FLAGS --prefix=%{prefix} \
-	--enable-eazel-services \
+	--enable-eazel-services \ 
+	--enable-more-warnings \
 	--sysconfdir=%{sysconfdir}
 
 if [ "$SMP" != "" ]; then
