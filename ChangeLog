@@ -1,3 +1,15 @@
+2001-12-09  Darin Adler  <darin@bentspoon.com>
+
+	* libnautilus-private/nautilus-file-operations.c:
+	(handle_transfer_ok): Do fix based on patch from Martin Wehner
+	<mwehner@tfh-berlin.de> to prevent cancel of emptying trash or
+	deleting from core dumping.
+	
+	* src/file-manager/fm-icon-view.c: (icon_view_handle_uri_list):
+	Fix code that passed a path instead of a URI when creating a
+	desktop file. Based on a patch by <forgot, I'll fill his name in
+	when I find it again>.
+
 2001-12-06  Darin Adler  <darin@bentspoon.com>
 
 	Apply patch by Martin Wehner to fix crashes when hitting escape
