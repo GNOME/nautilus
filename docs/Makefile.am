@@ -4,6 +4,8 @@ EXTRA_DIST = \
 	architecture.txt \
 	dnd.txt \
 	load-states.dia \
+	nautilus-internals.sxw \
+	nautilus-internals.pdf \
 	nautilus-io.txt \
 	nautilus.faq \
 	recommended-books.html \
