@@ -1,3 +1,10 @@
+2000-11-16  Martin Baulig  <martin@home-of-linux.org>
+
+	* libnautilus-adapter/nautilus-adapter-factory.idl:
+	Use `NAUTILUS_ADAPTER_FACTORY_IDL' instead of
+	`NAUTUILUS_ADAPTER_FACTORY_IDL' in the #ifdef/#define
+	which protects against multiple inclusion of this file.
+
 2000-11-16  John Sullivan  <sullivan@eazel.com>
 
 	Removed a ton of code that was used only for the gtk
