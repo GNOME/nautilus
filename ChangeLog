@@ -1,3 +1,19 @@
+2001-04-04  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-canvas-note-item.c:
+	(update_item_bounding_box), (draw_item_aa_text),
+	(nautilus_canvas_note_item_update):
+	fixed the partial drawing problems in aa-mode plus
+	other tweaks.
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_initialize), (remove_annotation),
+	(create_annotation_timeout_callback),
+	(nautilus_icon_canvas_item_set_note_state),
+	(nautilus_icon_canvas_item_event):
+	made annotations appear only if you linger over the emblem
+	for at least one second.
+	
 2001-04-03  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-canvas-note-item.c: (get_bounds),

@@ -310,8 +310,8 @@ update_item_bounding_box (NautilusCanvasNoteItem *note_item)
 	
 	item->x1 = note_item->x1;
 	item->y1 = note_item->y1;
-	item->x2 = note_item->x2;
-	item->y2 = note_item->y2;
+	item->x2 = note_item->x2 + 1;
+	item->y2 = note_item->y2 + 1;
 }
 
 static void
@@ -720,7 +720,7 @@ draw_item_aa_text (GnomeCanvasBuf *buf, GnomeCanvasItem *item, const char *note_
 	
 	gtk_object_destroy (GTK_OBJECT (smooth_text_layout));
 		
-	nautilus_gnome_canvas_draw_pixbuf (buf, text_pixbuf, item_bounds.x0 + 4, item_bounds.y0 + 12);
+	nautilus_gnome_canvas_draw_pixbuf (buf, text_pixbuf, item_bounds.x0 + 4, item_bounds.y0 + 2);
 	
 	gdk_pixbuf_unref (text_pixbuf);	
 	gtk_object_unref (GTK_OBJECT (font));
@@ -997,6 +997,10 @@ nautilus_canvas_note_item_update (GnomeCanvasItem *item, double affine[6], ArtSV
 			art_free (vpath2);
 		} else
 			gnome_canvas_item_update_svp (item, &note_item->outline_svp, NULL);
+
+		nautilus_gnome_canvas_item_request_redraw
+			(GNOME_CANVAS_ITEM (item));
+	
 	} else {
 		/* xlib rendering - just update the bbox */
 

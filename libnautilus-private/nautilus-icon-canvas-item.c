@@ -28,6 +28,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkmain.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-canvas-rect-ellipse.h>
@@ -82,8 +83,11 @@ struct NautilusIconCanvasItemDetails {
 	GtkWidget *control;		/* optional Bonobo control*/
 	guint control_destroy_id;
 	
-	/* stuff for annotations */
+	/* stuff for annotations - since these are infrequently used, we probably should
+	 * combine them into a structure so we only use a pointer for every item eventually
+         */
 	GnomeCanvasItem *annotation;
+	int annotation_time_out;
 	int note_state;
 		
 	/* Size of the text at current font. */
@@ -327,6 +331,8 @@ nautilus_icon_canvas_item_initialize (NautilusIconCanvasItem *icon_item)
 	/* set up the default font and size */
 	icon_item->details->smooth_font_size = 12;
 	icon_item->details->smooth_font = nautilus_scalable_font_get_default_font ();
+	
+	icon_item->details->annotation_time_out = -1;
 }
 
 /* Destroy handler for the icon canvas item. */
@@ -1907,9 +1913,21 @@ remove_annotation (NautilusIconCanvasItem *icon_item)
 	if (icon_item->details->annotation != NULL) {
 		gtk_object_destroy (GTK_OBJECT (icon_item->details->annotation));
 		icon_item->details->annotation = NULL;	
-		icon_item->details->note_state = 0;
-
+		icon_item->details->note_state = 0;	
 	}
+}
+
+/* handle the timeout firing by creating the annotation */
+static int
+create_annotation_timeout_callback (gpointer callback_data)
+{
+	NautilusIconCanvasItem *icon_item;
+
+	icon_item = NAUTILUS_ICON_CANVAS_ITEM (callback_data);
+	create_annotation (icon_item, icon_item->details->note_state);
+
+	icon_item->details->annotation_time_out = -1;	
+	return 0;
 }
 
 /* manage showing and hiding annotations, based on mouse-over the passed-in emblem */
@@ -1920,17 +1938,28 @@ nautilus_icon_canvas_item_set_note_state (NautilusIconCanvasItem *icon_item, int
 	if (new_state == icon_item->details->note_state) {
 		return;
 	}
+	
+	/* if there already is a timeout in progress and we're showing one, just wait for it to fire */
+	if (new_state > 0 && icon_item->details->annotation_time_out >= 0) {
+		return;
+	}
+	
 	/* get rid of the old annotation, if there was one */
 	if (icon_item->details->annotation) {
 		remove_annotation (icon_item);
 	}
-	
-	/* create a new annotation, if necessary */
-	if (new_state > 0) {
-		create_annotation (icon_item, new_state);
+
+	if (icon_item->details->annotation_time_out >= 0) {
+		gtk_timeout_remove (icon_item->details->annotation_time_out);
+		icon_item->details->annotation_time_out = -1;
 	}
+
+	icon_item->details->note_state = new_state;	
 	
-	icon_item->details->note_state = new_state;
+	/* add a timeout to create the new annotation */
+	if (new_state > 0) {
+		icon_item->details->annotation_time_out = gtk_timeout_add (1000, create_annotation_timeout_callback, icon_item);
+	}	
 }
 
 
@@ -1992,7 +2021,8 @@ nautilus_icon_canvas_item_event (GnomeCanvasItem *item, GdkEvent *event)
 			icon_item->details->is_prelit = FALSE;
 			icon_item->details->is_active = 0;			
 			icon_item->details->is_highlighted_for_drop = FALSE;
-			remove_annotation (icon_item);
+			
+			nautilus_icon_canvas_item_set_note_state (icon_item, 0);		
 			gnome_canvas_item_request_update (item);
 		}
 		return TRUE;
