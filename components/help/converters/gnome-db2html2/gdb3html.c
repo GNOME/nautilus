@@ -371,21 +371,27 @@ main (int argc, char *argv[])
 {
 	gchar *section = NULL;
 	gchar *ptr;
+	gchar *ptr2;
 
 	if (argc != 2) {
 		g_print ("Usage:  gnome-db2html2 FILE[#SECTIONID]\n\n");
 		return 0;
 	}
 
-	for (ptr = argv[1]; *ptr; ptr++){
-		if (*ptr == '?') {
-			*ptr = '\000';
-			if (*(ptr + 1))
-				section = ptr + 1;
+	if (!strncmp (argv[1], "file://", strlen ("file://"))) {
+		ptr = argv[1] + strlen ("file://");
+	} else
+		ptr = argv[1];
+
+	for (ptr2 = ptr; *ptr2; ptr2++){
+		if (*ptr2 == '?') {
+			*ptr2 = '\000';
+			if (*(ptr2 + 1))
+				section = ptr2 + 1;
 			break;
 		}
 	}
-	parse_file (argv[1], section);
+	parse_file (ptr, section);
 
 	return 0;
 }
