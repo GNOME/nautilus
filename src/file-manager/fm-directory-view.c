@@ -122,6 +122,8 @@ static void           fm_directory_view_initialize_class                        
 static void           fm_directory_view_initialize                                (FMDirectoryView          *view);
 static void           fm_directory_view_duplicate_selection                       (FMDirectoryView          *view,
 										   GList                    *files);
+static void           fm_directory_view_create_links_for_files 			  (FMDirectoryView 	    *view, 
+										   GList		    *files);
 static void           fm_directory_view_trash_or_delete_selection                 (FMDirectoryView          *view,
 										   GList                    *files);
 static void	      fm_directory_view_new_folder				  (FMDirectoryView          *view);
@@ -613,6 +615,31 @@ bonobo_menu_duplicate_callback (BonoboUIHandler *ui_handler, gpointer callback_d
         g_assert (selection != NULL);
 
         fm_directory_view_duplicate_selection (view, selection);
+
+        nautilus_file_list_free (selection);
+}
+
+/**
+ * Note that this is used both as a Bonobo menu callback and a signal callback.
+ * The first parameter is different in these cases, but we just ignore it anyway.
+ */
+static void
+create_link_callback (gpointer ignored, gpointer callback_data)
+{
+        FMDirectoryView *view;
+        GList *selection;
+        
+        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+
+        view = FM_DIRECTORY_VIEW (callback_data);
+	selection = fm_directory_view_get_selection (view);
+
+        /* UI should have prevented this from being called unless at least
+         * one item is selected.
+         */
+        g_assert (selection != NULL);
+
+        fm_directory_view_create_links_for_files (view, selection);
 
         nautilus_file_list_free (selection);
 }
@@ -1816,6 +1843,24 @@ append_uri_one (gpointer data, gpointer callback_data)
 }
 
 static void
+fm_directory_view_create_links_for_files (FMDirectoryView *view, GList *files)
+{
+	GList *uris;
+
+        g_assert (FM_IS_DIRECTORY_VIEW (view));
+        g_assert (files != NULL);
+
+	/* create a list of URIs */
+	uris = NULL;
+	g_list_foreach (files, append_uri_one, &uris);    
+
+        g_assert (g_list_length (uris) == g_list_length (files));
+        
+	fs_xfer (uris, NULL, NULL, GDK_ACTION_LINK, GTK_WIDGET (view));
+	nautilus_g_list_free_deep (uris);
+}
+
+static void
 fm_directory_view_duplicate_selection (FMDirectoryView *view, GList *files)
 {
 	GList *uris;
@@ -2297,6 +2342,13 @@ compute_menu_item_info (FMDirectoryView *directory_view,
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE) == 0) {
 		name = g_strdup (_("_Duplicate"));
 		*return_sensitivity = selection != NULL;
+	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK) == 0) {
+		if (selection != NULL && !nautilus_g_list_exactly_one_item (selection)) {
+			name = g_strdup (_("Create _Links"));
+		} else {
+			name = g_strdup (_("Create _Link"));
+		}
+		*return_sensitivity = selection != NULL;
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES) == 0) {
 		name = g_strdup (_("Show _Properties"));
 		*return_sensitivity = selection != NULL && fm_directory_view_supports_properties (directory_view);
@@ -2652,6 +2704,9 @@ fm_directory_view_real_create_selection_context_menu_items (FMDirectoryView *vie
 				    	FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE,
 				    	duplicate_callback, files);
 	append_gtk_menu_item_with_view (view, menu, files,
+				    	FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK,
+				    	create_link_callback, view);
+	append_gtk_menu_item_with_view (view, menu, files,
 				    	FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES,
 				    	open_properties_window_callback, files);
         append_gtk_menu_item_with_view (view, menu, files,
@@ -2832,7 +2887,7 @@ reset_bonobo_trash_delete_menu (FMDirectoryView *view, BonoboUIHandler *ui_handl
 			 FM_DIRECTORY_VIEW_MENU_PATH_TRASH,
 			 _("Move all selected items to the Trash"),
 			 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ALL_WINDOWS_ITEM) + 3,
-			  'T', GDK_CONTROL_MASK,
+			 'T', GDK_CONTROL_MASK,
 			 bonobo_menu_move_to_trash_callback, view);
 	} else {
 		insert_bonobo_menu_item 
@@ -2927,7 +2982,7 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
 		 FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER,
 		 _("Create a new folder in this window"),
 		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM) + 1,
-		  0, 0,	/* Accelerator will be inherited */
+		  'N', GDK_CONTROL_MASK,
 		 (BonoboUIHandlerCallback) bonobo_menu_new_folder_callback, view);
 	insert_bonobo_menu_item 
 		(view,
@@ -2958,7 +3013,7 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
 		 FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES,
 		 _("View or modify the properties of the selected items"),
 		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ALL_WINDOWS_ITEM) + 2,
-		 0, 0,
+		 'I', GDK_CONTROL_MASK,
 		 bonobo_menu_open_properties_window_callback, view);
 
 	reset_bonobo_trash_delete_menu (view, ui_handler, selection);
@@ -2967,16 +3022,24 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
 		(view,
 		 ui_handler, selection,
 		 FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE,
-		 _("Duplicate all selected items"),
+		 _("Duplicate each selected item"),
 		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ALL_WINDOWS_ITEM) + 4,
 		  'D', GDK_CONTROL_MASK,
 		 bonobo_menu_duplicate_callback, view);
 	insert_bonobo_menu_item 
 		(view,
 		 ui_handler, selection,
+		 FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK,
+		 _("Create a symbolic link for each selected item"),
+		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ALL_WINDOWS_ITEM) + 5,
+		  'L', GDK_CONTROL_MASK,
+		 (BonoboUIHandlerCallback) create_link_callback, view);
+	insert_bonobo_menu_item 
+		(view,
+		 ui_handler, selection,
 		 FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH,
 		 _("Delete all items in the trash"),
-		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ALL_WINDOWS_ITEM) + 5,
+		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ALL_WINDOWS_ITEM) + 6,
 		  0, 0,
 		 bonobo_menu_empty_trash_callback, view);
 	insert_bonobo_menu_item 
@@ -3048,6 +3111,8 @@ fm_directory_view_real_update_menus (FMDirectoryView *view)
 			      FM_DIRECTORY_VIEW_MENU_PATH_TRASH);
 	update_one_menu_item (view, handler, selection,
 			      FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE);
+	update_one_menu_item (view, handler, selection,
+			      FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK);
 	update_one_menu_item (view, handler, selection,
 			      FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES);
 	update_one_menu_item (view, handler, selection,
@@ -3697,13 +3762,15 @@ fm_directory_view_get_context_menu_index (const char *menu_name)
 		return 3;
 	} else if (strcmp (FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE, menu_name) == 0) {
 		return 4;
-	} else if (strcmp (FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES, menu_name) == 0) {
+	} else if (strcmp (FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK, menu_name) == 0) {
 		return 5;
-	} else if (strcmp (FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS, menu_name) == 0) {
+	} else if (strcmp (FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES, menu_name) == 0) {
 		return 6;
-	/* Separator at position 7 */
+	} else if (strcmp (FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS, menu_name) == 0) {
+		return 7;
+	/* Separator at position 8 */
 	} else if (strcmp (NAUTILUS_MENU_PATH_SELECT_ALL_ITEM, menu_name) == 0) {
-		return 8;
+		return 9;
 	} else {
 		/* No match found */
 		return -1;

@@ -1037,8 +1037,8 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 -1,
         				 BONOBO_UI_HANDLER_PIXMAP_STOCK,
         				 GNOME_STOCK_MENU_NEW,
-        				 GNOME_KEY_NAME_NEW,
-        				 GNOME_KEY_MOD_NEW,
+        				 0,
+        				 0,
         				 file_menu_new_window_callback,
         				 window);
 
@@ -1049,8 +1049,8 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 -1,
         				 BONOBO_UI_HANDLER_PIXMAP_STOCK,
         				 GNOME_STOCK_MENU_CLOSE,
-        				 GNOME_KEY_NAME_CLOSE,
-        				 GNOME_KEY_MOD_CLOSE,
+        				 'W',
+        				 GDK_CONTROL_MASK,
         				 file_menu_close_window_callback,
         				 window);
         				 
@@ -1061,8 +1061,8 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 -1,
         				 BONOBO_UI_HANDLER_PIXMAP_NONE,
         				 NULL,
-        				 0,
-        				 0,
+        				 'W',
+        				 GDK_CONTROL_MASK | GDK_SHIFT_MASK,
         				 file_menu_close_all_windows_callback,
         				 NULL);
         				 

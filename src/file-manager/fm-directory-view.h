@@ -49,6 +49,7 @@ typedef struct FMDirectoryViewClass FMDirectoryViewClass;
 #define FM_DIRECTORY_VIEW_MENU_PATH_DELETE                    		"/File/Delete"
 #define FM_DIRECTORY_VIEW_MENU_PATH_TRASH                    		"/File/Trash"
 #define FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE                	 	"/File/Duplicate"
+#define FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK                	 	"/File/Create Link"
 #define FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH             	   	"/File/Empty Trash"
 #define FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES         	   	"/File/Show Properties"
 #define FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_RESET		"/Edit/Before Reset"

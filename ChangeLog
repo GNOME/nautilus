@@ -1,3 +1,33 @@
+2000-08-17  John Sullivan  <sullivan@eazel.com>
+
+	Finished task 1991 (Need "Create Link" menu item) and did
+	a little of bug 1653 (refined menu layout)
+
+	* src/file-manager/fm-directory-view.h:
+	#define FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK
+	* src/file-manager/fm-directory-view.c: 
+	(fm_directory_view_create_links_for_files): New function,
+	creates symbolic links in this directory for a set of files.
+	(create_link_callback): New function used by both bonobo and
+	context menu "Create Link" items. Calls _create_links_for_files
+	on selected files.
+	(compute_menu_item_info): Compute title & sensitivity of 
+	link-creating menu item.
+	(fm_directory_view_real_create_selection_context_menu_items):
+	add Create Link to context menu.
+	(reset_bonobo_trash_delete_menu): Spacing change only.
+	(fm_directory_view_real_merge_menus): Gave Control-N to
+	New Folder and Control-I (weird) to Show Properties. Added
+	Create Link to bonobo menu.
+	(fm_directory_view_real_update_menus): Update Create Link item
+	when selection changes.
+	(fm_directory_view_get_context_menu_index): Updated to match
+	current set of items.
+	
+	* src/nautilus-window-menus.c: (nautilus_window_initialize_menus):
+	Took Control-N away from "New Window" so "New Folder" could have it;
+	gave "Close All Windows" Control-Shift-W
+
 2000-08-17  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-dnd.c:
