@@ -222,18 +222,6 @@ create_mount_link (const NautilusVolume *volume)
 	gboolean result;
 	char *desktop_path, *target_uri, *icon_name, *volume_name;
 
-	/* This hack was moved here
-	 * from the volume monitor code.  This was a FIXME for
-	 * bug 2174, but apparently the decision was made that
-	 * it should stay here 
-	 */
-	 	 	 
-	/* Make a link only for the root partition for now. */
-	//if (volume->type == NAUTILUS_VOLUME_EXT2
-	//    && strcmp (volume->mount_path, "/") != 0) {
-	//	return;
-	//}
-	
 	/* Get icon type */
 	if (volume->type == NAUTILUS_VOLUME_CDROM) {
 		icon_name = g_strdup ("i-cdrom.png");
@@ -248,11 +236,9 @@ create_mount_link (const NautilusVolume *volume)
 	volume_name = nautilus_volume_monitor_get_volume_name (volume);
 	
 	/* Create link */
-	result = nautilus_link_local_create
-		(desktop_path, volume_name, icon_name, 
-		 target_uri, NAUTILUS_LINK_MOUNT);
-	/* FIXME bugzilla.eazel.com 2526: Ignoring the result here OK? */
-
+	nautilus_link_local_create (desktop_path, volume_name, icon_name,
+				    target_uri, NAUTILUS_LINK_MOUNT);
+				    
 	g_free (desktop_path);
 	g_free (target_uri);
 	g_free (icon_name);
@@ -458,7 +444,6 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor,
 			   NautilusVolume *volume, 
 			   FMDesktopIconView *icon_view)
 {
-	GnomeVFSResult result;
 	char *link_path, *link_uri, *desktop_path, *volume_name;
 	GList dummy_list;
 
@@ -484,10 +469,8 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor,
 	dummy_list.prev = NULL;
 	nautilus_directory_notify_files_removed (&dummy_list);
 	
-	result = gnome_vfs_unlink (link_uri);
-	if (result != GNOME_VFS_OK) {
-		/* FIXME bugzilla.eazel.com 2526: OK to ignore error? */
-	}
+	gnome_vfs_unlink (link_uri);
+
 	g_free (link_uri);
 	g_free (link_path);
 	g_free (desktop_path);
@@ -724,14 +707,8 @@ place_home_directory (FMDesktopIconView *icon_view)
 	
 	home_dir_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
 	home_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_HOME_URI, home_dir_uri);
-	made_link = nautilus_link_local_create
-		(desktop_path, home_link_name, "temp-home.png", 
-		 home_uri, NAUTILUS_LINK_HOME);	
-	if (!made_link) {
-		/* FIXME bugzilla.eazel.com 2526: Is a message to the console acceptable here? */
-		g_message ("Unable to create home link");
-	}
-	
+	nautilus_link_local_create (desktop_path, home_link_name, "temp-home.png", 
+				    home_uri, NAUTILUS_LINK_HOME);	
 	g_free (home_link_path);
 	g_free (home_link_name);
 	g_free (desktop_path);
