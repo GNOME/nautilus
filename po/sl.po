@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2001-03-11 22:25+0100\n"
+"POT-Creation-Date: 2001-05-02 11:05+0200\n"
 "PO-Revision-Date: 2000-07-07 12:30+0200\n"
 "Last-Translator: Andraz Tori <andraz.tori1@guest.arnes.si>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
@@ -335,8 +335,8 @@ msgid "Kernel Routines"
 msgstr "Funkcije jedra"
 
 #: components/help/hyperbola-filefmt.c:703
-#: libnautilus-extensions/nautilus-stock-dialogs.c:510
-#: libnautilus-extensions/nautilus-stock-dialogs.c:548
+#: libnautilus-extensions/nautilus-stock-dialogs.c:513
+#: libnautilus-extensions/nautilus-stock-dialogs.c:551
 msgid "Info"
 msgstr "Podatki"
 
@@ -1711,7 +1711,7 @@ msgstr "Glej kot glasbo"
 #. set up the default font
 #: components/notes/nautilus-notes.c:200
 #: components/text/nautilus-text-view.c:186
-#: libnautilus-extensions/nautilus-global-preferences.c:1118
+#: libnautilus-extensions/nautilus-global-preferences.c:1126
 #: libnautilus-extensions/nautilus-icon-container.c:3332
 #: libnautilus-extensions/nautilus-icon-container.c:3333
 #: libnautilus-extensions/nautilus-icon-container.c:3334
@@ -1953,10 +1953,12 @@ msgid "Downloading %s..."
 msgstr "Prena¹am %s..."
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:360
+#, c-format
 msgid "Downloading %s... (%d/%d) = %d%% %.1f KB/s"
 msgstr "Prena¹am %s... (%d/%d) = %d%% %.1f KB/s"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:368
+#, c-format
 msgid "Downloading %s... (%d/%d) = %d%%"
 msgstr "Prena¹am %s... (%d/%d) = %d%%"
 
@@ -1971,18 +1973,22 @@ msgid "Downloading %s... %3.1f KB/s Done\n"
 msgstr "Prena¹anje %s... %3.1f KB/s opravljeno\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:409
+#, c-format
 msgid "Installing %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
 msgstr "Name¹èam %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:417
+#, c-format
 msgid "Uninstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
 msgstr "Odstranjujem %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:439
+#, c-format
 msgid "Installing %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"
 msgstr "Name¹èanje %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% opravljeno\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:446
+#, c-format
 msgid "Uninstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"
 msgstr "Odstranjevanje %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% opravljeno\n"
 
@@ -2191,8 +2197,8 @@ msgstr "Navedi seznam paketov za uporabo (/var/eazel/service/package-list.xml)"
 #: components/services/install/command-line/eazel-gen-xml.c:42
 msgid "Use specified file to generate a package list, requires --packagelist"
 msgstr ""
-"Uporabi navedeno datoteko za generiranje seznama paketov, potrebuje "
-"--packagelist"
+"Uporabi navedeno datoteko za generiranje seznama paketov, potrebuje --"
+"packagelist"
 
 #: components/services/install/command-line/eazel-test-softcat.c:43
 msgid "Softcat server to connect to"
@@ -2904,6 +2910,7 @@ msgstr "Name¹èam \"%s\""
 
 #: components/services/install-view/callbacks.c:415
 #: src/nautilus-zoom-control.c:592
+#, c-format
 msgid "%d%%"
 msgstr "%d%%"
 
@@ -3043,6 +3050,14 @@ msgstr "Nadaljuj"
 #: src/file-manager/fm-directory-view.c:3551
 msgid "Cancel"
 msgstr "Preklièi"
+
+#: components/services/install-view/nautilus-service-install-view.c:61
+msgid ""
+"Please enter your root password to continue installing. (This password is "
+"not saved or transmitted outside of your system.)"
+msgstr ""
+"Za nadaljevanje namestitve prosim vpi¹ite va¹e korensko (root) geslo. ("
+"To geslo se ne shrani in ne prena¹a izven va¹ega sistema.)"
 
 #: components/services/install-view/nautilus-service-install-view.c:419
 #, c-format
@@ -4127,7 +4142,7 @@ msgid "Google"
 msgstr "Google"
 
 #: data/linksets/search_engines.xml.h:3
-#: libnautilus-extensions/nautilus-global-preferences.c:808
+#: libnautilus-extensions/nautilus-global-preferences.c:811
 msgid "Search Engines"
 msgstr "Iskalniki"
 
@@ -4185,11 +4200,11 @@ msgstr "Freshmeat.net"
 
 #: data/static_bookmarks.xml.h:14
 msgid "GNOME.org"
-msgstr "gnome.org"
+msgstr "GNOME.org"
 
 #: data/static_bookmarks.xml.h:15
 msgid "GNU.org"
-msgstr "gnu.org"
+msgstr "GNU.org"
 
 #: data/static_bookmarks.xml.h:17
 msgid "International"
@@ -4213,11 +4228,11 @@ msgstr "viri o Linuxu"
 
 #: data/static_bookmarks.xml.h:22
 msgid "Linux Weekly News"
-msgstr "Linux tedenske novice"
+msgstr "Linux weekly news"
 
 #: data/static_bookmarks.xml.h:23
 msgid "LinuxNewbie.org"
-msgstr "linuxnewbie.org"
+msgstr "LinuxNewbie.org"
 
 #: data/static_bookmarks.xml.h:24
 msgid "LinuxOrbit.com"
@@ -4253,7 +4268,7 @@ msgstr "OpenOffice"
 
 #: data/static_bookmarks.xml.h:32
 msgid "Penguin Computing"
-msgstr "Penguin Computing"
+msgstr "Penguin computing"
 
 #: data/static_bookmarks.xml.h:33
 msgid "Rackspace"
@@ -4321,11 +4336,11 @@ msgstr ""
 
 #: icons/crux_eggplant/crux_eggplant.xml.h:1
 msgid "An Eggplant variation of the Crux theme."
-msgstr ""
+msgstr "Jajèevska variacija na temo Crux"
 
 #: icons/crux_eggplant/crux_eggplant.xml.h:2
 msgid "Crux-Eggplant"
-msgstr ""
+msgstr "Crux-jajèevec"
 
 #: icons/default.xml.h:1
 msgid "Default"
@@ -4488,8 +4503,8 @@ msgstr ""
 #: libnautilus-extensions/nautilus-file.c:3798
 #, c-format
 msgid ""
-"No description found for mime type \"%s\" (file is \"%s\"), tell "
-"aaron@eazel.com"
+"No description found for mime type \"%s\" (file is \"%s\"), tell aaron@eazel."
+"com"
 msgstr ""
 "Opis za tip mime \"%s\" (datoteka je \"%s\") ni bil najden, pi¹ite na "
 "aaron@eazel.com"
@@ -5711,52 +5726,52 @@ msgstr "Vgrajeni zaznamki"
 msgid "Speed Tradeoffs"
 msgstr "¾rtvovanje za hitrosti"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:794
+#: libnautilus-extensions/nautilus-global-preferences.c:795
 msgid "Search"
 msgstr "Iskanje"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:796
+#: libnautilus-extensions/nautilus-global-preferences.c:798
 msgid "Search Complexity Options"
 msgstr "Mo¾nosti kompleksnega iskanja"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:802
+#: libnautilus-extensions/nautilus-global-preferences.c:804
 msgid "Fast Search"
 msgstr "Hitro iskanje"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:846
+#: libnautilus-extensions/nautilus-global-preferences.c:854
 msgid "Fonts"
 msgstr "Pisave"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1026
+#: libnautilus-extensions/nautilus-global-preferences.c:1034
 #, c-format
 msgid "Display %s tab in sidebar"
 msgstr "Ka¾i uhelj %s v stranskem pultu"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1073
+#: libnautilus-extensions/nautilus-global-preferences.c:1081
 msgid "always"
 msgstr "vedno"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1074
+#: libnautilus-extensions/nautilus-global-preferences.c:1082
 msgid "Always"
 msgstr "Vedno"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1077
+#: libnautilus-extensions/nautilus-global-preferences.c:1085
 msgid "local only"
 msgstr "le krajevno"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1078
+#: libnautilus-extensions/nautilus-global-preferences.c:1086
 msgid "Local Files Only"
 msgstr "le krajevne datoteke"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1081
+#: libnautilus-extensions/nautilus-global-preferences.c:1089
 msgid "never"
 msgstr "nikoli"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1082
+#: libnautilus-extensions/nautilus-global-preferences.c:1090
 msgid "Never"
 msgstr "Nikoli"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1145
+#: libnautilus-extensions/nautilus-global-preferences.c:1153
 msgid ""
 "Indexing is turned on, enabling the fast search feature. However, indexing "
 "currently can't be performed because the program crond, which does nightly "
@@ -5765,16 +5780,15 @@ msgid ""
 msgstr ""
 "Ustvarjanje kazala datotek je vkljuèeno, kar omogoèa hitro iskanje. Vendar "
 "ustvarjanje kazala ni mogoèe, ker je program crond, ki opravljanoène posle "
-"na raèunalniku, izklopljen. Èe ¾elite hitra iskanja, vklopite "
-"crond."
+"na raèunalniku, izklopljen. Èe ¾elite hitra iskanja, vklopite crond."
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1152
-#: libnautilus-extensions/nautilus-global-preferences.c:1170
+#: libnautilus-extensions/nautilus-global-preferences.c:1160
+#: libnautilus-extensions/nautilus-global-preferences.c:1178
 msgid "Files May Not Be Indexed"
 msgstr "Datotek ni mogoèe dati v kazalo"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1153
-#: libnautilus-extensions/nautilus-global-preferences.c:1171
+#: libnautilus-extensions/nautilus-global-preferences.c:1161
+#: libnautilus-extensions/nautilus-global-preferences.c:1179
 msgid ""
 "If you are running Linux, you can log in as root and type these commands to "
 "start cron:\n"
@@ -5788,7 +5802,7 @@ msgstr ""
 "/sbin/chkconfig --level 345 crond on\n"
 "/etc/rc.d/init.d/cron start\n"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1162
+#: libnautilus-extensions/nautilus-global-preferences.c:1170
 msgid ""
 "Indexing is turned on, enabling the fast search feature. However, indexing "
 "may not be performed because the program crond, which does nightly tasks on "
@@ -5813,6 +5827,8 @@ msgstr "Izbira ni bila narejena"
 
 #. The list of characters that cause line breaks can be localized.
 #: libnautilus-extensions/nautilus-icon-canvas-item.c:70
+#: libnautilus-extensions/nautilus-label.c:46
+#: libnautilus-extensions/nautilus-smooth-text-layout.c:46
 msgid " -_,;.?/&"
 msgstr " -_,;.?/&"
 
@@ -5898,15 +5914,15 @@ msgstr "courier"
 msgid "lucida"
 msgstr "lucida"
 
-#: libnautilus-extensions/nautilus-preferences.c:76
+#: libnautilus-extensions/nautilus-preferences.c:77
 msgid "Beginner"
 msgstr "Zaèetna"
 
-#: libnautilus-extensions/nautilus-preferences.c:77
+#: libnautilus-extensions/nautilus-preferences.c:78
 msgid "Intermediate"
 msgstr "Vmesna"
 
-#: libnautilus-extensions/nautilus-preferences.c:78
+#: libnautilus-extensions/nautilus-preferences.c:79
 msgid "Advanced"
 msgstr "Napredna"
 
@@ -6030,7 +6046,7 @@ msgstr "Izberi program s katerim naj se odpre \"%s\"."
 
 #: libnautilus-extensions/nautilus-program-chooser.c:1265
 msgid "View as Other"
-msgstr "Poglej z neèim drugim"
+msgstr "Glej kot nekaj drugega"
 
 #: libnautilus-extensions/nautilus-program-chooser.c:1266
 #, c-format
@@ -6085,6 +6101,7 @@ msgstr "Noben program ni na voljo"
 #. * (They can add applications though.)
 #.
 #: libnautilus-extensions/nautilus-program-chooser.c:1497
+#, c-format
 msgid ""
 "%s\n"
 "\n"
@@ -6104,6 +6121,7 @@ msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
 "locations.  Would you like to choose another application?"
 msgstr ""
+"\"%s\" ne more odpreti \"%s\", ker \"%s\" ne more dostopati do datotek na lokacijah \"%s\". ®elite izbrati drug program?"
 
 #: libnautilus-extensions/nautilus-program-choosing.c:497
 #: libnautilus-extensions/nautilus-program-choosing.c:518
@@ -6367,22 +6385,22 @@ msgstr ""
 msgid "Items containing \"medusa\" in their names and that are folders"
 msgstr "Predmeti, ki vsebujejo \"medusa\" v njihovih imenih in so mape"
 
-#: libnautilus-extensions/nautilus-stock-dialogs.c:550
-#: libnautilus-extensions/nautilus-stock-dialogs.c:603
+#: libnautilus-extensions/nautilus-stock-dialogs.c:553
+#: libnautilus-extensions/nautilus-stock-dialogs.c:606
 msgid "Details"
 msgstr "Podrobnosti"
 
-#: libnautilus-extensions/nautilus-stock-dialogs.c:568
+#: libnautilus-extensions/nautilus-stock-dialogs.c:571
 msgid "Warning"
 msgstr "Opozorilo"
 
-#: libnautilus-extensions/nautilus-stock-dialogs.c:579
-#: libnautilus-extensions/nautilus-stock-dialogs.c:601
+#: libnautilus-extensions/nautilus-stock-dialogs.c:582
+#: libnautilus-extensions/nautilus-stock-dialogs.c:604
 msgid "Error"
 msgstr "Napaka"
 
-#: libnautilus-extensions/nautilus-stock-dialogs.c:634
-#: libnautilus-extensions/nautilus-stock-dialogs.c:662
+#: libnautilus-extensions/nautilus-stock-dialogs.c:637
+#: libnautilus-extensions/nautilus-stock-dialogs.c:665
 msgid "Question"
 msgstr "Vpra¹anje"
 
@@ -6584,7 +6602,7 @@ msgstr "_Prilepi besedilo"
 #. * to change it when we upgrade to GTK 2.0.
 #.
 #: nautilus.desktop.in.h:1 src/nautilus-window-manage-views.c:254
-#: src/nautilus-window-menus.c:569
+#: src/nautilus-window-menus.c:573
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -7493,8 +7511,8 @@ msgid ""
 "an index by hand by running \"medusa-indexd\" as root on the command line."
 msgstr ""
 "Program, ki ustvari kazalo ni pravilno nastavljen. Roèno lahko ustvarite "
-"kazalo, èe kot administrator (root) v ukazni vrstici po¾enete "
-"\"medusa-index\"."
+"kazalo, èe kot administrator (root) v ukazni vrstici po¾enete \"medusa-index"
+"\"."
 
 #. It is not necessary to translate this text just yet; it has not been
 #. edited yet, and will be replaced by a final copy in a few days.
@@ -7909,6 +7927,7 @@ msgid "_Tighter Layout"
 msgstr "_O¾ji razpored"
 
 #: src/file-manager/nautilus-indexing-info.c:85
+#, c-format
 msgid "Indexing is %d%% complete."
 msgstr "Ustvarjanje kazala je %d%% opravljeno."
 
@@ -7926,8 +7945,8 @@ msgstr ""
 
 #: src/file-manager/nautilus-indexing-info.c:185
 msgid ""
-"An attempt to reindex, caused an Internal Indexer Error.  Tell "
-"rebecka@eazel.com"
+"An attempt to reindex, caused an Internal Indexer Error.  Tell rebecka@eazel."
+"com"
 msgstr ""
 "Poskus ustvarjanja novega kazala je povzroèil notranjo napako kazala. Pi¹ite "
 "na rebecka@eazel.com"
@@ -8068,8 +8087,8 @@ msgid ""
 "from the console may fix the problem. If not, you can try rebooting the "
 "computer or installing Nautilus again."
 msgstr ""
-"Nautilusa trenutno ni mogoèe uporabljati. Zagon ukaza \"nautilus-clean.sh "
-"-x\" iz ukazne lupine morda lahko re¹i problem. Èe ne, posku¹ajte znova "
+"Nautilusa trenutno ni mogoèe uporabljati. Zagon ukaza \"nautilus-clean.sh -x"
+"\" iz ukazne lupine morda lahko re¹i problem. Èe ne, posku¹ajte znova "
 "zagnati raèunalnik in znova namestiti Nautilusa."
 
 #. FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame.
@@ -8081,8 +8100,8 @@ msgid ""
 "\n"
 "OAF couldn't locate the Nautilus_shell.oaf file. One cause of this seems to "
 "be an LD_LIBRARY_PATH that does not include the oaf library's directory. "
-"Another possible cause would be bad install with a missing "
-"Nautilus_Shell.oaf file.\n"
+"Another possible cause would be bad install with a missing Nautilus_Shell."
+"oaf file.\n"
 "\n"
 "Running \"nautilus-clean.sh -x\" will kill all OAF and GConf processes, "
 "which may be needed by other applications.\n"
@@ -8091,9 +8110,9 @@ msgid ""
 "\n"
 "We have also seen this error when a faulty version of oaf was installed."
 msgstr ""
-"Nautilusa trenutno ni mogoèe uporabljati. Zagon ukaza \"nautilus-clean.sh "
-"-x\"iz ukazne lupine morda lahko re¹i problem. Èe ne, posku¹ajte znova "
-"zagnati raèunalnik in znova namestiti Nautilusa.\n"
+"Nautilusa trenutno ni mogoèe uporabljati. Zagon ukaza \"nautilus-clean.sh -x"
+"\"iz ukazne lupine morda lahko re¹i problem. Èe ne, posku¹ajte znova zagnati "
+"raèunalnik in znova namestiti Nautilusa.\n"
 "\n"
 "OAF ni mogel najti datoteke Nautilus_Shell.oaf. Vzrok lahko le¾i v tem,da "
 "LD_LIBRARY_PATH ne vsebuje imenika knji¾nice oaf. Drug mo¾en vzrok je lahko "
@@ -8167,7 +8186,7 @@ msgstr "Zaznamki"
 msgid "Location"
 msgstr "Lokacija"
 
-#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:763
+#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:767
 msgid "Remove"
 msgstr "Odstrani"
 
@@ -8195,7 +8214,7 @@ msgstr ""
 "Obstoj te datoteke ka¾e, da je bil Nautilusov nastavitveni èarovnik\n"
 "¾e predstavljen.\n"
 "\n"
-"Èe ¾elite vnovièno pojavitev èarovnika lahko to datoteko roèno izbri¹ete.\n"
+"Èe ¾elite vnovièno pojavitev èarovnika lahko to datoteko roèno zbri¹ete.\n"
 "\n"
 
 #: src/nautilus-first-time-druid.c:487
@@ -8204,7 +8223,7 @@ msgid ""
 "using GNOME and Linux. Choose a level that's comfortable for\n"
 "you - you can always change it later."
 msgstr ""
-"Va¹a uporabni¹ka stopnja prilagodi Nautilus va¹im izku¹enjam z\n"
+"Va¹a uporabni¹ka stopnja prilagodi Nautilus va¹im izku¹njam z\n"
 "uporabo GNOMEa in Linuxa. Izberite stopnjo, ki vam ugaja - \n"
 "vedno jo lahko spremenite kasneje."
 
@@ -8248,6 +8267,9 @@ msgstr ""
 "spletno stranjo Eazel. V kolikor imate zadnjo razlièico \n"
 "Nautilusa, bo to trajalo nekaj sekund, sicer pa malce dlje\n"
 "(a ne veè kot minuto ali dve).\n"
+"\n"
+"Èe veste, da va¹ raèunalnik uporablja posredovano povezavo\n"
+"kliknite \"Preveri\" in nautilus jo bo uporabil.\n"
 
 #: src/nautilus-first-time-druid.c:562
 msgid "Verify my connection and check for updates"
@@ -8265,7 +8287,7 @@ msgid ""
 msgstr ""
 "Imamo te¾ave z vzpostavljanjem spletne povezave navzven.\n"
 "Vèasih po¾arni zidovi zahtevajo navedbo spletnega posrednika.\n"
-"Spodaj vpi¹ite ime in vrata va¹ega spletnega posrednika, èe ga imate."
+"Èe imate spletnega posrednika, spodaj vpi¹ite njegovo ime in vrata."
 
 #: src/nautilus-first-time-druid.c:640
 msgid "No proxy server required."
@@ -8288,7 +8310,7 @@ msgstr "Preverjam va¹o povezavo v Internet in gledam za posodobitvami..."
 msgid "Downloading Nautilus updates..."
 msgstr "Prena¹am posodobitev Natuilusa..."
 
-#: src/nautilus-first-time-druid.c:906
+#: src/nautilus-first-time-druid.c:910
 msgid ""
 "If you have been using the GNOME Midnight Commander\n"
 "these settings move your desktop icons to Nautilus and\n"
@@ -8298,20 +8320,20 @@ msgstr ""
 "potem te nastavitve prestavijo ikone va¹ega namizja\n"
 "v Nautilusovega in nastavijo Nautilus za privzeto namizje.\n"
 
-#: src/nautilus-first-time-druid.c:913
+#: src/nautilus-first-time-druid.c:917
 msgid "Use Nautilus to draw the desktop."
 msgstr "Za risanje namizja uporabi Nautilusa."
 
-#: src/nautilus-first-time-druid.c:919
+#: src/nautilus-first-time-druid.c:923
 msgid "Move existing desktop icons to the Nautilus desktop."
 msgstr "Prenesi obstojeèe ikone namizja v Nautilusovo namizje."
 
 #. This option is currently disabled, per bugzilla.eazel.com 7557
-#: src/nautilus-first-time-druid.c:927
+#: src/nautilus-first-time-druid.c:931
 msgid "Launch Nautilus when GNOME starts up."
 msgstr "Po¾eni Nautilusa, ko se za¾ene GNOME."
 
-#: src/nautilus-first-time-druid.c:967
+#: src/nautilus-first-time-druid.c:971
 msgid ""
 "The fast search feature indexes all the items on your hard disk.\n"
 "It speeds up searching and allows you to search by file content\n"
@@ -8325,7 +8347,7 @@ msgstr ""
 "kazala vzame èas, a je opravljeno medtem, ko je va¹ raèunalnik brezdelen.\n"
 "Hitro iskanje zahteva, da na va¹em sistemu teèe daemon cron.\n"
 
-#: src/nautilus-first-time-druid.c:972
+#: src/nautilus-first-time-druid.c:976
 msgid ""
 "The fast search feature indexes all the items on your hard disk.\n"
 "It speeds up searching and allows you to search by file content\n"
@@ -8337,15 +8359,15 @@ msgstr ""
 "kot po imenu datotek, datumu in ostalih lastnostih datotek. Ustvarjanje\n"
 "kazala vzame èas, a je opravljeno medtem, ko je va¹ raèunalnik brezdelen.\n"
 
-#: src/nautilus-first-time-druid.c:981
+#: src/nautilus-first-time-druid.c:985
 msgid "Enable fast search"
 msgstr "Omogoèi hitro iskanje"
 
-#: src/nautilus-first-time-druid.c:982
+#: src/nautilus-first-time-druid.c:986
 msgid "Turn fast search on when cron is enabled"
 msgstr "Vklopi hitro iskanje, kadar je vkljuèen cron"
 
-#: src/nautilus-first-time-druid.c:1028
+#: src/nautilus-first-time-druid.c:1045
 msgid ""
 "Indexing is turned on, enabling the fast search feature. However, indexing\n"
 "currently can't be performed because the program crond, which does\n"
@@ -8369,7 +8391,7 @@ msgstr ""
 "/sbin/chkconfig --level 345 crond on\n"
 "/etc/rc.d/init.d/cron start\n"
 
-#: src/nautilus-first-time-druid.c:1036
+#: src/nautilus-first-time-druid.c:1053
 msgid ""
 "Indexing is turned on, enabling the fast search feature. However, indexing\n"
 "may not be performed because the program crond, which does nightly tasks\n"
@@ -8392,7 +8414,7 @@ msgstr ""
 "/sbin/chkconfig --level 345 crond on\n"
 "/etc/rc.d/init.d/cron start\n"
 
-#: src/nautilus-first-time-druid.c:1123
+#: src/nautilus-first-time-druid.c:1140
 msgid ""
 "Click Finish to launch Nautilus. You'll start with two\n"
 "Nautilus windows: one shows your home folder, and the\n"
@@ -8404,9 +8426,11 @@ msgstr ""
 "Kliknite \"Konèaj\" za zagon Nautilusa. Zaèeli boste z\n"
 "dvema Nautilusovima oknoma: eden ka¾e va¹ domaèi imenik in\n"
 "drugi govori o storitvah Eazel, ki laj¹ajo ¾ivljenje \n"
-"uporabnikov Linuxa"
+"uporabnikov Linuxa\n"
+"\n"
+"Upamo, da vam bo Nautilus ugajal!"
 
-#: src/nautilus-first-time-druid.c:1130
+#: src/nautilus-first-time-druid.c:1147
 msgid ""
 "Click Finish to launch Nautilus. You'll start with a\n"
 "window showing your home folder.\n"
@@ -8416,17 +8440,17 @@ msgstr ""
 "Kliknite \"Konèaj\" za zagon Nautilusa. Zaèeli boste z\n"
 "oknom, ki ka¾e va¹ domaèi imenik.\n"
 "\n"
-"Upamo, da vam bo Nautilus v¹eè!"
+"Upamo, da vam bo Nautilus ugajal"
 
-#: src/nautilus-first-time-druid.c:1154
+#: src/nautilus-first-time-druid.c:1171
 msgid "Nautilus First Time Setup"
 msgstr "Nastavitev Nautilusa ob prvem zagonu"
 
-#: src/nautilus-first-time-druid.c:1184
+#: src/nautilus-first-time-druid.c:1201
 msgid "Welcome to Nautilus"
 msgstr "Dobrodo¹li v Nautilusu"
 
-#: src/nautilus-first-time-druid.c:1186
+#: src/nautilus-first-time-druid.c:1203
 msgid ""
 "Nautilus...\n"
 "    Is a great file manager for the GNOME desktop.\n"
@@ -8445,51 +8469,51 @@ msgstr ""
 "Kliknite \"Naprej\" za zaèetek prilagajanja va¹ega okolja Nautilus."
 
 #. set up the final page
-#: src/nautilus-first-time-druid.c:1197
+#: src/nautilus-first-time-druid.c:1214
 msgid "Finished"
 msgstr "Konèano"
 
 #. set up the user level page
-#: src/nautilus-first-time-druid.c:1210
+#: src/nautilus-first-time-druid.c:1227
 msgid "Choose Your User Level"
 msgstr "Izberite va¹o uporabni¹ko stopnjo"
 
 #. set up the GMC transition page
-#: src/nautilus-first-time-druid.c:1214
+#: src/nautilus-first-time-druid.c:1231
 msgid "GMC to Nautilus Transition"
 msgstr "Prehod iz GMC v Nautilusa"
 
 #. set up the `Launch Medusa' page
-#: src/nautilus-first-time-druid.c:1218
+#: src/nautilus-first-time-druid.c:1238
 msgid "Fast Searches"
 msgstr "Hitra iskanja"
 
 #. set up optional page to tell the user how to run cron
-#: src/nautilus-first-time-druid.c:1226
+#: src/nautilus-first-time-druid.c:1246
 msgid "The Cron Daemon"
 msgstr "Daemon cron"
 
 #. set up the update page
-#: src/nautilus-first-time-druid.c:1231
+#: src/nautilus-first-time-druid.c:1251
 msgid "Checking Your Internet Connection"
 msgstr "Preverjam va¹o povezavo v Internet"
 
 #. set up the update feedback page
-#: src/nautilus-first-time-druid.c:1242
+#: src/nautilus-first-time-druid.c:1262
 msgid "Updating Nautilus..."
 msgstr "Posodabljam Nautilus..."
 
 #. set up the (optional) proxy configuration page
-#: src/nautilus-first-time-druid.c:1250
+#: src/nautilus-first-time-druid.c:1270
 msgid "Web Proxy Configuration"
 msgstr "Nastavitev spletnega posrednika"
 
 #. change the message to expanding file
-#: src/nautilus-first-time-druid.c:1325
+#: src/nautilus-first-time-druid.c:1345
 msgid "Decoding Update..."
 msgstr "Dekodiram posodobitev..."
 
-#: src/nautilus-first-time-druid.c:1342
+#: src/nautilus-first-time-druid.c:1362
 msgid "Update Complete. Click Next to Continue."
 msgstr "Posodobitev konèana. Za nadaljevanje kliknite \"Naprej\"."
 
@@ -8497,7 +8521,7 @@ msgstr "Posodobitev konèana. Za nadaljevanje kliknite \"Naprej\"."
 #. * doesn't exist. Arlo and I (jsh) and decided that the
 #. * best thing to do is silently fail
 #.
-#: src/nautilus-first-time-druid.c:1357
+#: src/nautilus-first-time-druid.c:1377
 msgid "No Update Available... Press Next to Continue."
 msgstr "Posodobitve niso na voljo... Za nadaljevanje kliknite \"Naprej\"."
 
@@ -8943,7 +8967,7 @@ msgstr "_Storitve"
 
 #: src/nautilus-shell.c:188
 msgid "Caveat"
-msgstr ""
+msgstr "Odlog"
 
 #: src/nautilus-shell.c:225
 msgid ""
@@ -9009,9 +9033,8 @@ msgstr ""
 "ikonski prostor"
 
 #: src/Nautilus_shell.oaf.in.h:10
-msgid "Nautilus file manager component that shows icons on the the desktop"
-msgstr ""
-"Komponenta Nautilusovega upravljalnika datotek, ki ka¾e ikone na namizju"
+msgid "Nautilus file manager component that shows icons on the desktop"
+msgstr "Komponenta upravljalnika datotek Nautilus, ki ka¾e ikone na namizju"
 
 #: src/Nautilus_shell.oaf.in.h:11
 msgid "Nautilus file manager desktop icon view"
@@ -9055,11 +9078,11 @@ msgstr "Seznam iskanja"
 
 #: src/Nautilus_shell.oaf.in.h:20
 msgid "View as Icons"
-msgstr "Poglej kot ikone"
+msgstr "Glej kot ikone"
 
 #: src/Nautilus_shell.oaf.in.h:21
 msgid "View as List"
-msgstr "Poglej kot seznam"
+msgstr "Glej kot seznam"
 
 #: src/nautilus-shell-ui.xml.h:1
 msgid " Advanced"
@@ -9184,19 +9207,19 @@ msgstr "Pojdi na naslednjo obiskano lokacijo"
 msgid "Go to the previous visited location"
 msgstr "Pojdi na prej¹njo obiskano lokacijo"
 
-#: src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:442
+#: src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:446
 msgid "Hide Location _Bar"
 msgstr "Skrij _vrstico lokacije"
 
-#: src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:424
+#: src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:428
 msgid "Hide St_atus Bar"
 msgstr "Skrij vrstico _stanja"
 
-#: src/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:430
+#: src/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:434
 msgid "Hide _Sidebar"
 msgstr "Skrij stranski _pult"
 
-#: src/nautilus-shell-ui.xml.h:37 src/nautilus-window-menus.c:436
+#: src/nautilus-shell-ui.xml.h:37 src/nautilus-window-menus.c:440
 msgid "Hide _Toolbar"
 msgstr "Skrij _orodjarno"
 
@@ -9376,7 +9399,7 @@ msgstr "_Uredi zaznamke..."
 msgid "_Feedback"
 msgstr "_Povratni podatki"
 
-#: src/nautilus-shell-ui.xml.h:86 src/nautilus-window-menus.c:1358
+#: src/nautilus-shell-ui.xml.h:86 src/nautilus-window-menus.c:1383
 msgid "_Find"
 msgstr "_Poi¹èi"
 
@@ -9564,7 +9587,7 @@ msgstr ""
 
 #: src/nautilus-theme-selector.c:587
 msgid "Can't delete current theme"
-msgstr "Ne morem izbrisati trenutne teme"
+msgstr "Ne morem zbrisati trenutne teme"
 
 #: src/nautilus-theme-selector.c:608
 msgid "Sorry, but that theme could not be removed!"
@@ -9666,7 +9689,8 @@ msgstr ""
 #: src/nautilus-window-manage-views.c:1245
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
-msgstr "Nautilus nima name¹èenga pregledovalnika, ki bi bil sposoben prikaza \"%s\"."
+msgstr ""
+"Nautilus nima name¹èenga pregledovalnika, ki bi bil sposoben prikaza \"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
 #: src/nautilus-window-manage-views.c:1257
@@ -9730,7 +9754,7 @@ msgstr "Ne morem prikazati lokacije"
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
 #.
-#: src/nautilus-window-menus.c:313
+#: src/nautilus-window-menus.c:317
 msgid ""
 "Are you sure you want to forget history? If you do, you will be doomed to "
 "repeat it."
@@ -9738,37 +9762,37 @@ msgstr ""
 "Ste preprièani, da ¾elite pozabiti zgodovino? Èe jo, potem ste obsojeni, da "
 "jo ponovite."
 
-#: src/nautilus-window-menus.c:316
+#: src/nautilus-window-menus.c:320
 msgid ""
 "Are you sure you want Nautilus to forget which locations you have visited?"
 msgstr ""
 "Ste preprièani, da ¾elite, da Nautilus pozabi katere lokacije ste obiskali?"
 
-#: src/nautilus-window-menus.c:321
+#: src/nautilus-window-menus.c:325
 msgid "Forget History?"
 msgstr "Pozabi zgodovino?"
 
-#: src/nautilus-window-menus.c:322
+#: src/nautilus-window-menus.c:326
 msgid "Forget"
 msgstr "Pozabi"
 
-#: src/nautilus-window-menus.c:425
+#: src/nautilus-window-menus.c:429
 msgid "Show St_atus Bar"
 msgstr "Ka¾i vrstico _stanja"
 
-#: src/nautilus-window-menus.c:431
+#: src/nautilus-window-menus.c:435
 msgid "Show _Sidebar"
 msgstr "Ka¾i stranski _pult"
 
-#: src/nautilus-window-menus.c:437
+#: src/nautilus-window-menus.c:441
 msgid "Show _Toolbar"
 msgstr "Ka¾i _orodno vrstico"
 
-#: src/nautilus-window-menus.c:443
+#: src/nautilus-window-menus.c:447
 msgid "Show Location _Bar"
 msgstr "Ka¾i _vrstico lokacije"
 
-#: src/nautilus-window-menus.c:494
+#: src/nautilus-window-menus.c:498
 msgid "Preferences"
 msgstr "Nastavitve"
 
@@ -9778,11 +9802,11 @@ msgstr "Nastavitve"
 #. * not translate the
 #. * company name, please.
 #.
-#: src/nautilus-window-menus.c:577
+#: src/nautilus-window-menus.c:581
 msgid "Copyright © 1999-2001 Eazel, Inc."
 msgstr "Avtorske pravice pridr¾ane © 1999-2001 Eazel, Inc."
 
-#: src/nautilus-window-menus.c:579
+#: src/nautilus-window-menus.c:583
 msgid ""
 "Nautilus is a graphical shell\n"
 "for GNOME that makes it\n"
@@ -9799,11 +9823,11 @@ msgstr ""
 #. * bottom of the about box to give credit
 #. * to the translator(s)
 #.
-#: src/nautilus-window-menus.c:588
+#: src/nautilus-window-menus.c:592
 msgid "Translator Credits"
 msgstr "Prevajalci"
 
-#: src/nautilus-window-menus.c:758
+#: src/nautilus-window-menus.c:762
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -9812,24 +9836,24 @@ msgstr ""
 "Lokacija \"%s ne obstaja. ®elite zbrisati vse zaznamke te lokacije z va¹ega "
 "seznama?"
 
-#: src/nautilus-window-menus.c:762
+#: src/nautilus-window-menus.c:766
 msgid "Bookmark for Nonexistent Location"
 msgstr "Zaznamek za neobstojeèo lokacijo"
 
-#: src/nautilus-window-menus.c:776
+#: src/nautilus-window-menus.c:780
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "Lokacija \"%s\" ne obstaja veè."
 
-#: src/nautilus-window-menus.c:777
+#: src/nautilus-window-menus.c:781
 msgid "Go to Nonexistent Location"
 msgstr "Pojdi na neobstojeèo lokacijo"
 
-#: src/nautilus-window-menus.c:846
+#: src/nautilus-window-menus.c:850
 msgid "Go to the location specified by this bookmark"
 msgstr "Pojdi na lokacijo navedeno s tem zaznamkom"
 
-#: src/nautilus-window-menus.c:1357
+#: src/nautilus-window-menus.c:1382
 msgid "_Browse"
 msgstr "_Brskaj"
 
@@ -10185,12 +10209,12 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-iso8859-2"
 #~ msgid ""
 #~ "To do a fast search, Find requires an index of the files on your system.  "
 #~ "You have elected not to index your computer so it does not have an index "
-#~ "right now.  Because Find cannot use an index, this search may take several "
-#~ "minutes.  "
+#~ "right now.  Because Find cannot use an index, this search may take "
+#~ "several minutes.  "
 #~ msgstr ""
-#~ "Za hitro iskanje potrebuje program Find kazalo datotek va¹ega sistema. Va¹ "
-#~ "raèunalnik ima ustvarjanje kazala izkljuèeno ali pa kazala trenutno nima. "
-#~ "Ker Find ne more uporabiti kazala, lahko iskanje traja veè minut."
+#~ "Za hitro iskanje potrebuje program Find kazalo datotek va¹ega sistema. "
+#~ "Va¹ raèunalnik ima ustvarjanje kazala izkljuèeno ali pa kazala trenutno "
+#~ "nima. Ker Find ne more uporabiti kazala, lahko iskanje traja veè minut."
 
 #~ msgid "Indexing is Disabled on Your Computer"
 #~ msgstr "Ustvarjanje kazala je na va¹em raèunalniku izkljuèeno."
@@ -10205,23 +10229,23 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-iso8859-2"
 #~ msgstr "_Izberi vse datoteke"
 
 #~ msgid ""
-#~ "An index of your files is not available because creating a nightly index of "
-#~ "files has been disabled by your system administrator."
+#~ "An index of your files is not available because creating a nightly index "
+#~ "of files has been disabled by your system administrator."
 #~ msgstr ""
-#~ "Kazalo va¹ih datotek ni na voljo, ker je bilo kreiranje vsakonoènega kazalo "
-#~ "datotek izkljuèeno s strani administratorja sistema."
+#~ "Kazalo va¹ih datotek ni na voljo, ker je bilo kreiranje vsakonoènega "
+#~ "kazalo datotek izkljuèeno s strani administratorja sistema."
 
 #~ msgid "No index of your system is available"
 #~ msgstr "Kazalo datotek na va¹em sistemu ni na voljo"
 
 #~ msgid ""
 #~ "An index of your files is not available, because you have elected to turn "
-#~ "the indexing feature off.  You can set your computer up to index your files "
-#~ "nightly by changing your search preferences."
+#~ "the indexing feature off.  You can set your computer up to index your "
+#~ "files nightly by changing your search preferences."
 #~ msgstr ""
 #~ "Kazalo va¹ih datotek ni na voljo, ker ste se odloèili ustvarjanje kazala "
-#~ "izklopitiVa¹ raèunalnik lahko nastavite, da bo vsakonoèno ustvarjal kazalo "
-#~ "datotek s spremembo va¹ih nastavitev iskanja."
+#~ "izklopitiVa¹ raèunalnik lahko nastavite, da bo vsakonoèno ustvarjal "
+#~ "kazalo datotek s spremembo va¹ih nastavitev iskanja."
 
 #~ msgid ""
 #~ "Nautilus can't be used now. Rebooting the computer or installing Nautilus "
@@ -10272,7 +10296,8 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-iso8859-2"
 #~ "Click the Next button to continue."
 #~ msgstr ""
 #~ "Nautilus se bo sedaj povezal s storitvami Eazel,\n"
-#~ "hitro preveril va¹o spletno povezavo in prenesel najnovej¹e posodobitve. \n"
+#~ "hitro preveril va¹o spletno povezavo in prenesel najnovej¹e "
+#~ "posodobitve. \n"
 #~ "\n"
 #~ "Èe veste, da va¹ raèunalnik uporablja posredovano povezavo, \n"
 #~ "kliknite Da in Nautilus jo bo uporabil. \n"
