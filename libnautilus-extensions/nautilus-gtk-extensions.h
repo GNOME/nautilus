@@ -71,6 +71,11 @@ void              nautilus_gtk_signal_connect_full_while_alive         (GtkObjec
 									gboolean                  after,
 									GtkObject                *alive_object);
 
+void              nautilus_gtk_signal_connect_while_realized           (GtkObject                *object,
+									const char               *name,
+									GtkSignalFunc             callback,
+									gpointer                  callback_data,
+									GtkWidget                *realized_widget);
 void		  nautilus_nullify_when_destroyed	      	       (gpointer		  object_pointer_address);
 void		  nautilus_nullify_cancel			       (gpointer		  object_pointer_address);
 

@@ -1198,7 +1198,7 @@ typedef struct DisconnectInfo {
 	guint disconnect_handler2;
 } DisconnectInfo;
 
-static guint
+static void
 alive_disconnecter (GtkObject *object, DisconnectInfo *info)
 {
 	g_assert (info != NULL);
@@ -1214,8 +1214,6 @@ alive_disconnecter (GtkObject *object, DisconnectInfo *info)
 	gtk_signal_disconnect (info->object2, info->disconnect_handler2);
 	
 	g_free (info);
-	
-	return 0;
 }
 
 /**
@@ -1247,26 +1245,109 @@ nautilus_gtk_signal_connect_full_while_alive (GtkObject *object,
 	info->object1 = object;
 	info->object2 = alive_object;
 	
-	info->signal_handler =
-		gtk_signal_connect_full (object,
-					 name,
-					 func,
-					 marshal,
-					 data,
-					 destroy_func,
-					 object_signal,
-					 after);
+	info->signal_handler = gtk_signal_connect_full (object,
+							name,
+							func,
+							marshal,
+							data,
+							destroy_func,
+							object_signal,
+							after);
+	info->disconnect_handler1 = gtk_signal_connect (object,
+							"destroy",
+							alive_disconnecter,
+							info);
+	info->disconnect_handler2 = gtk_signal_connect (alive_object,
+							"destroy",
+							alive_disconnecter,
+							info);
+}
 
-	info->disconnect_handler1 =
-		gtk_signal_connect (object,
+typedef struct
+{
+	GtkObject *object;
+	guint object_destroy_handler;
+	
+	GtkWidget *realized_widget;
+	guint realized_widget_destroy_handler;
+	guint realized_widget_unrealized_handler;
+
+	guint signal_handler;
+} RealizeDisconnectInfo;
+
+static void
+while_realized_disconnecter (GtkObject *object,
+			     RealizeDisconnectInfo *info)
+{
+	g_return_if_fail (GTK_IS_OBJECT (object));
+	g_return_if_fail (info != NULL);
+	g_return_if_fail (GTK_IS_OBJECT (info->object));
+	g_return_if_fail (info->object_destroy_handler != 0);
+	g_return_if_fail (info->object_destroy_handler != 0);
+	g_return_if_fail (info->realized_widget_destroy_handler != 0);
+	g_return_if_fail (info->realized_widget_unrealized_handler != 0);
+
+ 	gtk_signal_disconnect (info->object, info->object_destroy_handler);
+ 	gtk_signal_disconnect (info->object, info->signal_handler);
+ 	gtk_signal_disconnect (GTK_OBJECT (info->realized_widget), info->realized_widget_destroy_handler);
+ 	gtk_signal_disconnect (GTK_OBJECT (info->realized_widget), info->realized_widget_unrealized_handler);
+	g_free (info);
+}
+
+/**
+ * nautilus_gtk_signal_connect_while_realized:
+ *
+ * @object: Object to connect to.
+ * @name: Name of signal to connect to.
+ * @callback: Caller's callback.
+ * @callback_data: Caller's callback_data.
+ * @realized_widget: Widget to monitor for realized state.  Signal is connected
+ *                   while this wigget is realized.
+ *
+ * Connect to a signal of an object while another widget is realized.  This is 
+ * useful for non windowed widgets that need to monitor events in their ancestored
+ * windowed widget.  The signal is automatically disconnected when &widget is
+ * unrealized.  Also, the signal is automatically disconnected when either &object
+ * or &widget are destroyed.
+ **/
+void
+nautilus_gtk_signal_connect_while_realized (GtkObject *object,
+					    const char *name,
+					    GtkSignalFunc callback,
+					    gpointer callback_data,
+					    GtkWidget *realized_widget)
+{
+	RealizeDisconnectInfo *info;
+
+	g_return_if_fail (GTK_IS_OBJECT (object));
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (name[0] != '\0');
+	g_return_if_fail (callback != NULL);
+	g_return_if_fail (GTK_IS_WIDGET (realized_widget));
+	g_return_if_fail (GTK_WIDGET_REALIZED (realized_widget));
+
+	info = g_new0 (RealizeDisconnectInfo, 1);
+	
+	info->object = object;
+	info->object_destroy_handler = 
+		gtk_signal_connect (info->object,
 				    "destroy",
-				    GTK_SIGNAL_FUNC (alive_disconnecter),
+				    while_realized_disconnecter,
 				    info);
-	info->disconnect_handler2 =
-		gtk_signal_connect (alive_object,
+	
+	info->realized_widget = realized_widget;
+	info->realized_widget_destroy_handler = 
+		gtk_signal_connect (GTK_OBJECT (info->realized_widget),
 				    "destroy",
-				    GTK_SIGNAL_FUNC (alive_disconnecter),
+				    while_realized_disconnecter,
 				    info);
+	info->realized_widget_unrealized_handler = 
+		gtk_signal_connect_after (GTK_OBJECT (info->realized_widget),
+					  "unrealize",
+					  while_realized_disconnecter,
+					  info);
+
+	info->signal_handler = gtk_signal_connect (info->object, name, callback, callback_data);
 }
 
 static void

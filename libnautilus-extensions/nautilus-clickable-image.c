@@ -55,12 +55,6 @@ static guint clickable_image_signals[LAST_SIGNAL] = { 0 };
 struct _NautilusClickableImageDetails
 {
  	gboolean pointer_inside;
-	GtkWidget *windowed_ancestor;
-	guint enter_notify_connection_id;
-	guint leave_notify_connection_id;
-	guint motion_notify_connection_id;
-	guint button_press_connection_id;
-	guint button_release_connection_id;
 };
 
 /* GtkObjectClass methods */
@@ -195,6 +189,7 @@ static void
 nautilus_clickable_image_realize (GtkWidget *widget)
 {
 	NautilusClickableImage *clickable_image;
+	GtkWidget *windowed_ancestor;
 
 	g_return_if_fail (NAUTILUS_IS_CLICKABLE_IMAGE (widget));
 	
@@ -203,45 +198,45 @@ nautilus_clickable_image_realize (GtkWidget *widget)
 	/* Chain realize */
 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
 
-	clickable_image->details->windowed_ancestor = nautilus_gtk_widget_find_windowed_ancestor (widget);
-	g_assert (GTK_IS_WIDGET (clickable_image->details->windowed_ancestor));
+	windowed_ancestor = nautilus_gtk_widget_find_windowed_ancestor (widget);
+	g_assert (GTK_IS_WIDGET (windowed_ancestor));
 	
-	gtk_widget_add_events (clickable_image->details->windowed_ancestor,
+	gtk_widget_add_events (windowed_ancestor,
 			       GDK_BUTTON_PRESS_MASK
 			       | GDK_BUTTON_RELEASE_MASK
 			       | GDK_ENTER_NOTIFY_MASK
 			       | GDK_LEAVE_NOTIFY_MASK
 			       | GDK_POINTER_MOTION_MASK);
 
-	clickable_image->details->enter_notify_connection_id =
-		gtk_signal_connect (GTK_OBJECT (clickable_image->details->windowed_ancestor),
-				    "enter_notify_event",
-				    GTK_SIGNAL_FUNC (ancestor_enter_notify_event),
-				    widget);
+	nautilus_gtk_signal_connect_while_realized (GTK_OBJECT (windowed_ancestor),
+						    "enter_notify_event",
+						    GTK_SIGNAL_FUNC (ancestor_enter_notify_event),
+						    widget,
+						    widget);
 	
-	clickable_image->details->leave_notify_connection_id =
-		gtk_signal_connect (GTK_OBJECT (clickable_image->details->windowed_ancestor),
-				    "leave_notify_event",
-				    GTK_SIGNAL_FUNC (ancestor_leave_notify_event),
-				    widget);
+	nautilus_gtk_signal_connect_while_realized (GTK_OBJECT (windowed_ancestor),
+						    "leave_notify_event",
+						    GTK_SIGNAL_FUNC (ancestor_leave_notify_event),
+						    widget,
+						    widget);
 	
-	clickable_image->details->motion_notify_connection_id =
-		gtk_signal_connect (GTK_OBJECT (clickable_image->details->windowed_ancestor),
-				    "motion_notify_event",
-				    GTK_SIGNAL_FUNC (ancestor_motion_notify_event),
-				    widget);
+	nautilus_gtk_signal_connect_while_realized (GTK_OBJECT (windowed_ancestor),
+						    "motion_notify_event",
+						    GTK_SIGNAL_FUNC (ancestor_motion_notify_event),
+						    widget,
+						    widget);
 	
-	clickable_image->details->button_press_connection_id =
-		gtk_signal_connect (GTK_OBJECT (clickable_image->details->windowed_ancestor),
-				    "button_press_event",
-				    GTK_SIGNAL_FUNC (ancestor_button_press_event),
-				    widget);
+	nautilus_gtk_signal_connect_while_realized (GTK_OBJECT (windowed_ancestor),
+						    "button_press_event",
+						    GTK_SIGNAL_FUNC (ancestor_button_press_event),
+						    widget,
+						    widget);
 	
-	clickable_image->details->button_release_connection_id =
-		gtk_signal_connect (GTK_OBJECT (clickable_image->details->windowed_ancestor),
-				    "button_release_event",
-				    GTK_SIGNAL_FUNC (ancestor_button_release_event),
-				    widget);
+	nautilus_gtk_signal_connect_while_realized (GTK_OBJECT (windowed_ancestor),
+						    "button_release_event",
+						    GTK_SIGNAL_FUNC (ancestor_button_release_event),
+						    widget,
+						    widget);
 }
 
 static void
@@ -252,28 +247,6 @@ nautilus_clickable_image_unrealize (GtkWidget *widget)
 	g_return_if_fail (NAUTILUS_IS_CLICKABLE_IMAGE (widget));
 
 	clickable_image = NAUTILUS_CLICKABLE_IMAGE (widget);
-
-	gtk_signal_disconnect (GTK_OBJECT (clickable_image->details->windowed_ancestor),
-			       clickable_image->details->enter_notify_connection_id);
-	
-	gtk_signal_disconnect (GTK_OBJECT (clickable_image->details->windowed_ancestor),
-			       clickable_image->details->leave_notify_connection_id);
-	
-	gtk_signal_disconnect (GTK_OBJECT (clickable_image->details->windowed_ancestor),
-			       clickable_image->details->motion_notify_connection_id);
-	
-	gtk_signal_disconnect (GTK_OBJECT (clickable_image->details->windowed_ancestor),
-			       clickable_image->details->button_press_connection_id);
-	
-	gtk_signal_disconnect (GTK_OBJECT (clickable_image->details->windowed_ancestor),
-			       clickable_image->details->button_release_connection_id);
-
-	clickable_image->details->windowed_ancestor = NULL;
-	clickable_image->details->enter_notify_connection_id = 0;
-	clickable_image->details->leave_notify_connection_id = 0;
-	clickable_image->details->motion_notify_connection_id = 0;
-	clickable_image->details->button_press_connection_id = 0;
-	clickable_image->details->button_release_connection_id = 0;
 
 	/* Chain unrealize */
 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, unrealize, (widget));

@@ -1,3 +1,32 @@
+2001-02-12  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(while_realized_disconnecter),
+	(nautilus_gtk_signal_connect_while_realized):
+	New function to connect to a signal of an object while a widget is
+	realized.
+	(while_realized_disconnecter): Changed signature to be void - no
+	need to return a value here.  As such, the GTK_SIGNAL_FUNC casts
+	are no longer needed.
+	
+	* libnautilus-extensions/nautilus-clickable-image.c:
+	(nautilus_clickable_image_realize),
+	(nautilus_clickable_image_unrealize):
+	Use nautilus_gtk_signal_connect_while_realized so that we dont
+	have to keep track of the signal ids and ancestor widget.
+	
+	* libnautilus-extensions/nautilus-image-table.c:
+	(nautilus_image_table_realize), (nautilus_image_table_unrealize):
+	Use nautilus_gtk_signal_connect_while_realized so that we dont
+	have to keep track of the signal ids and ancestor widget.
+
+	* test/test-nautilus-clickable-image.c: (main):
+	Add a windowed ancestor inbetween in order to test
+	nautilus_gtk_signal_connect_while_realized.
+	
 2001-02-12  Mike Fleming  <mfleming@eazel.com>
 
 	reviewed by: <ramiro@eazel.com>

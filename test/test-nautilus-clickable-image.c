@@ -50,13 +50,16 @@ main (int argc, char* argv[])
 	GtkWidget *window;
 	GtkWidget *vbox;
 	GtkWidget *clickable_images[3];
+	GtkWidget *event_box;
 	GdkPixbuf *pixbuf;
 
 	test_init (&argc, &argv);
 	
 	window = test_window_new ("Simple Label Test", 20);
+	event_box = gtk_event_box_new ();
 	vbox = gtk_vbox_new (TRUE, 10);
-	gtk_container_add (GTK_CONTAINER (window), vbox);
+	gtk_container_add (GTK_CONTAINER (window), event_box);
+	gtk_container_add (GTK_CONTAINER (event_box), vbox);
 
 	clickable_images[0] = NULL;
 	clickable_images[1] = NULL;
@@ -64,8 +67,8 @@ main (int argc, char* argv[])
 
 	pixbuf = test_pixbuf_new_named ("/usr/share/pixmaps/gnome-globe.png", 1.0);
 	if (1) clickable_images[0] = clickable_image_new ("Clickable Image", pixbuf);
-	if (0) clickable_images[1] = clickable_image_new ("Clickable Image No pixbuf", NULL);
-	if (0) clickable_images[2] = clickable_image_new (NULL, pixbuf);
+	if (1) clickable_images[1] = clickable_image_new ("Clickable Image No pixbuf", NULL);
+	if (1) clickable_images[2] = clickable_image_new (NULL, pixbuf);
 	gdk_pixbuf_unref (pixbuf);
 
 	if (clickable_images[0]) gtk_box_pack_start (GTK_BOX (vbox), clickable_images[0], FALSE, FALSE, 0);
