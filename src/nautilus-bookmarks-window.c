@@ -116,6 +116,7 @@ create_bookmarks_window(NautilusBookmarklist *list)
 	gtk_widget_set_usize (window, 
 			      BOOKMARKS_WINDOW_MIN_WIDTH, 
 			      BOOKMARKS_WINDOW_MIN_HEIGHT);
+	nautilus_bookmarks_window_restore_geometry (window);
 	gtk_window_set_policy (GTK_WINDOW (window), FALSE, TRUE, FALSE);
 
 	content_area = gtk_hbox_new (TRUE, GNOME_PAD);
@@ -258,33 +259,6 @@ get_selection_exists ()
 	g_assert (GTK_CLIST(bookmark_list_widget)->selection_mode 
 		== GTK_SELECTION_BROWSE);
 	return GTK_CLIST(bookmark_list_widget)->rows > 0;
-}
-
-/**
- * nautilus_bookmarks_window_present:
- * 
- * Present the bookmarks window on screen in the saved position and size.
- * Brings window to front and activates it.
- * @window: The bookmarks window to present on screen.
- **/
-void
-nautilus_bookmarks_window_present (GtkWidget *window)
-{
-	g_return_if_fail (GTK_IS_WINDOW (window));
-
-	if (GTK_WIDGET_VISIBLE(window))
-	{
-		/* Hide window first so it will reappear on top */
-		nautilus_bookmarks_window_save_geometry (window);
-		gtk_widget_hide (window);
-	}
-	else
-	{
-		gtk_widget_realize (window);
-	}
-
-	nautilus_bookmarks_window_restore_geometry (window);
-    	gtk_widget_show (window);
 }
 
 static void
@@ -505,6 +479,13 @@ on_window_delete_event (GtkWidget *widget,
 	 
 	/* Hide but don't destroy */
 	gtk_widget_hide(widget);
+
+	/* Seems odd to restore the geometry just after saving it,
+	 * and when the window is hidden, but this insures that
+	 * the next time the window is shown it will have the
+	 * right hints in it to appear in the correct place.
+	 */
+	nautilus_bookmarks_window_restore_geometry (widget);
 
 	return TRUE;
 }

@@ -33,6 +33,7 @@
 #include "ntl-window-private.h"
 #include "ntl-miniicon.h"
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <libnautilus/nautilus-gtk-extensions.h>
 
 static void nautilus_window_realize (GtkWidget *widget);
 
@@ -215,7 +216,6 @@ static GnomeUIInfo bookmarks_menu_info[] = {
   GNOMEUIINFO_END
 };
 
-/* FIXME: This needs implementation. */
 static GnomeUIInfo help_menu_info[] = {
   {
     GNOME_APP_UI_ITEM,
@@ -523,10 +523,6 @@ nautilus_window_constructed(NautilusWindow *window)
   gtk_widget_set_sensitive(edit_menu_info[4].widget, FALSE); /* Paste */
   gtk_widget_set_sensitive(edit_menu_info[5].widget, FALSE); /* Clear */
   gtk_widget_set_sensitive(edit_menu_info[7].widget, FALSE); /* Select All */
-
-  gtk_widget_set_sensitive(bookmarks_menu_info[0].widget, FALSE); /* Add Bookmark */
-  gtk_widget_set_sensitive(bookmarks_menu_info[1].widget, FALSE); /* Edit Bookmarks */
-  gtk_widget_set_sensitive(help_menu_info[0].widget, TRUE); /* About */
 
   /* insert bookmarks menu */
   gtk_menu_item_set_submenu(GTK_MENU_ITEM (main_menu[BOOKMARKS_MENU_INDEX].widget), 
@@ -863,28 +859,43 @@ nautilus_window_stop (GtkWidget *btn, NautilusWindow *window)
   nautilus_window_end_location_change(window);
 }
 
+/**
+ * nautilus_window_about_cb:
+ * 
+ * Display about box, creating it first if necessary. Callback used when 
+ * user selects "About Nautilus".
+ * @widget: ignored
+ * @window: ignored
+ **/
 static void
 nautilus_window_about_cb (GtkWidget *widget,
                           NautilusWindow *window)
 {
-  GtkWidget *aboot;
-  const char *authors[] = {
-    "Darin Adler",
-    "Andy Hertzfeld",
-    "Elliot Lee",
-    "Ettore Perazzoli",
-    "Maciej Stachowiak",
-    "John Sullivan",
-    NULL
-  };
+  static GtkWidget *aboot = NULL;
 
-  aboot = gnome_about_new(_("Nautilus"),
-                          VERSION,
-                          "Copyright (C) 1999, 2000",
-                          authors,
-                          _("The Cool Shell Program"),
-                          "nautilus/nautilus3.jpg");
-  gtk_widget_show(aboot);
+  if (aboot == NULL)
+  {
+    const char *authors[] = {
+      "Darin Adler",
+      "Andy Hertzfeld",
+      "Elliot Lee",
+      "Ettore Perazzoli",
+      "Maciej Stachowiak",
+      "John Sullivan",
+      NULL
+    };
+
+    aboot = gnome_about_new(_("Nautilus"),
+                            VERSION,
+                            "Copyright (C) 1999, 2000",
+                            authors,
+                            _("The Cool Shell Program"),
+                            "nautilus/nautilus3.jpg");
+
+    gnome_dialog_close_hides (GNOME_DIALOG (aboot), TRUE);
+  }
+
+  nautilus_gtk_window_present (GTK_WINDOW (aboot));
 }
 
 void

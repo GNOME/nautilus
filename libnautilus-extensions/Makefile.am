@@ -23,8 +23,9 @@ libnautilusinclude_HEADERS=			\
 	gtkscrollframe.h			\
 	nautilus.h				\
 	nautilus-file-utilities.h		\
-	nautilus-lib-self-check-functions.c	\
-	nautilus-self-checks.c			\
+	nautilus-gtk-extensions.h		\
+	nautilus-lib-self-check-functions.h	\
+	nautilus-self-checks.h			\
 	ntl-content-view-client.h		\
 	ntl-meta-view-client.h			\
 	ntl-view-client.h
@@ -37,6 +38,7 @@ libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	gtkflist.c				\
 	gtkscrollframe.c			\
 	nautilus-file-utilities.c		\
+	nautilus-gtk-extensions.c		\
 	nautilus-lib-self-check-functions.c	\
 	nautilus-self-checks.c			\
 	ntl-content-view-client.c		\

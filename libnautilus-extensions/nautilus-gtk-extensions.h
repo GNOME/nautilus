@@ -1,6 +1,8 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* nautilus-bookmarks-window.h - interface for bookmark-editing window.
+/* nautilus-gtk-extensions.h - interface for new functions that operate on
+  			       gtk classes. Perhaps some of these should be
+  			       rolled into gtk someday.
 
    Copyright (C) 1999, 2000 Eazel, Inc.
 
@@ -22,13 +24,11 @@
    Authors: John Sullivan <sullivan@eazel.com>
 */
 
-#ifndef NAUTILUS_BOOKMARKS_WINDOW_H
-#define NAUTILUS_BOOKMARKS_WINDOW_H 1
+#ifndef NAUTILUS_GTK_EXTENSIONS_H
+#define NAUTILUS_GTK_EXTENSIONS_H 1
 
-#include <gnome.h>
-#include "nautilus-bookmarklist.h"
+#include <gtk/gtkwindow.h>
 
-GtkWidget	*create_bookmarks_window (NautilusBookmarklist *bookmarks);
-void		 nautilus_bookmarks_window_save_geometry (GtkWidget *window);
+void nautilus_gtk_window_present (GtkWindow *window);
 
-#endif /* NAUTILUS_BOOKMARKS_WINDOW_H */
+#endif /* NAUTILUS_GTK_EXTENSIONS_H */

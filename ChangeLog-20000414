@@ -1,5 +1,35 @@
 2000-01-07  John Sullivan  <sullivan@eazel.com>
 
+	Added and deployed utility routine for presenting a
+	window (in any current state) to user.
+
+	* libnautilus/nautilus-gtk-extensions.h:
+	* libnautilus/nautilus-gtk-extensions.c: New files
+	(nautilus_gtk_window_present): New function, presents
+	a window to user (opens it, brings it to front w/focus)
+	regardless of whether it was showing, buried, hidden, or
+	minimized.
+	* libnautilus/Makefile.am: added these two new files. Also
+	changed ".c" to ".h" for two self-check files in the HEADERS
+	list (apparent typo).
+	* src/nautilus-bookmarks-menu.c: (edit_bookmarks_cb):
+	Replaced call to nautilus_bookmarks_window_present with
+	call to nautilus_gtk_window_present.
+	* src/nautilus-bookmarks-window.c:
+	* src/nautilus-bookmarks-window.h:
+	(nautilus_bookmarks_window_present): Deleted this function.
+	* src/nautilus-bookmarks-window.c:
+	(create-bookmarks-window): Now calls nautilus_bookmarks_
+	window_restore_geometry just once here, instead of every
+	time window was shown.
+	* src/ntl-window.c: (nautilus_about_window_cb):
+	Now it keeps around a single About window, instead of
+	creating a new one each time (you could litter the screen
+	with About windows before). Also removed some obsolete
+	gtk_widget_set_sensitive calls.
+
+2000-01-07  John Sullivan  <sullivan@eazel.com>
+
 	Bookmarks window position is now saved & restored within
 	a session and across sessions. Some of this work can be
 	turned into general-purpose utilities but I didn't do

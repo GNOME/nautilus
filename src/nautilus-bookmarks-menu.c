@@ -27,6 +27,7 @@
 
 #include "nautilus-bookmarklist.h"
 #include "nautilus-bookmarks-window.h"
+#include <libnautilus/nautilus-gtk-extensions.h>
 
 /* object data strings */
 #define LAST_STATIC_ITEM	"last static item"
@@ -139,7 +140,7 @@ bookmark_activated_cb(GtkMenuItem* item, gpointer func_data)
 static void
 edit_bookmarks_cb(GtkMenuItem* item, gpointer ignored)
 {
-	nautilus_bookmarks_window_present (get_bookmarks_window());
+	nautilus_gtk_window_present (GTK_WINDOW (get_bookmarks_window()));
 }
 
 static GtkWidget *
