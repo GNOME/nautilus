@@ -200,15 +200,13 @@ display_caveat (GtkWindow *parent_window)
 	}
 
   	text = nautilus_label_new
-		(_("Thank you for your interest in Nautilus Preview Release 2.\n "
+		(_("Thank you for trying out Nautilus Preview Release 2.\n "
 		   "\n"
-		   "As with any software under development, you should exercise caution when "
-		   "using Nautilus.  Eazel does not provide any guarantee that it will work "
-		   "properly, or assume any liability for your use of it.  Please use it at your "
-		   "own risk.\n"
+		   "Nautilus is still under construction. Some operations may not"
+		   "have their intended consequences, so be careful and make "
+		   "sure any important files on your system are backed up.  "
 		   "\n"
-		   "Please visit http://www.eazel.com/feedback.html to provide feedback, "
-		   "comments, and suggestions."));
+		   "Please visit http://www.eazel.com/feedback.html to provide feedback."));
 	nautilus_label_set_font_size (NAUTILUS_LABEL (text), 14);
 	nautilus_label_set_text_justification (NAUTILUS_LABEL (text), GTK_JUSTIFY_LEFT);
 	nautilus_label_set_line_wrap (NAUTILUS_LABEL (text), TRUE);
