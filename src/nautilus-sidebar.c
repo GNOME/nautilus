@@ -1024,9 +1024,13 @@ nautilus_sidebar_release_event (GtkWidget *widget, GdkEventButton *event)
 	if (rounded_y >= GTK_WIDGET (sidebar->details->sidebar_tabs)->allocation.y) {
 		which_tab = nautilus_sidebar_tabs_hit_test (sidebar_tabs, event->x, event->y);
 		if (which_tab >= 0) {
-			nautilus_sidebar_tabs_select_tab (sidebar_tabs, which_tab);
-			nautilus_sidebar_activate_panel (sidebar, which_tab);
-			gtk_widget_queue_draw (widget);	
+			if (which_tab == sidebar->details->selected_index) {
+				nautilus_sidebar_deactivate_panel (sidebar);
+			} else {			
+				nautilus_sidebar_tabs_select_tab (sidebar_tabs, which_tab);
+				nautilus_sidebar_activate_panel (sidebar, which_tab);
+				gtk_widget_queue_draw (widget);	
+			}
 		}
 	} 
 	

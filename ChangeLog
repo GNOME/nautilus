@@ -1,3 +1,17 @@
+2001-02-09  Andy Hertzfeld  <andy@eazel.com>
+
+	* icons/i-directory-12.png:
+	* icons/i-directory-accept-12.png:
+	fixed bug 6338, folder moves to the right when highlighted,
+	by tweaking the associated images
+	
+	* src/nautilus-sidebar-tabs.c: (nautilus_sidebar_tabs_hit_test):
+	consider the tab for hit-testing even if invisible
+	* src/nautilus-sidebar.c: (nautilus_sidebar_release_event):
+	fixed 3538, easier way to minimize active sidebar view, by
+	making it close the active view when you click on the space
+	its tab formerly occupied.
+
 2001-02-09  Arlo Rose  <arlo@eazel.com>
 
 	* icons/Makefile.am:

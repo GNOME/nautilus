@@ -423,11 +423,12 @@ int nautilus_sidebar_tabs_hit_test (NautilusSidebarTabs *sidebar_tabs, int x, in
 		tab_item = (TabItem*) current_item->data;
 		rect_ptr = &tab_item->tab_rect;
 
-		if (tab_item->visible) {							
-			if ((x >= rect_ptr->x) && (x < rect_ptr->x + rect_ptr->width) &&
-		     		(y >= rect_ptr->y) && (y< rect_ptr->y + rect_ptr->height))
-		   		result = tab_item->notebook_page;
-		}
+		/* hit test even when invisible to provide an easy way to
+		 * toggle visibility
+		 */
+		if ((x >= rect_ptr->x) && (x < rect_ptr->x + rect_ptr->width) &&
+		     	(y >= rect_ptr->y) && (y< rect_ptr->y + rect_ptr->height))
+		   	result = tab_item->notebook_page;
 		 	
 		current_item = current_item->next;
 	}
