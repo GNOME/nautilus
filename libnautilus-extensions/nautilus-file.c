@@ -2764,7 +2764,7 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 	 */
 
 	if (strcmp (attribute_name, "name") == 0) {
-		return nautilus_link_get_display_name (nautilus_file_get_name (file));
+		return nautilus_file_get_name (file);
 	}
 
 	if (strcmp (attribute_name, "type") == 0) {
@@ -3193,13 +3193,11 @@ nautilus_file_contains_text (NautilusFile *file)
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 	
 	mime_type = nautilus_file_get_mime_type (file);
-		
-	/* see if it's a nautilus link xml file - if so, see if we need to handle specially */
-	contains_text = (nautilus_istr_has_prefix (mime_type, "text/")
-			 || (mime_type == NULL && nautilus_file_get_file_type (file)
-			     == GNOME_VFS_FILE_TYPE_REGULAR))
-		&& !nautilus_link_is_link_file (file);
-			
+	contains_text = nautilus_istr_has_prefix (mime_type, "text/")
+		|| (mime_type == NULL
+		    && nautilus_file_get_file_type (file) == GNOME_VFS_FILE_TYPE_REGULAR);
+	g_free (mime_type);
+	
 	return contains_text;
 }
 
@@ -3458,48 +3456,6 @@ nautilus_file_is_gone (NautilusFile *file)
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
 	return file->details->is_gone;
-}
-
-/**
- * nautilus_file_activate_custom
- *
- * This routine is called when a file is activated to have a chance to
- * do file-type specific activation. If it returns true, the framework
- * won't try to change location.
- *  
- * For now, the only thing we handle specially is link activation,
- * where we special case uris with a protocol of "command" to execute
- * shell commands, mainly to launch applications.
- *
- **/
-/* FIXME: This does not belong here! It's a much higher-level
- * operation than we should have in Nautilusfile.
- */
-gboolean
-nautilus_file_activate_custom (NautilusFile *file, gboolean use_new_window)
-{
-	int result;
-	char *uri, *old_uri, *command_str;
-		
-	/* See if it's a nautilus link xml file - if so, see if we need to handle specially. */
-	uri = nautilus_file_get_uri (file);
-
-	if (nautilus_link_is_link_file (file)) {
-		old_uri = uri;
-		uri = nautilus_link_get_link_uri (uri);
-		g_free (old_uri);
-	
-		if (nautilus_str_has_prefix (uri, "command:")) {
-			/* FIXME: Hardcoded "+8"? */
-			command_str = g_strdup_printf ("%s &", uri + 8);
-			result = system (command_str);
-			g_free (command_str);
-			g_free (uri);
-			return TRUE;
-		}
-	}
-	g_free (uri);
-	return FALSE;
 }
 
 /**

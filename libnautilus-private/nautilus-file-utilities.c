@@ -183,8 +183,7 @@ nautilus_get_user_directory (void)
 char *
 nautilus_get_desktop_directory (void)
 {
-	char *desktop_directory = NULL;
-	char *user_directory;
+	char *desktop_directory, *user_directory;
 
 	user_directory = nautilus_get_user_directory ();
 	desktop_directory = nautilus_make_path (user_directory, DESKTOP_DIRECTORY_NAME);

@@ -62,7 +62,7 @@ link_set_path_name (const char *directory_path, const char *name)
 	return g_strdup_printf ("%s/%s", path_start, name);
 }
 
-/* routine to create a new .link file in the specified directory */
+/* routine to create a new link file in the specified directory */
 static gboolean
 create_new_link (const char *directory_path, const char *name, const char *image, const char *uri)
 {
@@ -141,7 +141,7 @@ nautilus_link_set_install (const char *directory_path, const char *link_set_name
 		return FALSE;
 	}
 	
-	/* loop through the entries, generating .link files */
+	/* loop through the entries, generating link files */
 	
 	for (node = nautilus_xml_get_children (xmlDocGetRootElement (document));
 	     node != NULL; node = node->next) {

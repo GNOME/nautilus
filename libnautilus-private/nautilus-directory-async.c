@@ -575,6 +575,8 @@ static void
 set_up_request_by_file_attributes (Request *request,
 				   GList *file_attributes)
 {
+	memset (request, 0, sizeof (*request));
+
 	request->directory_count = g_list_find_custom
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT,
@@ -595,7 +597,12 @@ set_up_request_by_file_attributes (Request *request,
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY,
 		 nautilus_str_compare) != NULL;
-
+	if (g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI,
+				nautilus_str_compare) != NULL) {
+		request->file_info = TRUE;
+		request->activation_uri = TRUE;
+	}
 
 	/* FIXME:
 	 * Some file attributes are really pieces of metadata.
@@ -636,9 +643,9 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 	monitor = g_new (Monitor, 1);
 	monitor->file = file;
 	monitor->client = client;
+	set_up_request_by_file_attributes (&monitor->request, file_attributes);
 	monitor->request.metafile = monitor_metadata;
 	monitor->request.file_list = file == NULL;
-	set_up_request_by_file_attributes (&monitor->request, file_attributes);
 	directory->details->monitor_list =
 		g_list_prepend (directory->details->monitor_list, monitor);
 
@@ -974,9 +981,9 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 		callback.callback.file = file_callback;
 	}
 	callback.callback_data = callback_data;
+	set_up_request_by_file_attributes (&callback.request, file_attributes);
 	callback.request.metafile = wait_for_metadata;
 	callback.request.file_list = file == NULL && file_attributes != NULL;
-	set_up_request_by_file_attributes (&callback.request, file_attributes);
 	
 	/* Handle the NULL case. */
 	if (directory == NULL) {
@@ -1009,8 +1016,6 @@ nautilus_directory_check_if_ready_internal (NautilusDirectory *directory,
 
 	g_assert (directory != NULL);
 
-	request.metafile = FALSE;
-	request.file_list = FALSE;
 	set_up_request_by_file_attributes (&request, file_attributes);
 
 	return request_is_satisfied (directory, file, &request);
@@ -1281,7 +1286,8 @@ wants_deep_count (const Request *request)
 static gboolean
 lacks_activation_uri (NautilusFile *file)
 {
-	return !file->details->got_activation_uri;
+	return file->details->info != NULL
+		&& !file->details->got_activation_uri;
 }
 
 static gboolean
@@ -1997,20 +2003,29 @@ start_getting_file_info (NautilusDirectory *directory)
 }
 
 static void
-activation_uri_found (NautilusDirectory *directory,
-		      const char *uri)
+activation_uri_done (NautilusDirectory *directory,
+		     NautilusFile *file,
+		     const char *uri)
 {
-	NautilusFile *file;
-
-	file = directory->details->activation_uri_read_state->file;
 	file->details->got_activation_uri = TRUE;
 	g_free (file->details->activation_uri);
 	file->details->activation_uri = g_strdup (uri);
 
+	nautilus_directory_async_state_changed (directory);
+}
+
+static void
+activation_uri_read_done (NautilusDirectory *directory,
+			  const char *uri)
+{
+	NautilusFile *file;
+
+	file = directory->details->activation_uri_read_state->file;
+
 	g_free (directory->details->activation_uri_read_state);
 	directory->details->activation_uri_read_state = NULL;
 
-	nautilus_directory_async_state_changed (directory);
+	activation_uri_done (directory, file, uri);
 }
 
 static void
@@ -2026,17 +2041,19 @@ activation_uri_nautilus_link_read_callback (GnomeVFSResult result,
 
 	/* Handle the case where we read the Nautilus link. */
 	if (result != GNOME_VFS_OK) {
-		/* FIXME: We should show a dialog in this case. */
+		/* FIXME: We should report this error to the user. */
 		g_free (file_contents);
-		activation_uri_found (directory, NULL);
+		uri = NULL;
 	} else {
 		/* The gnome-xml parser requires a zero-terminated array. */
 		buffer = g_realloc (file_contents, bytes_read + 1);
 		buffer[bytes_read] = '\0';
 		uri = nautilus_link_get_link_uri_given_file_contents (buffer, bytes_read);
 		g_free (buffer);
-		activation_uri_found (directory, uri);
 	}
+
+	activation_uri_read_done (directory, uri);
+	g_free (uri);
 }
 
 static void
@@ -2050,8 +2067,11 @@ activation_uri_gmc_link_read_callback (GnomeVFSResult result,
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
 
-	/* Handle the case where we found a GMC link. */
-	if (result == GNOME_VFS_OK && nautilus_str_has_prefix (file_contents, "URL: ")) {
+	/* Handle the case where we read the GMC link. */
+	if (result != GNOME_VFS_OK || !nautilus_str_has_prefix (file_contents, "URL: ")) {
+		/* FIXME: We should report this error to the user. */
+		uri = NULL;
+	} else {
 		/* Make sure we don't run off the end of the buffer. */
 		end_of_line = memchr (file_contents, '\n', bytes_read);
 		if (end_of_line != NULL) {
@@ -2059,39 +2079,10 @@ activation_uri_gmc_link_read_callback (GnomeVFSResult result,
 		} else {
 			uri = g_strndup (file_contents, bytes_read);
 		}
-		g_free (file_contents);
-		activation_uri_found (directory, uri);
-		g_free (uri);
-		return;
 	}
+
 	g_free (file_contents);
-
-	/* Since we didn't find a GMC link, we try to consider a
-	 * special Nautilus ".link" file.
-	 */
-	/* FIXME: If we did this with MIME we would have known it was
-	 * a Nautilus link before we even dealt with the GMC link
-	 * part.
-	 */
-	 uri = nautilus_file_get_uri (directory->details->activation_uri_read_state->file);
-	if (!nautilus_link_is_link_file (directory->details->activation_uri_read_state->file)) {
-		/* Tell it that the activation URI is just the real URI. */
-		activation_uri_found (directory, NULL);
-		return;
-	}
-
-	/* We know it's a link file, so we must read and parse the
-	 * file to find the link URI.
-	 */
-	/* FIXME: We are reading the same file again, which is
-	 * necessary because the first read only is guaranteed to get
-	 * the first 512 bytes. The cleanest way to redo this is to
-	 * just use MIME types so we don't have to do both.
-	 */
-	directory->details->activation_uri_read_state->handle = nautilus_read_entire_file_async
-		(uri,
-		 activation_uri_nautilus_link_read_callback,
-		 directory);
+	activation_uri_read_done (directory, uri);
 	g_free (uri);
 }
 
@@ -2110,10 +2101,11 @@ static void
 start_getting_activation_uris (NautilusDirectory *directory)
 {
 	NautilusFile *file;
-	char *uri;
+	char *mime_type, *uri;
+	gboolean gmc_style_link, nautilus_style_link;
 
 	/* If there's already a activation URI read in progress, check
-	 * to be sure it's still wanted.'
+	 * to be sure it's still wanted.
 	 */
 	if (directory->details->activation_uri_read_state != NULL) {
 		file = directory->details->activation_uri_read_state->file;
@@ -2137,19 +2129,34 @@ start_getting_activation_uris (NautilusDirectory *directory)
 		return;
 	}
 
-	/* First step is to read it to see if it's a GMC link. */
-	/* FIXME: If we did this with MIME sniffing we could avoid
-	 * most of this mess.
-	 */
-	directory->details->activation_uri_read_state = g_new0 (ActivationURIReadState, 1);
-	directory->details->activation_uri_read_state->file = file;
-	uri = nautilus_file_get_uri (file);
-	directory->details->activation_uri_read_state->handle = nautilus_read_file_async
-		(uri,
-		 activation_uri_gmc_link_read_callback,
-		 activation_uri_gmc_link_read_more_callback,
-		 directory);
-	g_free (uri);
+	/* Figure out if it is a link. */
+	mime_type = nautilus_file_get_mime_type (file);
+	gmc_style_link = nautilus_strcasecmp (mime_type, "application/x-gmc-link") == 0;
+	g_free (mime_type);
+	nautilus_style_link = nautilus_link_is_link_file (file);
+
+	/* If it's not a link we are done. If it is, we need to read it. */
+	if (!(gmc_style_link || nautilus_style_link)) {
+		activation_uri_done (directory, file, NULL);
+	} else {
+		directory->details->activation_uri_read_state = g_new0 (ActivationURIReadState, 1);
+		directory->details->activation_uri_read_state->file = file;
+		uri = nautilus_file_get_uri (file);
+		if (gmc_style_link) {
+			directory->details->activation_uri_read_state->handle = nautilus_read_file_async
+				(uri,
+				 activation_uri_gmc_link_read_callback,
+				 activation_uri_gmc_link_read_more_callback,
+				 directory);
+		} else {
+			directory->details->activation_uri_read_state->handle = nautilus_read_entire_file_async
+				(uri,
+				 activation_uri_nautilus_link_read_callback,
+				 directory);
+		}
+		g_free (uri);
+
+	}
 }
 
 /* Call this when the monitor or call when ready list changes,

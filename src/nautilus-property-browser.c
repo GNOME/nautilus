@@ -483,9 +483,8 @@ nautilus_property_browser_drag_data_get (GtkWidget *widget,
 			g_free (user_directory);
 		}
 
-		image_file_uri = g_strdup_printf ("file://%s", image_file_name);
-		gtk_selection_data_set (selection_data, selection_data->target, 8, image_file_uri, strlen(image_file_uri));
-		
+		image_file_uri = nautilus_get_uri_from_local_path (image_file_name);
+		gtk_selection_data_set (selection_data, selection_data->target, 8, image_file_uri, strlen (image_file_uri));
 		g_free (image_file_name);
 		g_free (image_file_uri);
 		
@@ -683,15 +682,17 @@ remove_color (NautilusPropertyBrowser *property_browser, const char* color_value
 static void
 remove_background(NautilusPropertyBrowser *property_browser, const char* background_name)
 {
-	char *background_uri;
+	char *background_path, *background_uri;
 	char *user_directory;
 
 	user_directory = nautilus_get_user_directory ();
 
 	/* build the pathname of the background */
-	background_uri = g_strdup_printf ("file://%s/backgrounds/%s",
-					  user_directory,
-					  background_name);
+	background_path = g_strdup_printf ("%s/backgrounds/%s",
+					   user_directory,
+					   background_name);
+	background_uri = nautilus_get_uri_from_local_path (background_path);
+	g_free (background_path);
 
 	g_free (user_directory);	
 
@@ -700,7 +701,7 @@ remove_background(NautilusPropertyBrowser *property_browser, const char* backgro
 		/* FIXME bugzilla.eazel.com 1249: 
 		 * Is a g_warning a reasonable way to report this to the user? 
 		 */
-		g_warning ("couldnt delete background %s", background_uri);
+		g_warning ("couldn't delete background %s", background_uri);
 	}
 	
 	g_free (background_uri);
@@ -712,14 +713,16 @@ static void
 remove_emblem(NautilusPropertyBrowser *property_browser, const char* emblem_name)
 {
 	/* build the pathname of the emblem */
-	char *emblem_uri;
+	char *emblem_path, *emblem_uri;
 	char *user_directory;
 
 	user_directory = nautilus_get_user_directory ();
 
-	emblem_uri = g_strdup_printf ("file://%s/emblems/%s",
-				      user_directory,
-				      emblem_name);
+	emblem_path = g_strdup_printf ("%s/emblems/%s",
+				       user_directory,
+				       emblem_name);
+	emblem_uri = nautilus_get_uri_from_local_path (emblem_path);
+	g_free (emblem_path);
 
 	g_free (user_directory);		
 
@@ -728,7 +731,7 @@ remove_emblem(NautilusPropertyBrowser *property_browser, const char* emblem_name
 		/* FIXME bugzilla.eazel.com 1249: 
 		 * Is a g_warning a reasonable way to report this to the user? 
 		 */
-		g_warning ("couldnt delete emblem %s", emblem_uri);
+		g_warning ("couldn't delete emblem %s", emblem_uri);
 	}
 	
 	g_free (emblem_uri);
@@ -771,7 +774,8 @@ get_xml_path(NautilusPropertyBrowser *property_browser)
 	user_directory = nautilus_get_user_directory ();
 
 	/* first try the user's home directory */
-	xml_path = nautilus_make_path (user_directory, property_browser->details->path);
+	xml_path = nautilus_make_path (user_directory,
+				       property_browser->details->path);
 	g_free (user_directory);
 	if (g_file_exists (xml_path)) {
 		return xml_path;
@@ -779,9 +783,8 @@ get_xml_path(NautilusPropertyBrowser *property_browser)
 	g_free (xml_path);
 	
 	/* next try the shared directory */
-	xml_path = g_strdup_printf ("%s/%s",
-				    NAUTILUS_DATADIR,
-				    property_browser->details->path);
+	xml_path = nautilus_make_path (NAUTILUS_DATADIR,
+				       property_browser->details->path);
 	if (g_file_exists (xml_path)) {
 		return xml_path;
 	}
@@ -817,7 +820,7 @@ set_emblem_image_from_file(NautilusPropertyBrowser *property_browser)
 static void
 emblem_image_file_changed (GtkWidget *entry, NautilusPropertyBrowser *property_browser)
 {
-	char *new_uri = g_strdup_printf ("file://%s", gtk_entry_get_text(GTK_ENTRY(entry)));
+	char *new_uri = nautilus_get_uri_from_local_path (gtk_entry_get_text(GTK_ENTRY(entry)));
 	if (!ensure_uri_is_image (new_uri)) {
 		char *message = g_strdup_printf
 			(_("Sorry, but '%s' is not an image file!"),
@@ -909,7 +912,7 @@ add_background_to_browser (GtkWidget *widget, gpointer *data)
 	property_browser->details->dialog = NULL;
 
 	/* fetch the mime type and make sure that the file is an image */
-	path_uri = g_strdup_printf("file://%s", path_name);
+	path_uri = nautilus_get_uri_from_local_path (path_name);
 	is_image = ensure_uri_is_image(path_uri);
 	g_free(path_uri);	
 	
@@ -935,7 +938,7 @@ add_background_to_browser (GtkWidget *widget, gpointer *data)
 	
 	/* make the directory if it doesn't exist */
 	if (!g_file_exists(directory_path)) {
-		char *directory_uri = g_strdup_printf("file://%s", directory_path);
+		char *directory_uri = nautilus_get_uri_from_local_path (directory_path);
 		gnome_vfs_make_directory (directory_uri,
 					  GNOME_VFS_PERM_USER_ALL
 					  | GNOME_VFS_PERM_GROUP_ALL
@@ -945,10 +948,16 @@ add_background_to_browser (GtkWidget *widget, gpointer *data)
 		
 	g_free(directory_path);
 	
-	command_str = g_strdup_printf("cp '%s' '%s'", path_name, destination_name);
+	/* FIXME: Should use a quoting function that handles strings
+         * with "'" in them.
+	 */
+	command_str = g_strdup_printf ("cp '%s' '%s'", path_name, destination_name);
 	
-	if (system(command_str) != 0) {
-		g_warning("couldnt copy background %s", path_name);
+	if (system (command_str) != 0) {
+		/* FIXME bugzilla.eazel.com 1249: 
+		 * Is a g_warning a reasonable way to report this to the user? 
+		 */
+		g_warning("couldn't copy background %s", path_name);
 	}
 				
 	g_free(command_str);
@@ -1112,7 +1121,7 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 
 		/* make the directory if it doesn't exist */
 		if (!g_file_exists(directory_path)) {
-			char *directory_uri = g_strdup_printf("file://%s", directory_path);
+			char *directory_uri = nautilus_get_uri_from_local_path (directory_path);
 			gnome_vfs_make_directory(directory_uri, GNOME_VFS_PERM_USER_ALL | GNOME_VFS_PERM_GROUP_ALL | GNOME_VFS_PERM_OTHER_READ);
 			g_free(directory_uri);
 		}
@@ -1125,7 +1134,7 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 		/* perform the actual copy */
 		command_str = g_strdup_printf("cp '%s' '%s'", property_browser->details->image_path, destination_name);
 		if (system(command_str) != 0) {
-			g_warning("couldnt copy emblem %s", property_browser->details->image_path);
+			g_warning("couldn't copy emblem %s", property_browser->details->image_path);
 		}
 			
 		g_free(command_str);
@@ -1372,7 +1381,9 @@ make_background_chit (GdkPixbuf *background_tile, GdkPixbuf *frame, gboolean dra
 /* make_properties_from_directory_path generates widgets corresponding all of the objects in the passed in directory */
 
 static int
-make_properties_from_directory_path(NautilusPropertyBrowser *property_browser, const char* directory_uri, int index)
+make_properties_from_directory_path (NautilusPropertyBrowser *property_browser,
+				     const char* directory_uri,
+				     int index)
 {
 	char *temp_str;
 	NautilusBackground *background;
@@ -1481,21 +1492,22 @@ make_properties_from_directory_path(NautilusPropertyBrowser *property_browser, c
 static void
 make_properties_from_directory (NautilusPropertyBrowser *property_browser, const char* path)
 {
-	char *directory_uri;
+	char *directory_path, *directory_uri;
 	int new_index;
 	int index = 0;
 	char *user_directory;	
 
 	/* make room for the reset property if necessary */
-	if (!strcmp(property_browser->details->category, "backgrounds")) {
+	if (!strcmp (property_browser->details->category, "backgrounds")) {
 		index += 1;
 	}
 	
 	/* first, make properties from the shared space */
 	if (!property_browser->details->remove_mode) {
-		directory_uri = g_strdup_printf ("file://%s/%s",
-						 NAUTILUS_DATADIR,
-						 property_browser->details->category);
+		directory_path = nautilus_make_path (NAUTILUS_DATADIR,
+						     property_browser->details->category);
+		directory_uri = nautilus_get_uri_from_local_path (directory_path);
+		g_free (directory_path);
 		index = make_properties_from_directory_path (property_browser, directory_uri, index);
 		g_free(directory_uri);
 	}
@@ -1503,11 +1515,12 @@ make_properties_from_directory (NautilusPropertyBrowser *property_browser, const
 	user_directory = nautilus_get_user_directory ();
 	
 	/* next, make them from the local space, if it exists */
-	directory_uri = g_strdup_printf("file://%s/%s",
-					user_directory,
-					property_browser->details->category);
+	directory_path = nautilus_make_path (user_directory,
+					     property_browser->details->category);
 	g_free (user_directory);
-	new_index = make_properties_from_directory_path(property_browser, directory_uri,index);
+	directory_uri = nautilus_get_uri_from_local_path (directory_path);
+	g_free (directory_path);
+	new_index = make_properties_from_directory_path (property_browser, directory_uri,index);
 	g_free(directory_uri);	
 
 	property_browser->details->has_local = new_index != index;

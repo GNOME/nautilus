@@ -1,3 +1,111 @@
+2000-07-28  Darin Adler  <darin@eazel.com>
+
+	Mostly some tweaking on the recent link file work.
+
+	* data/top/Makefile.am: Install the new ".link" files.
+	* data/top/Computer: Renamed from Computer.link and added the new stuff
+	needed for the MIME magic.
+	* data/top/Computer.link: [deleted]
+	* data/top/Services: Renamed from Services.link and added the new stuff
+	needed for the MIME magic.
+	* data/top/Services.link: [deleted]
+
+	* components/tree/nautilus-tree-view.c: (queue_pending_files):
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_string_attribute):
+	Get rid of all use of nautilus_link_get_display_name since
+	links all have plain names now.
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(set_up_request_by_file_attributes): Fix bug that was causing the
+	program to get the activation URI for every single icon.  Lots of
+	extra I/O! Also changed it to get the file info first since the
+	activation URI is now based on MIME type.
+	(lacks_activation_uri): Don't try to get the activation URI until
+	after the file info is there.
+	(activation_uri_done),
+	(activation_uri_read_done),
+	(activation_uri_nautilus_link_read_callback),
+	(activation_uri_gmc_link_read_callback),
+	(start_getting_activation_uris):
+	Changed the code to read the activation URI to use MIME type,
+	so now it doesn't have to open every file just to find out if it's
+	a GMC link.
+	
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_get_desktop_directory): Get rid of a tiny bit of dead code.
+	
+	* libnautilus-extensions/nautilus-file.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_contains_text): No need to special-case the link
+	file any more because its MIME type will now make it clear it's
+	not a text file.  Also removed nautilus_file_activate_custom since
+	it's not needed any more and moved the logic into
+	fm-directory-view.c.
+	
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_for_file): Added FIXMEs.
+	
+	* libnautilus-extensions/nautilus-link-set.c:
+	(nautilus_link_set_install): Changed comments to not call link files
+	".link" files.
+	
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_register_for_ui): Removed the
+	NAUTILUS_PREFERENCES_SHOW_REAL_FILE_NAME preference since we no
+	longer have to lie about file names to make ".link" files
+	palatable.
+
+	* libnautilus-extensions/nautilus-link.h:
+	* libnautilus-extensions/nautilus-link.c: (nautilus_link_create):
+	Added code that notifies the NautilusFile framework that a new file
+	has been created, so callers don't have to worry about that.
+	(nautilus_link_is_link_file): Simplified the code -- turned it into
+	a one-liner.
+	(nautilus_link_set_icon): The old code had half NautilusFile calls
+	and half sync. I/O. Got rid of the NautilusFile stuff. Also put the
+	code in to notify the NautilusFile framework about the change to
+	the file.
+	(nautilus_link_get_root_property): Added FIXME.
+	(nautilus_link_get_additional_text): Added FIXME.
+	(nautilus_link_get_link_uri): Added FIXME.
+	Removed nautilus_link_get_display_name since it's not needed.
+	
+	* src/nautilus-desktop-window.c: (nautilus_desktop_window_new):
+	Fixed GnomeVFSURI leak and turned a GnomeVFSURI into a text URI
+	with gnome_vfs_uri_to_string, rather than gnome_vfs_uri_get_path
+	which will not do anything useful.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(mount_device_mount), (place_home_directory): Use
+	nautilus_get_uri_from_local_path instead of just sticking a
+	"file://" prefix on. Simplified by putting code to notify about
+	the link file into the link file create function. Some other
+	code cleanups and fixes of path/URI confusion.
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize): Use NAUTILUS_N_ELEMENTS.
+	(fm_directory_view_display_selection_info), (queue_pending_files):
+	Get rid of use of nautilus_link_get_display_name.
+	(activate_callback): Added code to handle "command:" URIs, which
+	used to be in nautilus_file_activate_custom.
+	(fm_directory_view_activate_file): Get rid of call to the
+	nautilus_file_activate_custom function.
+	(set_trash_empty): Rewrote to simplify and fix some path/URI
+	confusion.
+	* src/file-manager/fm-icon-view.c: (get_icon_text_callback):
+	Get rid of use of nautilus_link_get_display_name.
+	
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_drag_data_get), (remove_background),
+	(remove_emblem), (emblem_image_file_changed),
+	(add_background_to_browser), (emblem_dialog_clicked),
+	(make_properties_from_directory): Use
+	nautilus_get_uri_from_local_path instead of just sticking a
+	"file://" prefix on.
+	(get_xml_path): Use nautilus_make_path instead of just sticking
+	a "/" between the two pieces.
+
 2000-07-31  Gene Z. Ragan  <gzr@eazel.com>
 
 	* src/file-manager/fm-desktop-icon-view.c:
@@ -12,28 +120,31 @@
 	* src/file-manager/fm-desktop-icon-view.c:
 	(fm_desktop_icon_view_handle_middle_click),
 	(fm_desktop_icon_view_initialize):
-	Add support for the window manager middle mouse click menu on the desktop.
-	Capture the middle mouse click, create a new XEvent and send it to the
-	root window.
+	Add support for the window manager middle mouse click menu on the
+	desktop. Capture the middle mouse click, create a new XEvent and
+	send it to the root window.
 
 2000-07-30  Andy Hertzfeld  <andy@eazel.com>
 
 	* data/top/Computer.link:
 	* data/top/Services.link:
-	fixed some breakage in the novice home directory: these built-in links were not
-	being recognized as such, since they didn't have the magic mime string.  Fixed it
-	by adding the string to them.
+	fixed some breakage in the novice home directory: these built-in
+	links were not being recognized as such, since they didn't have
+	the magic mime string.  Fixed it by adding the string to them.
 	* libnautilus-extensions/nautilus-link.c: (make_local_path):
-	made it handle remote icon fetching better by unescaping the uri if necessary
+	made it handle remote icon fetching better by unescaping the uri
+	if necessary
 	
 2000-07-30  Andy Hertzfeld  <andy@eazel.com>
 
-	fixed bug 1408, thumbnails do not have the right shadow.  Fixed by maintaining
-	different thumbnails for the anti-aliased and non-anti-aliased cases.
+	fixed bug 1408, thumbnails do not have the right shadow.  Fixed by
+	maintaining different thumbnails for the anti-aliased and
+	non-anti-aliased cases.
 	
 	* libnautilus-extensions/nautilus-graphic-effects.c,h:
 	(stretch_frame_image), (nautilus_embed_image_in_frame):
-	got rid of old draw_frame routine, and added nautilus_embed_image_in_frame
+	got rid of old draw_frame routine, and added
+	nautilus_embed_image_in_frame
 	* libnautilus-extensions/nautilus-icon-factory.c:
 	(nautilus_icon_factory_get_icon_for_file), (make_thumbnail_path),
 	(nautilus_icon_factory_get_thumbnail_uri), (check_for_thumbnails),
@@ -60,14 +171,14 @@
 2000-07-30  Fatih Demir	<kabalak@gmx.net>
 
 	* configure.in: Added zh_TW.Big5 to ALL_LINGUAS.
-		[ who did forget it ... ]
+	[ who did forget it ... ]
 
 2000-07-29  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory-background.c:
 	(local_data_file_to_uri):
-	made directory backgrounds interpret "./" when building background uri
-	so the image can be kept in the theme folder
+	made directory backgrounds interpret "./" when building background
+	uri so the image can be kept in the theme folder
 	* src/nautilus-sidebar.c: (map_local_data_file):
 	ditto for sidebar
 
@@ -99,8 +210,7 @@
 	
 2000-07-28  Robey Pointer  <robey@eazel.com>
 
-	*
-	components/services/time/nautilus-view/trilobite-eazel-time-view.c:
+	* components/services/time/nautilus-view/trilobite-eazel-time-view.c:
 	(sync_button_pressed), (trilobite_eazel_time_view_get_password),
 	(trilobite_eazel_time_view_initialize),
 	(trilobite_eazel_time_view_destroy):

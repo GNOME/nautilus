@@ -185,7 +185,6 @@ static void           metadata_ready_callback                                   
 										   gpointer                  callback_data);
 static void	      set_trash_empty 						  (gboolean 		    state);
 
-
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, add_file)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, bump_zoom_level)
@@ -199,8 +198,6 @@ NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, file_changed)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selection)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, select_all)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, set_selection)
-
-static gboolean global_trash_is_empty;
 
 static void
 fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
@@ -769,13 +766,13 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 
 	directory_view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (directory_view));
 
-	directory_view->details->zoomable = nautilus_zoomable_new_from_bonobo_control (
-		get_bonobo_control (directory_view),
-		.25,
-		4.0,
-		FALSE,
-		fm_directory_view_preferred_zoom_levels,
-		sizeof (fm_directory_view_preferred_zoom_levels) / sizeof (*fm_directory_view_preferred_zoom_levels));		
+	directory_view->details->zoomable = nautilus_zoomable_new_from_bonobo_control
+		(get_bonobo_control (directory_view),
+		 .25,
+		 4.0,
+		 FALSE,
+		 fm_directory_view_preferred_zoom_levels,
+		 NAUTILUS_N_ELEMENTS (fm_directory_view_preferred_zoom_levels));		
 
 	gtk_signal_connect (GTK_OBJECT (directory_view->details->nautilus_view), 
 			    "stop_loading",
@@ -842,7 +839,6 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS, 
 					   anti_aliased_mode_changed_callback, 
 					   directory_view);
-
 }
 
 static void
@@ -942,7 +938,7 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 		}
 
 		if (first_item_name == NULL) {
-			first_item_name = nautilus_link_get_display_name(nautilus_file_get_name (file));
+			first_item_name = nautilus_file_get_name (file);
 		}
 	}
 	
@@ -1420,7 +1416,7 @@ queue_pending_files (FMDirectoryView *view,
 			
 			g_assert (file != NULL);
 			
-			name = nautilus_link_get_display_name(nautilus_file_get_name (file));
+			name = nautilus_file_get_name (file);
 			
 			g_assert (name != NULL);
 			
@@ -3000,7 +2996,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 {
 	ActivateParameters *parameters;
 	FMDirectoryView *view;
-	char *uri, *executable_path;
+	char *uri, *command, *executable_path;
 	GnomeVFSMimeActionType action_type;
 	GnomeVFSMimeApplication *application;
 
@@ -3010,12 +3006,17 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 
 	uri = nautilus_file_get_activation_uri (file);
 
-	/* FIXME: This should check if the activation URI points to
-	 * something launchable, not the original file. Also, for
-	 * symbolic links we need to check the X bit on the target
-	 * file, not on the original.
-	 */
-	if (file_is_launchable (file)) {
+	/* FIXME: Quite a security hole here. */
+	if (nautilus_istr_has_prefix (uri, "command:")) {
+		command = g_strconcat (uri + 8, " &", NULL);
+		system (command);
+		g_free (command);
+	} else if (file_is_launchable (file)) {
+		/* FIXME: This should check if the activation URI points to
+		 * something launchable, not the original file. Also, for
+		 * symbolic links we need to check the X bit on the target
+		 * file, not on the original.
+		 */
 		/* Launch executables to activate them. */
 		/* FIXME: bugzilla.eazel.com 1773: This is a lame way to
 		 * run command-line tools.
@@ -3057,10 +3058,6 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
-
-	if (nautilus_file_activate_custom (file, use_new_window)) {
-		return;
-	}
 
 	/* Might have to read some of the file to activate it. */
 	dummy_list.data = NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI;
@@ -3328,10 +3325,10 @@ fm_directory_view_update_menus (FMDirectoryView *view)
 }
 
 static void
-show_hidden_files_changed_callback (gpointer		user_data)
+show_hidden_files_changed_callback (gpointer user_data)
 {
 	FMDirectoryView	*directory_view;
-	char		*same_uri;
+	char *same_uri;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
 
@@ -3425,36 +3422,18 @@ fm_directory_view_get_context_menu_index (const char *menu_name)
 	}
 }
 
-
+/* FIXME: This should go in fs_move_to_trash and fs_empty_trash. */
 static void
 set_trash_empty (gboolean state)
 {
-	NautilusFile *file;
-	char *path, *desktop_directory_path;
+	char *desktop_directory_path, *path;
 
-	global_trash_is_empty = state;
-
-	g_message ("state: %d", state);
-	
 	desktop_directory_path = nautilus_get_desktop_directory ();
-	path = g_strdup_printf ("%s/%s", desktop_directory_path, "Trash");
+	path = nautilus_make_path (desktop_directory_path, "Trash");
 
-	g_message ("path: %s", path);
-	
-	file = nautilus_file_get (path);	
-	if (file != NULL) {
-		if (state) {
-			nautilus_link_set_icon (path, "trash-empty.png");
-		} else {
-			nautilus_link_set_icon (path, "trash-full.png");
-		}
+	/* Change the XML file to have a new icon. */
+	nautilus_link_set_icon (path, state ? "trash-empty.png" : "trash-full.png");
 
-		nautilus_file_changed (file);
-		nautilus_file_unref (file);		
-	} else {
-		g_message ("Unable to get trash file");
-	}
-	
-	g_free (desktop_directory_path);
 	g_free (path);
+	g_free (desktop_directory_path);
 }

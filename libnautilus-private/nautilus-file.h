@@ -235,15 +235,6 @@ int                     nautilus_file_compare_name		(NautilusFile               
  */
 char *                  nautilus_file_get_activation_uri        (NautilusFile                  *file);
 
-/* Give a file a chance to activate itself instead of letting the
- * location-based framework do it.
- */
-/* FIXME: This does not belong here! It's a much higher-level
- * operation than we should have in Nautilusfile.
- */
-gboolean		nautilus_file_activate_custom		(NautilusFile		       *file,
-								 gboolean			use_new_window);
-
 /* Change notification hack.
  * This is called when code modifies the file and it needs to trigger
  * a notification. Eventually this should become private, but for now

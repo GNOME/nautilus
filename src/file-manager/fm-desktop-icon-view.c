@@ -24,33 +24,27 @@
 */
 
 #include <config.h>
-
 #include "fm-desktop-icon-view.h"
 
 #include "fm-cdrom-extensions.h"
 #include "fm-icon-view.h"
-
 #include "iso9660.h"
 #include "src/nautilus-application.h"
-
 #include <errno.h>
 #include <fcntl.h>
+#include <gdk/gdkx.h>
 #include <gnome.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <libnautilus-extensions/nautilus-directory-private.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-link.h>
 #include <mntent.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <gdk/gdkx.h>
-
-
 
 #define MOUNT_TYPE_ISO9660 	"iso9660"
 #define MOUNT_TYPE_EXT2 	"ext2"
@@ -110,36 +104,43 @@ struct FMDesktopIconViewDetails
 	guint mount_device_timer_id;
 };
 
-static void fm_desktop_icon_view_initialize		(FMDesktopIconView        *desktop_icon_view);
-static void fm_desktop_icon_view_initialize_class	(FMDesktopIconViewClass   *klass);
-
-static void fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view, GtkMenu *menu);
-
-static char *   fm_desktop_icon_view_get_directory_sort_by       (FMIconView *icon_view, NautilusDirectory *directory);
-static void     fm_desktop_icon_view_set_directory_sort_by       (FMIconView *icon_view, NautilusDirectory *directory, const char* sort_by);
-static gboolean fm_desktop_icon_view_get_directory_sort_reversed (FMIconView *icon_view, NautilusDirectory *directory);
-static void     fm_desktop_icon_view_set_directory_sort_reversed (FMIconView *icon_view, NautilusDirectory *directory, gboolean sort_reversed);
-static gboolean fm_desktop_icon_view_get_directory_auto_layout   (FMIconView *icon_view, NautilusDirectory *directory);
-static void     fm_desktop_icon_view_set_directory_auto_layout   (FMIconView *icon_view, NautilusDirectory *directory, gboolean auto_layout);
-
-static void		find_mount_devices 			 (FMDesktopIconView 	*icon_view, 
-								  const char 		*fstab_path);
-static void		remove_mount_link 			 (DeviceInfo 		*device);								  
-static void		get_iso9660_volume_name 		 (DeviceInfo 		*device);
-static void		get_ext2_volume_name 			 (DeviceInfo 		*device);
-static void		get_floppy_volume_name 			 (DeviceInfo 		*device);
-static void		remove_mount_links 			 (DeviceInfo 		*device, 
-								  FMDesktopIconView 	*icon_view);
-static void		free_device_info 			 (DeviceInfo 		*device, 
-								  FMDesktopIconView 	*icon_view);
-static void		place_home_directory 			 (FMDesktopIconView 	*icon_view);
-static void		mount_device_mount 			 (FMDesktopIconView 	*view, 
-								  DeviceInfo 		*device);
-static gboolean		mount_device_is_mounted 		 (DeviceInfo 		*device);
-static gboolean		mount_device_deactivate 		 (FMDesktopIconView 	*icon_view, 
-								  DeviceInfo 		*device);
-static void		mount_device_activate_floppy 		 (FMDesktopIconView 	*view, 
-								  DeviceInfo 		*device);
+static void     fm_desktop_icon_view_initialize                           (FMDesktopIconView      *desktop_icon_view);
+static void     fm_desktop_icon_view_initialize_class                     (FMDesktopIconViewClass *klass);
+static void     fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView        *view,
+									   GtkMenu                *menu);
+static char *   fm_desktop_icon_view_get_directory_sort_by                (FMIconView             *icon_view,
+									   NautilusDirectory      *directory);
+static void     fm_desktop_icon_view_set_directory_sort_by                (FMIconView             *icon_view,
+									   NautilusDirectory      *directory,
+									   const char             *sort_by);
+static gboolean fm_desktop_icon_view_get_directory_sort_reversed          (FMIconView             *icon_view,
+									   NautilusDirectory      *directory);
+static void     fm_desktop_icon_view_set_directory_sort_reversed          (FMIconView             *icon_view,
+									   NautilusDirectory      *directory,
+									   gboolean                sort_reversed);
+static gboolean fm_desktop_icon_view_get_directory_auto_layout            (FMIconView             *icon_view,
+									   NautilusDirectory      *directory);
+static void     fm_desktop_icon_view_set_directory_auto_layout            (FMIconView             *icon_view,
+									   NautilusDirectory      *directory,
+									   gboolean                auto_layout);
+static void     find_mount_devices                                        (FMDesktopIconView      *icon_view,
+									   const char             *fstab_path);
+static void     remove_mount_link                                         (DeviceInfo             *device);								  
+static void     get_iso9660_volume_name                                   (DeviceInfo             *device);
+static void     get_ext2_volume_name                                      (DeviceInfo             *device);
+static void     get_floppy_volume_name                                    (DeviceInfo             *device);
+static void     remove_mount_links                                        (DeviceInfo             *device,
+									   FMDesktopIconView      *icon_view);
+static void     free_device_info                                          (DeviceInfo             *device,
+									   FMDesktopIconView      *icon_view);
+static void     place_home_directory                                      (FMDesktopIconView      *icon_view);
+static void     mount_device_mount                                        (FMDesktopIconView      *view,
+									   DeviceInfo             *device);
+static gboolean mount_device_is_mounted                                   (DeviceInfo             *device);
+static void     mount_device_deactivate                                   (FMDesktopIconView      *icon_view,
+									   DeviceInfo             *device);
+static void     mount_device_activate_floppy                              (FMDesktopIconView      *view,
+									   DeviceInfo             *device);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDesktopIconView, fm_desktop_icon_view, FM_TYPE_ICON_VIEW);
 
@@ -202,7 +203,8 @@ fm_desktop_icon_view_initialize_class (FMDesktopIconViewClass *klass)
 
 static void
 fm_desktop_icon_view_handle_middle_click (NautilusIconContainer *icon_container,
-	GdkEventButton *event, FMDesktopIconView *desktop_icon_view)
+					  GdkEventButton *event,
+					  FMDesktopIconView *desktop_icon_view)
 {
 	XButtonEvent x_event;
 	
@@ -214,8 +216,8 @@ fm_desktop_icon_view_handle_middle_click (NautilusIconContainer *icon_container,
 	gdk_keyboard_ungrab (GDK_CURRENT_TIME);
 
 	/* Stop the event because we don't want anyone else dealing with it. */	
-	gdk_flush();
-	gtk_signal_emit_stop_by_name( GTK_OBJECT(icon_container), "middle_click");
+	gdk_flush ();
+	gtk_signal_emit_stop_by_name (GTK_OBJECT(icon_container), "middle_click");
 
 	/* build an X event to represent the middle click. */
 	x_event.type = ButtonPress;
@@ -234,7 +236,8 @@ fm_desktop_icon_view_handle_middle_click (NautilusIconContainer *icon_container,
 	x_event.same_screen = True;
 	
 	/* Send it to the root window, the window manager will handle it. */
-	XSendEvent (GDK_DISPLAY (), GDK_ROOT_WINDOW (), True, ButtonPressMask, (XEvent *)&x_event);
+	XSendEvent (GDK_DISPLAY (), GDK_ROOT_WINDOW (), True,
+		    ButtonPressMask, (XEvent *) &x_event);
 }
 
 static void
@@ -282,7 +285,9 @@ rescan_floppy_callback (GtkMenuItem *item, FMDirectoryView *view)
 	for (element = icon_view->details->devices; element != NULL; element = element->next) {
 		device = element->data;
 		if (strncmp ("/dev/fd", device->fsname, strlen("/dev/fd")) == 0) {
+			/* FIXME: Remove messages when this code is done. */
 			g_message ("Mounting floppy: %s", device->mount_path);
+
 			argv[1] = device->mount_path;
 			argv[2] = NULL;
 
@@ -456,11 +461,10 @@ mount_device_ext2_set_state (FMDesktopIconView *icon_view, DeviceInfo *device)
 	device->state = STATE_ACTIVE;
 }
 
-
 static void
 mount_device_set_state (DeviceInfo *device, FMDesktopIconView *icon_view)
 {
-	switch(device->type) {
+	switch (device->type) {
 		case DEVICE_CDROM:
 			mount_device_cdrom_set_state (icon_view, device);
 			break;
@@ -484,22 +488,19 @@ device_set_state_empty (DeviceInfo *device, FMDesktopIconView *icon_view)
 	device->state = STATE_EMPTY;
 }
 
-typedef gboolean (*ChangeFunc)(FMDesktopIconView *view, DeviceInfo *device);
-
 static void
 mount_device_mount (FMDesktopIconView *view, DeviceInfo *device)
 {
-	char *target_uri, *desktop_uri, *icon_name;
+	char *target_uri, *desktop_path;
+	const char *icon_name;
 	NautilusIconContainer *container;
 	gboolean result;
 	int index;
-	GList *new_files_list;
 
-	new_files_list = NULL;
 	container = get_icon_container (view);
 
-	desktop_uri = nautilus_get_desktop_directory ();
-	target_uri = g_strdup_printf ("file://%s/", device->mount_path);
+	desktop_path = nautilus_get_desktop_directory ();
+	target_uri = nautilus_get_uri_from_local_path (device->mount_path);
 
 	/* Make volume name link "nice" */
 
@@ -511,60 +512,52 @@ mount_device_mount (FMDesktopIconView *view, DeviceInfo *device)
 		device->volume_name [index] = '\0';
 	}
 
-	/* The volume name may have '/' characters. We need to convert them to 
-	 * something legal.
+	/* The volume name may have '/' characters. We need to convert
+	 * them to something legal.
 	 */
 	for (index = 0; ; index++) {
 		if (device->volume_name [index] == '\0') {
 			break;
 		}
-		
 		if (device->volume_name [index] == '/') {
 			device->volume_name [index] = '-';
 		}
 	}
 
 	/* Clean up old link, This should have been done earlier, but
-	 * we double check to be sure. */
+	 * we double check to be sure.
+	 */
 	remove_mount_link (device);
 
 	/* Get icon type */
 	if (strcmp (device->mount_type, "cdrom") == 0) {
-		icon_name = g_strdup ("i-cdrom.png");
+		icon_name = "i-cdrom.png";
 	} else if (strcmp (device->mount_type, "floppy") == 0) {
-		icon_name = g_strdup ("i-floppy.png");
+		icon_name = "i-floppy.png";
 	} else {
-		icon_name = g_strdup ("i-blockdev.png");
+		icon_name = "i-blockdev.png";
 	}
 	
 	/* Create link */
-	device->link_uri = g_strdup_printf ("%s/%s", desktop_uri, device->volume_name);
-
-	result = nautilus_link_create (desktop_uri, device->volume_name, icon_name, target_uri);
+	result = nautilus_link_create (desktop_path, device->volume_name, icon_name, target_uri);
 	if (result) {
-		new_files_list = g_list_prepend (new_files_list, device->link_uri);
-		nautilus_directory_notify_files_added (new_files_list);
-		g_list_free (new_files_list);
+		device->link_uri = nautilus_make_path (desktop_path, device->volume_name);
 	} else {
 		g_message ("Unable to create mount link");
-		g_free (device->link_uri);
-		device->link_uri = NULL;
 	}
 	
-	g_free (desktop_uri);
+	g_free (desktop_path);
 	g_free (target_uri);
-	g_free (icon_name);
 	
 	device->did_mount = TRUE;
 }
-
 
 static void
 mount_device_activate_cdrom (FMDesktopIconView *icon_view, DeviceInfo *device)
 {
 	int disctype;
 
-	if(device->device_fd < 0) {
+	if (device->device_fd < 0) {
 		device->device_fd = open (device->fsname, O_RDONLY|O_NONBLOCK);
 	}
 
@@ -623,7 +616,9 @@ mount_device_activate_ext2 (FMDesktopIconView *view, DeviceInfo *device)
 	mount_device_mount (view, device);
 }
 
-static gboolean
+typedef void (* ChangeDeviceInfoFunction) (FMDesktopIconView *view, DeviceInfo *device);
+
+static void
 mount_device_activate (FMDesktopIconView *view, DeviceInfo *device)
 {
 	switch (device->type) {
@@ -640,14 +635,12 @@ mount_device_activate (FMDesktopIconView *view, DeviceInfo *device)
 			break;
 			
 		default:
-			g_message ("Unknown mount type");
+			g_assert_not_reached ();
 			break;
 	}
-
-	return FALSE;
 }
 
-static gboolean
+static void
 mount_device_deactivate (FMDesktopIconView *icon_view, DeviceInfo *device)
 {
 	NautilusIconContainer *container;
@@ -664,39 +657,47 @@ mount_device_deactivate (FMDesktopIconView *icon_view, DeviceInfo *device)
 	}
 
 	device->did_mount = FALSE;
-
-	return TRUE;
 }
 
 static void
-mount_device_check_change (DeviceInfo *device, FMDesktopIconView *icon_view)
+mount_device_do_nothing (FMDesktopIconView *icon_view, DeviceInfo *device)
+{
+}
+
+static void
+mount_device_check_change (gpointer data, gpointer callback_data)
 {
 	/* What functions to run for particular state transitions */
-	static ChangeFunc state_transitions[STATE_LAST][STATE_LAST] = {
-		/************  from: ACTIVE                 	INACTIVE                 EMPTY */
+	static const ChangeDeviceInfoFunction state_transitions[STATE_LAST][STATE_LAST] = {
+		/************  from: ACTIVE                   INACTIVE                 EMPTY */
 		/* to */
-		/* ACTIVE */   {     NULL,                  	mount_device_activate,	 mount_device_activate  },
-		/* INACTIVE */ {     mount_device_deactivate, 	NULL,   	 	 mount_device_activate 	},
-		/* EMPTY */    {     mount_device_deactivate, 	mount_device_deactivate, NULL               	}
+		/* ACTIVE */   {     mount_device_do_nothing, mount_device_activate,   mount_device_activate   },
+		/* INACTIVE */ {     mount_device_deactivate, mount_device_do_nothing, mount_device_activate   },
+		/* EMPTY */    {     mount_device_deactivate, mount_device_deactivate, mount_device_do_nothing }
 	};	
 
+	DeviceInfo *device;
+	FMDesktopIconView *icon_view;
 	DeviceState old_state;
+	ChangeDeviceInfoFunction f;
+
+	g_assert (data != NULL);
+
+	device = data;
+	icon_view = FM_DESKTOP_ICON_VIEW (callback_data);
 
   	old_state = device->state;
 
   	mount_device_set_state (device, icon_view);
 
-  	if(old_state != device->state) {
-    		ChangeFunc func;
+  	if (old_state != device->state) {
+    		f = state_transitions[device->state][old_state];
 
-    		func = state_transitions[device->state][old_state];
-
+		/* FIXME: Remove messages when this code is done. */
     		g_message ("State on %s changed from %s to %s, running %p",
-			   device->fsname, state_names[old_state], state_names[device->state], func);
+			   device->fsname, state_names[old_state], state_names[device->state], f);
 			
-    		if (func != NULL) {
-      			func (icon_view, device);
-      		}
+		(* f) (icon_view, device);
   	}
 }
 
@@ -708,7 +709,7 @@ mount_devices_update_is_mounted (FMDesktopIconView *icon_view)
 	GList *ltmp;
 	DeviceInfo *device;
 
-	for (ltmp = icon_view->details->devices; ltmp; ltmp = g_list_next (ltmp)) {
+	for (ltmp = icon_view->details->devices; ltmp; ltmp = ltmp->next) {
 		device = ltmp->data;
 
 		device->is_mounted = FALSE;
@@ -736,7 +737,9 @@ mount_devices_check_status (FMDesktopIconView *icon_view)
 {
 	mount_devices_update_is_mounted (icon_view);
 
-	g_list_foreach (icon_view->details->devices, (GFunc)mount_device_check_change, icon_view);
+	g_list_foreach (icon_view->details->devices,
+			mount_device_check_change,
+			icon_view);
 	
 	return TRUE;
 }
@@ -898,12 +901,14 @@ add_mount_device (FMDesktopIconView *icon_view, struct mntent *ent)
 		newdev->mount_type = g_strdup ("blockdevice");
 		mounted = mount_device_ext2_add (newdev);
 	} else {
+		/* FIXME: Is this a reasonable way to report this error? */
 		g_message ("Unknown file system: %s", ent->mnt_type);
 	}
 	
 	if (mounted) {
 		icon_view->details->devices = g_list_append (icon_view->details->devices, newdev);
 		mount_device_add_aliases (icon_view, newdev->fsname, newdev);
+		/* FIXME: Remove messages when this code is done. */
 		g_message ("Device %s came through (type %s)", newdev->fsname, type_names[newdev->type]);
 	} else {
 		close (newdev->device_fd);
@@ -962,6 +967,7 @@ find_mount_devices (FMDesktopIconView *icon_view, const char *fstab_path)
 	g_return_if_fail (mef);
 
 	while ((ent = getmntent (mef))) {
+		/* FIXME: Remove messages when this code is done. */
 		g_message ("Checking device %s", ent->mnt_fsname);
 
 #if 0
@@ -1002,6 +1008,7 @@ remove_mount_link (DeviceInfo *device)
 	if (device->link_uri != NULL) {
 		result = gnome_vfs_unlink (device->link_uri);
 		if (result != GNOME_VFS_OK) {
+			/* FIXME: Is a message to the console acceptable here? */
 			g_message ("Unable to remove mount link: %s", gnome_vfs_result_to_string (result));
 		}
 		g_free (device->link_uri);
@@ -1096,32 +1103,30 @@ get_floppy_volume_name (DeviceInfo *device)
 static void
 place_home_directory (FMDesktopIconView *icon_view)
 {
-	char *user_path, *desktop_uri, *user_homelink_uri, *user_icon_name;
+	char *desktop_path, *home_link_name, *home_link_path, *home_link_uri, *home_dir_uri;
 	GnomeVFSResult result;
 	GnomeVFSFileInfo info;
-	GList *new_files_list;
 	
-	user_path = g_strdup_printf ("%s/", g_get_home_dir ());
-	desktop_uri = nautilus_get_desktop_directory ();
-	user_icon_name = g_strdup_printf("%s's Home", g_get_user_name ());
-	user_homelink_uri = g_strdup_printf ("%s/%s", desktop_uri, user_icon_name);
+	desktop_path = nautilus_get_desktop_directory ();
+	home_link_name = g_strdup_printf ("%s's Home", g_get_user_name ());
+	home_link_path = nautilus_make_path (desktop_path, home_link_name);
+	home_link_uri = nautilus_get_uri_from_local_path (home_link_path);
 	
-	result = gnome_vfs_get_file_info (user_homelink_uri, &info, 0);
+	result = gnome_vfs_get_file_info (home_link_uri, &info, 0);
 	if (result != GNOME_VFS_OK) {
+		/* FIXME: Maybe we should only create if the error was "not found". */
 		/* There was no link file.  Create it and add it to the desktop view */		
-		result = nautilus_link_create (desktop_uri, user_icon_name, "temp-home.png", user_path);
-		if (result == GNOME_VFS_OK) {
-			new_files_list = NULL;
-			new_files_list = g_list_prepend (new_files_list, user_homelink_uri);
-			nautilus_directory_notify_files_added (new_files_list);
-			g_list_free (new_files_list);
-		} else {
+		home_dir_uri = nautilus_get_uri_from_local_path (g_get_home_dir ());
+		result = nautilus_link_create (desktop_path, home_link_name, "temp-home.png", home_dir_uri);
+		g_free (home_dir_uri);
+		if (result != GNOME_VFS_OK) {
+			/* FIXME: Is a message to the console acceptable here? */
 			g_message ("Unable to create home link: %s", gnome_vfs_result_to_string (result));
-		}		
+		}
 	}
 	
-	g_free (desktop_uri);
-	g_free (user_path);
-	g_free (user_homelink_uri);
-	g_free (user_icon_name);
+	g_free (home_link_uri);
+	g_free (home_link_path);
+	g_free (home_link_name);
+	g_free (desktop_path);
 }

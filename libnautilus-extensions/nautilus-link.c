@@ -25,6 +25,8 @@
 #include <config.h>
 #include "nautilus-link.h"
 
+/* FIXME: Bad to include the private file here, but necessary for now. */
+#include "nautilus-directory-private.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-file.h"
 #include "nautilus-global-preferences.h"
@@ -32,29 +34,33 @@
 #include "nautilus-preferences.h"
 #include "nautilus-string.h"
 #include "nautilus-xml-extensions.h"
-#include <libgnomevfs/gnome-vfs.h>
 #include <libgnomevfs/gnome-vfs-mime.h>
+#include <libgnomevfs/gnome-vfs.h>
 #include <parser.h>
 #include <stdlib.h>
 #include <xmlmemory.h>
 
-#define LINK_SUFFIX ".link"
-
-#define REMOTE_ICON_DIR_PERMISSIONS (GNOME_VFS_PERM_USER_ALL | GNOME_VFS_PERM_GROUP_ALL | GNOME_VFS_PERM_OTHER_ALL)
+#define REMOTE_ICON_DIR_PERMISSIONS (GNOME_VFS_PERM_USER_ALL \
+				     | GNOME_VFS_PERM_GROUP_ALL \
+				     | GNOME_VFS_PERM_OTHER_ALL)
 
 typedef struct {
 	char *link_uri;
 	char *file_path;
 } NautilusLinkIconNotificationInfo;
 
- 
 gboolean
-nautilus_link_create (const char *directory_path, const char *name, const char *image, const char *uri)
+nautilus_link_create (const char *directory_path,
+		      const char *name,
+		      const char *image,
+		      const char *target_uri)
 {
 	xmlDocPtr output_document;
 	xmlNodePtr root_node;
-	char *file_name;
+	char *path;
 	int result;
+	char *uri;
+	GList dummy_list;
 	
 	/* create a new xml document */
 	output_document = xmlNewDoc ("1.0");
@@ -69,70 +75,68 @@ nautilus_link_create (const char *directory_path, const char *name, const char *
 
 	/* Add link and custom icon tags */
 	xmlSetProp (root_node, "CUSTOM_ICON", image);
-	xmlSetProp (root_node, "LINK", uri);
+	xmlSetProp (root_node, "LINK", target_uri);
 	
 	/* all done, so save the xml document as a link file */
-	file_name = g_strdup_printf ("%s/%s", directory_path, name);
-	result = xmlSaveFile (file_name, output_document);
-	g_free (file_name);
+	path = nautilus_make_path (directory_path, name);
+	result = xmlSaveFile (path, output_document);
 	
 	xmlFreeDoc (output_document);
 
-	return result > 0;
-}
-
-/* given a path, returns TRUE if it's a link file */
-gboolean
-nautilus_link_is_link_file (NautilusFile *file)
-{
-	char *mime_type;
-	
-	mime_type = nautilus_file_get_mime_type (file);
-	if (mime_type == NULL) {
+	if (result <= 0) {
+		g_free (path);
 		return FALSE;
 	}
 	
-	if (nautilus_strcasecmp (mime_type, "application/x-nautilus-link") == 0) {
-		g_free (mime_type);
-		return TRUE;
-	}
+	/* Notify that this new file has been created. */
+	uri = nautilus_get_uri_from_local_path (path);
+	dummy_list.data = uri;
+	dummy_list.next = NULL;
+	dummy_list.prev = NULL;
+	nautilus_directory_notify_files_added (&dummy_list);
+	g_free (uri);
 
-	g_free (mime_type);
+	g_free (path);
 
-	return FALSE;
+	return TRUE;
 }
 
+/* Given a NautilusFile, returns TRUE if it's known to be a link file. */
+gboolean
+nautilus_link_is_link_file (NautilusFile *file)
+{
+	return nautilus_file_is_mime_type (file, "application/x-nautilus-link");
+}
 
-/* Set the icon for a link file */
+/* Set the icon for a link file. This can only be called on local
+ * paths, and only on files known to be link files.
+ */
 gboolean
 nautilus_link_set_icon (const char *path, const char *icon_name)
 {
 	xmlDocPtr document;
+	char *uri;
 	NautilusFile *file;
-
-	file = nautilus_file_get (path);
-	if (file == NULL) {
-		return FALSE;
-	}
-	
-	if (!nautilus_link_is_link_file (file)) {
-		nautilus_file_unref (file);
-		return FALSE;
-	}
 
 	document = xmlParseFile (path);
 	if (document == NULL) {
-		nautilus_file_unref (file);
 		return FALSE;
 	}
 
-	xmlSetProp (xmlDocGetRootElement (document), NAUTILUS_METADATA_KEY_CUSTOM_ICON, icon_name);
-
+	xmlSetProp (xmlDocGetRootElement (document),
+		    NAUTILUS_METADATA_KEY_CUSTOM_ICON,
+		    icon_name);
 	xmlSaveFile (path, document);
 	xmlFreeDoc (document);
 
-	nautilus_file_unref (file);
-	
+	uri = nautilus_get_uri_from_local_path (path);
+	file = nautilus_file_get (uri);
+	if (file != NULL) {
+		nautilus_file_changed (file);
+		nautilus_file_unref (file);		
+	}
+	g_free (uri);
+		
 	return TRUE;
 }
 
@@ -166,6 +170,7 @@ nautilus_link_get_root_property (const char *link_file_uri,
 		return NULL;
 	}
 
+	/* FIXME: Sync. I/O. */
 	doc = xmlParseFile (path);
 	g_free (path);
 	property = xml_get_root_property (doc, key);
@@ -177,13 +182,13 @@ nautilus_link_get_root_property (const char *link_file_uri,
 char *
 nautilus_link_get_additional_text (const char *link_file_uri)
 {
+	/* FIXME: This interface requires sync. I/O. */
 	return nautilus_link_get_root_property
 		(link_file_uri, NAUTILUS_METADATA_KEY_EXTRA_TEXT);
 }
 
 /* utility to return the local pathname of a cached icon, given the leaf name */
 /* if the icons directory hasn't been created yet, create it */
-
 static char *
 make_local_path (const char *image_uri)
 {
@@ -312,10 +317,14 @@ nautilus_link_get_image_uri (const char *link_file_uri)
 char *
 nautilus_link_get_link_uri (const char *link_file_uri)
 {
+	/* FIXME: This interface requires sync. I/O. */
 	return nautilus_link_get_root_property
 		(link_file_uri, "LINK");
 }
 
+/* FIXME: Caller has to know to pass in a file with a NUL character at
+ * the end.
+ */
 char *
 nautilus_link_get_link_uri_given_file_contents (const char *file_contents,
 						int file_size)
@@ -327,21 +336,4 @@ nautilus_link_get_link_uri_given_file_contents (const char *file_contents,
 	property = xml_get_root_property (doc, "LINK");
 	xmlFreeDoc (doc);
 	return property;
-}
-
-/* Strips the suffix from the passed in string (in place) if it's a
- * link file.
- */
-char *
-nautilus_link_get_display_name (char *link_file_name)
-{
-	char *suffix;
-	
-	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_REAL_FILE_NAME, FALSE)
-	    && nautilus_str_has_suffix (link_file_name, LINK_SUFFIX)) {
-		suffix = link_file_name + strlen (link_file_name) - strlen (LINK_SUFFIX);
-		*suffix = '\0';
-	}
-	
-	return link_file_name;
 }

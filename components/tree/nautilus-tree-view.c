@@ -367,7 +367,7 @@ queue_pending_files (NautilusTreeView *view,
 			
 			g_assert (file != NULL);
 			
-			name = nautilus_link_get_display_name (nautilus_file_get_name (file));
+			name = nautilus_file_get_name (file);
 			
 			g_assert (name != NULL);
 			

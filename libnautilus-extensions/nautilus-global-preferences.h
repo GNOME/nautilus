@@ -46,9 +46,8 @@ BEGIN_GNOME_DECLS
 /* adding/removing from property browser */
 #define NAUTILUS_PREFERENCES_CAN_ADD_CONTENT			"preferences/can_add_content"
 
-/* Preferences not (currently?) displayed in dialog */
+/* FIXME: Preferences not (currently?) displayed in dialog */
 #define NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES	"icon_view/text_attribute_names"
-#define NAUTILUS_PREFERENCES_SHOW_REAL_FILE_NAME		"preferences/show_real_file_name"
 #define NAUTILUS_PREFERENCES_SHOW_BUILT_IN_BOOKMARKS		"preferences/show_built_in_bookmarks"
 
 /* Single/Double click preference  */

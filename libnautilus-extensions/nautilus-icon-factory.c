@@ -958,14 +958,16 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 		g_free (mime_type);		
 	}
 	
-	/* handle nautilus link xml files, which may specify their own image */	
+	/* Handle nautilus link xml files, which may specify their own image */	
 	icon_name = NULL;
 	if (uri == NULL) {
 		uri = g_strdup (file_uri);
 	}	
-	if (nautilus_link_is_link_file (file)) {	
+	if (nautilus_link_is_link_file (file)) {
+		/* FIXME: This does sync. I/O. */
 		image_uri = nautilus_link_get_image_uri (file_uri);
 		if (image_uri != NULL) {
+			/* FIXME: Lame hack. We only support file:// URIs? */
 			if (nautilus_istr_has_prefix (image_uri, "file://"))
 				uri = image_uri;
 			else {

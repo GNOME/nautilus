@@ -656,12 +656,6 @@ global_preferences_register_for_ui (void)
 	/* FIXME: Many user-displayed strings in this file aren't 
 	 * marked with _(), so aren't being localized 
 	 */
-	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_SHOW_REAL_FILE_NAME,
-							   "Show entire filename",
-							   FALSE,
-							   FALSE,
-							   TRUE);
-
 	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 							   "Show hidden files",
 							   FALSE,
