@@ -38,6 +38,7 @@
 #include "nautilus-information-panel.h"
 #include "nautilus-history-sidebar.h"
 #include "nautilus-notes-sidebar.h"
+#include "nautilus-emblem-sidebar.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -177,6 +178,7 @@ nautilus_application_instance_init (NautilusApplication *application)
 	nautilus_information_panel_register ();
 	nautilus_history_sidebar_register ();
 	nautilus_notes_sidebar_register ();
+	nautilus_emblem_sidebar_register ();
 }
 
 NautilusApplication *

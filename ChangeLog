@@ -1,5 +1,16 @@
 2004-11-05  Alexander Larsson  <alexl@redhat.com>
 
+	* src/Makefile.am:
+	* src/nautilus-emblem-sidebar.[ch]:
+	* src/nautilus-application.c:
+	Add emblem sidebar, based on old compontent
+	now uses NautilusSignaller to detect/signal emblem changes
+	
+	* src/nautilus-property-browser.c:
+	Catch the emblems_changed signal and refresh
+
+2004-11-05  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-list-view.c:
 	Fix crash when switching view.
 
