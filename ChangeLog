@@ -1,5 +1,24 @@
 2000-10-10  John Sullivan  <sullivan@eazel.com>
 
+	Fixed bug 3516 (Sidebar & Content Loser merged items don't appear)
+	Fixed bug 3517 (Mozilla merged items don't appear)
+
+	There's a crashing bug involving merged tool bar buttons 
+	(bug 3574), so I didn't put the tool bar button back in Mozilla,
+	but the merged menu item is once again wired up. Actually I
+	checked this in the other day but thought it wasn't working
+	correctly, though it is.
+
+	* components/loser/content/nautilus-content-loser-ui.xml:
+	Filled in contents.
+	* components/loser/content/nautilus-content-loser.c:
+	(bonobo_loser_callback), (loser_merge_bonobo_items_callback):
+	* components/loser/sidebar/nautilus-sidebar-loser.c:
+	(bonobo_loser_callback), (loser_merge_bonobo_items_callback):
+	Converted to new Bonobo API and tweaked some behavior.
+
+2000-10-10  John Sullivan  <sullivan@eazel.com>
+
 	* src/nautilus-shell-ui.xml: Added placeholder for
 	built-in bookmarks.
 

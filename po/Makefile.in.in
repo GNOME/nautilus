@@ -33,8 +33,7 @@ GENCAT = @GENCAT@
 GMSGFMT = PATH=../src:$$PATH @GMSGFMT@
 MSGFMT = @MSGFMT@
 XGETTEXT = PATH=../src:$$PATH @XGETTEXT@
-MSGMERGE = PATH=../src:$$PATH ./update.pl --dist
-GENPOT   = PATH=../src:$$PATH ./update.pl --pot
+MSGMERGE = PATH=../src:$$PATH msgmerge
 
 DEFS = @DEFS@
 CFLAGS = @CFLAGS@
@@ -211,17 +210,17 @@ update-po: Makefile
 	$(MAKE) $(PACKAGE).pot
 	PATH=`pwd`/../src:$$PATH; \
 	cd $(srcdir); \
-	$(GENPOT); \
 	catalogs='$(CATALOGS)'; \
 	for cat in $$catalogs; do \
 	  cat=`basename $$cat`; \
 	  lang=`echo $$cat | sed 's/\$(CATOBJEXT)$$//'`; \
-	  cp $$lang.po $$lang.old.po; \
+	  mv $$lang.po $$lang.old.po; \
 	  echo "$$lang:"; \
-	  if $(MSGMERGE) $$lang; then \
-	  rm -f $$lang.old.po; \
+	  if $(MSGMERGE) $$lang.old.po $(PACKAGE).pot -o $$lang.po; then \
+	    rm -f $$lang.old.po; \
 	  else \
 	    echo "msgmerge for $$cat failed!"; \
+	    rm -f $$lang.po; \
 	    mv $$lang.old.po $$lang.po; \
 	  fi; \
 	done

@@ -189,7 +189,7 @@ bonobo_loser_callback (BonoboUIComponent *ui, gpointer user_data, const char *ve
         g_assert (NAUTILUS_IS_SIDEBAR_LOSER (user_data));
 
 	nautilus_sidebar_loser_fail ();
-	gtk_label_set_text (GTK_LABEL (user_data), _("You have killed the Sidebar Loser"));
+	gtk_label_set_text (GTK_LABEL (user_data), _("You have tried to kill the Sidebar Loser"));
 }
 
 static void
@@ -209,7 +209,7 @@ loser_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpoint
 	view = NAUTILUS_SIDEBAR_LOSER (user_data);
 
 	if (state) {
-		ui_component = nautilus_view_set_up_ui (NAUTILUS_VIEW (view),
+		ui_component = nautilus_view_set_up_ui (view->details->nautilus_view,
 							DATADIR,
 							"nautilus-sidebar-loser-ui.xml",
 							"nautilus-sidebar-loser");
