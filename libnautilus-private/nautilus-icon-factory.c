@@ -1837,7 +1837,7 @@ get_cache_time (const char *file_uri, time_t *cache_time)
 	
 	/* Gather the info and then compare modification times. */
 	file_info = gnome_vfs_file_info_new ();
-	result = gnome_vfs_get_file_info (file_uri, file_info, GNOME_VFS_FILE_INFO_DEFAULT);
+	result = gnome_vfs_get_file_info (file_uri, file_info, GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
 	if (result == GNOME_VFS_OK) {
 		*cache_time = file_info->mtime;
 	}

@@ -1,5 +1,13 @@
 2001-06-06  Darin Adler  <darin@bentspoon.com>
 
+	* components/music/nautilus-music-view.c: (play_current_file):
+	* libnautilus-private/nautilus-icon-factory.c: (get_cache_time):
+	* src/nautilus-window-menus.c: (get_static_bookmarks_file_path):
+	Oops, a few of my changes were still in the editor. More places
+	where we should follow links.
+
+2001-06-06  Darin Adler  <darin@bentspoon.com>
+
 	Frederic Devernay <Frederic.Devernay@sophia.inria.fr>
 	pointed out that the icon factory wasn't following links.
 	I found similar problems elsewhere.

@@ -1225,7 +1225,7 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 	music_view->details->current_duration = length;
 	g_free (title);
 	
-        result = gnome_vfs_get_file_info (song_info->path_uri, &file_info, GNOME_VFS_FILE_INFO_DEFAULT);
+        result = gnome_vfs_get_file_info (song_info->path_uri, &file_info, GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
 	if (result != GNOME_VFS_OK) {
 		/* File must be unavailable for some reason. Let's yank it from the list */
 		gtk_clist_remove (GTK_CLIST (music_view->details->song_list), music_view->details->selected_index);
