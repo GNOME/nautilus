@@ -1,5 +1,20 @@
 2000-09-07  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-icon-container.c: (destroy),
+	(nautilus_icon_container_initialize),
+	(nautilus_icon_container_update_icon),
+	(nautilus_icon_container_set_label_font_for_zoom_level),
+	(nautilus_icon_container_set_smooth_label_font):
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* libnautilus-extensions/nautilus-icon-private.h:
+	Add support for smooth fonts.  We simply manage one font and an
+	array of sizes.  The management of the smooth font parallels that
+	of regular non smooth Gdk fonts, except we have just one.  Instead
+	of an array of fonts, we have an array of font sizes.  We use
+	these to update the canvas icon items.
+	
+2000-09-07  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-scalable-font.h:
 	* libnautilus-extensions/nautilus-scalable-font.c:
 	(nautilus_scalable_font_draw_text), (nautilus_text_layout_paint),

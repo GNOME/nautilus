@@ -159,8 +159,12 @@ struct NautilusIconContainerDetails {
 	/* zoom level */
 	int zoom_level;
 	
-	/* default fonts used to draw labels */
+	/* fonts used to draw labels in regular mode */
 	GdkFont *label_font[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
+
+	/* font used to draw labels in smooth mode */
+	NautilusScalableFont *smooth_label_font;
+	guint smooth_font_size[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
 
 	/* color for text labels */
 	guint32 label_color;

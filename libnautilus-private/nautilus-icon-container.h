@@ -28,6 +28,7 @@
 
 #include <libgnomeui/gnome-canvas.h>
 #include "nautilus-icon-factory.h"
+#include "nautilus-scalable-font.h"
 
 #define NAUTILUS_ICON_CONTAINER(obj) \
 	GTK_CHECK_CAST (obj, nautilus_icon_container_get_type (), NautilusIconContainer)
@@ -137,6 +138,7 @@ typedef struct {
 guint      nautilus_icon_container_get_type                      (void);
 GtkWidget *nautilus_icon_container_new                           (void);
 
+
 /* adding, removing, and managing icons */
 void       nautilus_icon_container_clear                         (NautilusIconContainer  *view);
 gboolean   nautilus_icon_container_add                           (NautilusIconContainer  *view,
@@ -149,8 +151,9 @@ void       nautilus_icon_container_for_each                      (NautilusIconCo
 void       nautilus_icon_container_request_update                (NautilusIconContainer  *view,
 								  NautilusIconData       *data);
 void       nautilus_icon_container_request_update_all            (NautilusIconContainer  *container);
-void	   nautilus_icon_container_reveal			 (NautilusIconContainer	 *container,
-								  NautilusIconData	 *data);
+void       nautilus_icon_container_reveal                        (NautilusIconContainer  *container,
+								  NautilusIconData       *data);
+
 
 /* control the layout */
 gboolean   nautilus_icon_container_is_auto_layout                (NautilusIconContainer  *container);
@@ -164,9 +167,11 @@ void       nautilus_icon_container_set_layout_mode               (NautilusIconCo
 void       nautilus_icon_container_sort                          (NautilusIconContainer  *container);
 void       nautilus_icon_container_freeze_icon_positions         (NautilusIconContainer  *container);
 
+
 /* operations on all icons */
 void       nautilus_icon_container_unselect_all                  (NautilusIconContainer  *view);
 void       nautilus_icon_container_select_all                    (NautilusIconContainer  *view);
+
 
 /* operations on the selection */
 GList     *nautilus_icon_container_get_selection                 (NautilusIconContainer  *view);
@@ -178,6 +183,7 @@ void       nautilus_icon_container_show_stretch_handles          (NautilusIconCo
 void       nautilus_icon_container_unstretch                     (NautilusIconContainer  *container);
 void       nautilus_icon_container_start_renaming_selected_item  (NautilusIconContainer  *container);
 gboolean   nautilus_icon_container_is_renaming                   (NautilusIconContainer  *container);
+
 
 /* options */
 int        nautilus_icon_container_get_zoom_level                (NautilusIconContainer  *view);
@@ -193,8 +199,11 @@ void       nautilus_icon_container_set_anti_aliased_mode         (NautilusIconCo
 void       nautilus_icon_container_set_label_font_for_zoom_level (NautilusIconContainer  *container,
 								  int                     zoom_level,
 								  GdkFont                *font);
+void       nautilus_icon_container_set_smooth_label_font         (NautilusIconContainer  *container,
+								  NautilusScalableFont   *font);
 gboolean   nautilus_icon_container_get_is_fixed_size             (NautilusIconContainer  *container);
 void       nautilus_icon_container_set_is_fixed_size             (NautilusIconContainer  *container,
 								  gboolean                is_fixed_size);
+
 
 #endif /* NAUTILUS_ICON_CONTAINER_H */

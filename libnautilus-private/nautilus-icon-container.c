@@ -2011,7 +2011,11 @@ destroy (GtkObject *object)
        		if (container->details->label_font[i] != NULL)
         		gdk_font_unref (container->details->label_font[i]);
 	}
-	
+
+	if (container->details->smooth_label_font != NULL) {
+		gtk_object_unref (GTK_OBJECT (container->details->smooth_label_font));
+	}
+
 	nautilus_icon_container_flush_typeselect_state (container);
 	
 	g_free (container->details);
@@ -2861,6 +2865,16 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
         details->label_font[NAUTILUS_ZOOM_LEVEL_LARGER] = nautilus_font_factory_get_font_by_family ("helvetica", 18);
         details->label_font[NAUTILUS_ZOOM_LEVEL_LARGEST] = nautilus_font_factory_get_font_by_family ("helvetica", 18);
 
+        details->smooth_label_font = nautilus_scalable_font_get_default_font ();
+
+        details->smooth_font_size[NAUTILUS_ZOOM_LEVEL_SMALLEST] = 8;
+        details->smooth_font_size[NAUTILUS_ZOOM_LEVEL_SMALLER] = 8;
+        details->smooth_font_size[NAUTILUS_ZOOM_LEVEL_SMALL] = 10;
+        details->smooth_font_size[NAUTILUS_ZOOM_LEVEL_STANDARD] = 12;
+        details->smooth_font_size[NAUTILUS_ZOOM_LEVEL_LARGE] = 14;
+        details->smooth_font_size[NAUTILUS_ZOOM_LEVEL_LARGER] = 18;
+        details->smooth_font_size[NAUTILUS_ZOOM_LEVEL_LARGEST] = 18;
+
 	container->details = details;
 
 	/* Set up DnD.  */
@@ -3165,6 +3179,9 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	char *editable_text, *additional_text;
 	GdkFont *font;
 
+	guint smooth_font_size;
+	NautilusScalableFont *smooth_font;
+
 	if (icon == NULL) {
 		return;
 	}
@@ -3229,12 +3246,17 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 			 &additional_text);
 	
 	font = details->label_font[details->zoom_level];
+
+	smooth_font_size = details->smooth_font_size[details->zoom_level];
+	smooth_font = details->smooth_label_font;
         
 	gnome_canvas_item_set (GNOME_CANVAS_ITEM (icon->item),
 			       "editable_text", editable_text,
 			       "additional_text", additional_text,
 			       "font", font,
 			       "highlighted_for_drop", icon == details->drop_target,
+			       "smooth_font_size", smooth_font_size,
+			       "smooth_font", smooth_font,
 			       NULL);
 	
 	nautilus_icon_canvas_item_set_image (icon->item, pixbuf);
@@ -4284,6 +4306,20 @@ nautilus_icon_container_set_label_font_for_zoom_level (NautilusIconContainer *co
 	gdk_font_ref (font);
 	
 	container->details->label_font[zoom_level] = font;
+}
+
+void
+nautilus_icon_container_set_smooth_label_font (NautilusIconContainer *container,
+					       NautilusScalableFont   *font)
+{
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+	g_return_if_fail (NAUTILUS_IS_SCALABLE_FONT (font));
+
+	gtk_object_unref (GTK_OBJECT (container->details->smooth_label_font));
+
+	gtk_object_ref (GTK_OBJECT (font));
+
+	container->details->smooth_label_font = font;
 }
 
 void
