@@ -1,3 +1,18 @@
+2000-09-26  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(pthread_nautilus_read_file_callback_idle_binder),
+	(pthread_nautilus_read_file_callback_common),
+	(pthread_nautilus_read_file_synchronous_callback),
+	(pthread_nautilus_read_file_asynchronous_callback),
+	(pthread_nautilus_read_file_thread_entry),
+	(pthread_nautilus_read_file_async),
+	(pthread_nautilus_read_file_async_cancel),
+	(nautilus_read_file_async), (nautilus_read_file_cancel):
+	Experimental replacement for the nautilus_read_file_async
+	as a potential speed improvement. Need to do some more profiling
+	to see if we are getting any gain.
+
 2000-09-25  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-thumbnails.c:

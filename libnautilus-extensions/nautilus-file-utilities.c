@@ -41,6 +41,7 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-xfer.h>
 #include <ctype.h>
+#include <pthread.h>
 
 #define NAUTILUS_USER_DIRECTORY_NAME ".nautilus"
 #define DEFAULT_NAUTILUS_DIRECTORY_MODE (0755)
@@ -64,7 +65,11 @@ struct NautilusReadFileHandle {
 	int bytes_read;
 };
 
+#undef PTHREAD_ASYNC_READ
+
+#ifndef PTHREAD_ASYNC_READ
 static void read_file_read_chunk (NautilusReadFileHandle *handle);
+#endif
 
 /**
  * nautilus_format_uri_for_display:
@@ -629,6 +634,7 @@ nautilus_read_entire_file (const char *uri,
 	return GNOME_VFS_OK;
 }
 
+#ifndef PTHREAD_ASYNC_READ
 /* When close is complete, there's no more work to do. */
 static void
 read_file_close_callback (GnomeVFSAsyncHandle *handle,
@@ -772,6 +778,262 @@ read_file_open_callback (GnomeVFSAsyncHandle *handle,
 	read_file_read_chunk (read_handle);
 }
 
+#else
+
+typedef struct {
+	NautilusReadFileCallback callback;
+	NautilusReadMoreCallback more_callback;
+	gpointer callback_data;
+	pthread_mutex_t *callback_result_ready_semaphore;
+	gboolean synch_callback_result;
+
+	GnomeVFSResult result;
+	GnomeVFSFileSize file_size;
+	char *buffer;
+} NautilusAsyncReadFileCallbackData;
+
+static int
+pthread_nautilus_read_file_callback_idle_binder (void *cast_to_context)
+{
+	NautilusAsyncReadFileCallbackData *context;
+	
+	context = (NautilusAsyncReadFileCallbackData *)cast_to_context;
+
+	if (context->more_callback) {
+		g_assert (context->callback_result_ready_semaphore != NULL);
+		/* Synchronous callback flavor, wait for the return value. */
+		context->synch_callback_result = (* context->more_callback) (context->file_size, 
+			context->buffer, context->callback_data);
+		/* Got the result, release the master thread */
+		pthread_mutex_unlock (context->callback_result_ready_semaphore);
+	} else {
+		/* Asynchronous callback flavor, don't wait for the result. */
+		(* context->callback) (context->result, context->file_size, 
+			context->buffer, context->callback_data);
+
+		/* We assume ownership of data here in the async call and have to
+		 * free it.
+		 */
+		g_free (context);
+	}
+
+	return FALSE;
+}
+
+static gboolean
+pthread_nautilus_read_file_callback_common (NautilusReadFileCallback callback,
+	NautilusReadMoreCallback more_callback, gpointer callback_data, 
+	GnomeVFSResult error, GnomeVFSFileSize file_size,
+	char *buffer, pthread_mutex_t *callback_result_ready_semaphore)
+{
+	NautilusAsyncReadFileCallbackData *data;
+	gboolean result;
+
+	g_assert ((callback == NULL) != (more_callback == NULL));
+	g_assert ((more_callback != NULL) == (callback_result_ready_semaphore != NULL));
+
+	result = FALSE;
+	data = g_new0 (NautilusAsyncReadFileCallbackData, 1);
+	data->callback = callback;
+	data->more_callback = more_callback;
+	data->callback_data = callback_data;
+	data->callback_result_ready_semaphore = callback_result_ready_semaphore;
+	data->result = error;
+	data->file_size = file_size;
+	data->buffer = buffer;
+	
+	/* Set up the callback to get called in the main thread. */
+	g_idle_add (pthread_nautilus_read_file_callback_idle_binder, data);
+
+	if (callback_result_ready_semaphore != NULL) {
+		/* Block until callback deposits the return value. This is not optimal but we do it
+		 * to emulate the nautilus_read_file_async call behavior.
+		 */
+		pthread_mutex_lock (callback_result_ready_semaphore);
+		result = data->synch_callback_result;
+
+		/* In the synch call we still own data here and need to free it. */
+		g_free (data);
+
+	}
+
+	return result;
+}
+
+static gboolean
+pthread_nautilus_read_file_synchronous_callback (NautilusReadMoreCallback callback,
+	gpointer callback_data, GnomeVFSFileSize file_size,
+	char *buffer, pthread_mutex_t *callback_result_ready_semaphore)
+{
+	return pthread_nautilus_read_file_callback_common(NULL, callback,
+		callback_data, GNOME_VFS_OK, file_size, buffer, callback_result_ready_semaphore);
+}
+
+static void
+pthread_nautilus_read_file_asynchronous_callback (NautilusReadFileCallback callback,
+	gpointer callback_data, GnomeVFSResult result, GnomeVFSFileSize file_size,
+	char *buffer)
+{
+	pthread_nautilus_read_file_callback_common(callback, NULL,
+		callback_data, result, file_size, buffer, NULL);
+}
+
+typedef struct {
+	NautilusReadFileHandle handle;
+	char *uri;
+	volatile gboolean cancel_requested;
+	/* Expose the synch callback semaphore to allow the cancel call to unlock it. */
+	pthread_mutex_t *callback_result_ready_semaphore;
+} NautilusAsyncReadFileData;
+
+static void *
+pthread_nautilus_read_file_thread_entry (void *cast_to_data)
+{
+	NautilusAsyncReadFileData *data;
+	GnomeVFSResult result;
+	char *buffer;
+	GnomeVFSFileSize total_bytes_read;
+	GnomeVFSFileSize bytes_read;
+	pthread_mutex_t callback_result_ready_semaphore;
+	
+	data = (NautilusAsyncReadFileData *)cast_to_data;
+	buffer = NULL;
+	total_bytes_read = 0;
+
+	result = gnome_vfs_open ((GnomeVFSHandle **)&data->handle.handle, data->uri, GNOME_VFS_OPEN_READ);
+	if (result == GNOME_VFS_OK) {
+	
+		if (data->handle.read_more_callback != NULL) {
+			/* read_more_callback is a synchronous callback, allocate a semaphore
+			 * to provide for synchoronization with the callback.
+			 * We are using the default mutex attributes that give us a fast mutex
+			 * that behaves like a semaphore.
+			 */
+			pthread_mutex_init (&callback_result_ready_semaphore, NULL);
+			/* Grab the semaphore -- the next lock will block us and
+			 * we will need the callback to unblock the semaphore.
+			 */
+			pthread_mutex_lock (&callback_result_ready_semaphore);
+			data->callback_result_ready_semaphore = &callback_result_ready_semaphore;
+		}
+		for (;;) {
+			if (data->cancel_requested) {
+				/* Cancelled by the master. */
+				result = GNOME_VFS_ERROR_INTERRUPTED;
+				break;
+			}
+
+			buffer = g_realloc (buffer, total_bytes_read + READ_CHUNK_SIZE);
+			/* FIXME:
+			 * For a better cancellation granularity we should use gnome_vfs_read_cancellable
+			 * here, adding a GnomeVFSContext to NautilusAsyncReadFileData.
+			 */
+			result = gnome_vfs_read ((GnomeVFSHandle *)data->handle.handle, buffer + total_bytes_read,
+				READ_CHUNK_SIZE, &bytes_read);
+
+			total_bytes_read += bytes_read;
+
+			if (data->cancel_requested) {
+				/* Cancelled by the master. */
+				result = GNOME_VFS_ERROR_INTERRUPTED;
+				break;
+			}
+
+			if (result != GNOME_VFS_OK) {
+				if (result == GNOME_VFS_ERROR_EOF) {
+					/* not really an error, just done reading */
+					result = GNOME_VFS_OK;
+				}
+				break;
+			}
+
+			if (data->handle.read_more_callback != NULL
+				&& !pthread_nautilus_read_file_synchronous_callback (data->handle.read_more_callback,
+					data->handle.callback_data, total_bytes_read, buffer, 
+					&callback_result_ready_semaphore)) {
+				/* callback doesn't want any more data */
+				break;
+			}
+
+		}
+		gnome_vfs_close ((GnomeVFSHandle *)data->handle.handle);
+	}
+
+	if (result != GNOME_VFS_OK) {
+		/* Because of the error or cancellation, nobody will take the data we read, 
+		 * delete the buffer here instead.
+		 */
+		g_free (buffer);
+		buffer = NULL;
+		total_bytes_read = 0;
+	}
+
+	/* Call the final callback. 
+	 * If everything is OK, pass in the data read. 
+	 * We are handing off the read buffer -- trim it to the actual size we need first
+	 * so that it doesn't take up more space than needed.
+	 */
+	pthread_nautilus_read_file_asynchronous_callback(data->handle.callback, 
+		data->handle.callback_data, result, total_bytes_read, 
+		g_realloc (buffer, total_bytes_read));
+
+	if (data->handle.read_more_callback != NULL) {
+		pthread_mutex_destroy (&callback_result_ready_semaphore);
+	}
+
+	g_free (data->uri);
+	g_free (data);
+
+	return NULL;
+}
+
+static NautilusReadFileHandle *
+pthread_nautilus_read_file_async(const char *uri, NautilusReadFileCallback callback, 
+	NautilusReadMoreCallback read_more_callback, gpointer callback_data)
+{
+	NautilusAsyncReadFileData *data;
+	pthread_attr_t thread_attr;
+	pthread_t thread;
+
+	data = g_new0 (NautilusAsyncReadFileData, 1);
+
+	data->handle.callback = callback;
+	data->handle.read_more_callback = read_more_callback;
+	data->handle.callback_data = callback_data;
+	data->cancel_requested = FALSE;
+	data->uri = g_strdup (uri);
+
+	pthread_attr_init (&thread_attr);
+	pthread_attr_setdetachstate (&thread_attr, PTHREAD_CREATE_DETACHED);
+	if (pthread_create (&thread, &thread_attr, pthread_nautilus_read_file_thread_entry, data) != 0) {
+		/* FIXME:
+		 * Would be cleaner to call through an idle callback here.
+		 */
+		(*callback) (GNOME_VFS_ERROR_INTERNAL, 0, NULL, NULL);
+		g_free (data);
+		return NULL;
+	}
+
+	return (NautilusReadFileHandle *)data;
+}
+
+static void
+pthread_nautilus_read_file_async_cancel (NautilusReadFileHandle *handle)
+{
+	/* Must call this before the final callback kicks in. */
+	NautilusAsyncReadFileData *data;
+
+	data = (NautilusAsyncReadFileData *)handle;
+	data->cancel_requested = TRUE;
+	if (data->callback_result_ready_semaphore != NULL) {
+		pthread_mutex_unlock (data->callback_result_ready_semaphore);
+	}
+
+	/* now the thread will die on it's own and clean up after itself */
+}
+
+#endif
+
 /* Set up the read handle and start reading. */
 NautilusReadFileHandle *
 nautilus_read_file_async (const char *uri,
@@ -779,6 +1041,7 @@ nautilus_read_file_async (const char *uri,
 			  NautilusReadMoreCallback read_more_callback,
 			  gpointer callback_data)
 {
+#ifndef PTHREAD_ASYNC_READ
 	NautilusReadFileHandle *handle;
 
 	handle = g_new0 (NautilusReadFileHandle, 1);
@@ -792,8 +1055,11 @@ nautilus_read_file_async (const char *uri,
 			      GNOME_VFS_OPEN_READ,
 			      read_file_open_callback,
 			      handle);
-
 	return handle;
+#else
+	return pthread_nautilus_read_file_async(uri, callback, 
+		read_more_callback, callback_data);
+#endif
 }
 
 /* Set up the read handle and start reading. */
@@ -809,10 +1075,14 @@ nautilus_read_entire_file_async (const char *uri,
 void
 nautilus_read_file_cancel (NautilusReadFileHandle *handle)
 {
+#ifndef PTHREAD_ASYNC_READ
 	gnome_vfs_async_cancel (handle->handle);
 	read_file_close (handle);
 	g_free (handle->buffer);
 	g_free (handle);
+#else
+	pthread_nautilus_read_file_async_cancel (handle);
+#endif
 }
 
 GnomeVFSResult
@@ -946,3 +1216,4 @@ nautilus_self_check_file_utilities (void)
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */
+
