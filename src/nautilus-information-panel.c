@@ -619,6 +619,9 @@ uri_is_local_image (const char *uri)
 	return TRUE;
 }
 
+/* routine to handle a list of uris is dropped on the sidebar; case out based on the part
+ * of the sidebar it was dropped on
+ */
 static void
 receive_dropped_uri_list (NautilusSidebar *sidebar,
 			  int x, int y,
@@ -772,7 +775,6 @@ receive_dropped_color (NautilusSidebar *sidebar,
 }
 
 /* handle receiving a dropped keyword */
-
 static void
 receive_dropped_keyword (NautilusSidebar *sidebar,
 			 int x, int y,
@@ -784,6 +786,7 @@ receive_dropped_keyword (NautilusSidebar *sidebar,
 	nautilus_sidebar_update_appearance (sidebar);  	
 }
 
+/* general handler for dropped items - case out on the type of the dropped item */
 static void  
 nautilus_sidebar_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 					 int x, int y,
@@ -1258,7 +1261,6 @@ add_command_buttons (NautilusSidebar *sidebar, GList *application_list)
 		 * somehow. We can do a search and replace on the "%s"
 		 * part instead, which should work.
 		 */
-
 		/* Get the local path, if there is one */
 		file_path = gnome_vfs_get_local_path_from_uri (sidebar->details->uri);
 		if (file_path == NULL) {
@@ -1423,6 +1425,7 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 	} else {
 		gtk_widget_show (GTK_WIDGET (sidebar->details->button_box_centerer));
 	}
+
 }
 
 static void

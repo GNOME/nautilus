@@ -28,6 +28,7 @@
 #include "fm-desktop-icon-view.h"
 #include "fm-error-reporting.h"
 #include "fm-icon-text-window.h"
+#include <bonobo/bonobo-widget.h>
 #include <bonobo/bonobo-ui-util.h>
 #include <ctype.h>
 #include <errno.h>
@@ -43,6 +44,7 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-xfer.h>
+#include <libnautilus-extensions/nautilus-annotation.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
@@ -1675,6 +1677,38 @@ get_icon_images_callback (NautilusIconContainer *container,
 	return nautilus_icon_factory_get_icon_for_file (file, modifier, smooth_graphics);
 }
 
+/* return the Bonobo control associated with the icon, if any */
+static void 
+get_icon_control_callback (NautilusIconContainer *container,
+			   NautilusFile *file,
+			   GtkWidget **control,
+			   FMIconView *icon_view)
+{
+	Bonobo_UIContainer ui_container;
+	char *control_moniker, *control_data;
+	char *uri, *path;
+	*control = NULL;
+
+	if (nautilus_file_is_nautilus_link (file)) {
+		uri = nautilus_file_get_uri (file);
+		path = gnome_vfs_get_local_path_from_uri (uri);
+		if (path != NULL) {
+			nautilus_link_local_get_component_info (path, &control_moniker, &control_data);
+			if (control_moniker && strlen (control_moniker) > 0) {
+				ui_container = fm_directory_view_get_bonobo_ui_container (FM_DIRECTORY_VIEW (icon_view));
+				*control = bonobo_widget_new_control (control_moniker, ui_container);				
+				g_free (control_moniker);
+			}
+			if (control_data && strlen (control_data) > 0) {
+				bonobo_widget_set_property (BONOBO_WIDGET (*control), "configuration", control_data, NULL);
+				g_free (control_data);
+			}
+			g_free (path);
+		}
+		g_free (uri);
+	}	
+}
+
 static char *
 get_icon_uri_callback (NautilusIconContainer *container,
 		       NautilusFile *file,
@@ -1739,6 +1773,7 @@ get_icon_text_callback (NautilusIconContainer *container,
 	g_assert (additional_text != NULL);
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 
+
 	/* In the smallest zoom mode, no text is drawn. */
 	if (fm_icon_view_get_zoom_level (icon_view) == NAUTILUS_ZOOM_LEVEL_SMALLEST) {
 		*editable_text = NULL;
@@ -1746,7 +1781,7 @@ get_icon_text_callback (NautilusIconContainer *container,
 		/* Strip the suffix for nautilus object xml files. */
 		*editable_text = nautilus_file_get_name (file);
 	}
-	
+		
 	/* Handle link files specially. */
 	if (nautilus_file_is_nautilus_link (file)) {
 		/* FIXME bugzilla.eazel.com 2531: Does sync. I/O and works only locally. */
@@ -1795,6 +1830,39 @@ get_icon_text_callback (NautilusIconContainer *container,
 	*additional_text = g_strjoinv ("\n", text_array);
 
 	g_strfreev (text_array);
+}
+
+/* this callback returns the annotation text associated with the passed-in file and emblem index */
+static char *
+get_icon_annotation_callback (NautilusIconContainer *container,
+		       		   NautilusFile *file,
+		       		   int emblem_index,
+		       		   FMIconView *icon_view)
+{
+	GList *keyword_list, *selected_keyword;
+	char  *keyword;
+		
+	keyword_list = nautilus_file_get_emblem_names (file);
+	if (keyword_list == NULL) {
+		return NULL;
+	}
+	
+	selected_keyword = g_list_nth (keyword_list, emblem_index - 1);
+	if (selected_keyword == NULL) {
+		nautilus_g_list_free_deep (keyword_list);	
+		return NULL;
+	}
+	
+	keyword = g_strdup (selected_keyword->data);	
+	nautilus_g_list_free_deep (keyword_list);
+	
+	/* if the keyword is "note", return the file annotation instead */
+	if (nautilus_strcmp (keyword, "note") == 0) {
+		g_free (keyword);
+		keyword = nautilus_annotation_get_annotation (file);
+	}
+	
+	return keyword;
 }
 
 /* Preferences changed callbacks */
@@ -2092,6 +2160,10 @@ create_icon_container (FMIconView *icon_view)
 			    GTK_SIGNAL_FUNC (get_icon_images_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "get_icon_control",
+			    GTK_SIGNAL_FUNC (get_icon_control_callback),
+			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "get_icon_uri",
 			    GTK_SIGNAL_FUNC (get_icon_uri_callback),
 			    icon_view);
@@ -2102,6 +2174,10 @@ create_icon_container (FMIconView *icon_view)
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "get_icon_text",
 			    GTK_SIGNAL_FUNC (get_icon_text_callback),
+			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "get_icon_annotation",
+			    GTK_SIGNAL_FUNC (get_icon_annotation_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "move_copy_items",

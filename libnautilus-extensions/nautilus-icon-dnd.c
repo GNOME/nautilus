@@ -1290,6 +1290,7 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 					   &pixmap_for_dragged_file,
 					   &mask_for_dragged_file,
 					   NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
+	gdk_pixbuf_unref (pixbuf);
 	
         /* compute the image's offset */
 	nautilus_icon_canvas_item_get_icon_rectangle
