@@ -598,7 +598,7 @@ draw_all_tabs (NautilusTabs *tabs)
 			}
 			
 		} else {
-			transition_type_piece = TAB_ACTIVE_INACTIVE;
+			transition_type_piece = TAB_ACTIVE_RIGHT;
 			fill_piece_2 = TAB_INACTIVE_FILL;
 			right_bumper_piece = TAB_INACTIVE_RIGHT;
 		}

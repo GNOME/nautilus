@@ -183,6 +183,7 @@ struct _NautilusSummaryViewDetails {
 	GtkWidget	*update_softcat_goto_label_widget;
 	char		*update_softcat_goto_label;
 	char		*update_softcat_redirects[500];
+	GtkWidget	*updates_notebook;
 
 	/* EazelProxy -- for logging in/logging out */
 	EazelProxy_UserControl user_control;
@@ -233,6 +234,10 @@ static void
 service_tab_selected_callback				(GtkWidget *widget,
 		   					int which_tab,
 		   					NautilusSummaryView *view);
+static void
+updates_tab_selected_callback				(GtkWidget *widget,
+		   					int which_tab,
+		   					NautilusSummaryView *view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSummaryView, nautilus_summary_view, GTK_TYPE_EVENT_BOX)
 
@@ -243,7 +248,6 @@ generate_summary_form (NautilusSummaryView	*view)
 	GtkWidget		*frame;
 	GtkWidget		*title;
 	GtkWidget		*notebook, *notebook_tabs;
-	GtkWidget		*tab_label_widget;
 	GtkWidget		*temp_box;
 	ServicesData		*service_node;
 	EazelNewsData		*eazel_news_node;
@@ -253,6 +257,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	GtkWidget 		*viewport;
 	GtkWidget		*temp_hbox;
 	GtkWidget		*temp_vbox;
+	GtkWidget		*notebook_vbox;
 	GtkWidget		*temp_label;
 	GtkWidget		*separator;
 
@@ -411,7 +416,6 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_box_pack_start (GTK_BOX (frame), temp_scrolled_window, TRUE, TRUE, 0);
 
 	/* create the Additional Services pane */
-
 	nautilus_tabs_add_tab (NAUTILUS_TABS (notebook_tabs), _("Additional Services"), 1);
 
 	temp_vbox = gtk_vbox_new (TRUE, 0);
@@ -445,24 +449,31 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_container_add (GTK_CONTAINER (temp_scrolled_window), viewport);
 	gtk_box_pack_start (GTK_BOX (temp_vbox), temp_scrolled_window, TRUE, TRUE, 0);
 
-	/* Create the notebook container for services */
+	/* add a set of tabs to control the updates page switching */
+	notebook_vbox = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (notebook_vbox);
+	
+	notebook_tabs = nautilus_tabs_new ();
+	gtk_widget_show (notebook_tabs);
+	gtk_box_pack_start (GTK_BOX (notebook_vbox), notebook_tabs, FALSE, FALSE, 0);
+
+	/* Create the notebook container for updates */
 	notebook = gtk_notebook_new ();
 	gtk_widget_show (notebook);
-	gtk_container_add (GTK_CONTAINER (view->details->form), notebook);
+	gtk_container_add (GTK_CONTAINER (notebook_vbox), notebook);
+	gtk_container_add (GTK_CONTAINER (view->details->form), notebook_vbox);
+	
+	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), FALSE);
+	view->details->updates_notebook = notebook;
+	gtk_signal_connect (GTK_OBJECT (notebook_tabs), "tab_selected", updates_tab_selected_callback, view);
+	
+	/* add the tab */
+	nautilus_tabs_add_tab (NAUTILUS_TABS (notebook_tabs), _("Current Updates"), 0);
 
-	/* Create the tab_label_widget */
-	tab_label_widget = nautilus_label_new ("Current Updates");
-	nautilus_label_set_font_size (NAUTILUS_LABEL (tab_label_widget), 16);
-	nautilus_label_set_font_from_components (NAUTILUS_LABEL (tab_label_widget),
-						 "helvetica",
-						 "bold",
-						 NULL,
-						 NULL);
-	gtk_widget_show (tab_label_widget);
 	/* Create the Update News Frame */
 	frame = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (frame);
-	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), frame, tab_label_widget);
+	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), frame, NULL);
 
 	/* create the update news scroll widget */
 	temp_scrolled_window = gtk_scrolled_window_new (NULL, NULL);
@@ -1386,6 +1397,15 @@ service_tab_selected_callback (GtkWidget *widget,
 		   NautilusSummaryView	*view)
 {
 	gtk_notebook_set_page (GTK_NOTEBOOK (view->details->services_notebook), which_tab);
+}
+
+/* here is the callback to handle updates tab selection */
+static void
+updates_tab_selected_callback (GtkWidget *widget,
+		   int which_tab,
+		   NautilusSummaryView	*view)
+{
+	gtk_notebook_set_page (GTK_NOTEBOOK (view->details->updates_notebook), which_tab);
 }
 
 /* here are the callbacks to handle bonobo menu items */
