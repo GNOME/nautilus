@@ -104,10 +104,12 @@ nautilus_meta_view_get_label(NautilusMetaView *nview)
   CORBA_Environment ev;
   char *retval = NULL;
   CORBA_any *anyval;
+  GnomeControlFrame *control_frame;
 
-  g_return_val_if_fail(view->client, NULL);
+  g_return_val_if_fail(view->type != NV_NONE, NULL);
 
-  bc = gnome_control_frame_get_control_property_bag(gnome_bonobo_widget_get_control_frame(GNOME_BONOBO_WIDGET(view->client)));
+  control_frame = GNOME_CONTROL_FRAME(nautilus_view_get_control_frame(view));
+  bc = gnome_control_frame_get_control_property_bag(control_frame);
   g_return_val_if_fail(bc, NULL);
 
   prop = gnome_property_bag_client_get_property(bc, "label");
