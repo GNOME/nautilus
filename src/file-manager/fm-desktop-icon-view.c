@@ -242,7 +242,7 @@ volume_in_black_list (const FMDesktopIconView *icon_view, const NautilusVolume *
 	GList *p;
 		
 	for (p = icon_view->details->mount_black_list; p != NULL; p = p->next) {
-		if (strcmp ((char *)p->data, volume->device_path) == 0) {
+		if (strcmp ((char *)p->data, volume->mount_path) == 0) {
 			return TRUE;
 		}
 	}
@@ -326,7 +326,7 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 	desktop_icon_view->details->mount_black_list =
 		g_list_append (desktop_icon_view->details->mount_black_list, g_strdup ("/proc"));
 	desktop_icon_view->details->mount_black_list =
-		g_list_append (desktop_icon_view->details->mount_black_list, g_strdup ("/dev/root"));
+		g_list_append (desktop_icon_view->details->mount_black_list, g_strdup ("/boot"));
 
 	/* Set allocation to be at 0, 0 */
 	allocation = &GTK_WIDGET (icon_container)->allocation;
