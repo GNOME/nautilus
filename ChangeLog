@@ -1,3 +1,17 @@
+Tue Mar 27 00:45:02 2001  George Lebl <jirka@5z.com>
+
+	* components/help/hyperbola-filefmt.c
+	  (fmt_scrollkeeper_parse_toc_section)
+	  (fmt_scrollkeeper_parse_document) (fmt_toplevel_add_doc):
+	  Properly set BOOK and SECTION types instead of making everything
+	  FOLDER.  No wonder my original patch to #6911 didn't all work.
+	  This makes it work, though apparently icons are involved now, so
+	  it's still not fixed.
+
+	* components/help/hyperbola-nav-tree.c (set_node_style):
+	  Also set italic style for SECTIONs which are now set correctly
+	  in the above fix.
+
 2001-03-26  Gene Z. Ragan  <gzr@eazel.com>
 	
 	* libnautilus-extensions/nautilus-audio-player.c:

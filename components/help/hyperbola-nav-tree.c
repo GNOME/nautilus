@@ -79,6 +79,7 @@ set_node_style (HyperbolaNavigationTree *view,
 
 	if (tnode != NULL
 	    && (tnode->type == HYP_TREE_NODE_PAGE
+		|| tnode->type == HYP_TREE_NODE_SECTION
 		|| tnode->type == HYP_TREE_NODE_BOOK)) {
 		ensure_italic_style (view);
 

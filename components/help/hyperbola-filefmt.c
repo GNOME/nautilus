@@ -994,7 +994,7 @@ fmt_scrollkeeper_parse_toc_section (HyperbolaDocTree * tree, char **ancestors,
 				xmlGetProp (node, "linkid"), NULL);
 
 	/* Process this node and insert it into the tree */
-	hyperbola_doc_tree_add (tree, HYP_TREE_NODE_FOLDER,
+	hyperbola_doc_tree_add (tree, HYP_TREE_NODE_SECTION,
 				(const char **) ancestors, section[i],
 				sect_uri);
 
@@ -1175,7 +1175,7 @@ fmt_scrollkeeper_parse_document (HyperbolaDocTree * tree, char **ancestors,
 	}
 
 	/* Insert info for this document into the tree */
-	hyperbola_doc_tree_add (tree, HYP_TREE_NODE_FOLDER,
+	hyperbola_doc_tree_add (tree, HYP_TREE_NODE_BOOK,
 				(const char **) ancestors, doc_data[0],
 				doc_uri);
 
@@ -1517,7 +1517,7 @@ static void fmt_toplevel_add_doc (HyperbolaDocTree * tree, char * omf_name)
 	
 		tree_path[0] = NULL;
     
-        	hyperbola_doc_tree_add (tree, HYP_TREE_NODE_FOLDER,
+        	hyperbola_doc_tree_add (tree, HYP_TREE_NODE_BOOK,
 	             	        	(const char **)tree_path, title, uri);
 				
 		section = fmt_scrollkeeper_expand_ancestor_list(tree_path, &i);
