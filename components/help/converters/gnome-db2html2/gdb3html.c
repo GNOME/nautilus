@@ -15,6 +15,26 @@
 /* Generic Function. Used by toc_elements and sect_preparse */
 
 void
+glossentry_stack_add (Context *context,
+		   const char *name,
+		   const xmlChar **atrs)
+{
+	/* This function adds a glosssentry id to the context->glossentry_stack */
+	char **atrs_ptr;
+	
+	atrs_ptr = (char **) atrs;
+	while (atrs_ptr &&  *atrs_ptr) {
+		if (g_strcasecmp (*atrs_ptr, "id") == 0) {
+			atrs_ptr++;
+			context->glossentry_stack =
+				g_list_prepend (context->glossentry_stack, g_strdup (*atrs_ptr));
+			break;
+		}
+		atrs_ptr += 2;
+	}
+}
+
+void
 sect1id_stack_add (Context *context,
 		   const char *name,
 		   const xmlChar **atrs)
@@ -41,6 +61,13 @@ article_start_element (Context *context, const char *name, const xmlChar **atrs)
 {
 	g_print ("<HTML>\n");
 	context->doctype = ARTICLE_DOC;
+}
+
+void
+glossary_start_element (Context *context, const char *name, const xmlChar **atrs)
+{
+	g_print ("<HTML>\n");
+	context->doctype = GLOSSARY_DOC;
 }
 
 void
@@ -196,15 +223,105 @@ find_element_info (ElementInfo *elements,
 
 	return NULL;
 }
+/* new init_entities function and data structure
+   to handle i18n entities */ 
+struct gdb_xmlPredefinedEntityValue {
+     const char *name;
+     const char *value;
+};
+
+struct gdb_xmlPredefinedEntityValue gdbXmlPredefinedEntityValues[] = {
+/* i18 entities from iso-latin1 character set */
+     { "aacute", "&#x00E1;" },
+     { "Aacute", "&#x00C1;" },
+     { "acirc", "&#x00E2;" },
+     { "Acirc", "&#x00C2;" },
+     { "agrave", "&#x00E0;" },
+     { "Agrave", "&#x00C0;" },
+     { "aring", "&#x00E5;" },
+     { "Aring", "&#x00C5;" },
+     { "atilde", "&#x00E3;" },
+     { "Atilde", "&#x00C3;" },
+     { "auml", "&#x00E4;" },
+     { "Auml", "&#x00C4;" },
+     { "aelig", "&#x00E6;" },
+     { "AElig", "&#x00C6;" },
+     { "ccedil", "&#x00E7;" },
+     { "Ccedil", "&#x00C7;" },
+     { "eth", "&#x00D0;" },
+     { "ETH", "&#x00F0;" },
+     { "eacute", "&#x00E9;" },
+     { "Eacute", "&#x00C9;" },
+     { "ecirc", "&#x00EA;" },
+     { "Ecirc", "&#x00CA;" },
+     { "egrave", "&#x00E8;" },
+     { "Egrave", "&#x00C8;" },
+     { "euml", "&#x00EB;" },
+     { "Euml", "&#x00CB;" },
+     { "iacute", "&#x00ED;" },
+     { "Iacute", "&#x00CD;" },
+     { "icirc", "&#x00EE;" },
+     { "Icirc", "&#x00CE;" },
+     { "igrave", "&#x00EC;" },
+     { "Igrave", "&#x00CC;" },
+     { "iuml", "&#x00EF;" },
+     { "Iuml", "&#x00CF;" },
+     { "ntilde", "&#x00F1;" },
+     { "Ntilde", "&#x00D1;" },
+     { "oacute", "&#x00F3;" },
+     { "Oacute", "&#x00D3;" },
+     { "ocirc", "&#x00F4;" },
+     { "Ocirc", "&#x00D4;" },
+     { "ograve", "&#x00F2;" },
+     { "Ograve", "&#x00D2;" },
+     { "oslash", "&#x2298;" },
+     { "Oslash", "&#x00D8;" },
+     { "otilde", "&#x00F5;" },
+     { "Otilde", "&#x00D5;" },
+     { "ouml", "&#x00F6;" },
+     { "Ouml", "&#x00D6;" },
+     { "szlig", "&#x00DF;" },
+     { "thorn", "&#x00FE;" },
+     { "THORN", "&#x00DE;" },
+     { "uacute", "&#x00FA;" },
+     { "Uacute", "&#x00DA;" },
+     { "ucirc", "&#x00FB;" },
+     { "Ucirc", "&#x00DB;" },
+     { "ugrave", "&#x00F9;" },
+     { "Ugrave", "&#x00D9;" },
+     { "uuml", "&#x00FC;" },
+     { "Uuml", "&#x00DC;" },
+     { "yacute", "&#x00FD;" },
+     { "Yacute", "&#x00DD;" },
+     { "yuml", "&#x00FF;" },
+/* other miscellaneous entities we need */
+     { "mdash", "&mdash;" },
+     { "hellip", "&hellip;" },
+     { "percnt", "&#37;" }
+};
+
 static void
 init_entities (xmlDocPtr doc) {
-	xmlAddDocEntity (doc, "mdash", XML_INTERNAL_PREDEFINED_ENTITY,
-		         NULL, NULL, "&mdash;");
-	xmlAddDocEntity (doc, "hellip", XML_INTERNAL_PREDEFINED_ENTITY,
-		         NULL, NULL, "&hellip;");
-	xmlAddDocEntity (doc, "percnt", XML_INTERNAL_PREDEFINED_ENTITY,
-		         NULL, NULL, "&#37;");
+    unsigned int i;
+    xmlChar name[50];
+    xmlChar value[50];
+    const char *in;
+    xmlChar *out;
+
+    for (i = 0;i < sizeof(gdbXmlPredefinedEntityValues) / 
+                   sizeof(gdbXmlPredefinedEntityValues[0]);i++) {
+        in = gdbXmlPredefinedEntityValues[i].name;
+	out = &name[0];
+	for (;(*out++ = (xmlChar) *in);)in++;
+        in = gdbXmlPredefinedEntityValues[i].value;
+	out = &value[0];
+	for (;(*out++ = (xmlChar) *in);)in++;
+        xmlAddDocEntity(doc, &name[0],
+	             XML_INTERNAL_PREDEFINED_ENTITY, NULL, NULL,
+		     &value[0]);
+    }
 }
+
 
 /* our callbacks for the xmlSAXHandler */
 
@@ -577,6 +694,7 @@ static xmlSAXHandler parser = {
 	(cdataBlockSAXFunc) cdata_block
 };
 
+#if 0
 static xmlDocPtr
 xml_parse_document (gchar *filename)
 {
@@ -593,7 +711,7 @@ xml_parse_document (gchar *filename)
 		return (NULL);
 	}
 	ctxt->sax = NULL; /* This line specifically stops the warnings */
-
+	
 	if ((ctxt->directory == NULL) && (directory == NULL))
 		directory = xmlParserGetDirectory (filename);
 	if ((ctxt->directory == NULL) && (directory != NULL))
@@ -612,6 +730,7 @@ xml_parse_document (gchar *filename)
 	
 	return (ret);
 }
+#endif
 
 void
 print_footer (const char *prev, const char *home, const char *next)
@@ -703,11 +822,10 @@ parse_file (gchar *filename, gchar *section, char *arg)
 	xmlInitParserCtxt (context->ParserCtxt);
 	context->ParserCtxt->sax = &parser;
 	context->ParserCtxt->validate = 1;
-	/* FIXME bugzilla.eazel.com 2399: 
-	 * Is the below correct? version needs to be set so as not to
-	 * segfault in startDocument (in SAX.h) */
-	context->ParserCtxt->version = xmlStrdup ("1.0"); 
+	context->ParserCtxt->version = xmlStrdup (XML_DEFAULT_VERSION); 
+#if 0
 	context->ParserCtxt->myDoc = xml_parse_document (filename);
+#endif
 	xmlSubstituteEntitiesDefault (1);
 
 	dirpointer = strrchr (arg, '/');
