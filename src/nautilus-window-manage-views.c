@@ -1326,7 +1326,7 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
 	case NAUTILUS_NAVIGATION_RESULT_SERVICE_NOT_AVAILABLE:
 		if (nautilus_is_search_uri (requested_uri)) {
 			/* FIXME bugzilla.eazel.com 2458: Need to give the user some advice about what to do here. */
-			error_message = g_strdup_printf (_("Sorry, searching can't be used now. In the future this message will be more helpful."));
+			error_message = g_strdup_printf (_("Searching is unavailable right now, because you either have no index, or the search service isn't running.  Be sure that you have started the Medusa search service, and if you don't have an index, that the Medusa indexer is running."));
 			dialog_title = g_strdup (_("Nautilus: Searching unavailable"));
 			break;
 		} /* else fall through */
