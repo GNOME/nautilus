@@ -1,5 +1,17 @@
 2000-10-31  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* Makefile.am:
+	Add applets to SUBDIRS if needed.
+	
+	* applets/Makefile.am:
+	Tiny bit of cleanup.
+
+	* configure.in:
+	Define HAVE_APPLETS only if the applets devel libs are found by
+	gnome-config.
+	
+2000-10-31  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* components/mozilla/nautilus-mozilla-content-view.c:
 	(nautilus_mozilla_content_view_load_uri),
 	(mozilla_content_view_one_time_happenings):

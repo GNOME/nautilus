@@ -1,5 +1,9 @@
 include $(top_srcdir)/Makefile.shared
 
+if HAVE_APPLETS
+APPLETS_SUBDIRS = applets
+endif
+
 SUBDIRS =			\
 	data 			\
 	icons 			\
@@ -12,6 +16,7 @@ SUBDIRS =			\
 	helper-utilities 	\
 	src 			\
 	components		\
+	$(APPLETS_SUBDIRS)	\
 	test 			\
 	user-guide		\
 	po 			\
@@ -49,3 +54,6 @@ install-data-hook: nautilus-clean.sh
 	    $(INSTALL_PROGRAM) $(srcdir)/$$p $(DESTDIR)/$(prefix)/bin/$$p; \
 	  else :; fi; \
 	done
+
+caca:
+	@echo $(APPLETS_SUBDIRS)

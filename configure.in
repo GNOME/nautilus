@@ -502,11 +502,14 @@ dnl ====================================
 dnl = begin applet checks
 dnl ====================================
 AC_MSG_CHECKING(for applets)
-APPLETS_CFLAGS=""
-APPLETS_LIBS=""
+APPLETS_CFLAGS=
+APPLETS_LIBS=
 HAVE_APPLETS="no"
 
-if test -n `gnome-config --modversion applets` ; then
+gnome-config | grep applets > /dev/null 2>&1
+
+if test $? -eq 0
+then
 	HAVE_APPLETS="yes"
 	APPLETS_CFLAGS=`gnome-config --cflags applets`
 	APPLETS_LIBS=`gnome-config --libs applets`	
@@ -514,8 +517,9 @@ if test -n `gnome-config --modversion applets` ; then
 else
 	HAVE_APPLETS="no"
 	AC_MSG_RESULT(no)
-	AC_MSG_ERROR(Could not find applets library. Make sure you have installed the gnome-core package.)
 fi
+
+AM_CONDITIONAL(HAVE_APPLETS, test "x$HAVE_APPLETS" = "xyes")
 
 AC_SUBST(HAVE_APPLETS)
 AC_SUBST(APPLETS_CFLAGS)
@@ -859,6 +863,10 @@ echo
 dnl <= Snapshot things =>
 echo "
 EAZEL_BUILD_TIMESTAMP   : $EAZEL_BUILD_TIMESTAMP"
+echo
+
+echo "
+HAVE_APPLETS   : $HAVE_APPLETS"
 echo
 
 dnl <= End of configuration summary =>
