@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.5.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-24 22:44+0900\n"
+"POT-Creation-Date: 2004-01-30 13:04+0100\n"
 "PO-Revision-Date: 2004-01-24 23:14+0900\n"
 "Last-Translator: Young-Ho Cha <ganadist at mizi.com>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
@@ -2210,10 +2210,6 @@ msgid "Replace _All"
 msgstr "모두 바꾸기(_A)"
 
 #. appended to new link file
-#. Note to localizers: convert file type string for file
-#. * (e.g. "folder", "plain text") to file type for symbolic link
-#. * to that kind of file (e.g. "link to folder").
-#.
 #: libnautilus-private/nautilus-file-operations.c:1148
 #: libnautilus-private/nautilus-file.c:4690
 #, c-format
@@ -2268,9 +2264,6 @@ msgid " (another copy)"
 msgstr " (또 다른 사본)"
 
 #. localizers: tag used to detect the x11th copy of a file
-#. localizers: tag used to detect the x12th copy of a file
-#. localizers: tag used to detect the x13th copy of a file
-#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
 #: libnautilus-private/nautilus-file-operations.c:1210
@@ -2306,9 +2299,6 @@ msgid "%s (another copy)%s"
 msgstr "%s (또 다른 사본)%s"
 
 #. localizers: appended to x11th file copy
-#. localizers: appended to x12th file copy
-#. localizers: appended to x13th file copy
-#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
 #: libnautilus-private/nautilus-file-operations.c:1243
@@ -2748,7 +2738,7 @@ msgid "%m/%d/%y"
 msgstr "%y/%m/%d"
 
 #: libnautilus-private/nautilus-file.c:4265
-#: src/file-manager/fm-directory-view.c:1803
+#: src/file-manager/fm-directory-view.c:1806
 #, c-format
 msgid "%u item"
 msgid_plural "%u items"
@@ -3029,95 +3019,95 @@ msgstr "24"
 msgid "%s's Home"
 msgstr "%s의 폴더"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2758
+#: libnautilus-private/nautilus-icon-canvas-item.c:2804
 msgid "editable text"
 msgstr "고칠 수 있는 텍스트"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2759
+#: libnautilus-private/nautilus-icon-canvas-item.c:2805
 msgid "the editable label"
 msgstr "고칠 수 있는 라벨"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2766
+#: libnautilus-private/nautilus-icon-canvas-item.c:2812
 msgid "additional text"
 msgstr "더할 텍스트"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2767
+#: libnautilus-private/nautilus-icon-canvas-item.c:2813
 msgid "some more text"
 msgstr "더 많은 텍스트"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2774
+#: libnautilus-private/nautilus-icon-canvas-item.c:2820
 msgid "highlighted for selection"
 msgstr "선택한 것 강조"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2775
+#: libnautilus-private/nautilus-icon-canvas-item.c:2821
 msgid "whether we are highlighted for a selection"
 msgstr "선택한 것에 강조를 합니다"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2782
+#: libnautilus-private/nautilus-icon-canvas-item.c:2828
 msgid "highlighted as keyboard focus"
 msgstr "키보드 초점에 강조"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2783
+#: libnautilus-private/nautilus-icon-canvas-item.c:2829
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "키보드 초점에 강조를 합니다"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2791
+#: libnautilus-private/nautilus-icon-canvas-item.c:2837
 msgid "highlighted for drop"
 msgstr "놓기에 강조"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2792
+#: libnautilus-private/nautilus-icon-canvas-item.c:2838
 msgid "whether we are highlighted for a D&D drop"
 msgstr "끌어서 놓기에 강조를 합니다"
 
-#: libnautilus-private/nautilus-icon-container.c:2065
+#: libnautilus-private/nautilus-icon-container.c:2068
 msgid "The selection rectangle"
 msgstr "선택한 영역"
 
-#: libnautilus-private/nautilus-icon-container.c:4163
+#: libnautilus-private/nautilus-icon-container.c:4176
 msgid "Frame Text"
 msgstr "글자 테두리"
 
-#: libnautilus-private/nautilus-icon-container.c:4164
+#: libnautilus-private/nautilus-icon-container.c:4177
 msgid "Draw a frame around unselected text"
 msgstr "선택되지 않은 글자 주위에 테두리를 칩니다"
 
-#: libnautilus-private/nautilus-icon-container.c:4170
+#: libnautilus-private/nautilus-icon-container.c:4183
 msgid "Selection Box Color"
 msgstr "선택 상자 색상"
 
-#: libnautilus-private/nautilus-icon-container.c:4171
+#: libnautilus-private/nautilus-icon-container.c:4184
 msgid "Color of the selection box"
 msgstr "선택 상자의 색상"
 
-#: libnautilus-private/nautilus-icon-container.c:4176
+#: libnautilus-private/nautilus-icon-container.c:4189
 msgid "Selection Box Alpha"
 msgstr "선택 상자 투명도"
 
-#: libnautilus-private/nautilus-icon-container.c:4177
+#: libnautilus-private/nautilus-icon-container.c:4190
 msgid "Opacity of the selection box"
 msgstr "선택 상자의 투명도"
 
-#: libnautilus-private/nautilus-icon-container.c:4184
+#: libnautilus-private/nautilus-icon-container.c:4197
 msgid "Highlight Alpha"
 msgstr "강조 투명도"
 
-#: libnautilus-private/nautilus-icon-container.c:4185
+#: libnautilus-private/nautilus-icon-container.c:4198
 msgid "Opacity of the highlight for selected icons"
 msgstr "선택한 아이콘의 강조 투명도"
 
-#: libnautilus-private/nautilus-icon-container.c:4191
+#: libnautilus-private/nautilus-icon-container.c:4204
 msgid "Light Info Color"
 msgstr "밝은 정보 글씨색"
 
-#: libnautilus-private/nautilus-icon-container.c:4192
+#: libnautilus-private/nautilus-icon-container.c:4205
 msgid "Color used for information text against a dark background"
 msgstr "어두운 바탕에 어울리는 정보 글씨색"
 
-#: libnautilus-private/nautilus-icon-container.c:4197
+#: libnautilus-private/nautilus-icon-container.c:4210
 msgid "Dark Info Color"
 msgstr "어두운 정보 글씨색"
 
-#: libnautilus-private/nautilus-icon-container.c:4198
+#: libnautilus-private/nautilus-icon-container.c:4211
 msgid "Color used for information text against a light background"
 msgstr "밝은 바탕에 어울리는 정보 글씨색"
 
@@ -4064,49 +4054,49 @@ msgstr "파일이름 형태 선택"
 msgid "_Pattern:"
 msgstr "파일이름 형태(_P):"
 
-#: src/file-manager/fm-directory-view.c:1735
+#: src/file-manager/fm-directory-view.c:1738
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" 선택됨"
 
-#: src/file-manager/fm-directory-view.c:1737
+#: src/file-manager/fm-directory-view.c:1740
 #, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
 msgstr[0] "폴더 %d개 선택"
 
-#: src/file-manager/fm-directory-view.c:1747
+#: src/file-manager/fm-directory-view.c:1750
 #, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
 msgstr[0] " (항목 %d개 포함)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/file-manager/fm-directory-view.c:1758
+#: src/file-manager/fm-directory-view.c:1761
 #, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
 msgstr[0] " (모두 항목 %d개 포함)"
 
-#: src/file-manager/fm-directory-view.c:1774
+#: src/file-manager/fm-directory-view.c:1777
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" 선택됨 (%s)"
 
-#: src/file-manager/fm-directory-view.c:1778
+#: src/file-manager/fm-directory-view.c:1781
 #, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
 msgstr[0] "항목 %d개 선택 (%s)"
 
 #. Folders selected also, use "other" terminology
-#: src/file-manager/fm-directory-view.c:1786
+#: src/file-manager/fm-directory-view.c:1789
 #, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
 msgstr[0] "다른 항목 %d개 선택 (%s)"
 
-#: src/file-manager/fm-directory-view.c:1807
+#: src/file-manager/fm-directory-view.c:1810
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, 사용 가능한 공간: %s"
@@ -4118,7 +4108,7 @@ msgstr "%s, 사용 가능한 공간: %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1832
+#: src/file-manager/fm-directory-view.c:1835
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -4127,49 +4117,49 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1957
+#: src/file-manager/fm-directory-view.c:1960
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr ""
 "\"%s\" 폴더는 노틸러스가 처리할 수 있는것보다 더 많은 파일을 포함하고 있습니"
 "다."
 
-#: src/file-manager/fm-directory-view.c:1963
+#: src/file-manager/fm-directory-view.c:1966
 msgid "Some files will not be displayed."
 msgstr "몇 파일들이 보여주지 않을수 있습니다."
 
-#: src/file-manager/fm-directory-view.c:1964
+#: src/file-manager/fm-directory-view.c:1967
 msgid "Too Many Files"
 msgstr "파일이 너무 많음"
 
-#: src/file-manager/fm-directory-view.c:3232
+#: src/file-manager/fm-directory-view.c:3235
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr "파일을 휴지통으로 버릴 수 없습니다. 지금 바로 지우시겠습니까?"
 
-#: src/file-manager/fm-directory-view.c:3233
+#: src/file-manager/fm-directory-view.c:3236
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr "\"%s\" 파일을 휴지통으로 버릴 수 없습니다."
 
-#: src/file-manager/fm-directory-view.c:3237
+#: src/file-manager/fm-directory-view.c:3240
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr "항목을 휴지통으로 버릴 수 없습니다. 지금 바로 지우시겠습니까?"
 
-#: src/file-manager/fm-directory-view.c:3240
+#: src/file-manager/fm-directory-view.c:3243
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
 msgstr "몇몇 항목을 휴지통으로 버릴 수 없습니다. 지금 바로 지우시겠습니까?"
 
-#: src/file-manager/fm-directory-view.c:3247
+#: src/file-manager/fm-directory-view.c:3250
 msgid "Delete Immediately?"
 msgstr "바로 지우시겠습니까?"
 
-#: src/file-manager/fm-directory-view.c:3279
+#: src/file-manager/fm-directory-view.c:3282
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "휴지통에서 \"%s\"을(를) 완전히 지우시겠습니까?"
 
-#: src/file-manager/fm-directory-view.c:3283
+#: src/file-manager/fm-directory-view.c:3286
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
@@ -4179,43 +4169,43 @@ msgid_plural ""
 "trash?"
 msgstr[0] "휴지통에서 선택한 항목 %d개를 완전히 지우시겠습니까?"
 
-#: src/file-manager/fm-directory-view.c:3292
+#: src/file-manager/fm-directory-view.c:3295
 msgid "If you delete an item, it will be permanently lost."
 msgstr "휴지통을 비우면 항목들이 완전히 지워지게 됩니다."
 
-#: src/file-manager/fm-directory-view.c:3293
+#: src/file-manager/fm-directory-view.c:3296
 msgid "Delete From Trash?"
 msgstr "휴지통에서 지우겠습니까?"
 
-#: src/file-manager/fm-directory-view.c:3656
+#: src/file-manager/fm-directory-view.c:3659
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "선택한 항목을 열기 위해 \"%s\"을(를) 씁니다"
 
-#: src/file-manager/fm-directory-view.c:3720
+#: src/file-manager/fm-directory-view.c:3723
 #: src/file-manager/nautilus-directory-view-ui.xml.h:30
 msgid "Other _Application..."
 msgstr "다른 프로그램(_A)..."
 
-#: src/file-manager/fm-directory-view.c:3720
+#: src/file-manager/fm-directory-view.c:3723
 msgid "An _Application..."
 msgstr "응용프로그램(_A)..."
 
-#: src/file-manager/fm-directory-view.c:4071
+#: src/file-manager/fm-directory-view.c:4074
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "선택한 항목에 대해 \"%s\" 실행"
 
-#: src/file-manager/fm-directory-view.c:4305
+#: src/file-manager/fm-directory-view.c:4308
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "\"%s\" 형식의 문서본을 이용하여 문서를 만듭니다."
 
-#: src/file-manager/fm-directory-view.c:4489
+#: src/file-manager/fm-directory-view.c:4492
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "이 폴더의 모든 실행 파일은 혼잣말 메뉴에 나타날 것입니다."
 
-#: src/file-manager/fm-directory-view.c:4491
+#: src/file-manager/fm-directory-view.c:4494
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -4223,11 +4213,11 @@ msgstr ""
 " 메뉴에서 혼잣말을 선택하면 선택한 어떤 항목을 입력으로 하여 혼잣말을 실행할 "
 "것입니다."
 
-#: src/file-manager/fm-directory-view.c:4493
+#: src/file-manager/fm-directory-view.c:4496
 msgid "About Scripts"
 msgstr "혼잣말은"
 
-#: src/file-manager/fm-directory-view.c:4494
+#: src/file-manager/fm-directory-view.c:4497
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4267,19 +4257,19 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: 현재 창의 위치와 크기"
 
-#: src/file-manager/fm-directory-view.c:4624
+#: src/file-manager/fm-directory-view.c:4627
 #: src/file-manager/fm-tree-view.c:786
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "\"%s\"은(는) 파일 붙여 넣기 명령 선택할 때 옮길 것입니다."
 
-#: src/file-manager/fm-directory-view.c:4628
+#: src/file-manager/fm-directory-view.c:4631
 #: src/file-manager/fm-tree-view.c:790
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\"은(는) 파일 붙여 넣기 명령 선택할 때 복사될 것입니다."
 
-#: src/file-manager/fm-directory-view.c:4635
+#: src/file-manager/fm-directory-view.c:4638
 #, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
@@ -4287,7 +4277,7 @@ msgid_plural ""
 "The %d selected items will be moved if you select the Paste Files command"
 msgstr[0] "선택한 항목 %d개는 파일 붙여 넣기 명령을 선택하면 옮겨집니다."
 
-#: src/file-manager/fm-directory-view.c:4642
+#: src/file-manager/fm-directory-view.c:4645
 #, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
@@ -4295,154 +4285,154 @@ msgid_plural ""
 "The %d selected items will be copied if you select the Paste Files command"
 msgstr[0] "선택한 항목 %d개는 파일 붙여 넣기 명령을 선택하면 복사됩니다."
 
-#: src/file-manager/fm-directory-view.c:4724
+#: src/file-manager/fm-directory-view.c:4727
 #: src/file-manager/fm-tree-view.c:866
 msgid "There is nothing on the clipboard to paste."
 msgstr "클립보드에서 붙여 넣을 것이 없습니다."
 
-#: src/file-manager/fm-directory-view.c:4826
-#: src/file-manager/fm-directory-view.c:5801
+#: src/file-manager/fm-directory-view.c:4829
+#: src/file-manager/fm-directory-view.c:5804
 msgid "Mount Error"
 msgstr "마운트 오류"
 
-#: src/file-manager/fm-directory-view.c:4888
+#: src/file-manager/fm-directory-view.c:4891
 msgid "Unmount Error"
 msgstr "언마운트 오류"
 
-#: src/file-manager/fm-directory-view.c:4891
+#: src/file-manager/fm-directory-view.c:4894
 msgid "Eject Error"
 msgstr "꺼내기 오류"
 
-#: src/file-manager/fm-directory-view.c:5115
+#: src/file-manager/fm-directory-view.c:5118
 msgid "E_ject"
 msgstr "꺼내기(_J)"
 
-#: src/file-manager/fm-directory-view.c:5115
+#: src/file-manager/fm-directory-view.c:5118
 #: src/file-manager/nautilus-directory-view-ui.xml.h:62
 msgid "_Unmount Volume"
 msgstr "볼륨 마운트해제(_U)"
 
 #. add the "open in new window" menu item
-#: src/file-manager/fm-directory-view.c:5194
+#: src/file-manager/fm-directory-view.c:5197
 #: src/file-manager/fm-tree-view.c:958
 #, c-format
 msgid "Open in New Window"
 msgid_plural "Open in %d New Windows"
 msgstr[0] "새 창 %d개에서 열기"
 
-#: src/file-manager/fm-directory-view.c:5201
+#: src/file-manager/fm-directory-view.c:5204
 msgid "Browse Folder"
 msgstr "폴더 찾아보기"
 
-#: src/file-manager/fm-directory-view.c:5203
+#: src/file-manager/fm-directory-view.c:5206
 msgid "Browse Folders"
 msgstr "폴더 찾아보기"
 
-#: src/file-manager/fm-directory-view.c:5226
+#: src/file-manager/fm-directory-view.c:5229
 msgid "_Delete from Trash"
 msgstr "휴지통에서 지우기(_D)"
 
-#: src/file-manager/fm-directory-view.c:5228
+#: src/file-manager/fm-directory-view.c:5231
 msgid "Delete all selected items permanently"
 msgstr "선택한 항목을 모두 지웁니다"
 
-#: src/file-manager/fm-directory-view.c:5231
-#: src/file-manager/fm-directory-view.c:5585
+#: src/file-manager/fm-directory-view.c:5234
+#: src/file-manager/fm-directory-view.c:5588
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Mo_ve to Trash"
 msgstr "휴지통으로 보내기(_M)"
 
-#: src/file-manager/fm-directory-view.c:5233
+#: src/file-manager/fm-directory-view.c:5236
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Move each selected item to the Trash"
 msgstr "각각 선택한 항목을 휴지통으로 보냅니다"
 
-#: src/file-manager/fm-directory-view.c:5257
+#: src/file-manager/fm-directory-view.c:5260
 #: src/file-manager/nautilus-directory-view-ui.xml.h:50
 msgid "_Delete"
 msgstr "지우기(_D)"
 
-#: src/file-manager/fm-directory-view.c:5277
+#: src/file-manager/fm-directory-view.c:5280
 msgid "Ma_ke Links"
 msgstr "바로 가기 만들기(_K)"
 
-#: src/file-manager/fm-directory-view.c:5278
+#: src/file-manager/fm-directory-view.c:5281
 #: src/file-manager/nautilus-directory-view-ui.xml.h:18
 msgid "Ma_ke Link"
 msgstr "바로 가기 만들기(_K)"
 
-#: src/file-manager/fm-directory-view.c:5291
+#: src/file-manager/fm-directory-view.c:5294
 #: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "_Empty Trash"
 msgstr "휴지통 비우기(_E)"
 
-#: src/file-manager/fm-directory-view.c:5307
+#: src/file-manager/fm-directory-view.c:5310
 msgid "Cu_t File"
 msgstr "파일 잘라내기(_T)"
 
-#: src/file-manager/fm-directory-view.c:5308
+#: src/file-manager/fm-directory-view.c:5311
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Cu_t Files"
 msgstr "파일 잘라내기(_T)"
 
-#: src/file-manager/fm-directory-view.c:5317
+#: src/file-manager/fm-directory-view.c:5320
 msgid "_Copy File"
 msgstr "파일 복사(_C)"
 
-#: src/file-manager/fm-directory-view.c:5318
+#: src/file-manager/fm-directory-view.c:5321
 #: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "_Copy Files"
 msgstr "파일 복사(_C)"
 
-#: src/file-manager/fm-directory-view.c:5576
+#: src/file-manager/fm-directory-view.c:5579
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr "바로 가기가 가리키는 파일이 없습니다. 휴지통에 버리시겠습니까?"
 
-#: src/file-manager/fm-directory-view.c:5578
+#: src/file-manager/fm-directory-view.c:5581
 msgid "This link can't be used, because it has no target."
 msgstr "이 바로 가기는 가리키는 파일이 없기 때문에 쓸 수 없습니다."
 
-#: src/file-manager/fm-directory-view.c:5580
+#: src/file-manager/fm-directory-view.c:5583
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "이 바로 가기는 가리키는 파일 \"%s\"이(가) 없기 때문에 쓸 수 없습니다."
 
-#: src/file-manager/fm-directory-view.c:5585
+#: src/file-manager/fm-directory-view.c:5588
 msgid "Broken Link"
 msgstr "깨진 바로 가기"
 
-#: src/file-manager/fm-directory-view.c:5643
+#: src/file-manager/fm-directory-view.c:5646
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "\"%s\"(을)를 실행 하시겠습니까? 아니면 내용을 보시겠습니까?"
 
-#: src/file-manager/fm-directory-view.c:5645
+#: src/file-manager/fm-directory-view.c:5648
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "\"%s\"(은)는 실행할 수 있는 텍스트 파일입니다."
 
-#: src/file-manager/fm-directory-view.c:5651
+#: src/file-manager/fm-directory-view.c:5654
 msgid "Run or Display?"
 msgstr "실행 또는 보기?"
 
-#: src/file-manager/fm-directory-view.c:5652
+#: src/file-manager/fm-directory-view.c:5655
 msgid "Run in _Terminal"
 msgstr "터미널에서 실행(_T)"
 
-#: src/file-manager/fm-directory-view.c:5653
+#: src/file-manager/fm-directory-view.c:5656
 msgid "_Display"
 msgstr "표시(_D)"
 
-#: src/file-manager/fm-directory-view.c:5656
+#: src/file-manager/fm-directory-view.c:5659
 msgid "_Run"
 msgstr "실행(_R)"
 
-#: src/file-manager/fm-directory-view.c:5934
+#: src/file-manager/fm-directory-view.c:5937
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "\"%s\"을(를) 여는 중."
 
-#: src/file-manager/fm-directory-view.c:5940
+#: src/file-manager/fm-directory-view.c:5943
 msgid "Cancel Open?"
 msgstr "열기를 취소하시겠습니까?"
 
@@ -5337,13 +5327,15 @@ msgstr "선택한 볼륨을 마운트"
 #: src/file-manager/nautilus-directory-view-ui.xml.h:23
 msgid ""
 "Move or copy files previously selected by a Cut Files or Copy Files command"
-msgstr "이전에 선택된 파일을 파일 잘라내기나 파일 복사 명령으로 옮기거나 복사합니다"
+msgstr ""
+"이전에 선택된 파일을 파일 잘라내기나 파일 복사 명령으로 옮기거나 복사합니다"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:24
 msgid ""
 "Move or copy files previously selected by a Cut Files or Copy Files command "
 "into the selected folder"
-msgstr "이전에 파일 잘라내기나 파일 복사 명령으로 선택된 파일을 옮기거나 복사합니다"
+msgstr ""
+"이전에 파일 잘라내기나 파일 복사 명령으로 선택된 파일을 옮기거나 복사합니다"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:25
 msgid "No templates Installed"
@@ -5687,8 +5679,8 @@ msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
 msgstr ""
-"그놈 2.4에서 바탕화면 디렉토리가 바뀌었습니다. 이 바로 가기를 열어서 옛날 파일"
-"들을 옮겨 온 다음, 바로 가기를 지우십시오."
+"그놈 2.4에서 바탕화면 디렉토리가 바뀌었습니다. 이 바로 가기를 열어서 옛날 파"
+"일들을 옮겨 온 다음, 바로 가기를 지우십시오."
 
 #: src/nautilus-application.c:360
 msgid "Migrated Old Desktop"
@@ -5760,7 +5752,6 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#. FIXME bugzilla.gnome.org 42538: When can this happen?
 #: src/nautilus-application.c:570 src/nautilus-application.c:588
 #: src/nautilus-application.c:595
 msgid "Nautilus can't be used now, due to an unexpected error."
@@ -6240,27 +6231,22 @@ msgid "Nautilus"
 msgstr "노틸러스"
 
 #: src/nautilus-main.c:259
-#, c-format
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "노틸러스: --check는 URI와 같이 사용할 수 없습니다.\n"
 
 #: src/nautilus-main.c:263
-#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "노틸러스: --check는 다른 옵션과 같이 사용할 수 없습니다.\n"
 
 #: src/nautilus-main.c:267
-#, c-format
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "노틸러스: --quit는 URI와 같이 사용할 수 없습니다.\n"
 
 #: src/nautilus-main.c:271
-#, c-format
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "노틸러스: --restart는 URI와 같이 사용할 수 없습니다.\n"
 
 #: src/nautilus-main.c:275
-#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "노틸러스: --geometry는 하나이상의  URI와 같이 사용할 수 없습니다.\n"
 
@@ -6913,8 +6899,9 @@ msgid "Choose a view for the current location, or modify the set of views"
 msgstr "현재 위치에 대한 보기를 선택하거나 보기를 바꿉니다"
 
 #: src/nautilus-shell-ui.xml.h:3
-msgid "Close this window"
-msgstr "이 창을 닫습니다"
+#, fuzzy
+msgid "Close this folder"
+msgstr "이 폴더의 상위 폴더를 닫습니다"
 
 #: src/nautilus-shell-ui.xml.h:5
 msgid "Display Nautilus help"
@@ -7015,7 +7002,8 @@ msgid "_CD Creator"
 msgstr "CD 만들기(_C)"
 
 #: src/nautilus-shell-ui.xml.h:33
-msgid "_Close Window"
+#, fuzzy
+msgid "_Close"
 msgstr "창 닫기(_C)"
 
 #: src/nautilus-shell-ui.xml.h:34
@@ -7350,3 +7338,6 @@ msgstr "네트워크 서버"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "노틸러스 파일 관리자에서 네트워크 서버를 봅니다"
+
+#~ msgid "Close this window"
+#~ msgstr "이 창을 닫습니다"

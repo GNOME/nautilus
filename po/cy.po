@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-20 23:24+0000\n"
+"POT-Creation-Date: 2004-01-30 13:04+0100\n"
 "PO-Revision-Date: 2004-01-20 23:34+0000\n"
 "Last-Translator: Dafydd Harries <daf@parnassus.ath.cx>\n"
 "Language-Team: Cymraeg <gnome-cy@pengwyn.linux.org.uk>\n"
@@ -2169,8 +2169,8 @@ msgid ""
 "Cannot move \"%s\" to the trash because you do not have permissions to "
 "change it or its parent folder."
 msgstr ""
-"Ni ellir symud \"%s\" i'r sbwriel achos nid oes gennych ganiatad i "
-"addasu ef nac ei chyfeiriadur rhiant."
+"Ni ellir symud \"%s\" i'r sbwriel achos nid oes gennych ganiatad i addasu ef "
+"nac ei chyfeiriadur rhiant."
 
 #: libnautilus-private/nautilus-file-operations.c:637
 msgid "Error while copying."
@@ -2195,8 +2195,7 @@ msgstr "Gwall tra'n copïo i \"%s\"."
 #: libnautilus-private/nautilus-file-operations.c:664
 #: libnautilus-private/nautilus-file-operations.c:668
 msgid "There is not enough space on the destination."
-msgstr ""
-"Nid oes digon o le yn y cyrchfan."
+msgstr "Nid oes digon o le yn y cyrchfan."
 
 #: libnautilus-private/nautilus-file-operations.c:663
 #, c-format
@@ -2254,8 +2253,7 @@ msgstr "Gwall tra'n copïo"
 #: libnautilus-private/nautilus-file-operations.c:771
 #: libnautilus-private/nautilus-file-operations.c:777
 msgid "Would you like to continue?"
-msgstr ""
-"A hoffech chi barhau?"
+msgstr "A hoffech chi barhau?"
 
 #: libnautilus-private/nautilus-file-operations.c:737
 #, fuzzy, c-format
@@ -2525,8 +2523,8 @@ msgid " (%d"
 msgstr " (%d"
 
 #: libnautilus-private/nautilus-file-operations.c:1543
-#: libnautilus-private/nautilus-file-operations.c:2125
-#: libnautilus-private/nautilus-file-operations.c:2286
+#: libnautilus-private/nautilus-file-operations.c:2133
+#: libnautilus-private/nautilus-file-operations.c:2295
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "GnomeVFSXferProgressStatus anhysbys %d"
@@ -2611,71 +2609,76 @@ msgstr "Copïo"
 msgid "Preparing To Copy..."
 msgstr "Yn Paratoi i Gopïo..."
 
-#: libnautilus-private/nautilus-file-operations.c:1929
+#: libnautilus-private/nautilus-file-operations.c:1930
 #, fuzzy
 msgid "You cannot copy items into the trash."
 msgstr "Dydych chi ddim yn gallu copïo eitemau i'r Sbwriel."
 
-#: libnautilus-private/nautilus-file-operations.c:1930
+#: libnautilus-private/nautilus-file-operations.c:1931
+#, fuzzy
+msgid "You cannot create links inside the trash."
+msgstr "Dydych chi ddim yn gallu copïo eitemau i'r Sbwriel."
+
+#: libnautilus-private/nautilus-file-operations.c:1932
 msgid "Files and folders can only be moved into the trash."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:1954
+#: libnautilus-private/nautilus-file-operations.c:1956
 msgid "You cannot move this trash folder."
 msgstr "Dydych chi ddim yn gallu symud y plygell sbwriel"
 
-#: libnautilus-private/nautilus-file-operations.c:1955
+#: libnautilus-private/nautilus-file-operations.c:1957
 msgid "You cannot copy this trash folder."
 msgstr "Dydych chi ddim yn gallu copïo y plygell sbwriel"
 
-#: libnautilus-private/nautilus-file-operations.c:1956
+#: libnautilus-private/nautilus-file-operations.c:1958
 msgid "A trash folder is used for storing items moved to the trash."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:1958
+#: libnautilus-private/nautilus-file-operations.c:1960
 msgid "Can't Change Trash Location"
 msgstr "Methu Newid Lleoliad Sbwriel"
 
-#: libnautilus-private/nautilus-file-operations.c:1959
+#: libnautilus-private/nautilus-file-operations.c:1961
 msgid "Can't Copy Trash"
 msgstr "Methu Copïo Sbwriel"
 
-#: libnautilus-private/nautilus-file-operations.c:1983
+#: libnautilus-private/nautilus-file-operations.c:1985
 msgid "You cannot move a folder into itself."
 msgstr "Ni chewch symud plygell i fewn i'w hun."
 
-#: libnautilus-private/nautilus-file-operations.c:1984
+#: libnautilus-private/nautilus-file-operations.c:1986
 msgid "You cannot copy a folder into itself."
 msgstr "Rydych chi'n methu copïo plygell i mewn i'w hun."
 
-#: libnautilus-private/nautilus-file-operations.c:1985
+#: libnautilus-private/nautilus-file-operations.c:1987
 #, fuzzy
 msgid "The destination folder is inside the source folder."
 msgstr "Creu plygell wag newydd o fewn y blygell hon"
 
-#: libnautilus-private/nautilus-file-operations.c:1987
+#: libnautilus-private/nautilus-file-operations.c:1989
 #, fuzzy
 msgid "Can't Move Into Self"
 msgstr "Methu symud mewn iddo i hun"
 
-#: libnautilus-private/nautilus-file-operations.c:1988
+#: libnautilus-private/nautilus-file-operations.c:1990
 msgid "Can't Copy Into Self"
 msgstr "Methu Copïo I Fewn I'w Hun"
 
-#: libnautilus-private/nautilus-file-operations.c:2001
+#: libnautilus-private/nautilus-file-operations.c:2003
 msgid "You cannot copy a file over itself."
 msgstr "Rydych methu copïo ffeil dros ei hun."
 
-#: libnautilus-private/nautilus-file-operations.c:2002
+#: libnautilus-private/nautilus-file-operations.c:2004
 msgid "The destination and source are the same file."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:2003
+#: libnautilus-private/nautilus-file-operations.c:2005
 msgid "Can't Copy Over Self"
 msgstr "Methu Copïo Dros Ei Hun"
 
-#: libnautilus-private/nautilus-file-operations.c:2055
-#: libnautilus-private/nautilus-file-operations.c:2189
+#: libnautilus-private/nautilus-file-operations.c:2057
+#: libnautilus-private/nautilus-file-operations.c:2197
 #, fuzzy
 msgid "You do not have permissions to write to the destination."
 msgstr ""
@@ -2683,8 +2686,8 @@ msgstr ""
 "\n"
 "Nid oes gannoch caniatad i ysgrifennu i'r cyrchfan."
 
-#: libnautilus-private/nautilus-file-operations.c:2057
-#: libnautilus-private/nautilus-file-operations.c:2191
+#: libnautilus-private/nautilus-file-operations.c:2059
+#: libnautilus-private/nautilus-file-operations.c:2199
 #, fuzzy
 msgid "There is no space on the destination."
 msgstr ""
@@ -2692,87 +2695,87 @@ msgstr ""
 "\n"
 "Nid oes digon o lle ar y cyrchfan."
 
-#: libnautilus-private/nautilus-file-operations.c:2059
+#: libnautilus-private/nautilus-file-operations.c:2061
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "Gwall \"%s\" creu blygell newydd."
 
-#: libnautilus-private/nautilus-file-operations.c:2064
+#: libnautilus-private/nautilus-file-operations.c:2066
 #, fuzzy
 msgid "Error creating new folder."
 msgstr "Gwall creu blygell newydd"
 
-#: libnautilus-private/nautilus-file-operations.c:2064
+#: libnautilus-private/nautilus-file-operations.c:2066
 #, fuzzy
 msgid "Error Creating New Folder"
 msgstr "Gwall creu blygell newydd"
 
 #. localizers: the initial name of a new folder
-#: libnautilus-private/nautilus-file-operations.c:2153
+#: libnautilus-private/nautilus-file-operations.c:2161
 msgid "untitled folder"
 msgstr "plygell di-deitl"
 
-#: libnautilus-private/nautilus-file-operations.c:2193
+#: libnautilus-private/nautilus-file-operations.c:2201
 #, fuzzy, c-format
 msgid "Error \"%s\" creating new document."
 msgstr "Gwall \"%s\" creu blygell newydd."
 
-#: libnautilus-private/nautilus-file-operations.c:2198
+#: libnautilus-private/nautilus-file-operations.c:2206
 #, fuzzy
 msgid "Error creating new document."
 msgstr "Gwall creu blygell newydd"
 
-#: libnautilus-private/nautilus-file-operations.c:2198
+#: libnautilus-private/nautilus-file-operations.c:2206
 #, fuzzy
 msgid "Error Creating New Document"
 msgstr "Gwall creu blygell newydd"
 
-#: libnautilus-private/nautilus-file-operations.c:2344
+#: libnautilus-private/nautilus-file-operations.c:2353
 #, fuzzy
 msgid "new file"
 msgstr "1 ffeil"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2416
+#: libnautilus-private/nautilus-file-operations.c:2425
 msgid "Deleting files"
 msgstr "Dileu ffeil"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:2418
-#: libnautilus-private/nautilus-file-operations.c:2453
+#: libnautilus-private/nautilus-file-operations.c:2427
+#: libnautilus-private/nautilus-file-operations.c:2462
 msgid "Files deleted:"
 msgstr "Ffeil wedi ei dileu"
 
 #. localizers: label prepended to the name of the current file deleted
-#: libnautilus-private/nautilus-file-operations.c:2420
-#: libnautilus-private/nautilus-file-operations.c:2455
+#: libnautilus-private/nautilus-file-operations.c:2429
+#: libnautilus-private/nautilus-file-operations.c:2464
 msgid "Deleting"
 msgstr "Dileu"
 
-#: libnautilus-private/nautilus-file-operations.c:2421
+#: libnautilus-private/nautilus-file-operations.c:2430
 msgid "Preparing to Delete files..."
 msgstr "Paratoi i dileu ffeiliau..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2451
+#: libnautilus-private/nautilus-file-operations.c:2460
 msgid "Emptying the Trash"
 msgstr "Wrthi'n Gwagu'r Sbwriel"
 
-#: libnautilus-private/nautilus-file-operations.c:2456
+#: libnautilus-private/nautilus-file-operations.c:2465
 msgid "Preparing to Empty the Trash..."
 msgstr "Paratoi i Wagu'r Sbwriel..."
 
-#: libnautilus-private/nautilus-file-operations.c:2519
+#: libnautilus-private/nautilus-file-operations.c:2528
 #, fuzzy
 msgid "Are you sure you want to empty all of the items from the trash?"
 msgstr "Ydych yn siwr bod chi eisiau dileu pob eitem o'r spwriel am byth?"
 
-#: libnautilus-private/nautilus-file-operations.c:2533
+#: libnautilus-private/nautilus-file-operations.c:2542
 #, fuzzy
 msgid "If you empty the trash, items will be permanently deleted."
 msgstr "Os ydych chi'n dileu eitem, caiff ei golli am byth."
 
-#: libnautilus-private/nautilus-file-operations.c:2545
+#: libnautilus-private/nautilus-file-operations.c:2554
 msgid "_Empty"
 msgstr "_Gwagu"
 
@@ -2946,7 +2949,7 @@ msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
 #: libnautilus-private/nautilus-file.c:4265
-#: src/file-manager/fm-directory-view.c:1803
+#: src/file-manager/fm-directory-view.c:1806
 #, fuzzy, c-format
 msgid "%u item"
 msgid_plural "%u items"
@@ -3231,95 +3234,95 @@ msgstr "24"
 msgid "%s's Home"
 msgstr "Cartref %s"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2758
+#: libnautilus-private/nautilus-icon-canvas-item.c:2804
 msgid "editable text"
 msgstr "testun golygadwy"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2759
+#: libnautilus-private/nautilus-icon-canvas-item.c:2805
 msgid "the editable label"
 msgstr "Y label golygadwy"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2766
+#: libnautilus-private/nautilus-icon-canvas-item.c:2812
 msgid "additional text"
 msgstr "testun ychwanegol"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2767
+#: libnautilus-private/nautilus-icon-canvas-item.c:2813
 msgid "some more text"
 msgstr "mwy o destun"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2774
+#: libnautilus-private/nautilus-icon-canvas-item.c:2820
 msgid "highlighted for selection"
 msgstr "amlygir i ddewis"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2775
+#: libnautilus-private/nautilus-icon-canvas-item.c:2821
 msgid "whether we are highlighted for a selection"
 msgstr "os ydym wedi amlygir i ddewis"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2782
+#: libnautilus-private/nautilus-icon-canvas-item.c:2828
 msgid "highlighted as keyboard focus"
 msgstr "amlygir fel canolbwyntio bysellfwrdd"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2783
+#: libnautilus-private/nautilus-icon-canvas-item.c:2829
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "os ydym wedi amlygir i llunio canolbwyntio bysellfwrdd"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2791
+#: libnautilus-private/nautilus-icon-canvas-item.c:2837
 msgid "highlighted for drop"
 msgstr "amlygir i gollwng"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2792
+#: libnautilus-private/nautilus-icon-canvas-item.c:2838
 msgid "whether we are highlighted for a D&D drop"
 msgstr "Os ydym wedi amlygir am gollwng D&D"
 
-#: libnautilus-private/nautilus-icon-container.c:2065
+#: libnautilus-private/nautilus-icon-container.c:2068
 msgid "The selection rectangle"
 msgstr "Y petryal dewis"
 
-#: libnautilus-private/nautilus-icon-container.c:4163
+#: libnautilus-private/nautilus-icon-container.c:4176
 msgid "Frame Text"
 msgstr "Testun Ffrâm"
 
-#: libnautilus-private/nautilus-icon-container.c:4164
+#: libnautilus-private/nautilus-icon-container.c:4177
 msgid "Draw a frame around unselected text"
 msgstr "Arlunio ffrâm o amgylch testun heb ei ddewis"
 
-#: libnautilus-private/nautilus-icon-container.c:4170
+#: libnautilus-private/nautilus-icon-container.c:4183
 msgid "Selection Box Color"
 msgstr "Lliw Blwch Dewis"
 
-#: libnautilus-private/nautilus-icon-container.c:4171
+#: libnautilus-private/nautilus-icon-container.c:4184
 msgid "Color of the selection box"
 msgstr "Lliw y blwch dewis"
 
-#: libnautilus-private/nautilus-icon-container.c:4176
+#: libnautilus-private/nautilus-icon-container.c:4189
 msgid "Selection Box Alpha"
 msgstr "Alpha'r Blwch Dewis"
 
-#: libnautilus-private/nautilus-icon-container.c:4177
+#: libnautilus-private/nautilus-icon-container.c:4190
 msgid "Opacity of the selection box"
 msgstr "Didreiddedd y blwch dewis"
 
-#: libnautilus-private/nautilus-icon-container.c:4184
+#: libnautilus-private/nautilus-icon-container.c:4197
 msgid "Highlight Alpha"
 msgstr "Alffa Amlygu"
 
-#: libnautilus-private/nautilus-icon-container.c:4185
+#: libnautilus-private/nautilus-icon-container.c:4198
 msgid "Opacity of the highlight for selected icons"
 msgstr "Didreiddedd yr amlygu ar gyfer eiconau a ddewiswyd"
 
-#: libnautilus-private/nautilus-icon-container.c:4191
+#: libnautilus-private/nautilus-icon-container.c:4204
 msgid "Light Info Color"
 msgstr "Lliw Gwyboadaeth Golau"
 
-#: libnautilus-private/nautilus-icon-container.c:4192
+#: libnautilus-private/nautilus-icon-container.c:4205
 msgid "Color used for information text against a dark background"
 msgstr "Y lliw a ddefnyddir ar gyfer testun gwybodaeth yn erbyn cefndir tywyll"
 
-#: libnautilus-private/nautilus-icon-container.c:4197
+#: libnautilus-private/nautilus-icon-container.c:4210
 msgid "Dark Info Color"
 msgstr "Lliw Gwybodaeth Tywyll"
 
-#: libnautilus-private/nautilus-icon-container.c:4198
+#: libnautilus-private/nautilus-icon-container.c:4211
 msgid "Color used for information text against a light background"
 msgstr "Y lliw a ddefnyddir ar gyfer testun gwybodaeth yn erbyn cefndir golau"
 
@@ -4326,19 +4329,19 @@ msgstr "Dewiswch Gategori:"
 msgid "_Pattern:"
 msgstr "_Patrymmau"
 
-#: src/file-manager/fm-directory-view.c:1735
+#: src/file-manager/fm-directory-view.c:1738
 #, c-format
 msgid "\"%s\" selected"
 msgstr "dewiswyd \"%s\""
 
-#: src/file-manager/fm-directory-view.c:1737
+#: src/file-manager/fm-directory-view.c:1740
 #, fuzzy, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
 msgstr[0] "dewiswyd %d plygell"
 msgstr[1] "dewiswyd %d plygell"
 
-#: src/file-manager/fm-directory-view.c:1747
+#: src/file-manager/fm-directory-view.c:1750
 #, fuzzy, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
@@ -4346,19 +4349,19 @@ msgstr[0] " (yn cynnwys %d eitem)"
 msgstr[1] " (yn cynnwys %d eitem)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/file-manager/fm-directory-view.c:1758
+#: src/file-manager/fm-directory-view.c:1761
 #, fuzzy, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
 msgstr[0] " (yn cynnwys cyfanswm o %d eitem)"
 msgstr[1] " (yn cynnwys cyfanswm o %d eitem)"
 
-#: src/file-manager/fm-directory-view.c:1774
+#: src/file-manager/fm-directory-view.c:1777
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "dewiswyd \"%s\" (%s)"
 
-#: src/file-manager/fm-directory-view.c:1778
+#: src/file-manager/fm-directory-view.c:1781
 #, fuzzy, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
@@ -4366,14 +4369,14 @@ msgstr[0] "dewiswyd %d eitem (%s)"
 msgstr[1] "dewiswyd %d eitem (%s)"
 
 #. Folders selected also, use "other" terminology
-#: src/file-manager/fm-directory-view.c:1786
+#: src/file-manager/fm-directory-view.c:1789
 #, fuzzy, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
 msgstr[0] "dewiswyd %d eitem arall (%s)"
 msgstr[1] "dewiswyd %d eitem arall (%s)"
 
-#: src/file-manager/fm-directory-view.c:1807
+#: src/file-manager/fm-directory-view.c:1810
 #, fuzzy, c-format
 msgid "%s, Free space: %s"
 msgstr "Gofod rhydd:"
@@ -4385,7 +4388,7 @@ msgstr "Gofod rhydd:"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1832
+#: src/file-manager/fm-directory-view.c:1835
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -4394,55 +4397,55 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1957
+#: src/file-manager/fm-directory-view.c:1960
 #, fuzzy, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr ""
 "Mae y plygelli \"%s\" yn dal mwy o ffeiliau na mae Nautilus yn gallu trin. "
 "Bydd rhai ffeiliau ddim yn cael ei dangos."
 
-#: src/file-manager/fm-directory-view.c:1963
+#: src/file-manager/fm-directory-view.c:1966
 msgid "Some files will not be displayed."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:1964
+#: src/file-manager/fm-directory-view.c:1967
 msgid "Too Many Files"
 msgstr "Gormod o Ffeiliau"
 
-#: src/file-manager/fm-directory-view.c:3232
+#: src/file-manager/fm-directory-view.c:3235
 #, fuzzy
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr ""
 "Ddim yn gallu symud \"%s\" i'r sbwriel. Ydych eisiau ei dileu ar unwaith?"
 
-#: src/file-manager/fm-directory-view.c:3233
+#: src/file-manager/fm-directory-view.c:3236
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3237
+#: src/file-manager/fm-directory-view.c:3240
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr ""
 "Ni ellir symud yr eitemau i'r sbwriel. Ydych chi eisiau eu dileu nhw ar "
 "unwaith?"
 
-#: src/file-manager/fm-directory-view.c:3240
+#: src/file-manager/fm-directory-view.c:3243
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
 msgstr ""
 "Ni ellir symud rhai eitemau i'r sbwriel. Ydych chi eisiau eu dileu nhw ar "
 "unwaith?"
 
-#: src/file-manager/fm-directory-view.c:3247
+#: src/file-manager/fm-directory-view.c:3250
 msgid "Delete Immediately?"
 msgstr "Dileu ar Unwaith?"
 
-#: src/file-manager/fm-directory-view.c:3279
+#: src/file-manager/fm-directory-view.c:3282
 #, fuzzy, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Ydych yn siwr eich bod chi eisiau dileu \"%s\" o'r Sbwriel?"
 
-#: src/file-manager/fm-directory-view.c:3283
+#: src/file-manager/fm-directory-view.c:3286
 #, fuzzy, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
@@ -4457,39 +4460,39 @@ msgstr[1] ""
 "Ydych chi'n siwr eich bod chi eisiau dileu'r %d eitem a ddewiswyd o'r "
 "sbwriel am byth?"
 
-#: src/file-manager/fm-directory-view.c:3292
+#: src/file-manager/fm-directory-view.c:3295
 msgid "If you delete an item, it will be permanently lost."
 msgstr "Os ydych chi'n dileu eitem, caiff ei golli am byth."
 
-#: src/file-manager/fm-directory-view.c:3293
+#: src/file-manager/fm-directory-view.c:3296
 msgid "Delete From Trash?"
 msgstr "Dileu O'r Sbwriel?"
 
-#: src/file-manager/fm-directory-view.c:3656
+#: src/file-manager/fm-directory-view.c:3659
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Defnyddio \"%s\" i agor yr eitem a ddewiswyd"
 
-#: src/file-manager/fm-directory-view.c:3720
+#: src/file-manager/fm-directory-view.c:3723
 #: src/file-manager/nautilus-directory-view-ui.xml.h:30
 msgid "Other _Application..."
 msgstr "Rhaglen _Arall..."
 
-#: src/file-manager/fm-directory-view.c:3720
+#: src/file-manager/fm-directory-view.c:3723
 msgid "An _Application..."
 msgstr "_Rhaglen..."
 
-#: src/file-manager/fm-directory-view.c:4071
+#: src/file-manager/fm-directory-view.c:4074
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Rhedeg \"%s\" ar unrhyw eitemau dewisiedig"
 
-#: src/file-manager/fm-directory-view.c:4305
+#: src/file-manager/fm-directory-view.c:4308
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4489
+#: src/file-manager/fm-directory-view.c:4492
 #, fuzzy
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
@@ -4497,7 +4500,7 @@ msgstr ""
 "Sgriptiau. Bydd dewis sgribt o'r dewislen yn rhedeg y sgript hefo unrhyw "
 "eitem dewisiedig fel mewnbwn."
 
-#: src/file-manager/fm-directory-view.c:4491
+#: src/file-manager/fm-directory-view.c:4494
 #, fuzzy
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
@@ -4507,11 +4510,11 @@ msgstr ""
 "Sgriptiau. Bydd dewis sgribt o'r dewislen yn rhedeg y sgript hefo unrhyw "
 "eitem dewisiedig fel mewnbwn."
 
-#: src/file-manager/fm-directory-view.c:4493
+#: src/file-manager/fm-directory-view.c:4496
 msgid "About Scripts"
 msgstr "Ynghylch Sgriptiau"
 
-#: src/file-manager/fm-directory-view.c:4494
+#: src/file-manager/fm-directory-view.c:4497
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4553,20 +4556,20 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: safle a maint y ffenest cyfredol"
 
-#: src/file-manager/fm-directory-view.c:4624
+#: src/file-manager/fm-directory-view.c:4627
 #: src/file-manager/fm-tree-view.c:786
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr ""
 "Bydd \"%s\" yn cael ei symud os dewiswch chi'r gorchymyn Gludo Ffeiliau"
 
-#: src/file-manager/fm-directory-view.c:4628
+#: src/file-manager/fm-directory-view.c:4631
 #: src/file-manager/fm-tree-view.c:790
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "Caiff \"%s\" ei gopïo os dewiswch chi'r gorchymyn Gludo Ffeiliau"
 
-#: src/file-manager/fm-directory-view.c:4635
+#: src/file-manager/fm-directory-view.c:4638
 #, fuzzy, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
@@ -4579,7 +4582,7 @@ msgstr[1] ""
 "Bydd y %d eitemau dewisiedig yn cael ei symud os dewisiwch y gorchymyn Gludo "
 "ffeiliau"
 
-#: src/file-manager/fm-directory-view.c:4642
+#: src/file-manager/fm-directory-view.c:4645
 #, fuzzy, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
@@ -4592,36 +4595,36 @@ msgstr[1] ""
 "Bydd y %d eitemau dewisiedig yn cael eu copïo os dewisiwch y gorchymyn Gludo "
 "Ffeiliau"
 
-#: src/file-manager/fm-directory-view.c:4724
+#: src/file-manager/fm-directory-view.c:4727
 #: src/file-manager/fm-tree-view.c:866
 msgid "There is nothing on the clipboard to paste."
 msgstr "Does dim byd ar y clipfwrdd i'w ludo."
 
-#: src/file-manager/fm-directory-view.c:4826
-#: src/file-manager/fm-directory-view.c:5795
+#: src/file-manager/fm-directory-view.c:4829
+#: src/file-manager/fm-directory-view.c:5804
 msgid "Mount Error"
 msgstr "Gwall Gosod"
 
-#: src/file-manager/fm-directory-view.c:4888
+#: src/file-manager/fm-directory-view.c:4891
 msgid "Unmount Error"
 msgstr "Gwall Datosod"
 
-#: src/file-manager/fm-directory-view.c:4891
+#: src/file-manager/fm-directory-view.c:4894
 #, fuzzy
 msgid "Eject Error"
 msgstr "Gwall Gosod"
 
-#: src/file-manager/fm-directory-view.c:5115
+#: src/file-manager/fm-directory-view.c:5118
 msgid "E_ject"
 msgstr "Bwrw _Allan"
 
-#: src/file-manager/fm-directory-view.c:5115
+#: src/file-manager/fm-directory-view.c:5118
 #: src/file-manager/nautilus-directory-view-ui.xml.h:62
 msgid "_Unmount Volume"
 msgstr "_Datosod Cyfrol"
 
 #. add the "open in new window" menu item
-#: src/file-manager/fm-directory-view.c:5194
+#: src/file-manager/fm-directory-view.c:5197
 #: src/file-manager/fm-tree-view.c:958
 #, fuzzy, c-format
 msgid "Open in New Window"
@@ -4629,131 +4632,131 @@ msgid_plural "Open in %d New Windows"
 msgstr[0] "Agor mewn Ffenestr _Newydd"
 msgstr[1] "Agor mewn Ffenestr _Newydd"
 
-#: src/file-manager/fm-directory-view.c:5201
+#: src/file-manager/fm-directory-view.c:5204
 #, fuzzy
 msgid "Browse Folder"
 msgstr "Plygell Cartref"
 
-#: src/file-manager/fm-directory-view.c:5203
+#: src/file-manager/fm-directory-view.c:5206
 #, fuzzy
 msgid "Browse Folders"
 msgstr "Plygell Cartref"
 
-#: src/file-manager/fm-directory-view.c:5226
+#: src/file-manager/fm-directory-view.c:5229
 msgid "_Delete from Trash"
 msgstr "Dileu o'r Sb_wriel"
 
-#: src/file-manager/fm-directory-view.c:5228
+#: src/file-manager/fm-directory-view.c:5231
 msgid "Delete all selected items permanently"
 msgstr "Dileu yr itemau dewisiedig am byth"
 
-#: src/file-manager/fm-directory-view.c:5231
-#: src/file-manager/fm-directory-view.c:5579
+#: src/file-manager/fm-directory-view.c:5234
+#: src/file-manager/fm-directory-view.c:5588
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Mo_ve to Trash"
 msgstr "Symud i'r _Sbwriel"
 
-#: src/file-manager/fm-directory-view.c:5233
+#: src/file-manager/fm-directory-view.c:5236
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Move each selected item to the Trash"
 msgstr "Symud pob eitem â ddetholwyd i'r Sbwriel"
 
-#: src/file-manager/fm-directory-view.c:5257
+#: src/file-manager/fm-directory-view.c:5260
 #: src/file-manager/nautilus-directory-view-ui.xml.h:50
 msgid "_Delete"
 msgstr "_Dileu"
 
-#: src/file-manager/fm-directory-view.c:5277
+#: src/file-manager/fm-directory-view.c:5280
 msgid "Ma_ke Links"
 msgstr "Creu _Cysylltion"
 
-#: src/file-manager/fm-directory-view.c:5278
+#: src/file-manager/fm-directory-view.c:5281
 #: src/file-manager/nautilus-directory-view-ui.xml.h:18
 msgid "Ma_ke Link"
 msgstr "Creu _Cyswllt"
 
-#: src/file-manager/fm-directory-view.c:5291
+#: src/file-manager/fm-directory-view.c:5294
 #: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "_Empty Trash"
 msgstr "_Taflu'r Sbwriel"
 
-#: src/file-manager/fm-directory-view.c:5307
+#: src/file-manager/fm-directory-view.c:5310
 msgid "Cu_t File"
 msgstr "_Torri Ffeil"
 
-#: src/file-manager/fm-directory-view.c:5308
+#: src/file-manager/fm-directory-view.c:5311
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Cu_t Files"
 msgstr "_Torri Ffeiliau"
 
-#: src/file-manager/fm-directory-view.c:5317
+#: src/file-manager/fm-directory-view.c:5320
 msgid "_Copy File"
 msgstr "_Copïo Ffeil"
 
-#: src/file-manager/fm-directory-view.c:5318
+#: src/file-manager/fm-directory-view.c:5321
 #: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "_Copy Files"
 msgstr "_Copïo Ffeiliau"
 
-#: src/file-manager/fm-directory-view.c:5570
+#: src/file-manager/fm-directory-view.c:5579
 #, fuzzy
-msgid "The link is borken, do you want to move it to the Trash?"
+msgid "The link is broken, do you want to move it to the Trash?"
 msgstr ""
 "Nid yw y cysylltiad yma yn gallu cael ei defnyddio, oherwydd nad oes ganddo "
 "cyrchfan. Ycych eisiau symud y cysylltiad i'r spwriel?"
 
-#: src/file-manager/fm-directory-view.c:5572
+#: src/file-manager/fm-directory-view.c:5581
 #, fuzzy
 msgid "This link can't be used, because it has no target."
 msgstr ""
 "Nid yw y cysylltiad yma yn gallu cael ei defnyddio, oherwydd nad oes ganddo "
 "cyrchfan. Ycych eisiau symud y cysylltiad i'r sbwriel?"
 
-#: src/file-manager/fm-directory-view.c:5574
+#: src/file-manager/fm-directory-view.c:5583
 #, fuzzy, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr ""
 "Nid yw y cysylltiad yma yn gallu cael ei defnyddio, oherwydd nad yw ei "
 "cyrchfan \"%s\" yn bodoli. Ycych eisiau symud y cysylltiad i'r sbwriel?"
 
-#: src/file-manager/fm-directory-view.c:5579
+#: src/file-manager/fm-directory-view.c:5588
 msgid "Broken Link"
 msgstr "Cyswllt Torredig"
 
-#: src/file-manager/fm-directory-view.c:5637
+#: src/file-manager/fm-directory-view.c:5646
 #, fuzzy, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr ""
 "Ffeil testun gweithredadwy yw \"%s\". A ydych am ei gweithredu, neu ddangos "
 "ei gynnwys?"
 
-#: src/file-manager/fm-directory-view.c:5639
+#: src/file-manager/fm-directory-view.c:5648
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:5645
+#: src/file-manager/fm-directory-view.c:5654
 msgid "Run or Display?"
 msgstr "Rhedeg neu arddangos?"
 
-#: src/file-manager/fm-directory-view.c:5646
+#: src/file-manager/fm-directory-view.c:5655
 msgid "Run in _Terminal"
 msgstr "Gweithredu mewn _Derfynnell"
 
-#: src/file-manager/fm-directory-view.c:5647
+#: src/file-manager/fm-directory-view.c:5656
 msgid "_Display"
 msgstr "_Arddangos"
 
-#: src/file-manager/fm-directory-view.c:5650
+#: src/file-manager/fm-directory-view.c:5659
 msgid "_Run"
 msgstr "_Gweithredu"
 
-#: src/file-manager/fm-directory-view.c:5928
+#: src/file-manager/fm-directory-view.c:5937
 #, fuzzy, c-format
 msgid "Opening \"%s\"."
 msgstr "Agor \"%s\""
 
-#: src/file-manager/fm-directory-view.c:5934
+#: src/file-manager/fm-directory-view.c:5943
 msgid "Cancel Open?"
 msgstr "Diddymu Agor?"
 
@@ -5942,8 +5945,7 @@ msgstr "Trefn Cildr_oedig"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:19
 msgid "Reposition icons to better fit in the window and avoid overlapping"
-msgstr ""
-"Symud yr eiconau i ffitio yn well yn y ffenestr ac osgoi gorgyffwrdd"
+msgstr "Symud yr eiconau i ffitio yn well yn y ffenestr ac osgoi gorgyffwrdd"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:21
 msgid "Restore each selected icon to its original size"
@@ -7390,8 +7392,9 @@ msgid "Choose a view for the current location, or modify the set of views"
 msgstr "Dewiswch gowlg i'r lleoliad cyfredol, neu newid y set o olygfeydd"
 
 #: src/nautilus-shell-ui.xml.h:3
-msgid "Close this window"
-msgstr "Cau'r ffenest yma"
+#, fuzzy
+msgid "Close this folder"
+msgstr "Cau'r panel ochr"
 
 #: src/nautilus-shell-ui.xml.h:5
 msgid "Display Nautilus help"
@@ -7494,7 +7497,8 @@ msgid "_CD Creator"
 msgstr "Crëwr _CD"
 
 #: src/nautilus-shell-ui.xml.h:33
-msgid "_Close Window"
+#, fuzzy
+msgid "_Close"
 msgstr "_Cau'r Ffenestr"
 
 #: src/nautilus-shell-ui.xml.h:34
@@ -7861,6 +7865,9 @@ msgstr "Gweinyddion Rhwydwaith"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Gweld eich gweinyddion rhwydwaith yn y trefnydd ffeiliau Nautilus"
+
+#~ msgid "Close this window"
+#~ msgstr "Cau'r ffenest yma"
 
 #~ msgid "Search Google for Selected Text"
 #~ msgstr "Chwilio Google am y destun dewisiedig"
