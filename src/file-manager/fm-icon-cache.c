@@ -20,10 +20,12 @@
  */
 
 #include "fm-icon-cache.h"
+#include <libgnomevfs/gnome-vfs-file-info.h>
+#include <libgnomevfs/gnome-vfs-types.h>
 #include <gnome.h>
 
-static const int fm_default_file_icon_width  = 48;
-static const int fm_default_file_icon_height = 48;
+static const int fm_default_file_icon_width  = NAUTILUS_ICON_SIZE_STANDARD;
+static const int fm_default_file_icon_height = NAUTILUS_ICON_SIZE_STANDARD;
 static const int fm_default_file_icon_has_alpha  = 1;
 static const unsigned char fm_default_file_icon[] = {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -642,6 +644,12 @@ struct _FMIconCache {
         guint sweep_timer;
 };
 
+/* forward declarations */
+static GdkPixbuf *fm_icon_cache_scale (FMIconCache *fmic,
+		     		       GdkPixbuf   *standard_sized_pixbuf,
+		     		       guint	    size_in_pixels);
+
+
 static IconSet *
 icon_set_new (const gchar *name)
 {
@@ -782,10 +790,13 @@ fm_icon_cache_set_theme(FMIconCache *fmic, const char *theme_name)
 }
 
 static IconSet *
-fm_icon_cache_get_icon_for_file(FMIconCache *fmic, const GnomeVFSFileInfo *info)
+fm_icon_cache_get_icon_set_for_file(FMIconCache *fmic, NautilusFile *file)
 {
         IconSet *retval = NULL;
         const char *icon_name = NULL;
+        GnomeVFSFileInfo *info;
+
+        info = nautilus_file_get_info (file);
 
         if(info->mime_type)
                 icon_name = gnome_mime_get_value(info->mime_type,
@@ -893,20 +904,24 @@ fm_icon_cache_load_icon(FMIconCache *fmic, IconSet *is, gboolean is_symlink)
 }
 
 GdkPixbuf *
-fm_icon_cache_get_icon(FMIconCache *fmic,
-		       const GnomeVFSFileInfo *info)
+fm_icon_cache_get_icon_for_file(FMIconCache  *fmic,
+		       		NautilusFile *file,
+		       		guint	     size_in_pixels)
 {
         IconSet *is;
         GdkPixbuf *retval;
+        GnomeVFSFileInfo *info;
 
         g_return_val_if_fail(fmic, NULL);
-        g_return_val_if_fail(info, NULL);
+        g_return_val_if_fail(file, NULL);
+
+        info = nautilus_file_get_info (file);
 
         switch (info->type) {
         case GNOME_VFS_FILE_TYPE_UNKNOWN:
         case GNOME_VFS_FILE_TYPE_REGULAR:
         default:
-                is = fm_icon_cache_get_icon_for_file(fmic, info);
+                is = fm_icon_cache_get_icon_set_for_file(fmic, file);
                 break;
         case GNOME_VFS_FILE_TYPE_DIRECTORY:
                 is = &fmic->special_isets[ICONSET_DIRECTORY];
@@ -938,6 +953,23 @@ fm_icon_cache_get_icon(FMIconCache *fmic,
         }
 
         g_assert(retval != NULL);
+
+        /* First cut at handling multiple sizes. If size is other than standard,
+         * scale the pixbuf here. Eventually we'll store icons at multiple sizes
+         * rather than relying on scaling in every case (though we'll still need
+         * scaling as a fallback). The scaled pixbufs also might want to be cached.
+         * For now, assume that the icon found so far is of standard size.
+         */
+        if (size_in_pixels != NAUTILUS_ICON_SIZE_STANDARD)
+        {
+        	GdkPixbuf *non_standard_size_icon;
+
+        	non_standard_size_icon = fm_icon_cache_scale (fmic,
+        						      retval, 
+        						      size_in_pixels);
+        	gdk_pixbuf_unref (retval);
+        	retval = non_standard_size_icon;
+        }
   
         fm_icon_cache_setup_sweep(fmic);
   
@@ -953,4 +985,29 @@ fm_get_current_icon_cache (void)
                 global_icon_cache = fm_icon_cache_new(NULL);
 
         return global_icon_cache;
+}
+
+static GdkPixbuf *
+fm_icon_cache_scale (FMIconCache *fmic,
+		     GdkPixbuf *standard_sized_pixbuf,
+		     guint size_in_pixels)
+{
+	GdkPixbuf *result;
+	int old_width, old_height, new_width, new_height;
+	
+	g_return_val_if_fail (standard_sized_pixbuf != NULL, NULL);
+
+	old_width = gdk_pixbuf_get_width (standard_sized_pixbuf);
+	old_height = gdk_pixbuf_get_height (standard_sized_pixbuf);
+
+	new_width = (old_width * size_in_pixels)/NAUTILUS_ICON_SIZE_STANDARD;
+	new_height = (old_height * size_in_pixels)/NAUTILUS_ICON_SIZE_STANDARD;
+
+	/* This creates scaled icon with refcount of 1 */
+	result = gdk_pixbuf_scale_simple (standard_sized_pixbuf, 
+					  new_width, 
+					  new_height, 
+					  ART_FILTER_NEAREST);	
+
+	return result;
 }

@@ -22,20 +22,47 @@
 #define FM_ICON_CACHE_H 1
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <libgnomevfs/gnome-vfs.h>
+#include <libnautilus/nautilus-directory.h>
 #include <glib.h>
+
+/* Names for Nautilus's different zoom levels, from tiniest items to largest items */
+enum _NautilusZoomLevel {
+	NAUTILUS_ZOOM_LEVEL_SMALLEST,
+	NAUTILUS_ZOOM_LEVEL_SMALLER,
+	NAUTILUS_ZOOM_LEVEL_SMALL,
+	NAUTILUS_ZOOM_LEVEL_STANDARD,
+	NAUTILUS_ZOOM_LEVEL_LARGE,
+	NAUTILUS_ZOOM_LEVEL_LARGER,
+	NAUTILUS_ZOOM_LEVEL_LARGEST
+};
+typedef enum _NautilusZoomLevel NautilusZoomLevel;
+
+/* Nominal icon sizes for each Nautilus zoom level.
+ * This scheme assumes that icons are designed to
+ * fit in a square space, though each image needn't
+ * be square. Since individual icons can be stretched,
+ * each icon is not constrained to this nominal size.
+ */
+#define NAUTILUS_ICON_SIZE_SMALLEST	16
+#define NAUTILUS_ICON_SIZE_SMALLER	24
+#define NAUTILUS_ICON_SIZE_SMALL	32
+#define NAUTILUS_ICON_SIZE_STANDARD	48
+#define NAUTILUS_ICON_SIZE_LARGE	64
+#define NAUTILUS_ICON_SIZE_LARGER	96
+#define NAUTILUS_ICON_SIZE_LARGEST	144
 
 typedef struct _FMIconCache FMIconCache;
 
-FMIconCache *fm_icon_cache_new       (const char             *theme_name);
-void         fm_icon_cache_destroy   (FMIconCache            *fmic);
-void         fm_icon_cache_set_theme (FMIconCache            *fmic,
-                                      const char             *theme_name);
+FMIconCache *fm_icon_cache_new       	       (const char       *theme_name);
+void         fm_icon_cache_destroy   	       (FMIconCache      *fmic);
+void         fm_icon_cache_set_theme 	       (FMIconCache      *fmic,
+                                      		const char       *theme_name);
 /* Ownership of a refcount in this pixbuf comes with the deal */
-GdkPixbuf *  fm_icon_cache_get_icon  (FMIconCache            *fmic,
-                                      const GnomeVFSFileInfo *info);
+GdkPixbuf *  fm_icon_cache_get_icon_for_file   (FMIconCache      *fmic,
+                                      		NautilusFile     *file,
+                                      		guint		  size_in_pixels);
 
-FMIconCache* fm_get_current_icon_cache        (void);
+FMIconCache* fm_get_current_icon_cache         (void);
 
 #endif
 

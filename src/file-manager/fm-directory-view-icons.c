@@ -205,9 +205,12 @@ add_icon_if_already_positioned (FMDirectoryViewIcons *icon_view,
 		return;
 	}
 
-	/* Get the appropriate image and name for the file. */
-	image = fm_icon_cache_get_icon (fm_get_current_icon_cache (),
-					nautilus_file_get_info (file));
+	/* Get the appropriate image and name for the file. For the moment,
+	 * we always use the standard size of icons.
+	 */
+	image = fm_icon_cache_get_icon_for_file (fm_get_current_icon_cache (), 		
+						 file,
+						 NAUTILUS_ICON_SIZE_STANDARD);
 	name = nautilus_file_get_name (file);
 	gnome_icon_container_add_pixbuf (get_icon_container (icon_view),
 					 image, name, x, y, file);
@@ -222,8 +225,9 @@ add_icon_at_free_position (FMDirectoryViewIcons *icon_view,
 	char *name;
 
 	/* Get the appropriate image and name for the file. */
-	image = fm_icon_cache_get_icon (fm_get_current_icon_cache (),
-					nautilus_file_get_info (file));
+	image = fm_icon_cache_get_icon_for_file (fm_get_current_icon_cache (), 		
+						 file,
+						 NAUTILUS_ICON_SIZE_STANDARD);
 	name = nautilus_file_get_name (file);
 	gnome_icon_container_add_pixbuf_auto (get_icon_container (icon_view),
 					      image, name, file);

@@ -38,14 +38,14 @@ struct _FMDirectoryViewListDetails
 {
 	FMDirectoryViewSortType sort_type;
 	gboolean sort_reversed;
+	guint icon_size;
 };
 
 #define DEFAULT_BACKGROUND_COLOR "rgb:FFFF/FFFF/FFFF"
 
 
 /* forward declarations */
-static void add_to_flist 			    (FMIconCache *icon_manager,
-		   		 		     GtkFList *flist,
+static void add_to_flist 			    (FMDirectoryViewList *list_view,
 		   		 		     NautilusFile *file);
 static void column_clicked_cb 			    (GtkCList *ignored,
 			       	 		     gint column,
@@ -70,6 +70,10 @@ static void fm_directory_view_list_destroy 	    (GtkObject *object);
 static void fm_directory_view_list_done_adding_entries 
 						    (FMDirectoryView *view);
 static GtkFList *get_flist 			    (FMDirectoryViewList *list_view);
+static void install_icon 			    (FMDirectoryViewList *list_view, 
+						     NautilusFile *file,
+						     guint row,
+						     guint column);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryViewList, fm_directory_view_list, FM_TYPE_DIRECTORY_VIEW);
 
@@ -108,6 +112,7 @@ fm_directory_view_list_initialize (gpointer object, gpointer klass)
 	list_view->details = g_new0 (FMDirectoryViewListDetails, 1);
 	list_view->details->sort_type = FM_DIRECTORY_VIEW_SORT_NONE;
 	list_view->details->sort_reversed = FALSE;
+	list_view->details->icon_size = NAUTILUS_ICON_SIZE_SMALLER;
 	
 	create_flist (list_view);
 }
@@ -184,7 +189,7 @@ create_flist (FMDirectoryViewList *list_view)
 		_("Date Modified"),
 	};
 	uint widths[] = {
-		 20,	/* Icon */
+		 list_view->details->icon_size,	/* Icon */
 		130,	/* Name */
 		 55,	/* Size */
 		 95,	/* Type */
@@ -204,6 +209,9 @@ create_flist (FMDirectoryViewList *list_view)
 	gtk_clist_set_column_justification (GTK_CLIST (flist), 
 					    LIST_VIEW_COLUMN_SIZE, 
 					    GTK_JUSTIFY_RIGHT);
+
+	/* Make height tall enough for icons to look good */
+	gtk_clist_set_row_height (GTK_CLIST (flist), list_view->details->icon_size);
 	
 	GTK_WIDGET_SET_FLAGS (flist, GTK_CAN_FOCUS);
 
@@ -256,8 +264,7 @@ flist_selection_changed_cb (GtkFList *flist,
 }
 
 static void
-add_to_flist (FMIconCache *icon_manager,
-	      GtkFList *flist,
+add_to_flist (FMDirectoryViewList *list_view,
 	      NautilusFile *file)
 {
 	GtkCList *clist;
@@ -267,7 +274,8 @@ add_to_flist (FMIconCache *icon_manager,
 	gchar *modified_string;
 	gchar *type_string;
 
-	/* FIXME: Icon column needs a pixmap */
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (list_view));
+
 	text[LIST_VIEW_COLUMN_ICON] = NULL;
 	
 	name = nautilus_file_get_name (file);
@@ -282,9 +290,14 @@ add_to_flist (FMIconCache *icon_manager,
 	type_string = nautilus_file_get_type_as_string (file);
 	text[LIST_VIEW_COLUMN_MIME_TYPE] = type_string;
 	
-	clist = GTK_CLIST (flist);
+	clist = GTK_CLIST (get_flist(list_view));
 	gtk_clist_append (clist, text);
 	gtk_clist_set_row_data (clist, clist->rows - 1, file);
+
+	install_icon (list_view, 
+		      file, 
+		      clist->rows - 1, 
+		      LIST_VIEW_COLUMN_ICON);
 
 	g_free (name);
 	g_free (size_string);
@@ -336,7 +349,7 @@ fm_directory_view_list_add_entry (FMDirectoryView *view, NautilusFile *file)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (view));
 
-	add_to_flist (fm_get_current_icon_cache(), get_flist (FM_DIRECTORY_VIEW_LIST (view)), file);
+	add_to_flist (FM_DIRECTORY_VIEW_LIST (view), file);
 }
 
 static void
@@ -376,4 +389,38 @@ fm_directory_view_list_background_changed_cb (NautilusBackground *background,
 					 DEFAULT_BACKGROUND_COLOR,
 					 color_spec);
 	g_free (color_spec);
+}
+
+/**
+ * install_icon:
+ *
+ * Put an icon for a file into the specified cell.
+ * @list_view: FMDirectoryView in which to install icon.
+ * @file: NautilusFile representing file whose icon should be installed.
+ * @row: row index of target cell
+ * @column: column index of target cell
+ * 
+ **/
+static void
+install_icon (FMDirectoryViewList *list_view, 
+	      NautilusFile *file, 
+	      guint row, 
+	      guint column)
+{
+	GdkPixbuf *pixbuf;
+	GdkPixmap *pixmap;
+	GdkBitmap *bitmap;
+
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (list_view));
+	g_return_if_fail (file != NULL);
+	
+	pixbuf = fm_icon_cache_get_icon_for_file (fm_get_current_icon_cache(), 
+					 	  file,
+					 	  list_view->details->icon_size);
+
+	/* GtkCList requires a pixmap & mask rather than a pixbuf */
+	gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &bitmap, 100);
+	gtk_clist_set_pixmap (GTK_CLIST (get_flist (list_view)), row, column, pixmap, bitmap);
+
+	gdk_pixbuf_unref (pixbuf);
 }

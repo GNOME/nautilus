@@ -1,3 +1,45 @@
+2000-01-21  John Sullivan <sullivan@eazel.com>
+
+	Make icons appear in list view, and do some of the restructuring
+	necessary for supporting multiple icon sizes.
+
+	* src/file-manager/fm-icon-cache.h:
+	Added enum for Nautilus's 7 levels of zooming.
+	Added #defines for nominal icon sizes matching these 7 levels.
+	(fm_icon_cache_get_icon): Renamed to fm_icon_cache_get_icon_for_file,
+	and changed parameters to take a NautilusFile and a size (in pixels)
+	instead of a GnomeVFSFileInfo.
+	
+	* src/file-manager/fm-icon-cache.c
+	Changed static vars fm_default_file_icon_width & height to use new
+	NAUTILUS_ICON_SIZE_STANDARD #define
+	(fm_icon_cache_get_icon_for_file): Renamed to 
+	fm_icon_cache_get_icon_set_for_file to avoid collision with changed
+	public API call. Also changed parameters to take a NautilusFile instead
+	of a GnomeVFSFileInfo.
+	(fm_icon_cache_get_icon): Renamed to fm_icon_cache_get_icon_for_file,
+	and changed parameters to take a NautilusFile and a size (in pixels)
+	instead of a GnomeVFSFileInfo. If the size parameter is not the
+	standard size, calls fm_icon_cache_scale to get a scaled icon.
+	Eventually icons will be stored at various sizes, but for now we
+	always scale.
+	(fm_icon_cache_scale): New function, scales standard-sized GdkPixbuf
+	to given size.
+
+	* src/file-manager/fm-directory-view-icons.c:
+	(add_icon_if_already_positioned), (add_icon_at_free_position):
+	Updated callers of fm_icon_cache_get_icon, passing in
+	NAUTILUS_ICON_SIZE_STANDARD.
+
+	* src/file-manager/fm-directory-view-list.c:
+	(struct _FMDirectoryViewListDetails): Add icon_size field.
+	(fm_directory_view_list_initialize): Initialize icon_size field.
+	(create_flist): Determine icon column width and row height from icon size. 		(add_to_flist): Change parameters to take FMDirectoryViewList instead of
+	GtkFList, and remove FMIconCache parameter. Now calls install_icon.
+	(fm_directory_view_list_add_entry): Update add_to_flist parameters.
+	(install_icon): New function, gets an appropriately-sized icon for
+	a NautilusFile and puts it into icon column in list.
+
 2000-01-21  Elliot Lee  <sopwith@redhat.com>
 
 	* src/ntl-window.[ch], src/ntl-window-msgs.c,
