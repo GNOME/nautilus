@@ -444,19 +444,18 @@ nautilus_background_draw_flat_box (GtkStyle *style,
 		return;
 	}
 
-	gc = gdk_gc_new (window);
+    	gc = style->bg_gc[state_type];
+	if (area)
+		gdk_gc_set_clip_rectangle (gc, area);
 
-	nautilus_gdk_window_update_sizes (window, &width, &height);
-	
+	nautilus_gdk_window_update_sizes (window, &width, &height);	
 	rectangle.x = x;
 	rectangle.y = y;
 	rectangle.width = width;
 	rectangle.height = height;
 	
 	nautilus_background_draw (background, window, gc,
-				  &rectangle, 0, 0);
-	
-	gdk_gc_unref (gc);
+				  &rectangle, 0, 0);	
 }
 
 static GtkStyleClass *
