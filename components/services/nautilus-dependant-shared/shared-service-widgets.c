@@ -41,13 +41,12 @@
 /* Ramiro's very cool generic image widget */
 GtkWidget*
 create_image_widget (const char			*icon_name,
-		     const char			*background_color_spec,
-		     NautilusImagePlacementType	placement) {
-
+		     const char			*background_color_spec)
+{
 	char		*path;
 	GtkWidget	*image;
 	GdkPixbuf	*pixbuf;
-	guint32		background_rgb;
+/* 	guint32		background_rgb;*/
 
 	g_return_val_if_fail (icon_name != NULL, NULL);
 	g_return_val_if_fail (background_color_spec != NULL, NULL);
@@ -67,15 +66,13 @@ create_image_widget (const char			*icon_name,
 		g_warning ("Could not find the requested icon.");
 	}
 
-	nautilus_image_set_background_type (NAUTILUS_IMAGE (image),
-					    NAUTILUS_IMAGE_BACKGROUND_SOLID);
+/* 	nautilus_image_set_background_type (NAUTILUS_IMAGE (image),*/
+/* 					    NAUTILUS_IMAGE_BACKGROUND_SOLID);*/
 
-	background_rgb = nautilus_parse_rgb_with_white_default (background_color_spec);
+/* 	background_rgb = nautilus_parse_rgb_with_white_default (background_color_spec);*/
 
-	nautilus_image_set_background_color (NAUTILUS_IMAGE (image),
-					     background_rgb);
-
-	nautilus_image_set_placement_type (NAUTILUS_IMAGE (image), placement);
+/* 	nautilus_image_set_background_color (NAUTILUS_IMAGE (image),*/
+/* 					     background_rgb);*/
 
 	return image;
 
@@ -90,33 +87,30 @@ create_services_title_widget (const char	*title_text) {
 	GtkWidget       *logo_image;
 	GtkWidget       *filler_image;
 	GtkWidget       *text_image;
-	GdkFont         *font;
+/* 	GdkFont         *font;*/
 
 	g_assert (title_text != NULL);
 
 	title_hbox = gtk_hbox_new (FALSE, 0);
 
 	logo_image = create_image_widget ("eazel-services-logo.png",
-					  SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR,
-					  NAUTILUS_IMAGE_PLACEMENT_CENTER);
+					  SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
 
 	filler_image = create_image_widget ("eazel-services-logo-tile.png",
-					    SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR,
-					    NAUTILUS_IMAGE_PLACEMENT_TILE);
+					    SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
 
 	text_image = create_image_widget ("eazel-services-logo-tile.png",
-					  SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR,
-					  NAUTILUS_IMAGE_PLACEMENT_TILE);
+					  SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
 
-	font = nautilus_font_factory_get_font_by_family ("helvetica", 20);
+/* 	font = nautilus_font_factory_get_font_by_family ("helvetica", 20);*/
 
-	nautilus_image_set_label_text (NAUTILUS_IMAGE (text_image), title_text);
-	nautilus_image_set_label_font (NAUTILUS_IMAGE (text_image), font);
-	nautilus_image_set_extra_width (NAUTILUS_IMAGE (text_image), 8);
-	nautilus_image_set_right_offset (NAUTILUS_IMAGE (text_image), 8);
-	nautilus_image_set_top_offset (NAUTILUS_IMAGE (text_image), 3);
+/* 	nautilus_image_set_label_text (NAUTILUS_IMAGE (text_image), title_text); */
+/* 	nautilus_image_set_label_font (NAUTILUS_IMAGE (text_image), font); */
+/* 	nautilus_image_set_extra_width (NAUTILUS_IMAGE (text_image), 8);*/
+/* 	nautilus_image_set_right_offset (NAUTILUS_IMAGE (text_image), 8);*/
+/* 	nautilus_image_set_top_offset (NAUTILUS_IMAGE (text_image), 3);*/
 
-	gdk_font_unref (font);
+/* 	gdk_font_unref (font);*/
 
 	gtk_widget_show (logo_image);
 	gtk_widget_show (filler_image);
@@ -140,7 +134,7 @@ create_services_header_widget	(const char	*left_text,
 	GtkWidget	*left_image;
 	GtkWidget	*right_image;
 	GtkWidget	*filler_image;
-	GdkFont		*font;
+/* 	GdkFont		*font;*/
 
 	g_assert (left_text != NULL);
 	g_assert (right_text != NULL);
@@ -148,34 +142,31 @@ create_services_header_widget	(const char	*left_text,
 	title_hbox = gtk_hbox_new (FALSE, 0);
 
 	left_image = create_image_widget ("eazel-services-logo-tile.png",
-					  SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR,
-					  NAUTILUS_IMAGE_PLACEMENT_TILE);
+					  SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
 
 	filler_image = create_image_widget ("eazel-services-logo-tile.png",
-					    SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR,
-					    NAUTILUS_IMAGE_PLACEMENT_TILE);
+					    SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
 
 	right_image = create_image_widget ("eazel-services-logo-tile.png",
-					   SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR,
-					   NAUTILUS_IMAGE_PLACEMENT_TILE);
+					   SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
 
-	font = nautilus_font_factory_get_font_by_family ("helvetica", 18);
+/* 	font = nautilus_font_factory_get_font_by_family ("helvetica", 18);*/
 
-	nautilus_image_set_label_text (NAUTILUS_IMAGE (left_image), left_text);
-	nautilus_image_set_label_font (NAUTILUS_IMAGE (left_image), font);
+/* 	nautilus_image_set_label_text (NAUTILUS_IMAGE (left_image), left_text); */
+/* 	nautilus_image_set_label_font (NAUTILUS_IMAGE (left_image), font); */
 
-	nautilus_image_set_extra_width (NAUTILUS_IMAGE (left_image), 8);
-	nautilus_image_set_left_offset (NAUTILUS_IMAGE (left_image), 8);
-	nautilus_image_set_top_offset (NAUTILUS_IMAGE (left_image), 1);
+/* 	nautilus_image_set_extra_width (NAUTILUS_IMAGE (left_image), 8);*/
+/* 	nautilus_image_set_left_offset (NAUTILUS_IMAGE (left_image), 8);*/
+/* 	nautilus_image_set_top_offset (NAUTILUS_IMAGE (left_image), 1);*/
 
-	nautilus_image_set_label_text (NAUTILUS_IMAGE (right_image), right_text);
-	nautilus_image_set_label_font (NAUTILUS_IMAGE (right_image), font);
+/* 	nautilus_image_set_label_text (NAUTILUS_IMAGE (right_image), right_text); */
+/* 	nautilus_image_set_label_font (NAUTILUS_IMAGE (right_image), font); */
 
-	nautilus_image_set_extra_width (NAUTILUS_IMAGE (right_image), 8);
-	nautilus_image_set_right_offset (NAUTILUS_IMAGE (right_image), 8);
-	nautilus_image_set_top_offset (NAUTILUS_IMAGE (right_image), 1);
+/* 	nautilus_image_set_extra_width (NAUTILUS_IMAGE (right_image), 8);*/
+/* 	nautilus_image_set_right_offset (NAUTILUS_IMAGE (right_image), 8);*/
+/* 	nautilus_image_set_top_offset (NAUTILUS_IMAGE (right_image), 1);*/
 
-	gdk_font_unref (font);
+/* 	gdk_font_unref (font);*/
 
 	gtk_widget_show (left_image);
 	gtk_widget_show (filler_image);

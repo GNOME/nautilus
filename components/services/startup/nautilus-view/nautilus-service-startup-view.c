@@ -106,8 +106,7 @@ generate_startup_form (NautilusServiceStartupView	*view)
 	gtk_widget_show (temp_box);
 
 	temp_widget = create_image_widget ("service-watch.png",
-					   STARTUP_VIEW_DEFAULT_BACKGROUND_COLOR,
-					   NAUTILUS_IMAGE_PLACEMENT_CENTER);
+					   STARTUP_VIEW_DEFAULT_BACKGROUND_COLOR);
 	g_assert (temp_widget != NULL);
 
 	gtk_box_pack_start (GTK_BOX (temp_box), temp_widget, 0, 0, 8);
@@ -174,8 +173,7 @@ generate_form_logo (NautilusServiceStartupView	*view) {
 	gtk_box_pack_start (GTK_BOX (view->details->form), logo_container, 0, 0, 4);	
 
 	logo_widget = create_image_widget ("startup-logo.png",
-					   STARTUP_VIEW_DEFAULT_BACKGROUND_COLOR,
-					   NAUTILUS_IMAGE_PLACEMENT_CENTER);
+					   STARTUP_VIEW_DEFAULT_BACKGROUND_COLOR);
 
 	g_assert (logo_widget != NULL);
 

@@ -21,11 +21,15 @@ INCLUDES = 						\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 	\
 	$(NULL)
 
-libnautilus_extensions_la_LDFLAGS=	\
+dependency_static_libs =\
 	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la \
 	$(top_builddir)/cut-n-paste-code/widgets/nautilus-druid/libnautilus-druid.la \
 	$(top_builddir)/librsvg/librsvg.la \
 	$(top_builddir)/cut-n-paste-code/freetype/libfreetype2.la \
+	$(NULL)
+
+libnautilus_extensions_la_LDFLAGS=	\
+	$(dependency_static_libs)	\
 	$(GNOME_LIBS) 			\
 	$(GNOMECANVASPIXBUF_LIBS)	\
 	$(OAF_LIBS) 			\
@@ -44,6 +48,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-background.c			\
 	nautilus-bonobo-extensions.c		\
 	nautilus-bookmark.c			\
+	nautilus-buffered-widget.c		\
 	nautilus-caption-table.c		\
 	nautilus-caption.c			\
 	nautilus-debug.c			\
@@ -58,6 +63,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-file-utilities.c		\
 	nautilus-file.c				\
 	nautilus-font-factory.c			\
+	nautilus-font-picker.c			\
 	nautilus-gdk-extensions.c		\
 	nautilus-gdk-pixbuf-extensions.c	\
 	nautilus-generous-bin.c			\
@@ -74,6 +80,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-icon-text-item.c		\
 	nautilus-image.c			\
 	nautilus-keep-last-vertical-box.c	\
+	nautilus-label.c			\
 	nautilus-lib-self-check-functions.c	\
 	nautilus-link-set.c			\
 	nautilus-link.c				\
@@ -91,23 +98,25 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-program-chooser.c		\
 	nautilus-program-choosing.c		\
 	nautilus-radio-button-group.c		\
+	nautilus-scalable-font.c		\
 	nautilus-search-bar-criterion.c		\
 	nautilus-search-uri.c			\
 	nautilus-self-checks.c			\
 	nautilus-stock-dialogs.c		\
 	nautilus-string-list.c			\
+	nautilus-string-map.c			\
 	nautilus-string-picker.c		\
 	nautilus-string.c			\
 	nautilus-text-caption.c			\
-	nautilus-trash-directory.c		\
 	nautilus-theme.c			\
+	nautilus-trash-directory.c		\
 	nautilus-undo-context.c			\
 	nautilus-undo-manager.c			\
 	nautilus-undo-signal-handlers.c		\
 	nautilus-user-level-manager.c		\
+	nautilus-vfs-directory.c		\
 	nautilus-view-identifier.c		\
 	nautilus-volume-monitor.c		\
-	nautilus-vfs-directory.c		\
 	nautilus-xml-extensions.c		\
 	$(NULL)
 
@@ -118,24 +127,26 @@ noinst_HEADERS =				\
 	nautilus-background.h			\
 	nautilus-bonobo-extensions.h		\
 	nautilus-bookmark.h			\
-	nautilus-caption.h			\
+	nautilus-buffered-widget.h		\
 	nautilus-caption-table.h		\
+	nautilus-caption.h			\
 	nautilus-cdrom-extensions.h		\
 	nautilus-debug.h			\
 	nautilus-default-file-icon.h		\
 	nautilus-directory-background.h		\
-	nautilus-directory.h			\
 	nautilus-directory-metafile.h		\
 	nautilus-directory-notify.h		\
 	nautilus-directory-private.h		\
+	nautilus-directory.h			\
 	nautilus-drag.h				\
 	nautilus-entry.h			\
 	nautilus-file-attributes.h		\
 	nautilus-file-changes-queue.h		\
-	nautilus-file.h				\
 	nautilus-file-private.h			\
 	nautilus-file-utilities.h		\
+	nautilus-file.h				\
 	nautilus-font-factory.h			\
+	nautilus-font-picker.h			\
 	nautilus-gdk-extensions.h		\
 	nautilus-gdk-pixbuf-extensions.h	\
 	nautilus-generous-bin.h			\
@@ -155,9 +166,10 @@ noinst_HEADERS =				\
 	nautilus-image.h			\
 	nautilus-iso9660.h			\
 	nautilus-keep-last-vertical-box.h	\
+	nautilus-label.h			\
 	nautilus-lib-self-check-functions.h	\
-	nautilus-link.h				\
 	nautilus-link-set.h			\
+	nautilus-link.h				\
 	nautilus-list-column-title.h		\
 	nautilus-list.h                         \
 	nautilus-metadata.h			\
@@ -167,20 +179,22 @@ noinst_HEADERS =				\
 	nautilus-preferences-box.h		\
 	nautilus-preferences-dialog.h		\
 	nautilus-preferences-group.h		\
-	nautilus-preferences.h			\
 	nautilus-preferences-item.h		\
 	nautilus-preferences-pane.h		\
+	nautilus-preferences.h			\
 	nautilus-program-chooser.h		\
 	nautilus-program-choosing.h		\
 	nautilus-radio-button-group.h		\
+	nautilus-scalable-font.h		\
+	nautilus-search-bar-criterion-private.h	\
 	nautilus-search-bar-criterion.h		\
 	nautilus-search-uri.h			\
-	nautilus-search-bar-criterion-private.h	\
 	nautilus-self-checks.h			\
 	nautilus-stock-dialogs.h		\
-	nautilus-string.h			\
 	nautilus-string-list.h			\
+	nautilus-string-map.h			\
 	nautilus-string-picker.h		\
+	nautilus-string.h			\
 	nautilus-text-caption.h			\
 	nautilus-theme.h			\
 	nautilus-trash-directory.h		\
@@ -193,3 +207,5 @@ noinst_HEADERS =				\
 	nautilus-volume-monitor.h		\
 	nautilus-xml-extensions.h		\
 	$(NULL)
+
+$(lib_LTLIBRARIES): $(dependency_static_libs)

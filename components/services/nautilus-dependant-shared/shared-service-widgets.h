@@ -33,8 +33,7 @@
 #define SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR   "rgb:FFFF/FFFF/FFFF"
 
 GtkWidget*	 create_image_widget			(const char			*icon_name,
-							 const char			*background_color_spec,
-							 NautilusImagePlacementType	placement);
+							 const char			*background_color_spec);
 GtkWidget*	 create_services_title_widget		(const char			*title_text);
 GtkWidget*	 create_services_header_widget		(const char			*left_text,
 							 const char			*right_text);

@@ -1,5 +1,78 @@
 2000-08-21  Ramiro Estrugo  <ramiro@eazel.com>
 
+	Tasks: 1612, 1274, 1511 and 1588.
+	
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	* libnautilus-extensions/nautilus-scalable-font.h:
+
+	New GtkObject subclass that provdes a simple interface to raph's
+	librsvg FreeType2 bases anti aliased text rendering.
+
+	* libnautilus-extensions/nautilus-font-picker.c:
+	* libnautilus-extensions/nautilus-font-picker.h:
+
+	New font picker class.  I will soon use it in the preferences
+	dialog instead of the current one.
+
+	* libnautilus-extensions/nautilus-buffered-widget.c:
+	* libnautilus-extensions/nautilus-buffered-widget.h:
+
+	New virtual widget class that encapsulates the details of finding
+	a suitable background for compositing pixbufs.
+
+	* libnautilus-extensions/nautilus-image.c:
+	* libnautilus-extensions/nautilus-image.h:
+
+	Rewritten NautilusImage class.  Took out all the label stuff,
+	which lives in its own class.  Now subclassed from
+	NautilusBufferedWidget so that background the image gets
+	composited on is always correct and groks NautilusBackground.
+
+	* libnautilus-extensions/nautilus-label.c:
+	* libnautilus-extensions/nautilus-label.h:
+
+	New NautilusLabel widget class.  A label widget that is capable of
+	displaying anti aliased text composited over a complex background.
+
+	The background can be installed as NautilusBackground on a
+	NautilusLabel widget or any of its ancestors.  The best background
+	will automatically be found and used by the widget.
+
+	* services/nautilus-dependant-shared/shared-service-widgets.c,
+	* services/nautilus-dependant-shared/shared-service-widgets.h,
+	* services/startup/nautilus-view/nautilus-service-startup-view.c:
+
+	Update for changes in the NautilusImage api.  Unfortunately, these
+	components are slightly broken now cause of the NautilusImage
+	changes.  I will fix them shortly.
+
+	* libnautilus-extensions/nautilus-string-map.c:
+	* libnautilus-extensions/nautilus-string-map.h:
+
+	New simple class to map an arbitrary number of strings to a single
+	string.
+
+	* libnautilus-extensions/nautilus-lib-self-check-functions.h:
+	Add tests for the new string map class.
+	
+	* libnautilus-extensions/Makefile.am:
+
+	Build the new widgets.  Also add some depedencies on the static
+	libraries we link into this beast.  This way,
+	libnautilus-extensions will rebuild of one if its dependency
+	static libs is touched.
+
+	* test/.cvsignore,
+	* test/Makefile.am,
+	* test/test-nautilus-font-picker.c,
+	* test/test-nautilus-font.c,
+	* test/test-nautilus-image.c,
+	* test/test-nautilus-label.c:
+
+	Update test programs for new widgets.
+	
+2000-08-21  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-background.c:
 	(nautilus_widget_has_attached_background):
 	* libnautilus-extensions/nautilus-background.h:
