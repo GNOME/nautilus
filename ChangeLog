@@ -1,3 +1,57 @@
+2001-01-26  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 5747, Nautilus freezes while mounting a device
+	
+	There were several issues here.  The first involved the use
+	of popen to call the mount/umount command. If a mount/umount
+	call causes a lengthy response, such as a hard drive spinning
+	up, it would block the UI.  I changed the code to spawn a thread
+	and schedule a gtk_idle to display feedback if any was generated.
+	I also create a thread to call eject, instead of using a possibly
+	blocking ioctl call. Another benefir of this is that we now have
+	a more flexible eject mechanism. Zip drives and other removable
+	media can no wbe ejected.  In the course of making these changes,
+	another issue was found.  The dynamic creation of the removable
+	volumes menus was causing a UI lock up.  I get around this by
+	creating a list of removable volumes at volume monitor initialization
+	instead of a dynamic list.  The downside of this is that any new
+	entries added to the fstab while Nautilus is running will be overlooked.
+	We will have to monitor the file in the future to work around this issue.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	* libnautilus-extensions/nautilus-volume-monitor.h:
+	(nautilus_volume_monitor_initialize),
+	(nautilus_volume_monitor_destroy),
+	Add and cleanup list of removable volumes.
+	
+	(nautilus_volume_monitor_volume_is_removable):
+	Check is_removable filed of volume.
+	
+	(nautilus_volume_monitor_get_removable_volumes):
+	Return const pointer to monitor's removable volume list.
+	
+	(get_removable_volumes):
+	Contruct list of removable volumes
+	
+	(volume_is_removable), (volume_is_read_only):
+	New functions that check against fstab to see if the volume
+	is removable and read-only.
+
+	(eject_device):
+	New threaded eject function.
+	
+	(mount_volume_deactivate),
+	(mount_volume_floppy_add), (mount_volume_iso9660_add),
+	(display_mount_status), (close_error_pipe),
+	(nautilus_volume_monitor_mount_unmount_removable),
+	(mount_volume_add_filesystem):
+	
+	(mount_unmount_callback):
+	Thread function to mount/umount
+	
+	* src/file-manager/fm-desktop-icon-view.c: (create_mount_link),
+	(update_disks_menu):
+
 2001-01-26  Maciej Stachowiak  <mjs@eazel.com>
 
 	* src/nautilus-window-manage-views.c

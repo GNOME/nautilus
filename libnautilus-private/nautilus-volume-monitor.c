@@ -31,6 +31,7 @@
 #include "nautilus-directory-notify.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-gtk-extensions.h"
+#include "nautilus-gnome-extensions.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-iso9660.h"
 #include "nautilus-stock-dialogs.h"
@@ -47,6 +48,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/ioctl.h>
@@ -84,6 +86,7 @@
 struct NautilusVolumeMonitorDetails
 {
 	GList *mounts;
+	GList *removable_volumes;
 	guint mount_volume_timer_id;
 };
 
@@ -97,6 +100,7 @@ enum {
 	LAST_SIGNAL
 };
 static guint signals[LAST_SIGNAL];
+
 
 static void		nautilus_volume_monitor_initialize 		(NautilusVolumeMonitor 		*desktop_mounter);
 static void		nautilus_volume_monitor_initialize_class 	(NautilusVolumeMonitorClass 	*klass);
@@ -119,6 +123,8 @@ static gboolean 	mount_volume_add_filesystem 			(NautilusVolume 		*volume);
 static NautilusVolume	*copy_volume					(NautilusVolume             	*volume);									 
 static void		find_volumes 					(NautilusVolumeMonitor 		*monitor);
 static void		free_mount_list 				(GList 				*mount_list);
+static GList 		*get_removable_volumes 				(void);
+
 #ifdef MOUNT_AUDIO_CD
 static cdrom_drive 	*open_cdda_device 				(GnomeVFSURI 			*uri);
 static gboolean 	locate_audio_cd 				(void);
@@ -134,6 +140,9 @@ nautilus_volume_monitor_initialize (NautilusVolumeMonitor *monitor)
 	/* Set up details */
 	monitor->details = g_new0 (NautilusVolumeMonitorDetails, 1);	
 	monitor->details->mounts = NULL;
+	monitor->details->removable_volumes = NULL;
+	
+	monitor->details->removable_volumes = get_removable_volumes ();
 	
 	find_volumes (monitor);
 }
@@ -180,6 +189,7 @@ nautilus_volume_monitor_destroy (GtkObject *object)
 		
 	/* Clean up mount info */
 	free_mount_list (monitor->details->mounts);
+	free_mount_list (monitor->details->removable_volumes);
 
 	/* Clean up details */	 
 	g_free (monitor->details);
@@ -231,38 +241,32 @@ floppy_sort (const NautilusVolume *volume1, const NautilusVolume *volume2)
 }
 
 gboolean		
-nautilus_volume_monitor_volume_is_removable (NautilusVolumeMonitor *monitor, const NautilusVolume *volume)
+nautilus_volume_monitor_volume_is_removable (const NautilusVolume *volume)
 {
-	GList *disk_list, *p;
-	gboolean found_one;
-	NautilusVolume *found_volume;
-	
-	found_one = FALSE;
-
-	disk_list = nautilus_volume_monitor_get_removable_volumes (nautilus_volume_monitor_get ());
-	for (p = disk_list; p != NULL; p = p->next) {
-		/* Until we have a comprehensive desktop mount strategy and design, 
-		 * we are only showing removable volumes on the desktop.  
-		 */
-		 found_volume = p->data;		 
-		 if ( strcmp (volume->mount_path, found_volume->mount_path) == 0) {
-			found_one = TRUE;
-		 	break;
-		 }
-	}
-	g_list_free (disk_list);
-
-	return found_one;
+	return volume->is_removable;
 }
 
+
 /* nautilus_volume_monitor_get_removable_volumes
+ *
+ * Accessor. List and internal data is not to be freed.
+ */
+ 
+const GList *
+nautilus_volume_monitor_get_removable_volumes (NautilusVolumeMonitor *monitor)
+{
+	return monitor->details->removable_volumes;
+}
+
+
+/* get_removable_volumes
  *	
  * Returns a list a device paths.
  * Caller needs to free these as well as the list.
  */
 
-GList *
-nautilus_volume_monitor_get_removable_volumes (NautilusVolumeMonitor *monitor)
+static GList *
+get_removable_volumes (void)
 {
 	FILE *file;
 	GList *volumes;
@@ -304,6 +308,53 @@ nautilus_volume_monitor_get_removable_volumes (NautilusVolumeMonitor *monitor)
 	return g_list_sort (g_list_reverse (volumes), (GCompareFunc) floppy_sort);
 }
 
+
+static gboolean
+volume_is_removable (const NautilusVolume *volume)
+{
+	FILE *file;
+	struct mntent *ent;
+	
+	file = setmntent (_PATH_MNTTAB, "r");
+	g_return_val_if_fail (file != NULL, FALSE);
+	
+	/* Search for our device in the fstab */
+	while ((ent = getmntent (file)) != NULL) {
+		if (strcmp (volume->device_path, ent->mnt_fsname) == 0) {
+			/* Use noauto as our way of determining a removable volume */
+			if (strstr (ent->mnt_opts, MNTOPT_NOAUTO) != NULL) {
+				fclose (file);
+				return TRUE;
+			}
+		}	
+	}
+				
+	fclose (file);
+	return FALSE;
+}
+
+static gboolean
+volume_is_read_only (const NautilusVolume *volume)
+{
+	FILE *file;
+	struct mntent *ent;
+	
+	file = setmntent (_PATH_MNTTAB, "r");
+	g_return_val_if_fail (file != NULL, FALSE);
+	
+	/* Search for our device in the fstab */
+	while ((ent = getmntent (file)) != NULL) {
+		if (strcmp (volume->device_path, ent->mnt_fsname) == 0) {
+			if (strstr (ent->mnt_opts, MNTOPT_RO) != NULL) {
+				fclose (file);
+				return TRUE;
+			}
+		}	
+	}
+				
+	fclose (file);
+	return FALSE;
+}
 
 /* nautilus_volume_monitor_get_volume_name
  *	
@@ -591,28 +642,32 @@ mount_volume_activate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 }
 
 
-static void 
-eject_cdrom (NautilusVolume *volume)
+static void *
+eject_device (void *arg)
 {
-	int fd;
+	char *command, *path;	
+	
+	path = arg;
 
-	fd = open (volume->device_path, O_RDONLY | O_NONBLOCK);
-	if (fd < 0) {
-		return;
+	if (path != NULL) {		
+		command = g_strdup_printf ("eject %s", path);	
+		nautilus_gnome_shell_execute (command);
+		g_free (command);
+		g_free (path);
 	}
-
-	ioctl (fd, CDROMEJECT, 0);
-
-	close (fd);
+	
+	pthread_exit (NULL);
 }
 
 static void
 mount_volume_deactivate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 {
+	pthread_t eject_thread;
+
 	switch (volume->type) {
 	case NAUTILUS_VOLUME_CDROM:
-		eject_cdrom (volume);
-		break;
+		pthread_create (&eject_thread, NULL, eject_device, g_strdup (volume->device_path));
+	break;
 		
 	default:
 		break;
@@ -622,7 +677,6 @@ mount_volume_deactivate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 	gtk_signal_emit (GTK_OBJECT (monitor),
 			 signals[VOLUME_UNMOUNTED],
 			 volume);
-
 }
 
 static void
@@ -837,7 +891,6 @@ static gboolean
 mount_volume_floppy_add (NautilusVolume *volume)
 {
 	volume->type = NAUTILUS_VOLUME_FLOPPY;
-	volume->is_removable = TRUE;
 	return TRUE;
 }
 
@@ -916,8 +969,6 @@ mount_volume_iso9660_add (NautilusVolume *volume)
 	close (fd);
 
 	volume->type = NAUTILUS_VOLUME_CDROM;
-	volume->is_removable = TRUE;
-	volume->is_read_only = TRUE;
 
 	return TRUE;
 }
@@ -1109,14 +1160,44 @@ open_error_pipe (void)
 	close (error_pipe[1]);
 }
 
+typedef struct {
+	char *command;
+	char *mount_point;
+	gboolean should_mount;
+} MountThreadInfo;
+
+typedef struct {
+	char *message;
+	char *detailed_message;
+	char *title;
+} MountStatusInfo;
+
+
+static gboolean
+display_mount_status (gpointer callback_data)
+{
+	MountStatusInfo *info = callback_data;
+		
+	nautilus_error_dialog_with_details (info->message, info->title, info->detailed_message, NULL);
+
+	g_free (info->message);
+	g_free (info->detailed_message);
+	g_free (info->title);
+	g_free (info);
+	
+	return FALSE;
+}
+
 static void
 close_error_pipe (gboolean mount, const char *mount_path)
 {
-	char *title, *message;
+	char *message;
+	const char *title;
 	char detailed_msg[MAX_PIPE_SIZE];
 	int len = 0;
 	gboolean is_floppy;
-		
+	MountStatusInfo *info;
+	
 	if (mount) {
 		title = _("Mount Error");
 	} else {
@@ -1181,9 +1262,38 @@ close_error_pipe (gboolean mount, const char *mount_path)
 		message = g_strdup (_("Nautilus was unable to unmount the selected volume."));
 	}
 	
-	nautilus_error_dialog_with_details (message, title, detailed_msg, NULL);
+	/* Set up info and pass it to callback to display dialog.  We do this because this
+	   routine may be called from a thread */
+	info = g_new0 (MountStatusInfo, 1);
+	info->message = g_strdup (message);	
+	info->detailed_message = g_strdup (detailed_msg);
+	info->title = g_strdup (title);
+
+	gtk_idle_add (display_mount_status, info);
 	
 	g_free (message);	
+}
+
+
+static void *
+mount_unmount_callback (void *arg)
+{
+	FILE *file;
+	MountThreadInfo *info;
+	info = arg;
+	
+	if (info != NULL) {	
+		open_error_pipe ();
+		file = popen (info->command, "r");
+		close_error_pipe (info->should_mount, info->mount_point);
+		pclose (file);
+		
+		g_free (info->command);
+		g_free (info->mount_point);
+		g_free (info);
+	}
+	
+	pthread_exit (NULL); 	
 }
 
 
@@ -1196,7 +1306,8 @@ nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
 	GList *p;
 	NautilusVolume *volume;
 	char *command_string;
-	FILE *file;
+	MountThreadInfo *mount_info;
+	pthread_t mount_thread;
 
 	volume = NULL;
 	
@@ -1214,13 +1325,16 @@ nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
 		command = find_command (umount_known_locations);
 	}
 
-	if (command != NULL) {
-		command_string = g_strconcat (command, " ", mount_point, NULL);
-		open_error_pipe ();
-		file = popen (command_string, "r");
-		close_error_pipe (should_mount, mount_point);
-		pclose (file);		
-	}
+	command_string = g_strconcat (command, " ", mount_point, NULL);
+
+	mount_info = g_new0 (MountThreadInfo, 1);
+	mount_info->command = g_strdup (command_string);	
+	mount_info->mount_point = g_strdup (mount_point);
+	mount_info->should_mount = should_mount;
+
+	pthread_create (&mount_thread, NULL, mount_unmount_callback, mount_info);
+	
+	g_free (command_string);
 }
 
 
@@ -1348,8 +1462,7 @@ mount_volume_add_filesystem (NautilusVolume *volume)
 {
 	gboolean mounted = FALSE;
 	
-	volume->is_removable = FALSE;
-	volume->is_read_only = FALSE;
+	
 		
 	if (nautilus_str_has_prefix (volume->device_path, FLOPPY_DEVICE_PATH_PREFIX)) {		
 		mounted = mount_volume_floppy_add (volume);
@@ -1388,6 +1501,9 @@ mount_volume_add_filesystem (NautilusVolume *volume)
 	} else if (strcmp (volume->filesystem, "xiafs") == 0) {
 		mounted = mount_volume_xiafs_add (volume);
 	}
+	
+	volume->is_removable = volume_is_removable (volume);
+	volume->is_read_only = volume_is_read_only (volume);;
 	
 	return mounted;
 }

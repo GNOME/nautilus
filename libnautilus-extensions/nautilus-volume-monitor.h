@@ -98,8 +98,7 @@ void               	nautilus_volume_monitor_mount_unmount_removable    	(Nautilu
 									   	 gboolean			 should_mount);
 gboolean		nautilus_volume_monitor_volume_is_mounted 		(NautilusVolumeMonitor 		*monitor,
 					   					const NautilusVolume 		*mount_point);
-gboolean		nautilus_volume_monitor_volume_is_removable		(NautilusVolumeMonitor 		*monitor,
-										 const NautilusVolume 		*volume);
+gboolean		nautilus_volume_monitor_volume_is_removable		(const NautilusVolume 		*volume);
 gboolean               	nautilus_volume_monitor_is_volume_link             	(const char            		*path);
 
 gboolean		nautilus_volume_monitor_should_integrate_trash		(const NautilusVolume 		*volume);
@@ -107,7 +106,7 @@ const char		*nautilus_volume_monitor_get_volume_mount_uri 		(const NautilusVolum
 void                   	nautilus_volume_monitor_each_mounted_volume        	(NautilusVolumeMonitor 		*monitor,
 									  	 NautilusEachVolumeFunction   	function,
 									   	 gpointer               	context);
-GList			*nautilus_volume_monitor_get_removable_volumes 		(NautilusVolumeMonitor 		*monitor);
+const GList		*nautilus_volume_monitor_get_removable_volumes 		(NautilusVolumeMonitor 		*monitor);
 void			nautilus_volume_monitor_free_volume             	(NautilusVolume             	*volume);
 char 			*nautilus_volume_monitor_get_target_uri 		(const NautilusVolume 		*volume);
 

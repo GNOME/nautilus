@@ -256,7 +256,7 @@ create_mount_link (FMDesktopIconView *icon_view,
 	}
 	
 	/* FIXME bugzilla.eazel.com 5412: Design a comprehensive desktop mounting strategy */
-	if (!nautilus_volume_monitor_volume_is_removable (nautilus_volume_monitor_get (), volume)) {
+	if (!nautilus_volume_monitor_volume_is_removable (volume)) {
 		return;
 	}
 	
@@ -995,14 +995,13 @@ mount_or_unmount_removable_volume (BonoboUIComponent *component,
 static void
 update_disks_menu (FMDesktopIconView *view)
 {
-	GList *disk_list;
-	GList *element;
+	const GList *disk_list, *element;
 	guint index;
 	char *name;
 	char *command_name;
 	char *command_path;
 	NautilusVolume *volume;
-
+	
 	/* Clear any previously inserted items */
 	nautilus_bonobo_remove_menu_items_and_commands
 		(view->details->ui, DESKTOP_BACKGROUND_POPUP_PATH_DISKS);
@@ -1048,11 +1047,8 @@ update_disks_menu (FMDesktopIconView *view)
 			 mount_or_unmount_removable_volume,
 			 mount_parameters_new (view, volume->mount_path),
 			 mount_parameters_free_wrapper);
-		g_free (command_name);
-		
-		nautilus_volume_monitor_free_volume (volume);
+		g_free (command_name);		
 	}
-	g_list_free (disk_list);
 }
 
 static void
