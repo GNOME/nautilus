@@ -244,7 +244,7 @@ nautilus_file_new_from_info (NautilusDirectory *directory,
 }
 
 /**
- * nautilus_file_get:
+ * nautilus_file_get_internal:
  * @uri: URI of file to get.
  *
  * Get a file given a uri.
@@ -266,7 +266,6 @@ nautilus_file_get_internal (const char *uri, gboolean create)
 	/* Make VFS version of URI. */
 	vfs_uri = gnome_vfs_uri_new (uri);
 
-	/* Avoid (false) compiler complaint about possibly uninitialized variable */
 	file_name = NULL;
 
 	if (vfs_uri != NULL) {
@@ -278,9 +277,11 @@ nautilus_file_get_internal (const char *uri, gboolean create)
 		 * so we'll treat it like the case where gnome_vfs_uri couldn't
 		 * even create a URI.
 		 */
-		if (nautilus_str_is_empty (file_name_escaped)) {
+		if (nautilus_str_is_empty (file_name)) {
 			gnome_vfs_uri_unref (vfs_uri);
 			vfs_uri = NULL;
+			g_free (file_name);
+			file_name = NULL;
 		}
 	}
 
@@ -311,9 +312,7 @@ nautilus_file_get_internal (const char *uri, gboolean create)
 	/* Get the name for the file. */
 	if (vfs_uri == NULL) {
 		g_assert (self_owned);
-		if (directory == NULL) {
-			file_name = NULL;
-		} else {
+		if (directory != NULL) {
 			file_name = nautilus_directory_get_name_for_self_as_new_file (directory);
 		}
 	}

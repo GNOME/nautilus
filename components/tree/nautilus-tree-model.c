@@ -475,15 +475,6 @@ nautilus_tree_model_get_node (NautilusTreeModel *model,
 	}
 
 	node = g_hash_table_lookup (model->details->file_to_node_map, file);
-
-	if (node == NULL) {
-		g_print ("You've run into an intermittent tree view bug.\n");
-		g_print ("Running Nautilus again will probably not hit this bug.\n");
-		g_print ("The tree view didn't have a node for %s (0x%x)\n", uri, (unsigned) file);
-		g_print ("The tree view had the following nodes:\n\n");
-		nautilus_tree_model_dump_files (model);
-	}
-
 	nautilus_file_unref (file);
 
 	return node;

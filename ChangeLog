@@ -1,3 +1,20 @@
+2000-09-29  John Sullivan  <sullivan@eazel.com>
+
+	Probably fixed bug 3327 (intermittent tree view crash)
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_internal): Changed file_name_escaped
+	to file_name in nautilus_str_is_empty call. 
+	file_name_escaped had already been freed at this point
+	(Doh!). Darin and I believe this to be the cause of
+	3327. Also freed file_name later, which had been leaking.
+
+	* components/tree/nautilus-tree-model.c:
+	(nautilus_tree_model_get_node): Removed extra debugging
+	spam from here now that bug seems fixed. We can bring it
+	back later if necessary.
+	
+
 2000-09-29  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* configure.in:
