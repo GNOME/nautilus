@@ -1,3 +1,22 @@
+2000-10-25  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (generate_install_form), (show_dialog_and_run_away):
+
+	A few quick tweaks to make the installer screenshot-worthy, and to
+	fix a possible case where it would switch to a new URI before it
+	had told nautilus it was done loading.  (I think that was
+	confusing Nautilus in some corner cases.)
+	
+	* components/services/trilobite/libtrilobite/trilobite-redirect.c:
+	(wipe_redirect_table), (add_redirect),
+	(trilobite_redirect_lookup):
+
+	Add "/" back to the keys when adding and removing, since otherwise
+	we end up with a big blob of evil-named keys.  Fix the bug that
+	the missing "/" was hiding: namely, that mass-removing keys had
+	stopped working after the gconf upgrade.
+	
 2000-10-25  Mike Fleming  <mfleming@eazel.com>
 
 	* components/mozilla/main.c: (run_test_cases), (main):

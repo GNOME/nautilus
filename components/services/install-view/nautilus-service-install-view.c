@@ -119,7 +119,7 @@ generate_install_form (NautilusServiceInstallView	*view)
 
 	/* Add package information */
 
-	add_padding_to_box (view->details->form, 0, 16);
+	add_padding_to_box (view->details->form, 0, 6);
 
 	/* Package Name */
 	temp_box = gtk_hbox_new (FALSE, 0);
@@ -134,26 +134,19 @@ generate_install_form (NautilusServiceInstallView	*view)
 	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->package_name), 18);
 	gtk_widget_show (view->details->package_name);
 
-	/* Package Description */
-	temp_box = gtk_hbox_new (FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 2);
-	gtk_widget_show (temp_box);
-	view->details->package_details = nautilus_label_new (" ");
-	nautilus_label_set_text_justification (NAUTILUS_LABEL (view->details->package_details), GTK_JUSTIFY_LEFT);
-	nautilus_label_set_line_wrap (NAUTILUS_LABEL (view->details->package_details), TRUE);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->package_details), 12);
-	gtk_box_pack_start (GTK_BOX (temp_box), view->details->package_details, FALSE, FALSE, 15);
-	gtk_widget_show (view->details->package_details);
-
 	/* Package Version */
 	temp_box = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 2);
 	gtk_widget_show (temp_box);
 	view->details->package_version = nautilus_label_new (" ");
 	nautilus_label_set_text_justification (NAUTILUS_LABEL (view->details->package_version), GTK_JUSTIFY_LEFT);
+	nautilus_label_set_font_from_components (NAUTILUS_LABEL (view->details->package_version), "helvetica", "bold",
+						 NULL, NULL);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->package_version), 12);
 	gtk_box_pack_start (GTK_BOX (temp_box), view->details->package_version, FALSE, FALSE, 15);
 	gtk_widget_show (view->details->package_version);
+
+	add_padding_to_box (view->details->form, 0, 4);
 
 	/* generate the overall progress bar */
 	temp_box = gtk_hbox_new (FALSE, 0);
@@ -171,6 +164,19 @@ generate_install_form (NautilusServiceInstallView	*view)
 	nautilus_label_set_text_justification (NAUTILUS_LABEL (view->details->overall_feedback_text), GTK_JUSTIFY_LEFT);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->overall_feedback_text), 11);
 	gtk_box_pack_start (GTK_BOX (temp_box), view->details->overall_feedback_text, FALSE, FALSE, 30);
+
+	add_padding_to_box (view->details->form, 0, 10);
+
+	/* Package Description */
+	temp_box = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 2);
+	gtk_widget_show (temp_box);
+	view->details->package_details = nautilus_label_new (" ");
+	nautilus_label_set_text_justification (NAUTILUS_LABEL (view->details->package_details), GTK_JUSTIFY_LEFT);
+	nautilus_label_set_line_wrap (NAUTILUS_LABEL (view->details->package_details), TRUE);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->package_details), 12);
+	gtk_box_pack_start (GTK_BOX (temp_box), view->details->package_details, FALSE, FALSE, 15);
+	gtk_widget_show (view->details->package_details);
 
 	/* filler blob to separate the top from the bottom */
 	gtk_box_pack_start (GTK_BOX (view->details->form), gtk_label_new (""), TRUE, FALSE, 0);
@@ -797,6 +803,9 @@ show_dialog_and_run_away (NautilusServiceInstallView *view, const char *message)
 		dialog = gnome_ok_dialog (message);
 	}
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+
+	/* just in case we were in "loading" mode */
+	nautilus_view_report_load_complete (view->details->nautilus_view);
 
 	gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
 	go_to_uri (view->details->nautilus_view, NEXT_SERVICE_VIEW);
