@@ -54,7 +54,7 @@ struct NautilusTreeViewDetails {
 	NautilusTreeModel *child_model;
 
 	NautilusFile *activation_file;
-	guint save_expansion_state_idle_id;
+	GHashTable   *expanded_uris;
 };
 
 typedef struct {
@@ -65,16 +65,110 @@ typedef struct {
 BONOBO_CLASS_BOILERPLATE (NautilusTreeView, nautilus_tree_view,
 			  NautilusView, NAUTILUS_TYPE_VIEW)
 
+/*
+ *   The expansion state storage is pretty broken
+ * conceptually we have a gconf key, but we can't
+ * listen on it, since we don't want to sync all
+ * tree views. We want to load the stored state per
+ * new tree view we instantiate, and keep a track of
+ * what nodes we are expanding.
+ *
+ *   We then arbitrarily serialize all the tree
+ * view's expansion state - and the last one to shut
+ * wins the GConf key value - it sucks, but it's what
+ * happened in Nautilus 1.0
+ *
+ * - Michael Meeks (23/5/2002)
+ */
+
+static void
+populate_expansion_hash (const char *string,
+			 gpointer callback_data)
+{
+	char *key = g_strdup (string);
+
+	g_hash_table_insert (callback_data, key, key);
+}
+
 static void
 load_expansion_state (NautilusTreeView *view)
 {
 	EelStringList *uris;
 
-        uris = eel_preferences_get_string_list (NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE);
-        /* eel_string_list_for_each (uris, expansion_state_load_callback, expansion_state); */
-        eel_string_list_free (uris);
+	uris = eel_preferences_get_string_list (
+		NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE);
 
-	/* FIXME: Need to expand nodes as they get loaded -- connect to the row_inserted signal on the model */
+	eel_string_list_for_each (uris, populate_expansion_hash,
+				  view->details->expanded_uris);
+
+	eel_string_list_free (uris);
+}
+
+static void
+expand_row_if_stored (NautilusTreeView *view,
+		      GtkTreePath      *path,
+		      const char       *uri)
+{
+	g_return_if_fail (NAUTILUS_IS_TREE_VIEW (view));
+	g_return_if_fail (view->details != NULL);
+
+	if (g_hash_table_lookup (view->details->expanded_uris, uri)) {
+
+		if (!gtk_tree_view_expand_row (
+			view->details->tree_widget, path, FALSE)) {
+			g_warning ("Error expanding row '%s' '%s'", uri,
+				   gtk_tree_path_to_string (path));
+		}
+		g_hash_table_remove (view->details->expanded_uris, uri);
+	}
+}
+
+static void
+row_inserted_expand_node_callback (GtkTreeModel     *tree_model,
+				   GtkTreePath      *path,
+				   GtkTreeIter      *iter,
+				   NautilusTreeView *view)
+{
+	char *uri;
+	GtkTreeIter  parent;
+	GtkTreePath *sort_path, *parent_path;
+	NautilusFile *file;
+
+	file = nautilus_tree_model_iter_get_file (view->details->child_model, iter);
+
+	if (file) {
+		/*
+		 *   We can't expand a node as it's created,
+		 * we need to wait for the dummy child to be
+		 * made, so it has children, so 'expand_node'
+		 * doesn't fail.
+		 */
+		nautilus_file_unref (file);
+		return;
+	}
+
+	if (!gtk_tree_model_iter_parent (tree_model, &parent, iter)) {
+		g_warning ("Un-parented tree node");
+		return;
+	}
+
+	file = nautilus_tree_model_iter_get_file (view->details->child_model, &parent);
+
+	uri = nautilus_file_get_uri (file);
+	g_return_if_fail (uri != NULL);
+
+	parent_path = gtk_tree_model_get_path (tree_model, &parent);
+
+	sort_path = gtk_tree_model_sort_convert_child_path_to_path
+		(view->details->sort_model, parent_path);
+
+	expand_row_if_stored (view, sort_path, uri);
+
+	gtk_tree_path_free (sort_path);
+
+	g_free (uri);
+
+	nautilus_file_unref (file);
 }
 
 static NautilusFile *
@@ -115,40 +209,22 @@ prepend_one_uri (GtkTreeView *tree_view,
 }
 
 static void
-save_expansion_state (NautilusTreeView *view)
+save_expansion_state_callback (GtkTreeView      *tree_widget,
+			       NautilusTreeView *view)
 {
 	PrependURIParameters p;
         EelStringList *uris;
 
+	g_return_if_fail (NAUTILUS_IS_TREE_VIEW (view));
+
 	p.uris = NULL;
 	p.view = view;
-        gtk_tree_view_map_expanded_rows (view->details->tree_widget, prepend_one_uri, &p);
+        gtk_tree_view_map_expanded_rows (tree_widget, prepend_one_uri, &p);
         p.uris = g_list_sort (p.uris, eel_strcmp_compare_func);
         uris = eel_string_list_new_from_g_list (p.uris, TRUE);
 	eel_g_list_free_deep (p.uris);
         eel_preferences_set_string_list (NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE, uris);
         eel_string_list_free (uris);
-}
-
-static gboolean
-save_expansion_state_idle_callback (gpointer callback_data)
-{
-	NautilusTreeView *view;
-
-	view = NAUTILUS_TREE_VIEW (callback_data);
-	view->details->save_expansion_state_idle_id = 0;
-	save_expansion_state (view);
-	return FALSE;
-}
-
-static void
-schedule_save_expansion_state_callback (NautilusTreeView *view)
-{
-	g_assert (NAUTILUS_IS_TREE_VIEW (view));
-	if (view->details->save_expansion_state_idle_id == 0) {
-		view->details->save_expansion_state_idle_id =
-			g_idle_add (save_expansion_state_idle_callback, view);
-	}
 }
 
 static void
@@ -243,21 +319,29 @@ compare_rows (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer call
 static void
 create_tree (NautilusTreeView *view)
 {
-	GtkTreeViewColumn *column;
 	GtkCellRenderer *cell;
+	GtkTreeViewColumn *column;
 	
-	view->details->child_model = nautilus_tree_model_new ("file:///");
+	view->details->child_model = nautilus_tree_model_new (NULL);
 	view->details->sort_model = GTK_TREE_MODEL_SORT
 		(gtk_tree_model_sort_new_with_model (GTK_TREE_MODEL (view->details->child_model)));
-	g_object_unref (view->details->child_model);
 	view->details->tree_widget = GTK_TREE_VIEW
 		(gtk_tree_view_new_with_model (GTK_TREE_MODEL (view->details->sort_model)));
 	g_object_unref (view->details->sort_model);
+	g_signal_connect_object
+		(view->details->child_model, "row_inserted",
+		 G_CALLBACK (row_inserted_expand_node_callback),
+		 view, G_CONNECT_AFTER);
+	nautilus_tree_model_set_root_uri (view->details->child_model, "file:///");
+	g_object_unref (view->details->child_model);
 
 	gtk_tree_sortable_set_default_sort_func (GTK_TREE_SORTABLE (view->details->sort_model),
 						 compare_rows, view, NULL);
 
 	gtk_tree_view_set_headers_visible (view->details->tree_widget, FALSE);
+
+	g_signal_connect_object (view->details->tree_widget, "destroy",
+				 G_CALLBACK (save_expansion_state_callback), view, 0);
 
 	/* Create column */
 	column = gtk_tree_view_column_new ();
@@ -278,16 +362,11 @@ create_tree (NautilusTreeView *view)
 					     NULL);
 
 	gtk_tree_view_append_column (view->details->tree_widget, column);
-	
+
 	gtk_widget_show (GTK_WIDGET (view->details->tree_widget));
 
 	gtk_container_add (GTK_CONTAINER (view->details->scrolled_window),
 			   GTK_WIDGET (view->details->tree_widget));
-
-	g_signal_connect_object (view->details->tree_widget, "row_expanded",
-				 G_CALLBACK (schedule_save_expansion_state_callback), view, G_CONNECT_SWAPPED);
-	g_signal_connect_object (view->details->tree_widget, "row_collapsed",
-				 G_CALLBACK (schedule_save_expansion_state_callback), view, G_CONNECT_SWAPPED);
 
 	g_signal_connect_object (gtk_tree_view_get_selection (GTK_TREE_VIEW (view->details->tree_widget)), "changed",
 				 G_CALLBACK (selection_changed_callback), view, 0);
@@ -339,6 +418,8 @@ nautilus_tree_view_instance_init (NautilusTreeView *view)
 	view->details = g_new0 (NautilusTreeViewDetails, 1);
 	
 	view->details->scrolled_window = gtk_scrolled_window_new (NULL, NULL);
+	view->details->expanded_uris = g_hash_table_new_full
+		(g_str_hash, g_str_equal, g_free, NULL);
 	
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (view->details->scrolled_window), 
 					GTK_POLICY_AUTOMATIC,
@@ -375,9 +456,6 @@ nautilus_tree_view_finalize (GObject *object)
 					 filtering_changed_callback, view);
 
 	cancel_activation (view);
-	if (view->details->save_expansion_state_idle_id != 0) {
-		g_source_remove (view->details->save_expansion_state_idle_id);
-	}
 
 	g_free (view->details);
 

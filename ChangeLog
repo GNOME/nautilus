@@ -1,3 +1,30 @@
+2002-05-23  Michael Meeks  <michael@ximian.com>
+
+	This change only partially works, it works correctly
+	with a fix to Gtk+ from jrb, but then dies with multiple
+	views.
+
+	* components/tree/nautilus-tree-view.c
+	(nautilus_tree_view_finalize): don't de-queue idle
+	epansion state save.
+	(schedule_save_expansion_state_callback),
+	(save_expansion_state_idle_callback): kill.
+	(create_tree): don't save the gconf key on each
+	row expand / contract.
+	(nautilus_tree_view_instance_init): setup expanded_uris.
+	(load_expansion_state): kill.
+	(row_inserted_expand_node_callback): impl.
+	(create_tree): connect signal, always expand root.
+	(load_expansion_state): impl.
+	(save_expansion_state_callback): rename.
+	(expand_row_if_stored): impl.
+	Sigh - I spent hours working out there was a sort_path.
+
+	* components/tree/nautilus-tree-model.c
+	(nautilus_tree_model_new): optionally set the root.
+	(nautilus_tree_model_set_root_uri): publicise.
+	(nautilus_tree_model_iter_has_child): add some debug.
+
 2002-05-23  Alex Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-directory-view.c:

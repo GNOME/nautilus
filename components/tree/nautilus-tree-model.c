@@ -1149,13 +1149,23 @@ nautilus_tree_model_iter_parent (GtkTreeModel *model, GtkTreeIter *iter, GtkTree
 static gboolean
 nautilus_tree_model_iter_has_child (GtkTreeModel *model, GtkTreeIter *iter)
 {
+	gboolean has_child;
 	TreeNode *node;
 
 	g_return_val_if_fail (NAUTILUS_IS_TREE_MODEL (model), FALSE);
 	g_return_val_if_fail (iter_is_valid (NAUTILUS_TREE_MODEL (model), iter), FALSE);
 
 	node = iter->user_data;
-	return node != NULL && node->directory != NULL;
+
+	has_child = node != NULL && node->directory != NULL;
+
+#if 0
+	g_warning ("Node '%s' %s",
+		   node && node->file ? nautilus_file_get_uri (node->file) : "no name",
+		   has_child ? "has child" : "no child");
+#endif
+		   
+	return has_child;
 }
 
 static int
@@ -1365,14 +1375,14 @@ root_node_file_changed_callback (NautilusFile *file, NautilusTreeModel *model)
 	update_node (model, model->details->root_node);
 }
 
-static void
+void
 nautilus_tree_model_set_root_uri (NautilusTreeModel *model, const char *root_uri)
 {
 	NautilusFile *file;
 	TreeNode *node;
 	GList *attrs;
 	
-	g_assert (model->details->root_node == NULL);
+	g_return_if_fail (model->details->root_node == NULL);
 	
 	file = nautilus_file_get (root_uri);
 
@@ -1393,12 +1403,14 @@ nautilus_tree_model_set_root_uri (NautilusTreeModel *model, const char *root_uri
 }
 
 NautilusTreeModel *
-nautilus_tree_model_new (const char *root_uri)
+nautilus_tree_model_new (const char *opt_root_uri)
 {
 	NautilusTreeModel *model;
 
 	model = g_object_new (NAUTILUS_TYPE_TREE_MODEL, NULL);
-	nautilus_tree_model_set_root_uri (model, root_uri);
+	if (opt_root_uri) {
+		nautilus_tree_model_set_root_uri (model, opt_root_uri);
+	}
 	
 	return model;
 }
