@@ -1,3 +1,23 @@
+2000-07-04  Andy Hertzfeld  <andy@eazel.com>
+
+	First cut at the first-time preferences druid.  It's still
+	not hooked-up yet, and it's appearance needs some work.
+	
+	* libnautilus-extensions/nautilus-file-utilities.c,h:
+	(nautilus_user_main_directory_exists):
+	added routine to test if the user main directory has been created
+	* src/nautilus-application.c: (nautilus_application_startup):
+	if the user main directory hasn't been created yet, run the
+	first time druid instead of showing a Nautilus window.
+	* src/Makefile.am:
+	added new files: nautilus-first-time-druid.c and .h
+	* src/nautilus-first-time-druid.c,h: (druid_cancel),
+	(druid_finished), (set_up_background),
+	(user_level_selection_changed), (signup_selection_changed),
+	(set_up_user_level_page), (set_up_service_signup_page),
+	(nautilus_first_time_druid_show):
+	new, first-time druid asks for user level and service signup.
+	
 2000-07-04  J Shane Culpepper  <pepper@eazel.com>
 
 	*

@@ -38,11 +38,12 @@ LDADD =\
 	$(NULL)
 
 noinst_HEADERS = \
+	nautilus-application.h			\
+	nautilus-applicable-views.h		\
 	nautilus-bookmark-list.h		\
 	nautilus-bookmarks-window.h		\
 	nautilus-desktop-window.h		\
-	nautilus-sidebar-tabs.h			\
-	nautilus-sidebar-title.h		\
+	nautilus-first-time-druid.h		\
 	nautilus-link-set-window.h		\
 	nautilus-location-bar.h			\
 	nautilus-search-bar.h			\
@@ -55,10 +56,10 @@ noinst_HEADERS = \
 	nautilus-self-check-functions.h 	\
 	nautilus-signaller.h			\
 	nautilus-zoom-control.h			\
-	nautilus-application.h			\
 	nautilus-switchable-navigation-bar.h	\
 	nautilus-sidebar.h			\
-	nautilus-applicable-views.h		\
+	nautilus-sidebar-tabs.h			\
+	nautilus-sidebar-title.h		\
 	nautilus-view-frame-private.h		\
 	nautilus-view-frame.h			\
 	nautilus-window-manage-views.h		\
@@ -70,8 +71,7 @@ nautilus_SOURCES =\
 	nautilus-bookmark-list.c		\
 	nautilus-bookmarks-window.c		\
 	nautilus-desktop-window.c		\
-	nautilus-sidebar-tabs.c			\
-	nautilus-sidebar-title.c		\
+	nautilus-first-time-druid.c		\
 	nautilus-link-set-window.c		\
 	nautilus-location-bar.c         	\
 	nautilus-search-bar.c			\
@@ -89,6 +89,8 @@ nautilus_SOURCES =\
 	nautilus-zoomable-frame-corba.c		\
 	nautilus-application.c			\
 	nautilus-sidebar.c			\
+	nautilus-sidebar-tabs.c			\
+	nautilus-sidebar-title.c		\
 	nautilus-switchable-navigation-bar.c	\
 	nautilus-main.c 			\
 	nautilus-applicable-views.c		\

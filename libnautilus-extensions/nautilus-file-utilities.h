@@ -47,6 +47,10 @@ const char *            nautilus_get_user_main_directory (void);
 const char *            nautilus_get_desktop_directory   (void);
 const char *            nautilus_get_pixmap_directory    (void);
 
+/* see if the user_main_directory exists.  This must be called before
+   "nautilus_get_user_main_directory", which creates it */
+gboolean		nautilus_user_main_directory_exists (void);
+
 /* Turn a "file://" URI into a local path.
  * Returns NULL if it's not a URI that can be converted.
  */

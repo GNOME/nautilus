@@ -204,6 +204,27 @@ nautilus_get_desktop_directory (void)
 }
 
 /**
+  * nautilus_user_main_directory_exists:
+  *
+  * returns true if the user directory exists.  This must be called
+  * before nautilus_get_user_main_directory, which creates it if necessary
+  *
+  **/
+gboolean
+nautilus_user_main_directory_exists(void)
+{
+	gboolean directory_exists;
+	char *main_directory;
+	
+	main_directory = g_strdup_printf ("%s/%s",
+					g_get_home_dir(),
+					NAUTILUS_USER_MAIN_DIRECTORY_NAME);
+	directory_exists = g_file_exists(main_directory);
+	g_free(main_directory);
+	return directory_exists;
+}
+
+/**
  * nautilus_get_user_main_directory:
  * 
  * Get the path for the user's main Nautilus directory.  
