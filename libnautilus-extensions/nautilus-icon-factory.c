@@ -1965,13 +1965,14 @@ nautilus_get_icon_size_for_zoom_level (NautilusZoomLevel zoom_level)
  */
 GdkPixbuf *
 nautilus_icon_factory_get_pixbuf_for_file (NautilusFile *file,
+					   const char *modifer,
 					   guint size_in_pixels)
 {
 	NautilusScalableIcon *icon;
 	GdkPixbuf *pixbuf;
 
 	/* Get the pixbuf for this file. */
-	icon = nautilus_icon_factory_get_icon_for_file (file, NULL);
+	icon = nautilus_icon_factory_get_icon_for_file (file, modifer);
 	if (icon == NULL) {
 		return NULL;
 	}
@@ -1990,6 +1991,7 @@ nautilus_icon_factory_get_pixbuf_for_file (NautilusFile *file,
  */
 void
 nautilus_icon_factory_get_pixmap_and_mask_for_file (NautilusFile *file,
+						    const char *modifer,
 						    guint size_in_pixels,
 						    GdkPixmap **pixmap,
 						    GdkBitmap **mask)
@@ -2002,7 +2004,7 @@ nautilus_icon_factory_get_pixmap_and_mask_for_file (NautilusFile *file,
 	*pixmap = NULL;
 	*mask = NULL;
 
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (file, size_in_pixels);
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (file, modifer, size_in_pixels);
 	if (pixbuf == NULL) {
 		return;
 	}

@@ -221,6 +221,7 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 	if (nautilus_icon_factory_is_icon_ready_for_file (sidebar_title->details->file)) {
 		nautilus_icon_factory_get_pixmap_and_mask_for_file
 			(sidebar_title->details->file,
+			 "accept",
 			 NAUTILUS_ICON_SIZE_STANDARD,
 			 &pixmap, &mask);
 	} else {

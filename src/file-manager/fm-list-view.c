@@ -1377,6 +1377,7 @@ install_row_images (FMListView *list_view, guint row)
 	/* Install the icon for this file. */
 	nautilus_icon_factory_get_pixmap_and_mask_for_file
 		(file,
+		 NULL,
 		 fm_list_view_get_icon_size (list_view),
 		 &pixmap, &bitmap);
 	gtk_clist_set_pixmap (clist, row, LIST_VIEW_COLUMN_ICON, pixmap, bitmap);

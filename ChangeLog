@@ -1,3 +1,24 @@
+2000-07-05  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-factory.c,h:
+	(nautilus_icon_factory_get_pixbuf_for_file),
+	(nautilus_icon_factory_get_pixmap_and_mask_for_file):
+	added modifier parameter to icon factory high level routines
+	* components/tree/nautilus-tree-view.c:
+	(nautilus_tree_view_insert_file):
+	added extra parameter to get_pixmap call
+	* src/file-manager/fm-list-view.c: (install_row_images):
+	added extra parameter to get_pixmap call
+	* src/file-manager/fm-properties-window.c:
+	(get_pixmap_and_mask_for_properties_window):
+	added extra parameter to get_pixmap call
+	* icons/eazel/Makefile.am:
+	* icons/eazel/i-directory-accept.svg:
+	removed the .svg open folder, added bitmap ones
+	changed the folder icons in eazel theme to Susan's new one
+	* src/nautilus-sidebar-title.c: (update_icon):
+	use the open folder in the sidebar
+	
 2000-07-05  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-global-preferences.c:

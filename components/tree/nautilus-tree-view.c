@@ -566,6 +566,7 @@ nautilus_tree_view_insert_file (NautilusTreeView *view, NautilusFile *file)
 
 
 		nautilus_icon_factory_get_pixmap_and_mask_for_file (file,
+								    NULL,
 								    NAUTILUS_ICON_SIZE_FOR_MENUS,
 								    &pixmap,
 								    &mask);

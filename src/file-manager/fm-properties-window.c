@@ -174,7 +174,7 @@ get_pixmap_and_mask_for_properties_window (NautilusFile *file,
 
 	g_assert (NAUTILUS_IS_FILE (file));
 	
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (file, NAUTILUS_ICON_SIZE_STANDARD);
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (file, NULL, NAUTILUS_ICON_SIZE_STANDARD);
         gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap_return, mask_return, 128);
 	gdk_pixbuf_unref (pixbuf);
 }

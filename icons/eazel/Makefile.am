@@ -6,14 +6,17 @@ eazel_DATA =					\
 	Forward.png				\
 	Home.png				\
 	i-directory.png				\
+	i-directory-12.png			\
 	i-directory-24.png			\
 	i-directory-36.png			\
 	i-directory-72.png			\
 	i-directory-96.png			\
 	i-directory-accept.png			\
+	i-directory-accept-12.png		\
+	i-directory-accept-24.png		\
 	i-directory-accept-36.png		\
 	i-directory-accept-72.png		\
-	i-directory-accept.svg			\
+	i-directory-accept-96.png		\
 	i-regular.png				\
 	i-regular.xml				\
 	i-regular-12.png			\
