@@ -5,9 +5,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus 2.2.1\n"
-"POT-Creation-Date: 2003-03-31 23:22-0500\n"
-"PO-Revision-Date: 2003-03-17 18:11+0800\n"
+"Project-Id-Version: nautilus 2.2.3.1\n"
+"POT-Creation-Date: 2003-04-11 00:36+0800\n"
+"PO-Revision-Date: 2003-04-11 00:49+0800\n"
 "Last-Translator: Abel Cheung <maddog@linux.org.hk>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
 "MIME-Version: 1.0\n"
@@ -236,15 +236,15 @@ msgstr "這裡預留作日後顯示 IDE 資訊之用。"
 
 #: components/history/Nautilus_View_history.server.in.in.h:1
 msgid "History"
-msgstr "紀錄"
+msgstr "瀏覽紀錄"
 
 #: components/history/Nautilus_View_history.server.in.in.h:2
 msgid "History side pane"
-msgstr "紀錄側列窗格"
+msgstr "瀏覽紀錄側列窗格"
 
 #: components/history/Nautilus_View_history.server.in.in.h:3
 msgid "History side pane for Nautilus"
-msgstr "Nautilus 的紀錄側列窗格"
+msgstr "Nautilus 的瀏覽紀錄側列窗格"
 
 #: components/image_properties/Nautilus_View_image_properties.server.in.in.h:1
 msgid "Image"
@@ -1231,17 +1231,17 @@ msgstr "抱歉，無法儲存自選圖章的名稱。"
 #: libnautilus-private/nautilus-file-operations-progress.c:456
 #, c-format
 msgid "%ld of %ld"
-msgstr "%ld 之 %ld"
+msgstr "%2$ld 之 %1$ld"
 
 #. "From" dialog label, source path gets placed next to it in the dialog
 #: libnautilus-private/nautilus-file-operations.c:347
 msgid "From:"
-msgstr "由："
+msgstr "從："
 
 #. "To" dialog label, source path gets placed next to it in the dialog
 #: libnautilus-private/nautilus-file-operations.c:362
 msgid "To:"
-msgstr "移至："
+msgstr "至："
 
 #: libnautilus-private/nautilus-file-operations.c:542
 #, c-format
@@ -4255,21 +4255,21 @@ msgstr "拖放時發生錯誤"
 msgid "An invalid drag type was used."
 msgstr "拖曳方式不正確。"
 
-#: src/file-manager/fm-list-view.c:715
+#: src/file-manager/fm-list-view.c:719
 msgid "File name"
 msgstr "檔案名稱"
 
-#: src/file-manager/fm-list-view.c:739
+#: src/file-manager/fm-list-view.c:743
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "大小"
 
-#: src/file-manager/fm-list-view.c:750
+#: src/file-manager/fm-list-view.c:754
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "類型"
 
-#: src/file-manager/fm-list-view.c:761
+#: src/file-manager/fm-list-view.c:765
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "最後修改日期"
@@ -4385,13 +4385,12 @@ msgid "Location:"
 msgstr "位置："
 
 #: src/file-manager/fm-properties-window.c:1710
-#, fuzzy
 msgid "Volume:"
-msgstr "DVD 檔案系統"
+msgstr "總容量："
 
 #: src/file-manager/fm-properties-window.c:1711
 msgid "Free space:"
-msgstr ""
+msgstr "可用空間："
 
 #: src/file-manager/fm-properties-window.c:1714
 msgid "Link target:"
@@ -5315,7 +5314,7 @@ msgid ""
 "information will appear when zooming in closer."
 msgstr ""
 "請選取圖示下方顯示資訊的次序。\n"
-"當拉近時將會顯示更多資訊。"
+"當圖示放得越大時顯示的資訊會更多。"
 
 #: src/nautilus-file-management-properties.glade.h:45
 msgid "Count _number of items:"
@@ -6078,11 +6077,11 @@ msgstr "另選顯示模式..."
 
 #: src/nautilus-shell-ui.xml.h:50
 msgid "Zoom _In"
-msgstr "拉近(_I)"
+msgstr "放大(_I)"
 
 #: src/nautilus-shell-ui.xml.h:51
 msgid "Zoom _Out"
-msgstr "拉遠(_O)"
+msgstr "縮小(_O)"
 
 #: src/nautilus-shell-ui.xml.h:52
 msgid "_About"
@@ -6102,7 +6101,7 @@ msgstr "背景及圖章(_B)"
 
 #: src/nautilus-shell-ui.xml.h:57
 msgid "_Clear History"
-msgstr "清除紀錄(_C)"
+msgstr "清除瀏覽紀錄(_C)"
 
 #: src/nautilus-shell-ui.xml.h:58
 msgid "_Close Window"
@@ -6395,7 +6394,7 @@ msgstr "是否確定清除所有曾經瀏覽的位置的紀錄？"
 
 #: src/nautilus-window-menus.c:370
 msgid "Clear History"
-msgstr "清除紀錄"
+msgstr "清除瀏覽紀錄"
 
 #. Localize to deal with issues in the copyright
 #. * symbol characters -- do not translate the company
@@ -6455,11 +6454,11 @@ msgstr "進入該書籤指定的位置"
 
 #: src/nautilus-window-toolbars.c:367
 msgid "Go back a few pages"
-msgstr "進入其它瀏覽本頁面前曾經瀏覽的位置"
+msgstr "進入其它瀏覽本頁面之前曾經瀏覽的位置"
 
 #: src/nautilus-window-toolbars.c:370
 msgid "Go forward a number of pages"
-msgstr "進入其它瀏覽本頁面後曾經瀏覽的位置"
+msgstr "進入其它瀏覽本頁面之後曾經瀏覽的位置"
 
 #: src/nautilus-window.c:668
 msgid "Information"
@@ -6468,7 +6467,7 @@ msgstr "資訊"
 #: src/nautilus-window.c:1198
 #, c-format
 msgid "Display this location with \"%s\""
-msgstr "使用“%s”顯示該位置"
+msgstr "使用“%s”來顯示該位置"
 
 #: src/nautilus-window.c:2244
 msgid "Application ID"
@@ -6488,11 +6487,11 @@ msgstr "和該視窗有聯繫的 NautilusApplication。"
 
 #: src/nautilus-zoom-control.c:95
 msgid "Zoom In"
-msgstr "拉近"
+msgstr "放大"
 
 #: src/nautilus-zoom-control.c:96
 msgid "Zoom Out"
-msgstr "拉遠"
+msgstr "縮小"
 
 #: src/nautilus-zoom-control.c:97
 msgid "Zoom to Fit"
@@ -6517,45 +6516,3 @@ msgstr "網路伺服器"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "在 Nautilus 檔案總管中瀏覽網路伺服器"
-
-#~ msgid "F_onts"
-#~ msgstr "字型(_O)"
-
-#~ msgid "Lucida"
-#~ msgstr "Lucida"
-
-#~ msgid "Services"
-#~ msgstr "服務"
-
-#~ msgid "Use the Courier Font"
-#~ msgstr "使用 Courier 字型"
-
-#~ msgid "Use the Fixed Font"
-#~ msgstr "使用 Fixed 字型"
-
-#~ msgid "Use the GTK System Font"
-#~ msgstr "使用 GTK 系統字型"
-
-#~ msgid "Use the Helvetica Font"
-#~ msgstr "使用 Helvetica 字型"
-
-#~ msgid "Use the Lucida Font"
-#~ msgstr "使用 Lucida 字型"
-
-#~ msgid "Use the Times Font"
-#~ msgstr "使用 Times 字型"
-
-#~ msgid "_Courier"
-#~ msgstr "_Courier"
-
-#~ msgid "_Fixed"
-#~ msgstr "_Fixed"
-
-#~ msgid "_GTK System Font"
-#~ msgstr "_GTK 系統字型"
-
-#~ msgid "_Helvetica"
-#~ msgstr "_Helvetica"
-
-#~ msgid "_Times"
-#~ msgstr "_Times"
