@@ -1165,7 +1165,7 @@ nautilus_first_time_druid_show (NautilusApplication *application, const char *ur
 
 	gtk_widget_show_all (druid);
 
-	update_draw_desktop_checkbox_state (nautilus_preferences_get_user_level ());
+	update_draw_desktop_checkbox_state ();
 	gtk_widget_show (GTK_WIDGET (dialog));
 	return druid;
 }

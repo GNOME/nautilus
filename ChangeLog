@@ -1,3 +1,11 @@
+2001-04-23  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* src/nautilus-first-time-druid.c:
+	(nautilus_first_time_druid_show):
+	Remove extra argument to update_draw_desktop_checkbox_state()
+	which was delcared as () (instead of (void)) before the last
+	change and so the build broke.
+	
 2001-04-23  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>
