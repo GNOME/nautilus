@@ -84,7 +84,8 @@
 
 #define NAUTILUS_COMMAND_SPECIFIER "command:"
 
-#define ALL_NON_LOCK_MODIFIER_KEYS (GDK_SHIFT_MASK | GDK_CONTROL_MASK | GDK_MOD1_MASK | GDK_MOD2_MASK | GDK_MOD3_MASK | GDK_MOD4_MASK | GDK_MOD5_MASK)
+/* MOD2 is num lock -- I would include MOD3-5 if I was sure they were not lock keys */
+#define ALL_NON_LOCK_MODIFIER_KEYS (GDK_SHIFT_MASK | GDK_CONTROL_MASK | GDK_MOD1_MASK)
 
 /* Paths to use when referring to bonobo menu items. Paths used by
  * subclasses are in fm-directory-view.h 
@@ -714,18 +715,19 @@ other_viewer_callback (BonoboUIComponent *component, gpointer callback_data, con
 }
 
 static void
-trash_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
+trash_or_delete_selected_files (FMDirectoryView *view)
 {
-        FMDirectoryView *view;
         GList *selection;
         
-        view = FM_DIRECTORY_VIEW (callback_data);
-
 	selection = fm_directory_view_get_selection (view);
-	if (selection_not_empty_in_menu_callback (view, selection)) {
-	        trash_or_delete_files (view, selection);					 
-	}
+	trash_or_delete_files (view, selection);					 
         nautilus_file_list_free (selection);
+}
+
+static void
+trash_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
+{
+        trash_or_delete_selected_files (FM_DIRECTORY_VIEW (callback_data));
 }
 
 static gboolean
@@ -769,33 +771,37 @@ confirm_delete_directly (FMDirectoryView *view,
 	return gnome_dialog_run (dialog) == GNOME_OK;
 }
 
-
 static void
-delete_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
+delete_selected_files (FMDirectoryView *view)
 {
-        FMDirectoryView *view;
         GList *selection;
 	GList *node;
 	GList *file_uris;
 
-        view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
-	if (selection_not_empty_in_menu_callback (view, selection)) {
-		file_uris = NULL;
-		for (node = selection; node != NULL; node = node->next) {
-			file_uris = g_list_prepend (file_uris,
-						    nautilus_file_get_uri ((NautilusFile *) node->data));
-		}
-
-		if (confirm_delete_directly (view, 
-					     file_uris)) {
-			nautilus_file_operations_delete (file_uris, GTK_WIDGET (view));
-		}
-
-		eel_g_list_free_deep (file_uris);
+	if (selection == NULL) {
+		return;
 	}
 
+	file_uris = NULL;
+	for (node = selection; node != NULL; node = node->next) {
+		file_uris = g_list_prepend (file_uris,
+					    nautilus_file_get_uri ((NautilusFile *) node->data));
+	}
+	
+	if (confirm_delete_directly (view, 
+				     file_uris)) {
+		nautilus_file_operations_delete (file_uris, GTK_WIDGET (view));
+	}
+	
+	eel_g_list_free_deep (file_uris);
         nautilus_file_list_free (selection);
+}
+
+static void
+delete_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
+{
+        delete_selected_files (FM_DIRECTORY_VIEW (callback_data));
 }
 
 static void
@@ -951,27 +957,39 @@ key_press_event_callback (GtkWidget *widget,
 			  gpointer callback_data)
 {
 	FMDirectoryView *view;
-	GList *selection;
+	gboolean handled;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	/* Delete key alone means "Move to Trash". We don't use key
-	 * bindings to implement this because there is already a key
-	 * binding for "Move to Trash".
+	handled = FALSE;
+
+	/* Delete or Control-Backspace means "Move to Trash".
+	 * Shift-Delete means "Delete". We don't use key bindings to
+	 * implement this because there is already a key binding for
+	 * "Move to Trash".
 	 */
-	if ((event->keyval == GDK_Delete || event->keyval == GDK_KP_Delete)
-	    && (event->state & ALL_NON_LOCK_MODIFIER_KEYS) == 0) {
-		if (!all_selected_items_in_trash (view)) {
-			selection = fm_directory_view_get_selection (view);
-			trash_or_delete_files (view, selection);					 
-			nautilus_file_list_free (selection);
+	if (event->keyval == GDK_BackSpace) {
+		if ((event->state & ALL_NON_LOCK_MODIFIER_KEYS) == GDK_CONTROL_MASK) {
+			trash_or_delete_selected_files (view);
+			handled = TRUE;
 		}
-		gtk_signal_emit_stop_by_name (GTK_OBJECT (widget),
-					      "key_press_event");
-		return TRUE;
+	} else if (event->keyval == GDK_Delete || event->keyval == GDK_KP_Delete) {
+		if ((event->state & ALL_NON_LOCK_MODIFIER_KEYS) == 0) {
+			trash_or_delete_selected_files (view);
+			handled = TRUE;
+		} else if ((event->state & ALL_NON_LOCK_MODIFIER_KEYS) == GDK_SHIFT_MASK) {
+			if (show_delete_command_auto_value) {
+				delete_selected_files (view);
+			}
+			handled = TRUE;
+		}
 	}
 
-	return FALSE;
+	if (handled) {
+		gtk_signal_emit_stop_by_name (GTK_OBJECT (widget),
+					      "key_press_event");
+	}
+	return handled;
 }
 
 static void

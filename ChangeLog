@@ -2,6 +2,23 @@
 
 	reviewed by: John Sullivan <sullivan@eazel.com>
 
+	More tweaking on keyboard shortcuts for deleting and trashing.
+
+	* src/file-manager/fm-directory-view.c:
+	(ALL_NON_LOCK_MODIFIER_KEYS): Don't include MOD2, because it is
+	"num lock". Don't include MOD3-5 because I don't know for sure if
+	they are lock modifiers or not.
+	(trash_or_delete_selected_files), (trash_callback): Separated out
+	the Move To Trash command into a non-callback function.
+	(delete_selected_files), (delete_callback): Separated out the
+	Delete command into a non-callback function.
+	(key_press_event_callback): Shift-Delete now means "Delete" if that
+	command is turned on. Control-Backspace now means "Move To Trash".
+
+2001-05-03  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
 	Fixed bug 8232 (Trash.gmc and home directory link files made by
 	gmc show on Desktop):
 
@@ -43,7 +60,7 @@
 	pass in icon names to nautilus_icon_factory_get_pixbuf_by_name,
 	instead of passing icon paths (no reason to do that).
 
-2001-05-03 John Fleck <jfleck@inkstain.net>
+2001-05-03  John Fleck  <jfleck@inkstain.net>
 
 	* components/help/converters/gnome-db2html2/sect-elements.c
 	improve support for <emphasis> tag to proporly support role="bold"
