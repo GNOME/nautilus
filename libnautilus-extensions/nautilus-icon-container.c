@@ -1948,8 +1948,20 @@ button_release_event (GtkWidget *widget,
 		details->drag_button = 0;
 
 		switch (details->drag_state) {
-		case DRAG_STATE_MOVE_OR_COPY:
 		case DRAG_STATE_MOVE_COPY_OR_MENU:
+			if (!details->drag_started) {
+				/* Right click, drag did not start,
+				 * show context menu.
+				 */
+				details->drag_state = DRAG_STATE_INITIAL;
+				gtk_timeout_remove (details->context_menu_timeout_id);
+				gtk_signal_emit (GTK_OBJECT (container),
+						 signals[CONTEXT_CLICK_SELECTION]);
+				break;
+			}
+			/* fall through */
+
+		case DRAG_STATE_MOVE_OR_COPY:
 			if (!details->drag_started) {
 				nautilus_icon_container_did_not_drag (container, event);
 			} else {

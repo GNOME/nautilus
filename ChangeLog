@@ -1,3 +1,11 @@
+2000-07-24  Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(button_release_event):
+	Fix bugzilla 1611 - Poor right-click and move behavior.
+	In button_release detect that a drag has not started during a
+	right-click and start a context menu instead.
+	
 2000-07-24  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-theme.c:
