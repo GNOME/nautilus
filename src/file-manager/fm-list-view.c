@@ -535,7 +535,6 @@ fm_list_receive_dropped_icons (NautilusList *list,
 			       FMListView *list_view)
 {
 	FMDirectoryView *directory_view;
-	char *list_view_uri;
 	char *target_item_uri;
 	NautilusFile *target_item;
 	GList *source_uris, *p;
@@ -557,12 +556,14 @@ fm_list_receive_dropped_icons (NautilusList *list,
 			target_item = NULL;
 		}
 
-		list_view_uri = fm_directory_view_get_uri (directory_view);
-
-		if (target_item != NULL) {
-
-			/* figure out the uri of the destination */
+		/* figure out the uri of the destination */
+		if (target_item == NULL) {
+			target_item_uri = fm_directory_view_get_uri (directory_view);
+		} else {
 			target_item_uri = nautilus_file_get_uri (target_item);
+		}
+
+		if (target_item_uri != NULL) {
 
 			/* build a list of URIs to copy */
 			for (p = drop_data; p != NULL; p = p->next) {
@@ -572,12 +573,10 @@ fm_list_receive_dropped_icons (NautilusList *list,
 			}
 			source_uris = g_list_reverse (source_uris);
 			
-			
 			/* start the copy */
 			fm_directory_view_move_copy_items (source_uris, NULL,
 							   target_item_uri, action, x, y, directory_view);
 		}
-		g_free (list_view_uri);
 	}
 	
 	g_free (target_item_uri);
@@ -681,6 +680,12 @@ fm_list_get_default_action (NautilusList *list,
 
 	switch (info) {
 	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
+
+		if (drop_data == NULL) {
+			*default_action = 0;
+			*non_default_action = 0;
+			return;
+		}
 
 		drop_target = nautilus_list_find_icon_list_drop_target (list, x, y,
 									drop_data,

@@ -1,3 +1,16 @@
+2000-11-03  Mathieu Lacage  <mathieu@eazel.com>
+
+	Hopefully, fix bug 4055 for true.
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_drag_start), (nautilus_list_ensure_drag_data),
+	(nautilus_list_drag_end), (nautilus_list_get_drop_action),
+	(nautilus_list_drag_motion), (nautilus_list_drag_data_received):
+	make it work with multiple successive drags by reinitializing a 
+	number of variables used during drag.
+	* src/file-manager/fm-list-view.c: (fm_list_receive_dropped_icons),
+	(fm_list_get_default_action): make it react to drops in the blank
+	area of a list view.
+
 2000-11-03  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	Last commit was botched, here's the changelog

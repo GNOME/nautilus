@@ -2747,6 +2747,8 @@ nautilus_list_drag_start (GtkWidget *widget, GdkEventMotion *event)
 	list->details->dnd_select_pending = FALSE;
 	/* reinit from last dnd if there was one */
 	list->details->drag_info->got_drop_data_type = FALSE;
+	nautilus_drag_destroy_selection_list (list->details->drag_info->selection_list);
+	list->details->drag_info->selection_list = NULL;
 	
 	context = gtk_drag_begin (widget, list->details->drag_info->target_list,
 				  list->details->dnd_press_button == CONTEXTUAL_MENU_BUTTON
@@ -2854,7 +2856,6 @@ nautilus_list_ensure_drag_data (NautilusList *list,
 				GdkDragContext *context,
 				guint32 time)
 {
-
 	if (!list->details->drag_info->got_drop_data_type) {
 		gtk_drag_get_data (GTK_WIDGET (list), context,
 				   GPOINTER_TO_INT (context->targets->data),
@@ -2871,8 +2872,9 @@ nautilus_list_drag_end (GtkWidget *widget, GdkDragContext *context)
 	list = NAUTILUS_LIST (widget);
 	drag_info = list->details->drag_info;
 
-	nautilus_drag_destroy_selection_list (drag_info->selection_list);
-	drag_info->selection_list = NULL;
+	drag_info->got_drop_data_type = FALSE;
+	nautilus_drag_destroy_selection_list (list->details->drag_info->selection_list);
+	list->details->drag_info->selection_list = NULL;
 
 }
 
@@ -2919,13 +2921,6 @@ nautilus_list_get_drop_action (NautilusList *list,
 		/* drag_data_received didn't get called yet */
 		return;
 	}
-
-	if (drag_info->selection_list == NULL) {
-		*default_action = 0;
-		*non_default_action = 0;
-		return;
-	}
-	
 
 	/* get those actions from a subclass of this object */
 	gtk_signal_emit (GTK_OBJECT (list), 
@@ -3054,8 +3049,12 @@ nautilus_list_drag_motion (GtkWidget *widget, GdkDragContext *context,
 
 	nautilus_list_start_auto_scroll (NAUTILUS_LIST (widget));
 
+	default_action = 0; 
+	non_default_action = 0;
+
 	nautilus_list_get_drop_action (list, context, x, y, &default_action, &non_default_action);
 	resulting_action = nautilus_drag_modifier_based_action (default_action, non_default_action);
+
 	gdk_drag_status (context, resulting_action, time);
 
 	nautilus_list_prelight_if_necessary (list, context, x, y, time);
@@ -3135,26 +3134,30 @@ nautilus_list_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 	list = NAUTILUS_LIST (widget);
 	drag_info = list->details->drag_info;
 
-	drag_info->data_type = info;
-	drag_info->got_drop_data_type = TRUE;
-	drag_info->selection_data = data;
+
+	if (!drag_info->got_drop_data_type) {
+
+		drag_info->data_type = info;
+		drag_info->got_drop_data_type = TRUE;
+		drag_info->selection_data = data;
 
 
-	switch (info) {
-	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
-		drag_info->selection_list = nautilus_drag_build_selection_list (data);
-		break;
-	case NAUTILUS_ICON_DND_URI_LIST:
-		drag_info->selection_list = nautilus_drag_build_selection_list (data);
-		break;
-	case NAUTILUS_ICON_DND_COLOR:
-		break;
-	case NAUTILUS_ICON_DND_BGIMAGE:	
-		break;
-	case NAUTILUS_ICON_DND_KEYWORD:	
-		break;
-	default:
-		break;
+		switch (info) {
+		case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
+			drag_info->selection_list = nautilus_drag_build_selection_list (data);
+			break;
+		case NAUTILUS_ICON_DND_URI_LIST:
+			drag_info->selection_list = nautilus_drag_build_selection_list (data);
+			break;
+		case NAUTILUS_ICON_DND_COLOR:
+			break;
+		case NAUTILUS_ICON_DND_BGIMAGE:	
+			break;
+		case NAUTILUS_ICON_DND_KEYWORD:	
+			break;
+		default:
+			break;
+		}
 	}
 
 	if (drag_info->drop_occured) {
@@ -3198,6 +3201,7 @@ nautilus_list_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 
 
 		drag_info->drop_occured = FALSE;
+		drag_info->got_drop_data_type = FALSE;
 	}
 
 }
