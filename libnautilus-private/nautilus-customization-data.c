@@ -41,6 +41,7 @@
 #include "nautilus-customization-data.h"
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-gdk-pixbuf-extensions.h"
+#include "nautilus-glib-extensions.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-gtk-extensions.h"
@@ -266,8 +267,7 @@ nautilus_customization_data_destroy (NautilusCustomizationData *data)
 		gnome_vfs_directory_list_destroy (data->private_file_list);
 	}
 	if (data->name_map_hash != NULL) {
-		/* FIXME: This leaks all the strings in the hash table. */
-		g_hash_table_destroy (data->name_map_hash);	
+		nautilus_g_hash_table_destroy_deep (data->name_map_hash);	
 	}
 	
 	g_free (data->customization_name);

@@ -417,6 +417,8 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 	
 	if (nautilus_istr_has_prefix (uri, "eazel:") || nautilus_istr_has_prefix (uri, "eazel-services:")) {
 		icon_path = nautilus_theme_get_image_path ("big_services_icon.png");
+	} else if (nautilus_istr_has_prefix (uri, "http:")) {
+		icon_path = nautilus_theme_get_image_path ("i-web-72.png");
 	} else if (nautilus_istr_has_prefix (uri, "man:")) {
 		icon_path = nautilus_theme_get_image_path ("manual.png");
 	} else if (nautilus_istr_has_prefix (uri, "hardware:")) {

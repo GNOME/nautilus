@@ -1,3 +1,16 @@
+2001-01-08  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-customization-data.c:
+	(nautilus_customization_data_destroy):
+	fixed recently introduced memory leak by calling
+	nautilus_g_hash_table_destroy_deep instead of
+	g_hash_table_destroy
+	
+	* src/nautilus-sidebar-title.c: (update_icon):
+	fixed problem in the sidebar where web pages were getting the
+	generic icon instead of the web icon. Fixed by adding
+	"http:" to the protocols the sidebar special-cases.
+	
 2001-01-08  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>
