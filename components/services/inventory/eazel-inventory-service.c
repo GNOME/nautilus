@@ -49,7 +49,6 @@
 #include "eazel-inventory-service-interface.h"
 
 #define KEY_GCONF_EAZEL_INVENTORY_ENABLED "/apps/eazel-trilobite/inventory/enabled"
-#define KEY_GCONF_EAZEL_INVENTORY_MACHINE_NAME "/apps/eazel-trilobite/inventory/machine_name"
 #define KEY_GCONF_EAZEL_INVENTORY_WARN_BEFORE_UPLOAD "/apps/eazel-trilobite/inventory/warn_before_upload"
 
 #define EAZEL_INVENTORY_UPLOAD_URI "eazel-services:/inventory/upload"
@@ -229,9 +228,17 @@ impl_Trilobite_Eazel_Inventory_upload (impl_POA_Trilobite_Eazel_Inventory *servi
 	/* FIXME: CRAAAAAACK */
 
 	if (error != ERR_Success) {
-		if (error == ERR_UserNotLoggedIn) {
+		switch (error) {
+		case ERR_UserNotLoggedIn:
 			g_print (_("User isn't logged into ammonite yet.\n"));
-		} else {
+			break;
+		case ERR_BadURL:
+			g_print (_("The supplied URL was bad.\n"));
+			break;
+		case ERR_CORBA:
+			g_print (_("A CORBA error occured.\n"));
+			break;
+		default:
 			g_print (_("Ammonite returned an error translating the url.\n"));
 		}
 		return;
@@ -306,6 +313,9 @@ impl_Trilobite_Eazel_Inventory_upload (impl_POA_Trilobite_Eazel_Inventory *servi
 	g_free (body);
 
 	ghttp_close (request);
+
+	/* store the new MD5 */
+	eazel_inventory_update_md5 ();
 
 }
 

@@ -30,8 +30,11 @@
 #include <gnome.h>
 #include "eazel-package-system.h"
 
+#define KEY_GCONF_EAZEL_INVENTORY_MACHINE_NAME "/apps/eazel-trilobite/machine_name"
+
 gboolean eazel_gather_inventory				(void);
 gboolean update_gconf_inventory_digest			(unsigned char          value[16]);
 gchar *eazel_inventory_local_path			(void);
+void eazel_inventory_update_md5                         (void);
 
 #endif /* EAZEL_INVENTORY_UTILS_H */

@@ -42,7 +42,7 @@
 #include <libtrilobite/trilobite-md5-tools.h>
 #include <libtrilobite/trilobite-core-distribution.h>
 
-#define notDEBUG_pepper		1
+#define DEBUG_pepper		1
 
 #define DIGEST_GCONF_PATH	"/apps/eazel-trilobite/inventory-digest"
 #define DIGEST_GCONF_KEY	"inventory_digest_value"
@@ -128,7 +128,7 @@ static void
 add_package_info (xmlDocPtr	configuration_metafile, xmlNodePtr	node)
 {
 
-	char			package_count_str[32];
+	char			*package_count_str;
 	xmlNodePtr		packages_node;
 	xmlNodePtr		current_package_node;
  	int			package_count;
@@ -157,32 +157,28 @@ add_package_info (xmlDocPtr	configuration_metafile, xmlNodePtr	node)
 
 		package = (PackageData*) iterator->data;
 
-		package_name = g_strdup (package->name);
-		package_version = g_strdup (package->version);
-		package_release = g_strdup (package->minor);
-		package_arch = g_strdup (package->archtype);
+		package_name = package->name;
+		package_version = package->version;
+		package_release = package->minor;
+		package_arch = package->archtype;
 
  		/* add a node for this package */
         
 		current_package_node = xmlNewChild (packages_node, NULL, "PACKAGE", NULL);
 		package_count += 1;
-        
+
 		xmlSetProp (current_package_node, "name", package_name);
 		xmlSetProp (current_package_node, "version", package_version);
 		xmlSetProp (current_package_node, "release", package_release);
 		xmlSetProp (current_package_node, "epoch", package_arch);
 
-		g_free (package_name);
-		g_free (package_version);
-		g_free (package_release);
-		g_free (package_arch);
-		packagedata_destroy (package, TRUE);
+		gtk_object_unref (GTK_OBJECT (package));
 
 	  }
     
     	/* update the count */
     
-    	sprintf (package_count_str, "%d", package_count);
+    	package_count_str = g_strdup_printf ("%d", package_count);
 	xmlSetProp (packages_node, "count", package_count_str);
     
 	/* clean up*/   
@@ -329,8 +325,8 @@ static void
 add_software_info (xmlDocPtr	configuration_metafile)
 {
 
-    	xmlNodePtr		distribution_node;
 	xmlNodePtr		software_node;
+    	xmlNodePtr		distribution_node;
 	DistributionInfo	distro;
 	char			*distro_string;
 	
@@ -345,15 +341,12 @@ add_software_info (xmlDocPtr	configuration_metafile)
 		distro_string = g_strdup_printf ("Unknown Distribution");
 	}
 	xmlNodeSetContent (distribution_node, distro_string);
+	g_free (distro_string);
 
 	/* add the package info */
 	add_package_info (configuration_metafile, software_node);
 
-	g_free (distro_string);
 }
-
-#define KEY_GCONF_EAZEL_INVENTORY_MACHINE_NAME "/apps/eazel-trilobite/inventory/machine_name"
-
 
 /* create the configuration metafile and add package and hardware configuration info to it */
 static xmlDocPtr
@@ -538,4 +531,17 @@ eazel_gather_inventory (void)
 /* return the local path to store and retrieve the inventory XML from */
 gchar *eazel_inventory_local_path			(void) {
 	return g_strdup_printf ("%s/.nautilus/configuration.xml", g_get_home_dir ());
+}
+
+void eazel_inventory_update_md5 () {
+	unsigned char	md5_digest[16];
+	char *inventory_file_name;
+
+	inventory_file_name = eazel_inventory_local_path();
+	trilobite_md5_get_digest_from_file (inventory_file_name, md5_digest);
+	if (!update_gconf_inventory_digest (md5_digest)) {
+		g_print ("failed to update digest\n");
+	}
+	g_free (inventory_file_name);
+
 }

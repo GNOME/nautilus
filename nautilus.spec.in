@@ -279,6 +279,9 @@ fi
 %{prefix}/bin/nautilus-rpm-view
 %{prefix}/bin/eazel-gen-xml
 %{prefix}/bin/eazel-vault
+%{prefix}/bin/eazel-inventory-client
+%{prefix}/bin/trilobite-inventory-service
+%{prefix}/bin/nautilus-inventory-view
 %{prefix}/lib/libeazelinstall.so.0
 %{prefix}/lib/libeazelinstall.so.0.0.0
 %{prefix}/lib/libeazelpackagesystem.so
@@ -287,6 +290,7 @@ fi
 %{prefix}/lib/libeazelpackagesystem-rpm*.so
 %{prefix}/lib/libeazelpackagesystem-rpm*.so.0
 %{prefix}/lib/libeazelpackagesystem-rpm*.so.0.0.0
+%{prefix}/lib/libtrilobite-inventory-service*so*
 %{prefix}/lib/libtrilobite-service.so.0
 %{prefix}/lib/libtrilobite-service.so.0.0.0
 %{prefix}/lib/libtrilobite.so.0
@@ -303,6 +307,8 @@ fi
 %{prefix}/share/oaf/Nautilus_View_change-password.oaf
 %{prefix}/share/oaf/Nautilus_View_services-summary.oaf
 %{prefix}/share/oaf/Nautilus_View_rpm.oaf
+%{prefix}/share/oaf/Trilobite_Service_inventory.oaf
+%{prefix}/share/oaf/Nautilus_View_inventory.oaf
 
 %files extras
 

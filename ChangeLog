@@ -1,3 +1,28 @@
+2001-01-31  Ian McKellar  <ian@eazel.com>
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+
+	* components/services/inventory/Trilobite_Service_inventory.oaf.in:
+	Fixed a tyop in the path to the trilobite-inventory-service
+
+	* components/services/inventory/eazel-inventory-utils.h:
+	* components/services/inventory/eazel-inventory-service.c:
+	Moved the GConf path for machine name to 
+
+	(impl_Trilobite_Eazel_Inventory_upload):
+	Improved error reporting / debugging. Actually save the MD5.
+
+	* components/services/inventory/eazel-inventory-utils.c:
+	(add_package_info), (add_software_info),
+	(eazel_inventory_local_path)
+	Fixed memory leaks.
+
+	(eazel_inventory_update_md5):
+	Added a function to store the MD5.
+
+	* nautilus.spec.in:
+	Add inventory files to the right RPMs.
+
 2001-01-31  Arik Devens  <arik@eazel.com>
 
 	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
