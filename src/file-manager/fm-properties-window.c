@@ -67,6 +67,7 @@ static GHashTable *pending_files;
 
 struct FMPropertiesWindowDetails {
 	NautilusFile *file;
+	GtkNotebook *notebook;
 	GtkWidget *remove_image_button;
 	guint file_changed_handler_id;
 
@@ -1125,20 +1126,63 @@ create_page_with_table_in_vbox (GtkNotebook *notebook,
 	}
 }		
 
+static gboolean
+is_merged_trash_directory (NautilusFile *file) 
+{
+	char *file_uri;
+	gboolean result;
+
+	file_uri = nautilus_file_get_uri (file);
+	result = nautilus_uris_match (file_uri, NAUTILUS_TRASH_URI);
+	g_free (file_uri);
+
+	return result;
+}
+
+static gboolean
+should_show_custom_icon_buttons (FMPropertiesWindow *window) 
+{
+	/* FIXME bugzilla.eazel.com 5642:
+	 * Custom icons aren't displayed on the the desktop Trash icon, so
+	 * we shouldn't pretend that they work by showing them here.
+	 * When bug 5642 is fixed we can remove this case.
+	 */
+	if (is_merged_trash_directory (window->details->file)) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static gboolean
+should_show_mime_type (FMPropertiesWindow *window) 
+{
+	/* FIXME bugzilla.eazel.com 5652:
+	 * nautilus_file_is_directory should return TRUE for special
+	 * trash directory, but doesn't. I could trivially fix this
+	 * with a check for is_merged_trash_directory here instead.
+	 */
+	if (nautilus_file_is_directory (window->details->file)) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
 static void
-create_basic_page (FMPropertiesWindow *window, GtkNotebook *notebook, NautilusFile *file)
+create_basic_page (FMPropertiesWindow *window)
 {
 	GtkWidget *table, *container;
 	GtkWidget *icon_pixmap_widget, *icon_aligner, *name_field;
 	GtkWidget *button_box, *temp_button;
 	char *image_uri;
-	gboolean is_directory;
+	NautilusFile *file;
 
-	is_directory = nautilus_file_is_directory (file);
+	file = window->details->file;
 
-	create_page_with_table_in_vbox (notebook, 
+	create_page_with_table_in_vbox (window->details->notebook, 
 					_("Basic"), 
-					is_directory ? BASIC_PAGE_ROW_COUNT - 1 : BASIC_PAGE_ROW_COUNT, 
+					should_show_mime_type (window) ? BASIC_PAGE_ROW_COUNT : BASIC_PAGE_ROW_COUNT - 1, 
 					&table, 
 					&container);
 
@@ -1216,7 +1260,7 @@ create_basic_page (FMPropertiesWindow *window, GtkNotebook *notebook, NautilusFi
 				  _("Where:"), file, "parent_uri");
 	attach_title_value_pair (GTK_TABLE (table), BASIC_PAGE_TYPE_ROW,
 				  _("Type:"), file, "type");
-	if (is_directory) {
+	if (nautilus_file_is_directory (file)) {
 		attach_directory_contents_fields
 			(GTK_TABLE (table), BASIC_PAGE_SIZE_ROW, file);
 	} else {
@@ -1231,34 +1275,36 @@ create_basic_page (FMPropertiesWindow *window, GtkNotebook *notebook, NautilusFi
 				  _("Modified:"), file, "date_modified");
 	attach_title_value_pair (GTK_TABLE (table), BASIC_PAGE_ACCESSED_DATE_ROW,
 				  _("Accessed:"), file, "date_accessed");
-	if (!is_directory) {
+	if (should_show_mime_type (window)) {
 		attach_title_value_pair (GTK_TABLE (table), BASIC_PAGE_MIME_TYPE_ROW,
 					  _("MIME type:"), file, "mime_type");
 	}				  
 
-	/* add command buttons for setting and clearing custom icons */
-	button_box = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (button_box);
-	gtk_box_pack_end (GTK_BOX(container), button_box, FALSE, FALSE, 4);  
-	
- 	temp_button = gtk_button_new_with_label (_("Select Custom Icon..."));
-	gtk_widget_show (temp_button);
-	gtk_box_pack_start (GTK_BOX (button_box), temp_button, FALSE, FALSE, 4);  
- 	gtk_widget_set_usize (temp_button, -1, 24);
-	gtk_signal_connect(GTK_OBJECT (temp_button), "clicked", GTK_SIGNAL_FUNC (select_image_button_callback), file);
- 	
- 	temp_button = gtk_button_new_with_label (_("Remove Custom Icon"));
-	gtk_widget_show (temp_button);
-	gtk_box_pack_start (GTK_BOX(button_box), temp_button, FALSE, FALSE, 4);  
-	gtk_widget_set_usize (temp_button, -1, 24);
- 	gtk_signal_connect (GTK_OBJECT (temp_button), "clicked", GTK_SIGNAL_FUNC (remove_image_button_callback), file);		
+	if (should_show_custom_icon_buttons (window)) {
+		/* add command buttons for setting and clearing custom icons */
+		button_box = gtk_hbox_new (FALSE, 0);
+		gtk_widget_show (button_box);
+		gtk_box_pack_end (GTK_BOX(container), button_box, FALSE, FALSE, 4);  
+		
+	 	temp_button = gtk_button_new_with_label (_("Select Custom Icon..."));
+		gtk_widget_show (temp_button);
+		gtk_box_pack_start (GTK_BOX (button_box), temp_button, FALSE, FALSE, 4);  
+	 	gtk_widget_set_usize (temp_button, -1, 24);
+		gtk_signal_connect(GTK_OBJECT (temp_button), "clicked", GTK_SIGNAL_FUNC (select_image_button_callback), file);
+	 	
+	 	temp_button = gtk_button_new_with_label (_("Remove Custom Icon"));
+		gtk_widget_show (temp_button);
+		gtk_box_pack_start (GTK_BOX(button_box), temp_button, FALSE, FALSE, 4);  
+		gtk_widget_set_usize (temp_button, -1, 24);
+	 	gtk_signal_connect (GTK_OBJECT (temp_button), "clicked", GTK_SIGNAL_FUNC (remove_image_button_callback), file);		
 
-	window->details->remove_image_button = temp_button;
-	
-	/* de-sensitize the remove button if there isn't a custom image */
-	image_uri = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
-	gtk_widget_set_sensitive (temp_button, image_uri != NULL);
-	g_free (image_uri);
+		window->details->remove_image_button = temp_button;
+		
+		/* de-sensitize the remove button if there isn't a custom image */
+		image_uri = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
+		gtk_widget_set_sensitive (temp_button, image_uri != NULL);
+		g_free (image_uri);
+	}
 }
 
 static void
@@ -1273,7 +1319,7 @@ remove_default_viewport_shadow (GtkViewport *viewport)
 
 
 static void
-create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
+create_emblems_page (FMPropertiesWindow *window)
 {
 	NautilusCustomizationData *customization_data;
 	GtkWidget *emblems_table, *button, *scroller;
@@ -1282,7 +1328,10 @@ create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 	GtkWidget *emblem_pixmap_widget;
 	GtkWidget *emblem_label;	
 	int row, column;
-	
+	NautilusFile *file;
+
+	file = window->details->file;
+
 	/* we use an estimate for the number of rows - the table will grow as we add more */
 	emblems_table = gtk_table_new (4, EMBLEM_COLUMN_COUNT, TRUE);
 	gtk_widget_show (emblems_table);
@@ -1307,7 +1356,8 @@ create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 			    remove_default_viewport_shadow, 
 			    NULL);
 
-	gtk_notebook_append_page (notebook, scroller, gtk_label_new (_("Emblems")));
+	gtk_notebook_append_page (window->details->notebook, 
+				  scroller, gtk_label_new (_("Emblems")));
 	
 	/* Use nautilus_customization to make the emblem widgets */
 	row = 0;
@@ -1590,14 +1640,17 @@ get_adjusted_permissions_row (int permissions_row, gboolean show_special_flags)
 }
 
 static void
-create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
+create_permissions_page (FMPropertiesWindow *window)
 {
 	GtkWidget *vbox;
 	GtkTable *page_table, *check_button_table;
 	char *file_name, *prompt_text;
 	gboolean show_special_flags;
+	NautilusFile *file;
 
-	vbox = create_page_with_vbox (notebook, _("Permissions"));
+	file = window->details->file;
+
+	vbox = create_page_with_vbox (window->details->notebook, _("Permissions"));
 
 	if (nautilus_file_can_get_permissions (file)) {
 		if (!nautilus_file_can_set_permissions (file)) {
@@ -1778,11 +1831,38 @@ create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
 	}
 }
 
+static gboolean
+should_show_emblems (FMPropertiesWindow *window) 
+{
+	/* FIXME bugzilla.eazel.com 5643:
+	 * Emblems aren't displayed on the the desktop Trash icon, so
+	 * we shouldn't pretend that they work by showing them here.
+	 * When bug 5643 is fixed we can remove this case.
+	 */
+	if (is_merged_trash_directory (window->details->file)) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static gboolean
+should_show_permissions (FMPropertiesWindow *window) 
+{
+	/* Don't show permissions for the Trash since it's not
+	 * really a file system object.
+	 */
+	if (is_merged_trash_directory (window->details->file)) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
 static FMPropertiesWindow *
 create_properties_window (NautilusFile *file)
 {
 	FMPropertiesWindow *window;
-	GtkWidget *notebook;
 	GList *attributes;
 
 	window = FM_PROPERTIES_WINDOW (gtk_widget_new (fm_properties_window_get_type (), NULL));
@@ -1818,14 +1898,21 @@ create_properties_window (NautilusFile *file)
 					   GTK_OBJECT (window));
 
 	/* Create the notebook tabs. */
-	notebook = gtk_notebook_new ();
-	gtk_widget_show (notebook);
-	gtk_container_add (GTK_CONTAINER (window), notebook);
+	window->details->notebook = GTK_NOTEBOOK (gtk_notebook_new ());
+	gtk_widget_show (GTK_WIDGET (window->details->notebook));
+	gtk_container_add (GTK_CONTAINER (window), 
+			   GTK_WIDGET (window->details->notebook));
 
 	/* Create the pages. */
-	create_basic_page (window, GTK_NOTEBOOK (notebook), window->details->file);
-	create_emblems_page (GTK_NOTEBOOK (notebook), window->details->file);
-	create_permissions_page (GTK_NOTEBOOK (notebook), window->details->file);
+	create_basic_page (window);
+
+	if (should_show_emblems (window)) {
+		create_emblems_page (window);
+	}
+
+	if (should_show_permissions (window)) {
+		create_permissions_page (window);
+	}
 
 	return window;
 }

@@ -1,3 +1,42 @@
+2001-01-15  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Some work on bug 2146 (Properties window for desktop Trash icon
+	should show Trash properties)
+
+	* src/file-manager/fm-properties-window.c:
+	(is_merged_trash_directory): New helper function, checks whether
+	window is displaying special trash location.
+	(should_show_custom_icon_buttons): New helper function, returns
+	FALSE for special trash location since custom icons don't work
+	with the trash (see bug 5642)
+	(should_show_mime_type): New helper function, extracted for
+	code clarity (returns FALSE for directories).
+	(create_basic_page): Now takes only one parameter, gets file
+	and notebook from details struct; uses should_show_mime_type
+	and should_show_custom_icon_buttons.
+	(create_emblems_page), (create_permissions_page): Now take only
+	one parameter, get file and notebook from details struct.
+	(should_show_emblems): New helper function, returns FALSE for
+	special trash location since emblems don't work with the
+	trash (see bug 5643)
+	(should_show_permissions): New helper function, returns FALSE for
+	special trash location since it's not really a file system object
+	for which permissions make sense.
+	(create_properties_window): Respect should_show_emblems and
+	should_show_permissions.
+
+	Eli ran into a case where the "can't set permissions" error message
+	was the vague default case when the disk was locked. I added that
+	case to the set of specifically handled cases.
+
+	* src/file-manager/fm-error-reporting.c:
+	(fm_report_error_renaming_file), (fm_report_error_setting_group),
+	(fm_report_error_setting_owner),
+	(fm_report_error_setting_permissions): Handle
+	GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM cases.
+
 2001-01-15  Ian McKellar  <ian@eazel.com>
 
 	* components/services/inventory/eazel-inventory-service.c:

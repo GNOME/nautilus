@@ -76,6 +76,10 @@ fm_report_error_renaming_file (NautilusFile *file,
 						   new_name);
 		}
 		break;
+	case GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM:
+		message = g_strdup_printf (_("Couldn't change the name of \"%s\" because it is on a read-only disk"),
+					   original_name);
+		break;
 	default:
 		/* We should invent decent error messages for every case we actually experience. */
 		g_warning ("Hit unhandled case %d in fm_report_error_renaming_file, tell sullivan@eazel.com", error);
@@ -97,14 +101,20 @@ fm_report_error_setting_group (NautilusFile *file,
 	char *file_name;
 	char *message;
 
-	switch (error) {
-	case GNOME_VFS_OK:
+	if (error == GNOME_VFS_OK) {
 		return;
+	}
+
+	file_name = nautilus_file_get_name (file);
+
+	switch (error) {
 	case GNOME_VFS_ERROR_NOT_PERMITTED:
-		file_name = nautilus_file_get_name (file);
 		message = g_strdup_printf (_("You do not have the permissions necessary to change the group of \"%s\"."),
 					   file_name);
-		g_free (file_name);
+		break;
+	case GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM:
+		message = g_strdup_printf (_("Couldn't change the group of \"%s\" because it is on a read-only disk"),
+					   file_name);
 		break;
 	default:
 		/* We should invent decent error messages for every case we actually experience. */
@@ -115,6 +125,8 @@ fm_report_error_setting_group (NautilusFile *file,
 	}
 
 	nautilus_error_dialog (message, _("Error Setting Group"), NULL);
+
+	g_free (file_name);
 	g_free (message);
 }		
 
@@ -125,18 +137,26 @@ fm_report_error_setting_owner (NautilusFile *file,
 	char *file_name;
 	char *message;
 
-	switch (error) {
-	case GNOME_VFS_OK:
+	if (error == GNOME_VFS_OK) {
 		return;
+	}
+
+	file_name = nautilus_file_get_name (file);
+
+	switch (error) {
+	case GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM:
+		message = g_strdup_printf (_("Couldn't change the owner of \"%s\" because it is on a read-only disk"),
+					   file_name);
+		break;
 	default:
 		/* We should invent decent error messages for every case we actually experience. */
 		g_warning ("Hit unhandled case %d in fm_report_error_setting_owner, tell sullivan@eazel.com", error);
-		file_name = nautilus_file_get_name (file);
 		message = g_strdup_printf (_("Sorry, couldn't change the owner of \"%s\"."), file_name);
-		g_free (file_name);
 	}
 
 	nautilus_error_dialog (message, _("Error Setting Owner"), NULL);
+
+	g_free (file_name);
 	g_free (message);
 }		
 
@@ -147,18 +167,26 @@ fm_report_error_setting_permissions (NautilusFile *file,
 	char *file_name;
 	char *message;
 
-	switch (error) {
-	case GNOME_VFS_OK:
+	if (error == GNOME_VFS_OK) {
 		return;
+	}
+
+	file_name = nautilus_file_get_name (file);
+
+	switch (error) {
+	case GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM:
+		message = g_strdup_printf (_("Couldn't change the permissions of \"%s\" because it is on a read-only disk"),
+					   file_name);
+		break;
 	default:
 		/* We should invent decent error messages for every case we actually experience. */
 		g_warning ("Hit unhandled case %d in fm_report_error_setting_permissions, tell sullivan@eazel.com", error);
-		file_name = nautilus_file_get_name (file);
 		message = g_strdup_printf (_("Sorry, couldn't change the permissions of \"%s\"."), file_name);
-		g_free (file_name);
 	}
 
 	nautilus_error_dialog (message, _("Error Setting Permissions"), NULL);
+
+	g_free (file_name);
 	g_free (message);
 }		
 
