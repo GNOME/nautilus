@@ -34,6 +34,7 @@
 #include <libgnome/gnome-program.h>
 #include <libgnomeui/gnome-ui-init.h>
 #include <libgnomeui/gnome-url.h>
+#include <libgnomeui/gnome-authentication-manager.h>
 
 #include <eel/eel-preferences.h>
 #include <eel/eel-stock-dialogs.h>
@@ -103,6 +104,8 @@ main (int argc, char *argv[])
 	gnome_program_init ("nautilus-connect-server", VERSION,
 			    LIBGNOMEUI_MODULE, argc, argv,
 			    NULL);
+
+	gnome_authentication_manager_init ();
 
 	eel_preferences_init ("/apps/nautilus");
 
