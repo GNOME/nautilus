@@ -103,7 +103,7 @@ struct NautilusSidebarTabsDetails {
 /* constants */
 #define TAB_MARGIN 8
 #define TITLE_TAB_OFFSET 8
-#define NOMINAL_TAB_HEIGHT 18
+#define NOMINAL_TAB_HEIGHT 21
 #define TAB_H_GAP 8
 #define TAB_TOP_GAP 3
 #define TAB_ROW_V_OFFSET 3

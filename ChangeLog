@@ -1,3 +1,14 @@
+2001-03-01  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_update_contents):
+	fixed bug 7143, increased borders in property browser to Arlo's
+	taste; fixed by adding a box with an 8 pixel border width.
+	
+	* src/nautilus-sidebar-tabs.c:
+	fixed bug 7226, sidebar tabs are too small in Sierra theme; fixed by
+	increasing the tab height constant by three pixels.
+	
 2001-03-01  Mike Fleming  <mfleming@eazel.com>
 
 	reviewed by: <rslomkow@eazel.com>
