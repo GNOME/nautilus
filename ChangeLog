@@ -1,3 +1,20 @@
+2001-04-19  Darin Adler  <darin@eazel.com>
+
+	Fixed bug 8065 (Cut and Paste file in Trash -> file deleted)
+
+	* src/file-manager/fm-directory-view.c:
+	(trash_or_delete_files_common): Simplified this a lot and removed
+	parameters. Added a new parameter so the "move to trash within
+	trash means delete if nothing else is being moved" rule only takes
+	effect for the actual "move to trash" command, not when you are
+	dragging or pasting files.
+	(fm_directory_view_trash_or_delete_files): Call new simpler
+	function.
+	(fm_directory_view_move_copy_items): Call new simpler
+	function. Also use trash_or_delete_files_common only when moving
+	files. It doesn't help any when you copy or make links to files,
+	so just use the normal copy code for that.
+
 2001-04-19  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 8049, Nautilus makes sound even when control center

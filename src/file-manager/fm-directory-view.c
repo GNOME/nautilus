@@ -2724,7 +2724,7 @@ special_link_in_selection (FMDirectoryView *view)
 }
 
 static gboolean
-fm_directory_view_can_move_uri_to_trash (FMDirectoryView *view, const char *file_uri_string)
+can_move_uri_to_trash (FMDirectoryView *view, const char *file_uri_string)
 {
 	/* Return TRUE if we can get a trash directory on the same volume as this file. */
 	GnomeVFSURI *file_uri;
@@ -2739,6 +2739,7 @@ fm_directory_view_can_move_uri_to_trash (FMDirectoryView *view, const char *file
 
 	g_return_val_if_fail (file_uri != NULL, FALSE);
 
+	/* FIXME: Why can't we just pass file_uri to gnome_vfs_find_directory? */
 	directory_uri = gnome_vfs_uri_get_parent (file_uri);
 	gnome_vfs_uri_unref (file_uri);
 
@@ -2746,16 +2747,10 @@ fm_directory_view_can_move_uri_to_trash (FMDirectoryView *view, const char *file
 		return FALSE;
 	}
 
-	/* Create a new trash if needed but don't go looking for an old Trash.
-	 */
+	/* Create a new trash if needed but don't go looking for an old Trash. */
 	result = gnome_vfs_find_directory (directory_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
 					   &trash_dir_uri, TRUE, FALSE, 0777) == GNOME_VFS_OK;
 	if (result) {
-		if (gnome_vfs_uri_equal (trash_dir_uri, directory_uri)
-		    || gnome_vfs_uri_is_parent (trash_dir_uri, directory_uri, TRUE)) {
-			/* don't allow trashing items already in the Trash */
-			result = FALSE;
-		}
 		gnome_vfs_uri_unref (trash_dir_uri);
 	}
 	gnome_vfs_uri_unref (directory_uri);
@@ -2790,7 +2785,7 @@ fm_directory_view_confirm_deletion (FMDirectoryView *view, GList *uris, gboolean
 	g_assert (uri_count > 0);
 	
 	if (uri_count == 1) {
-		file_name = file_name_from_uri ((char *)uris->data);
+		file_name = file_name_from_uri ((char *) uris->data);
 
 		prompt = g_strdup_printf (_("\"%s\" cannot be moved to the Trash. Do "
 					    "you want to delete it immediately?"), file_name);
@@ -2860,11 +2855,10 @@ confirm_delete_from_trash (FMDirectoryView *view, GList *uris)
 }
 
 static void
-trash_or_delete_files_common (const GList *file_uris,
+trash_or_delete_files_common (FMDirectoryView *view,
+			      const GList *file_uris,
 			      GArray *relative_item_points,
-			      const char *target_uri,
-			      int copy_action,
-			      FMDirectoryView *view)
+			      gboolean delete_if_all_already_in_trash)
 {
 	const GList *file_node;
 	char *file_uri;
@@ -2882,47 +2876,47 @@ trash_or_delete_files_common (const GList *file_uris,
 	 * Always move (1) to trash if non-empty.
 	 * Delete (3) only if (1) and (2) are non-empty, otherwise ignore (3).
 	 * Ask before deleting (2) if non-empty.
+	 * Ask before deleting (3) if non-empty.
 	 */
+
 	moveable_uris = NULL;
 	unmoveable_uris = NULL;
 	in_trash_uris = NULL;
 	
 	for (file_node = file_uris; file_node != NULL; file_node = file_node->next) {
-		file_uri = (char *)file_node->data;
+		file_uri = (char *) file_node->data;
 		
-		if (fm_directory_view_can_move_uri_to_trash (view, file_uri)) {
-			moveable_uris = g_list_prepend (moveable_uris, g_strdup (file_uri));
-		} else if (eel_uri_is_in_trash (file_uri)) {
+		if (delete_if_all_already_in_trash && eel_uri_is_in_trash (file_uri)) {
 			in_trash_uris = g_list_prepend (in_trash_uris, g_strdup (file_uri));
+		} else if (can_move_uri_to_trash (view, file_uri)) {
+			moveable_uris = g_list_prepend (moveable_uris, g_strdup (file_uri));
 		} else {
 			unmoveable_uris = g_list_prepend (unmoveable_uris, g_strdup (file_uri));
 		}
 	}
 
-	if (moveable_uris != NULL) {
-		nautilus_file_operations_copy_move (moveable_uris, relative_item_points, 
-			 target_uri, copy_action, GTK_WIDGET (view),
-			 copy_move_done_callback, pre_copy_move (view));
-	}
-
 	if (in_trash_uris != NULL && moveable_uris == NULL && unmoveable_uris == NULL) {
-		/* Don't confirm if the preference says not to. */
 		if (confirm_delete_from_trash (view, in_trash_uris)) {
 			nautilus_file_operations_delete (in_trash_uris, GTK_WIDGET (view));
 		}		
-	}
-
-	if (unmoveable_uris != NULL) {
-		if (fm_directory_view_confirm_deletion (view, 
-							unmoveable_uris,
-							moveable_uris == NULL)) {
-			nautilus_file_operations_delete (unmoveable_uris, GTK_WIDGET (view));
+	} else {
+		if (moveable_uris != NULL) {
+			nautilus_file_operations_copy_move (moveable_uris, relative_item_points, 
+							    EEL_TRASH_URI, GDK_ACTION_MOVE, GTK_WIDGET (view),
+							    copy_move_done_callback, pre_copy_move (view));
+		}
+		if (unmoveable_uris != NULL) {
+			if (fm_directory_view_confirm_deletion (view, 
+								unmoveable_uris,
+								moveable_uris == NULL)) {
+				nautilus_file_operations_delete (unmoveable_uris, GTK_WIDGET (view));
+			}
 		}
 	}
 	
+	eel_g_list_free_deep (in_trash_uris);
 	eel_g_list_free_deep (moveable_uris);
 	eel_g_list_free_deep (unmoveable_uris);
-	eel_g_list_free_deep (in_trash_uris);
 }
 
 static void
@@ -2939,8 +2933,7 @@ fm_directory_view_trash_or_delete_files (const GList *files,
 	}
 	
 	file_uris = g_list_reverse (file_uris);
-	trash_or_delete_files_common (file_uris, NULL, EEL_TRASH_URI,
-				      GDK_ACTION_MOVE, view);					 
+	trash_or_delete_files_common (view, file_uris, NULL, TRUE);
 	eel_g_list_free_deep (file_uris);
 }
 
@@ -5290,10 +5283,8 @@ fm_directory_view_move_copy_items (const GList *item_uris,
 		return;
 	}
 	
-	if (eel_uri_is_trash (target_uri)) {
-		trash_or_delete_files_common (item_uris, relative_item_points, 
-				              target_uri, copy_action,
-				              view);
+	if (eel_uri_is_trash (target_uri) && copy_action == GDK_ACTION_MOVE) {
+		trash_or_delete_files_common (view, item_uris, relative_item_points, FALSE);
 	} else {
 		nautilus_file_operations_copy_move
 			(item_uris, relative_item_points, 
