@@ -1,3 +1,17 @@
+2000-10-29  Mike Fleming  <mfleming@eazel.com>
+
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: switch authority-less eazel-services URL's 
+	from "eazel-services:/" to "eazel-services:///"  
+
+	* src/nautilus-window-service-ui.c: (goto_online_storage),
+	(goto_software_catalog), (detach_service_ui),
+	(nautilus_window_install_service_ui):
+
+	Go back to initing ammonite each time these menus are called.  
+	I didn't want to bother with trying to make it work.
+
+
 2000-10-29  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/loser/content/nautilus-content-loser-ui.xml.h:

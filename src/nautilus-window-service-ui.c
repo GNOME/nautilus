@@ -32,8 +32,6 @@
 #include <libtrilobite/libammonite.h>
 #include <bonobo/bonobo-main.h>
 
-static EazelProxy_UserControl gl_user_control = CORBA_OBJECT_NIL;
-
 static void
 goto_services_summary (BonoboUIComponent *component, 
 		       gpointer callback_data, 
@@ -51,8 +49,10 @@ goto_online_storage (BonoboUIComponent *component,
 	char			*url;
 	char			*user_name;
 
-	if ( gl_user_control != CORBA_OBJECT_NIL ) {
-		user_name = ammonite_get_default_user_username (gl_user_control);
+	/* FIXME ideally, the ammonite_init should happen once per process */
+	if ( ammonite_init (bonobo_poa())) {
+		user_name = ammonite_get_default_user_username (ammonite_get_user_control());
+		ammonite_shutdown();
 	} else {
 		user_name = NULL;
 	}
@@ -81,14 +81,14 @@ goto_software_catalog (BonoboUIComponent *component,
 	gboolean		logged_in;
 	char 			*user_name;
 
-	if (gl_user_control != CORBA_OBJECT_NIL) {
-		user_name = ammonite_get_default_user_username (gl_user_control);
+	/* FIXME ideally, the ammonite_init should happen once per process */
+	if (ammonite_init (bonobo_poa())) {
+		user_name = ammonite_get_default_user_username (ammonite_get_user_control());
 
 		logged_in = (NULL != user_name);
 		g_free (user_name);
-		user_name = NULL;
 
-		ammonite_shutdown ();
+		ammonite_shutdown();
 	} else {
 		logged_in = FALSE;
 	}
@@ -129,8 +129,6 @@ detach_service_ui (GtkObject *object,
 	service_ui = BONOBO_UI_COMPONENT (callback_data);
 	bonobo_ui_component_unset_container (service_ui);
 	bonobo_object_unref (BONOBO_OBJECT (service_ui));
-
-	ammonite_shutdown();
 }
 
 void
@@ -145,10 +143,6 @@ nautilus_window_install_service_ui (NautilusWindow *window)
 		BONOBO_UI_VERB ("Services Support", goto_services_support),
 		BONOBO_UI_VERB_END
 	};
-
-	if ( ammonite_init (bonobo_poa()) ) {
-		gl_user_control = ammonite_get_user_control();
-	}
 
 	/* Load UI from the XML file. */
 	service_ui = bonobo_ui_component_new ("Eazel Services");

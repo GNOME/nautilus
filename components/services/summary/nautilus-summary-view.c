@@ -67,9 +67,9 @@
 #define DEFAULT_SUMMARY_BACKGROUND_COLOR	"rgb:FFFF/FFFF/FFFF"
 
 #define	URL_REDIRECT_TABLE_HOME			"eazel-services://anonymous/services/urls"
-#define	URL_REDIRECT_TABLE_HOME_2		"eazel-services:/services/urls"
+#define	URL_REDIRECT_TABLE_HOME_2		"eazel-services:///services/urls"
 #define	SUMMARY_CONFIG_XML			"eazel-services://anonymous/services"
-#define	SUMMARY_CONFIG_XML_2			"eazel-services:/services"
+#define	SUMMARY_CONFIG_XML_2			"eazel-services:///services"
 
 #define SUMMARY_TERMS_OF_USE_URI		"eazel-services://anonymous/aboutus/terms_of_use"
 #define SUMMARY_PRIVACY_STATEMENT_URI		"eazel-services://anonymous/aboutus/privacy"
