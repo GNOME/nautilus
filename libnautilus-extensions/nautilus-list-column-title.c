@@ -93,13 +93,8 @@ struct NautilusListColumnTitleDetails
 	GdkPixmap *down_indicator_pixmap;
 	GdkBitmap *down_indicator_mask;
 
-	/* offscreen drawing support */
-	/* FIXME bugzilla.eazel.com 614: 
-	 * consolidate this into it's own class once I figure out all the details.
-	 */
- 	GtkWidget *offscreen_widget;
- 	GdkPixmap *offscreen_pixmap;
- 	GdkGC *offscreen_blitting_gc;
+	/* offscreen drawing idle handler id*/
+	guint offscreen_drawing_idle;
 
 	int tracking_column_resize;
 		/* index of the column we are currently tracking or -1 */
@@ -119,6 +114,7 @@ static void nautilus_list_column_title_initialize       (gpointer object, gpoint
 static void nautilus_list_column_title_paint		(GtkWidget *widget, GtkWidget *draw_target, GdkDrawable *target_drawable, GdkRectangle *area);
 static void nautilus_list_column_title_draw 		(GtkWidget *widget, GdkRectangle *box);
 static void nautilus_list_column_title_buffered_draw	(GtkWidget *widget);
+static void nautilus_list_column_title_queue_buffered_draw(GtkWidget *widget);
 static gboolean nautilus_list_column_title_expose 	(GtkWidget *widget, GdkEventExpose *event);
 static void nautilus_list_column_title_realize 		(GtkWidget *widget);
 static void nautilus_list_column_title_finalize 	(GtkObject *object);
@@ -174,9 +170,8 @@ nautilus_list_column_title_initialize (gpointer object, gpointer klass)
 	column_title->details->up_indicator_mask = NULL;
 	column_title->details->down_indicator_pixmap = NULL;
 	column_title->details->down_indicator_mask = NULL;
-	column_title->details->offscreen_widget = NULL;
-	column_title->details->offscreen_pixmap = NULL;
-	column_title->details->offscreen_blitting_gc = NULL;
+
+	column_title->details->offscreen_drawing_idle = 0;
 
 	column_title->details->resize_cursor_on = FALSE;
 	column_title->details->tracking_column_resize = -1;
@@ -251,11 +246,9 @@ nautilus_list_column_title_finalize (GtkObject *object)
 		column_title->details->down_indicator_mask = NULL;
 	}
 
-	if (column_title->details->offscreen_widget != NULL) {
-		gdk_pixmap_unref (column_title->details->offscreen_pixmap);
-		gtk_widget_unref (column_title->details->offscreen_widget);
-		gdk_gc_destroy (column_title->details->offscreen_blitting_gc);
-		
+	if (column_title->details->offscreen_drawing_idle != 0) {
+		gtk_idle_remove (column_title->details->offscreen_drawing_idle);
+		column_title->details->offscreen_drawing_idle = 0;
 	}
 
 	if (column_title->details->copy_area_gc != NULL) {
@@ -590,68 +583,92 @@ nautilus_list_column_title_draw (GtkWidget *widget, GdkRectangle *area)
 static void
 nautilus_list_column_title_buffered_draw (GtkWidget *widget)
 {
-	/* draw using an offscreen_widget bitmap */
+	/* draw using an offscreen_pixmap */
 	GdkRectangle redraw_area;
 	NautilusListColumnTitle *column_title;
+	GdkPixmap *offscreen_pixmap;
+	GdkGC *offscreen_blitting_gc;
+
+	/* don't do anything if not drawable */
+	if ( ! GTK_WIDGET_DRAWABLE (widget)) {
+		return;
+	}
 
 	column_title = NAUTILUS_LIST_COLUMN_TITLE(widget);
 	
-	redraw_area.x = widget->allocation.x;
-	redraw_area.y = widget->allocation.y;
+	redraw_area.x = 0;
+	redraw_area.y = 0;
 	redraw_area.width = widget->allocation.width;
 	redraw_area.height = widget->allocation.height;
-	
-	if (column_title->details->offscreen_widget != NULL
-	    && (column_title->details->offscreen_widget->allocation.x < redraw_area.x
-		|| column_title->details->offscreen_widget->allocation.y < redraw_area.y
-		|| column_title->details->offscreen_widget->allocation.width > redraw_area.width
-		|| column_title->details->offscreen_widget->allocation.height > redraw_area.height)) {
-		/* existing offscreen_widget not large enough, need to
-		 * allocate a new one, get rid of the old one first
-		 */
-		gdk_pixmap_unref (column_title->details->offscreen_pixmap);
-		gtk_widget_unref (column_title->details->offscreen_widget);
-		column_title->details->offscreen_widget = NULL;
-	}
-	
-	if (column_title->details->offscreen_widget == NULL) {
-		/* allocate a new offscreen_widget */
-		column_title->details->offscreen_pixmap = gdk_pixmap_new (widget->window, 
-									  redraw_area.width, 
-									  redraw_area.height, -1);
-		column_title->details->offscreen_widget = 
-			gtk_type_new (gtk_widget_get_type ());
 
-		gdk_window_set_user_data (column_title->details->offscreen_pixmap, 
-					  column_title->details->offscreen_widget);
-		gtk_widget_show (column_title->details->offscreen_widget);
-	}
-
+	/* allocate a new offscreen_pixmap */
+	offscreen_pixmap = gdk_pixmap_new (widget->window, 
+					   redraw_area.width, 
+					   redraw_area.height, -1);
 
 	/* Erase the offscreen background.
 	 * We are using the GtkStyle call to draw the background - this is a tiny bit
 	 * less efficient but gives us the convenience of setting up the right colors and
 	 * gc for the style we are using to blit the column titles.
 	 */
-	gtk_paint_box (widget->style, column_title->details->offscreen_pixmap,
+	gtk_paint_box (widget->style, offscreen_pixmap,
 		       GTK_STATE_NORMAL, GTK_SHADOW_OUT,
-		       &redraw_area, column_title->details->offscreen_widget, 
+		       &redraw_area, widget,
 		       COLUMN_TITLE_THEME_STYLE_NAME,
 		       redraw_area.x, redraw_area.y, 
 		       redraw_area.width, redraw_area.height);
 
 	/* render the column titles into the offscreen */
-	nautilus_list_column_title_paint (widget, column_title->details->offscreen_widget, 
-		column_title->details->offscreen_pixmap, &redraw_area);
+	nautilus_list_column_title_paint (widget, widget,
+					  offscreen_pixmap, &redraw_area);
 
-	if (column_title->details->offscreen_blitting_gc == NULL)
-		/* allocate a gc to blit the offscreen if needed */
-		column_title->details->offscreen_blitting_gc = gdk_gc_new (widget->window);
+	/* allocate a gc to blit the offscreen */
+	offscreen_blitting_gc = gdk_gc_new (widget->window);
 
 	/* blit the offscreen into the real view */
-	gdk_draw_pixmap (widget->window, column_title->details->offscreen_blitting_gc, 
-			 column_title->details->offscreen_pixmap, 
-			 0, 0, 0, 0, -1, -1);
+	gdk_draw_pixmap (widget->window, offscreen_blitting_gc,
+			 offscreen_pixmap, 0, 0, 0, 0, -1, -1);
+
+	gdk_pixmap_unref (offscreen_pixmap);
+	gdk_gc_destroy (offscreen_blitting_gc);
+}
+
+/* Do all buffered drawing in an idle, this means it's only done after all
+ * events have been processed and thus we don't do it unneccessairly */
+static gboolean
+offscreen_drawing_idle_handler (gpointer data)
+{
+	GtkWidget *widget;
+	NautilusListColumnTitle *column_title;
+
+	g_assert (GTK_IS_WIDGET (data));
+	g_assert (NAUTILUS_IS_LIST_COLUMN_TITLE (data));
+
+	widget = GTK_WIDGET (data);
+	column_title = NAUTILUS_LIST_COLUMN_TITLE (data);
+
+	nautilus_list_column_title_buffered_draw (widget);
+
+	column_title->details->offscreen_drawing_idle = 0;
+
+	return FALSE;
+}
+
+/* queue a buffered_draw to be called later after all other events
+ * are processed.  Increasing performance and reducing memory load. */
+static void
+nautilus_list_column_title_queue_buffered_draw (GtkWidget *widget)
+{
+	NautilusListColumnTitle *column_title;
+
+	g_assert (NAUTILUS_IS_LIST_COLUMN_TITLE (widget));
+
+	column_title = NAUTILUS_LIST_COLUMN_TITLE (widget);
+ 
+	if (column_title->details->offscreen_drawing_idle == 0) {
+		column_title->details->offscreen_drawing_idle =
+			gtk_idle_add (offscreen_drawing_idle_handler, widget);
+	}
 }
 
 static gboolean
@@ -822,7 +839,7 @@ nautilus_list_column_title_motion (GtkWidget *widget, GdkEventMotion *event)
 	title_update_needed |= track_prelight (widget, mouse_x, mouse_y);
 
 	if (title_update_needed) {
-		nautilus_list_column_title_buffered_draw (widget);
+		nautilus_list_column_title_queue_buffered_draw (widget);
 	}
 
 	return TRUE;
@@ -843,7 +860,7 @@ nautilus_list_column_title_leave (GtkWidget *widget, GdkEventCrossing *event)
 		column_title->details->tracking_column_prelight = -1;
 		gtk_widget_set_state (widget, GTK_STATE_NORMAL);
 	}
-	nautilus_list_column_title_buffered_draw (widget);
+	nautilus_list_column_title_queue_buffered_draw (widget);
 	return TRUE;
 }
 
@@ -934,7 +951,7 @@ nautilus_list_column_title_button_press (GtkWidget *widget, GdkEventButton *even
 				return FALSE;
 			}
 
-			nautilus_list_column_title_buffered_draw (widget);
+			nautilus_list_column_title_queue_buffered_draw (widget);
 		}
 		
 	}	
@@ -985,7 +1002,7 @@ nautilus_list_column_title_button_release (GtkWidget *widget, GdkEventButton *ev
 		column_title->details->tracking_column_prelight != -1 ? 
 		GTK_STATE_PRELIGHT : GTK_STATE_NORMAL);
 
-	nautilus_list_column_title_buffered_draw (widget);
+	nautilus_list_column_title_queue_buffered_draw (widget);
 
 	return FALSE;
 }

@@ -1,3 +1,26 @@
+Mon Aug 07 14:47:28 2000  George Lebl <jirka@5z.com>
+
+	* libnautilus-extensions/nautilus-list-column-title.c
+	  (nautilus_list_column_title_initialize) 
+	  (nautilus_list_column_title_finalize)
+	  (nautilus_list_column_title_buffered_draw)
+	  (offscreen_drawing_idle_handler)
+	  (nautilus_list_column_title_queue_buffered_draw)
+	  (nautilus_list_column_title_motion)
+	  (nautilus_list_column_title_leave)
+	  (nautilus_list_column_title_button_press)
+	  (nautilus_list_column_title_button_release):
+	  Redo drawing buffered background, stop using a widget, and
+	  allocate the gc and the offscreen pixmap only for the draw
+	  and free them afterwards.  Also do the buffered draw in an idle
+	  handler to avoid too many draws.  Obscoletes bug 614.
+
+	* src/file-manager/fm-list-view.c (remove_from_list):
+	  Instead of a warning just ignore the file if it's not in
+	  the list anymore.  This is what the icon view does and
+	  apparently we can get multiple file_changed calls which
+	  will cause this.  Fixes bug 1961
+
 2000-08-07  Ramiro Estrugo  <ramiro@eazel.com>
 
 	Fix bug 1903.  Pick a better sidebar font.

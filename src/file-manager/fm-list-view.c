@@ -1028,7 +1028,13 @@ remove_from_list (FMListView *list_view, NautilusFile *file)
 	list = get_list (list_view);
 	old_row = gtk_clist_find_row_from_data (GTK_CLIST (list), file);
 
-	g_return_val_if_fail (old_row >= 0, FALSE);
+	/* Just ignore this.  For some reason this is possible to
+	 * happen that multiple file_changed calls will be emitted for
+	 * the same file.   Thus this means we'll get called on a file
+	 * which no longer exists in the list. */
+	if (old_row < 0) {
+		return FALSE;
+	}
 	
 	/* Keep this item selected if necessary. */
 	was_selected = nautilus_list_is_row_selected (list, old_row);
