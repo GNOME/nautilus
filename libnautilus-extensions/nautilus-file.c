@@ -70,6 +70,10 @@ extern void eazel_dump_stack_trace	(const char    *print_prefix,
 /* Name to use to tag metadata for the directory itself. */
 #define FILE_NAME_FOR_DIRECTORY_METADATA "."
 
+/* Name of Nautilus trash directories */
+#define TRASH_DIRECTORY_NAME ".Trash"
+
+
 typedef struct {
 	NautilusFile *file;
 	GnomeVFSAsyncHandle *handle;
@@ -759,6 +763,16 @@ nautilus_file_can_rename (NautilusFile *file)
 		if (!can_rename_link) {
 			return FALSE;
 		}
+	}
+	
+	/* Nautilus trash directories cannot be renamed */
+	if (nautilus_file_is_directory (file)) {
+		text_uri = nautilus_file_get_uri (file);
+		if (nautilus_uri_is_trash_folder (text_uri)) {
+			g_free (text_uri);
+			return FALSE;
+		}
+		g_free (text_uri);
 	}
 	
 	/* User must have write permissions for the parent directory. */

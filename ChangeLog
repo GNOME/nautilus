@@ -1,3 +1,21 @@
+2001-02-02  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+	
+	Fixed bug 5222,
+	Nautilus allows users to rename .Trash (but not copy or link)
+	
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	* libnautilus-extensions/nautilus-file-utilities.h:
+	(nautilus_uri_is_trash_folder):
+	Utility function to indentify if the folder is trash based
+	on a text uri.
+	
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_can_rename):
+	Call nautilus_uri_is_trash_folder to identify a trash
+	folder and disallow renaming.
+	
 2001-02-02  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>
@@ -304,6 +322,7 @@
 	Initiall check-in of new metadata APIs (corba) - not hooked
 	up yet.
 
+>>>>>>> 1.3621
 2001-02-01  Gene Z. Ragan  <gzr@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>

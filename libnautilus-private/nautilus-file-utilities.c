@@ -212,6 +212,40 @@ nautilus_uri_is_trash (const char *uri)
 		|| nautilus_istr_has_prefix (uri, "gnome-trash:");
 }
 
+gboolean
+nautilus_uri_is_trash_folder (const char *uri)
+{
+	GnomeVFSURI *vfs_uri, *trash_vfs_uri;
+	gboolean result;
+	
+	/* Use a check for the actual trash first so that the trash
+	 * itself will be "in trash". There are fancier ways to do
+	 * this, but lets start with this.
+	 */
+ 	if (nautilus_uri_is_trash (uri)) {
+		return TRUE;
+	}
+
+        vfs_uri = gnome_vfs_uri_new (uri);
+	if (vfs_uri == NULL) {
+		return FALSE;
+	}
+
+	result = gnome_vfs_find_directory
+		(vfs_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
+		 &trash_vfs_uri, FALSE, FALSE, 0777) == GNOME_VFS_OK;
+
+       if (result) {
+		result = gnome_vfs_uri_equal (trash_vfs_uri, vfs_uri);			
+		gnome_vfs_uri_unref (trash_vfs_uri);
+        }
+        
+        gnome_vfs_uri_unref (vfs_uri);
+
+	return result;
+}
+
+
 gboolean 
 nautilus_uri_is_in_trash (const char *uri)
 {

@@ -41,6 +41,7 @@ typedef struct NautilusReadFileHandle NautilusReadFileHandle;
 char *                  nautilus_format_uri_for_display       (const char                *uri);
 char *                  nautilus_make_uri_from_input          (const char                *location);
 gboolean                nautilus_uri_is_trash                 (const char                *uri);
+gboolean		nautilus_uri_is_trash_folder 	      (const char 		 *uri);
 gboolean                nautilus_uri_is_in_trash              (const char                *uri);
 char *                  nautilus_make_uri_canonical           (const char                *uri);
 gboolean                nautilus_uris_match                   (const char                *uri_1,
