@@ -52,7 +52,7 @@
 #include <libgnomeui/gnome-dialog-util.h>
 
 #if (MOZILLA_MILESTONE >= 18) && EAZEL_SERVICES
-#include <libammonite-gtk.h>
+#include <libtrilobite/libammonite-gtk.h>
 /* for bonobo_poa() */
 #include <bonobo/bonobo-main.h>
 #endif

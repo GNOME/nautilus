@@ -7,23 +7,6 @@ CPPFLAGS = \
 	$(MOZILLA_COMPONENT_DEBUG_FLAGS) \
 	$(NULL)
 
-if EAZEL_SERVICES
-EAZEL_SERVICES_INCLUDES = \
-	$(AMMONITE_CFLAGS) \
-	-I$(top_srcdir)/components/services/trilobite/libammonite-gtk \
-	$(NULL)
-
-EAZEL_SERVICES_LIBS = \
-	$(top_srcdir)/components/services/trilobite/libammonite-gtk/libammonite-gtk.a \
-	$(AMMONITE_LIBS) 				\
-	$(NULL)
-else
-
-EAZEL_SERVICES_INCLUDES =
-EAZEL_SERVICES_LIBS = 
-
-endif
-
 INCLUDES = \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
@@ -32,7 +15,7 @@ INCLUDES = \
 	$(GNOMEUI_CFLAGS) \
 	$(MOZILLA_COMPONENT_CFLAGS) \
 	-DMOZILLA_MILESTONE=$(MOZILLA_MILESTONE) \
-	$(EAZEL_SERVICES_INCLUDES)
+	$(AMMONITE_CFLAGS) \
 	$(NULL)
 
 bin_PROGRAMS =\
@@ -55,15 +38,15 @@ noinst_HEADERS =\
 	$(NULL)
 
 nautilus_mozilla_content_view_LDADD = \
-	$(EAZEL_SERVICES_LIBS)				\
-	$(top_builddir)/libnautilus/libnautilus.la 	\
-	$(BONOBO_LIBS) 					\
-	$(GCONF_LIBS) 					\
-	$(GNOMEUI_LIBS) 				\
-	$(VFS_LIBS) 					\
-	$(OAF_LIBS) 					\
-	$(MOZILLA_COMPONENT_LDFLAGS) 			\
-	$(MOZILLA_COMPONENT_LIBS) 			\
+	$(top_builddir)/libnautilus/libnautilus.la \
+	$(BONOBO_LIBS) \
+	$(GCONF_LIBS) \
+	$(GNOMEUI_LIBS) \
+	$(VFS_LIBS) \
+	$(OAF_LIBS) \
+	$(MOZILLA_COMPONENT_LDFLAGS) \
+	$(MOZILLA_COMPONENT_LIBS) \
+	$(AMMONITE_LIBS) \
 	$(NULL)
 
 oafdir = $(datadir)/oaf
