@@ -1,8 +1,8 @@
-villadir = $(datadir)/pixmaps/nautilus/villanova
+sierradir = $(datadir)/pixmaps/nautilus/sierra
 
 SUBDIRS = 
 
-villa_DATA =	\
+sierra_DATA =	\
 	green_weave.png			\
 	i-directory-12.png		\
 	i-directory-12-aa.png		\
@@ -31,6 +31,7 @@ villa_DATA =	\
 	number_strip.png		\
 	Sierra_desktop.png		\
 	theme_preview.png		\
-	villanova_green.png		\
-	villanova.xml
-EXTRA_DIST = $(villa_DATA)
+	sierra_green.png		\
+	sierra.xml
+
+EXTRA_DIST = $(sierra_DATA)

@@ -1,6 +1,14 @@
 NULL=
 
-SUBDIRS = ardmore arlo crux_eggplant gnome sidebar_tab_pieces villanova throbber
+SUBDIRS =\
+	crux_eggplant \
+	crux_teal \
+	gnome \
+	sidebar_tab_pieces \
+	sierra \
+	tahoe \
+	throbber \
+	$(NULL)
 
 icondir = $(datadir)/pixmaps/nautilus
 

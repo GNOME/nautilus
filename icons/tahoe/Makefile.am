@@ -2,10 +2,10 @@ NULL=
 
 SUBDIRS =
 
-ardmoredir = $(datadir)/pixmaps/nautilus/ardmore
+tahoedir = $(datadir)/pixmaps/nautilus/tahoe
 
-ardmore_DATA =\
-	ardmore.xml \
+tahoe_DATA =\
+	tahoe.xml \
 	blueridge.png \
 	bluewall.png \
 	i-directory-12.png \
@@ -24,4 +24,4 @@ ardmore_DATA =\
 	theme_preview.png \
 	$(NULL)
 
-EXTRA_DIST = $(ardmore_DATA)
+EXTRA_DIST = $(tahoe_DATA)

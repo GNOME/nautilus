@@ -1,9 +1,9 @@
-arlodir = $(datadir)/pixmaps/nautilus/arlo
+crux_tealdir = $(datadir)/pixmaps/nautilus/crux_teal
 
 SUBDIRS = sidebar_tab_pieces backgrounds throbber
 
-arlo_DATA =	\
-	arlo.xml		\
+crux_teal_DATA =	\
+	crux_teal.xml		\
 	Back.png	\
 	Forward.png	\
 	Up.png	\
@@ -56,5 +56,5 @@ arlo_DATA =	\
 	number_strip.png	\
 	theme_preview.png	\
 	zoom_body.png
-		
-EXTRA_DIST = $(arlo_DATA)
+
+EXTRA_DIST = $(crux_teal_DATA)
