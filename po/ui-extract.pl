@@ -8,7 +8,7 @@
 use strict;
 use Getopt::Long;
 
-my $VERSION     = "0.6";
+my $VERSION     = "0.6.1";
 
 my $FILE	= $ARGV[0];
 my $HELP_ARG 	= "0";
@@ -23,7 +23,7 @@ GetOptions (
 	    "help|h|?"   => \$HELP_ARG,
 	    "version|v"  => \$VERSION_ARG,
 	    "update"     => \$UPDATE_ARG,
-	    ) or &Error2;
+	    ) or &Error;
 
 &SplitOnArgument;
 
@@ -77,7 +77,7 @@ sub Help{
 }
 
 #------------------- 
-sub Error2{
+sub Error{
 #   print "ui-extract: invalid option @ARGV\n";
     print "Try `ui-extract.pl --help' for more information.\n";
     exit;
@@ -136,7 +136,7 @@ sub Convert($) {
 
 	### For generic translatable XML files ###
  
-        if ($FILE =~ /xml/sg){
+        if ($FILE =~ /xml$/sg){
         while ($input =~ /[\t\n\s]_[a-zA-Z0-9_]+=\"([^\"]+)\"/sg) {
 	   	$string{$1} = [];
         }
@@ -147,7 +147,7 @@ sub Convert($) {
 
         ### For translatable Glade XML files ###
 
-        if ($FILE =~ /glade/sg){
+        if ($FILE =~ /glade$/sg){
         my $translate = "label|title|text|format|copyright|comments|preview_text|tooltip";
 
         while ($input =~ /<($translate)>(..[^<]*)<\/($translate)>/sg) {
