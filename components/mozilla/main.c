@@ -78,9 +78,18 @@ mozilla_process_delayed_exit (gpointer data)
 static void
 mozilla_object_destroyed (GtkObject *obj)
 {
+	static guint32 delayed_exit_interval = 0;
 	object_count--;
 
 	DEBUG_MSG (("mozilla_object_destroyed\n"));
+
+	if (delayed_exit_interval == 0) {
+		if (getenv ("NAUTILUS_MOZILLA_COMPONENT_DONT_DELAY_EXIT")) {
+			delayed_exit_interval = 1;
+		} else {
+			delayed_exit_interval = MOZILLA_QUIT_TIMEOUT_DELAY;
+		}
+	}
 	
 	if (object_count == 0) {
 		DEBUG_MSG (("mozilla_object_destroyed: 0 objects remaining, scheduling quit\n"));
@@ -90,7 +99,10 @@ mozilla_object_destroyed (GtkObject *obj)
 		}
 
 		quit_timeout_pending = TRUE;
-		quit_timeout_id = gtk_timeout_add (MOZILLA_QUIT_TIMEOUT_DELAY, (GtkFunction) mozilla_process_delayed_exit, NULL);
+		
+		quit_timeout_id = gtk_timeout_add (delayed_exit_interval,
+						   (GtkFunction) mozilla_process_delayed_exit,
+						   NULL);
 	}
 }
 

@@ -46,7 +46,10 @@
 #include "mozilla-preferences.h"
 #include "mozilla-components.h"
 #include "mozilla-events.h"
+#include "nautilus-mozilla-embed-extensions.h"
+#include "bonobo-extensions.h"
 
+#include <bonobo/bonobo-ui-util.h>
 #include <bonobo/bonobo-control.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
@@ -79,9 +82,12 @@ enum nsEventStatus {
 /* Buffer for streaming contents from gnome-vfs into mozilla */
 #define VFS_READ_BUFFER_SIZE	(40 * 1024)
 
+/* Menu Path for charset encoding submenu */
+#define MENU_VIEW_CHARSET_ENCODING_PATH "/menu/View/Encoding"
+
 struct NautilusMozillaContentViewDetails {
 	char 		*uri;			/* The URI stored here is nautilus's idea of the URI */
-	GtkWidget 	*mozilla;		/* If this is NULL, the mozilla widget has not yet been initialized */ 
+	GtkMozEmbed 	*mozilla;		/* If this is NULL, the mozilla widget has not yet been initialized */ 
 	NautilusView 	*nautilus_view;
 	GdkCursor 	*busy_cursor;
 	char		*vfs_read_buffer;
@@ -101,6 +107,8 @@ struct NautilusMozillaContentViewDetails {
 	gboolean	is_pending_report_status :1;
 	gboolean	is_pending_report_load_progress :1;
 	gboolean	is_pending_open_location :1;
+
+	BonoboUIComponent *ui;
 };
 
 /* GTK Type System */
@@ -230,6 +238,9 @@ static void	async_report_load_progress 			(NautilusMozillaContentView 	*view,
 								 double 			load_progress);
 
 
+/* BonoboControl callbacks */
+static void bonobo_control_activate_callback (BonoboObject *control, gboolean state, gpointer callback_data);
+
 /***********************************************************************************/
 /***********************************************************************************/
 
@@ -282,7 +293,7 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 	DEBUG_MSG (("+%s\n", __FUNCTION__));
 
 	/* Conjure up the beast.  May God have mercy on our souls. */
-	view->details->mozilla = gtk_moz_embed_new ();
+	view->details->mozilla = GTK_MOZ_EMBED (gtk_moz_embed_new ());
 
 	/* Do preference/environment setup that needs to happen only once.
 	 * We need to do this right after the first gtkmozembed widget gets
@@ -340,9 +351,9 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 					view,
 					GTK_OBJECT (view->details->mozilla));
 	
-	gtk_box_pack_start (GTK_BOX (view), view->details->mozilla, TRUE, TRUE, 1);
+	gtk_box_pack_start (GTK_BOX (view), GTK_WIDGET (view->details->mozilla), TRUE, TRUE, 1);
 	
-	gtk_widget_show (view->details->mozilla);
+	gtk_widget_show (GTK_WIDGET (view->details->mozilla));
 	
 	view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (view));
 	
@@ -351,6 +362,12 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 					GTK_SIGNAL_FUNC (view_load_location_callback), 
 					view,
 					GTK_OBJECT (view));
+
+	/* Connect to the active signal of the view to merge our menus */
+        gtk_signal_connect (GTK_OBJECT (nautilus_view_get_bonobo_control (view->details->nautilus_view)),
+                            "activate",
+                            bonobo_control_activate_callback,
+                            view);
 
 	gtk_widget_show_all (GTK_WIDGET (view));
 
@@ -429,6 +446,239 @@ view_load_location_callback (NautilusView *nautilus_view,
 /***********************************************************************************/
 /***********************************************************************************/
 
+typedef struct
+{
+	char *encoding;
+	NautilusMozillaContentView *mozilla_view;
+} EncodingMenuData;
+
+static void
+charset_encoding_changed_callback (BonoboUIComponent *component,
+				   gpointer callback_data,
+				   const char *path)
+{
+	EncodingMenuData *data;
+
+	g_return_if_fail (callback_data != NULL);
+	data = callback_data;
+	g_return_if_fail (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (data->mozilla_view));
+
+	/* Change the encoding and reload the page */
+	mozilla_charset_set_encoding (data->mozilla_view->details->mozilla,
+				      data->encoding);
+
+	gtk_moz_embed_reload (data->mozilla_view->details->mozilla, GTK_MOZ_EMBED_FLAG_RELOADNORMAL);
+}
+
+static void
+encoding_menu_data_free_cover (gpointer callback_data)
+{
+	EncodingMenuData *data;
+	g_return_if_fail (callback_data != NULL);
+
+	data = callback_data;
+	g_free (data->encoding);
+}
+
+
+static void
+mozilla_view_create_charset_encoding_submenu (NautilusMozillaContentView *mozilla_view)
+{
+	GList *node = NULL;
+	GList *groups = NULL;
+	guint num_encodings;
+	guint i;
+	guint menu_index = 0;
+	
+	g_return_if_fail (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (mozilla_view));
+	g_return_if_fail (BONOBO_IS_UI_COMPONENT (mozilla_view->details->ui));
+	g_return_if_fail (GTK_IS_MOZ_EMBED (mozilla_view->details->mozilla));
+	
+	num_encodings = mozilla_charset_get_num_encodings (mozilla_view->details->mozilla);
+	
+	/* Collect the list of encoding groups */
+	for (i = 0; i < num_encodings; i++) {
+		char *encoding_title;
+		char *encoding_group;
+		
+		encoding_title = mozilla_charset_get_nth_encoding_title (mozilla_view->details->mozilla, i);
+		encoding_group = mozilla_charset_find_encoding_group (mozilla_view->details->mozilla,
+								      encoding_title);
+		
+		/* Add new encodings to the list only once */
+		if (encoding_group != NULL) {
+			if (!g_list_find_custom	(groups, encoding_group, (GCompareFunc) g_strcasecmp)) {
+				groups = g_list_append (groups, encoding_group);
+			}
+		}
+		
+		g_free (encoding_title);
+	}
+	
+	/* Create the encoding group submenus */
+	node = groups;
+	while (node) {
+		char *encoding_group;
+		char *encoded_encoding_group;
+		char *path;
+		g_assert (node->data != NULL);
+		encoding_group = node->data;
+		encoded_encoding_group = bonobo_ui_util_encode_str (encoding_group);
+		
+		/* From now onwards we use the groups list to store indeces of items */
+		node->data = GINT_TO_POINTER (0);
+		
+		nautilus_bonobo_add_submenu (mozilla_view->details->ui,
+					     MENU_VIEW_CHARSET_ENCODING_PATH,
+					     encoded_encoding_group);
+		path = g_strdup_printf ("%s/%s", MENU_VIEW_CHARSET_ENCODING_PATH, encoded_encoding_group);
+		nautilus_bonobo_set_label (mozilla_view->details->ui,
+					   path,
+					   encoding_group);
+		g_free (path);
+		
+		node = node->next;
+		g_free (encoding_group);
+		g_free (encoded_encoding_group);
+	}
+	
+	/* We start adding items to the root submenu right after the last encoding group submenu */
+	menu_index = g_list_length (groups);
+	
+	/* Add the encoding menu items.  Encodings that belong in groups
+	 * get added the submenus we created above.  Encodings without a group
+	 * get added the root encodings menu.
+	 */
+	for (i = 0; i < num_encodings; i++) {
+		char *encoding;
+		char *encoding_title;
+		char *encoding_group;
+		char *ui_path;
+		char *verb_name;
+		EncodingMenuData *data;
+		char *new_item_path;
+		guint new_item_index;
+		
+		encoding = mozilla_charset_get_nth_encoding (mozilla_view->details->mozilla, i);
+		encoding_title = mozilla_charset_get_nth_encoding_title (mozilla_view->details->mozilla, i);
+		encoding_group = mozilla_charset_find_encoding_group (mozilla_view->details->mozilla,
+								      encoding_title);
+		
+		/* Add item to an existing encoding group submenu */
+		if (encoding_group != NULL) {
+			int enconding_group_index;
+			GList *nth_node;
+			char *encoded_encoding_group;
+
+			enconding_group_index = mozilla_charset_get_encoding_group_index (mozilla_view->details->mozilla,
+												  encoding_group);
+			g_assert (enconding_group_index >= 0);
+			g_assert ((guint) enconding_group_index < g_list_length (groups));
+			
+			nth_node = g_list_nth (groups, enconding_group_index);
+			g_assert (nth_node != NULL);
+
+			
+			encoded_encoding_group = bonobo_ui_util_encode_str (encoding_group);
+			
+			new_item_path = g_strdup_printf ("%s/%s", MENU_VIEW_CHARSET_ENCODING_PATH, encoded_encoding_group);
+			new_item_index = GPOINTER_TO_INT (nth_node->data);
+
+			g_free (encoded_encoding_group);
+			
+			/* Bump the child index */
+			nth_node->data = GINT_TO_POINTER (new_item_index + 1);
+		/* Add item to root encoding submenu */
+		} else {
+			new_item_path = g_strdup (MENU_VIEW_CHARSET_ENCODING_PATH);
+			new_item_index = menu_index;
+			menu_index++;
+		}
+		
+		nautilus_bonobo_add_numbered_menu_item (mozilla_view->details->ui, 
+							new_item_path, 
+							new_item_index,
+							encoding_title,
+							NULL);
+		
+		/* Add the status tip */
+		ui_path = nautilus_bonobo_get_numbered_menu_item_path (mozilla_view->details->ui,
+								       new_item_path,
+								       new_item_index);
+		/* NOTE: The encoding_title comes to us already localized */
+		nautilus_bonobo_set_tip (mozilla_view->details->ui,
+					 ui_path,
+					 encoding_title);
+		g_free (ui_path);
+		
+		/* Add verb to new bookmark menu item */
+		verb_name = nautilus_bonobo_get_numbered_menu_item_command  (mozilla_view->details->ui,
+									     new_item_path,
+									     new_item_index);
+		
+		data = g_new0 (EncodingMenuData, 1);
+		data->encoding = g_strdup (encoding);
+		data->mozilla_view = mozilla_view;
+		
+		bonobo_ui_component_add_verb_full (mozilla_view->details->ui,
+						   verb_name, 
+						   charset_encoding_changed_callback,
+						   data,
+						   encoding_menu_data_free_cover);
+		g_free (new_item_path);
+		g_free (verb_name);
+		
+		g_free (encoding);
+		g_free (encoding_title);
+		g_free (encoding_group);
+	}
+	
+	g_list_free (groups);
+}
+
+static void
+mozilla_view_merge_menus (NautilusMozillaContentView *mozilla_view)
+{
+	g_return_if_fail (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (mozilla_view));
+
+	/* This BonoboUIComponent is made automatically, and its lifetime is
+	 * controlled automatically. We don't need to explicitly ref or unref it.
+	 */
+	mozilla_view->details->ui = nautilus_view_set_up_ui (mozilla_view->details->nautilus_view,
+							     DATADIR,
+							     "nautilus-mozilla-ui.xml",
+							     "nautilus-mozilla-view");
+	
+	/* Create the charset encodings submenu */
+	bonobo_ui_component_freeze (mozilla_view->details->ui, NULL);
+	mozilla_view_create_charset_encoding_submenu (mozilla_view);
+	bonobo_ui_component_thaw (mozilla_view->details->ui, NULL);
+}
+
+/* BonoboControl callbacks */
+static void
+bonobo_control_activate_callback (BonoboObject *control, gboolean state, gpointer callback_data)
+{
+        NautilusMozillaContentView *mozilla_view;
+
+	g_return_if_fail (BONOBO_IS_CONTROL (control));
+	g_return_if_fail (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (callback_data));
+	
+        mozilla_view = NAUTILUS_MOZILLA_CONTENT_VIEW (callback_data);
+
+	if (state) {
+		mozilla_view_merge_menus (mozilla_view);
+	}
+
+        /* 
+         * Nothing to do on deactivate case, which never happens because
+         * of the way Nautilus content views are handled.
+         */
+}
+
+/***********************************************************************************/
+/***********************************************************************************/
+
 static void
 mozilla_title_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
 {
@@ -439,9 +689,9 @@ mozilla_title_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
 
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
 
-	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla));
+	g_assert (GTK_MOZ_EMBED (mozilla) == view->details->mozilla);
 
-	new_title = gtk_moz_embed_get_title (GTK_MOZ_EMBED (view->details->mozilla));
+	new_title = gtk_moz_embed_get_title (view->details->mozilla);
 
 	DEBUG_MSG (("=%s : new title='%s'\n", __FUNCTION__, new_title));
 
@@ -465,12 +715,12 @@ mozilla_location_callback (GtkMozEmbed *mozilla, gpointer user_data)
 
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
 
-	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla));
+	g_assert (GTK_MOZ_EMBED (mozilla) == view->details->mozilla);
 
 	/* If we were streaming in content, stop now */
 	cancel_pending_vfs_operation (view);
 
-	new_location = gtk_moz_embed_get_location (GTK_MOZ_EMBED (view->details->mozilla));
+	new_location = gtk_moz_embed_get_location (view->details->mozilla);
 
 	new_location_translated = translate_uri_mozilla_to_nautilus (view, new_location);
 
@@ -541,7 +791,7 @@ mozilla_net_state_callback (GtkMozEmbed	*mozilla,
 
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
 
-	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla));
+	g_assert (GTK_MOZ_EMBED (mozilla) == view->details->mozilla);
 
 #if defined(DEBUG_ramiro)
 	g_print ("%s\n", __FUNCTION__);
@@ -573,7 +823,7 @@ mozilla_net_stop_callback (GtkMozEmbed 	*mozilla,
 
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
 
-	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla));
+	g_assert (GTK_MOZ_EMBED (mozilla) == view->details->mozilla);
 
 	DEBUG_MSG (("gtkembedmoz signal: 'net_stop'\n"));
 
@@ -594,9 +844,9 @@ mozilla_link_message_callback (GtkMozEmbed *mozilla, gpointer user_data)
 
 	/* DEBUG_MSG (("+%s\n", __FUNCTION__)); */
 
-	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla));
+	g_assert (GTK_MOZ_EMBED (mozilla) == view->details->mozilla);
 
-	link_message = gtk_moz_embed_get_link_message (GTK_MOZ_EMBED (view->details->mozilla));
+	link_message = gtk_moz_embed_get_link_message (view->details->mozilla);
 
 	/* You could actually use make_full_uri_from_relative here
 	 * to translate things like fragment links to full URI's.
@@ -624,7 +874,7 @@ mozilla_progress_callback (GtkMozEmbed *mozilla,
  	NautilusMozillaContentView	*view;
 
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
-	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla));
+	g_assert (GTK_MOZ_EMBED (mozilla) == view->details->mozilla);
 
 #ifdef DEBUG_ramiro
 	g_print ("mozilla_progress_callback (max = %d, current = %d)\n", max_progress, current_progress);
@@ -696,7 +946,7 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 	
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
 
-	g_return_val_if_fail (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla), TRUE);
+	g_return_val_if_fail (GTK_MOZ_EMBED (mozilla) == view->details->mozilla, TRUE);
 
 	DEBUG_MSG (("+%s\n", __FUNCTION__));
 
@@ -778,12 +1028,12 @@ vfs_open_callback (GnomeVFSAsyncHandle *handle, GnomeVFSResult result, gpointer 
 	{
 		DEBUG_MSG ((">nautilus_view_report_load_failed\n"));
 		nautilus_view_report_load_failed (view->details->nautilus_view);
-		gtk_moz_embed_close_stream (GTK_MOZ_EMBED (view->details->mozilla));
+		gtk_moz_embed_close_stream (view->details->mozilla);
 	} else {
 		if (view->details->vfs_read_buffer == NULL) {
 			view->details->vfs_read_buffer = g_malloc (VFS_READ_BUFFER_SIZE);
 		}
-		gtk_moz_embed_open_stream (GTK_MOZ_EMBED (view->details->mozilla), "file://", "text/html");
+		gtk_moz_embed_open_stream (view->details->mozilla, "file://", "text/html");
 		gnome_vfs_async_read (handle, view->details->vfs_read_buffer, VFS_READ_BUFFER_SIZE, vfs_read_callback, view);
 	}
 	DEBUG_MSG (("-%s\n", __FUNCTION__));
@@ -806,11 +1056,11 @@ vfs_read_callback (GnomeVFSAsyncHandle *handle, GnomeVFSResult result, gpointer 
 	DEBUG_MSG (("+%s %ld/%ld bytes\n", __FUNCTION__, (long)bytes_requested, (long) bytes_read));
 
 	if (bytes_read != 0) {
-		gtk_moz_embed_append_data (GTK_MOZ_EMBED (view->details->mozilla), buffer, bytes_read);
+		gtk_moz_embed_append_data (view->details->mozilla, buffer, bytes_read);
 	}
 
 	if (bytes_read == 0 || result != GNOME_VFS_OK) {
-		gtk_moz_embed_close_stream (GTK_MOZ_EMBED (view->details->mozilla));
+		gtk_moz_embed_close_stream (view->details->mozilla);
 		view->details->vfs_handle = NULL;
 		g_free (view->details->vfs_read_buffer);
 		view->details->vfs_read_buffer = NULL;
@@ -911,7 +1161,7 @@ cancel_pending_vfs_operation (NautilusMozillaContentView *view)
 {
 	if (view->details->vfs_handle != NULL) {
 		gnome_vfs_async_cancel (view->details->vfs_handle);
-		gtk_moz_embed_close_stream (GTK_MOZ_EMBED (view->details->mozilla));
+		gtk_moz_embed_close_stream (view->details->mozilla);
 	}
 
 	view->details->vfs_handle = NULL;
@@ -937,11 +1187,11 @@ navigate_mozilla_to_nautilus_uri (NautilusMozillaContentView     *view,
 	} else if (should_mozilla_load_uri_directly (nautilus_uri)) {
 		if (view->details->uri != NULL && uris_identical (nautilus_uri, view->details->uri)) {
 			DEBUG_MSG (("=%s uri's identical, telling mozilla to reload\n", __FUNCTION__));
-			gtk_moz_embed_reload (GTK_MOZ_EMBED (view->details->mozilla),
+			gtk_moz_embed_reload (view->details->mozilla,
 				GTK_MOZ_EMBED_FLAG_RELOADBYPASSCACHE);
 
 		} else {
-			gtk_moz_embed_load_url (GTK_MOZ_EMBED (view->details->mozilla),
+			gtk_moz_embed_load_url (view->details->mozilla,
 						mozilla_uri);
 		}
 	} else {

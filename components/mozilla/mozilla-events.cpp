@@ -31,6 +31,7 @@
 #include <config.h>
 
 #include "mozilla-events.h"
+#include "gtkmozembed_internal.h"
 
 #include "nsIServiceManager.h"
 #include "nsComponentManagerUtils.h"
@@ -239,8 +240,6 @@ mozilla_events_is_in_form_POST_submit (gpointer dom_event)
 }
 
 #endif /* 0 */
-/* defined in gtkmozembed_internal.h */
-extern "C" void gtk_moz_embed_get_nsIWebBrowser  (GtkMozEmbed *embed, nsIWebBrowser **retval);
 
 #if 0
 static void

@@ -1,25 +1,9 @@
 <Root>
-
 <menu>
-	<submenu name="File" _label="_File">
-		<placeholder name="File Items Placeholder">
-			<menuitem name="Mozilla Test Menu Item" 
-				  _label="_Mozilla Test" 
-				  _tip="This is a Mozilla merged menu item"
-			          pixtype="stock" pixname="About"
-				  verb="Mozilla Test Menu Item"/>
-		</placeholder>
+	<submenu name="View">
+		<separator/>
+		<submenu name="Encoding" _label="Charset Encoding" tearoff="0">
+		</submenu>
 	</submenu>
 </menu>
-
-<dockitem name="Tool Bar">
-	<placeholder name="Extra Buttons Placeholder">
-		<toolitem name="Mozilla Test Dock Item"
-			  _label="Mozilla Test"
-			  _tip="This is a Mozilla merged tool bar button"
-		          pixtype="stock" pixname="About"
-		          verb="Mozilla Test Dock Item"/>
-	</placeholder>
-</dockitem>
-
 </Root>

@@ -25,14 +25,18 @@ nautilus_mozilla_content_view_SOURCES = \
 	mozilla-components.cpp \
 	mozilla-events.cpp \
 	mozilla-preferences.cpp \
+	nautilus-mozilla-embed-extensions.cpp \
 	nautilus-mozilla-content-view.c \
+	bonobo-extensions.c \
 	$(NULL)
 
 noinst_HEADERS =\
 	mozilla-components.h \
 	mozilla-events.h \
 	mozilla-preferences.h \
+	nautilus-mozilla-embed-extensions.h \
 	nautilus-mozilla-content-view.h \
+	bonobo-extensions.h \
 	$(NULL)
 
 nautilus_mozilla_content_view_LDADD = \

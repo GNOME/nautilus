@@ -1,3 +1,45 @@
+2001-02-16  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* components/mozilla/Makefile.am:
+	* components/mozilla/bonobo-extensions.c:
+	* components/mozilla/bonobo-extensions.h:
+	New files.  Cut and paste from nautilus-extensions to workaround
+	licensing issues.
+	
+	* components/mozilla/main.c: (mozilla_object_destroyed):
+	Mike Fleming added a nice feature that caches the mozilla process
+	by delaying exit.  This makes jumping from web page to web page
+	much faster.  However, it makes it harder to debug the mozilla
+	component because it sticks around for a while and killing it by
+	hand doesnt allow for clean shutdown.  So I added an debug
+	environment variable that can be set to turn the delayed exit off.
+	
+	* components/mozilla/mozilla-events.cpp: Include the mozembed
+	private header.  Im not quite sure why we were declaring the
+	prototype found thre ourselves.
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(nautilus_mozilla_content_view_initialize),
+	(charset_encoding_changed_callback),
+	(encoding_menu_data_free_cover),
+	(mozilla_view_create_charset_encoding_submenu),
+	(mozilla_view_merge_menus), (bonobo_control_activate_callback),
+	(mozilla_title_changed_callback), (mozilla_location_callback),
+	(mozilla_net_state_callback), (mozilla_net_stop_callback),
+	(mozilla_link_message_callback), (mozilla_progress_callback),
+	(mozilla_dom_mouse_click_callback), (vfs_open_callback),
+	(vfs_read_callback), (cancel_pending_vfs_operation),
+	(navigate_mozilla_to_nautilus_uri):
+	Add a charset encoding menu.  Also, changed the type of the
+	mozilla member to be GtkMozEmbed instead of GtkWidget to reduce
+	the amount of casting we did.
+
+	* components/mozilla/nautilus-mozilla-embed-extensions.cpp:
+	* components/mozilla/nautilus-mozilla-embed-extensions.h:
+	New files.  Start of mozilla embed extensions.  Right now only
+	charset encoding stuff.  Inspired somewhat by Galeon.
+	* components/mozilla/nautilus-mozilla-ui.xml:
+	Update for charset encoding menu support.
+
 2001-02-16  Josh Barrow  <josh@eazel.com>
 
 	* README:
