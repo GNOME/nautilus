@@ -590,7 +590,7 @@ nautilus_file_get_user_info (void)
 	    ((now.tv_sec - cached_time.tv_sec) > GETPWUID_CACHE_TIME)) {
 		cached_time = now;
 		has_cached_info = TRUE;
-		g_print ("FOO!\n");
+
 		info.user_id = geteuid ();
 		
 		info.has_primary_group = FALSE;
