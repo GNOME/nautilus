@@ -3485,10 +3485,16 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 
 	if (!performed_special_handling) {
 		action_type = nautilus_mime_get_default_action_type_for_uri (uri);
+
+		/* We need to check for the case of having GNOME_VFS_MIME_ACTION_TYPE_APPLICATION as the action
+		 * but having a NULL application returned. */
+		application = nautilus_mime_get_default_application_for_uri (uri);
+		if (action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION && application == NULL) {			
+			action_type = GNOME_VFS_MIME_ACTION_TYPE_COMPONENT;
+		}
+		
 		if (action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
-			application = nautilus_mime_get_default_application_for_uri (uri);
 			fm_directory_view_launch_application (application, uri, view);
-			gnome_vfs_mime_application_free (application);
 		} else {
 			/* If the action type is unspecified, treat it like
 			 * the component case. This is most likely to happen
@@ -3501,6 +3507,10 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 
 			fm_directory_view_switch_location
 				(view, uri, parameters->use_new_window);
+		}
+		
+		if (application != NULL) {
+			gnome_vfs_mime_application_free (application);
 		}
 	}
 

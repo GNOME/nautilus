@@ -1,3 +1,15 @@
+2000-09-11  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 818, clicking on .doc and .pdf crashes Nautilus
+
+	This was a bug where the action would be to open the document
+	in an application but the application returned would be NULL
+	due to some inconsistancy in the mime database.  We now check
+	for this case and default to the componet view if this 
+	situation arises.
+	
+	* src/file-manager/fm-directory-view.c: (activate_callback):
+
 2000-09-11  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 2938 (Shouldn't open a zillion Properties windows
