@@ -54,19 +54,19 @@ struct NautilusBookmarkListClass {
 GtkType                 nautilus_bookmark_list_get_type            (void);
 NautilusBookmarkList *  nautilus_bookmark_list_new                 (void);
 void                    nautilus_bookmark_list_append              (NautilusBookmarkList   *bookmarks,
-								    const NautilusBookmark *bookmark);
+								    NautilusBookmark *bookmark);
 gboolean                nautilus_bookmark_list_contains            (NautilusBookmarkList   *bookmarks,
-								    const NautilusBookmark *bookmark);
+								    NautilusBookmark *bookmark);
 void                    nautilus_bookmark_list_contents_changed    (NautilusBookmarkList   *bookmarks);
 void                    nautilus_bookmark_list_delete_item_at      (NautilusBookmarkList   *bookmarks,
 								    guint                   index);
 void                    nautilus_bookmark_list_delete_items_with_uri (NautilusBookmarkList *bookmarks,
 								    const char		   *uri);
 void                    nautilus_bookmark_list_insert_item         (NautilusBookmarkList   *bookmarks,
-								    const NautilusBookmark *bookmark,
+								    NautilusBookmark *bookmark,
 								    guint                   index);
 guint                   nautilus_bookmark_list_length              (NautilusBookmarkList   *bookmarks);
-const NautilusBookmark *nautilus_bookmark_list_item_at             (NautilusBookmarkList   *bookmarks,
+NautilusBookmark *      nautilus_bookmark_list_item_at             (NautilusBookmarkList   *bookmarks,
 								    guint                   index);
 void                    nautilus_bookmark_list_set_window_geometry (NautilusBookmarkList   *bookmarks,
 								    const char             *geometry);

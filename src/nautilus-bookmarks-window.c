@@ -47,7 +47,7 @@ static int		     uri_field_changed_signalID;
 
 
 /* forward declarations */
-static const NautilusBookmark *get_selected_bookmark (void);
+static NautilusBookmark *get_selected_bookmark (void);
 static guint	get_selected_row	      (void);
 static gboolean get_selection_exists 	      (void);
 static void     name_or_uri_field_activate    (NautilusEntry *entry);
@@ -268,7 +268,7 @@ create_bookmarks_window (NautilusBookmarkList *list, GtkObject *undo_manager_sou
 	return GTK_WINDOW (window);
 }
 
-static const NautilusBookmark *
+static NautilusBookmark *
 get_selected_bookmark ()
 {
 	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK_LIST(bookmarks), NULL);
@@ -293,7 +293,7 @@ get_selection_exists ()
 }
 
 static void
-install_bookmark_icon (const NautilusBookmark *bookmark, int row)
+install_bookmark_icon (NautilusBookmark *bookmark, int row)
 {
 	GdkPixmap *pixmap;
 	GdkBitmap *bitmap;
@@ -473,16 +473,21 @@ on_select_row (GtkCList	       *clist,
 	       GdkEventButton  *event,
 	       gpointer		user_data)
 {
-	const NautilusBookmark *selected;
+	NautilusBookmark *selected;
+	char *name, *uri;
 
-	g_assert(GTK_IS_ENTRY(name_field));
-	g_assert(GTK_IS_ENTRY(uri_field));
+	g_assert (GTK_IS_ENTRY (name_field));
+	g_assert (GTK_IS_ENTRY (uri_field));
 
-	selected = get_selected_bookmark();
-	nautilus_entry_set_text(NAUTILUS_ENTRY (name_field), 
-			   nautilus_bookmark_get_name(selected));
-	nautilus_entry_set_text(NAUTILUS_ENTRY (uri_field), 
-			   nautilus_bookmark_get_uri(selected));
+	selected = get_selected_bookmark ();
+	name = nautilus_bookmark_get_name (selected);
+	uri = nautilus_bookmark_get_uri (selected);
+	
+	nautilus_entry_set_text (NAUTILUS_ENTRY (name_field), name);
+	nautilus_entry_set_text (NAUTILUS_ENTRY (uri_field), uri);
+
+	g_free (name);
+	g_free (uri);
 }
 
 
@@ -603,14 +608,17 @@ repopulate (void)
 	/* Fill the list in with the bookmark names. */
 	for (index = 0; index < nautilus_bookmark_list_length(bookmarks); ++index) {
 		char *text[BOOKMARK_LIST_COLUMN_COUNT];
-		const NautilusBookmark *bookmark;
+		char *bookmark_name;
+		NautilusBookmark *bookmark;
 		int new_row;
 
 		bookmark = nautilus_bookmark_list_item_at(bookmarks, index);
+		bookmark_name = nautilus_bookmark_get_name (bookmark);
 		text[BOOKMARK_LIST_COLUMN_ICON] = NULL;
-		text[BOOKMARK_LIST_COLUMN_NAME] = 
-			(char *)nautilus_bookmark_get_name (bookmark);
+		text[BOOKMARK_LIST_COLUMN_NAME] = bookmark_name;
 		new_row = gtk_clist_append (clist, text);
+		g_free (bookmark_name);
+		
 		install_bookmark_icon (bookmark, new_row);
 	}
 	

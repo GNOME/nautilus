@@ -50,7 +50,7 @@ static void                  activate_bookmark_in_menu_item                 (Bon
 									     gpointer                user_data,
 									     const char             *path);
 static void                  append_bookmark_to_menu                        (NautilusWindow         *window,
-									     const NautilusBookmark *bookmark,
+									     NautilusBookmark *bookmark,
 									     const char             *menu_item_path,
 									     gboolean		     is_in_bookmarks_menu);
 static void                  clear_appended_bookmark_items                  (NautilusWindow         *window,
@@ -76,13 +76,13 @@ static void		     update_preferences_dialog_title		    (void);
 
 /* Struct that stores all the info necessary to activate a bookmark. */
 typedef struct {
-        const NautilusBookmark *bookmark;
+        NautilusBookmark *bookmark;
         NautilusWindow *window;
         gboolean in_bookmarks_menu;
 } BookmarkHolder;
 
 static BookmarkHolder *
-bookmark_holder_new (const NautilusBookmark *bookmark, 
+bookmark_holder_new (NautilusBookmark *bookmark, 
 		     NautilusWindow *window,
 		     gboolean in_bookmarks_menu)
 {
@@ -370,7 +370,7 @@ static void
 show_bogus_bookmark_window (BookmarkHolder *holder)
 {
 	GtkWidget *dialog;
-	const char *uri;
+	char *uri;
 	char *prompt;
 
 	uri = nautilus_bookmark_get_uri (holder->bookmark);
@@ -399,7 +399,8 @@ show_bogus_bookmark_window (BookmarkHolder *holder)
 		dialog = nautilus_info_dialog_parented (prompt, GTK_WINDOW (holder->window));
 		gtk_window_set_title (GTK_WINDOW (dialog), _("Go To Bad Location"));
 	}
-	
+
+	g_free (uri);
 	g_free (prompt);
 }
 
@@ -425,27 +426,30 @@ static void
 activate_bookmark_in_menu_item (BonoboUIHandler *uih, gpointer user_data, const char *path)
 {
         BookmarkHolder *holder;
+        char *uri;
 
         holder = (BookmarkHolder *)user_data;
+        uri = nautilus_bookmark_get_uri (holder->bookmark);
 
-	if (uri_known_not_to_exist (nautilus_bookmark_get_uri (holder->bookmark))) {
+	if (uri_known_not_to_exist (uri)) {
 		show_bogus_bookmark_window (holder);
 	} else {
-	        nautilus_window_goto_uri (holder->window, 
-	        			  nautilus_bookmark_get_uri (holder->bookmark));
-        }	
+	        nautilus_window_goto_uri (holder->window, uri);
+        }
+
+        g_free (uri);
 }
 
 static void
 append_bookmark_to_menu (NautilusWindow *window, 
-                         const NautilusBookmark *bookmark, 
+                         NautilusBookmark *bookmark, 
                          const char *menu_item_path,
                          gboolean is_bookmarks_menu)
 {
 	BookmarkHolder *bookmark_holder;	
 	GdkPixbuf *pixbuf;
 	BonoboUIHandlerPixmapType pixmap_type;
-	char *name;
+	char *raw_name, *name;
 
 	/* FIXME bugzilla.eazel.com 705:
 	 * This can make remote calls to try to get the icon. We
@@ -468,8 +472,9 @@ append_bookmark_to_menu (NautilusWindow *window,
 	 * escape more than just the underscores, we'll add a menu helper function
 	 * instead of a string utility. (Like maybe escaping control characters.)
 	 */
-	name = nautilus_str_double_underscores
-		(nautilus_bookmark_get_name (bookmark));
+	raw_name = nautilus_bookmark_get_name (bookmark);
+	name = nautilus_str_double_underscores (raw_name);
+	g_free (raw_name);
  	bonobo_ui_handler_menu_new_item (window->ui_handler,
 					 menu_item_path,
 					 name,
@@ -573,8 +578,8 @@ nautilus_window_add_bookmark_for_current_location (NautilusWindow *window)
 
 	g_return_if_fail(NAUTILUS_IS_WINDOW (window));
 
-	g_assert (strcmp (nautilus_bookmark_get_uri (window->current_location_bookmark), 
-		          window->location) == 0);
+	g_assert (nautilus_eat_strcmp (nautilus_bookmark_get_uri (window->current_location_bookmark), 
+		          	       window->location) == 0);
 	/* Use the first bookmark in the history list rather than creating a new one. */
 	bookmark = window->current_location_bookmark;
 

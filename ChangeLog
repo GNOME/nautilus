@@ -1,5 +1,43 @@
 2000-06-15  John Sullivan  <sullivan@eazel.com>
 
+	Modernized some NautilusBookmark code that had been written
+	in the dark ages (by me).
+
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(nautilus_bookmark_compare_with), (nautilus_bookmark_copy),
+	(nautilus_bookmark_get_name),
+	(nautilus_bookmark_get_pixmap_and_mask),
+	(nautilus_bookmark_get_pixbuf), (nautilus_bookmark_get_icon),
+	(nautilus_bookmark_get_uri), (create_pixmap_widget_for_bookmark),
+	(nautilus_bookmark_menu_item_new): Eliminated the use of
+	const NautilusBookmark *; made _get_name and _get_uri return
+	copies instead of the original text; tweaked a little formatting.
+
+	* components/history/nautilus-history-view.c: (install_icon),
+	(hyperbola_navigation_history_load_location),
+	(hyperbola_navigation_history_select_row):
+	* libnautilus-extensions/nautilus-bookmark.h:
+	* src/nautilus-bookmark-list.c: (append_bookmark_node),
+	(nautilus_bookmark_list_append), (nautilus_bookmark_list_contains),
+	(nautilus_bookmark_list_delete_items_with_uri),
+	(nautilus_bookmark_list_insert_item):
+	* src/nautilus-bookmark-list.h:
+	* src/nautilus-bookmarks-window.c: (install_bookmark_icon),
+	(on_select_row), (repopulate):
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_reset_title_internal), (handle_go_back),
+	(handle_go_forward), (handle_go_elsewhere):
+	* src/nautilus-window-menus.c: (bookmark_holder_new),
+	(show_bogus_bookmark_window), (activate_bookmark_in_menu_item),
+	(append_bookmark_to_menu),
+	(nautilus_window_add_bookmark_for_current_location):
+	* src/nautilus-window.c: (nautilus_window_back_or_forward):
+	Eliminated the use of const NautilusBookmark *; changed all
+	callers of nautilus_bookmark_get_name and _get_uri to free
+	the results.
+
+2000-06-15  John Sullivan  <sullivan@eazel.com>
+
 	Fixed bug 705 (Need to avoid network hit on startup for
 	each remote bookmark). Bookmarks now get their icon only
 	when they're initially created, and then store a text

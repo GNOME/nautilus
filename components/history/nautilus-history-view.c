@@ -48,14 +48,14 @@ typedef struct {
 #define HISTORY_VIEW_COLUMN_NAME	1
 #define HISTORY_VIEW_COLUMN_COUNT	2
 
-static const NautilusBookmark *
+static NautilusBookmark *
 get_bookmark_from_row (GtkCList *clist, int row)
 {
   g_assert (NAUTILUS_IS_BOOKMARK (gtk_clist_get_row_data (clist, row)));
   return NAUTILUS_BOOKMARK (gtk_clist_get_row_data (clist, row));  
 }
 
-static const char *
+static char *
 get_uri_from_row (GtkCList *clist, int row)
 {
   return nautilus_bookmark_get_uri (get_bookmark_from_row (clist, row));
@@ -67,7 +67,7 @@ install_icon (GtkCList *clist, gint row)
 {
 	GdkPixmap *pixmap;
 	GdkBitmap *bitmap;
-	const NautilusBookmark *bookmark;
+	NautilusBookmark *bookmark;
 
 	bookmark = get_bookmark_from_row (clist, row);
 	if (!nautilus_bookmark_get_pixmap_and_mask (bookmark,
@@ -127,8 +127,6 @@ hyperbola_navigation_history_load_location (NautilusView *view,
     gnome_vfs_uri_unref (vfs_uri);
   }
   bookmark = nautilus_bookmark_new (location, short_name);
-  g_free (short_name);
-
   
 
   /* If a bookmark for this location was already in list, remove it
@@ -147,9 +145,10 @@ hyperbola_navigation_history_load_location (NautilusView *view,
     }
 
   cols[HISTORY_VIEW_COLUMN_ICON] = NULL;
-  /* Ugh. Gotta cast away the const */
-  cols[HISTORY_VIEW_COLUMN_NAME] = (char *)nautilus_bookmark_get_name (bookmark);
+  cols[HISTORY_VIEW_COLUMN_NAME] = short_name;
   new_rownum = gtk_clist_prepend(clist, cols);
+  g_free (short_name);
+  
   gtk_clist_set_row_data_full (clist,
   			       new_rownum,
   			       bookmark,
@@ -172,6 +171,8 @@ static void
 hyperbola_navigation_history_select_row(GtkCList *clist, gint row, gint column, GdkEvent *event,
 					HistoryView *hview)
 {
+  char *uri;
+  
   if(hview->notify_count > 0)
     return;
 
@@ -186,7 +187,9 @@ hyperbola_navigation_history_select_row(GtkCList *clist, gint row, gint column, 
   if(gtk_clist_row_is_visible(clist, row) != GTK_VISIBILITY_FULL)
     gtk_clist_moveto(clist, row, -1, 0.5, 0.0);
 
-  nautilus_view_open_location (hview->view, get_uri_from_row (clist, row));
+  uri = get_uri_from_row (clist, row);
+  nautilus_view_open_location (hview->view, uri);
+  g_free (uri);
 
   gtk_clist_thaw(clist);
 }

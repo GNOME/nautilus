@@ -59,29 +59,29 @@ typedef struct NautilusBookmarkClass NautilusBookmarkClass;
 
 
 
-GtkType           nautilus_bookmark_get_type            (void);
-NautilusBookmark *nautilus_bookmark_new       		(const char              *uri,
-							 const char              *name);
-NautilusBookmark *nautilus_bookmark_new_with_icon	(const char		 *uri,
-							 const char		 *name,
-							 NautilusScalableIcon	 *icon);
-NautilusBookmark *nautilus_bookmark_copy                (const NautilusBookmark  *bookmark);
-const char *      nautilus_bookmark_get_name            (const NautilusBookmark  *bookmark);
-const char *      nautilus_bookmark_get_uri             (const NautilusBookmark  *bookmark);
-NautilusScalableIcon *nautilus_bookmark_get_icon	(const NautilusBookmark  *bookmark);
-void		  nautilus_bookmark_set_name 		(NautilusBookmark 	 *bookmark, 
-							 const char 		 *new_name);
-int               nautilus_bookmark_compare_with        (gconstpointer            a,
-							 gconstpointer            b);
+GtkType               nautilus_bookmark_get_type            (void);
+NautilusBookmark *    nautilus_bookmark_new       	    (const char           *uri,
+							     const char           *name);
+NautilusBookmark *    nautilus_bookmark_new_with_icon	    (const char		  *uri,
+							     const char		  *name,
+							     NautilusScalableIcon *icon);
+NautilusBookmark *    nautilus_bookmark_copy                (NautilusBookmark     *bookmark);
+char *                nautilus_bookmark_get_name            (NautilusBookmark     *bookmark);
+char *                nautilus_bookmark_get_uri             (NautilusBookmark     *bookmark);
+NautilusScalableIcon *nautilus_bookmark_get_icon	    (NautilusBookmark     *bookmark);
+void		      nautilus_bookmark_set_name 	    (NautilusBookmark 	  *bookmark, 
+							     const char 	  *new_name);
+int                   nautilus_bookmark_compare_with        (gconstpointer         a,
+							     gconstpointer         b);
 
 /* Helper functions for displaying bookmarks */
-gboolean          nautilus_bookmark_get_pixmap_and_mask (const NautilusBookmark  *bookmark,
-							 guint                    icon_size,
-							 GdkPixmap              **pixmap_return,
-							 GdkBitmap              **mask_return);
-GdkPixbuf *       nautilus_bookmark_get_pixbuf          (const NautilusBookmark *bookmark,
-							 guint		icon_size);
-GtkWidget *       nautilus_bookmark_menu_item_new       (const NautilusBookmark  *bookmark);
+gboolean              nautilus_bookmark_get_pixmap_and_mask (NautilusBookmark     *bookmark,
+							     guint                 icon_size,
+							     GdkPixmap           **pixmap_return,
+							     GdkBitmap           **mask_return);
+GdkPixbuf *           nautilus_bookmark_get_pixbuf          (NautilusBookmark     *bookmark,
+							     guint		   icon_size);
+GtkWidget *           nautilus_bookmark_menu_item_new       (NautilusBookmark     *bookmark);
 
 
 #endif /* NAUTILUS_BOOKMARK_H */

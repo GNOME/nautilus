@@ -47,7 +47,7 @@ struct NautilusBookmarkDetails
 
 static void       nautilus_bookmark_initialize_class      (NautilusBookmarkClass  *class);
 static void       nautilus_bookmark_initialize            (NautilusBookmark       *bookmark);
-static GtkWidget *create_pixmap_widget_for_bookmark       (const NautilusBookmark *bookmark);
+static GtkWidget *create_pixmap_widget_for_bookmark       (NautilusBookmark *bookmark);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusBookmark, nautilus_bookmark, GTK_TYPE_OBJECT)
 
@@ -112,13 +112,13 @@ nautilus_bookmark_compare_with (gconstpointer a, gconstpointer b)
 	bookmark_a = NAUTILUS_BOOKMARK (a);
 	bookmark_b = NAUTILUS_BOOKMARK (b);
 
-	if (strcmp (nautilus_bookmark_get_name(bookmark_a),
-		    nautilus_bookmark_get_name(bookmark_b)) != 0) {
+	if (strcmp (bookmark_a->details->name,
+		    bookmark_b->details->name) != 0) {
 		return 1;
 	}
 	
-	if (strcmp (nautilus_bookmark_get_uri(bookmark_a),
-		    nautilus_bookmark_get_uri(bookmark_b)) != 0) {
+	if (strcmp (bookmark_a->details->uri,
+		    bookmark_b->details->uri) != 0) {
 		return 1;
 	}
 	
@@ -126,7 +126,7 @@ nautilus_bookmark_compare_with (gconstpointer a, gconstpointer b)
 }
 
 NautilusBookmark *
-nautilus_bookmark_copy (const NautilusBookmark *bookmark)
+nautilus_bookmark_copy (NautilusBookmark *bookmark)
 {
 	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK (bookmark), NULL);
 
@@ -136,16 +136,16 @@ nautilus_bookmark_copy (const NautilusBookmark *bookmark)
 			bookmark->details->icon);
 }
 
-const char *
-nautilus_bookmark_get_name (const NautilusBookmark *bookmark)
+char *
+nautilus_bookmark_get_name (NautilusBookmark *bookmark)
 {
 	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK (bookmark), NULL);
 
-	return bookmark->details->name;
+	return g_strdup (bookmark->details->name);
 }
 
 gboolean	    
-nautilus_bookmark_get_pixmap_and_mask (const NautilusBookmark *bookmark,
+nautilus_bookmark_get_pixmap_and_mask (NautilusBookmark *bookmark,
 				       guint icon_size,
 				       GdkPixmap **pixmap_return,
 				       GdkBitmap **mask_return)
@@ -165,7 +165,7 @@ nautilus_bookmark_get_pixmap_and_mask (const NautilusBookmark *bookmark,
 
 
 GdkPixbuf *	    
-nautilus_bookmark_get_pixbuf (const NautilusBookmark *bookmark,
+nautilus_bookmark_get_pixbuf (NautilusBookmark *bookmark,
 			      guint icon_size)
 {
 	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK (bookmark), NULL);
@@ -179,7 +179,7 @@ nautilus_bookmark_get_pixbuf (const NautilusBookmark *bookmark,
 }
 
 NautilusScalableIcon *
-nautilus_bookmark_get_icon (const NautilusBookmark *bookmark)
+nautilus_bookmark_get_icon (NautilusBookmark *bookmark)
 {
 	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK (bookmark), NULL);
 
@@ -189,12 +189,12 @@ nautilus_bookmark_get_icon (const NautilusBookmark *bookmark)
 	return bookmark->details->icon;
 }
 
-const char *
-nautilus_bookmark_get_uri (const NautilusBookmark *bookmark)
+char *
+nautilus_bookmark_get_uri (NautilusBookmark *bookmark)
 {
 	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK (bookmark), NULL);
 
-	return bookmark->details->uri;
+	return g_strdup (bookmark->details->uri);
 }
 
 
@@ -287,7 +287,7 @@ nautilus_bookmark_new_with_icon (const char *uri, const char *name,
 }				 
 
 static GtkWidget *
-create_pixmap_widget_for_bookmark (const NautilusBookmark *bookmark)
+create_pixmap_widget_for_bookmark (NautilusBookmark *bookmark)
 {
 	GdkPixmap *gdk_pixmap;
 	GdkBitmap *mask;
@@ -310,7 +310,7 @@ create_pixmap_widget_for_bookmark (const NautilusBookmark *bookmark)
  * Return value: A newly-created bookmark, not yet shown.
  **/ 
 GtkWidget *
-nautilus_bookmark_menu_item_new (const NautilusBookmark *bookmark)
+nautilus_bookmark_menu_item_new (NautilusBookmark *bookmark)
 {
 	GtkWidget *menu_item;
 	GtkWidget *pixmap_widget;
@@ -328,7 +328,7 @@ nautilus_bookmark_menu_item_new (const NautilusBookmark *bookmark)
 		gtk_widget_show (pixmap_widget);
 		gtk_pixmap_menu_item_set_pixmap (GTK_PIXMAP_MENU_ITEM (menu_item), pixmap_widget);
 	}
-	accel_label = gtk_accel_label_new (nautilus_bookmark_get_name (bookmark));
+	accel_label = gtk_accel_label_new (bookmark->details->name);
 	gtk_misc_set_alignment (GTK_MISC (accel_label), 0.0, 0.5);
 
 	gtk_container_add (GTK_CONTAINER (menu_item), accel_label);

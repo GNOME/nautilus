@@ -33,6 +33,7 @@
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-xml-extensions.h>
 
 #include <parser.h>
@@ -100,6 +101,7 @@ append_bookmark_node (gpointer data, gpointer user_data)
 	xmlNodePtr root_node, bookmark_node;
 	NautilusBookmark *bookmark;
 	NautilusScalableIcon *icon;
+	char *bookmark_uri, *bookmark_name;
 	char *icon_uri, *icon_name;
 
 	g_assert (NAUTILUS_IS_BOOKMARK (data));
@@ -107,9 +109,15 @@ append_bookmark_node (gpointer data, gpointer user_data)
 	bookmark = NAUTILUS_BOOKMARK (data);
 	root_node = (xmlNodePtr) user_data;	
 
+	bookmark_name = nautilus_bookmark_get_name (bookmark);
+	bookmark_uri = nautilus_bookmark_get_uri (bookmark);
+
 	bookmark_node = xmlNewChild (root_node, NULL, "bookmark", NULL);
-	xmlSetProp (bookmark_node, "name", nautilus_bookmark_get_name (bookmark));
-	xmlSetProp (bookmark_node, "uri", nautilus_bookmark_get_uri (bookmark));
+	xmlSetProp (bookmark_node, "name", bookmark_name);
+	xmlSetProp (bookmark_node, "uri", bookmark_uri);
+
+	g_free (bookmark_name);
+	g_free (bookmark_uri);
 
 	icon = nautilus_bookmark_get_icon (bookmark);
 	if (icon != NULL) {
@@ -132,7 +140,7 @@ append_bookmark_node (gpointer data, gpointer user_data)
  **/
 void
 nautilus_bookmark_list_append (NautilusBookmarkList *bookmarks, 
-			      const NautilusBookmark *bookmark)
+			       NautilusBookmark *bookmark)
 {
 	g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
 	g_return_if_fail (NAUTILUS_IS_BOOKMARK (bookmark));
@@ -153,7 +161,7 @@ nautilus_bookmark_list_append (NautilusBookmarkList *bookmarks,
  **/
 gboolean
 nautilus_bookmark_list_contains (NautilusBookmarkList *bookmarks, 
-				const NautilusBookmark *bookmark)
+				 NautilusBookmark *bookmark)
 {
 	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks), FALSE);
 	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK (bookmark), FALSE);
@@ -228,7 +236,7 @@ nautilus_bookmark_list_delete_items_with_uri (NautilusBookmarkList *bookmarks,
 	for (node = bookmarks->list; node != NULL;  node = next) {
 		next = node->next;
 
-		if (strcmp (uri, nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (node->data))) == 0) {
+		if (nautilus_eat_strcmp (nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (node->data)), uri) == 0) {
 			bookmarks->list = g_list_remove_link (bookmarks->list, node);
 			gtk_object_unref (GTK_OBJECT (node->data));
 			g_list_free (node);
@@ -281,7 +289,7 @@ nautilus_bookmark_list_get_window_geometry (NautilusBookmarkList *bookmarks)
  **/
 void			
 nautilus_bookmark_list_insert_item (NautilusBookmarkList *bookmarks,
-				    const NautilusBookmark* new_bookmark,
+				    NautilusBookmark* new_bookmark,
 				    guint index)
 {
 	g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
@@ -303,7 +311,7 @@ nautilus_bookmark_list_insert_item (NautilusBookmarkList *bookmarks,
  * 
  * Return value: the bookmark at position @index in @bookmarks.
  **/
-const NautilusBookmark *
+NautilusBookmark *
 nautilus_bookmark_list_item_at (NautilusBookmarkList *bookmarks, guint index)
 {
 	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks), NULL);

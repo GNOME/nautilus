@@ -865,16 +865,20 @@ void
 nautilus_window_back_or_forward (NautilusWindow *window, gboolean back, guint distance)
 {
 	GSList *list;
+	char *uri;
 	
 	list = back ? window->back_list : window->forward_list;
 	g_assert (g_slist_length (list) > distance);
-	
+
+	uri = nautilus_bookmark_get_uri (g_slist_nth_data (list, distance));
 	nautilus_window_begin_location_change
 		(window,
-		 nautilus_bookmark_get_uri (g_slist_nth_data (list, distance)),
+		 uri,
 		 NULL,
 		 back ? NAUTILUS_LOCATION_CHANGE_BACK : NAUTILUS_LOCATION_CHANGE_FORWARD,
 		 distance);
+
+	g_free (uri);
 }
 
 void
