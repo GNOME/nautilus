@@ -1,3 +1,12 @@
+2001-05-03  Darin Adler  <darin@eazel.com>
+
+	Fixed bug 8228 (http://www.yahoo.com shows plain document icon,
+	not HTML icon).
+
+	* src/nautilus-sidebar-title.c: (update_icon): Changed code to
+	pass in icon names to nautilus_icon_factory_get_pixbuf_by_name,
+	instead of passing icon paths (no reason to do that).
+
 2001-05-03 John Fleck <jfleck@inkstain.net>
 
 	* components/help/converters/gnome-db2html2/sect-elements.c

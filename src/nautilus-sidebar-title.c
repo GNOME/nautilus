@@ -434,33 +434,36 @@ static void
 update_icon (NautilusSidebarTitle *sidebar_title)
 {
 	GdkPixbuf *pixbuf;
-	char *uri, *icon_path;
+	char *uri;
+	const char *icon_name;
 	gboolean leave_pixbuf_unchanged;
 	
-	/* FIXME bugzilla.eazel.com 5043: currently, components can't specify their own sidebar icon.  This
-	  needs to be added to the framework, but for now we special-case some
-	  important ones here */
+	/* FIXME bugzilla.eazel.com 5043: Currently, components can't
+	 * specify their own sidebar icon. This needs to be added to
+	 * the framework, but for now we special-case some important
+	 * ones here.
+	 */
 
 	leave_pixbuf_unchanged = FALSE;
 	uri = NULL;
-	icon_path = NULL;
+	icon_name = NULL;
 	if (sidebar_title->details->file) {
 		uri = nautilus_file_get_uri (sidebar_title->details->file);
 	}	
 	
 	if (eel_istr_has_prefix (uri, "eazel:") || eel_istr_has_prefix (uri, "eazel-services:")) {
-		icon_path = nautilus_theme_get_image_path ("big_services_icon.png");
+		icon_name = "big_services_icon";
 	} else if (eel_istr_has_prefix (uri, "http:")) {
-		icon_path = nautilus_theme_get_image_path ("i-web-72.png");
+		icon_name = "i-web";
 	} else if (eel_istr_has_prefix (uri, "man:")) {
-		icon_path = nautilus_theme_get_image_path ("manual.png");
+		icon_name = "manual";
 	} else if (eel_istr_has_prefix (uri, "hardware:")) {
-		icon_path = nautilus_theme_get_image_path ("computer.svg");
+		icon_name = "computer";
 	}
 
 	pixbuf = NULL;
-	if (icon_path != NULL) {
-		pixbuf = nautilus_icon_factory_get_pixbuf_from_name (icon_path, NULL, NAUTILUS_ICON_SIZE_LARGE, TRUE);
+	if (icon_name != NULL) {
+		pixbuf = nautilus_icon_factory_get_pixbuf_from_name (icon_name, NULL, NAUTILUS_ICON_SIZE_LARGE, TRUE);
 	} else if (nautilus_icon_factory_is_icon_ready_for_file (sidebar_title->details->file)) {
 		pixbuf = nautilus_icon_factory_get_pixbuf_for_file (sidebar_title->details->file,
 								    "accept",
@@ -477,7 +480,6 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 	}
 	
 	g_free (uri);	
-	g_free (icon_path);
 
 	if (pixbuf != NULL) {
 		sidebar_title->details->determined_icon = TRUE;
