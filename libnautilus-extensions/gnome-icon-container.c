@@ -2306,6 +2306,8 @@ gnome_icon_container_new (NautilusIconsController *controller)
 	return new;
 }
 
+/* clear all of the icons in the container */
+
 void
 gnome_icon_container_clear (GnomeIconContainer *container)
 {
@@ -2326,6 +2328,73 @@ gnome_icon_container_clear (GnomeIconContainer *container)
 	details->num_icons = 0;
 
 	icon_grid_clear (details->grid);
+}
+
+/* utility routine to remove a single icon from the container */
+
+static void
+remove_icon_from_container(GnomeIconContainer *container,
+			 GnomeIconContainerIcon *icon)
+{
+	GnomeIconContainerDetails *details;
+	gint icon_x, icon_y;
+	gint grid_x, grid_y;
+	gint x_offset, y_offset;
+	details = container->details;
+	
+	details->icons = g_list_remove(details->icons, icon);
+	details->num_icons--;
+
+	icon_x = icon->x;
+	icon_y = icon->y;
+	world_to_grid (container, icon_x, icon_y, &grid_x, &grid_y);
+	icon_grid_remove(details->grid, icon, grid_x, grid_y);
+ 
+ 	x_offset = icon_x % GNOME_ICON_CONTAINER_CELL_WIDTH (container);
+	y_offset = icon_y % GNOME_ICON_CONTAINER_CELL_HEIGHT (container);
+
+	if (x_offset > 0)
+		icon_grid_remove (details->grid, icon,
+				  grid_x + 1, grid_y);
+	if (y_offset > 0)
+		icon_grid_remove (details->grid, icon,
+				  grid_x, grid_y + 1);
+	if (x_offset > 0 && y_offset > 0)
+		icon_grid_remove (details->grid, icon,
+				  grid_x + 1, grid_y + 1);
+	
+ 	g_hash_table_remove (details->canvas_item_to_icon, icon->item);
+	
+	icon_destroy (icon);
+}
+
+/* clear the selected items in the container */
+
+void
+gnome_icon_container_clear_selected_items (GnomeIconContainer *container)
+{
+	GnomeIconContainerIcon *current_icon;
+	GnomeIconContainerDetails *details;
+	GList *current_item, *next_item;
+
+	g_return_if_fail (container != NULL);
+
+	details = container->details;
+
+	set_kbd_current (container, NULL, FALSE);
+	details->stretch_icon = NULL;
+	
+	current_item = details->icons;
+	while (current_item != NULL)
+	  {
+	  	
+	  	next_item = current_item->next;
+	  	current_icon = (GnomeIconContainerIcon*) current_item->data;
+		if (current_icon->is_selected)
+	  		remove_icon_from_container(container, current_icon);
+	  	current_item = next_item;
+	  }
+	
 }
 
 static void

@@ -73,6 +73,7 @@ void       gnome_icon_container_enable_linger_selection (GnomeIconContainer     
 							 gboolean                 enable);
 
 void       gnome_icon_container_clear                   (GnomeIconContainer      *view);
+void       gnome_icon_container_clear_selected_items    (GnomeIconContainer      *view);
 void       gnome_icon_container_add                     (GnomeIconContainer      *view,
 							 NautilusControllerIcon  *icon,
 							 int                      x,

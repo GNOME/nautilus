@@ -29,6 +29,8 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkcheckmenuitem.h>
+
+#include <gnome.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-directory-list.h>
@@ -75,7 +77,8 @@ struct _FMDirectoryViewDetails
 };
 
 /* forward declarations */
-static int display_selection_info_idle_cb 	(gpointer data);
+static void delete_cb 				(GtkMenuItem *item, GList *files);
+static int  display_selection_info_idle_cb 	(gpointer data);
 static void display_selection_info 		(FMDirectoryView *view);
 static void fm_directory_view_initialize_class	(FMDirectoryViewClass *klass);
 static void fm_directory_view_initialize 	(FMDirectoryView *view);
@@ -114,6 +117,7 @@ static void disconnect_model_handlers                   (FMDirectoryView *view);
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, add_entry)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, clear)
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, delete_selection)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selection)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, select_all)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, bump_zoom_level)
@@ -186,6 +190,7 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, add_entry);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, clear);
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, delete_selection);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_selection);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, select_all);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, bump_zoom_level);
@@ -797,6 +802,15 @@ fm_directory_view_can_zoom_out (FMDirectoryView *view)
 	return (* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->can_zoom_out) (view);
 }
 
+/* fm_directory_view_delete_selection invokes the subclass to delete its selected items */
+void
+fm_directory_view_delete_selection (FMDirectoryView *view)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	return (* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->delete_selection) (view);
+}
+
 /**
  * fm_directory_view_get_selection:
  *
@@ -851,6 +865,62 @@ fm_directory_view_get_model (FMDirectoryView *view)
 
 	return view->details->model;
 }
+
+/* handle the delete command */
+/* FIXME: need to handle errors better, and provide feedback for long deletes */
+
+static void
+delete_one (gpointer data, gpointer user_data)
+{
+	GnomeVFSResult result;
+	NautilusFile *file;
+	gchar *text_uri;
+	
+	g_assert (NAUTILUS_IS_FILE (data));
+	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+	
+	file = NAUTILUS_FILE(data);	
+	text_uri = nautilus_file_get_uri(file);
+		
+	/* use vfs to actually delete the file or directory */
+	
+	if (nautilus_file_is_directory(file))
+		result = gnome_vfs_remove_directory(text_uri);
+	else
+		result = gnome_vfs_unlink(text_uri);
+	
+	/* remove the file from the model */
+	/* FIXME: need to do this soon - nautilus_directory doesn't have anything for this yet? */
+	
+	/* report errors if necessary, or remove the file from the views */
+	if (result == GNOME_VFS_OK)
+	{
+		/* invoke a method of the view to delete from the model and container */
+		fm_directory_view_delete_selection(FM_DIRECTORY_VIEW(user_data));
+	} else
+	{
+		GtkWidget *error_box;
+		gchar *message = g_strdup_printf("Sorry, but %s could not be deleted", text_uri);
+		error_box = gnome_message_box_new(message, GNOME_MESSAGE_BOX_WARNING,
+						  GNOME_STOCK_BUTTON_OK, NULL);
+		g_free(message);
+	}
+	
+	g_free(text_uri);	
+
+}
+
+static void
+delete_cb (GtkMenuItem *item, GList *files)
+{
+	FMDirectoryView *directory_view;
+
+	directory_view = FM_DIRECTORY_VIEW (gtk_object_get_data (GTK_OBJECT (item), "directory_view"));
+
+	g_list_foreach (files, delete_one, directory_view);
+}
+
+/* handle the open command */
 
 static void
 open_cb (GtkMenuItem *item, NautilusFile *file)
@@ -984,8 +1054,14 @@ fm_directory_view_real_append_selection_context_menu_items (FMDirectoryView *vie
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
 
-	menu_item = gtk_menu_item_new_with_label (_("Delete"));
-	gtk_widget_set_sensitive (menu_item, FALSE);
+	/* create and install the "Delete" item */
+	
+	menu_item = gtk_menu_item_new_with_label ("Delete");
+	gtk_object_set_data_full (GTK_OBJECT (menu_item), "directory_view",
+				  view, (GtkDestroyNotify) gtk_object_unref);
+	gtk_object_ref (GTK_OBJECT (view));
+	gtk_signal_connect(GTK_OBJECT (menu_item), "activate",
+		           GTK_SIGNAL_FUNC (delete_cb), files);
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
 }

@@ -109,8 +109,13 @@ struct _FMDirectoryViewClass {
 	 * with a function that returns a newly-allocated GList of
 	 * NautilusFile pointers.
 	 */
-	GList *	(* get_selection) 	 (FMDirectoryView *view);
-
+	GList *
+		(* get_selection) 	 (FMDirectoryView *view);
+	
+	/* delete_selection tells the view to delete it's selected items.  It's not responsible
+	   for deleting the actual files, just the entry corresponding to them */
+	void	(* delete_selection)	 (FMDirectoryView *view);
+ 
         /* bump_zoom_level is a function pointer that subclasses must override
          * to change the zoom level of an object. */
         void    (* bump_zoom_level)      (FMDirectoryView *view,
@@ -142,6 +147,7 @@ void                      fm_directory_view_load_uri                      (FMDir
 									   const char      *uri);
 
 /* Functions callable from the user interface and elsewhere. */
+void	                  fm_directory_view_delete_selection              (FMDirectoryView *view);
 GList *                   fm_directory_view_get_selection                 (FMDirectoryView *view);
 void                      fm_directory_view_stop                          (FMDirectoryView *view);
 gboolean                  fm_directory_view_can_zoom_in                   (FMDirectoryView *view);

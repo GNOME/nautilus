@@ -77,6 +77,7 @@ static void fm_directory_view_icons_bump_zoom_level
 static gboolean fm_directory_view_icons_can_zoom_in  (FMDirectoryView *view);
 static gboolean fm_directory_view_icons_can_zoom_out (FMDirectoryView *view);
 static void fm_directory_view_icons_clear 	 (FMDirectoryView *view);
+static void fm_directory_view_icons_delete_selection (FMDirectoryView *view);
 static void fm_directory_view_icons_destroy      (GtkObject *view);
 static void fm_directory_view_icons_done_adding_entries 
 				          	 (FMDirectoryView *view);
@@ -146,7 +147,9 @@ fm_directory_view_icons_initialize_class (FMDirectoryViewIconsClass *klass)
 		= fm_directory_view_icons_can_zoom_in;
 	fm_directory_view_class->can_zoom_out 
 		= fm_directory_view_icons_can_zoom_out;
-        fm_directory_view_class->select_all
+        fm_directory_view_class->delete_selection
+		= fm_directory_view_icons_delete_selection;
+	fm_directory_view_class->select_all
                 = fm_directory_view_icons_select_all;
         fm_directory_view_class->append_selection_context_menu_items
         	= fm_directory_view_icons_append_selection_context_menu_items;
@@ -630,6 +633,13 @@ fm_directory_view_icons_get_icon_text_attribute_names (FMDirectoryViewIcons *vie
 	g_free (all_names);
 	
 	return result;
+}
+
+static void
+fm_directory_view_icons_delete_selection(FMDirectoryView *view)
+{
+   gnome_icon_container_clear_selected_items(
+   	get_icon_container(FM_DIRECTORY_VIEW_ICONS (view)));
 }
 
 static GList *

@@ -1,3 +1,18 @@
+2000-02-24  Andy Hertzfeld <andy@eazel.com>
+
+	implemented the delete command in the context menu.  It's not completed yet,it still
+	needs to remove entries from the model, as well as giving better feedback.
+	
+	* libnautilus/gnome-icon-container.c,.h:
+	added gnome_icon_container_clear_selected_items to remove selected items from the view
+	* src/file-manager/fm-directory-view.c,h:
+	enabled the delete menu item, added a callback for it which actually does the deletion
+	added a delete_selection method, implemented by the subclasses to remove items from the view
+	* src/file-manager/fm-directory-view-icons.c:
+	implemented delete_selection by calling the icon container
+	* src/file-manager/fm-directory-view-list.c:
+	implemented delete_selection to remove selected items from the clist
+	
 2000-02-24  John Sullivan  <sullivan@eazel.com>
 
 	* components/history/ntl-history-view.c:
