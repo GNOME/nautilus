@@ -2,12 +2,12 @@
 # component.  Also add whatever libraries, include paths, etc you want,
 # and change the G_LOG_DOMAIN.
 
-NULL =
-
 INCLUDES =						\
+	-DG_DISABLE_DEPRECATED				\
+	-DGTK_DISABLE_DEPRECATED			\
+	-DGNOME_DISABLE_DEPRECATED			\
 	-DG_LOG_DOMAIN=\"Nautilus-Sample\"		\
 	-DDATADIR=\"$(datadir)\"			\
-	-DICON_DIR=\"$(datadir)/pixmaps/nautilus\"	\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
 	$(COMPONENT_CFLAGS)
@@ -28,9 +28,7 @@ uidir = $(datadir)/gnome-2.0/ui
 ui_DATA = nautilus-sample-content-view-ui.xml
 
 serverdir = $(libdir)/bonobo/servers
-server_in_files =					\
-	Nautilus_View_sample.server.in			\
-	$(NULL)
+server_in_files = Nautilus_View_sample.server.in
 server_DATA = $(server_in_files:.server.in=.server)
 
 @INTLTOOL_SERVER_RULE@

@@ -46,48 +46,6 @@ static void selection_changed_callback            (GtkWidget *widget,
 						   gpointer callback_data);
 
 static void
-do_with_fake_current_event (EditableFunction function,
-			    GtkEditable *editable)
-{
-	GdkEvent *current_event;
-	GdkEvent fake_event;
-	GtkWidget *fake_widget;
-
-	/* Handle the simple case where no fakery is required. */
-	current_event = gtk_get_current_event ();
-	if (current_event != NULL) {
-		gdk_event_free (current_event);
-		(* function) (editable);
-		return;
-	}
-
-	/* Call the function inside a fake event, so the event is
-	 * non-NULL. This works around the gtk bug described in
-	 * http://bugzilla.gnome.org/show_bug.cgi?id=51889 where the
-	 * event must not be NULL.
-	 */
-
-	/* Make widget. */
-	fake_widget = gtk_invisible_new ();
-	gtk_signal_connect_object (GTK_OBJECT (fake_widget),
-				   "client_event",
-				   G_CALLBACK (function),
-				   GTK_OBJECT (editable));
-	gtk_widget_realize (fake_widget);
-
-	/* Make event. */
-	memset (&fake_event, 0, sizeof (fake_event));
-	fake_event.type = GDK_CLIENT_EVENT;
-	fake_event.any.window = fake_widget->window;
-
-	/* Handle event, calling through to function. */
-	gtk_main_do_event (&fake_event);
-
-	/* Discard widget. */
-	gtk_widget_unref (fake_widget);
-}
-
-static void
 cut_callback (BonoboUIComponent *ui,
 	      gpointer callback_data,
 	      const char *command_name)
@@ -95,8 +53,7 @@ cut_callback (BonoboUIComponent *ui,
 	g_assert (BONOBO_IS_UI_COMPONENT (ui));
 	g_assert (strcmp (command_name, "Cut") == 0);
 	
-	do_with_fake_current_event (gtk_editable_cut_clipboard,
-				    GTK_EDITABLE (callback_data));
+	gtk_editable_cut_clipboard (GTK_EDITABLE (callback_data));
 }
 
 static void
@@ -107,8 +64,7 @@ copy_callback (BonoboUIComponent *ui,
 	g_assert (BONOBO_IS_UI_COMPONENT (ui));
 	g_assert (strcmp (command_name, "Copy") == 0);
 	
-	do_with_fake_current_event (gtk_editable_copy_clipboard,
-				    GTK_EDITABLE (callback_data));
+	gtk_editable_copy_clipboard (GTK_EDITABLE (callback_data));
 }
 
 static void
@@ -119,8 +75,7 @@ paste_callback (BonoboUIComponent *ui,
 	g_assert (BONOBO_IS_UI_COMPONENT (ui));
 	g_assert (strcmp (command_name, "Paste") == 0);
 	
-	do_with_fake_current_event (gtk_editable_paste_clipboard,
-				    GTK_EDITABLE (callback_data));
+	gtk_editable_paste_clipboard (GTK_EDITABLE (callback_data));
 }
 
 static void
@@ -282,8 +237,8 @@ merge_in_clipboard_menu_items (GObject *widget_as_object,
 			       "nautilus", NULL);
 	
 	if (add_selection_callback) {
-		gtk_signal_connect_after (GTK_OBJECT (widget_as_object), "selection_changed",
-					  G_CALLBACK (selection_changed_callback), target_data);
+		g_signal_connect_after (GTK_OBJECT (widget_as_object), "selection_changed",
+					G_CALLBACK (selection_changed_callback), target_data);
 		selection_changed_callback (GTK_WIDGET (widget_as_object),
 					    target_data);
 			
@@ -309,9 +264,11 @@ merge_out_clipboard_menu_items (GObject *widget_as_object,
 	bonobo_ui_component_unset_container (ui, NULL);
 
 	if (selection_callback_was_added) {
-		gtk_signal_disconnect_by_func (GTK_OBJECT (widget_as_object),
-					       G_CALLBACK (selection_changed_callback),
-					       target_data);
+		g_signal_handlers_disconnect_matched (widget_as_object,
+						      G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA,
+						      0, 0, NULL,
+						      G_CALLBACK (selection_changed_callback),
+						      target_data);
 	}
 	set_clipboard_items_are_merged_in (widget_as_object, FALSE);
 }
@@ -433,10 +390,10 @@ nautilus_clipboard_set_up_editable (GtkEditable *target,
 		 ui_container,
 		 shares_selection_changes);
 
-	gtk_signal_connect_after (GTK_OBJECT (target), "focus_in_event",
-				  G_CALLBACK (focus_changed_callback), target_data);
-	gtk_signal_connect_after (GTK_OBJECT (target), "focus_out_event",
-				  G_CALLBACK (focus_changed_callback), target_data);
+	g_signal_connect_after (target, "focus_in_event",
+				G_CALLBACK (focus_changed_callback), target_data);
+	g_signal_connect_after (target, "focus_out_event",
+				G_CALLBACK (focus_changed_callback), target_data);
 
 	g_signal_connect (G_OBJECT (target), "destroy",
 			    G_CALLBACK (target_destroy_callback), target_data);
@@ -522,10 +479,14 @@ static void
 disconnect_set_up_in_control_handlers (GtkObject *object,
 				       gpointer callback_data)
 {
-	gtk_signal_disconnect_by_func (object,
-				       G_CALLBACK (first_focus_callback),
-				       callback_data);
-	gtk_signal_disconnect_by_func (object,
-				       G_CALLBACK (control_destroyed_callback),
-				       callback_data);
+	g_signal_handlers_disconnect_matched (object,
+					      G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA,
+					      0, 0, NULL,
+					      G_CALLBACK (first_focus_callback),
+					      callback_data);
+	g_signal_handlers_disconnect_matched (object,
+					      G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA,
+					      0, 0, NULL,
+					      G_CALLBACK (control_destroyed_callback),
+					      callback_data);
 }

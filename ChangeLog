@@ -1,5 +1,21 @@
 2001-11-08  Darin Adler  <darin@bentspoon.com>
 
+	* components/sample/Makefile.am: Cleanup, turn on all
+	DISABLE_DEPRECATED.
+	* libnautilus/Makefile.am: Turn on all DISABLE_DEPRECATED.
+	
+	* components/sample/nautilus-sample-content-view.c:
+	(nautilus_sample_content_view_instance_init): Remove gratuitous
+	assert.
+	
+	* libnautilus/nautilus-clipboard.c: (cut_callback),
+	(copy_callback), (paste_callback): Remove bug workaround.
+	(merge_in_clipboard_menu_items), (merge_out_clipboard_menu_items),
+	(nautilus_clipboard_set_up_editable),
+	(disconnect_set_up_in_control_handlers): gtk_signal -> g_signal.
+
+2001-11-08  Darin Adler  <darin@bentspoon.com>
+
 	* MAINTAINERS: Just me, not the mailing list.
 	
 	* Makefile.am: Enable the components directory.

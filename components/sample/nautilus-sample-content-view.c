@@ -193,8 +193,6 @@ nautilus_sample_content_view_class_init (NautilusSampleContentViewClass *class)
 static void
 nautilus_sample_content_view_instance_init (NautilusSampleContentView *view)
 {
-	g_assert (NAUTILUS_IS_SAMPLE_CONTENT_VIEW (view));
-
 	view->details = g_new0 (NautilusSampleContentViewDetails, 1);
 	
 	view->details->label = gtk_label_new (_("(none)"));
