@@ -59,7 +59,7 @@ struct _NautilusLoginViewDetails {
 
 #define SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR	"rgb:FFFF/FFFF/FFFF"
 #define SERVICE_DOMAIN_NAME			"testmachine.eazel.com"
-#define SERVICE_SUMMARY_LOCATION                "http://eazel1.eazel.com:/services/control1.html"
+#define SERVICE_SUMMARY_LOCATION                "http://eazel1.eazel.com/services/control1.html"
 #define SERVICE_HELP_LOCATION                   "http://www.eazel.com"
 
 static void       nautilus_login_view_initialize_class (NautilusLoginViewClass       *klass);
