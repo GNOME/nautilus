@@ -40,10 +40,6 @@ icon_DATA =\
 	emblem-shared.svg \
 	emblem-special.svg \
 	emblem-symbolic-link.png \
-	emblem-symbolic-link-24.png \
-	emblem-symbolic-link-72.png \
-	emblem-symbolic-link-92.png \
-	emblem-symbolic-link-192.png \
 	emblem-urgent.svg \
 	emblems.png \
 	expert.png \
