@@ -31,7 +31,6 @@ libnautilus_extensionsinclude_HEADERS=		\
 	nautilus-icon-dnd.h			\
 	nautilus-icon-grid.h			\
 	bonobo-stream-vfs.h			\
-	nautilus-scroll-frame.h			\
 	libnautilus-extensions.h		\
 	nautilus-alloc.h			\
 	nautilus-background.h			\
@@ -79,7 +78,6 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-directory-metafile.h		\
 	nautilus-lib-self-check-functions.h	\
 	bonobo-stream-vfs.c			\
-	nautilus-scroll-frame.c			\
 	nautilus-background-canvas-group.c	\
 	nautilus-background.c			\
 	nautilus-bonobo-extensions.c		\
