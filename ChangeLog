@@ -1,5 +1,10 @@
 2000-07-18  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* components/tree/main.c: (main):
+	Dont initialize gnome twice to avoid assertion spewage.
+	
+2000-07-18  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* components/services/time/command-line/.cvsignore:
 	* components/services/time/nautilus-view/.cvsignore:
 	* components/services/trilobite/sample/command-line/.cvsignore:

@@ -98,9 +98,6 @@ main (int argc, char *argv[])
 				   argc, argv,
 				   oaf_popt_options, 0, NULL); 
 
-        gnome_init_with_popt_table ("nautilus-tree-view", VERSION, 
-				    argc, argv,
-				    oaf_popt_options, 0, NULL); 
 	orb = oaf_init (argc, argv);
 
 	gnome_vfs_init ();
