@@ -30,7 +30,6 @@
 
 #include "nautilus-application.h"
 #include "nautilus-throbber.h"
-#include "nautilus-toolbar.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window.h"
