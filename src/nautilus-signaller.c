@@ -32,7 +32,8 @@
 #include <gtk/gtksignal.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 
-static NautilusSignaller *global_signaller = NULL;
+typedef GtkObject NautilusSignaller;
+typedef GtkObjectClass NautilusSignallerClass;
 
 enum {
 	HISTORY_LIST_CHANGED,
@@ -40,11 +41,14 @@ enum {
 	LAST_SIGNAL
 };
 
-static guint nautilus_signaller_signals[LAST_SIGNAL];
+static guint signals[LAST_SIGNAL];
 
-static void nautilus_signaller_initialize_class (gpointer klass);
-static void nautilus_signaller_initialize       (gpointer object,
-						 gpointer klass);
+static GtkObject *global_signaller = NULL;
+
+static GtkType nautilus_signaller_get_type         (void);
+static void    nautilus_signaller_initialize_class (gpointer klass);
+static void    nautilus_signaller_initialize       (gpointer object,
+						    gpointer klass);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSignaller,
 				   nautilus_signaller,
@@ -57,21 +61,22 @@ nautilus_signaller_initialize_class (gpointer klass)
 
 	object_class = GTK_OBJECT_CLASS (klass);
 	
-	nautilus_signaller_signals[HISTORY_LIST_CHANGED] =
+	signals[HISTORY_LIST_CHANGED] =
 		gtk_signal_new ("history_list_changed",
 				GTK_RUN_LAST,
 				object_class->type,
 				0,
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
-	nautilus_signaller_signals[EMBLEMS_CHANGED] =
+	signals[EMBLEMS_CHANGED] =
 		gtk_signal_new ("emblems_changed",
 				GTK_RUN_LAST,
 				object_class->type,
 				0,
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
-	gtk_object_class_add_signals (object_class, nautilus_signaller_signals, LAST_SIGNAL);
+
+	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 }
 
 static void
@@ -86,11 +91,11 @@ unref_global_signaller (void)
 	gtk_object_unref (GTK_OBJECT (global_signaller));
 }
 
-NautilusSignaller *
+GtkObject *
 nautilus_signaller_get_current (void)
 {
 	if (global_signaller == NULL) {
-		global_signaller = NAUTILUS_SIGNALLER (gtk_object_new (NAUTILUS_TYPE_SIGNALLER, NULL));
+		global_signaller = gtk_object_new (nautilus_signaller_get_type (), NULL);
 		gtk_object_ref (GTK_OBJECT (global_signaller));
 		gtk_object_sink (GTK_OBJECT (global_signaller));
 		g_atexit (unref_global_signaller);

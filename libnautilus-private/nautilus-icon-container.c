@@ -2449,6 +2449,17 @@ nautilus_icon_container_did_not_drag (NautilusIconContainer *container,
 	}
 }
 
+static void
+clear_drag_state (NautilusIconContainer *container)
+{
+       container->details->drag_icon = NULL;
+       container->details->drag_state = DRAG_STATE_INITIAL;
+       if (container->details->context_menu_timeout_id != 0) {
+               gtk_timeout_remove (container->details->context_menu_timeout_id);
+               container->details->context_menu_timeout_id = 0;
+       }
+}
+
 static gboolean
 start_stretching (NautilusIconContainer *container)
 {
@@ -2492,8 +2503,7 @@ start_stretching (NautilusIconContainer *container)
 
 static void
 continue_stretching (NautilusIconContainer *container,
-		     int window_x, int window_y,
-		     gboolean update_position)
+		     int window_x, int window_y)
 {
 	NautilusIconContainerDetails *details;
 	NautilusIcon *icon;
@@ -2522,7 +2532,7 @@ continue_stretching (NautilusIconContainer *container,
 			  &world_x, &world_y);
 
 	icon_set_position (icon, world_x, world_y);
-	icon_set_size (container, icon, stretch_state.icon_size, update_position);
+	icon_set_size (container, icon, stretch_state.icon_size, FALSE);
 }
 
 static void
@@ -2539,7 +2549,7 @@ end_stretching (NautilusIconContainer *container,
 	NautilusIconPosition position;
 	NautilusIcon *icon;
 	
-	continue_stretching (container, window_x, window_y, FALSE);
+	continue_stretching (container, window_x, window_y);
 	ungrab_stretch_icon (container);
 
 	/* now that we're done stretching, update the icon's position */
@@ -2552,19 +2562,8 @@ end_stretching (NautilusIconContainer *container,
 			 signals[ICON_POSITION_CHANGED],
 			 icon->data, &position);
 	
-	/* We must do a redo_layout after indicating we are done stretching. */
-	container->details->drag_icon = NULL;
-	container->details->drag_state = DRAG_STATE_INITIAL;
+	clear_drag_state (container);
 	redo_layout (container);
-}
-
-static void
-cancel_stretching (NautilusIconContainer *container)
-{
-	ungrab_stretch_icon (container);
-	
-	container->details->drag_icon = NULL;
-	container->details->drag_state = DRAG_STATE_INITIAL;
 }
 
 static void
@@ -2575,13 +2574,19 @@ undo_stretching (NautilusIconContainer *container)
 	}
 
 	if (container->details->drag_state == DRAG_STATE_STRETCH) {
-		cancel_stretching (container);		
+		ungrab_stretch_icon (container);
+		clear_drag_state (container);
 	}
 	nautilus_icon_canvas_item_set_show_stretch_handles
 		(container->details->stretch_icon->item, FALSE);
 	
-	icon_set_size (container, container->details->stretch_icon, 
-		       container->details->initial_stretch_size, FALSE);
+	icon_set_position (container->details->stretch_icon,
+			   container->details->stretch_initial_x,
+			   container->details->stretch_initial_y);
+	icon_set_size (container,
+		       container->details->stretch_icon, 
+		       container->details->stretch_initial_size,
+		       FALSE);
 	
 	container->details->stretch_icon = NULL;				
 	redo_layout (container);
@@ -2611,8 +2616,7 @@ button_release_event (GtkWidget *widget,
 				/* Right click, drag did not start,
 				 * show context menu.
 				 */
-				details->drag_state = DRAG_STATE_INITIAL;
-				gtk_timeout_remove (details->context_menu_timeout_id);
+				clear_drag_state (container);
 				gtk_signal_emit (GTK_OBJECT (container),
 						 signals[CONTEXT_CLICK_SELECTION],
 						 event);
@@ -2634,11 +2638,7 @@ button_release_event (GtkWidget *widget,
 			break;
 		}
 
-		details->drag_icon = NULL;
-		if (details->drag_state == DRAG_STATE_MOVE_COPY_OR_MENU) {
-			gtk_timeout_remove (details->context_menu_timeout_id);
-		}
-		details->drag_state = DRAG_STATE_INITIAL;
+		clear_drag_state (container);
 		return TRUE;
 	}
 
@@ -2700,7 +2700,7 @@ motion_notify_event (GtkWidget *widget,
 			}
 			break;
 		case DRAG_STATE_STRETCH:
-			continue_stretching (container, event->x, event->y, FALSE);
+			continue_stretching (container, event->x, event->y);
 			break;
 		default:
 			break;
@@ -3236,8 +3236,7 @@ show_context_menu_callback (void *cast_to_parameters)
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (parameters->container));
 
 	if (parameters->container->details->drag_state == DRAG_STATE_MOVE_COPY_OR_MENU) {
-		parameters->container->details->drag_state = DRAG_STATE_INITIAL;
-		gtk_timeout_remove (parameters->container->details->context_menu_timeout_id);
+		clear_drag_state (parameters->container);
 
 		/* Context menu applies to all selected items. The only
 		 * odd case is if this click deselected the icon under
@@ -4087,7 +4086,7 @@ nautilus_icon_container_set_selection (NautilusIconContainer *container,
 
 	selection_changed = FALSE;
 
-	hash = g_hash_table_new (g_direct_hash, g_direct_equal);
+	hash = g_hash_table_new (NULL, NULL);
 	for (p = selection; p != NULL; p = p->next) {
 		g_hash_table_insert (hash, p->data, p->data);
 	}
@@ -4126,7 +4125,7 @@ nautilus_icon_container_select_list_unselect_others (NautilusIconContainer *cont
 
 	selection_changed = FALSE;
 
-	hash = g_hash_table_new (g_direct_hash, g_direct_equal);
+	hash = g_hash_table_new (NULL, NULL);
 	for (p = selection; p != NULL; p = p->next) {
 		g_hash_table_insert (hash, p->data, p->data);
 	}
@@ -4268,11 +4267,15 @@ nautilus_icon_container_show_stretch_handles (NautilusIconContainer *container)
 		ungrab_stretch_icon (container);
 	}
 	nautilus_icon_canvas_item_set_show_stretch_handles (icon->item, TRUE);
+
 	details->stretch_icon = icon;
 	
 	icon_get_size (container, icon, &initial_size_x, &initial_size_y);
+
 	/* only need to keep size in one dimension, since they are constrained to be the same */
-	container->details->initial_stretch_size = initial_size_x;
+	container->details->stretch_initial_x = icon->x;
+	container->details->stretch_initial_y = icon->y;
+	container->details->stretch_initial_size = initial_size_x;
 }
 
 /**
@@ -4345,6 +4348,9 @@ compute_stretch (StretchState *start,
 	gboolean right, bottom;
 	int x_stretch, y_stretch;
 
+	/* FIXME bugzilla.eazel.com 5390: This doesn't correspond to
+         * the way the handles are drawn.
+	 */
 	/* Figure out which handle we are dragging. */
 	right = start->pointer_x > start->icon_x + (int) start->icon_size / 2;
 	bottom = start->pointer_y > start->icon_y + (int) start->icon_size / 2;
@@ -4358,8 +4364,8 @@ compute_stretch (StretchState *start,
 	if (bottom) {
 		y_stretch = - y_stretch;
 	}
-	current->icon_size = MAX ((int)start->icon_size + MIN (x_stretch, y_stretch),
-				  (int)NAUTILUS_ICON_SIZE_SMALLEST);
+	current->icon_size = MAX ((int) start->icon_size + MIN (x_stretch, y_stretch),
+				  (int) NAUTILUS_ICON_SIZE_SMALLEST);
 
 	/* Figure out where the corner of the icon should be. */
 	current->icon_x = start->icon_x;

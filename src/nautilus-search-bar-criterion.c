@@ -268,7 +268,7 @@ nautilus_search_bar_criterion_destroy (GtkObject *object)
 	criterion = NAUTILUS_SEARCH_BAR_CRITERION (object);
 
 	/* FIXME bugzilla.eazel.com 2437: need more freeage */
-	gtk_signal_disconnect_by_data (GTK_OBJECT (nautilus_signaller_get_current ()),
+	gtk_signal_disconnect_by_data (nautilus_signaller_get_current (),
 				       criterion);
 	/*	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (criterion->details->value_entry), FALSE);
 	nautilus_undo_tear_down_nautilus_entry_for_undo (criterion->details->value_entry);
@@ -336,7 +336,7 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 			    "need_reallocation",
 			    queue_bar_resize_callback,
 			    bar);
-	gtk_signal_connect (GTK_OBJECT (nautilus_signaller_get_current ()),
+	gtk_signal_connect (nautilus_signaller_get_current (),
 			    "emblems_changed",
 			    emblems_changed_callback,
 			    (gpointer) criterion);

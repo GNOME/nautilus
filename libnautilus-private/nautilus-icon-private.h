@@ -108,7 +108,8 @@ struct NautilusIconContainerDetails {
 
 	/* Current icon with stretch handles, so we have only one. */
 	NautilusIcon *stretch_icon;
-	int initial_stretch_size;
+	double stretch_initial_x, stretch_initial_y;
+	guint stretch_initial_size;
 	
 	/* Last highlighted drop target. */
 	NautilusIcon *drop_target;

@@ -40,7 +40,7 @@ get_sock_info(SOCKET s, gboolean create)
 	SockInfo *info;
 
 	if (!sockhash)
-		sockhash = g_hash_table_new(g_direct_hash, g_direct_equal);
+		sockhash = g_hash_table_new(NULL, NULL);
 
 	info = g_hash_table_lookup(sockhash, GINT_TO_POINTER(s));
 	if (!info && create) {
@@ -179,7 +179,7 @@ glibwww_timer_register(HTTimer *timer)
 	guint tag;
 
 	if (!timers)
-		timers = g_hash_table_new(g_direct_hash, g_direct_equal);
+		timers = g_hash_table_new(NULL, NULL);
 
 	tag = g_timeout_add(HTTimer_expiresRelative(timer),
 			    glibwww_dispatch_timer, timer);

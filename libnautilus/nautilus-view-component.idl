@@ -52,6 +52,13 @@ module Nautilus {
 	typedef string URI;
 	typedef sequence<URI> URIList;
 
+	struct HistoryItem {
+		string title;
+		URI location;
+		string icon;
+	};
+	typedef sequence<HistoryItem> History;
+
 	/* The View interface is used by the Nautilus shell to control
 	 * the view. A view that is a Bonobo::Control can choose to
 	 * implement the View interface for additional finer control
@@ -70,6 +77,9 @@ module Nautilus {
 
 		/* Called to tell the view about title changes. */
 		oneway void title_changed (in string title);
+
+		/* Called to tell the view about history changes. */
+		oneway void history_changed (in History history);
 	};
 	
 	/* The ViewFrame interface is used by the view to communicate
@@ -121,26 +131,6 @@ module Nautilus {
 
 		/* Called by a view component to change the title. */
 		oneway void set_title (in string new_title);
-	};		
-
-	/* The specifications for a history list item. The structure
-	 * contains the title of the item, and the location it's for.
-	 */
-	struct HistoryItem {
-		string title;
-		URI location;
-		string icon;
-	};
-	typedef sequence<HistoryItem> HistoryList;
-
-	/* An interface that a component can use to get at the history
-	 * list stored in Nautilus.
-	 */
-	interface HistoryFrame : ::Bonobo::Unknown {
-		/* Called by a view component to get the Nautilus
-		 * history list.
-		 */		 
-		HistoryList get_history_list ();
 	};
 
 };

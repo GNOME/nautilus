@@ -1318,7 +1318,7 @@ nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 void
 nautilus_send_history_list_changed (void)
 {
-	gtk_signal_emit_by_name (GTK_OBJECT (nautilus_signaller_get_current ()),
+	gtk_signal_emit_by_name (nautilus_signaller_get_current (),
 			 	 "history_list_changed");
 }
 

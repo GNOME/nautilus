@@ -33,12 +33,11 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gnome.h>
 #include <gtk/gtksignal.h>
-#include <libgnomevfs/gnome-vfs.h>
 #include <libgnorba/gnorba.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
-#include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
@@ -52,28 +51,21 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-/* FIXME: Hardwired font size here. */
+/* FIXME bugzilla.eazel.com 5408: Hardwired font size here. */
 #define HARDWARE_FONT_SIZE 14
 #define HARDWARE_TITLE_FONT_SIZE 24
 
 struct _NautilusHardwareViewDetails {
-        char *uri;
         NautilusView *nautilus_view;
-        
         GtkWidget *form;
 };
 
-
 enum {
-	TARGET_URI_LIST,
 	TARGET_COLOR,
-        TARGET_GNOME_URI_LIST
 };
 
 static GtkTargetEntry hardware_dnd_target_table[] = {
-	{ "text/uri-list",  0, TARGET_URI_LIST },
 	{ "application/x-color", 0, TARGET_COLOR },
-	{ "x-special/gnome-icon-list",  0, TARGET_GNOME_URI_LIST }
 };
 
 static void nautilus_hardware_view_drag_data_received (GtkWidget                 *widget,
@@ -138,9 +130,10 @@ nautilus_hardware_view_initialize (NautilusHardwareView *hardware_view)
 static void
 nautilus_hardware_view_destroy (GtkObject *object)
 {
-	NautilusHardwareView *hardware_view = NAUTILUS_HARDWARE_VIEW (object);
+	NautilusHardwareView *hardware_view;
 
-	g_free (hardware_view->details->uri);
+        hardware_view = NAUTILUS_HARDWARE_VIEW (object);
+
 	g_free (hardware_view->details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
@@ -154,7 +147,7 @@ nautilus_hardware_view_get_nautilus_view (NautilusHardwareView *hardware_view)
 }
 
 static char * 
-read_proc_info(const gchar* proc_filename)
+read_proc_info (const char* proc_filename)
 {
 	FILE *thisFile;
 	char *result;
@@ -179,21 +172,23 @@ read_proc_info(const gchar* proc_filename)
 /* utility routine to extract information from a string and add it to an XML node */
 
 static char*
-extract_info (gchar* data, const gchar *field_name, gint nth)
+extract_info (char* data, const char *field_name, int nth)
 {
 	int index;
 	char **info_array;
 	char *field_data = NULL;
 	
 	/* parse the data into a string array */
-	info_array = g_strsplit(data, "\n", 32);
+	info_array = g_strsplit (data, "\n", 32);
 	/* iterate through the data isolating the field */
 	for (index = 0; index < 32; index++) {
-		if (info_array[index] == NULL)
+		if (info_array[index] == NULL) {
 			break;
+                }
 		if (nautilus_str_has_prefix(info_array[index], field_name)) {
-			if(nth>0) nth--;
-			else {
+			if (nth > 0) {
+                                nth--;
+			} else {
 				field_data = info_array[index] + strlen(field_name);
 				field_data = strchr(field_data, ':') + 1;
 				field_data =  g_strchug(field_data);
@@ -203,10 +198,8 @@ extract_info (gchar* data, const gchar *field_name, gint nth)
 	}
 	
 	/* add the requested node if the field was found */
-	if (field_data == NULL)
-		return NULL;
-	field_data = g_strdup(field_data);
-	g_strfreev(info_array);
+	field_data = g_strdup (field_data);
+	g_strfreev (info_array);
 	return field_data;
 }
 
@@ -235,7 +228,7 @@ get_CPU_description (int nth)
          * "K" for file sizes as of this writing (although we use "MB"
          * and "GB").
          */
-		
+        
         if (model == NULL || speed == NULL || cache_size == NULL) {
                 result = NULL;
         } else {
@@ -256,11 +249,11 @@ get_CPU_description (int nth)
 static char *
 get_RAM_description (void)
 {
-	char *temp_str, *num_str, *result;
-	char* proc_data;
-        GnomeVFSFileSize ram_size;
+	char *temp_str, *result;
+	char *proc_data;
+        gulong ram_size;
 
-        proc_data = read_proc_info("meminfo");
+        proc_data = read_proc_info ("meminfo");
 
 	temp_str = extract_info (proc_data, "MemTotal", 0);
         if (temp_str == NULL || strlen (temp_str) < 3) {
@@ -272,19 +265,15 @@ get_RAM_description (void)
 	temp_str[strlen(temp_str) - 3] = '\0';
 
 	ram_size = (strtoul (temp_str, NULL, 10) + 500) / 1000;
-	if (ram_size > 1000) {
-		num_str = g_strdup_printf ("%Lu GB", ram_size / 1000);
+	if (ram_size >= 1000) {
+		result = g_strdup_printf (_("%lu GB RAM"), ram_size / 1000);
 	} else {
-		num_str = g_strdup_printf ("%Lu MB", ram_size);
+		result = g_strdup_printf (_("%lu MB RAM"), ram_size);
 	}
 
  	g_free (temp_str);
 
 	g_free (proc_data);
-
-	result = g_strdup_printf (_("%s RAM"), num_str);
-
-        g_free (num_str);
 
 	return result;
 }
@@ -293,30 +282,30 @@ static char *
 get_IDE_description (const char *device)
 {
         char *temp_str, *num_str, *result;
-        GString* string_data = g_string_new("");
+        GString *string_data = g_string_new("");
         char *proc_file;
-        GnomeVFSFileSize capacity;
+        gulong capacity;
 
         /* Read model information string */
-        proc_file = g_strdup_printf("%s/model", device);
-        temp_str = read_proc_info(proc_file);
-        temp_str[strlen(temp_str) - 1] = '\0';
-        g_string_append(string_data, temp_str);
-        g_free(temp_str);
-        g_free(proc_file);
+        proc_file = g_strdup_printf ("%s/model", device);
+        temp_str = read_proc_info (proc_file);
+        temp_str[strlen (temp_str) - 1] = '\0';
+        g_string_append (string_data, temp_str);
+        g_free (temp_str);
+        g_free (proc_file);
         
         /* Read media type */
-        proc_file = g_strdup_printf("%s/media", device);
-        temp_str = read_proc_info(proc_file);
-        g_free(proc_file);
+        proc_file = g_strdup_printf ("%s/media", device);
+        temp_str = read_proc_info (proc_file);
+        g_free (proc_file);
         
         /* If a hard disk, get the size */
-        if(!strcmp(temp_str, "disk\n")) {
-                g_free(temp_str);
+        if (strcmp (temp_str, "disk\n") == 0) {
+                g_free (temp_str);
 
-                proc_file = g_strdup_printf("%s/capacity", device);
-                temp_str = read_proc_info(proc_file);
-                temp_str[strlen(temp_str) - 1] = '\0';
+                proc_file = g_strdup_printf ("%s/capacity", device);
+                temp_str = read_proc_info (proc_file);
+                temp_str[strlen (temp_str) - 1] = '\0';
 
                  /* NOTE: this should be 
 		  *  capacity = strtoul (...)
@@ -325,7 +314,7 @@ get_IDE_description (const char *device)
 		  *  (512 bytes per sector)
 		  *
 		  *  but with large disks we overflow an unsigned long, which is the
-		  *  the type that gnome_vfs uses.  
+		  *  the type that gnome_vfs uses (Darin: Not true, gnome-vfs uses 64-bit integers).  
 		  *
 		  *  ALSO, in keeping with disk manufacturer convention, disk sizes
 		  *  are quoted in powers of 10 (i.e., MB is 10^6, GB is 10^9).
@@ -336,18 +325,18 @@ get_IDE_description (const char *device)
 		  */
    
 		capacity = (512 * (strtoul (temp_str, NULL, 10) / 1000)) / 1000;
-		if (capacity > 1000) {
-			num_str = g_strdup_printf ("%Lu GB", capacity / 1000);
+		if (capacity >= 1000) {
+			num_str = g_strdup_printf (_("%lu GB"), capacity / 1000);
 		} else {
-			num_str = g_strdup_printf ("%Lu MB", capacity);
+			num_str = g_strdup_printf (_("%lu MB"), capacity);
 		}
              
-		g_string_append(string_data, "\n");
-                g_string_append(string_data, num_str);
-                g_free(temp_str);
-                g_free(proc_file);
+		g_string_append (string_data, "\n");
+                g_string_append (string_data, num_str);
+                g_free (temp_str);
+                g_free (proc_file);
         } else {
-                g_free(temp_str);
+                g_free (temp_str);
         }
         
         result = string_data->str;
@@ -360,7 +349,9 @@ get_IDE_description (const char *device)
 /* shared utility to allocate a title for a form */
 
 static void
-setup_form_title (NautilusHardwareView *view, const char* image_name, const char* title_text)
+setup_form_title (NautilusHardwareView *view,
+                  const char *image_name,
+                  const char *title_text)
 {
 	GtkWidget *temp_widget;
 	char *file_name;	
@@ -373,8 +364,8 @@ setup_form_title (NautilusHardwareView *view, const char* image_name, const char
  		file_name = gnome_pixmap_file (image_name);
 		if (file_name != NULL) {
 			temp_widget = nautilus_image_new_from_file (file_name);
-			gtk_box_pack_start(GTK_BOX(temp_container), temp_widget, 0, 0, 8);		
-			gtk_widget_show(temp_widget);
+			gtk_box_pack_start (GTK_BOX (temp_container), temp_widget, 0, 0, 8);		
+			gtk_widget_show (temp_widget);
 			g_free (file_name);
 		}
 	}
@@ -401,7 +392,8 @@ add_element_to_table (GtkWidget *table, GtkWidget *element, int element_index)
 }
 
 /* set up the widgetry for the overview page */
-static void setup_overview_form (NautilusHardwareView *view)
+static void
+setup_overview_form (NautilusHardwareView *view)
 {
 	char  *file_name, *temp_text;
 	GtkWidget *temp_widget, *pixmap_widget, *temp_box;
@@ -417,7 +409,7 @@ static void setup_overview_form (NautilusHardwareView *view)
 	gtk_widget_show(view->details->form);
 
 	/* set up the title */	
-	setup_form_title (view, NULL, "Hardware Overview");
+	setup_form_title (view, NULL, _("Hardware Overview"));
 
 	/* allocate a table to hold the elements */
 	table =  gtk_table_new (3, 3, FALSE);	
@@ -433,8 +425,8 @@ static void setup_overview_form (NautilusHardwareView *view)
 
 		file_name = nautilus_pixmap_file ("cpu.png");
                 temp_widget = nautilus_image_new_from_file (file_name);
-		gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0);		
-		gtk_widget_show(temp_widget);
+		gtk_box_pack_start (GTK_BOX (temp_box), temp_widget, 0, 0, 0);		
+		gtk_widget_show (temp_widget);
 		g_free (file_name);
 		
 		temp_widget = nautilus_label_new (temp_text);
@@ -460,8 +452,8 @@ static void setup_overview_form (NautilusHardwareView *view)
 	temp_text = get_RAM_description ();
 	temp_widget = nautilus_label_new (temp_text);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), HARDWARE_FONT_SIZE);
-	g_free(temp_text);
-	gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0 );			
+	g_free (temp_text);
+	gtk_box_pack_start (GTK_BOX (temp_box), temp_widget, 0, 0, 0 );			
  	gtk_widget_show (temp_widget);
 	
         /* Set up ide devices : by Shane Butler <shane_b@bigfoot.com> */
@@ -512,9 +504,12 @@ static void setup_overview_form (NautilusHardwareView *view)
         }
 }
 
+#ifdef ENABLE_SUBVIEWS
+
 /* set up the widgetry for the CPU page */
 
-static void setup_CPU_form(NautilusHardwareView *view)
+static void
+setup_CPU_form(NautilusHardwareView *view)
 {
 	char *message;
 	GtkWidget *temp_widget;
@@ -538,7 +533,8 @@ static void setup_CPU_form(NautilusHardwareView *view)
 
 /* set up the widgetry for the RAM page */
 
-static void setup_RAM_form(NautilusHardwareView *view)
+static void
+setup_RAM_form(NautilusHardwareView *view)
 {
 	char *message;
 	GtkWidget *temp_widget;
@@ -562,7 +558,8 @@ static void setup_RAM_form(NautilusHardwareView *view)
 
 /* set up the widgetry for the IDE page */
 
-static void setup_IDE_form(NautilusHardwareView *view)
+static void
+setup_IDE_form(NautilusHardwareView *view)
 {
         char *message;
         GtkWidget *temp_widget;
@@ -586,43 +583,48 @@ static void setup_IDE_form(NautilusHardwareView *view)
 
 
 /* utility for checking uri */
-static gboolean is_location(char *document_str, const char *place_str)
+static gboolean
+is_location (const char *document_str, const char *place_str)
 {
-	return document_str && !strncmp(document_str + 1, place_str, strlen(place_str));
+	return document_str && strncmp(document_str + 1, place_str, strlen (place_str)) == 0;
 }
+
+#endif /* ENABLE_SUBVIEWS */
 
 /* load the uri by casing out on the path */
 
 void
 nautilus_hardware_view_load_uri (NautilusHardwareView *view, const char *uri)
 {
-	char *document_name;
+#ifdef ENABLE_SUBVIEWS
+	const char *document_name;
+#endif
 	
-	/* dispose of the old uri and copy the new one */
-	g_free (view->details->uri);
-	view->details->uri = g_strdup (uri);
-
 	/* dispose of any old form that was installed */
 	if (view->details->form != NULL) {
-		gtk_widget_destroy(view->details->form);
+		gtk_widget_destroy (view->details->form);
 		view->details->form = NULL;	
 	}
 		
+#ifndef ENABLE_SUBVIEWS
+        setup_overview_form (view);
+#else
 	/* extract the document part of the uri */
-	document_name = strchr(uri, ':');
+	document_name = strchr (uri, ':');
 	
 	/* load the appropriate form, based on the uri and the registration state */
-	if (is_location(document_name, "overview")) {
-		setup_overview_form(view);
-	} else if (is_location(document_name, "CPU")) {
-		setup_CPU_form(view);
-	} else if (is_location(document_name, "RAM")) {
-		setup_RAM_form(view);
-        } else if (is_location(document_name, "IDE")) {
-                setup_IDE_form(view);
+	if (is_location (document_name, "overview")) {
+		setup_overview_form (view);
+	} else if (is_location (document_name, "CPU")) {
+		setup_CPU_form (view);
+	} else if (is_location (document_name, "RAM")) {
+		setup_RAM_form (view);
+        } else if (is_location (document_name, "IDE")) {
+                setup_IDE_form (view);
 	} else {
-		setup_overview_form(view); /* if we don't understand it, go to the overview */
+		setup_overview_form (view); /* if we don't understand it, go to the overview */
         }
+#endif
 }
 
 static void
@@ -645,12 +647,6 @@ nautilus_hardware_view_drag_data_received (GtkWidget *widget, GdkDragContext *co
 	g_return_if_fail (NAUTILUS_IS_HARDWARE_VIEW (widget));
 
 	switch (info) {
-        case TARGET_GNOME_URI_LIST:
-        case TARGET_URI_LIST: 	
-                g_message ("dropped data on hardware_view: %s", selection_data->data); 			
-                break;
-  		
-                
         case TARGET_COLOR:
                 /* Let the background change based on the dropped color. */
                 nautilus_background_receive_dropped_color (nautilus_get_widget_background (widget),

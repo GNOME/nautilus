@@ -205,7 +205,7 @@ async_job_start (NautilusDirectory *directory,
 	if (async_job_count >= MAX_ASYNC_JOBS) {
 		if (waiting_directories == NULL) {
 			waiting_directories = nautilus_g_hash_table_new_free_at_exit
-				(g_direct_hash, g_direct_equal,
+				(NULL, NULL,
 				 "nautilus-directory-async.c: waiting_directories");
 		}
 

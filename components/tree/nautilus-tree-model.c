@@ -148,8 +148,7 @@ nautilus_tree_model_initialize (gpointer object, gpointer klass)
 
 	model->details = g_new0 (NautilusTreeModelDetails, 1);
 
-	model->details->file_to_node_map = g_hash_table_new (g_direct_hash, 
-							     g_direct_equal);
+	model->details->file_to_node_map = g_hash_table_new (NULL, NULL);
 }
 
 static void

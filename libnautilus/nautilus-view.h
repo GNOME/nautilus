@@ -22,6 +22,7 @@
  *
  *  Authors: Elliot Lee <sopwith@redhat.com>
  *           Maciej Stachowiak <mjs@eazel.com>
+ *           Darin Adler <darin@eazel.com>
  *
  */
 
@@ -30,11 +31,8 @@
 
 #include <libnautilus/nautilus-view-component.h>
 #include <bonobo/bonobo-control.h>
-#include <gtk/gtkwidget.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+BEGIN_GNOME_DECLS
 
 #define NAUTILUS_TYPE_VIEW	      (nautilus_view_get_type ())
 #define NAUTILUS_VIEW(obj)	      (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_VIEW, NautilusView))
@@ -46,27 +44,26 @@ typedef struct NautilusViewDetails NautilusViewDetails;
 
 typedef struct {
 	BonoboObject parent_spot;
-
 	NautilusViewDetails *details;
 } NautilusView;
 
 typedef struct {
 	BonoboObjectClass parent_spot;
 	
-	void (*load_location)     (NautilusView *view,
-		                   const char   *location_uri);
-	void (*stop_loading)      (NautilusView *view);
-	void (*selection_changed) (NautilusView *view,
-				   GList        *selection); /* list of URI char *s */
-	void (*title_changed)     (NautilusView *view,
-				   const char   *title);
+	void (* load_location)     (NautilusView          *view,
+		                    const char            *location_uri);
+	void (* stop_loading)      (NautilusView          *view);
+	void (* selection_changed) (NautilusView          *view,
+				    GList                 *selection); /* list of URI char *s */
+	void (* title_changed)     (NautilusView          *view,
+				    const char            *title);
+	void (* history_changed)   (NautilusView          *view,
+				    const Nautilus_History *history);
 } NautilusViewClass;
 
 GtkType            nautilus_view_get_type                             (void);
 NautilusView *     nautilus_view_new                                  (GtkWidget              *widget);
 NautilusView *     nautilus_view_new_from_bonobo_control              (BonoboControl          *bonobo_control);
-
-
 BonoboControl *    nautilus_view_get_bonobo_control                   (NautilusView           *view);
 
 /* Calls to the Nautilus shell via the view frame. See the IDL for detailed comments. */
@@ -102,16 +99,12 @@ BonoboUIComponent *nautilus_view_set_up_ui                            (NautilusV
 								       const char             *ui_xml_file_name,
 								       const char             *application_name);
 
-
 /* `protected' functions for use by subclasses only. */
 NautilusView *     nautilus_view_construct                            (NautilusView           *view,
 								       GtkWidget              *widget);
 NautilusView *     nautilus_view_construct_from_bonobo_control        (NautilusView           *view,
 								       BonoboControl          *bonobo_control);
 
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+END_GNOME_DECLS
 
 #endif /* NAUTILUS_VIEW_H */

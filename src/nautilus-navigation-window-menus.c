@@ -1112,7 +1112,7 @@ nautilus_window_initialize_go_menu (NautilusWindow *window)
 	/* Recreate bookmarks part of menu if history list changes
 	 * or if icon theme changes.
 	 */
-	gtk_signal_connect_object_while_alive (GTK_OBJECT (nautilus_signaller_get_current ()),
+	gtk_signal_connect_object_while_alive (nautilus_signaller_get_current (),
 			                       "history_list_changed",
 			                       schedule_refresh_go_menu,
 			   	               GTK_OBJECT (window));
@@ -1121,7 +1121,6 @@ nautilus_window_initialize_go_menu (NautilusWindow *window)
 					       "icons_changed",
 					       schedule_refresh_go_menu,
 					       GTK_OBJECT (window));
-
 }
 
 /* handler to receive the user_level_changed signal, so we can update the menu and dialog

@@ -1692,11 +1692,11 @@ zoom_parameters_changed_callback (NautilusViewFrame *view,
 }
 
 
-static Nautilus_HistoryList *
+static Nautilus_History *
 get_history_list_callback (NautilusViewFrame *view,
                            NautilusWindow *window)
 {
-	Nautilus_HistoryList *list;
+	Nautilus_History *list;
 	NautilusBookmark *bookmark;
 	int length, i;
 	GList *node;
@@ -1706,7 +1706,7 @@ get_history_list_callback (NautilusViewFrame *view,
 	/* Get total number of history items */
 	length = g_list_length (nautilus_get_history_list ());
 
-	list = Nautilus_HistoryList__alloc ();
+	list = Nautilus_History__alloc ();
 
 	list->_length = length;
 	list->_maximum = length;

@@ -80,8 +80,7 @@ nautilus_merged_directory_initialize (gpointer object, gpointer klass)
 	merged->details = g_new0 (NautilusMergedDirectoryDetails, 1);
 	merged->details->callbacks = g_hash_table_new
 		(merged_callback_hash, merged_callback_equal);
-	merged->details->monitors = g_hash_table_new
-		(g_direct_hash, g_direct_equal);
+	merged->details->monitors = g_hash_table_new (NULL, NULL);
 }
 
 static void

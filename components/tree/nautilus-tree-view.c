@@ -714,7 +714,7 @@ nautilus_tree_view_initialize (NautilusTreeView *view)
 			    GTK_SIGNAL_FUNC (tree_load_location_callback), 
 			    view);
 
-	view->details->file_to_node_map = g_hash_table_new (g_direct_hash, g_direct_equal);
+	view->details->file_to_node_map = g_hash_table_new (NULL, NULL);
 	
 	nautilus_tree_view_load_from_filesystem (view);
 

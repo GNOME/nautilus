@@ -1,3 +1,155 @@
+2001-01-03  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fix bug 5235 ("Forget History" eliminates history from Go menu,
+	not History sidebar panel).
+
+	* components/history/nautilus-history-view.c:
+	(install_icons): Fix leak of pixmap and bitmap.
+	(update_history): Replaced dual lock system with a single one.
+	(button_press_callback): Only respect button 1, ignore others.
+	(button_release_callback): Only respect button 1, ignore others,
+	(history_changed_callback): A new single callback for when the
+	history list changes to replace the multiple callbacks before.
+	(nautilus_history_view_initialize_class),
+	(nautilus_history_view_initialize),
+	(nautilus_history_view_destroy), (main): Change the history view
+	to use nautilus_view_standard_main which requires a subclass. This
+	gets rid of a lot of boilerplate code.
+	
+	* libnautilus/nautilus-view-component.idl: Make every NautilusView
+	get an explicit history_changed call instead of requiring them to
+	guess when to get history. Removed the old get_history_list call
+	and also renamed the HistoryList sequence to History.
+	* libnautilus/nautilus-view.h:
+	* libnautilus/nautilus-view.c:
+	(impl_Nautilus_View_history_changed),
+	(nautilus_view_initialize_class): Added the necessary stuff to
+	cover the new history_changed call.
+	
+	* src/nautilus-view-frame.h:
+	* src/nautilus-view-frame.c: (nautilus_view_frame_initialize):
+	Connect handlers so we can send history_changed calls to the
+	NautilusView when either the history or the icons change.
+	(nautilus_view_frame_destroy): Change state to EMPTY so the
+	history signal won't be sent once the frame is destroyed.
+	(view_frame_activated): Send a history_changed to every
+	newly-activated view.
+	(get_CORBA_object): Helper function to make code that makes CORBA
+	calls simpler.
+	(check_if_view_is_gone): Use get_CORBA_object.
+	(attach_client): Gave a nicer name, removed the code that makes
+	the Nautilus_HistoryFrame interface.
+	(nautilus_view_frame_load_client): Do the attach_client (formerly
+	nautilus_view_frame_set_to_component) before calling
+	view_frame_activated. This is needed since view_frame_activated
+	now sends a history_changed to the view.
+	(nautilus_view_frame_load_location),
+	(nautilus_view_frame_stop_loading),
+	(nautilus_view_frame_selection_changed),
+	(nautilus_view_frame_title_changed): Use get_CORBA_object.
+	(get_history_list): Made this private.
+	(send_history): Helper function that sends history to the view if
+	it's in the appropriate state.
+	
+	* src/Makefile.am:
+	* src/nautilus-history-frame.c:
+	* src/nautilus-history-frame.h:
+	Removed the old NautilusHistoryFrame, which is no longer needed
+	since we put the history call right in the NautilusView class.
+	
+	* src/nautilus-window-manage-views.c: (get_history_list_callback):
+	Updated for Nautilus_HistoryList -> Nautilus_History change.
+	
+	Fix bug 5391 ("Esc" Canceling of an icon stretch doesn't restore
+	icon position.).
+
+	* libnautilus-extensions/nautilus-icon-private.h:
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(clear_drag_state): Add a single bottleneck function to make sure
+	the context menu timeout always gets canceled.
+	(continue_stretching): Remove the unused "update_position" parameter.
+	(undo_stretching): Consolidate the cancel_stretching function and
+	restore the icon's position as well as its size. Also use the new
+	bottleneck to clear the drag state.
+	(button_release_event): Use the new bottleneck to clear the drag
+	state.
+	(show_context_menu_callback): Use the new bottleneck to clear the
+	drag state.
+	(nautilus_icon_container_set_selection),
+	(nautilus_icon_container_select_list_unselect_others): Take
+	advantage of the defaults in g_hash_table_new and use NULL, NULL
+	instead of g_direct_hash, g_direct_equal.
+	(nautilus_icon_container_show_stretch_handles): Save the position
+	as well as the size.
+	(compute_stretch): Add a FIXME with a bug number.
+	
+	Fix bug 5407 (Make "Hardware Overview" title translatable).
+
+	* components/hardware/nautilus-hardware-view.c:
+	(nautilus_hardware_view_destroy): Remove unused uri field.
+	(extract_info): Fix storage leak.
+	(get_RAM_description): Get rid of code that non-portably relies on
+	long long. Mark strings for translation.
+	(get_IDE_description): Get rid of code that non-portably relies on
+	long long. Mark strings for translation.
+	(setup_overview_form): Marked string for translation.
+	(setup_CPU_form), (setup_RAM_form), (setup_IDE_form),
+	(is_location), (nautilus_hardware_view_load_uri): Disable the
+	views other than the overview for now since they are not ready to
+	be seen.
+	(nautilus_hardware_view_drag_data_received): Get rid of the code
+	that makes the hardware view accept a URI list drag.
+
+	Fix bug 5405 (nautilus --check fails when using LC_ALL=sv_SE due
+	to missing entry in POTFILES.in).
+	
+	* po/POTFILES.in: Added nautilus-glib-extensions.c.
+
+	Other changes.
+	
+	* src/nautilus-signaller.h:
+	* src/nautilus-signaller.c: (nautilus_signaller_initialize_class),
+	(nautilus_signaller_get_current):
+	Change the NautilusSignaller class so that the interface calls the
+	object a GtkObject * and the details of the class are hidden.
+
+	* src/nautilus-property-browser.c: (emit_emblems_changed_signal):
+	* src/nautilus-search-bar-criterion.c:
+	(nautilus_search_bar_criterion_destroy),
+	(nautilus_search_bar_criterion_new_from_values):
+	* src/nautilus-window-menus.c:
+	(nautilus_window_initialize_go_menu):
+	* src/nautilus-window.c: (nautilus_send_history_list_changed):
+	Now that nautilus_signaller_get_current returns a GtkObject,
+	remove some unnecessary casts.
+	
+	* components/html/glibwww-callbacks.c: (get_sock_info),
+	(glibwww_timer_register):
+	* components/tree/nautilus-tree-model.c:
+	(nautilus_tree_model_initialize):
+	* components/tree/nautilus-tree-view.c:
+	(nautilus_tree_view_initialize):
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(async_job_start):
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_notify_files_added),
+	(nautilus_directory_notify_files_removed),
+	(nautilus_directory_notify_files_moved):
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_initialize):
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_set_selection):
+	* libnautilus-extensions/nautilus-merged-directory.c:
+	(nautilus_merged_directory_initialize):
+	* libnautilus-extensions/nautilus-trash-directory.c:
+	(nautilus_trash_directory_initialize):
+	* src/file-manager/fm-properties-window.c:
+	(fm_properties_window_present):
+	Take advantage of the defaults in g_hash_table_new and use NULL,
+	NULL instead of g_direct_hash, g_direct_equal.
+	
 2001-01-03  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>
@@ -91,7 +243,7 @@
 
 2001-01-03  Ramiro Estrugo  <ramiro@eazel.com>
 
-	reviewed by: Pavel Cisler<pavel@eazel.com>
+	reviewed by: Pavel Cisler <pavel@eazel.com>
 
 	* components/mozilla/nautilus-mozilla-content-view.c:
 	(file_exists), (ensure_profile_dir), (ensure_cache_dir),

@@ -40,9 +40,10 @@
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 
 enum {
+	HISTORY_CHANGED,
 	LOAD_LOCATION,
-	STOP_LOADING,
 	SELECTION_CHANGED,
+	STOP_LOADING,
 	TITLE_CHANGED,
 	LAST_SIGNAL
 };
@@ -69,6 +70,9 @@ static void impl_Nautilus_View_selection_changed (PortableServer_Servant  servan
 static void impl_Nautilus_View_title_changed     (PortableServer_Servant  servant,
 						  const CORBA_char       *title,
 						  CORBA_Environment      *ev);
+static void impl_Nautilus_View_history_changed   (PortableServer_Servant  servant,
+						  const Nautilus_History *history,
+						  CORBA_Environment      *ev);
 static void nautilus_view_initialize             (NautilusView           *view);
 static void nautilus_view_destroy                (GtkObject              *object);
 static void nautilus_view_initialize_class       (NautilusViewClass      *klass);
@@ -78,10 +82,11 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusView, nautilus_view, BONOBO_OBJECT_TY
 static POA_Nautilus_View__epv libnautilus_Nautilus_View_epv =
 {
 	NULL,
-	&impl_Nautilus_View_load_location,
-	&impl_Nautilus_View_stop_loading,
-	&impl_Nautilus_View_selection_changed,
-	&impl_Nautilus_View_title_changed
+	impl_Nautilus_View_load_location,
+	impl_Nautilus_View_stop_loading,
+	impl_Nautilus_View_selection_changed,
+	impl_Nautilus_View_title_changed,
+	impl_Nautilus_View_history_changed
 };
 
 static PortableServer_ServantBase__epv base_epv;
@@ -179,6 +184,15 @@ impl_Nautilus_View_title_changed (PortableServer_Servant servant,
 			 title);
 }
 
+static void 
+impl_Nautilus_View_history_changed (PortableServer_Servant servant,
+				    const Nautilus_History *history,
+				    CORBA_Environment *ev)
+{
+	gtk_signal_emit (GTK_OBJECT (((impl_POA_Nautilus_View *) servant)->bonobo_object),
+			 signals[HISTORY_CHANGED],
+			 history);
+}
 
 static void
 impl_Nautilus_View__destroy (BonoboObject *object, PortableServer_Servant servant)
@@ -256,6 +270,13 @@ nautilus_view_initialize_class (NautilusViewClass *klass)
 			       GTK_SIGNAL_OFFSET (NautilusViewClass, title_changed),
 			       gtk_marshal_NONE__STRING,
 			       GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
+	signals[HISTORY_CHANGED] =
+		gtk_signal_new ("history_changed",
+			       GTK_RUN_LAST,
+			       object_class->type,
+			       GTK_SIGNAL_OFFSET (NautilusViewClass, history_changed),
+			       gtk_marshal_NONE__POINTER,
+			       GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
 	
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 }

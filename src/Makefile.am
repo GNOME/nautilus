@@ -64,7 +64,6 @@ noinst_HEADERS = \
 	nautilus-component-adapter-factory.h	\
 	nautilus-desktop-window.h		\
 	nautilus-first-time-druid.h		\
-	nautilus-history-frame.h		\
 	nautilus-link-set-window.h		\
 	nautilus-location-bar.h			\
 	nautilus-main.h				\
@@ -107,7 +106,6 @@ nautilus_SOURCES = \
 	nautilus-component-adapter-factory.c	\
 	nautilus-desktop-window.c		\
 	nautilus-first-time-druid.c		\
-	nautilus-history-frame.c		\
 	nautilus-link-set-window.c		\
 	nautilus-location-bar.c         	\
 	nautilus-main.c 			\

@@ -3323,7 +3323,7 @@ nautilus_list_set_selection (NautilusList *list, GList *selection)
 
 	selection_changed = FALSE;
 
-	hash = g_hash_table_new (g_direct_hash, g_direct_equal);
+	hash = g_hash_table_new (NULL, NULL);
 	for (p = selection; p != NULL; p = p->next) {
 		g_hash_table_insert (hash, p->data, p->data);
 	}

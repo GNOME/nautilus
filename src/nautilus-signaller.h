@@ -40,34 +40,7 @@
    this kind of thing.
 */
 
-typedef struct _NautilusSignaller NautilusSignaller;
-typedef struct _NautilusSignallerClass NautilusSignallerClass;
-
-#define NAUTILUS_TYPE_SIGNALLER \
-	(nautilus_signaller_get_type ())
-#define NAUTILUS_SIGNALLER(obj) \
-	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SIGNALLER, NautilusSignaller))
-#define NAUTILUS_SIGNALLER_CLASS(klass) \
-	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SIGNALLER, NautilusSignallerClass))
-#define NAUTILUS_IS_SIGNALLER(obj) \
-	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_SIGNALLER))
-#define NAUTILUS_IS_SIGNALLER_CLASS(klass) \
-	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SIGNALLER))
-
-struct _NautilusSignaller
-{
-	GtkObject object;
-};
-
-struct _NautilusSignallerClass
-{
-	GtkObjectClass parent_class;
-};
-
-/* Basic GtkObject requirements. */
-GtkType            nautilus_signaller_get_type            (void);
-
 /* Get the one and only NautilusSignaller to connect with or emit signals for */
-NautilusSignaller *nautilus_signaller_get_current	  (void);
+GtkObject *nautilus_signaller_get_current (void);
 
 #endif /* NAUTILUS_SIGNALLER_H */

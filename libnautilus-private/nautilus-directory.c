@@ -858,10 +858,10 @@ nautilus_directory_notify_files_added (GList *uris)
 	GnomeVFSURI *vfs_uri;
 
 	/* Make a list of added files in each directory. */
-	added_lists = g_hash_table_new (g_direct_hash, g_direct_equal);
+	added_lists = g_hash_table_new (NULL, NULL);
 
 	/* Make a list of parent directories that will need their counts updated. */
-	parent_directories = g_hash_table_new (g_direct_hash, g_direct_equal);
+	parent_directories = g_hash_table_new (NULL, NULL);
 
 	for (p = uris; p != NULL; p = p->next) {
 		uri = (const char *) p->data;
@@ -914,10 +914,10 @@ nautilus_directory_notify_files_removed (GList *uris)
 	NautilusFile *file;
 
 	/* Make a list of changed files in each directory. */
-	changed_lists = g_hash_table_new (g_direct_hash, g_direct_equal);
+	changed_lists = g_hash_table_new (NULL, NULL);
 
 	/* Make a list of parent directories that will need their counts updated. */
-	parent_directories = g_hash_table_new (g_direct_hash, g_direct_equal);
+	parent_directories = g_hash_table_new (NULL, NULL);
 
 	/* Go through all the notifications. */
 	for (p = uris; p != NULL; p = p->next) {
@@ -1133,12 +1133,12 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 
 	/* Make a list of added and changed files in each directory. */
 	new_files_list = NULL;
-	added_lists = g_hash_table_new (g_direct_hash, g_direct_equal);
-	changed_lists = g_hash_table_new (g_direct_hash, g_direct_equal);
+	added_lists = g_hash_table_new (NULL, NULL);
+	changed_lists = g_hash_table_new (NULL, NULL);
 	unref_list = NULL;
 
 	/* Make a list of parent directories that will need their counts updated. */
-	parent_directories = g_hash_table_new (g_direct_hash, g_direct_equal);
+	parent_directories = g_hash_table_new (NULL, NULL);
 
 	for (p = uri_pairs; p != NULL; p = p->next) {
 		pair = p->data;

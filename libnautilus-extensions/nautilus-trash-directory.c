@@ -205,8 +205,7 @@ nautilus_trash_directory_initialize (gpointer object, gpointer klass)
 	trash = NAUTILUS_TRASH_DIRECTORY (object);
 
 	trash->details = g_new0 (NautilusTrashDirectoryDetails, 1);
-	trash->details->volumes = g_hash_table_new
-		(g_direct_hash, g_direct_equal);
+	trash->details->volumes = g_hash_table_new (NULL, NULL);
 
 	volume_monitor = nautilus_volume_monitor_get ();
 

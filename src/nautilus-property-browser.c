@@ -2314,6 +2314,6 @@ nautilus_property_browser_size_allocate(GtkWidget *widget, GtkAllocation *alloca
 static void
 emit_emblems_changed_signal (void)
 {
-	gtk_signal_emit_by_name (GTK_OBJECT (nautilus_signaller_get_current ()),
+	gtk_signal_emit_by_name (nautilus_signaller_get_current (),
 			 	 "emblems_changed");
 }

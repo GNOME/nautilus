@@ -2037,13 +2037,13 @@ fm_properties_window_present (NautilusFile *file, FMDirectoryView *directory_vie
 
 	/* Create the hash tables first time through. */
 	if (windows == NULL) {
-		windows = nautilus_g_hash_table_new_free_at_exit (
-			g_direct_hash, g_direct_equal, "Property windows");
+		windows = nautilus_g_hash_table_new_free_at_exit
+			(NULL, NULL, "property windows");
 	}
 	
 	if (pending_files == NULL) {
-		pending_files = nautilus_g_hash_table_new_free_at_exit (
-			g_direct_hash, g_direct_equal, "pending Property window files");
+		pending_files = nautilus_g_hash_table_new_free_at_exit
+			(NULL, NULL, "pending property window files");
 	}
 	
 	file_to_display = get_and_ref_file_to_display (file);

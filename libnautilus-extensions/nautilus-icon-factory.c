@@ -367,8 +367,7 @@ nautilus_icon_factory_initialize (NautilusIconFactory *factory)
 {
 	factory->scalable_icons = g_hash_table_new (nautilus_scalable_icon_hash,
 						    nautilus_scalable_icon_equal);
-	factory->cache_icons = g_hash_table_new (g_direct_hash,
-						 g_direct_equal);
+	factory->cache_icons = g_hash_table_new (NULL, NULL);
         factory->icon_cache = g_hash_table_new (cache_key_hash,
 						cache_key_equal);
 	
