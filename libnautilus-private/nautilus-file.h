@@ -291,6 +291,8 @@ GList                  *nautilus_file_list_filter_hidden_and_backup     (GList  
  */
 char *                  nautilus_file_get_activation_uri                (NautilusFile                   *file);
 
+char *                  nautilus_file_get_drop_target_uri               (NautilusFile                   *file);
+
 /* Get custom icon (if specified by metadata or link contents) */
 char *                  nautilus_file_get_custom_icon_uri               (NautilusFile                   *file);
 

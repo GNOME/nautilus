@@ -1,3 +1,38 @@
+2002-07-25  Dave Camp  <dave@ximian.com>
+
+	* components/tree/nautilus-tree-view.c: (get_root_uri_callback),
+	(get_file_for_path_callback), (move_copy_items_callback): New
+	functions.
+	(create_tree): Create a NautilusTreeViewDragDest.
+	(nautilus_tree_view_dispose): Unref the DragDest object.
+	(nautilus_tree_view_class_init): initialize dispose.
+	* libnautilus-private/Makefile.am: Build
+	nautilus-tree-view-drag-dest.[ch].
+	* libnautilus-tree-view-drag-dest.c:
+	* libnautilus-tree-view-drag-dest.h: New files.
+	* libnautilus-private/nautilus-dnd.c: 
+	(nautilus_drag_selection_includes_special_link): Moved here
+	from nautilus-icon-dnd.c.
+	* libnautilus-private/nautilus-dnd.h: Prototype for
+	nautilus_drag_selection_includes_special_link.
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_get_drop_target_uri): Moved here from
+	fm-directory-view.
+	* libnautilus-private/nautilus-file.h:
+	* libnautilus-private/nautilus-icon-dnd.c:
+	(nautilus_icon_container_receive_dropped_icons): Call
+	nautilus_drag_selection_includes_special_link().
+	* libnautilus-private/nautilus-marshal.list: New marshallers.
+	* src/file-manager/fm-icon-view.c:
+	(get_icon_drop_target_uri_callback): Use
+	nautilus_file_get_drop_target_uri().
+	* src/file-manager/fm-list-view.c: (get_root_uri_callback),
+	(get_file_for_path_callback), (move_copy_items_callback): New
+	functions.
+	(create_and_set_up_tree_view): Create a NautilusViewDragDest
+	object. 
+	(fm_list_view_dispose): Unref the DragDest object.
+
 === nautilus 2.0.2 ===
 
 2002-07-25  Dave Camp  <dave@ximian.com>

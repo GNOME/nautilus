@@ -147,6 +147,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-trash-file.h \
 	nautilus-trash-monitor.c \
 	nautilus-trash-monitor.h \
+	nautilus-tree-view-drag-dest.c \
+	nautilus-tree-view-drag-dest.h \
 	nautilus-undo-context.c \
 	nautilus-undo-context.h \
 	nautilus-undo-manager.c \

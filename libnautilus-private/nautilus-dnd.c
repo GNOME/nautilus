@@ -30,6 +30,7 @@
 #include "nautilus-dnd.h"
 
 #include "nautilus-program-choosing.h"
+#include "nautilus-link.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
@@ -730,4 +731,31 @@ nautilus_drag_autoscroll_stop (NautilusDragInfo *drag_info)
 		gtk_timeout_remove (drag_info->auto_scroll_timeout_id);
 		drag_info->auto_scroll_timeout_id = 0;
 	}
+}
+
+gboolean
+nautilus_drag_selection_includes_special_link (GList *selection_list)
+{
+	GList *node;
+	char *uri, *local_path;
+	gboolean link_in_selection;
+
+	link_in_selection = FALSE;
+
+	for (node = selection_list; node != NULL; node = node->next) {
+		uri = ((NautilusDragSelectionItem *) node->data)->uri;
+
+		/* FIXME bugzilla.gnome.org 43020: This does sync. I/O and works only locally. */
+		local_path = gnome_vfs_get_local_path_from_uri (uri);
+		link_in_selection = local_path != NULL
+			&& (nautilus_link_local_is_trash_link (local_path) || nautilus_link_local_is_home_link (local_path) ||
+			nautilus_link_local_is_volume_link (local_path));
+		g_free (local_path);
+		
+		if (link_in_selection) {
+			break;
+		}
+	}
+	
+	return link_in_selection;
 }

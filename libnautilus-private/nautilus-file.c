@@ -2359,6 +2359,31 @@ nautilus_file_get_activation_uri (NautilusFile *file)
 	return nautilus_file_get_uri (file);
 }
 
+
+char *
+nautilus_file_get_drop_target_uri (NautilusFile *file)
+{
+	char *uri, *target_uri;
+	
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+	uri = nautilus_file_get_uri (file);
+
+	/* Check for Nautilus link */
+	if (nautilus_file_is_nautilus_link (file)) {
+		/* FIXME bugzilla.gnome.org 43020: This does sync. I/O and works only locally. */
+		if (!eel_vfs_has_capability (uri, EEL_VFS_CAPABILITY_IS_REMOTE_AND_SLOW)) {
+			target_uri = nautilus_link_local_get_link_uri (uri);
+			if (target_uri != NULL) {
+				g_free (uri);
+				uri = target_uri;
+			}
+		}
+	}
+
+	return uri;
+}
+
 char *
 nautilus_file_get_custom_icon_uri (NautilusFile *file)
 {
