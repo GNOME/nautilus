@@ -1,3 +1,16 @@
+2003-10-11  Dave Camp  <dave@ximian.com>
+
+	* src/Makefile.am: Add nautilus-location-dialog.[ch] and
+	nautilus-location-entry.[ch]
+	* src/nautilus-location-bar.c: (editable_event_after_callback),
+	(nautilus_location_bar_init):
+	* src/nautilus-location-entry.c: Moved the tab-completing entry
+	into its own widget.
+	* src/nautilus-location-dialog.c
+	* src/nautilus-spatial-window.c: (real_prompt_for_location),
+	(nautilus_spatial_window_class_init): Add an Open Location 
+	dialog for the spatial windows.
+
 2003-10-10  Christophe Fergeau  <teuf@gnome.org>
 
 	* components/tree/nautilus-tree-view.c : expand rows in the 

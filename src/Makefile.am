@@ -69,6 +69,8 @@ nautilus_SOURCES = \
 	nautilus-first-time-druid.c		\
 	nautilus-information-panel.c            \
 	nautilus-location-bar.c         	\
+	nautilus-location-dialog.c              \
+	nautilus-location-entry.c               \
 	nautilus-main.c 			\
 	nautilus-navigation-bar.c         	\
 	nautilus-navigation-window.c            \
@@ -104,6 +106,8 @@ nautilus_SOURCES = \
 	nautilus-first-time-druid.h		\
 	nautilus-information-panel.h            \
 	nautilus-location-bar.h			\
+	nautilus-location-dialog.h              \
+	nautilus-location-entry.h               \
 	nautilus-main.h				\
 	nautilus-navigation-bar.h		\
 	nautilus-navigation-window.h            \

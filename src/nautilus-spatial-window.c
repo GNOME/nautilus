@@ -34,7 +34,7 @@
 #include "nautilus-application.h"
 #include "nautilus-desktop-window.h"
 #include "nautilus-bookmarks-window.h"
-#include "nautilus-information-panel.h"
+#include "nautilus-location-dialog.h"
 #include "nautilus-main.h"
 #include "nautilus-signaller.h"
 #include "nautilus-switchable-navigation-bar.h"
@@ -247,6 +247,15 @@ file_menu_close_with_parent_windows_callback (BonoboUIComponent *component,
 }
 
 static void
+real_prompt_for_location (NautilusWindow *window)
+{
+	GtkWidget *dialog;
+	
+	dialog = nautilus_location_dialog_new (window);
+	gtk_widget_show (dialog);
+}
+
+static void
 real_set_title (NautilusWindow *window, const char *title)
 {
 
@@ -327,6 +336,8 @@ nautilus_spatial_window_class_init (NautilusSpatialWindowClass *class)
 	GTK_WIDGET_CLASS (class)->configure_event = nautilus_spatial_window_configure_event;
 	GTK_WIDGET_CLASS (class)->unrealize = nautilus_spatial_window_unrealize;
 
+	NAUTILUS_WINDOW_CLASS (class)->prompt_for_location = 
+		real_prompt_for_location;
 	NAUTILUS_WINDOW_CLASS (class)->set_title = 
 		real_set_title;
 	NAUTILUS_WINDOW_CLASS (class)->merge_menus = 
