@@ -918,14 +918,7 @@ rsvg_text_handler_characters (RsvgSaxHandler *self, const xmlChar *ch, int len)
   ArtRender *render;
   GdkPixbuf *pixbuf;
   gboolean has_alpha;
-  static int count = 0;
   int opacity;
-
-  count++;
-  if (count == 2)
-    {
-      count = 10;
-    }
 
   /* Copy ch into string, chopping off leading and trailing whitespace */
   for (beg = 0; beg < len; beg++)
