@@ -1,3 +1,13 @@
+2000-12-07  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 954, Plays two MP3s at once instead of one at a time
+
+	This was caused by playback not being stopped when a new uri
+	was being loaded. We now stop playback when a new uri is loaded.
+
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_update), (nautilus_music_view_load_uri):
+
 2000-12-07  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

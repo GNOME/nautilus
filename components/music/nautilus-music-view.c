@@ -1659,10 +1659,10 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 		g_free (album_name);
 	}
 
-
 	/* allocate the play controls if necessary */	
-	if (music_view->details->play_control_box == NULL)
+	if (music_view->details->play_control_box == NULL) {
 		add_play_controls(music_view);
+	}
 	
 	music_view_set_selected_song_title (music_view, 0);
 	
@@ -1690,6 +1690,7 @@ detach_file (NautilusMusicView *music_view)
 void
 nautilus_music_view_load_uri (NautilusMusicView *music_view, const char *uri)
 {
+	stop_playing_file (music_view);
         detach_file (music_view);
         music_view->details->file = nautilus_file_get (uri);
 	nautilus_music_view_update (music_view);
