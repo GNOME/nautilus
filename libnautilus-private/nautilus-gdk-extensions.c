@@ -593,17 +593,17 @@ nautilus_gdk_window_bring_to_front (GdkWindow *window)
 	 * the focus at this point. Do a little X trickery to
 	 * ensure it is focused.
 	 */
-	nautilus_gdk_window_focus (window);
+	nautilus_gdk_window_focus (window, GDK_CURRENT_TIME);
 }
 
 void
-nautilus_gdk_window_focus (GdkWindow *window)
+nautilus_gdk_window_focus (GdkWindow *window, guint32 timestamp)
 {
 	gdk_error_trap_push ();
 	XSetInputFocus (GDK_DISPLAY (),
 			GDK_WINDOW_XWINDOW (window),
 			RevertToNone,
-			CurrentTime);
+			timestamp);
 	gdk_flush();
 	gdk_error_trap_pop ();
 }

@@ -903,7 +903,7 @@ iti_ensure_focus (GnomeCanvasItem *item)
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (item->canvas));
 	if (toplevel != NULL && GTK_WIDGET_REALIZED (toplevel)) {
-		nautilus_gdk_window_focus (toplevel->window);
+		nautilus_gdk_window_focus (toplevel->window, GDK_CURRENT_TIME);
 	}
 }
 

@@ -1,5 +1,21 @@
 2001-01-04  John Harper  <jsh@eazel.com>
 
+	* libnautilus-extensions/nautilus-gdk-extensions.c,
+	libnautilus-extensions/nautilus-gdk-extensions.h
+	(nautilus_gdk_window_focus): added second argument,
+	`timestamp', that's passed straight through to XSetInputFocus
+
+	* libnautilus-extensions/nautilus-drag-window.c: save the
+	timestamp in the WM_TAKE_FOCUS client message, and use it when
+	eventually focusing the window (instead of implicitly using
+	CurrentTime, which can lead to race conditions)
+
+	* libnautilus-extensions/nautilus-icon-text-item.c
+	(iti_ensure_focus): pass GDK_CURRENT_TIME as timestamp to
+	nautilus_gdk_window_focus
+
+2001-01-04  John Harper  <jsh@eazel.com>
+
 	reviewed by: Pavel Cisler <pavel@eazel.com>
 
 	When renaming an icon, manually focus the associated top-level

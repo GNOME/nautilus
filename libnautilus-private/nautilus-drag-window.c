@@ -41,6 +41,8 @@ struct NautilusDragWindowDetails {
 	gboolean pending_focus;
 	gboolean pending_raise;
 
+	Time focus_timestamp;
+
 	guint focus_timeout_tag;
 };
 	
@@ -101,7 +103,8 @@ execute_pending_requests (GtkWindow *window,
 {
 	if (GTK_WIDGET_REALIZED (window)) {
 		if (details->pending_focus) {
-			nautilus_gdk_window_focus (GTK_WIDGET (window)->window);
+			nautilus_gdk_window_focus (GTK_WIDGET (window)->window,
+						   details->focus_timestamp);
 			details->pending_focus = FALSE;
 		}
 		if (details->pending_raise) {
@@ -284,6 +287,7 @@ wm_protocols_filter (GdkXEvent *xev, GdkEvent *event, gpointer data)
 
 		if (details != NULL) {
 			details->pending_focus = TRUE;
+			details->focus_timestamp = xevent->xclient.data.l[1];
 
 			/* Wait to see if a button-press event
 			 * is received in the near future.
