@@ -1,3 +1,16 @@
+2004-10-26  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-tree-model.[ch]:
+	Handle volumes for root nodes
+	
+	* src/file-manager/fm-tree-view.c:
+	Add eject on volume toplevel roots.
+	
+	* src/nautilus-application.c:
+	Don't close nav windows when unmounting, just go to home.
+
+	Patch from Colin Leroy <colin@colino.net>
+
 2004-10-25  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus/nautilus-scroll-positionable.h:

@@ -1160,7 +1160,11 @@ volume_unmounted_callback (GnomeVFSVolumeMonitor *monitor,
 	/* Handle the windows in the close list. */
 	for (node = close_list; node != NULL; node = node->next) {
 		window = NAUTILUS_WINDOW (node->data);
-		nautilus_window_close (window);
+		if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
+			nautilus_window_close (window);
+		} else {
+			nautilus_window_go_home (window);
+		}
 	}
 		
 	g_list_free (close_list);

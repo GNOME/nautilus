@@ -74,7 +74,8 @@ NautilusFile *     fm_tree_model_iter_get_file             (FMTreeModel *model,
 void               fm_tree_model_add_root_uri              (FMTreeModel *model,
 								  const char        *root_uri,
 								  const char        *display_name,
-								  const char        *icon_name);
+								  const char        *icon_name,
+								  GnomeVFSVolume    *volume);
 void               fm_tree_model_remove_root_uri           (FMTreeModel *model,
 								  const char        *root_uri);
 gboolean           fm_tree_model_iter_is_root              (FMTreeModel *model,
@@ -85,5 +86,8 @@ gboolean           fm_tree_model_file_get_iter             (FMTreeModel *model,
 								  GtkTreeIter *currentIter);
 
 void               fm_tree_model_set_theme                 (FMTreeModel *model);
+GnomeVFSVolume *   fm_tree_model_get_volume_for_root_node_file        
+                                                           (FMTreeModel  *model, 
+                                                            NautilusFile *file);
 
 #endif /* FM_TREE_MODEL_H */
