@@ -72,8 +72,6 @@ NAUTILUS_BUG_5712_PR3_WORKAROUND__gdk_image_get (GdkWindow *window,
   if (win_private->destroyed)
     return NULL;
 
-  g_print ("FUCK\n");
-
   ximage = XGetImage (gdk_display,
 		      win_private->xwindow,
 		      x, y, width, height,
