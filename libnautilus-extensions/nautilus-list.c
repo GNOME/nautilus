@@ -42,6 +42,7 @@
 #include "nautilus-gdk-pixbuf-extensions.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-global-preferences.h"
+#include "nautilus-gtk-extensions.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-list-column-title.h"
 
@@ -206,8 +207,6 @@ static void     nautilus_list_drag_data_received        (GtkWidget            *w
 							 guint                 time);
 static void     nautilus_list_clear_keyboard_focus      (NautilusList         *list);
 static void     nautilus_list_draw_focus                (GtkWidget            *widget);
-static int      nautilus_list_get_first_selected_row    (NautilusList         *list);
-static int      nautilus_list_get_last_selected_row     (NautilusList         *list);
 static gint     nautilus_list_key_press                 (GtkWidget            *widget,
 							 GdkEventKey          *event);
 static void     nautilus_list_unselect_all              (GtkCList             *clist);
@@ -1030,8 +1029,8 @@ nautilus_list_keyboard_navigation_key_press (NautilusList *list, GdkEventKey *ev
 			start_row = clist->focus_row;
 		} else {
 			start_row = (scroll_type == GTK_SCROLL_STEP_FORWARD || scroll_type == GTK_SCROLL_PAGE_FORWARD ?
-				     nautilus_list_get_last_selected_row (list) :
-				     nautilus_list_get_first_selected_row (list));
+				     nautilus_gtk_clist_get_last_selected_row (clist) :
+				     nautilus_gtk_clist_get_first_selected_row (clist));
 		}
 
 		/* If there's no row to start with, select the row farthest toward the end.
@@ -2436,50 +2435,6 @@ nautilus_list_new_with_titles (int columns, const char * const *titles)
 				      GTK_SELECTION_MULTIPLE);
 
 	return GTK_WIDGET (list);
-}
-
-static int
-nautilus_list_get_first_selected_row (NautilusList *list)
-{
-	GtkCListRow *row;
-	GList *p;
-	int row_number;
-
-	g_return_val_if_fail (NAUTILUS_IS_LIST (list), -1);
-
-	row_number = 0;
-	for (p = GTK_CLIST (list)->row_list; p != NULL; p = p->next) {
-		row = p->data;
-		if (row->state == GTK_STATE_SELECTED) {
-			return row_number;	
-		}
-
-		++row_number;
-	}
-
-	return -1;
-}
-
-static int
-nautilus_list_get_last_selected_row (NautilusList *list)
-{
-	GtkCListRow *row;
-	GList *p;
-	int row_number;
-
-	g_return_val_if_fail (NAUTILUS_IS_LIST (list), -1);
-
-	row_number = GTK_CLIST (list)->rows - 1;
-	for (p = GTK_CLIST (list)->row_list_end; p != NULL; p = p->prev) {
-		row = p->data;
-		if (row->state == GTK_STATE_SELECTED) {
-			return row_number;	
-		}
-
-		--row_number;
-	}
-
-	return -1;
 }
 
 GList *

@@ -766,10 +766,10 @@ view_menu_choose_view_callback (GtkWidget *widget, gpointer data)
         window = NAUTILUS_WINDOW (gtk_object_get_data (GTK_OBJECT (widget), "window"));
 
 	/* Set the option menu back to its previous setting (Don't leave it
-	 * on this dialog-producing "View as ..." setting). If the menu choice 
+	 * on this dialog-producing "View as Other..." setting). If the menu choice 
 	 * causes a content view change, this will be updated again later, 
 	 * in nautilus_window_load_content_view_menu. Do this right away so 
-	 * the user never sees the option menu set to "View as ...".
+	 * the user never sees the option menu set to "View as Other...".
 	 */
 	synch_view_as_menu (window);
 
@@ -844,12 +844,12 @@ nautilus_window_load_content_view_menu (NautilusWindow *window,
                 ++index;
         }
 
-        /* Add "View as ..." extra bonus choice, with separator before it. */
+        /* Add "View as Other..." extra bonus choice, with separator before it. */
         menu_item = gtk_menu_item_new ();
         gtk_widget_show (menu_item);
         gtk_menu_append (GTK_MENU (new_menu), menu_item);
 
-       	menu_item = gtk_menu_item_new_with_label (_("View as ..."));
+       	menu_item = gtk_menu_item_new_with_label (_("View as Other..."));
         /* Store reference to window in item; no need to free this. */
         gtk_object_set_data (GTK_OBJECT (menu_item), "window", window);
         gtk_signal_connect (GTK_OBJECT (menu_item),

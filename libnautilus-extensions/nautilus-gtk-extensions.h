@@ -27,10 +27,15 @@
 #ifndef NAUTILUS_GTK_EXTENSIONS_H
 #define NAUTILUS_GTK_EXTENSIONS_H
 
+#include <gtk/gtkclist.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkwindow.h>
 
 #define NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT 2
+
+/* GtkCList */
+int		  nautilus_gtk_clist_get_first_selected_row (GtkCList *list);
+int		  nautilus_gtk_clist_get_last_selected_row  (GtkCList *list);
 
 /* signals */
 guint             nautilus_gtk_signal_connect_free_data (GtkObject              *object,

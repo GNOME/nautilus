@@ -313,7 +313,7 @@ display_caveat (GtkWindow *parent_window)
 		   "\n\n"
 		   "If you do decide to test this version of Nautilus, "
 		   "beware. The program could do something "
-		   "unpredictable and may even delete or overwrite"
+		   "unpredictable and may even delete or overwrite "
 		   "files on your computer."
 		   "\n\n"
 		   "For more information, visit http://nautilus.eazel.com."));

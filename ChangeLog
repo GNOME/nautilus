@@ -1,5 +1,52 @@
+2000-05-25  John Sullivan  <sullivan@eazel.com>
+
+	* src/ntl-app.c: (display_caveat): Added a missing space.
+
+
+	More work on the "Open with Other" dialogs. Most of
+	the UI features are present now, but they don't do
+	anything since there's no API to call yet.
+
+	* libnautilus-extensions/nautilus-gtk-extensions.h,
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_clist_get_first_selected_row),
+	(nautilus_gtk_clist_get_last_selected_row):
+	Moved these functions to here from NautilusList, since
+	they only require a GtkCList and I needed to use one
+	of them outside of NautilusList.
+	
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_get_first_selected_row),
+	(nautilus_list_get_last_selected_row),
+	(nautilus_list_keyboard_navigation_key_press),
+	(nautilus_list_new_with_titles):
+	Removed get_first and get_last_selected_row, and updated
+	callers to call new nautilus_gtk_clist versions.
+	
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(populate_program_list), (nautilus_program_chooser_get_file),
+	(nautilus_program_chooser_get_clist),
+	(nautilus_program_chooser_get_frame),
+	(nautilus_program_chooser_get_status_label),
+	(nautilus_program_chooser_set_file),
+	(nautilus_program_chooser_set_clist),
+	(nautilus_program_chooser_set_frame),
+	(nautilus_program_chooser_set_status_label), (is_in_short_list),
+	(is_in_metadata_list), (update_selected_item_details),
+	(program_list_selection_changed_callback), (pack_radio_button),
+	(run_program_configurator_callback),
+	(nautilus_program_chooser_new):
+	Whole bunch of changes to push the "Open with Other" dialogs
+	closer to reality.
+	
+	* src/ntl-window.c: 
+	(view_menu_choose_view_callback): Comment changes only.
+	(nautilus_window_load_content_view_menu): Changed menu item
+	text from "View as ..." to "View as Other..."
+
 2000-05-25  Darin Adler  <darin@eazel.com>
 
+	* libnautilus-extensions/nautilus-file.c:
 	I am getting a little careless. This must end.
 	
 	* libnautilus-extensions/nautilus-file.c:

@@ -33,6 +33,62 @@
 #include "nautilus-glib-extensions.h"
 
 /**
+ * nautilus_gtk_clist_get_first_selected_row:
+ * 
+ * Get the index of the first selected row, or -1 if no rows are selected.
+ * @list: Any GtkCList
+ **/
+int 
+nautilus_gtk_clist_get_first_selected_row (GtkCList *list)
+{
+	GtkCListRow *row;
+	GList *p;
+	int row_number;
+
+	g_return_val_if_fail (GTK_IS_CLIST (list), -1);
+
+	row_number = 0;
+	for (p = GTK_CLIST (list)->row_list; p != NULL; p = p->next) {
+		row = p->data;
+		if (row->state == GTK_STATE_SELECTED) {
+			return row_number;	
+		}
+
+		++row_number;
+	}
+
+	return -1;
+}
+
+/**
+ * nautilus_gtk_clist_get_last_selected_row:
+ * 
+ * Get the index of the last selected row, or -1 if no rows are selected.
+ * @list: Any GtkCList
+ **/
+int 
+nautilus_gtk_clist_get_last_selected_row (GtkCList *list)
+{
+	GtkCListRow *row;
+	GList *p;
+	int row_number;
+
+	g_return_val_if_fail (GTK_IS_CLIST (list), -1);
+
+	row_number = GTK_CLIST (list)->rows - 1;
+	for (p = GTK_CLIST (list)->row_list_end; p != NULL; p = p->prev) {
+		row = p->data;
+		if (row->state == GTK_STATE_SELECTED) {
+			return row_number;	
+		}
+
+		--row_number;
+	}
+
+	return -1;
+}
+
+/**
  * nautilus_gtk_signal_connect_free_data:
  * 
  * Attach a function pointer and user data to a signal, and free
