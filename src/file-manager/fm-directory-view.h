@@ -210,4 +210,5 @@ void                      fm_directory_view_pop_up_background_context_menu (FMDi
 void                      fm_directory_view_pop_up_selection_context_menu (FMDirectoryView *view); 
 void                      fm_directory_view_update_menus                  (FMDirectoryView *view);
 
+
 #endif /* FM_DIRECTORY_VIEW_H */

@@ -1,3 +1,32 @@
+2000-04-06  Pavel Cisler <pavel@eazel.com>
+	* src/file-manager/dfos-xfer-progress-dialog.c:
+	* src/file-manager/dfos-xfer-progress-dialog.h:
+	(dfos_xfer_progress_dialog_new_file):
+	Pass in the current copied file index so that the progress
+	dialog doesn't need to get called for every file copied.
+
+	* src/file-manager/dfos-xfer.c:
+	(handle_xfer_vfs_error), (handle_xfer_overwrite),
+	(handle_xfer_duplicate), (handle_xfer_ok):
+	Add error handling with error alerts.
+	Add file overwrite alerts.
+	Fix up calling the progress to deal with not being
+	called for every single file.
+
+	* src/file-manager/dfos-xfer.c:
+	(dfos_xfer):
+	Fix a bug where the async job handle was not being set properly.
+
+	* src/file-manager/dfos-xfer.c:
+	* src/file-manager/dfos-xfer.h:
+	(file_operation_alert):
+	Utility alert call.
+
+	* src/file-manager/dfos-xfer.c:
+	* src/file-manager/dfos-xfer.h:
+	(fs_xfer):
+	New copy engine main entry.
+
 2000-04-06  Andy Hertzfeld <andy@eazel.com>
 
 	* components/services/startup/nautilus-service-startup-view.c:

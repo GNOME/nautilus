@@ -154,14 +154,14 @@ destroy (GtkObject *object)
 static GtkWidget *
 create_label_in_box (GtkBox *vbox)
 {
-	GtkWidget *new;
+	GtkWidget *widget;
 
-	new = gtk_label_new ("");
-	gtk_label_set_justify (GTK_LABEL (new), GTK_JUSTIFY_LEFT);
-	gtk_box_pack_start (vbox, new, TRUE, TRUE, 0);
-	gtk_widget_show (new);
+	widget = gtk_label_new ("");
+	gtk_label_set_justify (GTK_LABEL (widget), GTK_JUSTIFY_LEFT);
+	gtk_box_pack_start (vbox, widget, TRUE, TRUE, 0);
+	gtk_widget_show (widget);
 
-	return new;
+	return widget;
 }
 
 static void
@@ -247,21 +247,21 @@ dfos_xfer_progress_dialog_new (const gchar *title,
 			       gulong total_files,
 			       gulong total_bytes)
 {
-	GtkWidget *new;
+	GtkWidget *widget;
 
-	new = gtk_type_new (dfos_xfer_progress_dialog_get_type ());
+	widget = gtk_type_new (dfos_xfer_progress_dialog_get_type ());
 
-	dfos_xfer_progress_dialog_set_operation_string (DFOS_XFER_PROGRESS_DIALOG (new),
+	dfos_xfer_progress_dialog_set_operation_string (DFOS_XFER_PROGRESS_DIALOG (widget),
 							operation_string);
-	dfos_xfer_progress_dialog_set_total (DFOS_XFER_PROGRESS_DIALOG (new),
+	dfos_xfer_progress_dialog_set_total (DFOS_XFER_PROGRESS_DIALOG (widget),
 					     total_files, total_bytes);
 
-	gtk_window_set_title (GTK_WINDOW (new), title);
+	gtk_window_set_title (GTK_WINDOW (widget), title);
 
-	gnome_dialog_append_button (GNOME_DIALOG (new),
+	gnome_dialog_append_button (GNOME_DIALOG (widget),
 				    GNOME_STOCK_BUTTON_CANCEL);
 
-	return new;
+	return widget;
 }
 
 void
@@ -292,6 +292,7 @@ void
 dfos_xfer_progress_dialog_new_file (DFOSXferProgressDialog *dialog,
 				    const gchar *source_uri,
 				    const gchar *target_uri,
+				    gulong file_index,
 				    gulong size)
 {
 	gchar *s;
@@ -299,7 +300,7 @@ dfos_xfer_progress_dialog_new_file (DFOSXferProgressDialog *dialog,
 	g_return_if_fail (IS_DFOS_XFER_PROGRESS_DIALOG (dialog));
 	g_return_if_fail (GTK_WIDGET_REALIZED (dialog));
 
-	dialog->file_index++;
+	dialog->file_index = file_index;
 	dialog->bytes_copied = 0;
 	dialog->file_size = size;
 

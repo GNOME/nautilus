@@ -18,23 +18,26 @@
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
    
-   Author: Ettore Perazzoli <ettore@gnu.org> */
+   Authors: 
+   Ettore Perazzoli <ettore@gnu.org> 
+   Pavel Cisler <pavel@eazel.com> 
+   */
 
 #include <config.h>
-#include "dfos.h"
 
 #include <gnome.h>
-#include <libgnomevfs/gnome-vfs.h>
+#include "dfos-xfer.h"
+#include "fm-directory-view.h"
 
-
-struct _XferInfo {
+
+typedef struct XferInfo {
 	GnomeVFSAsyncHandle *handle;
 	GtkWidget *progress_dialog;
-	GnomeVFSXferOptions options;
+	const char *operation_name;
 	GnomeVFSXferErrorMode error_mode;
 	GnomeVFSXferOverwriteMode overwrite_mode;
-};
-typedef struct _XferInfo XferInfo;
+	GtkWidget *parent_view;
+} XferInfo;
 
 
 static XferInfo *
@@ -43,23 +46,23 @@ xfer_info_new (GnomeVFSAsyncHandle *handle,
 	       GnomeVFSXferErrorMode error_mode,
 	       GnomeVFSXferOverwriteMode overwrite_mode)
 {
-	XferInfo *new;
+	XferInfo *info;
 
-	new = g_new (XferInfo, 1);
+	info = g_new (XferInfo, 1);
 
-	new->handle = handle;
-	new->options = options;
-	new->error_mode = error_mode;
-	new->overwrite_mode = overwrite_mode;
+	info->handle = handle;
+	info->error_mode = error_mode;
+	info->overwrite_mode = overwrite_mode;
 
-	new->progress_dialog = NULL;
+	info->progress_dialog = NULL;
+	info->parent_view = NULL;
 
-	return new;
+	return info;
 }
 
 static void
 xfer_dialog_clicked_callback (DFOSXferProgressDialog *dialog,
-			      gint button_number,
+			      int button_number,
 			      gpointer data)
 {
 	XferInfo *info;
@@ -68,28 +71,19 @@ xfer_dialog_clicked_callback (DFOSXferProgressDialog *dialog,
 	gnome_vfs_async_cancel (info->handle);
 
 	gtk_widget_destroy (GTK_WIDGET (dialog));
-
-	g_warning (_("Operation cancelled"));
 }
 
 static void
 create_xfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
 		    XferInfo *xfer_info)
 {
-	gchar *op_string;
-
 	g_return_if_fail (xfer_info->progress_dialog == NULL);
-
-	if (xfer_info->options & GNOME_VFS_XFER_REMOVESOURCE)
-		op_string = _("Moving");
-	else
-		op_string = _("Copying");
 
 	xfer_info->progress_dialog
 		= dfos_xfer_progress_dialog_new ("Transfer in progress",
-						 op_string,
-						 progress_info->files_total,
-						 progress_info->bytes_total);
+						 "",
+						 1,
+						 1);
 
 	gtk_signal_connect (GTK_OBJECT (xfer_info->progress_dialog),
 			    "clicked",
@@ -99,21 +93,44 @@ create_xfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
 	gtk_widget_show (xfer_info->progress_dialog);
 }
 
-static gint
+static int
 handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 		XferInfo *xfer_info)
 {
 	switch (progress_info->phase) {
-	case GNOME_VFS_XFER_PHASE_READYTOGO:
+	case GNOME_VFS_XFER_PHASE_INITIAL:
 		create_xfer_dialog (progress_info, xfer_info);
 		return TRUE;
+
+	case GNOME_VFS_XFER_PHASE_COLLECTING:
+		dfos_xfer_progress_dialog_set_operation_string
+			(DFOS_XFER_PROGRESS_DIALOG
+				 (xfer_info->progress_dialog),
+				 "Preparing Copy...");
+		return TRUE;
+
+	case GNOME_VFS_XFER_PHASE_READYTOGO:
+		dfos_xfer_progress_dialog_set_operation_string
+			(DFOS_XFER_PROGRESS_DIALOG
+				 (xfer_info->progress_dialog),
+				 xfer_info->operation_name);
+		dfos_xfer_progress_dialog_set_total
+			(DFOS_XFER_PROGRESS_DIALOG
+				 (xfer_info->progress_dialog),
+				 progress_info->files_total,
+				 progress_info->bytes_total);
+		return TRUE;
+				 
 	case GNOME_VFS_XFER_PHASE_XFERRING:
+	case GNOME_VFS_XFER_PHASE_OPENSOURCE:
+	case GNOME_VFS_XFER_PHASE_OPENTARGET:
 		if (progress_info->bytes_copied == 0) {
 			dfos_xfer_progress_dialog_new_file
 				(DFOS_XFER_PROGRESS_DIALOG
 				 (xfer_info->progress_dialog),
 				 progress_info->source_name,
 				 progress_info->target_name,
+				 progress_info->file_index,
 				 progress_info->file_size);
 		} else {
 			dfos_xfer_progress_dialog_update
@@ -123,20 +140,22 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 				 progress_info->total_bytes_copied);
 		}
 		return TRUE;
+
 	case GNOME_VFS_XFER_PHASE_FILECOMPLETED:
 		/* FIXME? */
 		return TRUE;
+		
 	case GNOME_VFS_XFER_PHASE_COMPLETED:
 		gtk_widget_destroy (xfer_info->progress_dialog);
-		g_warning ("***** RELEASING HANDLE");
 		g_free (xfer_info);
 		return TRUE;
+
 	default:
 		return TRUE;
 	}
 }
 
-static gint
+static int
 handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 		       XferInfo *xfer_info)
 {
@@ -144,8 +163,30 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
            requested, but the transfer is always performed in mode
            `GNOME_VFS_XFER_ERROR_MODE_QUERY'.  */
 
+	int result;
+	char *text;
+
 	switch (xfer_info->error_mode) {
-	case GNOME_VFS_XFER_ERROR_MODE_QUERY: /* FIXME */
+	case GNOME_VFS_XFER_ERROR_MODE_QUERY:
+
+		/* transfer error, prompt the user to continue or stop */
+		text = g_strdup_printf ( _("Error %s copying file %s. \n"
+			"Would you like to continue?"), 
+			gnome_vfs_result_to_string (progress_info->vfs_status),
+			progress_info->source_name);
+		result = file_operation_alert (xfer_info->parent_view, text, 
+			_("File copy error"),
+			_("Skip"), _("Retry"), _("Stop"));
+
+		switch (result) {
+		case 0:
+			return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
+		case 1:
+			return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
+		case 2:
+			return GNOME_VFS_XFER_ERROR_ACTION_RETRY;
+		}						
+
 	case GNOME_VFS_XFER_ERROR_MODE_ABORT:
 	default:
 		dfos_xfer_progress_dialog_freeze (DFOS_XFER_PROGRESS_DIALOG
@@ -157,16 +198,56 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 	}
 }
 
-static gint
+static int
 handle_xfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 		       XferInfo *xfer_info)
 {
-	return FALSE;
+	/* transfer conflict, prompt the user to replace or skip */
+	int result;
+	char *text;
+
+	text = g_strdup_printf ( _("File %s already exists. \n"
+		"Would you like to replace it?"), 
+		progress_info->target_name);
+	result = file_operation_alert (xfer_info->parent_view, text, 
+		_("File copy conflict"),
+		_("Replace All"), _("Replace"), _("Skip"));
+
+	switch (result) {
+	case 0:
+		return GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE_ALL;
+	case 1:
+		return GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE;
+	case 2:
+		return GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP;
+	}
+
+	return 0;					
 }
 
-static gint
-xfer_callback (GnomeVFSAsyncHandle *handle,
-	       const GnomeVFSXferProgressInfo *progress_info,
+static int
+handle_xfer_duplicate (GnomeVFSXferProgressInfo *progress_info,
+		       XferInfo *xfer_info)
+{
+	char *old_name = progress_info->duplicate_name;
+
+	if (progress_info->duplicate_count < 2) {
+		progress_info->duplicate_name = g_strdup_printf ("%s (copy)", 
+			progress_info->duplicate_name);
+	} else {
+		progress_info->duplicate_name = g_strdup_printf ("%s (copy %d)", 
+			progress_info->duplicate_name,
+			progress_info->duplicate_count);
+	}
+	
+	g_free (old_name);
+
+	return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
+}
+
+static int
+sync_xfer_callback (
+	       GnomeVFSXferProgressInfo *progress_info,
 	       gpointer data)
 {
 	XferInfo *xfer_info;
@@ -180,11 +261,21 @@ xfer_callback (GnomeVFSAsyncHandle *handle,
 		return handle_xfer_vfs_error (progress_info, xfer_info);
 	case GNOME_VFS_XFER_PROGRESS_STATUS_OVERWRITE:
 		return handle_xfer_overwrite (progress_info, xfer_info);
+	case GNOME_VFS_XFER_PROGRESS_STATUS_DUPLICATE:
+		return handle_xfer_duplicate (progress_info, xfer_info);
 	default:
 		g_warning (_("Unknown GnomeVFSXferProgressStatus %d"),
 			   progress_info->status);
 		return FALSE;
 	}
+}
+
+static int
+xfer_callback (GnomeVFSAsyncHandle *handle,
+	       GnomeVFSXferProgressInfo *progress_info,
+	       gpointer data)
+{
+	return sync_xfer_callback (progress_info, data);
 }
 
 
@@ -200,11 +291,10 @@ dfos_xfer (DFOS *dfos,
 {
 	GnomeVFSResult result;
 	XferInfo *xfer_info;
-	GnomeVFSAsyncHandle *handle;
 
-	xfer_info = xfer_info_new (handle, options, overwrite_mode, error_mode);
+	xfer_info = xfer_info_new (NULL, options, overwrite_mode, error_mode);
 
-	result = gnome_vfs_async_xfer (&handle,
+	result = gnome_vfs_async_xfer (&xfer_info->handle,
 				       source_directory_uri,
 				       source_file_name_list,
 				       target_directory_uri,
@@ -233,4 +323,114 @@ dfos_xfer (DFOS *dfos,
 		g_free (message);
 		g_free (xfer_info);
 	}
+}
+
+int
+file_operation_alert (GtkWidget *parent_view, const char *text, 
+			const char *title, const char *button_1_text,
+			const char *button_2_text, const char *button_3_text)
+{
+        GtkWidget *dialog;
+        GtkWidget *prompt_widget;
+        GtkWidget *top_widget;
+
+        /* Don't use GNOME_STOCK_BUTTON_CANCEL because the
+         * red X is confusing in this context.
+         */
+
+        dialog = gnome_dialog_new (title,
+                                   button_1_text,
+                                   button_2_text,
+                                   button_3_text,
+                                   NULL);
+
+        gnome_dialog_set_close (GNOME_DIALOG (dialog), TRUE);
+        gnome_dialog_close_hides (GNOME_DIALOG (dialog), TRUE);
+
+        top_widget = gtk_widget_get_toplevel (parent_view);
+        g_assert (GTK_IS_WINDOW (top_widget));
+        gnome_dialog_set_parent (GNOME_DIALOG (dialog), GTK_WINDOW (top_widget));
+
+        prompt_widget = gtk_label_new (text);
+        
+        gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox),
+                            prompt_widget,
+                            TRUE, TRUE, GNOME_PAD);
+
+        gtk_widget_show_all (dialog);
+
+        return gnome_dialog_run (GNOME_DIALOG (dialog));
+}
+
+void
+fs_xfer (const GList *item_uris,
+	 const GdkPoint *relative_item_points,
+	 const char *target_dir,
+	 int copy_action,
+	 GtkWidget *view)
+{
+	const GList *p;
+	GList *item_names;
+	GnomeVFSXferOptions move_options;
+	gchar *source_dir;
+	GnomeVFSURI *source_dir_uri;
+	GnomeVFSURI *target_dir_uri;
+	XferInfo *xfer_info;
+	
+	g_assert (item_uris != NULL);
+	g_assert (target_dir != NULL);
+	
+	item_names = NULL;
+	source_dir_uri = NULL;
+
+
+	/* convert URI list to a source parent URI and a list of names */
+	for (p = item_uris; p != NULL; p = p->next) {
+		GnomeVFSURI *item_uri;
+		const gchar *item_name;
+		
+		item_uri = gnome_vfs_uri_new (p->data);
+		item_name = gnome_vfs_uri_get_basename (item_uri);
+		item_names = g_list_append (item_names, g_strdup (item_name));
+		if (source_dir_uri == NULL)
+			source_dir_uri = gnome_vfs_uri_get_parent (item_uri);
+
+		gnome_vfs_uri_unref (item_uri);
+	}
+
+	source_dir = gnome_vfs_uri_to_string (source_dir_uri, GNOME_VFS_URI_HIDE_NONE);
+	target_dir_uri = gnome_vfs_uri_new (target_dir);
+
+	/* figure out the right move/copy mode */
+	move_options = GNOME_VFS_XFER_RECURSIVE;
+
+	if (gnome_vfs_uri_equal (target_dir_uri, source_dir_uri)) {
+		g_assert (copy_action == GDK_ACTION_COPY);
+		move_options |= GNOME_VFS_XFER_USE_UNIQUE_NAMES;
+	} else if (copy_action == GDK_ACTION_MOVE) {
+		move_options |= GNOME_VFS_XFER_REMOVESOURCE;
+	}
+
+	/* set up the copy/move parameters */
+	xfer_info = g_new (XferInfo, 1);
+	xfer_info->parent_view = view;
+	xfer_info->progress_dialog = NULL;
+
+	if ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0)
+		xfer_info->operation_name = _("Moving");
+	else
+		xfer_info->operation_name = _("Copying");
+
+	xfer_info->error_mode = GNOME_VFS_XFER_ERROR_MODE_QUERY;
+	xfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_QUERY;
+	
+	gnome_vfs_async_xfer (&xfer_info->handle, source_dir, item_names,
+	      		      target_dir, NULL,
+	      		      move_options, GNOME_VFS_XFER_ERROR_MODE_QUERY, 
+	      		      GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
+	      		      &xfer_callback, xfer_info);
+
+	gnome_vfs_uri_unref (target_dir_uri); 
+	gnome_vfs_uri_unref (source_dir_uri);
+	g_free (source_dir);
 }

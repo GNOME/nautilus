@@ -25,6 +25,7 @@
 #define _XFER_H
 
 #include <libgnomevfs/gnome-vfs.h>
+#include "dfos.h"
 
 void dfos_xfer (DFOS *dfos,
 		const gchar *source_directory_uri,
@@ -34,5 +35,18 @@ void dfos_xfer (DFOS *dfos,
 		GnomeVFSXferOptions options,
 		GnomeVFSXferErrorMode error_mode,
 		GnomeVFSXferOverwriteMode overwrite_mode);
+
+void fs_xfer   (const GList *item_uris,
+		const GdkPoint *target_item_points,
+		const char *target_dir,
+		int copy_action,
+		GtkWidget *parent_view);
+
+int file_operation_alert (GtkWidget *parent_view, 
+			  const char *text, 
+			  const char *title,
+			  const char *button_1_text,
+			  const char *button_2_text, 
+			  const char *button_3_text);
 
 #endif /* _XFER_H */

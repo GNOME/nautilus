@@ -50,6 +50,7 @@
 #include <libnautilus/nautilus-zoomable.h>
 
 #include "fm-properties-window.h"
+#include "dfos-xfer.h"
 
 #define DISPLAY_TIMEOUT_INTERVAL_MSECS 500
 
@@ -2018,95 +2019,6 @@ fm_directory_view_get_container_uri (NautilusIconContainer *container,
 	return nautilus_directory_get_uri (view->details->model);
 }
 
-
-#undef XFER_CALLBACK_DEBUG
-static gint
-xfer_callback (const GnomeVFSXferProgressInfo *progress, gpointer data)
-{
-	/* FIXME */
-#ifdef XFER_CALLBACK_DEBUG
-	#include <stdio.h>
-#endif
-	
-	if (progress->status == GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR) {
-#ifdef XFER_CALLBACK_DEBUG
-		printf ("file %s, error %s, skipping \n",
-			progress->source_name,
-			gnome_vfs_result_to_string (progress->vfs_status));
-#endif
-		return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
-	}
-
-	if (progress->status == GNOME_VFS_XFER_PROGRESS_STATUS_OVERWRITE) {
-#ifdef XFER_CALLBACK_DEBUG
-		printf ("file %s conflicting, skipping \n",
-			progress->source_name);
-#endif
-		return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
-	}
-
-	switch (progress->phase) {
-	case GNOME_VFS_XFER_PHASE_COLLECTING:
-#ifdef XFER_CALLBACK_DEBUG
-		printf("preflight \n");
-#endif
-		break;
-
-	case GNOME_VFS_XFER_PHASE_READYTOGO:
-#ifdef XFER_CALLBACK_DEBUG
-		printf("%ld starting copy \n", progress->files_total);
-#endif
-		break;
-
-	case GNOME_VFS_XFER_PHASE_FILECOMPLETED:
-#ifdef XFER_CALLBACK_DEBUG
-		printf("%ld %s done copying \n", progress->file_index, progress->target_name);
-#endif
-		break;
-
-	case GNOME_VFS_XFER_PHASE_READSOURCE:
-#ifdef XFER_CALLBACK_DEBUG
-		printf ("%ld %s reading file\n", progress->file_index, progress->source_name);
-#endif
-		break;
-		
-	case GNOME_VFS_XFER_PHASE_WRITETARGET:
-#ifdef XFER_CALLBACK_DEBUG
-		printf ("%ld %s writing file\n", progress->file_index, progress->target_name);
-#endif
-		break;
-
-	case GNOME_VFS_XFER_PHASE_DELETESOURCE:
-#ifdef XFER_CALLBACK_DEBUG
-		printf ("%ld %s deleting file\n", progress->file_index, progress->source_name);
-#endif
-		break;
-
-	case GNOME_VFS_XFER_PHASE_COMPLETED:
-#ifdef XFER_CALLBACK_DEBUG
-		printf ("done\n");
-#endif
-		break;
-
-	default:
-		break;
-	}
-
-	return 1;
-}
-
-#if 0
-static gint
-async_xfer_callback (GnomeVFSAsyncHandle *handle, 
-		     const GnomeVFSXferProgressInfo *info, 
-		     gpointer data)
-{
-	/* FIXME */
-	xfer_callback (info, data);
-}
-#endif
-
- 
 void
 fm_directory_view_move_copy_items (NautilusIconContainer *container,
 				   const GList *item_uris,
@@ -2117,76 +2029,11 @@ fm_directory_view_move_copy_items (NautilusIconContainer *container,
 				   int y,
 				   FMDirectoryView *view)
 {
-	/* FIXME:
-	 * handle a case where item_uris have different parents
-	 * FIXME:
-	 * move this to fm-directory-view.c
-	 */
-	const GList *p;
-	GList *item_names;
-	GnomeVFSAsyncHandle *transfer_handle;
-	GnomeVFSXferOptions move_options;
-	gchar *source_dir;
-	GnomeVFSURI *source_dir_uri;
-	GnomeVFSURI *target_dir_uri;
-	
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
-	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
-	g_assert (item_uris != NULL);
-	g_assert (target_dir != NULL);
-	
-	item_names = NULL;
-	source_dir_uri = NULL;
-
-	for (p = item_uris; p != NULL; p = p->next) {
-		GnomeVFSURI *item_uri;
-		const gchar *item_name;
-		
-		item_uri = gnome_vfs_uri_new (p->data);
-		item_name = gnome_vfs_uri_get_basename (item_uri);
-		item_names = g_list_append (item_names, g_strdup (item_name));
-		if (source_dir_uri == NULL)
-			source_dir_uri = gnome_vfs_uri_get_parent (item_uri);
-
-		gnome_vfs_uri_unref (item_uri);
-	}
-
-	source_dir = gnome_vfs_uri_to_string (source_dir_uri, GNOME_VFS_URI_HIDE_NONE);
-	target_dir_uri = gnome_vfs_uri_new (target_dir);
-
-	if (gnome_vfs_uri_equal (target_dir_uri, source_dir_uri)) {
-		/* local copy - create a list of unique names 
-		 * FIXME:
-		 * consider doing this in the xfer operation, using a special move option
-		 */
-	}
-
-	move_options = GNOME_VFS_XFER_RECURSIVE;
-	if (copy_action == GDK_ACTION_MOVE) {
-		move_options |= GNOME_VFS_XFER_REMOVESOURCE;
-	}
-
-
-#if 0
-	/* FIXME:
-	 * async calls crash for now 
-	 */
-	gnome_vfs_async_xfer (&transfer_handle, source_dir, item_names,
-	      		      target_dir, NULL,
-	      		      move_options, GNOME_VFS_XFER_ERROR_MODE_QUERY, 
-	      		      GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
-	      		      &async_xfer_callback, NULL);
-#else
-	transfer_handle = NULL; /* FIXME: just to fake out a warning for now */
-	gnome_vfs_xfer (source_dir, item_names,
-	      		target_dir, NULL,
-	      		move_options, GNOME_VFS_XFER_ERROR_MODE_QUERY, 
-	      		GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
-	      		&xfer_callback, NULL);
-#endif
-	gnome_vfs_uri_unref (target_dir_uri); 
-	gnome_vfs_uri_unref (source_dir_uri);
-	g_free (source_dir);
+	fs_xfer (item_uris,
+		relative_item_points,
+		target_dir,
+		copy_action,
+		GTK_WIDGET (view));
 }
 
 

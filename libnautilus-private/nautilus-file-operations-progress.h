@@ -85,6 +85,7 @@ void		 dfos_xfer_progress_dialog_new_file
 						(DFOSXferProgressDialog *dialog,
 						 const gchar *source_uri,
 						 const gchar *target_uri,
+						 gulong file_index,
 						 gulong size);
 
 void		 dfos_xfer_progress_dialog_update
