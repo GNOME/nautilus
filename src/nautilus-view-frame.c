@@ -70,10 +70,12 @@ static POA_Nautilus_ViewFrame__epv impl_Nautilus_ViewFrame_epv =
    (void(*))&impl_Nautilus_ViewFrame_request_status_change
 };
 
+static PortableServer_ServantBase__epv base_epv = { NULL};
+
 static POA_Nautilus_ViewFrame__vepv impl_Nautilus_ViewFrame_vepv =
 {
-   &gnome_object_base_epv,
-   &gnome_object_epv,
+   &base_epv,
+   NULL,
    &impl_Nautilus_ViewFrame_epv
 };
 
@@ -103,6 +105,8 @@ impl_Nautilus_ViewFrame__create(NautilusView *view, CORBA_Environment * ev)
 
    newservant = g_new0(impl_POA_Nautilus_ViewFrame, 1);
    newservant->servant.vepv = &impl_Nautilus_ViewFrame_vepv;
+   if(!newservant->servant.vepv->GNOME_Unknown_epv)
+     newservant->servant.vepv->GNOME_Unknown_epv = gnome_object_get_epv();
    newservant->view = view;
    POA_Nautilus_ViewFrame__init((PortableServer_Servant) newservant, ev);
 

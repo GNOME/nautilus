@@ -68,10 +68,12 @@ POA_Nautilus_View__epv libnautilus_Nautilus_View_epv =
    (gpointer) & impl_Nautilus_View_notify_selection_change
 };
 
+static PortableServer_ServantBase__epv base_epv = { NULL};
+
 static POA_Nautilus_View__vepv impl_Nautilus_View_vepv =
 {
-   &gnome_object_base_epv,
-   &gnome_object_epv,
+   &base_epv,
+   NULL,
    &libnautilus_Nautilus_View_epv
 };
 
@@ -146,6 +148,8 @@ impl_Nautilus_View__create(NautilusViewClient *view, CORBA_Environment * ev)
    servant_init_func = view_class->servant_init_func;
    newservant = g_new0(impl_POA_Nautilus_View, 1);
    newservant->servant.vepv = view_class->vepv;
+   if(!newservant->servant.vepv->GNOME_Unknown_epv)
+     newservant->servant.vepv->GNOME_Unknown_epv = gnome_object_get_epv();
    newservant->view = view;
    servant_init_func((PortableServer_Servant) newservant, ev);
 
