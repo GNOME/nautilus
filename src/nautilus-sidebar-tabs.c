@@ -414,16 +414,17 @@ int nautilus_sidebar_tabs_hit_test (NautilusSidebarTabs *sidebar_tabs, int x, in
 			
 	/* loop through the items, seeing it the passed in point is in one of the rectangles */
 	tab_item = (TabItem*) current_item->data;
+	/*
 	if (!tab_item->visible && current_item->next) {
 		tab_item = (TabItem*) current_item->next->data;
 	}
-			
+	*/		
 	result = -1;
 	while (current_item != NULL) {
 		tab_item = (TabItem*) current_item->data;
 		rect_ptr = &tab_item->tab_rect;
 
-		if (tab_item->visible) {							
+		if (TRUE /*tab_item->visible*/) {							
 			if ((x >= rect_ptr->x) && (x < rect_ptr->x + rect_ptr->width) &&
 		     		(y >= rect_ptr->y) && (y< rect_ptr->y + rect_ptr->height))
 		   		result = tab_item->notebook_page;
@@ -1317,8 +1318,9 @@ nautilus_sidebar_tabs_select_tab (NautilusSidebarTabs *sidebar_tabs, int which_t
 
 	for (next_tab = sidebar_tabs->details->tab_items; next_tab != NULL; next_tab = next_tab->next) {
 		TabItem *item = next_tab->data;
+
 		item->visible = (item->notebook_page != which_tab);
-		item->prelit = FALSE;
+		item->prelit = FALSE;		
 	}
 	
 	recalculate_size(sidebar_tabs);

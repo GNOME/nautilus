@@ -1,0 +1,226 @@
+<chapter id="ch3">
+        <title>Nautilus and Eazel Services</title>
+
+
+	<para>
+	Eazel Services are an Internet-based suite of tools 
+	designed to simplify system management in 
+	Linux. Nautilus and Eazel Services work together: 
+	one complements the other. This chapter presents 
+	a description of Eazel Services available for 
+	the preview release two.
+	</para>
+
+	<para>
+	For this release, Services will include:
+
+	<itemizedlist>
+
+	<listitem><para>
+	Eazel Software Catalog
+	</para></listitem>
+
+	<listitem><para>
+	Eazel Software Installer
+	</para></listitem>
+
+	<listitem><para>
+	Eazel Online Storage
+	</para></listitem>
+
+	</itemizedlist>
+
+	</para>
+
+	<sect1 id="ch3-accessing">
+	<title>Accessing Services</title>
+
+	<para>
+	There are several ways to access Eazel Services. 
+	When starting Nautilus for the first time, the user 
+	is asked if they wish to learn about, sign up, or 
+	log on to Services (Figure 1). 
+	</para>
+
+
+	<figure>
+	<title>Signing Up for Eazel Services Upon Starting Nautilus</title>
+	<graphic fileref="ch3-sign-up" scale="50"></graphic>
+	</figure>
+
+
+	<para>
+	On a routine basis, Services can be reached by 
+	simply clicking the Services icon on the Nautilus 
+	toolbar. Alternatively, they can be reached 
+	through any web browser, from www.eazel.com.
+	</para>
+
+	</sect1>
+
+	<sect1 id="ch3-registration">
+	<title>Registration and Login</title>
+
+	<para>
+	Registration--for this preview release--is not required for the 
+	software catalog, but is for online storage.
+	</para
+
+	<para>
+	Registration is the same from Nautilus or from any browser.  The 
+	screen is divided into three sections: the required fields to open 
+	an account (Figure 2); the optional personal profile section, and 
+	the optional computing environment section.
+	</para>
+
+	<figure>
+	<title>Required Account Information in Registration</title>
+	<graphic fileref="ch3-account-info" scale="50"></graphic>
+	</figure>
+
+
+	<para>
+	The user completes the process by activating their account with the
+	instructions sent in a validation e-mail.  The instructions are sent
+	almost instantaneously.
+	</para>
+
+	<para>
+	Logging in can be accomplished either from the greeting page which 
+	follows account validation, from clicking services in Nautilus, or 
+	from the Eazel website, www.eazel.com.
+	</para>
+
+	<para>
+	The Welcome screen, Figure 3, is organized into three basic sections.  
+	The top section has links for reaching the Eazel support page, for 
+	changing user preferences, and for logging out.
+	</para>
+
+	<para>
+	The support page has a number of FAQs and other help features.  The 
+	preferences link allows the user to change or update personal and 
+	computer preferences, and even passwords.
+	</para/>
+
+	<figure>
+	<title>The Welcome Screen, Showing Online Storage and Software Catalog
+	</title>
+	<graphic fileref="ch3-welcome-screen" scale="50"></graphic>
+	</figure>
+	
+
+	<para>
+	The second section down is devoted to Online Storage, and has links to 
+	the users private and public storage folder.
+	</para>
+
+	<para>
+	The third section allows the user to either browse or search the Eazel 
+	software catalog.
+	</para>
+
+
+
+	</sect1>
+
+	<sect1 id="ch3-catalog">
+	<title>Eazel Software Catalog</title>
+
+	<para>
+	The Software Catalog is an on-line catalog of 
+	Linux software, both Open Source and commercial, that should
+	install and work properly--in this preview release--on a Redhat 6.0 
+	to 6.2 system.
+	</para>
+
+	<para>
+	The software is in RPM format.
+	</para>
+
+	<para>
+	The user is able to select software by either browsing the online 
+	catalog by category, or by searching for a specific package with a 
+	keyword.  Both catalog browsing and searching can be further refined 
+	by specifying a Redhat distribution version.
+	</para>
+
+	<para>
+	When browsing, the user is presented with thirteen different categories,	from Communications to Text Editors.  Selecting the first, for example, 	opens a separate screen dedicated to communications software (Figure 4), 	with a list of package titles and short summaries.
+	</para>
+	
+	<figure>
+	<title>Package Titles and Summaries</title>
+	<graphic fileref="ch3-package-titles" scale="50"></graphic>
+	</figure>
+
+
+	<para>
+	Selecting the package title takes the user to a further screen, giving 
+	more complete information, including the version and release number, 
+	the source and vendor, a more complete description, package size, etc.
+	</para>
+
+	<para>
+	Pressing the download button sets up a download of the selected package
+	--in RPM format--to the users home directory.
+	</para>
+
+	</sect1>
+
+	<sect1 id="ch3-installer">
+	<title>Eazel Software Installer</title>
+
+	<para>
+	The Software Installer, which functions when accessing Services through 	Nautilus, takes into account your distribution, 
+	version, and current system, and installs not only 
+	the chosen programs, but also automatically 
+	installs the necessary dependencies.
+	</para>
+	
+	<para>
+	This is all accomplished with the help of a client-
+	side inventory program built into Nautilus--
+	making Nautilus an integral part of Eazel 
+	Services.
+	</para>
+	
+	</sect1>
+
+	<sect1 id="ch3-vault">
+	<title>Eazel Online Storage</title>
+
+	<para>
+	Each user is provided initially with 25MB of free storage space, in two 	folders, private and public.
+	</para>
+
+	<para>
+	Online Storage is more than just a one-directory 
+	file repository. Users can create online folders--
+	even entire directory trees. They can upload and 
+	download files, and Nautilus users can copy or 
+	move entire folders from their own system to 
+	Eazel Online Storage, and back again.
+	</para>
+	
+	<para>
+	Clicking on either the Private or Public folder icon takes the user to 		the Online Storage screen (Figure 5).
+	</para>
+	
+	<figure>
+	<title>The Online Storage Screen</title>
+	<graphic fileref="ch3-online-storage" scale="50"></graphic>
+	</figure>
+
+	<para>
+	From here, the user can see immediately which files they have in 
+	storage, and how much space they have left available.  They may also 
+	choose to create a sub-folder, to upload or download files, or to 
+	copy, move, or delete selected items.
+	</para>
+
+
+	</sect1>
+	
+
+</chapter>

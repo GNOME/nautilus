@@ -21,10 +21,12 @@ SUBDIRS = \
 	loser \
 	music \
 	notes \
+	rss-control \
 	sample \
 	text \
 	throbber \
 	tree \
+	vcard \
 	$(SERVICE_SUBDIRS) \
 	$(RPMVIEW_COMPONENT_SUBDIRS) \
 	$(MOZILLA_COMPONENT_SUBDIRS) \

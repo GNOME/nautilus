@@ -72,6 +72,9 @@
 #define NAUTILUS_METADATA_KEY_ICON_SCALE                 	"icon_scale"
 #define NAUTILUS_METADATA_KEY_CUSTOM_ICON                	"custom_icon"
 
+#define	NAUTILUS_METADATA_KEY_CONTROL_MONIKER			"control_moniker"
+#define	NAUTILUS_METADATA_KEY_CONTROL_DATA			"control_data"
+
 /* per link file */
 
 #define NAUTILUS_METADATA_KEY_EXTRA_TEXT		 	"extra_text"
