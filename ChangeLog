@@ -1,15 +1,7 @@
-2000-09-29  Andy Hertzfeld  <andy@eazel.com>
-
-	* components/music/nautilus-music-view.c:
-	(nautilus_music_view_update_from_uri):
-	fixed bug 2107, music view fails when encountering a broken image file,
-	by testing for a NULL result from gdk_pixbuf_new_from_file and
-	handling it accordingly.
-	
 2000-09-29  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 3322 (context menus don't work in FTP site
-	that wasn't typed with a trailing slash)
+	whose address wasn't typed with a trailing slash)
 
 	* libnautilus-extensions/nautilus-directory.c:
 	(nautilus_directory_make_uri_canonical): New function, calls
@@ -26,6 +18,14 @@
 	equivalent is now in the NautilusDirectory version,
 	replaced with comment.
 
+2000-09-29  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_update_from_uri):
+	fixed bug 2107, music view fails when encountering a broken image file,
+	by testing for a NULL result from gdk_pixbuf_new_from_file and
+	handling it accordingly.
+	
 2000-09-29  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-private.h:
@@ -119,18 +119,19 @@
 
 2000-09-29  John Sullivan  <sullivan@eazel.com>
 
-	Probably fixed bug 3327 (intermittent tree view crash)
+	Fixed bug 3327 (intermittent tree view crash)
 
 	* libnautilus-extensions/nautilus-file.c:
 	(nautilus_file_get_internal): Changed file_name_escaped
 	to file_name in nautilus_str_is_empty call. 
 	file_name_escaped had already been freed at this point
 	(Doh!). Darin and I believe this to be the cause of
-	3327. Also freed file_name later, which had been leaking.
+	3327 (and testers agree). Also freed file_name later, 
+	which had been leaking.
 
 	* components/tree/nautilus-tree-model.c:
 	(nautilus_tree_model_get_node): Removed extra debugging
-	spam from here now that bug seems fixed. We can bring it
+	spam from here now that bug is fixed. We can bring it
 	back later if necessary.
 	
 
