@@ -87,7 +87,7 @@ load_location(NautilusViewFrame *view, Nautilus_URI location, CORBA_Environment 
   Nautilus_View_load_location(nvi->view_client, location, ev);
 
   if(ev->_major != CORBA_NO_EXCEPTION)
-    /* FIXME: Is a destroy really sufficient here? Who does the unref? */
+    /* FIXME bugzilla.eazel.com 2455: Is a destroy really sufficient here? Who does the unref? */
     gtk_object_destroy(GTK_OBJECT(view));
 }
 
@@ -99,7 +99,7 @@ stop_loading(NautilusViewFrame *view, CORBA_Environment *ev)
   Nautilus_View_stop_loading(nvi->view_client, ev);
 
   if(ev->_major != CORBA_NO_EXCEPTION)
-    /* FIXME: Is a destroy really sufficient here? Who does the unref? */
+    /* FIXME bugzilla.eazel.com 2455 bugzilla.eazel.com 2455: Is a destroy really sufficient here? Who does the unref? */
     gtk_object_destroy(GTK_OBJECT(view));
 }
 
@@ -111,7 +111,7 @@ selection_changed(NautilusViewFrame *view, const Nautilus_URIList *selection, CO
   Nautilus_View_selection_changed(nvi->view_client, selection, ev);
 
   if(ev->_major != CORBA_NO_EXCEPTION)
-    /* FIXME: Is a destroy really sufficient here? Who does the unref? */
+    /* FIXME bugzilla.eazel.com 2455: Is a destroy really sufficient here? Who does the unref? */
     gtk_object_destroy(GTK_OBJECT(view));
 }
 
@@ -126,7 +126,7 @@ title_changed (NautilusViewFrame *view, CORBA_Environment *ev)
   Nautilus_View_title_changed(nvi->view_client, ev);
 
   if(ev->_major != CORBA_NO_EXCEPTION)
-    /* FIXME: Is a destroy really sufficient here? Who does the unref? */
+    /* FIXME bugzilla.eazel.com 2455: Is a destroy really sufficient here? Who does the unref? */
     gtk_object_destroy(GTK_OBJECT(view));
        
 }

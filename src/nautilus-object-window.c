@@ -71,7 +71,7 @@
 /* GNOME Dock Items */
 #define URI_ENTRY_DOCK_ITEM	"uri_entry"
 
-/* default web search uri - FIXME: this will be changed to point to the Eazel service */
+/* default web search uri - FIXME bugzilla.eazel.com 2465: this will be changed to point to the Eazel service */
 #define DEFAULT_SEARCH_WEB_URI "http://www.google.com"
 
 enum {
@@ -830,7 +830,7 @@ nautilus_window_load_content_view_menu (NautilusWindow *window)
 	 * it's better than nothing.
 	 */
 	method = nautilus_mime_get_short_list_methods_for_uri (window->location);
-	/* FIXME: Name of the function is plural, but it returns only
+	/* FIXME bugzilla.eazel.com 2466: Name of the function is plural, but it returns only
 	 * one item. That must be fixed.
 	 */
 	if (method != NULL) {

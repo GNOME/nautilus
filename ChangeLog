@@ -1,3 +1,27 @@
+2000-08-28  John Sullivan  <sullivan@eazel.com>
+
+	Added more bug numbers to FIXMEs. 142 to go.
+
+	* src/nautilus-view-frame-nautilus-view.c: (load_location),
+	(stop_loading), (selection_changed), (title_changed):
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_handle_client_destroy),
+	(nautilus_view_frame_set_active_errors):
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_report_load_underway),
+	(nautilus_window_report_load_complete),
+	(nautilus_window_report_load_failed),
+	(nautilus_window_update_view),
+	(nautilus_window_load_sidebar_panel), (open_location),
+	(nautilus_window_update_state),
+	(nautilus_window_end_location_change_callback):
+	* src/nautilus-window-menus.c: (get_static_bookmarks_file_path):
+	* src/nautilus-window.c: (nautilus_window_load_content_view_menu):
+	* tools/leak-checker/nautilus-leak-checker.c: (detect_reentry):
+	* tools/leak-checker/nautilus-leak-hash-table.c:
+	(nautilus_leak_hash_element_vector_add),
+	(nautilus_leak_hash_table_remove):
+
 2000-08-28  Robey Pointer  <robey@eazel.com>
 
 	components/services/install/nautilus-view/nautilus-service-install-

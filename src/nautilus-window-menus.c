@@ -759,8 +759,8 @@ get_static_bookmarks_file_path (void)
 	char *xml_file_path;
 	
 	/* For now at least, the static bookmarks file is kept in the standard shared data directory. */
-	/* FIXME: The service might want to overwrite this file. Can it do so in this
-	 * location?
+	/* FIXME bugzilla.eazel.com 1826: 
+	 * The service might want to overwrite this file. Can it do so in this location?
 	 */
 
 	xml_file_path = nautilus_make_path (NAUTILUS_DATADIR, STATIC_BOOKMARKS_FILE_NAME);

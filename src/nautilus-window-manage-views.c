@@ -124,8 +124,8 @@ void
 nautilus_window_report_load_underway (NautilusWindow *window,
                                       NautilusViewFrame *view)
 {
-        /* FIXME: OK to ignore progress from sidebar views? */
-        /* FIXME: Is progress from either old or new really equally interesting? */
+        /* FIXME bugzilla.eazel.com 2460: OK to ignore progress from sidebar views? */
+        /* FIXME bugzilla.eazel.com 2461: Is progress from either old or new really equally interesting? */
         if (view == window->new_content_view
             || view == window->content_view) {
                nautilus_window_set_state_info
@@ -148,8 +148,8 @@ void
 nautilus_window_report_load_complete (NautilusWindow *window,
                                       NautilusViewFrame *view)
 {
-        /* FIXME: OK to ignore progress from sidebar views? */
-        /* FIXME: Is progress from either old or new really equally interesting? */
+        /* FIXME bugzilla.eazel.com 2460: OK to ignore progress from sidebar views? */
+        /* FIXME bugzilla.eazel.com 2461: Is progress from either old or new really equally interesting? */
         if (view == window->new_content_view
             || view == window->content_view) {
                nautilus_window_set_state_info
@@ -163,8 +163,8 @@ void
 nautilus_window_report_load_failed (NautilusWindow *window,
                                     NautilusViewFrame *view)
 {
-        /* FIXME: OK to ignore progress from sidebar views? */
-        /* FIXME: Is progress from either old or new really equally interesting? */
+        /* FIXME bugzilla.eazel.com 2460: OK to ignore progress from sidebar views? */
+        /* FIXME bugzilla.eazel.com 2461: Is progress from either old or new really equally interesting? */
         if (view == window->new_content_view
             || view == window->content_view) {
                nautilus_window_set_state_info
@@ -514,7 +514,7 @@ nautilus_window_update_view (NautilusWindow *window,
                 nautilus_view_frame_load_location (view, new_location);
         }
         
-        /* FIXME: Is NULL a way to indicate no selection, or no change? */
+        /* FIXME bugzilla.eazel.com 2462: Is NULL a way to indicate no selection, or no change? */
         if (new_selection != NULL) {
         	nautilus_view_frame_selection_changed (view, new_selection);
         }
@@ -663,7 +663,7 @@ nautilus_window_load_sidebar_panel (NautilusWindow *window,
         }
         
         if (sidebar_panel != NULL) {
-                /* FIXME: Do we really want to ref even in the case
+                /* FIXME bugzilla.eazel.com 2463: Do we really want to ref even in the case
                  * where we just made the panel?
                  */
                 gtk_object_ref (GTK_OBJECT (sidebar_panel));
@@ -743,7 +743,8 @@ open_location (NautilusWindow *window,
                 g_assert (view_if_already_loading == NULL);
 
                 /* Determine if a window with this uri is already open.  If so, activate it */
-		/* FIXME: This may be the desired bahavior, but the prefs UI still says open
+		/* FIXME bugzilla.eazel.com 2464: 
+		 * This may be the desired bahavior, but the prefs UI still says open
 		 * new window.  How can we resolve this inconsistancy?
 		 */                 
 		for (element = nautilus_application_windows (); element != NULL; element = element->next) {
@@ -1092,7 +1093,7 @@ nautilus_window_update_state (gpointer data)
                                                              location, selection,
                                                              window->new_requesting_view, window->new_content_view);
                         } else {
-                                /* FIXME: Silent error here! */
+                                /* FIXME bugzilla.eazel.com 2457: Silent error here! */
                                 window->cv_progress_error = TRUE;
                         }
                         
@@ -1356,7 +1357,7 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
 
 	case NAUTILUS_NAVIGATION_RESULT_SERVICE_NOT_AVAILABLE:
 		if (nautilus_is_search_uri (requested_uri)) {
-			/* FIXME: Need to give the user some advice about what to do here. */
+			/* FIXME bugzilla.eazel.com 2458: Need to give the user some advice about what to do here. */
 			error_message = g_strdup_printf (_("Sorry, searching can't be used now. In the future this message will be more helpful."));
 			break;
 		} /* else fall through */
@@ -1376,7 +1377,7 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                 /* Destroy never-had-a-chance-to-be-seen window. This case
                  * happens when a new window cannot display its initial URI. 
                  */
-                /* FIXME: Is a destroy really sufficient here? Who does the unref? */
+                /* FIXME bugzilla.eazel.com 2459: Is a destroy really sufficient here? Who does the unref? */
                 gtk_object_destroy (GTK_OBJECT (window));
                 nautilus_error_dialog (error_message, NULL);
         } else {

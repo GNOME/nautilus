@@ -219,7 +219,8 @@ detect_reentry (void *parent_caller)
 		 * check to detect the recursion, 0x40 bytes should be a large enough distance
 		 * from the start of the malloc call to the point where the old malloc call is
 		 * being called.
-		 * FIXME: this the value 0x40 works well only with certain function sizes, optimization levels,
+		 * FIXME bugzilla.eazel.com 2467: 
+		 * The value 0x40 works well only with certain function sizes, optimization levels,
 		 * etc. need a more robust way of doing this. One way might be adding stuffing into the 
 		 * __libc_* calls that is never executed but makes the funcitons longer. We could
 		 * then up the value without the danger of hitting the next function

@@ -272,7 +272,7 @@ extern NautilusViewComponentType bonobo_control_component_type; /* ntl-view-bono
 static void
 nautilus_view_frame_handle_client_destroy (GtkWidget *widget, NautilusViewFrame *view)
 {
-	/* FIXME: Is a destroy really sufficient here? Who does the unref? */
+	/* FIXME bugzilla.eazel.com 2455: Is a destroy really sufficient here? Who does the unref? */
 	gtk_object_destroy (GTK_OBJECT (view));
 }
 
@@ -832,7 +832,9 @@ nautilus_view_frame_set_active_errors (NautilusViewFrame *view, gboolean enabled
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 	if (enabled) {
 		if (view->timer_id == 0) {
-			/* FIXME: Is a hard-coded 2-second timeout acceptable? */
+			/* FIXME bugzilla.eazel.com 2456: 
+			 * Is a hard-coded 2-second timeout acceptable? 
+			 */
 			view->timer_id = g_timeout_add (2000, check_object, view);
 		}
 	} else {

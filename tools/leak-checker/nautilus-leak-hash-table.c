@@ -125,7 +125,7 @@ nautilus_leak_hash_element_vector_add (NautilusHashEntryVector *vector)
 			g_warning ("leak checker out of memory");
 			abort();
 		}
-		/* FIXME: only clean the unused part */
+		/* FIXME bugzilla.eazel.com 2469: only clean the unused part */
 		memset (new_data, 0, new_size * sizeof(NautilusHashEntry));
 
 		/* copy all the existing items over*/
@@ -320,7 +320,8 @@ nautilus_leak_hash_table_remove (NautilusLeakHashTable *table, unsigned long key
 
 	element = nautilus_leak_hash_table_find (table, key);
 	if (element != NULL) {
-		/* FIXME: this could be faster if we just found the element
+		/* FIXME bugzilla.eazel.com 2470: 
+		 * this could be faster if we just found the element
 		 * here and deleted it.
 		 */
 		nautilus_leak_hash_table_remove_element (table, element);
