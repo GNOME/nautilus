@@ -1,3 +1,18 @@
+2003-03-04  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-container.c (nautilus_icon_container_accessible_get_type):
+	EEL_CANVAS, not GNOME_CANVAS.
+
+	* libnautilus-private/nautilus-icon-canvas-item.c (nautilus_icon_canvas_item_accessible_get_type):
+	Implements AtkText for icons presenting the text on both lines.
+	Implements atk_text_get_offset_at_point and atk_text_get_character_extents
+	so that screen readers can obtain the text.
+
+	* src/nautilus-zoom-control.c (nautilus_zoom_control_accessible_initialize):
+	Set the role for the zoom widget.
+	
+	All patches by padraig.obriain@sun.com
+
 2003-03-03  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-dnd.c (confirm_switch_to_manual_layout):

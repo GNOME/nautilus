@@ -6061,7 +6061,7 @@ nautilus_icon_container_accessible_get_type (void)
 
 		type = eel_accessibility_create_derived_type 
 			("NautilusIconContainerAccessible",
-			 GNOME_TYPE_CANVAS,
+			 EEL_TYPE_CANVAS,
 			 nautilus_icon_container_accessible_class_init);
 		
                 g_type_add_interface_static (type, ATK_TYPE_ACTION,

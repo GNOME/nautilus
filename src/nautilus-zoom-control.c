@@ -1091,12 +1091,21 @@ nautilus_zoom_control_accessible_get_description (AtkObject *accessible)
 }
 
 static void
+nautilus_zoom_control_accessible_initialize (AtkObject *accessible,
+                                             gpointer  data)
+{
+	ATK_OBJECT_CLASS (accessible_parent_class)->initialize (accessible, data);
+	atk_object_set_role (accessible, ATK_ROLE_DIAL);	
+}
+
+static void
 nautilus_zoom_control_accessible_class_init (AtkObjectClass *klass)
 {	
 	accessible_parent_class = g_type_class_peek_parent (klass);
 
 	klass->get_name = nautilus_zoom_control_accessible_get_name;
 	klass->get_description = nautilus_zoom_control_accessible_get_description;
+	klass->initialize = nautilus_zoom_control_accessible_initialize;
 }
 
 static GType
