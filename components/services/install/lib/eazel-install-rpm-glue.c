@@ -203,13 +203,13 @@ eazel_install_download_packages (EazelInstall *service,
 				 GList **failed_packages)
 {
 	GList *iterator;
-	gboolean result = FALSE;
+	gboolean result = TRUE;
 	GList *remove_list = NULL;
 
 	g_assert (packages);
 	g_assert (*packages);
 
-	for (iterator = *packages;iterator; iterator = g_list_next (iterator)) {
+	for (iterator = *packages; (iterator != NULL) && (result == TRUE); iterator = g_list_next (iterator)) {
 		PackageData* package = (PackageData*)iterator->data;
 		gboolean fetch_package;
 		
@@ -273,15 +273,14 @@ eazel_install_download_packages (EazelInstall *service,
 			if (result == FALSE) {
 				remove_list = g_list_prepend (remove_list, package);
 			} else {
-				result = TRUE;
 				package->toplevel = toplevel;
 				/* If downloaded package has soft_deps,
 				   fetch them by a recursive call */
 				if (package->soft_depends) {
-					eazel_install_download_packages (service,
-									 FALSE,
-									 &package->soft_depends,
-									 NULL);
+					result = eazel_install_download_packages (service,
+										  FALSE,
+										  &package->soft_depends,
+										  NULL);
 				}
 			}
 		}
@@ -420,7 +419,7 @@ eazel_install_do_install_packages (EazelInstall *service,
 				rv = TRUE;
 			}			
 			g_list_free (packages);
-		} 
+		}
 	}
 
 	return rv;

@@ -466,7 +466,7 @@ eazel_install_progress (EazelInstall *service,
 		gtk_label_set_text (package_label, tmp);
 		g_free (tmp);
 
-		gtk_progress_set_format_string (GTK_PROGRESS (progressbar), "%p%% (%v of %u kb)");
+		gtk_progress_set_format_string (GTK_PROGRESS (progressbar), "%p%% (%v of %u KB)");
 		gtk_progress_configure (GTK_PROGRESS (progressbar), 0, 0, (float)(total/1024));		
 
 		gtk_label_set_text (GTK_LABEL (summary), package->description);
@@ -492,6 +492,10 @@ eazel_install_progress (EazelInstall *service,
 	if (amount == total && installer_output) {
 		fprintf (stdout, "\n");
 	}
+
+	while (gtk_events_pending ()) {
+		gtk_main_iteration ();
+	}
 }
 
 
@@ -514,8 +518,8 @@ eazel_download_progress (EazelInstall *service,
 		gtk_label_set_text (package_label, tmp);
 		g_free (tmp);
 
-		gtk_progress_set_format_string (GTK_PROGRESS (progressbar), "%p%% (%v of %u kb)");
-		gtk_progress_configure (GTK_PROGRESS (progressbar), 0, 0, (float)(total/1024));
+		gtk_progress_set_format_string (GTK_PROGRESS (progressbar), "%p%% (%v of %u KB)");
+		gtk_progress_configure (GTK_PROGRESS (progressbar), 0, 0, ((float)total)/1024);
 	}
 
 	if (installer_output) {
@@ -526,80 +530,64 @@ eazel_download_progress (EazelInstall *service,
 		fflush (stdout);
 	}
 	
-	gtk_progress_set_value (GTK_PROGRESS (progressbar), amount/1024);
+	gtk_progress_set_value (GTK_PROGRESS (progressbar), ((float)amount)/1024);
 
-	if (amount != total) {		
-		/* g_main_iteration (FALSE); */
-		/* gtk_main_iteration (); */
-	} else if (amount == total) {		
-		/*
-		gtk_progress_set_format_string (GTK_OBJECT (progressbar), "done..."); 
-		g_main_iteration (FALSE);
-		*/
+	/* for some reason, we have to prod GTK while downloading... */
+	while (gtk_events_pending ()) {
+		gtk_main_iteration ();
 	}
 }
 
 static void
-get_detailed_errors_foreach (const PackageData *pack, char **result)
+get_detailed_errors_foreach (const PackageData *pack, GString *message)
 {
-	char *tmp = *result;;
 	switch (pack->status) {
 	case PACKAGE_UNKNOWN_STATUS:
 		break;
 	case PACKAGE_SOURCE_NOT_SUPPORTED:
 		break;
 	case PACKAGE_FILE_CONFLICT:
-		tmp = g_strdup_printf ("%s\n%s %s",
-				       *result, 
-				       pack->name, 
-				       _("which had file conflict"));
-		g_free (*result);
+		g_string_sprintfa (message, _("%s which had a file conflict\n"), pack->name);
 		break;
 	case PACKAGE_DEPENDENCY_FAIL:
-		tmp = g_strdup_printf ("%s\n%s %s",
-				       *result, 
-				       pack->name, 
-				       _("would not work anymore"));
-		g_free (*result);
+		g_string_sprintfa (message, _("%s would not work anymore\n"), pack->name);
 		break;
 	case PACKAGE_BREAKS_DEPENDENCY:
+		g_string_sprintfa (message, _("%s would break other installed packages\n"), pack->name);
 		break;
 	case PACKAGE_INVALID:
 		break;
 	case PACKAGE_CANNOT_OPEN:
-		tmp = g_strdup_printf ("%s\n%s %s",
-				       *result, 
-				       pack->name, 
-				       _("is needed, but could not be found"));
-		g_free (*result);
+		g_string_sprintfa (message, _("%s is needed, but could not be found\n"), pack->name);
 		break;
 	case PACKAGE_PARTLY_RESOLVED:
 		break;
 	case PACKAGE_ALREADY_INSTALLED:
-		 tmp = g_strdup_printf ("%s\n%s %s",
-					*result, 
-					pack->name, 
-					_("was already installed"));
-		g_free (*result);
+		g_string_sprintfa (message, _("%s was already installed\n"), pack->name);
 		break;
 	case PACKAGE_RESOLVED:
 		break;
 	}
-	(*result) = tmp;
+	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_errors_foreach, message);
+	g_list_foreach (pack->hard_depends, (GFunc)get_detailed_errors_foreach, message);
+	g_list_foreach (pack->modifies, (GFunc)get_detailed_errors_foreach, message);
+	g_list_foreach (pack->breaks, (GFunc)get_detailed_errors_foreach, message);
 }
 
-static char*
-get_detailed_errors (const PackageData *pack)
+static GString *
+get_detailed_errors (const PackageData *pack, GString *message)
 {
-	char *result;
+	if (message == NULL) {
+		message = g_string_new ("");
+	}
 
-	result = g_strdup_printf (_("%s failed because of the following issue(s):"), pack->name);
-	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_errors_foreach, &result);
-	g_list_foreach (pack->hard_depends, (GFunc)get_detailed_errors_foreach, &result);
-	g_list_foreach (pack->modifies, (GFunc)get_detailed_errors_foreach, &result);
-	g_list_foreach (pack->breaks, (GFunc)get_detailed_errors_foreach, &result);
+	g_string_sprintfa (message, _("%s failed because of the following issue(s):\n"), pack->name);
+	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_errors_foreach, message);
+	g_list_foreach (pack->hard_depends, (GFunc)get_detailed_errors_foreach, message);
+	g_list_foreach (pack->modifies, (GFunc)get_detailed_errors_foreach, message);
+	g_list_foreach (pack->breaks, (GFunc)get_detailed_errors_foreach, message);
 
-	return result;
+	return message;
 }
 
 static void
@@ -607,9 +595,7 @@ install_failed (EazelInstall *service,
 		const PackageData *pd,
 		EazelInstaller *installer)
 {
-	/* FIXME:
-	   This is bad, we lose the previous one */
-	installer->failure_info = get_detailed_errors (pd);		
+	installer->failure_info = get_detailed_errors (pd, installer->failure_info);		
 }
 
 static void
@@ -619,13 +605,12 @@ download_failed (EazelInstall *service,
 {
 	char *output;
 
-	if (output) {		
-		output = g_strdup_printf ("%s\nDownload of %s failed", installer->failure_info, name);
-	} else {
-		output = g_strdup_printf ("Download of %s failed", name);
+	if (installer->failure_info == NULL) {
+		installer->failure_info = g_string_new ("");
 	}
-	g_free (installer->failure_info);
-	installer->failure_info = output;
+
+	g_string_sprintfa (installer->failure_info, "Download of %s failed\n", name);
+	g_message ("Download FAILED for %s", name);
 }
 
 static gboolean
@@ -651,9 +636,9 @@ eazel_install_preflight (EazelInstall *service,
 
 	summary_string = g_strdup_printf (_("Now starting the install process.\n"
 					    "Starting the process takes some time, please be patient.\n"
-					    "In total, %d mb of software will be installed"), 
-					  total_size/(1024*1024));
-	tmp = g_strdup_printf ("Preparing RPM, %d packages (%d mb)", num_packages, total_size/(1024*1024));
+					    "In total, %d MB of software will be installed"), 
+					  (total_size+(512*1024))/(1024*1024));
+	tmp = g_strdup_printf ("Preparing RPM, %d packages (%d MB)", num_packages, (total_size+(512*1024))/(1024*1024));
 
 	if (installer_output) {
 		fprintf (stdout, "PREFLIGHT: %s\n", tmp);
@@ -661,7 +646,10 @@ eazel_install_preflight (EazelInstall *service,
 
 	gtk_label_set_text (package_label, tmp);
 	gtk_label_set_text (GTK_LABEL (summary), summary_string);
-	g_main_iteration (FALSE);
+
+	while (gtk_events_pending ()) {
+		gtk_main_iteration ();
+	}
 	return TRUE;
 }
 
@@ -691,7 +679,9 @@ eazel_install_dep_check (EazelInstall *service,
 	gtk_label_set_text (GTK_LABEL (summary), tmp);
 	g_free (tmp);
 
-	g_main_iteration (FALSE);
+	while (gtk_events_pending ()) {
+		gtk_main_iteration ();
+	}
 }
 
 static gboolean
@@ -918,6 +908,15 @@ check_system (EazelInstaller *installer)
 		installer->test = 1;
 		gnome_dialog_run_and_close (d);
 	}
+	if (!installer_test && g_strncasecmp (ub.nodename, "tortoise", 8) == 0) {
+		GnomeDialog *d;
+
+		d = GNOME_DIALOG (gnome_warning_dialog_parented ("Robey, vi'as kaco!  Tajpu --test dum iniciati\n"
+								 "en via propra komputero!  Au khaosoj!",
+								 GTK_WINDOW (installer->window)));
+		installer->test = 1;
+		gnome_dialog_run_and_close (d);
+	}
 
 	if (!installer->test) {
 		GnomeDialog *d;
@@ -984,11 +983,11 @@ eazel_installer_do_install (EazelInstaller *installer,
 	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
 	g_list_free (categories);
 */
-	if (installer->failure_info && strlen (installer->failure_info)>1) {
+	if (installer->failure_info != NULL) {
 		if (installer->debug) {
-			fprintf (stdout, "ERROR :\n%s", installer->failure_info);
+			fprintf (stdout, "ERROR :\n%s", installer->failure_info->str);
 		}
-		gnome_error_dialog_parented (installer->failure_info, GTK_WINDOW (installer->window));
+		gnome_error_dialog_parented (installer->failure_info->str, GTK_WINDOW (installer->window));
 	} else {
 	}
 }
@@ -1131,6 +1130,9 @@ eazel_installer_finalize (GtkObject *object)
 	installer = EAZEL_INSTALLER (object);
 
 	/* Free the objects own crap */
+	if (installer->failure_info) {
+		g_string_free (installer->failure_info, TRUE);
+	}
 	g_list_foreach (installer->categories, (GFunc)categorydata_destroy_foreach, NULL);
 	g_list_free (installer->categories);
 	eazel_install_unref (GTK_OBJECT (installer->service));
@@ -1141,7 +1143,7 @@ eazel_installer_finalize (GtkObject *object)
 	}
 }
 
- void
+void
 eazel_installer_unref (GtkObject *object)
 {
 	gtk_object_unref (object);

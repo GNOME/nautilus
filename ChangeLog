@@ -1,3 +1,26 @@
+2000-09-15  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_download_packages),
+	(eazel_install_do_install_packages):
+
+	Fix bug in RPM glue that would case a failed download to get
+	glossed over instead of aborting right then.  (Very annoying to
+	download 500M of stuff and then find out that one of the first
+	downloads silently failed.)
+	
+	* nautilus-installer/src/installer.c: (eazel_install_progress),
+	(eazel_download_progress), (get_detailed_errors_foreach),
+	(get_detailed_errors), (install_failed), (download_failed),
+	(eazel_install_preflight), (eazel_install_dep_check),
+	(check_system), (eazel_installer_do_install),
+	(eazel_installer_finalize):
+	* nautilus-installer/src/installer.h:
+
+	Clean up installer: Fix a few crashes and make error-reporting
+	more robust.  Add annoying calls to gtk_main_iteration() to make
+	it update the screen.
+
 2000-09-15  Arlo Rose  <arlo@eazel.com>
 
 	* icons/eazel/Up.png:

@@ -64,7 +64,7 @@ struct _EazelInstaller
 	GList *implicit_must_have;
 	GList *dont_show;
 
-	char *failure_info;
+	GString *failure_info;
 
 	gboolean debug, output;
 	gboolean test;
