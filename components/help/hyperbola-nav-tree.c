@@ -304,10 +304,14 @@ hyperbola_navigation_tree_new (void)
 #endif
 
 #ifdef ENABLE_SCROLLKEEPER_SUPPORT
-	gtk_clist_columns_autosize (GTK_CLIST (view->top_ctree));
+	gtk_clist_set_column_auto_resize (GTK_CLIST (view->top_ctree),
+					  0 /* column */,
+					  TRUE /* auto_resize */);
 	gtk_clist_thaw (GTK_CLIST (view->top_ctree));
 #endif
-	gtk_clist_columns_autosize (GTK_CLIST (view->ctree));
+	gtk_clist_set_column_auto_resize (GTK_CLIST (view->ctree),
+					  0 /* column */,
+					  TRUE /* auto_resize */);
 	gtk_clist_thaw (GTK_CLIST (view->ctree));
 		
 	view->view_frame = nautilus_view_new (wtmp);
