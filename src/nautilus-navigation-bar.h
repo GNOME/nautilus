@@ -29,7 +29,7 @@
 #ifndef NAUTILUS_NAVIGATION_BAR_H
 #define NAUTILUS_NAVIGATION_BAR_H
 
-#include <eel/eel-generous-bin.h>
+#include <gtk/gtkhbox.h>
 
 #define NAUTILUS_TYPE_NAVIGATION_BAR (nautilus_navigation_bar_get_type ())
 #define NAUTILUS_NAVIGATION_BAR(obj) \
@@ -40,11 +40,11 @@
 	GTK_CHECK_TYPE (obj, NAUTILUS_TYPE_NAVIGATION_BAR)
 
 typedef struct {
-	EelGenerousBin parent;
+	GtkHBox parent;
 } NautilusNavigationBar;
 
 typedef struct {
-	EelGenerousBinClass parent_class;
+	GtkHBoxClass parent_class;
 
 	/* signals */
 	void         (* location_changed) (NautilusNavigationBar *bar,

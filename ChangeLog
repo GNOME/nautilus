@@ -1,3 +1,20 @@
+2004-01-03  Anders Carlsson  <andersca@gnome.org>
+
+	* components/adapter/nautilus-adapter.c: (nautilus_adapter_new):
+	* src/nautilus-navigation-bar.c:
+	* src/nautilus-navigation-bar.h:
+	* src/nautilus-navigation-window.c:
+	* src/nautilus-spatial-window.c:
+	(nautilus_spatial_window_instance_init):
+	* src/nautilus-view-frame.c:
+	* src/nautilus-view-frame.h:
+	* src/nautilus-window.c:
+	Remove use of EelGenerousBin, we can use a GtkBox with only one
+	child for that instead.
+	
+	* test/Makefile.am:
+	Don't use Eel stuff that no-one else uses.
+	
 2004-01-02  Dennis Cranston <dennis_cranston at yahoo com>
  
  	* src/nautilus-connect-server-dialog.c:

@@ -46,7 +46,6 @@
 #include <eel/eel-debug.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
-#include <eel/eel-generous-bin.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
@@ -339,7 +338,7 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 	window->affect_spatial_window_on_next_location_change = TRUE;
 
 	window->details->content_box = 
-		gtk_widget_new (EEL_TYPE_GENEROUS_BIN, NULL);
+		gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (window->details->content_box);
 	bonobo_window_set_contents (BONOBO_WINDOW (window), 
 				    window->details->content_box);
