@@ -167,7 +167,7 @@ trilobite_get_distribution ()
 		determine_mandrake_version (&distinfo);
 	} 
 	/* Check for SuSE */
-	if (g_file_exists ("/etc/SuSE-release")) {
+	else if (g_file_exists ("/etc/SuSE-release")) {
 		distinfo.name = DISTRO_SUSE;
 		determine_suse_version (&distinfo);
 	} 

@@ -1,3 +1,21 @@
+2000-10-26  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_prepare_rpm_system):
+	Moved the addition of the opened db into the if clause.
+	
+	* components/services/time/command-line/Makefile.am:
+	Added GNOMELOCALEDIR
+	
+	* components/services/trilobite/helper/Makefile.am:
+	Trickery to make the eazel-helper.security file be build during
+	make and not make install, as the latter is Real Bad<tm> as the
+	rpm version will point to a nonexisting binary.
+	
+	* components/services/trilobite/libtrilobite/trilobite-core-distrib
+	ution.c: (trilobite_get_distribution):
+	Inserted a else to fix the mandrake/redhat issue.
+	
 2000-10-26  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 4064 (Can't get a right-click menu in vault)

@@ -3,6 +3,7 @@ NULL =
 INCLUDES =					\
 	-DPREFIX=\"$(prefix)\"			\
 	-DG_LOG_DOMAIN=\"trilobite-eazel-time-service-cli\" \
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
 	-I$(top_srcdir)/components/services/trilobite/libtrilobite \

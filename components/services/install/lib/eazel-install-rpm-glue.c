@@ -312,12 +312,12 @@ eazel_install_prepare_rpm_system(EazelInstall *service)
 		} else {			
 			if (db) {
 				trilobite_debug (_("Opened packages database in %s"), root_dir);
+				g_hash_table_insert (service->private->packsys.rpm.dbs,
+						     g_strdup (root_dir),
+						     db);
 			} else {
 				trilobite_debug (_("Opening packages database in %s failed"), root_dir);
 			}
-			g_hash_table_insert (service->private->packsys.rpm.dbs,
-					     g_strdup (root_dir),
-					     db);
 		}
 	}
 
