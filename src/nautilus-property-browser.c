@@ -65,11 +65,16 @@ struct NautilusPropertyBrowserDetails {
 	
 	GtkWidget *dialog;
 	
+	GtkWidget *keyword;
+	GtkWidget *emblem_image;
+	GtkWidget *file_entry;
+	
 	char *path;
 	char *category;
 	char *dragged_file;
 	char *drag_type;
-
+	char *image_path;
+	
 	int  remove_mode;
 	int  keep_around;
 	int  has_local;
@@ -374,6 +379,23 @@ nautilus_property_browser_drag_end(GtkWidget *widget, GdkDragContext *context)
 		gtk_object_destroy(GTK_OBJECT(widget));
 }
 
+/* utility routine to check if the passed-in uri is an image file */
+static gboolean
+ensure_uri_is_image(const char* uri)
+{	
+	gboolean is_image;
+	GnomeVFSResult result;
+	GnomeVFSFileInfo *file_info;
+
+	file_info = gnome_vfs_file_info_new ();
+	result = gnome_vfs_get_file_info (uri, file_info,
+					  GNOME_VFS_FILE_INFO_GETMIMETYPE
+					  | GNOME_VFS_FILE_INFO_FASTMIMETYPE
+		  			  | GNOME_VFS_FILE_INFO_FOLLOWLINKS, NULL);
+        is_image = nautilus_str_has_prefix(file_info->mime_type, "image/");
+	gnome_vfs_file_info_unref(file_info);
+	return is_image;
+}
 /* utility routine to scale the passed-in pixbuf to be smaller than the maximum allowed size, if necessary */
 
 static GdkPixbuf*
@@ -550,8 +572,14 @@ static void
 remove_emblem(NautilusPropertyBrowser *property_browser, const char* emblem_name)
 {
 	/* build the pathname of the emblem */
-	
+	char *emblem_uri = g_strdup_printf("file://%s/emblems/%s",nautilus_user_directory(), emblem_name);
+		
 	/* delete the emblem from the emblem directory */
+	if (gnome_vfs_unlink(emblem_uri) != GNOME_VFS_OK) {
+		g_warning("couldnt delete emblem %s", emblem_uri);
+	}
+	
+	g_free(emblem_uri);
 }
 
 
@@ -604,6 +632,104 @@ get_xml_path(NautilusPropertyBrowser *property_browser)
 	return xml_path;
 }
 
+/* utility to set up the emblem image from the passed-in file */
+
+static void
+set_emblem_image_from_file(NautilusPropertyBrowser *property_browser)
+{
+	GdkPixbuf *pixbuf;
+	GdkPixmap *pixmap;
+	GdkBitmap *mask;
+
+	pixbuf = gdk_pixbuf_new_from_file(property_browser->details->image_path);			
+	pixbuf = scale_pixbuf_to_fit(pixbuf);			
+    	gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
+	gdk_pixbuf_unref (pixbuf);
+	
+	if (property_browser->details->emblem_image == NULL) {
+		property_browser->details->emblem_image = gtk_pixmap_new(pixmap, mask);
+		gtk_widget_show(property_browser->details->emblem_image);
+	}
+	else
+		gtk_pixmap_set(GTK_PIXMAP(property_browser->details->emblem_image), pixmap, mask);
+}
+
+/* this callback is invoked when a file is selected by the file selection */
+static void
+emblem_image_file_changed(GtkWidget *entry, NautilusPropertyBrowser *property_browser)
+{
+
+	char *new_uri = g_strdup_printf("file://%s", gtk_entry_get_text(GTK_ENTRY(entry)));
+	
+	if (!ensure_uri_is_image(new_uri)) {
+		/* FIXME: probably should put up a message here */
+		gtk_entry_set_text(GTK_ENTRY(entry), property_browser->details->image_path);
+		g_free(new_uri);
+		return;
+	}
+	
+	g_free(new_uri);
+	if (property_browser->details->image_path != NULL)
+		g_free(property_browser->details->image_path);
+	property_browser->details->image_path = gtk_entry_get_text(GTK_ENTRY(entry));
+	if (property_browser->details->image_path)
+		property_browser->details->image_path = g_strdup(property_browser->details->image_path);
+	
+	/* set up the pixmap in the dialog */
+	
+	set_emblem_image_from_file(property_browser);
+}
+
+/* here's where we create the emblem dialog */
+
+static GtkWidget*
+nautilus_emblem_dialog_new(NautilusPropertyBrowser *property_browser)
+{
+	GtkWidget *widget, *entry;
+	GtkWidget *dialog = gnome_dialog_new(_("Create a New Emblem:"), GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, NULL);
+	GtkWidget *table = gtk_table_new(2, 2, FALSE);
+
+	/* make the keyword label and field */	
+	
+	widget = gtk_label_new(_("Keyword:"));
+	gtk_widget_show(widget);
+	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 4, 4);
+	
+  	property_browser->details->keyword = gtk_entry_new_with_max_length (24);
+	gtk_widget_show(property_browser->details->keyword);
+	gtk_table_attach(GTK_TABLE(table), property_browser->details->keyword, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 4, 4);
+
+	/* default image is the generic emblem */
+	if (property_browser->details->image_path)
+		g_free(property_browser->details->image_path);
+		
+	property_browser->details->image_path = gnome_pixmap_file ("nautilus/emblem-generic.png"); 
+	property_browser->details->emblem_image = NULL; /* created lazily by set_emblem_image */
+	set_emblem_image_from_file(property_browser);
+	gtk_table_attach(GTK_TABLE(table), property_browser->details->emblem_image, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 4, 4);
+ 
+	/* set up a gnome file entry to pick the image file */
+	property_browser->details->file_entry = gnome_file_entry_new ("nautilus", _("Select an image file for the new emblem:"));
+	gnome_file_entry_set_default_path(GNOME_FILE_ENTRY(property_browser->details->file_entry), property_browser->details->image_path);
+	
+	gtk_widget_show(property_browser->details->file_entry);
+	gtk_table_attach(GTK_TABLE(table), property_browser->details->file_entry, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 4, 4);
+	
+	/* connect to the activate signal of the entry to change images */
+	entry = gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY(property_browser->details->file_entry));
+	gtk_entry_set_text(GTK_ENTRY(entry), property_browser->details->image_path);
+	
+	gtk_signal_connect (GTK_OBJECT (entry), "activate", (GtkSignalFunc) emblem_image_file_changed, property_browser);
+		
+	/* install the table in the dialog */
+	
+	gtk_widget_show(table);	
+	gtk_box_pack_start(GTK_BOX(GNOME_DIALOG(dialog)->vbox), table, TRUE, TRUE, GNOME_PAD);
+	gnome_dialog_set_default(GNOME_DIALOG(dialog), GNOME_OK);
+	
+	return dialog;
+}
+
 /* add the newly selected file to the browser images */
 
 static void
@@ -612,8 +738,6 @@ add_background_to_browser (GtkWidget *widget, gpointer *data)
 	gboolean is_image;
 	char *directory_path, *source_file_name, *destination_name;
 	char *command_str, *path_uri;
-	GnomeVFSResult result;
-	GnomeVFSFileInfo *file_info;
 	
 	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER(data);
 
@@ -625,14 +749,8 @@ add_background_to_browser (GtkWidget *widget, gpointer *data)
 
 	/* fetch the mime type and make sure that the file is an image */
 	path_uri = g_strdup_printf("file://%s", path_name);
-	file_info = gnome_vfs_file_info_new ();
-	result = gnome_vfs_get_file_info (path_uri, file_info,
-					  GNOME_VFS_FILE_INFO_GETMIMETYPE
-					  | GNOME_VFS_FILE_INFO_FASTMIMETYPE
-		  			  | GNOME_VFS_FILE_INFO_FOLLOWLINKS, NULL);
-        is_image = nautilus_str_has_prefix(file_info->mime_type, "image/");
+	is_image = ensure_uri_is_image(path_uri);
 	g_free(path_uri);
-	gnome_vfs_file_info_unref(file_info);
 	
 	if (!is_image) {
 		/* FIXME: we should put up an error dialog here - only accept images */
@@ -682,7 +800,7 @@ add_new_background(NautilusPropertyBrowser *property_browser)
 	} else {
 		GtkFileSelection *file_dialog;
 
-		property_browser->details->dialog = gtk_file_selection_new ("Select an image file to add as a background:");
+		property_browser->details->dialog = gtk_file_selection_new (_("Select an image file to add as a background:"));
 		file_dialog = GTK_FILE_SELECTION (property_browser->details->dialog);
 		
 		gtk_signal_connect (GTK_OBJECT (property_browser->details->dialog), "destroy", (GtkSignalFunc) dialog_destroy, property_browser);
@@ -762,7 +880,7 @@ add_new_color(NautilusPropertyBrowser *property_browser)
 	} else {
 		GtkColorSelectionDialog *color_dialog;
 
-		property_browser->details->dialog = gtk_color_selection_dialog_new ("Select a color to add:");
+		property_browser->details->dialog = gtk_color_selection_dialog_new (_("Select a color to add:"));
 		color_dialog = GTK_COLOR_SELECTION_DIALOG (property_browser->details->dialog);
 		
 		gtk_signal_connect (GTK_OBJECT (property_browser->details->dialog), "destroy", (GtkSignalFunc)  dialog_destroy, property_browser);
@@ -776,12 +894,77 @@ add_new_color(NautilusPropertyBrowser *property_browser)
 }
 
 
+/* here's where we handle clicks in the emblem dialog buttons */
+
+/* Callback used when the color selection dialog is destroyed */
+static void
+emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrowser *property_browser)
+{
+	if (which_button == GNOME_OK) {
+		char *command_str, *destination_name, *extension;
+		char* new_keyword = gtk_entry_get_text(GTK_ENTRY(property_browser->details->keyword));
+
+		/* get the path for emblems in the user's home directory */
+		char *directory_path = nautilus_make_path(nautilus_user_directory(), property_browser->details->category);
+	
+		/* make the directory if it doesn't exist */
+		if (!g_file_exists(directory_path)) {
+			char *directory_uri = g_strdup_printf("file://%s", directory_path);
+			gnome_vfs_make_directory(directory_uri, GNOME_VFS_PERM_USER_ALL | GNOME_VFS_PERM_GROUP_ALL | GNOME_VFS_PERM_OTHER_READ);
+			g_free(directory_uri);
+		}
+
+		/* formulate the destination file name */
+		extension = strrchr(property_browser->details->image_path, '.');
+		destination_name = g_strdup_printf("%s/%s.%s", directory_path, new_keyword, extension + 1);
+		
+		g_free(directory_path);
+				
+		/* perform the actual copy */
+		command_str = g_strdup_printf("cp '%s' '%s'", property_browser->details->image_path, destination_name);
+	
+		if (system(command_str) != 0) {
+			g_warning("couldnt copy emblem %s", property_browser->details->image_path);
+		}
+			
+		g_free(command_str);
+		g_free(destination_name);
+				
+		nautilus_property_browser_update_contents(property_browser);
+	}
+	
+	gtk_widget_destroy(dialog);
+	
+	property_browser->details->keyword = NULL;
+	property_browser->details->emblem_image = NULL;
+	property_browser->details->file_entry = NULL;
+}
+
+/* here's the routine to add a new emblem, by putting up an emblem dialog */
+
+static void
+add_new_emblem(NautilusPropertyBrowser *property_browser)
+{
+	if (property_browser->details->dialog) {
+		gtk_widget_show(property_browser->details->dialog);
+		if (property_browser->details->dialog->window)
+			gdk_window_raise(property_browser->details->dialog->window);
+
+	} else {
+		property_browser->details->dialog = nautilus_emblem_dialog_new (property_browser);		
+		gtk_signal_connect (GTK_OBJECT (property_browser->details->dialog), "destroy", (GtkSignalFunc)  dialog_destroy, property_browser);
+		gtk_signal_connect (GTK_OBJECT (property_browser->details->dialog), "clicked", (GtkSignalFunc)  emblem_dialog_clicked, property_browser);
+		gtk_window_set_position (GTK_WINDOW (property_browser->details->dialog), GTK_WIN_POS_MOUSE);
+		gtk_widget_show (GTK_WIDGET(property_browser->details->dialog));
+	}
+}
+
 /* handle the add_new button */
 
 static void
 add_new_button_cb(GtkWidget *widget, NautilusPropertyBrowser *property_browser)
 {
-	/* handle remove mode, where we act as a cance button */
+	/* handle remove mode, where we act as a cancel button */
 	if (property_browser->details->remove_mode) {
 		property_browser->details->remove_mode = 0;
 		nautilus_property_browser_update_contents(property_browser);
@@ -796,7 +979,7 @@ add_new_button_cb(GtkWidget *widget, NautilusPropertyBrowser *property_browser)
 		add_new_color(property_browser);
 	}
 	else if (!strcmp(property_browser->details->category, "emblems")) {
-		g_message("create new emblem");
+		add_new_emblem(property_browser);
 	}
 }
 
@@ -1194,7 +1377,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 	/* update the title and button */
 
 	if (property_browser->details->category == NULL) {
-		gtk_label_set_text(GTK_LABEL(property_browser->details->title_label), "Select A Category:");
+		gtk_label_set_text(GTK_LABEL(property_browser->details->title_label), _("Select A Category:"));
 		gtk_widget_hide(property_browser->details->up_arrow);		
 		gtk_widget_hide(property_browser->details->add_button);
 		gtk_widget_hide(property_browser->details->remove_button);
@@ -1203,9 +1386,9 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		char *label_text, *temp_str;
 				
 		if (property_browser->details->remove_mode) {
-			temp_str = g_strdup("Cancel Remove");		
+			temp_str = g_strdup(_("Cancel Remove"));		
 		} else {
-			temp_str = g_strdup_printf("Add a new %s", property_browser->details->category);	
+			temp_str = g_strdup_printf(_("Add a new %s"), property_browser->details->category);	
 			temp_str[strlen(temp_str) - 1] = '\0'; /* trim trailing s */
 		}
 		
@@ -1219,11 +1402,11 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		if (property_browser->details->remove_mode) {
 			char *temp_category = g_strdup(property_browser->details->category);
 			temp_category[strlen(temp_category) - 1] = '\0'; /* strip trailing s */
-			label_text = g_strdup_printf("Click on a %s to remove it", temp_category);		
+			label_text = g_strdup_printf(_("Click on a %s to remove it"), temp_category);		
 			g_free(temp_category);
 		} else {
 		
-			label_text = g_strdup_printf("Categories: %s", property_browser->details->category);		
+			label_text = g_strdup_printf(_("Categories: %s"), property_browser->details->category);		
 		}
 		
 		gtk_label_set_text(GTK_LABEL(property_browser->details->title_label), label_text);
@@ -1231,7 +1414,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		/* enable the remove button (if necessary) and update its name */
 		
 		g_free(temp_str);
-		temp_str = g_strdup_printf("Remove a %s", property_browser->details->category);		
+		temp_str = g_strdup_printf(_("Remove a %s"), property_browser->details->category);		
 				
 		if (property_browser->details->remove_mode || !property_browser->details->has_local)
 			gtk_widget_hide(property_browser->details->remove_button);

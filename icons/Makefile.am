@@ -11,6 +11,7 @@ icon_DATA =					\
 	emblem-changed.gif			\
 	emblem-confidential.gif			\
 	emblem-encrypted.gif			\
+	emblem-generic.png			\
 	emblem-important.gif			\
 	emblem-new.gif				\
 	emblem-personal.gif			\
