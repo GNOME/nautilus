@@ -1,3 +1,11 @@
+2000-11-21  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/music/nautilus-music-view.c: (fetch_song_info):
+	fixed bug 4815, bitrate and time not displayed for certain mp3s. It turns
+	out that some encoders reserve a lot of space for id3v2 tags at the
+	beginning of the file, so we weren't looking deep enough into the file.
+	Fixed by changing the size of the header buffer from 1K to 8K.
+	
 2000-11-21  Pavel Cisler  <pavel@eazel.com>
 
 	reviewed by: Maciej Stachowiak <mjs@eazel.com>

@@ -707,7 +707,7 @@ fetch_song_info (const char *song_uri, GnomeVFSFileInfo *file_info, int file_ord
 {
 	gboolean has_info = FALSE;
 	SongInfo *info; 
-	guchar buffer[1024];
+	guchar buffer[8192];
 	GnomeVFSHandle *mp3_file;
 	GnomeVFSResult result;
 	GnomeVFSFileSize length_read;
