@@ -1,3 +1,22 @@
+2000-08-22  Eskil Heyn Olsen  <eskil@eazel.com>
+	 
+	* components/services/install/command-line/eazel-alt-install-corba.c:
+	* components/services/install/lib/eazel-install-metadata.c:
+	(create_default_metadata), (get_boolean_value_from_string):
+	About to make create_default_metadata switch to ~/ instead of /var.
+	
+	* components/services/install/lib/eazel-install-protocols.c:
+	(get_url_for_package)
+	Robey committed a fix for the multiple url stuff.
+	
+	(gnome_vfs_fetch_remote_file):
+	english output instead of binary.
+	
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_osd_xml_from_memory):
+	Insert null at the end for the </packages> tag. Needed to lose the
+	weird </xmp> tags.
+
 2000-08-22  John Sullivan  <sullivan@eazel.com>
 
 	More work on bug 1653 (new menu layout)

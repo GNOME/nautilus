@@ -323,7 +323,7 @@ gnome_vfs_fetch_remote_file (EazelInstall *service,
 				     (GnomeVFSXferProgressCallback)gnome_vfs_xfer_callback,
 				     (gpointer)service);
 
-	g_message ("Roev, result = %d", result==GNOME_VFS_OK);
+	g_message ("Roev, result = %s", result==GNOME_VFS_OK?"OK":"fucked");
  
 	gnome_vfs_uri_unref (src_uri);
 	gnome_vfs_uri_unref (src_dir_uri);

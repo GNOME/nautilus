@@ -577,12 +577,13 @@ parse_osd_xml_from_memory (const char *mem,
 {
 	xmlDocPtr doc;
 	GList *result;
-	char *ptr, *docptr;
+	char *ptr, *docptr, *end;
 
 	result = NULL;
 	if (mem==NULL) {
 		return result;
 	}
+
 	docptr = g_strndup (mem, size);
 	docptr [size] = 0;
 
@@ -593,7 +594,17 @@ parse_osd_xml_from_memory (const char *mem,
 		g_free (docptr);
 		return result;
 	}
-	doc = xmlParseMemory ((char*)ptr, size);
+	end = strstr (ptr, "</PACKAGES");
+	if (end) {
+		end = strchr (end, '\n');
+		if (end) {
+			g_message ("Cutting at \"%s\"", end);
+			*end = 0;
+			size = strlen (ptr);
+		}
+	}
+
+	doc = xmlParseMemory (ptr, size);
 
 	if (doc == NULL) {
 		g_warning ("XML =\"%s\"", ptr);

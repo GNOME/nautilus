@@ -37,7 +37,6 @@
 #include <unistd.h>
 
 #define PACKAGE_FILE_NAME "package-list.xml"
-#define DEFAULT_CONFIG_FILE "/var/eazel/services/eazel-services-config.xml"
 
 #define DEFAULT_HOSTNAME "ham.eazel.com"
 #define DEFAULT_PORT_NUMBER 8888
@@ -78,7 +77,6 @@ CORBA_ORB orb;
 CORBA_Environment ev;
 
 static const struct poptOption options[] = {
-	{"config", '\0', POPT_ARG_STRING, &arg_config_file, 0, N_("Specify config file (/var/eazel/services/eazel-services-config.xml)"), NULL},	
 	{"debug", '0', POPT_ARG_NONE, &arg_debug, 0 , N_("Show debug output"), NULL},
 	{"delay", '\0', POPT_ARG_NONE, &arg_delay, 0 , N_("10 sec delay after starting service"), NULL},
 	{"downgrade", 'd', POPT_ARG_NONE, &arg_downgrade, 0, N_("Allow downgrades"), NULL},

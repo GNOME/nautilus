@@ -31,13 +31,13 @@
 #define EAZEL_SERVICES_DIR_HOME "/var/eazel"
 #define EAZEL_SERVICES_DIR EAZEL_SERVICES_DIR_HOME "/services"
 
-static void create_default_metadata (const char* config_file);
+static gboolean create_default_metadata (const char* config_file);
 static gboolean create_default_configuration_metafile (const char* target_file);
 static gboolean xml_doc_sanity_checks (xmlDocPtr doc);
 static URLType get_urltype_from_string (char* tmpbuf);
 static gboolean get_boolean_value_from_string (char* tmpbuf);
 
-static void
+static gboolean
 create_default_metadata (const char* config_file) {
 
 	gboolean rv;
@@ -51,7 +51,9 @@ create_default_metadata (const char* config_file) {
 			retval = mkdir (EAZEL_SERVICES_DIR_HOME, 0755);		       
 			if (retval < 0) {
 				if (errno != EEXIST) {
-					g_error (_("*** Could not create services directory (%s)! ***\n"), EAZEL_SERVICES_DIR_HOME);
+					g_warning (_("*** Could not create services directory (%s)! ***\n"), 
+						   EAZEL_SERVICES_DIR_HOME);
+					rv = FALSE;
 				}
 			}
 		}
@@ -59,15 +61,19 @@ create_default_metadata (const char* config_file) {
 		retval = mkdir (EAZEL_SERVICES_DIR, 0755);
 		if (retval < 0) {
 			if (errno != EEXIST) {
-				g_error (_("*** Could not create services directory (%s)! ***\n"), EAZEL_SERVICES_DIR);
+				g_warning (_("*** Could not create services directory (%s)! ***\n"), 
+					   EAZEL_SERVICES_DIR);
+				rv = FALSE;
 			}
 		}
 	}
 
 	rv = create_default_configuration_metafile (config_file);
 	if (rv == FALSE) {
-		g_error (_("*** Could not create the default configuration file! ***\n"));
+		g_warning (_("*** Could not create the default configuration file! ***\n"));
+		return FALSE;
 	}
+	return TRUE;
 } /* end create_default_metadata */
 
 static gboolean
@@ -163,7 +169,7 @@ get_boolean_value_from_string (char* tmpbuf) {
 	if (tmpbuf[0] == 't' || tmpbuf[0] == 'T') {
 		rv = TRUE;
 	}
-	else if (tmpbuf[0] == 'f' || tmpbuf[0] == 'T') {
+	else if (tmpbuf[0] == 'f' || tmpbuf[0] == 'F') {
 		rv = FALSE;
 	}
 	return rv;
