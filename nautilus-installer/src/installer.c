@@ -417,6 +417,40 @@ create_pixmap_widget (GtkWidget *widget, char **xpmdata)
 	return my_widget;
 }
 
+/* adds a bullet point, in boldface, to a vbox: the bullet point should word-wrap correctly */
+static void
+add_bullet_point_to_vbox (GtkWidget *vbox, const char *text)
+{
+	GtkWidget *hbox;
+	GtkWidget *inner_vbox;
+	GtkWidget *label;
+	GtkWidget *bullet_label;
+
+	LOG_DEBUG (("bullet = \"%s\"\n", text));
+
+	label = gtk_label_new_with_font (text, FONT_NORM_BOLD);
+	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+	gtk_widget_show (label);
+	bullet_label = gtk_label_new_with_font ("\xB7 ", FONT_NORM_BOLD);
+	gtk_label_set_justify (GTK_LABEL (bullet_label), GTK_JUSTIFY_LEFT);
+	gtk_widget_show (bullet_label);
+
+	/* put the bullet in a vbox so it'll anchor at the top */
+	inner_vbox = gtk_vbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (inner_vbox), bullet_label, FALSE, FALSE, 0);
+	gtk_widget_show (inner_vbox);
+
+	/* put the anchored bullet and the explanation into an hbox */
+	hbox = gtk_hbox_new (FALSE, 0);
+	add_padding_to_box (hbox, 45, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), inner_vbox, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_widget_show (hbox);
+
+	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+}
+
 static void
 jump_to_error_page (EazelInstaller *installer, GList *bullets, char *text, char *text2)
 {
@@ -427,7 +461,6 @@ jump_to_error_page (EazelInstaller *installer, GList *bullets, char *text, char 
 	GtkWidget *title;
 	GtkWidget *label;
 	GList *iter;
-	char *temp;
 
 	error_page = nautilus_druid_page_eazel_new_with_vals (NAUTILUS_DRUID_PAGE_EAZEL_FINISH,
 							      "", "", NULL, NULL,
@@ -466,15 +499,7 @@ jump_to_error_page (EazelInstaller *installer, GList *bullets, char *text, char 
 	add_padding_to_box (vbox, 0, 15);
 
 	for (iter = g_list_first (bullets); iter != NULL; iter = g_list_next (iter)) {
-		temp = g_strdup_printf ("\xB7 %s", (char *)(iter->data));
-		label = gtk_label_new_with_font (temp, FONT_NORM_BOLD);
-		g_free (temp);
-		gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
-		gtk_widget_show (label);
-		hbox = gtk_hbox_new (FALSE, 0);
-		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 45);
-		gtk_widget_show (hbox);
-		gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+		add_bullet_point_to_vbox (vbox, (char *)(iter->data));
 	}
 
 	add_padding_to_box (vbox, 0, 15);
@@ -783,14 +808,14 @@ jump_to_retry_page (EazelInstaller *installer)
 		switch (rcase->t) {
 		case MUST_UPDATE: {
 			char *required = get_required_name (rcase->u.in_the_way.pack);
-			temp = g_strdup_printf ("\xB7 %s needs update", required);
+			temp = g_strdup_printf ("%s needs to be updated.", required);
 			g_free (required);
 		}
 		break;
 		case FORCE_BOTH: {
 			char *required_1 = get_required_name (rcase->u.force_both.pack_1);
 			char *required_2 = get_required_name (rcase->u.force_both.pack_2);
-			temp = g_strdup_printf ("\xB7 %s and %s can both be force installed (DANGER!)", 
+			temp = g_strdup_printf ("%s and %s can both be force installed (DANGER!)", 
 						required_1,
 						required_2);
 			g_free (required_1);
@@ -799,22 +824,15 @@ jump_to_retry_page (EazelInstaller *installer)
 		break;
 		case REMOVE: {
 			char *required = get_required_name (rcase->u.remove.pack);
-			temp = g_strdup_printf ("\xB7 %s could not be solved, will be forcefully removed.", 
+			temp = g_strdup_printf ("%s could not be solved, will be forcefully removed.", 
 						required);
 			g_free (required);
 		}
 		break;
 		};
 
-		LOG_DEBUG (("temp = \"%s\"\n", temp));
-		label = gtk_label_new_with_font (temp, FONT_NORM_BOLD);
+		add_bullet_point_to_vbox (vbox, temp);
 		g_free (temp);
-		gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
-		gtk_widget_show (label);
-		hbox = gtk_hbox_new (FALSE, 0);
-		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 45);
-		gtk_widget_show (hbox);
-		gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 	}
 
 	add_padding_to_box (vbox, 0, 15);

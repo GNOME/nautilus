@@ -1,3 +1,19 @@
+2000-10-26  Robey Pointer  <robey@eazel.com>
+
+	* components/services/login/nautilus-view/nautilus-change-password-
+	view.c: (authn_failed):
+
+	Better logging of a failed password change attempt.
+	
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_category):
+	* nautilus-installer/src/installer.c: (add_bullet_point_to_vbox),
+	(jump_to_error_page), (jump_to_retry_page):
+
+	Factor out the bullet point generation and make it line-wrap
+	(using Gtk's unfortunately lame line-wrapping algorithm).  Do
+	better debugging on failed package lists.
+
 2000-10-26  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c

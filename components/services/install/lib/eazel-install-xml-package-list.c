@@ -126,7 +126,7 @@ parse_category (xmlNode* cat) {
 
 	pkg = cat->xmlChildrenNode;
 	if (pkg == NULL) {
-		g_print (_("*** No package nodes! ***"));
+		g_print (_("*** No package nodes! (cat has no children) ***"));
 		g_free (category);
 		g_error (_("*** Bailing from package parse! ***"));
 	}

@@ -315,8 +315,10 @@ authn_failed (const EazelProxy_User *user, const EazelProxy_AuthnFailInfo *info,
 	view->details->pending = PENDING_NONE;
 	gtk_widget_set_sensitive (view->details->change_password_button, TRUE);
 
-	show_feedback (view->details->feedback_text, "Incorrect current password.  Please try again.");
+	show_feedback (view->details->feedback_text, _("Incorrect current password.  Please try again."));
 	gtk_entry_set_text (GTK_ENTRY (view->details->account_old_password), "");
+
+	g_warning ("ChangePassword failed: code = %ld, result = '%s'", (long)info->code, info->http_result);
 	/* more? */
 
 	ammonite_auth_callback_wrapper_free (bonobo_poa (), view->details->authn_callback);
