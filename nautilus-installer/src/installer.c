@@ -332,7 +332,7 @@ create_install_page (GtkWidget *druid, GtkWidget *window)
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox,  FALSE, FALSE, 3);
 
-	label_single = gtk_label_new (_("Eskil's been licking mushrooms again"));
+	label_single = gtk_label_new (_("Poking about for packages  "));
 	gtk_widget_set_name (label_single, "label_single");
 	gtk_label_set_justify (GTK_LABEL (label_single), GTK_JUSTIFY_LEFT);
 	gtk_widget_ref (label_single);
@@ -1065,7 +1065,7 @@ eazel_download_progress (EazelInstall *service,
 	gtk_progress_set_value (GTK_PROGRESS (progress_single), (float)amount);
 	gtk_progress_set_value (GTK_PROGRESS (progress_overall), (float)(installer->total_bytes_downloaded + amount));
 
-	if ((amount_KB >= installer->last_KB+10) || (amount_KB == total_KB) || (amount_KB == 0)) {
+	if ((amount_KB >= installer->last_KB+10) || (amount_KB == total_KB)) {
 		temp = g_strdup_printf ("%dK of %dK", amount_KB, total_KB);
 		gtk_label_set_text (GTK_LABEL (label_single_2), temp); 
 		g_free (temp);
@@ -1221,7 +1221,7 @@ get_detailed_errors_foreach (PackageData *pack, GetErrorsForEachData *data)
 		if (previous_pack) {
 			if (previous_pack->status == PACKAGE_DEPENDENCY_FAIL) {
 				message = g_strdup_printf (_("%s requires %s, which could not be found on Eazel's servers"), 
-							   required_by,required);
+							   required_by, required);
 			}
 		}
 		break;
@@ -1444,7 +1444,7 @@ install_done (EazelInstall *service,
 	if (result == FALSE) {
 		/* will call jump_to_error_page later */
 		if (installer->failure_info == NULL) {
-			temp = g_strdup (_("Couldn't download or install the packages, for some reason"));
+			temp = g_strdup (_("The RPM installer gave an unexpected error code -- run for your life!"));
 			installer->failure_info = g_list_append (installer->failure_info, temp);
 		}
 	}
@@ -1545,7 +1545,8 @@ toggle_button_toggled (GtkToggleButton *button,
 
 static void 
 eazel_installer_add_category (EazelInstaller *installer,
-			      CategoryData *category)
+			      CategoryData *category,
+			      gboolean only_one_category)
 {
 	GtkWidget *button;
 	GtkWidget *vbox;
@@ -1569,7 +1570,9 @@ eazel_installer_add_category (EazelInstaller *installer,
 	button = gtk_check_button_new ();
 	button_name = gtk_label_new_with_font (category->name, FONT_NORM_BOLD);
 
-	gtk_widget_show (button);
+	if (! only_one_category) {
+		gtk_widget_show (button);
+	}
 	gtk_widget_show (button_name);
 	add_padding_to_box (hbox, 10, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), button, 0, 0, 0);
@@ -1591,7 +1594,7 @@ eazel_installer_add_category (EazelInstaller *installer,
 		category->description = g_strdup ("");
 	}
 
-	if (category->default_choice) {
+	if (category->default_choice || only_one_category) {
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
 	}
 
@@ -1611,7 +1614,7 @@ eazel_installer_add_category (EazelInstaller *installer,
 		gtk_label_set_line_wrap (GTK_LABEL (label), FALSE);
 		gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 		hbox2 = gtk_hbox_new (FALSE, 0);
-		gtk_box_pack_start (GTK_BOX (hbox2), label, FALSE, FALSE, 40);
+		gtk_box_pack_start (GTK_BOX (hbox2), label, FALSE, FALSE, only_one_category ? 20 : 40);
 		gtk_widget_show (label);
 		g_free (section);
 
@@ -1929,6 +1932,47 @@ eazel_install_get_depends (EazelInstaller *installer, const char *dest_dir)
 	return TRUE;
 }
 
+/* if there's an older tmpdir left over from a previous attempt, use it */
+#define TMPDIR_PREFIX "eazel-installer."
+static char *
+find_old_tmpdir (void)
+{
+	DIR *dirfd;
+	struct dirent *file;
+	char *old_tmpdir = NULL;
+	char *old_package_list;
+	struct stat statbuf;
+
+	dirfd = opendir ("/tmp");
+	if (dirfd == NULL) {
+		return NULL;
+	}
+	while ((file = readdir (dirfd)) != NULL) {
+		if ((old_tmpdir == NULL) && (strlen (file->d_name) > strlen (TMPDIR_PREFIX)) &&
+		    (strncmp (file->d_name, TMPDIR_PREFIX, strlen (TMPDIR_PREFIX)) == 0)) {
+			old_tmpdir = g_strdup_printf ("/tmp/%s", file->d_name);
+			if ((stat (old_tmpdir, &statbuf) == 0) &&
+			    ((statbuf.st_mode & 0777) == 0700) &&
+			    (statbuf.st_mode & S_IFDIR) &&
+			    (statbuf.st_nlink == 2) &&
+			    (statbuf.st_uid == 0)) {
+				/* acceptable */
+				LOG_DEBUG (("found an old tmpdir: %s\n", old_tmpdir));
+				/* make sure old package list isn't hanging around */
+				old_package_list = g_strdup_printf ("%s/%s", old_tmpdir, PACKAGE_LIST);
+				unlink (old_package_list);
+				g_free (old_package_list);
+			} else {
+				g_free (old_tmpdir);
+				old_tmpdir = NULL;
+			}
+		}
+	}
+	closedir (dirfd);
+
+	return old_tmpdir;
+}
+
 static void
 eazel_installer_initialize (EazelInstaller *object) {
 	EazelInstaller *installer;
@@ -1946,7 +1990,11 @@ eazel_installer_initialize (EazelInstaller *object) {
 
 	installer = EAZEL_INSTALLER (object);
 
-	if (installer_tmpdir==NULL) {
+	if (installer_tmpdir == NULL) {
+		installer_tmpdir = find_old_tmpdir ();
+	}
+
+	if (installer_tmpdir == NULL) {
 		/* attempt to create a directory we can use */
 #define RANDCHAR ('A' + (rand () % 23))
 		srand (time (NULL));
@@ -2012,7 +2060,7 @@ eazel_installer_initialize (EazelInstaller *object) {
 					       "server_port", 
 					       installer_server_port ? installer_server_port : PORT_NUMBER,
 					       "package_list", package_destination, 
-					       "package_list_storage_path", "package-list.xml",
+					       "package_list_storage_path", PACKAGE_LIST,
 					       "transaction_dir", "/tmp",
 					       "cgi_path", installer_cgi_path ? installer_cgi_path : CGI_PATH,
 					       NULL));
@@ -2078,15 +2126,21 @@ eazel_installer_initialize (EazelInstaller *object) {
 	}
 
 	vbox = GTK_WIDGET (gtk_object_get_data (GTK_OBJECT (installer->window), "vbox3"));
-	for (iterator = installer->categories; iterator; iterator=iterator->next) {
+	if (installer->categories && installer->categories->next) {
+		/* more than one category */
+		for (iterator = installer->categories; iterator; iterator=iterator->next) {
 #if 0
-		/* eventually, it would be nice to go pre-fetch the list of required rpm's.  unfortunately
-		 * the install lib isn't quite ready for that yet.
-		 */
-		eazel_install_fetch_definitive_category_info (installer->service, (CategoryData *)(iterator->data));
+			/* eventually, it would be nice to go pre-fetch the list of required rpm's.  unfortunately
+			 * the install lib isn't quite ready for that yet.
+			 */
+			eazel_install_fetch_definitive_category_info (installer->service, (CategoryData *)(iterator->data));
 #endif
-		eazel_installer_add_category (installer, (CategoryData*)iterator->data);
-		add_padding_to_box (vbox, 0, 5);
+			eazel_installer_add_category (installer, (CategoryData*)iterator->data, FALSE);
+			add_padding_to_box (vbox, 0, 5);
+		}
+	} else {
+		/* single category */
+		eazel_installer_add_category (installer, (CategoryData *)installer->categories->data, TRUE);
 	}
 
 	g_free (package_destination);
