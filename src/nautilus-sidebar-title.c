@@ -38,18 +38,21 @@
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
+#include <libnautilus-extensions/nautilus-theme.h>
 
 static void     nautilus_sidebar_title_initialize_class   (NautilusSidebarTitleClass *klass);
 static void     nautilus_sidebar_title_destroy            (GtkObject                 *object);
 static void     nautilus_sidebar_title_initialize         (NautilusSidebarTitle      *pixmap);
 static gboolean nautilus_sidebar_title_button_press_event (GtkWidget                 *widget,
 							   GdkEventButton            *event);
+static void	nautilus_sidebar_title_theme_changed	  (gpointer		     user_data);
 static void     update_icon                               (NautilusSidebarTitle      *sidebar_title);
 
 struct NautilusSidebarTitleDetails {
@@ -117,6 +120,10 @@ nautilus_sidebar_title_initialize (NautilusSidebarTitle *sidebar_title)
 	gdk_font_unref (font);
 	gtk_widget_show (sidebar_title->details->notes);
 	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->notes, 0, 0, 0);
+
+	/* set up the label colors according to the theme, and get notified of changes */
+	nautilus_sidebar_title_theme_changed (sidebar_title);
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, nautilus_sidebar_title_theme_changed, sidebar_title);
 }
 
 /* destroy by throwing away private storage */
@@ -148,6 +155,8 @@ nautilus_sidebar_title_destroy (GtkObject *object)
 	
 	g_free (sidebar_title->details->title_text);
 	g_free (sidebar_title->details);
+
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME, nautilus_sidebar_title_theme_changed, sidebar_title);
   	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -158,6 +167,48 @@ GtkWidget *
 nautilus_sidebar_title_new (void)
 {
 	return GTK_WIDGET (gtk_type_new (nautilus_sidebar_title_get_type ()));
+}
+
+/* utility to set up the style of a widget to have a particular color */
+static void
+set_widget_color (GtkWidget *widget, const char* color_spec)
+{
+	GtkStyle *style;
+	GdkColor color;
+	
+	style = gtk_widget_get_style (widget);
+	
+	/* Make a copy of the style. */
+	style = gtk_style_copy (style);
+
+	nautilus_gdk_color_parse_with_white_default (color_spec, &color);
+	style->fg[GTK_STATE_NORMAL] = color;
+	style->base[GTK_STATE_NORMAL] = color;
+	style->fg[GTK_STATE_ACTIVE] = color;
+	style->base[GTK_STATE_ACTIVE] = color;
+	
+	/* Put the style in the widget. */
+	gtk_widget_set_style (widget, style);
+	gtk_style_unref (style);
+}
+
+/* handle theme changes by setting up the color of the labels */
+static void
+nautilus_sidebar_title_theme_changed (gpointer user_data)
+{
+	char *sidebar_title_color;
+	NautilusSidebarTitle *sidebar_title;
+	
+	sidebar_title = NAUTILUS_SIDEBAR_TITLE (user_data);	
+	sidebar_title_color = nautilus_theme_get_theme_data ("sidebar", "LABEL_COLOR");
+	if (sidebar_title_color == NULL) {	
+		sidebar_title_color = g_strdup("rgb:0000/0000/0000");
+	}
+	
+	set_widget_color (sidebar_title->details->title, sidebar_title_color);
+	set_widget_color (sidebar_title->details->more_info, sidebar_title_color);
+	
+	g_free (sidebar_title_color);
 }
 
 /* set up the icon image */
