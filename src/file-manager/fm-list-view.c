@@ -59,16 +59,6 @@ struct FMListViewDetails {
 static NautilusFileSortType	default_sort_order_auto_value;
 static gboolean			default_sort_reversed_auto_value;
 
-/* The list view receives files from the directory model
-   in chunks, to improve responsiveness during loading.
-   This is the number of files we add to the list, or change
-   at once. */
-/* FIXME: Why doesn't the icon view need the same thing? 
- * (Probably this was added when testing search results and
- * similar tests weren't done for icon view.)
- */
-#define LIST_VIEW_DISPLAY_PENDING_FILES_GROUP_SIZE 100
-
 /* 
  * Emblems should never get so small that they're illegible,
  * so we semi-arbitrarily choose a minimum size.
@@ -1853,101 +1843,27 @@ fm_list_view_reveal_selection (FMDirectoryView *view)
         nautilus_file_list_free (selection);
 }
 
-static GList *
-g_list_split_off_first_n (GList **list,
-			  int removed_count)
-{
-	GList *first_n_items, *nth_item;
-
-	nth_item = g_list_nth (*list, removed_count);
-	first_n_items = *list;
-
-	if (nth_item == NULL) {
-		*list = NULL;
-	}
-	else {
-		nth_item->prev->next = NULL;
-		nth_item->prev = NULL;
-		*list = nth_item;
-	}
-
-	return first_n_items;
-}
-
-
 static gboolean
 fm_list_view_display_pending_files (FMDirectoryView *view,
 				    GList **pending_files_added,
 				    GList **pending_files_changed)
 {
-	GList *files_added, *files_changed, *node;
-	NautilusFile *file;
 	EelCList *clist;
-	GList *selection;
-	gboolean send_selection_change;
 	NautilusFileSortType sort_criterion;
-	
+
 	g_return_val_if_fail (FM_IS_LIST_VIEW (view), FALSE);
 	
-	send_selection_change = FALSE;
-
-        clist = EEL_CLIST (get_list (FM_LIST_VIEW (view)));	
+	clist = EEL_CLIST (get_list (FM_LIST_VIEW (view)));	
 	sort_criterion = get_column_sort_criterion (FM_LIST_VIEW (view), clist->sort_column);
 
 	/* Sort the added items before displaying them, so that they'll be added in order,
 	   and items won't move around.  */
-	*pending_files_added = eel_g_list_sort_custom (*pending_files_added,
-							    (EelCompareFunction) list_view_compare_files_for_sort,
-							    FM_LIST_VIEW (view));
+	*pending_files_added = eel_g_list_sort_custom (*pending_files_added, 
+						       (EelCompareFunction) list_view_compare_files_for_sort,
+						       FM_LIST_VIEW (view));
 
-	files_added = g_list_split_off_first_n (pending_files_added,
-						       LIST_VIEW_DISPLAY_PENDING_FILES_GROUP_SIZE);
-	files_changed = g_list_split_off_first_n (pending_files_changed,
-							LIST_VIEW_DISPLAY_PENDING_FILES_GROUP_SIZE);
-
-	if (files_added != NULL || files_changed != NULL) {
-		gtk_signal_emit_by_name (GTK_OBJECT (view), "begin_adding_files");
-		
-		for (node = files_added; node != NULL; node = node->next) {
-			file = NAUTILUS_FILE (node->data);
-			
-			if (nautilus_directory_contains_file (fm_directory_view_get_model (view), file)) {
-				gtk_signal_emit_by_name (GTK_OBJECT (view),
-							 "add_file",
-							 file);
-			}
-		}
-		
-		for (node = files_changed; node != NULL; node = node->next) {
-			file = NAUTILUS_FILE (node->data);
-			
-			gtk_signal_emit_by_name (GTK_OBJECT (view),
-						 "file_changed",
-						 file);
-		}
-		
-		gtk_signal_emit_by_name (GTK_OBJECT (view), "done_adding_files");
-
-		if (files_changed != NULL) {
-			selection = fm_directory_view_get_selection (view);
-			send_selection_change = eel_g_lists_sort_and_check_for_intersection
-				(&files_changed, &selection);
-			nautilus_file_list_free (selection);
-		}
-
-		nautilus_file_list_free (files_added);
-		nautilus_file_list_free (files_changed);
-	}
-
-
-	if (send_selection_change) {
-		/* Send a selection change since some file names could
-		 * have changed.
-		 */
-		fm_directory_view_send_selection_change (view);
-	}
-
-	return (*pending_files_added == NULL || *pending_files_changed != NULL);
+	return EEL_CALL_PARENT_WITH_RETURN_VALUE (FM_DIRECTORY_VIEW_CLASS, display_pending_files,
+						 (view, pending_files_added, pending_files_changed));
 }
 
 static GArray *

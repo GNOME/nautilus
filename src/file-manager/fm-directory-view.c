@@ -76,6 +76,14 @@
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <math.h>
 
+/* The list view receives files from the directory model
+ * in chunks, to improve responsiveness during loading.
+ * This is the number of files we add to the list, or change
+ * at once.
+ */
+
+#define FILES_TO_PROCESS_AT_ONCE 100
+
 #define DISPLAY_TIMEOUT_INTERVAL_MSECS 100
 #define SILENT_WINDOW_OPEN_LIMIT	5
 
@@ -1922,6 +1930,27 @@ display_pending_files (FMDirectoryView *view)
 	return call_timeout_again;
 }
 
+static GList *
+g_list_split_off_first_n (GList **list,
+			  int removed_count)
+{
+	GList *first_n_items, *nth_item;
+
+	nth_item = g_list_nth (*list, removed_count);
+	first_n_items = *list;
+
+	if (nth_item == NULL) {
+		*list = NULL;
+	}
+	else {
+		nth_item->prev->next = NULL;
+		nth_item->prev = NULL;
+		*list = nth_item;
+	}
+
+	return first_n_items;
+}
+
 static gboolean
 real_display_pending_files (FMDirectoryView *view,
 			    GList **pending_files_added,
@@ -1931,20 +1960,15 @@ real_display_pending_files (FMDirectoryView *view,
 	NautilusFile *file;
 	GList *selection;
 	gboolean send_selection_change;
-
+	
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
+	
 	send_selection_change = FALSE;
 
-	g_assert (*pending_files_added == view->details->pending_files_added);
-	g_assert (*pending_files_changed == view->details->pending_files_changed);
+	files_added = g_list_split_off_first_n (pending_files_added, FILES_TO_PROCESS_AT_ONCE);
+	files_changed = g_list_split_off_first_n (pending_files_changed, FILES_TO_PROCESS_AT_ONCE);
 	
-	/* Deliver all available files right now */
-	files_added = *pending_files_added;
-	files_changed = *pending_files_changed;
-
 	if (files_added != NULL || files_changed != NULL) {
-		*pending_files_added = NULL;
-		*pending_files_changed = NULL;
-
 		gtk_signal_emit (GTK_OBJECT (view), signals[BEGIN_ADDING_FILES]);
 		
 		for (node = files_added; node != NULL; node = node->next) {
@@ -1959,13 +1983,13 @@ real_display_pending_files (FMDirectoryView *view,
 		
 		for (node = files_changed; node != NULL; node = node->next) {
 			file = NAUTILUS_FILE (node->data);
-			
+
 			gtk_signal_emit (GTK_OBJECT (view),
 					 signals[FILE_CHANGED],
 					 file);
 		}
-		
-		gtk_signal_emit (GTK_OBJECT (view), signals[DONE_ADDING_FILES]);
+
+                gtk_signal_emit (GTK_OBJECT (view), signals[DONE_ADDING_FILES]);
 
 		if (files_changed != NULL) {
 			selection = fm_directory_view_get_selection (view);
@@ -1985,7 +2009,11 @@ real_display_pending_files (FMDirectoryView *view,
 		fm_directory_view_send_selection_change (view);
 	}
 
-	return TRUE;
+        
+        /* Return TRUE if there is no work remaining, FALSE
+         * if item are remaining in one of the list.
+         */
+	return *pending_files_added == NULL && *pending_files_changed == NULL;
 }
 
 static gboolean

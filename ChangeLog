@@ -1,3 +1,29 @@
+2001-05-18  Yoann Vandoorselaere  <yoann@mandrakesoft.com>
+
+	Code reviewed by Darin Adler <darin@bentspoon.com>,
+	also, thanks for the help solving this issue.
+	
+	* src/file-manager/fm-directory-view.c (g_list_split_off_first_n): 
+	moved from fm-list-view.c.
+	(real_display_pending_files): move the fm-list-view.c function to
+	display pending file, but remove the clist sorting code.
+	(FILES_TO_PROCESS_AT_ONCE): new constant, appear to be a better name
+	than LIST_VIEW_DISPLAY_PENDING_FILES_GROUP_SIZE.
+
+	* src/file-manager/fm-list-view.c (LIST_VIEW_DISPLAY_PENDING_FILES_GROUP_SIZE): 
+	removed this constant.
+	(fm_list_view_display_pending_files): just sort the list by the clist criteria
+	then call the parent function to display_pending_file.
+	(g_list_split_off_first_n): removed.
+
+	This should fix the issue where UI response (icon drawing) would take
+	a long time because the directory loaded was cached by the kernel.
+	We now draw with a fixed maximum number of files at once.
+	
+	The list view code was already doing that, so the code was just moved,
+	and adaptated for use in directory view, so list view has the same 
+	behavior as before without any code being duplicated.
+
 2001-05-17  Darin Adler  <darin@eazel.com>
 
 	Yoann and I did some more debugging and analysis and we stumbled
