@@ -243,10 +243,9 @@ druid_finished (GtkWidget *druid_page)
 		convert_gmc_desktop_icons ();
 	}
 	
-	/* FIXME bugzilla.eazel.com bug 5681: Services icon on desktop may need better icon and text */
 	/* Create default services icon on the desktop */
 	desktop_path = nautilus_get_desktop_directory ();
-	nautilus_link_local_create (desktop_path, _("Eazel Services"), "big_services_icon.png", 
+	nautilus_link_local_create (desktop_path, _("Eazel Services"), "hand.png", 
 				    "eazel:", NULL, NAUTILUS_LINK_GENERIC);
 	g_free (desktop_path);
 	
