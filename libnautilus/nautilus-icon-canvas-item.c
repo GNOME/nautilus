@@ -30,7 +30,6 @@
 #include <stdio.h>
 #include <gtk/gtksignal.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <libart_lgpl/art_rgb_pixbuf_affine.h>
 #include <libgnomeui/gnome-canvas-util.h>
 #include <libgnomeui/gnome-icon-text.h>
 #include "nautilus-icon-private.h"
@@ -262,7 +261,7 @@ nautilus_icon_canvas_item_destroy (GtkObject *object)
 static gboolean
 pixbuf_is_acceptable (GdkPixbuf *pixbuf)
 {
-	return gdk_pixbuf_get_format (pixbuf) == ART_PIX_RGB
+	return gdk_pixbuf_get_colorspace (pixbuf) == GDK_COLORSPACE_RGB
 		&& ((!gdk_pixbuf_get_has_alpha (pixbuf)
 		     && gdk_pixbuf_get_n_channels (pixbuf) == 3)
 		    || (gdk_pixbuf_get_has_alpha (pixbuf)

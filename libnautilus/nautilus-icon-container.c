@@ -235,9 +235,9 @@ icon_get_actual_size (NautilusIcon *icon)
 	guint max_size;
 	
  	pixbuf = nautilus_icon_canvas_item_get_image (icon->item, NULL);
-	max_size = pixbuf->art_pixbuf->width;
-	if (pixbuf->art_pixbuf->height > max_size) {
-		max_size = pixbuf->art_pixbuf->height;
+	max_size = gdk_pixbuf_get_width (pixbuf);
+	if (gdk_pixbuf_get_height (pixbuf) > max_size) {
+		max_size = gdk_pixbuf_get_height (pixbuf);
 	}
 
 	return max_size;

@@ -1,3 +1,29 @@
+2000-04-11  Darin Adler  <darin@eazel.com>
+
+	Updated for new GdkPixbuf.
+
+	* HACKING: gnome-print must be built before bonobo.
+	* RENAMING: New renaming ideas.
+	* libnautilus/nautilus-graphic-effects.c (create_new_pixbuf),
+	(nautilus_create_spotlight_pixbuf),
+	(nautilus_create_darkened_pixbuf),
+	(nautilus_create_colorized_pixbuf),
+	(nautilus_make_semi_transparent): Updated for new GdkPixbuf.
+	* libnautilus/nautilus-icon-canvas-item.c (pixbuf_is_acceptable):
+	Updated for new GdkPixbuf.
+	* libnautilus/nautilus-icon-container.c (icon_get_actual_size):
+	Updated for new GdkPixbuf.
+	* libnautilus/nautilus-icon-factory.c
+	(nautilus_icon_factory_possibly_free_cached_image): Put in a
+	temporary hack that allows us to keep working until we get a
+	suitable feature in GdkPixbuf for implementing the cache. For now,
+	we don't free any pixbufs ever, so the cache grows unbounded.
+	(load_image_for_scaling), (load_image_scale_if_necessary):
+	(nautilus_icon_factory_make_thumbnails), Updated for new
+	GdkPixbuf.
+	* src/nautilus-index-title (nautilus_index_title_update_icon):
+	Updated for new GdkPixbuf.
+	
 2000-04-11  Pavel Cisler <pavel@eazel.com>
 
 	* libnautilus/nautilus-icon-dnd.c:

@@ -178,7 +178,7 @@ nautilus_index_title_update_icon (NautilusIndexTitle *index_title)
 				
 		scaled_pixbuf = gdk_pixbuf_scale_simple (pixbuf,
 							 scaled_width, scaled_height,
-							 ART_FILTER_BILINEAR);	
+							 GDK_INTERP_BILINEAR);	
 		gdk_pixbuf_unref (pixbuf);
 		pixbuf = scaled_pixbuf;
 	}

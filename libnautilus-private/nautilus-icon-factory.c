@@ -365,12 +365,19 @@ nautilus_icon_factory_possibly_free_cached_image (gpointer key,
 
 	/* Don't free a cache entry if the image is still in use. */
 	image = value;
+
+	/* FIXME: We treat all entries as "in use", until we get a hook we can use
+	 * in GdkPixbuf.
+	 */
+	return FALSE;
+#if 0
 	if (image->ref_count > 1) {
 		return FALSE;
 	}
 
 	/* Free the item. */
         return nautilus_icon_factory_destroy_cached_image (key, value, NULL);
+#endif
 }
 
 /* Sweep the cache, freeing any images that are not in use and are
@@ -1064,8 +1071,9 @@ load_image_for_scaling (NautilusScalableIcon *scalable_icon,
 	if (fallback_image == NULL) {
 		fallback_image = gdk_pixbuf_new_from_data
 			(nautilus_default_file_icon,
-			 ART_PIX_RGB,
+			 GDK_COLORSPACE_RGB,
 			 TRUE,
+			 8,
 			 nautilus_default_file_icon_width,
 			 nautilus_default_file_icon_height,
 			 nautilus_default_file_icon_width * 4, /* stride */
@@ -1105,7 +1113,7 @@ load_image_scale_if_necessary (NautilusScalableIcon *scalable_icon,
 	scaled_width = gdk_pixbuf_get_width (image) * requested_size_x / actual_size;
 	scaled_height = gdk_pixbuf_get_height (image) * requested_size_y / actual_size;
 	scaled_image = gdk_pixbuf_scale_simple
-		(image, scaled_width, scaled_height, ART_FILTER_BILINEAR);
+		(image, scaled_width, scaled_height, GDK_INTERP_BILINEAR);
 
 	/* Scale the text rectangle to the same size. */
 	text_rect->x0 = text_rect->x0 * requested_size_x / actual_size;
@@ -1634,19 +1642,25 @@ nautilus_icon_factory_make_thumbnails (gpointer data)
 
 				/* scale the image, then release the large one */
 				
-				scaled_image = gdk_pixbuf_scale_simple (full_size_image,  scaled_width, scaled_height, ART_FILTER_BILINEAR);				
+				scaled_image = gdk_pixbuf_scale_simple (full_size_image,
+									scaled_width, scaled_height,
+									GDK_INTERP_BILINEAR);				
 				gdk_pixbuf_unref (full_size_image);
 				
 				/* make the frame to mount it in - don't use an alpha channel, since it's rectangular */
-				framed_image = gdk_pixbuf_new(ART_PIX_RGB, FALSE, 8, scaled_width + 12, scaled_height + 12);
+				framed_image = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
+							       FALSE, 8,
+							       scaled_width + 12, scaled_height + 12);
 				draw_thumbnail_frame(framed_image);
 				
 				/* copy the scaled image into it, then release it */
-				gdk_pixbuf_copy_area(scaled_image, 0, 0, scaled_width, scaled_height, framed_image, 6, 6);				
+				gdk_pixbuf_copy_area (scaled_image, 0, 0,
+						      scaled_width, scaled_height, framed_image, 6, 6);
 				gdk_pixbuf_unref (scaled_image);
 				
-				if (!save_pixbuf_to_file (framed_image, factory->new_thumbnail_path + 7))
-					g_warning ("error saving thumbnail %s", factory->new_thumbnail_path + 7);	
+				if (!save_pixbuf_to_file (framed_image, factory->new_thumbnail_path + 7)) {
+					g_warning ("error saving thumbnail %s", factory->new_thumbnail_path + 7);
+				}
 				gdk_pixbuf_unref (framed_image);
 			}
 			else {

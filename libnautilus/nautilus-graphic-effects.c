@@ -33,13 +33,13 @@
 static GdkPixbuf *
 create_new_pixbuf (GdkPixbuf *src)
 {
-	g_return_val_if_fail (gdk_pixbuf_get_format (src) == ART_PIX_RGB, NULL);
+	g_return_val_if_fail (gdk_pixbuf_get_colorspace (src) == GDK_COLORSPACE_RGB, NULL);
 	g_return_val_if_fail ((!gdk_pixbuf_get_has_alpha (src)
 			       && gdk_pixbuf_get_n_channels (src) == 3)
 			      || (gdk_pixbuf_get_has_alpha (src)
 				  && gdk_pixbuf_get_n_channels (src) == 4), NULL);
 
-	return gdk_pixbuf_new (gdk_pixbuf_get_format (src),
+	return gdk_pixbuf_new (gdk_pixbuf_get_colorspace (src),
 			       gdk_pixbuf_get_has_alpha (src),
 			       gdk_pixbuf_get_bits_per_sample (src),
 			       gdk_pixbuf_get_width (src),
@@ -68,7 +68,7 @@ nautilus_create_spotlight_pixbuf (GdkPixbuf* src)
 	guchar *target_pixels, *original_pixels;
 	guchar *pixsrc, *pixdest;
 
-	g_return_val_if_fail (gdk_pixbuf_get_format (src) == ART_PIX_RGB, NULL);
+	g_return_val_if_fail (gdk_pixbuf_get_colorspace (src) == GDK_COLORSPACE_RGB, NULL);
 	g_return_val_if_fail ((!gdk_pixbuf_get_has_alpha (src)
 			       && gdk_pixbuf_get_n_channels (src) == 3)
 			      || (gdk_pixbuf_get_has_alpha (src)
@@ -119,7 +119,7 @@ nautilus_create_darkened_pixbuf (GdkPixbuf *src, int saturation, int darken)
 	guchar r, g, b;
 	GdkPixbuf *dest;
 
-	g_return_val_if_fail (gdk_pixbuf_get_format (src) == ART_PIX_RGB, NULL);
+	g_return_val_if_fail (gdk_pixbuf_get_colorspace (src) == GDK_COLORSPACE_RGB, NULL);
 	g_return_val_if_fail ((!gdk_pixbuf_get_has_alpha (src)
 			       && gdk_pixbuf_get_n_channels (src) == 3)
 			      || (gdk_pixbuf_get_has_alpha (src)
@@ -160,10 +160,10 @@ nautilus_create_darkened_pixbuf (GdkPixbuf *src, int saturation, int darken)
 /* this routine colorizes the passed-in pixbuf by multiplying each pixel with the passed in color */
 
 GdkPixbuf *
-nautilus_create_colorized_pixbuf(GdkPixbuf *src,
-				 int red_value,
-				 int green_value,
-				 int blue_value)
+nautilus_create_colorized_pixbuf (GdkPixbuf *src,
+				  int red_value,
+				  int green_value,
+				  int blue_value)
 {
 	int i, j;
 	int width, height, has_alpha, src_row_stride, dst_row_stride;
@@ -173,14 +173,7 @@ nautilus_create_colorized_pixbuf(GdkPixbuf *src,
 	guchar *pixdest;
 	GdkPixbuf *dest;
 	
-	g_return_val_if_fail (gdk_pixbuf_get_format (src) == ART_PIX_RGB, NULL);
-	g_return_val_if_fail ((!gdk_pixbuf_get_has_alpha (src)
-			       && gdk_pixbuf_get_n_channels (src) == 3)
-			      || (gdk_pixbuf_get_has_alpha (src)
-				  && gdk_pixbuf_get_n_channels (src) == 4), NULL);
-	g_return_val_if_fail (gdk_pixbuf_get_bits_per_sample (src) == 8, NULL);
-
-	g_return_val_if_fail (gdk_pixbuf_get_format (src) == ART_PIX_RGB, NULL);
+	g_return_val_if_fail (gdk_pixbuf_get_colorspace (src) == GDK_COLORSPACE_RGB, NULL);
 	g_return_val_if_fail ((!gdk_pixbuf_get_has_alpha (src)
 			       && gdk_pixbuf_get_n_channels (src) == 3)
 			      || (gdk_pixbuf_get_has_alpha (src)
@@ -228,7 +221,7 @@ nautilus_make_semi_transparent (GdkPixbuf *src)
 	GdkPixbuf *dest_pixbuf;
 	guchar start_alpha_value;
 	
-	g_return_val_if_fail (gdk_pixbuf_get_format (src) == ART_PIX_RGB, NULL);
+	g_return_val_if_fail (gdk_pixbuf_get_colorspace (src) == GDK_COLORSPACE_RGB, NULL);
 	g_return_val_if_fail ((!gdk_pixbuf_get_has_alpha (src)
 			       && gdk_pixbuf_get_n_channels (src) == 3)
 			      || (gdk_pixbuf_get_has_alpha (src)
