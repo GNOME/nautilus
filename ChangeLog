@@ -1,5 +1,12 @@
 2005-01-27  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-directory-view.c: (ask_link_action):
+	Set focus_on_map for dnd ask dialog to avoid it ending
+	up under the browser window.
+	Patch from Jorn Baayen <jbaayen@gnome.org>
+
+2005-01-27  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-file-operations.c:
 	(confirm_empty_trash):
 	No title on dialog.

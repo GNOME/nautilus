@@ -7758,26 +7758,42 @@ ask_link_action (FMDirectoryView *view)
 {
 	int button_pressed;
 	GdkDragAction result;
-	GtkWidget *parent_window;
+	GtkWindow *parent_window;
+	GtkWidget *dialog;
 
 	parent_window = NULL;
 
 	/* Don't use desktop window as parent, since that means
 	   we show up an all desktops etc */
 	if (! FM_IS_DESKTOP_ICON_VIEW (view)) {
-		parent_window = GTK_WIDGET (fm_directory_view_get_containing_window (view));
+		parent_window = GTK_WINDOW (fm_directory_view_get_containing_window (view));
 	}
-	
-	button_pressed = eel_run_simple_dialog (parent_window,
-			                        TRUE,
-			                        GTK_MESSAGE_QUESTION,
-                                                _("Download location?"),
-                                                _("You can download it or make a link to it."),
-                                                NULL, /* as per HIG */
-                                                _("Make a _Link"),
-                                                GTK_STOCK_CANCEL,
-                                                _("_Download"),
-                                                NULL);
+
+	dialog = gtk_message_dialog_new (parent_window,
+					 GTK_DIALOG_DESTROY_WITH_PARENT,
+					 GTK_MESSAGE_QUESTION,
+					 GTK_BUTTONS_NONE,
+					 _("Download location?"));
+
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+						  _("You can download it or make a link to it."));
+
+	gtk_dialog_add_button (GTK_DIALOG (dialog),
+			       _("Make a _Link"), 0);
+	gtk_dialog_add_button (GTK_DIALOG (dialog),
+			       GTK_STOCK_CANCEL, 1);
+	gtk_dialog_add_button (GTK_DIALOG (dialog),
+			       _("_Download"), 2);
+
+	gtk_window_set_title (GTK_WINDOW (dialog), ""); /* as per HIG */
+	gtk_window_set_focus_on_map (GTK_WINDOW (dialog), TRUE);
+	gtk_dialog_set_default_response (GTK_DIALOG (dialog), 2);
+
+	gtk_window_present (GTK_WINDOW (dialog));
+
+	button_pressed = gtk_dialog_run (GTK_DIALOG (dialog));
+
+	gtk_widget_destroy (dialog);
 
 	switch (button_pressed) {
 	case 0:
