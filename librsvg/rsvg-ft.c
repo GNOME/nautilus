@@ -336,11 +336,11 @@ rsvg_ft_ctx_done (RsvgFTCtx *ctx) {
 	/* Free glyph cache. */
 	g_hash_table_destroy (ctx->glyph_hash_table);
 	for (glyph_ce = ctx->glyph_first; glyph_ce != NULL; glyph_ce = next) {
-		free (glyph_ce->desc);
-		free (glyph_ce->glyph->buf);
-		free (glyph_ce->glyph);
+		g_free (glyph_ce->desc);
+		g_free (glyph_ce->glyph->buf);
+		g_free (glyph_ce->glyph);
 		next = glyph_ce->next;
-		free (glyph_ce);
+		g_free (glyph_ce);
 	}
 
 	FT_Done_FreeType (ctx->ftlib);

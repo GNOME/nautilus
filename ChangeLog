@@ -1,3 +1,8 @@
+Sun Oct 22 05:25:46 2000  George Lebl <jirka@5z.com>
+
+	* librsvg/rsvg-ft.c (rsvg_ft_ctx_done): Things allocated with
+	  glib functions must be freed with g_free, not free
+
 2000-10-21  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* nautilus.spec.in:
