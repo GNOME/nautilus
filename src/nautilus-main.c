@@ -244,17 +244,14 @@ main (int argc, char *argv[])
 
 	/* Initialize preferences. This is needed so that proper 
 	 * defaults are available before any preference peeking 
-	 * happens.  Do this only if we are not going to kill the
-	 * nautilus shell.
+	 * happens.
 	 */
-	if (!kill_shell) {
-		nautilus_global_preferences_initialize ();
-		if (no_desktop) {
-			eel_preferences_set_is_invisible
-				(NAUTILUS_PREFERENCES_SHOW_DESKTOP, TRUE);
-			eel_preferences_set_is_invisible
-				(NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR, TRUE);
-		}
+	nautilus_global_preferences_initialize ();
+	if (no_desktop) {
+		eel_preferences_set_is_invisible
+			(NAUTILUS_PREFERENCES_SHOW_DESKTOP, TRUE);
+		eel_preferences_set_is_invisible
+			(NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR, TRUE);
 	}
 		
 	/* Do either the self-check or the real work. */
