@@ -1,3 +1,82 @@
+2000-05-05  Darin Adler  <darin@eazel.com>
+
+	Moved the "embedded text" feature into the icon factory and
+	NautilusFile.
+
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(metafile_read_close), (nautilus_metafile_read_cancel),
+	(metafile_read_failed), (metafile_read_complete),
+	(metafile_read_callback), (metafile_read_some),
+	(metafile_read_open_callback), (metafile_read_start),
+	(nautilus_directory_request_read_metafile), (metafile_write_done),
+	(metafile_write_failed), (metafile_write_callback),
+	(metafile_write_create_callback), (nautilus_metafile_write_start),
+	(metafile_write), (lacks_top_left), (wants_top_left),
+	(has_problem), (select_needy_file), (count_lines),
+	(top_left_read_done), (top_left_read_failed),
+	(top_left_read_complete), (top_left_read_close),
+	(top_left_read_callback), (top_left_read_some),
+	(top_left_open_callback), (start_getting_top_lefts),
+	(state_changed):
+	Added code to read top lefts of files in the background.
+	Restructured things to accomodate this new code nicely with
+	a minimum of copy and paste (there still was plenty of copy
+	and paste so there's room for improvement).
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_destroy):
+	Name changes from above required revising some asserts.
+	
+	* libnautilus-extensions/nautilus-file-private.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_top_left_text): Now it returns something
+	besides just NULL.
+	(nautilus_extract_top_left_text): Function that remembers only
+	the part of the top left text that we want to keep around.
+	
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_marshal_NONE__POINTER_POINTER_POINTER),
+	(nautilus_gtk_marshal_POINTER__POINTER_INT_INT_POINTER_POINTER):
+	Needed some new marshal functions.
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.h:
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_initialize_class),
+	(nautilus_icon_canvas_item_destroy),
+	(nautilus_icon_canvas_item_set_arg),
+	(nautilus_icon_canvas_item_get_arg),
+	(nautilus_icon_canvas_item_get_image),
+	(nautilus_icon_canvas_item_set_image),
+	(nautilus_icon_canvas_item_draw):
+	Removed the old embedded text support. It came with a whole lot
+	of baggage, also removed.
+	
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_update_icon): Moved pixbuf computing code
+	into the FMIconView class. We might decide later to move it back
+	again, but for now the embedded text makes it easier to do it
+	this way.
+	(nautilus_icon_container_initialize_class): Merged
+	get_icon_editable_text and get_icon_additional_text back into
+	a single signal that gets both.
+	
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_dnd_begin_drag): Updated for change in icon factory
+	API.
+	
+	* src/file-manager/fm-directory-view.c: (finish_loading_uri):
+	Ask for top-left text attribute for all directories.
+	
+	* src/file-manager/fm-icon-view.c: (get_icon_images_callback):
+	Moved pixbuf computing code into the FMIconView class. We might
+	decide later to move it back again, but for now the embedded text
+	makes it easier to do it this way.
+	(get_icon_text_callback): Merged get_icon_editable_text and
+	get_icon_additional_text back into a single signal that gets both.
+
 2000-05-04  Andy Hertzeld
 
 	added colors to the property browser.  Dragging isn't quite working yet.
@@ -36,6 +115,7 @@
 	added location, type, size, and date to Basic page.
 
 2000-05-04  J Shane Culpepper <pepper@eazel.com>
+	
 	* components/services/install/Makefile.am
 	* components/services/startup/main.c
 	* components/services/startup/eazel-register.c
