@@ -1,3 +1,21 @@
+2004-08-23  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file.c: (get_description):
+	Avoid multiple x-directory/normal warnings
+	
+	* libnautilus-private/nautilus-program-chooser.[ch]:
+	cvs remove old code
+	
+	* libnautilus-private/nautilus-global-preferences.[ch]:
+	* libnautilus-private/nautilus-view-query.c:
+	* src/nautilus-applicable-views.c: 
+	* src/nautilus-main.c:
+	Make default component for folders just use the gconf setting instead
+	of the short list (which is essentially random).
+	Remove component picking for non-folders.
+	Remove unused code.
+	
+
 2004-08-19  Martin Wehner  <martin.wehner@epost.de>
 
 	* src/file-manager/fm-directory-view.c:

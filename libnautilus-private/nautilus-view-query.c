@@ -28,6 +28,7 @@
 #include "nautilus-file-attributes.h"
 #include "nautilus-file.h"
 #include "nautilus-metadata.h"
+#include "nautilus-global-preferences.h"
 #include "nautilus-mime-actions.h"
 #include <bonobo-activation/bonobo-activation-activate.h>
 #include <eel/eel-glib-extensions.h>
@@ -145,11 +146,9 @@ nautilus_view_query_get_default_component_sort_conditions (NautilusFile *file, c
 
 static Bonobo_ServerInfo *
 nautilus_view_query_get_default_component_for_file_internal (NautilusFile *file,
-							     gboolean      fallback,
-							     gboolean     *user_chosen)
+							     gboolean      fallback)
 {
 	GList *info_list;
-	Bonobo_ServerInfo *mime_default; 
 	char *default_component_string;
 	char *mime_type;
 	char *uri_scheme;
@@ -158,14 +157,11 @@ nautilus_view_query_get_default_component_for_file_internal (NautilusFile *file,
 	Bonobo_ServerInfo *server;
 	char **sort_conditions;
 	char *extra_requirements;
-	gboolean used_user_chosen_info;
 	gboolean metadata_default;
 
 	if (!nautilus_view_query_check_if_minimum_attributes_ready (file)) {
 		return NULL;
 	}
-
-	used_user_chosen_info = TRUE;
 
 	info_list = NULL;
 
@@ -189,16 +185,11 @@ nautilus_view_query_get_default_component_for_file_internal (NautilusFile *file,
     	if (default_component_string == NULL) {
 		metadata_default = FALSE;
 
-		if (is_known_mime_type (mime_type)) {
-			mime_default = gnome_vfs_mime_get_default_component (mime_type);
-			if (mime_default != NULL) {
-				default_component_string = g_strdup (mime_default->iid);
-				if (default_component_string != NULL) {
-					/* Default component chosen based only on type. */
-					used_user_chosen_info = FALSE;
-				}
-				CORBA_free (mime_default);
-			}
+		if (nautilus_file_is_directory (file)) {
+			default_component_string = nautilus_global_preferences_get_default_folder_viewer_preference_as_iid ();
+		} else {
+			g_warning ("Trying to load view for non-directory");
+			/* Default component chosen based only on type. */
 		}
 	} else {
 		metadata_default = TRUE;
@@ -223,10 +214,6 @@ nautilus_view_query_get_default_component_for_file_internal (NautilusFile *file,
 	if (info_list != NULL) {
 		server = Bonobo_ServerInfo_duplicate (info_list->data);
 		gnome_vfs_mime_component_list_free (info_list);
-
-		if (default_component_string != NULL && strcmp (server->iid, default_component_string) == 0) {
-			used_user_chosen_info = TRUE;	/* Default component chosen based on user-stored . */
-		}
 	} else {
 		server = NULL;		
 	}
@@ -239,10 +226,6 @@ nautilus_view_query_get_default_component_for_file_internal (NautilusFile *file,
 	g_free (mime_type);
 	g_free (default_component_string);
 
-	if (user_chosen != NULL) {
-		*user_chosen = used_user_chosen_info;
-	}
-
 	return server;
 }
 
@@ -250,19 +233,18 @@ nautilus_view_query_get_default_component_for_file_internal (NautilusFile *file,
 Bonobo_ServerInfo *
 nautilus_view_query_get_default_component_for_file (NautilusFile      *file)
 {
-	return nautilus_view_query_get_default_component_for_file_internal (file, FALSE, NULL);
+	return nautilus_view_query_get_default_component_for_file_internal (file, FALSE);
 }
 
 Bonobo_ServerInfo *
 nautilus_view_query_get_fallback_component_for_file (NautilusFile      *file)
 {
-	return nautilus_view_query_get_default_component_for_file_internal (file, TRUE, NULL);
+	return nautilus_view_query_get_default_component_for_file_internal (file, TRUE);
 }
 
 
-static GList *
-nautilus_view_query_get_components_for_file_extended (NautilusFile *file,
-						      char *extra_reqs)
+GList *
+nautilus_view_query_get_components_for_file (NautilusFile *file)
 {
 	char *mime_type;
 	char *uri_scheme;
@@ -287,7 +269,7 @@ nautilus_view_query_get_components_for_file_extended (NautilusFile *file,
 	info_list = nautilus_do_component_query (mime_type, uri_scheme,
 						 item_mime_types, FALSE,
 						 explicit_iids, NULL,
-						 extra_reqs, TRUE);
+						 NULL, TRUE);
 	
 	eel_g_list_free_deep (explicit_iids);
 	eel_g_list_free_deep (item_mime_types);
@@ -297,59 +279,6 @@ nautilus_view_query_get_components_for_file_extended (NautilusFile *file,
 
 	return info_list;
 }
-
-GList *
-nautilus_view_query_get_components_for_file (NautilusFile *file)
-{
-	return nautilus_view_query_get_components_for_file_extended (file, NULL);
-}
-
-static gboolean
-nautilus_view_query_has_any_components_for_file_extended (NautilusFile *file,
-						    char *extra_reqs)
-{
-	GList *list;
-	gboolean result;
-
-	list = nautilus_view_query_get_components_for_file_extended (file,
-								     extra_reqs);
-	result = list != NULL;
-	gnome_vfs_mime_component_list_free (list);
-
-	return result;
-}
-
-gboolean
-nautilus_view_query_has_any_components_for_file (NautilusFile *file)
-{
-	return nautilus_view_query_has_any_components_for_file_extended (file, NULL);
-}
-
-static GList *
-mime_get_components_for_uri_scheme (const char *uri_scheme)
-{
-	g_return_val_if_fail (eel_strlen (uri_scheme) > 0, NULL);
-
-	return nautilus_do_component_query
-		(NULL, uri_scheme, NULL, TRUE,
-		 NULL, NULL, NULL, TRUE);
-}
-
-gboolean
-nautilus_view_query_has_any_components_for_uri_scheme (const char *uri_scheme)
-{
-	GList *list;
-	gboolean result;
-
-	g_return_val_if_fail (eel_strlen (uri_scheme) > 0, FALSE);
-
-	list = mime_get_components_for_uri_scheme (uri_scheme);
-	result = list != NULL;
-	gnome_vfs_mime_component_list_free (list);
-
-	return result;
-}
-
 
 GnomeVFSResult
 nautilus_view_query_set_default_component_for_file (NautilusFile      *file,
@@ -457,10 +386,10 @@ make_bonobo_activation_query_for_explicit_content_view_iids (GList *view_iids)
 
 static char *
 make_bonobo_activation_query_with_known_mime_type (const char *mime_type, 
-				     const char *uri_scheme, 
-				     GList      *explicit_iids, 
-				     const char *extra_requirements,
-				     gboolean    must_be_view)
+						   const char *uri_scheme, 
+						   GList      *explicit_iids, 
+						   const char *extra_requirements,
+						   gboolean    must_be_view)
 {
         char *mime_supertype;
         char *result;

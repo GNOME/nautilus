@@ -126,8 +126,6 @@ got_file_info_callback (NautilusFile *file,
         }
         
         if (vfs_result_code == GNOME_VFS_OK && default_id == NULL) {
-                /* If the complete list is non-empty, the default shouldn't have been NULL */
-                g_assert (!nautilus_view_query_has_any_components_for_file (handle->file));
                 result_code = NAUTILUS_DETERMINE_VIEW_NO_HANDLER_FOR_TYPE;
         } else {
                 result_code = get_view_result_from_gnome_vfs_result (vfs_result_code);

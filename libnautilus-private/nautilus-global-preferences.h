@@ -185,9 +185,7 @@ typedef enum
 #define NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE	   "desktop/volumes_visible"
 
 void nautilus_global_preferences_init                      (void);
-void nautilus_global_preferences_init_with_folder_browsing (void);
-void nautilus_global_preferences_set_default_folder_viewer (const char *iid);
-
+char *nautilus_global_preferences_get_default_folder_viewer_preference_as_iid (void);
 G_END_DECLS
 
 #endif /* NAUTILUS_GLOBAL_PREFERENCES_H */
