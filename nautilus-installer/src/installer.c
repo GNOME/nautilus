@@ -40,6 +40,8 @@
 #include <dirent.h>
 #include <sys/utsname.h>
 
+#include <rpm/misc.h>
+
 #include <nautilus-druid.h>
 #include <nautilus-druid-page-eazel.h>
 
@@ -96,7 +98,7 @@ typedef struct {
 #define ERROR_LABEL	_("The installer was not able to complete the installation of the\n" \
 			  "selected files.  Here's why:")
 #define ERROR_LABEL_2	_("Look for possible solutions to this problem at:\n" \
- 			  "        http://nautilus.eazel.com/faq.html\n" \
+ 			  "        http://www.eazel.com/support/nautilusfaq\n" \
 			  "Once you have resolved the problem, please restart the installer.")
 #define ERROR_TITLE	_("An error has occurred")
 #define RETRY_LABEL	_("An installation problem has been encountered, but we think we can\n" \
@@ -116,7 +118,7 @@ typedef struct {
 
 #define WHAT_TO_INSTALL_LABEL _("What would you like to install?")
 
-#undef NAUTILUS_INSTALLER_RELEASE
+#define NAUTILUS_INSTALLER_RELEASE
 
 int installer_debug = 0;
 int installer_test = 0;
@@ -610,6 +612,8 @@ start_over (GnomeDruidPage *druid_page,
 
 			LOG_DEBUG (("met a MUST_UPDATE\n"));
 
+			installer->attempted_updates = g_list_prepend (installer->attempted_updates,
+								       g_strdup (pack->name));
 			pack->toplevel = TRUE;
 			a_list = g_list_prepend (a_list, pack);
 		}
@@ -1097,11 +1101,14 @@ static void
 add_update_package (EazelInstaller *installer, 
 		   const PackageData *pack)
 {
-	PackageData *copy = packagedata_new ();
-	RepairCase *rcase = g_new0 (RepairCase, 1);
-	GList *already_tried;
+	PackageData *copy;
+	RepairCase *rcase;
+	GList *already_tried;	
 
 	LOG_DEBUG (("add_update_package\n"));
+	
+	copy = packagedata_new ();
+	rcase = g_new0 (RepairCase, 1);
 
 	copy->name = g_strdup (pack->name);
 	copy->distribution  = pack->distribution;
@@ -1116,10 +1123,7 @@ add_update_package (EazelInstaller *installer,
 		packagedata_destroy (copy, FALSE);
 		g_free (rcase);
 		add_force_remove (installer, pack);
-	} else {
-		installer->attempted_updates = g_list_prepend (installer->attempted_updates,
-							       g_strdup (copy->name));
-		
+	} else {		
 		installer->additional_packages = g_list_prepend (installer->additional_packages, 
 								 rcase);
 	}
@@ -1389,21 +1393,23 @@ eazel_install_preflight (EazelInstall *service,
 	gtk_label_set_text (GTK_LABEL (label_single_2), "");
 
 	gtk_progress_set_percentage (GTK_PROGRESS (progress_single), 0.0);
-	/* surprise!  we're 50% done now! */
-	gtk_progress_configure (GTK_PROGRESS (progress_overall), 50.0, 0.0, 100.0);
 
 	total_mb = (total_size + (512*1024)) / (1024*1024);
 	if (num_packages == 1) {
 		if (installer->force_remove_categories) {
-			temp = g_strdup_printf (_("Installing 1 package (%d MB)"), total_mb);
-		} else {
 			temp = g_strdup_printf (_("Uninstalling 1 package"));
+		} else {
+			temp = g_strdup_printf (_("Installing 1 package (%d MB)"), total_mb);
+			/* surprise!  we're 50% done now! */
+			gtk_progress_configure (GTK_PROGRESS (progress_overall), 50.0, 0.0, 100.0);
 		}
 	} else {
 		if (installer->force_remove_categories) {
 			temp = g_strdup_printf (_("Uninstalling %d packages"), num_packages);
 		} else {
 			temp = g_strdup_printf (_("Installing %d packages (%d MB)"), num_packages, total_mb);
+			/* surprise!  we're 50% done now! */
+			gtk_progress_configure (GTK_PROGRESS (progress_overall), 50.0, 0.0, 100.0);
 		}
 	}
 	gtk_label_set_text (GTK_LABEL (label_overall), temp);
@@ -1729,7 +1735,8 @@ check_system (EazelInstaller *installer)
 		/* FIXME bugzilla.eazel.com
 		   Find other distro's that use rpm */
 		if (dist.name == DISTRO_MANDRAKE ||
-		    dist.name == DISTRO_YELLOWDOG) {
+		    dist.name == DISTRO_YELLOWDOG ||
+		    dist.name == DISTRO_SUSE) {
 			GnomeDialog *d;
 			d = GNOME_DIALOG (gnome_warning_dialog_parented (_("You're running the installer on a"
 									   "RPM-based system, but not a Red Hat"
@@ -1739,39 +1746,17 @@ check_system (EazelInstaller *installer)
 		} else {
 			jump_to_error_page (installer, NULL,
 					    _("Sorry, but this preview installer only works for RPM-based\n"
-					      "systems.  You will have to download the source youself."), "");
+					      "systems.  You will have to download the source yourself.\n"
+					      "In the future, we will support other packaging formats."), "");
 			return FALSE;
 		}
 	} else if (dist.version_major != 6) {
 			jump_to_error_page (installer, NULL,
-					    _("Sorry, but this preview installer only works for Red Hat\n"
-					      "Linux 6.x systems."), "");
+					    _("Sorry, but this preview installer won't work for Red Hat\n"
+					      "Linux 7.x systems."), "");
 			return FALSE;
 	}
 
-#if 0
-	{
-                /*if (!installer_test && g_file_test ("/etc/eazel/profile/bashrc", G_FILE_TEST_ISFILE)) { */
-		GList *matches = NULL;
-		matches = eazel_install_simple_query (installer->service, 
-						      "eazel-hacking",
-						      EI_SIMPLE_QUERY_MATCHES,
-						      0,
-						      NULL);
-		if (matches) {
-
-			PackageData *pack = packagedata_new ();
-			pack->name = g_strdup ("eazel-hacking");
-			add_force_remove (installer, pack);
-			packagedata_destroy (pack, FALSE);
-
-			insert_info_page (installer,
-					  "Eazel Hacking",
-					  EAZEL_HACKING_TEXT);
-			
-		}
-	}
-#endif
 	return TRUE;
 }
 
@@ -1795,6 +1780,33 @@ more_check_system (EazelInstaller *installer)
 				  "Eazel Hacking",
 				  EAZEL_HACKING_TEXT);
 		
+		g_list_foreach (matches, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
+		matches = NULL;
+	}
+	
+	matches = eazel_install_simple_query (installer->service, 
+					      "rpm",
+					      EI_SIMPLE_QUERY_MATCHES,
+					      0,
+					      NULL);
+	if (matches) {		
+		PackageData *pack = (PackageData*)matches->data;
+		
+		LOG_DEBUG (("** installed rpm has version %s\n", pack->version));
+		if (rpmvercmp (pack->version, "4")>0) {
+			jump_to_error_page (installer,
+					    NULL,
+					    "RPM version 4.x is not supported, go away.",
+					    NULL);
+		}
+		
+		g_list_foreach (matches, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
+		matches = NULL;
+
+		return FALSE;
+	} else {
+		LOG_DEBUG (("** rpm not installed!"));
+		return FALSE;
 	}
 
 	return TRUE;

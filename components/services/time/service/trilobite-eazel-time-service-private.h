@@ -27,18 +27,12 @@
 #ifndef TRILOBITE_EAZEL_TIME__PRIVATE_H
 #define TRILOBITE_EAZEL_TIME__PRIVATE_H
 
-typedef enum {
-	REQUEST_BY_HTTP
-} RequestMethod;
-
 struct _TrilobiteEazelTimeServicePrivate {	
 	int maxd;	
-	char *time_url;
+	char *time_server;
 
 	time_t server_time;
 	time_t time_obtained;
-
-	RequestMethod method;
 };
 
 #endif /* TRILOBITE_EAZEL_TIME__PRIVATE_H */

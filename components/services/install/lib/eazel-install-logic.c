@@ -34,11 +34,11 @@
 #ifndef EAZEL_INSTALL_NO_CORBA
 #include <libtrilobite/libtrilobite.h>
 #else
+#include <libtrilobite/libtrilobite-service.h>
 #include <libtrilobite/trilobite-root-helper.h>
 #endif
 
 #include <libtrilobite/trilobite-core-utils.h>
-#include <libtrilobite/libtrilobite-service.h>
 #include <string.h>
 #include <time.h>
 

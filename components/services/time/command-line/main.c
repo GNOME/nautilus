@@ -37,13 +37,13 @@
 int     arg_list_info,
 	arg_max_diff,
 	arg_update_time;
-char   *arg_url;
+char   *arg_server;
 
 static const struct poptOption options[] = {
 	{"info", 'i', POPT_ARG_NONE, &arg_list_info, 0, N_("display service name and such"), NULL},
 	{"maxdiff", '\0', POPT_ARG_INT, &arg_max_diff, -1, N_("maximum allowed difference in seconds"), NULL},
 	{"update", 'u', POPT_ARG_NONE, &arg_update_time, 0, N_("update the system clock"), NULL},
-	{"url", '\0', POPT_ARG_STRING, &arg_url, 0, N_("specify time url"), NULL},
+	{"server", '\0', POPT_ARG_STRING, &arg_server, 0, N_("specify time server"), NULL},
 	{NULL, '\0', 0, NULL, 0}
 };
 
@@ -121,8 +121,8 @@ int main(int argc, char *argv[]) {
 		Trilobite_Eazel_Time_set_max_difference (timeservice, arg_max_diff, &ev);
 	}
 
-	if (arg_url) {
-		Trilobite_Eazel_Time_set_time_url (timeservice, arg_url, &ev);
+	if (arg_server) {
+		Trilobite_Eazel_Time_set_time_server (timeservice, arg_server, &ev);
 	} 
 
 	diff = Trilobite_Eazel_Time_check_time (timeservice, &ev);
@@ -131,7 +131,7 @@ int main(int argc, char *argv[]) {
 			Trilobite_Eazel_Time_CannotGetTime *exn; 
 			fprintf (stderr, "Unable to obtain time from server\n");
 			exn = (Trilobite_Eazel_Time_CannotGetTime*)CORBA_exception_value (&ev);
-			fprintf (stderr, "URL was %s\nReason is %s\n", exn->url, exn->reason);
+			fprintf (stderr, "server was %s\nReason is %s\n", exn->server, exn->reason);
 		} else {
 			fprintf (stderr, "Unhandleable error occured while communicating with the time-service\n");
 			fprintf (stderr, "Caught %s\n", CORBA_exception_id (&ev));

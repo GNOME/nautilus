@@ -37,10 +37,20 @@
 #include <ghttp.h>
 #include <time.h>
 
+#include <netdb.h>
+
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <sys/timeb.h>
+#include <sys/time.h>
+
+
 /* might wanna make this configable */
 /* # of seconds to wait between bugging the time server again */
-#define TIME_SERVER_CACHE_TIMEOUT	60
-
+#define TIME_SERVER_CACHE_TIMEOUT	1800
+#define PORT 13
+#define MAXDATASIZE 100
 
 /* This is the parent class pointer */
 static GtkObjectClass *trilobite_eazel_time_service_parent_class;
@@ -70,14 +80,14 @@ impl_Trilobite_Eazel_Time_Service_set_max_difference (impl_POA_Trilobite_Eazel_T
 }
 
 static void
-impl_Trilobite_Eazel_Time_Service_set_time_url (impl_POA_Trilobite_Eazel_Time_Service *service,
-						const CORBA_char *url,
-						CORBA_Environment *ev) 
+impl_Trilobite_Eazel_Time_Service_set_time_server (impl_POA_Trilobite_Eazel_Time_Service *service,
+						   const CORBA_char *server,
+						   CORBA_Environment *ev) 
 {
-	if (service->object->private->time_url != NULL) {
-		g_free (service->object->private->time_url);
+	if (service->object->private->time_server != NULL) {
+		g_free (service->object->private->time_server);
 	}
-	service->object->private->time_url = g_strdup (url);
+	service->object->private->time_server = g_strdup (server);
 	service->object->private->time_obtained = 0;
 }
 
@@ -161,7 +171,7 @@ trilobite_eazel_time_service_get_epv ()
 	epv = g_new0 (POA_Trilobite_Eazel_Time__epv, 1);
 
 	epv->set_max_difference = (gpointer) &impl_Trilobite_Eazel_Time_Service_set_max_difference;
-	epv->set_time_url       = (gpointer) &impl_Trilobite_Eazel_Time_Service_set_time_url;
+	epv->set_time_server       = (gpointer) &impl_Trilobite_Eazel_Time_Service_set_time_server;
 	epv->check_time         = (gpointer) &impl_Trilobite_Eazel_Time_Service_check_time;
 	epv->update_time        = (gpointer) &impl_Trilobite_Eazel_Time_Service_update_time;
 		
@@ -185,8 +195,8 @@ trilobite_eazel_time_service_finalize (GtkObject *object)
 
 	service = TRILOBITE_EAZEL_TIME_SERVICE (object);
 
-	if (service->private->time_url) {
-		g_free (service->private->time_url);
+	if (service->private->time_server) {
+		g_free (service->private->time_server);
 	}
 
 	g_free (service->private);
@@ -276,7 +286,7 @@ trilobite_eazel_time_service_initialize_load_config (TrilobiteEazelTimeService *
 	doc = xmlParseFile (config_file);
 	
 	service->private->maxd = 180;
-	service->private->time_url = g_strdup ("http://testmachine.eazel.com:8888/examples/time/current");
+	service->private->time_server = g_strdup ("nist1.sjc.certifiedtime.com");
 	
 	if (!doc) {
 	        g_warning (_("Could not read time-service config from %s"), config_file);
@@ -300,9 +310,9 @@ trilobite_eazel_time_service_initialize_load_config (TrilobiteEazelTimeService *
 		return;
 	}
 	
-	if (xml_get_value (base, "TIME_URL")) {
-		g_free (service->private->time_url);
-		service->private->time_url = g_strdup (xml_get_value (base, "TIME_URL"));
+	if (xml_get_value (base, "TIME_SERVER")) {
+		g_free (service->private->time_server);
+		service->private->time_server = g_strdup (xml_get_value (base, "TIME_SERVER"));
 	}
 	if (xml_get_value (base, "MAXD")) {
 		const char *tmp = xml_get_value (base, "MAXD");
@@ -389,6 +399,7 @@ trilobite_eazel_time_service_new (void)
 	return service;
 }
 
+#if 0
 /* 
    NOTE: 
    the parser isn't using XML, since the contents of body is so basic 
@@ -467,6 +478,133 @@ trilobite_eazel_time_service_do_http_request (TrilobiteEazelTimeService *service
 
 	return result;
 }
+#endif
+
+/* This code was blatantly ripped from gnuclear/src/app.c.
+   Modified for local variables and nautilus style guidelines.
+   Gnuclear 0.6
+   Havoc Pennington <hp@pobox.com>
+*/
+static time_t
+get_nist_time (TrilobiteEazelTimeService *service)
+{
+	struct tm server;
+	time_t server_unixtime;
+	gint server_health;
+	char buf[MAXDATASIZE];
+	char buffy[MAXDATASIZE];
+	int sockfd, numbytes;  
+	
+	struct hostent *he;
+	struct sockaddr_in their_addr; /* connector's address information */
+	
+	if ((he = gethostbyname (service->private->time_server)) == NULL) {  
+		/* get the host info */
+		perror ("gethostbyname");
+		return 0;
+	}
+	
+	if ((sockfd = socket (AF_INET, SOCK_STREAM, 0)) == -1) {
+		perror ("socket");
+		return 0;
+	}
+	
+	their_addr.sin_family = AF_INET;         /* host byte order */
+	their_addr.sin_port = htons (PORT);     /* short, network byte order */
+	their_addr.sin_addr = *((struct in_addr *)he->h_addr);
+	bzero (&(their_addr.sin_zero), 8);        /* zero the rest of the struct */
+	
+	if (connect (sockfd, (struct sockaddr *)&their_addr, sizeof(struct sockaddr)) == -1) {
+		perror ("connect");
+		return 0;
+	}
+	
+	if ((numbytes=recv (sockfd, buf, MAXDATASIZE, 0)) == -1) {
+		perror ("recv");
+		return 0;
+	}
+	
+	buf[numbytes] = '\0';
+	
+	close (sockfd);
+	
+	/* Let's parse buf[]! */
+	/* Year */
+	sprintf (buffy, "%c%c", buf[7], buf[8]);
+	server.tm_year = atoi (buffy);
+	if (server.tm_year<99)
+		server.tm_year+=100;
+	/* note:  1999 is stored as "99", 2001 as "101" */
+	
+	
+	/* reset buffy */
+	buffy[0] = '\0';
+	
+	/* Month */
+	/* the local month variable is stored 0-11, not 1-12 as on the server.
+	 * so I need to subtract the server's value by 1.  */
+	sprintf (buffy, "%c%c", buf[10], buf[11]);
+	server.tm_mon = atoi (buffy);
+	server.tm_mon--;
+	/* reset buffy */
+	buffy[0] = '\0';
+	
+	/* Day */
+	sprintf (buffy, "%c%c", buf[13], buf[14]);
+	server.tm_mday = atoi (buffy);
+	/* reset buffy */
+	buffy[0] = '\0';
+	
+	/* Hour */
+	sprintf (buffy, "%c%c", buf[16], buf[17]);
+	server.tm_hour = atoi (buffy);
+	/* reset buffy */
+	buffy[0] = '\0';
+
+	/* Minute */
+	sprintf (buffy, "%c%c", buf[19], buf[20]);
+	server.tm_min = atoi (buffy);
+	/* reset buffy */
+	buffy[0] = '\0';
+	
+	/* Second */
+	sprintf (buffy, "%c%c", buf[22], buf[23]);
+	server.tm_sec = atoi (buffy);
+	/* reset buffy */
+	buffy[0] = '\0';
+	
+	/* Standard vs. Daylight Savings */
+	if ( buf[24]=='0' ) {
+		server.tm_isdst = 0;
+	} else {
+		server.tm_isdst = 1;
+	}
+
+	/* Time Server Health */
+	sprintf (buffy, "%c", buf[35]);
+	server_health = atoi (buffy);
+	/* reset buffy */
+	buffy[0] = '\0';
+	
+	(time_t)server_unixtime = mktime (&server);
+	
+	if (server_unixtime == -1) {
+		printf ("Error in server time conversion\n");
+		return 0;
+	}
+	
+	
+	/* investigate this */
+	/* adjust for time zone difference (I thought this was done automagically? */
+	server_unixtime -= timezone;
+	
+	/* now check for daylight savings time.  If 'yes', adjust accordingly */
+	if (server.tm_isdst > 0) {
+		server_unixtime += 3600;  /* 3600 seconds in an hour ;) */
+	}
+
+	return server_unixtime;
+}
 
 time_t
 trilobite_eazel_time_service_get_server_time (TrilobiteEazelTimeService *service,
@@ -475,21 +613,13 @@ trilobite_eazel_time_service_get_server_time (TrilobiteEazelTimeService *service
 	time_t result;
 	time_t now;
 
+	result = get_nist_time (service);
 	now = time (NULL);
 	if ((service->private->time_obtained > 0) &&
 	    (now - service->private->time_obtained < TIME_SERVER_CACHE_TIMEOUT)) {
 		/* don't bug the time server again -- just extrapolate the time */
 		return service->private->server_time + (now - service->private->time_obtained);
 	}
-
-	switch (service->private->method) {
-	case REQUEST_BY_HTTP:
-		result = trilobite_eazel_time_service_do_http_request (service, ev);
-		break;
-	default:
-		result = 0;
-		break;
-	};
 
 	service->private->server_time = result;
 	if (result != 0) {

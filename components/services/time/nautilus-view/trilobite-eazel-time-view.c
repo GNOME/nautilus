@@ -50,7 +50,7 @@
  */
 
 /* FIXME bugzilla.eazel.com 2588: no way to save the url once you change it */
-#define DEFAULT_SERVER_URL	"http://testmachine.eazel.com:8888/examples/time/current"
+#define DEFAULT_SERVER  "nist1.sjc.certifiedtime.com"
 #define DEFAULT_TIME_DIFF	"180"
 
 #define OAFIID_TIME_SERVICE	"OAFIID:trilobite_eazel_time_service:13a2dbd9-84f9-4400-bd9e-bb4575b86894"
@@ -59,12 +59,12 @@
 
 /* A NautilusContentView's private information. */
 struct TrilobiteEazelTimeViewDetails {
-	char *		server_url;
+	char *		server;
 	char *		max_time_diff;
 	NautilusView *	nautilus_view;
 	GtkEntry *	p_localtime;
 	GtkEntry *	p_servertime;
-	GtkEntry *	p_url;
+	GtkEntry *	p_server;
 	GtkEntry *	p_maxdiff;
 	GtkLabel *	p_status;
 	Trilobite_Eazel_Time service;
@@ -145,7 +145,7 @@ sync_button_pressed( GtkButton *p_button, TrilobiteEazelTimeView *view )
 
 
 static void
-url_button_pressed( GtkButton *p_button, TrilobiteEazelTimeView *view )
+server_button_pressed( GtkButton *p_button, TrilobiteEazelTimeView *view )
 {
 	CORBA_Environment ev;
 
@@ -155,12 +155,12 @@ url_button_pressed( GtkButton *p_button, TrilobiteEazelTimeView *view )
 
 	if (view->details->service) {
 
-		g_free (view->details->server_url);
-		view->details->server_url = gtk_editable_get_chars (GTK_EDITABLE (view->details->p_url), 0, -1);
+		g_free (view->details->server);
+		view->details->server = gtk_editable_get_chars (GTK_EDITABLE (view->details->p_server), 0, -1);
 			
-		Trilobite_Eazel_Time_set_time_url (view->details->service, view->details->server_url, &ev);
+		Trilobite_Eazel_Time_set_time_server (view->details->service, view->details->server, &ev);
 
-		set_status_text (view, "Server URL changed");
+		set_status_text (view, "Time server changed");
 
 	} else {
 		set_status_text (view, STATUS_ERROR_NO_SERVER);
@@ -180,8 +180,8 @@ timediff_button_pressed( GtkButton *p_button, TrilobiteEazelTimeView *view )
 
 	if (view->details->service) {
 
-		g_free (view->details->server_url);
-		view->details->server_url = gtk_editable_get_chars (GTK_EDITABLE (view->details->p_maxdiff), 0, -1);
+		g_free (view->details->server);
+		view->details->server = gtk_editable_get_chars (GTK_EDITABLE (view->details->p_maxdiff), 0, -1);
 			
 		Trilobite_Eazel_Time_set_max_difference (view->details->service, atoi (view->details->max_time_diff), &ev);
 
@@ -292,7 +292,7 @@ trilobite_eazel_time_view_initialize (TrilobiteEazelTimeView *view)
 	GtkWidget *p_hbox2;
 	GtkWidget *p_hbox3;
 	GtkWidget *p_sync;
-	GtkWidget *p_url_button;
+	GtkWidget *p_server_button;
 	GtkWidget *p_timediff_button;
 	BonoboObjectClient *p_service;
 
@@ -306,19 +306,19 @@ trilobite_eazel_time_view_initialize (TrilobiteEazelTimeView *view)
 
 	view->details->nautilus_view 	= nautilus_view_new (GTK_WIDGET (view));
 
-	view->details->server_url 	= g_strdup(DEFAULT_SERVER_URL);
+	view->details->server 	        = g_strdup(DEFAULT_SERVER);
 	view->details->max_time_diff 	= g_strdup(DEFAULT_TIME_DIFF);
 
 	view->details->p_localtime 	= GTK_ENTRY (gtk_entry_new());
 	view->details->p_servertime 	= GTK_ENTRY (gtk_entry_new());
-	view->details->p_url 		= GTK_ENTRY (gtk_entry_new());
+	view->details->p_server 		= GTK_ENTRY (gtk_entry_new());
 	view->details->p_maxdiff 	= GTK_ENTRY (gtk_entry_new());
 	view->details->p_status 	= GTK_LABEL (gtk_label_new("(no status)"));
 
 	gtk_entry_set_editable (GTK_ENTRY(view->details->p_localtime), FALSE);
 	gtk_entry_set_editable (GTK_ENTRY(view->details->p_servertime), FALSE);
 
-	gtk_entry_set_text (GTK_ENTRY(view->details->p_url), view->details->server_url);
+	gtk_entry_set_text (GTK_ENTRY(view->details->p_server), view->details->server);
 	gtk_entry_set_text (GTK_ENTRY(view->details->p_maxdiff), view->details->max_time_diff);
 
 	p_service	= bonobo_object_activate (OAFIID_TIME_SERVICE, 0);
@@ -334,7 +334,7 @@ trilobite_eazel_time_view_initialize (TrilobiteEazelTimeView *view)
 	/* Initialize service params */
 
 	if (view->details->service) {
-		Trilobite_Eazel_Time_set_time_url (view->details->service, view->details->server_url, &ev);
+		Trilobite_Eazel_Time_set_time_server (view->details->service, view->details->server, &ev);
 		Trilobite_Eazel_Time_set_max_difference (view->details->service, atoi (view->details->max_time_diff), &ev);
 	}
 
@@ -364,14 +364,14 @@ trilobite_eazel_time_view_initialize (TrilobiteEazelTimeView *view)
 
 	gtk_box_pack_start (GTK_BOX (p_vbox), GTK_WIDGET (p_sync), FALSE, FALSE, 0);
 
-	/* Time URL */
+	/* Time SERVER */
 
 	p_hbox2 = gtk_hbox_new (FALSE,0);
-	gtk_box_pack_start (GTK_BOX(p_hbox2), gtk_label_new ("Server URL"), FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX(p_hbox2), GTK_WIDGET (view->details->p_url), FALSE, FALSE, 0);
-	p_url_button = gtk_button_new_with_label ("Set");
-	gtk_signal_connect (GTK_OBJECT (p_url_button), "pressed", GTK_SIGNAL_FUNC (url_button_pressed), view);
-	gtk_box_pack_start (GTK_BOX(p_hbox2), GTK_WIDGET (p_url_button), FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX(p_hbox2), gtk_label_new ("Time server"), FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX(p_hbox2), GTK_WIDGET (view->details->p_server), FALSE, FALSE, 0);
+	p_server_button = gtk_button_new_with_label ("Set");
+	gtk_signal_connect (GTK_OBJECT (p_server_button), "pressed", GTK_SIGNAL_FUNC (server_button_pressed), view);
+	gtk_box_pack_start (GTK_BOX(p_hbox2), GTK_WIDGET (p_server_button), FALSE, FALSE, 0);
 
 	gtk_box_pack_start (GTK_BOX (p_vbox), GTK_WIDGET (p_hbox2), FALSE, FALSE, 0);
 
@@ -428,7 +428,7 @@ trilobite_eazel_time_view_destroy (GtkObject *object)
 	
 	view = TRILOBITE_EAZEL_TIME_VIEW (object);
 	
-	g_free (view->details->server_url);
+	g_free (view->details->server);
 	g_free (view->details->max_time_diff);
 	g_free (view->details->remembered_password);
 

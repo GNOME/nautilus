@@ -1,3 +1,43 @@
+2000-10-24  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/lib/eazel-install-logic.c:
+	Moved a CORBA include, so EAZEL_INSTALL_NO_CORBA doesn't include
+	it
+	
+	* components/services/time/command-line/main.c: (main):
+	* components/services/time/idl/trilobite-eazel-time-service.idl:
+	* components/services/time/nautilus-view/trilobite-eazel-time-view.
+	c: (server_button_pressed), (timediff_button_pressed),
+	(trilobite_eazel_time_view_initialize),
+	(trilobite_eazel_time_view_destroy):
+	* components/services/time/service/trilobite-eazel-time-service-pri
+	vate.h:
+	* components/services/time/service/trilobite-eazel-time-service.c:
+	(impl_Trilobite_Eazel_Time_Service_set_time_server),
+	(trilobite_eazel_time_service_get_epv),
+	(trilobite_eazel_time_service_finalize),
+	(trilobite_eazel_time_service_initialize_load_config),
+	(get_nist_time), (trilobite_eazel_time_service_get_server_time):
+	Revived the timeservice, made it use nist/ntp (defaults to
+	nist1.sjc.certifiedtime.com). Uses code from gnuclear to do the
+	actual nist parse.
+	
+	* nautilus-installer/src/Makefile:
+	Yes.
+	* nautilus-installer/src/installer.c: (start_over),
+	(add_update_package), (eazel_install_preflight), (check_system),
+	(more_check_system):
+	Fixed the "will update eog && will remove eog" bug. Now it just
+	say "will update eog x 2". Also checks for rh7.x and rpm v.4.x
+	
+	* nautilus-installer/src/prescript:
+	Temporarily hacked prescript to run
+	/h/public/bin/eazel-trilobite-configure (if present), and set
+	nautilus to use gegl as services server.
+	
+	* nautilus.spec.in:
+	Updated deps to ORBit >= 0.5.3 and oaf >= 0.6.0
+
 2000-10-24  Robey Pointer  <robey@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory-async.c:
