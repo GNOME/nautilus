@@ -25,7 +25,7 @@
 #include <eazel-install-query.h>
 #include <eazel-install-public.h>
 #include <eazel-install-private.h>
-#include <eazel-install-rpm-glue.h>
+#include <eazel-install-logic.h>
 #include <ctype.h>
 #include <stdarg.h>
 

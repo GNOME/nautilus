@@ -18,6 +18,7 @@
  * Boston, MA 02111-1307, USA.
  *
  * Authors: J Shane Culpepper <pepper@eazel.com>
+ *          Eskil Heyn Olsen <eskil@eazel.com>
  */
 
 /* eazel-install - services command line install/update/uninstall
