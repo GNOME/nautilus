@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.0.4\n"
-"POT-Creation-Date: 2002-02-28 11:27+0100\n"
+"POT-Creation-Date: 2002-03-04 13:00-0800\n"
 "PO-Revision-Date: 28.02.2002 11:28\n"
 "Last-Translator: Stanislav Višňovský <visnovsky@nenya.ms.mff.cuni.cz>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
@@ -239,7 +239,8 @@ msgstr "Zábudlivec pre bočný panel pre Nautilus"
 
 #: components/loser/sidebar/Nautilus_View_sidebar-loser.server.in.h:2
 msgid "Nautilus sidebar loser component's factory"
-msgstr "Vytváracie rozhranie pre komponent Zábudlivec pre bočný panel pre Nautilus"
+msgstr ""
+"Vytváracie rozhranie pre komponent Zábudlivec pre bočný panel pre Nautilus"
 
 #: components/loser/sidebar/Nautilus_View_sidebar-loser.server.in.h:3
 msgid "Nautilus sidebar loser factory"
@@ -880,7 +881,7 @@ msgid "Sorry, but '%s' is not a usable image file."
 msgstr "Je mi ľúto, ale '%s' nie je použiteľný súbor s obrázkom."
 
 #: components/music/nautilus-music-view.c:748
-#: src/nautilus-property-browser.c:1045 src/nautilus-property-browser.c:1300
+#: src/nautilus-property-browser.c:1045 src/nautilus-property-browser.c:1296
 msgid "Not an Image"
 msgstr "Nie je obrázok"
 
@@ -917,7 +918,8 @@ msgstr ""
 
 #: components/music/nautilus-music-view.c:1226
 msgid "Sorry, but the music view can't play non-local files yet."
-msgstr "Je mi ľúto, ale pohľad Hudba nepodporuje prehrávanie vzdialených súborov."
+msgstr ""
+"Je mi ľúto, ale pohľad Hudba nepodporuje prehrávanie vzdialených súborov."
 
 #: components/music/nautilus-music-view.c:1227
 msgid "Can't Play Remote Files"
@@ -1239,7 +1241,8 @@ msgstr "Zobraziť ako ukážku"
 #: components/text/nautilus-text-view.c:345
 #, c-format
 msgid "Sorry, but %s is too large for Nautilus to load all of it."
-msgstr "Ľutujem, ale %s je príliš veľký, takže ho Nautilus nedokáže načítať celý."
+msgstr ""
+"Ľutujem, ale %s je príliš veľký, takže ho Nautilus nedokáže načítať celý."
 
 #: components/text/nautilus-text-view.c:348
 msgid "File too large"
@@ -1375,7 +1378,7 @@ msgid "Nautilus Tree view"
 msgstr "Stromový pohľad pre Nautilus"
 
 #: components/tree/Nautilus_View_tree.server.in.h:3
-#: src/nautilus-preferences-dialog.c:369
+#: src/nautilus-preferences-dialog.c:364
 msgid "Tree"
 msgstr "Strom"
 
@@ -1724,7 +1727,7 @@ msgstr "Obľúbené"
 msgid "Adjust your user environment"
 msgstr "Prispôsobte si svoje prostredie"
 
-#: data/preferences.desktop.in.h:2 src/nautilus-preferences-dialog.c:428
+#: data/preferences.desktop.in.h:2 src/nautilus-preferences-dialog.c:425
 msgid "Preferences"
 msgstr "Nastavenie"
 
@@ -1955,7 +1958,8 @@ msgstr "Toto je štandardná téma pre Nautilus."
 
 #: icons/gnome/gnome.xml.h:1
 msgid "A theme designed to fit well with the classic GNOME environment."
-msgstr "Táto téma je vytvorená tak, aby dobre vyzerala v klasickom prostredí GNOME."
+msgstr ""
+"Táto téma je vytvorená tak, aby dobre vyzerala v klasickom prostredí GNOME."
 
 #: icons/sierra/sierra.xml.h:1
 msgid "Sierra"
@@ -2176,7 +2180,7 @@ msgstr "_Odkaz sem"
 msgid "Cancel"
 msgstr "Zrušiť"
 
-#: libnautilus-private/nautilus-file.c:2143
+#: libnautilus-private/nautilus-file.c:2188
 msgid " (invalid Unicode)"
 msgstr " (neplatný znak Unicode)"
 
@@ -2195,64 +2199,64 @@ msgstr " (neplatný znak Unicode)"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2360
+#: libnautilus-private/nautilus-file.c:2410
 msgid "today at 00:00:00 PM"
 msgstr "dnes o 0:0:0"
 
-#: libnautilus-private/nautilus-file.c:2361
+#: libnautilus-private/nautilus-file.c:2411
 msgid "today at %-I:%M:%S %p"
 msgstr "dnes o %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2363
+#: libnautilus-private/nautilus-file.c:2413
 msgid "today at 00:00 PM"
 msgstr "dnes o 0:0"
 
-#: libnautilus-private/nautilus-file.c:2364
+#: libnautilus-private/nautilus-file.c:2414
 msgid "today at %-I:%M %p"
 msgstr "dnes o %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2366
+#: libnautilus-private/nautilus-file.c:2416
 msgid "today, 00:00 PM"
 msgstr "dnes o 12:00"
 
-#: libnautilus-private/nautilus-file.c:2367
+#: libnautilus-private/nautilus-file.c:2417
 msgid "today, %-I:%M %p"
 msgstr "dnes o %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2369
-#: libnautilus-private/nautilus-file.c:2370
+#: libnautilus-private/nautilus-file.c:2419
+#: libnautilus-private/nautilus-file.c:2420
 msgid "today"
 msgstr "dnes"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2379
+#: libnautilus-private/nautilus-file.c:2429
 msgid "yesterday at 00:00:00 PM"
 msgstr "včera o 12:00"
 
-#: libnautilus-private/nautilus-file.c:2380
+#: libnautilus-private/nautilus-file.c:2430
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "včera o %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2382
+#: libnautilus-private/nautilus-file.c:2432
 msgid "yesterday at 00:00 PM"
 msgstr "včera o 12:00"
 
-#: libnautilus-private/nautilus-file.c:2383
+#: libnautilus-private/nautilus-file.c:2433
 msgid "yesterday at %-I:%M %p"
 msgstr "včera o %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2385
+#: libnautilus-private/nautilus-file.c:2435
 msgid "yesterday, 00:00 PM"
 msgstr "včera o 12:00"
 
-#: libnautilus-private/nautilus-file.c:2386
+#: libnautilus-private/nautilus-file.c:2436
 msgid "yesterday, %-I:%M %p"
 msgstr "včera o %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2388
-#: libnautilus-private/nautilus-file.c:2389
+#: libnautilus-private/nautilus-file.c:2438
+#: libnautilus-private/nautilus-file.c:2439
 msgid "yesterday"
 msgstr "včera"
 
@@ -2261,132 +2265,132 @@ msgstr "včera"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2400
+#: libnautilus-private/nautilus-file.c:2450
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Streda, 00. septembra 0000 o 12:00"
 
-#: libnautilus-private/nautilus-file.c:2401
+#: libnautilus-private/nautilus-file.c:2451
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %B %-d.%-m.%y o %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2403
+#: libnautilus-private/nautilus-file.c:2453
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Pod, 00. Okt 0000 o 12:00"
 
-#: libnautilus-private/nautilus-file.c:2404
+#: libnautilus-private/nautilus-file.c:2454
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%A %-d.%-m.%y o %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2406
+#: libnautilus-private/nautilus-file.c:2456
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Pon, 00. Okt 0000 o 12:00"
 
-#: libnautilus-private/nautilus-file.c:2407
+#: libnautilus-private/nautilus-file.c:2457
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %b %-d %Y o %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2409
+#: libnautilus-private/nautilus-file.c:2459
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "00. Okt 0000 o 00:00"
 
-#: libnautilus-private/nautilus-file.c:2410
+#: libnautilus-private/nautilus-file.c:2460
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%b %-d %Y o %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2412
+#: libnautilus-private/nautilus-file.c:2462
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "00. Okt 0000, 12:00"
 
-#: libnautilus-private/nautilus-file.c:2413
+#: libnautilus-private/nautilus-file.c:2463
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%b %-d %Y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2415
+#: libnautilus-private/nautilus-file.c:2465
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 12:00"
 
-#: libnautilus-private/nautilus-file.c:2416
+#: libnautilus-private/nautilus-file.c:2466
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d/%m/%y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2418
+#: libnautilus-private/nautilus-file.c:2468
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-private/nautilus-file.c:2419
+#: libnautilus-private/nautilus-file.c:2469
 msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
-#: libnautilus-private/nautilus-file.c:3694
+#: libnautilus-private/nautilus-file.c:3744
 msgid "0 items"
 msgstr "0 položiek"
 
-#: libnautilus-private/nautilus-file.c:3694
+#: libnautilus-private/nautilus-file.c:3744
 msgid "0 folders"
 msgstr "0 priečinkov"
 
-#: libnautilus-private/nautilus-file.c:3695
+#: libnautilus-private/nautilus-file.c:3745
 msgid "0 files"
 msgstr "0 súborov"
 
-#: libnautilus-private/nautilus-file.c:3699
+#: libnautilus-private/nautilus-file.c:3749
 msgid "1 item"
 msgstr "1 položka"
 
-#: libnautilus-private/nautilus-file.c:3699
+#: libnautilus-private/nautilus-file.c:3749
 msgid "1 folder"
 msgstr "1 priečinok"
 
-#: libnautilus-private/nautilus-file.c:3700
+#: libnautilus-private/nautilus-file.c:3750
 msgid "1 file"
 msgstr "1 súbor"
 
-#: libnautilus-private/nautilus-file.c:3703
+#: libnautilus-private/nautilus-file.c:3753
 #, c-format
 msgid "%u items"
 msgstr "%u položiek"
 
-#: libnautilus-private/nautilus-file.c:3703
+#: libnautilus-private/nautilus-file.c:3753
 #, c-format
 msgid "%u folders"
 msgstr "%u priečinkov"
 
-#: libnautilus-private/nautilus-file.c:3704
+#: libnautilus-private/nautilus-file.c:3754
 #, c-format
 msgid "%u files"
 msgstr "%u súborov"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4011
-#: libnautilus-private/nautilus-file.c:4027
+#: libnautilus-private/nautilus-file.c:4061
+#: libnautilus-private/nautilus-file.c:4077
 msgid "? items"
 msgstr "? položiek"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4017
+#: libnautilus-private/nautilus-file.c:4067
 msgid "? bytes"
 msgstr "? bajtov"
 
-#: libnautilus-private/nautilus-file.c:4032
+#: libnautilus-private/nautilus-file.c:4082
 msgid "unknown type"
 msgstr "neznámy typ"
 
-#: libnautilus-private/nautilus-file.c:4035
+#: libnautilus-private/nautilus-file.c:4085
 msgid "unknown MIME type"
 msgstr "neznámy typ MIME"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4041
+#: libnautilus-private/nautilus-file.c:4091
 msgid "unknown"
 msgstr "neznámy"
 
-#: libnautilus-private/nautilus-file.c:4073
+#: libnautilus-private/nautilus-file.c:4123
 msgid "program"
 msgstr "program"
 
-#: libnautilus-private/nautilus-file.c:4085
+#: libnautilus-private/nautilus-file.c:4135
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2396,7 +2400,7 @@ msgstr ""
 "súbor gnome-vfs.keys nie je na správnom mieste alebo z nejakého iného dôvodu "
 "sa nedá nájsť."
 
-#: libnautilus-private/nautilus-file.c:4089
+#: libnautilus-private/nautilus-file.c:4139
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2405,7 +2409,7 @@ msgstr ""
 "Pre typ MIME \"%s\" (súbor je \"%s\") nebol nájdený žiadny popis. Oznámte to "
 "v konferencii gnome-vfs."
 
-#: libnautilus-private/nautilus-file.c:4103
+#: libnautilus-private/nautilus-file.c:4153
 msgid "link"
 msgstr "odkaz"
 
@@ -2414,16 +2418,16 @@ msgstr "odkaz"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: libnautilus-private/nautilus-file-operations.c:1114
-#: libnautilus-private/nautilus-file.c:4109
+#: libnautilus-private/nautilus-file.c:4159
 #, c-format
 msgid "link to %s"
 msgstr "odkaz na %s"
 
-#: libnautilus-private/nautilus-file.c:4123
+#: libnautilus-private/nautilus-file.c:4173
 msgid "link (broken)"
 msgstr "odkaz (neplatný)"
 
-#: libnautilus-private/nautilus-file.c:5130
+#: libnautilus-private/nautilus-file.c:5180
 #: libnautilus-private/nautilus-trash-directory.c:390
 #: src/file-manager/fm-desktop-icon-view.c:68
 msgid "Trash"
@@ -3109,7 +3113,8 @@ msgid "Preparing to Empty the Trash..."
 msgstr "Pripravujem vyprázdnenie Odpadkov..."
 
 #: libnautilus-private/nautilus-file-operations.c:2225
-msgid "Are you sure you want to permanently delete all of the items in the Trash?"
+msgid ""
+"Are you sure you want to permanently delete all of the items in the Trash?"
 msgstr "Naozaj chcete navždy odstrániť všetky položky v Odpadkoch?"
 
 #: libnautilus-private/nautilus-file-operations.c:2227
@@ -3662,7 +3667,7 @@ msgstr "zvýraznené pre pustenie"
 msgid "whether we are highlighted for a D&D drop"
 msgstr "či sme zvýraznení pre pustenie pomocou myši"
 
-#: libnautilus-private/nautilus-icon-dnd.c:777
+#: libnautilus-private/nautilus-icon-dnd.c:624
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it? This will clobber the stored "
@@ -3672,7 +3677,7 @@ msgstr ""
 "rozmiestnenia a nechať pustenú položku tam, kam ste ju umiestnili? To "
 "rozhádže ručné rozmiestnenie."
 
-#: libnautilus-private/nautilus-icon-dnd.c:781
+#: libnautilus-private/nautilus-icon-dnd.c:628
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them? This will clobber the stored "
@@ -3682,7 +3687,7 @@ msgstr ""
 "rozmiestnenia a nechať pustené položky tam, kam ste ich umiestnili? To "
 "rozhádže ručné rozmiestnenie."
 
-#: libnautilus-private/nautilus-icon-dnd.c:787
+#: libnautilus-private/nautilus-icon-dnd.c:634
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it?"
@@ -3690,7 +3695,7 @@ msgstr ""
 "Tento priečinok používa automatické rozmiestnenie. Chcete prepnúť do ručného "
 "rozmiestnenia a nechať túto položku tam, kam ste ju umiestnili?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:790
+#: libnautilus-private/nautilus-icon-dnd.c:637
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them?"
@@ -3698,11 +3703,11 @@ msgstr ""
 "Tento priečinok používa automatické rozmiestnenie. Chcete prepnúť do ručného "
 "rozmiestnenia a nechať tieto položky tam, kam ste ich umiestnili?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:795
+#: libnautilus-private/nautilus-icon-dnd.c:642
 msgid "Switch to Manual Layout?"
 msgstr "Prepnúť do ručného rozmiestnenia?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:796
+#: libnautilus-private/nautilus-icon-dnd.c:643
 msgid "Switch"
 msgstr "Prepnúť"
 
@@ -4187,7 +4192,8 @@ msgstr "Položky sú normálne súbory"
 
 #: libnautilus-private/nautilus-search-uri.c:705
 msgid "Items containing \"stuff\" in their names and that are regular files"
-msgstr "Položky obsahujúce \"informáciu\" v svojich menách a sú to normálne súbory"
+msgstr ""
+"Položky obsahujúce \"informáciu\" v svojich menách a sú to normálne súbory"
 
 #: libnautilus-private/nautilus-search-uri.c:709
 msgid ""
@@ -4279,7 +4285,8 @@ msgstr "Chyba odpojenia"
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
-msgstr "Nautilus nemohol pripojiť disketovú mechaniku. Možno v nej nie je disketa."
+msgstr ""
+"Nautilus nemohol pripojiť disketovú mechaniku. Možno v nej nie je disketa."
 
 #. All others
 #: libnautilus-private/nautilus-volume-monitor.c:1513
@@ -4362,93 +4369,93 @@ msgstr "Vyprázdniť odpadky"
 msgid "Unmount Volume"
 msgstr "Odpojiť disk"
 
-#: src/file-manager/fm-directory-view.c:466
+#: src/file-manager/fm-directory-view.c:468
 #, c-format
 msgid "This will open %d separate windows. Are you sure you want to do this?"
 msgstr "Toto otvorí %d samostatných okien. Naozaj to chcete urobiť?"
 
-#: src/file-manager/fm-directory-view.c:468
+#: src/file-manager/fm-directory-view.c:470
 #, c-format
 msgid "Open %d Windows?"
 msgstr "Otvoriť %d okien?"
 
-#: src/file-manager/fm-directory-view.c:778
+#: src/file-manager/fm-directory-view.c:780
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Naozaj chcete úplne odstrániť \"%s\"?"
 
-#: src/file-manager/fm-directory-view.c:782
+#: src/file-manager/fm-directory-view.c:784
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected items?"
 msgstr "Naozaj chcete úplne odstrániť %d vybraných položiek?"
 
-#: src/file-manager/fm-directory-view.c:788
+#: src/file-manager/fm-directory-view.c:790
 msgid "Delete?"
 msgstr "Odstrániť?"
 
-#: src/file-manager/fm-directory-view.c:788
-#: src/file-manager/fm-directory-view.c:2947
-#: src/file-manager/fm-directory-view.c:2989
+#: src/file-manager/fm-directory-view.c:790
+#: src/file-manager/fm-directory-view.c:2964
+#: src/file-manager/fm-directory-view.c:3006
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Delete"
 msgstr "Odstrániť"
 
-#: src/file-manager/fm-directory-view.c:1416
+#: src/file-manager/fm-directory-view.c:1435
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" vybraných"
 
-#: src/file-manager/fm-directory-view.c:1418
+#: src/file-manager/fm-directory-view.c:1437
 msgid "1 folder selected"
 msgstr "vybraný 1 priečinok"
 
-#: src/file-manager/fm-directory-view.c:1421
+#: src/file-manager/fm-directory-view.c:1440
 #, c-format
 msgid "%d folders selected"
 msgstr "vybraných %d priečinkov"
 
-#: src/file-manager/fm-directory-view.c:1428
+#: src/file-manager/fm-directory-view.c:1447
 msgid " (containing 0 items)"
 msgstr " (obsahujú 0 položiek)"
 
-#: src/file-manager/fm-directory-view.c:1430
+#: src/file-manager/fm-directory-view.c:1449
 msgid " (containing 1 item)"
 msgstr " (obsahujú 1 položku)"
 
-#: src/file-manager/fm-directory-view.c:1432
+#: src/file-manager/fm-directory-view.c:1451
 #, c-format
 msgid " (containing %d items)"
 msgstr " (obsahujú %d položiek)"
 
-#: src/file-manager/fm-directory-view.c:1439
+#: src/file-manager/fm-directory-view.c:1458
 msgid " (containing a total of 0 items)"
 msgstr " (obsahujú celkom 0 položiek)"
 
-#: src/file-manager/fm-directory-view.c:1441
+#: src/file-manager/fm-directory-view.c:1460
 msgid " (containing a total of 1 item)"
 msgstr " (obsahujúci celkom 1 položku)"
 
-#: src/file-manager/fm-directory-view.c:1443
+#: src/file-manager/fm-directory-view.c:1462
 #, c-format
 msgid " (containing a total of %d items)"
 msgstr " (obsahujúci celkom %d položiek)"
 
-#: src/file-manager/fm-directory-view.c:1456
+#: src/file-manager/fm-directory-view.c:1475
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" vybraných (%s)"
 
-#: src/file-manager/fm-directory-view.c:1460
+#: src/file-manager/fm-directory-view.c:1479
 #, c-format
 msgid "%d items selected (%s)"
 msgstr "%d vybraných položiek (%s)"
 
-#: src/file-manager/fm-directory-view.c:1467
+#: src/file-manager/fm-directory-view.c:1486
 #, c-format
 msgid "1 other item selected (%s)"
 msgstr "1 iná vybraná položka (%s)"
 
-#: src/file-manager/fm-directory-view.c:1470
+#: src/file-manager/fm-directory-view.c:1489
 #, c-format
 msgid "%d other items selected (%s)"
 msgstr "%d iných vybraných položiek (%s)"
@@ -4460,7 +4467,7 @@ msgstr "%d iných vybraných položiek (%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1499
+#: src/file-manager/fm-directory-view.c:1518
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -4469,7 +4476,7 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1625
+#: src/file-manager/fm-directory-view.c:1644
 #, c-format
 msgid ""
 "The folder \"%s\" contains more files than Nautilus can handle. Some files "
@@ -4478,16 +4485,17 @@ msgstr ""
 "Priečinok \"%s\" obsahuje viac súborov, než dokáže Nautilus spracovať. "
 "Niektoré súbory nebudú zobrazené."
 
-#: src/file-manager/fm-directory-view.c:1632
+#: src/file-manager/fm-directory-view.c:1651
 msgid "Too Many Files"
 msgstr "Príliš veľa súborov"
 
-#: src/file-manager/fm-directory-view.c:2930
+#: src/file-manager/fm-directory-view.c:2947
 #, c-format
-msgid "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
+msgid ""
+"\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
 msgstr "Nie je možné presunúť \"%s\" do Odpadkov. Chcete ho odstrániť úplne?"
 
-#: src/file-manager/fm-directory-view.c:2935
+#: src/file-manager/fm-directory-view.c:2952
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the Trash. Do you want to delete "
@@ -4496,7 +4504,7 @@ msgstr ""
 "%d vybraných položiek nie je možné presunúť do Odpadkov. Chcete ich "
 "odstrániť úplne?"
 
-#: src/file-manager/fm-directory-view.c:2939
+#: src/file-manager/fm-directory-view.c:2956
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the Trash. Do you want to delete "
@@ -4505,56 +4513,56 @@ msgstr ""
 "%d z vybraných položiek nie je možné presunúť do Odpadkov. Chcete týchto %d "
 "položiek odstrániť úplne?"
 
-#: src/file-manager/fm-directory-view.c:2947
+#: src/file-manager/fm-directory-view.c:2964
 msgid "Delete Immediately?"
 msgstr "Odstrániť okamžite?"
 
-#: src/file-manager/fm-directory-view.c:2979
+#: src/file-manager/fm-directory-view.c:2996
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the Trash?"
 msgstr "Naozaj chcete úplne odstrániť \"%s\" z Odpadkov?"
 
-#: src/file-manager/fm-directory-view.c:2983
+#: src/file-manager/fm-directory-view.c:3000
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "Trash?"
 msgstr "Naozaj chcete úplne odstrániť %d vybraných položiek z Odpadkov?"
 
-#: src/file-manager/fm-directory-view.c:2989
+#: src/file-manager/fm-directory-view.c:3006
 msgid "Delete From Trash?"
 msgstr "Odstrániť z Odpadkov?"
 
-#: src/file-manager/fm-directory-view.c:3301
-#: src/file-manager/fm-directory-view.c:3343
+#: src/file-manager/fm-directory-view.c:3322
+#: src/file-manager/fm-directory-view.c:3364
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Použiť \"%s\" pre otvorenie vybranej položky"
 
-#: src/file-manager/fm-directory-view.c:3425
+#: src/file-manager/fm-directory-view.c:3446
 #: src/file-manager/nautilus-directory-view-ui.xml.h:32
 msgid "Other _Application..."
 msgstr "Iná _aplikácia..."
 
-#: src/file-manager/fm-directory-view.c:3425
+#: src/file-manager/fm-directory-view.c:3446
 msgid "An _Application..."
 msgstr "_Aplikácia..."
 
-#: src/file-manager/fm-directory-view.c:3431
+#: src/file-manager/fm-directory-view.c:3452
 #: src/file-manager/nautilus-directory-view-ui.xml.h:33
 msgid "Other _Viewer..."
 msgstr "Iný program pre _zobrazenie..."
 
-#: src/file-manager/fm-directory-view.c:3431
+#: src/file-manager/fm-directory-view.c:3452
 msgid "A _Viewer..."
 msgstr "_Prehliadač..."
 
-#: src/file-manager/fm-directory-view.c:3648
+#: src/file-manager/fm-directory-view.c:3670
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Spustiť \"%s\" na všetky vybrané položky"
 
-#: src/file-manager/fm-directory-view.c:3838
+#: src/file-manager/fm-directory-view.c:3875
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script with any selected items "
@@ -4563,11 +4571,11 @@ msgstr ""
 "Všetky spustiteľné súbory v tomto priečinku sa objavia v menu Skripty. "
 "Vybraním skriptu z menu ho spustíte s vybranými položkami ako vstupom."
 
-#: src/file-manager/fm-directory-view.c:3841
+#: src/file-manager/fm-directory-view.c:3878
 msgid "About Scripts"
 msgstr "O skriptoch"
 
-#: src/file-manager/fm-directory-view.c:3842
+#: src/file-manager/fm-directory-view.c:3879
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4607,121 +4615,125 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: pozícia a veľkosť aktuálneho okna"
 
-#: src/file-manager/fm-directory-view.c:3908
+#: src/file-manager/fm-directory-view.c:3945
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "\"%s\" bude presunutý, ak použijete príkaz Vložiť súbory"
 
-#: src/file-manager/fm-directory-view.c:3912
+#: src/file-manager/fm-directory-view.c:3949
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\" bude skopírovaný, ak použijete príkaz Vložiť súbory"
 
-#: src/file-manager/fm-directory-view.c:3919
+#: src/file-manager/fm-directory-view.c:3956
 #, c-format
-msgid "The %d selected items will be moved if you select the Paste Files command"
-msgstr "%d vybraných položiek bude presunutých, ak použijete príkaz Vložiť súbory"
+msgid ""
+"The %d selected items will be moved if you select the Paste Files command"
+msgstr ""
+"%d vybraných položiek bude presunutých, ak použijete príkaz Vložiť súbory"
 
-#: src/file-manager/fm-directory-view.c:3923
+#: src/file-manager/fm-directory-view.c:3960
 #, c-format
-msgid "The %d selected items will be copied if you select the Paste Files command"
-msgstr "%d vybraných položiek bude skopírovaných, ak použijete príkaz Vložiť súbory"
+msgid ""
+"The %d selected items will be copied if you select the Paste Files command"
+msgstr ""
+"%d vybraných položiek bude skopírovaných, ak použijete príkaz Vložiť súbory"
 
-#: src/file-manager/fm-directory-view.c:4069
+#: src/file-manager/fm-directory-view.c:4106
 msgid "There is nothing on the clipboard to paste."
 msgstr "V schránke nie je nič na vloženie."
 
-#: src/file-manager/fm-directory-view.c:4187
+#: src/file-manager/fm-directory-view.c:4223
 msgid "Open _in This Window"
 msgstr "Otvoriť v _tomto okne"
 
-#: src/file-manager/fm-directory-view.c:4190
+#: src/file-manager/fm-directory-view.c:4226
 #: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "Open _in New Window"
 msgstr "Otvoriť v _novom okne"
 
-#: src/file-manager/fm-directory-view.c:4192
+#: src/file-manager/fm-directory-view.c:4228
 #, c-format
 msgid "Open _in %d New Windows"
 msgstr "Otvoriť _v %d nových oknách"
 
-#: src/file-manager/fm-directory-view.c:4210
+#: src/file-manager/fm-directory-view.c:4246
 msgid "Delete from _Trash..."
 msgstr "Odstrániť z _Odpadkov..."
 
-#: src/file-manager/fm-directory-view.c:4210
+#: src/file-manager/fm-directory-view.c:4246
 msgid "Delete from _Trash"
 msgstr "Odstrániť z _Odpadkov"
 
-#: src/file-manager/fm-directory-view.c:4212
+#: src/file-manager/fm-directory-view.c:4248
 msgid "Delete all selected items permanently"
 msgstr "Odstrániť úplne všetky vybrané položky"
 
-#: src/file-manager/fm-directory-view.c:4215
+#: src/file-manager/fm-directory-view.c:4251
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Move to _Trash"
 msgstr "Presunúť do _Odpadkov"
 
-#: src/file-manager/fm-directory-view.c:4217
+#: src/file-manager/fm-directory-view.c:4253
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
 msgid "Move each selected item to the Trash"
 msgstr "Presunie každú vybranú položku do Odpadkov"
 
-#: src/file-manager/fm-directory-view.c:4244
+#: src/file-manager/fm-directory-view.c:4280
 msgid "De_lete..."
 msgstr "O_dstrániť..."
 
-#: src/file-manager/fm-directory-view.c:4244
+#: src/file-manager/fm-directory-view.c:4280
 #: src/file-manager/nautilus-directory-view-ui.xml.h:9
 msgid "De_lete"
 msgstr "O_dstrániť"
 
-#: src/file-manager/fm-directory-view.c:4265
+#: src/file-manager/fm-directory-view.c:4301
 msgid "Make _Links"
 msgstr "Vytvoriť _odkazy"
 
-#: src/file-manager/fm-directory-view.c:4266
+#: src/file-manager/fm-directory-view.c:4302
 msgid "Make _Link"
 msgstr "Vytvoriť _odkaz"
 
-#: src/file-manager/fm-directory-view.c:4281 src/nautilus-sidebar.c:1505
+#: src/file-manager/fm-directory-view.c:4317 src/nautilus-sidebar.c:1496
 msgid "_Empty Trash..."
 msgstr "_Vyprázdniť Odpadky..."
 
-#: src/file-manager/fm-directory-view.c:4282
+#: src/file-manager/fm-directory-view.c:4318
 #: src/file-manager/nautilus-directory-view-ui.xml.h:58
-#: src/nautilus-sidebar.c:1506
+#: src/nautilus-sidebar.c:1497
 msgid "_Empty Trash"
 msgstr "_Vyprázdniť Odpadky"
 
-#: src/file-manager/fm-directory-view.c:4293
+#: src/file-manager/fm-directory-view.c:4329
 #: src/file-manager/nautilus-directory-view-ui.xml.h:37
 msgid "R_emove Custom Images"
 msgstr "Odstrániť _vlastné obrázky"
 
-#: src/file-manager/fm-directory-view.c:4294
+#: src/file-manager/fm-directory-view.c:4330
 msgid "R_emove Custom Image"
 msgstr "Odstrániť _vlastný obrázok"
 
-#: src/file-manager/fm-directory-view.c:4308
+#: src/file-manager/fm-directory-view.c:4344
 msgid "Cu_t File"
 msgstr "Vystri_hnúť súbor"
 
-#: src/file-manager/fm-directory-view.c:4309
+#: src/file-manager/fm-directory-view.c:4345
 #: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Cu_t Files"
 msgstr "Vystri_hnúť súbory"
 
-#: src/file-manager/fm-directory-view.c:4319
+#: src/file-manager/fm-directory-view.c:4355
 msgid "_Copy File"
 msgstr "_Kopírovať súbor"
 
-#: src/file-manager/fm-directory-view.c:4320
+#: src/file-manager/fm-directory-view.c:4356
 #: src/file-manager/nautilus-directory-view-ui.xml.h:56
 msgid "_Copy Files"
 msgstr "_Kopírovať súbory"
 
-#: src/file-manager/fm-directory-view.c:4485
+#: src/file-manager/fm-directory-view.c:4521
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the Trash?"
@@ -4729,7 +4741,7 @@ msgstr ""
 "Tento odkaz nie je možné použiť, pretože nemá cieľ. Chcete tento odkaz hodiť "
 "do Odpadkov?"
 
-#: src/file-manager/fm-directory-view.c:4488
+#: src/file-manager/fm-directory-view.c:4524
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -4738,15 +4750,15 @@ msgstr ""
 "Tento odkaz nie je možné použiť, pretože jeho cieľ \"%s\" neexistuje. Chcete "
 "tento odkaz hodiť do Odpadkov?"
 
-#: src/file-manager/fm-directory-view.c:4494
+#: src/file-manager/fm-directory-view.c:4530
 msgid "Broken Link"
 msgstr "Neplatný odkaz"
 
-#: src/file-manager/fm-directory-view.c:4494
+#: src/file-manager/fm-directory-view.c:4530
 msgid "Throw Away"
 msgstr "Zahodiť"
 
-#: src/file-manager/fm-directory-view.c:4551
+#: src/file-manager/fm-directory-view.c:4587
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
@@ -4755,19 +4767,19 @@ msgstr ""
 "\"%s\" je spustiteľný textový súbor. Chcete ho spustiť alebo zobraziť jeho "
 "obsah?"
 
-#: src/file-manager/fm-directory-view.c:4557
+#: src/file-manager/fm-directory-view.c:4593
 msgid "Run or Display?"
 msgstr "Spustiť alebo zobraziť?"
 
-#: src/file-manager/fm-directory-view.c:4558
+#: src/file-manager/fm-directory-view.c:4594
 msgid "Run"
 msgstr "Spustiť"
 
-#: src/file-manager/fm-directory-view.c:4559
+#: src/file-manager/fm-directory-view.c:4595
 msgid "Display"
 msgstr "Displej"
 
-#: src/file-manager/fm-directory-view.c:4614
+#: src/file-manager/fm-directory-view.c:4650
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
@@ -4775,22 +4787,23 @@ msgstr ""
 "Ľutujem, ale nie je možné vykonávať príkazy zo vzdialených počítačov kvôli "
 "bezpečnosti."
 
-#: src/file-manager/fm-directory-view.c:4616
+#: src/file-manager/fm-directory-view.c:4652
 msgid "Can't execute remote links"
 msgstr "Nie je možné vykonať vzdialené odkazy"
 
-#: src/file-manager/fm-directory-view.c:4760
+#: src/file-manager/fm-directory-view.c:4796
 #, c-format
 msgid "Opening \"%s\""
 msgstr "Otváram \"%s\""
 
-#: src/file-manager/fm-directory-view.c:4766
+#: src/file-manager/fm-directory-view.c:4802
 msgid "Cancel Open?"
 msgstr "Zrušiť otvorenie?"
 
 #: src/file-manager/fm-error-reporting.c:57
 #, c-format
-msgid "You do not have the permissions necessary to view the contents of \"%s\"."
+msgid ""
+"You do not have the permissions necessary to view the contents of \"%s\"."
 msgstr "Nemáte dostatočné práva pre zobrazenie obsahu \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:61
@@ -4809,12 +4822,14 @@ msgstr "Chyba pri zobrazovaní priečinku"
 
 #: src/file-manager/fm-error-reporting.c:102
 #, c-format
-msgid "The name \"%s\" is already used in this folder. Please use a different name."
+msgid ""
+"The name \"%s\" is already used in this folder. Please use a different name."
 msgstr "Meno \"%s\" už je v tomto priečinku použité. Prosím, vyberte iné meno."
 
 #: src/file-manager/fm-error-reporting.c:107
 #, c-format
-msgid "There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
+msgid ""
+"There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
 msgstr "V priečinku nie je \"%s\". Možno bol práve presunutý alebo odstránený."
 
 #: src/file-manager/fm-error-reporting.c:112
@@ -4854,7 +4869,8 @@ msgstr "Chyba pri premenovaní"
 
 #: src/file-manager/fm-error-reporting.c:163
 #, c-format
-msgid "You do not have the permissions necessary to change the group of \"%s\"."
+msgid ""
+"You do not have the permissions necessary to change the group of \"%s\"."
 msgstr "Nemáte práva nutné pre zmenu skupiny pre \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:167
@@ -4891,7 +4907,8 @@ msgstr "Chyba pri nastavovaní vlastníka"
 
 #: src/file-manager/fm-error-reporting.c:233
 #, c-format
-msgid "Couldn't change the permissions of \"%s\" because it is on a read-only disk"
+msgid ""
+"Couldn't change the permissions of \"%s\" because it is on a read-only disk"
 msgstr ""
 "Nie je možné zmeniť práva pre \"%s\", pretože je na disku pripojenom iba pre "
 "čítanie."
@@ -5004,7 +5021,7 @@ msgstr "Typ"
 msgid "Date Modified"
 msgstr "Dátum zmeny"
 
-#: src/file-manager/fm-properties-window.c:311 src/nautilus-sidebar.c:745
+#: src/file-manager/fm-properties-window.c:311 src/nautilus-sidebar.c:743
 msgid ""
 "You can't assign more than one custom icon at a time! Please drag just one "
 "image to set a custom icon."
@@ -5012,11 +5029,11 @@ msgstr ""
 "Nie je možné priradiť viac ako jednu vlastnú ikonu! Prosím, pritiahnite a "
 "pusťte iba jeden obrázok pre nastavenie vlastnej ikony."
 
-#: src/file-manager/fm-properties-window.c:313 src/nautilus-sidebar.c:747
+#: src/file-manager/fm-properties-window.c:313 src/nautilus-sidebar.c:745
 msgid "More Than One Image"
 msgstr "Viac ako jeden obrázok"
 
-#: src/file-manager/fm-properties-window.c:322 src/nautilus-sidebar.c:766
+#: src/file-manager/fm-properties-window.c:322 src/nautilus-sidebar.c:764
 msgid ""
 "The file that you dropped is not local.  You can only use local images as "
 "custom icons."
@@ -5024,11 +5041,11 @@ msgstr ""
 "Súbor, ktorý ste pustili, nie je lokálny. Ako vlastné ikony môžete použiť "
 "iba lokálne obrázky."
 
-#: src/file-manager/fm-properties-window.c:324 src/nautilus-sidebar.c:768
+#: src/file-manager/fm-properties-window.c:324 src/nautilus-sidebar.c:766
 msgid "Local Images Only"
 msgstr "Len lokálne obrázky"
 
-#: src/file-manager/fm-properties-window.c:329 src/nautilus-sidebar.c:773
+#: src/file-manager/fm-properties-window.c:329 src/nautilus-sidebar.c:771
 msgid ""
 "The file that you dropped is not an image.  You can only use local images as "
 "custom icons."
@@ -5036,7 +5053,7 @@ msgstr ""
 "Súbor, ktorý ste pustili, nie je obrázok. Ako vlastné ikony môžete použiť "
 "iba lokálne obrázky."
 
-#: src/file-manager/fm-properties-window.c:331 src/nautilus-sidebar.c:775
+#: src/file-manager/fm-properties-window.c:331 src/nautilus-sidebar.c:773
 msgid "Images Only"
 msgstr "Len obrázky"
 
@@ -5105,7 +5122,7 @@ msgid "Size:"
 msgstr "Veľkosť:"
 
 #: src/file-manager/fm-properties-window.c:1621 src/nautilus-location-bar.c:60
-#: src/nautilus-preferences-dialog.c:276 src/nautilus-preferences-dialog.c:286
+#: src/nautilus-preferences-dialog.c:271 src/nautilus-preferences-dialog.c:281
 msgid "Location:"
 msgstr "Umiestnenie:"
 
@@ -5471,7 +5488,8 @@ msgid "Reset Desktop Background"
 msgstr "Nastaviť štandardné pozadie"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:10
-msgid "Show a window that lets you set your desktop background's pattern or color"
+msgid ""
+"Show a window that lets you set your desktop background's pattern or color"
 msgstr "Zobrazí okno,ktoré umožní nastaviť vzorku alebo farbu pozadia plochy"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:1
@@ -5519,7 +5537,8 @@ msgid "Make Link"
 msgstr "Vytvoriť odkaz"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:18
-msgid "Move or copy files previously selected by a Cut Files or Copy Files command"
+msgid ""
+"Move or copy files previously selected by a Cut Files or Copy Files command"
 msgstr ""
 "Presunie alebo skopíruje súbory vybrané predcházajúcim príkazom Vystrihnúť "
 "súbory alebo Kopírovať súbory"
@@ -5594,7 +5613,7 @@ msgstr "Odstráni všetky vlastné vzorky alebo farby z pozadia tohoto miesta"
 
 #. add the reset background item, possibly disabled
 #: src/file-manager/nautilus-directory-view-ui.xml.h:41
-#: src/nautilus-sidebar.c:564
+#: src/nautilus-sidebar.c:562
 msgid "Reset Background"
 msgstr "Štandardné pozadie"
 
@@ -5608,7 +5627,8 @@ msgstr "Ná_vrat k nastaveniu pohľadu"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:44
 msgid "Reset sorting order and zoom level to match preferences for this view"
-msgstr "Návrat k triedeniu a úrovni lupy odpovedajúcim nastaveniu tohto pohľadu"
+msgstr ""
+"Návrat k triedeniu a úrovni lupy odpovedajúcim nastaveniu tohto pohľadu"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:45
 msgid "Run or manage scripts from ~/Nautilus/scripts"
@@ -5736,7 +5756,8 @@ msgstr "Premenovať vybranú položku"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:25
 msgid "Reposition icons to better fit in the window and avoid overlapping"
-msgstr "Popresúvať ikony tak, aby lepšie odpovedali oknu a zabránili prekrývaniu sa"
+msgstr ""
+"Popresúvať ikony tak, aby lepšie odpovedali oknu a zabránili prekrývaniu sa"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:26
 msgid "Restore Icons' Original Sizes"
@@ -5795,7 +5816,8 @@ msgstr "Indexácia je hotová z %d%%"
 msgid ""
 "Once a day your files and text content are indexed so your searches are "
 "fast. "
-msgstr "Raz za deň sú vaše súbory a ich obsah indexované, takže hľadanie je rýchle. "
+msgstr ""
+"Raz za deň sú vaše súbory a ich obsah indexované, takže hľadanie je rýchle. "
 
 #: src/file-manager/nautilus-indexing-info.c:168
 #: src/file-manager/nautilus-indexing-info.c:206
@@ -6074,7 +6096,7 @@ msgid "Restart Nautilus."
 msgstr "Reštartovať Nautilus."
 
 #: src/nautilus-main.c:186 src/nautilus-window-manage-views.c:256
-#: src/nautilus-window-menus.c:627
+#: src/nautilus-window-menus.c:619
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -6154,7 +6176,8 @@ msgstr "Chovanie Odpadkov"
 
 #: src/nautilus-preferences-dialog.c:109
 msgid "Ask before emptying the Trash or deleting files"
-msgstr "Pýtať sa pred odstránením položiek z Odpadkov alebo odstránením súborov"
+msgstr ""
+"Pýtať sa pred odstránením položiek z Odpadkov alebo odstránením súborov"
 
 #: src/nautilus-preferences-dialog.c:114
 msgid "Include a Delete command that bypasses Trash"
@@ -6205,7 +6228,7 @@ msgstr "Poradie triedenia"
 msgid "Always list folders before files"
 msgstr "Vždy uvádzať v zozname priečinky pre súbormi"
 
-#: src/nautilus-preferences-dialog.c:164 src/nautilus-preferences-dialog.c:398
+#: src/nautilus-preferences-dialog.c:164 src/nautilus-preferences-dialog.c:393
 msgid "Icon Captions"
 msgstr "Titulky ikon"
 
@@ -6271,138 +6294,130 @@ msgstr "Nastavenie zložitosti hľadania"
 msgid "search type to do by default"
 msgstr "Štandardný typ hľadania"
 
-#: src/nautilus-preferences-dialog.c:265
-msgid "Search Engines"
-msgstr "Vyhľadávacie služby"
-
-#: src/nautilus-preferences-dialog.c:267
-msgid "Search Engine Location"
-msgstr "Miesto pre prehľadávanie WWW"
-
-#: src/nautilus-preferences-dialog.c:274 src/nautilus-shell-ui.xml.h:32
+#: src/nautilus-preferences-dialog.c:269 src/nautilus-shell-ui.xml.h:32
 msgid "Home"
 msgstr "Domov"
 
-#: src/nautilus-preferences-dialog.c:279 src/nautilus-preferences-dialog.c:284
-#: src/nautilus-preferences-dialog.c:289 src/nautilus-preferences-dialog.c:294
-#: src/nautilus-preferences-dialog.c:301 src/nautilus-preferences-dialog.c:308
+#: src/nautilus-preferences-dialog.c:274 src/nautilus-preferences-dialog.c:279
+#: src/nautilus-preferences-dialog.c:284 src/nautilus-preferences-dialog.c:289
+#: src/nautilus-preferences-dialog.c:296 src/nautilus-preferences-dialog.c:303
 msgid "HTTP Proxy Settings"
 msgstr "Nastavenie proxy HTTP"
 
-#: src/nautilus-preferences-dialog.c:281
+#: src/nautilus-preferences-dialog.c:276
 msgid "Use HTTP Proxy"
 msgstr "Použiť HTTP proxy"
 
-#: src/nautilus-preferences-dialog.c:291
+#: src/nautilus-preferences-dialog.c:286
 msgid "Port:"
 msgstr "Port:"
 
-#: src/nautilus-preferences-dialog.c:296
+#: src/nautilus-preferences-dialog.c:291
 msgid "Proxy requires a username and password:"
 msgstr "Proxy vyžaduje používateľské meno a heslo:"
 
-#: src/nautilus-preferences-dialog.c:303
+#: src/nautilus-preferences-dialog.c:298
 msgid "Username:"
 msgstr "Používateľské meno:"
 
-#: src/nautilus-preferences-dialog.c:310
+#: src/nautilus-preferences-dialog.c:305
 msgid "Password:"
 msgstr "Heslo:"
 
-#: src/nautilus-preferences-dialog.c:315
+#: src/nautilus-preferences-dialog.c:310
 msgid "Built-in Bookmarks"
 msgstr "Zabudované záložky"
 
-#: src/nautilus-preferences-dialog.c:317
+#: src/nautilus-preferences-dialog.c:312
 msgid "Don't include the built-in bookmarks in the Bookmarks menu"
 msgstr "Neuvádzať zabudované záložky v menu Záložky"
 
-#: src/nautilus-preferences-dialog.c:324
+#: src/nautilus-preferences-dialog.c:319
 msgid "Show Text in Icons"
 msgstr "Ukázať text v ikonách"
 
-#: src/nautilus-preferences-dialog.c:329
+#: src/nautilus-preferences-dialog.c:324
 msgid "Show Count of Items in Folders"
 msgstr "Ukázať počet položiek v priečinkoch"
 
-#: src/nautilus-preferences-dialog.c:334 src/nautilus-preferences-dialog.c:339
+#: src/nautilus-preferences-dialog.c:329 src/nautilus-preferences-dialog.c:334
 msgid "Show Thumbnails for Image Files"
 msgstr "Ukázať miniatúry pre obrázky"
 
-#: src/nautilus-preferences-dialog.c:341
+#: src/nautilus-preferences-dialog.c:336
 msgid "Don't make thumbnails for files larger than:"
 msgstr "Nevytvárať miniatúry pre súbory väčšie ako:"
 
-#: src/nautilus-preferences-dialog.c:344
+#: src/nautilus-preferences-dialog.c:339
 msgid "Preview Sound Files"
 msgstr "Ukážka zvukových súborov"
 
 #. FIXME bugzilla.gnome.org 42560: This title phrase needs improvement.
-#: src/nautilus-preferences-dialog.c:351
+#: src/nautilus-preferences-dialog.c:346
 msgid "Make Folder Appearance Details Public"
 msgstr "Detaily vzhľadu priečinku sú verejné"
 
-#: src/nautilus-preferences-dialog.c:360
+#: src/nautilus-preferences-dialog.c:355
 msgid "Tabs"
 msgstr "Záložky"
 
-#: src/nautilus-preferences-dialog.c:371
+#: src/nautilus-preferences-dialog.c:366
 msgid "Show only folders (no files) in the tree"
 msgstr "Ukázať iba priečinky (nie súbory) v strome"
 
-#: src/nautilus-preferences-dialog.c:378
+#: src/nautilus-preferences-dialog.c:373
 msgid "Maximum items per site"
 msgstr "Maximálny počet položiek pre server"
 
-#: src/nautilus-preferences-dialog.c:380
+#: src/nautilus-preferences-dialog.c:375
 msgid "Maximum number of items displayed per site"
 msgstr "Maximálny počet zobrazených položiek pre každý server"
 
-#: src/nautilus-preferences-dialog.c:383
+#: src/nautilus-preferences-dialog.c:378
 msgid "Update Minutes"
 msgstr "Aktualizácia v minútach"
 
-#: src/nautilus-preferences-dialog.c:385
+#: src/nautilus-preferences-dialog.c:380
 msgid "Update frequency in minutes"
 msgstr "Frekvencia aktualizácie v minútach"
 
-#: src/nautilus-preferences-dialog.c:394
+#: src/nautilus-preferences-dialog.c:389
 msgid "View Preferences"
 msgstr "Pohľad Nastavenie"
 
-#: src/nautilus-preferences-dialog.c:395
+#: src/nautilus-preferences-dialog.c:390
 msgid "Appearance"
 msgstr "Vzhľad"
 
-#: src/nautilus-preferences-dialog.c:396
+#: src/nautilus-preferences-dialog.c:391
 msgid "Windows & Desktop"
 msgstr "Okná a plocha"
 
-#: src/nautilus-preferences-dialog.c:397
+#: src/nautilus-preferences-dialog.c:392
 msgid "Icon & List Views"
 msgstr "Ikony a zoznamy"
 
-#: src/nautilus-preferences-dialog.c:399
+#: src/nautilus-preferences-dialog.c:394
 msgid "Sidebar Panels"
 msgstr "Bočný panel"
 
-#: src/nautilus-preferences-dialog.c:400
+#: src/nautilus-preferences-dialog.c:396
 msgid "Search"
 msgstr "Hľadanie"
 
-#: src/nautilus-preferences-dialog.c:401
+#: src/nautilus-preferences-dialog.c:398
 msgid "Navigation"
 msgstr "Navigácia"
 
-#: src/nautilus-preferences-dialog.c:402
+#: src/nautilus-preferences-dialog.c:399
 msgid "Speed Tradeoffs"
 msgstr "Rýchlostné kompromisy"
 
-#: src/nautilus-preferences-dialog.c:403
+#: src/nautilus-preferences-dialog.c:400
 msgid "News Panel"
 msgstr "Panel noviniek"
 
-#: src/nautilus-preferences-dialog.c:458
+#: src/nautilus-preferences-dialog.c:455
 #, c-format
 msgid "Display %s tab in sidebar"
 msgstr "Zobraziť záložku %s v bočnom paneli"
@@ -6517,95 +6532,97 @@ msgstr "Ľutujem, musíte zadať neprázdne meno pre novú farbu."
 msgid "Couldn't install color"
 msgstr "Nie je možné nainštalovať farbu"
 
-#: src/nautilus-property-browser.c:1216
+#: src/nautilus-property-browser.c:1215
 msgid "Select a color to add:"
 msgstr "Vyberte pridávanú farbu:"
 
-#: src/nautilus-property-browser.c:1299
+#: src/nautilus-property-browser.c:1295
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Ľutujem, ale '%s' nie je použiteľný súbor s obrázkom!"
 
-#: src/nautilus-property-browser.c:1317
+#: src/nautilus-property-browser.c:1313
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
 msgstr "Ľutujem, ale musíte zadať neprázdne kľúčové slovo pre nový emblém."
 
-#: src/nautilus-property-browser.c:1318 src/nautilus-property-browser.c:1321
-#: src/nautilus-property-browser.c:1325 src/nautilus-property-browser.c:1354
+#: src/nautilus-property-browser.c:1314 src/nautilus-property-browser.c:1317
+#: src/nautilus-property-browser.c:1321 src/nautilus-property-browser.c:1350
 msgid "Couldn't install emblem"
 msgstr "Nie je možné nainštalovať emblém"
 
-#: src/nautilus-property-browser.c:1320
-msgid "Sorry, but emblem keywords can only contain letters, spaces and numbers."
+#: src/nautilus-property-browser.c:1316
+msgid ""
+"Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
 "Ľutujem, ale kľúčové slová pre emblémy môžu obsahovať iba písmená, medzery a "
 "číslice."
 
-#: src/nautilus-property-browser.c:1323
+#: src/nautilus-property-browser.c:1319
 #, c-format
 msgid ""
 "Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
 "for it."
-msgstr "Ľutujem, ale \"%s\" je už existujúce kľúčové slovo. Prosím, vyberte iné meno."
+msgstr ""
+"Ľutujem, ale \"%s\" je už existujúce kľúčové slovo. Prosím, vyberte iné meno."
 
-#: src/nautilus-property-browser.c:1353
+#: src/nautilus-property-browser.c:1349
 #, c-format
 msgid "Sorry, but the image at %s couldn't be installed as an emblem."
 msgstr "Ľutujem, ale obrázok %s nie je možné nainštalovať ako emblém."
 
-#: src/nautilus-property-browser.c:1998
+#: src/nautilus-property-browser.c:1993
 msgid "Select A Category:"
 msgstr "Vyberte kategóriu:"
 
-#: src/nautilus-property-browser.c:2006 src/nautilus-theme-selector.c:576
+#: src/nautilus-property-browser.c:2001 src/nautilus-theme-selector.c:528
 msgid "Cancel Remove"
 msgstr "Zrušiť odstránenie"
 
-#: src/nautilus-property-browser.c:2011
+#: src/nautilus-property-browser.c:2006
 msgid "Add a New Pattern..."
 msgstr "Pridať novú vzorku..."
 
-#: src/nautilus-property-browser.c:2014
+#: src/nautilus-property-browser.c:2009
 msgid "Add a New Color..."
 msgstr "Pridať novú farbu..."
 
-#: src/nautilus-property-browser.c:2017
+#: src/nautilus-property-browser.c:2012
 msgid "Add a New Emblem..."
 msgstr "Pridať nový emblém..."
 
-#: src/nautilus-property-browser.c:2040
+#: src/nautilus-property-browser.c:2035
 msgid "Click on a pattern to remove it"
 msgstr "Kliknutím na vzorku ju odstránite"
 
-#: src/nautilus-property-browser.c:2043
+#: src/nautilus-property-browser.c:2038
 msgid "Click on a color to remove it"
 msgstr "Kliknutím na farbu ju odstránite"
 
-#: src/nautilus-property-browser.c:2046
+#: src/nautilus-property-browser.c:2041
 msgid "Click on an emblem to remove it"
 msgstr "Kliknutím na emblém ho odstránite"
 
-#: src/nautilus-property-browser.c:2055
+#: src/nautilus-property-browser.c:2050
 msgid "Patterns:"
 msgstr "Vzorky:"
 
-#: src/nautilus-property-browser.c:2058
+#: src/nautilus-property-browser.c:2053
 msgid "Colors:"
 msgstr "Farby:"
 
-#: src/nautilus-property-browser.c:2061
+#: src/nautilus-property-browser.c:2056
 msgid "Emblems:"
 msgstr "Emblémy:"
 
-#: src/nautilus-property-browser.c:2080
+#: src/nautilus-property-browser.c:2075
 msgid "Remove a Pattern..."
 msgstr "Odstrániť vzorku..."
 
-#: src/nautilus-property-browser.c:2083
+#: src/nautilus-property-browser.c:2078
 msgid "Remove a Color..."
 msgstr "Odstrániť farbu..."
 
-#: src/nautilus-property-browser.c:2086
+#: src/nautilus-property-browser.c:2081
 msgid "Remove an Emblem..."
 msgstr "Odstrániť emblém..."
 
@@ -6836,7 +6853,8 @@ msgstr "Nautilus shell"
 msgid ""
 "Nautilus shell operations that can be done from subsequent command-line "
 "invocations"
-msgstr "Operácie shellu Nautilus, ktoré je možné neskôr vykonať z príkazového riadku."
+msgstr ""
+"Operácie shellu Nautilus, ktoré je možné neskôr vykonať z príkazového riadku."
 
 #: src/Nautilus_shell.server.in.h:18
 msgid "Produces metafile objects for accessing Nautilus metadata"
@@ -6958,19 +6976,19 @@ msgstr "Prejsť na predchádzajúce navštívené miesto"
 msgid "Go up to the location that contains the displayed location"
 msgstr "Prejsť o úroveň vyššie na miesto, ktoré obsahuje toto miesto"
 
-#: src/nautilus-shell-ui.xml.h:28 src/nautilus-window-menus.c:477
+#: src/nautilus-shell-ui.xml.h:28 src/nautilus-window-menus.c:469
 msgid "Hide Location _Bar"
 msgstr "Skryť pruh _umiestnenia"
 
-#: src/nautilus-shell-ui.xml.h:29 src/nautilus-window-menus.c:459
+#: src/nautilus-shell-ui.xml.h:29 src/nautilus-window-menus.c:451
 msgid "Hide St_atus Bar"
 msgstr "Skryť _stavový riadok"
 
-#: src/nautilus-shell-ui.xml.h:30 src/nautilus-window-menus.c:465
+#: src/nautilus-shell-ui.xml.h:30 src/nautilus-window-menus.c:457
 msgid "Hide _Sidebar"
 msgstr "Skryť _bočný panel"
 
-#: src/nautilus-shell-ui.xml.h:31 src/nautilus-window-menus.c:471
+#: src/nautilus-shell-ui.xml.h:31 src/nautilus-window-menus.c:463
 msgid "Hide _Toolbar"
 msgstr "Skryť panel _nástrojov"
 
@@ -7059,8 +7077,8 @@ msgid "Up"
 msgstr "Hore"
 
 #. Add "View as..." extra bonus choice.
-#: src/nautilus-shell-ui.xml.h:56 src/nautilus-window.c:624
-#: src/nautilus-window.c:1508
+#: src/nautilus-shell-ui.xml.h:56 src/nautilus-window.c:575
+#: src/nautilus-window.c:1469
 msgid "View as..."
 msgstr "Zobraziť ako..."
 
@@ -7188,13 +7206,13 @@ msgstr "_Zobraziť"
 msgid "_View as..."
 msgstr "_Zobraziť ako..."
 
-#: src/nautilus-sidebar.c:1361
+#: src/nautilus-sidebar.c:1359
 #, c-format
 msgid "Open with %s"
 msgstr "Otvoriť s %s"
 
 #. Catch-all button after all the others.
-#: src/nautilus-sidebar.c:1397
+#: src/nautilus-sidebar.c:1388
 msgid "Open with..."
 msgstr "Otvoriť s..."
 
@@ -7202,37 +7220,37 @@ msgstr "Otvoriť s..."
 msgid "Find:"
 msgstr "Nájsť:"
 
-#: src/nautilus-theme-selector.c:108
+#: src/nautilus-theme-selector.c:113
 msgid "Click on a theme to remove it."
 msgstr "Kliknutím na tému ju odstránite."
 
-#: src/nautilus-theme-selector.c:111
+#: src/nautilus-theme-selector.c:116
 msgid "Click on a theme to change the appearance of Nautilus."
 msgstr "Kliknutím na tému zmeníte vzhľad programu Nautilus."
 
-#: src/nautilus-theme-selector.c:139
+#: src/nautilus-theme-selector.c:138
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid theme folder."
 msgstr "Ľutujem, ale \"%s\" nie je platné meno témy."
 
-#: src/nautilus-theme-selector.c:141
+#: src/nautilus-theme-selector.c:140
 msgid "Couldn't add theme"
 msgstr "Nie je možné pridať tému"
 
-#: src/nautilus-theme-selector.c:148
+#: src/nautilus-theme-selector.c:147
 #, c-format
 msgid "Sorry, but the \"%s\" theme couldn't be installed."
 msgstr "Ľutujem, ale \"%s\" nie je možné nainštalovať."
 
-#: src/nautilus-theme-selector.c:150
+#: src/nautilus-theme-selector.c:149
 msgid "Couldn't install theme"
 msgstr "Nie je možné nainštalovať tému"
 
-#: src/nautilus-theme-selector.c:195
+#: src/nautilus-theme-selector.c:188
 msgid "Select a theme folder to add as a new theme:"
 msgstr "Vyberte priečinok témy, ktorú chcete pridať ako novú tému:"
 
-#: src/nautilus-theme-selector.c:335
+#: src/nautilus-theme-selector.c:300
 msgid ""
 "Sorry, but you can't remove the current theme. Please change to another "
 "theme before removing this one."
@@ -7240,23 +7258,23 @@ msgstr ""
 "Ľutujem, ale nemôžete odstrániť aktuálnu tému. Prosím, zmeňte aktuálnu tému "
 "pred odstránením tej momentálnej."
 
-#: src/nautilus-theme-selector.c:337
+#: src/nautilus-theme-selector.c:302
 msgid "Can't delete current theme"
 msgstr "Nie je možné zmazať aktuálnu tému"
 
-#: src/nautilus-theme-selector.c:345
+#: src/nautilus-theme-selector.c:310
 msgid "Sorry, but that theme could not be removed!"
 msgstr "Ľutujem, ale tému nie je možné odstrániť!"
 
-#: src/nautilus-theme-selector.c:346
+#: src/nautilus-theme-selector.c:311
 msgid "Couldn't remove theme"
 msgstr "Nie je možné odstrániť tému"
 
-#: src/nautilus-theme-selector.c:564
+#: src/nautilus-theme-selector.c:516
 msgid "Add New Theme..."
 msgstr "Pridať novú tému..."
 
-#: src/nautilus-theme-selector.c:570
+#: src/nautilus-theme-selector.c:522
 msgid "Remove Theme..."
 msgstr "Odstrániť tému..."
 
@@ -7272,26 +7290,26 @@ msgstr "história prehliadania"
 msgid "the current selection"
 msgstr "aktuálny výber"
 
-#: src/nautilus-window.c:182
-msgid "Application ID"
-msgstr "ID aplikácie"
-
-#: src/nautilus-window.c:183
-msgid "The application ID of the window."
-msgstr "ID okna aplikácie."
-
-#: src/nautilus-window.c:190
-msgid "Application"
-msgstr "Aplikácia"
-
-#: src/nautilus-window.c:191
-msgid "The NautilusApplication associated with this window."
-msgstr "NautilusApplication asociovaná s týmto oknom."
-
-#: src/nautilus-window.c:1214
+#: src/nautilus-window.c:1175
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Zobraziť toto umiestneni pomocou \"%s\""
+
+#: src/nautilus-window.c:2230
+msgid "Application ID"
+msgstr "ID aplikácie"
+
+#: src/nautilus-window.c:2231
+msgid "The application ID of the window."
+msgstr "ID okna aplikácie."
+
+#: src/nautilus-window.c:2237
+msgid "Application"
+msgstr "Aplikácia"
+
+#: src/nautilus-window.c:2238
+msgid "The NautilusApplication associated with this window."
+msgstr "NautilusApplication asociovaná s týmto oknom."
 
 #. FIXME bugzilla.gnome.org 45037: The text Preview
 #. * Release is hardcoded here. Are all builds with
@@ -7345,12 +7363,15 @@ msgstr "Bočný panel zlyhal"
 #: src/nautilus-window-manage-views.c:1241
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
-msgstr "Nie je možné nájsť \"%s\". Prosím, overte zadaný text a skúste to znovu."
+msgstr ""
+"Nie je možné nájsť \"%s\". Prosím, overte zadaný text a skúste to znovu."
 
 #: src/nautilus-window-manage-views.c:1247
 #, c-format
-msgid "\"%s\" is not a valid location. Please check the spelling and try again."
-msgstr "\"%s\" nie je platné miesto. Prosím, overte zadaný text a skúste to znovu."
+msgid ""
+"\"%s\" is not a valid location. Please check the spelling and try again."
+msgstr ""
+"\"%s\" nie je platné miesto. Prosím, overte zadaný text a skúste to znovu."
 
 #: src/nautilus-window-manage-views.c:1261
 #, c-format
@@ -7440,7 +7461,7 @@ msgstr "Nie je možné zobraziť miesto"
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
 #.
-#: src/nautilus-window-menus.c:352
+#: src/nautilus-window-menus.c:344
 msgid ""
 "Are you sure you want to forget history? If you do, you will be doomed to "
 "repeat it."
@@ -7448,31 +7469,32 @@ msgstr ""
 "Naozaj chcete zabudnúť históriu? Ak áno, budete ju musieť nabudúce ručne "
 "obnoviť."
 
-#: src/nautilus-window-menus.c:355
-msgid "Are you sure you want Nautilus to forget which locations you have visited?"
+#: src/nautilus-window-menus.c:347
+msgid ""
+"Are you sure you want Nautilus to forget which locations you have visited?"
 msgstr "Naozaj chcete aby Nautilus zabudol, ktoré miesta ste navštívili?"
 
-#: src/nautilus-window-menus.c:360
+#: src/nautilus-window-menus.c:352
 msgid "Forget History?"
 msgstr "Zabudnúť históriu?"
 
-#: src/nautilus-window-menus.c:360
+#: src/nautilus-window-menus.c:352
 msgid "Forget"
 msgstr "Zabudnúť"
 
-#: src/nautilus-window-menus.c:460
+#: src/nautilus-window-menus.c:452
 msgid "Show St_atus Bar"
 msgstr "Zobraziť _stavový riadok"
 
-#: src/nautilus-window-menus.c:466
+#: src/nautilus-window-menus.c:458
 msgid "Show _Sidebar"
 msgstr "Zobraziť _bočný panel"
 
-#: src/nautilus-window-menus.c:472
+#: src/nautilus-window-menus.c:464
 msgid "Show _Toolbar"
 msgstr "Zobraziť panel _nástrojov"
 
-#: src/nautilus-window-menus.c:478
+#: src/nautilus-window-menus.c:470
 msgid "Show Location _Bar"
 msgstr "Zobraziť pruh u_miestnenia"
 
@@ -7480,7 +7502,7 @@ msgstr "Zobraziť pruh u_miestnenia"
 #. * symbol characters -- do not translate the company
 #. * name, please.
 #.
-#: src/nautilus-window-menus.c:618
+#: src/nautilus-window-menus.c:610
 msgid "Copyright (C) 1999-2001 Eazel, Inc."
 msgstr "Copyright (C) 1999-2001 Eazel, Inc."
 
@@ -7488,11 +7510,11 @@ msgstr "Copyright (C) 1999-2001 Eazel, Inc."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window-menus.c:625
+#: src/nautilus-window-menus.c:617
 msgid "Translator Credits"
 msgstr "Nautilus preložil Stanislav Višňovský"
 
-#: src/nautilus-window-menus.c:630
+#: src/nautilus-window-menus.c:622
 msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
@@ -7500,7 +7522,7 @@ msgstr ""
 "Nautilus je grafické rozhranie pre GNOME, ktoré zjednodušuje správu vašich "
 "súborov  a celého systému."
 
-#: src/nautilus-window-menus.c:707
+#: src/nautilus-window-menus.c:700
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -7509,40 +7531,40 @@ msgstr ""
 "Umiestnenie \"%s\" neexistuje. Naozaj chcete odstrániť záložky s týmto "
 "miestom z vášho zoznamu?"
 
-#: src/nautilus-window-menus.c:711
+#: src/nautilus-window-menus.c:704
 msgid "Bookmark for Nonexistent Location"
 msgstr "Záložka pre neexistujúce miesto"
 
-#: src/nautilus-window-menus.c:712
+#: src/nautilus-window-menus.c:705
 msgid "Remove"
 msgstr "Odstrániť"
 
-#: src/nautilus-window-menus.c:723
+#: src/nautilus-window-menus.c:716
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "Miesto \"%s\" už neexistuje."
 
-#: src/nautilus-window-menus.c:724
+#: src/nautilus-window-menus.c:717
 msgid "Go to Nonexistent Location"
 msgstr "Prejsť na neexistujúce miesto"
 
-#: src/nautilus-window-menus.c:793
+#: src/nautilus-window-menus.c:786
 msgid "Go to the location specified by this bookmark"
 msgstr "Prejsť na miesto definované touto záložkou"
 
-#: src/nautilus-window-toolbars.c:387
+#: src/nautilus-window-toolbars.c:386
 msgid "Toolbar item style"
 msgstr "Štýl položky panelu nástrojov"
 
-#: src/nautilus-window-toolbars.c:392
+#: src/nautilus-window-toolbars.c:391
 msgid "Toolbar item orientation"
 msgstr "Orientácia položky panelu nástrojov"
 
-#: src/nautilus-window-toolbars.c:443
+#: src/nautilus-window-toolbars.c:442
 msgid "Back"
 msgstr "Dozadu"
 
-#: src/nautilus-window-toolbars.c:445
+#: src/nautilus-window-toolbars.c:444
 msgid "Forward"
 msgstr "Dopredu"
 
@@ -7551,3 +7573,8 @@ msgstr "Dopredu"
 msgid "%d%%"
 msgstr "%d%%"
 
+#~ msgid "Search Engines"
+#~ msgstr "Vyhľadávacie služby"
+
+#~ msgid "Search Engine Location"
+#~ msgstr "Miesto pre prehľadávanie WWW"
