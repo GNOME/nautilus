@@ -1,3 +1,22 @@
+2000-10-18  Darin Adler  <darin@eazel.com>
+
+	Some Music View fixes. Andy asked me to work on this.
+	
+	* components/music/main.c: (main): Make warnings drop into the
+	debugger.
+	
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_destroy): Change to use a NautilusFile object
+	instead of using a uri string.
+	(set_album_cover): Use the file object.
+	(metadata_callback): Get rid of the unref that was causing a lot
+	of trouble.
+	(nautilus_music_view_update): Get the uri from the file object
+	instead of vice versa.
+	(detach_file): Cancel the call when releasing the file.
+	(nautilus_music_view_load_uri): Release the old file and get a new
+	one when the URI changes.
+
 2000-10-17  Maciej Stachowiak  <mjs@eazel.com>
 
 	Fixed bugzilla.eazel.com bugs 2222, 3177, 3468, 3650, 3788

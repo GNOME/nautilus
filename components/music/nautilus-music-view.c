@@ -66,7 +66,7 @@
 #include <limits.h>
 
 struct _NautilusMusicViewDetails {
-        char *uri;
+        NautilusFile *file;
 	NautilusView *nautilus_view;
         
 	int sort_mode;
@@ -156,44 +156,38 @@ static GtkTargetEntry music_dnd_target_table[] = {
 	{ "x-special/gnome-icon-list",  0, TARGET_GNOME_URI_LIST }
 };
 
-static void nautilus_music_view_drag_data_received (GtkWidget              *widget,
-                                                    GdkDragContext         *context,
-                                                    int                     x,
-                                                    int                     y,
-                                                    GtkSelectionData       *selection_data,
-                                                    guint                   info,
-                                                    guint                   time);
-static void nautilus_music_view_initialize_class   (NautilusMusicViewClass *klass);
-static void nautilus_music_view_initialize         (NautilusMusicView      *view);
-static void nautilus_music_view_destroy            (GtkObject              *object);
-static void nautilus_music_view_update_from_uri    (NautilusMusicView      *music_view,
-                                                    const char             *uri);
-static void music_view_background_appearance_changed_callback
-						   (NautilusBackground	   *background,
-						    NautilusMusicView	   *music_view);
-static void music_view_load_location_callback      (NautilusView           *view,
-                                                    const char             *location,
-                                                    NautilusMusicView      *music_view);
-static void selection_callback                     (GtkCList               *clist,
-                                                    int                     row,
-                                                    int                     column,
-                                                    GdkEventButton         *event,
-                                                    NautilusMusicView      *music_view);
-static void music_view_set_selected_song_title     (NautilusMusicView      *music_view,
-                                                    int                     row);
-static void  nautilus_music_view_set_album_image   (NautilusMusicView *music_view,
-						    const char *image_path_uri);
-
-static void add_play_controls                      (NautilusMusicView      *music_view);
-static void click_column_callback                  (GtkCList               *clist,
-                                                    gint                    column,
-                                                    NautilusMusicView      *music_view);
-static void set_image_button_callback	           (GtkWidget               *widget,
-                                                    NautilusMusicView      *music_view);
-
-static void go_to_next_track                       (NautilusMusicView      *music_view);
-static void play_current_file                      (NautilusMusicView      *music_view,
-                                                    gboolean                from_start);
+static void nautilus_music_view_drag_data_received            (GtkWidget              *widget,
+                                                               GdkDragContext         *context,
+                                                               int                     x,
+                                                               int                     y,
+                                                               GtkSelectionData       *selection_data,
+                                                               guint                   info,
+                                                               guint                   time);
+static void nautilus_music_view_initialize_class              (NautilusMusicViewClass *klass);
+static void nautilus_music_view_initialize                    (NautilusMusicView      *view);
+static void nautilus_music_view_destroy                       (GtkObject              *object);
+static void nautilus_music_view_update                        (NautilusMusicView      *music_view);
+static void music_view_background_appearance_changed_callback (NautilusBackground     *background,
+                                                               NautilusMusicView      *music_view);
+static void music_view_load_location_callback                 (NautilusView           *view,
+                                                               const char             *location,
+                                                               NautilusMusicView      *music_view);
+static void selection_callback                                (GtkCList               *clist,
+                                                               int                     row,
+                                                               int                     column,
+                                                               GdkEventButton         *event,
+                                                               NautilusMusicView      *music_view);
+static void nautilus_music_view_set_album_image               (NautilusMusicView      *music_view,
+                                                               const char             *image_path_uri);
+static void click_column_callback                             (GtkCList               *clist,
+                                                               gint                    column,
+                                                               NautilusMusicView      *music_view);
+static void set_image_button_callback                         (GtkWidget              *widget,
+                                                               NautilusMusicView      *music_view);
+static void go_to_next_track                                  (NautilusMusicView      *music_view);
+static void play_current_file                                 (NautilusMusicView      *music_view,
+                                                               gboolean                from_start);
+static void detach_file                                       (NautilusMusicView      *music_view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusMusicView, nautilus_music_view, GTK_TYPE_EVENT_BOX)
 
@@ -225,12 +219,12 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
     	
 	gtk_signal_connect (GTK_OBJECT (music_view->details->nautilus_view), 
 			    "load_location",
-			    GTK_SIGNAL_FUNC (music_view_load_location_callback), 
+			    music_view_load_location_callback, 
 			    music_view);
 			    
 	gtk_signal_connect (GTK_OBJECT (nautilus_get_widget_background (GTK_WIDGET (music_view))), 
 			    "appearance_changed",
-			    GTK_SIGNAL_FUNC (music_view_background_appearance_changed_callback), 
+			    music_view_background_appearance_changed_callback, 
 			    music_view);
 
 	music_view->details->status_timeout = -1;
@@ -290,7 +284,7 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	gtk_clist_set_column_justification(GTK_CLIST(music_view->details->song_list), 5, GTK_JUSTIFY_RIGHT);
  	
  	gtk_signal_connect (GTK_OBJECT (music_view->details->song_list),
-                            "select_row", GTK_SIGNAL_FUNC (selection_callback), music_view);
+                            "select_row", selection_callback, music_view);
  
 	scrollwindow = gtk_scrolled_window_new (NULL, gtk_clist_get_vadjustment (GTK_CLIST (music_view->details->song_list)));
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
@@ -302,8 +296,8 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	gtk_widget_show (scrollwindow);
 
 	/* connect a signal to let us know when the column titles are clicked */
-	gtk_signal_connect(GTK_OBJECT(music_view->details->song_list), "click_column",
-				GTK_SIGNAL_FUNC(click_column_callback), music_view);
+	gtk_signal_connect (GTK_OBJECT (music_view->details->song_list), "click_column",
+                            click_column_callback, music_view);
 
 	/* make an hbox to hold the optional cover and other controls */
 	music_view->details->control_box = gtk_hbox_new (FALSE, 4);
@@ -319,7 +313,8 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	gtk_widget_show (label);
 	gtk_container_add (GTK_CONTAINER(music_view->details->set_image_button), label);
 	gtk_box_pack_end (GTK_BOX(music_view->details->control_box), music_view->details->set_image_button, FALSE, FALSE, 4);  
- 	gtk_signal_connect (GTK_OBJECT (music_view->details->set_image_button), "clicked", GTK_SIGNAL_FUNC (set_image_button_callback), music_view);
+ 	gtk_signal_connect (GTK_OBJECT (music_view->details->set_image_button), "clicked",
+                            set_image_button_callback, music_view);
 	
 	/* prepare ourselves to receive dropped objects */
 	gtk_drag_dest_set (GTK_WIDGET (music_view),
@@ -339,7 +334,7 @@ nautilus_music_view_destroy (GtkObject *object)
 	/* so we stop things on exit for now, and improve it post 1.0 */
 	stop_playing_file();
 
-	g_free (music_view->details->uri);
+        detach_file (music_view);
 	g_free (music_view->details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
@@ -418,8 +413,9 @@ selection_callback(GtkCList * clist, int row, int column, GdkEventButton * event
         }
 
         music_view_set_selected_song_title(music_view, row);
-	if (is_playing)
-		play_current_file(music_view, FALSE);
+	if (is_playing) {
+		play_current_file (music_view, FALSE);
+        }
 } 
 
 /* handle clicks in the songlist columns */
@@ -430,7 +426,7 @@ click_column_callback (GtkCList * clist, gint column, NautilusMusicView *music_v
 	if (music_view->details->sort_mode == column)
 		return;
 	music_view->details->sort_mode = column;
-	nautilus_music_view_update_from_uri (music_view, music_view->details->uri);
+	nautilus_music_view_update (music_view);
 }
 
 /* utility routine to check if the passed-in uri is an image file */
@@ -457,7 +453,6 @@ set_album_cover (GtkWidget *widget, gpointer *data)
 {
 	char *path_name, *path_uri;
 	NautilusMusicView *music_view;
-	NautilusFile *file;
 	
 	music_view = NAUTILUS_MUSIC_VIEW (data);
 	
@@ -479,9 +474,8 @@ set_album_cover (GtkWidget *widget, gpointer *data)
 	}
 	
 	/* set the meta-data */
-	file = nautilus_file_get (music_view->details->uri);
-	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL, path_uri);
-	nautilus_file_unref (file);
+	nautilus_file_set_metadata (music_view->details->file,
+                                    NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL, path_uri);
 	
 	/* set the album image */
 	nautilus_music_view_set_album_image (music_view, path_uri);
@@ -702,7 +696,7 @@ fetch_song_info (const char *song_uri, GnomeVFSFileInfo *file_info, int file_ord
 {
 	gboolean has_info = FALSE;
 	SongInfo *info; 
-	guchar buffer[1024];  
+	guchar buffer[1024];
 	GnomeVFSHandle *mp3_file;
 	GnomeVFSResult result;
 	GnomeVFSFileSize length_read;
@@ -1424,34 +1418,35 @@ metadata_callback (NautilusFile *file, gpointer callback_data)
 	music_view = NAUTILUS_MUSIC_VIEW (callback_data);
 	
 	album_image_path = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);	
-	if (album_image_path) {
+	if (album_image_path != NULL) {
 		nautilus_music_view_set_album_image (music_view, album_image_path);
 		g_free (album_image_path);
 	}
-	nautilus_file_unref (file);
 }
 
 
 /* here's where we do most of the real work of populating the view with info from the new uri */
 static void
-nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *uri)
+nautilus_music_view_update (NautilusMusicView *music_view)
 {
 	GnomeVFSResult result;
 	GnomeVFSFileInfo *current_file_info;
 	GnomeVFSDirectoryList *list;
-
-	NautilusFile *file;
 	
-	char* clist_entry[10];
+        char *uri;
+	char *clist_entry[10];
 	GList *p;
 	GList *song_list, *attributes;
 	SongInfo *info;
 	char *path_uri, *escaped_name;
 	char *image_path_uri;
+        char *path, *message;
 	
 	int file_index;
 	int track_index;
 	int image_count;
+
+        uri = nautilus_file_get_uri (music_view->details->file);
 	
 	song_list = NULL;
 	image_path_uri = NULL;
@@ -1468,12 +1463,13 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 						GNOME_VFS_FILE_INFO_GET_MIME_TYPE, 
 						NULL);
 	if (result != GNOME_VFS_OK) {
-		char *path = gnome_vfs_get_local_path_from_uri (uri);
-		char *message = g_strdup_printf (_("Sorry, but there was an error reading %s."), path);
+		path = gnome_vfs_get_local_path_from_uri (uri);
+		message = g_strdup_printf (_("Sorry, but there was an error reading %s."), path);
 		nautilus_error_dialog (message, _("Can't Read Folder"), 
 				       GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (music_view))));
 		g_free (path);
 		g_free (message);
+                g_free (uri);
 		return;
 	}
 	
@@ -1572,16 +1568,14 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	g_free (image_path_uri);
 
 	/* Check if one is specified in metadata; if so, it will be set by the callback */	
-	file = nautilus_file_get (music_view->details->uri);
 	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON);
-	nautilus_file_call_when_ready (file, attributes, metadata_callback, music_view);
+	nautilus_file_call_when_ready (music_view->details->file, attributes, metadata_callback, music_view);
 	g_list_free (attributes);
-						
+        
 	/* determine the album title/artist line */
 	
 	if (music_view->details->album_title) {
-		char *artist_name, *temp_str;
-		char* album_name;
+		char *album_name, *artist_name, *temp_str;
 
                 album_name = determine_attribute (song_list, FALSE);
 		if (album_name == NULL) {
@@ -1590,12 +1584,13 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 		
 		artist_name = determine_attribute (song_list, TRUE);
 		if (artist_name != NULL) {
-			temp_str = g_strdup_printf ("%s by %s", album_name, artist_name);
+			temp_str = g_strdup_printf (_("%s by %s"), album_name, artist_name);
 			g_free (artist_name);
 		} else {
 			temp_str = g_strdup (album_name);
                 }
-		nautilus_label_set_text (NAUTILUS_LABEL (music_view->details->album_title), temp_str);
+		nautilus_label_set_text (NAUTILUS_LABEL (music_view->details->album_title),
+                                         temp_str);
 		
 		g_free (temp_str);
 		g_free (album_name);
@@ -1614,17 +1609,28 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 		info = (SongInfo *) p->data;
 		release_song_info(info);
 	}
-	g_list_free (song_list);	
-	nautilus_file_unref (file);
+	g_list_free (song_list);
+
+        g_free (uri);
 }
 
+static void
+detach_file (NautilusMusicView *music_view)
+{
+        if (music_view->details->file != NULL) {
+                nautilus_file_cancel_call_when_ready (music_view->details->file,
+                                                      metadata_callback, music_view);
+                nautilus_file_unref (music_view->details->file);
+                music_view->details->file = NULL;
+        }
+}
 
 void
 nautilus_music_view_load_uri (NautilusMusicView *music_view, const char *uri)
 {
-	g_free (music_view->details->uri);
-  	music_view->details->uri = g_strdup (uri);	
-	nautilus_music_view_update_from_uri (music_view, uri);
+        detach_file (music_view);
+        music_view->details->file = nautilus_file_get (uri);
+	nautilus_music_view_update (music_view);
 }
 
 static void

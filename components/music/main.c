@@ -23,13 +23,13 @@
 /* main.c - main function and object activation function for the music view component. */
 
 #include <config.h>
-
 #include "nautilus-music-view.h"
 
+#include <bonobo.h>
 #include <gnome.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <libnautilus-extensions/nautilus-debug.h>
 #include <liboaf/liboaf.h>
-#include <bonobo.h>
 
 static int object_count = 0;
 
@@ -77,6 +77,27 @@ main (int argc, char *argv[])
 	textdomain (PACKAGE);
 #endif
 	
+	/* Make criticals and warnings stop in the debugger if
+	 * NAUTILUS_DEBUG is set. Unfortunately, this has to be done
+	 * explicitly for each domain.
+	 */
+	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
+		nautilus_make_warnings_and_criticals_stop_in_debugger
+			(G_LOG_DOMAIN, g_log_domain_glib,
+			 "Bonobo",
+			 "Gdk",
+			 "GnomeUI",
+			 "GnomeVFS",
+			 "GnomeVFS-CORBA",
+			 "GnomeVFS-pthread",
+			 "Gtk",
+			 "Nautilus",
+			 "Nautilus-Authenticate",
+			 "Nautilus-Tree",
+			 "ORBit",
+			 NULL);
+	}
+
         gnome_init_with_popt_table("nautilus-music-view", VERSION, 
 				   argc, argv,
 				   oaf_popt_options, 0, NULL); 
