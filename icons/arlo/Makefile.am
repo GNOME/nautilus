@@ -6,6 +6,7 @@ arlo_DATA =					\
 	i-directory.png				\
 	i-regular.png				\
 	increment.png				\
+	number_strip.png			\
 	sidebar_tab_pieces.png			\
 	theme_preview.png			\
 	zoom_body.png

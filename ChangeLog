@@ -1,4 +1,19 @@
+2000-07-26  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-zoom-control.c:
+	(nautilus_zoom_control_class_initialize), (draw_number),
+	(draw_zoom_control_image), (nautilus_zoom_control_load_images):
+	fixed recently introduced bug where the increment and decrement images were
+	not being erased at the extremes; also, added the optional ability for a theme
+	to define a custom number strip image for the little percentage number.
+	* icons/arlo/Makefile.am:
+	* icons/arlo/number_strip.png:
+	added image for custom numbers to arlo theme
+	* icons/arlo/arlo.xml:
+	added info to theme for new number drawing
+
 2000-07-26  Rebecca Schulman  <rebecka@eazel.com>
+
 	Redid the complex search bar to look the way we actually
 	wanted it.  There are still some bugs, but as far as i
 	can tell, it hasn't introduced horrid instability, and 
