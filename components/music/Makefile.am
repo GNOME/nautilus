@@ -20,7 +20,11 @@ bin_PROGRAMS =					\
 	nautilus-music-view
 
 nautilus_music_view_SOURCES =		        \
+	esd-audio.h				\
+	getbits.h				\
+	huffman.h				\
 	mp3head.c				\
+	mp3head.h				\
 	nautilus-music-view.c			\
 	nautilus-music-view.h			\
 	main.c					\
@@ -30,20 +34,25 @@ nautilus_music_view_SOURCES =		        \
 	decode_4to1.c  				\
 	decode_i386.c  				\
 	decode_ntom.c  				\
+	dxhead.c  				\
+	mpg123.c				\
+	mpg123.h				\
+	common.c				\
 	layer1.c				\
 	layer2.c				\
 	layer3.c				\
-	dxhead.c       				\
-	mpg123.c				\
-	common.c       				\
+	l2tables.h				\
 	id3.c		   			\
+	id3.h					\
+	id3_header.h				\
 	id3_frame.c	   			\
 	id3_frame_content.c  			\
 	id3_frame_text.c			\
 	id3_frame_url.c	   			\
 	id3_tag.c				\
 	esd-audio.c				\
-	esd-mixer.c
+	esd-mixer.c				\
+	pixmaps.h
 
 nautilus_music_view_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\

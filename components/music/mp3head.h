@@ -8,6 +8,8 @@
  * This software comes with no warranty of any kind, use at you own risk!
  */
 
+#ifndef MP3HEAD_H
+#define MP3HEAD_H
 
 /* mpeg audio header   */
 typedef struct
@@ -45,6 +47,5 @@ int get_stereo(unsigned char *buf,int bufsize);
 int get_header_info (unsigned char *buf, unsigned int n, MPEGHeader *h);
 int get_header_info_extended (unsigned char *buf, unsigned int n, MPEGHeader *h, int *bitrate);
 
-
-
+#endif
 
