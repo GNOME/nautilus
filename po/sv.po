@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2002-07-22 20:07+0200\n"
-"PO-Revision-Date: 2002-07-22 20:08+0200\n"
+"POT-Creation-Date: 2002-07-22 20:22+0200\n"
+"PO-Revision-Date: 2002-07-22 20:23+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -2718,7 +2718,7 @@ msgid "Preparing to Empty the Trash..."
 msgstr "Förbereder tömning av papperskorgen..."
 
 #: libnautilus-private/nautilus-file-operations.c:2221
-#: src/file-manager/fm-desktop-icon-view.c:1357
+#: src/file-manager/fm-desktop-icon-view.c:1354
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
 msgid "Empty Trash"
 msgstr "Töm papperskorgen"
@@ -4419,15 +4419,11 @@ msgstr "Fel vid körning av verktygsprogrammet \"%s\": %s"
 msgid "%s's Home"
 msgstr "%.0sHem"
 
-#: src/file-manager/fm-desktop-icon-view.c:1355
-msgid "Empty Trash..."
-msgstr "Töm papperskorgen..."
-
-#: src/file-manager/fm-desktop-icon-view.c:1376
+#: src/file-manager/fm-desktop-icon-view.c:1372
 msgid "E_ject"
 msgstr "_Mata ut"
 
-#: src/file-manager/fm-desktop-icon-view.c:1476
+#: src/file-manager/fm-desktop-icon-view.c:1472
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
 msgid "_Unmount Volume"
 msgstr "_Avmontera volym"
@@ -4727,10 +4723,6 @@ msgid "Open _in %d New Windows"
 msgstr "Öppna _i %d nya fönster"
 
 #: src/file-manager/fm-directory-view.c:4386
-msgid "_Delete from Trash..."
-msgstr "_Ta bort från papperskorgen..."
-
-#: src/file-manager/fm-directory-view.c:4386
 msgid "_Delete from Trash"
 msgstr "_Ta bort från papperskorgen"
 
@@ -4748,62 +4740,55 @@ msgstr "Fl_ytta till papperskorgen"
 msgid "Move each selected item to the Trash"
 msgstr "Flytta varje markerat objekt till papperskorgen"
 
-#: src/file-manager/fm-directory-view.c:4418
-msgid "_Delete..."
-msgstr "_Ta bort..."
-
-#: src/file-manager/fm-directory-view.c:4418
+#: src/file-manager/fm-directory-view.c:4417
 #: src/file-manager/nautilus-directory-view-ui.xml.h:40
 msgid "_Delete"
 msgstr "_Ta bort"
 
-#: src/file-manager/fm-directory-view.c:4438
+#: src/file-manager/fm-directory-view.c:4437
 msgid "Ma_ke Links"
 msgstr "S_kapa länkar"
 
-#: src/file-manager/fm-directory-view.c:4439
+#: src/file-manager/fm-directory-view.c:4438
 #: src/file-manager/nautilus-directory-view-ui.xml.h:14
 msgid "Ma_ke Link"
 msgstr "S_kapa länk"
 
-#: src/file-manager/fm-directory-view.c:4453 src/nautilus-sidebar.c:1491
-msgid "_Empty Trash..."
-msgstr "_Töm papperskorgen..."
-
-#: src/file-manager/fm-directory-view.c:4454
+#. FIXME: We don't use spaces to pad labels!
+#: src/file-manager/fm-directory-view.c:4451
 #: src/file-manager/nautilus-directory-view-ui.xml.h:41
-#: src/nautilus-sidebar.c:1492
+#: src/nautilus-sidebar.c:1490
 msgid "_Empty Trash"
 msgstr "_Töm papperskorgen"
 
-#: src/file-manager/fm-directory-view.c:4464
+#: src/file-manager/fm-directory-view.c:4461
 #: src/file-manager/nautilus-directory-view-ui.xml.h:27
 msgid "Re_move Custom Icons"
 msgstr "Ta _bort anpassade ikoner"
 
-#: src/file-manager/fm-directory-view.c:4465
+#: src/file-manager/fm-directory-view.c:4462
 msgid "Re_move Custom Icon"
 msgstr "Ta _bort anpassad ikon"
 
-#: src/file-manager/fm-directory-view.c:4478
+#: src/file-manager/fm-directory-view.c:4475
 msgid "Cu_t File"
 msgstr "Klipp u_t fil"
 
-#: src/file-manager/fm-directory-view.c:4479
+#: src/file-manager/fm-directory-view.c:4476
 #: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Cu_t Files"
 msgstr "Klipp u_t filer"
 
-#: src/file-manager/fm-directory-view.c:4488
+#: src/file-manager/fm-directory-view.c:4485
 msgid "_Copy File"
 msgstr "_Kopiera fil"
 
-#: src/file-manager/fm-directory-view.c:4489
+#: src/file-manager/fm-directory-view.c:4486
 #: src/file-manager/nautilus-directory-view-ui.xml.h:39
 msgid "_Copy Files"
 msgstr "_Kopiera filer"
 
-#: src/file-manager/fm-directory-view.c:4671
+#: src/file-manager/fm-directory-view.c:4668
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the Trash?"
@@ -4811,7 +4796,7 @@ msgstr ""
 "Denna länk kan inte användas eftersom den inte har något mål. Vill du flytta "
 "denna länk till papperskorgen?"
 
-#: src/file-manager/fm-directory-view.c:4674
+#: src/file-manager/fm-directory-view.c:4671
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -4820,15 +4805,15 @@ msgstr ""
 "Denna länk kan inte användas eftersom dess mål \"%s\" inte finns. Vill du "
 "flytta denna länk till papperskorgen?"
 
-#: src/file-manager/fm-directory-view.c:4680
+#: src/file-manager/fm-directory-view.c:4677
 msgid "Broken Link"
 msgstr "Trasig länk"
 
-#: src/file-manager/fm-directory-view.c:4680
+#: src/file-manager/fm-directory-view.c:4677
 msgid "Throw Away"
 msgstr "Kasta"
 
-#: src/file-manager/fm-directory-view.c:4737
+#: src/file-manager/fm-directory-view.c:4734
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
@@ -4836,28 +4821,28 @@ msgid ""
 msgstr ""
 "\"%s\" är en körbar textfil. Vill du köra den eller visa dess innehåll?"
 
-#: src/file-manager/fm-directory-view.c:4743
+#: src/file-manager/fm-directory-view.c:4740
 msgid "Run or Display?"
 msgstr "Kör eller visa?"
 
-#: src/file-manager/fm-directory-view.c:4744
+#: src/file-manager/fm-directory-view.c:4741
 msgid "_Display"
 msgstr "_Visa"
 
-#: src/file-manager/fm-directory-view.c:4745
+#: src/file-manager/fm-directory-view.c:4742
 msgid "Run in _Terminal"
 msgstr "Kör i _terminal"
 
-#: src/file-manager/fm-directory-view.c:4748
+#: src/file-manager/fm-directory-view.c:4745
 msgid "_Run"
 msgstr "_Kör"
 
-#: src/file-manager/fm-directory-view.c:4919
+#: src/file-manager/fm-directory-view.c:4916
 #, c-format
 msgid "Opening \"%s\""
 msgstr "Öppnar \"%s\""
 
-#: src/file-manager/fm-directory-view.c:4925
+#: src/file-manager/fm-directory-view.c:4922
 msgid "Cancel Open?"
 msgstr "Avbryt öppning?"
 
@@ -5743,8 +5728,8 @@ msgid "_Properties"
 msgstr "_Egenskaper"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:47
-msgid "_Rename"
-msgstr "_Byt namn"
+msgid "_Rename..."
+msgstr "_Byt namn..."
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:48
 msgid "_Scripts"
@@ -6979,8 +6964,8 @@ msgid "_Back"
 msgstr "_Bakåt"
 
 #: src/nautilus-shell-ui.xml.h:55
-msgid "_Backgrounds and Emblems..."
-msgstr "Bakgrunder och _emblem..."
+msgid "_Backgrounds and Emblems"
+msgstr "_Bakgrunder och emblem"
 
 #: src/nautilus-shell-ui.xml.h:57
 msgid "_Clear History"
@@ -7462,6 +7447,27 @@ msgstr "Zooma"
 msgid "Set the zoom level of the current view"
 msgstr "Ställ in zoomnivån på den aktuella vyn"
 
+#~ msgid "Rename..."
+#~ msgstr "Byt namn..."
+
+#~ msgid "Empty Trash..."
+#~ msgstr "Töm papperskorgen..."
+
+#~ msgid "_Delete from Trash..."
+#~ msgstr "_Ta bort från papperskorgen..."
+
+#~ msgid "_Delete..."
+#~ msgstr "_Ta bort..."
+
+#~ msgid "_Empty Trash..."
+#~ msgstr "_Töm papperskorgen..."
+
+#~ msgid "_Rename"
+#~ msgstr "_Byt namn"
+
+#~ msgid "_Backgrounds and Emblems..."
+#~ msgstr "Bakgrunder och _emblem..."
+
 #~ msgid "Eject"
 #~ msgstr "Mata ut"
 
@@ -7704,9 +7710,6 @@ msgstr "Ställ in zoomnivån på den aktuella vyn"
 
 #~ msgid "Rename"
 #~ msgstr "Byt namn"
-
-#~ msgid "Rename..."
-#~ msgstr "Byt namn..."
 
 #~ msgid "Reset View to Default"
 #~ msgstr "Återställ vy till standard"
