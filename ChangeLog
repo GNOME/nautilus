@@ -1,3 +1,15 @@
+2002-04-26  Benedikt Roth  <Benedikt.Roth@gmx.net>
+
+	* libnautilus-private/nautilus-program-chooser.c:
+	(launch_mime_capplet_on_ok),
+	(nautilus_program_chooser_show_no_choices_message):
+	Changed OK to Yes, as this is a Yes/No question.
+	Fixed dialog to really open the capplet when choosing yes (#75372).
+
+	* nautilus.desktop.in: (Bugzilla Bug: 75830) Use the stock home icon
+	for the Home folder in applications menu. 
+	(Patch from Dennis Cranston <dennis_cranston@yahoo.com>)
+
 2002-04-26  Alex Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-theme.c:

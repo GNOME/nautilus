@@ -929,8 +929,8 @@ static void
 launch_mime_capplet_on_ok (GtkDialog *dialog, int response, gpointer callback_data)
 {
 	g_assert (GTK_IS_DIALOG (dialog));
-	
-	if (response == GTK_RESPONSE_OK) {
+
+	if (response == GTK_RESPONSE_YES) {
 		launch_mime_capplet (callback_data);
 	}
 	gtk_object_destroy (GTK_OBJECT (dialog));
@@ -1543,7 +1543,7 @@ nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType action_
 				    "you want to go there now?"),
 				  unavailable_message);
 	dialog = eel_show_yes_no_dialog 
-		(prompt, dialog_title, GTK_STOCK_OK, GTK_STOCK_CANCEL, parent_window);
+		(prompt, dialog_title, GTK_STOCK_YES, GTK_STOCK_CANCEL, parent_window);
 
 	g_signal_connect (dialog, "response",
 			  G_CALLBACK (launch_mime_capplet_on_ok),
