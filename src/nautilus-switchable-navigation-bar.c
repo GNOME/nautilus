@@ -37,6 +37,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-search-uri.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <stdio.h>
 
@@ -176,12 +177,10 @@ nautilus_switchable_navigation_bar_set_location (NautilusNavigationBar *navigati
 					      location);
 	
 	/* Toggle the search button on and off appropriately */
-	if (nautilus_istr_has_prefix (location, "search:")
-	    || nautilus_istr_has_prefix (location, "gnome-search:")) {
+	if (nautilus_is_search_uri (location)) {
 		nautilus_switchable_navigation_bar_set_mode
 			(bar, NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH);
-	}
-	else {
+	} else {
 		nautilus_switchable_navigation_bar_set_mode
 			(bar, NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION);
 	}

@@ -31,6 +31,7 @@
 #include "nautilus-glib-extensions.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-link.h"
+#include "nautilus-search-uri.h"
 #include "nautilus-string.h"
 #include <gtk/gtkmain.h>
 #include <parser.h>
@@ -420,8 +421,7 @@ allow_metafile (NautilusDirectory *directory)
 	    || nautilus_istr_has_prefix (uri, "help:")
 	    || nautilus_istr_has_prefix (uri, "man:")
 	    || nautilus_istr_has_prefix (uri, "pipe:")
-	    || nautilus_istr_has_prefix (uri, "search:")
-	    || nautilus_istr_has_prefix (uri, "gnome-search:")) {
+	    || nautilus_is_search_uri (uri)) {
 		return FALSE;
 	}
 	

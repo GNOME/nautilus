@@ -477,7 +477,9 @@ nautilus_directory_are_all_files_seen (NautilusDirectory *directory)
 {
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
 	
-	return directory->details->directory_loaded;
+	return NAUTILUS_CALL_VIRTUAL
+		(NAUTILUS_DIRECTORY_CLASS, directory,
+		 are_all_files_seen, (directory));
 }
 
 NautilusFile *
@@ -862,7 +864,9 @@ nautilus_directory_contains_file (NautilusDirectory *directory,
 		return FALSE;
 	}
 
-	return file->details->directory == directory;
+	return NAUTILUS_CALL_VIRTUAL
+		(NAUTILUS_DIRECTORY_CLASS, directory,
+		 contains_file, (directory, file));
 }
 
 void
@@ -872,56 +876,51 @@ nautilus_directory_call_when_ready (NautilusDirectory *directory,
 				    NautilusDirectoryCallback callback,
 				    gpointer callback_data)
 {
-	g_return_if_fail (directory == NULL || NAUTILUS_IS_DIRECTORY (directory));
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (wait_for_metadata == FALSE || wait_for_metadata == TRUE);
 	g_return_if_fail (callback != NULL);
 
-	nautilus_directory_call_when_ready_internal
-		(directory,
-		 NULL,
-		 file_attributes,
-		 wait_for_metadata,
-		 callback,
-		 NULL,
-		 callback_data);
+	NAUTILUS_CALL_VIRTUAL
+		(NAUTILUS_DIRECTORY_CLASS, directory,
+		 call_when_ready, (directory, file_attributes, wait_for_metadata,
+				   callback, callback_data));
 }
 
 typedef struct {
 	gboolean done;
-	GList *file_return;
-} wait_until_ready_callback_data;
+	GList *files_return;
+} WaitUntilReadyCallbackData;
 
 static void
-nautilus_directory_wait_until_ready_callback (NautilusDirectory *directory,
-					      GList             *files,
-					      wait_until_ready_callback_data *data)
+wait_until_ready_callback (NautilusDirectory *directory,
+			   GList *files,
+			   gpointer callback_data)
 {
+	WaitUntilReadyCallbackData *data;
+	
+	data = callback_data; 
 	data->done = TRUE;
-	data->file_return = nautilus_file_list_copy (files);
+	data->files_return = nautilus_file_list_copy (files);
 }
-
 
 GList *
 nautilus_directory_wait_until_ready (NautilusDirectory *directory,
-				     GList             *file_attributes,
-				     gboolean           wait_for_metadata)
+				     GList *file_attributes,
+				     gboolean wait_for_metadata)
 {
-	wait_until_ready_callback_data data;
+	WaitUntilReadyCallbackData data;
 
 	data.done = FALSE;
-	data.file_return = NULL;
+	data.files_return = NULL;
 
-	nautilus_directory_call_when_ready (directory,
-					    file_attributes,
-					    wait_for_metadata,
-					    (NautilusDirectoryCallback) nautilus_directory_wait_until_ready_callback,
-					    (gpointer) &data);
-	
+	nautilus_directory_call_when_ready
+		(directory, file_attributes, wait_for_metadata,
+		 wait_until_ready_callback, &data);
 	while (!data.done) {
 		gtk_main_iteration ();
 	}
 
-	return data.file_return;
+	return data.files_return;
 }
 
 void
@@ -929,15 +928,12 @@ nautilus_directory_cancel_callback (NautilusDirectory *directory,
 				    NautilusDirectoryCallback callback,
 				    gpointer callback_data)
 {
-	g_return_if_fail (directory == NULL || NAUTILUS_IS_DIRECTORY (directory));
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (callback != NULL);
 
-	nautilus_directory_cancel_callback_internal
-		(directory,
-		 NULL,
-		 callback,
-		 NULL,
-		 callback_data);
+	NAUTILUS_CALL_VIRTUAL
+		(NAUTILUS_DIRECTORY_CLASS, directory,
+		 cancel_callback, (directory, callback, callback_data));
 }
 
 void
@@ -952,61 +948,35 @@ nautilus_directory_file_monitor_add (NautilusDirectory *directory,
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (client != NULL);
 
-	if (force_reload) {
-		nautilus_directory_force_reload (directory);
-	}
-
-	nautilus_directory_monitor_add_internal
-		(directory, NULL,
-		 client,
-		 file_attributes, monitor_metadata,
-		 force_reload ? NULL : callback,
-		 callback_data);
+	NAUTILUS_CALL_VIRTUAL
+		(NAUTILUS_DIRECTORY_CLASS, directory,
+		 file_monitor_add, (directory, client,
+				    file_attributes, monitor_metadata,
+				    force_reload,
+				    callback, callback_data));
 }
 
 void
 nautilus_directory_file_monitor_remove (NautilusDirectory *directory,
 					gconstpointer client)
 {
-	nautilus_directory_monitor_remove_internal (directory, NULL, client);
-}
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+	g_return_if_fail (client != NULL);
 
-static int
-any_non_metafile_item (gconstpointer item, gconstpointer callback_data)
-{
-	/* A metafile is exactly what we are not looking for, anything else is a match. */
-	return nautilus_file_matches_uri
-		(NAUTILUS_FILE (item), (const char *) callback_data)
-		? 1 : 0;
+	NAUTILUS_CALL_VIRTUAL
+		(NAUTILUS_DIRECTORY_CLASS, directory,
+		 file_monitor_remove, (directory, client));
 }
 
 gboolean
 nautilus_directory_is_not_empty (NautilusDirectory *directory)
 {
-	char *public_metafile_uri;
-	gboolean not_empty;
-	
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
-
-	/* Directory must be monitored for this call to be correct. */
 	g_return_val_if_fail (nautilus_directory_is_file_list_monitored (directory), FALSE);
 
-	if (directory->details->public_metafile_vfs_uri == NULL) {
-		not_empty = directory->details->files != NULL;
-	} else {
-		public_metafile_uri = gnome_vfs_uri_to_string
-			(directory->details->public_metafile_vfs_uri,
-			 GNOME_VFS_URI_HIDE_NONE);
-		
-		/* Return TRUE if the directory contains anything besides a metafile. */
-		not_empty = g_list_find_custom (directory->details->files,
-						public_metafile_uri,
-						any_non_metafile_item) != NULL;
-		
-		g_free (public_metafile_uri);
-	}
-
-	return not_empty;
+	return NAUTILUS_CALL_VIRTUAL
+		(NAUTILUS_DIRECTORY_CLASS, directory,
+		 is_not_empty, (directory));
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)

@@ -1,3 +1,76 @@
+2000-08-15  Darin Adler  <darin@eazel.com>
+
+	Getting closer to an implementation of the shared trash. Did a bit
+	of factoring so that the trash has its own NautilusDirectory
+	subclass now, and the appropriate functions are virtual.
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_are_all_files_seen),
+	(nautilus_directory_contains_file),
+	(nautilus_directory_call_when_ready),
+	(nautilus_directory_cancel_callback),
+	(nautilus_directory_file_monitor_add),
+	(nautilus_directory_file_monitor_remove),
+	(nautilus_directory_is_not_empty): Made all these functions
+	virtual.
+	(wait_until_ready_callback),
+	(nautilus_directory_wait_until_ready): Fixed some names and got
+	rid of some type casts.
+	
+	* libnautilus-extensions/nautilus-gtk-macros.h: Added a new macro
+	to make calls to virtual functions easier to read.
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* libnautilus-extensions/nautilus-icon-private.h:
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_initialize):
+	Minor cleanup and name changes.
+	
+	* libnautilus-extensions/nautilus-lib-self-check-functions.h:
+	* libnautilus-extensions/nautilus-search-uri.h:
+	* libnautilus-extensions/nautilus-search-uri.c:
+	(nautilus_is_search_uri): Added a function to tell if a URI is a
+	search URI.
+	(nautilus_self_check_search_uri): Added self-checks.
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(allow_metafile):
+	* src/nautilus-switchable-navigation-bar.c:
+	(nautilus_switchable_navigation_bar_set_location):
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_end_location_change_callback):
+	Changed to use the is_search_uri function.
+	
+	* libnautilus-extensions/nautilus-trash-directory.c:
+	(trash_destroy), (trash_contains_file), (trash_call_when_ready),
+	(trash_cancel_callback), (trash_file_monitor_add),
+	(trash_file_monitor_remove), (trash_are_all_files_seen),
+	(trash_is_not_empty), (nautilus_trash_directory_initialize_class):
+	Trash versions of the virtual functions.
+	
+	* libnautilus-extensions/nautilus-vfs-directory.c: (vfs_destroy),
+	(vfs_contains_file), (vfs_call_when_ready), (vfs_cancel_callback),
+	(vfs_file_monitor_add), (vfs_file_monitor_remove),
+	(vfs_are_all_files_seen), (any_non_metafile_item),
+	(vfs_is_not_empty), (nautilus_vfs_directory_initialize_class):
+	Non-trash versions of the virtual functions (mostly code moved
+	from nautilus-directory.c).
+	
+	* src/file-manager/fm-directory-view.c:
+	(disconnect_model_handlers): Fix a place that relied on doing a
+	call with a NautilusDirectory of NULL. We don't need to be so
+	tolerant of NULL any more now that nautilus_directory_get always
+	returns a non-NULL result for any URI.
+	
+	* src/nautilus-window.c: (nautilus_window_realize):
+	A little code cleanup.
+	(nautilus_window_load_content_view_menu): Fixed a storage leak
+	of the method string.
+
+	* src/nautilus.oafinfo: Added trash and gnome-trash as additional
+	URIs supported by the icon and list view.
+
 2000-08-15  John Sullivan  <sullivan@eazel.com>
 
 	Fixed task 1414 (Emptying the trash needs a warning dialog)
@@ -58,7 +131,7 @@
 	* libnautilus-extensions/nautilus-icon-container.c:
 	(icon_set_position), (get_best_empty_grid_location):
 	Fixed bug in postioning icons on the left edge of 
-	the desktop.  Some fine tuning of inital default icon
+	the desktop.  Some fine tuning of initial default icon
 	placement.
 	
 2000-08-15  Eskil Heyn Olsen  <eskil@eazel.com>
@@ -152,7 +225,6 @@
 	(create_install_page), (create_finish_page), (create_window):
 	Revamped large parts of the ui, much prettier now.
 
->>>>>>> 1.1394
 2000-08-14  Pavel Cisler  <pavel@eazel.com>
 
 	* src/file-manager/fm-desktop-icon-view.c:
@@ -505,7 +577,6 @@
 	(nautilus_sidebar_tabs_size_allocate):
 	removed unnecessary override of size_request
 	
->>>>>>> 1.1392
 2000-08-12  Raph Levien  <raph@acm.org>
 
 	* librsvg/rsvg-ft.c: Got glyph cache working. Eviction when

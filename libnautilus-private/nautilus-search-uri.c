@@ -24,13 +24,11 @@
 #include <config.h>
 #include "nautilus-search-uri.h"
 
-/* FIXME: including only libgnome/gnome-i18n.h gives 
-   what seems to be random erros on /usr/include/libintl.h
-   gnome.h fixes the pb but is ugly.
-*/
-#include <gnome.h>
+/* Must be included before other libgnome headers. */
+#include <libgnome/gnome-defs.h>
 
-#include <glib.h>
+#include "nautilus-lib-self-check-functions.h"
+#include "nautilus-string.h"
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 
@@ -43,8 +41,6 @@ static char *             get_nth_criterion_suffix    (GSList *criterion);
 static char *             get_first_criterion_suffix  (GSList *criterion);
 static char *             parse_uri                   (const char *search_uri);
 static void               free_tokenized_uri          (GSList *list);
-
-
 
 /**
  * strip_uri_begenning:
@@ -117,7 +113,7 @@ static GSList *
 tokenize_uri (const char *string) 
 {
         const char *temp_string;
-        char **criterions;
+        char **criteria;
         GSList *criterion_list;
         int i, j;
 
@@ -136,11 +132,11 @@ tokenize_uri (const char *string)
                 return NULL;
         }
         
-        /* split the uri in different criterions */
-        criterions = g_strsplit (string, " & ", 0);
-        for (i = 0, temp_string = criterions[0]; 
+        /* split the uri in different criteria */
+        criteria = g_strsplit (string, " & ", 0);
+        for (i = 0, temp_string = criteria[0]; 
              temp_string != NULL; 
-             i++, temp_string = criterions[i]) {
+             i++, temp_string = criteria[i]) {
                 char **tokens;
                 char *token;
                 GSList *token_list;
@@ -155,7 +151,7 @@ tokenize_uri (const char *string)
                 criterion_list = g_slist_append (criterion_list, token_list);
                 g_strfreev (tokens);
         }
-        g_strfreev (criterions);
+        g_strfreev (criteria);
 
         return criterion_list;
 }
@@ -369,8 +365,6 @@ static field_criterion_item main_table[] = {
  * Yes, I know it is wrong to use the normal function return value
  * to pass error status.
  */
-static int                get_item_number             (field_criterion_item *current_table,
-                                                       char *item);
 static int 
 get_item_number (field_criterion_item *current_table, char *item) 
 {
@@ -387,7 +381,6 @@ get_item_number (field_criterion_item *current_table, char *item)
         
         return i;
 }
-
 
 /**
  * get_translated_criterion:
@@ -522,7 +515,6 @@ get_nth_criterion_suffix (GSList *criterion)
         return g_strdup ("");
 }
 
-
 /**
  * get_first_criterion_suffix:
  * @criterion: The GSList whose data field points to the criterion GSList.
@@ -537,8 +529,6 @@ get_first_criterion_suffix (GSList *criterion)
         return get_nth_criterion_suffix (criterion);
 }
 
-
-
 /**
  * parse_uri:
  * @search_uri: uri to translate.
@@ -548,37 +538,36 @@ get_first_criterion_suffix (GSList *criterion)
 static char *
 parse_uri (const char *search_uri)
 {
-        GSList *criterions, *criterion;
+        GSList *criteria, *criterion;
         char *translated_criterion, *translated_prefix, *translated_suffix;
         char *ret_val, *temp;
         
-
-        criterions = tokenize_uri (search_uri);
-        if (criterions == NULL) {
+        criteria = tokenize_uri (search_uri);
+        if (criteria == NULL) {
                 return NULL;
         }
 
         /* processes the first criterion and add the necessary "whose" prefix */
-        translated_prefix = get_first_criterion_prefix (criterions);
-        translated_criterion = get_translated_criterion ((GSList *)criterions->data);
+        translated_prefix = get_first_criterion_prefix (criteria);
+        translated_criterion = get_translated_criterion ((GSList *)criteria->data);
         if (translated_criterion == NULL) {
-                free_tokenized_uri (criterions);
+                free_tokenized_uri (criteria);
                 g_free (translated_prefix);
                 return NULL;
         }
-        translated_suffix = get_first_criterion_suffix (criterions);
+        translated_suffix = get_first_criterion_suffix (criteria);
         ret_val = g_strdup_printf (_("Search results for items %s %s%s"), 
                                    translated_prefix, translated_criterion, translated_suffix);
         g_free (translated_suffix);
         g_free (translated_criterion);
         g_free (translated_prefix);
         
-        /* processes the other criterions and add the necessary "and" prefixes */
-        for (criterion = (GSList *)criterions->next; criterion != NULL; criterion = criterion->next) {
+        /* processes the other criteria and add the necessary "and" prefixes */
+        for (criterion = (GSList *)criteria->next; criterion != NULL; criterion = criterion->next) {
                 translated_criterion = get_translated_criterion ((const GSList *)criterion->data);
                 if (translated_criterion == NULL) {
                         g_free (ret_val);
-                        free_tokenized_uri (criterions);
+                        free_tokenized_uri (criteria);
                         return NULL;
                 }
                 translated_prefix = get_nth_criterion_prefix (criterion);
@@ -592,7 +581,7 @@ parse_uri (const char *search_uri)
                 g_free (translated_prefix);
         }
         
-        free_tokenized_uri (criterions);        
+        free_tokenized_uri (criteria);        
 
         return ret_val;
 }
@@ -602,9 +591,10 @@ parse_uri (const char *search_uri)
  * nautilus_search_uri_to_human:
  * @search_uri: search uri to translate to human langage.
  *
- * The returned string is already internationalized.
+ * The returned string is already localized.
  */
-char * nautilus_search_uri_to_human (const char *search_uri)
+char *
+nautilus_search_uri_to_human (const char *search_uri)
 {
         char *uri, *human;
 
@@ -621,14 +611,33 @@ char * nautilus_search_uri_to_human (const char *search_uri)
         return human;
 }
 
+gboolean
+nautilus_is_search_uri (const char *uri)
+{
+        return nautilus_istr_has_prefix (uri, "search:")
+                || nautilus_istr_has_prefix (uri, "gnome-search:");
+}
 
+#if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
+void
+nautilus_self_check_search_uri (void)
+{
+	/* search_uri_to_human */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human (NULL), NULL);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human (""), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("xxx:yyy"), "xxx:yyy");
+        /* FIXME: Need more tests. */
 
+        /* is_search_uri */
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri (NULL), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri (""), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri ("search:"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri ("gnome-search:"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri ("xxx-search:"), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri ("search:xxx"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri ("gnome-search:xxx"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri ("xxx-search:xxx"), FALSE);
+}
 
-
-
-
-
-
-
-
+#endif /* !NAUTILUS_OMIT_SELF_CHECK */

@@ -26,12 +26,13 @@
 #include <config.h>
 #include "nautilus-vfs-directory.h"
 
+#include "nautilus-directory-private.h"
 #include "nautilus-gtk-macros.h"
+#include "nautilus-file-private.h"
 
 struct NautilusVFSDirectoryDetails {
 };
 
-static void nautilus_vfs_directory_destroy          (GtkObject *object);
 static void nautilus_vfs_directory_initialize       (gpointer   object,
 						     gpointer   klass);
 static void nautilus_vfs_directory_initialize_class (gpointer   klass);
@@ -39,16 +40,6 @@ static void nautilus_vfs_directory_initialize_class (gpointer   klass);
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusVFSDirectory,
 				   nautilus_vfs_directory,
 				   NAUTILUS_TYPE_DIRECTORY)
-
-static void
-nautilus_vfs_directory_initialize_class (gpointer klass)
-{
-	GtkObjectClass *object_class;
-
-	object_class = GTK_OBJECT_CLASS (klass);
-	
-	object_class->destroy = nautilus_vfs_directory_destroy;
-}
 
 static void
 nautilus_vfs_directory_initialize (gpointer object, gpointer klass)
@@ -61,7 +52,149 @@ nautilus_vfs_directory_initialize (gpointer object, gpointer klass)
 }
 
 static void
-nautilus_vfs_directory_destroy (GtkObject *object)
+vfs_destroy (GtkObject *object)
 {
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+}
+
+static gboolean
+vfs_contains_file (NautilusDirectory *directory,
+		   NautilusFile *file)
+{
+	g_assert (NAUTILUS_IS_VFS_DIRECTORY (directory));
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+	return file->details->directory == directory;
+}
+
+static void
+vfs_call_when_ready (NautilusDirectory *directory,
+		     GList *file_attributes,
+		     gboolean wait_for_metadata,
+		     NautilusDirectoryCallback callback,
+		     gpointer callback_data)
+{
+	g_assert (NAUTILUS_IS_VFS_DIRECTORY (directory));
+
+	nautilus_directory_call_when_ready_internal
+		(directory,
+		 NULL,
+		 file_attributes,
+		 wait_for_metadata,
+		 callback,
+		 NULL,
+		 callback_data);
+}
+
+static void
+vfs_cancel_callback (NautilusDirectory *directory,
+		     NautilusDirectoryCallback callback,
+		     gpointer callback_data)
+{
+	g_assert (NAUTILUS_IS_VFS_DIRECTORY (directory));
+
+	nautilus_directory_cancel_callback_internal
+		(directory,
+		 NULL,
+		 callback,
+		 NULL,
+		 callback_data);
+}
+
+static void
+vfs_file_monitor_add (NautilusDirectory *directory,
+		      gconstpointer client,
+		      GList *file_attributes,
+		      gboolean monitor_metadata,
+		      gboolean force_reload,
+		      NautilusDirectoryCallback callback,
+		      gpointer callback_data)
+{
+	g_assert (NAUTILUS_IS_VFS_DIRECTORY (directory));
+	g_assert (client != NULL);
+
+	if (force_reload) {
+		nautilus_directory_force_reload (directory);
+	}
+
+	nautilus_directory_monitor_add_internal
+		(directory, NULL,
+		 client,
+		 file_attributes, monitor_metadata,
+		 force_reload ? NULL : callback,
+		 callback_data);
+}
+
+static void
+vfs_file_monitor_remove (NautilusDirectory *directory,
+			 gconstpointer client)
+{
+	g_assert (NAUTILUS_IS_VFS_DIRECTORY (directory));
+	g_assert (client != NULL);
+	
+	nautilus_directory_monitor_remove_internal (directory, NULL, client);
+}
+
+static gboolean
+vfs_are_all_files_seen (NautilusDirectory *directory)
+{
+	g_assert (NAUTILUS_IS_VFS_DIRECTORY (directory));
+	
+	return directory->details->directory_loaded;
+}
+
+static int
+any_non_metafile_item (gconstpointer item, gconstpointer callback_data)
+{
+	/* A metafile is exactly what we are not looking for, anything else is a match. */
+	return nautilus_file_matches_uri
+		(NAUTILUS_FILE (item), (const char *) callback_data)
+		? 1 : 0;
+}
+
+static gboolean
+vfs_is_not_empty (NautilusDirectory *directory)
+{
+	char *public_metafile_uri;
+	gboolean not_empty;
+	
+	g_assert (NAUTILUS_IS_VFS_DIRECTORY (directory));
+	g_assert (nautilus_directory_is_file_list_monitored (directory));
+	
+	if (directory->details->public_metafile_vfs_uri == NULL) {
+		not_empty = directory->details->files != NULL;
+	} else {
+		public_metafile_uri = gnome_vfs_uri_to_string
+			(directory->details->public_metafile_vfs_uri,
+			 GNOME_VFS_URI_HIDE_NONE);
+		
+		/* Return TRUE if the directory contains anything besides a metafile. */
+		not_empty = g_list_find_custom (directory->details->files,
+						public_metafile_uri,
+						any_non_metafile_item) != NULL;
+		
+		g_free (public_metafile_uri);
+	}
+	
+	return not_empty;
+}
+
+static void
+nautilus_vfs_directory_initialize_class (gpointer klass)
+{
+	GtkObjectClass *object_class;
+	NautilusDirectoryClass *directory_class;
+
+	object_class = GTK_OBJECT_CLASS (klass);
+	directory_class = NAUTILUS_DIRECTORY_CLASS (klass);
+	
+	object_class->destroy = vfs_destroy;
+
+	directory_class->contains_file = vfs_contains_file;
+	directory_class->call_when_ready = vfs_call_when_ready;
+	directory_class->cancel_callback = vfs_cancel_callback;
+	directory_class->file_monitor_add = vfs_file_monitor_add;
+	directory_class->file_monitor_remove = vfs_file_monitor_remove;
+	directory_class->are_all_files_seen = vfs_are_all_files_seen;
+	directory_class->is_not_empty = vfs_is_not_empty;
 }

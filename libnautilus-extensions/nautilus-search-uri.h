@@ -24,14 +24,9 @@
 #ifndef NAUTILUS_SEARCH_URI_H
 #define NAUTILUS_SEARCH_URI_H
 
+#include <glib.h>
 
-
-char *            nautilus_search_uri_to_human           (const char *search_uri);
-
-
-
-
-
-
+gboolean nautilus_is_search_uri       (const char *uri);
+char *   nautilus_search_uri_to_human (const char *search_uri);
 
 #endif /* NAUTILUS_SEARCH_URI_H */

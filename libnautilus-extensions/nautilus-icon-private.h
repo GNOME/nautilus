@@ -177,7 +177,7 @@ struct NautilusIconContainerDetails {
 	gboolean auto_layout;
 
 	/* Layout mode */
-	NautilusIconContainerLayoutMode layout_mode;
+	NautilusIconLayoutMode layout_mode;
 
 	/* Is the container fixed or resizable */
 	gboolean is_fixed_size;
@@ -204,10 +204,13 @@ gboolean      nautilus_icon_container_has_stored_icon_positions   (NautilusIconC
 gboolean      nautilus_icon_container_emit_preview_signal         (NautilusIconContainer *view,
 								   NautilusIcon          *icon,
 								   gboolean               start_flag);
+void          nautilus_icon_container_scroll                      (NautilusIconContainer *container,
+								   int                    delta_x,
+								   int                    delta_y);
+void          nautilus_icon_container_update_scroll_region        (NautilusIconContainer *container);
 
-void	      nautilus_icon_container_scroll			  (NautilusIconContainer *container,
-								   int 			  delta_x, 
-								   int 			  delta_y);
+/* label color for items */
+guint32       nautilus_icon_container_get_label_color             (NautilusIconContainer *container,
+								   gboolean               first_line);
 
-void	      nautilus_icon_container_update_scroll_region	  (NautilusIconContainer *container);
 #endif /* NAUTILUS_ICON_CONTAINER_PRIVATE_H */

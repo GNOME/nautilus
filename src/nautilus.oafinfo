@@ -17,7 +17,12 @@
   <oaf_attribute name="name" type="string" value="Nautilus file manager icon view"/>
   <oaf_attribute name="description" type="string" value="Nautilus file manager component that shows a two-dimensional icon space"/>
   <oaf_attribute name="bonobo:supported_mime_types" type="stringv">
-    <item value="x-directory/*"/>
+    <item value="x-directory/normal"/>
+    <item value="x-directory/webdav"/>
+  </oaf_attribute>
+  <oaf_attribute name="bonobo:additional_uri_schemes" type="stringv">
+    <item value="gnome-trash"/>
+    <item value="trash"/>
   </oaf_attribute>
   <oaf_attribute name="nautilus:view_as_name" type="string" value="Icons"/>
 </oaf_server>
@@ -44,6 +49,10 @@
     <item value="x-directory/normal"/>
     <item value="x-directory/webdav"/>
   </oaf_attribute>
+  <oaf_attribute name="bonobo:additional_uri_schemes" type="stringv">
+    <item value="gnome-trash"/>
+    <item value="trash"/>
+  </oaf_attribute>
   <oaf_attribute name="nautilus:view_as_name" type="string" value="List"/>
 </oaf_server>
 
@@ -60,8 +69,6 @@
   </oaf_attribute>
   <oaf_attribute name="nautilus:view_as_name" type="string" value="Search List"/>
 </oaf_server>
-
-
 
 <oaf_server iid="OAFIID:nautilus_shell:cd5183b2-3913-4b74-9b8e-10528b0de08d" type="factory" location="OAFIID:nautilus_factory:bd1e1862-92d7-4391-963e-37583f0daef3">
   <oaf_attribute name="repo_ids" type="stringv">

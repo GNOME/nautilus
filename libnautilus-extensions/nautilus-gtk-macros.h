@@ -35,7 +35,6 @@
    The parent_class_type parameter is guaranteed to be evaluated only once
    so it can be an expression, even an expression that contains a function call.
 */
-
 #define NAUTILUS_DEFINE_CLASS_BOILERPLATE(class_name, class_name_in_function_format, parent_class_type) \
 \
 static gpointer parent_class; \
@@ -66,17 +65,27 @@ class_name_in_function_format##_get_type (void) \
 	return type; \
 }
 
-/* Call a parent class version of a signal.
-   Nice because it documents what it's doing and there is less chance for
-   a typo. Depends on the parent class pointer having the conventional
-   name "parent_class".
-*/
-
+/* Call a parent class version of a virtual function (or default
+ * signal handler since that's the same thing). Nice because it
+ * documents what it's doing and there is less chance for a
+ * typo. Depends on the parent class pointer having the conventional
+ * name "parent_class" as the boilerplate macro above does it.
+ */
 #define NAUTILUS_CALL_PARENT_CLASS(parent_class_cast_macro, signal, parameters) \
 \
 (parent_class_cast_macro (parent_class)->signal == NULL) \
 	? 0 \
 	: ((* parent_class_cast_macro (parent_class)->signal) parameters)
+
+/* Call a virtual function. Useful when the virtual function is not a
+ * signal, otherwise you want to gtk_signal emit. Nice because it
+ * documents what it's doing and there is less chance for a typo.
+ */
+#define NAUTILUS_CALL_VIRTUAL(class_cast_macro, object, signal, parameters) \
+\
+(class_cast_macro (GTK_OBJECT (object)->klass)->signal == NULL) \
+	? 0 \
+	: ((* class_cast_macro (GTK_OBJECT (object)->klass)->signal) parameters)
 
 #ifndef G_DISABLE_ASSERT
 

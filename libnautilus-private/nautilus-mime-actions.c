@@ -566,19 +566,17 @@ nautilus_mime_get_short_list_components_for_uri (const char *uri)
 	return result;
 }
 
-gchar *
+char *
 nautilus_mime_get_short_list_methods_for_uri (const char *uri)
 {
-	gchar *mime_type = get_mime_type_from_uri (uri);
-	const gchar *method = gnome_vfs_mime_get_value (mime_type, "vfs-method");
+	char *mime_type;
+	const char *method;
 
-	g_free(mime_type);
-
-	if (method == NULL) return NULL;
-
-	return g_strdup(method);
+	mime_type = get_mime_type_from_uri (uri);
+	method = gnome_vfs_mime_get_value (mime_type, "vfs-method");
+	g_free (mime_type);
+	return g_strdup (method);
 }
-
 
 GList *
 nautilus_mime_get_all_applications_for_uri (const char *uri)

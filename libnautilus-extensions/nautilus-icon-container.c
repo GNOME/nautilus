@@ -631,8 +631,8 @@ lay_down_one_line (NautilusIconContainer *container,
 
 static void
 lay_down_icons_horizontal (NautilusIconContainer *container,
-		GList *icons,
-		double start_y)
+			   GList *icons,
+			   double start_y)
 {
 	GList *p, *line_start;
 	NautilusIcon *icon;
@@ -1000,7 +1000,6 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 		free (grid_memory);
 		g_list_free (placed_icons);
 		g_list_free (unplaced_icons);
-		
 	} else {
 		/* There are no placed icons.  Just lay them down using our rules */		
 		x = DESKTOP_PAD_HORIZONTAL;
@@ -1029,7 +1028,12 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 		}
 	}
 
-	/* This mode is special.  We freeze all of our positions after we do the layout. */
+	/* These modes are special. We freeze all of our positions
+	 * after we do the layout.
+	 */
+	/* FIXME: This should not be tied to the direction of layout.
+	 * It should be a separate switch.
+	 */
 	nautilus_icon_container_freeze_icon_positions (container);
 }
 
@@ -1039,17 +1043,18 @@ lay_down_icons (NautilusIconContainer *container, GList *icons, double start_y)
 {
 	switch (container->details->layout_mode)
 	{
-		case NAUTILUS_ICON_CONTAINER_LAYOUT_HORIZONTAL:
-			lay_down_icons_horizontal (container, icons, start_y);
-			break;
-
-		case NAUTILUS_ICON_CONTAINER_LAYOUT_T_B_L_R:
-		case NAUTILUS_ICON_CONTAINER_LAYOUT_T_B_R_L:
-			lay_down_icons_tblr (container, icons);
-			break;
-						
-		default:
-			break;
+	case NAUTILUS_ICON_LAYOUT_L_R_T_B:
+		lay_down_icons_horizontal (container, icons, start_y);
+		break;
+		
+	case NAUTILUS_ICON_LAYOUT_T_B_L_R:
+	case NAUTILUS_ICON_LAYOUT_T_B_R_L:
+		/* FIXME: Need to handle T_B_R_L differently. */
+		lay_down_icons_tblr (container, icons);
+		break;
+		
+	default:
+		g_assert_not_reached ();
 	}
 }
 
@@ -2927,11 +2932,7 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 	details = g_new0 (NautilusIconContainerDetails, 1);
 
         details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
-	details->is_fixed_size = FALSE;
  
-	/* Set default layout mode */
-	details->layout_mode = NAUTILUS_ICON_CONTAINER_LAYOUT_HORIZONTAL;
-	
  	/* font table - this isn't exactly proportional, but it looks better than computed */
         details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLEST] = nautilus_font_factory_get_font_by_family ("helvetica", 8);
         details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLER] = nautilus_font_factory_get_font_by_family ("helvetica", 8);
@@ -4033,7 +4034,7 @@ nautilus_icon_container_set_auto_layout (NautilusIconContainer *container,
 
 void
 nautilus_icon_container_set_layout_mode (NautilusIconContainer *container,
-					 NautilusIconContainerLayoutMode mode)
+					 NautilusIconLayoutMode mode)
 {
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 

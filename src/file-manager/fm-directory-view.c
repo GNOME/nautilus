@@ -3391,10 +3391,10 @@ disconnect_model_handlers (FMDirectoryView *view)
 	disconnect_handler (view, &view->details->files_changed_handler_id);
 	if (view->details->model != NULL) {
 		nautilus_directory_file_monitor_remove (view->details->model, view);
+		nautilus_directory_cancel_callback (view->details->model,
+						    metadata_ready_callback,
+						    view);
 	}
-	nautilus_directory_cancel_callback (view->details->model,
-					    metadata_ready_callback,
-					    view);
 }
 
 /**

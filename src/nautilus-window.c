@@ -527,39 +527,30 @@ nautilus_window_close (NautilusWindow *window)
 static void
 nautilus_window_realize (GtkWidget *widget)
 {
-        GdkPixmap *pixmap = NULL;
-        GdkBitmap *mask = NULL;
-        gchar *filename;
+        char *filename;
+	GdkPixbuf *pixbuf;
+        GdkPixmap *pixmap;
+        GdkBitmap *mask;
         
         /* Create our GdkWindow */
 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
         
         /* Set the mini icon */
-        filename = nautilus_pixmap_file("nautilus-mini-logo.png");
-        
+        filename = nautilus_pixmap_file ("nautilus-mini-logo.png");
         if (filename != NULL) {
-                GdkPixbuf *pixbuf;
-
                 pixbuf = gdk_pixbuf_new_from_file(filename);
-
                 if (pixbuf != NULL) {
-                        gdk_pixbuf_render_pixmap_and_mask (pixbuf,
-                                                           &pixmap,
-                                                           &mask, 
-							   128);				   
+                        gdk_pixbuf_render_pixmap_and_mask
+				(pixbuf, &pixmap, &mask, 128);				   
 			gdk_pixbuf_unref (pixbuf);
+			nautilus_set_mini_icon
+				(widget->window, pixmap, mask);
+			/* FIXME bugzilla.eazel.com 610: It seems we are
+			 * leaking the pixmap and mask here, but if we unref
+			 * them here, the task bar crashes.
+			 */
 		}
         	g_free (filename);
-	}
-                     
-        if (pixmap != NULL) {
-                nautilus_set_mini_icon (widget->window,
-					pixmap,
-					mask);
-		/* FIXME bugzilla.eazel.com 610: It seems we are
-		 * leaking the pixmap and mask here, but if we unref
-		 * them here, the task bar crashes.
-		 */
 	}
 }
 
@@ -820,15 +811,14 @@ static void
 view_menu_vfs_method_callback (GtkWidget *widget, gpointer data)
 {
         NautilusWindow *window;
-        //NautilusFile *file;
-	gchar *new_location;
-	gchar *method;
+	char *new_location;
+	char *method;
         
         g_return_if_fail (GTK_IS_MENU_ITEM (widget));
         g_return_if_fail (NAUTILUS_IS_WINDOW (gtk_object_get_data (GTK_OBJECT (widget), "window")));
         
         window = NAUTILUS_WINDOW (gtk_object_get_data (GTK_OBJECT (widget), "window"));
-        method = (gchar *)(gtk_object_get_data (GTK_OBJECT (widget), "method"));
+        method = (char *)(gtk_object_get_data (GTK_OBJECT (widget), "method"));
 	g_return_if_fail (method);
 
 	new_location = g_strdup_printf("%s#%s:/",window->location,method);
@@ -841,10 +831,11 @@ void
 nautilus_window_load_content_view_menu (NautilusWindow *window)
 {	
 	GList *components;
-	gchar *method;
+	char *method;
         GList *p;
         GtkWidget *new_menu;
         GtkWidget *menu_item;
+	char *label;
 
         g_return_if_fail (NAUTILUS_IS_WINDOW (window));
         g_return_if_fail (GTK_IS_OPTION_MENU (window->view_as_option_menu));
@@ -853,47 +844,52 @@ nautilus_window_load_content_view_menu (NautilusWindow *window)
         
         /* Add a menu item for each view in the preferred list for this location. */
         components = nautilus_mime_get_short_list_components_for_uri (window->location);
-
         for (p = components; p != NULL; p = p->next) {
                 menu_item = create_content_view_menu_item 
                 	(window, nautilus_view_identifier_new_from_content_view (p->data));
                 gtk_menu_append (GTK_MENU (new_menu), menu_item);
         }
+	gnome_vfs_mime_component_list_free (components);
 
-	/* Add a menu item for each GNOME-VFS method for this URI */
-	method = nautilus_mime_get_short_list_methods_for_uri(window->location);
-	if (method) {
-		gchar *label = g_strdup_printf(_("View as %s..."), method);
+	/* Add a menu item for each special GNOME-VFS method for this
+	 * URI. This is a questionable user interface, since it's a
+	 * one way trip if you choose one of these view menu items, but
+	 * it's better than nothing.
+	 */
+	method = nautilus_mime_get_short_list_methods_for_uri (window->location);
+	/* FIXME: Name of the function is plural, but it returns only
+	 * one item. That must be fixed.
+	 */
+	if (method != NULL) {
+		label = g_strdup_printf (_("View as %s..."), method);
 		menu_item = gtk_menu_item_new_with_label (label);
-		g_free(label);
+		g_free (label);
 
         	gtk_object_set_data (GTK_OBJECT (menu_item), "window", window);
-        	gtk_object_set_data (GTK_OBJECT (menu_item), "method", method);
+        	gtk_object_set_data_full (GTK_OBJECT (menu_item), "method",
+					  g_strdup (method), g_free);
         	gtk_signal_connect (GTK_OBJECT (menu_item),
-        		    	"activate",
-        		    	GTK_SIGNAL_FUNC (view_menu_vfs_method_callback),
-        		    	NULL);
+				    "activate",
+				    view_menu_vfs_method_callback,
+				    NULL);
        		gtk_widget_show (menu_item);
        		gtk_menu_append (GTK_MENU (new_menu), menu_item);
+		g_free (method);
 	}
 
-        /* Add "View as Other..." extra bonus choice, with separator before it.
-         * Leave separator out if there are no viewers in menu by default. 
-         */
+        /* Add separator before "Other" if there are any other viewers in menu. */
         if (components != NULL || method != NULL) {
 	        menu_item = gtk_menu_item_new ();
 	        gtk_widget_show (menu_item);
 	        gtk_menu_append (GTK_MENU (new_menu), menu_item);
         }
 
-	gnome_vfs_mime_component_list_free (components);
-
+	/* Add "View as Other..." extra bonus choice. */
        	menu_item = gtk_menu_item_new_with_label (_("View as Other..."));
-        /* Store reference to window in item; no need to free this. */
         gtk_object_set_data (GTK_OBJECT (menu_item), "window", window);
         gtk_signal_connect (GTK_OBJECT (menu_item),
         		    "activate",
-        		    GTK_SIGNAL_FUNC (view_menu_choose_view_callback),
+        		    view_menu_choose_view_callback,
         		    NULL);
        	gtk_widget_show (menu_item);
        	gtk_menu_append (GTK_MENU (new_menu), menu_item);
@@ -908,16 +904,19 @@ nautilus_window_load_content_view_menu (NautilusWindow *window)
 }
 
 void
-nautilus_window_set_content_view (NautilusWindow *window, NautilusViewFrame *content_view)
+nautilus_window_set_content_view (NautilusWindow *window,
+				  NautilusViewFrame *content_view)
 {
 	nautilus_window_real_set_content_view (window, content_view);
 }
 
 void
-nautilus_window_add_sidebar_panel (NautilusWindow *window, NautilusViewFrame *sidebar_panel)
+nautilus_window_add_sidebar_panel (NautilusWindow *window,
+				   NautilusViewFrame *sidebar_panel)
 {
-	g_return_if_fail (!g_list_find (window->sidebar_panels, sidebar_panel));
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (sidebar_panel));
+	g_return_if_fail (g_list_find (window->sidebar_panels, sidebar_panel) == NULL);
 	
 	nautilus_sidebar_add_panel (window->sidebar, sidebar_panel);
 	window->sidebar_panels = g_list_prepend (window->sidebar_panels, sidebar_panel);
@@ -926,8 +925,12 @@ nautilus_window_add_sidebar_panel (NautilusWindow *window, NautilusViewFrame *si
 void
 nautilus_window_remove_sidebar_panel (NautilusWindow *window, NautilusViewFrame *sidebar_panel)
 {
-	if (!g_list_find(window->sidebar_panels, sidebar_panel))
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (sidebar_panel));
+
+	if (g_list_find (window->sidebar_panels, sidebar_panel) == NULL) {
 		return;
+	}
 	
 	nautilus_sidebar_remove_panel (window->sidebar, sidebar_panel);
 	window->sidebar_panels = g_list_remove (window->sidebar_panels, sidebar_panel);
