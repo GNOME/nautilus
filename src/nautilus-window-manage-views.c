@@ -1414,6 +1414,11 @@ nautilus_window_set_sidebar_panels (NautilusWindow *window,
 			continue;
 		}
 
+                /* tell panel about the location and selection, if we have them */
+                if (window->location != NULL) {
+                        update_view (sidebar_panel, window->location, window->selection);
+                }
+
 		/* If the load succeeded, add the panel. */
 		nautilus_window_add_sidebar_panel (window, sidebar_panel);
 	}

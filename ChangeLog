@@ -1,3 +1,10 @@
+2000-10-31  Maciej Stachowiak  <mjs@eazel.com>
+
+	* src/nautilus-window-manage-views.c
+	(nautilus_window_set_sidebar_panels): Call `update_view' on new
+	sidebar panels that get activated, so they find out about the
+	location and selection.
+
 2000-10-31  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* applets/Makefile.am:

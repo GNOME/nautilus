@@ -1296,7 +1296,6 @@ nautilus_tree_view_load_uri (NautilusTreeView *view,
 
 	cancel_selection_in_progress (view);
 
-
 	canonical_uri = nautilus_make_uri_canonical (uri);
 
 	if (nautilus_strcmp (canonical_uri, view->details->selected_uri) == 0) {
