@@ -2982,7 +2982,8 @@ fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView *view)
 	
 	nautilus_pop_up_context_menu (create_selection_context_menu (view),
 				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
-				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT);
+				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
+				      0);
 }
 
 /**
@@ -3001,7 +3002,8 @@ fm_directory_view_pop_up_background_context_menu  (FMDirectoryView *view)
 	
 	nautilus_pop_up_context_menu (create_background_context_menu (view),
 				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
-				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT);
+				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
+				      0);
 }
 
 /**

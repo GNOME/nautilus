@@ -1,3 +1,24 @@
+2000-08-07  Pavel Cisler  <pavel@eazel.com>
+
+	Fix bug 1941 -- Context menus need to be clicked twice.
+
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_pop_up_context_menu):
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	When invoked from anywhere but the button_press call, we need to
+	pass 0 for button otherwise the next click will not be handled.
+	Add a way to pass the button as a parameter.
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_pop_up_selection_context_menu),
+	(fm_directory_view_pop_up_background_context_menu):
+	Pass 0 for button
+	
+	* src/nautilus-sidebar.c: (nautilus_sidebar_press_event):
+	* src/nautilus-window-toolbars.c:
+	(back_or_forward_button_clicked_callback):
+	Called from button_press, pass the actual button.
+	
 2000-08-07  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 1422 (dropping an icon at the edge doesn't update

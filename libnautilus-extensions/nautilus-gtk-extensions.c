@@ -369,23 +369,27 @@ nautilus_popup_menu_position_func (GtkMenu   *menu,
 /**
  * nautilus_pop_up_context_menu:
  * 
- * Pop up a context menu under the mouse. This assumes that
- * a mouse down event just occurred, with the 3rd button pressed.
- * (Context menus only appear with the 3rd mouse button, by UI
- * convention.) The menu is sunk after use, so it will be destroyed
- * unless the caller first ref'ed it.
+ * Pop up a context menu under the mouse.
+ * The menu is sunk after use, so it will be destroyed unless the 
+ * caller first ref'ed it.
  * 
  * This function is more of a helper function than a gtk extension,
  * so perhaps it belongs in a different file.
  * 
+ * When calling from a callback other than button_press, make sure to pass
+ * 0 for button because otherwise the first button click after the button came
+ * up would not be handled properly (a subtle fragility of gtk_menu_popup).
+ * 
  * @menu: The menu to pop up under the mouse.
  * @offset_x: Number of pixels to displace the popup menu vertically
  * @offset_y: Number of pixels to displace the popup menu horizontally
+ * @button: current button if called from button_press.
  **/
 void 
 nautilus_pop_up_context_menu (GtkMenu	*menu,
 			      gint16	offset_x,
-			      gint16	offset_y)
+			      gint16	offset_y,
+			      int	button)
 {
 	GdkPoint offset;
 
@@ -403,7 +407,7 @@ nautilus_pop_up_context_menu (GtkMenu	*menu,
 			NULL,					/* parent_menu_item */
 			nautilus_popup_menu_position_func,	/* func */
 			&offset,			        /* data */
-			3,					/* button */
+			button,					/* button */
 			GDK_CURRENT_TIME);			/* activate_time */
 
 	gtk_object_sink (GTK_OBJECT(menu));

@@ -96,8 +96,8 @@ void              nautilus_gtk_selection_data_free_deep        (GtkSelectionData
 /* GtkMenu */
 void              nautilus_pop_up_context_menu                 (GtkMenu                *menu,
 								gint16                  offset_x,
-								gint16                  offset_y);
-
+								gint16                  offset_y,
+								int			button);
 /* GtkStyle */
 void              nautilus_gtk_style_set_font                  (GtkStyle               *style,
 								GdkFont                *font);
