@@ -1,5 +1,19 @@
 2001-11-06  Michael Meeks  <michael@ximian.com>
 
+	* src/nautilus-view-frame.c
+	(create_corba_objects): upd. bind to zoomable.
+
+	* components/image-viewer/nautilus-image-view.c
+	(zoomable_set_zoom_level_callback): upd. for bonobo.
+
+	* src/file-manager/fm-directory-view.c
+	(fm_directory_view_set_zoom_level): ditto.
+
+	* components/text/nautilus-text-view.c
+	(nautilus_text_view_zoom_to_level): ditto.
+
+2001-11-06  Michael Meeks  <michael@ximian.com>
+
 	* configure.in: update bonobo requirement to 1.106.0
 	bump bonobo-activation to 0.9.3, bump canvas and libgnome[ui]
 	to 1.105, ORBit2 >= 2.3.97, glib, gtk+, gdk-pixbuf >= 1.3.10,

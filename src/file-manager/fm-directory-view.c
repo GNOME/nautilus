@@ -2492,7 +2492,8 @@ fm_directory_view_set_zoom_level (FMDirectoryView *view, int zoom_level)
 	new_zoom_level = (float) nautilus_get_icon_size_for_zoom_level (zoom_level)
 		/ NAUTILUS_ICON_SIZE_STANDARD;
 
-	bonobo_zoomable_report_zoom_level_changed (view->details->zoomable, new_zoom_level);
+	bonobo_zoomable_report_zoom_level_changed (
+		view->details->zoomable, new_zoom_level, NULL);
 }
 
 /**

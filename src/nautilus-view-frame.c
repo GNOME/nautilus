@@ -675,7 +675,8 @@ create_corba_objects (NautilusViewFrame *view)
 	    && !CORBA_Object_is_nil (zoomable, &ev)
 	    && ev._major == CORBA_NO_EXCEPTION) {
 		view->details->zoomable_frame = bonobo_zoomable_frame_new ();
-		bonobo_zoomable_frame_bind_to_zoomable (view->details->zoomable_frame, zoomable);
+		bonobo_zoomable_frame_bind_to_zoomable (
+			view->details->zoomable_frame, zoomable, NULL);
 		bonobo_object_release_unref (zoomable, NULL);
 	}
 

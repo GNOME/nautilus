@@ -808,8 +808,9 @@ nautilus_text_view_zoom_to_level (NautilusTextView *text_view, int zoom_index)
 	
 	if (pinned_zoom_index != text_view->details->zoom_index) {
 		text_view->details->zoom_index = pinned_zoom_index;
-		bonobo_zoomable_report_zoom_level_changed (text_view->details->zoomable,
-                                                           text_view_preferred_zoom_levels[pinned_zoom_index]);		
+		bonobo_zoomable_report_zoom_level_changed (
+                        text_view->details->zoomable,
+                        text_view_preferred_zoom_levels[pinned_zoom_index], NULL);
 		nautilus_text_view_update_font (text_view);
 	}
  }

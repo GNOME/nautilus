@@ -430,8 +430,8 @@ zoomable_set_zoom_level_callback (BonoboZoomable *zoomable, float new_zoom_level
 
 	control_update (bod);
 
-	bonobo_zoomable_report_zoom_level_changed (bod->zoomable,
-						   new_zoom_level);
+	bonobo_zoomable_report_zoom_level_changed (
+		bod->zoomable, new_zoom_level, NULL);
 }
 
 static void
