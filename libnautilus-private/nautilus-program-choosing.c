@@ -48,6 +48,14 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <stdlib.h>
 
+/* This number controls a maximum character count for a URL that is
+ * displayed as part of a dialog. It's fairly arbitrary -- big enough
+ * to allow most "normal" URIs to display in full, but small enough to
+ * prevent the dialog from getting insanely wide.
+ */
+#define MAX_URI_IN_DIALOG_LENGTH 60
+
+
 #ifdef HAVE_STARTUP_NOTIFICATION
 #define SN_API_NOT_YET_FROZEN
 #include <libsn/sn.h>
@@ -814,6 +822,10 @@ void nautilus_launch_show_file (NautilusFile *file,
 	GdkScreen *screen;
 	char **envp;
 	char *uri, *uri_scheme;
+	char *error_message, *detail_message;
+        char *full_uri_for_display;
+        char *uri_for_display;
+	GnomeVFSURI *vfs_uri;
 #ifdef HAVE_STARTUP_NOTIFICATION
 	SnLauncherContext *sn_context;
 	SnDisplay *sn_display;
@@ -920,6 +932,17 @@ void nautilus_launch_show_file (NautilusFile *file,
 	sn_display_unref (sn_display);
 #endif /* HAVE_STARTUP_NOTIFICATION */
 	
+	full_uri_for_display = eel_format_uri_for_display (uri);
+	/* Truncate the URI so it doesn't get insanely wide. Note that even
+	 * though the dialog uses wrapped text, if the URI doesn't contain
+	 * white space then the text-wrapping code is too stupid to wrap it.
+	 */
+	uri_for_display = eel_str_middle_truncate
+		(full_uri_for_display, MAX_URI_IN_DIALOG_LENGTH);
+	g_free (full_uri_for_display);
+	
+	error_message = detail_message = NULL;
+	
 	switch (result) {
 	case GNOME_VFS_OK:
 		break;
@@ -939,10 +962,67 @@ void nautilus_launch_show_file (NautilusFile *file,
 					(action_type, file, parent_window);
 		break;
 		
+	case GNOME_VFS_ERROR_LAUNCH:
+		/* TODO: These strings suck pretty badly, but we're in string-freeze,
+		 * and I found these in other places to reuse. We should make them
+		 * better later. */
+		error_message = g_strdup_printf (_("Couldn't display \"%s\"."),
+						 uri_for_display);
+		detail_message = g_strdup (_("There was an error launching the application."));		
+		break;
 	default:
-		nautilus_program_chooser_show_invalid_message
-					(action_type, file, parent_window);
+
+		switch (nautilus_file_get_file_info_result (file)) {
+		case GNOME_VFS_ERROR_ACCESS_DENIED:
+			error_message = g_strdup_printf (_("Couldn't display \"%s\"."),
+							 uri_for_display);
+			detail_message = g_strdup (_("The attempt to log in failed."));		
+			break;
+		case GNOME_VFS_ERROR_NOT_PERMITTED:
+			error_message = g_strdup_printf (_("Couldn't display \"%s\"."),
+							 uri_for_display);
+			detail_message = g_strdup (_("Access was denied."));		
+			break;
+		case GNOME_VFS_ERROR_INVALID_HOST_NAME:
+		case GNOME_VFS_ERROR_HOST_NOT_FOUND:
+			vfs_uri = gnome_vfs_uri_new (uri);
+			error_message = g_strdup_printf (_("Couldn't display \"%s\", because no host \"%s\" could be found."),
+							 uri_for_display,
+							 gnome_vfs_uri_get_host_name (vfs_uri));
+			detail_message = g_strdup (_("Check that the spelling is correct and that your proxy settings are correct."));
+			gnome_vfs_uri_unref (vfs_uri);
+			break;
+		case GNOME_VFS_ERROR_INVALID_URI:
+			error_message = g_strdup_printf
+				(_("\"%s\" is not a valid location."),
+				 uri_for_display);
+			detail_message = g_strdup 
+				(_("Please check the spelling and try again."));
+			break;
+		case GNOME_VFS_ERROR_NOT_FOUND:
+			error_message = g_strdup_printf
+				(_("Couldn't find \"%s\"."), 
+				 uri_for_display);
+			detail_message = g_strdup 
+				(_("Please check the spelling and try again."));
+			break;
+		case GNOME_VFS_OK:
+		default:
+			nautilus_program_chooser_show_invalid_message
+				(action_type, file, parent_window);
+		}
+
+		
 	}
+
+	if (error_message != NULL) {
+		eel_show_error_dialog (error_message, detail_message, _("Can't Display Location"), parent_window);
+		
+		g_free (error_message);
+		g_free (detail_message);
+	}
+	
+	g_free (uri_for_display);
 	
 	if (action != NULL) 
 		gnome_vfs_mime_action_free (action);

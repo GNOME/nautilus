@@ -1,5 +1,13 @@
 2004-04-07  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-program-choosing.c:
+	(nautilus_launch_show_file):
+	Better error messages when launching fails.
+	The error messages are re-used from other places due
+	to the string freeze, so they aren't optimal.
+
+2004-04-07  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-window-manage-views.c:
 	(position_and_show_window_callback):
 	* src/nautilus-window-private.h:
