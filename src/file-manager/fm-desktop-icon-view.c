@@ -253,9 +253,13 @@ create_unique_volume_name (const char *desktop_path, const NautilusVolume *volum
 	int index;
 	char *volume_name;
 	
-	index = 0;
 	new_name = NULL;
-	
+
+	/* Start with an index of one. If we collide, the file collided with will be the actual
+	 * number one. We will rename with the next available number.
+	 */	   
+	index = 1;
+			
 	volume_name = nautilus_volume_monitor_get_volume_name (volume);	
 
 	uri_path = g_strdup_printf ("%s/%s",desktop_path, volume_name);		

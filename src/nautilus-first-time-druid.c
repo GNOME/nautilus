@@ -27,6 +27,7 @@
 #include "nautilus-first-time-druid.h"
 
 #include <ctype.h>
+#include <dirent.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gnome.h>
 #include <libgnomevfs/gnome-vfs.h>
@@ -60,13 +61,16 @@
 #define SERVICE_UPDATE_ARCHIVE_PATH "/tmp/nautilus_update.tgz"
 #define WELCOME_PACKAGE_URI "http://services.eazel.com/downloads/eazel/updates.tgz"
 
-#define NUMBER_OF_STANDARD_PAGES 5
-
-#define USER_LEVEL_PAGE 0
-#define SERVICE_SIGNUP_PAGE 1
-#define OFFER_UPDATE_PAGE 2
-#define UPDATE_FEEDBACK_PAGE 3
-#define PROXY_CONFIGURATION_PAGE 4
+/* Wizard page number enumeration */
+enum {
+	USER_LEVEL_PAGE = 0,
+	GMC_TRANSITION_PAGE,
+	SERVICE_SIGNUP_PAGE,
+	OFFER_UPDATE_PAGE,
+	UPDATE_FEEDBACK_PAGE,
+	PROXY_CONFIGURATION_PAGE,
+	NUMBER_OF_STANDARD_PAGES	/* This must be the last item in the enumeration. */
+};
 
 /* Preference for http proxy settings */
 #define DEFAULT_HTTP_PROXY_PORT 8080
@@ -125,6 +129,10 @@ static enum {
 static gboolean sigalrm_occurred;
 static pid_t child_pid;
 
+/* GMC transition tool globals */
+static gboolean draw_desktop = TRUE;
+static gboolean add_to_session = TRUE;
+static gboolean transfer_gmc_icons = TRUE;
 
 static void     initiate_file_download           (GnomeDruid *druid);
 static gboolean set_http_proxy                   (const char *proxy_url);
@@ -225,7 +233,7 @@ druid_finished (GtkWidget *druid_page)
 	/* Create default services icon on the desktop */
 	desktop_path = nautilus_get_desktop_directory ();
 	nautilus_link_local_create (desktop_path, _("Eazel Services"), "big_services_icon.png", 
-				    "eazel:", NAUTILUS_LINK_GENERIC);
+				    "http://services.eazel.com", NAUTILUS_LINK_GENERIC);
 	g_free (desktop_path);
 	
 	/* Time to start. Hooray! */
@@ -777,6 +785,95 @@ next_proxy_configuration_page_callback (GtkWidget *button, GnomeDruid *druid)
 	return TRUE;
 }
 
+#if 0
+static void
+convert_gmc_desktop_icons ()
+{
+	const char *home_dir;
+	char *gmc_desktop_dir;
+	struct stat st;
+	DIR *dir;
+	struct dirent *dirent;
+
+	home_dir = g_get_home_dir ();
+	if (home_dir == NULL) {
+		return;
+	}
+		
+	gmc_desktop_dir = g_strdup_printf ("%s/.gnome_desktop", home_dir);
+
+	if (stat (gmc_desktop_dir, &st) != 0) {
+		g_free (gmc_desktop_dir);
+		return;
+	}
+	
+	if (S_ISDIR (st.st_mode) != 0) {
+		g_free (gmc_desktop_dir);
+		return;
+	}
+	
+	dir = opendir (gmc_desktop_dir);
+	if (dir == NULL) {
+		g_free (gmc_desktop_dir);
+		return;
+	}
+
+	/* Iterate all the files here and indentify the GMC links. */
+	dirent = NULL;
+	while ((dirent = readdir (dir)) != NULL) {
+		if (strcmp (dirent->d_name, ".") == 0 || strcmp (dirent->d_name, "..") == 0) {
+			continue;
+		}
+				
+		//sprintf(buff, "%s/%s", path.CStr(), dirent->d_name);
+	}
+				
+	g_free (gmc_desktop_dir);	
+}
+#endif
+
+/* handle the "next" signal for the update feedback page to skip the error page */
+static gboolean
+transition_value_changed (GtkWidget *checkbox, gboolean *value)
+{	
+	*value = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (checkbox));
+		
+	return TRUE;
+}
+
+/* set up the "GMC to Nautilus Transition" page */
+static void
+set_up_gmc_transition_page (NautilusDruidPageEazel *page)
+{
+	GtkWidget *checkbox;
+	GtkWidget *container, *main_box;
+
+	container = set_up_background (page, "rgb:ffff/ffff/ffff:h");
+
+	/* allocate a vbox to hold the description and the widgets */
+	main_box = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (main_box);
+	gtk_container_add (GTK_CONTAINER (container), main_box);
+	
+	checkbox = gtk_check_button_new_with_label (_("Use Nautilus to draw desktop."));
+	gtk_box_pack_start (GTK_BOX (main_box), checkbox, FALSE, FALSE, 0);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), TRUE);	
+	gtk_signal_connect (GTK_OBJECT (checkbox), "toggled", GTK_SIGNAL_FUNC (transition_value_changed), &draw_desktop);
+
+	checkbox = gtk_check_button_new_with_label (_("Transfer GMC desktop icons to Nautilus desktop."));
+	gtk_box_pack_start (GTK_BOX (main_box), checkbox, FALSE, FALSE, 0);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), TRUE);	
+	gtk_signal_connect (GTK_OBJECT (checkbox), "toggled", GTK_SIGNAL_FUNC (transition_value_changed), &transfer_gmc_icons);
+
+	checkbox = gtk_check_button_new_with_label (_("Launch Nautilus at Gnome session startup."));
+	gtk_box_pack_start (GTK_BOX (main_box), checkbox, FALSE, FALSE, 0);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), TRUE);
+	gtk_signal_connect (GTK_OBJECT (checkbox), "toggled", GTK_SIGNAL_FUNC (transition_value_changed), &add_to_session);
+			
+	gtk_widget_show_all (main_box);
+}
+
+
 /* handle the "back" signal from the finish page to skip the feedback page */
 static gboolean
 finish_page_back_callback (GtkWidget *button, GnomeDruid *druid)
@@ -805,7 +902,7 @@ nautilus_first_time_druid_show (NautilusApplication *application, gboolean manag
 {	
 	GtkWidget *dialog;
 	GtkWidget *druid;
-	int i;
+	int index;
 	GtkWidget *container, *main_box, *label;
 	
 	/* remember parameters for later window invocation */
@@ -830,9 +927,9 @@ nautilus_first_time_druid_show (NautilusApplication *application, gboolean manag
 	finish_page = nautilus_druid_page_eazel_new (NAUTILUS_DRUID_PAGE_EAZEL_FINISH);
 	set_page_sidebar (NAUTILUS_DRUID_PAGE_EAZEL (finish_page));
 
-	for (i = 0; i < NUMBER_OF_STANDARD_PAGES; i++) {
-		pages[i] = nautilus_druid_page_eazel_new (NAUTILUS_DRUID_PAGE_EAZEL_OTHER);
-		set_page_sidebar (NAUTILUS_DRUID_PAGE_EAZEL (pages[i]));
+	for (index = 0; index < NUMBER_OF_STANDARD_PAGES; index++) {
+		pages[index] = nautilus_druid_page_eazel_new (NAUTILUS_DRUID_PAGE_EAZEL_OTHER);
+		set_page_sidebar (NAUTILUS_DRUID_PAGE_EAZEL (pages[index]));
 	}
 		
 	/* set up the initial page */
@@ -881,6 +978,10 @@ nautilus_first_time_druid_show (NautilusApplication *application, gboolean manag
 	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[USER_LEVEL_PAGE]), _("Select A User Level"));
 	set_up_user_level_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[USER_LEVEL_PAGE]));
 				
+	/* set up the GMC transition page */
+	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[GMC_TRANSITION_PAGE]), _("GMC to Nautilus Transition"));
+	set_up_gmc_transition_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[GMC_TRANSITION_PAGE]));
+
 	/* set up the service sign-up page */
 	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[SERVICE_SIGNUP_PAGE]), _("Sign Up for Eazel Services"));
 	set_up_service_signup_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[SERVICE_SIGNUP_PAGE]));
@@ -912,22 +1013,19 @@ nautilus_first_time_druid_show (NautilusApplication *application, gboolean manag
 			    GTK_SIGNAL_FUNC (finish_page_back_callback),
 			    druid);
 
-
+	
 	/* capture the "back" signal from the finish page to skip the feedback page */
 	gtk_signal_connect (GTK_OBJECT (finish_page), "back",
 			    GTK_SIGNAL_FUNC (finish_page_back_callback),
 			    druid);
 		
 	/* append all of the pages to the druid */
-	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (start_page));
-	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (pages[0]));
-	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (pages[1]));
-	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (pages[2]));
-	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (pages[3]));
-	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (pages[4]));
-	
+	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (start_page));	
+	for (index = 0; index < NUMBER_OF_STANDARD_PAGES; index++) {
+		gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (pages[index]));
+	}
 	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (finish_page));
-
+		
 	gtk_container_add (GTK_CONTAINER (dialog), druid);
 
 	/* set up the signals */

@@ -1273,7 +1273,7 @@ close_error_pipe (gboolean mount, const char *mount_path)
 	char *message;
 	const char *title;
 	char detailed_msg[MAX_PIPE_SIZE];
-	int len = 0;
+	int length = 0;
 	gboolean is_floppy;
 	MountStatusInfo *info;
 	
@@ -1287,17 +1287,20 @@ close_error_pipe (gboolean mount, const char *mount_path)
 		close (2);
 		dup (old_error);
 		close (old_error);
-		len = read (error_pipe[0], detailed_msg, MAX_PIPE_SIZE);
-
-		if (len >= 0) {
-			detailed_msg[len] = 0;
+		
+		do {
+			length = read (error_pipe[0], detailed_msg, MAX_PIPE_SIZE);							
+		} while (length < 0);
+		
+		if (length >= 0) {
+			detailed_msg[length] = 0;
 		}
 		
 		close (error_pipe[0]);
 	}
 	
 	/* No output to show */
-	if (len == 0) {
+	if (length == 0) {
 		return;
 	}
 	
@@ -1310,7 +1313,8 @@ close_error_pipe (gboolean mount, const char *mount_path)
 		if (strstr (detailed_msg, _("is write-protected, mounting read-only")) != NULL) {
 			/* This is not an error. Just an informative message from mount. */
 			return;
-		} else if (strstr (detailed_msg, _("is not a valid block device")) != NULL) {
+		} else if ((strstr (detailed_msg, _("is not a valid block device")) != NULL) ||
+			   (strstr (detailed_msg, _("No medium found")) != NULL)) {
 			/* No media in drive */
 			if (is_floppy) {
 				/* Handle floppy case */

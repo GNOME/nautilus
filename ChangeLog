@@ -1,3 +1,25 @@
+2001-01-29  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+	
+	Fixed bug 6098, mounting and unmounting a cdrom
+	volume incorrectly reports error.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(close_error_pipe):
+	Loop on read until we get an error or end of read.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(create_unique_volume_name):
+	Tweak the index so the created name accurately reflects
+	the number of occurence the file is.
+	
+	Initial work on adding a GMC to Nautilus transition mechanism
+	to the first time wizard.
+	* src/nautilus-first-time-druid.c: (druid_finished),
+	(convert_gmc_desktop_icons), (transition_value_changed),
+	(set_up_gmc_transition_page), (nautilus_first_time_druid_show):
+	
 2001-01-29  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>
