@@ -122,6 +122,7 @@ ElementInfo sect_elements[] = {
 	{ GLOSSSEE, "glosssee", (startElementSAXFunc) sect_glosssee_start_element, NULL,  NULL },
 	{ GLOSSSEEALSO, "glossseealso", (startElementSAXFunc) sect_glossseealso_start_element, NULL, NULL },
 	{ EXAMPLE, "example", NULL, NULL, NULL },
+	{ VARLISTENTRY, "varlistentry", (startElementSAXFunc) sect_varlistentry_start_element, (endElementSAXFunc) sect_varlistentry_end_element, NULL },
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -1433,20 +1434,58 @@ sect_listitem_start_element (Context *context,
 			     const gchar *name,
 			     const xmlChar **atrs)
 {
+	GSList *element_list = NULL;
+	StackElement *stack_el;
+
 	if (!IS_IN_SECT (context))
 		return;
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (ITEMIZEDLIST));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (ORDEREDLIST));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (VARIABLELIST));
+	stack_el = find_first_element (context, element_list);
 
-	sect_print (context, "<LI>");
+	g_slist_free (element_list);
+	if (stack_el == NULL)
+		return;
+
+	switch (stack_el->info->index) {
+	case VARIABLELIST:
+		return;
+	case ITEMIZEDLIST:
+	case ORDEREDLIST:
+		sect_print (context, "<LI>");
+	default:
+		break;
+	};
 }
 
 void
 sect_listitem_end_element (Context *context,
 			   const gchar *name)
 {
+	GSList *element_list = NULL;
+	StackElement *stack_el;
+
 	if (!IS_IN_SECT (context))
 		return;
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (ITEMIZEDLIST));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (ORDEREDLIST));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (VARIABLELIST));
+	stack_el = find_first_element (context, element_list);
 
-	sect_print (context, "<P>");
+	g_slist_free (element_list);
+	if (stack_el == NULL)
+		return;
+
+	switch (stack_el->info->index) {
+	case VARIABLELIST:
+		return;
+	case ITEMIZEDLIST:
+	case ORDEREDLIST:
+		sect_print (context, "</LI>");
+	default:
+		break;
+	};
 }
 
 void
@@ -2103,4 +2142,25 @@ sect_glossseealso_start_element (Context *context, const gchar *name, const xmlC
 			atrs_ptr += 2;
 		}
 	}
+}
+
+void
+sect_varlistentry_start_element (Context *context,
+			     const gchar *name,
+			     const xmlChar **atrs)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "<LI>");
+}
+
+void
+sect_varlistentry_end_element (Context *context,
+			   const gchar *name)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "</LI>");
 }

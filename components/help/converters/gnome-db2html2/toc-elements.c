@@ -1,5 +1,6 @@
 
 #include <config.h>
+#include "sect-elements.h"
 #include "toc-elements.h"
 
 
@@ -23,7 +24,7 @@ static void toc_glossentry_start_element (Context *context, const gchar *name, c
 static void toc_glossentry_end_element (Context *context, const gchar *name);
 static void toc_glossterm_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 static void toc_glossterm_end_element (Context *context, const gchar *name);
-
+static void toc_tag_characters (Context *context, const gchar *chars, int len);
 
 ElementInfo toc_elements[] = {
 	{ ARTICLE, "article", (startElementSAXFunc) article_start_element, NULL, NULL},
@@ -79,7 +80,7 @@ ElementInfo toc_elements[] = {
 	{ SCREENINFO, "screeninfo", NULL, NULL, NULL},
 	{ COMMAND, "command", NULL, NULL, NULL},
 	{ REPLACEABLE, "replaceable", NULL, NULL, NULL},
-	{ FUNCTION, "function", NULL, NULL, NULL},
+	{ FUNCTION, "function", NULL, NULL, (charactersSAXFunc) toc_tag_characters},
 	{ GUIBUTTON, "guibutton", NULL, NULL, NULL},
 	{ GUIICON, "guiicon", NULL, NULL, NULL},
 	{ GUILABEL, "guilabel", NULL, NULL, NULL},
@@ -115,7 +116,7 @@ ElementInfo toc_elements[] = {
 	{ ENTRY, "entry", NULL, NULL, NULL},
 	{ THEAD, "thead", NULL, NULL, NULL},
 	{ TBODY, "tbody", NULL, NULL, NULL},
-	{ ACRONYM, "acronym", NULL, NULL, NULL},
+	{ ACRONYM, "acronym", NULL, NULL, (charactersSAXFunc) toc_tag_characters },
 	{ MARKUP, "markup", NULL, NULL, NULL},
 	{ SIMPLELIST, "simplelist", NULL, NULL, NULL},
 	{ MEMBER, "member", NULL, NULL, NULL},
@@ -144,6 +145,7 @@ ElementInfo toc_elements[] = {
 	{ GLOSSSEE, "glosssee", NULL, NULL, NULL},
 	{ GLOSSSEEALSO, "glossseealso", NULL, NULL, NULL},
 	{ EXAMPLE, "example", NULL, NULL, NULL},
+	{ VARLISTENTRY, "varlistentry", NULL, NULL, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -785,3 +787,31 @@ toc_glossterm_end_element (Context *context,
 	g_print ("</A>\n");
 }
 
+static void
+toc_tag_characters (Context *context, const gchar *chars, int len)
+{
+	GSList *element_list = NULL;
+	ElementIndex index;
+	char *temp;
+
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TITLE));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GLOSSTERM));
+
+	index = find_first_parent (context, element_list);
+	temp = g_strndup (chars, len);
+
+	switch (index) {
+	case TITLE:
+	case GLOSSTERM:
+		temp = g_strndup (chars, len);
+		sect_print (context, temp);
+		g_free (temp);
+		break;
+	default:
+		g_free (temp);
+		break;
+	};
+
+	g_slist_free (element_list);
+
+}

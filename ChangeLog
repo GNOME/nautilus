@@ -1,3 +1,44 @@
+2000-12-17  Ali Abdin  <aliabdin@aucegypt.edu>
+        
+        Fix bug #4379 (problem with variablelist's)
+
+        Partial fix for bug #5118 (acronym (and other tags) do not appear
+        in table of contents) - Implemented for: ACRONYM, FUNCTION
+
+        Both of these are based on patches thanks to jfleck@inkstain.net
+
+        Also added experimental ScrollKeeper support to the sidebar (as
+        contributed by Mark Murnane from Sun). This is experimental, and
+        disabled by default.
+
+        * components/help/converters/gnome-db2html2/gdb3html.h:
+        * components/help/converters/gnome-db2html2/sect-elements.[ch]:
+        * components/help/converters/gnome-db2html2/toc-elements.c:
+        (sect_varlistentry_start_element),
+        (sect_varlistentry_end_element):
+        new functions for VARLISTENTRY support
+        (sect_listitem_start_element),
+        (sect_listitem_end_element):
+        Only print <LI> for itemizedlist and orderlist (for the varlist we
+        print it out during the varlistentry)
+        
+        Makre sure we print out </LI>'s too, and remove the <P> cruft.
+
+        * components/help/converters/gnome-db2html2/toc-elements.c:
+        (toc_tag_characters):
+        New function. This will be used to print tags within the title. e.g.
+        <title><acronym>ASCII</acronym></title> should print out ASCII.
+
+        * components/help/hyperbola-filefmt.c:
+        * components/help/hyperbola-nav-tree.c:
+        Added a patch contributes by Mark Murnane <Mark.Murnane@ireland.sun.com>
+        that integrates experimental ScrollKeeper support for Hyperbola (the
+        Help Sidebar). This is disabled by default. You should #define
+        ENABLE_SCROLLKEEPER_SUPPORT to be able to use it.
+
+        * components/help/ScrollKeeper-TODO:
+        New file contributed by Sun.
+
 2000-12-17  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-property-browser.c:

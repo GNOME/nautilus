@@ -6,6 +6,8 @@
 
 #include "hyperbola-nav.h"
 
+#include <ctype.h>
+
 typedef struct {
   NautilusView *view_frame;
 
@@ -38,12 +40,37 @@ ctree_populate_subnode(gpointer key, gpointer value, gpointer user_data)
   HyperbolaTreeNode *node = value;
   PopulateInfo *pi = (PopulateInfo *)user_data, subpi;
   gboolean term;
+  char *title;
+
+#ifdef ENABLE_SCROLLKEEPER_SUPPORT
+  /* Get rid of leading numbers used to make sure TOCs are displayed properly */
+  if (isdigit(*(node->title)))
+    {
+      char **split;
+      
+      split = g_strsplit(node->title, ". ", 1);
+      title = g_strdup(split[1]);
+
+      /* Clean up the strings a bit.  These modify the string in-place */
+      g_strchug(title);
+      g_strchomp(title);
+      
+      g_strfreev(split);
+    }
+  else 
+#endif
+    title = node->title;
 
   term = (node->type == HYP_TREE_NODE_PAGE) || !node->children;
-  pi->sibling = gtk_ctree_insert_node(GTK_CTREE(pi->view->ctree), pi->parent, NULL, &node->title, 5,
+  pi->sibling = gtk_ctree_insert_node(GTK_CTREE(pi->view->ctree), pi->parent, NULL, &title, 5,
 				      NULL, NULL, NULL, NULL, term, FALSE);
   node->user_data = pi->sibling;
-
+  
+#ifdef ENABLE_SCROLLKEEPER_SUPPORT
+  if (title != node->title)   
+    g_free(title);            /* We used the copy from the split */
+#endif
+  
   gtk_ctree_node_set_row_data(GTK_CTREE(pi->view->ctree), pi->sibling, node);
 
   if(node->children)

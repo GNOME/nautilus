@@ -1,3 +1,21 @@
+/*
+ * Portions Copyright (C) 2000 Sun Microsystems, Inc. 
+ *
+ * This module is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public 
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This module is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this module; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
+
 #include <config.h>
 #include <gnome.h>
 #include <zlib.h>
@@ -10,6 +28,9 @@
 
 #include <string.h>
 
+#include <tree.h>
+#include <parser.h>
+
 typedef struct {
   const char *name;
   void (*populate_tree)(HyperbolaDocTree *tree);
@@ -21,12 +42,19 @@ static void fmt_info_populate_tree(HyperbolaDocTree *tree);
 
 static void fmt_help_populate_tree(HyperbolaDocTree *tree);
 
+#ifdef ENABLE_SCROLLKEEPER_SUPPORT
+static void fmt_scrollkeeper_populate_tree(HyperbolaDocTree *tree);
+#endif
+
 static void make_treesection(HyperbolaDocTree *tree, char **path);
 
 static FormatHandler format_handlers[] = {
   {"help", fmt_help_populate_tree},
   {"man", fmt_man_populate_tree},
   {"info", fmt_info_populate_tree},
+#ifdef ENABLE_SCROLLKEEPER_SUPPORT
+  {"xml", fmt_scrollkeeper_populate_tree},
+#endif
   {NULL, NULL}
 };
 
@@ -692,3 +720,439 @@ fmt_help_populate_tree(HyperbolaDocTree *tree)
     fmt_help_populate_tree_from_subdir(tree, dirname, app_path);
   g_free(dirname);
 }
+
+
+
+#ifdef ENABLE_SCROLLKEEPER_SUPPORT
+/* Code for the ScrollKeeper XML Tree */
+
+/*
+ * fmt_scrollkeeper_expand_ancestor_list
+ *
+ * Utility function which copies the ancestors list of strings into
+ * a new list.  The new list is created with an extra space to allow
+ * for the addition of a further entry in the list.
+ */
+static char ** 
+fmt_scrollkeeper_expand_ancestor_list(char **ancestors, int *next_free)
+{
+  int i;
+  char **new_list;
+ 
+  /* Find out how many strings are in the list */ 
+  for (i = 0; ancestors[i] != NULL; i++);
+  
+  /* Add space for one more and a NULL to indicate the tail */
+  new_list = g_new0(char*, i + 2);
+
+  /* Just copy the pointers */
+  for (i = 0; ancestors[i] != NULL; i++) {
+    new_list[i] = ancestors[i];
+  }
+
+  new_list[i] = new_list[i+1] = NULL;
+
+  *next_free = i;
+    
+  return new_list;
+}
+
+
+/*
+ * fmt_scrollkeeper_parse_toc_section
+ *
+ * This function is intended to process an individual tocsect tag from 
+ * a ScrollKeeper Table of Contents XML file.
+ *
+ * It is similar to the fmt_scrollkeeper_parse_section function.  It first
+ * inserts information about the current node into the tree, and then 
+ * recursively process other tocsect nodes beneath it.
+ *
+ * The GTree which stores the node names and their path within the tree
+ * is alphabetically sorted.  Such sorting is inappropriate for a TOC.
+ * To get around this, the relative position of each node is prepended
+ * to its title.  This number is removed for insertion into the GTK CTree.
+ *
+ *     base_uri:  String specifying the URI of the document whose TOC is
+ *                being processed.  All section tags are appended to this
+ *                to create the URI of a particular section in the doc.
+ *
+ *     this_pos:  Specifies the position of this tag within its section,
+ *     	          i.e. first, second, third, etc. 
+ */
+static void
+fmt_scrollkeeper_parse_toc_section (HyperbolaDocTree *tree, char **ancestors,
+                                     xmlNodePtr node, char *base_uri, 
+				     int this_pos, unsigned int go_deeper)
+{
+  xmlNodePtr next_child;
+  
+  char **section;
+  char *sect_uri;
+  int  i, pos;
+  
+  char separator[2] = {'\0'};
+  
+
+  next_child = node->childs;
+ 
+  /* Set up the positioning information for the HyperbolaDocTree */ 
+  section      = fmt_scrollkeeper_expand_ancestor_list(ancestors, &i);
+  section[i]   = g_strdup_printf("%03d. %s", this_pos, next_child->content);
+  section[i+1] = NULL;
+  
+  /* 
+   * Set the correct separator token.  SGML requires ? but
+   * the other use #
+   */
+  if (!g_strncasecmp ("help", base_uri, 4)) {
+    separator[0] = '?';
+  }
+  else {
+    separator[0] = '#';
+  }
+ 
+  sect_uri = g_strconcat(base_uri, separator, 
+		  		xmlGetProp (node, "linkid"), NULL);
+
+  /* Process this node and insert it into the tree */
+  hyperbola_doc_tree_add (tree, HYP_TREE_NODE_FOLDER, 
+                            (const char**)ancestors, section[i], sect_uri);
+
+  
+  /* Process subsections of this node */ 
+  if (go_deeper > 0) {
+    for(pos = 1, next_child = next_child->next; next_child != NULL; 
+                                next_child = next_child->next)
+    {
+      if(!g_strncasecmp (next_child->name, "tocsect", 7)) {
+        fmt_scrollkeeper_parse_toc_section (tree, section, next_child, 
+		      				base_uri, pos, (go_deeper - 1));
+        pos++;
+      }
+    }
+  }
+  
+  g_free (sect_uri);  
+  g_free (section[i]);
+  g_free (section);
+  
+  return;
+}
+
+/*
+ * fmt_scrollkeeper_parse_doc_toc
+ *
+ * This function is the entry point into the processing of a Table of Contents
+ * XML file.  The TOC file presented by ScrollKeeper is less complex than
+ * the main contents file.  It simply consists of a root node under which
+ * are tocsect tags, which may be nested.  
+ *
+ * Usually they have a number appended to them to indicate which level they 
+ * are at in the TOC.  This is ignored here as under the root should only
+ * contain tocsect1 tags.  The fmt_scrollkeeper_parse_toc_section ignores them
+ * also so that it may be recursive.
+ *
+ * The first two parameters are the same as the other functions.
+ *
+ * 	toc_file:	String containing the name of the XML file which
+ * 			contains the table of contents information.
+ *
+ * 	base_uri:	String containing the fully qualified URI of the
+ * 			document file.  All contents references will be
+ * 			appended to this.
+ */
+static void
+fmt_scrollkeeper_parse_doc_toc (HyperbolaDocTree *tree, char **ancestors, 
+                                  char *toc_file, char *base_uri)
+{
+  xmlDocPtr toc_doc;
+  xmlNodePtr next_child;
+  
+  int pos;
+
+  unsigned int levels_to_process = 0;
+  
+  toc_doc = xmlParseFile (toc_file);
+  
+  if (!toc_doc) {
+      g_warning ("Unable to parse ScrollKeeper TOC XML file:\n\t%s", toc_file); 
+      return;
+  }
+ 
+  /* Process the top-level tocsect nodes in the file */ 
+  for (pos = 1, next_child = toc_doc->root->childs; next_child != NULL; 
+       			                         next_child = next_child->next) {
+    if (!g_strncasecmp (next_child->name, "tocsect", 7)) {
+      fmt_scrollkeeper_parse_toc_section (tree, ancestors, next_child, 
+		      				base_uri, pos, levels_to_process);
+      pos++;
+    }
+  }
+
+  xmlFreeDoc (toc_doc);
+
+  return;
+}
+
+
+/*
+ * fmt_scrollkeeper_parse_document
+ *
+ * This function inserts relevant information into the hyperbola tree for
+ * an individual document.  
+ *
+ * It must establish what format the document is in in order to prepend the 
+ * appropriate prefix to the URI.  This URI is a combination of the prefix 
+ * and the document's location.
+ *
+ * It also attempts to locate a Table of Contents for the particular document
+ * it is processing.  If it can, it calls fmt_scrollkeeper_parse_doc_toc to
+ * process that Table of Contents file.
+ *
+ * 	ancestors:	The textual path in the tree at which to root changes
+ *
+ * 	node:		The XML node representing the document to be processed.
+ */
+static void
+fmt_scrollkeeper_parse_document (HyperbolaDocTree *tree, char **ancestors, 
+					xmlNodePtr node)
+{
+  xmlNodePtr next_child;
+  char **section;
+ 
+  FILE *pipe;
+  int  i;
+
+  char *toc_location;
+  int bytes_read;
+  
+  char *doc_uri;
+  char *doc_data[3] = {NULL};
+
+
+  toc_location = g_new0(char, 1024);
+
+  next_child = node->childs;
+		
+  /* Obtain info about the document from the XML node describing it*/
+  for ( ; next_child != NULL; next_child = next_child->next) {
+
+      if (!g_strcasecmp (next_child->name, "doctitle")) {
+        doc_data[0] = next_child->childs->content;
+      }
+
+      else if (!g_strcasecmp (next_child->name, "docsource")) {
+        doc_data[1] = next_child->childs->content;
+      }
+        
+      else if (!g_strcasecmp (next_child->name, "docformat")) {
+        doc_data[2] = next_child->childs->content;
+      }
+  }
+
+  /* Expand the ancestor list and append this documents name to it */
+  section      = fmt_scrollkeeper_expand_ancestor_list (ancestors, &i);
+  section[i]   = doc_data[0];
+  section[i+1] = NULL;
+
+
+  /* Decide on the appropriate prefix */
+  if (!g_strcasecmp ("text/html", doc_data[2])) {
+      doc_uri = g_strconcat ("file://", doc_data[1], NULL);
+  }
+  else if (!g_strcasecmp ("text/sgml", doc_data[2])) {
+      doc_uri = g_strconcat ("help:", doc_data[1], NULL);
+  }
+  else if (!g_strcasecmp ("info", doc_data[2])) {
+      doc_uri = g_strconcat ("info:", doc_data[1], NULL);
+  }
+  else if(!g_strcasecmp ("applications/x-troff", doc_data[2])) {
+      /* Man Pages */
+      doc_uri = g_strconcat ("man:", doc_data[1], NULL);
+  }
+  else { 
+      /* If not a type we deal with then don't do anything else */
+      g_free (section);
+      g_free (toc_location);
+      return;
+  }
+ 
+  /* Insert info for this document into the tree */ 
+  hyperbola_doc_tree_add (tree, HYP_TREE_NODE_FOLDER,
+	             	       (const char**)ancestors, doc_data[0], doc_uri);
+
+  /* Get the TOC, if there is one, for the document */ 
+  g_snprintf (toc_location, 1024, "scrollkeeper-get-toc-from-docpath %s", 
+		  doc_data[1]);
+
+  pipe = popen (toc_location, "r");
+  bytes_read = fread ((void *)toc_location, sizeof(char), 1024, pipe);
+
+  if (bytes_read > 0) {
+    toc_location[bytes_read - 1] = '\0';
+
+ 
+    /* Exit code of 0 indicates ScrollKeeper returned a TOC file path */
+    if(!pclose(pipe)) {
+       fmt_scrollkeeper_parse_doc_toc (tree, section, toc_location, doc_uri);
+    }
+  }
+
+  g_free (toc_location);
+  g_free (doc_uri);
+  g_free (section);
+	
+  return;
+}
+
+
+/*
+ * fmt_scrollkeeper_parse_section
+ * 
+ * This function does the actual processing of a sect tag as encountered
+ * in a ScrollKeeper Contents List file.  Each section may contain a mix
+ * of children, either other sections or document info.
+ *
+ * This function may be called recursively as each section's children are
+ * processed.
+ *
+ * 	ancestors:	The path in the tree at which additions will be
+ * 			rooted.  Points to the titles of all parent
+ * 			sections.  
+ *
+ * 	node:		Pointer to the node in the XML file to be orocessed.
+ */
+static void 
+fmt_scrollkeeper_parse_section (HyperbolaDocTree *tree, char **ancestors, 
+					xmlNodePtr node)
+{
+  xmlNodePtr next_child;
+  char **section;
+  int i;
+	
+  next_child = node->childs;
+  
+  /* Make space for this level and add the title of this node to the path */
+  section      = fmt_scrollkeeper_expand_ancestor_list (ancestors, &i);
+  section[i]   = next_child->childs->content;
+  section[i+1] = NULL;
+
+  /* There is no URI so use this function instead */
+  make_treesection (tree, section);
+
+  for ( ; next_child->next != NULL; next_child = next_child->next) {
+
+      if (!g_strcasecmp (next_child->next->name, "sect")) {
+	fmt_scrollkeeper_parse_section (tree, section, next_child->next);
+      }
+      else if (!g_strcasecmp (next_child->next->name, "doc")) {
+	fmt_scrollkeeper_parse_document (tree, section, next_child->next);  
+      }
+  }
+
+  /* Don't own the individual pointers so only free the double pointer */
+  g_free (section);
+
+  return;
+}	
+
+
+/* 
+ * fmt_scrollkeeper_parse_xml
+ * 
+ * This function ensure that the XML file is a valid ScrollKeeper Contents
+ * List file and then parses all top level sections of the file.  Each sect
+ * tag represents a section of documentation.  
+ *
+ * 	tree:	    The Hyperbola tree which maintains the doc info
+ * 	defpath:    The position in the tree at which to root additions.
+ * 	doc:	    The pointer to the XML Document.  
+ */
+static void 
+fmt_scrollkeeper_parse_xml (HyperbolaDocTree *tree, char **defpath, 
+				xmlDocPtr doc)
+{
+  xmlNodePtr node;
+
+  /* Ensure the document is valid and a real ScrollKeeper document */
+  if (!doc->root || !doc->root->name ||
+		  g_strcasecmp (doc->root->name, "ScrollKeeperContentsList")) {
+      g_warning ("Invalid ScrollKeeper XML Contents List!");
+      return;
+  }
+	
+  /* Start parsing the list and add to the tree */	
+  for (node = doc->root->childs; node != NULL; node = node->next) {
+      if (!g_strcasecmp (node->name, "sect"))
+   	fmt_scrollkeeper_parse_section (tree, defpath, node);
+  } 
+		
+  return;	
+}
+
+
+/*
+ * fmt_scrollkeeper_populate_tree
+ * 
+ * Entry point into the ScrollKeeper specific code for Hyperbola.
+ *
+ * This function obtains the location of the ScrollKeeper Contents List 
+ * XML file, if it exists.  If the XML file is found and can be parsed
+ * by the libXml library, the parsing of that file continues.
+ *
+ * 	tree:	Pointer to the tree structure used by Hyperbola to
+ * 		maintain the list of documentation available.
+ */
+static void
+fmt_scrollkeeper_populate_tree (HyperbolaDocTree *tree)
+{
+  xmlDocPtr doc;
+  FILE *pipe;
+  
+  char *xml_location;
+  int bytes_read;
+  
+  char *tree_path[] = {NULL};
+
+  
+  xml_location = g_new0 (char, 1024);
+
+  /* Use g_snprintf here because we don't know how long the location will be */  
+  g_snprintf (xml_location, 1024, "scrollkeeper-get-content-list %s", 
+		  getenv("LANG")); 
+
+  pipe = popen (xml_location, "r");
+  bytes_read = fread ((void *)xml_location, sizeof(char), 1024, pipe);
+
+  /* Make sure that we don't end up out-of-bunds */
+  if (bytes_read < 1) {
+    pclose (pipe);
+    g_free (xml_location); 
+    return;
+  }
+  
+  /* Make sure the string is properly terminated */
+  xml_location[bytes_read - 1] = '\0';
+
+  /* Exit code of 0 means we got a path back from ScrollKeeper */
+  if (!pclose (pipe)) {
+
+    doc = xmlParseFile (xml_location); 
+   
+    if (doc) {
+      fmt_scrollkeeper_parse_xml (tree, tree_path, doc);
+    }
+    else {
+      g_warning ("Unable to locate ScrollKeeper XML file:\n\t%s", xml_location);
+    }
+
+    xmlFreeDoc (doc);
+  }
+	
+  g_free (xml_location);
+  	
+  return;
+}
+
+#endif  /* ENABLE_SCROLLKEEPER_SUPPORT */

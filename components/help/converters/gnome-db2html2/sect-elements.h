@@ -131,4 +131,6 @@ void sect_answer_start_element (Context *context, const char *name, const xmlCha
 void sect_glosssee_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 void sect_glossseealso_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 void sect_glossee_end_element (Context *context, const gchar *name);
+void sect_varlistentry_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+void sect_varlistentry_end_element (Context *context, const gchar *name);
 #endif
