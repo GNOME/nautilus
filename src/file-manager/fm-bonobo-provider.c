@@ -18,7 +18,7 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  Authors: James Willcox <james@gnome.org>
+ *  Authors: James Willcox <jwillcox@gnome.org>
  *           Dave Camp <dave@ximian.com>
  *
  */

@@ -3696,6 +3696,8 @@ set_icon_callback (const char* icon_path, FMPropertiesWindow *properties_window)
 {
 	NautilusFile *file;
 	char *icon_uri;
+	GnomeDesktopItem *ditem;
+	char *file_uri;
 	
 	g_return_if_fail (properties_window != NULL);
 	g_return_if_fail (FM_IS_PROPERTIES_WINDOW (properties_window));
@@ -3706,9 +3708,29 @@ set_icon_callback (const char* icon_path, FMPropertiesWindow *properties_window)
 		icon_uri = gnome_vfs_get_uri_from_local_path (icon_path);
 		for (l = properties_window->details->original_files; l != NULL; l = l->next) {
 			file = NAUTILUS_FILE (l->data);
+			file_uri = nautilus_file_get_uri (file);
 			
-			nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL, icon_uri);
-			nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_ICON_SCALE, NULL, NULL);
+			if (nautilus_file_is_mime_type (file, "application/x-desktop")) {
+				ditem = gnome_desktop_item_new_from_uri (file_uri,
+								 GNOME_DESKTOP_ITEM_LOAD_ONLY_IF_EXISTS,
+								 NULL);
+
+				if (ditem != NULL) {
+					gnome_desktop_item_set_string (ditem,
+								       GNOME_DESKTOP_ITEM_ICON,
+								       icon_path);
+					gnome_desktop_item_save (ditem, NULL, TRUE, NULL);
+					gnome_desktop_item_unref (ditem);
+					nautilus_file_invalidate_attributes (file,
+									     NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON);
+				}
+			} else {
+			
+				nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL, icon_uri);
+				nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_ICON_SCALE, NULL, NULL);
+			}
+
+			g_free (file_uri);
 
 		}
 		g_free (icon_uri);	

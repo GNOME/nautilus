@@ -18,6 +18,7 @@ libnautilus_file_manager_la_SOURCES=	\
 	fm-bonobo-provider.c            \
 	fm-desktop-icon-view.c		\
 	fm-directory-view.c		\
+	fm-ditem-page.c			\
 	fm-error-reporting.c		\
 	fm-icon-container.c		\
 	fm-icon-view.c			\
@@ -31,6 +32,7 @@ libnautilus_file_manager_la_SOURCES=	\
 	fm-bonobo-provider.h 		\
 	fm-desktop-icon-view.h 		\
 	fm-directory-view.h 		\
+	fm-ditem-page.h			\
 	fm-error-reporting.h 		\
 	fm-icon-container.h		\
 	fm-icon-view.h 			\

@@ -1,8 +1,7 @@
 /*
- *  fm-bonobo-provider.h - Bonobo API support
+ *  fm-ditem-page.h - A property page for desktop items
  * 
- *  Copyright (C) 2002 James Willcox
- *                2003 Novell, Inc.
+ *  Copyright (C) 2004 James Willcox
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public
@@ -18,33 +17,32 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  Authors: Dave Camp <dave@ximian.com>
- *           James Willcox <jwillcox@gnome.org>
+ *  Authors: James Willcox <james@gnome.org>
  * 
  */
 
-#ifndef FM_BONOBO_PROVIDER_H
-#define FM_BONOBO_PROVIDER_H
+#ifndef FM_DITEM_PAGE_H
+#define FM_DITEM_PAGE_H
 
 #include <glib-object.h>
 
 G_BEGIN_DECLS
 
-#define FM_TYPE_BONOBO_PROVIDER  (fm_bonobo_provider_get_type ())
-#define FM_BONOBO_PROVIDER(o)    (G_TYPE_CHECK_INSTANCE_CAST ((o), FM_TYPE_BONOBO_PROVIDER, FMBonoboProvider))
-#define FM_IS_BONOBO_PROVIDER(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), FM_TYPE_BONOBO_PROVIDER))
-typedef struct _FMBonoboProvider       FMBonoboProvider;
-typedef struct _FMBonoboProviderClass  FMBonoboProviderClass;
+#define FM_TYPE_DITEM_PAGE  (fm_ditem_page_get_type ())
+#define FM_DITEM_PAGE(o)    (G_TYPE_CHECK_INSTANCE_CAST ((o), FM_TYPE_DITEM_PAGE, FMDitemPage))
+#define FM_IS_DITEM_PAGE(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), FM_TYPE_DITEM_PAGE))
+typedef struct _FMDitemPage       FMDitemPage;
+typedef struct _FMDitemPageClass  FMDitemPageClass;
 
-struct _FMBonoboProvider {
+struct _FMDitemPage {
 	GObject parent_slot;
 };
 
-struct _FMBonoboProviderClass {
+struct _FMDitemPageClass {
 	GObjectClass parent_slot;
 };
 
-GType fm_bonobo_provider_get_type      (void);
+GType fm_ditem_page_get_type      (void);
 
 G_END_DECLS
 

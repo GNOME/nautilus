@@ -30,6 +30,7 @@
 
 
 #include "file-manager/fm-bonobo-provider.h"
+#include "file-manager/fm-ditem-page.h"
 #include "file-manager/fm-desktop-icon-view.h"
 #include "file-manager/fm-icon-view.h"
 #include "file-manager/fm-list-view.h"
@@ -404,6 +405,7 @@ finish_startup (NautilusApplication *application)
 	nautilus_module_init ();
 
 	nautilus_module_add_type (FM_TYPE_BONOBO_PROVIDER);
+	nautilus_module_add_type (FM_TYPE_DITEM_PAGE);
 	
 	/* initialize the sound machinery */
 	nautilus_sound_init ();
