@@ -1,3 +1,18 @@
+2001-02-28  John Harper  <jsh@eazel.com>
+
+	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 6988 (Nautilus consumes CPU for 5 mins on startup) by
+	reverting my fix to bug 6820 (directory sort order is different
+	in tree view):
+
+	* components/tree/nautilus-tree-view.c
+	(nautilus_tree_view_initialize): commented out the call to
+	gtk_clist_set_compare_func - revert to using the default clist
+	comparison function (basically strcmp)
+
+	(ctree_compare_rows): commented out this function
+
 2001-02-28  Fatih Demir	<kabalak@gtranslator.org>
 
 	* THANKS: Corrected the translator entry from me to

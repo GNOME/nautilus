@@ -843,7 +843,11 @@ filtering_changed_callback (gpointer callback_data)
 	}
 }
 
-
+#if 0
+/* FIXME bugzilla.eazel.com 6820:
+ * See the comment below (search for gtk_clist_set_compare_func)
+ * explaining why this is disabled. Basically, it's too slow.
+ */
 static gint
 ctree_compare_rows (GtkCList      *clist,
 		    gconstpointer  ptr1,
@@ -875,6 +879,7 @@ ctree_compare_rows (GtkCList      *clist,
 
 	return result;
 }
+#endif
 
 static void
 nautilus_tree_view_initialize (NautilusTreeView *view)
@@ -905,8 +910,18 @@ nautilus_tree_view_initialize (NautilusTreeView *view)
         gtk_clist_set_selection_mode (GTK_CLIST (view->details->tree), GTK_SELECTION_SINGLE);
 	gtk_clist_set_auto_sort (GTK_CLIST (view->details->tree), TRUE);
 	gtk_clist_set_sort_type (GTK_CLIST (view->details->tree), GTK_SORT_ASCENDING);
+
+#if 0
+	/* FIXME bugzilla.eazel.com 6820:
+	 * Using the NautilusFile comparison function to sort by
+	 * is way too slow when opening large directories (those with
+	 * 1000s of files). So to fix bug 6988 we're reverting back
+	 * to using the standard clist comparison function (a strcmp)
+	 */
 	gtk_clist_set_compare_func (GTK_CLIST (view->details->tree),
 				    ctree_compare_rows);
+#endif
+
 	gtk_clist_set_column_auto_resize (GTK_CLIST (view->details->tree), 0, TRUE);
 	gtk_clist_columns_autosize (GTK_CLIST (view->details->tree));
 	gtk_clist_set_reorderable (GTK_CLIST (view->details->tree), FALSE);
