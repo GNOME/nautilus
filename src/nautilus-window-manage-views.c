@@ -498,7 +498,7 @@ update_for_new_location (NautilusWindow *window)
         /* Maintain history lists. */
         if (window->location_change_type != NAUTILUS_LOCATION_CHANGE_RELOAD) {
                 /* Always add new location to history list. */
-                nautilus_add_to_history_list (window->current_location_bookmark);
+                nautilus_window_add_current_location_to_history_list (window);
                 
                 /* Update back and forward list. */
                 if (window->location_change_type == NAUTILUS_LOCATION_CHANGE_BACK) {

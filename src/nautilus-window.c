@@ -122,6 +122,7 @@ static void update_sidebar_panels_from_preferences (NautilusWindow      *window)
 static void sidebar_panels_changed_callback        (gpointer             user_data);
 static void nautilus_window_show                   (GtkWidget           *widget);
 static void cancel_view_as_callback                (NautilusWindow      *window);
+static void real_add_current_location_to_history_list (NautilusWindow   *window);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusWindow,
 				   nautilus_window,
@@ -152,7 +153,10 @@ nautilus_window_initialize_class (NautilusWindowClass *klass)
 				 ARG_APP);
 	
 	widget_class->realize = nautilus_window_realize;
-	widget_class->size_request = nautilus_window_size_request;	
+	widget_class->size_request = nautilus_window_size_request;
+
+	klass->add_current_location_to_history_list
+		= real_add_current_location_to_history_list;
 }
 
 static void
@@ -1402,6 +1406,22 @@ free_history_list (void)
 	history_list = NULL;
 }
 
+static void
+real_add_current_location_to_history_list (NautilusWindow *window)
+{
+	g_assert (NAUTILUS_IS_WINDOW (window));
+	nautilus_add_to_history_list (window->current_location_bookmark);
+}
+
+void
+nautilus_window_add_current_location_to_history_list (NautilusWindow *window)
+{
+	g_assert (NAUTILUS_IS_WINDOW (window));
+	NAUTILUS_CALL_VIRTUAL (NAUTILUS_WINDOW_CLASS, window,
+			       add_current_location_to_history_list, (window));
+			       
+}
+
 void
 nautilus_add_to_history_list (NautilusBookmark *bookmark)
 {
@@ -1493,7 +1513,7 @@ nautilus_forget_history (void)
 	     window_node = window_node->next) {
 
 		window = NAUTILUS_WINDOW (window_node->data);
-		nautilus_add_to_history_list (window->current_location_bookmark);
+		nautilus_window_add_current_location_to_history_list (window);
 	}
 }
 

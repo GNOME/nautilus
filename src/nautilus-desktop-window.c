@@ -48,6 +48,7 @@ static void nautilus_desktop_window_initialize_class (NautilusDesktopWindowClass
 static void nautilus_desktop_window_initialize       (NautilusDesktopWindow      *window);
 static void destroy                                  (GtkObject                  *object);
 static void realize                                  (GtkWidget                  *widget);
+static void real_add_current_location_to_history_list (NautilusWindow		 *window);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusDesktopWindow, nautilus_desktop_window, NAUTILUS_TYPE_WINDOW)
 
@@ -56,6 +57,8 @@ nautilus_desktop_window_initialize_class (NautilusDesktopWindowClass *klass)
 {
 	GTK_OBJECT_CLASS (klass)->destroy = destroy;
 	GTK_WIDGET_CLASS (klass)->realize = realize;
+	NAUTILUS_WINDOW_CLASS (klass)->add_current_location_to_history_list 
+		= real_add_current_location_to_history_list;
 }
 
 static void
@@ -214,4 +217,12 @@ realize (GtkWidget *widget)
 	 */
         gdk_window_set_decorations (widget->window, 0);
         gdk_window_set_functions (widget->window, 0);
+}
+
+static void
+real_add_current_location_to_history_list (NautilusWindow *window)
+{
+	/* Do nothing. The desktop window's location should not
+	 * show up in the history list.
+	 */
 }

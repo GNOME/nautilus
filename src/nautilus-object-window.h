@@ -50,6 +50,16 @@ typedef struct NautilusWindow NautilusWindow;
 
 typedef struct {
         BonoboWindowClass parent_spot;
+
+	/* Function pointers for overriding, without corresponding signals */
+
+	/* add_current_location_to_history_list is a function pointer that
+	 * subclasses may override if they wish to add something other than
+	 * NautilusWindow's idea of the "current location" to the history
+	 * list, or nothing at all.
+	 */
+        void (* add_current_location_to_history_list)	(NautilusWindow *window);
+        
 } NautilusWindowClass;
 
 typedef struct NautilusWindowStateInfo NautilusWindowStateInfo;

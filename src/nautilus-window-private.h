@@ -121,6 +121,8 @@ void               nautilus_window_set_viewed_file                (NautilusWindo
                                                                    NautilusFile      *file);
 
 void               nautilus_send_history_list_changed             (void);
+void		   nautilus_window_add_current_location_to_history_list 
+								  (NautilusWindow    *window);
 void               nautilus_add_to_history_list                   (NautilusBookmark  *bookmark);
 GList *            nautilus_get_history_list                      (void);
 

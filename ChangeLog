@@ -1,3 +1,41 @@
+2001-01-25  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 5569 (Desktop should not show up in history list)
+
+	I also prevented Control-B on the desktop from adding the
+	desktop to the Bookmarks list.
+
+	* src/file-manager/nautilus-desktop-icon-view-ui.xml:
+	overrode command "Add Bookmark" to be insensitive.
+	
+	* src/nautilus-window.h: Declare function pointer for
+	add_current_location_to_history_list.
+
+	* src/nautilus-window-private.h: Declare private function
+	nautilus_window_add_current_location_to_history_list.
+
+	* src/nautilus-window.c: 
+	(nautilus_window_initialize_class),
+	(real_add_current_location_to_history_list): Fill in
+	add_current_location_to_history_list function pointer
+	with simple function.
+	(nautilus_window_add_current_location_to_history_list):
+	wrapper for calling the new virtual function.
+	(nautilus_forget_history):
+	Call nautilus_window_add_current_location_to_history_list
+	where it was doing the work directly, to get the indirection.
+	
+	* src/nautilus-window-manage-views.c: (update_for_new_location):
+	Call nautilus_window_add_current_location_to_history_list
+	where it was doing the work directly, to get the indirection.
+
+	* src/nautilus-desktop-window.c:
+	(nautilus_desktop_window_initialize_class),
+	(real_add_current_location_to_history_list): Override
+	add_current_location_to_history_list to do nothing.
+
 2001-01-25  Michael Engber  <engber@eazel.com>
 
 	reviewed by: John Harper
