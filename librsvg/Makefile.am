@@ -70,6 +70,7 @@ test_ft_LDADD =\
 	$(GNOMEUI_LIBS) \
 	$(XML_LIBS) \
 	$(FREETYPE2_LIBS) \
+	$(LIBPNG) \
 	$(NULL)
 
 test_ft_gtk_LDADD =\
