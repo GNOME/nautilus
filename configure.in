@@ -453,17 +453,17 @@ dnl = End rpmview checks
 dnl ====================================
 
 dnl Checks for libraries.
-AM_PATH_GLIB(1.2.0,,
+AM_PATH_GLIB(1.2.9,,
 AC_MSG_ERROR([
 *** GLIB 1.2.0 or better is required. The latest version of GLIB
 *** is always available from ftp://ftp.gtk.org/.]))
 
-AM_PATH_GTK(1.2.0,,
+AM_PATH_GTK(1.2.9,,
 AC_MSG_ERROR([
 *** Gtk+ 1.2.0 or better is required. The latest version of GTK
 *** is always available from ftp://ftp.gtk.org/.]))
 
-AM_PATH_GNOME(1.0.0,,AC_MSG_ERROR([*** GNOME 1.0.0 or better is required.]), gnomecanvaspixbuf bonobo bonobox bonobox_print vfs idl)
+AM_PATH_GNOME(1.2.8,,AC_MSG_ERROR([*** GNOME 1.0.0 or better is required.]), gnomecanvaspixbuf bonobo bonobox bonobox_print vfs idl)
 
 dnl
 dnl We need the right version of bonobo because
@@ -506,14 +506,14 @@ echo "IDL_CFLAGS: $IDL_CFLAGS"
 
 AC_SUBST(IDL_CFLAGS)
 
-AM_PATH_OAF(0.3.0)
+AM_PATH_OAF(0.6.1)
 
 dnl GnomeVFS can compile without OAF support, Nautilus depends on OAF.
 dnl Make USING_OAF be defined
 
 AC_DEFINE(USING_OAF)
 
-AM_PATH_GCONF(0.9.0,,,gconf-gtk)
+AM_PATH_GCONF(0.11,,,gconf-gtk)
 
 AC_PATH_PROG(XML_CONFIG,xml-config,no)
 if test x$XML_CONFIG = xno; then
@@ -573,8 +573,8 @@ dnl ====================================
 dnl ====================================
 dnl = begin gdk-pixbuf checks
 dnl ====================================
-AM_PATH_GDK_PIXBUF(0.7.0,,
-AC_MSG_ERROR([*** gdk_pixbuf 0.7.0 or better is required.]))
+AM_PATH_GDK_PIXBUF(0.9.0,,
+AC_MSG_ERROR([*** gdk_pixbuf 0.9.0 or better is required.]))
 dnl ====================================
 dnl = begin gdk-pixbuf checks
 dnl ====================================
