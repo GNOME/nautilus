@@ -217,7 +217,7 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 				path_b = gtk_tree_model_get_path (tree_model, iter);
 
 				if (gtk_tree_path_compare (path_a, path_b) == 0) {
-					modifier = "visiting";
+					modifier = "accept";
 				}
 					
 				gtk_tree_path_free (path_a);
@@ -226,7 +226,7 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 		}
 		
 		if (nautilus_file_has_open_window (file)) {
-			modifier = "accept";
+			modifier = "visiting";
 		}
 		
 		icon = nautilus_icon_factory_get_pixbuf_for_file (file, modifier, icon_size);
