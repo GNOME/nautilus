@@ -1117,17 +1117,19 @@ position_and_show_window_callback (NautilusFile *file,
         
 	window = NAUTILUS_WINDOW (callback_data);
 
-	/* load the saved window geometry */
-	geometry_string = nautilus_file_get_metadata 
+        if (!NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+                /* load the saved window geometry */
+                geometry_string = nautilus_file_get_metadata 
 			(file, NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY, NULL);
-	if (geometry_string != NULL) {
-		eel_gtk_window_set_initial_geometry_from_string 
-			(GTK_WINDOW (window), 
-			 geometry_string,
-			 NAUTILUS_WINDOW_MIN_WIDTH, 
-			 NAUTILUS_WINDOW_MIN_HEIGHT);
-	}
-	g_free (geometry_string);
+                if (geometry_string != NULL) {
+                        eel_gtk_window_set_initial_geometry_from_string 
+                                (GTK_WINDOW (window), 
+                                 geometry_string,
+                                 NAUTILUS_WINDOW_MIN_WIDTH, 
+                                 NAUTILUS_WINDOW_MIN_HEIGHT);
+                }
+                g_free (geometry_string);
+        }
 
         /* If we finished constructing the window by now we need
          * to show the window here.

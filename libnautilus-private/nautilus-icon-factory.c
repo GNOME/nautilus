@@ -160,6 +160,9 @@ typedef struct {
 
 	/* frames to use for thumbnail icons */
 	GdkPixbuf *thumbnail_frame;
+
+	/* Used for icon themes according to the freedesktop icon spec. */
+	GnomeIconLoader *icon_loader;
 } NautilusIconFactory;
 
 #define NAUTILUS_ICON_FACTORY(obj) \
@@ -312,6 +315,36 @@ GtkObject *
 nautilus_icon_factory_get (void)
 {
 	return GTK_OBJECT (get_icon_factory ());
+}
+
+static void
+icon_loader_changed_callback (GnomeIconLoader *icon_loader,
+			      gpointer user_data)
+{
+	NautilusIconFactory *factory;
+
+	factory = user_data;
+
+	g_signal_emit (factory,
+		       signals[ICONS_CHANGED], 0);
+}
+
+GnomeIconLoader *
+nautilus_icon_factory_get_icon_loader (void)
+{
+	NautilusIconFactory *factory;
+
+	factory = get_icon_factory ();
+
+	if (factory->icon_loader == NULL) {
+		factory->icon_loader = gnome_icon_loader_new ();
+		g_signal_connect_object (factory->icon_loader,
+					 "changed",
+					 G_CALLBACK (icon_loader_changed_callback),
+					 factory, 0);
+	}
+
+	return g_object_ref (factory->icon_loader);
 }
 
 static void

@@ -276,7 +276,7 @@ CORE_IDL_INCLUDES="`$PKG_CONFIG --variable=idldir $CORE_MODULES | $srcdir/add-in
 AC_SUBST(CORE_IDL_INCLUDES)
 
 dnl typical components
-COMPONENT_MODULES="eel-2.0 libbonoboui-2.0 gnome-vfs-module-2.0"
+COMPONENT_MODULES="eel-2.0 libbonoboui-2.0 gnome-vfs-module-2.0 gnome-desktop-2.0"
 COMPONENT_CFLAGS="`$PKG_CONFIG --cflags $COMPONENT_MODULES`"
 AC_SUBST(COMPONENT_CFLAGS)
 COMPONENT_LIBS="`$PKG_CONFIG --libs $COMPONENT_MODULES`"

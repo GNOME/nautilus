@@ -1,3 +1,19 @@
+2002-07-05  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-window-manage-views.c:
+	Don't use window geometry metadata to place the desktop window.
+
+	* libnautilus-private/nautilus-icon-factory.[ch]:
+	Add a GnomeIconLoader to NautilusIconFactory.
+	This is just initial code for handling icon themes in desktop
+	file icons.
+
+	* libnautilus-private/nautilus-link-desktop-file.c:
+	Use GnomeIconLoader to load desktop file icons.
+
+	* configure.in:
+	Add gnome-desktop to COMPONENT_MODULES.
+
 2002-07-02  Damon Chaplin  <damon@ximian.com>
 
 	* libnautilus-private/nautilus-file.c (rename_guts): for .desktop files
@@ -133,6 +149,13 @@
 	src/nautilus-property-browser.c: Added line break to help error
 	message.
 
+2002-06-28  Alexander Larsson  <alexl@redhat.com>
+
+       * src/file-manager/fm-directory-view.c
+       Fixed mneumonic collision between "Make Link" and "Delete"
+
+       Patch by David Bordoley <bordoley@msu.edu>
+	
 2002-06-28  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-canvas-item.c (nautilus_icon_canvas_item_bounds):
