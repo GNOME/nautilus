@@ -2688,17 +2688,37 @@ fm_directory_view_activate_file_internal (FMDirectoryView *view,
 				 	  gboolean use_new_window)
 {
 	Nautilus_NavigationRequestInfo request;
+	GnomeVFSMimeActionType action_type;
+	GnomeVFSMimeApplication *application;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
-	if (!nautilus_file_activate_custom(file, use_new_window)) {
-		request.requested_uri = nautilus_file_get_mapped_uri (file);
+	if (nautilus_file_activate_custom(file, use_new_window)) {
+		return;
+	}
+
+	request.requested_uri = nautilus_file_get_mapped_uri (file);
+
+	action_type = nautilus_mime_get_default_action_type_for_uri (request.requested_uri);
+	if (action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
+		application = nautilus_mime_get_default_application_for_uri (request.requested_uri);
+		fm_directory_view_launch_application (application, request.requested_uri, view);
+		gnome_vfs_mime_application_free (application);
+	} else {
+		/* If the action type is unspecified, treat it like the component case.
+		 * This is most likely to happen (only happens?) when there's no
+		 * registered viewers or apps, or there are errors in the mime.keys files.
+		 */
+		g_assert (action_type == GNOME_VFS_MIME_ACTION_TYPE_NONE ||
+			  action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT);
+
 		request.new_window_requested = use_new_window;
 		nautilus_view_request_location_change (view->details->nautilus_view,
 					       		&request);
-		g_free (request.requested_uri);
 	}
+
+	g_free (request.requested_uri);
 }
 
 

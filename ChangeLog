@@ -1,3 +1,13 @@
+2000-06-07  John Sullivan  <sullivan@eazel.com>
+
+	Did task 1058 (Activating an item in directory view needs
+	to use application when appropriate)
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_activate_file_internal):
+	Check default_action_type_for_uri and launch default application
+	or switch location depending on result.
+
 2000-06-07  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-gnome-extensions.c:
