@@ -29,36 +29,16 @@
 #define NAUTILUS_ICON_DND_H
 
 #include "nautilus-icon-container.h"
+#include "nautilus-drag.h"
 
-#include <gtk/gtkdnd.h>
 
-typedef struct NautilusIconDndInfo NautilusIconDndInfo;
-typedef enum NautilusIconDndTargetType NautilusIconDndTargetType;
-
-/* Standard DnD types. */
-enum NautilusIconDndTargetType {
-	NAUTILUS_ICON_DND_GNOME_ICON_LIST,
-	NAUTILUS_ICON_DND_URI_LIST,
-	NAUTILUS_ICON_DND_URL,
-	NAUTILUS_ICON_DND_COLOR,
-	NAUTILUS_ICON_DND_BGIMAGE,
-	NAUTILUS_ICON_DND_KEYWORD
-};
-
-/* DnD target names. */
-#define NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE "special/x-gnome-icon-list"
-#define NAUTILUS_ICON_DND_URI_LIST_TYPE        "text/uri-list"
-#define NAUTILUS_ICON_DND_URL_TYPE	       "_NETSCAPE_URL"
-#define NAUTILUS_ICON_DND_COLOR_TYPE           "application/x-color"
-#define NAUTILUS_ICON_DND_BGIMAGE_TYPE         "property/bgimage"
-#define NAUTILUS_ICON_DND_KEYWORD_TYPE         "property/keyword"
 
 /* DnD-related information. */
-struct NautilusIconDndInfo {
+typedef struct {
 	GtkTargetList *target_list;
 
 	/* Stuff saved at "receive data" time needed later in the drag. */
-	gboolean got_data_type;
+	gboolean got_drop_data_type;
 	NautilusIconDndTargetType data_type;
 	GtkSelectionData *selection_data;
 
@@ -75,7 +55,7 @@ struct NautilusIconDndInfo {
 
 	/* Shadow for the icons being dragged.  */
 	GnomeCanvasItem *shadow;
-};
+} NautilusIconDndInfo;
 
 void nautilus_icon_dnd_init       (NautilusIconContainer *container,
 				   GdkBitmap             *stipple);

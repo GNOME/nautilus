@@ -38,6 +38,7 @@
 #include <glib.h>
 
 #include "nautilus-background.h"
+#include "nautilus-drag.h"
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-gdk-pixbuf-extensions.h"
 #include "nautilus-glib-extensions.h"
@@ -85,6 +86,15 @@ struct NautilusListDetails
 	/* Delayed selection information */
 	int dnd_select_pending;
 	guint dnd_select_pending_state;
+
+	/* Stuff saved at "receive data" time needed later in the drag. */
+	gboolean got_drop_data_type;
+	NautilusIconDndTargetType data_type;
+
+	/* List of DndSelectionItems, representing items being dragged, or NULL
+	 * if data about them has not been received from the source yet.
+	 */
+	GList *selection_list;
 
 	GtkWidget *title;
 };
@@ -146,12 +156,11 @@ enum {
 	LAST_SIGNAL
 };
 
-enum {
-	TARGET_COLOR
-};
-
 static GtkTargetEntry nautilus_list_dnd_target_table[] = {
-	{ "application/x-color", 0, TARGET_COLOR }
+	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
+	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
+	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL },
+	{ NAUTILUS_ICON_DND_COLOR_TYPE, 0, NAUTILUS_ICON_DND_COLOR }
 };
 
 static void     activate_row                            (NautilusList         *list,
@@ -444,7 +453,7 @@ nautilus_list_initialize (NautilusList *list)
 			   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
 			   nautilus_list_dnd_target_table,
 			   NAUTILUS_N_ELEMENTS (nautilus_list_dnd_target_table),
-			   GDK_ACTION_COPY);
+			   GDK_ACTION_COPY | GDK_ACTION_MOVE);
 
 	/* Emit "selection changed" signal when parent class changes selection */
 	list->details->select_row_signal_id = gtk_signal_connect (GTK_OBJECT (list),
@@ -2332,6 +2341,13 @@ nautilus_list_drag_begin (GtkWidget *widget, GdkDragContext *context)
 static void
 nautilus_list_drag_end (GtkWidget *widget, GdkDragContext *context)
 {
+	NautilusList *list;
+
+	g_assert (NAUTILUS_IS_LIST (widget));
+	list = NAUTILUS_LIST (widget);
+
+	nautilus_drag_destroy_selection_list (list->details->selection_list);
+	list->details->selection_list = NULL;
 	/* nothing */
 }
 
@@ -2347,6 +2363,13 @@ nautilus_list_drag_data_get (GtkWidget *widget, GdkDragContext *context,
 static void
 nautilus_list_drag_leave (GtkWidget *widget, GdkDragContext *context, guint time)
 {
+	NautilusList *list;
+
+	g_assert (NAUTILUS_IS_LIST (widget));
+	list = NAUTILUS_LIST (widget);
+
+	list->details->got_drop_data_type = FALSE;
+
 	/* nothing */
 }
 
@@ -2363,6 +2386,30 @@ static gboolean
 nautilus_list_drag_drop (GtkWidget *widget, GdkDragContext *context,
 		     gint x, gint y, guint time)
 {
+	NautilusList *list;
+	GList *p;
+	
+	g_assert (NAUTILUS_IS_LIST (widget));
+	list = NAUTILUS_LIST (widget);
+
+	g_assert (list->details->got_drop_data_type);
+
+	switch (list->details->data_type) {
+	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
+		/* FIXME: handle the drop here */
+
+		nautilus_drag_destroy_selection_list (list->details->selection_list);
+		list->details->selection_list = NULL;
+		gtk_drag_finish (context, TRUE, FALSE, time);
+		break;
+	case NAUTILUS_ICON_DND_COLOR:
+		gtk_drag_finish (context, TRUE, FALSE, time);
+		break;
+	default:
+		gtk_drag_finish (context, FALSE, FALSE, time);
+		break;
+	}
+
 	return FALSE;
 }
 
@@ -2372,14 +2419,25 @@ nautilus_list_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 			      gint x, gint y, GtkSelectionData *data,
 			      guint info, guint time)
 {
+	NautilusList *list;
+
+	g_assert (NAUTILUS_IS_LIST (widget));
+	list = NAUTILUS_LIST (widget);
+
 	switch (info) {
-	case TARGET_COLOR:
+	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
+		list->details->selection_list = nautilus_drag_build_selection_list (data);
+		list->details->got_drop_data_type = TRUE;
+		list->details->data_type = info;
+		break;
+	case NAUTILUS_ICON_DND_COLOR:
+		/* FIXME: cache the data here and use it in drag_drop */
 		nautilus_background_receive_dropped_color
 			(nautilus_get_widget_background (widget),
 			 widget, x, y, data);
 		break;
 	default:
-		g_assert_not_reached ();
+		break;
 	}
 }
 

@@ -66,14 +66,6 @@ static gboolean drag_motion_callback                 (GtkWidget             *wid
 						      int                    y,
 						      guint32                time);
 
-
-typedef struct {
-	char *uri;
-	gboolean got_icon_position;
-	int icon_x, icon_y;
-	int icon_width, icon_height;
-} DndSelectionItem;
-
 static GtkTargetEntry drag_types [] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
@@ -137,7 +129,7 @@ create_selection_shadow (NautilusIconContainer *container,
 	
 	pixels_per_unit = canvas->pixels_per_unit;
 	for (p = list; p != NULL; p = p->next) {
-		DndSelectionItem *item;
+		DragSelectionItem *item;
 		int x1, y1, x2, y2;
 
 		item = p->data;
@@ -187,40 +179,6 @@ set_shadow_position (GnomeCanvasItem *shadow,
 	gnome_canvas_item_affine_absolute (shadow, affine);
 }
 
-
-
-/* Functions to deal with DndSelectionItems.  */
-
-static DndSelectionItem *
-dnd_selection_item_new (void)
-{
-	DndSelectionItem *new;
-
-	new = g_new0 (DndSelectionItem, 1);
-	
-	return new;
-}
-
-static void
-dnd_selection_item_destroy (DndSelectionItem *item)
-{
-	g_free (item->uri);
-	g_free (item);
-}
-
-static void
-destroy_selection_list (GList *list)
-{
-	GList *p;
-
-	if (list == NULL)
-		return;
-
-	for (p = list; p != NULL; p = p->next)
-		dnd_selection_item_destroy (p->data);
-
-	g_list_free (list);
-}
 
 /* Source-side handling of the drag.  */
 
@@ -347,90 +305,6 @@ drag_data_get_callback (GtkWidget *widget,
 
 /* Target-side handling of the drag.  */
 
-static void
-get_gnome_icon_list_selection (NautilusIconContainer *container,
-			       GtkSelectionData *data)
-{
-	NautilusIconDndInfo *dnd_info;
-	const guchar *p, *oldp;
-	int size;
-
-	dnd_info = container->details->dnd_info;
-
-	oldp = data->data;
-	size = data->length;
-
-	while (size > 0) {
-		DndSelectionItem *item;
-		guint len;
-
-		/* The list is in the form:
-
-		   name\rx:y:width:height\r\n
-
-		   The geometry information after the first \r is optional.  */
-
-		/* 1: Decode name. */
-
-		p = memchr (oldp, '\r', size);
-		if (p == NULL) {
-			break;
-		}
-
-		item = dnd_selection_item_new ();
-
-		len = p - oldp;
-
-		item->uri = g_malloc (len + 1);
-		memcpy (item->uri, oldp, len);
-		item->uri[len] = 0;
-
-		p++;
-		if (*p == '\n' || *p == '\0') {
-			dnd_info->selection_list
-				= g_list_prepend (dnd_info->selection_list,
-						  item);
-			if (p == 0) {
-				g_warning ("Invalid special/x-gnome-icon-list data received: "
-					   "missing newline character.");
-				break;
-			} else {
-				oldp = p + 1;
-				continue;
-			}
-		}
-
-		size -= p - oldp;
-		oldp = p;
-
-		/* 2: Decode geometry information.  */
-
-		item->got_icon_position = sscanf (p, "%d:%d:%d:%d%*s",
-						  &item->icon_x, &item->icon_y,
-						  &item->icon_width, &item->icon_height) == 4;
-		if (!item->got_icon_position) {
-			g_warning ("Invalid special/x-gnome-icon-list data received: "
-				   "invalid icon position specification.");
-		}
-
-		dnd_info->selection_list
-			= g_list_prepend (dnd_info->selection_list, item);
-
-		p = memchr (p, '\r', size);
-		if (p == NULL || p[1] != '\n') {
-			g_warning ("Invalid special/x-gnome-icon-list data received: "
-				   "missing newline character.");
-			if (p == NULL) {
-				break;
-			}
-		} else {
-			p += 2;
-		}
-
-		size -= p - oldp;
-		oldp = p;
-	}
-}
 
 static void
 nautilus_icon_container_position_shadow (NautilusIconContainer *container,
@@ -461,11 +335,9 @@ nautilus_icon_container_dropped_icon_feedback (GtkWidget *widget,
 	container = NAUTILUS_ICON_CONTAINER (widget);
 	dnd_info = container->details->dnd_info;
 
-	/* Delete old selection list if any. */
-	if (dnd_info->selection_list != NULL) {
-		destroy_selection_list (dnd_info->selection_list);
-		dnd_info->selection_list = NULL;
-	}
+	/* Delete old selection list. */
+	nautilus_drag_destroy_selection_list (dnd_info->selection_list);
+	dnd_info->selection_list = NULL;
 
 	/* Delete old shadow if any. */
 	if (dnd_info->shadow != NULL) {
@@ -473,7 +345,7 @@ nautilus_icon_container_dropped_icon_feedback (GtkWidget *widget,
 	}
 
 	/* Build the selection list and the shadow. */
-	get_gnome_icon_list_selection (container, data);
+	dnd_info->selection_list = nautilus_drag_build_selection_list (data);
 	dnd_info->shadow = create_selection_shadow (container, dnd_info->selection_list);
 	nautilus_icon_container_position_shadow (container, x, y);
 }
@@ -492,7 +364,7 @@ drag_data_received_callback (GtkWidget *widget,
 
 	dnd_info = NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info;
 
-	dnd_info->got_data_type = TRUE;
+	dnd_info->got_drop_data_type = TRUE;
 	dnd_info->data_type = info;
 
 	switch (info) {
@@ -520,7 +392,7 @@ nautilus_icon_container_ensure_drag_data (NautilusIconContainer *container,
 
 	dnd_info = container->details->dnd_info;
 
-	if (!dnd_info->got_data_type) {
+	if (!dnd_info->got_drop_data_type) {
 		gtk_drag_get_data (GTK_WIDGET (container), context,
 				   GPOINTER_TO_INT (context->targets->data),
 				   time);
@@ -538,7 +410,7 @@ drag_end_callback (GtkWidget *widget,
 	container = NAUTILUS_ICON_CONTAINER (widget);
 	dnd_info = container->details->dnd_info;
 
-	destroy_selection_list (dnd_info->selection_list);
+	nautilus_drag_destroy_selection_list (dnd_info->selection_list);
 	dnd_info->selection_list = NULL;
 }
 
@@ -604,7 +476,7 @@ nautilus_icon_container_selection_items_local (const NautilusIconContainer *cont
 	container_uri = gnome_vfs_uri_new (container_uri_string);
 
 	/* get the parent URI of the first item in the selection */
-	item_uri = gnome_vfs_uri_new (((DndSelectionItem *)items->data)->uri);
+	item_uri = gnome_vfs_uri_new (((DragSelectionItem *)items->data)->uri);
 	result = gnome_vfs_uri_is_parent (container_uri, item_uri, FALSE);
 	
 	gnome_vfs_uri_unref (item_uri);
@@ -643,7 +515,7 @@ nautilus_icon_canvas_item_can_accept_items (NautilusIconContainer *container,
 	 */
 	for (max = 100; items != NULL && max >=0 ; items = items->next, max--) {
 		if (!nautilus_icon_canvas_item_can_accept_item (container, drop_target_item, 
-						((DndSelectionItem *)items->data)->uri)) {
+						((DragSelectionItem *)items->data)->uri)) {
 			return FALSE;
 		}
 	}
@@ -731,7 +603,7 @@ handle_local_move (NautilusIconContainer *container,
 		   double world_x, double world_y)
 {
 	GList *moved_icons, *p;
-	DndSelectionItem *item;
+	DragSelectionItem *item;
 	NautilusIcon *icon;
 
 	if (container->details->auto_layout) {
@@ -780,7 +652,7 @@ handle_nonlocal_move (NautilusIconContainer *container,
 	source_uris = NULL;
 	for (p = container->details->dnd_info->selection_list; p != NULL; p = p->next) {
 		/* do a shallow copy of all the uri strings of the copied files */
-		source_uris = g_list_prepend (source_uris, ((DndSelectionItem *)p->data)->uri);
+		source_uris = g_list_prepend (source_uris, ((DragSelectionItem *)p->data)->uri);
 	}
 	source_uris = g_list_reverse (source_uris);
 	
@@ -795,8 +667,8 @@ handle_nonlocal_move (NautilusIconContainer *container,
 			/* FIXME bugzilla.eazel.com 626:
 			 * subtract the original click coordinates from each point here
 			 */
-			source_item_locations[i].x = ((DndSelectionItem *)p->data)->icon_x;
-			source_item_locations[i].y = ((DndSelectionItem *)p->data)->icon_y;
+			source_item_locations[i].x = ((DragSelectionItem *)p->data)->icon_x;
+			source_item_locations[i].y = ((DragSelectionItem *)p->data)->icon_y;
 		}
 	}
 	
@@ -861,7 +733,7 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 		handle_nonlocal_move (container, context, x, y, drop_target_icon);
 	}
 
-	destroy_selection_list (container->details->dnd_info->selection_list);
+	nautilus_drag_destroy_selection_list (container->details->dnd_info->selection_list);
 	container->details->dnd_info->selection_list = NULL;
 }
 
@@ -921,7 +793,7 @@ nautilus_icon_container_free_drag_data (NautilusIconContainer *container)
 	
 	dnd_info = container->details->dnd_info;
 	
-	dnd_info->got_data_type = FALSE;
+	dnd_info->got_drop_data_type = FALSE;
 	
 	if (dnd_info->shadow != NULL) {
 		gtk_object_destroy (GTK_OBJECT (dnd_info->shadow));
@@ -1053,7 +925,7 @@ nautilus_icon_dnd_fini (NautilusIconContainer *container)
 	g_return_if_fail (dnd_info != NULL);
 
 	gtk_target_list_unref (dnd_info->target_list);
-	destroy_selection_list (dnd_info->selection_list);
+	nautilus_drag_destroy_selection_list (dnd_info->selection_list);
 
 	if (dnd_info->shadow != NULL)
 		gtk_object_destroy (GTK_OBJECT (dnd_info->shadow));
@@ -1189,7 +1061,7 @@ drag_drop_callback (GtkWidget *widget,
 	nautilus_icon_container_ensure_drag_data
 		(NAUTILUS_ICON_CONTAINER (widget), context, time);
 
-	g_assert (dnd_info->got_data_type);
+	g_assert (dnd_info->got_drop_data_type);
 	switch (dnd_info->data_type) {
 	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
 		nautilus_icon_container_receive_dropped_icons

@@ -26,6 +26,7 @@ libnautilus_extensionsincludedir=$(includedir)/libnautilus-extensions
 
 libnautilus_extensionsinclude_HEADERS=		\
 	nautilus-background-canvas-group.h	\
+	nautilus-drag.h				\
 	nautilus-file-changes-queue.h		\
 	nautilus-icon-canvas-item.h		\
 	nautilus-icon-dnd.h			\
@@ -102,6 +103,7 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-gtk-extensions.c		\
 	nautilus-icon-canvas-item.c       	\
 	nautilus-icon-container.c		\
+	nautilus-drag.c				\
 	nautilus-icon-dnd.c			\
 	nautilus-icon-factory.c			\
 	nautilus-icon-grid.c			\

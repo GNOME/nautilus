@@ -1,3 +1,31 @@
+2000-05-29  Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-drag.c:
+	* libnautilus-extensions/nautilus-drag.h:
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	* libnautilus-extensions/nautilus-icon-dnd.h:
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_drag_selection_item_new), (drag_selection_item_destroy),
+	(nautilus_drag_destroy_selection_list),
+	(nautilus_drag_build_selection_list),
+	(create_selection_shadow),
+	(nautilus_icon_container_dropped_icon_feedback),
+	(drag_data_received_callback),
+	(nautilus_icon_container_ensure_drag_data), (drag_end_callback),
+	(nautilus_icon_container_selection_items_local),
+	(nautilus_icon_canvas_item_can_accept_items), (handle_local_move),
+	(handle_nonlocal_move),
+	(nautilus_icon_container_receive_dropped_icons),
+	(nautilus_icon_container_free_drag_data), (nautilus_icon_dnd_fini),
+	(drag_drop_callback), (nautilus_list_initialize), (nautilus_list_drag_end),
+	(nautilus_list_drag_leave), (nautilus_list_drag_drop),
+	(nautilus_list_drag_data_received):
+	Start splitting out drag&drop code common between icon view and list view
+	into a new file.
+	Start adding drag&drop calls to list view.
+	Bunch of renamings.
+
 2000-05-29  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-string-list.c:
