@@ -3060,7 +3060,7 @@ add_open_with_app_bonobo_menu_item (BonoboUIComponent *ui,
 	escaped_label = nautilus_str_double_underscores (label);
 
 	nautilus_bonobo_add_menu_item (ui, FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER, 
-				       label, escaped_label);
+				       escaped_label);
 
 	verb_name = g_strdup_printf ("verb:%s", label);
 	bonobo_ui_component_add_verb_full (ui, verb_name, callback, callback_data, destroy_notify);
@@ -3081,8 +3081,8 @@ add_open_with_viewer_bonobo_menu_item (BonoboUIComponent *ui,
 	escaped_label = nautilus_str_double_underscores (label);
 
 	nautilus_bonobo_add_menu_item (ui, FM_DIRECTORY_VIEW_MENU_PATH_VIEWERS_PLACEHOLDER, 
-				       escaped_label, escaped_label);
-				       
+				       escaped_label);
+
 	verb_name = g_strdup_printf ("verb:%s", label);
 	bonobo_ui_component_add_verb_full (ui, verb_name, callback, callback_data, destroy_notify);
 

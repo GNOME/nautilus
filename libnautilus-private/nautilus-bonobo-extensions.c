@@ -110,15 +110,14 @@ nautilus_bonobo_get_hidden (BonoboUIComponent *ui,
 }
 
 void
-nautilus_bonobo_add_menu_item (BonoboUIComponent *ui, const char *path, 
-			 	const char *item_name, const char *item_label)
+nautilus_bonobo_add_menu_item (BonoboUIComponent *ui, const char *path, const char *label)
 {
 	CORBA_Environment  ev;
 	char *xml_string;
 		
 	CORBA_exception_init (&ev);
 
-	xml_string = g_strdup_printf ("<menuitem name=\"%s\" label=\"%s\" verb=\"verb:%s\"/>\n", item_name, item_label, item_name);
+	xml_string = g_strdup_printf ("<menuitem name=\"name:%s\" label=\"%s\" verb=\"verb:%s\"/>\n", label, label, label);
 	bonobo_ui_component_set (ui, path, xml_string, &ev);
 
 	g_free (xml_string);

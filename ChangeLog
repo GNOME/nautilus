@@ -1,3 +1,16 @@
+2000-10-10  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	* libnautilus-extensions/nautilus-bonobo-extensions.h:
+	(nautilus_bonobo_add_menu_item):
+	Changed prototype to take only label as argument. Name
+	is now derived form the label.
+
+	* src/file-manager/fm-directory-view.c:
+	(add_open_with_app_bonobo_menu_item),
+	(add_open_with_viewer_bonobo_menu_item):
+	Call modified nautilus_bonobo_add_menu_item.
+	
 2000-10-09  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-property-browser.c:
