@@ -641,7 +641,7 @@ build_error_string (const char *source_name, const char *target_name,
 		case TRANSFER_MOVE_TO_TRASH:
 			if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
 				error_string = _("Error while moving.\n\n"
-						 "\"%s\" cannot be moved to the trash because you do not have "
+						 "\"%s\" cannot be moved to the Trash because you do not have "
 						 "permissions to change it or its parent folder.");
 			}
 			break;
@@ -2309,7 +2309,7 @@ confirm_empty_trash (GtkWidget *parent_view)
 
 	dialog = nautilus_show_yes_no_dialog (
 		_("Are you sure you want to permanently delete "
-		  "all of the items in the trash?"),
+		  "all of the items in the Trash?"),
 		_("Delete Trash Contents?"),
 		_("Empty"),
 		GNOME_STOCK_BUTTON_CANCEL,

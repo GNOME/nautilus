@@ -1,3 +1,19 @@
+2001-02-20  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 6785 ("Trash" should be capitalized)
+
+	I grepped Nautilus sources for "the trash" and replaced
+	it with "the Trash". Let me know if you can think of
+	any references to the Trash that don't start with "the".
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(build_error_string), (confirm_empty_trash):
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_confirm_deletion), (confirm_delete_from_trash),
+	(report_broken_symbolic_link):
+	* src/file-manager/nautilus-desktop-icon-view-ui.xml:
+	* src/file-manager/nautilus-directory-view-ui.xml:
+
 2001-02-20  Dan Mueth  <dan@eazel.com>
 
 	* user-guide/C/Makefile.am: Changed so only a warning is

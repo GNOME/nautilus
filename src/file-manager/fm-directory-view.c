@@ -2598,17 +2598,17 @@ fm_directory_view_confirm_deletion (FMDirectoryView *view, GList *uris, gboolean
 	if (uri_count == 1) {
 		file_name = file_name_from_uri ((char *)uris->data);
 
-		prompt = g_strdup_printf (_("\"%s\" cannot be moved to the trash. Do "
+		prompt = g_strdup_printf (_("\"%s\" cannot be moved to the Trash. Do "
 					    "you want to delete it immediately?"), file_name);
 		g_free (file_name);
 	} else {
 		if (all) {
 			prompt = g_strdup_printf (_("The %d selected items cannot be moved "
-						    "to the trash. Do you want to delete them "
+						    "to the Trash. Do you want to delete them "
 						    "immediately?"), uri_count);
 		} else {
 			prompt = g_strdup_printf (_("%d of the selected items cannot be moved "
-						    "to the trash. Do you want to delete those "
+						    "to the Trash. Do you want to delete those "
 						    "%d items immediately?"), uri_count, uri_count);
 		}
 	}
@@ -2647,11 +2647,11 @@ confirm_delete_from_trash (FMDirectoryView *view, GList *uris)
 		file_name = file_name_from_uri ((char *)uris->data);
 
 		prompt = g_strdup_printf (_("Are you sure you want to permanently delete \"%s\" "
-					    "from the trash?"), file_name);
+					    "from the Trash?"), file_name);
 		g_free (file_name);
 	} else {
 		prompt = g_strdup_printf (_("Are you sure you want to permanently delete "
-		  			    "the %d selected items from the trash?"), uri_count);
+		  			    "the %d selected items from the Trash?"), uri_count);
 	}
 
 	dialog = nautilus_show_yes_no_dialog (
@@ -3430,10 +3430,10 @@ report_broken_symbolic_link (FMDirectoryView *view, NautilusFile *file)
 	target_path = nautilus_file_get_symbolic_link_target_path (file);
 	if (target_path == NULL) {
 		prompt = g_strdup_printf (_("This link can't be used, because it has no target. "
-					    "Do you want to put this link in the trash?"));
+					    "Do you want to put this link in the Trash?"));
 	} else {
 		prompt = g_strdup_printf (_("This link can't be used, because its target \"%s\" doesn't exist. "
-				 	    "Do you want to put this link in the trash?"),
+				 	    "Do you want to put this link in the Trash?"),
 					  target_path);
 	}
 
