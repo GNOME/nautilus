@@ -1,3 +1,22 @@
+2001-01-24  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixed bug 5710, Images no longer snap to size after hitting Refresh
+	
+	* components/image-viewer/nautilus-image-view.c: (redraw_control),
+	(load_image_from_stream), (scrolled_window_size_allocate_callback):
+	Restore the previous zoom setting when reloading a file from a stream.
+			
+	Fixed a logic flaw dealing with renaming NautilusLinks.  The icon view
+	had duplicated some logic that was present in NautilusFile.  There were
+	slight differences in the logic that lead to some confusion in determing
+	if a link could be renamed.
+	
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_can_rename):
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_update_menus):
+
 2001-01-24  Andy Hertzfeld  <andy@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

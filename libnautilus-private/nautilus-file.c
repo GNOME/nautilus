@@ -739,6 +739,7 @@ nautilus_file_can_rename (NautilusFile *file)
 		
 		switch (nautilus_link_local_get_link_type (unescaped_path)) {
 			case NAUTILUS_LINK_HOME:
+			case NAUTILUS_LINK_GENERIC:
 				can_rename_link = TRUE;
 				break;
 							
@@ -746,11 +747,7 @@ nautilus_file_can_rename (NautilusFile *file)
 			case NAUTILUS_LINK_MOUNT:
 				can_rename_link = FALSE;
 				break;
-
-			case NAUTILUS_LINK_GENERIC:
-				can_rename_link = FALSE;
-				break;
-				
+								
 			default:
 				can_rename_link = FALSE;
 				break;

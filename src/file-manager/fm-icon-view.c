@@ -428,27 +428,6 @@ fm_icon_view_using_tighter_layout (FMIconView *icon_view)
 		(get_icon_container (icon_view));
 }
 
-/* special_link_in_selection
- * 
- * Return TRUE is one of our special links is the selection.
- * Special links include the following: 
- *	 NAUTILUS_LINK_TRASH, NAUTILUS_LINK_HOME, NAUTILUS_LINK_MOUNT
- */
- 
-static gboolean
-special_link_in_selection (FMIconView *view)
-{
-	if (fm_directory_link_type_in_selection (FM_DIRECTORY_VIEW (view), NAUTILUS_LINK_TRASH)) {
-		return TRUE;
-	}
-
-	if (fm_directory_link_type_in_selection (FM_DIRECTORY_VIEW (view), NAUTILUS_LINK_MOUNT)) {
-		return TRUE;
-	}
-
-	return FALSE;
-}
-
 static void
 handle_radio_item (FMIconView *view,
 		   const char *id)
@@ -1248,9 +1227,8 @@ fm_icon_view_update_menus (FMDirectoryView *view)
 	nautilus_bonobo_set_sensitive (icon_view->details->ui, 
 				       COMMAND_RENAME,
 				       selection_count == 1
-				       && nautilus_file_can_rename (selection->data)
-				       && !special_link_in_selection (icon_view));
-
+				       && nautilus_file_can_rename (selection->data));
+				       
 	bonobo_ui_component_thaw (icon_view->details->ui, NULL);
 	
 	nautilus_file_list_free (selection);

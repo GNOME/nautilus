@@ -215,7 +215,7 @@ redraw_control (bonobo_object_data_t *bod, GdkRectangle *rect)
 	 * an unscaled image too early.
 	 */
 	if (bod->size_allocated) {
-	        render_pixbuf (buf, bod->drawing_area, rect);
+		render_pixbuf (buf, bod->drawing_area, rect);
 	}
 }
 
@@ -518,6 +518,12 @@ load_image_from_stream (BonoboPersistStream *ps, Bonobo_Stream stream,
 		gtk_object_unref (GTK_OBJECT (loader));
 	} else {
 		gdk_pixbuf_ref (bod->pixbuf);
+		
+		/* Restore current zoomed pixbuf cache. */
+		if (bod->zoom_level != 1.0) {
+			rezoom_control (bod, bod->zoom_level);
+		}
+		
 		resize_control (bod);
 	}
 }
@@ -605,30 +611,6 @@ scrolled_control_size_allocate_callback (GtkWidget *drawing_area,
 	control_update (bod);
 }
 
-/* utility routine to determine if the image is bigger than the current viewer */
-static gboolean
-image_bigger_than_viewer (bonobo_object_data_t *bod)
-{
-	int width, height;
-	GtkAdjustment *hadj, *vadj;
-	
-	if (bod->pixbuf == NULL) {
-		return FALSE;
-	}
-	
-	width = gdk_pixbuf_get_width (bod->pixbuf);
-	height = gdk_pixbuf_get_height (bod->pixbuf);
-
-	hadj = gtk_scrolled_window_get_hadjustment (GTK_SCROLLED_WINDOW (bod->scrolled_window));
-	vadj = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (bod->scrolled_window));
-
-	if (hadj == NULL || vadj == NULL) {
-		return FALSE;
-	}
-	
-	return width > hadj->page_size || height > vadj->page_size;
-}
-
 /*
  * This callback will be invoked when the container assigns us a size.
  */
@@ -639,14 +621,10 @@ scrolled_window_size_allocate_callback (GtkWidget *drawing_area,
 {	
 	/* implement initial shrink-to-fit if necessary.  It's hard to tell when resizing
 	 * is complete, inspiring this hackish solution determining when; it should
-	 * be replaced with a cleaner approach when the framework is improve.
+	 * be replaced with a cleaner approach when the framework is improved.
 	 */
-
+	
 	if (bod->resize_flag && bod->initial_flag && allocation->width > 1 && allocation->height > 1) {
-		if (image_bigger_than_viewer (bod)) {
-			zoomable_zoom_to_fit_callback (bod->zoomable, bod);		
-			control_update (bod);
-		}
 		bod->initial_flag = FALSE;
 	} else if (!bod->resize_flag && allocation->width == 1 && allocation->height == 1) {
 		bod->resize_flag = TRUE;
