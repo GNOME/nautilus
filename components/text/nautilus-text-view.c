@@ -301,7 +301,7 @@ file_read_callback (GnomeVFSAsyncHandle *vfs_handle,
 	byte_count = bytes_read;
 	text_view->details->file_size += bytes_read;
 	
-	if (result == GNOME_VFS_OK && bytes_read != 0) {
+	if (result == GNOME_VFS_OK) {
 		/* write the buffer into the text field */	
 		gtk_text_freeze (GTK_TEXT (text_view->details->text_display));
 	
@@ -317,14 +317,12 @@ file_read_callback (GnomeVFSAsyncHandle *vfs_handle,
 				
 		/* read more if necessary */		
 		if (text_view->details->file_size < MAX_FILE_SIZE) {
-			if (bytes_read == bytes_requested) {
-				gnome_vfs_async_read (text_view->details->file_handle,
-				      text_view->details->buffer,
-				      TEXT_VIEW_CHUNK_SIZE,
-				      file_read_callback,
-				      callback_data);
-				return;
-			}
+                        gnome_vfs_async_read (text_view->details->file_handle,
+                                              text_view->details->buffer,
+                                              TEXT_VIEW_CHUNK_SIZE,
+                                              file_read_callback,
+                                              callback_data);
+                        return;
 		} else {
 			char *filename = nautilus_file_get_name(text_view->details->file);
 			char *message = g_strdup_printf (_("Sorry, but %s is too large for Nautilus to load all of it."), filename);

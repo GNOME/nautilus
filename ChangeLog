@@ -1,3 +1,19 @@
+2001-03-04  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: George Lebl  <jirka@5z.com>
+	             Ramiro Estrugo  <ramiro@eazel.com>
+
+	Fixed bug 7336 ("View as Text" not a choice for remote web pages)
+
+	* components/text/Nautilus_View_text.oaf.in: Removed attribute
+	limiting this view's applicability to the "file:" URI scheme, thus
+	fixing bug 7336.
+
+	* components/text/nautilus-text-view.c (file_read_callback):
+	Remove some incorrect checks that made this component only load
+	the first chunk of text for remote files; this bug was uncovered
+	in the process of fixing 7336.
+
 2001-03-05  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Pavel Cisler  <pavel@eazel.com>
