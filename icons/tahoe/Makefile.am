@@ -1,7 +1,5 @@
 NULL=
 
-SUBDIRS =
-
 tahoedir = $(datadir)/pixmaps/nautilus/tahoe
 
 tahoe_DATA =\

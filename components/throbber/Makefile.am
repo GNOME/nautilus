@@ -1,7 +1,5 @@
 NULL = 
 
-SUBDIRS =
-
 INCLUDES =						\
 	-DG_LOG_DOMAIN=\"Nautilus-Throbber\"		\
 	-DDATADIR=\""$(datadir)"\" 			\

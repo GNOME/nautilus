@@ -56,6 +56,7 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
+#include <libnautilus-private/nautilus-monitor.h>
 #include <libnautilus-private/nautilus-search-uri.h>
 
 /* FIXME bugzilla.eazel.com 1243: 
@@ -1368,6 +1369,7 @@ begin_location_change (NautilusWindow *window,
 {
         NautilusDirectory *directory;
         NautilusFile *file;
+	gboolean force_reload;
 
         g_assert (NAUTILUS_IS_WINDOW (window));
         g_assert (location != NULL);
@@ -1385,11 +1387,23 @@ begin_location_change (NautilusWindow *window,
 
         directory = nautilus_directory_get (location);
 
-        /* In all 4 cases, we want fresh information. */
-        nautilus_directory_force_reload (directory);
-        file = nautilus_directory_get_corresponding_file (directory);
-        nautilus_file_invalidate_all_attributes (file);
-        nautilus_file_unref (file);
+	/* The code to force a reload is here because if we do it
+	 * after determining an initial view (in the components), then
+	 * we end up fetching things twice.
+	 */
+	if (type == NAUTILUS_LOCATION_CHANGE_RELOAD) {
+		force_reload = TRUE;
+	} else if (!nautilus_monitor_active ()) {
+		force_reload = TRUE;
+	} else {
+		force_reload = !nautilus_directory_is_local (directory);
+	}
+	if (force_reload) {
+		nautilus_directory_force_reload (directory);
+		file = nautilus_directory_get_corresponding_file (directory);
+		nautilus_file_invalidate_all_attributes (file);
+		nautilus_file_unref (file);
+	}
 
         window->details->determine_view_handle = nautilus_determine_initial_view
                 (location,

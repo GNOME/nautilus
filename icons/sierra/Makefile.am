@@ -1,7 +1,5 @@
 sierradir = $(datadir)/pixmaps/nautilus/sierra
 
-SUBDIRS = 
-
 sierra_DATA =	\
 	green_weave.png			\
 	i-directory-12.png		\

@@ -1,3 +1,17 @@
+2001-06-26  Darin Adler  <darin@bentspoon.com>
+
+	* src/nautilus-window-manage-views.c: (begin_location_change):
+	Don't force a reload if file monitoring will work properly
+	for the location.
+
+	* components/throbber/Makefile.am:
+	* icons/sierra/Makefile.am:
+	* icons/tahoe/Makefile.am:
+	Remove use of empty SUBDIRS. At least some versions of automake
+	have trouble with that.
+
+	* src/file-manager/fm-directory-view.c: Formatting tweak.
+
 2001-06-25  Ramiro Estrugo  <ramiro@fateware.com>
 
 	Patch from Miguel Rodríguez Pérez  <migras@atlas.uvigo.es>
