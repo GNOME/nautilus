@@ -42,7 +42,6 @@
 #include <libgnome/gnome-desktop-item.h>
 #include <libgnome/gnome-url.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <libgnomevfs/gnome-vfs-application-registry.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <stdlib.h>
@@ -473,9 +472,7 @@ void nautilus_launch_show_file (NautilusFile *file,
 	
 	/* Only initiate notification if application supports it. */
 	if (application) {
-		startup_notify = gnome_vfs_application_registry_get_bool_value (application->id,
-										GNOME_VFS_APPLICATION_REGISTRY_STARTUP_NOTIFY,
-										NULL);
+		startup_notify = gnome_vfs_mime_application_supports_startup_notification (application);
 	} else {
 		startup_notify = FALSE;
 	}
@@ -516,7 +513,7 @@ void nautilus_launch_show_file (NautilusFile *file,
 
 			timestamp = slowly_and_stupidly_obtain_timestamp (sn_display);
 
-			binary_name = application->command;
+			binary_name = gnome_vfs_mime_application_get_binary_name (application);
 		
 			sn_launcher_context_set_binary_name (sn_context,
 							     binary_name);
@@ -711,9 +708,8 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 
 	
 	/* Only initiate notification if application supports it. */
-	if (gnome_vfs_application_registry_get_bool_value (application->id, 
-							   GNOME_VFS_APPLICATION_REGISTRY_STARTUP_NOTIFY,
-							   NULL)) {
+	if (gnome_vfs_mime_application_supports_startup_notification (application))
+	{ 
 		char *name;
 		char *icon;
 
@@ -748,7 +744,7 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 
 			timestamp = slowly_and_stupidly_obtain_timestamp (sn_display);
 			
-			binary_name = application->command;
+			binary_name = gnome_vfs_mime_application_get_binary_name (application);
 		
 			sn_launcher_context_set_binary_name (sn_context,
 							     binary_name);

@@ -28,16 +28,8 @@
 #include "nautilus-file-attributes.h"
 #include "nautilus-file.h"
 #include "nautilus-metadata.h"
-#include <eel/eel-glib-extensions.h>
-#include <eel/eel-string.h>
-#include <libgnomevfs/gnome-vfs-application-registry.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
-#include <stdio.h>
-
-static int         gnome_vfs_mime_application_has_id             (GnomeVFSMimeApplication  *application,
-								  const char               *id);
-static gboolean   application_supports_uri_scheme                (gpointer                 data,
-								  gpointer                 uri_scheme);
+#include <string.h>
 
 static gboolean
 nautilus_mime_actions_check_if_minimum_attributes_ready (NautilusFile *file)
@@ -92,59 +84,41 @@ nautilus_mime_actions_get_full_file_attributes (void)
 GnomeVFSMimeApplication *
 nautilus_mime_get_default_application_for_file (NautilusFile *file)
 {
-	char *mime_type;
-	GnomeVFSMimeApplication *result;
-	char *uri_scheme;
+	GnomeVFSMimeApplication *app;
+	char *uri, *mime_type;
 
 	if (!nautilus_mime_actions_check_if_open_with_attributes_ready (file)) {
 		return NULL;
 	}
-	uri_scheme = nautilus_file_get_uri_scheme (file);
-
-	/* TODO: this should maybe use gnome_vfs_mime_get_default_application_for_scheme,
-	   but thats not public atm */
 	
+	uri = nautilus_file_get_uri (file);
 	mime_type = nautilus_file_get_mime_type (file);
-	result = gnome_vfs_mime_get_default_application (mime_type);
-	if (result != NULL && !application_supports_uri_scheme (result, uri_scheme)) {
-		result = NULL;
-	}
+	app = gnome_vfs_mime_get_default_application_for_uri (uri, mime_type);
 	
-	if (result == NULL) {
-		GList *all_applications, *l;
-		
-		all_applications = nautilus_mime_get_open_with_applications_for_file (file);
-		
-		for (l = all_applications; l != NULL; l = l->next) {
-			result = gnome_vfs_mime_application_copy (l->data);
-			if (result != NULL && !application_supports_uri_scheme (result, uri_scheme)) {
-				gnome_vfs_mime_application_free (result);
-				result = NULL;
-			}
-			if (result != NULL)
-				break;
-		}
-		gnome_vfs_mime_application_list_free (all_applications);
-	}
-	
+	g_free (uri);
 	g_free (mime_type);
+	
+	return app;
+}
 
-	g_free (uri_scheme);
-
-	return result;
+static int
+application_equal (GnomeVFSMimeApplication *app_a, GnomeVFSMimeApplication *app_b)
+{
+	return gnome_vfs_mime_application_equal (app_a, app_b) ? 0 : 1;
 }
 
 static GList *
 get_open_with_mime_applications (NautilusFile *file)
 {
 	char *guessed_mime_type;
-	char *mime_type;
+	char *mime_type, *uri;
 	GList *result;
 
 	guessed_mime_type = nautilus_file_get_guessed_mime_type (file);
 	mime_type = nautilus_file_get_mime_type (file);
+	uri = nautilus_file_get_uri (file);
 
-	result = gnome_vfs_mime_get_all_applications (mime_type);
+	result = gnome_vfs_mime_get_all_applications_for_uri (uri, mime_type);
 
 	if (strcmp (guessed_mime_type, mime_type) != 0) {
 		GList *result_2;
@@ -152,9 +126,8 @@ get_open_with_mime_applications (NautilusFile *file)
 
 		result_2 = gnome_vfs_mime_get_all_applications (guessed_mime_type);
 		for (l = result_2; l != NULL; l = l->next) {
-			if (!g_list_find_custom (result,
-						 ((GnomeVFSMimeApplication*)l->data)->id,
-						 (GCompareFunc) gnome_vfs_mime_application_has_id)) {
+			if (!g_list_find_custom (result, l->data,
+						 (GCompareFunc) application_equal)) {
 				result = g_list_prepend (result, l->data);
 			}
 		}
@@ -162,6 +135,7 @@ get_open_with_mime_applications (NautilusFile *file)
 	}
 
 	g_free (mime_type);
+	g_free (uri);
 	g_free (guessed_mime_type);
 	
 	return result;
@@ -172,11 +146,9 @@ get_open_with_mime_applications (NautilusFile *file)
  * because this function will merge the lists of the fast and slow
  * mime types for the file */
 GList *
-nautilus_mime_get_open_with_applications_for_file (NautilusFile      *file)
+nautilus_mime_get_open_with_applications_for_file (NautilusFile *file)
 {
-	char *uri_scheme;
 	GList *result;
-	GList *removed;
 
 	if (!nautilus_mime_actions_check_if_open_with_attributes_ready (file)) {
 		return NULL;
@@ -184,19 +156,11 @@ nautilus_mime_get_open_with_applications_for_file (NautilusFile      *file)
 
 	result = get_open_with_mime_applications (file);
 
-	/* First remove applications that cannot support this location */
-	uri_scheme = nautilus_file_get_uri_scheme (file);
-	g_assert (uri_scheme != NULL);
-	result = eel_g_list_partition (result, application_supports_uri_scheme,
-					    uri_scheme, &removed);
-	gnome_vfs_mime_application_list_free (removed);
-	g_free (uri_scheme);
-
 	return g_list_reverse (result);
 }
 
 GList *
-nautilus_mime_get_applications_for_file (NautilusFile      *file)
+nautilus_mime_get_applications_for_file (NautilusFile *file)
 {
 	char *mime_type;
 
@@ -208,59 +172,27 @@ nautilus_mime_get_applications_for_file (NautilusFile      *file)
 	return gnome_vfs_mime_get_all_applications (mime_type);
 }
 
-static int
-application_supports_uri_scheme_strcmp_style (gconstpointer application_data,
-					      gconstpointer uri_scheme)
-{
-	return application_supports_uri_scheme
-		((gpointer) application_data,
-		 (gpointer) uri_scheme) ? 0 : 1;
-}
-
 gboolean
-nautilus_mime_has_any_applications_for_file (NautilusFile      *file)
+nautilus_mime_has_any_applications_for_file (NautilusFile *file)
 {
-	GList *all_applications_for_mime_type, *application_that_can_access_uri;
-	char *uri_scheme;
+	GList *apps;
+	char *uri, *mime_type;
 	gboolean result;
 
-	all_applications_for_mime_type = nautilus_mime_get_applications_for_file (file);
-
-	uri_scheme = nautilus_file_get_uri_scheme (file);
-	application_that_can_access_uri = g_list_find_custom
-		(all_applications_for_mime_type,
-		 uri_scheme,
-		 application_supports_uri_scheme_strcmp_style);
-	g_free (uri_scheme);
-
-	result = application_that_can_access_uri != NULL;
-	gnome_vfs_mime_application_list_free (all_applications_for_mime_type);
+	uri = nautilus_file_get_uri (file);
+	mime_type = nautilus_file_get_mime_type (file);
+	
+	apps = gnome_vfs_mime_get_all_applications_for_uri (uri, mime_type);
+		
+	if (apps) {
+		result = TRUE;
+		gnome_vfs_mime_application_list_free (apps);
+	} else {
+		result = FALSE;
+	}
+	
+	g_free (mime_type);
+	g_free (uri);
 
 	return result;
-}
-
-static int
-gnome_vfs_mime_application_has_id (GnomeVFSMimeApplication *application, 
-				   const char *id)
-{
-	return strcmp (application->id, id);
-}
-
-static gboolean
-application_supports_uri_scheme (gpointer data,
-				 gpointer uri_scheme)
-{
-	GnomeVFSMimeApplication *application;
-
-	g_assert (data != NULL);
-	application = (GnomeVFSMimeApplication *) data;
-
-	/* The default supported uri scheme is "file" */
-	if (application->supported_uri_schemes == NULL
-	    && g_ascii_strcasecmp ((const char *) uri_scheme, "file") == 0) {
-		return TRUE;
-	}
-	return g_list_find_custom (application->supported_uri_schemes,
-				   uri_scheme,
-				   eel_strcasecmp_compare_func) != NULL;
 }

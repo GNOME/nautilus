@@ -3904,7 +3904,7 @@ reset_open_with_menu (FMDirectoryView *view, GList *selection)
 			
 			application = node->data;
 
-			if (default_app && !strcmp (default_app->id, application->id)) {
+			if (default_app && gnome_vfs_mime_application_equal (default_app, application)) {
 				continue;
 			}
 
@@ -4225,11 +4225,8 @@ activate_check_mime_types (FMDirectoryView *view,
 			(mime_type);
 		guessed_default_app = gnome_vfs_mime_get_default_application
 			(guessed_mime_type);
-		if (default_app == NULL ||
-		    default_app->id == NULL ||
-		    guessed_default_app == NULL ||
-		    guessed_default_app->id == NULL ||
-		    strcmp (default_app->id, guessed_default_app->id) != 0) {
+		if (default_app == NULL || guessed_default_app == NULL ||
+		    !gnome_vfs_mime_application_equal (default_app, guessed_default_app)) {
 			if (warn_on_mismatch) {
 				warn_mismatched_mime_types (view, file);
 			}

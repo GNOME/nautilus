@@ -29,18 +29,13 @@
 
 #include <libnautilus-private/nautilus-file.h>
 
+NautilusFileAttributes   nautilus_mime_actions_get_minimum_file_attributes	(void);
+NautilusFileAttributes   nautilus_mime_actions_get_full_file_attributes		(void);
 
-NautilusFileAttributes   nautilus_mime_actions_get_minimum_file_attributes         (void);
-NautilusFileAttributes   nautilus_mime_actions_get_full_file_attributes            (void);
+GnomeVFSMimeApplication *nautilus_mime_get_default_application_for_file		(NautilusFile *file);
+GList *                  nautilus_mime_get_open_with_applications_for_file	(NautilusFile *file);
+GList *			 nautilus_mime_get_applications_for_file		(NautilusFile *file);
 
-GnomeVFSMimeApplication *nautilus_mime_get_default_application_for_file            (NautilusFile           *file);
-GList *                  nautilus_mime_get_open_with_applications_for_file         (NautilusFile           *file);
-GList *                  nautilus_mime_get_applications_for_file               (NautilusFile           *file);
-
-
-gboolean                 nautilus_mime_has_any_applications_for_file               (NautilusFile           *file);
-
-GnomeVFSResult           nautilus_mime_set_default_application_for_file            (NautilusFile           *file,
-										    const char             *application_id);
+gboolean                 nautilus_mime_has_any_applications_for_file		(NautilusFile *file);
 
 #endif /* NAUTILUS_MIME_ACTIONS_H */

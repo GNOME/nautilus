@@ -1,3 +1,28 @@
+2004-11-25  Marco Pesenti Gritti  <marco@gnome.org>
+
+	reviewed by: Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+
+	Bump gnome-vfs required version
+
+	* libnautilus-private/nautilus-mime-actions.c:
+	(nautilus_mime_get_default_application_for_file),
+	(application_equal), (get_open_with_mime_applications),
+	(nautilus_mime_get_open_with_applications_for_file),
+	(nautilus_mime_get_applications_for_file),
+	(nautilus_mime_has_any_applications_for_file):
+	* libnautilus-private/nautilus-mime-actions.h:
+	* libnautilus-private/nautilus-program-choosing.c:
+	(nautilus_launch_show_file), (nautilus_launch_application):
+	* src/file-manager/fm-directory-view.c: (reset_open_with_menu),
+	(activate_check_mime_types):
+	* src/nautilus-information-panel.c: (command_button_callback),
+	(add_command_buttons), (nautilus_information_panel_update_buttons):
+
+	Remove all mime api deprecated calls and replace them with the
+	new API. Fix bug #159435.
+
 2004-11-24  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in: 

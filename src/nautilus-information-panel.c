@@ -45,7 +45,6 @@
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <libgnomevfs/gnome-vfs-application-registry.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
@@ -852,7 +851,7 @@ command_button_callback (GtkWidget *button, char *id_str)
 	
 	information_panel = NAUTILUS_INFORMATION_PANEL (g_object_get_data (G_OBJECT (button), "user_data"));
 
-	application = gnome_vfs_application_registry_get_mime_application (id_str);
+	application = gnome_vfs_mime_application_new_from_desktop_id (id_str);
 
 	if (application != NULL) {
 		nautilus_launch_application (application, information_panel->details->file,
@@ -873,48 +872,12 @@ metadata_button_callback (GtkWidget *button, const char *command_str)
 	information_panel = NAUTILUS_INFORMATION_PANEL (g_object_get_data (G_OBJECT (button), "user_data"));
 }
 
-#if NEW_MIME_COMPLETE
-static void
-nautilus_information_panel_chose_application_callback (GnomeVFSMimeApplication *application,
-					     gpointer callback_data)
-{
-	NautilusInformationPanel *information_panel;
-
-	information_panel = NAUTILUS_INFORMATION_PANEL (callback_data);
-
-	if (application != NULL) {
-		nautilus_launch_application
-			(application, 
-			 information_panel->details->file,
-			 nautilus_information_panel_get_window (information_panel));
-	}
-}
-#endif
-
-static void
-open_with_callback (GtkWidget *button, gpointer ignored)
-{
-#if NEW_MIME_COMPLETE
-	NautilusInformationPanel *information_panel;
-	
-	information_panel = NAUTILUS_INFORMATION_PANEL (g_object_get_data (G_OBJECT (button), "user_data"));
-	
-	g_return_if_fail (information_panel->details->file != NULL);
-
-	nautilus_choose_application_for_file
-		(information_panel->details->file,
-		 GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (information_panel))),
-		 nautilus_information_panel_chose_application_callback,
-		 information_panel);
-#endif
-}
-
 /* utility routine that allocates the command buttons from the command list */
 
 static void
 add_command_buttons (NautilusInformationPanel *information_panel, GList *application_list)
 {
-	char *id_string, *temp_str, *file_path;
+	char *id_string, *temp_str;
 	GList *p;
 	GtkWidget *temp_button;
 	GnomeVFSMimeApplication *application;
@@ -933,16 +896,7 @@ add_command_buttons (NautilusInformationPanel *information_panel, GList *applica
 				    FALSE, FALSE, 
 				    0);
 
-		/* Get the local path, if there is one */
-		file_path = gnome_vfs_get_local_path_from_uri (information_panel->details->uri);
-		if (file_path == NULL) {
-			file_path = g_strdup (information_panel->details->uri);
-		} 
-
-		temp_str = g_shell_quote (file_path);		
-		id_string = eel_str_replace_substring (application->id, "%s", temp_str); 		
-		g_free (file_path);
-		g_free (temp_str);
+		id_string = g_strdup (gnome_vfs_mime_application_get_desktop_id (application));
 
 		eel_gtk_signal_connect_free_data 
 			(GTK_OBJECT (temp_button), "clicked",
@@ -952,15 +906,6 @@ add_command_buttons (NautilusInformationPanel *information_panel, GList *applica
 		
 		gtk_widget_show (temp_button);
 	}
-
-	/* Catch-all button after all the others. */
-	temp_button = gtk_button_new_with_label (_("Open with..."));
-	g_signal_connect (temp_button, "clicked",
-			  G_CALLBACK (open_with_callback), NULL);
-	g_object_set_data (G_OBJECT (temp_button), "user_data", information_panel);
-	gtk_widget_show (temp_button);
-	gtk_box_pack_start (GTK_BOX (information_panel->details->button_box),
-			    temp_button, FALSE, FALSE, 0);
 }
 
 /* utility to construct command buttons for the information_panel from the passed in metadata string */
@@ -1108,11 +1053,8 @@ nautilus_information_panel_update_buttons (NautilusInformationPanel *information
 		g_signal_connect (temp_button, "clicked",
 				  G_CALLBACK (burn_cd_callback), NULL);
 	}
-	
-	/* Make buttons for each item in short list + "Open with..." catchall,
-	 * unless there aren't any applications at all in complete list. 
-	 */
 
+	/* Make buttons for each application */
 	if (nautilus_mime_has_any_applications_for_file (information_panel->details->file)) {
 		short_application_list = 
 			nautilus_mime_get_applications_for_file (information_panel->details->file);
