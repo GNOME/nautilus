@@ -36,6 +36,7 @@
 
 typedef struct MetafileReadState MetafileReadState;
 typedef struct MetafileWriteState MetafileWriteState;
+typedef struct TopLeftTextReadState TopLeftTextReadState;
 
 struct NautilusDirectoryDetails
 {
@@ -50,10 +51,10 @@ struct NautilusDirectoryDetails
 
 	gboolean metafile_read;
 	gboolean use_alternate_metafile;
-	MetafileReadState *read_state;
+	MetafileReadState *metafile_read_state;
 
 	guint write_metafile_idle_id;
-	MetafileWriteState *write_state;
+	MetafileWriteState *metafile_write_state;
 
 	/* These lists are going to be pretty short.  If we think they
 	 * are going to get big, we can use hash tables instead.
@@ -73,6 +74,8 @@ struct NautilusDirectoryDetails
 
 	GnomeVFSAsyncHandle *count_in_progress;
 	NautilusFile *count_file;
+
+	TopLeftTextReadState *top_left_read_state;
 };
 
 typedef struct {

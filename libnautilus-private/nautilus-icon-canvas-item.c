@@ -53,8 +53,6 @@ struct NautilusIconCanvasItemDetails {
 	char *editable_text;		/* Text that can be modified by a renaming function */
 	char *additional_text;		/* Text that cannot be modifed, cuch as file sise, etc */
 	GdkFont *font;
-	ArtIRect embedded_text_rect;
-	char *embedded_text_file_URI;
 	
 	/* Size of the text at current font. */
 	int text_width;
@@ -79,7 +77,6 @@ enum {
     	ARG_HIGHLIGHTED_FOR_SELECTION,
     	ARG_HIGHLIGHTED_AS_KEYBOARD_FOCUS,
     	ARG_HIGHLIGHTED_FOR_DROP,
-    	ARG_TEXT_SOURCE,
     	ARG_MODIFIER
 };
 
@@ -103,8 +100,6 @@ enum {
 	LAST_SIGNAL
 };
 static guint signals[LAST_SIGNAL];
-
-static GdkFont *embedded_text_font;
 
 /* GtkObject */
 static void     nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass  *class);
@@ -191,8 +186,6 @@ nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass *class)
 				 GTK_TYPE_BOOL, GTK_ARG_READWRITE, ARG_HIGHLIGHTED_AS_KEYBOARD_FOCUS);
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::highlighted_for_drop",
 				 GTK_TYPE_BOOL, GTK_ARG_READWRITE, ARG_HIGHLIGHTED_FOR_DROP);
-	gtk_object_add_arg_type	("NautilusIconCanvasItem::text_source",
-				 GTK_TYPE_STRING, GTK_ARG_READWRITE, ARG_TEXT_SOURCE);
 
 	object_class->destroy = nautilus_icon_canvas_item_destroy;
 	object_class->set_arg = nautilus_icon_canvas_item_set_arg;
@@ -215,9 +208,6 @@ nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass *class)
 	item_class->point = nautilus_icon_canvas_item_point;
 	item_class->bounds = nautilus_icon_canvas_item_bounds;
 	item_class->event = nautilus_icon_canvas_item_event;
-
-        /* FIXME bugzilla.eazel.com 667: the font shouldn't be hard-wired like this */
-        embedded_text_font = gdk_font_load("-bitstream-charter-medium-r-normal-*-9-*-*-*-*-*-*-*");
 }
 
 /* Object initialization function for the icon item. */
@@ -259,9 +249,6 @@ nautilus_icon_canvas_item_destroy (GtkObject *object)
 		gdk_font_unref (details->font);
 	}
 	
-	if (details->embedded_text_file_URI)
-		g_free(details->embedded_text_file_URI);
-					
 	g_free (details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
@@ -347,15 +334,6 @@ nautilus_icon_canvas_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 		details->is_highlighted_for_drop = GTK_VALUE_BOOL (*arg);
 		break;
         
-        case ARG_TEXT_SOURCE:
-		if (nautilus_strcmp (details->embedded_text_file_URI, GTK_VALUE_STRING (*arg)) == 0) {
-			return;
-		}
-		
-		g_free (details->embedded_text_file_URI);
-		details->embedded_text_file_URI = g_strdup (GTK_VALUE_STRING (*arg));
-		break;
-
 	default:
 		g_warning ("nautilus_icons_view_item_item_set_arg on unknown argument");
 		return;
@@ -398,10 +376,6 @@ nautilus_icon_canvas_item_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
                 GTK_VALUE_BOOL (*arg) = details->is_highlighted_for_drop;
                 break;
         
-        case ARG_TEXT_SOURCE:
-		GTK_VALUE_STRING (*arg) = g_strdup (details->embedded_text_file_URI);
-                break;
-        
         default:
 		arg->type = GTK_TYPE_INVALID;
 		break;
@@ -409,8 +383,7 @@ nautilus_icon_canvas_item_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 }
 
 GdkPixbuf *
-nautilus_icon_canvas_item_get_image (NautilusIconCanvasItem *item,
-					 ArtIRect *embedded_text_rect)
+nautilus_icon_canvas_item_get_image (NautilusIconCanvasItem *item)
 {
 	NautilusIconCanvasItemDetails *details;
 
@@ -418,34 +391,21 @@ nautilus_icon_canvas_item_get_image (NautilusIconCanvasItem *item,
 
 	details = item->details;
 
-	if (embedded_text_rect != NULL) {
-		*embedded_text_rect = details->embedded_text_rect;
-	}
 	return details->pixbuf;
 }
 
 void
 nautilus_icon_canvas_item_set_image (NautilusIconCanvasItem *item,
-				     GdkPixbuf *image,
-				     const ArtIRect *embedded_text_rect)
+				     GdkPixbuf *image)
 {
 	NautilusIconCanvasItemDetails *details;
-	ArtIRect empty_rect;
 
 	g_return_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item));
 	g_return_if_fail (image == NULL || pixbuf_is_acceptable (image));
 
 	details = item->details;
 
-	if (embedded_text_rect == NULL) {
-		memset (&empty_rect, 0, sizeof (empty_rect));
-		embedded_text_rect = &empty_rect;
-	}
-
-	if (details->pixbuf == image
-	    && memcmp (embedded_text_rect,
-		       &details->embedded_text_rect,
-		       sizeof (ArtIRect)) == 0) {
+	if (details->pixbuf == image) {
 		return;
 	}
 
@@ -457,7 +417,6 @@ nautilus_icon_canvas_item_set_image (NautilusIconCanvasItem *item,
 	}
 
 	details->pixbuf = image;
-	details->embedded_text_rect = *embedded_text_rect;
 	
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (item));
 }
@@ -721,91 +680,6 @@ draw_label_text (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 	draw_or_measure_label_text (item, drawable, icon_left, icon_bottom);
 }
 
-/* utility routine to draw the mini-text inside text files */
-/* FIXME bugzilla.eazel.com 709: We should cache the text in the object instead
- * of reading each time we draw, so we can work well over the network.
- */
-/* FIXME bugzilla.eazel.com 711: The text reading does not belong here at all, but rather in the caller. */
-
-static void
-nautilus_art_irect_to_gdk_rectangle (GdkRectangle *destination,
-				     const ArtIRect *source)
-{
-	destination->x = source->x0;
-	destination->y = source->y0;
-	destination->width = source->x1 - source->x0;
-	destination->height = source->y1 - source->y0;
-}
-
-static void
-draw_embedded_text (GnomeCanvasItem* item,
-		    GdkDrawable *drawable,
-		    const ArtIRect *icon_rect)
-{
-	FILE *text_file;
-	char *file_name;
-	GdkRectangle clip_rect;
-	NautilusIconCanvasItem *icon_item;
-	NautilusIconCanvasItemDetails *details;
-	char line_buffer[256];
-	int cur_y;
-	GdkGC *gc;
-	ArtIRect text_rect;
-	
-	icon_item = NAUTILUS_ICON_CANVAS_ITEM (item);
-	details = icon_item->details;
-
-	/* Draw the first few lines of the text file until we fill up the icon */
-	/* FIXME bugzilla.eazel.com 713: need to use gnome_vfs to read the file  */
-	
-	file_name = details->embedded_text_file_URI;
-	if (file_name == NULL) {
-		return;
-	}
-
-	text_rect.x0 = icon_rect->x0 + details->embedded_text_rect.x0;
-	text_rect.y0 = icon_rect->y0 + details->embedded_text_rect.y0;
-	text_rect.x1 = icon_rect->x0 + details->embedded_text_rect.x1;
-	text_rect.y1 = icon_rect->y0 + details->embedded_text_rect.y1;
-	art_irect_intersect (&text_rect, &text_rect, icon_rect);
-
-	if (art_irect_empty (&text_rect)) {
-		return;
-	}
-
-	if (nautilus_str_has_prefix (file_name, "file://")) {
-		file_name += 7;
-	}
-        text_file = fopen(file_name, "r");
-	if (text_file == NULL) {
-		return;
-	}
-
-	gc = gdk_gc_new (drawable);
-	
-	/* clip to the text bounds */
-	nautilus_art_irect_to_gdk_rectangle (&clip_rect, &text_rect);
-	gdk_gc_set_clip_rectangle (gc, &clip_rect);
-	
-	cur_y = text_rect.y0 + embedded_text_font->ascent;
-	while (fgets (line_buffer, sizeof (line_buffer), text_file)) {
-		if (cur_y + embedded_text_font->descent > text_rect.y1) {
-			break;
-		}
-		gdk_draw_string (drawable,
-				 embedded_text_font,
-				 gc,
-				 text_rect.x0,
-				 cur_y,
-				 line_buffer);
-		cur_y += embedded_text_font->descent + embedded_text_font->ascent;
-	}
-	
-	gdk_gc_unref (gc);
-
-	fclose (text_file);
-}
-
 static void
 draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 		      const ArtIRect *rect)
@@ -1038,9 +912,6 @@ nautilus_icon_canvas_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 	/* Draw stretching handles (if necessary). */
 	draw_stretch_handles (icon_item, drawable, &icon_rect);
 	
-	/* Draw embedded text (if necessary) */
-	draw_embedded_text (item, drawable, &icon_rect);
-	
 	/* Draw the label text. */
 	draw_label_text (icon_item, drawable, icon_rect.x0, icon_rect.y1);
 }
@@ -1082,7 +953,9 @@ nautilus_icon_canvas_item_event (GnomeCanvasItem *item, GdkEvent *event)
 }
 
 static void
-compute_text_rectangle (NautilusIconCanvasItem *item, const ArtIRect *icon_rect, ArtIRect *text_rect)
+compute_text_rectangle (NautilusIconCanvasItem *item,
+			const ArtIRect *icon_rect,
+			ArtIRect *text_rect)
 {
 	/* Compute text rectangle. */
 	text_rect->x0 = (icon_rect->x0 + icon_rect->x1) / 2 - item->details->text_width / 2;
@@ -1092,7 +965,9 @@ compute_text_rectangle (NautilusIconCanvasItem *item, const ArtIRect *icon_rect,
 }
 
 static void
-compute_editable_text_rectangle (NautilusIconCanvasItem *item, const ArtIRect *icon_rect, ArtIRect *text_rect)
+compute_editable_text_rectangle (NautilusIconCanvasItem *item,
+				 const ArtIRect *icon_rect,
+				 ArtIRect *text_rect)
 {
 	int text_width, text_height;
 
@@ -1180,7 +1055,8 @@ hit_test (NautilusIconCanvasItem *icon_item, const ArtIRect *canvas_rect)
 
 	/* Check for hit in the text. */
 	compute_text_rectangle (icon_item, &icon_rect, &text_rect);
-	if (nautilus_art_irect_hits_irect (&text_rect, canvas_rect) && icon_item->details->is_renaming == FALSE) {
+	if (nautilus_art_irect_hits_irect (&text_rect, canvas_rect)
+	    && !icon_item->details->is_renaming) {
 		return TRUE;
 	}
 
@@ -1403,7 +1279,7 @@ nautilus_icon_canvas_item_hit_test_rectangle (NautilusIconCanvasItem *item,
 /* Return coordinates of icon text location */
 void
 nautilus_icon_canvas_item_get_text_bounds (NautilusIconCanvasItem *icon_item,
-					       ArtIRect *text_rect)
+					   ArtIRect *text_rect)
 {
 	ArtIRect icon_rect;
 
@@ -1418,7 +1294,7 @@ nautilus_icon_canvas_item_get_text_bounds (NautilusIconCanvasItem *icon_item,
 /* Return coordinates of icon editable_text location */
 void
 nautilus_icon_canvas_item_get_editable_text_bounds (NautilusIconCanvasItem *icon_item,
-					       ArtIRect *text_rect)
+						    ArtIRect *text_rect)
 {
 	ArtIRect icon_rect;
 

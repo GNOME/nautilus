@@ -1096,10 +1096,10 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 			    GTK_SIGNAL_FUNC (nautilus_icon_drag_key_callback), saved_drag_source_info);
 
         /* create a pixmap and mask to drag with */
-        pixbuf = nautilus_icon_canvas_item_get_image (container->details->drag_icon->item, NULL);
+        pixbuf = nautilus_icon_canvas_item_get_image (container->details->drag_icon->item);
         
 	/* unfortunately, X is very slow when using a stippled mask, so only use the stipple
-	   for relatively small pixbufs.  Eventually, we may have to remove this entirely
+	   for relatively small pixbufs.  FIXME: Eventually, we may have to remove this entirely
 	   for UI consistency reasons */
 	
 	if (gdk_pixbuf_get_width(pixbuf) * gdk_pixbuf_get_height(pixbuf) < 4096) {

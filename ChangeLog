@@ -1,7 +1,11 @@
 2000-05-05  Darin Adler  <darin@eazel.com>
 
 	Moved the "embedded text" feature into the icon factory and
-	NautilusFile.
+	NautilusFile. Also fixed some FIXMEs that were in the modified
+	code along the way.
+
+	This code requires a new version of GdkPixbuf to work properly.
+	A bug in the old one makes embedded text look wrong.
 
 	* libnautilus-extensions/nautilus-directory-private.h:
 	* libnautilus-extensions/nautilus-directory-async.c:

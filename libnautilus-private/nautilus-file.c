@@ -25,6 +25,7 @@
 #include <config.h>
 #include "nautilus-file-private.h"
 
+#include <ctype.h>
 #include <grp.h>
 #include <pwd.h>
 #include <unistd.h>
@@ -1700,7 +1701,10 @@ nautilus_file_get_top_left_text (NautilusFile *file)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-	return NULL; /* g_strdup ("DARIN IMPLEMENT THIS"); */
+	/* Show "--" in the file until we read the contents in. */
+	return file->details->got_top_left_text
+		? g_strdup (file->details->top_left_text)
+		: g_strdup (_(" --"));
 }
 
 /**
@@ -1900,6 +1904,70 @@ GList *
 nautilus_file_list_copy (GList *list)
 {
 	return nautilus_gtk_object_list_copy (list);
+}
+
+/* Extract the top left part of the read-in text. */
+char *
+nautilus_extract_top_left_text (const char *text,
+				int length)
+{
+	char buffer[(NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_CHARACTERS_PER_LINE + 1)
+		   * NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_LINES + 1];
+	const char *in, *end;
+	char *out;
+	int line, i;
+
+	if (length == 0) {
+		return NULL;
+	}
+
+	in = text;
+	end = text + length;
+	out = buffer;
+
+	for (line = 0; line < NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_LINES; line++) {
+		/* Extract one line. */
+		for (i = 0; i < NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_CHARACTERS_PER_LINE; ) {
+			if (*in == '\n') {
+				break;
+			}
+			if (isprint (*in)) {
+				*out++ = *in;
+				i++;
+			}
+			if (++in == end) {
+				goto done;
+			}
+		}
+
+		/* Skip the rest of the line. */
+		while (*in != '\n') {
+			if (++in == end) {
+				goto done;
+			}
+		}
+		if (++in == end) {
+			goto done;
+		}
+
+		/* Put a new-line separator in. */
+		*out++ = '\n';
+	}
+	
+ done:
+	/* Omit any trailing new-lines. */
+	while (out != buffer && out[-1] == '\n') {
+		out--;
+	}
+
+	/* Check again for special case of empty string. */
+	if (out == buffer) {
+		return NULL;
+	}
+
+	/* Allocate a copy to keep. */
+	*out = '\0';
+	return g_strdup (buffer);
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)

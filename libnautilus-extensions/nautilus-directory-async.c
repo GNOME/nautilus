@@ -43,11 +43,15 @@
 
 #define DIRECTORY_LOAD_ITEMS_PER_CALLBACK 32
 
+#define METAFILE_READ_CHUNK_SIZE (4 * 1024)
+
+#define TOP_LEFT_TEXT_READ_CHUNK_SIZE (4 * 1024)
+
 struct MetafileReadState {
 	GnomeVFSAsyncHandle *handle;
 	gboolean is_open;
-	gpointer buffer;
-	size_t bytes_read;
+	char *buffer;
+	int bytes_read;
 };
 
 struct MetafileWriteState {
@@ -55,6 +59,14 @@ struct MetafileWriteState {
 	xmlChar *buffer;
 	int size;
 	gboolean write_again;
+};
+
+struct TopLeftTextReadState {
+	GnomeVFSAsyncHandle *handle;
+	NautilusFile *file;
+	gboolean is_open;
+	char *buffer;
+	int bytes_read;
 };
 
 /* A request for information about one or more files. */
@@ -84,44 +96,11 @@ typedef struct {
 typedef gboolean (* RequestCheck) (const Request *);
 typedef gboolean (* FileCheck) (NautilusFile *);
 
-#define METAFILE_READ_CHUNK_SIZE (4 * 1024)
-
-static gboolean dequeue_pending_idle_callback (gpointer               callback_data);
-static void     directory_load_callback       (GnomeVFSAsyncHandle   *handle,
-					       GnomeVFSResult         result,
-					       GnomeVFSDirectoryList *list,
-					       guint                  entries_read,
-					       gpointer               callback_data);
-static void     directory_load_done           (NautilusDirectory     *directory,
-					       GnomeVFSResult         result);
-static void     directory_load_one            (NautilusDirectory     *directory,
-					       GnomeVFSFileInfo      *info);
-static void     metafile_read_callback        (GnomeVFSAsyncHandle   *handle,
-					       GnomeVFSResult         result,
-					       gpointer               buffer,
-					       GnomeVFSFileSize       bytes_requested,
-					       GnomeVFSFileSize       bytes_read,
-					       gpointer               callback_data);
-static void     metafile_read_complete        (NautilusDirectory     *directory);
-static void     metafile_read_failed          (NautilusDirectory     *directory,
-					       GnomeVFSResult         result);
-static void     metafile_read_open_callback   (GnomeVFSAsyncHandle   *handle,
-					       GnomeVFSResult         result,
-					       gpointer               callback_data);
-static void     metafile_read_some            (NautilusDirectory     *directory);
-static void     metafile_read_start           (NautilusDirectory     *directory);
-static void     metafile_write_callback       (GnomeVFSAsyncHandle   *handle,
-					       GnomeVFSResult         result,
-					       gconstpointer          buffer,
-					       GnomeVFSFileSize       bytes_requested,
-					       GnomeVFSFileSize       bytes_read,
-					       gpointer               callback_data);
-static void     metafile_write_complete       (NautilusDirectory     *directory);
-static void     metafile_write_failed         (NautilusDirectory     *directory,
-					       GnomeVFSResult         result);
-static int      ready_callback_key_compare    (gconstpointer          a,
-					       gconstpointer          b);
-static void     state_changed                 (NautilusDirectory     *directory);
+/* Forward declarations for functions that need them. */
+static void metafile_read_some  (NautilusDirectory *directory);
+static void metafile_read_start (NautilusDirectory *directory);
+static void state_changed       (NautilusDirectory *directory);
+static void top_left_read_some  (NautilusDirectory *directory);
 
 static void
 empty_close_callback (GnomeVFSAsyncHandle *handle,
@@ -134,49 +113,48 @@ empty_close_callback (GnomeVFSAsyncHandle *handle,
 static void
 metafile_read_close (NautilusDirectory *directory)
 {
-	g_assert (directory->details->read_state->handle != NULL);
-	if (directory->details->read_state->is_open) {
-		gnome_vfs_async_close (directory->details->read_state->handle,
+	g_assert (directory->details->metafile_read_state->handle != NULL);
+	if (directory->details->metafile_read_state->is_open) {
+		gnome_vfs_async_close (directory->details->metafile_read_state->handle,
 				       empty_close_callback,
 				       directory);
-		directory->details->read_state->is_open = TRUE;
+		directory->details->metafile_read_state->is_open = FALSE;
 	}
-	directory->details->read_state->handle = NULL;
+	directory->details->metafile_read_state->handle = NULL;
 }
 
 void
 nautilus_metafile_read_cancel (NautilusDirectory *directory)
 {
-	if (directory->details->read_state == NULL) {
+	if (directory->details->metafile_read_state == NULL) {
 		return;
 	}
 
-	g_assert (directory->details->read_state->handle != NULL);
-	gnome_vfs_async_cancel (directory->details->read_state->handle);
+	g_assert (directory->details->metafile_read_state->handle != NULL);
+	gnome_vfs_async_cancel (directory->details->metafile_read_state->handle);
 	metafile_read_close (directory);
-	g_free (directory->details->read_state);
-	directory->details->read_state = NULL;
+	g_free (directory->details->metafile_read_state);
+	directory->details->metafile_read_state = NULL;
 }
 
 static void
-metafile_read_failed (NautilusDirectory *directory,
-		      GnomeVFSResult result)
+metafile_read_failed (NautilusDirectory *directory)
 {
-	g_free (directory->details->read_state->buffer);
+	g_free (directory->details->metafile_read_state->buffer);
 
 	if (directory->details->use_alternate_metafile) {
-		directory->details->read_state->buffer = NULL;
-		directory->details->read_state->bytes_read = 0;
+		directory->details->metafile_read_state->buffer = NULL;
+		directory->details->metafile_read_state->bytes_read = 0;
 
 		directory->details->use_alternate_metafile = FALSE;
 		metafile_read_start (directory);
 		return;
 	}
 
-	g_free (directory->details->read_state);
+	g_free (directory->details->metafile_read_state);
 
 	directory->details->metafile_read = TRUE;
-	directory->details->read_state = NULL;
+	directory->details->metafile_read_state = NULL;
 
 	/* Let the callers that were waiting for the metafile know. */
 	state_changed (directory);
@@ -201,16 +179,16 @@ metafile_read_complete (NautilusDirectory *directory)
 	/* g_assert (directory->details->metafile == NULL); */
 	
 	/* The gnome-xml parser requires a zero-terminated array. */
-	size = directory->details->read_state->bytes_read;
-	buffer = g_realloc (directory->details->read_state->buffer, size + 1);
+	size = directory->details->metafile_read_state->bytes_read;
+	buffer = g_realloc (directory->details->metafile_read_state->buffer, size + 1);
 	buffer[size] = '\0';
 	directory->details->metafile = xmlParseMemory (buffer, size);
 	g_free (buffer);
 
-	g_free (directory->details->read_state);
+	g_free (directory->details->metafile_read_state);
 
 	directory->details->metafile_read = TRUE;
-	directory->details->read_state = NULL;
+	directory->details->metafile_read_state = NULL;
 
 	/* Let the callers that were waiting for the metafile know. */
 	state_changed (directory);
@@ -229,25 +207,19 @@ metafile_read_callback (GnomeVFSAsyncHandle *handle,
 	g_assert (bytes_requested == METAFILE_READ_CHUNK_SIZE);
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
-	g_assert (directory->details->read_state->handle == handle);
-	g_assert ((char *) directory->details->read_state->buffer
-		  + directory->details->read_state->bytes_read == buffer);
+	g_assert (directory->details->metafile_read_state->handle == handle);
+	g_assert (directory->details->metafile_read_state->buffer
+		  + directory->details->metafile_read_state->bytes_read == buffer);
 
-	if (result != GNOME_VFS_OK
-	    && result != GNOME_VFS_ERROR_EOF) {
+	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_EOF) {
 		metafile_read_close (directory);
-		metafile_read_failed (directory, result);
+		metafile_read_failed (directory);
 		return;
 	}
 
-	directory->details->read_state->bytes_read += bytes_read;
+	directory->details->metafile_read_state->bytes_read += bytes_read;
 
-	/* FIXME bugzilla.eazel.com 719: 
-	 * Is the call allowed to return fewer bytes than I requested
-	 * when I'm not at the end of the file? If so, then I need to fix this
-	 * check. I don't want to stop until the end of the file.
-	 */
-	if (bytes_read == bytes_requested && result == GNOME_VFS_OK) {
+	if (bytes_read != 0 && result == GNOME_VFS_OK) {
 		metafile_read_some (directory);
 		return;
 	}
@@ -259,13 +231,13 @@ metafile_read_callback (GnomeVFSAsyncHandle *handle,
 static void
 metafile_read_some (NautilusDirectory *directory)
 {
-	directory->details->read_state->buffer = g_realloc
-		(directory->details->read_state->buffer,
-		 directory->details->read_state->bytes_read + METAFILE_READ_CHUNK_SIZE);
+	directory->details->metafile_read_state->buffer = g_realloc
+		(directory->details->metafile_read_state->buffer,
+		 directory->details->metafile_read_state->bytes_read + METAFILE_READ_CHUNK_SIZE);
 
-	gnome_vfs_async_read (directory->details->read_state->handle,
-			      (char *) directory->details->read_state->buffer
-			      + directory->details->read_state->bytes_read,
+	gnome_vfs_async_read (directory->details->metafile_read_state->handle,
+			      directory->details->metafile_read_state->buffer
+			      + directory->details->metafile_read_state->bytes_read,
 			      METAFILE_READ_CHUNK_SIZE,
 			      metafile_read_callback,
 			      directory);
@@ -279,14 +251,14 @@ metafile_read_open_callback (GnomeVFSAsyncHandle *handle,
 	NautilusDirectory *directory;
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
-	g_assert (directory->details->read_state->handle == handle);
+	g_assert (directory->details->metafile_read_state->handle == handle);
 
 	if (result != GNOME_VFS_OK) {
-		metafile_read_failed (directory, result);
+		metafile_read_failed (directory);
 		return;
 	}
 
-	directory->details->read_state->is_open = TRUE;
+	directory->details->metafile_read_state->is_open = TRUE;
 	metafile_read_some (directory);
 }
 
@@ -295,7 +267,7 @@ metafile_read_start (NautilusDirectory *directory)
 {
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
-	gnome_vfs_async_open_uri (&directory->details->read_state->handle,
+	gnome_vfs_async_open_uri (&directory->details->metafile_read_state->handle,
 				  directory->details->use_alternate_metafile
 				  ? directory->details->alternate_metafile_uri
 				  : directory->details->metafile_uri,
@@ -310,13 +282,13 @@ nautilus_directory_request_read_metafile (NautilusDirectory *directory)
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
 	if (directory->details->metafile_read
-	    || directory->details->read_state != NULL) {
+	    || directory->details->metafile_read_state != NULL) {
 		return;
 	}
 
 	g_assert (directory->details->metafile == NULL);
 
-	directory->details->read_state = g_new0 (MetafileReadState, 1);
+	directory->details->metafile_read_state = g_new0 (MetafileReadState, 1);
 	directory->details->use_alternate_metafile = TRUE;
 	metafile_read_start (directory);
 }
@@ -325,20 +297,19 @@ nautilus_directory_request_read_metafile (NautilusDirectory *directory)
 static void
 metafile_write_done (NautilusDirectory *directory)
 {
-	if (directory->details->write_state->write_again) {
+	if (directory->details->metafile_write_state->write_again) {
 		nautilus_metafile_write_start (directory);
 		return;
 	}
 
-	xmlFree (directory->details->write_state->buffer);
-	g_free (directory->details->write_state);
-	directory->details->write_state = NULL;
+	xmlFree (directory->details->metafile_write_state->buffer);
+	g_free (directory->details->metafile_write_state);
+	directory->details->metafile_write_state = NULL;
 	nautilus_directory_unref (directory);
 }
 
 static void
-metafile_write_failed (NautilusDirectory *directory,
-		       GnomeVFSResult result)
+metafile_write_failed (NautilusDirectory *directory)
 {
 	if (!directory->details->use_alternate_metafile) {
 		directory->details->use_alternate_metafile = TRUE;
@@ -346,12 +317,6 @@ metafile_write_failed (NautilusDirectory *directory,
 		return;
 	}
 
-	metafile_write_done (directory);
-}
-
-static void
-metafile_write_complete (NautilusDirectory *directory)
-{
 	metafile_write_done (directory);
 }
 
@@ -366,22 +331,22 @@ metafile_write_callback (GnomeVFSAsyncHandle *handle,
 	NautilusDirectory *directory;
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
-	g_assert (directory->details->write_state->handle == handle);
-	g_assert (directory->details->write_state->buffer == buffer);
-	g_assert (directory->details->write_state->size == bytes_requested);
+	g_assert (directory->details->metafile_write_state->handle == handle);
+	g_assert (directory->details->metafile_write_state->buffer == buffer);
+	g_assert (directory->details->metafile_write_state->size == bytes_requested);
 
-	g_assert (directory->details->write_state->handle != NULL);
-	gnome_vfs_async_close (directory->details->write_state->handle,
+	g_assert (directory->details->metafile_write_state->handle != NULL);
+	gnome_vfs_async_close (directory->details->metafile_write_state->handle,
 			       empty_close_callback,
 			       directory);
-	directory->details->write_state->handle = NULL;
+	directory->details->metafile_write_state->handle = NULL;
 
 	if (result != GNOME_VFS_OK) {
-		metafile_write_failed (directory, result);
+		metafile_write_failed (directory);
 		return;
 	}
 
-	metafile_write_complete (directory);
+	metafile_write_done (directory);
 }
 
 static void
@@ -392,16 +357,16 @@ metafile_write_create_callback (GnomeVFSAsyncHandle *handle,
 	NautilusDirectory *directory;
 	
 	directory = NAUTILUS_DIRECTORY (callback_data);
-	g_assert (directory->details->write_state->handle == handle);
+	g_assert (directory->details->metafile_write_state->handle == handle);
 	
 	if (result != GNOME_VFS_OK) {
-		metafile_write_failed (directory, result);
+		metafile_write_failed (directory);
 		return;
 	}
 
-	gnome_vfs_async_write (directory->details->write_state->handle,
-			       directory->details->write_state->buffer,
-			       directory->details->write_state->size,
+	gnome_vfs_async_write (directory->details->metafile_write_state->handle,
+			       directory->details->metafile_write_state->buffer,
+			       directory->details->metafile_write_state->size,
 			       metafile_write_callback,
 			       directory);
 }
@@ -411,10 +376,10 @@ nautilus_metafile_write_start (NautilusDirectory *directory)
 {
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
-	directory->details->write_state->write_again = FALSE;
+	directory->details->metafile_write_state->write_again = FALSE;
 
 	/* Open the file. */
-	gnome_vfs_async_create_uri (&directory->details->write_state->handle,
+	gnome_vfs_async_create_uri (&directory->details->metafile_write_state->handle,
 				    directory->details->use_alternate_metafile
 				    ? directory->details->alternate_metafile_uri
 				    : directory->details->metafile_uri,
@@ -433,9 +398,9 @@ metafile_write (NautilusDirectory *directory)
 	nautilus_directory_ref (directory);
 
 	/* If we are already writing, then just remember to do it again. */
-	if (directory->details->write_state != NULL) {
+	if (directory->details->metafile_write_state != NULL) {
 		nautilus_directory_unref (directory);
-		directory->details->write_state->write_again = TRUE;
+		directory->details->metafile_write_state->write_again = TRUE;
 		return;
 	}
 
@@ -449,10 +414,10 @@ metafile_write (NautilusDirectory *directory)
 	}
 
 	/* Create the write state. */
-	directory->details->write_state = g_new0 (MetafileWriteState, 1);
+	directory->details->metafile_write_state = g_new0 (MetafileWriteState, 1);
 	xmlDocDumpMemory (directory->details->metafile,
-			  &directory->details->write_state->buffer,
-			  &directory->details->write_state->size);
+			  &directory->details->metafile_write_state->buffer,
+			  &directory->details->metafile_write_state->size);
 
 	nautilus_metafile_write_start (directory);
 }
@@ -1121,6 +1086,19 @@ wants_directory_count (const Request *request)
 }
 
 static gboolean
+lacks_top_left (NautilusFile *file)
+{
+	return !nautilus_file_is_directory (file)
+		&& !file->details->got_top_left_text;
+}
+
+static gboolean
+wants_top_left (const Request *request)
+{
+	return request->top_left_text;
+}
+
+static gboolean
 has_problem (NautilusDirectory *directory, NautilusFile *file, FileCheck problem)
 {
 	GList *p;
@@ -1320,8 +1298,8 @@ is_wanted (NautilusFile *file, RequestCheck check_wanted)
 
 static NautilusFile *
 select_needy_file (NautilusDirectory *directory,
-			FileCheck check_missing,
-			RequestCheck check_wanted)
+		   FileCheck check_missing,
+		   RequestCheck check_wanted)
 {
 	GList *p, *p2;
 	ReadyCallback *callback;
@@ -1428,6 +1406,189 @@ start_getting_directory_counts (NautilusDirectory *directory)
 	g_free (uri);
 }
 
+static int
+count_lines (const char *text, int length)
+{
+	int count, i;
+
+	count = 0;
+	for (i = 0; i < length; i++) {
+		count += *text++ == '\n';
+	}
+	return count;
+}
+
+static void
+top_left_read_done (NautilusDirectory *directory)
+{
+	g_assert (NAUTILUS_IS_FILE (directory->details->top_left_read_state->file));
+
+	directory->details->top_left_read_state->file->details->got_top_left_text = TRUE;
+	nautilus_file_unref (directory->details->top_left_read_state->file);
+
+	g_free (directory->details->top_left_read_state->buffer);
+	g_free (directory->details->top_left_read_state);
+	directory->details->top_left_read_state = NULL;
+
+	state_changed (directory);
+}
+
+static void
+top_left_read_failed (NautilusDirectory *directory)
+{
+	top_left_read_done (directory);
+}
+
+static void
+top_left_read_complete (NautilusDirectory *directory)
+{
+	g_assert (NAUTILUS_IS_FILE (directory->details->top_left_read_state->file));
+
+	g_free (directory->details->top_left_read_state->file->details->top_left_text);
+	directory->details->top_left_read_state->file->details->top_left_text =
+		nautilus_extract_top_left_text (directory->details->top_left_read_state->buffer,
+						directory->details->top_left_read_state->bytes_read);
+
+	nautilus_file_changed (directory->details->top_left_read_state->file);
+
+
+	top_left_read_done (directory);
+}
+
+static void
+top_left_read_close (NautilusDirectory *directory)
+{
+	g_assert (directory->details->top_left_read_state->handle != NULL);
+	if (directory->details->top_left_read_state->is_open) {
+		gnome_vfs_async_close (directory->details->top_left_read_state->handle,
+				       empty_close_callback,
+				       directory);
+		directory->details->top_left_read_state->is_open = FALSE;
+	}
+	directory->details->top_left_read_state->handle = NULL;
+}
+
+static void
+top_left_read_callback (GnomeVFSAsyncHandle *handle,
+			GnomeVFSResult result,
+			gpointer buffer,
+			GnomeVFSFileSize bytes_requested,
+			GnomeVFSFileSize bytes_read,
+			gpointer callback_data)
+{
+	NautilusDirectory *directory;
+
+	g_assert (bytes_requested == TOP_LEFT_TEXT_READ_CHUNK_SIZE);
+
+	directory = NAUTILUS_DIRECTORY (callback_data);
+	g_assert (directory->details->top_left_read_state->handle == handle);
+	g_assert (directory->details->top_left_read_state->buffer
+		  + directory->details->top_left_read_state->bytes_read == buffer);
+
+	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_EOF) {
+		top_left_read_close (directory);
+		top_left_read_failed (directory);
+		return;
+	}
+
+	directory->details->top_left_read_state->bytes_read += bytes_read;
+
+	/* If we haven't read the whole file and we don't have enough lines,
+	 * keep reading.
+	 */
+	if (bytes_read != 0 && result == GNOME_VFS_OK
+	    && count_lines (directory->details->top_left_read_state->buffer,
+			    directory->details->top_left_read_state->bytes_read)
+	    <= NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_LINES) {
+		top_left_read_some (directory);
+		return;
+	}
+
+	/* We are done reading. */
+	top_left_read_close (directory);
+	top_left_read_complete (directory);
+}
+
+static void
+top_left_read_some (NautilusDirectory *directory)
+{
+	directory->details->top_left_read_state->buffer = g_realloc
+		(directory->details->top_left_read_state->buffer,
+		 directory->details->top_left_read_state->bytes_read
+		 + TOP_LEFT_TEXT_READ_CHUNK_SIZE);
+
+	gnome_vfs_async_read (directory->details->top_left_read_state->handle,
+			      directory->details->top_left_read_state->buffer
+			      + directory->details->top_left_read_state->bytes_read,
+			      TOP_LEFT_TEXT_READ_CHUNK_SIZE,
+			      top_left_read_callback,
+			      directory);
+}
+
+static void
+top_left_open_callback (GnomeVFSAsyncHandle *handle,
+			GnomeVFSResult result,
+			gpointer callback_data)
+{
+	NautilusDirectory *directory;
+
+	directory = NAUTILUS_DIRECTORY (callback_data);
+	g_assert (directory->details->top_left_read_state->handle == handle);
+
+	if (result != GNOME_VFS_OK) {
+		top_left_read_failed (directory);
+		return;
+	}
+
+	directory->details->top_left_read_state->is_open = TRUE;
+	top_left_read_some (directory);
+}
+
+static void
+start_getting_top_lefts (NautilusDirectory *directory)
+{
+	NautilusFile *file;
+	char *uri;
+
+	/* If there's already a read in progress, check to be sure
+	 * it's still wanted.
+	 */
+	if (directory->details->top_left_read_state != NULL) {
+		g_assert (NAUTILUS_IS_FILE (directory->details->top_left_read_state->file));
+		g_assert (directory->details->top_left_read_state->file->details->directory == directory);
+		if (is_wanted (directory->details->top_left_read_state->file,
+			       wants_top_left)) {
+			return;
+		}
+
+		/* The top left is not wanted, so stop it. */
+		gnome_vfs_async_cancel (directory->details->top_left_read_state->handle);
+		g_free (directory->details->top_left_read_state->buffer);
+		g_free (directory->details->top_left_read_state);
+		directory->details->top_left_read_state = NULL;
+	}
+
+	/* Figure out which file to read the top left for. */
+	file = select_needy_file (directory,
+				  lacks_top_left,
+				  wants_top_left);
+	if (file == NULL) {
+		return;
+	}
+
+	/* Start reading. */
+	nautilus_file_ref (file);
+	uri = nautilus_file_get_uri (file);
+	directory->details->top_left_read_state = g_new0 (TopLeftTextReadState, 1);
+	directory->details->top_left_read_state->file = file;
+	gnome_vfs_async_open (&directory->details->top_left_read_state->handle,
+			      uri,
+			      GNOME_VFS_OPEN_READ,
+			      top_left_open_callback,
+			      directory);
+	g_free (uri);
+}
+
 /* Call this when the monitor or call when ready list changes,
  * or when some I/O is completed.
  */
@@ -1451,4 +1612,7 @@ state_changed (NautilusDirectory *directory)
 
 	/* Start or stop getting directory counts. */
 	start_getting_directory_counts (directory);
+
+	/* Start or stop getting top left pieces of files. */
+	start_getting_top_lefts (directory);
 }

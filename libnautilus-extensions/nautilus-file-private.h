@@ -39,11 +39,13 @@ struct NautilusFileDetails
 	char *top_left_text;
 };
 
-#define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_CHARACTERS_PER_LINE  80
-#define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_LINES                20
-#define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_BYTES              1000
+#define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_CHARACTERS_PER_LINE 80
+#define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_LINES               24
+#define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_BYTES            10000
 
-NautilusFile *nautilus_file_new          (NautilusDirectory *directory,
-					  GnomeVFSFileInfo  *info);
-void          nautilus_file_emit_changed (NautilusFile      *file);
-void          nautilus_file_mark_gone    (NautilusFile      *file);
+NautilusFile *nautilus_file_new              (NautilusDirectory *directory,
+					      GnomeVFSFileInfo  *info);
+void          nautilus_file_emit_changed     (NautilusFile      *file);
+void          nautilus_file_mark_gone        (NautilusFile      *file);
+char *        nautilus_extract_top_left_text (const char        *text,
+					      int                length);

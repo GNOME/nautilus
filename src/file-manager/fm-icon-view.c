@@ -64,87 +64,12 @@
 #define MENU_PATH_RENAME "/File/Rename"
 
 /* forward declarations */
-static void                   add_icon_at_free_position                         (FMIconView             *icon_view,
-										 NautilusFile           *file);
-static void                   add_icon_if_already_positioned                    (FMIconView             *icon_view,
-										 NautilusFile           *file);
-static NautilusIconContainer *create_icon_container                             (FMIconView             *icon_view);
-static void                   display_icons_not_already_positioned              (FMIconView             *icon_view);
-static void                   fm_icon_view_icon_changed_callback                (NautilusIconContainer  *container,
-										 NautilusFile           *icon_data,
-										 int                     x,
-										 int                     y,
-										 double                  scale_x,
-										 double                  scale_y,
-										 FMIconView             *icon_view);
-static void                   fm_icon_view_add_file                             (FMDirectoryView        *view,
-										 NautilusFile           *file);
-static void                   fm_icon_view_file_changed                         (FMDirectoryView        *view,
-										 NautilusFile           *file);
-static void                   fm_icon_view_append_background_context_menu_items (FMDirectoryView        *view,
-										 GtkMenu                *menu);
-static void                   fm_icon_view_append_selection_context_menu_items  (FMDirectoryView        *view,
-										 GtkMenu                *menu,
-										 GList                  *files);
-static void                   fm_icon_view_begin_loading                        (FMDirectoryView        *view);
-static void                   fm_icon_view_bump_zoom_level                      (FMDirectoryView        *view,
-										 int                     zoom_increment);
-static gboolean               fm_icon_view_can_zoom_in                          (FMDirectoryView        *view);
-static gboolean               fm_icon_view_can_zoom_out                         (FMDirectoryView        *view);
-static void                   fm_icon_view_clear                                (FMDirectoryView        *view);
-static void                   fm_icon_view_destroy                              (GtkObject              *view);
-static void                   fm_icon_view_done_adding_files                    (FMDirectoryView        *view);
-static char *                 fm_icon_view_get_icon_text_attribute_names        (FMIconView             *view);
-static GList *                fm_icon_view_get_selection                        (FMDirectoryView        *view);
-static NautilusZoomLevel      fm_icon_view_get_zoom_level                       (FMIconView             *view);
-static void                   fm_icon_view_initialize                           (FMIconView             *icon_view);
-static void                   fm_icon_view_initialize_class                     (FMIconViewClass        *klass);
-static void                   fm_icon_view_merge_menus                          (FMDirectoryView        *view);
-static gboolean               fm_icon_view_react_to_icon_change_idle_callback   (gpointer                data);
-static void                   fm_icon_view_select_all                           (FMDirectoryView        *view);
-static void                   fm_icon_view_set_selection                        (FMDirectoryView        *view,
-										 GList                  *selection);
-static void                   fm_icon_view_set_zoom_level                       (FMIconView             *view,
-										 NautilusZoomLevel       new_level);
-static void                   fm_icon_view_icon_text_changed_callback           (NautilusIconContainer  *container,
-										 NautilusFile           *file,
-										 char                   *new_name,
-										 FMIconView             *icon_view);
-static void                   fm_icon_view_update_menus                         (FMDirectoryView        *view);
-static NautilusIconContainer *get_icon_container                                (FMIconView             *icon_view);
-static void                   icon_container_activate_callback                  (NautilusIconContainer  *container,
-										 NautilusFile           *icon_data,
-										 FMIconView             *icon_view);
-static int                    icon_container_compare_icons_callback             (NautilusIconContainer  *container,
-										 NautilusFile           *file_a,
-										 NautilusFile           *file_b,
-										 FMIconView             *icon_view);
-static void                   icon_container_selection_changed_callback         (NautilusIconContainer  *container,
-										 FMIconView             *icon_view);
-static void                   icon_container_context_click_selection_callback   (NautilusIconContainer  *container,
-										 FMIconView             *icon_view);
-static void                   icon_container_context_click_background_callback  (NautilusIconContainer  *container,
-										 FMIconView             *icon_view);
-static NautilusScalableIcon * get_icon_images_callback                          (NautilusIconContainer  *container,
-										 NautilusFile           *icon_data,
-										 GList                 **emblem_icons,
-										 const char             *modifier,
-										 FMIconView             *icon_view);
-static char *                 get_icon_uri_callback                             (NautilusIconContainer  *container,
-										 NautilusFile           *icon_data,
-										 FMIconView             *icon_view);
-static char *                 get_icon_property_callback                        (NautilusIconContainer  *container,
-										 NautilusFile           *icon_data,
-										 const char             *property_name,
-										 FMIconView             *icon_view);
-static char *                 get_icon_additional_text_callback                 (NautilusIconContainer  *container,
-										 NautilusFile           *file,
-										 FMIconView             *icon_view);
-static char *                 get_icon_editable_text_callback                   (NautilusIconContainer  *container,
-										 NautilusFile           *file,
-										 FMIconView             *icon_view);
-static void                   text_attribute_names_changed_callback             (gpointer                user_data);
-
+static NautilusIconContainer *create_icon_container                 (FMIconView        *icon_view);
+static void                   fm_icon_view_initialize               (FMIconView        *icon_view);
+static void                   fm_icon_view_initialize_class         (FMIconViewClass   *klass);
+static void                   fm_icon_view_set_zoom_level           (FMIconView        *view,
+								     NautilusZoomLevel  new_level);
+static void                   text_attribute_names_changed_callback (gpointer           user_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMIconView, fm_icon_view, FM_TYPE_DIRECTORY_VIEW);
 
@@ -156,55 +81,6 @@ struct FMIconViewDetails
 	guint react_to_icon_change_idle_id;
 	gboolean menus_ready;
 };
-
-/* GtkObject methods. */
-
-static void
-fm_icon_view_initialize_class (FMIconViewClass *klass)
-{
-	GtkObjectClass *object_class;
-	FMDirectoryViewClass *fm_directory_view_class;
-
-	object_class = GTK_OBJECT_CLASS (klass);
-	fm_directory_view_class = FM_DIRECTORY_VIEW_CLASS (klass);
-
-	object_class->destroy = fm_icon_view_destroy;
-	
-	fm_directory_view_class->add_file = fm_icon_view_add_file;
-	fm_directory_view_class->begin_loading = fm_icon_view_begin_loading;
-	fm_directory_view_class->bump_zoom_level = fm_icon_view_bump_zoom_level;	
-	fm_directory_view_class->can_zoom_in = fm_icon_view_can_zoom_in;
-	fm_directory_view_class->can_zoom_out = fm_icon_view_can_zoom_out;
-	fm_directory_view_class->clear = fm_icon_view_clear;
-	fm_directory_view_class->done_adding_files = fm_icon_view_done_adding_files;	
-	fm_directory_view_class->file_changed = fm_icon_view_file_changed;
-	fm_directory_view_class->get_selection = fm_icon_view_get_selection;
-	fm_directory_view_class->select_all = fm_icon_view_select_all;
-	fm_directory_view_class->set_selection = fm_icon_view_set_selection;
-        fm_directory_view_class->append_background_context_menu_items =
-		fm_icon_view_append_background_context_menu_items;
-        fm_directory_view_class->append_selection_context_menu_items =
-		fm_icon_view_append_selection_context_menu_items;
-        fm_directory_view_class->merge_menus = fm_icon_view_merge_menus;
-        fm_directory_view_class->update_menus = fm_icon_view_update_menus;
-}
-
-static void
-fm_icon_view_initialize (FMIconView *icon_view)
-{
-	NautilusIconContainer *icon_container;
-        
-        g_return_if_fail (GTK_BIN (icon_view)->child == NULL);
-
-	icon_view->details = g_new0 (FMIconViewDetails, 1);
-	icon_view->details->default_zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
-
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
-					   text_attribute_names_changed_callback,
-					   icon_view);
-	
-	icon_container = create_icon_container (icon_view);
-}
 
 static void
 fm_icon_view_destroy (GtkObject *object)
@@ -225,85 +101,6 @@ fm_icon_view_destroy (GtkObject *object)
 	g_free (icon_view->details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
-}
-
-static NautilusIconContainer *
-create_icon_container (FMIconView *icon_view)
-{
-	NautilusIconContainer *icon_container;
-	FMDirectoryView *directory_view;
-
-	icon_container = NAUTILUS_ICON_CONTAINER (nautilus_icon_container_new ());
-	directory_view = FM_DIRECTORY_VIEW (icon_view);
-
-	GTK_WIDGET_SET_FLAGS (icon_container, GTK_CAN_FOCUS);
-	
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "activate",
-			    GTK_SIGNAL_FUNC (icon_container_activate_callback),
-			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "compare_icons",
-			    GTK_SIGNAL_FUNC (icon_container_compare_icons_callback),
-			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "context_click_selection",
-			    GTK_SIGNAL_FUNC (icon_container_context_click_selection_callback),
-			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "context_click_background",
-			    GTK_SIGNAL_FUNC (icon_container_context_click_background_callback),
-			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "icon_changed",
-			    GTK_SIGNAL_FUNC (fm_icon_view_icon_changed_callback),
-			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "icon_text_changed",
-			    GTK_SIGNAL_FUNC (fm_icon_view_icon_text_changed_callback),
-			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "selection_changed",
-			    GTK_SIGNAL_FUNC (icon_container_selection_changed_callback),
-			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "get_icon_images",
-			    GTK_SIGNAL_FUNC (get_icon_images_callback),
-			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "get_icon_uri",
-			    GTK_SIGNAL_FUNC (get_icon_uri_callback),
-			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "get_icon_editable_text",
-			    GTK_SIGNAL_FUNC (get_icon_editable_text_callback),
-			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "get_icon_additional_text",
-			    GTK_SIGNAL_FUNC (get_icon_additional_text_callback),
-			    icon_view);	
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "get_icon_property",
-			    GTK_SIGNAL_FUNC (get_icon_property_callback),
-			    icon_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "move_copy_items",
-			    GTK_SIGNAL_FUNC (fm_directory_view_move_copy_items),
-			    directory_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "get_container_uri",
-			    GTK_SIGNAL_FUNC (fm_directory_view_get_container_uri),
-			    directory_view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "can_accept_item",
-			    GTK_SIGNAL_FUNC (fm_directory_view_can_accept_item),
-			    directory_view);
-
-	gtk_container_add (GTK_CONTAINER (icon_view), GTK_WIDGET (icon_container));
-
-	gtk_widget_show (GTK_WIDGET (icon_container));
-
-	return icon_container;
 }
 
 static NautilusIconContainer *
@@ -1172,23 +969,65 @@ fm_icon_view_icon_text_changed_callback (NautilusIconContainer *container,
 	g_free (original_name);
 }
 
-static NautilusScalableIcon *
+static GdkPixbuf *
 get_icon_images_callback (NautilusIconContainer *container,
 			  NautilusFile *file,
-			  GList **emblem_icons,
+			  int icon_size_x,
+			  int icon_size_y,
 			  const char *modifier,
+			  GList **emblem_pixbufs,
 			  FMIconView *icon_view)
 {
+	GList *emblem_icons, *p;
+	NautilusScalableIcon *scalable_icon;
+	GdkPixbuf *emblem_pixbuf, *pixbuf_without_text, *pixbuf_with_text;
+	ArtIRect text_rect;
+
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_assert (NAUTILUS_IS_FILE (file));
-	g_assert (emblem_icons != NULL);
+	g_assert (emblem_pixbufs != NULL);
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 
 	/* Get the appropriate images for the file. */
-	if (emblem_icons != NULL) {
-		*emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file);
+	if (emblem_pixbufs != NULL) {
+		emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file);
+		*emblem_pixbufs = NULL;
+		for (p = emblem_icons; p != NULL; p = p->next) {
+			emblem_pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
+				(p->data,
+				 icon_size_x, icon_size_y,
+				 NAUTILUS_ICON_MAXIMUM_EMBLEM_SIZE,
+				 NAUTILUS_ICON_MAXIMUM_EMBLEM_SIZE,
+				 NULL);
+			if (emblem_pixbuf != NULL) {
+				*emblem_pixbufs = g_list_prepend
+					(*emblem_pixbufs, emblem_pixbuf);
+			}
+		}
+		*emblem_pixbufs = g_list_reverse (*emblem_pixbufs);
+		nautilus_scalable_icon_list_free (emblem_icons);
 	}
-	return nautilus_icon_factory_get_icon_for_file (file, modifier);
+
+	/* Get the icon for the file with embedded text. */
+	scalable_icon = nautilus_icon_factory_get_icon_for_file (file, modifier);
+	pixbuf_without_text = nautilus_icon_factory_get_pixbuf_for_icon
+		(scalable_icon,
+		 icon_size_x, icon_size_y,
+		 NAUTILUS_ICON_MAXIMUM_IMAGE_SIZE,
+		 NAUTILUS_ICON_MAXIMUM_IMAGE_SIZE,
+		 &text_rect);
+	nautilus_scalable_icon_unref (scalable_icon);
+	if (icon_size_x < NAUTILUS_ICON_SIZE_STANDARD
+	    || icon_size_y < NAUTILUS_ICON_SIZE_STANDARD) {
+		pixbuf_with_text = pixbuf_without_text;
+	} else {
+		pixbuf_with_text = nautilus_icon_factory_embed_file_text
+			(pixbuf_without_text,
+			 &text_rect,
+			 file);
+		gdk_pixbuf_unref (pixbuf_without_text);
+	}
+	return pixbuf_with_text;
 }
 
 static char *
@@ -1203,72 +1042,50 @@ get_icon_uri_callback (NautilusIconContainer *container,
 	return nautilus_file_get_uri (file);
 }
 
-
-
-/* This callback returns the text items that are editable by the user
- * using the "Rename" command.  In the case of FMIconView, this
- * would be the attribute with the name
+/* This callback returns the text, both the editable part, and the
+ * part below that is not editable.
  */
-static char *
-get_icon_editable_text_callback (NautilusIconContainer *container,
+static void
+get_icon_text_callback (NautilusIconContainer *container,
 			NautilusFile *file,
+			char **editable_text,
+			char **additional_text,
 			FMIconView *icon_view)
 {
-	char *file_name;
-
-	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
-	g_assert (NAUTILUS_IS_FILE (file));
-	g_assert (FM_IS_ICON_VIEW (icon_view));
-
-	/* In the smallest zoom mode, no text is drawn */
-	if ( fm_icon_view_get_zoom_level (icon_view) == NAUTILUS_ZOOM_LEVEL_SMALLEST) {
-		return NULL;
-	}
-
-	/* strip the suffix for nautilus object xml files */
-	
-	file_name = nautilus_link_get_display_name(nautilus_file_get_name (file));
-	
-	/* FIXME bugzilla.eazel.com 664: 
-	 * We don't want the name displayed when we are zoomed all
-	 * the way out. Perhaps this routine should return NULL in that
-	 * case to indicate that fact to NautilusIconContainer.
-	 */
-	return file_name;
-}
-
-/* This callback returns the text items that are not editable by the user
- * using the "Rename" command.
- */
-static char *
-get_icon_additional_text_callback (NautilusIconContainer *container,
-				   NautilusFile *file,
-				   FMIconView *icon_view)
-{
+	char *actual_uri;
 	char *attribute_names;
 	char **text_array;
-	char *result, *actual_uri;
 	int i;
 	char *attribute_string;
 
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (editable_text != NULL);
+	g_assert (additional_text != NULL);
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 
-	/* handle link files specially */
-	
-	actual_uri = nautilus_file_get_uri(file);
-	if (actual_uri && nautilus_link_is_link_file(actual_uri)) {
-		result = nautilus_link_get_additional_text(actual_uri);
-		g_free(actual_uri);
-		return result;
+	/* In the smallest zoom mode, no text is drawn. */
+	if (fm_icon_view_get_zoom_level (icon_view) == NAUTILUS_ZOOM_LEVEL_SMALLEST) {
+		*editable_text = NULL;
+	} else {
+		/* Strip the suffix for nautilus object xml files. */
+		*editable_text = nautilus_link_get_display_name (nautilus_file_get_name (file));
 	}
 	
-	attribute_names = fm_icon_view_get_icon_text_attribute_names
-		(icon_view);
+	/* Handle link files specially. */
+	actual_uri = nautilus_file_get_uri (file);
+	if (actual_uri && nautilus_link_is_link_file (actual_uri)) {
+		*additional_text = nautilus_link_get_additional_text (actual_uri);
+		g_free (actual_uri);
+		return;
+	}
+	
+	/* Find out what attributes go below each icon. */
+	attribute_names = fm_icon_view_get_icon_text_attribute_names (icon_view);
 	text_array = g_strsplit (attribute_names, "|", 0);
 	g_free (attribute_names);
 
+	/* Get the attributes. */
 	for (i = 0; text_array[i] != NULL; i++)	{
 		attribute_string = nautilus_file_get_string_attribute (file, text_array[i]);
 		
@@ -1285,41 +1102,134 @@ get_icon_additional_text_callback (NautilusIconContainer *container,
 		text_array[i] = attribute_string;
 	}
 
-	result = g_strjoinv ("\n", text_array);
+	/* Return them. */
+	*additional_text = g_strjoinv ("\n", text_array);
 
 	g_strfreev (text_array);
-
-	return result;
-}
-
-static char *
-get_icon_property_callback (NautilusIconContainer *container,
-			    NautilusFile *file,
-			    const char *property_name,
-			    FMIconView *icon_view)
-{
-	char *mime_type;
-
-	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
-	g_assert (NAUTILUS_IS_FILE (file));
-	g_assert (property_name != NULL);
-	g_assert (FM_IS_ICON_VIEW (icon_view));
-	
-	if (strcmp (property_name, "contents_as_text") == 0) {
-		mime_type = nautilus_file_get_mime_type (file);
-		if (mime_type == NULL || nautilus_str_has_prefix (mime_type, "text/")) {
-			g_free (mime_type);
-			return nautilus_file_get_uri (file);
-		}
-		g_free (mime_type);
-	}
-	
-	/* nothing applied, so return nothing */
-	return NULL;		
 }
 
 static void
 text_attribute_names_changed_callback (gpointer user_data)
 {
 	nautilus_icon_container_request_update_all (get_icon_container (FM_ICON_VIEW (user_data)));	
+}
+
+/* GtkObject methods. */
+
+static void
+fm_icon_view_initialize_class (FMIconViewClass *klass)
+{
+	GtkObjectClass *object_class;
+	FMDirectoryViewClass *fm_directory_view_class;
+
+	object_class = GTK_OBJECT_CLASS (klass);
+	fm_directory_view_class = FM_DIRECTORY_VIEW_CLASS (klass);
+
+	object_class->destroy = fm_icon_view_destroy;
+	
+	fm_directory_view_class->add_file = fm_icon_view_add_file;
+	fm_directory_view_class->begin_loading = fm_icon_view_begin_loading;
+	fm_directory_view_class->bump_zoom_level = fm_icon_view_bump_zoom_level;	
+	fm_directory_view_class->can_zoom_in = fm_icon_view_can_zoom_in;
+	fm_directory_view_class->can_zoom_out = fm_icon_view_can_zoom_out;
+	fm_directory_view_class->clear = fm_icon_view_clear;
+	fm_directory_view_class->done_adding_files = fm_icon_view_done_adding_files;	
+	fm_directory_view_class->file_changed = fm_icon_view_file_changed;
+	fm_directory_view_class->get_selection = fm_icon_view_get_selection;
+	fm_directory_view_class->select_all = fm_icon_view_select_all;
+	fm_directory_view_class->set_selection = fm_icon_view_set_selection;
+        fm_directory_view_class->append_background_context_menu_items =
+		fm_icon_view_append_background_context_menu_items;
+        fm_directory_view_class->append_selection_context_menu_items =
+		fm_icon_view_append_selection_context_menu_items;
+        fm_directory_view_class->merge_menus = fm_icon_view_merge_menus;
+        fm_directory_view_class->update_menus = fm_icon_view_update_menus;
+}
+
+static void
+fm_icon_view_initialize (FMIconView *icon_view)
+{
+	NautilusIconContainer *icon_container;
+        
+        g_return_if_fail (GTK_BIN (icon_view)->child == NULL);
+
+	icon_view->details = g_new0 (FMIconViewDetails, 1);
+	icon_view->details->default_zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
+
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
+					   text_attribute_names_changed_callback,
+					   icon_view);
+	
+	icon_container = create_icon_container (icon_view);
+}
+
+static NautilusIconContainer *
+create_icon_container (FMIconView *icon_view)
+{
+	NautilusIconContainer *icon_container;
+	FMDirectoryView *directory_view;
+
+	icon_container = NAUTILUS_ICON_CONTAINER (nautilus_icon_container_new ());
+	directory_view = FM_DIRECTORY_VIEW (icon_view);
+
+	GTK_WIDGET_SET_FLAGS (icon_container, GTK_CAN_FOCUS);
+	
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "activate",
+			    GTK_SIGNAL_FUNC (icon_container_activate_callback),
+			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "compare_icons",
+			    GTK_SIGNAL_FUNC (icon_container_compare_icons_callback),
+			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "context_click_selection",
+			    GTK_SIGNAL_FUNC (icon_container_context_click_selection_callback),
+			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "context_click_background",
+			    GTK_SIGNAL_FUNC (icon_container_context_click_background_callback),
+			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "icon_changed",
+			    GTK_SIGNAL_FUNC (fm_icon_view_icon_changed_callback),
+			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "icon_text_changed",
+			    GTK_SIGNAL_FUNC (fm_icon_view_icon_text_changed_callback),
+			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "selection_changed",
+			    GTK_SIGNAL_FUNC (icon_container_selection_changed_callback),
+			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "get_icon_images",
+			    GTK_SIGNAL_FUNC (get_icon_images_callback),
+			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "get_icon_uri",
+			    GTK_SIGNAL_FUNC (get_icon_uri_callback),
+			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "get_icon_text",
+			    GTK_SIGNAL_FUNC (get_icon_text_callback),
+			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "move_copy_items",
+			    GTK_SIGNAL_FUNC (fm_directory_view_move_copy_items),
+			    directory_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "get_container_uri",
+			    GTK_SIGNAL_FUNC (fm_directory_view_get_container_uri),
+			    directory_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "can_accept_item",
+			    GTK_SIGNAL_FUNC (fm_directory_view_can_accept_item),
+			    directory_view);
+
+	gtk_container_add (GTK_CONTAINER (icon_view), GTK_WIDGET (icon_container));
+
+	gtk_widget_show (GTK_WIDGET (icon_container));
+
+	return icon_container;
 }

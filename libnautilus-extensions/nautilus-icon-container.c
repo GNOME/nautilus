@@ -69,10 +69,6 @@
 #define RUBBERBAND_BUTTON 1
 #define CONTEXTUAL_MENU_BUTTON 3
 
-/* Maximum size (pixels) allowed for icons. */
-#define MAXIMUM_ICON_SIZE 1000
-#define MAXIMUM_EMBLEM_SIZE 100
-
 static void          activate_selected_items                  (NautilusIconContainer      *container);
 static void          nautilus_icon_container_initialize_class (NautilusIconContainerClass *class);
 static void          nautilus_icon_container_initialize       (NautilusIconContainer      *container);
@@ -103,10 +99,8 @@ enum {
 	CONTEXT_CLICK_BACKGROUND,
 	CONTEXT_CLICK_SELECTION,
 	GET_CONTAINER_URI,
-	GET_ICON_ADDITIONAL_TEXT,
-	GET_ICON_EDITABLE_TEXT,
+	GET_ICON_TEXT,
 	GET_ICON_IMAGES,
-	GET_ICON_PROPERTY,
 	GET_ICON_URI,
 	ICON_CHANGED,
 	ICON_TEXT_EDIT_OCCURRED,
@@ -1898,29 +1892,24 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
 						     get_icon_images),
-				  nautilus_gtk_marshal_POINTER__POINTER_POINTER_POINTER,
-				  GTK_TYPE_POINTER, 3,
+				  nautilus_gtk_marshal_POINTER__POINTER_INT_INT_STRING_POINTER,
+				  GTK_TYPE_POINTER, 5,
 				  GTK_TYPE_POINTER,
-				  GTK_TYPE_POINTER,
+				  GTK_TYPE_INT,
+				  GTK_TYPE_INT,
+				  GTK_TYPE_STRING,
 				  GTK_TYPE_POINTER);
-	signals[GET_ICON_EDITABLE_TEXT]
-		= gtk_signal_new ("get_icon_editable_text",
+	signals[GET_ICON_TEXT]
+		= gtk_signal_new ("get_icon_text",
 				  GTK_RUN_LAST,
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
-						     get_icon_editable_text),
-				  nautilus_gtk_marshal_STRING__POINTER,
-				  GTK_TYPE_STRING, 1,
-				  GTK_TYPE_POINTER);
-	signals[GET_ICON_ADDITIONAL_TEXT]
-		= gtk_signal_new ("get_icon_additional_text",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
-						     get_icon_additional_text),
-				  nautilus_gtk_marshal_STRING__POINTER,
-				  GTK_TYPE_STRING, 1,
-				  GTK_TYPE_POINTER);
+						     get_icon_text),
+				  nautilus_gtk_marshal_NONE__POINTER_STRING_STRING,
+				  GTK_TYPE_NONE, 3,
+				  GTK_TYPE_POINTER,
+				  GTK_TYPE_STRING,
+				  GTK_TYPE_STRING);
 	signals[GET_ICON_URI]
 		= gtk_signal_new ("get_icon_uri",
 				  GTK_RUN_LAST,
@@ -1930,16 +1919,6 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  nautilus_gtk_marshal_STRING__POINTER,
 				  GTK_TYPE_STRING, 1,
 				  GTK_TYPE_POINTER);
-	signals[GET_ICON_PROPERTY]
-		= gtk_signal_new ("get_icon_property",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
-						     get_icon_property),
-				  nautilus_gtk_marshal_STRING__POINTER_STRING,
-				  GTK_TYPE_STRING, 2,
-				  GTK_TYPE_POINTER,
-				  GTK_TYPE_STRING);
 	signals[COMPARE_ICONS]
 		= gtk_signal_new ("compare_icons",
 				  GTK_RUN_LAST,
@@ -1969,7 +1948,7 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  GTK_RUN_LAST,
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass, 
-                    		 		    get_container_uri),
+						     get_container_uri),
 				  nautilus_gtk_marshal_STRING__NONE,
 				  GTK_TYPE_STRING, 0);
 	signals[CAN_ACCEPT_ITEM] 
@@ -2353,13 +2332,10 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 				     NautilusIcon *icon)
 {
 	NautilusIconContainerDetails *details;
-	NautilusScalableIcon *scalable_icon;
 	guint icon_size_x, icon_size_y;
-	GdkPixbuf *pixbuf, *emblem_pixbuf;
-	ArtIRect text_rect;
-	GList *emblem_icons, *emblem_pixbufs, *p;
+	GdkPixbuf *pixbuf;
+	GList *emblem_pixbufs;
 	char *editable_text, *additional_text;
-	char *contents_as_text;
 	GdkFont *font;
 
 	if (icon == NULL) {
@@ -2369,77 +2345,35 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	details = container->details;
 
 	/* Get the icons. */
-	scalable_icon = NULL;
+	icon_get_size (container, icon, &icon_size_x, &icon_size_y);
 	gtk_signal_emit (GTK_OBJECT (container),
 			 signals[GET_ICON_IMAGES],
 			 icon->data,
-			 &emblem_icons,
+			 icon_size_x,
+			 icon_size_y,
 			 (icon == details->drop_target) ? "accept" : "",
-			 &scalable_icon);
-	g_assert (scalable_icon != NULL);
-
-	/* Get the corresponding pixbufs for this size. */
-	icon_get_size (container, icon, &icon_size_x, &icon_size_y);
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
-		(scalable_icon,
-		 icon_size_x, icon_size_y,
-		 MAXIMUM_ICON_SIZE, MAXIMUM_ICON_SIZE,
-		 &text_rect);
-	emblem_pixbufs = NULL;
-	for (p = emblem_icons; p != NULL; p = p->next) {
-		emblem_pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
-			(p->data,
-			 icon_size_x, icon_size_y,
-			 MAXIMUM_EMBLEM_SIZE, MAXIMUM_EMBLEM_SIZE,
-			 NULL);
-		if (emblem_pixbuf != NULL) {
-			emblem_pixbufs = g_list_prepend
-				(emblem_pixbufs, emblem_pixbuf);
-		}
-	}
-	emblem_pixbufs = g_list_reverse (emblem_pixbufs);
-
-	/* Let the icons go. */
-	nautilus_scalable_icon_unref (scalable_icon);
-	nautilus_scalable_icon_list_free (emblem_icons);
+			 &emblem_pixbufs,
+			 &pixbuf);
 
 	/* Get both editable and non-editable icon text */
 	gtk_signal_emit (GTK_OBJECT (container),
-			 signals[GET_ICON_EDITABLE_TEXT],
+			 signals[GET_ICON_TEXT],
 			 icon->data,
-			 &editable_text);
-	gtk_signal_emit (GTK_OBJECT (container),
-			 signals[GET_ICON_ADDITIONAL_TEXT],
-			 icon->data,
+			 &editable_text,
 			 &additional_text);
 
 	end_renaming_mode (container, TRUE);
 
 	font = details->label_font[details->zoom_level];
         
-	/* Choose to show mini-text based on this icon's requested size,
-	* not zoom level, since icon may be stretched big or small.
-	*/
-	contents_as_text = NULL;
-	if (!art_irect_empty (&text_rect)
-	    && icon_size_x >= NAUTILUS_ICON_SIZE_STANDARD
-	    && icon_size_y >= NAUTILUS_ICON_SIZE_STANDARD) {
-		gtk_signal_emit (GTK_OBJECT (container),
-				 signals[GET_ICON_PROPERTY],
-				 icon->data,
-				 "contents_as_text",
-				 &contents_as_text);
-	}
-	
 	gnome_canvas_item_set (GNOME_CANVAS_ITEM (icon->item),
 			       "editable_text", editable_text,
 			       "additional_text", additional_text,
 			       "font", font,
-			       "text_source", contents_as_text,
 			       "highlighted_for_drop", icon == details->drop_target,
 			       NULL);
 	
-	nautilus_icon_canvas_item_set_image (icon->item, pixbuf, &text_rect);
+	nautilus_icon_canvas_item_set_image (icon->item, pixbuf);
 	nautilus_icon_canvas_item_set_emblems (icon->item, emblem_pixbufs);
 
 	/* Let the pixbufs go. */
@@ -2448,7 +2382,6 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 
 	g_free (editable_text);
 	g_free (additional_text);
-	g_free (contents_as_text);
 }
 
 void
