@@ -125,7 +125,7 @@ ElementInfo sect_preparse[] = {
 	{ APPENDIX, "appendix", (startElementSAXFunc) sect_preparse_sect_start_element, NULL, NULL},
 	{ DOCINFO, "docinfo", NULL, NULL, NULL},
 	{ GLOSSARY, "glossary", (startElementSAXFunc) sect_preparse_set_doctype, NULL, NULL},
-	{ GLOSSDIV, "glossdiv", NULL, NULL, NULL},
+	{ GLOSSDIV, "glossdiv", (startElementSAXFunc) sect_preparse_sect_start_element, NULL, NULL},
 	{ GLOSSENTRY, "glossentry", (startElementSAXFunc) sect_preparse_glossentry_start_element, NULL, NULL},
 	{ GLOSSTERM, "glossterm", NULL, NULL, (charactersSAXFunc) sect_preparse_glossterm_characters},
 	{ GLOSSSEE, "glosssee", NULL, NULL, NULL},
@@ -174,6 +174,7 @@ sect_preparse_sect_start_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GRAPHIC));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CAUTION));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (IMPORTANT));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GLOSSDIV));
 	stack_el = find_first_element (context, element_list);
 
 	g_slist_free (element_list);
@@ -190,6 +191,9 @@ sect_preparse_sect_start_element (Context *context,
 	        sect1id_stack_add (context, name, atrs);
 		break;
 	case 't':
+		sect1id_stack_add (context, name, atrs);
+		break;
+	case 's':
 		sect1id_stack_add (context, name, atrs);
 		break;
 	case '1':
