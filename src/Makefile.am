@@ -8,8 +8,7 @@ INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
 	$(VFS_CFLAGS) \
 	$(XML_CFLAGS) \
 	-DVERSION="\"$(VERSION)\"" \
-	$(WERROR)		\
-	-D_REENTRANT
+	$(WERROR)
 
 LDADD=	file-manager/libntl-file-manager.la \
 	../libnautilus/libnautilus.la \
@@ -31,6 +30,8 @@ nautilus_SOURCES=			\
 	nautilus-bookmarks-menu.h	\
 	nautilus-bookmarks-window.c	\
 	nautilus-bookmarks-window.h	\
+        nautilus-index-tabs.c		\
+        nautilus-index-tabs.h		\
         nautilus-self-check-functions.c \
         nautilus-self-check-functions.h \
 	nautilus-zoom-control.c		\

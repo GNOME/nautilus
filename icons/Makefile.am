@@ -22,6 +22,8 @@ icon_DATA =					\
 	multi-ok.png				\
 	not.png					\
 	nautilus3.jpg				\
+	tableft.png				\
+	tabright.png				\
 	zoom.png
 
 EXTRA_DIST = $(icon_DATA)

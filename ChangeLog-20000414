@@ -1,3 +1,18 @@
+2000-02-07  Andy Hertzfeld <andy@eazel.com>
+
+        first cut at real tabs for index panel, still incomplete and not
+	hooked up yet, but will be soon.
+	
+	* icons/tableft.png, tabright.png:
+	small pixmaps for nice rounded edges for the tabs
+	* icons/Makefile.am
+	added tableft.png and tabright.png
+	
+	* src/nautilus-index-tabs.c,h
+	new class for drawing the index tabs
+	* src/Makefile.am
+	added index-tabs class to build
+	
 2000-02-07  Elliot Lee  <sopwith@redhat.com>
 	* idl/*.idl: Include the .idl files of other modules that we use.
 	* libnautilus/Makefile.am, src/Makefile.am, src/file-manager/Makefile.am:
