@@ -511,32 +511,42 @@ dispose_root_pixmap (GdkPixmap *pixmap)
  * it at the same time. (This assumes that they follow the
  * same conventions we do
  * (copied from gnome-source/control-panels/capplets/background-properties/render-background.c)
+ *
+ * One diff between this and the capplet code is that the capplet tests nitems == 4 instead
+ * of nitems == 1, which means XKillClient is never called and the old pixmap is never freed.
  */
 static void 
 set_root_pixmap (GdkPixmap *pixmap)
 {
-	GdkAtom type;
-	gulong nitems, bytes_after;
-	gint format;
+	int     result;
+	gint    format;
+	gulong  nitems;
+	gulong  bytes_after;
 	guchar *data_esetroot;
-	Pixmap pixmap_id = GDK_WINDOW_XWINDOW (pixmap);
+	Pixmap  pixmap_id;
+	GdkAtom type;
+
+	data_esetroot = NULL;
 
 	XGrabServer (GDK_DISPLAY());
 
-	XGetWindowProperty (GDK_DISPLAY(), GDK_ROOT_WINDOW(),
-			    gdk_atom_intern("ESETROOT_PMAP_ID", FALSE),
-			    0L, 1L, False, XA_PIXMAP,
-			    &type, &format, &nitems, &bytes_after,
-			    &data_esetroot);
+	result = XGetWindowProperty (GDK_DISPLAY(), GDK_ROOT_WINDOW(),
+				     gdk_atom_intern("ESETROOT_PMAP_ID", FALSE),
+				     0L, 1L, False, XA_PIXMAP,
+				     &type, &format, &nitems, &bytes_after,
+				     &data_esetroot);
 
-	if (type == XA_PIXMAP) {
-		if (format == 32 && nitems == 4)
-			XKillClient(GDK_DISPLAY(), *((Pixmap*)data_esetroot));
-
+	if (result == Success && type == XA_PIXMAP && format == 32 && nitems == 1) {
+		XKillClient(GDK_DISPLAY(), *(Pixmap*)data_esetroot);
+	}
+	
+	if (data_esetroot != NULL) {
 		XFree (data_esetroot);
 	}
 
 	++set_root_pixmap_count;
+	
+	pixmap_id = GDK_WINDOW_XWINDOW (pixmap);
 
 	XChangeProperty (GDK_DISPLAY(), GDK_ROOT_WINDOW(),
 			 gdk_atom_intern("ESETROOT_PMAP_ID", FALSE), XA_PIXMAP,
