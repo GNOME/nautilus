@@ -297,7 +297,9 @@ insert_hack_node (NautilusTreeView *view, const char *uri)
 	GtkCTreeNode *hack_node;
 	char *text[2];
 
+#ifdef DEBUG_TREE
 	printf ("XXX: possibly adding hack node for %s\n", uri);
+#endif
 
 	hack_node = g_hash_table_lookup (view->details->uri_to_hack_node_map, uri);
 
@@ -305,7 +307,9 @@ insert_hack_node (NautilusTreeView *view, const char *uri)
 		text[0] = "...HACK...";
 		text[1] = NULL;
 
+#ifdef DEBUG_TREE
 		printf ("XXX: actually adding hack node for %s\n", uri);
+#endif
 
 		view_node = uri_to_view_node (view, uri);
 
@@ -329,7 +333,9 @@ remove_hack_node (NautilusTreeView *view, const char *uri)
 {
 	GtkCTreeNode *hack_node;
 
+#ifdef DEBUG_TREE
 	printf ("XXX: removing hack node for %s\n", uri);
+#endif
 
 	hack_node = g_hash_table_lookup (view->details->uri_to_hack_node_map, uri);
        
@@ -340,7 +346,9 @@ remove_hack_node (NautilusTreeView *view, const char *uri)
 		g_hash_table_remove (view->details->uri_to_hack_node_map, uri);
 
 		gtk_clist_thaw (GTK_CLIST (view->details->tree));
+#ifdef DEBUG_TREE
 		printf ("XXX: actually thawing (%d)\n", GTK_CLIST (view->details->tree)->freeze_count);
+#endif
 	}
 }
 
@@ -350,13 +358,17 @@ freeze_if_have_hack_node (NautilusTreeView *view, const char *uri)
 {
 	GtkCTreeNode *hack_node;
 
+#ifdef DEBUG_TREE
 	puts ("XXX: freezing if hack node");
+#endif
 
 	hack_node = g_hash_table_lookup (view->details->uri_to_hack_node_map, uri);
 
 	if (hack_node != NULL) {
 		gtk_clist_freeze (GTK_CLIST (view->details->tree));
+#ifdef DEBUG_TREE
 		printf ("XXX: actually freezing (%d)\n", GTK_CLIST (view->details->tree)->freeze_count);
+#endif
 	}
 }
 
@@ -622,7 +634,9 @@ nautilus_tree_view_model_node_added_callback (NautilusTreeModel *model,
 {
 	NautilusTreeView *view;
 
+#ifdef DEBUG_TREE
 	puts ("XXX: added");
+#endif
 
 	view = NAUTILUS_TREE_VIEW (callback_data);
 
@@ -644,7 +658,9 @@ nautilus_tree_view_model_node_changed_callback (NautilusTreeModel *model,
 
 	uri = nautilus_file_get_uri (nautilus_tree_node_get_file (node));
 
+#ifdef DEBUG_TREE
 	printf ("XXX: changed %s\n", uri);
+#endif
 
 	g_free (uri);
 
@@ -661,7 +677,9 @@ nautilus_tree_view_model_node_removed_callback (NautilusTreeModel *model,
 {
 	NautilusTreeView *view;
 
+#ifdef DEBUG_TREE
 	puts ("XXX: removed");
+#endif
 
 	view = NAUTILUS_TREE_VIEW (callback_data);
 
@@ -677,7 +695,9 @@ nautilus_tree_view_model_done_loading_callback (NautilusTreeModel *model,
 	NautilusTreeView *view;
 	char *uri;
 
+#ifdef DEBUG_TREE
 	puts ("XXX: done loading");
+#endif
 
 	view = NAUTILUS_TREE_VIEW (callback_data);
 
