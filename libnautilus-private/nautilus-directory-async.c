@@ -2874,9 +2874,17 @@ make_dot_directory_uri (const char *uri)
 	if (vfs_uri == NULL) {
 		return NULL;
 	}
-	
-	dot_dir_vfs_uri = gnome_vfs_uri_append_file_name (vfs_uri, ".directory");
-	dot_directory_uri = gnome_vfs_uri_to_string (dot_dir_vfs_uri, GNOME_VFS_URI_HIDE_NONE);
+
+	/* This does sync I/O but is allowed here since otherwise nautilus won't start showing the
+	 * directory's contents before all the scheduled calls of "look for .directory file" have been
+	 * finished. 
+	 */
+	if (gnome_vfs_uri_is_local (dot_dir_vfs_uri) && gnome_vfs_uri_exists (dot_dir_vfs_uri)) {
+		dot_directory_uri = gnome_vfs_uri_to_string (dot_dir_vfs_uri, GNOME_VFS_URI_HIDE_NONE);
+	}
+	else {
+		dot_directory_uri = NULL;
+	}
 	
 	gnome_vfs_uri_unref (vfs_uri);
 	gnome_vfs_uri_unref (dot_dir_vfs_uri);
