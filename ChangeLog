@@ -1,3 +1,13 @@
+2002-03-04  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-global-preferences.c
+	(nautilus_global_preferences_init): split out the ultra slow
+	gnome-vfs thrashing bit into here
+	(nautilus_global_preferences_init_with_folder_browsing): 
+
+	* src/nautilus-main.c (main): do a full init here so we
+	get the folder browsing setup.
+
 2002-03-04  Darin Adler  <darin@bentspoon.com>
 
 	* src/nautilus-sidebar-tabs.h:

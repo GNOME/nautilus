@@ -488,13 +488,6 @@ static const PreferenceDefault preference_defaults[] = {
 	  "standard_font_size"
 	},
 	
-	/* View Preferences */
-	{ NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
-	  PREFERENCE_INTEGER,
-	  NULL, default_default_folder_viewer_callback, NULL,
-	  "default_folder_viewer"
-	},
-
 	/* Icon View Default Preferences */
 
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_FONT,
@@ -756,10 +749,6 @@ default_home_location_callback (void)
 	return gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
 }
 
-/*
- * Public functions
- */
-
 static void
 set_default_folder_viewer_in_gnome_vfs (const char *iid)
 {
@@ -788,6 +777,10 @@ default_folder_viewer_changed_callback (gpointer callback_data)
 
 	set_default_folder_viewer_in_gnome_vfs (viewer_iid);
 }
+
+/*
+ * Public functions
+ */
 
 void
 nautilus_global_preferences_set_default_folder_viewer (const char *iid)
@@ -905,10 +898,6 @@ nautilus_global_preferences_init (void)
 	}
 
 	/* Set up storage for values accessed in this file */
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER, 
-				      default_folder_viewer_changed_callback, 
-				      NULL);
-
  	eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT,
 				      default_icon_view_sort_order_or_manual_layout_changed_callback, 
 				      NULL);
@@ -918,3 +907,27 @@ nautilus_global_preferences_init (void)
 				 GCONF_CLIENT_PRELOAD_ONELEVEL);
 }
 
+void
+nautilus_global_preferences_init_with_folder_browsing (void)
+{
+	static gboolean browse_initialized = FALSE;
+	static const PreferenceDefault browse_def = {
+		NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
+		PREFERENCE_INTEGER,
+		NULL, default_default_folder_viewer_callback, NULL,
+		"default_folder_viewer"
+	};
+
+	if (browse_initialized) {
+		return;
+	}
+	browse_initialized = TRUE;
+
+	global_preferences_install_one_default (browse_def.name,
+						browse_def.type,
+						&browse_def);
+
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER, 
+				      default_folder_viewer_changed_callback, 
+				      NULL);	
+}

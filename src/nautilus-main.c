@@ -230,7 +230,7 @@ main (int argc, char *argv[])
 	 * defaults are available before any preference peeking 
 	 * happens.
 	 */
-	nautilus_global_preferences_init ();
+	nautilus_global_preferences_init_with_folder_browsing ();
 	if (no_desktop) {
 		eel_preferences_set_is_invisible
 			(NAUTILUS_PREFERENCES_SHOW_DESKTOP, TRUE);

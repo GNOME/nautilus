@@ -182,9 +182,10 @@ typedef enum
 } NautilusSearchBarMode;
 
 /* Gnome session management */
-#define NAUTILUS_PREFERENCES_ADD_TO_SESSION		"preferences/add_to_session"
+#define NAUTILUS_PREFERENCES_ADD_TO_SESSION		   "preferences/add_to_session"
 
 void nautilus_global_preferences_init                      (void);
+void nautilus_global_preferences_init_with_folder_browsing (void);
 void nautilus_global_preferences_set_default_folder_viewer (const char *iid);
 
 G_END_DECLS
