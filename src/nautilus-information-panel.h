@@ -28,7 +28,8 @@
 #ifndef NAUTILUS_SIDEBAR_H
 #define NAUTILUS_SIDEBAR_H
 
-#include <gtk/gtkeventbox.h>
+#include <eel/eel-background-box.h>
+
 #include "nautilus-view-frame.h"
 
 #define NAUTILUS_TYPE_SIDEBAR \
@@ -45,12 +46,12 @@
 typedef struct NautilusSidebarDetails NautilusSidebarDetails;
 
 typedef struct {
-	GtkEventBox parent_slot;
+	EelBackgroundBox parent_slot;
 	NautilusSidebarDetails *details;
 } NautilusSidebar;
 
 typedef struct {
-	GtkEventBoxClass parent_slot;
+	EelBackgroundBoxClass parent_slot;
 	
 	void (*location_changed) (NautilusSidebar *sidebar,
 				  const char *location);

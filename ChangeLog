@@ -1,3 +1,13 @@
+2002-07-24  Dave Camp  <dave@ximian.com>
+
+	(nautilus_music_view_init): Use an EelBackgroundBox instead of a
+	GtkEventBox.
+	* components/music/nautilus-music-view.c:
+	* src/nautilus-sidebar.c: Derive from EelBackgroundBox instead of
+	GtkEventBox.
+	(nautilus_sidebar_style_set): Removed special case for
+	EelBackgroundStyle.
+
 2002-07-24  Michael Meeks  <michael@ximian.com>
 
 	* src/nautilus-window-manage-views.c

@@ -26,7 +26,7 @@
 #define NAUTILUS_HARDWARE_VIEW_H
 
 #include <libnautilus/nautilus-view.h>
-#include <gtk/gtkeventbox.h>
+#include <eel/eel-background-box.h>
 
 
 typedef struct _NautilusHardwareView      NautilusHardwareView;
@@ -41,12 +41,12 @@ typedef struct _NautilusHardwareViewClass NautilusHardwareViewClass;
 typedef struct _NautilusHardwareViewDetails NautilusHardwareViewDetails;
 
 struct _NautilusHardwareView {
-	GtkEventBox parent;
+	EelBackgroundBox parent;
 	NautilusHardwareViewDetails *details;
 };
 
 struct _NautilusHardwareViewClass {
-	GtkEventBoxClass parent_class;
+	EelBackgroundBoxClass parent_class;
 };
 
 /* GtkObject support */

@@ -93,7 +93,7 @@ static void hardware_view_load_location_callback      (NautilusView             
 static char* make_summary_string		      (NautilusHardwareView	 *hardware_view);
 static int  update_uptime_text			      (gpointer			 callback_data);
 
-EEL_CLASS_BOILERPLATE (NautilusHardwareView, nautilus_hardware_view, GTK_TYPE_EVENT_BOX)
+EEL_CLASS_BOILERPLATE (NautilusHardwareView, nautilus_hardware_view, EEL_TYPE_BACKGROUND_BOX)
 
 static void
 nautilus_hardware_view_class_init (NautilusHardwareViewClass *klass)

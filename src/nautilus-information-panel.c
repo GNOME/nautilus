@@ -38,7 +38,6 @@
 #include <bonobo/bonobo-exception.h>
 
 #include <eel/eel-background.h>
-#include <eel/eel-background-style.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
@@ -178,7 +177,7 @@ typedef enum {
 	TABS_PART
 } SidebarPart;
 
-EEL_CLASS_BOILERPLATE (NautilusSidebar, nautilus_sidebar, GTK_TYPE_EVENT_BOX)
+EEL_CLASS_BOILERPLATE (NautilusSidebar, nautilus_sidebar, EEL_TYPE_BACKGROUND_BOX)
 
 /* initializing the class object by installing the operations we override */
 static void
@@ -1713,15 +1712,10 @@ static void
 nautilus_sidebar_style_set (GtkWidget *widget, GtkStyle *previous_style)
 {
 	NautilusSidebar *sidebar;
-	GtkStyle *style;
 
 	sidebar = NAUTILUS_SIDEBAR (widget);
 
-	style = gtk_widget_get_style (widget);
-
-	/* This is slightly hackish */
-	if (!EEL_IS_BACKGROUND_STYLE (style))
-		nautilus_sidebar_theme_changed (sidebar);
+	nautilus_sidebar_theme_changed (sidebar);
 }
 
 void

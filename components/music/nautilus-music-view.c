@@ -34,6 +34,7 @@
 #include "pixmaps.h"
 #include <eel/eel-accessibility.h>
 #include <eel/eel-background.h>
+#include <eel/eel-background-box.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
@@ -49,7 +50,6 @@
 #include <gtk/gtkadjustment.h>
 #include <gtk/gtkcellrendererpixbuf.h>
 #include <gtk/gtkcellrenderertext.h>
-#include <gtk/gtkeventbox.h>
 #include <gtk/gtkfilesel.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkhscale.h>
@@ -411,7 +411,8 @@ nautilus_music_view_init (NautilusMusicView *music_view)
 	
 	music_view->details = g_new0 (NautilusMusicViewDetails, 1);
 
-        music_view->details->event_box = gtk_event_box_new ();
+
+        music_view->details->event_box = eel_background_box_new ();
         gtk_widget_show (music_view->details->event_box);
         
         g_signal_connect_object (music_view->details->event_box, "drag_data_received",
