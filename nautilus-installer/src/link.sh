@@ -1,6 +1,6 @@
 #! /bin/bash
 
-DEBUG="no"
+DEBUG="yes"
 
 GNOME=/gnome
 BUILD_DATE=`date +%d%b%y-%H%M`
@@ -30,7 +30,7 @@ else
 	echo "* XFree86 3.x.y";
     elif test "x$XFREE_MAJOR" = "x4"; then
 	echo "* XFree86 4.x.y";
-	XLIBS=-L/usr/X11R6/lib -ldl -lX11 -lm -lSM -lICE ;
+	XLIBS="-L/usr/X11R6/lib -ldl -lX11 -lm -lSM -lICE ";
     else 
        echo "* I do not believe your XFree86 is a $XFREE_MAJOR";
        return 1;
