@@ -747,7 +747,8 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
 	GnomeVFSFileInfo *file_info;
 	GnomeThumbnailFactory *thumb_factory;
 	gboolean show_thumb;
-
+	GnomeIconLookupFlags lookup_flags;
+	
 	if (file == NULL) {
 		return NULL;
 	}
@@ -783,15 +784,18 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
 	} else {
 		thumb_factory = NULL;
 	}
-	
+
+	lookup_flags = GNOME_ICON_LOOKUP_FLAGS_SHOW_SMALL_IMAGES_AS_THEMSELVES;
+	if (nautilus_file_peek_top_left_text (file) != NULL) {
+		lookup_flags |= GNOME_ICON_LOOKUP_FLAGS_EMBEDDING_TEXT;
+	}
 	icon_name = gnome_icon_lookup (factory->icon_theme,
 				       thumb_factory,
 				       file_uri,
 				       custom_icon,
 				       nautilus_file_peek_vfs_file_info (file),
 				       mime_type,
-				       GNOME_ICON_LOOKUP_FLAGS_EMBEDDING_TEXT |
-				       GNOME_ICON_LOOKUP_FLAGS_SHOW_SMALL_IMAGES_AS_THEMSELVES,
+				       lookup_flags,
 				       &lookup_result);
 
 
