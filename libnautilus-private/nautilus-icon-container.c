@@ -1148,6 +1148,7 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 	int **icon_grid;
 	int num_rows, num_columns;
 	int row, column;
+	ArtDRect icon_rect;
 
 	/* Get container dimensions */
 	width  = GTK_WIDGET (container)->allocation.width /
@@ -1213,7 +1214,14 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 			icon = p->data;
 			get_best_empty_grid_location (icon, icon_grid, num_rows, num_columns,
 						      &x, &y);
-			icon_set_position (icon, x, y);
+
+			icon_get_bounding_box (icon, &x1, &y1, &x2, &y2);
+			icon_width = x2 - x1;
+			
+			icon_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
+
+			icon_set_position (icon,
+					   x + (icon_width - (icon_rect.x1 - icon_rect.x0)) / 2, y);
 			/* Add newly placed icon to grid */
 			mark_icon_location_in_grid (icon, icon_grid, num_rows, num_columns);
 		}
@@ -1226,31 +1234,55 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 	} else {
 		/* There are no placed icons.  Just lay them down using our rules */		
 		x = DESKTOP_PAD_HORIZONTAL;
-		y = DESKTOP_PAD_VERTICAL;
-		max_width = 0;
 
-		for (p = icons; p != NULL; p = p->next) {
-			icon = p->data;
-			icon_get_bounding_box (icon, &x1, &y1, &x2, &y2);
+		while (icons != NULL) {
+			y = DESKTOP_PAD_VERTICAL;
+			max_width = 0;
 
-			icon_width = x2 - x1;
-			icon_height = y2 - y1;
+			/* Calculate max width for column */
+			for (p = icons; p != NULL; p = p->next) {
+				icon = p->data;
+				
+				icon_get_bounding_box (icon, &x1, &y1, &x2, &y2);
+				
+				icon_width = x2 - x1;
+				icon_height = y2 - y1;
+				
+				/* Check and see if we need to move to a new column */
+				if (y != DESKTOP_PAD_VERTICAL && y > height - icon_height) {
+					break;
+				}
 
-			/* Check and see if we need to move to a new column */
-			if (y > height - icon_height) {
-				x += max_width + DESKTOP_PAD_VERTICAL;
-				y = DESKTOP_PAD_VERTICAL;
-				max_width = 0;
+				if (max_width < icon_width) {
+					max_width = icon_width;
+				}
+				
+				y += icon_height + DESKTOP_PAD_VERTICAL;
 			}
 
-			icon_set_position (icon, x, y);
-
-			/* Check for increase in column width */
-			if (max_width < icon_width) {
-				max_width = icon_width;
+			y = DESKTOP_PAD_VERTICAL;
+			/* Lay out column */
+			for (p = icons; p != NULL; p = p->next) {
+				icon = p->data;
+				icon_get_bounding_box (icon, &x1, &y1, &x2, &y2);
+				
+				icon_height = y2 - y1;
+				
+				icon_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
+				
+				/* Check and see if we need to move to a new column */
+				if (y != DESKTOP_PAD_VERTICAL && y > height - icon_height) {
+					x += max_width + DESKTOP_PAD_HORIZONTAL;
+					break;
+				}
+				
+				icon_set_position (icon,
+						   x + max_width / 2 - (icon_rect.x1 - icon_rect.x0) / 2,
+						   y);
+				
+				y += icon_height + DESKTOP_PAD_VERTICAL;
 			}
-
-			y += icon_height + DESKTOP_PAD_VERTICAL;
+			icons = p;
 		}
 	}
 
