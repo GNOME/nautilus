@@ -1601,6 +1601,10 @@ nautilus_async_destroying_file (NautilusFile *file)
 		directory->details->link_info_read_state->file = NULL;
 		changed = TRUE;
 	}
+	if (directory->details->extension_info_file == file) {
+		directory->details->extension_info_file = NULL;
+		changed = TRUE;
+	}
 
 	/* Let the directory take care of the rest. */
 	if (changed) {
@@ -3219,13 +3223,18 @@ static void
 extension_info_cancel (NautilusDirectory *directory)
 {
 	if (directory->details->extension_info_in_progress != NULL) {
-		nautilus_info_provider_cancel_update 
-			(directory->details->extension_info_provider,
-			 directory->details->extension_info_in_progress);
+		if (directory->details->extension_info_idle) {
+			g_source_remove (directory->details->extension_info_idle);
+		} else {
+			nautilus_info_provider_cancel_update 
+				(directory->details->extension_info_provider,
+				 directory->details->extension_info_in_progress);
+		}
 
 		directory->details->extension_info_in_progress = NULL;
 		directory->details->extension_info_file = NULL;
 		directory->details->extension_info_provider = NULL;
+		directory->details->extension_info_idle = 0;
 
 		async_job_end (directory, "extension info");
 	}
@@ -3290,7 +3299,8 @@ info_provider_idle_callback (gpointer user_data)
 		directory->details->extension_info_file = NULL;
 		directory->details->extension_info_provider = NULL;
 		directory->details->extension_info_in_progress = NULL;
-
+		directory->details->extension_info_idle = 0;
+		
 		finish_info_provider (directory, file, response->provider);
 	}
 
@@ -3311,7 +3321,10 @@ info_provider_callback (NautilusInfoProvider *provider,
 	response->result = result;
 	response->directory = NAUTILUS_DIRECTORY (user_data);
 
-	g_idle_add (info_provider_idle_callback, response);
+	response->directory->details->extension_info_idle =
+		g_idle_add_full (G_PRIORITY_DEFAULT_IDLE,
+				 info_provider_idle_callback, response,
+				 g_free);
 }
 
 static void

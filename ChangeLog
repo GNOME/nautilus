@@ -1,3 +1,12 @@
+2004-11-09  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory-async.c:
+	(nautilus_async_destroying_file), (extension_info_cancel),
+	(info_provider_idle_callback), (info_provider_callback):
+	* libnautilus-private/nautilus-directory-private.h:
+	Handle the case when the file we're getting extension info
+	from goes away.
+
 2004-11-08  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-navigation-window.c:

@@ -109,6 +109,7 @@ struct NautilusDirectoryDetails
 	NautilusFile *extension_info_file;
 	NautilusInfoProvider *extension_info_provider;
 	NautilusOperationHandle *extension_info_in_progress;
+	guint extension_info_idle;
 
 	TopLeftTextReadState *top_left_read_state;
 
