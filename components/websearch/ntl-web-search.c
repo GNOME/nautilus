@@ -30,6 +30,7 @@
 #include <liboaf/liboaf.h>
 #include <limits.h>
 #include <ctype.h>
+#include <libnautilus/nautilus-clipboard.h>
 
 typedef struct {
   char *name, *url_head, *url_tail;
@@ -165,6 +166,7 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
 {
   GtkWidget *vbox;
   WebSearchView *hview;
+  NautilusClipboardInfo *info;
 
   g_return_val_if_fail(!strcmp(goad_id, "OAFIID:ntl_websearch_view:8216e1e4-6b01-4a28-82d9-5df30ed7d044"), NULL);
 
@@ -218,7 +220,18 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
 
   /* handle events */
   gtk_signal_connect(GTK_OBJECT(hview->view), "notify_location_change", web_search_notify_location_change, hview);
-
+  
+  /* handle selections */
+  info = nautilus_clipboard_info_new ();
+  nautilus_clipboard_info_set_view_frame (info, hview->view);
+  nautilus_clipboard_info_set_clipboard_owner (info, GTK_WIDGET (hview->ent_params));
+  nautilus_clipboard_info_set_component_name (info, "WebSearch");
+  gtk_signal_connect (GTK_OBJECT (hview->ent_params), "focus_in_event",
+                      GTK_SIGNAL_FUNC (nautilus_component_merge_bonobo_items_cb), info); 
+  gtk_signal_connect (GTK_OBJECT (hview->ent_params), "focus_out_event",
+                      GTK_SIGNAL_FUNC (nautilus_component_unmerge_bonobo_items_cb), info); 
+  gtk_signal_connect (GTK_OBJECT (hview->ent_params), "destroy", nautilus_clipboard_info_destroy, info);
+  
   /* set description */
   nautilus_meta_view_frame_set_label (NAUTILUS_META_VIEW_FRAME (hview->view),
                                       _("WebSearch"));

@@ -37,6 +37,7 @@ libnautilusinclude_HEADERS=			\
 	nautilus-content-view-frame.h		\
 	nautilus-meta-view-frame.h			\
 	nautilus-view-frame.h			\
+	nautilus-clipboard.h			\
 	$(NULL)
 
 libnautilus_la_SOURCES=				\
@@ -45,6 +46,7 @@ libnautilus_la_SOURCES=				\
 	nautilus-content-view-frame.c		\
 	nautilus-meta-view-frame.c		\
 	nautilus-view-frame.c			\
+	nautilus-clipboard.c			\
 	$(NULL)
 
 $(nautilus_view_component_idl_sources): nautilus_view_component_idl_stamp

@@ -37,6 +37,15 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 
+
+static void                  edit_menu_cut_cb                    (GtkWidget *widget,
+								  gpointer data) ;
+static void                  edit_menu_copy_cb                   (GtkWidget *widget,
+								  gpointer data) ;
+static void                  edit_menu_paste_cb                  (GtkWidget *widget,
+								  gpointer data) ; 
+static void                  edit_menu_clear_cb                  (GtkWidget *widget,
+								  gpointer data) ; 
 static void                  activate_bookmark_in_menu_item      (BonoboUIHandler *uih, 
                                                                   gpointer user_data, 
                                                                   const char *path);
@@ -129,10 +138,10 @@ static GnomeUIInfo file_menu_info[] = {
 static GnomeUIInfo edit_menu_info[] = {
   GNOMEUIINFO_MENU_UNDO_ITEM(NULL, NULL),
   GNOMEUIINFO_SEPARATOR,
-  GNOMEUIINFO_MENU_CUT_ITEM(NULL, NULL),
-  GNOMEUIINFO_MENU_COPY_ITEM(NULL, NULL),
-  GNOMEUIINFO_MENU_PASTE_ITEM(NULL, NULL),
-  GNOMEUIINFO_MENU_CLEAR_ITEM(NULL, NULL),
+  GNOMEUIINFO_MENU_CUT_ITEM(edit_menu_cut_cb, NULL),
+  GNOMEUIINFO_MENU_COPY_ITEM(edit_menu_copy_cb, NULL),
+  GNOMEUIINFO_MENU_PASTE_ITEM(edit_menu_paste_cb, NULL),
+  GNOMEUIINFO_MENU_CLEAR_ITEM(edit_menu_clear_cb, NULL),
   GNOMEUIINFO_SEPARATOR,
   /* Didn't use standard SELECT_ALL_ITEM 'cuz it didn't have accelerator */
   {
@@ -144,6 +153,68 @@ static GnomeUIInfo edit_menu_info[] = {
   },
   GNOMEUIINFO_END
 };
+
+
+static void
+edit_menu_cut_cb (GtkWidget *widget,
+		  gpointer data) 
+{
+	GtkWindow *main_window;
+	
+	g_assert (GTK_IS_WINDOW (data));
+	main_window=GTK_WINDOW (data);
+
+        if (GTK_IS_EDITABLE (main_window->focus_widget)) {
+		gtk_editable_cut_clipboard (GTK_EDITABLE (main_window->focus_widget));
+	}
+}
+
+
+static void
+edit_menu_copy_cb (GtkWidget *widget,
+		  gpointer data) 
+{
+	GtkWindow *main_window;
+
+	g_assert (GTK_IS_WINDOW (data));
+	main_window=GTK_WINDOW (data);
+
+	if (GTK_IS_EDITABLE (main_window->focus_widget)) {
+		gtk_editable_copy_clipboard (GTK_EDITABLE (main_window->focus_widget));
+	}
+
+
+}
+
+
+static void
+edit_menu_paste_cb (GtkWidget *widget,
+		  gpointer data) 
+{
+	GtkWindow *main_window;
+
+	main_window=GTK_WINDOW (data);
+	if (GTK_IS_EDITABLE (main_window->focus_widget)) {
+		gtk_editable_paste_clipboard (GTK_EDITABLE (main_window->focus_widget));
+	}
+
+}
+
+
+static void
+edit_menu_clear_cb (GtkWidget *widget,
+		  gpointer data) 
+{
+	GtkWindow *main_window;
+	main_window=GTK_WINDOW (data);
+	if (GTK_IS_EDITABLE (main_window->focus_widget)) {
+		/* A negative index deletes until the end of the string */
+		gtk_editable_delete_text (GTK_EDITABLE (main_window->focus_widget),0, -1);
+	}
+
+}
+
+
 
 static GnomeUIInfo go_menu_info[] = {
   {
@@ -598,10 +669,6 @@ nautilus_window_initialize_menus (NautilusWindow *window)
          * different content views.
          */
         bonobo_ui_handler_menu_set_sensitivity(ui_handler, "/Edit/Undo", FALSE);
-        bonobo_ui_handler_menu_set_sensitivity(ui_handler, "/Edit/Cut", FALSE);
-        bonobo_ui_handler_menu_set_sensitivity(ui_handler, "/Edit/Copy", FALSE);
-        bonobo_ui_handler_menu_set_sensitivity(ui_handler, "/Edit/Paste", FALSE);
-        bonobo_ui_handler_menu_set_sensitivity(ui_handler, "/Edit/Clear", FALSE);
         bonobo_ui_handler_menu_set_sensitivity(ui_handler, "/Edit/Select All", FALSE);
 
         /* Set initial toggle state of Eazel theme menu item */
@@ -706,3 +773,10 @@ update_eazel_theme_menu_item (NautilusWindow *window)
 							       "default"), 
 				     "eazel") == 0);
 }
+
+
+
+
+
+
+

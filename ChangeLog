@@ -1,3 +1,23 @@
+2000-04-26  Rebecca Schulman <rebecka@eazel.com>
+
+	Fixed bug #99:  Implemented copy, paste, clear, and cut for text
+	Added new files nautilus-clipboard.c,h which contains clipboard
+	functionality.  All components with text widgets should use this
+	code.  It can just be copied from any existing sample code
+	(see ntl-notes.c in the notes component)
+	The frame cut, copy and paste stuff is now happy when there is a 
+	widget in focus.
+
+	Added
+	* libnautilus/nautilus-clipboard.c
+	* libnautilus/nautilus-clipboard.h
+
+	Modified
+	* src/nautilus-window-menus.c  (turned on clear, fixed up callbacks for cut, copy, and
+	                                paste buttons)
+	* components/notes/ntl-notes.c (Clipboard activated notes text box)
+	* components/websearch/ntl-web-search.c (Clipboard activated the search box)
+
 2000-04-26  John Sullivan  <sullivan@eazel.com>
 
 	More FIXME-to-bug work.
@@ -80,6 +100,7 @@
 	Wrote bug reports for all FIXMEs in these files. Down to 90
 	in Nautilus with no bug report.
 
+>>>>>>> 1.133
 2000-04-26  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* doc/nautilus.faq: Added faq.
@@ -113,6 +134,7 @@
 	(nautilus_directory_notify_files_moved):
 	Updated bug numbers on FIXMEs in here.
 
+>>>>>>> 1.127
 2000-04-26  John Sullivan  <sullivan@eazel.com>
 
 	More FIXME-to-bug work.
@@ -456,6 +478,7 @@
 	gnet and large chunks of the current xml parsing come from his work on
 	the Helix Code install/updater.
 
+>>>>>>> 1.123
 2000-04-25  John Sullivan  <sullivan@eazel.com>
 
 	Fixed part of bug 556 (nautilus_file_can_rename returns
@@ -966,6 +989,7 @@
 
 	* configure.in (ALL_LINGUAS): Added Danish language
 
+>>>>>>> 1.102
 2000-04-19  Shane Culpepper  <pepper@eazel.com>
 	
 	* components/services/install/eazel-install-lib-xml.c
@@ -1128,6 +1152,7 @@
 	  components/mozilla/nautilus-mozilla-content-view.c: Dont use
 	code from libnautilus-extensions.  Fix struct tag names.  
 
+>>>>>>> 1.69
 2000-04-18  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* nautilus-widgets/nautilus-preferences.c,

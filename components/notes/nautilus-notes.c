@@ -1,3 +1,4 @@
+
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*- */
 
 /*
@@ -37,8 +38,9 @@
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-debug.h>
-
+#include <libnautilus/nautilus-clipboard.h>
 #define NOTES_DEFAULT_BACKGROUND_COLOR "rgb:FFFF/FFFF/BBBB"
+
 
 typedef struct {
         NautilusViewFrame *view;
@@ -90,10 +92,9 @@ notes_load_metainfo (Notes *notes)
         if (notes->file == NULL) {
                 return;
         }
-
-        keys = g_list_prepend (NULL, NAUTILUS_METADATA_KEY_ANNOTATION);
+	keys = g_list_prepend (NULL, NAUTILUS_METADATA_KEY_ANNOTATION);
         nautilus_file_call_when_ready (notes->file, keys, finish_loading_note, notes);
-        g_list_free (keys);
+	g_list_free (keys);
 }
 
 /* save the metainfo corresponding to the current uri, if any, into the text field */
@@ -125,6 +126,9 @@ notes_notify_location_change (NautilusViewFrame *view,
         }
 }
 
+
+                               
+
 static void
 do_destroy (GtkObject *obj, Notes *notes)
 {
@@ -144,9 +148,9 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
         GtkWidget *vbox;
         Notes *notes;
         NautilusBackground *background;
-
-        g_return_val_if_fail (strcmp (goad_id, "OAFIID:ntl_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185") == 0, NULL);
+        NautilusClipboardInfo *info; 
         
+        g_return_val_if_fail (strcmp (goad_id, "OAFIID:ntl_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185") == 0, NULL);
         notes = g_new0 (Notes, 1);
         notes->uri = g_strdup ("");
         
@@ -167,17 +171,29 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
         /* Create CORBA object. */
         notes->view = NAUTILUS_VIEW_FRAME (nautilus_meta_view_frame_new (vbox));
         gtk_signal_connect (GTK_OBJECT (notes->view), "destroy", do_destroy, notes);
+
         notes_object_count++;
         
         /* handle events */
         gtk_signal_connect (GTK_OBJECT (notes->view), "notify_location_change",
                             notes_notify_location_change, notes);
         
+        /* handle selections */
+        info = nautilus_clipboard_info_new ();
+	nautilus_clipboard_info_set_view_frame (info, notes->view);
+	nautilus_clipboard_info_set_clipboard_owner (info, GTK_WIDGET (notes->note_text_field));
+	nautilus_clipboard_info_set_component_name (info, "Notes");
+        gtk_signal_connect (GTK_OBJECT (notes->note_text_field), "focus_in_event",
+                            GTK_SIGNAL_FUNC (nautilus_component_merge_bonobo_items_cb), info); 
+	gtk_signal_connect (GTK_OBJECT (notes->note_text_field), "focus_out_event",
+			    GTK_SIGNAL_FUNC (nautilus_component_unmerge_bonobo_items_cb), info); 
+
+        gtk_signal_connect (GTK_OBJECT (notes->view), "destroy", nautilus_clipboard_info_destroy, info);
         /* set description */
         nautilus_meta_view_frame_set_label (NAUTILUS_META_VIEW_FRAME (notes->view),
                                             _("Notes"));
-        
         return BONOBO_OBJECT (notes->view);
+        
 }
 
 int
