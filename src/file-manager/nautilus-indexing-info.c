@@ -131,9 +131,7 @@ show_index_progress_dialog (void)
                                    "destroy",
                                    medusa_remove_state_changed_function,
                                    GINT_TO_POINTER (callback_id));
-#endif
 }
-
 
 
 static void
@@ -326,8 +324,6 @@ index_progress_dialog_new (void)
         return dialog;
 }
 
-
-
 static void
 destroy_indexing_info_dialogs_on_exit (void)
 {
@@ -335,8 +331,6 @@ destroy_indexing_info_dialogs_on_exit (void)
         gtk_widget_destroy (GTK_WIDGET (dialogs->last_index_time_dialog));
         g_free (dialogs);
 }
-
-#ifdef HAVE_MEDUSA
 
 static void
 show_indexing_info_dialog (void)

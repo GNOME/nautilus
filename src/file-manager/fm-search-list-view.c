@@ -111,6 +111,7 @@ EEL_DEFINE_CLASS_BOILERPLATE (FMSearchListView,
 				   FM_TYPE_LIST_VIEW)
 
 
+#ifdef HAVE_MEDUSA
 static void
 report_index_age_as_status (NautilusView *nautilus_view)
 {
@@ -127,6 +128,7 @@ report_index_age_as_status (NautilusView *nautilus_view)
 		g_free (status_string);
 	}
 }
+#endif
 
 static void
 load_location_callback (NautilusView *nautilus_view, char *location)

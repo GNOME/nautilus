@@ -39,8 +39,6 @@
 #include <libmedusa/medusa-system-state.h>
 #endif
 
-static const char *       nautilus_medusa_get_configuration_file_path        (void);
-
 gboolean
 nautilus_medusa_services_are_enabled (void)
 {
@@ -111,15 +109,13 @@ nautilus_medusa_check_cron_is_enabled (void)
 	return status;
 }
 
+#ifdef HAVE_MEDUSA
 static const char *
 nautilus_medusa_get_configuration_file_path (void)
 {
-#ifdef HAVE_MEDUSA
 	return medusa_get_configuration_file_path ();
-#else
-	return NULL;
-#endif
 }
+#endif
 
 char *       
 nautilus_medusa_get_explanation_of_enabling (void)
