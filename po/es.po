@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2001-02-28 20:59-0300\n"
-"PO-Revision-Date: 2001-02-28 21:02-0300\n"
+"POT-Creation-Date: 2001-03-01 20:36-0300\n"
+"PO-Revision-Date: 2001-03-01 20:55-0300\n"
 "Last-Translator: Pablo Gonzalo del Campo <pablodc@bigfoot.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,6 +19,30 @@ msgstr "¡No puedo crear el aplique lanzador-nautilus!"
 #: applets/preferences-applet/nautilus-preferences-applet.c:211
 msgid "Can't create nautilus-preferences-applet!"
 msgstr "¡No puedo crear el aplique preferencias-nautilus!"
+
+#: applets/preferences-applet/nautilus-preferences-applet.c:226
+msgid "Show Desktop"
+msgstr "Mostrar Escritorio"
+
+# libnautilus-extensions/nautilus-global-preferences.c:209
+#: applets/preferences-applet/nautilus-preferences-applet.c:230
+msgid "Smooth Graphics"
+msgstr "Gráficos Mejorados"
+
+#: applets/preferences-applet/nautilus-preferences-applet.c:243
+#: src/nautilus-application.c:639
+msgid "Quit"
+msgstr "Salir"
+
+# libnautilus-extensions/nautilus-program-chooser.c:1199
+#: applets/preferences-applet/nautilus-preferences-applet.c:251
+msgid "Start"
+msgstr "Inicio"
+
+# src/file-manager/dfos-xfer.c:372
+#: applets/preferences-applet/nautilus-preferences-applet.c:259
+msgid "Restart"
+msgstr "Reinicio"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -75,6 +99,18 @@ msgstr "%lu MB"
 #: components/hardware/nautilus-hardware-view.c:407
 msgid "Hardware Overview"
 msgstr "Visión General del Hardware"
+
+#: components/hardware/nautilus-hardware-view.c:520
+msgid "This is a placeholder for the CPU page."
+msgstr "Este es un lugar para colocar la página de la CPU."
+
+#: components/hardware/nautilus-hardware-view.c:545
+msgid "This is a placeholder for the RAM page."
+msgstr "Este una lugar para colocar la página de RAM."
+
+#: components/hardware/nautilus-hardware-view.c:570
+msgid "This is a placeholder for the IDE page."
+msgstr "Este es un lugar para la página IDE."
 
 #: components/hardware/Nautilus_View_hardware.oaf.in.h:2
 #: components/hardware/nautilus-hardware-view.c:631
@@ -252,75 +288,85 @@ msgstr "APÉNDICE"
 #. **
 #: components/help/hyperbola-filefmt.c:504
 #: components/help/hyperbola-filefmt.c:506
+#: components/help/hyperbola-filefmt.c:508
 #: components/help/hyperbola-filefmt.c:510
+#: components/help/hyperbola-filefmt.c:511
 #: components/help/hyperbola-filefmt.c:512
-#: components/help/hyperbola-filefmt.c:516
+#: components/help/hyperbola-filefmt.c:513
+#: components/help/hyperbola-filefmt.c:515
+#: components/help/hyperbola-filefmt.c:517
 msgid "Manual"
 msgstr "Manual"
 
-# components/help/hyperbola-filefmt.c:397
-#: components/help/hyperbola-filefmt.c:506
-msgid "System"
-msgstr "Sistema"
-
-# components/help/hyperbola-filefmt.c:397
-#: components/help/hyperbola-filefmt.c:506
-msgid "Configuration"
-msgstr "Configuración"
-
-# components/help/hyperbola-filefmt.c:397
-#: components/help/hyperbola-filefmt.c:506
-msgid "Config files"
-msgstr "Archivos de configuración"
-
 # components/help/hyperbola-filefmt.c:398
 # components/help/hyperbola-filefmt.c:671
-#: components/help/hyperbola-filefmt.c:510
-#: components/help/hyperbola-filefmt.c:834 data/linksets/apps.xml.h:1
+#: components/help/hyperbola-filefmt.c:504
+#: components/help/hyperbola-filefmt.c:835 data/linksets/apps.xml.h:1
 msgid "Applications"
 msgstr "Aplicaciones"
 
-# components/help/hyperbola-filefmt.c:398
-#: components/help/hyperbola-filefmt.c:510
-msgid "Command Line"
-msgstr "Línea de comando"
-
 # components/help/hyperbola-filefmt.c:399
 # components/help/hyperbola-filefmt.c:400
-#: components/help/hyperbola-filefmt.c:512
-#: components/help/hyperbola-filefmt.c:516
+#: components/help/hyperbola-filefmt.c:506
+#: components/help/hyperbola-filefmt.c:508
+#: components/help/hyperbola-filefmt.c:510
+#: components/help/hyperbola-filefmt.c:517
 msgid "Development"
 msgstr "Desarrollo"
 
-# components/help/hyperbola-filefmt.c:399
 # components/help/hyperbola-filefmt.c:400
-#: components/help/hyperbola-filefmt.c:512
-#: components/help/hyperbola-filefmt.c:516
-msgid "APIs"
-msgstr "APIs"
-
-# components/help/hyperbola-filefmt.c:399
-#: components/help/hyperbola-filefmt.c:512
-msgid "Miscellaneous"
-msgstr "Misceláneas"
-
-# components/help/hyperbola-filefmt.c:400
-#: components/help/hyperbola-filefmt.c:516
+#: components/help/hyperbola-filefmt.c:506
 msgid "System Calls"
 msgstr "Llamadas al Sistema"
 
+#: components/help/hyperbola-filefmt.c:508
+msgid "Library Functions"
+msgstr "Librería de Funciones"
+
+# src/nautilus-window-toolbars.c:161
+#: components/help/hyperbola-filefmt.c:510
+msgid "Devices"
+msgstr "Dispositivos"
+
+# components/help/hyperbola-filefmt.c:397
+#: components/help/hyperbola-filefmt.c:511
+msgid "Configuration Files"
+msgstr "Archivos de Configuración"
+
+# libnautilus-extensions/nautilus-program-chooser.c:1196
+# libnautilus-extensions/nautilus-search-bar-criterion.c:42
+# src/file-manager/fm-list-view.c:1581
+# src/file-manager/fm-search-list-view.c:140
+# src/nautilus-bookmarks-window.c:172
+#: components/help/hyperbola-filefmt.c:512
+msgid "Games"
+msgstr "Juegos"
+
+# src/file-manager/fm-properties-window.c:878
+#: components/help/hyperbola-filefmt.c:513
+msgid "Conventions"
+msgstr "Convenciones"
+
+#: components/help/hyperbola-filefmt.c:515
+msgid "System Administration"
+msgstr "Administración del Sistema"
+
+#: components/help/hyperbola-filefmt.c:517
+msgid "Kernel Routines"
+msgstr "Rutinal del Kernel"
+
 # components/help/hyperbola-filefmt.c:556
-#: components/help/hyperbola-filefmt.c:676
+#: components/help/hyperbola-filefmt.c:677
 #: libnautilus-extensions/nautilus-stock-dialogs.c:510
 #: libnautilus-extensions/nautilus-stock-dialogs.c:548
 msgid "Info"
 msgstr "Info"
 
-#: components/help/hyperbola-nav-tree.c:277
+#: components/help/hyperbola-nav-tree.c:279
 msgid "Introductory Documents:"
 msgstr "Documentos Introductorios:"
 
-#: components/help/hyperbola-nav-tree.c:291
+#: components/help/hyperbola-nav-tree.c:293
 msgid "Documents by Subject:"
 msgstr "Documentos por asunto:"
 
@@ -1810,21 +1856,35 @@ msgstr "Solapa de Notas"
 msgid "Notes sidebar panel for Nautilus"
 msgstr "Solapa de Notas para Nautilus"
 
+#. buttons
+#: components/rpmview/nautilus-rpm-verify-window.c:155
+#: components/services/install-view/forms.c:478
+msgid "Continue"
+msgstr "Continuar"
+
+# libnautilus-extensions/nautilus-program-chooser.c:1262
+#: components/rpmview/nautilus-rpm-verify-window.c:160
+#: components/services/install-view/forms.c:482
+#: libnautilus-extensions/nautilus-drag.c:493
+#: src/file-manager/fm-directory-view.c:3503
+msgid "Cancel"
+msgstr "Cancelar"
+
 # components/html/gnome-dialogs.c:210
 #. set up the window title
-#: components/rpmview/nautilus-rpm-verify-window.c:183
+#: components/rpmview/nautilus-rpm-verify-window.c:185
 #, c-format
 msgid "Verifying %s..."
 msgstr "Verificando %s..."
 
-#: components/rpmview/nautilus-rpm-verify-window.c:207
+#: components/rpmview/nautilus-rpm-verify-window.c:209
 #, c-format
 msgid "Failed on \"%s\""
 msgstr "Fallo en \"%s\""
 
 #. TRANSLATORS: this is printed while verifying files from packages,
 #. %s is the filename, %d/%d is filenumber of total-number-of-files
-#: components/rpmview/nautilus-rpm-verify-window.c:211
+#: components/rpmview/nautilus-rpm-verify-window.c:213
 #, c-format
 msgid "Checking \"%s\" (%ld/%ld)"
 msgstr "Verificando \"%s\" (%ld/%ld)"
@@ -2172,271 +2232,266 @@ msgstr "habilitar ei2"
 msgid "RPM args are filename"
 msgstr "Los argumentos de RPM son el nombre del archivo"
 
-# components/services/install/command-line/eazel-alt-install-corba.c:86
-#: components/services/install/command-line/eazel-alt-install-corba.c:115
-msgid "Force install"
-msgstr "Forzar la instalación"
-
 # components/services/install/command-line/eazel-alt-install-corba.c:87
 # components/services/install/command-line/eazel-revert.c:82
-#: components/services/install/command-line/eazel-alt-install-corba.c:116
+#: components/services/install/command-line/eazel-alt-install-corba.c:115
 msgid "Use ftp"
 msgstr "Usar FTP"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:88
 # components/services/install/command-line/eazel-revert.c:83
-#: components/services/install/command-line/eazel-alt-install-corba.c:117
+#: components/services/install/command-line/eazel-alt-install-corba.c:116
 msgid "Use local"
 msgstr "Usar local"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:89
 # components/services/install/command-line/eazel-revert.c:81
-#: components/services/install/command-line/eazel-alt-install-corba.c:118
+#: components/services/install/command-line/eazel-alt-install-corba.c:117
 msgid "Use http"
 msgstr "Usar HTTP"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:85
 # components/services/install/command-line/eazel-revert.c:84
-#: components/services/install/command-line/eazel-alt-install-corba.c:119
+#: components/services/install/command-line/eazel-alt-install-corba.c:118
 msgid "RPM args are Eazel Ids"
 msgstr "Los argumentos de RPM son Ids Eazel"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:120
+#: components/services/install/command-line/eazel-alt-install-corba.c:119
 msgid "machine readable output"
 msgstr "salida legible por máquina"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:121
+#: components/services/install/command-line/eazel-alt-install-corba.c:120
 msgid "Don't print fancy percent output"
 msgstr "No mostrar salida de porcentaje"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:122
+#: components/services/install/command-line/eazel-alt-install-corba.c:121
 msgid "don't use eazel auth stuff"
 msgstr "no usar mecanismo de autorización Eazel"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:90
-#: components/services/install/command-line/eazel-alt-install-corba.c:123
+#: components/services/install/command-line/eazel-alt-install-corba.c:122
 msgid "Specify package file"
 msgstr "Especificar archivo del paquete"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:85
 # components/services/install/command-line/eazel-revert.c:84
-#: components/services/install/command-line/eazel-alt-install-corba.c:124
+#: components/services/install/command-line/eazel-alt-install-corba.c:123
 msgid "RPM args are needed files"
 msgstr "Los argumentos de RPM son archivos necesarios"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:92
-#: components/services/install/command-line/eazel-alt-install-corba.c:125
+#: components/services/install/command-line/eazel-alt-install-corba.c:124
 msgid "Run Query"
 msgstr "Ejecutar Consulta"
 
 # libnautilus-extensions/nautilus-global-preferences.c:591
-#: components/services/install/command-line/eazel-alt-install-corba.c:126
+#: components/services/install/command-line/eazel-alt-install-corba.c:125
 msgid "Revert"
 msgstr "Revertir"
 
 # src/file-manager/fm-properties-window.c:1478
-#: components/services/install/command-line/eazel-alt-install-corba.c:127
+#: components/services/install/command-line/eazel-alt-install-corba.c:126
 msgid "Set root"
 msgstr "Usar root"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:93
 # components/services/install/command-line/eazel-revert.c:80
-#: components/services/install/command-line/eazel-alt-install-corba.c:128
+#: components/services/install/command-line/eazel-alt-install-corba.c:127
 msgid "Specify server"
 msgstr "Especificar el Servidor"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:129
+#: components/services/install/command-line/eazel-alt-install-corba.c:128
 msgid "Dont print too much, just problems and download"
 msgstr "No imprimir demasiado, solo problemas y descarga"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:130
+#: components/services/install/command-line/eazel-alt-install-corba.c:129
 msgid "Perform ssl renaming"
 msgstr "Ejecutar renombrado ssl"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:131
+#: components/services/install/command-line/eazel-alt-install-corba.c:130
 msgid "argument is a suite id"
 msgstr "el argumento es un suite id"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:94
 # components/services/install/command-line/eazel-revert.c:78
 # components/services/install/command-line/eazel-uninstall.c:69
-#: components/services/install/command-line/eazel-alt-install-corba.c:132
+#: components/services/install/command-line/eazel-alt-install-corba.c:131
 msgid "Test run"
 msgstr "Ejecución de prueba"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:96
-#: components/services/install/command-line/eazel-alt-install-corba.c:133
+#: components/services/install/command-line/eazel-alt-install-corba.c:132
 msgid "Allow username"
 msgstr "Permitir nombre de usuario"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:96
-#: components/services/install/command-line/eazel-alt-install-corba.c:134
+#: components/services/install/command-line/eazel-alt-install-corba.c:133
 #: components/services/install/lib/eazel-install-problem.c:1009
 msgid "Allow upgrades"
 msgstr "Permitir actualizaciones"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:135
+#: components/services/install/command-line/eazel-alt-install-corba.c:134
 msgid "Verbose output"
 msgstr "Salida Verbosa"
 
 # components/services/install/nautilus-view/nautilus-service-install-view.c:340
-#: components/services/install/command-line/eazel-alt-install-corba.c:136
+#: components/services/install/command-line/eazel-alt-install-corba.c:135
 msgid "Install a specific package version"
 msgstr "Instalar una versión especifica del paquete"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:167
+#: components/services/install/command-line/eazel-alt-install-corba.c:158
 msgid "*** You cannot specify more then one protocol type.\n"
 msgstr "*** No puede especificar más de un tipo de protocolo.\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:184
+#: components/services/install/command-line/eazel-alt-install-corba.c:175
 msgid "*** Erase and revert ?  Somebody set up us the bomb!\n"
 msgstr "*** Borrar y revertir ? Alguien nos puso la bomba!\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:293
+#: components/services/install/command-line/eazel-alt-install-corba.c:284
 #, c-format
 msgid "File conflict checking %s...\n"
 msgstr "Verificación de conflicto de Archivo %s...\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:307
+#: components/services/install/command-line/eazel-alt-install-corba.c:298
 #, c-format
 msgid "File uniqueness checking %s...\n"
 msgstr "Verificando unicidad del archivo %s...\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:321
+#: components/services/install/command-line/eazel-alt-install-corba.c:312
 #, c-format
 msgid "Feature consistency checking %s...\n"
 msgstr "Verificación de consistencia de característica %s...\n"
 
 # components/services/install/lib/eazel-install-protocols.c:70
 # components/services/install/lib/eazel-install-protocols.c:172
-#: components/services/install/command-line/eazel-alt-install-corba.c:352
+#: components/services/install/command-line/eazel-alt-install-corba.c:343
 #: components/services/install/lib/eazel-install-protocols.c:110
 #: components/services/install/lib/eazel-install-protocols.c:248
 #, c-format
 msgid "Downloading %s..."
 msgstr "Descargando %s..."
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:368
+#: components/services/install/command-line/eazel-alt-install-corba.c:359
 msgid "Downloading %s... (%d/%d) = %d%% %.1f KB/s"
 msgstr "Descargando %s... (%d%d) = %d%% %.1f KB/s     "
 
 # components/services/install/lib/eazel-install-protocols.c:70
 # components/services/install/lib/eazel-install-protocols.c:172
-#: components/services/install/command-line/eazel-alt-install-corba.c:376
+#: components/services/install/command-line/eazel-alt-install-corba.c:367
 msgid "Downloading %s... (%d/%d) = %d%%"
 msgstr "Descargando %s... (%d/%d) = %d%%"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:384
+#: components/services/install/command-line/eazel-alt-install-corba.c:375
 #, c-format
 msgid "Downloading %s... (%d/%d) %.1f KB/s Done      \n"
 msgstr "Descargando %s... (%d/%d) %.1f KB/d Terminado\n"
 
 # components/services/install/lib/eazel-install-protocols.c:70
 # components/services/install/lib/eazel-install-protocols.c:172
-#: components/services/install/command-line/eazel-alt-install-corba.c:389
+#: components/services/install/command-line/eazel-alt-install-corba.c:380
 #, c-format
 msgid "Downloading %s... %3.1f KB/s Done\n"
 msgstr "Descargando %s... %3.1f KB/s Terminado\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:417
+#: components/services/install/command-line/eazel-alt-install-corba.c:408
 msgid "Installing %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
 msgstr "Instalando %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:425
+#: components/services/install/command-line/eazel-alt-install-corba.c:416
 msgid "Uninstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
 msgstr "Desinstalando %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:447
+#: components/services/install/command-line/eazel-alt-install-corba.c:438
 msgid "Installing %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"
 msgstr "Instalando %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Terminado\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:454
+#: components/services/install/command-line/eazel-alt-install-corba.c:445
 msgid "Uninstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"
 msgstr "Desinstalando %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Terminado\n"
 
 # libnautilus-extensions/nautilus-program-chooser.c:1262
-#: components/services/install/command-line/eazel-alt-install-corba.c:462
+#: components/services/install/command-line/eazel-alt-install-corba.c:453
 msgid "Done\n"
 msgstr "Terminado\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:482
+#: components/services/install/command-line/eazel-alt-install-corba.c:473
 #, c-format
 msgid "Download of %s FAILED\n"
 msgstr "La descarga de %s ha FALLADO\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:602
+#: components/services/install/command-line/eazel-alt-install-corba.c:495
 #, c-format
 msgid "Package %s failed to uninstall.\n"
 msgstr "Ha fallado la desinstalación del paquete %s.\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:604
+#: components/services/install/command-line/eazel-alt-install-corba.c:497
 #, c-format
 msgid "Package %s failed to install.\n"
 msgstr "Ha fallado la instalación del paquete %s.\n"
 
 #. I18N note: \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:625
+#: components/services/install/command-line/eazel-alt-install-corba.c:518
 #, c-format
 msgid "\t· Problem : %s\n"
 msgstr "\t· Problema : %s\n"
 
 #. I18N note: \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:634
+#: components/services/install/command-line/eazel-alt-install-corba.c:527
 #, c-format
 msgid "\t· Action : %s\n"
 msgstr "\t· Acción : %s\n"
 
 # components/services/vault/command-line/main.c:46
-#: components/services/install/command-line/eazel-alt-install-corba.c:677
+#: components/services/install/command-line/eazel-alt-install-corba.c:570
 msgid "Cancelling operation\n"
 msgstr "Cancelando operación\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:688
+#: components/services/install/command-line/eazel-alt-install-corba.c:581
 #, c-format
 msgid "About to install a total of %d packages, %dKB\n"
 msgstr "A punto de instalar un total de %d paquetes, %dKB\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:692
+#: components/services/install/command-line/eazel-alt-install-corba.c:585
 #, c-format
 msgid "About to uninstall a total of %d packages, %dKB\n"
 msgstr "A punto de desinstalar un total de %d paquetes, %dKB\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:696
+#: components/services/install/command-line/eazel-alt-install-corba.c:589
 #, c-format
 msgid "About to revert a total of %d packages, %d KB\n"
 msgstr "A punto de revertir un total de %d paquetes, %dKB\n"
 
 #. I18N note: %s is a package name, \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:711
+#: components/services/install/command-line/eazel-alt-install-corba.c:606
 #, c-format
 msgid "\t· %s and it's dependencies\n"
 msgstr "\t· %s y sus dependencias\n"
 
 #. I18N note: %s is a package name, \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:714
+#: components/services/install/command-line/eazel-alt-install-corba.c:609
 #, c-format
 msgid "\t· %s\n"
 msgstr "\t· %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:736
+#: components/services/install/command-line/eazel-alt-install-corba.c:631
 #, c-format
 msgid "Dependency : %s needs %s\n"
 msgstr "Dependencia : %s necesita de %s\n"
 
 #. I18N note: %s is a package name
-#: components/services/install/command-line/eazel-alt-install-corba.c:754
+#: components/services/install/command-line/eazel-alt-install-corba.c:649
 #, c-format
 msgid "Package %s failed md5 check!\n"
 msgstr "¡Ha fallado el chequeo md5 del paquete %s!\n"
 
 #. I18N note: %s is a 32 bytes hex numbers, \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:756
+#: components/services/install/command-line/eazel-alt-install-corba.c:651
 #, c-format
 msgid "\t· server MD5 checksum is %s\n"
 msgstr "\t· el checksum MD5 del servidor es %s\n"
 
 #. I18N note: %s is a 32 bytes hex numbers, \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:758
+#: components/services/install/command-line/eazel-alt-install-corba.c:653
 #, c-format
 msgid "\t· actual MD5 checksum is %s\n"
 msgstr "\t· el checksum MD5 actual es %s\n"
@@ -2446,15 +2501,15 @@ msgstr "\t· el checksum MD5 actual es %s\n"
 #. If you eg. translate this to Danish : "Fortsæt (j/n " and
 #. translated the "y" later to "j", da_DK users can respond with
 #. "j" "ja" "JA" etc.
-#: components/services/install/command-line/eazel-alt-install-corba.c:824
+#: components/services/install/command-line/eazel-alt-install-corba.c:719
 msgid "Continue? (y/n) "
 msgstr "¿Continuar? (s/n)"
 
 #. I18N note: y is the letter for the word Yes. This is
 #. used in the response for a yes/no questions. Your translation
 #. must be 1 character only.
-#: components/services/install/command-line/eazel-alt-install-corba.c:835
-#: components/services/install/command-line/eazel-alt-install-corba.c:877
+#: components/services/install/command-line/eazel-alt-install-corba.c:730
+#: components/services/install/command-line/eazel-alt-install-corba.c:772
 msgid "y"
 msgstr "y"
 
@@ -2463,92 +2518,92 @@ msgstr "y"
 #. If you eg. translate this to Danish : "Fortsæt (j/n " and
 #. translated the "y" later to "j", da_DK users can respond with
 #. "j" "ja" "JA" etc.
-#: components/services/install/command-line/eazel-alt-install-corba.c:865
+#: components/services/install/command-line/eazel-alt-install-corba.c:760
 msgid "Should I delete the RPM files? (y/n) "
 msgstr "¿Debería borrar los archivos RPM? (s/n)"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:897
+#: components/services/install/command-line/eazel-alt-install-corba.c:792
 msgid "Operation ok\n"
 msgstr "Operación Terminada\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:899
+#: components/services/install/command-line/eazel-alt-install-corba.c:794
 msgid "Operation failed\n"
 msgstr "La Operación Falló\n"
 
 # components/rpmview/nautilus-rpm-view.c:261
-#: components/services/install/command-line/eazel-alt-install-corba.c:1016
+#: components/services/install/command-line/eazel-alt-install-corba.c:911
 msgid "Installing"
 msgstr "Instalando"
 
 # components/rpmview/nautilus-rpm-view.c:286
-#: components/services/install/command-line/eazel-alt-install-corba.c:1025
+#: components/services/install/command-line/eazel-alt-install-corba.c:920
 msgid "Uninstalling"
 msgstr "Desinstalando"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1040
+#: components/services/install/command-line/eazel-alt-install-corba.c:935
 msgid "Only one operation at a time please."
 msgstr "Sólo una operación a la vez por favor."
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1045
-#: components/services/install/command-line/eazel-alt-install-corba.c:1053
-#: components/services/install/command-line/eazel-alt-install-corba.c:1097
-#: components/services/install/command-line/eazel-alt-install-corba.c:1104
+#: components/services/install/command-line/eazel-alt-install-corba.c:940
+#: components/services/install/command-line/eazel-alt-install-corba.c:948
+#: components/services/install/command-line/eazel-alt-install-corba.c:992
+#: components/services/install/command-line/eazel-alt-install-corba.c:999
 #, c-format
 msgid "%s: --help for usage\n"
 msgstr "%s: --help para saber como usarlo\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1069
+#: components/services/install/command-line/eazel-alt-install-corba.c:964
 #, c-format
 msgid "Name         : %s\n"
 msgstr "Nombre       : %s\n"
 
 # components/services/install/nautilus-view/nautilus-service-install-view.c:381
-#: components/services/install/command-line/eazel-alt-install-corba.c:1070
+#: components/services/install/command-line/eazel-alt-install-corba.c:965
 #, c-format
 msgid "Version      : %s\n"
 msgstr ""
 "Versión      : %s\n"
 " \n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1071
+#: components/services/install/command-line/eazel-alt-install-corba.c:966
 #, c-format
 msgid "Minor        : %s\n"
 msgstr "Menor        : %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1073
+#: components/services/install/command-line/eazel-alt-install-corba.c:968
 #, c-format
 msgid "Size         : %d\n"
 msgstr "Tamaño       : %d\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1074
+#: components/services/install/command-line/eazel-alt-install-corba.c:969
 #, c-format
 msgid "Arch         : %s\n"
 msgstr "Archivo      : %s\n"
 
 # components/rpmview/nautilus-rpm-view.c:219
-#: components/services/install/command-line/eazel-alt-install-corba.c:1075
+#: components/services/install/command-line/eazel-alt-install-corba.c:970
 #, c-format
 msgid "Distribution : %s\n"
 msgstr "Distribución : %s\n"
 
 # components/rpmview/nautilus-rpm-view.c:336
-#: components/services/install/command-line/eazel-alt-install-corba.c:1076
+#: components/services/install/command-line/eazel-alt-install-corba.c:971
 #, c-format
 msgid "Description  : %s\n"
 msgstr ""
 "Descripción  : %s\n"
 " \n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1078
+#: components/services/install/command-line/eazel-alt-install-corba.c:973
 #, c-format
 msgid "Install root : %s\n"
 msgstr "Ruta de Instalación : %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1081
+#: components/services/install/command-line/eazel-alt-install-corba.c:976
 msgid "Provides     : \n"
 msgstr "Provee       :\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1123
+#: components/services/install/command-line/eazel-alt-install-corba.c:1018
 #, c-format
 msgid "exit code %d\n"
 msgstr "código de salida %d\n"
@@ -2611,80 +2666,80 @@ msgstr "usar función de chequeo (para depurar)"
 msgid "Show detailed sub-package info"
 msgstr "Mostrar información detallada del sub-paquete"
 
-#: components/services/install/lib/eazel-install-logic2.c:143
+#: components/services/install/lib/eazel-install-logic2.c:99
 msgid "Failed to lock the downloaded file"
 msgstr "Falló el bloqueo del archivo descargado"
 
-#: components/services/install/lib/eazel-install-logic2.c:160
+#: components/services/install/lib/eazel-install-logic2.c:116
 #, c-format
 msgid "MD5 mismatch, package %s may be compromised"
 msgstr "Inconsistencia MD5, el paquete %s puede estar comprometido"
 
-#: components/services/install/lib/eazel-install-logic2.c:176
+#: components/services/install/lib/eazel-install-logic2.c:132
 #, c-format
 msgid "No MD5 available for %s"
 msgstr "No hay MD5 disponible para %s"
 
 #. I18N note: "%is is ok" in the sense that %s=package name and the
 #. package is intact
-#: components/services/install/lib/eazel-install-logic2.c:360
+#: components/services/install/lib/eazel-install-logic2.c:317
 #, c-format
 msgid "%s is ok"
 msgstr "%s esta bien"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:86
-#: components/services/install/lib/eazel-install-logic2.c:466
+#: components/services/install/lib/eazel-install-logic2.c:423
 #, c-format
 msgid "%s-%s version %s-%s already installed"
 msgstr "%s-%s versión %s-%s está instalado"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:86
-#: components/services/install/lib/eazel-install-logic2.c:470
+#: components/services/install/lib/eazel-install-logic2.c:427
 #, c-format
 msgid "%s version %s already installed"
 msgstr "%s versión %s está instalado"
 
-#: components/services/install/lib/eazel-install-logic2.c:479
-#: components/services/install/lib/eazel-install-logic2.c:484
+#: components/services/install/lib/eazel-install-logic2.c:436
+#: components/services/install/lib/eazel-install-logic2.c:441
 #, c-format
 msgid "%s upgrades from version %s-%s to %s-%s"
 msgstr "%s actualizaciones desde la versión %s-%s hasta la %s-%s"
 
-#: components/services/install/lib/eazel-install-logic2.c:493
+#: components/services/install/lib/eazel-install-logic2.c:450
 #, c-format
 msgid "%s downgrades from version %s-%s to %s-%s"
 msgstr "%s des-actualizaciones desde la versión %s-%s hasta la %s-%s"
 
-#: components/services/install/lib/eazel-install-logic2.c:498
+#: components/services/install/lib/eazel-install-logic2.c:455
 #, c-format
 msgid "%s downgrades from version %s to %s"
 msgstr "%s des-actualizaciones desde la versión %s a la versión %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:551
+#: components/services/install/lib/eazel-install-logic2.c:508
 #, c-format
 msgid "%s installs version %s-%s"
 msgstr "%s instala la versión %s-%s"
 
-#: components/services/install/lib/eazel-install-logic2.c:556
+#: components/services/install/lib/eazel-install-logic2.c:513
 #, c-format
 msgid "%s installs version %s"
 msgstr "%s instala la versión %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:628
+#: components/services/install/lib/eazel-install-logic2.c:663
 #, c-format
 msgid "Loading package info from file %s"
 msgstr "Carga Información del paquete desde el archivo %s"
 
 #. I18N note: ok is for "package dependencies are ok", "not ok".. well guess...
-#: components/services/install/lib/eazel-install-logic2.c:996
+#: components/services/install/lib/eazel-install-logic2.c:973
 msgid "ok"
 msgstr "aceptar"
 
-#: components/services/install/lib/eazel-install-logic2.c:996
+#: components/services/install/lib/eazel-install-logic2.c:973
 msgid "not ok"
 msgstr "no esta bien"
 
-#: components/services/install/lib/eazel-install-logic2.c:1160
+#: components/services/install/lib/eazel-install-logic2.c:1137
 #, c-format
 msgid "Checking dependencies for %s"
 msgstr "Verificando dependencias para %s"
@@ -2693,48 +2748,48 @@ msgstr "Verificando dependencias para %s"
 #. I18N note: both %s' are package names.
 #. related is in the sense that the two packages apparently
 #. are connected somehow, eg. foo and foo-devel
-#: components/services/install/lib/eazel-install-logic2.c:1719
+#: components/services/install/lib/eazel-install-logic2.c:1698
 #, c-format
 msgid "%s is related to %s"
 msgstr "%s esta relacionado con %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:1773
+#: components/services/install/lib/eazel-install-logic2.c:1758
 #, c-format
 msgid "updating %s to version %s-%s solves conflict"
 msgstr "actualizando %s a la versión %s-%s resuelve el conflicto"
 
-#: components/services/install/lib/eazel-install-logic2.c:1789
+#: components/services/install/lib/eazel-install-logic2.c:1774
 #, c-format
 msgid "available update to %s (%s-%s) does not solves conflict"
 msgstr "la actualizacion disponible para %s (%s-%s) no resuelve el conflicto"
 
 # components/services/install/lib/eazel-install-protocols.c:93
-#: components/services/install/lib/eazel-install-logic2.c:1796
+#: components/services/install/lib/eazel-install-logic2.c:1781
 #, c-format
 msgid "could not revive %s"
 msgstr "No se puede recuperar %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:1932
+#: components/services/install/lib/eazel-install-logic2.c:1917
 #, c-format
 msgid "file uniqueness checking %s"
 msgstr "Verificando unicidad del archivo %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:1953
+#: components/services/install/lib/eazel-install-logic2.c:1938
 #, c-format
 msgid "Duplicate file : %s occurs in %s and %s"
 msgstr "Duplicar archivo : %s ocurre en %s y %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:1971
+#: components/services/install/lib/eazel-install-logic2.c:1956
 #, c-format
 msgid "(there were %d other conflicts)"
 msgstr "(hubo %d otros conflictos)"
 
-#: components/services/install/lib/eazel-install-logic2.c:2066
+#: components/services/install/lib/eazel-install-logic2.c:2051
 #, c-format
 msgid "file conflict checking %s"
 msgstr "verificando conflicto de archivo %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2103
+#: components/services/install/lib/eazel-install-logic2.c:2088
 #, c-format
 msgid ""
 "file conflict : package %s already provides file %s also provided by %s"
@@ -2744,18 +2799,18 @@ msgstr ""
 
 #. the owner of this file is a package that we're upgrading, and the
 #. * new version no longer has this file, so everything's okay.
-#: components/services/install/lib/eazel-install-logic2.c:2113
+#: components/services/install/lib/eazel-install-logic2.c:2098
 #, c-format
 msgid "...but it is okay, we're upgrading %s and it ditched that file"
 msgstr ""
 "...pero esta bien, estamos actualizando %s y este descartó este archivo"
 
-#: components/services/install/lib/eazel-install-logic2.c:2203
+#: components/services/install/lib/eazel-install-logic2.c:2188
 #, c-format
 msgid "checking feature consistency of %s"
 msgstr "verificando consistencia de característica %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2271
+#: components/services/install/lib/eazel-install-logic2.c:2256
 #, c-format
 msgid ""
 "feature missing : %s breaks if %s is installed (feature %s would be lost"
@@ -2764,44 +2819,44 @@ msgstr ""
 "será perdida"
 
 # components/services/install/nautilus-view/nautilus-service-install-view.c:340
-#: components/services/install/lib/eazel-install-logic2.c:2349
+#: components/services/install/lib/eazel-install-logic2.c:2334
 #, c-format
 msgid "downloading %d packages"
 msgstr "descargando %d paquetes"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:96
-#: components/services/install/lib/eazel-install-logic2.c:2614
+#: components/services/install/lib/eazel-install-logic2.c:2599
 #, c-format
 msgid "will upgrade %s"
 msgstr "actualizará %s"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:83
-#: components/services/install/lib/eazel-install-logic2.c:2617
+#: components/services/install/lib/eazel-install-logic2.c:2602
 #, c-format
 msgid "will downgrade %s"
 msgstr "des-actualizará %s"
 
 # components/services/install/nautilus-view/nautilus-service-install-view.c:340
-#: components/services/install/lib/eazel-install-logic2.c:2620
+#: components/services/install/lib/eazel-install-logic2.c:2605
 #, c-format
 msgid "will install %s"
 msgstr "instalará %s"
 
 # components/rpmview/nautilus-rpm-view.c:286
-#: components/services/install/lib/eazel-install-logic2.c:2623
+#: components/services/install/lib/eazel-install-logic2.c:2608
 #, c-format
 msgid "will uninstall %s"
 msgstr "des-instalará %s"
 
 # components/services/install/lib/eazel-install-rpm-glue.c:1287
-#: components/services/install/lib/eazel-install-logic2.c:2706
+#: components/services/install/lib/eazel-install-logic2.c:2691
 #: components/services/install/lib/eazel-install-problem.c:335
 #: components/services/install/lib/eazel-install-problem.c:338
 #, c-format
 msgid "%s requires %s"
 msgstr "%s necesita %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2870
+#: components/services/install/lib/eazel-install-logic2.c:2855
 #, c-format
 msgid "failed %s"
 msgstr "ha fallado %s"
@@ -3225,6 +3280,264 @@ msgstr "Cerrando la base de datos para %s (no abierta)"
 msgid "Cannot open %s"
 msgstr "No se puede abrir %s"
 
+# components/services/install/lib/eazel-install-object.c:584
+#. this stuff flies by so fast, it's probably enough to just say "info"
+#: components/services/install-view/callbacks.c:63
+msgid "Getting package information ..."
+msgstr "Obteniendo información del paquete ..."
+
+#: components/services/install-view/callbacks.c:81
+#, c-format
+msgid "Checking \"%s\" for conflicts..."
+msgstr "Verificando conflictos para \"%s\"..."
+
+# components/services/install/nautilus-view/nautilus-service-install-view.c:340
+#: components/services/install-view/callbacks.c:174
+#, c-format
+msgid "Downloading 1 package (%s)"
+msgstr "Descargando 1 paquete (%s)"
+
+# components/services/install/nautilus-view/nautilus-service-install-view.c:340
+#: components/services/install-view/callbacks.c:176
+#, c-format
+msgid "Downloading %d packages (%s)"
+msgstr "Descargando %d paquetes (%s)"
+
+# components/services/install/lib/eazel-install-protocols.c:70
+# components/services/install/lib/eazel-install-protocols.c:172
+#: components/services/install-view/callbacks.c:225
+#, c-format
+msgid "Downloading \"%s\""
+msgstr "Descargando \"%s\""
+
+#: components/services/install-view/callbacks.c:231
+#, c-format
+msgid "0K of %dK"
+msgstr "0K de %dK"
+
+#: components/services/install-view/callbacks.c:238
+#, c-format
+msgid ""
+"The package \"%s\" requires \"%s\" to run.\n"
+"Downloading \"%s\" now."
+msgstr ""
+"El paquete \"%s\" necesita \"%s\" para instalarse.\n"
+"Descargando \"%s\" en este momento."
+
+#: components/services/install-view/callbacks.c:241
+#, c-format
+msgid "Attempting to download package \"%s\"."
+msgstr "Intentando Descarga el Paquete \"%s\"."
+
+# components/music/nautilus-music-view.c:198
+#: components/services/install-view/callbacks.c:251
+#: components/services/install-view/callbacks.c:322
+msgid "Complete"
+msgstr "Completo"
+
+#: components/services/install-view/callbacks.c:255
+#, c-format
+msgid ""
+"The package \"%s\" requires \"%s\" to run.\n"
+"\"%s\" has been successfully downloaded."
+msgstr ""
+"El paquete \"%s\" necesita de \"%s\" para instalarse.\n"
+"\"%s\" ha sido satisfactoriamente descargado."
+
+#: components/services/install-view/callbacks.c:258
+#, c-format
+msgid "The package \"%s\" has been successfully downloaded."
+msgstr "El paquete \"%s\" ha sido satisfactoriamente descargado."
+
+#: components/services/install-view/callbacks.c:276
+#, c-format
+msgid "%dK of %dK"
+msgstr "%dK de %dK"
+
+# components/services/install/nautilus-view/nautilus-service-install-view.c:340
+#: components/services/install-view/callbacks.c:305
+#, c-format
+msgid "Download of package \"%s\" failed!"
+msgstr "¡Ha fallado la descarga del paquete \"%s\"!"
+
+#: components/services/install-view/callbacks.c:327
+#, c-format
+msgid ""
+"The package \"%s\" requires \"%s\" to run.\n"
+"\"%s\" has been successfully downloaded and installed."
+msgstr ""
+"El paquete \"%s\" necesita de \"%s\" para ejecutarse.\n"
+"\"%s\" ha sido satisfactoriamente descargado e instalado."
+
+#: components/services/install-view/callbacks.c:330
+#, c-format
+msgid "\"%s\" has been successfully downloaded and installed."
+msgstr "\"%s\" ha sido satistactoriamente descargado e instalado."
+
+# components/services/install/nautilus-view/nautilus-service-install-view.c:340
+#. starting a new package -- create new progress indicator
+#: components/services/install-view/callbacks.c:358
+#, c-format
+msgid "Installing package %d of %d"
+msgstr "Instalando paquete %d de %d"
+
+#: components/services/install-view/callbacks.c:385
+#, c-format
+msgid ""
+"The package \"%s\" requires \"%s\" to run.\n"
+"\"%s\" is now being installed."
+msgstr ""
+"El paquete \"%s\" necesita de \"%s\" para instalarse.\n"
+"\"%s\" esta siendo instalado."
+
+# components/services/install/nautilus-view/nautilus-service-install-view.c:340
+#: components/services/install-view/callbacks.c:388
+#, c-format
+msgid "Now installing package \"%s\"."
+msgstr "Instalando paquete \"%s\" ahora."
+
+# components/services/install/nautilus-view/nautilus-service-install-view.c:340
+#: components/services/install-view/callbacks.c:396
+#: components/services/install-view/nautilus-service-install-view.c:640
+#, c-format
+msgid "Installing \"%s\""
+msgstr "Instalando \"%s\""
+
+# src/nautilus-zoom-control.c:481
+#: components/services/install-view/callbacks.c:404
+#: src/nautilus-zoom-control.c:592
+msgid "%d%%"
+msgstr "%d%%"
+
+# components/services/install/lib/eazel-install-object.c:668
+#: components/services/install-view/callbacks.c:432
+#, c-format
+msgid "Installation failed on %s"
+msgstr "Ha fallado la instalación de %s"
+
+#: components/services/install-view/callbacks.c:460
+msgid "I ran into problems while installing."
+msgstr "Me he metido en problemas mientras instalaba."
+
+#: components/services/install-view/callbacks.c:461
+msgid "I'd like to try the following :"
+msgstr "Me gustaría intentar lo siguiente :"
+
+#: components/services/install-view/callbacks.c:470
+msgid "Is this ok ?"
+msgstr "¿ Esta esto bien ?"
+
+# components/services/install/lib/eazel-install-object.c:668
+#: components/services/install-view/callbacks.c:544
+msgid "Installation cancelled."
+msgstr "Instalación cancelada."
+
+#: components/services/install-view/callbacks.c:546
+msgid "This package has already been installed."
+msgstr "Este paquete ya ha sido instalado."
+
+# components/services/install/lib/eazel-install-protocols.c:70
+# components/services/install/lib/eazel-install-protocols.c:172
+#: components/services/install-view/callbacks.c:548
+msgid "Installation complete."
+msgstr "Instalación completa."
+
+# components/services/install/lib/eazel-install-object.c:668
+#: components/services/install-view/callbacks.c:552
+msgid "Installation failed."
+msgstr "Ha fallado la Instalación."
+
+#. some succeeded; some failed
+#: components/services/install-view/callbacks.c:556
+msgid "Some packages installed successfully:"
+msgstr "Algunos paquetes que han sido instalados satisfactoriamente:"
+
+# components/services/install/command-line/eazel-alt-install-corba.c:90
+#: components/services/install-view/callbacks.c:565
+msgid ""
+"\n"
+"Some packages failed:"
+msgstr ""
+"\n"
+"Algunos paquetes han fallado:"
+
+#: components/services/install-view/callbacks.c:608
+msgid "Erase the RPM files?"
+msgstr "¿Borrar los archivo RPM?"
+
+#: components/services/install-view/callbacks.c:610
+msgid "Erase the leftover RPM files?"
+msgstr "¿Borrar los archivos RPM que quedan?"
+
+#: components/services/install-view/callbacks.c:644
+msgid ""
+"A core package of Nautilus has been\n"
+"updated.  You should restart Nautilus.\n"
+"\n"
+"Do you wish to do that now?"
+msgstr ""
+"Un paquete del núcleo de Nautilus ha sido\n"
+"actualizado. Debería reiniciar Nautilus.\n"
+"\n"
+"¿Desea hacerlo en este momento?"
+
+# libnautilus-extensions/nautilus-program-chooser.c:188
+# src/nautilus-window.c:606
+#. Setup the title
+#: components/services/install-view/forms.c:201
+msgid "Easy Install"
+msgstr "Instalación Sencilla"
+
+#. Setup the progress header
+#. FIXME: the middle header is all fubar now, so we just say "messages", but the spec
+#. * shows "progress" over the 2nd column of the message box.  it's just too hard to get
+#. * it aligned currently.
+#.
+#: components/services/install-view/forms.c:327
+msgid "Messages"
+msgstr "Mensajes"
+
+# components/services/install/nautilus-view/nautilus-service-install-view.c:381
+#: components/services/install-view/forms.c:358
+#: components/services/summary/nautilus-summary-view.c:643
+#, c-format
+msgid "Version: %s"
+msgstr "Versión: %s"
+
+#: components/services/install-view/forms.c:407
+msgid "These packages are ready to be downloaded and installed:"
+msgstr "Estos paquetes están listos para ser descargados e instalados:"
+
+#: components/services/install-view/forms.c:408
+msgid "If you wish to download and install these packages, click Continue."
+msgstr "Si desea descargar e instalar estos paquetes haga clic en Continuar."
+
+#: components/services/install-view/forms.c:411
+msgid "These packages are ready to be uninstalled:"
+msgstr "Estos paquetes están listos para ser desinstalados:"
+
+#: components/services/install-view/forms.c:412
+msgid "If you wish to uninstall these packages, click Continue."
+msgstr "Si desear desinstalar estos paquetes haga clic en Continuar."
+
+#: components/services/install-view/forms.c:415
+msgid "These packages are ready to be reverted:"
+msgstr "Estos paquete están listos para ser revertidos:"
+
+#: components/services/install-view/forms.c:416
+msgid "If you wish to revert these packages, click Continue."
+msgstr "Si desea revertir estos paquetes haga clic en Continuar."
+
+#: components/services/install-view/forms.c:464
+#, c-format
+msgid "for a total of %ld MB."
+msgstr "para un total de %ld MB."
+
+#: components/services/install-view/forms.c:466
+#, c-format
+msgid "for a total of %ld KB."
+msgstr "para un tota lde %ld KB."
+
 # libnautilus-extensions/nautilus-program-chooser.c:264
 #: components/services/install-view/nautilus-service-install-view.c:418
 #, c-format
@@ -3253,12 +3566,6 @@ msgstr "Instalando paquetes"
 #: components/services/install-view/nautilus-service-install-view.c:638
 msgid "Installing remote package"
 msgstr "Instalando paquete remoto"
-
-# components/services/install/nautilus-view/nautilus-service-install-view.c:340
-#: components/services/install-view/nautilus-service-install-view.c:640
-#, c-format
-msgid "Installing \"%s\""
-msgstr "Instalando \"%s\""
 
 # components/services/install/lib/eazel-install-protocols.c:70
 # components/services/install/lib/eazel-install-protocols.c:172
@@ -3588,11 +3895,13 @@ msgstr "Servicios de conexión"
 # libnautilus-extensions/nautilus-icon-text-item.c:1487
 # src/file-manager/fm-icon-view.c:1105
 #: components/services/summary/nautilus-summary-dialogs.c:131
+#: libnautilus-extensions/nautilus-password-dialog.c:269
 msgid "Username:"
 msgstr "Nombre de usuario"
 
 # components/html/gnome-dialogs.c:318 components/html/gnome-dialogs.c:359
 #: components/services/summary/nautilus-summary-dialogs.c:138
+#: libnautilus-extensions/nautilus-password-dialog.c:276
 msgid "Password:"
 msgstr "Contraseña:"
 
@@ -3662,12 +3971,6 @@ msgstr "Usted no esta conectado"
 #: components/services/summary/nautilus-summary-view.c:181
 msgid "Connecting to Eazel Services..."
 msgstr "Conectándose a los Servicios Eazel..."
-
-# components/services/install/nautilus-view/nautilus-service-install-view.c:381
-#: components/services/summary/nautilus-summary-view.c:643
-#, c-format
-msgid "Version: %s"
-msgstr "Versión: %s"
 
 # src/nautilus-window-toolbars.c:161
 #: components/services/summary/nautilus-summary-view.c:737
@@ -4502,84 +4805,88 @@ msgstr "LinuxNewbie.org"
 msgid "LinuxOrbit.com"
 msgstr "LinuxOrbit.com"
 
-# libnautilus-extensions/nautilus-global-preferences.c:592
 #: data/static_bookmarks.xml.h:25
+msgid "MandrakeSoft"
+msgstr "MandrakeSoft"
+
+# libnautilus-extensions/nautilus-global-preferences.c:592
+#: data/static_bookmarks.xml.h:26
 msgid "Netraverse"
 msgstr "Netraverse"
 
-#: data/static_bookmarks.xml.h:26
+#: data/static_bookmarks.xml.h:27
 msgid "News and Media"
 msgstr "News and Media"
 
-#: data/static_bookmarks.xml.h:27
+#: data/static_bookmarks.xml.h:28
 msgid "O'Reilly"
 msgstr "O'Reilly"
 
-#: data/static_bookmarks.xml.h:28
+#: data/static_bookmarks.xml.h:29
 msgid "OSDN"
 msgstr "OSDN"
 
-#: data/static_bookmarks.xml.h:29
+#: data/static_bookmarks.xml.h:30
 msgid "Open Source Asia"
 msgstr "Open Source Asia"
 
-#: data/static_bookmarks.xml.h:30
+#: data/static_bookmarks.xml.h:31
 msgid "OpenOffice"
 msgstr "OpenOffice"
 
-#: data/static_bookmarks.xml.h:31
+#: data/static_bookmarks.xml.h:32
 msgid "Penguin Computing"
 msgstr "Penguin Computing"
 
 # components/rpmview/nautilus-rpm-view.c:153
-#: data/static_bookmarks.xml.h:32
+#: data/static_bookmarks.xml.h:33
 msgid "Rackspace"
 msgstr "Rackspace"
 
 # libnautilus-extensions/nautilus-undo-signal-handlers.c:177
-#: data/static_bookmarks.xml.h:33
+#: data/static_bookmarks.xml.h:34
 msgid "Red Hat"
 msgstr "Red Hat"
 
 # libnautilus-extensions/nautilus-undo-signal-handlers.c:177
-#: data/static_bookmarks.xml.h:34
+#: data/static_bookmarks.xml.h:35
 msgid "Red Hat Network"
 msgstr "Red Hat Network"
 
-#: data/static_bookmarks.xml.h:35
+#: data/static_bookmarks.xml.h:36
 msgid "RedFlag Linux"
 msgstr "Redfalg Linux"
 
-#: data/static_bookmarks.xml.h:36
+#: data/static_bookmarks.xml.h:37
 msgid "Software"
 msgstr "Software"
 
-#: data/static_bookmarks.xml.h:37
+#: data/static_bookmarks.xml.h:38
 msgid "SourceForge"
 msgstr "SourceForge"
 
-#: data/static_bookmarks.xml.h:38
+#: data/static_bookmarks.xml.h:39
 msgid "Sun StarOffice"
 msgstr "Sun StarOffice"
 
-#: data/static_bookmarks.xml.h:39
+#: data/static_bookmarks.xml.h:40
 msgid "Sun Wah Linux"
 msgstr "Sun Wah Linux"
 
 # src/nautilus-window-toolbars.c:161
-#: data/static_bookmarks.xml.h:40
+#: data/static_bookmarks.xml.h:41
 msgid "Web Services"
 msgstr "Servicios Web"
 
-#: data/static_bookmarks.xml.h:41
+#: data/static_bookmarks.xml.h:42
 msgid "ZDNet Linux Hardware Database"
 msgstr "ZDNet Linux Hardware Database"
 
-#: data/static_bookmarks.xml.h:42
+#: data/static_bookmarks.xml.h:43
 msgid "ZDNet Linux Resource Center"
 msgstr "ZDNet Linux Resource Center"
 
-#: data/static_bookmarks.xml.h:43
+#: data/static_bookmarks.xml.h:44
 msgid "Zero-Knowledge"
 msgstr "Zero-Knowledge"
 
@@ -4645,12 +4952,6 @@ msgstr "_Copiar aquí"
 #: libnautilus-extensions/nautilus-drag.c:491
 msgid "_Link here"
 msgstr "En_lazar aquí"
-
-# libnautilus-extensions/nautilus-program-chooser.c:1262
-#: libnautilus-extensions/nautilus-drag.c:493
-#: src/file-manager/fm-directory-view.c:3503
-msgid "Cancel"
-msgstr "Cancelar"
 
 #. Note to localizers: this font is used for text items in Druid pages
 #: libnautilus-extensions/nautilus-druid-page-eazel.c:381
@@ -5794,7 +6095,7 @@ msgstr "Error de GConf"
 #. * when no other font can be found. It must be guaranteed
 #. * to exist, * even in the most limited user environment
 #.
-#: libnautilus-extensions/nautilus-gdk-font-extensions.c:880
+#: libnautilus-extensions/nautilus-gdk-font-extensions.c:905
 msgid "fixed"
 msgstr "arreglado"
 
@@ -5803,15 +6104,15 @@ msgstr "arreglado"
 #. * yields -- usually just omitting the AM part is all that's
 #. * needed.
 #.
-#: libnautilus-extensions/nautilus-glib-extensions.c:1359
+#: libnautilus-extensions/nautilus-glib-extensions.c:1364
 msgid "01/01/00, 01:00 AM"
 msgstr "01/01/00, 01:00 AM"
 
-#: libnautilus-extensions/nautilus-glib-extensions.c:1360
+#: libnautilus-extensions/nautilus-glib-extensions.c:1365
 msgid "1/1/00, 1:00 AM"
 msgstr "1/1/00, 1:00 AM"
 
-#: libnautilus-extensions/nautilus-glib-extensions.c:1361
+#: libnautilus-extensions/nautilus-glib-extensions.c:1366
 msgid " 1/ 1/00,  1:00 AM"
 msgstr "foo (25th copy).txt"
 
@@ -6191,6 +6492,16 @@ msgstr "nunca"
 msgid "Never"
 msgstr "Nunca"
 
+#: libnautilus-extensions/nautilus-gnome-extensions.c:640
+msgid "No image was selected.  You must click on an image to select it."
+msgstr ""
+"No se ha seleccionado una imagen. Debe hacer clic sobre la imagen para "
+"selccionarla."
+
+#: libnautilus-extensions/nautilus-gnome-extensions.c:641
+msgid "No selection made"
+msgstr "No se ha hecho ninguna selección"
+
 # libnautilus-extensions/nautilus-icon-canvas-item.c:704
 #. The list of characters that cause line breaks can be localized.
 #: libnautilus-extensions/nautilus-icon-canvas-item.c:69
@@ -6274,6 +6585,10 @@ msgstr "Rehacer edición"
 msgid "Restore the changed name"
 msgstr "Recuperar el nombre cambiado"
 
+#: libnautilus-extensions/nautilus-password-dialog.c:306
+msgid "Remember this password"
+msgstr "Recordar esta contraseña"
+
 #: libnautilus-extensions/nautilus-preferences.c:76
 msgid "Beginner"
 msgstr "Principiante"
@@ -6288,7 +6603,7 @@ msgid "Advanced"
 msgstr "Avanzado"
 
 # libnautilus-extensions/nautilus-preferences-dialog.c:201
-#: libnautilus-extensions/nautilus-preferences-dialog.c:205
+#: libnautilus-extensions/nautilus-preferences-dialog.c:202
 msgid "Prefs Box"
 msgstr "Preferencias"
 
@@ -6474,6 +6789,47 @@ msgid ""
 msgstr ""
 "Puede configurar que programas se ofrecen para determinados tipos de archivo "
 "en el Centro de Control de GNOME."
+
+#: libnautilus-extensions/nautilus-program-chooser.c:1485
+#, c-format
+msgid "No viewers are available for \"%s\"."
+msgstr "No hay visualizadores disponibles para \"%s\"."
+
+#: libnautilus-extensions/nautilus-program-chooser.c:1486
+msgid "No Viewers Available"
+msgstr "No hay Visualizadores Disponibles"
+
+#: libnautilus-extensions/nautilus-program-chooser.c:1489
+#, c-format
+msgid "No applications are available for \"%s\"."
+msgstr "No hay aplicaciones disponibles para \"%s\"."
+
+# components/help/hyperbola-filefmt.c:398
+# components/help/hyperbola-filefmt.c:671
+#: libnautilus-extensions/nautilus-program-chooser.c:1490
+msgid "No Applications Available"
+msgstr "No hay Aplicaciones Disponibles"
+
+# libnautilus-extensions/nautilus-program-chooser.c:1353
+#. Note: This might be misleading in the components case, since the
+#. * user can't add components to the complete list even from the capplet.
+#. * (They can add applications though.)
+#.
+#: libnautilus-extensions/nautilus-program-chooser.c:1497
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"You can configure which programs are offered for which file types with the "
+"\"File Types and Programs\" part of the GNOME Control Center. Do you want to go "
+"there now?"
+msgstr ""
+"%s\n"
+"\n"
+"Puede configurar que programas se ofrecen para determinados tipos de archivo "
+"en la parte de \"Tipos de archivo y Programas\" del Centro de Control de "
+"GNOME.\n"
+"¿Quiere ir ahí ahora?"
 
 #: libnautilus-extensions/nautilus-program-choosing.c:516
 #, c-format
@@ -6819,6 +7175,20 @@ msgstr "Rehacer Editar"
 #: libnautilus-extensions/nautilus-undo-signal-handlers.c:179
 msgid "Redo the edit"
 msgstr "Rehacer la edición"
+
+# libnautilus-extensions/nautilus-program-chooser.c:188
+# src/nautilus-window.c:606
+#: libnautilus-extensions/nautilus-view-identifier.c:61
+#, c-format
+msgid "View as %s"
+msgstr "Ver como %s"
+
+# src/file-manager/fm-directory-view.c:2403
+# src/file-manager/fm-directory-view.c:2646
+#: libnautilus-extensions/nautilus-view-identifier.c:64
+#, c-format
+msgid "%s Viewer"
+msgstr "Visualizador %s"
 
 # libnautilus-extensions/nautilus-file.c:2936
 #: libnautilus-extensions/nautilus-volume-monitor.c:514
@@ -7531,7 +7901,7 @@ msgid ""
 "information appears as you zoom in closer."
 msgstr ""
 "Elija el orden en que la información aparecerá debajo de los nombres de los "
-"iconos. Aparecerá más información a medida que se achique más la vista."
+"iconos. Aparecerá más información a medida que agrande más la vista."
 
 # src/file-manager/fm-icon-view.c:109
 #: src/file-manager/fm-icon-view.c:157
@@ -8630,11 +9000,11 @@ msgstr "Acerca de Nautilus"
 msgid "Authors"
 msgstr "Autores"
 
-#: src/nautilus-application.c:274
+#: src/nautilus-application.c:275
 msgid "Couldn't Create Required Folder"
 msgstr "No puedo crear la carpeta requerida"
 
-#: src/nautilus-application.c:275
+#: src/nautilus-application.c:276
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -8645,11 +9015,11 @@ msgstr ""
 "Nautilus por favor cree esta carpeta, o pongale los permisos necesarios para "
 "que Nautilus pueda crearla."
 
-#: src/nautilus-application.c:280
+#: src/nautilus-application.c:281
 msgid "Couldn't Create Required Folders"
 msgstr "No puedo crear las carpetas requeridas"
 
-#: src/nautilus-application.c:281
+#: src/nautilus-application.c:282
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -8676,7 +9046,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:406
+#: src/nautilus-application.c:407
 msgid ""
 "Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" from "
 "the console may fix the problem. If not, you can try rebooting the computer "
@@ -8688,7 +9058,7 @@ msgstr ""
 
 # src/nautilus-application.c:353
 #. FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:412
+#: src/nautilus-application.c:413
 msgid ""
 "Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" from "
 "the console may fix the problem. If not, you can try rebooting the computer "
@@ -8734,13 +9104,13 @@ msgstr ""
 #. * wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:443 src/nautilus-application.c:461
-#: src/nautilus-application.c:468
+#: src/nautilus-application.c:444 src/nautilus-application.c:462
+#: src/nautilus-application.c:469
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus no puede ser utilizado ahora debido a un error inesperado."
 
 # src/nautilus-application.c:379
-#: src/nautilus-application.c:444
+#: src/nautilus-application.c:445
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to register the file manager view server."
@@ -8750,7 +9120,7 @@ msgstr ""
 "archivos"
 
 # src/nautilus-application.c:397
-#: src/nautilus-application.c:462
+#: src/nautilus-application.c:463
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the factory.Killing oafd and restarting Nautilus may "
@@ -8761,7 +9131,7 @@ msgstr ""
 "quizás sea una forma de arreglar el problema."
 
 # src/nautilus-application.c:397
-#: src/nautilus-application.c:469
+#: src/nautilus-application.c:470
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the shell object. Killing oafd and restarting Nautilus "
@@ -8772,7 +9142,7 @@ msgstr ""
 "Nautilus quizás ayude a arreglar el problema."
 
 # src/nautilus-application.c:549
-#: src/nautilus-application.c:634
+#: src/nautilus-application.c:635
 msgid ""
 "You are about to run Nautilus as root.\n"
 "\n"
@@ -8783,10 +9153,6 @@ msgstr ""
 "\n"
 "Como root usted puede dañar su sistema si no es cuidadoso y\n"
 "Nautilus no lo detendrá por hacerlo."
-
-#: src/nautilus-application.c:638
-msgid "Quit"
-msgstr "Salir"
 
 # src/nautilus-window-menus.c:1235
 #: src/nautilus-bookmarks-window.c:127
@@ -8821,15 +9187,14 @@ msgstr "Buscar"
 # src/nautilus-application.c:614
 #: src/nautilus-first-time-druid.c:180
 msgid ""
-"Existence of this file indicates that the Nautilus configuration wizard\n"
-"has been presented.\n"
+"Existence of this file indicates that the Nautilus configuration "
+"druid\nhas been presented.\n"
 "\n"
-"You can manually erase this file to present the wizard again.\n"
+"You can manually erase this file to present the druid again.\n"
 "\n"
 msgstr ""
 "La existencia de este archivo indica que el asistente de configuración de "
-"Nautilus\n"
-"ya ha sido mostrado.\n"
+"Nautilus ya ha sido mostrado.\n"
 "\n"
 "Usted puede manualmente borrar este archivo para mostrar el asistente "
 "nuevamente.\n"
@@ -10606,9 +10971,4 @@ msgstr "Adelante"
 #: src/nautilus-zoom-control.c:531
 msgid "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
-
-# src/nautilus-zoom-control.c:481
-#: src/nautilus-zoom-control.c:592
-msgid "%d%%"
-msgstr "%d%%"
 
