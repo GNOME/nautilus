@@ -207,7 +207,8 @@ set_gnome_icon_list_selection (GnomeIconContainer *container,
 		GnomeIconContainerIcon *icon;
 		char *uri;
 		char *s;
-		int icon_x, icon_y, icon_width, icon_height;
+		GdkPixbuf *pixbuf;
+                int icon_x, icon_y;
 
 		icon = p->data;
 		if (!icon->is_selected)
@@ -216,14 +217,15 @@ set_gnome_icon_list_selection (GnomeIconContainer *container,
 		/* Corner of the icon relative to the cursor. */
 		icon_x = icon->x - details->dnd_info->start_x;
 		icon_y = icon->y - details->dnd_info->start_y;
-		icon_width = GNOME_ICON_CONTAINER_ICON_WIDTH (container);
-		icon_height = GNOME_ICON_CONTAINER_ICON_HEIGHT (container);
 
 		uri = nautilus_icons_controller_get_icon_uri (details->controller, icon->data);
-		s = g_strdup_printf ("%s\r%d:%d:%d:%d\r\n",
-				     uri, icon_x, icon_y, icon_width, icon_height);
+		pixbuf = nautilus_icons_controller_get_icon_image(details->controller, icon->data);
+                
+                s = g_strdup_printf ("%s\r%d:%d:%d:%d\r\n",
+				     uri, icon_x, icon_y, pixbuf->art_pixbuf->width, pixbuf->art_pixbuf->height);
 		g_free (uri);
-
+                gdk_pixbuf_unref(pixbuf);
+                
 		g_string_append (data, s);
 		g_free (s);
 	}
@@ -360,7 +362,7 @@ get_gnome_icon_list_selection (GnomeIconContainer *container,
 
 		item->got_icon_position = sscanf (p, "%d:%d:%d:%d%*s",
 						  &item->icon_x, &item->icon_y,
-						  &item->icon_height, &item->icon_width) == 4;
+						  &item->icon_width, &item->icon_height) == 4;
 		if (!item->got_icon_position)
 			g_warning ("Invalid special/x-gnome-icon-list data received: "
 				   "invalid icon position specification.");
