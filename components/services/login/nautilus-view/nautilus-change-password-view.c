@@ -81,7 +81,7 @@ struct _NautilusChangePasswordViewDetails {
 };
 
 #define SERVICE_SUMMARY_LOCATION                "eazel:"
-#define SERVICE_HELP_LOCATION                   "http://www.eazel.com"
+#define SERVICE_HELP_LOCATION                   "eazel-services://anonymous/account/login/lost_pwd_form"
 
 static void       nautilus_change_password_view_initialize_class (NautilusChangePasswordViewClass     *klass);
 static void       nautilus_change_password_view_initialize       (NautilusChangePasswordView          *view);
@@ -143,6 +143,7 @@ generate_change_password_form (NautilusChangePasswordView	*view)
 	GtkWidget	*maintenance_label;
 	GtkWidget	*title;
 	char		*username;
+	GdkFont		*font;
 
 	/* allocate a box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
@@ -228,8 +229,11 @@ generate_change_password_form (NautilusChangePasswordView	*view)
 	/* allocate the command buttons - first the change_password button */
 
 	view->details->change_password_button = gtk_button_new ();
-	change_password_label = nautilus_label_new (_(" Change my password! "));
-	nautilus_label_set_font_size (NAUTILUS_LABEL (change_password_label), 12);
+	change_password_label = gtk_label_new (_(" Change my password! "));
+	font = nautilus_font_factory_get_font_from_preferences (12);
+	nautilus_gtk_widget_set_font (change_password_label, font);
+	gdk_font_unref (font);
+
 	gtk_widget_show (change_password_label);
 	gtk_container_add (GTK_CONTAINER (view->details->change_password_button), change_password_label);
 
@@ -247,8 +251,11 @@ generate_change_password_form (NautilusChangePasswordView	*view)
         /* now allocate the account maintenance button */
 
         maintenance_button = gtk_button_new ();
-        maintenance_label = nautilus_label_new (_("  I need some help!  "));
-	nautilus_label_set_font_size (NAUTILUS_LABEL (maintenance_label), 12);
+        maintenance_label = gtk_label_new (_("  I need some help!  "));
+	font = nautilus_font_factory_get_font_from_preferences (12);
+	nautilus_gtk_widget_set_font (maintenance_label, font);
+	gdk_font_unref (font);
+
         gtk_widget_show (maintenance_label);
         gtk_container_add (GTK_CONTAINER (maintenance_button), maintenance_label);
 	temp_box = gtk_hbox_new (TRUE, 0);
