@@ -234,13 +234,14 @@ icon_set_position (NautilusIcon *icon,
 		width = x2 - x1;
 		height = y2 - y1;
 				
-		if (x > right) {
+		if (x > right - DESKTOP_ICON_SAFETY_PAD) {
 			x = right - DESKTOP_ICON_SAFETY_PAD;
 		}
+		
 		if (x < left) {
 			x = left;
 		}
-		if (y > bottom - height) {
+		if (y > bottom - DESKTOP_ICON_SAFETY_PAD) {
 			y = bottom - DESKTOP_ICON_SAFETY_PAD;
 		}
 		if (y < top) {
