@@ -291,8 +291,6 @@ create_and_set_up_tree_view (FMListView *view)
 	g_signal_connect_object (view->details->model, "sort_column_changed",
 				 G_CALLBACK (sort_column_changed_callback), view, 0);
 
-	g_object_unref (view->details->model);
-	
 	gtk_tree_selection_set_mode (gtk_tree_view_get_selection (view->details->tree_view), GTK_SELECTION_MULTIPLE);
 	gtk_tree_view_set_rules_hint (view->details->tree_view, TRUE);
 
@@ -432,7 +430,9 @@ fm_list_view_clear (FMDirectoryView *view)
 
 	list_view = FM_LIST_VIEW (view);
 	
-	fm_list_model_clear (list_view->details->model);
+	if (list_view->details->model != NULL) {
+		fm_list_model_clear (list_view->details->model);
+	}
 }
 
 static void
@@ -727,6 +727,21 @@ fm_list_view_sort_directories_first_changed (FMDirectoryView *view)
 }
 
 static void
+fm_list_view_dispose (GObject *object)
+{
+	FMListView *list_view;
+
+	list_view = FM_LIST_VIEW (object);
+
+	if (list_view->details->model) {
+		g_object_unref (list_view->details->model);
+		list_view->details->model = NULL;
+	}
+
+	G_OBJECT_CLASS (parent_class)->dispose (object);
+}
+
+static void
 fm_list_view_finalize (GObject *object)
 {
 	FMListView *list_view;
@@ -757,6 +772,7 @@ fm_list_view_class_init (FMListViewClass *class)
 
 	fm_directory_view_class = FM_DIRECTORY_VIEW_CLASS (class);
 
+	G_OBJECT_CLASS (class)->dispose = fm_list_view_dispose;
 	G_OBJECT_CLASS (class)->finalize = fm_list_view_finalize;
 
 	fm_directory_view_class->add_file = fm_list_view_add_file;

@@ -671,6 +671,8 @@ fm_list_model_clear (FMListModel *model)
 {
 	GtkTreeIter iter;
 
+	g_return_if_fail (model != NULL);
+
 	while (model->details->files != NULL) {
 		iter.stamp = model->details->stamp;
 		iter.user_data = model->details->files;

@@ -236,7 +236,8 @@ nautilus_file_background_read_desktop_settings (char **color,
 		(theme_name, desktop_theme_source, &default_color, &default_image_uri, &default_placement);
 
         if (prefs->wallpaper_enabled) {
-                if (prefs->wallpaper_filename != NULL) {
+                if (prefs->wallpaper_filename != NULL &&
+                    prefs->wallpaper_filename [0] != '\0') {
                         *image = gnome_vfs_get_uri_from_local_path (prefs->wallpaper_filename);
                 } else {
                         *image = g_strdup (default_image_uri);

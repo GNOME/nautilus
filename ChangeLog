@@ -1,3 +1,34 @@
+2002-05-17  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: require libbonoboui >= 1.116.1 [ CVS ]
+
+	* src/file-manager/fm-list-model.c
+	(fm_list_model_clear): add pre-condition.
+
+	* src/file-manager/fm-list-view.c
+	(create_and_set_up_tree_view): hold a ref on the model.
+	(fm_list_view_dispose): impl.
+	(fm_list_view_class_init): upd.
+	(fm_list_view_clear): only clear a non NULL model.
+
+	* src/file-manager/fm-icon-view.c
+	(get_icon_container): return NULL if we've no container.
+	(fm_icon_view_clear): tolerate a NIL icon_container
+	( on a 2nd dispose perhaps )
+
+	* libnautilus-private/nautilus-directory-background.c
+	(nautilus_file_background_read_desktop_settings): check
+	the wallpaper_filename is not empty.
+
+	* src/file-manager/fm-directory-view.c
+	(fm_directory_view_destroy): hoist pointer
+	NULLification up the method.
+
+2002-05-16  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-bookmark.c
+	(nautilus_bookmark_get_pixmap_and_mask): kill, unused.
+
 2002-05-17  Anders Carlsson  <andersca@gnu.org>
 
 	* src/file-manager/fm-directory-view.c: Remove some

@@ -85,10 +85,6 @@ int                   nautilus_bookmark_compare_uris           (gconstpointer   
 								gconstpointer          b);
 
 /* Helper functions for displaying bookmarks */
-gboolean              nautilus_bookmark_get_pixmap_and_mask    (NautilusBookmark      *bookmark,
-								guint                  icon_size,
-								GdkPixmap            **pixmap_return,
-								GdkBitmap            **mask_return);
 GdkPixbuf *           nautilus_bookmark_get_pixbuf             (NautilusBookmark      *bookmark,
 								guint                  icon_size,
 								gboolean               optimize_for_anti_aliasing);

@@ -1285,11 +1285,6 @@ fm_directory_view_destroy (GtkObject *object)
 	FMDirectoryView *view;
 
 	view = FM_DIRECTORY_VIEW (object);
-	
-	monitor_file_for_open_with (view, NULL);
-
-	fm_directory_view_stop (view);
-	fm_directory_view_clear (view);
 
 	/* Since we are owned by the NautilusView, if we're going it's
 	 * gone. It would be even better to NULL this out when the
@@ -1298,6 +1293,11 @@ fm_directory_view_destroy (GtkObject *object)
 	 */
 	view->details->zoomable = NULL;
 	view->details->nautilus_view = NULL;
+	
+	monitor_file_for_open_with (view, NULL);
+
+	fm_directory_view_stop (view);
+	fm_directory_view_clear (view);
 
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -1674,6 +1674,7 @@ done_loading (FMDirectoryView *view)
 			selection = file_list_from_uri_list (uris_selected);
 			eel_g_list_free_deep (uris_selected);
 			
+
 			view->details->selection_change_is_due_to_shell = TRUE;
 			fm_directory_view_set_selection (view, selection);
 			view->details->selection_change_is_due_to_shell = FALSE;

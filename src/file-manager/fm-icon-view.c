@@ -238,10 +238,18 @@ fm_icon_view_finalize (GObject *object)
 static NautilusIconContainer *
 get_icon_container (FMIconView *icon_view)
 {
-	g_return_val_if_fail (FM_IS_ICON_VIEW (icon_view), NULL);
-	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (GTK_BIN (icon_view)->child), NULL);
+	GtkBin *bin;
 
-	return NAUTILUS_ICON_CONTAINER (GTK_BIN (icon_view)->child);
+	g_return_val_if_fail (FM_IS_ICON_VIEW (icon_view), NULL);
+
+	bin = GTK_BIN (icon_view);
+	if (bin->child) {
+		g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (GTK_BIN (icon_view)->child), NULL);
+		
+		return NAUTILUS_ICON_CONTAINER (GTK_BIN (icon_view)->child);
+	} else {
+		return NULL;
+	}
 }
 
 static gboolean
@@ -447,6 +455,8 @@ fm_icon_view_clear (FMDirectoryView *view)
 	g_return_if_fail (FM_IS_ICON_VIEW (view));
 
 	icon_container = get_icon_container (FM_ICON_VIEW (view));
+	if (!icon_container)
+		return;
 
 	/* Clear away the existing icons. */
 	nautilus_icon_container_for_each (icon_container, unref_cover, NULL);

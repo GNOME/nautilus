@@ -199,25 +199,6 @@ nautilus_bookmark_get_name (NautilusBookmark *bookmark)
 	return g_strdup (bookmark->details->name);
 }
 
-gboolean	    
-nautilus_bookmark_get_pixmap_and_mask (NautilusBookmark *bookmark,
-				       guint icon_size,
-				       GdkPixmap **pixmap_return,
-				       GdkBitmap **mask_return)
-{
-	GdkPixbuf *pixbuf;
-
-	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, icon_size, FALSE);
-	if (pixbuf == NULL) {
-		return FALSE;
-	}
-
-	gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap_return, mask_return, EEL_STANDARD_ALPHA_THRESHHOLD);
-	g_object_unref (pixbuf);
-
-	return TRUE;
-}
-
 GdkPixbuf *	    
 nautilus_bookmark_get_pixbuf (NautilusBookmark *bookmark,
 			      guint icon_size,
