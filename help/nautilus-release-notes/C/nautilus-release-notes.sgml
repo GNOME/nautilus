@@ -3,12 +3,11 @@
 
 <!--
       (Do not remove this comment block.)
-  Version: 1.0.1
-  Last modified: March 9, 2001
+  Version: 1.0.2
+  Last modified: April 12, 2001
   This document is maintained by Eazel Inc.
   Maintainers:
                Eazel Inc.
-               Vera Horiuchi <vera@eazel.com>
                Dan Mueth <dan@eazel.com>
   Translators:
                (translators put your name and email here)
@@ -21,7 +20,7 @@
 <article id="index"> <!-- please do not change the id -->
 
   <artheader>
-    <title>Nautilus 1.0 Release Notes</title>
+    <title>Nautilus 1.0.2 Release Notes</title>
     <copyright>
       <year>2001</year>
       <holder>Eazel Inc.</holder>
@@ -70,8 +69,8 @@
   <title>Introduction</title>
 
   <para>
-   These release notes, last updated March 9, 2001, describe known
-   issues for Nautilus versions 1.0.
+   These release notes, last updated April 12, 2001, describe known
+   issues for Nautilus versions 1.0.2.
   </para>
 
   <para>
@@ -88,7 +87,7 @@
 
  </sect1>
 
- <sect1 id="new">
+ <sect1 id="new10">
   <title>What's New in Nautilus 1.0</title>
 
   <itemizedlist>
@@ -153,6 +152,28 @@
 
    </itemizedlist>
   </sect1>
+
+ <sect1 id="new102">
+  <title>What's New in Nautilus 1.0.2</title>
+
+  <itemizedlist>
+
+   <listitem>
+    <para>
+     Translated strings and documents have been updated.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     Several critical bugs have been fixed, including several which
+     only appeared under certain locales.
+    </para>
+   </listitem>
+
+   </itemizedlist>
+  </sect1>
+
 
   <sect1 id="require">
    <title>System Requirements</title>
@@ -374,7 +395,27 @@
 
    </orderedlist>
 
- </sect1>
+  </sect1>
+
+  <sect1 id="mozilla">
+   <title>Mozilla</title>
+
+   <para>
+    Note that there are some problems using Mozilla 0.8.1 with 
+    this release of Nautilus.  You should use Mozilla 0.8 
+    with this release of Nautilus.
+   </para>
+  </sect1>
+
+  <sect1 id="searching">
+   <title>Searching</title>
+
+   <para>
+    The find features used to search the files on your local machine 
+    are not available in Nautilus 1.0.2.  These features will be
+    available in another release soon. 
+   </para>
+  </sect1>
 
 </article>
 
