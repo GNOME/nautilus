@@ -370,7 +370,7 @@ generate_summary_form (NautilusSummaryView	*view)
 		/* Create the Service News Frame */	
 		frame = gtk_vbox_new (FALSE, 0);
 		gtk_widget_show (frame);		
-		gtk_box_pack_start (GTK_BOX (view->details->form), frame, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (view->details->form), frame, TRUE, TRUE, 0);
 		
 		/* create the service news scroll widget */
 		
@@ -416,7 +416,7 @@ generate_summary_form (NautilusSummaryView	*view)
 		/* draw parent vbox and connect it to the service news frame */
 		gtk_container_add (GTK_CONTAINER (viewport), temp_box);
 		gtk_container_add (GTK_CONTAINER (temp_scrolled_window), viewport);
-		gtk_box_pack_start (GTK_BOX (frame), temp_scrolled_window, FALSE, FALSE, 0);		
+		gtk_box_pack_start (GTK_BOX (frame), temp_scrolled_window, TRUE, TRUE, 0);		
 	}
 #ifdef DEBUG_pepper
 	g_print ("end news load.\n");
@@ -433,7 +433,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	/* Create the notebook container for services */
 	notebook = gtk_notebook_new ();
 	gtk_widget_show (notebook);
-	gtk_container_add (GTK_CONTAINER (view->details->form), notebook);
+	gtk_box_pack_start (GTK_BOX (view->details->form), notebook, TRUE, TRUE, 0);
 	
 	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), FALSE);
 	view->details->services_notebook = notebook;
@@ -556,7 +556,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	notebook = gtk_notebook_new ();
 	gtk_widget_show (notebook);
 	gtk_container_add (GTK_CONTAINER (notebook_vbox), notebook);
-	gtk_container_add (GTK_CONTAINER (view->details->form), notebook_vbox);
+	gtk_box_pack_start (GTK_BOX (view->details->form), notebook_vbox, TRUE, TRUE, 0);
 	
 	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), FALSE);
 	view->details->updates_notebook = notebook;
