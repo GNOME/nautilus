@@ -1399,7 +1399,7 @@ static GtkActionEntry icon_view_entries[] = {
     G_CALLBACK (action_unstretch_callback) },
   { "Clean Up", NULL,                               /* name, stock id */
     N_("Clean _Up by Name"), NULL,                     /* label, accelerator */
-    N_("Reposition icons to better fit in the window and avoaction overlapping"),      /* tooltip */ 
+    N_("Reposition icons to better fit in the window and avoid overlapping"),      /* tooltip */ 
     G_CALLBACK (action_clean_up_callback) },
 };
 
