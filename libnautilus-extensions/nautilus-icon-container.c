@@ -23,7 +23,6 @@
 */
 
 #include <config.h>
-
 #include "nautilus-icon-container.h"
 
 #include <math.h>
@@ -1445,20 +1444,15 @@ size_request (GtkWidget *widget,
 }
 
 static void
-size_allocate (GtkWidget *widget,
-	       GtkAllocation *allocation)
+world_width_changed (NautilusIconContainer *container, int new_width)
 {
-	NautilusIconContainer *container;
 	NautilusIconGrid *grid;
 	double world_width;
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
-
-	container = NAUTILUS_ICON_CONTAINER (widget);
 	grid = container->details->grid;
 
 	gnome_canvas_c2w (GNOME_CANVAS (container),
-			  allocation->width, 0,
+			  new_width, 0,
 			  &world_width, NULL);
 
 	nautilus_icon_grid_set_visible_width (grid, world_width);
@@ -1467,6 +1461,15 @@ size_allocate (GtkWidget *widget,
 		relayout (container);
 	}
 	set_scroll_region (container);
+}
+
+static void
+size_allocate (GtkWidget *widget,
+	       GtkAllocation *allocation)
+{
+	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+
+	world_width_changed (NAUTILUS_ICON_CONTAINER (widget), widget->allocation.width);
 }
 
 static void
@@ -2600,6 +2603,8 @@ nautilus_icon_container_set_zoom_level(NautilusIconContainer *container, int new
 	gnome_canvas_set_pixels_per_unit (GNOME_CANVAS (container), pixels_per_unit);
 
 	nautilus_icon_container_request_update_all (container);
+
+	world_width_changed (container, GTK_WIDGET (container)->allocation.width);
 }
 
 /**

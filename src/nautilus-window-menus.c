@@ -335,6 +335,7 @@ append_bookmark_to_menu (NautilusWindow *window,
 	
 	bookmark_holder = g_new (BookmarkHolder, 1);
 	bookmark_holder->window = window;
+	bookmark_holder->bookmark = bookmark;
 
 	/* We double the underscores here to escape them so Bonobo will know they are
 	 * not keyboard accelerator character prefixes. If we ever find we need to
@@ -405,9 +406,7 @@ clear_appended_bookmark_items (NautilusWindow *window,
                                                              p->data,
                                                              &func,
                                                              (gpointer *)&holder);
-                        if (holder != NULL) {
-                                g_free (holder);
-                        }
+                        g_free (holder);
                         bonobo_ui_handler_menu_remove (window->uih, p->data);
 		}
 		else if (strcmp ((const char *) p->data, last_static_item_path) == 0) {

@@ -1,3 +1,16 @@
+2000-04-19  John Sullivan  <sullivan@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(world_width_changed): New function, extracted from size_allocate.
+	(size_allocate): Call world-width-changed.
+	(nautilus_icon_container_set_zoom_level): Call world_width_changed.
+	This makes zooming relayout when in auto-layout mode.
+	
+	* src/nautilus-window-menus.c:
+	(append_bookmark_to_menu): Added line where bookmark is set in
+	BookmarkHolder. This had been accidentally deleted, breaking all
+	bookmarks.
+
 2000-04-19  Pablo Saratxaga <pablo@mandrakesoft.com>
 
 	* configure.in (ALL_LINGUAS): Added Danish language
