@@ -701,7 +701,7 @@ find_and_update_home_link (void)
 				if (nautilus_link_local_is_home_link (link_path)) {
 
 					/* Create the home link */					
-					home_link_name = g_strdup_printf ("%s's Home", g_get_user_name ());
+					home_link_name = g_strdup_printf (_("%s's Home"), g_get_user_name ());
 					home_link_path = nautilus_make_path (desktop_path, home_link_name);
 					
 					home_dir_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
@@ -748,7 +748,7 @@ place_home_directory (FMDesktopIconView *icon_view)
 
 	/* Create the home link */
 	desktop_path = nautilus_get_desktop_directory ();
-	home_link_name = g_strdup_printf ("%s's Home", g_get_user_name ());
+	home_link_name = g_strdup_printf (_("%s's Home"), g_get_user_name ());
 	home_link_path = nautilus_make_path (desktop_path, home_link_name);
 	
 	home_dir_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());

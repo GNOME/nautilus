@@ -98,29 +98,24 @@ get_file_node (NautilusDirectory *directory,
 	       const char *file_name,
 	       gboolean create)
 {
+	GHashTable *hash;
 	xmlNode *root, *node;
 	
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
-	if (directory->details->metafile_node_hash != NULL) {
-		node = g_hash_table_lookup (directory->details->metafile_node_hash,
-					     file_name);
+	hash = directory->details->metafile_node_hash;
+	if (hash != NULL) {
+		node = g_hash_table_lookup (hash, file_name);
 		if (node != NULL) {
 			return node;
 	 	}
 	}
 	
 	if (create) {
-		if (directory->details->metafile_read) {
-			root = create_metafile_root (directory);
-			node = xmlNewChild (root, NULL, "FILE", NULL);
-		} else {
-			node = xmlNewNode (NULL, "FILE");
-		}
+		root = create_metafile_root (directory);
+		node = xmlNewChild (root, NULL, "FILE", NULL);
 		xmlSetProp (node, "NAME", file_name);
-		g_hash_table_insert (directory->details->metafile_node_hash,
-				     xmlMemStrdup (file_name),
-				     node);
+		g_hash_table_insert (hash, xmlMemStrdup (file_name), node);
 		return node;
 	}
 	
@@ -175,8 +170,8 @@ set_metadata_string_in_metafile (NautilusDirectory *directory,
 	}
 
 	/* Data that matches the default is represented in the tree by
-	   the lack of an attribute.
-	*/
+	 * the lack of an attribute.
+	 */
 	if (nautilus_strcmp (default_metadata, metadata) == 0) {
 		value = NULL;
 	} else {
@@ -523,15 +518,18 @@ destroy_xml_string_key (gpointer key, gpointer value, gpointer user_data)
 void
 nautilus_directory_metafile_destroy (NautilusDirectory *directory)
 {
-	if (directory->details->metafile_node_hash != NULL) {
-		g_hash_table_foreach (directory->details->metafile_node_hash,
-				      destroy_xml_string_key, NULL);
-		g_hash_table_destroy (directory->details->metafile_node_hash);
+	GHashTable *hash;
+
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+
+	hash = directory->details->metafile_node_hash;
+	if (hash != NULL) {
+		g_hash_table_foreach (hash, destroy_xml_string_key, NULL);
+		g_hash_table_destroy (hash);
 	}
 	xmlFreeDoc (directory->details->metafile);
 	destroy_metadata_changes_hash_table (directory->details->metadata_changes);
 }
-
 
 char *
 nautilus_directory_get_file_metadata (NautilusDirectory *directory,
@@ -539,11 +537,11 @@ nautilus_directory_get_file_metadata (NautilusDirectory *directory,
 				      const char *key,
 				      const char *default_metadata)
 {
-	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
-	g_return_val_if_fail (file_name != NULL, FALSE);
-	g_return_val_if_fail (file_name[0] != '\0', FALSE);
-	g_return_val_if_fail (key != NULL, FALSE);
-	g_return_val_if_fail (key[0] != '\0', FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
+	g_return_val_if_fail (file_name != NULL, NULL);
+	g_return_val_if_fail (file_name[0] != '\0', NULL);
+	g_return_val_if_fail (key != NULL, NULL);
+	g_return_val_if_fail (key[0] != '\0', NULL);
 
 	if (directory->details->metafile_read) {
 		return get_metadata_string_from_metafile
@@ -637,41 +635,48 @@ nautilus_directory_rename_file_metadata (NautilusDirectory *directory,
 	gboolean found;
 	gpointer key, value;
 	xmlNode *file_node;
-	GHashTable *directory_table;
+	GHashTable *hash;
 	char *old_file_uri, *new_file_uri;
+
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+	g_return_if_fail (old_file_name != NULL);
+	g_return_if_fail (new_file_name != NULL);
 
 	nautilus_directory_remove_file_metadata (directory, new_file_name);
 
 	if (directory->details->metafile_read) {
 		/* Move data in XML document if present. */
-		found = directory->details->metafile_node_hash != NULL
-			&& g_hash_table_lookup_extended (directory->details->metafile_node_hash,
-							 old_file_name, &key, &value);
+		hash = directory->details->metafile_node_hash;
+		found = hash != NULL && g_hash_table_lookup_extended
+			(hash, old_file_name, &key, &value);
 		if (found) {
 			g_assert (strcmp (key, old_file_name) == 0);
 			file_node = value;
-			g_hash_table_remove (directory->details->metafile_node_hash,
+			g_hash_table_remove (hash,
 					     old_file_name);
 			xmlFree (key);
-			g_hash_table_insert (directory->details->metafile_node_hash,
+			g_hash_table_insert (hash,
 					     xmlMemStrdup (new_file_name), value);
 			xmlSetProp (file_node, "NAME", new_file_name);
 			nautilus_directory_request_write_metafile (directory);
 		}
 	} else {
 		/* Move data in hash table. */
-		directory_table = directory->details->metadata_changes;
+		/* FIXME: If there's data for this file in the
+		 * metafile on disk, this doesn't arrange for that
+		 * data to be moved to the new name.
+		 */
+		hash = directory->details->metadata_changes;
 		found = g_hash_table_lookup_extended
-			(directory_table, old_file_name, &key, &value);
+			(hash, old_file_name, &key, &value);
 		if (found) {
-			g_hash_table_remove (directory_table, old_file_name);
+			g_hash_table_remove (hash, old_file_name);
 			g_free (key);
-			g_hash_table_insert (directory_table,
-					     g_strdup (new_file_name), value);
+			g_hash_table_insert (hash, g_strdup (new_file_name), value);
 		}
 	}
 
-	/* rename the thumbnails for the file, if any */
+	/* Rename the thumbnails for the file, if any. */
 	old_file_uri = nautilus_directory_get_file_uri (directory, old_file_name);
 	new_file_uri = nautilus_directory_get_file_uri (directory, new_file_name);
 	nautilus_update_thumbnail_file_renamed (old_file_uri, new_file_uri);
@@ -717,17 +722,26 @@ apply_one_change (gpointer key, gpointer value, gpointer callback_data)
 }
 
 static void
-apply_file_changes (gpointer key, gpointer value, gpointer callback_data)
+apply_file_changes (NautilusDirectory *directory,
+		    const char *file_name,
+		    GHashTable *changes)
 {
 	ChangeContext context;
 
-	g_assert (value != NULL);
-	g_assert (NAUTILUS_IS_DIRECTORY (callback_data));
+	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+	g_assert (file_name != NULL);
+	g_assert (changes != NULL);
 
-	context.directory = callback_data;
-	context.file_name = key;
+	context.directory = directory;
+	context.file_name = file_name;
 
-	g_hash_table_foreach (value, apply_one_change, &context);
+	g_hash_table_foreach (changes, apply_one_change, &context);
+}
+
+static void
+apply_one_file_changes (gpointer key, gpointer value, gpointer callback_data)
+{
+	apply_file_changes (callback_data, key, value);
 	g_hash_table_destroy (value);
 }
 
@@ -738,7 +752,7 @@ nautilus_directory_metafile_apply_pending_changes (NautilusDirectory *directory)
 		return;
 	}
 	g_hash_table_foreach (directory->details->metadata_changes,
-			      apply_file_changes, directory);
+			      apply_one_file_changes, directory);
 	g_hash_table_destroy (directory->details->metadata_changes);
 	directory->details->metadata_changes = NULL;
 }
@@ -798,18 +812,21 @@ nautilus_directory_get_integer_file_metadata (NautilusDirectory *directory,
 	default_as_string = g_strdup_printf ("%d", default_metadata);
 	result_as_string = nautilus_directory_get_file_metadata
 		(directory, file_name, key, default_as_string);
-	
-	/* Handle oddball case of non-existent directory */
+
+	/* Normally we can't get a a NULL, but we check for it here to
+	 * handle the oddball case of a non-existent directory.
+	 */
 	if (result_as_string == NULL) {
 		result = default_metadata;
 	} else {
-		result = atoi (result_as_string);
+		if (sscanf (result_as_string, " %d %*s", &result) != 1) {
+			result = default_metadata;
+		}
 		g_free (result_as_string);
 	}
 
 	g_free (default_as_string);
 	return result;
-
 }
 
 gboolean
@@ -833,57 +850,56 @@ nautilus_directory_set_integer_file_metadata (NautilusDirectory *directory,
 	g_free (default_as_string);
 }
 
-static void
-copy_file_metadata_for_key (NautilusDirectory *source_directory,
-			    const char *source_file_name,
-			    NautilusDirectory *destination_directory,
-			    const char *destination_file_name,
-			    const char *key)
-{
-	char *data;
-
-	data = nautilus_directory_get_file_metadata
-		(source_directory, source_file_name,
-		 key, NULL);
-	nautilus_directory_set_file_metadata
-		(destination_directory, destination_file_name,
-		 key, NULL, data);
-	g_free (data);
-}
-
 void
 nautilus_directory_copy_file_metadata (NautilusDirectory *source_directory,
 				       const char *source_file_name,
 				       NautilusDirectory *destination_directory,
 				       const char *destination_file_name)
 {
-	/* FIXME bugzilla.eazel.com 3343: This does nothing to ensure
-	 * the source directory metadata is read in.
+	xmlNodePtr source_node, node, root;
+	GHashTable *hash, *changes;
+
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (source_directory));
+	g_return_if_fail (source_file_name != NULL);
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (destination_directory));
+	g_return_if_fail (destination_file_name != NULL);
+
+	/* FIXME bugzilla.eazel.com 3343: This does not properly
+	 * handle the case where we don't have the source metadata yet
+	 * since it's not read in.
 	 */
 
-	/* FIXME bugzilla.eazel.com 2808: Change this to copy all the
-	 * metadata, not just a hard-coded set of keys.
-	 */
-	copy_file_metadata_for_key
-		(source_directory, source_file_name,
-		 destination_directory, destination_file_name,
-		 NAUTILUS_METADATA_KEY_NOTES);
-	copy_file_metadata_for_key
-		(source_directory, source_file_name,
-		 destination_directory, destination_file_name,
-		 NAUTILUS_METADATA_KEY_ICON_SCALE);
-	copy_file_metadata_for_key
-		(source_directory, source_file_name,
-		 destination_directory, destination_file_name,
-		 NAUTILUS_METADATA_KEY_ICON_POSITION);
-	copy_file_metadata_for_key
-		(source_directory, source_file_name,
-		 destination_directory, destination_file_name,
-		 NAUTILUS_METADATA_KEY_ANNOTATION);
-	copy_file_metadata_for_key
-		(source_directory, source_file_name,
-		 destination_directory, destination_file_name,
-		 NAUTILUS_METADATA_KEY_CUSTOM_ICON);
+	nautilus_directory_remove_file_metadata
+		(destination_directory, destination_file_name);
+	g_assert (get_file_node (destination_directory, destination_file_name, FALSE) == NULL);
+
+	source_node = get_file_node (source_directory, source_file_name, FALSE);
+	if (source_node != NULL) {
+		if (destination_directory->details->metafile_read) {
+			node = xmlCopyNode (source_node, TRUE);
+			root = create_metafile_root (destination_directory);
+			xmlAddChild (root, node);
+			xmlSetProp (node, "NAME", destination_file_name);
+			g_hash_table_insert (destination_directory->details->metafile_node_hash,
+					     xmlMemStrdup (destination_file_name), node);
+		} else {
+			/* FIXME: Copying data into a destination
+			 * where the metafile was not yet read is not
+			 * implemented.
+			 */
+			g_warning ("not copying metadata");
+		}
+	}
+
+	hash = source_directory->details->metadata_changes;
+	if (hash != NULL) {
+		changes = g_hash_table_lookup (hash, source_file_name);
+		if (changes != NULL) {
+			apply_file_changes (destination_directory,
+					    destination_file_name,
+					    changes);
+		}
+	}
 
 	/* FIXME: Do we want to copy the thumbnail here like in the
 	 * rename and remove cases?
@@ -897,18 +913,21 @@ nautilus_directory_remove_file_metadata (NautilusDirectory *directory,
 	gboolean found;
 	gpointer key, value;
 	xmlNode *file_node;
-	GHashTable *directory_table;
+	GHashTable *hash;
 	char *file_uri;
+
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+	g_return_if_fail (file_name != NULL);
 
 	if (directory->details->metafile_read) {
 		/* Remove data in XML document if present. */
-		found = directory->details->metafile_node_hash != NULL
-			&& g_hash_table_lookup_extended (directory->details->metafile_node_hash,
-							 file_name, &key, &value);
+		hash = directory->details->metafile_node_hash;
+		found = hash != NULL && g_hash_table_lookup_extended
+			(hash, file_name, &key, &value);
 		if (found) {
 			g_assert (strcmp (key, file_name) == 0);
 			file_node = value;
-			g_hash_table_remove (directory->details->metafile_node_hash,
+			g_hash_table_remove (hash,
 					     file_name);
 			xmlFree (key);
 			nautilus_xml_remove_node (file_node);
@@ -917,17 +936,21 @@ nautilus_directory_remove_file_metadata (NautilusDirectory *directory,
 		}
 	} else {
 		/* Remove data from hash table. */
-		directory_table = directory->details->metadata_changes;
+		/* FIXME: If there's data for this file on the
+		 * metafile on disk, this does not arrange for it to
+		 * be removed when the metafile is later read.
+		 */
+		hash = directory->details->metadata_changes;
 		found = g_hash_table_lookup_extended
-			(directory_table, file_name, &key, &value);
+			(hash, file_name, &key, &value);
 		if (found) {
-			g_hash_table_remove (directory_table, file_name);
+			g_hash_table_remove (hash, file_name);
 			g_free (key);
 			metadata_value_destroy (value);
 		}
 	}
 
-	/* delete the thumbnails for the file, if any */
+	/* Delete the thumbnails for the file, if any. */
 	file_uri = nautilus_directory_get_file_uri (directory, file_name);
 	nautilus_remove_thumbnail_for_file (file_uri);
 	g_free (file_uri);
@@ -941,8 +964,9 @@ nautilus_directory_set_metafile_contents (NautilusDirectory *directory,
 	xmlNodePtr node;
 	xmlChar *name;
 
-	g_assert (directory->details->metafile == NULL);
-	g_assert (directory->details->metafile_node_hash == NULL);
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+	g_return_if_fail (directory->details->metafile == NULL);
+	g_return_if_fail (directory->details->metafile_node_hash == NULL);
 
 	hash = g_hash_table_new (g_str_hash, g_str_equal);
 
@@ -956,7 +980,7 @@ nautilus_directory_set_metafile_contents (NautilusDirectory *directory,
 				name = xmlGetProp (node, "NAME");
 				if (g_hash_table_lookup (hash, name) != NULL) {
 					xmlFree (name);
-				/* FIXME: Should we delete these duplicate nodes? */
+					/* FIXME: Should we delete duplicate nodes as we discover them? */
 				} else {
 					g_hash_table_insert (hash, name, node);
 				}

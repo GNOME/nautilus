@@ -1768,8 +1768,9 @@ sect_informaltable_start_element (Context *context,
 	if (!IS_IN_SECT (context))
 		return;
 
-	sect_print (context, "<TABLE BORDER=\"0\" BGCOLOR=\"#E0E0E0\"
-                           CELLSPACING=\"0\" CELLPADDING=\"4\">\n");
+	sect_print (context,
+		    "<TABLE BORDER=\"0\" BGCOLOR=\"#E0E0E0\" "
+		    "CELLSPACING=\"0\" CELLPADDING=\"4\">\n");
 }
 
 void

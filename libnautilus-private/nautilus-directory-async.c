@@ -41,12 +41,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define METAFILE_PERMISSIONS (GNOME_VFS_PERM_USER_READ | GNOME_VFS_PERM_USER_WRITE \
-			      | GNOME_VFS_PERM_GROUP_READ | GNOME_VFS_PERM_GROUP_WRITE \
-			      | GNOME_VFS_PERM_OTHER_READ | GNOME_VFS_PERM_OTHER_WRITE)
-
-#define DIRECTORY_LOAD_ITEMS_PER_CALLBACK 32
-
 /* comment this back in to see messages about each load_directory call:
 #define DEBUG_LOAD_DIRECTORY
 */
@@ -54,6 +48,15 @@
 /* comment this back in to check if async. job calls are balanced
 #define DEBUG_ASYNC_JOBS
 */
+
+#define METAFILE_PERMISSIONS (GNOME_VFS_PERM_USER_READ | GNOME_VFS_PERM_USER_WRITE \
+			      | GNOME_VFS_PERM_GROUP_READ | GNOME_VFS_PERM_GROUP_WRITE \
+			      | GNOME_VFS_PERM_OTHER_READ | GNOME_VFS_PERM_OTHER_WRITE)
+
+#define DIRECTORY_LOAD_ITEMS_PER_CALLBACK 32
+
+/* Keep async. jobs down to this number for all directories. */
+#define MAX_ASYNC_JOBS 10
 
 struct MetafileReadState {
 	gboolean use_public_metafile;
@@ -98,9 +101,6 @@ typedef struct {
 typedef gboolean (* RequestCheck) (const Request *);
 typedef gboolean (* FileCheck) (NautilusFile *);
 
-/* Keep async. jobs down to this number for all directories. */
-#define MAX_ASYNC_JOBS 10
-
 /* Current number of async. jobs. */
 static int async_job_count;
 static GHashTable *waiting_directories;
@@ -118,7 +118,6 @@ static gboolean request_is_satisfied  (NautilusDirectory *directory,
 
 static void     cancel_loading_attributes (NautilusDirectory *directory,
 					   GList             *file_attributes);
-
 
 /* Some helpers for case-insensitive strings.
  * Move to nautilus-glib-extensions?

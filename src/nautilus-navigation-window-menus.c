@@ -608,6 +608,10 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 			time_stamp = g_strdup ("");
 		}
 		
+		/* The copyright character in here is correct for
+		 * Latin-1 encoding, but not for UTF-8, so we have
+		 * to change it when we upgrade to GTK 2.0.
+		 */
 		about = nautilus_about_new (_("Nautilus"),
 					    VERSION,
 					    /* Localize to deal with
@@ -616,7 +620,7 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 					     * not translate the
 					     * company name, please.
 					     */
-					    _("(C) 1999, 2000 Eazel, Inc."),
+					    _("\xA9 1999, 2000 Eazel, Inc."),
 					    authors,
 					    _("Nautilus is a graphical shell\n"
 					      "for GNOME that makes it\n"

@@ -1,3 +1,81 @@
+2000-12-28  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com>
+
+	Fixed bug 2802 (copy all metadata, not just certain items). There
+	are still a few loose ends but it's basically there.
+
+	Fixed bug 5296 (Hardware overview should be localized).
+	Fixed bug 5299 (Spacing problems with sizes in bytes).
+
+	* libnautilus-extensions/nautilus-directory-metafile.c:
+	(get_file_node): Used a local variable for the hash table to make
+	the code more readable because the full expression is too long.
+	Removed the half-baked attempt at using xmlNode objects to
+	represent "changes" data, which no longer seems a likely
+	direction.
+	(nautilus_directory_metafile_destroy): Local variable for hash
+	table.
+	(nautilus_directory_get_file_metadata): Return NULL, not FALSE,
+	since the function returns char *, not gboolean.
+	(nautilus_directory_rename_file_metadata): Local variable for hash
+	table. Also added a FIXME for a case that won't work.
+	(apply_file_changes): Broke out so it can be used elsewhere.
+	(apply_one_file_changes): This is now the version that has the
+	hash table iterator function interface.
+	(nautilus_directory_get_integer_file_metadata): Use sscanf instead
+	of atoi so we can do error checking.
+	(nautilus_directory_copy_file_metadata): Removed the old code that
+	copied fixed keys and wrote new code that copies all the metadata.
+	(nautilus_directory_remove_file_metadata): Local variable for hash
+	table.
+
+	* icons/arlo/arlo.xml: Added an explicit H offset of 0 for the
+	zoom control. It was inheriting the default theme's offset of
+	-2. This seems to indicate a design problem with the "fall back on
+	default" approach for themes, but for now it's nice to have the
+	zoom control looking right again.
+
+	* src/nautilus-window-menus.c:
+	(help_menu_about_nautilus_callback): Use the real copyright
+	character, not "(C)".
+
+	* src/file-manager/fm-desktop-icon-view.c
+	(find_and_update_home_link), (place_home_directory): Mark the
+	"darin's Home" string for localization. Needs improvement beyond
+	this, because just tacking "'s Home" onto the login name is
+	probably no good.
+
+	* components/hardware/nautilus-hardware-view.c: (read_proc_info):
+	Tweak code style a bit. Use g_string_free (FALSE) instead of
+	g_strdup and g_string_free (TRUE).
+	(get_CPU_description): Make this a little more localizable by
+	adding a strdup format string instead of appending things. Added
+	FIXMEs about additional problems.
+	(get_RAM_description): Add a little reality checking on the value
+	read from the file and make a little more localizable.
+	(get_IDE_description): Change to use the gnome-vfs file size
+	formatting functions in the right way. The old code had been
+	changed to not use them at all, probably because the first cut at
+	this code was using it wrong and ran into a 32-bit limit. Use
+	g_string_free (FALSE) instead of g_strdup and g_string_free
+	(TRUE).
+
+	* po/POTFILES.in: Marked nautilus-hardware-view.c as needing
+	localization.
+	
+	* components/help/converters/gnome-db2html2/sect-elements.c:
+	(sect_informaltable_start_element): Fixed a runaway string
+	literal.
+
+	* libnautilus-extensions/nautilus-directory-async.c: Moved the
+	constants to the top of the file and put the compile-time switches
+	at the top of the constants section.
+	
+	* NEWS: Removed out of date news.
+	* README: Fixed a typo.
+	* TODO: Removed out of date tasks.
+
 2000-12-27  Michael Engber  <engber@eazel.com>
 
 	* libnautilus-extensions/nautilus-background-canvas-group.c:
@@ -73,7 +151,7 @@
 	Started work on volume black list.  Added proc and boot to
 	list.  Need to figure out a way to expose this to the UI
 	so it is easy for the user to specify what mounts they
-	wnat dispalyed on the desktop.
+	want displayed on the desktop.
 
 	* libnautilus-extensions/nautilus-drag.c: (add_one_url_list),
 	(add_one_path_list), (nautilus_drag_drag_data_get):

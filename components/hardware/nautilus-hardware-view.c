@@ -28,31 +28,31 @@
 #include <config.h>
 #include "nautilus-hardware-view.h"
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <dirent.h>
-
-#include <libnautilus/libnautilus.h>
+#include <fcntl.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gnome.h>
+#include <gtk/gtksignal.h>
+#include <libgnomevfs/gnome-vfs.h>
+#include <libgnorba/gnorba.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-image.h>
+#include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-string.h>
-#include <libnautilus-extensions/nautilus-label.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gtk/gtksignal.h>
-#include <gnome.h>
-#include <libgnomevfs/gnome-vfs.h>
-#include <libgnorba/gnorba.h>
+#include <libnautilus/libnautilus.h>
 #include <limits.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
+/* FIXME: Hardwired font size here. */
 #define HARDWARE_FONT_SIZE 14
 #define HARDWARE_TITLE_FONT_SIZE 24
 
@@ -153,25 +153,25 @@ nautilus_hardware_view_get_nautilus_view (NautilusHardwareView *hardware_view)
 	return hardware_view->details->nautilus_view;
 }
 
-static char* 
+static char * 
 read_proc_info(const gchar* proc_filename)
 {
 	FILE *thisFile;
 	char *result;
 	char buffer[256];
-	char* path_name = g_strdup_printf("/proc/%s", proc_filename);	
+	char* path_name;
 	GString* string_data = g_string_new("");
 	
-	thisFile = fopen(  path_name, "r");
-	
-	while (fgets(buffer, 255, thisFile) != NULL) {
-		g_string_append(string_data, buffer);		
+        path_name = g_strdup_printf ("/proc/%s", proc_filename);	
+	thisFile = fopen (path_name, "r");
+	g_free (path_name);
+	while (fgets (buffer, 255, thisFile) != NULL) {
+		g_string_append (string_data, buffer);		
 	}
-	fclose(thisFile);
+	fclose (thisFile);
 	
-	result = g_strdup(string_data->str);
-	g_string_free(string_data, TRUE);
-	g_free(path_name);
+	result = string_data->str;
+	g_string_free(string_data, FALSE);
 
 	return result;
 }
@@ -179,7 +179,7 @@ read_proc_info(const gchar* proc_filename)
 /* utility routine to extract information from a string and add it to an XML node */
 
 static char*
-extract_info(gchar* data, const gchar *field_name, gint nth)
+extract_info (gchar* data, const gchar *field_name, gint nth)
 {
 	int index;
 	char **info_array;
@@ -212,40 +212,42 @@ extract_info(gchar* data, const gchar *field_name, gint nth)
 
 /* get descriptive text about the CPU */
 
-static char*
-get_CPU_description(gint nth)
+static char *
+get_CPU_description (int nth)
 {
-	char *temp_str, *result;
-	GString* string_data = g_string_new("");
-	char* proc_data = read_proc_info("cpuinfo");
+	char *proc_data;
+        char *model, *speed, *cache_size;
+	char *result;
 
-	temp_str = extract_info(proc_data, "processor", nth);
-	if(temp_str == NULL) {
-		/* can't find nth processor */
-		g_free(proc_data);
-		g_string_free(string_data, TRUE);
-		return NULL;
-	}
-	g_free (temp_str);
-	
-	temp_str = extract_info(proc_data, "model name", nth);
-	g_string_append(string_data, temp_str);
-	g_string_append(string_data, " CPU\n");
-	g_free(temp_str);
-	
-	temp_str = extract_info(proc_data, "cpu MHz", nth);
-	g_string_append(string_data, temp_str);
-	g_string_append(string_data, " MHz\n");
-	g_free(temp_str);
-	
-	temp_str = extract_info(proc_data, "cache size", nth);
-	g_string_append(string_data, temp_str);
-	g_string_append(string_data, " cache size\n");
-	g_free(temp_str);
+        proc_data = read_proc_info ("cpuinfo");
+	model = extract_info (proc_data, "model name", nth);
+	speed = extract_info (proc_data, "cpu MHz", nth);
+	cache_size = extract_info (proc_data, "cache size", nth);
+	g_free (proc_data);
+
+        /* FIXME: The MHz value always comes in with a "." as the
+         * radix character. We need to change that to the local one
+         * ("," for many European countries).
+         */
+
+        /* FIXME bugzilla.eazel.com 5298: The KB string that comes
+         * from the proc data is wrong -- "kB" is correct, and we use
+         * "K" for file sizes as of this writing (although we use "MB"
+         * and "GB").
+         */
 		
-	g_free(proc_data);
-	result = g_strdup(string_data->str);
-	g_string_free(string_data, TRUE);
+        if (model == NULL || speed == NULL || cache_size == NULL) {
+                result = NULL;
+        } else {
+                result = g_strdup_printf (_("%s CPU\n"
+                                            "%s MHz\n"
+                                            "%s cache size"),
+                                          model, speed, cache_size);
+        }
+
+        g_free (model);
+        g_free (speed);
+        g_free (cache_size);
 
 	return result;	
 }
@@ -255,33 +257,38 @@ static char *
 get_RAM_description (void)
 {
 	char *temp_str, *num_str, *result;
-	GString* string_data = g_string_new("");
-	char* proc_data = read_proc_info("meminfo");
-	
+	char* proc_data;
+
+        proc_data = read_proc_info("meminfo");
+
 	temp_str = extract_info (proc_data, "MemTotal", 0);
-	/* strip kbyte suffix */
+        if (temp_str == NULL || strlen (temp_str) < 3) {
+                g_free (temp_str);
+                return NULL;
+        }
+
+        /* strip kbyte suffix */
 	temp_str[strlen(temp_str) - 3] = '\0';
 
-        num_str = gnome_vfs_format_file_size_for_display (1024 * atoi (temp_str));
-	
-	g_string_append(string_data, num_str);
-	g_string_append(string_data, " RAM");
-	g_free(num_str);
-	g_free(temp_str);
+        num_str = gnome_vfs_format_file_size_for_display (1024 * atol (temp_str));
+	g_free (temp_str);
 
-	g_free(proc_data);
-	result = g_strdup(string_data->str);
-	g_string_free(string_data, TRUE);
+	g_free (proc_data);
+
+	result = g_strdup_printf (_("%s RAM"), num_str);
+
+        g_free (num_str);
 
 	return result;
 }
 
-static char*
-get_IDE_description(char *device)
+static char *
+get_IDE_description (const char *device)
 {
         char *temp_str, *num_str, *result;
         GString* string_data = g_string_new("");
         char *proc_file;
+        GnomeVFSFileSize capacity;
 
         /* Read model information string */
         proc_file = g_strdup_printf("%s/model", device);
@@ -298,28 +305,15 @@ get_IDE_description(char *device)
         
         /* If a hard disk, get the size */
         if(!strcmp(temp_str, "disk\n")) {
-                unsigned long capacity;
-
                 g_free(temp_str);
 
                 proc_file = g_strdup_printf("%s/capacity", device);
                 temp_str = read_proc_info(proc_file);
                 temp_str[strlen(temp_str) - 1] = '\0';
 
-                /* NOTE: this should be 
-                   capacity = strtoul (...)
-                   num_str = gnome_vfs_format_file_size_for_display (512 * capacity);
-                   
-                   (512 bytes pr sector)
-                   but 512 * 23579136 (numsectors) = 12072517632 > unsigned long,
-                   which is the type that gnome_vfs uses */
                 /* This converts & calcs the sectors into MB's */
-                capacity = 512 * (strtoul (temp_str, NULL, 10) / (1024 * 1024));
-                if (capacity > 1024) {
-                        num_str = g_strdup_printf ("%lu GB", capacity / 1024);
-                } else {
-                        num_str = g_strdup_printf ("%lu MB", capacity);
-                }
+                capacity = strtoul (temp_str, NULL, 10);
+                num_str = gnome_vfs_format_file_size_for_display (512 * capacity);
                 g_string_append(string_data, "\n");
                 g_string_append(string_data, num_str);
                 g_free(temp_str);
@@ -328,8 +322,8 @@ get_IDE_description(char *device)
                 g_free(temp_str);
         }
         
-        result = strdup(string_data->str);
-        g_string_free(string_data, TRUE);
+        result = string_data->str;
+        g_string_free (string_data, FALSE);
         
         return result;
 }
