@@ -890,10 +890,11 @@ nautilus_g_hash_table_remove_deep_custom (GHashTable *hash_table, gconstpointer 
 	 */
 	if (g_hash_table_lookup_extended (hash_table, key, &key_in_table, &value)) {
 		g_hash_table_remove (hash_table, key);
-		if (key_free_func) {
+		if (key_free_func != NULL) {
 			key_free_func (key_in_table, key_free_data);
 		}
-		if (value_free_func) {
+		/* handle key == value, don't double free */
+		if (value_free_func != NULL && value != key_in_table) {
 			value_free_func (value, value_free_data);
 		}
 		return TRUE;
@@ -921,11 +922,12 @@ nautilus_g_hash_table_destroy_deep_helper (gpointer key, gpointer value, gpointe
 	HashTableFreeFuncs *free_funcs;
 	free_funcs = (HashTableFreeFuncs *) data;
 	
-	if (free_funcs->key_free_func) {
+	if (free_funcs->key_free_func != NULL) {
 		free_funcs->key_free_func (key, free_funcs->key_free_data);
 	}
-	if (free_funcs->value_free_func) {
-		free_funcs->value_free_func (data, free_funcs->value_free_data);
+	/* handle key == value, don't double free */
+	if (free_funcs->value_free_func != NULL && value != key) {
+		free_funcs->value_free_func (value, free_funcs->value_free_data);
 	}
 	return TRUE;
 }
