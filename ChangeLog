@@ -1,3 +1,25 @@
+2000-11-12  Maciej Stachowiak  <mjs@eazel.com>
+
+	Fixed bugs 4503 and 4584.
+	
+	* components/tree/nautilus-tree-view.c: Added
+	`current_main_view_uri' field to details struct.
+	(nautilus_tree_view_load_uri): Set `current_main_view_uri' field
+	every time, whether or not we end up selecting it.
+	(nautilus_tree_view_destroy): Free `current_main_view_uri' and
+	`selected_uri' fields.
+	(tree_select_row_callback): Only ignore the select if the selected
+	row matches `current_main_view_uri', not just `selected_uri' to
+	fix bug 4584 (Can not reselect the previous directory in the tree
+	when I entered a "hidden" directory in the content view)
+
+	(nautilus_tree_view_button_release): Only select the row on a
+	release of button 1, otherwise ignore to fix bug 4503 ("Tree
+	Sidebar panel treats right-clicks as left-clicks (should do
+	nothing)")
+ 
+	(tree_view_realize_callback): trivial formatting fix. 
+
 2000-11-11  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/help/hyperbola-nav-tree.c

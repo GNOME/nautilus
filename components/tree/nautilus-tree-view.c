@@ -115,6 +115,7 @@ struct NautilusTreeViewDetails {
 
 	NautilusTreeExpansionState *expansion_state;
 	char *selected_uri;
+	char *current_main_view_uri;
 
 	TreeViewCallback root_seen_callback;
 	char *wait_uri;
@@ -844,7 +845,7 @@ tree_view_realize_callback (GtkWidget *widget, gpointer user_data)
 	gtk_style_ref (style);
 
 	new_style = gtk_style_copy (style);
-        gtk_style_ref(new_style);
+        gtk_style_ref (new_style);
 
 	/* calculate a new prelighting color */
 	nautilus_gtk_style_shade (&style->bg[GTK_STATE_SELECTED], 
@@ -1082,6 +1083,9 @@ nautilus_tree_view_destroy (GtkObject *object)
 	nautilus_tree_expansion_state_save (view->details->expansion_state);
 	gtk_object_unref (GTK_OBJECT (view->details->expansion_state));
 
+	g_free (view->details->current_main_view_uri);
+	g_free (view->details->selected_uri);
+
 	g_free (view->details);
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
@@ -1317,6 +1321,9 @@ nautilus_tree_view_load_uri (NautilusTreeView *view,
 
 	canonical_uri = nautilus_make_uri_canonical (uri);
 
+	g_free (view->details->current_main_view_uri);
+	view->details->current_main_view_uri = g_strdup (canonical_uri);
+
 	if (nautilus_strcmp (canonical_uri, view->details->selected_uri) == 0) {
 		g_free (canonical_uri);
 		return;
@@ -1421,7 +1428,7 @@ tree_select_row_callback (NautilusCTree              *tree,
 	uri = nautilus_file_get_uri (view_node_to_file (view, node));
 	
 	if (uri != NULL &&
-	    nautilus_strcmp (view->details->selected_uri, uri) != 0) {
+	    nautilus_strcmp (view->details->current_main_view_uri, uri) != 0) {
 		nautilus_view_open_location (NAUTILUS_VIEW (view->details->nautilus_view), uri);
 		
 		g_free (view->details->selected_uri);
@@ -1863,8 +1870,12 @@ nautilus_tree_view_button_release (GtkWidget *widget, GdkEventButton *event)
 		} else if (distance_squared <= RADIUS) {
 			/* we are close from the place we clicked */
 			/* select current row */
-			gtk_clist_select_row (GTK_CLIST (tree_view->details->tree), 
-					      release_row, release_column);
+
+			/* Only button 1 triggers a selection */
+			if (event->button == 1) {
+				gtk_clist_select_row (GTK_CLIST (tree_view->details->tree), 
+						      release_row, release_column); 
+			}
 		}
 	}
 
