@@ -42,6 +42,7 @@
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-image.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-theme.h>
@@ -154,9 +155,9 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	gtk_widget_show (icon_title_box);
 	gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container), icon_title_box, FALSE, FALSE, 0);	
 	
-	/* allocate a pixwidget to hold the icon */
+	/* allocate a nautilus_image to hold the icon */
 	default_icon_path = nautilus_theme_get_image_path ("gnome-pack-rpm.png");
-	rpm_view->details->package_image = gnome_pixmap_new_from_file (default_icon_path);
+	rpm_view->details->package_image = nautilus_image_new (default_icon_path);
 	g_free (default_icon_path);
 	gtk_widget_show (rpm_view->details->package_image);
 	gtk_box_pack_start (GTK_BOX (icon_title_box), rpm_view->details->package_image, FALSE, FALSE, 8);	
@@ -471,7 +472,7 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 		
 	/* load the standard icon as the default */
 	default_icon_path = nautilus_theme_get_image_path ("gnome-pack-rpm.png");
-    	gnome_pixmap_load_file (GNOME_PIXMAP (rpm_view->details->package_image), default_icon_path);
+    	nautilus_image_set_pixbuf_from_file_name (NAUTILUS_IMAGE (rpm_view->details->package_image), default_icon_path);
         g_free (default_icon_path);
 
 #ifdef EAZEL_SERVICES	       

@@ -357,7 +357,14 @@ nautilus_sidebar_active_panel_matches_id (NautilusSidebar *sidebar, const char *
 		return FALSE;
 	}
 	current_view = gtk_notebook_get_nth_page (GTK_NOTEBOOK (sidebar->details->notebook),
-							sidebar->details->selected_index);
+						  sidebar->details->selected_index);	
+	/* if we can't get the active one, say yes to removing it, to make sure to
+	 * remove the tab
+	 */
+	if (current_view == NULL) {
+		return TRUE;
+	}
+	
 	current_iid = nautilus_view_frame_get_view_iid (NAUTILUS_VIEW_FRAME (current_view));
 	return nautilus_strcmp (current_iid, id) == 0;	
 }
@@ -863,7 +870,9 @@ nautilus_sidebar_remove_panel (NautilusSidebar *sidebar,
 	
 	/* Remove the tab associated with this panel */
 	nautilus_sidebar_tabs_remove_view (sidebar->details->sidebar_tabs, description);
-
+	if (page_num <= sidebar->details->selected_index) {
+		sidebar->details->selected_index -= 1;
+	}
 	g_free (description);
 }
 

@@ -1,3 +1,17 @@
+2001-02-09  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-sidebar.c:
+	(nautilus_sidebar_active_panel_matches_id),
+	(nautilus_sidebar_remove_panel):
+	fixed bug 6005, help tab still left on sidebar after view is hidden,
+	by decrementing the active tab index when an earlier one is deleted,
+	and checking for NULL in active_panel_matches_id.
+
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_initialize),
+	(nautilus_rpm_view_update_from_uri):
+	made it us nautilus_image so the package image is anti-aliased
+
 2001-02-09  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 5903 ("Tighter Layout" can't be changed in
