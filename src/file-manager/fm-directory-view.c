@@ -49,7 +49,6 @@
 #include <libnautilus/nautilus-undo.h>
 #include <libnautilus/nautilus-zoomable.h>
 
-#include <libnautilus-extensions/nautilus-alloc.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>

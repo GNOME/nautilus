@@ -2,7 +2,6 @@
 #include <config.h>
 
 #include <bonobo.h>
-#include <libnautilus-extensions/nautilus-alloc.h>
 #include <gnome.h>
 #include <liboaf/liboaf.h>
 
