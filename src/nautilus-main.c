@@ -198,7 +198,8 @@ main (int argc, char *argv[])
         gnome_init_with_popt_table ("nautilus", VERSION,
 				    argc, argv, options, 0,
 				    &popt_context);
-	
+	gdk_rgb_init ();
+
 	/* Check for argument consistency. */
 	args = poptGetArgs (popt_context);
 	if (perform_self_check && args != NULL) {

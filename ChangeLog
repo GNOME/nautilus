@@ -1,3 +1,30 @@
+2001-01-23  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+	Fixed bug 5943 (Throbber crashes on nautilus startup (crashing
+	Nautilus) with some themes and configurations)
+
+	* components/help/hyperbola-main.c: (main):
+	* components/image-viewer/nautilus-image-view.c:
+	(init_server_factory):
+	* components/mozilla/main.c: (main):
+	* components/music/main.c: (main):
+	* components/notes/nautilus-notes.c: (main):
+	* components/services/install/nautilus-view/main.c: (main):
+	* components/services/login/nautilus-view/main.c: (main):
+	* components/services/summary/nautilus-view/main.c: (main):
+	* components/shell/shell.c:
+	* components/text/main.c: (main):
+	* components/throbber/main.c: (main):
+	* components/tree/main.c: (main):
+	* libnautilus/nautilus-view-standard-main.c:
+	(nautilus_view_standard_main_multi):
+	* nautilus-installer/src/main.c: (main):
+	* src/nautilus-main.c: (main): Added gdk_rgb_init calls. The
+	throbber one was causing a real 100% reproducible crash for me on
+	Nautilus startup, the rest are pre-emptive.
+
 2001-01-23  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* nautilus.spec.in: changed mozilla required version

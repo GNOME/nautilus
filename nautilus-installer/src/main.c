@@ -142,6 +142,7 @@ main (int argc, char *argv[])
 	}
 
 	gnome_init_with_popt_table ("eazel-installer", VERSION, argc, argv, options, 0, NULL);
+	gdk_rgb_init ();
 
 	if (installer_show_build) {
 		printf ("\nEazel Installer v%s (build %s)\n\n", VERSION, BUILD_DATE);
