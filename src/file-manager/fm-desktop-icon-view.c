@@ -122,6 +122,8 @@ static void		get_iso9660_volume_name 		 (DeviceInfo 		*device);
 static void		get_ext2_volume_name 			 (DeviceInfo 		*device);
 static void		remove_mount_symlinks 			 (DeviceInfo 		*device, 
 								  FMDesktopIconView 	*icon_view);
+static void		free_device_info 			 (DeviceInfo 		*device, 
+								  FMDesktopIconView 	*icon_view);
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDesktopIconView, fm_desktop_icon_view, FM_TYPE_ICON_VIEW);
@@ -144,8 +146,13 @@ fm_desktop_icon_view_destroy (GtkObject *object)
 
 	/* Remove symlink mount files */
 	g_list_foreach (icon_view->details->devices, (GFunc)remove_mount_symlinks, icon_view);
+
+	/* Clean up other device info */
+	g_list_foreach (icon_view->details->devices, (GFunc)free_device_info, icon_view);
 	
-	/* Clean up details FIXME: More cleanup needed here */	 
+	/* Clean up details */	 
+	g_hash_table_destroy (icon_view->details->devices_by_fsname);
+	g_list_free (icon_view->details->devices);
 	g_free (icon_view->details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
@@ -350,16 +357,9 @@ mount_device_set_state (DeviceInfo *device, FMDesktopIconView *icon_view)
 }
 
 static void
-local_device_set_state_empty (DeviceInfo *device, FMDesktopIconView *icon_view)
+device_set_state_empty (DeviceInfo *device, FMDesktopIconView *icon_view)
 {
-	switch(device->type) {
-		case DEVICE_EXT2:
-			device->state = STATE_EMPTY;
-			break;
-	
-		default:
-			break;
-	}
+	device->state = STATE_EMPTY;
 }
 
 typedef gboolean (*ChangeFunc)(FMDesktopIconView *view, DeviceInfo *device);
@@ -817,26 +817,29 @@ find_mount_devices (FMDesktopIconView *icon_view, const char *fstab_path)
 	while ((ent = getmntent (mef))) {
 		g_message ("Checking device %s", ent->mnt_fsname);
 
+#if 0
+		/* Think some more about these checks */
 		/* Check for removable device */
 		if (!mntent_is_removable_fs (ent)) {
-		//	continue;
+			continue;
 		}
 
 		if (!mntent_has_option (ent->mnt_opts, MOUNT_OPTIONS_USER)
 			&& !mntent_has_option (ent->mnt_opts, MOUNT_OPTIONS_OWNER)) {
-			//continue;
+			continue;
 		}
-
+#endif
 		/* Add it to out list of mount points */
 		add_mount_device (icon_view, ent);
 	}
+
 
   	endmntent (mef);
 
 	g_list_foreach (icon_view->details->devices, (GFunc) mount_device_set_state, icon_view);
 
-	/* Manually set state of local non-removable volumes to empty*/
-	g_list_foreach (icon_view->details->devices, (GFunc) local_device_set_state_empty, icon_view);
+	/* Manually set state of all volumes to empty so we update */
+	g_list_foreach (icon_view->details->devices, (GFunc) device_set_state_empty, icon_view);
 
 	/* Add a timer function to check for status change in mounted devices */
 	gtk_timeout_add (CHECK_INTERVAL, (GtkFunction) mount_devices_check_status, icon_view);
@@ -881,6 +884,47 @@ static void
 remove_mount_symlinks (DeviceInfo *device, FMDesktopIconView *icon_view)
 {
 	remove_mount_link (device);
+}
+
+
+static void
+free_device_info (DeviceInfo *device, FMDesktopIconView *icon_view)
+{
+
+	if (device->device_fd != -1) {
+		close (device->device_fd);
+		device->device_fd = -1;
+	}
+	
+	if (device->fsname != NULL) {
+		g_free (device->fsname);
+		device->fsname = NULL;
+	}
+
+	if (device->mount_path != NULL) {
+		g_free (device->mount_path);
+		device->mount_path = NULL;
+	}
+
+	if (device->mount_type != NULL) {
+		g_free (device->mount_type);
+		device->mount_type = NULL;
+	}
+
+	if (device->volume_name != NULL) {
+		g_free (device->volume_name);
+		device->volume_name = NULL;
+	}
+
+	if (device->link_uri != NULL) {
+		g_free (device->link_uri);
+		device->link_uri = NULL;
+	}
+
+	if (device->file != NULL) {
+		nautilus_file_unref (device->file);
+		device->file = NULL;
+	}
 }
 
 static void

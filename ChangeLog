@@ -1,3 +1,22 @@
+2000-07-25  Gene Z. Ragan  <gzr@eazel.com>
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_destroy)
+	Clean up all of our symbolic links to mounted volumes.
+
+	(device_set_state_empty)
+	Set all devices to empty to start with.  Force a poll
+	of all devices in fstab.
+	
+	(find_mount_devices)
+	Call device_set_state_empty () on all device entries.
+
+	(remove_mount_symlinks)
+	Utility function to clear out device mouny symbolic link.
+	
+	(free_device_info):
+	Clean up all data in DeviceEntry structure.
+
 2000-07-25  Robey Pointer  <robey@eazel.com>
 
 	*
@@ -18,6 +37,7 @@
 	delete the RPMs after an install.  It doesn't entirely work yet
 	(not all files are deleted) pending a change in the install API.
 
+>>>>>>> 1.1088
 2000-07-25  Arlo Rose  <set EMAIL_ADDRESS environment variable>
 
 	* icons/Makefile.am:
@@ -26,6 +46,7 @@
 	It will change in the future when/if I clean up or change the
 	real trash can icon.
 	
+>>>>>>> 1.1087
 2000-07-25  Robey Pointer  <robey@eazel.com>
 
 	*
