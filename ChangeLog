@@ -1,3 +1,14 @@
+2003-10-02  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-container.c:
+	(placement_grid_new), (canvas_position_to_grid_position),
+	(find_empty_location), (lay_down_icons_tblr),
+	(nautilus_icon_container_scroll_to_icon):
+	Merge from HEAD:
+	Force any scheduled relayout to run before scrolling.
+	Separate SNAP_SIZE into SNAP_SIZE_X and SNAP_SIZE_Y.
+	Make SNAP_SIZE_Y 1/4 of old SNAP_SIZE.
+
 2003-09-29  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-properties-window.c (permission_button_toggled):
