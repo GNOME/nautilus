@@ -52,8 +52,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#define DEFAULT_RPM_DB_ROOT "/var/lib/rpm"
-
 enum {
 	DOWNLOAD_PROGRESS,
 	PREFLIGHT_CHECK,

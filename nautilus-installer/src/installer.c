@@ -34,6 +34,7 @@
 #include <libtrilobite/helixcode-utils.h>
 #include <eazel-install-xml-package-list.h>
 #include <eazel-install-protocols.h>
+#include <eazel-install-query.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <dirent.h>
@@ -105,9 +106,17 @@ typedef struct {
 #define RETRY_TITLE	_("Just so you know...")
 #define FINISHED_TITLE	_("Congratulations!")
 
+#define EAZEL_HACKING_TEXT _("You have the eazel-hacking environment installed.\n" \
+			     "That does not mix well with Nautilus PR2, so I'm\n" \
+			     "going to remove the eazel-hacking enviroment for you.\n" \
+			     "Do note, that there will be leftovers in\n" \
+			     " \xB7 /gnome\n" \
+			     " \xB7 /gnome-source\n" \
+			     "that you should manually remove.")
+
 #define WHAT_TO_INSTALL_LABEL _("What would you like to install?")
 
-#define NAUTILUS_INSTALLER_RELEASE
+#undef NAUTILUS_INSTALLER_RELEASE
 
 int installer_debug = 0;
 int installer_test = 0;
@@ -651,6 +660,67 @@ dont_start_over (GnomeDruidPage *druid_page, GnomeDruid *druid, EazelInstaller *
 	return TRUE;	/* go to error page instead of cancelling */
 }
 
+static void
+insert_info_page (EazelInstaller *installer,
+		  char *title_text,
+		  char *info_text)
+{
+	GtkWidget *info_page;
+	GtkWidget *vbox;
+	GtkWidget *hbox;
+	GtkWidget *pixmap;
+	GtkWidget *title;
+	GtkWidget *label;
+
+	info_page = nautilus_druid_page_eazel_new_with_vals (NAUTILUS_DRUID_PAGE_EAZEL_OTHER,
+							    NULL,
+							    NULL, 
+							    NULL,
+							    NULL,
+							    create_pixmap (GTK_WIDGET (installer->window),
+									   bootstrap_background));
+
+
+	gtk_widget_show (info_page);
+
+	vbox = gtk_vbox_new (FALSE, 0);
+	gtk_widget_set_uposition (vbox, ERROR_SYMBOL_X, ERROR_SYMBOL_Y);
+	gtk_widget_show (vbox);
+	nautilus_druid_page_eazel_put_widget (NAUTILUS_DRUID_PAGE_EAZEL (info_page), vbox);
+
+	title = gtk_label_new_with_font (title_text, FONT_TITLE);
+	gtk_label_set_justify (GTK_LABEL (title), GTK_JUSTIFY_LEFT);
+	gtk_widget_show (title);
+	pixmap = create_pixmap_widget (info_page, error_symbol);
+	gtk_widget_show (pixmap);
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), pixmap, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), title, FALSE, FALSE, 0);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+
+	add_padding_to_box (vbox, 0, 20);
+
+	label = gtk_label_new (info_text);
+	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+	gtk_label_set_line_wrap (GTK_LABEL (label), FALSE);
+	gtk_widget_show (label);
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 30);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+
+
+	gtk_signal_connect (GTK_OBJECT (info_page), "cancel",
+			    GTK_SIGNAL_FUNC (druid_cancel),
+			    installer);
+	gnome_druid_insert_page (installer->druid, 
+				 installer->back_page,
+				 GNOME_DRUID_PAGE (info_page));
+	installer->back_page = GNOME_DRUID_PAGE (info_page);
+							    
+}
+
 /* give the user an opportunity to retry the install, with new info */
 static void
 jump_to_retry_page (EazelInstaller *installer)
@@ -854,6 +924,10 @@ create_window (EazelInstaller *installer)
 
 	what_to_do_page = create_what_to_do_page (druid, window);
 	install_page = create_install_page (druid, window);
+
+	gtk_signal_connect (GTK_OBJECT (what_to_do_page), "next",
+			    GTK_SIGNAL_FUNC (start_over),
+			    installer);
 
 	gtk_signal_connect (GTK_OBJECT (druid), "cancel",
 			    GTK_SIGNAL_FUNC (druid_cancel),
@@ -1655,14 +1729,59 @@ check_system (EazelInstaller *installer)
 					      "systems.  You will have to download the source youself."), "");
 			return FALSE;
 		}
+	} else if (dist.version_major != 6) {
+			jump_to_error_page (installer, NULL,
+					    _("Sorry, but this preview installer only works for Red Hat\n"
+					      "Linux 6.x systems."), "");
+			return FALSE;
 	}
 
-	if (!installer_test && g_file_test ("/etc/eazel/profile/bashrc", G_FILE_TEST_ISFILE)) {
-		jump_to_error_page (installer, NULL,
-				    _("No, you've got the eazel-hacking environment.\n"
-				      "You definitely do not want to run the installer\n"
-				      "as it will screw up your system."), "");
-		return FALSE;
+#if 0
+	{
+                /*if (!installer_test && g_file_test ("/etc/eazel/profile/bashrc", G_FILE_TEST_ISFILE)) { */
+		GList *matches = NULL;
+		matches = eazel_install_simple_query (installer->service, 
+						      "eazel-hacking",
+						      EI_SIMPLE_QUERY_MATCHES,
+						      0,
+						      NULL);
+		if (matches) {
+
+			PackageData *pack = packagedata_new ();
+			pack->name = g_strdup ("eazel-hacking");
+			add_force_remove (installer, pack);
+			packagedata_destroy (pack, FALSE);
+
+			insert_info_page (installer,
+					  "Eazel Hacking",
+					  EAZEL_HACKING_TEXT);
+			
+		}
+	}
+#endif
+	return TRUE;
+}
+
+static gboolean
+more_check_system (EazelInstaller *installer)
+{
+	
+	GList *matches = NULL;
+	matches = eazel_install_simple_query (installer->service, 
+					      "eazel-hacking",
+					      EI_SIMPLE_QUERY_MATCHES,
+					      0,
+					      NULL);
+	if (matches) {
+		
+		PackageData *pack = packagedata_new ();
+		pack->name = g_strdup ("eazel-hacking");
+		add_force_remove (installer, pack);
+		
+		insert_info_page (installer,
+				  "Eazel Hacking",
+				  EAZEL_HACKING_TEXT);
+		
 	}
 
 	return TRUE;
@@ -1861,6 +1980,10 @@ eazel_installer_initialize (EazelInstaller *object) {
 	installer->must_have_categories = NULL;
 	installer->implicit_must_have = NULL;
 	installer->dont_show = NULL;
+	installer->failure_info = NULL;
+	installer->install_categories = NULL;
+	installer->force_categories = NULL;
+	installer->force_remove_categories = NULL;
 
 	installer->window = create_window (installer);
 
@@ -1876,8 +1999,6 @@ eazel_installer_initialize (EazelInstaller *object) {
 	while (gtk_events_pending ()) {
 		gtk_main_iteration ();
 	}
-
-	installer->failure_info = NULL;
 
 	installer->service =  
 		EAZEL_INSTALL (gtk_object_new (TYPE_EAZEL_INSTALL,
@@ -1902,6 +2023,7 @@ eazel_installer_initialize (EazelInstaller *object) {
 					       "cgi_path", installer_cgi_path ? installer_cgi_path : CGI_PATH,
 					       NULL));
 
+	more_check_system (installer);
 	
 	gtk_signal_connect (GTK_OBJECT (installer->service), 
 			    "download_progress", 
@@ -1950,8 +2072,6 @@ eazel_installer_initialize (EazelInstaller *object) {
 	}
 
 	installer->categories = parse_local_xml_package_list (package_destination, &splash_text, &finish_text);
-	installer->install_categories = NULL;
-	installer->force_categories = NULL;
 
 	if (!installer->categories) {
 		CategoryData *cat = categorydata_new ();

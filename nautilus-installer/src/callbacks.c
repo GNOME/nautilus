@@ -84,7 +84,7 @@ begin_install (EazelInstaller  *installer)
 		g_message ("I'm now here : %s:%d", __FILE__, __LINE__);
 		/* return TRUE; */
 	} 
-	if (installer->force_categories) {
+	if (installer->failure_info==NULL && installer->force_categories) {
 		g_message ("using force_categories");
 		eazel_installer_do_install (installer, installer->force_categories, TRUE, FALSE);
 		categorydata_list_destroy (installer->force_categories);
@@ -93,7 +93,7 @@ begin_install (EazelInstaller  *installer)
 		/* return TRUE; */
 	} 
 
-	if (installer->install_categories) { 
+	if (installer->failure_info==NULL && installer->install_categories) { 
 		g_message ("using install_categories");
 		if (eazel_installer_do_install (installer, installer->install_categories, FALSE, FALSE)) {
 			/* still more to do... */

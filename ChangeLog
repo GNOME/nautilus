@@ -1,3 +1,29 @@
+2000-10-23  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* configure.in:
+	Some code to test for rpm version. We require 3.0.4. If it fucks
+	up, feel free to revert.
+	
+	* components/services/install/lib/eazel-install-private.h:
+	* components/services/install/lib/eazel-install-object.c:
+	Moved the DEFAULT_RPM_DB_ROOT into -private.h
+	
+	* components/services/install/lib/eazel-install-query.c:
+	(eazel_install_simple_rpm_query):
+	Code so you can call the query function directly
+	(EAZEL_INSTALL_SLIM/NO_CORBA)
+	
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_fill_from_rpm_header):
+	Moved support for rpm < 3.0.4
+	
+	* nautilus-installer/src/Makefile:
+	* nautilus-installer/src/callbacks.c: (begin_install):
+	* nautilus-installer/src/installer.c: (insert_info_page),
+	(create_window), (check_system), (more_check_system),
+	(eazel_installer_initialize):
+	If eazel-hacking is installed, offer to remove it.
+	
 2000-10-23  Mike Fleming  <mfleming@eazel.com>
 
 	* components/services/summary/nautilus-view/main.c: (main):

@@ -351,13 +351,13 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 		char **paths_copy = NULL;
 		char **names = NULL;
 		int *indexes = NULL;
-		int count;
-		int index;
-		int num_paths;
+		int count = 0;
+		int index = 0;
+		int num_paths = 0;
 
-/* RPM v.3.0.4 and above has RPMTAG_BASENAMES,
-   Lets see if RPMTAG_PROVIDES works for the older ones */
-#ifdef RPMTAG_BASENAMES
+                /* RPM v.3.0.4 and above has RPMTAG_BASENAMES */
+
+
 		headerGetEntry (*hd,			
 				RPMTAG_DIRINDEXES, NULL,
 				(void**)&indexes, NULL);
@@ -376,18 +376,12 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 			paths_copy[index] = g_strdup (paths[index]);
 			paths_copy[index][strlen (paths_copy[index]) - 1] = 0;
 		}
-#else /* RPMTAG_BASENAMES */
-		/* This will most like make eazel_install_chekc_for_file_conflicts break... */
-		headerGetEntry (*hd,			
-				RPMTAG_FILENAMES, NULL,
-				(void**)&names, &count);
-#endif /* RPMTAG_BASENAMES */
 
 		/* Now loop through all the basenames */
 		/* NOTE: This algorithm has sizeof (paths) * sizeof (names)
 		   complexity, aka O(n²) */
 		for (index=0; index<count; index++) {
-			char *fullname;
+			char *fullname = NULL;
 			int index2 = 0;
 
 			if (paths) {
@@ -395,7 +389,6 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 			} else {
 				fullname = g_strdup (names[index]);
 			}
-#ifdef RPMTAG_BASENAMES
 			/* Check it's not a dirname, by looping through all
 			   paths_copy and check that fullname does not occur there */
 			for (index2 = 0; index2 < num_paths; index2++) {
@@ -405,19 +398,15 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 					break;
 				}
 			}
-#endif /* RPMTAG_BASENAMES */
 			if (fullname) {
 				/* trilobite_debug ("%s provides %s", pack->name, fullname);*/
 				pack->provides = g_list_prepend (pack->provides, fullname);
 			}
 		}
-#ifdef RPMTAG_BASENAMES
 		for (index=0; index<num_paths; index++) {
 			g_free (paths_copy[index]);
 		}
-#endif	/* RPMTAG_BASENAMES */
 		g_free (paths_copy);
-
 	}
 }
 

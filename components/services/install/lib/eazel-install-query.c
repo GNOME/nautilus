@@ -25,6 +25,7 @@
 #include <eazel-install-query.h>
 #include <eazel-install-public.h>
 #include <eazel-install-private.h>
+#include <eazel-install-rpm-glue.h>
 #include <ctype.h>
 #include <stdarg.h>
 
@@ -81,13 +82,24 @@ eazel_install_simple_rpm_query (EazelInstall *service,
 	rpmdb db;
 	int rc;
 	int i;
+	gboolean free_db_system = FALSE;
 	
 	/* g_message (_("Querying for %s in package database in %s"), input, root); */
 
 	rc = -1;
 	g_assert (service->private->packsys.rpm.dbs);
 	db = (rpmdb)g_hash_table_lookup (service->private->packsys.rpm.dbs, root);	
-	g_assert (db);
+	if (db==NULL) {
+		trilobite_debug ("will open db system");
+		free_db_system = TRUE;
+		if (eazel_install_prepare_rpm_system (service)) {
+			db = (rpmdb)g_hash_table_lookup (service->private->packsys.rpm.dbs, root);
+			g_assert (db);
+		} else {
+			trilobite_debug ("could not open db system");
+			return;
+		}
+	}
 
 	switch (flag) {
 	case EI_SIMPLE_QUERY_OWNS:		
@@ -106,29 +118,32 @@ eazel_install_simple_rpm_query (EazelInstall *service,
 		g_warning ("Unknown query");
 	}
 	
-	if (rc != 0) {
-		return;
-	} 
-	for (i = 0; i < dbiIndexSetCount (matches); i++) {
-		unsigned int offset;
-		Header *hd;
-		PackageData *pack;
-		
-		offset = dbiIndexRecordOffset (matches, i);
-		hd = g_new0 (Header,1);
-		(*hd) = rpmdbGetRecord (db, offset);
-		pack = packagedata_new_from_rpm_header (hd);
-		pack->install_root = g_strdup (root);
-		if (g_list_find_custom (*result, 
-					pack, 
-					(GCompareFunc)eazel_install_package_compare)!=NULL) {
-			packagedata_destroy (pack, TRUE);
-		} else {
-			(*result) = g_list_prepend (*result, pack);
-		}
-	}	
+	if (rc == 0) {
+		for (i = 0; i < dbiIndexSetCount (matches); i++) {
+			unsigned int offset;
+			Header *hd;
+			PackageData *pack;
+			
+			offset = dbiIndexRecordOffset (matches, i);
+			hd = g_new0 (Header,1);
+			(*hd) = rpmdbGetRecord (db, offset);
+			pack = packagedata_new_from_rpm_header (hd);
+			pack->install_root = g_strdup (root);
+			if (g_list_find_custom (*result, 
+						pack, 
+						(GCompareFunc)eazel_install_package_compare)!=NULL) {
+				packagedata_destroy (pack, TRUE);
+			} else {
+				(*result) = g_list_prepend (*result, pack);
+			}
+		}	
+	}
+	
+	if (free_db_system) {
+		trilobite_debug ("closing db system");
+		eazel_install_free_rpm_system (service);
+	}
 }
-
 
 GList* 
 eazel_install_simple_query (EazelInstall *service, 

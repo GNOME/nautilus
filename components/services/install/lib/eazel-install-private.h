@@ -29,6 +29,7 @@
 /* Funky define to step a GList iterator one ahead */
 #define glist_step(iterator) iterator = g_list_next (iterator)
 
+#define DEFAULT_RPM_DB_ROOT "/var/lib/rpm"
 
 struct _EazelInstallPrivate {	
 	TransferOptions *topts;

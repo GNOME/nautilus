@@ -384,8 +384,20 @@ AC_CHECK_LIB(popt, poptParseArgvString, [rpm_libs="$rpm_libs -lpopt"])
 AC_CHECK_LIB(rpm, rpmRunTransactions,[build_rpmview=true],
   [build_rpmview=false],-lz $rpm_libs -ldb)
 if test "x$build_rpmview" = "xtrue" ; then
-  AC_DEFINE(HAVE_RPM)
-  RPM_LIBS="-lrpm -lz $rpm_libs -ldb"
+dnl FIXME
+dnl Ideally I should check for rpm and where it is
+  REQUIREDRPM="3.0.4"
+  RPMSTRING=`rpm --version`
+  AC_MSG_CHECKING(rpm version = $REQUIREDRPM)
+  if test "x$RPMSTRING" = "xRPM version $REQUIREDRPM"; then
+	AC_MSG_RESULT(yes)
+	AC_DEFINE(HAVE_RPM)  	
+  	RPM_LIBS="-lrpm -lz $rpm_libs -ldb"
+  else
+	AC_MSG_ERROR([
+*** RPM 3.0.4 required
+])
+  fi
 fi
 AC_SUBST(RPM_LIBS)
 AM_CONDITIONAL(BUILD_RPMVIEW_COMPONENT, test "x$build_rpmview" = "xtrue")
