@@ -1997,6 +1997,9 @@ set_up_category_width (NautilusPropertyBrowser *property_browser)
 	
 	if (container_width > 64) {
 		property_browser->details->content_table_width = container_width / category_width;
+		if (property_browser->details->content_table_width < 1) {
+			property_browser->details->content_table_width = 1;
+		}
 		return;
 	} 
 	

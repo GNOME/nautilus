@@ -1,3 +1,18 @@
+2000-12-18  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-property-browser.c: (set_up_category_width):
+	fixed bug 5230, shrinking the width of Backgrounds window
+	causes floating point exception, by pinning the number of
+	columns at 1.
+	
+	* icons/Makefile.am:
+	* icons/default.xml:
+	* icons/eazel/eazel.xml:
+	* icons/vector/vector.xml:
+	* icons/zoom_body.png:
+	* icons/eazel/zoom_body.png:
+	new zoom control image from Susan
+
 2000-12-18  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 2472, text_height and text_width shouldn't be

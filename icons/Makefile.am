@@ -190,6 +190,7 @@ icon_DATA =\
 	not.png \
 	novice-selected.png \
 	novice.png \
+	number_strip.png \
 	rightarrow.png \
 	search.png \
 	services-rpm-72.png \
