@@ -2135,6 +2135,10 @@ key_press_event (GtkWidget *widget,
 
 	if (nautilus_icon_container_is_renaming (container)) {
 		switch (event->keyval) {
+		case GDK_Return:
+			end_renaming_mode (container, TRUE);	
+			handled = TRUE;
+			break;			
 		case GDK_Escape:
 			end_renaming_mode (container, FALSE);
 			handled = TRUE;
@@ -2179,11 +2183,7 @@ key_press_event (GtkWidget *widget,
 			handled = TRUE;
 			break;
 		case GDK_Return:
-			if (container->details->renaming) {
-				end_renaming_mode (container, TRUE);	
-			} else {
-				activate_selected_items (container);
-			}
+			activate_selected_items (container);
 			handled = TRUE;
 			break;
 		default:

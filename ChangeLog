@@ -1,3 +1,12 @@
+2000-06-07  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(key_press_event):
+	Fixed bug #1154.  The Enter key was getting checking
+	for improperly.  A check was being performed for
+	being in editing mode after a check for not being in editing mode 
+	had occured.  Moved the check to the proper code block.
+	
 2000-06-07  Darin Adler  <darin@eazel.com>
 
 	Updated code affected by destroy-notify addition to bonobo.
