@@ -35,6 +35,8 @@
 #include "nautilus-preferences-item.h"
 #include "nautilus-scalable-font.h"
 #include "nautilus-string.h"
+#include "nautilus-medusa-support.h"
+#include "nautilus-stock-dialogs.h"
 #include "nautilus-view-identifier.h"
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
@@ -1128,20 +1130,59 @@ static void
 global_preferences_use_fast_search_changed_callback (gpointer callback_data)
 {
 	gboolean use_fast_search;
+	gboolean services_are_blocked;
+	NautilusCronStatus cron_status;
 
-	use_fast_search = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_USE_FAST_SEARCH);
-
-	nautilus_medusa_enable_services (use_fast_search);
+	if (global_prefs_dialog) {
+		use_fast_search = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_USE_FAST_SEARCH);
+		
+		nautilus_medusa_enable_services (use_fast_search);
+		services_are_blocked = nautilus_medusa_blocked ();
+		if (use_fast_search && !services_are_blocked) {
+			cron_status = nautilus_medusa_check_cron_is_enabled ();
+			switch (cron_status) {
+			case NAUTILUS_CRON_STATUS_OFF:
+				/* Translators: do not translate this text yet; it is still a rough draft. */
+				nautilus_show_info_dialog_with_details (_("File indexing has been turned on for your hard drive.  "
+									  "However, indexing will not take place each night "
+									  "with your current configuration.  You need to "
+									  "start the cron daemon, so that your files will "
+									  "be indexed."),
+				/* Translators: do not translate this text yet; it is still a rough draft. */
+									_("Files May Not Be Indexed"),
+				/* Translators: do not translate this text yet; it is still a rough draft. */
+									_("If crond program is installed on your system, "
+									  "you can turn the cron service on by running "
+									  "the following commands as root:\n"
+									  "/sbin/chkconfig --level 345 crond on\n"
+									  "/etc/rc.d/init.d/crond start\n"),
+									NULL);
+				
+				break;
+			case NAUTILUS_CRON_STATUS_UNKNOWN:
+				/* Translators: do not translate this text yet; it is still a rough draft. */
+				nautilus_show_info_dialog (_("In order to index your files each night, the cron "
+							     "program must be active on your system. You should "
+							     "check to be sure this program is running. "),
+							   _("Files May Not Be Indexed"),
+							   NULL);
+				break;
+			default:
+				break;
+			}
+		}
+	}
 }
-
+	
 static void 
 global_preferences_medusa_state_changed_callback (gpointer callback_data)
 {
 	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_USE_FAST_SEARCH,
 					  nautilus_medusa_services_have_been_enabled_by_user ());
-
+	
 	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_MEDUSA_BLOCKED,
 					  nautilus_medusa_blocked ());
+
 }
 
 static void

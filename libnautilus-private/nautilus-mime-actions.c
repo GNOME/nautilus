@@ -30,6 +30,7 @@
 #include "nautilus-glib-extensions.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-metadata.h"
+#include "nautilus-string.h"
 #include <libgnomevfs/gnome-vfs-application-registry.h>
 #include <libgnomevfs/gnome-vfs-mime-info.h>
 #include <libgnomevfs/gnome-vfs-mime.h>
@@ -672,15 +673,58 @@ nautilus_mime_get_all_applications_for_file (NautilusFile      *file)
 	return result;
 }
 
+static int
+application_can_handle_uri (gconstpointer application_data,
+			    gconstpointer uri_scheme)
+{
+	GnomeVFSMimeApplication *application;
+
+	g_assert (application_data != NULL);
+
+	application = (GnomeVFSMimeApplication *) application_data;
+
+	if (g_list_find_custom (application->supported_uri_schemes,
+				(gpointer) uri_scheme,
+				nautilus_strcmp_compare_func) != NULL) {
+		return 0;
+	}
+	else {
+		return 1;
+	}
+}
+
+
 gboolean
 nautilus_mime_has_any_applications_for_file (NautilusFile      *file)
 {
-	GList *list;
+	GList *all_applications_for_mime_type, *application_that_can_access_uri;
+	char *uri_scheme;
 	gboolean result;
 
-	list = nautilus_mime_get_all_applications_for_file (file);
-	result = list != NULL;
-	gnome_vfs_mime_application_list_free (list);
+	all_applications_for_mime_type = nautilus_mime_get_all_applications_for_file (file);
+
+	uri_scheme = nautilus_file_get_uri_scheme (file);
+	application_that_can_access_uri = g_list_find_custom (all_applications_for_mime_type,
+							      uri_scheme,
+							      application_can_handle_uri);
+	g_free (uri_scheme);
+
+	result = application_that_can_access_uri != NULL;
+	gnome_vfs_mime_application_list_free (all_applications_for_mime_type);
+
+	return result;
+}
+
+gboolean
+nautilus_mime_has_any_applications_for_file_type (NautilusFile      *file)
+{
+	GList *applications;
+	gboolean result;
+
+	applications = nautilus_mime_get_all_applications_for_file (file);
+	
+	result = applications != NULL;
+	gnome_vfs_mime_application_list_free (applications);
 
 	return result;
 }

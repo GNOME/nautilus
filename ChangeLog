@@ -1,3 +1,47 @@
+2001-03-03  Rebecca Schulman  <rebecka@eazel.com>
+	Complete most of bug 5520, that turning medusa on when cron
+	isn't running should tell the user this, and, if possible,
+	how to start cron.
+
+	reviewed by: Mike Engber <engber@eazel.com>
+
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_use_fast_search_changed_callback):
+	Add dialog that comes up if the fast search preference is 
+	enabled in the preference dialog when cron is off.
+	The dialog will tell the user about cron and how to
+	turn it on on linux systems.
+
+	* libnautilus-extensions/nautilus-medusa-support.c:
+	(nautilus_medusa_add_system_state_changed_callback),
+	(nautilus_medusa_check_cron_is_enabled):
+	* libnautilus-extensions/nautilus-medusa-support.h:
+	Add hack to check if cron is actually running using cron.
+	* acconfig.h:
+	* configure.in:
+	Add HAVE_PROC_PROCESS_FILES, so we know whether we can
+	check proc files for whether cron is running
+
+	* src/nautilus-first-time-druid.c: (back_update_page_callback),
+	(set_up_medusa_page), (next_medusa_page_callback),
+	(set_up_cron_information_page), (nautilus_first_time_druid_show):
+	Add cron interface to the first time druid that tells users how to
+	turn on cron if necessary, as per Arlo's design.
+	Final text still needs to be added here.
+
+
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(application_can_handle_uri),
+	(nautilus_mime_has_any_applications_for_file),
+	(nautilus_mime_has_any_applications_for_file_type):
+	* libnautilus-extensions/nautilus-mime-actions.h:
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	(choose_application_callback), (application_cannot_open_location):
+	Old change that never got committed, reviewed by Darin Adler 
+	<darin@eazel.com>
+	
+
 2001-03-05  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>
@@ -820,6 +864,7 @@
 	supported type for the trash folder creation and
 	detection code.
 	
+>>>>>>> 1.4154
 2001-03-02  Frederic Crozat <fcrozat@mandrakesoft.com>
 
 	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
@@ -924,6 +969,7 @@
 	* libnautilus-extensions/nautilus-lib-self-check-functions.h:
 	added nautilus_self_check_smooth_text_layout_cache to the list
 
+>>>>>>> 1.4125
 2001-03-02  Andy Hertzfeld  <andy@eazel.com>
 
 	fixed bug 7247, Web Search and Services toolbar icons missing in

@@ -32,12 +32,19 @@
 
 typedef void (* NautilusMedusaChangedCallback)     (gpointer data);
 
-gboolean nautilus_medusa_services_have_been_enabled_by_user (void);
-gboolean nautilus_medusa_blocked                            (void);
-void     nautilus_medusa_enable_services                    (gboolean enable);
-void     nautilus_medusa_add_system_state_changed_callback  (NautilusMedusaChangedCallback callback,
-							     gpointer callback_data);
+typedef enum {
+	NAUTILUS_CRON_STATUS_ON,
+	NAUTILUS_CRON_STATUS_OFF,
+	NAUTILUS_CRON_STATUS_UNKNOWN
+} NautilusCronStatus;
+	
 
+gboolean           nautilus_medusa_services_have_been_enabled_by_user (void);
+gboolean           nautilus_medusa_blocked                            (void);
+void               nautilus_medusa_enable_services                    (gboolean enable);
+void               nautilus_medusa_add_system_state_changed_callback  (NautilusMedusaChangedCallback callback,
+								       gpointer callback_data);
+NautilusCronStatus nautilus_medusa_check_cron_is_enabled              (void);
 
 #endif /* NAUTILUS_MEDUSA_SUPPORT_H */
 

@@ -332,7 +332,7 @@ choose_application_callback (NautilusFile *file,
 	application = NULL;
 	dialog = NULL;
 
-	if (nautilus_mime_has_any_applications_for_file (file)) {
+	if (nautilus_mime_has_any_applications_for_file_type (file)) {
 		dialog = set_up_program_chooser	(file, GNOME_VFS_MIME_ACTION_TYPE_APPLICATION,
 						 choose_data->parent_window);
 		if (gnome_dialog_run (dialog) == GNOME_OK) {
@@ -407,21 +407,6 @@ nautilus_choose_application_for_file (NautilusFile *file,
 	g_list_free (attributes);
 }
 
-static gboolean 
-application_can_handle_uri (gpointer application_data,
-			    gpointer uri_scheme)
-{
-	GnomeVFSMimeApplication *application;
-
-	g_assert (application_data != NULL);
-
-	application = (GnomeVFSMimeApplication *) application_data;
-
-	return g_list_find_custom (application->supported_uri_schemes,
-				   uri_scheme,
-				   nautilus_strcmp_compare_func) != NULL;
-	
-}
 
 typedef struct {
 	NautilusFile *file;
@@ -496,23 +481,14 @@ application_cannot_open_location (GnomeVFSMimeApplication *application,
 				  const char *uri_scheme,
 				  GtkWindow *parent_window)
 {
-	GList *available_applications, *available_applications_for_uri;
-	GList *other_applications;
 	GnomeDialog *message_dialog;
 	LaunchParameters *launch_parameters;
 	char *message;
 	char *file_name;
 
-	available_applications = nautilus_mime_get_all_applications_for_file (file);
-	available_applications_for_uri = nautilus_g_list_partition (available_applications,
-								    application_can_handle_uri,
-								    (gpointer) uri_scheme,
-								    &other_applications);
-	gnome_vfs_mime_application_list_free (other_applications);
-
 	file_name = nautilus_file_get_name (file);
 
-	if (available_applications_for_uri != NULL) {
+	if (nautilus_mime_has_any_applications_for_file (file)) {
 		message = g_strdup_printf (_("\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
 					     "locations.  Would you like to choose another application?"),
 					   application->name, file_name, 
@@ -536,13 +512,12 @@ application_cannot_open_location (GnomeVFSMimeApplication *application,
 	else {
 		message = g_strdup_printf (_("\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
 					     "locations.  No other applications are available to view this file.  "
-					     "If you copy this file onto your computer, you will be able to open "
+					     "If you copy this file onto your computer, you may be able to open "
 					     "it."), application->name, file_name, 
 					   application->name, uri_scheme);
 		nautilus_show_info_dialog (message, _("Can't Open Location"), parent_window);
 	}
 
-	gnome_vfs_mime_application_list_free (available_applications_for_uri);
 	g_free (file_name);
 	g_free (message);
 }

@@ -47,6 +47,7 @@ GList *                  nautilus_mime_get_all_applications_for_file            
 GList *                  nautilus_mime_get_all_components_for_file                 (NautilusFile           *file);
 gboolean                 nautilus_mime_has_any_components_for_file                 (NautilusFile           *file);
 gboolean                 nautilus_mime_has_any_applications_for_file               (NautilusFile           *file);
+gboolean                 nautilus_mime_has_any_applications_for_file_type          (NautilusFile           *file);
 GnomeVFSResult           nautilus_mime_set_default_action_type_for_file            (NautilusFile           *file,
 										    GnomeVFSMimeActionType  action_type);
 GnomeVFSResult           nautilus_mime_set_default_application_for_file            (NautilusFile           *file,
