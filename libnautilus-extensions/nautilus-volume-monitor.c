@@ -389,7 +389,7 @@ static void
 mount_volume_get_cdrom_name (NautilusVolume *volume)
 {
 	int fd, disctype;
-
+	
 	fd = open (volume->device_path, O_RDONLY|O_NONBLOCK);
 
 	disctype = ioctl (fd, CDROM_DISC_STATUS, CDSL_CURRENT);
@@ -596,7 +596,7 @@ eject_cdrom (NautilusVolume *volume)
 {
 	int fd;
 
-	fd = open (volume->device_path, O_RDONLY|O_NONBLOCK);
+	fd = open (volume->device_path, O_RDONLY | O_NONBLOCK);
 	if (fd < 0) {
 		return;
 	}
@@ -1145,9 +1145,12 @@ close_error_pipe (gboolean mount, const char *mount_path)
 		
 	/* Determine a user readable message from the obscure pipe error */
 	/* Attention localizers: The strings being examined by strstr need to be identical
-	   to the errors returned to the terminal by mount */
+	   to the errors returned to the terminal by mount. */
 	if (mount) {
-		if (strstr (detailed_msg, _("is not a valid block device")) != NULL) {
+		if (strstr (detailed_msg, _("is write-protected, mounting read-only")) != NULL) {
+			/* This is not an error. Just an informative message from mount. */
+			return;
+		} else if (strstr (detailed_msg, _("is not a valid block device")) != NULL) {
 			/* No media in drive */
 			if (is_floppy) {
 				/* Handle floppy case */
@@ -1437,8 +1440,6 @@ locate_audio_cd (void) {
 	cdrom_drive *drive;
 	GnomeVFSURI *uri;
 	gboolean found_one;
-	
-	g_message ("Squirt");
 	
 	found_one = FALSE;
 		

@@ -1,3 +1,29 @@
+2001-01-15  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Arlo Rose <arlo@eazel.com>
+
+	Fixed bug 1420, pane splitter drag outline edges are indistinct
+
+	* libnautilus-extensions/nautilus-horizontal-splitter.c:
+	(splitter_xor_line):
+	Make line appears as single pixel on off dash.
+	
+2001-01-15  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Mike Engber <engber@eazel.com>
+
+	Fixed bug 5651, Mounting write-protected disk gives Mount Error
+	
+	I examined the source code to mount. There is one case where
+	an error message is returned but it is not an error.  I now
+	check for that case in the error checking code.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(mount_volume_get_cdrom_name), (eject_cdrom), (close_error_pipe),
+	(locate_audio_cd):
+	Also remove some old debugging code and make sure audio cd
+	mounting is ifdefed out.
+
 2001-01-15  Michael K. Fleming  <mfleming@eazel.com>
 
 	reviewed by: <pavel@eazel.com>

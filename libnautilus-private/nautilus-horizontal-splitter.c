@@ -350,9 +350,10 @@ splitter_xor_line (EPaned *paned)
 	GtkWidget *widget;
 	GdkGCValues values;
 	guint16 xpos, half_width;
-
+	gint8 dash_list[2];
+	
 	widget = GTK_WIDGET(paned);
-
+ 
 	if (!paned->xor_gc) {
 		values.function = GDK_INVERT;
 		values.subwindow_mode = GDK_INCLUDE_INFERIORS;
@@ -360,8 +361,13 @@ splitter_xor_line (EPaned *paned)
 							GDK_GC_FUNCTION | GDK_GC_SUBWINDOW);
 	}
 
-	gdk_gc_set_line_attributes (paned->xor_gc, 1, GDK_LINE_SOLID,
+	gdk_gc_set_line_attributes (paned->xor_gc, 1, GDK_LINE_ON_OFF_DASH,
 				    GDK_CAP_NOT_LAST, GDK_JOIN_BEVEL);
+	
+	/* Make line appear as every other pixel dash */			    
+	dash_list[0] = 1;				    
+	dash_list[1] = 1;
+	gdk_gc_set_dashes (paned->xor_gc, 1, dash_list, 2);
 
 	xpos = paned->child1_size + GTK_CONTAINER (paned)->border_width + paned->handle_size / 2;
 	half_width = paned->handle_size / 2;
