@@ -101,19 +101,14 @@ add_menu_items_callback (GtkWidget *widget,
 {
         BonoboUIHandler *local_ui_handler;
 	Bonobo_UIHandler remote_ui_handler;
-	CORBA_Environment ev;
 
 	g_assert (GTK_IS_EDITABLE (widget));
 	
 	local_ui_handler = bonobo_control_get_ui_handler (BONOBO_CONTROL (callback_data));
 
-	/* I wish I understood better why we have to do this. */
-	CORBA_exception_init (&ev);
 	remote_ui_handler = bonobo_control_get_remote_ui_handler (BONOBO_CONTROL (callback_data));
 	bonobo_ui_handler_set_container (local_ui_handler, remote_ui_handler);
-	Bonobo_UIHandler_unref (remote_ui_handler, &ev);
-	CORBA_Object_release (remote_ui_handler, &ev);
-	CORBA_exception_free (&ev);
+	bonobo_object_release_unref (remote_ui_handler, NULL);
 
 	/* FIXME bugzilla.eazel.com 733: We never mark any of these items insensitive. */
 	add_menu_item (local_ui_handler,

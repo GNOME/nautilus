@@ -86,8 +86,7 @@ bonobo_subdoc_load_location (NautilusViewFrame *view,
           nautilus_view_frame_report_load_complete (view);
         }
 
-      Bonobo_Unknown_unref(persist, ev);
-      CORBA_Object_release(persist, ev);
+      bonobo_object_release_unref (persist, ev);
 
       if (stream != NULL)
         {
@@ -122,8 +121,7 @@ bonobo_subdoc_load_location (NautilusViewFrame *view,
 
       /* FIXME bugzilla.eazel.com 2578: Find out whether the loading was successful. */
 
-      Bonobo_Unknown_unref(persist_file, ev);
-      CORBA_Object_release(persist_file, ev);
+      bonobo_object_release_unref (persist_file, ev);
 
       g_free (local_path);
 
@@ -135,8 +133,7 @@ bonobo_subdoc_load_location (NautilusViewFrame *view,
         {
           if (!CORBA_Object_is_nil (persist_file, ev))
             {
-              Bonobo_Unknown_unref(persist_file, ev);
-              CORBA_Object_release(persist_file, ev);
+              bonobo_object_release_unref (persist_file, ev);
             }
           else
             {

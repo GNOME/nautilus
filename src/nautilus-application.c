@@ -434,8 +434,7 @@ nautilus_application_startup (NautilusApplication *application,
 	}
 
 	/* We're done with the shell now, so let it go. */
-	Nautilus_Shell_unref (shell, &ev);
-	CORBA_Object_release (shell, &ev);
+	bonobo_object_release_unref (shell, &ev);
 
  out:
 	CORBA_exception_free (&ev);

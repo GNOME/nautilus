@@ -58,8 +58,7 @@ nautilus_view_try_load_client(NautilusViewFrame *view, CORBA_Object obj, CORBA_E
   bonobo_control_frame_bind_to_control(nvi->control_frame, control);
   view->client_widget = bonobo_control_frame_get_widget(nvi->control_frame);
 
-  Bonobo_Unknown_unref(control, ev);
-  CORBA_Object_release(control, ev);
+  bonobo_object_release_unref (control, ev);
 
   return TRUE;
 

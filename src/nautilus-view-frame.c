@@ -226,8 +226,7 @@ nautilus_view_frame_destroy_client (NautilusViewFrame *view)
 	view->client_widget = NULL;
 
 	if (!CORBA_Object_is_nil (view->zoomable, &ev)) {
-		Bonobo_Unknown_unref (view->zoomable, &ev);
-		CORBA_Object_release (view->zoomable, &ev);
+		bonobo_object_release_unref (view->zoomable, &ev);
 	}
 	view->zoomable = CORBA_OBJECT_NIL;
 
@@ -368,8 +367,7 @@ nautilus_view_frame_load_client (NautilusViewFrame *view, const char *iid)
         		view->component_class = component_types[i];
 		}
 
-      		Bonobo_Unknown_unref (obj, &ev);
-      		CORBA_Object_release (obj, &ev);
+      		bonobo_object_release_unref (obj, &ev);
     	}
 
 	/* Handle case where we don't know how to host this component. */

@@ -150,8 +150,7 @@ release_transaction (NautilusUndoManager *manager)
 	transaction = manager->details->transaction;
 	manager->details->transaction = CORBA_OBJECT_NIL;
 	if (!CORBA_Object_is_nil (transaction, &ev)) {
-		Nautilus_Undo_Transaction_unref (transaction, &ev);
-		CORBA_Object_release (transaction, &ev);
+		bonobo_object_release_unref (transaction, &ev);
 	}
 
 	CORBA_exception_free (&ev);
@@ -300,8 +299,7 @@ nautilus_undo_manager_undo (NautilusUndoManager *manager)
 		manager->details->new_transaction_is_redo = FALSE;
 
 		/* Let go of the transaction. */
-		Nautilus_Undo_Transaction_unref (transaction, &ev);
-		CORBA_Object_release (transaction, &ev);
+		bonobo_object_release_unref (transaction, &ev);
 
 		/* Fire off signal indicating the undo state has changed. */
 		gtk_signal_emit (GTK_OBJECT (manager), signals[CHANGED]);

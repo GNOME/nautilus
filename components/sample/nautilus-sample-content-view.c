@@ -216,6 +216,7 @@ sample_merge_bonobo_items_callback (BonoboControl *control, gboolean state, gpoi
 {
  	NautilusSampleContentView *view;
 	BonoboUIHandler *ui_handler;
+	Bonobo_UIHandler remote_ui_handler;
 	GdkPixbuf *pixbuf;
 	BonoboUIHandlerPixmapType pixmap_type;
 
@@ -226,8 +227,9 @@ sample_merge_bonobo_items_callback (BonoboControl *control, gboolean state, gpoi
 
 	if (state) {
 		/* Tell the Nautilus window to merge our bonobo_ui_handler items with its ones */
-		bonobo_ui_handler_set_container (ui_handler, 
-                                                 bonobo_control_get_remote_ui_handler (control));
+		remote_ui_handler = bonobo_control_get_remote_ui_handler (BONOBO_CONTROL (control));
+		bonobo_ui_handler_set_container (ui_handler, remote_ui_handler);
+		bonobo_object_release_unref (remote_ui_handler, NULL);
 
 		/* Load test pixbuf (used for both menu item and toolbar). */
 		pixbuf = gdk_pixbuf_new_from_file (ICON_DIR "/i-directory-24.png");		

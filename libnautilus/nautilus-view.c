@@ -313,8 +313,7 @@ view_frame_call_begin (NautilusView *view, CORBA_Environment *ev)
 static void
 view_frame_call_end (Nautilus_ViewFrame frame, CORBA_Environment *ev)
 {
-	Nautilus_ViewFrame_unref (frame, ev);
-	CORBA_Object_release (frame, ev);
+	bonobo_object_release_unref (frame, ev);
 	CORBA_exception_free (ev);
 }
 

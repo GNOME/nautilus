@@ -214,7 +214,8 @@ loser_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpoint
 {
  	NautilusSidebarLoser *view;
 	BonoboUIHandler *local_ui_handler;
-	GdkPixbuf		*pixbuf;
+	Bonobo_UIHandler remote_ui_handler;
+	GdkPixbuf *pixbuf;
 	BonoboUIHandlerPixmapType pixmap_type;
 	char *path;
 	
@@ -227,8 +228,9 @@ loser_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpoint
 
 	if (state) {
 		/* Tell the Nautilus window to merge our bonobo_ui_handler items with its ones */
-		bonobo_ui_handler_set_container (local_ui_handler, 
-                                                 bonobo_control_get_remote_ui_handler (BONOBO_CONTROL (control)));
+		remote_ui_handler = bonobo_control_get_remote_ui_handler (BONOBO_CONTROL (control));
+		bonobo_ui_handler_set_container (local_ui_handler, remote_ui_handler);
+		bonobo_object_release_unref (remote_ui_handler, NULL);
 
 		/* Load test pixbuf */
 		pixbuf = gdk_pixbuf_new_from_file ("/gnome/share/pixmaps/nautilus/i-directory-24.png");		

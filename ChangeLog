@@ -1,3 +1,52 @@
+2000-09-06  Darin Adler  <darin@eazel.com>
+
+	Added checks in Nautilus to guarantee we will notice leaks
+	of UI handlers in the future.
+
+	The check will fire unless you get new Bonobo, since I just fixed
+	a UI handler leak bug in Bonobo.
+
+	* src/nautilus-window.c: (nautilus_window_real_set_content_view):
+	Added code to check for a still-merged Open menu item in the file
+	menu. This will catch leaks of UI handlers fairly quickly, instead
+	of the traditional way we discover them, after long debugging
+	sessions.
+
+	* components/history/nautilus-history-view.c:
+	(history_view_frame_call_end):
+	* libnautilus-extensions/nautilus-undo-manager.c:
+	(release_transaction), (nautilus_undo_manager_undo):
+	* libnautilus/nautilus-clipboard.c: (add_menu_items_callback):
+	* libnautilus/nautilus-undo.c: (undo_manager_unref_cover),
+	(nautilus_undo_attach_undo_manager):
+	* libnautilus/nautilus-view.c: (view_frame_call_end):
+	* src/file-manager/fm-directory-view.c:
+	(bonobo_control_activate_callback):
+	* src/nautilus-application.c: (nautilus_application_startup):
+	* src/nautilus-view-frame-bonobo-embeddable.c:
+	(bonobo_subdoc_load_location):
+	* src/nautilus-view-frame-nautilus-view.c:
+	(nautilus_view_try_load_client):
+	* src/nautilus-view-frame.c: (nautilus_view_frame_destroy_client),
+	(nautilus_view_frame_load_client):
+	Use bonobo_object_dup_ref and bonobo_object_release_unref to
+	simplify some code.
+	
+	* components/loser/content/nautilus-content-loser.c:
+	(loser_merge_bonobo_items_callback):
+	* components/loser/sidebar/nautilus-sidebar-loser.c:
+	(loser_merge_bonobo_items_callback):
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(mozilla_merge_bonobo_items_callback):
+	* components/sample/nautilus-sample-content-view.c:
+	(sample_merge_bonobo_items_callback):
+	Add missing unref to avoid leaking a UI handler.
+	
+	* components/services/time/nautilus-view/trilobite-eazel-time-view.c:
+	Remove a bunch of code inside #if 0, which had out of date copies
+	of the sample code. I decided this was better than trying to fix
+	it.
+	
 2000-09-06  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 2377 (Menu separators in search date criterion

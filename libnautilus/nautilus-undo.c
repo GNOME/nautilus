@@ -190,35 +190,10 @@ nautilus_undo_get_undo_manager (GtkObject *start_object)
 	return CORBA_OBJECT_NIL;
 }
 
-static Nautilus_Undo_Manager
-undo_manager_ref (Nautilus_Undo_Manager manager)
-{
-	CORBA_Environment ev;
-	Nautilus_Undo_Manager result;
-
-	CORBA_exception_init (&ev);
-	Nautilus_Undo_Manager_ref (manager, &ev);
-	result = CORBA_Object_duplicate (manager, &ev);
-	CORBA_exception_free (&ev);
-
-	return result;
-}
-
-static void
-undo_manager_unref (Nautilus_Undo_Manager manager)
-{
-	CORBA_Environment ev;
-
-	CORBA_exception_init (&ev);
-	Nautilus_Undo_Manager_unref (manager, &ev);
-	CORBA_Object_release (manager, &ev);
-	CORBA_exception_free (&ev);
-}
-
 static void
 undo_manager_unref_cover (gpointer manager)
 {
-	undo_manager_unref (manager);
+	bonobo_object_release_unref (manager, NULL);
 }
 
 void
@@ -230,9 +205,10 @@ nautilus_undo_attach_undo_manager (GtkObject *object,
 	if (manager == NULL) {
 		gtk_object_remove_data (object, NAUTILUS_UNDO_MANAGER_DATA);
 	} else {
+		bonobo_object_dup_ref (manager, NULL);
 		gtk_object_set_data_full
 			(object, NAUTILUS_UNDO_MANAGER_DATA,
-			 undo_manager_ref (manager), undo_manager_unref_cover);
+			 manager, undo_manager_unref_cover);
 	}
 }
 

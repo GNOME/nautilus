@@ -1432,6 +1432,11 @@ nautilus_window_real_set_content_view (NautilusWindow *window, NautilusViewFrame
 		gtk_container_remove (GTK_CONTAINER (window->content_hbox),
 				      GTK_WIDGET (window->content_view));      
 	}
+
+	/* Here's an explicit check for a problem that happens all too often. */
+	if (bonobo_ui_handler_menu_path_exists (window->ui_handler, "/File/Open")) {
+		g_warning ("There's a lingering Open menu item. This usually means a new Bonobo bug.");
+	}
 	
 	if (new_view != NULL) {			
 		gtk_widget_show (GTK_WIDGET (new_view));

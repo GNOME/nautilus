@@ -501,14 +501,16 @@ mozilla_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpoi
 {
  	NautilusMozillaContentView *view;
         BonoboUIHandler *local_ui_handler;
+	Bonobo_UIHandler remote_ui_handler;
 
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
         local_ui_handler = bonobo_control_get_ui_handler (BONOBO_CONTROL (control));
 
         if (state) {
         	/* Tell the Nautilus window to merge our bonobo_ui_handler items with its ones */
-                bonobo_ui_handler_set_container (local_ui_handler, 
-                                                 bonobo_control_get_remote_ui_handler (BONOBO_CONTROL (control)));
+		remote_ui_handler = bonobo_control_get_remote_ui_handler (BONOBO_CONTROL (control));
+		bonobo_ui_handler_set_container (local_ui_handler, remote_ui_handler);
+		bonobo_object_release_unref (remote_ui_handler, NULL);
 
                 /* 
                  * Create our mozilla menu item.

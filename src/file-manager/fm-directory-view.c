@@ -709,7 +709,6 @@ bonobo_control_activate_callback (BonoboObject *control, gboolean state, gpointe
         FMDirectoryView *view;
         BonoboUIHandler *local_ui_handler;
 	Bonobo_UIHandler remote_ui_handler;
-	CORBA_Environment ev;
 
         g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
@@ -718,12 +717,9 @@ bonobo_control_activate_callback (BonoboObject *control, gboolean state, gpointe
         local_ui_handler = bonobo_control_get_ui_handler (BONOBO_CONTROL (control));
 
         if (state) {
-		CORBA_exception_init (&ev);
 		remote_ui_handler = bonobo_control_get_remote_ui_handler (BONOBO_CONTROL (control));
                 bonobo_ui_handler_set_container (local_ui_handler, remote_ui_handler);
-		Bonobo_UIHandler_unref (remote_ui_handler, &ev);
-		CORBA_Object_release (remote_ui_handler, &ev);
-		CORBA_exception_free (&ev);
+		bonobo_object_release_unref (remote_ui_handler, NULL);
 
                 /* Add new menu items and perhaps whole menus */
                 fm_directory_view_merge_menus (view);
