@@ -40,7 +40,9 @@ static void fmt_man_populate_tree(HyperbolaDocTree *tree);
 
 static void fmt_info_populate_tree(HyperbolaDocTree *tree);
 
+#ifndef ENABLE_SCROLLKEEPER_SUPPORT
 static void fmt_help_populate_tree(HyperbolaDocTree *tree);
+#endif
 
 #ifdef ENABLE_SCROLLKEEPER_SUPPORT
 static void fmt_scrollkeeper_populate_tree(HyperbolaDocTree *tree);
@@ -650,6 +652,7 @@ fmt_info_populate_tree(HyperbolaDocTree *tree)
 }
 
 /******* help: ******/
+#ifndef ENABLE_SCROLLKEEPER_SUPPORT
 static void
 fmt_help_populate_tree_from_subdir(HyperbolaDocTree *tree, const char *dirname, char **defpath)
 {
@@ -760,7 +763,9 @@ fmt_help_populate_tree_from_subdir(HyperbolaDocTree *tree, const char *dirname, 
 
   closedir(dirh);
 }
+#endif
 
+#ifndef ENABLE_SCROLLKEEPER_SUPPORT
 static void
 fmt_help_populate_tree(HyperbolaDocTree *tree)
 {
@@ -776,6 +781,7 @@ fmt_help_populate_tree(HyperbolaDocTree *tree)
     fmt_help_populate_tree_from_subdir(tree, dirname, app_path);
   g_free(dirname);
 }
+#endif
 
 
 
