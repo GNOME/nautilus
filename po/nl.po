@@ -13,8 +13,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2003-06-04 10:07+0200\n"
-"PO-Revision-Date: 2003-05-02 16:29+0100\n"
+"POT-Creation-Date: 2003-06-03 12:52+0200\n"
+"PO-Revision-Date: 2003-06-04 21:17+0100\n"
 "Last-Translator: Reinout van Schouwen <reinout@cs.vu.nl>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
 "MIME-Version: 1.0\n"
@@ -1134,11 +1134,11 @@ msgstr "Werkblad-lettertype"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:20
 msgid "Desktop home icon name"
-msgstr ""
+msgstr "Naam van persoonlijke map-pictogram op werkblad"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:21
 msgid "Desktop trash icon name"
-msgstr ""
+msgstr "Naam van prullenbak-pictogram op werkblad"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:22
 msgid "Enable 'special' flags in file preferences dialog"
@@ -1166,7 +1166,7 @@ msgstr "Standaard bladwijzers in het bladwijzermenu verbergen."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:26
 msgid "Home icon visible on desktop"
-msgstr ""
+msgstr "Persoonlijke map-pictogram zichtbaar op werkblad"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:27
 msgid ""
@@ -1304,7 +1304,7 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
 msgid "List of possible captions on icons"
-msgstr ""
+msgstr "Lijst van mogelijke bijschriften bij pictogrammen"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
 msgid "Maximum handled files in a directory"
@@ -1429,22 +1429,24 @@ msgid "The side pane view to show in newly opened windows."
 msgstr "De zijpaneelweergave om in nieuw geopende vensters te tonen."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
-#, fuzzy
 msgid ""
 "This name can be set if you want a custom name for the home link icon on the "
 "desktop."
-msgstr "De lettertypeomschrijving voor de pictogrammen op het werkblad."
+msgstr ""
+"Deze naam kan ingesteld worden indien u een aangepaste naam wilt voor de "
+"verwijzing naar uw persoonlijke map op het werkblad."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
-#, fuzzy
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
-msgstr "De lettertypeomschrijving voor de pictogrammen op het werkblad."
+msgstr ""
+"Deze naam kan ingesteld worden indien u een aangepaste naam wilt voor de "
+"verwijzing naar het prullenbak-pictogram op het werkblad."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
 msgid "Trash icon visible on desktop"
-msgstr ""
+msgstr "Prullenbak-pictogram zichtbaar op werkblad"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
 msgid "Type of click used to launch/open files"
@@ -5171,9 +5173,8 @@ msgid "Creating Properties window"
 msgstr "Bezig met aanmaken eigenschappenvenster"
 
 #: src/file-manager/fm-properties-window.c:2714
-#, fuzzy
 msgid "Select an icon"
-msgstr "Kies een pictogram:"
+msgstr "Kies een pictogram"
 
 #: src/file-manager/fm-search-list-view.c:124
 #, c-format
@@ -5656,9 +5657,8 @@ msgid "Display icons in the opposite order"
 msgstr "Pictogrammen in omgekeerde volgorde tonen"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:10
-#, fuzzy
 msgid "Keep icons lined up on a grid"
-msgstr "Pictogrammen gesorteerd op naam in rijen"
+msgstr "Pictogrammen opstellen op een raster"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:16
 msgid "Leave icons wherever they are dropped"
@@ -5670,7 +5670,7 @@ msgstr "Het pictogram uitrekbaar maken"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:18
 msgid "Re_versed Order"
-msgstr "Omgekeerde volgorde"
+msgstr "Omgekeerde _volgorde"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:19
 msgid "Reposition icons to better fit in the window and avoid overlapping"
@@ -5809,9 +5809,8 @@ msgstr ""
 "zodanig in te stellen dat Nautilus ze kan aanmaken."
 
 #: src/nautilus-application.c:301
-#, fuzzy
 msgid "Link To Old Desktop"
-msgstr "op het werkblad"
+msgstr "Verwijzing naar oud werkblad"
 
 #: src/nautilus-application.c:317
 msgid ""
@@ -5819,10 +5818,15 @@ msgid ""
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
 msgstr ""
+"De locatie van de werkbladmap is veranderd in Gnome 2.4. Een verwijzing met "
+"de naam \"Verwijzing naar oud werkblad\" is aangemaakt op het werkblad. U "
+"kunt deze openen om de bestanden van uw keuze te verhuizen, en de verwijzing "
+"vervolgens verwijderen."
 
+# Gemigreerd oud werkblad?
 #: src/nautilus-application.c:320
 msgid "Migrated old desktop"
-msgstr ""
+msgstr "Oude werkblad gemigreerd"
 
 #. Can't register myself due to trouble locating the
 #. * Nautilus_Shell.server file. This has happened when you
@@ -5930,18 +5934,16 @@ msgid "No bookmarks defined"
 msgstr "Geen bladwijzers gedefinieerd"
 
 #: src/nautilus-bookmarks-window.glade.h:1
-#, fuzzy
 msgid "<b>_Bookmarks</b>"
-msgstr "B_ladwijzers"
+msgstr "<b>Blad_wijzers</b>"
 
 #: src/nautilus-bookmarks-window.glade.h:2
-#, fuzzy
 msgid "<b>_Location</b>"
-msgstr "_Lokatie:"
+msgstr "<b>_Lokatie</b>"
 
 #: src/nautilus-bookmarks-window.glade.h:3
 msgid "<b>_Name</b>"
-msgstr ""
+msgstr "<b>_Naam</b>"
 
 #: src/nautilus-bookmarks-window.glade.h:4
 msgid "Edit Bookmarks"
@@ -6387,9 +6389,8 @@ msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Sorry, maar '%s' is geen bruikbaar afbeeldingsbestand!"
 
 #: src/nautilus-property-browser.c:2037
-#, fuzzy
 msgid "Select a Category:"
-msgstr "Selecteert u een categorie:"
+msgstr "Selecteer een categorie:"
 
 #: src/nautilus-property-browser.c:2046
 msgid "C_ancel Remove"
@@ -6639,9 +6640,8 @@ msgid "*"
 msgstr "*"
 
 #: src/nautilus-server-connect.glade.h:3
-#, fuzzy
 msgid "_Connect"
-msgstr "Conectiva"
+msgstr "_Verbinden"
 
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
