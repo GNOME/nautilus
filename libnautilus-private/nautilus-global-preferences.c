@@ -172,7 +172,7 @@ global_preferences_install_descriptions (void)
 	/* search tradeoffs */
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_SEARCH_METHOD,
 					      _("Do slower but more complete search whenever possible\n"
-						"Slower search is not available when searching by content"));
+						"(slower search is not available when searching by content)"));
 
 	/* search bar type */
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
@@ -626,7 +626,7 @@ global_preferences_create_dialog (void)
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
 							 4,
 							 NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
-							 NAUTILUS_PREFERENCE_ITEM_ENUM);
+							 NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM);
 
 	/*
 	 * Search Settings 

@@ -1,3 +1,16 @@
+2001-02-01  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_descriptions):
+	Parenthesize parenthetical part of "slow but complete
+	search" checkbox label.
+	(global_preferences_create_dialog): Use SHORT_ENUM
+	instead of ENUM type for executable text file
+	activation options so they all go on one line, taking
+	less precious vertical screen real estate.
+
 2001-02-01  Darin Adler  <darin@eazel.com>
 
 	* components/services/install/lib/eazel-package-system-types.h:
