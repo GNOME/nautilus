@@ -84,7 +84,7 @@
  */
 #define FILES_TO_PROCESS_AT_ONCE 300
 
-#define DISPLAY_TIMEOUT_INTERVAL_MSECS 1000
+#define DISPLAY_TIMEOUT_INTERVAL_MSECS 5000
 
 #define SILENT_WINDOW_OPEN_LIMIT 5
 
@@ -2292,7 +2292,10 @@ queue_pending_files (FMDirectoryView *view,
 
 	*pending_list = g_list_concat (*pending_list,
 				       nautilus_file_list_copy (files));
-	schedule_timeout_display_of_pending_files (view);
+	if (view->details->loading)
+		schedule_timeout_display_of_pending_files (view);
+	else
+		schedule_idle_display_of_pending_files (view);
 }
 
 static void
