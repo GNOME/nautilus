@@ -143,7 +143,8 @@
 #define FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND				"/popups/background"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_SELECTION				"/popups/selection"
 
-#define FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND_SCRIPTS_PLACEHOLDER      "/popups/background/Before Zoom Items/Scripts/Scripts Placeholder"
+#define FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND_SCRIPTS_PLACEHOLDER	"/popups/background/Before Zoom Items/Scripts/Scripts Placeholder"
+#define FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND_SCRIPTS_SEPARATOR	"/popups/background/Before Zoom Items/Scripts/After Scripts"
 
 #define FM_DIRECTORY_VIEW_POPUP_PATH_APPLICATIONS_PLACEHOLDER    	"/popups/selection/Open Placeholder/Open With/Applications Placeholder"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_VIEWERS_PLACEHOLDER    		"/popups/selection/Open Placeholder/Open With/Viewers Placeholder"
@@ -3880,6 +3881,9 @@ update_scripts_menu (FMDirectoryView *view)
 				    !any_scripts);
 	nautilus_bonobo_set_hidden (view->details->ui, 
 				    FM_DIRECTORY_VIEW_POPUP_PATH_SCRIPTS_SEPARATOR, 
+				    !any_scripts);
+	nautilus_bonobo_set_hidden (view->details->ui, 
+				    FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND_SCRIPTS_SEPARATOR, 
 				    !any_scripts);
 }
 
