@@ -633,6 +633,20 @@ is_satisfied (EazelInstall *service,
 	g_assert (service);
 	g_assert (EAZEL_IS_INSTALL (service));
 
+	/* FIXME:
+	   this checks that the package isn't already filled, but what if
+	   it is, but later fails, will we loose a dependency ? */
+	/* First check if we've already downloaded the packag */
+	if (dep->package->fillflag & MUST_HAVE) {
+#if EI2_DEBUG & 0x4
+		trilobite_debug ("is_satisfied? %p %s", 
+				 dep->package, dep->package->name);
+		trilobite_debug ("\t -> already filled, must be ok");
+#endif
+		
+		return TRUE;
+	}
+
 	if (dep->version != NULL) {
 		char *sense_str = eazel_softcat_sense_flags_to_string (dep->sense);
 #if EI2_DEBUG & 0x4
@@ -735,12 +749,15 @@ is_satisfied_features (EazelInstall *service,
 
 	features = package->features;
 
-	trilobite_debug ("is_satisfied_features %d features", g_list_length (features));
+	trilobite_debug ("\t -> is_satisfied_features %d features", g_list_length (features));
 
 	for (iterator = features; iterator && result; iterator = g_list_next (iterator)) {
 		GList *query_result;
 		char *f = (char*)iterator->data;
 
+#if EI2_DEBUG & 0x4
+		trilobite_debug ("\t -> %s", f);
+#endif
 		query_result = eazel_package_system_query (service->private->package_system,
 							   service->private->cur_root,
 							   f,
@@ -754,7 +771,7 @@ is_satisfied_features (EazelInstall *service,
 								   PACKAGE_FILL_MINIMAL);
 			if (g_list_length (query_result) == 0) {
 #if EI2_DEBUG & 0x4
-				trilobite_debug ("noone owns or provides %s", f);
+				trilobite_debug ("\t -> noone owns or provides %s", f);
 #endif
 				result = FALSE;
 
@@ -766,7 +783,7 @@ is_satisfied_features (EazelInstall *service,
 								       service->private->cur_root,
 								       f, NULL, NULL,
 								       EAZEL_SOFTCAT_SENSE_ANY)) {
-					trilobite_debug ("but a package called %s exists", f);
+					trilobite_debug ("\t -> but a package called %s exists", f);
 					result = TRUE;
 				}
 #endif

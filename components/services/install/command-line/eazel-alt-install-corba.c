@@ -558,8 +558,8 @@ md5_check_failed (EazelInstallCallback *service,
 		  gpointer unused) 
 {
 	fprintf (stdout, "Package %s failed md5 check!\n", package->name);
-	fprintf (stdout, "server MD5 checksum is %s\n", package->md5);
-	fprintf (stdout, "actual MD5 checksum is %s\n", actual_md5);
+	fprintf (stdout, "\tserver MD5 checksum is %s\n", package->md5);
+	fprintf (stdout, "\tactual MD5 checksum is %s\n", actual_md5);
 }
 
 static PackageData*
@@ -634,7 +634,7 @@ delete_files (EazelInstallCallback *service, EazelInstallProblem *problem)
 		}		
 	} 
 
-	if (/* downloaded_files && */ !arg_query && !arg_erase && !arg_file && ask_delete) {
+	if (downloaded_files && !arg_query && !arg_erase && !arg_file && ask_delete) {
 		printf ("should i delete the RPM files? (y/n) ");
 		fflush (stdout);
 		if (arg_batch) {			

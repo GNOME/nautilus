@@ -60,7 +60,7 @@ test_package_load (EazelPackageSystem *packsys,
 		g_message ("load_package test 1 FAIL");
 	}
 
-	packagedata_destroy (p, TRUE);
+	gtk_object_unref (GTK_OBJECT (p));
 
 	flag = PACKAGE_FILL_NO_PROVIDES;
 	p = eazel_package_system_load_package (packsys, NULL, package_file_name, flag);
@@ -69,7 +69,7 @@ test_package_load (EazelPackageSystem *packsys,
 	} else {
 		g_message ("load_package test 2 FAIL");
 	}
-	packagedata_destroy (p, TRUE);
+	gtk_object_unref (GTK_OBJECT (p));
 
 
 	flag = PACKAGE_FILL_NO_DIRS_IN_PROVIDES;
@@ -84,7 +84,7 @@ test_package_load (EazelPackageSystem *packsys,
 	} else {
 		g_message ("load_package test 3 FAIL");
 	}
-	packagedata_destroy (p, TRUE);
+	gtk_object_unref (GTK_OBJECT (p));
 }
 
 static char *
@@ -137,9 +137,8 @@ test_query (EazelPackageSystem *packsys)
 		g_message ("Query matches fail (got %d, not 1 for %s)", 
 			   g_list_length (result), MATCHES_ONLY_ONE);
 	}
-	g_list_foreach (result, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
+	g_list_foreach (result, (GFunc)gtk_object_unref, NULL);
 	g_list_free (result);
-	sleep (5);
 
 	result = eazel_package_system_query (packsys,
 					     NULL,
@@ -152,9 +151,8 @@ test_query (EazelPackageSystem *packsys)
 		g_message ("Query provides fail (got %d, not 1 for %s)", 
 			   g_list_length (result), PROVIDED_BY_ONLY_ONE);
 	}
-	g_list_foreach (result, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
+	g_list_foreach (result, (GFunc)gtk_object_unref, NULL);
 	g_list_free (result);
-	sleep (5);
 
 	result = eazel_package_system_query (packsys,
 					     NULL,
@@ -167,9 +165,8 @@ test_query (EazelPackageSystem *packsys)
 		g_message ("Query owned fail (got %d, not 1 for %s)", 
 			   g_list_length (result), OWNED_BY_ONLY_ONE);
 	}
-	g_list_foreach (result, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
+	g_list_foreach (result, (GFunc)gtk_object_unref, NULL);
 	g_list_free (result);
-	sleep (5);
 	
 	result = eazel_package_system_query (packsys,
 					     NULL,
@@ -182,9 +179,8 @@ test_query (EazelPackageSystem *packsys)
 		g_message ("Query substr fail (%d hits, too few (<10) for \"\")", 
 			   g_list_length (result));
 	}
-	g_list_foreach (result, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
+	g_list_foreach (result, (GFunc)gtk_object_unref, NULL);
 	g_list_free (result);
-	sleep (5);
 
 	{		
 		GList *glibc_result;
@@ -210,10 +206,14 @@ test_query (EazelPackageSystem *packsys)
 				g_message ("Query requires fail (%d hits, too few (<50) for %s)",  
 					   g_list_length (result), NEEDED_BY_MANY);
 			}
+			g_list_foreach (result, (GFunc)gtk_object_unref, NULL);
 			g_list_free (result);
 		} else {
 			g_message ("Can't test query requires, no hits for %s", NEEDED_BY_MANY);
 		}
+		g_list_foreach (glibc_result, (GFunc)gtk_object_unref, NULL);
+		g_list_free (glibc_result);
+		
 	}
 }
 
@@ -233,7 +233,7 @@ test_query_owns_mem (EazelPackageSystem *packsys)
 		if (i%50==0) {
 			g_message ("%d queries done...", i);
 		}
-		g_list_foreach (result, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
+		g_list_foreach (result, (GFunc)gtk_object_unref, NULL);
 		g_list_free (result);
 	}
 }
@@ -326,7 +326,7 @@ is_installed (EazelPackageSystem *packsys,
 					    package->name,
 					    EAZEL_PACKAGE_SYSTEM_QUERY_MATCHES,
 					    0);
-	packagedata_destroy (package, TRUE);
+	gtk_object_unref (GTK_OBJECT (package));
 	if (g_list_length (query) > 0) {
 		result = TRUE;
 	}
@@ -375,6 +375,7 @@ test_install (EazelPackageSystem *packsys,
 	} else {
 		g_message ("install FAIL");
 	}
+	g_list_foreach (packages, (GFunc)gtk_object_unref, NULL);
 
 	gtk_signal_disconnect (GTK_OBJECT (packsys), h1);
 	gtk_signal_disconnect (GTK_OBJECT (packsys), h2);
@@ -424,6 +425,7 @@ test_uninstall (EazelPackageSystem *packsys,
 	} else {
 		g_message ("uninstall FAIL");
 	}
+	g_list_foreach (packages, (GFunc)gtk_object_unref, NULL);
 
 	gtk_signal_disconnect (GTK_OBJECT (packsys), h1);
 	gtk_signal_disconnect (GTK_OBJECT (packsys), h2);
@@ -470,6 +472,7 @@ test_verify (EazelPackageSystem *packsys,
 	} else {
 		g_message ("verify didn't emit enough signals");
 	}
+	g_list_foreach (packages, (GFunc)gtk_object_unref, NULL);
 
 	gtk_signal_disconnect (GTK_OBJECT (packsys), h1);
 	gtk_signal_disconnect (GTK_OBJECT (packsys), h2);
@@ -508,6 +511,7 @@ int main(int argc, char *argv[]) {
 	test_package_load (packsys, filename);
 	test_query (packsys);
 	test_query_owns_mem (packsys);
+
 	test_install (packsys, home_dbpath, filename);
 	test_verify (packsys, home_dbpath, filename);
 	test_uninstall (packsys, home_dbpath, filename);
