@@ -5332,7 +5332,6 @@ void
 nautilus_file_changed (NautilusFile *file)
 {
 	GList fake_list;
-	g_print ("nautilus_file_changed (%p)\n", file);
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
