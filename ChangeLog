@@ -1,3 +1,18 @@
+2000-10-23  Mike Fleming  <mfleming@eazel.com>
+
+	* components/services/summary/nautilus-view/main.c: (main):
+	Add gconf-init
+	
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (save_default_eazel_service_user), (authn_cb_succeeded),
+	(am_i_logged_in), (logged_in_callback),
+	(nautilus_summary_view_initialize),
+	(nautilus_summary_view_destroy):
+
+	Store previously used Eazel Service user for later.  The ammonite
+	login dialog makes use of this as the default username.
+	
+
 2000-10-23  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-types.c:

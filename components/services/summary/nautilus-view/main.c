@@ -29,6 +29,7 @@
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
 #include "nautilus-summary-view.h"
+#include <gconf/gconf.h>
 
 static int object_count =0;
 
@@ -88,6 +89,7 @@ main (int argc, char *argv[])
 	
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
+	gconf_init (argc, argv, NULL);
 
         registration_id = oaf_make_registration_id ("OAFIID:nautilus_summary_view_factory:1b0b1018-e0ca-4f14-8d23-7a134486ab30", getenv ("DISPLAY"));
 
