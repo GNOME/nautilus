@@ -1,3 +1,12 @@
+Fri Apr 14 16:35:32 2000  Raph Levien  <raph@acm.org>
+
+	* librsvg/test-rsvg.c: Added a command line tester for rsvg, which
+	outputs alpha-transparent PNG's. The PNG save code is lifted from
+	similar code in nautilus-icon-factory, and should be deleted when
+	this functionality appears in gdk-pixbuf.
+
+	* librsvg/Makefile.am: Build test-rsvg.
+
 2000-04-14  Andy Hertzfeld <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-factory.c:

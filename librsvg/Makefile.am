@@ -1,5 +1,10 @@
 NULL=
 
+bin_PROGRAMS=test-rsvg
+
+test_rsvg_LDADD =\
+	librsvg.la
+
 lib_LTLIBRARIES=librsvg.la
 
 INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
@@ -28,3 +33,6 @@ librsvg_la_SOURCES=	\
 	art_rgba_svp.c		\
 	$(NULL)
 
+test_rsvg_SOURCES =\
+	test-rsvg.c	\
+	$(NULL)
