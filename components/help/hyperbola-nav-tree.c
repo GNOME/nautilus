@@ -44,7 +44,7 @@ ctree_populate_subnode(gpointer key, gpointer value, gpointer user_data)
 
 #ifdef ENABLE_SCROLLKEEPER_SUPPORT
   /* Get rid of leading numbers used to make sure TOCs are displayed properly */
-  if (isdigit(*(node->title)))
+  if (strstr(node->title, ". ") != NULL)
     {
       char **split;
       
