@@ -86,6 +86,60 @@ nautilus_desktop_link_monitor_get (void)
 	return the_link_monitor;
 }
 
+static gboolean
+eject_for_type (GnomeVFSDeviceType type)
+{
+	switch (type) {
+	case GNOME_VFS_DEVICE_TYPE_CDROM:
+	case GNOME_VFS_DEVICE_TYPE_ZIP:
+	case GNOME_VFS_DEVICE_TYPE_JAZ:
+		return TRUE;
+	default:
+		return FALSE;
+	}
+}
+
+static void
+volume_delete_dialog (GtkWidget *parent_view,
+                      NautilusDesktopLink *link)
+{
+	GnomeVFSVolume *volume;
+	char *dialog_str;
+	char *display_name;
+
+	volume = nautilus_desktop_link_get_volume (link);
+
+	if (volume != NULL) {
+		display_name = nautilus_desktop_link_get_display_name (link);
+		dialog_str = g_strdup_printf (_("You cannot move the volume \"%s\" to the trash."),
+					      display_name);
+		g_free (display_name);
+
+		if (eject_for_type (gnome_vfs_volume_get_device_type (volume))) {
+			eel_run_simple_dialog
+				(parent_view, 
+				 FALSE,
+				 GTK_MESSAGE_ERROR,
+				 dialog_str,
+				 _("If you want to eject the volume, please use Eject in the "
+				   "right-click menu of the volume."),
+				 NULL, GTK_STOCK_OK, NULL);
+		} else {
+			eel_run_simple_dialog
+				(parent_view, 
+				 FALSE,
+				 GTK_MESSAGE_ERROR,
+				 dialog_str,
+				 _("If you want to unmount the volume, please use Unmount Volume in the "
+				   "right-click menu of the volume."),
+				 NULL, GTK_STOCK_OK, NULL);
+		}
+
+		gnome_vfs_volume_unref (volume);
+		g_free (dialog_str);
+	}
+}
+
 void
 nautilus_desktop_link_monitor_delete_link (NautilusDesktopLinkMonitor *monitor,
 					   NautilusDesktopLink *link,
@@ -98,15 +152,7 @@ nautilus_desktop_link_monitor_delete_link (NautilusDesktopLinkMonitor *monitor,
 		/* just ignore. We don't allow you to delete these */
 		break;
 	default:
-		eel_run_simple_dialog
-			(parent_view, 
-			 FALSE,
-			 GTK_MESSAGE_ERROR,
-			 _("You cannot delete a volume icon."),
-			 _("If you want to eject the volume, please use Eject in the "
-			   "right-click menu of the volume."),
-			 _("Can't Delete Volume"),
-			 GTK_STOCK_OK, NULL);
+		volume_delete_dialog (parent_view, link);
 		break;
 	}
 }
