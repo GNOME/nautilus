@@ -651,7 +651,9 @@ trash_link_is_selection (FMDirectoryView *view)
 	if (eel_g_list_exactly_one_item (selection) &&
 	    NAUTILUS_IS_DESKTOP_ICON_FILE (selection->data)) {
 		link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (selection->data));
-		if (nautilus_desktop_link_get_link_type (link) == NAUTILUS_DESKTOP_LINK_TRASH) {
+		/* link may be NULL if the link was recently removed (unmounted) */
+		if (link != NULL &&
+		    nautilus_desktop_link_get_link_type (link) == NAUTILUS_DESKTOP_LINK_TRASH) {
 			result = TRUE;
 		}
 		g_object_unref (link);

@@ -293,15 +293,17 @@ get_target_file_for_original_file (NautilusFile *file)
 		}
 	} else if (NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
 		link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (file));
-		
-		/* map to linked URI for these types of links */
-		uri_to_display = nautilus_desktop_link_get_activation_uri (link);
-		if (uri_to_display) {
-                        target_file = nautilus_file_get (uri_to_display);
-                        g_free (uri_to_display);
-                }
-		
-		g_object_unref (link);
+
+		if (link != NULL) {
+			/* map to linked URI for these types of links */
+			uri_to_display = nautilus_desktop_link_get_activation_uri (link);
+			if (uri_to_display) {
+				target_file = nautilus_file_get (uri_to_display);
+				g_free (uri_to_display);
+			}
+			
+			g_object_unref (link);
+		}
         }
 
 

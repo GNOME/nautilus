@@ -1,5 +1,20 @@
 2005-02-22  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-desktop-icon-file.c:
+	* libnautilus-private/nautilus-file-operations.c:
+	(nautilus_file_operations_delete):
+	* libnautilus-private/nautilus-file.c: (nautilus_file_can_rename),
+	(rename_guts), (nautilus_file_get_drop_target_uri):
+	* src/file-manager/fm-desktop-icon-view.c:
+	(trash_link_is_selection):
+	* src/file-manager/fm-icon-container.c: (get_sort_category):
+	* src/file-manager/fm-properties-window.c:
+	(get_target_file_for_original_file):
+	Handle nautilus_desktop_icon_file_get_link() returning NULL.
+	Likely fixes bug #145971
+
+2005-02-22  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-properties-window.c: (should_show_mime_type):
 	Remove stale comment.
 	Patch from Jaap Haitsma <jaap@haitsma.org>

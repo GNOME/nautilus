@@ -872,8 +872,10 @@ nautilus_file_can_rename (NautilusFile *file)
 
 		link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (file));
 
-		can_rename = nautilus_desktop_link_can_rename (link);
-		g_object_unref (link);
+		if (link != NULL) {
+			can_rename = nautilus_desktop_link_can_rename (link);
+			g_object_unref (link);
+		}
 	}
 	
 	/* Nautilus trash directories cannot be renamed */
@@ -1202,7 +1204,8 @@ rename_guts (NautilusFile *file,
 
 		link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (file));
 		
-		if (nautilus_desktop_link_rename (link, new_name)) {
+		if (link != NULL &&
+		    nautilus_desktop_link_rename (link, new_name)) {
 			(* callback) (file, GNOME_VFS_OK, callback_data);
 		} else {
 			(* callback) (file, GNOME_VFS_ERROR_GENERIC, callback_data);
@@ -2823,11 +2826,13 @@ nautilus_file_get_drop_target_uri (NautilusFile *file)
 
 	if (NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
 		link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (file));
-		
-		uri = nautilus_desktop_link_get_activation_uri (link);
-		g_object_unref (link);
-		if (uri != NULL) {
-			return uri;
+
+		if (link != NULL) {
+			uri = nautilus_desktop_link_get_activation_uri (link);
+			g_object_unref (link);
+			if (uri != NULL) {
+				return uri;
+			}
 		}
 	}
 	

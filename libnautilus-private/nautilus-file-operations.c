@@ -2461,11 +2461,12 @@ nautilus_file_operations_delete (const GList *item_uris,
 
 					link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (file));
 
-					nautilus_desktop_link_monitor_delete_link (nautilus_desktop_link_monitor_get (),
-										   link,
-										   parent_view);
-					
-					g_object_unref (link);
+					if (link != NULL) {
+						nautilus_desktop_link_monitor_delete_link (nautilus_desktop_link_monitor_get (),
+											   link,
+											   parent_view);
+						g_object_unref (link);
+					}
 				}
 				nautilus_file_unref (file);
 			}

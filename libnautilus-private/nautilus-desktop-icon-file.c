@@ -313,6 +313,8 @@ nautilus_desktop_icon_file_new (NautilusDesktopLink *link)
 	return icon_file;
 }
 
+
+/* Note: This can return NULL if the link was recently removed (i.e. unmounted) */
 NautilusDesktopLink *
 nautilus_desktop_icon_file_get_link (NautilusDesktopIconFile *icon_file)
 {
