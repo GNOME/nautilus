@@ -17,6 +17,7 @@ INCLUDES = \
 	$(GHTTP_CFLAGS) 	\
 	$(GCONF_CFLAGS) 	\
 	$(GNOME_CFLAGS) 	\
+	$(VFS_CFLAGS)		\
 	$(GNOME_INCLUDEDIR) 	\
 	$(OAF_CFLAGS) 		\
 	$(XML_CFLAGS) 		\
@@ -25,6 +26,7 @@ INCLUDES = \
 LDFLAGS = \
 	$(OAF_LIBS) 	\
 	$(GHTTP_LIBS) 	\
+	$(VFS_LIBS)	\
 	$(NULL)
 
 
@@ -54,6 +56,7 @@ trilobite_eazel_install_service_LDADD =							\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la	 \
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite-service.la \
 	$(GNOMEUI_LIBS) \
+	$(VFS_LIBS)	\
 	$(RPM_LIBS)
 	$(BONOBO_LIBS) \
 	$(NULL)

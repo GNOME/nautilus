@@ -78,23 +78,21 @@ create_default_configuration_metafile (const char* target_file) {
 
 	doc = xmlNewDoc ("1.0");
 	doc->root = xmlNewDocNode (doc, NULL, "EAZEL_INSTALLER", NULL);
-	tree = xmlNewChild (doc->root, NULL, "PROTOCOL", "LOCAL");
+	tree = xmlNewChild (doc->root, NULL, "PROTOCOL", "HTTP");
 	tree = xmlNewChild (doc->root, NULL, "PKG_LIST", "/var/eazel/services/package-list.xml");
 	tree = xmlNewChild (doc->root, NULL, "VERBOSE", "TRUE");
 	tree = xmlNewChild (doc->root, NULL, "SILENT", "FALSE");
 	tree = xmlNewChild (doc->root, NULL, "DEBUG", "TRUE");
-	tree = xmlNewChild (doc->root, NULL, "DRY_RUN", "FALSE");
-	tree = xmlNewChild (doc->root, NULL, "FORCE", "TRUE");
+	tree = xmlNewChild (doc->root, NULL, "DRY_RUN", "TRUE");
+	tree = xmlNewChild (doc->root, NULL, "FORCE", "FALSE");
 	tree = xmlNewChild (doc->root, NULL, "DEPEND", "FALSE");
 	tree = xmlNewChild (doc->root, NULL, "UPDATE", "TRUE");
 	tree = xmlNewChild (doc->root, NULL, "UNINSTALL", "FALSE");
 	tree = xmlNewChild (doc->root, NULL, "DOWNGRADE", "FALSE");
-	tree = xmlNewChild (doc->root, NULL, "PORT", "80");
-	tree = xmlNewChild (doc->root, NULL, "HOSTNAME", "10.1.1.5");
+	tree = xmlNewChild (doc->root, NULL, "PORT", "8888");
+	tree = xmlNewChild (doc->root, NULL, "HOSTNAME", "ham.eazel.com");
 	tree = xmlNewChild (doc->root, NULL, "PKG_LIST_STORAGE_PATH", "/package-list.xml");
-	tree = xmlNewChild (doc->root, NULL, "RPM_STORAGE_PATH", "/RPMS");
 	tree = xmlNewChild (doc->root, NULL, "TMP_DIR", "/tmp/eazel-install");
-	tree = xmlNewChild (doc->root, NULL, "TRANSACTION_DIR", "/var/eazel/services/transaction");
 	tree = xmlNewChild (doc->root, NULL, "RPMRC_FILE", "/usr/lib/rpm/rpmrc");
 
 	if (doc == NULL) {
@@ -255,7 +253,6 @@ init_default_transfer_configuration (const char* config_file) {
 	rv->port_number = atoi (xml_get_value (base, "PORT"));
 	rv->hostname = g_strdup (xml_get_value (base, "HOSTNAME"));
 	rv->pkg_list_storage_path = g_strdup (xml_get_value (base, "PKG_LIST_STORAGE_PATH"));
-	rv->rpm_storage_path = g_strdup (xml_get_value (base, "RPM_STORAGE_PATH"));
 	rv->tmp_dir = g_strdup (xml_get_value (base, "TMP_DIR"));	
 	rv->rpmrc_file = g_strdup (xml_get_value (base, "RPMRC_FILE"));
 
@@ -273,8 +270,6 @@ transferoptions_destroy (TransferOptions *topts)
 	topts->hostname = NULL;
 	g_free (topts->pkg_list_storage_path);
 	topts->pkg_list_storage_path = NULL;
-	g_free (topts->rpm_storage_path);
-	topts->rpm_storage_path = NULL;
 	g_free (topts->tmp_dir);
 	topts->tmp_dir = NULL;
 	g_free (topts->rpmrc_file);

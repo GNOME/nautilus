@@ -16,6 +16,7 @@ INCLUDES = \
         -I$(top_builddir)/components/services/install/lib	\
 	$(GNOME_CFLAGS)						\
 	$(GCONF_CFLAGS)						\
+	$(VFS_CFLAGS)						\
 	$(XML_CFLAGS)						\
 	$(GHTTP_CFLAGS)						\
 	$(NULL)
@@ -24,10 +25,11 @@ LDADD =                                           \
         $(top_builddir)/components/services/install/lib/libeazelinstall.la\
         $(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(BONOBO_LIBS) \
-	$(GNOME_LIBS)                                                     \
-	$(GCONF_LIBS)                                                     \
-	$(GHTTP_LIBS)                                                     \
-	$(RPM_LIBS)                                                       \
+	$(GNOME_LIBS)                   \
+	$(GCONF_LIBS)			\
+	$(VFS_LIBS)			\
+	$(GHTTP_LIBS)			\
+	$(RPM_LIBS)			\
 	$(NULL)
 
 bin_PROGRAMS = eazel-install eazel-uninstall eazel-gen-xml eazel-package-query eazel-revert

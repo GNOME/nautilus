@@ -1,3 +1,94 @@
+2000-08-15  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/Makefile.am:
+	* components/services/install/lib/eazel-install-metadata.c:
+	(create_default_configuration_metafile),
+	(init_default_install_configuration),
+	(init_default_transfer_configuration), (transferoptions_destroy):
+	Changed some of the default values.
+	
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_unref), (eazel_install_set_arg),
+	(eazel_install_class_initialize),
+	(eazel_install_fetch_remote_package_list),
+	(eazel_install_install_packages),
+	(eazel_install_uninstall_packages):
+	Removed rpm_storage_path, as we query the server for a complete
+	url. Unref calls finalize if compiled with EAZEL_INSTALL_SLIM.
+	fetch_remote_package_list now uses file:// unless _SLIM is defined
+	(file:// makes gnome-vfs download the bastard).
+	
+	* components/services/install/lib/eazel-install-private.h:
+	Made the subcommand_cammand boolean volatile.
+	
+	* components/services/install/lib/eazel-install-protocols.h:
+	* components/services/install/lib/eazel-install-protocols.c:
+	(http_fetch_remote_file), (ftp_fetch_remote_file),
+	(gnome_vfs_xfer_callback), (gnome_vfs_fetch_remote_file),
+	(local_fetch_remote_file), (eazel_install_fill_file_fetch_table),
+	(eazel_install_fetch_file), (filename_from_url),
+	(eazel_install_fetch_package),
+	(eazel_install_fetch_package_which_provides), (add_to_url),
+	(get_url_for_package), (get_search_url_for_package):
+	Added gnome-vfs support (1301). Revamped a lot of the switch
+	(protocol) calls, so now theres a table of function pointers, so
+	eazel_install_fetch_file just uses
+	func_table[protocol](...). Thereby making it easier to add
+	protocols.
+	Also more #ifdefs to make life easier on the poor
+	nautilus-installer.
+	And I added file_to_report to eazel_install_fetch_file, so it can
+	use an alternative filename in the download progress signals,
+	instead of the target filename (eg. Eye of Gnome instead of
+	eog-x.y.z-bla1.i386.rpm).
+	Added g_main_iteration calls to http_fetch, for the
+	nautilus-installer. The gnome-vfs automagically calls it.
+	local_file_fetch now emits the obiligatory signals.
+	
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(download_all_packages),
+	(eazel_install_start_transaction_make_rpm_argument_list),
+	(eazel_install_do_transaction_save_report),
+	(eazel_install_monitor_rpm_propcess_pipe),
+	(eazel_install_check_existing_packages),
+	(eazel_install_fetch_rpm_dependencies), (print_package_list),
+	(eazel_install_ensure_deps), (eazel_uninstall_upward_traverse),
+	(eazel_uninstall_downward_traverse):
+	Div cleaning up. Fixed rpm percentage output.
+	
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_fill_from_rpm_header):
+	* components/services/install/lib/eazel-install-types.h:
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_osd_xml_from_memory):
+	Fixed evil pointer mishap.
+	
+	* components/services/install/lib/makefile.staticlib.in:
+	Added EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
+	
+	* components/services/install/server/Makefile.am:
+	Added the VFS flags
+	
+	* components/services/install/server/main.c: (sig_segv_handler),
+	(eazel_install_service_factory), (main):
+	Now loads the default config file.
+	
+	* components/services/trilobite/libtrilobite/Makefile.am:
+	Added VFS flags
+	 
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.h:
+	*components/services/trilobite/libtrilobite/trilobite-core-utils.c:
+	(trilobite_get_useragent_string):
+	Adressed bug 2149
+	
+	* nautilus-installer/src/Makefile:
+	* nautilus-installer/src/installer.c: (eazel_install_progress),
+	(eazel_download_progress), (eazel_install_preflight), (installer):
+	* nautilus-installer/src/interface.c: (create_what_to_do_page),
+	(create_install_page), (create_finish_page), (create_window):
+	Revamped large parts of the ui, much prettier now.
+
 2000-08-14  Pavel Cisler  <pavel@eazel.com>
 
 	* src/file-manager/fm-desktop-icon-view.c:

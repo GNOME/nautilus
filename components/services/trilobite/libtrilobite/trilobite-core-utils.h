@@ -54,5 +54,7 @@ int trilobite_pexec (const char *path, char * const argv[], int *stdin_fd, int *
 gboolean trilobite_init (const char *service_name, const char *version_name, const char *log_filename,
 			 int argc, char **argv, GData *options);
 
+const char *trilobite_get_useragent_string (gboolean version, char *suffix);
+
 #endif /* TRILOBITE_CORE_UTILS_H */
 

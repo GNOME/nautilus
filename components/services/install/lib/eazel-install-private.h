@@ -70,7 +70,7 @@ struct _EazelInstallPrivate {
 	char *logfilename;
 	
         /* TRUE if the rpm subcommand is running */
-	gboolean subcommand_running;
+	volatile gboolean subcommand_running;
 };
 
 #endif /* EAZEL_INSTALL_PRIVATE_H */

@@ -225,3 +225,16 @@ trilobite_init (const char *service_name, const char *version_name, const char *
 fail:
 	return FALSE;
 }
+
+const char *
+trilobite_get_useragent_string (gboolean version, char *suffix)
+{
+	static char *result = NULL;
+
+	g_free (result);
+	result = g_strdup_printf ("Trilobite/%s%s%s", 
+				  version ? "/" TRILOBITE_VERSION : suffix ? "/" : "" , 
+				  suffix ? "/" : "", 
+				  suffix ? suffix : "");
+	return result;
+}

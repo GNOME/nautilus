@@ -84,12 +84,23 @@ struct _HTTPError {
 	char *reason;
 };
 
+/* NOTE: if you add protocols here, modify the following places :
+   idl/trilobite-eazel-install.idl
+   lib/eazel-install-protocols.c (eazel_install_fill_file_fetch_table)
+   lib/eazel-install-types.c (protocol_as_string)
+   lib/eazel-install-corba.c (impl_Eazel_Install__set_protocol) (impl_Eazel_Install__get_protocol)
+ */
 enum _URLType {
-	PROTOCOL_LOCAL,
-	PROTOCOL_HTTP,
-	PROTOCOL_FTP
+	PROTOCOL_LOCAL = 0,
+	PROTOCOL_HTTP  = 1,
+	PROTOCOL_FTP   = 2
 };
 const char *protocol_as_string (URLType protocol);
+
+typedef gboolean (*eazel_install_file_fetch_function) (gpointer *obj, 
+						       char *url,
+						       const char *file_to_report,
+						       const char *target_file);
 
 enum _PackageType {
 	PACKAGE_TYPE_RPM,
@@ -101,7 +112,6 @@ struct _TransferOptions {
 	char* hostname;                    /* Remote hostname */
 	guint port_number;                 /* Connection port */
 	char* pkg_list_storage_path;       /* Remote path to package-list.xml */
-	char* rpm_storage_path;            /* Remote path to RPM directory */
 	char* tmp_dir;                     /* Local directory to store incoming RPMs */
 	char* rpmrc_file;                  /* Location of the rpm resource file */
 };

@@ -39,47 +39,54 @@ int installer_local = 0;
 
 static void 
 eazel_install_progress (EazelInstall *service, 
-			const PackageData *pack,
+			const PackageData *package,
 			int package_num, int num_packages, 
 			int amount, int total,
 			int total_size_completed, int total_size, 
 			GtkWidget *widget) 
 {
 	GtkProgressBar *progressbar, *progress_overall;
-	GtkLabel *action_label;
+	GtkText *summary;
 	GtkLabel *package_label;
 
-	action_label = gtk_object_get_data (GTK_OBJECT (widget), "action_label");
 	package_label = gtk_object_get_data (GTK_OBJECT (widget), "package_label");
+	summary = gtk_object_get_data (GTK_OBJECT (widget), "summary");
 	progressbar = gtk_object_get_data (GTK_OBJECT (widget), "progressbar_single");
 	progress_overall = gtk_object_get_data (GTK_OBJECT (widget), "progressbar_overall");
 
 	if (amount == 0) {
-		gtk_label_set_text (action_label, "Install :");
-		gtk_label_set_text (package_label, pack->name);
-		gtk_progress_set_format_string (GTK_PROGRESS (progressbar), "%p%% - %vkb/%ukb");
+		char *tmp;
+		tmp = g_strdup_printf ("Installing %s", package->name);
+		gtk_label_set_text (package_label, tmp);
+		g_free (tmp);
+
+		gtk_progress_set_format_string (GTK_PROGRESS (progressbar), "%p%% (%v of %u kb)");
 		gtk_progress_configure (GTK_PROGRESS (progressbar), 0, 0, (float)(total/1024));		
+		gtk_text_backward_delete (summary, gtk_text_get_length (summary));
+		gtk_text_insert (summary, NULL, NULL, NULL,
+				 package->summary, strlen (package->summary));
+			
 	}
 
 	if (installer_debug) {
 		float pct;
 		pct = ( (total > 0) ? ((float) ((((float) amount) / total) * 100)): 100.0);
 		fprintf (stdout, "Install Progress - %s - %d %d (%d %d) %% %f\r", 
-			 pack->name?pack->name:"(null)", 
+			 package->name?package->name:"(null)", 
 			 amount, total, 
 			 total_size_completed, total_size, 
 			 pct);
 	}
 
-	gtk_progress_set_value (GTK_PROGRESS (progressbar), (float)(amount/1024 > total/1024 ? total/1024 : amount/1024));
-	gtk_progress_set_value (GTK_PROGRESS (progress_overall), (float)total_size_completed>total_size ? total_size : total_size_completed);
-	g_main_iteration (FALSE);  
+	gtk_progress_set_value (GTK_PROGRESS (progressbar), 
+				(float)(amount/1024 > total/1024 ? total/1024 : amount/1024));
+	gtk_progress_set_value (GTK_PROGRESS (progress_overall), 
+				(float)total_size_completed>total_size ? total_size : total_size_completed);
 
 	fflush (stdout);
 	if (amount == total && installer_debug) {
 		fprintf (stdout, "\n");
 	}
-	
 }
 
 
@@ -91,10 +98,8 @@ eazel_download_progress (EazelInstall *service,
 			 GtkWidget *widget) 
 {
 	GtkProgressBar *progressbar;
-	GtkLabel *action_label;
 	GtkLabel *package_label;
 
-	action_label = gtk_object_get_data (GTK_OBJECT (widget), "action_label");
 	package_label = gtk_object_get_data (GTK_OBJECT (widget), "package_label");
 	progressbar = gtk_object_get_data (GTK_OBJECT (widget), "progressbar_single");
 
@@ -104,7 +109,6 @@ eazel_download_progress (EazelInstall *service,
 		gtk_label_set_text (package_label, tmp);
 		g_free (tmp);
 
-		gtk_label_set_text (action_label, "Download :");
 		gtk_progress_set_format_string (GTK_PROGRESS (progressbar), "%p%% (%v of %u kb)");
 		gtk_progress_configure (GTK_PROGRESS (progressbar), 0, 0, (float)(total/1024));
 	}
@@ -120,7 +124,7 @@ eazel_download_progress (EazelInstall *service,
 	gtk_progress_set_value (GTK_PROGRESS (progressbar), amount/1024);
 
 	if (amount != total) {		
-		g_main_iteration (FALSE);
+		/* g_main_iteration (FALSE); */
 		/* gtk_main_iteration (); */
 	} else if (amount == total) {		
 		/*
@@ -228,26 +232,34 @@ eazel_install_preflight (EazelInstall *service,
 			 int num_packages,
 			 GtkWidget *widget)
 {
-	GtkLabel *action_label;
-	GtkLabel *package_label;
 	GtkProgressBar *progress_overall;
+	GtkLabel *package_label;
+	GtkText *summary;
+	char *summary_string;
 	char *tmp;
 
-	action_label = gtk_object_get_data (GTK_OBJECT (widget), "action_label");
+	summary = gtk_object_get_data (GTK_OBJECT (widget), "summary");
 	package_label = gtk_object_get_data (GTK_OBJECT (widget), "package_label");
 	progress_overall = gtk_object_get_data (GTK_OBJECT (widget), "progressbar_overall");
 
 	gtk_progress_set_format_string (GTK_PROGRESS (progress_overall), "Total completion %p%%");
 	gtk_progress_configure (GTK_PROGRESS (progress_overall), 0, 0, (float)total_size);
+	gtk_widget_show (GTK_WIDGET (progress_overall));
 
+	summary_string = g_strdup_printf (_("Now starting the install process.\n"
+					    "Starting the process takes some time, please be patient.\n"
+					    "In total, %d mb of software will be installed"), 
+					  total_size/(1024*1024));
 	tmp = g_strdup_printf ("Preparing RPM, %d packages (%d mb)", num_packages, total_size/(1024*1024));
 
 	if (installer_debug) {
 		fprintf (stdout, "PREFLIGHT: %s\n", tmp);
 	}
 
-	gtk_label_set_text (action_label, "Install :");
 	gtk_label_set_text (package_label, tmp);
+	gtk_text_backward_delete (summary, gtk_text_get_length (summary));
+	gtk_text_insert (summary, NULL, NULL, NULL,
+			 summary_string, strlen (summary_string));
 	g_main_iteration (FALSE);
 }
 
@@ -338,7 +350,7 @@ void installer (GtkWidget *window,
 						 "silent", FALSE,
 						 "debug", TRUE,
 						 "test", installer_test ? TRUE : FALSE, 
-						 "force", TRUE,
+						 "force", FALSE,
 						 "depend", FALSE,
 						 "update", TRUE,
 						 "uninstall", method==UNINSTALL ? TRUE : FALSE,
@@ -347,7 +359,6 @@ void installer (GtkWidget *window,
 						 "tmp_dir", TMP_DIR,
 						 "rpmrc_file", RPMRC,
 						 "server", HOSTNAME,
-						 "rpm_storage_path", REMOTE_RPM_DIR,
 						 "package_list", installer_local, 
 						 "package_list_storage_path", package_list [ method ],
 						 "server_port", PORT_NUMBER,
@@ -387,22 +398,19 @@ void installer (GtkWidget *window,
 		break;
 	};
 
-	eazel_install_destroy (GTK_OBJECT (service));
+	gtk_object_destroy (GTK_OBJECT (service)); 
 
-	package_label = gtk_object_get_data (GTK_OBJECT (window), "package_label");
 	progressbar = gtk_object_get_data (GTK_OBJECT (window), "progressbar_single");
 	gtk_progress_set_format_string (GTK_PROGRESS (progressbar), "done");
 	progressbar = gtk_object_get_data (GTK_OBJECT (window), "progressbar_overall");
 	gtk_progress_set_format_string (GTK_PROGRESS (progressbar), "done");
 
-	if (strlen (failure_info)>1) {
-		gtk_label_set_text (package_label, "Failed");	
+	if (failure_info && strlen (failure_info)>1) {
 		if (installer_debug) {
 			fprintf (stdout, "ERROR :\n%s", failure_info);
 		}
 		gnome_error_dialog_parented (failure_info, GTK_WINDOW (window));
 	} else {
-		gtk_label_set_text (package_label, "Completed");	
 	}
 }
 

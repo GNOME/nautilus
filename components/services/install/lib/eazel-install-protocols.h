@@ -29,14 +29,12 @@
 #define EAZEL_INSTALL_PROTOCOLS_H
 
 #include "eazel-install-types.h"
-#include <ghttp.h>
 #include "eazel-install-public.h"
 
-#define USER_AGENT_STRING "eazel-install/"
-
 gboolean eazel_install_fetch_file (EazelInstall *service,
-				   char* url, 
-				   const char* target_file);
+				   char *url, 
+				   const char *file_to_report,
+				   const char *target_file);
 
 gboolean eazel_install_fetch_package (EazelInstall *service,
 				      PackageData *package);

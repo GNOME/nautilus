@@ -69,7 +69,6 @@ enum {
 	ARG_TMP_DIR,
 	ARG_RPMRC_FILE,
 	ARG_SERVER,
-	ARG_RPM_STORAGE_PATH,
 	ARG_PACKAGE_LIST_STORAGE_PATH,
 	ARG_PACKAGE_LIST,
 	ARG_ROOT_DIR,
@@ -156,15 +155,7 @@ xml_from_packagedata (const PackageData *pack) {
   GTK+ object stuff
 *****************************************/
 
-void eazel_install_unref (GtkObject *object) 
-{
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (EAZEL_INSTALL (object));
-
-	bonobo_object_unref (BONOBO_OBJECT (object));
-}
-
-void
+static void
 eazel_install_finalize (GtkObject *object)
 {
 	EazelInstall *service;
@@ -199,6 +190,18 @@ eazel_install_finalize (GtkObject *object)
 
 	g_message ("out eazel_install_finalize");
 }
+
+void eazel_install_unref (GtkObject *object) 
+{
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (EAZEL_INSTALL (object));
+#ifndef EAZEL_INSTALL_SLIM
+	bonobo_object_unref (BONOBO_OBJECT (object));
+#else
+	eazel_install_finalize (object);
+#endif
+}
+
 
 static void
 eazel_install_set_arg (GtkObject *object,
@@ -248,9 +251,6 @@ eazel_install_set_arg (GtkObject *object,
 		break;
 	case ARG_SERVER:
 		eazel_install_set_server (service, (char*)GTK_VALUE_POINTER(*arg));
-		break;
-	case ARG_RPM_STORAGE_PATH:
-		eazel_install_set_rpm_storage_path (service, (char*)GTK_VALUE_POINTER(*arg));
 		break;
 	case ARG_PACKAGE_LIST_STORAGE_PATH:
 		eazel_install_set_package_list_storage_path (service, (char*)GTK_VALUE_POINTER(*arg));
@@ -421,10 +421,6 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				 GTK_TYPE_POINTER,
 				 GTK_ARG_READWRITE,
 				 ARG_SERVER);
-	gtk_object_add_arg_type ("EazelInstall::rpm_storage_path",
-				 GTK_TYPE_POINTER,
-				 GTK_ARG_READWRITE,
-				 ARG_RPM_STORAGE_PATH);
 	gtk_object_add_arg_type ("EazelInstall::package_list_storage_path",
 				 GTK_TYPE_POINTER,
 				 GTK_ARG_READWRITE,
@@ -556,7 +552,6 @@ eazel_install_new_with_config (const char *config_file)
 						 "transaction_dir", iopts->transaction_dir,
 						 "rpmrc_file", topts->rpmrc_file,
 						 "server", topts->hostname,
-						 "rpm_storage_path", topts->rpm_storage_path,
 						 "package_list_storage_path", topts->pkg_list_storage_path,
 						 "server_port", topts->port_number,
 						 NULL));
@@ -586,7 +581,8 @@ static gboolean
 eazel_install_fetch_remote_package_list (EazelInstall *service) 
 {
 	gboolean retval;
-	char* url;
+	char *url;
+	char *destination;
 	
 	SANITY_VAL(service, FALSE);
 
@@ -595,16 +591,25 @@ eazel_install_fetch_remote_package_list (EazelInstall *service)
 	url = g_strdup_printf ("http://%s%s", 
 			       eazel_install_get_server (service),
 			       eazel_install_get_package_list_storage_path (service));
+#ifdef EAZEL_INSTALL_SLIM
+	destination = g_strdup (eazel_install_get_package_list (service));
+#else /*  EAZEL_INSTALL_SLIM */
+	destination = g_strdup_printf ("file://%s",
+				       eazel_install_get_package_list (service));
+#endif /*  EAZEL_INSTALL_SLIM */
 	
-	retval = eazel_install_fetch_file (service, url, eazel_install_get_package_list (service));
+	retval = eazel_install_fetch_file (service, 
+					   url, 
+					   "package list", 
+					   destination);
 
 	if (retval == FALSE) {
-		g_free (url);
-		g_error (_("Unable to retrieve package-list.xml!\n"));
-		return FALSE;
+		g_warning (_("Unable to retrieve package-list.xml!\n"));
 	}
+
+	g_free (destination);
 	g_free (url);
-	return TRUE;
+	return retval;
 } 
 
 static void 
@@ -662,16 +667,7 @@ eazel_install_install_packages (EazelInstall *service, GList *categories)
 		eazel_install_set_package_list (service, tmp);
 		g_free (tmp);
 
-		switch (service->private->iopts->protocol) {
-		case PROTOCOL_HTTP:
-			eazel_install_fetch_remote_package_list (service);
-			break;
-		case PROTOCOL_FTP:
-			g_error (_("ftp install not supported"));
-			break;
-		case PROTOCOL_LOCAL:
-			break;
-		}
+		eazel_install_fetch_remote_package_list (service);
 	}
 	if (install_new_packages (service, categories)==FALSE) {
 		g_warning (_("Install failed"));
@@ -719,16 +715,7 @@ eazel_install_uninstall_packages (EazelInstall *service, GList *categories)
 	eazel_install_set_uninstall (service, TRUE);
 	if (categories == NULL && eazel_install_get_package_list (service) == NULL) {
 		eazel_install_set_package_list (service, "/var/eazel/services/package-list.xml");
-		switch (service->private->iopts->protocol) {
-		case PROTOCOL_HTTP:
-			eazel_install_fetch_remote_package_list (service);
-			break;
-		case PROTOCOL_FTP:
-			g_error (_("ftp install not supported"));
-			break;
-		case PROTOCOL_LOCAL:
-			break;
-		}
+		eazel_install_fetch_remote_package_list (service);
 	}
 	if (uninstall_packages (service, categories)==FALSE) {
 		g_warning (_("Uninstall failed"));
@@ -1021,7 +1008,6 @@ ei_mutator_impl (protocol, URLType, iopts->protocol);
 ei_mutator_impl_copy (tmp_dir, char*, topts->tmp_dir, g_strdup);
 ei_mutator_impl_copy (rpmrc_file, char*, topts->rpmrc_file, g_strdup);
 ei_mutator_impl_copy (server, char*, topts->hostname, g_strdup);
-ei_mutator_impl_copy (rpm_storage_path, char*, topts->rpm_storage_path, g_strdup);
 ei_mutator_impl_copy (package_list_storage_path, char*, topts->pkg_list_storage_path, g_strdup);
 ei_mutator_impl_copy (package_list, char*, iopts->pkg_list, g_strdup);
 ei_mutator_impl_copy (root_dir, char*, root_dir, g_strdup);
@@ -1047,7 +1033,6 @@ ei_access_impl (protocol, URLType , iopts->protocol, PROTOCOL_LOCAL);
 ei_access_impl (tmp_dir, char*, topts->tmp_dir, NULL);
 ei_access_impl (rpmrc_file, char*, topts->rpmrc_file, NULL);
 ei_access_impl (server, char*, topts->hostname, NULL);
-ei_access_impl (rpm_storage_path, char*, topts->rpm_storage_path, NULL);
 ei_access_impl (package_list_storage_path, char*, topts->pkg_list_storage_path, NULL);
 ei_access_impl (package_list, char*, iopts->pkg_list, NULL);
 ei_access_impl (transaction_dir, char*, transaction_dir, NULL);

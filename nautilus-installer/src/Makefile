@@ -125,6 +125,7 @@ MKINSTALLDIRS = ./mkinstalldirs
 MOZILLA_COMPONENT_CFLAGS = -I/usr/include/mozilla
 MOZILLA_COMPONENT_LDFLAGS = -L/usr/lib/mozilla
 MOZILLA_COMPONENT_LIBS = -lgtkembedmoz 				-lgtksuperwin 				-lxpcom 				-lnspr4 				-lplc4 				-lplds4
+MOZILLA_MILESTONE = 17
 NM = /usr/bin/nm -B
 OAF_CFLAGS = -I/gnome/include -I/gnome/lib/glib/include
 OAF_CONFIG = /gnome/bin/oaf-config

@@ -29,31 +29,47 @@
 #include "eazel-install-protocols.h"
 #include "eazel-install-private.h"
 #include "eazel-install-xml-package-list.h"
+#include <ghttp.h>
 #include <config.h>
 #include <sys/utsname.h>
 #include <errno.h>
+#ifndef EAZEL_INSTALL_SLIM
+#include <trilobite-core-utils.h>
+#include <libgnomevfs/gnome-vfs.h>
+#else /* EAZEL_INSTALL_SLIM */
+#define USER_AGENT_STRING "Trilobite"
+#endif /* EAZEL_INSTALL_SLIM */
 
 /* This string defines the url for the rpmsearch cgi script.
    It should contain a %s for the server name, and later 
    a %d for the portnumber. In this order, no other
    order */
 
-#define EI_PROT_USE_NEW_CGI
-
-#ifndef EI_PROT_USE_NEW_CGI
+#ifdef EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
 #define CGI_BASE "http://%s:%d/cgi-bin/rpmsearch.cgi" 
-#else /* EI_PROT_USE_NEW_CGI */
+#else /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
 #define CGI_BASE "http://%s:%d/catalog/find" 
-#endif /* EI_PROT_USE_NEW_CGI */
+#endif /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
+
+#ifdef EAZEL_INSTALL_SLIM
 
 gboolean http_fetch_remote_file (EazelInstall *service,
-				 char* url, 
+				 char *url, 
+				 const char *file_to_report,
 				 const char* target_file);
 gboolean ftp_fetch_remote_file (EazelInstall *service,
-				char* url, 
+				char *url, 
+				const char *file_to_report,
 				const char* target_file);
+#else /* EAZEL_INSTALL_SLIM */
+gboolean  gnome_vfs_fetch_remote_file (EazelInstall *service, 
+				       char *url, 
+				       const char *file_to_report, 
+				       const char *target_file);
+#endif /* EAZEL_INSTALL_SLIM */
 gboolean local_fetch_remote_file (EazelInstall *service,
-				  char* url, 
+				  char *url, 
+				  const char *file_to_report,
 				  const char* target_file);
 
 typedef enum { RPMSEARCH_ENTRY_NAME, RPMSEARCH_ENTRY_PROVIDES } RpmSearchEntry;
@@ -61,9 +77,11 @@ typedef enum { RPMSEARCH_ENTRY_NAME, RPMSEARCH_ENTRY_PROVIDES } RpmSearchEntry;
 char* get_search_url_for_package (EazelInstall *service, RpmSearchEntry, const gpointer data);
 char* get_url_for_package (EazelInstall *service, RpmSearchEntry, const gpointer data);
 
+#ifdef EAZEL_INSTALL_SLIM
 gboolean
 http_fetch_remote_file (EazelInstall *service,
-			char* url, 
+			char *url, 
+			const char *file_to_report,
 			const char* target_file) 
 {
         int length, get_failed;
@@ -73,7 +91,9 @@ http_fetch_remote_file (EazelInstall *service,
         FILE* file;
 	int total_bytes;
 	gboolean first_emit;
+	const char *report;
 
+	report = file_to_report ? file_to_report : g_basename (target_file);
 	g_message (_("Downloading %s..."), url);
 
 	if (! g_file_test (eazel_install_get_tmp_dir (service), G_FILE_TEST_ISDIR)) {
@@ -129,16 +149,20 @@ http_fetch_remote_file (EazelInstall *service,
 		total_bytes = curStat.bytes_total;
 		/* Ensure first emit is with amount==0 */
 		if (first_emit && total_bytes > 0) {
-			eazel_install_emit_download_progress (service, g_basename (target_file), 0, total_bytes);		
+			eazel_install_emit_download_progress (service, report, 0, total_bytes);
 			first_emit = FALSE;
 		}
 		/* And that amount==0 & amount==total only occurs once */
 		if (curStat.bytes_read!=0 && (curStat.bytes_read != curStat.bytes_total)) {
-			eazel_install_emit_download_progress (service, g_basename (target_file), curStat.bytes_read, curStat.bytes_total);
+			eazel_install_emit_download_progress (service, 
+							      report,
+							      curStat.bytes_read, 
+							      curStat.bytes_total);
 		}
+		g_main_iteration (FALSE);
         }
 	/* Last emit amount==total */
-	eazel_install_emit_download_progress (service, g_basename (target_file), total_bytes, total_bytes);		
+	eazel_install_emit_download_progress (service, report, total_bytes, total_bytes);		
 
         if (ghttp_status_code (request) != 200) {
                 g_warning (_("HTTP error: %d %s"), ghttp_status_code (request),
@@ -173,65 +197,232 @@ http_fetch_remote_file (EazelInstall *service,
 
 gboolean
 ftp_fetch_remote_file (EazelInstall *service,
-			char* url, 
-			const char* target_file) 
+		       char *url, 
+		       const char *file_to_report,
+		       const char* target_file) 
 {
 	g_message (_("Downloading %s..."), url);
 	g_warning (_("FTP not supported yet"));
 	return FALSE;
 }
+#else /* EAZEL_INSTALL_SLIM */
 
+static int
+gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
+			 EazelInstall *service)
+{
+	switch (info->status) {
+	case GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR:
+		g_message ("VFS Error: %s\n",
+			   gnome_vfs_result_to_string (info->vfs_status));
+		exit (1);
+		break;
+	case GNOME_VFS_XFER_PROGRESS_STATUS_OVERWRITE:
+		g_message ("Overwriting `%s' with `%s'",
+			   info->target_name, info->source_name);
+		exit (1);
+		break;
+	case GNOME_VFS_XFER_PROGRESS_STATUS_OK:
+		g_message ("Status: OK");
+		switch (info->phase) {
+		case GNOME_VFS_XFER_PHASE_INITIAL:
+			g_message ("Initial phase");
+			return TRUE;
+		case GNOME_VFS_XFER_PHASE_COLLECTING:
+			g_message ("Collecting file list");
+			return TRUE;
+		case GNOME_VFS_XFER_PHASE_READYTOGO:
+			g_message ("Ready to go!");
+			return TRUE;
+		case GNOME_VFS_XFER_PHASE_OPENSOURCE:
+			g_message ("Opening source");
+			return TRUE;
+		case GNOME_VFS_XFER_PHASE_OPENTARGET:
+			g_message ("Opening target");
+			return TRUE;
+		case GNOME_VFS_XFER_PHASE_COPYING:
+			g_message ("Transferring `%s' to `%s' (file %ld/%ld, byte %ld/%ld in file, "
+				   "%" GNOME_VFS_SIZE_FORMAT_STR "/%" GNOME_VFS_SIZE_FORMAT_STR " total)",
+				   info->source_name,
+				   info->target_name,
+				   info->file_index,
+				   info->files_total,
+				   (glong) info->bytes_copied,
+				   (glong) info->file_size,
+				   info->total_bytes_copied,
+				   info->bytes_total);
+			return TRUE;
+		case GNOME_VFS_XFER_PHASE_CLOSESOURCE:
+			g_message ("Closing source");
+			return TRUE;
+		case GNOME_VFS_XFER_PHASE_CLOSETARGET:
+			g_message ("Closing target");
+			return TRUE;
+		case GNOME_VFS_XFER_PHASE_FILECOMPLETED:
+			g_message ("Done with `%s' -> `%s', going next",
+				   info->source_name, info->target_name);
+			return TRUE;
+		case GNOME_VFS_XFER_PHASE_COMPLETED:
+			g_message ("All done.");
+			return TRUE;
+		default:
+			g_message ("Unexpected phase %d", info->phase);
+			return TRUE; /* keep going anyway */
+		}
+	case GNOME_VFS_XFER_PROGRESS_STATUS_DUPLICATE:
+	default:
+		g_message ("ugly status");
+		break;
+	}       
+	
+	g_message ("Boh!");
+	return FALSE;
+	
+}
+
+gboolean 
+gnome_vfs_fetch_remote_file (EazelInstall *service, 
+			     char *url, 
+			     const char *file_to_report, 
+			     const char *target_file)
+{
+	GnomeVFSResult result;
+	GnomeVFSXferOptions xfer_options;
+	GnomeVFSURI *src_uri, *src_dir_uri;
+	GnomeVFSURI *dest_uri, *dest_dir_uri;
+	GList *src_list;
+	GList *dest_list;
+	const char *tmp;
+
+	g_message ("gnome_vfs_xfer_uri (%s, %s,...)", url, target_file);
+	
+	src_uri = gnome_vfs_uri_new (url);
+	g_assert (src_uri);
+	src_dir_uri = gnome_vfs_uri_get_parent (src_uri);
+	g_assert (src_dir_uri);
+	tmp = gnome_vfs_uri_get_basename (src_uri);
+	g_assert (tmp);
+	src_list = g_list_prepend (NULL, (char*)tmp);
+	g_assert (src_list);
+
+	dest_uri = gnome_vfs_uri_new (target_file);
+	g_assert (dest_uri);
+	dest_dir_uri = gnome_vfs_uri_get_parent (dest_uri);
+	g_assert (dest_dir_uri);
+	tmp = gnome_vfs_uri_get_basename (dest_uri);
+	g_assert (tmp);
+	dest_list = g_list_prepend (NULL, (char*)tmp);
+	g_assert (dest_list);
+	
+	result = gnome_vfs_xfer_uri (src_dir_uri, src_list,
+				     dest_dir_uri, dest_list,
+				     xfer_options,
+				     GNOME_VFS_XFER_ERROR_MODE_QUERY,
+				     GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
+				     (GnomeVFSXferProgressCallback)gnome_vfs_xfer_callback,
+				     (gpointer)service);
+
+	g_message ("Roev, result = %d", result==GNOME_VFS_OK);
+ 
+	gnome_vfs_uri_unref (src_uri);
+	gnome_vfs_uri_unref (src_dir_uri);
+	gnome_vfs_uri_unref (dest_uri);
+	gnome_vfs_uri_unref (dest_dir_uri);
+	
+	g_list_free (src_list);
+	g_list_free (dest_list);
+
+	if (result == GNOME_VFS_OK) {
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+#endif /* EAZEL_INSTALL_SLIM */
 
 gboolean
 local_fetch_remote_file (EazelInstall *service,
-			 char* url, 
+			 char *url, 
+			 const char *file_to_report,
 			 const char* target_file) 
 {
 	gboolean result;
-	
+	const char *report;
+
+	report = file_to_report ? file_to_report : g_basename (target_file);
 	g_message (_("Checking local file %s..."), target_file);
 	result = FALSE;
 	if (access (target_file, R_OK|W_OK) == 0) {
-		eazel_install_emit_download_progress (service, target_file, 100, 100);
+		struct stat sbuf;
+		stat (target_file, &sbuf);
+		/* Emit bogus download progress */
+		eazel_install_emit_download_progress (service, report,            0, sbuf.st_size);
+		eazel_install_emit_download_progress (service, report, sbuf.st_size, sbuf.st_size);
 		result = TRUE;
 	} 
 	return result;
 }
 
+eazel_install_file_fetch_function*
+eazel_install_fill_file_fetch_table (void)
+{
+	eazel_install_file_fetch_function *res;
+
+	res = g_new0 (eazel_install_file_fetch_function, 3);
+#ifdef EAZEL_INSTALL_SLIM
+	res [PROTOCOL_HTTP] = (eazel_install_file_fetch_function)http_fetch_remote_file;
+	res [PROTOCOL_FTP] = (eazel_install_file_fetch_function)ftp_fetch_remote_file;
+#else /* EAZEL_INSTALL_SLIM */
+	res [PROTOCOL_HTTP] = (eazel_install_file_fetch_function)gnome_vfs_fetch_remote_file;
+	res [PROTOCOL_FTP] = (eazel_install_file_fetch_function)gnome_vfs_fetch_remote_file;
+#endif /* EAZEL_INSTALL_SLIM */
+	res [PROTOCOL_LOCAL] = (eazel_install_file_fetch_function)local_fetch_remote_file;
+	
+	return res;
+}
+
 gboolean
 eazel_install_fetch_file (EazelInstall *service,
-			  char* url, 
+			  char *url, 
+			  const char *file_to_report,
 			  const char* target_file) 
 {
 	gboolean result;
+
+	static eazel_install_file_fetch_function *func_table = NULL;
+	
+	if (!func_table) {
+		func_table = eazel_install_fill_file_fetch_table ();
+	}
 	
 	result = FALSE;
 
 	g_return_val_if_fail (url!=NULL, FALSE);
 	g_return_val_if_fail (target_file!=NULL, FALSE);
+
+	result = (func_table [eazel_install_get_protocol (service)])((gpointer)service, 
+								     url, 
+								     file_to_report, 
+								     target_file);
 	
-	switch (eazel_install_get_protocol (service)) {
-	case PROTOCOL_HTTP:
-		result = http_fetch_remote_file (service, url, target_file);
-		break;
-	case PROTOCOL_FTP:
-		result = ftp_fetch_remote_file (service, url, target_file);
-		break;
-	case PROTOCOL_LOCAL:
-		result = local_fetch_remote_file (service, url, target_file);
-		break;
+	if (result==FALSE) {
+		g_warning (_("Failed to retreive %s!"), 
+			   file_to_report ? file_to_report : g_basename (target_file));
+		eazel_install_emit_download_failed (service, 
+						    file_to_report ? file_to_report : g_basename (target_file));
 	}
+
 	return result;
 }
 
 
 static const char*
-filename_from_url (char *url)
+filename_from_url (const char *url)
 {
 	static char *filename = NULL;
-	char *ptr;
+	const char *ptr;
 
-	//g_return_val_if_fail (url!=NULL, NULL);
+	g_return_val_if_fail (url!=NULL, NULL);
 
 	g_free (filename);
 
@@ -278,7 +469,7 @@ eazel_install_fetch_package (EazelInstall *service,
 					      eazel_install_get_tmp_dir (service),
 					      filename_from_url (url));
 		g_message ("%s resolved", package->name);
-#ifdef EI_PROT_USE_NEW_CGI
+#ifndef EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
 		if (g_file_test (targetname, G_FILE_TEST_ISFILE)) {
 			/* Uh, file already exists, check the size to see if we can reuse it */
 			struct stat sbuf;
@@ -288,16 +479,16 @@ eazel_install_fetch_package (EazelInstall *service,
 				g_message ("Size checks out");
 				result = TRUE;
 			} else {
-				result = eazel_install_fetch_file (service, url, targetname);
+				result = eazel_install_fetch_file (service, url, package->name, targetname);
 			}
 		} else {
-				result = eazel_install_fetch_file (service, url, targetname);
+				result = eazel_install_fetch_file (service, url, package->name, targetname);
 		}
-#else /*  EI_PROT_USE_NEW_CGI */
+#else /*  EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
 		if (filename_from_url (url) && strlen (filename_from_url (url))>1) {
-			result = eazel_install_fetch_file (service, url, targetname);
+			result = eazel_install_fetch_file (service, url, package->name, targetname);
 		}
-#endif /* EI_PROT_USE_NEW_CGI */
+#endif /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
 		if (result==TRUE) {
 			packagedata_fill_from_file (package, targetname); 
 		}
@@ -344,9 +535,9 @@ gboolean eazel_install_fetch_package_which_provides (EazelInstall *service,
 			targetname = g_strdup_printf ("%s/%s",
 						      eazel_install_get_tmp_dir (service),
 						      filename_from_url (url));
-			packagedata_fill_from_file (*package, targetname);
-			result = eazel_install_fetch_file (service, url, targetname);
+			result = eazel_install_fetch_file (service, url, NULL, targetname);
 			if (!result) {
+				packagedata_fill_from_file (*package, targetname);
 				(*package)->status = PACKAGE_DEPENDENCY_FAIL;
 			}
 			g_free (targetname);
@@ -360,8 +551,8 @@ gboolean eazel_install_fetch_package_which_provides (EazelInstall *service,
 
 static void
 add_to_url (char **url,
-	    char *cgi_string,
-	    char *val)
+	    const char *cgi_string,
+	    const char *val)
 {
 	char *tmp;
 
@@ -394,8 +585,11 @@ get_url_for_package  (EazelInstall *service,
         if (request == NULL) {
                 g_warning (_("Could not create an http request !"));
         } else {
-	
-		ghttp_set_header (request, http_hdr_User_Agent, "Trilobite");
+#ifdef EAZEL_INSTALL_SLIM
+		ghttp_set_header (request, http_hdr_User_Agent, USER_AGENT_STRING);
+#else /* EAZEL_INSTALL_SLIM */
+		ghttp_set_header (request, http_hdr_User_Agent, trilobite_get_useragent_string (FALSE, NULL));
+#endif /* EAZEL_INSTALL_SLIM */
 		if (ghttp_set_uri (request, search_url) != 0) {
 			g_warning (_("Invalid uri"));
 		} else {
@@ -421,7 +615,7 @@ get_url_for_package  (EazelInstall *service,
 					}
 				case ghttp_done:
 					if (ghttp_status_code (request) != 404) {
-#ifdef EI_PROT_USE_NEW_CGI
+#ifndef EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
 						/* Parse the returned xml */
 						GList *packages;
 						
@@ -451,12 +645,12 @@ get_url_for_package  (EazelInstall *service,
 									(GFunc)packagedata_destroy_foreach, 
 									NULL);
 						}						
-#else /* EI_PROT_USE_NEW_CGI */
+#else /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
 						url = g_strdup (ghttp_get_body (request));
 						if (url) {
 							url [ ghttp_get_body_len (request)] = 0;
 						}
-#endif /* EI_PROT_USE_NEW_CGI */
+#endif /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
 
 					} else {
 						url = NULL;
@@ -508,7 +702,7 @@ char* get_search_url_for_package (EazelInstall *service,
 	break;
 	}
 
-#ifdef EI_PROT_USE_NEW_CGI
+#ifndef EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
 	if (dist.name != DISTRO_UNKNOWN) {
 		char *distro;
 		distro = g_strdup_printf ("%s", 
@@ -516,17 +710,9 @@ char* get_search_url_for_package (EazelInstall *service,
 		add_to_url (&url, "&distro=", distro);
 		g_free (distro);
 	}
-#endif /* EI_PROT_USE_NEW_CGI */
+#endif /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
 
-	switch (eazel_install_get_protocol (service)) {
-	case PROTOCOL_HTTP:
-		add_to_url (&url, "&protocol=", "http");
-		break;
-	case PROTOCOL_FTP:
-		add_to_url (&url, "&protocol=", "ftp");
-		break;
-	default:
-		break;
-	}
+	add_to_url (&url, "&protocol=", protocol_as_string (eazel_install_get_protocol (service)));
+
 	return url;
 }

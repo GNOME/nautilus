@@ -15,7 +15,7 @@
 #include "support.h"
 
 GtkWidget*
-create_what_to_do_page (void)
+create_what_to_do_page (GtkWidget *druid, GtkWidget *window)
 {
 	GtkWidget *what_to_do_page;
 	GdkColor what_to_do_page_bg_color = { 0, 3341, 23130, 26214 };
@@ -147,7 +147,7 @@ create_what_to_do_page (void)
 }
 
 GtkWidget*
-create_install_page (void)
+create_install_page (GtkWidget *druid, GtkWidget *window)
 {
 	GtkWidget *install_page;
 	GdkColor install_page_bg_color = { 0, 3341, 23130, 26214 };
@@ -164,7 +164,15 @@ create_install_page (void)
 	GtkWidget *progressbar2;
 	GtkWidget *package_label;
 	GtkWidget *fixed1;
+	GtkWidget *textbox;
+	GtkWidget *scrolledwindow;
+	const char *download_description;
+	int download_description_length;
 	
+	download_description = g_strdup (_("Currently downloading packages required to "
+					   "install Nautilus\n"));
+	download_description_length = strlen (download_description);
+
 	install_page = gnome_druid_page_standard_new_with_vals ("", NULL);
 	set_white_stuff (GTK_WIDGET (install_page));
 	gtk_widget_set_name (install_page, "install_page");
@@ -188,23 +196,15 @@ create_install_page (void)
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show (druid_vbox2);
 
-	vbox5 = gtk_vbox_new (FALSE, 0);
+	vbox5 = gtk_vbox_new (FALSE, 16);
 	set_white_stuff (GTK_WIDGET (vbox5));
 	gtk_widget_set_name (vbox5, "vbox5");
 	gtk_widget_ref (vbox5);
 	gtk_object_set_data_full (GTK_OBJECT (window), "vbox5", vbox5,
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show (vbox5);
-	gtk_box_pack_start (GTK_BOX (druid_vbox2), vbox5, TRUE, TRUE, 0);
-/*
-	label11 = gtk_label_new (_("(between download and install, we'll take a small break)"));
-	gtk_widget_set_name (label11, "label11");
-	gtk_widget_ref (label11);
-	gtk_object_set_data_full (GTK_OBJECT (window), "label11", label11,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (label11);
-	gtk_box_pack_start (GTK_BOX (vbox5), label11, TRUE, FALSE, 0);
-*/
+	gtk_box_pack_start (GTK_BOX (druid_vbox2), vbox5, FALSE, FALSE, 16);
+
 	table2 = gtk_table_new (3, 2, FALSE);
 	set_white_stuff (GTK_WIDGET (table2));
 	gtk_widget_set_name (table2, "table2");
@@ -215,37 +215,6 @@ create_install_page (void)
 	gtk_box_pack_start (GTK_BOX (vbox5), table2, FALSE, TRUE, 16);
 	gtk_table_set_row_spacings (GTK_TABLE (table2), 16);
 
-	label12 = gtk_label_new (_("Package :"));
-	gtk_widget_set_name (label12, "label12");
-	gtk_widget_ref (label12);
-	gtk_object_set_data_full (GTK_OBJECT (window), "label12", label12,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (label12);
-	gtk_table_attach (GTK_TABLE (table2), label12, 0, 1, 0, 1,
-			  (GtkAttachOptions) 0, 
-			  (GtkAttachOptions) 0,
-			  0, 0);
-
-	action_label = gtk_label_new (_(""));
-	gtk_widget_set_name (action_label, "");
-	gtk_widget_ref (action_label);
-	gtk_object_set_data_full (GTK_OBJECT (window), "action_label", action_label,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (action_label);
-	gtk_table_attach (GTK_TABLE (table2), action_label, 0, 1, 1, 2,
-			  (GtkAttachOptions) (0),
-			  (GtkAttachOptions) (0), 0, 0);
-
-	label13 = gtk_label_new (_("Overall progress :"));
-	gtk_widget_set_name (label13, "label13");
-	gtk_widget_ref (label13);
-	gtk_object_set_data_full (GTK_OBJECT (window), "label13", label13,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (label13);
-	gtk_table_attach (GTK_TABLE (table2), label13, 0, 1, 2, 3,
-			  0, 0,		       
-			  0, 0);
-
 	progressbar1 = gtk_progress_bar_new ();
 	gtk_widget_set_name (progressbar1, "progressbar_single");
 	gtk_widget_ref (progressbar1);
@@ -254,8 +223,8 @@ create_install_page (void)
 	gtk_progress_set_show_text (GTK_PROGRESS (progressbar1), TRUE);		  
 	gtk_widget_show (progressbar1);
 	gtk_table_attach (GTK_TABLE (table2), progressbar1, 1, 2, 1, 2,
-			  GTK_FILL,
-			  GTK_FILL,
+			  /* GTK_EXPAND */ 0,
+			  /* GTK_EXPAND */ GTK_SHRINK,
 			  0, 0);
 
 	progressbar2 = gtk_progress_bar_new ();
@@ -265,21 +234,21 @@ create_install_page (void)
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_progress_set_format_string (GTK_PROGRESS (progressbar2), "Waiting for download...");
 	gtk_progress_set_show_text (GTK_PROGRESS (progressbar2), TRUE);		  
-	gtk_widget_show (progressbar2);
+	/* gtk_widget_show (progressbar2); */
 	gtk_table_attach (GTK_TABLE (table2), progressbar2, 1, 2, 2, 3,
-			  GTK_FILL,
-			  GTK_FILL,
+			  /* GTK_EXPAND */ 0,
+			  /* GTK_EXPAND */ GTK_SHRINK,
 			  0, 0);
 
-	package_label = gtk_label_new (_(""));
+	package_label = gtk_label_new (_("                                                     "));
 	gtk_widget_set_name (package_label, "package_label");
 	gtk_widget_ref (package_label);
 	gtk_object_set_data_full (GTK_OBJECT (window), "package_label", package_label,
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show (package_label);
 	gtk_table_attach (GTK_TABLE (table2), package_label, 1, 2, 0, 1,
-			  GTK_FILL,
-			  GTK_FILL,
+			  GTK_EXPAND,
+			  GTK_EXPAND,
 			  0, 0);
 
 	fixed1 = gtk_fixed_new ();
@@ -289,13 +258,38 @@ create_install_page (void)
 	gtk_object_set_data_full (GTK_OBJECT (window), "fixed1", fixed1,
 				  (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show (fixed1);
-	gtk_box_pack_start (GTK_BOX (vbox5), fixed1, FALSE, FALSE, 16);	
+	gtk_box_pack_start (GTK_BOX (vbox5), fixed1, TRUE, TRUE, 16);	
 
+	scrolledwindow = gtk_scrolled_window_new (NULL, NULL);
+	gtk_widget_set_name (scrolledwindow, "scrolledwindow");
+	gtk_widget_ref (scrolledwindow);
+	gtk_object_set_data_full (GTK_OBJECT (window), "scrolledwindow", scrolledwindow,
+				  (GtkDestroyNotify) gtk_widget_unref);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow),
+					GTK_POLICY_AUTOMATIC,
+					GTK_POLICY_AUTOMATIC);
+	gtk_widget_show (scrolledwindow);
+	gtk_box_pack_start (GTK_BOX (vbox5), scrolledwindow, TRUE, TRUE, 16);	
+    
+
+	textbox = gtk_text_new (NULL, NULL);
+	gtk_widget_set_name (textbox, "summary");
+	gtk_widget_ref (textbox);
+	gtk_text_set_editable (GTK_TEXT (textbox), FALSE);
+	gtk_text_set_word_wrap (GTK_TEXT (textbox), TRUE);
+	gtk_object_set_data_full (GTK_OBJECT (window), "summary", textbox,
+				  (GtkDestroyNotify) gtk_widget_unref);
+	gtk_text_insert (GTK_TEXT (textbox), NULL, NULL, NULL,
+			 download_description, download_description_length);
+	gtk_widget_show (textbox);
+	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (scrolledwindow), 
+					       textbox);
+	
 	return install_page;
 }
 
 GtkWidget*
-create_finish_page (void)
+create_finish_page (GtkWidget *druid, GtkWidget *window)
 {
 	GtkWidget *finish_page;
 	GdkColor finish_page_bg_color = { 0, 3341, 23130, 26214 };
@@ -386,9 +380,9 @@ create_window (void)
 					   "\n"
 					   "If you meet these requirements, hit the \"Next\" button to continue!\n\n"));
 
-	what_to_do_page = create_what_to_do_page ();
-	install_page = create_install_page ();
-	finish_page = create_finish_page ();
+	what_to_do_page = create_what_to_do_page (druid, window);
+	install_page = create_install_page (druid, window);
+	finish_page = create_finish_page (druid, window);
 
 	gtk_signal_connect (GTK_OBJECT (druid), "cancel",
 			    GTK_SIGNAL_FUNC (druid_cancel),

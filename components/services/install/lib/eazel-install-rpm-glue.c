@@ -197,11 +197,10 @@ download_all_packages (EazelInstall *service,
 				g_message ("Must download %s", package->name);
 			}
 
-			if (fetch_package &&
-			    eazel_install_fetch_package (service, package) == FALSE) {
-				g_warning (_("Failed to retreive %s!"), package->name);
-				eazel_install_emit_download_failed (service, package->name);
-				remove = g_list_prepend (remove, package); 
+			if (fetch_package) {
+				if (eazel_install_fetch_package (service, package)==FALSE) {
+					remove = g_list_prepend (remove, package);
+				}
 			}
 			
 			pkgs = pkgs->next;
@@ -504,7 +503,7 @@ eazel_install_start_transaction_make_rpm_argument_list (EazelInstall *service,
 		(*args) = g_list_prepend (*args, g_strdup ("--nodeps"));
 	} 
 	if (eazel_install_get_uninstall (service)) {
-		(*args) = g_list_prepend (*args, g_strdup ("-ev"));
+		(*args) = g_list_prepend (*args, g_strdup ("-e"));
 	} else 	if (eazel_install_get_update (service)) {
 		(*args) = g_list_prepend (*args, g_strdup ("-Uvh"));
 	} else if (eazel_install_get_downgrade (service)) {
@@ -622,7 +621,9 @@ eazel_install_do_transaction_save_report (EazelInstall *service)
 	while (g_file_test (name, G_FILE_TEST_ISFILE)) {
 		g_free (name);
 		sleep (1);
-		name = g_strdup_printf ("%s/transaction.%d", eazel_install_get_transaction_dir (service), time (NULL));
+		name = g_strdup_printf ("%s/transaction.%d", 
+					eazel_install_get_transaction_dir (service), 
+					time (NULL));
 	}
 
 	/* Open and save */
@@ -660,7 +661,7 @@ eazel_install_monitor_rpm_propcess_pipe (GIOChannel *source,
 	g_io_channel_read (source, &tmp, 1, &bytes_read);
 	
 	if (bytes_read) {
-		/* g_message ("READ '%c'", tmp); */
+		/* fprintf (stdout, "%c", tmp); fflush (stdout); */
 		/* Percentage output, parse and emit... */
 		if (tmp=='#') {
 			int amount;
@@ -671,7 +672,7 @@ eazel_install_monitor_rpm_propcess_pipe (GIOChannel *source,
 			if (pct == 100) {
 				amount = pack->bytesize;
 			} else {
-				amount = (pack->bytesize * pct) / 100;
+				amount =  (pack->bytesize / 100) * pct;
 			}
 			if (pack && amount) {
 				eazel_install_emit_install_progress (service, 
@@ -1284,12 +1285,12 @@ eazel_install_check_existing_packages (EazelInstall *service,
 	existing_packages = eazel_install_simple_query (service, pack->name, EI_SIMPLE_QUERY_MATCHES, 0, NULL);
 	if (existing_packages) {
 		/* Get the existing package, set it's modify flag and add it */
-		GList *existing_iterator;
-		for (existing_iterator = existing_packages; existing_iterator; existing_iterator = existing_iterator->next) {
+		GList *iterator;
+		for (iterator = existing_packages; iterator; iterator = iterator->next) {
 			int res;
 			PackageData *existing_package;
 
-			existing_package = (PackageData*)existing_iterator->data;			
+			existing_package = (PackageData*)iterator->data;			
 			pack->modifies = g_list_prepend (pack->modifies, existing_package);
 			existing_package->status = PACKAGE_RESOLVED;
 			/* The order of arguments to rpmvercmp is important... */
@@ -1311,7 +1312,10 @@ eazel_install_check_existing_packages (EazelInstall *service,
 				result = -1;
 			}
 		
-			g_message ("%s %sgrades from %s to %s", pack->name, result != 0 ? (result>0 ? "up" : "down") : "", existing_package->version, pack->version);
+			g_message ("%s %sgrades from %s to %s", 
+				   pack->name, 
+				   result != 0 ? (result>0 ? "up" : "down") : "", 
+				   existing_package->version, pack->version);
 		}
 	}
 
@@ -1360,7 +1364,10 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 			case RPMDEP_SENSE_REQUIRES: {
 				char *tmp;
 				
-				g_warning (_("%s %s breaks %s"), conflict.needsName, conflict.needsVersion, conflict.byName);
+				g_warning (_("%s %s breaks %s"), 
+					   conflict.needsName, 
+					   conflict.needsVersion, 
+					   conflict.byName);
 				pack_entry = g_list_find_custom (*packages, 
 								 (gpointer)conflict.needsName,
 								 (GCompareFunc)eazel_install_package_name_compare);
@@ -1407,7 +1414,9 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 				/* If we end here, it's a conflict is going to break something */
 				/* FIXME bugzilla.eazel.com 1514:
 				   Need to handle this more intelligently */
-				g_warning (_("%s conflicts %s-%s"), conflict.byName, conflict.needsName, conflict.needsVersion);
+				g_warning (_("%s conflicts %s-%s"), 
+					   conflict.byName, conflict.needsName, 
+					   conflict.needsVersion);
 				if (g_list_find (*failedpackages, pack) == NULL) {
 					(*failedpackages) = g_list_prepend (*failedpackages, pack);
 				}
@@ -1419,7 +1428,8 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 			/* Does the conflict look like a file dependency ? */
 			pack = (PackageData*)pack_entry->data;
 			if (*conflict.needsName=='/' || strstr (conflict.needsName, ".so")) {
-				g_message (_("Processing dep for %s : requires %s"), pack->name, conflict.needsName);		
+				g_message (_("Processing dep for %s : requires %s"), 
+					   pack->name, conflict.needsName);		
 				dep = packagedata_new ();
 				dep->name = g_strdup (conflict.needsName);
 				fetch_from_file_dependency = TRUE;
@@ -1427,7 +1437,7 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 				dep = packagedata_new_from_rpm_conflict (conflict);
 				dep->archtype = g_strdup (pack->archtype);
 				fetch_from_file_dependency = FALSE;
-				g_message (_("Processing dep for %s : requires %s"), pack->name, dep->name);		
+				g_message (_("Processing dep for %s : requires %s"), pack->name, dep->name);
 			}
 		}
 
@@ -1435,7 +1445,9 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 		pack->soft_depends = g_list_prepend (pack->soft_depends, dep);
 
 		if (fetch_from_file_dependency) {
-			fetch_result = eazel_install_fetch_package_which_provides (service, conflict.needsName, &dep);
+			fetch_result = eazel_install_fetch_package_which_provides (service, 
+										   conflict.needsName, 
+										   &dep);
 		} else {
 			fetch_result = eazel_install_fetch_package (service, dep);
 		}
@@ -1472,8 +1484,6 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 			  3) add to list of failed packages
 			*/
 			GList *extralist;
-			
-			eazel_install_emit_download_failed (service, dep->name);				
 			
 			pack->status = PACKAGE_DEPENDENCY_FAIL;
 			dep->status = PACKAGE_CANNOT_OPEN;
@@ -1554,7 +1564,8 @@ print_package_list (char *str, GList *packages, gboolean show_deps)
 			it2 = pack->soft_depends;
 			while (it2) { 
 				char *tmp2;
-				tmp2 = g_strdup_printf ("%s%s ", tmp ,rpmfilename_from_packagedata ((PackageData*)it2->data));
+				tmp2 = g_strdup_printf ("%s%s ", tmp ,
+							rpmfilename_from_packagedata ((PackageData*)it2->data));
 				g_free (tmp);
 				tmp = tmp2;
 				it2 = it2->next;
@@ -1689,7 +1700,8 @@ eazel_install_ensure_deps (EazelInstall *service,
 				for (iterator = *failedpackages; iterator; iterator = iterator->next) {
 					PackageData *pack;
 					pack = (PackageData*)iterator->data;
-					eazel_install_prune_packages (service, pack, packages, &extrapackages, NULL);
+					eazel_install_prune_packages (service, pack, packages, 
+								      &extrapackages, NULL);
 				}			
 			} 
 			if (extrapackages) {
@@ -1791,7 +1803,8 @@ eazel_uninstall_upward_traverse (EazelInstall *service,
 				requiredby = packagedata_new_from_rpm_header (hd);
 				requiredby->status = PACKAGE_DEPENDENCY_FAIL;
 				pack->status = PACKAGE_BREAKS_DEPENDENCY;
-				g_message ("%s (0x%x) is required by %s (0x%x)", pack->name, pack, requiredby->name, requiredby);
+				g_message ("%s (0x%x) is required by %s (0x%x)", pack->name, pack, 
+					   requiredby->name, requiredby);
 				if (g_list_find_custom (*breaks, (gpointer)requiredby->name, 
 							 (GCompareFunc)eazel_install_package_name_compare) ||
 				    g_list_find_custom (*packages, (gpointer)requiredby->name, 
@@ -1925,7 +1938,8 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 							int l;
 							/* FIXME bugzilla.eazel.com 1697:
 							   use eazel_install_simple_query instead */
-							rc = rpmdbFindByRequiredBy (db, isrequired->name, &thirdmatches);
+							rc = rpmdbFindByRequiredBy (db, isrequired->name, 
+										    &thirdmatches);
 						}
 						/* FIXME bugzilla.eazel.com 1539:
 						   check noone outside of "packages" & "requires" require

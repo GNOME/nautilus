@@ -577,18 +577,20 @@ parse_osd_xml_from_memory (const char *mem,
 {
 	xmlDocPtr doc;
 	GList *result;
-	char *ptr;
+	char *ptr, *docptr;
 
 	result = NULL;
 	if (mem==NULL) {
 		return result;
 	}
+	docptr = g_strndup (mem, size);
+	docptr [size] = 0;
 
-	mem [size] = 0;
-
-	ptr = strstr (mem, "<?xml");
+	ptr = strstr (docptr, "<?xml");
 	if (ptr == NULL) {
 		g_warning ("Could not find <?xml tag in string");
+		g_message ("XML is %sEND", docptr);
+		g_free (docptr);
 		return result;
 	}
 	doc = xmlParseMemory ((char*)ptr, size);
@@ -596,12 +598,14 @@ parse_osd_xml_from_memory (const char *mem,
 	if (doc == NULL) {
 		g_warning ("XML =\"%s\"", ptr);
 		g_warning ("parse_osd_xml_from_memory, doc == NULL");
+		g_free (docptr);
 		return result;
 	}
 	
 	result = osd_parse_shared (doc);	
 	xmlFreeDoc (doc);
 
+	g_free (docptr);
 	return result;
 }
 
