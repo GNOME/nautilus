@@ -1,3 +1,10 @@
+2003-03-19  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-view-frame.c (attach_view):
+	If the ViewFrame is mapped already, activate the frame control.
+	This fixes the tree sidebar not loading when you hide/show the
+	sidebar.
+
 2003-03-19  Padraig O'Briain  <padraig.obriain@sun.com>
 
 	* libnautilus-private/nautilus-icon-canvas-item.c

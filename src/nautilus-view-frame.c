@@ -775,6 +775,14 @@ attach_view (NautilusViewFrame *view,
 	gtk_container_add (GTK_CONTAINER (view), widget);
 	
 	view_frame_activated (view);
+
+	/* The frame might already be mapped when the view is activated.
+	 * This means we won't get the mapped signal while its active, so
+	 * activate it now.
+	 */
+	if (GTK_WIDGET_MAPPED (GTK_WIDGET (view))) {
+		bonobo_control_frame_control_activate (view->details->control_frame);
+	}
 }
 
 static void
