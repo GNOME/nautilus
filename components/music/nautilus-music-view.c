@@ -137,16 +137,6 @@ enum {
         TARGET_GNOME_URI_LIST
 };
 
-/* button commands */
-
-enum {
-	PREVIOUS_BUTTON,
-	PLAY_BUTTON,
-	PAUSE_BUTTON,
-	STOP_BUTTON,
-	NEXT_BUTTON
-};
-
 /* sort modes */
 enum {
 	SORT_BY_NUMBER = 0,
@@ -155,6 +145,16 @@ enum {
 	SORT_BY_YEAR,
 	SORT_BY_BITRATE,
 	SORT_BY_TIME
+};
+
+/* button commands */
+
+enum {
+	PREVIOUS_BUTTON,
+	PLAY_BUTTON,
+	PAUSE_BUTTON,
+	STOP_BUTTON,
+	NEXT_BUTTON
 };
 
 static GtkTargetEntry music_dnd_target_table[] = {
@@ -204,7 +204,7 @@ static void stop_playing_file 				      (NautilusMusicView      *music_view);
 static PlayerState get_player_state 			      (NautilusMusicView      *music_view);
 static void set_player_state 				      (NautilusMusicView      *music_view, 
 							       PlayerState 	      state);
-
+static void sort_list 					      (NautilusMusicView      *music_view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusMusicView,
                                    nautilus_music_view,
@@ -215,6 +215,8 @@ nautilus_music_view_initialize_class (NautilusMusicViewClass *klass)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
+	
+	g_message ("INIT");
 	
 	object_class = GTK_OBJECT_CLASS (klass);
 	widget_class = GTK_WIDGET_CLASS (klass);
@@ -361,12 +363,16 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 
 	/* finally, show the view itself */	
 	gtk_widget_show (GTK_WIDGET (music_view));
+	
+	music_view->details->sort_mode = SORT_BY_NUMBER;
 }
 
 static void
 nautilus_music_view_destroy (GtkObject *object)
 {
 	NautilusMusicView *music_view;
+
+	g_message ("DESTROY");
 
         music_view = NAUTILUS_MUSIC_VIEW (object);
 
@@ -598,19 +604,14 @@ compare_song_bitrates (GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2)
 	return info1->bitrate - info2->bitrate;
 }
 
-
-/* handle clicks in the songlist columns */
 static void
-click_column_callback (GtkCList *clist, int column, NautilusMusicView *music_view)
-{	
+sort_list (NautilusMusicView *music_view)
+{
 	GList *row;
-			
-	if (music_view->details->sort_mode == column) {
-		return;
-        }
-        
-        music_view->details->sort_mode = (int)gtk_object_get_data (GTK_OBJECT (clist->column[column].button), "SortMode");
-        
+	GtkCList *clist;
+	
+	clist = GTK_CLIST (music_view->details->song_list);
+
 	/* sort by the specified criteria */	
 	switch (music_view->details->sort_mode) {
         case SORT_BY_NUMBER:
@@ -643,6 +644,20 @@ click_column_callback (GtkCList *clist, int column, NautilusMusicView *music_vie
         if (row != NULL) {
 		music_view->details->selected_index = (int)row->data;
 	} 
+
+}
+
+/* handle clicks in the songlist columns */
+static void
+click_column_callback (GtkCList *clist, int column, NautilusMusicView *music_view)
+{					
+	if (music_view->details->sort_mode == column) {
+		return;
+        }
+        
+        music_view->details->sort_mode = (int)gtk_object_get_data (GTK_OBJECT (clist->column[column].button), "SortMode");
+        
+        sort_list (music_view);
 }
 
 /* utility routine to check if the passed-in uri is an image file */
@@ -1777,11 +1792,10 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 	
 	music_view_set_selected_song_title (music_view, 0);
 	
+	/* Do initial sort */
+	sort_list (music_view);
+	
 	/* release the song list */
-	//for (p = song_list; p != NULL; p = p->next) {
-	//	info = (SongInfo *) p->data;
-	//	release_song_info (info);
-	//}
 	g_list_free (song_list);
 
         g_free (uri);
