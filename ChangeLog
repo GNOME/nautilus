@@ -1,3 +1,18 @@
+2001-01-22  Mike Fleming  <mfleming@eazel.com>
+
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(mozilla_dom_key_press_callback),
+	(mozilla_dom_mouse_click_callback):
+
+ 	Bug 5905: Softcat Search button doesn't work.
+ 
+ 	I don't know when this stopped working but maybe it was while I
+ 	was dorking with the key-initiated-navigation.
+ 
+ 	Anyway, I polished stuff up to use the real constants for indicating
+ 	to Moz whether to handle events or not.  This problem went away and
+ 	everything else seemed to continue to work as expected.
+
 2001-01-22  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* configure.in: THIS IS A BRANCH nautilus-pr3
