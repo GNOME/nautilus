@@ -1,3 +1,9 @@
+2002-04-19	Diego González  <diego@pemas.net>
+
+	* src/nautilus-window-menus.c (forget_history_if_confirmed):
+	  use eel_create_question_dialog to show the buttons with the
+	  proper strings. This fixes bug 74949.
+
 2002-04-19  Anders Carlsson  <andersca@gnu.org>
 
 	* src/file-manager/fm-directory-view.c:

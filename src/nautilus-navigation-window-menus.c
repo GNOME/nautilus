@@ -96,6 +96,8 @@
 #define CUSTOMER_FEEDBACK_URI	"http://www.eazel.com/feedback.html"
 #define START_HERE_URI          "start-here:"
 
+#define RESPONSE_FORGET		1000
+
 static GtkWindow *bookmarks_window = NULL;
 
 static void                  append_bookmark_to_menu                       (NautilusWindow   *window,
@@ -320,7 +322,7 @@ go_menu_start_here_callback (BonoboUIComponent *component,
 static void
 forget_history_if_yes (GtkDialog *dialog, int response, gpointer callback_data)
 {
-	if (response == GTK_RESPONSE_YES) {
+	if (response == RESPONSE_FORGET) {
 		nautilus_forget_history ();
 	}
 	gtk_object_destroy (GTK_OBJECT (dialog));
@@ -347,15 +349,20 @@ forget_history_if_confirmed (NautilusWindow *window)
 				     "which locations you have visited?"));
 	}
 					   
-	dialog = eel_show_yes_no_dialog (prompt,
-					 _("Forget History?"), _("Forget"), GTK_STOCK_CANCEL,
-					 GTK_WINDOW (window));
+	dialog = eel_create_question_dialog (prompt,
+					     _("Forget History?"), 
+					     _("Forget"), RESPONSE_FORGET,
+					     GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					     GTK_WINDOW (window));
+
+	gtk_widget_show (GTK_WIDGET (dialog));
+
 	g_free (prompt);					 
 	
 	g_signal_connect (dialog, "response",
 			  G_CALLBACK (forget_history_if_yes), NULL);
-	
-	gtk_dialog_set_default_response (dialog, GTK_RESPONSE_NO);
+
+	gtk_dialog_set_default_response (dialog, GTK_RESPONSE_CANCEL);
 }
 
 static void
