@@ -1,5 +1,11 @@
 2002-03-30  Darin Adler  <darin@bentspoon.com>
 
+	* libnautilus-private/nautilus-metafile.c: (write_all): New.
+	(metafile_write_local): Use write_all to do the multiple writes that
+	might be necessary in some cases.
+
+2002-03-30  Darin Adler  <darin@bentspoon.com>
+
 	Fixed security problem where we would write the metafile without
 	protecting against potential symbolic links.
 

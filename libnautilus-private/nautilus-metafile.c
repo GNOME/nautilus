@@ -1928,6 +1928,27 @@ metafile_write_create_callback (GnomeVFSAsyncHandle *handle,
 			       metafile);
 }
 
+static int
+write_all (int fd, const char *buffer, int size)
+{
+	int size_remaining;
+	const char *p;
+	ssize_t result;
+
+	p = buffer;
+	size_remaining = size;
+	while (size_remaining != 0) {
+		result = write (fd, p, size_remaining);
+		if (result <= 0 || result > size_remaining) {
+			return -1;
+		}
+		p += result;
+		size_remaining -= result;
+	}
+
+	return size;
+}
+
 static void
 metafile_write_local (NautilusMetafile *metafile,
 		      const char *metafile_path)
@@ -1951,9 +1972,9 @@ metafile_write_local (NautilusMetafile *metafile,
 	if (!failed && fchmod (fd, METAFILE_PERMISSIONS) == -1) {
 		failed = TRUE;
 	}
-	if (!failed && write (fd,
-			      metafile->details->write_state->buffer,
-			      metafile->details->write_state->size) == -1) {
+	if (!failed && write_all (fd,
+				  metafile->details->write_state->buffer,
+				  metafile->details->write_state->size) == -1) {
 		failed = TRUE;
 	}
 	if (fd != -1 && close (fd) == -1) {
