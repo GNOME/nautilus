@@ -252,6 +252,14 @@ gnome_thumbnail_factory_class_init (GnomeThumbnailFactoryClass *class)
   gobject_class->finalize = gnome_thumbnail_factory_finalize;
 }
 
+/**
+ * gnome_thumbnail_factory_new:
+ * @size: The thumbnail size to use
+ *
+ * Creates a new #GnomeThumbnailFactory.
+ *
+ * Return value: a new #GnomeThumbnailFactory
+ **/
 GnomeThumbnailFactory *
 gnome_thumbnail_factory_new (GnomeThumbnailSize size)
 {
@@ -441,6 +449,18 @@ gnome_thumbnail_factory_ensure_failed_uptodate (GnomeThumbnailFactory *factory)
   g_free (path);
 }
 
+/**
+ * gnome_thumbnail_factory_lookup:
+ * @factory: a #GnomeThumbnailFactory
+ * @uri: the uri of a file
+ * @mtime: the mtime of the file
+ *
+ * Tries to locate an existing thumbnail for the file specified.
+ *
+ * Usage of this function is threadsafe.
+ *
+ * Return value: The absolute path of the thumbnail, or %NULL if none exist
+ **/
 char *
 gnome_thumbnail_factory_lookup (GnomeThumbnailFactory *factory,
 				const char            *uri,
@@ -502,6 +522,20 @@ gnome_thumbnail_factory_lookup (GnomeThumbnailFactory *factory,
   return NULL;
 }
 
+/**
+ * gnome_thumbnail_factory_has_valid_failed_thumbnail:
+ * @factory: a #GnomeThumbnailFactory
+ * @uri: the uri of a file
+ * @mtime: the mtime of the file
+ *
+ * Tries to locate an failed thumbnail for the file specified. Writing
+ * and looking for failed thumbnails is important to avoid to try to
+ * thumbnail e.g. broken images several times.
+ *
+ * Usage of this function is threadsafe.
+ *
+ * Return value: TRUE if there is a failed thumbnail for the file
+ **/
 gboolean
 gnome_thumbnail_factory_has_valid_failed_thumbnail (GnomeThumbnailFactory *factory,
 						    const char            *uri,
@@ -578,6 +612,20 @@ mimetype_supported_by_gdk_pixbuf (const char *mime_type)
 }
 
 
+/**
+ * gnome_thumbnail_factory_can_thumbnail:
+ * @factory: a #GnomeThumbnailFactory
+ * @uri: the uri of a file
+ * @mime_type: the mime type of the file
+ * @mtime: the mtime of the file
+ *
+ * Returns TRUE if this GnomeIconFactory can (at least try) to thumbnail
+ * this file. Thumbnails or files with failed thumbnails won't be thumbnailed.
+ *
+ * Usage of this function is threadsafe.
+ *
+ * Return value: TRUE if the file can be thumbnailed
+ **/
 gboolean
 gnome_thumbnail_factory_can_thumbnail (GnomeThumbnailFactory *factory,
 				       const char            *uri,
@@ -590,7 +638,6 @@ gnome_thumbnail_factory_can_thumbnail (GnomeThumbnailFactory *factory,
       strstr (uri, "/.thumbnails/") != NULL)
     return FALSE;
   
-  /* TODO: Replace with generic system */
   if (mime_type != NULL &&
       (mimetype_supported_by_gdk_pixbuf (mime_type) ||
        g_hash_table_lookup (factory->priv->scripts_hash, mime_type)))
@@ -672,6 +719,19 @@ expand_thumbnailing_script (const char *script,
 }
 
 
+/**
+ * gnome_thumbnail_factory_generate_thumbnail:
+ * @factory: a #GnomeThumbnailFactory
+ * @uri: the uri of a file
+ * @mime_type: the mime type of the file
+ *
+ * Tries to generate a thumbnail for the specified file. If it succeeds
+ * it returns a pixbuf that can be used as a thumbnail.
+ *
+ * Usage of this function is threadsafe.
+ *
+ * Return value: thumbnail pixbuf if thumbnailing succeeded, %NULL otherwise
+ **/
 GdkPixbuf *
 gnome_thumbnail_factory_generate_thumbnail (GnomeThumbnailFactory *factory,
 					    const char            *uri,
@@ -829,6 +889,18 @@ make_thumbnail_fail_dirs (GnomeThumbnailFactory *factory)
 }
 
 
+/**
+ * gnome_thumbnail_factory_save_thumbnail:
+ * @factory: a #GnomeThumbnailFactory
+ * @thumbnail: the thumbnail as a pixbuf 
+ * @uri: the uri of a file
+ * @original_mtime: the mime type of the file
+ *
+ * Saves @thumbnail at the right place. If the save fails a
+ * failed thumbnail is written.
+ *
+ * Usage of this function is threadsafe.
+ **/
 void
 gnome_thumbnail_factory_save_thumbnail (GnomeThumbnailFactory *factory,
 					GdkPixbuf             *thumbnail,
@@ -932,6 +1004,17 @@ gnome_thumbnail_factory_save_thumbnail (GnomeThumbnailFactory *factory,
   g_free (tmp_path);
 }
 
+/**
+ * gnome_thumbnail_factory_create_failed_thumbnail:
+ * @factory: a #GnomeThumbnailFactory
+ * @uri: the uri of a file
+ * @mtime: the mime type of the file
+ *
+ * Creates a failed thumbnail for the file so that we don't try
+ * to re-thumbnail the file later.
+ *
+ * Usage of this function is threadsafe.
+ **/
 void
 gnome_thumbnail_factory_create_failed_thumbnail (GnomeThumbnailFactory *factory,
 						 const char            *uri,
@@ -1028,6 +1111,15 @@ gnome_thumbnail_factory_create_failed_thumbnail (GnomeThumbnailFactory *factory,
   g_free (tmp_path);
 }
 
+/**
+ * gnome_thumbnail_md5:
+ * @uri: an uri
+ *
+ * Calculates the MD5 checksum of the uri. This can be useful
+ * if you want to manually handle thumbnail files.
+ *
+ * Return value: A string with the MD5 digest of the uri string.
+ **/
 char *
 gnome_thumbnail_md5 (const char *uri)
 {
@@ -1037,6 +1129,15 @@ gnome_thumbnail_md5 (const char *uri)
   return thumb_digest_to_ascii (digest);
 }
 
+/**
+ * gnome_thumbnail_path_for_uri:
+ * @uri: an uri
+ * @size: a thumbnail size
+ *
+ * Returns the filename that a thumbnail of size @size for @uri would have.
+ *
+ * Return value: an absolute filename
+ **/
 char *
 gnome_thumbnail_path_for_uri (const char         *uri,
 			      GnomeThumbnailSize  size)
@@ -1060,6 +1161,16 @@ gnome_thumbnail_path_for_uri (const char         *uri,
   return path;
 }
 
+/**
+ * gnome_thumbnail_has_uri:
+ * @pixbuf: an loaded thumbnail pixbuf
+ * @uri: a uri
+ *
+ * Returns whether the thumbnail has the correct uri embedded in the
+ * Thumb::URI option in the png.
+ *
+ * Return value: TRUE if the thumbnail is for @uri
+ **/
 gboolean
 gnome_thumbnail_has_uri (GdkPixbuf          *pixbuf,
 			 const char         *uri)
@@ -1070,6 +1181,17 @@ gnome_thumbnail_has_uri (GdkPixbuf          *pixbuf,
   return strcmp (uri, thumb_uri) == 0;
 }
 
+/**
+ * gnome_thumbnail_is_valid:
+ * @pixbuf: an loaded thumbnail #GdkPixbuf
+ * @uri: a uri
+ * @mtime: the mtime
+ *
+ * Returns whether the thumbnail has the correct uri and mtime embedded in the
+ * png options.
+ *
+ * Return value: TRUE if the thumbnail has the right @uri and @mtime
+ **/
 gboolean
 gnome_thumbnail_is_valid (GdkPixbuf          *pixbuf,
 			  const char         *uri,

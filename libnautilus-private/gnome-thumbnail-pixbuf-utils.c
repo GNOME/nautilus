@@ -38,6 +38,14 @@ GdkPixbuf * _gnome_thumbnail_load_scaled_jpeg (const char *uri,
 					       int         target_height);
 
 
+/**
+ * gnome_thumbnail_load_pixbuf:
+ * @uri: a uri
+ *
+ * Loads a pixbuf using gnome-vfs
+ *
+ * Return value: The loaded pixbuf or %NULL on failure
+ **/
 GdkPixbuf *
 gnome_thumbnail_load_pixbuf (const char *uri)
 {
@@ -97,6 +105,18 @@ gnome_thumbnail_load_pixbuf (const char *uri)
 	return pixbuf;
 }
 
+/**
+ * gnome_thumbnail_scale_down_pixbuf:
+ * @pixbuf: a #GdkPixbuf
+ * @dest_width: the desired new width
+ * @dest_height: the desired new height
+ *
+ * Scales the pixbuf to the desired size. This function
+ * is a lot faster than gdk-pixbuf when scaling down by
+ * large amounts.
+ *
+ * Return value: a scaled pixbuf
+ **/
 GdkPixbuf *
 gnome_thumbnail_scale_down_pixbuf (GdkPixbuf *pixbuf,
 				   int dest_width,

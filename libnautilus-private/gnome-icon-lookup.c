@@ -187,7 +187,40 @@ mimetype_supported_by_gdk_pixbuf (const char *mime_type)
 	return FALSE;
 }
 
-
+/**
+ * gnome_icon_lookup:
+ * @icon_loader: a #GnomeIconLoader
+ * @thumbnail_factory: an optional #GnomeThumbnailFactory used to look up thumbnails
+ * @file_uri: the uri of the file
+ * @custom_icon: optionally the name of a custom icon to try
+ * @file_info: information about the file from gnome_vfs_get_file_info()
+ * @mime_type: the mime type of the icon
+ * @flags: flags that affect the result of the lookup
+ * @result: optionally result flags of the lookups are stored here
+ *
+ * This function tries to locate an icon in @icon_loader that can be used
+ * to represent the file passed. It can optionally also look for existing
+ * thumbnails. It does no I/O, so the lookup should be relatively fast.
+ * 
+ * If you don't know any information about the file already you can use
+ * gnome_icon_lookup_sync() which gets this information using gnome-vfs.
+ *
+ * The following @flags are valid:
+ * 
+ * GNOME_ICON_LOOKUP_FLAGS_EMBEDDING_TEXT - Return the text icon for scripts.
+ * This is useful if you do text embedding in the icons.
+ * 
+ * GNOME_ICON_LOOKUP_FLAGS_SHOW_SMALL_IMAGES_AS_THEMSELVES - Return the
+ * filename of the filename itself for small images. Only availible if you
+ * pass a thumbnail_factory.
+ *
+ * Possible @result flags:
+ *
+ * GNOME_ICON_LOOKUP_RESULT_FLAGS_THUMBNAIL - The returned file is a thumbnail.
+ *
+ * Return value: the name of an icon or an absolute filename of an image to
+ *               use for the file.
+ **/
 char *
 gnome_icon_lookup (GnomeIconLoader            *icon_loader,
 		   GnomeThumbnailFactory      *thumbnail_factory,
@@ -266,6 +299,21 @@ gnome_icon_lookup (GnomeIconLoader            *icon_loader,
   return g_strdup (ICON_NAME_REGULAR);
 }
 
+/**
+ * gnome_icon_lookup:
+ * @icon_loader: a #GnomeIconLoader
+ * @thumbnail_factory: an optional #GnomeThumbnailFactory used to look up thumbnails
+ * @file_uri: the uri of the file
+ * @custom_icon: optionally the name of a custom icon to try
+ * @flags: flags that affect the result of the lookup
+ * @result: optionally result flags of the lookups are stored here
+ *
+ * This function tries to locate an icon in @icon_loader that can be used
+ * to represent the file passed. See gnome_icon_lookup() for more information.
+ * 
+ * Return value: the name of an icon or an absolute filename of an image to
+ *               use for the file.
+ */
 char *
 gnome_icon_lookup_sync (GnomeIconLoader         *icon_loader,
 			GnomeThumbnailFactory   *thumbnail_factory,
