@@ -66,7 +66,8 @@ int     arg_dry_run,
 	arg_force,
 	arg_upgrade,
 	arg_downgrade,
-	arg_erase;
+	arg_erase,
+	arg_query;
 char    *arg_server,
 	*arg_config_file,
 	*arg_tmp_dir;
@@ -85,6 +86,7 @@ static const struct poptOption options[] = {
 	{"downgrade", 'd', POPT_ARG_NONE, &arg_downgrade, 0, N_("Allow downgrades"), NULL},
 	{"tmp", '\0', POPT_ARG_STRING, &arg_tmp_dir, 0, N_("Set tmp dir (/tmp/eazel-install)"), NULL},
 	{"server", '\0', POPT_ARG_STRING, &arg_server, 0, N_("Specify server"), NULL},
+	{"query", 'q', POPT_ARG_NONE, &arg_query, 0, N_("Run Query"), NULL},
 	{"http", 'h', POPT_ARG_NONE, &arg_http, 0, N_("Use http"), NULL},
 	{"ftp", 'f', POPT_ARG_NONE, &arg_ftp, 0, N_("Use ftp"), NULL},
 	{"local", 'l', POPT_ARG_NONE, &arg_local, 0, N_("Use local"), NULL},
@@ -390,9 +392,12 @@ int main(int argc, char *argv[]) {
 	GList *packages;
 	GList *categories;
 	char *str;
+	GList *strs;
 	EazelInstallCallback *cb;		
 
 	CORBA_exception_init (&ev);
+
+	strs = NULL;
 
 	/* Seems that bonobo_main doens't like
 	   not having gnome_init called, dies in a
@@ -411,6 +416,7 @@ int main(int argc, char *argv[]) {
 	/* If there are more args, get them and parse them as packages */
 	while ((str = poptGetArg (ctxt)) != NULL) {
 		packages = g_list_prepend (packages, create_package (str));
+		strs = g_list_prepend (strs, g_strdup (str));
 	}
 	if (packages) {
 		CategoryData *category;
@@ -422,11 +428,9 @@ int main(int argc, char *argv[]) {
 	}
 
 	/* Chech that we're root and on a redhat system */
-	if (check_for_root_user() == FALSE) {
-		fprintf (stderr, "*** This tool requires root access.\n");
-	}
 	if (check_for_redhat () == FALSE) {
 		fprintf (stderr, "*** This tool can only be used on RedHat.\n");
+		exit (1);
 	}
 
 	orb = oaf_init (argc, argv);
@@ -456,14 +460,32 @@ int main(int argc, char *argv[]) {
 	gtk_signal_connect (GTK_OBJECT (cb), "delete_files", (void *)delete_files, NULL);
 	gtk_signal_connect (GTK_OBJECT (cb), "done", done, NULL);
 
+	if (arg_erase + arg_query > 1) {
+		g_error ("Only one operation at a time please.");
+	}
+
 	if (arg_erase) {
 		eazel_install_callback_uninstall_packages (cb, categories, &ev);
+	} else if (arg_query) {
+		GList *iterator;
+		for (iterator = strs; iterator; iterator = iterator->next) {
+			GList *matched_packages;
+			GList *match_it;
+			matched_packages = eazel_install_callback_simple_query (cb, (char*)iterator->data, &ev);
+			for (match_it = matched_packages; match_it; match_it = match_it->next) {
+				PackageData *p;
+				p = (PackageData*)match_it->data;
+				fprintf (stdout, "%s %s %50.50s", p->name, p->version, p->summary);
+			}
+		}
 	} else {
 		eazel_install_callback_install_packages (cb, categories, &ev);
 	}
 	
-	fprintf (stdout, "\nEntering main loop...\n");
-	bonobo_main ();
+	if (!arg_query) {
+		fprintf (stdout, "\nEntering main loop...\n");
+		bonobo_main ();
+	}
 
 	eazel_install_callback_destroy (GTK_OBJECT (cb));
 

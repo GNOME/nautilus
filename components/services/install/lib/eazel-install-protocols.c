@@ -121,7 +121,7 @@ http_fetch_remote_file (EazelInstall *service,
                 ghttp_current_status curStat = ghttp_get_status (request);
 		total_bytes = curStat.bytes_total;
 		/* Ensure first emit is with amount==0 */
-		if (first_emit) {
+		if (first_emit && total_bytes > 0) {
 			eazel_install_emit_download_progress (service, g_basename (target_file), 0, total_bytes);		
 			first_emit = FALSE;
 		}

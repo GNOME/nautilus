@@ -51,7 +51,8 @@ create_window (void)
   GtkWidget *table2;
   GtkWidget *label12;
   GtkWidget *action_label;
-  GtkWidget *progressbar;
+  GtkWidget *progressbar1;
+  GtkWidget *progressbar2;
   GtkWidget *package_label;
   GtkWidget *fixed1;
   GtkWidget *begin_button;
@@ -233,14 +234,14 @@ create_window (void)
   gtk_widget_show (label11);
   gtk_box_pack_start (GTK_BOX (vbox5), label11, TRUE, FALSE, 0);
 
-  table2 = gtk_table_new (2, 2, FALSE);
+  table2 = gtk_table_new (3, 2, FALSE);
   set_white_stuff (GTK_WIDGET (table2));
   gtk_widget_set_name (table2, "table2");
   gtk_widget_ref (table2);
   gtk_object_set_data_full (GTK_OBJECT (window), "table2", table2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table2);
-  gtk_box_pack_start (GTK_BOX (vbox5), table2, FALSE, FALSE, 16);
+  gtk_box_pack_start (GTK_BOX (vbox5), table2, FALSE, TRUE, 16);
   gtk_table_set_row_spacings (GTK_TABLE (table2), 16);
 
   label12 = gtk_label_new (_("Package :"));
@@ -250,8 +251,9 @@ create_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label12);
   gtk_table_attach (GTK_TABLE (table2), label12, 0, 1, 0, 1,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
+                    (GtkAttachOptions) 0, 
+                    (GtkAttachOptions) 0,
+		    0, 0);
 
   action_label = gtk_label_new (_(""));
   gtk_widget_set_name (action_label, "");
@@ -263,15 +265,27 @@ create_window (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
-  progressbar = gtk_progress_bar_new ();
-  gtk_widget_set_name (progressbar, "progressbar");
-  gtk_widget_ref (progressbar);
-  gtk_object_set_data_full (GTK_OBJECT (window), "progressbar", progressbar,
+  progressbar1 = gtk_progress_bar_new ();
+  gtk_widget_set_name (progressbar1, "progressbar_single");
+  gtk_widget_ref (progressbar1);
+  gtk_object_set_data_full (GTK_OBJECT (window), "progressbar_single", progressbar1,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (progressbar);
-  gtk_table_attach (GTK_TABLE (table2), progressbar, 1, 2, 1, 2,
-                    GTK_FILL,
-                    GTK_FILL,
+  gtk_progress_set_show_text (GTK_PROGRESS (progressbar1), TRUE);		  
+  gtk_widget_show (progressbar1);
+  gtk_table_attach (GTK_TABLE (table2), progressbar1, 1, 2, 1, 2,
+		    GTK_EXPAND,
+                    GTK_EXPAND,
+		    0, 0);
+
+  progressbar2 = gtk_progress_bar_new ();
+  gtk_widget_set_name (progressbar2, "progressbar_overall");
+  gtk_widget_ref (progressbar2);
+  gtk_object_set_data_full (GTK_OBJECT (window), "progressbar_overall", progressbar2,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_progress_set_show_text (GTK_PROGRESS (progressbar2), TRUE);		  
+  gtk_table_attach (GTK_TABLE (table2), progressbar2, 1, 2, 2, 3,
+		    GTK_EXPAND,
+                    GTK_EXPAND,
 		    0, 0);
 
   package_label = gtk_label_new (_(""));

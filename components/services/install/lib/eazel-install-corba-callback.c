@@ -142,11 +142,21 @@ impl_install_failed (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 	GList *categories;
 	PackageData *pack;
 	categories = parse_memory_xml_package_list ((char*)xmlcorbapack, strlen (xmlcorbapack));
-	/* FIXME bugzilla.eazel.com 1557:
-	   semi ugly, but assuming that the xml parse was ok, this gets the package 
-	   in for the signal */
-	pack = (PackageData*)((CategoryData*)categories->data)->packages->data;
-	gtk_signal_emit (GTK_OBJECT (servant->object), signals[INSTALL_FAILED], pack);
+	if (categories==NULL) {
+		g_warning ("install_failed called with error in xml.");
+		g_warning ("XML is = \n%s", xmlcorbapack);
+	} else {
+		CategoryData *cat;
+		cat = (CategoryData*)categories->data;
+		if (cat->packages==NULL) {
+			g_warning ("install_failed called with error in xml.");
+			g_warning ("XML is = \n%s", xmlcorbapack);
+		} else {
+			PackageData *pack;
+			pack = (PackageData*)cat->packages->data;
+			gtk_signal_emit (GTK_OBJECT (servant->object), signals[INSTALL_FAILED], pack);
+		}
+	}
 }
 
 static void 
@@ -157,11 +167,21 @@ impl_uninstall_failed (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 	GList *categories;
 	PackageData *pack;
 	categories = parse_memory_xml_package_list ((char*)xmlcorbapack, strlen (xmlcorbapack));
-	/* FIXME bugzilla.eazel.com 1557:
-	   semi ugly, but assuming that the xml parse was ok, this gets the package 
-	   in for the signal */
-	pack = (PackageData*)((CategoryData*)categories->data)->packages->data;
-	gtk_signal_emit (GTK_OBJECT (servant->object), signals[UNINSTALL_FAILED], pack);
+	if (categories==NULL) {
+		g_warning ("install_failed called with error in xml.");
+		g_warning ("XML is = \n%s", xmlcorbapack);
+	} else {
+		CategoryData *cat;
+		cat = (CategoryData*)categories->data;
+		if (cat->packages==NULL) {
+			g_warning ("install_failed called with error in xml.");
+			g_warning ("XML is = \n%s", xmlcorbapack);
+		} else {
+			PackageData *pack;
+			pack = (PackageData*)cat->packages->data;
+			gtk_signal_emit (GTK_OBJECT (servant->object), signals[INSTALL_FAILED], pack);
+		}
+	}
 }
 
 static CORBA_boolean
@@ -462,24 +482,25 @@ eazel_install_callback_uninstall_packages (EazelInstallCallback *service,
 }
 
 GList*
-eazel_install_callback_query (EazelInstallCallback *service, 
-			      char *query,
-			      CORBA_Environment *ev)
+eazel_install_callback_simple_query (EazelInstallCallback *service, 
+				     const char *query,
+				     CORBA_Environment *ev)
 {
 	GList *result;
 	Trilobite_Eazel_PackageDataStructList *corbares;
 	
-	/* FIXME bugzilla.eazel.com 1446: ? */
-
-	corbares = Trilobite_Eazel_Install_query (service->installservice_corba,
-						  query,
-						  ev);
+	corbares = Trilobite_Eazel_Install_simple_query (service->installservice_corba,
+							 query,
+							 ev);
+	result = packagedata_list_from_corba_packagedatastructlist (*corbares);
+	CORBA_free (corbares); 
+	
 	return result;
 }
 
 void 
 eazel_install_callback_revert_transaction (EazelInstallCallback *service, 
-					   char *xmlfile,
+					   const char *xmlfile,
 					   CORBA_Environment *ev)
 {
 	xmlDocPtr doc;

@@ -272,15 +272,13 @@ generate_xml_package_list (const char* pkg_template_file,
  */
 
 	xmlDocPtr doc;
-	xmlNodePtr category;
-	xmlNodePtr packages;
-	xmlNodePtr package;
-	xmlNodePtr data;
 	char* retbuf;
 	int index;
 	char** entry_array;
 	char** package_array;
-	gint lines;
+	char *tags[] = {"NAME", "VERSION", "MINOR", "ARCH", "BYTESIZE", "SUMMARY", NULL};
+	int num_tags = 6;
+	int lines;
 	
 	doc = xmlNewDoc ("1.0");
 	doc->root = xmlNewDocNode (doc, NULL, "CATEGORIES", NULL);
@@ -297,25 +295,35 @@ generate_xml_package_list (const char* pkg_template_file,
 			break;
 		}
 
-		package_array = g_strsplit (entry_array[index], ":", 7);
+		package_array = g_strsplit (entry_array[index], ":", num_tags+1);
 
- /* FIXME bugzilla.eazel.com 1283: this has no error control right now.  It needs to be improved alot.  */
- 
-		if ((doc->root->childs == NULL) ||
-		   (xmlGetProp (doc->root->childs, package_array[0]))) {
-			category = xmlNewChild (doc->root, NULL, "CATEGORY", NULL);
-			xmlSetProp (category, "name", package_array[0]);
-			packages = xmlNewChild (category, NULL, "PACKAGES", NULL);
+		if (package_array && package_array[0]) {
+			xmlNodePtr packages;
+			xmlNodePtr category;
+			xmlNodePtr package;
+			xmlNodePtr data;
+			int i;
+
+			if ((doc->root->childs == NULL) ||
+			    (xmlGetProp (doc->root->childs, package_array[0]))) {
+				category = xmlNewChild (doc->root, NULL, "CATEGORY", NULL);
+				xmlSetProp (category, "name", package_array[0]);
+				packages = xmlNewChild (category, NULL, "PACKAGES", NULL);
+			}
+
+			package = xmlNewChild (packages, NULL, "PACKAGE", NULL);
+			
+			for (i = 1; i <= num_tags; i++) {
+				if (package_array[i]) {
+					data = xmlNewChild (package, NULL, tags[i], package_array[i]);
+				} else {
+					g_error ("line %d, tag %d (%s) is missing", index+1, i+1, tags[i]);
+				}
+			}
+			g_strfreev (package_array);
 		}
-		package = xmlNewChild (packages, NULL, "PACKAGE", NULL);
-		data = xmlNewChild (package, NULL, "NAME", package_array[1]);
-		data = xmlNewChild (package, NULL, "VERSION", package_array[2]);
-		data = xmlNewChild (package, NULL, "MINOR", package_array[3]);
-		data = xmlNewChild (package, NULL, "ARCH", package_array[4]);
-		data = xmlNewChild (package, NULL, "BYTESIZE", package_array[5]);
-		data = xmlNewChild (package, NULL, "SUMMARY", package_array[6]);
 	}
-
+	
 	if (doc == NULL) {
 		g_warning (_("*** Error generating xml package list! ***\n"));
 		xmlFreeDoc (doc);

@@ -110,12 +110,12 @@ void eazel_install_callback_uninstall_packages (EazelInstallCallback *service,
 						  GList *categories,
 						  CORBA_Environment *ev);
 
-GList* eazel_install_callback_query (EazelInstallCallback *service, 
-				     char *query,
-				     CORBA_Environment *ev);
+GList* eazel_install_callback_simple_query (EazelInstallCallback *service, 
+					    const char* query,
+					    CORBA_Environment *ev);
 
 void eazel_install_callback_revert_transaction (EazelInstallCallback *service, 
-						char *xmlfile,
+						const char *xmlfile,
 						CORBA_Environment *ev);
 
 /* Stuff */

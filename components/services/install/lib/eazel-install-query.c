@@ -88,7 +88,7 @@ eazel_install_query_package_system (EazelInstall *service,
 
 static GList *
 eazel_install_simple_rpm_query (EazelInstall *service, 
-				char *input, 
+				const char *input, 
 				EazelInstallSimpleQueryEnum flag)
 {
 	dbiIndexSet matches;
@@ -104,7 +104,6 @@ eazel_install_simple_rpm_query (EazelInstall *service,
 	   open and close at the end. That way, this
 	   func can be used in both various enviroments */
 	if (db == NULL) {
-		g_message ("PREPARING PACKAGE SYS");
 		eazel_install_prepare_package_system (service);
 		db = service->private->packsys.rpm.db;       
 		close_db = TRUE;
@@ -151,7 +150,6 @@ eazel_install_simple_rpm_query (EazelInstall *service,
 	}
 	
 	if (close_db) {
-		g_message ("KILLING PACKAGE SYS");
 		eazel_install_free_package_system (service);
 	}
 
@@ -160,10 +158,11 @@ eazel_install_simple_rpm_query (EazelInstall *service,
 
 
 GList* 
-eazel_install_simple_query (EazelInstall *service, char *input, 
+eazel_install_simple_query (EazelInstall *service, 
+			    const char *input, 
 			    EazelInstallSimpleQueryEnum flag, 
 			    int neglist_count, 
-			    GList *neglists,...)
+			    const GList *neglists,...)
 {
 	GList *result;
 	GList *remove;

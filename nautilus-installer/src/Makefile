@@ -60,9 +60,13 @@ POST_UNINSTALL = :
 host_alias = i686-pc-linux-gnu
 host_triplet = i686-pc-linux-gnu
 AS = @AS@
+BONOBOX_CFLAGS = -I/gnome/include -DNEED_GNOMESUPPORT_H -I/gnome/lib/gnome-libs/include -I/gnome/lib/glib/include -I/usr/X11R6/include -I/gnome/include/gnome-xml
+BONOBOX_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -L/usr/lib -lbonobo -lgdk_pixbuf -ltiff -ljpeg -lpng -lgnomeprint -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgtk -lgdk -lgmodule -lXext -lX11 -lgnome -lgnomesupport -lesd -laudiofile -ldb1 -ldl -lxml -lz -loaf -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lglib -lnsl -lm -lbonobox
 BONOBO_CFLAGS = -I/gnome/include -DNEED_GNOMESUPPORT_H -I/gnome/lib/gnome-libs/include -I/gnome/lib/glib/include -I/usr/X11R6/include -I/gnome/include/gnome-xml
 BONOBO_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -L/usr/lib -lbonobo -lgdk_pixbuf -ltiff -ljpeg -lpng -lgnomeprint -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgtk -lgdk -lgmodule -lXext -lX11 -lgnome -lgnomesupport -lesd -laudiofile -ldb1 -ldl -lxml -lz -loaf -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lglib -lnsl -lm
-CATALOGS =  da.gmo de.gmo fr.gmo gl.gmo ja.gmo ko.gmo no.gmo ru.gmo sv.gmo tr.gmo
+BONOBO_PRINT_CFLAGS = 
+BONOBO_PRINT_LIBS = 
+CATALOGS =  da.gmo de.gmo fr.gmo gl.gmo ja.gmo ko.gmo no.gmo ru.gmo sv.gmo tr.gmo zh_TW.Big5.gmo
 CATOBJEXT = .gmo
 CC = gcc
 CPP = gcc -E
@@ -83,7 +87,7 @@ GHTTP_LIBS = -L/gnome/lib -lghttp
 GLIB_CFLAGS = -I/gnome/lib/glib/include -I/gnome/include
 GLIB_CONFIG = /gnome/bin/glib-config
 GLIB_LIBS = -L/gnome/lib -lglib
-GMOFILES =  da.gmo de.gmo fr.gmo gl.gmo ja.gmo ko.gmo no.gmo ru.gmo sv.gmo tr.gmo
+GMOFILES =  da.gmo de.gmo fr.gmo gl.gmo ja.gmo ko.gmo no.gmo ru.gmo sv.gmo tr.gmo zh_TW.Big5.gmo
 GMSGFMT = /usr/bin/msgfmt
 GNOMECANVASPIXBUF_INCLUDEDIR = 
 GNOMECANVASPIXBUF_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -lgdk_pixbuf -ltiff -ljpeg -lpng -lz -lgtk -lgdk -lgmodule -lglib -ldl -lXext -lX11 -lm -lgnomecanvaspixbuf
@@ -132,7 +136,7 @@ ORBIT_IDL = /gnome/bin/orbit-idl
 ORBIT_LIBS = -L/gnome/lib -lORBit -lIIOP -lORBitutil -lglib -lnsl -lm
 PACKAGE = nautilus
 PAM_LIBS = -ldl -lpam -lpam_misc
-POFILES =  da.po de.po fr.po gl.po ja.po ko.po no.po ru.po sv.po tr.po
+POFILES =  da.po de.po fr.po gl.po ja.po ko.po no.po ru.po sv.po tr.po zh_TW.Big5.po
 POSUB = po
 RANLIB = ranlib
 RPM_LIBS = -lrpm -lz -lbz2 -lpopt -ldb
@@ -165,7 +169,7 @@ nautilus_installer_SOURCES =  	main.c 	support.c support.h 	interface.c interfac
 
 nautilus_installer_LDFLAGS = -static
 
-nautilus_installer_LDADD =          $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o 			        $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o 		$(top_builddir)/components/services/install/lib/libeazelinstall_minimal.a				$(top_builddir)/components/services/trilobite/libtrilobite/trilobite-root-helper.o			$(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-utils.o			-L/gnome/lib 	-lgnomeui 	-lgnome 	-lart_lgpl 	-lgdk_imlib 	-lgtk 	-lgdk 	-lgmodule 	-lglib 	-L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE 	/usr/lib/libesd.a 	/usr/lib/libaudiofile.a 	-lghttp 	-L/usr/lib -lrpm -lz -ldb1 	-lpopt 	-lxml 
+nautilus_installer_LDADD =          $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o 			        $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o 		$(top_builddir)/components/services/install/lib/libeazelinstall_minimal.a				$(top_builddir)/components/services/trilobite/libtrilobite/trilobite-root-helper.o			$(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-utils.o			-L/gnome/lib 	-lgnomeui 	-lgnome 	-lart_lgpl 	-lgdk_imlib 	-lgtk 	-lgdk 	-lgmodule 	-lglib 	-L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE 	-lghttp 	-L/usr/lib -lrpm -lz -ldb1 	-lpopt 	-lxml 
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -183,8 +187,7 @@ $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o \
 $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o \
 $(top_builddir)/components/services/install/lib/libeazelinstall_minimal.a \
 $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-root-helper.o \
-$(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-utils.o \
-/usr/lib/libesd.a /usr/lib/libaudiofile.a
+$(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-utils.o
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -431,6 +434,9 @@ all-redirect all-am all installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
+
+#	/usr/lib/libesd.a \
+#	/usr/lib/libaudiofile.a \
 
 #
 #        /gnome-source/nautilus/components/services/trilobite/libtrilobite/helixcode-utils.o 	\

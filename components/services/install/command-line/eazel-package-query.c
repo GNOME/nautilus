@@ -32,11 +32,6 @@
 
 #include <libtrilobite/helixcode-utils.h>
 
-/* This ensure that if the arch is detected as i[3-9]86, the
-   requested archtype will be set to i386 */
-#define ASSUME_ix86_IS_i386 
-
-
 /* Popt stuff */
 char *arg_query;
 int arg_owns, arg_provides, arg_requires;

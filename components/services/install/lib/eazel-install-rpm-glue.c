@@ -557,11 +557,13 @@ eazel_install_do_rpm_transaction_process_pipe (EazelInstall *service,
 		}
 
 		if (tmp) {
+			g_message ("READ \"%s\"", tmp);
 			/* Percentage output, parse and emit... */
 			if (tmp[0]=='%' && tmp[1]=='%') {
 				char *ptr;
 				int pct;
 				int amount;
+
 
 				if (pack == NULL) {
 					continue;
@@ -612,12 +614,17 @@ eazel_install_do_rpm_transaction_process_pipe (EazelInstall *service,
 									     service->private->packsys.rpm.total_size);
 				}
 			}
+		} else {
+			if (fflush (pipe)==0) {
+				g_warning ("cannot flush");
+			}
 		}
 	}
 
 	fclose (pipe);
 }
 
+#ifndef EAZEL_INSTALL_SLIM
 static void
 eazel_install_do_rpm_transaction_save_report_helper (xmlNodePtr node,
 						     GList *packages)
@@ -654,9 +661,25 @@ eazel_install_do_rpm_transaction_save_report (EazelInstall *service)
 	xmlNodePtr node, root;
 	char *name;
 	
+	/* Ensure the transaction dir is present */
+	if (! g_file_test (eazel_install_get_transaction_dir (service), G_FILE_TEST_ISDIR)) {
+		int retval;
+		retval = mkdir (eazel_install_get_transaction_dir (service), 0755);		       
+		if (retval < 0) {
+			if (errno != EEXIST) {
+				g_warning (_("*** Could not create transaction directory (%s)! ***\n"), 
+					   eazel_install_get_transaction_dir (service));
+				return;
+			}
+		}
+	}
+
+	/* Create xml */
 	doc = xmlNewDoc ("1.0");
 	root = node = xmlNewNode (NULL, "TRANSACTION");
 	xmlDocSetRootElement (doc, node);
+
+	/* Make a unique name */
 	name = g_strdup_printf ("%s/transaction.%d", eazel_install_get_transaction_dir (service), time (NULL));
 	while (g_file_test (name, G_FILE_TEST_ISFILE)) {
 		g_free (name);
@@ -664,18 +687,7 @@ eazel_install_do_rpm_transaction_save_report (EazelInstall *service)
 		name = g_strdup_printf ("%s/transaction.%d", eazel_install_get_transaction_dir (service), time (NULL));
 	}
 
-	/* Ensure the transaction dir is present */
-	if (! g_file_test (eazel_install_get_transaction_dir (service), G_FILE_TEST_ISDIR)) {
-		int retval;
-		retval = mkdir (eazel_install_get_transaction_dir (service), 0755);		       
-		if (retval < 0) {
-			if (errno != EEXIST) {
-				g_error (_("*** Could not create transaction directory (%s)! ***\n"), 
-					 eazel_install_get_transaction_dir (service));
-			}
-		}
-	}
-
+	/* Open and save */
 	outfile = fopen (name, "w");
 	xmlAddChild (root, eazel_install_packagelist_to_xml (service->private->transaction));
 	node = xmlAddChild (node, xmlNewNode (NULL, "DESCRIPTIONS"));
@@ -692,21 +704,19 @@ eazel_install_do_rpm_transaction_save_report (EazelInstall *service)
 	xmlDocDump (outfile, doc);
 	
 	fclose (outfile);
-	g_free (name);
-
-	/* FIXME bugzilla.eazel.com 1586:
-	   FIXME bugzilla.eazel.com 1673:
-	   at this point, we could emit the transaction info, by finding the toplevel
-	   packages, and spewing out xml for them */
-}
+	g_free (name);}
+#endif /* EAZEL_INSTALL_SLIM */
 
 int
 do_rpm_transaction (EazelInstall *service,
 		    GList* packages) 
 {
+#ifndef EAZEL_INSTALL_SLIM
 	TrilobiteRootHelper *root_helper;
+#endif /* EAZEL_INSTALL_SLIM */
 	GList *args;
 	int fd;
+	int res;
 
 	if (g_list_length (packages) == 0) {
 		return 0;
@@ -718,6 +728,7 @@ do_rpm_transaction (EazelInstall *service,
 	service->private->packsys.rpm.total_size = 0;
 
 	args = NULL;
+	res = 0;
 
 	eazel_install_do_rpm_transaction_fill_hash (service, packages);
 	eazel_install_do_rpm_transaction_get_total_size (service, packages);
@@ -726,6 +737,7 @@ do_rpm_transaction (EazelInstall *service,
 	eazel_install_emit_preflight_check (service, 					     
 					    service->private->packsys.rpm.total_size,
 					    service->private->packsys.rpm.num_packages);
+
 	{
 		GList *iterator;
 		fprintf (stdout, "\nARGS: ");
@@ -735,27 +747,62 @@ do_rpm_transaction (EazelInstall *service,
 		fprintf (stdout, "\n");
 	}
 
-	/* Fire off the helper */
+#ifdef EAZEL_INSTALL_SLIM
+	{
+		char **argv;
+		int i;
+		int flags;
+		GList *iterator;
+		 
+		/* Create argv list */
+		argv = g_new0 (char*, g_list_length (args) + 2);
+		argv[0] = g_strdup ("rpm");
+		i = 1;
+		for (iterator = args; iterator; iterator = iterator->next) {
+			argv[i] = g_strdup (iterator->data);
+			i++;
+		}
+		argv[i] = NULL;
+
+		if (access ("/bin/rpm", R_OK|X_OK)!=0) {
+			g_warning ("/bin/rpm missing or not executable for uid");
+			res = service->private->packsys.rpm.num_packages;
+		} 
+		/* start /bin/rpm... */
+		if (res==0 && trilobite_pexec ("/bin/rpm", argv, NULL, &fd, NULL)!=0) {
+			g_warning ("Could not start rpm");
+			res = service->private->packsys.rpm.num_packages;
+		} else {
+			g_message ("rpm running...");
+		}
+	}
+#else /* EAZEL_INSTALL_SLIM     */
+	/* Fire off the helper */	
 	root_helper = gtk_object_get_data (GTK_OBJECT (service), "trilobite-root-helper");
 	if (trilobite_root_helper_start (root_helper) != TRILOBITE_ROOT_HELPER_SUCCESS) {
 		g_warning ("Error in starting trilobite_root_helper");
-		return service->private->packsys.rpm.num_packages;
+		res = service->private->packsys.rpm.num_packages;
 	}
 
 	/* Run RPM */
-	if (trilobite_root_helper_run (root_helper, TRILOBITE_ROOT_HELPER_RUN_RPM, args, &fd) != 
+	if (res==0 && trilobite_root_helper_run (root_helper, TRILOBITE_ROOT_HELPER_RUN_RPM, args, &fd) != 
 	    TRILOBITE_ROOT_HELPER_SUCCESS) {
 		g_warning ("Error in running trilobite_root_helper");
-		return service->private->packsys.rpm.num_packages;
+		res = service->private->packsys.rpm.num_packages;
 	}
-	
-	eazel_install_do_rpm_transaction_process_pipe (service, fd);
-	eazel_install_do_rpm_transaction_save_report (service);
+
+#endif /* EAZEL_INSTALL_SLIM     */
+	if (res==0) {
+		eazel_install_do_rpm_transaction_process_pipe (service, fd);
+#ifndef EAZEL_INSTALL_SLIM
+		eazel_install_do_rpm_transaction_save_report (service);
+#endif /* EAZEL_INSTALL_SLIM     */
+	}
 
 	g_list_foreach (args, (GFunc)g_free, NULL);
 	g_list_free (args);
 
-	return 0;
+	return res;
 } /* end do_rpm_transaction */
 
 /*
@@ -1243,6 +1290,12 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 				pack_entry = g_list_find_custom (*packages, 
 								 (gpointer)conflict.needsName,
 								 (GCompareFunc)eazel_install_package_name_compare);
+				if (pack_entry==NULL) {
+					/* FIXME: bugzilla.eazel.com
+					   Argh, if a lib*.so breaks a package,
+					   we end up here */
+					continue;
+				}
 				dep = packagedata_new_from_rpm_conflict_reversed (conflict);
 				pack = (PackageData*)(pack_entry->data);
 				dep->archtype = g_strdup (pack->archtype);

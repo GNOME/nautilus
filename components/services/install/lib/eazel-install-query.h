@@ -34,8 +34,8 @@ typedef enum {
 } EazelInstallSimpleQueryEnum;
 
 GList* eazel_install_simple_query (EazelInstall *service, 
-				   char *input, 
+				   const char *input, 
 				   EazelInstallSimpleQueryEnum flag, 
-				   int neglists, GList *neglist,...);
+				   int neglists, const GList *neglist,...);
 
 #endif /* EAZEL_INSTALL_QUERY_H */

@@ -1,3 +1,66 @@
+2000-08-07  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/eazel-alt-install-corba.c:
+	(main):
+	Added --query, to test the corba query stuff
+	
+	* components/services/install/command-line/eazel-package-query.c:
+	Removed some erratic #defs.
+	
+	* components/services/install/command-line/genpkg_list.example:
+	Now has an error on purpose, to test the error checking
+	
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	Renamed the query to simple_query
+	
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(impl_install_failed), (impl_uninstall_failed),
+	(eazel_install_callback_simple_query),
+	(eazel_install_callback_revert_transaction):
+	* components/services/install/lib/eazel-install-corba-callback.h:
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(corba_packagedatastruct_from_packagedata):
+	* components/services/install/lib/eazel-install-corba.c:
+	(impl_Eazel_Install_simple_query), (eazel_install_get_epv):
+	* components/services/install/lib/eazel-install-query.c:
+	(eazel_install_simple_rpm_query), (eazel_install_simple_query):
+	Finished the corbafication of simple_query and added some const's
+	to some arguments.
+		
+	* components/services/install/lib/eazel-install-protocols.c:
+	(http_fetch_remote_file):
+	Fixed a bug where the first download-progress emit got called with
+	total == 0.
+	
+	* components/services/install/lib/eazel-install-query.h:
+	Removed debug output.
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_do_rpm_transaction_process_pipe),
+	(eazel_install_do_rpm_transaction_save_report),
+	(do_rpm_transaction), (eazel_install_fetch_rpm_dependencies):
+	Am tryink to fix the installer. Havink problems reading the output
+	from rpm, since it apparently gets buffered somewhere.
+	
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(generate_xml_package_list):
+	Added error checking to the :-seperated values parsing.
+	
+	* components/services/install/lib/makefile.staticlib.in:
+	More static linking fun.
+	
+	* nautilus-installer/src/Makefile:
+	* nautilus-installer/src/Makefile.am:
+	* nautilus-installer/src/installer.c: (eazel_install_progress),
+	(eazel_download_progress), (download_failed),
+	(eazel_install_preflight), (eazel_install_dep_check),
+	(eazel_install_delete_files), (installer):
+	* nautilus-installer/src/interface.c: (create_window):
+	* nautilus-installer/src/link.sh:
+	* nautilus-installer/src/prescript:
+	Okaeh, the installer is slight prettier, but the install progress
+	is screwed because of the problem with progress bar.
+
 2000-08-07  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 1969 enough for now (search bar buttons should

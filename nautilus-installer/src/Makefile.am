@@ -46,12 +46,14 @@ nautilus_installer_LDADD = 	\
 	-lgmodule \
 	-lglib \
 	-L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE \
-	/usr/lib/libesd.a \
-	/usr/lib/libaudiofile.a \
 	-lghttp \
 	-L/usr/lib -lrpm -lz -ldb1 \
 	-lpopt \
 	-lxml 
+
+#	/usr/lib/libesd.a \
+#	/usr/lib/libaudiofile.a \
+
 
 #
 #        /gnome-source/nautilus/components/services/trilobite/libtrilobite/helixcode-utils.o 	\

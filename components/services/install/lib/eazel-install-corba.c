@@ -33,6 +33,7 @@
 #include "eazel-install-public.h"
 #include "eazel-install-private.h"
 #include "eazel-install-corba-types.h"
+#include "eazel-install-query.h"
 
 #define RELEASE_CB if (servant->object->callback != CORBA_OBJECT_NIL) { \
    CORBA_Object_release (servant->object->callback, ev); \
@@ -323,17 +324,17 @@ impl_Eazel_Install__get_protocol (impl_POA_Trilobite_Eazel_Install *servant,
 }
 
 static Trilobite_Eazel_PackageDataStructList*
-impl_Eazel_Install_query (impl_POA_Trilobite_Eazel_Install *servant,
-			  const CORBA_char *query,
-			  CORBA_Environment *ev)
+impl_Eazel_Install_simple_query (impl_POA_Trilobite_Eazel_Install *servant,
+				 const CORBA_char *query,
+				 CORBA_Environment *ev)
 {
 	Trilobite_Eazel_PackageDataStructList *result;
+	GList *tmp_result;
 
-	/* FIXME bugzilla.eazel.com:
-	   Finish this, need to convert the return value to a 
-	   corba sequence and return it.
-	*/
-	eazel_install_query_package_system (servant->object, query, 0);
+	tmp_result = eazel_install_simple_query (servant->object, query, EI_SIMPLE_QUERY_MATCHES, 0, NULL);
+	result = Trilobite_Eazel_PackageDataStructList__alloc ();
+	(*result) = corba_packagedatastructlist_from_packagedata_list (tmp_result);
+	g_list_foreach (tmp_result, (GFunc)packagedata_destroy_foreach, NULL);
 	
 	return result;
 }
@@ -383,7 +384,7 @@ eazel_install_get_epv ()
 	epv->_set_tmp_dir = (gpointer)&impl_Eazel_Install__set_tmp_dir;
 	epv->_get_tmp_dir = (gpointer)&impl_Eazel_Install__get_tmp_dir;
 
-	epv->query = (gpointer)&impl_Eazel_Install_query;
+	epv->simple_query = (gpointer)&impl_Eazel_Install_simple_query;
 
 	return epv;
 };
