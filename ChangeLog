@@ -1,3 +1,12 @@
+2000-10-30  Rebecca Schulman  <rebecka@eazel.com>
+
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (summary_load_location_callback):
+	Add setting of window and sidebar title to the summary view
+	to "Eazel Services Summary".  I'm not necessarily attached to the wording
+	but we should definitely make it something other than "eazel".
+	this fixes a bug I filed, #4183
+
 2000-10-30  Robey Pointer  <robey@eazel.com>
 
 	* components/services/trilobite/helper/eazel-helper.pam:
@@ -53,6 +62,7 @@
 	made the news items use all of the available space by setting its
 	wrap width to -1.
 	
+>>>>>>> 1.2661
 2000-10-29  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c

@@ -1547,10 +1547,12 @@ summary_load_location_callback (NautilusView		*nautilus_view,
 			        const char		*location,
 			        NautilusSummaryView	*view)
 {
-
+	
 	g_assert (nautilus_view == view->details->nautilus_view);
 	
 	nautilus_view_report_load_underway (nautilus_view);
+
+	nautilus_view_set_title (nautilus_view, "Eazel Services Summary");
 	
 	nautilus_summary_view_load_uri (view, location);
 
