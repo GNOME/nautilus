@@ -71,6 +71,26 @@ nautilus_xml_get_child_by_name_and_property (xmlNodePtr parent,
 	return NULL;
 }
 
+/* return a child of the passed-in node with a matching name */
+
+xmlNodePtr
+nautilus_xml_get_child_by_name (xmlNodePtr parent,
+					     const char *child_name)
+{
+	xmlNodePtr child;
+
+	if (parent == NULL) {
+		return NULL;
+	}
+	for (child = nautilus_xml_get_children (parent); child != NULL; child = child->next) {
+		if (strcmp (child->name, child_name) == 0) {
+				return child;
+		}
+	}
+	return NULL;
+}
+
+
 xmlNodePtr
 nautilus_xml_get_root_child_by_name_and_property (xmlDocPtr document,
 						  const char *child_name,

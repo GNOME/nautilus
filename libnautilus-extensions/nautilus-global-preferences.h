@@ -64,7 +64,7 @@ BEGIN_GNOME_DECLS
 
 /* themes */
 #define NAUTILUS_PREFERENCES_TOOLBAR_ICON_THEME			"preferences/toolbar_icon_theme"
-#define NAUTILUS_PREFERENCES_ICON_THEME				"preferences/icon_theme"
+#define NAUTILUS_PREFERENCES_THEME				"preferences/theme"
 
 /* File Indexing */
 #define NAUTILUS_PREFERENCES_SEARCH_METHOD                       "preferences/also_do_slow_search"

@@ -200,8 +200,8 @@ global_preferences_create_dialog (void)
 
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
 							 1,
-							 NAUTILUS_PREFERENCES_ICON_THEME,
-							 NAUTILUS_PREFERENCE_ITEM_ICON_THEME);
+							 NAUTILUS_PREFERENCES_THEME,
+							 NAUTILUS_PREFERENCE_ITEM_THEME);
 	
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane), "Fonts");
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
@@ -543,7 +543,7 @@ global_preferences_register_for_ui (void)
 							   FALSE,
 							   FALSE);
 
-	global_preferences_register_string_with_defaults (NAUTILUS_PREFERENCES_ICON_THEME,
+	global_preferences_register_string_with_defaults (NAUTILUS_PREFERENCES_THEME,
 							  "theme for file icons:      ",
 							  "default",
 							  "default",

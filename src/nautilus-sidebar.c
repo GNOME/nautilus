@@ -34,10 +34,12 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <liboaf/liboaf.h>
+#include <parser.h>
 
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
@@ -49,6 +51,7 @@
 #include <libnautilus-extensions/nautilus-mime-actions.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
 #include <libnautilus-extensions/nautilus-view-identifier.h>
+#include <libnautilus-extensions/nautilus-xml-extensions.h>
 
 #include "nautilus-sidebar-tabs.h"
 #include "nautilus-sidebar-title.h"
@@ -64,6 +67,8 @@ struct NautilusSidebarDetails {
 	GtkVBox *button_box;
 	gboolean has_buttons;
 	char *uri;
+	char *default_background_color;
+	char *default_background_image;
 	int selected_index;
 	NautilusDirectory *directory;
 	int background_connection;
@@ -89,8 +94,11 @@ static void     nautilus_sidebar_drag_data_received (GtkWidget        *widget,
 						     GtkSelectionData *selection_data,
 						     guint             info,
 						     guint             time);
+static void	nautilus_sidebar_read_theme	    (NautilusSidebar *sidebar);
+
 static void     nautilus_sidebar_size_allocate      (GtkWidget        *widget,
 						     GtkAllocation    *allocation);
+static void	nautilus_sidebar_theme_changed	    (gpointer user_data);
 static void     nautilus_sidebar_update_info        (NautilusSidebar  *sidebar,
 						     const char       *title);
 static void     nautilus_sidebar_update_buttons     (NautilusSidebar  *sidebar);
@@ -98,7 +106,6 @@ static void     add_command_buttons                 (NautilusSidebar  *sidebar,
 						     GList            *application_list);
 
 /* FIXME bug 1245: hardwired sizes */
-#define DEFAULT_BACKGROUND_COLOR "rgb:DDDD/DDDD/FFFF"
 #define DEFAULT_TAB_COLOR "rgb:9999/9999/9999"
 
 #define SIDEBAR_MINIMUM_WIDTH 1
@@ -205,7 +212,10 @@ nautilus_sidebar_initialize (GtkObject *object)
 	
 	/* set the minimum size of the sidebar */
 	gtk_widget_set_usize (widget, SIDEBAR_MINIMUM_WIDTH, SIDEBAR_MINIMUM_HEIGHT);
-  	
+
+	/* load the default background from the current theme */
+	nautilus_sidebar_read_theme(sidebar);
+	  	
 	/* create the container box */
   	sidebar->details->container = GTK_VBOX (gtk_vbox_new (FALSE, 0));
 	gtk_container_set_border_width (GTK_CONTAINER (sidebar->details->container), 0);				
@@ -245,6 +255,9 @@ nautilus_sidebar_initialize (GtkObject *object)
 	/* allocate and install the command button container */
 	make_button_box (sidebar);
 
+	/* add a callback for when the theme changes */
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, nautilus_sidebar_theme_changed, sidebar);	
+
 	/* prepare ourselves to receive dropped objects */
 	gtk_drag_dest_set (GTK_WIDGET (sidebar),
 			   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
@@ -264,7 +277,14 @@ nautilus_sidebar_destroy (GtkObject *object)
 	nautilus_directory_unref (sidebar->details->directory);
 
 	g_free (sidebar->details->uri);
+	g_free (sidebar->details->default_background_color);
+	g_free (sidebar->details->default_background_image);
+	
 	g_free (sidebar->details);
+	
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
+					      nautilus_sidebar_theme_changed,
+					      sidebar);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -364,7 +384,7 @@ nautilus_sidebar_add_panel_items(NautilusSidebar *sidebar, GtkWidget *menu)
 	
 	CORBA_exception_free (&ev);
 }
-
+ 
 /* create the context menu */
 GtkWidget *
 nautilus_sidebar_create_context_menu (NautilusSidebar *sidebar)
@@ -401,6 +421,76 @@ nautilus_sidebar_new (void)
 {
 	return NAUTILUS_SIDEBAR (gtk_type_new (nautilus_sidebar_get_type ()));
 }
+
+/* read the theme file and set up the default backgrounds and images accordingly */
+static void
+nautilus_sidebar_read_theme (NautilusSidebar *sidebar)
+{
+	char *theme_name, *theme_path, *temp_str;
+	xmlDocPtr document;
+	xmlNodePtr sidebar_node;
+	
+	/* fetch the current theme name */
+	theme_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME, "default");
+	
+	/* formulate the theme path name */
+	if (strcmp(theme_name, "default") == 0) {
+		theme_path = nautilus_pixmap_file ("default.xml");
+	} else {
+		temp_str = g_strdup_printf("%s/%s.xml", theme_name, theme_name);
+		theme_path = nautilus_pixmap_file (temp_str);
+		g_free(temp_str);
+	}
+	
+	/* load and parse the theme file */
+	document = xmlParseFile(theme_path);
+	g_free(theme_path);
+	
+	if (document != NULL) {
+		/* fetch the sidebar node */
+				
+		sidebar_node = nautilus_xml_get_child_by_name(xmlDocGetRootElement (document), "sidebar");
+		if (sidebar_node) {		
+			/* set up the default background color */		
+			g_free(sidebar->details->default_background_color);
+			sidebar->details->default_background_color = NULL;
+			g_free(sidebar->details->default_background_image);
+			sidebar->details->default_background_image = NULL;
+			
+			temp_str = xmlGetProp(sidebar_node, NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR);
+			if (temp_str && strlen(temp_str)) {
+					sidebar->details->default_background_color = g_strdup(temp_str);
+			}
+			
+		 /* set up the default background image */
+	
+			temp_str = xmlGetProp(sidebar_node, NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE);
+			if (temp_str && strlen(temp_str)) {
+					sidebar->details->default_background_image = g_strdup(temp_str);
+			}
+
+		/* set up the sidebar tab info */
+		}
+		xmlFreeDoc(document);
+	}
+	
+	g_free(theme_name); 
+}
+
+/* handler for handling theme changes */
+
+static void
+nautilus_sidebar_theme_changed (gpointer user_data)
+{
+	NautilusSidebar *sidebar;
+	
+	sidebar = NAUTILUS_SIDEBAR(user_data);
+	nautilus_sidebar_read_theme(sidebar);
+	nautilus_sidebar_update_info(sidebar, NULL);
+	gtk_widget_queue_draw(GTK_WIDGET(sidebar)) ;	
+}
+
+/* hit testing */
 
 static SidebarPart
 hit_test (NautilusSidebar *sidebar,
@@ -859,14 +949,14 @@ nautilus_sidebar_background_changed (NautilusSidebar *sidebar)
 	color_spec = nautilus_background_get_color (background);
 	nautilus_directory_set_metadata (sidebar->details->directory,
 					 NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
-					 DEFAULT_BACKGROUND_COLOR,
+					 sidebar->details->default_background_color,
 					 color_spec);
 	g_free (color_spec);
 
 	image = nautilus_background_get_tile_image_uri (background);
 	nautilus_directory_set_metadata (sidebar->details->directory,
 					 NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
-					 NULL,
+					 sidebar->details->default_background_image,
 					 image);	
 	g_free (image);
 }
@@ -1091,7 +1181,7 @@ nautilus_sidebar_update_info (NautilusSidebar *sidebar,
 	NautilusDirectory *directory;
 	NautilusBackground *background;
 	char *background_color, *color_spec;
-	char *background_image;
+	char *background_image, *temp_str;
 	
 	directory = nautilus_directory_get (sidebar->details->uri);
 	nautilus_directory_unref (sidebar->details->directory);
@@ -1110,10 +1200,20 @@ nautilus_sidebar_update_info (NautilusSidebar *sidebar,
 	/* Set up the background color and image from the metadata. */
 	background_color = nautilus_directory_get_metadata (directory,
 							    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
-							    DEFAULT_BACKGROUND_COLOR);
+							    sidebar->details->default_background_color);
+		
 	background_image = nautilus_directory_get_metadata (directory,
 							    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
-							    NULL);
+							    sidebar->details->default_background_image);
+		
+	if (background_image && !nautilus_str_has_prefix (background_image, "file://")) {
+		temp_str = g_strdup_printf ("%s/%s",
+						 NAUTILUS_DATADIR,
+						 background_image);
+		g_free (background_image);
+		background_image = nautilus_get_uri_from_local_path (temp_str);
+		g_free (temp_str);
+	}
 	
 	nautilus_background_set_color (background, background_color);	
 	g_free (background_color);

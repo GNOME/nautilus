@@ -240,14 +240,14 @@ nautilus_get_current_icon_factory (void)
         if (global_icon_factory == NULL) {
 		char *theme_preference;
 
-		theme_preference = nautilus_preferences_get (NAUTILUS_PREFERENCES_ICON_THEME,
+		theme_preference = nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME,
 							     DEFAULT_ICON_THEME);
 		g_assert (theme_preference != NULL);
 
                 global_icon_factory = nautilus_icon_factory_new (theme_preference);
                 g_free (theme_preference);
 
-		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_THEME,
+		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
 						   icon_theme_changed_callback,
 						   NULL);	
 		
@@ -343,7 +343,7 @@ nautilus_icon_factory_clear (void)
 static void
 nautilus_icon_factory_destroy (NautilusIconFactory *factory)
 {
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_THEME,
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
 					      icon_theme_changed_callback,
 					      NULL);
 
@@ -721,7 +721,7 @@ icon_theme_changed_callback (gpointer user_data)
 {
 	char *theme_preference;
 
-	theme_preference = nautilus_preferences_get (NAUTILUS_PREFERENCES_ICON_THEME,
+	theme_preference = nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME,
 						     DEFAULT_ICON_THEME);
 
 	g_assert (theme_preference != NULL);

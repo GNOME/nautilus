@@ -2,6 +2,7 @@ eazeldir = $(datadir)/pixmaps/nautilus/eazel
 
 eazel_DATA =					\
 	Back.png				\
+	eazel.xml				\
 	Forward.png				\
 	Home.png				\
 	i-directory.png				\

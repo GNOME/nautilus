@@ -88,7 +88,7 @@ static void preferences_item_create_editable_string    (NautilusPreferencesItem 
 							const NautilusPreference     *prefrence);
 static void preferences_item_create_font_family               (NautilusPreferencesItem      *item,
 							const NautilusPreference     *prefrence);
-static void preferences_item_create_icon_theme         (NautilusPreferencesItem      *item,
+static void preferences_item_create_theme	       (NautilusPreferencesItem      *item,
 							const NautilusPreference     *preference);
 static void preferences_item_create_toolbar_icon_theme (NautilusPreferencesItem      *item,
 							const NautilusPreference     *preference);
@@ -279,8 +279,8 @@ preferences_item_construct (NautilusPreferencesItem	*item,
 		preferences_item_create_font_family (item, preference);
 		break;
 	
-	case NAUTILUS_PREFERENCE_ITEM_ICON_THEME:
-		preferences_item_create_icon_theme (item, preference);
+	case NAUTILUS_PREFERENCE_ITEM_THEME:
+		preferences_item_create_theme (item, preference);
 		break;
 	case NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING:
 		preferences_item_create_editable_string (item, preference);
@@ -532,7 +532,7 @@ add_icon_themes(NautilusStringList *theme_list, char *required_file)
 }
 
 static void
-preferences_item_create_icon_theme (NautilusPreferencesItem	*item,
+preferences_item_create_theme (NautilusPreferencesItem	*item,
 				     const NautilusPreference	*preference)
 {
 	char			*description;

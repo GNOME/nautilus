@@ -11,6 +11,7 @@ icon_DATA =\
 	colors.png \
 	computer.png \
 	computer.svg \
+	default.xml \
 	eazel-logo.gif \
 	emblem-certified.gif \
 	emblem-changed.gif \

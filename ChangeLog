@@ -1,3 +1,37 @@
+2000-06-26  Andy Hertzfeld  <andy@eazel.com>
+
+	added xml based theme mechanism and used it for the sidebar background,
+	which isn't entirely working yet.
+	
+	* icons/Makefile.am:
+	* icons/default.xml:
+	* icons/eazel/Makefile.am:
+	* icons/eazel/eazel.xml:
+	* icons/vector/Makefile.am:
+	* icons/vector/vector.xml:
+	new xml-based theme files
+	* libnautilus-extensions/nautilus-global-preferences.c,h:
+	(global_preferences_create_dialog),
+	(global_preferences_register_for_ui):
+	changed "icon_theme" preference to general "theme"
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_get_current_icon_factory),
+	(nautilus_icon_factory_destroy), (icon_theme_changed_callback):
+	changed from "icon_theme" to "theme"
+	* libnautilus-extensions/nautilus-preferences-item.c,h:
+	(preferences_item_construct), (preferences_item_create_theme):
+	changed from "icon_theme" to "theme"
+	* libnautilus-extensions/nautilus-xml-extensions.c,h:
+	(nautilus_xml_get_child_by_name):
+	added a routine to access child nodes
+	* src/nautilus-sidebar.c: (nautilus_sidebar_initialize),
+	(nautilus_sidebar_destroy), (nautilus_sidebar_read_theme),
+	(nautilus_sidebar_theme_changed),
+	(nautilus_sidebar_background_changed),
+	(nautilus_sidebar_update_info):
+	made the sidebar get its default values from an xml-based theme file, and reload
+	them when the theme changes
+
 2000-06-25  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-link.c:
