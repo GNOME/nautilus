@@ -1106,8 +1106,7 @@ nautilus_ctree_draw_expander (NautilusCTree     *ctree,
 
 	gdk_draw_polygon (clist->clist_window, style->base_gc[GTK_STATE_NORMAL], TRUE, points, 3);
 	if (ctree_row->mouse_down) {
-		g_message ("mouse_down");
-		//gdk_draw_polygon (clist->clist_window, style->fg_gc[GTK_STATE_NORMAL], FALSE, points, 3);
+		gdk_draw_polygon (clist->clist_window, style->fg_gc[GTK_STATE_NORMAL], FALSE, points, 3);
 	} else {
 		gdk_draw_polygon (clist->clist_window, style->fg_gc[GTK_STATE_NORMAL], TRUE, points, 3);
 	}
@@ -1924,29 +1923,37 @@ draw_row (GtkCList     *clist,
     }
 }
 
+void
+nautilus_ctree_draw_node (NautilusCTree *ctree, NautilusCTreeNode *node)
+{
+	tree_draw_node (ctree, node);
+}
+
 static void
 tree_draw_node (NautilusCTree     *ctree, 
 	        NautilusCTreeNode *node)
 {
-  GtkCList *clist;
+	GtkCList *clist;
   
-  clist = GTK_CLIST (ctree);
+	clist = GTK_CLIST (ctree);
 
-  if (CLIST_UNFROZEN (clist) && nautilus_ctree_is_viewable (ctree, node))
-    {
-      NautilusCTreeNode *work;
-      gint num = 0;
-      
-      work = NAUTILUS_CTREE_NODE (clist->row_list);
-      while (work && work != node)
+	if (CLIST_UNFROZEN (clist) && nautilus_ctree_is_viewable (ctree, node))
 	{
-	  work = NAUTILUS_CTREE_NODE_NEXT (work);
-	  num++;
+		NautilusCTreeNode *work;
+		gint num = 0;
+      
+		work = NAUTILUS_CTREE_NODE (clist->row_list);
+		while (work && work != node)
+		{
+			work = NAUTILUS_CTREE_NODE_NEXT (work);
+			num++;
+		}
+		
+		if (work && gtk_clist_row_is_visible (clist, num) != GTK_VISIBILITY_NONE) {
+			GTK_CLIST_CLASS_FW (clist)->draw_row			
+	  			(clist, NULL, num, GTK_CLIST_ROW ((GList *) node));
+		}
 	}
-      if (work && gtk_clist_row_is_visible (clist, num) != GTK_VISIBILITY_NONE)
-	GTK_CLIST_CLASS_FW (clist)->draw_row
-	  (clist, NULL, num, GTK_CLIST_ROW ((GList *) node));
-    }
 }
 
 static NautilusCTreeNode *
@@ -3085,43 +3092,43 @@ tree_toggle_expansion (NautilusCTree     *ctree,
 static NautilusCTreeRow *
 row_new (NautilusCTree *ctree)
 {
-  GtkCList *clist;
-  NautilusCTreeRow *ctree_row;
-  int i;
+	GtkCList *clist;
+	NautilusCTreeRow *ctree_row;
+	int i;
 
-  clist = GTK_CLIST (ctree);
-  ctree_row = g_chunk_new (NautilusCTreeRow, clist->row_mem_chunk);
-  ctree_row->row.cell = g_chunk_new (GtkCell, clist->cell_mem_chunk);
+	clist = GTK_CLIST (ctree);
+	ctree_row = g_chunk_new (NautilusCTreeRow, clist->row_mem_chunk);
+	ctree_row->row.cell = g_chunk_new (GtkCell, clist->cell_mem_chunk);
 
-  for (i = 0; i < clist->columns; i++)
-    {
-      ctree_row->row.cell[i].type = GTK_CELL_EMPTY;
-      ctree_row->row.cell[i].vertical = 0;
-      ctree_row->row.cell[i].horizontal = 0;
-      ctree_row->row.cell[i].style = NULL;
-    }
+	for (i = 0; i < clist->columns; i++) {
+		ctree_row->row.cell[i].type = GTK_CELL_EMPTY;
+		ctree_row->row.cell[i].vertical = 0;
+		ctree_row->row.cell[i].horizontal = 0;
+		ctree_row->row.cell[i].style = NULL;
+	}
 
-  GTK_CELL_PIXTEXT (ctree_row->row.cell[ctree->tree_column])->text = NULL;
+	GTK_CELL_PIXTEXT (ctree_row->row.cell[ctree->tree_column])->text = NULL;
 
-  ctree_row->row.fg_set     = FALSE;
-  ctree_row->row.bg_set     = FALSE;
-  ctree_row->row.style      = NULL;
-  ctree_row->row.selectable = TRUE;
-  ctree_row->row.state      = GTK_STATE_NORMAL;
-  ctree_row->row.data       = NULL;
-  ctree_row->row.destroy    = NULL;
+	ctree_row->row.fg_set     = FALSE;
+	ctree_row->row.bg_set     = FALSE;
+	ctree_row->row.style      = NULL;
+	ctree_row->row.selectable = TRUE;
+	ctree_row->row.state      = GTK_STATE_NORMAL;
+	ctree_row->row.data       = NULL;
+	ctree_row->row.destroy    = NULL;
 
-  ctree_row->level         = 0;
-  ctree_row->expanded      = FALSE;
-  ctree_row->parent        = NULL;
-  ctree_row->sibling       = NULL;
-  ctree_row->children      = NULL;
-  ctree_row->pixmap_closed = NULL;
-  ctree_row->mask_closed   = NULL;
-  ctree_row->pixmap_opened = NULL;
-  ctree_row->mask_opened   = NULL;
-  
-  return ctree_row;
+	ctree_row->level         = 0;
+	ctree_row->expanded      = FALSE;
+	ctree_row->parent        = NULL;
+	ctree_row->sibling       = NULL;
+	ctree_row->children      = NULL;
+	ctree_row->pixmap_closed = NULL;
+	ctree_row->mask_closed   = NULL;
+	ctree_row->pixmap_opened = NULL;
+	ctree_row->mask_opened   = NULL;
+	ctree_row->mouse_down    = FALSE;
+	
+	return ctree_row;
 }
 
 static void
@@ -3555,27 +3562,29 @@ nautilus_ctree_insert_node (NautilusCTree     *ctree,
 		       gboolean      is_leaf,
 		       gboolean      expanded)
 {
-  GtkCList *clist;
-  NautilusCTreeRow *new_row;
-  NautilusCTreeNode *node;
-  GList *list;
-  gint i;
+	GtkCList *clist;
+	NautilusCTreeRow *new_row;
+	NautilusCTreeNode *node;
+	GList *list;
+	gint i;
 
-  g_return_val_if_fail (ctree != NULL, NULL);
-  g_return_val_if_fail (NAUTILUS_IS_CTREE (ctree), NULL);
-  if (sibling)
-    g_return_val_if_fail (NAUTILUS_CTREE_ROW (sibling)->parent == parent, NULL);
+	g_return_val_if_fail (ctree != NULL, NULL);
+	g_return_val_if_fail (NAUTILUS_IS_CTREE (ctree), NULL);
+	if (sibling) {
+    		g_return_val_if_fail (NAUTILUS_CTREE_ROW (sibling)->parent == parent, NULL);
+    	}
 
-  if (parent && NAUTILUS_CTREE_ROW (parent)->is_leaf)
-    return NULL;
+	if (parent && NAUTILUS_CTREE_ROW (parent)->is_leaf) {
+    		return NULL;
+    	}
 
-  clist = GTK_CLIST (ctree);
+	clist = GTK_CLIST (ctree);
 
-  /* create the row */
-  new_row = row_new (ctree);
-  list = g_list_alloc ();
-  list->data = new_row;
-  node = NAUTILUS_CTREE_NODE (list);
+	/* create the row */
+	new_row = row_new (ctree);
+	list = g_list_alloc ();
+	list->data = new_row;
+	node = NAUTILUS_CTREE_NODE (list);
 
   if (text)
     for (i = 0; i < clist->columns; i++)

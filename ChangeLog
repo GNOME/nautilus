@@ -1,3 +1,24 @@
+2000-09-12  Gene Z. Ragan  <gzr@eazel.com>
+
+	More work on bug 1595
+	
+	* libnautilus-extensions/nautilus-ctree.c:
+	* libnautilus-extensions/nautilus-ctree.h:
+	(nautilus_ctree_draw_expander),
+	(tree_draw_node), (row_new), (nautilus_ctree_insert_node):
+	More code to handle click and hold cases.
+	
+	(nautilus_ctree_draw_node)
+	Created a public function to cause a tree node to be redrawn
+
+	* components/tree/nautilus-tree-view.c:
+	Replace gtk_widget_queue_redraw () with new 
+	nautilus_ctree_draw_node ()
+
+	Fixed logic so a mouse click and drag on expander and then
+	out of the twisty hot spot properly resets expander to
+	unclicked state.	
+	
 2000-09-12  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 1305 (Selecting file with really long name makes

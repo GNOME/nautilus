@@ -1712,13 +1712,10 @@ nautilus_tree_view_button_press (GtkWidget *widget, GdkEventButton *event)
 		return FALSE;
 	}
 
-	{
-	NautilusCTreeRow *ctree_row;
-	ctree_row = ROW_ELEMENT (clist, on_row)->data;
-	ctree_row->mouse_down = TRUE;
-	}
-	
 	if (nautilus_ctree_is_hot_spot (NAUTILUS_CTREE (widget), event->x, event->y)) {		
+		NautilusCTreeRow *ctree_row;
+		NautilusCTreeNode *node;
+		
 		tree_view->details->dnd->press_x = event->x;
 		tree_view->details->dnd->press_y = event->y;
 		tree_view->details->dnd->pressed_button = event->button;
@@ -1726,6 +1723,16 @@ nautilus_tree_view_button_press (GtkWidget *widget, GdkEventButton *event)
 
 		/* Clicking in the expander should not start a drag */
 		tree_view->details->dnd->drag_pending = FALSE;
+	
+		ctree_row = ROW_ELEMENT (clist, press_row)->data;
+		if (ctree_row != NULL) {
+			ctree_row->mouse_down = TRUE;
+
+			node = nautilus_ctree_find_node_ptr (NAUTILUS_CTREE (widget), ctree_row);
+			if (node != NULL) {
+				nautilus_ctree_draw_node (NAUTILUS_CTREE (widget), node);
+			}
+		}
 	} else {
 		switch (event->type) {
 		case GDK_BUTTON_PRESS:
@@ -1741,9 +1748,6 @@ nautilus_tree_view_button_press (GtkWidget *widget, GdkEventButton *event)
 	}
 
 	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget), "button-press-event");
-
-	/* Redraw selection bezel */
-	gtk_widget_queue_draw (widget);
 	
 	return TRUE;
 }
@@ -1759,6 +1763,9 @@ nautilus_tree_view_button_release (GtkWidget *widget, GdkEventButton *event)
 	int release_row, release_column, on_row;
 	int distance_squared;
 	gboolean is_still_hot_spot;
+	int press_row, press_column;
+	NautilusCTreeRow *ctree_row;
+	NautilusCTreeNode *node;
 
 	clist = GTK_CLIST (widget);
 	retval = FALSE;
@@ -1769,11 +1776,22 @@ nautilus_tree_view_button_release (GtkWidget *widget, GdkEventButton *event)
 	tree_view = NAUTILUS_TREE_VIEW (gtk_object_get_data (GTK_OBJECT (widget), "tree_view"));
 	tree_view->details->dnd->drag_pending = FALSE;
 	
-	//{
-	//NautilusCTreeRow *ctree_row;
-	//ctree_row = ROW_ELEMENT (clist, row)->data;
-	//ctree_row->mouse_down = FALSE;
-	//}
+	/* Set state of spinner.  Use saved dnd x and y as the mouse may have moved out
+	 * of the original row */	
+	on_row = gtk_clist_get_selection_info (GTK_CLIST (tree_view->details->tree), 
+					       tree_view->details->dnd->press_x, 
+					       tree_view->details->dnd->press_y, 
+					       &press_row, &press_column);	
+	ctree_row = ROW_ELEMENT (clist, press_row)->data;
+	if (ctree_row != NULL) {
+		ctree_row->mouse_down = FALSE;
+
+		/* Redraw spinner */
+		node = nautilus_ctree_find_node_ptr (NAUTILUS_CTREE (widget), ctree_row);
+		if (node != NULL) {
+			nautilus_ctree_draw_node (NAUTILUS_CTREE (widget), node);
+		}
+	}
 
 	distance_squared = (event->x - tree_view->details->dnd->press_x)
 		* (event->x - tree_view->details->dnd->press_x) +

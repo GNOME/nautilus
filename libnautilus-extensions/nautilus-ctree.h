@@ -297,6 +297,8 @@ void nautilus_ctree_unselect_recursive                (NautilusCTree     *ctree,
 void nautilus_ctree_real_select_recursive             (NautilusCTree     *ctree, 
 						  NautilusCTreeNode *node, 
 						  gint          state);
+void nautilus_ctree_draw_node 			 (NautilusCTree 	*ctree, 
+						  NautilusCTreeNode 	*node);
 
 /***********************************************************
  *           Analogons of GtkCList functions               *
