@@ -2549,8 +2549,11 @@ permission_button_toggled (GtkToggleButton *button,
 
 	if (window->details->long_operation_underway == 0) {
 		/* start long operation */
-		GdkCursor * cursor = gdk_cursor_new (GDK_WATCH);
+		GdkCursor * cursor;
+	       
+		cursor = gdk_cursor_new (GDK_WATCH);
 		gdk_window_set_cursor (GTK_WIDGET (window)->window, cursor);
+		gdk_cursor_unref (cursor);
 	}
 	window->details->long_operation_underway += g_list_length (files_on);
 	window->details->long_operation_underway += g_list_length (files_off);

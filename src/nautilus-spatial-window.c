@@ -175,6 +175,28 @@ nautilus_spatial_window_unrealize (GtkWidget *widget)
 	}
 }
 
+
+static void
+nautilus_spatial_window_realize (GtkWidget *widget)
+{
+	NautilusSpatialWindow *window;
+
+	window = NAUTILUS_SPATIAL_WINDOW (widget);
+
+	GTK_WIDGET_CLASS (parent_class)->realize (widget);
+
+	if (window->loading) {
+		GdkCursor *cursor;
+
+		cursor = gdk_cursor_new (GDK_WATCH);
+		gdk_window_set_cursor (widget->window, cursor);
+		gdk_cursor_unref (cursor);
+	} else {
+		gdk_window_set_cursor (widget->window, NULL);
+	}
+}
+
+
 static void
 nautilus_spatial_window_destroy (GtkObject *object)
 {
@@ -346,6 +368,33 @@ real_get_default_size(NautilusWindow *window, guint *default_width, guint *defau
       *default_height = NAUTILUS_SPATIAL_WINDOW_DEFAULT_HEIGHT;	
    }
 }
+
+
+static void
+real_set_throbber_active (NautilusWindow *window, gboolean active)
+{
+	NautilusSpatialWindow *spatial;
+
+	spatial = NAUTILUS_SPATIAL_WINDOW (window);
+	spatial->loading = active;
+	
+	if (!GTK_WIDGET_REALIZED (GTK_WIDGET (window)))
+		return;
+
+	if (active) {
+		GdkCursor *cursor;
+
+		cursor = gdk_cursor_new (GDK_WATCH);
+		gdk_window_set_cursor (GTK_WIDGET (window)->window,
+				       cursor);
+		gdk_cursor_unref (cursor);
+		
+	} else {
+		gdk_window_set_cursor (GTK_WIDGET (window)->window,
+				       NULL);
+	}
+}
+
 
 static void
 location_menu_item_activated_callback (GtkWidget *menu_item,
@@ -555,6 +604,7 @@ nautilus_spatial_window_class_init (NautilusSpatialWindowClass *class)
 	GTK_WIDGET_CLASS (class)->show = nautilus_spatial_window_show;
 	GTK_WIDGET_CLASS (class)->configure_event = nautilus_spatial_window_configure_event;
 	GTK_WIDGET_CLASS (class)->unrealize = nautilus_spatial_window_unrealize;
+	GTK_WIDGET_CLASS (class)->realize = nautilus_spatial_window_realize;
 
 	NAUTILUS_WINDOW_CLASS (class)->prompt_for_location = 
 		real_prompt_for_location;
@@ -567,4 +617,7 @@ nautilus_spatial_window_class_init (NautilusSpatialWindowClass *class)
 	NAUTILUS_WINDOW_CLASS (class)->close = 
 		real_window_close;
 	NAUTILUS_WINDOW_CLASS(class)->get_default_size = real_get_default_size;
+
+	NAUTILUS_WINDOW_CLASS(class)->set_throbber_active =
+		real_set_throbber_active;
 }

@@ -47,6 +47,7 @@ struct _NautilusSpatialWindow {
         NautilusWindow parent_object;
 
         gboolean affect_spatial_window_on_next_location_change;
+	gboolean loading;
         
         NautilusSpatialWindowDetails *details;
 };
