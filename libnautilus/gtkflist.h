@@ -25,21 +25,11 @@
 
 typedef struct _GtkFList GtkFList;
 typedef struct _GtkFListClass GtkFListClass;
+typedef struct _GtkFListDetails GtkFListDetails;
 
 struct _GtkFList {
 	GtkCList clist;
-
-	/* The anchor row for range selections */
-	int anchor_row;
-
-	/* Mouse button and position saved on button press */
-	int dnd_press_button;
-	int dnd_press_x, dnd_press_y;
-
-	/* Delayed selection information */
-	int dnd_select_pending;
-	guint dnd_select_pending_state;
-	int dnd_select_pending_row;
+	GtkFListDetails *details;
 };
 
 struct _GtkFListClass {

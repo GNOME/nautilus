@@ -22,6 +22,21 @@
 #include "nautilus-gtk-macros.h"
 #include "nautilus-background.h"
 
+struct _GtkFListDetails
+{
+	/* The anchor row for range selections */
+	int anchor_row;
+
+	/* Mouse button and position saved on button press */
+	int dnd_press_button;
+	int dnd_press_x, dnd_press_y;
+
+	/* Delayed selection information */
+	int dnd_select_pending;
+	guint dnd_select_pending_state;
+	int dnd_select_pending_row;
+};
+
 #define ARRAY_LENGTH(a) (sizeof(a) / sizeof((a)[0]))
 
 enum {
@@ -142,7 +157,9 @@ gtk_flist_initialize_class (GtkFListClass *class)
 static void
 gtk_flist_initialize (GtkFList *flist)
 {
-	flist->anchor_row = -1;
+
+	flist->details = g_new0 (GtkFListDetails, 1);
+	flist->details->anchor_row = -1;
 
 	/* GtkCList does not specify pointer motion by default */
 	gtk_widget_add_events (GTK_WIDGET (flist), GDK_POINTER_MOTION_MASK);
@@ -172,14 +189,14 @@ select_range (GtkFList *flist, int row)
 	int min, max;
 	int i;
 
-	if (flist->anchor_row == -1)
-		flist->anchor_row = row;
+	if (flist->details->anchor_row == -1)
+		flist->details->anchor_row = row;
 
-	if (row < flist->anchor_row) {
+	if (row < flist->details->anchor_row) {
 		min = row;
-		max = flist->anchor_row;
+		max = flist->details->anchor_row;
 	} else {
-		min = flist->anchor_row;
+		min = flist->details->anchor_row;
 		max = row;
 	}
 
@@ -210,7 +227,7 @@ select_row (GtkFList *flist, int row, guint state)
 		} else {
 			gtk_clist_select_row (GTK_CLIST (flist), row, 0);
 		}
-		flist->anchor_row = row;
+		flist->details->anchor_row = row;
 	} else
 		select_range (flist, row);
 
@@ -248,9 +265,9 @@ gtk_flist_button_press (GtkWidget *widget, GdkEventButton *event)
 			if (on_row) {
 				/* Save the mouse info for DnD */
 
-				flist->dnd_press_button = event->button;
-				flist->dnd_press_x = event->x;
-				flist->dnd_press_y = event->y;
+				flist->details->dnd_press_button = event->button;
+				flist->details->dnd_press_x = event->x;
+				flist->details->dnd_press_y = event->y;
 
 				/* Handle selection */
 
@@ -258,9 +275,9 @@ gtk_flist_button_press (GtkWidget *widget, GdkEventButton *event)
 				     && !(event->state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)))
 				    || ((event->state & GDK_CONTROL_MASK)
 					&& !(event->state & GDK_SHIFT_MASK))) {
-					flist->dnd_select_pending = TRUE;
-					flist->dnd_select_pending_state = event->state;
-					flist->dnd_select_pending_row = row;
+					flist->details->dnd_select_pending = TRUE;
+					flist->details->dnd_select_pending_state = event->state;
+					flist->details->dnd_select_pending_row = row;
 				}
 
 				select_row (flist, row, event->state);
@@ -289,8 +306,8 @@ gtk_flist_button_press (GtkWidget *widget, GdkEventButton *event)
 		if (event->button == 1) {
 			GtkCListRow *elem;
 
-			flist->dnd_select_pending = FALSE;
-			flist->dnd_select_pending_state = 0;
+			flist->details->dnd_select_pending = FALSE;
+			flist->details->dnd_select_pending_state = 0;
 
 			if (on_row) {
 				elem = g_list_nth (GTK_CLIST (flist)->row_list,
@@ -339,15 +356,15 @@ gtk_flist_button_release (GtkWidget *widget, GdkEventButton *event)
 	if (!(event->button == 1 || event->button == 2))
 		return FALSE;
 
-	flist->dnd_press_button = 0;
-	flist->dnd_press_x = 0;
-	flist->dnd_press_y = 0;
+	flist->details->dnd_press_button = 0;
+	flist->details->dnd_press_x = 0;
+	flist->details->dnd_press_y = 0;
 
 	if (on_row) {
-		if (flist->dnd_select_pending) {
-			/*  select_row (flist, row, flist->dnd_select_pending_state); */
-			flist->dnd_select_pending = FALSE;
-			flist->dnd_select_pending_state = 0;
+		if (flist->details->dnd_select_pending) {
+			/*  select_row (flist, row, flist->details->dnd_select_pending_state); */
+			flist->details->dnd_select_pending = FALSE;
+			flist->details->dnd_select_pending_state = 0;
 		}
 
 		retval = TRUE;
@@ -375,30 +392,30 @@ gtk_flist_motion (GtkWidget *widget, GdkEventMotion *event)
 	if (event->window != clist->clist_window)
 		return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, motion_notify_event, (widget, event));
 
-	if (!((flist->dnd_press_button == 1 && (event->state & GDK_BUTTON1_MASK))
-	      || (flist->dnd_press_button == 2 && (event->state & GDK_BUTTON2_MASK))))
+	if (!((flist->details->dnd_press_button == 1 && (event->state & GDK_BUTTON1_MASK))
+	      || (flist->details->dnd_press_button == 2 && (event->state & GDK_BUTTON2_MASK))))
 		return FALSE;
 
 	/* This is the same threshold value that is used in gtkdnd.c */
 
-	if (MAX (abs (flist->dnd_press_x - event->x),
-		 abs (flist->dnd_press_y - event->y)) <= 3)
+	if (MAX (abs (flist->details->dnd_press_x - event->x),
+		 abs (flist->details->dnd_press_y - event->y)) <= 3)
 		return FALSE;
 
 	/* Handle any pending selections */
 
-	if (flist->dnd_select_pending) {
+	if (flist->details->dnd_select_pending) {
 		select_row (flist,
-			    flist->dnd_select_pending_row,
-			    flist->dnd_select_pending_state);
+			    flist->details->dnd_select_pending_row,
+			    flist->details->dnd_select_pending_state);
 
-		flist->dnd_select_pending = FALSE;
-		flist->dnd_select_pending_state = 0;
+		flist->details->dnd_select_pending = FALSE;
+		flist->details->dnd_select_pending_state = 0;
 	}
 
 	gtk_signal_emit (GTK_OBJECT (flist),
 			 flist_signals[START_DRAG],
-			 flist->dnd_press_button,
+			 flist->details->dnd_press_button,
 			 event);
 	return TRUE;
 }
@@ -486,7 +503,7 @@ gtk_flist_clear (GtkCList *clist)
 	g_return_if_fail (GTK_IS_FLIST (clist));
 
 	flist = GTK_FLIST (clist);
-	flist->anchor_row = -1;
+	flist->details->anchor_row = -1;
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_CLIST_CLASS, clear, (clist));
 }
