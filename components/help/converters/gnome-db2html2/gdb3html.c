@@ -201,7 +201,7 @@ end_element (Context *context,
 
 	element = find_element_info (context->elements, name);
 	stack_el = (StackElement *) context->stack->data;
-	if (stack_el->info == element) {
+	if (stack_el->info != element) {
 		/* Prolly a tag we ignored */
 		return;
 	}
