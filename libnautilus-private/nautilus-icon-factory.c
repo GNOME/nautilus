@@ -1796,7 +1796,7 @@ scale_icon (CacheIcon *icon,
 	rect_height = (icon->details.text_rect.y1 - icon->details.text_rect.y0) * scale_y;
 	
 	scaled_details.text_rect.x0 = icon->details.text_rect.x0 * scale_x;
-	scaled_details.text_rect.y0 = icon->details.text_rect.x0 * scale_y;
+	scaled_details.text_rect.y0 = icon->details.text_rect.y0 * scale_y;
 	scaled_details.text_rect.x1 = scaled_details.text_rect.x0 + rect_width;
 	scaled_details.text_rect.y1 = scaled_details.text_rect.y0 + rect_height;
 
