@@ -281,7 +281,7 @@ fm_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext *cont
  	GtkWindow *window; 
 
 	uris = g_strsplit (selection_data->data, "\r\n", 0);
-	exactly_one = uris[0] != NULL && uris[1] == NULL;
+	exactly_one = uris[0] != NULL && (uris[1] == NULL || uris[1][0] == '\0');
 
 	image = GTK_IMAGE (widget);
  	window = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (image)));

@@ -1,5 +1,11 @@
 2002-04-17  Anders Carlsson  <andersca@gnu.org>
 
+	* src/file-manager/fm-properties-window.c:
+	(fm_properties_window_drag_data_received):
+	Get the "exactly one" check right. Fixes #75187.
+	
+2002-04-17  Anders Carlsson  <andersca@gnu.org>
+
 	* src/file-manager/fm-directory-view.c:
 	(clipboard_targets_received), (real_update_menus):
 	Query the clipboard TARGET types so we can set the sensitivity
