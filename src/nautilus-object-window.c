@@ -47,6 +47,9 @@ static void nautilus_window_real_request_location_change (NautilusWindow *window
 static void nautilus_window_real_request_selection_change(NautilusWindow *window,
 							  Nautilus_SelectionRequestInfo *loc,
 							  GtkWidget *requesting_view);
+static void nautilus_window_real_request_status_change(NautilusWindow *window,
+                                                       Nautilus_StatusRequestInfo *loc,
+                                                       GtkWidget *requesting_view);
 
 #define CONTENTS_AS_HBOX
 /* six seconds */
@@ -114,6 +117,7 @@ nautilus_window_class_init (NautilusWindowClass *klass)
 
   klass->request_location_change = nautilus_window_real_request_location_change;
   klass->request_selection_change = nautilus_window_real_request_selection_change;
+  klass->request_status_change = nautilus_window_real_request_status_change;
 
   i = 0;
   klass->window_signals[i++] = gtk_signal_new("request_location_change",
@@ -126,6 +130,12 @@ nautilus_window_class_init (NautilusWindowClass *klass)
 					      GTK_RUN_LAST,
 					      object_class->type,
 					      GTK_SIGNAL_OFFSET (NautilusWindowClass, request_selection_change),
+					      gtk_marshal_NONE__BOXED_OBJECT,
+					      GTK_TYPE_NONE, 2, GTK_TYPE_BOXED, GTK_TYPE_OBJECT);
+  klass->window_signals[i++] = gtk_signal_new("request_status_change",
+					      GTK_RUN_LAST,
+					      object_class->type,
+					      GTK_SIGNAL_OFFSET (NautilusWindowClass, request_status_change),
 					      gtk_marshal_NONE__BOXED_OBJECT,
 					      GTK_TYPE_NONE, 2, GTK_TYPE_BOXED, GTK_TYPE_OBJECT);
   gtk_object_class_add_signals (object_class, klass->window_signals, i);
@@ -465,6 +475,20 @@ nautilus_window_remove_meta_view(NautilusWindow *window, NautilusView *meta_view
 }
 
 void
+nautilus_window_request_status_change(NautilusWindow *window,
+                                      Nautilus_StatusRequestInfo *loc,
+                                      GtkWidget *requesting_view)
+{
+  NautilusWindowClass *klass;
+  GtkObject *obj;
+
+  obj = GTK_OBJECT(window);
+
+  klass = NAUTILUS_WINDOW_CLASS(obj->klass);
+  gtk_signal_emit(obj, klass->window_signals[2], loc, requesting_view);
+}
+
+void
 nautilus_window_request_selection_change(NautilusWindow *window,
 					 Nautilus_SelectionRequestInfo *loc,
 					 GtkWidget *requesting_view)
@@ -628,6 +652,14 @@ static void nautilus_window_real_request_selection_change(NautilusWindow *window
       if(cur->data != requesting_view)
 	gtk_signal_emit(GTK_OBJECT(window->content_view), signum, &selinfo);
     }
+}
+
+static void
+nautilus_window_real_request_status_change(NautilusWindow *window,
+                                           Nautilus_StatusRequestInfo *loc,
+                                           GtkWidget *requesting_view)
+{
+  nautilus_window_set_status(window, loc->status_string);
 }
 
 static void

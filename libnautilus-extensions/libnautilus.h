@@ -30,5 +30,6 @@
 #include <bonobo/gnome-bonobo.h>
 #include <libnautilus/nautilus.h>
 #include <libnautilus/ntl-view-client.h>
+#include <libnautilus/ntl-meta-view-client.h>
 
 #endif

@@ -22,7 +22,7 @@
  *  Author: Elliot Lee <sopwith@redhat.com>
  *
  */
-/* ntl-view-client.c: Implementation for object that represents a nautilus client. */
+/* ntl-view-client.c: Implementation for object that represents a nautilus view implementation. */
 
 #include <gtk/gtk.h>
 #include "libnautilus.h"
@@ -58,7 +58,7 @@ impl_Nautilus_View_notify_selection_change(impl_POA_Nautilus_View * servant,
 					   Nautilus_SelectionInfo * selinfo,
 					   CORBA_Environment * ev);
 
-static POA_Nautilus_View__epv impl_Nautilus_View_epv =
+POA_Nautilus_View__epv libnautilus_Nautilus_View_epv =
 {
    NULL,			/* _private */
    (gpointer) & impl_Nautilus_View_save_state,
@@ -72,7 +72,7 @@ static POA_Nautilus_View__vepv impl_Nautilus_View_vepv =
 {
    &gnome_object_base_epv,
    &gnome_object_epv,
-   &impl_Nautilus_View_epv
+   &libnautilus_Nautilus_View_epv
 };
 
 static void
@@ -120,15 +120,17 @@ impl_Nautilus_View__destroy(GnomeObject *obj, impl_POA_Nautilus_View *servant)
 {
    PortableServer_ObjectId *objid;
    CORBA_Environment ev;
+   void (*servant_destroy_func)(PortableServer_Servant servant, CORBA_Environment *ev);
 
    CORBA_exception_init(&ev);
 
+   servant_destroy_func = NAUTILUS_VIEW_CLIENT_CLASS(GTK_OBJECT(servant->view)->klass)->servant_destroy_func;
    objid = PortableServer_POA_servant_to_id(bonobo_poa(), servant, &ev);
    PortableServer_POA_deactivate_object(bonobo_poa(), objid, &ev);
    CORBA_free(objid);
    obj->servant = NULL;
 
-   POA_Nautilus_View__fini((PortableServer_Servant) servant, &ev);
+   servant_destroy_func((PortableServer_Servant) servant, &ev);
    g_free(servant);
    CORBA_exception_free(&ev);
 }
@@ -138,11 +140,14 @@ impl_Nautilus_View__create(NautilusViewClient *view, CORBA_Environment * ev)
 {
    GnomeObject *retval;
    impl_POA_Nautilus_View *newservant;
+   void (*servant_init_func)(PortableServer_Servant servant, CORBA_Environment *ev);
+   NautilusViewClientClass *view_class = NAUTILUS_VIEW_CLIENT_CLASS(GTK_OBJECT(view)->klass);
 
+   servant_init_func = view_class->servant_init_func;
    newservant = g_new0(impl_POA_Nautilus_View, 1);
-   newservant->servant.vepv = &impl_Nautilus_View_vepv;
+   newservant->servant.vepv = view_class->vepv;
    newservant->view = view;
-   POA_Nautilus_View__init((PortableServer_Servant) newservant, ev);
+   servant_init_func((PortableServer_Servant) newservant, ev);
 
    retval = gnome_object_new_from_servant(newservant);
 
@@ -229,6 +234,9 @@ nautilus_view_client_class_init (NautilusViewClientClass *klass)
   klass->notify_location_change = NULL;
 
   klass->parent_class = gtk_type_class (gtk_type_parent (object_class->type));
+  klass->servant_init_func = POA_Nautilus_View__init;
+  klass->servant_destroy_func = POA_Nautilus_View__fini;
+  klass->vepv = &impl_Nautilus_View_vepv;
 
   i = 0;
   klass->view_client_signals[i++] = gtk_signal_new("notify_location_change",
@@ -292,9 +300,15 @@ nautilus_view_client_init (NautilusViewClient *view)
 }
 
 static void
-nautilus_view_client_destroy       (NautilusViewClient      *view)
+nautilus_view_client_destroy (NautilusViewClient *view)
 {
-  gtk_object_destroy(GTK_OBJECT(view->view_client));
+  NautilusViewClientClass *klass = NAUTILUS_VIEW_CLIENT_CLASS(GTK_OBJECT(view)->klass);
+
+  gnome_object_destroy(view->view_client);
+  gnome_object_destroy(view->control);
+
+  if(((GtkObjectClass *)klass->parent_class)->destroy)
+    ((GtkObjectClass *)klass->parent_class)->destroy((GtkObject *)view);
 }
 
 void
@@ -344,6 +358,34 @@ nautilus_view_client_request_selection_change (NautilusViewClient              *
     return;
 
   Nautilus_ViewFrame_request_selection_change(view->view_frame, loc, &ev);
+  if(ev._major != CORBA_NO_EXCEPTION)
+    {
+      CORBA_Object_release(view->view_frame, &ev);
+      view->view_frame = CORBA_OBJECT_NIL;
+    }
+  
+  CORBA_exception_free(&ev);
+}
+
+void
+nautilus_view_client_request_status_change    (NautilusViewClient        *view,
+					       Nautilus_StatusRequestInfo *loc)
+{
+  CORBA_Environment ev;
+
+  g_return_if_fail (view != NULL);
+  g_return_if_fail (NAUTILUS_IS_VIEW_CLIENT (view));
+
+  CORBA_exception_init(&ev);
+  if(CORBA_Object_is_nil(view->view_frame, &ev))
+    view->view_frame = GNOME_Unknown_query_interface(gnome_control_get_control_frame(GNOME_CONTROL(view->control)),
+						     "IDL:Nautilus/ViewFrame:1.0", &ev);
+  if(ev._major != CORBA_NO_EXCEPTION)
+    view->view_frame = CORBA_OBJECT_NIL;
+  if(CORBA_Object_is_nil(view->view_frame, &ev))
+    return;
+
+  Nautilus_ViewFrame_request_status_change(view->view_frame, loc, &ev);
   if(ev._major != CORBA_NO_EXCEPTION)
     {
       CORBA_Object_release(view->view_frame, &ev);

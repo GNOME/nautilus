@@ -86,6 +86,8 @@ void    nautilus_view_request_location_change (NautilusView              *view,
 					       Nautilus_NavigationRequestInfo *loc);
 void    nautilus_view_request_selection_change (NautilusView              *view,
 						Nautilus_SelectionRequestInfo *loc);
+void    nautilus_view_request_status_change    (NautilusView              *view,
+                                                Nautilus_StatusRequestInfo *loc);
 void    nautilus_view_load_client             (NautilusView              *view,
 					       const char *               iid);
 

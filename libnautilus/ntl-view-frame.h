@@ -27,7 +27,7 @@
 #ifndef NTL_VIEW_CLIENT_H
 #define NTL_VIEW_CLIENT_H
 
-#include <gtk/gtkobject.h>
+#include <gtk/gtk.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -50,11 +50,14 @@ struct _NautilusViewClientClass
 					 Nautilus_NavigationInfo *nav_context);
   void (*notify_selection_change)	(NautilusViewClient *view,
 					 Nautilus_SelectionInfo *nav_context);
-  void (*load_state) (NautilusViewClient *view, const char *config_path);
-  void (*save_state) (NautilusViewClient *view, const char *config_path);
-  void (*show_properties) (NautilusViewClient *view);
+  void (*load_state)                    (NautilusViewClient *view, const char *config_path);
+  void (*save_state)                    (NautilusViewClient *view, const char *config_path);
+  void (*show_properties)               (NautilusViewClient *view);
 
   GtkBinClass *parent_class;
+
+  gpointer servant_init_func, servant_destroy_func, vepv, ;
+
   guint view_client_signals[5];
 };
 
@@ -73,6 +76,8 @@ void    nautilus_view_client_request_location_change (NautilusViewClient        
 						      Nautilus_NavigationRequestInfo *loc);
 void    nautilus_view_client_request_selection_change (NautilusViewClient        *view,
 						       Nautilus_SelectionRequestInfo *loc);
+void    nautilus_view_client_request_status_change    (NautilusViewClient        *view,
+						       Nautilus_StatusRequestInfo *loc);
 
 #ifdef __cplusplus
 }

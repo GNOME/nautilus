@@ -57,12 +57,17 @@ static void
 impl_Nautilus_ViewFrame_request_selection_change(impl_POA_Nautilus_ViewFrame * servant,
 						 Nautilus_SelectionRequestInfo * selinfo,
 						 CORBA_Environment * ev);
+static void
+impl_Nautilus_ViewFrame_request_status_change(impl_POA_Nautilus_ViewFrame * servant,
+                                              Nautilus_StatusRequestInfo * statinfo,
+                                              CORBA_Environment * ev);
 
 static POA_Nautilus_ViewFrame__epv impl_Nautilus_ViewFrame_epv =
 {
    NULL,			/* _private */
    (void(*))&impl_Nautilus_ViewFrame_request_location_change,
-   (void(*))&impl_Nautilus_ViewFrame_request_selection_change
+   (void(*))&impl_Nautilus_ViewFrame_request_selection_change,
+   (void(*))&impl_Nautilus_ViewFrame_request_status_change
 };
 
 static POA_Nautilus_ViewFrame__vepv impl_Nautilus_ViewFrame_vepv =
@@ -122,6 +127,14 @@ impl_Nautilus_ViewFrame_request_selection_change(impl_POA_Nautilus_ViewFrame * s
 						 CORBA_Environment * ev)
 {
   nautilus_view_request_selection_change(servant->view, selinfo);
+}
+
+static void
+impl_Nautilus_ViewFrame_request_status_change(impl_POA_Nautilus_ViewFrame * servant,
+                                              Nautilus_StatusRequestInfo * statinfo,
+                                              CORBA_Environment * ev)
+{
+  nautilus_view_request_status_change(servant->view, statinfo);
 }
 
 static void nautilus_view_init       (NautilusView      *view);
@@ -332,6 +345,13 @@ nautilus_view_request_selection_change (NautilusView              *view,
 					Nautilus_SelectionRequestInfo *loc)
 {
   nautilus_window_request_selection_change(NAUTILUS_WINDOW(view->main_window), loc, GTK_WIDGET(view));  
+}
+
+void
+nautilus_view_request_status_change    (NautilusView              *view,
+                                        Nautilus_StatusRequestInfo *loc)
+{
+  nautilus_window_request_status_change(NAUTILUS_WINDOW(view->main_window), loc, GTK_WIDGET(view));  
 }
 
 static void

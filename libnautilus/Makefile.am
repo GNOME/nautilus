@@ -8,10 +8,12 @@ BUILT_SOURCES=$(nautilus_idl_sources)
 libnautilusincludedir=$(includedir)/libnautilus
 libnautilusinclude_HEADERS=			\
 	ntl-view-client.h			\
+	ntl-meta-view-client.h			\
 	nautilus.h
 
-libnautilus_la_SOURCES=$(nautilus_idl_sources) \
-	ntl-view-client.c
+libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
+	ntl-view-client.c			\
+	ntl-meta-view-client.c
 
 $(nautilus_idl_sources): nautilus_idl_stamp
 

@@ -24,6 +24,10 @@ module Nautilus {
     string selected_uri;
   };
 
+  struct StatusRequestInfo {
+    string status_string;
+  };
+
   interface View : ::GNOME::Unknown {
     void save_state(in string config_path);
     void load_state(in string config_path);
@@ -34,7 +38,14 @@ module Nautilus {
     oneway void notify_selection_change(in SelectionInfo selinfo);
   };
 
+  interface MetaView : View {
+  };
+
+  interface ContentView : View {
+  };
+
   interface ViewFrame : ::GNOME::Unknown {
+    oneway void request_status_change(in StatusRequestInfo statinfo);
     oneway void request_location_change(in NavigationRequestInfo navinfo);
     oneway void request_selection_change(in SelectionRequestInfo selinfo);
   };
