@@ -1,3 +1,26 @@
+2000-09-11  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 2938 (Shouldn't open a zillion Properties windows
+	without asking first). I generalized this bug to include
+	other multiple-window situations.
+
+	* src/file-manager/fm-directory-view.h,
+	* src/file-manager/fm-directory-view.c: 
+	(get_containing_window): Just moved this function earlier in
+	the file.
+	(fm_directory_view_confirm_multiple_windows): New public function,
+	asks user whether they really want to open some large number
+	of windows. The cutoff point is determined by a constant,
+	currently set to 10.
+	(bonobo_menu_open_in_new_window_callback),
+	(bonobo_menu_open_properties_window_callback),
+	(open_in_new_window_callback), (open_properties_window_callback),
+	(fm_directory_view_activate_files): Confirm before opening
+	lots o' windows.
+	* src/file-manager/fm-search-list-view.c:
+	(reveal_selected_items_callback): Confirm before opening lots o'
+	windows.
+
 2000-09-11  Michael Engber  <engber@eazel.com>
 
 	* src/nautilus-main.c: (nautilus_main_event_loop_unregister):

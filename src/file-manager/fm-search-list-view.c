@@ -540,20 +540,21 @@ reveal_selected_items_callback (gpointer ignored, gpointer user_data)
 
 	selection = fm_directory_view_get_selection (directory_view);
 
-	for (node = selection; node != NULL; node = node->next) {
-		file = NAUTILUS_FILE (node->data);
-		parent_uri = nautilus_file_get_parent_uri (file);
-		if (parent_uri != NULL) {
-			file_as_list = g_list_prepend (NULL, nautilus_file_get_uri (file));
-			nautilus_view_open_in_new_window_and_select
-				(fm_directory_view_get_nautilus_view (directory_view), 
-				 parent_uri,
-				 file_as_list);
-			nautilus_g_list_free_deep (file_as_list);
+	if (fm_directory_view_confirm_multiple_windows (directory_view, g_list_length (selection))) {
+		for (node = selection; node != NULL; node = node->next) {
+			file = NAUTILUS_FILE (node->data);
+			parent_uri = nautilus_file_get_parent_uri (file);
+			if (parent_uri != NULL) {
+				file_as_list = g_list_prepend (NULL, nautilus_file_get_uri (file));
+				nautilus_view_open_in_new_window_and_select
+					(fm_directory_view_get_nautilus_view (directory_view), 
+					 parent_uri,
+					 file_as_list);
+				nautilus_g_list_free_deep (file_as_list);
+			}
+			g_free (parent_uri);
 		}
-		g_free (parent_uri);
-	}
-	
+	}	
 
 	nautilus_file_list_free (selection);
 }

@@ -74,6 +74,7 @@
 #include "nautilus-trash-monitor.h"
 
 #define DISPLAY_TIMEOUT_INTERVAL_MSECS 500
+#define SILENT_WINDOW_OPEN_LIMIT	10
 
 enum {
 	ADD_FILE,
@@ -369,6 +370,38 @@ viewer_launch_parameters_free (ViewerLaunchParameters *parameters)
 	g_free (parameters);
 }			      
 
+static GtkWindow *
+get_containing_window (FMDirectoryView *view)
+{
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	
+	return GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view)));
+}
+
+gboolean
+fm_directory_view_confirm_multiple_windows (FMDirectoryView *view, int count)
+{
+	GnomeDialog *dialog;
+	char *prompt;
+	char *title;
+
+	if (count <= SILENT_WINDOW_OPEN_LIMIT) {
+		return TRUE;
+	}
+
+	prompt = g_strdup_printf (_("This will open %d separate windows. "
+				    "Are you sure you want to do this?"), count);
+	title = g_strdup_printf (_("Nautilus: Open %d Windows?"), count);
+	dialog = nautilus_yes_no_dialog (prompt, title, 
+					 GNOME_STOCK_BUTTON_OK, 
+					 GNOME_STOCK_BUTTON_CANCEL, 
+					 get_containing_window (view));
+	g_free (prompt);
+	g_free (title);
+
+	return gnome_dialog_run (dialog) == GNOME_OK;
+}
+
 static void
 bonobo_menu_open_callback (BonoboUIHandler *ui_handler, gpointer callback_data, const char *path)
 {
@@ -402,17 +435,11 @@ bonobo_menu_open_in_new_window_callback (BonoboUIHandler *ui_handler, gpointer c
 
         view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
-	g_list_foreach (selection, open_one_in_new_window, view);
+	if (fm_directory_view_confirm_multiple_windows (view, g_list_length (selection))) {
+		g_list_foreach (selection, open_one_in_new_window, view);
+	}
 
 	nautilus_file_list_free (selection);
-}
-
-static GtkWindow *
-get_containing_window (FMDirectoryView *view)
-{
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
-	
-	return GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view)));
 }
 
 static void
@@ -697,7 +724,9 @@ bonobo_menu_open_properties_window_callback (BonoboUIHandler *ui_handler, gpoint
          */
         g_assert (selection != NULL);
 
-	g_list_foreach (selection, open_one_properties_window, view);
+	if (fm_directory_view_confirm_multiple_windows (view, g_list_length (selection))) {
+		g_list_foreach (selection, open_one_properties_window, view);
+	}
 
         nautilus_file_list_free (selection);
 }
@@ -2243,7 +2272,9 @@ open_in_new_window_callback (GtkMenuItem *item, GList *files)
 
 	directory_view = FM_DIRECTORY_VIEW (gtk_object_get_data (GTK_OBJECT (item), "directory_view"));
 
-	g_list_foreach (files, open_one_in_new_window, directory_view);
+	if (fm_directory_view_confirm_multiple_windows (directory_view, g_list_length (files))) {
+		g_list_foreach (files, open_one_in_new_window, directory_view);
+	}
 }
 
 static void
@@ -2262,7 +2293,9 @@ open_properties_window_callback (GtkMenuItem *item, GList *files)
 
 	directory_view = FM_DIRECTORY_VIEW (gtk_object_get_data (GTK_OBJECT (item), "directory_view"));
 
-	g_list_foreach (files, open_one_properties_window, directory_view);
+	if (fm_directory_view_confirm_multiple_windows (directory_view, g_list_length (files))) {
+		g_list_foreach (files, open_one_properties_window, directory_view);
+	}
 }
 
 static void
@@ -3525,6 +3558,7 @@ fm_directory_view_activate_files (FMDirectoryView *view,
 				  GList *files)
 {
 	GList *node;
+	int file_count;
 	gboolean use_new_window;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
@@ -3535,13 +3569,16 @@ fm_directory_view_activate_files (FMDirectoryView *view,
 	 * one special one to replace the current window's contents; we tried this
 	 * but it proved mysterious in practice.
 	 */
-	use_new_window = nautilus_g_list_more_than_one_item (files)
+	file_count = g_list_length (files);
+	use_new_window = file_count > 1
 			 ||  nautilus_preferences_get_boolean 
 			 	(NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW, FALSE);
 
-	for (node = files; node != NULL; node = node->next) {  	
-		fm_directory_view_activate_file 
-			(view, node->data, use_new_window);
+	if (!use_new_window || fm_directory_view_confirm_multiple_windows (view, file_count)) {
+		for (node = files; node != NULL; node = node->next) {  	
+			fm_directory_view_activate_file 
+				(view, node->data, use_new_window);
+		}
 	}
 }
 

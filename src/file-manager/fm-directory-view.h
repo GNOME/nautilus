@@ -313,6 +313,8 @@ void               fm_directory_view_begin_loading                  (FMDirectory
  */
 void               fm_directory_view_activate_files                 (FMDirectoryView       *view,
 								     GList          	   *files);								     
+gboolean	   fm_directory_view_confirm_multiple_windows	    (FMDirectoryView	   *view,
+								     int		    window_count);
 void		   fm_directory_view_queue_file_change	    	    (FMDirectoryView	   *view,
 								     NautilusFile 	   *file);
 void               fm_directory_view_notify_selection_changed       (FMDirectoryView       *view);
