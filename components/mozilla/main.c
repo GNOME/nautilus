@@ -64,7 +64,7 @@ mozilla_make_object (BonoboGenericFactory *factory,
 
 	nautilus_view = NAUTILUS_VIEW (nautilus_mozilla_content_view_get_nautilus_view (view));
 
-	gtk_signal_connect (GTK_OBJECT (view_frame), "destroy", mozilla_object_destroyed, NULL);
+	gtk_signal_connect (GTK_OBJECT (nautilus_view), "destroy", mozilla_object_destroyed, NULL);
 
 	return BONOBO_OBJECT (view_frame);
 }
