@@ -1,3 +1,15 @@
+2000-12-11  Darin Adler  <darin@eazel.com>
+
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	* src/file-manager/nautilus-icon-view-ui.xml:
+	* src/nautilus-service-ui.xml:
+	* src/nautilus-shell-ui.xml:
+	Changed all placeholders that are not supposed to be "transparent"
+	to use an explict 'delimit="none"' to make it clear to the bonobo
+	merging code that they are not transparent. This subtle rule about
+	the 2 different kinds of placeholder resulted in a number of bugs
+	that were then "fixed" by a Bonobo change that was then rolled out.
+
 2000-12-11  John Sullivan  <sullivan@eazel.com>
 
 	* icons/arlo/arlo.xml: I broke the Arlo theme with my earlier

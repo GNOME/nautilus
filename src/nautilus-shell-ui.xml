@@ -37,7 +37,7 @@
 <menu>
 	<submenu name="File" _label="_File">
 
-		<placeholder name="New Items Placeholder">
+		<placeholder name="New Items Placeholder" delimit="none">
 			<menuitem name="New Window"
 				  _label="_New Window"
 				  verb="New Window"/>
@@ -129,7 +129,7 @@
 			  _tip="Display the set of available appearance themes"
 			  verb="Change Appearance"/>
 
-		<placeholder name="Global Edit Items Placeholder"/>
+		<placeholder name="Global Edit Items Placeholder" delimit="none"/>
 		<placeholder name="Edit Items Placeholder" delimit="top"/>
 
 	</submenu>
@@ -215,7 +215,7 @@
 		<placeholder name="Bookmarks Placeholder" delimit="top"/>
 	</submenu>
 		
-	<placeholder name="Services Placeholder"/>
+	<placeholder name="Services Placeholder" delimit="none"/>
 
 	<submenu name="Profiler" _label="_Profiler">
 		<menuitem name="Start Profiling" 
@@ -258,7 +258,7 @@
 
 	<submenu name="Preferences" _label="" pixtype="filename">
 
-		<placeholder name="User Levels Placeholder">
+		<placeholder name="User Levels Placeholder" delimit="none">
 			<menuitem name="Switch to Beginner Level" 
 				  _label=" Beginner"
 				  _tip="Use Beginner settings"
@@ -344,7 +344,7 @@
 
 <popups>
 	<popup name="background">
-		<placeholder name="Before Zoom Items">
+		<placeholder name="Before Zoom Items" delimit="none">
 			<placeholder name="New Items">
 				<menuitem name="New Window" verb="New Window"/>
 			</placeholder>
