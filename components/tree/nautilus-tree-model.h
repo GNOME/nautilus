@@ -105,6 +105,8 @@ NautilusTreeNode  *nautilus_tree_model_get_nearest_parent_node  (NautilusTreeMod
 NautilusTreeNode  *nautilus_tree_model_get_root_node            (NautilusTreeModel *model);
 #endif
 
+/* Debugging */
+void		   nautilus_tree_model_dump_files		(NautilusTreeModel *model);
 
 
 #endif /* NAUTILUS_TREE_MODEL_H */

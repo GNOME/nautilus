@@ -481,6 +481,40 @@ nautilus_tree_model_get_node (NautilusTreeModel *model,
 	return node;
 }
 
+/* Debugging functions to dump current contents of file_to_node_map */
+
+static void
+dump_one_file_node (gpointer key, gpointer value, gpointer user_data)
+{
+	guint *file_number;
+	char *uri;
+
+	g_assert (NAUTILUS_IS_FILE (key));
+	g_assert (NAUTILUS_IS_TREE_NODE (value));
+	g_assert (user_data != NULL);
+
+	file_number = (guint *)user_data;
+	uri = nautilus_file_get_uri (NAUTILUS_FILE (key));
+
+	g_print ("%d: %s\n", ++(*file_number), uri);
+	
+	g_free (uri);
+}
+
+void
+nautilus_tree_model_dump_files (NautilusTreeModel *model)
+{
+	guint file_number;
+
+	file_number = 0;
+
+	g_print ("nautilus_tree_model_dump_files: %d files in tree view file_to_node_map hash table:\n", 
+		   g_hash_table_size (model->details->file_to_node_map));
+	g_hash_table_foreach (model->details->file_to_node_map, 
+			      dump_one_file_node, 
+			      &file_number);
+}
+
 
 /* helper functions */
 

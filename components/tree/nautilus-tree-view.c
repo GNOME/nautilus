@@ -1449,7 +1449,16 @@ nautilus_tree_view_find_parent_node (NautilusTreeView *view,
 
 	node = nautilus_tree_model_get_node (view->details->model, uri);
 
-	g_assert (node != NULL);
+	if (node == NULL) {
+		g_print ("You've run into an intermittent tree view bug.\n");
+		g_print ("Running Nautilus again will probably not hit this bug.\n");
+		g_print ("The tree view didn't have a node for %s\n", uri);
+		g_print ("The tree view had the following nodes:\n\n");
+		nautilus_tree_model_dump_files (view->details->model);
+
+		/* NOW die. */
+		g_assert_not_reached ();
+	}
 
 	return model_node_to_view_node (view, nautilus_tree_node_get_parent (node));
 }
