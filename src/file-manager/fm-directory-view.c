@@ -392,7 +392,7 @@ fm_directory_view_launch_application (GnomeVFSMimeApplication *application,
 	/* Might want to handle errors here someday, perhaps using
 	 * a parented dialog.
 	 */
-	nautilus_launch_application (application->command, uri);
+	nautilus_launch_application (application, uri);
 	
 }				      
 
