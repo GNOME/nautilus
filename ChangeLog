@@ -1,3 +1,42 @@
+2002-04-24  Dave Camp  <dave@ximian.com>
+
+	* src/nautilus-view-frame.c: (nautilus_view_frame_set_zoom_level):
+	* src/nautilus-view-frame.h:
+	* src/nautilus-window-manage-views.c:
+	(zoom_parameters_changed_callback):
+	* src/nautilus-window-private.h:
+	* src/nautilus-window.c: (nautilus_window_zoom_to_level): Replace
+	doubles in the zoom interfaces with floats to match the bonobo
+	zoomable interface.
+ 
+	* src/nautilus-zoom-control.c:
+	(nautilus_zoom_control_expose): Draw the focus rectangle if the
+	zoom control is focused.
+	(nautilus_zoom_control_button_press_event): Grab focus.
+	(zoom_menu_callback), (create_zoom_menu_item),
+	(nautilus_zoom_control_change_value),
+	(nautilus_zoom_control_set_zoom_level),
+	(nautilus_zoom_control_set_parameters): Replace double with float.
+	(nautilus_zoom_control_class_init): Initialize keybindings.
+	(nautilus_zoom_control_get_accessible),
+	(nautilus_zoom_control_accessible_do_action),
+	(nautilus_zoom_control_accessible_get_n_actions),
+	(nautilus_zoom_control_accessible_action_get_description),
+	(nautilus_zoom_control_accessible_action_get_name),
+	(nautilus_zoom_control_accessible_action_interface_init),
+	(nautilus_zoom_control_accessible_get_current_value),
+	(nautilus_zoom_control_accessible_get_maximum_value),
+	(nautilus_zoom_control_accessible_get_minimum_value),
+	(nearest_preferred),
+	(nautilus_zoom_control_accessible_set_current_value),
+	(nautilus_zoom_control_accessible_value_interface_init),
+	(nautilus_zoom_control_accessible_get_name),
+	(nautilus_zoom_control_accessible_get_description),
+	(nautilus_zoom_control_accessible_class_init),
+	(nautilus_zoom_control_accessible_get_type): Implement the zoom
+	accessible.
+	* src/nautilus-zoom-control.h: Added the change_value signal.
+
 2002-04-26  Damon Chaplin  <damon@ximian.com>
 
 	* libnautilus-private/nautilus-directory-metafile.c

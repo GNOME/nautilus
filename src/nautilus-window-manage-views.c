@@ -1604,7 +1604,7 @@ static void
 zoom_parameters_changed_callback (NautilusViewFrame *view,
                                   NautilusWindow *window)
 {
-        double zoom_level;
+        float zoom_level;
 
         g_assert (NAUTILUS_IS_WINDOW (window));
 

@@ -921,7 +921,7 @@ nautilus_view_frame_get_is_zoomable (NautilusViewFrame *view)
 	return view->details->zoomable_frame != NULL;
 }
 
-double
+float
 nautilus_view_frame_get_zoom_level (NautilusViewFrame *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), 0.0);
@@ -935,7 +935,7 @@ nautilus_view_frame_get_zoom_level (NautilusViewFrame *view)
 
 void
 nautilus_view_frame_set_zoom_level (NautilusViewFrame *view,
-				    double zoom_level)
+				    float zoom_level)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 
@@ -943,10 +943,10 @@ nautilus_view_frame_set_zoom_level (NautilusViewFrame *view,
 		return;
 	}
 
-	bonobo_zoomable_frame_set_zoom_level (view->details->zoomable_frame, (float) zoom_level);
+	bonobo_zoomable_frame_set_zoom_level (view->details->zoomable_frame, zoom_level);
 }
 
-double
+float
 nautilus_view_frame_get_min_zoom_level (NautilusViewFrame *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), 0.0);
@@ -958,7 +958,7 @@ nautilus_view_frame_get_min_zoom_level (NautilusViewFrame *view)
 	return bonobo_zoomable_frame_get_min_zoom_level (view->details->zoomable_frame);
 }
 
-double
+float
 nautilus_view_frame_get_max_zoom_level (NautilusViewFrame *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), 0.0);

@@ -28,11 +28,17 @@
 #include <config.h>
 #include "nautilus-zoom-control.h"
 
+#include <atk/atkaction.h>
+#include <libgnome/gnome-i18n.h>
+#include <eel/eel-accessibility.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-graphic-effects.h>
 #include <eel/eel-gtk-extensions.h>
+#include <gtk/gtkaccessible.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkradiomenuitem.h>
+#include <gtk/gtkbindings.h>
+#include <gdk/gdkkeysyms.h>
 #include <libgnome/gnome-macros.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
@@ -47,6 +53,7 @@ enum {
 	ZOOM_OUT,
 	ZOOM_TO_LEVEL,
 	ZOOM_TO_FIT,
+	CHANGE_VALUE,
 	LAST_SIGNAL
 };
 
@@ -60,9 +67,9 @@ typedef enum {
 #define	GAP_WIDTH 2
 
 struct NautilusZoomControlDetails {
-	double zoom_level;
-	double min_zoom_level;	 
-	double max_zoom_level;
+	float zoom_level;
+	float min_zoom_level;	 
+	float max_zoom_level;
 	gboolean has_min_zoom_level;
 	gboolean has_max_zoom_level;
 	GList *preferred_zoom_levels;
@@ -82,12 +89,36 @@ struct NautilusZoomControlDetails {
 
 static guint signals[LAST_SIGNAL];
 
+gpointer accessible_parent_class;
+
+static const char *nautilus_zoom_control_accessible_action_names[] = {
+	N_("Zoom In"),
+	N_("Zoom Out"),
+	N_("Zoom to Fit"),
+};
+
+static int nautilus_zoom_control_accessible_action_signals[] = {
+	ZOOM_IN,
+	ZOOM_OUT,
+	ZOOM_TO_FIT,
+};
+
+static const char *nautilus_zoom_control_accessible_action_descriptions[] = {
+	N_("Show the contents in more detail"),
+	N_("Show the contents in less detail"),
+	N_("Try to fit in window"),
+};
+
 static void nautilus_zoom_control_load_images   (NautilusZoomControl      *zoom_control);
 static void nautilus_zoom_control_unload_images (NautilusZoomControl      *zoom_control);
 static void nautilus_zoom_control_theme_changed (gpointer                  user_data);
 
+static GType nautilus_zoom_control_accessible_get_type (void);
+
 /* button assignments */
 #define CONTEXTUAL_MENU_BUTTON 3
+
+#define NUM_ACTIONS ((int)G_N_ELEMENTS (nautilus_zoom_control_accessible_action_names))
 
 GNOME_CLASS_BOILERPLATE (NautilusZoomControl, nautilus_zoom_control,
 			 GtkEventBox, GTK_TYPE_EVENT_BOX)
@@ -346,6 +377,17 @@ nautilus_zoom_control_expose (GtkWidget *widget, GdkEventExpose *event)
 
 	draw_zoom_control_image (widget, &box);	
 	draw_number (widget, &box);
+	
+	if (GTK_WIDGET_HAS_FOCUS (widget)) {
+		gtk_paint_focus (widget->style,
+				 widget->window,
+				 GTK_WIDGET_STATE (widget),
+				 &event->area,
+				 widget,
+				 "nautilus-zoom-control",
+				 box.x, box.y,
+				 box.width, box.height);
+	}		 
 
 	return FALSE;
 }
@@ -459,7 +501,7 @@ nautilus_zoom_control_load_images (NautilusZoomControl *zoom_control)
 static void
 zoom_menu_callback (GtkMenuItem *item, gpointer callback_data)
 {
-	double zoom_level;
+	float zoom_level;
 	NautilusZoomControl *zoom_control;
 	gboolean can_zoom;
 		
@@ -470,7 +512,12 @@ zoom_menu_callback (GtkMenuItem *item, gpointer callback_data)
 		return;
 	}
 
-	zoom_level = * (double *) g_object_get_data (G_OBJECT (item), "zoom_level");
+	/* Don't send the signal if the menuitem was toggled off */
+	if (!gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (item))) {
+		return;
+	}
+
+	zoom_level = * (float *) g_object_get_data (G_OBJECT (item), "zoom_level");
 
 	/* Assume we can zoom and then check whether we're right. */
 	can_zoom = TRUE;
@@ -494,7 +541,7 @@ create_zoom_menu_item (NautilusZoomControl *zoom_control, GtkMenu *menu,
 {
 	GtkWidget *menu_item;
 	char *item_text;
-	double *zoom_level_ptr;
+	float *zoom_level_ptr;
 	GSList *radio_item_group;
 	int percent;
 	
@@ -514,7 +561,7 @@ create_zoom_menu_item (NautilusZoomControl *zoom_control, GtkMenu *menu,
 		: gtk_radio_menu_item_get_group (previous_radio_item);
 	menu_item = gtk_radio_menu_item_new_with_label (radio_item_group, item_text);
 
-	zoom_level_ptr = g_new (double, 1);
+	zoom_level_ptr = g_new (float, 1);
 	*zoom_level_ptr = zoom_level;
 
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), 
@@ -563,7 +610,9 @@ nautilus_zoom_control_button_press_event (GtkWidget *widget, GdkEventButton *eve
 	if (event->type != GDK_BUTTON_PRESS) {
 		return FALSE;
 	}
-	
+
+	gtk_widget_grab_focus (widget);
+
 	/* check for the context menu button and handle by creating and showing the menu */  
 	if (event->button == CONTEXTUAL_MENU_BUTTON) {
 		eel_pop_up_context_menu (create_zoom_menu (zoom_control), 
@@ -603,6 +652,23 @@ nautilus_zoom_control_leave_notify (GtkWidget *widget,
 {
 	nautilus_zoom_control_set_prelight_mode (NAUTILUS_ZOOM_CONTROL (widget), PRELIGHT_NONE);
   	return FALSE;
+}
+
+static AtkObject *
+nautilus_zoom_control_get_accessible (GtkWidget *widget)
+{
+	AtkObject *accessible;
+	
+	accessible = eel_accessibility_get_atk_object (widget);
+
+	if (accessible) {
+		return accessible;
+	}
+	
+	accessible = g_object_new 
+		(nautilus_zoom_control_accessible_get_type (), NULL);
+	
+	return eel_accessibility_set_atk_object_return (widget, accessible);
 }
 
 static gboolean
@@ -651,8 +717,28 @@ nautilus_zoom_control_size_allocate (GtkWidget *widget, GtkAllocation *allocatio
 	nautilus_zoom_control_update_offsets (zoom_control);
 }
 
+static void
+nautilus_zoom_control_change_value (NautilusZoomControl *zoom_control, 
+				    GtkScrollType scroll)
+{
+	switch (scroll) {
+	case GTK_SCROLL_STEP_DOWN :
+		if (nautilus_zoom_control_can_zoom_out (zoom_control)) {
+			g_signal_emit (zoom_control, signals[ZOOM_OUT], 0);
+		}
+		break;
+	case GTK_SCROLL_STEP_UP :
+		if (nautilus_zoom_control_can_zoom_in (zoom_control)) {
+			g_signal_emit (zoom_control, signals[ZOOM_IN], 0);
+		}
+		break;
+	default :
+		g_warning ("Invalid scroll type %d for NautilusZoomControl:change_value", scroll);
+	}
+}
+
 void
-nautilus_zoom_control_set_zoom_level (NautilusZoomControl *zoom_control, double zoom_level)
+nautilus_zoom_control_set_zoom_level (NautilusZoomControl *zoom_control, float zoom_level)
 {
 	zoom_control->details->zoom_level = zoom_level;
 	gtk_widget_queue_draw (GTK_WIDGET (zoom_control));
@@ -660,8 +746,8 @@ nautilus_zoom_control_set_zoom_level (NautilusZoomControl *zoom_control, double 
 
 void
 nautilus_zoom_control_set_parameters (NautilusZoomControl *zoom_control,
-				      double min_zoom_level,
-				      double max_zoom_level,
+				      float min_zoom_level,
+				      float max_zoom_level,
 				      gboolean has_min_zoom_level,
 				      gboolean has_max_zoom_level,
 				      GList *zoom_levels)
@@ -677,19 +763,19 @@ nautilus_zoom_control_set_parameters (NautilusZoomControl *zoom_control,
 	gtk_widget_queue_draw (GTK_WIDGET (zoom_control));
 }
 
-double
+float
 nautilus_zoom_control_get_zoom_level (NautilusZoomControl *zoom_control)
 {
 	return zoom_control->details->zoom_level;
 }
 
-double
+float
 nautilus_zoom_control_get_min_zoom_level (NautilusZoomControl *zoom_control)
 {
 	return zoom_control->details->min_zoom_level;
 }
 
-double
+float
 nautilus_zoom_control_get_max_zoom_level (NautilusZoomControl *zoom_control)
 {
 	return zoom_control->details->max_zoom_level;
@@ -727,6 +813,7 @@ static void
 nautilus_zoom_control_class_init (NautilusZoomControlClass *class)
 {
 	GtkWidgetClass *widget_class;
+	GtkBindingSet *binding_set;
 
 	G_OBJECT_CLASS (class)->finalize = nautilus_zoom_control_finalize;
 
@@ -737,7 +824,10 @@ nautilus_zoom_control_class_init (NautilusZoomControlClass *class)
 	widget_class->motion_notify_event = nautilus_zoom_control_motion_notify;
 	widget_class->size_allocate = nautilus_zoom_control_size_allocate;
   	widget_class->leave_notify_event = nautilus_zoom_control_leave_notify;
+	widget_class->get_accessible = nautilus_zoom_control_get_accessible;
 	
+	class->change_value = nautilus_zoom_control_change_value;
+
 	signals[ZOOM_IN] =
 		g_signal_new ("zoom_in",
 		              G_TYPE_FROM_CLASS (class),
@@ -765,18 +855,275 @@ nautilus_zoom_control_class_init (NautilusZoomControlClass *class)
 		              G_STRUCT_OFFSET (NautilusZoomControlClass,
 					       zoom_to_level),
 		              NULL, NULL,
-		              nautilus_marshal_VOID__DOUBLE,
+		              g_cclosure_marshal_VOID__FLOAT,
 		              G_TYPE_NONE,
 			      1,
-			      G_TYPE_DOUBLE);
+			      G_TYPE_FLOAT);
 
 	signals[ZOOM_TO_FIT] =
 		g_signal_new ("zoom_to_fit",
 		              G_TYPE_FROM_CLASS (class),
-		              G_SIGNAL_RUN_LAST,
+		              G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
 		              G_STRUCT_OFFSET (NautilusZoomControlClass,
 					       zoom_to_fit),
 		              NULL, NULL,
 		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
+
+	signals[CHANGE_VALUE] =
+		g_signal_new ("change_value",
+		              G_TYPE_FROM_CLASS (class),
+		              G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+		              G_STRUCT_OFFSET (NautilusZoomControlClass,
+					       change_value),
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__ENUM,
+		              G_TYPE_NONE, 1, GTK_TYPE_SCROLL_TYPE);
+
+	binding_set = gtk_binding_set_by_class (class);	
+
+	gtk_binding_entry_add_signal (binding_set, 
+				      GDK_KP_Subtract, 0, 
+				      "change_value",
+				      1, GTK_TYPE_SCROLL_TYPE, 
+				      GTK_SCROLL_STEP_DOWN);
+	gtk_binding_entry_add_signal (binding_set, 
+				      GDK_minus, 0,
+				      "change_value",
+				      1, GTK_TYPE_SCROLL_TYPE, 
+				      GTK_SCROLL_STEP_DOWN);
+
+	gtk_binding_entry_add_signal (binding_set, 
+				      GDK_KP_Equal, 0, 
+				      "zoom_to_fit",
+				      0);
+	gtk_binding_entry_add_signal (binding_set, 
+				      GDK_KP_Equal, 0, 
+				      "zoom_to_fit",
+				      0);
+
+	gtk_binding_entry_add_signal (binding_set, 
+				      GDK_KP_Add, 0, 
+				      "change_value",
+				      1, GTK_TYPE_SCROLL_TYPE,
+				      GTK_SCROLL_STEP_UP);
+	gtk_binding_entry_add_signal (binding_set, 
+				      GDK_plus, 0, 
+				      "change_value",
+				      1, GTK_TYPE_SCROLL_TYPE,
+				      GTK_SCROLL_STEP_UP);
+}
+
+static gboolean
+nautilus_zoom_control_accessible_do_action (AtkAction *accessible, int i)
+{
+	GtkWidget *widget;
+	
+	g_return_val_if_fail (i >= 0 && i < NUM_ACTIONS, FALSE);
+
+	widget = GTK_ACCESSIBLE (accessible)->widget;
+	if (!widget) {
+		return FALSE;
+	}
+	
+	g_signal_emit (widget, 
+		       signals[nautilus_zoom_control_accessible_action_signals [i]],
+		       0);
+
+	return TRUE;
+}
+
+static int
+nautilus_zoom_control_accessible_get_n_actions (AtkAction *accessible)
+{
+
+	return NUM_ACTIONS;
+}
+
+static G_CONST_RETURN char *
+nautilus_zoom_control_accessible_action_get_description (AtkAction *accessible, 
+							 int i)
+{
+	g_return_val_if_fail (i >= 0 && i < NUM_ACTIONS, NULL);
+
+	return _(nautilus_zoom_control_accessible_action_descriptions[i]);
+}
+
+static G_CONST_RETURN char *
+nautilus_zoom_control_accessible_action_get_name (AtkAction *accessible, 
+						  int i)
+{
+	g_return_val_if_fail (i >= 0 && i < NUM_ACTIONS, NULL);
+
+	return _(nautilus_zoom_control_accessible_action_names[i]);
+}
+
+static void
+nautilus_zoom_control_accessible_action_interface_init (AtkActionIface *iface)
+{
+        iface->do_action = nautilus_zoom_control_accessible_do_action;
+        iface->get_n_actions = nautilus_zoom_control_accessible_get_n_actions;
+	iface->get_description = nautilus_zoom_control_accessible_action_get_description;
+        iface->get_name = nautilus_zoom_control_accessible_action_get_name;
+}
+
+static void
+nautilus_zoom_control_accessible_get_current_value (AtkValue *accessible,
+						    GValue *value)
+{
+	NautilusZoomControl *control;
+
+	g_value_init (value, G_TYPE_FLOAT);
+	
+	control = NAUTILUS_ZOOM_CONTROL (GTK_ACCESSIBLE (accessible)->widget);
+	if (!control) {
+		g_value_set_float (value, 0.0);
+		return;
+	}
+
+	g_value_set_float (value, control->details->zoom_level);
+}
+
+static void
+nautilus_zoom_control_accessible_get_maximum_value (AtkValue *accessible,
+						    GValue *value)
+{
+	NautilusZoomControl *control;
+
+	g_value_init (value, G_TYPE_FLOAT);
+	
+	control = NAUTILUS_ZOOM_CONTROL (GTK_ACCESSIBLE (accessible)->widget);
+	if (!control) {
+		g_value_set_float (value, 0.0);
+		return;
+	}
+
+	g_value_set_float (value, control->details->max_zoom_level);
+}
+
+static void
+nautilus_zoom_control_accessible_get_minimum_value (AtkValue *accessible,
+						    GValue *value)
+{
+	NautilusZoomControl *control;
+	
+	g_value_init (value, G_TYPE_FLOAT);
+
+	control = NAUTILUS_ZOOM_CONTROL (GTK_ACCESSIBLE (accessible)->widget);
+	if (!control) {
+		g_value_set_float (value, 0.0);
+		return;
+	}
+
+	g_value_set_float (value, control->details->min_zoom_level);
+}
+
+static float
+nearest_preferred (NautilusZoomControl *zoom_control, float value)
+{
+	float last_value;
+	float current_value;
+	GList *l;
+
+	if (!zoom_control->details->preferred_zoom_levels) {
+		return value;
+	}
+
+	last_value = * (float *)zoom_control->details->preferred_zoom_levels->data;
+
+	for (l = zoom_control->details->preferred_zoom_levels; l != NULL; l = l->next) {
+		current_value = * (float*)l->data;
+		
+		if (current_value > value) {
+			float center = (last_value + current_value) / 2;
+			
+			return (value < center) ? last_value : current_value;
+				
+		}
+		
+		last_value = current_value;
+	}
+
+	return current_value;
+}
+
+static gboolean
+nautilus_zoom_control_accessible_set_current_value (AtkValue *accessible,
+						    const GValue *value)
+{
+	NautilusZoomControl *control;
+	float zoom;
+
+	control = NAUTILUS_ZOOM_CONTROL (GTK_ACCESSIBLE (accessible)->widget);
+	if (!control) {
+		return FALSE;
+	}
+
+	zoom = nearest_preferred (control, g_value_get_float (value));
+
+	g_signal_emit (control, signals[ZOOM_TO_LEVEL], 0, zoom);
+
+	return TRUE;
+}
+
+static void
+nautilus_zoom_control_accessible_value_interface_init (AtkValueIface *iface)
+{
+	iface->get_current_value = nautilus_zoom_control_accessible_get_current_value;
+	iface->get_maximum_value = nautilus_zoom_control_accessible_get_maximum_value;
+	iface->get_minimum_value = nautilus_zoom_control_accessible_get_minimum_value;
+	iface->set_current_value = nautilus_zoom_control_accessible_set_current_value;
+}
+
+static G_CONST_RETURN char *
+nautilus_zoom_control_accessible_get_name (AtkObject *accessible)
+{
+	return _("Zoom");
+}
+
+static G_CONST_RETURN char *
+nautilus_zoom_control_accessible_get_description (AtkObject *accessible)
+{
+	return _("Set the zoom level of the current view");
+}
+
+static void
+nautilus_zoom_control_accessible_class_init (AtkObjectClass *klass)
+{	
+	accessible_parent_class = g_type_class_peek_parent (klass);
+
+	klass->get_name = nautilus_zoom_control_accessible_get_name;
+	klass->get_description = nautilus_zoom_control_accessible_get_description;
+}
+
+static GType
+nautilus_zoom_control_accessible_get_type (void)
+{
+	static GType type = 0;
+	
+	if (!type) {
+		static GInterfaceInfo atk_action_info = {
+			(GInterfaceInitFunc)nautilus_zoom_control_accessible_action_interface_init,
+			(GInterfaceFinalizeFunc)NULL,
+			NULL
+		};
+		
+		static GInterfaceInfo atk_value_info = {
+			(GInterfaceInitFunc)nautilus_zoom_control_accessible_value_interface_init,
+			(GInterfaceFinalizeFunc)NULL,
+			NULL
+		};
+		
+		type = eel_accessibility_create_derived_type
+			("NautilusZoomControlAccessible",
+			 GTK_TYPE_EVENT_BOX,
+			 nautilus_zoom_control_accessible_class_init);
+		
+ 		g_type_add_interface_static (type, ATK_TYPE_ACTION,
+					     &atk_action_info);
+ 		g_type_add_interface_static (type, ATK_TYPE_VALUE,
+					     &atk_value_info);
+	}
+
+	return type;
 }

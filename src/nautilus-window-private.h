@@ -151,7 +151,7 @@ void               nautilus_window_update_show_hide_menu_items           (Nautil
 void               nautilus_window_zoom_in                               (NautilusWindow    *window);
 void               nautilus_window_zoom_out                              (NautilusWindow    *window);
 void               nautilus_window_zoom_to_level                         (NautilusWindow    *window,
-                                                                          double             level);
+                                                                          float                   level);
 void               nautilus_window_zoom_to_fit                           (NautilusWindow    *window);
 void		   nautilus_window_show_view_as_dialog			 (NautilusWindow    *window);
 void               nautilus_window_set_content_view_widget               (NautilusWindow    *window,

@@ -423,7 +423,7 @@ nautilus_window_zoom_in (NautilusWindow *window)
 }
 
 void
-nautilus_window_zoom_to_level (NautilusWindow *window, double level)
+nautilus_window_zoom_to_level (NautilusWindow *window, float level)
 {
 	if (window->content_view != NULL) {
 		nautilus_view_frame_set_zoom_level (window->content_view, level);
