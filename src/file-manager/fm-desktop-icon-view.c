@@ -27,20 +27,19 @@
 #include "fm-desktop-icon-view.h"
 
 #include "nautilus-trash-monitor.h"
-
 #include <ctype.h>
 #include <dirent.h>
 #include <fcntl.h>
 #include <gdk/gdkx.h>
-#include <gnome.h>
-#include <gtk/gtk.h>
+#include <gtk/gtkcheckmenuitem.h>
+#include <libgnome/gnome-dentry.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <libnautilus-extensions/nautilus-directory-notify.h>
+#include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
+#include <libnautilus-extensions/nautilus-directory-notify.h>
 #include <libnautilus-extensions/nautilus-file-changes-queue.h>
-#include <libnautilus-extensions/nautilus-metadata.h>
-#include <libnautilus-extensions/nautilus-program-choosing.h>
 #include <libnautilus-extensions/nautilus-file-operations.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
@@ -49,10 +48,10 @@
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-link.h>
+#include <libnautilus-extensions/nautilus-metadata.h>
+#include <libnautilus-extensions/nautilus-program-choosing.h>
 #include <libnautilus-extensions/nautilus-volume-monitor.h>
-#include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <limits.h>
-
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
@@ -61,6 +60,10 @@
 #include <unistd.h>
 
 #define TRASH_LINK_NAME _("Trash")
+
+struct FMDesktopIconViewDetails
+{
+};
 
 typedef struct {
 	GnomeVFSResult expected_result;
@@ -127,7 +130,6 @@ fm_desktop_icon_view_destroy (GtkObject *object)
 	icon_view = FM_DESKTOP_ICON_VIEW (object);
 
 	/* Clean up details */	
-	gtk_object_destroy (GTK_OBJECT (icon_view->details->volume_monitor));
 	g_free (icon_view->details);
 
 	/* Clean up any links that may be left over */
@@ -270,7 +272,6 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 
 	/* Set up details */
 	desktop_icon_view->details = g_new0 (FMDesktopIconViewDetails, 1);	
-	desktop_icon_view->details->volume_monitor = nautilus_volume_monitor_get ();
 
 	nautilus_icon_container_set_is_fixed_size (icon_container, TRUE);
 
@@ -300,7 +301,7 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 	create_or_rename_trash ();
 
 	/* Create initial mount links */
-	nautilus_volume_monitor_each_mounted_volume (desktop_icon_view->details->volume_monitor, 
+	nautilus_volume_monitor_each_mounted_volume (nautilus_volume_monitor_get (),
 					     	     startup_create_mount_links, desktop_icon_view);
 	
 	gtk_signal_connect (GTK_OBJECT (icon_container),
@@ -323,12 +324,12 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 			    fm_desktop_icon_view_trash_state_changed_callback,
 			    desktop_icon_view);
 
-	gtk_signal_connect (GTK_OBJECT (desktop_icon_view->details->volume_monitor),
+	gtk_signal_connect (GTK_OBJECT (nautilus_volume_monitor_get ()),
 			    "volume_mounted",
 			    volume_mounted_callback,
 			    desktop_icon_view);
 
-	gtk_signal_connect (GTK_OBJECT (desktop_icon_view->details->volume_monitor),
+	gtk_signal_connect (GTK_OBJECT (nautilus_volume_monitor_get ()),
 			    "volume_unmounted",
 			    volume_unmounted_callback,
 			    desktop_icon_view);
@@ -696,7 +697,7 @@ mount_unmount_removable (GtkCheckMenuItem *item, FMDesktopIconView *icon_view)
 	mount_point = gtk_object_get_data (GTK_OBJECT (item), "mount_point");
 	if (mount_point != NULL) {
 		is_mounted = nautilus_volume_monitor_mount_unmount_removable 
-				(icon_view->details->volume_monitor, mount_point); 
+			(nautilus_volume_monitor_get (), mount_point); 
 	}
 	
 	/* Set the check state of menu item even thought the user may not see it */

@@ -902,12 +902,6 @@ nautilus_directory_notify_files_removed (GList *uris)
 	for (p = uris; p != NULL; p = p->next) {
 		uri = (const char *) p->data;
 
-		/* Find the file. */
-		file = nautilus_file_get_existing (uri);
-		if (file == NULL) {
-			continue;
-		}
-
 		/* Update file count for parent directory if anyone might care. */
 		directory = get_parent_directory_if_exists (uri);
 		if (directory != NULL) {
@@ -915,11 +909,14 @@ nautilus_directory_notify_files_removed (GList *uris)
 			nautilus_directory_unref (directory);
 		}
 
-		/* Mark it gone and prepare to send the changed signal. */
-		nautilus_file_mark_gone (file);
-		hash_table_list_prepend (changed_lists,
-					 file->details->directory,
-					 file);
+		/* Find the file. */
+		file = nautilus_file_get_existing (uri);
+		if (file != NULL) {
+			/* Mark it gone and prepare to send the changed signal. */
+			nautilus_file_mark_gone (file);
+			hash_table_list_prepend (changed_lists,
+						 file->details->directory, file);
+		}
 	}
 
 	/* Now send out the changed signals. */
@@ -954,6 +951,19 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 
 	for (p = uri_pairs; p != NULL; p = p->next) {
 		pair = p->data;
+
+		/* Handle overwriting a file. */
+		file = nautilus_file_get_existing (pair->to_uri);
+		if (file != NULL) {
+			/* Mark it gone and prepare to send the changed signal. */
+			nautilus_file_mark_gone (file);
+			new_directory = file->details->directory;
+			hash_table_list_prepend (changed_lists,
+						 new_directory,
+						 file);
+			collect_parent_directories (parent_directories,
+						    new_directory);
+		}
 
 		/* Move an existing file. */
 		file = nautilus_file_get_existing (pair->from_uri);

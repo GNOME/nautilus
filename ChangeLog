@@ -1,5 +1,27 @@
 2000-10-12  Darin Adler  <darin@eazel.com>
 
+	Fixed two bugs that got in Pavel's and my way as we were testing
+	our bug fixes.
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_notify_files_removed): Fix bug where it won't
+	update the directory count if there is no NautilusFile object
+	already existing for the file.
+	(nautilus_directory_notify_files_moved): Mark any overwritten file
+	as "gone" instead of just having two non-gone NautilusFile objects
+	with the same URI.
+	
+	* src/file-manager/fm-desktop-icon-view.h:
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_destroy), (fm_desktop_icon_view_initialize),
+	(mount_unmount_removable): Got rid of code that acted like the
+	volume monitor belonged to it. The main problem was destroying it,
+	which is wrong in any case (at most you'd unref it, but even that
+	is illegal since nautilus_volume_monitor_get doesn't return a
+	ref).
+	
+2000-10-12  Darin Adler  <darin@eazel.com>
+
 	* components/music/nautilus-music-view.c:
 	(nautilus_music_view_update_from_uri): Add a FIXME.
 	
