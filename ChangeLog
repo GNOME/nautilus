@@ -1,3 +1,17 @@
+2000-09-15  Darin Adler  <darin@eazel.com>
+
+	Another try at fixing the Tinderbox.
+
+	* po/POTFILES.in: Removed files that are not in Makefile.am,
+	since they won't be in the tarball/RPM.
+	
+	* check-POTFILES.pl: Added a new script to check for files that
+	are mentioned in POTFILES.in, but not in the Makefile.am files.
+	* check-headers-in-Makefile.pl: Fixed to use SUBDIRS instead of
+	looking for all Makefile.am files.
+	
+	* components/adapter/.cvsignore: Listed generated files.
+
 2000-09-15  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 1779 ("Customize Hacker Settings" doesn't match

@@ -23,8 +23,8 @@
 #  Author: Darin Adler <darin@eazel.com>,
 #
 
-# check-headers-in-Makefile.pl: Checks the contents of the source
-# directories against the contents of the Makefile.am files.
+# check-POTFILES.pl: Checks for files mentioned in POTFILES.in that
+# are not present in the Makefile.am files for those directories.
 
 use diagnostics;
 use strict;
@@ -42,6 +42,9 @@ my %exceptions =
    'po' => '',
   );
 
+my %files;
+
+# collect all files mentioned in Makefile.am files
 while (@directories)
   {
     my $directory = pop @directories;
@@ -51,11 +54,10 @@ while (@directories)
     my $in_subdirs = 0;
 
     my $file = $prefix . "Makefile.am";
-    open FILE, $file or die "can't open $file";
-    my %headers;
+    open FILE, $file or die "can't open $file\n";
     while (<FILE>)
       {
-       if (s/^SUBDIRS\s*=//)
+        if (s/^SUBDIRS\s*=//)
           {
             $in_subdirs = 1;
           }
@@ -86,33 +88,19 @@ while (@directories)
           }
 	while (s/([-_a-zA-Z0-9]+\.[ch])\W//)
 	  {
-	    $headers{$1} = $1;
+	    $files{$prefix . $1} = $1;
 	  }
       }
     close FILE;
+  }
 
-    if ($directory eq ".")
+open POTFILES, "po/POTFILES.in" or die "can't open POTFILES.in\n";
+while (<POTFILES>)
+  {
+    chomp;
+    if (! defined $files{$_})
       {
-	$headers{"acconfig.h"} = "acconfig.h";
-	$headers{"config.h"} = "config.h";
-      }
-
-    opendir DIRECTORY, $directory or die "can't open $directory";
-    foreach my $header (grep /.*\.[ch]$/, readdir DIRECTORY)
-      {
-	if (defined $headers{$header})
-	  {
-	    delete $headers{$header};
-	  }
-	else
-	  {
-	    print "$directory/$header in directory but not Makefile.am\n";
-	  }
-      }
-    closedir DIRECTORY;
-
-    foreach my $header (keys %headers)
-      {
-	print "$directory/$header in Makefile.am but not directory\n";
+        print "$_ is in POTFILES.in but not Makefile.am\n";
       }
   }
+close POTFILES;
