@@ -352,7 +352,7 @@ gloss_term_append (Context *context,
  			new_string = g_strconcat ((gchar *)origdata, temp, NULL );
  			g_free(origdata);
  			g_hash_table_remove(context->glossary_data, origkey);
- 			g_hash_table_insert(context->glossary_data, g_strdup (origkey), new_string);
+ 			g_hash_table_insert(context->glossary_data, origkey, new_string);
  			g_free(temp_glossentry);
 			} 
 		}
