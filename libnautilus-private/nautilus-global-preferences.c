@@ -55,27 +55,34 @@ static const char PROXY_PORT_KEY[] = "/system/gnome-vfs/http-proxy-port";
 static const char USE_PROXY_KEY[] = "/system/gnome-vfs/use-http-proxy";
 static const char SYSTEM_GNOME_VFS_PATH[] = "/system/gnome-vfs";
 
-typedef struct
-{
-	const char *stored_value;
-	const char *display_value;
-	int value;
-} EnumerationEntry;
+/* A structure that describes a single preferences dialog ui item. */
+typedef struct PreferenceDialogItem PreferenceDialogItem;
 
-typedef struct
-{
-	const char *group_name;
-	const char *preference_name;
-	const char *preference_description;
-	NautilusPreferencesItemType item_type;
-	const char *control_preference_name;
-	NautilusPreferencesItemControlAction control_action;
-	const EnumerationEntry *enumeration_values;
-	int constrained_integer_lower;
-	int constrained_integer_upper;
-	int constrained_integer_increment;
-} ItemDescription;
+/* Forward declarations */
+static char *     global_preferences_make_sidebar_panel_key             (const char                 *panel_iid);
+static gboolean   global_preferences_is_sidebar_panel_enabled_cover     (gpointer                    data,
+									 gpointer                    callback_data);
+static GList *    global_preferences_get_sidebar_panel_view_identifiers (void);
+static gboolean   global_preferences_close_dialog_callback              (GtkWidget                  *dialog,
+									 gpointer                    user_data);
+static void       global_preferences_install_sidebar_panel_defaults     (void);
+static void       global_preferences_install_defaults                   (void);
+static void       global_preferences_install_home_location_defaults     (void);
+static void       global_preferences_install_medusa_defaults            (void);
+static void       global_preferences_install_font_defaults              (void);
+static int        compare_view_identifiers                              (gconstpointer               a,
+									 gconstpointer               b);
+static GtkWidget *global_preferences_create_dialog                      (void);
+static void       global_preferences_create_search_pane                 (NautilusPreferencesBox     *preference_box);
+static void       global_preferences_create_sidebar_panels_pane         (NautilusPreferencesBox     *preference_box);
+static void       global_preferences_pane_update_callback               (gpointer                    callback_data);
+static GtkWidget *global_preferences_populate_pane                      (NautilusPreferencesBox     *preference_box,
+									 const char                 *pane_name,
+									 const PreferenceDialogItem *preference_dialog_item);
 
+static GtkWidget *global_prefs_dialog = NULL;
+
+/* An enumeration used for installing type specific preferences defaults. */
 typedef enum
 {
 	PREFERENCE_BOOLEAN = 1,
@@ -83,6 +90,7 @@ typedef enum
 	PREFERENCE_STRING
 } PreferenceType;
 
+/* A structure that pairs a default value with a specific user level. */
 typedef struct
 {
 	int user_level;
@@ -91,6 +99,7 @@ typedef struct
 
 #define USER_LEVEL_NONE -1
 
+/* A structure that describes a single preference including defaults and visibility. */
 typedef struct
 {
 	const char *name;
@@ -100,30 +109,63 @@ typedef struct
 	PreferenceUserLevelDefault default2;
 } PreferenceDefault;
 
-/* Forward declarations */
-static char *     global_preferences_make_sidebar_panel_key             (const char             *panel_iid);
-static gboolean   global_preferences_is_sidebar_panel_enabled_cover     (gpointer                data,
-									 gpointer                callback_data);
-static GList *    global_preferences_get_sidebar_panel_view_identifiers (void);
-static gboolean   global_preferences_close_dialog_callback              (GtkWidget              *dialog,
-									 gpointer                user_data);
-static void       global_preferences_install_sidebar_panel_defaults     (void);
-static void       global_preferences_install_defaults                   (void);
-static void       global_preferences_install_home_location_defaults     (void);
-static void       global_preferences_install_medusa_defaults            (void);
-static void       global_preferences_install_font_defaults              (void);
-static int        compare_view_identifiers                              (gconstpointer           a,
-									 gconstpointer           b);
-static GtkWidget *global_preferences_create_dialog                      (void);
-static void       global_preferences_create_search_pane                 (NautilusPreferencesBox *preference_box);
-static void       global_preferences_create_sidebar_panels_pane         (NautilusPreferencesBox *preference_box);
-static void       global_preferences_pane_update_callback               (gpointer                callback_data);
-static GtkWidget *global_preferences_populate_pane                      (NautilusPreferencesBox *preference_box,
-									 const char             *pane_name,
-									 const ItemDescription  *item_descriptions);
-
-static GtkWidget *global_prefs_dialog = NULL;
-
+/* The following table defines the default values and user level visibilities of
+ * Nautilus preferences.  Each of these preferences does not necessarily need to
+ * have a UI item in the preferences dialog.  To add an item to the preferences
+ * dialog, see the PreferenceDialogItem tables later in this file.
+ * 
+ * Field definitions:
+ *
+ * 1. name
+ *
+ *    The name of the preference.  Usually defined in
+ *    nautilus-global-preferences.h
+ *
+ * 2. type
+ *    The preference type.  One of:
+ *
+ *	PREFERENCE_BOOLEAN
+ *	PREFERENCE_INTEGER
+ *	PREFERENCE_STRING
+ * 
+ * 3. visible_user_level
+ *    The visible user level is the first user level at which the
+ *    preference is visible.  By default all preferences have a visibility of 0.
+ * 
+ *    A preference with a visible_user_level greater than 0, will be "visible"
+ *    only at that level or higher.  Any getters that ask for that preference at
+ *    lower user levels will always receive the default value.  Also, if the
+ *    preference has an entry in the preferences dialog, it will not be shown
+ *    unless the current user level is greater than or equal to the preference's
+ *    visible user level.
+ *
+ * 4. default1
+ *    A pair of a user_level and a value (PreferenceUserLevelDefault).  For the
+ *    left hand side user_level, the preference will have the right hand side
+ *    default value.
+ * 
+ *    This pair does not need to be given.  It can be { USER_LEVEL_NONE }, in 
+ *    which case the preference defaults to 0 at all user levels.
+ * 
+ * 5. default2
+ *    A pair of a user_level and a value (PreferenceUserLevelDefault).  For the
+ *    left hand side user_level, the preference will have the right hand side
+ *    default value.
+ * 
+ *    This pair does not need to be given.  It can be { USER_LEVEL_NONE }, in 
+ *    which case the preference defaults to 0 at all user levels.
+ *
+ *    Notes:
+ *
+ *    Define defaults only for preferences that need something other than 0 (integer)
+ *    FALSE (boolean) or "" (string) as their defaults.
+ *
+ *    Its possible to have different defaults for different user levels  Its not 
+ *    required to have defaults for EACH user level.  If there is no default
+ *    installed for a high user level, the next lowest user level with a valid
+ *    default is used.
+ *
+ */
 static const PreferenceDefault preference_defaults[] = {
 	{ NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 	  PREFERENCE_BOOLEAN,
@@ -199,7 +241,6 @@ static const PreferenceDefault preference_defaults[] = {
 	  PREFERENCE_BOOLEAN,
 	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
 	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) }, 
-	  /* { NAUTILUS_USER_LEVEL_NOVICE, !nautilus_dumb_down_for_multi_byte_locale_hack () }, */
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_PREVIEW_SOUND,
@@ -326,14 +367,12 @@ static const PreferenceDefault preference_defaults[] = {
 /**
  * global_preferences_install_defaults
  *
- * Install defaults for some preferences.  Install defaults only for preferences
- * that need something other than 0 (integer) FALSE (boolean) or "" (string) as
- * their defaults.
+ * Install defaults and visibilities.
  *
- * Its possible to have different defaults for different user levels  Its not 
- * required to have defaults for EACH user level.  If there is no default
- * installed for a high user level, the next lowest user level with a valid
- * default is used.
+ * Most of the defaults come from the preference_defaults table above.
+ *
+ * Many preferences require their defaults to be computed, and so there
+ * are special functions to install those.
  */
 static void
 global_preferences_install_defaults (void)
@@ -411,26 +450,6 @@ global_preferences_install_defaults (void)
 	global_preferences_install_medusa_defaults ();
 }
 
-/**
- * global_preferences_install_visibility
- *
- * Set the visibilities for restricted preferences.  The visible user level
- * is the first user level at which the preference is visible.  By default
- * all preferences have a visibility of 0.
- *
- * A preference with a value greater than 0, will be "visible" only at that
- * level or higher.  Any getters that ask for that preference at lower user
- * levels will always receive the default value.  Also, if the preference 
- * has an entry in the preferences dialog, it will not be shown unless the 
- * current user level is greater than or equal to the preference's visible
- * user level.
- * 
- */
-// static void
-// global_preferences_install_visibility (void)
-// {
-// }
-
 /*
  * Private stuff
  */
@@ -449,6 +468,14 @@ compare_view_identifiers (gconstpointer a, gconstpointer b)
 	return nautilus_strcmp (idenfifier_a->name, idenfifier_b->name);
 }
 
+/* An enumeration structure used for NAUTILUS_PREFERENCE_ITEM_ENUM items. */
+typedef struct
+{
+	const char *stored_value;
+	const char *display_value;
+	int value;
+} EnumerationEntry;
+
 static EnumerationEntry speed_tradeoff_enumeration[] = {
 	{ N_("always"),
 	  N_("Always"),
@@ -465,7 +492,96 @@ static EnumerationEntry speed_tradeoff_enumeration[] = {
 	{ NULL, NULL, 0 }
 };
 
-static ItemDescription appearance_items[] = {
+/* A structure that describes a single preferences dialog ui item. */
+struct PreferenceDialogItem
+{
+	const char *group_name;
+	const char *preference_name;
+	const char *preference_description;
+	NautilusPreferencesItemType item_type;
+	const char *control_preference_name;
+	NautilusPreferencesItemControlAction control_action;
+	const EnumerationEntry *enumeration_values;
+	const char *constrained_integer_values;
+	const char *constrained_integer_labels;
+};
+
+/* The following tables define preference items for the preferences dialog.
+ * Each item corresponds to one preference.
+ * 
+ * Field definitions:
+ *
+ * 1. group_name
+ *
+ *    The group under which the preference is placed.  Each unique group will
+ *    be framed and titled with the group_name.
+ *
+ *    Many items can have the same group_name.  Groups will be created as needed
+ *    while populating the items.
+ *
+ *    This field needs to be non NULL.
+ *
+ * 2. preference_name
+ *
+ *    The name of the preference
+ *
+ *    This field needs to be non NULL.
+ *
+ * 3. preference_description
+ *
+ *    A user visible description of the preference.  Not all items use the
+ *    description.  In particular, enumeration items use the descriptions from
+ *    an enumeration structure.  See field XX below.
+ *
+ *    This field needs to be non NULL for items other than 
+ *    NAUTILUS_PREFERENCE_ITEM_ENUM or 
+ *    NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM
+ * 
+ * 4. item_type
+ *
+ *    The type of the item.  Needs to be one of the valid values of
+ *    NautilusPreferencesItemType.  See nautilus-preference-item.h.
+ *
+ *    This field needs to be one of the valid item types.
+ * 
+ * 5. control_preference_name
+ *
+ *    A second preference that "controls" this preference.  Can only
+ *    be a boolean preference.
+ *
+ *    This field can be NULL, in which case field 6 is ignored.
+ *
+ * 6. control_action
+ *
+ *    The action to take when the control preference in field 5 changes.
+ *    There are only 2 possible actions:
+ *
+ *       NAUTILUS_PREFERENCE_ITEM_SHOW - If the control preference is TRUE
+ *                                       the show this item.
+ *
+ *       NAUTILUS_PREFERENCE_ITEM_HIDE - If the control preference is FALSE
+ *                                       the hide this item.
+ *
+ * 7. enumeration_values
+ *
+ *    If the item_type in field 4 was NAUTILUS_PREFERENCE_ITEM_ENUM or
+ *    NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM, then this field should be 
+ *    a pointer to a NULL terminated array of EnumerationEntry.
+ *
+ * 8. constrained_integer_values
+ *
+ *    If the item_type in field 4 was NAUTILUS_PREFERENCE_ITEM_CONSTRAINED_INTEGER,
+ *    then this field should be a string of comma delimeted integers to be
+ *    tokenized and used as the list of possible integers.
+ *
+ * 9. constrained_integer_labels
+ *
+ *    If the item_type in field 4 was NAUTILUS_PREFERENCE_ITEM_CONSTRAINED_INTEGER,
+ *    then this field should be a string of comma delimeted labels corresponding to
+ *    the integers in field 8.
+ *
+ */
+static PreferenceDialogItem appearance_items[] = {
 	{ N_("Smoother Graphics"),
 	  NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
 	  N_("Use smoother (but slower) graphics"),
@@ -487,21 +603,10 @@ static ItemDescription appearance_items[] = {
 	  NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
 	  NAUTILUS_PREFERENCE_ITEM_SHOW
 	},
-#if 0
-	{ N_("Fonts"),
-	  NAUTILUS_PREFERENCES_DEFAULT_FONT_SIZE,
-	  N_("Use this font size for default text:"),
-	  NAUTILUS_PREFERENCE_ITEM_CONSTRAINED_INTEGER,
-	  NULL,
-	  0,
-	  NULL,
-	  8, 24, 2
-	},
-#endif
 	{ NULL, NULL, NULL, 0, NULL, 0 }
 };
 
-static ItemDescription windows_and_desktop_items[] = {
+static PreferenceDialogItem windows_and_desktop_items[] = {
 	{ N_("Desktop"),
 	  NAUTILUS_PREFERENCES_SHOW_DESKTOP,
 	  N_("Use Nautilus to draw the desktop"),
@@ -600,7 +705,7 @@ static EnumerationEntry executable_text_activation_enumeration[] = {
 	{ NULL, NULL, 0 }
 };
 
-static ItemDescription directory_views_items[] = {
+static PreferenceDialogItem directory_views_items[] = {
 	{ N_("Fonts"),
 	  NAUTILUS_PREFERENCES_ICON_VIEW_FONT,
 	  N_("Use this font to display non-smooth icon file names"),
@@ -622,7 +727,8 @@ static ItemDescription directory_views_items[] = {
 	  NULL,
 	  0,
 	  NULL,
-	  8, 24, 2
+	  "8,10,12,14,16,18,20,22,24",
+	  "8,10,12,14,16,18,20,22,24",
 	},
 	{ N_("Fonts"),
 	  NAUTILUS_PREFERENCES_LIST_VIEW_FONT,
@@ -638,7 +744,8 @@ static ItemDescription directory_views_items[] = {
 	  NULL,
 	  0,
 	  NULL,
-	  8, 24, 2
+	  "8,10,12,14,16,18,20,22,24",
+	  "8,10,12,14,16,18,20,22,24",
 	},
 	{ N_("Click Behavior"),
 	  NAUTILUS_PREFERENCES_CLICK_POLICY,
@@ -687,7 +794,7 @@ static ItemDescription directory_views_items[] = {
 	{ NULL, NULL, NULL, 0, NULL, 0 }
 };
 
-static ItemDescription navigation_items[] = {
+static PreferenceDialogItem navigation_items[] = {
 	{ N_("Home"),
 	  NAUTILUS_PREFERENCES_HOME_URI,
 	  N_("Location:"),
@@ -726,7 +833,7 @@ static ItemDescription navigation_items[] = {
 	{ NULL, NULL, NULL, 0, NULL, 0 }
 };
 
-static ItemDescription tradeoffs_items[] = {
+static PreferenceDialogItem tradeoffs_items[] = {
 	{ N_("Show Text in Icons"),
 	  NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
 	  N_(""),
@@ -872,7 +979,7 @@ static EnumerationEntry search_bar_type_enumeration[] = {
 	{ NULL, NULL, 0 }
 };
 
-static ItemDescription search_items[] = {
+static PreferenceDialogItem search_items[] = {
 	{ N_("Search Complexity Options"),
 	  NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
 	  N_("search type to do by default"),
@@ -925,7 +1032,7 @@ global_preferences_create_search_pane (NautilusPreferencesBox *preference_box)
 	global_preferences_medusa_blocked_changed_callback (fast_search_group);
 }
 
-static ItemDescription sidebar_items[] = {
+static PreferenceDialogItem sidebar_items[] = {
 	{ N_("Tree"),
 	  NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
 	  N_("Show only folders (no files) in the tree"),
@@ -1334,7 +1441,7 @@ global_preferences_close_dialog_callback (GtkWidget   *dialog,
 static GtkWidget *
 global_preferences_populate_pane (NautilusPreferencesBox *preference_box,
 				  const char *pane_name,
-				  const ItemDescription *item_descriptions)
+				  const PreferenceDialogItem *preference_dialog_item)
 {
 	GtkWidget *pane;
 	GtkWidget *item;
@@ -1346,7 +1453,7 @@ global_preferences_populate_pane (NautilusPreferencesBox *preference_box,
 
 	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_BOX (preference_box), NULL);
 	g_return_val_if_fail (pane_name != NULL, NULL);
-	g_return_val_if_fail (item_descriptions != NULL, NULL);
+	g_return_val_if_fail (preference_dialog_item != NULL, NULL);
 
 	/* Create the pane if needed */
 	pane = nautilus_preferences_box_find_pane (preference_box, pane_name);
@@ -1358,24 +1465,24 @@ global_preferences_populate_pane (NautilusPreferencesBox *preference_box,
 
 	start_group_index = nautilus_preferences_pane_get_num_groups (NAUTILUS_PREFERENCES_PANE (pane));
 
-	for (i = 0; item_descriptions[i].group_name != NULL; i++) {
-		if (!nautilus_string_list_contains (group_names, item_descriptions[i].group_name)) {
-			nautilus_string_list_insert (group_names, item_descriptions[i].group_name);
+	for (i = 0; preference_dialog_item[i].group_name != NULL; i++) {
+		if (!nautilus_string_list_contains (group_names, preference_dialog_item[i].group_name)) {
+			nautilus_string_list_insert (group_names, preference_dialog_item[i].group_name);
 			nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (pane),
-							     item_descriptions[i].group_name);
+							     preference_dialog_item[i].group_name);
 		}
 	}
 
-	for (i = 0; item_descriptions[i].group_name != NULL; i++) {
+	for (i = 0; preference_dialog_item[i].group_name != NULL; i++) {
 		group_index = start_group_index + 
-			nautilus_string_list_get_index_for_string (group_names, item_descriptions[i].group_name);
+			nautilus_string_list_get_index_for_string (group_names, preference_dialog_item[i].group_name);
 
-		nautilus_preferences_set_description (item_descriptions[i].preference_name,
-						      item_descriptions[i].preference_description);
+		nautilus_preferences_set_description (preference_dialog_item[i].preference_name,
+						      preference_dialog_item[i].preference_description);
 
-		enumeration_values = item_descriptions[i].enumeration_values;
+		enumeration_values = preference_dialog_item[i].enumeration_values;
 		while (enumeration_values != NULL && enumeration_values->stored_value != NULL) {
-			nautilus_preferences_enumeration_insert (item_descriptions[i].preference_name,
+			nautilus_preferences_enumeration_insert (preference_dialog_item[i].preference_name,
 								 enumeration_values->stored_value,
 								 enumeration_values->display_value,
 								 enumeration_values->value);
@@ -1384,22 +1491,23 @@ global_preferences_populate_pane (NautilusPreferencesBox *preference_box,
 
 		item = nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (pane),
 									group_index,
-									item_descriptions[i].preference_name,
-									item_descriptions[i].item_type);
+									preference_dialog_item[i].preference_name,
+									preference_dialog_item[i].item_type);
 
-		if (item_descriptions[i].item_type == NAUTILUS_PREFERENCE_ITEM_CONSTRAINED_INTEGER) {
-			nautilus_preferences_item_set_constrained_integer_paramaters (
+		if (preference_dialog_item[i].item_type == NAUTILUS_PREFERENCE_ITEM_CONSTRAINED_INTEGER) {
+			g_assert (nautilus_strlen (preference_dialog_item[i].constrained_integer_values) > 0);
+			g_assert (nautilus_strlen (preference_dialog_item[i].constrained_integer_labels) > 0);
+			nautilus_preferences_item_set_constrained_integer_values (
 				NAUTILUS_PREFERENCES_ITEM (item),
-				item_descriptions[i].constrained_integer_lower,
-				item_descriptions[i].constrained_integer_upper,
-				item_descriptions[i].constrained_integer_increment);
+				preference_dialog_item[i].constrained_integer_values,
+				preference_dialog_item[i].constrained_integer_labels);
 		}
 
-		if (item_descriptions[i].control_preference_name != NULL) {
+		if (preference_dialog_item[i].control_preference_name != NULL) {
 			nautilus_preferences_item_set_control_preference (NAUTILUS_PREFERENCES_ITEM (item),
-									  item_descriptions[i].control_preference_name);
+									  preference_dialog_item[i].control_preference_name);
 			nautilus_preferences_item_set_control_action (NAUTILUS_PREFERENCES_ITEM (item),
-								      item_descriptions[i].control_action);
+								      preference_dialog_item[i].control_action);
 		}
 	}
 

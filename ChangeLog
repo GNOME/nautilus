@@ -1,5 +1,31 @@
 2001-03-28  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* components/text/nautilus-text-view-ui.xml:
+	* components/text/nautilus-text-view.c: (merge_bonobo_menu_items):
+	* libnautilus-extensions/nautilus-font-factory.c:
+	(nautilus_font_factory_get_font_by_family):
+	Change "default" to "GTK System Font."  Also add a FIXME for the fact
+	that the string "GTK System Font" is hard coded in many places.
+	Im going to fix this better in a bit.
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_populate_pane):
+	Add documentation for the preference and preference dialog item
+	structures and tables.  Also cleanup a bit of cruft left over from
+	the last checkin.
+	
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(nautilus_preferences_item_initialize), (preferences_item_destroy),
+	(preferences_item_create_constrained_integer),
+	(preferences_item_create_font),
+	(constrained_integer_changed_callback),
+	(nautilus_preferences_item_set_constrained_integer_values):
+	* libnautilus-extensions/nautilus-preferences-item.h:
+	Add support for having the constrained integer values be
+	independent of the labels.
+	
+2001-03-28  Ramiro Estrugo  <ramiro@eazel.com>
+
 	Fix bugs:
 
 	7343 - Fonts checks should work even when nautilus has not

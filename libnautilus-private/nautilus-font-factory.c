@@ -219,7 +219,10 @@ nautilus_font_factory_get_font_by_family (const char *family,
 	g_return_val_if_fail (family != NULL, NULL);
 	g_return_val_if_fail (size_in_pixels > 0, NULL);
 
-	if (nautilus_str_is_equal (family, "default")) {
+	/* FIXME bugzilla.eazel.com 7907: 
+	 * The "GTK System Font" string is hard coded in many places.
+	 */
+	if (nautilus_str_is_equal (family, "GTK System Font")) {
 		return nautilus_gtk_get_system_font ();
 	}
 

@@ -31,6 +31,8 @@
 #include "nautilus-string.h"
 #include <libgnomevfs/gnome-vfs.h>
 
+#include <ctype.h>
+
 #include <libgnome/gnome-i18n.h>
 #include <gtk/gtkcheckbutton.h>
 #include <gtk/gtksignal.h>
@@ -58,9 +60,8 @@ struct _NautilusPreferencesItemDetails
 	guint change_signal_ID;
 	char *control_preference_name;
 	NautilusPreferencesItemControlAction control_action;
-	int constrained_integer_lower;
-	int constrained_integer_upper;
-	int constrained_integer_increment;
+	NautilusStringList *constrained_integer_value_list;
+	NautilusStringList *constrained_integer_label_list;
 };
 
 /* GtkObjectClass methods */
@@ -127,10 +128,6 @@ nautilus_preferences_item_initialize (NautilusPreferencesItem *item)
 {
 	item->details = g_new0 (NautilusPreferencesItemDetails, 1);
 	item->details->item_type = PREFERENCES_ITEM_UNDEFINED_ITEM;
-
-	item->details->constrained_integer_lower = 0;
-	item->details->constrained_integer_upper = 10;
-	item->details->constrained_integer_increment = 1;
 }
 
 /* GtkObjectClass methods */
@@ -145,6 +142,8 @@ preferences_item_destroy (GtkObject *object)
 
 	g_free (item->details->preference_name);
 	g_free (item->details->control_preference_name);
+	nautilus_string_list_free (item->details->constrained_integer_value_list);
+	nautilus_string_list_free (item->details->constrained_integer_label_list);
 	g_free (item->details);
 	
 	/* Chain destroy */
@@ -482,9 +481,6 @@ preferences_item_create_constrained_integer (NautilusPreferencesItem *item,
 					     const char *preference_name)
 {
 	char *description;
-	NautilusStringList *size_list;
-	int i;
-	char *number;
 	
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (item));
 	g_return_if_fail (nautilus_strlen (preference_name) > 0);
@@ -496,19 +492,6 @@ preferences_item_create_constrained_integer (NautilusPreferencesItem *item,
 	nautilus_caption_set_title_label (NAUTILUS_CAPTION (item->details->child), description);
 	g_free (description);
 
-	size_list = nautilus_string_list_new (TRUE);
-
-	for (i = item->details->constrained_integer_lower;
-	     i <= item->details->constrained_integer_upper;
-	     i += item->details->constrained_integer_increment) {
-		number = g_strdup_printf ("%d", i);
-		nautilus_string_list_insert (size_list, number);
-		g_free (number);
-	}
-	
-	nautilus_string_picker_set_string_list (NAUTILUS_STRING_PICKER (item->details->child), size_list);
-	nautilus_string_list_free (size_list);
-	
 	item->details->change_signal_ID = gtk_signal_connect (GTK_OBJECT (item->details->child),
 							      "changed",
 							      GTK_SIGNAL_FUNC (constrained_integer_changed_callback),
@@ -570,7 +553,11 @@ preferences_item_create_font (NautilusPreferencesItem *item,
 	 * look much better.  However, in multi byte locales, the fixed font is usually the
 	 * only one that is available at the right encoding.
 	 */
-	nautilus_string_list_insert (font_list, "default");
+
+	/* FIXME bugzilla.eazel.com 7907: 
+	 * The "GTK System Font" string is hard coded in many places.
+	 */
+	nautilus_string_list_insert (font_list, "GTK System Font");
 	nautilus_string_list_insert (font_list, "fixed");
 	nautilus_string_list_insert (font_list, "helvetica");
 	nautilus_string_list_insert (font_list, "times");
@@ -754,18 +741,36 @@ static void
 constrained_integer_changed_callback (NautilusStringPicker *string_picker,
 				      NautilusPreferencesItem *item)
 {
+ 	char *selected_label;
+	int selected_label_index;
  	char *new_value_string;
 	int new_value;
 
 	g_return_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker));
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (item));
+	g_return_if_fail (nautilus_string_list_get_length (item->details->constrained_integer_value_list) > 0);
+	g_return_if_fail (nautilus_string_list_get_length (item->details->constrained_integer_label_list) > 0);
+	g_return_if_fail (nautilus_string_list_get_length (item->details->constrained_integer_value_list)
+			  == nautilus_string_list_get_length (item->details->constrained_integer_label_list));
 
- 	new_value_string = nautilus_string_picker_get_selected_string (string_picker);
- 	g_assert (new_value_string != NULL);
-	
-	if (nautilus_eat_str_to_int (new_value_string, &new_value)) {
+ 	selected_label = nautilus_string_picker_get_selected_string (string_picker);
+	g_return_if_fail (selected_label != NULL);
+
+	selected_label_index = 
+		nautilus_string_list_get_index_for_string (item->details->constrained_integer_label_list,
+							   selected_label);
+	g_free (selected_label);
+
+	g_return_if_fail (selected_label_index != NAUTILUS_STRING_LIST_NOT_FOUND);
+
+	new_value_string = nautilus_string_list_nth (item->details->constrained_integer_value_list,
+						     selected_label_index);
+
+	if (nautilus_strlen (new_value_string) && nautilus_str_to_int (new_value_string, &new_value)) {
 		nautilus_preferences_set_integer (item->details->preference_name, new_value);
 	}
+
+	g_free (new_value_string);
 }
 
 char *
@@ -947,37 +952,38 @@ nautilus_preferences_item_get_control_showing (const NautilusPreferencesItem *pr
 	return !value;
 }
 
+/**
+ * nautilus_preferences_item_set_constrained_integer_values:
+ *
+ * @item: A NautilusPreferenceItem object.
+ * @values: A non NULL comma delimited string of integer choices.
+ * @labels: A non NULL comma delimited string of labels for the choices.
+ */
 void
-nautilus_preferences_item_set_constrained_integer_paramaters (NautilusPreferencesItem *item,
-							      int lower,
-							      int upper,
-							      int increment)
+nautilus_preferences_item_set_constrained_integer_values (NautilusPreferencesItem *item,
+							  const char *values,
+							  const char *labels)
 {
-	NautilusStringList *size_list;
-	int i;
-	char *number;
-
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (item));
 	g_return_if_fail (item->details->item_type == NAUTILUS_PREFERENCE_ITEM_CONSTRAINED_INTEGER);
-	g_return_if_fail (upper >= lower);
-	g_return_if_fail (increment > 0);
-	
-	item->details->constrained_integer_lower = lower;
-	item->details->constrained_integer_upper = upper;
-	item->details->constrained_integer_increment = increment;
+	g_return_if_fail (nautilus_strlen (labels) > 0);
+	g_return_if_fail (nautilus_strlen (values) > 0);
+	g_return_if_fail (nautilus_str_count_characters (labels, ',')
+			  == nautilus_str_count_characters (values, ','));
 
-	size_list = nautilus_string_list_new (TRUE);
-
-	for (i = item->details->constrained_integer_lower;
-	     i <= item->details->constrained_integer_upper;
-	     i += item->details->constrained_integer_increment) {
-		number = g_strdup_printf ("%d", i);
-		nautilus_string_list_insert (size_list, number);
-		g_free (number);
-	}
+	nautilus_string_list_free (item->details->constrained_integer_value_list);
+	nautilus_string_list_free (item->details->constrained_integer_label_list);
 	
-	nautilus_string_picker_set_string_list (NAUTILUS_STRING_PICKER (item->details->child), size_list);
-	nautilus_string_list_free (size_list);
+	item->details->constrained_integer_value_list = nautilus_string_list_new_from_tokens (values, ",", TRUE);
+	item->details->constrained_integer_label_list = nautilus_string_list_new_from_tokens (labels, ",", TRUE);
+
+ 	g_return_if_fail (nautilus_string_list_get_length (item->details->constrained_integer_value_list) > 0);
+ 	g_return_if_fail (nautilus_string_list_get_length (item->details->constrained_integer_label_list) > 0);
+ 	g_return_if_fail (nautilus_string_list_get_length (item->details->constrained_integer_value_list)
+ 			  == nautilus_string_list_get_length (item->details->constrained_integer_label_list));
+
+	nautilus_string_picker_set_string_list (NAUTILUS_STRING_PICKER (item->details->child),
+						item->details->constrained_integer_label_list);
 }
 
 gboolean
