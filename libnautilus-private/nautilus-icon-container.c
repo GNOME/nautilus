@@ -2784,7 +2784,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 		 max_image_size * icon->scale_x,
 		 max_image_size * icon->scale_y,
 		 &attach_points);
-		
+	
 	nautilus_scalable_icon_unref (scalable_icon);
 	
 	emblem_pixbufs = NULL;
@@ -2810,7 +2810,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 			 icon->data,
 			 &editable_text,
 			 &additional_text);
-
+	
 	font = details->label_font[details->zoom_level];
         
 	gnome_canvas_item_set (GNOME_CANVAS_ITEM (icon->item),
@@ -2821,6 +2821,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 			       NULL);
 	
 	nautilus_icon_canvas_item_set_image (icon->item, pixbuf);
+	nautilus_icon_canvas_item_set_attach_points (icon->item, &attach_points);
 	nautilus_icon_canvas_item_set_emblems (icon->item, emblem_pixbufs);
 
 	/* Let the pixbufs go. */

@@ -77,9 +77,12 @@ typedef enum {
 typedef struct NautilusScalableIcon NautilusScalableIcon;
 
 /* here's a structure to hold the emblem attach points */
+
+#define MAX_ATTACH_POINTS 8
+
 typedef struct {
 	gboolean has_attach_points;
-	GdkPoint attach_points[8];		
+	GdkPoint attach_points[MAX_ATTACH_POINTS];		
 } EmblemAttachPoints;
 
 /* Instead of a class declaration here, I will just document

@@ -191,7 +191,7 @@ typedef struct {
 typedef struct {
 	ArtIRect text_rect;
 	gboolean has_attach_points;
-	GdkPoint attach_points[8];		
+	GdkPoint attach_points[MAX_ATTACH_POINTS];		
 } IconInfo;
 
 /* The key to a hash table that holds the scaled icons as pixbufs.
@@ -584,7 +584,7 @@ parse_attach_points (IconInfo *icon_info, const char* attach_point_string)
 				
 	/* split the attach point string into a string array, then process
 	   each point with sscanf in a loop */	
-	point_array = g_strsplit (attach_point_string, "|", 8); 
+	point_array = g_strsplit (attach_point_string, "|", MAX_ATTACH_POINTS); 
 	
 	for (index = 0; (text_piece = point_array[index]) != NULL; index++) {
 		if (sscanf (text_piece, " %d , %d , %*s", &x_offset, &y_offset) == 2) {
@@ -624,6 +624,10 @@ get_themed_icon_file_path (const char *theme_name,
 		themed_icon_name = g_strconcat (theme_name, "/", icon_name, NULL);
 	}
 
+	if (icon_info != NULL) {
+		icon_info->has_attach_points = FALSE;	
+	}
+	
 	include_size = icon_size != NAUTILUS_ICON_SIZE_STANDARD;
 	factory = (NautilusIconFactory*) nautilus_icon_factory_get();
 	
@@ -680,8 +684,6 @@ get_themed_icon_file_path (const char *theme_name,
 		node = nautilus_xml_get_root_child_by_name_and_property
 			(doc, "ICON", "SIZE", size_as_string);
 		g_free (size_as_string);
-
-		icon_info->has_attach_points = FALSE;
 		
 		property = xmlGetProp (node, "EMBEDDED_TEXT_RECTANGLE");		
 		if (property != NULL) {
@@ -702,7 +704,10 @@ get_themed_icon_file_path (const char *theme_name,
 			icon_info->has_attach_points = TRUE;
 			parse_attach_points (icon_info, property);	
 			xmlFree (property);
-		}		
+		} else  {
+			icon_info->has_attach_points = FALSE;		
+		}			
+		
 		xmlFreeDoc (doc);
 	}
 
@@ -1559,7 +1564,8 @@ load_specific_image (NautilusScalableIcon *scalable_icon,
 		/* Custom icon. */
 
 		memset (&icon_info->text_rect, 0, sizeof (icon_info->text_rect));
-
+		icon_info->has_attach_points = FALSE;
+		
 		/* FIXME bugzilla.eazel.com 643: we can't load svgs asynchronously, so this
 		 *  only works for local files
 		 */
@@ -1927,6 +1933,8 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 		gboolean got_custom_image;
 		IconInfo key_icon_info;
 		
+		key_icon_info.has_attach_points = FALSE;
+		
 		/* Not in the table, so load the image. */
 		/* If we're picky, then we want the image only if this exact
 		 * nominal size is available.
@@ -1994,7 +2002,7 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 		g_hash_table_insert (hash_table, key, image);
 	}
 
-	/* Return the text rect if the caller asked for it. */
+	/* Return the icon info if the caller asked for it. */
 	if (icon_info != NULL) {
 		*icon_info = key->icon_info;
 	}
@@ -2032,7 +2040,7 @@ nautilus_icon_factory_get_pixbuf_for_icon (NautilusScalableIcon *scalable_icon,
 				     &icon_info);
 	if (attach_data != NULL) {
 		attach_data->has_attach_points = icon_info.has_attach_points;
-		for (index = 0; index < 8; index++) {
+		for (index = 0; index < MAX_ATTACH_POINTS; index++) {
 			attach_data->attach_points[index] = icon_info.attach_points[index];
 		}
 	}

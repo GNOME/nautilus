@@ -46,6 +46,7 @@
 #include "nautilus-gnome-extensions.h"
 #include "nautilus-graphic-effects.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-icon-factory.h"
 
 #define STRETCH_HANDLE_THICKNESS 5
 #define EMBLEM_SPACING 2
@@ -59,6 +60,7 @@ struct NautilusIconCanvasItemDetails {
 	char *editable_text;		/* Text that can be modified by a renaming function */
 	char *additional_text;		/* Text that cannot be modifed, such as file size, etc. */
 	GdkFont *font;
+	EmblemAttachPoints *attach_pointer;
 	
 	/* Size of the text at current font. */
 	int text_width;
@@ -101,6 +103,7 @@ typedef struct {
 	ArtIRect icon_rect;
 	RectangleSide side;
 	int position;
+	int index;
 	GList *emblem;
 } EmblemLayout;
 
@@ -269,6 +272,8 @@ nautilus_icon_canvas_item_destroy (GtkObject *object)
 	nautilus_gdk_pixbuf_list_free (details->emblem_pixbufs);
 	g_free (details->editable_text);
 	g_free (details->additional_text);
+	g_free (details->attach_pointer);
+	
 	if (details->font != NULL) {
 		gdk_font_unref (details->font);
 	}
@@ -471,6 +476,19 @@ nautilus_icon_canvas_item_set_emblems (NautilusIconCanvasItem *item,
 	nautilus_gdk_pixbuf_list_free (item->details->emblem_pixbufs);
 	item->details->emblem_pixbufs = g_list_copy (emblem_pixbufs);
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (item));
+}
+
+void 
+nautilus_icon_canvas_item_set_attach_points (NautilusIconCanvasItem *item,
+					     EmblemAttachPoints     *attach_points)
+{
+	g_free (item->details->attach_pointer);
+	item->details->attach_pointer = NULL;
+
+	if (attach_points && attach_points->has_attach_points) {
+		item->details->attach_pointer = g_new0 (EmblemAttachPoints, 1);
+		*item->details->attach_pointer = *attach_points;
+	}
 }
 
 /* Recomputes the bounding box of a icon canvas item.
@@ -854,6 +872,7 @@ emblem_layout_reset (EmblemLayout *layout, NautilusIconCanvasItem *icon_item, co
 	layout->icon_rect = *icon_rect;
 	layout->side = RIGHT_SIDE;
 	layout->position = 0;
+	layout->index = 0;
 	layout->emblem = icon_item->details->emblem_pixbufs;
 }
 
@@ -864,7 +883,8 @@ emblem_layout_next (EmblemLayout *layout,
 {
 	GdkPixbuf *pixbuf;
 	int width, height, x, y;
-
+	EmblemAttachPoints *attach_info   ;
+	
 	/* Check if we have layed out all of the pixbufs. */
 	if (layout->emblem == NULL) {
 		return FALSE;
@@ -875,10 +895,31 @@ emblem_layout_next (EmblemLayout *layout,
 	width = gdk_pixbuf_get_width (pixbuf);
 	height = gdk_pixbuf_get_height (pixbuf);
 
-	/* handle the case of just one emblem by centering it in the icon */ 
+
 	/* Advance to the next emblem. */
 	layout->emblem = layout->emblem->next;
 
+	if (layout->icon_item->details->attach_pointer) {
+		if (layout->index >= MAX_ATTACH_POINTS)
+			return FALSE;
+		
+		attach_info = layout->icon_item->details->attach_pointer;
+		x = layout->icon_rect.x0 + attach_info->attach_points[layout->index].x;
+		y = layout->icon_rect.y0 + attach_info->attach_points[layout->index].y;
+
+		layout->index += 1;
+		
+		/* Return the rectangle and pixbuf. */
+		*emblem_pixbuf = pixbuf;
+		emblem_rect->x0 = x - width / 2;
+		emblem_rect->y0 = y - height / 2;
+		emblem_rect->x1 = emblem_rect->x0 + width;
+		emblem_rect->y1 = emblem_rect->y0 + height;
+
+		return TRUE;
+
+	}
+	
 	for (;;) {
 
 		/* Find the side to lay out along. */

@@ -1,3 +1,31 @@
+2000-08-02  Andy Hertzfeld  <andy@eazel.com>
+
+	this almost completes the emblem attach point stuff, at least for the eazel theme,
+	but there's still some tweaking left to do
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c,h:
+	(nautilus_icon_canvas_item_destroy),
+	(nautilus_icon_canvas_item_set_attach_points),
+	(emblem_layout_reset), (emblem_layout_next):
+	added an attach_points attribute, and used it to determine the
+	emblem positions if set	
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_update_icon):
+	get the emblem attach points from the icon factory, and tell the
+	canvas item about them.
+	
+	* libnautilus-extensions/nautilus-icon-factory.c,h:
+	(parse_attach_points), (get_themed_icon_file_path),
+	(load_specific_image), (get_image_from_cache),
+	(nautilus_icon_factory_get_pixbuf_for_icon):
+	cleaned up and debugged the attach point handling
+	
+	* icons/eazel/Makefile.am:
+	* icons/eazel/i-directory-accept.xml:
+	* icons/eazel/i-directory.xml:
+	set the emblem positions of folders in the eazel theme
+	
 2000-08-02  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/mozilla/mozilla-preferences.cpp:

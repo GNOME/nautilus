@@ -28,6 +28,7 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnomeui/gnome-canvas.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include "nautilus-icon-factory.h"
 
 BEGIN_GNOME_DECLS
 
@@ -70,6 +71,8 @@ void        nautilus_icon_canvas_item_set_emblems              (NautilusIconCanv
 								GList                  *emblem_pixbufs);
 void        nautilus_icon_canvas_item_set_show_stretch_handles (NautilusIconCanvasItem *item,
 								gboolean                show_stretch_handles);
+void	    nautilus_icon_canvas_item_set_attach_points	       (NautilusIconCanvasItem *item,
+								EmblemAttachPoints     *attach_points);
 double      nautilus_icon_canvas_item_get_max_text_width       (NautilusIconCanvasItem *item);
 const char *nautilus_icon_canvas_item_get_editable_text        (NautilusIconCanvasItem *icon_item);
 void        nautilus_icon_canvas_item_set_renaming             (NautilusIconCanvasItem *icon_item,
