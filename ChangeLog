@@ -1,3 +1,22 @@
+2000-08-31  Andy Hertzfeld  <andy@eazel.com>
+
+	various cleanups and enhancements for the rpm view
+
+	* components/rpmview/nautilus-rpm-view.h:
+	moved the details private again by moving them out of the header file
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_initialize),
+	(nautilus_rpm_view_update_from_uri), (nautilus_rpm_view_get_uri),
+	(nautilus_rpm_view_verify_package_callback):
+	moved the details back here; added an accessor for the uri field;
+	added a verify button; changed label info text back to using non-aa
+	text, since aa-text doesn't justify right yet; captured images
+	from the header if present.
+	* components/rpmview/nautilus-rpm-view-install.c:
+	(nautilus_rpm_view_install_done),
+	(nautilus_rpm_view_install_package_callback):
+	used the new accessor for uris.
+	
 2000-08-31  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus-extensions/nautilus-gtk-extensions.c:

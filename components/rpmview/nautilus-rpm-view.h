@@ -55,38 +55,8 @@ GtkType       nautilus_rpm_view_get_type          (void);
 NautilusView *nautilus_rpm_view_get_nautilus_view (NautilusRPMView *view);
 
 /* URI handling */
+char*	      nautilus_rpm_view_get_uri		  (NautilusRPMView *view);
 void          nautilus_rpm_view_load_uri          (NautilusRPMView *view,
 						   const char      *uri);
-
-struct NautilusRPMViewDetails {
-        char *current_uri;
-        NautilusView *nautilus_view;
-        
-        GtkWidget *package_image;
-        GtkWidget *package_title;
-        GtkWidget *package_release;
-        GtkWidget *package_summary;
-        GtkWidget *package_size;
-        GtkWidget *package_idate;
-        GtkWidget *package_license;
-        GtkWidget *package_bdate;
-        GtkWidget *package_distribution;
-        GtkWidget *package_vendor;      
-        GtkWidget *package_description;    
-        
-	GtkWidget *package_installed_message;
-	GtkWidget *package_install_button;
-	GtkWidget *package_update_button;
-	GtkWidget *package_uninstall_button;
-	
-	GtkVBox   *package_container;
-	GtkWidget *go_to_button;
-	
-	GtkWidget *package_file_list;
-        gboolean  package_installed;
-	int background_connection;
-	int selected_file;	
-};
-
 
 #endif /* NAUTILUS_RPM_VIEW_H */

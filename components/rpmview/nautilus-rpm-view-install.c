@@ -146,7 +146,7 @@ nautilus_rpm_view_install_done (EazelInstallCallback *service,
 {
 	char *tmp;
 	eazel_install_callback_unref (GTK_OBJECT (service));
-	tmp = g_strdup (rpm_view->details->current_uri);
+	tmp = g_strdup (nautilus_rpm_view_get_uri (rpm_view));
 	nautilus_rpm_view_load_uri (rpm_view, tmp);
 	g_free (tmp);
 }
@@ -171,7 +171,7 @@ nautilus_rpm_view_install_package_callback (GtkWidget *widget,
 		PackageData *pack;
 
 		/* Find the :// of the url and skip to after it */
-		ptr = strstr (rpm_view->details->current_uri, "file://");
+		ptr = strstr (nautilus_rpm_view_get_uri (rpm_view), "file://");
 		ptr += strlen ("file://");
 
 		/* make a package and add to it to a categorylist */
