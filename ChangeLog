@@ -1,3 +1,8 @@
+2001-11-29  Darin Adler  <darin@bentspoon.com>
+
+	* libnautilus-private/nautilus-directory-async.c:
+	(top_left_read_callback): Zero out text to avoid a double free.
+
 2001-11-16  Yanko Kaneti  <yaneti@declera.com>
 
         * configure.in (ALL_LINGUAS): Added bg (Bulgarian).
