@@ -74,6 +74,7 @@ struct _NautilusServiceInstallViewDetails {
 	char		*remembered_password;
 	int		password_attempts;
 	guint		cylon_timer;
+	int		using_local_file;
 };
 
 

@@ -98,7 +98,7 @@ generate_install_form (NautilusServiceInstallView	*view)
 	gtk_container_add (GTK_CONTAINER (view), view->details->form);
 
 	/* Setup the title */
-	title = create_services_title_widget ("Easy Install");
+	title = create_services_title_widget (_("Easy Install"));
         gtk_box_pack_start (GTK_BOX (view->details->form), title, FALSE, FALSE, 0);
         gtk_widget_show (title);
 
@@ -193,7 +193,7 @@ generate_install_form (NautilusServiceInstallView	*view)
 	}
 
 	/* Setup the progress header */
-	middle_title = create_services_header_widget ("Messages", "Progress");
+	middle_title = create_services_header_widget (_("Messages"), _("Progress"));
         gtk_box_pack_end (GTK_BOX (view->details->form), middle_title, FALSE, FALSE, 0);
 	gtk_widget_show (middle_title);
 
@@ -281,14 +281,18 @@ nautilus_service_install_view_get_nautilus_view (NautilusServiceInstallView *vie
 
 
 static PackageData *
-create_package (char *name) 
+create_package (char *name, int local_file) 
 {
 	struct utsname buf;
 	PackageData *pack;
 
 	uname (&buf);
 	pack = packagedata_new ();
-	pack->name = g_strdup (name);
+	if (local_file) {
+		pack->filename = g_strdup (name);
+	} else {
+		pack->name = g_strdup (name);
+	}
 	pack->archtype = g_strdup (buf.machine);
 #ifdef ASSUME_ix86_IS_i386
 	if (strlen (pack->archtype)==4 && pack->archtype[0]=='i' &&
@@ -306,9 +310,10 @@ create_package (char *name)
 
 /* quick & dirty: parse the url into (host, port) and a category list */
 static void
-nautilus_install_parse_uri (const char *uri, GList **categories)
+nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view, GList **categories,
+			    char **host, int *port)
 {
-	char *p, *plist, *package_name;
+	char *p, *q, *package_name;
 	GList *packages = NULL;
 
 	*categories = NULL;
@@ -319,16 +324,37 @@ nautilus_install_parse_uri (const char *uri, GList **categories)
 		return;
 	}
 	p++;
+
+	/* "//host:port" spec? */
 	if ((*p == '/') && (*(p+1) == '/')) {
 		p += 2;
+
+		q = strchr (p, '/');
+		if (! q) {
+			q = p + strlen(p);
+		}
+		g_free (*host);
+		*host = g_strndup (p, q - p);
+
+		/* optional ":port" */
+		p = strchr (*host, ':');
+		if (p) {
+			*p = 0;
+			*port = atoi (p+1);
+		}
+
+		/* push p to past the trailing '/' */
+		p = (*q) ? q+1 : q;
 	}
 
-	plist = p;
+	/* full path specified?  local file instead of server */
+	if (*p == '/') {
+		view->details->using_local_file = 1;
+	}
 
-	/* last one */
-	if (*plist) {
-		package_name = g_strdup (plist);
-		packages = g_list_prepend (packages, create_package (package_name));
+	if (*p) {
+		package_name = g_strdup (p);
+		packages = g_list_prepend (packages, create_package (package_name, view->details->using_local_file));
 		g_free (package_name);
 	}
 
@@ -378,7 +404,7 @@ make_new_status (NautilusServiceInstallView *view)
 		gtk_table_attach (GTK_TABLE (view->details->message_box), left, 0, 1, i-1, i,
 				  GTK_EXPAND | GTK_FILL | GTK_SHRINK, 0, 12, 4);
 		gtk_table_attach (GTK_TABLE (view->details->message_box), right, 1, 2, i-1, i,
-				  GTK_EXPAND, 0, 12, 4);
+				  0, 0, 12, 4);
 	}
 
 	/* new entries */
@@ -396,7 +422,7 @@ make_new_status (NautilusServiceInstallView *view)
 
 	right = gtk_progress_bar_new ();
 	gtk_table_attach (GTK_TABLE (view->details->message_box), right, 1, 2, STATUS_ROWS-1, STATUS_ROWS,
-			  GTK_EXPAND, 0, 12, 4);
+			  0, 0, 12, 4);
 	gtk_widget_show (right);
 	view->details->message_right = g_list_append (view->details->message_right, right);
 
@@ -439,7 +465,7 @@ current_progress_bar_complete (NautilusServiceInstallView *view)
 	height = right->allocation.height;
 	gtk_container_remove (GTK_CONTAINER (view->details->message_box), right);
 
-	right = gtk_label_new ("Complete!");
+	right = gtk_label_new (_("Complete!"));
 	view->details->message_right = g_list_append (view->details->message_right, right);
 	font = nautilus_font_factory_get_font_from_preferences (12);
 	nautilus_gtk_widget_set_font (right, font);
@@ -486,14 +512,14 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const char *name
 		 * but we don't know how much work there is to do yet...
 		 */
 		gtk_progress_set_activity_mode (GTK_PROGRESS (view->details->total_progress_bar), TRUE);
-		out = g_strdup_printf ("Downloading package %s", root_name);
+		out = g_strdup_printf (_("Downloading package %s"), root_name);
 		show_overall_feedback (view, out);
 		g_free (out);
 
 		/* new progress message and bar */
 		make_new_status (view);
 		gtk_progress_set_percentage (GTK_PROGRESS (view->details->current_progress_bar), 0.0);
-		out = g_strdup_printf ("Downloading package %s ...", root_name);
+		out = g_strdup_printf (_("Downloading package %s ..."), root_name);
 		gtk_label_set_text (GTK_LABEL (view->details->current_feedback_text), out);
 		g_free (out);
 	} else if (amount == total) {
@@ -518,7 +544,7 @@ nautilus_service_install_dependency_check (EazelInstallCallback *cb, const Packa
 {
 	char *out;
 
-	out = g_strdup_printf ("Dependency check: Package %s needs %s", package->name, needs->name);
+	out = g_strdup_printf (_("Dependency check: Package %s needs %s"), package->name, needs->name);
 	show_overall_feedback (view, out);
 	g_free (out);
 }
@@ -531,8 +557,11 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb, int total_by
 {
 	char *out;
 
-	out = g_strdup_printf ("Preparing to install %d package%s", total_packages,
-			       total_packages == 1 ? "" : "s");
+	if (total_packages == 1) {
+		out = g_strdup (_("Preparing to install 1 package"));
+	} else {
+		out = g_strdup_printf (_("Preparing to install %d packagess"), total_packages);
+	}
 	show_overall_feedback (view, out);
 	g_free (out);
 
@@ -555,7 +584,7 @@ nautilus_service_install_download_failed (EazelInstallCallback *cb, const char *
 		view->details->cylon_timer = 0;
 	}
 
-	out = g_strdup_printf ("Download of package %s failed!", name);
+	out = g_strdup_printf (_("Download of package %s failed!"), name);
 	show_overall_feedback (view, out);
 	g_free (out);
 }
@@ -572,13 +601,13 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 
 	if (current_package != view->details->current_package) {
 		/* starting a new package -- create new progress indicator */
-		out = g_strdup_printf ("Installing package %d of %d", current_package, total_packages);
+		out = g_strdup_printf (_("Installing package %d of %d"), current_package, total_packages);
 		show_overall_feedback (view, out);
 		g_free (out);
 
 		make_new_status (view);
 		gtk_progress_set_percentage (GTK_PROGRESS (view->details->current_progress_bar), 0.0);
-		out = g_strdup_printf ("Installing package %s ...", pack->name);
+		out = g_strdup_printf (_("Installing package %s ..."), pack->name);
 		gtk_label_set_text (GTK_LABEL (view->details->current_feedback_text), out);
 		g_free (out);
 
@@ -586,14 +615,14 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 
 		if (current_package == 1) {
 			/* first package is the main one.  update top info, now that we know it */
-			out = g_strdup_printf ("Installing \"%s\"", pack->name);
+			out = g_strdup_printf (_("Installing \"%s\""), pack->name);
 			gtk_label_set_text (GTK_LABEL (view->details->package_name), out);
 			g_free (out);
 			if (strchr (pack->description, '\n') != NULL) {
 				gtk_label_set_line_wrap (GTK_LABEL (view->details->package_details), FALSE);
 			}
 			gtk_label_set_text (GTK_LABEL (view->details->package_details), pack->description);
-			out = g_strdup_printf ("Version: %s", pack->version);
+			out = g_strdup_printf (_("Version: %s"), pack->version);
 			gtk_label_set_text (GTK_LABEL (view->details->package_version), out);
 			g_free (out);
 		}
@@ -617,7 +646,7 @@ nautilus_service_install_done (EazelInstallCallback *cb, NautilusServiceInstallV
 		view->details->cylon_timer = 0;
 	}
 
-	show_overall_feedback (view, "Installation complete!");
+	show_overall_feedback (view, _("Installation complete!"));
 }
 
 /* FIXME -- need to show whole dep tree here */
@@ -629,7 +658,7 @@ nautilus_service_install_failed (EazelInstallCallback *cb, const PackageData *pa
 		view->details->cylon_timer = 0;
 	}
 
-	show_overall_feedback (view, "Installation failed!! :( :( :(");
+	show_overall_feedback (view, _("Installation failed!! :( :( :("));
 	g_message ("I am sad.");
 }
 
@@ -648,7 +677,7 @@ nautilus_service_need_password (GtkObject *object, const char *prompt, NautilusS
 	}
 
 	if (view->details->password_attempts > 0) {
-		message = "Incorrect password.";
+		message = _("Incorrect password.");
 	}
 
 	dialog = nautilus_password_dialog_new ("Authenticate Me", message, prompt, "", TRUE);
@@ -713,9 +742,9 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	CORBA_Environment	ev;
 	char 			*out;
 
-	nautilus_install_parse_uri (uri, &categories);
-	host = INSTALL_HOST;
+	host = g_strdup (INSTALL_HOST);
 	port = INSTALL_PORT;
+	nautilus_install_parse_uri (uri, view, &categories, &host, &port);
 
 	if (! categories) {
 		return;
@@ -734,7 +763,7 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 
 	gtk_object_set_data (GTK_OBJECT (view), "packagedata", pack);
 
-	out = g_strdup_printf ("Downloading \"%s\"", pack->name);
+	out = g_strdup_printf (_("Downloading \"%s\""), pack->name);
 	gtk_label_set_text (GTK_LABEL (view->details->package_name), out);
 	g_free (out);
 
@@ -746,6 +775,7 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	Trilobite_Eazel_Install__set_tmp_dir (service, "/tmp/eazel-install", &ev);
 	Trilobite_Eazel_Install__set_server (service, host, &ev);
 	Trilobite_Eazel_Install__set_server_port (service, port, &ev);
+	Trilobite_Eazel_Install__set_test_mode (service, FALSE, &ev);
 
 	gtk_signal_connect (GTK_OBJECT (view->details->installer), "download_progress",
 			    nautilus_service_install_downloading, view);
@@ -765,7 +795,7 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 
 	CORBA_exception_free (&ev);
 
-	show_overall_feedback (view, "Contacting install server ...");
+	show_overall_feedback (view, _("Contacting install server ..."));
 
 	/* might take a while... cylon a bit */
 	gtk_progress_set_activity_mode (GTK_PROGRESS (view->details->total_progress_bar), TRUE);
@@ -811,4 +841,3 @@ service_install_load_location_callback (NautilusView			*nautilus_view,
 #endif
 
 }
-
