@@ -1,3 +1,13 @@
+2000-10-09  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_notify_files_added),
+	(nautilus_directory_notify_files_removed),
+	(nautilus_directory_notify_files_moved):
+	Get rid of some FIXMEs that were wrong.
+	Clean up the way NautilusFile objects were ref'd
+	in nautilus_directory_notify_files_moved.
+
 2000-10-09  Arlo Rose  <arlo@eazel.com>
 
 	* icons/arlo/Makefile.am:

@@ -787,7 +787,6 @@ nautilus_directory_notify_files_added (GList *uris)
 		}
 		hash_table_list_prepend (added_lists, directory, vfs_uri);
 		nautilus_directory_unref (directory);
-		/* FIXME: do we need to ref here if the file is added to a monitored directory? */
 	}
 
 
@@ -840,7 +839,6 @@ nautilus_directory_notify_files_removed (GList *uris)
 		hash_table_list_prepend (changed_lists,
 					 file->details->directory,
 					 file);
-		/* FIXME: do we need to unref here if the file is in a monitored directory? */
 	}
 
 	/* Now send out the changed signals. */
@@ -860,7 +858,7 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 	NautilusFile *file;
 	NautilusDirectory *old_directory, *new_directory;
 	GHashTable *parent_directories;
-	GList *new_files_list, *unref_list, *ref_list;
+	GList *new_files_list, *unref_list;
 	GHashTable *added_lists, *changed_lists;
 	GList **files;
 	char *name;
@@ -870,7 +868,6 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 	added_lists = g_hash_table_new (g_direct_hash, g_direct_equal);
 	changed_lists = g_hash_table_new (g_direct_hash, g_direct_equal);
 	unref_list = NULL;
-	ref_list = NULL;
 
 	/* Make a list of parent directories that will need their counts updated. */
 	parent_directories = g_hash_table_new (g_direct_hash, g_direct_equal);
@@ -881,11 +878,6 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 		/* Move an existing file. */
 		file = nautilus_file_get (pair->from_uri);
 		if (file == NULL) {
-			/* FIXME:
-			 * nautilus_file_get will never return NULL
-			 * what is this really trying to do?
-			 */
-
 			/* Handle this as if it was a new file. */
 			new_files_list = g_list_prepend (new_files_list,
 							 pair->to_uri);
@@ -946,7 +938,7 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 				 * as it would get if it was in the directory when we started the monitor
 				 */
 				if (nautilus_directory_is_file_list_monitored (new_directory)) {
-					ref_list = g_list_prepend (ref_list, file);
+					nautilus_file_ref (file);
 				}
 			}
 
@@ -965,9 +957,6 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 	g_hash_table_foreach (added_lists, call_files_added_free_list, NULL);
 	g_hash_table_destroy (added_lists);
 
-	/* Ref the files we need. */
-	nautilus_file_list_ref (ref_list);
-	g_list_free (ref_list);
 
 	/* Let the file objects go. */
 	nautilus_file_list_free (unref_list);
