@@ -358,10 +358,15 @@ generate_summary_form (NautilusSummaryView	*view)
 	UpdateNewsData		*update_news_node;
 	GList			*iterator;
 	GtkWidget		*temp_scrolled_window;
+	gint			length;
+	gint			padding;
 
 	view->details->current_service_row = 0;
 	view->details->current_news_row = 0;
 	view->details->current_update_row = 0;
+
+	length = 0;
+	padding = 0;
 
 	/* allocate the parent box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
@@ -513,12 +518,13 @@ generate_summary_form (NautilusSummaryView	*view)
 		/* login button */
 		g_print ("label lib start\n");
 		view->details->login_button = gtk_button_new ();
+		gtk_widget_set_usize (view->details->login_button, 140, -1);
 		view->details->login_label = nautilus_label_new (" I'm ready to login! ");
 		nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->login_label), 12);
 		gtk_widget_show (view->details->login_label);
 		gtk_container_add (GTK_CONTAINER (view->details->login_button), view->details->login_label);
 		button_box = gtk_hbox_new (TRUE, 0);
-		gtk_box_pack_start (GTK_BOX (button_box), view->details->login_button, FALSE, FALSE, 21);
+		gtk_box_pack_start (GTK_BOX (button_box), view->details->login_button, FALSE, FALSE, 0);
 		gtk_signal_connect (GTK_OBJECT (view->details->login_button), "clicked", GTK_SIGNAL_FUNC (login_button_cb), view);
 		gtk_widget_set_sensitive (view->details->login_button, FALSE);
 		gtk_widget_show (view->details->login_button);
@@ -529,12 +535,13 @@ generate_summary_form (NautilusSummaryView	*view)
 		/* register button */
 		g_print ("label rb start\n");
 		view->details->register_button = gtk_button_new ();
+		gtk_widget_set_usize (view->details->register_button, 140, -1);
 		view->details->register_label = nautilus_label_new ("    Register Now!    ");
 		nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->register_label), 12);
 		gtk_widget_show (view->details->register_label);
 		gtk_container_add (GTK_CONTAINER (view->details->register_button), view->details->register_label);
 		button_box = gtk_hbox_new (TRUE, 0);
-		gtk_box_pack_start (GTK_BOX (button_box), view->details->register_button, FALSE, FALSE, 21);
+		gtk_box_pack_start (GTK_BOX (button_box), view->details->register_button, FALSE, FALSE, 0);
 		gtk_signal_connect (GTK_OBJECT (view->details->register_button), "clicked", GTK_SIGNAL_FUNC (register_button_cb), view);
 		gtk_widget_show (view->details->register_button);
 		gtk_widget_show (button_box);
@@ -552,12 +559,13 @@ generate_summary_form (NautilusSummaryView	*view)
 	else {
 		/* preferences button */
 		view->details->preferences_button = gtk_button_new ();
+		gtk_widget_set_usize (view->details->preferences_button, 140, -1);
 		view->details->preferences_label = nautilus_label_new (" Account Preferences ");
 		nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->preferences_label), 12);
 		gtk_widget_show (view->details->preferences_label);
 		gtk_container_add (GTK_CONTAINER (view->details->preferences_button), view->details->preferences_label);
 		button_box = gtk_hbox_new (TRUE, 0);
-		gtk_box_pack_start (GTK_BOX (button_box), view->details->preferences_button, FALSE, FALSE, 21);
+		gtk_box_pack_start (GTK_BOX (button_box), view->details->preferences_button, FALSE, FALSE, 0);
 		gtk_signal_connect (GTK_OBJECT (view->details->preferences_button), "clicked", GTK_SIGNAL_FUNC (preferences_button_cb), view);
 		gtk_widget_show (view->details->preferences_button);
 		gtk_widget_show (button_box);
@@ -565,12 +573,13 @@ generate_summary_form (NautilusSummaryView	*view)
 
 		/* logout button */
 		view->details->logout_button = gtk_button_new ();
-		view->details->logout_label = nautilus_label_new ("     Log me out!     ");
+		gtk_widget_set_usize (view->details->logout_button, 140, -1);
+		view->details->logout_label = nautilus_label_new ("Log me out!");
 		nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->logout_label), 12);
 		gtk_widget_show (view->details->logout_label);
 		gtk_container_add (GTK_CONTAINER (view->details->logout_button), view->details->logout_label);
 		button_box = gtk_hbox_new (TRUE, 0);
-		gtk_box_pack_start (GTK_BOX (button_box), view->details->logout_button, FALSE, FALSE, 21);
+		gtk_box_pack_start (GTK_BOX (button_box), view->details->logout_button, FALSE, FALSE, 0);
 		gtk_signal_connect (GTK_OBJECT (view->details->logout_button), "clicked", GTK_SIGNAL_FUNC (logout_button_cb), view);
 		gtk_widget_show (view->details->logout_button);
 		gtk_widget_show (button_box);
@@ -739,13 +748,14 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	gtk_widget_show (temp_vbox);
 
 	/* Add the redirect button to the third column */
-	view->details->services_button_container = gtk_hbox_new (TRUE, 0);
+	view->details->services_button_container = gtk_hbox_new (FALSE, 0);
 	view->details->services_goto_button = gtk_button_new ();
+	gtk_widget_set_usize (view->details->services_goto_button, 140, -1);
 	view->details->services_goto_label_widget = nautilus_label_new (view->details->services_goto_label);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->services_goto_label_widget), 12);
 	gtk_widget_show (view->details->services_goto_label_widget);
 	gtk_container_add (GTK_CONTAINER (view->details->services_goto_button), view->details->services_goto_label_widget);
-	gtk_box_pack_start (GTK_BOX (view->details->services_button_container), view->details->services_goto_button, FALSE, FALSE, 13);
+	gtk_box_pack_end (GTK_BOX (view->details->services_button_container), view->details->services_goto_button, FALSE, FALSE, 0);
 	cbdata->nautilus_view = view->details->nautilus_view;
 	cbdata->uri = view->details->services_redirects[view->details->current_service_row - 1];
 	gtk_signal_connect (GTK_OBJECT (view->details->services_goto_button), "clicked", GTK_SIGNAL_FUNC (goto_service_cb), cbdata);
@@ -842,6 +852,7 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 	/* Add the redirect button to the third column */
 	view->details->update_button_container = gtk_hbox_new (TRUE, 0);
 	view->details->update_goto_button = gtk_button_new ();
+	gtk_widget_set_usize (view->details->update_goto_button, 140, -1);
 	view->details->update_goto_label_widget = nautilus_label_new (view->details->update_goto_label);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->update_goto_label_widget), 12);
 	gtk_widget_show (view->details->update_goto_label_widget);
