@@ -569,7 +569,7 @@ nautilus_gnome_open_terminal (const char *command)
 		g_message (" Could not start a terminal ");
 	} else if (command){
 		if (quote_all) {
-			command_line = g_strconcat (terminal_path_with_flags, " -e '", command, "'", NULL);
+			command_line = g_strconcat (terminal_path, " -e '", command, "'", NULL);
 		} else {
 			command_line = g_strconcat (terminal_path, " -e ", command, NULL);
 		}
