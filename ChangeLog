@@ -1,3 +1,12 @@
+2000-10-26  Seth Nickell  <seth@eazel.com>
+
+	* src/nautilus-window.c: (nautilus_window_realize):
+
+	Commented out a wm hints line that was causing Nautilus to be
+	unfocusable (hence not allowing keyboard input, making it
+	hard to work on things) in Sawfish. Coordination with 
+	Sawfish/John Harper is probably needed here...
+
 2000-10-26  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	This introduces the problem thingy to libeazelinstall. A set of

@@ -687,7 +687,11 @@ nautilus_window_realize (GtkWidget *widget)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
 
 	/* Set window manager hints so click-drag from window to window works */
-	nautilus_gdk_window_set_wm_hints_input (widget->window, FALSE);
+	
+	/* FIXME: need to coordinate with sawfish or this line results in
+	   nautilus windows being unfocusable */
+
+	//nautilus_gdk_window_set_wm_hints_input (widget->window, FALSE);
 
 	/* Add custom message filter to handle WM_TAKE_FOCUS */
 	//gdk_add_client_message_filter (gdk_wm_protocols, nautilus_window_filter, widget);
