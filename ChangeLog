@@ -1,3 +1,24 @@
+2000-04-18  Gene Z. Ragan <gzr@eazel.com>
+
+	*libnautilus-extensions/nautilus-icon-canvas-item.c
+	*libnautilus-extensions/nautilus-icon-canvas-item.h
+	Renamed several public functions to use proper nomenclature.
+	An example would be changing nautilus_icon_canvas_get_editable_text_bounds
+	to nautilus_icon_canvas_item_get_editable_text_bounds.  A few of 
+	these misnaming were in my last submission.
+
+	*libnautilus-extensions/nautilus-icon-container.c
+	*libnautilus-extensions/nautilus-icon-container.h
+	Renamed nautilus_icon_container_show_rename_widget to
+	nautilus_icon_container_start_renaming_selected_item
+
+	*libnautilus-extensions/nautilus-icon-text-item.c
+	Fixed the following bugs:
+	487 Trying to rename an icon to empty string should revert to original
+	498 Renaming text field looks silly when empty
+	500 text-editng box too narrow when renaming files with short names
+	508 Icon text appears and disappears incorrectly when zooming
+
 2000-04-18  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory.c:
