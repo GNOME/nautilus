@@ -2147,8 +2147,14 @@ file_list_start (NautilusDirectory *directory)
 	}
 }
 
+/* Reset count and mime list. Invalidating deep counts is handled by
+ * itself elsewhere because it's a relatively heavyweight and
+ * special-purpose operation (see bug 5863). Also, the shallow count
+ * needs to be refreshed when filtering changes, but the deep count
+ * deliberately does not take filtering into account.
+ */
 void
-nautilus_directory_invalidate_counts (NautilusDirectory *directory)
+nautilus_directory_invalidate_count_and_mime_list (NautilusDirectory *directory)
 {
 	NautilusFile *file;
 	NautilusDirectory *parent_directory;
@@ -2160,15 +2166,11 @@ nautilus_directory_invalidate_counts (NautilusDirectory *directory)
 		if (parent_directory->details->count_file == file) {
 			directory_count_cancel (parent_directory);
 		}
-		if (parent_directory->details->deep_count_file == file) {
-			deep_count_cancel (parent_directory);
-		}
 		if (parent_directory->details->mime_list_file == file) {
 			mime_list_cancel (parent_directory);
 		}
 
 		file->details->directory_count_is_up_to_date = FALSE;
-		file->details->deep_counts_status = NAUTILUS_REQUEST_NOT_STARTED;
 		file->details->mime_list_is_up_to_date = FALSE;
 
 		nautilus_file_unref (file);
@@ -2208,7 +2210,7 @@ nautilus_directory_force_reload (NautilusDirectory *directory,
 	directory->details->directory_loaded = FALSE;
 
 	/* Start a new directory count. */
-	nautilus_directory_invalidate_counts (directory);
+	nautilus_directory_invalidate_count_and_mime_list (directory);
 
 	nautilus_directory_async_state_changed (directory);
 }

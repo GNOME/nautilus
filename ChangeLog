@@ -1,3 +1,22 @@
+2001-01-30  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 5863 (visiting a directory makes its property-window
+	deep count start again from scratch)
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(nautilus_directory_invalidate_count_and_mime_list):
+	Renamed from _invalidate_counts, no longer resets the
+	deep count when resetting the shallow count and MIME
+	list. (There's already a separately-used API for resetting
+	the deep count.)
+	(nautilus_directory_force_reload):
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory.c:
+	(invalidate_one_count), (invalidate_count_and_unref):
+	Updated for name change.
+
 2001-01-29  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* test/test-nautilus-label-wrapped.c: (size_allocate_callback),

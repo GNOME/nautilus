@@ -217,7 +217,7 @@ invalidate_one_count (gpointer key, gpointer value, gpointer user_data)
 
 	directory = NAUTILUS_DIRECTORY (value);
 	
-	nautilus_directory_invalidate_counts (directory);
+	nautilus_directory_invalidate_count_and_mime_list (directory);
 }
 
 static void
@@ -831,7 +831,7 @@ invalidate_count_and_unref (gpointer key, gpointer value, gpointer user_data)
 
 	directory = NAUTILUS_DIRECTORY (key);
 	
-	nautilus_directory_invalidate_counts (directory);
+	nautilus_directory_invalidate_count_and_mime_list (directory);
 	nautilus_directory_unref (directory);
 }
 
