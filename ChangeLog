@@ -1,3 +1,32 @@
+2000-07-31  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 1838, seperate volume mounting code into a new source file.
+	
+	* src/file-manager/Makefile.am:
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_destroy), (fm_desktop_icon_view_initialize),
+	(fm_desktop_icon_view_create_background_context_menu_items):
+	* src/file-manager/fm-desktop-icon-view.h:
+	* src/file-manager/fm-desktop-mounting.c:
+	(fm_desktop_rescan_floppy), (mount_device_is_mounted),
+	(mount_device_cdrom_set_state), (mount_device_floppy_set_state),
+	(mount_device_ext2_set_state), (mount_device_set_state),
+	(device_set_state_empty), (mount_device_mount),
+	(mount_device_activate_cdrom), (mount_device_activate_floppy),
+	(mount_device_activate_ext2), (mount_device_activate),
+	(mount_device_deactivate), (mount_device_do_nothing),
+	(mount_device_check_change), (mount_devices_update_is_mounted),
+	(mount_devices_check_status), (my_g_check_permissions),
+	(mount_device_floppy_add), (mount_device_ext2_add),
+	(cdrom_ioctl_frenzy), (mount_device_iso9660_add),
+	(mount_device_add_aliases), (add_mount_device),
+	(mntent_is_removable_fs), (mntent_has_option),
+	(fm_desktop_find_mount_devices), (remove_mount_link),
+	(fm_desktop_remove_mount_links), (fm_desktop_free_device_info),
+	(get_iso9660_volume_name), (get_ext2_volume_name),
+	(get_floppy_volume_name), (fm_desktop_place_home_directory):
+	* src/file-manager/fm-desktop-mounting.h:
+
 2000-07-31  John Sullivan  <sullivan@eazel.com>
 
 	Finished rest of bug 762 (Framework for dealing with

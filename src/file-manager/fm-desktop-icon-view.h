@@ -27,9 +27,9 @@
 
 #include "fm-icon-view.h"
 
-typedef struct FMDesktopIconViewDetails FMDesktopIconViewDetails;
 typedef struct FMDesktopIconView FMDesktopIconView;
 typedef struct FMDesktopIconViewClass FMDesktopIconViewClass;
+typedef struct FMDesktopIconViewDetails FMDesktopIconViewDetails;
 
 #define FM_TYPE_DESKSTOP_ICON_VIEW		(fm_desktop_icon_view_get_type ())
 #define FM_DESKTOP_ICON_VIEW(obj)		(GTK_CHECK_CAST ((obj), FM_TYPE_DESKSTOP_ICON_VIEW, FMDesktopIconView))
@@ -45,6 +45,14 @@ struct FMDesktopIconView {
 struct FMDesktopIconViewClass {
 	FMIconViewClass parent_class;
 };
+
+struct FMDesktopIconViewDetails
+{
+	GHashTable *devices_by_fsname;
+	GList *devices;
+	guint mount_device_timer_id;
+};
+
 
 /* GtkObject support */
 GtkType fm_desktop_icon_view_get_type (void);
