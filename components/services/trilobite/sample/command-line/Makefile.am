@@ -2,7 +2,7 @@ NULL =
 
 CPPFLAGS =					\
 	-DPREFIX=\"$(prefix)\"
-	-DG_LOG_DOMAIN=\"nautilus-eazel-sample-service-cli\"
+	-DG_LOG_DOMAIN=\"trilobite-eazel-sample-service-cli\"
 
 INCLUDES =					\
 	-I$(top_srcdir)				\
@@ -40,15 +40,15 @@ CLEANFILES+=$(CORBA_GENERATED) sample-service.h
 ## Binaries
 
 bin_PROGRAMS =					\
-	nautilus-eazel-sample-service-cli
+	trilobite-eazel-sample-service-cli
 
-nautilus_eazel_sample_service_cli_SOURCES =	\
+trilobite_eazel_sample_service_cli_SOURCES =	\
 	sample-service-common.c			\
 	sample-service-stubs.c			\
 	main.c					\
 	$(NULL)
 
-nautilus_eazel_sample_service_cli_LDFLAGS =	\
+trilobite_eazel_sample_service_cli_LDFLAGS =	\
 	$(BONOBO_LIBS)				\
 	$(GNOMEUI_LIBS)				\
 	$(GCONF_LIBS)				\
@@ -56,7 +56,7 @@ nautilus_eazel_sample_service_cli_LDFLAGS =	\
 	$(OAF_LIBS)				\
 	$(NULL)
 
-nautilus_eazel_sample_service_cli_LDADD = 	\
+trilobite_eazel_sample_service_cli_LDADD = 	\
 	$(top_builddir)/components/services/trilobite/src/libtrilobited.la \
 	$(NULL)
 
