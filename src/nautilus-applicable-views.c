@@ -455,7 +455,7 @@ nautilus_navigation_info_new (Nautilus_NavigationRequestInfo *nri,
                               const char *referring_iid)
 {
         NautilusNavigationInfo *navinfo;
-        GList *metadata_keys;
+        GList *keys;
         
         navinfo = g_new0 (NautilusNavigationInfo, 1);
         
@@ -474,15 +474,15 @@ nautilus_navigation_info_new (Nautilus_NavigationRequestInfo *nri,
         navinfo->directory = nautilus_directory_get (nri->requested_uri);
 
         /* Arrange for all the metadata we will need. */
-        metadata_keys = NULL;
-        metadata_keys = g_list_prepend (metadata_keys, NAUTILUS_METADATA_KEY_CONTENT_VIEWS);
-        metadata_keys = g_list_prepend (metadata_keys, NAUTILUS_METADATA_KEY_INITIAL_VIEW);
-        nautilus_directory_metadata_call_when_ready
-                (navinfo->directory,
-                 metadata_keys,
-                 got_metadata_callback,
-                 navinfo);
-        g_list_free (metadata_keys);
+        keys = NULL;
+        keys = g_list_prepend (keys, NAUTILUS_METADATA_KEY_CONTENT_VIEWS);
+        keys = g_list_prepend (keys, NAUTILUS_METADATA_KEY_INITIAL_VIEW);
+        nautilus_directory_call_when_ready (navinfo->directory,
+                                            keys,
+                                            NULL,
+                                            got_metadata_callback,
+                                            navinfo);
+        g_list_free (keys);
         
         return navinfo;
 }
@@ -497,7 +497,7 @@ nautilus_navigation_info_cancel (NautilusNavigationInfo *info)
                 info->ah = NULL;
         }
 
-        nautilus_directory_metadata_callback_cancel
+        nautilus_directory_cancel_callback
                 (info->directory, got_metadata_callback, info);
 }
 

@@ -46,7 +46,8 @@ nautilus_fill_rectangle (GdkDrawable *drawable,
 			 const GdkRectangle *rectangle)
 {
 	gdk_draw_rectangle (drawable, gc, TRUE,
-			    rectangle->x, rectangle->y, rectangle->width, rectangle->height);
+			    rectangle->x, rectangle->y,
+			    rectangle->width, rectangle->height);
 }
 
 /**
@@ -67,7 +68,7 @@ nautilus_fill_rectangle_with_color (GdkDrawable *drawable,
 {
 	GdkGCValues saved_values;
 	
-	gdk_gc_get_values(gc, &saved_values);
+	gdk_gc_get_values (gc, &saved_values);
 	gdk_rgb_gc_set_foreground (gc, rgb);
 	nautilus_fill_rectangle (drawable, gc, rectangle);
 	gdk_gc_set_foreground (gc, &saved_values.foreground);
@@ -131,8 +132,9 @@ nautilus_fill_rectangle_with_gradient (GdkDrawable *drawable,
 		/* Last band may need to be a bit smaller to avoid writing outside the box.
 		 * This is more efficient than changing and restoring the clip.
 		 */
-		if (band == num_bands - 1)
+		if (band == num_bands - 1) {
 			*size = last_band_size;
+		}
 		
 		nautilus_fill_rectangle_with_color (drawable, gc, &band_box, band_rgb);
 		*position += *size;
@@ -227,12 +229,14 @@ nautilus_gradient_new (const char *start_color,
 	/* Handle the special case where the start and end colors are identical.
 	   Handle the special case where the end color is an empty string.
 	*/
-	if (nautilus_strcmp(start_color, end_color) == 0 || end_color == NULL || end_color[0] == '\0')
+	if (nautilus_strcmp(start_color, end_color) == 0 || end_color == NULL || end_color[0] == '\0') {
 		return g_strdup (start_color);
+	}
 
 	/* Handle the special case where the start color is an empty string. */
-	if (start_color == NULL || start_color[0] == '\0')
+	if (start_color == NULL || start_color[0] == '\0') {
 		return g_strdup (end_color);
+	}
 	
 	/* Handle the general case. */
 	return g_strconcat (start_color, "-", end_color, is_horizontal ? ":h" : NULL, NULL);
@@ -272,8 +276,9 @@ nautilus_gradient_strip_trailing_direction_if_any (const char *gradient_spec)
 
 	length = nautilus_strlen (gradient_spec);
 	if (length >= 2 && gradient_spec[length - 2] == ':'
-	    && (gradient_spec[length - 1] == 'v' || gradient_spec[length - 1] == 'h'))
+	    && (gradient_spec[length - 1] == 'v' || gradient_spec[length - 1] == 'h')) {
 		length -= 2;
+	}
 
 	return g_strndup (gradient_spec, length);
 }
@@ -291,8 +296,9 @@ nautilus_gradient_get_start_color_spec (const char *gradient_spec)
 	const char *separator;
 	
 	separator = nautilus_strchr (gradient_spec, '-');
-	if (separator == NULL)
+	if (separator == NULL) {
 		return nautilus_gradient_strip_trailing_direction_if_any (gradient_spec);
+	}
 
 	return g_strndup (gradient_spec, separator - gradient_spec);
 }
@@ -458,10 +464,12 @@ gboolean
 nautilus_gdk_font_equal (GdkFont *font_a_null_allowed,
 			 GdkFont *font_b_null_allowed)
 {
-	if (font_a_null_allowed == NULL)
+	if (font_a_null_allowed == NULL) {
 		return font_b_null_allowed == NULL;
-	if (font_b_null_allowed == NULL)
+	}
+	if (font_b_null_allowed == NULL) {
 		return FALSE;
+	}
 	return gdk_font_equal (font_a_null_allowed, font_b_null_allowed);
 }
 

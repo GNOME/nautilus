@@ -56,6 +56,9 @@ typedef enum {
 	NAUTILUS_FILE_SORT_BY_EMBLEMS
 } NautilusFileSortType;	
 
+typedef void (*NautilusFileCallback) (NautilusFile *file,
+				      gpointer      callback_data);
+
 /* GtkObject requirements. */
 GtkType          nautilus_file_get_type                  (void);
 
@@ -67,8 +70,17 @@ void             nautilus_file_ref                       (NautilusFile         *
 void             nautilus_file_unref                     (NautilusFile         *file);
 void             nautilus_file_delete                    (NautilusFile         *file);
 
-/* Change notification. */
-void             nautilus_file_changed                   (NautilusFile         *file);
+/* Waiting for data that's read asynchronously.
+ * This interface currently works only for metadata, but could be expanded
+ * to other attributes as well.
+ */
+void             nautilus_file_call_when_ready           (NautilusFile         *file,
+							  GList                *metadata_tags,
+							  NautilusFileCallback  callback,
+							  gpointer              callback_data);
+void             nautilus_file_cancel_callback           (NautilusFile         *file,
+							  NautilusFileCallback  callback,
+							  gpointer              callback_data);
 
 /* Basic attributes for file objects. */
 char *           nautilus_file_get_name                  (NautilusFile         *file);
@@ -84,11 +96,12 @@ guint            nautilus_file_get_directory_item_count  (NautilusFile         *
 GList *          nautilus_file_get_keywords              (NautilusFile         *file);
 void             nautilus_file_set_keywords              (NautilusFile         *file,
 							  GList                *keywords);
-GList *		 nautilus_file_get_emblem_names	   	 (NautilusFile	       *file);
-gboolean	 nautilus_file_can_rename		 (NautilusFile	       *file);
-GnomeVFSResult	 nautilus_file_rename			 (NautilusFile	       *file, 
-							  const char 	       *new_name);
+GList *          nautilus_file_get_emblem_names          (NautilusFile         *file);
 
+/* Basic operations for file objects. */
+gboolean         nautilus_file_can_rename                (NautilusFile         *file);
+GnomeVFSResult   nautilus_file_rename                    (NautilusFile         *file,
+							  const char           *new_name);
 
 /* Return true if this file has already been deleted.
    This object will be unref'd after sending the files_removed signal,
@@ -116,6 +129,13 @@ int              nautilus_file_compare_for_sort          (NautilusFile         *
 int              nautilus_file_compare_for_sort_reversed (NautilusFile         *file_1,
 							  NautilusFile         *file_2,
 							  NautilusFileSortType  sort_type);
+
+/* Change notification hack.
+ * This is called when code modifies the file and it needs to trigger
+ * a notification. Eventually this should become private, but for now
+ * it needs to be used for code like the thumbnail generation.
+ */
+void             nautilus_file_changed                   (NautilusFile         *file);
 
 /* Convenience functions for dealing with a list of NautilusFile objects that each have a ref. */
 void             nautilus_file_list_ref                  (GList                *file_list);

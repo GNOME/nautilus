@@ -637,6 +637,9 @@ fm_list_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 
 	was_selected = remove_from_list (list_view, file);	
 
+	/* FIXME: We really want to ask if it is gone from this directory,
+	 * not if it has been deleted.
+	 */
 	if (!nautilus_file_is_gone (file)) {
 		new_row = add_to_list (list_view, file);
 

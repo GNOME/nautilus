@@ -46,6 +46,7 @@ main(int argc, char *argv[])
 	gboolean check = FALSE;
 #endif
 	const char **args;
+	NautilusApp *app;
 
 	struct poptOption options[] = {
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
@@ -58,9 +59,10 @@ main(int argc, char *argv[])
 	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
 	 * Unfortunately, this has to be done explicitly for each domain.
 	 */
-	if (getenv("NAUTILUS_DEBUG") != NULL)
+	if (getenv("NAUTILUS_DEBUG") != NULL) {
 		nautilus_make_warnings_and_criticals_stop_in_debugger
 			(G_LOG_DOMAIN, g_log_domain_glib, "Gdk", "Gtk", "GnomeVFS", "GnomeUI", "Bonobo", NULL);
+	}
 	
 	/* Initialize the services that we use. */
 	CORBA_exception_init(&ev);
@@ -80,14 +82,12 @@ main(int argc, char *argv[])
 		nautilus_exit_if_self_checks_failed ();
 	} else {
 #endif
-		NautilusApp *app;
-
-		app = NAUTILUS_APP(nautilus_app_new());
 
 		/* Run the nautilus application. */
+		app = NAUTILUS_APP (nautilus_app_new ());
 		nautilus_app_startup (app, args ? args[0] : NULL);
 		bonobo_main();
-		bonobo_object_unref(BONOBO_OBJECT(app));
+		bonobo_object_unref (BONOBO_OBJECT (app));
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 	}

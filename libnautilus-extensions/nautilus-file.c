@@ -1407,6 +1407,23 @@ nautilus_file_is_gone (NautilusFile *file)
 	return file->details->is_gone;
 }
 
+void
+nautilus_file_call_when_ready (NautilusFile *file,
+			       GList *file_metadata_tags,
+			       NautilusFileCallback callback,
+			       gpointer callback_data)
+{
+	/* For now, it's synchronous for testing. */
+	(* callback) (file, callback_data);
+}
+
+void
+nautilus_file_cancel_callback (NautilusFile *file,
+			       NautilusFileCallback callback,
+			       gpointer callback_data)
+{
+}
+
 /**
  * nautilus_file_list_ref
  *

@@ -380,7 +380,7 @@ nautilus_index_title_update_info (NautilusIndexTitle *index_title)
 	
 	/* see if there are any notes for this file. If so, display them */
 	notes_text = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_NOTES, NULL);
-	if (notes_text)	{
+	if (notes_text != NULL) {
 		if (index_title->details->notes != NULL)
 			gtk_label_set_text(GTK_LABEL(index_title->details->notes), notes_text);
 		else  {  

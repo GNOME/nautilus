@@ -1083,19 +1083,20 @@ nautilus_directory_get_file_metadata_node (NautilusDirectory *directory,
 }
 
 void
-nautilus_directory_metadata_call_when_ready (NautilusDirectory *directory,
-					     GList *tags,
-					     NautilusMetadataCallback callback,
-					     gpointer callback_data)
+nautilus_directory_call_when_ready (NautilusDirectory *directory,
+				    GList *directory_metadata_tags,
+				    GList *file_metadata_tags,
+				    NautilusDirectoryCallback callback,
+				    gpointer callback_data)
 {
 	/* For now, it's synchronous for testing. */
 	(* callback) (directory, callback_data);
 }
 
 void
-nautilus_directory_metadata_callback_cancel (NautilusDirectory *directory,
-					     NautilusMetadataCallback callback,
-					     gpointer callback_data)
+nautilus_directory_cancel_callback (NautilusDirectory *directory,
+				    NautilusDirectoryCallback callback,
+				    gpointer callback_data)
 {
 }
 

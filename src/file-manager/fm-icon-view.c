@@ -550,6 +550,9 @@ static void
 fm_icon_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 {
 	/* This handles both changes to an existing file and the existing file going away. */
+	/* FIXME: We really want to ask if it is gone from this directory,
+	 * not if it has been deleted.
+	 */
 	if (nautilus_file_is_gone (file)) {
 		if (nautilus_icon_container_remove (get_icon_container (FM_ICON_VIEW (view)),
 						    NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {

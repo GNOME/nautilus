@@ -36,77 +36,103 @@
 #include <ctype.h>
 #include <libnautilus/nautilus-background.h>
 #include <libnautilus/nautilus-file.h>
+#include <libnautilus/nautilus-debug.h>
 
 #define NOTES_DEFAULT_BACKGROUND_COLOR "rgb:FFFF/FFFF/BBBB"
 
 typedef struct {
         NautilusViewFrame *view;
         GtkWidget *note_text_field;
-        char* uri;
-} NotesView;
+        char *uri;
+        NautilusFile *file;
+} Notes;
 
 static int notes_object_count = 0;
 
 static void
-notes_load_metainfo (NotesView *hview)
+finish_loading_note (NautilusFile *file,
+                     gpointer callback_data)
 {
-        NautilusFile *file;
+        Notes *notes;
         int position;
         char *notes_text;
-        
-        gtk_editable_delete_text (GTK_EDITABLE (hview->note_text_field), 0, -1);   
-        
-        file = nautilus_file_get (hview->uri);
-        if (file == NULL) {
-                return;
-        }
-        
+
+        g_assert (NAUTILUS_IS_FILE (file));
+
+        notes = callback_data;
+        g_assert (notes->file == file);
+
         notes_text = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_ANNOTATION, "");
-        gtk_editable_insert_text (GTK_EDITABLE (hview->note_text_field),
+        position = 0;
+        gtk_editable_insert_text (GTK_EDITABLE (notes->note_text_field),
                                   notes_text,
                                   strlen (notes_text),
                                   &position);
         g_free (notes_text);
+}
+
+static void
+done_with_file (Notes *notes)
+{
+        nautilus_file_cancel_callback (notes->file, finish_loading_note, notes);
+        nautilus_file_unref (notes->file);
+}
+
+static void
+notes_load_metainfo (Notes *notes)
+{
+        NautilusFile *file;
+        GList *keys;
         
-        nautilus_file_unref (file);
+        gtk_editable_delete_text (GTK_EDITABLE (notes->note_text_field), 0, -1);   
+        
+        done_with_file (notes);
+        notes->file = nautilus_file_get (notes->uri);
+        if (file == NULL) {
+                return;
+        }
+
+        keys = g_list_prepend (NULL, NAUTILUS_METADATA_KEY_ANNOTATION);
+        nautilus_file_call_when_ready (file, keys, finish_loading_note, notes);
+        g_list_free (keys);
 }
 
 /* save the metainfo corresponding to the current uri, if any, into the text field */
 
 static void
-notes_save_metainfo(NotesView *hview)
+notes_save_metainfo (Notes *notes)
 {
-        NautilusFile *file;
         char *notes_text;
-        
-        file = nautilus_file_get (hview->uri);	
-        if (file == NULL) {
+
+        if (notes->file == NULL) {
                 return;
         }
 
-        notes_text = gtk_editable_get_chars (GTK_EDITABLE (hview->note_text_field), 0 , -1);
-        nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_ANNOTATION, NULL, notes_text);
+        notes_text = gtk_editable_get_chars (GTK_EDITABLE (notes->note_text_field), 0 , -1);
+        nautilus_file_set_metadata (notes->file, NAUTILUS_METADATA_KEY_ANNOTATION, NULL, notes_text);
         g_free (notes_text);
-        
-        nautilus_file_unref (file);
 }
 
 static void
 notes_notify_location_change (NautilusViewFrame *view,
                               Nautilus_NavigationInfo *loci,
-                              NotesView *hview)
-{ 
-        if (strcmp (hview->uri, loci->requested_uri) != 0) {
-                notes_save_metainfo (hview);
-                g_free (hview->uri);
-                hview->uri = g_strdup (loci->requested_uri);
-                notes_load_metainfo (hview);
+                              Notes *notes)
+{
+        if (strcmp (notes->uri, loci->requested_uri) != 0) {
+                notes_save_metainfo (notes);
+                g_free (notes->uri);
+                notes->uri = g_strdup (loci->requested_uri);
+                notes_load_metainfo (notes);
         }
 }
 
 static void
-do_destroy (GtkObject *obj, NotesView *hview)
+do_destroy (GtkObject *obj, Notes *notes)
 {
+        done_with_file (notes);
+        g_free (notes->uri);
+        g_free (notes);
+
         notes_object_count--;
         if (notes_object_count <= 0) {
                 gtk_main_quit();
@@ -117,13 +143,13 @@ static BonoboObject *
 make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
 {
         GtkWidget *vbox;
-        NotesView *hview;
+        Notes *notes;
         NautilusBackground *background;
         
         g_return_val_if_fail (strcmp (goad_id, "ntl_notes_view") == 0, NULL);
         
-        hview = g_new0 (NotesView, 1);
-        hview->uri = g_strdup ("");
+        notes = g_new0 (Notes, 1);
+        notes->uri = g_strdup ("");
         
         /* allocate a vbox to hold all of the UI elements */
         
@@ -131,28 +157,28 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
         
         /* create the text container */
         
-        hview->note_text_field = gtk_text_new (NULL, NULL);
-        gtk_text_set_editable (GTK_TEXT (hview->note_text_field), TRUE);
-        gtk_box_pack_start (GTK_BOX (vbox), hview->note_text_field, TRUE, TRUE, 0);
-        background = nautilus_get_widget_background (GTK_WIDGET (hview->note_text_field));
+        notes->note_text_field = gtk_text_new (NULL, NULL);
+        gtk_text_set_editable (GTK_TEXT (notes->note_text_field), TRUE);
+        gtk_box_pack_start (GTK_BOX (vbox), notes->note_text_field, TRUE, TRUE, 0);
+        background = nautilus_get_widget_background (GTK_WIDGET (notes->note_text_field));
         nautilus_background_set_color (background, NOTES_DEFAULT_BACKGROUND_COLOR);
 
         gtk_widget_show_all (vbox);
         
         /* Create CORBA object. */
-        hview->view = NAUTILUS_VIEW_FRAME (nautilus_meta_view_frame_new (vbox));
-        gtk_signal_connect (GTK_OBJECT (hview->view), "destroy", do_destroy, hview);
+        notes->view = NAUTILUS_VIEW_FRAME (nautilus_meta_view_frame_new (vbox));
+        gtk_signal_connect (GTK_OBJECT (notes->view), "destroy", do_destroy, notes);
         notes_object_count++;
         
         /* handle events */
-        gtk_signal_connect (GTK_OBJECT (hview->view), "notify_location_change",
-                            notes_notify_location_change, hview);
+        gtk_signal_connect (GTK_OBJECT (notes->view), "notify_location_change",
+                            notes_notify_location_change, notes);
         
         /* set description */
-        nautilus_meta_view_frame_set_label (NAUTILUS_META_VIEW_FRAME (hview->view),
+        nautilus_meta_view_frame_set_label (NAUTILUS_META_VIEW_FRAME (notes->view),
                                             _("Notes"));
         
-        return BONOBO_OBJECT (hview->view);
+        return BONOBO_OBJECT (notes->view);
 }
 
 int
@@ -162,6 +188,14 @@ main(int argc, char *argv[])
         CORBA_ORB orb;
         CORBA_Environment ev;
         
+	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
+	 * Unfortunately, this has to be done explicitly for each domain.
+	 */
+	if (getenv("NAUTILUS_DEBUG") != NULL) {
+		nautilus_make_warnings_and_criticals_stop_in_debugger
+			(G_LOG_DOMAIN, g_log_domain_glib, "Gdk", "Gtk", "GnomeVFS", "GnomeUI", "Bonobo", NULL);
+	}
+	
         /* initialize CORBA and Bonobo */
         CORBA_exception_init (&ev);
         orb = gnome_CORBA_init_with_popt_table ("ntl-notes", VERSION, &argc, argv,

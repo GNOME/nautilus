@@ -31,7 +31,6 @@
 
 /* Per-directory */
 
-#define NAUTILUS_METADATA_KEY_ANNOTATION                 "ANNOTATION"
 #define NAUTILUS_METADATA_KEY_INITIAL_VIEW               "INITIAL_VIEW"
 #define NAUTILUS_METADATA_KEY_CONTENT_VIEWS              "CONTENT_VIEWS"
 
@@ -49,6 +48,7 @@
 /* Per-file */
 
 #define NAUTILUS_METADATA_KEY_NOTES                      "NOTES"
+#define NAUTILUS_METADATA_KEY_ANNOTATION                 "ANNOTATION"
 #define NAUTILUS_METADATA_KEY_ICON_POSITION              "ICON_POSITION"
 #define NAUTILUS_METADATA_KEY_ICON_SCALE                 "ICON_SCALE"
 #define NAUTILUS_METADATA_KEY_CUSTOM_ICON                "CUSTOM_ICON"

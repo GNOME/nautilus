@@ -1,16 +1,53 @@
-2000-04-10	Andy Hertzfeld <andy@eazel.com>
+2000-04-10  Darin Adler  <darin@eazel.com>
+
+	Finished changing all callers that use metadata to use it in a way
+	that is compatible with async. metadata reading.
+
+	* components/notes/ntl-notes.c:
+	(notes_load_metainfo): Changed to use nautilus_file_call_when_ready
+	to wait for the metadata. Also fixed a bug that was causing an assert
+	inside the call to gtk_editable_insert_text.
+	(main): Made warnings and criticals stop in the debugger.
+
+	* libnautilus/nautilus-directory.c:
+	* libnautilus/nautilus-directory.h:
+	(nautilus_directory_call_when_ready): Renamed the call to indicate
+	it can wait for more than just metadata. For now it does only wait
+	for metadata, though.
+	(nautilus_directory_cancel_callback): Renamed this too.
+
+	* libnautilus/nautilus-file.c:
+	(nautilus_file_call_when_ready), (nautilus_file_cancel_callback):
+	Made a corresponding call for the metadata of a single file.
+
+	* libnautilus/nautilus-gdk-extensions.c:
+	* src/nautilus-index-title.c:
+	Formatting changes.
+
+	* libnautilus/nautilus-metadata.h:
+	Clarified that ANNOTATION is a per-file piece of metadata.
+
+	* src/ntl-uri-map.c:
+	* src/file-manager/fm-directory-view.c:
+	Use new names of calls.
+
+	* src/file-manager/fm-icon-view.c:
+	* src/file-manager/fm-list-view.c:
+	Added comment.
+
+2000-04-10  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-index-title.c:
 	fixed bug where multi-line titles in index panel would have a big
 	vertical gap.  Fixed by breaking out of the loop after it finds a
 	split point.  Also, removed an unneccesary justification call.
 	
-2000-04-10	Andy Hertzfeld <andy@eazel.com>
+2000-04-10  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/services/startup/eazel-register.c:
 	added io ports to hardware configuration synopsis
-	 
-2000-04-10	John Sullivan <sullivan@eazel.com>
+	
+2000-04-10  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 377 (clipping emblems in list view looks bad
 	and loses information)
@@ -19,7 +56,7 @@
 	(draw_row): Made it draw the ellipsis character if there's
 	not enough room to show all emblems.
 
-2000-04-10	John Sullivan <sullivan@eazel.com>
+2000-04-10  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus/nautilus-list.c:
 	(nautilus_list_initialize_class), (nautilus_list_initialize),
@@ -35,17 +72,18 @@
 	such operations as Select All, switch-from-icon-view-with-lots-
 	selected, and arrow-key-to-end-of-list significantly faster.
 
-2000-04-09	Andy Hertzfeld <andy@eazel.com>
+2000-04-09  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/services/startup/nautilus-service-startup-view.c:
-	now it saves the account toke assigned by the service, and passes it back in the
-	header of subsequent requests
+	now it saves the account token assigned by the service, and passes
+	it back in the header of subsequent requests
 	* libnautilus/nautilus-icon-factory.c:
-	fixed bug #293, thumbnails of thumbnails endlessly, by explicitly testing for thumbnails
-	of thumbnails as part of the criteria for making them
-	also, make a "snapshot" frame for thumbnails (task 295)
+	fixed bug #293, thumbnails of thumbnails endlessly, by explicitly
+	testing for thumbnails of thumbnails as part of the criteria for
+	making them also, make a "snapshot" frame for thumbnails (task
+	295)
 	
-2000-04-09  John Sullivan <sullivan@eazel.com>
+2000-04-09  John Sullivan  <sullivan@eazel.com>
 
 	Finished task 307 (keyboard navigation in list view should
 	use same keys/behavior as in icon view). There are a few
@@ -78,13 +116,13 @@
 	functions that were used by the GtkCList key bindings in favor of
 	nautilus_list_key_press and friends.
 
-2000-04-07  Andy Hertzfeld <andy@eazel.com>
+2000-04-07  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus/nautilus-icon-canvas-item.c:
 	inspired by John's list view underlining, the text beneath icons
 	is now underlined when the icon is pre-lit
 	
-2000-04-07  John Sullivan <sullivan@eazel.com>
+2000-04-07  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug Andy pointed out where list view "links" could
 	be activated by clicking in white space past the name.
@@ -128,26 +166,28 @@
 	(draw_row) Use get_cell_horizontal_start_position that was extracted
 	from this function.
 
-2000-04-07  Andy Hertzfeld <andy@eazel.com>
+2000-04-07  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/services/startup/nautilus-service-startup-view.c:
 	switched over to using Jonathan's prototype service, which is only
 	accessible from eazel's intranet for now. Registration now works with
 	the service.
+	
 	* libnautilus/nautilus-icon-canvas-item.c:
 	first, simple version of drag/swallow highliting - it just darkens the
 	icon and emboldens the text, exactly like selection highlighting.
 	Pavel's going to set the flag during dragging soon, so this will help
 	him see what he's doing.  Soon, we'll have a more elaborate approach.
 	
-2000-04-06  Andy Hertzfeld <andy@eazel.com>
+2000-04-06  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/services/startup/nautilus-service-startup-view.c:
         made configuration upload make the HTTP request and handle errors, but still not
         quite finished, since it's not passing the cookie back yet.  Also, created a stub
         summary page plus minor clean-ups
 	
-2000-04-06  Pavel Cisler <pavel@eazel.com>
+2000-04-06  Pavel Cisler  <pavel@eazel.com>
+
 	* src/file-manager/dfos-xfer-progress-dialog.c:
 	* src/file-manager/dfos-xfer-progress-dialog.h:
 	(dfos_xfer_progress_dialog_new_file):
@@ -176,7 +216,7 @@
 	(fs_xfer):
 	New copy engine main entry.
 
-2000-04-06  Andy Hertzfeld <andy@eazel.com>
+2000-04-06  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/services/startup/nautilus-service-startup-view.c:
         more work to polish registration and implement configuration upload,
