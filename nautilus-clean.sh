@@ -59,7 +59,7 @@ nautilus-rpm-view \
 nautilus-sample-content-view \
 nautilus-service-startup-view \
 nautilus-sidebar-loser \
-nautilus-tree=voew \
+nautilus-tree-view \
 ntl-history-view \
 ntl-notes \
 ntl-web-search \
