@@ -1,3 +1,14 @@
+2000-09-17  Robey Pointer  <robey@eazel.com>
+
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c
+	: (trilobite_open_uri):
+	* components/services/trilobite/libtrilobite/trilobite-redirect.c:
+	(trilobite_redirect_parse_xml):
+
+	Clean up whitespace on XML files for the pathetic libxml library,
+	so it won't puke.  Add the hacky gnome-vfs env variable to set the
+	user-agent string for fetching the XML file.
+
 2000-09-17  Mathieu Lacage  <mathieu@eazel.com>
 
 	* src/file-manager/fm-list-view.c: (fm_list_receive_dropped_icons):
