@@ -1,3 +1,17 @@
+2000-10-16  Rebecca Schulman  <rebecka@eazel.com>
+	Fixed bug 3745, that reverse sort order / tighter
+	layout buttons weren't working after the newest bonobo
+	changes
+
+	* src/file-manager/fm-icon-view.c:
+	(tighter_layout_state_changed_callback),
+	(fm_icon_view_create_background_context_menu_items),
+	(sort_reversed_state_changed_callback), (fm_icon_view_merge_menus):
+	Changed the callbacks for the buttons to use listeners and ids 
+	rather than verbs.
+	* src/file-manager/nautilus-icon-view-ui.xml:
+	Added id fields
+
 2000-10-16  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* acconfig.h:

@@ -87,6 +87,9 @@
 #define COMMAND_CLEAN_UP			"/commands/Clean Up"
 
 #define ID_MANUAL_LAYOUT                        "Manual Layout"
+#define ID_TIGHTER_LAYOUT                       "Tighter Layout"
+#define ID_SORT_REVERSED                        "Reversed Order"
+
 
 /* forward declarations */
 static void     create_icon_container                     (FMIconView        *icon_view);
@@ -112,8 +115,6 @@ static void     set_sort_criterion_by_id                  (FMIconView        *ic
 							   const char        *id);
 static gboolean set_sort_reversed                         (FMIconView        *icon_view,
 							   gboolean           new_value);
-static void     sort_direction_callback                   (gpointer           ignored,
-							   gpointer           user_data);
 static void     switch_to_manual_layout                   (FMIconView        *view);
 static void     preview_sound                             (NautilusFile      *file,
 							   gboolean           start_flag);
@@ -381,25 +382,7 @@ clean_up_callback (gpointer ignored, gpointer view)
 	fm_icon_view_clean_up (FM_ICON_VIEW (view));
 }
 
-/* callback to toggle the tighter layout boolean */
-static void
-tighter_layout_callback (gpointer ignored, gpointer view)
-{
-	NautilusIconContainer *icon_container;
-	NautilusFile *file;
-	gboolean is_tighter_layout;
 	
-	/* FIXME bugzilla.eazel.com 916: Workaround for Bonobo/GTK menu bug. */
-	if (FM_ICON_VIEW (view)->details->updating_toggle_menu_item)
-		return;
-	
-	icon_container = get_icon_container (FM_ICON_VIEW (view));
-	file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (view));
-	is_tighter_layout = fm_icon_view_get_directory_tighter_layout (FM_ICON_VIEW (view), file);
-	
-	fm_icon_view_set_directory_tighter_layout (FM_ICON_VIEW (view), file, !is_tighter_layout);
-	nautilus_icon_container_set_tighter_layout (icon_container, !is_tighter_layout);
-}
 
 /**
  * Note that this is used both as a Bonobo menu callback and a signal callback.
@@ -415,6 +398,36 @@ rename_icon_callback (gpointer ignored, gpointer view)
 
 	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (view));
 }
+
+static void
+tighter_layout_state_changed_callback (BonoboUIComponent   *component,
+				       const char          *path,
+				       Bonobo_UIComponent_EventType type,
+				       const char          *state,
+				       gpointer            user_data)
+{
+	NautilusIconContainer *icon_container;
+	NautilusFile *file;
+	gboolean is_tighter_layout;
+	FMIconView *view;
+
+	g_assert (strcmp (path, ID_TIGHTER_LAYOUT) == 0);
+
+	view = FM_ICON_VIEW (user_data);
+
+	/* FIXME bugzilla.eazel.com 916: Workaround for Bonobo/GTK menu bug. */
+	if (FM_ICON_VIEW (view)->details->updating_toggle_menu_item)
+		return;
+
+
+	icon_container = get_icon_container (FM_ICON_VIEW (view));
+	file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (view));
+	is_tighter_layout = fm_icon_view_get_directory_tighter_layout (FM_ICON_VIEW (view), file);
+	
+	fm_icon_view_set_directory_tighter_layout (FM_ICON_VIEW (view), file, !is_tighter_layout);
+	nautilus_icon_container_set_tighter_layout (icon_container, !is_tighter_layout);
+}
+
 
 static gboolean
 fm_icon_view_using_auto_layout (FMIconView *icon_view)
@@ -771,11 +784,12 @@ fm_icon_view_create_background_context_menu_items (FMDirectoryView *view,
 		}
 	 
 		nautilus_gtk_menu_append_separator (layout_submenu);
-			 
+
+		/* No callback here, since that is handled by the bonobo "id" field */
 	     	toggle_item = append_one_context_menu_item
 			(icon_view, layout_submenu, NULL, 
 			 MENU_PATH_TIGHTER_LAYOUT,
-			 GTK_SIGNAL_FUNC (tighter_layout_callback));
+			 NULL);
 		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (toggle_item), 
 					   	fm_icon_view_using_tighter_layout (icon_view)); 
 		
@@ -783,7 +797,7 @@ fm_icon_view_create_background_context_menu_items (FMDirectoryView *view,
 	     	toggle_item = append_one_context_menu_item
 			(icon_view, layout_submenu, NULL, 
 			 MENU_PATH_SORT_REVERSED,
-			 GTK_SIGNAL_FUNC (sort_direction_callback));		
+			 NULL);
 		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (toggle_item), 
 						icon_view->details->sort_reversed);
 		
@@ -1379,9 +1393,15 @@ set_sort_criterion_by_id (FMIconView *icon_view, const char *id)
  * The first parameter is different in these cases, but we just ignore it anyway.
  */
 static void
-sort_direction_callback (gpointer ignored, gpointer user_data)
+sort_reversed_state_changed_callback (BonoboUIComponent *component,
+				      const char        *path,
+				      Bonobo_UIComponent_EventType type,
+				      const char        *state,
+				      gpointer          user_data)
 {
 	FMIconView *icon_view;
+
+	g_assert (strcmp (path, ID_SORT_REVERSED) == 0);
 
 	icon_view = FM_ICON_VIEW (user_data);
 
@@ -1462,8 +1482,6 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB ("Icon Text", (BonoboUIVerbFn)customize_icon_text_callback),
 		BONOBO_UI_VERB ("Stretch", (BonoboUIVerbFn)show_stretch_handles_callback),
 		BONOBO_UI_VERB ("Unstretch", (BonoboUIVerbFn)unstretch_icons_callback),
-		BONOBO_UI_VERB ("Tighter Layout", (BonoboUIVerbFn)tighter_layout_callback),
-		BONOBO_UI_VERB ("Reversed Order", (BonoboUIVerbFn)sort_direction_callback),
 		BONOBO_UI_VERB ("Clean Up", (BonoboUIVerbFn)clean_up_callback),
 		BONOBO_UI_VERB_END
 	};
@@ -1485,7 +1503,9 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 			       "nautilus");
 
 	bonobo_ui_component_add_verb_list_with_data (icon_view->details->ui, verbs, view);
-
+	
+	bonobo_ui_component_add_listener (icon_view->details->ui, ID_TIGHTER_LAYOUT, tighter_layout_state_changed_callback, view);
+	bonobo_ui_component_add_listener (icon_view->details->ui, ID_SORT_REVERSED, sort_reversed_state_changed_callback, view);
 	icon_view->details->menus_ready = TRUE;
 
 	update_layout_menus (icon_view);
