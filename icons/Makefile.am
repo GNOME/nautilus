@@ -62,7 +62,6 @@ icon_DATA =\
 	gnome-audio-ulaw.png \
 	gnome-audio-x-aiff.png \
 	gnome-audio-x-mod.png \
-	gnome-audio-x-mp3.png \
 	gnome-audio-x-pn-realaudio.png \
 	gnome-audio-x-s3m.png \
 	gnome-audio-x-stm.png \
@@ -139,6 +138,8 @@ icon_DATA =\
 	i-executable.png \
 	i-fifo.png \
 	i-floppy.png \
+	i-music.png \
+	i-music-aa.png \
 	i-nfs.png \
 	i-printer.png \
 	i-regular-12.png \
@@ -156,6 +157,8 @@ icon_DATA =\
 	i-regular.xml \
 	i-search-72.png \
 	i-sock.png \
+	i-spreadsheet.png \
+	i-spreadsheet-aa.png \
 	i-stalled.png \
 	i-symlink.png \
 	i-web-72.png \
