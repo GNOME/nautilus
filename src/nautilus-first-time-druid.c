@@ -343,7 +343,17 @@ new_title_label (const char *text)
 	label = label_new_left_justified (text);
 
 	font = nautilus_scalable_font_get_default_font ();
-	nautilus_label_set_is_smooth (NAUTILUS_LABEL (label), TRUE);
+
+	/* Force the label into smooth mode only if our locale is not
+	 * multibyte.  The problem is that for multibyte locales it is
+	 * likely that there will be no properly encoded font setup for
+	 * nautilus use at this time.  By making the label not smooth in 
+	 * multi bytes locales, we make the first time druid work in more
+	 * systems.
+	 */
+	nautilus_label_set_is_smooth (NAUTILUS_LABEL (label), 
+				      !nautilus_dumb_down_for_multi_byte_locale_hack ());
+
 	nautilus_label_set_smooth_font (NAUTILUS_LABEL (label), font);
 	nautilus_label_make_larger (NAUTILUS_LABEL (label), 10);
 	nautilus_label_set_smooth_drop_shadow_offset (NAUTILUS_LABEL (label), 2);

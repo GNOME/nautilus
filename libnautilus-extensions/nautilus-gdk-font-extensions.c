@@ -114,6 +114,19 @@ nautilus_gdk_font_get_italic (GdkFont *font)
 	char *pattern_match;
 	const NautilusStringList *font_list;
 
+	/* FIXME bugzilla.eazel.com 7350:
+	 * The issue is that the the italic font matching code here 
+	 * assumes that all fonts are for the same encoding.
+	 * So we might find an italic version of a font, but but it will
+	 * be the in a wrong encoding and thus not appropiate for the current
+	 * locale.  This only happens in multi byte locales, because of the 
+	 * limited number of fonts found in these.
+	 */
+	if (nautilus_dumb_down_for_multi_byte_locale_hack ()) {
+		gdk_font_ref (font);
+		return font;
+	}
+
 	name = font_get_name (font);
 
 	/* Replace the slant with a wildard */
@@ -212,6 +225,19 @@ nautilus_gdk_font_get_bold (GdkFont *font)
 	BoldFontEntry *entry;
 
 	g_return_val_if_fail (font != NULL, NULL);
+
+	/* FIXME bugzilla.eazel.com 7350:
+	 * The issue is that the the bold font matching code here 
+	 * assumes that all fonts are for the same encoding.
+	 * So we might find a bold version of a font, but but it will
+	 * be the in a wrong encoding and thus not appropiate for the current
+	 * locale.  This only happens in multi byte locales, because of the 
+	 * limited number of fonts found in these.
+	 */
+	if (nautilus_dumb_down_for_multi_byte_locale_hack ()) {
+		gdk_font_ref (font);
+		return font;
+	}
 
 	if (bold_font_table == NULL) {
 		bold_font_table = g_hash_table_new (g_str_hash, g_str_equal);
@@ -379,6 +405,19 @@ nautilus_gdk_font_get_larger (GdkFont *font,
 	g_return_val_if_fail (ABS (num_steps) >= MIN_NUM_STEPS, NULL);
 	g_return_val_if_fail (ABS (num_steps) <= MAX_NUM_STEPS, NULL);
 
+	/* FIXME bugzilla.eazel.com 7350:
+	 * The issue is that the the larger font matching code here 
+	 * assumes that all fonts are for the same encoding.
+	 * So we might find a larger version of a font, but but it will
+	 * be the in a wrong encoding and thus not appropiate for the current
+	 * locale.  This only happens in multi byte locales, because of the 
+	 * limited number of fonts found in these.
+	 */
+	if (nautilus_dumb_down_for_multi_byte_locale_hack ()) {
+		gdk_font_ref (font);
+		return font;
+	}
+
 	name = font_get_name (font);
 
 	size_in_points = xlfd_string_get_nth_as_int (name, XLFD_SIZE_IN_POINTS_INDEX);
@@ -539,6 +578,18 @@ nautilus_gdk_font_get_largest_fitting (GdkFont *font,
 	g_return_val_if_fail (maximum_acceptable_font_size > 0, NULL);
 	g_return_val_if_fail (maximum_acceptable_font_size > minimum_acceptable_font_size, NULL);
 
+	/* FIXME bugzilla.eazel.com 7350:
+	 * The issue is that the the larger font matching code here 
+	 * assumes that all fonts are for the same encoding.
+	 * So we might find a larger version of a font, but but it will
+	 * be the in a wrong encoding and thus not appropiate for the current
+	 * locale.  This only happens in multi byte locales, because of the 
+	 * limited number of fonts found in these.
+	 */
+	if (nautilus_dumb_down_for_multi_byte_locale_hack ()) {
+		gdk_font_ref (font);
+		return font;
+	}
 	
 	tokenized_string = nautilus_string_list_new_from_tokens (text, "\n", FALSE);
 	longest_string = nautilus_string_list_get_longest_string (tokenized_string);

@@ -1184,6 +1184,69 @@ nautilus_g_slist_from_g_list (GList *list)
 	return g_slist_reverse (slist);
 }
 
+/**
+ * nautilus_dumb_down_for_multi_byte_locale_hack
+ * 
+ * Return value: A boolean value indicating whether the current locale
+ *               is multi byte so that we can dumb down some operations.
+ *               to work on those locales.  This is a temporary workaround
+ *               with will be properly fixed in a future version of 
+ *               nautilus.
+ *
+ */
+gboolean
+nautilus_dumb_down_for_multi_byte_locale_hack (void)
+{
+	static gboolean is_multi_byte_locale = FALSE;
+	static gboolean is_multi_byte_locale_known = FALSE;
+	guint i;
+	const char *variable = NULL;
+
+	/*
+	 * List of environment variables that effect the locale.
+	 * This list was provided by John Harper (out of Sawfish)
+	 * where he uses it for similar purposes.
+	 */
+	static const char *locale_variables[] ={
+		"LANGUAGE",
+		"LC_ALL",
+		"LC_MESSAGES",
+		"LANG",
+		"GDM_LANG"
+	};
+
+	/*
+	 * List of locales (prefixes) known to be multi byte.
+	 */
+	static const char *multi_byte_locales[] ={
+		"ja",
+		"ko",
+		"zh"
+	};
+
+	/* Find out if the locale is multi byte only once */
+	if (is_multi_byte_locale_known) {
+		return is_multi_byte_locale;
+	}
+	is_multi_byte_locale_known = TRUE;
+
+	/* Find the first language variable that is set */
+	for (i = 0; i < NAUTILUS_N_ELEMENTS (locale_variables) && variable == NULL; i++) {
+		variable = g_getenv (locale_variables[i]);
+	}
+
+	/* If a language variable was found, check it agains the known multi byte locales */
+	if (variable != NULL) {
+		for (i = 0; i < NAUTILUS_N_ELEMENTS (multi_byte_locales); i++) {
+			if (nautilus_istr_has_prefix (variable, multi_byte_locales[i])) {
+				is_multi_byte_locale = TRUE;
+			}
+		}
+	}
+
+	return is_multi_byte_locale;
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 static void 

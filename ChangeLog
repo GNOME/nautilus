@@ -4,6 +4,39 @@
 
 	2001-03-06  Ramiro Estrugo  <ramiro@eazel.com>
 
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Workaround hack for the following bugs:
+
+	7352 - Theme selector description labels missing in ja_JP locale.
+	7354 - First time druid title doesnt properly display in the ja_JP
+	locale.
+	
+	* libnautilus-extensions/nautilus-gdk-font-extensions.c:
+	(nautilus_gdk_font_get_italic), (nautilus_gdk_font_get_bold),
+	(nautilus_gdk_font_get_larger),
+	(nautilus_gdk_font_get_largest_fitting):
+	For multibyte locales, always return the source font.  This is a
+	workaround for bug 7350.  We will fix 7350 properly in 1.2.
+
+	* libnautilus-extensions/nautilus-glib-extensions.h:
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(nautilus_dumb_down_for_multi_byte_locale_hack):
+	New function to determine if we need to dumb down some things for
+	multi byte locales.  Currently this is only limited to bold text
+	and possible larger text in the sidebar, first time wizard and
+	theme selector.
+
+	* src/nautilus-first-time-druid.c: (new_title_label):
+	For multibyte locales, dont force the label to be smooth so that
+	it works in more systems.
+
+2001-03-06  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Merge from HEAD:
+
+	2001-03-06  Ramiro Estrugo  <ramiro@eazel.com>
+
 	reviewed by: John Sullivan <sullivan@eazel.com>
 
 	Fix bug 7400 - Assertions in NON smooth font picker, and font

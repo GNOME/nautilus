@@ -153,4 +153,7 @@ char *      nautilus_shell_quote                      (const char               
 /* math */
 int         nautilus_round                            (double                      d);
 
+/* Locale */
+gboolean    nautilus_dumb_down_for_multi_byte_locale_hack (void);
+
 #endif /* NAUTILUS_GLIB_EXTENSIONS_H */
