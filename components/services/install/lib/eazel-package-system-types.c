@@ -1387,14 +1387,14 @@ dump_package_break_list (GString *out, GList *breaks, gboolean deep, int indent)
 		g_string_sprintfa (out, "Breaks : %s\n", readable_name);
 		if (IS_PACKAGEFEATUREMISSING (breakage)) {
 			add_string_list (out, 
-					 PACKAGEFILECONFLICT (breakage)->files,
-					 indent,
-					 "FeautureMissing");
-		} else if (IS_PACKAGEFILECONFLICT (breakage)) {
-			add_string_list (out, 
 					 PACKAGEFEATUREMISSING (breakage)->features,
 					 indent,
-					 "FeautureMissing");
+					 "FeatureMissing");
+		} else if (IS_PACKAGEFILECONFLICT (breakage)) {
+			add_string_list (out, 
+					 PACKAGEFILECONFLICT (breakage)->files,
+					 indent,
+					 "FileConflict");
 		} 
 		
 	}

@@ -1359,6 +1359,23 @@ check_if_modification_is_ok (EazelInstall *service,
 	return accept;
 }
 
+/* add a "breaks" marker to a package, but only if the broken package isn't already in the breaks list */
+static void
+packagedata_add_to_breaks_if_new (PackageData *pack, PackageBreaks *breaks)
+{
+	PackageData *what_broke = packagebreaks_get_package (breaks);
+	GList *iter;
+
+	for (iter = g_list_first (pack->breaks); iter != NULL; iter = g_list_next (iter)) {
+		pack = packagebreaks_get_package (PACKAGEBREAKS (iter->data));
+		if (pack == what_broke) {
+			/* redundant */
+			return;
+		}
+	}
+	packagedata_add_to_breaks (pack, breaks);
+}
+
 /*
   Traverse the packages modifies and query for packages R that require them
   foreach r in R 
@@ -1451,7 +1468,7 @@ do_requirement_consistency_check_package (EazelInstall *service,
 							pack->status = PACKAGE_BREAKS_DEPENDENCY;
 							packagebreaks_set_package (PACKAGEBREAKS (breakage), 
 										   requiredby);
-							packagedata_add_to_breaks (pack, PACKAGEBREAKS (breakage));
+							packagedata_add_to_breaks_if_new (pack, PACKAGEBREAKS (breakage));
 						}
 					}
 				}
@@ -1481,18 +1498,22 @@ do_requirement_consistency_check_internal (EazelInstall *service,
 			do_requirement_consistency_check_package (service, pack);
 			
 		}
+	}
 
 #if EI2_DEBUG & 0x4
 	trilobite_debug ("<-- do_requirement_consistency_check_internal");
 #endif
-	}
 }
 
 void 
 do_requirement_consistency_check (EazelInstall *service, 
 				  GList *packages)
 {
-	do_requirement_consistency_check_internal (service, packages);
+	GList *flat_packages;
+
+	flat_packages = flatten_packagedata_dependency_tree (packages);
+	do_requirement_consistency_check_internal (service, flat_packages);
+	g_list_free (flat_packages);
 }
 
 /***********************************************************************************/
@@ -1656,9 +1677,7 @@ check_tree_helper (EazelInstall *service,
 #endif
 		return;
 	}
-#if EI2_DEBUG & 0x4
-	trilobite_debug ("-> check_tree_for_conflicts_helper");
-#endif
+
 	if (pack->status == PACKAGE_FILE_CONFLICT ||
 	    pack->status == PACKAGE_BREAKS_DEPENDENCY) {
 		if (eazel_install_get_upgrade (service)==FALSE) {

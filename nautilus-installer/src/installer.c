@@ -1047,6 +1047,11 @@ eazel_install_preflight (EazelInstall *service,
 		while (1) { while (gtk_events_pending ()) { gtk_main_iteration (); } }
 	}
 
+        if (installer->had_failures) {
+                /* why would the install lib try to continue here?? */
+                return FALSE;
+        }
+
 	label_single = gtk_object_get_data (GTK_OBJECT (installer->window), "download_label");
 	label_single_2 = gtk_object_get_data (GTK_OBJECT (installer->window), "download_label_2");
 	label_overall = gtk_object_get_data (GTK_OBJECT (installer->window), "label_overall");

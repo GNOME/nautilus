@@ -1,3 +1,35 @@
+2001-02-24  Robey Pointer  <robey@eazel.com>
+
+	reviewed by: <delete if not using a buddy>
+
+	* components/services/install/lib/eazel-install-logic2.c:
+	(packagedata_add_to_breaks_if_new),
+	(do_requirement_consistency_check_package),
+	(do_requirement_consistency_check_internal),
+	(do_requirement_consistency_check), (check_tree_helper):
+
+	Trying to make the new consistency-check stuff work, so that the
+	RH62 install will succeed.  This seems to do it for me.  First,
+	flatten the dep-tree before doing consistency checks, to make sure
+	everything gets checked.  Second, only add a package to the breaks
+	list if that package isn't already there.
+	
+	* components/services/install/lib/eazel-install-problem.c:
+	(get_detailed_messages_breaks_foreach):
+
+	Clean up one of the messages a little bit so it's less
+	nonsensical.
+	
+	* components/services/install/lib/eazel-package-system-types.c:
+	(dump_package_break_list):
+
+	The names of these (debug messages) appeared to be reversed, which
+	might have caused someone unneeded heartbreak someday.
+	
+	* nautilus-installer/src/installer.c: (eazel_install_preflight):
+
+	If any packages failed before the preflight, give up.
+
 2001-02-25 John Fleck <jfleck@inkstain.net>
 
 	reviewed by: George Lebl <jirka@5z.org>

@@ -74,7 +74,11 @@ get_detailed_messages_breaks_foreach (PackageBreaks *breakage, GetErrorsForEachD
 		previous_pack = PACKAGEDATA(data->path->data);
 		previous_name = packagedata_get_readable_name (previous_pack);
 		top_pack = PACKAGEDATA(g_list_last (data->path)->data);
-		top_name = packagedata_get_readable_name (top_pack);
+		if (top_pack == previous_pack) {
+			top_pack = NULL;
+		} else {
+			top_name = packagedata_get_readable_name (top_pack);
+		}
 	}
 
 	package_broken_name = packagedata_get_readable_name (packagebreaks_get_package (breakage));
@@ -100,7 +104,7 @@ get_detailed_messages_breaks_foreach (PackageBreaks *breakage, GetErrorsForEachD
 		char *message;
 		
 		message = g_strdup_printf ("Feature dependency between %s and %s", 
-					   previous_pack->name,
+					   previous_name,
 					   package_broken_name);
 		(*errors) = g_list_append (*errors, message);
 	}
