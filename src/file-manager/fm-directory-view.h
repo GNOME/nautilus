@@ -331,6 +331,8 @@ void               fm_directory_view_pop_up_background_context_menu (FMDirectory
 						  		     GdkEventButton 	   *event);
 void               fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView 	   *view, 
 						  		     GdkEventButton 	   *event); 
+gboolean	   fm_directory_view_should_show_file 		    (FMDirectoryView	   *view,
+								     NautilusFile 	   *file);
 void               fm_directory_view_update_menus                   (FMDirectoryView       *view);
 void		   fm_directory_view_new_folder			    (FMDirectoryView       *view);
 

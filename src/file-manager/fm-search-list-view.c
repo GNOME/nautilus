@@ -426,11 +426,16 @@ real_add_file (FMDirectoryView *view, NautilusFile *file)
 	real_file_uri = gnome_vfs_unescape_string (fake_file_name, NULL);
 	real_file = nautilus_file_get (real_file_uri);
 
-	/* Tell the normal list-view code to add this file. It will add
-	 * and ref it only if it's not already in the list.
-	 */ 
-	NAUTILUS_CALL_PARENT_CLASS 
-		(FM_DIRECTORY_VIEW_CLASS, add_file, (view, real_file));
+	/* We don't benefit from the filtering done in queue_pending_files,
+	 * since that's done on the fake file, so we do our own filtering here.
+	 */
+	if (fm_directory_view_should_show_file (view, real_file)) {
+		/* Tell the normal list-view code to add this file. It will add
+		 * and ref it only if it's not already in the list.
+		 */ 
+		NAUTILUS_CALL_PARENT_CLASS 
+			(FM_DIRECTORY_VIEW_CLASS, add_file, (view, real_file));
+	}
 
 	g_free (fake_file_name);
 	g_free (real_file_uri);

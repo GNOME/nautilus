@@ -1,3 +1,26 @@
+2000-12-07  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 2330 (Search can find hidden files, which the user
+	can't otherwise see)
+
+	Unfortunately this fix leaves behind a related but harder-
+	to-fix bug, bug 5029. I'll fix that separately.
+
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_should_show_file): New function, intended
+	for subclasses, returns whether a single file should be
+	displayed or not, based on user's filter preferences.
+
+	* src/file-manager/fm-search-list-view.c: 
+	(real_add_file): Use should_show_file to filter out files
+	that don't match preferences. The normal directory-view
+	mechanism doesn't work in this case due to the way
+	the search view uses "fake" uris to pass around the
+	search results.
+
 2000-12-07  Rebecca Schulman  <rebecka@eazel.com>
 	Hopefully will improve performance for
 	menu merging in a case where it is poor.

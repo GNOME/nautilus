@@ -3848,6 +3848,20 @@ showing_trash_directory (FMDirectoryView *view)
 	return nautilus_file_is_in_trash (fm_directory_view_get_directory_as_file (view));
 }
 
+/**
+ * fm_directory_view_should_show_file
+ * 
+ * Returns whether or not this file should be displayed based on
+ * current filtering options.
+ */
+gboolean
+fm_directory_view_should_show_file (FMDirectoryView *view, NautilusFile *file)
+{
+	return nautilus_file_should_show (file, 
+					  view->details->show_hidden_files, 
+					  view->details->show_backup_files);
+}
+
 static gboolean
 real_supports_creating_files (FMDirectoryView *view)
 {
