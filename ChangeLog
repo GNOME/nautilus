@@ -1,3 +1,16 @@
+2000-12-15  Andy Hertzfeld  <andy@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_initialize),
+	(invalidate_text_dimensions), (nautilus_icon_canvas_item_set_arg),
+	(measure_label_text):
+	fixed performance bottleneck where we measure the label text too
+	many times by making it use values cached in the item details.
+	Added code to invalidate them at the appropriate times, and
+	made measure_label_text short-circuit if they're valid.
+	
 2000-12-15  J Shane Culpepper  <pepper@eazel.com>
 
         reviewed by: Darin Adler <darin@eazel.com>
