@@ -1,3 +1,23 @@
+2000-07-28  Mathieu Lacage  <mathieu@eazel.com>
+
+	Implement complex search bar. Need to be hooked onto medusa
+	
+	* libnautilus-extensions/nautilus-search-bar-criterion-private.h:
+	* libnautilus-extensions/nautilus-search-bar-criterion.c:
+	(nautilus_search_bar_criterion_destroy), (option_menu_callback),
+	(nautilus_search_bar_criterion_set_callback),
+	(nautilus_search_bar_criterion_new_from_values),
+	(nautilus_search_bar_criterion_next_new),
+	(nautilus_search_bar_criterion_first_new),
+	(nautilus_search_bar_criterion_get_location):
+	* libnautilus-extensions/nautilus-search-bar-criterion.h:
+	* src/nautilus-complex-search-bar.c: (criterion_callback),
+	(nautilus_complex_search_bar_initialize),
+	(nautilus_complex_search_bar_get_location),
+	(unattach_criterion_from_search_bar), (more_options_callback),
+	(fewer_options_callback):
+	* src/nautilus-complex-search-bar.h:
+
 2000-07-28  Josh Barrow  <linuxfan@ionet.net>
 
 	Hopefully, this will be the last change required for 

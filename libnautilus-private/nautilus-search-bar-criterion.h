@@ -44,20 +44,38 @@ typedef enum {
 	NAUTILUS_LAST_CRITERION
 } NautilusSearchBarCriterionType;
 
+
+
 typedef struct NautilusSearchBarCriterionDetails NautilusSearchBarCriterionDetails;
-
-#define NAUTILUS_SEARCH_BAR_CRITERION(arg) (NautilusSearchBarCriterion *) arg
-
 typedef struct NautilusSearchBarCriterion {
 	NautilusSearchBarCriterionDetails *details;
 	NautilusSearchBarCriterionType type;
 } NautilusSearchBarCriterion;
 
 
+typedef void (* NautilusSearchBarCriterionCallback) (NautilusSearchBarCriterion *old_criterion,
+						     NautilusSearchBarCriterion *new_criterion,
+						     gpointer data);
+
+#define NAUTILUS_SEARCH_BAR_CRITERION(arg) (NautilusSearchBarCriterion *) arg
+
+
+
 
 NautilusSearchBarCriterion *       nautilus_search_bar_criterion_first_new        (void);
 
-NautilusSearchBarCriterion *       nautilus_search_bar_criterion_next_new          (NautilusSearchBarCriterion *criterion);
+NautilusSearchBarCriterion *       nautilus_search_bar_criterion_next_new         (NautilusSearchBarCriterionType criterion_type);
+
+/* set callback called when the user chooses a new criterion type.
+   Used by complex-search-bar */
+void                               nautilus_search_bar_criterion_set_callback     (NautilusSearchBarCriterion *criterion,
+										   NautilusSearchBarCriterionCallback callback,
+										   gpointer data);
+/* called by the seach-bar-complex when the user asks for a search to be performed.
+   We need toi build the serach uri from the different criterions.
+   Each criterion returns the part of the search uri it represents 
+*/
+char *                              nautilus_search_bar_criterion_get_location     (NautilusSearchBarCriterion *criterion);
 
 void                               nautilus_search_bar_criterion_show             (NautilusSearchBarCriterion *criterion);
 void                               nautilus_search_bar_criterion_hide             (NautilusSearchBarCriterion *criterion);

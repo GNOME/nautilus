@@ -28,7 +28,7 @@
 #include "nautilus-search-bar-criterion.h"
 #include "nautilus-search-bar-criterion-private.h"
 
-
+#include <gtk/gtksignal.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtkoptionmenu.h>
 #include <gtk/gtkmenu.h>
@@ -38,34 +38,19 @@
 
 #include <libgnomeui/gnome-uidefs.h>
 
-typedef struct criteria_table_element {
-	NautilusSearchBarCriterionType type;
-	char *title;
-} criteria_table_element;
-
-static criteria_table_element criteria_table [] = {
-	{ NAUTILUS_FILE_NAME_SEARCH_CRITERION,
-	  N_("Name") },
-	{ NAUTILUS_CONTENT_SEARCH_CRITERION,
-	  N_("Content") },
-	{ NAUTILUS_FILE_TYPE_SEARCH_CRITERION,
-	  N_("Type") },
-	{ NAUTILUS_LOCATION_SEARCH_CRITERION,
-	  N_("Stored") },
-	{ NAUTILUS_SIZE_SEARCH_CRITERION,
-	  N_("Size") },
-	{ NAUTILUS_NOTES_SEARCH_CRITERION,
-	  N_("With Note") },
-	{ NAUTILUS_EMBLEM_SEARCH_CRITERION,
-	  N_("With Emblem") },
-	{ NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION,
-	  N_("Last Modified") },
-	{ NAUTILUS_OWNER_SEARCH_CRITERION,
-	  N_("Owned By") },
-	{ NAUTILUS_LAST_CRITERION,
-	  NULL},
-	{ 0, NULL }
+static char * criteria_titles [] = {
+	  N_("Name"),
+	  N_("Content"),
+	  N_("Type"),
+	  N_("Stored"),
+	  N_("Size"),
+	  N_("With Note"),
+	  N_("With Emblem"),
+	  N_("Last Modified"),
+	  N_("Owned By"),
+	  NULL
 };
+
 
 static char *name_relations [] = {
 	N_("contains"),
@@ -175,32 +160,48 @@ static NautilusSearchBarCriterion * nautilus_search_bar_criterion_new_from_value
 NautilusSearchBarCriterionType      get_next_default_search_criterion_type         (NautilusSearchBarCriterionType type) ;
 
 
-static int number_from_type (NautilusSearchBarCriterionType type);
-
-static int number_from_type (NautilusSearchBarCriterionType type) 
-{
-	int i;
-
-	for (i = 0; criteria_table[i].title != NULL; i++) {
-		if (criteria_table[i].type == type) {
-			return i;
-		}
-	}
-	
-	return 0;
-}
-
 void
 nautilus_search_bar_criterion_destroy (NautilusSearchBarCriterion *criterion)
 {
 	/* FIXME : need more freeage */
 	g_free (criterion->details);
+	g_free (criterion);
 }
 
 static NautilusSearchBarCriterion * 
 nautilus_search_bar_criterion_new (void)
 {
 	return g_new0 (NautilusSearchBarCriterion, 1);
+}
+
+static void
+option_menu_callback (GtkWidget *widget, gpointer data);
+
+static void
+option_menu_callback (GtkWidget *widget, gpointer data)
+{
+	NautilusSearchBarCriterion *criterion, *new_criterion;
+	int type;
+		
+	criterion = (NautilusSearchBarCriterion *) data;
+	
+	type = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT(widget), "type"));
+
+	new_criterion = nautilus_search_bar_criterion_next_new (type - 1);	
+
+	criterion->details->callback (criterion, new_criterion, criterion->details->callback_data);
+	
+	nautilus_search_bar_criterion_destroy (criterion);
+}
+
+
+void                               
+nautilus_search_bar_criterion_set_callback     (NautilusSearchBarCriterion *criterion,
+						NautilusSearchBarCriterionCallback callback,
+						gpointer data)
+{
+	criterion->details->callback = callback;
+	criterion->details->callback_data = data;
 }
 
 
@@ -224,33 +225,46 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 
 	search_criteria_option_menu = gtk_option_menu_new ();
 	search_criteria_menu = gtk_menu_new ();
-	for (i = 0; criteria_table[i].title != NULL; i++) {
+	for (i = 0; criteria_titles[i] != NULL; i++) {
+		GtkWidget *item;
+		item = gtk_menu_item_new_with_label (_(criteria_titles[i]));
+		gtk_object_set_data (GTK_OBJECT(item), "type", GINT_TO_POINTER(i));
+		gtk_signal_connect (GTK_OBJECT (item), 
+				    "activate",
+				    option_menu_callback,
+				    (gpointer) criterion);
 		gtk_menu_append (GTK_MENU (search_criteria_menu),
-				 gtk_menu_item_new_with_label (_(criteria_table[i].title)));
+				 item);
 	}
-	gtk_menu_set_active (GTK_MENU (search_criteria_menu), number_from_type (type));
+	gtk_menu_set_active (GTK_MENU (search_criteria_menu), type);
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (search_criteria_option_menu),
 				  search_criteria_menu);
-
-
-
 	criterion->details->available_option_menu = GTK_OPTION_MENU (search_criteria_option_menu);
-	g_return_val_if_fail (operator_menu != NULL, NULL);
-	
+	gtk_widget_show_all (GTK_WIDGET(search_criteria_option_menu));
+
+
+
 	operator_option_menu = gtk_option_menu_new ();
 	operator_menu = gtk_menu_new ();
 	for (i = 0; operator_options[i] != NULL; i++) {
+		GtkWidget *item;
+		item = gtk_menu_item_new_with_label (_(operator_options[i]));
+		gtk_object_set_data (GTK_OBJECT(item), "type", GINT_TO_POINTER(i));
 		gtk_menu_append (GTK_MENU (operator_menu),
-				 gtk_menu_item_new_with_label (_(operator_options[i])));
+				 item);
 	}
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (operator_option_menu),
 				  operator_menu);
 	criterion->details->operator_menu = GTK_OPTION_MENU (operator_option_menu);
+	gtk_widget_show_all (GTK_WIDGET(operator_option_menu));
+
+
 
 	g_assert (! (use_value_entry && use_value_menu));
 	criterion->details->use_value_entry = use_value_entry;
 	if (use_value_entry) {
 		criterion->details->value_entry = GTK_ENTRY (gtk_entry_new ());
+		gtk_widget_show_all(GTK_WIDGET(criterion->details->value_entry));
 	}
 	criterion->details->use_value_menu = use_value_menu;
 	if (use_value_menu) {
@@ -258,13 +272,16 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 		value_option_menu = gtk_option_menu_new ();
 		value_menu = gtk_menu_new ();
 		for (i = 0; value_options[i] != NULL; i++) {
+			GtkWidget *item;
+			item = gtk_menu_item_new_with_label (_(value_options[i]));
+			gtk_object_set_data (GTK_OBJECT(item), "type", GINT_TO_POINTER(i));
 			gtk_menu_append (GTK_MENU (value_menu),
-					 gtk_menu_item_new_with_label (_(value_options[i])));
+					 item);
 		}
 		gtk_option_menu_set_menu (GTK_OPTION_MENU (value_option_menu),
 					  value_menu);
 		criterion->details->value_menu = GTK_OPTION_MENU (value_option_menu);
-
+		gtk_widget_show_all (GTK_WIDGET(criterion->details->value_menu));
 	}
 
 	return criterion;
@@ -272,12 +289,12 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 
 
 NautilusSearchBarCriterion *
-nautilus_search_bar_criterion_next_new (NautilusSearchBarCriterion *criterion)
+nautilus_search_bar_criterion_next_new (NautilusSearchBarCriterionType criterion_type)
 {
 	NautilusSearchBarCriterion *new_criterion;
 	NautilusSearchBarCriterionType next_type;
 
-	next_type = get_next_default_search_criterion_type (criterion->details->type);
+	next_type = criterion_type + 1;
 
 	switch(next_type) {
 	case NAUTILUS_FILE_NAME_SEARCH_CRITERION:
@@ -352,7 +369,7 @@ nautilus_search_bar_criterion_next_new (NautilusSearchBarCriterion *criterion)
 }
 
 NautilusSearchBarCriterion *
-nautilus_search_bar_criterion_first_new ()
+nautilus_search_bar_criterion_first_new (void)
 {
 	return nautilus_search_bar_criterion_new_from_values (NAUTILUS_FILE_NAME_SEARCH_CRITERION,
 							      name_relations,
@@ -361,7 +378,23 @@ nautilus_search_bar_criterion_first_new ()
 							      NULL); 	
 }
 
+/* returns a newly allocated string: needs to be freed by the caller. */
+char *
+nautilus_search_bar_criterion_get_location (NautilusSearchBarCriterion *criterion)
+{
+	/* There is ONE thing you should be aware of while implementing this function.
+	   You have to make sure you use non-translated strings for building the uri.
+	   So, to implement this, you are supposed to:
+	   - build various tables which contain the strings corresponding to  a search type.
+	   - call 
+	          option_menu = gtk_option_menu_get_menu (criterion->details->some_menu)
+		  menu_item = gtk_menu_get_active (optin_menu)
+		  number = gtk_object_get_data (menu_item, "type")
+	 */
 
+
+	return g_strdup ("file_name contains evolution ");
+}
 
 
 NautilusSearchBarCriterionType
