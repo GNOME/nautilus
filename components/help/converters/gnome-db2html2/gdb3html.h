@@ -112,7 +112,8 @@ typedef enum ElementIndex {
 	ENVAR, /* 100 */
 	COMPUTEROUTPUT,
 	INLINEGRAPHIC,
-	UNDEFINED /* 103 */
+	LEGALNOTICE,
+	UNDEFINED /* 104 */
 } ElementIndex;
 
 typedef struct _ElementInfo ElementInfo;
@@ -193,5 +194,6 @@ void ulink_end_element (Context *context, const gchar *name);
 void sect1_start_element (Context *context, const char *name, const xmlChar **atrs);
 StackElement *find_first_element (Context *context, GSList *args);
 ElementIndex find_first_parent (Context *context, GSList *args);
+void print_footer (const char *prev, const char *home, const char *next);
 
 #endif

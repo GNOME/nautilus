@@ -1,3 +1,36 @@
+2000-09-09  Ali Abdin  <aliabdin@aucegypt.edu>
+
+        Should fix bug #2229. Also make HTML output more 'valid'
+
+        * components/help/converters/gnome-db2html2/gdb3html.h:
+        Add legalnotice tag, and prototype of print_footer (since it is no
+        longer static)
+
+        * components/help/converters/gnome-db2html2/sect-elements.[ch]:
+        (sect_inlinegraphic_start_element): Forgot to initialize a
+        variable.
+
+        (sect_legalnotice_start_element),
+        (sect_legalnotice_characters),
+        (sect_legalnotice_end_element): New functions for special handling of
+        the legalnotice tag.
+
+        (sect_para_end_element),
+        (sect_para_start_element): Modified to also work in the legalnotice
+        tag
+
+        (sect_article_end_element): Commented out an area of code that creates
+        erroneous HTML tags (now that the 'footer' prints them out).
+
+        (sect_title_characters): Somebody forgot to 'open' the <HEAD>
+
+        * components/help/converters/gnome-db2html2/toc-elements.c:
+        (toc_artheader_end_element): Make 'Copyright' link to the legalnotice.
+
+        * components/help/help-method.conf:
+        Add 'gnome-help:' at mjs' suggestion (do we need to remove 'help:'
+        now?)
+
 2000-09-08  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 773, Context menu items wrong when used on Trash item

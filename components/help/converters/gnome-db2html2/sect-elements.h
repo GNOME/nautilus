@@ -12,7 +12,7 @@ typedef enum SectContextState {
 	LOOKING_FOR_SECT_TITLE,
 	IN_SECT,
 	LOOKING_FOR_POST_SECT,
-	DONE_WITH_SECT
+	DONE_WITH_SECT,
 } SectContextState;
 
 typedef struct _SectFuncProtoInfo SectFuncProtoInfo;
@@ -123,4 +123,7 @@ void sect_sup_end_element (Context *context, const char *name);
 void sect_blockquote_start_element (Context *context, const char *name, const xmlChar **atrs);
 void sect_blockquote_end_element (Context *context, const char *name);
 void sect_inlinegraphic_start_element (Context *context, const char *name, const xmlChar **atrs);
+void sect_legalnotice_start_element (Context *context, const char *name, const xmlChar **atrs);
+void sect_legalnotice_end_element (Context *context, const char *name);
+void sect_legalnotice_characters (Context *context, const char *chars, int len);
 #endif

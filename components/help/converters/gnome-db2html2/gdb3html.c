@@ -578,7 +578,7 @@ xml_parse_document (gchar *filename)
 	return (ret);
 }
 
-static void
+void
 print_footer (const char *prev, const char *home, const char *next)
 {
 	g_print ("\n<HR ALIGN=\"LEFT\" WIDTH=\"100%%\">\n");

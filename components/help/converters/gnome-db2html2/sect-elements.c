@@ -107,6 +107,7 @@ ElementInfo sect_elements[] = {
 	{ ENVAR, "envar", (startElementSAXFunc) sect_tt_start_element, (endElementSAXFunc) sect_tt_end_element, (charactersSAXFunc) sect_write_characters},
 	{ COMPUTEROUTPUT, "comptueroutput", (startElementSAXFunc) sect_tt_start_element, (endElementSAXFunc) sect_tt_end_element, (charactersSAXFunc) sect_write_characters},
 	{ INLINEGRAPHIC, "inlinegraphic", (startElementSAXFunc) sect_inlinegraphic_start_element, NULL, NULL},
+	{ LEGALNOTICE, "legalnotice", (startElementSAXFunc) sect_legalnotice_start_element, (endElementSAXFunc) sect_legalnotice_end_element, (charactersSAXFunc) sect_legalnotice_characters},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -238,7 +239,8 @@ sect_article_end_element (Context *context, const gchar *name)
 		}
 		g_print ("</TABLE>");
 	}
-	sect_print (context, "</BODY>\n</HEAD>\n");
+	/* FIXME: Is the below needed now that we have the footer printed out */
+/*	sect_print (context, "</BODY>\n</HEAD>\n"); */
 }
 
 void
@@ -260,6 +262,7 @@ sect_para_start_element (Context *context, const gchar *name, const xmlChar **at
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FOOTNOTE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FORMALPARA));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (LISTITEM));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (LEGALNOTICE));
 	stack_el = find_first_element (context, element_list);
 
 	g_slist_free (element_list);
@@ -273,6 +276,7 @@ sect_para_start_element (Context *context, const gchar *name, const xmlChar **at
 	case SECT4:
 	case SECT5:
 	case SECTION:
+	case LEGALNOTICE:
 		sect_print (context, "<P>\n");
 		break;
 	case FORMALPARA:
@@ -301,6 +305,7 @@ sect_para_end_element (Context *context, const gchar *name)
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FOOTNOTE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FORMALPARA));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (LISTITEM));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (LEGALNOTICE));
 	stack_el = find_first_element (context, element_list);
 
 	g_slist_free (element_list);
@@ -314,6 +319,7 @@ sect_para_end_element (Context *context, const gchar *name)
 	case SECT4:
 	case SECT5:
 	case SECTION:
+	case LEGALNOTICE:
 		sect_print (context, "</P>\n");
 		break;
 	case FORMALPARA:
@@ -575,7 +581,7 @@ sect_title_start_element (Context *context,
 	SectContext *sect_context;
 
 	sect_context = (SectContext *) context->data;
-	if (!IS_IN_SECT (context))
+	if (!IS_IN_SECT (context)) 
 		return;
 
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT1));
@@ -592,7 +598,6 @@ sect_title_start_element (Context *context,
 	g_slist_free (element_list);
 	if (stack_el == NULL)
 		return;
-
 
 	switch (stack_el->info->index) {
 	case TABLE:
@@ -701,7 +706,7 @@ sect_title_characters (Context *context,
 
 		temp = g_strndup (chars, len);
 
-		sect_print (context, "<TITLE>%s</TITLE>\n</HEAD>\n", temp);
+		sect_print (context, "<HEAD>\n<TITLE>%s</TITLE>\n</HEAD>\n", temp);
 		sect_print (context, "<BODY BGCOLOR=\"#FFFFFF\" TEXT=\"#000000\" LINK=\"#0000FF\" VLINK=\"#840084\" ALINK=\"#0000FF\">\n");
 		if (stack_el == NULL)
 			sect_print (context, "<A href=\"help:%s\"><font size=3>Up to Table of Contents</font></A><BR>\n",
@@ -947,6 +952,7 @@ sect_inlinegraphic_start_element (Context *context,
 		return;
 
 	format = NULL;
+	fileref = NULL;
 	atrs_ptr = (char **) atrs;
 	while (atrs_ptr && *atrs_ptr) {
 		if (g_strcasecmp (*atrs_ptr, "format") == 0) {
@@ -1831,4 +1837,59 @@ sect_blockquote_end_element (Context *context,
 		return;
 	
 	sect_print (context, "</BLOCKQUOTE>\n");
+}
+
+void
+sect_legalnotice_start_element (Context *context,
+				const char *name,
+				const xmlChar **atrs)
+{
+	SectContext *sect_context;
+
+	sect_context = (SectContext *)context->data;
+
+	if ((strcmp (context->target_section, "legalnotice") != 0) || IS_IN_SECT (context)) {
+		/* If we are not searching for the legalnotice or we are
+		 * currently in a sect then abort */
+		return;
+	}
+
+	sect_context->state = IN_SECT;
+	sect_print (context, "<HEAD>\n<TITLE>Legal Notice</TITLE>\n</HEAD>\n");
+	sect_print (context, "<BODY BGCOLOR=\"#FFFFFF\" TEXT=\"#000000\" LINK=\"#0000FF\" VLINK=\"#840084\" ALINK=\"#0000FF\">\n");
+	sect_print (context, "<H1>Legal Notice</H1>\n");
+
+}
+
+void
+sect_legalnotice_end_element (Context *context,
+			      const char *name)
+{
+	SectContext *sect_context;
+	char *prev_link;
+	
+	sect_context = (SectContext *)context->data;
+
+	if (strcmp (context->target_section, "legalnotice") != 0) {
+		return;
+	}
+
+
+	prev_link = g_strdup_printf ("help:%s", context->base_file);
+	print_footer (prev_link, prev_link, NULL);
+	g_free (prev_link);
+	
+	sect_context->state = DONE_WITH_SECT;
+}
+
+void
+sect_legalnotice_characters (Context *context,
+			     const char *chars,
+			     int len)
+{
+	if (strcmp (context->target_section, "legalnotice") != 0) {
+		return;
+	}
+
+	sect_write_characters (context, chars, len);
 }

@@ -230,7 +230,7 @@ toc_artheader_end_element (Context *context, const gchar *name)
 	}
 	g_print ("<P>");
 	if ((header->copyright_holder) && (header->copyright_year))
-		g_print ("Copyright &copy; %s by %s", header->copyright_year, header->copyright_holder);
+		g_print ("<A HREF=\"help:%s?legalnotice\">Copyright</A> &copy; %s by %s", context->base_file, header->copyright_year, header->copyright_holder);
 	g_print ("<HR>\n<H1>Table of Contents</H1>\n\n");
 	g_print ("<P>\n");
 }
