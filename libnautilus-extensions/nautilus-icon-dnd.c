@@ -402,19 +402,18 @@ drag_data_received_callback (GtkWidget *widget,
 	case NAUTILUS_ICON_DND_BGIMAGE:	
 	case NAUTILUS_ICON_DND_KEYWORD:
 	case NAUTILUS_ICON_DND_URI_LIST:
-	case NAUTILUS_ICON_DND_URL:
 		/* Save the data so we can do the actual work on drop. */
 		g_assert (drag_info->selection_data == NULL);
 		drag_info->selection_data = nautilus_gtk_selection_data_copy_deep (data);
 		break;
 		
 	/* Netscape keeps sending us the data, even though we accept the first drag */
-	//case NAUTILUS_ICON_DND_URL:
-	//	if (drag_info->selection_data != NULL) {
-	//		nautilus_gtk_selection_data_free_deep (drag_info->selection_data);
-	//		drag_info->selection_data = nautilus_gtk_selection_data_copy_deep (data);
-	//	}
-	//	break;
+	case NAUTILUS_ICON_DND_URL:
+		if (drag_info->selection_data != NULL) {
+			nautilus_gtk_selection_data_free_deep (drag_info->selection_data);
+			drag_info->selection_data = nautilus_gtk_selection_data_copy_deep (data);
+		}
+		break;
 
 	default:
 		g_message ("drag_data_received_callback unknown");
@@ -457,7 +456,7 @@ drag_data_received_callback (GtkWidget *widget,
 			receive_dropped_uri_list
 				(NAUTILUS_ICON_CONTAINER (widget),
 				 (char*) data->data, x, y);
-			gtk_drag_finish (context, FALSE, FALSE, time);
+			gtk_drag_finish (context, TRUE, FALSE, time);
 			break;
 
 		default:

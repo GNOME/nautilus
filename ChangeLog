@@ -1,5 +1,12 @@
 2001-03-14  Gene Z. Ragan  <gzr@eazel.com>
 
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(drag_data_received_callback):
+	Handle a case where Netscape submits duplicate drag data
+	before the first instance of the data has been freed.
+		
+2001-03-14  Gene Z. Ragan  <gzr@eazel.com>
+
 	* libnautilus-extensions/nautilus-icon-container.c:
 	(icon_set_position):
 	Fixed a minor annoying layout bug on the desktop. When icons were placed
