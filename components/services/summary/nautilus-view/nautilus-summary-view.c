@@ -52,9 +52,9 @@
 #define DEFAULT_BACKGROUND_COLOR		"rgb:0000/6666/6666"
 #define DEFAULT_SUMMARY_BACKGROUND_COLOR	"rgb:FFFF/FFFF/FFFF"
 /* #define	SUMMARY_XML_HOME			"http://localhost/summary-configuration.xml" */
-#define	SUMMARY_XML_HOME			"http://services.eazel.com:8888/services"
+#define	SUMMARY_XML_HOME			"eazel-services://anonymous/services"
 #define	SUMMARY_XML_HOME_2			"eazel-services:/services"
-#define	URL_REDIRECT_TABLE_HOME			"http://services.eazel.com:8888/services/urls"
+#define	URL_REDIRECT_TABLE_HOME			"eazel-services://anonymous/services/urls"
 #define	URL_REDIRECT_TABLE_HOME_2		"eazel-services:/services/urls"
 #define	REGISTER_HOME				"eazel-services://anonymous/account/register/form"
 #define	PREFERENCES_HOME			"eazel-services:/account/preferences/form"
