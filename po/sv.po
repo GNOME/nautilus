@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2001-05-14 21:15+0200\n"
-"PO-Revision-Date: 2001-05-14 21:14+0200\n"
+"POT-Creation-Date: 2001-05-16 05:14+0200\n"
+"PO-Revision-Date: 2001-05-16 05:14+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -4127,6 +4127,47 @@ msgstr "Gör om inmatning"
 msgid "Restore the changed name"
 msgstr "Återställ det ändrade namnet"
 
+#: libnautilus-private/nautilus-medusa-support.c:124
+#, c-format
+msgid ""
+"If you would like to enable fast searches, you can edit the file %s as root. "
+"Setting the enabled flag to \"yes\" will turn medusa services on.\n"
+"To start indexing and search services right away, you should also run the "
+"following commands as root:\n"
+"\n"
+"medusa-indexd\n"
+"medusa-searchd\n"
+"\n"
+"Fast searches will not be available until an initial index of your files has "
+"been created.  This may take a long time."
+msgstr ""
+"Om du vill använda snabbsökningar kan redigera filen %s som root. Genom att "
+"sätta enabled-flaggan till \"yes\" aktiverar du medusa-tjänsterna.\n"
+"För att starta indexering och söktjänster omedelbart bör du även köra "
+"följande kommandon som root:\n"
+"\n"
+"medusa-indexd\n"
+"medusa-searchd\n"
+"\n"
+"Snabbsökningar kommer inte att vara tillgängliga innan ett inledande index "
+"över dina filer har skapats. Detta kan komma att ta lång tid."
+
+#: libnautilus-private/nautilus-medusa-support.c:139
+msgid ""
+"Medusa, the application that performs searches, cannot be found on your "
+"system.  If you have compiled nautilus yourself, you will need to install a "
+"copy of medusa and recompile nautilus.  (A copy of Medusa may be available "
+"at ftp://ftp.gnome.org)\n"
+"If you are using a packaged version of Nautilus, fast searching is not "
+"available.\n"
+msgstr ""
+"Medusa, programmet som genomför sökningar, kan inte hittas på ditt system. "
+"Om du har kompilerat nautilus själv måste du installera en kopia av medusa "
+"och kompilera om nautilus (en kopia av Medusa kan finnas tillgängglig på "
+"ftp://ftp.gnome.org)\n"
+"Om du använder en paketerad version av Nautilus är snabbsökning inte "
+"tillgänglig.\n"
+
 #: libnautilus-private/nautilus-program-chooser.c:227
 msgid "not in menu"
 msgstr "inte i menyn"
@@ -4581,6 +4622,11 @@ msgstr ""
 #: libnautilus-private/nautilus-search-uri.c:714
 msgid "Items containing \"medusa\" in their names and that are folders"
 msgstr "Objekt som har \"medusa\" i sina namn och som är mappar"
+
+#: libnautilus-private/nautilus-theme.c:558
+#, c-format
+msgid "No description available for the \"%s\" theme"
+msgstr "Ingen beskrivning är tillgänglig för temat \"%s\""
 
 #: libnautilus-private/nautilus-trash-directory.c:74
 msgid "Searching Disks"
@@ -8474,9 +8520,6 @@ msgstr "%d%%"
 
 #~ msgid "Nautilus Theme Selector"
 #~ msgstr "Nautilus temaväljare"
-
-#~ msgid "No description available for the \"%s\" theme"
-#~ msgstr "Ingen beskrivning är tillgänglig för temat \"%s\""
 
 #~ msgid "_Tighter Layout"
 #~ msgstr "_Kompaktare layout"
