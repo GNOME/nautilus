@@ -24,8 +24,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-09 20:16+0100\n"
-"PO-Revision-Date: 2004-01-09 20:23+0100\n"
+"POT-Creation-Date: 2004-01-10 16:36+0100\n"
+"PO-Revision-Date: 2004-01-10 16:35+0100\n"
 "Last-Translator: Ole Laursen <olau@hardworking.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
@@ -74,7 +74,7 @@ msgstr "Emblemvisning til Nautilus"
 #: components/emblem/nautilus-emblem-view.c:203
 #, c-format
 msgid "Couldn't remove emblem with name '%s'."
-msgstr "Kunne ikke slette emblemet ved navn '%s'."
+msgstr "Kunne ikke slette emblemet ved navn \"%s\"."
 
 #: components/emblem/nautilus-emblem-view.c:204
 msgid ""
@@ -91,7 +91,7 @@ msgstr "Kunne ikke slette emblem"
 #: components/emblem/nautilus-emblem-view.c:239
 #, c-format
 msgid "Couldn't rename emblem with name '%s'."
-msgstr "Kunne ikke omdøbe emblemet ved navn '%s'."
+msgstr "Kunne ikke omdøbe emblemet ved navn \"%s\"."
 
 #: components/emblem/nautilus-emblem-view.c:240
 msgid ""
@@ -175,7 +175,7 @@ msgstr "Kunne ikke tilføje emblem"
 #: components/emblem/nautilus-emblem-view.c:839
 #, c-format
 msgid "The file '%s' does not appear to be a valid image."
-msgstr "Filen '%s' ser ikke ud til at være et gyldigt billede."
+msgstr "Filen \"%s\" ser ikke ud til at være et gyldigt billede."
 
 #: components/emblem/nautilus-emblem-view.c:788
 msgid "The dragged file does not appear to be a valid image."
@@ -2016,7 +2016,10 @@ msgstr "Kunne ikke flytte \"%s\" til den nye placering."
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to move the item, rename it and try again."
-msgstr "Navnet bliver allerede brugt til et specielt objekt som ikke kan slettes eller erstattes. Hvis du stadig ønsker at flytte objektet, så omdøb det og prøv igen."
+msgstr ""
+"Navnet bliver allerede brugt til et specielt objekt som ikke kan slettes "
+"eller erstattes. Hvis du stadig ønsker at flytte objektet, så omdøb det og "
+"prøv igen."
 
 #: libnautilus-private/nautilus-file-operations.c:1034
 #, c-format
@@ -2027,7 +2030,10 @@ msgstr "Kunne ikke kopiere \"%s\" til den nye placering."
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to copy the item, rename it and try again."
-msgstr "Navnet bliver allerede brugt til et specielt objekt som ikke kan slettes eller erstattes. Hvis du stadig ønsker at kopiere objektet, så omdøb det og prøv igen."
+msgstr ""
+"Navnet bliver allerede brugt til et specielt objekt som ikke kan slettes "
+"eller erstattes. Hvis du stadig ønsker at kopiere objektet, så omdøb det og "
+"prøv igen."
 
 #: libnautilus-private/nautilus-file-operations.c:1043
 msgid "Unable to Replace File"
@@ -2357,7 +2363,7 @@ msgstr "Der er ikke ledig plads på destinationen."
 #: libnautilus-private/nautilus-file-operations.c:2059
 #, c-format
 msgid "Error \"%s\" creating new folder."
-msgstr "Fejl '%s' ved oprettelse af ny mappe."
+msgstr "Fejl \"%s\" ved oprettelse af ny mappe."
 
 #: libnautilus-private/nautilus-file-operations.c:2064
 msgid "Error creating new folder."
@@ -2431,6 +2437,32 @@ msgstr "Hvis du tømmer papirkurven, vil filerne blive slettet permanent."
 #: libnautilus-private/nautilus-file-operations.c:2545
 msgid "_Empty"
 msgstr "_Tøm"
+
+#: libnautilus-private/nautilus-file-utilities.c:364
+#: libnautilus-private/nautilus-global-preferences.c:549
+#: nautilus-computer.desktop.in.h:1 src/nautilus-navigation-window-ui.xml.h:9
+msgid "Computer"
+msgstr "Computer"
+
+#: libnautilus-private/nautilus-file-utilities.c:366
+msgid "Network"
+msgstr "Netværk"
+
+#: libnautilus-private/nautilus-file-utilities.c:368
+msgid "Fonts"
+msgstr "Skrifttyper"
+
+#: libnautilus-private/nautilus-file-utilities.c:370
+msgid "Themes"
+msgstr "Temaer"
+
+#: libnautilus-private/nautilus-file-utilities.c:372
+msgid "CD Creator"
+msgstr "Cd-brænder"
+
+#: libnautilus-private/nautilus-file-utilities.c:374
+msgid "Windows Network"
+msgstr "Windowsnetværk"
 
 #. Today, use special word.
 #. * strftime patterns preceeded with the widest
@@ -2657,7 +2689,7 @@ msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
 "gnome-vfs mailing list."
 msgstr ""
-"Ingen beskrivelse fundet for MIME-typen '%s' (filen er '%s'), fortæl det "
+"Ingen beskrivelse fundet for MIME-typen \"%s\" (filen er \"%s\"), fortæl det "
 "venligst til Gnome VFS-postlisten."
 
 #: libnautilus-private/nautilus-file.c:4534
@@ -2948,11 +2980,6 @@ msgstr "ingen"
 msgid "%s's Home"
 msgstr "Hjemmemappe%.0s"
 
-#: libnautilus-private/nautilus-global-preferences.c:549
-#: nautilus-computer.desktop.in.h:1 src/nautilus-navigation-window-ui.xml.h:9
-msgid "Computer"
-msgstr "Computer"
-
 #: libnautilus-private/nautilus-icon-canvas-item.c:2758
 msgid "editable text"
 msgstr "redigerbar tekst"
@@ -3049,7 +3076,9 @@ msgstr "Farve der benyttes til infotekst mod en lys baggrund"
 msgid ""
 "Do you want to switch to manual layout and leave this item where you dropped "
 "it? This will clobber the stored manual layout."
-msgstr "Ønsker du at skifte til manuel placering og lade dette objekt blive hvor du slap det? Dette vil ødelægge den gemte manuelle placering."
+msgstr ""
+"Ønsker du at skifte til manuel placering og lade dette objekt blive hvor du "
+"slap det? Dette vil ødelægge den gemte manuelle placering."
 
 #: libnautilus-private/nautilus-icon-dnd.c:734
 #: libnautilus-private/nautilus-icon-dnd.c:738
@@ -3062,19 +3091,25 @@ msgstr "Denne mappe benyttet automatisk placering."
 msgid ""
 "Do you want to switch to manual layout and leave these items where you "
 "dropped them? This will clobber the stored manual layout."
-msgstr "Ønsker du at skifte til manuel placering og lade disse objekter blive hvor du slap dem? Dette vil ødelægge den gemte manuelle placering."
+msgstr ""
+"Ønsker du at skifte til manuel placering og lade disse objekter blive hvor "
+"du slap dem? Dette vil ødelægge den gemte manuelle placering."
 
 #: libnautilus-private/nautilus-icon-dnd.c:742
 msgid ""
 "Do you want to switch to manual layout and leave this item where you dropped "
 "it?"
-msgstr "Ønsker du at skifte til manuel placering og lade dette objekt blive hvor du slap det?"
+msgstr ""
+"Ønsker du at skifte til manuel placering og lade dette objekt blive hvor du "
+"slap det?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:745
 msgid ""
 "Do you want to switch to manual layout and leave these items where you "
 "dropped them?"
-msgstr "Ønsker du at skifte til manuel placering og lade disse objekter blive hvor du slap dem?"
+msgstr ""
+"Ønsker du at skifte til manuel placering og lade disse objekter blive hvor "
+"du slap dem?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:751
 msgid "Switch to Manual Layout?"
@@ -3143,11 +3178,11 @@ msgstr "i menuen for denne fil"
 #: libnautilus-private/nautilus-program-chooser.c:342
 #, c-format
 msgid "in menu for \"%s\""
-msgstr "i menuen for '%s'"
+msgstr "i menuen for \"%s\""
 
 #: libnautilus-private/nautilus-program-chooser.c:345
 msgid "default for this file"
-msgstr "standard for denne fil"
+msgstr "forvalgt for denne fil"
 
 #: libnautilus-private/nautilus-program-chooser.c:348
 #: libnautilus-private/nautilus-program-chooser.c:351
@@ -3194,7 +3229,7 @@ msgstr "Er forvalgt for alle \"%s\"-filer."
 #: libnautilus-private/nautilus-program-chooser.c:1030
 #, c-format
 msgid "Modify \"%s\""
-msgstr "Ændr '%s'"
+msgstr "Ændr \"%s\""
 
 #. Radio button for adding to short list for file type.
 #: libnautilus-private/nautilus-program-chooser.c:1056
@@ -3206,7 +3241,7 @@ msgstr "Medtag i menuen for \"%s\"-filer."
 #: libnautilus-private/nautilus-program-chooser.c:1063
 #, c-format
 msgid "Use as default for \"%s\" items"
-msgstr "Er i menuen for alle \"%s\"-filer."
+msgstr "Benyt som forvalg for \"%s\"-filer."
 
 #. Radio button for adding to short list for specific file.
 #: libnautilus-private/nautilus-program-chooser.c:1070
@@ -3316,7 +3351,9 @@ msgstr "Ingen handling associeret"
 msgid ""
 "You can configure GNOME to associate applications with file types. Do you "
 "want to associate an application with this file type now?"
-msgstr "Du kan konfigurere Gnome til at associere programmer med filtyper. Vil du associere et program med denne filtype nu?"
+msgstr ""
+"Du kan konfigurere Gnome til at associere programmer med filtyper. Vil du "
+"associere et program med denne filtype nu?"
 
 #: libnautilus-private/nautilus-program-chooser.c:1610
 msgid "_Associate Application"
@@ -3354,7 +3391,10 @@ msgid ""
 "You can configure GNOME to associate a different application or viewer with "
 "this file type. Do you want to associate an application or viewer with this "
 "file type now?"
-msgstr "Du kan konfigurere Gnome til at associere et andet program eller en anden fremviser med denne filtype. Vil du associere et program eller en fremviser med denne filtype nu?"
+msgstr ""
+"Du kan konfigurere Gnome til at associere et andet program eller en anden "
+"fremviser med denne filtype. Vil du associere et program eller en fremviser "
+"med denne filtype nu?"
 
 #: libnautilus-private/nautilus-program-chooser.c:1654
 msgid "_Associate Action"
@@ -3369,7 +3409,9 @@ msgstr "Åbning mislykkedes, ønsker du at vælge et andet program?"
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
 "locations."
-msgstr "\"%s\" kan ikke åbne \"%s\" fordi \"%s\" ikke kan få adgang til filer placeret på \"%s\"."
+msgstr ""
+"\"%s\" kan ikke åbne \"%s\" fordi \"%s\" ikke kan få adgang til filer "
+"placeret på \"%s\"."
 
 #: libnautilus-private/nautilus-program-choosing.c:511
 msgid "Open Failed, would you like to choose another action?"
@@ -3655,28 +3697,28 @@ msgstr "ikke mærket med \"%s\""
 #: libnautilus-private/nautilus-search-uri.c:378
 #, c-format
 msgid "[Items ]with all the words \"%s\""
-msgstr "med alle ordene '%s'"
+msgstr "med alle ordene \"%s\""
 
 #. "%s" here is a word or words present in the file, for
 #. example "nautilus" or "apple orange"
 #: libnautilus-private/nautilus-search-uri.c:383
 #, c-format
 msgid "[Items ]containing one of the words \"%s\""
-msgstr "indeholdende et af ordene '%s'"
+msgstr "indeholdende et af ordene \"%s\""
 
 #. "%s" here is a word or words present in the file, for
 #. example "nautilus" or "apple orange"
 #: libnautilus-private/nautilus-search-uri.c:388
 #, c-format
 msgid "[Items ]without all the words \"%s\""
-msgstr "uden alle ordene '%s'"
+msgstr "uden alle ordene \"%s\""
 
 #. "%s" here is a word or words present in the file, for
 #. example "nautilus" or "apple orange"
 #: libnautilus-private/nautilus-search-uri.c:393
 #, c-format
 msgid "[Items ]without any of the words \"%s\""
-msgstr "uden nogen af ordene '%s'"
+msgstr "uden nogen af ordene \"%s\""
 
 #: libnautilus-private/nautilus-search-uri.c:555
 msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
@@ -3958,7 +4000,7 @@ msgstr "Dette vil åbne %d separate vinduer."
 #: src/file-manager/fm-directory-view.c:902
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
-msgstr "Er du sikker på at du en gang for alle ønsker at slette '%s'?"
+msgstr "Er du sikker på at du en gang for alle ønsker at slette \"%s\"?"
 
 #: src/file-manager/fm-directory-view.c:906
 #, c-format
@@ -3986,7 +4028,7 @@ msgstr "_Mønster:"
 #: src/file-manager/fm-directory-view.c:1751
 #, c-format
 msgid "\"%s\" selected"
-msgstr "'%s' markeret"
+msgstr "\"%s\" markeret"
 
 #: src/file-manager/fm-directory-view.c:1753
 msgid "1 folder selected"
@@ -4026,7 +4068,7 @@ msgstr " (med et totalt antal af %d objekter)"
 #: src/file-manager/fm-directory-view.c:1791
 #, c-format
 msgid "\"%s\" selected (%s)"
-msgstr "'%s' markeret (%s)"
+msgstr "\"%s\" markeret (%s)"
 
 #: src/file-manager/fm-directory-view.c:1795
 #, c-format
@@ -4070,7 +4112,7 @@ msgstr "%s%s, %s"
 #: src/file-manager/fm-directory-view.c:1975
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
-msgstr "Mappen '%s' indeholder flere filer end Nautilus kan håndtere."
+msgstr "Mappen \"%s\" indeholder flere filer end Nautilus kan håndtere."
 
 #: src/file-manager/fm-directory-view.c:1981
 msgid "Some files will not be displayed."
@@ -4091,27 +4133,29 @@ msgid "The file \"%s\" cannot be moved to the trash."
 msgstr "Filen \"%s\" kan ikke flyttes til papirkurven."
 
 #: src/file-manager/fm-directory-view.c:3255
-#, fuzzy
 msgid "Cannot move items to trash, do you want to delete them immediately?"
-msgstr "'%s' kan ikke flyttes til papirkurven. Ønsker du at slette den helt? "
+msgstr ""
+"Kan ikke flytte objekter til papirkurven. Ønsker du at slette dem med det "
+"samme?"
 
 #: src/file-manager/fm-directory-view.c:3258
-#, fuzzy
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
-msgstr "'%s' kan ikke flyttes til papirkurven. Ønsker du at slette den helt? "
+msgstr ""
+"Kan ikke flytte nogle objekter til papirkurven. Ønsker du at slette dem med "
+"det samme?"
 
 #: src/file-manager/fm-directory-view.c:3265
 msgid "Delete Immediately?"
 msgstr "Slet med det samme?"
 
 #: src/file-manager/fm-directory-view.c:3297
-#, fuzzy, c-format
+#, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
-msgstr "er du sikker på at du vil slette '%s' permanent fra papirkurven?"
+msgstr "Er du sikker på at du vil slette \"%s\" permanent fra papirkurven?"
 
 #: src/file-manager/fm-directory-view.c:3301
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
@@ -4120,9 +4164,8 @@ msgstr ""
 "permanent?"
 
 #: src/file-manager/fm-directory-view.c:3306
-#, fuzzy
 msgid "If you delete an item, it will be permanently lost."
-msgstr "Hvis du tømmer papirkurven, vil filerne blive slettet permanent."
+msgstr "Hvis du sletter et objekt, vil det gå tabt permanent."
 
 #: src/file-manager/fm-directory-view.c:3307
 msgid "Delete From Trash?"
@@ -4132,7 +4175,7 @@ msgstr "Slet fra papirkurven?"
 #: src/file-manager/fm-directory-view.c:3724
 #, c-format
 msgid "Use \"%s\" to open the selected item"
-msgstr "Brug '%s' til at åbne det markerede objekt"
+msgstr "Brug \"%s\" til at åbne det markerede objekt"
 
 #: src/file-manager/fm-directory-view.c:3800
 #: src/file-manager/nautilus-directory-view-ui.xml.h:31
@@ -4164,7 +4207,7 @@ msgstr "Kunne ikke fuldføre angivet handling."
 #: src/file-manager/fm-directory-view.c:4448
 #, c-format
 msgid "Run \"%s\" on any selected items"
-msgstr "Benyt '%s' til de markerede filer"
+msgstr "Benyt \"%s\" til de markerede filer"
 
 #: src/file-manager/fm-directory-view.c:4682
 #, c-format
@@ -4232,13 +4275,13 @@ msgstr ""
 #: src/file-manager/fm-tree-view.c:786
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
-msgstr "'%s' vil blive flyttet hvis du vælger kommandoen 'indsæt filer'"
+msgstr "\"%s\" vil blive flyttet hvis du vælger kommandoen 'indsæt filer'"
 
 #: src/file-manager/fm-directory-view.c:5005
 #: src/file-manager/fm-tree-view.c:790
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
-msgstr "'%s' vil blive kopieret hvis du vælger kommandoen 'indsæt filer'"
+msgstr "\"%s\" vil blive kopieret hvis du vælger kommandoen 'indsæt filer'"
 
 #: src/file-manager/fm-directory-view.c:5012
 #, c-format
@@ -4359,39 +4402,33 @@ msgid "_Copy Files"
 msgstr "_Kopiér filer"
 
 #: src/file-manager/fm-directory-view.c:5927
-#, fuzzy
 msgid "The link is borken, do you want to move it to the Trash?"
-msgstr ""
-"Denne henvisning kan ikke benyttes da den ikke har en destination. Ønsker du "
-"at smide henvisningen i papirkurven? "
+msgstr "Henvisningen er ødelagt. Ønsker du at flytte den til papirkurven?"
 
 #: src/file-manager/fm-directory-view.c:5929
-#, fuzzy
 msgid "This link can't be used, because it has no target."
-msgstr ""
-"Denne henvisning kan ikke benyttes da den ikke har en destination. Ønsker du "
-"at smide henvisningen i papirkurven? "
+msgstr "Denne henvisning kan ikke benyttes da den ikke har en destination."
 
 #: src/file-manager/fm-directory-view.c:5931
-#, fuzzy, c-format
+#, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr ""
-"Denne henvisning kan ikke benyttes da dens destination '%s' ikke eksisterer. "
-"Ønsker du at smide henvisningen i papirkurven? "
+"Denne henvisning kan ikke benyttes da dens destination \"%s\" ikke "
+"eksisterer."
 
 #: src/file-manager/fm-directory-view.c:5936
 msgid "Broken Link"
 msgstr "Ødelagt henvisning"
 
 #: src/file-manager/fm-directory-view.c:5994
-#, fuzzy, c-format
+#, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
-msgstr "'%s' er en udførbar tekstfil. Vil du køre den eller vise dens indhold?"
+msgstr "Vil du køre \"%s\" eller vise dens indhold?"
 
 #: src/file-manager/fm-directory-view.c:5996
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" is an executable text file."
-msgstr "Kørbare tekstfiler"
+msgstr "\"%s\" er en udførbar tekstfil."
 
 #: src/file-manager/fm-directory-view.c:6002
 msgid "Run or Display?"
@@ -4410,9 +4447,9 @@ msgid "_Run"
 msgstr "_Kør"
 
 #: src/file-manager/fm-directory-view.c:6275
-#, fuzzy, c-format
+#, c-format
 msgid "Opening \"%s\"."
-msgstr "Åbner '%s'"
+msgstr "Åbner \"%s\"."
 
 #: src/file-manager/fm-directory-view.c:6281
 msgid "Cancel Open?"
@@ -4427,17 +4464,16 @@ msgstr "Du har ikke de nødvendige rettigheder til at se indholdet af '%s.'"
 #: src/file-manager/fm-error-reporting.c:61
 #, c-format
 msgid "\"%s\" couldn't be found. Perhaps it has recently been deleted."
-msgstr "'%s' blev ikke fundet. Måske er den blevet slettet for nyligt. "
+msgstr "\"%s\" blev ikke fundet. Måske er den blevet slettet for nyligt. "
 
 #: src/file-manager/fm-error-reporting.c:68
 #, c-format
 msgid "Sorry, couldn't display all the contents of \"%s\"."
-msgstr "Desværre, kunne ikke vise hele indholdet af '%s'."
+msgstr "Desværre, kunne ikke vise hele indholdet af \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:71
-#, fuzzy
 msgid "The folder contents could not be displayed."
-msgstr "Rettighederne for \"%s\" kunne ikke bestemmes."
+msgstr "Mappeindholdet kunne ikke vises."
 
 #: src/file-manager/fm-error-reporting.c:72
 msgid "Error Displaying Folder"
@@ -4448,20 +4484,20 @@ msgstr "Fejl ved visning af mappe"
 msgid ""
 "The name \"%s\" is already used in this folder. Please use a different name."
 msgstr ""
-"Navnet '%s' er allerede i brug i denne mappe. Benyt venligst et andet navn."
+"Navnet \"%s\" er allerede i brug i denne mappe. Benyt venligst et andet navn."
 
 #: src/file-manager/fm-error-reporting.c:108
 #, c-format
 msgid ""
 "There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
 msgstr ""
-"Der er ingen '%s' i denne mappe. Måske er den lige blevet flyttet eller "
+"Der er ingen \"%s\" i denne mappe. Måske er den lige blevet flyttet eller "
 "slettet?"
 
 #: src/file-manager/fm-error-reporting.c:113
 #, c-format
 msgid "You do not have the permissions necessary to rename \"%s\"."
-msgstr "Du har ikke de nødvendige rettigheder til at omdøbe '%s'."
+msgstr "Du har ikke de nødvendige rettigheder til at omdøbe \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:118
 #, c-format
@@ -4480,7 +4516,7 @@ msgstr "Navnet \"%s\" er ikke gyldigt. Benyt venligst et andet navn."
 #: src/file-manager/fm-error-reporting.c:128
 #, c-format
 msgid "Couldn't change the name of \"%s\" because it is on a read-only disk"
-msgstr "Kunne ikke omdøbe '%s' fordi den er på en skrivebeskyttet disk."
+msgstr "Kunne ikke omdøbe \"%s\" fordi den er på en skrivebeskyttet disk."
 
 #: src/file-manager/fm-error-reporting.c:137
 #, c-format
@@ -4488,9 +4524,8 @@ msgid "Sorry, couldn't rename \"%s\" to \"%s\"."
 msgstr "Desværre, kunne ikke omdøbe \"%s\" til \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:144
-#, fuzzy
 msgid "The item could not be renamed."
-msgstr "Desværre, men dette tema kunne ikke fjernes!"
+msgstr "Objektet kunne ikke omdøbes."
 
 #: src/file-manager/fm-error-reporting.c:145
 msgid "Renaming Error"
@@ -4506,17 +4541,16 @@ msgstr "Du har ikke de nødvendige rettigheder til at ændre gruppen til '%s.'"
 #, c-format
 msgid "Couldn't change the group of \"%s\" because it is on a read-only disk"
 msgstr ""
-"Kunne ikke ændre gruppen til '%s' fordi den er på en skrivebeskyttet disk."
+"Kunne ikke ændre gruppen til \"%s\" fordi den er på en skrivebeskyttet disk."
 
 #: src/file-manager/fm-error-reporting.c:177
 #, c-format
 msgid "Sorry, couldn't change the group of \"%s\"."
-msgstr "Desværre, kunne ikke ændre gruppen til '%s'."
+msgstr "Desværre, kunne ikke ændre gruppen til \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:181
-#, fuzzy
 msgid "The group could not be changed."
-msgstr "Rettighederne for \"%s\" kunne ikke bestemmes."
+msgstr "Gruppen kunne ikke ændres."
 
 #: src/file-manager/fm-error-reporting.c:181
 msgid "Error Setting Group"
@@ -4526,17 +4560,16 @@ msgstr "Fejl under sætning af gruppe"
 #, c-format
 msgid "Couldn't change the owner of \"%s\" because it is on a read-only disk"
 msgstr ""
-"Kunne ikke ændre ejeren af '%s' fordi den er på en skrivebeskyttet disk."
+"Kunne ikke ændre ejeren af \"%s\" fordi den er på en skrivebeskyttet disk."
 
 #: src/file-manager/fm-error-reporting.c:210
 #, c-format
 msgid "Sorry, couldn't change the owner of \"%s\"."
-msgstr "Desværre, kunne ikke ændre ejeren af '%s'."
+msgstr "Desværre, kunne ikke ændre ejeren af \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:213
-#, fuzzy
 msgid "The owner could not be changed."
-msgstr "Rettighederne for \"%s\" kunne ikke bestemmes."
+msgstr "Ejeren kunne ikke ændres."
 
 #: src/file-manager/fm-error-reporting.c:213
 msgid "Error Setting Owner"
@@ -4547,31 +4580,30 @@ msgstr "Fejl ved ændring af ejer"
 msgid ""
 "Couldn't change the permissions of \"%s\" because it is on a read-only disk"
 msgstr ""
-"Kunne ikke ændre rettighederne til '%s' fordi den er på en skrivebeskyttet "
+"Kunne ikke ændre rettighederne til \"%s\" fordi den er på en skrivebeskyttet "
 "disk."
 
 #: src/file-manager/fm-error-reporting.c:242
 #, c-format
 msgid "Sorry, couldn't change the permissions of \"%s\"."
-msgstr "Desværre, kunne ikke ændre rettighederne til '%s'."
+msgstr "Desværre, kunne ikke ændre rettighederne til \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:245
-#, fuzzy
 msgid "The permissions could not be changed."
-msgstr "Rettighederne for \"%s\" kunne ikke bestemmes."
+msgstr "Rettighederne kunne ikke ændres."
 
 #: src/file-manager/fm-error-reporting.c:246
 msgid "Error Setting Permissions"
-msgstr "Fejl ved sætning af rettigheder"
+msgstr "Fejl ved ændring af rettigheder"
 
 #: src/file-manager/fm-error-reporting.c:312
 #, c-format
 msgid "Renaming \"%s\" to \"%s\"."
-msgstr "Omdøber '%s' til '%s'"
+msgstr "Omdøber \"%s\" til \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:317
 msgid "Cancel Rename?"
-msgstr "Fortryd omdøbning?"
+msgstr "Fortryd omdøbelse?"
 
 #: src/file-manager/fm-icon-view.c:161
 msgid "by _Name"
@@ -4631,20 +4663,17 @@ msgstr "Nulstil _ikonstørrelse"
 #: src/file-manager/fm-icon-view.c:1989
 #, c-format
 msgid "pointing at \"%s\""
-msgstr "pegende på '%s'"
+msgstr "pegende på \"%s\""
 
 #: src/file-manager/fm-icon-view.c:2572 src/file-manager/fm-icon-view.c:2596
-#, fuzzy
 msgid "Drag and drop is not supported."
-msgstr "Træk og slip er kun understøttet til lokale filsystemer."
+msgstr "Træk og slip er ikke understøttet."
 
 #: src/file-manager/fm-icon-view.c:2573
-#, fuzzy
 msgid "Drag and drop is only supported on local file systems."
-msgstr "Træk og slip er kun understøttet til lokale filsystemer."
+msgstr "Træk og slip er kun understøttet på lokale filsystemer."
 
 #: src/file-manager/fm-icon-view.c:2574 src/file-manager/fm-icon-view.c:2598
-#, fuzzy
 msgid "Drag and Drop Error"
 msgstr "Træk og slip-fejl"
 
@@ -4672,19 +4701,13 @@ msgid "Date Modified"
 msgstr "Dato for ændring"
 
 #: src/file-manager/fm-properties-window.c:482
-#, fuzzy
 msgid "You can't assign more than one custom icon at a time!"
-msgstr ""
-"Du kan ikke angive mere end et brugerdefineret ikon ad gangen! Træk venligst "
-"kun ét billede for at vælge et brugerdefineret ikon."
+msgstr "Du kan ikke angive mere end et brugerdefineret ikon ad gangen!"
 
 #: src/file-manager/fm-properties-window.c:483
 #: src/nautilus-information-panel.c:507
-#, fuzzy
 msgid "Please drag just one image to set a custom icon."
-msgstr ""
-"Du kan ikke angive mere end et brugerdefineret ikon ad gangen! Træk venligst "
-"kun ét billede for at vælge et brugerdefineret ikon."
+msgstr "Træk venligst kun ét billede for at vælge et brugerdefineret ikon."
 
 #: src/file-manager/fm-properties-window.c:484
 #: src/nautilus-information-panel.c:508
@@ -4693,20 +4716,14 @@ msgstr "Mere end 1 billede"
 
 #: src/file-manager/fm-properties-window.c:493
 #: src/nautilus-information-panel.c:527
-#, fuzzy
 msgid "The file that you dropped is not local."
-msgstr ""
-"Filen du slap, er ikke lokal. Du kan kun bruge lokale billeder som "
-"brugerdefinerede ikoner."
+msgstr "Filen du slap, er ikke lokal."
 
 #: src/file-manager/fm-properties-window.c:494
 #: src/file-manager/fm-properties-window.c:501
 #: src/nautilus-information-panel.c:528
-#, fuzzy
 msgid "You can only use local images as custom icons."
-msgstr ""
-"Filen du slap, er ikke lokal. Du kan kun bruge lokale billeder som "
-"brugerdefinerede ikoner."
+msgstr "Du kan kun bruge lokale billeder som brugerdefinerede ikoner."
 
 #: src/file-manager/fm-properties-window.c:495
 #: src/nautilus-information-panel.c:529
@@ -4715,11 +4732,8 @@ msgstr "Kun lokale billeder"
 
 #: src/file-manager/fm-properties-window.c:500
 #: src/nautilus-information-panel.c:534
-#, fuzzy
 msgid "The file that you dropped is not an image."
-msgstr ""
-"Filen du slap, er ikke lokal. Du kan kun bruge lokale billeder som "
-"brugerdefinerede ikoner."
+msgstr "Filen du slap, er ikke et billede."
 
 #: src/file-manager/fm-properties-window.c:502
 #: src/nautilus-information-panel.c:536
@@ -4741,18 +4755,16 @@ msgid "Cancel Group Change?"
 msgstr "Fortryd ændring af gruppe?"
 
 #: src/file-manager/fm-properties-window.c:1384
-#, fuzzy
 msgid "Changing group."
-msgstr "Skifter gruppe"
+msgstr "Skifter gruppe."
 
 #: src/file-manager/fm-properties-window.c:1545
 msgid "Cancel Owner Change?"
 msgstr "Fortryd ændring af ejer?"
 
 #: src/file-manager/fm-properties-window.c:1546
-#, fuzzy
 msgid "Changing owner."
-msgstr "Skifter ejer"
+msgstr "Skifter ejer."
 
 # der står 'Indhold:' foran
 #: src/file-manager/fm-properties-window.c:1752
@@ -4829,7 +4841,7 @@ msgstr "Størrelse:"
 
 #: src/file-manager/fm-properties-window.c:2279 src/nautilus-location-bar.c:60
 msgid "Location:"
-msgstr "Placering:"
+msgstr "Sted:"
 
 #: src/file-manager/fm-properties-window.c:2286
 msgid "Volume:"
@@ -4903,9 +4915,8 @@ msgid "You are not the owner, so you can't change these permissions."
 msgstr "Du er ikke ejeren, så du kan ikke ændre disse rettigheder."
 
 #: src/file-manager/fm-properties-window.c:2894
-#, fuzzy
 msgid "File _owner:"
-msgstr "Filens ejer:"
+msgstr "Filens _ejer:"
 
 #: src/file-manager/fm-properties-window.c:2900
 msgid "File owner:"
@@ -5020,9 +5031,8 @@ msgstr ""
 "\" som root fra kommandolinjen."
 
 #: src/file-manager/fm-search-list-view.c:197
-#, fuzzy
 msgid "Search For Items That Are Too New"
-msgstr "Søg efter filer som er for nye"
+msgstr "Søgning efter filer som er for nye"
 
 #: src/file-manager/fm-search-list-view.c:201
 #, fuzzy
@@ -5044,7 +5054,6 @@ msgstr ""
 
 #: src/file-manager/fm-search-list-view.c:205
 #: src/file-manager/fm-search-list-view.c:223
-#, fuzzy
 msgid "Error During Search"
 msgstr "Fejl under søgning"
 
@@ -5059,7 +5068,6 @@ msgstr ""
 "\" som root fra kommandolinjen."
 
 #: src/file-manager/fm-search-list-view.c:215
-#, fuzzy
 msgid "Error Reading File Index"
 msgstr "Fejl ved læsning af filindeks"
 
@@ -5145,14 +5153,15 @@ msgstr ""
 #: src/file-manager/fm-search-list-view.c:278
 msgid "Because Find cannot use an index, this search may take several minutes."
 msgstr ""
+"Fordi søgningen ikke kan bruge et indeks, kan denne søgning tage flere "
+"minutter."
 
 #: src/file-manager/fm-search-list-view.c:281
 msgid "Content searches will be available when the index is complete."
-msgstr ""
+msgstr "Indholdssøgninger vil være tilgængelige når indekset er færdigt."
 
 #: src/file-manager/fm-search-list-view.c:284
 #: src/file-manager/fm-search-list-view.c:311
-#, fuzzy
 msgid "Indexed Searches Are Not Available"
 msgstr "Indekserede søgninger er ikke tilgængelige"
 
@@ -5199,9 +5208,8 @@ msgstr ""
 "indeks er oprettet, kan du ikke foretage søgninger efter indhold."
 
 #: src/file-manager/fm-search-list-view.c:329
-#, fuzzy
 msgid "Fast searches are not enabled on your computer."
-msgstr "Hurtige søgninger er ikke aktiveret på din maskine"
+msgstr "Hurtige søgninger er ikke aktiveret på din maskine."
 
 #: src/file-manager/fm-search-list-view.c:330
 msgid ""
@@ -5214,9 +5222,8 @@ msgstr ""
 "maskinen så intet indeks er tilgængeligt."
 
 #: src/file-manager/fm-search-list-view.c:334
-#, fuzzy
 msgid "Fast Searches Not Enabled"
-msgstr "Hurtige søgninger ikke tilgængelige"
+msgstr "Hurtige søgninger ikke aktiveret"
 
 #: src/file-manager/fm-search-list-view.c:513
 msgid "Where"
@@ -5230,7 +5237,7 @@ msgstr "Hvor"
 #: src/file-manager/fm-search-list-view.c:567
 #: src/file-manager/nautilus-search-list-view-ui.xml.h:6
 msgid "_Reveal in New Window"
-msgstr "_Åbn i et nyt vindue"
+msgstr "_Vis i et nyt vindue"
 
 #. "Reveal in n New Windows" means open the parent folder for each
 #. * selected item in a separate new window, select each selected
@@ -5241,29 +5248,66 @@ msgstr "_Åbn i et nyt vindue"
 #: src/file-manager/fm-search-list-view.c:575
 #, c-format
 msgid "Reveal in %d _New Windows"
-msgstr "Åbn i %d _nye vinduer"
+msgstr "Vis i %d _nye vinduer"
 
 #. Note that the number of items actually displayed varies somewhat due
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
 #: src/file-manager/fm-search-list-view.c:691
-#, fuzzy
 msgid "Nautilus found more search results than it can display."
-msgstr ""
-"Nautilus fandt flere søgeresultater end der kan fremvises. Nogle bliver "
-"udeladt."
+msgstr "Nautilus fandt flere søgeresultater end der kan vises."
 
 #: src/file-manager/fm-search-list-view.c:692
-#, fuzzy
 msgid "Some matching items will not be displayed. "
-msgstr ""
-"Nautilus fandt flere søgeresultater end der kan fremvises. Nogle bliver "
-"udeladt."
+msgstr "Nogle fundne bliver ikke vist."
 
 #: src/file-manager/fm-search-list-view.c:693
 msgid "Too Many Matches"
 msgstr "For mange fundet"
+
+#: src/file-manager/fm-tree-model.c:1199
+msgid "(Empty)"
+msgstr "(tom)"
+
+#: src/file-manager/fm-tree-model.c:1199
+msgid "Loading..."
+msgstr "Indlæser..."
+
+#: src/file-manager/fm-tree-view.c:947
+msgid "Open"
+msgstr "Åbn"
+
+#. add the "create folder" menu item
+#: src/file-manager/fm-tree-view.c:971
+msgid "Create Folder"
+msgstr "Opret mappe"
+
+#: src/file-manager/fm-tree-view.c:987
+msgid "Cut Folder"
+msgstr "Klip mappe"
+
+#: src/file-manager/fm-tree-view.c:1001
+msgid "Copy Folder"
+msgstr "Kopiér mappe"
+
+#: src/file-manager/fm-tree-view.c:1015
+#, fuzzy
+msgid "Paste Files into Folder"
+msgstr "_Indsæt filer i mappe"
+
+#: src/file-manager/fm-tree-view.c:1033
+#, fuzzy
+msgid "Move to Trash"
+msgstr "Sm_id i papirkurv"
+
+#: src/file-manager/fm-tree-view.c:1086
+msgid "Filesystem"
+msgstr "Filsystem"
+
+#: src/file-manager/fm-tree-view.c:1088
+msgid "Network Neighbourhood"
+msgstr "Netværksnaboer"
 
 # 'desktop' giver sig selv i konteksten og en kortere tekst giver en kønnere menu
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:1
@@ -5739,20 +5783,18 @@ msgstr "Henvisning til tidligere skrivebord"
 #: src/nautilus-application.c:355
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
 msgstr ""
+"En henvisning ved navn \"Henvisning til tidligere skrivebord\" er blevet "
+"oprettet på skrivebordet."
 
 #: src/nautilus-application.c:356
-#, fuzzy
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
 msgstr ""
-"Placeringen af skrivebordsmappen er blevet ændret i Gnome 2.4. En henvisning "
-"ved navn \"Henvisning til tidligere skrivebord\" er blevet oprettet på "
-"skrivebordet. Du kan åbne den for at flytte de filer over du ønsker, og "
-"derefter slette henvisningen."
+"Placeringen af skrivebordsmappen er blevet ændret i Gnome 2.4. Du kan åbne "
+"den for at flytte de filer over du ønsker, og derefter slette henvisningen."
 
 #: src/nautilus-application.c:358
-#, fuzzy
 msgid "Migrated Old Desktop"
 msgstr "Migreret tidligere skrivebord"
 
@@ -5867,7 +5909,7 @@ msgstr "<b>_Bogmærker</b>"
 
 #: src/nautilus-bookmarks-window.glade.h:2
 msgid "<b>_Location</b>"
-msgstr "<b>_Placering</b>"
+msgstr "<b>_Sted</b>"
 
 #: src/nautilus-bookmarks-window.glade.h:3
 msgid "<b>_Name</b>"
@@ -5922,12 +5964,11 @@ msgstr "Tilkobl til server"
 
 #: src/nautilus-connect-server-dialog.c:209 src/nautilus-location-dialog.c:147
 msgid "_Location:"
-msgstr "_Placering:"
+msgstr "_Sted:"
 
 #: src/nautilus-connect-server-dialog.c:235
-#, fuzzy
 msgid "C_onnect"
-msgstr "Tilkobl"
+msgstr "_Tilkobl"
 
 #: src/nautilus-desktop-window.c:356
 msgid "Desktop"
@@ -6127,18 +6168,12 @@ msgstr ""
 "Du kan slette denne fil manuelt for at få hjælperen frem igen.\n"
 
 #: src/nautilus-information-panel.c:506
-#, fuzzy
 msgid "You can't assign more than one custom icon at a time."
-msgstr ""
-"Du kan ikke angive mere end et brugerdefineret ikon ad gangen! Træk venligst "
-"kun ét billede for at vælge et brugerdefineret ikon."
+msgstr "Du kan ikke angive mere end et brugerdefineret ikon ad gangen."
 
 #: src/nautilus-information-panel.c:535
-#, fuzzy
 msgid "You can only use images as custom icons."
-msgstr ""
-"Filen du slap, er ikke lokal. Du kan kun bruge lokale billeder som "
-"brugerdefinerede ikoner."
+msgstr "Du kan kun bruge billeder som brugerdefinerede ikoner."
 
 #: src/nautilus-information-panel.c:882
 #, c-format
@@ -6151,14 +6186,10 @@ msgid "Open with..."
 msgstr "Åbn med..."
 
 #: src/nautilus-information-panel.c:993 src/nautilus-window.c:485
-#, fuzzy
 msgid "Unable to launch the cd burner application."
-msgstr ""
-"Kan ikke køre cd-brænderprogrammet:\n"
-"%s"
+msgstr "Kan ikke køre cd-brænderprogrammet."
 
 #: src/nautilus-information-panel.c:994 src/nautilus-window.c:486
-#, fuzzy
 msgid "Can't Launch CD Burner"
 msgstr "Kan ikke køre cd-brænder"
 
@@ -6177,9 +6208,9 @@ msgid "Go To:"
 msgstr "Gå til:"
 
 #: src/nautilus-location-bar.c:154
-#, fuzzy, c-format
+#, c-format
 msgid "Do you want to view %d locations?"
-msgstr "Vil du vise disse %d steder i forskellige vinduer?"
+msgstr "Vil du vise disse %d steder?"
 
 #: src/nautilus-location-bar.c:166
 msgid "View in Multiple Windows?"
@@ -6260,21 +6291,17 @@ msgstr "nautilus: --restart kan ikke bruges med URI'er.\n"
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry kan ikke bruges med mere end én URI.\n"
 
+# historik kan ikke bruges - det er en vittighed
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
 #.
 #: src/nautilus-navigation-window-menus.c:187
-#, fuzzy
 msgid "Are you sure you want to forget history?"
-msgstr "Er du sikker på at du en gang for alle ønsker at slette '%s'?"
+msgstr "Er du sikker på at du ønsker at glemme fortiden?"
 
-# historik kan ikke bruges - det er en vittighed
 #: src/nautilus-navigation-window-menus.c:188
-#, fuzzy
 msgid "If you do, you will be doomed to repeat it."
-msgstr ""
-"Er du sikker på at du ønsker at glemme fortiden? Hvis det er tilfældet, er "
-"du dømt til at gentage den."
+msgstr "Hvis det er tilfældet, er du dømt til at gentage den."
 
 #: src/nautilus-navigation-window-menus.c:190
 msgid "Are you sure you want to clear the list of locations you have visited?"
@@ -6282,27 +6309,25 @@ msgstr ""
 "Er du sikker på at du ønsker at rydde listen over steder du har besøgt?"
 
 #: src/nautilus-navigation-window-menus.c:192
-#, fuzzy
 msgid "If you clear the list of locations, they will be permanently deleted."
-msgstr "Hvis du tømmer papirkurven, vil filerne blive slettet permanent."
+msgstr "Hvis du rydder listen over steder, vil de være væk permanent."
 
 #: src/nautilus-navigation-window-menus.c:198
 msgid "Clear History"
 msgstr "Ryd historik"
 
 #: src/nautilus-navigation-window-menus.c:427
-#, fuzzy
 msgid ""
 "Do you want to remove any bookmarks with the non-existing location from your "
 "list?"
 msgstr ""
-"Stedet \"%s\" eksisterer ikke. Ønsker du at fjerne alle bogmærker med dette "
-"sted fra din liste?"
+"Ønsker du at fjerne alle bogmærker med det ikke-eksisterende sted fra din "
+"liste?"
 
 #: src/nautilus-navigation-window-menus.c:429
-#, fuzzy, c-format
+#, c-format
 msgid "The location \"%s\" does not exist."
-msgstr "Stedet \"%s\" eksisterer ikke længere."
+msgstr "Stedet \"%s\" eksisterer ikke."
 
 #: src/nautilus-navigation-window-menus.c:432
 msgid "Bookmark for Nonexistent Location"
@@ -6453,7 +6478,7 @@ msgstr "_Hjem"
 
 #: src/nautilus-navigation-window-ui.xml.h:35
 msgid "_Location..."
-msgstr "_Placering..."
+msgstr "_Sted..."
 
 #: src/nautilus-navigation-window-ui.xml.h:36
 msgid "_Side Pane"
@@ -7132,7 +7157,7 @@ msgid "Open _Location..."
 msgstr "Åbn _placering..."
 
 #: src/nautilus-spatial-window-ui.xml.h:10
-msgid "Open _Pa_rent"
+msgid "Open _Parent"
 msgstr "Åbn _ophav"
 
 #: src/nautilus-spatial-window-ui.xml.h:11
@@ -7168,26 +7193,22 @@ msgid "View Failed"
 msgstr "Visning mislykkedes"
 
 #: src/nautilus-window-manage-views.c:841
-#, fuzzy, c-format
+#, c-format
 msgid "The %s view encountered an error and can't continue."
-msgstr "%s-visningen stødte på en fejl ved opstart."
+msgstr "%s-visningen stødte på en fejl og kan ikke fortsætte."
 
 #: src/nautilus-window-manage-views.c:842
-#, fuzzy
 msgid "You can choose another view or go to a different location."
-msgstr ""
-"Visningen %s stødte på en fejl og kan ikke fortsætte. Du kan vælge en anden "
-"visning eller gå til et andet sted."
+msgstr "Du kan vælge en anden visning eller gå til et andet sted."
 
 #: src/nautilus-window-manage-views.c:852
 #, c-format
 msgid "The %s view encountered an error while starting up."
-msgstr "%s-visningen stødte på en fejl ved opstart."
+msgstr "%s-visningen stødte på en fejl ved start."
 
 #: src/nautilus-window-manage-views.c:853
-#, fuzzy
 msgid "The location cannot be displayed with this viewer."
-msgstr "Den NautilusApplication som er associeret med dette vindue"
+msgstr "Stedet kan ikke vises med denne fremviser."
 
 #: src/nautilus-window-manage-views.c:1000
 msgid "Content View"
@@ -7198,9 +7219,9 @@ msgid "View of the current file or folder"
 msgstr "Visning af den aktuelle fil eller mappe"
 
 #: src/nautilus-window-manage-views.c:1255
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't find \"%s\"."
-msgstr "Kunne ikke indlæse %s"
+msgstr "Kunne ikke finde \"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
 #: src/nautilus-window-manage-views.c:1279
@@ -7209,65 +7230,57 @@ msgstr "Kunne ikke indlæse %s"
 #: src/nautilus-window-manage-views.c:1311
 #: src/nautilus-window-manage-views.c:1317
 #: src/nautilus-window-manage-views.c:1337
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't display \"%s\"."
-msgstr "Kunne ikke indlæse %s"
+msgstr "Kunne ikke vise \"%s\"."
 
 #: src/nautilus-window-manage-views.c:1282
-#, fuzzy
 msgid "Nautilus cannot determine what type of file it is."
-msgstr ""
-"Kunne ikke vise \"%s\" fordi Nautilus ikke kan finde ud af hvilken type fil "
-"det drejer sig om."
+msgstr "Nautilus kan ikke finde ud af hvilken type fil det drejer sig om."
 
 #: src/nautilus-window-manage-views.c:1292
-#, fuzzy
 msgid "Nautilus has no installed viewer capable of displaying the file."
-msgstr "Nautilus har ingen fremviser installeret der kan vise \"%s\"."
+msgstr "Nautilus har ingen fremviser installeret der kan vise filen."
 
 #: src/nautilus-window-manage-views.c:1305
-#, fuzzy, c-format
+#, c-format
 msgid "Nautilus cannot handle %s: locations."
-msgstr "Kunne ikke vise \"%s\" fordi Nautilus ikke kan behandle %s:-steder."
+msgstr "Nautilus ikke kan håndtere %s:-steder."
 
 #: src/nautilus-window-manage-views.c:1313
-#, fuzzy
 msgid "The attempt to log in failed."
-msgstr "Kunne ikke vise \"%s\" fordi forsøget på at logge ind mislykkedes."
+msgstr "Forsøget på at logge ind mislykkedes."
 
 #: src/nautilus-window-manage-views.c:1319
 msgid "Access was denied."
 msgstr "Tilgang blev nægtet."
 
 #: src/nautilus-window-manage-views.c:1329
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
-msgstr "Kunne ikke vise \"%s\" fordi adgang blev nægtet."
+msgstr ""
+"Kunne ikke vise \"%s\" fordi der ikke kunne findes en vært ved navn \"%s\"."
 
 #: src/nautilus-window-manage-views.c:1332
-#, fuzzy
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
-msgstr ""
-"Kunne ikke vise \"%s\" fordi værten \"%s\" ikke blev fundet. Kontrollér at "
-"stavningen og mellemværtsindstillingerne er korrekte."
+msgstr "Kontrollér at stavningen og mellemværtsindstillingerne er korrekte."
 
 #: src/nautilus-window-manage-views.c:1339
-#, fuzzy
 msgid "Check that your proxy settings are correct."
-msgstr ""
-"Kunne ikke vise \"%s\". Kontrollér at mellemværtsindstillingene er korrekte."
+msgstr "Kontrollér at mellemværtsindstillingene er korrekte."
 
 #: src/nautilus-window-manage-views.c:1344
 #, fuzzy, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
 "browser."
-msgstr "Kunne ikke vise \"%s\" fordi Nautilus ikke kan behandle %s:-steder."
+msgstr ""
+"Kunne ikke vise \"%s\" fordi Nautilus ikke kan kontakte SMB-hovedkataloget."
 
 #: src/nautilus-window-manage-views.c:1347
 msgid "Check that an SMB server is running in the local network."
-msgstr ""
+msgstr "Kontrollér at der kører en SMB-server på lokalnetværket."
 
 #: src/nautilus-window-manage-views.c:1357
 #, fuzzy
@@ -7280,14 +7293,12 @@ msgstr ""
 "og hvis du ikke har et indeks, at Medusas indeksering kører."
 
 #: src/nautilus-window-manage-views.c:1360
-#, fuzzy
 msgid ""
 "Be sure that you have started the Medusa search service, and if you don't "
 "have an index, that the Medusa indexer is running."
 msgstr ""
-"Søgning er ikke muligt nu fordi du enten ikke har noget indeks eller "
-"søgetjenesten ikke kører. Sikr dig at du har startet Medusa-søgetjenesten, "
-"og hvis du ikke har et indeks, at Medusas indeksering kører."
+"Sikr dig at du har startet Medusa-søgetjenesten, og hvis du ikke har et "
+"indeks, at Medusas indeksering kører."
 
 #: src/nautilus-window-manage-views.c:1362
 msgid "Searching Unavailable"
@@ -7345,7 +7356,7 @@ msgstr "Gå nogle sider fremad"
 #: src/nautilus-window.c:907
 #, c-format
 msgid "Display this location with \"%s\""
-msgstr "Vis denne placering med '%s'"
+msgstr "Vis dette sted med \"%s\""
 
 #: src/nautilus-window.c:1638
 msgid "Application ID"
@@ -7395,2425 +7406,8 @@ msgstr "Netværksservere"
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Vis dine netværksservere i Nautilus-filhåndteringen"
 
-#: src/file-manager/fm-tree-model.c:1199
-msgid "(Empty)"
-msgstr "(tom)"
-
-#: src/file-manager/fm-tree-model.c:1199
-msgid "Loading..."
-msgstr "Indlæser..."
-
-#: src/file-manager/fm-tree-view.c:947
-msgid "Open"
-msgstr "Åbn"
-
-#. add the "create folder" menu item
-#: src/file-manager/fm-tree-view.c:971
-#, fuzzy
-msgid "Create Folder"
-msgstr "Opret _mappe"
-
-#: src/file-manager/fm-tree-view.c:987
-#, fuzzy
-msgid "Cut Folder"
-msgstr "Opret _mappe"
-
-#: src/file-manager/fm-tree-view.c:1001
-#, fuzzy
-msgid "Copy Folder"
-msgstr "Kopier filer"
-
-#: src/file-manager/fm-tree-view.c:1015
-#, fuzzy
-msgid "Paste Files into Folder"
-msgstr "_Indsæt filer i mappe"
-
-#: src/file-manager/fm-tree-view.c:1033
-#, fuzzy
-msgid "Move to Trash"
-msgstr "Sm_id i papirkurv"
-
-#: src/file-manager/fm-tree-view.c:1086
-msgid "Filesystem"
-msgstr "Filsystem"
-
-#: src/file-manager/fm-tree-view.c:1088
-msgid "Network Neighbourhood"
-msgstr "Netværksnaboer"
-
-#~ msgid "Search Google for Selected Text"
-#~ msgstr "Søg på Google efter markeret tekst"
-
-#~ msgid "Use Google to search the web for the selected text"
-#~ msgstr "Brug Google til at søge på Internettet efter den markerede tekst"
-
-#~ msgid "Look Up Selected Text in Dictionary"
-#~ msgstr "Slå markeret tekst op i ordbog"
-
-#~ msgid "Look up the selected text in the Merriam-Webster dictionary"
-#~ msgstr "Slå den markerede tekst op i Merriam-Websters ordbog"
-
-#~ msgid "foo"
-#~ msgstr "fæ"
-
-#~ msgid "foo (copy)"
-#~ msgstr "fæ (kopiér)"
-
-#~ msgid ".bashrc"
-#~ msgstr ".bashrc"
-
-#~ msgid ".bashrc (copy)"
-#~ msgstr ".bashrc (kopi)"
-
-#~ msgid ".foo.txt"
-#~ msgstr ".fæ.txt"
-
-#~ msgid ".foo (copy).txt"
-#~ msgstr ".fæ (kopi).txt"
-
-#~ msgid "foo foo"
-#~ msgstr "fæ fæ"
-
-#~ msgid "foo foo (copy)"
-#~ msgstr "fæ fæ (kopi)"
-
-#~ msgid "foo.txt"
-#~ msgstr "fæ.txt"
-
-#~ msgid "foo (copy).txt"
-#~ msgstr "fæ (kopi).txt"
-
-#~ msgid "foo foo.txt"
-#~ msgstr "fæ fæ.txt"
-
-#~ msgid "foo foo (copy).txt"
-#~ msgstr "fæ fæ (kopi).txt"
-
-#~ msgid "foo foo.txt txt"
-#~ msgstr "fæ fæ.txt txt"
-
-#~ msgid "foo foo (copy).txt txt"
-#~ msgstr "fæ fæ (kopi).txt txt"
-
-#~ msgid "foo...txt"
-#~ msgstr "fæ...txt"
-
-#~ msgid "foo.. (copy).txt"
-#~ msgstr "fæ.. (kopi).txt"
-
-#~ msgid "foo..."
-#~ msgstr "fæ..."
-
-#~ msgid "foo... (copy)"
-#~ msgstr "fæ... (kopi)"
-
-#~ msgid "foo. (copy)"
-#~ msgstr "fæ. (kopi)"
-
-#~ msgid "foo. (another copy)"
-#~ msgstr "fæ. (ny kopi)"
-
-#~ msgid "foo (another copy)"
-#~ msgstr "fæ (ny kopi)"
-
-#~ msgid "foo (another copy).txt"
-#~ msgstr "fæ (ny kopi).txt"
-
-#~ msgid "foo (3rd copy)"
-#~ msgstr "fæ (3. kopi)"
-
-#~ msgid "foo (3rd copy).txt"
-#~ msgstr "fæ (3. kopi).txt"
-
-#~ msgid "foo foo (another copy).txt"
-#~ msgstr "fæ fæ (ny kopi).txt"
-
-#~ msgid "foo foo (3rd copy).txt"
-#~ msgstr "fæ fæ (3. kopi).txt"
-
-#~ msgid "foo (13th copy)"
-#~ msgstr "fæ (13. kopi)"
-
-#~ msgid "foo (14th copy)"
-#~ msgstr "fæ (14. kopi)"
-
-#~ msgid "foo (13th copy).txt"
-#~ msgstr "fæ (13. kopi).txt"
-
-#~ msgid "foo (14th copy).txt"
-#~ msgstr "fæ (14. kopi).txt"
-
-#~ msgid "foo (21st copy)"
-#~ msgstr "fæ (21. kopi)"
-
-#~ msgid "foo (22nd copy)"
-#~ msgstr "fæ (22. kopi)"
-
-#~ msgid "foo (21st copy).txt"
-#~ msgstr "fæ (21. kopi).txt"
-
-#~ msgid "foo (22nd copy).txt"
-#~ msgstr "fæ (22. kopi).txt"
-
-#~ msgid "foo (23rd copy)"
-#~ msgstr "fæ (23. kopi)"
-
-#~ msgid "foo (23rd copy).txt"
-#~ msgstr "fæ (23. kopi).txt"
-
-#~ msgid "foo (24th copy)"
-#~ msgstr "fæ (24. kopi)"
-
-#~ msgid "foo (24th copy).txt"
-#~ msgstr "fæ (24. kopi).txt"
-
-#~ msgid "foo (25th copy)"
-#~ msgstr "fæ (25. kopi)"
-
-#~ msgid "foo (25th copy).txt"
-#~ msgstr "fæ (25. kopi).txt"
-
-#~ msgid "foo foo (24th copy)"
-#~ msgstr "fæ fæ (24. kopi)"
-
-#~ msgid "foo foo (25th copy)"
-#~ msgstr "fæ fæ (25. kopi)"
-
-#~ msgid "foo foo (24th copy).txt"
-#~ msgstr "fæ fæ (24. kopi).txt"
-
-#~ msgid "foo foo (25th copy).txt"
-#~ msgstr "fæ fæ (25. kopi).txt"
-
-#~ msgid "foo foo (100000000000000th copy).txt"
-#~ msgstr "fæ fæ (100000000000000te kopi).txt"
-
-#~ msgid "foo (10th copy)"
-#~ msgstr "fæ (10. kopi)"
-
-#~ msgid "foo (11th copy)"
-#~ msgstr "fæ (11. kopi)"
-
-#~ msgid "foo (10th copy).txt"
-#~ msgstr "fæ (10. kopi).txt"
-
-#~ msgid "foo (11th copy).txt"
-#~ msgstr "fæ (11. kopi).txt"
-
-#~ msgid "foo (12th copy)"
-#~ msgstr "fæ (12. kopi)"
-
-#~ msgid "foo (12th copy).txt"
-#~ msgstr "fæ (12. kopi).txt"
-
-#~ msgid "foo (110th copy)"
-#~ msgstr "fæ (110. kopi)"
-
-#~ msgid "foo (111th copy)"
-#~ msgstr "fæ (111. kopi)"
-
-#~ msgid "foo (110th copy).txt"
-#~ msgstr "fæ (110. kopi).txt"
-
-#~ msgid "foo (111th copy).txt"
-#~ msgstr "fæ (111. kopi).txt"
-
-#~ msgid "foo (122nd copy)"
-#~ msgstr "fæ (122. kopi)"
-
-#~ msgid "foo (123rd copy)"
-#~ msgstr "fæ (123. kopi)"
-
-#~ msgid "foo (122nd copy).txt"
-#~ msgstr "fæ (122. kopi).txt"
-
-#~ msgid "foo (123rd copy).txt"
-#~ msgstr "fæ (123. kopi).txt"
-
-#~ msgid "foo (124th copy)"
-#~ msgstr "fæ (124. kopi)"
-
-#~ msgid "foo (124th copy).txt"
-#~ msgstr "fæ (124. kopi).txt"
-
-#~ msgid "Network"
-#~ msgstr "Netværk"
-
-#~ msgid "Fonts"
-#~ msgstr "Skrifttyper"
-
-#~ msgid "Themes"
-#~ msgstr "Temaer"
-
-#~ msgid "CD Creator"
-#~ msgstr "Cd-brænder"
-
-#~ msgid "Factory for hardware view"
-#~ msgstr "Fabrik for udstyrsvisning"
-
-#~ msgid "Hardware Viewer"
-#~ msgstr "Udstyrsviser"
-
-#~ msgid "Hardware view"
-#~ msgstr "Udstyrsvisning"
-
-#~ msgid "View as Hardware"
-#~ msgstr "Vis som udstyr"
-
-#~ msgid "hardware view"
-#~ msgstr "udstyrsvisning"
-
-#~ msgid "name of icon for the hardware view"
-#~ msgstr "navnet på ikonet til udstyrsvisning"
-
-#~ msgid "summary of hardware info"
-#~ msgstr "sammendrag af udstyrsoplysninger"
-
-#~ msgid ""
-#~ "%s CPU\n"
-#~ "%s MHz\n"
-#~ "%s K cache size"
-#~ msgstr ""
-#~ "%s CPU\n"
-#~ "%s MHz\n"
-#~ "%s K mellemlager"
-
-#~ msgid "%lu GB RAM"
-#~ msgstr "%lu Gb RAM"
-
-#~ msgid "%lu MB RAM"
-#~ msgstr "%lu Mb RAM"
-
-#~ msgid "%lu GB"
-#~ msgstr "%lu Gb"
-
-#~ msgid "%lu MB"
-#~ msgstr "%lu Mb"
-
-#~ msgid "Uptime is %d days, %d hours, %d minutes"
-#~ msgstr "Oppetiden er %d dage, %d timer og %d minutter"
-
-#~ msgid "Hardware Overview"
-#~ msgstr "Udstyrsoversigt"
-
-#~ msgid "This is a placeholder for the CPU page."
-#~ msgstr "Dette er en pladsoptager for processorsiden"
-
-#~ msgid "This is a placeholder for the RAM page."
-#~ msgstr "Dette er en pladsoptager for RAM-siden"
-
-#~ msgid "This is a placeholder for the IDE page."
-#~ msgstr "Dette er en pladsoptager for IDE-siden"
-
-#~ msgid ""
-#~ "Error while copying to \"%s\".\n"
-#~ "\n"
-#~ "There is not enough space on the destination."
-#~ msgstr ""
-#~ "Fejl ved kopiering til '%s'.\n"
-#~ "\n"
-#~ "Der er ikke nok plads ved destinationen."
-
-#~ msgid ""
-#~ "Error while creating link in \"%s\".\n"
-#~ "\n"
-#~ "There is not enough space on the destination."
-#~ msgstr ""
-#~ "Fejl ved oprettelse af henvisning i '%s'.\n"
-#~ "\n"
-#~ "Der er ikke nok plads ved destinationen."
-
-#~ msgid ""
-#~ "Error while moving items to \"%s\".\n"
-#~ "\n"
-#~ "You do not have permissions to write to this folder."
-#~ msgstr ""
-#~ "Fejl ved flytning af filer til \"%s\".\n"
-#~ "\n"
-#~ "Du har ikke lov til at skrive til denne mappe."
-
-#~ msgid ""
-#~ "Error while moving items to \"%s\".\n"
-#~ "\n"
-#~ "The destination disk is read-only."
-#~ msgstr ""
-#~ "Fejl ved flytning af filer til '%s'.\n"
-#~ "Destinationsdisken er skrivebeskyttet."
-
-#~ msgid ""
-#~ "Error while creating links in \"%s\".\n"
-#~ "\n"
-#~ "You do not have permissions to write to this folder."
-#~ msgstr ""
-#~ "Fejl ved oprettelse af henvisninger i '%s'.\n"
-#~ "\n"
-#~ "Du har ikke lov til at skrive til denne mappe."
-
-#~ msgid ""
-#~ "Error while creating links in \"%s\".\n"
-#~ "\n"
-#~ "The destination disk is read-only."
-#~ msgstr ""
-#~ "Fejl ved oprettelse af henvisninger i '%s'.\n"
-#~ "\n"
-#~ "Destinationsdisken er skrivebeskyttet."
-
-#~ msgid ""
-#~ "Error \"%s\" while copying \"%s\".\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "Fejl \"%s\" ved kopiering af \"%s\".\n"
-#~ "\n"
-#~ "Vil du fortsætte?"
-
-#~ msgid ""
-#~ "Error \"%s\" while moving \"%s\".\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "Fejl \"%s\" ved flytning af \"%s\".\n"
-#~ "\n"
-#~ "Vil du fortsætte?"
-
-#~ msgid ""
-#~ "Error \"%s\" while deleting \"%s\".\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "Fejl \"%s\" ved sletning af \"%s\".\n"
-#~ "\n"
-#~ "Vil du gerne fortsætte?"
-
-#~ msgid ""
-#~ "Error \"%s\" while copying.\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "Fejl \"%s\" ved kopiering.\n"
-#~ "\n"
-#~ "Vil du gerne fortsætte?"
-
-#~ msgid ""
-#~ "Error \"%s\" while linking.\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "Fejl \"%s\" ved oprettelse af henvisning.\n"
-#~ "\n"
-#~ "Vil du gerne fortsætte?"
-
-#~ msgid ""
-#~ "Error \"%s\" while deleting.\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "Fejl \"%s\" ved sletning.\n"
-#~ "\n"
-#~ "Vil du gerne fortsætte?"
-
-#~ msgid "Can't Copy to Trash"
-#~ msgstr "Kan ikke kopiere til papirkurv"
-
-#~ msgid ""
-#~ "The default action can't open \"%s\" because it can't access files at \"%s"
-#~ "\" locations.  No other actions are available to view this file.  If you "
-#~ "copy this file onto your computer, you may be able to open it."
-#~ msgstr ""
-#~ "Den forvalgte handling kan ikke åbne \"%s\" fordi den ikke kan få adgang "
-#~ "til filer placeret på \"%s\". Der er ikke adgang til andre programmer som "
-#~ "kan vise denne fil. Hvis du kopierer filen over på din computer, så kan "
-#~ "du måske åbne den."
-
-#~ msgid "Searching Disks"
-#~ msgstr "Søger på diskene"
-
-#~ msgid "Nautilus is searching your disks for trash folders."
-#~ msgstr "Nautilus søger på din disk for at finde skraldespandsmapper"
-
-#~ msgid ""
-#~ "The %d selected items cannot be moved to the Trash. Do you want to delete "
-#~ "them immediately?"
-#~ msgstr ""
-#~ "De %d markerede objekter kan ikke flyttes til papirkurven. Ønsker du at "
-#~ "slette dem helt?"
-
-#~ msgid ""
-#~ "%d of the selected items cannot be moved to the Trash. Do you want to "
-#~ "delete those %d items immediately?"
-#~ msgstr ""
-#~ "%d af de markerede objekter kan ikke flyttes til papirkurven. Ønsker du "
-#~ "at slette de %d objekter helt?"
-
-#~ msgid ""
-#~ "The file that you dropped is not an image.  You can only use local images "
-#~ "as custom icons."
-#~ msgstr ""
-#~ "Filen du slap, er ikke et billede. Du kan kun bruge lokale billeder som "
-#~ "brugerdefinerede ikoner."
-
-#~ msgid ""
-#~ "Sorry, but the Medusa search service is not available because it is not "
-#~ "installed."
-#~ msgstr ""
-#~ "Beklager, men Medusa søgningstjenesten er ikke tilgængelig fordi den ikke "
-#~ "er installeret."
-
-#~ msgid ""
-#~ "To do a content search, Find requires an index of the content on your "
-#~ "system.  Your computer is currently creating that index.  Content "
-#~ "searches will be available when the index is complete."
-#~ msgstr ""
-#~ "For at kunne foretage en søgning efter indhold kræves et indeks over "
-#~ "filerne på systemet. Maskinen er i øjeblikket ved at lave det. "
-#~ "Indholdssøgning bliver tilgængeligt når indekset er færdigt."
-
-#~ msgid ""
-#~ "Once a day your files and text content are indexed so your searches are "
-#~ "fast.  Your files are currently being indexed."
-#~ msgstr ""
-#~ "En gang om dagen bliver dine filer og tekstindhold indekseret så "
-#~ "søgninger er hurtige. Din filer bliver i øjeblikket indekseret."
-
-#~ msgid ""
-#~ "\"%s\" is not a valid location. Please check the spelling and try again."
-#~ msgstr "\"%s\" er ikke et gyldigt sted. Kontrollér stavningen og prøv igen."
-
-#~ msgid "Sorry, but '%s' is not a usable image file!"
-#~ msgstr "Beklager, men '%s' er ikke en brugbar billedfil!"
-
-#~ msgid ""
-#~ "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
-#~ "browser.\n"
-#~ "Check that an SMB server is running in the local network."
-#~ msgstr ""
-#~ "Kunne ikke vise \"%s\" fordi Nautilus ikke kan komme i kontakt med SMB-"
-#~ "browseren.\n"
-#~ "Kontrollér at der at der kører en SMB-server på lokalnetværket."
-
-#~ msgid "file icon"
-#~ msgstr "filikon"
-
-#~ msgid "Name:"
-#~ msgstr "Navn:"
-
-#~ msgid "Unknown"
-#~ msgstr "Ukendt"
-
-#~ msgid "Floppy"
-#~ msgstr "Diskette"
-
-#~ msgid "CD-ROM"
-#~ msgstr "Cd-rom"
-
-#~ msgid "Zip Drive"
-#~ msgstr "Zipdrev"
-
-#~ msgid "Audio CD"
-#~ msgstr "Lyd-cd"
-
-#~ msgid "Root Volume"
-#~ msgstr "Rodarkiv"
-
-#~ msgid ""
-#~ "Nautilus was unable to mount the floppy drive. There is probably no "
-#~ "floppy in the drive."
-#~ msgstr ""
-#~ "Nautilus kunne ikke montere disketten. Der er formentlig ingen diskette i "
-#~ "diskettedrevet."
-
-#~ msgid ""
-#~ "Nautilus was unable to mount the volume. There is probably no media in "
-#~ "the device."
-#~ msgstr ""
-#~ "Nautilus kunne ikke montere arkivet. Der er formentlig intet medium i "
-#~ "enheden."
-
-#~ msgid ""
-#~ "Nautilus was unable to mount the floppy drive. The floppy is probably in "
-#~ "a format that cannot be mounted."
-#~ msgstr ""
-#~ "Nautilus kunne ikke montere disketten. Disketten er formentlig i et "
-#~ "format der ikke kan monteres."
-
-#~ msgid ""
-#~ "Nautilus was unable to mount the selected volume. The volume is probably "
-#~ "in a format that cannot be mounted."
-#~ msgstr ""
-#~ "Nautilus kunne ikke montere det valgte arkiv. Arkivet er formentlig i et "
-#~ "format der ikke kan monteres."
-
-#~ msgid "Nautilus was unable to mount the selected floppy drive."
-#~ msgstr "Nautilus kunne ikke montere den valgte disketteenhed."
-
-#~ msgid "Nautilus was unable to mount the selected volume."
-#~ msgstr "Nautilus kunne ikke montere det valgte arkiv."
-
-#~ msgid "Nautilus was unable to unmount the selected volume."
-#~ msgstr "Nautilus kunne ikke afmontere det valgte arkiv."
-
-#~ msgid "ISO 9660 Volume"
-#~ msgstr "ISO 9660-arkiv"
-
-#~ msgid "Error executing utility program '%s': %s"
-#~ msgstr "Fejl ved kørsel af værktøjet '%s': %s"
-
-#~ msgid "Dis_ks"
-#~ msgstr "Dre_v"
-
-#~ msgid "Mount or unmount disks"
-#~ msgstr "Montér eller afmontér diske"
-
-#~ msgid "Open _in This Window"
-#~ msgstr "Åbn _i dette vindue"
-
-#~ msgid "_Open activated item in a new window"
-#~ msgstr "Å_bn aktiveret objekt i et nyt vindue"
-
-#~ msgid "Change the visibility of this window's toolbar"
-#~ msgstr "Skift mellem om dette vindues værktøjslinje er vist"
-
-#~ msgid "Go to the Start Here folder"
-#~ msgstr "Gå til 'Start her'-mappen"
-
-#~ msgid "Open New _Window"
-#~ msgstr "Åbn nyt _vindue"
-
-#~ msgid "Open another Nautilus window for the displayed location"
-#~ msgstr "Åbn et nyt Nautilus-vindue for den nuværende placering"
-
-#~ msgid "_Find"
-#~ msgstr "_Find"
-
-#~ msgid "_Start Here"
-#~ msgstr "_Start her"
-
-#~ msgid "_Toolbar"
-#~ msgstr "_Værktøjslinje"
-
-#~ msgid "Go to Nonexistent Location"
-#~ msgstr "Gå til ikke-eksisterende placering"
-
-#~ msgid ""
-#~ "If set to true, then hidden files (dotfiles) are shown in the file "
-#~ "manager."
-#~ msgstr ""
-#~ "Hvis sat til sand, vil skjulte filer (filer der starter med punktum) "
-#~ "blive vist."
-
-#~ msgid "Sort in _reverse"
-#~ msgstr "Sortér i om_vendt rækkefølge"
-
 #~ msgid "Use _manual layout"
 #~ msgstr "Benyt manuel _placering"
-
-#~ msgid "Your HTTP Proxy requires you to log in.\n"
-#~ msgstr "Din HTTP-mellemvært kræver at du logger ind.\n"
-
-#~ msgid ""
-#~ "You must log in to access \"%s\".\n"
-#~ "\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Du skal logge ind for at kunne tilgå \"%s\".\n"
-#~ "\n"
-#~ "%s"
-
-#~ msgid "Your password will be transmitted unencrypted."
-#~ msgstr "Adgangskoden vil blive overført ukrypteret."
-
-#~ msgid "Your password will be transmitted encrypted."
-#~ msgstr "Adgangskoden vil blive overført krypteret."
-
-#~ msgid "Authentication Required"
-#~ msgstr "Brugerverifikation påkrævet"
-
-#~ msgid "You cannot copy the Trash."
-#~ msgstr "Du kan ikke kopiere papirkurven."
-
-#~ msgid "F_onts"
-#~ msgstr "_Skrifttyper"
-
-#~ msgid "Services"
-#~ msgstr "Tjenester"
-
-#~ msgid "E_xecute scripts when they are clicked"
-#~ msgstr "_Kør tekstprogrammer når der klikkes på dem"
-
-#~ msgid "_View scripts when they are clicked"
-#~ msgstr "_Vis tekstprogrammer når der klikkes på dem"
-
-#~ msgid "Clear Text"
-#~ msgstr "Ryd tekst"
-
-#~ msgid "Copy Text"
-#~ msgstr "Kopiér tekst"
-
-#~ msgid "Paste Text"
-#~ msgstr "Indsæt tekst"
-
-#~ msgid "Select All"
-#~ msgstr "Vælg alt"
-
-#~ msgid " (invalid Unicode)"
-#~ msgstr " (ugyldig Unicode)"
-
-#~ msgid "Display _side pane"
-#~ msgstr "Vis _sidepanel"
-
-#~ msgid "Display _toolbar"
-#~ msgstr "Vis _værktøjslinje"
-
-#~ msgid "Display location _bar"
-#~ msgstr "Vis _adresselinje"
-
-#~ msgid "Display st_atusbar"
-#~ msgstr "Vis st_atuslinje"
-
-#~ msgid "_Ask before emptying the Trash or deleting files"
-#~ msgstr "_Spørg før tømning af papirkurven eller sletning af filer"
-
-#~ msgid "_Include a Delete command that bypasses Trash"
-#~ msgstr "_Medtag en slet-kommando der ikke benytter papirkurven"
-
-#~ msgid "Click Behavior"
-#~ msgstr "Klik-opførsel"
-
-#~ msgid "Show Options"
-#~ msgstr "Visningsindstillinger"
-
-#~ msgid "_Hidden files (filenames starting with \".\")"
-#~ msgstr "Skj_ulte filer (filnavne begynder med '.')"
-
-#~ msgid "_Backup files (filenames ending with \"~\")"
-#~ msgstr "S_ikkerhedskopier (filnavne slutter med '~')"
-
-#~ msgid "Sort"
-#~ msgstr "Sortering"
-
-#~ msgid "Fo_lders before files"
-#~ msgstr "Mapper _før filer"
-
-#~ msgid ""
-#~ "Choose the order for information to appear beneath icon names.\n"
-#~ "More information appears as you zoom in closer"
-#~ msgstr ""
-#~ "Vælg rækkefølgen for information der skal vises under ikonnavnene.\n"
-#~ "Mere information dukker op når du zoomer nærmere ind."
-
-#~ msgid "_View new folders using:"
-#~ msgstr "_Vis nye mapper med:"
-
-#~ msgid "Icon View Defaults"
-#~ msgstr "Ikonvisningsforvalg"
-
-#~ msgid "List View Defaults"
-#~ msgstr "Listevisningsforvalg"
-
-#~ msgid "Built-in Bookmarks"
-#~ msgstr "Indbyggede bogmærker"
-
-#~ msgid "Tabs"
-#~ msgstr "Faner"
-
-#~ msgid "_Show folders only"
-#~ msgstr "_Vis kun mapper"
-
-# det drejer sig normalt om overskrifter, derfor 'punkter'
-#~ msgid "Maximum items per site"
-#~ msgstr "Maksimalt antal punkter pr. sted"
-
-#~ msgid "_Maximum number of items displayed per site"
-#~ msgstr "_Maksimalt antal punkter vist pr. sted"
-
-#~ msgid "Update Minutes"
-#~ msgstr "Opdateringsinterval"
-
-#~ msgid "_Update frequency in minutes"
-#~ msgstr "_Opdateringsinterval i minutter"
-
-#~ msgid "Appearance"
-#~ msgstr "Udseende"
-
-#~ msgid "Windows"
-#~ msgstr "Vinduer"
-
-#~ msgid "Desktop & Trash"
-#~ msgstr "Skrivebord og papirkurv"
-
-#~ msgid "Icon & List Views"
-#~ msgstr "Ikon- og listevisninger"
-
-#~ msgid "Side Panes"
-#~ msgstr "Sidepaneler"
-
-#~ msgid "Search"
-#~ msgstr "Søgning"
-
-#~ msgid "Navigation"
-#~ msgstr "Navigering"
-
-#~ msgid "Performance"
-#~ msgstr "Hastighed"
-
-#~ msgid "News Panel"
-#~ msgstr "Nyhedspanel"
-
-#~ msgid "Preferences"
-#~ msgstr "Indstillinger"
-
-#~ msgid "Click on a theme to remove it."
-#~ msgstr "Klik på et tema for at fjerne det."
-
-#~ msgid "Click on a theme to change the appearance of Nautilus."
-#~ msgstr "Klik på et tema for at at ændre Nautilus' udseende."
-
-#~ msgid "Sorry, but \"%s\" is not a valid theme folder."
-#~ msgstr "Desværre, men '%s' er ikke et gyldigt tema-katalog."
-
-#~ msgid "Couldn't add theme"
-#~ msgstr "Kunne ikke tilføje tema"
-
-#~ msgid "Couldn't install theme"
-#~ msgstr "Kunne ikke installere tema"
-
-#~ msgid "Sorry, but \"%s\" is not a valid theme file."
-#~ msgstr "Desværre, men '%s' er ikke en gyldig temafil."
-
-#~ msgid "Select a theme folder to add as a new theme:"
-#~ msgstr "Vælg et tema-katalog der skal tilføjes som et nyt tema:"
-
-#~ msgid ""
-#~ "Sorry, but you can't remove the current theme. Please change to another "
-#~ "theme before removing this one."
-#~ msgstr ""
-#~ "Desværre, men du kan ikke fjerne det aktuelle tema. Skift venligst til et "
-#~ "andet tema før dette fjernes."
-
-#~ msgid "Couldn't remove theme"
-#~ msgstr "Kunne ikke fjerne tema"
-
-#~ msgid "_Add Theme..."
-#~ msgstr "_Tilføj nyt tema..."
-
-#~ msgid "_Remove Theme..."
-#~ msgstr "_Fjern tema..."
-
-#~ msgid "Cancel _Remove"
-#~ msgstr "F_ortryd Fjern"
-
-#~ msgid "Factory for music view"
-#~ msgstr "Fabrik for musik-visning"
-
-#~ msgid "Music"
-#~ msgstr "Musik"
-
-#~ msgid "Music Viewer"
-#~ msgstr "Musikviser"
-
-#~ msgid "Music view"
-#~ msgstr "Musikvisning"
-
-#~ msgid "Music view factory"
-#~ msgstr "Fabrik for musik-visning"
-
-#~ msgid "View as Music"
-#~ msgstr "Vis som musik"
-
-#~ msgid "Blues"
-#~ msgstr "Blues"
-
-#~ msgid "Classic Rock"
-#~ msgstr "Klassisk rock"
-
-#~ msgid "Country"
-#~ msgstr "Country"
-
-#~ msgid "Dance"
-#~ msgstr "Dance"
-
-#~ msgid "Disco"
-#~ msgstr "Disco"
-
-#~ msgid "Funk"
-#~ msgstr "Funk"
-
-#~ msgid "Grunge"
-#~ msgstr "Grunge"
-
-#~ msgid "Hip-Hop"
-#~ msgstr "Hip-hop"
-
-#~ msgid "Jazz"
-#~ msgstr "Jazz"
-
-#~ msgid "Metal"
-#~ msgstr "Metal"
-
-#~ msgid "New Age"
-#~ msgstr "New age"
-
-#~ msgid "Oldies"
-#~ msgstr "Evergreens"
-
-#~ msgid "Other"
-#~ msgstr "Andre"
-
-#~ msgid "Pop"
-#~ msgstr "Pop"
-
-#~ msgid "R&B"
-#~ msgstr "R&B"
-
-#~ msgid "Rap"
-#~ msgstr "Rap"
-
-#~ msgid "Reggae"
-#~ msgstr "Reggae"
-
-#~ msgid "Rock"
-#~ msgstr "Rock"
-
-#~ msgid "Techno"
-#~ msgstr "Tekno"
-
-#~ msgid "Industrial"
-#~ msgstr "Industriel"
-
-#~ msgid "Alternative"
-#~ msgstr "Alternativ"
-
-#~ msgid "Ska"
-#~ msgstr "Ska"
-
-#~ msgid "Death Metal"
-#~ msgstr "Dødsmetal"
-
-#~ msgid "Pranks"
-#~ msgstr "Pranks"
-
-#~ msgid "Soundtrack"
-#~ msgstr "Filmmusik"
-
-#~ msgid "Euro-Techno"
-#~ msgstr "Euro-tekno"
-
-#~ msgid "Ambient"
-#~ msgstr "Ambient"
-
-#~ msgid "Trip-Hop"
-#~ msgstr "Trip-hop"
-
-#~ msgid "Vocal"
-#~ msgstr "Vokal"
-
-#~ msgid "Jazz+Funk"
-#~ msgstr "Jazz+funk"
-
-#~ msgid "Fusion"
-#~ msgstr "Fusion"
-
-#~ msgid "Trance"
-#~ msgstr "Trance"
-
-#~ msgid "Classical"
-#~ msgstr "Klassisk"
-
-#~ msgid "Instrumental"
-#~ msgstr "Instrumental"
-
-#~ msgid "Acid"
-#~ msgstr "Syre"
-
-#~ msgid "House"
-#~ msgstr "House"
-
-#~ msgid "Game"
-#~ msgstr "Spil"
-
-#~ msgid "Sound Clip"
-#~ msgstr "Lydklip"
-
-#~ msgid "Gospel"
-#~ msgstr "Gospel"
-
-#~ msgid "Noise"
-#~ msgstr "Støj"
-
-#~ msgid "Alt"
-#~ msgstr "Alt"
-
-#~ msgid "Bass"
-#~ msgstr "Bas"
-
-#~ msgid "Soul"
-#~ msgstr "Soul"
-
-#~ msgid "Punk"
-#~ msgstr "Punk"
-
-#~ msgid "Space"
-#~ msgstr "Futuristisk"
-
-#~ msgid "Meditative"
-#~ msgstr "Meditativ"
-
-#~ msgid "Instrumental Pop"
-#~ msgstr "Instrumentalpop"
-
-#~ msgid "Instrumental Rock"
-#~ msgstr "Instrumentalrock"
-
-#~ msgid "Ethnic"
-#~ msgstr "Etnisk"
-
-#~ msgid "Gothic"
-#~ msgstr "Gotisk"
-
-#~ msgid "Darkwave"
-#~ msgstr "Darkwave"
-
-#~ msgid "Techno-Industrial"
-#~ msgstr "Tekno-industriel"
-
-#~ msgid "Electronic"
-#~ msgstr "Elektronisk"
-
-#~ msgid "Pop-Folk"
-#~ msgstr "Folkepop"
-
-#~ msgid "Eurodance"
-#~ msgstr "Eurodance"
-
-#~ msgid "Dream"
-#~ msgstr "Dream"
-
-#~ msgid "Southern Rock"
-#~ msgstr "Sydstatsrock"
-
-#~ msgid "Comedy"
-#~ msgstr "Komedie"
-
-#~ msgid "Cult"
-#~ msgstr "Kult"
-
-#~ msgid "Gangsta Rap"
-#~ msgstr "Gangster-rap"
-
-#~ msgid "Top 40"
-#~ msgstr "Top 40"
-
-#~ msgid "Christian Rap"
-#~ msgstr "Kristen rap"
-
-#~ msgid "Pop/Funk"
-#~ msgstr "Pop/funk"
-
-#~ msgid "Jungle"
-#~ msgstr "Jungle"
-
-#~ msgid "Native American"
-#~ msgstr "Indiansk"
-
-#~ msgid "Cabaret"
-#~ msgstr "Kabarét"
-
-#~ msgid "Psychedelic"
-#~ msgstr "Psykedelisk"
-
-#~ msgid "Rave"
-#~ msgstr "Rave"
-
-#~ msgid "Showtunes"
-#~ msgstr "Teatersange"
-
-#~ msgid "Trailer"
-#~ msgstr "Trailer"
-
-#~ msgid "Lo-Fi"
-#~ msgstr "Lo-fi"
-
-#~ msgid "Tribal"
-#~ msgstr "Stamme"
-
-#~ msgid "Acid Punk"
-#~ msgstr "Syrepunk"
-
-#~ msgid "Acid Jazz"
-#~ msgstr "Syrejazz"
-
-#~ msgid "Polka"
-#~ msgstr "Polka"
-
-#~ msgid "Retro"
-#~ msgstr "Retro"
-
-#~ msgid "Musical"
-#~ msgstr "Musical"
-
-#~ msgid "Rock & Roll"
-#~ msgstr "Rok og rul"
-
-#~ msgid "Hard Rock"
-#~ msgstr "Hård rock"
-
-#~ msgid "Folk"
-#~ msgstr "Folke"
-
-#~ msgid "Folk/Rock"
-#~ msgstr "Folke/Rock"
-
-#~ msgid "National Folk"
-#~ msgstr "National folkemusik"
-
-#~ msgid "Swing"
-#~ msgstr "Swing"
-
-#~ msgid "Fast-Fusion"
-#~ msgstr "Fast-Fusion"
-
-#~ msgid "Bebob"
-#~ msgstr "Bebob"
-
-#~ msgid "Latin"
-#~ msgstr "Latin"
-
-#~ msgid "Revival"
-#~ msgstr "Revival"
-
-#~ msgid "Celtic"
-#~ msgstr "Keltisk"
-
-#~ msgid "Bluegrass"
-#~ msgstr "Bluegrass"
-
-#~ msgid "Avantgarde"
-#~ msgstr "Avantgarde"
-
-#~ msgid "Gothic Rock"
-#~ msgstr "Gotisk rock"
-
-#~ msgid "Progressive Rock"
-#~ msgstr "Progressiv rock"
-
-#~ msgid "Psychedelic Rock"
-#~ msgstr "Psykedelisk rock"
-
-#~ msgid "Symphonic Rock"
-#~ msgstr "Symfonisk rock"
-
-#~ msgid "Slow Rock"
-#~ msgstr "Langsom rock"
-
-#~ msgid "Big Band"
-#~ msgstr "Big band"
-
-#~ msgid "Chorus"
-#~ msgstr "Kor"
-
-#~ msgid "Easy Listening"
-#~ msgstr "Let musik"
-
-#~ msgid "Acoustic"
-#~ msgstr "Akustisk"
-
-#~ msgid "Humour"
-#~ msgstr "Humoristisk"
-
-#~ msgid "Speech"
-#~ msgstr "Taler"
-
-#~ msgid "Chanson"
-#~ msgstr "Chanson"
-
-#~ msgid "Opera"
-#~ msgstr "Opera"
-
-#~ msgid "Chamber Music"
-#~ msgstr "Kammermusik"
-
-#~ msgid "Sonata"
-#~ msgstr "Sonater"
-
-#~ msgid "Symphony"
-#~ msgstr "Symfonier"
-
-#~ msgid "Booty Bass"
-#~ msgstr "Booty bass"
-
-#~ msgid "Primus"
-#~ msgstr "Primus"
-
-#~ msgid "Porn Groove"
-#~ msgstr "Porn groove"
-
-#~ msgid "Satire"
-#~ msgstr "Satire"
-
-#~ msgid "Slow Jam"
-#~ msgstr "Slow Jam"
-
-#~ msgid "Club"
-#~ msgstr "Klub"
-
-#~ msgid "Tango"
-#~ msgstr "Tango"
-
-#~ msgid "Samba"
-#~ msgstr "Samba"
-
-#~ msgid "Folklore"
-#~ msgstr "Folklore"
-
-#~ msgid "Ballad"
-#~ msgstr "Ballader"
-
-#~ msgid "Power Ballad"
-#~ msgstr "Power ballad"
-
-#~ msgid "Rhythmic Soul"
-#~ msgstr "Rytmisk soul"
-
-#~ msgid "Duet"
-#~ msgstr "Duet"
-
-#~ msgid "Punk Rock"
-#~ msgstr "Punkrock"
-
-#~ msgid "Drum Solo"
-#~ msgstr "Trommesolo"
-
-#~ msgid "A Cappella"
-#~ msgstr "A cappella"
-
-#~ msgid "Euro-House"
-#~ msgstr "Euro-house"
-
-#~ msgid "Dance Hall"
-#~ msgstr "Dance hall"
-
-#~ msgid "Goa"
-#~ msgstr "Goa"
-
-#~ msgid "Drum & Bass"
-#~ msgstr "Trommer og bas"
-
-#~ msgid "Club-House"
-#~ msgstr "Club-house"
-
-#~ msgid "Hardcore"
-#~ msgstr "Hardcore"
-
-#~ msgid "Terror"
-#~ msgstr "Terror"
-
-#~ msgid "Indie"
-#~ msgstr "Indie"
-
-#~ msgid "BritPop"
-#~ msgstr "Britpop"
-
-#~ msgid "Negerpunk"
-#~ msgstr "Negerpunk"
-
-#~ msgid "Polsk Punk"
-#~ msgstr "Polsk punk"
-
-#~ msgid "Beat"
-#~ msgstr "Beat"
-
-#~ msgid "Christian Gangsta Rap"
-#~ msgstr "Kristen gangster-rap"
-
-#~ msgid "Heavy Metal"
-#~ msgstr "Heavy metal"
-
-#~ msgid "Black Metal"
-#~ msgstr "Sort metal"
-
-#~ msgid "Crossover"
-#~ msgstr "Mellemting"
-
-#~ msgid "Contemporary Christian"
-#~ msgstr "Nutidigt kristent"
-
-#~ msgid "Christian Rock"
-#~ msgstr "Kristen rock"
-
-#~ msgid "Merengue"
-#~ msgstr "Merengue"
-
-#~ msgid "Salsa"
-#~ msgstr "Salsa"
-
-#~ msgid "Thrash Metal"
-#~ msgstr "Trash metal"
-
-#~ msgid "Anime"
-#~ msgstr "Anime"
-
-#~ msgid "JPop"
-#~ msgstr "JPop"
-
-#~ msgid "Synthpop"
-#~ msgstr "Synthpop"
-
-#~ msgid "Track"
-#~ msgstr "Spor"
-
-#~ msgid "Title"
-#~ msgstr "Titel"
-
-#~ msgid "Artist"
-#~ msgstr "Kunstner"
-
-#~ msgid "Bit Rate"
-#~ msgstr "Bitrate"
-
-#~ msgid "Time"
-#~ msgstr "Tid"
-
-#~ msgid "Set Cover Image"
-#~ msgstr "Omslagsbillede"
-
-#~ msgid "Select an image file for the album cover:"
-#~ msgstr "Vælg en billedfil til pladeomslaget:"
-
-#~ msgid ""
-#~ "Sorry, but the music view is unable to play back sound right now. This is "
-#~ "because the Enable sound server startup setting in the Sound section of "
-#~ "the Control Center is turned off."
-#~ msgstr ""
-#~ "Desværre, men musikvisningen kan ikke afspille lyd lige nu. Dette skyldes "
-#~ "at opstart af lydtjeneren er slå fra i lydsektionen i kontrolcentret."
-
-#~ msgid "Unable to Play File"
-#~ msgstr "Kan ikke afspille fil"
-
-#~ msgid ""
-#~ "Sorry, but the music view is unable to play back sound right now. Either "
-#~ "another program is using or blocking the sound card, or your sound card "
-#~ "is not configured properly. Try quitting any applications that may be "
-#~ "blocking use of the sound card."
-#~ msgstr ""
-#~ "Desværre, men musikvisningen er ikke i stand til at afspille lyd i "
-#~ "øjeblikket. Enten bruger eller blokerer et andet program lydkortet, eller "
-#~ "også er dit lydkort ikke indstillet rigtigt. Prøv at afslutte alle "
-#~ "programmer som kunne tænkes at blokere for lydkortet."
-
-#~ msgid "Sorry, but the music view can't play non-local files yet."
-#~ msgstr "Beklager, men musikvisning kan ikke afspille eksterne filer endnu."
-
-#~ msgid "Can't Play Remote Files"
-#~ msgstr "Kan ikke afspille eksterne filer"
-
-#~ msgid "Drag to seek within track"
-#~ msgstr "Træk for at søge i et spor"
-
-#~ msgid "Previous"
-#~ msgstr "Forrige"
-
-#~ msgid "Play"
-#~ msgstr "Afspil"
-
-#~ msgid "Pause"
-#~ msgstr "Pause"
-
-#~ msgid "Next"
-#~ msgstr "Næste"
-
-#~ msgid "cover image"
-#~ msgstr "omslagsbillede"
-
-#~ msgid "Sorry, but there was an error reading %s."
-#~ msgstr "Desværre, der var en fejl vel læsning af %s."
-
-#~ msgid "<span size=\"xx-large\">%s - %s</span>"
-#~ msgstr "<span size=\"xx-large\">%s - %s</span>"
-
-#~ msgid "Delete"
-#~ msgstr "Slet"
-
-#~ msgid "Re_move Custom Icons"
-#~ msgstr "F_jern egne ikoner"
-
-#~ msgid "Re_move Custom Icon"
-#~ msgstr "F_jern eget ikon"
-
-#~ msgid "Throw Away"
-#~ msgstr "Smid væk"
-
-#~ msgid "Remove any custom images from selected icons"
-#~ msgstr "Fjern brugerdefinerede billeder fra de markerede ikoner"
-
-#~ msgid "Empty Trash..."
-#~ msgstr "Tøm papirkurv..."
-
-#~ msgid "_Delete from Trash..."
-#~ msgstr "_Slet fra papirkurv..."
-
-#~ msgid "_Delete..."
-#~ msgstr "_Slet..."
-
-#~ msgid "_Empty Trash..."
-#~ msgstr "_Tøm papirkurv..."
-
-#~ msgid "_Backgrounds and Emblems..."
-#~ msgstr "_Baggrunde og emblemer..."
-
-#~ msgid "Factory for news view"
-#~ msgstr "Fabrik for nyhedsvisning"
-
-#~ msgid "News"
-#~ msgstr "Nyheder"
-
-#~ msgid "News sidebar panel"
-#~ msgstr "Nyhedssidepanel"
-
-#~ msgid "News sidebar panel fetches and displays RSS feeds"
-#~ msgstr "Nyhedssidepanelet henter og viser RSS-fødninger"
-
-#~ msgid "Wrap at"
-#~ msgstr "Ombryd ved"
-
-#~ msgid "Width the cell should wrap to."
-#~ msgstr "Bredde som cellen skal ombryde ved"
-
-#~ msgid "Markup"
-#~ msgstr "Opmærkning"
-
-#~ msgid "Marked up text to display"
-#~ msgstr "Opmærket tekst som skal vises"
-
-#~ msgid "Bullet"
-#~ msgstr "Punkt"
-
-#~ msgid "Bullet to display"
-#~ msgstr "Punkt som skal vises"
-
-#~ msgid "Prelight Bullet"
-#~ msgstr "Fremhævet punkt"
-
-#~ msgid "Bullet to display when prelit"
-#~ msgstr "Punkt som skal vises ved fremhævning"
-
-#~ msgid "%I:%M %p"
-#~ msgstr "%H:%M"
-
-#~ msgid "Loading %s"
-#~ msgstr "Indlæser %s"
-
-#~ msgid "Missing Site Name Error"
-#~ msgstr "Manglende navn på sted-fejl"
-
-#~ msgid "Sorry, but you have not specified a URL for the site!"
-#~ msgstr "Beklager, men du har ikke angivet en adresse for stedet!"
-
-#~ msgid "Missing URL Error"
-#~ msgstr "Manglende URL-fejl"
-
-#~ msgid "Sorry, but the specified url doesn't seem to be a valid RSS file!"
-#~ msgstr ""
-#~ "Beklager, men den angivne adresse ser ikke ud til at være en gyldig RSS-"
-#~ "fil!"
-
-#~ msgid "Invalid RSS URL"
-#~ msgstr "Ugyldig RSS-URL"
-
-#~ msgid "Edi_t"
-#~ msgstr "_Redigér"
-
-#~ msgid "Site Name"
-#~ msgstr "Navn på sted"
-
-#~ msgid "_Remove Site"
-#~ msgstr "_Fjern sted"
-
-#~ msgid "Site _Name:"
-#~ msgstr "_Navn på sted:"
-
-#~ msgid "Site _RSS URL:"
-#~ msgstr "_RSS-adresse på sted:"
-
-#~ msgid "_Add New Site"
-#~ msgstr "_Tilføj nyt sted"
-
-#~ msgid "Add a New Site:"
-#~ msgstr "Tilføj et nyt sted:"
-
-#~ msgid "Remove a _Site:"
-#~ msgstr "Tilføj et st_ed:"
-
-#~ msgid "_Select Sites:"
-#~ msgstr "_Vælg steder:"
-
-#~ msgid "_Done"
-#~ msgstr "_Færdig"
-
-#~ msgid ""
-#~ "The News panel displays current headlines from your favorite websites.  "
-#~ "Click the 'Select Sites' button to select the sites to display."
-#~ msgstr ""
-#~ "Nyhedspanelet viser de nuværende overskrifter fra dine favoritnetsteder. "
-#~ "Klik på 'Vælg steder'-knappen for at vælge de steder der skal vises."
-
-#~ msgid "_Select Sites"
-#~ msgstr "_Vælg steder"
-
-#~ msgid "image indicating that the news has changed"
-#~ msgstr "billede som indikerer at nyhederne har ændret sig"
-
-#~ msgid ""
-#~ "%s\n"
-#~ "\n"
-#~ "You can configure which programs are offered for which file types with "
-#~ "the \"File Types and Programs\" part of the GNOME Control Center. Do you "
-#~ "want to go there now?"
-#~ msgstr ""
-#~ "%s\n"
-#~ "\n"
-#~ "Du kan vælge hvilke programmer der foreslås for hvilke filtyper med "
-#~ "\"Filtypeassocieringer\" i Gnomes kontrolcenter. Vil du gå dertil nu?"
-
-#~ msgid "De_lete"
-#~ msgstr "S_let"
-
-#~ msgid "Make _Link"
-#~ msgstr "Opret _henvisning"
-
-#~ msgid "R_emove Custom Icons"
-#~ msgstr "F_jern egne ikoner"
-
-#~ msgid "R_emove Custom Icon"
-#~ msgstr "F_jern eget ikon"
-
-# kortere, passer bedre i en popop-menu
-#~ msgid "Restore Icons' _Original Sizes"
-#~ msgstr "Nulstil _ikonstørrelser"
-
-#~ msgid "MIME Type:"
-#~ msgstr "MIME-type:"
-
-#~ msgid "Text View:"
-#~ msgstr "Tekstvisning:"
-
-#~ msgid "Format Conditionally"
-#~ msgstr "Betinget formatering"
-
-#~ msgid "Media Properties Conditionally"
-#~ msgstr "Betingede medieegenskaber"
-
-#~ msgid "Protect Conditionally"
-#~ msgstr "Betinget beskyttelse"
-
-#~ msgid "Unmount Volume Conditionally"
-#~ msgstr "Betinget afmontering af arkiv"
-
-#~ msgid "Cut Files"
-#~ msgstr "Klip filer"
-
-#~ msgid "New Folder"
-#~ msgstr "Ny mappe"
-
-#~ msgid "New La_uncher"
-#~ msgstr "Ny _genvej"
-
-#~ msgid "Open Scripts Folder"
-#~ msgstr "Åbn programmappen"
-
-#~ msgid "Open With"
-#~ msgstr "Åbn med"
-
-#~ msgid "Other Viewer..."
-#~ msgstr "Anden fremviser..."
-
-#~ msgid "Paste Files"
-#~ msgstr "Indsæt filer"
-
-#~ msgid "Reset View to Default"
-#~ msgstr "Nulstil visning til forvalg"
-
-#~ msgid "Select All Files"
-#~ msgstr "Vælg alle filer"
-
-#~ msgid "Show the contents of the Trash"
-#~ msgstr "Vis indholdet af papirkurven"
-
-#~ msgid "_Duplicate"
-#~ msgstr "_Duplikér"
-
-#~ msgid "_Make Link"
-#~ msgstr "_Opret henvisning"
-
-#~ msgid "_Show Trash"
-#~ msgstr "Vis _papirkurv"
-
-#~ msgid "Reversed Order"
-#~ msgstr "Omvendt rækkefølge"
-
-#~ msgid "_Clean Up by Name"
-#~ msgstr "R_yd op efter navn"
-
-#~ msgid "_Stretch Icon"
-#~ msgstr "_Stræk ikon"
-
-#~ msgid "Bookmarks"
-#~ msgstr "Bogmærker"
-
-#~ msgid "_Remove"
-#~ msgstr "_Fjern"
-
-#~ msgid "Nautilus Themes"
-#~ msgstr "Nautilus-temaer"
-
-#~ msgid "Opening New Windows"
-#~ msgstr "Åbning af nye vinduer"
-
-#~ msgid "Sorting Order"
-#~ msgstr "Sorteringsorden"
-
-#~ msgid "_Show only folders (no files) in the tree"
-#~ msgstr "_Vis kun mapper (ikke filer) i træet"
-
-#~ msgid "View Defaults"
-#~ msgstr "Visningsforvalg"
-
-#~ msgid "Speed Tradeoffs"
-#~ msgstr "Hastighedsvalg"
-
-#~ msgid "Hide _Toolbar"
-#~ msgstr "Skjul _værktøjslinjen"
-
-#~ msgid "P_references"
-#~ msgstr "_Indstillinger"
-
-#~ msgid "_About Nautilus"
-#~ msgstr "_Om Nautilus"
-
-#~ msgid "_Normal Size"
-#~ msgstr "_Normal størrelse"
-
-#~ msgid "_Up a Level"
-#~ msgstr "_Op et niveau"
-
-#~ msgid "Hide St_atus Bar"
-#~ msgstr "Skjul _statuslinje"
-
-#~ msgid "Show St_atus Bar"
-#~ msgstr "Vis stat_uslinje"
-
-#~ msgid "Show _Sidebar"
-#~ msgstr "Vis _sidepanel"
-
-#~ msgid "Show Location _Bar"
-#~ msgstr "Vis _adresselinje"
-
-#~ msgid "Clear"
-#~ msgstr "Ryd"
-
-#~ msgid "Factory for history views"
-#~ msgstr "Fabrik for historik-visning"
-
-#~ msgid "Factory for annotation view"
-#~ msgstr "Fabrik for notevisning"
-
-#~ msgid "Delete Trash Contents?"
-#~ msgstr "Slet indholdet i papirkurven?"
-
-#~ msgid "Font:"
-#~ msgstr "Skrifttype:"
-
-#~ msgid "Font size at default zoom level:"
-#~ msgstr "Skriftstørrelse ved startzoomniveau:"
-
-#~ msgid "Show Properties"
-#~ msgstr "Vis egenskaber"
-
-#~ msgid "Show _Properties"
-#~ msgstr "Vis _egenskaber"
-
-#~ msgid "HTTP Proxy Settings"
-#~ msgstr "Indstillinger for mellemværter"
-
-#~ msgid "Use HTTP Proxy"
-#~ msgstr "Brug HTTP-mellemvært"
-
-#~ msgid "Port:"
-#~ msgstr "Port:"
-
-#~ msgid "Proxy requires a username and password:"
-#~ msgstr "Mellemværten kræver et brugernavn og kodeord:"
-
-#~ msgid "Username:"
-#~ msgstr "Brugernavn:"
-
-#~ msgid "Password:"
-#~ msgstr "Adgangskode:"
-
-# dækker vist bedre over hvad det drejer sig om
-#~ msgid "Make Folder Appearance Details Public"
-#~ msgstr "Husk udseendet af mapper"
-
-#~ msgid "Remove any custom pattern or color from the desktop background"
-#~ msgstr ""
-#~ "Fjern ethvert brugerdefineret mønster eller farve fra "
-#~ "skrivebordsbaggrunden"
-
-#~ msgid ""
-#~ "Remove any custom pattern or color from the background of this location"
-#~ msgstr ""
-#~ "Fjern alle tilpassede mønstre eller farver fra baggrunden på dette sted"
-
-#~ msgid "Display on-line help for Nautilus"
-#~ msgstr "Vis hjælp for Nautilus"
-
-#~ msgid "Display quick reference pages for Nautilus"
-#~ msgstr "Vis referencesiderne for Nautilus"
-
-#~ msgid "Go up to the location that contains the displayed location"
-#~ msgstr "Gå en tak op til stedet der indeholder det fremviste sted"
-
-#~ msgid "Nautilus Quick _Reference"
-#~ msgstr "Nautilus _referenceopslag"
-
-#~ msgid "Nautilus User _Manual"
-#~ msgstr "Nautilus bruger_vejledning"
-
-#~ msgid "P_references..."
-#~ msgstr "I_ndstillinger"
-
-#~ msgid "_About Nautilus..."
-#~ msgstr "_Om Nautilus..."
-
-#~ msgid "Server Configuration"
-#~ msgstr "Serverkonfigurering"
-
-#~ msgid "R_emove Custom Images"
-#~ msgstr "Fj_ern egne billeder"
-
-#~ msgid "R_emove Custom Image"
-#~ msgstr "Fj_ern eget billede"
-
-#~ msgid "Remove Custom Images"
-#~ msgstr "Fjern egne billeder"
-
-#~ msgid "Reset View to Match _Preferences"
-#~ msgstr "Nulstil til visningens standard_indstillinger"
-
-#~ msgid "Refresh"
-#~ msgstr "Opdatér"
-
-#~ msgid "_Refresh"
-#~ msgstr "_Genopfrisk"
-
-#~ msgid "Lay Out Items"
-#~ msgstr "Arrangér objekter"
-
-#~ msgid "_Lay Out Items"
-#~ msgstr "_Arrangér objekter"
-
-#~ msgid "Lay Out Items:"
-#~ msgstr "Arrangér objekter:"
-
-#~ msgid "Preview Release %s: %s"
-#~ msgstr "Forpræmiere %s: %s"
-
-#~ msgid "File too large"
-#~ msgstr "For stor fil"
-
-#~ msgid "Keyboard Shortcuts"
-#~ msgstr "Tastaturgenveje"
-
-#~ msgid "Use Emacs-style keyboard shortcuts in text fields"
-#~ msgstr "Brug Emacs-agtige tastaturgenveje i tekstfelter"
-
-#~ msgid "Display release notes for Nautilus"
-#~ msgstr "Vis udgivelsesbemærkninger til Nautilus"
-
-#~ msgid "Nautilus Release _Notes"
-#~ msgstr "Nautilus udgivelses_bemærkninger"
-
-#~ msgid "search by text"
-#~ msgstr "søg efter tekst"
-
-#~ msgid "search by text and properties"
-#~ msgstr "søg efter tekst og egenskaber"
-
-#~ msgid "Mailing list where you can send feedback about Nautilus"
-#~ msgstr "Postliste hvortil du kan sende kommentarer til Nautilus"
-
-#~ msgid "_Feedback"
-#~ msgstr "_Tilbagemeldinger"
-
-#~ msgid "Toolbar item style"
-#~ msgstr "Værktøjselementstil"
-
-#~ msgid "Toolbar item orientation"
-#~ msgstr "Værktøjselementorientering"
-
-#~ msgid "%d%%"
-#~ msgstr "%d%%"
-
-#~ msgid "Search Engines"
-#~ msgstr "Søgemotorer"
-
-#~ msgid "Search Engine Location"
-#~ msgstr "Internetsøgningssted"
-
-#~ msgid "Generic Image Viewer"
-#~ msgstr "Generel billedviser"
-
-#~ msgid "Generic image control factory"
-#~ msgstr "Fabrik for generel billedkontrol"
-
-#~ msgid "Image Viewer"
-#~ msgstr "Billedfremviser"
-
-#~ msgid "Nautilus Image Viewer"
-#~ msgstr "Nautilus billedfremviser"
-
-#~ msgid "Nautilus Image viewer factory"
-#~ msgstr "Fabrik for Nautilus billedfremviser"
-
-#~ msgid "View as Image"
-#~ msgstr "Vis som billede"
-
-#~ msgid "I could not initialize Bonobo"
-#~ msgstr "Kunne ikke klargøre Bonobo"
-
-#~ msgid " -_,;.?/&"
-#~ msgstr " -_,;.?/&"
-
-#~ msgid "Undo Typing"
-#~ msgstr "Fortryd indtasting"
-
-#~ msgid "Redo Typing"
-#~ msgstr "Genopret indtasting"
-
-#~ msgid "Restore the changed name"
-#~ msgstr "Genskab det ændrede navn"
-
-#~ msgid "Authors"
-#~ msgstr "Forfattere"
-
-#~ msgid "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
-#~ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
-
-#~ msgid "Smoother Graphics"
-#~ msgstr "Udjævnet grafik"
-
-#~ msgid "Use smoother (but slower) graphics"
-#~ msgstr "Brug udjævnet (men langsommere) grafik"
-
-#~ msgid "Search the World Wide Web"
-#~ msgstr "Søg på internettet"
-
-#~ msgid "We_b Search"
-#~ msgstr "Ne_tsøgning"
-
-#~ msgid "Web Search"
-#~ msgstr "Internetsøgning"
-
-#~ msgid "Default"
-#~ msgstr "Standard"
-
-#~ msgid "Help"
-#~ msgstr "Hjælp"
-
-#~ msgid "Show indexes for:"
-#~ msgstr "Vis indeks for:"
-
-#~ msgid "_All documents"
-#~ msgstr "_Alle dokumenter"
-
-#~ msgid "_Specific documents"
-#~ msgstr "_Specifikke dokumenter"
-
-#~ msgid "S_how all index terms"
-#~ msgstr "_Vis alle indekstermer"
-
-#~ msgid "Show _only terms containing"
-#~ msgstr "Vis _kun termer indeholdende"
-
-#~ msgid "Sho_w"
-#~ msgstr "V_is"
-
-#~ msgid "Inde_x:"
-#~ msgstr "Inde_ks:"
-
-#~ msgid "Introductory Documents"
-#~ msgstr "Introduktionsdokumenter"
-
-#~ msgid "Documents by Subject"
-#~ msgstr "Dokumenter efter emne"
-
-#~ msgid "_Index"
-#~ msgstr "_Indeks"
-
-#~ msgid "Mozilla Nautilus view"
-#~ msgstr "Mozilla Nautilus-visning"
-
-#~ msgid "Mozilla Nautilus view factory"
-#~ msgstr "Fabrik for Mozilla Nautilus-visning"
-
-#~ msgid "Mozilla content view component"
-#~ msgstr "Mozilla indholdsvisningskomponent"
-
-#~ msgid "Mozilla content view component's factory"
-#~ msgstr "Mozilla indholdsvisningskomponentfabrik"
-
-#~ msgid "View as Web Page"
-#~ msgstr "Vis som internetside"
-
-#~ msgid "Web Page"
-#~ msgstr "Internetside"
-
-#~ msgid "Web Page Viewer"
-#~ msgstr "Internetsideviser"
-
-#~ msgid ""
-#~ "GConf error:\n"
-#~ "  %s"
-#~ msgstr ""
-#~ "GConf-fejl:\n"
-#~ "  %s"
-
-#~ msgid ""
-#~ "GConf error:\n"
-#~ "  %s\n"
-#~ "All further errors shown only on terminal"
-#~ msgstr ""
-#~ "GConf-fejl:\n"
-#~ "  %s\n"
-#~ "Alle yderligere fejl vises kun på terminalen."
-
-#~ msgid "name of icon for the mozilla view"
-#~ msgstr "navnet på ikonet til Mozilla-visningen"
-
-#~ msgid "mozilla summary info"
-#~ msgstr "sammendrag af Mozilla-oplysninger"
-
-#~ msgid ""
-#~ "A JavaScript function (small software program) on this page tried to open "
-#~ "a new window, but Nautilus does not support the opening new windows by "
-#~ "JavaScript.\n"
-#~ "\n"
-#~ "Try viewing the page in a different web browser, such as Mozilla."
-#~ msgstr ""
-#~ "En Javascript-funktion (et lille program) på denne side prøvede på at "
-#~ "åbne et nyt vindue. Nautilus understøtter ikke åbning af nye vinduer via "
-#~ "Javascript\n"
-#~ "\n"
-#~ "Prøv at åbne siden i en anden browser som f.eks. Mozilla."
-
-#~ msgid "Nautilus JavaScript Warning"
-#~ msgstr "Nautilus Javascript-advarsel"
-
-#~ msgid "Arabic"
-#~ msgstr "Arabisk"
-
-#~ msgid "Baltic"
-#~ msgstr "Baltisk"
-
-#~ msgid "Central European"
-#~ msgstr "Centraleuropæisk"
-
-#~ msgid "Chinese"
-#~ msgstr "Kinesisk"
-
-#~ msgid "Cyrillic"
-#~ msgstr "Kyrillisk"
-
-#~ msgid "Greek"
-#~ msgstr "Græsk"
-
-#~ msgid "Hebrew"
-#~ msgstr "Hebræisk"
-
-#~ msgid "Japanese"
-#~ msgstr "Japansk"
-
-#~ msgid "Turkish"
-#~ msgstr "Tyrkisk"
-
-#~ msgid "Unicode"
-#~ msgstr "Unicode"
-
-#~ msgid "UTF"
-#~ msgstr "UTF"
-
-#~ msgid "Vietnamese"
-#~ msgstr "vietnamesisk"
-
-#~ msgid "Western"
-#~ msgstr "Vestligt"
-
-#~ msgid "Arabic (IBM-864)"
-#~ msgstr "Arabisk (IBM-864)"
-
-#~ msgid "Arabic (ISO-8859-6)"
-#~ msgstr "Arabisk (ISO-8859-6)"
-
-#~ msgid "Arabic (ISO-8859-6-E)"
-#~ msgstr "Arabisk (ISO-8859-6-E)"
-
-#~ msgid "Arabic (ISO-8859-6-I)"
-#~ msgstr "Arabisk (ISO-8859-6-I)"
-
-#~ msgid "Arabic (Windows-1256)"
-#~ msgstr "Arabisk (Windows-1256)"
-
-#~ msgid "Armenian (ARMSCII-8)"
-#~ msgstr "Armensk (ARMSCII-8)"
-
-#~ msgid "Baltic (ISO-8859-13)"
-#~ msgstr "Baltisk (ISO-8859-13)"
-
-#~ msgid "Baltic (ISO-8859-4)"
-#~ msgstr "Baltisk (ISO-8859-4)"
-
-#~ msgid "Baltic (Windows-1257)"
-#~ msgstr "Baltisk (Windows-1257)"
-
-#~ msgid "Celtic (ISO-8859-14)"
-#~ msgstr "Keltisk (ISO-8859-14)"
-
-#~ msgid "Central European (IBM-852)"
-#~ msgstr "Centraleuropæisk (IBM-852)"
-
-#~ msgid "Central European (ISO-8859-2)"
-#~ msgstr "Centraleuropæisk (ISO-8859-2)"
-
-#~ msgid "Central European (MacCE)"
-#~ msgstr "Centraleuropæisk (MacCE)"
-
-#~ msgid "Central European (Windows-1250)"
-#~ msgstr "Centraleuropæisk (Windows-1250)"
-
-#~ msgid "Chinese Simplified (GB2312)"
-#~ msgstr "Kinesisk forenklet (GB2312)"
-
-#~ msgid "Chinese Simplified (GBK)"
-#~ msgstr "Kinesisk forenklet (GBK)"
-
-#~ msgid "Chinese Simplified (HZ)"
-#~ msgstr "Kinesisk forenklet (HZ)"
-
-#~ msgid "Chinese Traditional (Big5)"
-#~ msgstr "Kinesisk traditionel (Big5)"
-
-#~ msgid "Chinese Traditional (EUC-TW)"
-#~ msgstr "Kinesisk traditionel (EUC-TW)"
-
-#~ msgid "Croatian (MacCroatian)"
-#~ msgstr "Kroatisk (MacCroatian)"
-
-#~ msgid "Cyrillic (IBM-855)"
-#~ msgstr "Kyrillisk (IBM-855)"
-
-#~ msgid "Cyrillic (ISO-8859-5)"
-#~ msgstr "Kyrillisk (ISO-8859-5)"
-
-#~ msgid "Cyrillic (ISO-IR-111)"
-#~ msgstr "Kyrillisk (ISO-IR-111)"
-
-#~ msgid "Cyrillic (MacCyrillic)"
-#~ msgstr "Kyrillisk (MacCyrillic)"
-
-#~ msgid "Cyrillic (Windows-1251)"
-#~ msgstr "Kyrillisk (Windows-1251)"
-
-#~ msgid "Cyrillic/Russian (IBM-866)"
-#~ msgstr "Kyrillisk/russisk (IBM-866)"
-
-#~ msgid "Cyrillic/Russian (KOI8-R)"
-#~ msgstr "Kyrillisk/russisk (KOI8-R)"
-
-#~ msgid "Cyrillic/Ukrainian (KOI8-U)"
-#~ msgstr "Kyrillisk/ukrainsk (KOI8-U)"
-
-#~ msgid "Cyrillic/Ukrainian (MacUkrainian)"
-#~ msgstr "Kyrillisk/ukrainsk (MacUkrainian)"
-
-#~ msgid "English (US-ASCII)"
-#~ msgstr "Engelsk (US-ASCII)"
-
-#~ msgid "Greek (ISO-8859-7)"
-#~ msgstr "Græsk (ISO-8859-7)"
-
-#~ msgid "Greek (MacGreek)"
-#~ msgstr "Græsk (MacGreek)"
-
-#~ msgid "Greek (Windows-1253)"
-#~ msgstr "Græsk (Windows-1253)"
-
-#~ msgid "Hebrew (IBM-862)"
-#~ msgstr "Hebræisk (IBM-862)"
-
-#~ msgid "Hebrew (ISO-8859-8-E)"
-#~ msgstr "Hebræisk (ISO-8859-8-E)"
-
-#~ msgid "Hebrew (ISO-8859-8-I)"
-#~ msgstr "Hebræisk (ISO-8859-8-I)"
-
-#~ msgid "Hebrew (Windows-1255)"
-#~ msgstr "Hebræisk (Windows-1255)"
-
-#~ msgid "Icelandic (MacIcelandic)"
-#~ msgstr "Islandsk (MacIcelandic)"
-
-#~ msgid "Japanese (EUC-JP)"
-#~ msgstr "Japansk (EUC-JP)"
-
-#~ msgid "Japanese (ISO-2022-JP)"
-#~ msgstr "Japansk (ISO-2022-JP)"
-
-#~ msgid "Japanese (Shift_JIS)"
-#~ msgstr "Japansk (Shift_JIS)"
-
-#~ msgid "Korean (EUC-KR)"
-#~ msgstr "Koreansk (EUC-KR)"
-
-#~ msgid "Nordic (ISO-8859-10)"
-#~ msgstr "Nordisk (ISO-8859-10)"
-
-#~ msgid "Romanian (MacRomanian)"
-#~ msgstr "Romansk (MacRomanian)"
-
-#~ msgid "South European (ISO-8859-3)"
-#~ msgstr "Sydeuropæisk (ISO-8859-3)"
-
-#~ msgid "T.61-8bit"
-#~ msgstr "T.61-8bit"
-
-#~ msgid "Thai (TIS-620)"
-#~ msgstr "Tailandsk (TIS-620)"
-
-#~ msgid "Turkish (IBM-857)"
-#~ msgstr "Tyrkisk (IBM-857)"
-
-#~ msgid "Turkish (ISO-8859-9)"
-#~ msgstr "Tyrkisk (ISO-8859-9)"
-
-#~ msgid "Turkish (MacTurkish)"
-#~ msgstr "Tyrkisk (MacTurkish)"
-
-#~ msgid "Turkish (Windows-1254)"
-#~ msgstr "Tyrkisk (Windows-1254)"
-
-#~ msgid "Unicode (UTF-7)"
-#~ msgstr "ISO-10646 (UTF-7)"
-
-#~ msgid "Unicode (UTF-8)"
-#~ msgstr "ISO-10646 (UTF-8)"
-
-#~ msgid "User Defined"
-#~ msgstr "Brugerdefineret"
-
-#~ msgid "UTF-16BE"
-#~ msgstr "UTF-16BE"
-
-#~ msgid "UTF-16LE"
-#~ msgstr "UTF-16LE"
-
-#~ msgid "UTF-32BE"
-#~ msgstr "UTF-32BE"
-
-#~ msgid "UTF-32LE"
-#~ msgstr "UTF-32LE"
-
-#~ msgid "Vietnamese (TCVN)"
-#~ msgstr "Vietnamesisk (TCVN)"
-
-#~ msgid "Vietnamese (VISCII)"
-#~ msgstr "Vietnamesisk (VISCII)"
-
-#~ msgid "Vietnamese (VPS)"
-#~ msgstr "Vietnamesisk (VPS)"
-
-#~ msgid "Vietnamese (Windows-1258)"
-#~ msgstr "Vietnamesisk (Windows-1258)"
-
-#~ msgid "Visual Hebrew (ISO-8859-8)"
-#~ msgstr "Visuel hebræisk (ISO-8859-8)"
-
-#~ msgid "Western (IBM-850)"
-#~ msgstr "Vestligt (IBM-850)"
-
-#~ msgid "Western (ISO-8859-1)"
-#~ msgstr "Vestligt (ISO-8859-1)"
-
-#~ msgid "Western (ISO-8859-15)"
-#~ msgstr "Vestligt (ISO-8859-15)"
-
-#~ msgid "Western (MacRoman)"
-#~ msgstr "Vestligt (MacRoman)"
-
-#~ msgid "Western (Windows-1252)"
-#~ msgstr "Vestligt (Windows-1252)"
-
-#~ msgid "windows-936"
-#~ msgstr "windows-936"
-
-#~ msgid "x-imap4-modified-utf7"
-#~ msgstr "x-imap4-modified-utf7"
-
-#~ msgid "x-u-escaped"
-#~ msgstr "x-u-escaped"
-
-#~ msgid "Charset Encoding"
-#~ msgstr "Tegntabelskodning"
-
-#~ msgid "%s - %s"
-#~ msgstr "%s - %s"
-
-#~ msgid "Gnumeric"
-#~ msgstr "Gnumeric"
-
-#~ msgid "Netscape"
-#~ msgstr "Netscape"
-
-#~ msgid "The Gimp"
-#~ msgstr "Gimp'en"
-
-#~ msgid "Home Directory"
-#~ msgstr "Hjemmemappen"
-
-#~ msgid "Excite"
-#~ msgstr "Excite"
-
-#~ msgid "Portals"
-#~ msgstr "Portaler"
-
-#~ msgid "Yahoo"
-#~ msgstr "Yahoo"
-
-#~ msgid "Alta Vista"
-#~ msgstr "Alta Vista"
-
-#~ msgid "Google"
-#~ msgstr "Google"
-
-#~ msgid "Programs"
-#~ msgstr "Programmer"
-
-#~ msgid ""
-#~ "You are about to run Nautilus as root.\n"
-#~ "\n"
-#~ "As root, you can damage your system if you are not careful, and\n"
-#~ "Nautilus will not stop you from doing it."
-#~ msgstr ""
-#~ "Du er ved at køre Nautilus som root.\n"
-#~ "\n"
-#~ "Du kan, som root, ødelægge dit system hvis du ikke er forsigtig, og\n"
-#~ "Nautilus vil ikke hindre dig."
-
-#~ msgid "Quit"
-#~ msgstr "Afslut"
-
-#~ msgid "Link sets"
-#~ msgstr "Henvisningssæt"
-
-#~ msgid "Add or remove sets of links by clicking on the checkboxes below."
-#~ msgstr ""
-#~ "Tilføj eller fjern henvisningssæt ved at klikke på afkrydsningsboksene "
-#~ "nedenfor."
-
-#~ msgid " _Advanced"
-#~ msgstr " _Avanceret"
-
-#~ msgid " _Beginner"
-#~ msgstr " _Begynder"
-
-#~ msgid " _Intermediate"
-#~ msgstr " _Mellem"
-
-#~ msgid "Use preferences appropriate for beginners"
-#~ msgstr "Brug opsætninger som passer til begyndere"
-
-#~ msgid "Use preferences appropriate for experts"
-#~ msgstr "Brug opsætninger som passer til eksperter"
-
-#~ msgid "Use preferences appropriate for most people"
-#~ msgstr "Brug opsætninger som passer til de fleste personer"
-
-#~ msgid "_Edit Preferences..."
-#~ msgstr "_Tilret indstillinger..."
-
-#~ msgid "_Preferences"
-#~ msgstr "_Indstillinger"
-
-#~ msgid ""
-#~ "Thank you for your interest in Nautilus.\n"
-#~ " \n"
-#~ "As with any software under development, you should exercise caution when "
-#~ "using Nautilus. We do not provide any guarantee that it will work "
-#~ "properly, or assume any liability for your use of it.  Please use it at "
-#~ "your own risk.\n"
-#~ "\n"
-#~ "Please write a mail to <nautilus-list@eazel.com> to provide feedback, "
-#~ "comments, and suggestions."
-#~ msgstr ""
-#~ "Tak for din interesse i Nautilus.\n"
-#~ " \n"
-#~ "Som med alt programmel under udvikling bør du udvise forsigtighed under "
-#~ "brug af Nautilus. Vi giver ingen garantier mht. om programmet vil virke "
-#~ "efter hensigten, eller accepterer noget ansvar for din brug af det. Brug "
-#~ "venligst programmet på eget ansvar.\n"
-#~ "\n"
-#~ "Skriv gerne et brev til <nautilus-list@eazel.com> med kommentarer og "
-#~ "forslag."
-
-#~ msgid "Close"
-#~ msgstr "Luk"
-
-#~ msgid "Show Desktop"
-#~ msgstr "Vis skrivebord"
-
-#~ msgid "Smooth Graphics"
-#~ msgstr "Udjævnet grafik"
-
-#~ msgid "Restart"
-#~ msgstr "Prøv igen"
-
-#~ msgid "Help Index"
-#~ msgstr "Hjælpeindeks"
-
-#~ msgid "Help Index sidebar panel"
-#~ msgstr "Hjælpeindeks-sidepanel"
-
-#~ msgid "Help Search"
-#~ msgstr "Søgning i hjælp"
-
-#~ msgid "Help Search sidebar panel"
-#~ msgstr "Sidepanel til hjælpesøgning"
-
-#~ msgid "-adobe-helvetica-bold-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
-#~ msgstr "-adobe-helvetica-bold-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
-
-#~ msgid "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
-#~ msgstr "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
-
-#~ msgid ""
-#~ "Your user level adjusts Nautilus to your degree of experience\n"
-#~ "using GNOME and %s. Choose a level that's comfortable for\n"
-#~ "you - you can always change it later."
-#~ msgstr ""
-#~ "Brugerniveau tilpasser Nautilus til dit erfaringsniveau\n"
-#~ "med hensyn til at bruge Gnome og %s. Vælg et niveau som du\n"
-#~ "er komfortabel med - du kan altid ændre det igen senere."
-
-#~ msgid ""
-#~ "For users who have no previous experience with GNOME\n"
-#~ "and %s."
-#~ msgstr ""
-#~ "For brugere som har ingen tidligere erfaring med Gnome\n"
-#~ "og %s."
-
-#~ msgid ""
-#~ "For users who are comfortable with GNOME and %s,\n"
-#~ "but don't describe themselves as ``technical.''"
-#~ msgstr ""
-#~ "For brugere som er komfortable med deres Gnome og\n"
-#~ "%s-miljøer, men som ikke føler sig \"tekniske\"."
-
-#~ msgid ""
-#~ "For users who have GNOME and %s experience, and\n"
-#~ "like to see every detail of the operating system."
-#~ msgstr ""
-#~ "For brugere som kender til Gnome og %s og behøver\n"
-#~ "adgang til alle detaljer i deres styresystem."
-
-#~ msgid "Finished"
-#~ msgstr "Færdig"
-
-#~ msgid "Choose Your User Level"
-#~ msgstr "Vælg dit brugerniveau"
-
-#~ msgid "Checking Your Internet Connection"
-#~ msgstr "Kontrollerer din Internetforbindelse"
-
-#~ msgid "Updating Nautilus..."
-#~ msgstr "Opdaterer Nautilus..."
-
-#~ msgid "is write-protected, mounting read-only"
-#~ msgstr "er skrivebeskyttet, monterer ligeså"
-
-#~ msgid "No medium found"
-#~ msgstr "Intet medium fundet"
-
-#~ msgid "wrong fs type, bad option, bad superblock on"
-#~ msgstr "Forkert filsystemstype, dårligt tilvalg, dårlig superblok på"
-
-#~ msgid "scripts"
-#~ msgstr "programmer"
-
-#~ msgid "Album"
-#~ msgstr "Album"
-
-#~ msgid "Comment"
-#~ msgstr "Kommentar"
-
-#~ msgid "Channels"
-#~ msgstr "Kanaler"
-
-#~ msgid "Sample Rate"
-#~ msgstr "Samplerate"
-
-#~ msgid "Stereo"
-#~ msgstr "Stereo"
-
-#~ msgid "Mono"
-#~ msgstr "Mono"
-
-#~ msgid "Root"
-#~ msgstr "Rod"
-
-#~ msgid "No Scripts Folder"
-#~ msgstr "Ingen programmappe"
-
-#~ msgid "_Online Storage"
-#~ msgstr "_Netlagring"
-
-#~ msgid "Display support information for Nautilus and Eazel Services"
-#~ msgstr "Vis support information for Nautilus- og Eazel-tjenesterne"
-
-# passer vist ca.
-#~ msgid "_Community Support"
-#~ msgstr "_Hjælp fra ligestillede"
-
-#~ msgid "Don't create index"
-#~ msgstr "Opret ikke index"
-
-#~ msgid "Create an Index"
-#~ msgstr "Opret et indeks"
-
-#~ msgid "Don't Create an Index Now"
-#~ msgstr "Opret ikke indeks nu"
-
-#~ msgid "The indexer is currently busy."
-#~ msgstr "Indekseringen er optaget lige i øjeblikket."
-
-#~ msgid "Use this font family to display file names:"
-#~ msgstr "Benyt denne skrifttypefamilie til at vise filnavne:"
-
-#~ msgid "Enable fast search (indexes your hard drive)"
-#~ msgstr "Aktivér hurtige søgninger (indekserer din harddisk)"
-
-#~ msgid "Can add Content"
-#~ msgstr "Kan tilføje indhold"
-
-#~ msgid "Fast Search"
-#~ msgstr "Hurtig søgning"
-
-#~ msgid "always"
-#~ msgstr "altid"
-
-#~ msgid "local only"
-#~ msgstr "kun lokalt"
-
-#~ msgid "never"
-#~ msgstr "aldrig"
 
 #~ msgid ""
 #~ "Indexing is turned on, enabling the fast search feature. However, "
@@ -9830,19 +7424,6 @@ msgstr "Netværksnaboer"
 #~ msgstr "Filerne er muligvis ikke indekseret"
 
 #~ msgid ""
-#~ "If you are running Linux, you can log in as root and type these commands "
-#~ "to start cron:\n"
-#~ "\n"
-#~ "/sbin/chkconfig --level 345 crond on\n"
-#~ "/etc/rc.d/init.d/cron start\n"
-#~ msgstr ""
-#~ "Hvis du kører Linux kan du logge ind som root og skrive disse kommandoer "
-#~ "for at starte cron:\n"
-#~ "\n"
-#~ "/sbin/chkconfig --level 345 crond on\n"
-#~ "/etc/rc.d/init.d/cron start\n"
-
-#~ msgid ""
 #~ "Indexing is turned on, enabling the fast search feature. However, "
 #~ "indexing may not be performed because the program crond, which does "
 #~ "nightly tasks on your computer, may be turned off. To make sure fast "
@@ -9855,22 +7436,6 @@ msgstr "Netværksnaboer"
 #~ "hurtigsøgning til at virke korrekt.\n"
 #~ "\n"
 
-#~ msgid "No image was selected.  You must click on an image to select it."
-#~ msgstr ""
-#~ "Intet billede var valgt.  Du skal klikke på et billede for at vælge det."
-
-#~ msgid "No selection made"
-#~ msgstr "Intet markeret"
-
-#~ msgid "Warning"
-#~ msgstr "Advarsel"
-
-#~ msgid "Error"
-#~ msgstr "Fejl"
-
-#~ msgid "Question"
-#~ msgstr "Spørgsmål"
-
 #~ msgid ""
 #~ "To do a fast search, Find requires an index of the files on your system. "
 #~ "Fast search is disabled in your Search preferences, so no index is "
@@ -9879,9 +7444,6 @@ msgstr "Netværksnaboer"
 #~ "For at kunne foretage en hurtig søgning kræves et indeks over filerne på "
 #~ "systemet. Hurtige søgninger er slået fra i dine søgningsindstillinger så "
 #~ "intet indeks er tilgængeligt."
-
-#~ msgid "Fast searches are not available on your computer."
-#~ msgstr "Hurtige søgninger er ikke tilgængelige på din maskine."
 
 #~ msgid ""
 #~ "To enable fast search, open the Preferences menu and choose Preferences. "
@@ -9893,18 +7455,6 @@ msgstr "Netværksnaboer"
 #~ "Indstillinger. Vælg så Søgningsindstillinger og afkryds \"Aktivér hurtige "
 #~ "søgninger\". Et indeks bliver genereret mens computeren ikke foretager "
 #~ "sig noget, så indekset bliver ikke tilgængeligt med det samme."
-
-#~ msgid "Create Link"
-#~ msgstr "Opret henvisning"
-
-#~ msgid "Choose which information appears beneath each icon's name"
-#~ msgstr "Vælg hvilken information der skal vises under ikonnavnene"
-
-#~ msgid "Icon Captions..."
-#~ msgstr "Ikontekster..."
-
-#~ msgid "_Icon Captions..."
-#~ msgstr "_Ikontekster..."
 
 #~ msgid ""
 #~ "The fast search feature indexes all the items on your hard disk.\n"
@@ -9932,9 +7482,6 @@ msgstr "Netværksnaboer"
 
 #~ msgid "Enable fast search"
 #~ msgstr "Aktivér hurtige søgninger"
-
-#~ msgid "Turn fast search on when cron is enabled"
-#~ msgstr "Slå hurtig søgning til når cron er startet."
 
 #~ msgid ""
 #~ "Indexing is turned on, enabling the fast search feature. However, "
@@ -9992,21 +7539,3 @@ msgstr "Netværksnaboer"
 #~ "\n"
 #~ "/sbin/chkconfig --level 345 crond on\n"
 #~ "/etc/rc.d/init.d/cron start\n"
-
-#~ msgid "Fast Searches"
-#~ msgstr "Hurtige søgninger"
-
-#~ msgid "Removes the selected text without putting it on the clipboard"
-#~ msgstr "Fjerner den valgte tekst uden at placere den på klippebordet"
-
-#~ msgid "View as Other..."
-#~ msgstr "Vis som andet..."
-
-#~ msgid "_Browse"
-#~ msgstr "_Gennemse"
-
-#~ msgid "Revert"
-#~ msgstr "Forkast"
-
-#~ msgid "More..."
-#~ msgstr "Mere...."
