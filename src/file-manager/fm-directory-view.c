@@ -27,6 +27,7 @@
 
 #include <config.h>
 #include "fm-directory-view.h"
+#include "fm-desktop-icon-view.h"
 
 #include <math.h>
 
@@ -1605,6 +1606,12 @@ queue_pending_files (FMDirectoryView *view,
 	char * name;
 	gboolean include_file;
 
+	/* Desktop always filters out hidden files */
+	if (FM_IS_DESKTOP_ICON_VIEW (view)) {
+		view->details->show_hidden_files = FALSE;
+		view->details->show_backup_files = FALSE;
+	}
+	
 	/* Filter out hidden files if needed */
 	if (!view->details->show_hidden_files || !view->details->show_backup_files) {
 		/* FIXME bugzilla.eazel.com 653: 
@@ -4082,9 +4089,16 @@ filtering_changed_callback (gpointer callback_data)
 
 	directory_view = FM_DIRECTORY_VIEW (callback_data);
 
+	/* Hidden files are never shown on the desktop */
+	if (FM_IS_DESKTOP_ICON_VIEW (directory_view)) {
+		directory_view->details->show_hidden_files = FALSE;
+		directory_view->details->show_backup_files = FALSE;
+		return;
+	}
+	
 	directory_view->details->show_hidden_files = 
 		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES, FALSE);
-
+	
 	directory_view->details->show_backup_files = 
 		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES, FALSE);
 

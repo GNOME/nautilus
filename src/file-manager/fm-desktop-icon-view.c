@@ -252,7 +252,7 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 	/* Set up details */
 	desktop_icon_view->details = g_new0 (FMDesktopIconViewDetails, 1);	
 	desktop_icon_view->details->volume_monitor = nautilus_volume_monitor_get ();
-	
+
 	nautilus_icon_container_set_is_fixed_size (icon_container, TRUE);
 
 	/* Set allocation to be at 0, 0 */

@@ -1,3 +1,18 @@
+2000-09-18  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 3029, Metafile shows up on desktop when
+	"show invisible files" is on.
+
+	Special files are now never shown on the desktop.
+		
+	* src/file-manager/fm-directory-view.c: 
+	(queue_pending_files):
+	Reset hidden file flags to false for the desktop case.
+	
+	(filtering_changed_callback):
+	Reset hidden file flags to false for the desktop case
+	and don't reload contents.
+
 2000-09-18  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 2213 (Shouldn't be able to drop files into
