@@ -2232,13 +2232,12 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 
 	GList *uri_list;
 	GList *node, *real_uri_list = NULL;
-	GnomeVFSURI *container_uri;
 	GnomeDesktopItem *entry;
 	GdkPoint point;
 	char *uri;
 	char *path;
 	char *stripped_uri;
-	char *container_uri_string;
+	char *container_uri;
 	const char *last_slash, *link_name;
 	int n_uris;
 	gboolean all_local;
@@ -2248,17 +2247,15 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 		return;
 	}
 
-	container_uri_string = fm_directory_view_get_uri (FM_DIRECTORY_VIEW (view));
-	container_uri = gnome_vfs_uri_new (container_uri_string);
+	container_uri = fm_directory_view_get_uri (FM_DIRECTORY_VIEW (view));
 	g_return_if_fail (container_uri != NULL);
 
-	if (eel_vfs_test_capabilities (container_uri,
-				       EEL_VFS_TEST_IS_REMOTE_AND_SLOW)) {
+	if (eel_vfs_has_capability (container_uri,
+				    EEL_VFS_CAPABILITY_IS_REMOTE_AND_SLOW)) {
 		eel_show_warning_dialog (_("Drag and drop is only supported to local file systems."),
 					 _("Drag and Drop error"),
 					 fm_directory_view_get_containing_window (FM_DIRECTORY_VIEW (view)));
-		gnome_vfs_uri_unref (container_uri);
-		g_free (container_uri_string);
+		g_free (container_uri);
 		return;
 	}
 
@@ -2276,8 +2273,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 		eel_show_warning_dialog (_("An invalid drag type was used."),
 					 _("Drag and Drop error"),
 					 fm_directory_view_get_containing_window (FM_DIRECTORY_VIEW (view)));
-		gnome_vfs_uri_unref (container_uri);
-		g_free (container_uri_string);
+		g_free (container_uri);
 		return;
 	}
 
@@ -2299,8 +2295,10 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 		if (sanitized_uri == NULL)
 			continue;
 		real_uri_list = g_list_append (real_uri_list, sanitized_uri);
-		if (strncmp (sanitized_uri, "file", 4) != 0)
+		if (eel_vfs_has_capability (sanitized_uri,
+					    EEL_VFS_CAPABILITY_IS_REMOTE_AND_SLOW)) {
 			all_local = FALSE;
+		}
 		n_uris++;
 	}
 	nautilus_icon_dnd_uri_list_free_strings (uri_list);
@@ -2319,7 +2317,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 			points = NULL;
 		}
 		fm_directory_view_move_copy_items (real_uri_list, points,
-						   container_uri_string,
+						   container_uri,
 						   action, x, y, FM_DIRECTORY_VIEW (view));
 		
 		if (points)
@@ -2341,7 +2339,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 
 			if (entry != NULL) {
 				/* FIXME: Handle name conflicts? */
-				nautilus_link_local_create_from_gnome_entry (entry, container_uri_string, &point);
+				nautilus_link_local_create_from_gnome_entry (entry, container_uri, &point);
 
 				gnome_desktop_item_unref (entry);
 				continue;
@@ -2359,7 +2357,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 			
 			if (!eel_str_is_empty (link_name)) {
 				/* FIXME: Handle name conflicts? */
-				nautilus_link_local_create (container_uri_string, link_name,
+				nautilus_link_local_create (container_uri, link_name,
 							    NULL, uri,
 							    &point, NAUTILUS_LINK_GENERIC);
 			}
@@ -2371,8 +2369,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 	
 	nautilus_icon_dnd_uri_list_free_strings (real_uri_list);
 
-	gnome_vfs_uri_unref (container_uri);
-	g_free (container_uri_string);
+	g_free (container_uri);
 	
 }
 
