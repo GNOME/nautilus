@@ -1,3 +1,17 @@
+2000-02-24  Maciej Stachowiak  <mjs@eazel.com>
+
+	* src/ntl-uri-map.c (my_notify_when_ready): Make sure to
+	gnome_vfs_async_cancel our GnomeVFSAsyncHandle before setting it
+	to NULL, to avoid leaking gnome-vfs-slave processes.
+	* libnautilus/nautilus-directory.c (nautilus_directory_load_done):
+	When loading is complete, make sure to gnome_vfs_async_cancel the
+	handle before setting it NULL, to avoid leaking gnome-vfs-slave
+	processes.
+	* src/file-manager/fm-directory-view.c
+	(disconnect_model_handlers): if we have a NautilusDirectory in
+	use, make sure to call nautilus_directory_stop_monitoring on it to
+	avoid leaking gnome-vfs-slave processes.
+	
 2000-02-24  John Sullivan  <sullivan@eazel.com>
 
 	Some work on improving the error messages when files

@@ -104,7 +104,10 @@ my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
   NautilusNavigationInfoFunc notify_ready = navinfo->notify_ready;
   gpointer notify_ready_data = navinfo->data;
 
-  navinfo->ah = NULL;
+  if (navinfo->ah) {
+    gnome_vfs_async_cancel (navinfo->ah);
+    navinfo->ah = NULL;
+  }
 
   if(result != GNOME_VFS_OK)
     {
@@ -244,8 +247,8 @@ nautilus_navinfo_free(NautilusNavigationInfo *navinfo)
 {
   g_return_if_fail(navinfo != NULL);
 
-  if(navinfo->ah)
-    gnome_vfs_async_cancel(navinfo->ah);
+  if (navinfo->ah)
+    gnome_vfs_async_cancel (navinfo->ah);
 
   g_slist_foreach(navinfo->content_identifiers, (GFunc)nautilus_view_identifier_free, NULL);
   g_slist_free(navinfo->content_identifiers);

@@ -1263,8 +1263,9 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 
 	old_model = view->details->model;
 	view->details->model = nautilus_directory_get (uri);
-	if (old_model != NULL)
+	if (old_model != NULL) {
 		gtk_object_unref (GTK_OBJECT (old_model));
+	}
 
 	memset (&progress, 0, sizeof (progress));
 	progress.type = Nautilus_PROGRESS_UNDERWAY;
@@ -1296,6 +1297,10 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 static void
 disconnect_model_handlers (FMDirectoryView *view)
 {
+	if (view->details->model != NULL) {
+		nautilus_directory_stop_monitoring (view->details->model);
+	}
+
 	if (view->details->add_files_handler_id != 0) {
 		gtk_signal_disconnect (GTK_OBJECT (view->details->model),
 				       view->details->add_files_handler_id);

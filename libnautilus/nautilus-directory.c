@@ -709,7 +709,10 @@ static void
 nautilus_directory_load_done (NautilusDirectory *directory,
 			      GnomeVFSResult result)
 {
-	directory->details->directory_load_in_progress = NULL;
+	if (directory->details->directory_load_in_progress != NULL) {
+		gnome_vfs_async_cancel (directory->details->directory_load_in_progress);
+		directory->details->directory_load_in_progress = NULL;
+	}
 	directory->details->directory_loaded = TRUE;
 	schedule_dequeue_pending (directory);
 }
