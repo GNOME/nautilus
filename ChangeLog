@@ -1,3 +1,13 @@
+2000-11-07  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_copy_uri_simple), (nautilus_unique_temporary_file_name):
+	* libnautilus-extensions/nautilus-file-utilities.h:
+	* src/nautilus-first-time-druid.c: (download_callback):
+	Fix for 4585.  Crash saving updates.tgz file from server if it
+	already exists.  The fix is to use a unique temporary file name
+	and cleaning up after untar the update tarball.
+
 2000-11-07  Mike Fleming  <mfleming@eazel.com>
 
 	* src/nautilus-first-time-druid.c: (druid_finished),

@@ -55,7 +55,6 @@
 
 #include "nautilus-first-time-druid.h"
 
-#define SERVICE_UPDATE_ARCHIVE_PATH "/tmp/nautilus_update.tgz"
 #define NUMBER_OF_STANDARD_PAGES 5
 
 #define USER_LEVEL_PAGE 0
@@ -864,10 +863,12 @@ download_callback (GnomeVFSResult result,
 		   char *file_contents,
 		   gpointer callback_data)
 {
-	char *command_str, *user_directory_path;
+	char *untar_command, *user_directory_path;
 	int size, write_result, expand_result;
 	FILE* outfile;
 	GnomeDruid *druid;
+	char *temporary_file;
+	char *remove_command;
 
 	/* FIXME this is a cheap work-around to the problem
 	 * that the user can get beyond the download
@@ -882,8 +883,10 @@ download_callback (GnomeVFSResult result,
 	/* check for errors */
 	if (result == GNOME_VFS_OK) {
 		/* there was no error, so write out the file into the /tmp directory */
+		temporary_file = nautilus_unique_temporary_file_name ();
+		g_assert (temporary_file != NULL);
 		size = file_size;
-		outfile = fopen (SERVICE_UPDATE_ARCHIVE_PATH, "wb");	 	
+		outfile = fopen (temporary_file, "wb");	 	
 		write_result = fwrite (file_contents, size, 1, outfile);
 		fclose (outfile);
 		g_free (file_contents);
@@ -896,17 +899,25 @@ download_callback (GnomeVFSResult result,
 		/* expand the directory into the proper place */
 		/* first, formulate the command string */
 		user_directory_path = nautilus_get_user_directory ();
-		command_str = g_strdup_printf ("cd %s; tar xvfz %s >/dev/null", user_directory_path, SERVICE_UPDATE_ARCHIVE_PATH);
+		untar_command = g_strdup_printf ("cd %s; tar xvfz %s >/dev/null",
+						 user_directory_path, temporary_file);
+		remove_command = g_strdup_printf ("rm -f %s >/dev/null", temporary_file);
+
+		g_free (temporary_file);
 		
 		/* execute the command to make the updates folder */
-		expand_result = system (command_str);
+		expand_result = system (untar_command);
+
+		/* Remove the temporary file */
+		expand_result = system (remove_command);
 
 		if (!has_druid_exited) {
 			nautilus_label_set_text (NAUTILUS_LABEL (download_label), _("Update Completed... Press Next to Continue."));
 		}
 			
 		g_free (user_directory_path);
-		g_free (command_str);	
+		g_free (untar_command);
+		g_free (remove_command);
 
 		if (!has_druid_exited) {
 			/* now that we're done, reenable the buttons */
