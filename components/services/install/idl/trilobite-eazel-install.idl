@@ -147,14 +147,21 @@ module Trilobite {
 			oneway void uninstall (in string packagelist, in InstallCallback cb);
 
 			/* These are for installing/uninstalling specific packages */
-			oneway void install_packages (in CategoryStructList categories, in InstallCallback cb);
-			oneway void uninstall_packages (in CategoryStructList categories, in InstallCallback cb);
+			oneway void install_packages (in CategoryStructList categories, 
+						      in string root,
+						      in InstallCallback cb);
+			oneway void uninstall_packages (in CategoryStructList categories, 
+							in string root,
+							in InstallCallback cb);
 
 			/* Run a query to the package sys */
-			PackageDataStructList simple_query (in string query);
+			PackageDataStructList simple_query (in string query,
+							    in string root);
 
 			/* Revert a operation */
-			oneway void revert_transaction (in string xml, in InstallCallback cb);
+			oneway void revert_transaction (in string xml, 
+							in string root,
+							in InstallCallback cb);
 		};
 	};
 };

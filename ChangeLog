@@ -1,3 +1,117 @@
+2000-08-25  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/Makefile.am:
+	No longer builds anything else then eazel-install.
+	* components/services/install/command-line/eazel-alt-install-corba.c:
+	(install_failed), 
+	Changed output...
+	(create_package), 
+	if used with --file and the filename does not start with /, adds
+	$cwd to filename
+	(main):
+	Commandline arg for rpm db root
+	
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	Added the rpm db root arg to install, uninstall, query and revert.
+	
+	* components/services/install/lib/eazel-install-corba-callback.h:
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(eazel_install_callback_install_packages),
+	(eazel_install_callback_uninstall_packages),
+	(eazel_install_callback_simple_query),
+	(eazel_install_callback_revert_transaction):
+	Added support for rpm db root arguments for the four major
+	operations. Encodes root==NULL to ""
+	
+	* components/services/install/lib/eazel-install-corba.c:
+	(impl_Eazel_Install_install_packages),
+	(impl_Eazel_Install_uninstall_packages),
+	(impl_Eazel_Install_revert_transaction),
+	(impl_Eazel_Install_simple_query):
+	Decode the root arg... big stuff heh ?
+	
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-private.h:
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_set_arg), (eazel_install_class_initialize),
+	(eazel_install_initialize), (eazel_install_install_packages),
+	(eazel_install_uninstall_packages),
+	(eazel_install_revert_transaction_from_xmlstring),
+	(eazel_install_revert_transaction_from_file),
+	(eazel_install_query_package_system), (string_list_copy),
+	(eazel_install_set_root_dirs):
+	Changed the root_dir GtkArg to a GList, so you can set the array
+	of roots to use. The object defaults to use /var/lib/rpm and
+	~/.nautilus/rpmdb as roots. If ~/.nautilus/rpmdb does not exist,
+	it will create a rpmdb in this dir.
+	In -private.h, I've removed the rpmdb var in the packsys.rpm
+	union, and now have a hashtable that maps from root dir to rpmdb.
+	in the private struct, there is also a cur_root var, which holds
+	the root given to the four calls, or DEFAULT_RPM_DB_ROO
+	(/var/lib/rpm) if called with root==NULL.
+
+	* components/services/install/lib/eazel-install-protocols.c:
+	(gnome_vfs_xfer_callback), (gnome_vfs_fetch_remote_file):
+	Added gnome_vfs_callback_struct so I can transfer both the
+	file_to_report and EazelInstall object. Thus gnome-vfs downloads
+	now again reports short names (eg. xfig instead of
+	xfig-3.2.2-_beta1-2).
+	
+	* components/services/install/lib/eazel-install-query.h:
+	Comments on how to use the query call.
+	
+	* components/services/install/lib/eazel-install-query.c:
+	(eazel_install_simple_rpm_query), 
+	Now collects the result into a parameter instead of returning a glist.
+	(eazel_install_simple_query):
+	If no cur_root is set in the EazelInstall object, it queries on
+	all the databases, otherwise, it only queries the cur_root db.
+	Plus I fixed some horribleness in the vaarg stuff.
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(install_new_packages), (download_all_packages),
+	(install_packages), (uninstall_packages),
+	(eazel_install_start_transaction),
+	(eazel_install_free_rpm_system_close_db_foreach),
+	(eazel_install_free_rpm_system),
+	(eazel_install_prepare_rpm_system),
+	(eazel_install_prepare_package_system),
+	(eazel_install_add_to_rpm_set),
+	(eazel_install_check_existing_packages),
+	(eazel_install_fetch_rpm_dependencies),
+	(eazel_install_ensure_deps), 
+	Changed to use the new hashtable of rpmdb's.
+	
+	(eazel_uninstall_upward_traverse),
+	(eazel_uninstall_downward_traverse),
+	(eazel_uninstall_check_for_install), 
+	(eazel_uninstall_globber):
+	The uninstall stuff uses eazel_install_simple_query now (bug
+	1697). Also did more work on the downward traverse, although I
+	still feel it's too dangerous to actually use. But now the upwards
+	works properly (by using the neglist feature in the query, fixes
+	bug 1539)
+	
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_fill_from_rpm_header):
+	Eek, I used pointers into the rpmheader instead of copying them
+	out. At least that 
+	
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(xml_get_prop), 
+	Made a funky xml_get_prop call, that like xmlGetProp gets a
+	property, but also g_strdup's it and free the malloc'ed libxml value.
+	(parse_category), (generate_xml_package_list),
+	(osd_parse_implementation), (osd_parse_softpkg),
+	(parse_osd_xml_from_memory):
+	Uses xml_get_prop
+	 
+	* components/services/install/nautilus-view/nautilus-service-install.
+	c: (nautilus_service_install_view_install_package_callback),
+	(nautilus_service_install_view_uninstall_package_callback):
+	Pass NULL for the root parameter, that causes eazelinstall to
+	default to the /var/lib/rpm db
+
 2000-08-24  J Shane Culpepper  <pepper@eazel.com>
 
 	 

@@ -103,19 +103,23 @@ void                           eazel_install_callback_unref    (GtkObject *objec
    the function to specify packagelist name */
 void eazel_install_callback_install_packages (EazelInstallCallback *service, 
 					      GList *categories,
+					      const char *root,
 					      CORBA_Environment *ev);
 
 /* Request the uninstallation of a set of packages */
 void eazel_install_callback_uninstall_packages (EazelInstallCallback *service, 
-						  GList *categories,
-						  CORBA_Environment *ev);
+						GList *categories,
+						const char *root,
+						CORBA_Environment *ev);
 
 GList* eazel_install_callback_simple_query (EazelInstallCallback *service, 
 					    const char* query,
+					    const char *root,
 					    CORBA_Environment *ev);
 
 void eazel_install_callback_revert_transaction (EazelInstallCallback *service, 
 						const char *xmlfile,
+						const char *root,
 						CORBA_Environment *ev);
 
 /* Stuff */

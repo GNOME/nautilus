@@ -31,7 +31,9 @@ struct _EazelInstallPrivate {
 	InstallOptions *iopts;
  
         /* Used in rpm-glue */
-	char *root_dir;
+	GList *root_dirs; /* Holds the root dirs for package databases. Eazel package database
+			     glue must handle this as seen fit */
+	char *cur_root; /* For a given operation, this holds the current root dir */
 	int install_flags; 
 	int interface_flags; 
 	int problem_filters; 
@@ -42,7 +44,7 @@ struct _EazelInstallPrivate {
 	PackageSystem package_system;
 	union {
 		struct {
-			rpmdb db;
+			GHashTable *dbs;
 			rpmTransactionSet set;
 			struct rpmDependencyConflict *conflicts;
 			int num_conflicts;

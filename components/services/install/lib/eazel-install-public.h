@@ -143,17 +143,30 @@ void eazel_install_emit_dependency_check          (EazelInstall *service,
 void eazel_install_emit_done                      (EazelInstall *service);
 
 /* This is in flux */
-void eazel_install_fetch_pockage_list (EazelInstall *service);
-void eazel_install_install_packages (EazelInstall *service, GList *categories);
-void eazel_install_uninstall_packages (EazelInstall *service, GList *categories);
+
+void eazel_install_fetch_package_list (EazelInstall *service);
+
+void eazel_install_install_packages (EazelInstall *service, 
+				     GList *categories, 
+				     const char *root);
+
+void eazel_install_uninstall_packages (EazelInstall *service, 
+				       GList *categories, 
+				       const char *root);
 
 GList* eazel_install_query_package_system (EazelInstall *service,
 					   const char *query, 
-					   int flags) ;
+					   int flags,
+					   const char *root);
 
-void eazel_install_revert_transaction_from_xmlstring (EazelInstall *service, const char *xml, int size);
+void eazel_install_revert_transaction_from_xmlstring (EazelInstall *service, 
+						      const char *xml, 
+						      int size,
+						      const char *root);
 
-void eazel_install_revert_transaction_from_file (EazelInstall *service, const char *filename);
+void eazel_install_revert_transaction_from_file (EazelInstall *service, 
+						 const char *filename,
+						 const char *root);
 
 
 /******************************************************************************/
@@ -227,7 +240,7 @@ ei_mutator_decl (rpmrc_file, char*);
 ei_mutator_decl (server, char*);
 ei_mutator_decl (package_list_storage_path, char*);
 ei_mutator_decl (package_list, char*);
-ei_mutator_decl (root_dir, char*);
+ei_mutator_decl (root_dirs, GList*);
 ei_mutator_decl (transaction_dir, char*);
 ei_mutator_decl (server_port, guint);
 
@@ -252,7 +265,7 @@ ei_access_decl (rpmrc_file, char*);
 ei_access_decl (server, char*);
 ei_access_decl (package_list_storage_path, char*);
 ei_access_decl (package_list, char*);
-ei_access_decl (root_dir, char*);
+ei_access_decl (root_dirs, GList*);
 ei_access_decl (transaction_dir, char*);
 ei_access_decl (server_port, guint);
 

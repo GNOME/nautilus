@@ -761,7 +761,7 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 			    nautilus_service_install_failed, view);
 	gtk_signal_connect (GTK_OBJECT (view->details->installer), "done",
 			    nautilus_service_install_done, view);
-	eazel_install_callback_install_packages (view->details->installer, categories, &ev);
+	eazel_install_callback_install_packages (view->details->installer, categories, NULL, &ev);
 
 	CORBA_exception_free (&ev);
 

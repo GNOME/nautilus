@@ -138,31 +138,44 @@ packagedata_new_from_rpm_header (Header *hd)
 	return pack;
 };
 
+/* FIXME: bugzilla.eazel.com:2351
+   check possible leaks from using headerGetEntry */
 void 
 packagedata_fill_from_rpm_header (PackageData *pack, 
 				  Header *hd) 
 {
 	unsigned long *sizep;
+	char *tmp;
 
 	headerGetEntry (*hd,
 			RPMTAG_NAME, NULL,
-			(void **) &pack->name, NULL);
+			(void **) &tmp, NULL);
+	pack->name = g_strdup (tmp);
+
 	headerGetEntry (*hd,
 			RPMTAG_VERSION, NULL,
-			(void **) &pack->version, NULL);
+			(void **) &tmp, NULL);
+	pack->version = g_strdup (tmp);
+
 	headerGetEntry (*hd,
 			RPMTAG_RELEASE, NULL,
-			(void **) &pack->minor, NULL);
+			(void **) &tmp, NULL);
+	pack->minor = g_strdup (tmp);
+
 	headerGetEntry (*hd,
 			RPMTAG_ARCH, NULL,
-			(void **) &pack->archtype, NULL);
+			(void **) &tmp, NULL);
+	pack->archtype = g_strdup (tmp);
+
 	headerGetEntry (*hd,
 			RPMTAG_SIZE, NULL,
 			(void **) &sizep, NULL);
 	pack->bytesize = *sizep;
+
 	headerGetEntry (*hd,
 			RPMTAG_DESCRIPTION, NULL,
-			(void **) &pack->description, NULL);
+			(void **) &tmp, NULL);
+	pack->description = g_strdup (tmp);
 
 	pack->packsys_struc = (gpointer)hd;
 }

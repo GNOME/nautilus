@@ -62,8 +62,8 @@ typedef void (*rpm_install_cb)(char* name, char* group, void* user_data);
 static gboolean download_all_packages (EazelInstall *service,
                                        GList* categories);
 
-static gboolean install_all_packages (EazelInstall *service,
-                                      GList* categories);
+static gboolean install_packages (EazelInstall *service,
+				  GList* categories);
 
 typedef void* (*RpmCallbackFunc) (const Header, const rpmCallbackType, 
 				  const unsigned long, const unsigned long, 
@@ -139,8 +139,8 @@ install_new_packages (EazelInstall *service, GList *categories) {
 		rv = FALSE;
 	} else {
 		rv = download_all_packages (service, categories);
-		rv = install_all_packages (service,
-					   categories);
+		rv = install_packages (service,
+				       categories);
 	}
 	
 	return rv;
@@ -216,13 +216,15 @@ download_all_packages (EazelInstall *service,
 	}
 
 	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
+	g_list_free (categories);
 	
 	return result;
 } /* end download_all_packages */
 
 static gboolean
-install_all_packages (EazelInstall *service,
-                      GList* categories) {
+install_packages (EazelInstall *service,
+                      GList* categories) 
+{
 
 	gboolean rv;
 	rv = TRUE;
@@ -243,7 +245,7 @@ install_all_packages (EazelInstall *service,
 			int inst_status;
 
 			pack = (PackageData*)iterator->data;
-			inst_status = eazel_install_check_existing_packages (service, pack);		      
+			inst_status = eazel_install_check_existing_packages (service, pack);
 			g_message ("%s: install status = %d", pack->name, inst_status);
 			/* If in force mode, install it under all circumstances.
 			   if not, only install if not already installed in same
@@ -278,9 +280,10 @@ install_all_packages (EazelInstall *service,
 	}
 
 	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
+	g_list_free (categories);
 	
 	return rv;
-} /* end install_all_packages */
+} /* end install_packages */
 
 static gboolean
 uninstall_all_packages (EazelInstall *service,
@@ -340,6 +343,7 @@ uninstall_packages (EazelInstall *service,
 	rv = uninstall_all_packages (service, categories);
 /*
 	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
+	g_list_free (categories);
 */
 	return rv;
 
@@ -816,6 +820,9 @@ eazel_install_start_transaction (EazelInstall *service,
 	eazel_install_do_transaction_get_total_size (service, packages);
 	args = eazel_install_start_transaction_make_argument_list (service, packages);
 
+	g_message ("Preflight (%d bytes, %d packages)", 
+		   service->private->packsys.rpm.total_size,
+		   service->private->packsys.rpm.num_packages);
 	eazel_install_emit_preflight_check (service, 					     
 					    service->private->packsys.rpm.total_size,
 					    service->private->packsys.rpm.num_packages);
@@ -1074,20 +1081,34 @@ eazel_install_load_headers (EazelInstall *service,
 	return result;
 }
 
+static void
+eazel_install_free_rpm_system_close_db_foreach (char *key, rpmdb db, gpointer unused)
+{
+	g_message ("Closing db for %s (%s)", key, db ? "yes" : "no");
+	if (db) {
+		rpmdbClose (db);
+		db = NULL;
+		g_free (key);
+	}		
+}
+
 static gboolean
 eazel_install_free_rpm_system (EazelInstall *service)
 {
-	rpmdb *db;
-	rpmTransactionSet *set;
+	GList *iterator;
 
-	db = &(service->private->packsys.rpm.db);
+	/* Close all the db's */
+	g_hash_table_foreach_remove (service->private->packsys.rpm.dbs, 
+				     (GHRFunc)eazel_install_free_rpm_system_close_db_foreach,
+				     NULL);
+	
+/*
+  This crashes, so it's commented out. 
+  These are the vars used for this.
+  
+	rpmTransactionSet *set;
 	set = &(service->private->packsys.rpm.set);
 
-	if (*db) {
-		rpmdbClose (*db);
-		(*db) = NULL;
-	}
-/*
 	if (*set != NULL) {
 		rpmtransFree (*set);
 		(*set) = NULL;
@@ -1099,25 +1120,30 @@ eazel_install_free_rpm_system (EazelInstall *service)
 static gboolean
 eazel_install_prepare_rpm_system(EazelInstall *service)
 {
-	const char *root_dir;
-	rpmdb *db;
-	rpmTransactionSet *set;
-
-	db = &(service->private->packsys.rpm.db);
-	set = &(service->private->packsys.rpm.set);
+	GList *iterator;
 
 	rpmReadConfigFiles (eazel_install_get_rpmrc_file (service), NULL);
 
-	root_dir = eazel_install_get_root_dir (service);
+	g_assert (g_list_length (eazel_install_get_root_dirs (service)));
 
-	if (rpmdbOpen (root_dir, db, O_RDONLY, 0644)) {
-		const char* dn;
-		dn = rpmGetPath (root_dir, "%{_dbpath}", NULL);
-		if (!dn) {
+	addMacro(NULL, "_dbpath", NULL, "/", 0);
+
+	for (iterator = eazel_install_get_root_dirs (service); iterator; iterator = iterator->next) {
+		const char *root_dir;	
+		rpmdb db;
+		
+		root_dir = (char*)iterator->data;
+		
+		if (rpmdbOpen (root_dir, &db, O_RDONLY, 0644)) {
 			g_warning (_("RPM package database query failed !"));
+		} else {			
+			g_message ("Opened db for %s (%s)", root_dir, db ? "yes" : "no");
+			g_hash_table_insert (service->private->packsys.rpm.dbs,
+					     g_strdup (root_dir),
+					     db);
 		}
-		return FALSE;
 	}
+
 
 	return TRUE;
 }
@@ -1126,6 +1152,8 @@ gboolean
 eazel_install_prepare_package_system (EazelInstall *service)
 {
 	gboolean result;
+
+	g_message ("Preparing package system");
 
 	switch (eazel_install_get_package_system (service)) {
 	case EAZEL_INSTALL_USE_RPM:
@@ -1186,6 +1214,10 @@ eazel_install_add_to_rpm_set (EazelInstall *service,
 				tmp_failed = g_list_prepend (tmp_failed, pack);
 			}
 		} else {
+			/* This was once used, but not anymore. Will remove
+			   once I've ensured it's not used anymore */
+			g_assert_not_reached ();
+#if 0
 			dbiIndexSet matches;
 			int rc;
 			
@@ -1209,6 +1241,7 @@ eazel_install_add_to_rpm_set (EazelInstall *service,
 					}
 				}
 			}
+#endif
 		} 
 	} /* end for loop */
 
@@ -1275,7 +1308,7 @@ eazel_install_add_to_extras_foreach (char *key, GList *list, GList **extrapackag
    return the "lowest possible" stage */
 static int
 eazel_install_check_existing_packages (EazelInstall *service, 
-				       PackageData *pack) 
+				       PackageData *pack)
 {
 	GList *existing_packages;
 	int result;
@@ -1286,6 +1319,8 @@ eazel_install_check_existing_packages (EazelInstall *service,
 	if (existing_packages) {
 		/* Get the existing package, set it's modify flag and add it */
 		GList *iterator;
+		/* FIXME: bugzilla.eazel.com: 2345
+		   Check the packages root */
 		for (iterator = existing_packages; iterator; iterator = iterator->next) {
 			int res;
 			PackageData *existing_package;
@@ -1495,6 +1530,7 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 			if (!eazel_install_get_force (service)) {
 				extralist = g_hash_table_lookup (extras, pack->name);
 				g_list_foreach (extralist, (GFunc)packagedata_destroy_foreach, NULL);
+				g_list_free (extralist);
 				g_hash_table_remove (extras, pack->name);
 				
 				/* Don't add it to failedpackages more then once */
@@ -1627,7 +1663,7 @@ eazel_install_do_dependency_check (EazelInstall *service) {
 
 /*
   Given a glist of PackageData's, ensure_deps_are_fetched checks deps
-  for them all, if deps fail, fetch the depency and add to outfiles.
+  for them all, if deps fail, fetch the depency and add to packages.
   Returns FALSE if outfiles was set, TRUE is all dependencies were satisfied.
   If a dep could not be found, that name is added to fails)
  */
@@ -1654,11 +1690,19 @@ eazel_install_ensure_deps (EazelInstall *service,
 	switch (eazel_install_get_package_system (service)) {
 	case EAZEL_INSTALL_USE_RPM: {
 		int num_conflicts;
+		rpmdb db;
 /*
 		rpmTransactionSet *set;
 		struct rpmDependencyConflict **conflicts;
 */
-		service->private->packsys.rpm.set = rpmtransCreateSet (service->private->packsys.rpm.db, "/");
+		db = (rpmdb)g_hash_table_lookup (service->private->packsys.rpm.dbs,
+						  service->private->cur_root);
+		if (!db) {
+			return FALSE;
+		}
+
+		service->private->packsys.rpm.set = rpmtransCreateSet (db, service->private->cur_root);
+
 		eazel_install_load_headers (service, packages);
 		eazel_install_add_to_set (service, packages, failedpackages);
 		num_conflicts = eazel_install_do_dependency_check (service);		
@@ -1776,75 +1820,55 @@ eazel_uninstall_upward_traverse (EazelInstall *service,
 
 	/* Open the package system */
 
-	service->private->packsys.rpm.set = rpmtransCreateSet (service->private->packsys.rpm.db, "/");
 	/* Add all packages to the set */
 	/* eazel_install_add_to_set (service, packages, failed); */
 
 	for (iterator = *packages; iterator; iterator = iterator->next) {
-		PackageData *pack;
-		dbiIndexSet matches;
-		int rc;
-		rpmdb db;
-
-		db = service->private->packsys.rpm.db;
+		PackageData *pack = (PackageData*)iterator->data;
+		GList *matches;
+		GList *match_iterator;
+		GList *tmp_breaks = NULL;
+		GList *break_iterator = NULL;
 		
-		pack = (PackageData*)iterator->data;
-		g_message ("checking reqs by %s (0x%x)", rpmname_from_packagedata (pack), pack);
-		/* FIXME bugzilla.eazel.com 1697:
-		   use eazel_install_simple_query instead */
-		rc = rpmdbFindByRequiredBy (db, pack->name, &matches);
-		if (!rc) {
-			/* Hits */
-			int i;
-			GList *tmp_breaks;
-			GList *break_iterator;
-
-			tmp_breaks = NULL;
-			for (i = 0; i < dbiIndexSetCount(matches); i++) {				
-				unsigned int offset;
-				Header *hd;
-				PackageData *requiredby;
-
-				offset = dbiIndexRecordOffset (matches, i);
-				hd = g_new0 (Header,1);
-				(*hd) = rpmdbGetRecord (db, offset);
-				requiredby = packagedata_new_from_rpm_header (hd);
-				requiredby->status = PACKAGE_DEPENDENCY_FAIL;
-				pack->status = PACKAGE_BREAKS_DEPENDENCY;
-				g_message ("%s (0x%x) is required by %s (0x%x)", pack->name, pack, 
-					   requiredby->name, requiredby);
-				if (g_list_find_custom (*breaks, (gpointer)requiredby->name, 
-							 (GCompareFunc)eazel_install_package_name_compare) ||
-				    g_list_find_custom (*packages, (gpointer)requiredby->name, 
-							(GCompareFunc)eazel_install_package_name_compare)) {
-					g_message ("skip %s", requiredby->name);
-					packagedata_destroy (requiredby);
-					continue;
-				}
-				pack->breaks = g_list_prepend (pack->breaks, requiredby);
-				/* If the package has not been failed yet (and is a toplevel),
-				   fail it */
-				if (!g_list_find_custom (*failed, (gpointer)pack->name, 
-							 (GCompareFunc)eazel_install_package_name_compare) &&
-				    pack->toplevel) {
-					(*failed) = g_list_prepend (*failed, pack);
-				}
-				(*breaks) = g_list_prepend ((*breaks), requiredby);
-			}
-
-			dbiFreeIndexRecord (matches);
+		g_message ("checking reqs by %s", rpmname_from_packagedata (pack));
+		matches = eazel_install_simple_query (service, pack->name, EI_SIMPLE_QUERY_REQUIRES,
+						      1, *packages);
+		
+		for (match_iterator = matches; match_iterator; match_iterator = match_iterator->next) {
+			PackageData *requiredby = (PackageData*)match_iterator->data;;
 			
-			/* rpmtransFree (service->private->packsys.rpm.set); */
-			if (*breaks) {
-				eazel_uninstall_upward_traverse (service, breaks, failed, &tmp_breaks);
+			requiredby->status = PACKAGE_DEPENDENCY_FAIL;
+			pack->status = PACKAGE_BREAKS_DEPENDENCY;
+			g_message ("%s requires %s", requiredby->name, pack->name, *breaks);
+
+			/* If we're already marked it as breaking, go on */
+			if (g_list_find_custom (*breaks, (gpointer)requiredby->name, 
+						(GCompareFunc)eazel_install_package_name_compare)) {
+				g_message ("skip %s", requiredby->name);
+				packagedata_destroy (requiredby);
+				continue;
 			}
-			
-			for (break_iterator = tmp_breaks; break_iterator; break_iterator = break_iterator->next) {
-				(*breaks) = g_list_prepend ((*breaks), break_iterator->data);
+
+			/* Guess not, mark it as breaking (and that pack is the offender */
+			pack->breaks = g_list_prepend (pack->breaks, requiredby);
+			(*breaks) = g_list_prepend ((*breaks), requiredby);
+
+			/* If the package has not been failed yet (and is a toplevel),
+			   fail it */
+			if (!g_list_find_custom (*failed, (gpointer)pack->name, 
+						 (GCompareFunc)eazel_install_package_name_compare) &&
+			    pack->toplevel) {
+				(*failed) = g_list_prepend (*failed, pack);
 			}
-		} else {
-                        /* No hits/error */
-			/* rpmtransFree (service->private->packsys.rpm.set); */
+		}
+		
+		
+		if (*breaks) {
+			eazel_uninstall_upward_traverse (service, breaks, failed, &tmp_breaks);
+		}
+		
+		for (break_iterator = tmp_breaks; break_iterator; break_iterator = break_iterator->next) {
+			(*breaks) = g_list_prepend ((*breaks), break_iterator->data);
 		}
 	}
 	
@@ -1866,7 +1890,7 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 				   GList **requires)
 {
 	GList *iterator;
-	rpmdb db;
+	GList *tmp_requires = NULL;
 
 	/* 
 	   create set
@@ -1878,24 +1902,21 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 	   add all from tmp to requirements
 	*/
 	g_message ("in eazel_uninstall_downward_traverse");
-	db = service->private->packsys.rpm.db;
 	
 	/* First iterate across the packages in "packages" */
 	for (iterator = *packages; iterator; iterator = iterator->next) {
-		dbiIndexSet matches;
+		GList *matches;
 		PackageData *pack;
-		int i;
-		int rc;
+		GList *match_iterator;
 
 		pack = (PackageData*)iterator->data;
-		/* FIXME bugzilla.eazel.com 1697:
-		   use eazel_install_simple_query instead */
-		rc = rpmdbFindPackage (db,
-				       pack->name,
-				       &matches);
+
+		matches = eazel_install_simple_query (service, pack->name, EI_SIMPLE_QUERY_MATCHES, 0, NULL);
+		g_message ("%s had %d hits", pack->name, g_list_length (matches));
 
 		/* Now iterate over all packages that match pack->name */
-		for (i = 0; i < dbiIndexSetCount (matches); i++) {
+		for (match_iterator = matches; match_iterator; match_iterator = match_iterator->next) {
+			PackageData *matched_pack;
 			const char **require_name;
 			int require_name_count;
 			Header hd;
@@ -1903,34 +1924,34 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 			int type;
 			int j;
 
-			offset = dbiIndexRecordOffset (matches, i);
-			hd = rpmdbGetRecord (db, offset);
+			matched_pack = (PackageData*)match_iterator->data;
+			hd = *((Header*)matched_pack->packsys_struc);
 
 			if (!headerGetEntry(hd, RPMTAG_REQUIRENAME, &type, (void **) &require_name,
 					    &require_name_count)) {
 				require_name_count = 0;
 			}
 			
+			g_message ("requirename count = %d", require_name_count);
+			
 			/* No iterate over all packages required by the current package */
 			for (j = 0; j < require_name_count; j++) {
 				if ((*require_name[j] != '/') &&
 				    !strstr (require_name[j], ".so")) {
-					dbiIndexSet secondmatches;
-					int k;
-					Header *hd2;
-					PackageData *isrequired;
-					
-					/* FIXME bugzilla.eazel.com 1697:
-					   use eazel_install_simple_query instead */
-					rc = rpmdbFindPackage (db, require_name[j], &secondmatches);
+					GList *second_matches;
+					GList *second_match_iterator;
+
+					second_matches = eazel_install_simple_query (service, 
+										     require_name[j],
+										     EI_SIMPLE_QUERY_MATCHES,
+										     2, *packages, *requires);
 					/* Iterate over all packages that match the required package */
-					for (k = 0; k < dbiIndexSetCount (secondmatches); k++) {
-						unsigned int offset2;
-						offset2 = dbiIndexRecordOffset (secondmatches, k);
-						
-						hd2 = g_new0 (Header, 1);
-						(*hd2) = rpmdbGetRecord (db, offset2);
-						isrequired = packagedata_new_from_rpm_header (hd2);
+					for (second_match_iterator = second_matches;
+					     second_match_iterator; 
+					     second_match_iterator = second_match_iterator->next) {
+						PackageData *isrequired;
+
+						isrequired = (PackageData*)second_match_iterator->data;
 						if (g_list_find_custom (*requires, isrequired->name,
 									(GCompareFunc)eazel_install_package_name_compare) ||
 						    g_list_find_custom (*packages, isrequired->name,
@@ -1942,19 +1963,36 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 						g_message ("** %s requires %s", pack->name, isrequired->name);
 
 						{
-							dbiIndexSet thirdmatches;
-							int l;
-							/* FIXME bugzilla.eazel.com 1697:
-							   use eazel_install_simple_query instead */
-							rc = rpmdbFindByRequiredBy (db, isrequired->name, 
-										    &thirdmatches);
+							GList *third_matches;
+
+							/* Search for packages
+							   requiring the requirement, excluding
+							   all pacakges from requires and packages */
+							third_matches = 
+								eazel_install_simple_query (service, 
+											    isrequired->name,
+											    EI_SIMPLE_QUERY_REQUIRES, 
+											    3, 
+											    *packages, 
+											    *requires,
+											    tmp_requires);
+							
+							if (third_matches) {
+								g_message ("skipped %s, others depend on it", 
+									   isrequired->name);
+								print_package_list ("BY", third_matches, FALSE);
+								g_list_foreach (third_matches, 
+										(GFunc)packagedata_destroy_foreach, 
+										NULL);
+								packagedata_destroy (isrequired);
+							} else {
+								g_message ("Also nuking %s", isrequired->name);
+								tmp_requires = g_list_prepend (tmp_requires, 
+											       isrequired);
+							}
 						}
-						/* FIXME bugzilla.eazel.com 1539:
-						   check noone outside of "packages" & "requires" require
-						   this before adding */
-						(*requires) = g_list_prepend (*requires, isrequired);
 					}
-					dbiFreeIndexRecord (secondmatches);
+					g_list_free (second_matches);
 				} else {
 					/* FIXME bugzilla.eazel.com 1542:
 					   Need the ability to lookup a pacakge that provides a file
@@ -1969,12 +2007,66 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 
 			headerFree (hd);
 		}
-		dbiFreeIndexRecord (matches);
+		g_list_foreach (matches, (GFunc)packagedata_destroy_foreach, NULL);
+		g_list_free (matches);
 	}
+
+	if (tmp_requires) {
+		eazel_uninstall_downward_traverse (service, &tmp_requires, failed, requires);
+	}
+
+	/* Now move the entries in tmp_requires into *requires */
+	for (iterator = tmp_requires; iterator; iterator = iterator->next) {
+		(*requires) = g_list_prepend (*requires, iterator->data);
+	}
+	g_list_free (tmp_requires);
 
 	g_message ("out eazel_uninstall_downward_traverse");
 }
 
+static void
+eazel_uninstall_check_for_install (EazelInstall *service,
+				   GList **packages,
+				   GList **failed)
+{
+	GList *iterator;
+	GList *remove;
+
+	g_message ("in eazel_uninstall_check_for_install");
+	remove = NULL;
+	for (iterator = *packages; iterator; iterator = iterator->next) {
+		GList *matches;
+		PackageData *pack;
+
+		pack = (PackageData*)iterator->data;
+		matches = eazel_install_simple_query (service, pack->name, EI_SIMPLE_QUERY_MATCHES, 0, NULL);
+		/* If it's installed, continue */
+		if (matches) {
+			if (g_list_length (matches)==1) {
+				packagedata_destroy (pack);
+				iterator->data = matches->data;
+				pack = (PackageData*)iterator->data;
+				/* This is mucho important. If not marked 
+				   as toplevel, upwards traverse will not fail the package
+				   is it has dependents */
+				pack->toplevel = TRUE;
+			} else {
+				g_assert_not_reached ();
+			}
+			continue;
+		} else {
+			pack->status = PACKAGE_CANNOT_OPEN;
+			remove = g_list_prepend (remove, pack);
+		}		
+	}
+
+	for (iterator = remove; iterator; iterator=iterator->next) {
+		(*packages) = g_list_remove (*packages, iterator->data);
+		(*failed) = g_list_prepend (*failed, iterator->data);
+	}
+	g_list_free (remove);
+	g_message ("out eazel_uninstall_check_for_install");
+}
 /* Calls the upward and downward traversal */
 static void
 eazel_uninstall_globber (EazelInstall *service,
@@ -2000,19 +2092,27 @@ eazel_uninstall_globber (EazelInstall *service,
 	} else {
 		close_base = TRUE;
 		tmp = NULL;
-		eazel_uninstall_upward_traverse (service, packages, failed, &tmp);
-		for (iterator = tmp; iterator; iterator = iterator->next) {
-			g_message ("breaks %s", ((PackageData*)iterator->data)->name);
+
+		eazel_uninstall_check_for_install (service, packages, failed);
+		for (iterator = *failed; iterator; iterator = iterator->next) {
+			g_message ("not installed %s", ((PackageData*)iterator->data)->name);
+			eazel_install_emit_uninstall_failed (service, (PackageData*)iterator->data);
+		}
+		
+		if (*packages) {
+			eazel_uninstall_upward_traverse (service, packages, failed, &tmp);
+			print_package_list ("FAILED", *failed, TRUE);
+			for (iterator = *failed; iterator; iterator = iterator->next) {
+				g_message ("failed %s", ((PackageData*)iterator->data)->name);
+				eazel_install_emit_uninstall_failed (service, (PackageData*)iterator->data);
+			}
+			g_list_free (tmp);
 		}
 	}
-	print_package_list ("FAILED", *failed, TRUE);
-	for (iterator = *failed; iterator; iterator = iterator->next) {
-		g_message ("failed %s", ((PackageData*)iterator->data)->name);
-		eazel_install_emit_uninstall_failed (service, (PackageData*)iterator->data);
-	}
-	g_list_free (tmp);
+
 /*
   I've disabled downwards traverse untill it's done.
+
 	tmp = NULL;
 	eazel_uninstall_downward_traverse (service, packages, failed, &tmp);
 	for (iterator = tmp; iterator; iterator = iterator->next) {
@@ -2021,6 +2121,7 @@ eazel_uninstall_globber (EazelInstall *service,
 	}
 	g_list_free (tmp);
 */
+
 	if (close_base) {
 		eazel_install_free_package_system (service);
 	}

@@ -26,6 +26,7 @@
 
 #include "eazel-install-public.h"
 #include "eazel-install-private.h"
+#include "eazel-install-query.h"
 #include "eazel-install-xml-package-list.h"
 
 #ifndef EAZEL_INSTALL_NO_CORBA
@@ -40,6 +41,8 @@
 #include "eazel-install-protocols.h"
 #include "eazel-install-rpm-glue.h"
 #include "eazel-install-types.h"
+
+#define DEFAULT_RPM_DB_ROOT "/var/lib/rpm"
 
 enum {
 	DOWNLOAD_PROGRESS,
@@ -71,7 +74,7 @@ enum {
 	ARG_SERVER,
 	ARG_PACKAGE_LIST_STORAGE_PATH,
 	ARG_PACKAGE_LIST,
-	ARG_ROOT_DIR,
+	ARG_ROOT_DIRS,
 	ARG_PACKAGE_SYSTEM,
 	ARG_SERVER_PORT,
 	ARG_TRANSACTION_DIR
@@ -264,8 +267,8 @@ eazel_install_set_arg (GtkObject *object,
 	case ARG_PACKAGE_SYSTEM:
 		eazel_install_set_package_system (service, GTK_VALUE_ENUM(*arg));
 		break;
-	case ARG_ROOT_DIR:
-		eazel_install_set_root_dir (service, (char*)GTK_VALUE_POINTER(*arg));
+	case ARG_ROOT_DIRS:
+		eazel_install_set_root_dirs (service, (GList*)GTK_VALUE_POINTER(*arg));
 		break;
 	case ARG_TRANSACTION_DIR:
 		eazel_install_set_transaction_dir (service, (char*)GTK_VALUE_POINTER(*arg));
@@ -432,7 +435,7 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 	gtk_object_add_arg_type ("EazelInstall::root_dir",
 				 GTK_TYPE_POINTER,
 				 GTK_ARG_READWRITE,
-				 ARG_ROOT_DIR);
+				 ARG_ROOT_DIRS);
 	gtk_object_add_arg_type ("EazelInstall::transaction_dir",
 				 GTK_TYPE_POINTER,
 				 GTK_ARG_READWRITE,
@@ -468,11 +471,12 @@ eazel_install_initialize (EazelInstall *service) {
 	service->private = g_new0 (EazelInstallPrivate,1);
 	service->private->topts = g_new0 (TransferOptions, 1);
 	service->private->iopts = g_new0 (InstallOptions, 1);
-	service->private->root_dir = g_strdup ("/");
+	service->private->root_dirs = NULL;
+	service->private->cur_root = NULL;
 	service->private->transaction_dir = g_strdup_printf ("%s/.nautilus/transactions", g_get_home_dir() );
 	service->private->packsys.rpm.conflicts = NULL;
 	service->private->packsys.rpm.num_conflicts = 0;
-	service->private->packsys.rpm.db = NULL;
+	service->private->packsys.rpm.dbs = g_hash_table_new (g_str_hash, g_str_equal);
 	service->private->packsys.rpm.set = NULL;
 	service->private->logfile = NULL;
 	service->private->logfilename = NULL;
@@ -480,8 +484,29 @@ eazel_install_initialize (EazelInstall *service) {
 								   (GCompareFunc)g_str_equal);
 	service->private->transaction = NULL;
 
-	eazel_install_set_root_dir (service, "/");
 	eazel_install_set_rpmrc_file (service, "/usr/lib/rpm/rpmrc");
+
+	/* Set default root dirs list */
+	{
+		GList *list = NULL;
+		char *tmp;
+
+		/* FIXME: bugzilla.eazel.com
+		   RPM specific code */
+		tmp = g_strdup_printf ("%s/.nautilus/rpmdb/", g_get_home_dir ());		
+		if (g_file_test (tmp, G_FILE_TEST_ISDIR)==0) {			
+			g_message ("Creating rpmdb in %s", tmp);
+			addMacro(NULL, "_dbpath", NULL, "/", 0);
+			mkdir (tmp, 0700);
+			rpmdbInit (tmp, 0644);
+		}
+
+		list = g_list_prepend (list, tmp);
+		list = g_list_prepend (list, DEFAULT_RPM_DB_ROOT);
+		eazel_install_set_root_dirs (service, list);
+		g_list_free (list);
+		g_free (tmp);
+	}
 }
 
 GtkType
@@ -653,7 +678,9 @@ eazel_install_open_log (EazelInstall *service,
 }
 
 void 
-eazel_install_install_packages (EazelInstall *service, GList *categories)
+eazel_install_install_packages (EazelInstall *service, 
+				GList *categories,
+				const char *root)
 {
 	SANITY (service);
 
@@ -669,6 +696,10 @@ eazel_install_install_packages (EazelInstall *service, GList *categories)
 
 		eazel_install_fetch_remote_package_list (service);
 	}
+
+	g_free (service->private->cur_root);
+	service->private->cur_root = g_strdup (root?root:DEFAULT_RPM_DB_ROOT);
+
 	if (install_new_packages (service, categories)==FALSE) {
 		g_warning (_("Install failed"));
 	}
@@ -705,14 +736,20 @@ eazel_install_install_packages (EazelInstall *service, GList *categories)
 			}
 		}
 	}
+	g_free (service->private->cur_root);
+
 	eazel_install_emit_done (service);
 }
 
 void 
-eazel_install_uninstall_packages (EazelInstall *service, GList *categories)
+eazel_install_uninstall_packages (EazelInstall *service, GList *categories, const char *root)
 {
 	SANITY (service);
+
+	g_free (service->private->cur_root);
+	service->private->cur_root = g_strdup (root?root:DEFAULT_RPM_DB_ROOT);
 	eazel_install_set_uninstall (service, TRUE);
+
 	if (categories == NULL && eazel_install_get_package_list (service) == NULL) {
 		eazel_install_set_package_list (service, "/var/eazel/services/package-list.xml");
 		eazel_install_fetch_remote_package_list (service);
@@ -726,9 +763,13 @@ eazel_install_uninstall_packages (EazelInstall *service, GList *categories)
 void 
 eazel_install_revert_transaction_from_xmlstring (EazelInstall *service, 
 						 const char *xml, 
-						 int size)
+						 int size,
+						 const char *root)
 {
 	GList *packages;
+
+	g_free (service->private->cur_root);
+	service->private->cur_root = g_strdup (root?root:DEFAULT_RPM_DB_ROOT);
 
 	packages = parse_memory_transaction_file (xml, size);
 	revert_transaction (service, packages);
@@ -739,7 +780,8 @@ eazel_install_revert_transaction_from_xmlstring (EazelInstall *service,
 
 void 
 eazel_install_revert_transaction_from_file (EazelInstall *service, 
-					    const char *filename)
+					    const char *filename,
+					    const char *root)
 {
 	xmlDocPtr doc;
 	xmlChar *mem;
@@ -747,10 +789,25 @@ eazel_install_revert_transaction_from_file (EazelInstall *service,
 	
 	doc = xmlParseFile (filename);
 	xmlDocDumpMemory (doc, &mem, &size);
-	eazel_install_revert_transaction_from_xmlstring (service, mem, size);
+	eazel_install_revert_transaction_from_xmlstring (service, mem, size, root);
 	g_free (mem);
 	xmlFreeDoc (doc);
 }
+
+GList*
+eazel_install_query_package_system (EazelInstall *service,
+				    const char *query, 
+				    int flags,
+				    const char *root)
+{
+	g_message ("eazel_install_query_package_system (...,%s,...)", query);
+
+	g_free (service->private->cur_root);
+	service->private->cur_root = g_strdup (root?root:DEFAULT_RPM_DB_ROOT);
+
+	return eazel_install_simple_query (service, query, flags, 0, NULL);
+}
+
 
 /************************************************
   Signal emitters and default handlers.
@@ -1012,6 +1069,22 @@ eazel_install_emit_done_default (EazelInstall *service)
 /* Welcome to define madness. These are all the get/set methods. There is nothing of
  interest beyond this point, except for a fucking big dragon*/
 
+void string_list_copy (GList **in, 
+		       const GList *strings) {
+	GList *result = NULL;
+	GList *iterator;
+	const GList *iterator_c;
+
+	for (iterator = *in; iterator; iterator=iterator->next) {
+		g_free (iterator->data);
+	}
+	g_list_free (*in);
+		
+	for (iterator_c = strings; iterator_c; iterator_c = iterator_c->next) {
+		(*in) = g_list_prepend (*in, g_strdup ((char*)iterator_c->data));
+	}
+}
+
 ei_mutator_impl (verbose, gboolean, iopts->mode_verbose);
 ei_mutator_impl (silent, gboolean, iopts->mode_silent);
 ei_mutator_impl (debug, gboolean, iopts->mode_debug);
@@ -1027,7 +1100,7 @@ ei_mutator_impl_copy (rpmrc_file, char*, topts->rpmrc_file, g_strdup);
 ei_mutator_impl_copy (server, char*, topts->hostname, g_strdup);
 ei_mutator_impl_copy (package_list_storage_path, char*, topts->pkg_list_storage_path, g_strdup);
 ei_mutator_impl_copy (package_list, char*, iopts->pkg_list, g_strdup);
-ei_mutator_impl_copy (root_dir, char*, root_dir, g_strdup);
+
 ei_mutator_impl_copy (transaction_dir, char*, transaction_dir, g_strdup);
 ei_mutator_impl (server_port, guint, topts->port_number);
 
@@ -1053,7 +1126,7 @@ ei_access_impl (server, char*, topts->hostname, NULL);
 ei_access_impl (package_list_storage_path, char*, topts->pkg_list_storage_path, NULL);
 ei_access_impl (package_list, char*, iopts->pkg_list, NULL);
 ei_access_impl (transaction_dir, char*, transaction_dir, NULL);
-ei_access_impl (root_dir, char*, root_dir, NULL);
+ei_access_impl (root_dirs, GList*, root_dirs, NULL);
 ei_access_impl (server_port, guint, topts->port_number, 0);
 
 ei_access_impl (install_flags, int, install_flags, 0);
@@ -1061,3 +1134,10 @@ ei_access_impl (interface_flags, int, interface_flags, 0);
 ei_access_impl (problem_filters, int, problem_filters, 0);
 
 ei_access_impl (package_system, int, package_system, 0);
+
+void eazel_install_set_root_dirs (EazelInstall *service,
+				  const GList *new_roots) 
+{
+	string_list_copy (&service->private->root_dirs, new_roots);
+}
+

@@ -71,7 +71,8 @@ int     arg_dry_run,
 char    *arg_server,
 	*arg_config_file,
 	*arg_package_list,
-	*arg_tmp_dir;
+	*arg_tmp_dir,
+	*arg_root;
 
 CORBA_ORB orb;
 CORBA_Environment ev;
@@ -90,6 +91,7 @@ static const struct poptOption options[] = {
 	{"port", '\0', POPT_ARG_INT, &arg_port, 0 , N_("Set port numer (80)"), NULL},
 	{"query", 'q', POPT_ARG_NONE, &arg_query, 0, N_("Run Query"), NULL},
 	{"revert", 'r', POPT_ARG_NONE, &arg_revert, 0, N_("Revert"), NULL},
+	{"root", '\0', POPT_ARG_STRING, &arg_root, 0, N_("Set root"), NULL},
 	{"server", '\0', POPT_ARG_STRING, &arg_server, 0, N_("Specify server"), NULL},
 	{"test", 't', POPT_ARG_NONE, &arg_dry_run, 0, N_("Test run"), NULL},
 	{"tmp", '\0', POPT_ARG_STRING, &arg_tmp_dir, 0, N_("Set tmp dir (/tmp/eazel-install)"), NULL},
@@ -266,7 +268,7 @@ install_failed (EazelInstallCallback *service,
 		fprintf (stdout, "%s%s, which breaks deps\n", indent, rpmfilename_from_packagedata (pd));
 		break;
 	default:
-		fprintf (stdout, "%s%s\n", indent, rpmfilename_from_packagedata (pd));
+		fprintf (stdout, "%s%s\n", indent, pd->name);
 		break;
 	}
 	for (iterator = pd->soft_depends; iterator; iterator = iterator->next) {			
@@ -313,7 +315,9 @@ create_package (char *name)
 	uname (&buf);
 	pack = packagedata_new ();
 	if (arg_file) {
-		pack->filename = g_strdup (name);
+		pack->filename = name[0]=='/' ? 
+			g_strdup (name) : 
+			g_strdup_printf ("%s/%s", g_get_current_dir (), name);
 	} else {
 		pack->name = g_strdup (name);
 	}
@@ -471,13 +475,16 @@ int main(int argc, char *argv[]) {
 	}
 
 	if (arg_erase) {
-		eazel_install_callback_uninstall_packages (cb, categories, &ev);
+		eazel_install_callback_uninstall_packages (cb, categories, arg_root, &ev);
 	} else if (arg_query) {
 		GList *iterator;
 		for (iterator = strs; iterator; iterator = iterator->next) {
 			GList *matched_packages;
 			GList *match_it;
-			matched_packages = eazel_install_callback_simple_query (cb, (char*)iterator->data, &ev);
+			matched_packages = eazel_install_callback_simple_query (cb, 
+										(char*)iterator->data, 
+										NULL, 
+										&ev);
 			for (match_it = matched_packages; match_it; match_it = match_it->next) {
 				PackageData *p;
 				p = (PackageData*)match_it->data;
@@ -487,10 +494,10 @@ int main(int argc, char *argv[]) {
 	} else if (arg_revert) {
 		GList *iterator;
 		for (iterator = strs; iterator; iterator = iterator->next) {
-			eazel_install_callback_revert_transaction (cb, (char*)iterator->data, &ev);
+			eazel_install_callback_revert_transaction (cb, (char*)iterator->data, arg_root, &ev);
 		}
 	} else {
-		eazel_install_callback_install_packages (cb, categories, &ev);
+		eazel_install_callback_install_packages (cb, categories, arg_root, &ev);
 	}
 	
 	if (!arg_query) {

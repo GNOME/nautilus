@@ -71,46 +71,35 @@ typedef struct {
 	char *arg;
 } AttributeOpArg;
 
-GList*
-eazel_install_query_package_system (EazelInstall *service,
-				    const char *query, 
-				    int flags) 
-{
-	g_message ("eazel_install_query_package_system (...,%s,...)", query);
 
-	/* FIXME bugzilla.eazel.com 1445
-	   write and use a yacc parser for the queries here.
-	   The lexer is in eazel-install-query-lex.l
-	*/
-
-	return NULL;
-}
-
-static GList *
+static void
 eazel_install_simple_rpm_query (EazelInstall *service, 
 				const char *input, 
-				EazelInstallSimpleQueryEnum flag)
+				EazelInstallSimpleQueryEnum flag,
+				const char *root,
+				GList **result)
 {
 	dbiIndexSet matches;
-	rpmdb db;
-	GList *result;
 	gboolean close_db;
+	rpmdb db;
 	int rc;
 	int i;
-
-	db = service->private->packsys.rpm.db;       
+	
 	close_db = FALSE;
+
 	/* If db is not open, this will be false, therefore, 
 	   open and close at the end. That way, this
 	   func can be used in both various enviroments */
-	if (db == NULL) {
+	if (g_hash_table_size (service->private->packsys.rpm.dbs) == 0) {
 		eazel_install_prepare_package_system (service);
-		db = service->private->packsys.rpm.db;       
 		close_db = TRUE;
-		g_assert (db != NULL);
-	}
+	} 
+
+	g_message ("Querying for %s in %s", input, root);
+
 	rc = -1;
-	result = NULL;
+	db = (rpmdb)g_hash_table_lookup (service->private->packsys.rpm.dbs, root);	
+	g_assert (db);
 
 	switch (flag) {
 	case EI_SIMPLE_QUERY_OWNS:		
@@ -128,11 +117,11 @@ eazel_install_simple_rpm_query (EazelInstall *service,
 	default:
 		g_warning ("Unknown query");
 	}
-
+	
 	if (rc != 0) {
-		return NULL;
-	}
-
+		return;
+	} 
+	
 	for (i = 0; i < dbiIndexSetCount (matches); i++) {
 		unsigned int offset;
 		Header *hd;
@@ -142,18 +131,17 @@ eazel_install_simple_rpm_query (EazelInstall *service,
 		hd = g_new0 (Header,1);
 		(*hd) = rpmdbGetRecord (db, offset);
 		pack = packagedata_new_from_rpm_header (hd);
-		if (g_list_find_custom (result, pack->name, (GCompareFunc)eazel_install_package_name_compare)!=NULL) {
+		if (g_list_find_custom (*result, pack->name, (GCompareFunc)eazel_install_package_name_compare)!=NULL) {
 			packagedata_destroy (pack);
 		} else {
-			result = g_list_prepend (result, pack);
+			(*result) = g_list_prepend (*result, pack);
 		}
 	}
 	
+
 	if (close_db) {
 		eazel_install_free_package_system (service);
 	}
-
-	return result;
 }
 
 
@@ -162,18 +150,19 @@ eazel_install_simple_query (EazelInstall *service,
 			    const char *input, 
 			    EazelInstallSimpleQueryEnum flag, 
 			    int neglist_count, 
-			    const GList *neglists,...)
+			    ...)
 {
 	GList *result;
 	GList *remove;
 	GList *iterator;
+	GList *root_dirs;
 	GHashTable *names_to_ignore;
 
 	if (neglist_count) {
 		int i;
 		va_list va;
 
-		va_start (va, neglists);
+		va_start (va, neglist_count);
 		names_to_ignore = g_hash_table_new (g_str_hash, g_str_equal);
 
 		/* for all neglists, collect the package->names */
@@ -188,12 +177,30 @@ eazel_install_simple_query (EazelInstall *service,
 		}
 	}
 
-	/* Do the query depending on package system */
-	switch (eazel_install_get_package_system (service)) {
-	case EAZEL_INSTALL_USE_RPM:
-		result = eazel_install_simple_rpm_query (service, input, flag);
-		break;
+	result = NULL;
+
+	/* query in one root ? */
+	if (service->private->cur_root) {
+		root_dirs = g_list_prepend (NULL, service->private->cur_root);
+	} else {
+		root_dirs = g_list_copy (eazel_install_get_root_dirs (service));
 	}
+
+	{
+		/* Now query all the set roots */
+		GList *iterator;
+		for (iterator = root_dirs; iterator; iterator=iterator->next) {
+			char *root_dir = (char*)iterator->data;
+			/* Do the query depending on package system */
+			switch (eazel_install_get_package_system (service)) {
+			case EAZEL_INSTALL_USE_RPM:
+				eazel_install_simple_rpm_query (service, input, flag, root_dir, &result);
+				break;
+			}
+			
+		}
+	}
+	g_list_free (root_dirs);
 
 	/* Now strip the packages to ignore */
 	if (neglist_count) {
@@ -214,7 +221,7 @@ eazel_install_simple_query (EazelInstall *service,
 			for (iterator = remove; iterator; iterator = iterator->next) {
 				PackageData *pack;
 				pack = (PackageData*)iterator->data;
-				g_list_remove (result, pack);
+				result = g_list_remove (result, pack);
 				packagedata_destroy (pack);
 			}
 			g_list_free (remove);

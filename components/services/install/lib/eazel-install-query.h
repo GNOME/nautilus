@@ -33,9 +33,20 @@ typedef enum {
 	EI_SIMPLE_QUERY_MATCHES
 } EazelInstallSimpleQueryEnum;
 
+/* Performs a simple query for "input", using
+   the enum flag.
+   
+   neglists is the number of GList* provided to the function. These
+   lists should contain pacakage that should _not_ be returned in the
+   result. So normally you will just use it like :
+   
+   GList *matches = eazel_install_simple_query (service, "somepackage", 
+                                                EI_SIMPLE_QUERY_MATCHES, 0, NULL);
+*/
+   
 GList* eazel_install_simple_query (EazelInstall *service, 
 				   const char *input, 
 				   EazelInstallSimpleQueryEnum flag, 
-				   int neglists, const GList *neglist,...);
+				   int neglists, ...);
 
 #endif /* EAZEL_INSTALL_QUERY_H */

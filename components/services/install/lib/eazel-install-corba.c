@@ -75,6 +75,7 @@ impl_Eazel_Install_uninstall(impl_POA_Trilobite_Eazel_Install *servant,
 static void 
 impl_Eazel_Install_install_packages(impl_POA_Trilobite_Eazel_Install *servant,
 				    const Trilobite_Eazel_CategoryStructList *corbacategories,
+				    const CORBA_char *root,
 				    const Trilobite_Eazel_InstallCallback cb,
 				    CORBA_Environment * ev) 
 {
@@ -85,7 +86,9 @@ impl_Eazel_Install_install_packages(impl_POA_Trilobite_Eazel_Install *servant,
 
 	categories = NULL;
 	categories = categorydata_list_from_corba_categorystructlist (*corbacategories);
-	eazel_install_install_packages (servant->object, categories);
+	eazel_install_install_packages (servant->object, 
+					categories, 
+					!root || strcmp (root, "")==0 ? NULL : root);
 	
 	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
 	g_list_free (categories);
@@ -96,6 +99,7 @@ impl_Eazel_Install_install_packages(impl_POA_Trilobite_Eazel_Install *servant,
 static void 
 impl_Eazel_Install_uninstall_packages(impl_POA_Trilobite_Eazel_Install *servant,
 				      const Trilobite_Eazel_CategoryStructList *corbacategories,
+				      const CORBA_char *root,
 				      const Trilobite_Eazel_InstallCallback cb,
 				      CORBA_Environment * ev) 
 {
@@ -106,8 +110,10 @@ impl_Eazel_Install_uninstall_packages(impl_POA_Trilobite_Eazel_Install *servant,
 
 	categories = NULL;
 	categories = categorydata_list_from_corba_categorystructlist (*corbacategories);
-	eazel_install_uninstall_packages (servant->object, categories);
-	
+	eazel_install_uninstall_packages (servant->object, 
+					  categories,
+					  !root || strcmp (root, "")==0 ? NULL : root);
+
 	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
 	g_list_free (categories);
 
@@ -117,13 +123,17 @@ impl_Eazel_Install_uninstall_packages(impl_POA_Trilobite_Eazel_Install *servant,
 static void
 impl_Eazel_Install_revert_transaction (impl_POA_Trilobite_Eazel_Install *servant,
 				       const CORBA_char *xml, 
+				       const CORBA_char *root,
 				       const Trilobite_Eazel_InstallCallback cb,
 				       CORBA_Environment * ev) 
 {
 	RELEASE_CB;
 	SET_CB (cb);       
 
-	eazel_install_revert_transaction_from_xmlstring (servant->object, xml, strlen (xml));
+	eazel_install_revert_transaction_from_xmlstring (servant->object, 
+							 xml, 
+							 strlen (xml),
+							 !root || strcmp (root, "")==0 ? NULL : root);
 
 	return;
 }
@@ -343,12 +353,23 @@ impl_Eazel_Install__get_protocol (impl_POA_Trilobite_Eazel_Install *servant,
 static Trilobite_Eazel_PackageDataStructList*
 impl_Eazel_Install_simple_query (impl_POA_Trilobite_Eazel_Install *servant,
 				 const CORBA_char *query,
+				 const CORBA_char *root,
 				 CORBA_Environment *ev)
 {
 	Trilobite_Eazel_PackageDataStructList *result;
 	GList *tmp_result;
 
-	tmp_result = eazel_install_simple_query (servant->object, query, EI_SIMPLE_QUERY_MATCHES, 0, NULL);
+	g_free (servant->object->private->cur_root);
+	if (!root || strcmp (root, "")==0) {
+		servant->object->private->cur_root = g_strdup (root);
+	} else {
+		servant->object->private->cur_root = NULL;
+	}
+
+	tmp_result = eazel_install_simple_query (servant->object, 
+						 query, 
+						 EI_SIMPLE_QUERY_MATCHES, 
+						 0, NULL);
 	result = Trilobite_Eazel_PackageDataStructList__alloc ();
 	(*result) = corba_packagedatastructlist_from_packagedata_list (tmp_result);
 	g_list_foreach (tmp_result, (GFunc)packagedata_destroy_foreach, NULL);

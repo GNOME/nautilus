@@ -469,12 +469,14 @@ eazel_install_callback_bonobo (EazelInstallCallback *service)
 void 
 eazel_install_callback_install_packages (EazelInstallCallback *service, 
 					 GList *categories,
+					 const char *root,
 					 CORBA_Environment *ev)
 {
 	Trilobite_Eazel_CategoryStructList *corbacats;
 	corbacats = corba_category_list_from_categorydata_list (categories);
 	Trilobite_Eazel_Install_install_packages (service->installservice_corba, 
 						  corbacats, 
+						  root ? root : "",
 						  service->cb, 
 						  ev);
 }
@@ -482,12 +484,14 @@ eazel_install_callback_install_packages (EazelInstallCallback *service,
 void 
 eazel_install_callback_uninstall_packages (EazelInstallCallback *service, 
 					   GList *categories,
+					   const char *root,
 					   CORBA_Environment *ev)
 {
 	Trilobite_Eazel_CategoryStructList *corbacats;
 	corbacats = corba_category_list_from_categorydata_list (categories);
 	Trilobite_Eazel_Install_uninstall_packages (service->installservice_corba, 
 						    corbacats, 
+						    root ? root : "",
 						    service->cb, 
 						    ev);
 }
@@ -495,6 +499,7 @@ eazel_install_callback_uninstall_packages (EazelInstallCallback *service,
 GList*
 eazel_install_callback_simple_query (EazelInstallCallback *service, 
 				     const char *query,
+				     const char *root,
 				     CORBA_Environment *ev)
 {
 	GList *result;
@@ -502,6 +507,7 @@ eazel_install_callback_simple_query (EazelInstallCallback *service,
 	
 	corbares = Trilobite_Eazel_Install_simple_query (service->installservice_corba,
 							 query,
+							 root ? root : "",
 							 ev);
 	result = packagedata_list_from_corba_packagedatastructlist (*corbares);
 	CORBA_free (corbares); 
@@ -512,6 +518,7 @@ eazel_install_callback_simple_query (EazelInstallCallback *service,
 void 
 eazel_install_callback_revert_transaction (EazelInstallCallback *service, 
 					   const char *xmlfile,
+					   const char *root,
 					   CORBA_Environment *ev)
 {
 	xmlDocPtr doc;
@@ -524,6 +531,7 @@ eazel_install_callback_revert_transaction (EazelInstallCallback *service,
 	arg = CORBA_string_dup (mem);
 	Trilobite_Eazel_Install_revert_transaction (service->installservice_corba, 
 						    arg,
+						    root ? root : "",
 						    service->cb,
 						    ev);
 	CORBA_free (arg);

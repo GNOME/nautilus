@@ -110,6 +110,20 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 
 } /* end parse package */
 
+/* Returns a g_strdupped xmlGetProp val */
+static char *
+xml_get_prop (xmlNode *node, char *tag) {
+	char *tmp = NULL;
+	char *result = NULL;
+	
+	tmp = xmlGetProp (node, tag);
+	if (tmp) {
+		result = g_strdup (tmp);
+		free (tmp);
+	}
+	return result;
+}
+
 static CategoryData*
 parse_category (xmlNode* cat) {
 
@@ -117,7 +131,7 @@ parse_category (xmlNode* cat) {
 	xmlNode* pkg;
 
 	category = g_new0 (CategoryData, 1);
-	category->name = xmlGetProp (cat, "name");
+	category->name = xml_get_prop (cat, "name");
 
 	pkg = cat->childs->childs;
 	if (pkg == NULL) {
@@ -304,6 +318,8 @@ generate_xml_package_list (const char* pkg_template_file,
 			xmlNodePtr data;
 			int i;
 
+			/* NOTE: This xmlGetProp leaks, since it's return value 
+			   is forgotten */
 			if ((doc->root->childs == NULL) ||
 			    (xmlGetProp (doc->root->childs, package_array[0]))) {
 				category = xmlNewChild (doc->root, NULL, "CATEGORY", NULL);
@@ -485,20 +501,25 @@ osd_parse_implementation (PackageData *pack,
 	child = node->childs;
 	while (child) {
 		if (g_strcasecmp (child->name, "PROCESSOR")==0) {
-			pack->archtype = g_strdup (xmlGetProp (child, "VALUE"));
+			pack->archtype = xml_get_prop (child, "VALUE");
 		} else if (g_strcasecmp (child->name, "OS")==0) {
-			pack->distribution.name = trilobite_get_distribution_enum (xmlGetProp (child, "VALUE"),
-										   TRUE);
+			char *dtmp = xmlGetProp (child, "VALUE");
+			if (dtmp) {
+				pack->distribution.name = trilobite_get_distribution_enum (dtmp,
+											   TRUE);
+			} 
+			g_free (dtmp);
 		} else if (g_strcasecmp (child->name, "CODEBASE")==0) {			
-			pack->filename = g_strdup (xmlGetProp (child, "HREF"));
+			pack->filename = xml_get_prop (child, "HREF");
+			g_message ("pack->filename = %s", pack->filename);
 			{
-				char *tmp;
-				tmp = xmlGetProp (child, "SIZE");
-				if (tmp) {
-					pack->bytesize = atoi (tmp);
+				char *stmp = xml_get_prop (child, "SIZE");
+				if (stmp) {
+					pack->bytesize = atoi (stmp);
 				} else {
 					pack->bytesize = 0;
 				}
+				g_free (stmp);
 			}
 		} else {
 			g_warning ("unparsed tag \"%s\" in IMPLEMENTATION", child->name);
@@ -515,8 +536,8 @@ osd_parse_softpkg (xmlNodePtr softpkg)
 
 	result = packagedata_new ();
 
-	result->name = g_strdup (xmlGetProp (softpkg, "NAME"));
-	result->version = g_strdup (xmlGetProp (softpkg, "VERSION"));
+	result->name = xml_get_prop (softpkg, "NAME");
+	result->version = xml_get_prop (softpkg, "VERSION");
 	
 	child = softpkg->childs;
 	while (child) {
@@ -594,14 +615,19 @@ parse_osd_xml_from_memory (const char *mem,
 		g_free (docptr);
 		return result;
 	}
+/* This compensates for the server code
+   not returned the correct xml when
+   useragent set to Trilobite 
 	end = strstr (ptr, "</PACKAGES");
 	if (end) {
 		end = strchr (end, '\n');
+		g_message ("CUTTING AT \"%s\"", end);
 		if (end) {
 			*end = 0;
 			size = strlen (ptr);
 		}
 	}
+*/
 
 	doc = xmlParseMemory (ptr, size);
 

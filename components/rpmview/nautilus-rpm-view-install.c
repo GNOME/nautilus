@@ -208,7 +208,7 @@ nautilus_rpm_view_install_package_callback (GtkWidget *widget,
 	gtk_signal_connect (GTK_OBJECT (cb), "dependency_check", nautilus_rpm_view_dependency_check, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "done", nautilus_rpm_view_install_done, rpm_view);
 	
-	eazel_install_callback_install_packages (cb, categories, &ev);
+	eazel_install_callback_install_packages (cb, categories, NULL, &ev);
 	
 	CORBA_exception_free (&ev);               
 }
@@ -261,7 +261,7 @@ nautilus_rpm_view_uninstall_package_callback (GtkWidget *widget,
 	gtk_signal_connect (GTK_OBJECT (cb), "dependency_check", nautilus_rpm_view_dependency_check, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "done", nautilus_rpm_view_install_done, rpm_view);
 	
-	eazel_install_callback_uninstall_packages (cb, categories, &ev);
+	eazel_install_callback_uninstall_packages (cb, categories, NULL, &ev);
 	
 	CORBA_exception_free (&ev);               
 }

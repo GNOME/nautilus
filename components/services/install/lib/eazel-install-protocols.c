@@ -40,6 +40,12 @@
 #define USER_AGENT_STRING "Trilobite"
 #endif /* EAZEL_INSTALL_SLIM */
 
+typedef struct {
+	EazelInstall *service;
+	const char *file_to_report;
+} gnome_vfs_callback_struct;
+
+
 /* This string defines the url for the rpmsearch cgi script.
    It should contain a %s for the server name, and later 
    a %d for the portnumber. In this order, no other
@@ -51,7 +57,7 @@
 #define CGI_BASE "http://%s:%d/catalog/find" 
 #endif /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
 
-#ifdef EAZEL_INSTALL_SLIM
+#ifdef EAZEL_INSTALL_SLIM	       
 
 gboolean http_fetch_remote_file (EazelInstall *service,
 				 char *url, 
@@ -210,10 +216,13 @@ ftp_fetch_remote_file (EazelInstall *service,
 
 static int
 gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
-			 EazelInstall *service)
+			 gnome_vfs_callback_struct *cbstruct)
+
 {
 	static gboolean initial_emit;
 	static gboolean last_emit;
+	EazelInstall *service = cbstruct->service;
+	const char *file_to_report = cbstruct->file_to_report;
 
 	switch (info->status) {
 	case GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR:
@@ -250,18 +259,18 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 			if (initial_emit && info->file_size>0) {
 				initial_emit = FALSE;
 				eazel_install_emit_download_progress (service, 
-								      info->source_name,
+								      file_to_report ? file_to_report : info->source_name,
 								      0,
 								      info->file_size);
 			} else if (!last_emit && info->bytes_copied == info->file_size) {
 				last_emit = TRUE;
 				eazel_install_emit_download_progress (service, 
-								      info->source_name,
+								      file_to_report ? file_to_report : info->source_name,
 								      info->file_size,
 								      info->file_size);
 			} else {
 				eazel_install_emit_download_progress (service, 
-								      info->source_name,
+								      file_to_report ? file_to_report : info->source_name,
 								      info->bytes_copied,
 								      info->file_size);
 
@@ -293,7 +302,7 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 			if (!last_emit) {
 				last_emit = TRUE;
 				eazel_install_emit_download_progress (service, 
-								      info->source_name,
+								      file_to_report ? file_to_report : info->source_name,
 								      info->file_size,
 								      info->file_size);
 			}
@@ -328,9 +337,12 @@ gnome_vfs_fetch_remote_file (EazelInstall *service,
 	GList *src_list;
 	GList *dest_list;
 	const char *tmp;
+	char *t_file;
+	gnome_vfs_callback_struct cbstruct;
 
 	g_message ("gnome_vfs_xfer_uri (%s, %s,...)", url, target_file);
 	
+	/* Create source uri */
 	src_uri = gnome_vfs_uri_new (url);
 	g_assert (src_uri);
 	src_dir_uri = gnome_vfs_uri_get_parent (src_uri);
@@ -339,7 +351,15 @@ gnome_vfs_fetch_remote_file (EazelInstall *service,
 	g_assert (tmp);
 	src_list = g_list_prepend (NULL, (char*)tmp);
 	g_assert (src_list);
-
+	
+	/* Ensure the target_file has a protocol://,
+	   or at least a file:// */
+	if (strstr (target_file, "://")==0) {
+		t_file = g_strdup_printf ("file://%s", target_file);
+	} else {
+		t_file = g_strdup (target_file);
+	}
+	/* Create destination uri */
 	dest_uri = gnome_vfs_uri_new (target_file);
 	g_assert (dest_uri);
 	dest_dir_uri = gnome_vfs_uri_get_parent (dest_uri);
@@ -349,13 +369,17 @@ gnome_vfs_fetch_remote_file (EazelInstall *service,
 	dest_list = g_list_prepend (NULL, (char*)tmp);
 	g_assert (dest_list);
 	
+	cbstruct.service = service;
+	cbstruct.file_to_report = file_to_report;
+
 	result = gnome_vfs_xfer_uri (src_dir_uri, src_list,
 				     dest_dir_uri, dest_list,
 				     xfer_options,
 				     GNOME_VFS_XFER_ERROR_MODE_QUERY,
 				     GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
 				     (GnomeVFSXferProgressCallback)gnome_vfs_xfer_callback,
-				     (gpointer)service);
+				     (gpointer)&cbstruct);
+	g_free (t_file);
 
 	g_message ("Roev, result = %s", result==GNOME_VFS_OK?"OK":"fucked");
  
