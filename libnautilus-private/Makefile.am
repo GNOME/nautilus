@@ -191,9 +191,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-view-identifier.h \
 	$(NULL)
 
-fsattributesdir = $(datadir)/nautilus
-fsattributes_DATA = filesystem-attributes.xml
-
 $(lib_LTLIBRARIES): $(dependency_static_libs)
 
 $(nautilus_metafile_server_idl_sources): nautilus_metafile_server_idl_stamp
@@ -226,7 +223,6 @@ install-data-local:
 endif
 
 EXTRA_DIST = 				\
-	$(fsattributes_DATA)		\
 	nautilus-metafile-server.idl	\
 	nautilus-marshal.list		\
 	$(schema_in_files)              \
