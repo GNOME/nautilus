@@ -1892,6 +1892,7 @@ nautilus_window_hide_toolbar (NautilusWindow *window)
 void 
 nautilus_window_show_toolbar (NautilusWindow *window)
 {
+	nautilus_window_activate_throbber (window);
 	show_dock_item (window, TOOLBAR_PATH);
 }
 

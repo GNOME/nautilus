@@ -33,6 +33,7 @@
 #include <X11/Xlib.h>
 #include <bonobo/bonobo-generic-factory.h>
 #include <bonobo/bonobo-main.h>
+#include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-ui-main.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtkmain.h>
@@ -68,20 +69,119 @@ delayed_quit_timeout_callback (gpointer data)
 }
 
 static void
-object_destroyed (GObject      *object,
-		  CallbackData *callback_data)
+view_object_destroy (GObject      *object,
+		     CallbackData *callback_data)
 {
 	g_assert (G_IS_OBJECT (object));
 
-	callback_data->object_count--;
+	if (!g_object_get_data (object, "standard_main_destroy_accounted")) {
+		g_object_set_data (object, "standard_main_destroy_accounted",
+				   GUINT_TO_POINTER (TRUE));
 
-	if (callback_data->object_count <= 0 &&
-	    callback_data->delayed_quit_timeout_id == 0) {
-		callback_data->delayed_quit_timeout_id = 
-			g_timeout_add (N_IDLE_SECONDS_BEFORE_QUIT * 1000,
-				       delayed_quit_timeout_callback,
-				       callback_data);
+		callback_data->object_count--;
+
+		if (callback_data->object_count <= 0 &&
+		    callback_data->delayed_quit_timeout_id == 0) {
+			/*    Connect a handler that will get us out of the
+			 * main loop when there are no more objects outstanding.
+			 */
+			callback_data->delayed_quit_timeout_id = 
+				g_timeout_add (N_IDLE_SECONDS_BEFORE_QUIT * 1000,
+					       delayed_quit_timeout_callback,
+					       callback_data);
+		}
 	}
+}
+
+/*
+ *   Time we're prepared to wait without a ControlFrame
+ * before terminating the Control. This can happen if the
+ * container activates us but crashes before the set_frame.
+ *
+ * NB. if we don't get a frame in 30 seconds, something
+ * is badly wrong, or Gnome performance needs improving
+ * markedly !
+ */
+#define NAUTILUS_VIEW_NEVER_GOT_FRAME_TIMEOUT (30 * 1000)
+#define CALLBACK_DATA_KEY "standard_main_callback_data_key"
+
+static void
+nautilus_view_cnx_broken_callback (GObject *control)
+{
+	view_object_destroy (control,
+			     g_object_get_data (G_OBJECT (control),
+						CALLBACK_DATA_KEY));
+}
+
+static gboolean
+nautilus_view_never_got_frame_timeout (gpointer user_data)
+{
+	g_warning ("Never got frame, container died - abnormal exit condition");
+
+	nautilus_view_cnx_broken_callback (user_data);
+	
+	return FALSE;
+}
+
+static void
+nautilus_view_set_frame_callback (BonoboControl *control,
+				  gpointer       user_data)
+{
+	Bonobo_ControlFrame remote_frame;
+
+	remote_frame = bonobo_control_get_control_frame (control, NULL);
+
+	if (remote_frame != CORBA_OBJECT_NIL) {
+		ORBitConnectionStatus status;
+
+		g_source_remove (GPOINTER_TO_UINT (user_data));
+
+		status = ORBit_small_get_connection_status (remote_frame);
+
+		/* Only track out of proc controls */
+		if (status != ORBIT_CONNECTION_IN_PROC) {
+			g_signal_connect_closure (
+				ORBit_small_get_connection (remote_frame),
+				"broken",
+				g_cclosure_new_object_swap (
+					G_CALLBACK (nautilus_view_cnx_broken_callback),
+					G_OBJECT (control)),
+				FALSE);
+			g_signal_connect (
+				control, "destroy",
+				G_CALLBACK (nautilus_view_cnx_broken_callback),
+				NULL);
+		}
+	}
+}
+
+/*
+ *   This code is somewhat duplicated in gnome-panel/libpanel-applet
+ * and is ripe for abstracting in an intermediate library.
+ */
+static void
+nautilus_view_instrument_for_failure (BonoboObject *control,
+				      CallbackData *callback_data)
+{
+	guint no_frame_timeout_id;
+
+	g_object_set_data (G_OBJECT (control),
+			   CALLBACK_DATA_KEY, callback_data);
+
+	no_frame_timeout_id = g_timeout_add (
+		NAUTILUS_VIEW_NEVER_GOT_FRAME_TIMEOUT,
+		nautilus_view_never_got_frame_timeout,
+		control);
+	g_signal_connect_closure (
+		control, "destroy",
+		g_cclosure_new_swap (
+			G_CALLBACK (g_source_remove_by_user_data),
+			control, NULL),
+		0);
+	g_signal_connect (
+		control, "set_frame",
+		G_CALLBACK (nautilus_view_set_frame_callback),
+		GUINT_TO_POINTER (no_frame_timeout_id));
 }
 
 static BonoboObject *
@@ -90,6 +190,7 @@ make_object (BonoboGenericFactory *factory,
 	     gpointer              data)
 {
 	BonoboObject *view;
+	BonoboObject *control;
 	CallbackData *callback_data;
 
 	callback_data = (CallbackData *) data;
@@ -98,10 +199,7 @@ make_object (BonoboGenericFactory *factory,
 	g_assert (iid != NULL);
 	g_assert (callback_data != NULL);
 
-	/* Check that this is one of the types of object we know how to
-	 * create.
-	 */
-
+	/* Check that this is one of the types of object we know how to create. */
 	if (g_list_find_custom (callback_data->view_iids,
 				(gpointer) iid, (GCompareFunc) strcmp) == NULL) {
 		return NULL;
@@ -109,17 +207,20 @@ make_object (BonoboGenericFactory *factory,
 	
 	view = callback_data->create_function (iid, callback_data->user_data);
 
-	/* Connect a handler that will get us out of the main loop
-         * when there are no more objects outstanding.
-	 */
 	callback_data->object_count++;
 	if (callback_data->delayed_quit_timeout_id != 0) {
 		g_source_remove (callback_data->delayed_quit_timeout_id);
 		callback_data->delayed_quit_timeout_id = 0;
 	}
 	g_signal_connect (view, "destroy",
-			  G_CALLBACK (object_destroyed),
+			  G_CALLBACK (view_object_destroy),
 			  callback_data);
+
+	/* We can do some more agressive tracking of controls */
+	if ((control = bonobo_object_query_local_interface
+	             (view, "IDL:Bonobo/Control:1.0"))) {
+		nautilus_view_instrument_for_failure (control, callback_data);
+	}
 
 	return BONOBO_OBJECT (view);
 }
@@ -227,7 +328,8 @@ nautilus_view_standard_main_multi (const char *executable_name,
 		bonobo_activate ();
 		do {
 			gtk_main ();
-		} while (callback_data.object_count > 0 || callback_data.delayed_quit_timeout_id != 0);
+		} while (callback_data.object_count > 0 ||
+			 callback_data.delayed_quit_timeout_id != 0);
 		bonobo_object_unref (factory);
 	}
 

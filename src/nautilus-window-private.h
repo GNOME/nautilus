@@ -85,6 +85,7 @@ struct NautilusWindowDetails
 
         /* Throbber. */
         gboolean           throbber_active;
+        gboolean           throbber_activating;
 	Bonobo_PropertyBag throbber_property_bag;
 	Bonobo_Listener    throbber_listener;
 
@@ -133,6 +134,7 @@ void               nautilus_window_synch_view_as_menus                   (Nautil
 void               nautilus_window_initialize_menus_part_1               (NautilusWindow    *window);
 void               nautilus_window_initialize_menus_part_2               (NautilusWindow    *window);
 void               nautilus_window_initialize_toolbars                   (NautilusWindow    *window);
+void               nautilus_window_activate_throbber                     (NautilusWindow    *window);
 void		   nautilus_window_handle_ui_event_callback		 (BonoboUIComponent *ui,
 									  const char	    *id,
 									  Bonobo_UIComponent_EventType type,

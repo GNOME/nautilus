@@ -478,6 +478,8 @@ throbber_created_callback (Bonobo_Unknown     throbber,
 
 	window = NAUTILUS_WINDOW (user_data);
 
+	window->details->throbber_activating = FALSE;
+
 	bonobo_ui_component_object_set (window->details->shell_ui,
 					"/Toolbar/ThrobberWrapper",
 					throbber, ev);
@@ -531,13 +533,17 @@ nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 	nautilus_window_ui_thaw (window);
 }
 
+
 void
-nautilus_window_initialize_toolbars (NautilusWindow *window)
+nautilus_window_activate_throbber (NautilusWindow *window)
 {
 	CORBA_Environment ev;
 	char *exception_as_text;
 
-	nautilus_window_ui_freeze (window);
+	if (window->details->throbber_activating ||
+	    window->details->throbber_property_bag != CORBA_OBJECT_NIL) {
+		return;
+	}
 
 	/* FIXME bugzilla.gnome.org 41243: 
 	 * We should use inheritance instead of these special cases
@@ -559,6 +565,17 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 			g_free (exception_as_text);
 		}
 		CORBA_exception_free (&ev);
+		window->details->throbber_activating = TRUE;		
+	}
+}
+
+void
+nautilus_window_initialize_toolbars (NautilusWindow *window)
+{
+	nautilus_window_ui_freeze (window);
+
+	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR)) {
+		nautilus_window_activate_throbber (window);
 	}
 
 	window->details->back_button_item = create_back_or_forward_toolbar_item 

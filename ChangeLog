@@ -1,3 +1,29 @@
+2002-05-13  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-window.c (nautilus_window_show_toolbar): 
+	activate the throbber in case we didn't earlier.
+
+	* src/nautilus-window-toolbars.c
+	(nautilus_window_activate_throbber): split out of
+	(nautilus_window_initialize_toolbars): here,
+	only activate the throbber if we are starting
+	with a toolbar.
+
+	* src/nautilus-window.c: 
+	(nautilus_window_show_toolbar, nautilus_window_hide_toolbar): move
+	into nautilus-window-toolbars.
+
+	* libnautilus/nautilus-view-standard-main.c
+	(object_destroyed): upd. comment.
+	(make_object): prune bogus comment.
+	(nautilus_view_instrument_for_failure): impl.
+	(object_destroyed): only do 1 destroy ever, rename
+	(view_object_destroy): to this.
+	(make_object): upd.
+	(nautilus_view_never_got_frame_timeout),
+	(nautilus_view_set_frame_callback),
+	(nautilus_view_cnx_broken_callback): impl.
+
 2002-05-12  Dave Camp  <dave@ximian.com>
 
 	* libnautilus-private/nautilus-global-preferences.c:
