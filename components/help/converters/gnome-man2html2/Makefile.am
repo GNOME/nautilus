@@ -5,7 +5,7 @@ INCLUDES = 			\
 	-I$(top_srcdir)/intl -I$(top_builddir)/intl
 
 
-LDADD = $(Z_LIBS)
+LDADD = $(Z_LIBS) $(BZ_LIBS)
 
 bin_PROGRAMS = gnome-man2html2
 

@@ -521,31 +521,38 @@ dnl = End mozilla hacks
 dnl ====================================
 
 dnl ====================================
+dnl = Bzip2
+dnl ====================================
+BZ_LIBS=
+AC_CHECK_LIB(bz2, bzread, [AC_DEFINE(HAVE_LIBBZ2)
+			  BZ_LIBS="-lbz2"])
+dnl <= Check for bzip2 > 1.0.0
+    AC_CHECK_LIB(bz2, BZ2_bzread, [AC_DEFINE(HAVE_LIBBZ2)
+		      	  BZ_LIBS="-lbz2"
+    dnl <= define the wrapper-functions to get the Bzip2 stuff working .. =>	
+	   AC_DEFINE(bzread,BZ2_bzread)
+	   AC_DEFINE(bzopen,BZ2_bzopen)
+	   AC_DEFINE(bzdopen,BZ2_bzdopen)
+	   AC_DEFINE(bzwrite,BZ2_bzwrite)
+	   AC_DEFINE(bzerror,BZ2_bzerror)
+	   AC_DEFINE(bzclose,BZ2_bzclose)
+	   AC_DEFINE(bzflush,BZ2_bzflush)
+	   AC_DEFINE(bzCompress,BZ2_bzCompress)
+	   AC_DEFINE(bzCompressInit,BZ2_bzCompressInit)
+	   AC_DEFINE(bzDecompress,BZ2_bzDecompress)
+	   AC_DEFINE(bzDecompressInit,BZ2_bzDecompressInit)	
+	   ])
+    dnl =>
+AC_SUBST(BZ_LIBS)
+dnl ====================================
 dnl = rpmview component support
 dnl ====================================
 
 if test "x$EAZEL_SERVICES_ENABLED" = "xyes" ;
 then
-	rpm_libs=
+	rpm_libs=$BZ_LIBS
 	rpm_xlibs=
 	have_rpm=no
-	AC_CHECK_LIB(bz2, bzread, [rpm_libs=-lbz2])
-	dnl <= Check for bzip2 > 1.0.0
-		AC_CHECK_LIB(bz2, BZ2_bzread, [rpm_libs=-lbz2
-		dnl <= define the wrapper-functions to get the Bzip2 stuff working .. =>	
-			AC_DEFINE(bzread,BZ2_bzread)
-			AC_DEFINE(bzopen,BZ2_bzopen)
-			AC_DEFINE(bzdopen,BZ2_bzdopen)
-			AC_DEFINE(bzwrite,BZ2_bzwrite)
-			AC_DEFINE(bzerror,BZ2_bzerror)
-			AC_DEFINE(bzclose,BZ2_bzclose)
-			AC_DEFINE(bzflush,BZ2_bzflush)
-			AC_DEFINE(bzCompress,BZ2_bzCompress)
-			AC_DEFINE(bzCompressInit,BZ2_bzCompressInit)
-			AC_DEFINE(bzDecompress,BZ2_bzDecompress)
-			AC_DEFINE(bzDecompressInit,BZ2_bzDecompressInit)	
-		])
-	dnl =>
 	AC_CHECK_LIB(popt, poptParseArgvString, [rpm_libs="$rpm_libs -lpopt"])
 	AC_CHECK_FUNC(dbopen, [],
 	  AC_CHECK_LIB(db-3.1, __db185_open, [rpm_libs="$rpm_libs -ldb-3.1"],

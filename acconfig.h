@@ -12,6 +12,7 @@
 #undef HAVE_RPM_30
 #undef HAVE_RPM_40
 #undef HAVE_STPCPY
+#undef HAVE_LIBBZ2
 #undef bzCompress
 #undef bzCompressInit
 #undef bzDecompress

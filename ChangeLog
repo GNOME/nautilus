@@ -1,3 +1,22 @@
+2001-03-02  Frederic Crozat <fcrozat@mandrakesoft.com>
+
+	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
+	
+	Fixed bug 7276, No support for bzipped man and info pages
+	-- problem for Mandrake
+	
+	Note that the coding style of these files is not the same
+	as the rest of the Nautilus source code.
+		
+	* components/help/converters/gnome-info2html2/Makefile.am:
+	* components/help/converters/gnome-info2html2/main.c: (main):
+	* components/help/converters/gnome-man2html2/Makefile.am:
+	* components/help/converters/gnome-man2html2/gnome-man2html.c:
+	(read_man_page):
+	* components/help/hyperbola-filefmt.c:
+	(extract_secnum_from_filename), (man_name_without_suffix),
+	(fmt_man_populate_tree_for_subdir):
+			
 2001-03-02  Ian McKellar  <ian@eazel.com>
 
 	reviewed by: <robey@eazel.com>

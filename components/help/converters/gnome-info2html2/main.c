@@ -6,6 +6,9 @@
 #include <string.h>
 #include <gnome.h>
 #include <zlib.h>
+#ifdef HAVE_LIBBZ2
+#include <bzlib.h>
+#endif
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -43,6 +46,10 @@ int
 main(int argc, char **argv)
 {
 	gzFile f = NULL;
+#ifdef HAVE_LIBBZ2
+	BZFILE *bf=NULL;
+#endif
+	int bz = 0;
 	char line[250];
 	poptContext ctx;
 	int result;
@@ -95,9 +102,16 @@ main(int argc, char **argv)
 		  break;
 		ext = ".gz";
 		sprintf(buf, "%s/%s.info.gz", dirs[i], args[0]);
-
 		if(file_exists(buf))
 		  break;
+#ifdef HAVE_LIBBZ2
+		ext = ".bz2";
+		sprintf(buf, "%s/%s.info.bz2", dirs[i], args[0]);		
+		if(file_exists(buf)) {
+		  bz = 1;
+		  break;
+		}
+#endif
 	      }
 	    if(i >= ndirs) {
 		    printf ("<HTML><HEAD><TITLE>Document not found</TITLE>\n"
@@ -156,6 +170,28 @@ main(int argc, char **argv)
 	/* No need to store all nodes, etc since we let web server */
 	/* handle resolving tags!                                  */
 	for (;1 || !foundit || !requested_nodename;) {
+#ifdef HAVE_LIBBZ2	 
+	  if(bz && !bf) {
+	     if(args && args[curarg])
+	      {
+		bf = bzopen(args[curarg++], "r");
+		if(!f)
+		  break;
+		num_files_left = args[curarg]?1:0;
+		for(work_line_number = 0, bzread(bf, line, sizeof(line)); *line != INFO_COOKIE;
+		    bzread(bf, line, sizeof(line)), work_line_number++)
+		  /**/ ;
+	      }
+	    else
+	      break;
+	  }
+	  if(!bzread(bf, line, sizeof(line)))
+	    {
+	      bzclose(bf);
+	      bf = NULL;
+	      continue;
+	    }	
+#endif
 	  if(!f) {
 	    if(args && args[curarg])
 	      {

@@ -6,7 +6,7 @@ INCLUDES = 			\
 	$(GNOME_CFLAGS)	
 
 LDADD = \
-	$(GNOME_LIBS) $(Z_LIBS)
+	$(GNOME_LIBS) $(Z_LIBS) $(BZ_LIBS)
 
 bin_PROGRAMS = gnome-info2html2
 

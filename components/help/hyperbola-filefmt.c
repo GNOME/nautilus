@@ -351,7 +351,17 @@ extract_secnum_from_filename (const char *filename)
 {
 	char *end_string;
 
+#ifdef HAVE_LIBBZ2
+	end_string = strstr (filename, ".bz2");
+	if (end_string) 
+		/* Its a bzipped man file so we need to return the
+		 * secnum */
+		return g_strndup (end_string - 3, 3);
+	else
+		free(end_string);
+#endif
 	end_string = strstr (filename, ".gz");
+
 	if (!end_string) {
 		/* Not a gzipped man file */
 		return g_strdup (strrchr (filename, '.'));
@@ -368,6 +378,15 @@ static char *
 man_name_without_suffix (const char *filename)
 {
 	char *end_string, *new_string, *ptr;
+
+#ifdef HAVE_LIBBZ2
+	end_string = strstr (filename, ".bz2");
+	if (end_string) 
+		/* e.g. manfile.1.bz2  would return manfile */
+		return g_strndup (filename, end_string - filename - 3);
+	else
+		free(end_string);
+#endif
 
 	end_string = strstr (filename, ".gz");
 	if (end_string) {
@@ -420,6 +439,12 @@ fmt_man_populate_tree_for_subdir (HyperbolaDocTree *tree,
 
 		manname = man_name_without_suffix (dent->d_name);
 
+#ifdef HAVE_LIBBZ2
+		if (strstr (dent->d_name, ".bz2")) {
+			g_snprintf (namebuf, sizeof (namebuf), "%.*s",
+				    (int) strlen (manname), manname);
+		} else
+#endif
 		if (strstr (dent->d_name, ".gz")) {
 			g_snprintf (namebuf, sizeof (namebuf), "%.*s",
 				    (int) strlen (manname), manname);
