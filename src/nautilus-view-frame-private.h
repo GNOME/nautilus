@@ -30,7 +30,7 @@
 #include "nautilus.h"
 
 extern POA_Nautilus_ViewFrame__vepv impl_Nautilus_ViewFrame_vepv;
-GnomeObject *impl_Nautilus_ViewFrame__create(NautilusView *view, CORBA_Environment * ev);
+BonoboObject *impl_Nautilus_ViewFrame__create(NautilusView *view, CORBA_Environment * ev);
 
 void nautilus_view_request_location_change(NautilusView *view,
 					   Nautilus_NavigationRequestInfo *loc);

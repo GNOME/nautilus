@@ -1,4 +1,4 @@
-#include <gnome-unknown.idl>
+#include <Bonobo.idl>
 
 module Nautilus {
   enum TruthValue { V_UNKNOWN, V_FALSE, V_TRUE };
@@ -36,7 +36,7 @@ module Nautilus {
     double amount;
   };
 
-  interface View : ::GNOME::Unknown {
+  interface View : ::Bonobo::Unknown {
     void save_state(in string config_path);
     void load_state(in string config_path);
     oneway void notify_location_change(in NavigationInfo navinfo);
@@ -56,7 +56,7 @@ module Nautilus {
 
   interface ViewWindow;
 
-  interface ViewFrame : ::GNOME::Unknown {
+  interface ViewFrame : ::Bonobo::Unknown {
     readonly attribute ViewWindow main_window;
     oneway void request_status_change(in StatusRequestInfo statinfo);
     oneway void request_location_change(in NavigationRequestInfo navinfo);
@@ -70,6 +70,6 @@ module Nautilus {
   interface ContentViewFrame : ViewFrame {
   };
 
-  interface ViewWindow : ::GNOME::Unknown {
+  interface ViewWindow : ::Bonobo::Unknown {
   };
 };

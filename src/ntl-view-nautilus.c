@@ -30,19 +30,19 @@
 #include "ntl-view-private.h"
 
 typedef struct {
-  GnomeObject *control_frame;
+  BonoboObject *control_frame;
   CORBA_Object view_client;
 } NautilusViewInfo;
 
 static gboolean
 nautilus_view_try_load_client(NautilusView *view, CORBA_Object obj, CORBA_Environment *ev)
 {
-  GNOME_Control control;
+  Bonobo_Control control;
   NautilusViewInfo *nvi;
 
   nvi = view->component_data = g_new0(NautilusViewInfo, 1);
 
-  control = GNOME_Unknown_query_interface(obj, "IDL:GNOME/Control:1.0", ev);
+  control = Bonobo_Unknown_query_interface(obj, "IDL:GNOME/Control:1.0", ev);
   if(ev->_major != CORBA_NO_EXCEPTION)
     control = CORBA_OBJECT_NIL;
 
@@ -50,17 +50,17 @@ nautilus_view_try_load_client(NautilusView *view, CORBA_Object obj, CORBA_Enviro
     goto out;
 
   nvi->view_client = CORBA_Object_duplicate(obj, ev);
-  GNOME_Unknown_ref(nvi->view_client, ev);
+  Bonobo_Unknown_ref(nvi->view_client, ev);
 
-  nvi->control_frame = GNOME_OBJECT(gnome_control_frame_new());
-  gnome_object_add_interface(GNOME_OBJECT(nvi->control_frame), view->view_frame);
+  nvi->control_frame = BONOBO_OBJECT(bonobo_control_frame_new());
+  bonobo_object_add_interface(BONOBO_OBJECT(nvi->control_frame), view->view_frame);
 
-  gnome_control_frame_set_ui_handler(GNOME_CONTROL_FRAME(nvi->control_frame),
+  bonobo_control_frame_set_ui_handler(BONOBO_CONTROL_FRAME(nvi->control_frame),
 				     nautilus_window_get_uih(NAUTILUS_WINDOW(view->main_window)));
-  gnome_control_frame_bind_to_control(GNOME_CONTROL_FRAME(nvi->control_frame), control);
-  view->client_widget = gnome_control_frame_get_widget(GNOME_CONTROL_FRAME(nvi->control_frame));
+  bonobo_control_frame_bind_to_control(BONOBO_CONTROL_FRAME(nvi->control_frame), control);
+  view->client_widget = bonobo_control_frame_get_widget(BONOBO_CONTROL_FRAME(nvi->control_frame));
 
-  GNOME_Unknown_unref(control, ev);
+  Bonobo_Unknown_unref(control, ev);
   CORBA_Object_release(control, ev);
 
   return TRUE;
@@ -145,22 +145,22 @@ static char *
 nv_get_label(NautilusView *view, CORBA_Environment *ev)
 {
   NautilusViewInfo *nvi = view->component_data;
-  GnomePropertyBagClient *bc;
-  GNOME_Property prop;
+  BonoboPropertyBagClient *bc;
+  Bonobo_Property prop;
   char *retval = NULL;
   CORBA_any *anyval;
-  GnomeControlFrame *control_frame;
+  BonoboControlFrame *control_frame;
 
-  control_frame = GNOME_CONTROL_FRAME(nvi->control_frame);
-  bc = gnome_control_frame_get_control_property_bag(control_frame);
+  control_frame = BONOBO_CONTROL_FRAME(nvi->control_frame);
+  bc = bonobo_control_frame_get_control_property_bag(control_frame);
   g_return_val_if_fail(bc, NULL);
 
-  prop = gnome_property_bag_client_get_property(bc, "label");
+  prop = bonobo_property_bag_client_get_property(bc, "label");
 
   if(CORBA_Object_is_nil(prop, ev))
     return NULL;
 
-  anyval = GNOME_Property_get_value(prop, ev);
+  anyval = Bonobo_Property_get_value(prop, ev);
   if(ev->_major == CORBA_NO_EXCEPTION && CORBA_TypeCode_equal(anyval->_type, TC_string, ev))
     {
       retval = g_strdup(*(CORBA_char **)anyval->_value);

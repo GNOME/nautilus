@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* xfer.h - GNOME::Desktop::FileOperationService transfer service.
+/* xfer.h - Bonobo::Desktop::FileOperationService transfer service.
 
    Copyright (C) 1999, 2000 Free Software Foundation
 

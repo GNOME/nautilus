@@ -28,6 +28,8 @@
 #include "config.h"
 
 #include <libnautilus/libnautilus.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnorba/gnorba.h>
 
 typedef struct {
   NautilusViewFrame *view;
@@ -36,7 +38,7 @@ typedef struct {
 
   gint notify_count, last_row;
 
-  GnomeUIHandler *uih;
+  BonoboUIHandler *uih;
 } HistoryView;
 
 static void
@@ -134,10 +136,10 @@ do_destroy(GtkObject *obj)
     gtk_main_quit();
 }
 
-static GnomeObject * make_obj(GnomeGenericFactory *Factory, const char *goad_id, gpointer closure)
+static BonoboObject * make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
 {
   GtkWidget *frame, *clist, *wtmp;
-  GnomeObject *ctl;
+  BonoboObject *ctl;
   char *col_titles[1];
   HistoryView *hview;
 
@@ -149,7 +151,7 @@ static GnomeObject * make_obj(GnomeGenericFactory *Factory, const char *goad_id,
   gtk_signal_connect(GTK_OBJECT(frame), "destroy", do_destroy, NULL);
   object_count++;
 
-  ctl = nautilus_view_frame_get_gnome_object(NAUTILUS_VIEW_FRAME(frame));
+  ctl = nautilus_view_frame_get_bonobo_object(NAUTILUS_VIEW_FRAME(frame));
 
   /* create interface */
   col_titles[0] = _("Path");
@@ -179,18 +181,18 @@ static GnomeObject * make_obj(GnomeGenericFactory *Factory, const char *goad_id,
 
 #if 0
   {
-    GNOME_UIHandler remote_uih;
+    Bonobo_UIHandler remote_uih;
     GnomeUIInfo history_menu[] = {
       GNOMEUIINFO_MENU_NEW_ITEM("_New", "Testing", NULL, NULL),
       GNOMEUIINFO_END
     };
 
-    remote_uih = gnome_control_get_remote_ui_handler(GNOME_CONTROL(ctl));
-    hview->uih = gnome_ui_handler_new();
-    gnome_ui_handler_set_container(hview->uih, remote_uih);
+    remote_uih = bonobo_control_get_remote_ui_handler(BONOBO_CONTROL(ctl));
+    hview->uih = bonobo_ui_handler_new();
+    bonobo_ui_handler_set_container(hview->uih, remote_uih);
 
-    gnome_ui_handler_menu_add_tree(hview->uih, "/History",
-                                   gnome_ui_handler_menu_parse_uiinfo_tree(history_menu));
+    bonobo_ui_handler_menu_add_tree(hview->uih, "/History",
+                                   bonobo_ui_handler_menu_parse_uiinfo_tree(history_menu));
   }
 #endif
 
@@ -199,7 +201,7 @@ static GnomeObject * make_obj(GnomeGenericFactory *Factory, const char *goad_id,
 
 int main(int argc, char *argv[])
 {
-  GnomeGenericFactory *factory;
+  BonoboGenericFactory *factory;
   CORBA_ORB orb;
   CORBA_Environment ev;
 
@@ -208,7 +210,7 @@ int main(int argc, char *argv[])
 					 GNORBA_INIT_SERVER_FUNC, &ev);
   bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
-  factory = gnome_generic_factory_new_multi("ntl_history_view_factory", make_obj, NULL);
+  factory = bonobo_generic_factory_new_multi("ntl_history_view_factory", make_obj, NULL);
 
   do {
     bonobo_main();

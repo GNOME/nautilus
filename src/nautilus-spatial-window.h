@@ -62,8 +62,8 @@ struct _NautilusWindow {
   guint statusbar_ctx, statusbar_clear_id;
 
   /** CORBA-related elements **/
-  GnomeObject *ntl_viewwindow;
-  GnomeUIHandler *uih;
+  BonoboObject *ntl_viewwindow;
+  BonoboUIHandler *uih;
 
   /** State information **/
 
@@ -110,7 +110,7 @@ void nautilus_window_goto_uri(NautilusWindow *window, const char *uri);
 void nautilus_window_display_error(NautilusWindow *window, const char *error_msg);
 
 const char *nautilus_window_get_requested_uri(NautilusWindow *window);
-GnomeUIHandler *nautilus_window_get_uih(NautilusWindow *window);
+BonoboUIHandler *nautilus_window_get_uih(NautilusWindow *window);
 
 void nautilus_window_allow_back (NautilusWindow *window, gboolean allow);
 void nautilus_window_allow_forward (NautilusWindow *window, gboolean allow);

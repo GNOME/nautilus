@@ -23,14 +23,14 @@
 
 /* FIXME this is just a quick hack.  */
 
-#ifndef __GNOME_PROGRESSIVE_LOADER_H__
-#define __GNOME_PROGRESSIVE_LOADER_H__
+#ifndef __BONOBO_PROGRESSIVE_LOADER_H__
+#define __BONOBO_PROGRESSIVE_LOADER_H__
 
 #include <gnome.h>
-#include <bonobo/gnome-bonobo.h>
+#include <bonobo.h>
 #include <libgnomevfs/gnome-vfs.h>
 
-#include "GNOME_ProgressiveLoader.h"
+#include "Bonobo_ProgressiveLoader.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -38,47 +38,47 @@ extern "C" {
 #endif /* __cplusplus */
 
 #define GNOME_TYPE_PROGRESSIVE_LOADER \
-	(gnome_progressive_loader_get_type ())
-#define GNOME_PROGRESSIVE_LOADER(obj) \
-	(GTK_CHECK_CAST ((obj), GNOME_TYPE_PROGRESSIVE_LOADER, GnomeProgressiveLoader))
-#define GNOME_PROGRESSIVE_LOADER_CLASS(klass) \
-	(GTK_CHECK_CLASS_CAST ((klass), GNOME_TYPE_PROGRESSIVE_LOADER, GnomeProgressiveLoaderClass))
-#define GNOME_IS_PROGRESSIVE_LOADER(obj) \
+	(bonobo_progressive_loader_get_type ())
+#define BONOBO_PROGRESSIVE_LOADER(obj) \
+	(GTK_CHECK_CAST ((obj), GNOME_TYPE_PROGRESSIVE_LOADER, BonoboProgressiveLoader))
+#define BONOBO_PROGRESSIVE_LOADER_CLASS(klass) \
+	(GTK_CHECK_CLASS_CAST ((klass), GNOME_TYPE_PROGRESSIVE_LOADER, BonoboProgressiveLoaderClass))
+#define BONOBO_IS_PROGRESSIVE_LOADER(obj) \
         (GTK_CHECK_TYPE ((obj), GNOME_TYPE_PROGRESSIVE_LOADER))
-#define GNOME_IS_PROGRESSIVE_LOADER_CLASS(klass) \
+#define BONOBO_IS_PROGRESSIVE_LOADER_CLASS(klass) \
 	(GTK_CHECK_CLASS_TYPE ((obj), GNOME_TYPE_PROGRESSIVE_LOADER))
 
 
-typedef struct _GnomeProgressiveLoader       GnomeProgressiveLoader;
-typedef struct _GnomeProgressiveLoaderClass  GnomeProgressiveLoaderClass;
+typedef struct _BonoboProgressiveLoader       BonoboProgressiveLoader;
+typedef struct _BonoboProgressiveLoaderClass  BonoboProgressiveLoaderClass;
 
-typedef GnomeVFSResult (* GnomeProgressiveLoaderLoadFn)
-			(GnomeProgressiveLoader *progressive_loader,
+typedef GnomeVFSResult (* BonoboProgressiveLoaderLoadFn)
+			(BonoboProgressiveLoader *progressive_loader,
 			 const gchar *uri,
-			 GNOME_ProgressiveDataSink pdsink);
+			 Bonobo_ProgressiveDataSink pdsink);
 
-struct _GnomeProgressiveLoader {
-	GnomeObject parent;
+struct _BonoboProgressiveLoader {
+	BonoboObject parent;
 
-	GnomeProgressiveLoaderLoadFn load_fn;
+	BonoboProgressiveLoaderLoadFn load_fn;
 };
 
-struct _GnomeProgressiveLoaderClass {
-	GnomeObjectClass parent_class;
+struct _BonoboProgressiveLoaderClass {
+	BonoboObjectClass parent_class;
 };
 
 
-GtkType gnome_progressive_loader_get_type (void);
-GnomeProgressiveLoader *gnome_progressive_loader_new (GnomeProgressiveLoaderLoadFn fn);
-gboolean gnome_progressive_loader_construct (GnomeProgressiveLoader *loader,
-					     GNOME_ProgressiveLoader corba_loader,
-					     GnomeProgressiveLoaderLoadFn load_fn);
+GtkType bonobo_progressive_loader_get_type (void);
+BonoboProgressiveLoader *bonobo_progressive_loader_new (BonoboProgressiveLoaderLoadFn fn);
+gboolean bonobo_progressive_loader_construct (BonoboProgressiveLoader *loader,
+					     Bonobo_ProgressiveLoader corba_loader,
+					     BonoboProgressiveLoaderLoadFn load_fn);
 
 
-extern POA_GNOME_ProgressiveLoader__epv gnome_progressive_loader_epv;
+extern POA_Bonobo_ProgressiveLoader__epv bonobo_progressive_loader_epv;
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif /* __GNOME_PROGRESSIVE_LOADER_H__ */
+#endif /* __BONOBO_PROGRESSIVE_LOADER_H__ */

@@ -5,7 +5,7 @@
 
 #include <gnome.h>
 #include <libgnorba/gnorba.h>
-#include <bonobo/gnome-bonobo.h>
+#include <bonobo.h>
 
 #include "ntl-types.h"
 #include "ntl-prefs.h"

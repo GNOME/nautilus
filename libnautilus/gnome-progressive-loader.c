@@ -32,52 +32,52 @@
 #include "gnome-progressive-loader.h"
 
 
-static GnomeObjectClass *parent_class = NULL;
+static BonoboObjectClass *parent_class = NULL;
 
-POA_GNOME_ProgressiveLoader__epv gnome_progressive_loader_epv;
-POA_GNOME_ProgressiveLoader__vepv gnome_progressive_loader_vepv;
+POA_Bonobo_ProgressiveLoader__epv bonobo_progressive_loader_epv;
+POA_Bonobo_ProgressiveLoader__vepv bonobo_progressive_loader_vepv;
 
 
 static void
 impl_load (PortableServer_Servant servant,
 	   const CORBA_char *uri,
-	   GNOME_ProgressiveDataSink pdsink,
+	   Bonobo_ProgressiveDataSink pdsink,
 	   CORBA_Environment *ev)
 {
-	GnomeObject *object;
-	GnomeProgressiveLoader *loader;
+	BonoboObject *object;
+	BonoboProgressiveLoader *loader;
 	GnomeVFSResult result;
-	GNOME_ProgressiveLoader_Error *exception;
+	Bonobo_ProgressiveLoader_Error *exception;
 
-	object = gnome_object_from_servant (servant);
-	loader = GNOME_PROGRESSIVE_LOADER (object);
+	object = bonobo_object_from_servant (servant);
+	loader = BONOBO_PROGRESSIVE_LOADER (object);
 
 	result = (* loader->load_fn) (loader, uri, pdsink);
 
 	if (result == GNOME_VFS_OK)
 		return;
 
-	exception = g_new (GNOME_ProgressiveLoader_Error, 1);
+	exception = g_new (Bonobo_ProgressiveLoader_Error, 1);
 	exception->vfs_result = result;
 
 	CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
-			     ex_GNOME_ProgressiveLoader_Error,
+			     ex_Bonobo_ProgressiveLoader_Error,
 			     exception);
 }
 
 
-static GNOME_ProgressiveLoader
-create_GNOME_ProgressiveLoader (GnomeObject *object)
+static Bonobo_ProgressiveLoader
+create_Bonobo_ProgressiveLoader (BonoboObject *object)
 {
-	POA_GNOME_ProgressiveLoader *servant;
+	POA_Bonobo_ProgressiveLoader *servant;
 	CORBA_Environment ev;
 
-	servant = (POA_GNOME_ProgressiveLoader *) g_new (GnomeObjectServant, 1);
-	servant->vepv = &gnome_progressive_loader_vepv;
+	servant = (POA_Bonobo_ProgressiveLoader *) g_new (BonoboObjectServant, 1);
+	servant->vepv = &bonobo_progressive_loader_vepv;
 
 	CORBA_exception_init (&ev);
 
-	POA_GNOME_ProgressiveLoader__init ((PortableServer_Servant) servant,
+	POA_Bonobo_ProgressiveLoader__init ((PortableServer_Servant) servant,
 					   &ev);
 	if (ev._major != CORBA_NO_EXCEPTION){
 		g_free (servant);
@@ -86,7 +86,7 @@ create_GNOME_ProgressiveLoader (GnomeObject *object)
 	}
 
 	CORBA_exception_free (&ev);
-	return (GNOME_ProgressiveLoader) gnome_object_activate_servant
+	return (Bonobo_ProgressiveLoader) bonobo_object_activate_servant
 		(object, servant);
 }
 
@@ -96,9 +96,9 @@ create_GNOME_ProgressiveLoader (GnomeObject *object)
 static void
 destroy (GtkObject *object)
 {
-	GnomeProgressiveLoader *loader;
+	BonoboProgressiveLoader *loader;
 
-	loader = GNOME_PROGRESSIVE_LOADER (object);
+	loader = BONOBO_PROGRESSIVE_LOADER (object);
 
 	/* Nothing special.  */
 
@@ -110,18 +110,18 @@ destroy (GtkObject *object)
 static void
 corba_class_init (void)
 {
-	gnome_progressive_loader_epv.load = impl_load;
+	bonobo_progressive_loader_epv.load = impl_load;
 
-	gnome_progressive_loader_vepv.GNOME_ProgressiveLoader_epv
-		= &gnome_progressive_loader_epv;
+	bonobo_progressive_loader_vepv.Bonobo_ProgressiveLoader_epv
+		= &bonobo_progressive_loader_epv;
 }
 
 static void
-class_init (GnomeProgressiveLoaderClass *class)
+class_init (BonoboProgressiveLoaderClass *class)
 {
 	GtkObjectClass *object_class;
 
-	parent_class = gtk_type_class (gnome_object_get_type ());
+	parent_class = gtk_type_class (bonobo_object_get_type ());
 
 	object_class = GTK_OBJECT_CLASS (class);
 	object_class->destroy = destroy;
@@ -130,21 +130,21 @@ class_init (GnomeProgressiveLoaderClass *class)
 }
 
 static void
-init (GnomeProgressiveLoader *progressive_loader)
+init (BonoboProgressiveLoader *progressive_loader)
 {
 }
 
 
 GtkType
-gnome_progressive_loader_get_type (void)
+bonobo_progressive_loader_get_type (void)
 {
 	static GtkType type = 0;
 
 	if (type == 0) {
 		static const GtkTypeInfo info = {
 			"IDL:GNOME/ProgressiveLoader:1.0",
-			sizeof (GnomeProgressiveLoader),
-			sizeof (GnomeProgressiveLoaderClass),
+			sizeof (BonoboProgressiveLoader),
+			sizeof (BonoboProgressiveLoaderClass),
 			(GtkClassInitFunc) class_init,
 			(GtkObjectInitFunc) init,
 			/* reserved_1 */ NULL,
@@ -152,26 +152,26 @@ gnome_progressive_loader_get_type (void)
 			(GtkClassInitFunc) NULL,
 		};
 
-		type = gtk_type_unique (gnome_object_get_type (), &info);
+		type = gtk_type_unique (bonobo_object_get_type (), &info);
 	}
 
 	return type;
 }
 
 gboolean
-gnome_progressive_loader_construct (GnomeProgressiveLoader *loader,
-				    GNOME_ProgressiveLoader corba_loader,
-				    GnomeProgressiveLoaderLoadFn load_fn)
+bonobo_progressive_loader_construct (BonoboProgressiveLoader *loader,
+				    Bonobo_ProgressiveLoader corba_loader,
+				    BonoboProgressiveLoaderLoadFn load_fn)
 {
 	g_return_val_if_fail (loader != NULL, FALSE);
-	g_return_val_if_fail (GNOME_IS_PROGRESSIVE_LOADER (loader), FALSE);
+	g_return_val_if_fail (BONOBO_IS_PROGRESSIVE_LOADER (loader), FALSE);
 	g_return_val_if_fail (corba_loader != CORBA_OBJECT_NIL, FALSE);
 	g_return_val_if_fail (load_fn != NULL, FALSE);
 
-	gnome_object_construct (GNOME_OBJECT (loader), corba_loader);
+	bonobo_object_construct (BONOBO_OBJECT (loader), corba_loader);
 
 	if (corba_loader == CORBA_OBJECT_NIL) {
-		corba_loader = create_GNOME_ProgressiveLoader (GNOME_OBJECT (loader));
+		corba_loader = create_Bonobo_ProgressiveLoader (BONOBO_OBJECT (loader));
 		if (corba_loader == CORBA_OBJECT_NIL)
 			return FALSE;
 	}
@@ -181,16 +181,16 @@ gnome_progressive_loader_construct (GnomeProgressiveLoader *loader,
 	return TRUE;
 }
 
-GnomeProgressiveLoader *
-gnome_progressive_loader_new (GnomeProgressiveLoaderLoadFn load_fn)
+BonoboProgressiveLoader *
+bonobo_progressive_loader_new (BonoboProgressiveLoaderLoadFn load_fn)
 {
-	GnomeProgressiveLoader *loader;
+	BonoboProgressiveLoader *loader;
 
 	g_return_val_if_fail (load_fn != NULL, NULL);
 
-	loader = gtk_type_new (gnome_progressive_loader_get_type ());
+	loader = gtk_type_new (bonobo_progressive_loader_get_type ());
 
-	if (! gnome_progressive_loader_construct (loader, CORBA_OBJECT_NIL,
+	if (! bonobo_progressive_loader_construct (loader, CORBA_OBJECT_NIL,
 						  load_fn)) {
 		gtk_object_destroy (GTK_OBJECT (loader));
 		return NULL;

@@ -31,9 +31,9 @@
 #include "fm-directory-view-list.h"
 #include <libnautilus/nautilus-debug.h>
 #include <libgnorba/gnorba.h>
-#include <bonobo/gnome-object.h>
-#include <bonobo/gnome-generic-factory.h>
-#include <bonobo/gnome-main.h>
+#include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-generic-factory.h>
+#include <bonobo/bonobo-main.h>
 #include <libgnomevfs/gnome-vfs-init.h>
 
 static int object_count = 0;
@@ -46,8 +46,8 @@ do_destroy (GtkObject *obj)
                 gtk_main_quit();
 }
 
-static GnomeObject *
-make_obj (GnomeGenericFactory *Factory, const char *goad_id, gpointer closure)
+static BonoboObject *
+make_obj (BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
 {
         FMDirectoryView *dir_view;
         NautilusContentViewFrame *view_frame;
@@ -64,22 +64,22 @@ make_obj (GnomeGenericFactory *Factory, const char *goad_id, gpointer closure)
         
         view_frame = fm_directory_view_get_view_frame (dir_view);
         
-        if (GNOME_IS_OBJECT (view_frame))
-                return GNOME_OBJECT (view_frame);
+        if (BONOBO_IS_OBJECT (view_frame))
+                return BONOBO_OBJECT (view_frame);
         
         gtk_signal_connect (GTK_OBJECT (view_frame), "destroy", do_destroy, NULL);
         gtk_widget_show (GTK_WIDGET (view_frame));
         
         object_count++;
         
-        return nautilus_view_frame_get_gnome_object (NAUTILUS_VIEW_FRAME (view_frame));
+        return nautilus_view_frame_get_bonobo_object (NAUTILUS_VIEW_FRAME (view_frame));
 }
 
 int main(int argc, char *argv[])
 {
         CORBA_Environment ev;
         CORBA_ORB orb;
-        GnomeGenericFactory *factory;
+        BonoboGenericFactory *factory;
         
         CORBA_exception_init(&ev);
         
@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
         g_thread_init (NULL);
         gnome_vfs_init ();
         
-        factory = gnome_generic_factory_new_multi("ntl_file_manager_factory", make_obj, NULL);
+        factory = bonobo_generic_factory_new_multi("ntl_file_manager_factory", make_obj, NULL);
         
         do
                 bonobo_main();

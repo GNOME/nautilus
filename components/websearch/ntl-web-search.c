@@ -45,7 +45,7 @@ typedef struct {
 
   EngineInfo *last_sel;
 
-  GnomeUIHandler *uih;
+  BonoboUIHandler *uih;
 } WebSearchView;
 
 static int object_count = 0;
@@ -160,11 +160,11 @@ web_search_populate_engines(WebSearchView *hview)
     }
 }
 
-static GnomeObject *
-make_obj(GnomeGenericFactory *Factory, const char *goad_id, gpointer closure)
+static BonoboObject *
+make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
 {
   GtkWidget *frame, *vbox;
-  GnomeObject *ctl;
+  BonoboObject *ctl;
   WebSearchView *hview;
 
   g_return_val_if_fail(!strcmp(goad_id, "ntl_websearch_view"), NULL);
@@ -174,7 +174,7 @@ make_obj(GnomeGenericFactory *Factory, const char *goad_id, gpointer closure)
   gtk_signal_connect(GTK_OBJECT(frame), "destroy", do_destroy, NULL);
   object_count++;
 
-  ctl = nautilus_view_frame_get_gnome_object(NAUTILUS_VIEW_FRAME(frame));
+  ctl = nautilus_view_frame_get_bonobo_object(NAUTILUS_VIEW_FRAME(frame));
 
   vbox = gtk_vbox_new(FALSE, GNOME_PAD);
   gtk_container_add(GTK_CONTAINER(frame), vbox);
@@ -229,7 +229,7 @@ make_obj(GnomeGenericFactory *Factory, const char *goad_id, gpointer closure)
 
 int main(int argc, char *argv[])
 {
-  GnomeGenericFactory *factory;
+  BonoboGenericFactory *factory;
   CORBA_ORB orb;
   CORBA_Environment ev;
 
@@ -238,7 +238,7 @@ int main(int argc, char *argv[])
 					 GNORBA_INIT_SERVER_FUNC, &ev);
   bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
-  factory = gnome_generic_factory_new_multi("ntl_websearch_view_factory", make_obj, NULL);
+  factory = bonobo_generic_factory_new_multi("ntl_websearch_view_factory", make_obj, NULL);
 
   do {
     bonobo_main();

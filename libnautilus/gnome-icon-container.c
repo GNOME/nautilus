@@ -2656,7 +2656,7 @@ gnome_icon_container_select_all (GnomeIconContainer *container)
 /**
  * gnome_icon_container_select_list_unselect_others:
  * @container: An icon container widget.
- * @list: A list of GnomeContainerIcons.
+ * @list: A list of BonoboContainerIcons.
  * 
  * Select only the icons in the list, deselect all others.
  **/

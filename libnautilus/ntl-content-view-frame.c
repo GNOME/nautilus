@@ -31,7 +31,7 @@
 
 typedef struct {
   POA_Nautilus_View servant;
-  gpointer gnome_object;
+  gpointer bonobo_object;
 
   NautilusContentViewFrame *view;
 } impl_POA_Nautilus_ContentView;

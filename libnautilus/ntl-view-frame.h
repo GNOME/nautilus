@@ -32,7 +32,7 @@
 
 #include <gtk/gtkbin.h>
 #include <libnautilus/nautilus.h>
-#include <bonobo/gnome-object.h>
+#include <bonobo/bonobo-object.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -71,7 +71,7 @@ struct _NautilusViewFrame
 
 	GtkWidget *main_window;
  
-	GnomeObject *control, *view_server;
+	BonoboObject *control, *view_server;
 	Nautilus_ViewFrame view_frame;
 };
 
@@ -84,7 +84,7 @@ void         nautilus_view_frame_request_status_change    (NautilusViewFrame    
 							   Nautilus_StatusRequestInfo     *loc);
 void         nautilus_view_frame_request_progress_change  (NautilusViewFrame              *view,
 							   Nautilus_ProgressRequestInfo   *loc);
-GnomeObject *nautilus_view_frame_get_gnome_object         (NautilusViewFrame              *view);
+BonoboObject *nautilus_view_frame_get_bonobo_object         (NautilusViewFrame              *view);
 
 #ifdef __cplusplus
 }

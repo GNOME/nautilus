@@ -31,7 +31,7 @@
 
 typedef struct {
   POA_Nautilus_ViewFrame servant;
-  gpointer gnome_object;
+  gpointer bonobo_object;
 
   NautilusView *view;
 } impl_POA_Nautilus_ViewFrame;
@@ -77,7 +77,7 @@ POA_Nautilus_ViewFrame__vepv impl_Nautilus_ViewFrame_vepv =
 };
 
 static void
-impl_Nautilus_ViewFrame__destroy(GnomeObject *obj, impl_POA_Nautilus_ViewFrame *servant)
+impl_Nautilus_ViewFrame__destroy(BonoboObject *obj, impl_POA_Nautilus_ViewFrame *servant)
 {
    PortableServer_ObjectId *objid;
    CORBA_Environment ev;
@@ -99,10 +99,10 @@ impl_Nautilus_ViewFrame__destroy(GnomeObject *obj, impl_POA_Nautilus_ViewFrame *
    CORBA_exception_free(&ev);
 }
 
-GnomeObject *
+BonoboObject *
 impl_Nautilus_ViewFrame__create(NautilusView *view, CORBA_Environment * ev)
 {
-   GnomeObject *retval;
+   BonoboObject *retval;
    impl_POA_Nautilus_ViewFrame *newservant;
    NautilusViewClass *klass;
    void (*servant_init_func)(PortableServer_Servant, CORBA_Environment *);
@@ -110,13 +110,13 @@ impl_Nautilus_ViewFrame__create(NautilusView *view, CORBA_Environment * ev)
    klass = NAUTILUS_VIEW_CLASS(GTK_OBJECT(view)->klass);
    newservant = g_new0(impl_POA_Nautilus_ViewFrame, 1);
    newservant->servant.vepv = klass->vepv;
-   if(!newservant->servant.vepv->GNOME_Unknown_epv)
-     newservant->servant.vepv->GNOME_Unknown_epv = gnome_object_get_epv();
+   if(!newservant->servant.vepv->Bonobo_Unknown_epv)
+     newservant->servant.vepv->Bonobo_Unknown_epv = bonobo_object_get_epv();
    newservant->view = view;
    servant_init_func = klass->servant_init_func;
    servant_init_func((PortableServer_Servant) newservant, ev);
 
-   retval = gnome_object_new_from_servant(newservant);
+   retval = bonobo_object_new_from_servant(newservant);
 
    gtk_signal_connect(GTK_OBJECT(retval), "destroy", GTK_SIGNAL_FUNC(impl_Nautilus_ViewFrame__destroy), newservant);
 
@@ -127,7 +127,7 @@ static Nautilus_ViewWindow
 impl_Nautilus_ViewFrame__get_main_window(impl_POA_Nautilus_ViewFrame *servant,
                                          CORBA_Environment *ev)
 {
-  return CORBA_Object_duplicate(gnome_object_corba_objref(NAUTILUS_WINDOW(servant->view->main_window)->ntl_viewwindow), ev);
+  return CORBA_Object_duplicate(bonobo_object_corba_objref(NAUTILUS_WINDOW(servant->view->main_window)->ntl_viewwindow), ev);
 }
 
 static void

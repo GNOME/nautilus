@@ -13,7 +13,7 @@ typedef struct {
 
 /* Temporary prototypes until hyperbola-nav-tree.h compiles. */
 GtkType hyperbola_navigation_tree_get_type(void);
-GnomeObject *hyperbola_navigation_tree_new(void);
+BonoboObject *hyperbola_navigation_tree_new(void);
 
 static void hyperbola_navigation_tree_select_row(GtkCTree *ctree,
 						 GtkCTreeNode *node,
@@ -63,7 +63,7 @@ ctree_populate(HyperbolaNavigationTree *view)
   g_tree_traverse(view->doc_tree->children, ctree_populate_subnode, G_IN_ORDER, &subpi);
 }
 
-GnomeObject *
+BonoboObject *
 hyperbola_navigation_tree_new(void)
 {
   static const char *titles[] = {"Document Tree"};
@@ -98,7 +98,7 @@ hyperbola_navigation_tree_new(void)
   gtk_widget_show(view->ctree);
   gtk_widget_show(wtmp);
 
-  return nautilus_view_frame_get_gnome_object(view->view_frame);
+  return nautilus_view_frame_get_bonobo_object(view->view_frame);
 }
 
 static void

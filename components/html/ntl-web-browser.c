@@ -24,6 +24,7 @@
 #include <gnome.h>
 #include <libnautilus/libnautilus.h>
 #include <gtkhtml/gtkhtml.h>
+#include <libgnorba/gnorba.h>
 
 extern GtkHTMLStreamHandle gtk_html_stream_ref(GtkHTMLStreamHandle handle);
 extern void gtk_html_stream_unref(GtkHTMLStreamHandle handle);
@@ -449,8 +450,8 @@ browser_do_destroy(GtkObject *obj)
     gtk_main_quit();
 }
 
-static GnomeObject *
-make_obj(GnomeGenericFactory *Factory, const char *goad_id, void *closure)
+static BonoboObject *
+make_obj(BonoboGenericFactory *Factory, const char *goad_id, void *closure)
 {
   BrowserInfo *bi;
   GtkWidget *wtmp;
@@ -484,12 +485,12 @@ make_obj(GnomeGenericFactory *Factory, const char *goad_id, void *closure)
   gtk_widget_show(wtmp);
   gtk_widget_show(GTK_WIDGET(bi->view_frame));
 
-  return nautilus_view_frame_get_gnome_object(bi->view_frame);
+  return nautilus_view_frame_get_bonobo_object(bi->view_frame);
 }
 
 int main(int argc, char *argv[])
 {
-  GnomeGenericFactory *factory;
+  BonoboGenericFactory *factory;
   CORBA_ORB orb;
   CORBA_Environment ev;
 
@@ -501,7 +502,7 @@ int main(int argc, char *argv[])
   HTNet_addAfter(request_terminator, NULL, NULL, HT_ALL, HT_FILTER_LAST);
   bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
-  factory = gnome_generic_factory_new_multi("ntl_web_browser_factory", make_obj, NULL);
+  factory = bonobo_generic_factory_new_multi("ntl_web_browser_factory", make_obj, NULL);
 
   do {
     bonobo_main();

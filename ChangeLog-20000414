@@ -1,3 +1,26 @@
+2000-01-26  Maciej Stachowiak  <mjs@eazel.com>
+
+	* components/help/hyperbola-main.c,
+	components/help/hyperbola-nav-tree.c,
+	components/history/ntl-history-view.c, components/html/main.c,
+	components/html/ntl-web-browser.c,
+	components/websearch/ntl-web-search.c, idl/nautilus.idl,
+	libnautilus/gnome-icon-container.c,
+	libnautilus/gnome-progressive-loader.c,
+	libnautilus/gnome-progressive-loader.h, libnautilus/libnautilus.h,
+	libnautilus/ntl-content-view-frame.c,
+	libnautilus/ntl-meta-view-frame.c, libnautilus/ntl-view-frame.c,
+	libnautilus/ntl-view-frame.h, src/nautilus.h,
+	src/ntl-index-panel.c, src/ntl-view-bonobo-control.c,
+	src/ntl-view-bonobo-subdoc.c, src/ntl-view-frame-svr.c,
+	src/ntl-view-nautilus.c, src/ntl-view-private.h, src/ntl-view.c,
+	src/ntl-view.h, src/ntl-window.c, src/ntl-window.h,
+	src/file-manager/dfos-corba.h, src/file-manager/dfos-xfer.c,
+	src/file-manager/dfos-xfer.h, src/file-manager/fm-main.c: Build
+	with the recent Bonobo global renaming, and Havoc's changes. A
+	patch from Kjartan Maraas <kmaraas@online.no> and scripts from Nat
+	Friedman <nat@helixcode.com> were a very helpful starting point.
+
 2000-01-26  Havoc Pennington  <hp@pobox.com>
 
 	* src/nautilus-gconf.h, src/nautilus-gconf.c: Trivial files I'd

@@ -33,7 +33,7 @@
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkbin.h>
 #include "ntl-types.h"
-#include <bonobo/gnome-bonobo.h>
+#include <bonobo.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -83,10 +83,10 @@ struct _NautilusView
 
   char *iid;
 
-  GnomeObjectClient *client_object;
+  BonoboObjectClient *client_object;
   GtkWidget *client_widget;
 
-  GnomeObject *view_frame;
+  BonoboObject *view_frame;
 
   NautilusViewComponentType *component_class;
   gpointer component_data;
@@ -102,7 +102,7 @@ gboolean nautilus_view_load_client              (NautilusView              *view
                                                  const char *               iid);
 const char *nautilus_view_get_iid               (NautilusView *view);
 CORBA_Object nautilus_view_get_client_objref    (NautilusView *view);
-GnomeObject *nautilus_view_get_control_frame    (NautilusView *view);
+BonoboObject *nautilus_view_get_control_frame    (NautilusView *view);
 CORBA_Object nautilus_view_get_objref           (NautilusView *view);
 
 /* These functions correspond to methods of the Nautilus:View CORBAinterface */

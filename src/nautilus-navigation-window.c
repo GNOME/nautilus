@@ -45,7 +45,7 @@ static GnomeAppClass *parent_class = NULL;
 /* Stuff for handling the CORBA interface */
 typedef struct {
   POA_Nautilus_ViewWindow servant;
-  gpointer gnome_object;
+  gpointer bonobo_object;
 
   NautilusWindow *window;
 } impl_POA_Nautilus_ViewWindow;
@@ -66,7 +66,7 @@ static POA_Nautilus_ViewWindow__vepv impl_Nautilus_ViewWindow_vepv =
 
 
 static void
-impl_Nautilus_ViewWindow__destroy(GnomeObject *obj, impl_POA_Nautilus_ViewWindow *servant)
+impl_Nautilus_ViewWindow__destroy(BonoboObject *obj, impl_POA_Nautilus_ViewWindow *servant)
 {
    PortableServer_ObjectId *objid;
    CORBA_Environment ev;
@@ -84,10 +84,10 @@ impl_Nautilus_ViewWindow__destroy(GnomeObject *obj, impl_POA_Nautilus_ViewWindow
    CORBA_exception_free(&ev);
 }
 
-static GnomeObject *
+static BonoboObject *
 impl_Nautilus_ViewWindow__create(NautilusWindow *window)
 {
-   GnomeObject *retval;
+   BonoboObject *retval;
    impl_POA_Nautilus_ViewWindow *newservant;
    CORBA_Environment ev;
 
@@ -98,7 +98,7 @@ impl_Nautilus_ViewWindow__create(NautilusWindow *window)
    newservant->window = window;
    POA_Nautilus_ViewWindow__init((PortableServer_Servant) newservant, &ev);
 
-   retval = gnome_object_new_from_servant(newservant);
+   retval = bonobo_object_new_from_servant(newservant);
 
    gtk_signal_connect(GTK_OBJECT(retval), "destroy", GTK_SIGNAL_FUNC(impl_Nautilus_ViewWindow__destroy), newservant);
    CORBA_exception_free(&ev);
@@ -354,7 +354,7 @@ nautilus_window_class_init (NautilusWindowClass *klass)
 			   GTK_TYPE_OBJECT,
 			   GTK_ARG_READWRITE,
 			   ARG_CONTENT_VIEW);
-  impl_Nautilus_ViewWindow_vepv.GNOME_Unknown_epv = gnome_object_get_epv();
+  impl_Nautilus_ViewWindow_vepv.Bonobo_Unknown_epv = bonobo_object_get_epv();
 
   widget_class->realize = nautilus_window_realize;
 }
@@ -486,9 +486,9 @@ nautilus_window_constructed(NautilusWindow *window)
 
   /* CORBA stuff */
   window->ntl_viewwindow = impl_Nautilus_ViewWindow__create(window);
-  window->uih = gnome_ui_handler_new();
-  gnome_ui_handler_set_app(window->uih, app);
-  gnome_ui_handler_set_statusbar(window->uih, statusbar);
+  window->uih = bonobo_ui_handler_new();
+  bonobo_ui_handler_set_app(window->uih, app);
+  bonobo_ui_handler_set_statusbar(window->uih, statusbar);
 
   /* set up menu bar */
   gnome_app_create_menus_with_data(app, main_menu, window);
@@ -765,7 +765,7 @@ nautilus_window_get_requested_uri (NautilusWindow *window)
   return window->ni == NULL ? NULL : window->ni->requested_uri;
 }
 
-GnomeUIHandler *
+BonoboUIHandler *
 nautilus_window_get_uih(NautilusWindow *window)
 {
   return window->uih;

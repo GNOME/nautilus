@@ -219,7 +219,7 @@ nautilus_view_destroy_client(NautilusView *view)
 
   g_free(view->iid); view->iid = NULL;
 
-  gnome_object_destroy(GNOME_OBJECT(view->client_object)); view->client_object = NULL;
+  bonobo_object_destroy(BONOBO_OBJECT(view->client_object)); view->client_object = NULL;
 
   gtk_container_remove(GTK_CONTAINER(view), view->client_widget); view->client_widget = NULL;
 
@@ -231,7 +231,7 @@ nautilus_view_destroy_client(NautilusView *view)
       CORBA_exception_free(&ev);
     }
 
-  gnome_object_destroy(view->view_frame); view->view_frame = NULL;
+  bonobo_object_destroy(view->view_frame); view->view_frame = NULL;
 
   view->component_class = NULL;
   view->component_data = NULL;
@@ -354,7 +354,7 @@ nautilus_view_load_client(NautilusView *view, const char *iid)
 
   nautilus_view_destroy_client(view);
 
-  view->client_object = gnome_object_activate(iid, 0);
+  view->client_object = bonobo_object_activate(iid, 0);
   if(!view->client_object)
     return FALSE;
 
@@ -364,7 +364,7 @@ nautilus_view_load_client(NautilusView *view, const char *iid)
 
   for(i = 0; component_types[i] && !view->component_class; i++)
     {
-      obj = GNOME_Unknown_query_interface(gnome_object_corba_objref(GNOME_OBJECT(view->client_object)),
+      obj = Bonobo_Unknown_query_interface(bonobo_object_corba_objref(BONOBO_OBJECT(view->client_object)),
                                           component_types[i]->primary_repoid, &ev);
       if(ev._major != CORBA_NO_EXCEPTION)
         obj = CORBA_OBJECT_NIL;
@@ -375,7 +375,7 @@ nautilus_view_load_client(NautilusView *view, const char *iid)
       if(component_types[i]->try_load(view, obj, &ev))
         view->component_class = component_types[i];
 
-      GNOME_Unknown_unref(obj, &ev);
+      Bonobo_Unknown_unref(obj, &ev);
       CORBA_Object_release(obj, &ev);
 
       if (view->component_class)
@@ -528,13 +528,13 @@ nautilus_view_get_iid(NautilusView *view)
 CORBA_Object
 nautilus_view_get_client_objref(NautilusView *view)
 {
-  return view?gnome_object_corba_objref(GNOME_OBJECT(view->client_object)):NULL;
+  return view?bonobo_object_corba_objref(BONOBO_OBJECT(view->client_object)):NULL;
 }
 
 CORBA_Object
 nautilus_view_get_objref(NautilusView *view)
 {
-  return view?gnome_object_corba_objref(view->view_frame):NULL;
+  return view?bonobo_object_corba_objref(view->view_frame):NULL;
 }
 
 
@@ -577,7 +577,7 @@ check_object(NautilusView *view)
 
   view->checking++;
 
-  if(CORBA_Object_non_existent(gnome_object_corba_objref(GNOME_OBJECT(view->client_object)), &ev))
+  if(CORBA_Object_non_existent(bonobo_object_corba_objref(BONOBO_OBJECT(view->client_object)), &ev))
     {
       view->timer_id = 0;
       gtk_object_destroy(GTK_OBJECT(view));

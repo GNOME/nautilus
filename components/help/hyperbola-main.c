@@ -1,9 +1,10 @@
 #include "config.h"
 
 #include <libnautilus/libnautilus.h>
+#include <libgnorba/gnorba.h>
 
 /* In hyperbola-nav-tree.c */
-extern GnomeObject *hyperbola_navigation_tree_new(void);
+extern BonoboObject *hyperbola_navigation_tree_new(void);
 
 static int object_count = 0;
 
@@ -16,10 +17,10 @@ do_destroy(GtkObject *obj)
     gtk_main_quit();
 }
 
-static GnomeObject *
-make_obj(GnomeGenericFactory *Factory, const char *goad_id, void *closure)
+static BonoboObject *
+make_obj(BonoboGenericFactory *Factory, const char *goad_id, void *closure)
 {
-  GnomeObject *retval = NULL;
+  BonoboObject *retval = NULL;
 
   if(!strcmp(goad_id, "hyperbola_navigation_tree"))
      retval = hyperbola_navigation_tree_new();
@@ -35,7 +36,7 @@ make_obj(GnomeGenericFactory *Factory, const char *goad_id, void *closure)
 
 int main(int argc, char *argv[])
 {
-  GnomeGenericFactory *factory;
+  BonoboGenericFactory *factory;
   CORBA_ORB orb;
   CORBA_Environment ev;
 
@@ -44,7 +45,7 @@ int main(int argc, char *argv[])
 					 GNORBA_INIT_SERVER_FUNC, &ev);
   bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
-  factory = gnome_generic_factory_new_multi("hyperbola_factory", make_obj, NULL);
+  factory = bonobo_generic_factory_new_multi("hyperbola_factory", make_obj, NULL);
 
   do {
     bonobo_main();

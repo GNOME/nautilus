@@ -29,7 +29,7 @@
 #ifndef LIBNAUTILUS_H
 #define LIBNAUTILUS_H
 
-#include <bonobo/gnome-bonobo.h>
+#include <bonobo.h>
 #include <libnautilus/nautilus.h>
 #include <libnautilus/nautilus-alloc.h>
 #include <libnautilus/nautilus-directory.h>

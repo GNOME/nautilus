@@ -26,16 +26,16 @@
 #endif
 
 #include <gnome.h>
-#include <bonobo/gnome-bonobo.h>
+#include <bonobo.h>
 
 #include <gtkhtml/gtkhtml.h>
 #include <libnautilus/gnome-progressive-loader.h>
 
 
-/* Per-GnomeEmbeddable data.  */
+/* Per-BonoboEmbeddable data.  */
 struct _EmbeddableData {
 	/* The embeddable object.  */
-	GnomeEmbeddable *embeddable;
+	BonoboEmbeddable *embeddable;
 
 	/* The HTML widget.  */
 	GtkHTML *html;
@@ -45,7 +45,7 @@ struct _EmbeddableData {
 
 	/* The progressive data sink object used to feed our baby with juicy
 	   HTML.  */
-	GnomeProgressiveDataSink *pdsink;
+	BonoboProgressiveDataSink *pdsink;
 
 	/* The GtkHTML stream associated with the HTML widget.  Data is passed
            to it through the ProgressiveDataSink interface.  */
@@ -56,12 +56,12 @@ struct _EmbeddableData {
 };
 typedef struct _EmbeddableData EmbeddableData;
 
-/* Per-GnomeView data.  */
+/* Per-BonoboView data.  */
 struct _ViewData {
-	/* The GnomeView itself.  */
-	GnomeView *view;
+	/* The BonoboView itself.  */
+	BonoboView *view;
 
-	/* Data for the corresponding GnomeEmbeddable.  */
+	/* Data for the corresponding BonoboEmbeddable.  */
 	EmbeddableData *embeddable_data;
 };
 typedef struct _ViewData ViewData;
@@ -71,13 +71,13 @@ typedef struct _ViewData ViewData;
 static guint num_running_objects = 0;
 
 /* Our embeddable factory object.  */
-static GnomeEmbeddableFactory *embeddable_factory_object = NULL;
+static BonoboEmbeddableFactory *embeddable_factory_object = NULL;
 
 
 /* ProgressiveDataSink callbacks for the main HTML widget.  */
 
 static gint
-pdsink_start (GnomeProgressiveDataSink *pdsink,
+pdsink_start (BonoboProgressiveDataSink *pdsink,
 	      gpointer data)
 {
 	EmbeddableData *embeddable_data;
@@ -100,7 +100,7 @@ pdsink_start (GnomeProgressiveDataSink *pdsink,
 }
 
 static gint
-pdsink_end (GnomeProgressiveDataSink *pdsink,
+pdsink_end (BonoboProgressiveDataSink *pdsink,
 
 	    gpointer data)
 {
@@ -119,8 +119,8 @@ pdsink_end (GnomeProgressiveDataSink *pdsink,
 }
 
 static gint
-pdsink_add_data (GnomeProgressiveDataSink *pdsink,
-		 const GNOME_ProgressiveDataSink_iobuf *iobuf,
+pdsink_add_data (BonoboProgressiveDataSink *pdsink,
+		 const Bonobo_ProgressiveDataSink_iobuf *iobuf,
 		 gpointer data)
 {
 	EmbeddableData *embeddable_data;
@@ -145,7 +145,7 @@ pdsink_add_data (GnomeProgressiveDataSink *pdsink,
 }
 
 static gint
-pdsink_set_size (GnomeProgressiveDataSink *pdsink,
+pdsink_set_size (BonoboProgressiveDataSink *pdsink,
 		 const CORBA_long count,
 		 gpointer data)
 {
@@ -165,12 +165,12 @@ pdsink_set_size (GnomeProgressiveDataSink *pdsink,
 struct _ReqPDSinkData {
 	GtkHTML *html;
 	GtkHTMLStreamHandle stream;
-	GnomeProgressiveDataSink *pdsink;
+	BonoboProgressiveDataSink *pdsink;
 };
 typedef struct _ReqPDSinkData ReqPDSinkData;
 
 static gint
-req_pdsink_start (GnomeProgressiveDataSink *pdsink,
+req_pdsink_start (BonoboProgressiveDataSink *pdsink,
 		  gpointer data)
 {
 	ReqPDSinkData *pdsink_data;
@@ -188,7 +188,7 @@ req_pdsink_start (GnomeProgressiveDataSink *pdsink,
 }
 
 static gint
-req_pdsink_end (GnomeProgressiveDataSink *pdsink,
+req_pdsink_end (BonoboProgressiveDataSink *pdsink,
 		gpointer data)
 {
 	ReqPDSinkData *pdsink_data;
@@ -200,15 +200,15 @@ req_pdsink_end (GnomeProgressiveDataSink *pdsink,
 		      pdsink_data->stream,
 		      GTK_HTML_STREAM_OK);
 
-	gnome_object_unref (GNOME_OBJECT (pdsink_data->pdsink));
+	bonobo_object_unref (BONOBO_OBJECT (pdsink_data->pdsink));
 	g_free (pdsink_data);
 
 	return 0;
 }
 
 static gint
-req_pdsink_add_data (GnomeProgressiveDataSink *pdsink,
-		     const GNOME_ProgressiveDataSink_iobuf *iobuf,
+req_pdsink_add_data (BonoboProgressiveDataSink *pdsink,
+		     const Bonobo_ProgressiveDataSink_iobuf *iobuf,
 		     gpointer data)
 {
 	ReqPDSinkData *pdsink_data;
@@ -230,7 +230,7 @@ req_pdsink_add_data (GnomeProgressiveDataSink *pdsink,
 }
 
 static gint
-req_pdsink_set_size (GnomeProgressiveDataSink *pdsink,
+req_pdsink_set_size (BonoboProgressiveDataSink *pdsink,
 		     const CORBA_long count,
 		     gpointer data)
 {
@@ -254,15 +254,15 @@ url_requested_cb (GtkHTML *html,
 		  gpointer data)
 {
 	EmbeddableData *embeddable_data;
-	GNOME_ClientSite client_site;
-	GNOME_ProgressiveLoader loader;
-	GnomeProgressiveDataSink *pdsink;
+	Bonobo_ClientSite client_site;
+	Bonobo_ProgressiveLoader loader;
+	BonoboProgressiveDataSink *pdsink;
 	ReqPDSinkData *req_pdsink_data;
-	GNOME_ProgressiveDataSink corba_pdsink;
+	Bonobo_ProgressiveDataSink corba_pdsink;
 	CORBA_Environment ev;
 
 	/* We are requested an extra URL.  So we request a
-           GnomeProgressiveDataSink interface to our container and feed data
+           BonoboProgressiveDataSink interface to our container and feed data
            from it.  */
 
 	embeddable_data = (EmbeddableData *) data;
@@ -273,40 +273,40 @@ url_requested_cb (GtkHTML *html,
 	/* FIXME cache the result.  */
 
 	g_warning ("query_interface on the ClientSite.");
-	loader = GNOME_Unknown_query_interface
+	loader = Bonobo_Unknown_query_interface
 		(client_site, "IDL:GNOME/ProgressiveLoader:1.0", &ev);
 	if (ev._major != CORBA_NO_EXCEPTION) {
-		g_warning ("Cannot query GNOME::ProgressiveLoader on the GNOME::ClientSite.");
+		g_warning ("Cannot query Bonobo::ProgressiveLoader on the Bonobo::ClientSite.");
 		CORBA_exception_free (&ev);
 		return;
 	}
 	if (loader == CORBA_OBJECT_NIL) {
-		g_warning ("Our client site does not support GNOME::ProgressiveLoader!");
+		g_warning ("Our client site does not support Bonobo::ProgressiveLoader!");
 		CORBA_exception_free (&ev);
 		return;
 	}
 
 	req_pdsink_data = g_new (ReqPDSinkData, 1);
 
-	pdsink = gnome_progressive_data_sink_new (req_pdsink_start,
+	pdsink = bonobo_progressive_data_sink_new (req_pdsink_start,
 						  req_pdsink_end,
 						  req_pdsink_add_data,
 						  req_pdsink_set_size,
 						  req_pdsink_data);
 	if (pdsink == NULL) {
-		g_warning ("Cannot create GNOME::ProgressiveDataSink interface for extra requested URL.");
+		g_warning ("Cannot create Bonobo::ProgressiveDataSink interface for extra requested URL.");
 		g_free (req_pdsink_data);
 		CORBA_exception_free (&ev);
 		return;
 	}
 
-	corba_pdsink = GNOME_OBJECT (pdsink)->corba_objref;
+	corba_pdsink = BONOBO_OBJECT (pdsink)->corba_objref;
 
 	/* Please send mail to sopwith@redhat.com for this evil cast.  :-) */
-	GNOME_ProgressiveLoader_load (loader, (CORBA_char *) url, corba_pdsink, &ev);
+	Bonobo_ProgressiveLoader_load (loader, (CORBA_char *) url, corba_pdsink, &ev);
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
-		g_warning ("Cannot start client site progressive loading on the GNOME::ProgressiveDatasink interface.");
+		g_warning ("Cannot start client site progressive loading on the Bonobo::ProgressiveDatasink interface.");
 		g_free (req_pdsink_data);
 		CORBA_exception_free (&ev);
 		return;
@@ -351,10 +351,10 @@ connect_gtk_html_signals (GtkHTML *html,
 }
 
 
-/* GnomeView callbacks.  */
+/* BonoboView callbacks.  */
 
 static void
-view_size_query_cb (GnomeView *view,
+view_size_query_cb (BonoboView *view,
 		    int *desired_width,
 		    int *desired_height,
 		    ViewData *view_data)
@@ -369,24 +369,24 @@ view_size_query_cb (GnomeView *view,
 }
 
 static void
-view_activate_cb (GnomeView *view,
+view_activate_cb (BonoboView *view,
 		  gboolean activate,
 		  ViewData *data)
 {
-	gnome_view_activate_notify (view, activate);
+	bonobo_view_activate_notify (view, activate);
 }
 
 static void
-view_system_exception_cb (GnomeView *view,
+view_system_exception_cb (BonoboView *view,
 			  CORBA_Object corba_object,
 			  CORBA_Environment *ev,
 			  gpointer data)
 {
-	gnome_object_destroy (GNOME_OBJECT (view));
+	bonobo_object_destroy (BONOBO_OBJECT (view));
 }
 
 static void
-view_destroy_cb (GnomeView *view,
+view_destroy_cb (BonoboView *view,
 		 ViewData *view_data)
 {
 	view_data->embeddable_data->view_count--;
@@ -394,28 +394,28 @@ view_destroy_cb (GnomeView *view,
 }
 
 
-/* GnomeView factory.  */
+/* BonoboView factory.  */
 
-static GnomeView *
-view_factory (GnomeEmbeddable *embeddable,
-	      const GNOME_ViewFrame view_frame,
+static BonoboView *
+view_factory (BonoboEmbeddable *embeddable,
+	      const Bonobo_ViewFrame view_frame,
 	      EmbeddableData *embeddable_data)
 {
 	ViewData *view_data;
-	GnomeView *view;
+	BonoboView *view;
 
 	view_data = g_new0 (ViewData, 1);
 
-	/* Create the GnomeView object.  */
-	view = gnome_view_new (embeddable_data->scrolled_window);
+	/* Create the BonoboView object.  */
+	view = bonobo_view_new (embeddable_data->scrolled_window);
 	gtk_object_set_data (GTK_OBJECT (view), "view_data", view_data);
 
-	gnome_view_set_view_frame (view, view_frame);
+	bonobo_view_set_view_frame (view, view_frame);
 
 	gtk_signal_connect (GTK_OBJECT (view), "size_query",
 			    GTK_SIGNAL_FUNC (view_size_query_cb), view_data);
 
-	gtk_signal_connect (GTK_OBJECT (view), "view_activate",
+	gtk_signal_connect (GTK_OBJECT (view), "activate",
 			    GTK_SIGNAL_FUNC (view_activate_cb), view_data);
 
 	gtk_signal_connect (GTK_OBJECT (view), "system_exception",
@@ -433,10 +433,10 @@ view_factory (GnomeEmbeddable *embeddable,
 }
 
 
-/* GnomeEmbeddable callbacks.  */
+/* BonoboEmbeddable callbacks.  */
 
 static void
-embeddable_destroy_cb (GnomeEmbeddable *embeddable,
+embeddable_destroy_cb (BonoboEmbeddable *embeddable,
 		       EmbeddableData *embeddable_data)
 {
 	num_running_objects--;
@@ -444,12 +444,12 @@ embeddable_destroy_cb (GnomeEmbeddable *embeddable,
 		return;
 
 	if (embeddable_data->pdsink != NULL)
-		gnome_object_unref (GNOME_OBJECT (embeddable_data->pdsink));
+		bonobo_object_unref (BONOBO_OBJECT (embeddable_data->pdsink));
 
 	if (embeddable_data->html != NULL)
 		gtk_widget_destroy (GTK_WIDGET (embeddable_data->html));
 
-	gnome_object_unref (GNOME_OBJECT (embeddable_factory_object));
+	bonobo_object_unref (BONOBO_OBJECT (embeddable_factory_object));
 
 	g_free (embeddable_data);
 
@@ -457,23 +457,23 @@ embeddable_destroy_cb (GnomeEmbeddable *embeddable,
 }
 
 static void
-embeddable_system_exception_cb (GnomeEmbeddable *embeddable,
+embeddable_system_exception_cb (BonoboEmbeddable *embeddable,
 				CORBA_Object corba_object,
 				CORBA_Environment *ev,
 				gpointer data)
 {
-	gnome_object_destroy (GNOME_OBJECT (embeddable));
+	bonobo_object_destroy (BONOBO_OBJECT (embeddable));
 }
 
 
-/* GnomeEmbeddable factory.  */
+/* BonoboEmbeddable factory.  */
 
-static GnomeObject *
-embeddable_factory (GnomeEmbeddableFactory *this,
+static BonoboObject *
+embeddable_factory (BonoboEmbeddableFactory *this,
 		    void *data)
 {
-	GnomeEmbeddable *embeddable;
-	GnomeProgressiveDataSink *pdsink;
+	BonoboEmbeddable *embeddable;
+	BonoboProgressiveDataSink *pdsink;
 	EmbeddableData *embeddable_data;
 	GtkWidget *html;
 	GtkWidget *scrolled_window;
@@ -489,17 +489,17 @@ embeddable_factory (GnomeEmbeddableFactory *this,
 	gtk_widget_show (html);
 	gtk_widget_show (scrolled_window);
 
-	embeddable = gnome_embeddable_new (GNOME_VIEW_FACTORY (view_factory),
+	embeddable = bonobo_embeddable_new (BONOBO_VIEW_FACTORY (view_factory),
 					   embeddable_data);
 
-	pdsink = gnome_progressive_data_sink_new (pdsink_start,
+	pdsink = bonobo_progressive_data_sink_new (pdsink_start,
 						  pdsink_end,
 						  pdsink_add_data,
 						  pdsink_set_size,
 						  embeddable_data);
 
-	gnome_object_add_interface (GNOME_OBJECT (embeddable),
-				    GNOME_OBJECT (pdsink));
+	bonobo_object_add_interface (BONOBO_OBJECT (embeddable),
+				    BONOBO_OBJECT (pdsink));
 
 	num_running_objects++;
 
@@ -518,16 +518,16 @@ embeddable_factory (GnomeEmbeddableFactory *this,
 	embeddable_data->html_stream = NULL;
 	embeddable_data->view_count = 0;
 
-	return GNOME_OBJECT (embeddable);
+	return BONOBO_OBJECT (embeddable);
 }
 
 
 /* Main.  */
 
-static GnomeEmbeddableFactory *
+static BonoboEmbeddableFactory *
 init_html_factory (void)
 {
-	return gnome_embeddable_factory_new
+	return bonobo_embeddable_factory_new
 		("embeddable-factory:explorer-html-component",
 		 embeddable_factory, NULL);
 }

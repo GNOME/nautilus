@@ -36,6 +36,7 @@
 #include <libnautilus/nautilus-directory.h>
 #include <libnautilus/nautilus-gtk-macros.h>
 #include <libnautilus/nautilus-string.h>
+#include <gnome.h>
 
 #define ARRAY_LENGTH(array) \
 	(sizeof (array) / sizeof ((array)[0]))

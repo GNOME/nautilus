@@ -26,10 +26,12 @@
 /* ntl-meta-view-frame.c: Implementation for object that represents a
    nautilus meta view implementation. */
 #include "libnautilus.h"
+#include <libgnome/gnome-i18n.h>
+#include <bonobo/bonobo-property-bag.h>
 
 typedef struct {
   POA_Nautilus_View servant;
-  gpointer gnome_object;
+  gpointer bonobo_object;
 
   NautilusMetaViewFrame *view;
 } impl_POA_Nautilus_MetaView;
@@ -108,18 +110,18 @@ nautilus_meta_view_frame_class_init (NautilusMetaViewFrameClass *klass)
 void
 nautilus_meta_view_frame_set_label(NautilusMetaViewFrame *mvc, const char *label)
 {
-  GnomeObject *ctl;
-  GnomePropertyBag *bag;
+  BonoboObject *ctl;
+  BonoboPropertyBag *bag;
 
-  ctl = nautilus_view_frame_get_gnome_object(NAUTILUS_VIEW_FRAME(mvc));
-  bag = gnome_control_get_property_bag(GNOME_CONTROL(ctl));
+  ctl = nautilus_view_frame_get_bonobo_object(NAUTILUS_VIEW_FRAME(mvc));
+  bag = bonobo_control_get_property_bag(BONOBO_CONTROL(ctl));
   if(!bag)
     {
-      bag = gnome_property_bag_new();
-      gnome_control_set_property_bag(GNOME_CONTROL(ctl), bag);
+      bag = bonobo_property_bag_new();
+      bonobo_control_set_property_bag(BONOBO_CONTROL(ctl), bag);
     }
 
-  gnome_property_bag_add(bag, "label", "string",
+  bonobo_property_bag_add(bag, "label", "string",
 			 g_strdup(label), g_strdup(label),
-			 _("Label"), GNOME_PROPERTY_READ_ONLY);
+			 _("Label"), BONOBO_PROPERTY_READ_ONLY);
 }

@@ -30,7 +30,7 @@
 #include "ntl-view-private.h"
 
 typedef struct {
-  GnomeObject *control_frame;
+  BonoboObject *control_frame;
 } BonoboControlInfo;
 
 static void
@@ -41,7 +41,7 @@ destroy_bonobo_control_view(NautilusView *view, CORBA_Environment *ev)
 }
 
 static void
-nautilus_view_activate_uri(GnomeControlFrame *frame, const char *uri, gboolean relative, NautilusView *view)
+nautilus_view_activate_uri(BonoboControlFrame *frame, const char *uri, gboolean relative, NautilusView *view)
 {
   Nautilus_NavigationRequestInfo nri;
   g_assert(!relative);
@@ -58,14 +58,14 @@ bonobo_control_try_load_client(NautilusView *view, CORBA_Object obj, CORBA_Envir
 
   view->component_data = bci = g_new0(BonoboControlInfo, 1);
 
-  bci->control_frame = GNOME_OBJECT(gnome_control_frame_new());
-  gnome_object_add_interface(GNOME_OBJECT(bci->control_frame), view->view_frame);
+  bci->control_frame = BONOBO_OBJECT(bonobo_control_frame_new());
+  bonobo_object_add_interface(BONOBO_OBJECT(bci->control_frame), view->view_frame);
   
-  gnome_control_frame_set_ui_handler(GNOME_CONTROL_FRAME(bci->control_frame),
+  bonobo_control_frame_set_ui_handler(BONOBO_CONTROL_FRAME(bci->control_frame),
 				     nautilus_window_get_uih(NAUTILUS_WINDOW(view->main_window)));
-  gnome_control_frame_bind_to_control(GNOME_CONTROL_FRAME(bci->control_frame), obj);
+  bonobo_control_frame_bind_to_control(BONOBO_CONTROL_FRAME(bci->control_frame), obj);
 
-  view->client_widget = gnome_control_frame_get_widget(GNOME_CONTROL_FRAME(bci->control_frame));
+  view->client_widget = bonobo_control_frame_get_widget(BONOBO_CONTROL_FRAME(bci->control_frame));
   
   gtk_signal_connect(GTK_OBJECT(bci->control_frame),
                      "activate_uri", GTK_SIGNAL_FUNC(nautilus_view_activate_uri), view);

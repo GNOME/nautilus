@@ -30,7 +30,7 @@
 #include "ntl-view-private.h"
 
 typedef struct {
-  GnomeObject *container, *client_site, *view_frame;
+  BonoboObject *container, *client_site, *view_frame;
 } BonoboSubdocInfo;
 
 static void
@@ -44,26 +44,26 @@ destroy_bonobo_subdoc_view(NautilusView *view, CORBA_Environment *ev)
 static void
 bonobo_subdoc_notify_location_change(NautilusView *view, Nautilus_NavigationInfo *real_nav_ctx, CORBA_Environment *ev)
 {
-  GNOME_PersistFile persist;
-  persist = gnome_object_client_query_interface(view->client_object, "IDL:GNOME/PersistFile:1.0",
+  Bonobo_PersistFile persist;
+  persist = bonobo_object_client_query_interface(view->client_object, "IDL:GNOME/PersistFile:1.0",
                                                 NULL);
   if(!CORBA_Object_is_nil(persist, ev))
     {
-      GNOME_PersistFile_load(persist, real_nav_ctx->actual_uri, ev);
-      GNOME_Unknown_unref(persist, ev);
+      Bonobo_PersistFile_load(persist, real_nav_ctx->actual_uri, ev);
+      Bonobo_Unknown_unref(persist, ev);
       CORBA_Object_release(persist, ev);
     }
-  else if((persist = gnome_object_client_query_interface(view->client_object, "IDL:GNOME/PersistStream:1.0",
+  else if((persist = bonobo_object_client_query_interface(view->client_object, "IDL:GNOME/PersistStream:1.0",
                                                          NULL))
           && !CORBA_Object_is_nil(persist, ev))
     {
-      GnomeStream *stream;
+      BonoboStream *stream;
       
-      stream = gnome_stream_fs_open(real_nav_ctx->actual_uri, GNOME_Storage_READ);
-      GNOME_PersistStream_load (persist,
-                                (GNOME_Stream) gnome_object_corba_objref (GNOME_OBJECT (stream)),
+      stream = bonobo_stream_fs_open(real_nav_ctx->actual_uri, Bonobo_Storage_READ);
+      Bonobo_PersistStream_load (persist,
+                                (Bonobo_Stream) bonobo_object_corba_objref (BONOBO_OBJECT (stream)),
                                 ev);
-      GNOME_Unknown_unref(persist, ev);
+      Bonobo_Unknown_unref(persist, ev);
       CORBA_Object_release(persist, ev);
     }
 }      
@@ -75,21 +75,21 @@ bonobo_subdoc_try_load_client(NautilusView *view, CORBA_Object obj, CORBA_Enviro
 
   view->component_data = bsi = g_new0(BonoboSubdocInfo, 1);
 
-  bsi->container = GNOME_OBJECT(gnome_container_new());
-  gnome_object_add_interface(GNOME_OBJECT(bsi->container), view->view_frame);
+  bsi->container = BONOBO_OBJECT(bonobo_container_new());
+  bonobo_object_add_interface(BONOBO_OBJECT(bsi->container), view->view_frame);
       
   bsi->client_site =
-    GNOME_OBJECT(gnome_client_site_new(GNOME_CONTAINER(bsi->container)));
-  gnome_client_site_bind_embeddable(GNOME_CLIENT_SITE(bsi->client_site), view->client_object);
-  gnome_container_add(GNOME_CONTAINER(bsi->container), bsi->client_site);
+    BONOBO_OBJECT(bonobo_client_site_new(BONOBO_CONTAINER(bsi->container)));
+  bonobo_client_site_bind_embeddable(BONOBO_CLIENT_SITE(bsi->client_site), view->client_object);
+  bonobo_container_add(BONOBO_CONTAINER(bsi->container), bsi->client_site);
 
-  bsi->view_frame = GNOME_OBJECT(gnome_client_site_new_view(GNOME_CLIENT_SITE(bsi->client_site)));
-  gnome_control_frame_set_ui_handler(GNOME_CONTROL_FRAME(bsi->view_frame),
+  bsi->view_frame = BONOBO_OBJECT(bonobo_client_site_new_view(BONOBO_CLIENT_SITE(bsi->client_site)));
+  bonobo_control_frame_set_ui_handler(BONOBO_CONTROL_FRAME(bsi->view_frame),
 				     nautilus_window_get_uih(NAUTILUS_WINDOW(view->main_window)));
 
   g_assert(bsi->view_frame);
       
-  view->client_widget = gnome_view_frame_get_wrapper(GNOME_VIEW_FRAME(bsi->view_frame));
+  view->client_widget = bonobo_view_frame_get_wrapper(BONOBO_VIEW_FRAME(bsi->view_frame));
       
   return TRUE;
 }

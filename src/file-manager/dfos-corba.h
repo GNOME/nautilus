@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* dfos-corba.h - Implementation of the GNOME::Desktop::FileOperationService
+/* dfos-corba.h - Implementation of the Bonobo::Desktop::FileOperationService
    CORBA server.
 
    Copyright (C) 1999, 2000 Free Software Foundation
