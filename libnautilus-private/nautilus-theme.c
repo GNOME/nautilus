@@ -299,6 +299,7 @@ nautilus_theme_make_preview_pixbuf (const char *theme_name)
 	pixbuf_file = nautilus_pixmap_file (theme_preview_name);
 	if (pixbuf_file != NULL) {
 		pixbuf = gdk_pixbuf_new_from_file (pixbuf_file, NULL);
+		g_free (theme_preview_name);
 		g_free (pixbuf_file);
 		return pixbuf;
 	} else {
@@ -310,6 +311,7 @@ nautilus_theme_make_preview_pixbuf (const char *theme_name)
 		if (g_file_test (pixbuf_file, G_FILE_TEST_EXISTS)) {
 			pixbuf = gdk_pixbuf_new_from_file (pixbuf_file, NULL);
 			g_free (pixbuf_file);
+			g_free (theme_preview_name);
 			return pixbuf;
 		}  else {
 			g_free (pixbuf_file);

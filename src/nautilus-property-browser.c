@@ -1495,7 +1495,7 @@ element_clicked_callback (GtkWidget *image_table,
 		drag_types[0].target = "x-special/gnome-reset-background";	
 	}
 	
-	target_list = gtk_target_list_new (drag_types, G_N_ELEMENTS (drag_types));	
+	target_list = gtk_target_list_new (drag_types, G_N_ELEMENTS (drag_types));
 	nautilus_property_browser_set_dragged_file(property_browser, element_name);
 	
 	context = gtk_drag_begin (GTK_WIDGET (property_browser),
@@ -1503,7 +1503,8 @@ element_clicked_callback (GtkWidget *image_table,
 				  GDK_ACTION_MOVE | GDK_ACTION_COPY,
 				  event->button,
 				  event->event);
-
+	gtk_target_list_unref (target_list);
+	
 	/* compute the offsets for dragging */
 	if (strcmp (drag_types[0].target, "application/x-color")) {
 		/* it's not a color, so, for now, it must be an image */

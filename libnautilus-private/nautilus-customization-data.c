@@ -356,6 +356,7 @@ add_reset_text (GdkPixbuf *pixbuf)
 {
 	int width, height;
 	int h_offset, v_offset;
+	PangoContext *context;
 	PangoLayout *layout;
 	PangoRectangle text_extent;
 	PangoFontDescription *font_desc;
@@ -365,13 +366,16 @@ add_reset_text (GdkPixbuf *pixbuf)
 
 	font_desc = pango_font_description_from_string ("Mono");
 
-	layout = pango_layout_new (eel_pango_ft2_get_context ());
+	context = eel_pango_ft2_get_context ();
+	layout = pango_layout_new (context);
+	g_object_unref (context);
 	pango_layout_set_text (layout, _("reset"), -1);
 	pango_layout_set_font_description (layout, font_desc);
-
+	pango_font_description_free (font_desc);
+	
 	text_extent = eel_pango_layout_fit_to_dimensions (
 		layout, width - 12, -1);
-
+	
 	/* compute text position, correcting for the imbalanced shadow, etc. */
 	h_offset = ((width - text_extent.width) / 2) - 2;
 	v_offset = (((height - 8)/ 2) - text_extent.height) / 2;

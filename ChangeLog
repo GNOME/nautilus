@@ -1,5 +1,14 @@
 2002-04-17  Anders Carlsson  <andersca@gnu.org>
 
+	* libnautilus-private/nautilus-customization-data.c:
+	(add_reset_text):
+	* libnautilus-private/nautilus-theme.c:
+	(nautilus_theme_make_preview_pixbuf):
+	* src/nautilus-property-browser.c: (element_clicked_callback):
+	Plug memory leaks.
+	
+2002-04-17  Anders Carlsson  <andersca@gnu.org>
+
 	* components/hardware/nautilus-hardware-view.c:
 	(nautilus_hardware_view_class_init),
 	(nautilus_hardware_view_finalize):
