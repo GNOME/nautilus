@@ -476,7 +476,8 @@ nautilus_music_view_init (NautilusMusicView *music_view)
         gtk_widget_show (music_view->details->tree_view);
 
 	font_name = eel_preferences_get (NAUTILUS_PREFERENCES_LIST_VIEW_FONT);
-	standard_font_size = eel_preferences_get_integer (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE);
+	standard_font_size = eel_preferences_get_integer (
+                NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE);
         
 #ifdef GNOME2_CONVERSION_COMPLETE
 	font = nautilus_font_factory_get_font_by_family (font_name, standard_font_size);
@@ -792,10 +793,14 @@ image_button_callback (GtkWidget * widget, NautilusMusicView *music_view)
 				    "clicked",
 				    (GtkSignalFunc) set_album_cover,
 				    music_view);
-		gtk_signal_connect_object (GTK_OBJECT (file_dialog->cancel_button),
-					   "clicked",
-					   (GtkSignalFunc) gtk_widget_destroy,
-					   GTK_OBJECT(file_dialog));
+                
+                g_signal_connect_closure (file_dialog->cancel_button,
+                                          "clicked",
+                                          g_cclosure_new_swap (
+                                                  G_CALLBACK (gtk_widget_destroy),
+                                                  file_dialog,
+                                                  NULL),
+                                          0);
 
 		gtk_window_set_position (GTK_WINDOW (file_dialog), GTK_WIN_POS_MOUSE);
 		gtk_window_set_wmclass (GTK_WINDOW (file_dialog), "file_selector", "Nautilus");
@@ -1399,7 +1404,7 @@ xpm_label_box (NautilusMusicView *music_view, char * xpm_data[])
         GtkStyle *style;
 
         box = gtk_hbox_new (FALSE, 0);
-        gtk_container_border_width (GTK_CONTAINER (box), 2);
+        gtk_container_set_border_width (GTK_CONTAINER (box), 2);
         style = gtk_widget_get_style (GTK_WIDGET (music_view->details->event_box));
 
         pixbuf = gdk_pixbuf_new_from_xpm_data ((const char **)xpm_data);
@@ -1426,7 +1431,7 @@ xpm_dual_label_box (NautilusMusicView *music_view, char * xpm_data[],
 
 
         box = gtk_hbox_new (FALSE, 0);
-        gtk_container_border_width (GTK_CONTAINER (box), 2);
+        gtk_container_set_border_width (GTK_CONTAINER (box), 2);
 
         style = gtk_widget_get_style (GTK_WIDGET (music_view->details->event_box));
 
@@ -1767,11 +1772,13 @@ nautilus_music_view_update (NautilusMusicView *music_view)
         
 	/* determine the album title/artist line */	
 	if (music_view->details->album_title) {
-		char *album_name, *artist_name, *temp_str;
+		char *basename, *album_name, *artist_name, *temp_str;
 
                 album_name = determine_attribute (song_list, FALSE);
 		if (album_name == NULL) {
-			album_name = g_strdup (gnome_vfs_unescape_string_for_display (g_basename (uri)));
+			album_name = gnome_vfs_unescape_string_for_display (
+                                basename = g_path_get_basename (uri));                               
+                        g_free (basename);
                 }
 		
 		artist_name = determine_attribute (song_list, TRUE);

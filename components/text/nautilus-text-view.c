@@ -39,9 +39,6 @@
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-xml-extensions.h>
 
-#ifdef GNOME2_CONVERSION_COMPLETE
-#include <ghttp.h>
-#endif
 #include <libxml/parser.h>
 #include <gnome.h>
 #include <gtk/gtkeventbox.h>

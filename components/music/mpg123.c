@@ -255,16 +255,14 @@ static gchar *eval_id3_format(const char *id3_format, struct id3tag_t *id3,
 	const size_t alloc_size = 256;	/* size of memory block allocations */
 	gboolean got_field = FALSE;
 
-	ans = g_malloc(allocated = alloc_size);
-	pathlen = strlen(path = g_dirname(filename));
-	base = g_strdup(g_basename(filename));
+	ans = g_malloc (allocated = alloc_size);
+	pathlen = strlen (path = g_path_get_dirname (filename));
+	base = g_path_get_basename (filename);
 	if ((ext = extname(base)) == NULL)
 	{
 		ext = "";
 		extlen = 0;
-	}
-	else
-	{
+	} else {
 		*(ext - 1) = '\0';
 		extlen = strlen(ext);
 	}
@@ -403,7 +401,7 @@ gchar *mpg123_format_song_title(struct id3tag_t *tag, gchar * filename)
 		/*
 		 * Format according to filename.
 		 */
-		ret = g_strdup(g_basename(filename));
+		ret = g_path_get_basename (filename);
 		if (extname(ret) != NULL)
 			*(extname(ret) - 1) = '\0';	/* removes period */
 	}

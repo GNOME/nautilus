@@ -442,7 +442,9 @@ setup_form_title (NautilusHardwareView *view,
 	gtk_widget_show(temp_container);
 	
 	if (image_name != NULL) {
- 		file_name = gnome_pixmap_file (image_name);
+ 		file_name = gnome_program_locate_file (
+                        NULL, GNOME_FILE_DOMAIN_PIXMAP, image_name, TRUE, NULL);
+
 		if (file_name != NULL) {
 			temp_widget = gtk_image_new_from_file (file_name);
 			gtk_box_pack_start (GTK_BOX(temp_container), temp_widget, 0, 0, 8);		

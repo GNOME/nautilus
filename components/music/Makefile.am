@@ -12,6 +12,7 @@ INCLUDES =					\
 	-DG_LOG_DOMAIN=\"Nautilus-Music\"	\
 	-I$(top_srcdir)				\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
+	$(DISABLE_DEPRECATED_CFLAGS)		\
 	$(MUSIC_COMPONENT_CFLAGS)		\
 	$(NULL)
 

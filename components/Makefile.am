@@ -4,7 +4,6 @@ SUBDIRS = 					\
 	adapter                                 \
 	hardware 				\
 	history 				\
-	image-viewer 				\
 	loser 					\
 	music					\
 	news					\

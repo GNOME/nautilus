@@ -1,5 +1,41 @@
 2002-02-20  Michael Meeks  <michael@ximian.com>
 
+	* components/throbber/nautilus-throbber.c
+	(nautilus_throbber_set_small_mode): remove usize
+	mis-use.
+
+	* components/text/nautilus-text-view.c: remove
+	bogus ghttp include.
+
+	* components/music/nautilus-music-view.c
+	(image_button_callback): upd. signal handling.
+	(xpm_dual_label_box, xpm_label_box): upd. container
+	border width.
+	(nautilus_music_view_update): fix leak & upd.
+	path handling.
+
+	* components/music/mpg123.c (eval_id3_format),
+	(mpg123_format_song_title): upd. path handling.
+
+	* components/hardware/main.c: include string.h
+
+	* components/hardware/nautilus-hardware-view.c
+	(setup_form_title): use gnome_program_locate_file.
+
+	* components/hardware/Makefile.am,
+	* components/sample/Makefile.am,
+	* components/tree/Makefile.am,
+	* components/text/Makefile.am,
+	* components/throbber/Makefile.am,
+	* components/music/Makefile.am: add disable
+	deprecated cflags.
+
+	* components/Makefile.am: remove image_viewer
+
+	* configure.in: upd.
+
+2002-02-20  Michael Meeks  <michael@ximian.com>
+
 	* libnautilus/nautilus-view.c
 	(nautilus_view_set_frame): don't spew debug as we
 	disconnect from a dead parent.

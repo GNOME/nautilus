@@ -5,6 +5,7 @@ INCLUDES =						\
 	-DDATADIR=\""$(datadir)"\" 			\
 	-I$(top_srcdir)					\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
+	$(DISABLE_DEPRECATED_CFLAGS)			\
 	$(COMPONENT_CFLAGS)				\
 	$(NULL)
 

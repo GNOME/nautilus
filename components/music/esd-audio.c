@@ -1,9 +1,9 @@
 
 #include <config.h>
+#include <string.h>
 #include <pthread.h>
 
 #include "esd-audio.h"
-#include "config.h"
 
 static gint fd = 0;
 static gpointer buffer;

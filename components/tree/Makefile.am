@@ -4,6 +4,7 @@ INCLUDES =						\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	-DG_LOG_DOMAIN=\"Nautilus-Tree\"		\
 	-I$(top_srcdir)					\
+	$(DISABLE_DEPRECATED_CFLAGS)			\
 	$(COMPONENT_CFLAGS)				\
 	$(NULL)
 

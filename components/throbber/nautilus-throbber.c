@@ -617,14 +617,10 @@ nautilus_throbber_button_release_event (GtkWidget *widget, GdkEventButton *event
 void
 nautilus_throbber_set_small_mode (NautilusThrobber *throbber, gboolean new_mode)
 {
-	int throbber_width, throbber_height;
-	
 	if (new_mode != throbber->details->small_mode) {
 		throbber->details->small_mode = new_mode;
 		nautilus_throbber_load_images (throbber);
 
-		get_throbber_dimensions (throbber, &throbber_width, &throbber_height);
-		gtk_widget_set_usize (GTK_WIDGET (throbber), throbber_width, throbber_height);		
 		gtk_widget_queue_resize (GTK_WIDGET (throbber));
 	}
 }

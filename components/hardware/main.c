@@ -25,7 +25,7 @@
 #define IID "OAFIID:nautilus_hardware_view_factory:8c80e55a-5c03-4403-9e51-3a5711b8a5ce" 
 
 #include <config.h>
-
+#include <string.h>
 #include "nautilus-hardware-view.h"
 
 #include <bonobo.h>
@@ -52,7 +52,8 @@ hardware_view_make_object (BonoboGenericFactory *factory,
 {
 	NautilusView *view;
 
-	if (strcmp (bonobo_activation_iid, "OAFIID:nautilus_hardware_view:4a3f3793-bab4-4640-9f56-e7871fe8e150")) {
+	if (strcmp (bonobo_activation_iid,
+		    "OAFIID:nautilus_hardware_view:4a3f3793-bab4-4640-9f56-e7871fe8e150")) {
 		return NULL;
 	}
 	
