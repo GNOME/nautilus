@@ -131,6 +131,16 @@ dnl Test for libpng
 
 AC_SUBST(LIBPNG)
 
+dnl Checks for i18n
+ALL_LINGUAS="ru"
+AM_GNOME_GETTEXT
+# AM_GNOME_GETTEXT above substs $DATADIRNAME
+# this is the directory where the *.{mo,gmo} files are installed
+gnomelocaledir='${prefix}/${DATADIRNAME}/locale'
+AC_SUBST(gnomelocaledir)
+
+
+
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 
@@ -161,4 +171,6 @@ components/rpmview/Makefile
 components/sample/Makefile
 components/services/Makefile
 components/services/startup/Makefile
+po/Makefile.in
+intl/Makefile
 ])

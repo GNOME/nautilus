@@ -7,6 +7,8 @@ SUBDIRS =\
 	components \
 	icons \
 	data \
+	intl \
+	po \
 	$(NULL)
 
 EXTRA_DIST=COPYING.LIB
