@@ -27,6 +27,7 @@
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libgnomevfs/gnome-vfs-types.h>
+#include <libart_lgpl/art_rect.h>
 
 typedef struct NautilusPixbufLoadHandle NautilusPixbufLoadHandle;
 typedef void (* NautilusPixbufLoadCallback) (GnomeVFSResult  error,
@@ -38,14 +39,17 @@ void                      nautilus_gdk_pixbuf_list_ref                 (GList   
 void                      nautilus_gdk_pixbuf_list_unref               (GList                      *pixbuf_list);
 void                      nautilus_gdk_pixbuf_list_free                (GList                      *pixbuf_list);
 
+
 /* Loading a GdkPixbuf with a URI. */
 GdkPixbuf *               nautilus_gdk_pixbuf_load                     (const char                 *uri);
+
 
 /* Same thing async. */
 NautilusPixbufLoadHandle *nautilus_gdk_pixbuf_load_async               (const char                 *uri,
 									NautilusPixbufLoadCallback  callback,
 									gpointer                    callback_data);
 void                      nautilus_cancel_gdk_pixbuf_load              (NautilusPixbufLoadHandle   *handle);
+
 
 /* Draw a GdkPixbuf tiled. */
 void                      nautilus_gdk_pixbuf_render_to_drawable_tiled (GdkPixbuf                  *pixbuf,
@@ -58,8 +62,16 @@ void                      nautilus_gdk_pixbuf_render_to_drawable_tiled (GdkPixbu
 GdkPixbuf *               nautilus_gdk_pixbuf_scale_to_fit             (GdkPixbuf                  *pixbuf,
 									int                         max_width,
 									int                         max_height);
+
 /* return average color values for each component */
-void			  nautilus_gdk_pixbuf_average_value		(GdkPixbuf		   *pixbuf,
-									 GdkColor		   *result_color);
-									 
+void                      nautilus_gdk_pixbuf_average_value            (GdkPixbuf                  *pixbuf,
+									GdkColor                   *result_color);
+
+/* Draw text onto a GdkPixbuf using the given font and rect */
+void                      nautilus_gdk_pixbuf_draw_text                (GdkPixbuf                  *pixbuf,
+									const GdkFont              *font,
+									const ArtIRect             *destination_rect,
+									const char                 *text,
+									guint			   overall_alpha);
+
 #endif /* NAUTILUS_GDK_PIXBUF_EXTENSIONS_H */

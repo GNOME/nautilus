@@ -2038,19 +2038,10 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 	    const ArtIRect *embedded_text_rect,
 	    const char *text)
 {
+
 	static GdkFont *font;
 
-	ArtIRect pixbuf_rect, text_rect;
-	int width, height;
-	GdkVisual *visual;
-	GdkPixmap *pixmap;
-	GdkGC *gc;
-	GdkColormap *colormap;
-	int y;
-	const char *line, *end_of_line;
-	int line_length;
-	GdkPixbuf *text_pixbuf, *text_pixbuf_with_alpha, *pixbuf_with_text;
-	guchar *pixels;
+	GdkPixbuf *pixbuf_with_text;
 
 	g_return_val_if_fail (pixbuf_without_text != NULL, NULL);
 	g_return_val_if_fail (embedded_text_rect != NULL, gdk_pixbuf_ref (pixbuf_without_text));
@@ -2071,84 +2062,10 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 		return gdk_pixbuf_ref (pixbuf_without_text);
 	}
 
-	/* Compute the intersection of the text rectangle with the pixbuf.
-	 * This is only to prevent pathological cases from upsetting the
-	 * GdkPixbuf routines. It should not happen in any normal circumstance.
-	 */
-	pixbuf_rect.x0 = 0;
-	pixbuf_rect.y0 = 0;
-	pixbuf_rect.x1 = gdk_pixbuf_get_width (pixbuf_without_text);
-	pixbuf_rect.y1 = gdk_pixbuf_get_height (pixbuf_without_text);
-	art_irect_intersect (&text_rect, embedded_text_rect, &pixbuf_rect);
-
-	/* Get the system visual. I wish I could do this all in 1-bit mode,
-	 * but I can't.
-	 */
-	visual = gdk_visual_get_system ();
-
-	/* Allocate a GdkPixmap of the appropriate size. */
-	width = text_rect.x1 - text_rect.x0;
-	height = text_rect.y1 - text_rect.y0;
-	pixmap = gdk_pixmap_new (NULL, width, height, visual->depth);
-	gc = gdk_gc_new (pixmap);
-
-	/* Set up a white background. */
-	gdk_rgb_gc_set_foreground (gc, NAUTILUS_RGB_COLOR_WHITE);
-	gdk_draw_rectangle (pixmap, gc, TRUE, 0, 0, width, height);
-
-	/* Draw black text. */
-	gdk_rgb_gc_set_foreground (gc, NAUTILUS_RGB_COLOR_BLACK);
-	gdk_gc_set_font (gc, font);
-	line = text;
-	for (y = font->ascent;
-	     y + font->descent <= height;
-	     y += font->ascent + font->descent) {
-
-		/* Extract the next line of text. */
-		end_of_line = strchr (line, '\n');
-		line_length = end_of_line == NULL
-			? strlen (line)
-			: end_of_line - line;
-		
-		/* Draw the next line of text. */
-		gdk_draw_text (pixmap, font, gc, 0, y,
-			       line, line_length);
-
-		/* Move on to the subsequent line. */
-		line = end_of_line == NULL
-			? ""
-			: end_of_line + 1;
-	}
-	gdk_gc_unref (gc);
-
-	/* Convert into a GdkPixbuf with gdk_pixbuf_get_from_drawable. */
-	colormap = gdk_colormap_new (visual, FALSE);
-	text_pixbuf = gdk_pixbuf_get_from_drawable (NULL, pixmap, colormap,
-						    0, 0,
-						    0, 0, width, height);
-	gdk_colormap_unref (colormap);
-	gdk_pixmap_unref (pixmap);
-
-	/* White is not always FF FF FF. So we get the top left corner pixel. */
-	pixels = gdk_pixbuf_get_pixels (text_pixbuf);
-	text_pixbuf_with_alpha = gdk_pixbuf_add_alpha
-		(text_pixbuf,
-		 TRUE, pixels[0], pixels[1], pixels[2]);
-	gdk_pixbuf_unref (text_pixbuf);
-
 	pixbuf_with_text = gdk_pixbuf_copy (pixbuf_without_text);
-	gdk_pixbuf_composite (text_pixbuf_with_alpha,
-			      pixbuf_with_text,
-			      text_rect.x0,
-			      text_rect.y0,
-			      width, height,
-			      text_rect.x0,
-			      text_rect.y0,
-			      1, 1,
-			      GDK_INTERP_BILINEAR,
-			      0xFF);
-	gdk_pixbuf_unref (text_pixbuf_with_alpha);
-	
+
+	nautilus_gdk_pixbuf_draw_text (pixbuf_with_text, font, embedded_text_rect, text, 0xFF);
+
 	return pixbuf_with_text;
 }
 

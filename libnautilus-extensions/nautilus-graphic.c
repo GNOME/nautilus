@@ -27,6 +27,7 @@
 #include "nautilus-graphic.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-gdk-extensions.h"
+#include "nautilus-gdk-pixbuf-extensions.h"
 
 #include <math.h>
 
@@ -576,17 +577,12 @@ nautilus_graphic_size_allocate (GtkWidget *widget, GtkAllocation* allocation)
 		}
 	}
 
-
-/* FIXME bugzilla.eazel.com 1613: 
- * Need to factor out code in  nautilus-icon-factory.c:embed_text() into
- * nautilus_gdk_pixbuf_draw_text and use it here.
- */
-#if FIXME
 	if (graphic ->detail->label_text != NULL)
 	{
 		GtkRequisition text_size;
 		gint x;
 		gint y;
+		ArtIRect text_rect;
 			
 		g_assert (graphic->detail->label_font != NULL);
 		
@@ -594,19 +590,23 @@ nautilus_graphic_size_allocate (GtkWidget *widget, GtkAllocation* allocation)
 				       graphic ->detail->label_text,
 				       &text_size);
 
-		
 		x = (widget->allocation.width - text_size.width) / 2;
 		y = (widget->allocation.height - text_size.height) / 2;
 
+		text_rect.x0 = x;
+		text_rect.y0 = y;
+		text_rect.x1 = x + text_size.width;
+		text_rect.y1 = y + text_size.height;
+
+/* FIXME bugzilla.eazel.com xxxx: 
+ * Need to be able to pass in a rgb colot into the draw_text function.
+ */
 		nautilus_gdk_pixbuf_draw_text (graphic->detail->buffer,
 					       graphic->detail->label_font,
-					       x,
-					       y,
+					       &text_rect,
 					       graphic->detail->label_text,
-					       strlen (graphic->detail->label_text),
-					       NAUTILUS_RGBA_COLOR_PACK (255, 0, 0, NAUTILUS_ALPHA_NONE));
+					       graphic->detail->overall_alpha);
 	}
-#endif
 }
 
 static void

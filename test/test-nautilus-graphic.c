@@ -5,6 +5,7 @@
 #include <libnautilus-extensions/nautilus-graphic.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-font-factory.h>
 
 static GdkPixbuf*
 create_background (void)
@@ -231,6 +232,8 @@ create_color_scale (guint num_colors, GtkSignalFunc callback, gpointer callback_
 
 	gtk_signal_connect (GTK_OBJECT (adjustment), "value_changed", callback, callback_data);
 
+	gtk_widget_set_usize (scale, 150, 0);
+
 	return scale;
 }
 
@@ -291,7 +294,7 @@ main (int argc, char* argv[])
 	{
 		GdkFont *font;
 
-		font = gdk_font_load ("-adobe-helvetica-medium-r-normal--20-140-*");
+		font = nautilus_font_factory_get_font_by_family ("helvetica", 20);
 
 		nautilus_graphic_set_label_text (NAUTILUS_GRAPHIC (graphic3), "Welcome Back, Arlo!");
 		nautilus_graphic_set_label_font (NAUTILUS_GRAPHIC (graphic3), font);

@@ -1,3 +1,22 @@
+2000-07-10  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	(nautilus_gdk_pixbuf_scale_to_fit),
+	(nautilus_gdk_pixbuf_draw_text):
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h:
+	New function to draw text into a pixbuf given a rect and a
+	string.   Factored from the icon factoyr.
+	* libnautilus-extensions/nautilus-graphic.c:
+	(nautilus_graphic_size_allocate):
+	Add support for drawing text.
+	
+	* libnautilus-extensions/nautilus-icon-factory.c: (embed_text):
+	Factored out gdk pixbuf text drawing.  Use the new text drawing
+	function.
+
+	* test/test-nautilus-graphic.c: (create_color_scale):
+	Update for text support.
+	
 2000-07-10  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-gdk-extensions.c:
