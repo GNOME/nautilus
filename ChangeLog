@@ -1,3 +1,46 @@
+2001-04-24  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: <delete if not using a buddy>
+
+	Fixed part of bug 7649 (sidebar font doesn't update when font
+	changed in non-smooth mode) and various other small problems
+	with fonts in sidebar. The font in the tabs is still always
+	the smooth font.
+
+	Also, made both default smooth and default non-smooth fonts
+	visible simultaneously in the Preferences dialog since they
+	are both used in different places at the same time. Maybe
+	if we fix the sidebar tabs to not insist on using a smooth
+	font we can turn these two controls back into one.
+
+	* src/nautilus-preferences-dialog.c: Changed labels from
+	"Font for elsewhere in Nautilus", which had become context-free,
+	to "Default smooth font" and "Default non-smooth font". Made
+	both of these always visible.
+	
+	* src/nautilus-sidebar-title.c:
+	(nautilus_sidebar_title_initialize_class): Set up auto-variable
+	to get default non-smooth font name so we don't have to call 
+	get_preferences	repeatedly.
+	(get_non_smooth_font): New helper function to get a non-smooth
+	font of a specified size.
+	(non_smooth_font_changed_callback): New function, updates the
+	non-smooth font for the title and "more info" text.
+	(update_all_cover): Removed this function.
+	(nautilus_sidebar_title_initialize): Call new callback instead of
+	update_all when non-smooth font changes. update_all was bailing
+	out without doing any work since the text hadn't changed. Also
+	call callback once to set the initial non-smooth font info.
+	(update_title_font): Changed name from update_font for clarity;
+	moved some consts to become #defines instead; fixed bug where 
+	this routine wasn't using bold font for either smooth or non-smooth 
+	font (2 unrelated bugs); removed unnecessary font-setting call 
+	(smooth font is already set elsewhere and doesn't change here);
+	remove unnecessary callback for NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE
+	since each label piece already handles this separately.
+	(update_title), (nautilus_sidebar_title_size_allocate): Updated for
+	name change.
+
 2001-04-24  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

@@ -57,7 +57,12 @@
 #include <string.h>
 
 /* maximum allowable size to be displayed as the title */
-#define MAX_TITLE_SIZE 256
+#define MAX_TITLE_SIZE 		256
+
+#define MORE_INFO_FONT_SIZE 	 12
+#define MIN_TITLE_FONT_SIZE 	 12
+#define MAX_TITLE_FONT_SIZE 	 20
+#define TITLE_PADDING		  4
 
 static void                nautilus_sidebar_title_initialize_class (NautilusSidebarTitleClass *klass);
 static void                nautilus_sidebar_title_destroy          (GtkObject                 *object);
@@ -68,9 +73,11 @@ static void                nautilus_sidebar_title_theme_changed    (gpointer    
 static void                update_icon                             (NautilusSidebarTitle      *sidebar_title);
 static GtkWidget *         sidebar_title_create_title_label        (void);
 static GtkWidget *         sidebar_title_create_more_info_label    (void);
-static void                update_all_cover   			   (gpointer                   callback_data);
 static void		   update_all 				   (NautilusSidebarTitle      *sidebar_title);
-static EelBackground *nautilus_sidebar_title_background       (NautilusSidebarTitle      *sidebar_title);
+static void		   update_title_font			   (NautilusSidebarTitle      *sidebar_title);
+static EelBackground 	  *nautilus_sidebar_title_background       (NautilusSidebarTitle      *sidebar_title);
+
+static const char *non_smooth_font_name;
 
 struct NautilusSidebarTitleDetails {
 	NautilusFile		*file;
@@ -99,6 +106,9 @@ nautilus_sidebar_title_initialize_class (NautilusSidebarTitleClass *class)
 	
 	object_class->destroy = nautilus_sidebar_title_destroy;
 	widget_class->size_allocate = nautilus_sidebar_title_size_allocate;
+
+	nautilus_preferences_add_auto_string (NAUTILUS_PREFERENCES_DEFAULT_FONT,
+					      &non_smooth_font_name);
 }
 
 static void
@@ -144,6 +154,37 @@ smooth_font_changed_callback (gpointer callback_data)
 	gtk_object_unref (GTK_OBJECT (new_bold_font));
 }
 
+static GdkFont *
+get_non_smooth_font (int font_size)
+{
+	GdkFont *result;
+
+	result = nautilus_font_factory_get_font_by_family (non_smooth_font_name, font_size);
+	g_assert (result != NULL);
+
+	return result;
+}
+
+static void
+non_smooth_font_changed_callback (gpointer callback_data)
+{
+	NautilusSidebarTitle *sidebar_title;
+	GdkFont *new_font;
+
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TITLE (callback_data));
+
+	sidebar_title = NAUTILUS_SIDEBAR_TITLE (callback_data);
+
+	/* Update the dynamically-sized title font */
+	update_title_font (sidebar_title);
+
+	/* Update the fixed-size "more info" font */
+	new_font = get_non_smooth_font (MORE_INFO_FONT_SIZE);
+	eel_gtk_widget_set_font (sidebar_title->details->more_info_label,
+				 new_font);	
+	gdk_font_unref (new_font);
+}
+
 static void
 nautilus_sidebar_title_initialize (NautilusSidebarTitle *sidebar_title)
 { 
@@ -187,12 +228,8 @@ nautilus_sidebar_title_initialize (NautilusSidebarTitle *sidebar_title)
 
 	/* Keep track of changes in graphics trade offs */
 	update_all (sidebar_title);
-	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
-						       update_all_cover, 
-						       sidebar_title,
-						       GTK_OBJECT (sidebar_title));
 	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DEFAULT_FONT,
-						       update_all_cover,
+						       non_smooth_font_changed_callback,
 						       sidebar_title,
 						       GTK_OBJECT (sidebar_title));
 	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
@@ -204,9 +241,10 @@ nautilus_sidebar_title_initialize (NautilusSidebarTitle *sidebar_title)
 						       sidebar_title,
 						       GTK_OBJECT (sidebar_title));
 
-	/* set up the label colors according to the theme, and get notified of changes */
+	/* initialize the label colors & fonts */
 	nautilus_sidebar_title_theme_changed (sidebar_title);
 	smooth_font_changed_callback (sidebar_title);
+	non_smooth_font_changed_callback (sidebar_title);
 }
 
 /* destroy by throwing away private storage */
@@ -451,26 +489,21 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 }
 
 static void
-update_font (NautilusSidebarTitle *sidebar_title)
+update_title_font (NautilusSidebarTitle *sidebar_title)
 {
-	const int maximum_acceptable_font_size = 20;
-	const int minimum_acceptable_font_size = 12;
-	const int slop_offset = 4;
-
 	int available_width;
 	GdkFont *template_font;
 	GdkFont *bold_template_font;
 	GdkFont *largest_fitting_font;
 	int largest_fitting_smooth_font_size;
 	EelScalableFont *smooth_font;
-	char *font_name;
 
 	/* Make sure theres work to do */
 	if (eel_strlen (sidebar_title->details->title_text) < 1) {
 		return;
 	}
 
-	available_width = GTK_WIDGET (sidebar_title)->allocation.width - slop_offset;
+	available_width = GTK_WIDGET (sidebar_title)->allocation.width - TITLE_PADDING;
 
 	/* No work to do */
 	if (available_width <= 0) {
@@ -478,33 +511,29 @@ update_font (NautilusSidebarTitle *sidebar_title)
 	}
 	
 	/* Update the smooth font */
-	smooth_font = nautilus_global_preferences_get_default_smooth_font ();
+	smooth_font = eel_label_get_smooth_font (EEL_LABEL (sidebar_title->details->title_label));
 	largest_fitting_smooth_font_size = eel_scalable_font_largest_fitting_font_size
 		(smooth_font,
 		 sidebar_title->details->title_text,
 		 available_width,
-		 minimum_acceptable_font_size,
-		 maximum_acceptable_font_size);
+		 MIN_TITLE_FONT_SIZE,
+		 MAX_TITLE_FONT_SIZE);
 	
-	eel_label_set_smooth_font (EEL_LABEL (sidebar_title->details->title_label), smooth_font);
-	eel_label_set_smooth_font_size (EEL_LABEL (sidebar_title->details->title_label), largest_fitting_smooth_font_size);
+	eel_label_set_smooth_font_size (EEL_LABEL (sidebar_title->details->title_label), 
+					largest_fitting_smooth_font_size);
 	
 	gtk_object_unref (GTK_OBJECT (smooth_font));
 
 	/* Update the regular font */
-	font_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_DEFAULT_FONT);
-	template_font = nautilus_font_factory_get_font_by_family (font_name, maximum_acceptable_font_size);
-	g_free (font_name);
-	g_assert (template_font != NULL);
-
+	template_font = get_non_smooth_font (MAX_TITLE_FONT_SIZE);
 	bold_template_font = eel_gdk_font_get_bold (template_font);
 	
 	largest_fitting_font = eel_gdk_font_get_largest_fitting
-		(template_font,
+		(bold_template_font,
 		 sidebar_title->details->title_text,
 		 available_width,
-		 minimum_acceptable_font_size,
-		 maximum_acceptable_font_size);
+		 MIN_TITLE_FONT_SIZE,
+		 MAX_TITLE_FONT_SIZE);
 	
 	if (largest_fitting_font == NULL) {
 		largest_fitting_font = eel_gdk_font_get_fixed ();
@@ -524,7 +553,7 @@ update_title (NautilusSidebarTitle *sidebar_title)
 	/* FIXME bugzilla.eazel.com 2500: We could defer showing the title until the icon is ready. */
 	if (eel_label_set_text (EEL_LABEL (sidebar_title->details->title_label),
 				     sidebar_title->details->title_text)) {
-		update_font (sidebar_title);
+		update_title_font (sidebar_title);
 	}
 }
 
@@ -754,7 +783,7 @@ nautilus_sidebar_title_size_allocate (GtkWidget *widget,
 
 	if (old_width != widget->allocation.width) {
 		/* Need to update the font if the width changes. */
-		update_font (NAUTILUS_SIDEBAR_TITLE (widget));
+		update_title_font (NAUTILUS_SIDEBAR_TITLE (widget));
 	}
 }
 
@@ -789,12 +818,4 @@ sidebar_title_create_more_info_label (void)
 	eel_label_set_justify (EEL_LABEL (more_info_label), GTK_JUSTIFY_CENTER);
 	
 	return more_info_label;
-}
-
-static void
-update_all_cover (gpointer callback_data)
-{
-	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TITLE (callback_data));
-	
-	update_all (NAUTILUS_SIDEBAR_TITLE (callback_data));
 }
