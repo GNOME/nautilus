@@ -1,5 +1,10 @@
 2003-03-27  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-list-model.c (fm_list_model_get_value):
+	Scale icons to fit in row-height.
+
+2003-03-27  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-list-view.c (fm_list_view_start_renaming_file): 
 	* libnautilus-private/nautilus-icon-container.c (nautilus_icon_container_start_renaming_selected_item):
 	Use eel_filename_get_rename_region for both list and icon view to
