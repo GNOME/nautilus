@@ -1097,7 +1097,7 @@ set_up_scripts_directory_global (void)
 	}
 
 	scripts_directory_path = nautilus_make_path (g_get_home_dir (),
-						     ".gnome/nautilus-scripts");
+						     GNOME_DOT_GNOME "/nautilus-scripts");
 
 	scripts_directory_uri = gnome_vfs_get_uri_from_local_path (scripts_directory_path);
 	scripts_directory_uri_length = strlen (scripts_directory_uri);
