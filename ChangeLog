@@ -1,3 +1,13 @@
+2000-04-18 Shane Culpepper <pepper@eazel.com>
+	*components/services/install/eazel-install-lib-xml.c
+	*components/services/install/eazel-install-lib.h
+	*components/servics/install/eazel-install-lib-rpm.c
+	*components/services/install/eazel-install.c
+	Fixed a few memory leaks, removed some debugging code,
+	and added interfaceFlags, installFlags, and probFilter
+	in order to remove some hardcoded options and make use
+	of the configuration files.
+
 2000-04-18  Gene Z. Ragan <gzr@eazel.com>
 
 	*libnautilus-extensions/nautilus-icon-canvas-item.c

@@ -198,9 +198,11 @@ parse_package (xmlNode* package) {
 		dep = dep->next;
 
 	}
-	
-	dump_package_list (rv);
 
+	/* For debugging only
+	dump_package_list (rv);
+	*/
+	g_free(tmp);
 	return rv;
 
 } /* end parse package */
@@ -214,7 +216,9 @@ parse_category (xmlNode* cat) {
 	category = g_new0 (CategoryData, 1);
 	category->name = xmlGetProp (cat, "name");
 
+/*
 	g_print ("Category Name = %s\n", category->name);
+*/
 	
 	pkg = cat->childs->childs;
 	if (pkg == NULL) {

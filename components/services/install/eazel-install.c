@@ -32,7 +32,7 @@ static void show_license (int exitcode, char* error);
 
 static void
 show_usage (int exitcode, char* error) {
-	fprintf (stderr, "Usage: eazel-linstall [options]\n"
+	fprintf (stderr, "Usage: eazel-install [options]\n"
 			"Valid options are:\n"
 			"	-h --help       : show help\n"
 			"	-L --License    : show license\n"
@@ -147,13 +147,21 @@ main (int argc, char* argv[]) {
 	}
 
 	/* Initialize iopts with defaults from the configuration file */
-
+	g_print ("Reading the eazel services configuration ...\n");
 	iopts = init_default_install_configuration (config_file);
+
+/*
 	if (iopts->mode_debug == TRUE) {
 		dump_install_options (iopts);
 	}
-
+*/
 	/* Do the install */
+
+	if (iopts->mode_silent && iopts->mode_verbose == TRUE) {
+		fprintf (stderr, "***You cannot specify verbose and silent modes\n"
+						 "   at the same time !\n");
+		exit (1);
+	}
 
 	retval = install_new_packages (iopts);
 	if (retval == FALSE) {

@@ -32,12 +32,38 @@ install_new_packages (InstallOptions* iopts) {
 
 	GList *categories;
 	gboolean rv;
+	int installFlags, interfaceFlags, probFilter;
+	
+	categories = NULL;
+	installFlags = 0;
+	interfaceFlags = 0;
+	probFilter = 0;
+	
+	if (iopts->mode_test == TRUE) {
+		installFlags |= RPMTRANS_FLAG_TEST;
+	}
 
-	rpmSetVerbosity(RPMMESS_FATALERROR);
+	if (iopts->mode_update == TRUE) {
+		interfaceFlags |= INSTALL_UPGRADE;
+	}
+
+	if (iopts->mode_verbose == TRUE) {
+		interfaceFlags |= INSTALL_HASH;
+		rpmSetVerbosity (RPMMESS_VERBOSE);
+	}
+	else {
+		rpmSetVerbosity (RPMMESS_NORMAL);
+	}
+
+	/* FIXME This needs to be setup as an option.  Forcing everything right now. */
+	probFilter |= RPMPROB_FILTER_REPLACEPKG |
+				  RPMPROB_FILTER_REPLACEOLDFILES |
+				  RPMPROB_FILTER_REPLACENEWFILES |
+				  RPMPROB_FILTER_OLDPACKAGE;
+	
 	rpmReadConfigFiles (iopts->rpmrc_file, NULL);
 
-	categories = NULL;
-
+	g_print ("Reading the package list ...\n");
 	categories = fetch_xml_package_list_local (iopts->pkg_list_file);
 
 	while (categories) {
@@ -48,25 +74,26 @@ install_new_packages (InstallOptions* iopts) {
 		while (t) {
 			PackageData* pack = t->data;
 			const char* pkg[2]; 
+			char *tmpbuf;
 			int retval;
 
 			retval = 0;
 			
-			pkg[0] = g_strdup_printf ("%s/%s", iopts->rpm_storage_dir, pack->rpm_name);
+			tmpbuf = g_strdup_printf ("%s/%s", iopts->rpm_storage_dir, pack->rpm_name);
+            pkg[0] = tmpbuf;
 			pkg[1] = NULL;
-			g_print ("Installing Package = %s\n", pkg[0]);
-			retval = rpmInstall ("/", pkg, 0, INSTALL_UPGRADE | INSTALL_HASH,
-								RPMPROB_FILTER_REPLACEPKG | RPMPROB_FILTER_OLDPACKAGE |
-								RPMPROB_FILTER_REPLACEOLDFILES, NULL);
+			g_print ("Installing %s\n", pack->summary);
+			retval = rpmInstall ("/", pkg, installFlags, interfaceFlags,
+								probFilter, NULL);
 			if (retval == 0) {
-				g_print ("Package install successful!\n");
+				g_print ("Package install successful !\n");
 				rv = TRUE;
 			}
 			else {
 				g_print ("Package install failed !\n");
 				rv = FALSE;
 			}
-
+			g_free(tmpbuf);
 			t = t->next;
 		}
 		categories = categories->next;
@@ -76,12 +103,6 @@ install_new_packages (InstallOptions* iopts) {
 	
 	return rv;
 } /* end install_new_packages */
-
-gboolean 
-install_update_packages (InstallOptions* iopts) {
-	fprintf (stderr, "***Sorry update not supported yet!***\n");
-	return TRUE;
-} /* end install_update_packages */
 
 gboolean 
 uninstall_packages (InstallOptions* iopts) {

@@ -53,13 +53,13 @@ enum _URLType {
 struct _InstallOptions {
 	URLType protocol;
 	gboolean mode_debug;		/* Internal testing mode for debugging */
-	gboolean mode_test;			/* NOT IMPLEMENTED */
-	gboolean mode_verbose;		/* NOT IMPLEMENTED */
-	gboolean mode_silent;		/* NOT IMPLEMENTED */
-	gboolean mode_depend;		/* NOT IMPLEMETED */
-	gboolean mode_uninstall;	/* NOT IMPLEMENTED */
-	gboolean mode_update;		/* NOT IMPLEMENTED */
-	guint port_number;			/* NOT IMPLEMENTED */
+	gboolean mode_test;
+	gboolean mode_verbose;
+	gboolean mode_silent;
+	gboolean mode_depend;
+	gboolean mode_uninstall;
+	gboolean mode_update;
+	guint port_number;
 	char* rpmrc_file;			/* Points to the rpmrc file */
 	char* pkg_list_file;		/* The URI pointing to packages.xml */
 	char* rpm_storage_dir;		/* The URI pointing to the rpm location */
@@ -96,7 +96,6 @@ InstallOptions* init_default_install_configuration (const char* config_file);
 InstallOptions* init_default_install_configuration_test (void);
 GList* fetch_xml_package_list_local (const char* pkg_list_file);
 gboolean install_new_packages (InstallOptions* iopts);
-gboolean install_update_packages (InstallOptions* iopts);
 gboolean uninstall_packages (InstallOptions* iopts);
 void dump_install_options (InstallOptions* iopts);
 void dump_package_list (PackageData* pkg);
