@@ -68,6 +68,8 @@ guint      nautilus_preferences_pane_get_num_groups         (const NautilusPrefe
 guint      nautilus_preferences_pane_get_num_visible_groups (const NautilusPreferencesPane *pane);
 GtkWidget* nautilus_preferences_pane_find_group             (const NautilusPreferencesPane *preferences_pane,
 							     const char                    *group_title);
+void       nautilus_preferences_pane_add_control_preference (NautilusPreferencesPane       *preferences_pane,
+							     const char                    *control_preference_name);
 
 END_GNOME_DECLS
 

@@ -28,6 +28,7 @@
 #include "nautilus-gtk-macros.h"
 #include "nautilus-gtk-extensions.h"
 #include "nautilus-string.h"
+#include "nautilus-string-list.h"
 
 #include <gtk/gtkhbox.h>
 
@@ -38,6 +39,7 @@ struct _NautilusPreferencesPaneDetails
 {
 	GtkWidget *groups_box;
 	GList *groups;
+	NautilusStringList *control_preference_list;
 };
 
 /* NautilusPreferencesPaneClass methods */
@@ -82,6 +84,7 @@ nautilus_preferences_pane_destroy (GtkObject* object)
 	preferences_pane = NAUTILUS_PREFERENCES_PANE (object);
 
 	g_list_free (preferences_pane->details->groups);
+	nautilus_string_list_free (preferences_pane->details->control_preference_list);
 	g_free (preferences_pane->details);
 
 	/* Chain destroy */
@@ -238,4 +241,37 @@ nautilus_preferences_pane_find_group (const NautilusPreferencesPane *pane,
 	}
 	
 	return NULL;
+}
+
+static void
+preferences_pane_control_preference_changed_callback (gpointer callback_data)
+{
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_PANE (callback_data));
+
+	nautilus_preferences_pane_update (NAUTILUS_PREFERENCES_PANE (callback_data));
+}
+
+void
+nautilus_preferences_pane_add_control_preference (NautilusPreferencesPane *pane,
+						  const char *control_preference_name)
+{
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_PANE (pane));
+	g_return_if_fail (control_preference_name != NULL);
+
+	if (nautilus_string_list_contains (pane->details->control_preference_list,
+					   control_preference_name)) {
+		return;
+	}
+
+	if (pane->details->control_preference_list == NULL) {
+		pane->details->control_preference_list = nautilus_string_list_new (TRUE);
+	}
+
+	nautilus_string_list_insert (pane->details->control_preference_list,
+				     control_preference_name);
+
+ 	nautilus_preferences_add_callback_while_alive (control_preference_name,
+						       preferences_pane_control_preference_changed_callback,
+						       pane,
+						       GTK_OBJECT (pane));
 }

@@ -75,7 +75,6 @@ static int        compare_view_identifiers                              (gconstp
 static GtkWidget *global_preferences_create_dialog                      (void);
 static void       global_preferences_create_search_pane                 (NautilusPreferencesBox     *preference_box);
 static void       global_preferences_create_sidebar_panels_pane         (NautilusPreferencesBox     *preference_box);
-static void       global_preferences_pane_update_callback               (gpointer                    callback_data);
 static GtkWidget *global_preferences_populate_pane                      (NautilusPreferencesBox     *preference_box,
 									 const char                 *pane_name,
 									 const PreferenceDialogItem *preference_dialog_item);
@@ -929,12 +928,6 @@ global_preferences_create_dialog (void)
 							    _("Appearance"),
 							    appearance_items);
 	
- 	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
-						       global_preferences_pane_update_callback,
-						       appearance_pane,
-						       GTK_OBJECT (prefs_dialog));
-	
-
 	/* Windows & Desktop */
 	global_preferences_populate_pane (preference_box,
 					  _("Windows & Desktop"),
@@ -944,11 +937,6 @@ global_preferences_create_dialog (void)
 	directory_views_pane = global_preferences_populate_pane (preference_box,
 								 _("Icon & List Views"),
 								 directory_views_items);
-	
-	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
-						       global_preferences_pane_update_callback,
-						       directory_views_pane,
-						       GTK_OBJECT (prefs_dialog));
 	
 	/* Sidebar Panels */
 	global_preferences_create_sidebar_panels_pane (preference_box);
@@ -1109,18 +1097,6 @@ global_preferences_create_sidebar_panels_pane (NautilusPreferencesBox *preferenc
 	global_preferences_populate_pane (preference_box,
 					  _("Sidebar Panels"),
 					  sidebar_items);
-}
-
-/* Update a pane as a result of a preference change.
- * For example, we have 2 font picker items, but we only show
- * one depending on the value of the SMOOTH_GRAPHICS preference.
- */
-static void
-global_preferences_pane_update_callback (gpointer callback_data)
-{
-	g_return_if_fail (NAUTILUS_IS_PREFERENCES_PANE (callback_data));
-
-	nautilus_preferences_pane_update (NAUTILUS_PREFERENCES_PANE (callback_data));
 }
 
 /* Make a query to find out what sidebar panels are available. */
@@ -1526,6 +1502,9 @@ global_preferences_populate_pane (NautilusPreferencesBox *preference_box,
 									  preference_dialog_item[i].control_preference_name);
 			nautilus_preferences_item_set_control_action (NAUTILUS_PREFERENCES_ITEM (item),
 								      preference_dialog_item[i].control_action);
+
+			nautilus_preferences_pane_add_control_preference (NAUTILUS_PREFERENCES_PANE (pane),
+									  preference_dialog_item[i].control_preference_name);
 		}
 	}
 

@@ -1,5 +1,26 @@
 2001-03-30  Ramiro Estrugo  <ramiro@eazel.com>
 
+	reviewed by: Mike Fleming  <mfleming@eazel.com>
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog),
+	(global_preferences_populate_pane):
+	No need to explicitly add pane update callbacks for control
+	preference.  These happen automatically as needed now.
+	
+	* libnautilus-extensions/nautilus-preferences-pane.h:
+	* libnautilus-extensions/nautilus-preferences-pane.c:
+	(nautilus_preferences_pane_destroy),
+	(nautilus_preferences_pane_find_group),
+	(preferences_pane_control_preference_changed_callback),
+	(nautilus_preferences_pane_add_control_preference):
+	New function to add control preferences to the pane.  For each
+	unique control preference, a callback will be added to update the
+	pane so that control actions (such as hiding or showing items) can
+	take place as needed.
+	
+2001-03-30  Ramiro Estrugo  <ramiro@eazel.com>
+
 	reviewed by: John Sullivan  <sullivan@eazel.com>
 
 	* components/text/nautilus-text-view.c: (merge_bonobo_menu_items):
