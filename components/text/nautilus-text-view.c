@@ -616,9 +616,15 @@ add_one_service (NautilusTextView *text_view, BonoboControl *control, const char
 	}
 }
 
-/* iterate through the passed in services directory */
-static void
-add_services_to_menu (NautilusTextView *text_view, BonoboControl *control, const char *services_directory, int* index)
+/* iterate through the passed in services directory to add services to the menu.
+ * Don't add a service with the same name as one that has already been added.
+ */
+static GList *
+add_services_to_menu (NautilusTextView *text_view,
+			BonoboControl *control,
+			const char *services_directory,
+			GList *added_services,
+			int* index)
 {
 	GnomeVFSResult result;
 	GList *file_list, *element;	
@@ -630,7 +636,7 @@ add_services_to_menu (NautilusTextView *text_view, BonoboControl *control, const
 	
 	if (result != GNOME_VFS_OK) {
 		g_free (services_uri);
-		return;
+		return added_services;
 	}
 
 	/* iterate through the directory */
@@ -642,15 +648,19 @@ add_services_to_menu (NautilusTextView *text_view, BonoboControl *control, const
 		}
 		
 		if (nautilus_istr_has_suffix (current_file_info->name, ".xml")) {		
-			service_xml_path = nautilus_make_path (services_directory, current_file_info->name);
-			add_one_service (text_view, control, service_xml_path, index);
-			g_free (service_xml_path);
+			if (g_list_find_custom (added_services, current_file_info->name,
+						(GCompareFunc) strcmp) == NULL) {
+				service_xml_path = nautilus_make_path (services_directory, current_file_info->name);
+				add_one_service (text_view, control, service_xml_path, index);
+				added_services = g_list_prepend (added_services, g_strdup (current_file_info->name));
+				g_free (service_xml_path);
+			}
 		}
 	}
 	
 	g_free (services_uri);
 	gnome_vfs_file_info_list_free (file_list);	
-
+	return added_services;
 }
 
 /* build the services menu from the shared and private services/text directories */
@@ -658,25 +668,33 @@ static void
 nautilus_text_view_build_service_menu (NautilusTextView *text_view, BonoboControl *control)
 {
 	char *services_directory, *user_directory, *nautilus_datadir;
+	GList *added_services;
 	int index;
-	
 	index = 0;
 	
 	/* first, add the services from the global directory */
 	nautilus_datadir = nautilus_make_path (DATADIR, "nautilus");
 	services_directory = nautilus_make_path (nautilus_datadir, "services/text");
-	add_services_to_menu (text_view, control, services_directory, &index);
+	added_services = add_services_to_menu (text_view, control, services_directory, NULL, &index);
 	g_free (nautilus_datadir);
 	g_free (services_directory);
 	
 	/* now add services from the user-specific directory, if any */	
 	user_directory = nautilus_get_user_directory ();
 	services_directory = nautilus_make_path (user_directory, "services/text");
-	add_services_to_menu (text_view, control, services_directory, &index);
+	added_services = add_services_to_menu (text_view, control, services_directory, added_services, &index);
 
+	/* add any services that are present in the updates folder */
+	g_free (services_directory);
+	g_free (user_directory);
+	user_directory = nautilus_get_user_directory ();
+	services_directory = nautilus_make_path (user_directory, "updates/services/text");
+	added_services = add_services_to_menu (text_view, control, services_directory, added_services, &index);
+	
 	text_view->details->service_item_count = index;	
 	g_free (services_directory);
 	g_free (user_directory);
+	nautilus_g_list_free_deep (added_services);
 }
 
 /* handle updating the service menu items according to the selection state of the text display */

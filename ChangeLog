@@ -1,3 +1,12 @@
+2001-02-13  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/text/nautilus-text-view.c: (add_services_to_menu),
+	(nautilus_text_view_build_service_menu):
+	made the text view look for services in the updates folder, so we
+	can add new services in the same fashion as bookmarks.  Also,
+	keep a list of the added service filenames so if the same service
+	is present in multiple directories, it only gets added once.
+	
 2001-02-13  Robin * Slomkowski  <rslomkow@rslomkow.org>
 
 	* nautilus.spec.in: enabled make -k check
