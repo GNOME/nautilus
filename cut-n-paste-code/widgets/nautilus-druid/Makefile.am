@@ -5,6 +5,7 @@ noinst_LTLIBRARIES = libnautilus-druid.la
 INCLUDES = \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/cut-n-paste-code \
+	$(VFS_CFLAGS) \
 	$(GNOME_CFLAGS) \
 	$(GDK_PIXBUF_CFLAGS) \
 	$(NULL)
