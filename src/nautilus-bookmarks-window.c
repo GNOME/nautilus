@@ -188,7 +188,7 @@ create_bookmarks_window (NautilusBookmarkList *list, GtkObject *undo_manager_sou
 	gtk_box_pack_start (GTK_BOX (right_side), hbox2, FALSE, FALSE, 0);
 
 	remove_button = gtk_button_new_with_label (_("Remove"));
-	nautilus_gtk_button_set_padding (GTK_BUTTON (remove_button), GNOME_PAD_SMALL);
+	nautilus_gtk_button_set_standard_padding (GTK_BUTTON (remove_button));
 	gtk_widget_show (remove_button);
 	gtk_box_pack_start (GTK_BOX (hbox2), remove_button, TRUE, FALSE, 0);
 

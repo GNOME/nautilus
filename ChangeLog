@@ -1,3 +1,51 @@
+2001-01-15  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
+
+	Removed stuff I added earlier as part of a failed fix
+	for bug 2068, which I ended up fixing a different way.
+
+	Fixed bug 5661 (Hardwired button sizes for custom icons
+	in properties window)
+
+	Fixed bug 1682 ("Go There" button taller than others
+	in "Open with Other" dialog)
+
+	* libnautilus-extensions/nautilus-scrolled-window.h:
+	* libnautilus-extensions/nautilus-scrolled-window.c:
+	Removed these files from cvs.
+
+	* libnautilus-extensions/Makefile.am:
+	Removed the removed files from the build.
+	
+	* libnautilus-extensions/nautilus-metadata.h:
+	removed NAUTILUS_METADATA_KEY_ICON_VIEW_SCROLL_ORIGIN
+
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize): Changed back to inheriting
+	from GtkScrolledWindow instead of now non-existent
+	NautilusScrolledWindow.
+
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_button_set_standard_padding): New function,
+	wrapper for nautilus_gtk_button_set_padding that uses
+	a standard amount of padding instead of taking a parameter.
+	This is preferred so we can change a single number if we
+	change our minds about what the standard padding should be.
+
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(nautilus_program_chooser_new): Use 
+	nautilus_gtk_button_set_standard_padding. Also added a vbox
+	so that "Go There" button doesn't grow taller to match the 
+	height of the adjacent text. This fixed bug 1682.
+	* src/nautilus-bookmarks-window.c: (create_bookmarks_window):
+	Use nautilus_gtk_button_set_standard_padding.
+	* src/file-manager/fm-properties-window.c: (create_basic_page):
+	Use nautilus_gtk_button_set_standard_padding instead of
+	hardwiring button sizes. This fixed bug 5661.
+
 2001-01-16  Carlos Perelló Marín <carlos@gnome-db.org>
 
         * configure.in: Added es to ALL_LINGUAS.

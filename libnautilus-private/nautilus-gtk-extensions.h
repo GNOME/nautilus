@@ -41,6 +41,7 @@
 
 /* GtkButton */
 void              nautilus_gtk_button_auto_click                       (GtkButton                *button);
+void		  nautilus_gtk_button_set_standard_padding	       (GtkButton		 *button);
 void              nautilus_gtk_button_set_padding                      (GtkButton                *button,
 									int                       pad_amount);
 

@@ -54,6 +54,11 @@
 #define MINIMUM_ON_SCREEN_WIDTH		100
 #define MINIMUM_ON_SCREEN_HEIGHT	100
 
+/* GTK buttons cram the text too close to the edge of the buttons by default.
+ * This is the standard padding used to make them look non-crammed.
+ */
+#define NAUTILUS_STANDARD_BUTTON_PADDING 1
+
 static gboolean
 finish_button_activation (gpointer data)
 {
@@ -118,6 +123,22 @@ nautilus_gtk_button_set_padding (GtkButton *button, int pad_amount)
 	gtk_misc_set_padding (GTK_MISC (GTK_BIN(button)->child), 
 			      pad_amount, 
 			      pad_amount);
+}
+
+/**
+ * nautilus_gtk_button_set_standard_padding
+ * 
+ * Adds the standard amount of padding around the contained widget in the button 
+ * (typically the label). Use this rather than nautilus_gtk_button_set_padding
+ * unless you have a specific reason to use a non-standard amount.
+ * @button: a GtkButton
+ **/
+void
+nautilus_gtk_button_set_standard_padding (GtkButton *button)
+{
+	g_return_if_fail (GTK_IS_BUTTON (button));
+
+	nautilus_gtk_button_set_padding (button, NAUTILUS_STANDARD_BUTTON_PADDING);
 }
 
 
