@@ -86,12 +86,9 @@ install_icon (GtkCList *clist, gint row)
 }
 
 static void
-history_view_update_icons (HistoryView *history_view)
+history_view_update_icons (GtkCList *clist)
 {
-  GtkCList *clist;
   int row;
-
-  clist = history_view->clist;
 
   for (row = 0; row < clist->rows; ++row) 
     {
@@ -249,11 +246,12 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
   ctl = nautilus_view_frame_get_bonobo_control (NAUTILUS_VIEW_FRAME (hview->view));
   gtk_signal_connect(GTK_OBJECT (ctl), "set_frame", menu_setup, hview);
 
+  hview->clist = (GtkCList *)clist;
+
   /* set description */
   nautilus_meta_view_frame_set_label(NAUTILUS_META_VIEW_FRAME(hview->view),
                                      _("History"));
 
-  
   /* handle events */
   gtk_signal_connect(GTK_OBJECT(hview->view), "notify_location_change", hyperbola_navigation_history_notify_location_change, hview);
   gtk_signal_connect(GTK_OBJECT(clist), "select_row", hyperbola_navigation_history_select_row, hview);
@@ -261,10 +259,8 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
   gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
 					 "theme_changed",
 					 history_view_update_icons,
-					 GTK_OBJECT (hview));
+					 GTK_OBJECT (hview->clist));
 
-
-  hview->clist = (GtkCList *)clist;
 
   return BONOBO_OBJECT (hview->view);
 }

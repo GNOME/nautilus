@@ -1,5 +1,12 @@
 2000-02-24  John Sullivan  <sullivan@eazel.com>
 
+	* components/history/ntl-history-view.c:
+	(history_view_update_icons), (make_obj): Correction to previous
+	checkin: connect signal to CList instead of HistoryView because
+	HistoryView isn't a GtkObject.
+
+2000-02-24  John Sullivan  <sullivan@eazel.com>
+
 	* src/ntl-uri-map.c: (my_notify_when_ready):
 	Added "View as Text" as an option for html pages. Untestable
 	right now because attempting to load html pages fails.
