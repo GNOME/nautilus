@@ -415,12 +415,12 @@ nautilus_view_activate_uri(GnomeControlFrame *frame, const char *uri, gboolean r
   nautilus_view_request_location_change(view, &nri);
 }
 
-void
-nautilus_view_load_client(NautilusView              *view,
-			  const char *               iid)
+nautilus_view_load_client(NautilusView *view, const char *iid)
 {
   GnomeControlFrame *frame;
   CORBA_Environment ev;
+
+  g_return_if_fail(iid);
 
   if(view->client)
     {
@@ -438,12 +438,27 @@ nautilus_view_load_client(NautilusView              *view,
 						    "IDL:Nautilus/View:1.0", &ev);
   if(ev._major != CORBA_NO_EXCEPTION)
     view->view_client = CORBA_OBJECT_NIL;
+
   view->iid = g_strdup(iid);
 
   gtk_signal_connect(GTK_OBJECT(frame), "activate_uri", GTK_SIGNAL_FUNC(nautilus_view_activate_uri), view);
   gtk_widget_show(view->client);
   gtk_container_add(GTK_CONTAINER(view), view->client);
   CORBA_exception_free(&ev);
+}
+
+void
+nautilus_view_use_client               (NautilusView              *view,
+                                        GNOME_Control              ctl)
+{
+  nautilus_view_handle_client(view, NULL, ctl);
+}
+
+void
+nautilus_view_load_client(NautilusView              *view,
+			  const char *               iid)
+{
+  nautilus_view_handle_client(view, iid, CORBA_OBJECT_NIL);
 }
 
 static void

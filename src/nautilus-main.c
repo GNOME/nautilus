@@ -38,6 +38,13 @@ check_for_quit(void)
     gtk_main_quit();
 }
 
+static GnomeObject *
+nautilus_make_object(GnomeGenericFactory *gfact, const char *goad_id, void *closure)
+{
+  /* New internally implemented objects should be activated here */
+  return NULL;
+}
+
 int main(int argc, char *argv[])
 {
   poptContext ctx;
@@ -47,9 +54,12 @@ int main(int argc, char *argv[])
     {NULL}
   };
   GtkWidget *mainwin;
+  GnomeGenericFactory *gfact;
 
   orb = gnome_CORBA_init_with_popt_table("nautilus", VERSION, &argc, argv, options, 0, &ctx, GNORBA_INIT_SERVER_FUNC, &ev);
   bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
+
+  gfact = gnome_generic_factory_new("nautilus_factory", nautilus_make_object, NULL);
 
   mainwin = gtk_widget_new(nautilus_window_get_type(), "app_id", "nautilus", NULL);
   bonobo_activate();

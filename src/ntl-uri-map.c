@@ -44,7 +44,28 @@ nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
 
   navinfo->requesting_view = requesting_view;
 
-  /* XXX turn the provided information into some activateable IID's */
+  navinfo->navinfo.content_type = gnome_mime_type_of_file(navinfo->navinfo.requested_uri);
+
+  /* Given a content type and a URI, what do we do? Basically the "expert system" below
+     tries to answer that question
+
+     Check if the URI is in an abnormal scheme (e.g. one not supported by gnome-vfs)
+       If so
+          Lookup a content view by scheme name, go.
+          Lookup meta views by scheme name, go.
+
+       If not
+          Figure out content type.
+          Lookup a content view by content type, go.
+          Lookup meta views by content type, go.
+
+     The lookup-and-go process works like:
+         Generate a list of all possibilities ordered by quality.
+         Put possibilities on menu.
+
+         Find if the user has specified any default(s) globally, modify selection.
+         Find if the user has specified any default(s) per-page, modify selection.
+  */
 
   return NULL;
 }
@@ -52,4 +73,5 @@ nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
 void
 nautilus_navinfo_free(NautilusNavigationInfo *navinfo)
 {
+  g_free(navinfo->navinfo.content_type);
 }
