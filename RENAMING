@@ -19,38 +19,19 @@ macros
 ---------------
 directory names
 ---------------
-components/rpmview -> components/rpm
 
 ----------
 file names
 ----------
-components/html/ntl-web-browser.c -> ?
-components/websearch/ntl-web-search.c -> components/websearch/nautilus-web-search.c?
 src/file-manager/fm-* -> ?
-src/file-manager/dfos* -> ?
-src/file-manager/dfos-xfer* -> src/file-manager/copy_engine*
-
---------------------------
-Random vestiges of "ntl"
---------------------------
-libntl-file-manager.* -> libnautilus-file-manager.*
-*ntl* -> *nautilus*
-header file guard #defines, *NTL* -> *NAUTILUS*
-	(change to match header file instead with perl script to check?)
+hyperbola -> nautilus-help-system
 
 ----------------------------
 classes and other data types
 ----------------------------
-NautilusNavigationInfo -> ?
-NautilusList -> NautilusExtendedColumnarList or NautilusExtendedCList
+FM* -> ?
 
 --------------
 function names
 --------------
 zoom_level_changed -> report_zoom_level_change
-nautilus_strlen -> nautilus_null_tolerant_strlen
-nautilus_strchr -> nautilus_null_tolerant_strchr
-nautilus_strcmp -> nautilus_null_tolerant_strcmp
-nautilus_strcasecmp -> nautilus_null_tolerant_strcasecmp
-nautilus_str_compare -> nautilus_str_compare_null_tolerant
-nautilus_eat_strcmp -> <kill it>

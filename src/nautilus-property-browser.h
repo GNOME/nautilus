@@ -28,8 +28,8 @@
  * customize them 
  */
 
-#ifndef NTL_PROPERTY_BROWSER_H
-#define NTL_PROPERTY_BROWSER_H
+#ifndef NAUTILUS_PROPERTY_BROWSER_H
+#define NAUTILUS_PROPERTY_BROWSER_H
 
 #include <gtk/gtkwindow.h>
 
@@ -66,4 +66,4 @@ void nautilus_property_browser_show (void);
 void nautilus_property_browser_set_path (NautilusPropertyBrowser *panel,
 					 const char         *new_path);
 
-#endif /* NTL_PROPERTY_BROWSER_H */
+#endif /* NAUTILUS_PROPERTY_BROWSER_H */
