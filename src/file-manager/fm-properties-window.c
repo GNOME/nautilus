@@ -3609,12 +3609,13 @@ fm_properties_window_present (GList *original_files,
 					 directory_view);
 
 	nautilus_file_list_free (target_files);
+	g_free(pending_key);
 
 	/* Wait until we can tell whether it's a directory before showing, since
 	 * some one-time layout decisions depend on that info. 
 	 */
 	
-	g_hash_table_insert (pending_lists, pending_key, pending_key);
+	g_hash_table_insert (pending_lists, startup_data->pending_key, startup_data->pending_key);
 	g_signal_connect (directory_view, "destroy",
 			  G_CALLBACK (directory_view_destroyed_callback), startup_data);
 
