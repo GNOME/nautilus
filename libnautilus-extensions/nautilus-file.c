@@ -3346,7 +3346,10 @@ nautilus_file_get_type_as_string (NautilusFile *file)
 		return g_strdup (_("link (broken)"));
 	}
 
-	mime_type = file->details->default_mime_type;
+	mime_type = file->details->slow_mime_type;
+	if (mime_type == NULL) {
+		mime_type = file->details->default_mime_type;
+	}
 
 	if (nautilus_strlen (mime_type) == 0) {
 		/* No mime type, anything else interesting we can say about this? */

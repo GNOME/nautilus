@@ -1,5 +1,15 @@
 2000-10-17  John Sullivan  <sullivan@eazel.com>
 
+	Fixed bug 3824 (Files in search list have unknown type)
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_type_as_string): Made this check cached
+	slow_mime_type as well as cached default_mime_type. I'm worried
+	about this whole area -- why did we differentiate the two? I'll
+	bet there are other lurking bugs around here.
+
+2000-10-17  John Sullivan  <sullivan@eazel.com>
+
 	Fixed bug 3825 (Bonobo error messages viewing search results)
 	Fixed bug 3826 ("Reveal in New Window" misplaced in context menu)
 
