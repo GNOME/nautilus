@@ -355,8 +355,6 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 		int index;
 		int num_paths;
 
-		num_paths = 0;
-		
 /* RPM v.3.0.4 and above has RPMTAG_BASENAMES,
    Lets see if RPMTAG_PROVIDES works for the older ones */
 #ifdef RPMTAG_BASENAMES
@@ -390,10 +388,8 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 		   complexity, aka O(n²) */
 		for (index=0; index<count; index++) {
 			char *fullname;
-			int index2;
+			int index2 = 0;
 
-			index2 = 0;
-			
 			if (paths) {
 				fullname = g_strdup_printf ("%s/%s", paths_copy[indexes[index]], names[index]);
 			} else {
@@ -415,9 +411,11 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 				pack->provides = g_list_prepend (pack->provides, fullname);
 			}
 		}
+#ifdef RPMTAG_BASENAMES
 		for (index=0; index<num_paths; index++) {
 			g_free (paths_copy[index]);
 		}
+#endif	/* RPMTAG_BASENAMES */
 		g_free (paths_copy);
 
 	}
