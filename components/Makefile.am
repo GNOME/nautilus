@@ -5,7 +5,6 @@ SUBDIRS = 					\
 	hardware 				\
 	history 				\
 	loser 					\
-	music					\
 	notes 					\
 	sample 					\
 	text 					\

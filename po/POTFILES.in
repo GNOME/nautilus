@@ -2,19 +2,20 @@
 # Please keep this file sorted alphabetically.
 components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in
 components/adapter/main.c
+components/emblem/Nautilus_View_emblem.server.in.in
+components/emblem/nautilus-emblem-view.c
 components/hardware/Nautilus_View_hardware.server.in.in
 components/hardware/nautilus-hardware-view.c
 components/history/Nautilus_View_history.server.in.in
 components/history/nautilus-history-view.c
+components/image_properties/Nautilus_View_image_properties.server.in.in
+components/image_properties/nautilus-image-properties-view.c
 components/loser/content/Nautilus_View_content-loser.server.in.in
 components/loser/content/nautilus-content-loser-ui.xml
 components/loser/content/nautilus-content-loser.c
 components/loser/sidebar/Nautilus_View_sidebar-loser.server.in.in
 components/loser/sidebar/nautilus-sidebar-loser-ui.xml
 components/loser/sidebar/nautilus-sidebar-loser.c
-components/music/Nautilus_View_music.server.in.in
-components/music/mpg123.c
-components/music/nautilus-music-view.c
 components/notes/Nautilus_View_notes.server.in.in
 components/notes/nautilus-notes.c
 components/sample/Nautilus_View_sample.server.in.in
@@ -50,9 +51,11 @@ icons/tahoe/tahoe.xml
 libbackground/preview-file-selection.c
 libnautilus-private/filesystem-attributes.xml
 libnautilus-private/eggtreemultidnd.c
+libnautilus-private/egg-screen-help.c
 libnautilus-private/nautilus-authn-manager.c
 libnautilus-private/nautilus-customization-data.c
 libnautilus-private/nautilus-dnd.c
+libnautilus-private/nautilus-emblem-utils.c
 libnautilus-private/nautilus-entry.c
 libnautilus-private/nautilus-file-operations-progress.c
 libnautilus-private/nautilus-file-operations.c
@@ -76,7 +79,9 @@ libnautilus-private/nautilus-volume-monitor.c
 libnautilus/nautilus-clipboard-ui.xml
 libnautilus/nautilus-clipboard.c
 nautilus.desktop.in
+nautilus-file-management-properties.desktop.in
 src/Nautilus_shell.server.in
+src/file-manager/egg-recent-vfs-utils.c
 src/file-manager/fm-desktop-icon-view.c
 src/file-manager/fm-directory-view.c
 src/file-manager/fm-error-reporting.c
@@ -93,6 +98,9 @@ src/nautilus-application.c
 src/nautilus-bookmarks-window.c
 src/nautilus-bookmarks-window.glade
 src/nautilus-complex-search-bar.c
+src/nautilus-file-management-properties.c
+src/nautilus-file-management-properties.glade
+src/nautilus-file-management-properties-main.c
 src/nautilus-first-time-druid.c
 src/nautilus-information-panel.c
 src/nautilus-location-bar.c
@@ -101,6 +109,9 @@ src/nautilus-preferences-dialog.c
 src/nautilus-profiler.c
 src/nautilus-property-browser.c
 src/nautilus-search-bar-criterion.c
+src/nautilus-server-connect.c
+src/nautilus-server-connect.desktop.in
+src/nautilus-server-connect.glade
 src/nautilus-shell-ui.xml
 src/nautilus-shell.c
 src/nautilus-sidebar-title.c
@@ -115,3 +126,4 @@ src/nautilus-window-private.h
 src/nautilus-window-toolbars.c
 src/nautilus-window.c
 src/nautilus-zoom-control.c
+src/network-scheme.desktop.in
