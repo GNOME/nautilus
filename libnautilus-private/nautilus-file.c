@@ -148,6 +148,8 @@ nautilus_file_ref (NautilusFile *file)
 void
 nautilus_file_unref (NautilusFile *file)
 {
+        gboolean goner;
+
 	g_return_if_fail (file != NULL);
 
 	g_assert (file->ref_count != 0);
@@ -158,11 +160,17 @@ nautilus_file_unref (NautilusFile *file)
 		return;
 	}
 
+        goner = file->is_gone;
+        
 	/* No references left, so it's time to release our hold on the directory. */
-	if (file->is_gone) {
+	gtk_object_unref (GTK_OBJECT (file->directory));
+
+	if (goner) {
+                /* Files that were deleted aren't referenced by the directory,
+                 * need to free it explicitly.
+                 */
 		nautilus_file_free (file);
 	}
-	gtk_object_unref (GTK_OBJECT (file->directory));
 }
 
 void

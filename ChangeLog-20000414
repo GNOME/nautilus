@@ -1,5 +1,13 @@
 2000-03-09  John Sullivan <sullivan@eazel.com>
 
+        * libnautilus/nautilus-file.c:
+        (nautilus_file_unref): Got this fix wrong last time, causing
+        GTK-CRITICALs when deleting files. Remember file->is_gone
+        before unreffing directory since you can't test possibly-destroyed
+        file afterward.
+
+2000-03-09  John Sullivan <sullivan@eazel.com>
+
         * libnautilus/nautilus-directory-private.h:
         (nautilus_directory_number_outstanding): Added prototype for this
         debugging function.
