@@ -452,9 +452,9 @@ nautilus_window_constructed(NautilusWindow *window)
   window->meta_notebook = gtk_notebook_new();
   gtk_widget_show(window->meta_notebook);
 #ifdef CONTENTS_AS_HBOX
-  gtk_box_pack_end(GTK_BOX(window->content_hbox), window->meta_notebook, FALSE, FALSE, GNOME_PAD);
+  gtk_box_pack_start(GTK_BOX(window->content_hbox), window->meta_notebook, FALSE, FALSE, GNOME_PAD);
 #else
-  gtk_paned_pack2(GTK_PANED(window->content_hbox), window->meta_notebook, TRUE, TRUE);
+  gtk_paned_pack1(GTK_PANED(window->content_hbox), window->meta_notebook, TRUE, TRUE);
 #endif
   gtk_widget_show_all(window->content_hbox);
 
@@ -497,17 +497,17 @@ nautilus_window_set_arg (GtkObject      *object,
 	gtk_widget_ref(GTK_WIDGET(window->content_view));
 	gtk_container_remove(GTK_CONTAINER(window->content_hbox), GTK_WIDGET(window->content_view));
 #ifdef CONTENTS_AS_HBOX
-	gtk_box_pack_start(GTK_BOX(window->content_hbox), GTK_WIDGET(new_cv), TRUE, TRUE, GNOME_PAD);
+	gtk_box_pack_end(GTK_BOX(window->content_hbox), GTK_WIDGET(new_cv), TRUE, TRUE, GNOME_PAD);
 #else
-	gtk_paned_pack1(GTK_PANED(window->content_hbox), GTK_WIDGET(new_cv), TRUE, FALSE);
+        gtk_paned_pack2(GTK_PANED(window->content_hbox), GTK_WIDGET(new_cv), TRUE, FALSE);
 #endif
 	gtk_widget_unref(GTK_WIDGET(window->content_view));
       }
     else
 #ifdef CONTENTS_AS_HBOX
-      gtk_box_pack_start(GTK_BOX(window->content_hbox), GTK_WIDGET(new_cv), TRUE, TRUE, GNOME_PAD);
+      gtk_box_pack_end(GTK_BOX(window->content_hbox), GTK_WIDGET(new_cv), TRUE, TRUE, GNOME_PAD);
 #else
-      gtk_paned_pack1(GTK_PANED(window->content_hbox), GTK_WIDGET(new_cv), TRUE, FALSE);
+      gtk_paned_pack2(GTK_PANED(window->content_hbox), GTK_WIDGET(new_cv), TRUE, FALSE);
 #endif
 
     gtk_widget_queue_resize(window->content_hbox);
