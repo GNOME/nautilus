@@ -638,42 +638,29 @@ create_image_widget_for_emblem (const char *emblem_name)
 static void
 create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 {
-	GtkWidget *emblems_page_vbox, *button, *scroller;
-	GtkWidget *check_buttons_box, *left_buttons_box, *right_buttons_box;
+	GtkWidget *emblems_table, *button, *scroller;
 	GtkWidget *image_widget, *label, *image_and_label_table;
 	int i;
 
-	emblems_page_vbox = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (emblems_page_vbox);
-	gtk_container_set_border_width (GTK_CONTAINER (emblems_page_vbox), GNOME_PAD);
+	emblems_table = gtk_table_new ((NAUTILUS_N_ELEMENTS (property_names) + 1) / 2,
+				       2,
+				       TRUE);
+	gtk_widget_show (emblems_table);
+	gtk_container_set_border_width (GTK_CONTAINER (emblems_table), GNOME_PAD);
 
 	scroller = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroller),
 					GTK_POLICY_NEVER,
 					GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (scroller), 
-					       emblems_page_vbox);
+					       emblems_table);
+	/* Get rid of default lowered shadow appearance. */
 	gtk_viewport_set_shadow_type (GTK_VIEWPORT (GTK_BIN (scroller)->child), 
 				      GTK_SHADOW_NONE);
 	gtk_widget_show (scroller);
 
 	gtk_notebook_append_page (notebook, scroller, gtk_label_new (_("Emblems")));
 	
-	/* Holder for two columns of check buttons. */
-	check_buttons_box = gtk_hbox_new (TRUE, 0);
-	gtk_widget_show (check_buttons_box);
-	gtk_box_pack_start (GTK_BOX (emblems_page_vbox), check_buttons_box, FALSE, FALSE, 0);
-
-	/* Left column of check buttons. */
-	left_buttons_box = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (left_buttons_box);
-	gtk_box_pack_start (GTK_BOX (check_buttons_box), left_buttons_box, FALSE, FALSE, 0);
-
-	/* Right column of check buttons. */
-	right_buttons_box = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (right_buttons_box);
-	gtk_box_pack_start (GTK_BOX (check_buttons_box), right_buttons_box, FALSE, FALSE, 0);
-
 	/* The check buttons themselves. */
 	for (i = 0; i < NAUTILUS_N_ELEMENTS (property_names); i++) {
 		button = gtk_check_button_new ();
@@ -716,12 +703,24 @@ create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 				    property_button_toggled,
 				    NULL);
 
+		/* Set initial state of button. */
 		property_button_update (GTK_TOGGLE_BUTTON (button));
 
+		/* Update button when file changes in future. */
+		gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
+						       "changed",
+						       property_button_update,
+						       GTK_OBJECT (button));
+
 		if (i < NAUTILUS_N_ELEMENTS (property_names) / 2) {
-			gtk_box_pack_start (GTK_BOX (left_buttons_box), button, FALSE, FALSE, 0);
+			gtk_table_attach_defaults (GTK_TABLE (emblems_table), button,
+					  	   0, 1,
+					  	   i, i+1);
 		} else {
-			gtk_box_pack_start (GTK_BOX (right_buttons_box), button, FALSE, FALSE, 0);
+			gtk_table_attach_defaults (GTK_TABLE (emblems_table), button,
+						   1, 2,
+						   i - (NAUTILUS_N_ELEMENTS (property_names) / 2),
+						   i - (NAUTILUS_N_ELEMENTS (property_names) / 2) + 1);
 		}
 	}
 }

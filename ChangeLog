@@ -1,3 +1,15 @@
+2000-05-09  John Sullivan  <sullivan@eazel.com>
+
+	fixed bug 843 (Emblem checkboxes in Properties window
+	don't react to external emblem changes)
+
+	* src/file-manager/fm-properties-window.c: 
+	(create_emblems_page): Added file-changes signal
+	handler so checkboxes react to external emblem changes.
+	Also changed page to use a GtkTable rather than four 
+	nested boxes; this keeps all the cells the same size 
+	despite differing image sizes.
+
 2000-05-09  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory-async.c:
