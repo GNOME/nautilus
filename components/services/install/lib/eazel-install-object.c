@@ -873,7 +873,7 @@ eazel_install_uninstall_packages (EazelInstall *service, GList *categories, cons
 	if (result == EAZEL_INSTALL_NOTHING) {
 		g_warning (_("Uninstall failed"));
 	} 
-	eazel_install_emit_done (service, result | EAZEL_INSTALL_UNINSTALL_OK);
+	eazel_install_emit_done (service, result & EAZEL_INSTALL_UNINSTALL_OK);
 }
 
 void 
@@ -895,7 +895,7 @@ eazel_install_revert_transaction_from_xmlstring (EazelInstall *service,
 
 	eazel_install_unlock_tmp_dir (service);
 	eazel_install_delete_downloads (service);
-	eazel_install_emit_done (service, result | EAZEL_INSTALL_REVERSION_OK);
+	eazel_install_emit_done (service, result & EAZEL_INSTALL_REVERSION_OK);
 }
 
 

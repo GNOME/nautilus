@@ -1,3 +1,18 @@
+2000-09-13  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(impl_uninstall_failed):
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_uninstall_packages),
+	(eazel_install_revert_transaction_from_xmlstring):
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_monitor_rpm_propcess_pipe):
+
+	Fix copy-and-paste error where the uninstall_failed callback was
+	actually triggering the install_failed signal.  Make sure a failed
+	uninstall or revert actually return a fail condition.  Clean up
+	possible warning debug messages (read from rpm pipe).
+	
 Wed Sep 13 22:06:55 2000  George Lebl <jirka@5z.com>
 
 	* libnautilus-extensions/nautilus-druid.c

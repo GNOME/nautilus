@@ -211,18 +211,18 @@ impl_uninstall_failed (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 	PackageData *pack;
 	categories = parse_memory_xml_package_list ((char*)xmlcorbapack, strlen (xmlcorbapack));
 	if (categories==NULL) {
-		g_warning ("install_failed called with error in xml.");
+		g_warning ("uninstall_failed called with error in xml.");
 		g_warning ("XML is = \n%s", xmlcorbapack);
 	} else {
 		CategoryData *cat;
 		cat = (CategoryData*)categories->data;
 		if (cat->packages==NULL) {
-			g_warning ("install_failed called with error in xml.");
+			g_warning ("uninstall_failed called with error in xml.");
 			g_warning ("XML is = \n%s", xmlcorbapack);
 		} else {
 			PackageData *pack;
 			pack = (PackageData*)cat->packages->data;
-			gtk_signal_emit (GTK_OBJECT (servant->object), signals[INSTALL_FAILED], pack);
+			gtk_signal_emit (GTK_OBJECT (servant->object), signals[UNINSTALL_FAILED], pack);
 		}
 	}
 	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);

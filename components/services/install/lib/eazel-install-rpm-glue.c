@@ -837,6 +837,7 @@ eazel_install_monitor_rpm_propcess_pipe (GIOChannel *source,
 			}
 		}  else  if (tmp != ' ') {
 			/* Read untill we hit a space */
+			package_name[0] = 0;
 			while (bytes_read && tmp != ' ') {
 				if (strlen (package_name) < package_name_length) {
 					/* Add char to package */
@@ -857,8 +858,17 @@ eazel_install_monitor_rpm_propcess_pipe (GIOChannel *source,
 			
 			/* Not percantage mark, that means filename, step ahead one file */
 			pack = g_hash_table_lookup (service->private->name_to_package_hash, package_name);
-			if (pack==NULL) {						
-				trilobite_debug ("lookup \"%s\" failed", package_name);
+			if (pack==NULL) {
+				/* might be "warning:" */
+				if (strcmp (package_name, "warning:") == 0) {
+					package_name[0] = 0;
+					while (tmp != '\n') {
+						g_io_channel_read (source, &tmp, 1, &bytes_read);
+					}
+					trilobite_debug ("warning received");
+				} else {
+					trilobite_debug ("lookup \"%s\" failed", package_name);
+				}
 			} else {
 				trilobite_debug ("matched \"%s\"", package_name);
 				pct = 0;
