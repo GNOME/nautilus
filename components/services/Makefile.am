@@ -8,7 +8,7 @@ endif
 SUBDIRS = \
 	trilobite \
 	nautilus-dependent-shared \
-	$(INSTALLS_SERVICE) \
+	$(INSTALL_SERVICE) \
 	login \
 	summary \
 	vault \
