@@ -1,5 +1,12 @@
 2005-01-12  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-icon-view.c: (icon_view_handle_uri_list):
+	Don't user GNOME_DESKTOP_ITEM_LOAD_ONLY_IF_EXISTS, it doesn't mean
+	what you think, it means don't load if the app the desktop file
+	references doesn't exist.
+
+2005-01-12  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/Makefile.am:
 	* libnautilus-private/nautilus-link-historical.c:
 	* libnautilus-private/nautilus-link-historical.h:
