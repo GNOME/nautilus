@@ -1,5 +1,20 @@
 2002-03-01  Darin Adler  <darin@bentspoon.com>
 
+	* src/nautilus-window-manage-views.h:
+	* src/nautilus-window-manage-views.c: (begin_location_change): Add
+	a ref/unref so that window->details won't go away at an
+	inopportune time.
+	(nautilus_window_manage_views_finalize): Rename from destroy.
+	
+	* src/nautilus-window.c: (load_mini_icon): Break into separate
+	function.
+	(set_up_default_icon_list): Break into separate function.
+	(nautilus_window_finalize): Change from destroy to finalize.
+	(nautilus_window_class_init): Move to bottom of file and simplify the
+	code a bit.
+
+2002-03-01  Darin Adler  <darin@bentspoon.com>
+
 	* src/file-manager/fm-directory-view.c:
 	(add_script_to_script_menus), (add_submenu_to_script_menus),
 	(update_directory_in_scripts_menu):

@@ -1417,6 +1417,8 @@ begin_location_change (NautilusWindow *window,
                   || type == NAUTILUS_LOCATION_CHANGE_FORWARD
                   || distance == 0);
 
+        g_object_ref (window);
+
         end_location_change (window);
         
         nautilus_window_allow_stop (window, TRUE);
@@ -1449,9 +1451,9 @@ begin_location_change (NautilusWindow *window,
         nautilus_directory_unref (directory);
         
         window->details->determine_view_handle = nautilus_determine_initial_view
-                (location,
-                 determined_initial_view_callback,
-                 window);
+                (location, determined_initial_view_callback, window);
+
+        g_object_unref (window);
 }
 
 static void
@@ -2022,7 +2024,7 @@ disconnect_view_callback (gpointer list_item_data, gpointer callback_data)
 }
 
 void
-nautilus_window_manage_views_destroy (NautilusWindow *window)
+nautilus_window_manage_views_finalize (NautilusWindow *window)
 {
         free_location_change (window);
 

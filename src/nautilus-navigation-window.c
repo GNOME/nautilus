@@ -28,7 +28,6 @@
 /* nautilus-window.c: Implementation of the main window object */
 
 #include <config.h>
-#include <unistd.h>
 #include "nautilus-window-private.h"
 
 #include "nautilus-application.h"
@@ -59,6 +58,7 @@
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtkvbox.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-macros.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-messagebox.h>
 #include <libgnomeui/gnome-uidefs.h>
@@ -81,6 +81,7 @@
 #include <libnautilus/nautilus-undo.h>
 #include <math.h>
 #include <sys/time.h>
+#include <unistd.h>
 
 /* FIXME bugzilla.gnome.org 41243: 
  * We should use inheritance instead of these special cases
@@ -112,37 +113,17 @@ enum {
 	ARG_APP
 };
 
-static GList *history_list = NULL;
+static GList *history_list;
 
 static GdkPixmap *mini_icon_pixmap;
 static GdkBitmap *mini_icon_mask;
 
-static void nautilus_window_class_init          (NautilusWindowClass *klass);
-static void nautilus_window_init                (NautilusWindow      *window);
-static void nautilus_window_destroy                   (GtkObject           *object);
-static void nautilus_window_set_property              (GObject             *object,
-						       guint                arg_id,
-						       const GValue        *value,
-						       GParamSpec          *pspec);
+static void update_sidebar_panels_from_preferences (NautilusWindow *window);
+static void sidebar_panels_changed_callback        (gpointer        user_data);
+static void cancel_view_as_callback                (NautilusWindow *window);
 
-static void nautilus_window_get_property              (GObject           *object,
-						       guint              arg_id,
-						       GValue            *value,
-						       GParamSpec        *pspec);
-
-static void nautilus_window_size_request              (GtkWidget           *widget,
-						       GtkRequisition      *requisition);
-static void nautilus_window_realize                   (GtkWidget           *widget);
-static void update_sidebar_panels_from_preferences    (NautilusWindow      *window);
-static void sidebar_panels_changed_callback           (gpointer             user_data);
-static void nautilus_window_show                      (GtkWidget           *widget);
-static void nautilus_window_unrealize                 (GtkWidget           *widget);
-static void cancel_view_as_callback                   (NautilusWindow      *window);
-static void real_add_current_location_to_history_list (NautilusWindow      *window);
-
-EEL_CLASS_BOILERPLATE (NautilusWindow,
-			      nautilus_window,
-			      BONOBO_TYPE_WINDOW)
+GNOME_CLASS_BOILERPLATE (NautilusWindow, nautilus_window,
+			 BonoboWindow, BONOBO_TYPE_WINDOW)
 
 static void
 unref_mini_icon (void)
@@ -154,82 +135,52 @@ unref_mini_icon (void)
 }
 
 static void
-nautilus_window_class_init (NautilusWindowClass *klass)
+load_mini_icon (void)
 {
-	GObjectClass   *gobject_class;
-	GtkObjectClass *object_class;
-	GtkWidgetClass *widget_class;
 	char *filename;
 	GdkPixbuf *pixbuf;
-	GList *icons;
+       	static gboolean loaded;
+
+	if (loaded) {
+		return;
+	}
+	loaded = TRUE;
+
+	filename = nautilus_pixmap_file ("nautilus-mini-logo.png");
+	if (filename == NULL) {
+		return;
+	}
+
+	pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+	if (pixbuf != NULL) {
+		gdk_pixbuf_render_pixmap_and_mask
+			(pixbuf, &mini_icon_pixmap, &mini_icon_mask,
+			 EEL_STANDARD_ALPHA_THRESHHOLD);
+		g_object_unref (pixbuf);
+		eel_debug_call_at_shutdown (unref_mini_icon);
+	}
+	g_free (filename);
+}
+
+static void
+set_up_default_icon_list (void)
+{
+	GList *icon_list;
 	guint i;
-	char *icon_filenames[] = { "nautilus-mini-logo.png", "nautilus-launch-icon.png" };
-	
-	gobject_class = (GObjectClass *) klass;
-	object_class = (GtkObjectClass *) klass;
-	widget_class = (GtkWidgetClass *) klass;
+	GdkPixbuf *pixbuf;
+	const char *icon_filenames[] = { "nautilus-mini-logo.png", "nautilus-launch-icon.png" };
 
-	object_class->destroy = nautilus_window_destroy;
-	gobject_class->get_property = nautilus_window_get_property;
-	gobject_class->set_property = nautilus_window_set_property;
-	
-	widget_class->show = nautilus_window_show;
-	widget_class->unrealize = nautilus_window_unrealize;
-	
-	g_object_class_install_property (gobject_class,
-					 ARG_APP_ID,
-					 g_param_spec_string ("app_id",
-							      _("Application ID"),
-							      _("The application ID of the window."),
-							      NULL,
-							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-
-	g_object_class_install_property (gobject_class,
-					 ARG_APP,
-					 g_param_spec_object ("app",
-							      _("Application"),
-							      _("The NautilusApplication associated with this window."),
-							      NAUTILUS_TYPE_APPLICATION,
-							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-	
-	widget_class->realize = nautilus_window_realize;
-	widget_class->size_request = nautilus_window_size_request;
-
-	klass->add_current_location_to_history_list
-		= real_add_current_location_to_history_list;
-
-	/* Load the mini icon for backwards compat */
-        filename = nautilus_pixmap_file ("nautilus-mini-logo.png");
-        if (filename != NULL) {
-                pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
-                if (pixbuf != NULL) {
-                        gdk_pixbuf_render_pixmap_and_mask
-				(pixbuf, &mini_icon_pixmap, &mini_icon_mask,
-				 EEL_STANDARD_ALPHA_THRESHHOLD);
-			g_object_unref (pixbuf);
-			eel_debug_call_at_shutdown (unref_mini_icon);
-		}
-        	g_free (filename);
-	}
-
-
-	/* Set default icon list for all windows */
-	icons = NULL;
+	icon_list = NULL;
 	for (i = 0; i < G_N_ELEMENTS (icon_filenames); i++) {
-		filename = nautilus_pixmap_file (icon_filenames[i]);
-		if (filename != NULL) {
-			pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
-			if (pixbuf != NULL) {
-				icons = g_list_prepend (icons, pixbuf);
-			}
-			g_free (filename);
+		pixbuf = gdk_pixbuf_new_from_file (icon_filenames[i], NULL);
+		if (pixbuf != NULL) {
+			icon_list = g_list_prepend (icon_list, pixbuf);
 		}
 	}
-	
-	gtk_window_set_default_icon_list (icons);
-	
-	g_list_foreach (icons, (GFunc) g_object_unref, NULL);
-	g_list_free (icons);
+
+	gtk_window_set_default_icon_list (icon_list);
+
+	eel_g_list_free_deep_custom (icon_list, (GFunc) g_object_unref, NULL);
 }
 
 static void
@@ -238,10 +189,10 @@ add_sidebar_panel_callback (const char *name,
 			    const char *preference_key,
 			    gpointer callback_data) 
 {
-	g_return_if_fail (name != NULL);
-	g_return_if_fail (iid != NULL);
-	g_return_if_fail (preference_key != NULL);
-	g_return_if_fail (NAUTILUS_IS_WINDOW (callback_data));
+	g_assert (name != NULL);
+	g_assert (iid != NULL);
+	g_assert (preference_key != NULL);
+	g_assert (NAUTILUS_IS_WINDOW (callback_data));
 	
 	eel_preferences_add_callback_while_alive (preference_key,
 						  sidebar_panels_changed_callback,
@@ -250,7 +201,7 @@ add_sidebar_panel_callback (const char *name,
 }
 
 static void
-nautilus_window_init (NautilusWindow *window)
+nautilus_window_instance_init (NautilusWindow *window)
 {
 	window->details = g_new0 (NautilusWindowDetails, 1);
 
@@ -904,76 +855,67 @@ nautilus_window_unrealize (GtkWidget *widget)
 		window->details->throbber = CORBA_OBJECT_NIL;
 	}
 
-	EEL_CALL_PARENT (GTK_WIDGET_CLASS, unrealize, (widget));
+	GTK_WIDGET_CLASS (parent_class)->unrealize (widget);
 }
 
-static void 
-nautilus_window_destroy (GtkObject *object)
+static void
+nautilus_window_finalize (GObject *object)
 {
 	NautilusWindow *window;
 	
 	window = NAUTILUS_WINDOW (object);
 
-	if (window->details != NULL) {
-		/* Handle the part of destroy that's private to the view
-		 * management.
-		 */
-		nautilus_window_manage_views_destroy (window);
+	nautilus_window_manage_views_finalize (window);
 
-		/* Get rid of all callbacks. */
-		nautilus_window_set_viewed_file (window, NULL);
-		nautilus_window_remove_bookmarks_menu_callback (window);
-		nautilus_window_remove_go_menu_callback (window);
-		nautilus_window_toolbar_remove_theme_callback (window);
+	nautilus_window_set_viewed_file (window, NULL);
+	nautilus_window_remove_bookmarks_menu_callback (window);
+	nautilus_window_remove_go_menu_callback (window);
+	nautilus_window_toolbar_remove_theme_callback (window);
 
-		if (window->details->ui_idle_id != 0) {
-			gtk_idle_remove (window->details->ui_idle_id);
-		}
-
-		/* Get rid of all owned objects. */
-
-		if (window->details->shell_ui != NULL) {
-			bonobo_ui_component_unset_container (window->details->shell_ui, NULL);
-			bonobo_object_unref (window->details->shell_ui);
-		}
-
-		nautilus_file_unref (window->details->viewed_file);
-
-		g_list_free (window->sidebar_panels);
-
-		free_stored_viewers (window);
-	
-		g_free (window->details->location);
-		eel_g_list_free_deep (window->details->selection);
-		eel_g_list_free_deep (window->details->pending_selection);
-
-		nautilus_window_clear_back_list (window);
-		nautilus_window_clear_forward_list (window);
-
-		if (window->current_location_bookmark != NULL) {
-			g_object_unref (window->current_location_bookmark);
-		}
-		if (window->last_location_bookmark != NULL) {
-			g_object_unref (window->last_location_bookmark);
-		}
-	
-		if (window->status_bar_clear_id != 0) {
-			g_source_remove (window->status_bar_clear_id);
-		}
-
-		bonobo_object_unref (window->details->ui_container);
-
-		if (window->details->location_change_at_idle_id != 0) {
-			gtk_idle_remove (window->details->location_change_at_idle_id);
-		}
-
-		g_free (window->details->title);
-	
-		g_free (window->details);
-		window->details = NULL;
+	if (window->details->ui_idle_id != 0) {
+		gtk_idle_remove (window->details->ui_idle_id);
 	}
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	if (window->details->shell_ui != NULL) {
+		bonobo_ui_component_unset_container (window->details->shell_ui, NULL);
+		bonobo_object_unref (window->details->shell_ui);
+	}
+
+	nautilus_file_unref (window->details->viewed_file);
+
+	g_list_free (window->sidebar_panels);
+
+	free_stored_viewers (window);
+
+	g_free (window->details->location);
+	eel_g_list_free_deep (window->details->selection);
+	eel_g_list_free_deep (window->details->pending_selection);
+
+	nautilus_window_clear_back_list (window);
+	nautilus_window_clear_forward_list (window);
+
+	if (window->current_location_bookmark != NULL) {
+		g_object_unref (window->current_location_bookmark);
+	}
+	if (window->last_location_bookmark != NULL) {
+		g_object_unref (window->last_location_bookmark);
+	}
+
+	if (window->status_bar_clear_id != 0) {
+		g_source_remove (window->status_bar_clear_id);
+	}
+
+	bonobo_object_unref (window->details->ui_container);
+
+	if (window->details->location_change_at_idle_id != 0) {
+		gtk_idle_remove (window->details->location_change_at_idle_id);
+	}
+
+	g_free (window->details->title);
+	
+	g_free (window->details);
+
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void
@@ -981,8 +923,8 @@ nautilus_window_save_geometry (NautilusWindow *window)
 {
 	char *geometry_string;
 
-        g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-	g_return_if_fail (GTK_WIDGET_VISIBLE (window));
+        g_assert (NAUTILUS_IS_WINDOW (window));
+	g_assert (GTK_WIDGET_VISIBLE (window));
 
         geometry_string = eel_gtk_window_get_geometry_string (GTK_WINDOW (window));
 
@@ -1032,9 +974,10 @@ static void
 nautilus_window_realize (GtkWidget *widget)
 {
         /* Create our GdkWindow */
-	EEL_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
+	GTK_WIDGET_CLASS (parent_class)->realize (widget);
 
         /* Set the mini icon */
+	load_mini_icon ();
 	if (mini_icon_pixmap != NULL) {
 		eel_set_mini_icon (widget->window, mini_icon_pixmap, mini_icon_mask);
 	}
@@ -1050,10 +993,10 @@ nautilus_window_size_request (GtkWidget		*widget,
 	guint max_width;
 	guint max_height;
 
-	g_return_if_fail (NAUTILUS_IS_WINDOW (widget));
-	g_return_if_fail (requisition != NULL);
+	g_assert (NAUTILUS_IS_WINDOW (widget));
+	g_assert (requisition != NULL);
 
-	EEL_CALL_PARENT (GTK_WIDGET_CLASS, size_request, (widget, requisition));
+	GTK_WIDGET_CLASS (parent_class)->size_request (widget, requisition);
 
 	/* Limit the requisition to be within 90% of the available screen 
 	 * real state.
@@ -1144,8 +1087,8 @@ view_as_menu_switch_views_callback (GtkWidget *widget, gpointer data)
         NautilusWindow *window;
         int viewer_index;
         
-        g_return_if_fail (GTK_IS_MENU_ITEM (widget));
-        g_return_if_fail (NAUTILUS_IS_WINDOW (data));
+        g_assert (GTK_IS_MENU_ITEM (widget));
+        g_assert (NAUTILUS_IS_WINDOW (data));
 
         window = NAUTILUS_WINDOW (data);
 
@@ -1416,8 +1359,8 @@ view_as_menu_choose_view_callback (GtkWidget *widget, gpointer data)
 {
         NautilusWindow *window;
         
-        g_return_if_fail (GTK_IS_MENU_ITEM (widget));
-        g_return_if_fail (NAUTILUS_IS_WINDOW (data));
+        g_assert (GTK_IS_MENU_ITEM (widget));
+        g_assert (NAUTILUS_IS_WINDOW (data));
         
         window = NAUTILUS_WINDOW (data);
 
@@ -1464,7 +1407,7 @@ load_view_as_menus_callback (NautilusFile *file,
 
 	window = NAUTILUS_WINDOW (callback_data);
 
-        g_return_if_fail (GTK_IS_OPTION_MENU (window->view_as_option_menu));
+        g_assert (GTK_IS_OPTION_MENU (window->view_as_option_menu));
 
         /* Clear out the menu items created last time. For the option menu, we need do
          * nothing since we replace the entire menu. For the View menu, we have
@@ -1810,7 +1753,7 @@ add_to_history_list (NautilusBookmark *bookmark)
 	GList *l, *next;
 	static gboolean free_history_list_is_set_up;
 
-	g_return_if_fail (NAUTILUS_IS_BOOKMARK (bookmark));
+	g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
 
 	if (!free_history_list_is_set_up) {
 		eel_debug_call_at_shutdown (free_history_list);
@@ -1864,7 +1807,7 @@ nautilus_window_add_current_location_to_history_list (NautilusWindow *window)
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
 	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
-			      add_current_location_to_history_list, (window));
+			 add_current_location_to_history_list, (window));
 }
 
 void
@@ -2194,7 +2137,7 @@ nautilus_window_show (GtkWidget *widget)
 
 	window = NAUTILUS_WINDOW (widget);
 
-	EEL_CALL_PARENT (GTK_WIDGET_CLASS, show, (widget));
+	GTK_WIDGET_CLASS (parent_class)->show (widget);
 	
 	/* Initially show or hide views based on preferences; once the window is displayed
 	 * these can be controlled on a per-window basis from View menu items. 
@@ -2262,4 +2205,40 @@ nautilus_window_set_viewed_file (NautilusWindow *window,
 
 	nautilus_file_unref (window->details->viewed_file);
 	window->details->viewed_file = file;
+}
+
+static void
+nautilus_window_class_init (NautilusWindowClass *class)
+{
+	G_OBJECT_CLASS (class)->finalize = nautilus_window_finalize;
+	G_OBJECT_CLASS (class)->get_property = nautilus_window_get_property;
+	G_OBJECT_CLASS (class)->set_property = nautilus_window_set_property;
+	GTK_WIDGET_CLASS (class)->show = nautilus_window_show;
+	GTK_WIDGET_CLASS (class)->unrealize = nautilus_window_unrealize;
+	GTK_WIDGET_CLASS (class)->realize = nautilus_window_realize;
+	GTK_WIDGET_CLASS (class)->size_request = nautilus_window_size_request;
+	class->add_current_location_to_history_list = real_add_current_location_to_history_list;
+	
+	g_object_class_install_property (G_OBJECT_CLASS (class),
+					 ARG_APP_ID,
+					 g_param_spec_string ("app_id",
+							      _("Application ID"),
+							      _("The application ID of the window."),
+							      NULL,
+							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+	g_object_class_install_property (G_OBJECT_CLASS (class),
+					 ARG_APP,
+					 g_param_spec_object ("app",
+							      _("Application"),
+							      _("The NautilusApplication associated with this window."),
+							      NAUTILUS_TYPE_APPLICATION,
+							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+	
+	/* Set default for all windows. This probably should be done
+	 * in main or NautilusApplication rather than here in case
+	 * some other window is created before the first
+	 * NautilusWindow. Also, do we really want this icon for
+	 * dialogs?
+	 */
+	set_up_default_icon_list ();
 }
