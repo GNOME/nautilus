@@ -32,13 +32,6 @@ nautilus_shell_interface_idl_sources =		\
 	nautilus-shell-interface.h		\
 	nautilus-shell-interface-common.c
 
-if ENABLE_PROFILER
-profiler_headers = nautilus-profiler.h
-profiler_sources = nautilus-profiler.c
-else
-profiler_dist = nautilus-profiler.h nautilus-profiler.c
-endif
-
 nautilus_SOURCES = \
 	$(nautilus_shell_interface_idl_sources)	\
 	nautilus-about.c			\
@@ -55,6 +48,7 @@ nautilus_SOURCES = \
 	nautilus-main.c 			\
 	nautilus-navigation-bar.c         	\
 	nautilus-preferences-dialog.c		\
+	nautilus-profiler.c			\
 	nautilus-property-browser.c     	\
 	nautilus-search-bar-criterion.c		\
 	nautilus-search-bar.c			\
@@ -75,7 +69,6 @@ nautilus_SOURCES = \
 	nautilus-window-toolbars.c      	\
 	nautilus-window.c			\
 	nautilus-zoom-control.c			\
-	$(profiler_sources)			\
 	nautilus-about.h			\
 	nautilus-applicable-views.h		\
 	nautilus-application.h			\
@@ -89,7 +82,8 @@ nautilus_SOURCES = \
 	nautilus-location-bar.h			\
 	nautilus-main.h				\
 	nautilus-navigation-bar.h		\
-	nautilus-preferences-dialog.h \
+	nautilus-preferences-dialog.h		\
+	nautilus-profiler.h			\
 	nautilus-property-browser.h		\
 	nautilus-search-bar-criterion-private.h	\
 	nautilus-search-bar-criterion.h		\
@@ -111,7 +105,6 @@ nautilus_SOURCES = \
 	nautilus-window-private.h		\
 	nautilus-window.h			\
 	nautilus-zoom-control.h			\
-	$(profiler_headers)			\
 	$(NULL)
 
 $(nautilus_shell_interface_idl_sources): nautilus_shell_interface_idl_stamp
@@ -146,7 +139,6 @@ EXTRA_DIST =					\
 	check-nautilus				\
 	nautilus-shell-interface.idl		\
 	run-nautilus				\
-	$(profiler_dist)			\
 	$(NULL)
 
 BUILT_SOURCES = \

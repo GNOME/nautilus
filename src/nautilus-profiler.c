@@ -29,6 +29,8 @@
 #include <config.h>
 #include "nautilus-profiler.h"
 
+#ifdef ENABLE_PROFILER
+
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-vfs-extensions.h>
 #include <glib.h>
@@ -279,6 +281,7 @@ nautilus_profiler_bonobo_ui_report_callback (BonoboUIComponent *component,
 {
 	char *dump_file_name;
 	char *uri;
+	int fd;
 
 	int dump_size = 0;
 	char *dump_contents = NULL;
@@ -290,7 +293,11 @@ nautilus_profiler_bonobo_ui_report_callback (BonoboUIComponent *component,
 
 	dump_file_name = g_strdup ("/tmp/nautilus-profile-log-XXXXXX");
 
-	if (mktemp (dump_file_name) != dump_file_name) {
+	fd = mkstemp (dump_file_name);
+
+	if (fd != -1) {
+		close (fd);
+	} else {
 		g_free (dump_file_name);
 		dump_file_name = g_strdup_printf ("/tmp/nautilus-profile-log.%d", getpid ());
 	}
@@ -313,3 +320,5 @@ nautilus_profiler_bonobo_ui_report_callback (BonoboUIComponent *component,
 
 	g_free (dump_file_name);
 }
+
+#endif
