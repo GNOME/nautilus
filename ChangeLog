@@ -1,3 +1,22 @@
+2000-12-04  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 4931 ("Can't display files of this type"
+	message is inaccurate in some cases)
+
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_end_location_change_callback):
+	Reworded the error message when there's no viewer for a
+	file to not mention the file type, since the file type
+	might not have anything to do with why no viewer could be
+	found. For example, clicking on a remote RPM was getting a
+	message implying that Nautilus had no viewer capable of
+	displaying RPM files in general, whereas in fact it has a
+	viewer that can display RPM files, but only if local. This
+	is the simplest way to address this problem; see bugs
+	4932 and 4933 for better but harder-to-implement solutions.
+
 2000-12-04  Pavel Cisler <pavel@eazel.com>
 
 	reviewed by: Maciej Stachowiak <mjs@eazel.com>

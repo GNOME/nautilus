@@ -1197,12 +1197,16 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                 nautilus_file_unref (file);
                 if (type_string == NULL) {
 	                error_message = g_strdup_printf
-                                (_("Couldn't display \"%s\", because Nautilus cannot handle items of this unknown type."),
+                                (_("Couldn't display \"%s\", because Nautilus cannot determine what type of file it is."),
                                  uri_for_display);
         	} else {
+        		/* FIXME bugzilla.eazel.com 4932:
+        		 * Should distinguish URIs with no handlers at all from remote URIs
+        		 * with local-only handlers.
+        		 */
 	                error_message = g_strdup_printf
-                                (_("Couldn't display \"%s\", because Nautilus cannot handle items of type \"%s\"."),
-                                 uri_for_display, type_string);
+                                (_("Nautilus has no installed viewer capable of displaying \"%s\"."),
+                                 uri_for_display);
 			g_free (type_string);
         	}
                 break;
