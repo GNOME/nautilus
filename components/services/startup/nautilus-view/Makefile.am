@@ -13,6 +13,7 @@ INCLUDES =							\
 	-I$(top_builddir)					\
 	$(GNOMEUI_CFLAGS)                       		\
 	$(GCONF_CFLAGS) 					\
+	$(GHTTP_CFLAGS) 					\
 	$(WERROR)						\
 	$(NULL)
 
@@ -41,7 +42,7 @@ nautilus_service_startup_view_LDADD =                                     \
 	$(GNOMEUI_LIBS)                                                   \
 	$(GCONF_LIBS)                                                     \
 	$(VFS_LIBS)                                                       \
-	-lghttp                                                           \
+	$(GHTTP_LIBS)                                                     \
 	$(OAF_LIBS)                                                       \
 	$(top_builddir)/components/services/startup/lib/libstartup.a      \
 	$(NULL)

@@ -12,6 +12,7 @@ INCLUDES =							\
 	-I$(top_builddir)					\
 	$(GNOMEUI_CFLAGS)                       		\
 	$(GCONF_CFLAGS) 					\
+	$(GHTTP_CFLAGS) 					\
 	$(WERROR)						\
 	$(NULL)
 
@@ -40,7 +41,7 @@ nautilus_eazel_sample_service_view_LDFLAGS =			\
 	$(GNOMEUI_LIBS)					\
 	$(GCONF_LIBS)					\
 	$(VFS_LIBS)					\
-	-lghttp						\
+	$(GHTTP_LIBS)					\
 	$(OAF_LIBS)					\
 	$(NULL)
 

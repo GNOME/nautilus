@@ -1,3 +1,13 @@
+2000-05-15  J Shane Culpepper  <pepper@eazel.com>
+
+	* HACKING: Added new gnome-http dep.  Minor fixes to order to jive
+	with our current build env.
+	* components/services/startup/nautilus-view/Makefile.am: Removed
+	hardcoded -lghttp
+	* components/services/trilobite/sample/nautilus-view/Makefile.am:
+	Removed hardcoded -lghttp
+	* configure.in: Added test for ghttp since it is now a dependancy.
+
 2000-05-15  Darin Adler  <darin@eazel.com>
 
 	First cut at metadata cleanup in preparation for fixing bug
