@@ -1105,7 +1105,7 @@ static void
 forgot_password_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 {
 	char	*url;
-	url = "eazel-services://anonymous/account/login/lost_pw_form";
+	url = "eazel-services://anonymous/account/login/lost_pwd_form";
 
 	if (!url) {
 		g_assert ("Failed to load Registration url!\n");
