@@ -17,7 +17,6 @@ sierra_DATA =	\
 	number_strip.png		\
 	Sierra_desktop.png		\
 	theme_preview.png		\
-	sierra_green.png		\
 	sierra.xml
 
 EXTRA_DIST = $(sierra_DATA)

@@ -1,5 +1,19 @@
 2002-02-28  Josh Barrow  <drleary@mac.com>
 
+	* icons/sierra/Makefile.am:
+	Remove sierra_green.png
+	* icons/sierra/sierra.xml:
+	Change instance of sierra_green.png to #BAC5C0.  Why wasn't 
+	this like this to begin with?  sierra_green.png was just a 
+	patch of #BAC5C0...  what a waste!
+	* icons/sierra/sierra_green.png:
+	Remove.
+
+	Not certain, but I think that this makes the sierra theme a 
+	tiny bit faster.
+
+2002-02-28  Josh Barrow  <drleary@mac.com>
+
 	* icons/Makefile.am:
 	Doh!  Broke the build.  Remove icons from Makefile.am as well.
 
