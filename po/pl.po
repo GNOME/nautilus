@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2001-06-07 12:50+0200\n"
-"PO-Revision-Date: 2001-06-07 12:52+0200\n"
+"POT-Creation-Date: 2001-07-23 22:50+0200\n"
+"PO-Revision-Date: 2001-07-23 23:33+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -59,6 +59,14 @@ msgid "Nautilus component adapter factory"
 msgstr "Generator komponentów opakowuj±cych Nautilusa"
 
 #: components/hardware/nautilus-hardware-view.c:1
+msgid "name of icon for the hardware view"
+msgstr "nazwa ikony widoku sprzêtu"
+
+#: components/hardware/nautilus-hardware-view.c:1
+msgid "summary of hardware info"
+msgstr "zestawienie informacji o sprzêcie"
+
+#: components/hardware/nautilus-hardware-view.c:1
 #, c-format
 msgid ""
 "%s CPU\n"
@@ -88,6 +96,11 @@ msgstr "%lu GB"
 #, c-format
 msgid "%lu MB"
 msgstr "%lu MB"
+
+#: components/hardware/nautilus-hardware-view.c:1
+#, c-format
+msgid "Uptime is %d days, %d hours, %d minutes"
+msgstr "Czas aktywno¶ci: %d dni, %d godzin, %d minut"
 
 #. set up the title
 #: components/hardware/nautilus-hardware-view.c:1
@@ -126,7 +139,7 @@ msgstr "Widok sprzêtu"
 
 #: components/hardware/Nautilus_View_hardware.oaf.in.h:1
 msgid "View as Hardware"
-msgstr "Wy¶wietlanie jako sprzêt"
+msgstr "Wy¶wietlanie jako Sprzêt"
 
 #: components/hardware/Nautilus_View_hardware.oaf.in.h:1
 msgid "hardware view"
@@ -348,7 +361,7 @@ msgstr "zobacz te¿ "
 
 #: components/help/hyperbola-nav-index.c:1
 msgid "No matches."
-msgstr "Brak pasuj±cych elementów."
+msgstr "Brak wyst±pieñ."
 
 #: components/help/hyperbola-nav-index.c:1
 msgid " (see \""
@@ -436,7 +449,7 @@ msgstr "Generator przegl±darki obrazów Nautilusa"
 
 #: components/image-viewer/Nautilus_View_image.oaf.in.h:1
 msgid "View as Image"
-msgstr "Wy¶wietlanie jako obraz"
+msgstr "Wy¶wietlanie jako Obraz"
 
 #: components/loser/content/nautilus-content-loser.c:1
 #, c-format
@@ -904,6 +917,14 @@ msgid "x-u-escaped"
 msgstr "x-u-escaped"
 
 #: components/mozilla/nautilus-mozilla-content-view.c:1
+msgid "name of icon for the mozilla view"
+msgstr "nazwa ikony widoku mozilli"
+
+#: components/mozilla/nautilus-mozilla-content-view.c:1
+msgid "mozilla summary info"
+msgstr "zestawienie informacji mozilli"
+
+#: components/mozilla/nautilus-mozilla-content-view.c:1
 msgid ""
 "A JavaScript function (small software program) on this page tried to open a "
 "new window, but Nautilus does not support the opening new windows by "
@@ -944,7 +965,7 @@ msgstr "Generator komponentów widoku tre¶ci Mozilli"
 
 #: components/mozilla/Nautilus_View_mozilla.oaf.in.h:1
 msgid "View as Web Page"
-msgstr "Wy¶wietlanie jako strona WWW"
+msgstr "Wy¶wietlanie jako Strona WWW"
 
 #: components/mozilla/Nautilus_View_mozilla.oaf.in.h:1
 msgid "Web Page"
@@ -1703,7 +1724,7 @@ msgstr "Generator widoku muzyki"
 
 #: components/music/Nautilus_View_music.oaf.in.h:1
 msgid "View as Music"
-msgstr "Wy¶wietlanie jako muzyka"
+msgstr "Wy¶wietlanie jako Muzyka"
 
 #: components/news/nautilus-news.c:1
 #, c-format
@@ -1804,6 +1825,10 @@ msgstr ""
 msgid "Select Sites"
 msgstr "Wybierz ¼ród³a nowo¶ci"
 
+#: components/news/nautilus-news.c:1
+msgid "image indicating that the news has changed"
+msgstr "obraz wskazuj±cy, ¿e pojawi³y siê nowo¶ci"
+
 #: components/news/Nautilus_View_news.oaf.in.h:1
 msgid "Factory for news view"
 msgstr "Generator widoku nowo¶ci"
@@ -1897,7 +1922,7 @@ msgstr "Generator przyk³adowych komponentów widoku tre¶ci"
 
 #: components/sample/Nautilus_View_sample.oaf.in.h:1
 msgid "View as Sample"
-msgstr "Wy¶wietlanie jako przyk³ad"
+msgstr "Wy¶wietlanie jako Przyk³ad"
 
 #: components/text/nautilus-text-view.c:1
 #, c-format
@@ -1915,6 +1940,16 @@ msgstr "_Czcionki"
 #: components/text/nautilus-text-view-ui.xml.h:1
 msgid "Lucida"
 msgstr "Lucida"
+
+#: components/text/nautilus-text-view-ui.xml.h:1 data/linksets/home.xml.h:1
+#: src/nautilus-service-ui.xml.h:1
+msgid "Services"
+msgstr "Us³ugi"
+
+#: components/text/Nautilus_View_text.oaf.in.h:1
+#: components/text/nautilus-text-view-ui.xml.h:1
+msgid "Text view"
+msgstr "Widok tekstowy"
 
 #: components/text/nautilus-text-view-ui.xml.h:1
 msgid "Use the Courier Font"
@@ -1973,16 +2008,12 @@ msgid "Text Viewer"
 msgstr "Przegl±darka tekstowa"
 
 #: components/text/Nautilus_View_text.oaf.in.h:1
-msgid "Text view"
-msgstr "Widok tekstowy"
-
-#: components/text/Nautilus_View_text.oaf.in.h:1
 msgid "Text view factory"
 msgstr "Generator widoku tekstowego"
 
 #: components/text/Nautilus_View_text.oaf.in.h:1
 msgid "View as Text"
-msgstr "Wy¶wietlanie jako tekst"
+msgstr "Wy¶wietlanie jako Tekst"
 
 #: components/text/services/google.xml.h:1
 msgid "Search Google for Selected Text"
@@ -2386,10 +2417,6 @@ msgstr "Komputer"
 msgid "Home Directory"
 msgstr "Katalog pocz±tkowy"
 
-#: data/linksets/home.xml.h:1 src/nautilus-service-ui.xml.h:1
-msgid "Services"
-msgstr "Us³ugi"
-
 #: data/linksets/portals.xml.h:1
 msgid "Excite"
 msgstr "Excite"
@@ -2630,6 +2657,10 @@ msgstr "Tahoe"
 msgid "This theme uses photo-realistic folders."
 msgstr "Motyw zawieraj±cy fotorealistyczne foldery."
 
+#: libnautilus-private/nautilus-customization-data.c:1
+msgid "reset"
+msgstr "wyczy¶æ"
+
 #. Note to localizers: this font is used for text items in Druid pages
 #: libnautilus-private/nautilus-druid-page-eazel.c:1
 msgid "-adobe-helvetica-bold-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
@@ -2727,7 +2758,7 @@ msgstr "¦roda, 00 wrze¶nia 0000 o 00:00:00 PM"
 
 #: libnautilus-private/nautilus-file.c:1
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
-msgstr "%A %B %-d %Y o %-I:%M:%S %p"
+msgstr "%A %-d %B %Y o %-I:%M:%S %p"
 
 #: libnautilus-private/nautilus-file.c:1
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
@@ -2735,7 +2766,7 @@ msgstr "Mon, 00 Pa¼ 0000 o 00:00:00 PM"
 
 #: libnautilus-private/nautilus-file.c:1
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
-msgstr "%a, %b %-d %Y o %-I:%M:%S %p"
+msgstr "%a, %-d %b %Y o %-I:%M:%S %p"
 
 #: libnautilus-private/nautilus-file.c:1
 msgid "Mon, Oct 00 0000 at 00:00 PM"
@@ -2743,7 +2774,7 @@ msgstr "Pon, 00 Pa¼ 0000 o 00:00 PM"
 
 #: libnautilus-private/nautilus-file.c:1
 msgid "%a, %b %-d %Y at %-I:%M %p"
-msgstr "%a, %b %-d %Y o %-I:%M %p"
+msgstr "%a, %-d %b %Y o %-I:%M %p"
 
 #: libnautilus-private/nautilus-file.c:1
 msgid "Oct 00 0000 at 00:00 PM"
@@ -2751,7 +2782,7 @@ msgstr "00 Pa¼ 0000 o 00:00 PM"
 
 #: libnautilus-private/nautilus-file.c:1
 msgid "%b %-d %Y at %-I:%M %p"
-msgstr "%b %-d %Y o %-I:%M %p"
+msgstr "%-d %b %Y o %-I:%M %p"
 
 #: libnautilus-private/nautilus-file.c:1
 msgid "Oct 00 0000, 00:00 PM"
@@ -2759,7 +2790,7 @@ msgstr "00 Pa¼ 0000, 00:00 PM"
 
 #: libnautilus-private/nautilus-file.c:1
 msgid "%b %-d %Y, %-I:%M %p"
-msgstr "%b %-d %Y o %-I:%M %p"
+msgstr "%-d %b %Y o %-I:%M %p"
 
 #: libnautilus-private/nautilus-file.c:1
 msgid "00/00/00, 00:00 PM"
@@ -2767,7 +2798,7 @@ msgstr "00/00/00, 00:00 PM"
 
 #: libnautilus-private/nautilus-file.c:1
 msgid "%m/%-d/%y, %-I:%M %p"
-msgstr "%m/%-d/%y, %-I:%M %p"
+msgstr "%-d/%m/%y, %-I:%M %p"
 
 #: libnautilus-private/nautilus-file.c:1
 msgid "00/00/00"
@@ -2775,7 +2806,7 @@ msgstr "00/00/00"
 
 #: libnautilus-private/nautilus-file.c:1
 msgid "%m/%d/%y"
-msgstr "%m/%d/%y"
+msgstr "%d/%m/%y"
 
 #: libnautilus-private/nautilus-file.c:1
 msgid "0 items"
@@ -2859,11 +2890,11 @@ msgstr ""
 #: libnautilus-private/nautilus-file.c:1
 #, c-format
 msgid ""
-"No description found for mime type \"%s\" (file is \"%s\"), tell "
-"aaron@eazel.com"
+"No description found for mime type \"%s\" (file is \"%s\"), please tell the "
+"gnome-vfs mailing list."
 msgstr ""
-"Nie odnaleziono opisu typu mime \"%s\" (plik \"%s\"), napisz do "
-"aaron@eazel.com (w jêzyku angielskim)"
+"Nie odnaleziono opisu typu MIME \"%s\" (plik \"%s\"), napisz na listê "
+"gnome-cfa (w jêzyku angielskim)."
 
 #: libnautilus-private/nautilus-file.c:1
 msgid "link"
@@ -3829,37 +3860,37 @@ msgid "Never"
 msgstr "Nigdy"
 
 #: libnautilus-private/nautilus-global-preferences.c:1
-#, c-format
+#, no-c-format
 msgid "25%"
 msgstr "25%"
 
 #: libnautilus-private/nautilus-global-preferences.c:1
-#, c-format
+#, no-c-format
 msgid "50%"
 msgstr "50%"
 
 #: libnautilus-private/nautilus-global-preferences.c:1
-#, c-format
+#, no-c-format
 msgid "75%"
 msgstr "75%"
 
 #: libnautilus-private/nautilus-global-preferences.c:1
-#, c-format
+#, no-c-format
 msgid "100%"
 msgstr "100%"
 
 #: libnautilus-private/nautilus-global-preferences.c:1
-#, c-format
+#, no-c-format
 msgid "150%"
 msgstr "150%"
 
 #: libnautilus-private/nautilus-global-preferences.c:1
-#, c-format
+#, no-c-format
 msgid "200%"
 msgstr "200%"
 
 #: libnautilus-private/nautilus-global-preferences.c:1
-#, c-format
+#, no-c-format
 msgid "400%"
 msgstr "400%"
 
@@ -4277,7 +4308,7 @@ msgstr "Wybierz aplikacjê, za której pomoc± otworzyæ \"%s\"."
 
 #: libnautilus-private/nautilus-program-chooser.c:1
 msgid "View as Other"
-msgstr "Wy¶wietlanie jako inne"
+msgstr "Wy¶wietlanie jako Inne"
 
 #: libnautilus-private/nautilus-program-chooser.c:1
 #, c-format
@@ -4694,6 +4725,10 @@ msgid "Ext2 Volume"
 msgstr "Wolumin ext2"
 
 #: libnautilus-private/nautilus-volume-monitor.c:1
+msgid "Ext3 Volume"
+msgstr "Wolumin ext3"
+
+#: libnautilus-private/nautilus-volume-monitor.c:1
 msgid "MSDOS Volume"
 msgstr "Wolumin MSDOS"
 
@@ -5057,6 +5092,19 @@ msgid " (containing %d items)"
 msgstr " (zawarto¶æ: %d elementów)"
 
 #: src/file-manager/fm-directory-view.c:1
+msgid " (containing a total of 0 items)"
+msgstr " (ogólna zawarto¶æ: 0 elementów)"
+
+#: src/file-manager/fm-directory-view.c:1
+msgid " (containing a total of 1 item)"
+msgstr " (ogólna zawarto¶æ: 1 element)"
+
+#: src/file-manager/fm-directory-view.c:1
+#, c-format
+msgid " (containing a total of %d items)"
+msgstr " (ogólna zawarto¶æ: %d elementów)"
+
+#: src/file-manager/fm-directory-view.c:1
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "Zaznaczone \"%s\" (%s)"
@@ -5305,8 +5353,9 @@ msgid "Move to _Trash"
 msgstr "_Wyrzuæ do ¶mietnika"
 
 #: src/file-manager/fm-directory-view.c:1
-msgid "Move all selected items to the Trash"
-msgstr "Przenosi wszystkie zaznaczone elementy do ¶mietnika"
+#: src/file-manager/nautilus-directory-view-ui.xml.h:1
+msgid "Move each selected item to the Trash"
+msgstr "Przenosi ka¿dy z zaznaczonych elementów do ¶mietnika"
 
 #: src/file-manager/fm-directory-view.c:1
 msgid "De_lete..."
@@ -5809,7 +5858,7 @@ msgstr "Tworzenie okna w³a¶ciwo¶ci"
 
 #: src/file-manager/fm-properties-window.c:1
 msgid "Select an icon:"
-msgstr "Wybierz ikonê:"
+msgstr "Wybór ikony"
 
 #: src/file-manager/fm-search-list-view.c:1
 #, c-format
@@ -6123,10 +6172,6 @@ msgstr "Duplikuje ka¿dy z zaznaczonych elementów"
 #: src/file-manager/nautilus-directory-view-ui.xml.h:1
 msgid "Make Link"
 msgstr "Utwórz odno¶nik"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:1
-msgid "Move each selected item to the Trash"
-msgstr "Przenosi ka¿dy z zaznaczonych elementów do ¶mietnika"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:1
 msgid ""
@@ -6671,10 +6716,6 @@ msgstr ""
 "\n"
 "Aby okno pojawi³o siê ponownie, mo¿esz rêcznie usun±æ ten plik.\n"
 "\n"
-
-#: src/nautilus-first-time-druid.c:1
-msgid "Eazel Services"
-msgstr "Us³ugi Eazela"
 
 #: src/nautilus-first-time-druid.c:1
 #, c-format
