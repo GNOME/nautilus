@@ -7,6 +7,11 @@ icon_DATA =\
 	decrement.png \
 	default.xml \
 	desktop-home.png \
+	emblem-art.png \
+	emblem-camera.png \
+	emblem-mail.png \
+	emblem-pictures.png \
+	emblem-sound.png \
 	emblem-OK.svg \
 	emblem-broken-link.png \
 	emblem-certified.svg \
