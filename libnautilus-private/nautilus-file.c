@@ -4852,8 +4852,8 @@ nautilus_file_is_mime_type (NautilusFile *file, const char *mime_type)
 	if (file->details->info == NULL) {
 		return FALSE;
 	}
-	return eel_strcasecmp (file->details->info->mime_type,
-			       mime_type) == 0;
+	return gnome_vfs_mime_type_is_equal (file->details->info->mime_type,
+					     mime_type);
 }
 
 /**

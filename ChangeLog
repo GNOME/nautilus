@@ -1,5 +1,11 @@
 2004-08-16  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-file.c (nautilus_file_is_mime_type):
+	Compare types using gnome_vfs_mime_type_is_equal to catch aliases.
+	Fixes bug #147811
+
+2004-08-16  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-property-browser.c:
 	(nautilus_property_browser_init), (nautilus_property_browser_new),
 	(nautilus_emblem_dialog_new),
