@@ -1,3 +1,20 @@
+2002-01-04  Anders Carlsson  <andersca@gnu.org>
+
+	* libnautilus-private/nautilus-program-choosing.c: 
+	Update to matched changed return value from
+	nautilus_program_chooser_new ().
+	
+	* libnautilus-private/nautilus-program-chooser.h: 
+	* libnautilus-private/nautilus-program-chooser.c: 
+	Port to GtkTreeView, and make NautilusProgramChooser
+	into a real object.
+
+	* components/Makefile.am: Re-enable the music
+	view.
+
+	* components/music/nautilus-music-view.c: Port to 
+	GtkTreeView and GNOME2.
+
 2002-01-03  Andy Hertzfeld  <andy@differnet.com>
 	
 	reviewed by: <darin@bentspoon.com>

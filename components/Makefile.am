@@ -3,6 +3,7 @@ NULL=
 SUBDIRS = 					\
 	history 				\
 	image-viewer 				\
+	music					\
 	news					\
 	notes 					\
 	sample 					\
@@ -14,6 +15,5 @@ XXX=
 	adapter 				\
 	hardware 				\
 	loser 					\
-	music 					\
 	text 					\
 	$(NULL)

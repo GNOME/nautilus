@@ -137,12 +137,12 @@ choose_component_destroy (ChooseComponentCallbackData *choose_data)
  * 
  * Return value: The program-choosing dialog, ready to be run.
  */
-static GtkDialog *
+static GtkWidget *
 set_up_program_chooser (NautilusFile *file, 
 			GnomeVFSMimeActionType type, 
 			GtkWindow *parent)
 {
-	GtkDialog *dialog;
+	GtkWidget *dialog;
 
 	g_assert (NAUTILUS_IS_FILE (file));
 
@@ -172,7 +172,7 @@ choose_component_callback (NautilusFile *file,
 {
 	ChooseComponentCallbackData *choose_data;
 	NautilusViewIdentifier *identifier;
-	GtkDialog *dialog;
+	GtkWidget *dialog;
 
 	choose_data = callback_data;
 
@@ -191,8 +191,8 @@ choose_component_callback (NautilusFile *file,
 	if (nautilus_mime_has_any_components_for_file (file)) {
 		dialog = set_up_program_chooser (file, GNOME_VFS_MIME_ACTION_TYPE_COMPONENT,
 						 choose_data->parent_window);
-		if (gtk_dialog_run (dialog) == GTK_RESPONSE_OK) {
-			identifier = nautilus_program_chooser_get_component (dialog);
+		if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK) {
+			identifier = nautilus_program_chooser_get_component (NAUTILUS_PROGRAM_CHOOSER (dialog));
 		}
 	} else {
 		nautilus_program_chooser_show_no_choices_message (GNOME_VFS_MIME_ACTION_TYPE_COMPONENT,
@@ -311,7 +311,7 @@ choose_application_callback (NautilusFile *file,
 			     gpointer callback_data)
 {
 	ChooseApplicationCallbackData *choose_data;
-	GtkDialog *dialog;
+	GtkWidget *dialog;
 	GnomeVFSMimeApplication *application;
 
 	choose_data = callback_data;
@@ -331,8 +331,8 @@ choose_application_callback (NautilusFile *file,
 	if (nautilus_mime_has_any_applications_for_file_type (file)) {
 		dialog = set_up_program_chooser	(file, GNOME_VFS_MIME_ACTION_TYPE_APPLICATION,
 						 choose_data->parent_window);
-		if (gtk_dialog_run (dialog) == GTK_RESPONSE_OK) {
-			application = nautilus_program_chooser_get_application (dialog);
+		if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK) {
+			application = nautilus_program_chooser_get_application (NAUTILUS_PROGRAM_CHOOSER (dialog));
 		}
 	} else {
 		nautilus_program_chooser_show_no_choices_message (GNOME_VFS_MIME_ACTION_TYPE_APPLICATION,

@@ -2,6 +2,7 @@
 
 /*
  *  Copyright (C) 2000, 2001 Eazel, Inc.
+ *  Copyright (C) 2002 Anders Carlsson <andersca@gnu.org>
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
@@ -17,7 +18,8 @@
  *  along with this library; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  Author: Andy Hertzfeld <andy@eazel.com>
+ *  Authors: Andy Hertzfeld <andy@eazel.com>
+ *           Anders Carlsson <andersca@gnu.org>
  *
  */
 
@@ -46,8 +48,15 @@
 #include <fcntl.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtkadjustment.h>
+#include <gtk/gtkcellrendererpixbuf.h>
+#include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtkeventbox.h>
+#include <gtk/gtkliststore.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtktreeview.h>
+#include <libgnomevfs/gnome-vfs-directory.h>
+#include <libgnomevfs/gnome-vfs-ops.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-private/nautilus-directory-background.h>
 #include <libnautilus-private/nautilus-directory-notify.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
@@ -71,22 +80,10 @@ typedef enum {
 	PLAYER_NEXT
 } PlayerState;
 
-
-typedef enum {
-        TRACK_NUMBER = 0,
-        TITLE,
-        ARTIST,
-        BITRATE,
-        TIME
-} Column;
-
-
 struct NautilusMusicViewDetails {
         NautilusFile *file;
 	GtkWidget *event_box;
         
-	int sort_column;
-	int sort_reversed;
 	int selected_index;
 	int status_timeout;
 	
@@ -95,10 +92,12 @@ struct NautilusMusicViewDetails {
 		
 	gboolean slider_dragging;
 	
+        GtkListStore *list_store;
+        GtkWidget *tree_view;
+        
 	GtkVBox   *album_container;
 	GtkWidget *scroll_window;
 	GtkWidget *album_title;
-	GtkWidget *song_list;
 	GtkWidget *album_image;
 	GtkWidget *image_box;
 	GtkWidget *dialog;
@@ -149,6 +148,20 @@ enum {
         TARGET_GNOME_URI_LIST
 };
 
+/* list columns */
+enum {
+        TRACK_NUMBER_COLUMN,
+        TITLE_COLUMN,
+        ARTIST_COLUMN,
+        BITRATE_COLUMN,
+        TIME_COLUMN,
+        SAMPLE_RATE_COLUMN,
+        YEAR_COLUMN,
+        COMMENT_COLUMN,
+        PATH_URI_COLUMN,
+        ALBUM_COLUMN,
+        NUM_COLUMNS
+};
 
 /* button commands */
 enum {
@@ -176,25 +189,24 @@ static void nautilus_music_view_drag_data_received            (GtkWidget        
                                                                gpointer                user_data);
 static void nautilus_music_view_class_init              (NautilusMusicViewClass *klass);
 static void nautilus_music_view_init                    (NautilusMusicView      *view);
-static void nautilus_music_view_destroy                       (GtkObject              *object);
+static void nautilus_music_view_destroy                       (BonoboObject           *object);
+static void nautilus_music_view_finalize                      (GObject                *object);
+
 static void nautilus_music_view_update                        (NautilusMusicView      *music_view);
 static void music_view_background_appearance_changed_callback (EelBackground     *background,
                                                                NautilusMusicView      *music_view);
 static void music_view_load_location_callback                 (NautilusView           *view,
                                                                const char             *location,
                                                                NautilusMusicView      *music_view);
-static void selection_callback                                (EelCList               *clist,
-                                                               int                     row,
-                                                               int                     column,
-                                                               GdkEventButton         *event,
+
+static void selection_changed                                 (GtkTreeSelection       *selection,
                                                                NautilusMusicView      *music_view);
-static void value_changed_callback                            (GtkAdjustment          *adjustment,
-							       EelCList      	      *clist);
+static void row_activated_callback                            (GtkTreeView            *tree_view,
+                                                               GtkTreePath            *path,
+                                                               GtkTreeViewColumn      *column,
+                                                               NautilusMusicView      *music_view);
 static void nautilus_music_view_set_album_image               (NautilusMusicView      *music_view,
                                                                const char             *image_path_uri);
-static void click_column_callback                             (EelCList               *clist,
-                                                               int                     column,
-                                                               NautilusMusicView      *music_view);
 static void image_button_callback                             (GtkWidget              *widget,
                                                                NautilusMusicView      *music_view);
 static void go_to_next_track                                  (NautilusMusicView      *music_view);
@@ -207,9 +219,10 @@ static void stop_playing_file 				      (NautilusMusicView      *music_view);
 static PlayerState get_player_state 			      (NautilusMusicView      *music_view);
 static void set_player_state 				      (NautilusMusicView      *music_view, 
 							       PlayerState 	       state);
-static void sort_list 					      (NautilusMusicView      *music_view);
-static void list_reveal_row                                   (EelCList               *clist, 
+
+static void list_reveal_row                                   (GtkTreeView            *view, 
                                                                int                     row_index);
+
 
 static void nautilus_music_view_load_uri (NautilusMusicView *view,
                                           const char        *uri);
@@ -233,30 +246,156 @@ nautilus_music_view_class_init (NautilusMusicViewClass *klass)
         gobject_class->finalize = nautilus_music_view_finalize;
 }
 
-static char *
-get_cell_text (GtkWidget *widget, int column_index, int cell_width,
-               EelCListRow *row, GdkFont *font, gpointer data)
-{
-	const char *cell_text;
-	EelCList *clist;
-	
-	clist = EEL_CLIST (widget);
 
-	switch ((EelCellType)row->cell[column_index].type) {
-	case EEL_CELL_PIXTEXT:
-		cell_text = EEL_CELL_PIXTEXT (row->cell[column_index])->text;
-		break;
-	case EEL_CELL_TEXT:
-	case EEL_CELL_LINK_TEXT:
-		cell_text = EEL_CELL_TEXT (row->cell[column_index])->text;
-		break;
-	default:
-		g_assert_not_reached ();
-		cell_text = NULL;
-		break;
-	}
-		
-	return eel_string_ellipsize (cell_text, font, cell_width, EEL_ELLIPSIZE_END);
+static void
+track_cell_data_func (GtkTreeViewColumn *tree_column, GtkCellRenderer *cell, GtkTreeModel *tree_model, GtkTreeIter *iter, gpointer data)
+{
+        int track_number;
+        char *str;
+        
+        gtk_tree_model_get (tree_model,
+                            iter,
+                            TRACK_NUMBER_COLUMN, &track_number,
+                            -1);
+
+        /* Don't show the track number if it's lower than 1 */
+        if (track_number < 1) {
+                str = NULL;
+        }
+        else {
+                str = g_strdup_printf ("%d", track_number);
+        }
+
+        g_object_set (cell,
+                      "text", str,
+                      NULL);
+
+                      g_free (str);
+}
+
+static void
+bitrate_cell_data_func (GtkTreeViewColumn *tree_column, GtkCellRenderer *cell, GtkTreeModel *tree_model, GtkTreeIter *iter, gpointer data)
+{
+        int bitrate;
+        char *str;
+        
+        gtk_tree_model_get (tree_model,
+                            iter,
+                            BITRATE_COLUMN, &bitrate,
+                            -1);
+
+        if (bitrate <= 0) {
+                str = g_strdup (_("Unknown"));
+        }
+        else {
+                str = g_strdup_printf ("%d kbps", bitrate);
+        }
+
+        g_object_set (cell,
+                      "text", str,
+                      NULL);
+
+                      g_free (str);
+}
+
+static void
+time_cell_data_func (GtkTreeViewColumn *tree_column, GtkCellRenderer *cell, GtkTreeModel *tree_model, GtkTreeIter *iter, gpointer data)
+{
+        int time;
+	int seconds, minutes, remain_seconds;
+        char *str;
+
+        gtk_tree_model_get (tree_model,
+                            iter,
+                            TIME_COLUMN, &time,
+                            -1);
+
+        seconds = time;
+	minutes = seconds / 60;
+	remain_seconds = seconds - (60 * minutes);
+        
+	str = g_strdup_printf ("%d:%02d ", minutes, remain_seconds);
+
+        g_object_set (cell,
+                      "text", str,
+                      NULL);
+
+        g_free (str);
+}
+
+static void
+set_up_tree_view (NautilusMusicView *music_view)
+{
+        GtkCellRenderer *cell;
+        GtkTreeViewColumn *column;
+        GtkTreeView *tree_view;
+
+        tree_view = GTK_TREE_VIEW (music_view->details->tree_view);
+
+        /* The track number column */
+        cell = gtk_cell_renderer_text_new ();
+        g_object_set (cell,
+                      "xalign", 1.0,
+                      NULL);
+        column = gtk_tree_view_column_new ();
+        gtk_tree_view_column_set_title (column, _("Track"));
+        gtk_tree_view_column_pack_start (column, cell, TRUE);
+        gtk_tree_view_column_set_cell_data_func (column, cell,
+                                                 track_cell_data_func,
+                                                 NULL, NULL);
+        gtk_tree_view_column_set_sort_column_id (column, TRACK_NUMBER_COLUMN);
+        gtk_tree_view_column_set_resizable (column, TRUE);
+        gtk_tree_view_append_column (tree_view, column);
+
+        /* The name column */
+        cell = gtk_cell_renderer_text_new ();
+        column = gtk_tree_view_column_new_with_attributes (_("Title"),
+                                                           cell,
+                                                           "text", TITLE_COLUMN,
+                                                           NULL);
+        gtk_tree_view_column_set_sort_column_id (column, TITLE_COLUMN);
+        gtk_tree_view_column_set_resizable (column, TRUE);
+        gtk_tree_view_append_column (tree_view, column);
+
+        /* The artist column */
+        cell = gtk_cell_renderer_text_new ();
+        column = gtk_tree_view_column_new_with_attributes (_("Artist"),
+                                                           cell,
+                                                           "text", ARTIST_COLUMN,
+                                                           NULL);
+        gtk_tree_view_column_set_sort_column_id (column, ARTIST_COLUMN);
+        gtk_tree_view_column_set_resizable (column, TRUE);        
+        gtk_tree_view_append_column (tree_view, column);
+
+        /* The bitrate column */
+        cell = gtk_cell_renderer_text_new ();
+        g_object_set (cell,
+                      "xalign", 1.0,
+                      NULL);
+        column = gtk_tree_view_column_new ();
+        gtk_tree_view_column_set_title (column, _("Bit Rate"));
+        gtk_tree_view_column_pack_start (column, cell, TRUE);
+        gtk_tree_view_column_set_cell_data_func (column, cell,
+                                                 bitrate_cell_data_func,
+                                                 NULL, NULL);
+        gtk_tree_view_column_set_sort_column_id (column, BITRATE_COLUMN);
+        gtk_tree_view_column_set_resizable (column, TRUE);
+        gtk_tree_view_append_column (tree_view, column);
+
+        /* The time column */
+        cell = gtk_cell_renderer_text_new ();
+        g_object_set (cell,
+                      "xalign", 1.0,
+                      NULL);
+        column = gtk_tree_view_column_new ();
+        gtk_tree_view_column_set_title (column, _("Time"));
+        gtk_tree_view_column_pack_start (column, cell, TRUE);
+        gtk_tree_view_column_set_cell_data_func (column, cell,
+                                                 time_cell_data_func,
+                                                 NULL, NULL);
+        gtk_tree_view_column_set_sort_column_id (column, TIME_COLUMN);
+        gtk_tree_view_column_set_resizable (column, TRUE);
+        gtk_tree_view_append_column (tree_view, column);
 }
 
 /* initialize ourselves by connecting to the location change signal and allocating our subviews */
@@ -268,16 +407,6 @@ nautilus_music_view_init (NautilusMusicView *music_view)
 	GtkWidget *button;
 	char *font_name;
 	int standard_font_size;
-	GdkFont *font;
-	guint i;
-        gpointer foo;
-	char *titles[] = { N_("Track"), N_("Title"), N_("Artist"), N_("Bit Rate"), N_("Time")};
-
-        foo = &selection_callback;
-        foo = &value_changed_callback;
-        foo = &click_column_callback;
-        foo = &get_cell_text;
-
 	
 	music_view->details = g_new0 (NautilusMusicViewDetails, 1);
 
@@ -313,68 +442,59 @@ nautilus_music_view_init (NautilusMusicView *music_view)
 	gtk_container_add (GTK_CONTAINER (music_view->details->event_box), GTK_WIDGET (music_view->details->album_container));
 		
 	/* allocate a widget for the album title */	
-	music_view->details->album_title = eel_label_new ("");
+	music_view->details->album_title = gtk_label_new ("");
         gtk_widget_show (music_view->details->album_title);
-	eel_label_make_larger (EEL_LABEL (music_view->details->album_title), 8);
-
 	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), music_view->details->album_title, FALSE, FALSE, 0);	
-	
-        /* Localize the titles */
-        for (i = 0; i < G_N_ELEMENTS (titles); i++) {
-		titles[i] = _(titles[i]);
-	}
 
-	/* allocate a list widget to hold the song list */
-	music_view->details->song_list = eel_list_new_with_titles (G_N_ELEMENTS (titles), (const char * const *) titles);
+        /* Create list model*/
+        music_view->details->list_store = gtk_list_store_new (NUM_COLUMNS,
+                                                              G_TYPE_INT, /* TRACK_NUMBER_COLUMN */
+                                                              G_TYPE_STRING, /* TITLE_COLUMN */
+                                                              G_TYPE_STRING, /* ARTIST_COLUMN */
+                                                              G_TYPE_INT, /* BITRATE_COLUMN */
+                                                              G_TYPE_INT, /* TIME_COLUMN */
+                                                              G_TYPE_INT, /* BITRATE_COLUMN */
+                                                              G_TYPE_STRING, /* YEAR_COLUMN */
+                                                              G_TYPE_STRING, /* COMMENT_COLUMN */
+                                                              G_TYPE_STRING, /* PATH_URI_COLUMN */
+                                                              G_TYPE_STRING /* ALBUM_COLUMN */);
+        music_view->details->tree_view = gtk_tree_view_new_with_model (GTK_TREE_MODEL (music_view->details->list_store));
+        g_signal_connect (music_view->details->tree_view,
+                          "row_activated",
+                          G_CALLBACK (row_activated_callback),
+                          music_view);
         
-	EEL_CLIST_SET_FLAG (EEL_CLIST (music_view->details->song_list), CLIST_SHOW_TITLES);
+        g_object_unref (music_view->details->list_store);
+        set_up_tree_view (music_view);
 
-        gtk_widget_show (music_view->details->song_list);
+        g_signal_connect (gtk_tree_view_get_selection (GTK_TREE_VIEW (music_view->details->tree_view)),
+                          "changed",
+                          G_CALLBACK (selection_changed),
+                          music_view);
 
-	g_signal_connect (music_view->details->song_list,
-			    "get_cell_text",
-			    G_CALLBACK (get_cell_text),
-			    NULL);	
+        /* We sort ascending by track number by default */
+        gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (music_view->details->list_store),
+                                              TRACK_NUMBER_COLUMN, GTK_SORT_ASCENDING);
+
+        gtk_widget_show (music_view->details->tree_view);
 
 	font_name = eel_preferences_get (NAUTILUS_PREFERENCES_LIST_VIEW_FONT);
 	standard_font_size = eel_preferences_get_integer (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE);
-	font = nautilus_font_factory_get_font_by_family (font_name, standard_font_size);
+        
 #ifdef GNOME2_CONVERSION_COMPLETE
+	font = nautilus_font_factory_get_font_by_family (font_name, standard_font_size);
 	eel_gtk_widget_set_font (GTK_WIDGET (music_view->details->song_list), font);
-#endif
-        eel_list_set_anti_aliased_mode (EEL_LIST (music_view->details->song_list), FALSE);
-	gdk_font_unref (font);
 
-	eel_clist_set_column_width (EEL_CLIST (music_view->details->song_list), TRACK_NUMBER, 36);		/* track number */
-	eel_clist_set_column_width (EEL_CLIST (music_view->details->song_list), TITLE, 204);	/* song name */
-	eel_clist_set_column_width (EEL_CLIST (music_view->details->song_list), ARTIST, 96);		/* artist */
-eel_clist_set_column_width (EEL_CLIST (music_view->details->song_list), BITRATE, 42);		/* bitrate */	
-	eel_clist_set_column_width (EEL_CLIST (music_view->details->song_list), TIME, 42);		/* time */
- 
- 	eel_clist_set_column_justification(EEL_CLIST(music_view->details->song_list), TRACK_NUMBER, GTK_JUSTIFY_RIGHT);
- 	eel_clist_set_column_justification(EEL_CLIST(music_view->details->song_list), BITRATE, GTK_JUSTIFY_RIGHT);
-	eel_clist_set_column_justification(EEL_CLIST(music_view->details->song_list), TIME, GTK_JUSTIFY_RIGHT);
- 	
- 	g_signal_connect (music_view->details->song_list,
-                            "select-row", G_CALLBACK (selection_callback), music_view);
-
-	music_view->details->scroll_window = gtk_scrolled_window_new (NULL, eel_clist_get_vadjustment (EEL_CLIST (music_view->details->song_list)));
+#endif 	
+	music_view->details->scroll_window = gtk_scrolled_window_new (NULL, NULL);
         gtk_widget_show (music_view->details->scroll_window);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (music_view->details->scroll_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_container_add (GTK_CONTAINER (music_view->details->scroll_window), music_view->details->song_list);	
-	eel_clist_set_selection_mode (EEL_CLIST (music_view->details->song_list), GTK_SELECTION_BROWSE);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (music_view->details->scroll_window),
+                                        GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+        gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (music_view->details->scroll_window),
+                                             GTK_SHADOW_ETCHED_IN);
+	gtk_container_add (GTK_CONTAINER (music_view->details->scroll_window), music_view->details->tree_view);	
 
 	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), music_view->details->scroll_window, TRUE, TRUE, 0);	
-
-	/* We have to know when we the adjustment is changed to cause a redraw due to a lame CList bug */
-	g_signal_connect (eel_clist_get_vadjustment (EEL_CLIST (music_view->details->song_list)),
-			    "value-changed", G_CALLBACK (value_changed_callback), music_view->details->song_list);
-	
-	/* connect a signal to let us know when the column titles are clicked */
-	g_signal_connect (music_view->details->song_list, "click_column",
-                            G_CALLBACK (click_column_callback), music_view);
-
-        gtk_widget_show (music_view->details->song_list);
 
 	/* make an hbox to hold the optional cover and other controls */
 	music_view->details->control_box = gtk_hbox_new (FALSE, 2);
@@ -402,8 +522,6 @@ eel_clist_set_column_width (EEL_CLIST (music_view->details->song_list), BITRATE,
 
 	music_view->details->player_state = PLAYER_STOPPED;
 	music_view->details->last_player_state = PLAYER_STOPPED;
-	
-	music_view->details->sort_column = TRACK_NUMBER;
 }
 
 static void
@@ -446,48 +564,67 @@ string_non_empty (char *str)
         return (str != NULL && str[0] != '\0');
 }
 
+static void
+get_tree_iter_for_row (NautilusMusicView *music_view, int row, GtkTreeIter *iter)
+{
+        GtkTreePath *path;
+        
+        path = gtk_tree_path_new ();
+        gtk_tree_path_append_index (path, row);
+        gtk_tree_model_get_iter (GTK_TREE_MODEL (music_view->details->list_store), iter, path);
+        gtk_tree_path_free (path);
+}
+
 /* utility to return the text describing a song */
 static char *
 get_song_text (NautilusMusicView *music_view, int row)
 {
-        SongInfo *info;
         char *artist_album_string; 
 	char *song_text;
         char *song_title;
-		
+        GtkTreeIter iter;
+        char *info_title, *info_album, *info_year, *info_artist;
+        
 	song_text = NULL;
 	artist_album_string = NULL;
-        
-        info = eel_clist_get_row_data (EEL_CLIST (music_view->details->song_list),
-                                       row);
 
-        if (!string_non_empty (info->title)) {
+        get_tree_iter_for_row (music_view, row, &iter);
+        
+        gtk_tree_model_get (GTK_TREE_MODEL (music_view->details->list_store),
+                            &iter,
+                            ARTIST_COLUMN, &info_artist,
+                            TITLE_COLUMN, &info_title,
+                            ALBUM_COLUMN, &info_album,
+                            YEAR_COLUMN, &info_year,
+                            -1);
+                            
+        if (!string_non_empty (info_title)) {
                 song_title = "-";
         } else {
-                song_title = info->title;
+                song_title = info_title;
         }
 
-	if (string_non_empty (info->album)) {
-                if (string_non_empty (info->artist)) {
-                        artist_album_string = g_strdup_printf ("%s / %s", info->artist, info->album);
+	if (string_non_empty (info_album)) {
+                if (string_non_empty (info_artist)) {
+                        artist_album_string = g_strdup_printf ("%s / %s", info_artist, info_album);
                 } else {
-                        artist_album_string = g_strdup (info->album);
+                        artist_album_string = g_strdup (info_album);
                 }
         } else {
-                if (string_non_empty (info->artist)) {
-                        artist_album_string = g_strdup (info->artist);
+                if (string_non_empty (info_artist)) {
+                        artist_album_string = g_strdup (info_artist);
                 }
         }
                 
 	if (string_non_empty (artist_album_string)) {
-		if (string_non_empty (info->year)) {
-			song_text = g_strdup_printf ("%s\n%s (%s)", song_title, artist_album_string, info->year);
+		if (string_non_empty (info_year)) {
+			song_text = g_strdup_printf ("%s\n%s (%s)", song_title, artist_album_string, info_year);
 		} else {
 			song_text = g_strdup_printf ("%s\n%s", song_title, artist_album_string);
                 }
 	} else {
-		if (string_non_empty (info->year)) {
-                        song_text = g_strdup_printf ("%s (%s)\n-", song_title, info->year);
+		if (string_non_empty (info_year)) {
+                        song_text = g_strdup_printf ("%s (%s)\n-", song_title, info_year);
                 } else {
                         song_text = g_strdup_printf ("%s\n-", song_title);
                 }
@@ -506,30 +643,47 @@ music_view_set_selected_song_title (NautilusMusicView *music_view, int row)
 	char *label_text;
 	char *temp_str;
 	
-	label_text = NULL;
-	temp_str = NULL;
-
 	music_view->details->selected_index = row;
 	
 	label_text = get_song_text (music_view, row);
-	eel_label_set_text (EEL_LABEL(music_view->details->song_label), label_text);
-	g_free (label_text);
+
+        temp_str = g_strdup_printf ("<span size=\"x-large\">%s</span>", label_text);
         
-	eel_clist_get_text (EEL_CLIST(music_view->details->song_list), row, 5, &temp_str);
+	gtk_label_set_markup (GTK_LABEL(music_view->details->song_label), temp_str);
+	g_free (label_text);
+        g_free (temp_str);
 }
 
+static void
+row_activated_callback (GtkTreeView *tree_view, GtkTreePath *path, GtkTreeViewColumn *column, NautilusMusicView *music_view)
+{
+        PlayerState state;
+	gboolean is_playing_or_paused;
+
+        state = get_player_state (music_view);
+	is_playing_or_paused = (state == PLAYER_PLAYING || state == PLAYER_PAUSED);
+
+        play_current_file (music_view, FALSE);
+}
 
 /* handle a row being selected in the list view by playing the corresponding song */
 static void 
-selection_callback (EelCList *clist, int row, int column, GdkEventButton *event, NautilusMusicView *music_view)
+selection_changed (GtkTreeSelection *selection, NautilusMusicView *music_view)
 {
 	gboolean is_playing_or_paused;
-	SongInfo *song_info;
 	PlayerState state;
-	
+	GtkTreePath *path;
+        GtkTreeIter iter;
+        int row;
+
 	state = get_player_state (music_view);
 	is_playing_or_paused = (state == PLAYER_PLAYING || state == PLAYER_PAUSED);
-	 
+
+        gtk_tree_selection_get_selected (selection, NULL, &iter);
+        path = gtk_tree_model_get_path (GTK_TREE_MODEL (music_view->details->list_store), &iter);
+        row = gtk_tree_path_get_indices (path)[0];
+        gtk_tree_path_free (path);
+        
 	/* Exit if we are playing and clicked on the row that represents the playing song */
 	if (is_playing_or_paused && (music_view->details->selected_index == row)) {
 		return;
@@ -539,203 +693,9 @@ selection_callback (EelCList *clist, int row, int column, GdkEventButton *event,
 		stop_playing_file (music_view);
         }
         
-        song_info = eel_clist_get_row_data (clist, row);
-	if (song_info == NULL) {
-		return;
-        }
-
         music_view_set_selected_song_title (music_view, row);
-
-        /* Play if playback was already happening or there was a double click */
-	if ((is_playing_or_paused) || (event != NULL && event->type == GDK_2BUTTON_PRESS)) {
-		play_current_file (music_view, FALSE);
-        }
-        
-        /* Redraw to fix lame bug EelCList has with setting the wrong GC */
-        //gtk_widget_queue_draw (GTK_WIDGET (clist));
 } 
 
-
-static void
-value_changed_callback (GtkAdjustment *adjustment, EelCList *clist)
-{
-        /* Redraw to fix lame bug EelCList has with setting the wrong GC */
- 	//gtk_widget_queue_draw (GTK_WIDGET (clist));
-}
-
-
-static gint
-compare_song_numbers (EelCList *clist, gconstpointer ptr1, gconstpointer ptr2)
-{
-	EelCListRow *row1, *row2;
-	SongInfo *info1, *info2;
-        int result;
-
-	row1 = (EelCListRow *) ptr1;
-	row2 = (EelCListRow *) ptr2;
-	
-	info1 = row1->data;
-	info2 = row2->data;
-	
-	if (info1 == NULL || info2 == NULL) {
-		return 0;
-	}
-		
-	result = info1->track_number - info2->track_number;
-
-        return result;
-}
-
-static int
-compare_song_titles (EelCList *clist, gconstpointer ptr1, gconstpointer ptr2)
-{
-	SongInfo *info1, *info2;
-	EelCListRow *row1, *row2;
-	int result;
-
-	row1 = (EelCListRow *) ptr1;
-	row2 = (EelCListRow *) ptr2;
-	
-	info1 = row1->data;
-	info2 = row2->data;
-
-	if (info1 == NULL || info2 == NULL) {
-		return 0;
-	}
-
-	result = eel_strcoll (info1->title, info2->title);
-
-        return result;
-}
-
-static int
-compare_song_artists (EelCList *clist, gconstpointer ptr1, gconstpointer ptr2)
-{
-	SongInfo *info1, *info2;
-	EelCListRow *row1, *row2;
-        int result;
-
-	row1 = (EelCListRow *) ptr1;
-	row2 = (EelCListRow *) ptr2;
-	
-	info1 = row1->data;
-	info2 = row2->data;
-
-	if (info1 == NULL || info2 == NULL) {
-		return 0;
-	}
-
-	result = eel_strcoll (info1->artist, info2->artist);
-
-        return result;
-}
-
-static int
-compare_song_times (EelCList *clist, gconstpointer ptr1, gconstpointer ptr2)
-{
-	SongInfo *info1, *info2;
-	EelCListRow *row1, *row2;
-        int result;
-	
-	row1 = (EelCListRow *) ptr1;
-	row2 = (EelCListRow *) ptr2;
-	
-	info1 = row1->data;
-	info2 = row2->data;
-
-	if (info1 == NULL || info2 == NULL) {
-		return 0;
-	}
-
-	result = info1->track_time - info2->track_time;
-
-        return result;
-}
-
-static int
-compare_song_bitrates (EelCList *clist, gconstpointer ptr1, gconstpointer ptr2)
-{
-	SongInfo *info1, *info2;
-	EelCListRow *row1, *row2;
-	int result;
-
-	row1 = (EelCListRow *) ptr1;
-	row2 = (EelCListRow *) ptr2;
-	
-	info1 = row1->data;
-	info2 = row2->data;
-
-	if (info1 == NULL || info2 == NULL) {
-		return 0;
-	}
-
-	result = info1->bitrate - info2->bitrate;
-
-        return result;
-}
-
-static void
-sort_list (NautilusMusicView *music_view)
-{
-	GList *row;
-	EelCList *clist;
-	
-	clist = EEL_CLIST (music_view->details->song_list);
-
-        eel_list_set_sort_type (EEL_LIST (clist), music_view->details->sort_reversed
-                                ? GTK_SORT_DESCENDING
-                                : GTK_SORT_ASCENDING);
-	eel_list_set_sort_column (EEL_LIST (clist), music_view->details->sort_column);
-
-	/* sort by the specified criteria */	
-	switch (music_view->details->sort_column) {
-        case TRACK_NUMBER:
-		eel_clist_set_compare_func (clist, compare_song_numbers);
-                break;
-        case TITLE:
-		eel_clist_set_compare_func (clist, compare_song_titles);
-                break;
-        case ARTIST:
-		eel_clist_set_compare_func (clist, compare_song_artists);
-                break;
-        case BITRATE:
-        	eel_clist_set_compare_func (clist, compare_song_bitrates);
-                break;
-        case TIME:
-        	eel_clist_set_compare_func (clist, compare_song_times);
-                break;
-        default:
-                g_warning ("unknown sort mode");
-                break;
-	}
-		
-	eel_clist_sort (clist);
-	
-	/* Determine current selection index */
-        row = clist->selection;
-        if (row != NULL) {
-		music_view->details->selected_index = GPOINTER_TO_INT (row->data);
-	} 
-
-}
-
-/* handle clicks in the songlist columns */
-static void
-click_column_callback (EelCList *clist, int column, NautilusMusicView *music_view)
-{					
-
-	if (music_view->details->sort_column == column) {
-		music_view->details->sort_reversed = !music_view->details->sort_reversed;
-        } else {
-                music_view->details->sort_reversed = FALSE;
-        }
-        
-        music_view->details->sort_column = column;
-        
-        sort_list (music_view);
-
-	list_reveal_row (EEL_CLIST(music_view->details->song_list), music_view->details->selected_index);
-}
 
 /* utility routine to check if the passed-in uri is an image file */
 static gboolean
@@ -857,9 +817,8 @@ initialize_song_info (SongInfo *info)
 }
 
 /* deallocate a songinfo structure */
-
 static void
-release_song_info (SongInfo *info)
+song_info_free (SongInfo *info)
 {
         g_free (info->title);
         g_free (info->artist);
@@ -869,6 +828,7 @@ release_song_info (SongInfo *info)
         g_free (info->path_uri);
 	g_free (info);
 }
+
 
 /* determine if a file is an mp3 file by looking at the mime type */
 static gboolean
@@ -953,18 +913,6 @@ fetch_play_time (GnomeVFSFileInfo *file_info, int bitrate)
 
         /* Avoid divide by zero. */
 	return bitrate == 0 ? 0 : file_info->size / (125 * bitrate);
-}
-
-/* format_play_time takes the pathname to a file and returns the play time formated as mm:ss */
-static char *
-format_play_time (int track_time)
-{
-	int seconds, minutes, remain_seconds;
-
-        seconds = track_time;
-	minutes = seconds / 60;
-	remain_seconds = seconds - (60 * minutes);
-	return g_strdup_printf ("%d:%02d ", minutes, remain_seconds);
 }
 
 /* extract a track number from the file name
@@ -1129,7 +1077,7 @@ reset_playtime (NautilusMusicView *music_view)
  	gtk_range_set_adjustment (GTK_RANGE (music_view->details->playtime_bar),
                                   GTK_ADJUSTMENT (music_view->details->playtime_adjustment));	
 	gtk_widget_set_sensitive (music_view->details->playtime_bar, FALSE);	
-	eel_label_set_text  (EEL_LABEL (music_view->details->playtime), "--:--");
+	gtk_label_set_markup (GTK_LABEL (music_view->details->playtime), "<span size=\"x-large\">--:--</span>");
 }
 
 /* status display timer task */
@@ -1138,7 +1086,7 @@ play_status_display (NautilusMusicView *music_view)
 {
 	int minutes, seconds;
 	float percentage;
-	char play_time_str[256];
+	char *play_time_str;
 	int current_time;
 	gboolean is_playing_or_paused;
 	int samps_per_frame;
@@ -1167,7 +1115,8 @@ play_status_display (NautilusMusicView *music_view)
                      		seconds = current_time / 1000;
 				minutes = seconds / 60;
 				seconds = seconds % 60;
-				sprintf(play_time_str, "%02d:%02d", minutes, seconds);
+
+                                play_time_str = g_strdup_printf ("<span size=\"x-large\">%02d:%02d</span>", minutes, seconds);
 												
 				percentage = (float) ((float)current_time / (float)music_view->details->current_duration) * 100.0;
 				
@@ -1176,9 +1125,10 @@ play_status_display (NautilusMusicView *music_view)
                                 			  GTK_ADJUSTMENT(music_view->details->playtime_adjustment));	
 
 				if (!music_view->details->slider_dragging) {
-		 			eel_label_set_text (EEL_LABEL(music_view->details->playtime),
-                                                                 play_time_str);	
-                        	}                             
+		 			gtk_label_set_markup (GTK_LABEL(music_view->details->playtime),
+                                                            play_time_str);
+                        	}
+                                g_free (play_time_str);
 			}
 		}		
 	} else  {
@@ -1188,86 +1138,31 @@ play_status_display (NautilusMusicView *music_view)
 	return is_playing_or_paused;
 }
 
-
-/* The following are copied from gtkclist.c and eel-clist.c */ 
-#define CELL_SPACING 1
-
-/* gives the top pixel of the given row in context of
- * the clist's voffset */
-#define ROW_TOP_YPIXEL(clist, row) (((clist)->row_height * (row)) + \
-				    (((row) + 1) * CELL_SPACING) + \
-				    (clist)->voffset)
-				    
 static void
-list_move_vertical (EelCList *clist, gint row, gfloat align)
+list_reveal_row (GtkTreeView *view, int row_index)
 {
-	gfloat value;
+        GtkTreePath *path;
+        GtkTreeModel *model;
 
-	g_return_if_fail (clist != NULL);
+        model = gtk_tree_view_get_model (view);
+        path = gtk_tree_path_new ();
+        gtk_tree_path_append_index (path, row_index);
 
-	if (!clist->vadjustment) {
-		return;
-	}
-
-	value = (ROW_TOP_YPIXEL (clist, row) - clist->voffset -
-		 align * (clist->clist_window_height - clist->row_height) +
-		 (2 * align - 1) * CELL_SPACING);
-
-	if (value + clist->vadjustment->page_size > clist->vadjustment->upper) {
-		value = clist->vadjustment->upper - clist->vadjustment->page_size;
-	}
-
-	gtk_adjustment_set_value (clist->vadjustment, value);
+        gtk_tree_view_scroll_to_cell (view, path, NULL,
+                                      TRUE, 0.5, 0.5);
 }
-
-
-static void
-list_moveto (EelCList *clist, gint row, gint column, gfloat row_align, gfloat col_align)
-{
-	g_return_if_fail (clist != NULL);
-
-	if (row < -1 || row >= clist->rows) {
-		return;
-	}
-	
-	if (column < -1 || column >= clist->columns) {
-		return;
-	}
-
-	row_align = CLAMP (row_align, 0, 1);
-	col_align = CLAMP (col_align, 0, 1);
-
-	/* adjust vertical scrollbar */
-	if (clist->vadjustment && row >= 0) {
-		list_move_vertical (clist, row, row_align);
-	}
-}
-
-
-static void
-list_reveal_row (EelCList *clist, int row_index)
-{
-	g_return_if_fail (row_index >= 0 && row_index < clist->rows);
-		
-	if (ROW_TOP_YPIXEL (clist, row_index) + clist->row_height > clist->clist_window_height) {
-		list_moveto (clist, row_index, -1, 1, 0);
-     	} else if (ROW_TOP_YPIXEL (clist, row_index) < 0) {
-		list_moveto (clist, row_index, -1, 0, 0);
-     	}
-}
-
 
 /* track incrementing routines */
 static void
 play_current_file (NautilusMusicView *music_view, gboolean from_start)
 {
 	char *song_filename, *title;
-	SongInfo *song_info;
         GnomeVFSResult result;
         GnomeVFSFileInfo file_info;
 	int length;
-
-	
+        char *path_uri;
+        GtkTreeIter iter;
+        
 	/* Check gnome config sound preference */
 	if (!gnome_config_get_bool ("/sound/system/settings/start_esd=true")) {
 		eel_show_error_dialog (_("Sorry, but the music view is unable to play back sound right now. "
@@ -1291,17 +1186,20 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 		return;	
 	}
        	
-	eel_clist_select_row (EEL_CLIST(music_view->details->song_list), music_view->details->selected_index, 0);
-
 	/* Scroll the list to display the current new selection */
-	list_reveal_row (EEL_CLIST(music_view->details->song_list), music_view->details->selected_index);
-	
-	song_info = eel_clist_get_row_data (EEL_CLIST (music_view->details->song_list),
-                                                music_view->details->selected_index);
-	if (song_info == NULL) {
-		return;
-	}
-	song_filename = gnome_vfs_get_local_path_from_uri (song_info->path_uri);
+	list_reveal_row (GTK_TREE_VIEW (music_view->details->tree_view), music_view->details->selected_index);
+        get_tree_iter_for_row (music_view, music_view->details->selected_index, &iter);
+
+        gtk_tree_model_get (GTK_TREE_MODEL (music_view->details->list_store),
+                            &iter,
+                            PATH_URI_COLUMN, &path_uri,
+                            -1);
+
+        /* Make the song selected */
+        gtk_tree_selection_select_iter (gtk_tree_view_get_selection (GTK_TREE_VIEW (music_view->details->tree_view)),
+                                        &iter);
+        
+	song_filename = gnome_vfs_get_local_path_from_uri (path_uri);
 
 	/* for now, we can only play local files, so apologize to the user and give up */	
 	if (song_filename == NULL) {
@@ -1317,10 +1215,10 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 	music_view->details->current_duration = length;
 	g_free (title);
 	
-        result = gnome_vfs_get_file_info (song_info->path_uri, &file_info, GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
+        result = gnome_vfs_get_file_info (path_uri, &file_info, GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
 	if (result != GNOME_VFS_OK) {
 		/* File must be unavailable for some reason. Let's yank it from the list */
-		eel_clist_remove (EEL_CLIST (music_view->details->song_list), music_view->details->selected_index);
+                gtk_list_store_remove (music_view->details->list_store, &iter);
 		g_free (song_filename);
 		music_view->details->selected_index -= 1;
 		go_to_next_track (music_view);
@@ -1345,8 +1243,13 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 static void
 go_to_next_track (NautilusMusicView *music_view)
 {
-	mpg123_stop ();		
-	if (music_view->details->selected_index < (EEL_CLIST (music_view->details->song_list)->rows - 1)) {
+        int num_rows;
+        
+	mpg123_stop ();
+
+        num_rows = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (music_view->details->list_store), NULL);
+        
+	if (music_view->details->selected_index < num_rows) {
 		music_view->details->selected_index += 1;		
 		play_current_file (music_view, TRUE);
 	} else {  
@@ -1436,7 +1339,7 @@ static int
 slider_moved_callback (GtkWidget *bar, GdkEvent *event, NautilusMusicView *music_view)
 {	
 	GtkAdjustment *adjustment;
-	char temp_str[256];
+	char *temp_str;
 	int time, seconds, minutes;
 	float multiplier;
 		
@@ -1454,9 +1357,10 @@ slider_moved_callback (GtkWidget *bar, GdkEvent *event, NautilusMusicView *music
 		seconds = time / 1000; 
 		minutes = seconds / 60;
 		seconds = seconds % 60;
-		sprintf(temp_str, "%02d:%02d", minutes, seconds);
 
-		eel_label_set_text (EEL_LABEL(music_view->details->playtime), temp_str);
+                temp_str = g_strdup_printf ("<span size=\"x-large\">%02d:%02d</span>", minutes, seconds);
+
+		gtk_label_set_markup (GTK_LABEL(music_view->details->playtime), temp_str);
 	}
         return FALSE;
 }
@@ -1598,17 +1502,18 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_widget_show (music_view->details->playtime_bar);
 	gtk_widget_set_sensitive (music_view->details->playtime_bar, FALSE);
 	gtk_box_pack_start (GTK_BOX (hbox), music_view->details->playtime_bar, FALSE, FALSE, 4);
-	gtk_widget_set_usize (music_view->details->playtime_bar, 150, -1);
+	gtk_widget_set_size_request (music_view->details->playtime_bar, 150, -1);
 	gtk_widget_show (music_view->details->playtime_bar);
 
 	/* playtime label */
-	music_view->details->playtime = eel_label_new ("--:--");
-	eel_label_make_larger (EEL_LABEL (music_view->details->playtime), 2);
-	eel_label_set_justify (EEL_LABEL (music_view->details->playtime), GTK_JUSTIFY_LEFT);	
+	music_view->details->playtime = gtk_label_new ("");
+        gtk_label_set_markup (GTK_LABEL (music_view->details->playtime), "<span size=\"x-large\">--:--</span>");
+
+	gtk_label_set_justify (GTK_LABEL (music_view->details->playtime), GTK_JUSTIFY_LEFT);
+
 	gtk_misc_set_alignment (GTK_MISC (music_view->details->playtime), 0.0, 0.0);
 	gtk_widget_show (music_view->details->playtime);
 	gtk_box_pack_start (GTK_BOX (hbox), music_view->details->playtime, FALSE, FALSE, 0);
-	gtk_widget_set_usize (music_view->details->playtime, 40, -1);
 	 
 	/* Buttons */
         hbox = gtk_hbox_new (0, 0);
@@ -1686,9 +1591,8 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_widget_show (music_view->details->next_track_button);
 
 	/* Song title label */
-	music_view->details->song_label = eel_label_new ("");
-	eel_label_make_larger (EEL_LABEL (music_view->details->song_label), 2);
-	eel_label_set_justify (EEL_LABEL (music_view->details->song_label), GTK_JUSTIFY_LEFT);
+	music_view->details->song_label = gtk_label_new ("");
+	gtk_label_set_justify (GTK_LABEL (music_view->details->song_label), GTK_JUSTIFY_LEFT);
 	gtk_box_pack_end (GTK_BOX (vbox), music_view->details->song_label, FALSE, FALSE, 2);	
 	gtk_widget_show (music_view->details->song_label);	
 }
@@ -1757,16 +1661,15 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 	GList *list, *node;
 	
         char *uri;
-	char *clist_entry[10];
 	GList *p;
 	GList *song_list, *attributes;
 	SongInfo *info;
 	char *path_uri, *escaped_name;
 	char *image_path_uri;
         char *path, *message;
-	
+	GtkTreeIter iter;
+        
 	int file_index;
-	int track_index;
 	int image_count;
 
         uri = nautilus_file_get_uri (music_view->details->file);
@@ -1774,16 +1677,15 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 	song_list = NULL;
 	image_path_uri = NULL;
 	file_index = 1;
-	track_index = 0;
 	image_count = 0;
 	
-	/* connect the music view background to directory metadata */	
+	/* connect the music view background to directory metadata */
 	nautilus_connect_background_to_file_metadata (GTK_WIDGET (music_view->details->event_box), 
                                                       music_view->details->file);
-	
+#ifdef GNOME2_CONVERSION_COMPLETE
 	nautilus_connect_background_to_file_metadata (GTK_WIDGET (music_view->details->song_list),
                                                       music_view->details->file);
-
+#endif
 	/* iterate through the directory, collecting mp3 files and extracting id3 data if present */
 	result = gnome_vfs_directory_list_load (&list, uri,
 						GNOME_VFS_FILE_INFO_GET_MIME_TYPE
@@ -1836,38 +1738,27 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 
         song_list = g_list_reverse (song_list);
 	
-	/* populate the clist */	
-	eel_clist_clear (EEL_CLIST (music_view->details->song_list));
+	/* populate the list */
+        gtk_list_store_clear (music_view->details->list_store);
 	
 	for (p = song_list; p != NULL; p = p->next) {
-		int i;
 		info = (SongInfo *) p->data;
 
-		for (i = 0; i < 10; i ++) {
-			clist_entry[i] = NULL;
-		}
-		
-		if (info->track_number > 0)
-			clist_entry[TRACK_NUMBER] = g_strdup_printf("%d ", info->track_number);
-		if (info->title)
-			clist_entry[TITLE] = g_strdup(info->title);
-		if (info->artist)
-			clist_entry[ARTIST] = g_strdup(info->artist);
-		if (info->bitrate > 0)
-			clist_entry[BITRATE] = g_strdup_printf("%d ", info->bitrate);
-		if (info->track_time > 0)
-			clist_entry[TIME] = format_play_time (info->track_time);
+                gtk_list_store_append (music_view->details->list_store,
+                                       &iter);
+                gtk_list_store_set (music_view->details->list_store,
+                                    &iter,
+                                    TRACK_NUMBER_COLUMN, info->track_number,
+                                    TITLE_COLUMN, g_strdup (info->title),
+                                    ARTIST_COLUMN, g_strdup (info->artist),
+                                    BITRATE_COLUMN, info->bitrate,
+                                    TIME_COLUMN, info->track_time,
+                                    SAMPLE_RATE_COLUMN, info->samprate,
+                                    YEAR_COLUMN, g_strdup (info->year),
+                                    COMMENT_COLUMN, g_strdup (info->comment),
+                                    PATH_URI_COLUMN, g_strdup (info->path_uri),
+                                    -1);
 
-		eel_clist_append(EEL_CLIST(music_view->details->song_list), clist_entry);		
-		eel_clist_set_row_data_full (EEL_CLIST(music_view->details->song_list),
-					track_index, info, (GtkDestroyNotify)release_song_info);
-
-		for (i = 0; i < 10; i ++) {
-			g_free (clist_entry[i]);
-			clist_entry[i] = NULL;
-		}
-		
-		track_index += 1;
 	}
 	
 	/* if there was more than one image in the directory, don't use any */	
@@ -1896,12 +1787,12 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 		
 		artist_name = determine_attribute (song_list, TRUE);
 		if (artist_name != NULL) {
-			temp_str = g_strdup_printf (_("%s - %s"), album_name, artist_name);
+			temp_str = g_strdup_printf (_("<span size=\"xx-large\">%s - %s</span>"), album_name, artist_name);
 			g_free (artist_name);
 		} else {
-			temp_str = g_strdup (album_name);
+			temp_str = g_strdup_printf ("<span size=\"xx-large\">%s</span>", album_name);
                 }
-		eel_label_set_text (EEL_LABEL (music_view->details->album_title), temp_str);
+		gtk_label_set_markup (GTK_LABEL (music_view->details->album_title), temp_str);
 		
 		g_free (temp_str);
 		g_free (album_name);
@@ -1914,11 +1805,8 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 	
 	music_view_set_selected_song_title (music_view, 0);
 	
-	/* Do initial sort */
-	sort_list (music_view);
-	
 	/* release the song list */
-	g_list_free (song_list);
+	eel_g_list_free_deep_custom (song_list, (GFunc) song_info_free, NULL);
 
         g_free (uri);
 }
@@ -1948,21 +1836,21 @@ nautilus_music_view_load_uri (NautilusMusicView *music_view, const char *uri)
 static void
 music_view_background_appearance_changed_callback (EelBackground *background, NautilusMusicView *music_view)
 {
-	guint32 text_color;
-
-	text_color = eel_background_is_dark (background) ? EEL_RGBA_COLOR_OPAQUE_WHITE : EEL_RGBA_COLOR_OPAQUE_BLACK;
-
+        GdkColor color;
+        
+        color = eel_gdk_rgb_to_color (eel_background_is_dark (background) ? EEL_RGB_COLOR_WHITE : EEL_RGB_COLOR_BLACK);
+        
 	if (music_view->details->album_title != NULL) {
-		eel_label_set_text_color (EEL_LABEL (music_view->details->album_title),
-                                               text_color);
+		gtk_widget_modify_fg (music_view->details->album_title,
+                                      GTK_STATE_NORMAL, &color);
 	}
 	if (music_view->details->song_label != NULL) {
-		eel_label_set_text_color (EEL_LABEL (music_view->details->song_label),
-                                               text_color);
+		gtk_widget_modify_fg (music_view->details->song_label,
+                                      GTK_STATE_NORMAL, &color);
 	}
 	if (music_view->details->playtime != NULL) {
-		eel_label_set_text_color (EEL_LABEL (music_view->details->playtime),
-                                               text_color);
+		gtk_widget_modify_fg (music_view->details->playtime,
+                                      GTK_STATE_NORMAL, &color);
 	}
 }
 
