@@ -232,17 +232,28 @@ nautilus_volume_monitor_volume_is_removable (NautilusVolume *volume)
 
 	switch (volume->type) {
 	case NAUTILUS_VOLUME_CDROM:
-		return TRUE;
-		break;
-		
+	case NAUTILUS_VOLUME_UDF:
 	case NAUTILUS_VOLUME_FLOPPY:
 		return TRUE;
 		break;
-		
-	case NAUTILUS_VOLUME_EXT2:
+
+	case NAUTILUS_VOLUME_EXT2:	
+	case NAUTILUS_VOLUME_AFFS:
+	case NAUTILUS_VOLUME_FAT:
+	case NAUTILUS_VOLUME_HPFS:
+	case NAUTILUS_VOLUME_MINIX:
+	case NAUTILUS_VOLUME_MSDOS:
+	case NAUTILUS_VOLUME_NFS:
+	case NAUTILUS_VOLUME_PROC:
+	case NAUTILUS_VOLUME_SMB:
+	case NAUTILUS_VOLUME_UFS:
+	case NAUTILUS_VOLUME_UNSDOS:
+	case NAUTILUS_VOLUME_VFAT:
+	case NAUTILUS_VOLUME_XENIX:
+	case NAUTILUS_VOLUME_XIAFS:
 		return FALSE;
 		break;
-
+				
 	default:
 		return FALSE;
 		break;
@@ -384,7 +395,7 @@ mount_volume_floppy_set_state (NautilusVolumeMonitor *monitor, NautilusVolume *v
 }
 
 static void
-mount_volume_ext2_set_state (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
+mount_volume_generic_set_state (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 {
 	volume->state = NAUTILUS_VOLUME_ACTIVE;
 }
@@ -402,7 +413,21 @@ mount_volume_set_state (NautilusVolume *volume, NautilusVolumeMonitor *monitor)
 		break;
 		
 	case NAUTILUS_VOLUME_EXT2:
-		mount_volume_ext2_set_state (monitor, volume);
+	case NAUTILUS_VOLUME_AFFS:
+	case NAUTILUS_VOLUME_FAT:
+	case NAUTILUS_VOLUME_HPFS:
+	case NAUTILUS_VOLUME_MINIX:
+	case NAUTILUS_VOLUME_MSDOS:
+	case NAUTILUS_VOLUME_NFS:
+	case NAUTILUS_VOLUME_PROC:
+	case NAUTILUS_VOLUME_SMB:
+	case NAUTILUS_VOLUME_UDF:
+	case NAUTILUS_VOLUME_UFS:
+	case NAUTILUS_VOLUME_UNSDOS:
+	case NAUTILUS_VOLUME_VFAT:
+	case NAUTILUS_VOLUME_XENIX:
+	case NAUTILUS_VOLUME_XIAFS:
+		mount_volume_generic_set_state (monitor, volume);
 		break;
 		
 	default:
@@ -466,6 +491,14 @@ mount_volume_activate_ext2 (NautilusVolumeMonitor *view, NautilusVolume *volume)
 	mount_volume_mount (view, volume);
 }
 
+static void
+mount_volume_activate_generic (NautilusVolumeMonitor *view, NautilusVolume *volume)
+{	
+	volume->volume_name = g_strdup (_("Unknown Volume"));
+	mount_volume_mount (view, volume);
+}
+
+
 typedef void (* ChangeNautilusVolumeFunction) (NautilusVolumeMonitor *view, NautilusVolume *volume);
 
 static void
@@ -482,6 +515,23 @@ mount_volume_activate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 		
 	case NAUTILUS_VOLUME_EXT2:
 		mount_volume_activate_ext2 (monitor, volume);
+		break;
+
+	case NAUTILUS_VOLUME_AFFS:
+	case NAUTILUS_VOLUME_FAT:
+	case NAUTILUS_VOLUME_HPFS:
+	case NAUTILUS_VOLUME_MINIX:
+	case NAUTILUS_VOLUME_MSDOS:
+	case NAUTILUS_VOLUME_NFS:
+	case NAUTILUS_VOLUME_PROC:
+	case NAUTILUS_VOLUME_SMB:
+	case NAUTILUS_VOLUME_UDF:
+	case NAUTILUS_VOLUME_UFS:
+	case NAUTILUS_VOLUME_UNSDOS:
+	case NAUTILUS_VOLUME_VFAT:
+	case NAUTILUS_VOLUME_XENIX:
+	case NAUTILUS_VOLUME_XIAFS:
+		mount_volume_activate_generic (monitor, volume);
 		break;
 		
 	default:
@@ -669,6 +719,42 @@ mount_volume_ext2_add (NautilusVolume *volume)
 	return TRUE;
 }
 
+static gboolean
+mount_volume_udf_add (NautilusVolume *volume)
+{		
+	if (check_permissions (volume->fsname, R_OK)) {		
+		return FALSE;
+	}
+
+	volume->type = NAUTILUS_VOLUME_UDF;
+		
+	return TRUE;
+}
+
+static gboolean
+mount_volume_vfat_add (NautilusVolume *volume)
+{		
+	if (check_permissions (volume->fsname, R_OK)) {		
+		return FALSE;
+	}
+
+	volume->type = NAUTILUS_VOLUME_VFAT;
+		
+	return TRUE;
+}
+
+static gboolean
+mount_volume_msdos_add (NautilusVolume *volume)
+{		
+	if (check_permissions (volume->fsname, R_OK)) {		
+		return FALSE;
+	}
+
+	volume->type = NAUTILUS_VOLUME_MSDOS;
+		
+	return TRUE;
+}
+
 static void
 cdrom_ioctl_frenzy (int fd)
 {
@@ -678,7 +764,7 @@ cdrom_ioctl_frenzy (int fd)
 }
 
 static gboolean
-mount_volume_iso9660_add (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
+mount_volume_iso9660_add (NautilusVolume *volume)
 {
 	int fd;
 
@@ -699,6 +785,77 @@ mount_volume_iso9660_add (NautilusVolumeMonitor *monitor, NautilusVolume *volume
 
 	return TRUE;
 }
+
+static gboolean
+mount_volume_affs_add (NautilusVolume *volume)
+{
+	volume->type = NAUTILUS_VOLUME_AFFS;
+	return TRUE;
+}
+
+static gboolean
+mount_volume_fat_add (NautilusVolume *volume)
+{
+	volume->type = NAUTILUS_VOLUME_FAT;
+	return TRUE;
+}
+
+static gboolean
+mount_volume_hpfs_add (NautilusVolume *volume)
+{
+	volume->type = NAUTILUS_VOLUME_HPFS;
+	return TRUE;
+}
+
+static gboolean
+mount_volume_minix_add (NautilusVolume *volume)
+{
+	volume->type = NAUTILUS_VOLUME_MINIX;
+	return TRUE;
+}
+
+static gboolean
+mount_volume_nfs_add (NautilusVolume *volume)
+{
+	volume->type = NAUTILUS_VOLUME_NFS;
+	return TRUE;
+}
+
+static gboolean
+mount_volume_proc_add (NautilusVolume *volume)
+{
+	volume->type = NAUTILUS_VOLUME_PROC;
+	return TRUE;
+}
+
+static gboolean
+mount_volume_smb_add (NautilusVolume *volume)
+{
+	volume->type = NAUTILUS_VOLUME_SMB;
+	return TRUE;
+}
+
+static gboolean
+mount_volume_unsdos_add (NautilusVolume *volume)
+{
+	volume->type = NAUTILUS_VOLUME_UNSDOS;
+	return TRUE;
+}
+
+static gboolean
+mount_volume_xenix_add (NautilusVolume *volume)
+{
+	volume->type = NAUTILUS_VOLUME_XENIX;
+	return TRUE;
+}
+
+static gboolean
+mount_volume_xiafs_add (NautilusVolume *volume)
+{
+	volume->type = NAUTILUS_VOLUME_XIAFS;
+	return TRUE;
+}
+
 
 /* This is here because mtab lists volumes by their symlink-followed names rather than what is listed in fstab. */
 static void
@@ -733,8 +890,7 @@ mount_volume_add_aliases (NautilusVolumeMonitor *monitor, const char *alias, Nau
 
 #if HAVE_SYS_MNTTAB_H
 
-static
-void
+static void
 mnttab_add_mount_volume (NautilusVolumeMonitor *monitor, struct mnttab *tab) 
 {
 	NautilusVolume *volume;
@@ -747,12 +903,15 @@ mnttab_add_mount_volume (NautilusVolumeMonitor *monitor, struct mnttab *tab)
 	mounted = FALSE;
 
 	if (strcmp (tab->mnt_fstype, "iso9660") == 0) {
-		mounted = mount_volume_iso9660_add (monitor, volume);
+		mounted = mount_volume_iso9660_add (volume);
 	} else if (nautilus_str_has_prefix (volume->fsname, FLOPPY_DEVICE_PATH_PREFIX)) {
 		mounted = mount_volume_floppy_add (monitor, volume);
 	} else if (strcmp (tab->mnt_fstype, "ufs") == 0) {
 		mounted = mount_volume_ext2_add (volume);
+	} else if (strcmp (tab->mnt_fstype, "udf") == 0) {		
+		mounted = mount_volume_udf_add (volume);
 	}
+
 
 	if (mounted) {
 		volume->is_read_only = strstr (tab->mnt_mntopts, "r") != NULL;
@@ -779,14 +938,43 @@ mntent_add_mount_volume (NautilusVolumeMonitor *monitor, struct mntent *ent)
 
 	mounted = FALSE;
 	
-	if (strcmp (ent->mnt_type, "iso9660") == 0) {		
-    		mounted = mount_volume_iso9660_add (monitor, volume); 
-	} else if (nautilus_str_has_prefix (ent->mnt_fsname, FLOPPY_DEVICE_PATH_PREFIX)) {		
+	if (nautilus_str_has_prefix (ent->mnt_fsname, FLOPPY_DEVICE_PATH_PREFIX)) {		
 		mounted = mount_volume_floppy_add (monitor, volume);
+		
+	} else if (strcmp (ent->mnt_type, "affs") == 0) {		
+		mounted = mount_volume_affs_add (volume);
 	} else if (strcmp (ent->mnt_type, "ext2") == 0) {		
 		mounted = mount_volume_ext2_add (volume);
+	} else if (strcmp (ent->mnt_type, "fat") == 0) {		
+		mounted = mount_volume_fat_add (volume);
+	} else if (strcmp (ent->mnt_type, "hpfs") == 0) {		
+		mounted = mount_volume_hpfs_add (volume);
+	} else if (strcmp (ent->mnt_type, "iso9660") == 0) {		    		
+		mounted = mount_volume_iso9660_add (volume);
+	} else if (strcmp (ent->mnt_type, "minix") == 0) {		    		
+		mounted = mount_volume_minix_add (volume);
+	} else if (strcmp (ent->mnt_type, "msdos") == 0) {		
+		mounted = mount_volume_msdos_add (volume);
+	} else if (strcmp (ent->mnt_type, "nfs") == 0) {		
+		mounted = mount_volume_nfs_add (volume);
+	} else if (strcmp (ent->mnt_type, "proc") == 0) {		
+		mounted = mount_volume_proc_add (volume);
+	} else if (strcmp (ent->mnt_type, "smb") == 0) {		
+		mounted = mount_volume_smb_add (volume);
+	} else if (strcmp (ent->mnt_type, "udf") == 0) {		
+		mounted = mount_volume_udf_add (volume);
+	} else if (strcmp (ent->mnt_type, "ufs") == 0) {		
+		mounted = mount_volume_udf_add (volume);
+	} else if (strcmp (ent->mnt_type, "unsdos") == 0) {		
+		mounted = mount_volume_unsdos_add (volume);
+	} else if (strcmp (ent->mnt_type, "vfat") == 0) {		
+		mounted = mount_volume_vfat_add (volume);
+	} else if (strcmp (ent->mnt_type, "xenix") == 0) {		
+		mounted = mount_volume_xenix_add (volume);
+	} else if (strcmp (ent->mnt_type, "xiafs") == 0) {		
+		mounted = mount_volume_xiafs_add (volume);
 	}
-	
+
 	if (mounted) {
 		volume->is_read_only = strstr (ent->mnt_opts, MNTOPT_RO) != NULL;
 		monitor->details->volumes = g_list_append (monitor->details->volumes, volume);

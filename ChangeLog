@@ -1,3 +1,25 @@
+2000-09-16  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 2450, We don't detect zip drives, etc.
+
+	I added all filesystem types listed in man fstab and
+	others that I found by reading various linux articles.
+	There may be even more!  We can test these for now.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(nautilus_volume_monitor_volume_is_removable),
+	(mount_volume_generic_set_state), (mount_volume_set_state),
+	(mount_volume_activate_generic), (mount_volume_activate),
+	(mount_volume_udf_add), (mount_volume_vfat_add),
+	(mount_volume_msdos_add), (mount_volume_iso9660_add),
+	(mount_volume_affs_add), (mount_volume_fat_add),
+	(mount_volume_hpfs_add), (mount_volume_minix_add),
+	(mount_volume_nfs_add), (mount_volume_proc_add),
+	(mount_volume_smb_add), (mount_volume_unsdos_add),
+	(mount_volume_xenix_add), (mount_volume_xiafs_add),
+	(mnttab_add_mount_volume), (mntent_add_mount_volume):
+	* libnautilus-extensions/nautilus-volume-monitor.h:
+
 2000-09-16  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-factory.c:
