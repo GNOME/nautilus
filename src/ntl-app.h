@@ -35,6 +35,7 @@ extern "C" {
 typedef struct {
   BonoboObject parent;
   GSList *windows;
+  BonoboObject *undo_manager;
 } NautilusApp;
 
 typedef struct {

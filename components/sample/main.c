@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
 	BonoboGenericFactory *factory;
 	CORBA_ORB orb;
 	CORBA_Environment ev;
-	
+
 	CORBA_exception_init(&ev);
 
         puts ("In component.");        
@@ -88,8 +88,8 @@ int main(int argc, char *argv[])
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
 	factory = bonobo_generic_factory_new_multi ("OAFIID:nautilus_sample_content_view_factory:3df6b028-be44-4a18-95c3-7720f50ca0c5", sample_make_object, NULL);
-	
-        puts ("About to do main loop.");        
+		
+	puts ("About to do main loop.");        
 
 	do {
 		bonobo_main ();

@@ -26,6 +26,7 @@
 #define NAUTILUS_UNDO_MANAGER_PRIVATE_H
 
 #include <glib.h>
+#include <bonobo.h>
 
 #include "nautilus-undo-transaction.h"
 

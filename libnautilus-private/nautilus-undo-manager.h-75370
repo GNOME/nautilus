@@ -25,6 +25,9 @@
 #ifndef NAUTILUS_UNDO_MANAGER_H
 #define NAUTILUS_UNDO_MANAGER_H
 
+#include <bonobo/bonobo-object.h>
+#include <libnautilus-extensions/nautilus-undo-manager-component.h>
+#include <bonobo/bonobo-persist.h>
 #include "nautilus-undo-transaction.h"
 
 #define NAUTILUS_TYPE_UNDO_MANAGER \
@@ -42,19 +45,22 @@ typedef struct NautilusUndoManagerClass NautilusUndoManagerClass;
 typedef struct NautilusUndoManagerDetails NautilusUndoManagerDetails;
 
 struct NautilusUndoManager {
-	GtkObject parent;
+	BonoboPersist parent;
 	NautilusUndoManagerDetails *details;
 };
 
 struct NautilusUndoManagerClass {
-	GtkObjectClass parent_class;
+	BonoboPersistClass parent_class;
 	
 	void (* undo_transaction_occurred) (GtkObject *object, gpointer data);
+
+	gpointer servant_init_func, servant_destroy_func, vepv;
 };
 
+
 /* GtkObject */
-GtkType		nautilus_undo_manager_get_type 					 (void);
-GtkObject 	*nautilus_undo_manager_new 					 (void);
+GtkType			nautilus_undo_manager_get_type 				(void);
+NautilusUndoManager 	*nautilus_undo_manager_new 				(void);
 
 /* Prototypes */
 gboolean 		nautilus_undo_manager_initialize_global_manager		 (void);

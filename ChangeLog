@@ -1,3 +1,36 @@
+2000-05-05  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-undo-manager-component.idl:
+	New IDL file describing CORBA interface to the undo manager.
+	
+	* libnautilus-extensions/Makefile.am:
+	Modified to include nautilus-undo-manager-component.idl
+	
+	* libnautilus-extensions/nautilus-undo-manager.c
+	* libnautilus-extensions/nautilus-undo-manager-private.h:
+	(impl_Nautilus_UndoManager__destroy),
+	(impl_Nautilus_UndoManager__create),
+	(impl_Nautilus_UndoManager__begin_transaction),
+	(impl_Nautilus_UndoManager__end_transaction):
+	CORBA/Bonobo functions to access undo manager features.
+
+	* libnautilus-extensions/nautilus-undo-manager.h:
+	* src/file-manager/fm-list-view.c
+	(fm_list_view_append_background_context_menu_items),
+	(fm_list_view_merge_menus), (fm_list_view_update_menus),
+	(rename_list_item_callback):
+	Began the task of 
+	
+	* src/ntl-main.c 
+	(main):
+	Removed intialization of undo manager from main,
+
+	* src/ntl-app.c 
+	(nautilus_app_init):
+	Moved initialization of undo manager. A reference to the undo manager
+	is saved for easy access from components.
+	
+	
 2000-05-05  Andy Hertzfeld <andy@eazel.com>
 
 	* src/nautilus-property-browser.c:

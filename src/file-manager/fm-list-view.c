@@ -848,25 +848,12 @@ fm_list_view_sort_items (FMListView *list_view,
 static void
 fm_list_view_append_background_context_menu_items (FMDirectoryView *view, GtkMenu *menu)
 {
-	//GtkWidget *menu_item;
-
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	g_assert (GTK_IS_MENU (menu));
 
 	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, 
 				    append_background_context_menu_items, 
 				    (view, menu));
-
-	/* Put a separator before this item, since previous items are
-	 * window-specific and this one is global.
-	 */
-	/*menu_item = gtk_menu_item_new ();
-	gtk_widget_show (menu_item);
-	gtk_menu_append (menu, menu_item);
-
-        append_one_context_menu_item (FM_LIST_VIEW (view), menu, NULL, 
-                                      MENU_PATH_CUSTOMIZE_ICON_TEXT, 
-                                      GTK_SIGNAL_FUNC (customize_icon_text_callback));*/
 }
 
 
@@ -924,48 +911,14 @@ fm_list_view_merge_menus (FMDirectoryView *view)
                                          (BonoboUIHandlerCallbackFunc) rename_list_item_callback,
                                          view);
 
-	/* Add Undo menu item at top of Edit menu */
-	/*bonobo_ui_handler_menu_new_item (ui_handler,
-                                         MENU_PATH_UNDO,
-                                         _("Undo"),
-                                         _("Undo Rename"),
-                                         0,
-                                         BONOBO_UI_HANDLER_PIXMAP_NONE,
-                                         NULL,
-                                         0,
-                                         0,
-                                         (BonoboUIHandlerCallbackFunc) undo_rename_list_item_callback,
-                                         view);*/                                         
-
         nautilus_file_list_free (selection);
-
-	/*FM_LIST_VIEW (view)->details->menus_ready = TRUE;*/
 }
 
 
 static void
 fm_list_view_update_menus (FMDirectoryView *view)
 {
-        //GList *selection;
-        //BonoboUIHandler *ui_handler;
-	//int count;
-	
 	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
-
-        /*ui_handler = fm_directory_view_get_bonobo_ui_handler (view);
-        selection = fm_directory_view_get_selection (view);
-    	count = g_list_length (selection);
-                
-        update_bonobo_menu_item (FM_LIST_VIEW (view), ui_handler, selection, 
-                                 MENU_PATH_STRETCH_ICON);
-        update_bonobo_menu_item (FM_LIST_VIEW (view), ui_handler, selection, 
-                                 MENU_PATH_RESTORE_STRETCHED_ICONS);
-        update_bonobo_menu_item (FM_LIST_VIEW (view), ui_handler, selection, 
-                                 MENU_PATH_RENAME);
-        update_bonobo_menu_item (FM_LIST_VIEW (view), ui_handler, selection, 
-                                 MENU_PATH_UNDO);
-	
-	nautilus_file_list_free (selection);*/
 }
 
 
@@ -978,9 +931,6 @@ rename_list_item_callback (gpointer ignored, gpointer view)
 {
 	g_assert (FM_IS_LIST_VIEW (view));
   		
-	/*nautilus_icon_container_start_renaming_selected_item (
-				get_icon_container (FM_ICON_VIEW (view)));*/
-
 	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (view));
 }
 

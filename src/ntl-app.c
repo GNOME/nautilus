@@ -31,6 +31,7 @@
 #include "file-manager/fm-icon-view.h"
 #include "file-manager/fm-list-view.h"
 #include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-undo-manager.h>
 
 typedef struct {
   POA_Nautilus_Application servant;
@@ -232,16 +233,21 @@ nautilus_app_class_init (NautilusAppClass *klass)
 static void
 nautilus_app_init (NautilusApp *app)
 {
-  CORBA_Environment ev;
-  CORBA_Object objref;
+	CORBA_Environment ev;
+	CORBA_Object objref;
+	
+	CORBA_exception_init(&ev);
+	objref = impl_Nautilus_Application__create(bonobo_poa(), app, &ev);
 
-  CORBA_exception_init(&ev);
-  objref = impl_Nautilus_Application__create(bonobo_poa(), app, &ev);
+	oaf_active_server_register("OAFIID:ntl_file_manager_factory:bd1e1862-92d7-4391-963e-37583f0daef3", objref);
 
-  oaf_active_server_register("OAFIID:ntl_file_manager_factory:bd1e1862-92d7-4391-963e-37583f0daef3", objref);
+	bonobo_object_construct(BONOBO_OBJECT(app), objref);
 
-  bonobo_object_construct(BONOBO_OBJECT(app), objref);
-  CORBA_exception_free(&ev);
+	/* Init undo manager */
+	nautilus_undo_manager_initialize_global_manager ();
+	app->undo_manager = BONOBO_OBJECT (nautilus_undo_manager_get_undo_manager());
+	
+	CORBA_exception_free(&ev);
 }
 
 GtkObject *
@@ -269,12 +275,12 @@ nautilus_app_destroy(GtkObject *object)
 void
 nautilus_app_startup(NautilusApp *app, const char *initial_url)
 {
-  NautilusWindow *mainwin;
+	NautilusWindow *mainwin;
 
-  /* Set default configuration */
-  mainwin = nautilus_app_create_window(app);
-  bonobo_activate();
-  nautilus_window_set_initial_state(mainwin, initial_url);
+  	/* Set default configuration */
+  	mainwin = nautilus_app_create_window(app);
+  	bonobo_activate();
+  	nautilus_window_set_initial_state(mainwin, initial_url);  	
 }
 
 static void

@@ -34,7 +34,6 @@
 #include <libnautilus-extensions/nautilus-debug.h>
 #include <libnautilus-extensions/nautilus-lib-self-check-functions.h>
 #include <libnautilus-extensions/nautilus-self-checks.h>
-#include <libnautilus-extensions/nautilus-undo-manager.h>
 #include <nautilus-widgets/nautilus-widgets-self-check-functions.h>
 #include <nautilus-widgets/nautilus-preferences.h>
 #include <libgnomevfs/gnome-vfs-init.h>
@@ -93,8 +92,7 @@ main(int argc, char *argv[])
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 	g_thread_init (NULL);
 	gnome_vfs_init ();
-	nautilus_undo_manager_initialize_global_manager ();
-	
+		
 	args = poptGetArgs (ctx);
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)

@@ -21,10 +21,24 @@ libnautilus_extensions_la_LDFLAGS=\
 	$(XML_LIBS) \
 	$(LIBPNG)
 
-fsextension_idl_sources=fsextension-stubs.c fsextension-skels.c fsextension-common.c fsextension.h
-BUILT_SOURCES=$(fsextension_idl_sources)
+fsextension_idl_sources = 	\
+	fsextension-stubs.c 	\
+	fsextension-skels.c 	\
+	fsextension-common.c 	\
+	fsextension.h
+
+nautilus_undo_manager_component_idl_sources = 	 \
+	nautilus-undo-manager-component-stubs.c  \
+	nautilus-undo-manager-component-skels.c  \
+	nautilus-undo-manager-component-common.c \
+	nautilus-undo-manager-component.h
+	
+BUILT_SOURCES = \
+	$(fsextension_idl_sources) \
+	$(nautilus_undo_manager_component_idl_sources)
 
 libnautilus_extensionsincludedir=$(includedir)/libnautilus-extensions
+
 libnautilus_extensionsinclude_HEADERS=		\
 	nautilus-background-canvas-group.h	\
 	nautilus-file-changes-queue.h		\
@@ -122,14 +136,19 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-undoable.c			\
 	nautilus-xml-extensions.c		\
 	$(fsextension_idl_sources)		\
+	$(nautilus_undo_manager_component_idl_sources) \
 	$(NULL)
 
 $(fsextension_idl_sources): fsextension_idl_stamp
-
 fsextension_idl_stamp: $(top_srcdir)/idl/fsextension.idl
 	orbit-idl -I${datadir}/idl `gnome-config --cflags idl` $(top_srcdir)/idl/fsextension.idl
 	touch fsextension_idl_stamp
 
-CLEANFILES = fsextension_idl_stamp
+$(nautilus_undo_manager_component_idl_sources): nautilus_undo_manager_component_idl_stamp
+nautilus_undo_manager_component_idl_stamp: nautilus-undo-manager-component.idl
+	orbit-idl -I${datadir}/idl `gnome-config --cflags idl` $(srcdir)/nautilus-undo-manager-component.idl
+	touch nautilus_undo_manager_component_idl_stamp
+	
+CLEANFILES = fsextension_idl_stamp nautilus_undo_manager_component_idl_stamp
 
 EXTRA_DIST = $(top_srcdir)/idl/fsextension.idl $(top_srcdir)/idl/GNOME_Desktop_FileOperationService.idl
