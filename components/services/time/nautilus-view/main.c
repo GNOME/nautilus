@@ -32,7 +32,6 @@
 #include <liboaf/liboaf.h>
 #include <libnautilus-extensions/nautilus-debug.h>
 #include <bonobo.h>
-#include <glade/glade.h>
 
 static int object_count = 0;
 
@@ -98,11 +97,6 @@ int main(int argc, char *argv[])
 	orb = oaf_init (argc, argv);
 	
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
-
-#if 0
-    	glade_gnome_init();
-#endif /* 0 */
-
 
         registration_id = oaf_make_registration_id (OAFIID_TRILOBITE_EAZEL_TIME_VIEW_FACTORY, getenv ("DISPLAY"));
 	factory = bonobo_generic_factory_new_multi (registration_id, 
