@@ -43,13 +43,11 @@
 #include <libnautilus/nautilus-gtk-extensions.h>
 #include <libnautilus/nautilus-gtk-macros.h>
 #include <libnautilus/nautilus-string.h>
-#include <libnautilus/nautilus-background.h>
 #include <libnautilus/nautilus-directory.h>
+#include <libnautilus/nautilus-directory-background.h>
 #include <libnautilus/nautilus-global-preferences.h>
 #include <libnautilus/nautilus-icon-factory.h>
 #include <libnautilus/nautilus-icon-container.h>
-
-#define DEFAULT_BACKGROUND_COLOR "rgb:FFFF/FFFF/FFFF"
 
 /* Paths to use when creating & referring to bonobo menu items */
 #define MENU_PATH_BEFORE_STRETCH_SEPARATOR   "/Settings/Before Stretch Separator"
@@ -83,8 +81,6 @@ static void                   fm_icon_view_append_background_context_menu_items 
 static void                   fm_icon_view_append_selection_context_menu_items  (FMDirectoryView          *view,
 										 GtkMenu                  *menu,
 										 GList                    *files);
-static void                   fm_icon_view_background_changed_callback          (NautilusBackground       *background,
-										 FMIconView               *icon_view);
 static void                   fm_icon_view_begin_loading                        (FMDirectoryView          *view);
 static void                   fm_icon_view_bump_zoom_level                      (FMDirectoryView          *view,
 										 gint                      zoom_increment);
@@ -144,7 +140,6 @@ struct FMIconViewDetails
 	char *text_attribute_names;
 
 	guint react_to_icon_change_idle_id;
-	guint background_changed_connection;
 };
 
 /* GtkObject methods.  */
@@ -282,11 +277,6 @@ create_icon_container (FMIconView *icon_view)
 			    "get_icon_property",
 			    GTK_SIGNAL_FUNC (get_icon_property_callback),
 			    icon_view);
-        icon_view->details->background_changed_connection =
-		gtk_signal_connect (GTK_OBJECT (nautilus_get_widget_background (GTK_WIDGET (icon_container))),
-				    "changed",
-				    GTK_SIGNAL_FUNC (fm_icon_view_background_changed_callback),
-				    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "move_copy_items",
 			    GTK_SIGNAL_FUNC (fm_directory_view_move_copy_items),
@@ -325,14 +315,14 @@ add_icon_if_already_positioned (FMIconView *icon_view,
 	/* Get the current position of this icon from the metadata. */
 	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view));
 	position_string = nautilus_file_get_metadata (file, 
-						      ICON_VIEW_ICON_POSITION_METADATA_KEY, 
+						      NAUTILUS_METADATA_KEY_ICON_POSITION, 
 						      "");
 	position_good = sscanf (position_string, " %d , %d %*s", &x, &y) == 2;
 	g_free (position_string);
 
 	/* Get the scale of the icon from the metadata. */
 	scale_string = nautilus_file_get_metadata (file,
-						   ICON_VIEW_ICON_SCALE_METADATA_KEY,
+						   NAUTILUS_METADATA_KEY_ICON_SCALE,
 						   "1");
 	scale_good = sscanf (scale_string, " %lf %*s", &scale_x) == 1;
 	if (scale_good) {
@@ -584,51 +574,31 @@ fm_icon_view_done_adding_files (FMDirectoryView *view)
 static void
 fm_icon_view_begin_loading (FMDirectoryView *view)
 {
-	NautilusDirectory *directory;
 	FMIconView *icon_view;
-	char *background_color, *background_image;
-	NautilusBackground *background;
+	NautilusDirectory *directory;
+	int level;
 
 	g_return_if_fail (FM_IS_ICON_VIEW (view));
 
 	icon_view = FM_ICON_VIEW (view);
 	directory = fm_directory_view_get_model (view);
 
-	/* Set up the background color from the metadata. */
-	background = nautilus_get_widget_background (GTK_WIDGET (get_icon_container (icon_view)));
-	gtk_signal_handler_block (GTK_OBJECT (background),
-				  icon_view->details->background_changed_connection);
-	background_color = nautilus_directory_get_metadata (directory,
-							    ICON_VIEW_BACKGROUND_COLOR_METADATA_KEY,
-							    DEFAULT_BACKGROUND_COLOR);
-	nautilus_background_set_color (background, background_color);
-	g_free (background_color);
-	background_image = nautilus_directory_get_metadata (directory,
-							    NAUTILUS_ICON_VIEW_BACKGROUND_IMAGE_METADATA_KEY,
-							    NULL);
-	nautilus_background_set_tile_image_uri (background, background_image);
-	g_free (background_image);
-	gtk_signal_handler_unblock (GTK_OBJECT (background),
-				    icon_view->details->background_changed_connection);
+	nautilus_connect_background_to_directory_metadata (GTK_WIDGET (get_icon_container (icon_view)),
+							   directory);
 
 	/* Set up the zoom level from the metadata. */
-	fm_icon_view_set_zoom_level
-		(icon_view,
-		 nautilus_directory_get_integer_metadata (directory, 
-							  ICON_VIEW_ZOOM_LEVEL_METADATA_KEY, 
-							  icon_view->details->default_zoom_level));
+	level = nautilus_directory_get_integer_metadata (directory, 
+							 NAUTILUS_METADATA_KEY_ICON_VIEW_ZOOM_LEVEL, 
+							 icon_view->details->default_zoom_level);
+	fm_icon_view_set_zoom_level (icon_view, level);
+
 }
 
 static NautilusZoomLevel
 fm_icon_view_get_zoom_level (FMIconView *view)
 {
-	NautilusIconContainer *icon_container;
-
-	g_return_val_if_fail (FM_IS_ICON_VIEW (view), 
-			      view->details->default_zoom_level);
-
-	icon_container = get_icon_container (view);
-	return (nautilus_icon_container_get_zoom_level (icon_container));
+	g_return_val_if_fail (FM_IS_ICON_VIEW (view), NAUTILUS_ZOOM_LEVEL_STANDARD);
+	return nautilus_icon_container_get_zoom_level (get_icon_container (view));
 }
 
 static void
@@ -648,7 +618,7 @@ fm_icon_view_set_zoom_level (FMIconView *view,
 
 	nautilus_directory_set_integer_metadata
 		(fm_directory_view_get_model (FM_DIRECTORY_VIEW (view)), 
-		 ICON_VIEW_ZOOM_LEVEL_METADATA_KEY, 
+		 NAUTILUS_METADATA_KEY_ICON_VIEW_ZOOM_LEVEL, 
 		 view->details->default_zoom_level,
 		 new_level);
 
@@ -916,37 +886,6 @@ icon_container_context_click_background_callback (NautilusIconContainer *contain
 	fm_directory_view_pop_up_background_context_menu (FM_DIRECTORY_VIEW (icon_view));
 }
 
-static void
-fm_icon_view_background_changed_callback (NautilusBackground *background,
-					  FMIconView *icon_view)
-{
-	NautilusDirectory *directory;
-	char *color_spec, *tile_image_uri;
-
-	g_assert (FM_IS_ICON_VIEW (icon_view));
-	g_assert (background == nautilus_get_widget_background
-		  (GTK_WIDGET (get_icon_container (icon_view))));
-
-	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view));
-	if (directory == NULL) {
-		return;
-	}
-	
-	color_spec = nautilus_background_get_color (background);
-	nautilus_directory_set_metadata (directory,
-					 ICON_VIEW_BACKGROUND_COLOR_METADATA_KEY,
-					 DEFAULT_BACKGROUND_COLOR,
-					 color_spec);
-	g_free (color_spec);
-
-	tile_image_uri = nautilus_background_get_tile_image_uri (background);
-	nautilus_directory_set_metadata (directory,
-					 NAUTILUS_ICON_VIEW_BACKGROUND_IMAGE_METADATA_KEY,
-					 NULL,
-					 tile_image_uri);
-	g_free (tile_image_uri);
-}
-
 static gboolean
 fm_icon_view_react_to_icon_change_idle_callback (gpointer data) 
 {        
@@ -999,7 +938,7 @@ fm_icon_view_icon_changed_callback (NautilusIconContainer *container,
 	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view));
 	position_string = g_strdup_printf ("%d,%d", x, y);
 	nautilus_file_set_metadata (file, 
-				    ICON_VIEW_ICON_POSITION_METADATA_KEY, 
+				    NAUTILUS_METADATA_KEY_ICON_POSITION, 
 				    NULL, 
 				    position_string);
 
@@ -1015,7 +954,7 @@ fm_icon_view_icon_changed_callback (NautilusIconContainer *container,
 		scale_string = g_strdup_printf ("%.2f,%.2f", scale_x, scale_y);
 	}
 	nautilus_file_set_metadata (file,
-				    ICON_VIEW_ICON_SCALE_METADATA_KEY,
+				    NAUTILUS_METADATA_KEY_ICON_SCALE,
 				    "1.00",
 				    scale_string);
 

@@ -1153,9 +1153,10 @@ view_menu_switch_views_cb (GtkWidget *widget, gpointer data)
         directory = nautilus_directory_get (window->ni->requested_uri);
         g_assert (directory != NULL);
         nautilus_directory_set_metadata (directory,
-                                         NAUTILUS_INITIAL_VIEW_METADATA_KEY,
+                                         NAUTILUS_METADATA_KEY_INITIAL_VIEW,
                                          NULL,
                                          iid);
+        nautilus_directory_unref (directory);
         
         nautilus_window_allow_stop (window, TRUE);
         

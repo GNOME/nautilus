@@ -222,6 +222,10 @@ destroy (GtkObject *object)
 void
 nautilus_file_ref (NautilusFile *file)
 {
+	if (file == NULL) {
+		return;
+	}
+
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
 	gtk_object_ref (GTK_OBJECT (file));
@@ -230,6 +234,10 @@ nautilus_file_ref (NautilusFile *file)
 void
 nautilus_file_unref (NautilusFile *file)
 {
+	if (file == NULL) {
+		return;
+	}
+
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
 	gtk_object_unref (GTK_OBJECT (file));

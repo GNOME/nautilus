@@ -1,3 +1,94 @@
+2000-04-05  Darin Adler  <darin@eazel.com>
+
+	Improved the background handling code so more is shared.
+	There's even more we could do in this direction.
+	
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize): Got rid of redundant background
+	color initialization.
+	(nautilus_music_view_realize): Got rid of background color
+	initialization.
+	(nautilus_music_view_update_from_uri): Changed background color
+	handling to use new nautilus_directory_background calls.
+	(nautilus_music_view_background_changed): Not needed any more.
+
+	* components/notes/ntl-notes.c:
+	Did some cleanup and reformatting.
+
+	* libnautilus/Makefile.am:
+	* libnautilus/nautilus-directory-background.c:
+	* libnautilus/nautilus-directory-background.h:
+	Created a new file with functions that manage the background for
+	a window connected with a particular directory. Later we might
+	generalize it further to work for windows that are connected to
+	any URI, not just a directory.
+
+	* libnautilus/nautilus-directory.c:
+	* libnautilus/nautilus-directory.h:
+	Added a new "metdata_changed" signal so that the background can
+	be updated if the underlying data changes.
+	(nautilus_directory_initialize_class): Create the new signal.
+	(nautilus_directory_ref), (nautilus_directory_unref): Made these
+	functions quietly do nothing for NULL. This simplifies life for
+	callers.
+	(nautilus_directory_set_metadata): Emit the "metadata_changed"
+	signal.
+
+	* libnautilus/nautilus-file.c:
+	(nautilus_file_ref), (nautilus_file_unref): Made these
+	functions quietly do nothing for NULL. This simplifies life for
+	callers.
+
+	* libnautilus/nautilus-metadata.h:
+	Renamed all the constants to be consistent. Got rid of separate
+	constants for the icon view and list view backgrounds. Changed
+	some of the underlying XML tags as well.
+
+	* libnautilus/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_for_file):
+	* src/nautilus-index-title.c: (nautilus_index_title_update_info):
+	* src/ntl-index-panel: (nautilus_index_panel_update_info),
+	(receive_dropped_uri_list),
+	(nautilus_index_panel_background_changed):
+	* src/ntl-uri-map.c: (set_initial_content_iid),
+	(add_components_from_metadata):
+	* src/ntl-window-msgs.c: (view_menu_switch_views_cb):
+	* src/file-manager/fm-icon-view.c: (add_icon_if_already_positioned),
+	(fm_icon_view_begin_loading), (fm_icon_view_set_zoom_level),
+	(fm_icon_view_icon_changed_callback):
+	* src/file-manager/fm-list-view.c: (fm_list_view_begin_loading),
+	(fm_list_view_set_zoom_level), (fm_list_view_sort_items):
+	Updated uses of metadata constants to use the new names.
+
+	* src/ntl-index-panel: (nautilus_index_panel_destroy),
+	(nautilus_index_panel_update_info):
+	* src/ntl-uri-map.c: (add_components_from_metadata):
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_destroy), (fm_directory_view_load_uri):
+	Used new nautilus_directory_unref to simplify code.
+
+	* src/ntl-uri-map.c: (set_initial_content_iid):
+	* src/ntl-window-msgs.c: (view_menu_switch_views_cb):
+	Added missing nautilus_directory_unref (storage leak).
+
+	* src/file-manager/fm-icon-view.c: (create_icon_container),
+	(fm_icon_view_background_changed_callback): Removed "changed"
+	signal handler on NautilusBackground since that's now handled
+	by the new nautilus_directory_background calls instead.
+	(fm_icon_view_begin_loading): Used nautilus_directory_background
+	to replace background customization code.
+
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_get_zoom_level):
+	Fixed a bug where it would try to use view as an FMIconView after
+	the FM_IS_ICON_VIEW check failed.
+
+	* src/file-manager/fm-list-view.c: (create_list),
+	(fm_list_view_background_changed_callback): Removed "changed"
+	signal handler on NautilusBackground since that's now handled
+	by the new nautilus_directory_background calls instead.
+	(fm_list_view_begin_loading): Used nautilus_directory_background
+	to replace background customization code.
+
 2000-04-05  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug in Ramiro's recent checkin that broke booting
@@ -119,7 +210,6 @@
 	We might want to change things such that no default has to be installed
 	for this preference.  If so, then the code that fetches the preference
 	would have to deal with either a NULL return value (or "").
-	
 	
 2000-04-05  Andy Hertzfeld <andy@eazel.com>
 

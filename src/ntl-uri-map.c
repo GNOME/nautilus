@@ -147,7 +147,7 @@ set_initial_content_iid (NautilusNavigationInfo *navinfo,
 	directory = nautilus_directory_get (navinfo->navinfo.requested_uri);
 	if (directory != NULL) {
 		remembered_value = nautilus_directory_get_metadata (directory,
-								    NAUTILUS_INITIAL_VIEW_METADATA_KEY,
+								    NAUTILUS_METADATA_KEY_INITIAL_VIEW,
 							 	    NULL);
 
 		/* Use the remembered value if it's non-NULL and in the list of choices. */
@@ -158,6 +158,8 @@ set_initial_content_iid (NautilusNavigationInfo *navinfo,
 				g_message ("Unknown iid \"%s\" stored for %s", remembered_value, navinfo->navinfo.requested_uri);
 			}
 		}
+
+                nautilus_directory_unref (directory);
 	}
 
 	if (value == NULL) {
@@ -363,33 +365,37 @@ my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
 /* the content views are specified in the string as "componentname1:label1\ncomponentname2:label2\n..." */
 
 static void
-add_components_from_metadata(NautilusNavigationInfo *navinfo)
+add_components_from_metadata (NautilusNavigationInfo *navinfo)
 {
-	NautilusDirectory *directory = nautilus_directory_get(navinfo->navinfo.requested_uri);
-	gchar *content_views = nautilus_directory_get_metadata(directory, NAUTILUS_CONTENT_VIEWS_METADATA_KEY, NULL);
+	NautilusDirectory *directory;
+	char *content_views;
 	
-	if (content_views) {
+        directory = nautilus_directory_get (navinfo->navinfo.requested_uri);
+
+        content_views = nautilus_directory_get_metadata (directory, NAUTILUS_METADATA_KEY_CONTENT_VIEWS, NULL);
+	if (content_views != NULL) {
 		char **pieces;
 		const char *component_str;
-		gchar *colon_pos;
-		gint index;
+		char *colon_pos;
+		int index;
+
 	 	pieces = g_strsplit (content_views, "\n", 0);
 	 	for (index = 0; (component_str = pieces[index]) != NULL; index++) {
 			/* break the component string into the name and label */
 			colon_pos = strchr(component_str, ':');
-			if (colon_pos) {
+			if (colon_pos != NULL) {
 				*colon_pos++ = '\0';
 				
 				/* add it to the list */
-				navinfo->content_identifiers = g_slist_append (navinfo->content_identifiers, 
-								nautilus_view_identifier_new (component_str, colon_pos));				
+				navinfo->content_identifiers = g_slist_append (navinfo->content_identifiers,
+                                                                               nautilus_view_identifier_new (component_str, colon_pos));
 			}			
 	 	}
 	 	g_strfreev (pieces);	 	 		 	
-	 	g_free(content_views); 	
+	 	g_free (content_views); 	
 	}
-	   
-	gtk_object_unref(GTK_OBJECT(directory));
+        
+	nautilus_directory_unref (directory);
 }
 
 static void
@@ -406,7 +412,7 @@ add_meta_view_iids_from_preferences (NautilusNavigationInfo *navinfo)
 	
 	for (i = 0; i < nautilus_string_list_get_length (meta_view_iids); i++)
 	{
-		gchar		*iid;
+		char		*iid;
 		gboolean	enabled;
 		GString		*pref_name;
 

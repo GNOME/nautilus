@@ -726,7 +726,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
 	}
 	
 	/* if there is a custom image in the metadata, use that. */
-	uri = nautilus_file_get_metadata (file, NAUTILUS_CUSTOM_ICON_METADATA_KEY, NULL);
+	uri = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
 	
 	/* if the file is an image, either use the image itself as the icon if it's small enough,
 	   or use a thumbnail if one exists.  If a thumbnail is required, but does not yet exist,

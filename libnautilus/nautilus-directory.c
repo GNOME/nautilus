@@ -60,6 +60,7 @@ enum
 	FILES_ADDED,
 	FILES_REMOVED,
 	FILES_CHANGED,
+	METADATA_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -112,6 +113,13 @@ nautilus_directory_initialize_class (gpointer klass)
 				GTK_SIGNAL_OFFSET (NautilusDirectoryClass, files_changed),
 				gtk_marshal_NONE__POINTER,
 				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+	signals[METADATA_CHANGED] =
+		gtk_signal_new ("metadata_changed",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (NautilusDirectoryClass, metadata_changed),
+				gtk_marshal_NONE__NONE,
+				GTK_TYPE_NONE, 0);
 
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 }
@@ -142,6 +150,10 @@ nautilus_gnome_vfs_file_info_list_free (GList *list)
 void
 nautilus_directory_ref (NautilusDirectory *directory)
 {
+	if (directory == NULL) {
+		return;
+	}
+
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 
 	gtk_object_ref (GTK_OBJECT (directory));
@@ -150,6 +162,10 @@ nautilus_directory_ref (NautilusDirectory *directory)
 void
 nautilus_directory_unref (NautilusDirectory *directory)
 {
+	if (directory == NULL) {
+		return;
+	}
+
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 
 	gtk_object_unref (GTK_OBJECT (directory));
@@ -943,6 +959,8 @@ nautilus_directory_set_metadata (NautilusDirectory *directory,
 
 	/* Since we changed the tree, arrange for it to be written. */
 	nautilus_directory_request_write_metafile (directory);
+	gtk_signal_emit (GTK_OBJECT (directory),
+			 signals[METADATA_CHANGED]);
 }
 
 gboolean 

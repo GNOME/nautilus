@@ -33,7 +33,7 @@
 #include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus/nautilus-gtk-macros.h>
 #include <libnautilus/nautilus-list.h>
-#include <libnautilus/nautilus-background.h>
+#include <libnautilus/nautilus-directory-background.h>
 #include <libnautilus/nautilus-icon-factory.h>
 #include <libnautilus/nautilus-metadata.h>
 
@@ -114,8 +114,6 @@ static void              fm_list_view_remove_file                 (FMDirectoryVi
 static void		 fm_list_view_reset_row_height 		  (FMListView 	      *list_view);
 static void              fm_list_view_file_changed                (FMDirectoryView    *view,
 								   NautilusFile       *file);
-static void              fm_list_view_background_changed_callback (NautilusBackground *background,
-								   FMListView         *list_view);
 static void              fm_list_view_begin_adding_files          (FMDirectoryView    *view);
 static void              fm_list_view_begin_loading               (FMDirectoryView    *view);
 static void              fm_list_view_bump_zoom_level             (FMDirectoryView    *view,
@@ -401,12 +399,6 @@ create_list (FMListView *list_view)
 			    context_click_background_callback,
 			    list_view);
 
-
-	gtk_signal_connect (GTK_OBJECT (nautilus_get_widget_background (GTK_WIDGET (list))),
-			    "changed",
-			    GTK_SIGNAL_FUNC (fm_list_view_background_changed_callback),
-			    list_view);
-
 	gtk_container_add (GTK_CONTAINER (list_view), GTK_WIDGET (list));
 
 	/* Make height tall enough for icons to look good */
@@ -559,7 +551,6 @@ fm_list_view_begin_loading (FMDirectoryView *view)
 {
 	NautilusDirectory *directory;
 	FMListView *list_view;
-	char *background_color;
 
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
 
@@ -567,18 +558,14 @@ fm_list_view_begin_loading (FMDirectoryView *view)
 	list_view = FM_LIST_VIEW (view);
 
 	/* Set up the background color from the metadata. */
-	background_color = nautilus_directory_get_metadata (directory,
-							    LIST_VIEW_BACKGROUND_COLOR_METADATA_KEY,
-							    DEFAULT_BACKGROUND_COLOR);
-	nautilus_background_set_color (nautilus_get_widget_background (GTK_WIDGET (get_list (list_view))),
-				       background_color);
-	g_free (background_color);
+	nautilus_connect_background_to_directory_metadata (GTK_WIDGET (get_list (list_view)),
+							   directory);
 
 	fm_list_view_set_zoom_level (
 		list_view,
 		nautilus_directory_get_integer_metadata (
 			directory, 
-			LIST_VIEW_ZOOM_LEVEL_METADATA_KEY, 
+			NAUTILUS_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL, 
 			list_view->details->default_zoom_level));
 
 	fm_list_view_sort_items (
@@ -586,11 +573,11 @@ fm_list_view_begin_loading (FMDirectoryView *view)
 		get_sort_column_from_attribute (
 			nautilus_directory_get_metadata (
 				directory,
-				LIST_VIEW_SORT_COLUMN_METADATA_KEY,
+				NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN,
 				LIST_VIEW_DEFAULT_SORTING_ATTRIBUTE)),
 		nautilus_directory_get_boolean_metadata (
 			directory,
-			LIST_VIEW_SORT_REVERSED_METADATA_KEY,
+			NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED,
 			FALSE));
 }
 
@@ -708,7 +695,7 @@ fm_list_view_set_zoom_level (FMListView *list_view,
 	list_view->details->zoom_level = new_level;
 	nautilus_directory_set_integer_metadata (
 		fm_directory_view_get_model (FM_DIRECTORY_VIEW (list_view)), 
-		LIST_VIEW_ZOOM_LEVEL_METADATA_KEY, 
+		NAUTILUS_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL, 
 		list_view->details->default_zoom_level,
 		new_level);
 
@@ -789,12 +776,12 @@ fm_list_view_sort_items (FMListView *list_view,
 	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (list_view));
 	nautilus_directory_set_metadata (
 		directory,
-		LIST_VIEW_SORT_COLUMN_METADATA_KEY,
+		NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN,
 		LIST_VIEW_DEFAULT_SORTING_ATTRIBUTE,
 		get_attribute_from_column (column));
 	nautilus_directory_set_boolean_metadata (
 		directory,
-		LIST_VIEW_SORT_REVERSED_METADATA_KEY,
+		NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED,
 		FALSE,
 		reversed);
 
@@ -815,29 +802,6 @@ fm_list_view_sort_items (FMListView *list_view,
 	gtk_clist_sort (clist);
 }
 
-static void
-fm_list_view_background_changed_callback (NautilusBackground *background,
-					  FMListView *list_view)
-{
-	NautilusDirectory *directory;
-	char *color_spec;
-
-	g_assert (FM_IS_LIST_VIEW (list_view));
-	g_assert (background == nautilus_get_widget_background
-		  (GTK_WIDGET (get_list (list_view))));
-
-	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (list_view));
-	if (directory == NULL)
-		return;
-	
-	color_spec = nautilus_background_get_color (background);
-	nautilus_directory_set_metadata (directory,
-					 LIST_VIEW_BACKGROUND_COLOR_METADATA_KEY,
-					 DEFAULT_BACKGROUND_COLOR,
-					 color_spec);
-	g_free (color_spec);
-}
-
 /**
  * Get the attribute name associated with the column. These are stored in
  * the metadata and also used to look up the text to display.
@@ -850,23 +814,22 @@ fm_list_view_background_changed_callback (NautilusBackground *background,
 const char *
 get_attribute_from_column (int column)
 {
-	switch (column)
-	{
-		case LIST_VIEW_COLUMN_ICON:
-			return LIST_VIEW_ICON_ATTRIBUTE;
-		case LIST_VIEW_COLUMN_NAME:
-			return LIST_VIEW_NAME_ATTRIBUTE;
-		case LIST_VIEW_COLUMN_EMBLEMS:
-			return LIST_VIEW_EMBLEMS_ATTRIBUTE;
-		case LIST_VIEW_COLUMN_SIZE:
-			return LIST_VIEW_SIZE_ATTRIBUTE;
-		case LIST_VIEW_COLUMN_MIME_TYPE:
-			return LIST_VIEW_MIME_TYPE_ATTRIBUTE;
-		case LIST_VIEW_COLUMN_DATE_MODIFIED:
-			return LIST_VIEW_DATE_MODIFIED_ATTRIBUTE;
-		default:
-			g_assert_not_reached ();
-			return NULL;
+	switch (column) {
+	case LIST_VIEW_COLUMN_ICON:
+		return LIST_VIEW_ICON_ATTRIBUTE;
+	case LIST_VIEW_COLUMN_NAME:
+		return LIST_VIEW_NAME_ATTRIBUTE;
+	case LIST_VIEW_COLUMN_EMBLEMS:
+		return LIST_VIEW_EMBLEMS_ATTRIBUTE;
+	case LIST_VIEW_COLUMN_SIZE:
+		return LIST_VIEW_SIZE_ATTRIBUTE;
+	case LIST_VIEW_COLUMN_MIME_TYPE:
+		return LIST_VIEW_MIME_TYPE_ATTRIBUTE;
+	case LIST_VIEW_COLUMN_DATE_MODIFIED:
+		return LIST_VIEW_DATE_MODIFIED_ATTRIBUTE;
+	default:
+		g_assert_not_reached ();
+		return NULL;
 	}
 }
 

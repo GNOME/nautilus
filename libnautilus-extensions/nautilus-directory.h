@@ -149,6 +149,11 @@ struct NautilusDirectoryClass
 	*/
 	void   (* files_changed)    (NautilusDirectory       *directory,
 				     GList                   *changed_files);
+
+	/* The metadata_changed signal is emitted when changes to the metadata
+	 * for the directory itself are made.
+	 */
+	void   (* metadata_changed) (NautilusDirectory       *directory);
 };
 
 #endif /* NAUTILUS_DIRECTORY_H */

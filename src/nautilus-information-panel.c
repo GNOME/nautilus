@@ -206,9 +206,7 @@ nautilus_index_panel_destroy (GtkObject *object)
 
 	gtk_object_unref (GTK_OBJECT (index_panel->details->notebook));
 
-	if (index_panel->details->directory != NULL) {
-		gtk_object_unref (GTK_OBJECT (index_panel->details->directory));
-	}
+	nautilus_directory_unref (index_panel->details->directory);
 
 	g_free (index_panel->details->uri);
 	g_free (index_panel->details);
@@ -294,7 +292,7 @@ receive_dropped_uri_list (NautilusIndexPanel *index_panel,
 			file = nautilus_file_get (index_panel->details->uri);
 			if (file != NULL) {
 				nautilus_file_set_metadata (file,
-							    NAUTILUS_CUSTOM_ICON_METADATA_KEY,
+							    NAUTILUS_METADATA_KEY_CUSTOM_ICON,
 							    NULL,
 							    uris[0]);
 				nautilus_file_unref (file);
@@ -571,7 +569,7 @@ nautilus_index_panel_background_changed (NautilusIndexPanel *index_panel)
 	background = nautilus_get_widget_background (GTK_WIDGET (index_panel));
 	color_spec = nautilus_background_get_color (background);
 	nautilus_directory_set_metadata (index_panel->details->directory,
-					 INDEX_PANEL_BACKGROUND_COLOR_METADATA_KEY,
+					 NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
 					 DEFAULT_BACKGROUND_COLOR,
 					 color_spec);
 	g_free (color_spec);
@@ -687,9 +685,7 @@ nautilus_index_panel_update_info (NautilusIndexPanel *index_panel,
 	char *background_color;
 
 	directory = nautilus_directory_get (index_panel->details->uri);
-	if (index_panel->details->directory != NULL) {
-		gtk_object_unref (GTK_OBJECT (index_panel->details->directory));
-	}
+	nautilus_directory_unref (index_panel->details->directory);
 	index_panel->details->directory = directory;
 	
 	/* Connect the background changed signal to code that writes the color. */
@@ -704,7 +700,7 @@ nautilus_index_panel_update_info (NautilusIndexPanel *index_panel,
 
 	/* Set up the background color from the metadata. */
 	background_color = nautilus_directory_get_metadata (directory,
-							    INDEX_PANEL_BACKGROUND_COLOR_METADATA_KEY,
+							    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
 							    DEFAULT_BACKGROUND_COLOR);
 	nautilus_background_set_color (background, background_color);
 	g_free (background_color);

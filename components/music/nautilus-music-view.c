@@ -33,6 +33,7 @@
 
 #include <libnautilus/libnautilus.h>
 #include <libnautilus/nautilus-background.h>
+#include <libnautilus/nautilus-directory-background.h>
 #include <libnautilus/nautilus-file.h>
 #include <libnautilus/nautilus-file-utilities.h>
 #include <libnautilus/nautilus-glib-extensions.h>
@@ -47,14 +48,13 @@
 #include <limits.h>
 
 struct _NautilusMusicViewDetails {
-        char *current_uri;
+        char *uri;
         NautilusContentViewFrame *view_frame;
         
         GtkVBox *album_container;
         GtkWidget *album_title;
         GtkWidget *song_list;
         GtkWidget *album_image;
-        int background_connection;
 };
 
 /* structure for holding song info */
@@ -69,8 +69,6 @@ typedef struct {
         char *path_name;
 } SongInfo;
 
-#define MUSIC_VIEW_DEFAULT_BACKGROUND_COLOR  "rgb:BBBB/BBBB/FFFF"
-
 enum {
 	TARGET_URI_LIST,
 	TARGET_COLOR,
@@ -83,7 +81,6 @@ static GtkTargetEntry music_dnd_target_table[] = {
 	{ "special/x-gnome-icon-list",  0, TARGET_GNOME_URI_LIST }
 };
 
-static void nautilus_music_view_background_changed     (NautilusMusicView        *music_view);
 static void nautilus_music_view_drag_data_received     (GtkWidget                *widget,
                                                         GdkDragContext           *context,
                                                         int                       x,
@@ -125,7 +122,6 @@ nautilus_music_view_initialize_class (NautilusMusicViewClass *klass)
 static void
 nautilus_music_view_initialize (NautilusMusicView *music_view)
 {
-  	NautilusBackground *background;
 	char *file_name;
 	GtkWidget *song_box, *scrollwindow;
 	char *titles[] = {"Track", "Title", "Artist", "Time"};
@@ -139,13 +135,6 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 			    GTK_SIGNAL_FUNC (music_view_notify_location_change_callback), 
 			    music_view);
 
-	music_view->details->current_uri = NULL;
-	music_view->details->background_connection = 0;
-
-	/* set up the default background color */
-  	background = nautilus_get_widget_background (GTK_WIDGET (music_view));
-  	nautilus_background_set_color (background, MUSIC_VIEW_DEFAULT_BACKGROUND_COLOR);
-	 
 	/* allocate a vbox to contain all of the views */
 	
 	music_view->details->album_container = GTK_VBOX (gtk_vbox_new (FALSE, 0));
@@ -208,7 +197,7 @@ nautilus_music_view_destroy (GtkObject *object)
 
         bonobo_object_unref (BONOBO_OBJECT (music_view->details->view_frame));
 
-	g_free (music_view->details->current_uri);
+	g_free (music_view->details->uri);
 	g_free (music_view->details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
@@ -258,19 +247,14 @@ setup_title_font(NautilusMusicView *music_view)
 
 /* set up fonts, colors, etc after we're realized */
 void
-nautilus_music_view_realize(GtkWidget *widget)
+nautilus_music_view_realize (GtkWidget *widget)
 {
 	NautilusMusicView *music_view;
-	NautilusBackground *background;
  
  	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
 	
   	music_view = NAUTILUS_MUSIC_VIEW (widget);
-
 	setup_title_font (music_view);
-  
-	background = nautilus_get_widget_background (widget);
-	nautilus_background_set_color (background, MUSIC_VIEW_DEFAULT_BACKGROUND_COLOR);
 }
 
 /* here are some utility routines for reading ID3 tags from mp3 files */
@@ -446,9 +430,6 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	DIR *dir;
 	struct dirent *entry;
 	char* clist_entry[4];
-	char *background_color;
-	NautilusBackground *background;
-	NautilusDirectory *directory;
 	GList *p;
 	GList *song_list = NULL ;
 	SongInfo *info;
@@ -533,34 +514,19 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	
 	/* install the album cover */
 	
-	if (image_path_name) {
-		gnome_pixmap_load_file(GNOME_PIXMAP(music_view->details->album_image), image_path_name);			
-		/* show the pixmap widget */
-		gtk_widget_show(music_view->details->album_image);
- 		g_free(image_path_name);
+	if (image_path_name != NULL) {
+		gnome_pixmap_load_file (GNOME_PIXMAP (music_view->details->album_image),
+                                        image_path_name);			
+		gtk_widget_show (music_view->details->album_image);
+ 		g_free (image_path_name);
 	} else {
-		gtk_widget_hide(music_view->details->album_image);
+		gtk_widget_hide (music_view->details->album_image);
         }
 	
 	/* set up background color */
-	
-	background = nautilus_get_widget_background (GTK_WIDGET (music_view));
-	if (music_view->details->background_connection == 0) {
-		music_view->details->background_connection =
-			gtk_signal_connect_object (GTK_OBJECT (background),
-						   "changed",
-						   nautilus_music_view_background_changed,
-						   GTK_OBJECT (music_view));
-        }
 
-	/* Set up the background color from the metadata. */
-	directory = nautilus_directory_get(music_view->details->current_uri);
-	background_color = nautilus_directory_get_metadata (directory,
-							    ICON_VIEW_BACKGROUND_COLOR_METADATA_KEY,
-							    MUSIC_VIEW_DEFAULT_BACKGROUND_COLOR);
-	nautilus_background_set_color (background, background_color);
-	g_free (background_color);
-	gtk_object_unref(GTK_OBJECT(directory));
+	nautilus_connect_background_to_directory_metadata_by_uri (GTK_WIDGET (music_view),
+                                                                  music_view->details->uri);
 	
 	/* determine the album title/artist line */
 	
@@ -598,10 +564,9 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 void
 nautilus_music_view_load_uri (NautilusMusicView *music_view, const char *uri)
 {
-	g_free(music_view->details->current_uri);
-  
-	music_view->details->current_uri = g_strdup (uri);	
-	nautilus_music_view_update_from_uri(music_view, uri);
+	g_free (music_view->details->uri);
+  	music_view->details->uri = g_strdup (uri);	
+	nautilus_music_view_update_from_uri (music_view, uri);
 }
 
 static void
@@ -629,24 +594,6 @@ music_view_notify_location_change_callback (NautilusContentViewFrame *view,
 }
 
 /* handle drag and drop */
-
-static void
-nautilus_music_view_background_changed (NautilusMusicView *music_view)
-{
-	NautilusBackground *background;
-	NautilusDirectory *directory;
-	char *color_spec;
-		
-	background = nautilus_get_widget_background (GTK_WIDGET (music_view));
-	color_spec = nautilus_background_get_color (background);
-	directory = nautilus_directory_get (music_view->details->current_uri);
-	nautilus_directory_set_metadata (directory,
-					 ICON_VIEW_BACKGROUND_COLOR_METADATA_KEY,
-					 MUSIC_VIEW_DEFAULT_BACKGROUND_COLOR,
-					 color_spec);
-	g_free (color_spec);		
-	nautilus_directory_unref (directory);
-}
 
 static void  
 nautilus_music_view_drag_data_received (GtkWidget *widget, GdkDragContext *context,
