@@ -1,3 +1,14 @@
+Thu Feb 22 21:22:58 2001  George Lebl <jirka@5z.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	* src/nautilus-window-manage-views.c (change_selection)
+	  (update_title) (load_new_location_in_sidebar_panels) 
+	  (stop_loading_cover):  When traversing sidebar_panels and doing
+	  things that could result in a sidebar_panels removal (failure),
+	  copy the list first and then traverse the copy to avoid free list
+	  corruption.
+
 2001-02-22  John Harper  <jsh@eazel.com>
 
 	reviewed by: Ramiro Estrugo <ramiro@eazel.com>

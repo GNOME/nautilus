@@ -110,7 +110,7 @@ change_selection (NautilusWindow *window,
                   GList *selection,
                   NautilusViewFrame *requesting_view)
 {
-        GList *sorted, *node;
+        GList *sorted, *node, *sidebar_panels;
         NautilusViewFrame *view;
 
         /* Sort list into canonical order and check if it's the same as
@@ -130,12 +130,19 @@ change_selection (NautilusWindow *window,
         if (window->content_view != requesting_view) {
                 nautilus_view_frame_selection_changed (window->content_view, sorted);
         }
-        for (node = window->sidebar_panels; node != NULL; node = node->next) {
+
+	/* Copy the list before traversing it, because during a failure in
+	 * selection_changed, list could be modified and bad things would
+	 * happen
+	 */
+	sidebar_panels = g_list_copy (window->sidebar_panels);
+        for (node = sidebar_panels; node != NULL; node = node->next) {
                 view = node->data;
                 if (view != requesting_view) {
                         nautilus_view_frame_selection_changed (view, sorted);
                 }
         }
+	g_list_free (sidebar_panels);
 }
 
 static char *
@@ -229,6 +236,7 @@ update_title (NautilusWindow *window)
 {
         char *title;
         char *window_title;
+        GList *sidebar_panels;
         GList *node;
 
         title = compute_title (window);
@@ -262,9 +270,15 @@ update_title (NautilusWindow *window)
         if (window->content_view != NULL) {
                 nautilus_view_frame_title_changed (window->content_view, title);
         }
-        for (node = window->sidebar_panels; node != NULL; node = node->next) {
+
+	/* Copy the list before traversing it, because during a failure in
+	 * title_change, list could be modified and bad things would happen
+	 */
+	sidebar_panels = g_list_copy (window->sidebar_panels);
+        for (node = sidebar_panels; node != NULL; node = node->next) {
                 nautilus_view_frame_title_changed (node->data, title);
         }
+	g_list_free (sidebar_panels);
 }
 
 /* set_displayed_location:
@@ -794,16 +808,22 @@ load_new_location_in_sidebar_panels (NautilusWindow *window,
                                      GList *selection,
                                      NautilusViewFrame *view_to_skip)
 {
+	GList *sidebar_panels;
         GList *node;
         NautilusViewFrame *view;
 
-        for (node = window->sidebar_panels; node != NULL; node = node->next) {
+	/* Copy the list before traversing it, because during a failure in
+	 * load_new..., list could be modified and bad things would happen
+	 */
+	sidebar_panels = g_list_copy (window->sidebar_panels);
+        for (node = sidebar_panels; node != NULL; node = node->next) {
                 view = node->data;
                 if (view != view_to_skip
                     && nautilus_view_frame_get_is_view_loaded (view)) {
                         load_new_location_in_one_view (view, location, selection);
                 }
         }
+	g_list_free (sidebar_panels);
 }
 
 static void
@@ -1367,9 +1387,19 @@ stop_loading_cover (gpointer data, gpointer callback_data)
 void
 nautilus_window_stop_loading (NautilusWindow *window)
 {
+	GList *sidebar_panels;
+
         stop_loading (window->content_view);
         stop_loading (window->new_content_view);
-        g_list_foreach (window->sidebar_panels, stop_loading_cover, NULL);
+
+	/* Copy the list before traversing it, because during a failure in
+	 * stop_loading_cover, list could be modified and bad things would
+	 * happen
+	 */
+	sidebar_panels = g_list_copy (window->sidebar_panels);
+        g_list_foreach (sidebar_panels, stop_loading_cover, NULL);
+	g_list_free (sidebar_panels);
+
         cancel_location_change (window);
 }
 
