@@ -86,7 +86,7 @@ main(int argc, char *argv[])
 		/* Run the nautilus application. */
 		nautilus_app_startup (app, args ? args[0] : NULL);
 		bonobo_main();
-		gtk_object_unref(GTK_OBJECT(app));
+		bonobo_object_unref(BONOBO_OBJECT(app));
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 	}

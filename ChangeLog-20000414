@@ -1,8 +1,15 @@
+2000-03-02  John Sullivan  <sullivan@eazel.com>
+
+        * src/ntl-main.c: Change gtk_object_unref (app) to
+        bonobo_object_unref (app) to avoid bonobo complaints
+        when quitting.
+
 2000-03-02  Elliot Lee  <sopwith@redhat.com>
 
 	* src/nautilus.goad, src/ntl-app.[ch], src/ntl-main.c: Implement
 	IDL:Nautilus/Application:1.0 interface and NautilusApp GtkObject.
-	* src/nautilus-window-menus.c, src/ntl-window.[ch], src/ntl-window: Change to match above.
+	* src/nautilus-window-menus.c, src/ntl-window.[ch], src/ntl-window: 
+	Change to match above.
 	* src/ntl-view-frame-svr.c: Implement _get_application()
 	operation.
 
