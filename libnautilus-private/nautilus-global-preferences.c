@@ -169,15 +169,15 @@ global_preferences_create_dialog (void)
 	 * Clicking pane
 	 */
 	icon_view_pane = nautilus_preferences_box_add_pane (preference_box,
-							    "Icon View",
-							    "Icon View something");
+							    "Click Policy",
+							    "Click Policy something");
 	
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (icon_view_pane), "Number of clicks");
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (icon_view_pane), "Click Policy");
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (icon_view_pane),
 							 0,
 							 preferences,
-							 NAUTILUS_PREFERENCES_CLICK_ACTIVATION_TYPE,
+							 NAUTILUS_PREFERENCES_CLICK_POLICY,
 							 NAUTILUS_PREFERENCE_ITEM_ENUM);
 
 	return prefs_dialog;
@@ -270,22 +270,22 @@ global_preferences_register_for_ui (NautilusPreferences *preferences)
 
 	/* Click activation type */
 	nautilus_preferences_set_info (preferences,
-				       NAUTILUS_PREFERENCES_CLICK_ACTIVATION_TYPE,
-				       "Click activation type",
+				       NAUTILUS_PREFERENCES_CLICK_POLICY,
+				       "Click policy",
 				       NAUTILUS_PREFERENCE_ENUM,
-				       (gconstpointer) NAUTILUS_CLICK_ACTIVATION_SINGLE);
+				       (gconstpointer) NAUTILUS_CLICK_POLICY_SINGLE);
 
 	nautilus_preferences_enum_add_entry (preferences,
-					     NAUTILUS_PREFERENCES_CLICK_ACTIVATION_TYPE,
+					     NAUTILUS_PREFERENCES_CLICK_POLICY,
 					     "single",
 					     "Single Click",
-					     NAUTILUS_CLICK_ACTIVATION_SINGLE);
+					     NAUTILUS_CLICK_POLICY_SINGLE);
 
 	nautilus_preferences_enum_add_entry (preferences,
-					     NAUTILUS_PREFERENCES_CLICK_ACTIVATION_TYPE,
+					     NAUTILUS_PREFERENCES_CLICK_POLICY,
 					     "double",
 					     "Double Click",
-					     NAUTILUS_CLICK_ACTIVATION_DOUBLE);
+					     NAUTILUS_CLICK_POLICY_DOUBLE);
 
 	/* User level */
 	nautilus_preferences_set_info (preferences,

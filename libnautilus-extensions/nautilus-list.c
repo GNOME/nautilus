@@ -35,13 +35,13 @@
 #include <gtk/gtkenums.h>
 #include <gtk/gtkmain.h>
 #include <glib.h>
-#include "nautilus-gdk-extensions.h"
 
-#include "nautilus-glib-extensions.h"
+#include "nautilus-background.h"
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-gdk-pixbuf-extensions.h"
+#include "nautilus-glib-extensions.h"
+#include "nautilus-global-preferences.h"
 #include "nautilus-gtk-macros.h"
-#include "nautilus-background.h"
 #include "nautilus-list-column-title.h"
 
 /* Timeout for making the row currently selected for keyboard operation
@@ -144,67 +144,105 @@ static GtkTargetEntry nautilus_list_dnd_target_table[] = {
 	{ "application/x-color", 0, TARGET_COLOR }
 };
 
-static void activate_row (NautilusList *list, gint row);
-static int get_cell_horizontal_start_position (GtkCList *clist, GtkCListRow *clist_row, 
-					       int column, int content_width);
-static void get_cell_style (GtkCList *clist, GtkCListRow *clist_row,
-			    gint state, gint column, GtkStyle **style,
-			    GdkGC **fg_gc, GdkGC **bg_gc);
-
-static void nautilus_list_initialize_class (NautilusListClass *class);
-static void nautilus_list_initialize (NautilusList *list);
-static void nautilus_list_destroy (GtkObject *object);
-
-static gint nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event);
-static gint nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event);
-static gint nautilus_list_motion (GtkWidget *widget, GdkEventMotion *event);
-static void nautilus_list_drag_begin (GtkWidget *widget, GdkDragContext *context);
-static void nautilus_list_drag_end (GtkWidget *widget, GdkDragContext *context);
-static void nautilus_list_drag_data_get (GtkWidget *widget, GdkDragContext *context,
-				     GtkSelectionData *data, guint info, guint time);
-static void nautilus_list_drag_leave (GtkWidget *widget, GdkDragContext *context, guint time);
-static gboolean nautilus_list_drag_motion (GtkWidget *widget, GdkDragContext *context,
-				       gint x, gint y, guint time);
-static gboolean nautilus_list_drag_drop (GtkWidget *widget, GdkDragContext *context,
-				     gint x, gint y, guint time);
-static void nautilus_list_drag_data_received (GtkWidget *widget, GdkDragContext *context,
-					  gint x, gint y, GtkSelectionData *data,
-					  guint info, guint time);
-static void nautilus_list_clear_keyboard_focus (NautilusList *list);
-static void nautilus_list_draw_focus      (GtkWidget *widget);
-static int nautilus_list_get_first_selected_row (NautilusList *list);
-static int nautilus_list_get_last_selected_row (NautilusList *list);
-static gint nautilus_list_key_press	  (GtkWidget *widget,
-					   GdkEventKey *event);
-static void nautilus_list_unselect_all (GtkCList *clist);
-static void nautilus_list_select_all (GtkCList *clist);
-
-static void reveal_row (NautilusList *list, int row);
-static void schedule_keyboard_row_reveal (NautilusList *list, int row);
-static void unschedule_keyboard_row_reveal (NautilusList *list);
-static void emit_selection_changed (NautilusList *clist);
-
-static void nautilus_list_clear (GtkCList *clist);
-static void draw_row (GtkCList *list, GdkRectangle *area, gint row, GtkCListRow *clist_row);
-
-static void nautilus_list_realize (GtkWidget *widget);
-static void nautilus_list_set_cell_contents (GtkCList    *clist,
-		   	   		     GtkCListRow *clist_row,
-		   		 	     gint         column,
-		   		 	     GtkCellType  type,
-		   		 	     const gchar *text,
-		   		 	     guint8       spacing,
-		   		 	     GdkPixmap   *pixmap,
-		   		 	     GdkBitmap   *mask);
-static void nautilus_list_size_request (GtkWidget *widget, GtkRequisition *requisition);
-
-static void nautilus_list_resize_column (GtkCList *widget, int column, int width);
-
-static void nautilus_list_column_resize_track_start (GtkWidget *widget, int column);
-static void nautilus_list_column_resize_track (GtkWidget *widget, int column);
-static void nautilus_list_column_resize_track_end (GtkWidget *widget, int column);
-static gboolean row_set_selected (NautilusList *list, int row, GtkCListRow *clist_row, gboolean select);
-static gboolean select_row_unselect_others (NautilusList *list, int row_to_select);
+static void     activate_row                            (NautilusList         *list,
+							 gint                  row);
+static int      get_cell_horizontal_start_position      (GtkCList             *clist,
+							 GtkCListRow          *clist_row,
+							 int                   column,
+							 int                   content_width);
+static void     get_cell_style                          (GtkCList             *clist,
+							 GtkCListRow          *clist_row,
+							 gint                  state,
+							 gint                  column,
+							 GtkStyle            **style,
+							 GdkGC               **fg_gc,
+							 GdkGC               **bg_gc);
+static void     nautilus_list_initialize_class          (NautilusListClass    *class);
+static void     nautilus_list_initialize                (NautilusList         *list);
+static void     nautilus_list_destroy                   (GtkObject            *object);
+static gint     nautilus_list_button_press              (GtkWidget            *widget,
+							 GdkEventButton       *event);
+static gint     nautilus_list_button_release            (GtkWidget            *widget,
+							 GdkEventButton       *event);
+static gint     nautilus_list_motion                    (GtkWidget            *widget,
+							 GdkEventMotion       *event);
+static void     nautilus_list_drag_begin                (GtkWidget            *widget,
+							 GdkDragContext       *context);
+static void     nautilus_list_drag_end                  (GtkWidget            *widget,
+							 GdkDragContext       *context);
+static void     nautilus_list_drag_data_get             (GtkWidget            *widget,
+							 GdkDragContext       *context,
+							 GtkSelectionData     *data,
+							 guint                 info,
+							 guint                 time);
+static void     nautilus_list_drag_leave                (GtkWidget            *widget,
+							 GdkDragContext       *context,
+							 guint                 time);
+static gboolean nautilus_list_drag_motion               (GtkWidget            *widget,
+							 GdkDragContext       *context,
+							 gint                  x,
+							 gint                  y,
+							 guint                 time);
+static gboolean nautilus_list_drag_drop                 (GtkWidget            *widget,
+							 GdkDragContext       *context,
+							 gint                  x,
+							 gint                  y,
+							 guint                 time);
+static void     nautilus_list_drag_data_received        (GtkWidget            *widget,
+							 GdkDragContext       *context,
+							 gint                  x,
+							 gint                  y,
+							 GtkSelectionData     *data,
+							 guint                 info,
+							 guint                 time);
+static void     nautilus_list_clear_keyboard_focus      (NautilusList         *list);
+static void     nautilus_list_draw_focus                (GtkWidget            *widget);
+static int      nautilus_list_get_first_selected_row    (NautilusList         *list);
+static int      nautilus_list_get_last_selected_row     (NautilusList         *list);
+static gint     nautilus_list_key_press                 (GtkWidget            *widget,
+							 GdkEventKey          *event);
+static void     nautilus_list_unselect_all              (GtkCList             *clist);
+static void     nautilus_list_select_all                (GtkCList             *clist);
+static void     reveal_row                              (NautilusList         *list,
+							 int                   row);
+static void     schedule_keyboard_row_reveal            (NautilusList         *list,
+							 int                   row);
+static void     unschedule_keyboard_row_reveal          (NautilusList         *list);
+static void     emit_selection_changed                  (NautilusList         *clist);
+static void     nautilus_list_clear                     (GtkCList             *clist);
+static void     draw_row                                (GtkCList             *list,
+							 GdkRectangle         *area,
+							 gint                  row,
+							 GtkCListRow          *clist_row);
+static void     nautilus_list_realize                   (GtkWidget            *widget);
+static void     nautilus_list_set_cell_contents         (GtkCList             *clist,
+							 GtkCListRow          *clist_row,
+							 gint                  column,
+							 GtkCellType           type,
+							 const gchar          *text,
+							 guint8                spacing,
+							 GdkPixmap            *pixmap,
+							 GdkBitmap            *mask);
+static void     nautilus_list_size_request              (GtkWidget            *widget,
+							 GtkRequisition       *requisition);
+static void     nautilus_list_resize_column             (GtkCList             *widget,
+							 int                   column,
+							 int                   width);
+static void     nautilus_list_column_resize_track_start (GtkWidget            *widget,
+							 int                   column);
+static void     nautilus_list_column_resize_track       (GtkWidget            *widget,
+							 int                   column);
+static void     nautilus_list_column_resize_track_end   (GtkWidget            *widget,
+							 int                   column);
+static gboolean row_set_selected                        (NautilusList         *list,
+							 int                   row,
+							 GtkCListRow          *clist_row,
+							 gboolean              select);
+static gboolean select_row_unselect_others              (NautilusList         *list,
+							 int                   row_to_select);
+static void     click_policy_changed_callback           (NautilusPreferences  *preferences,
+							 const char           *name,
+							 gpointer              user_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusList, nautilus_list, GTK_TYPE_CLIST)
 
@@ -337,9 +375,6 @@ nautilus_list_initialize (NautilusList *list)
 	list->details = g_new0 (NautilusListDetails, 1);
 	list->details->anchor_row = -1;
 	
-	/* This should be read from preferences */
-	list->details->single_click_mode = TRUE;
-
 	/* GtkCList does not specify pointer motion by default */
 	gtk_widget_add_events (GTK_WIDGET (list), GDK_POINTER_MOTION_MASK);
 
@@ -361,6 +396,18 @@ nautilus_list_initialize (NautilusList *list)
 			    					    list);
 
 	list->details->title = GTK_WIDGET (nautilus_list_column_title_new());
+
+	/* Initialize the single click mode from preferences */
+	list->details->single_click_mode = 
+		(nautilus_preferences_get_enum (nautilus_preferences_get_global_preferences (),
+						NAUTILUS_PREFERENCES_CLICK_POLICY,
+						NAUTILUS_CLICK_POLICY_SINGLE) == NAUTILUS_CLICK_POLICY_SINGLE);
+
+	/* Keep track of changes in clicking policy */
+	nautilus_preferences_add_enum_callback (nautilus_preferences_get_global_preferences (),
+						NAUTILUS_PREFERENCES_CLICK_POLICY,
+						click_policy_changed_callback,
+						list);
 }
 
 static void
@@ -371,6 +418,11 @@ nautilus_list_destroy (GtkObject *object)
 	list = NAUTILUS_LIST (object);
 
 	unschedule_keyboard_row_reveal (list);
+
+	nautilus_preferences_remove_callback (nautilus_preferences_get_global_preferences (),
+					      NAUTILUS_PREFERENCES_CLICK_POLICY,
+					      click_policy_changed_callback,
+					      list);
 
 	g_free (list->details);
 
@@ -2170,6 +2222,26 @@ nautilus_list_clear (GtkCList *clist)
 	list->details->anchor_row = -1;
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_CLIST_CLASS, clear, (clist));
+}
+
+static void
+click_policy_changed_callback (NautilusPreferences	*preferences,
+			       const char		*name,
+			       gpointer			user_data)
+{
+	NautilusList *list;
+
+	g_assert (NAUTILUS_IS_PREFERENCES (preferences));
+	g_assert (name != NULL);
+	g_assert (strcmp (name, NAUTILUS_PREFERENCES_CLICK_POLICY) == 0);
+	g_assert (NAUTILUS_IS_LIST (user_data));
+	
+	list = NAUTILUS_LIST (user_data);
+
+	list->details->single_click_mode = 
+		(nautilus_preferences_get_enum (preferences,
+						NAUTILUS_PREFERENCES_CLICK_POLICY,
+						NAUTILUS_CLICK_POLICY_SINGLE) == NAUTILUS_CLICK_POLICY_SINGLE);
 }
 
 

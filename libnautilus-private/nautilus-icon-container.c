@@ -23,6 +23,7 @@
 */
 
 #include <config.h>
+
 #include "nautilus-icon-container.h"
 
 #include <math.h>
@@ -34,10 +35,11 @@
 #include <libgnomeui/gnome-canvas-rect-ellipse.h>
 #include <gdk-pixbuf/gnome-canvas-pixbuf.h>
 
-#include "nautilus-glib-extensions.h"
 #include "nautilus-gdk-pixbuf-extensions.h"
-#include "nautilus-gtk-extensions.h"
+#include "nautilus-glib-extensions.h"
+#include "nautilus-global-preferences.h"
 #include "nautilus-gnome-extensions.h"
+#include "nautilus-gtk-extensions.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-icon-text-item.h"
 #include "nautilus-lib-self-check-functions.h"
@@ -72,28 +74,31 @@
  */
 #define MAXIMUM_INITIAL_ICON_SIZE 2
 
-static void                    activate_selected_items               (NautilusIconContainer      *container);
-static void                    nautilus_icon_container_initialize_class (NautilusIconContainerClass *class);
-static void                    nautilus_icon_container_initialize       (NautilusIconContainer      *container);
-static void                    compute_stretch                       (StretchState            *start,
-								      StretchState            *current);
-static NautilusIcon *get_first_selected_icon               (NautilusIconContainer      *container);
-static NautilusIcon *get_nth_selected_icon                 (NautilusIconContainer      *container,
-								      int                      index);
+static void          activate_selected_items                  (NautilusIconContainer      *container);
+static void          nautilus_icon_container_initialize_class (NautilusIconContainerClass *class);
+static void          nautilus_icon_container_initialize       (NautilusIconContainer      *container);
+static void          compute_stretch                          (StretchState               *start,
+							       StretchState               *current);
+static NautilusIcon *get_first_selected_icon                  (NautilusIconContainer      *container);
+static NautilusIcon *get_nth_selected_icon                    (NautilusIconContainer      *container,
+							       int                         index);
+static gboolean      has_multiple_selection                   (NautilusIconContainer      *container);
+static void          icon_destroy                             (NautilusIconContainer      *container,
+							       NautilusIcon               *icon);
+static guint         icon_get_actual_size                     (NautilusIcon               *icon);
+static void          end_renaming_mode                        (NautilusIconContainer      *container,
+							       gboolean                    commit);
+static void          hide_rename_widget                       (NautilusIconContainer      *container,
+							       NautilusIcon               *icon);
+static void          click_policy_changed_callback            (NautilusPreferences        *preferences,
+							       const char                 *name,
+							       gpointer                    user_data);
 #if 0
-static gboolean                has_selection                         (NautilusIconContainer      *container);
+static gboolean      has_selection                            (NautilusIconContainer      *container);
+static void          update_rename_widget_text                (NautilusIconContainer      *container,
+							       NautilusIcon               *icon,
+							       char                       *new_text);
 #endif
-static gboolean                has_multiple_selection                (NautilusIconContainer      *container);
-static void                    icon_destroy                          (NautilusIconContainer      *container,
-								      NautilusIcon  *icon);
-static guint                   icon_get_actual_size                  (NautilusIcon  *icon);
-static void 					end_renaming_mode (NautilusIconContainer *container, gboolean commit);
-
-#if 0
-static void 					update_rename_widget_text			(NautilusIconContainer *container, 
-																	 NautilusIcon *icon, char *new_text);
-#endif																	
-static void						hide_rename_widget (NautilusIconContainer *container, NautilusIcon *icon);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconContainer, nautilus_icon_container, GNOME_TYPE_CANVAS)
 
@@ -1370,6 +1375,11 @@ destroy (GtkObject *object)
        		if (container->details->label_font[i] != NULL)
         		gdk_font_unref (container->details->label_font[i]);
 	}
+
+	nautilus_preferences_remove_callback (nautilus_preferences_get_global_preferences (),
+					      NAUTILUS_PREFERENCES_CLICK_POLICY,
+					      click_policy_changed_callback,
+					      container);
 	
 	g_free (container->details);
 
@@ -2006,9 +2016,6 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
         details->label_font[NAUTILUS_ZOOM_LEVEL_LARGER] = load_font ("-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*");
         details->label_font[NAUTILUS_ZOOM_LEVEL_LARGEST] = load_font ("-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*");
 
-	/* FIXME: Read this from preferences. */
-	details->single_click_mode = TRUE;
-
 	container->details = details;
 
 	/* Set up DnD.  */
@@ -2025,6 +2032,18 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 
 	container->details->rename_widget = NULL;
 	container->details->original_text = NULL;
+
+	/* Initialize the single click mode from preferences */
+	details->single_click_mode = 
+		(nautilus_preferences_get_enum (nautilus_preferences_get_global_preferences (),
+						NAUTILUS_PREFERENCES_CLICK_POLICY,
+						NAUTILUS_CLICK_POLICY_SINGLE) == NAUTILUS_CLICK_POLICY_SINGLE);
+
+	/* Keep track of changes in clicking policy */
+	nautilus_preferences_add_enum_callback (nautilus_preferences_get_global_preferences (),
+						NAUTILUS_PREFERENCES_CLICK_POLICY,
+						click_policy_changed_callback,
+						container);
 }
 
 
@@ -3088,6 +3107,26 @@ hide_rename_widget (NautilusIconContainer *container, NautilusIcon *icon)
 	/* We are not in renaming mode */	
 	container->details->renaming = FALSE;
 	nautilus_icon_canvas_item_set_renaming (icon->item, container->details->renaming);		
+}
+
+static void
+click_policy_changed_callback (NautilusPreferences	*preferences,
+			       const char		*name,
+			       gpointer			user_data)
+{
+	NautilusIconContainer *container;
+
+	g_assert (NAUTILUS_IS_PREFERENCES (preferences));
+	g_assert (name != NULL);
+	g_assert (strcmp (name, NAUTILUS_PREFERENCES_CLICK_POLICY) == 0);
+	g_assert (NAUTILUS_IS_ICON_CONTAINER (user_data));
+	
+	container = NAUTILUS_ICON_CONTAINER (user_data);
+
+	container->details->single_click_mode = 
+		(nautilus_preferences_get_enum (preferences,
+						NAUTILUS_PREFERENCES_CLICK_POLICY,
+						NAUTILUS_CLICK_POLICY_SINGLE) == NAUTILUS_CLICK_POLICY_SINGLE);
 }
 
 void

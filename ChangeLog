@@ -1,5 +1,40 @@
 2000-04-18  Ramiro Estrugo  <ramiro@eazel.com>
 
+	Hook up click policy preference.  Bug 374.
+
+	*  libnautilus-extensions/nautilus-global-preferences.h,
+	   libnautilus-extensions/nautilus-global-preferences.c:
+	Rename CLICK_ACTIVATION_TYPE to CLICK_POLICY.  
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(click_policy_changed_callback): New preferences callback to keep
+	track of click policy changes.
+
+	(destroy): Unregister click_policy_changed callback on destroy.
+
+	(nautilus_icon_container_initialize): Initialize the
+	single_click_mode from preferences and register callback to keep
+	track of changes in click policy.
+
+	Also anal gtk style formatting of the private prototypes and
+	sophisticated alphabetization of libnautilus-extensions headers.
+
+	*  libnautilus-extensions/nautilus-list.c:
+	(click_policy_changed_callback): New preferences callback to keep
+	track of click policy changes.
+	
+	(nautilus_list_initialize): Initialize the single_click_mode from
+	preferences and register callback to keep track of changes in
+	click policy.
+
+	(nautilus_list_destroy): Unregister click_policy_changed callback
+	on destroy. 
+	
+	Also anal gtk style formatting of the private prototypes and
+	sophisticated alphabetization of libnautilus-extensions headers.
+
+2000-04-18  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* nautilus-widgets/nautilus-preferences.c,
 	  nautilus-widgets/nautilus-preferences.h: Dont expose the
 	preference/enum info structure.  Remove these and use the

@@ -54,12 +54,12 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_ICON_THEME				"/nautilus/preferences/icon_theme"
 
 /* Single/Double click preference  */
-#define NAUTILUS_PREFERENCES_CLICK_ACTIVATION_TYPE		"/nautilus/preferences/click_activation_type"
+#define NAUTILUS_PREFERENCES_CLICK_POLICY			"/nautilus/preferences/click_policy"
 
 enum
 {
-	NAUTILUS_CLICK_ACTIVATION_SINGLE,
-	NAUTILUS_CLICK_ACTIVATION_DOUBLE
+	NAUTILUS_CLICK_POLICY_SINGLE,
+	NAUTILUS_CLICK_POLICY_DOUBLE
 };
 
 void                      nautilus_global_preferences_startup            (void);
