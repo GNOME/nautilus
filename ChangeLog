@@ -1,5 +1,16 @@
 2000-10-24  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* components/services/nautilus-dependent-shared/icons/Makefile.am:
+	Rename one of the icons.
+	
+	* test/test-nautilus-image.c: (delete_event), (icon_get_path),
+	(pixbuf_new_from_name), (label_new), (label_enter_event),
+	(label_leave_event), (label_new_with_prelight), (image_new),
+	(image_new_from_name), (header_new), (footer_new), (main):
+	Add better test for image and label widgets.
+	
+2000-10-24  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* librsvg/Makefile.am:
 	Fix the broken build.  Add missing header to sources.
 	

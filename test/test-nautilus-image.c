@@ -1,673 +1,372 @@
 #include <config.h>
 
 #include <gtk/gtk.h>
-#include <libgnomevfs/gnome-vfs-init.h>
-#include <libnautilus-extensions/nautilus-background.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-font-factory.h>
-#include <libnautilus-extensions/nautilus-font-picker.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
+#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-image.h>
 #include <libnautilus-extensions/nautilus-label.h>
-#include <libnautilus-extensions/nautilus-scalable-font.h>
-#include <libnautilus-extensions/nautilus-string-list.h>
-#include <libnautilus-extensions/nautilus-string-picker.h>
-#include <libnautilus-extensions/nautilus-string.h>
-#include <libnautilus-extensions/nautilus-text-caption.h>
+#include <libnautilus-extensions/nautilus-theme.h>
+
+#define BACKGROUND_COLOR_STRING		"white"
+#define BACKGROUND_COLOR_RGBA		nautilus_parse_rgb_with_white_default (BACKGROUND_COLOR_STRING)
+#define DROP_SHADOW_COLOR_RGBA		NAUTILUS_RGB_COLOR_BLACK
+#define TEXT_COLOR_RGBA			NAUTILUS_RGB_COLOR_WHITE
+
+#define LOGO_LEFT_SIDE_REPEAT_ICON	"eazel-logo-left-side-repeat.png"
+#define LOGO_RIGHT_SIDE_ICON		"eazel-logo-right-side-logo.png"
+
+#define NORMAL_FILL			"summary-service-normal-fill.png"
+#define NORMAL_LEFT_BUMPER		"summary-service-normal-left-bumper.png"
+#define NORMAL_RIGHT_BUMPER		"summary-service-normal-right-bumper.png"
+
+#define PRELIGHT_FILL			"summary-service-prelight-fill.png"
+#define PRELIGHT_LEFT_BUMPER		"summary-service-prelight-left-bumper.png"
+#define PRELIGHT_RIGHT_BUMPER		"summary-service-prelight-right-bumper.png"
 
 static void
-red_label_color_value_changed_callback (GtkAdjustment *adjustment, gpointer client_data)
+delete_event (GtkWidget *widget, GdkEvent *event, gpointer callback_data)
 {
-	NautilusLabel	 *label;
-	guint32		  color;
-
-	g_return_if_fail (adjustment != NULL);
-	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
-	g_return_if_fail (client_data != NULL);
-	g_return_if_fail (NAUTILUS_IS_LABEL (client_data));
-
-	label = NAUTILUS_LABEL (client_data);
-	
-	color = nautilus_label_get_text_color (label);
-
-	color = NAUTILUS_RGBA_COLOR_PACK ((guchar) adjustment->value,
-					  NAUTILUS_RGBA_COLOR_GET_G (color),
-					  NAUTILUS_RGBA_COLOR_GET_B (color),
-					  NAUTILUS_RGBA_COLOR_GET_A (color));
-	
-	nautilus_label_set_text_color (label, color);
+	gtk_main_quit ();
 }
 
-static void
-green_label_color_value_changed_callback (GtkAdjustment *adjustment, gpointer client_data)
+static char *
+icon_get_path (const char *icon_name)
 {
-	NautilusLabel	 *label;
-	guint32		  color;
+	char *icon_path;
 
-	g_return_if_fail (adjustment != NULL);
-	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
-	g_return_if_fail (client_data != NULL);
-	g_return_if_fail (NAUTILUS_IS_LABEL (client_data));
+	g_return_val_if_fail (icon_name, NULL);
 
-	label = NAUTILUS_LABEL (client_data);
-	
-	color = nautilus_label_get_text_color (label);
+	icon_path = nautilus_theme_get_image_path (icon_name);
 
-	color = NAUTILUS_RGBA_COLOR_PACK (NAUTILUS_RGBA_COLOR_GET_R (color),
-					  (guchar) adjustment->value,
-					  NAUTILUS_RGBA_COLOR_GET_B (color),
-					  NAUTILUS_RGBA_COLOR_GET_A (color));
-	
-	nautilus_label_set_text_color (label, color);
+	return icon_path;
 }
 
-static void
-blue_label_color_value_changed_callback (GtkAdjustment *adjustment, gpointer client_data)
+static GdkPixbuf *
+pixbuf_new_from_name (const char *name)
 {
-	NautilusLabel	 *label;
-	guint32		  color;
+	char *path;
+	GdkPixbuf *pixbuf;
 
-	g_return_if_fail (adjustment != NULL);
-	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
-	g_return_if_fail (client_data != NULL);
-	g_return_if_fail (NAUTILUS_IS_LABEL (client_data));
+	g_return_val_if_fail (name != NULL, NULL);
 
-	label = NAUTILUS_LABEL (client_data);
+	path = icon_get_path (name);
 	
-	color = nautilus_label_get_text_color (label);
+	g_return_val_if_fail (path != NULL, NULL);
 
-	color = NAUTILUS_RGBA_COLOR_PACK (NAUTILUS_RGBA_COLOR_GET_R (color),
-					  NAUTILUS_RGBA_COLOR_GET_G (color),
-					  (guchar) adjustment->value,
-					  NAUTILUS_RGBA_COLOR_GET_A (color));
-	
-	nautilus_label_set_text_color (label, color);
+	pixbuf = gdk_pixbuf_new_from_file (path);
+	g_free (path);
+
+	return pixbuf;
 }
 
-static void
-alpha_label_color_value_changed_callback (GtkAdjustment *adjustment, gpointer client_data)
+static GtkWidget *
+label_new (const char *text,
+	   guint font_size,
+	   guint drop_shadow_offset,
+	   guint vertical_offset,
+	   guint horizontal_offset,
+	   guint xpadding,
+	   guint ypadding,
+	   guint32 background_color,
+	   guint32 drop_shadow_color,
+	   guint32 text_color,
+	   const char *tile_name)
 {
-	NautilusLabel	 *label;
+	GtkWidget *label;
 
-	g_return_if_fail (adjustment != NULL);
-	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
-	g_return_if_fail (client_data != NULL);
-	g_return_if_fail (NAUTILUS_IS_LABEL (client_data));
-
-	label = NAUTILUS_LABEL (client_data);
-
-	nautilus_label_set_text_alpha (NAUTILUS_LABEL (label), (guchar) adjustment->value);
-}
-
-static void
-red_background_color_value_changed_callback (GtkAdjustment *adjustment, gpointer client_data)
-{
-	NautilusLabel	 *label;
-	guint32		  color;
-
-	g_return_if_fail (adjustment != NULL);
-	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
-	g_return_if_fail (client_data != NULL);
-	g_return_if_fail (NAUTILUS_IS_LABEL (client_data));
-
-	label = NAUTILUS_LABEL (client_data);
+	g_return_val_if_fail (text != NULL, NULL);
 	
-	color = nautilus_label_get_text_color (label);
+ 	label = nautilus_label_new (text);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (label), font_size);
+	nautilus_label_set_drop_shadow_offset (NAUTILUS_LABEL (label), drop_shadow_offset);
+	nautilus_buffered_widget_set_background_type (NAUTILUS_BUFFERED_WIDGET (label), NAUTILUS_BACKGROUND_SOLID);
+	nautilus_buffered_widget_set_background_color (NAUTILUS_BUFFERED_WIDGET (label), background_color);
+	nautilus_label_set_drop_shadow_color (NAUTILUS_LABEL (label), drop_shadow_color);
+	nautilus_label_set_text_color (NAUTILUS_LABEL (label), background_color);
 
-	color = NAUTILUS_RGBA_COLOR_PACK ((guchar) adjustment->value,
-					  NAUTILUS_RGBA_COLOR_GET_G (color),
-					  NAUTILUS_RGBA_COLOR_GET_B (color),
-					  NAUTILUS_RGBA_COLOR_GET_A (color));
-	
-	nautilus_label_set_text_color (label, color);
-}
+	nautilus_buffered_widget_set_vertical_offset (NAUTILUS_BUFFERED_WIDGET (label), vertical_offset);
+	nautilus_buffered_widget_set_horizontal_offset (NAUTILUS_BUFFERED_WIDGET (label), horizontal_offset);
 
-static void
-green_background_color_value_changed_callback (GtkAdjustment *adjustment, gpointer client_data)
-{
-	NautilusLabel	 *label;
-	guint32		  color;
+	gtk_misc_set_padding (GTK_MISC (label), xpadding, ypadding);
 
-	g_return_if_fail (adjustment != NULL);
-	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
-	g_return_if_fail (client_data != NULL);
-	g_return_if_fail (NAUTILUS_IS_LABEL (client_data));
+	if (tile_name != NULL) {
+		GdkPixbuf *tile_pixbuf;
 
-	label = NAUTILUS_LABEL (client_data);
-	
-	color = nautilus_label_get_text_color (label);
+		tile_pixbuf = pixbuf_new_from_name (tile_name);
 
-	color = NAUTILUS_RGBA_COLOR_PACK (NAUTILUS_RGBA_COLOR_GET_R (color),
-					  (guchar) adjustment->value,
-					  NAUTILUS_RGBA_COLOR_GET_B (color),
-					  NAUTILUS_RGBA_COLOR_GET_A (color));
-	
-	nautilus_label_set_text_color (label, color);
-}
+		if (tile_pixbuf != NULL) {
+			nautilus_buffered_widget_set_tile_pixbuf (NAUTILUS_BUFFERED_WIDGET (label), tile_pixbuf);
+		}
 
-static void
-blue_background_color_value_changed_callback (GtkAdjustment *adjustment, gpointer client_data)
-{
-	NautilusLabel	 *label;
-	guint32		  color;
-
-	g_return_if_fail (adjustment != NULL);
-	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
-	g_return_if_fail (client_data != NULL);
-	g_return_if_fail (NAUTILUS_IS_LABEL (client_data));
-
-	label = NAUTILUS_LABEL (client_data);
-	
-	color = nautilus_label_get_text_color (label);
-
-	color = NAUTILUS_RGBA_COLOR_PACK (NAUTILUS_RGBA_COLOR_GET_R (color),
-					  NAUTILUS_RGBA_COLOR_GET_G (color),
-					  (guchar) adjustment->value,
-					  NAUTILUS_RGBA_COLOR_GET_A (color));
-	
-	nautilus_label_set_text_color (label, color);
-}
-
-static void
-alpha_background_color_value_changed_callback (GtkAdjustment *adjustment, gpointer client_data)
-{
-	NautilusLabel	 *label;
-
-	g_return_if_fail (adjustment != NULL);
-	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
-	g_return_if_fail (client_data != NULL);
-	g_return_if_fail (NAUTILUS_IS_LABEL (client_data));
-
-	label = NAUTILUS_LABEL (client_data);
-
-	nautilus_label_set_text_alpha (NAUTILUS_LABEL (label), (guchar) adjustment->value);
-}
-
-static void
-font_size_changed_callback (NautilusStringPicker *string_picker, gpointer client_data)
-{
- 	char *string;
-	int   size;
-
-	g_return_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker));
-	g_return_if_fail (NAUTILUS_IS_LABEL (client_data));
-
- 	string = nautilus_string_picker_get_selected_string (string_picker);
-
-	if (nautilus_eat_str_to_int (string, &size)) {
-		nautilus_label_set_font_size (NAUTILUS_LABEL (client_data), (guint) size);
+		nautilus_gdk_pixbuf_unref_if_not_null (tile_pixbuf);
 	}
-
-	g_free (string);
+	
+	return label;
 }
 
-static void
-font_changed_callback (NautilusFontPicker *font_picker, gpointer client_data)
-{
-	NautilusScalableFont *font;
-	char *family;
-	char *weight;
-	char *slant;
-	char *set_width;
-
-	g_return_if_fail (NAUTILUS_IS_FONT_PICKER (font_picker));
-	g_return_if_fail (NAUTILUS_IS_LABEL (client_data));
-
-	family = nautilus_font_picker_get_selected_family (NAUTILUS_FONT_PICKER (font_picker));
-	weight = nautilus_font_picker_get_selected_weight (NAUTILUS_FONT_PICKER (font_picker));
-	slant = nautilus_font_picker_get_selected_slant (NAUTILUS_FONT_PICKER (font_picker));
-	set_width = nautilus_font_picker_get_selected_set_width (NAUTILUS_FONT_PICKER (font_picker));
-
-	g_print ("%s (%s,%s,%s,%s)\n", __FUNCTION__, family, weight, slant, set_width);
-
-	font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new (family, weight, slant, set_width));
-	g_assert (font != NULL);
-
-	nautilus_label_set_font (NAUTILUS_LABEL (client_data), font);
-
-	g_free (family);
-	g_free (weight);
-	g_free (slant);
-	g_free (set_width);
-
-	gtk_object_unref (GTK_OBJECT (font));
-}
-
-static void
-text_caption_changed_callback (NautilusTextCaption *text_caption, gpointer client_data)
+static gint
+label_enter_event (GtkWidget *event_box,
+		   GdkEventCrossing *event,
+		   gpointer client_data)
 {
 	NautilusLabel *label;
- 	char *text;
+	GdkPixbuf *tile_pixbuf;
 
-	g_return_if_fail (NAUTILUS_IS_TEXT_CAPTION (text_caption));
-	g_return_if_fail (NAUTILUS_IS_LABEL (client_data));
-
- 	text = nautilus_text_caption_get_text (text_caption);
+	g_return_val_if_fail (GTK_IS_EVENT_BOX (event_box), TRUE);
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (client_data), TRUE);
 
 	label = NAUTILUS_LABEL (client_data);
 
-	nautilus_label_set_text (NAUTILUS_LABEL (label), text);
+	tile_pixbuf = pixbuf_new_from_name (PRELIGHT_FILL);
 
-	g_free (text);
-}
-
-static GtkWidget*
-create_value_scale (guint min,
-		    guint max,
-		    guint value,
-		    const char *color_spec,
-		    GtkSignalFunc callback,
-		    gpointer callback_data)
-{
-	GtkAdjustment	*adjustment;
-	GtkWidget	*scale;
-
-	g_assert (max > min);
-	g_assert (callback > 0);
-	
-	adjustment = (GtkAdjustment *) gtk_adjustment_new (value,
-							   min,
-							   max,
-							   1,
-							   (max - min) / 10,
-							   0);
-	
-	scale = gtk_hscale_new (adjustment);
-
-	if (color_spec != NULL) {
-		nautilus_gtk_widget_set_background_color (scale, color_spec);
+	if (tile_pixbuf != NULL) {
+		nautilus_buffered_widget_set_tile_pixbuf (NAUTILUS_BUFFERED_WIDGET (label), tile_pixbuf);
 	}
 
-	gtk_scale_set_draw_value (GTK_SCALE (scale), FALSE);
+	nautilus_gdk_pixbuf_unref_if_not_null (tile_pixbuf);
 
-	gtk_widget_set_usize (scale, 150, 0);
-	
-	gtk_signal_connect (GTK_OBJECT (adjustment), "value_changed", callback, callback_data);
-	
-	return scale;
+	return TRUE;
 }
 
-static GtkWidget*
-create_value_scale_caption (const gchar *title,
-			    guint min,
-			    guint max,
-			    guint value,
-			    const char *color_spec,
-			    GtkSignalFunc callback,
-			    gpointer callback_data)
+static gint
+label_leave_event (GtkWidget *event_box,
+		   GdkEventCrossing *event,
+		   gpointer client_data)
 {
-	GtkWidget	*hbox;
-	GtkWidget	*label;
-	GtkWidget	*scale;
+	NautilusLabel *label;
+	GdkPixbuf *tile_pixbuf;
 
-	scale = create_value_scale (min, max, value, color_spec, callback, callback_data);
-	hbox = gtk_hbox_new (FALSE, 0);
-	label = gtk_label_new (title);
+	g_return_val_if_fail (GTK_IS_EVENT_BOX (event_box), TRUE);
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (client_data), TRUE);
+
+	label = NAUTILUS_LABEL (client_data);
+
+	tile_pixbuf = pixbuf_new_from_name (NORMAL_FILL);
+
+	if (tile_pixbuf != NULL) {
+		nautilus_buffered_widget_set_tile_pixbuf (NAUTILUS_BUFFERED_WIDGET (label), tile_pixbuf);
+	}
+
+	nautilus_gdk_pixbuf_unref_if_not_null (tile_pixbuf);
+
+	return TRUE;
+}
+
+static GtkWidget *
+label_new_with_prelight (const char *text,
+			 guint font_size,
+			 guint drop_shadow_offset,
+			 guint vertical_offset,
+			 guint horizontal_offset,
+			 guint xpadding,
+			 guint ypadding,
+			 guint32 background_color,
+			 guint32 drop_shadow_color,
+			 guint32 text_color,
+			 const char *tile_name)
+{
+	GtkWidget *label;
+	GtkWidget *event_box;
+
+	g_return_val_if_fail (text != NULL, NULL);
 	
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 4);
-	gtk_box_pack_end (GTK_BOX (hbox), scale, FALSE, FALSE, 4);
+	event_box = gtk_event_box_new ();
+	
+ 	label = label_new (text,
+			   font_size,
+			   drop_shadow_offset,
+			   vertical_offset,
+			   horizontal_offset,
+			   xpadding,
+			   ypadding,
+			   background_color,
+			   drop_shadow_color,
+			   text_color,
+			   tile_name);
 
-	gtk_widget_show (label);
-	gtk_widget_show (scale);
+	gtk_container_add (GTK_CONTAINER (event_box), label);
+
+	gtk_signal_connect (GTK_OBJECT (event_box), "enter_notify_event", GTK_SIGNAL_FUNC (label_enter_event), label);
+	gtk_signal_connect (GTK_OBJECT (event_box), "leave_notify_event", GTK_SIGNAL_FUNC (label_leave_event), label);
+
+	return event_box;
+}
+
+static GtkWidget *
+image_new (GdkPixbuf *pixbuf, GdkPixbuf *tile_pixbuf, guint32 background_color)
+{
+	GtkWidget *image;
+
+	g_return_val_if_fail (pixbuf || tile_pixbuf, NULL);
+
+	image = nautilus_image_new ();
+
+	nautilus_buffered_widget_set_background_type (NAUTILUS_BUFFERED_WIDGET (image), NAUTILUS_BACKGROUND_SOLID);
+	nautilus_buffered_widget_set_background_color (NAUTILUS_BUFFERED_WIDGET (image), background_color);
+
+	if (pixbuf != NULL) {
+		nautilus_image_set_pixbuf (NAUTILUS_IMAGE (image), pixbuf);
+	}
+	
+	if (tile_pixbuf != NULL) {
+		nautilus_buffered_widget_set_tile_pixbuf (NAUTILUS_BUFFERED_WIDGET (image), tile_pixbuf);
+	}
+
+	return image;
+}
+
+static GtkWidget *
+image_new_from_name (const char *icon_name, const char *tile_name, guint32 background_color)
+{
+	GtkWidget *image;
+	GdkPixbuf *pixbuf = NULL;
+	GdkPixbuf *tile_pixbuf = NULL;
+
+	g_return_val_if_fail (icon_name || tile_name, NULL);
+
+	if (icon_name) {
+		pixbuf = pixbuf_new_from_name (icon_name);
+	}
+
+	if (tile_name) {
+		tile_pixbuf = pixbuf_new_from_name (tile_name);
+	}
+
+	g_return_val_if_fail (pixbuf || tile_pixbuf, NULL);
+
+	image = image_new (pixbuf, tile_pixbuf, background_color);
+
+	nautilus_gdk_pixbuf_unref_if_not_null (pixbuf);
+	nautilus_gdk_pixbuf_unref_if_not_null (tile_pixbuf);
+
+	return image;
+}
+
+static GtkWidget *
+header_new (const char *text)
+{
+	GtkWidget *hbox;
+ 	GtkWidget *label;
+ 	GtkWidget *middle;
+ 	GtkWidget *logo;
+	
+ 	label = label_new (text,
+			   20,
+			   1, 
+			   0,
+			   0,
+			   0,
+			   0,
+			   BACKGROUND_COLOR_RGBA,
+			   DROP_SHADOW_COLOR_RGBA,
+			   TEXT_COLOR_RGBA,
+			   LOGO_LEFT_SIDE_REPEAT_ICON);
+
+	middle = image_new_from_name (NULL, LOGO_LEFT_SIDE_REPEAT_ICON, BACKGROUND_COLOR_RGBA);
+
+	logo = image_new_from_name (LOGO_RIGHT_SIDE_ICON, NULL, BACKGROUND_COLOR_RGBA);
+
+	hbox = gtk_hbox_new (FALSE, 0);
+
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), middle, TRUE, TRUE, 0);
+	gtk_box_pack_end (GTK_BOX (hbox), logo, FALSE, FALSE, 0);
 
 	return hbox;
 }
 
-static GtkWidget*
-create_color_picker_frame (const char		*title,
-			   GtkSignalFunc	red_callback,
-			   GtkSignalFunc	green_callback,
-			   GtkSignalFunc	blue_callback,
-			   GtkSignalFunc	alpha_callback,
-			   gpointer		callback_data,
-			   guint32		current_color)
+static GtkWidget *
+footer_new (const char *items[], guint num_items)
 {
-	GtkWidget *red_scale;
-	GtkWidget *green_scale;
-	GtkWidget *blue_scale;
-	GtkWidget *alpha_scale;
-	GtkWidget *frame;
-	GtkWidget *vbox;
-
-	g_return_val_if_fail (title != NULL, NULL);
-	g_return_val_if_fail (red_callback != NULL, NULL);
-	g_return_val_if_fail (green_callback != NULL, NULL);
-	g_return_val_if_fail (blue_callback != NULL, NULL);
-	g_return_val_if_fail (alpha_callback != NULL, NULL);
-	
-	frame = gtk_frame_new (title);
-
-	vbox = gtk_vbox_new (FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), 2);
-
-	red_scale = create_value_scale_caption ("Red",
-						0,
-						255,
-						NAUTILUS_RGBA_COLOR_GET_R (current_color),
-						"red",
-						red_callback,
-						callback_data);
-
-	green_scale = create_value_scale_caption ("Green",
-						  0,
-						  255,
-						  NAUTILUS_RGBA_COLOR_GET_R (current_color),
-						  "green",
-						  green_callback,
-						  callback_data);
-	
-	blue_scale = create_value_scale_caption ("Blue",
-						 0,
-						 255,
-						 NAUTILUS_RGBA_COLOR_GET_R (current_color),
-						 "blue",
-						 blue_callback,
-						 callback_data);
-	
-	alpha_scale = create_value_scale_caption ("Alpha",
-						  0,
-						  255,
-						  NAUTILUS_RGBA_COLOR_GET_R (current_color),
-						  NULL,
-						  alpha_callback,
-						  callback_data);
-
-	gtk_container_add (GTK_CONTAINER (frame), vbox);
-
-	gtk_box_pack_start (GTK_BOX (vbox), red_scale, TRUE, TRUE, 2);
-	gtk_box_pack_start (GTK_BOX (vbox), green_scale, TRUE, TRUE, 1);
-	gtk_box_pack_start (GTK_BOX (vbox), blue_scale, TRUE, TRUE, 1);
-	gtk_box_pack_end (GTK_BOX (vbox), alpha_scale, TRUE, TRUE, 2);
-
-	gtk_widget_show_all (vbox);
-
-	return frame;
-}
-
-static GtkWidget*
-create_font_picker_frame (const char		*title,
-			  GtkSignalFunc		changed_callback,
-			  GtkSignalFunc		size_changed_callback,
-			  gpointer		callback_data)
-{
-	GtkWidget *frame;
 	GtkWidget *hbox;
-	GtkWidget		*font_picker;
-	GtkWidget		*font_size_picker;
-	NautilusStringList	*font_size_list;
+//  	GtkWidget *label;
+//  	GtkWidget *middle;
+//  	GtkWidget *logo;
 
-	g_return_val_if_fail (title != NULL, NULL);
-	g_return_val_if_fail (changed_callback != NULL, NULL);
-	g_return_val_if_fail (size_changed_callback != NULL, NULL);
-	
-	frame = gtk_frame_new (title);
+	guint i;
+
+	g_return_val_if_fail (items != NULL, NULL);
+	g_return_val_if_fail (num_items > 0, NULL);
 
 	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (hbox), 6);
 
-	gtk_container_add (GTK_CONTAINER (frame), hbox);
+	for (i = 0; i < num_items; i++) {
+		GtkWidget *label;
 
-	font_size_picker = nautilus_string_picker_new ();
-	nautilus_caption_set_show_title (NAUTILUS_CAPTION (font_size_picker), FALSE);
-	nautilus_caption_set_title_label (NAUTILUS_CAPTION (font_size_picker), "Size");
-
-	gtk_signal_connect (GTK_OBJECT (font_size_picker), "changed", size_changed_callback, callback_data);
-
-	font_size_list = nautilus_string_list_new_from_tokens ("5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,"
-							       "30,40,50,60,70,80,90,100,110,120,130,140,"
-							       "200,400,800", ",", TRUE);
-
-	nautilus_string_picker_set_string_list (NAUTILUS_STRING_PICKER (font_size_picker), font_size_list);
-	nautilus_string_list_free (font_size_list);
-
-	font_picker = nautilus_font_picker_new ();
-	gtk_signal_connect (GTK_OBJECT (font_picker), "selected_font_changed", changed_callback, callback_data);
+		g_assert (items[i] != NULL);
+		g_assert (items[i][0] != '\0');
 	
-	gtk_box_pack_start (GTK_BOX (hbox), font_picker, TRUE, TRUE, 0);
-	gtk_box_pack_end (GTK_BOX (hbox), font_size_picker, FALSE, FALSE, 5);
+		label = label_new_with_prelight (items[i],
+						 16,
+						 1, 
+						 10,
+						 10,
+						 10,
+						 10,
+						 BACKGROUND_COLOR_RGBA,
+						 DROP_SHADOW_COLOR_RGBA,
+						 TEXT_COLOR_RGBA,
+						 NORMAL_FILL);
 
-	gtk_widget_show_all (hbox);
-
-	return frame;
-}
-
-static GtkWidget*
-create_text_caption_frame (const char		*title,
-			   GtkSignalFunc	changed_callback,
-			   gpointer		callback_data)
-{
-	GtkWidget *frame;
-	GtkWidget *text_caption;
-
-	g_return_val_if_fail (title != NULL, NULL);
-	g_return_val_if_fail (changed_callback != NULL, NULL);
-	
-	frame = gtk_frame_new (title);
-
-	text_caption = nautilus_text_caption_new ();
-	gtk_container_set_border_width (GTK_CONTAINER (text_caption), 6);
-
- 	nautilus_caption_set_show_title (NAUTILUS_CAPTION (text_caption), FALSE);
-	nautilus_caption_set_title_label (NAUTILUS_CAPTION (text_caption), title);
-
-	gtk_signal_connect (GTK_OBJECT (text_caption), "changed", changed_callback, callback_data);
-
-	gtk_container_add (GTK_CONTAINER (frame), text_caption);
-
-	gtk_widget_show (text_caption);
-
-	return frame;
-}
-
-static void
-widget_set_background_image (GtkWidget *widget, const char *image_name)
-{
-	NautilusBackground	*background;
-	char			*background_uri;
-
-	g_return_if_fail (GTK_IS_WIDGET (widget));
-	g_return_if_fail (image_name != NULL);
-
-	background = nautilus_get_widget_background (widget);
-	
-	background_uri = g_strdup_printf ("file://%s/backgrounds/%s", NAUTILUS_DATADIR, image_name);
-
-	nautilus_background_reset (background);
-	nautilus_background_set_image_uri (background, background_uri);
-
-	g_free (background_uri);
-}
-
-static void
-widget_set_background_color (GtkWidget *widget, const char *color)
-{
-	NautilusBackground	*background;
-
-	g_return_if_fail (GTK_IS_WIDGET (widget));
-	g_return_if_fail (color != NULL);
-
-	background = nautilus_get_widget_background (widget);
-	
-	nautilus_background_reset (background);
-	nautilus_background_set_color (background, color);
-}
-
-static void
-widget_set_background_reset (GtkWidget *widget)
-{
-	NautilusBackground	*background;
-
-	g_return_if_fail (GTK_IS_WIDGET (widget));
-
-	background = nautilus_get_widget_background (widget);
-
-	nautilus_background_reset (background);
-}
-
-static void
-background_changed_callback (NautilusStringPicker *string_picker, gpointer client_data)
-{
- 	char *string;
-
-	g_return_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker));
-	g_return_if_fail (NAUTILUS_IS_LABEL (client_data));
-
- 	string = nautilus_string_picker_get_selected_string (string_picker);
-
-	if (nautilus_str_has_prefix (string, "Image - ")) {
-		widget_set_background_image (nautilus_gtk_widget_find_windowed_ancestor (GTK_WIDGET (client_data)),
-					     string + strlen ("Image - "));
-	}
-	else if (nautilus_str_has_prefix (string, "Gradient - ")) {
-		widget_set_background_color (nautilus_gtk_widget_find_windowed_ancestor (GTK_WIDGET (client_data)),
-					     string + strlen ("Gradient - "));
-	}
-	else if (nautilus_str_has_prefix (string, "Solid - ")) {
-		widget_set_background_color (nautilus_gtk_widget_find_windowed_ancestor (GTK_WIDGET (client_data)),
-					     string + strlen ("Solid - "));
-	}
-	else if (nautilus_str_has_prefix (string, "Reset")) {
-		widget_set_background_reset (nautilus_gtk_widget_find_windowed_ancestor (GTK_WIDGET (client_data)));
+		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 	}
 
-	g_free (string);
+// 	middle = image_new_from_name (NULL, LOGO_LEFT_SIDE_REPEAT_ICON, BACKGROUND_COLOR_RGBA);
+
+// 	logo = image_new_from_name (LOGO_RIGHT_SIDE_ICON, NULL, BACKGROUND_COLOR_RGBA);
+
+
+// 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+// 	gtk_box_pack_start (GTK_BOX (hbox), middle, TRUE, TRUE, 0);
+// 	gtk_box_pack_end (GTK_BOX (hbox), logo, FALSE, FALSE, 0);
+
+	return hbox;
 }
 
-static GtkWidget*
-create_background_frame (const char	*title,
-			 GtkSignalFunc	background_changed_callback,
-			 gpointer	callback_data)
+static const char *footer_items[] = 
 {
-	GtkWidget *frame;
-	GtkWidget *vbox;
-	GtkWidget *background_picker;
-
-	g_return_val_if_fail (title != NULL, NULL);
- 	g_return_val_if_fail (background_changed_callback != NULL, NULL);
-	
-	vbox = gtk_vbox_new (FALSE, 0);
-	frame = gtk_frame_new (title);
-
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), 2);
-	gtk_container_add (GTK_CONTAINER (frame), vbox);
-
-	background_picker = nautilus_string_picker_new ();
-	nautilus_string_picker_insert_string (NAUTILUS_STRING_PICKER (background_picker), "Image - pale_coins.png");
-	nautilus_string_picker_insert_string (NAUTILUS_STRING_PICKER (background_picker), "Image - bubbles.png");
-	nautilus_string_picker_insert_string (NAUTILUS_STRING_PICKER (background_picker), "Image - irish_spring.png");
-	nautilus_string_picker_insert_string (NAUTILUS_STRING_PICKER (background_picker), "Image - white_ribs.png");
-	nautilus_string_picker_insert_string (NAUTILUS_STRING_PICKER (background_picker), "-----------------------");
-	nautilus_string_picker_insert_string (NAUTILUS_STRING_PICKER (background_picker), "Gradient - rgb:bbbb/bbbb/eeee-rgb:ffff/ffff/ffff:h");
-	nautilus_string_picker_insert_string (NAUTILUS_STRING_PICKER (background_picker), "Gradient - rgb:bbbb/bbbb/eeee-rgb:ffff/ffff/ffff");
-	nautilus_string_picker_insert_string (NAUTILUS_STRING_PICKER (background_picker), "-----------------------");
-	nautilus_string_picker_insert_string (NAUTILUS_STRING_PICKER (background_picker), "Solid - rgb:bbbb/bbbb/eeee");
-	nautilus_string_picker_insert_string (NAUTILUS_STRING_PICKER (background_picker), "-----------------------");
-	nautilus_string_picker_insert_string (NAUTILUS_STRING_PICKER (background_picker), "Reset");
-
- 	nautilus_caption_set_show_title (NAUTILUS_CAPTION (background_picker), FALSE);
-
-	gtk_signal_connect (GTK_OBJECT (background_picker), "changed", background_changed_callback, callback_data);
-
-	gtk_box_pack_start (GTK_BOX (vbox), background_picker, FALSE, FALSE, 0);
-
-	gtk_widget_show_all (vbox);
-
-	return frame;
-}
+	"Register",
+	"Login",
+	"Terms of Use",
+	"Privacy Statement"
+};
 
 int 
 main (int argc, char* argv[])
 {
-	GtkWidget		*window;
-	GtkWidget		*main_box;
-	GtkWidget		*bottom_box;
-	GtkWidget		*tool_box1;
-	GtkWidget		*tool_box2;
-	GtkWidget		*tool_box3;
-	GtkWidget		*color_tool_box;
-	GtkWidget		*label;
-	GtkWidget		*label_color_picker_frame;
-	GtkWidget		*background_color_picker_frame;
-	GtkWidget		*font_picker_frame;
-	GtkWidget		*text_caption_frame;
-	GtkWidget		*background_frame;
-
+	GtkWidget *window;
+	GtkWidget *vbox;
+	GtkWidget *header;
+	GtkWidget *footer;
+	GtkWidget *content;
+	
 	gtk_init (&argc, &argv);
 	gdk_rgb_init ();
-	gnome_vfs_init ();
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title (GTK_WINDOW (window), "Label Test");
+	nautilus_gtk_widget_set_background_color (window, BACKGROUND_COLOR_STRING);
+	gtk_signal_connect (GTK_OBJECT (window), "delete_event", GTK_SIGNAL_FUNC (delete_event), NULL);
+	gtk_window_set_title (GTK_WINDOW (window), "Nautilus Wrapped Label Test");
 	gtk_window_set_policy (GTK_WINDOW (window), TRUE, TRUE, FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER (window), 10);
-
-	main_box = gtk_vbox_new (FALSE, 0);
-	gtk_container_add (GTK_CONTAINER (window), main_box);
-
-	label = nautilus_label_new ("Label that doesn't suck\nFoo\nBar");
-
-	bottom_box = gtk_vbox_new (FALSE, 4);
-
-	tool_box1 = gtk_hbox_new (FALSE, 0);
-	tool_box2 = gtk_hbox_new (FALSE, 0);
-	tool_box3 = gtk_hbox_new (FALSE, 0);
-
-	color_tool_box = gtk_hbox_new (FALSE, 0);
-
-	gtk_box_pack_start (GTK_BOX (bottom_box), tool_box1, TRUE, TRUE, 0);
-	gtk_box_pack_start (GTK_BOX (bottom_box), tool_box2, TRUE, TRUE, 0);
-	gtk_box_pack_end (GTK_BOX (bottom_box), tool_box3, TRUE, TRUE, 10);
-
-	gtk_box_pack_start (GTK_BOX (main_box), label, TRUE, TRUE, 10);
-	gtk_box_pack_end (GTK_BOX (main_box), bottom_box, TRUE, TRUE, 10);
-
-	widget_set_background_image (nautilus_gtk_widget_find_windowed_ancestor (label), "pale_coins.png");
+	gtk_widget_set_usize (window, 640, 480);
 	
-	label_color_picker_frame = create_color_picker_frame ("Label Color",
-							      red_label_color_value_changed_callback,
-							      green_label_color_value_changed_callback,
-							      blue_label_color_value_changed_callback,
-							      alpha_label_color_value_changed_callback,
-							      label,
-							      nautilus_label_get_text_color (NAUTILUS_LABEL (label)));
+	vbox = gtk_vbox_new (FALSE, 0);
+	gtk_container_add (GTK_CONTAINER (window), vbox);
 
-	background_color_picker_frame = create_color_picker_frame ("Background Color",
-								   red_background_color_value_changed_callback,
-								   green_background_color_value_changed_callback,
-								   blue_background_color_value_changed_callback,
-								   alpha_background_color_value_changed_callback,
-								   label,
-								   nautilus_label_get_text_color (NAUTILUS_LABEL (label)));
-
-	font_picker_frame = create_font_picker_frame ("Font",
-						      font_changed_callback,
-						      font_size_changed_callback,
-						      label);
-
-	text_caption_frame = create_text_caption_frame ("Text",
-							text_caption_changed_callback,
-							label);
-
-	background_frame = create_background_frame ("Background",
-						    background_changed_callback,
-						    label);
-
-	gtk_box_pack_start (GTK_BOX (color_tool_box), label_color_picker_frame, FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (color_tool_box), background_frame, FALSE, FALSE, 0);
-	gtk_box_pack_end (GTK_BOX (color_tool_box), background_color_picker_frame, FALSE, FALSE, 0);
-
-	gtk_box_pack_start (GTK_BOX (tool_box1), color_tool_box, FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (tool_box2), font_picker_frame, FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (tool_box3), text_caption_frame, TRUE, TRUE, 0);
+	header = header_new ("Welcome back, Arlo!");
+	content = gtk_vbox_new (FALSE, 0);
+	footer = footer_new (footer_items, NAUTILUS_N_ELEMENTS (footer_items));
+	
+	gtk_box_pack_start (GTK_BOX (vbox), header, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), content, TRUE, TRUE, 0);
+	gtk_box_pack_end (GTK_BOX (vbox), footer, FALSE, FALSE, 0);
 
 	gtk_widget_show_all (window);
 
 	gtk_main ();
 
-	gnome_vfs_shutdown ();
-	
 	return 0;
 }

@@ -6,7 +6,7 @@ icon_DATA =\
 	config-gather.png \
 	eazel-cloud-logo.png \
 	eazel-logo-left-side-repeat.png \
-	eazel-logo-right-side-eazel-logo.png \
+	eazel-logo-right-side-logo.png \
 	eazel-services-logo-tile.png \
 	eazel-services-logo.png \
 	inventory-service-icon.png \
