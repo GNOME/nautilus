@@ -1,3 +1,9 @@
+2003-07-05  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c 
+	(draw_or_measure_label_text): Don't add LABEL_LINE_SPACING to the
+	total height if there is no additional text.
+
 2003-07-02 Jordi Mallach  <jordi@sindominio.net>
 
 	* nautilus.desktop.in: Add Encoding and fixed Terminal entries.

@@ -862,7 +862,12 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	}
 
 	details->text_width = MAX (editable_width, additional_width);
-	details->text_height = editable_height + LABEL_LINE_SPACING + additional_height;
+
+	if (have_additional) {
+		details->text_height = editable_height + LABEL_LINE_SPACING + additional_height;
+	} else {
+		details->text_height = editable_height;
+	}
 
 	if (ANTIALIAS_SELECTION_RECTANGLE) {
 		/* add some extra space for highlighting even when we don't highlight so things won't move */
