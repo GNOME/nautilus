@@ -250,9 +250,9 @@ install_all_packages (EazelInstall *service,
 				return FALSE;
 			}
 			eazel_install_ensure_deps (service, &packages, &failedfiles);
-			eazel_install_free_package_system (service); 
+			eazel_install_free_package_system (service);
 
-			g_message (_("Category = %s, %d packages"), cat->name, g_list_length (packages));			
+			g_message (_("Category = %s, %d packages"), cat->name, g_list_length (packages));
 			do_rpm_transaction (service,
 					    packages);
 			
@@ -446,10 +446,10 @@ eazel_install_do_rpm_transaction_process_pipe (EazelInstall *service,
 				pct = strtol (ptr, NULL, 10);
 				if (pct == 100) {
 					amount = pack->bytesize;
-				} else if (pct != 0) {
+				} else {
 					amount = (pack->bytesize * pct) / 100;
 				}
-				if (pack) {
+				if (pack && amount) {
 					eazel_install_emit_install_progress (service, 
 									     pack, 
 									     service->private->packsys.rpm.packages_installed, 

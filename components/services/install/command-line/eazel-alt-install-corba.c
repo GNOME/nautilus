@@ -177,12 +177,13 @@ eazel_download_progress_signal (EazelInstallCallback *service,
 	} else if (amount != total ) {
 		fprintf (stdout, "(%d/%d) %% %f\r", 
 			 amount, total,
-			 (amount==total ? ((float)
-				   ((((float) amount) / total) * 100))
-			  : 100.0));
+			 (float) (((float) amount * 100.0) / total));
 		fflush (stdout);
 	} else if (amount == total && total!=0) {
+		fprintf (stdout, "(%d/%d) %% %f\r",
+			 amount, total, 100.0);
 		fprintf (stdout, "\nDone\n");
+		fflush (stdout);
 	}
 }
 
@@ -197,17 +198,20 @@ eazel_install_progress_signal (EazelInstallCallback *service,
 	if (amount==0) {
 		fprintf (stdout, "%s %s: \"%20.20s\"...\n", title, pack->name, pack->summary);
 	} else if (amount != total ) {
-		fprintf (stdout, "(%d/%d), (%d/%d)b - (%d/%d) %% %f\r", 
+		fprintf (stdout, "(%d/%d), (%d/%d)b - (%d/%d) %% %f\n", 
 			 package_num, num_packages,
 			 total_size_completed, total_size,
 			 amount, total,
-			 (amount==total ? ((float)
-				   ((((float) amount) / total) * 100))
-			  : 100.0));
+			 (float) (((float) amount * 100.0) / total));
 		fflush (stdout);
 	}
 	if (amount == total && total!=0) {
+		fprintf (stdout, "(%d/%d), (%d/%d)b - (%d/%d) %% %f\r",
+			 package_num, num_packages,
+			 total_size_completed, total_size,
+			 amount, total, 100.0);
 		fprintf (stdout, "\nDone\n");
+		fflush (stdout);
 	}
 }
 

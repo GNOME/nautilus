@@ -1,3 +1,15 @@
+2000-07-26  Robey Pointer  <robey@eazel.com>
+
+	*
+	components/services/install/command-line/eazel-alt-install-corba.c:
+	(eazel_download_progress_signal), (eazel_install_progress_signal):
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(install_all_packages),
+	(eazel_install_do_rpm_transaction_process_pipe):
+
+	Fix a few small bugs in percentage reporting and display in the
+	install service and its sample command-line client.
+
 2000-07-26  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-property-browser.c: (add_to_content_table),
