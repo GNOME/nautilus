@@ -873,7 +873,7 @@ initiate_file_download (GnomeDruid *druid)
 	NautilusReadFileHandle *file_handle;
 
 	/* FIXME bugzilla.eazel.com 1826: for testing; this needs to move to the real service */
-	const char *file_uri = "http://linus.differnet.com/eazel-services/updates.tgz";
+	const char *file_uri = "http://www.eazel.com/software/nautilus/updates.tgz";
 
 	/* disable the next and previous buttons during the  file loading process */
 	gtk_widget_set_sensitive (druid->next, FALSE);

@@ -1,3 +1,18 @@
+2000-09-11  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-entry.c:
+	(nautilus_entry_initialize), (nautilus_entry_key_press):
+	fixed bug 2829, location bar should treat TAB like right arrow
+	when there's a selection, by adding a mode to our entry class to do so.
+	* libnautilus-extensions/nautilus-entry.h:
+	defined a "special tab handling mode"
+	* src/nautilus-location-bar.c: (nautilus_location_bar_initialize):
+	set the special tab handling mode for the location bar's entry
+	
+	* src/nautilus-first-time-druid.c: (initiate_file_download):
+	fixed bug 1826, change "initial update" download to real uri, now using
+	one specified by Susan Space.
+	
 2000-09-11  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-canvas-item.c:

@@ -50,6 +50,7 @@ struct NautilusEntry {
 	GtkEntry parent;
 		
 	gboolean user_edit;
+	gboolean special_tab_handling;
 };
 
 struct NautilusEntryClass {

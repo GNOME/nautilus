@@ -418,6 +418,8 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 			     GNOME_PAD_SMALL);
 
 	entry = nautilus_entry_new ();
+	NAUTILUS_ENTRY (entry)->special_tab_handling = TRUE;
+	
 	gtk_signal_connect_object (GTK_OBJECT (entry), "activate",
 				   nautilus_navigation_bar_location_changed, GTK_OBJECT (bar));
 

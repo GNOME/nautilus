@@ -97,7 +97,8 @@ static void
 nautilus_entry_initialize (NautilusEntry *entry)
 {
 	entry->user_edit = TRUE;
-
+	entry->special_tab_handling = FALSE;
+	
 	nautilus_undo_set_up_nautilus_entry_for_undo (entry);
 }
 
@@ -121,15 +122,31 @@ static gint
 nautilus_entry_key_press (GtkWidget *widget, GdkEventKey *event)
 {
 	NautilusEntry *entry;
+	GtkEditable *editable;
+	int position;
 	
 	g_assert (NAUTILUS_IS_ENTRY (widget));
+
+	editable = GTK_EDITABLE (widget);
 	
-	if (!GTK_EDITABLE (widget)->editable) {
+	if (!editable->editable) {
 		return FALSE;
 	}
 
 	entry = NAUTILUS_ENTRY(widget);
 
+	/* the location bar entry wants TAB to work kind of like it does
+	   in the shell for command completion, so if we get a tab and
+	   there's a selection, we should position the insertion point
+	   at the end of the selection */
+	   
+	if (entry->special_tab_handling && (event->keyval == GDK_Tab) 
+		&& editable->has_selection) {
+		position = strlen (gtk_entry_get_text (GTK_ENTRY (editable)));
+		gtk_entry_select_region (GTK_ENTRY (editable), position, position);
+		return TRUE;
+	}
+	
 	/* Fix bug in GtkEntry where keypad Enter key inserts a
 	 * character rather than activating like the other Enter key.
 	 */
