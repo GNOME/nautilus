@@ -1,3 +1,31 @@
+2000-10-13  Mathieu Lacage  <mathieu@eazel.com>
+
+	* docs/state-machines.txt: new design for the state 
+	machine taking into account the new async states.
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	(nautilus_bonobo_set_icon), (oaf_activation_callback),
+	(nautilus_bonobo_activate_from_id),
+	(nautilus_bonobo_activate_stop), 
+	(nautilus_bonobo_activate_free):
+	add async activation call.
+	* libnautilus-extensions/nautilus-bonobo-extensions.h:
+	add prototypes.
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_initialize_class), (view_frame_activating),
+	(view_frame_not_activated), (view_frame_activated),
+	(view_frame_stop_activation), (view_frame_wait),
+	(view_frame_underway), (view_frame_wait_is_over),
+	(view_frame_loaded), (view_frame_failed),
+	(nautilus_view_frame_set_to_component), (activation_callback),
+	(nautilus_view_frame_load_client_async),
+	(nautilus_view_frame_load_client),
+	(nautilus_view_frame_stop_activation),
+	(nautilus_view_frame_load_location):
+	implement new state machine. add comments to explain by which stimulus
+	the state-chaging functions are triggered.
+	* src/nautilus-view-frame.h:
+	add prototype for new async activation function of ViewFrames.
+
 2000-10-12  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/Makefile.am:

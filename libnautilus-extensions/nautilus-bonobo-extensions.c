@@ -30,6 +30,8 @@
 #include <bonobo/bonobo-ui-util.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 
+#include <liboaf/oaf-async.h>
+
 void
 nautilus_bonobo_set_accelerator (BonoboUIComponent *ui,
 			   	 const char *path,
@@ -258,4 +260,114 @@ nautilus_bonobo_set_icon (BonoboUIComponent *ui,
 	bonobo_ui_component_set_prop (ui, path,
 				      "pixtype",
 				      "filename", NULL);
+}
+
+struct _NautilusBonoboActivate {
+	NautilusBonoboActivateCallback activation_callback;
+	gpointer callback_data;
+	gboolean stop_activation;
+};
+
+static void
+oaf_activation_callback (CORBA_Object object_reference, 
+			 const char *error_reason, 
+			 gpointer user_data)
+{
+	NautilusBonoboActivate *activate_struct;
+	CORBA_Environment ev;
+	
+	activate_struct = (NautilusBonoboActivate *) user_data;
+	CORBA_exception_init (&ev);
+	
+	if (CORBA_Object_is_nil (object_reference, &ev)) {
+		/* error */
+		activate_struct->activation_callback (NULL, 
+						      activate_struct->callback_data);
+		
+	} else if (!activate_struct->stop_activation) {
+		
+		/* report activation to caller */
+		activate_struct->activation_callback (object_reference, 
+						      activate_struct->callback_data);
+		
+	} else if (activate_struct->stop_activation) {
+		activate_struct->stop_activation = FALSE;
+		
+		Bonobo_Unknown_unref (object_reference, &ev);
+		/* it is no use to check for exception here since we 
+		   have no way of reporting it... */
+	}
+	CORBA_exception_free (&ev);
+}
+
+
+/**
+ * nautilus_bonobo_activate_from_id:
+ * @iid: iid of component to activate.
+ * @callback: callback to call when activation finished.
+ * @user_data: data to pass to callback when activation finished.
+ *
+ * This function will return NULL if something bad happened during 
+ * activation. Alternatively, it will return a structure you are 
+ * supposed to free yourself when you have received a call in your
+ * callback.
+ */
+NautilusBonoboActivate *
+nautilus_bonobo_activate_from_id (const char *iid, 
+				  NautilusBonoboActivateCallback callback, 
+				  gpointer user_data)
+{
+	NautilusBonoboActivate *activate_structure;
+	CORBA_Environment ev;
+
+	if (iid == NULL || callback == NULL) {
+		return NULL;
+	}
+
+	activate_structure = g_new0 (NautilusBonoboActivate, 1);
+
+	activate_structure->stop_activation = FALSE;
+	activate_structure->activation_callback = callback;
+	activate_structure->callback_data = user_data;
+
+	CORBA_exception_init (&ev);
+	oaf_activate_from_id_async ((const OAF_ActivationID) iid, 0, oaf_activation_callback, 
+				    activate_structure , &ev);
+
+	if (ev._major != CORBA_NO_EXCEPTION) {
+		return NULL;
+	}
+
+	CORBA_exception_free (&ev);
+
+	return activate_structure;
+}
+
+/**
+ * nautilus_bonobo_activate_from_id:
+ * @iid: iid of component to activate.
+ * @callback: callback to call when activation finished.
+ * @user_data: data to pass to callback when activation finished.
+ *
+ * Stops activation of a component. Your callback will never be called.
+ * you should free your %NautilusBonoboActivate strucutre through
+ * nautilus_bonobo_activate_free after this call.
+ */
+
+void 
+nautilus_bonobo_activate_stop (NautilusBonoboActivate *activate_structure)
+{
+	activate_structure->stop_activation = TRUE;
+}
+
+/**
+ * nautilus_bonobo_activate_free: 
+ * @activate_structure: structure to free.
+ * 
+ * Frees the corresponding structure.
+ */
+void
+nautilus_bonobo_activate_free (NautilusBonoboActivate *activate_structure)
+{
+	g_free (activate_structure);
 }

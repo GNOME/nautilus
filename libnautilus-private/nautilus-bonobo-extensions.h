@@ -69,4 +69,15 @@ void     nautilus_bonobo_set_icon                (BonoboUIComponent *ui,
 						  const char        *path,
 						  const char        *icon_relative_path);
 
+typedef struct _NautilusBonoboActivate NautilusBonoboActivate;
+
+typedef void (*NautilusBonoboActivateCallback) (CORBA_Object object_reference, gpointer data);
+
+NautilusBonoboActivate *nautilus_bonobo_activate_from_id (const char *iid, 
+							 NautilusBonoboActivateCallback callback, 
+							 gpointer user_data);
+void nautilus_bonobo_activate_stop (NautilusBonoboActivate *activate_structure);
+void nautilus_bonobo_activate_free (NautilusBonoboActivate *activate_structure);
+
+
 #endif /* NAUTILUS_BONOBO_EXTENSIONS_H */

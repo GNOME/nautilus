@@ -89,6 +89,9 @@ typedef struct {
         void (* zoom_level_changed)            (NautilusViewFrame *view,
                                                 double             zoom_level);
 
+        void (* report_activation_complete)    (NautilusViewFrame *view,
+                                                BonoboObjectClient *object);
+
         /* Error handling for when client goes away. */
         void (* client_gone)                   (NautilusViewFrame *view);
 
@@ -96,6 +99,15 @@ typedef struct {
 	Nautilus_HistoryList *
              (* get_history_list)	       (NautilusViewFrame *view);
 } NautilusViewFrameClass;
+
+typedef void (*NautilusActivationCallback) (NautilusViewFrame *view_frame, gpointer data);
+
+void                  nautilus_view_frame_load_client_async (NautilusViewFrame *view, 
+                                                             const char *iid);
+
+void                  nautilus_view_frame_stop_activation           (NautilusViewFrame *view);
+
+
 
 GtkType               nautilus_view_frame_get_type                  (void);
 NautilusViewFrame *   nautilus_view_frame_new                       (BonoboUIContainer   *ui_container,

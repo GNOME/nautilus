@@ -37,6 +37,7 @@
 
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtk.h>
 #include <libnautilus-extensions/nautilus-undo-manager.h>
@@ -54,6 +55,7 @@ enum {
 	REPORT_LOAD_PROGRESS,
 	REPORT_LOAD_COMPLETE,
 	REPORT_LOAD_FAILED,
+	REPORT_ACTIVATION_COMPLETE,
 	TITLE_CHANGED,
 	ZOOM_LEVEL_CHANGED,
 	CLIENT_GONE,
@@ -63,6 +65,7 @@ enum {
 
 typedef enum {
 	VIEW_FRAME_EMPTY,
+	VIEW_FRAME_ACTIVATING,
 	VIEW_FRAME_NO_LOCATION,
 	VIEW_FRAME_WAITING,
 	VIEW_FRAME_UNDERWAY,
@@ -79,11 +82,19 @@ struct NautilusViewFrameDetails {
 	BonoboUIContainer *ui_container;
 
 	guint check_if_view_is_gone_timeout_id;
+
+	char *activation_iid;
+	NautilusBonoboActivate *activate_structure;
 };
 
 static void nautilus_view_frame_initialize       (NautilusViewFrame      *view);
 static void nautilus_view_frame_destroy          (GtkObject              *view);
 static void nautilus_view_frame_initialize_class (NautilusViewFrameClass *klass);
+
+static void view_frame_not_activated             (NautilusViewFrame      *view);
+static void view_frame_activated                 (NautilusViewFrame      *view);
+static void view_frame_stop_activation           (NautilusViewFrame      *view);
+
 
 static guint signals[LAST_SIGNAL];
 
@@ -161,6 +172,15 @@ nautilus_view_frame_initialize_class (NautilusViewFrameClass *klass)
 						   report_load_failed),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
+	signals[REPORT_ACTIVATION_COMPLETE] =
+		gtk_signal_new ("report_activation_complete",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
+						   report_activation_complete),
+				gtk_marshal_NONE__POINTER,
+				GTK_TYPE_NONE, 1,
+				GTK_TYPE_POINTER);
 	signals[TITLE_CHANGED] =
 		gtk_signal_new ("title_changed",
 				GTK_RUN_LAST,
@@ -298,6 +318,110 @@ nautilus_view_frame_new (BonoboUIContainer *ui_container,
 	return view_frame;
 }
 
+/* stimulus: successful load_client call */
+static void
+view_frame_activating (NautilusViewFrame *view)
+{
+	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
+
+	switch (view->details->state) {
+	case VIEW_FRAME_EMPTY:
+		view->details->state = VIEW_FRAME_ACTIVATING;
+		return;
+		break;
+	case VIEW_FRAME_ACTIVATING:
+	case VIEW_FRAME_NO_LOCATION:
+	case VIEW_FRAME_UNDERWAY:
+	case VIEW_FRAME_LOADED:
+	case VIEW_FRAME_WAITING:
+	case VIEW_FRAME_FAILED:
+		g_assert_not_reached ();
+		return;
+	}
+
+	g_assert_not_reached ();
+}
+
+
+/* stimulus: unsuccessful activated_component call */
+static void
+view_frame_not_activated (NautilusViewFrame *view)
+{
+	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
+	
+	switch (view->details->state) {
+	case VIEW_FRAME_ACTIVATING:
+		view->details->state = VIEW_FRAME_FAILED;
+		return;
+		break;
+	case VIEW_FRAME_EMPTY:
+	case VIEW_FRAME_NO_LOCATION:
+	case VIEW_FRAME_UNDERWAY:
+	case VIEW_FRAME_LOADED:
+	case VIEW_FRAME_WAITING:
+	case VIEW_FRAME_FAILED:
+		g_assert_not_reached ();
+		return;
+		break;
+	}
+
+	g_assert_not_reached ();
+}
+
+/* stimulus: successful activated_component call */
+static void
+view_frame_activated (NautilusViewFrame *view)
+{
+	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
+	
+	switch (view->details->state) {
+	case VIEW_FRAME_ACTIVATING:
+		view->details->state = VIEW_FRAME_NO_LOCATION;
+		return;
+		break;
+	case VIEW_FRAME_EMPTY:
+	case VIEW_FRAME_NO_LOCATION:
+	case VIEW_FRAME_UNDERWAY:
+	case VIEW_FRAME_LOADED:
+	case VIEW_FRAME_WAITING:
+	case VIEW_FRAME_FAILED:
+		g_assert_not_reached ();
+		return;
+		break;
+	}
+
+	g_assert_not_reached ();
+}
+
+
+/* stimulus: stop activation */
+static void
+view_frame_stop_activation (NautilusViewFrame *view)
+{
+	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
+	
+	switch (view->details->state) {
+	case VIEW_FRAME_EMPTY:
+	case VIEW_FRAME_ACTIVATING:
+		view->details->state = VIEW_FRAME_EMPTY;
+		return;
+		break;
+	case VIEW_FRAME_NO_LOCATION:
+	case VIEW_FRAME_UNDERWAY:
+	case VIEW_FRAME_LOADED:
+	case VIEW_FRAME_WAITING:
+	case VIEW_FRAME_FAILED:
+		g_assert_not_reached ();
+		return;
+		break;
+	}
+
+	g_assert_not_reached ();
+}
+
+
+
+/* this corresponds to the load_location call stimulus */
 static void
 view_frame_wait (NautilusViewFrame *view)
 {
@@ -307,6 +431,9 @@ view_frame_wait (NautilusViewFrame *view)
 	case VIEW_FRAME_EMPTY:
 		/* Darin: Change to state machine? */
 		g_warning ("tried to load location in an empty view frame");
+		break;
+	case VIEW_FRAME_ACTIVATING:
+		view->details->state = VIEW_FRAME_FAILED;
 		break;
 	case VIEW_FRAME_NO_LOCATION:
 	case VIEW_FRAME_UNDERWAY:
@@ -323,6 +450,8 @@ view_frame_wait (NautilusViewFrame *view)
 	g_assert_not_reached ();
 }
 
+
+/* this corresponds to the load_underway and load_progress stimulus */
 static void
 view_frame_underway (NautilusViewFrame *view)
 {
@@ -331,6 +460,7 @@ view_frame_underway (NautilusViewFrame *view)
 	switch (view->details->state) {
 	case VIEW_FRAME_EMPTY:
 	case VIEW_FRAME_FAILED:
+	case VIEW_FRAME_ACTIVATING:
 		g_assert_not_reached ();
 		return;
 	case VIEW_FRAME_NO_LOCATION:
@@ -348,6 +478,13 @@ view_frame_underway (NautilusViewFrame *view)
 	g_assert_not_reached ();
 }
 
+/* stimulus 
+   - open_location call from component
+   - open_location_in_new_window
+   - report_selection_change
+   - report_status
+   - set_title 
+*/
 static void
 view_frame_wait_is_over (NautilusViewFrame *view)
 {
@@ -356,6 +493,7 @@ view_frame_wait_is_over (NautilusViewFrame *view)
 	switch (view->details->state) {
 	case VIEW_FRAME_EMPTY:
 	case VIEW_FRAME_FAILED:
+	case VIEW_FRAME_ACTIVATING:
 		g_assert_not_reached ();
 		return;
 	case VIEW_FRAME_NO_LOCATION:
@@ -372,6 +510,9 @@ view_frame_wait_is_over (NautilusViewFrame *view)
 	g_assert_not_reached ();
 }
 
+
+/* stimulus: report_load_complete */
+
 static void
 view_frame_loaded (NautilusViewFrame *view)
 {
@@ -380,6 +521,7 @@ view_frame_loaded (NautilusViewFrame *view)
 	switch (view->details->state) {
 	case VIEW_FRAME_EMPTY:
 	case VIEW_FRAME_FAILED:
+	case VIEW_FRAME_ACTIVATING:
 		g_assert_not_reached ();
 		return;
 	case VIEW_FRAME_NO_LOCATION:
@@ -397,6 +539,8 @@ view_frame_loaded (NautilusViewFrame *view)
 	g_assert_not_reached ();
 }
 
+/* stimulus: report_load_failed */
+
 static void
 view_frame_failed (NautilusViewFrame *view)
 {
@@ -408,6 +552,7 @@ view_frame_failed (NautilusViewFrame *view)
 		g_assert_not_reached ();
 		return;
 	case VIEW_FRAME_NO_LOCATION:
+	case VIEW_FRAME_ACTIVATING:
 		g_warning ("got signal from a view frame with no location");
 		return;
 	case VIEW_FRAME_WAITING:
@@ -451,31 +596,20 @@ check_if_view_is_gone (gpointer data)
 	return ok;
 }
 
-gboolean /* returns TRUE if successful */
-nautilus_view_frame_load_client (NautilusViewFrame *view, const char *iid)
+static gboolean
+nautilus_view_frame_set_to_component (NautilusViewFrame *view, BonoboObjectClient *component)
 {
 	CORBA_Environment ev;
 	Nautilus_View adapted;
-	BonoboObjectClient *component;
 	Bonobo_Control control;
 	BonoboControlFrame *control_frame;
-  	
-	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), FALSE);
-	g_return_val_if_fail (view->details->state == VIEW_FRAME_EMPTY, FALSE);
-
-	if (iid == NULL) {
-		return FALSE;
-        }
-
-	component = bonobo_object_activate (iid, 0);
-	if (component == NULL) {
-		return FALSE;
-        }
+	
 
 	/* Either create an adapter or query for the Nautilus:View
 	 * interface. Either way, we don't need to keep the original
 	 * reference around once that happens.
 	 */
+
 	adapted = nautilus_component_adapter_factory_create_adapter 
 		(nautilus_component_adapter_factory_get (),
 		 component);
@@ -530,7 +664,7 @@ nautilus_view_frame_load_client (NautilusViewFrame *view, const char *iid)
 	
 	bonobo_object_release_unref (control, NULL);
 	
-	view->iid = g_strdup (iid);
+	view->iid = g_strdup (view->details->activation_iid);
 
 	gtk_signal_connect_while_alive
 		(GTK_OBJECT (view->client_object), "destroy",
@@ -555,9 +689,91 @@ nautilus_view_frame_load_client (NautilusViewFrame *view, const char *iid)
 	view->details->check_if_view_is_gone_timeout_id
 		= g_timeout_add (10000, check_if_view_is_gone, view);
 
-	view->details->state = VIEW_FRAME_NO_LOCATION;
 	return TRUE;
 }
+
+
+static void
+activation_callback (CORBA_Object object_reference, gpointer data)
+{
+	NautilusViewFrame *view;
+	BonoboObjectClient *bonobo_object;
+
+	view = (NautilusViewFrame *) data;
+
+	bonobo_object = bonobo_object_client_from_corba (object_reference);
+	nautilus_view_frame_set_to_component (view, bonobo_object);
+
+	gtk_signal_emit (GTK_OBJECT (view), signals[REPORT_ACTIVATION_COMPLETE],
+			 bonobo_object);
+
+}
+
+
+
+void
+nautilus_view_frame_load_client_async (NautilusViewFrame *view, 
+				       const char *iid)
+{
+	NautilusBonoboActivate *activate_structure;
+
+	view_frame_activating (view);
+	view->details->activation_iid = g_strdup (iid);
+	activate_structure = nautilus_bonobo_activate_from_id (iid, 
+							       activation_callback,
+							       view);
+
+	view->details->activate_structure = activate_structure;
+}
+
+
+
+/**
+ * I left this function around because I was lazy to make the sidebar activation
+ * use the async model in the main state machine... there are 2 reasons for not 
+ * doing so:
+ * - sidebar components should NOT take long to load.
+ * - hacking the state machine might take me as long as it took me to get
+ *   the core stuff working so... I am not eager to get into this game.
+ *
+ * As a consequence, the folowing function does quite a few calls to 
+ * the state changing functions to simulate async activation... 
+ *
+ */
+gboolean /* returns TRUE if successful */
+nautilus_view_frame_load_client (NautilusViewFrame *view, const char *iid)
+{
+	BonoboObjectClient *component;
+  	
+	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), FALSE);
+	g_return_val_if_fail (view->details->state == VIEW_FRAME_EMPTY, FALSE);
+
+	if (iid == NULL) {
+		return FALSE;
+        }
+
+	view_frame_activating (view);
+	component = bonobo_object_activate (iid, 0);
+	if (component == NULL) {
+		view_frame_not_activated (view);
+		return FALSE;
+        }
+
+	view->details->activation_iid = g_strdup (iid);
+	view_frame_activated (view);
+
+	return nautilus_view_frame_set_to_component (view, component);
+}
+
+void 
+nautilus_view_frame_stop_activation (NautilusViewFrame *view)
+{
+	nautilus_bonobo_activate_stop (view->details->activate_structure);
+	view_frame_stop_activation (view);
+	nautilus_bonobo_activate_free (view->details->activate_structure);
+	view->details->activate_structure = NULL;
+}
+
 
 static void
 set_up_for_new_location (NautilusViewFrame *view)
@@ -578,6 +794,7 @@ nautilus_view_frame_load_location (NautilusViewFrame *view,
 	set_up_for_new_location (view);
 	view_frame_wait (view);
 	
+
 	/* ORBit does a bad job with Nautilus_URI, so it's not const char *. */
 	CORBA_exception_init (&ev);
 	Nautilus_View_load_location (bonobo_object_corba_objref (BONOBO_OBJECT (view->client_object)),
@@ -992,3 +1209,12 @@ nautilus_view_frame_get_history_list (NautilusViewFrame *view)
 			 &history_list);
   	return history_list;
 }
+
+
+
+
+
+
+
+
+
