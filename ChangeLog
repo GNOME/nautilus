@@ -1,3 +1,24 @@
+2001-01-27  Gene Z. Ragan  <gzr@eazel.com>
+
+	Added logic to handle volume mount name collisions.
+	Check for possible filename collison on desktop and create
+	unique alternate names for mounted devices.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	* libnautilus-extensions/nautilus-volume-monitor.h:
+
+	(nautilus_volume_monitor_get_volume_name),
+	(modify_volume_name_for_display), (update_modifed_volume_name),
+	(mount_lists_are_identical), (verify_current_mount_state),
+	(nautilus_volume_monitor_set_volume_name),
+	(get_iso9660_volume_name), (get_ext2_volume_name),
+	(get_msdos_volume_name), (get_nfs_volume_name),
+	(get_floppy_volume_name), (get_generic_volume_name):
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(create_unique_volume_name), (create_mount_link),
+	(volume_unmounted_callback):
+
 Fri Jan 26 23:58:42 2001  George Lebl <jirka@5z.com>
 
 	Holy piss sprinkled on this by Arik <arik@eazel.com>
@@ -40,7 +61,7 @@ Fri Jan 26 23:58:42 2001  George Lebl <jirka@5z.com>
 
 2001-01-26  Pavel Cisler  <pavel@eazel.com>
 
-	reviewed by: <delete if not using a buddy>
+	reviewed by: Gene Z. Ragan <gzr@eazel.com>
 
 	Fix 5352 (Tab Order messed up by "Layout" order of folder)
 	Fix 5478 (Icon view tab order doesn't follow the layout order)

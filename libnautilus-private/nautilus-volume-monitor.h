@@ -109,5 +109,9 @@ void                   	nautilus_volume_monitor_each_mounted_volume        	(Nau
 const GList		*nautilus_volume_monitor_get_removable_volumes 		(NautilusVolumeMonitor 		*monitor);
 void			nautilus_volume_monitor_free_volume             	(NautilusVolume             	*volume);
 char 			*nautilus_volume_monitor_get_target_uri 		(const NautilusVolume 		*volume);
+void			nautilus_volume_monitor_set_volume_name 		(NautilusVolumeMonitor 		*monitor,
+										 const NautilusVolume 		*volume,
+										 const char 			*volume_name);
+
 
 #endif /* NAUTILUS_VOLUME_MONITOR_H */

@@ -2,7 +2,7 @@
 
 /* fm-desktop-icon-view.c - implementation of icon view for managing the desktop.
 
-   Copyright (C) 2000 Eazel, Inc.
+   Copyright (C) 2000 Eazel, Inc.mou
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -244,6 +244,53 @@ volume_in_black_list (FMDesktopIconView *icon_view,
 	return FALSE;
 }
 
+
+static char *
+create_unique_volume_name (const char *desktop_path, const NautilusVolume *volume)
+{
+	GnomeVFSURI *uri;
+	char *uri_path, *new_name;
+	int index;
+	char *volume_name;
+	
+	index = 0;
+	new_name = NULL;
+	
+	volume_name = nautilus_volume_monitor_get_volume_name (volume);	
+
+	uri_path = g_strdup_printf ("%s/%s",desktop_path, volume_name);		
+	uri = gnome_vfs_uri_new (uri_path);
+	
+	/* Check for exiting filename and create a unique name. */
+	while (gnome_vfs_uri_exists (uri)) {
+		gnome_vfs_uri_unref (uri);
+		g_free (uri_path);
+		
+		index++;
+		
+		g_free (new_name);
+		new_name = g_strdup_printf ("%s (%d)", volume_name, index);
+		
+		uri_path = g_strdup_printf ("%s/%s", desktop_path, new_name);
+		uri = gnome_vfs_uri_new (uri_path);		
+	}
+	
+	if (new_name != NULL) {
+		g_free (volume_name);
+		volume_name = new_name;	
+	}
+	
+	if (strcmp (volume_name, volume->volume_name) != 0) {
+		nautilus_volume_monitor_set_volume_name (nautilus_volume_monitor_get (),
+							 volume, volume_name);
+	}
+
+	gnome_vfs_uri_unref (uri);
+	g_free (uri_path);
+	
+	return volume_name;
+}
+
 static void
 create_mount_link (FMDesktopIconView *icon_view,
 		   const NautilusVolume *volume)
@@ -277,9 +324,10 @@ create_mount_link (FMDesktopIconView *icon_view,
 	}
 
 	desktop_path = nautilus_get_desktop_directory ();
-	volume_name = nautilus_volume_monitor_get_volume_name (volume);	
 	target_uri =  nautilus_volume_monitor_get_target_uri (volume);
-
+	
+	volume_name = create_unique_volume_name (desktop_path, volume);
+	
 	/* Create link */
 	nautilus_link_local_create (desktop_path, volume_name, icon_name, target_uri, NAUTILUS_LINK_MOUNT);
 				    
@@ -582,7 +630,7 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor,
 	if (volume_name == NULL) {
 		return;
 	}
-
+	
 	desktop_path = nautilus_get_desktop_directory ();
 	link_path = nautilus_make_path (desktop_path, volume_name);
 	unlink_and_notify (link_path);

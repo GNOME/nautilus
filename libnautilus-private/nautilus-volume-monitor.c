@@ -356,19 +356,32 @@ volume_is_read_only (const NautilusVolume *volume)
 	return FALSE;
 }
 
-/* nautilus_volume_monitor_get_volume_name
- *	
- * Returns name of volume in human readable form
- */
- 
+
 char *
 nautilus_volume_monitor_get_volume_name (const NautilusVolume *volume)
+{
+	if (volume->volume_name == NULL) {
+		return g_strdup ("Unknown");
+	}
+	
+	return g_strdup (volume->volume_name);
+}
+
+
+/* modify_volume_name_for_display
+ *	
+ * Modify volume to be in human readable form
+ */
+ 
+static void
+modify_volume_name_for_display (NautilusVolume *volume)
 {
 	int index;
 	char *name;
 
 	if (volume->volume_name == NULL) {
-		return g_strdup ("Unknown");
+		volume->volume_name = g_strdup ("Unknown");
+		return;
 	}
 	
 	name = g_strdup (volume->volume_name);
@@ -388,7 +401,10 @@ nautilus_volume_monitor_get_volume_name (const NautilusVolume *volume)
 			name [index] = '-';
 		}
 	}
-	return name;
+	
+	/* Save pretty name back into volume info */
+	g_free (volume->volume_name);
+	volume->volume_name = g_strdup (name);
 }
 
 /* nautilus_volume_monitor_get_target_uri
@@ -788,19 +804,69 @@ get_current_mount_list (void)
 
 }
 
+
+static void
+update_modifed_volume_name (GList *mount_list, NautilusVolume *volume)
+{
+	GList *element;
+	NautilusVolume *found_volume;
+	
+	for (element = mount_list; element != NULL; element = element->next) {
+		found_volume = element->data;
+		if (strcmp (volume->device_path, found_volume->device_path) == 0) {
+			g_free (volume->volume_name);
+			volume->volume_name = g_strdup (found_volume->volume_name);
+		}
+	}
+}
+
+
+static gboolean
+mount_lists_are_identical (GList *list_a, GList *list_b)
+{
+	GList *p, *q;
+	NautilusVolume *volumeOne, *volumeTwo;
+
+	for (p = list_a, q = list_b; p != NULL && q != NULL; p = p->next, q = q->next) {
+		
+		volumeOne = p->data;
+		volumeTwo = q->data;
+		
+		if (strcmp (volumeOne->device_path, volumeTwo->device_path) != 0) {
+			return FALSE;
+		}
+	}
+	return p == NULL && q == NULL;
+}
+
 static void
 verify_current_mount_state (NautilusVolumeMonitor *monitor)
 {
 	GList *new_mounts, *old_mounts, *current_mounts;
+	GList *saved_mount_list;
+	gboolean free_new_mounts;
 	
-	new_mounts = old_mounts = current_mounts = NULL;
+	new_mounts = old_mounts = current_mounts = saved_mount_list = NULL;
 
+	/* Free the new mount list only if it is not a copy of the current mount list. */
+	if (monitor->details->mounts != NULL) {	
+		free_new_mounts = TRUE;
+	} else {
+		free_new_mounts = FALSE;
+	}
+	
 	/* Get all current mounts */
 	current_mounts = get_current_mount_list ();
 	if (current_mounts == NULL) {
 		return;
 	}
   	
+  	/* If the new list is the same of the current list, bail. */
+	if (mount_lists_are_identical (current_mounts, monitor->details->mounts)) {
+		free_mount_list (current_mounts);
+		return;
+	}
+		
   	/* If saved mounts is NULL, this is the first time we have been here. New mounts
   	 * are the same as current mounts
   	 */
@@ -812,7 +878,13 @@ verify_current_mount_state (NautilusVolumeMonitor *monitor)
   		new_mounts = build_volume_list_delta (current_mounts, monitor->details->mounts);
   		old_mounts = build_volume_list_delta (monitor->details->mounts, current_mounts);  		
 	}
-	
+		
+	/* Stash a copy of the current mount list for updating mount names later. */
+	saved_mount_list = monitor->details->mounts;
+		
+	/* Free previous mount list and replace with new */
+	monitor->details->mounts = current_mounts;
+
 	/* Check and see if we have new mounts to add */
 	if (new_mounts != NULL) {
 		GList *p;
@@ -822,9 +894,17 @@ verify_current_mount_state (NautilusVolumeMonitor *monitor)
 	}
 	
 	/* Check and see if we have old mounts to remove */
-	if (old_mounts != NULL) {
+	if (old_mounts != NULL) {		
 		GList *p;
+				
 		for (p = old_mounts; p != NULL; p = p->next) {
+			/* First we need to update the volume names in this list with modified names in the old list. Names in
+			 * the old list may have been modifed due to icon name conflicts.  The list of old mounts is unable
+		 	 * take this into account when it is created
+		 	 */			
+			update_modifed_volume_name (saved_mount_list, (NautilusVolume *)p->data);
+			
+			/* Deactivate the volume. */
 			mount_volume_deactivate (monitor, (NautilusVolume *)p->data);
 		}
 		free_mount_list (old_mounts);		
@@ -833,13 +913,11 @@ verify_current_mount_state (NautilusVolumeMonitor *monitor)
 	/* Free the new mount list only if it is not a copy of the current mount list.
 	 * It will be a copy if there are no previous mounts.
 	 */
-	if (monitor->details->mounts != NULL) {
+	if (free_new_mounts) {
 		free_mount_list (new_mounts);
 	}
-
-	/* Free previous mount list and replacw with new */
-	free_mount_list (monitor->details->mounts);
-	monitor->details->mounts = current_mounts;
+	
+	free_mount_list (saved_mount_list);
 }
 
 
@@ -1338,6 +1416,24 @@ nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
 }
 
 
+void
+nautilus_volume_monitor_set_volume_name (NautilusVolumeMonitor *monitor,
+					 const NautilusVolume *volume, const char *volume_name)
+{
+	GList *element;
+	NautilusVolume *found_volume;
+	
+	/* Find volume and set new name */
+	for (element = monitor->details->mounts; element != NULL; element = element->next) {
+		found_volume = element->data;
+		if (strcmp (found_volume->device_path, volume->device_path) == 0) {
+			g_free (found_volume->volume_name);
+			found_volume->volume_name = g_strdup (volume_name);
+			return;
+		}
+	}
+}
+
 static NautilusVolume *
 copy_volume (NautilusVolume *volume)
 {
@@ -1379,6 +1475,8 @@ get_iso9660_volume_name (NautilusVolume *volume, int fd)
 	volume->volume_name = g_strdup (iso_buffer.volume_id);
 	if (volume->volume_name == NULL) {
 		volume->volume_name = g_strdup (_("ISO 9660 Volume"));
+	} else {
+		modify_volume_name_for_display (volume);
 	}
 }
 
@@ -1395,6 +1493,7 @@ get_ext2_volume_name (NautilusVolume *volume)
 		} else {		
 			name++;
 			volume->volume_name = g_strdup (name);
+			modify_volume_name_for_display (volume);
 		}
 	} else {
 		volume->volume_name = g_strdup (_("Ext2 Volume"));
@@ -1410,6 +1509,7 @@ get_msdos_volume_name (NautilusVolume *volume)
 	if (name != NULL) {
 		name++;
 		volume->volume_name = g_strdup (name);
+		modify_volume_name_for_display (volume);
 	} else {
 		volume->volume_name = g_strdup (_("MSDOS Volume"));
 	}
@@ -1424,6 +1524,7 @@ get_nfs_volume_name (NautilusVolume *volume)
 	if (name != NULL) {
 		name++;
 		volume->volume_name = g_strdup (name);
+		modify_volume_name_for_display (volume);
 	} else {
 		volume->volume_name = g_strdup (_("NFS Volume"));
 	}
@@ -1438,6 +1539,7 @@ get_floppy_volume_name (NautilusVolume *volume)
 	if (name != NULL) {
 		name++;
 		volume->volume_name = g_strdup (name);
+		modify_volume_name_for_display (volume);
 	} else {
 		volume->volume_name = g_strdup (_("Floppy"));
 	}
@@ -1452,6 +1554,7 @@ get_generic_volume_name (NautilusVolume *volume)
 	if (name != NULL) {
 		name++;
 		volume->volume_name = g_strdup (name);
+		modify_volume_name_for_display (volume);
 	} else {
 		volume->volume_name = g_strdup (_("Unknown Volume"));
 	}
