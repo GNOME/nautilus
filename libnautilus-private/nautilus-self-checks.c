@@ -53,7 +53,7 @@ static void
 nautilus_report_check_failure (char *result, char *expected)
 {
 	if (!failed) {
-		printf ("\n");
+		fprintf (stderr, "\n");
 	}
 
 	fprintf (stderr, "FAIL: check failed in %s, line %d\n", current_file_name, current_line_number);

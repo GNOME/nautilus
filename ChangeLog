@@ -1,3 +1,16 @@
+2001-01-19  Pavel Cisler <pavel@eazel.com>
+
+	Fix 3558: Nautilus crashes with specific sequence of icon dragging
+	and mouse movement
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_button_release), (nautilus_list_motion):
+	The drag start code was assuming an actual item was clicked,
+	added a check that checked the clicked row index first.
+	
+	* libnautilus-extensions/nautilus-self-checks.c:
+	(nautilus_report_check_failure):
+	Missed one printf -> fprintf (stderr...
+	
 2001-01-18  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-xml-package-list.c:

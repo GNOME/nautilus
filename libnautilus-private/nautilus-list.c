@@ -1087,12 +1087,10 @@ nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 		 */
 		if (event->button == ACTION_BUTTON && 
 		    list->details->single_click_mode && 
-		    !event_state_modifies_selection (event->state))
-		{
+		    !event_state_modifies_selection (event->state)) {
 			int elapsed_time = event->time - list->details->button_down_time;
 
-			if (elapsed_time < MAX_CLICK_TIME && list->details->button_down_row == row_index)
-			{
+			if (elapsed_time < MAX_CLICK_TIME && list->details->button_down_row == row_index) {
 				row = ROW_ELEMENT (clist, row_index)->data;
 				if (row->cell[column_index].type == NAUTILUS_CELL_LINK_TEXT) {
 					/* One final test. Check whether the click was in the
@@ -3068,9 +3066,10 @@ nautilus_list_motion (GtkWidget *widget, GdkEventMotion *event)
 	list = NAUTILUS_LIST (widget);
 	clist = NAUTILUS_CLIST (widget);
 
-	if (event->window != clist->clist_window)
+	if (event->window != clist->clist_window) {
 		return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, motion_notify_event, (widget, event));
-
+	}
+	
 	if (!((list->details->dnd_press_button == ACTION_BUTTON && (event->state & GDK_BUTTON1_MASK))
 	    || (list->details->dnd_press_button == CONTEXTUAL_MENU_BUTTON && (event->state & GDK_BUTTON3_MASK))))
 		return FALSE;
@@ -3082,6 +3081,13 @@ nautilus_list_motion (GtkWidget *widget, GdkEventMotion *event)
 		return FALSE;
 	}
 
+
+	if (list->details->button_down_row < 0) {
+		/* We didn't hit a row, just blank space */
+		return FALSE;
+	}
+
+	g_assert (list->details->button_down_row < clist->rows);
 	if (!list->details->drag_started) {
 		if (list->details->dnd_press_button == CONTEXTUAL_MENU_BUTTON) {
 			gtk_timeout_remove (list->details->context_menu_timeout_id);
