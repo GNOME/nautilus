@@ -8,12 +8,13 @@ msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-02-11 13:05+0100\n"
-"PO-Revision-Date: 2003-12-15 22:42-0600\n"
-"Last-Translator: Paisa Seeluangsawat <paisa@colorado.edu>\n"
+"PO-Revision-Date: 2004-02-15 12:39-0600\n"
+"Last-Translator: Paisa Seeluangsawat <paisa@users.sf.net>\n"
 "Language-Team: Thai <L10n@opentle.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -52,38 +53,34 @@ msgid "Nautilus Emblem view"
 msgstr "มุมมองตรา ของ Nautilus"
 
 #: components/emblem/nautilus-emblem-view.c:203
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't remove emblem with name '%s'."
-msgstr "เอาตราออกไม่ได้"
+msgstr "เอาตราชื่อ '%s' ออกไม่ได้"
 
 #: components/emblem/nautilus-emblem-view.c:204
-#, fuzzy
 msgid ""
 "This is probably because the emblem is a permanent one, and not one you "
 "added yourself."
-msgstr "เอาตรา '%s' ออกไม่ได้ นี่อาจเป็นเพราะว่านี่ไม่ใช้ตราที่คุณติดไว้แต่เป็นตราถาวร"
+msgstr "คงเป็นเพราะว่า นี่ไม่ใช้ตราที่คุณติดไว้ แต่เป็นตราถาวร"
 
 #: components/emblem/nautilus-emblem-view.c:205
-#, fuzzy
 msgid "Couldn't Remove Emblem"
 msgstr "เอาตราออกไม่ได้"
 
 #: components/emblem/nautilus-emblem-view.c:239
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't rename emblem with name '%s'."
-msgstr "เปลี่ยนชื่อตราไม่ได้"
+msgstr "เปลี่ยนชื่อของตรา '%s' ไม่สำเร็จ"
 
 #: components/emblem/nautilus-emblem-view.c:240
-#, fuzzy
 msgid ""
 "This is probably because the emblem is a permanent one, and not one that you "
 "added yourself."
-msgstr "เปลี่ยนชื่อตรา '%s' ไม่ได้ นี่อาจเป็นเพราะว่านี่ไม่ใช้ตราที่คุณติดไว้แต่เป็นตราถาวร"
+msgstr "คงเป็นเพราะว่า นี่ไม่ใช้ตราที่คุณติดไว้ แต่เป็นตราถาวร"
 
 #: components/emblem/nautilus-emblem-view.c:241
-#, fuzzy
 msgid "Couldn't Rename Emblem"
-msgstr "เปลี่ยนชื่อตราไม่ได้"
+msgstr "เปลี่ยนชื่อตราไม่สำเร็จ"
 
 #: components/emblem/nautilus-emblem-view.c:260
 msgid "Rename Emblem"
@@ -114,32 +111,28 @@ msgid ""
 msgstr "ใส่ชื่อไว้ข้างๆตรา"
 
 #: components/emblem/nautilus-emblem-view.c:742
-#, fuzzy
 msgid "Some of the files could not be added as emblems."
-msgstr "บางแฟ้มไม่ใช่รูปจึงใช้เป็นตราไม่ได้"
+msgstr "บางแฟ้มใช้เป็นตราไม่ได้"
 
 #: components/emblem/nautilus-emblem-view.c:742
 #: components/emblem/nautilus-emblem-view.c:744
-#, fuzzy
 msgid "The emblems do not appear to be valid images."
-msgstr "แฟ้ม '%s' ดูเหมือนจะไม่ใช่รูป"
+msgstr "ตราเหล่านี้ดูเหมือนจะไม่ใช่รูป"
 
 #: components/emblem/nautilus-emblem-view.c:742
 #: components/emblem/nautilus-emblem-view.c:744
-#, fuzzy
 msgid "Couldn't Add Emblems"
 msgstr "เพิ่มตราไม่สำเร็จ"
 
 #: components/emblem/nautilus-emblem-view.c:744
-#, fuzzy
 msgid "None of the files could be added as emblems."
-msgstr "ไม่มีแฟ้มที่เป็นรูปซึ่งใช้เป็นตราได้"
+msgstr "ไม่มีแฟ้มที่ใช้เป็นตราไม่ได้"
 
 #: components/emblem/nautilus-emblem-view.c:765
 #: components/emblem/nautilus-emblem-view.c:790
 #: components/emblem/nautilus-emblem-view.c:840
 msgid "The emblem cannot be added."
-msgstr ""
+msgstr "เพิ่มตราไม่สำเร็จ"
 
 #: components/emblem/nautilus-emblem-view.c:765
 msgid "The dragged text was not a valid file location."
@@ -148,7 +141,6 @@ msgstr "ข้อความที่ลากมาไม่ใช้ตำแ
 #: components/emblem/nautilus-emblem-view.c:765
 #: components/emblem/nautilus-emblem-view.c:790
 #: components/emblem/nautilus-emblem-view.c:840
-#, fuzzy
 msgid "Couldn't Add Emblem"
 msgstr "เพิ่มตราไม่สำเร็จ"
 
@@ -224,7 +216,6 @@ msgid "Flash Fired"
 msgstr "ใช้แฟลช"
 
 #: components/image_properties/nautilus-image-properties-view.c:200
-#, fuzzy
 msgid "Focal Length"
 msgstr "ระยะโฟกัส"
 
@@ -242,7 +233,7 @@ msgid "Software"
 msgstr "โปรแกรม"
 
 #: components/image_properties/nautilus-image-properties-view.c:222
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
@@ -345,7 +336,7 @@ msgstr "เลือกดูโปรแกรมที่มี"
 
 #: data/browser.xml.h:1
 msgid "Apparition"
-msgstr "Apparition"
+msgstr "วิญญาณ"
 
 #: data/browser.xml.h:2
 msgid "Art"
@@ -377,7 +368,7 @@ msgstr "Brushed Metal"
 
 #: data/browser.xml.h:9
 msgid "Bubble Gum"
-msgstr "Bubble Gum"
+msgstr "หมากฝรั่ง"
 
 #: data/browser.xml.h:10
 msgid "Burlap"
@@ -535,9 +526,10 @@ msgstr "Indigo"
 msgid "Leaf"
 msgstr "ใบไม้"
 
+# It's lemon color.  มะนาว will make Thai people think of lime.
 #: data/browser.xml.h:50
 msgid "Lemon"
-msgstr "มะนาว"
+msgstr "ทุเรียน"
 
 #: data/browser.xml.h:51
 msgid "Mail"
@@ -994,9 +986,8 @@ msgstr ""
 #: libnautilus-extension/nautilus-column.c:189
 #: libnautilus-extension/nautilus-menu-item.c:213
 #: libnautilus-extension/nautilus-property-page.c:183
-#, fuzzy
 msgid "Label"
-msgstr "Eazel"
+msgstr ""
 
 #: libnautilus-extension/nautilus-column.c:190
 msgid "Label to display in the column"
@@ -1011,9 +1002,8 @@ msgid "A user-visible description of the column"
 msgstr ""
 
 #: libnautilus-extension/nautilus-column.c:204
-#, fuzzy
 msgid "xalign"
-msgstr "ตัวเชื่อม"
+msgstr ""
 
 #: libnautilus-extension/nautilus-column.c:205
 msgid "The x-alignment of the column"
@@ -1037,7 +1027,6 @@ msgid "Tooltip for the menu item"
 msgstr ""
 
 #: libnautilus-extension/nautilus-menu-item.c:227
-#, fuzzy
 msgid "Icon"
 msgstr "สัญลักษณ์"
 
@@ -1054,14 +1043,12 @@ msgid "Whether the menu item is sensitive"
 msgstr ""
 
 #: libnautilus-extension/nautilus-menu-item.c:242
-#, fuzzy
 msgid "Priority"
-msgstr "พิมพ์"
+msgstr ""
 
 #: libnautilus-extension/nautilus-menu-item.c:243
-#, fuzzy
 msgid "Show priority text in toolbars"
-msgstr "แสดงข้อความในสัญลักษณ์ (_X)"
+msgstr ""
 
 #: libnautilus-extension/nautilus-property-page.c:177
 msgid "Name of the page"
@@ -1072,9 +1059,8 @@ msgid "Label widget to display in the notebook tab"
 msgstr ""
 
 #: libnautilus-extension/nautilus-property-page.c:190
-#, fuzzy
 msgid "Page"
-msgstr "แพ็กเกจ"
+msgstr "หน้า"
 
 #: libnautilus-extension/nautilus-property-page.c:191
 msgid "Widget for the property page"
@@ -1765,63 +1751,53 @@ msgid "The date the file was modified."
 msgstr "แสดง \"%s\" ไม่สำเร็จเพราะล็อกอินไม่สำเร็จ"
 
 #: libnautilus-private/nautilus-column-utilities.c:73
-#, fuzzy
 msgid "Date Accessed"
-msgstr "เวลาที่ถูกใช้"
+msgstr "เวลาที่ถูกอ่าน"
 
 #: libnautilus-private/nautilus-column-utilities.c:74
 msgid "The date the file was accessed."
-msgstr ""
+msgstr "เวลาที่แฟ้มถูกเปิดอ่านอ่าน"
 
 #: libnautilus-private/nautilus-column-utilities.c:81
-#, fuzzy
 msgid "Owner"
-msgstr "เจ้าของ:"
+msgstr "เจ้าของ"
 
 #: libnautilus-private/nautilus-column-utilities.c:82
-#, fuzzy
 msgid "The owner of the file."
-msgstr "ไม่รู้สิทธิ์สำหรับ \"%s\""
+msgstr "เจ้าของแฟ้ม"
 
 #: libnautilus-private/nautilus-column-utilities.c:89
-#, fuzzy
 msgid "Group"
-msgstr "กลุ่ม:"
+msgstr "กลุ่ม"
 
 #: libnautilus-private/nautilus-column-utilities.c:90
-#, fuzzy
 msgid "The group of the file."
-msgstr "ไม่รู้สิทธิ์สำหรับ \"%s\""
+msgstr "กลุ่มของแฟ้ม"
 
 #: libnautilus-private/nautilus-column-utilities.c:97
 #: src/file-manager/fm-properties-window.c:2865
 msgid "Permissions"
-msgstr "สิทธิ์ที่อนุญาต"
+msgstr "สิทธิ์"
 
 #: libnautilus-private/nautilus-column-utilities.c:98
-#, fuzzy
 msgid "The permissions of the file."
-msgstr "ไม่รู้สิทธิ์สำหรับ \"%s\""
+msgstr "สิทธิ์การใช้แฟ้ม"
 
 #: libnautilus-private/nautilus-column-utilities.c:105
-#, fuzzy
 msgid "Octal Permissions"
-msgstr "สิทธิ์ในเลขฐาน 8"
+msgstr "สิทธิ์ในเลขฐานแปด"
 
 #: libnautilus-private/nautilus-column-utilities.c:106
-#, fuzzy
 msgid "The permissions of the file, in octal notation."
-msgstr "ไม่รู้สิทธิ์สำหรับแฟ้มที่เลือก"
+msgstr "สิทธิ์การใช้แฟ้ม ในเลขฐานแปด"
 
 #: libnautilus-private/nautilus-column-utilities.c:113
-#, fuzzy
 msgid "MIME Type"
-msgstr "ประเภท MIME"
+msgstr "MIME Type"
 
 #: libnautilus-private/nautilus-column-utilities.c:114
-#, fuzzy
 msgid "The mime type of the file."
-msgstr "[File type is] แฟ้ม text"
+msgstr "ชนิด MIME ของแฟ้ม"
 
 #: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
@@ -1834,16 +1810,14 @@ msgid "on the desktop"
 msgstr "บนพื้นโต๊ะ"
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:105
-#, fuzzy
 msgid "You cannot delete a volume icon."
-msgstr "ลบไดรฟ์ข้อมูลไม่ได้"
+msgstr "ลบสัญลักษณ์ของโวลุมไม่ได้"
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:106
-#, fuzzy
 msgid ""
 "If you want to eject the volume, please use Eject in the right-click menu of "
 "the volume."
-msgstr "ลบไม่ได้  ถ้าต้องการเอาแผ่นออก โปรดคลิกขวาบนสัญลักษณ์แล้วเลือก \"เอาแผ่นออก\""
+msgstr "ถ้าต้องการเอาแผ่นออก โปรดคลิกขวาบนสัญลักษณ์แล้วเลือก \"เอาแผ่นออก\""
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:108
 #, fuzzy
@@ -2553,7 +2527,6 @@ msgid "Error creating new folder."
 msgstr "เกิดข้อผิดพลาดขณะสร้างโฟลเดอร์ใหม่"
 
 #: libnautilus-private/nautilus-file-operations.c:2066
-#, fuzzy
 msgid "Error Creating New Folder"
 msgstr "เกิดข้อผิดพลาดขณะสร้างโฟลเดอร์ใหม่"
 
@@ -2741,7 +2714,7 @@ msgstr "วันพฤหัสบดี ที่ 00 พฤศจิกาย�
 
 #: libnautilus-private/nautilus-file.c:2939
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
-msgstr "วัน%A ที่ %-d %B %Y ตอน %-H:%M:%S น."
+msgstr "วัน%A ที่ %-d %B %EY ตอน %-H:%M:%S น."
 
 #: libnautilus-private/nautilus-file.c:2941
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
@@ -2749,7 +2722,7 @@ msgstr "อา. 13 มิ.ย. 2542, 22:48:32"
 
 #: libnautilus-private/nautilus-file.c:2942
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
-msgstr "%a %-d %b %Y, %-H:%M:%S"
+msgstr "%a %-d %b %Ey, %-H:%M:%S"
 
 #: libnautilus-private/nautilus-file.c:2944
 msgid "Mon, Oct 00 0000 at 00:00 PM"
@@ -2757,7 +2730,7 @@ msgstr "อา. 13 มิ.ย. 2542, 22:48"
 
 #: libnautilus-private/nautilus-file.c:2945
 msgid "%a, %b %-d %Y at %-I:%M %p"
-msgstr "%a %-d %b %Y, %-H:%M"
+msgstr "%a %-d %b %Ey, %-H:%M"
 
 #: libnautilus-private/nautilus-file.c:2947
 msgid "Oct 00 0000 at 00:00 PM"
@@ -2765,7 +2738,7 @@ msgstr "13 มิ.ย. 2542, 22:48"
 
 #: libnautilus-private/nautilus-file.c:2948
 msgid "%b %-d %Y at %-I:%M %p"
-msgstr "%-d %b %Y, %-H:%M"
+msgstr "%-d %b %Ey, %-H:%M"
 
 #: libnautilus-private/nautilus-file.c:2950
 msgid "Oct 00 0000, 00:00 PM"
@@ -2773,7 +2746,7 @@ msgstr "13 มิ.ย. 2542, 22:48"
 
 #: libnautilus-private/nautilus-file.c:2951
 msgid "%b %-d %Y, %-I:%M %p"
-msgstr "%-d %b %Y, %-H:%M"
+msgstr "%-d %b %Ey, %-H:%M"
 
 #: libnautilus-private/nautilus-file.c:2953
 msgid "00/00/00, 00:00 PM"
@@ -2781,7 +2754,7 @@ msgstr "00/00/0000, 00:00"
 
 #: libnautilus-private/nautilus-file.c:2954
 msgid "%m/%-d/%y, %-I:%M %p"
-msgstr "%-d/%m/%Y, %-H:%M"
+msgstr "%-d/%m/%Ey, %-H:%M"
 
 #: libnautilus-private/nautilus-file.c:2956
 msgid "00/00/00"
@@ -2789,7 +2762,7 @@ msgstr "00/00/0000"
 
 #: libnautilus-private/nautilus-file.c:2957
 msgid "%m/%d/%y"
-msgstr "%d/%m/%Y"
+msgstr "%d/%m/%Ey"
 
 #: libnautilus-private/nautilus-file.c:4265
 #: src/file-manager/fm-directory-view.c:1813
@@ -3448,19 +3421,14 @@ msgstr "ไม่มีคำสั่งตั้งไว้"
 #. * (They can add applications though.)
 #.
 #: libnautilus-private/nautilus-program-chooser.c:1605
-#, fuzzy
 msgid ""
 "You can configure GNOME to associate applications with file types. Do you "
 "want to associate an application with this file type now?"
-msgstr ""
-"%s\n"
-"\n"
-"คุณสามารถตั้งโปรแกรมที่จะใช้เปิดแฟ้มแต่ละชนิด  คุณต้องการตั้งโปรแกรมที่จะใช้เปิดแฟ้มชนิดนี้หรือไม่ ?"
+msgstr "คุณสามารถตั้งโปรแกรมสำหรับเปิดแฟ้มชนิดต่างๆ  จะตั้งโปรแกรมสำหรับแฟ้มชนิดนี้ใหม ?"
 
 #: libnautilus-private/nautilus-program-chooser.c:1610
-#, fuzzy
 msgid "_Associate Application"
-msgstr "โปรแกรมที่ใช้เปิด"
+msgstr "ตั้งโปรแกรมที่ใช้เปิด (_A)"
 
 #: libnautilus-private/nautilus-program-chooser.c:1639
 #, c-format
@@ -3490,15 +3458,11 @@ msgid "Invalid Action Associated"
 msgstr "เลือกคำสั่งไว้ไม่ดี"
 
 #: libnautilus-private/nautilus-program-chooser.c:1649
-#, fuzzy
 msgid ""
 "You can configure GNOME to associate a different application or viewer with "
 "this file type. Do you want to associate an application or viewer with this "
 "file type now?"
-msgstr ""
-"%s\n"
-"\n"
-"คุณสามารถตั้งโปรแกรมไว้สำหรับแฟ้มชนิดต่างๆ  คุณต้องการตั้งโปรแกรมสำหรับแฟ้มชนิดนี้หรือไม่?"
+msgstr "คุณสามารถตั้งโปรแกรมสำหรับเปิดแฟ้มชนิดต่างๆ  จะตั้งโปรแกรมสำหรับแฟ้มชนิดนี้ใหม ?"
 
 #: libnautilus-private/nautilus-program-chooser.c:1654
 #, fuzzy
@@ -4374,7 +4338,7 @@ msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\" จะถูกคัดลอกถ้าคุณเลือกคำสั่ง \"แปะแฟ้ม\""
 
 #: src/file-manager/fm-directory-view.c:4646
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
 msgid_plural ""
@@ -4383,7 +4347,7 @@ msgstr[0] "%d รายการที่เลือกจะถูกย้า
 msgstr[1] "%d รายการที่เลือกจะถูกย้ายถ้าคุณเลือกคำสั่ง \"แปะแฟ้ม\""
 
 #: src/file-manager/fm-directory-view.c:4653
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
 msgid_plural ""
@@ -4421,11 +4385,11 @@ msgstr "_Unmount Volume"
 #. add the "open in new window" menu item
 #: src/file-manager/fm-directory-view.c:5258
 #: src/file-manager/fm-tree-view.c:960
-#, fuzzy, c-format
+#, c-format
 msgid "Open in New Window"
 msgid_plural "Open in %d New Windows"
-msgstr[0] "เปิดในหน้าต่างใหม่ (_I)"
-msgstr[1] "เปิดในหน้าต่างใหม่ (_I)"
+msgstr[0] "เปิดในหน้าต่างใหม่"
+msgstr[1] "เปิดใน %d หน้าต่างใหม่"
 
 #: src/file-manager/fm-directory-view.c:5265
 msgid "Browse Folder"
@@ -4739,11 +4703,11 @@ msgstr "คอยเรียงสัญลักษณ์เป็นแถว
 #: src/file-manager/fm-icon-view.c:1632
 #: src/file-manager/nautilus-icon-view-ui.xml.h:20
 msgid "Restore Icons' Original Si_zes"
-msgstr "เปลี่ยนกลับไปใช้ขนาดปรกติของสัญลักษณ์ (_Z)"
+msgstr "เปลี่ยนกลับไปใช้ขนาดปกติของสัญลักษณ์ (_Z)"
 
 #: src/file-manager/fm-icon-view.c:1633
 msgid "Restore Icon's Original Si_ze"
-msgstr "เปลี่ยนกลับไปใช้ขนาดปรกติของสัญลักษณ์ (_Z)"
+msgstr "เปลี่ยนกลับไปใช้ขนาดปกติของสัญลักษณ์ (_Z)"
 
 #: src/file-manager/fm-icon-view.c:1996
 #, c-format
@@ -4772,12 +4736,11 @@ msgstr ""
 #: src/file-manager/fm-list-view.c:1512
 #, c-format
 msgid "%s Visible Columns"
-msgstr ""
+msgstr "คอลัมน์ที่แสดงใน %s"
 
 #: src/file-manager/fm-list-view.c:1531
-#, fuzzy
 msgid "Choose the order of information to appear in this folder."
-msgstr "เลือกลำดับข้อมูลที่แสดงใต้สัญลักษณ์ ข้อมูลจะแสดงมากขึ้นเมื่อซูมเข้าไปดูใกล้สัญลักษณ์ขึ้น"
+msgstr "เลือกลำดับข้อมูลที่จะแสดงในโฟลเดอร์นี้"
 
 #: src/file-manager/fm-properties-window.c:477
 #, fuzzy
@@ -4944,7 +4907,7 @@ msgstr "แก้ไขเมื่อ:"
 
 #: src/file-manager/fm-properties-window.c:2311
 msgid "Accessed:"
-msgstr "เปิดอ่าน:"
+msgstr "เปิดอ่านเมื่อ:"
 
 #: src/file-manager/fm-properties-window.c:2327
 msgid "_Select Custom Icon..."
@@ -5421,9 +5384,8 @@ msgid "Choose another application with which to open the selected item"
 msgstr "เลือกใช้โปรแกรมอื่นเปิดรายการที่เลือก"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:4
-#, fuzzy
 msgid "Create _Document"
-msgstr "สร้างโฟลเดอร์ใหม่ (_F)"
+msgstr "สร้างเอกสาร (_D)"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:5
 msgid "Create _Folder"
@@ -5494,9 +5456,8 @@ msgid "Open Wit_h"
 msgstr "เปิดด้วย (_H)"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:27
-#, fuzzy
 msgid "Open each selected item in a navigation window"
-msgstr "เปิดรายการที่เลือกในหน้าต่างใหม่"
+msgstr "เปิดแต่ละรายการที่เลือก ในหน้าต่างใหม่"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:28
 #, fuzzy
@@ -5545,7 +5506,7 @@ msgstr "เลือกทุกแฟ้ม (_A)"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:40
 msgid "Select _Pattern"
-msgstr "เลือกรูปแบบ (_P)"
+msgstr "เลือกตามแบบ (_P)"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:41
 msgid "Select all items in this window"
@@ -5650,7 +5611,7 @@ msgstr "จัดวางสัญลักษณ์อย่างกระช
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:9
 msgid "Display icons in the opposite order"
-msgstr "เรียงสัญลักษณ์ย้อนกับปรกติ"
+msgstr "เรียงสัญลักษณ์ย้อนกับปกติ"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:10
 msgid "Keep icons lined up on a grid"
@@ -5674,7 +5635,7 @@ msgstr "เรียงสัญลักษณ์ให้ไม่ทับก
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:21
 msgid "Restore each selected icon to its original size"
-msgstr "กลับไปใช้ขนาดปรกติของสัญลักษณ์ที่เลือก"
+msgstr "กลับไปใช้ขนาดปกติของสัญลักษณ์ที่เลือก"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:22
 msgid "Str_etch Icon"
@@ -5754,13 +5715,12 @@ msgid "%I:%M %p, %x"
 msgstr ""
 
 #: src/file-manager/nautilus-list-view-ui.xml.h:1
-#, fuzzy
 msgid "Select the columns visible in this folder"
-msgstr "สร้างโฟลเดอร์เปล่าข้างในโฟลเดอร์นี้"
+msgstr "เลือกคอลัมน์ที่จะแสดงในโฟลเดอร์นี้"
 
 #: src/file-manager/nautilus-list-view-ui.xml.h:2
 msgid "Visible _Columns..."
-msgstr ""
+msgstr "คอลัมน์ที่แสดง (_C)..."
 
 #: src/file-manager/nautilus-search-list-view-ui.xml.h:1
 msgid "Reveal each selected item in its original folder"
@@ -5787,18 +5747,15 @@ msgid "Couldn't Create Required Folder"
 msgstr "สร้างโฟลเดอร์ที่จำเป็นไม่สำเร็จ"
 
 #: src/nautilus-application.c:265
-#, fuzzy, c-format
+#, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
-msgstr "สร้างโฟลเดอร์ที่จำเป็นไม่สำเร็จ"
+msgstr "Nautilus สร้างโฟลเดอร์ที่จำเป็น (%s)ไม่สำเร็จ"
 
 #: src/nautilus-application.c:267
-#, fuzzy
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
-msgstr ""
-"Nautilus สร้างโฟลเดอร์ที่จำเป็นซึ่งชื่อ \"%s\" ไม่สำเร็จ ก่อนจะใช้ Nautilus "
-"โปรดสร้างโฟลเดอร์นี้ หรือตั้งสิทธิ์ที่อนุญาตอย่างที่ยอม Nautilus สร้างโฟลเดอร์นี้ได้"
+msgstr "ก่อนใช้ Nautilus โปรดสร้างโฟลเดอร์ที่ว่านี้ หรือตั้งสิทธิ์ให้ Nautilus สร้างโฟลเดอร์นี้ได้"
 
 #: src/nautilus-application.c:270
 msgid "Couldn't Create Required Folders"
@@ -5810,7 +5767,6 @@ msgid "Nautilus could not create the following required folders: %s."
 msgstr ""
 
 #: src/nautilus-application.c:273
-#, fuzzy
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -5841,9 +5797,8 @@ msgstr ""
 "ย้ายแฟ้มเก่าๆมาที่พื้นโต๊ะใหม่ และลบจุดเชื่อมนี้"
 
 #: src/nautilus-application.c:360
-#, fuzzy
 msgid "Migrated Old Desktop"
-msgstr "ย้ายไปพื้นโต๊ะใหม่"
+msgstr "พื้นโต๊ะเก่าที่ย้ายมา"
 
 #. Can't register myself due to trouble locating the
 #. * Nautilus_Shell.server file. This has happened when you
@@ -5964,7 +5919,6 @@ msgid "Find Them!"
 msgstr "ค้นหา"
 
 #: src/nautilus-connect-server-dialog.c:86
-#, fuzzy
 msgid "You must enter a name for the server."
 msgstr "คุณต้องบอกชื่อเซิร์ฟเวอร์"
 
@@ -5974,23 +5928,21 @@ msgstr ""
 
 #: src/nautilus-connect-server-dialog.c:88
 #: src/nautilus-connect-server-dialog.c:104
-#, fuzzy
 msgid "Can't Connect to Server"
 msgstr "เชื่อมต่อไปเซิร์ฟเวอร์ไม่สำเร็จ"
 
 #: src/nautilus-connect-server-dialog.c:101
 #: src/nautilus-window-manage-views.c:1255
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" is not a valid location."
-msgstr "ใช้ชื่อ \"%s\" ไม่ได้"
+msgstr "\"%s\" ไม่ใช่ตำแหน่งที่ใช้ได้"
 
 #: src/nautilus-connect-server-dialog.c:103
 #: src/nautilus-property-browser.c:1106
 #: src/nautilus-window-manage-views.c:1250
 #: src/nautilus-window-manage-views.c:1258
-#, fuzzy
 msgid "Please check the spelling and try again."
-msgstr "หา \"%s\" ไม่เจอ โปรดตรวจดูว่าพิมพ์อะไรผิดหรือเปล่า"
+msgstr "โปรดตรวจตัวสะกดแล้วลองใหม่"
 
 #: src/nautilus-connect-server-dialog.c:177
 msgid "Connect to Server"
@@ -6007,9 +5959,8 @@ msgid "_Location (URL):"
 msgstr "ตำแหน่ง (_L):"
 
 #: src/nautilus-connect-server-dialog.c:231
-#, fuzzy
 msgid "Example:"
-msgstr "ตรา:"
+msgstr "ตัวอย่าง:"
 
 #: src/nautilus-connect-server-dialog.c:248
 #, fuzzy
@@ -6021,7 +5972,6 @@ msgid "Desktop"
 msgstr "พื้นโต๊ะ"
 
 #: src/nautilus-file-management-properties.c:307
-#, fuzzy
 msgid "None"
 msgstr "ไม่เอาสักอย่าง"
 
@@ -6066,9 +6016,8 @@ msgid "<span weight=\"bold\">Icon View Defaults</span>"
 msgstr "<span weight=\"bold\">ค่าปริยายของมุมมองสัญลักษณ์</span>"
 
 #: src/nautilus-file-management-properties.glade.h:30
-#, fuzzy
 msgid "<span weight=\"bold\">List Columns</span>"
-msgstr "<span weight=\"bold\">โฟลเดอร์</span>"
+msgstr "<span weight=\"bold\">คอลัมน์</span>"
 
 #: src/nautilus-file-management-properties.glade.h:31
 msgid "<span weight=\"bold\">List View Defaults</span>"
@@ -6110,12 +6059,11 @@ msgstr "พฤติกรรม"
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
-msgstr "เลือกลำดับข้อมูลที่แสดงใต้สัญลักษณ์ ข้อมูลจะแสดงมากขึ้นเมื่อซูมเข้าไปดูใกล้สัญลักษณ์ขึ้น"
+msgstr "เลือกลำดับข้อมูลที่จะแสดงใต้สัญลักษณ์ ข้อมูลจะแสดงมากขึ้นเมื่อซูมเข้าไปดูใกล้สัญลักษณ์ขึ้น"
 
 #: src/nautilus-file-management-properties.glade.h:46
-#, fuzzy
 msgid "Choose the order of information to appear in the list view."
-msgstr "เลือกลำดับข้อมูลที่แสดงใต้สัญลักษณ์ ข้อมูลจะแสดงมากขึ้นเมื่อซูมเข้าไปดูใกล้สัญลักษณ์ขึ้น"
+msgstr "เลือกลำดับข้อมูลที่จะแสดงในมุมมองลิสต์"
 
 #: src/nautilus-file-management-properties.glade.h:47
 msgid "Count _number of items:"
@@ -6139,7 +6087,7 @@ msgstr "คำบรรยายสัญลักษณ์"
 
 #: src/nautilus-file-management-properties.glade.h:53
 msgid "List Columns"
-msgstr ""
+msgstr "คอลัมน์"
 
 #: src/nautilus-file-management-properties.glade.h:55
 msgid "Local Files Only"
@@ -6223,7 +6171,7 @@ msgstr "เปิดอ่านโปรแกรมในแฟ้ม text เ
 
 #: src/nautilus-file-management-properties.glade.h:77
 msgid "date accessed"
-msgstr "เวลาที่ถูกใช้"
+msgstr "เวลาที่ถูกอ่าน"
 
 #: src/nautilus-file-management-properties.glade.h:78
 msgid "date modified"
@@ -6413,9 +6361,8 @@ msgid "Are you sure you want to clear the list of locations you have visited?"
 msgstr "แน่ใจนะว่าจะล้างประวัติตำแหน่งที่คุณไปเยี่ยมมา ?"
 
 #: src/nautilus-navigation-window-menus.c:192
-#, fuzzy
 msgid "If you clear the list of locations, they will be permanently deleted."
-msgstr "เทถังขยะแล้วข้อมูลจะถูกลบทิ้งโดยถาวร"
+msgstr "เมื่อคุณเลือกล้างประวัติแล้ว จะเรียกมันคืนกลับมาไม่ได้"
 
 #: src/nautilus-navigation-window-menus.c:198
 msgid "Clear History"
@@ -7151,18 +7098,16 @@ msgid "_About"
 msgstr "เกี่ยวกับ (_A)"
 
 #: src/nautilus-shell-ui.xml.h:31
-#, fuzzy
 msgid "_Backgrounds and Emblems..."
-msgstr "พื้นหลังและตรา (_B)"
+msgstr "พื้นหลังและตรา (_B)..."
 
 #: src/nautilus-shell-ui.xml.h:32
 msgid "_CD Creator"
 msgstr "ตัวเขียนซีดี (_C)"
 
 #: src/nautilus-shell-ui.xml.h:33
-#, fuzzy
 msgid "_Close"
-msgstr "ปิดหน้าต่าง (_C)"
+msgstr "ปิด (_C)"
 
 #: src/nautilus-shell-ui.xml.h:34
 msgid "_Contents"
@@ -7439,6 +7384,8 @@ msgstr "สงวนลิขสิทธิ์ (C) 1999-2001 Eazel, Inc."
 msgid "Translator Credits"
 msgstr ""
 "ไพศาข์ สีเหลืองสวัสดิ์\n"
+"\n"
+"ถ้ามีเวลาโปรดมาช่วยกันแปล :-)\n"
 "http://gnome-th.sourceforge.net"
 
 #: src/nautilus-window-menus.c:605
