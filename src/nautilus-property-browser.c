@@ -115,7 +115,9 @@ struct NautilusPropertyBrowserDetails {
 	GtkWidget *remove_button_label;
 	GtkWidget *remove_button_image;
 	
-	GtkWidget *dialog;
+	GtkWidget *patterns_dialog;
+	GtkWidget *colors_dialog;
+	GtkWidget *emblems_dialog;
 	
 	GtkWidget *keyword;
 	GtkWidget *emblem_image;
@@ -430,6 +432,25 @@ nautilus_property_browser_init (GtkObject *object)
 	nautilus_drag_window_register (GTK_WINDOW (property_browser));
 }
 
+/* Destroy the three dialogs for adding patterns/colors/emblems if any of them
+   exist. */
+static void
+nautilus_property_browser_destroy_dialogs (NautilusPropertyBrowser *property_browser)
+{
+	if (property_browser->details->patterns_dialog) {
+		gtk_widget_destroy (property_browser->details->patterns_dialog);
+		property_browser->details->patterns_dialog = NULL;
+	}
+	if (property_browser->details->colors_dialog) {
+		gtk_widget_destroy (property_browser->details->colors_dialog);
+		property_browser->details->colors_dialog = NULL;
+	}
+	if (property_browser->details->emblems_dialog) {
+		gtk_widget_destroy (property_browser->details->emblems_dialog);
+		property_browser->details->emblems_dialog = NULL;
+	}
+}
+
 static void
 nautilus_property_browser_destroy (GtkObject *object)
 {
@@ -438,8 +459,8 @@ nautilus_property_browser_destroy (GtkObject *object)
 	
 	property_browser = NAUTILUS_PROPERTY_BROWSER (object);
 
-	eel_remove_weak_pointer (&property_browser->details->dialog);
-	
+	nautilus_property_browser_destroy_dialogs (property_browser);
+
 	g_free (property_browser->details->path);
 	g_free (property_browser->details->category);
 	g_free (property_browser->details->dragged_file);
@@ -504,7 +525,14 @@ static void
 nautilus_property_browser_hide_callback (GtkWidget *widget,
 					 gpointer   user_data)
 {
-	cancel_remove_mode (NAUTILUS_PROPERTY_BROWSER (widget));
+	NautilusPropertyBrowser *property_browser;
+
+	property_browser = NAUTILUS_PROPERTY_BROWSER (widget);
+
+	cancel_remove_mode (property_browser);
+
+	/* Destroy the 3 dialogs to add new patterns/colors/emblems. */
+	nautilus_property_browser_destroy_dialogs (property_browser);
 }
 
 /* remember the name of the dragged file */
@@ -932,7 +960,7 @@ nautilus_emblem_dialog_new (NautilusPropertyBrowser *property_browser)
 	GtkWidget *table = gtk_table_new(2, 2, FALSE);
 
 	dialog = gtk_dialog_new_with_buttons (_("Create a New Emblem:"),
-					      GTK_WINDOW (property_browser), GTK_DIALOG_MODAL,
+					      GTK_WINDOW (property_browser), 0,
 					      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 					      GTK_STOCK_OK, GTK_RESPONSE_OK,
 					      NULL);
@@ -990,7 +1018,8 @@ nautilus_color_selection_dialog_new (NautilusPropertyBrowser *property_browser)
 	GtkWidget *dialog;
 	GtkWidget *table = gtk_table_new(2, 2, FALSE);
 
-	dialog = gtk_dialog_new_with_buttons (_("Create a New Color:"), NULL, GTK_DIALOG_MODAL,
+	dialog = gtk_dialog_new_with_buttons (_("Create a New Color:"),
+					      GTK_WINDOW (property_browser), 0,
 					      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 					      GTK_STOCK_OK, GTK_RESPONSE_OK,
 					      NULL);
@@ -1077,7 +1106,7 @@ add_pattern_to_browser (const char *path_name, gpointer *data)
 	user_directory = nautilus_get_user_directory ();
 		
 	/* copy the image file to the patterns directory */
-	directory_path = nautilus_make_path (user_directory, property_browser->details->category);
+	directory_path = nautilus_make_path (user_directory, "patterns");
 	g_free (user_directory);
 	source_file_name = strrchr (path_name, '/');
 	destination_name = nautilus_make_path (directory_path, source_file_name + 1);
@@ -1112,21 +1141,18 @@ add_pattern_to_browser (const char *path_name, gpointer *data)
 static void
 add_new_pattern (NautilusPropertyBrowser *property_browser)
 {
-	if (property_browser->details->dialog) {
-		gtk_widget_show(property_browser->details->dialog);
-		if (property_browser->details->dialog->window) {
-			gdk_window_raise(property_browser->details->dialog->window);
-		}
+	if (property_browser->details->patterns_dialog) {
+		gtk_window_present (GTK_WINDOW (property_browser->details->patterns_dialog));
 	} else {
-		property_browser->details->dialog = 
+		property_browser->details->patterns_dialog = 
 			eel_gnome_icon_selector_new (_("Select an image file to add as a pattern"),
 				DATADIR "/nautilus/patterns/",
 				GTK_WINDOW (property_browser),
 				(EelIconSelectionFunction) add_pattern_to_browser,
 				property_browser);						   
 
-		if (property_browser->details->dialog)
-			eel_add_weak_pointer (&property_browser->details->dialog);
+		if (property_browser->details->patterns_dialog)
+			eel_add_weak_pointer (&property_browser->details->patterns_dialog);
 	}
 }
 
@@ -1191,8 +1217,8 @@ add_color_to_browser (GtkWidget *widget, gint which_button, gpointer *data)
 		g_free(color_spec);	
 	} 
 	
-	gtk_widget_destroy(property_browser->details->dialog);
-	property_browser->details->dialog = NULL;
+	gtk_widget_destroy(property_browser->details->colors_dialog);
+	property_browser->details->colors_dialog = NULL;
 }
 
 /* create the color selection dialog, pre-set with the color that was just selected */
@@ -1202,23 +1228,23 @@ show_color_selection_window (GtkWidget *widget, gpointer *data)
 	GdkColor color;
 	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER(data);
 
-	gtk_color_selection_get_current_color (GTK_COLOR_SELECTION (GTK_COLOR_SELECTION_DIALOG (property_browser->details->dialog)->colorsel), &color);
-	gtk_widget_destroy (property_browser->details->dialog);
+	gtk_color_selection_get_current_color (GTK_COLOR_SELECTION (GTK_COLOR_SELECTION_DIALOG (property_browser->details->colors_dialog)->colorsel), &color);
+	gtk_widget_destroy (property_browser->details->colors_dialog);
 
 	/* allocate a new color selection dialog */
-	property_browser->details->dialog = nautilus_color_selection_dialog_new (property_browser);		
+	property_browser->details->colors_dialog = nautilus_color_selection_dialog_new (property_browser);		
 
 	/* set the color to the one picked by the selector */
 	gnome_color_picker_set_i16 (GNOME_COLOR_PICKER (property_browser->details->color_picker), color.red, color.green, color.blue, 1.0);
 	
 	/* connect the signals to the new dialog */
 	
-	eel_add_weak_pointer (&property_browser->details->dialog);
+	eel_add_weak_pointer (&property_browser->details->colors_dialog);
 
-	g_signal_connect_object (property_browser->details->dialog, "response",
+	g_signal_connect_object (property_browser->details->colors_dialog, "response",
 				 G_CALLBACK (add_color_to_browser), property_browser, 0);
-	gtk_window_set_position (GTK_WINDOW (property_browser->details->dialog), GTK_WIN_POS_MOUSE);
-	gtk_widget_show (GTK_WIDGET(property_browser->details->dialog));
+	gtk_window_set_position (GTK_WINDOW (property_browser->details->colors_dialog), GTK_WIN_POS_MOUSE);
+	gtk_widget_show (GTK_WIDGET(property_browser->details->colors_dialog));
 
 }
 
@@ -1228,18 +1254,15 @@ show_color_selection_window (GtkWidget *widget, gpointer *data)
 static void
 add_new_color (NautilusPropertyBrowser *property_browser)
 {
-	if (property_browser->details->dialog) {
-		gtk_widget_show(property_browser->details->dialog);
-		if (property_browser->details->dialog->window)
-			gdk_window_raise(property_browser->details->dialog->window);
-
+	if (property_browser->details->colors_dialog) {
+		gtk_window_present (GTK_WINDOW (property_browser->details->colors_dialog));
 	} else {
 		GtkColorSelectionDialog *color_dialog;
 
-		property_browser->details->dialog = gtk_color_selection_dialog_new (_("Select a color to add"));
-		color_dialog = GTK_COLOR_SELECTION_DIALOG (property_browser->details->dialog);
+		property_browser->details->colors_dialog = gtk_color_selection_dialog_new (_("Select a color to add"));
+		color_dialog = GTK_COLOR_SELECTION_DIALOG (property_browser->details->colors_dialog);
 		
-		eel_add_weak_pointer (&property_browser->details->dialog);
+		eel_add_weak_pointer (&property_browser->details->colors_dialog);
 
 		g_signal_connect_object (color_dialog->ok_button, "clicked",
 					 G_CALLBACK (show_color_selection_window), property_browser, 0);
@@ -1350,7 +1373,8 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 			user_directory = nautilus_get_user_directory ();
 
 			/* get the path for emblems in the user's home directory */
-			directory_path = nautilus_make_path (user_directory, property_browser->details->category);
+			directory_path = nautilus_make_path (user_directory,
+							     "emblems");
 			g_free (user_directory);
 
 			/* make the directory if it doesn't exist */
@@ -1398,20 +1422,17 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 static void
 add_new_emblem (NautilusPropertyBrowser *property_browser)
 {
-	if (property_browser->details->dialog) {
-		gtk_widget_show (property_browser->details->dialog);
-		if (property_browser->details->dialog->window) {
-			gdk_window_raise (property_browser->details->dialog->window);
-		}
+	if (property_browser->details->emblems_dialog) {
+		gtk_window_present (GTK_WINDOW (property_browser->details->emblems_dialog));
 	} else {
-		property_browser->details->dialog = nautilus_emblem_dialog_new (property_browser);		
+		property_browser->details->emblems_dialog = nautilus_emblem_dialog_new (property_browser);		
 
-		eel_add_weak_pointer (&property_browser->details->dialog);
+		eel_add_weak_pointer (&property_browser->details->emblems_dialog);
 
-		g_signal_connect_object (property_browser->details->dialog, "response",
+		g_signal_connect_object (property_browser->details->emblems_dialog, "response",
 					 G_CALLBACK (emblem_dialog_clicked), property_browser, 0);
-		gtk_window_set_position (GTK_WINDOW (property_browser->details->dialog), GTK_WIN_POS_MOUSE);
-		gtk_widget_show (GTK_WIDGET(property_browser->details->dialog));
+		gtk_window_set_position (GTK_WINDOW (property_browser->details->emblems_dialog), GTK_WIN_POS_MOUSE);
+		gtk_widget_show (GTK_WIDGET(property_browser->details->emblems_dialog));
 	}
 }
 

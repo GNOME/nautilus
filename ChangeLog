@@ -1,5 +1,15 @@
 2002-05-30  Damon Chaplin  <damon@ximian.com>
 
+	* src/nautilus-property-browser.c: use a separate pointer for each
+	of the patterns/emblems/color dialogs, and make them not modal.
+
+	It was using 'property_browser->details->category' in some of the
+	callbacks, which meant it didn't work if the user had switched to one
+	of the other patterns/colors/emblems pages. I hard-coded "patterns"
+	and "emblems" instead. Fixes bug #80683.
+
+2002-05-30  Damon Chaplin  <damon@ximian.com>
+
 	* components/music/nautilus-music-view.c: removed PLAYER_NEXT state,
 	as it wasn't really necessary and was a bit confusing.
 	(selection_changed): updated to make sure we update the displayed
