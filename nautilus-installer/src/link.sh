@@ -4,6 +4,7 @@ DEBUG="no"
 
 GNOME=/gnome
 BUILD_DATE=`date +%d%b%y-%H%M`
+XFREE=`rpm -q --queryformat="%{VERSION}" XFree86`
 
 if test "$DEBUG" = "yes"; then
     OG_FLAG="-g"
@@ -12,6 +13,30 @@ else
     OG_FLAG="-O"
     STRIP="yes"
 fi
+
+XLIBS="-L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE "
+
+if test "x$XFREE" = "x"; then
+    echo "* XFree86 not installed as rpm, I will check for libXext";
+    if test ! -f /usr/X11R6/lib/libXext.a; then
+	echo "* libXext not present, not linking against it....";
+	XLIBS="-L/usr/X11R6/lib -ldl -lX11 -lm -lSM -lICE ";
+    else
+	echo "* libXext found";
+    fi
+else
+    XFREE_MAJOR=`echo $XFREE|sed -e 's/\([0-9]\).[0-9].[0-9]/\1/'`;
+    if test "x$XFREE_MAJOR" = "x3"; then
+	echo "* XFree86 3.x.y";
+    elif test "x$XFREE_MAJOR" = "x4"; then
+	echo "* XFree86 4.x.y";
+	XLIBS=-L/usr/X11R6/lib -ldl -lX11 -lm -lSM -lICE ;
+    else 
+       echo "* I do not believe your XFree86 is a $XFREE_MAJOR";
+       return 1;
+    fi
+fi
+
 
 WARN_FLAG="-Wall -Werror"
 
@@ -34,20 +59,20 @@ gcc -static $OG_FLAG $WARN_FLAG -o eazel-installer main.o support.o callbacks.o 
 -L$GNOME/lib -lgnomecanvaspixbuf -lgdk_pixbuf 						\
 -lgnomeui -lgnome -lart_lgpl 								\
 -lgtk -lgdk -lgmodule -lglib -lgdk_imlib 						\
--L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE 					\
+$XLIBS \
 -lghttp											\
 -L/usr/lib -lrpm -lbz2 -lz -ldb1 -lpopt -lxml
 
 cp eazel-installer eazel-installer-prezip
 
 if test "$STRIP" = "yes"; then
-    echo Stripping...
+    echo "* Stripping..."
     strip eazel-installer
 fi
-echo Packing...
+echo "* Packing..."
 gzexe eazel-installer
 
-echo Patching...
+echo "* Patching..."
 chmod 644 eazel-installer
 mv eazel-installer hest
 extraskip=`expr 22 + \`wc -l prescript|awk '{printf $1"\n"}'\``
@@ -75,4 +100,4 @@ if test "$1" = "push-test" -a $? = 0; then
     cp eazel-installer.sh /h/public/robey/
 fi
 
-echo 'Done!'
+echo '* Done!'
