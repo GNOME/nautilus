@@ -110,6 +110,8 @@ eazel_softcat_initialize (EazelSoftCat *softcat) {
 	g_assert (IS_EAZEL_SOFTCAT (softcat));
 
 	softcat->private = g_new0 (EazelSoftCatPrivate, 1);
+	softcat->private->retries = 3;
+	softcat->private->retries = 100;
 }
 
 GtkType
