@@ -1,3 +1,18 @@
+2001-03-01  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Ian McKellar  <ian@eazel.com>
+
+	Fixed bug 7254 (Remove Featured Downloads tab from svcs summary
+	page)
+
+	* components/services/summary/nautilus-summary-view.c:
+	(append_hseparator_to_vbox), (generate_eazel_news_entry_row),
+	(summary_view_update_pane), (generate_service_entry_row): Minor
+	spacing tweaks to match Arlo's screenshot.
+	(create_summary_form): ifdef out the code that shows the featured
+	donwloads pane. Don't entirely remove it for now to avoid major
+	code changes this late in the game.
+ 
 2001-03-01  John Harper  <jsh@eazel.com>
 
 	reviewed by: Maciej Stachowiak  <mjs@eazel.com>

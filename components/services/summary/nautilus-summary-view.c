@@ -64,6 +64,7 @@
 #include <libtrilobite/libammonite.h>
 
 #include <bonobo/bonobo-control.h>
+#include <gtk/gtkalignment.h>
 
 #include <gnome.h>
 #include <libgnomeui/gnome-stock.h>
@@ -348,7 +349,7 @@ append_hseparator_to_vbox (GtkWidget *vbox)
 	separator = gtk_hseparator_new ();
 	gtk_widget_show (separator);
 	gtk_box_pack_start (GTK_BOX (vbox), 
-			    separator, FALSE, FALSE, 8);
+			    separator, FALSE, FALSE, 4);
 
 }
 
@@ -371,16 +372,16 @@ generate_eazel_news_entry_row  (NautilusSummaryView *view,
 	news_row = gtk_hbox_new (FALSE, 0);
 
 	/* Generate first box with icon */
-	icon_box = gtk_vbox_new (FALSE, 2);
+	icon_box = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (icon_box);
-	gtk_box_pack_start (GTK_BOX (news_row), icon_box, FALSE, FALSE, 3);
+	gtk_box_pack_start (GTK_BOX (news_row), icon_box, FALSE, FALSE, 7);
 
 	icon = eazel_services_image_new_from_uri (news_node->icon,
 						  NULL,
 						  DEFAULT_SUMMARY_BACKGROUND_COLOR_RGB,
 						  MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT);
 	gtk_widget_show (icon);
-	gtk_box_pack_start (GTK_BOX (icon_box), icon, 0, 0, 0);
+	gtk_box_pack_start (GTK_BOX (icon_box), icon, FALSE, FALSE, 2);
 
 	/* generate second box with bold type date and the actual contents */
 	item_vbox = gtk_vbox_new (FALSE, 0);
@@ -397,7 +398,7 @@ generate_eazel_news_entry_row  (NautilusSummaryView *view,
 	news_item_label = summary_view_item_body_label_new (news_node->message);
 	gtk_widget_show (news_item_label);
 	gtk_box_pack_start (GTK_BOX (item_vbox), news_item_label, TRUE, TRUE, 2);
-	
+
 	return news_row;
 }
 
@@ -426,14 +427,16 @@ summary_view_update_pane (NautilusSummaryView          *view,
 		item = (*item_create) (view, node->data);
 
 		if (item != NULL) {
+			gtk_widget_show (item);	
+
 			if (added_one) {
 				append_hseparator_to_vbox (vbox);
-			}
-
-			gtk_widget_show (item);
+			} 
+			
 			gtk_box_pack_start (GTK_BOX (vbox), 
 					    GTK_WIDGET (item), 
-					    FALSE, FALSE, 0);
+					    FALSE, FALSE, added_one ? 0 : 7);
+
 			added_one = TRUE;
 		}
 	}
@@ -519,7 +522,7 @@ generate_service_entry_row  (NautilusSummaryView *view,
 
 	/* Generate first box with service icon */
 	icon_box = gtk_vbox_new (FALSE, 4);
-	gtk_box_pack_start (GTK_BOX (services_row), icon_box, FALSE, FALSE, 2);
+	gtk_box_pack_start (GTK_BOX (services_row), icon_box, FALSE, FALSE, 7);
 
 	gtk_widget_show (icon_box);
 
@@ -527,7 +530,7 @@ generate_service_entry_row  (NautilusSummaryView *view,
 					     services_node->icon,
 					     services_node->uri);
 	gtk_widget_show (icon);
-	gtk_box_pack_start (GTK_BOX (icon_box), icon, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (icon_box), icon, FALSE, FALSE, 3);
 
 	/* insert a few pixels of space here */
 
@@ -549,7 +552,7 @@ generate_service_entry_row  (NautilusSummaryView *view,
 	/* Add the redirect button to the third box */
 	button_vbox = gtk_vbox_new (TRUE, 0);
 	gtk_widget_show (button_vbox);
-	gtk_box_pack_end (GTK_BOX (services_row), button_vbox, FALSE, FALSE, 2);
+	gtk_box_pack_end (GTK_BOX (services_row), button_vbox, FALSE, FALSE, 7);
 	
 	button_hbox = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (button_hbox);
@@ -559,7 +562,8 @@ generate_service_entry_row  (NautilusSummaryView *view,
 					  view->details->nautilus_view,
 					  services_node->uri);
 	gtk_widget_show (button);
-	gtk_box_pack_end (GTK_BOX (button_hbox), button, FALSE, FALSE, 3);
+	gtk_box_pack_end (GTK_BOX (button_hbox), button, FALSE, FALSE, 0);
+
 
 	/* FIXME: respect enabled field */
 	   
@@ -746,12 +750,16 @@ create_summary_form (NautilusSummaryView *view)
 	/* Header for Featured Downloads pane */
 	notebook_tabs = nautilus_tabs_new ();
 	nautilus_tabs_add_tab (NAUTILUS_TABS (notebook_tabs), _("Featured Downloads"), 0);
+#if 0
 	gtk_widget_show (notebook_tabs);
+#endif
 	gtk_box_pack_start (GTK_BOX (view->details->form), notebook_tabs, FALSE, FALSE, 0);
 
 	/* Create the Featured Downloads pane */
 	create_featured_downloads_pane (view);
+#if 0
 	gtk_widget_show (view->details->featured_downloads_pane);
+#endif
 	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->featured_downloads_pane, TRUE, TRUE, 0);
 
 	create_footer (view);
