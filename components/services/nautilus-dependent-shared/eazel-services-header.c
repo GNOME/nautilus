@@ -130,15 +130,16 @@ eazel_services_header_middle_new (const char *left_text,
 
 	header = EAZEL_SERVICES_HEADER (gtk_widget_new (eazel_services_header_get_type (), NULL));
 
-	header->details->left_text = eazel_services_label_new (left_text,
-							       EAZEL_SERVICES_HEADER_MIDDLE_FONT_SIZE,
-							       EAZEL_SERVICES_HEADER_MIDDLE_FONT_WEIGHT,
-							       EAZEL_SERVICES_HEADER_MIDDLE_X_PADDING,
-							       EAZEL_SERVICES_HEADER_MIDDLE_Y_PADDING,
-							       EAZEL_SERVICES_HEADER_MIDDLE_VERTICAL_OFFSET,
-							       EAZEL_SERVICES_HEADER_MIDDLE_HORIZONTAL_OFFSET,
-							       EAZEL_SERVICES_BACKGROUND_COLOR_RGBA,
-							       EAZEL_SERVICES_HEADER_MIDDLE_FILL_ICON);
+	header->details->left_text = 
+		eazel_services_label_new (left_text,
+					  EAZEL_SERVICES_HEADER_MIDDLE_FONT_SIZE,
+					  EAZEL_SERVICES_HEADER_MIDDLE_FONT_WEIGHT,
+					  EAZEL_SERVICES_HEADER_MIDDLE_LEFT_X_PADDING,
+					  EAZEL_SERVICES_HEADER_MIDDLE_LEFT_Y_PADDING,
+					  EAZEL_SERVICES_HEADER_MIDDLE_LEFT_VERTICAL_OFFSET,
+					  EAZEL_SERVICES_HEADER_MIDDLE_LEFT_HORIZONTAL_OFFSET,
+					  EAZEL_SERVICES_BACKGROUND_COLOR_RGBA,
+					  EAZEL_SERVICES_HEADER_MIDDLE_FILL_ICON);
 	gtk_box_pack_start (GTK_BOX (header), header->details->left_text, FALSE, FALSE, 0);
 	gtk_widget_show (header->details->left_text);
 	
@@ -149,15 +150,16 @@ eazel_services_header_middle_new (const char *left_text,
 	gtk_box_pack_start (GTK_BOX (header), fill, TRUE, TRUE, 0);
 	gtk_widget_show (fill);
 
-	header->details->right_text = eazel_services_label_new (right_text,
-								EAZEL_SERVICES_HEADER_MIDDLE_FONT_SIZE,
-								EAZEL_SERVICES_HEADER_MIDDLE_FONT_WEIGHT,
-								EAZEL_SERVICES_HEADER_MIDDLE_X_PADDING,
-								EAZEL_SERVICES_HEADER_MIDDLE_Y_PADDING,
-								EAZEL_SERVICES_HEADER_MIDDLE_VERTICAL_OFFSET,
-								EAZEL_SERVICES_HEADER_MIDDLE_HORIZONTAL_OFFSET,
-								EAZEL_SERVICES_BACKGROUND_COLOR_RGBA,
-								EAZEL_SERVICES_HEADER_MIDDLE_FILL_ICON);
+	header->details->right_text = 
+		eazel_services_label_new (right_text,
+					  EAZEL_SERVICES_HEADER_MIDDLE_FONT_SIZE,
+					  EAZEL_SERVICES_HEADER_MIDDLE_FONT_WEIGHT,
+					  EAZEL_SERVICES_HEADER_MIDDLE_RIGHT_X_PADDING,
+					  EAZEL_SERVICES_HEADER_MIDDLE_RIGHT_Y_PADDING,
+					  EAZEL_SERVICES_HEADER_MIDDLE_RIGHT_VERTICAL_OFFSET,
+					  EAZEL_SERVICES_HEADER_MIDDLE_RIGHT_HORIZONTAL_OFFSET,
+					  EAZEL_SERVICES_BACKGROUND_COLOR_RGBA,
+					  EAZEL_SERVICES_HEADER_MIDDLE_FILL_ICON);
 	gtk_box_pack_start (GTK_BOX (header), header->details->right_text, FALSE, FALSE, 0);
 	gtk_widget_show (header->details->right_text);
 
