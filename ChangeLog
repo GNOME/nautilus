@@ -1,3 +1,16 @@
+2000-04-26  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* nautilus-widgets/nautilus-password-dialog.c,
+	  nautilus-widgets/nautilus-password-dialog.h,
+	  test-nautilus-widgets.c: Add a password dialog widget.  It
+	doesnt do the actual authentication, just the widgetry.
+
+	* nautilus-widgets/test-nautilus-widgets.c: Add new test for
+	password dialog, and properly call gnome_init() instead of
+	gtk_init() to prevent imlib braindamage. 
+
+	* nautilus-widgets/nautilus-caption-table.c: Style dumbness.
+	
 2000-04-26  Ian McKellar  <yakk@yakk.net>
 
 	* components/hardware/nautilus-hardware-view.c:

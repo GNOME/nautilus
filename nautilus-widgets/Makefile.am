@@ -25,6 +25,7 @@ libnautilus_widgetsincludedir=$(includedir)/nautilus-widgets
 
 libnautilus_widgetsinclude_HEADERS =\
 	nautilus-caption-table.h \
+	nautilus-password-dialog.h \
 	nautilus-preference.h \
 	nautilus-preferences-box.h \
 	nautilus-preferences-dialog.h \
@@ -37,6 +38,7 @@ libnautilus_widgetsinclude_HEADERS =\
 
 libnautilus_widgets_la_SOURCES =\
 	nautilus-caption-table.c \
+	nautilus-password-dialog.c \
 	nautilus-preference.c \
 	nautilus-preferences-box.c \
 	nautilus-preferences-dialog.c \

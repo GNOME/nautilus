@@ -1,18 +1,21 @@
 
 #include <nautilus-widgets/nautilus-radio-button-group.h>
 #include <nautilus-widgets/nautilus-caption-table.h>
+#include <nautilus-widgets/nautilus-password-dialog.h>
 #include <nautilus-widgets/nautilus-preferences-group.h>
 #include <nautilus-widgets/nautilus-preferences-item.h>
 #include <nautilus-widgets/nautilus-preferences.h>
 
 #include <gtk/gtk.h>
-#include <stdio.h>
 
 static void test_radio_group                     (void);
 static void test_caption_table                   (void);
+static void test_password_dialog                 (void);
 static void test_preferences_group               (void);
 static void test_preferences_item                (void);
-static void test_radio_changed_callback            (GtkWidget  *button_group,
+static void test_radio_changed_callback          (GtkWidget  *button_group,
+						  gpointer    user_data);
+static void test_authenticate_boink_callback     (GtkWidget  *button,
 						  gpointer    user_data);
 static void test_caption_table_activate_callback (GtkWidget  *button_group,
 						  gint        active_index,
@@ -20,7 +23,6 @@ static void test_caption_table_activate_callback (GtkWidget  *button_group,
 static void register_global_preferences          (void);
 GtkWidget * create_enum_item                     (const char *preference_name);
 GtkWidget * create_bool_item                     (const char *preference_name);
-
 
 enum
 {
@@ -34,7 +36,7 @@ static const char FRUIT_PREFERENCE[] = "/a/very/fruity/path";
 int
 main (int argc, char * argv[])
 {
-	gtk_init (&argc, &argv);
+	gnome_init ("foo", "bar", argc, argv);
 
 	nautilus_preferences_initialize (argc, argv);
 
@@ -42,6 +44,7 @@ main (int argc, char * argv[])
 
 	test_radio_group ();
 	test_caption_table ();
+	test_password_dialog ();
 	test_preferences_group ();
 	test_preferences_item ();
 		
@@ -123,6 +126,58 @@ test_caption_table (void)
 	gtk_container_add (GTK_CONTAINER (window), table);
 
 	gtk_widget_show (table);
+
+	gtk_widget_show (window);
+}
+
+static void
+test_authenticate_boink_callback (GtkWidget *button, gpointer user_data)
+{
+	GtkWidget *dialog;
+	gboolean  rv;
+	char	  *username;
+	char	  *password;
+
+	dialog = nautilus_password_dialog_new ("Authenticate Me",
+					       "foouser",
+					       "sekret",
+					       FALSE);
+
+	rv = nautilus_password_dialog_run_and_block (NAUTILUS_PASSWORD_DIALOG (dialog));
+
+	username = nautilus_password_dialog_get_username (NAUTILUS_PASSWORD_DIALOG (dialog));
+	password = nautilus_password_dialog_get_password (NAUTILUS_PASSWORD_DIALOG (dialog));
+
+	g_assert (username != NULL);
+	g_assert (password != NULL);
+
+	g_print ("test_authenticate_boink_callback (rv=%d , username='%s' , password='%s')\n",
+		 rv,
+		 username,
+		 password);
+
+	g_free (username);
+	g_free (password);
+}
+
+static void
+test_password_dialog (void)
+{
+	GtkWidget * window;
+	GtkWidget * button;
+
+	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+
+	button = gtk_button_new_with_label ("Boink me to authenticate");
+
+	gtk_signal_connect (GTK_OBJECT (button),
+			    "clicked",
+			    GTK_SIGNAL_FUNC (test_authenticate_boink_callback),
+			    (gpointer) NULL);
+
+	gtk_container_add (GTK_CONTAINER (window), button);
+
+	gtk_widget_show (button);
 
 	gtk_widget_show (window);
 }

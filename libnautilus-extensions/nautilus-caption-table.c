@@ -78,8 +78,6 @@ nautilus_caption_table_initialize_class (NautilusCaptionTableClass *klass)
 	object_class = GTK_OBJECT_CLASS (klass);
 	widget_class = GTK_WIDGET_CLASS (klass);
 
-	parent_class = gtk_type_class (GTK_TYPE_TABLE);
-
 	caption_table_signals[ACTIVATE] =
 		gtk_signal_new ("activate",
 				GTK_RUN_LAST,
@@ -97,7 +95,7 @@ nautilus_caption_table_initialize_class (NautilusCaptionTableClass *klass)
 #define CAPTION_TABLE_DEFAULT_ROWS 1
 
 static void
-nautilus_caption_table_initialize (NautilusCaptionTable * caption_table)
+nautilus_caption_table_initialize (NautilusCaptionTable *caption_table)
 {
 	GtkTable *table = GTK_TABLE (caption_table);
 
@@ -175,37 +173,37 @@ caption_table_resize (NautilusCaptionTable	*caption_table,
 		{
 			caption_table->detail->labels[i] = gtk_label_new("");
 			caption_table->detail->entries[i] = gtk_entry_new();
-
+			
 			gtk_signal_connect(GTK_OBJECT (caption_table->detail->entries[i]),
 					   "activate",
-					   GTK_SIGNAL_FUNC(entry_activate),
+					   GTK_SIGNAL_FUNC (entry_activate),
 					   (gpointer) caption_table);
 
-			gtk_misc_set_alignment(GTK_MISC(caption_table->detail->labels[i]), 1.0, 0.5);
+			gtk_misc_set_alignment (GTK_MISC (caption_table->detail->labels[i]), 1.0, 0.5);
 
 			/* Column 1 */
-			gtk_table_attach(table,
-					 caption_table->detail->labels[i],	/* child */
-					 0,					/* left_attatch */
-					 1,					/* right_attatch */
-					 i,					/* top_attatch */
-					 i + 1,					/* bottom_attatch */
-					 GTK_FILL,				/* xoptions */
-					 (GTK_FILL|GTK_EXPAND),			/* yoptions */
-					 0,					/* xpadding */
-					 0);					/* ypadding */
+			gtk_table_attach (table,
+					  caption_table->detail->labels[i],	/* child */
+					  0,					/* left_attatch */
+					  1,					/* right_attatch */
+					  i,					/* top_attatch */
+					  i + 1,				/* bottom_attatch */
+					  GTK_FILL,				/* xoptions */
+					  (GTK_FILL|GTK_EXPAND),		/* yoptions */
+					  0,					/* xpadding */
+					  0);					/* ypadding */
 			
 			/* Column 2 */
-			gtk_table_attach(table, 
-					 caption_table->detail->entries[i],	/* child */
-					 1,					/* left_attatch */
-					 2,					/* right_attatch */
-					 i,					/* top_attatch */
-					 i + 1,					/* bottom_attatch */
-					 (GTK_FILL|GTK_EXPAND),			/* xoptions */
-					 (GTK_FILL|GTK_EXPAND),			/* yoptions */
-					 0,					/* xpadding */
-					 0);					/* ypadding */
+			gtk_table_attach (table, 
+					  caption_table->detail->entries[i],	/* child */
+					  1,					/* left_attatch */
+					  2,					/* right_attatch */
+					  i,					/* top_attatch */
+					  i + 1,				/* bottom_attatch */
+					  (GTK_FILL|GTK_EXPAND),		/* xoptions */
+					  (GTK_FILL|GTK_EXPAND),		/* yoptions */
+					  0,					/* xpadding */
+					  0);					/* ypadding */
 		}
 
 		caption_table->detail->size = new_size;
@@ -259,7 +257,7 @@ caption_table_index_of_entry (NautilusCaptionTable *caption_table,
 
 static GtkWidget*
 caption_table_find_next_sensitive_entry (NautilusCaptionTable	*caption_table,
-			   guint		index)
+					 guint			index)
 {
 	guint i;
 
