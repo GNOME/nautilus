@@ -1,3 +1,10 @@
+2004-02-10  Jason Leach  <leach@wam.umd.edu>
+
+	* libnautilus-private/Makefile.am (install-data-local): Don't
+	install a schema if the user configures with
+	--disable-schemas-install
+	(#106220, Julio Merino)
+
 2004-02-09  Christian Rose  <menthos@menthos.com>
 
 	* configure.in: Added "mi" to ALL_LINGUAS.
