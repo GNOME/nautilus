@@ -408,6 +408,9 @@ create_properties_window (NautilusFile *file)
 
         /* Start with name field selected. */
         gtk_widget_grab_focus (GTK_WIDGET (name_field));
+
+        /* Enable undo in name field */
+        nautilus_entry_enable_undo (NAUTILUS_ENTRY(name_field), TRUE);
                       			    
 	/* React to name changes from elsewhere. */
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),

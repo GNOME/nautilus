@@ -193,7 +193,7 @@ destroy (GtkObject *object)
 	gtk_widget_destroy (GTK_WIDGET (bar->entry));
 
 	if (bar->undo_text != NULL) {
-		g_free(bar->undo_text);
+		g_free (bar->undo_text);
 	}
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
@@ -298,7 +298,7 @@ nautilus_location_bar_set_location (NautilusLocationBar *bar,
 	/* Set up undo variables */
 	if (location != NULL) {
 		if (bar->undo_text != NULL) { 
-			g_free(bar->undo_text);
+			g_free (bar->undo_text);
 		}
 		bar->undo_registered = FALSE;
 		bar->undo_text = g_strdup(location);
@@ -340,9 +340,9 @@ restore_from_undo_snapshot_callback(NautilusUndoable *undoable)
 
 	/* Register undo transaction */	
 	if (bar->undo_text != NULL) {
-		g_free(bar->undo_text);
+		g_free (bar->undo_text);
 	}
-	bar->undo_text = g_strdup(gtk_entry_get_text (bar->entry));
+	bar->undo_text = g_strdup (gtk_entry_get_text (bar->entry));
 
 	nautilus_undo_manager_begin_transaction ("Edit Location");
 	nautilus_undoable_save_undo_snapshot (GTK_OBJECT(bar), save_undo_snapshot_callback,

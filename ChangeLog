@@ -1,3 +1,21 @@
+2000-05-02  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-entry.c
+	Connected widget to undo manager.
+	(nautilus_entry_initialize),
+	(nautilus_entry_destroy), 
+	(nautilus_entry_key_press):
+	Added check for ctl-z.  An undo is requested when the key combination
+	is triggered.
+	(nautilus_entry_changed):
+	Added undo registration when text is modified.
+	(save_undo_snapshot_callback),
+	(restore_from_undo_snapshot_callback):
+	Standard undo manager callbacks
+	(nautilus_entry_enable_undo):
+	Added new function. Pass in boolean value to enable or disable
+	undo functionality.
+	
 2000-05-02  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-factory.c
