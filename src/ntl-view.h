@@ -92,6 +92,8 @@ void    nautilus_view_request_status_change    (NautilusView              *view,
                                                 Nautilus_StatusRequestInfo *loc);
 void    nautilus_view_load_client              (NautilusView              *view,
                                                 const char *               iid);
+const char *nautilus_view_get_iid(NautilusView *view);
+CORBA_Object nautilus_view_get_client_objref(NautilusView *view);
 
 /* This is a "protected" operation */
 void    nautilus_view_construct_arg_set(NautilusView *view);
