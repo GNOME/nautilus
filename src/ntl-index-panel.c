@@ -621,9 +621,8 @@ nautilus_index_panel_background_changed (NautilusIndexPanel *index_panel)
 	nautilus_directory_set_metadata (index_panel->details->directory,
 					 NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
 					 NULL,
-					 image);
+					 image);	
 	g_free (image);
-
 }
 
 /* utility to fork a process to actually execute the button command */
@@ -757,18 +756,17 @@ nautilus_index_panel_update_info (NautilusIndexPanel *index_panel,
 						   GTK_OBJECT (index_panel));
 	}
 
-	/* Set up the background color from the metadata. */
+	/* Set up the background color and image from the metadata. */
 	background_color = nautilus_directory_get_metadata (directory,
 							    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
 							    DEFAULT_BACKGROUND_COLOR);
-	nautilus_background_set_color (background, background_color);
-	g_free (background_color);
-	
-	/* set up the background image in a similar fashion */
-	
 	background_image = nautilus_directory_get_metadata (directory,
 							    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
 							    NULL);
+	
+	nautilus_background_set_color (background, background_color);	
+	g_free (background_color);
+	
 	nautilus_background_set_tile_image_uri (background, background_image);
 	g_free (background_image);
 	

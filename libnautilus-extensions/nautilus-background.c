@@ -310,9 +310,11 @@ nautilus_background_draw_flat_box (GtkStyle *style,
 	if (state_type == GTK_STATE_NORMAL) {
 		background = nautilus_get_widget_background (widget);
 		if (background != NULL) {
-			if (nautilus_gradient_is_gradient (background->details->color)) {
+			if (nautilus_gradient_is_gradient (background->details->color) ||
+			   (background->details->tile_image != NULL)) {
 				call_parent = FALSE;
 			}
+		  
 		}
 	}
 

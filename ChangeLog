@@ -1,3 +1,16 @@
+2000-04-26  Andy Hertzfeld <andy@eazel.com>
+
+	fixed bug #603, set index panel background image via drag and drop
+	
+	* libnautilus-extensions/nautilus-background.c:
+	fixed bug in nautilus_background_draw_flat_box, where it wasn't
+	checking for the image case when deciding to let the parent do
+	the drawing.
+	* src/ntl-index-panel.c:
+	fixed bug where it was losing the background image metadata when
+	setting the background color.  Fixed by reading both before
+	setting either.
+	
 2000-04-26  John Sullivan  <sullivan@eazel.com>
 
 	More FIXME-to-bug work.
