@@ -1101,7 +1101,11 @@ nautilus_sidebar_tabs_expose (GtkWidget *widget, GdkEventExpose *event)
 	if (widget->window == NULL) {
 		return FALSE;
 	}
-	
+
+	if (widget->parent->allocation.width <= 4) {
+		return FALSE;
+	}
+		
 	sidebar_tabs = NAUTILUS_SIDEBAR_TABS (widget);
 
 	text_offset = get_text_offset ();

@@ -1,3 +1,9 @@
+2000-09-09  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-sidebar-tabs.c: (nautilus_sidebar_tabs_expose):
+	fixed bug 2910, sidebar tabs crash in arlo theme when sidebar is
+	closed, by making them not try to draw when the sidebar is closed
+	
 2000-09-09  Mathieu Lacage  <mathieu@eazel.com>
 
 	* components/tree/nautilus-tree-view.c: port to new
