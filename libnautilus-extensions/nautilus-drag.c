@@ -38,6 +38,7 @@
 
 #include "nautilus-glib-extensions.h"
 #include "nautilus-link.h"
+#include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-string.h>
 
 void
@@ -212,10 +213,6 @@ gboolean
 nautilus_drag_can_accept_item (NautilusFile *drop_target_item,
 			       const char *item_uri)
 {
-	char *link_uri, *file_uri;
-	GnomeVFSURI *vfs_uri;
-	gboolean retval;
-	
 	if (nautilus_file_matches_uri (drop_target_item, item_uri)) {
 		/* can't accept itself */
 		return FALSE;
@@ -226,39 +223,17 @@ nautilus_drag_can_accept_item (NautilusFile *drop_target_item,
 		return TRUE;
 	}
 
-	/* Handle local NautilusLink files */
-	if (!nautilus_file_is_local (drop_target_item) 
-		|| !nautilus_file_is_nautilus_link (drop_target_item)) {
-		return FALSE;
-	}
-								
-	file_uri = nautilus_file_get_uri (drop_target_item);
-	if (file_uri == NULL) {
-		return FALSE;
-	}
-
-	if (nautilus_link_is_trash_link (file_uri)) {
-		/* Trash always accepts drops */
+	/* All Nautilus links are assumed to be links to directories.
+	 * Therefore, they all can accept drags, like all other
+	 * directories to. As with other directories, there can be
+	 * errors when the actual copy is attempted due to
+	 * permissions.
+	 */
+	if (nautilus_file_is_nautilus_link (drop_target_item)) {
 		return TRUE;
 	}
 	
-	vfs_uri = gnome_vfs_uri_new (file_uri);
-	link_uri = nautilus_link_get_link_uri (file_uri);	
-
-	if (vfs_uri == NULL || link_uri == NULL) {
-		g_free (file_uri);
-		g_free (link_uri);
-		return FALSE;
-	}
-
-	/* Check and see if it is a link that can accept a drag */
-	retval = nautilus_link_can_accept_drag (gnome_vfs_uri_get_path (vfs_uri));
-
-	gnome_vfs_uri_unref (vfs_uri);
-	g_free (file_uri);
-	g_free (link_uri);
-	
-	return retval;
+	return FALSE;
 }
 					       
 gboolean
@@ -276,14 +251,14 @@ nautilus_drag_can_accept_items (NautilusFile *drop_target_item,
 	 * drop target. If more than 100 items selected, return an over-optimisic
 	 * result
 	 */
-	for (max = 100; items != NULL && max >=0 ; items = items->next, max--) {
+	for (max = 100; items != NULL && max >= 0; items = items->next, max--) {
 		if (!nautilus_drag_can_accept_item (drop_target_item, 
 			((DragSelectionItem *)items->data)->uri)) {
 			return FALSE;
 		}
 	}
-
-	return TRUE;		
+	
+	return TRUE;
 }
 
 void
@@ -320,7 +295,7 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 	}
 
 	/* Check for trash: URI.  We do a find_directory for any Trash directory. */
-	if (strcmp (target_uri_string, "trash:") == 0) {
+	if (nautilus_uri_is_trash (target_uri_string)) {
 		result = gnome_vfs_find_directory (NULL, GNOME_VFS_DIRECTORY_KIND_TRASH,
 						   &target_uri, FALSE, FALSE, 0777);
 		if (result != GNOME_VFS_OK) {

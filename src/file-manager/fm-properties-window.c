@@ -1766,34 +1766,32 @@ get_and_ref_file_to_display (NautilusFile *file)
 	char *uri;
 	char *uri_to_display;
 	char *local_path;
-	char *type;
-	gboolean use_linked_file;
 
 	file_to_display = NULL;
 	if (nautilus_file_is_nautilus_link (file)) {
-		/* Note: This will only work on local files.
-		 * Non-local links will return NULL for type.
-		 * For now that seems fine.
+		/* Note: This will only work on local files. For now
+		 * that seems fine since the links we care about are
+		 * all on the desktop.
 		 */
-		use_linked_file = FALSE;
 		uri = nautilus_file_get_uri (file);
 		local_path = gnome_vfs_get_local_path_from_uri (uri);
 		if (local_path != NULL) {
-			type = nautilus_link_get_link_type (local_path);
-			if (strcmp (type, NAUTILUS_LINK_MOUNT_TAG) == 0 ||
-			    strcmp (type, NAUTILUS_LINK_TRASH_TAG) == 0 ||
-			    strcmp (type, NAUTILUS_LINK_HOME_TAG) == 0) {
-				use_linked_file = TRUE;
+			switch (nautilus_link_local_get_link_type (local_path)) {
+			case NAUTILUS_LINK_MOUNT:
+			case NAUTILUS_LINK_TRASH:
+			case NAUTILUS_LINK_HOME:
+				/* map to linked URI for these types of links */
+				uri_to_display = nautilus_link_local_get_link_uri (local_path);
+				file_to_display = nautilus_file_get (uri_to_display);
+				g_free (uri_to_display);
+				break;
+			case NAUTILUS_LINK_GENERIC:
+				/* don't for these types */
+				break;
 			}
-		}
-
-		if (use_linked_file) {
-			uri_to_display = nautilus_link_get_link_uri (uri);
-			file_to_display = nautilus_file_get (uri_to_display);
-			g_free (uri_to_display);
+			g_free (local_path);
 		}
 		
-		g_free (local_path);
 		g_free (uri);
 	}
 
@@ -1803,7 +1801,6 @@ get_and_ref_file_to_display (NautilusFile *file)
 
 	/* Ref passed-in file here since we've decided to use it. */
 	nautilus_file_ref (file);
-
 	return file;
 }
 

@@ -29,85 +29,78 @@
 #include "nautilus-file.h"
 
 /* Link types */
-typedef enum
-{
+typedef enum {
 	NAUTILUS_LINK_GENERIC,
 	NAUTILUS_LINK_TRASH,
 	NAUTILUS_LINK_MOUNT,
 	NAUTILUS_LINK_HOME
 } NautilusLinkType;
 
-/* Link type XML tags */
-#define NAUTILUS_LINK_GENERIC_TAG 	"Generic Link"
-#define NAUTILUS_LINK_TRASH_TAG 	"Trash Link"
-#define NAUTILUS_LINK_MOUNT_TAG 	"Mount Link"
-#define NAUTILUS_LINK_HOME_TAG 		"Home Link"
-
 /* Create a new link file. Takes a path, works locally, and uses sync. I/O.
  * Returns TRUE if it succeeds, FALSE if it fails.
  */
-gboolean nautilus_link_create 				(const char 	  *directory_path,
-							 const char 	  *name,
-							 const char 	  *image, 
-							 const char 	  *target_uri,
-							 NautilusLinkType link_type);
+gboolean         nautilus_link_local_create                     (const char       *directory_path,
+								 const char       *name,
+								 const char       *image,
+								 const char       *target_uri,
+								 NautilusLinkType  type);
 
 /* Change the icon of an existing link file. Takes a path, works
  * locally, and uses sync. I/O. Returns TRUE if it succeeds, FALSE if
  * it fails. Does not check and see if it is a link file.
  */
-gboolean nautilus_link_set_icon 			(const char  *path, 
-							 const char  *icon_name);
+gboolean         nautilus_link_local_set_icon                   (const char       *path,
+								 const char       *icon_name);
 
 /* Specify the type of link that is represented
  * Takes a path, works locally, and uses sync. I/O. 
  * Returns TRUE if it succeeds, FALSE if
  * it fails. Does not check and see if it is a link file.
  */
-gboolean nautilus_link_set_type 			(const char  *path, 
-							 const char  *type);
+gboolean         nautilus_link_local_set_type                   (const char       *path,
+								 NautilusLinkType  type);
 
 /* Specify the link uri of link that is represented
  * Takes a path, works locally, and uses sync. I/O. 
  * Returns TRUE if it succeeds, FALSE if
  * it fails. Does not check and see if it is a link file.
  */
-gboolean nautilus_link_set_link_uri 			(const char  *path, 
-							 const char  *uri);
+gboolean         nautilus_link_local_set_link_uri               (const char       *path,
+								 const char       *uri);
 
 /* Returns additional text to display under the name, NULL if
  * none. Despite the fact that it takes a URI parameter, works only if
  * the file is local and does sync. I/O.
  */
-char *   nautilus_link_get_additional_text              (const char *link_file_uri);
+char *           nautilus_link_local_get_additional_text        (const char       *path);
 
 /* Returns the image associated with a link file. Despite the fact
  * that it takes a URI parameter, works only if the file is local and
  * does sync. I/O on the link, although it does async. on the image
  * and caches if the image is remote.
  */
-char *   nautilus_link_get_image_uri                    (const char *link_file_uri);
+char *           nautilus_link_local_get_image_uri              (const char       *path);
 
 /* Returns the link type of a link file.
  * Works only if the file is local and does sync. I/O
  */
-char * 	nautilus_link_get_link_type 			(const char *uri);
+NautilusLinkType nautilus_link_local_get_link_type              (const char       *path);
 
 
 /* Returns if a link is a mount link.
  * Works only if the file is local and does sync. I/O
  */
-gboolean nautilus_link_is_volume_link 			(const char *uri);
+gboolean         nautilus_link_local_is_volume_link             (const char       *path);
 
 /* Returns if a link is a home link.
  * Works only if the file is local and does sync. I/O
  */
-gboolean nautilus_link_is_home_link 			(const char *uri);
+gboolean         nautilus_link_local_is_home_link               (const char       *path);
 
 /* Returns if a link is a trash link.
  * Works only if the file is local and does sync. I/O
  */
-gboolean nautilus_link_is_trash_link 			(const char *uri);
+gboolean         nautilus_link_local_is_trash_link              (const char       *path);
 
 
 /* Returns the link uri associated with a link file. The first version
@@ -115,10 +108,8 @@ gboolean nautilus_link_is_trash_link 			(const char *uri);
  * fact that it takes a URI parameter. The second version takes the
  * contents of a file already in memory.
  */
-char *   nautilus_link_get_link_uri                     (const char *link_file_uri);
-char *   nautilus_link_get_link_uri_given_file_contents (const char *link_file_contents,
-							 int         link_file_size);
-
-gboolean nautilus_link_can_accept_drag 			(const char *path);
+char *           nautilus_link_local_get_link_uri               (const char       *path);
+char *           nautilus_link_get_link_uri_given_file_contents (const char       *link_file_contents,
+								 int               link_file_size);
 
 #endif /* NAUTILUS_LINK_H */

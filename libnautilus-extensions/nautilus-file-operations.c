@@ -32,6 +32,7 @@
 #include "nautilus-file-operations.h"
 #include "nautilus-file-operations-progress.h"
 #include <libnautilus-extensions/nautilus-file-changes-queue.h>
+#include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include "fm-directory-view.h"
@@ -490,6 +491,9 @@ get_link_name (char *name, int count)
 		 * Perhaps for some locales we will need to add more.
 		 */
 		switch (count) {
+		default:
+			g_assert_not_reached ();
+			/* fall through */
 		case 1:
 			format = _("link to %s");
 			break;
@@ -547,6 +551,9 @@ get_duplicate_name (char *name, int count)
 		 * Perhaps for some locales we will need to add more.
 		 */
 		switch (count) {
+		default:
+			g_assert_not_reached ();
+			/* fall through */
 		case 1:
 			format = _("%s (copy)");
 			break;
@@ -806,7 +813,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		g_assert (copy_action != GDK_ACTION_MOVE);
 		move_options |= GNOME_VFS_XFER_USE_UNIQUE_NAMES;
 	} else {
-		if (strcmp (target_dir, "trash:") == 0) {
+		if (nautilus_uri_is_trash (target_dir)) {
 			is_trash_move = TRUE;
 		} else {
 			target_dir_uri = gnome_vfs_uri_new (target_dir);

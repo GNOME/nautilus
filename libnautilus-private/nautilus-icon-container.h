@@ -204,7 +204,5 @@ void       nautilus_icon_container_set_smooth_label_font         (NautilusIconCo
 gboolean   nautilus_icon_container_get_is_fixed_size             (NautilusIconContainer  *container);
 void       nautilus_icon_container_set_is_fixed_size             (NautilusIconContainer  *container,
 								  gboolean                is_fixed_size);
-gboolean   nautilus_icon_container_trash_link_is_in_selection 	 (NautilusIconContainer  *container);
-
 
 #endif /* NAUTILUS_ICON_CONTAINER_H */

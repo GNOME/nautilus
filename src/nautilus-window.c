@@ -1608,8 +1608,6 @@ window_update_sidebar_panels_from_preferences (NautilusWindow *window)
 			if (load_result) {
 				gtk_object_ref (GTK_OBJECT (sidebar_panel));
 				
-				nautilus_view_frame_set_active_errors (sidebar_panel, TRUE);
-				
 				nautilus_view_frame_set_label (sidebar_panel, identifier->name);
 				
 				nautilus_window_add_sidebar_panel (window, sidebar_panel);

@@ -671,12 +671,15 @@ nautilus_window_load_sidebar_panel (NautilusWindow *window,
         sidebar_panel = NULL;
         for (p = window->sidebar_panels; p != NULL; p = p->next) {
                 sidebar_panel = NAUTILUS_VIEW_FRAME (p->data);
-                if (strcmp (nautilus_view_frame_get_iid (sidebar_panel), iid) == 0)
+                if (strcmp (nautilus_view_frame_get_iid (sidebar_panel), iid) == 0) {
                         break;
+                }
         }
         
         /* Create a new sidebar panel. */
-        if (p == NULL) {
+        if (p != NULL) {
+                gtk_object_ref (GTK_OBJECT (sidebar_panel));
+        } else {
                 sidebar_panel = nautilus_view_frame_new (window->ui_handler,
                                                          window->application->undo_manager);
                 nautilus_window_connect_view (window, sidebar_panel);
@@ -684,14 +687,6 @@ nautilus_window_load_sidebar_panel (NautilusWindow *window,
                         gtk_widget_unref (GTK_WIDGET (sidebar_panel));
                         sidebar_panel = NULL;
                 }
-        }
-        
-        if (sidebar_panel != NULL) {
-                /* FIXME bugzilla.eazel.com 2463: Do we really want to ref even in the case
-                 * where we just made the panel?
-                 */
-                gtk_object_ref (GTK_OBJECT (sidebar_panel));
-                nautilus_view_frame_set_active_errors (sidebar_panel, TRUE);
         }
         
         return sidebar_panel;
@@ -906,8 +901,6 @@ nautilus_window_load_content_view (NautilusWindow *window,
                 
 		nautilus_view_identifier_free (window->content_view_id);
                 window->content_view_id = nautilus_view_identifier_copy (id);
-                
-                nautilus_view_frame_set_active_errors (new_view, TRUE);
         }
         
         return new_view;

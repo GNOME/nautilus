@@ -207,8 +207,9 @@ create_mount_link (const NautilusVolume *volume)
 	volume_name = nautilus_volume_monitor_get_volume_name (volume);
 	
 	/* Create link */
-	result = nautilus_link_create (desktop_path, volume_name, icon_name, 
-				       target_uri, NAUTILUS_LINK_MOUNT);
+	result = nautilus_link_local_create
+		(desktop_path, volume_name, icon_name, 
+		 target_uri, NAUTILUS_LINK_MOUNT);
 	/* FIXME bugzilla.eazel.com 2526: Ignoring the result here OK? */
 
 	g_free (desktop_path);
@@ -350,22 +351,23 @@ trash_link_is_selection (FMDirectoryView *view)
 {
 	GList *selection;
 	gboolean result;
-	char *uri;
+	char *uri, *path;
 
 	result = FALSE;
 	
 	selection = fm_directory_view_get_selection (view);
 
-	if (!nautilus_g_list_exactly_one_item (selection)) {
-		nautilus_file_list_free (selection);
-		return result;
-	}
-
-	if (nautilus_file_is_nautilus_link (NAUTILUS_FILE (selection->data))) {
+	if (nautilus_g_list_exactly_one_item (selection)
+	    && nautilus_file_is_nautilus_link (NAUTILUS_FILE (selection->data))) {
 		uri = nautilus_file_get_uri (NAUTILUS_FILE (selection->data));
-		if (nautilus_link_is_trash_link (uri)) {				
+		/* It's probably OK that this only works for local
+		 * items, since the trash we care about is on the desktop.
+		 */
+		path = gnome_vfs_get_local_path_from_uri (uri);
+		if (path != NULL && nautilus_link_local_is_trash_link (path)) {
 			result = TRUE;
 		}
+		g_free (path);
 		g_free (uri);
 	}
 	
@@ -386,7 +388,7 @@ fm_desktop_icon_view_create_selection_context_menu_items (FMDirectoryView *view,
 		(FM_DIRECTORY_VIEW_CLASS, 
 		 create_selection_context_menu_items,
 		 (view, menu, files));
-		 
+	
 	/* Add Empty Trash item if only the trash link is the selection */
 	if (trash_link_is_selection (view))  {
 		/* add a separator for more clarity */
@@ -516,7 +518,7 @@ fm_desktop_icon_view_trash_state_changed_callback (NautilusTrashMonitor *trash_m
 	path = nautilus_make_path (desktop_directory_path, TRASH_LINK_NAME);
 
 	/* Change the XML file to have a new icon. */
-	nautilus_link_set_icon (path, state ? "trash-empty.png" : "trash-full.png");
+	nautilus_link_local_set_icon (path, state ? "trash-empty.png" : "trash-full.png");
 
 	g_free (path);
 	g_free (desktop_directory_path);
@@ -536,27 +538,26 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor,
 			   FMDesktopIconView *icon_view)
 {
 	GnomeVFSResult result;
-	char *link_uri, *desktop_path, *volume_name;
+	char *link_path, *link_uri, *desktop_path, *volume_name;
 	GList dummy_list;
 	
 	desktop_path = nautilus_get_desktop_directory ();
 	volume_name = nautilus_volume_monitor_get_volume_name (volume);
-	link_uri = nautilus_make_path (desktop_path, volume_name);
+	link_path = nautilus_make_path (desktop_path, volume_name);
+	link_uri = gnome_vfs_get_uri_from_local_path (link_path);
 	
-	if (link_uri != NULL) {
-		/* Remove mounted device icon from desktop */
-		dummy_list.data = link_uri;
-		dummy_list.next = NULL;
-		dummy_list.prev = NULL;
-		nautilus_directory_notify_files_removed (&dummy_list);
-		
-		result = gnome_vfs_unlink (link_uri);
-		if (result != GNOME_VFS_OK) {
-			/* FIXME bugzilla.eazel.com 2526: OK to ignore error? */
-		}
-		g_free (link_uri);
+	/* Remove mounted device icon from desktop */
+	dummy_list.data = link_uri;
+	dummy_list.next = NULL;
+	dummy_list.prev = NULL;
+	nautilus_directory_notify_files_removed (&dummy_list);
+	
+	result = gnome_vfs_unlink (link_uri);
+	if (result != GNOME_VFS_OK) {
+		/* FIXME bugzilla.eazel.com 2526: OK to ignore error? */
 	}
-
+	g_free (link_uri);
+	g_free (link_path);
 	g_free (desktop_path);
 	g_free (volume_name);
 }
@@ -612,7 +613,7 @@ find_and_update_home_link (void)
 			if (!S_ISDIR (status.st_mode)) {
 				/* Check and see if this is a home link */
 				link_path = nautilus_make_path (desktop_path, this_entry->d_name);				
-				if (nautilus_link_is_home_link (link_path)) {
+				if (nautilus_link_local_is_home_link (link_path)) {
 
 					/* Create the home link */					
 					home_link_name = g_strdup_printf ("%s's Home", g_get_user_name ());
@@ -622,7 +623,7 @@ find_and_update_home_link (void)
 					home_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_HOME_URI, home_dir_uri);
 
 					/* Make sure URI points to user specified home location */
-					nautilus_link_set_link_uri (home_link_path, home_uri);
+					nautilus_link_local_set_link_uri (home_link_path, home_uri);
 
 					g_free (home_link_path);
 					g_free (home_link_name);
@@ -668,8 +669,9 @@ place_home_directory (FMDesktopIconView *icon_view)
 	
 	home_dir_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
 	home_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_HOME_URI, home_dir_uri);
-	made_link = nautilus_link_create (desktop_path, home_link_name, "temp-home.png", 
-					  home_uri, NAUTILUS_LINK_HOME);	
+	made_link = nautilus_link_local_create
+		(desktop_path, home_link_name, "temp-home.png", 
+		 home_uri, NAUTILUS_LINK_HOME);	
 	if (!made_link) {
 		/* FIXME bugzilla.eazel.com 2526: Is a message to the console acceptable here? */
 		g_message ("Unable to create home link");
@@ -714,11 +716,11 @@ find_and_rename_trash_link (void)
 			if (!S_ISDIR (status.st_mode)) {
 				/* Check and see if this is a home link */
 				link_path = nautilus_make_path (desktop_path, this_entry->d_name);				
-				if (nautilus_link_is_trash_link (link_path)) {
+				if (nautilus_link_local_is_trash_link (link_path)) {
 					/* Reset name */
 					rename (this_entry->d_name, TRASH_LINK_NAME);
 					/* Make sure LINK is set to "trash:" */
-					nautilus_link_set_link_uri (link_path, "trash:");
+					nautilus_link_local_set_link_uri (link_path, "trash:");
 					return TRUE;
 				}
 				g_free (link_path);
@@ -742,11 +744,11 @@ create_or_rename_trash (void)
 	}
 
 	desktop_directory_path = nautilus_get_desktop_directory ();
-	nautilus_link_create (desktop_directory_path,
-			      TRASH_LINK_NAME,
-			      "trash-empty.png", 
-			      "trash:",
-			      NAUTILUS_LINK_TRASH);
+	nautilus_link_local_create (desktop_directory_path,
+				    TRASH_LINK_NAME,
+				    "trash-empty.png", 
+				    "trash:",
+				    NAUTILUS_LINK_TRASH);
 	g_free (desktop_directory_path);
 }
 
@@ -781,7 +783,7 @@ remove_old_mount_links (void)
 			if (!S_ISDIR (status.st_mode)) {
 				/* Check and see if this is a link */
 				link_path = nautilus_make_path (desktop_path, this_entry->d_name);
-				if (nautilus_link_is_volume_link (link_path)) {
+				if (nautilus_link_local_is_volume_link (link_path)) {
 					unlink (this_entry->d_name);					
 				}
 				g_free (link_path);
@@ -829,17 +831,19 @@ get_sort_category (NautilusFile *file)
 		path = get_local_path (file);
 		g_return_val_if_fail (path != NULL, SORT_OTHER);
 		
-		link_type = nautilus_link_get_link_type (path);
-		if (link_type == NULL) {
-			category = SORT_OTHER;
-		} else if (strcmp (link_type, NAUTILUS_LINK_HOME_TAG) == 0) {
+		switch (nautilus_link_local_get_link_type (path)) {
+		case NAUTILUS_LINK_HOME:
 			category = SORT_HOME_LINK;
-		} else if (strcmp (link_type, NAUTILUS_LINK_MOUNT_TAG) == 0) {
+			break;
+		case NAUTILUS_LINK_MOUNT:
 			category = SORT_MOUNT_LINK;
-		} else if (strcmp (link_type, NAUTILUS_LINK_TRASH_TAG) == 0) {
+			break;
+		case NAUTILUS_LINK_TRASH:
 			category = SORT_TRASH_LINK;
-		} else {
+			break;
+		default:
 			category = SORT_OTHER;
+			break;
 		}
 		
 		g_free (path);

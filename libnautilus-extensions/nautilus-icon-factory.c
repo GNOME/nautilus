@@ -1044,7 +1044,7 @@ should_display_image_file_as_itself (NautilusFile *file)
 NautilusScalableIcon *
 nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifier, gboolean anti_aliased)
 {
-	char *uri, *file_uri, *image_uri, *icon_name, *mime_type, *top_left_text;
+	char *uri, *file_uri, *file_path, *image_uri, *icon_name, *mime_type, *top_left_text;
  	NautilusScalableIcon *scalable_icon;
 	
 	if (file == NULL) {
@@ -1075,19 +1075,23 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 	/* Handle nautilus link xml files, which may specify their own image */	
 	icon_name = NULL;
 	if (nautilus_file_is_nautilus_link (file)) {
-		/* FIXME bugzilla.eazel.com 2563: This does sync. I/O. */
-		image_uri = nautilus_link_get_image_uri (file_uri);
-		if (image_uri != NULL) {
-			/* FIXME bugzilla.eazel.com 2564: Lame hack. We only support file:// URIs? */
-			if (nautilus_istr_has_prefix (image_uri, "file://")) {
-				if (uri == NULL) {
-					uri = image_uri;
+		/* FIXME bugzilla.eazel.com 2563: This does sync. I/O and only works for local paths. */
+		file_path = gnome_vfs_get_local_path_from_uri (file_uri);
+		if (file_path != NULL) {
+			image_uri = nautilus_link_local_get_image_uri (file_path);
+			if (image_uri != NULL) {
+				/* FIXME bugzilla.eazel.com 2564: Lame hack. We only support file:// URIs? */
+				if (nautilus_istr_has_prefix (image_uri, "file://")) {
+					if (uri == NULL) {
+						uri = image_uri;
+					} else {
+						g_free (image_uri);
+					}
 				} else {
-					g_free (image_uri);
+					icon_name = image_uri;
 				}
-			} else {
-				icon_name = image_uri;
 			}
+			g_free (file_path);
 		}
 	}
 			

@@ -66,7 +66,7 @@ typedef struct {
 	/* Start of the drag, in world coordinates. */
 	gdouble start_x, start_y;
 
-	/* List of DndSelectionItems, representing items being dragged, or NULL
+	/* List of DragSelectionItems, representing items being dragged, or NULL
 	 * if data about them has not been received from the source yet.
 	 */
 	GList *selection_list;

@@ -1996,16 +1996,40 @@ fm_directory_all_selected_items_in_trash (FMDirectoryView *view)
 gboolean
 fm_directory_trash_link_in_selection (FMDirectoryView *view)
 {
-	gboolean result;
-	NautilusIconContainer *container;
+	gboolean saw_trash_link;
+	GList *selection, *node;
+	NautilusFile *file;
+	char *uri, *path;
 
-	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (GTK_BIN (view)->child), FALSE);
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
-	container = NAUTILUS_ICON_CONTAINER (GTK_BIN (view)->child);
+	saw_trash_link = FALSE;
 
-	result = nautilus_icon_container_trash_link_is_in_selection (container);
+	selection = fm_directory_view_get_selection (FM_DIRECTORY_VIEW (view));
+	for (node = selection; node != NULL; node = node->next) {
+		file = NAUTILUS_FILE (selection->data);
+
+		if (!nautilus_file_is_nautilus_link (file)) {
+			continue;
+		}
+		uri = nautilus_file_get_uri (file);
+		path = gnome_vfs_get_local_path_from_uri (uri);
+		/* It's probably OK that this ignores trash links that
+                 * are not local since the trash link we care about is
+		 * on the desktop.
+		 */
+		saw_trash_link = path != NULL
+			&& nautilus_link_local_is_trash_link (path);
+		g_free (path);
+		g_free (uri);
+
+		if (saw_trash_link) {
+			break;
+		}
+	}
+	nautilus_file_list_free (selection);
 	
-	return result;
+	return saw_trash_link;
 }
 
 static gboolean

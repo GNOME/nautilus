@@ -30,29 +30,30 @@
 #include <config.h>
 #include "nautilus-icon-dnd.h"
 
-#include <math.h>
-#include <string.h>
-#include <stdio.h>
-#include <gdk/gdkx.h>
-#include <gdk/gdkkeysyms.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkmain.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
-#include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-stock.h>
-#include <libgnomeui/gnome-canvas-rect-ellipse.h>
-
 #include "nautilus-background.h"
-#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
+#include "nautilus-file-utilities.h"
+#include "nautilus-gdk-pixbuf-extensions.h"
 #include "nautilus-glib-extensions.h"
-#include "nautilus-gtk-extensions.h"
-#include "nautilus-gtk-macros.h"
 #include "nautilus-gnome-extensions.h"
 #include "nautilus-graphic-effects.h"
+#include "nautilus-gtk-extensions.h"
+#include "nautilus-gtk-macros.h"
+#include "nautilus-icon-private.h"
+#include "nautilus-link.h"
 #include "nautilus-stock-dialogs.h"
 #include "nautilus-string.h"
-
-#include "nautilus-icon-private.h"
+#include <gdk/gdkkeysyms.h>
+#include <gdk/gdkx.h>
+#include <gtk/gtkmain.h>
+#include <gtk/gtksignal.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-canvas-rect-ellipse.h>
+#include <libgnomeui/gnome-stock.h>
+#include <libgnomevfs/gnome-vfs-uri.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
+#include <math.h>
+#include <stdio.h>
+#include <string.h>
 
 static gboolean drag_drop_callback                   (GtkWidget             *widget,
 						      GdkDragContext        *context,
@@ -836,6 +837,33 @@ nautilus_icon_container_find_drop_target (NautilusIconContainer *container,
 	return nautilus_icon_container_get_icon_drop_target_uri (container, drop_target_icon);
 }
 
+/* FIXME bugzilla.eazel.com 2485: This belongs in FMDirectoryView, not here. */
+static gboolean
+selection_includes_trash (GList *selection_list)
+{
+	GList *node;
+	char *uri, *local_path;
+	gboolean trash_in_selection;
+
+	trash_in_selection = FALSE;
+
+	for (node = selection_list; node != NULL; node = node->next) {
+		uri = ((DragSelectionItem *) node->data)->uri;
+
+		/* FIXME bugzilla.eazel.com 3020: This does sync. I/O and works only locally. */
+		local_path = gnome_vfs_get_local_path_from_uri (uri);
+		trash_in_selection = local_path != NULL
+			|| nautilus_link_local_is_trash_link (local_path);
+		g_free (local_path);
+		
+		if (trash_in_selection) {
+			break;
+		}
+	}
+	
+	return trash_in_selection;
+}
+
 static void
 nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 					       GdkDragContext *context,
@@ -854,8 +882,9 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 	}
 
 	if (context->action == GDK_ACTION_ASK) {
+		/* FIXME bugzilla.eazel.com 2485: This belongs in FMDirectoryView, not here. */
 		/* Check for special case items in selection list */
-		if (nautilus_icon_container_trash_link_is_in_selection (container)) {
+		if (selection_includes_trash (container->details->dnd_info->drag_info.selection_list)) {
 			/* We only want to move the trash */
 			action = GDK_ACTION_MOVE;
 		} else {

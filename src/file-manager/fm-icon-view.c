@@ -1971,20 +1971,26 @@ get_icon_drop_target_uri_callback (NautilusIconContainer *container,
 		       		   NautilusFile *file,
 		       		   FMIconView *icon_view)
 {
-	char *uri, *file_uri;
+	char *uri, *path, *target_uri;
 	
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_assert (NAUTILUS_IS_FILE (file));
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 
+	uri = nautilus_file_get_uri (file);
 
-	/* Check for NautilusLink */
+	/* Check for Nautilus link */
 	if (nautilus_file_is_nautilus_link (file)) {
-		file_uri = nautilus_file_get_uri (file);
-		uri = nautilus_link_get_link_uri (file_uri);
-		g_free (file_uri);
-	} else {
-		uri = nautilus_file_get_uri (file);
+		/* FIXME bugzilla.eazel.com 3020: This does sync. I/O and works only locally. */
+		path = gnome_vfs_get_local_path_from_uri (uri);
+		if (path != NULL) {
+			target_uri = nautilus_link_local_get_link_uri (path);
+			if (target_uri != NULL) {
+				g_free (uri);
+				uri = target_uri;
+			}
+			g_free (path);
+		}
 	}
 
 	return uri;
@@ -2000,7 +2006,7 @@ get_icon_text_callback (NautilusIconContainer *container,
 			char **additional_text,
 			FMIconView *icon_view)
 {
-	char *actual_uri;
+	char *actual_uri, *path;
 	char *attribute_names;
 	char **text_array;
 	int i , slot_index;
@@ -2023,10 +2029,14 @@ get_icon_text_callback (NautilusIconContainer *container,
 	/* Handle link files specially. */
 	actual_uri = nautilus_file_get_uri (file);
 	if (nautilus_file_is_nautilus_link (file)) {
-		/* FIXME bugzilla.eazel.com 2531: Does sync. I/O. */
-		*additional_text = nautilus_link_get_additional_text (actual_uri);
-		g_free (actual_uri);
-		return;
+		/* FIXME bugzilla.eazel.com 2531: Does sync. I/O and works only locally. */
+		path = gnome_vfs_get_local_path_from_uri (actual_uri);
+		if (path != NULL) {
+			*additional_text = nautilus_link_local_get_additional_text (path);
+			g_free (path);
+			g_free (actual_uri);
+			return;
+		}
 	}
 	
 	/* Find out what attributes go below each icon. */

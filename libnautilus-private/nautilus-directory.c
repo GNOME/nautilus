@@ -385,7 +385,7 @@ nautilus_directory_new (const char *uri)
 
 	g_assert (uri != NULL);
 
-	if (strcmp (uri, "trash:") == 0) {
+	if (nautilus_uri_is_trash (uri)) {
 		directory = NAUTILUS_DIRECTORY (gtk_type_new (NAUTILUS_TYPE_TRASH_DIRECTORY));
 	} else {
 		directory = NAUTILUS_DIRECTORY (gtk_type_new (NAUTILUS_TYPE_VFS_DIRECTORY));
@@ -806,45 +806,51 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 }
 
 static void
-nautilus_direcotry_copy_move_metadata_key (NautilusDirectory *source_directory,
-	const char *source_file, NautilusDirectory *destination_directory,
-	const char *destination_file, const char *key, gboolean move)
+nautilus_directory_copy_move_metadata_key (NautilusDirectory *source_directory,
+					   const char *source_file_name,
+					   NautilusDirectory *destination_directory,
+					   const char *destination_file_name,
+					   const char *key,
+					   gboolean move)
 {
 	char *metadata;
 
 	metadata = nautilus_directory_get_file_metadata (source_directory,
-		source_file, key, NULL);
-
-	if (metadata == NULL) {
-		return;
-	}
+		source_file_name, key, NULL);
 	nautilus_directory_set_file_metadata (destination_directory,
-		destination_file, key, NULL, metadata);
+		destination_file_name, key, NULL, metadata);
 
 	/* FIXME bugzilla.eazel.com 2807: 
 	 * add metadata removal here 
 	 */
+
 	g_free (metadata);
 }
 
 static void
 nautilus_directory_copy_metadata_key (NautilusDirectory *source_directory,
-	const char *source_file, NautilusDirectory *destination_directory,
-	const char *destination_file, const char *key)
+				      const char *source_file_name,
+				      NautilusDirectory *destination_directory,
+				      const char *destination_file_name,
+				      const char *key)
 {
-	nautilus_direcotry_copy_move_metadata_key (source_directory,
-		source_file, destination_directory, destination_file,
-		key, FALSE);
+	nautilus_directory_copy_move_metadata_key
+		(source_directory, source_file_name,
+		 destination_directory, destination_file_name,
+		 key, FALSE);
 }
 
 static void
 nautilus_directory_move_metadata_key (NautilusDirectory *source_directory,
-	const char *source_file, NautilusDirectory *destination_directory,
-	const char *destination_file, const char *key)
+				      const char *source_file_name,
+				      NautilusDirectory *destination_directory,
+				      const char *destination_file_name,
+				      const char *key)
 {
-	nautilus_direcotry_copy_move_metadata_key (source_directory,
-		source_file, destination_directory, destination_file,
-		key, TRUE);
+	nautilus_directory_copy_move_metadata_key
+		(source_directory, source_file_name,
+		 destination_directory, destination_file_name,
+		 key, TRUE);
 }
 
 static void
@@ -852,7 +858,6 @@ nautilus_directory_move_metadata (const char *source_uri, const char *dest_uri)
 {
 	NautilusDirectory *source_directory, *destination_directory;
 	char *source_file_name, *destination_file_name;
-
 
 	source_directory = get_parent_directory (source_uri);
 	destination_directory = get_parent_directory (dest_uri);
@@ -876,6 +881,7 @@ nautilus_directory_move_metadata (const char *source_uri, const char *dest_uri)
 
 	g_free (destination_file_name);
 	g_free (source_file_name);
+
 	nautilus_directory_unref (source_directory);
 	nautilus_directory_unref (destination_directory);
 }
@@ -886,7 +892,6 @@ nautilus_directory_copy_metadata (const char *source_uri, const char *dest_uri)
 	NautilusDirectory *source_directory, *destination_directory;
 	char *source_file_name, *destination_file_name;
 
-
 	source_directory = get_parent_directory (source_uri);
 	destination_directory = get_parent_directory (dest_uri);
 
@@ -909,6 +914,7 @@ nautilus_directory_copy_metadata (const char *source_uri, const char *dest_uri)
 
 	g_free (destination_file_name);
 	g_free (source_file_name);
+
 	nautilus_directory_unref (source_directory);
 	nautilus_directory_unref (destination_directory);
 }
@@ -924,15 +930,16 @@ nautilus_directory_set_icon_position (const char *uri, GdkPoint point)
 	destination_file_name = uri_get_basename (uri);
 
 	position_string = g_strdup_printf ("%d,%d", point.x, point.y);
-	nautilus_directory_set_file_metadata (destination_directory,
-		destination_file_name, NAUTILUS_METADATA_KEY_ICON_POSITION, NULL, position_string);
+	nautilus_directory_set_file_metadata
+		(destination_directory, destination_file_name,
+		 NAUTILUS_METADATA_KEY_ICON_POSITION,
+		 NULL, position_string);
 	g_free (position_string);
 
 	g_free (destination_file_name);
 	nautilus_directory_unref (destination_directory);
 }
 
-#undef METADATA_COPY_DEBUG
 void 
 nautilus_directory_schedule_metadata_copy (GList *uri_pairs)
 {
@@ -940,7 +947,7 @@ nautilus_directory_schedule_metadata_copy (GList *uri_pairs)
 	URIPair *pair;
 
 	for (p = uri_pairs; p != NULL; p = p->next) {
-		pair = (URIPair *)p->data;
+		pair = (URIPair *) p->data;
 		nautilus_directory_copy_metadata (pair->from_uri, pair->to_uri);
 	}
 }
@@ -952,7 +959,7 @@ nautilus_directory_schedule_metadata_move (GList *uri_pairs)
 	URIPair *pair;
 
 	for (p = uri_pairs; p != NULL; p = p->next) {
-		pair = (URIPair *)p->data;
+		pair = (URIPair *) p->data;
 		nautilus_directory_move_metadata (pair->from_uri, pair->to_uri);
 	}
 }
@@ -964,10 +971,7 @@ nautilus_directory_schedule_metadata_remove (GList *uris)
 	const char *uri;
 
 	for (p = uris; p != NULL; p = p->next) {
-		uri = (const char *)p->data;
-#ifdef METADATA_COPY_DEBUG
-		g_print ("removing metadata from %s\n", uri);
-#endif
+		uri = (const char *) p->data;
 		/* FIXME bugzilla.eazel.com 2807: 
 		 * call the metadata removal call here 
 		 */
@@ -981,7 +985,7 @@ nautilus_directory_schedule_position_setting (GList *position_setting_list)
 	const NautilusFileChangesQueuePositionSetting *item;
 
 	for (p = position_setting_list; p != NULL; p = p->next) {
-		item = (const NautilusFileChangesQueuePositionSetting *)p->data;
+		item = (const NautilusFileChangesQueuePositionSetting *) p->data;
 		nautilus_directory_set_icon_position (item->uri, item->point);
 	}
 }

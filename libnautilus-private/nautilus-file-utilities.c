@@ -142,6 +142,12 @@ nautilus_make_uri_from_input (const char *location)
 	return toreturn;
 }
 
+gboolean
+nautilus_uri_is_trash (const char *uri)
+{
+	return nautilus_istr_has_prefix (uri, "trash:")
+		|| nautilus_istr_has_prefix (uri, "gnome-trash:");
+}
 
 char *
 nautilus_make_uri_canonical (const char *uri)
@@ -152,8 +158,7 @@ nautilus_make_uri_canonical (const char *uri)
 	/* Convert "gnome-trash:<anything>" and "trash:<anything>" to
 	 * "trash:".
 	 */
-	if (nautilus_istr_has_prefix (uri, "trash:")
-	    || nautilus_istr_has_prefix (uri, "gnome-trash:")) {
+	if (nautilus_uri_is_trash (uri)) {
 		return g_strdup ("trash:");
 	}
 
@@ -405,9 +410,9 @@ nautilus_get_user_main_directory (void)
 		g_free (image_uri);
 		
 		/* install the default link set */
-		nautilus_link_set_install(user_main_directory, "apps");
+		nautilus_link_set_install (user_main_directory, "apps");
 		/*
-		  nautilus_link_set_install(user_main_directory, "search_engines");
+		  nautilus_link_set_install (user_main_directory, "search_engines");
 		*/
 	}
 

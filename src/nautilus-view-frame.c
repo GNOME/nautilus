@@ -59,8 +59,21 @@ enum {
 	LAST_SIGNAL
 };
 
+typedef enum {
+	VIEW_FRAME_EMPTY,
+	VIEW_FRAME_NO_LOCATION,
+	VIEW_FRAME_WAITING,
+	VIEW_FRAME_UNDERWAY,
+	VIEW_FRAME_LOADED,
+	VIEW_FRAME_FAILED
+} NautilusViewFrameState;
+
 struct NautilusViewFrameDetails {
+	NautilusViewFrameState state;
 	char *title;
+	char *label;
+
+	guint check_if_view_is_gone_timeout_id;
 };
 
 static void nautilus_view_frame_initialize       (NautilusViewFrame      *view);
@@ -210,11 +223,12 @@ static void
 nautilus_view_frame_destroy_client (NautilusViewFrame *view)
 {
 	CORBA_Environment ev;
-	CORBA_exception_init(&ev);
-	
+
 	if (view->component_class == NULL) {
 		return;
 	}
+	
+	CORBA_exception_init(&ev);
 	
 	g_free (view->iid);
 	view->iid = NULL;
@@ -241,7 +255,12 @@ nautilus_view_frame_destroy_client (NautilusViewFrame *view)
 	view->component_class = NULL;
 	view->component_data = NULL;
 	
-	CORBA_exception_free(&ev);
+	CORBA_exception_free (&ev);
+
+	if (view->details->check_if_view_is_gone_timeout_id != 0) {
+		g_source_remove (view->details->check_if_view_is_gone_timeout_id);
+		view->details->check_if_view_is_gone_timeout_id = 0;
+	}
 }
 
 static void
@@ -251,22 +270,14 @@ nautilus_view_frame_destroy (GtkObject *object)
 
 	frame = NAUTILUS_VIEW_FRAME (object);
 	
-	if (frame->timer_id != 0) {
-		g_source_remove (frame->timer_id);
-		frame->timer_id = 0;
-	}
-	
 	nautilus_view_frame_destroy_client (frame);
 
 	g_free (frame->details->title);
+	g_free (frame->details->label);
 	g_free (frame->details);
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
-
-extern NautilusViewComponentType nautilus_view_component_type; /* ntl-view-nautilus.c */
-extern NautilusViewComponentType bonobo_subdoc_component_type; /* ntl-view-bonobo-subdoc.c */
-extern NautilusViewComponentType bonobo_control_component_type; /* ntl-view-bonobo-control.c */
 
 static void
 nautilus_view_frame_handle_client_destroy (GtkWidget *widget, NautilusViewFrame *view)
@@ -276,10 +287,10 @@ nautilus_view_frame_handle_client_destroy (GtkWidget *widget, NautilusViewFrame 
 }
 
 static void
-nautilus_view_frame_handle_client_destroy_2 (GtkObject *object,
-					     CORBA_Object cobject,
-					     CORBA_Environment *ev,
-					     NautilusViewFrame *view)
+nautilus_view_frame_handle_client_gone (GtkObject *object,
+					CORBA_Object cobject,
+					CORBA_Environment *ev,
+					NautilusViewFrame *view)
 {
 	gtk_signal_emit (object, signals[CLIENT_GONE]);
 }
@@ -298,6 +309,154 @@ nautilus_view_frame_new (BonoboUIHandler *ui_handler,
 	return view_frame;
 }
 
+static void
+view_frame_wait (NautilusViewFrame *view)
+{
+	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
+	
+	switch (view->details->state) {
+	case VIEW_FRAME_EMPTY:
+		/* Darin: Change to state machine? */
+		g_warning ("tried to load location in an empty view frame");
+		break;
+	case VIEW_FRAME_NO_LOCATION:
+	case VIEW_FRAME_UNDERWAY:
+	case VIEW_FRAME_LOADED:
+		view->details->state = VIEW_FRAME_WAITING;
+		return;
+	case VIEW_FRAME_WAITING:
+		return;
+	case VIEW_FRAME_FAILED:
+		g_assert_not_reached ();
+		return;
+	}
+
+	g_assert_not_reached ();
+}
+
+static void
+view_frame_underway (NautilusViewFrame *view)
+{
+	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
+	
+	switch (view->details->state) {
+	case VIEW_FRAME_EMPTY:
+	case VIEW_FRAME_FAILED:
+		g_assert_not_reached ();
+		return;
+	case VIEW_FRAME_NO_LOCATION:
+		g_warning ("got signal from a view frame with no location");
+		return;
+	case VIEW_FRAME_WAITING:
+	case VIEW_FRAME_LOADED:
+		gtk_signal_emit (GTK_OBJECT (view), signals[REPORT_LOAD_UNDERWAY]);
+		view->details->state = VIEW_FRAME_UNDERWAY;
+		return;
+	case VIEW_FRAME_UNDERWAY:
+		return;
+	}
+
+	g_assert_not_reached ();
+}
+
+static void
+view_frame_wait_is_over (NautilusViewFrame *view)
+{
+	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
+	
+	switch (view->details->state) {
+	case VIEW_FRAME_EMPTY:
+	case VIEW_FRAME_FAILED:
+		g_assert_not_reached ();
+		return;
+	case VIEW_FRAME_NO_LOCATION:
+		g_warning ("got signal from a view frame with no location");
+		return;
+	case VIEW_FRAME_WAITING:
+		view_frame_underway (view);
+		return;
+	case VIEW_FRAME_UNDERWAY:
+	case VIEW_FRAME_LOADED:
+		return;
+	}
+
+	g_assert_not_reached ();
+}
+
+static void
+view_frame_loaded (NautilusViewFrame *view)
+{
+	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
+	
+	switch (view->details->state) {
+	case VIEW_FRAME_EMPTY:
+	case VIEW_FRAME_FAILED:
+		g_assert_not_reached ();
+		return;
+	case VIEW_FRAME_NO_LOCATION:
+		g_warning ("got signal from a view frame with no location");
+		return;
+	case VIEW_FRAME_WAITING:
+	case VIEW_FRAME_UNDERWAY:
+		gtk_signal_emit (GTK_OBJECT (view), signals[REPORT_LOAD_COMPLETE]);
+		view->details->state = VIEW_FRAME_LOADED;
+		return;
+	case VIEW_FRAME_LOADED:
+		return;
+	}
+
+	g_assert_not_reached ();
+}
+
+static void
+view_frame_failed (NautilusViewFrame *view)
+{
+	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
+	
+	switch (view->details->state) {
+	case VIEW_FRAME_EMPTY:
+	case VIEW_FRAME_FAILED:
+		g_assert_not_reached ();
+		return;
+	case VIEW_FRAME_NO_LOCATION:
+		g_warning ("got signal from a view frame with no location");
+		return;
+	case VIEW_FRAME_WAITING:
+	case VIEW_FRAME_UNDERWAY:
+	case VIEW_FRAME_LOADED:
+		gtk_signal_emit (GTK_OBJECT (view), signals[REPORT_LOAD_FAILED]);
+		view->details->state = VIEW_FRAME_FAILED;
+		return;
+	}
+
+	g_assert_not_reached ();
+}
+
+static gboolean
+check_if_view_is_gone (gpointer data)
+{
+	NautilusViewFrame *view;
+	CORBA_Environment ev;
+	gboolean ok;
+
+	view = NAUTILUS_VIEW_FRAME (data);
+
+	CORBA_exception_init (&ev);
+	ok = TRUE;
+	if (CORBA_Object_non_existent (bonobo_object_corba_objref (BONOBO_OBJECT (view->client_object)), &ev)) {
+		/* FIXME bugzilla.eazel.com 1840: Is a destroy really sufficient here? Who does the unref? 
+		 * See bug 1840 for one bad case this destroy is involved in.
+		 */
+		gtk_object_destroy (GTK_OBJECT (view));
+
+		view->details->check_if_view_is_gone_timeout_id = 0;
+		ok = FALSE;
+	}
+	CORBA_exception_free (&ev);
+	
+	return ok;
+}
+
 gboolean /* returns TRUE if successful */
 nautilus_view_frame_load_client (NautilusViewFrame *view, const char *iid)
 {
@@ -313,15 +472,18 @@ nautilus_view_frame_load_client (NautilusViewFrame *view, const char *iid)
   	};
 
 	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), FALSE);
+	g_return_val_if_fail (view->details->state == VIEW_FRAME_EMPTY, FALSE);
 
 	nautilus_view_frame_destroy_client (view);
 
 	if (iid == NULL) {
+		view->details->state = VIEW_FRAME_FAILED;
 		return FALSE;
         }
 
 	view->client_object = bonobo_object_activate (iid, 0);
 	if (view->client_object == NULL) {
+		view->details->state = VIEW_FRAME_FAILED;
 		return FALSE;
         }
 
@@ -373,6 +535,7 @@ nautilus_view_frame_load_client (NautilusViewFrame *view, const char *iid)
 	/* Handle case where we don't know how to host this component. */
   	if (view->component_class == NULL) {
       		nautilus_view_frame_destroy_client (view);
+		view->details->state = VIEW_FRAME_FAILED;
       		return FALSE;
     	}
 	
@@ -384,16 +547,24 @@ nautilus_view_frame_load_client (NautilusViewFrame *view, const char *iid)
 		 GTK_OBJECT (view));
 	gtk_signal_connect_while_alive
 		(GTK_OBJECT (view->client_object), "object_gone",
-		 GTK_SIGNAL_FUNC (nautilus_view_frame_handle_client_destroy_2), view,
+		 GTK_SIGNAL_FUNC (nautilus_view_frame_handle_client_gone), view,
 		 GTK_OBJECT (view));
 	gtk_signal_connect_while_alive
 		(GTK_OBJECT (view->client_object), "system_exception",
-		 GTK_SIGNAL_FUNC (nautilus_view_frame_handle_client_destroy_2), view,
+		 GTK_SIGNAL_FUNC (nautilus_view_frame_handle_client_gone), view,
 		 GTK_OBJECT (view));
 	gtk_container_add (GTK_CONTAINER (view), view->client_widget);
 	gtk_widget_show (view->client_widget);
 	CORBA_exception_free (&ev);
 
+	/* FIXME bugzilla.eazel.com 2456: 
+	 * Is a hard-coded 2-second timeout acceptable? 
+	 */
+	g_assert (view->details->check_if_view_is_gone_timeout_id == 0);
+	view->details->check_if_view_is_gone_timeout_id
+		= g_timeout_add (2000, check_if_view_is_gone, view);
+
+	view->details->state = VIEW_FRAME_NO_LOCATION;
 	return TRUE;
 }
 
@@ -415,15 +586,16 @@ nautilus_view_frame_load_location (NautilusViewFrame *view,
 	g_return_if_fail (view->component_class != NULL);
 
 	set_up_for_new_location (view);
+	view_frame_wait (view);
 	
 	if (view->component_class->load_location == NULL) {
 		return;
 	}
-	
-	CORBA_exception_init(&ev);
+
+	CORBA_exception_init (&ev);
 	/* ORBit does a bad job with Nautilus_URI, so it's not const char *. */
-	view->component_class->load_location(view, (Nautilus_URI) location, &ev);
-	CORBA_exception_free(&ev);
+	view->component_class->load_location (view, (Nautilus_URI) location, &ev);
+	CORBA_exception_free (&ev);
 }
 
 void
@@ -438,9 +610,9 @@ nautilus_view_frame_stop_loading (NautilusViewFrame *view)
 		return;
 	}
 
-	CORBA_exception_init(&ev);
-	view->component_class->stop_loading(view, &ev);
-	CORBA_exception_free(&ev);
+	CORBA_exception_init (&ev);
+	view->component_class->stop_loading (view, &ev);
+	CORBA_exception_free (&ev);
 }
 
 void
@@ -460,9 +632,9 @@ nautilus_view_frame_selection_changed (NautilusViewFrame *view,
 	
 	uri_list = nautilus_uri_list_from_g_list (selection);
 	
-	CORBA_exception_init(&ev);
-	view->component_class->selection_changed(view, uri_list, &ev);
-	CORBA_exception_free(&ev);
+	CORBA_exception_init (&ev);
+	view->component_class->selection_changed (view, uri_list, &ev);
+	CORBA_exception_free (&ev);
 	
 	CORBA_free (uri_list);
 }
@@ -479,9 +651,9 @@ nautilus_view_frame_title_changed (NautilusViewFrame *view)
 		return;
 	}
 	
-	CORBA_exception_init(&ev);
-	view->component_class->title_changed(view, &ev);
-	CORBA_exception_free(&ev);
+	CORBA_exception_init (&ev);
+	view->component_class->title_changed (view, &ev);
+	CORBA_exception_free (&ev);
 }	
 
 
@@ -662,24 +834,10 @@ nautilus_view_frame_zoom_to_fit (NautilusViewFrame *view)
 }
 
 const char *
-nautilus_view_frame_get_iid(NautilusViewFrame *view)
+nautilus_view_frame_get_iid (NautilusViewFrame *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), NULL);
 	return view->iid;
-}
-
-CORBA_Object
-nautilus_view_frame_get_client_objref (NautilusViewFrame *view)
-{
-	g_return_val_if_fail (view == NULL || NAUTILUS_IS_VIEW_FRAME (view), CORBA_OBJECT_NIL);
-	return view == NULL ? CORBA_OBJECT_NIL : bonobo_object_corba_objref (BONOBO_OBJECT (view->client_object));
-}
-
-CORBA_Object
-nautilus_view_frame_get_objref (NautilusViewFrame *view)
-{
-	g_return_val_if_fail (view == NULL || NAUTILUS_IS_VIEW_FRAME (view), CORBA_OBJECT_NIL);
-	return view == NULL ? CORBA_OBJECT_NIL : bonobo_object_corba_objref (view->view_frame);
 }
 
 void
@@ -687,6 +845,8 @@ nautilus_view_frame_open_location (NautilusViewFrame *view,
                                    const char *location)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+
+	view_frame_wait_is_over (view);
 	gtk_signal_emit (GTK_OBJECT (view), signals[OPEN_LOCATION], location);
 }
 
@@ -695,6 +855,8 @@ nautilus_view_frame_open_location_in_new_window (NautilusViewFrame *view,
                                                  const char *location)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+
+	view_frame_wait_is_over (view);
 	gtk_signal_emit (GTK_OBJECT (view), signals[OPEN_LOCATION_IN_NEW_WINDOW], location);
 }
 
@@ -704,7 +866,11 @@ nautilus_view_frame_open_in_new_window_and_select (NautilusViewFrame *view,
                                                    GList *selection)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
-	gtk_signal_emit (GTK_OBJECT (view), signals[OPEN_IN_NEW_WINDOW_AND_SELECT], location, selection);
+
+	view_frame_wait_is_over (view);
+	gtk_signal_emit (GTK_OBJECT (view),
+			 signals[OPEN_IN_NEW_WINDOW_AND_SELECT],
+			 location, selection);
 }
 
 void
@@ -714,9 +880,9 @@ nautilus_view_frame_report_location_change (NautilusViewFrame *view,
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 
 	set_up_for_new_location (view);
-
 	gtk_signal_emit (GTK_OBJECT (view),
 			 signals[REPORT_LOCATION_CHANGE], location);
+	view_frame_underway (view);
 }
 
 void
@@ -724,6 +890,8 @@ nautilus_view_frame_report_selection_change (NautilusViewFrame *view,
                                              GList *selection)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+
+	view_frame_wait_is_over (view);
 	gtk_signal_emit (GTK_OBJECT (view), signals[REPORT_SELECTION_CHANGE], selection);
 }
 
@@ -732,6 +900,8 @@ nautilus_view_frame_report_status (NautilusViewFrame *view,
                                    const char *status)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+
+	view_frame_wait_is_over (view);
 	gtk_signal_emit (GTK_OBJECT (view), signals[REPORT_STATUS], status);
 }
 
@@ -739,7 +909,8 @@ void
 nautilus_view_frame_report_load_underway (NautilusViewFrame *view)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
-	gtk_signal_emit (GTK_OBJECT (view), signals[REPORT_LOAD_UNDERWAY]);
+	
+	view_frame_underway (view);
 }
 
 void
@@ -747,6 +918,8 @@ nautilus_view_frame_report_load_progress (NautilusViewFrame *view,
                                           double fraction_done)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+
+	view_frame_underway (view);
 	gtk_signal_emit (GTK_OBJECT (view), signals[REPORT_LOAD_PROGRESS], fraction_done);
 }
 
@@ -754,6 +927,8 @@ void
 nautilus_view_frame_report_load_complete (NautilusViewFrame *view)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+
+	view_frame_loaded (view);
 	gtk_signal_emit (GTK_OBJECT (view), signals[REPORT_LOAD_COMPLETE]);
 }
 
@@ -761,25 +936,30 @@ void
 nautilus_view_frame_report_load_failed (NautilusViewFrame *view)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
-	gtk_signal_emit (GTK_OBJECT (view), signals[REPORT_LOAD_FAILED]);
+
+	view_frame_failed (view);
 }
 
 void
 nautilus_view_frame_set_title (NautilusViewFrame *view,
                                const char *title)
 {
+	gboolean changed;
+
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 	g_return_if_fail (title != NULL);
 
 	/* Only do work if the title actually changed. */
-	if (view->details->title != NULL
-	    && strcmp (view->details->title, title) == 0) {
-		return;
-	}
+	changed = view->details->title == NULL
+		|| strcmp (view->details->title, title) != 0;
 
 	g_free (view->details->title);
 	view->details->title = g_strdup (title);
-	gtk_signal_emit (GTK_OBJECT (view), signals[TITLE_CHANGED]);
+
+	view_frame_wait_is_over (view);
+	if (changed) {
+		gtk_signal_emit (GTK_OBJECT (view), signals[TITLE_CHANGED]);
+	}
 }
 
 char *
@@ -793,61 +973,17 @@ nautilus_view_frame_zoom_level_changed (NautilusViewFrame *view,
                                         double level)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+
+	view_frame_wait_is_over (view);
 	gtk_signal_emit (GTK_OBJECT (view), signals[ZOOM_LEVEL_CHANGED], level);
-}
-
-static gboolean
-check_object (gpointer data)
-{
-	NautilusViewFrame *view;
-	CORBA_Environment ev;
-	gboolean ok;
-
-	view = NAUTILUS_VIEW_FRAME (data);
-	g_assert (!view->checking);
-
-	CORBA_exception_init (&ev);
-	view->checking++;
-	ok = TRUE;
-	if (CORBA_Object_non_existent (bonobo_object_corba_objref (BONOBO_OBJECT (view->client_object)), &ev)) {
-		/* FIXME bugzilla.eazel.com 1840: Is a destroy really sufficient here? Who does the unref? 
-		 * See bug 1840 for one bad case this destroy is involved in.
-		 */
-		gtk_object_destroy (GTK_OBJECT (view));
-
-		view->timer_id = 0;
-		ok = FALSE;
-	}
-	view->checking--;
-	CORBA_exception_free (&ev);
-	
-	return ok;
-}
-
-void
-nautilus_view_frame_set_active_errors (NautilusViewFrame *view, gboolean enabled)
-{
-	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
-	if (enabled) {
-		if (view->timer_id == 0) {
-			/* FIXME bugzilla.eazel.com 2456: 
-			 * Is a hard-coded 2-second timeout acceptable? 
-			 */
-			view->timer_id = g_timeout_add (2000, check_object, view);
-		}
-	} else {
-		if (view->timer_id != 0) {
-			g_source_remove (view->timer_id);
-			view->timer_id = 0;
-		}
-	}
 }
 
 char *
 nautilus_view_frame_get_label (NautilusViewFrame *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), NULL);
-	return g_strdup (view->label);
+
+	return g_strdup (view->details->label);
 }
 
 void
@@ -855,8 +991,9 @@ nautilus_view_frame_set_label (NautilusViewFrame *view,
                                const char *label)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
-	g_free (view->label);
-	view->label = g_strdup (label);
+
+	g_free (view->details->label);
+	view->details->label = g_strdup (label);
 }
 
 /* Calls activate on the underlying control frame. */
@@ -886,6 +1023,3 @@ nautilus_view_frame_get_history_list (NautilusViewFrame *view)
 			 &history_list);
   	return history_list;
 }
-
-
-

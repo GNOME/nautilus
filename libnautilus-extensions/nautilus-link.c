@@ -40,6 +40,12 @@
 #include <stdlib.h>
 #include <xmlmemory.h>
 
+/* Link type XML tags */
+#define NAUTILUS_LINK_GENERIC_TAG	"Generic Link"
+#define NAUTILUS_LINK_TRASH_TAG 	"Trash Link"
+#define NAUTILUS_LINK_MOUNT_TAG 	"Mount Link"
+#define NAUTILUS_LINK_HOME_TAG 		"Home Link"
+
 #define REMOTE_ICON_DIR_PERMISSIONS (GNOME_VFS_PERM_USER_ALL \
 				     | GNOME_VFS_PERM_GROUP_ALL \
 				     | GNOME_VFS_PERM_OTHER_ALL)
@@ -49,12 +55,49 @@ typedef struct {
 	char *file_path;
 } NautilusLinkIconNotificationInfo;
 
+typedef void (* NautilusFileFunction) (NautilusFile *file);
+
+static const char *
+get_tag (NautilusLinkType type)
+{
+	switch (type) {
+	default:
+		g_assert_not_reached ();
+		/* fall through */
+	case NAUTILUS_LINK_GENERIC:
+		return NAUTILUS_LINK_GENERIC_TAG;
+	case NAUTILUS_LINK_TRASH:
+		return NAUTILUS_LINK_TRASH_TAG;
+	case NAUTILUS_LINK_MOUNT:
+		return NAUTILUS_LINK_MOUNT_TAG;
+	case NAUTILUS_LINK_HOME:
+		return NAUTILUS_LINK_HOME_TAG;
+	}
+}
+
+static NautilusLinkType
+get_link_type (const char *tag)
+{
+	if (tag != NULL) {
+		if (strcmp (tag, NAUTILUS_LINK_TRASH_TAG) == 0) {
+			return NAUTILUS_LINK_TRASH;
+		}
+		if (strcmp (tag, NAUTILUS_LINK_MOUNT_TAG) == 0) {
+			return NAUTILUS_LINK_MOUNT;
+		}
+		if (strcmp (tag, NAUTILUS_LINK_HOME_TAG) == 0) {
+			return NAUTILUS_LINK_HOME;
+		}
+	}
+	return NAUTILUS_LINK_GENERIC;
+}
+
 gboolean
-nautilus_link_create (const char 	*directory_path,
-		      const char 	*name,
-		      const char 	*image,
-		      const char 	*target_uri,
-		      NautilusLinkType 	link_type )
+nautilus_link_local_create (const char *directory_path,
+			    const char *name,
+			    const char *image,
+			    const char *target_uri,
+			    NautilusLinkType type)
 {
 	xmlDocPtr output_document;
 	xmlNodePtr root_node;
@@ -72,27 +115,7 @@ nautilus_link_create (const char 	*directory_path,
 
 	/* Add mime magic string so that the mime sniffer can recognize us.
 	 * Note: The value of the tag identfies what type of link this.  */
-	switch (link_type) {
-		case NAUTILUS_LINK_GENERIC:
-			xmlSetProp (root_node, "NAUTILUS_LINK", NAUTILUS_LINK_GENERIC_TAG);
-			break;
-
-		case NAUTILUS_LINK_TRASH:
-			xmlSetProp (root_node, "NAUTILUS_LINK", NAUTILUS_LINK_TRASH_TAG);
-			break;
-
-		case NAUTILUS_LINK_MOUNT:
-			xmlSetProp (root_node, "NAUTILUS_LINK", NAUTILUS_LINK_MOUNT_TAG);
-			break;
-
-		case NAUTILUS_LINK_HOME:
-			xmlSetProp (root_node, "NAUTILUS_LINK", NAUTILUS_LINK_HOME_TAG);
-			break;
-
-		default:
-			g_assert_not_reached ();
-			break;			
-	}	
+	xmlSetProp (root_node, "NAUTILUS_LINK", get_tag (type));
 	
 	/* Add link and custom icon tags */
 	xmlSetProp (root_node, "CUSTOM_ICON", image);
@@ -122,102 +145,6 @@ nautilus_link_create (const char 	*directory_path,
 	return TRUE;
 }
 
-/* Set the icon for a link file. This can only be called on local
- * paths, and only on files known to be link files.
- */
-gboolean
-nautilus_link_set_icon (const char *path, const char *icon_name)
-{
-	xmlDocPtr document;
-	char *uri;
-	NautilusFile *file;
-
-	document = xmlParseFile (path);
-	if (document == NULL) {
-		return FALSE;
-	}
-
-	xmlSetProp (xmlDocGetRootElement (document),
-		    NAUTILUS_METADATA_KEY_CUSTOM_ICON,
-		    icon_name);
-	xmlSaveFile (path, document);
-	xmlFreeDoc (document);
-
-	uri = gnome_vfs_get_uri_from_local_path (path);
-	file = nautilus_file_get (uri);
-	if (file != NULL) {
-		nautilus_file_changed (file);
-		nautilus_file_unref (file);		
-	}
-	g_free (uri);
-		
-	return TRUE;
-}
-
-/* Set the link uri for a link file. This can only be called on local
- * paths, and only on files known to be link files.
- */
-gboolean
-nautilus_link_set_link_uri (const char *path, const char *link_uri)
-{
-	xmlDocPtr document;
-	char *uri;
-	NautilusFile *file;
-
-	document = xmlParseFile (path);
-	if (document == NULL) {
-		return FALSE;
-	}
-
-	xmlSetProp (xmlDocGetRootElement (document),
-		    "LINK",
-		    link_uri);
-	xmlSaveFile (path, document);
-	xmlFreeDoc (document);
-
-	uri = gnome_vfs_get_uri_from_local_path (path);
-	file = nautilus_file_get (uri);
-	if (file != NULL) {
-		nautilus_file_forget_activation_uri (file);
-		nautilus_file_changed (file);
-		
-		nautilus_file_unref (file);
-	}
-	g_free (uri);
-	
-	return TRUE;
-}
-
-
-gboolean
-nautilus_link_set_type (const char *path, const char *type)
-{
-	xmlDocPtr document;
-	char *uri;
-	NautilusFile *file;
-
-	document = xmlParseFile (path);
-	if (document == NULL) {
-		return FALSE;
-	}
-
-	xmlSetProp (xmlDocGetRootElement (document),
-		    "NAUTILUS_LINK",
-		    type);
-	xmlSaveFile (path, document);
-	xmlFreeDoc (document);
-
-	uri = gnome_vfs_get_uri_from_local_path (path);
-	file = nautilus_file_get (uri);
-	if (file != NULL) {
-		nautilus_file_changed (file);
-		nautilus_file_unref (file);		
-	}
-	g_free (uri);
-		
-	return TRUE;
-}
-
 static char *
 xml_get_root_property (xmlDoc *doc,
 		       const char *key)
@@ -232,37 +159,107 @@ xml_get_root_property (xmlDoc *doc,
 }
 
 static char *
-nautilus_link_get_root_property (const char *link_file_uri,
-				 const char *key)
+local_get_root_property (const char *path,
+			 const char *key)
 {
-	char *path, *property;
-	xmlDoc *doc;
+	xmlDoc *document;
+	char *property;
 	
-	if (link_file_uri == NULL) {
-		return NULL;
+	document = xmlParseFile (path);
+	property = xml_get_root_property (document, key);
+	xmlFreeDoc (document);
+	return property;
+}
+
+static gboolean
+local_set_root_property (const char *path,
+			 const char *key,
+			 const char *value,
+			 NautilusFileFunction extra_notify)
+{
+	xmlDocPtr document;
+	xmlNodePtr root;
+	const char *old_value;
+	char *uri;
+	NautilusFile *file;
+
+	document = xmlParseFile (path);
+	if (document == NULL) {
+		return FALSE;
 	}
-	
-	/* FIXME bugzilla.eazel.com 2489: Works only with local link files. */
-	path = gnome_vfs_get_local_path_from_uri (link_file_uri);
-	if (path == NULL) {
-		return NULL;
+	root = xmlDocGetRootElement (document);
+	if (root == NULL) {
+		xmlFreeDoc (document);
+		return FALSE;
 	}
 
-	/* FIXME bugzilla.eazel.com 2490: Sync. I/O. */
-	doc = xmlParseFile (path);
-	g_free (path);
-	property = xml_get_root_property (doc, key);
-	xmlFreeDoc (doc);
-	return property;
+	/* Check if the property value is already correct. */
+	old_value = xmlGetProp (root, key);
+	if (old_value != NULL && strcmp (old_value, value) == 0) {
+		xmlFreeDoc (document);
+		return TRUE;
+	}
+
+	/* Change and write the property. */
+	xmlSetProp (root, key, value);
+	xmlSaveFile (path, document);
+	xmlFreeDoc (document);
+
+	/* Notify about the change. */
+	uri = gnome_vfs_get_uri_from_local_path (path);
+	file = nautilus_file_get (uri);
+	if (file != NULL) {
+		if (extra_notify != NULL) {
+			(* extra_notify) (file);
+		}
+		nautilus_file_changed (file);
+		nautilus_file_unref (file);
+	}
+	g_free (uri);
+		
+	return TRUE;
+}
+
+/* Set the icon for a link file. This can only be called on local
+ * paths, and only on files known to be link files.
+ */
+gboolean
+nautilus_link_local_set_icon (const char *path, const char *icon_name)
+{
+	return local_set_root_property (path,
+					NAUTILUS_METADATA_KEY_CUSTOM_ICON,
+					icon_name,
+					NULL);
+}
+
+/* Set the link uri for a link file. This can only be called on local
+ * paths, and only on files known to be link files.
+ */
+gboolean
+nautilus_link_local_set_link_uri (const char *path, const char *link_uri)
+{
+	return local_set_root_property (path,
+					"LINK",
+					link_uri,
+					nautilus_file_forget_activation_uri);
+}
+
+gboolean
+nautilus_link_local_set_type (const char *path,
+			      NautilusLinkType type)
+{
+	return local_set_root_property (path,
+					"NAUTILUS_LINK",
+					get_tag (type),
+					NULL);
 }
 
 /* returns additional text to display under the name, NULL if none */
 char *
-nautilus_link_get_additional_text (const char *link_file_uri)
+nautilus_link_local_get_additional_text (const char *path)
 {
-	/* FIXME bugzilla.eazel.com 2490: This interface requires sync. I/O. */
-	return nautilus_link_get_root_property
-		(link_file_uri, NAUTILUS_METADATA_KEY_EXTRA_TEXT);
+	return local_get_root_property
+		(path, NAUTILUS_METADATA_KEY_EXTRA_TEXT);
 }
 
 /* utility to return the local pathname of a cached icon, given the leaf name */
@@ -343,26 +340,14 @@ icon_read_done_callback (GnomeVFSResult result,
 
 /* returns the image associated with a link file */
 char *
-nautilus_link_get_image_uri (const char *link_file_uri)
+nautilus_link_local_get_image_uri (const char *path)
 {
 	xmlDoc *doc;
-	char *path, *icon_uri;
+	char *icon_uri;
 	char *local_path, *local_uri;
 	NautilusLinkIconNotificationInfo *info;
 	
-	if (link_file_uri == NULL) {
-		return NULL;
-	}
-	
-	/* FIXME bugzilla.eazel.com 2489: Works only with local URIs. */
-	path = gnome_vfs_get_local_path_from_uri (link_file_uri);
-	if (path == NULL) {
-		return NULL;
-	}
-
 	doc = xmlParseFile (path);
-	g_free (path);
-
 	if (doc == NULL) {
 		return NULL;
 	}
@@ -386,7 +371,7 @@ nautilus_link_get_image_uri (const char *link_file_uri)
 	 
 		/* load it asynchronously through gnome-vfs */
 	        info = g_new0 (NautilusLinkIconNotificationInfo, 1);
-		info->link_uri = g_strdup (link_file_uri);
+		info->link_uri = gnome_vfs_get_uri_from_local_path (path);
 		info->file_path = g_strdup (local_path);
 		nautilus_read_entire_file_async (icon_uri, icon_read_done_callback, info);
 		
@@ -394,26 +379,22 @@ nautilus_link_get_image_uri (const char *link_file_uri)
   		g_free (local_path);
 		return NULL; /* return NULL since the icon is still loading - it will get correctly set by the callback */
 	}
-			   
+	
 	return icon_uri;
 }
 
 /* Returns the link uri associated with a link file. */
 char *
-nautilus_link_get_link_uri (const char *link_file_uri)
+nautilus_link_local_get_link_uri (const char *path)
 {
-	/* FIXME bugzilla.eazel.com 2490: This interface requires sync. I/O. */
-	return nautilus_link_get_root_property
-		(link_file_uri, "LINK");
+	return local_get_root_property (path, "LINK");
 }
 
 /* Returns the link type of the link file. */
-char *
-nautilus_link_get_link_type (const char *path)
+NautilusLinkType
+nautilus_link_local_get_link_type (const char *path)
 {
-	/* FIXME bugzilla.eazel.com 2490: This interface requires sync. I/O. */
-	return nautilus_link_get_root_property
-		(path, "NAUTILUS_LINK");
+	return get_link_type (local_get_root_property (path, "NAUTILUS_LINK"));
 }
 
 /* FIXME bugzilla.eazel.com 2495: 
@@ -433,68 +414,19 @@ nautilus_link_get_link_uri_given_file_contents (const char *file_contents,
 }
 
 gboolean
-nautilus_link_is_volume_link (const char *path)
+nautilus_link_local_is_volume_link (const char *path)
 {
-	gboolean retval;
-	char *link_type;
-	
-	retval = FALSE;
-	link_type = nautilus_link_get_link_type (path);
-	if (link_type != NULL) {
-		if (strcmp (link_type, NAUTILUS_LINK_MOUNT_TAG) == 0) {
-			retval = TRUE;
-		} else {
-			retval = FALSE;
-		}
-		g_free (link_type);
-	}
-	
-	return retval;
+	return nautilus_link_local_get_link_type (path) == NAUTILUS_LINK_MOUNT;
 }
 
 gboolean
-nautilus_link_is_home_link (const char *uri)
+nautilus_link_local_is_home_link (const char *path)
 {
-	gboolean retval;
-	char *link_type;
-	
-	retval = FALSE;
-	link_type = nautilus_link_get_link_type (uri);
-	if (link_type != NULL) {
-		if (strcmp (link_type, NAUTILUS_LINK_HOME_TAG) == 0) {
-			retval = TRUE;
-		} else {
-			retval = FALSE;
-		}
-		g_free (link_type);
-	}
-	
-	return retval;
+	return nautilus_link_local_get_link_type (path) == NAUTILUS_LINK_HOME;
 }
 
 gboolean
-nautilus_link_is_trash_link (const char *uri)
+nautilus_link_local_is_trash_link (const char *path)
 {
-	gboolean retval;
-	char *link_type;
-	
-	retval = FALSE;
-	link_type = nautilus_link_get_link_type (uri);
-	if (link_type != NULL) {
-		if (strcmp (link_type, NAUTILUS_LINK_TRASH_TAG) == 0) {
-			retval = TRUE;
-		} else {
-			retval = FALSE;
-		}
-		g_free (link_type);
-	}
-	
-	return retval;
-}
-
-/* All links can accept drags currently */
-gboolean
-nautilus_link_can_accept_drag (const char *uri)
-{
-	return TRUE;
+	return nautilus_link_local_get_link_type (path) == NAUTILUS_LINK_TRASH;
 }
