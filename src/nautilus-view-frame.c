@@ -38,6 +38,7 @@
 #include <bonobo/bonobo-zoomable-frame.h>
 #include <bonobo/bonobo-zoomable.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkmain.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
@@ -104,6 +105,8 @@ struct NautilusViewFrameDetails {
 	NautilusBonoboActivationHandle *activation_handle;
 
 	NautilusIdleQueue *idle_queue;
+
+	guint view_frame_failed_id;
 };
 
 static void nautilus_view_frame_initialize       (NautilusViewFrame      *view);
@@ -353,6 +356,11 @@ nautilus_view_frame_destroy (GtkObject *object)
 	destroy_view (view);
 
 	nautilus_idle_queue_destroy (view->details->idle_queue);
+
+	if (view->details->view_frame_failed_id != 0) {
+		gtk_idle_remove (view->details->view_frame_failed_id);
+		view->details->view_frame_failed_id = 0;
+	}
 
 	/* It's good to be in "failed" state while shutting down
 	 * (makes operations all be quiet no-ops). But we don't want
@@ -680,6 +688,31 @@ create_corba_objects (NautilusViewFrame *view)
 					     BONOBO_OBJECT (view->details->view_frame));
 }
 
+
+static gboolean
+view_frame_failed_callback (gpointer data)
+{
+	NautilusViewFrame *view = data;
+
+	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
+
+	view->details->view_frame_failed_id = 0;
+
+	view_frame_failed (view);
+
+	return FALSE;
+}
+
+static void
+queue_view_frame_failed (NautilusViewFrame *view)
+{
+	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
+
+	if (view->details->view_frame_failed_id == 0)
+		view->details->view_frame_failed_id =
+			gtk_idle_add (view_frame_failed_callback, view);
+}
+
 static void
 attach_view (NautilusViewFrame *view,
 	       BonoboObjectClient *client)
@@ -708,18 +741,18 @@ attach_view (NautilusViewFrame *view,
 	gtk_signal_connect_object_while_alive
 		(GTK_OBJECT (view->details->view_frame),
 		 "system_exception",
-		 view_frame_failed, GTK_OBJECT (view));
+		 queue_view_frame_failed, GTK_OBJECT (view));
 
 	gtk_signal_connect_object_while_alive
 		(GTK_OBJECT (view->details->control_frame),
 		 "system_exception",
-		 view_frame_failed, GTK_OBJECT (view));
+		 queue_view_frame_failed, GTK_OBJECT (view));
 
 	if (view->details->zoomable_frame != NULL) {
 		gtk_signal_connect_object_while_alive
 			(GTK_OBJECT (view->details->zoomable_frame),
 			 "system_exception",
-			 view_frame_failed, GTK_OBJECT (view));
+			 queue_view_frame_failed, GTK_OBJECT (view));
 
 		gtk_signal_connect_while_alive
 			(GTK_OBJECT (view->details->zoomable_frame),

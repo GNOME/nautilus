@@ -1,3 +1,12 @@
+Fri Feb 23 04:09:54 2001  George Lebl <jirka@5z.com>
+
+	* src/nautilus-view-frame.c (nautilus_view_frame_destroy)
+	  (view_frame_failed_callback) (queue_view_frame_failed)
+	  (attach_view):  Avoid crashes by queueing the destruction of
+	  the view into an idle from a "system_exception" signal, as 
+	  the exception could have come in the middle of gtk voodoo, and
+	  destroying the object then would be bad juju.
+
 2001-02-23  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Gene Z. Ragan <gzr@eazel.com>
