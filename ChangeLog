@@ -1,3 +1,28 @@
+2000-10-09  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 3513, No applications or viewers appear in "Open With" menu
+	in menu bar
+	
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	* libnautilus-extensions/nautilus-bonobo-extensions.h:
+	(nautilus_bonobo_add_menu_item),
+	(nautilus_bonobo_remove_menu_items):
+	New functions to add a menu items and remove multiple menu items from
+	a submenu.
+
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-directory-view.h:
+	(bonobo_launch_application_callback),
+	(bonobo_open_location_with_viewer_callback),
+	(add_open_with_app_bonobo_menu_item),
+	(add_open_with_viewer_bonobo_menu_item),
+	(add_application_to_bonobo_menu), (add_component_to_bonobo_menu),
+	(reset_bonobo_open_with_menu),
+	(fm_directory_view_real_update_menus):
+	Call new nautilus bonobo functions to add applications and viewers
+	to Open With... menu.  Also add verbs in addition to creating
+	the menu items.
+
 2000-10-09  Josh Barrow  <josh@eazel.com>
 
 	* icons/Makefile.am:

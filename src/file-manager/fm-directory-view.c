@@ -2995,94 +2995,12 @@ fm_directory_view_real_create_selection_context_menu_items (FMDirectoryView *vie
 			      remove_custom_icons_callback);
 }
 
-#ifdef UIH
-
 static void
-insert_bonobo_menu_item (FMDirectoryView *view,
-			 BonoboUIHandler *ui_handler,
-                         GList *selection,
-                         const char *path,
-                         const char *hint,
-                         int position,
-			 guint accelerator_key, 
-			 GdkModifierType ac_mods,
-                         BonoboUIHandlerCallback callback,
-                         gpointer callback_data)
-{
-        char *label;
-        gboolean sensitive;
-
-        compute_menu_item_info (view, path, selection, TRUE, &label, &sensitive);
-        bonobo_ui_handler_menu_new_item
-		(ui_handler, path, label, hint, 
-		 position,                      /* Position, -1 means at end */
-		 BONOBO_UI_HANDLER_PIXMAP_NONE, /* Pixmap type */
-		 NULL,                          /* Pixmap data */
-		 accelerator_key,               /* Accelerator key */
-		 ac_mods,                       /* Modifiers for accelerator */
-		 callback, callback_data);
-        g_free (label);
-}
-
-static void
-insert_bonobo_menu_subtree (FMDirectoryView *view,
-			    BonoboUIHandler *ui_handler,
-                            GList *selection,
-                            const char *path,
-                            const char *hint,
-                            int position,
-			    guint accelerator_key, 
-			    GdkModifierType ac_mods)
-{
-        char *label;
-        gboolean sensitive;
-
-        compute_menu_item_info (view, path, selection, TRUE, &label, &sensitive);
-        bonobo_ui_handler_menu_new_subtree
-		(ui_handler, path, label, hint, 
-		 position,                      /* Position, -1 means at end */
-		 BONOBO_UI_HANDLER_PIXMAP_NONE, /* Pixmap type */
-		 NULL,                          /* Pixmap data */
-		 accelerator_key,               /* Accelerator key */
-		 ac_mods);                      /* Modifiers for accelerator */
-        g_free (label);
-}
-
-static void
-add_open_with_bonobo_menu_item (BonoboUIHandler *ui_handler,
-				const char *label,
-				BonoboUIHandlerCallback callback,
-				gpointer callback_data,
-				GDestroyNotify destroy_notify)
-{
-	char *path;
-	char *escaped_label;
-
-	escaped_label = nautilus_str_double_underscores (label);
-	path = bonobo_ui_handler_build_path 
-		(FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH,
-		 label,
-		 NULL);
-	bonobo_ui_handler_menu_new_item
-		(ui_handler, path, escaped_label, NULL,
-		 -1, BONOBO_UI_HANDLER_PIXMAP_NONE, NULL,
-		 0, 0,
-		 NULL, NULL);
-	bonobo_ui_handler_menu_set_callback
-		(ui_handler, path, callback,
-		 callback_data, destroy_notify);
-	g_free (escaped_label);
-	g_free (path);
-}
-
-static void
-bonobo_launch_application_callback (BonoboUIHandler *ui_handler, 
-				    gpointer callback_data, 
-				    const char *path)
+bonobo_launch_application_callback (BonoboUIComponent *component, gpointer callback_data, const char *path)
 {
 	ApplicationLaunchParameters *launch_parameters;
-
-	launch_parameters = (ApplicationLaunchParameters *)callback_data;
+	
+	launch_parameters = (ApplicationLaunchParameters *) callback_data;
 
 	fm_directory_view_launch_application 
 		(launch_parameters->application,
@@ -3091,27 +3009,7 @@ bonobo_launch_application_callback (BonoboUIHandler *ui_handler,
 }				    
 
 static void
-add_application_to_bonobo_menu (BonoboUIHandler *ui_handler, 
-				GnomeVFSMimeApplication *application, 
-				const char *uri,
-				FMDirectoryView *directory_view)
-{
-	ApplicationLaunchParameters *launch_parameters;
-
-	launch_parameters = application_launch_parameters_new 
-		(application, uri, directory_view);
-	
-	add_open_with_bonobo_menu_item (ui_handler, 
-					application->name,
-					bonobo_launch_application_callback,
-					launch_parameters,
-					(GDestroyNotify) application_launch_parameters_free);
-}
-
-static void
-bonobo_open_location_with_viewer_callback (BonoboUIHandler *ui_handler, 
-				    	   gpointer callback_data, 
-				    	   const char *path)
+bonobo_open_location_with_viewer_callback (BonoboUIComponent *component, gpointer callback_data, const char *path)
 {
 	ViewerLaunchParameters *launch_parameters;
 
@@ -3120,33 +3018,91 @@ bonobo_open_location_with_viewer_callback (BonoboUIHandler *ui_handler,
 	switch_location_and_view (launch_parameters->identifier,
 				  launch_parameters->uri,
 				  launch_parameters->directory_view);
-}				    
+}		
 
 static void
-add_component_to_bonobo_menu (BonoboUIHandler *ui_handler, 
+add_open_with_app_bonobo_menu_item (BonoboUIComponent *ui,
+				const char *label,
+				gpointer callback,
+				gpointer callback_data,
+				GDestroyNotify destroy_notify)
+{
+	char *escaped_label, *verb_name;
+
+	escaped_label = nautilus_str_double_underscores (label);
+
+	nautilus_bonobo_add_menu_item (ui, FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION_PLACEHOLDER, 
+				       label, escaped_label);
+
+	verb_name = g_strdup_printf ("verb:%s", label);
+	bonobo_ui_component_add_verb_full (ui, verb_name, callback, callback_data, destroy_notify);
+				   	   
+	g_free (escaped_label);
+	g_free (verb_name);
+}
+
+static void
+add_open_with_viewer_bonobo_menu_item (BonoboUIComponent *ui,
+				const char *label,
+				gpointer callback,
+				gpointer callback_data,
+				GDestroyNotify destroy_notify)
+{
+	char *escaped_label, *verb_name;
+
+	escaped_label = nautilus_str_double_underscores (label);
+
+	nautilus_bonobo_add_menu_item (ui, FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER_PLACEHOLDER, 
+				       escaped_label, escaped_label);
+				       
+	verb_name = g_strdup_printf ("verb:%s", label);
+	bonobo_ui_component_add_verb_full (ui, verb_name, callback, callback_data, destroy_notify);
+
+	g_free (escaped_label);
+	
+}
+
+static void
+add_application_to_bonobo_menu (FMDirectoryView *directory_view,
+				GnomeVFSMimeApplication *application, 
+				const char *uri)
+{
+	ApplicationLaunchParameters *launch_parameters;
+
+	launch_parameters = application_launch_parameters_new 
+		(application, uri, directory_view);
+
+	add_open_with_app_bonobo_menu_item (directory_view->details->ui, 
+					application->name,
+					bonobo_launch_application_callback,
+					launch_parameters,
+					(GDestroyNotify) application_launch_parameters_free);
+}
+
+static void
+add_component_to_bonobo_menu (FMDirectoryView *directory_view,
 			      OAF_ServerInfo *content_view, 
-			      const char *uri,
-			      FMDirectoryView *directory_view)
+			      const char *uri)
 {
 	NautilusViewIdentifier *identifier;
 	ViewerLaunchParameters *launch_parameters;
 	char *label;
 
 	identifier = nautilus_view_identifier_new_from_content_view (content_view);
-	launch_parameters = viewer_launch_parameters_new
-		(identifier, uri, directory_view);
+	launch_parameters = viewer_launch_parameters_new (identifier, uri, directory_view);
 	nautilus_view_identifier_free (identifier);
 
 	label = g_strdup_printf (_("%s Viewer"),
 				 launch_parameters->identifier->name);
-	add_open_with_bonobo_menu_item (ui_handler, 
+
+	add_open_with_viewer_bonobo_menu_item (directory_view->details->ui, 
 					label, 
 					bonobo_open_location_with_viewer_callback, 
 					launch_parameters,
 					(GDestroyNotify) viewer_launch_parameters_free);
 	g_free (label);
 }
-#endif /* UIH */
+
 
 static void
 update_one_menu_item (FMDirectoryView *view,
@@ -3184,27 +3140,19 @@ reset_bonobo_trash_delete_menu (FMDirectoryView *view, GList *selection)
 	update_one_menu_item (view, selection, FM_DIRECTORY_VIEW_MENU_PATH_TRASH);
 }
 
-#ifdef UIH
 static void
-reset_bonobo_open_with_menu (FMDirectoryView *view, BonoboUIHandler *ui_handler, GList *selection)
+reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 {
 	GList *applications, *components;
 	GList *node;
 	char *uri;
 	NautilusDirectory *directory;
 
-	/* Remove old copy of this menu (if any) */
-	bonobo_ui_handler_menu_remove 
-		(ui_handler, 
-		 FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH);
-
-	insert_bonobo_menu_subtree 
-		(view, ui_handler, selection,
-		 FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH,
-		 _("Choose a program with which to open the selected item"),
-		 bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW) + 1,
-		 0, 0);
-
+	/* Clear any previous inserted items in the applications and viewers placeholders */
+	/* FIXME bugzilla.eazel.com 3568: We are leaking here. We need to remove the verbs also */
+	nautilus_bonobo_remove_menu_items (view->details->ui, FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION_PLACEHOLDER);
+	nautilus_bonobo_remove_menu_items (view->details->ui, FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER_PLACEHOLDER);
+	
 	/* This menu is only displayed when there's one selected item. */
 	if (nautilus_g_list_exactly_one_item (selection)) {
 		uri = nautilus_file_get_uri (NAUTILUS_FILE (selection->data));
@@ -3213,49 +3161,24 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, BonoboUIHandler *ui_handler,
 		applications = nautilus_mime_get_short_list_applications_for_uri (directory, NAUTILUS_FILE (selection->data));
 
 		for (node = applications; node != NULL; node = node->next) {
-			add_application_to_bonobo_menu (ui_handler, node->data, uri, view);
+			add_application_to_bonobo_menu (view, node->data, uri);
 		}
 
 		gnome_vfs_mime_application_list_free (applications); 
 
-		insert_bonobo_menu_item 
-			(view,
-			 ui_handler, selection,
-			 FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION,
-			 _("Choose another application with which to open the selected item"),
-			 -1,
-			 0, 0,
-			 (BonoboUIHandlerCallback) other_application_callback, view);
-
-		bonobo_ui_handler_menu_new_separator 
-			(ui_handler, 
-			 FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_VIEWERS, 
-			 -1);
-
 		components = nautilus_mime_get_short_list_components_for_uri (directory, NAUTILUS_FILE (selection->data));
 
 		for (node = components; node != NULL; node = node->next) {
-			add_component_to_bonobo_menu (ui_handler, node->data, uri, view);
+			add_component_to_bonobo_menu (view, node->data, uri);
 		}
 
 		gnome_vfs_mime_component_list_free (components); 
-
-		insert_bonobo_menu_item 
-			(view,
-			 ui_handler, selection,
-			 FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER,
-			 _("Choose another viewer with which to view the selected item"),
-			 -1,
-			 0, 0,
-			 (BonoboUIHandlerCallback) other_viewer_callback, view);
 
 		nautilus_directory_unref (directory);
 
 		g_free (uri);
 	}
 }
-
-#endif /* UIH */
 
 static void
 fm_directory_view_real_merge_menus (FMDirectoryView *view)
@@ -3298,7 +3221,7 @@ static void
 fm_directory_view_real_update_menus (FMDirectoryView *view)
 {
 	GList *selection;
-
+	
 	selection = fm_directory_view_get_selection (view);
 
 	update_one_menu_item (view, selection,
@@ -3308,9 +3231,8 @@ fm_directory_view_real_update_menus (FMDirectoryView *view)
 	update_one_menu_item (view, selection,
 			      FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW);
 
-#ifdef UIH
 	reset_bonobo_open_with_menu (view, selection);
-#endif	
+	
 	reset_bonobo_trash_delete_menu (view, selection);
 
 	update_one_menu_item (view, selection,

@@ -58,8 +58,11 @@ typedef struct FMDirectoryViewClass FMDirectoryViewClass;
 #define FM_DIRECTORY_VIEW_MENU_PATH_RESET_BACKGROUND			"/menu/Edit/Global Edit Items Placeholder/Reset Background"
 #define FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS			"/menu/Edit/Edit Items Placeholder/Remove Custom Icons"
 #define FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION    		"/menu/File/Open Placeholder/Open With/OtherApplication"
+#define FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION_PLACEHOLDER    	"/menu/File/Open Placeholder/Open With/Open With Applications Placeholder"
 #define FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_VIEWERS		"/menu/File/Open Placeholder/Open With/SeparatorBeforeViewers"
 #define FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER	   		"/menu/File/Open Placeholder/Open With/OtherViewer"
+#define FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER_PLACEHOLDER    	"/menu/File/Open Placeholder/Open With/Open With Viewers Placeholder"
+
 
 #define FM_TYPE_DIRECTORY_VIEW			(fm_directory_view_get_type ())
 #define FM_DIRECTORY_VIEW(obj)			(GTK_CHECK_CAST ((obj), FM_TYPE_DIRECTORY_VIEW, FMDirectoryView))

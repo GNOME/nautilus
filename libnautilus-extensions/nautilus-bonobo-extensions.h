@@ -53,6 +53,13 @@ void nautilus_bonobo_set_hidden (BonoboUIComponent *ui,
 gboolean nautilus_bonobo_get_hidden (BonoboUIComponent *ui,
 				     const char        *path);
 
+void	 nautilus_bonobo_add_menu_item (BonoboUIComponent *ui, 
+					const char 	  *path, 
+			 		const char 	  *item_name, 
+			 		const char 	  *item_label);
+
+void	 nautilus_bonobo_remove_menu_items (BonoboUIComponent *ui,
+				  	   const char 	     *path);
 
 void nautilus_bonobo_set_icon (BonoboUIComponent *ui,
 			       const char        *path,

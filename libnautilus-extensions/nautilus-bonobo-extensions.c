@@ -87,8 +87,9 @@ nautilus_bonobo_set_hidden (BonoboUIComponent *ui,
 				      NULL);
 }
 
-gboolean nautilus_bonobo_get_hidden (BonoboUIComponent *ui,
-				     const char        *path)
+gboolean 
+nautilus_bonobo_get_hidden (BonoboUIComponent *ui,
+		            const char        *path)
 {
 	char *value;
 
@@ -106,6 +107,42 @@ gboolean nautilus_bonobo_get_hidden (BonoboUIComponent *ui,
 	} else {
 		return FALSE;
 	}
+}
+
+void
+nautilus_bonobo_add_menu_item (BonoboUIComponent *ui, const char *path, 
+			 	const char *item_name, const char *item_label)
+{
+	CORBA_Environment  ev;
+	char *xml_string;
+		
+	CORBA_exception_init (&ev);
+
+	xml_string = g_strdup_printf ("<menuitem name=\"%s\" label=\"%s\" verb=\"verb:%s\"/>\n", item_name, item_label, item_name);
+	bonobo_ui_component_set (ui, path, xml_string, &ev);
+
+	g_free (xml_string);
+	CORBA_exception_free (&ev);
+}
+
+/**
+ * nautilus_bonobo_remove_menu_items
+ * 
+ * Removes all menu items contained in a menu or placeholder
+ * 
+ * @uih: The BonoboUIHandler for this menu item.
+ * @path: The standard bonobo-style path specifier for this menu item.
+ */
+void
+nautilus_bonobo_remove_menu_items (BonoboUIComponent *ui, const char *path)
+{
+	char *remove_wildcard;
+	
+	remove_wildcard = g_strdup_printf ("%s/*", path);
+
+	bonobo_ui_component_rm (ui, remove_wildcard, NULL);
+
+	g_free (remove_wildcard);
 }
 
 void
@@ -145,7 +182,6 @@ nautilus_bonobo_set_icon (BonoboUIComponent *ui,
 	g_free (pixtype);
 
 }
-
 
 #ifdef UIH
 
