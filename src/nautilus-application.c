@@ -391,11 +391,7 @@ nautilus_application_startup (NautilusApplication *application,
 		CORBA_free (url_list);
 	}
 
-	/* FIXME bugzilla.eazel.com 1051: Change this logic back so it won't
-	 * make a new window when asked to manage the desktop, once we have
-	 * a way to get rid of the desktop.
-	 */
-	if (/* !manage_desktop && */ urls == NULL) {
+	if (!manage_desktop && urls == NULL) {
 		Nautilus_Shell_open_default_window (shell, &ev);
 	}
 
@@ -405,16 +401,13 @@ nautilus_application_startup (NautilusApplication *application,
 
  out:
 	CORBA_exception_free (&ev);
-	return application->windows != NULL;
+	return application->windows != NULL || application->has_desktop;
 }
 
 static void
 nautilus_application_destroy_window (GtkObject *obj, NautilusApplication *application)
 {
 	application->windows = g_slist_remove (application->windows, obj);
-	if (application->windows == NULL) {
-  		nautilus_application_quit ();
-	}
 }
 
 void 

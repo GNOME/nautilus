@@ -727,12 +727,12 @@ nautilus_window_load_content_view (NautilusWindow *window,
 	 */
         if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
         	/* We force the desktop to use a desktop_icon_view. It's simpler
-        	 * to do fix it here than trying to make it pick the right view
-        	 * in the first place.
+        	 * to fix it here than trying to make it pick the right view in
+        	 * the first place.
         	 */
 		iid = NAUTILUS_DESKTOP_ICON_VIEW_IID;
 	} else {
-        	g_return_val_if_fail(id, NULL);
+        	g_return_val_if_fail (id, NULL);
         	iid = id->iid;
         }
         

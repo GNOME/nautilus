@@ -46,6 +46,7 @@ typedef struct NautilusWindow NautilusWindow;
 typedef struct {
 	BonoboObject parent;
 	GSList *windows;
+	gboolean has_desktop;
 	NautilusUndoManager *undo_manager;
 } NautilusApplication;
 

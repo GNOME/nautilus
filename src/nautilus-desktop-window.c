@@ -111,6 +111,8 @@ nautilus_desktop_window_new (NautilusApplication *application)
 	nautilus_window_goto_uri (NAUTILUS_WINDOW (window), desktop_directory_uri);
 	g_free (desktop_directory_uri);
 
+	application->has_desktop = TRUE;
+	
 	gtk_widget_show (GTK_WIDGET (window));
 
 	return window;

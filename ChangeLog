@@ -1,3 +1,36 @@
+2000-07-11  Michael Engber  <engber@eazel.com>
+
+	* libnautilus/nautilus-view-component.idl:
+	* libnautilus/nautilus-view.c: (nautilus_view_quit_nautilus):
+	* libnautilus/nautilus-view.h:
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_quit_menu_item_callback),
+	(fm_desktop_icon_view_create_background_context_menu_items):
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_quit_nautilus):
+	* src/file-manager/fm-directory-view.h:
+	* src/nautilus-application.c: (nautilus_application_startup),
+	(nautilus_application_destroy_window):
+	* src/nautilus-application.h:
+	* src/nautilus-desktop-window.c: (nautilus_desktop_window_new):
+	* src/nautilus-view-frame-corba.c:
+	(impl_Nautilus_ViewFrame_set_title),
+	(impl_Nautilus_ViewFrame_quit_nautilus):
+	* src/nautilus-view-frame-private.h:
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_initialize_class),
+	(nautilus_view_frame_set_title),
+	(nautilus_view_frame_quit_nautilus):
+	* src/nautilus-view-frame.h:
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_load_content_view):
+	* src/nautilus-window.c: (nautilus_window_quit_nautilus_callback),
+	(nautilus_window_connect_view):
+	Hooked up the quit menu in the desktop context menu to quit Nautilus.
+	Now, if Nautilus is managing the desktop no default window is created
+	and Nautilus does not quit when the last window is closed - i.e. use
+	the quit menu item instead. Bugs 1050 and 1051.
+
 2000-07-11  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/login/nautilus-view/nautilus-login-view.c:

@@ -60,6 +60,8 @@ static void impl_Nautilus_ViewFrame_report_load_failed          (PortableServer_
 static void impl_Nautilus_ViewFrame_set_title                   (PortableServer_Servant  servant,
 								 const CORBA_char       *title,
 								 CORBA_Environment      *ev);
+static void impl_Nautilus_ViewFrame_quit_nautilus          	(PortableServer_Servant  servant,
+								 CORBA_Environment      *ev);
 
 POA_Nautilus_ViewFrame__epv impl_Nautilus_ViewFrame_epv =
 {
@@ -73,7 +75,8 @@ POA_Nautilus_ViewFrame__epv impl_Nautilus_ViewFrame_epv =
 	&impl_Nautilus_ViewFrame_report_load_progress,
 	&impl_Nautilus_ViewFrame_report_load_complete,
 	&impl_Nautilus_ViewFrame_report_load_failed,
-	&impl_Nautilus_ViewFrame_set_title
+	&impl_Nautilus_ViewFrame_set_title,
+	&impl_Nautilus_ViewFrame_quit_nautilus,
 };
 
 static PortableServer_ServantBase__epv base_epv;
@@ -217,5 +220,13 @@ impl_Nautilus_ViewFrame_set_title (PortableServer_Servant servant,
 {
 	nautilus_view_frame_set_title
 		(((impl_POA_Nautilus_ViewFrame *) servant)->view, title);
+}
+
+static void
+impl_Nautilus_ViewFrame_quit_nautilus (PortableServer_Servant servant,
+					    CORBA_Environment *ev)
+{
+	nautilus_view_frame_quit_nautilus
+		(((impl_POA_Nautilus_ViewFrame *) servant)->view);
 }
 

@@ -3262,3 +3262,10 @@ fm_directory_view_get_context_menu_index(const char *menu_name)
 		return -1;
 	}
 }
+
+void
+fm_directory_view_quit_nautilus (FMDirectoryView *view)
+{
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	nautilus_view_quit_nautilus (view->details->nautilus_view);	
+}
