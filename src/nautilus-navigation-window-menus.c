@@ -72,21 +72,24 @@
  * don't want other code relying on their existence.
  */
 
-#define NAUTILUS_MENU_PATH_SHOW_HIDE_SIDEBAR			"/menu/View/Show Hide Placeholder/Show Hide Sidebar"
-#define NAUTILUS_MENU_PATH_SHOW_HIDE_TOOL_BAR			"/menu/View/Show Hide Placeholder/Show Hide Tool Bar"
-#define NAUTILUS_MENU_PATH_SHOW_HIDE_LOCATION_BAR		"/menu/View/Show Hide Placeholder/Show Hide Location Bar"
-#define NAUTILUS_MENU_PATH_SHOW_HIDE_STATUS_BAR			"/menu/View/Show Hide Placeholder/Show Hide Status Bar"
+#define MENU_PATH_TOGGLE_FIND_MODE			"/menu/File/Toggle Find Mode"
 
-#define NAUTILUS_MENU_PATH_HISTORY_PLACEHOLDER			"/menu/Go/History Placeholder"
+#define MENU_PATH_SHOW_HIDE_SIDEBAR			"/menu/View/Show Hide Placeholder/Show Hide Sidebar"
+#define MENU_PATH_SHOW_HIDE_TOOL_BAR			"/menu/View/Show Hide Placeholder/Show Hide Tool Bar"
+#define MENU_PATH_SHOW_HIDE_LOCATION_BAR		"/menu/View/Show Hide Placeholder/Show Hide Location Bar"
+#define MENU_PATH_SHOW_HIDE_STATUS_BAR			"/menu/View/Show Hide Placeholder/Show Hide Status Bar"
 
-#define NAUTILUS_MENU_PATH_BUILT_IN_BOOKMARKS_PLACEHOLDER	"/menu/Bookmarks/Built-in Bookmarks Placeholder"
-#define NAUTILUS_MENU_PATH_BOOKMARKS_PLACEHOLDER		"/menu/Bookmarks/Bookmarks Placeholder"
+#define MENU_PATH_HISTORY_PLACEHOLDER			"/menu/Go/History Placeholder"
 
-#define SWITCH_TO_BEGINNER_VERB					"Switch to Beginner Level"
-#define SWITCH_TO_INTERMEDIATE_VERB				"Switch to Intermediate Level"
-#define SWITCH_TO_ADVANCED_VERB					"Switch to Advanced Level"
+#define MENU_PATH_BUILT_IN_BOOKMARKS_PLACEHOLDER	"/menu/Bookmarks/Built-in Bookmarks Placeholder"
+#define MENU_PATH_BOOKMARKS_PLACEHOLDER			"/menu/Bookmarks/Bookmarks Placeholder"
 
-#define NAUTILUS_MENU_PATH_TOGGLE_FIND_MODE			"/menu/File/Toggle Find Mode"
+#define COMMAND_PATH_CLOSE_WINDOW			"/commands/Close"
+
+#define SWITCH_TO_BEGINNER_VERB				"Switch to Beginner Level"
+#define SWITCH_TO_INTERMEDIATE_VERB			"Switch to Intermediate Level"
+#define SWITCH_TO_ADVANCED_VERB				"Switch to Advanced Level"
+
 
 static GtkWindow *bookmarks_window = NULL;
 
@@ -411,25 +414,25 @@ nautilus_window_update_show_hide_menu_items (NautilusWindow *window)
 
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 	nautilus_bonobo_set_label (window->details->shell_ui,
-				   NAUTILUS_MENU_PATH_SHOW_HIDE_STATUS_BAR,
+				   MENU_PATH_SHOW_HIDE_STATUS_BAR,
 				   nautilus_window_status_bar_showing (window)
 				   ? _("Hide Status Bar")
 				   : _("Show Status Bar"));
 		
 	nautilus_bonobo_set_label (window->details->shell_ui,
-				   NAUTILUS_MENU_PATH_SHOW_HIDE_SIDEBAR,
+				   MENU_PATH_SHOW_HIDE_SIDEBAR,
 				   nautilus_window_sidebar_showing (window)
 				   ? _("Hide Sidebar")
 				   : _("Show Sidebar"));
 
 	nautilus_bonobo_set_label (window->details->shell_ui,
-				   NAUTILUS_MENU_PATH_SHOW_HIDE_TOOL_BAR,
+				   MENU_PATH_SHOW_HIDE_TOOL_BAR,
 				   nautilus_window_tool_bar_showing (window)
 				   ? _("Hide Tool Bar")
 				   : _("Show Tool Bar"));
 		
 	nautilus_bonobo_set_label (window->details->shell_ui,
-				   NAUTILUS_MENU_PATH_SHOW_HIDE_LOCATION_BAR,
+				   MENU_PATH_SHOW_HIDE_LOCATION_BAR,
 				   nautilus_window_location_bar_showing (window)
 				   ? _("Hide Location Bar")
 				   : _("Show Location Bar"));
@@ -1057,7 +1060,7 @@ refresh_bookmarks_menu (NautilusWindow *window)
 
 	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS, 
 					       FALSE)) {
-		append_static_bookmarks (window, NAUTILUS_MENU_PATH_BUILT_IN_BOOKMARKS_PLACEHOLDER);
+		append_static_bookmarks (window, MENU_PATH_BUILT_IN_BOOKMARKS_PLACEHOLDER);
 	}
 
 	append_dynamic_bookmarks (window);
@@ -1289,10 +1292,10 @@ nautilus_window_remove_bookmarks_menu_items (NautilusWindow *window)
 {
 	nautilus_bonobo_remove_menu_items_and_commands
 		(window->details->shell_ui, 
-		 NAUTILUS_MENU_PATH_BUILT_IN_BOOKMARKS_PLACEHOLDER);					   
+		 MENU_PATH_BUILT_IN_BOOKMARKS_PLACEHOLDER);					   
 	nautilus_bonobo_remove_menu_items_and_commands 
 		(window->details->shell_ui, 
-		 NAUTILUS_MENU_PATH_BOOKMARKS_PLACEHOLDER);					   
+		 MENU_PATH_BOOKMARKS_PLACEHOLDER);					   
 }
 
 void
@@ -1300,7 +1303,7 @@ nautilus_window_remove_go_menu_items (NautilusWindow *window)
 {
 	nautilus_bonobo_remove_menu_items_and_commands 
 		(window->details->shell_ui, 
-		 NAUTILUS_MENU_PATH_HISTORY_PLACEHOLDER);
+		 MENU_PATH_HISTORY_PLACEHOLDER);
 }
 
 void
@@ -1316,7 +1319,7 @@ nautilus_window_update_find_menu_item (NautilusWindow *window)
 			: _("_Find"));
 
 	nautilus_bonobo_set_label (window->details->shell_ui, 
-				   NAUTILUS_MENU_PATH_TOGGLE_FIND_MODE,
+				   MENU_PATH_TOGGLE_FIND_MODE,
 				   label_string);
 	g_free (label_string);
 }
@@ -1338,7 +1341,7 @@ append_dynamic_bookmarks (NautilusWindow *window)
 	for (index = 0; index < bookmark_count; ++index) {
 		append_bookmark_to_menu (window,
 		                         nautilus_bookmark_list_item_at (bookmarks, index),
-		                         NAUTILUS_MENU_PATH_BOOKMARKS_PLACEHOLDER,
+		                         MENU_PATH_BOOKMARKS_PLACEHOLDER,
 		                         index,
 		                         TRUE);
 	}
@@ -1395,7 +1398,7 @@ refresh_go_menu (NautilusWindow *window)
 	     node = node->next, index++) {
 		append_bookmark_to_menu (window,
 					 NAUTILUS_BOOKMARK (node->data),
-					 NAUTILUS_MENU_PATH_HISTORY_PLACEHOLDER,
+					 MENU_PATH_HISTORY_PLACEHOLDER,
 					 index,
 					 FALSE);
 	}
