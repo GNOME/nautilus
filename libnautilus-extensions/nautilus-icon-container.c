@@ -100,6 +100,11 @@
 #define CONTAINER_PAD_TOP 4
 #define CONTAINER_PAD_BOTTOM 4
 
+/* Desktop layout mode defines */
+#define DESKTOP_PAD_HORIZONTAL 	30
+#define DESKTOP_PAD_VERTICAL 	10
+#define CELL_SIZE 		20
+
 static void          activate_selected_items                  (NautilusIconContainer      *container);
 static void          nautilus_icon_container_initialize_class (NautilusIconContainerClass *class);
 static void          nautilus_icon_container_initialize       (NautilusIconContainer      *container);
@@ -778,8 +783,6 @@ desktop_icons_sort (gconstpointer a, gconstpointer b)
 	return 0;
 }
 
-#define CELL_SIZE 35
-
 /* Search for available space at location */
 static gboolean
 find_open_grid_space (NautilusIcon *icon, int **icon_grid, int num_rows, 
@@ -846,8 +849,13 @@ get_best_empty_grid_location (NautilusIcon *icon, int **icon_grid, int num_rows,
 			if (found_space) {				
 				*x = row * CELL_SIZE;
 				*y = column * CELL_SIZE;
-				if (*x < 30) {
-					*x = 30;
+
+				/* Correct for padding */
+				if (*x < DESKTOP_PAD_HORIZONTAL) {
+					*x = DESKTOP_PAD_HORIZONTAL;
+				}
+				if (*y < DESKTOP_PAD_VERTICAL) {
+					*y = DESKTOP_PAD_VERTICAL;
 				}
 				return;
 			}
@@ -995,8 +1003,8 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 		
 	} else {
 		/* There are no placed icons.  Just lay them down using our rules */		
-		x = 30;
-		y = 10;
+		x = DESKTOP_PAD_HORIZONTAL;
+		y = DESKTOP_PAD_VERTICAL;
 		max_width = 0;
 		
 		for (p = icons; p != NULL; p = p->next) {

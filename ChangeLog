@@ -1,3 +1,10 @@
+2000-08-15  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(get_best_empty_grid_location), (lay_down_icons_tblr):
+	Added horizontal and vertical padding for the tblr
+	layout mode as per Arlo's spec.
+
 2000-08-15  Raph Levien  <raph@acm.org>
 
 	* librsvg/art_render.c (art_render_image_solid_negotiate): Only
@@ -32,7 +39,7 @@
 
 	* libnautilus-extensions/nautilus-icon-container.c:
 	(icon_set_position), (get_best_empty_grid_location):
-	Fixed bug in postioning icons on the right edge of 
+	Fixed bug in postioning icons on the left edge of 
 	the desktop.  Some fine tuning of inital default icon
 	placement.
 	
