@@ -252,9 +252,11 @@ eazel_install_fetch_package (EazelInstall *service,
 			targetname = g_strdup_printf ("%s/%s",
 						      eazel_install_get_tmp_dir (service),
 						      filename_from_url (url));
-			packagedata_fill_from_file (package, targetname); 
 			/* package->filename = g_strdup (targetname); */
 			result = eazel_install_fetch_file (service, url, targetname);
+			if (result==TRUE) {
+				packagedata_fill_from_file (package, targetname); 
+			}
 			g_free (targetname);
 		}
 		g_free (url);

@@ -1,3 +1,9 @@
+2000-07-20  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/lib/eazel-install-protocols.c:
+	(eazel_install_fetch_package):
+	I tried to read the package header before downloading the file. Duh.
+
 2000-07-20  Seth Nickell  <seth@eazel.com>
 
 	* libnautilus-extensions/nautilus-search-uri.c:
