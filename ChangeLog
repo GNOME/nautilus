@@ -1,5 +1,14 @@
 2000-07-28  Andy Hertzfeld  <andy@eazel.com>
 
+	* src/nautilus-navigation-bar.c:
+	(nautilus_navigation_bar_get_mapped_location),
+	(nautilus_navigation_bar_location_changed):
+	added heuristics to append http:// to typed in locations that look
+	like urls and would otherwise fail, so the user isn't required
+	to type in the protocol for web browsing
+	
+2000-07-28  Andy Hertzfeld  <andy@eazel.com>
+
 	* src/nautilus-sidebar-tabs.c: (draw_one_tab_themed):
 	removed hack I put in to compensate for unevenly sized tab pieces
 	now that Arlo has fixed them.
