@@ -1936,6 +1936,7 @@ set_owner_and_group_callback (GnomeVFSAsyncHandle *handle,
 	if (result == GNOME_VFS_OK) {
 		op->file->details->info->uid = op->new_uid;
 		op->file->details->info->gid = op->new_gid;
+		op->file->details->info->permissions = op->new_permissions;
 	}
 	operation_complete (op, result);
 }
@@ -1950,20 +1951,36 @@ set_owner_and_group (NautilusFile *file,
 	Operation *op;
 	GnomeVFSURI *uri;
 	GnomeVFSFileInfo *partial_file_info;
+	GnomeVFSFilePermissions new_permissions;
 
+	/* Clear the SUID and SGID bits for executable files when
+	 * the owner or group changes. POSIX specifies this behavior
+	 * when non-root does the chown, and leaves behavior unspecified
+	 * when root does the chown (varies with Linux kernel version).
+	 * For maximum security, we'll always clear the bits for executable
+	 * files here.
+	 */
+	new_permissions = file->details->info->permissions;
+	if (nautilus_file_can_execute (file)) {
+		new_permissions &= ~(GNOME_VFS_PERM_SUID | GNOME_VFS_PERM_SGID);
+	}
+	
 	/* Set up a owner-change operation. */
 	op = operation_new (file, callback, callback_data);
 	op->new_uid = owner;
 	op->new_gid = group;
+	op->new_permissions = new_permissions;
 
 	/* Change the file-on-disk owner. */
 	partial_file_info = gnome_vfs_file_info_new ();
 	partial_file_info->uid = owner;
 	partial_file_info->gid = group;
+	partial_file_info->permissions = new_permissions;
+
 	uri = nautilus_file_get_gnome_vfs_uri (file);
 	gnome_vfs_async_set_file_info (&op->handle,
 				       uri, partial_file_info, 
-				       GNOME_VFS_SET_FILE_INFO_OWNER,
+				       GNOME_VFS_SET_FILE_INFO_OWNER | GNOME_VFS_SET_FILE_INFO_PERMISSIONS,
 				       set_owner_and_group_callback, op);
 	gnome_vfs_file_info_unref (partial_file_info);
 	gnome_vfs_uri_unref (uri);

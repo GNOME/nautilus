@@ -1,3 +1,14 @@
+2000-07-24  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 1469 (changing owner/group doesn't handle
+	special flags correctly)
+
+	* libnautilus-extensions/nautilus-file.c:
+	(set_owner_and_group_callback), (set_owner_and_group):
+	Changing the owner or group on an executable file now
+	clears the SUID and SGID bits as per explanation in
+	man 2 chown.
+
 2000-07-24  Pavel Cisler <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c:
