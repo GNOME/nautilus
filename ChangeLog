@@ -1,3 +1,14 @@
+2000-06-10  Andy Hertzfeld  <andy@eazel.com>
+
+	* data/top/Computer.link:
+	* data/top/Services.link:
+	removed the suffix from the custom image reference
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(get_themed_icon_file_path), (get_icon_file_path),
+	(load_specific_image):
+	fixed a bug I introduced earlier today where custom icons wouldn't scale properly,
+	by using a different test to identify vector images
+	
 2000-06-09  Eskil Heyn Olsen  <eskil@eazel.com>
 	
 	* components/services/trilobite/libtrilobite/Makefile.am:
