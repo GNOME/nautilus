@@ -1,5 +1,17 @@
 2002-03-11  Anders Carlsson  <andersca@gnu.org>
 
+	* icons/Makefile.am:
+	* icons/nautilus-launch-icon.png:
+	Re-add nautilus-launch-icon.
+	
+	* src/nautilus-window.c: (set_up_default_icon_list):
+	Use nautilus_pixmap_file to get the full path to the icons used.
+	(nautilus_window_class_init):
+	Remove nautilus_window_realize function, it only contained
+	stuff we don't need to do these days.
+	
+2002-03-11  Anders Carlsson  <andersca@gnu.org>
+
 	* src/nautilus-window.c: (nautilus_window_set_up_sidebar),
 	(nautilus_window_tear_down_sidebar), (nautilus_window_constructed),
 	(nautilus_window_hide_sidebar), (nautilus_window_show_sidebar),

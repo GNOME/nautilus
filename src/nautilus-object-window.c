@@ -113,9 +113,6 @@ enum {
 
 static GList *history_list;
 
-static GdkPixmap *mini_icon_pixmap;
-static GdkBitmap *mini_icon_mask;
-
 static void update_sidebar_panels_from_preferences (NautilusWindow *window);
 static void sidebar_panels_changed_callback        (gpointer        user_data);
 static void cancel_view_as_callback                (NautilusWindow *window);
@@ -124,53 +121,25 @@ GNOME_CLASS_BOILERPLATE (NautilusWindow, nautilus_window,
 			 BonoboWindow, BONOBO_TYPE_WINDOW)
 
 static void
-unref_mini_icon (void)
-{
-	g_object_unref (mini_icon_pixmap);
-	if (mini_icon_mask != NULL) {
-		g_object_unref (mini_icon_mask);
-	}
-}
-
-static void
-load_mini_icon (void)
-{
-	char *filename;
-	GdkPixbuf *pixbuf;
-       	static gboolean loaded;
-
-	if (loaded) {
-		return;
-	}
-	loaded = TRUE;
-
-	filename = nautilus_pixmap_file ("nautilus-mini-logo.png");
-	if (filename == NULL) {
-		return;
-	}
-
-	pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
-	if (pixbuf != NULL) {
-		gdk_pixbuf_render_pixmap_and_mask
-			(pixbuf, &mini_icon_pixmap, &mini_icon_mask,
-			 EEL_STANDARD_ALPHA_THRESHHOLD);
-		g_object_unref (pixbuf);
-		eel_debug_call_at_shutdown (unref_mini_icon);
-	}
-	g_free (filename);
-}
-
-static void
 set_up_default_icon_list (void)
 {
 	GList *icon_list;
 	guint i;
 	GdkPixbuf *pixbuf;
+	char *path;
 	const char *icon_filenames[] = { "nautilus-mini-logo.png", "nautilus-launch-icon.png" };
 
 	icon_list = NULL;
 	for (i = 0; i < G_N_ELEMENTS (icon_filenames); i++) {
-		pixbuf = gdk_pixbuf_new_from_file (icon_filenames[i], NULL);
+		path = nautilus_pixmap_file (icon_filenames[i]);
+
+		if (path == NULL) {
+			continue;
+		}
+		
+		pixbuf = gdk_pixbuf_new_from_file (path, NULL);
+		g_free (path);
+		
 		if (pixbuf != NULL) {
 			icon_list = g_list_prepend (icon_list, pixbuf);
 		}
@@ -912,41 +881,6 @@ nautilus_window_close (NautilusWindow *window)
 	}
 
 	gtk_widget_destroy (GTK_WIDGET (window));
-}
-
-static void
-nautilus_window_update_launcher (GdkWindow *window)
-{
-	struct timeval tmp;
-	
-	gettimeofday (&tmp, NULL);
-
-	/* Set a property on the root window to the time of day in seconds.
-	 * The launcher will monitor the root window for this property change
-	 * to update its launching state */
-	gdk_property_change (gdk_get_default_root_window (),
-			     gdk_atom_intern ("_NAUTILUS_LAST_WINDOW_REALIZE_TIME", FALSE),
-			     gdk_x11_xatom_to_atom (XA_CARDINAL),
-			     32,
-			     PropModeReplace,
-			     (guchar *) &tmp.tv_sec,
-			     1);
-}
-
-static void
-nautilus_window_realize (GtkWidget *widget)
-{
-        /* Create our GdkWindow */
-	GTK_WIDGET_CLASS (parent_class)->realize (widget);
-
-        /* Set the mini icon */
-	load_mini_icon ();
-	if (mini_icon_pixmap != NULL) {
-		eel_set_mini_icon (widget->window, mini_icon_pixmap, mini_icon_mask);
-	}
-
-	/* Notify the launcher that our window has been realized */
-	nautilus_window_update_launcher (widget->window);
 }
 
 static void
@@ -2139,7 +2073,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
 	GTK_OBJECT_CLASS (class)->destroy = nautilus_window_destroy;
 	GTK_WIDGET_CLASS (class)->show = nautilus_window_show;
 	GTK_WIDGET_CLASS (class)->unrealize = nautilus_window_unrealize;
-	GTK_WIDGET_CLASS (class)->realize = nautilus_window_realize;
 	GTK_WIDGET_CLASS (class)->size_request = nautilus_window_size_request;
 	class->add_current_location_to_history_list = real_add_current_location_to_history_list;
 	

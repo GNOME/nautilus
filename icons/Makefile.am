@@ -29,6 +29,7 @@ icon_DATA =\
 	emblems.png \
 	increment.png \
 	knob.png \
+	nautilus-launch-icon.png \
 	nautilus-mini-logo.png \
 	note-indicator.png \
 	number_strip.png \
