@@ -692,6 +692,7 @@ static const PreferenceDefault preference_defaults[] = {
 	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
 	  { EEL_USER_LEVEL_INTERMEDIATE, GINT_TO_POINTER (TRUE) }
 	},
+
 	/* news panel preferences */
 	{ NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS,
 	  PREFERENCE_INTEGER,
@@ -703,6 +704,14 @@ static const PreferenceDefault preference_defaults[] = {
 	  PREFERENCE_INTEGER,
 	  EEL_USER_LEVEL_NOVICE,
 	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (5) },
+	  { USER_LEVEL_NONE }
+	},
+
+	/* non-visible preferences */
+	{ NAUTILUS_PREFERENCES_ADD_TO_SESSION,
+	  PREFERENCE_BOOLEAN,
+	  EEL_USER_LEVEL_NOVICE,
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
 	  { USER_LEVEL_NONE }
 	},
 

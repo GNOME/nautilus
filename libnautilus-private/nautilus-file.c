@@ -3779,7 +3779,6 @@ nautilus_file_get_size_as_string (NautilusFile *file)
 		if (!nautilus_file_get_directory_item_count (file, &item_count, &count_unreadable)) {
 			return NULL;
 		}
-
 		return format_item_count_for_display (item_count, TRUE, TRUE);
 	}
 	
@@ -4041,52 +4040,53 @@ nautilus_file_get_string_attribute_with_default (NautilusFile *file, const char 
 	NautilusRequestStatus status;
 
 	result = nautilus_file_get_string_attribute (file, attribute_name);
-
-	if (result == NULL) {
-		/* Supply default values for the ones we know about. */
-		/* FIXME bugzilla.eazel.com 646: 
-		 * Use hash table and switch statement or function pointers for speed? 
-		 */
-		if (strcmp (attribute_name, "size") == 0) {
-			if (!nautilus_file_should_show_directory_item_count (file)) {
-				result = g_strdup ("--");
-			} else {
-				count_unreadable = FALSE;
-				if (nautilus_file_is_directory (file)) {
-					nautilus_file_get_directory_item_count (file, &item_count, &count_unreadable);
-				}
-				
-				result = g_strdup (count_unreadable ? _("? items") : "...");
-			}
-		} else if (strcmp (attribute_name, "deep_size") == 0) {
-			status = nautilus_file_get_deep_counts (file, NULL, NULL, NULL, NULL);
-			if (status == NAUTILUS_REQUEST_DONE) {
-				/* This means no contents at all were readable */
-				return g_strdup (_("? bytes"));
-			}
-			return g_strdup ("...");
-		} else if (strcmp (attribute_name, "deep_file_count") == 0
-			   || strcmp (attribute_name, "deep_directory_count") == 0
-			   || strcmp (attribute_name, "deep_total_count") == 0) {
-			status = nautilus_file_get_deep_counts (file, NULL, NULL, NULL, NULL);
-			if (status == NAUTILUS_REQUEST_DONE) {
-				/* This means no contents at all were readable */
-				return g_strdup (_("? items"));
-			}
-			return g_strdup ("...");
-		} else if (strcmp (attribute_name, "type") == 0) {
-			result = g_strdup (_("unknown type"));
-		} else if (strcmp (attribute_name, "mime_type") == 0) {
-			result = g_strdup (_("unknown MIME type"));
-		} else {
-			/* Fallback, use for both unknown attributes and attributes
-			 * for which we have no more appropriate default.
-			 */
-			result = g_strdup (_("unknown"));
-		}
+	if (result != NULL) {
+		return result;
 	}
 
-	return result;
+	/* Supply default values for the ones we know about. */
+	/* FIXME bugzilla.eazel.com 646: 
+	 * Use hash table and switch statement or function pointers for speed? 
+	 */
+	if (strcmp (attribute_name, "size") == 0) {
+		if (!nautilus_file_should_show_directory_item_count (file)) {
+			return g_strdup ("--");
+		}
+		count_unreadable = FALSE;
+		if (nautilus_file_is_directory (file)) {
+			nautilus_file_get_directory_item_count (file, &item_count, &count_unreadable);
+		}
+		return g_strdup (count_unreadable ? _("? items") : "...");
+	}
+	if (strcmp (attribute_name, "deep_size") == 0) {
+		status = nautilus_file_get_deep_counts (file, NULL, NULL, NULL, NULL);
+		if (status == NAUTILUS_REQUEST_DONE) {
+			/* This means no contents at all were readable */
+			return g_strdup (_("? bytes"));
+		}
+		return g_strdup ("...");
+	}
+	if (strcmp (attribute_name, "deep_file_count") == 0
+	    || strcmp (attribute_name, "deep_directory_count") == 0
+	    || strcmp (attribute_name, "deep_total_count") == 0) {
+		status = nautilus_file_get_deep_counts (file, NULL, NULL, NULL, NULL);
+		if (status == NAUTILUS_REQUEST_DONE) {
+			/* This means no contents at all were readable */
+			return g_strdup (_("? items"));
+		}
+		return g_strdup ("...");
+	}
+	if (strcmp (attribute_name, "type") == 0) {
+		return g_strdup (_("unknown type"));
+	}
+	if (strcmp (attribute_name, "mime_type") == 0) {
+		return g_strdup (_("unknown MIME type"));
+	}
+	
+	/* Fallback, use for both unknown attributes and attributes
+	 * for which we have no more appropriate default.
+	 */
+	return g_strdup (_("unknown"));
 }
 
 /**

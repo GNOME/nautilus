@@ -1,3 +1,15 @@
+2001-05-23  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-private/nautilus-global-preferences.c: Added a
+	default for the ADD_TO_SESSION preference. This should fix the
+	problem where some people don't get any session
+	management. Miguel's patch removed the code to set this preference
+	in the first time druid so we need to default to TRUE.
+	
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_get_string_attribute_with_default): Used return
+	statements to simplify the logic a bit.
+
 2001-05-22  John Harper  <jsh@pixelslut.com>
 
 	Fallout from fixing bug 8220 (Having Ctrl as default "modifier
