@@ -33,6 +33,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-directory-list.h>
+#include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus/nautilus-gtk-macros.h>
@@ -344,6 +345,7 @@ fm_directory_view_populate (FMDirectoryView *view)
 			info = gnome_vfs_directory_list_get
 				(view->details->directory_list, position);
 
+			gnome_vfs_file_info_ref (info);
 			fm_directory_view_add_entry (view, info);
 
 			position = gnome_vfs_directory_list_position_next
@@ -366,6 +368,7 @@ display_pending_entries (FMDirectoryView *view)
 		info = gnome_vfs_directory_list_get (view->details->directory_list,
 						     view->details->current_position);
 
+		gnome_vfs_file_info_ref (info);
 		fm_directory_view_add_entry (view, info);
 
 		view->details->current_position = gnome_vfs_directory_list_position_next
@@ -692,7 +695,8 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 		gnome_vfs_uri_unref (view->details->uri);
 	view->details->uri = gnome_vfs_uri_new (uri);
 
-	/* FIXME: Does this leak? Where are we supposed to destroy the old value? */
+	if (view->details->directory_list != NULL)
+		gnome_vfs_directory_list_destroy (view->details->directory_list);
 	view->details->directory_list = NULL;
 	view->details->current_position = GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
 

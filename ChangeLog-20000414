@@ -1,3 +1,14 @@
+2000-01-19  John Sullivan  <sullivan@eazel.com>
+
+	* src/file-manager/fm-directory-view.c:
+	Added #include <libgnomevfs/gnome-vfs-file-info.h>
+	(fm_directory_view_populate), (display_pending_entries):
+	Bump refcount on file info before adding it to directory.
+	(fm_directory_view_load_uri): Destroy directory list
+	before setting it to NULL. With previous change, this
+	should prevent leaking GnomeVFSFileInfos and their
+	lists.
+
 2000-01-19  Darin Adler  <darin@eazel.com>
 
 	* libnautilus/nautilus-directory.c: (nautilus_directory_finalize):
