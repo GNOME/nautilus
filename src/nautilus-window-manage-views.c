@@ -29,6 +29,8 @@
  *   Cancel action
  */
 
+/* #define EXTREME_DEBUGGING */
+
 #include "nautilus.h"
 #include "ntl-window-private.h"
 #include "ntl-index-panel.h"
@@ -50,7 +52,10 @@ static void
 nautilus_window_progress_indicate(NautilusWindow *window, ProgressType type, double percent,
                                   const char *msg)
 {
-  /* Do nothing for now */
+  if(type == PROGRESS_ERROR)
+    {
+      gtk_widget_show(gnome_error_dialog_parented(msg, GTK_WINDOW(window)));
+    }
 }
 
 /* Stays alive */
@@ -349,7 +354,9 @@ nautilus_window_has_really_changed(NautilusWindow *window)
 static void
 nautilus_window_free_load_info(NautilusWindow *window)
 {
+#ifdef EXTREME_DEBUGGING
   g_message("-> FREE_LOAD_INFO <-");
+#endif
 
   if (window->pending_ni)
     nautilus_navinfo_free(window->pending_ni);
@@ -482,6 +489,7 @@ nautilus_window_update_state(gpointer data)
   window->made_changes = 0;
   window->making_changes++;
 
+#ifdef EXTREME_DEBUGGING
   g_message(">>> nautilus_window_update_state:");
   g_print("made_changes %d, making_changes %d\n", window->made_changes, window->making_changes);
   g_print("changes_pending %d, is_back %d, views_shown %d, view_bombed_out %d, view_activation_complete %d\n",
@@ -490,6 +498,7 @@ nautilus_window_update_state(gpointer data)
   g_print("sent_update_view %d, cv_progress_initial %d, cv_progress_done %d, cv_progress_error %d, reset_to_idle %d\n",
           window->sent_update_view, window->cv_progress_initial, window->cv_progress_done, window->cv_progress_error,
           window->reset_to_idle);
+#endif
 
   /* Now make any needed state changes based on available information */
   if(window->view_bombed_out && window->error_views)
@@ -541,7 +550,9 @@ nautilus_window_update_state(gpointer data)
     {
       GSList *cur;
 
+#ifdef EXTREME_DEBUGGING
       g_message("Reset to idle!");
+#endif
 
       window->changes_pending = FALSE;
       window->made_changes++;
@@ -583,7 +594,9 @@ nautilus_window_update_state(gpointer data)
     {
       window->state = NW_LOADING_VIEWS;
 
+#ifdef EXTREME_DEBUGGING
       g_message("Changes pending");
+#endif
 
       if(window->pending_ni && !window->new_content_view && !window->cv_progress_error
          && !window->view_activation_complete)
@@ -622,7 +635,9 @@ nautilus_window_update_state(gpointer data)
               si = window->si;
             }
 
+#ifdef EXTREME_DEBUGGING
           g_message("!!! Sending update_view");
+#endif
 
           if(window->new_content_view)
             nautilus_window_update_view(window, window->new_content_view, ni, si,
@@ -653,7 +668,9 @@ nautilus_window_update_state(gpointer data)
         {
           window->made_changes++;
           window->reset_to_idle = TRUE;
+#ifdef EXTREME_DEBUGGING
           g_message("cv_progress_(error|done) kicking in");
+#endif
         }
     }
 
@@ -668,7 +685,9 @@ nautilus_window_update_state(gpointer data)
   else
     window->action_tag = 0;
 
+#ifdef EXTREME_DEBUGGING
   g_message("update_state done <<<");
+#endif
 
   window->making_changes--;
 
@@ -700,7 +719,9 @@ nautilus_window_set_state_info(NautilusWindow *window, ...)
       switch(item_type)
         {
         case NAVINFO_RECEIVED: /* The information needed for a location change to continue has been received */
+#ifdef EXTREME_DEBUGGING
           g_message("NAVINFO_RECEIVED"); 
+#endif
           window->pending_ni = va_arg(args, NautilusNavigationInfo*);
           window->cancel_tag = 0;
           window->changes_pending = TRUE;
@@ -708,12 +729,16 @@ nautilus_window_set_state_info(NautilusWindow *window, ...)
         case VIEW_ERROR:
           window->view_bombed_out = TRUE;
           new_view = va_arg(args, NautilusView*);
+#ifdef EXTREME_DEBUGGING
           g_message("VIEW_ERROR on %p", new_view);
+#endif
           gtk_object_ref(GTK_OBJECT(new_view)); /* Ya right */
           window->error_views = g_slist_prepend(window->error_views, new_view);
           break;
         case NEW_CONTENT_VIEW_ACTIVATED:
+#ifdef EXTREME_DEBUGGING
           g_message("NEW_CONTENT_VIEW_ACTIVATED");
+#endif
           g_return_if_fail(!window->new_content_view);
           new_view = va_arg(args, NautilusView*);
           gtk_object_ref(GTK_OBJECT(new_view));
@@ -724,7 +749,9 @@ nautilus_window_set_state_info(NautilusWindow *window, ...)
           window->views_shown = FALSE;
           break;
         case NEW_META_VIEW_ACTIVATED:
+#ifdef EXTREME_DEBUGGING
           g_message("NEW_META_VIEW_ACTIVATED");
+#endif
           new_view = va_arg(args, NautilusView*);
           gtk_object_ref(GTK_OBJECT(new_view));
           window->new_meta_views = g_slist_prepend(window->new_meta_views, new_view);
@@ -732,21 +759,29 @@ nautilus_window_set_state_info(NautilusWindow *window, ...)
           window->views_shown = FALSE;
           break;
         case CV_PROGRESS_INITIAL: /* We have received an "I am loading" indication from the content view */
+#ifdef EXTREME_DEBUGGING
           g_message("CV_PROGRESS_INITIAL");
+#endif
           window->cv_progress_initial = TRUE;
           window->changes_pending = TRUE;
           break;
         case CV_PROGRESS_ERROR: /* We have received a load error from the content view */
           window->cv_progress_error = TRUE;
+#ifdef EXTREME_DEBUGGING
           g_message("CV_PROGRESS_ERROR");
+#endif
           break;
         case CV_PROGRESS_DONE: /* The content view is done loading */
           window->cv_progress_done = TRUE;
+#ifdef EXTREME_DEBUGGING
           g_message("CV_PROGRESS_DONE");
+#endif
           break;
         case RESET_TO_IDLE: /* Someone pressed the stop button or something */
           window->reset_to_idle = TRUE;
+#ifdef EXTREME_DEBUGGING
           g_message("RESET_TO_IDLE");
+#endif
           break;
         }
     }
@@ -770,13 +805,13 @@ nautilus_window_change_location_2(NautilusNavigationInfo *navi, gpointer data)
 
   if(!navi)
     {
-      errmsg = _("The chosen page could not be retrieved.");
+      errmsg = _("The chosen file could not be retrieved.");
       goto errout;
     }
 
   if(!navi->default_content_iid)
     {
-      errmsg = _("There is no known method of displaying the chosen page.");
+      errmsg = _("There is no known method of displaying the chosen file.");
       goto errout;
     }
 
