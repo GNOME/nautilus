@@ -3113,7 +3113,7 @@ nautilus_file_get_type_as_string (NautilusFile *file)
 		return NULL;
 	}
 
-	description = gnome_vfs_mime_description (mime_type);
+	description = gnome_vfs_mime_get_description (mime_type);
 	if (nautilus_strlen (description) > 0) {
 		return g_strdup (description);
 	}

@@ -88,6 +88,7 @@ struct _NautilusTreeViewDndDetails {
 
 	/* data setup by button_press signal for dragging */
 	int press_x, press_y;
+	gboolean pressed_hot_spot;
 	gboolean drag_pending;
 	guint pressed_button;
 
@@ -1269,7 +1270,7 @@ nautilus_tree_view_find_parent_node (NautilusTreeView *view,
 	return model_node_to_view_node (view, nautilus_tree_node_get_parent (node));
 }
 
-
+#if 0
 static gboolean
 nautilus_tree_view_is_row_selected (NautilusTreeView *tree_view, int x, int y)
 {
@@ -1284,7 +1285,7 @@ nautilus_tree_view_is_row_selected (NautilusTreeView *tree_view, int x, int y)
 
 	return FALSE;
 }
-
+#endif
 
 static void     
 nautilus_tree_view_drag_begin (GtkWidget *widget, GdkDragContext *context,
@@ -1624,11 +1625,11 @@ nautilus_tree_view_button_press (GtkWidget *widget, GdkEventButton *event)
 		break;
 	}
 
-	if (nautilus_tree_view_is_row_selected (tree_view, event->x, event->y) != TRUE) {
-		gtk_clist_set_selectable (GTK_CLIST (tree_view->details->tree),
-					  press_row, FALSE);
+	if (gtk_ctree_is_hot_spot (GTK_CTREE (widget), event->x, event->y)) {
+		tree_view->details->dnd->pressed_hot_spot = TRUE;
 	}
 
+	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget), "button-press-event");
 	return FALSE;
 }
 
@@ -1642,6 +1643,7 @@ nautilus_tree_view_button_release (GtkWidget *widget, GdkEventButton *event)
 	NautilusTreeView *tree_view;
 	int release_row, release_column, on_row;
 	int distance_squared;
+	gboolean is_still_hot_spot;
 
 	clist = GTK_CLIST (widget);
 	retval = FALSE;
@@ -1657,23 +1659,59 @@ nautilus_tree_view_button_release (GtkWidget *widget, GdkEventButton *event)
 		* (event->x - tree_view->details->dnd->press_x) +
 		(event->y - tree_view->details->dnd->press_y)
 		* (event->y - tree_view->details->dnd->press_y);
-
-	if (distance_squared <= RADIUS) {
-		/* we are close from the place we clicked */
-		on_row = gtk_clist_get_selection_info (GTK_CLIST (tree_view->details->tree), 
+	is_still_hot_spot = gtk_ctree_is_hot_spot (GTK_CTREE(tree_view->details->tree), 
+						   event->x, event->y);
+	
+	on_row = gtk_clist_get_selection_info (GTK_CLIST (tree_view->details->tree), 
 					       event->x, 
 					       event->y, 
 					       &release_row, &release_column);
-		if (on_row == 1) {
+
+	if (on_row == 1) {
+
+		if (distance_squared <= RADIUS 
+		    && tree_view->details->dnd->pressed_hot_spot == TRUE
+		    && is_still_hot_spot == TRUE) {
+			GtkCTreeNode *node;
+			char *node_text;
+			guint8 node_spacing;
+			GdkPixmap *pixmap_closed;
+			GdkBitmap *mask_closed;
+			GdkPixmap *pixmap_opened;
+			GdkBitmap *mask_opened;
+			gboolean is_leaf;
+			gboolean is_expanded;
+
+			tree_view->details->dnd->pressed_hot_spot = FALSE;
+
+			node = gtk_ctree_node_nth (GTK_CTREE(tree_view->details->tree), release_row);
+			gtk_ctree_get_node_info (GTK_CTREE(tree_view->details->tree), 
+						 node, &node_text,
+						 &node_spacing, &pixmap_closed, &mask_closed,
+						 &pixmap_opened, &mask_opened, 
+						 &is_leaf, &is_expanded);
+			if (is_expanded == FALSE) {
+				/* expand */
+				gtk_ctree_expand (GTK_CTREE(tree_view->details->tree),
+						  node);
+			} else {
+				/* collapse */ 
+				gtk_ctree_collapse (GTK_CTREE(tree_view->details->tree),
+						    node);
+			}
+			
+		} else if (distance_squared <= RADIUS) {
+			/* we are close from the place we clicked */
 			/* select current row */
-			gtk_clist_set_selectable (GTK_CLIST (tree_view->details->tree),
-						  release_row, TRUE);
 			gtk_clist_select_row (GTK_CLIST (tree_view->details->tree), 
 					      release_row, release_column);
 		}
 	}
 
+	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget), "button-release-event");
+
 	return FALSE;
+
 }
 
 
