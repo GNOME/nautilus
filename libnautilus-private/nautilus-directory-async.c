@@ -2478,7 +2478,7 @@ mime_list_start (NautilusDirectory *directory,
 	if (!nautilus_file_is_directory (file)) {
 		g_list_free (file->details->mime_list);
 		file->details->mime_list_failed = FALSE;
-		file->details->got_directory_count = FALSE;
+		file->details->got_mime_list = FALSE;
 		file->details->mime_list_is_up_to_date = TRUE;
 
 		nautilus_directory_async_state_changed (directory);
@@ -3265,6 +3265,8 @@ void
 nautilus_directory_add_file_to_work_queue (NautilusDirectory *directory,
 					   NautilusFile *file)
 {
+	g_return_if_fail (file->details->directory == directory);
+
 	if (!file_needs_work_done (directory, file)) {
 		return;
 	}

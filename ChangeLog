@@ -1,3 +1,15 @@
+2002-08-09  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-directory.c
+	(call_files_changed_common): Don't add files to the work queue of
+	a directory they don't belong to.
+
+	* libnautilus-private/nautilus-directory-async.c
+	(mime_list_start): Replaced got_directory_count with
+	got_mime_list.
+	(nautilus_directory_add_file_to_work_queue): Added a 
+	g_return_if_fail (file->details->directory == directory)	
+
 2002-08-08  Federico Mena Quintero  <federico@ximian.com>
 
 	* icons/crux_teal/crux_teal.xml: Added the "highlight_color_rgba"

@@ -843,9 +843,14 @@ static void
 call_files_changed_common (NautilusDirectory *directory, GList *file_list)
 {
 	GList *node;
+	NautilusFile *file;
 
 	for (node = file_list; node != NULL; node = node->next) {
-		nautilus_directory_add_file_to_work_queue (directory, node->data);
+		file = node->data;
+		if (file->details->directory == directory) {
+			nautilus_directory_add_file_to_work_queue (directory, 
+								   file);
+		}
 	}
 	nautilus_directory_async_state_changed (directory);
 	nautilus_directory_emit_change_signals (directory, file_list);
