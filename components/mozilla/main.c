@@ -66,7 +66,7 @@ mozilla_make_object (BonoboGenericFactory *factory,
 
 	gtk_signal_connect (GTK_OBJECT (nautilus_view), "destroy", mozilla_object_destroyed, NULL);
 
-	return BONOBO_OBJECT (view_frame);
+	return BONOBO_OBJECT (nautilus_view);
 }
 
 /* Make sure the mozilla environment is setup properly */

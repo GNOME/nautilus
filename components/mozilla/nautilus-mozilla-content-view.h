@@ -29,8 +29,8 @@
 #include <libnautilus/nautilus-content-view-frame.h>
 #include <gtk/gtkvbox.h>
 
-typedef struct _NautilusMozillaContentView      NautilusMozillaContentView;
-typedef struct _NautilusMozillaContentViewClass NautilusMozillaContentViewClass;
+typedef struct NautilusMozillaContentView      NautilusMozillaContentView;
+typedef struct NautilusMozillaContentViewClass NautilusMozillaContentViewClass;
 
 #define NAUTILUS_TYPE_MOZILLA_CONTENT_VIEW	      (nautilus_mozilla_content_view_get_type ())
 #define NAUTILUS_MOZILLA_CONTENT_VIEW(obj)	      (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_MOZILLA_CONTENT_VIEW, NautilusMozillaContentView))
@@ -38,14 +38,14 @@ typedef struct _NautilusMozillaContentViewClass NautilusMozillaContentViewClass;
 #define NAUTILUS_IS_MOZILLA_CONTENT_VIEW(obj)	      (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_MOZILLA_CONTENT_VIEW))
 #define NAUTILUS_IS_MOZILLA_CONTENT_VIEW_CLASS(klass)  (GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_MOZILLA_CONTENT_VIEW))
 
-typedef struct _NautilusMozillaContentViewDetail NautilusMozillaContentViewDetail;
+typedef struct NautilusMozillaContentViewDetails NautilusMozillaContentViewDetails;
 
-struct _NautilusMozillaContentView {
+struct NautilusMozillaContentView {
 	GtkVBox					parent;
-	NautilusMozillaContentViewDetail	*detail;
+	NautilusMozillaContentViewDetails	*details;
 };
 
-struct _NautilusMozillaContentViewClass {
+struct NautilusMozillaContentViewClass {
 	GtkVBoxClass parent_class;
 };
 
@@ -54,7 +54,7 @@ GtkType                   nautilus_mozilla_content_view_get_type       (void);
 
 
 /* Component embedding support */
-NautilusContentViewFrame *nautilus_mozilla_content_view_get_view_frame (NautilusMozillaContentView *view);
+NautilusContentView *nautilus_mozilla_content_view_get_nautilus_view (NautilusMozillaContentView *view);
 
 
 /* URI handling */

@@ -41,7 +41,7 @@
 #include <libgnomeui/gnome-stock.h>
 
 /* A NautilusContentView's private information. */
-struct _NautilusMozillaContentViewDetails {
+struct NautilusMozillaContentViewDetails {
 	char				 *uri;
 	GtkWidget			 *mozilla;
 	NautilusContentView	         *nautilus_view;
