@@ -175,7 +175,7 @@ my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
     }
   else if(!strncmp(navinfo->navinfo.content_type, "image/", 6))
     {
-      navinfo->default_content_iid = "embeddable:image-generic";
+      navinfo->default_content_iid = "eog-image-viewer";
       navinfo->content_identifiers = g_slist_append (
                                                      navinfo->content_identifiers, 
                                                      nautilus_view_identifier_new (navinfo->default_content_iid, "Image"));
