@@ -915,6 +915,13 @@ nautilus_window_go_up (NautilusWindow *window)
 }
 
 void
+nautilus_window_start_search (NautilusWindow *window)
+{
+	/* Just change the navigation info for now */
+	nautilus_window_goto_uri (window, "search:");
+}
+
+void
 nautilus_window_go_home (NautilusWindow *window)
 {
 	char *default_home_uri, *home_uri;
