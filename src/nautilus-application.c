@@ -61,7 +61,7 @@ static CORBA_boolean manufactures                                (PortableServer
 								  CORBA_Environment        *ev);
 static CORBA_Object  create_object                               (PortableServer_Servant    servant,
 								  const CORBA_char         *iid,
-								  const Bonobo_stringlist  *params,
+								  const GNOME_stringlist  *params,
 								  CORBA_Environment        *ev);
 static void          nautilus_application_initialize             (NautilusApplication      *application);
 static void          nautilus_application_initialize_class       (NautilusApplicationClass *klass);
@@ -98,7 +98,7 @@ manufactures (PortableServer_Servant servant,
 static CORBA_Object
 create_object (PortableServer_Servant servant,
 	       const CORBA_char *iid,
-	       const Bonobo_stringlist *params,
+	       const GNOME_stringlist *params,
 	       CORBA_Environment *ev)
 {
 	BonoboObject *object;
