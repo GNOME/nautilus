@@ -69,7 +69,6 @@ static void nautilus_index_panel_set_up_logo (NautilusIndexPanel *index_panel, c
 static GdkFont *select_font(const gchar *text_to_format, gint width, const gchar* font_template);
 
 #define DEFAULT_BACKGROUND_COLOR "rgb:DDDD/DDDD/FFFF"
-#define USE_NEW_TABS 0
 #define INDEX_PANEL_WIDTH 136
 
 /* drag and drop definitions */
@@ -140,30 +139,21 @@ nautilus_index_panel_initialize (GtkObject *object)
 	make_per_uri_container (index_panel);
 
 	/* first, allocate the index tabs */
-	index_panel->details->index_tabs = GTK_WIDGET(nautilus_index_tabs_new(INDEX_PANEL_WIDTH));
+	index_panel->details->index_tabs = GTK_WIDGET(nautilus_index_tabs_new());
 	index_panel->details->selected_index = -1;
 
 	/* also, allocate the title tab */
-	index_panel->details->title_tab = GTK_WIDGET(nautilus_index_tabs_new(INDEX_PANEL_WIDTH));
+	index_panel->details->title_tab = GTK_WIDGET(nautilus_index_tabs_new());
 	nautilus_index_tabs_set_title_mode(NAUTILUS_INDEX_TABS(index_panel->details->title_tab), TRUE);	
 	
-	if (USE_NEW_TABS)
-	  {
-	    gtk_widget_show (index_panel->details->index_tabs);
-	    gtk_box_pack_end (GTK_BOX (index_panel->details->index_container), index_panel->details->index_tabs, FALSE, FALSE, 0);
-	  }
-	  
+	gtk_widget_show (index_panel->details->index_tabs);
+	gtk_box_pack_end (GTK_BOX (index_panel->details->index_container), index_panel->details->index_tabs, FALSE, FALSE, 0);
+
 	/* allocate and install the meta-tabs */
   
 	index_panel->details->notebook = gtk_notebook_new ();
 	gtk_widget_set_usize (index_panel->details->notebook, INDEX_PANEL_WIDTH, 200);
-	if (USE_NEW_TABS)
-	    gtk_notebook_set_show_tabs(GTK_NOTEBOOK(index_panel->details->notebook), FALSE);
-	else
-	  {
-	    gtk_widget_show (index_panel->details->notebook);
-	    gtk_box_pack_end (GTK_BOX (index_panel->details->index_container), index_panel->details->notebook, FALSE, FALSE, 0);
- 	  }
+	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(index_panel->details->notebook), FALSE);
 	  
 	/* prepare ourselves to receive dropped objects */
 	gtk_drag_dest_set (GTK_WIDGET (index_panel),
@@ -289,10 +279,12 @@ nautilus_index_panel_activate_meta_view(NautilusIndexPanel *index_panel, gint wh
   if (index_panel->details->selected_index < 0)
     {
       gtk_widget_show (index_panel->details->notebook);
-      gtk_box_pack_end (GTK_BOX (index_panel->details->index_container), index_panel->details->notebook, FALSE, FALSE, 0);
+      if (index_panel->details->notebook->parent == NULL)
+      	gtk_box_pack_end (GTK_BOX (index_panel->details->index_container), index_panel->details->notebook, FALSE, FALSE, 0);
       
       gtk_widget_show (index_panel->details->title_tab);
-      gtk_box_pack_end (GTK_BOX (index_panel->details->index_container), index_panel->details->title_tab, FALSE, FALSE, 0);    
+       if (index_panel->details->title_tab->parent == NULL)
+         gtk_box_pack_end (GTK_BOX (index_panel->details->index_container), index_panel->details->title_tab, FALSE, FALSE, 0);    
     }
   
   index_panel->details->selected_index = which_view;
@@ -310,10 +302,7 @@ nautilus_index_panel_deactivate_meta_view(NautilusIndexPanel *index_panel)
   if (index_panel->details->selected_index >= 0)
     {
       gtk_widget_hide (index_panel->details->notebook);
-      gtk_container_remove (GTK_CONTAINER (index_panel->details->index_container), index_panel->details->notebook);      
-      
       gtk_widget_hide (index_panel->details->title_tab);
-      gtk_container_remove (GTK_CONTAINER (index_panel->details->index_container), index_panel->details->title_tab);
     }
   
   index_panel->details->selected_index = -1;
@@ -330,10 +319,7 @@ nautilus_index_panel_press_event (GtkWidget *widget, GdkEventButton *event)
   NautilusIndexTabs *index_tabs = NAUTILUS_INDEX_TABS(index_panel->details->index_tabs);
   NautilusIndexTabs *title_tab = NAUTILUS_INDEX_TABS(index_panel->details->title_tab);
   gint rounded_y = floor(event->y + .5);
-  
-  if (!USE_NEW_TABS)
-    return FALSE;
-       
+           
   /* if the click is in the main tabs, tell them about it */
   if (rounded_y >= index_panel->details->index_tabs->allocation.y)
     {

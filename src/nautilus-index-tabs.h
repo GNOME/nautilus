@@ -61,7 +61,7 @@ struct _NautilusIndexTabsClass
 
 
 GtkType	   	nautilus_index_tabs_get_type(void);
-GtkWidget* 	nautilus_index_tabs_new(gint container_width);
+GtkWidget* 	nautilus_index_tabs_new(void);
 
 gboolean	nautilus_index_tabs_add_view(NautilusIndexTabs *index_tabs, const gchar *name, GtkWidget *new_view, gint page_num);
 gchar*          nautilus_index_tabs_get_title_from_index(NautilusIndexTabs *index_tabs, gint which_tab);

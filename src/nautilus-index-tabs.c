@@ -45,7 +45,6 @@ struct _NautilusIndexTabsDetails
 {
   int tab_count;
   int selected_tab;	 
-  int panel_width;
   gboolean title_mode;
   
   GdkColor tab_color;
@@ -161,11 +160,10 @@ nautilus_index_tabs_init (NautilusIndexTabs *index_tabs)
 }
 
 GtkWidget*
-nautilus_index_tabs_new (gint container_width)
+nautilus_index_tabs_new ()
 {
   NautilusIndexTabs *index_tabs;   
   index_tabs = gtk_type_new (nautilus_index_tabs_get_type ());   
-  index_tabs->details->panel_width = container_width;
   return GTK_WIDGET (index_tabs);
 }
 
@@ -217,7 +215,8 @@ recalculate_size(NautilusIndexTabs *index_tabs)
 {
   GtkWidget *widget = GTK_WIDGET (index_tabs);
   gint tab_rows = (index_tabs->details->tab_count + 1) >> 1;
-  widget->requisition.width = index_tabs->details->panel_width;
+  	
+  widget->requisition.width = widget->parent ? widget->parent->allocation.width: 136;
   if (index_tabs->details->title_mode)
     widget->requisition.height = tab_left_edge->art_pixbuf->height;
   else
@@ -230,8 +229,7 @@ recalculate_size(NautilusIndexTabs *index_tabs)
 static void
 draw_one_tab(NautilusIndexTabs *index_tabs, GdkGC *gc, gchar *tab_name, gint x, gint y, gboolean right_flag)
 {  
-  GdkGCValues saved_values;
-  gint text_y_offset, tab_bottom, tab_right;
+   gint text_y_offset, tab_bottom, tab_right;
   /* measure the name and compute the bounding box */
   gint name_width = gdk_string_width(tab_font, tab_name) - 2*TAB_INDENT;
   GtkWidget *widget = GTK_WIDGET(index_tabs);
@@ -244,11 +242,9 @@ draw_one_tab(NautilusIndexTabs *index_tabs, GdkGC *gc, gchar *tab_name, gint x, 
     
   /* clear the tab rectangle */
 
-  gdk_gc_get_values(gc, &saved_values);
   gdk_gc_set_foreground (gc, &index_tabs->details->tab_color);
   gdk_draw_rectangle (widget->window, gc, TRUE, x + tab_left_edge->art_pixbuf->width, y, name_width, tab_left_edge->art_pixbuf->height); 
-  gdk_gc_set_foreground (gc, &saved_values.foreground);
-    
+     
   /* draw the two edges with the pixbufs */
   gdk_pixbuf_render_to_drawable_alpha (tab_left_edge, widget->window, 0, 0, x, y,
 						     tab_left_edge->art_pixbuf->width, tab_left_edge->art_pixbuf->height,
@@ -273,7 +269,7 @@ draw_one_tab(NautilusIndexTabs *index_tabs, GdkGC *gc, gchar *tab_name, gint x, 
   tab_bottom = y + tab_left_edge->art_pixbuf->height - 2;
   tab_right = x + tab_left_edge->art_pixbuf->width + name_width + tab_right_edge->art_pixbuf->width - 2*TAB_INDENT - 1;
   gdk_gc_set_foreground (gc, &index_tabs->details->line_color);  
-  gdk_draw_line(widget->window, gc, tab_right, tab_bottom, index_tabs->details->panel_width, tab_bottom);
+  gdk_draw_line(widget->window, gc, tab_right, tab_bottom, widget->parent->allocation.width, tab_bottom);
 
   /* draw the right bottom line, too */
   gdk_draw_line(widget->window, gc, 0, tab_bottom, x, tab_bottom);
@@ -304,9 +300,16 @@ draw_or_hit_test_all_tabs(NautilusIndexTabs *index_tabs, gboolean draw_flag, gin
       return -1;
     }
 
+  /* allocate a graphic context and clear the space below the top tabs to the background color */
   if (draw_flag)
-    temp_gc = gdk_gc_new(widget->window); 
-    
+    {
+      gint y_top = widget->allocation.y + tab_left_edge->art_pixbuf->height;
+      gint fill_height = widget->allocation.y + widget->allocation.height - y_top;
+      temp_gc = gdk_gc_new(widget->window); 
+      gdk_gc_set_foreground (temp_gc, &index_tabs->details->tab_color);
+      gdk_draw_rectangle (widget->window, temp_gc, TRUE, widget->allocation.x, y_top, widget->allocation.width, fill_height); 
+    }
+      
   /* we must draw two items at a time, drawing the second one first, because the first one overlaps the second */
     
   while (next_tab != NULL)
@@ -318,7 +321,12 @@ draw_or_hit_test_all_tabs(NautilusIndexTabs *index_tabs, gboolean draw_flag, gin
         {
 	  second_item = next_tab->next->data;
           if (draw_flag && second_item->visible)
-            draw_one_tab(index_tabs, temp_gc, second_item->tab_text, x_pos, y_pos - 3, TRUE);	
+            {
+	      gint y_offset = 0;
+	      if (this_item->visible)
+	        y_offset -= 3;
+	      draw_one_tab(index_tabs, temp_gc, second_item->tab_text, x_pos, y_pos + y_offset, TRUE);	
+	    }
 	}
 
       if (draw_flag && this_item->visible)
@@ -338,7 +346,7 @@ draw_or_hit_test_all_tabs(NautilusIndexTabs *index_tabs, gboolean draw_flag, gin
       if (next_tab)
       	next_tab = next_tab->next;
       
-      y_pos += tab_height;
+      y_pos -= tab_height;
     }  
   
   if (draw_flag)
@@ -400,10 +408,10 @@ nautilus_index_tabs_expose (GtkWidget *widget, GdkEventExpose *event)
 gboolean
 nautilus_index_tabs_add_view(NautilusIndexTabs *index_tabs, const gchar *name, GtkWidget *new_view, gint page_num)
 {
-  /* check to see if we already have one with this name, if so, refuse to add it */
-  
+  /* check to see if we already have one with this name, if so, refuse to add it */   
   tabItem *new_tab_item;
   GList *item = find_tab(index_tabs, name);
+  
   if (item)
     return FALSE;  
 
@@ -425,7 +433,8 @@ nautilus_index_tabs_add_view(NautilusIndexTabs *index_tabs, const gchar *name, G
  
  index_tabs->details->tab_count += 1;
  recalculate_size(index_tabs);
- 
+ gtk_widget_queue_draw(GTK_WIDGET(index_tabs));
+  
  return TRUE;
 }
 
@@ -462,6 +471,7 @@ nautilus_index_tabs_remove_view(NautilusIndexTabs *index_tabs, const gchar *name
 
  index_tabs->details->tab_count -= 1;
  recalculate_size(index_tabs);
+ gtk_widget_queue_draw(GTK_WIDGET(index_tabs));
 }
 
 /* select a tab, from its associated notebook page number, by making it invisible and all

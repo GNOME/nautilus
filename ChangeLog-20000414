@@ -1,3 +1,16 @@
+2000-02-11  Andy Hertzfeld <andy@eazel.com>
+
+	Finally enabled the new metaview UI
+	
+	* src/nautilus-index-tabs.c,h:
+	made clicking on the title tab deactivate the current metaview
+	removed the panel_width field since it didn't work for the
+	resizable panel, instead, look at the parents width on the fly
+	added code to test lots of tabs and improved the drawing in that case
+	before removing the test code.
+	* src/ntl-index-panel.c:
+	removed the USE_NEW_TABS boolean; we always use them now
+	
 2000-02-11  John Sullivan <sullivan@eazel.com>
 
 	Made right-clicking on an item select just that one item
@@ -115,12 +128,12 @@
 
 2000-02-10  Andy Hertzfeld <andy@eazel.com>
 
-    * src/ntl-index-panel.c:
-    added code to hide metaview when the title tab is clicked upon
-    * src/nautilus-index-tabs.c:
-    made hit-testing work for the title tab
-    * src/ntl-window.c:
-    defaulted hpaned position to proper size
+	* src/ntl-index-panel.c:
+	added code to hide metaview when the title tab is clicked upon
+	* src/nautilus-index-tabs.c:
+	made hit-testing work for the title tab
+	* src/ntl-window.c:
+	defaulted hpaned position to proper size
     
 2000-02-10  Andy Hertzfeld <andy@eazel.com>
 
