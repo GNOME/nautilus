@@ -419,6 +419,10 @@ get_song_text (NautilusMusicView *music_view, int row)
 	gtk_clist_get_text (GTK_CLIST(music_view->details->song_list), row, 3, &year);
 	gtk_clist_get_text (GTK_CLIST(music_view->details->song_list), row, 6, &album_name);
 	
+        if (!string_non_empty (song_name)) {
+                song_name = "-";
+        }
+
 	if (string_non_empty (album_name)) {
                 if (string_non_empty (song_artist)) {
                         artist_album_string = g_strdup_printf ("%s / %s", song_artist, album_name);

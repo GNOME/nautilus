@@ -1,5 +1,12 @@
 2001-07-22  Maciej Stachowiak  <mjs@eazel.com>
 
+	* components/music/nautilus-music-view.c: (get_song_text): Fix the
+	remainer of bug 3769 (Music View window redraws upon clicking a
+	different song) by making songs with no title show up with "-" for
+	the title (I have quite a collection of broken mp3s).
+
+2001-07-22  Maciej Stachowiak  <mjs@eazel.com>
+
 	* components/music/nautilus-music-view.c:
 	(read_id_tag): Fix bug 5175 (Music View displays year fields of
 	'0'.) by filtering out years that are all zeros or all spaces.
