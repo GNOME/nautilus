@@ -32,6 +32,8 @@
 #include <libgnomeui/gnome-pixmap.h>
 #include <libgnome/gnome-i18n.h>
 
+#include <stdio.h>
+
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-list.h>
 
@@ -146,6 +148,7 @@ add_to_list (FMSearchListView *list_view, NautilusFile *file)
 			text[column] = 
 				nautilus_file_get_string_attribute_with_default 
 					(file, get_attribute_from_column (column));
+
 		}
 	}
 
@@ -353,10 +356,7 @@ get_attribute_from_column (int column)
 	case SEARCH_LIST_VIEW_COLUMN_NAME:
 		return SEARCH_LIST_VIEW_NAME_ATTRIBUTE;
 	case SEARCH_LIST_VIEW_COLUMN_ACTUAL_PATH:
-		/* FIXME: Darin added this just to get rid of the core
-		 * dump. Need to add real code here.
-		 */
-		return SEARCH_LIST_VIEW_NAME_ATTRIBUTE;
+		return SEARCH_LIST_VIEW_ACTUAL_PATH_ATTRIBUTE;
 	case SEARCH_LIST_VIEW_COLUMN_EMBLEMS:
 		return SEARCH_LIST_VIEW_EMBLEMS_ATTRIBUTE;
 	case SEARCH_LIST_VIEW_COLUMN_SIZE:

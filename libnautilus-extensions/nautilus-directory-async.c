@@ -591,10 +591,11 @@ set_up_request_by_file_attributes (Request *request,
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE,
 		 nautilus_str_compare) != NULL;
-	request->activation_uri = g_list_find_custom
+	request->file_info |= g_list_find_custom
 		(file_attributes,
-		 NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI,
+		 NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY,
 		 nautilus_str_compare) != NULL;
+
 
 	/* FIXME:
 	 * Some file attributes are really pieces of metadata.

@@ -1,3 +1,32 @@
+2000-07-27  Maciej Stachowiak  <mjs@eazel.com>
+
+	* components/tree/nautilus-tree-model.c:
+	* components/tree/nautilus-tree-model.h:
+	* components/tree/nautilus-tree-node.c:
+	(nautilus_tree_node_get_parent), (nautilus_tree_node_get_children),
+	(nautilus_tree_node_get_file), (nautilus_tree_node_get_directory),
+	(nautilus_tree_node_set_user_data),
+	(nautilus_tree_node_get_user_data):
+	* components/tree/nautilus-tree-node.h:
+
+	Some work in progress on some model/view separation for the tree
+	view.
+
+	* libnautilus-extensions/nautilus-file-attributes.h,
+	libnautilus-extensions/nautilus-directory-async.c
+	(set_up_request_by_file_attributes): Added an "is directory"
+	attribute which you can use in a file attribute list for a monitor
+	or call_when_ready request, which insures we get that piece of
+	info about files.
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_real_name, nautilus_file_get_real_directory):
+	Add necessary decoding for the search case.
+
+	* src/file-manager/fm-search-list-view.c
+	(get_attribute_from_column): Get the directory attribute for the
+	directroy column.
+
 2000-07-27  Andy Hertzfeld  <andy@eazel.com>
 
 	Fixed task #1729, icon view labels need to adapt their text color to the background.

@@ -21,15 +21,13 @@
  * Author: Maciej Stachowiak <mjs@eazel.com>
  */
 
-/* nautilus-tree-model.h - sample content model
-   component. This component just displays a simple label of the URI
-   and does nothing else. It should be a good basis for writing
-   out-of-proc content models.*/
+/* nautilus-tree-model.h - Model for the tree view */
 
 #ifndef NAUTILUS_TREE_MODEL_H
 #define NAUTILUS_TREE_MODEL_H
 
 #include <gtk/gtkobject.h>
+#include "nautilus-tree-node.h"
 
 typedef struct NautilusTreeModel NautilusTreeModel;
 typedef struct NautilusTreeModelClass NautilusTreeModelClass;
@@ -42,6 +40,7 @@ typedef struct NautilusTreeModelClass NautilusTreeModelClass;
 
 typedef struct NautilusTreeModelDetails NautilusTreeModelDetails;
 
+
 struct NautilusTreeModel {
 	GtkObject parent;
 	NautilusTreeModelDetails *details;
@@ -49,10 +48,48 @@ struct NautilusTreeModel {
 
 struct NautilusTreeModelClass {
 	GtkObjectClass parent_class;
+
+	void         (*node_added)            (NautilusTreeModel *model,
+					       NautilusTreeNode *node);
+
+	void         (*node_changed)          (NautilusTreeModel *model,
+					       NautilusTreeNode *node);
+
+	void         (*node_removed)          (NautilusTreeModel *model,
+					       NautilusTreeNode *node);
+
+	void         (*done_loading_children) (NautilusTreeModel *model,
+					       NautilusTreeNode *node);
 };
 
-/* GtkObject support */
-GtkType       nautilus_tree_model_get_type          (void);
+typedef void (*NautilusTreeCallback) (NautilusTreeModel *model,
+				      NautilusTreeNode  *node,
+				      GList             *child_nodes,
+				      gpointer           callback_data);
+
+
+GtkType            nautilus_tree_model_get_type                 (void);
+
+NautilusTreeModel *nautilus_tree_model_new                      (const char *root_uri);
+
+
+void               nautilus_tree_model_monitor_node             (NautilusTreeModel    *model,
+								 NautilusTreeNode     *node,
+								 gboolean              force_reload,
+								 NautilusTreeCallback  initial_files_callback,
+								 gpointer              callback_data); 
+
+void               nautilus_tree_model_stop_monitoring_node     (NautilusTreeModel *model,
+								 NautilusTreeNode  *node);
+
+NautilusTreeNode  *nautilus_tree_model_get_node                 (NautilusTreeModel *model,
+								 const char *uri);
+
+NautilusTreeNode  *nautilus_tree_model_get_nearest_parent_node  (NautilusTreeModel *model,
+								 const char *uri);
+
+
+NautilusTreeNode  *nautilus_tree_model_get_root_node            (NautilusTreeModel *model);
 
 
 
