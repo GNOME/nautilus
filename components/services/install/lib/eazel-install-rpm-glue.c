@@ -424,6 +424,37 @@ eazel_install_package_modifies_provides_compare (PackageData *pack,
 	return -1;
 }
 
+static void
+eazel_install_rpm_create_requirement (EazelInstall *service,
+				      PackageData *pack,
+				      PackageData *dep,
+				      GList **requirements)
+{
+	g_assert (pack && dep);
+
+	/* Check if a previous conflict solve has fixed this conflict. */
+	if (g_list_find_custom (*requirements,
+				dep,
+				(GCompareFunc)eazel_install_requirement_dep_compare)) {
+		trilobite_debug ("Already created requirement for %s", dep->name);
+		packagedata_destroy (dep, FALSE);
+		dep = NULL;
+	} else {
+		PackageRequirement *req;
+		req = packagerequirement_new (pack, dep);				
+		(*requirements) = g_list_prepend (*requirements, req);
+				/* debug output code */
+		if (dep->name) {
+			trilobite_debug ("%s requires package %s", pack->name, dep->name);
+		} else {
+			trilobite_debug ("%s requires file %s", 
+					 pack->name, 
+					 (char*)dep->provides->data);
+		}
+	}
+}
+
+
 /* This is the function to do the RPM system dependency check */
 void
 eazel_install_do_rpm_dependency_check (EazelInstall *service,
@@ -472,200 +503,207 @@ eazel_install_do_rpm_dependency_check (EazelInstall *service,
 						 conflict.byName,
 						 (GCompareFunc)eazel_install_package_name_compare);
 
-		/* If we did not find it, we're in a special case conflict */
+		/* first time through, only do immediate matches */
 		if (pack_entry == NULL) {
-			switch (conflict.sense) {
-			case RPMDEP_SENSE_REQUIRES: {				
+			continue;
+		}
+
+		pack = (PackageData*)pack_entry->data;
+		/* Does the conflict look like a file dependency ? */
+		if (*conflict.needsName=='/' || strstr (conflict.needsName, ".so")) {
+			g_message (_("Processing dep for %s, requires library %s"), 
+				   pack->name, conflict.needsName);		
+			dep = packagedata_new ();
+			dep->provides = g_list_append (dep->provides, g_strdup (conflict.needsName));
+		} else {
+			dep = packagedata_new_from_rpm_conflict (conflict);
+			dep->archtype = g_strdup (pack->archtype);
+			g_message (_("Processing dep for %s, requires package %s"), 
+				   pack->name, 
+				   dep->name);
+		}
+
+		eazel_install_rpm_create_requirement (service, pack, dep, requirements);
+	}
+
+	/* now iterate the HARD cases, life sucks! */
+	for (iterator = 0; iterator < num_conflicts; iterator++) {
+		GList *pack_entry = NULL;
+		PackageData *pack = NULL;
+		PackageData *dep = NULL;
+
+		conflict = conflicts[iterator];
+
+		/* Locate the package that caused the conflict */
+		pack_entry = g_list_find_custom (*packages, 
+						 conflict.byName,
+						 (GCompareFunc)eazel_install_package_name_compare);
+		if (pack_entry == NULL) {
+			/* try our brand-new list of required packages, too */
+			pack_entry = g_list_find_custom (*requirements,
+							 conflict.byName,
+							 (GCompareFunc)eazel_install_requirement_dep_name_compare);
+			if (pack_entry != NULL) {
+				trilobite_debug (_("package %s is already in requirements, whew!"), conflict.byName);
+			}
+		}
+		if (pack_entry != NULL) {
+			continue;
+		}
+
+		/* If we did not find it, we're in a special case conflict */
+		switch (conflict.sense) {
+		case RPMDEP_SENSE_REQUIRES: {				
 				/* Possibly the implest case, we're installing package A, which requires
 				   B that is not installed. */
-				g_message (_("%s requires %s"), 
-					   conflict.byName,
-					   conflict.needsName);
+			g_message (_("%s requires %s"), 
+				   conflict.byName,
+				   conflict.needsName);
+			pack_entry = g_list_find_custom (*packages, 
+							 (gpointer)conflict.needsName,
+							 (GCompareFunc)eazel_install_package_name_compare);
+			if (pack_entry==NULL) {
+				/* If pack_entry is null, we're in the worse case, where
+				   install A causes file f to disappear, and package conflict.byName
+				   needs f (conflict.needsName). So conflict does not identify which
+				   package caused the conflict */
+				trilobite_debug ("pack_entry==NULL, level 2");
+				/* 
+				   I need to find the package P in "packages" that provides
+				   conflict.needsName, then fail P marking it's status as 
+				   PACKAGE_BREAKS_DEPENDENCY, then create PackageData C for
+				   conflict.byName, add to P's depends and mark C's status as
+				   PACKAGE_DEPENDENCY_FAIL. 
+				   Then then client can rerun the operation with all the C's as
+				   part of the update
+				*/
 				pack_entry = g_list_find_custom (*packages, 
 								 (gpointer)conflict.needsName,
-								 (GCompareFunc)eazel_install_package_name_compare);
-				if (pack_entry==NULL) {
-					/* If pack_entry is null, we're in the worse case, where
-					   install A causes file f to disappear, and package conflict.byName
-					   needs f (conflict.needsName). So conflict does not identify which
-					   package caused the conflict */
-					trilobite_debug ("pack_entry==NULL, level 2");
-					/* 
-					   I need to find the package P in "packages" that provides
-					   conflict.needsName, then fail P marking it's status as 
-					   PACKAGE_BREAKS_DEPENDENCY, then create PackageData C for
-					   conflict.byName, add to P's depends and mark C's status as
-					   PACKAGE_DEPENDENCY_FAIL. 
-					   Then then client can rerun the operation with all the C's as
-					   part of the update
-					*/
-					pack_entry = g_list_find_custom (*packages, 
+								 (GCompareFunc)eazel_install_package_modifies_provides_compare);
+				if (pack_entry == NULL) {
+					trilobite_debug ("pack_entry==NULL, level 3");
+					/* Kühl, we probably already moved it to 
+					   failed packages */
+					pack_entry = g_list_find_custom (*failedpackages, 
 									 (gpointer)conflict.needsName,
 									 (GCompareFunc)eazel_install_package_modifies_provides_compare); 					
 					if (pack_entry == NULL) {
-						trilobite_debug ("pack_entry==NULL, level 3");
-						/* Kühl, we probably already moved it to 
-						   failed packages */
+						trilobite_debug ("pack_entry==NULL, level 4");
+						/* Still kühl, we're looking for a name... */
 						pack_entry = g_list_find_custom (*failedpackages, 
 										 (gpointer)conflict.needsName,
-										 (GCompareFunc)eazel_install_package_modifies_provides_compare); 					
+										 (GCompareFunc)eazel_install_package_name_compare); 					
 						if (pack_entry == NULL) {
-							trilobite_debug ("pack_entry==NULL, level 4");
-							/* Still kühl, we're looking for a name... */
-							pack_entry = g_list_find_custom (*failedpackages, 
-											 (gpointer)conflict.needsName,
-											 (GCompareFunc)eazel_install_package_name_compare); 					
-							   if (pack_entry == NULL) {
-								   /* Massive debug output before I die.... */
-								   int a;
-								   GList *ptr;
-								   trilobite_debug ("This was certainly unexpected v5!");
-								   trilobite_debug ("*********************************");
-								   trilobite_debug ("Cannot lookup %s for %s", 
-										    conflict.needsName,
-										    conflict.byName);
-								   trilobite_debug ("Cannot lookup %s in *packages",
-										    conflict.needsName);
-								   trilobite_debug ("Cannot lookup %s in *failedpackages",
-										    conflict.needsName);
-								   
-								   trilobite_debug ("packages = 0x%x", packages);
-								   trilobite_debug ("*packages = 0x%x", *packages);
-								   trilobite_debug ("failedpackages = 0x%x", failedpackages);
-								   trilobite_debug ("*failedpackages = 0x%x", *failedpackages);
-								   
-								   trilobite_debug ("g_list_length (*packages) = %d", g_list_length (*packages));
-								   trilobite_debug ("g_list_length (*failedpackages) = %d", g_list_length (*failedpackages));
-								   a = 0;
-								   for (ptr = *packages; ptr; glist_step (ptr)) {
-									   PackageData *p = (PackageData*)ptr->data;
-									   a++;
-									   trilobite_debug ("(*packages)[%d] = %s-%s-%s",
-											    a,
-											    p->name,
-											    p->version,
-											    p->minor);
-								   }
-								   a = 0;
-								   for (ptr = *failedpackages; ptr; glist_step (ptr)) {
-									   PackageData *p = (PackageData*)ptr->data;
-									   a++;
-									   trilobite_debug ("(*failedpackages)[%d] = %s-%s-%s",
-											    a,
-											    p->name,
-											    p->version,
-											    p->minor);
-								   }
-								   
-								   
-								   g_assert_not_reached ();
-							   }
-						} 
-						/* If we reach this point, the package
-						   was found in *failedpackages. Otherwise,
-						   we would have hit the g_assert */
-						trilobite_debug ("We don't want to redo failing it");
-						pack_entry = NULL;
-					}
+							/* Massive debug output before I die.... */
+							int a;
+							GList *ptr;
+							trilobite_debug ("This was certainly unexpected v5!");
+							trilobite_debug ("*********************************");
+							trilobite_debug ("Cannot lookup %s for %s", 
+									 conflict.needsName,
+									 conflict.byName);
+							trilobite_debug ("Cannot lookup %s in *packages",
+									 conflict.needsName);
+							trilobite_debug ("Cannot lookup %s in *failedpackages",
+									 conflict.needsName);
+							
+							trilobite_debug ("packages = 0x%x", packages);
+							trilobite_debug ("*packages = 0x%x", *packages);
+							trilobite_debug ("failedpackages = 0x%x", failedpackages);
+							trilobite_debug ("*failedpackages = 0x%x", *failedpackages);
+							
+							trilobite_debug ("g_list_length (*packages) = %d", g_list_length (*packages));
+							trilobite_debug ("g_list_length (*failedpackages) = %d", g_list_length (*failedpackages));
+							a = 0;
+							for (ptr = *packages; ptr; glist_step (ptr)) {
+								PackageData *p = (PackageData*)ptr->data;
+								a++;
+								trilobite_debug ("(*packages)[%d] = %s-%s-%s",
+										 a,
+										 p->name,
+										 p->version,
+										 p->minor);
+							}
+							a = 0;
+							for (ptr = *failedpackages; ptr; glist_step (ptr)) {
+								PackageData *p = (PackageData*)ptr->data;
+								a++;
+								trilobite_debug ("(*failedpackages)[%d] = %s-%s-%s",
+										 a,
+										 p->name,
+										 p->version,
+										 p->minor);
+							}
+							
+							
+							g_assert_not_reached ();
+						}
+					} 
+					/* If we reach this point, the package
+					   was found in *failedpackages. Otherwise,
+					   we would have hit the g_assert */
+					trilobite_debug ("We don't want to redo failing it");
+					pack_entry = NULL;
 				}
-				
-				if (pack_entry) {
-					trilobite_debug ("pack_entry found");
-					/* Create a packagedata for the dependecy */
-					dep = packagedata_new_from_rpm_conflict_reversed (conflict);
-					pack = (PackageData*)(pack_entry->data);
-					dep->archtype = g_strdup (pack->archtype);
-					pack->status = PACKAGE_BREAKS_DEPENDENCY;
-					dep->status = PACKAGE_DEPENDENCY_FAIL;
-					g_assert (dep!=NULL);
-				} else {
-					trilobite_debug ("pack_enty is NULL, continueing");
-					continue;
-				}
-				
+			}
+			
+			if (pack_entry) {
+				trilobite_debug ("pack_entry found");
+				/* Create a packagedata for the dependecy */
+				dep = packagedata_new_from_rpm_conflict_reversed (conflict);
+				pack = (PackageData*)(pack_entry->data);
+				dep->archtype = g_strdup (pack->archtype);
+				pack->status = PACKAGE_BREAKS_DEPENDENCY;
+				dep->status = PACKAGE_DEPENDENCY_FAIL;
+				g_assert (dep!=NULL);
+			} else {
+				trilobite_debug ("pack_enty is NULL, continueing");
+				continue;
+			}
+			
 				/* Here I check to see if I'm breaking the -devel package, if so,
 				   request it. It does a pretty generic check to see
 				   if dep is on the form x-z and pack is x[-y] */
-
-				if (eazel_install_check_if_related_package (service, pack, dep)) {
-					trilobite_debug ("check_if_related_package returned TRUE");
-					g_free (dep->version);
-					dep->version = g_strdup (pack->version);
-				} else {
-					trilobite_debug ("check_if_related_package returned FALSE");
-					/* not the devel package, are we in force mode ? */
-					if (!eazel_install_get_force (service)) {
-						/* if not, remove the package */
-						packagedata_add_pack_to_breaks (pack, dep);
-						if (g_list_find (*failedpackages, pack) == NULL) {
-							(*failedpackages) = g_list_prepend (*failedpackages, pack);
-						}
-						(*packages) = g_list_remove (*packages, pack);
+			
+			if (eazel_install_check_if_related_package (service, pack, dep)) {
+				trilobite_debug ("check_if_related_package returned TRUE");
+				g_free (dep->version);
+				dep->version = g_strdup (pack->version);
+			} else {
+				trilobite_debug ("check_if_related_package returned FALSE");
+				/* not the devel package, are we in force mode ? */
+				if (!eazel_install_get_force (service)) {
+					/* if not, remove the package */
+					packagedata_add_pack_to_breaks (pack, dep);
+					if (g_list_find (*failedpackages, pack) == NULL) {
+						(*failedpackages) = g_list_prepend (*failedpackages, pack);
 					}
-					continue;
+					(*packages) = g_list_remove (*packages, pack);
 				}
+				continue;
 			}
-			break;
-			case RPMDEP_SENSE_CONFLICTS:
+		}
+		break;
+		case RPMDEP_SENSE_CONFLICTS:
 				/* This should be set if there's a file conflict,
 				   but I don't think rpm ever does that...
 				   Because the code below is broken, I've inserted 
 				   a g_assert_not_reached (eskil, Sept 2000)
 				*/
-				g_assert_not_reached ();
+			g_assert_not_reached ();
 				/* If we end here, it's a conflict is going to break something */
-				g_warning (_("Package %s conflicts with %s-%s"), 
-					   conflict.byName, conflict.needsName, 
-					   conflict.needsVersion);
-				if (g_list_find (*failedpackages, pack) == NULL) {
-					(*failedpackages) = g_list_prepend (*failedpackages, pack);
-				}
-				(*packages) = g_list_remove (*packages, pack);
-				continue;
-				break;
+			g_warning (_("Package %s conflicts with %s-%s"), 
+				   conflict.byName, conflict.needsName, 
+				   conflict.needsVersion);
+			if (g_list_find (*failedpackages, pack) == NULL) {
+				(*failedpackages) = g_list_prepend (*failedpackages, pack);
 			}
-		} else {
-			pack = (PackageData*)pack_entry->data;
-			/* Does the conflict look like a file dependency ? */
-			if (*conflict.needsName=='/' || strstr (conflict.needsName, ".so")) {
-				g_message (_("Processing dep for %s, requires library %s"), 
-					   pack->name, conflict.needsName);		
-				dep = packagedata_new ();
-				dep->provides = g_list_append (dep->provides, g_strdup (conflict.needsName));
-			} else {
-				dep = packagedata_new_from_rpm_conflict (conflict);
-				dep->archtype = g_strdup (pack->archtype);
-				g_message (_("Processing dep for %s, requires package %s"), 
-					   pack->name, 
-					   dep->name);
-			}
+			(*packages) = g_list_remove (*packages, pack);
+			continue;
+			break;
 		}
 		
-		if (pack && dep) {
-			/* Check if a previous conflict solve has fixed this conflict. */
-			if (g_list_find_custom (*requirements,
-						dep,
-						(GCompareFunc)eazel_install_requirement_dep_compare)) {
-				trilobite_debug ("Already created requirement for %s", dep->name);
-				packagedata_destroy (dep, FALSE);
-				dep = NULL;
-			} else {
-				PackageRequirement *req;
-				req = packagerequirement_new (pack, dep);				
-				(*requirements) = g_list_prepend (*requirements, req);
-				/* debug output code */
-				if (dep->name) {
-					trilobite_debug ("%s requires package %s", pack->name, dep->name);
-				} else {
-					trilobite_debug ("%s requires file %s", 
-							 pack->name, 
-							 (char*)dep->provides->data);
-				}
-			}
-		} else {
-			/* We shouldn't end here */
-			g_assert_not_reached ();
-		}
+		eazel_install_rpm_create_requirement (service, pack, dep, requirements);
 	}
 
 	rpmdepFreeConflicts (conflicts, num_conflicts);
@@ -674,4 +712,3 @@ eazel_install_do_rpm_dependency_check (EazelInstall *service,
 			 g_list_length (*failedpackages),
 			 g_list_length (*requirements));
 }
-

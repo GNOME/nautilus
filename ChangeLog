@@ -1,3 +1,16 @@
+2000-11-07  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_rpm_create_requirement),
+	(eazel_install_do_rpm_dependency_check):
+	* components/services/install/lib/eazel-install-types.c:
+	(eazel_install_requirement_dep_name_compare):
+	* components/services/install/lib/eazel-install-types.h:
+
+	Build up package-name requirement list first, then iterate the
+	harder cases.  When iterating the harder cases, if we're already
+	going to download/upgrade a package, skip the checks.
+	
 2000-11-07  Mike Fleming  <mfleming@eazel.com>
 
 	* src/nautilus-first-time-druid.c: (druid_finished),

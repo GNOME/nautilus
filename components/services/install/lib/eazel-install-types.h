@@ -248,6 +248,7 @@ int eazel_install_package_provides_basename_compare (char *a, char *b);
 int eazel_install_package_provides_compare (PackageData *pack, char *name);
 int eazel_install_package_name_compare (PackageData *pack, char *name);
 int eazel_install_package_compare (PackageData *pack, PackageData *other);
+int eazel_install_requirement_dep_name_compare (PackageRequirement *req, const char *name);
 int eazel_install_requirement_dep_compare (PackageRequirement *req, PackageData *pack);
 int eazel_install_package_version_compare (PackageData *pack, char *version);
 int eazel_install_package_other_version_compare (PackageData *pack, PackageData *other);
