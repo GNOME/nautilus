@@ -64,6 +64,8 @@ struct NautilusTreeViewDetails {
 
 	char *selection_location;
 	gboolean selecting;
+
+	guint show_selection_idle_id;
 };
 
 typedef struct {
@@ -138,6 +140,8 @@ show_selection_idle_callback (gpointer callback_data)
 
 	view = NAUTILUS_TREE_VIEW (callback_data);
 
+	view->details->show_selection_idle_id = 0;
+
 	file = nautilus_file_get (view->details->selection_location);
 	if (file == NULL) {
 		return FALSE;
@@ -173,6 +177,14 @@ show_selection_idle_callback (gpointer callback_data)
 }
 
 static void
+schedule_show_selection (NautilusTreeView *view)
+{
+	if (view->details->show_selection_idle_id == 0) {
+		view->details->show_selection_idle_id = g_idle_add (show_selection_idle_callback, view);
+	}
+}
+
+static void
 row_loaded_callback (GtkTreeModel     *tree_model,
 		     GtkTreeIter      *iter,
 		     NautilusTreeView *view)
@@ -201,7 +213,7 @@ row_loaded_callback (GtkTreeModel     *tree_model,
 			nautilus_file_unref (file);
 			nautilus_file_unref (selection_file);
 
-			g_idle_add (show_selection_idle_callback, view);
+			schedule_show_selection (view);
 			return;
 		}
 		tmp_file = nautilus_file_get_parent (selection_file);
@@ -570,7 +582,7 @@ create_tree (NautilusTreeView *view)
 	g_signal_connect_object (gtk_tree_view_get_selection (GTK_TREE_VIEW (view->details->tree_widget)), "changed",
 				 G_CALLBACK (selection_changed_callback), view, 0);
 
-	g_idle_add (show_selection_idle_callback, view);
+	schedule_show_selection (view);
 }
 
 static void
@@ -618,7 +630,7 @@ load_location_callback (NautilusTreeView *view, char *location)
 	}
 	view->details->selection_location = g_strdup (location);
 
-	g_idle_add (show_selection_idle_callback, view);
+	schedule_show_selection (view);
 }
 
 static void
@@ -670,6 +682,13 @@ nautilus_tree_view_dispose (GObject *object)
 		g_object_unref (view->details->drag_dest);
 		view->details->drag_dest = NULL;
 	}
+
+	if (view->details->show_selection_idle_id) {
+		g_source_remove (view->details->show_selection_idle_id);
+		view->details->show_selection_idle_id = 0;
+	}
+
+	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static void

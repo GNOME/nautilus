@@ -1,3 +1,12 @@
+2003-08-22  Dave Camp  <dave@ximian.com>
+
+	* components/tree/nautilus-tree-view.c:
+	(show_selection_idle_callback), (schedule_show_selection),
+	(row_loaded_callback), (create_tree), (load_location_callback),
+	(nautilus_tree_view_dispose): Remove the show_selection idle
+	handler if the view goes away, and chain up in the dispose
+	handler.  Fixes #119150.
+
 2003-08-20  Dave Camp  <dave@ximian.com>
 
 	* libnautilus-private/nautilus-icon-container.c:
