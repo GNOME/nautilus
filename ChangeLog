@@ -1,3 +1,13 @@
+2000-07-26  Pavel Cisler  <pavel@eazel.com>
+
+	* src/file-manager/dfos-xfer.c: (handle_xfer_vfs_error):
+
+	Show a more meaningful error dialog when copy/move fails
+	because the destination is not writable. This is a cheap 
+	replacement for the original fix for bug 657, we aren't
+	going to do the full fix for this release.
+	
+
 2000-07-26  Andy Hertzfeld  <andy@eazel.com>
 
 	completed task 1774, desktop needs separate background in theme

@@ -316,30 +316,69 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 	int result;
 	char *text;
 	char *unescaped_name;
+	char *current_operation;
+	const char *read_only_reason;
+
+	current_operation = NULL;
 
 	switch (xfer_info->error_mode) {
 	case GNOME_VFS_XFER_ERROR_MODE_QUERY:
 
 		unescaped_name = gnome_vfs_unescape_string_for_display (progress_info->source_name);
 		/* transfer error, prompt the user to continue or stop */
-		text = g_strdup_printf ( _("Error %s copying file %s.\n"
-			"Would you like to continue?"), 
-			gnome_vfs_result_to_string (progress_info->vfs_status),
-			unescaped_name);
-		g_free (unescaped_name);
-		result = nautilus_simple_dialog
-			(xfer_info->parent_view, text, 
-			 _("File copy error"),
-			 _("Skip"), _("Retry"), _("Stop"), NULL);
 
-		switch (result) {
-		case 0:
-			return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
-		case 1:
-			return GNOME_VFS_XFER_ERROR_ACTION_RETRY;
-		case 2:
-			return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
-		}						
+		current_operation = g_strdup (xfer_info->progress_verb);
+
+		g_strdown (current_operation);
+		if (progress_info->vfs_status == GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM
+			|| progress_info->vfs_status == GNOME_VFS_ERROR_READ_ONLY
+			|| progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED) {
+
+			read_only_reason = progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED
+				? "You do not have the required permissions to do that"
+				: "The destination is read-only";
+
+			text = g_strdup_printf ( _("Error while %s \"%s\".\n"
+				"%s. "
+				"Would you like to continue?"),
+				current_operation,
+				unescaped_name,
+				read_only_reason);
+
+			result = nautilus_simple_dialog
+				(xfer_info->parent_view, text, 
+				 _("File copy error"),
+				 _("Skip"), _("Stop"), NULL);
+
+			g_free (current_operation);
+
+			switch (result) {
+			case 0:
+				return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
+			case 2:
+				return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
+			}						
+		} else {
+
+			text = g_strdup_printf ( _("Error \"%s\" copying file %s.\n"
+				"Would you like to continue?"), 
+				gnome_vfs_result_to_string (progress_info->vfs_status),
+				unescaped_name);
+			g_free (unescaped_name);
+			result = nautilus_simple_dialog
+				(xfer_info->parent_view, text, 
+				 _("File copy error"),
+				 _("Skip"), _("Retry"), _("Stop"), NULL);
+
+			switch (result) {
+			case 0:
+				return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
+			case 1:
+				return GNOME_VFS_XFER_ERROR_ACTION_RETRY;
+			case 2:
+				return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
+			}						
+		}
 
 	case GNOME_VFS_XFER_ERROR_MODE_ABORT:
 	default:
