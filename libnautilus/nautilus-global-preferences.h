@@ -27,11 +27,12 @@
 
 #include <gnome.h>
 #include <nautilus-widgets/nautilus-preferences.h>
+#include <libnautilus/nautilus-string-list.h>
 
 BEGIN_GNOME_DECLS
 
 /* User level */
-#define NAUTILUS_PREFERENCES_USER_LEVEL				"/nautilus/preferences/user_level=2"
+#define NAUTILUS_PREFERENCES_USER_LEVEL				"/nautilus/preferences/user_level"
 
 /* Window options */
 #define NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW			"/nautilus/preferences/window_always_new"
@@ -53,9 +54,10 @@ enum
 	NAUTILUS_USER_LEVEL_ETTORE
 };
 
-void nautilus_global_preferences_shutdown    (void);
-void nautilus_global_preferences_initialize  (void);
-void nautilus_global_preferences_show_dialog (void);
+void                      nautilus_global_preferences_shutdown           (void);
+void                      nautilus_global_preferences_initialize         (void);
+void                      nautilus_global_preferences_show_dialog        (void);
+const NautilusStringList *nautilus_global_preferences_get_meta_view_iids (void);
 
 BEGIN_GNOME_DECLS
 

@@ -49,8 +49,6 @@ nautilus_SOURCES =\
 	ntl-meta-view.h			\
 	ntl-miniicon.c			\
 	ntl-miniicon.h			\
-	ntl-prefs.c			\
-	ntl-prefs.h			\
 	ntl-types.h			\
 	ntl-uri-map.c			\
 	ntl-uri-map.h			\

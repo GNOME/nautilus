@@ -97,6 +97,7 @@ static gboolean           prefs_get_pref                        (NautilusPrefere
 								 gconstpointer                 *pref_value_out);
 PrefHashInfo *            prefs_hash_lookup                     (NautilusPreferences           *prefs,
 								 const gchar                   *pref_name);
+static gchar * nautilus_preferences_make_gnome_config_string (const NautilusPreferencesInfo *pref_info);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPreferences, nautilus_preferences, GTK_TYPE_OBJECT)
 
@@ -463,7 +464,8 @@ void
 nautilus_preferences_register_from_info (NautilusPreferences		*prefs,
 					 const NautilusPreferencesInfo *pref_info)
 {
-	PrefHashInfo * pref_hash_info;
+	gchar		*gnome_config_string = NULL;
+	PrefHashInfo	*pref_hash_info;
 
 	g_return_if_fail (prefs != NULL);
 	g_return_if_fail (NAUTILUS_IS_PREFS (prefs));
@@ -488,29 +490,77 @@ nautilus_preferences_register_from_info (NautilusPreferences		*prefs,
 			     (gpointer) pref_info->pref_name,
 			     (gpointer) pref_hash_info);
 
+	gnome_config_string = nautilus_preferences_make_gnome_config_string (pref_info);
+
+	g_assert (gnome_config_string != NULL);
+
 	/* gnome-config for now ; in the future gconf */
 	switch (pref_hash_info->pref_info.pref_type)
 	{
 	case NAUTILUS_PREFERENCE_BOOLEAN:
-		pref_hash_info->pref_value = (gpointer) gnome_config_get_bool (pref_info->pref_name);
+		pref_hash_info->pref_value = (gpointer) gnome_config_get_bool (gnome_config_string);
 		break;
 
 	case NAUTILUS_PREFERENCE_ENUM:
-		pref_hash_info->pref_value = (gpointer) gnome_config_get_int (pref_info->pref_name);
+		pref_hash_info->pref_value = (gpointer) gnome_config_get_int (gnome_config_string);
 		break;
 	}
+
+	g_free (gnome_config_string);
 
 	/* Sync all the damn time.  Yes it sucks.  it will be better with gconf */
 	gnome_config_sync ();
 }
 
+static gchar *
+nautilus_preferences_make_gnome_config_string (const NautilusPreferencesInfo *pref_info)
+{
+	gchar * rv = NULL;
+	GString * tmp = NULL;
+
+	g_assert (pref_info != NULL);
+
+	tmp = g_string_new (pref_info->pref_name);
+	
+	g_string_append (tmp, "=");
+	
+	switch (pref_info->pref_type)
+	{
+	case NAUTILUS_PREFERENCE_BOOLEAN:
+		if ((gboolean) pref_info->pref_default_value)
+		{
+			g_string_append (tmp, "true");
+		}
+		else
+		{
+			g_string_append (tmp, "false");
+		}
+		break;
+
+	case NAUTILUS_PREFERENCE_ENUM:
+
+		g_string_sprintfa  (tmp, "%d", (gint) pref_info->pref_default_value);
+
+		break;
+	}
+	
+	g_assert (tmp != NULL);
+	g_assert (tmp->str != NULL);
+
+	rv = g_strdup (tmp->str);
+
+	g_string_free (tmp, TRUE);
+
+	return rv;
+}
+
 void
-nautilus_preferences_register_from_values (NautilusPreferences      *prefs,
-					   gchar		*pref_name,
-					   gchar		*pref_description,
+nautilus_preferences_register_from_values (NautilusPreferences		*prefs,
+					   gchar			*pref_name,
+					   gchar			*pref_description,
 					   NautilusPreferencesType	pref_type,
-					   gconstpointer	pref_default_value,
-					   gpointer		type_data)
+					   gconstpointer		pref_default_value,
+					   gpointer			type_data)
 {
 	NautilusPreferencesInfo pref_info;
 

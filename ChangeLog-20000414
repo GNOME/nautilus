@@ -1,8 +1,42 @@
 2000-03-12  Ramiro Estrugo  <ramiro@eazel.com>
+	* libnautilus/nautilus-global-preferences.c,
+	* libnautilus/nautilus-global-preferences.h:
+	(nautilus_global_preferences_get_meta_view_iids) Add a table of
+	meta view iids and a function to retrieve them.  This is a hack
+	until we have better runtime detection of components.  
+	Add some better defaults for which meta views are shown.  By
+	default none were shown.  Undo a previous gnome_config default
+	hack.  There is now a better fix in place in the prefs code.
+
+	* nautilus-widgets/nautilus-preferences.c:
+	(nautilus_preferences_make_gnome_config_string) A new function to
+	make a string as expected by gnome_config with a trailing default
+	value.  Use this string to fetch the value of the preferences.
+
+	* src/Makefile.am,
+	src/ntl-prefs.c,
+	src/ntl-prefs.h,
+	src/nautilus-window-menus.c,
+	src/nautilus.h:
+	Retire ntl-prefs.c and ntl-prefs.h.  Remove these 2 from build and
+	all references to them.
+	
+	* src/ntl-app.c: 
+	(nautilus_app_startup, nautilus_app_destroy) No need to call
+	retired ntl-prefs functions.
+	
+	* src/ntl-uri-map.c:
+	(add_meta_view_iids_from_preferences): New function.  Factor out
+	meta iid setup code into one place.  Replace the static meta iid
+	setup code with something that looks in preferences to see which
+	meta views are enabled.  Next step is to make the meta view
+	respond to pref changes.
+
+2000-03-12  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/ntl-window-state.c:
-	(nautilus_window_set_initial_state): Make Intermediate user level
-	work like hacker, but withouth showing dot files.
+	(nautilus_window_set_initial_state) Make Intermediate user level
+	work like hacker, but without showing dot files.
 
 2000-03-12  Andy Hertzfeld <andy@eazel.com>
 

@@ -27,7 +27,6 @@
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-signaller.h"
 #include "ntl-app.h"
-#include "ntl-prefs.h"
 #include "ntl-window-private.h"
 
 

@@ -243,7 +243,6 @@ static void
 nautilus_app_destroy(GtkObject *object)
 {
   /* Do those things that gotta be done just once before quitting */
-  nautilus_prefs_save();
   nautilus_global_preferences_shutdown ();
 
   nautilus_bookmarks_exiting();
@@ -256,7 +255,6 @@ nautilus_app_startup(NautilusApp *app, const char *initial_url)
   NautilusWindow *mainwin;
 
   nautilus_navinfo_init();
-  nautilus_prefs_load();
   nautilus_global_preferences_initialize ();
 
   /* Set default configuration */

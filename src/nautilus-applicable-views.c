@@ -26,10 +26,10 @@
    change request to a set of views and actual URL to be loaded. */
 
 #include "ntl-uri-map.h"
-#include "ntl-prefs.h"
 
 #include <libnautilus/nautilus-directory.h>
 #include <libnautilus/nautilus-metadata.h>
+#include <libnautilus/nautilus-global-preferences.h>
 
 #include <libgnorba/gnorba.h>
 #include <sys/types.h>
@@ -40,6 +40,7 @@
 /* forward declarations */
 
 static void add_components_from_metadata(NautilusNavigationInfo *navinfo);
+static void add_meta_view_iids_from_preferences(NautilusNavigationInfo *navinfo);
 
 /* Nautilus View Identifiers associate a component name with a user displayable name */
 
@@ -67,14 +68,6 @@ nautilus_view_identifier_free (NautilusViewIdentifier *identifier)
     g_free (identifier->name);
     g_free (identifier);
   }
-}
-
-static void
-nautilus_navinfo_append_globals(gpointer value, gpointer data)
-{
-  GSList **target = data;
-
-  *target = g_slist_prepend(*target, g_strdup(value));
 }
 
 static NautilusNavigationResult
@@ -248,8 +241,8 @@ my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
 
   navinfo->content_identifiers = g_slist_append (navinfo->content_identifiers, 
                                                  nautilus_view_identifier_new ("nautilus_sample_content_view", "Sample"));
-  
-  g_slist_foreach(nautilus_prefs.global_meta_views, nautilus_navinfo_append_globals, &navinfo->meta_iids);
+
+  add_meta_view_iids_from_preferences (navinfo);
 
  out:
   notify_ready(navinfo, notify_ready_data);
@@ -286,6 +279,47 @@ add_components_from_metadata(NautilusNavigationInfo *navinfo)
 	}
 	   
 	gtk_object_unref(GTK_OBJECT(directory));
+}
+
+static void
+add_meta_view_iids_from_preferences (NautilusNavigationInfo *navinfo)
+{
+	const NautilusStringList *meta_view_iids;
+	guint		     i;
+
+	g_assert (navinfo != NULL);
+	
+	meta_view_iids= nautilus_global_preferences_get_meta_view_iids ();
+	
+	g_assert (meta_view_iids != NULL);
+	
+	for (i = 0; i < nautilus_string_list_get_length (meta_view_iids); i++)
+	{
+		gchar		*iid;
+		gboolean	enabled;
+		GString		*pref_name;
+
+		iid = nautilus_string_list_nth (meta_view_iids, i);
+		
+		g_assert (iid != NULL);
+
+		pref_name = g_string_new ("/nautilus/metaviews/");
+
+		g_string_append (pref_name, iid);
+
+		enabled = nautilus_preferences_get_boolean (nautilus_preferences_get_global_preferences (),
+							    pref_name->str);
+
+
+		g_string_free (pref_name, TRUE);
+		
+		if (enabled)
+		{
+			navinfo->meta_iids = g_slist_prepend (navinfo->meta_iids, g_strdup (iid));
+		}
+		
+		g_free (iid);
+	}
 }
 
 

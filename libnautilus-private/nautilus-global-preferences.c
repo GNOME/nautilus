@@ -234,59 +234,79 @@ global_preferences_register_static (NautilusPreferences *prefs)
 	}
 }
 
+/* 
+ * Presummably, the following would be registered
+ * only if the component was present.  Once we
+ * have smarter activation, that will be case.
+ * 
+ * For now turn on all the ones we know about.
+ */
+
+const NautilusStringList *
+nautilus_global_preferences_get_meta_view_iids (void)
+{
+	static NautilusStringList * meta_view_names = NULL;
+	
+	if (!meta_view_names)
+	{
+		meta_view_names = nautilus_string_list_new ();
+
+		nautilus_string_list_insert (meta_view_names, "ntl_notes_view");
+		nautilus_string_list_insert (meta_view_names, "hyperbola_navigation_tree");
+		nautilus_string_list_insert (meta_view_names, "hyperbola_navigation_index");
+		nautilus_string_list_insert (meta_view_names, "hyperbola_navigation_search");
+		nautilus_string_list_insert (meta_view_names, "ntl_history_view");
+		nautilus_string_list_insert (meta_view_names, "ntl_websearch_view");
+	}
+
+	return meta_view_names;
+}
+
 static void
 global_preferences_register_dynamic (NautilusPreferences *prefs)
 {
 	g_assert (prefs != NULL);
 
-	/* 
-	 * Presummably, the following would be registered
-	 * only if the component was present.  Once we
-	 * have smarter activation, that will be case.
-	 * 
-	 * For now turn onall the ones we know off.
-	 */
-
 	nautilus_preferences_register_from_values (prefs,
 						   NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HISTORY,
 						   "History View",
 						   NAUTILUS_PREFERENCE_BOOLEAN,
-						   FALSE,
+						   (gconstpointer) TRUE,
 						   NULL);
 	
 	nautilus_preferences_register_from_values (prefs,
 						   NAUTILUS_PREFERENCES_META_VIEWS_SHOW_WEB_SEARCH,
 						   "Web Search View",
 						   NAUTILUS_PREFERENCE_BOOLEAN,
-						   FALSE,
+						   (gconstpointer) TRUE,
 						   NULL);
 
 	nautilus_preferences_register_from_values (prefs,
 						   NAUTILUS_PREFERENCES_META_VIEWS_SHOW_ANNOTATIONS,
 						   "Annotations",
 						   NAUTILUS_PREFERENCE_BOOLEAN,
-						   FALSE,
+						   (gconstpointer) TRUE,
 						   NULL);
 
 	nautilus_preferences_register_from_values (prefs,
 						   NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_CONTENTS,
 						   "Help Contents",
 						   NAUTILUS_PREFERENCE_BOOLEAN,
-						   FALSE,
+						   (gconstpointer) TRUE,
 						   NULL);
 
 	nautilus_preferences_register_from_values (prefs,
 						   NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_INDEX,
 						   "Help Index",
 						   NAUTILUS_PREFERENCE_BOOLEAN,
-						   FALSE,
+						   (gconstpointer) FALSE,
 						   NULL);
 
 	nautilus_preferences_register_from_values (prefs,
 						   NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_SEARCH,
 						   "Help Search",
 						   NAUTILUS_PREFERENCE_BOOLEAN,
-						   FALSE,
+						   (gconstpointer) FALSE,
 						   NULL);
 }
 
