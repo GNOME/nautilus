@@ -142,8 +142,12 @@ read_details (const char *path,
 	}
 
 	doc = xmlParseFile (path);
-	
-	size_as_string = g_strdup_printf ("%u", icon_size);
+
+	if (icon_size == 0) {
+		size_as_string = g_strdup ("*");
+	} else {
+		size_as_string = g_strdup_printf ("%u", icon_size);
+	}
 	node = eel_xml_get_root_child_by_name_and_property
 		(doc, "icon", "size", size_as_string);
 	g_free (size_as_string);
@@ -178,7 +182,8 @@ static char *
 get_themed_icon_file_path (const NautilusIconTheme *icon_theme,
 			   const char *icon_name,
 			   guint icon_size,
-			   NautilusIconDetails *details)
+			   NautilusIconDetails *details,
+			   NautilusIconDetails *scalable_details)
 {
 	guint i;
 	gboolean include_size, in_user_directory, document_type_icon;
@@ -236,6 +241,9 @@ get_themed_icon_file_path (const NautilusIconTheme *icon_theme,
 						in_user_directory,
 						document_type_icon);
 		read_details (xml_path, icon_size, details);
+		if (scalable_details) {
+			read_details (xml_path, 0, scalable_details);
+		}
 		g_free (xml_path);
 	}
 
@@ -256,7 +264,7 @@ theme_has_icon (const NautilusIconTheme *theme,
 
 	path = get_themed_icon_file_path (theme, name,
 					  NAUTILUS_ICON_SIZE_STANDARD,
-					  NULL);
+					  NULL, NULL);
 	g_free (path);
 
 	return path != NULL;
@@ -330,7 +338,8 @@ nautilus_get_icon_file_name (const NautilusIconThemeSpecifications *theme_specs,
 			     const char *name,
 			     const char *modifier,
 			     guint size,
-			     NautilusIconDetails *details)
+			     NautilusIconDetails *details,
+			     NautilusIconDetails *scalable_details)
 {
 	const NautilusIconTheme *theme;
 	char *path;
@@ -349,7 +358,7 @@ nautilus_get_icon_file_name (const NautilusIconThemeSpecifications *theme_specs,
 	/* If there's a modifier, try the modified icon first. */
 	if (modifier != NULL && modifier[0] != '\0') {
 		name_with_modifier = g_strconcat (name, "-", modifier, NULL);
-		path = get_themed_icon_file_path (theme, name_with_modifier, size, details);
+		path = get_themed_icon_file_path (theme, name_with_modifier, size, details, scalable_details);
 		g_free (name_with_modifier);
 		if (path != NULL) {
 			return path;
@@ -357,7 +366,7 @@ nautilus_get_icon_file_name (const NautilusIconThemeSpecifications *theme_specs,
 	}
 	
 	/* Check for a normal icon. */
-	path = get_themed_icon_file_path (theme, name, size, details);
+	path = get_themed_icon_file_path (theme, name, size, details, scalable_details);
 	if (path != NULL) {
 		return path;
 	}

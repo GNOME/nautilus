@@ -1,3 +1,33 @@
+2002-02-27  Alexander Larsson  <alla@lysator.liu.se>
+
+	* src/nautilus-window-menus.c (help_menu_about_nautilus_callback):
+	Patch from drleary@mac.com, add a weak_pointer to the about-dialog
+	to catch it being destroyed.
+
+	* libnautilus-private/nautilus-find-icon-image.h:
+	(nautilus_get_icon_file_name): Take extra argument for scalable details
+
+	* libnautilus-private/nautilus-find-icon-image.c:
+	(read_details): If size == 0, read scalable details, looking
+	for size "*" and using coordinated between 0..1000
+	(nautilus_get_icon_file_name): Take a scalable_details argument
+	and fill it out.
+
+	* libnautilus-private/nautilus-icon-factory.c
+	(load_pixbuf_svg): Load svg icons at the right size, considering
+	their embedded size, the zoom level, and the icon max size.
+	If there are scalable details availible, scale them and put them
+	in the unscaled ones.
+	(load_icon_from_path): Take details and max_size arguments and pass
+	them to load_pixbuf_rsvg.
+	(load_named_icon): max_size arg used for svg scaling.
+	Get scalable details from icon data, pass it on.
+	(load_icon_for_scaling): Try exact size lookup before trying
+	the specific zoom level sizes. This is so we don't have to scale
+	SVGs after their initial rendering.
+	(get_icon_from_cache, load_icon_scale_if_necessary,
+	load_specific_icon): Pass on max size as needed.
+	
 2002-02-27  Josh Barrow  <drleary@mac.com>
 
 	* icons/About_Image.png:

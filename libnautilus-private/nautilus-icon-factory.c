@@ -1383,9 +1383,14 @@ get_next_icon_size_to_try (guint target_size, guint *current_size)
 
 /* This loads an SVG image, scaling it to the appropriate size. */
 static GdkPixbuf *
-load_pixbuf_svg (const char *path, guint size_in_pixels, gboolean is_emblem)
+load_pixbuf_svg (const char *path, guint size_in_pixels, guint max_size_in_pixels, gboolean is_emblem,
+		 NautilusIconDetails *details, NautilusIconDetails *scalable_details)
+
 {
-	double actual_size_in_pixels;
+	double actual_size_in_pixels, zoom;
+	int rect_width, rect_height, num_points, i;
+	int width, height;
+	GdkPixbuf *pixbuf;
 	
 	/* FIXME: the nominal size of .svg emblems is too large, so we scale it
 	 * down here if the file is an emblem. This code should be removed
@@ -1396,8 +1401,35 @@ load_pixbuf_svg (const char *path, guint size_in_pixels, gboolean is_emblem)
 	} else {
 		actual_size_in_pixels = size_in_pixels;
 	}
+	zoom = actual_size_in_pixels / NAUTILUS_ICON_SIZE_STANDARD;
 
-	return rsvg_pixbuf_from_file_at_max_size (path, actual_size_in_pixels, actual_size_in_pixels, NULL);
+	pixbuf = rsvg_pixbuf_from_file_at_zoom_with_max (path, zoom, zoom, max_size_in_pixels, max_size_in_pixels, NULL);
+
+	if (pixbuf == NULL) {
+		return NULL;
+	}
+	
+	if (details && scalable_details) {
+		width = gdk_pixbuf_get_width (pixbuf);
+		height = gdk_pixbuf_get_height (pixbuf);
+		if (scalable_details->text_rect.x0 != scalable_details->text_rect.x1) {
+			rect_width = (scalable_details->text_rect.x1 - scalable_details->text_rect.x0);
+			rect_height = (scalable_details->text_rect.y1 - scalable_details->text_rect.y0);
+			
+			details->text_rect.x0 = scalable_details->text_rect.x0 * width / 1000;
+			details->text_rect.y0 = scalable_details->text_rect.y0 * height / 1000;
+			details->text_rect.x1 = details->text_rect.x0 + rect_width * width / 1000;
+			details->text_rect.y1 = details->text_rect.y0 + rect_height * height / 1000;
+		}
+
+		num_points = scalable_details->attach_points.num_points;
+		details->attach_points.num_points = num_points;
+		for (i = 0; i < num_points; i++) {
+			details->attach_points.points[i].x = scalable_details->attach_points.points[i].x * width / 1000;
+			details->attach_points.points[i].y = scalable_details->attach_points.points[i].y * height / 1000;
+		}
+	}
+	return pixbuf;
 }
 
 static gboolean
@@ -1462,15 +1494,19 @@ get_cache_time (const char *file_uri, time_t *cache_time)
 static GdkPixbuf *
 load_icon_from_path (const char *path,
 		     guint size_in_pixels,
+		     guint max_size_in_pixels,
 		     gboolean custom,
-		     gboolean is_emblem  /* for emblem scaling hack only */)
+		     gboolean is_emblem  /* for emblem scaling hack only */,
+		     NautilusIconDetails *details,
+		     NautilusIconDetails *scalable_details)
 {
 	/* Get the icon. */
 	if (path == NULL) {
 		return NULL;
 	}
 	if (path_represents_svg_image (path)) {
-		return load_pixbuf_svg (path, size_in_pixels, is_emblem);
+		return load_pixbuf_svg (path, size_in_pixels, max_size_in_pixels, is_emblem,
+					details, scalable_details);
 	}
 	
 	/* Custom non-svg icons exist at one size.
@@ -1492,17 +1528,21 @@ static GdkPixbuf *
 load_named_icon (const char *name,
 		 const char *modifier,
 		 guint size_in_pixels,
+		 guint max_size_in_pixels,
 		 NautilusIconDetails *details)
 {
 	char *path;
 	GdkPixbuf *pixbuf;
+	NautilusIconDetails scalable_details;
 
+	memset (&scalable_details, 0, sizeof (scalable_details));
 	path = nautilus_get_icon_file_name (&get_icon_factory ()->theme,
 					    name, modifier, size_in_pixels,
-					    details);
+					    details, &scalable_details);
 	
-	pixbuf = load_icon_from_path (path, size_in_pixels, FALSE,
-				      eel_str_has_prefix (name, NAUTILUS_EMBLEM_NAME_PREFIX));
+	pixbuf = load_icon_from_path (path, size_in_pixels, max_size_in_pixels, FALSE,
+				      eel_str_has_prefix (name, NAUTILUS_EMBLEM_NAME_PREFIX),
+				      details, &scalable_details);
 
 	g_free (path);
 
@@ -1525,6 +1565,7 @@ is_generic_icon_name (const char *name)
 static CacheIcon *
 load_specific_icon (NautilusScalableIcon *scalable_icon,
 		    guint size_in_pixels,
+		    guint max_size_in_pixels,
 		    IconRequest type)
 {
 	NautilusIconDetails details;
@@ -1540,7 +1581,7 @@ load_specific_icon (NautilusScalableIcon *scalable_icon,
 	if (type == REQUEST_PICKY_CUSTOM_ONLY) {
 		/* We don't support custom icons that are not local here. */
 		path = gnome_vfs_get_local_path_from_uri (scalable_icon->uri);
-		pixbuf = load_icon_from_path (path, size_in_pixels, TRUE, FALSE);
+		pixbuf = load_icon_from_path (path, size_in_pixels, max_size_in_pixels, TRUE, FALSE, NULL, NULL);
 		g_free (path);
 	} else {
 		mime_type_icon_name = get_mime_type_icon_without_suffix (scalable_icon->mime_type);
@@ -1558,7 +1599,8 @@ load_specific_icon (NautilusScalableIcon *scalable_icon,
 			((type == REQUEST_PICKY_BY_NAME_FIRST_CHOICE)
 			 ? first_choice_name : second_choice_name,
 			 scalable_icon->modifier,
-			 size_in_pixels, &details);
+			 size_in_pixels, max_size_in_pixels,
+			 &details);
 		g_free (mime_type_icon_name);
 	}
 
@@ -1591,7 +1633,7 @@ destroy_fallback_icon (void)
 /* This load function is not allowed to return NULL. */
 static CacheIcon *
 load_icon_for_scaling (NautilusScalableIcon *scalable_icon,
-		       guint requested_size,
+		       const IconSizeRequest *size,
 		       guint *actual_size_result)
 {
 	CacheIcon *icon;
@@ -1599,16 +1641,28 @@ load_icon_for_scaling (NautilusScalableIcon *scalable_icon,
 	IconSizeRequest size_request;
 	GdkPixbuf *pixbuf;
 	guint i;
+	guint requested_size;
 	const IconRequest requests[] = {
 		REQUEST_PICKY_CUSTOM_ONLY,
 		REQUEST_PICKY_BY_NAME_FIRST_CHOICE,
 		REQUEST_PICKY_BY_NAME_SECOND_CHOICE
 	};
 
+	requested_size = size->nominal_width;
 	size_request.maximum_width = MAXIMUM_ICON_SIZE * requested_size / NAUTILUS_ICON_SIZE_STANDARD;
 	size_request.maximum_height = size_request.maximum_width;
 
 	for (i = 0; i < G_N_ELEMENTS (requests); i++) {
+		/* Try an exact lookup. This will handle the case where
+		 * there is an SVG icon and we want to render it
+		 * immediately at the correct size
+		 */
+		icon = get_icon_from_cache (scalable_icon, size, requests[i]);
+		if (icon != NULL) {
+			*actual_size_result = size->nominal_width;
+			return icon;
+		}
+		
 		actual_size = 0;
 		while (get_next_icon_size_to_try (requested_size, &actual_size)) {
 			size_request.nominal_width = actual_size;
@@ -1756,7 +1810,7 @@ load_icon_scale_if_necessary (NautilusScalableIcon *scalable_icon,
 	
 	/* Load the icon that's closest in size to what we want. */
 	icon = load_icon_for_scaling (scalable_icon,
-				      size->nominal_width,
+				      size,
 				      &nominal_actual_size);
 	
 	/* Scale the pixbuf to the size we want. */
@@ -1920,6 +1974,7 @@ get_icon_from_cache (NautilusScalableIcon *scalable_icon,
 			/* Get the image. */
 			icon = load_specific_icon (scalable_icon,
 						   size->nominal_width,
+						   size->maximum_width,
 						   type);
 			if (icon == NULL) {
 				return NULL;
