@@ -149,7 +149,6 @@ fi
 %{prefix}/bin/nautilus-hardware-view
 %{prefix}/bin/nautilus-history-view
 %{prefix}/bin/nautilus-image-view
-%{prefix}/bin/nautilus-login-view
 %{prefix}/bin/nautilus-music-view
 %{prefix}/bin/nautilus-notes
 %{prefix}/bin/nautilus-sample-content-view
@@ -215,7 +214,6 @@ fi
 %{prefix}/share/oaf/nautilus-hardware-view.oafinfo
 %{prefix}/share/oaf/nautilus-history-view.oafinfo
 %{prefix}/share/oaf/nautilus-image-view.oafinfo
-%{prefix}/share/oaf/nautilus-login-view.oafinfo
 %{prefix}/share/oaf/nautilus-music-view.oafinfo
 %{prefix}/share/oaf/nautilus-notes.oafinfo
 %{prefix}/share/oaf/nautilus-sample-content-view.oafinfo
@@ -250,6 +248,7 @@ fi
 %{prefix}/bin/trilobite-eazel-install-service
 %{prefix}/bin/trilobite-eazel-time-service
 %{prefix}/bin/trilobite-eazel-time-view
+%{prefix}/bin/nautilus-login-view
 %{prefix}/bin/nautilus-summary-view
 %{prefix}/bin/nautilus-rpm-view
 %{prefix}/bin/eazel-time
@@ -272,5 +271,16 @@ fi
 %{prefix}/share/oaf/trilobite-eazel-install-service.oafinfo
 %{prefix}/share/oaf/trilobite-eazel-time-service.oafinfo
 %{prefix}/share/oaf/trilobite-eazel-time-view.oafinfo
+%{prefix}/share/oaf/nautilus-login-view.oafinfo
 %{prefix}/share/oaf/nautilus-summary-view.oafinfo
 %{prefix}/share/oaf/nautilus-rpm-view.oafinfo
+
+%files extras
+
+%defattr(0444, bin, bin)
+%{prefix}/share/nautilus/nautilus-extras.placeholder
+
+%files suggested
+
+%defattr(0444, bin, bin)
+%{prefix}/share/nautilus/nautilus-suggested.placeholder
