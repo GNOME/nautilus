@@ -46,6 +46,22 @@ create_new_pixbuf (GdkPixbuf *src)
 			       gdk_pixbuf_get_height (src));
 }
 
+static GdkPixbuf *
+create_new_pixbuf_with_alpha (GdkPixbuf *src)
+{
+	g_return_val_if_fail (gdk_pixbuf_get_colorspace (src) == GDK_COLORSPACE_RGB, NULL);
+	g_return_val_if_fail ((!gdk_pixbuf_get_has_alpha (src)
+			       && gdk_pixbuf_get_n_channels (src) == 3)
+			      || (gdk_pixbuf_get_has_alpha (src)
+				  && gdk_pixbuf_get_n_channels (src) == 4), NULL);
+
+	return gdk_pixbuf_new (gdk_pixbuf_get_colorspace (src),
+			       TRUE,
+			       gdk_pixbuf_get_bits_per_sample (src),
+			       gdk_pixbuf_get_width (src),
+			       gdk_pixbuf_get_height (src));
+}
+
 /* utility routine to bump the level of a color component with pinning */
 
 static guchar
@@ -228,7 +244,7 @@ nautilus_make_semi_transparent (GdkPixbuf *src)
 				  && gdk_pixbuf_get_n_channels (src) == 4), NULL);
 	g_return_val_if_fail (gdk_pixbuf_get_bits_per_sample (src) == 8, NULL);
 
-	dest_pixbuf = create_new_pixbuf (src);
+	dest_pixbuf = create_new_pixbuf_with_alpha (src);
 
 	has_alpha = gdk_pixbuf_get_has_alpha (src);
 	width = gdk_pixbuf_get_width (src);
