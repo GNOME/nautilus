@@ -15,7 +15,7 @@ fi
 PR1_TO_PR2=no
 if [ -f /usr/bin/nautilus ]; then
    VERSION=`/usr/bin/nautilus --version`
-   if [ "x$VERSION" = "xGNOME nautilus 0.1.0" ]; then
+   if [ "x$VERSION" = "xGnome nautilus 0.1.0" ]; then
       PR1_TO_PR2=yes
    fi
 fi
