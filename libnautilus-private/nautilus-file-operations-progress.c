@@ -156,6 +156,15 @@ create_titled_label (GtkBox *vbox, GtkWidget **title_widget, GtkWidget **label_t
 	gtk_misc_set_alignment (GTK_MISC (*label_text_widget), 0, 0);
 }
 
+static gboolean
+delete_event_callback (GtkWidget *widget, GdkEventAny *event)
+{
+	/* Do nothing -- we shouldn't be getting a close event because
+	 * the dialog should not have a close box.
+	 */
+	return TRUE;
+}
+
 static void
 nautilus_file_operations_progress_initialize (NautilusFileOperationsProgress *dialog)
 {
@@ -220,19 +229,29 @@ nautilus_file_operations_progress_initialize (NautilusFileOperationsProgress *di
 	dialog->details->total_bytes_copied = 0;
 
 	dialog->details->freeze_count = 0;
+
 }
 
 static void
 nautilus_file_operations_progress_initialize_class (NautilusFileOperationsProgressClass *klass)
 {
 	GtkObjectClass *object_class;
+	GtkWidgetClass *widget_class;
 	GnomeDialogClass *dialog_class;
 
 	object_class = GTK_OBJECT_CLASS (klass);
+	widget_class = GTK_WIDGET_CLASS (klass);
 	dialog_class = GNOME_DIALOG_CLASS (klass);
 
 	object_class->destroy = nautilus_file_operations_progress_destroy;
 	dialog_class->close = nautilus_file_operations_progress_close;
+
+	/* The progress dialog should not have a title and a close box.
+	 * Some broken window manager themes still show the window title.
+	 * Make clicking the close box do nothing in that case to prevent
+	 * a crash.
+	 */
+	widget_class->delete_event = delete_event_callback;
 }
 
 GtkWidget *

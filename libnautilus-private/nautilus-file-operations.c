@@ -197,6 +197,60 @@ xfer_dialog_clicked_callback (NautilusFileOperationsProgress *dialog,
 }
 
 static void
+fit_rect_on_screen (GdkRectangle *rect)
+{
+	if (rect->x + rect->width > gdk_screen_width ()) {
+		rect->x = gdk_screen_width () - rect->width;
+	}
+
+	if (rect->y + rect->height > gdk_screen_height ()) {
+		rect->y = gdk_screen_height () - rect->height;
+	}
+
+	if (rect->x < 0) {
+		rect->x = 0;
+	}
+
+	if (rect->y < 0) {
+		rect->y = 0;
+	}
+}
+
+static void
+center_dialog_over_rect (GtkWindow *window, GdkRectangle rect)
+{
+	g_return_if_fail (GTK_WINDOW (window) != NULL);
+
+	fit_rect_on_screen (&rect);
+
+	gtk_widget_set_uposition (GTK_WIDGET (window), 
+		rect.x + rect.width / 2 
+			- GTK_WIDGET (window)->allocation.width / 2,
+		rect.y + rect.height / 2
+			- GTK_WIDGET (window)->allocation.height / 2);
+}
+
+static void
+center_dialog_over_window (GtkWindow *window, GtkWindow *over)
+{
+	GdkRectangle rect;
+	int x, y, w, h;
+
+	g_return_if_fail (GTK_WINDOW (window) != NULL);
+	g_return_if_fail (GTK_WINDOW (over) != NULL);
+
+	gdk_window_get_root_origin (GTK_WIDGET (over)->window, &x, &y);
+	gdk_window_get_size (GTK_WIDGET (over)->window, &w, &h);
+	rect.x = x;
+	rect.y = y;
+	rect.width = w;
+	rect.height = h;
+
+	center_dialog_over_rect (window, rect);
+}
+
+
+static void
 create_xfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
 		    XferInfo *xfer_info)
 {
@@ -215,6 +269,12 @@ create_xfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
 			    xfer_info);
 
 	gtk_widget_show (xfer_info->progress_dialog);
+
+	/* Make the progress dialog show up over the window we are copying into */
+	if (xfer_info->parent_view != NULL) {
+		center_dialog_over_window (GTK_WINDOW (xfer_info->progress_dialog), 
+			GTK_WINDOW (gtk_widget_get_toplevel (xfer_info->parent_view)));
+	}
 }
 
 static void
@@ -267,7 +327,7 @@ progress_dialog_set_to_from_item_text (NautilusFileOperationsProgress *dialog,
 	}
 
 	if (to_uri != NULL) {
-		uri = gnome_vfs_uri_new (from_uri);
+		uri = gnome_vfs_uri_new (to_uri);
 		to_path = gnome_vfs_uri_extract_dirname (uri);
 
 		/* remove the last '/' */

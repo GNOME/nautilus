@@ -1,3 +1,33 @@
+2000-11-16  Pavel Cisler <pavel@eazel.com>
+
+	reviewed by: Mathieu Lacage  <mathieu@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-operations-progress.c:
+	(delete_event_callback),
+	(nautilus_file_operations_progress_initialize),
+	(nautilus_file_operations_progress_initialize_class):
+	Fix 3094: Closing file progress dialog using the close box 
+	crashes.
+	The progress dialog shouldn't really have a close box, it only
+	shows up in broken window manager themes that don't respect the
+	window manager hints. Made it so that clicking the close box
+	does nothing instead of crashing.
+	
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(fit_rect_on_screen), (center_dialog_over_rect),
+	(center_dialog_over_window), (create_xfer_dialog):
+	Fix 3092: File operation progress dialog not placed well.
+	Made it center over the window that is the target of the
+	copy/move operation. I couldn't really do it by setting the window
+	as the dialog's parent because you need to be able to close
+	the window without the dialog closing. Instead, added explicit
+	centering code.
+	
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(progress_dialog_set_to_from_item_text):
+	Fix 4080: Copy dialog shows to and from as the same location.
+	Stupid typo.
+
 2000-11-16  Rebecca Schulman  <rebecka@eazel.com>
 
 	* libnautilus-extensions/nautilus-search-uri.c:
