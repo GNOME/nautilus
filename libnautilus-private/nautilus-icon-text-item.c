@@ -6,7 +6,6 @@
  * Authors: Miguel de Icaza <miguel@gnu.org>
  *          Federico Mena <federico@gimp.org>
  *
- * FIXME bugzilla.eazel.com 685: Provide a ref-count fontname caching like thing.
  */
 
 #include <config.h>
@@ -71,7 +70,7 @@ typedef struct {
 
 	/* Store min width and height.  These are used when the text entry is empty. */
 	guint min_width;
-	guint min_height;
+	guint min_height;	
 } ItiPrivate;
 
 
@@ -92,11 +91,7 @@ enum {
 	SELECTION_STOPPED,
 	LAST_SIGNAL
 };
-
 static guint iti_signals [LAST_SIGNAL] = { 0 };
-
-static GdkFont *default_font;
-
 
 /* Stops the editing state of an icon text item */
 static void
@@ -161,7 +156,7 @@ layout_text (Iti *iti)
 
 	if (height != old_height)
 		gtk_signal_emit (GTK_OBJECT (iti), iti_signals[HEIGHT_CHANGED]);
-
+	
 	gtk_signal_emit (GTK_OBJECT (iti), iti_signals [TEXT_EDITED]);		
 }
 
@@ -254,14 +249,10 @@ iti_destroy (GtkObject *object)
 	priv = iti->priv;
 	item = GNOME_CANVAS_ITEM (object);
 
-	/* FIXME bugzilla.eazel.com 686: stop selection and editing */
-
 	/* Queue redraw of bounding box */
-
 	gnome_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
 
 	/* Free everything */
-
 	if (iti->font)
 		gdk_font_unref (iti->font);
 
@@ -297,19 +288,6 @@ iti_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 	default:
 		break;
 	}
-}
-
-/* Loads the default font for icon text items if necessary */
-static GdkFont *
-get_default_font (void)
-{
-	if (!default_font) {
-		/* FIXME bugzilla.eazel.com 687: this is never unref-ed */
-		default_font = gdk_fontset_load (DEFAULT_FONT_NAME);
-		g_assert (default_font != NULL);
-	}
-
-	return gdk_font_ref (default_font);
 }
 
 /* Recomputes the bounding box of an icon text item */
@@ -372,7 +350,6 @@ iti_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags)
 		(* parent_class->update) (item, affine, clip_path, flags);
 
 	/* If necessary, queue a redraw of the old bounding box */
-
 	if ((flags & GNOME_CANVAS_UPDATE_VISIBILITY)
 	    || (flags & GNOME_CANVAS_UPDATE_AFFINE)
 	    || priv->need_pos_update
@@ -381,14 +358,12 @@ iti_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags)
 		gnome_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
 
 	/* Compute new bounds */
-
 	if (priv->need_pos_update
 	    || priv->need_font_update
 	    || priv->need_text_update)
 		recompute_bounding_box (iti);
 
 	/* Queue redraw */
-
 	gnome_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
 
 	priv->need_pos_update = FALSE;
@@ -1106,13 +1081,6 @@ nautilus_icon_text_item_configure (NautilusIconTextItem *iti, int x, int y,
 
 	iti->font = gdk_font_ref (font);
 
-	/* FIXME bugzilla.eazel.com 684: 
-	 * We update the font and layout here instead of in the
-	 * ::update() method because the stupid icon list makes use of iti->ti
-	 * and expects it to be valid at all times.  It should request the
-	 * item's bounds instead.
-	 */
-
 	if (priv->font)
 		gdk_font_unref (priv->font);
 
@@ -1120,7 +1088,7 @@ nautilus_icon_text_item_configure (NautilusIconTextItem *iti, int x, int y,
 	if (font)
 		priv->font = gdk_font_ref (iti->font);
 	if (!priv->font)
-		priv->font = get_default_font ();
+		priv->font = gdk_fontset_load (DEFAULT_FONT_NAME);
 
 	layout_text (iti);
 
@@ -1259,10 +1227,12 @@ nautilus_icon_text_item_get_text (NautilusIconTextItem *iti)
 void
 nautilus_icon_text_item_start_editing (NautilusIconTextItem *iti)
 {
-	NautilusUndoable *undoable;
+	ItiPrivate *priv;
 
 	g_return_if_fail (iti != NULL);
 	g_return_if_fail (IS_ITI (iti));
+
+	priv = iti->priv;
 
 	if (iti->editing)
 		return;
@@ -1271,8 +1241,9 @@ nautilus_icon_text_item_start_editing (NautilusIconTextItem *iti)
 	gnome_canvas_item_grab_focus (GNOME_CANVAS_ITEM (iti));
 	iti_start_editing (iti);
 
-	nautilus_undo_manager_begin_transaction ("Text Edit");
-	nautilus_undoable_save_undo_snapshot (undoable, GTK_OBJECT(iti), save_undo_snapshot_callback,
+	/* Register undo transaction */	
+	nautilus_undo_manager_begin_transaction ("Rename Icon");
+	nautilus_undoable_save_undo_snapshot (GTK_OBJECT(iti), save_undo_snapshot_callback,
 					      restore_from_undo_snapshot_callback);
 	nautilus_undo_manager_end_transaction ();
 }
@@ -1290,8 +1261,13 @@ void
 nautilus_icon_text_item_stop_editing (NautilusIconTextItem *iti,
 				   gboolean accept)
 {		
+	ItiPrivate *priv;
+	NautilusUndoTransaction *transaction;
+
 	g_return_if_fail (iti != NULL);
 	g_return_if_fail (IS_ITI (iti));
+	
+	priv = iti->priv;
 
 	if (!iti->editing)
 		return;
@@ -1300,7 +1276,14 @@ nautilus_icon_text_item_stop_editing (NautilusIconTextItem *iti,
 		iti_edition_accept (iti);
 	} else {
 		iti_stop_editing (iti);
-	}		
+	}
+
+	/* Pop last undo transaction off.  We don't want an undo called on us when we 
+	 * are no longer in a selection mode */
+	transaction = nautilus_undo_manager_get_current_transaction ();
+	if (transaction != NULL) {
+		nautilus_undo_manager_remove_transaction (transaction);
+	}
 }
 
 
@@ -1361,8 +1344,10 @@ save_undo_snapshot_callback(NautilusUndoable *undoable)
 {
 	char *undo_text;
 	NautilusIconTextItem *iti;
-
+	ItiPrivate *priv;
+	
 	iti = NAUTILUS_ICON_TEXT_ITEM(undoable->undo_target_class);
+	priv = iti->priv;
 	
 	/* Add some data to the data list */
 	undo_text = g_strdup(iti->text);
@@ -1380,14 +1365,20 @@ restore_from_undo_snapshot_callback(NautilusUndoable *undoable)
 {
 	char *undo_text;
 	NautilusIconTextItem *iti;
+	ItiPrivate *priv;
 
 	iti = NAUTILUS_ICON_TEXT_ITEM(undoable->undo_target_class);
-		
+	priv = iti->priv;
+	
 	undo_text = g_datalist_get_data(&undoable->undo_data, "undo_text");
 	if (undo_text != NULL) {
-		printf("undo_text: %s\n", undo_text);
 		nautilus_icon_text_item_set_text (iti, undo_text);
 	}
-}
 
+	/* Re-register undo transaction */	
+	nautilus_undo_manager_begin_transaction ("Rename Icon");
+	nautilus_undoable_save_undo_snapshot (GTK_OBJECT(iti), save_undo_snapshot_callback,
+					      restore_from_undo_snapshot_callback);
+	nautilus_undo_manager_end_transaction ();
+}
 

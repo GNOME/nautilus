@@ -62,8 +62,7 @@ struct NautilusUndoableClass {
 GtkType	nautilus_undoable_get_type 				(void);
 
 GtkObject 	*nautilus_undoable_new 				(void);
-void		nautilus_undoable_save_undo_snapshot		(NautilusUndoable *undoable,
-								 GtkObject *target, GtkSignalFunc save_func,
+void		nautilus_undoable_save_undo_snapshot		(GtkObject *target, GtkSignalFunc save_func,
 								 GtkSignalFunc restore_func);
 void		nautilus_undoable_restore_from_undo_snapshot	(NautilusUndoable *undoable);
 

@@ -54,7 +54,7 @@ static GtkWidget            *get_bookmarks_window                (void);
 static void                  refresh_bookmarks_in_go_menu        (NautilusWindow *window);
 static void                  refresh_bookmarks_in_bookmarks_menu (NautilusWindow *window);
 static void                  update_eazel_theme_menu_item        (NautilusWindow *window);
-
+static void                  update_undo_menu_item        	 (NautilusWindow *window);
 
 /* Struct that stores all the info necessary to activate a bookmark. */
 typedef struct {
@@ -849,18 +849,27 @@ nautilus_window_initialize_menus (NautilusWindow *window)
          * Some (hopefully all) will be overridden by implementations by the
          * different content views.
          */
-        bonobo_ui_handler_menu_set_sensitivity(ui_handler, 
+	bonobo_ui_handler_menu_set_sensitivity(ui_handler, 
         				       NAUTILUS_MENU_PATH_SELECT_ALL_ITEM, 
         				       FALSE);
 
         /* Set initial toggle state of Eazel theme menu item */
         update_eazel_theme_menu_item (window);
+
+        /* Set inital state of undo menu */
+	update_undo_menu_item(window);
         
         /* Sign up to be notified of icon theme changes so Use Eazel Theme Icons
          * menu item will show correct toggle state. */        
 	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
 					       "icons_changed",
 					       update_eazel_theme_menu_item,
+					       GTK_OBJECT (window));	
+
+	/* Connect to UndoManager so that we are notified when an undo transcation has occurred */
+	gtk_signal_connect_object_while_alive (GTK_OBJECT(nautilus_undo_manager_get_undo_manager ()),
+					       "undo_transaction_occurred",
+					       update_undo_menu_item,
 					       GTK_OBJECT (window));	
 
         nautilus_window_initialize_bookmarks_menu (window);
@@ -958,8 +967,13 @@ update_eazel_theme_menu_item (NautilusWindow *window)
 }
 
 
+/* Toggle sensitivity based on undo manager state */
+static void 
+update_undo_menu_item (NautilusWindow *window)
+{
+        g_assert (NAUTILUS_IS_WINDOW (window));
 
-
-
-
+	bonobo_ui_handler_menu_set_sensitivity(window->uih, NAUTILUS_MENU_PATH_UNDO_ITEM, 
+        				       nautilus_undo_manager_can_undo ());
+}
 

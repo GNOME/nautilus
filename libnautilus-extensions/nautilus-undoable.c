@@ -122,10 +122,10 @@ destroy (GtkObject *object)
 
 /* nautilus_undoable_save_undo_snapshot */
 void 
-nautilus_undoable_save_undo_snapshot (NautilusUndoable *undoable, GtkObject *target, 
-				      GtkSignalFunc save_func, GtkSignalFunc restore_func)
+nautilus_undoable_save_undo_snapshot (GtkObject *target, GtkSignalFunc save_func, GtkSignalFunc restore_func)
 {
 	gboolean result;
+	NautilusUndoable *undoable;
 	
 	/* Init Undoable */
 	undoable = NAUTILUS_UNDOABLE(nautilus_undoable_new());

@@ -1,3 +1,42 @@
+2000-04-28  Gene Z. Ragan  <gzr@eazel.com>
+	* libnautilus-extensions/nautilus-icon-text-item.c
+	* libnautilus-extensions/nautilus-icon-text-item.h
+	* libnautilus-extensions/nautilus-undo-manager-private.h
+	Fixed the following FIXME bugs: 684 686 687
+	Hooked up the undo mechanism to work properly with
+	the renaming widget.
+
+	* libnautilus-extensions/nautilus-undo-manager.c
+	* libnautilus-extensions/nautilus-undo-manager.h
+	Add configuration defaults to sets the UndoManager to 
+	not use the redo functionality and sets the depth of
+	the undo list to one transaction.
+	(nautilus_undo_manager_enable_redo):
+	Function to toggle on or off the ability to redo undone transactions.
+	(nautilus_undo_manager_set_queue_depth):
+	Function to set the max depth of the undo/redo queues
+	(free_undo_manager_list_data):
+	New utility function to clean up data in undo/redo list
+	(prune_undo_manager_list):
+	New utility function that prunes a set number of items from
+	either the undo or redo list.
+	(nautilus_undo_manager_add_undo_transaction):
+	Manually insert an externally created undo transaction into
+	the undo queue.
+	(nautilus_undo_manager_add_redo_transaction):
+	Manually insert an externally created undo transaction into
+	the redo queue.
+
+	* libnautilus-extensions/nautilus-undo-transaction.c
+	* libnautilus-extensions/nautilus-undo-transaction.h
+	(nautilus_undo_transaction_destroy):
+	Added destructor function for a NautilusUndoTransaction object
+
+	* src/nautilus-window-menus.c
+	(update_undo_menu_item):
+	Fixed bug 755.  Connected to signal sent by undo manager that informs
+	Undo menu item sensitivity to be set.
+	
 2000-04-28  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory-background.c

@@ -52,6 +52,7 @@ typedef struct {
 
 	/* Whether the text is allocated by us (FALSE if allocated by the client) */
 	unsigned int is_text_allocated : 1;
+
 } NautilusIconTextItem;
 
 typedef struct {

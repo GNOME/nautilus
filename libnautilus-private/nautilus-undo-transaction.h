@@ -38,6 +38,7 @@ struct NautilusUndoTransaction {
 
 
 NautilusUndoTransaction *nautilus_undo_transaction_new		(const gchar *name);
+void			nautilus_undo_transaction_destroy 	(NautilusUndoTransaction *transaction);
 gboolean		nautilus_undo_transaction_add_undoable	(NautilusUndoTransaction *transaction, 
 								 NautilusUndoable *undoable);
 gboolean 		nautilus_undo_transaction_undo 		(NautilusUndoTransaction *transaction);

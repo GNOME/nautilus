@@ -25,7 +25,8 @@
 #include "nautilus-undo-transaction.h"
 
 /* nautilus_undo_transaction_new */
-NautilusUndoTransaction *nautilus_undo_transaction_new (const gchar *name)
+NautilusUndoTransaction *
+nautilus_undo_transaction_new (const gchar *name)
 {
 	NautilusUndoTransaction *transaction;
 
@@ -36,8 +37,22 @@ NautilusUndoTransaction *nautilus_undo_transaction_new (const gchar *name)
 	return transaction;
 }
 
+/* nautilus_undo_transaction_destroy */
+void
+nautilus_undo_transaction_destroy (NautilusUndoTransaction *transaction)
+{
+	g_assert(transaction);
+	
+	/* Empty list */
+	g_list_free(transaction->transaction_list);
+
+	g_free(transaction->name);
+	g_free(transaction);
+}
+
 /* nautilus_undo_transaction_add_undoable */
-gboolean nautilus_undo_transaction_add_undoable	(NautilusUndoTransaction *transaction, 
+gboolean 
+nautilus_undo_transaction_add_undoable	(NautilusUndoTransaction *transaction, 
 						 NautilusUndoable *undoable)
 {	
 	if (transaction == NULL) {
@@ -82,7 +97,8 @@ nautilus_undo_transaction_undo (NautilusUndoTransaction *transaction)
 	return TRUE;
 }
 
-const gchar *nautilus_undo_transaction_get_name	(NautilusUndoTransaction *transaction)
+const gchar *
+nautilus_undo_transaction_get_name	(NautilusUndoTransaction *transaction)
 {
 	g_return_val_if_fail(transaction != NULL, NULL);
 	
