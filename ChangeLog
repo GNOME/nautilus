@@ -1,3 +1,14 @@
+2000-08-04  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	(nautilus_gdk_pixbuf_load):
+	fixed demo bug #1944, nautilus doesn't thumbnail xpms.  Fixed
+	by making nautilus_gdk_pixbuf_load using
+	nautilus_gdk_pixbuf_new_from_file for local files, since that
+	works better than using the loaders.
+	
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	removed FIXME that was already fixed.
 2000-08-04  Mathieu Lacage  <mathieu@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-utilities.c:

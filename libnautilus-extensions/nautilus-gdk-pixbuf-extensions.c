@@ -24,6 +24,7 @@
 
 #include <config.h>
 #include <math.h>
+#include "nautilus-file-utilities.h"
 #include "nautilus-gdk-pixbuf-extensions.h"
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-glib-extensions.h"
@@ -89,12 +90,26 @@ nautilus_gdk_pixbuf_load (const char *uri)
 	GnomeVFSResult result;
 	GnomeVFSHandle *handle;
 	char buffer[LOAD_BUFFER_SIZE];
+	char *local_path;
 	GnomeVFSFileSize bytes_read;
 	GdkPixbufLoader *loader;
 	GdkPixbuf *pixbuf;	
 
 	g_return_val_if_fail (uri != NULL, NULL);
 
+	/* FIXME #1964: unfortunately, there are bugs in the gdk_pixbuf_loader
+	   stuff that make it not work for various image types like .xpms.
+	   Since gdk_pixbuf_new_from_file uses different, bug-free code,
+	   we call that when the file is local.  This should be fixed
+	   (in gdk_pixbuf) eventually, then this hack can be removed */
+	   
+	local_path = nautilus_get_local_path_from_uri (uri);
+	if (local_path != NULL) {
+		pixbuf = gdk_pixbuf_new_from_file (local_path);
+		g_free (local_path);
+		return pixbuf;
+	}
+	
 	result = gnome_vfs_open (&handle,
 				 uri,
 				 GNOME_VFS_OPEN_READ);
