@@ -1,3 +1,21 @@
+2000-07-26  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(metafile_read_failed): First cut at only reading the metafile if the
+	directory is really a directory. This might be making things worse
+	for now, because I'm not sure if the file info is available at this
+	point. I'll check in something better soon.
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_is_search_directory): Fixed backwards test that
+	would return TRUE for many non-search directories. Then I put that
+	code inside #if 0 and added a version of the function that just
+	checks the scheme of the URI for now. Also added FIXMEs.
+	
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_real_name): Simplfied the code a bit. Also added
+	a FIXME.
+
 2000-07-26  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* Makefile.am:
@@ -36,8 +54,7 @@
 	
 2000-07-26  Robey Pointer  <robey@eazel.com>
 
-	*
-	components/services/install/command-line/eazel-alt-install-corba.c:
+	* components/services/install/command-line/eazel-alt-install-corba.c:
 	(eazel_download_progress_signal), (eazel_install_progress_signal):
 	* components/services/install/lib/eazel-install-rpm-glue.c:
 	(install_all_packages),

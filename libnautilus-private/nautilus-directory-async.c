@@ -206,13 +206,28 @@ metafile_read_done (NautilusDirectory *directory)
 static void
 metafile_read_failed (NautilusDirectory *directory)
 {
+	NautilusFile *as_file;
+	gboolean try_public_metafile;
+
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 	g_assert (directory->details->metafile == NULL);
 
 	if (directory->details->use_alternate_metafile) {
-		directory->details->use_alternate_metafile = FALSE;
-		metafile_read_start (directory);
-		return;
+		/* The goal here is to read the real metafile, but
+		 * only if the directory is actually a directory.
+		 */
+		as_file = nautilus_file_get (directory->details->uri_text);
+		if (as_file == NULL) {
+			try_public_metafile = FALSE;
+		} else {
+			try_public_metafile = nautilus_file_is_directory (as_file);
+			nautilus_file_unref (as_file);
+		}
+		if (try_public_metafile) {
+			directory->details->use_alternate_metafile = FALSE;
+			metafile_read_start (directory);
+			return;
+		}
 	}
 
 	metafile_read_done (directory);

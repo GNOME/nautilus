@@ -3282,26 +3282,28 @@ nautilus_file_is_search_result (NautilusFile *file)
 char *
 nautilus_file_get_real_name (NautilusFile *file)
 {
-	char *uri;
-	GnomeVFSURI *vfs_uri;
 	char *name;
+	GnomeVFSURI *vfs_uri;
 
 	if (file == NULL) {
 		return NULL;
 	}
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-	if (nautilus_file_is_search_result (file)) {
-		uri = nautilus_file_get_name (file);
-		vfs_uri = gnome_vfs_uri_new (uri);
-		g_free (uri);
-		name = gnome_vfs_uri_extract_short_path_name (vfs_uri);
-		gnome_vfs_uri_unref (vfs_uri);	
+	name = nautilus_file_get_name (file);
 
-		return name;
-	} else {
-		return nautilus_file_get_name (file);
+	if (nautilus_file_is_search_result (file)) {
+		vfs_uri = gnome_vfs_uri_new (name);
+		/* FIXME: This can be NULL if the search result URI is bad.
+		 * I think a core dump is a bit too much here, so we might
+		 * have to add a bit more checking.
+		 */
+		g_free (name);
+		name = gnome_vfs_uri_extract_short_path_name (vfs_uri);
+		gnome_vfs_uri_unref (vfs_uri);
 	}
+
+	return name;
 }
 
 

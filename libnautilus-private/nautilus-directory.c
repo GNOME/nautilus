@@ -452,41 +452,52 @@ nautilus_directory_is_local (NautilusDirectory *directory)
 	return gnome_vfs_uri_is_local (directory->details->uri);
 }
 
+/* FIXME: I think this should be named _is_virtual_directory. */
 gboolean
 nautilus_directory_is_search_directory (NautilusDirectory *directory)
 {
-	GnomeVFSFileInfo *info;
-	gboolean is_search_directory;
-	GnomeVFSResult result;
-	
 	if (directory == NULL) {
 		return FALSE;
 	}
 
-	if (directory->details->uri == NULL) {
-		return FALSE;
-	}
+	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
+
+	/* 3 hard-coded schemes for now. */
+	/* FIXME: Later we gnome-vfs will tell us somehow that this is
+	 * a virtual directory.
+	 */
+	return nautilus_istr_has_prefix (directory->details->uri_text, "search:")
+		|| nautilus_istr_has_prefix (directory->details->uri_text, "gnome-search:")
+		|| nautilus_istr_has_prefix (directory->details->uri_text, "gnome-trash:");
+
+#if 0
+	GnomeVFSFileInfo *info;
+	gboolean is_search_directory;
+	GnomeVFSResult result;
 
 	info = gnome_vfs_file_info_new ();
 
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
 	
-	/* FIXME: should make use of some sort of NautilusDirectory
-	   cover for getting the mime type. */
-
+	/* FIXME bugzilla.eazel.com 1263: We can't just do sync. I/O
+	 * here! The model is that get_ functions in
+	 * NautilusDirectory/File are supposed to do no I/O. The
+	 * aforementioned bug talks about this a bit.
+	 */
+	/* FIXME bugzilla.eazel.com 1263: Should make use of some sort
+	 * of NautilusDirectory cover for getting the mime type.
+	 */
 	result = gnome_vfs_get_file_info_uri (directory->details->uri, 
 					      info,
 					      GNOME_VFS_FILE_INFO_GET_MIME_TYPE);
-
 	is_search_directory = result == GNOME_VFS_OK &&
-		nautilus_strcasecmp (info->mime_type, "x-special/virtual-directory");
-
+		nautilus_strcasecmp (info->mime_type, "x-special/virtual-directory") == 0;
+	
 	gnome_vfs_file_info_unref (info);
-       
+	
 	return is_search_directory;
+#endif
 }
-
-
 
 gboolean
 nautilus_directory_are_all_files_seen (NautilusDirectory *directory)
