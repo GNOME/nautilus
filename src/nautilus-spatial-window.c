@@ -38,7 +38,6 @@
 #include "nautilus-switchable-navigation-bar.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-zoom-control.h"
-#include <X11/Xatom.h>
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-ui-util.h>
 #include <eel/eel-debug.h>

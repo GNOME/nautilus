@@ -984,6 +984,8 @@ init_session (void)
 	update_session (client);
 }
 
+#ifdef UGLY_HACK_TO_DETECT_KDE
+
 static gboolean
 get_self_typed_prop (Window      xwindow,
                      Atom        atom,
@@ -1097,16 +1099,20 @@ look_for_kdesktop_recursive (Window xwindow)
 
 	return retval;
 }
+#endif /* UGLY_HACK_TO_DETECT_KDE */
 
 static gboolean
 is_kdesktop_present (void)
 {
+#ifdef UGLY_HACK_TO_DETECT_KDE
 	/* FIXME this is a pretty lame hack, should be replaced
 	 * eventually with e.g. a requirement that desktop managers
 	 * support a manager selection, ICCCM sec 2.8
 	 */
-
 	return look_for_kdesktop_recursive (GDK_ROOT_WINDOW ());
+#else
+	return FALSE;
+#endif
 }
 
 static void

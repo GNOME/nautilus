@@ -1,3 +1,11 @@
+2002-07-10  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-application.c (is_kdesktop_present): disable
+	the look_for_kdesktop_recursive code, since this takes ~1 second
+	at startup on my Ultra 2.
+	(look_for_kdesktop_recursive, has_wm_state, get_self_typed_prop):
+	don't compile these either.
+
 2002-07-09  Damon Chaplin  <damon@ximian.com>
 
 	* src/nautilus-preferences-dialog.c (dialog_button_response_callback): 
