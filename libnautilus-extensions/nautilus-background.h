@@ -142,13 +142,14 @@ struct NautilusBackgroundClass
 	 */
 	void (* appearance_changed) (NautilusBackground *);
 
-	/* This signal is emitted whenever an image is loaded.
+	/* This signal is emitted when image loading is over - whether it
+	 * was successfully loaded or not.
 	 */
-	void (* image_loaded) (NautilusBackground *);
+	void (* image_loading_done) (NautilusBackground *background, gboolean successful_load);
 
 	/* This signal is emitted when the background is reset by receiving
-	   the reset property from a drag */
-	
+	   the reset property from a drag
+	 */
 	void (* reset) (NautilusBackground *);
 
 };

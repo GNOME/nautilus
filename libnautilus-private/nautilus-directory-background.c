@@ -45,19 +45,32 @@ static void directory_changed_callback  (NautilusDirectory  *directory,
                                          NautilusBackground *background);
 static void background_reset_callback   (NautilusBackground *background,
                                          NautilusDirectory  *directory);
-                                         
+
+static const char *default_theme_source = "directory";
+static const char *desktop_theme_source = "desktop";
+                       
 void
 static nautilus_directory_background_set_desktop (NautilusBackground *background)
 {
-	gtk_object_set_data (GTK_OBJECT (background), "desktop", (void *) -1); 
+	gtk_object_set_data (GTK_OBJECT (background), "theme_source", (gpointer) desktop_theme_source); 
 }
 
 static gboolean
 nautilus_directory_background_is_desktop (NautilusBackground *background)
 {
-	return gtk_object_get_data (GTK_OBJECT (background), "desktop") != NULL;
+	/* == works because we're carful to always use the same string.
+	 */
+	return gtk_object_get_data (GTK_OBJECT (background), "theme_source") == desktop_theme_source;
 }
 
+static const char *nautilus_directory_background_peek_theme_source (NautilusBackground *background)
+{
+	char *theme_source;
+
+	theme_source = gtk_object_get_data (GTK_OBJECT (background), "theme_source");
+
+	return theme_source != NULL ? theme_source : default_theme_source;
+}
 
 /* utility routine to handle mapping local image files in themes to a uri */
 static char*
@@ -90,19 +103,16 @@ theme_image_path_to_uri (char *image_file)
  */
  
 static void
-nautilus_directory_background_get_default_settings (gboolean is_desktop,
+nautilus_directory_background_get_default_settings (const char* theme_source,
 						    char **color,
 						    char **image,
 						    nautilus_background_image_placement *placement,
 						    gboolean *combine)
 {
-	char *theme_source;
 	char *combine_str;
 	char *image_local_path;
 
 	*placement = NAUTILUS_BACKGROUND_TILED;
-
-	theme_source = is_desktop ? "desktop" : "directory";
 	
 	*color = nautilus_theme_get_theme_data (theme_source, NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_COLOR);
 
@@ -155,7 +165,7 @@ nautilus_directory_background_read_desktop_settings (char **color,
 	gboolean no_start_color;
 	gboolean no_end_color;
 
-	nautilus_directory_background_get_default_settings (TRUE, &default_color, &default_image_file, &default_placement, combine);
+	nautilus_directory_background_get_default_settings (desktop_theme_source, &default_color, &default_image_file, &default_placement, combine);
 	/* note - value of combine comes from the theme, not currently setable in gnome_config */
 
 	image_local_path = gnome_config_get_string ("/Background/Default/wallpaper=none");
@@ -269,7 +279,7 @@ nautilus_directory_background_write_desktop_default_settings ()
 	char *image;
 	gboolean combine;
 	nautilus_background_image_placement placement;
-	nautilus_directory_background_get_default_settings (TRUE, &color, &image, &placement, &combine);
+	nautilus_directory_background_get_default_settings (desktop_theme_source, &color, &image, &placement, &combine);
 	nautilus_directory_background_write_desktop_settings (color, image, placement, combine);
 }
 
@@ -361,7 +371,7 @@ set_root_pixmap (GdkPixmap *pixmap)
 }
 
 static void
-image_loaded_callback (NautilusBackground *background, void *calledDirectly)
+image_loading_done_callback (NautilusBackground *background, gboolean successful_load, void *disconnect_signal)
 {
 	GdkGC        *gc;
 	GdkPixmap    *bg_pixmap;
@@ -369,11 +379,14 @@ image_loaded_callback (NautilusBackground *background, void *calledDirectly)
 
         g_assert (NAUTILUS_IS_BACKGROUND (background));
 
-        if (!(gboolean) calledDirectly) {
+        if ((gboolean) GPOINTER_TO_INT (disconnect_signal)) {
 		gtk_signal_disconnect_by_func (GTK_OBJECT (background),
-					       GTK_SIGNAL_FUNC (image_loaded_callback),
-					       calledDirectly);
+					       GTK_SIGNAL_FUNC (image_loading_done_callback),
+					       disconnect_signal);
 	}
+
+	/* need to update the root view whether loading succeeded or not
+	 */
 	
 	screen_rectangle.x = 0;
 	screen_rectangle.y = 0;
@@ -395,12 +408,12 @@ static void
 nautilus_directory_update_root_window (NautilusBackground *background)
 {
 	if (nautilus_background_is_loaded (background)) {
-		image_loaded_callback (background, (void *) TRUE);
+		image_loading_done_callback (background, TRUE, GINT_TO_POINTER (FALSE));
 	} else {
 		gtk_signal_connect (GTK_OBJECT (background),
-				    "image_loaded",
-				    GTK_SIGNAL_FUNC (image_loaded_callback),
-				    (void *) FALSE);
+				    "image_loading_done",
+				    GTK_SIGNAL_FUNC (image_loading_done_callback),
+				    GINT_TO_POINTER (TRUE));
 	}
 }
 
@@ -424,7 +437,9 @@ nautilus_directory_background_is_set (NautilusBackground *background)
 	image = nautilus_background_get_image_uri (background);
 	default_combine = nautilus_background_get_combine_mode (background);
 	default_placement = nautilus_background_get_image_placement (background);
-	nautilus_directory_background_get_default_settings (nautilus_directory_background_is_desktop (background), &default_color, &default_image, &placement, &combine);
+	nautilus_directory_background_get_default_settings (
+		nautilus_directory_background_peek_theme_source (background),
+		&default_color, &default_image, &placement, &combine);
 
 	is_set = !nautilus_strcmp (color, default_color) ||
 		 !nautilus_strcmp (image, default_image) ||
@@ -518,7 +533,9 @@ directory_changed_callback (NautilusDirectory *directory,
 
 		/* if there's none, read the default from the theme */
 		if (color == NULL && image == NULL) {
-			nautilus_directory_background_get_default_settings (FALSE, &color, &image, &placement, &combine);	
+			nautilus_directory_background_get_default_settings (
+				nautilus_directory_background_peek_theme_source (background),
+				&color, &image, &placement, &combine);	
 		}
 	}
 

@@ -64,7 +64,7 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusBackground, nautilus_background, GTK_
 enum {
 	APPEARANCE_CHANGED,
 	SETTINGS_CHANGED,
-	IMAGE_LOADED,
+	IMAGE_LOADING_DONE,
 	RESET,
 	LAST_SIGNAL
 };
@@ -109,15 +109,16 @@ nautilus_background_initialize_class (gpointer klass)
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE,
 				0);
-	signals[IMAGE_LOADED] =
-		gtk_signal_new ("image_loaded",
+	signals[IMAGE_LOADING_DONE] =
+		gtk_signal_new ("image_loading_done",
 				GTK_RUN_LAST | GTK_RUN_NO_RECURSE,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusBackgroundClass,
-						   image_loaded),
-				gtk_marshal_NONE__NONE,
+						   image_loading_done),
+				gtk_marshal_NONE__BOOL,
 				GTK_TYPE_NONE,
-				0);
+				1,
+				GTK_TYPE_BOOL);
 	signals[RESET] =
 		gtk_signal_new ("reset",
 				GTK_RUN_LAST | GTK_RUN_NO_RECURSE,
@@ -187,7 +188,7 @@ nautilus_background_set_combine_mode (NautilusBackground *background, gboolean n
 nautilus_background_image_placement
 nautilus_background_get_image_placement (NautilusBackground *background)
 {
-	return background->details->combine_mode;
+	return background->details->image_placement;
 }
 
 void
@@ -226,6 +227,7 @@ nautilus_background_draw (NautilusBackground *background,
 	char *start_color_spec, *end_color_spec;
 	guint32 start_rgb, end_rgb;
 	gboolean horizontal_gradient;
+	gboolean image_totally_obscures;
 
 	/* FIXME combo mode only works with tiled images. If we decide we want combo mode to work
 	 * more generally, this needs to be fixed.
@@ -262,9 +264,35 @@ nautilus_background_draw (NautilusBackground *background,
 	
 	/* if the image won't totally obscure it, draw the background color
 	 */
-	if (background->details->image == NULL ||
-	    background->details->image_placement == NAUTILUS_BACKGROUND_CENTERED ||
-	    background->details->image_placement == NAUTILUS_BACKGROUND_SCALED_ASPECT) {
+
+	if (background->details->image == NULL) {
+		image_totally_obscures = FALSE;
+	} else {
+		image_width = gdk_pixbuf_get_width (background->details->image);
+		image_height = gdk_pixbuf_get_height (background->details->image);
+
+		switch (background->details->image_placement) {
+			case NAUTILUS_BACKGROUND_SCALED:
+		  	case NAUTILUS_BACKGROUND_TILED:
+				image_totally_obscures = TRUE;
+				break;
+			case NAUTILUS_BACKGROUND_SCALED_ASPECT:
+				/* See if the image has the same aspect ratio as the background.
+				 * Equivalent to: 
+				 *   image_width/image_height = rectangle->width/rectangle->height
+				 * but avoids integer division pitfall and floating point.
+				 */
+				image_totally_obscures = image_width * rectangle->height == image_height * rectangle->width;
+				break;
+			default:
+				g_assert_not_reached ();
+			case NAUTILUS_BACKGROUND_CENTERED:
+				image_totally_obscures = !(image_width < rectangle->width || image_height < rectangle->height);
+				break;
+		}
+	}
+	
+	if (!image_totally_obscures) {
 		start_color_spec = nautilus_gradient_get_start_color_spec (background->details->color);
 		end_color_spec = nautilus_gradient_get_end_color_spec (background->details->color);
 		horizontal_gradient = nautilus_gradient_is_horizontal (background->details->color);
@@ -284,10 +312,7 @@ nautilus_background_draw (NautilusBackground *background,
 	}
 
 	if (background->details->image != NULL) {
-	
-		image_width = gdk_pixbuf_get_width (background->details->image);
-		image_height = gdk_pixbuf_get_height (background->details->image);
-		
+			
 		switch (background->details->image_placement) {
 
 			case NAUTILUS_BACKGROUND_TILED:
@@ -543,7 +568,7 @@ nautilus_background_get_image_uri (NautilusBackground *background)
 }
 
 static gboolean
-nautilus_background_set_color_no_signal (NautilusBackground *background,
+nautilus_background_set_color_no_emit (NautilusBackground *background,
 			       const char *color)
 {
 	g_return_val_if_fail (NAUTILUS_IS_BACKGROUND (background), FALSE);
@@ -561,7 +586,7 @@ void
 nautilus_background_set_color (NautilusBackground *background,
 			       const char *color)
 {
-	if (nautilus_background_set_color_no_signal (background, color)) {
+	if (nautilus_background_set_color_no_emit (background, color)) {
 		gtk_signal_emit (GTK_OBJECT (background), signals[SETTINGS_CHANGED]);
 		gtk_signal_emit (GTK_OBJECT (background), signals[APPEARANCE_CHANGED]);
 	}
@@ -583,17 +608,17 @@ load_image_callback (GnomeVFSResult error,
 	background->details->load_image_handle = NULL;
 
 	/* Just ignore errors. */
-	if (pixbuf == NULL) {
-		return;
+	if (pixbuf != NULL) {
+		gdk_pixbuf_ref (pixbuf);
+		background->details->image = pixbuf;
+
+		gtk_signal_emit (GTK_OBJECT (background),
+				 signals[APPEARANCE_CHANGED]);
 	}
 
-	gdk_pixbuf_ref (pixbuf);
-	background->details->image = pixbuf;
-
-	gtk_signal_emit (GTK_OBJECT (background),
-			 signals[APPEARANCE_CHANGED]);
-	gtk_signal_emit (GTK_OBJECT (background),
-			 signals[IMAGE_LOADED]);
+	/* always emit IMAGE_LOADING_DONE
+	 */
+	gtk_signal_emit (GTK_OBJECT (background), signals[IMAGE_LOADING_DONE], pixbuf != NULL);
 }
 
 static void
@@ -622,7 +647,7 @@ nautilus_background_receive_dropped_background_image (NautilusBackground *backgr
 }
 
 static gboolean
-nautilus_background_set_image_uri_no_signal (NautilusBackground *background,
+nautilus_background_set_image_uri_no_emit (NautilusBackground *background,
 					const char *image_uri)
 {
 	g_return_val_if_fail (NAUTILUS_IS_BACKGROUND (background), FALSE);
@@ -650,7 +675,7 @@ void
 nautilus_background_set_image_uri (NautilusBackground *background,
 					const char *image_uri)
 {
-	if (nautilus_background_set_image_uri_no_signal (background, image_uri)) {
+	if (nautilus_background_set_image_uri_no_emit (background, image_uri)) {
 		gtk_signal_emit (GTK_OBJECT (background), signals[SETTINGS_CHANGED]);
 		gtk_signal_emit (GTK_OBJECT (background), signals[APPEARANCE_CHANGED]);
 	}
@@ -826,8 +851,8 @@ nautilus_background_reset (NautilusBackground *background)
 static void
 nautilus_background_real_reset (NautilusBackground *background)
 {
-	nautilus_background_set_color_no_signal (background, NULL);
-	nautilus_background_set_image_uri_no_signal (background, NULL);
+	nautilus_background_set_color_no_emit (background, NULL);
+	nautilus_background_set_image_uri_no_emit (background, NULL);
 	gtk_signal_emit (GTK_OBJECT (background), signals[SETTINGS_CHANGED]);
 	gtk_signal_emit (GTK_OBJECT (background), signals[APPEARANCE_CHANGED]);
 }
@@ -1012,8 +1037,8 @@ nautilus_background_receive_dropped_color (NautilusBackground *background,
 	
 	g_free (color_spec);
 
-	nautilus_background_set_color_no_signal (background, new_gradient_spec);
-	nautilus_background_set_image_uri_no_signal (background, NULL);
+	nautilus_background_set_color_no_emit (background, new_gradient_spec);
+	nautilus_background_set_image_uri_no_emit (background, NULL);
 	gtk_signal_emit (GTK_OBJECT (background), signals[SETTINGS_CHANGED]);
 	gtk_signal_emit (GTK_OBJECT (background), signals[APPEARANCE_CHANGED]);
 

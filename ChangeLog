@@ -1,3 +1,33 @@
+2000-08-16  Michael Engber  <engber@eazel.com>
+
+	Cleanup some of my desktop changes (better names) (bug 1047)
+	Fix nautilus_background_get_image_placement, it was returning
+	the wrong value (copy/paste error). Lay some ground work
+	for supporting search results windows having their own theme. 
+
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_initialize_class),
+	(nautilus_background_get_image_placement),
+	(nautilus_background_draw),
+	(nautilus_background_set_color_no_emit),
+	(nautilus_background_set_color), (load_image_callback),
+	(nautilus_background_set_image_uri_no_emit),
+	(nautilus_background_set_image_uri),
+	(nautilus_background_real_reset),
+	(nautilus_background_receive_dropped_color):
+	* libnautilus-extensions/nautilus-background.h:
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(nautilus_directory_background_set_desktop),
+	(nautilus_directory_background_is_desktop),
+	(nautilus_directory_background_peek_theme_source),
+	(nautilus_directory_background_get_default_settings),
+	(nautilus_directory_background_read_desktop_settings),
+	(nautilus_directory_background_write_desktop_default_settings),
+	(image_loading_done_callback),
+	(nautilus_directory_update_root_window),
+	(nautilus_directory_background_is_set),
+	(directory_changed_callback):
+
 2000-08-16  John Sullivan  <sullivan@eazel.com>
 
 	* src/file-manager/dfos-xfer.c: (get_parent_make_name_list):
