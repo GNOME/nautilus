@@ -720,13 +720,18 @@ nautilus_sidebar_background_changed (NautilusSidebar *sidebar)
 }
 
 static void
-command_button_callback (GtkWidget *button, char *command_str)
+command_button_callback (GtkWidget *button, char *id_str)
 {
 	NautilusSidebar *sidebar;
+	GnomeVFSMimeApplication *application;
 	
 	sidebar = NAUTILUS_SIDEBAR (gtk_object_get_user_data (GTK_OBJECT (button)));
 
-	nautilus_launch_application (command_str, sidebar->details->uri);	
+	application = gnome_vfs_mime_application_new_from_id (id_str);
+
+	nautilus_launch_application (application, sidebar->details->uri);	
+
+	gnome_vfs_mime_application_free (application);
 }
 
 /* interpret commands for buttons specified by metadata. Handle some built-in ones explicitly, or fork
@@ -753,7 +758,7 @@ nautilus_sidebar_chose_application_callback (GnomeVFSMimeApplication *applicatio
 
 	if (application != NULL) {
 		nautilus_launch_application 
-			(application->command, 
+			(application, 
 			 NAUTILUS_SIDEBAR (callback_data)->details->uri);
 	}
 }
@@ -783,7 +788,7 @@ open_with_callback (GtkWidget *button, gpointer ignored)
 static void
 add_command_buttons (NautilusSidebar *sidebar, GList *application_list)
 {
-	char *command_string, *temp_str;
+	char *id_string, *temp_str;
 	GList *p;
 	GtkWidget *temp_button;
 	GnomeVFSMimeApplication *application;
@@ -805,12 +810,13 @@ add_command_buttons (NautilusSidebar *sidebar, GList *application_list)
 		             nautilus_str_has_prefix (sidebar->details->uri, "file://") ?
 			     sidebar->details->uri + 7 : sidebar->details->uri);
 
-		command_string = g_strdup_printf (application->command, temp_str); 		
+		id_string = g_strdup_printf (application->id, temp_str); 		
 		g_free(temp_str);
 
 		nautilus_gtk_signal_connect_free_data 
 			(GTK_OBJECT (temp_button), "clicked",
-			 GTK_SIGNAL_FUNC (command_button_callback), command_string);
+			 GTK_SIGNAL_FUNC (command_button_callback), id_string);
+
                 gtk_object_set_user_data (GTK_OBJECT (temp_button), sidebar);
 		
 		gtk_widget_show (temp_button);
