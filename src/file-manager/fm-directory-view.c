@@ -434,7 +434,7 @@ selection_contains_one_item_in_menu_callback (FMDirectoryView *view, GList *sele
 	 * Otherwise, we will complain.
 	 */
 	if (!view->details->menu_states_untrustworthy) {
-		g_warning ("expected one selected item, found %d", 	
+		g_warning ("Expected one selected item, found %d. No action will be performed.", 	
 			   g_list_length (selection));
 	}
 
@@ -453,7 +453,7 @@ selection_not_empty_in_menu_callback (FMDirectoryView *view, GList *selection)
 	 * Otherwise, we will complain.
 	 */
 	if (!view->details->menu_states_untrustworthy) {
-		g_warning ("empty selection found when selection was expected");
+		g_warning ("Empty selection found when selection was expected. No action will be performed.");
 	}
 
 	return FALSE;
@@ -657,16 +657,9 @@ open_with_other_program (FMDirectoryView *view, GnomeVFSMimeActionType action_ty
 
        	selection = fm_directory_view_get_selection (view);
 
-        /* UI should have prevented this from being called unless exactly
-         * one item is selected. But we don't completely trust the UI, so
-         * we'll just complain rather than crashing.
-         */
-        if (!nautilus_g_list_exactly_one_item (selection)) {
-		g_warning ("This shouldn't have been called with %d items selected", 
-			   g_list_length (selection));
-        }
-
-	choose_program (view, NAUTILUS_FILE (selection->data), action_type);
+	if (selection_contains_one_item_in_menu_callback (view, selection)) {
+		choose_program (view, NAUTILUS_FILE (selection->data), action_type);
+	}
 
 	nautilus_file_list_free (selection);
 }
@@ -3206,6 +3199,10 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 
 		g_free (uri);
 	}
+
+	update_one_menu_item (view, selection,
+			      FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH,
+			      FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH);
 }
 
 static void

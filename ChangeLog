@@ -1,3 +1,16 @@
+2000-10-12  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 3718 ("Opem With" submenu enabled when it shouldn't be)
+
+	* src/file-manager/fm-directory-view.c:
+	(selection_contains_one_item_in_menu_callback),
+	(selection_not_empty_in_menu_callback): Improved error messages.
+	(open_with_other_program): Used selection_contains_one_item_
+	in_menu_callback to avoid crash if menu state doesn't match
+	expectations.
+	(reset_bonobo_open_with_menu): Sensitize the "Open With" submenu
+	appropriately.
+
 2000-10-12  Maciej Stachowiak  <mjs@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory-metafile.h,
