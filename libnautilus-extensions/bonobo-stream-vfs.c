@@ -65,12 +65,16 @@ vfs_read (BonoboStream *stream, CORBA_long count,
 	CORBA_sequence_set_release (*buffer, TRUE);
 	data = CORBA_sequence_CORBA_octet_allocbuf (count);
 
-	res = gnome_vfs_read(sfs->fd, data, count, &nread);
+	res = gnome_vfs_read (sfs->fd, data, count, &nread);
 
 	if (res == GNOME_VFS_OK) {
 		(*buffer)->_buffer = data;
 		(*buffer)->_length = nread;
-	} else {
+	} else if (res == GNOME_VFS_ERROR_EOF) {
+		/* Bonobo returns a zero length buffer for end of file */
+		(*buffer)->_buffer = data;
+		(*buffer)->_length = 0;
+	} else{
 		CORBA_free (data);
 		CORBA_free (*buffer);
 		*buffer = NULL;
