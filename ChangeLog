@@ -1,5 +1,11 @@
 2000-09-07  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_set_smooth_font_size):
+	The new font was not getting assigned.
+	
+2000-09-07  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-icon-container.c: (destroy),
 	(nautilus_icon_container_initialize),
 	(nautilus_icon_container_update_icon),

@@ -1814,6 +1814,8 @@ nautilus_icon_canvas_item_set_smooth_font_size (NautilusIconCanvasItem	*icon_ite
 		return;
 	}
 
+	icon_item->details->smooth_font_size = font_size;
+
 	/* Only need to update if in smooth mode */
 	if (icon_canvas_item_is_smooth (icon_item)) {
 		gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (icon_item));
