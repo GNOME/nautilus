@@ -3237,7 +3237,7 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
 	 * controlled automatically. We don't need to explicitly ref or unref it.
 	 */
 	view->details->ui = nautilus_view_set_up_ui (view->details->nautilus_view,
-						     NAUTILUS_DATADIR,
+						     DATADIR,
 						     "nautilus-directory-view-ui.xml",
 						     "nautilus");
 

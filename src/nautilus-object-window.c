@@ -419,7 +419,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 
 	bonobo_ui_util_set_ui (window->details->shell_ui,
-			       NAUTILUS_DATADIR,
+			       DATADIR,
 			       "nautilus-shell-ui.xml",
 			       "nautilus");
 	if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {

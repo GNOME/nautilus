@@ -1,3 +1,24 @@
+2000-10-11  Darin Adler  <darin@eazel.com>
+
+	* HACKING: Fixed typo.
+	
+	* src/Makefile.am: Add DATADIR.
+	* src/file-manager/Makefile.am: Add DATADIR.
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_real_merge_menus): Use DATADIR instead of
+	NAUTILUS_DATADIR, since that's where the UI XML files are.
+	* src/nautilus-window.c: (nautilus_window_constructed): Use
+	DATADIR instead of NAUTILUS_DATADIR, since that's where the UI XML
+	files are.
+	
+	* src/nautilus-shell-ui.xml: Fix some upper-cased accelerators. Not
+	sure if they caused any real problem.
+	
+	* src/nautilus-window-menus.c: (bookmark_holder_free_cover): Added
+	cover to avoid function type cast.
+	(append_bookmark_to_menu): Use cover.
+	(append_dynamic_bookmarks): Removed some commented out code
+
 2000-10-11  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-factory.c:

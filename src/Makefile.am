@@ -20,6 +20,7 @@ INCLUDES =\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
 	-DNAUTILUS_PIXMAPDIR=\""$(datadir)/pixmaps/nautilus"\" \
+	-DDATADIR=\""$(datadir)"\" \
 	$(NULL)
 
 LDADD =\

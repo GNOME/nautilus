@@ -66,80 +66,43 @@
 
 #define STATIC_BOOKMARKS_FILE_NAME	"static_bookmarks.xml"
 
-/* Private menu paths that components don't know about */
-#define NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM			"/menu/File/New Window"
-#define NAUTILUS_MENU_PATH_CLOSE_ITEM				"/menu/File/Close"
-#define NAUTILUS_MENU_PATH_CLOSE_ALL_WINDOWS_ITEM		"/menu/File/Close All Windows"
-#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_FIND		"/menu/File/Separator before Find"
-#define NAUTILUS_MENU_PATH_TOGGLE_FIND_MODE			"/menu/File/Toggle Find Mode"
-#define NAUTILUS_MENU_PATH_GO_TO_WEB_SEARCH			"/menu/File/Go to Web Search"
+/* Private menu definitions; others are in <libnautilus/nautilus-bonobo-ui.h>.
+ * These are not part of the published set, either because they are
+ * development-only or because we expect to change them and
+ * don't want other code relying on their existence.
+ */
 
-#define NAUTILUS_MENU_PATH_UNDO_ITEM				"/menu/Edit/Undo"
-#define NAUTILUS_MENU_PATH_SEPARATOR_AFTER_UNDO			"/menu/Edit/Separator after Undo"
-#define NAUTILUS_MENU_PATH_SEPARATOR_AFTER_CLEAR		"/menu/Edit/Separator after Clear"
-#define NAUTILUS_MENU_PATH_SEPARATOR_AFTER_SELECT_ALL		"/menu/Edit/Separator after Select All"
-
-#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_SHOW_HIDE		"/menu/View/Separator before Show Hide"
 #define NAUTILUS_MENU_PATH_SHOW_HIDE_SIDEBAR			"/menu/View/Show Hide Placeholder/Show Hide Sidebar"
 #define NAUTILUS_MENU_PATH_SHOW_HIDE_TOOL_BAR			"/menu/View/Show Hide Placeholder/Show Hide Tool Bar"
 #define NAUTILUS_MENU_PATH_SHOW_HIDE_LOCATION_BAR		"/menu/View/Show Hide Placeholder/Show Hide Location Bar"
 #define NAUTILUS_MENU_PATH_SHOW_HIDE_STATUS_BAR			"/menu/View/Show Hide Placeholder/Show Hide Status Bar"
 
-#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_ZOOM		"/menu/View/Separator before Zoom"
-
-#define NAUTILUS_MENU_PATH_HOME_ITEM				"/menu/Go/Home"
-#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_FORGET		"/menu/Go/Separator before Forget"
-#define NAUTILUS_MENU_PATH_FORGET_HISTORY_ITEM			"/menu/Go/Forget History"
-
 #define NAUTILUS_MENU_PATH_HISTORY_ITEMS_PLACEHOLDER		"/menu/Go/History Placeholder"
-#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_HISTORY		"/menu/Go/Separator before History"
 
-#define NAUTILUS_MENU_PATH_ADD_BOOKMARK_ITEM			"/menu/Bookmarks/Add Bookmark"
-#define NAUTILUS_MENU_PATH_EDIT_BOOKMARKS_ITEM			"/menu/Bookmarks/Edit Bookmarks"
 #define NAUTILUS_MENU_PATH_BUILT_IN_BOOKMARKS_PLACEHOLDER	"/menu/Bookmarks/Built-in Bookmarks Placeholder"
 #define NAUTILUS_MENU_PATH_BOOKMARK_ITEMS_PLACEHOLDER		"/menu/Bookmarks/Bookmarks Placeholder"
-#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_BOOKMARKS   	"/menu/Bookmarks/Separator before Bookmarks"
-
-#define NAUTILUS_MENU_PATH_ABOUT_ITEM				"/menu/Help/About Nautilus"
-#define NAUTILUS_MENU_PATH_NAUTILUS_FEEDBACK			"/menu/Help/Nautilus Feedback"
-
 
 #define SWITCH_TO_BEGINNER_VERB					"Switch to Beginner Level"
 #define SWITCH_TO_INTERMEDIATE_VERB				"Switch to Intermediate Level"
 #define SWITCH_TO_ADVANCED_VERB					"Switch to Advanced Level"
 
-#define BEGINNER_ICON_NAME                              	"nautilus/novice.png"
-#define INTERMEDIATE_ICON_NAME                          	"nautilus/intermediate.png"
-#define ADVANCED_ICON_NAME                              	"nautilus/expert.png"
 #define NAUTILUS_MENU_PATH_TOGGLE_FIND_MODE			"/menu/File/Toggle Find Mode"
 
+#define NAUTILUS_MENU_PATH_USER_LEVEL				"/menu/Preferences"
+#define NAUTILUS_MENU_PATH_NOVICE_ITEM				"/menu/Preferences/User Levels Placeholder/Switch to Beginner Level"
+#define NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM			"/menu/Preferences/User Levels Placeholder/Switch to Intermediate Level"
+#define NAUTILUS_MENU_PATH_EXPERT_ITEM				"/menu/Preferences/User Levels Placeholder/Switch to Advanced Level"
+#define NAUTILUS_MENU_PATH_USER_LEVEL_CUSTOMIZE			"/menu/Preferences/User Level Customization"
+
+/* Struct that stores all the info necessary to activate a bookmark. */
+typedef struct {
+        NautilusBookmark *bookmark;
+        NautilusWindow *window;
+        gboolean prompt_for_removal;
+        guint changed_handler_id;
+} BookmarkHolder;
+
 static GtkWindow *bookmarks_window = NULL;
-
-static void                  append_bookmark_to_menu                        (NautilusWindow         *window,
-									     NautilusBookmark *bookmark,
-									     const char             *menu_item_path,
-									     const char 	    *menu_item_name,
-									     gboolean		     is_in_bookmarks_menu);
-static void		     append_dynamic_bookmarks 			    (NautilusWindow *window);
-static NautilusBookmarkList *get_bookmark_list                              (void);
-static void                  refresh_go_menu                   		    (NautilusWindow         *window);
-static void                  refresh_bookmarks_menu            	    	    (NautilusWindow         *window);
-static void		     schedule_refresh_go_menu 		    	    (NautilusWindow 	    *window);
-static void		     schedule_refresh_bookmarks_menu 	    	    (NautilusWindow 	    *window);
-static void                  edit_bookmarks                                 (NautilusWindow         *window);
-
-
-
-
-/* User level things */
-static guint                 convert_verb_to_user_level               	    (const char             *verb);
-static const char *          convert_user_level_to_path                     (guint                   user_level);
-static char *                get_customize_user_level_settings_menu_string  (void);
-static void                  update_user_level_menu_items                   (NautilusWindow         *window);
-static char *                get_customize_user_level_string                (void);
-static void		     switch_to_user_level 			    (NautilusWindow 	    *window, 
-									     int 		     new_user_level);
-static void		     update_preferences_dialog_title		    (void);
 
 static const char * normal_menu_paths[] = {
 	NAUTILUS_MENU_PATH_FILE_MENU,
@@ -150,13 +113,28 @@ static const char * normal_menu_paths[] = {
 	NAUTILUS_MENU_PATH_HELP_MENU
 };
 
-/* Struct that stores all the info necessary to activate a bookmark. */
-typedef struct {
-        NautilusBookmark *bookmark;
-        NautilusWindow *window;
-        gboolean prompt_for_removal;
-        guint changed_handler_id;
-} BookmarkHolder;
+static void                  append_bookmark_to_menu                       (NautilusWindow   *window,
+									    NautilusBookmark *bookmark,
+									    const char       *menu_item_path,
+									    const char       *menu_item_name,
+									    gboolean          is_in_bookmarks_menu);
+static void                  append_dynamic_bookmarks                      (NautilusWindow   *window);
+static NautilusBookmarkList *get_bookmark_list                             (void);
+static void                  refresh_go_menu                               (NautilusWindow   *window);
+static void                  refresh_bookmarks_menu                        (NautilusWindow   *window);
+static void                  schedule_refresh_go_menu                      (NautilusWindow   *window);
+static void                  schedule_refresh_bookmarks_menu               (NautilusWindow   *window);
+static void                  edit_bookmarks                                (NautilusWindow   *window);
+
+/* User level things */
+static guint                 convert_verb_to_user_level                    (const char       *verb);
+static const char *          convert_user_level_to_path                    (guint             user_level);
+static char *                get_customize_user_level_settings_menu_string (void);
+static void                  update_user_level_menu_items                  (NautilusWindow   *window);
+static char *                get_customize_user_level_string               (void);
+static void                  switch_to_user_level                          (NautilusWindow   *window,
+									    int               new_user_level);
+static void                  update_preferences_dialog_title               (void);
 
 static BookmarkHolder *
 bookmark_holder_new (NautilusBookmark *bookmark, 
@@ -193,23 +171,11 @@ bookmark_holder_free (BookmarkHolder *bookmark_holder)
 	g_free (bookmark_holder);
 }
 
-/* Private menu definitions; others are in <libnautilus/nautilus-bonobo-ui.h>.
- * These are not part of the published set, either because they are
- * development-only or because we expect to change them and
- * don't want other code relying on their existence.
- */
-
-#define NAUTILUS_MENU_PATH_CUSTOMIZE_ITEM			"/menu/Edit/Customization"
-#define NAUTILUS_MENU_PATH_CHANGE_APPEARANCE_ITEM		"/menu/Edit/Change_Appearance"
-
-#define NAUTILUS_MENU_PATH_USER_LEVEL				"/menu/Preferences"
-#define NAUTILUS_MENU_PATH_NOVICE_ITEM				"/menu/Preferences/User Levels Placeholder/Switch to Beginner Level"
-#define NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM			"/menu/Preferences/User Levels Placeholder/Switch to Intermediate Level"
-#define NAUTILUS_MENU_PATH_EXPERT_ITEM				"/menu/Preferences/User Levels Placeholder/Switch to Advanced Level"
-#define NAUTILUS_MENU_PATH_AFTER_USER_LEVEL_SEPARATOR		"/menu/Preferences/After User Level Separator"
-#define NAUTILUS_MENU_PATH_USER_LEVEL_CUSTOMIZE			"/menu/Preferences/User Level Customization"
-
-#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_CANNED_BOOKMARKS	"/menu/Bookmarks/Before Canned Separator"
+static void
+bookmark_holder_free_cover (gpointer callback_data)
+{
+	bookmark_holder_free (callback_data);
+}
 
 static void
 file_menu_new_window_callback (BonoboUIComponent *component, 
@@ -908,8 +874,8 @@ append_bookmark_to_menu (NautilusWindow *window,
 	verb_name = nautilus_bonobo_get_menu_item_verb_name (display_name);
 	bonobo_ui_component_add_verb_full (window->details->shell_ui, verb_name, 
 					   activate_bookmark_in_menu_item, bookmark_holder, 
-					   (GDestroyNotify) bookmark_holder_free);
-					   
+					   bookmark_holder_free_cover);
+	
 	/* Set pixbuf */	
 	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS);
 	if (pixbuf != NULL) {
@@ -1399,33 +1365,25 @@ static void
 append_dynamic_bookmarks (NautilusWindow *window)
 {
         NautilusBookmarkList *bookmarks;
-	guint 	bookmark_count;
-	guint	index;
-	
+	guint bookmark_count;
+	guint index;
+	char *name;
+		
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
 	bookmarks = get_bookmark_list ();
 
-	bookmark_count = nautilus_bookmark_list_length (bookmarks);
-
-        /* Add separator before bookmarks, unless there are no bookmarks. */
-        //if (bookmark_count > 0) {
-	//	append_separator (window, NAUTILUS_MENU_PATH_BOOKMARK_ITEMS_PLACEHOLDER);
-        //}
-
 	/* append new set of bookmarks */
-	for (index = 0; index < bookmark_count; ++index)
-	{
-		char *name;
-		
+	bookmark_count = nautilus_bookmark_list_length (bookmarks);
+	for (index = 0; index < bookmark_count; ++index) {
 		name = g_strdup_printf ("Bookmark%d", index);
-		append_bookmark_to_menu (window, 
-		                         nautilus_bookmark_list_item_at (bookmarks, index), 
+		append_bookmark_to_menu (window,
+		                         nautilus_bookmark_list_item_at (bookmarks, index),
 		                         NAUTILUS_MENU_PATH_BOOKMARK_ITEMS_PLACEHOLDER,
 		                         name,
-		                         TRUE); 
+		                         TRUE);
                 g_free (name);
-	}	
+	}
 }
 
 static gboolean
@@ -1460,7 +1418,7 @@ schedule_refresh_bookmarks_menu (NautilusWindow *window)
 static void
 refresh_go_menu (NautilusWindow *window)
 {
-	GList *p;
+	GList *node;
 	int index;
 	char *name;
 	
@@ -1473,21 +1431,16 @@ refresh_go_menu (NautilusWindow *window)
 	nautilus_window_remove_go_menu_items (window);
 
 	/* Add in a new set of history items. */
-	index = 0;
-	p = nautilus_get_history_list ();
-	if (p != NULL) {
-		while (p != NULL) {
-			name = g_strdup_printf ("History%d", index); 
-	                append_bookmark_to_menu (window,
-	                                         NAUTILUS_BOOKMARK (p->data),
-	                                         NAUTILUS_MENU_PATH_HISTORY_ITEMS_PLACEHOLDER,
-	                                         name,
-	                                         FALSE);
-	                g_free (name);
-
-	                ++index;
-			p = p->next;
-		}
+	for (node = nautilus_get_history_list (), index = 0;
+	     node != NULL;
+	     node = node->next, index++) {
+		name = g_strdup_printf ("History%d", index); 
+		append_bookmark_to_menu (window,
+					 NAUTILUS_BOOKMARK (node->data),
+					 NAUTILUS_MENU_PATH_HISTORY_ITEMS_PLACEHOLDER,
+					 name,
+					 FALSE);
+		g_free (name);
 	}
 }
 
@@ -1551,16 +1504,13 @@ convert_verb_to_user_level (const char *verb)
 	
 	if (strcmp (verb, SWITCH_TO_BEGINNER_VERB) == 0) {
 		return NAUTILUS_USER_LEVEL_NOVICE;
-	}
-	else if (strcmp (verb, SWITCH_TO_INTERMEDIATE_VERB) == 0) {
+	} else if (strcmp (verb, SWITCH_TO_INTERMEDIATE_VERB) == 0) {
 		return NAUTILUS_USER_LEVEL_INTERMEDIATE;
-	}
-	else if (strcmp (verb, SWITCH_TO_ADVANCED_VERB) == 0) {
+	} else if (strcmp (verb, SWITCH_TO_ADVANCED_VERB) == 0) {
 		return NAUTILUS_USER_LEVEL_HACKER;
 	}
 
 	g_assert_not_reached ();
-
 	return NAUTILUS_USER_LEVEL_NOVICE;
 }
 
@@ -1570,20 +1520,14 @@ convert_user_level_to_path (guint user_level)
 	switch (user_level) {
 	case NAUTILUS_USER_LEVEL_NOVICE:
 		return NAUTILUS_MENU_PATH_NOVICE_ITEM;
-		break;
-
 	case NAUTILUS_USER_LEVEL_INTERMEDIATE:
 		return NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM;
-		break;
-
 	case NAUTILUS_USER_LEVEL_HACKER:
 		return NAUTILUS_MENU_PATH_EXPERT_ITEM; 
-		break;
 	}
 
 	g_assert_not_reached ();
-
-	return "";
+	return NAUTILUS_MENU_PATH_NOVICE_ITEM;
 }
 
 

@@ -14,6 +14,7 @@ INCLUDES = 					\
 	-DVERSION="\"$(VERSION)\"" 		\
 	-D_REENTRANT 				\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
+	-DDATADIR=\""$(datadir)"\"		\
 	$(NULL)	
 
 
