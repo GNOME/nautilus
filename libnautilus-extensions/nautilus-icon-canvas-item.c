@@ -52,6 +52,7 @@
 #include "nautilus-icon-factory.h"
 #include "nautilus-theme.h"
 #include "nautilus-smooth-text-layout.h"
+#include "nautilus-smooth-text-layout-cache.h"
 
 /* Comment this out if the new smooth fonts code give you problems
  * This isnt meant to be permanent.  Its just a precaution.
@@ -222,12 +223,25 @@ static gboolean icon_canvas_item_is_smooth                 (const NautilusIconCa
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconCanvasItem, nautilus_icon_canvas_item, GNOME_TYPE_CANVAS_ITEM)
 
+static NautilusSmoothTextLayoutCache *layout_cache;
+
+static void
+free_layout_cache (void)
+{
+	gtk_object_unref (GTK_OBJECT (layout_cache));
+}
+
 /* Class initialization function for the icon canvas item. */
 static void
 nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass *class)
 {
 	GtkObjectClass *object_class;
 	GnomeCanvasItemClass *item_class;
+
+	if (layout_cache == NULL) {
+		layout_cache = nautilus_smooth_text_layout_cache_new ();
+		g_atexit (free_layout_cache);
+	}
 
 	object_class = GTK_OBJECT_CLASS (class);
 	item_class = GNOME_CANVAS_ITEM_CLASS (class);
@@ -1357,7 +1371,7 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 	GnomeCanvasItem *canvas_item;
 	int max_text_width;
 	int icon_width, text_left, box_left;
-	NautilusSmoothTextLayout *smooth_text_layout;
+	const NautilusSmoothTextLayout *smooth_text_layout;
 	char **pieces;
 	const char *text_piece;
 	int i;
@@ -1449,13 +1463,13 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 			text_piece = " ";
 		}
 
-		smooth_text_layout = nautilus_smooth_text_layout_new (text_piece,
-								      strlen (text_piece),
-								      details->smooth_font,
-								      details->smooth_font_size,
-								      TRUE);
-		nautilus_smooth_text_layout_set_line_spacing (smooth_text_layout, LABEL_LINE_SPACING);
-		nautilus_smooth_text_layout_set_line_wrap_width (smooth_text_layout, max_text_width);
+		smooth_text_layout = nautilus_smooth_text_layout_cache_render (layout_cache,
+									       text_piece,
+									       strlen (text_piece),
+									       details->smooth_font,
+									       details->smooth_font_size,
+									       TRUE, LABEL_LINE_SPACING,
+									       max_text_width);
 		
 		/* Draw text if we are not in user rename mode */
 		if (destination_pixbuf != NULL && !details->is_renaming) {

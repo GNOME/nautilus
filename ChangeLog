@@ -1,3 +1,37 @@
+2001-03-02  John Harper  <jsh@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Work to cache smooth-text-layout objects. This increases the
+	speed of aa rendering so that there's no noticeable difference
+	when compared with non-aa mode (e.g. when dragging windows over
+	the top of the nautilus window)
+
+	* libnautilus-extensions/nautilus-smooth-text-layout-cache.c,
+	libnautilus-extensions/nautilus-smooth-text-layout-cache.h: new
+	class, a cache for the NautilusSmoothTextLayout objects
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c
+	(nautilus_icon_canvas_item_initialize_class): allocate a
+	NautilusSmoothTextLayoutCache for all canvas items. It will be
+	freed on program exit
+
+	(draw_or_measure_label_text_aa): use the layout cache when
+	rendering text
+
+	* libnautilus-extensions/Makefile.am: added layout cache files
+
+	* libnautilus-extensions/nautilus-glyph.c,
+	libnautilus-extensions/nautilus-glyph.c,
+	libnautilus-extensions/nautilus-smooth-text-layout.c,
+	libnautilus-extensions/nautilus-smooth-text-layout.c
+	(nautilus_glyph_compare, nautilus_smooth_text_layout_compare):
+	new functions, only defined when NAUTILUS_OMIT_SELF_CHECK isn't
+	#define'd. Used by the cache's self test code
+
+	* libnautilus-extensions/nautilus-lib-self-check-functions.h:
+	added nautilus_self_check_smooth_text_layout_cache to the list
+
 2001-03-02  Andy Hertzfeld  <andy@eazel.com>
 
 	fixed bug 7247, Web Search and Services toolbar icons missing in

@@ -107,6 +107,11 @@ void                              nautilus_smooth_text_layout_draw_to_pixbuf_sha
 											 guint32                         shadow_color,
 											 int                             opacity);
 
+#if !defined (NAUTILUS_OMIT_SELF_CHECK)
+gboolean 			  nautilus_smooth_text_layout_compare			(NautilusSmoothTextLayout	*x,
+											 NautilusSmoothTextLayout	*y);
+#endif /* NAUTILUS_OMIT_SELF_CHECK */
+
 END_GNOME_DECLS
 
 #endif /* NAUTILUS_SMOOTH_TEXT_LAYOUT_H */

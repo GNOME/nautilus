@@ -142,6 +142,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-search-uri.c			\
 	nautilus-self-checks.c			\
 	nautilus-smooth-text-layout.c		\
+	nautilus-smooth-text-layout-cache.c	\
 	nautilus-smooth-widget.c		\
 	nautilus-sound.c			\
 	nautilus-stock-dialogs.c		\
@@ -266,6 +267,7 @@ noinst_HEADERS =				\
 	nautilus-search-uri.h			\
 	nautilus-self-checks.h			\
 	nautilus-smooth-text-layout.h		\
+	nautilus-smooth-text-layout-cache.h	\
 	nautilus-smooth-widget.h		\
 	nautilus-sound.h			\
 	nautilus-stock-dialogs.h		\

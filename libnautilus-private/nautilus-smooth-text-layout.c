@@ -1235,3 +1235,55 @@ nautilus_text_layout_new (const NautilusScalableFont *font,
 
 	return text_layout;
 }
+
+#if !defined (NAUTILUS_OMIT_SELF_CHECK)
+
+gboolean
+nautilus_smooth_text_layout_compare (NautilusSmoothTextLayout *x,
+				     NautilusSmoothTextLayout *y)
+{
+	GList *xp, *yp;
+
+	g_return_val_if_fail (NAUTILUS_IS_SMOOTH_TEXT_LAYOUT (x), FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_SMOOTH_TEXT_LAYOUT (y), FALSE);
+
+	/* Compare simple things */
+	if (x->details->dimensions.width != y->details->dimensions.width
+	    || x->details->dimensions.height != y->details->dimensions.height
+	    || x->details->text_length != y->details->text_length
+	    || memcmp (x->details->text, y->details->text, x->details->text_length) != 0
+	    || x->details->font != y->details->font
+	    || x->details->font_size != y->details->font_size
+	    || x->details->line_spacing != y->details->line_spacing
+	    || x->details->empty_line_height != y->details->empty_line_height
+	    || x->details->max_line_width != y->details->max_line_width
+	    || x->details->num_empty_lines != y->details->num_empty_lines
+	    || x->details->line_wrap_width != y->details->line_wrap_width
+	    || x->details->total_line_height != y->details->total_line_height
+	    || x->details->wrap != y->details->wrap
+	    || strcmp (x->details->line_break_characters, y->details->line_break_characters) != 0) {
+		return FALSE;
+	}
+
+	/* Compare glyphs */
+	smooth_text_layout_ensure_lines (x);
+	smooth_text_layout_ensure_lines (y);
+	for (xp = x->details->text_line_list, yp = y->details->text_line_list;
+	     xp != NULL && yp != NULL;
+	     xp = xp->next, yp = yp->next) {
+		if ((xp->data == NULL) != (yp->data == NULL)) {
+			return FALSE;
+		}
+		if (xp->data != NULL
+		    && !nautilus_glyph_compare (xp->data, yp->data)) {
+			return FALSE;
+		}
+	}
+	if (xp != NULL || yp != NULL) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+#endif /* NAUTILUS_OMIT_SELF_CHECK */

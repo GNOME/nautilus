@@ -428,3 +428,40 @@ nautilus_glyph_intersect (const NautilusGlyph *glyph,
 	return intersection;
 }
 
+#if !defined (NAUTILUS_OMIT_SELF_CHECK)
+
+#include <string.h>
+#include <memory.h>
+
+gboolean
+nautilus_glyph_compare (NautilusGlyph *a, NautilusGlyph *b)
+{
+	int y;
+
+	if (a->glyph_xy[0] != b->glyph_xy[0]
+	    || a->glyph_xy[1] != b->glyph_xy[1]) {
+		return FALSE;
+	}
+
+	if (a->rsvg_glyph->width != b->rsvg_glyph->width
+	    || a->rsvg_glyph->height != b->rsvg_glyph->height
+	    || a->rsvg_glyph->underline_position != b->rsvg_glyph->underline_position
+	    || a->rsvg_glyph->underline_thickness != b->rsvg_glyph->underline_thickness
+	    || a->rsvg_glyph->xpen != b->rsvg_glyph->xpen
+	    || a->rsvg_glyph->ypen != b->rsvg_glyph->ypen
+	    || a->rsvg_glyph->rowstride != b->rsvg_glyph->rowstride) {
+		return FALSE;
+	}
+
+	for (y = 0; y < a->rsvg_glyph->height; y++) {
+		if (memcmp (a->rsvg_glyph->buf + y * a->rsvg_glyph->rowstride,
+			    b->rsvg_glyph->buf + y * b->rsvg_glyph->rowstride,
+			    a->rsvg_glyph->rowstride) != 0) {
+			return FALSE;
+		}
+	}
+
+	return TRUE;
+}
+
+#endif /* NAUTILUS_OMIT_SELF_CHECK */

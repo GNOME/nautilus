@@ -57,6 +57,11 @@ ArtIRect           nautilus_glyph_intersect      (const NautilusGlyph        *gl
 						  int                         glyph_y,
 						  const ArtIRect             *rectangle);
 
+#if !defined (NAUTILUS_OMIT_SELF_CHECK)
+gboolean	   nautilus_glyph_compare	 (NautilusGlyph		     *a,
+						  NautilusGlyph		     *b);
+#endif /* NAUTILUS_OMIT_SELF_CHECK */
+
 END_GNOME_DECLS
 
 #endif /* NAUTILUS_GLYPH_H */
