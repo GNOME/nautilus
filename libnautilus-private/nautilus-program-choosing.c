@@ -307,7 +307,7 @@ nautilus_launch_application_from_command (const char *command_string, const char
 
 	if (parameter != NULL) {
 		quoted_parameter = nautilus_shell_quote (parameter);
-		full_command = g_strconcat (command_string, " ", parameter, " &", NULL);
+		full_command = g_strconcat (command_string, " ", quoted_parameter, " &", NULL);
 		g_free (quoted_parameter);
 	} else {
 		full_command = g_strconcat (command_string, " &", NULL);
