@@ -111,8 +111,6 @@ void
 nautilus_clipboard_info_destroy (NautilusClipboardInfo *info)
 {
 	
-	bonobo_object_unref (BONOBO_OBJECT (info->details->view));
-	
 	g_free (info->details->component_name);
 	gtk_widget_unref (info->details->clipboard_owner);
 	g_free (info->details);
@@ -166,7 +164,6 @@ void
 nautilus_clipboard_info_set_view_frame (NautilusClipboardInfo *info, NautilusViewFrame *view)
 {
 	info->details->view = view;
-	bonobo_object_ref (BONOBO_OBJECT (view));
 }
 
 NautilusViewFrame*

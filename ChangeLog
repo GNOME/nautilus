@@ -1,3 +1,17 @@
+2000-05-07  Maciej Stachowiak  <mjs@eazel.com>
+
+
+	Fix bugzilla.eazel.com task 479:
+
+	* libnautilus/nautilus-clipboard.c
+	(nautilus_clipboard_info_destroy),
+	(nautilus_clipboard_info_set_view_frame): Do not ref and unref the
+	view_frame. Because the NautilusClipboardInfo will only be
+	destroyed when the view_frame is destroyed in the normal use case,
+	if it holds a ref on the view_frame it will prevent it from ever
+	being destroyed. This was causing the notes and history view
+	processes to stay around forever.
+	
 2000-05-06  John Sullivan  <sullivan@eazel.com>
 
 	Fixed up code that limits how small icons are before they
