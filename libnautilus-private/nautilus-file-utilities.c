@@ -91,20 +91,21 @@ static void read_file_read_chunk (NautilusReadFileHandle *handle);
 char *
 nautilus_format_uri_for_display (const char *uri) 
 {
-	char *path;
-	char *ret;
+	char *canonical_uri, *path;
 
 	g_return_val_if_fail (uri != NULL, g_strdup (""));
 
-	/* If there's no fragment and its a local path */
-	if (strchr(uri, '#') == NULL 
-	    && (path = gnome_vfs_get_local_path_from_uri (uri)) != NULL) {
-		ret = path;
-	} else {
-		ret = nautilus_make_uri_canonical (uri);
+	canonical_uri = nautilus_make_uri_canonical (uri);
+
+	/* If there's no fragment and it's a local path. */
+	path = gnome_vfs_get_local_path_from_uri (canonical_uri);
+	if (path != NULL) {
+		g_free (canonical_uri);
+		return path;
 	}
 
-	return ret;
+	g_free (path);
+	return canonical_uri;
 }
 
 static gboolean
@@ -1897,7 +1898,11 @@ nautilus_self_check_file_utilities (void)
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("fi#le:///h/user/file", "fi#le:"), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("fi#le:///h/user/file", "fi"), FALSE);
 
-	/* FIXME 6798 DNS names should compare case-insensitive */
+	/* FIXME bugzilla.eazel.com 6798: Host names should compare case-insensitive. */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.Eazel.Com"), "http://www.Eazel.Com");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.Eazel.Com:80"), "http://www.Eazel.Com:80");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.Eazel.Com:80/xXx"), "http://www.Eazel.Com:80/xXx");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("ftp://Darin@www.Eazel.Com:80/xXx"), "ftp://Darin@www.Eazel.Com:80/xXx");
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("http://www.Eazel.Com", "http://www.eazel.com"), FALSE);
 
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("", ""), TRUE);

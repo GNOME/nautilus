@@ -1,3 +1,23 @@
+2001-02-21  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	An attempt to fix the Tinderbox.
+
+	* user-guide/Makefile.am: Add C subdir.
+
+	Other changes.
+
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_format_uri_for_display): Simplify to take advantage of
+	the new gnome_vfs_get_local_path_from_uri, which rejects paths
+	that have "#" characters in them.
+	(nautilus_self_check_file_utilities): Add more test cases for
+	host names that are case sensitive.
+
+	* omf-install/.cvsignore: Ignore generated files in this new
+	directory.
+
 2001-02-21  Laszlo Kovacs <laszlo.kovacs@sun.com>
 	* components/help/Makefile.am
 	enabling Scrollkeeper to be the default help system
