@@ -1252,9 +1252,7 @@ nautilus_icon_dnd_init (NautilusIconContainer *container,
 void
 nautilus_icon_dnd_fini (NautilusIconContainer *container)
 {
-	g_return_if_fail (container != NULL);
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
-	g_return_if_fail (container->details->dnd_info != NULL);
 
 	stop_auto_scroll (container);
 	if (container->details->dnd_info->shadow != NULL) {
@@ -1263,7 +1261,10 @@ nautilus_icon_dnd_fini (NautilusIconContainer *container)
 		gtk_object_destroy (GTK_OBJECT (container->details->dnd_info->shadow));
 	}
 
-	eel_drag_finalize (&container->details->dnd_info->drag_info);
+	if (container->details->dnd_info != NULL) {
+		eel_drag_finalize (&container->details->dnd_info->drag_info);
+		container->details->dnd_info = NULL;
+	}
 }
 
 void

@@ -318,5 +318,5 @@ main (int argc, char *argv[])
 		execvp (argv[0], argv_copy);
 	}
 
-	return EXIT_SUCCESS;
+	return bonobo_debug_shutdown ();
 }

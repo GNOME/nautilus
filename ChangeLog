@@ -1,3 +1,12 @@
+2001-11-09  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-main.c (main): return bonobo_debug_shutdown,
+	if only we could get there.
+
+	* libnautilus-private/nautilus-icon-dnd.c
+	(nautilus_icon_dnd_fini): don't try to double free the
+	drag_info, allow mutliple invocations.
+
 2001-11-08  Darin Adler  <darin@bentspoon.com>
 
 	* Lots of files.
