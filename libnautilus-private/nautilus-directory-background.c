@@ -537,6 +537,7 @@ image_loading_done_callback (EelBackground *background, gboolean successful_load
 				gdk_window_set_background (background_window, &parsed_color);
 			}
 		}
+		g_free (color_string);
 	}
 
         pixmap = make_root_pixmap (screen, pixmap_width, pixmap_height);
