@@ -83,6 +83,7 @@
 #define CONTEXTUAL_MENU_BUTTON 3
 
 /* Maximum size (pixels) allowed for icons at the standard zoom level. */
+#define MINIMUM_IMAGE_SIZE 24
 #define MAXIMUM_IMAGE_SIZE 96
 #define MAXIMUM_EMBLEM_SIZE 48
 
@@ -3514,10 +3515,13 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 				     NautilusIcon *icon)
 {
 	NautilusIconContainerDetails *details;
-	guint icon_size_x, icon_size_y, max_image_size, max_emblem_size;
+	guint icon_size_x, icon_size_y;
+	guint min_image_size, max_image_size, max_emblem_size;
+	guint width, height, scaled_width, scaled_height;
+	double scale_factor;
 	NautilusScalableIcon *scalable_icon;
 	NautilusEmblemAttachPoints attach_points;
-	GdkPixbuf *pixbuf, *emblem_pixbuf;
+	GdkPixbuf *pixbuf, *emblem_pixbuf, *saved_pixbuf;
 	GList *emblem_scalable_icons, *emblem_pixbufs, *p;
 	char *editable_text, *additional_text;
 	GdkFont *font;
@@ -3538,9 +3542,10 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 			 &scalable_icon);
 
 	/* compute the maximum size based on the scale factor */
+	min_image_size = MINIMUM_IMAGE_SIZE * GNOME_CANVAS (container)->pixels_per_unit;
 	max_image_size = MAXIMUM_IMAGE_SIZE * GNOME_CANVAS (container)->pixels_per_unit;
 	max_emblem_size = MAXIMUM_EMBLEM_SIZE * GNOME_CANVAS (container)->pixels_per_unit;
-	
+		
 	/* Get the appropriate images for the file. */
 	icon_get_size (container, icon, &icon_size_x, &icon_size_y);
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
@@ -3553,7 +3558,20 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 		 TRUE);
 	
 	nautilus_scalable_icon_unref (scalable_icon);
+
+	/*  in the rare case an image is too small, scale it up */
 	
+	width = gdk_pixbuf_get_width (pixbuf);
+	height = gdk_pixbuf_get_height (pixbuf);
+	if (width < min_image_size || height < min_image_size) {
+		scale_factor = MAX (min_image_size  / (double) width, min_image_size / (double) height);
+		scaled_width  = floor (width * scale_factor + .5);
+		scaled_height = floor (height * scale_factor + .5);
+		saved_pixbuf = pixbuf;
+		pixbuf = gdk_pixbuf_scale_simple (pixbuf, scaled_width, scaled_height, GDK_INTERP_BILINEAR);
+		gdk_pixbuf_unref (saved_pixbuf);
+	}
+		
 	emblem_pixbufs = NULL;
 	
 	/* Since the natural emblem sizes are too large, scale them

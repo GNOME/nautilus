@@ -1,3 +1,10 @@
+2000-12-14  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_update_icon):
+	fixed bug 4219, using an image to represent itself bad when image is
+	too small, by scaling up the image to a minimum size if necessary.
+	
 2000-12-13  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-operations.c:
