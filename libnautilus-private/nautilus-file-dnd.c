@@ -96,7 +96,7 @@ nautilus_drag_file_receive_dropped_keyword (NautilusFile *file, char *keyword)
 		keywords = nautilus_file_get_keywords (file);
 		word = g_list_find_custom (keywords, keyword, (GCompareFunc) strcmp);
 		if (word == NULL) {
-			keywords = g_list_append (keywords, g_strdup (keyword));
+			keywords = g_list_prepend (keywords, g_strdup (keyword));
 		} else {
 			keywords = g_list_remove_link (keywords, word);
 			g_free (word->data);

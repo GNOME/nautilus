@@ -430,41 +430,49 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 			 */
 			
 			if (deletions != NULL) {
+				deletions = g_list_reverse (deletions);
 				nautilus_directory_notify_files_removed (deletions);
 				eel_g_list_free_deep (deletions);
 				deletions = NULL;
 			}
 			if (moves != NULL) {
+				moves = g_list_reverse (moves);
 				nautilus_directory_notify_files_moved (moves);
 				pairs_list_free (moves);
 				moves = NULL;
 			}
 			if (additions != NULL) {
+				additions = g_list_reverse (additions);
 				nautilus_directory_notify_files_added (additions);
 				eel_g_list_free_deep (additions);
 				additions = NULL;
 			}
 			if (changes != NULL) {
+				changes = g_list_reverse (changes);
 				nautilus_directory_notify_files_changed (changes);
 				eel_g_list_free_deep (changes);
 				changes = NULL;
 			}
 			if (metadata_copy_requests != NULL) {
+				metadata_copy_requests = g_list_reverse (metadata_copy_requests);
 				nautilus_directory_schedule_metadata_copy (metadata_copy_requests);
 				pairs_list_free (metadata_copy_requests);
 				metadata_copy_requests = NULL;
 			}
 			if (metadata_move_requests != NULL) {
+				metadata_move_requests = g_list_reverse (metadata_move_requests);
 				nautilus_directory_schedule_metadata_move (metadata_move_requests);
 				pairs_list_free (metadata_move_requests);
 				metadata_move_requests = NULL;
 			}
 			if (metadata_remove_requests != NULL) {
+				metadata_remove_requests = g_list_reverse (metadata_remove_requests);
 				nautilus_directory_schedule_metadata_remove (metadata_remove_requests);
 				eel_g_list_free_deep (metadata_remove_requests);
 				metadata_remove_requests = NULL;
 			}
 			if (position_set_requests != NULL) {
+				position_set_requests = g_list_reverse (position_set_requests);
 				nautilus_directory_schedule_position_set (position_set_requests);
 				position_set_list_free (position_set_requests);
 				position_set_requests = NULL;
@@ -479,40 +487,40 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 		/* add the new change to the list */
 		switch (change->kind) {
 		case CHANGE_FILE_ADDED:
-			additions = g_list_append (additions, change->from_uri);
+			additions = g_list_prepend (additions, change->from_uri);
 			break;
 
 		case CHANGE_FILE_CHANGED:
-			changes = g_list_append (changes, change->from_uri);
+			changes = g_list_prepend (changes, change->from_uri);
 			break;
 
 		case CHANGE_FILE_REMOVED:
-			deletions = g_list_append (deletions, change->from_uri);
+			deletions = g_list_prepend (deletions, change->from_uri);
 			break;
 
 		case CHANGE_FILE_MOVED:
 			pair = g_new (URIPair, 1);
 			pair->from_uri = change->from_uri;
 			pair->to_uri = change->to_uri;
-			moves = g_list_append (moves, pair);
+			moves = g_list_prepend (moves, pair);
 			break;
 
 		case CHANGE_METADATA_COPIED:
 			pair = g_new (URIPair, 1);
 			pair->from_uri = change->from_uri;
 			pair->to_uri = change->to_uri;
-			metadata_copy_requests = g_list_append (metadata_copy_requests, pair);
+			metadata_copy_requests = g_list_prepend (metadata_copy_requests, pair);
 			break;
 
 		case CHANGE_METADATA_MOVED:
 			pair = g_new (URIPair, 1);
 			pair->from_uri = change->from_uri;
 			pair->to_uri = change->to_uri;
-			metadata_move_requests = g_list_append (metadata_move_requests, pair);
+			metadata_move_requests = g_list_prepend (metadata_move_requests, pair);
 			break;
 
 		case CHANGE_METADATA_REMOVED:
-			metadata_remove_requests = g_list_append (metadata_remove_requests, 
+			metadata_remove_requests = g_list_prepend (metadata_remove_requests, 
 				change->from_uri);
 			break;
 
@@ -521,16 +529,16 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 			position_set->uri = change->from_uri;
 			position_set->set = TRUE;
 			position_set->point = change->point;
-			position_set_requests = g_list_append (position_set_requests,
-							       position_set);
+			position_set_requests = g_list_prepend (position_set_requests,
+								position_set);
 			break;
 
 		case CHANGE_POSITION_REMOVE:
 			position_set = g_new (NautilusFileChangesQueuePosition, 1);
 			position_set->uri = change->from_uri;
 			position_set->set = FALSE;
-			position_set_requests = g_list_append (position_set_requests,
-							       position_set);
+			position_set_requests = g_list_prepend (position_set_requests,
+								position_set);
 			break;
 
 		default:

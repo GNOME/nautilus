@@ -168,7 +168,7 @@ nautilus_tree_node_set_parent (NautilusTreeNode   *node,
 	g_return_if_fail (node->details->parent == NULL);
 
 	node->details->parent = parent;
-	parent->details->children = g_list_append (parent->details->children, node);
+	parent->details->children = g_list_prepend (parent->details->children, node);
 }
 
 gboolean

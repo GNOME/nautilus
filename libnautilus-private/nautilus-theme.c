@@ -562,10 +562,10 @@ theme_get_description_property (const char *themes_location_uri,
 }
 
 static GList *
-theme_list_insert (GList *theme_list,
-		   const char *themes_location_uri,
-		   const char *theme_name,
-		   gboolean builtin)
+theme_list_prepend (GList *theme_list,
+		    const char *themes_location_uri,
+		    const char *theme_name,
+		    gboolean builtin)
 {
 	ThemeAttibutes *attributes;
 	GdkPixbuf *unscaled_preview_pixbuf;
@@ -588,7 +588,7 @@ theme_list_insert (GList *theme_list,
 	attributes->display_name = theme_get_name_property (themes_location_uri, theme_name);
 	attributes->description = theme_get_description_property (themes_location_uri, theme_name);
 
-	return g_list_append (theme_list, attributes);
+	return g_list_prepend (theme_list, attributes);
 }
 
 static GList *
@@ -622,15 +622,15 @@ theme_get_themes_for_location (const char *themes_location_uri,
 		if ((file_info->type == GNOME_VFS_FILE_TYPE_DIRECTORY)
 		    && (file_info->name[0] != '.')) {
 			if (has_image_file (themes_location_uri, file_info->name, "i-directory" )) {
-				themes = theme_list_insert (themes,
-							    themes_location_uri,
-							    file_info->name,
-							    builtin);
+				themes = theme_list_prepend (themes,
+							     themes_location_uri,
+							     file_info->name,
+							     builtin);
 			}
 		}
 	}
 
-	return themes;
+	return g_list_reverse (themes);
 }
 
 static GList *
@@ -674,10 +674,9 @@ theme_get_default_themes (void)
  	char *pixmap_directory_uri;
 	GList *default_themes;
 
-	default_themes = NULL;
 	pixmap_directory = nautilus_get_pixmap_directory ();
 	pixmap_directory_uri = gnome_vfs_get_uri_from_local_path (pixmap_directory);
-	default_themes = theme_list_insert (default_themes, pixmap_directory_uri, "default", TRUE);
+	default_themes = theme_list_prepend (NULL, pixmap_directory_uri, "default", TRUE);
 	g_free (pixmap_directory_uri);
 	g_free (pixmap_directory);
 
@@ -784,7 +783,7 @@ nautilus_theme_remove_user_theme (const char *theme_to_remove_name)
 	theme_to_remove_path = nautilus_make_path (user_themes_directory, theme_to_remove_name);
 	g_free (user_themes_directory);
 	
-	uri_list = g_list_append (NULL, gnome_vfs_uri_new (theme_to_remove_path));			
+	uri_list = g_list_prepend (NULL, gnome_vfs_uri_new (theme_to_remove_path));			
 	g_free (theme_to_remove_path);
 
 	result = gnome_vfs_xfer_delete_list (uri_list, GNOME_VFS_XFER_RECURSIVE,

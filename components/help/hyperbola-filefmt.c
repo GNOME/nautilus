@@ -837,7 +837,7 @@ fmt_help_populate_tree_from_subdir (HyperbolaDocTree * tree,
 
 #ifndef ENABLE_SCROLLKEEPER_SUPPORT
 static GList *
-append_help_dir_if_exists (GList *list,
+prepend_help_dir_if_exists (GList *list,
 			   char  *prefix)
 {
 	char *help_dir;
@@ -845,7 +845,7 @@ append_help_dir_if_exists (GList *list,
 	help_dir = g_concat_dir_and_file (prefix, "share/gnome/help");
 
 	if (g_file_test (help_dir, G_FILE_TEST_ISDIR)) {
-		list = g_list_append (list, help_dir);
+		list = g_list_prepend (list, help_dir);
 	} else {
 		g_free (help_dir);
 	}
@@ -872,10 +872,10 @@ fmt_help_populate_tree (HyperbolaDocTree * tree)
 	dirname = gnome_datadir_file ("gnome/help");
 
 	if (dirname != NULL) {
-		help_directories = g_list_append (help_directories, dirname);
+		help_directories = g_list_prepend (help_directories, dirname);
 	}
 
-	help_directories = append_help_dir_if_exists (help_directories, PREFIX);
+	help_directories = prepend_help_dir_if_exists (help_directories, PREFIX);
 
 	gnome_path = g_getenv ("GNOME_PATH");
 
@@ -883,11 +883,13 @@ fmt_help_populate_tree (HyperbolaDocTree * tree)
 		pathdirs = g_strsplit (gnome_path, ":", INT_MAX);
 
 		for (i = 0; pathdirs[i] != NULL; i++) {
-			help_directories = append_help_dir_if_exists (help_directories, 
+			help_directories = prepend_help_dir_if_exists (help_directories, 
 								      pathdirs[i]);
 		}
 		g_strfreev (pathdirs);
 	}
+
+	help_directories = g_list_reverse (help_directories);
 
 	for (node = help_directories; node != NULL; node = node->next) {
 		fmt_help_populate_tree_from_subdir (tree, node->data, app_path);

@@ -292,8 +292,8 @@ void mpg123_file_info_box(char *filename)
 		if (!genre_list)
 		{
 			for (i = 0; i < GENRE_MAX; i++)
-				genre_list = g_list_append(genre_list, (gchar *) mpg123_id3_genres[i]);
-			genre_list = g_list_append(genre_list, "");
+				genre_list = g_list_prepend(genre_list, (gchar *) mpg123_id3_genres[i]);
+			genre_list = g_list_prepend(genre_list, "");
 			genre_list = g_list_sort(genre_list, genre_comp_func);
 		}
 		gtk_combo_set_popdown_strings(GTK_COMBO(genre_combo), genre_list);

@@ -996,7 +996,7 @@ nautilus_connect_background_to_file_metadata (GtkWidget    *widget,
                                     background);
         	
 		/* arrange to receive file metadata */
-                attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
+                attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
 		nautilus_file_monitor_add (file,
                                            background,
                                            attributes);					     

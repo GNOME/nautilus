@@ -1620,9 +1620,9 @@ nautilus_do_component_query (const char        *mime_type,
                                  * view is a superset and it's confusing for the user to be presented with both
                                  */
                                 if (server->iid != NULL && strcmp (server->iid, "OAFIID:Bonobo_Sample_Text") != 0) {
-                                	retval = g_list_append
+                                	retval = g_list_prepend
                                         	(retval, 
-                                         	OAF_ServerInfo_duplicate (server));
+						 OAF_ServerInfo_duplicate (server));
                         	}
                         }
                 }
@@ -1632,7 +1632,7 @@ nautilus_do_component_query (const char        *mime_type,
 
 	CORBA_free (oaf_result);
 	
-	return retval;
+	return g_list_reverse (retval);
 }
 
 

@@ -370,7 +370,6 @@ nautilus_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased)
 	/* the thumbnail needs to be created (or recreated), so add an entry to the thumbnail list */
  
 	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_FILE_EXISTS) {
-
 		g_warning ("error when making thumbnail directory %d, for %s", result, thumbnail_uri);	
 	} else {
 		NautilusThumbnailInfo *info = g_new0 (NautilusThumbnailInfo, 1);
@@ -378,13 +377,8 @@ nautilus_get_thumbnail_uri (NautilusFile *file, gboolean anti_aliased)
 		info->is_local = local_flag;
 		info->anti_aliased = anti_aliased;
 		
-		if (thumbnails != NULL) {
-			if (g_list_find_custom (thumbnails, info, compare_thumbnail_info) == NULL) {
-				thumbnails = g_list_append (thumbnails, info);
-			}
-		} else {
-			thumbnails = g_list_alloc ();
-			thumbnails->data = info;
+		if (g_list_find_custom (thumbnails, info, compare_thumbnail_info) == NULL) {
+			thumbnails = g_list_append (thumbnails, info);
 		}
 	
 		if (thumbnail_timeout_id == 0) {

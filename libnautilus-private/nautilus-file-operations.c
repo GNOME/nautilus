@@ -453,12 +453,10 @@ handle_transfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 		 * around and return.
 		 */
 		if (progress_info->bytes_total != progress_info->bytes_copied) {
-			GList *delete_me = NULL;
+			GList *delete_me;
 
-			delete_me = g_list_append (delete_me, progress_info->target_name);
-
+			delete_me = g_list_prepend (NULL, progress_info->target_name);
 			nautilus_file_operations_delete (delete_me, transfer_info->parent_view);
-
 			g_list_free (delete_me);
 		}
 
@@ -2118,7 +2116,7 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 	parent_uri = gnome_vfs_uri_new (parent_dir);
 	/* localizers: the initial name of a new folder  */
 	uri = gnome_vfs_uri_append_file_name (parent_uri, _("untitled folder"));
-	target_uri_list = g_list_append (NULL, uri);
+	target_uri_list = g_list_prepend (NULL, uri);
 	
 	gnome_vfs_async_xfer (&state->handle, NULL, target_uri_list,
 	      		      GNOME_VFS_XFER_NEW_UNIQUE_DIRECTORY,

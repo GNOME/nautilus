@@ -2583,7 +2583,7 @@ fm_directory_view_get_model (FMDirectoryView *view)
 }
 
 static void
-append_uri_one (gpointer data, gpointer callback_data)
+prepend_uri_one (gpointer data, gpointer callback_data)
 {
 	NautilusFile *file;
 	GList **result;
@@ -2593,7 +2593,7 @@ append_uri_one (gpointer data, gpointer callback_data)
 
 	result = (GList **) callback_data;
 	file = (NautilusFile *) data;
-	*result = g_list_append (*result, nautilus_file_get_uri (file));
+	*result = g_list_prepend (*result, nautilus_file_get_uri (file));
 }
 
 static void
@@ -2626,7 +2626,8 @@ fm_directory_view_create_links_for_files (FMDirectoryView *view, GList *files,
 
 	/* create a list of URIs */
 	uris = NULL;
-	g_list_foreach (files, append_uri_one, &uris);    
+	g_list_foreach (files, prepend_uri_one, &uris);
+	uris = g_list_reverse (uris);
 
         g_assert (g_list_length (uris) == g_list_length (files));
 
@@ -2657,7 +2658,8 @@ fm_directory_view_duplicate_selection (FMDirectoryView *view, GList *files,
 
 	/* create a list of URIs */
 	uris = NULL;
-	g_list_foreach (files, append_uri_one, &uris);    
+	g_list_foreach (files, prepend_uri_one, &uris);
+	uris = g_list_reverse (uris);
 
         g_assert (g_list_length (uris) == g_list_length (files));
         

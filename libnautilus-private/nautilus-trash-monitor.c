@@ -135,7 +135,7 @@ nautilus_trash_monitor_initialize (gpointer object, gpointer klass)
 	trash_monitor->details->trash_directory = trash_directory;
 	trash_monitor->details->empty = TRUE;
 
-	attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
+	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
 
 	/* Make sure we get notified about changes */
 	nautilus_directory_file_monitor_add
@@ -239,7 +239,7 @@ add_one_volume_trash (const NautilusVolume *volume,
 			FALSE, FALSE, 0777) == GNOME_VFS_OK) {
 
 			/* found trash, put it on the list */
-			*result = g_list_append (*result, trash_uri);
+			*result = g_list_prepend (*result, trash_uri);
 		}
 		
 		gnome_vfs_uri_unref (volume_mount_point_uri);

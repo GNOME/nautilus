@@ -563,6 +563,7 @@ nautilus_throbber_load_images (NautilusThrobber *throbber)
 	int index;
 	char *throbber_frame_name, *image_theme, *frames;
 	GdkPixbuf *pixbuf;
+	GList *image_list;
 	
 	nautilus_throbber_unload_images (throbber);
 
@@ -578,9 +579,9 @@ nautilus_throbber_load_images (NautilusThrobber *throbber)
 	} else {
 		throbber->details->max_frame = 16;
 	}
-	
-	index = 1;
-	while (index <= throbber->details->max_frame) {
+
+	image_list = NULL;
+	for (index = 1; index <= throbber->details->max_frame; index++) {
 		throbber_frame_name = make_throbber_frame_name (index);
 		pixbuf = load_themed_image (throbber_frame_name, image_theme, throbber->details->small_mode);
 		g_free (throbber_frame_name);
@@ -588,9 +589,10 @@ nautilus_throbber_load_images (NautilusThrobber *throbber)
 			throbber->details->max_frame = index - 1;
 			break;
 		}
-		throbber->details->image_list = g_list_append (throbber->details->image_list, pixbuf);
-		index += 1;
-	}	
+		image_list = g_list_prepend (image_list, pixbuf);
+	}
+	throbber->details->image_list = g_list_reverse (image_list);
+
 	g_free (image_theme);
 }
 

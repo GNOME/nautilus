@@ -5122,8 +5122,8 @@ nautilus_self_check_file (void)
 	file_2 = nautilus_file_get ("file:///usr");
 
         list = NULL;
-        list = g_list_append (list, file_1);
-        list = g_list_append (list, file_2);
+        list = g_list_prepend (list, file_1);
+        list = g_list_prepend (list, file_2);
 
         nautilus_file_list_ref (list);
         

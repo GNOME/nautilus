@@ -115,20 +115,20 @@ tokenize_uri (const char *string)
                 return NULL;
         }
 
-        criterion_list = NULL;
-
         string = strip_uri_beginning (string);
         if (string == NULL) {
                 return NULL;
         }
 
         /* make sure we can handle this uri */
-        if ( strchr (string , '(') != NULL
-             || strchr (string, ')') != NULL 
-             || strchr (string, '|') != NULL) {
+        if (strchr (string , '(') != NULL
+            || strchr (string, ')') != NULL 
+            || strchr (string, '|') != NULL) {
                 return NULL;
         }
         
+        criterion_list = NULL;
+
         /* split the uri in different criteria */
         criteria = g_strsplit (string, " & ", 0);
         for (i = 0, temp_string = criteria[0]; 
@@ -143,14 +143,14 @@ tokenize_uri (const char *string)
                 tokens = g_strsplit (temp_string, " ", 2);
                 for (j = 0, token = tokens[0]; token != NULL; j++, token = tokens[j]) {
                         /* g_strstrip does not return a newly allocated string. */
-                        token_list = g_list_append (token_list, g_strdup (g_strstrip (token)));
+                        token_list = g_list_prepend (token_list, g_strdup (g_strstrip (token)));
                 }
-                criterion_list = g_list_append (criterion_list, token_list);
+                criterion_list = g_list_prepend (criterion_list, g_list_reverse (token_list));
                 g_strfreev (tokens);
         }
         g_strfreev (criteria);
 
-        return criterion_list;
+        return g_list_reverse (criterion_list);
 }
 
 typedef struct _value_criterion_item value_criterion_item;

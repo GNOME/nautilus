@@ -1050,13 +1050,15 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 		for (p = container->details->icons; p != NULL; p = p->next) {
 			icon = p->data;
 			if (icon_is_positioned (icon)) {
-				placed_icons = g_list_append (placed_icons, icon);
+				placed_icons = g_list_prepend (placed_icons, icon);
 			} else {
 				icon->x = 0;
 				icon->y = 0;
-				unplaced_icons = g_list_append (unplaced_icons, icon);
+				unplaced_icons = g_list_prepend (unplaced_icons, icon);
 			}
 		}
+		placed_icons = g_list_reverse (placed_icons);
+		unplaced_icons = g_list_reverse (unplaced_icons);
 					
 		/* Allocate grid array */
 		num_rows = width / CELL_SIZE;

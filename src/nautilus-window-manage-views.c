@@ -1184,7 +1184,7 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
                 if (!GTK_WIDGET_VISIBLE (window)) {
 	                file = nautilus_file_get (location);
 
-                        attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
+                        attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
 			nautilus_file_call_when_ready (file,
                                                        attributes,
                                                        position_and_show_window_callback,

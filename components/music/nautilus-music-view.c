@@ -1720,7 +1720,7 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 		if (info) {
 			info->path_uri = path_uri;
 			file_index += 1;
-                        song_list = g_list_append (song_list, info);
+                        song_list = g_list_prepend (song_list, info);
 		} else {
 		        /* it's not an mp3 file, so see if it's an image */
         		const char *mime_type = gnome_vfs_file_info_get_mime_type (current_file_info);		        	
@@ -1737,6 +1737,8 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 		
 	}
 	gnome_vfs_file_info_list_free (list);	
+
+        song_list = g_list_reverse (song_list);
 	
 	/* populate the clist */	
 	gtk_clist_clear (GTK_CLIST (music_view->details->song_list));

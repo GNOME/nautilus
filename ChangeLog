@@ -1,5 +1,59 @@
 2001-05-10  Darin Adler  <darin@eazel.com>
 
+	* components/help/hyperbola-filefmt.c:
+	(prepend_help_dir_if_exists), (fmt_help_populate_tree):
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(mozilla_view_create_charset_encoding_submenu),
+	(mozilla_new_window_callback),
+	(should_uri_navigate_bypass_nautilus),
+	(should_mozilla_load_uri_directly):
+	* components/music/fileinfo.c: (mpg123_file_info_box):
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_update):
+	* components/notes/nautilus-notes.c: (notes_load_metainfo):
+	* components/throbber/nautilus-throbber.c:
+	(nautilus_throbber_load_images):
+	* components/tree/nautilus-tree-node.c:
+	(nautilus_tree_node_set_parent):
+	* libnautilus-private/nautilus-directory-background.c:
+	(nautilus_connect_background_to_file_metadata):
+	* libnautilus-private/nautilus-directory.c:
+	(nautilus_self_check_directory):
+	* libnautilus-private/nautilus-file-changes-queue.c:
+	(nautilus_file_changes_consume_changes):
+	* libnautilus-private/nautilus-file-dnd.c:
+	(nautilus_drag_file_receive_dropped_keyword):
+	* libnautilus-private/nautilus-file-operations.c:
+	(handle_transfer_ok), (nautilus_file_operations_new_folder):
+	* libnautilus-private/nautilus-file.c: (nautilus_self_check_file):
+	* libnautilus-private/nautilus-icon-container.c:
+	(lay_down_icons_tblr):
+	* libnautilus-private/nautilus-mime-actions.c:
+	(nautilus_do_component_query):
+	* libnautilus-private/nautilus-search-uri.c: (tokenize_uri):
+	* libnautilus-private/nautilus-theme.c: (theme_list_prepend),
+	(theme_get_themes_for_location), (theme_get_default_themes),
+	(nautilus_theme_remove_user_theme):
+	* libnautilus-private/nautilus-thumbnails.c:
+	(nautilus_get_thumbnail_uri):
+	* libnautilus-private/nautilus-trash-monitor.c:
+	(nautilus_trash_monitor_initialize), (add_one_volume_trash):
+	* libnautilus-private/nautilus-volume-monitor.c:
+	(get_removable_volumes), (build_volume_list_delta),
+	(get_mount_list), (get_current_mount_list),
+	(mount_volume_prepend_filesystem):
+	* src/file-manager/fm-directory-view.c: (prepend_uri_one),
+	(fm_directory_view_create_links_for_files),
+	(fm_directory_view_duplicate_selection):
+	* src/file-manager/fm-properties-window.c:
+	(property_button_toggled):
+	* src/nautilus-window-manage-views.c:
+	(determined_initial_view_callback):
+	Changed code that uses g_list_append to use g_list_prepend in all
+	the cases where it was simple enough.
+
+2001-05-10  Darin Adler  <darin@eazel.com>
+
 	Integrated a patch from peter@ximian.com to move the
 	MOZILLA_FIVE_HOME-setting code from the main Nautilus program
 	(where it does no good) to the Mozilla component (which is a nicer

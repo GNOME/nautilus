@@ -498,7 +498,7 @@ property_button_toggled (GtkToggleButton *button)
 	word = g_list_find_custom (keywords, name, (GCompareFunc) strcmp);
 	if (gtk_toggle_button_get_active (button)) {
 		if (word == NULL) {
-			keywords = g_list_append (keywords, g_strdup (name));
+			keywords = g_list_prepend (keywords, g_strdup (name));
 		}
 	} else {
 		if (word != NULL) {

@@ -214,7 +214,7 @@ notes_load_metainfo (Notes *notes)
 		return;
         }
 
-        attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
+        attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
         nautilus_file_monitor_add (notes->file, notes, attributes);
 
 	if (nautilus_file_check_if_ready (notes->file, attributes)) {

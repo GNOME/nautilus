@@ -29,6 +29,33 @@
  * widget to display and munge html.
  */
 
+#include <config.h>
+#include "nautilus-mozilla-content-view.h"
+
+#include "bonobo-extensions.h"
+#include "gtkmozembed.h"
+#include "mozilla-components.h"
+#include "mozilla-events.h"
+#include "mozilla-preferences.h"
+#include "nautilus-mozilla-embed-extensions.h"
+#include <bonobo/bonobo-control.h>
+#include <bonobo/bonobo-ui-util.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-stock-dialogs.h>
+#include <gtk/gtksignal.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-dialog-util.h>
+#include <libgnomeui/gnome-dialog.h>
+#include <libgnomeui/gnome-stock.h>
+#include <libgnomevfs/gnome-vfs.h>
+#include <stdlib.h>
+
+#ifdef HAVE_AMMONITE
+#include <libtrilobite/libammonite-gtk.h>
+#endif
+
 #define nopeDEBUG_ramiro 1
 #define nopeDEBUG_mfleming 1
 #define nopeDEBUG_pepper 1
@@ -38,36 +65,6 @@
 #else
 #define DEBUG_MSG(x)
 #endif
-
-#include <config.h>
-#include "nautilus-mozilla-content-view.h"
-
-#include "gtkmozembed.h"
-
-#include "mozilla-preferences.h"
-#include "mozilla-components.h"
-#include "mozilla-events.h"
-#include "nautilus-mozilla-embed-extensions.h"
-#include "bonobo-extensions.h"
-
-#include <bonobo/bonobo-ui-util.h>
-#include <bonobo/bonobo-control.h>
-#include <gtk/gtksignal.h>
-#include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-stock.h>
-#include <libgnomevfs/gnome-vfs.h>
-#include <stdlib.h>
-#include <libgnomeui/gnome-dialog.h>
-#include <libgnomeui/gnome-dialog-util.h>
-
-#include <eel/eel-stock-dialogs.h>
-#include <eel/eel-gtk-macros.h>
-
-#ifdef HAVE_AMMONITE
-#include <libtrilobite/libammonite-gtk.h>
-#endif
-
-#define NUM_ELEMENTS_IN_ARRAY(_a) (sizeof (_a) / sizeof ((_a)[0]))
 
 /* Code-copied from nsGUIEvent.h */
 
@@ -525,12 +522,13 @@ mozilla_view_create_charset_encoding_submenu (NautilusMozillaContentView *mozill
 		/* Add new encodings to the list only once */
 		if (encoding_group != NULL) {
 			if (!g_list_find_custom	(groups, encoding_group, (GCompareFunc) strcoll)) {
-				groups = g_list_append (groups, encoding_group);
+				groups = g_list_prepend (groups, encoding_group);
 			}
 		}
 		
 		g_free (encoding_title);
 	}
+	groups = g_list_reverse (groups);
 	
 	/* Create the encoding group submenus */
 	node = groups;
@@ -757,32 +755,20 @@ mozilla_title_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
 	DEBUG_MSG (("-%s\n", __FUNCTION__));
 }
 
-static GtkWindow *
-mozilla_get_containing_window (GtkMozEmbed *mozilla)
-{
-	GtkWidget *window;
-
-	window = gtk_widget_get_ancestor (GTK_WIDGET (mozilla), GTK_TYPE_WINDOW);
-	if (window == NULL) {
-		return NULL;
-	}
-
-	return GTK_WINDOW (window);
-}
-
 static void
 mozilla_new_window_callback (GtkMozEmbed *mozilla)
 {
-	GnomeDialog     *dialog;
+	static GnomeDialog *dialog;
 
-#ifdef DEBUG_pepper
-	g_warning ("Nautilus does not support JavaScript spawning of new windows!\n");
-#endif
-
-	dialog = eel_show_warning_dialog (_("A JavaScript function (small software program) on this page tried to open a new window, but nautilus does not support the opening of new windows by JavaScript.\n\nTry viewing the page in a different web browser, such as Mozilla or Netscape."),
-					     _("Nautilus Mozilla View Warning"),
-					     mozilla_get_containing_window (mozilla));
-
+	if (dialog == NULL) {
+		dialog = eel_show_warning_dialog (_("A JavaScript function (small software program) on this page "
+						    "tried to open a new window, but Nautilus does not support the "
+						    "opening new windows by JavaScript.\n\n"
+						    "Try viewing the page in a different web browser, such as Mozilla."),
+						  _("Nautilus JavaScript Warning"),
+						  NULL);
+		eel_nullify_when_destroyed (&dialog);
+	}
 }
 
 static void
@@ -1820,7 +1806,7 @@ should_uri_navigate_bypass_nautilus (const char *uri)
 
 	g_return_val_if_fail (uri != NULL, FALSE);
 	
-	return string_list_get_index_of_string (handled_by_nautilus, NUM_ELEMENTS_IN_ARRAY (handled_by_nautilus),
+	return string_list_get_index_of_string (handled_by_nautilus, EEL_N_ELEMENTS (handled_by_nautilus),
 						uri) != STRING_LIST_NOT_FOUND;
 }
 
@@ -1837,7 +1823,7 @@ should_mozilla_load_uri_directly (const char *uri)
 		"eazel-services"
 	};
 
-	return string_list_get_index_of_string (handled_by_mozilla, NUM_ELEMENTS_IN_ARRAY (handled_by_mozilla),
+	return string_list_get_index_of_string (handled_by_mozilla, EEL_N_ELEMENTS (handled_by_mozilla),
 						uri) != STRING_LIST_NOT_FOUND;
 }
 

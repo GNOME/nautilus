@@ -185,8 +185,8 @@ static void            mount_volume_activate                    (NautilusVolumeM
 static void            mount_volume_deactivate                  (NautilusVolumeMonitor      *monitor,
 								 NautilusVolume             *volume);
 static void            load_additional_mount_list_info          (GList                      *volume_list);
-static GList *         mount_volume_add_filesystem              (NautilusVolume             *volume,
-								 GList                      *volume_list);
+static GList *         mount_volume_prepend_filesystem          (GList                      *volume_list,
+								 NautilusVolume             *volume);
 static NautilusVolume *create_volume                            (const char                 *device_path,
 								 const char                 *mount_path,
 								 const char                 *filesystem);
@@ -424,7 +424,7 @@ get_removable_volumes (void)
 			volume->filesystem = g_strdup (ent[index].f_fstyename);
 			volume->is_removable = TRUE;
 			volume->is_read_only = ((ent[index].f_flags & MNT_RDONLY) != 0);
-			volume = mount_volume_add_filesystem (volume, volumes);				
+			volumes = mount_volume_prepend_filesystem (volumes, volume);				
 		}
 	}
 #endif
@@ -442,14 +442,14 @@ get_removable_volumes (void)
 			volume = create_volume (ent->mnt_special, ent->mnt_mountp, ent->mnt_fstype);
 			volume->is_removable = TRUE;
 			volume->is_read_only = hasmntopt (ent, MNTOPT_RO) != NULL;
-			volumes = mount_volume_add_filesystem (volume, volumes);
+			volumes = mount_volume_prepend_filesystem (volumes, volume);
 		}
 	}
 #elif defined (HAVE_MNTTENT_H)
 	while ((ent = getmntent (file)) != NULL) {
 		if (has_removable_mntent_options (ent)) {
 			volume = create_volume (ent->mnt_fsname, ent->mnt_dir, ent->mnt_type);
-			volumes = mount_volume_add_filesystem (volume, volumes);
+			volumes = mount_volume_prepend_filesystem (volumes, volume);
 		}
 	}
 #endif
@@ -458,7 +458,7 @@ get_removable_volumes (void)
 	
 #ifdef HAVE_CDDA
 	volume = create_volume (CD_AUDIO_PATH, CD_AUDIO_PATH, CDDA_SCHEME);
-	volumes = mount_volume_add_filesystem (volume, volumes);
+	volumes = mount_volume_prepend_filesystem (volumes, volume);
 #endif
 
 	load_additional_mount_list_info (volumes);
@@ -968,10 +968,10 @@ build_volume_list_delta (GList *list_one, GList *list_two)
 		if (!found_match) {
 			/* No match. Add it to the list to be returned; */
 			new_volume = copy_volume (volOne);
-			new_list = g_list_append (new_list, new_volume);
+			new_list = g_list_prepend (new_list, new_volume);
 		}
 	}
-		
+	
 	return new_list;
 }
 
@@ -998,7 +998,7 @@ get_mount_list (void)
                 volume = create_volume (ent.mnt_special, ent.mnt_mountp, ent.mnt_fstype);
                 volume->is_removable = has_removable_mntent_options (&ent);
                 volume->is_read_only = hasmntopt (&ent, MNTOPT_RO) != NULL;
-                volumes = mount_volume_add_filesystem (volume, volumes);
+                volumes = mount_volume_prepend_filesystem (volumes, volume);
         }
 
 	fclose (fh);
@@ -1062,7 +1062,7 @@ get_mount_list (void)
                         g_free (device_path);
                         g_free (mount_path);
                         g_free (filesystem);
-                        volumes = mount_volume_add_filesystem (volume, volumes);
+                        volumes = mount_volume_prepend_filesystem (volumes, volume);
                 }
 
 		eel_string_list_free (list);
@@ -1089,11 +1089,11 @@ get_current_mount_list (void)
 	if (locate_audio_cd ()) {
 		volume = create_volume (CD_AUDIO_PATH, CD_AUDIO_PATH, CDDA_SCHEME);
 		mount_volume_get_name (volume);
-		volumes = mount_volume_add_filesystem (volume, volumes);
+		volumes = mount_volume_prepend_filesystem (volumes, volume);
 	}
 #endif
 
-	return volumes;
+	return g_list_reverse (volumes);
 }
 
 
@@ -1989,7 +1989,7 @@ load_additional_mount_list_info (GList *volume_list)
 
 
 static GList *
-mount_volume_add_filesystem (NautilusVolume *volume, GList *volume_list)
+mount_volume_prepend_filesystem (GList *volume_list, NautilusVolume *volume)
 {
 	gboolean added;
 	char *device_name;
@@ -2041,7 +2041,7 @@ mount_volume_add_filesystem (NautilusVolume *volume, GList *volume_list)
 	}
 
 	if (added) {
-		volume_list = g_list_append (volume_list, volume);
+		volume_list = g_list_prepend (volume_list, volume);
 		
 		/* Identify device type */
 		if (eel_str_has_prefix (volume->mount_path, "/mnt/")) {		

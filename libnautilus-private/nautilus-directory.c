@@ -1541,7 +1541,7 @@ nautilus_self_check_directory (void)
 
 	got_metadata_flag = FALSE;
 
-	attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
+	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
 	nautilus_directory_call_when_ready (directory, attributes,
 					    got_metadata_callback, &data_dummy);
 	g_list_free (attributes);
@@ -1592,7 +1592,7 @@ nautilus_self_check_directory (void)
 	directory = nautilus_directory_get ("file:///etc");
 
 	got_metadata_flag = FALSE;
-	attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
+	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
 	nautilus_directory_call_when_ready (directory, attributes,
 					    got_metadata_callback, &data_dummy);
 	g_list_free (attributes);
