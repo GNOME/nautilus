@@ -1,3 +1,15 @@
+2000-05-09  Andy Hertzfeld <andy@eazel.com>
+
+	made the add and remove buttons in the content browser not
+	show up for novice-level users
+	
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	defined new preference for CAN_ADD_CONTENT
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	turned CAN_ADD_CONTENT off for novices, on for other levels
+	* src/nautilus-property-browser.c:
+	respect CAN_ADD_CONTENT when deciding to show the buttons
+	
 2000-05-09  John Sullivan  <sullivan@eazel.com>
 
 	fixed bug 843 (Emblem checkboxes in Properties window

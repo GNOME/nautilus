@@ -42,6 +42,7 @@
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
@@ -1312,6 +1313,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
  	xmlDocPtr document;
  	NautilusBackground *background;
 	GtkWidget *viewport;
+	gboolean show_buttons;
 	gint index = 0;
 	
 	/* load the xml document corresponding to the path and selection */
@@ -1376,6 +1378,8 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 
 	/* update the title and button */
 
+	show_buttons = nautilus_preferences_get_boolean(NAUTILUS_PREFERENCES_CAN_ADD_CONTENT, FALSE);
+
 	if (property_browser->details->category == NULL) {
 		gtk_label_set_text(GTK_LABEL(property_browser->details->title_label), _("Select A Category:"));
 		gtk_widget_hide(property_browser->details->up_arrow);		
@@ -1397,8 +1401,11 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		/* enable the "add new" button and update it's name */		
 		
 		gtk_label_set(GTK_LABEL(property_browser->details->add_button_label), temp_str);
-		gtk_widget_show(property_browser->details->add_button);
-		
+		if (show_buttons)
+			gtk_widget_show(property_browser->details->add_button);
+		else
+			gtk_widget_hide(property_browser->details->add_button);
+			
 		if (property_browser->details->remove_mode) {
 			char *temp_category = g_strdup(property_browser->details->category);
 			temp_category[strlen(temp_category) - 1] = '\0'; /* strip trailing s */
@@ -1416,7 +1423,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		g_free(temp_str);
 		temp_str = g_strdup_printf(_("Remove a %s"), property_browser->details->category);		
 				
-		if (property_browser->details->remove_mode || !property_browser->details->has_local)
+		if (!show_buttons || property_browser->details->remove_mode || !property_browser->details->has_local)
 			gtk_widget_hide(property_browser->details->remove_button);
 		else
 			gtk_widget_show(property_browser->details->remove_button);

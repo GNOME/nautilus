@@ -327,6 +327,7 @@ user_level_changed_callback (gpointer user_data)
 	gboolean		show_hidden_files = FALSE;
 	gboolean		use_real_home = TRUE;
 	gboolean		show_real_file_name = FALSE;
+	gboolean		can_add_content = TRUE;
 	
 	const char		*user_main_directory;
 
@@ -339,12 +340,14 @@ user_level_changed_callback (gpointer user_data)
 		show_hidden_files = FALSE;
 		use_real_home = FALSE;
 		show_real_file_name = FALSE;
+		can_add_content = FALSE;
 		break;
 
 	case NAUTILUS_USER_LEVEL_INTERMEDIATE: 
 		show_hidden_files = FALSE;
 		use_real_home = TRUE;
 		show_real_file_name = FALSE;
+		can_add_content = TRUE;
 		break;
 		
 	case NAUTILUS_USER_LEVEL_HACKER:
@@ -352,6 +355,7 @@ user_level_changed_callback (gpointer user_data)
 		show_hidden_files = TRUE;
 		use_real_home = TRUE;
 		show_real_file_name = TRUE;
+		can_add_content = TRUE;
 		break;
 	}
 
@@ -360,6 +364,10 @@ user_level_changed_callback (gpointer user_data)
 	
 	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_SHOW_REAL_FILE_NAME,
 					  show_real_file_name);
+
+	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_CAN_ADD_CONTENT,
+					  can_add_content);
+	
 
 	/* FIXME bugzilla.eazel.com 715: This call needs to be spanked to conform.  Should return a strduped string */
 	user_main_directory = nautilus_user_main_directory ();

@@ -39,10 +39,13 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES  		"/nautilus/preferences/show_hidden_files"
 
 /* sidebar width */
-#define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  		"/nautilus/preferences/sidebar_width"
+#define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  			"/nautilus/preferences/sidebar_width"
 
 /* Home URI  */
 #define NAUTILUS_PREFERENCES_HOME_URI                 		"/nautilus/preferences/home_uri"
+
+/* adding/removing from property browser */
+#define NAUTILUS_PREFERENCES_CAN_ADD_CONTENT			"/nautilus/preferences/can_add_content"
 
 /* Wellknown meta views */
 #define NAUTILUS_PREFERENCES_META_VIEWS_SHOW_ANNOTATIONS	"/nautilus/metaviews/OAFIID:ntl_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185"
