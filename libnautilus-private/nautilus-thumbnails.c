@@ -647,8 +647,8 @@ pixel_matches_value (const guchar *pixels, guchar value)
 	g_return_val_if_fail (pixels != NULL, FALSE);
 
 	return pixels[0] == value
-		|| pixels[1] == value
-		|| pixels[2] == value;
+		&& pixels[1] == value
+		&& pixels[2] == value;
 }
 
 static gboolean
