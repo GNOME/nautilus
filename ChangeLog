@@ -1,3 +1,34 @@
+2000-07-24  Pavel Cisler <pavel@eazel.com>
+
+	* RENAMING:
+	Add an entry.
+	
+	* libnautilus-extensions/nautilus-font-factory.c:
+	(nautilus_font_factory_get_font_from_preferences):
+	Fix a typo in font name.
+	
+	* src/file-manager/dfos-xfer-progress-dialog.c:
+	(dfos_xfer_progress_dialog_update), (truncate_string_from_start),
+	(set_text_unescaped_trimmed), (dfos_xfer_progress_dialog_close),
+	(dfos_xfer_progress_dialog_destroy), (create_titled_label),
+	(dfos_xfer_progress_dialog_initialize),
+	(dfos_xfer_progress_dialog_initialize_class),
+	(dfos_xfer_progress_dialog_new),
+	(dfos_xfer_progress_dialog_set_total),
+	(dfos_xfer_progress_dialog_set_operation_string),
+	(dfos_xfer_progress_dialog_new_file),
+	(dfos_xfer_progress_dialog_clear),
+	(dfos_xfer_progress_dialog_update_sizes),
+	(dfos_xfer_progress_dialog_freeze),
+	(dfos_xfer_progress_dialog_thaw):
+	* src/file-manager/dfos-xfer-progress-dialog.h:
+	* src/file-manager/dfos-xfer.c: (create_xfer_dialog),
+	(progress_dialog_set_files_remaining_text),
+	(progress_dialog_set_to_from_item_text), (handle_xfer_ok),
+	(fs_xfer), (fs_move_to_trash), (fs_delete), (fs_empty_trash):
+	Start reworking progress dialog to Arlo specs.
+	Still need some heavy Gtk wrestling to make it match the design.
+
 2000-07-23  Andy Hertzfeld  <andy@eazel.com>
 
 	rework of the property browser to Arlo's design

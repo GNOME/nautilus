@@ -296,7 +296,7 @@ nautilus_font_factory_get_font_from_preferences (guint size_in_pixels)
 	char	*family;
 	GdkFont *font;
 
-	family = nautilus_preferences_get (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY, "helvectica");
+	family = nautilus_preferences_get (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY, "helvetica");
 
 	font = nautilus_font_factory_get_font_by_family (family, size_in_pixels);
 
