@@ -90,12 +90,12 @@ static void     nautilus_sidebar_update_buttons     (NautilusSidebar  *sidebar);
 static void     add_command_buttons                 (NautilusSidebar  *sidebar,
 						     GList            *application_list);
 
+/* FIXME bug 1245: hardwired sizes */
 #define DEFAULT_BACKGROUND_COLOR "rgb:DDDD/DDDD/FFFF"
 #define DEFAULT_TAB_COLOR "rgb:9999/9999/9999"
 
-/* FIXME bugzilla.eazel.com 1245: Hardcoded sizes? */
-#define SIDEBAR_WIDTH 136
-#define SIDEBAR_HEIGHT 400
+#define SIDEBAR_MINIMUM_WIDTH 24
+#define SIDEBAR_MINIMUM_HEIGHT 400
 
 enum {
 	LOCATION_CHANGED,
@@ -196,8 +196,8 @@ nautilus_sidebar_initialize (GtkObject *object)
 
 	sidebar->details = g_new0 (NautilusSidebarDetails, 1);
 	
-	/* set the size of the sidebar */
-	gtk_widget_set_usize (widget, SIDEBAR_WIDTH, SIDEBAR_HEIGHT);
+	/* set the minimum size of the sidebar */
+	gtk_widget_set_usize (widget, SIDEBAR_MINIMUM_WIDTH, SIDEBAR_MINIMUM_HEIGHT);
   	
 	/* create the container box */
   	sidebar->details->container = GTK_VBOX (gtk_vbox_new (FALSE, 0));

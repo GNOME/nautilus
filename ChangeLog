@@ -1,3 +1,21 @@
+2000-06-10  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(load_specific_image_svg):
+	use the correct scale factor for vector icons, the same as image icons, instead
+	of expecting them to be twice the size of regular icons.
+	* icons/vector/i-directory-accept.svg:
+	* icons/vector/i-directory.svg:
+	* icons/vector/i-regular.svg:
+	new versions of the icons in the vector theme, scaled to their proper size	
+	* libnautilus-extensions/nautilus-link-set.c,h:
+	(make_link_set_check_box), (get_link_set_names),
+	(nautilus_link_set_configure_window):
+	added code for configuring link sets.  Still not finished yet.
+	* src/nautilus-sidebar.c: (nautilus_sidebar_initialize):
+	allowed sidebar to be reduced to a very narrow width, to start experimenting
+	with how to give it a minimal mode.
+	
 2000-06-10  J Shane Culpepper  <pepper@eazel.com>
 
 	* configure.in: Fixed the test for ghttp to jive with changes made to

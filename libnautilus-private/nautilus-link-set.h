@@ -26,10 +26,12 @@
 #define NAUTILUS_LINK_SET_H
 
 #include <glib.h>
+#include <gtk/gtkwindow.h>
 
-gboolean nautilus_link_set_install (const char *directory_path,
-				    const char *link_set_name);
-void     nautilus_link_set_remove  (const char *directory_path,
-				    const char *link_set_name);
+gboolean	nautilus_link_set_install (const char *directory_path,
+				    	const char *link_set_name);
+void		nautilus_link_set_remove  (const char *directory_path,
+				    	const char *link_set_name);
+GtkWindow	*nautilus_link_set_configure_window(const char *directory_path);
 
 #endif /* NAUTILUS_LINK_SET_H */
