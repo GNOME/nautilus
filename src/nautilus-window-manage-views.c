@@ -648,7 +648,7 @@ new_window_show_callback (GtkWidget *widget,
         
         window = NAUTILUS_WINDOW (user_data);
         
-        gtk_widget_destroy (GTK_WIDGET (window));
+        nautilus_window_close (window);
 
         g_signal_handlers_disconnect_by_func (widget, 
                                               G_CALLBACK (new_window_show_callback),
@@ -719,7 +719,7 @@ open_location (NautilusWindow *window,
         if ((flags & Nautilus_ViewFrame_OPEN_FLAG_CLOSE_BEHIND) != 0) {
                 if (NAUTILUS_IS_SPATIAL_WINDOW (window) && !NAUTILUS_IS_DESKTOP_WINDOW (window)) {
                         if (GTK_WIDGET_VISIBLE (target_window)) {
-                                gtk_widget_destroy (GTK_WIDGET (window));
+                                nautilus_window_close (window);
                         } else {
                                 g_signal_connect_object (target_window,
                                                          "show",

@@ -1,3 +1,9 @@
+2004-04-09  Dave Camp  <dave@ximian.com>
+
+	* src/nautilus-window-manage-views.c: (new_window_show_callback),
+	(open_location): Use nautilus_window_close() to close the
+	window, fixes #139072
+
 2004-04-09  James Willcox  <jwillcox@gnome.org>
 
 	* src/nautilus-spatial-window-ui.xml:  Add a *Shift*BackSpace keybinding
