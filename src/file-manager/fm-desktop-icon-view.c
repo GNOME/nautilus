@@ -65,21 +65,6 @@ static void     fm_desktop_icon_view_create_background_context_menu_items (FMDir
 static void	fm_desktop_icon_view_create_selection_context_menu_items  (FMDirectoryView 	  *view, 
 									   GtkMenu 		  *menu, 
 									   GList 		  *files);
-static char *   fm_desktop_icon_view_get_directory_sort_by                (FMIconView             *icon_view,
-									   NautilusDirectory      *directory);
-static void     fm_desktop_icon_view_set_directory_sort_by                (FMIconView             *icon_view,
-									   NautilusDirectory      *directory,
-									   const char             *sort_by);
-static gboolean fm_desktop_icon_view_get_directory_sort_reversed          (FMIconView             *icon_view,
-									   NautilusDirectory      *directory);
-static void     fm_desktop_icon_view_set_directory_sort_reversed          (FMIconView             *icon_view,
-									   NautilusDirectory      *directory,
-									   gboolean                sort_reversed);
-static gboolean fm_desktop_icon_view_get_directory_auto_layout            (FMIconView             *icon_view,
-									   NautilusDirectory      *directory);
-static void     fm_desktop_icon_view_set_directory_auto_layout            (FMIconView             *icon_view,
-									   NautilusDirectory      *directory,
-									   gboolean                auto_layout);
 static void     fm_desktop_icon_view_trash_state_changed_callback         (NautilusTrashMonitor   *trash,
 									   gboolean                state,
 									   gpointer                callback_data);
@@ -99,6 +84,7 @@ static int      desktop_icons_compare_callback                            (Nauti
 									   FMDesktopIconView      *icon_view);
 static void	create_or_rename_trash 					  (void);
 								   
+static gboolean real_supports_auto_layout     	 		  	  (FMIconView  	    *view);
 static gboolean real_supports_zooming 	     	 		  	  (FMDirectoryView  *view);
 
 
@@ -149,12 +135,7 @@ fm_desktop_icon_view_initialize_class (FMDesktopIconViewClass *klass)
 	fm_directory_view_class->create_selection_context_menu_items = fm_desktop_icon_view_create_selection_context_menu_items;
 	fm_directory_view_class->supports_zooming = real_supports_zooming;
 
-        fm_icon_view_class->get_directory_sort_by       = fm_desktop_icon_view_get_directory_sort_by;
-        fm_icon_view_class->set_directory_sort_by       = fm_desktop_icon_view_set_directory_sort_by;
-        fm_icon_view_class->get_directory_sort_reversed = fm_desktop_icon_view_get_directory_sort_reversed;
-        fm_icon_view_class->set_directory_sort_reversed = fm_desktop_icon_view_set_directory_sort_reversed;
-        fm_icon_view_class->get_directory_auto_layout   = fm_desktop_icon_view_get_directory_auto_layout;
-        fm_icon_view_class->set_directory_auto_layout   = fm_desktop_icon_view_set_directory_auto_layout;
+	fm_icon_view_class->supports_auto_layout = real_supports_auto_layout;
 }
 
 static void
@@ -506,52 +487,6 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 		 change_desktop_background_menu_item_callback,
 		 TRUE);
 }
-
-static char *
-fm_desktop_icon_view_get_directory_sort_by (FMIconView *icon_view,
-					    NautilusDirectory *directory)
-{
-	return g_strdup ("name");
-}
-
-static void
-fm_desktop_icon_view_set_directory_sort_by (FMIconView *icon_view,
-					    NautilusDirectory *directory,
-					    const char *sort_by)
-{
-	/* do nothing - the desktop always uses the same sort_by */
-}
-
-static gboolean
-fm_desktop_icon_view_get_directory_sort_reversed (FMIconView *icon_view,
-						  NautilusDirectory *directory)
-{
-	return FALSE;
-}
-
-static void
-fm_desktop_icon_view_set_directory_sort_reversed (FMIconView *icon_view,
-						  NautilusDirectory *directory,
-						  gboolean sort_reversed)
-{
-	/* do nothing - the desktop always uses sort_reversed == FALSE */
-}
-
-static gboolean
-fm_desktop_icon_view_get_directory_auto_layout (FMIconView *icon_view,
-						NautilusDirectory *directory)
-{
-	return FALSE;
-}
-
-static void
-fm_desktop_icon_view_set_directory_auto_layout (FMIconView *icon_view,
-						NautilusDirectory *directory,
-						gboolean auto_layout)
-{
-	/* do nothing - the desktop always uses auto_layout == FALSE */
-}
-
 
 static void
 fm_desktop_icon_view_trash_state_changed_callback (NautilusTrashMonitor *trash_monitor,
@@ -905,6 +840,15 @@ desktop_icons_compare_callback (NautilusIconContainer *container,
 	} else {
 		return +1;
 	}
+}
+
+static gboolean
+real_supports_auto_layout (FMIconView *view)
+{
+	/* Can't use auto-layout on the desktop, because doing so would cause all
+	 * sorts of complications involving the fixed-size window.
+	 */
+	return FALSE;
 }
 
 static gboolean

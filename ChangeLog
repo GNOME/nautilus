@@ -1,3 +1,84 @@
+2000-09-06  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 1794 (New directory view background context menu design)
+
+	Any complaints or revisions of the context menus in directory
+	views should be written up as new bugs.
+
+	* libnautilus-extensions/nautilus-gtk-extensions.h,
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_menu_insert_separator): New function, slight
+	generalization of _append_separator that takes a position.
+	(nautilus_gtk_menu_append_separator): Now calls _insert_separator.
+	
+	* src/file-manager/fm-icon-view.h: Added supports_auto_layout 
+	function pointer for subclasses to optionally override.
+	
+	* src/file-manager/fm-icon-view.c: 
+	renamed details->updating_bonobo_marked_menu_item to
+	updating_toggle_menu_item since I realized that it's not
+	a Bonobo-specific problem.
+	(tighter_layout_callback): updated for API changes.
+	(fm_icon_view_using_auto_layout),
+	(fm_icon_view_using_tighter_layout): New convenience function
+	to share a little code.
+	(compute_menu_item_info): Changed toggle_item boolean parameter
+	to menu_item_type that returns an enum for normal, check,
+	radio, and subtree items; moved some layout-related items in
+	here so the context menu can avoid duplicating code.
+	(context_menu_layout_radio_item_callback),
+	(append_one_context_menu_layout_item): New functions, used by
+	layout items in context menu. 
+	(insert_one_context_menu_item): Now handles the various menu item 
+	types returned by compute_menu_item_info, and returns the new item.
+	(append_one_context_menu_item): Now returns the new item.
+	(fm_icon_view_create_background_context_menu_items): Add the
+	layout items to the context menu per bug 1794.
+	(fm_icon_view_supports_auto_layout): New function, calls
+	virtual function.
+	(real_supports_auto_layout): Returns TRUE.
+	(fm_icon_view_initialize_class): Wire up supports_auto_layout.
+	(update_layout_menus): Now skips some work if supports_auto_layout
+	is false; also updates reversed_order item in a way that works
+	even the reversed_order field was changed elsewise.
+	(fm_icon_view_get_directory_sort_by),
+	(fm_icon_view_set_directory_sort_by),
+	(fm_icon_view_get_directory_sort_reversed),
+	(fm_icon_view_set_directory_sort_reversed),
+	(fm_icon_view_get_directory_auto_layout),
+	(fm_icon_view_set_directory_auto_layout): Bail out early if
+	supports_auto_layout is false.
+	(fm_icon_view_begin_loading): Refactor a little.
+	(insert_bonobo_menu_item): Handle the different menu item types
+	returned by compute_menu_item_info.
+	(set_sort_criterion_by_path): New function, extracted from
+	sort_callback so it could be used elsewhere.
+	(sort_callback): Now calls set_sort_criterion_by_path.
+	(sort_direction_callback): Changed signature so it can be used
+	for both Bonobo and Gtk menus; changed implementation not to
+	rely on Bonobo menu state.
+	(manual_layout_callback): Changed signature so it can be used
+	for both Bonobo and Gtk menus
+	(layout_changed_callback),  (icon_position_changed_callback): 
+	Use new convenience functions.
+	(fm_icon_view_merge_menus): Use insert_bonobo_menu_item for
+	more items to avoid duplicating code with context menus.
+	(update_one_menu_item): Updated for compute_menu_item_info API change.
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_get_directory_sort_by),
+	(fm_desktop_icon_view_set_directory_sort_by),
+	(fm_desktop_icon_view_get_directory_sort_reversed),
+	(fm_desktop_icon_view_set_directory_sort_reversed),
+	(fm_desktop_icon_view_get_directory_sort_auto_layout),
+	(fm_desktop_icon_view_set_directory_sort_auto_layout): Removed
+	these overridden function pointers, obviated by new
+	supports_auto_layout.
+	(fm_desktop_icon_view_initialize_class): removed function
+	pointer wiring for the above set; added function pointer
+	wiring for supports_auto_layout.
+	(real_supports_auto_layout): New function, returns FALSE.
+
 2000-09-06  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-search-uri.c: Got rid of a FIXME

@@ -418,12 +418,18 @@ nautilus_pop_up_context_menu (GtkMenu	*menu,
 GtkMenuItem *
 nautilus_gtk_menu_append_separator (GtkMenu *menu)
 {
+	return nautilus_gtk_menu_insert_separator (menu, -1);
+}
+
+GtkMenuItem *
+nautilus_gtk_menu_insert_separator (GtkMenu *menu, int index)
+{
 	GtkWidget *menu_item;
 
 	menu_item = gtk_menu_item_new ();
 	gtk_widget_set_sensitive (menu_item, FALSE);
 	gtk_widget_show (menu_item);
-	gtk_menu_append (menu, menu_item);
+	gtk_menu_insert (menu, menu_item, index);
 
 	return GTK_MENU_ITEM (menu_item);
 }

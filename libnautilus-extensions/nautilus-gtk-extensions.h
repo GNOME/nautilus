@@ -104,8 +104,9 @@ void              nautilus_pop_up_context_menu                 (GtkMenu         
 								gint16                  offset_x,
 								gint16                  offset_y,
 								int                     button);
-
 GtkMenuItem	 *nautilus_gtk_menu_append_separator	       (GtkMenu		       *menu);
+GtkMenuItem	 *nautilus_gtk_menu_insert_separator	       (GtkMenu		       *menu,
+								int			index);
 
 void		  nautilus_gtk_menu_set_item_visibility	       (GtkMenu		       *menu,
 								int			index,
