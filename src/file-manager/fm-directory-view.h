@@ -181,6 +181,7 @@ void                      fm_directory_view_bump_zoom_level               (FMDir
 void                      fm_directory_view_select_all                    (FMDirectoryView *view);
 void			  fm_directory_view_move_copy_items		  (NautilusIconContainer  *container,
 									   const GList 		  *item_uris,
+									   const GdkPoint 	  *relative_item_points,
 									   const char 		  *target_uri,
 									   int 			  copy_action,
 									   int 			  x,

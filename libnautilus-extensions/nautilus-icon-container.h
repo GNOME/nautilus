@@ -82,12 +82,13 @@ struct NautilusIconContainerClass {
 	char *  	       (* get_icon_property)        (NautilusIconContainer *container,
 							     NautilusIconData *data,
 							     const char *property_name);
-	void		       (* move_copy_items)	    (NautilusIconContainer *container,
-							     const GList *item_uris,
-							     const char *target_uri,
-							     int copy_action,
-							     int x,
-							     int y);
+	void		       (* move_copy_items)	    (NautilusIconContainer 	*container,
+							     const GList 		*item_uris,
+							     const GdkPoint 		*relative_item_points,
+							     const char 		*target_uri,
+							     int 			copy_action,
+							     int 			x,
+							     int 			y);
 };
 
 /* GtkObject */

@@ -1,3 +1,31 @@
+2000-03-28  Pavel Cisler  <pavel@eazel.com>
+
+	More copy/move operations. Fixes a problem I introduced earlier where
+	drop onto a file would lock up Nautilus.
+	
+	* libnautilus/nautilus-gtk-extensions.c:
+	* libnautilus/nautilus-gtk-extensions.h:
+	(nautilus_gtk_marshal_NONE__POINTER_POINTER_POINTER_INT_INT_INT):
+	Add more binder glue that I needed.
+
+	* libnautilus/nautilus-icon-container.c:
+	(motion_notify_event):
+	Enable move/copy modes during drag/drop.
+
+	* libnautilus/nautilus-icon-container.c:
+	* libnautilus/nautilus-icon-container.h:
+	* libnautilus/nautilus-icon-dnd.c:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-directory-view.h:
+	(move_copy_items):
+	Pass in a list of point offsets to allow placing new item in
+	the right relative position.
+
+	* src/file-manager/fm-directory-view.c:
+	(xfer_callback):
+	Don't loop forever during a conflict.
+
+	
 2000-03-30  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/sample/main.c (sample_make_object): Connect to the

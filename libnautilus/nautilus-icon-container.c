@@ -1659,7 +1659,6 @@ motion_notify_event (GtkWidget *widget,
 			
 			if (abs (details->drag_x - world_x) >= SNAP_RESISTANCE
 			    || abs (details->drag_y - world_y) >= SNAP_RESISTANCE) {
-				
 				details->drag_started = TRUE;
 				
 				/* KLUDGE ALERT: Poke the starting values into the motion
@@ -1667,11 +1666,11 @@ motion_notify_event (GtkWidget *widget,
 				 */
 				motion->x = details->drag_x;
 				motion->y = details->drag_y;
-				
+			
 				nautilus_icon_dnd_begin_drag (container,
-								     GDK_ACTION_MOVE,
-								     details->drag_button,
-								     motion);
+							      GDK_ACTION_MOVE | GDK_ACTION_COPY,
+							      details->drag_button,
+							      motion);
 			}
 			break;
 		case DRAG_ACTION_STRETCH:
@@ -1846,8 +1845,9 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
                     		 object_class->type,
                     		 GTK_SIGNAL_OFFSET (NautilusIconContainerClass, 
                     		 		    move_copy_items),
-		    		 nautilus_gtk_marshal_NONE__POINTER_POINTER_INT_INT_INT,
-		    		 GTK_TYPE_NONE, 5, 
+		    		 nautilus_gtk_marshal_NONE__POINTER_POINTER_POINTER_INT_INT_INT,
+		    		 GTK_TYPE_NONE, 6, 
+		    		 GTK_TYPE_POINTER, 
 		    		 GTK_TYPE_POINTER, 
 		    		 GTK_TYPE_POINTER, 
 		    		 GTK_TYPE_INT, 

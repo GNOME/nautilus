@@ -40,6 +40,7 @@
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libgnomevfs/gnome-vfs-result.h>
 #include <libnautilus/nautilus-alloc.h>
 #include <libnautilus/nautilus-global-preferences.h>
 #include <libnautilus/nautilus-gtk-extensions.h>
@@ -1900,11 +1901,79 @@ fm_directory_view_get_container_uri (NautilusIconContainer *container,
 	return nautilus_directory_get_uri (view->details->model);
 }
 
-
+#undef XFER_CALLBACK_DEBUG
 static gint
-xfer_callback (const GnomeVFSXferProgressInfo *info, gpointer data)
+xfer_callback (const GnomeVFSXferProgressInfo *progress, gpointer data)
 {
 	/* FIXME */
+#ifdef XFER_CALLBACK_DEBUG
+	#include <stdio.h>
+#endif
+	
+	if (progress->status == GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR) {
+#ifdef XFER_CALLBACK_DEBUG
+		printf ("file %s, error %s, skipping \n",
+			progress->source_name,
+			gnome_vfs_result_to_string (progress->vfs_status));
+#endif
+		return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
+	}
+
+	if (progress->status == GNOME_VFS_XFER_PROGRESS_STATUS_OVERWRITE) {
+#ifdef XFER_CALLBACK_DEBUG
+		printf ("file %s conflicting, skipping \n",
+			progress->source_name);
+#endif
+		return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
+	}
+
+	switch (progress->phase) {
+	case GNOME_VFS_XFER_PHASE_COLLECTING:
+#ifdef XFER_CALLBACK_DEBUG
+		printf("preflight \n");
+#endif
+		break;
+
+	case GNOME_VFS_XFER_PHASE_READYTOGO:
+#ifdef XFER_CALLBACK_DEBUG
+		printf("%ld starting copy \n", progress->files_total);
+#endif
+		break;
+
+	case GNOME_VFS_XFER_PHASE_FILECOMPLETED:
+#ifdef XFER_CALLBACK_DEBUG
+		printf("%ld %s done copying \n", progress->file_index, progress->target_name);
+#endif
+		break;
+
+	case GNOME_VFS_XFER_PHASE_READSOURCE:
+#ifdef XFER_CALLBACK_DEBUG
+		printf ("%ld %s reading file\n", progress->file_index, progress->source_name);
+#endif
+		break;
+		
+	case GNOME_VFS_XFER_PHASE_WRITETARGET:
+#ifdef XFER_CALLBACK_DEBUG
+		printf ("%ld %s writing file\n", progress->file_index, progress->target_name);
+#endif
+		break;
+
+	case GNOME_VFS_XFER_PHASE_DELETESOURCE:
+#ifdef XFER_CALLBACK_DEBUG
+		printf ("%ld %s deleting file\n", progress->file_index, progress->source_name);
+#endif
+		break;
+
+	case GNOME_VFS_XFER_PHASE_COMPLETED:
+#ifdef XFER_CALLBACK_DEBUG
+		printf ("done\n");
+#endif
+		break;
+
+	default:
+		break;
+	}
+
 	return 1;
 }
 
@@ -1919,10 +1988,11 @@ async_xfer_callback (GnomeVFSAsyncHandle *handle,
 }
 #endif
 
-
+ 
 void
 fm_directory_view_move_copy_items (NautilusIconContainer *container,
 				   const GList *item_uris,
+				   const GdkPoint *relative_item_points,
 				   const char *target_dir,
 				   int copy_action,
 				   int x,
@@ -1940,6 +2010,7 @@ fm_directory_view_move_copy_items (NautilusIconContainer *container,
 	GnomeVFSXferOptions move_options;
 	gchar *source_dir;
 	GnomeVFSURI *source_dir_uri;
+	GnomeVFSURI *target_dir_uri;
 	
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
@@ -1948,6 +2019,7 @@ fm_directory_view_move_copy_items (NautilusIconContainer *container,
 	
 	item_names = NULL;
 	source_dir_uri = NULL;
+
 	for (p = item_uris; p != NULL; p = p->next) {
 		GnomeVFSURI *item_uri;
 		const gchar *item_name;
@@ -1961,13 +2033,20 @@ fm_directory_view_move_copy_items (NautilusIconContainer *container,
 		gnome_vfs_uri_unref (item_uri);
 	}
 
+	source_dir = gnome_vfs_uri_to_string (source_dir_uri, GNOME_VFS_URI_HIDE_NONE);
+	target_dir_uri = gnome_vfs_uri_new (target_dir);
+
+	if (gnome_vfs_uri_equal (target_dir_uri, source_dir_uri)) {
+		/* local copy - create a list of unique names 
+		 * FIXME:
+		 * consider doing this in the xfer operation, using a special move option
+		 */
+	}
 
 	move_options = GNOME_VFS_XFER_RECURSIVE;
 	if (copy_action == GDK_ACTION_MOVE) {
 		move_options |= GNOME_VFS_XFER_REMOVESOURCE;
 	}
-
-	source_dir = gnome_vfs_uri_to_string (source_dir_uri, GNOME_VFS_URI_HIDE_NONE);
 
 
 #if 0
@@ -1987,6 +2066,7 @@ fm_directory_view_move_copy_items (NautilusIconContainer *container,
 	      		GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
 	      		&xfer_callback, NULL);
 #endif
+	gnome_vfs_uri_unref (target_dir_uri); 
 	gnome_vfs_uri_unref (source_dir_uri);
 	g_free (source_dir);
 }
