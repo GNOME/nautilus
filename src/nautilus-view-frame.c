@@ -239,8 +239,12 @@ nautilus_view_frame_destroy_client (NautilusViewFrame *view)
 	view->zoomable_frame = CORBA_OBJECT_NIL;
 
 	CORBA_exception_free (&ev);
-
-	bonobo_window_deregister_dead_components (view->details->ui_container->win);
+	
+	if (view->details->ui_container->win != NULL) {
+		bonobo_window_deregister_dead_components (view->details->ui_container->win);
+	}
+	
+	bonobo_object_unref (BONOBO_OBJECT (view->details->ui_container));
 
 	if (view->details->check_if_view_is_gone_timeout_id != 0) {
 		g_source_remove (view->details->check_if_view_is_gone_timeout_id);
@@ -529,6 +533,7 @@ nautilus_view_frame_new (BonoboUIContainer *ui_container,
 	
 	view_frame = NAUTILUS_VIEW_FRAME (gtk_widget_new (nautilus_view_frame_get_type (), NULL));
 	
+	bonobo_object_ref (BONOBO_OBJECT (ui_container));
 	view_frame->details->ui_container = ui_container;
 	view_frame->undo_manager = undo_manager;
 	

@@ -1,5 +1,19 @@
 2000-11-15  Maciej Stachowiak  <mjs@eazel.com>
 
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	* src/nautilus-view-frame.c 
+	(nautilus_view_frame_new): ref the ui_component
+	
+	(nautilus_view_frame_destroy_client): check if ui_component->win
+	is NULL before trying to use it; unref the ui_component
+	
+	* components/adapter/bonobo-stream-vfs.c (vfs_copy_to): Fix a bug
+	whereby the `copyTo' operation would not handle -1 as a request to
+	copy the whole file properly.
+	
+2000-11-15  Maciej Stachowiak  <mjs@eazel.com>
+
 	reviewed by:  George Lebl  <jirka@5z.com>
 
 	* components/loser/README: Added missing `crash' mode to docs.
