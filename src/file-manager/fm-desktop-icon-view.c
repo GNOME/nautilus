@@ -766,7 +766,7 @@ add_mount_device (FMDesktopIconView *icon_view, struct mntent *ent)
 	}
 }
 
-
+#if 0
 static gboolean
 mntent_is_removable_fs(struct mntent *ent)
 {
@@ -803,7 +803,7 @@ mntent_has_option(const char *optlist, const char *option)
 
   	return retval;
 }
-
+#endif
 
 static void
 find_mount_devices (FMDesktopIconView *icon_view, const char *fstab_path)

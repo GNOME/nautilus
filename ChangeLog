@@ -1,6 +1,12 @@
 2000-07-25  Gene Z. Ragan  <gzr@eazel.com>
 
 	* src/file-manager/fm-desktop-icon-view.c:
+	Added an #if 0 to disable some functions that
+	are not called but may be user soon.
+	
+2000-07-25  Gene Z. Ragan  <gzr@eazel.com>
+
+	* src/file-manager/fm-desktop-icon-view.c:
 	(fm_desktop_icon_view_destroy)
 	Clean up all of our symbolic links to mounted volumes.
 
