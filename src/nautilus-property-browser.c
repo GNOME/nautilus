@@ -663,7 +663,10 @@ emblem_image_file_changed(GtkWidget *entry, NautilusPropertyBrowser *property_br
 	char *new_uri = g_strdup_printf("file://%s", gtk_entry_get_text(GTK_ENTRY(entry)));
 	
 	if (!ensure_uri_is_image(new_uri)) {
-		/* FIXME: probably should put up a message here */
+		char *message = g_strdup_printf("Sorry, but '%s' is not an image file!", gtk_entry_get_text(GTK_ENTRY(entry)));
+		gnome_warning_dialog(message);
+		g_free(message);
+		
 		gtk_entry_set_text(GTK_ENTRY(entry), property_browser->details->image_path);
 		g_free(new_uri);
 		return;
@@ -751,13 +754,17 @@ add_background_to_browser (GtkWidget *widget, gpointer *data)
 	/* fetch the mime type and make sure that the file is an image */
 	path_uri = g_strdup_printf("file://%s", path_name);
 	is_image = ensure_uri_is_image(path_uri);
-	g_free(path_uri);
+	g_free(path_uri);	
 	
 	if (!is_image) {
-		/* FIXME: we should put up an error dialog here - only accept images */
+		char *message = g_strdup_printf("Sorry, but '%s' is not an image file!", path_name);
+		gnome_warning_dialog(message);
+		g_free(message);
+		g_free(path_name);
+		g_free(path_uri);	
 		return;
 	}
-		
+
 	/* copy the image file to the backgrounds directory */
 	/* FIXME: do we need to do this with gnome-vfs? */
 
