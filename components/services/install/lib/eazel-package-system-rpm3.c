@@ -61,6 +61,8 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#include <locale.h>
+
 #include <libtrilobite/trilobite-root-helper.h>
 
 #define DEFAULT_DB_PATH "/var/lib/rpm"
