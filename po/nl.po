@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-19 16:41+0200\n"
+"POT-Creation-Date: 2004-05-04 20:23+0200\n"
 "PO-Revision-Date: 2004-02-27 13:25+0100\n"
 "Last-Translator: Reinout van Schouwen <reinout@cs.vu.nl>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
@@ -1943,7 +1943,7 @@ msgstr "Van:"
 #. "To" dialog label, source path gets placed next to it in the dialog
 #: libnautilus-private/nautilus-file-operations.c:365
 msgid "To:"
-msgstr "Aan:"
+msgstr "Naar:"
 
 #: libnautilus-private/nautilus-file-operations.c:551
 #: libnautilus-private/nautilus-file-operations.c:599
@@ -2199,9 +2199,13 @@ msgstr "_Vervangen"
 
 #: libnautilus-private/nautilus-file-operations.c:1090
 msgid "Replace _All"
-msgstr "_Alles vervangen"
+msgstr "Alles ve_rvangen"
 
 #. appended to new link file
+#. Note to localizers: convert file type string for file
+#. * (e.g. "folder", "plain text") to file type for symbolic link
+#. * to that kind of file (e.g. "link to folder").
+#.
 #: libnautilus-private/nautilus-file-operations.c:1148
 #: libnautilus-private/nautilus-file.c:4735
 #, c-format
@@ -2256,6 +2260,9 @@ msgid " (another copy)"
 msgstr " (nog een kopie)"
 
 #. localizers: tag used to detect the x11th copy of a file
+#. localizers: tag used to detect the x12th copy of a file
+#. localizers: tag used to detect the x13th copy of a file
+#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
 #: libnautilus-private/nautilus-file-operations.c:1210
@@ -2291,6 +2298,9 @@ msgid "%s (another copy)%s"
 msgstr "%s (nog een kopie)%s"
 
 #. localizers: appended to x11th file copy
+#. localizers: appended to x12th file copy
+#. localizers: appended to x13th file copy
+#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
 #: libnautilus-private/nautilus-file-operations.c:1243
@@ -2545,7 +2555,7 @@ msgstr "Bezig met wissen"
 
 #: libnautilus-private/nautilus-file-operations.c:2430
 msgid "Preparing to Delete files..."
-msgstr "Bezig met voorbereiden van verwijderen van bestanden..."
+msgstr "Voorbereiden van verwijderen van bestanden..."
 
 #. localizers: progress dialog title
 #: libnautilus-private/nautilus-file-operations.c:2460
@@ -2554,7 +2564,7 @@ msgstr "Prullenbak aan het legen"
 
 #: libnautilus-private/nautilus-file-operations.c:2465
 msgid "Preparing to Empty the Trash..."
-msgstr "Bezig met voorbereiden van Prullenbak legen..."
+msgstr "Voorbereiden van Prullenbak legen..."
 
 #: libnautilus-private/nautilus-file-operations.c:2534
 msgid "Are you sure you want to empty all of the items from the trash?"
@@ -2611,11 +2621,11 @@ msgstr "Windows-netwerk"
 #.
 #: libnautilus-private/nautilus-file.c:2932
 msgid "today at 00:00:00 PM"
-msgstr "vandaag om 00:00:00 PM"
+msgstr "vandaag om 00:00:00"
 
 #: libnautilus-private/nautilus-file.c:2933
 msgid "today at %-I:%M:%S %p"
-msgstr "vandaag om %-I:%M %p"
+msgstr "vandaag om %H:%M:%S"
 
 #: libnautilus-private/nautilus-file.c:2935
 msgid "today at 00:00 PM"
@@ -2623,15 +2633,15 @@ msgstr "vandaag om %-I:%M %p"
 
 #: libnautilus-private/nautilus-file.c:2936
 msgid "today at %-I:%M %p"
-msgstr "vandaag om %-I:%M %p"
+msgstr "vandaag om %H:%M"
 
 #: libnautilus-private/nautilus-file.c:2938
 msgid "today, 00:00 PM"
-msgstr "vandaag, 00:00 PM"
+msgstr "vandaag, 00:00"
 
 #: libnautilus-private/nautilus-file.c:2939
 msgid "today, %-I:%M %p"
-msgstr "vandaag om %-I:%M %p"
+msgstr "vandaag om %H:%M"
 
 #: libnautilus-private/nautilus-file.c:2941
 #: libnautilus-private/nautilus-file.c:2942
@@ -2642,33 +2652,33 @@ msgstr "vandaag"
 #. * Note to localizers: Same issues as "today" string.
 #.
 #: libnautilus-private/nautilus-file.c:2951
-msgid "yesterday at 00:00:00 PM"
-msgstr "gisteren om %-I:%M %p"
+msgid "yesterday at 00:00:00"
+msgstr "gisteren om 00:00:00"
 
 #: libnautilus-private/nautilus-file.c:2952
 msgid "yesterday at %-I:%M:%S %p"
-msgstr "gisteren om %-I:%M %p"
+msgstr "gisteren om %H:%M:%S"
 
 #: libnautilus-private/nautilus-file.c:2954
 msgid "yesterday at 00:00 PM"
-msgstr "gisteren om %-I:%M %p"
+msgstr "gisteren om 00:00"
 
 #: libnautilus-private/nautilus-file.c:2955
 msgid "yesterday at %-I:%M %p"
-msgstr "gisteren om %-I:%M %p"
+msgstr "gisteren om %H:%M"
 
 #: libnautilus-private/nautilus-file.c:2957
 msgid "yesterday, 00:00 PM"
-msgstr "gisteren, 00:00 PM"
+msgstr "gisteren, 00:00"
 
 #: libnautilus-private/nautilus-file.c:2958
 msgid "yesterday, %-I:%M %p"
-msgstr "gisteren om %-I:%M %p"
+msgstr "gisteren om %H:%M"
 
 #: libnautilus-private/nautilus-file.c:2960
 #: libnautilus-private/nautilus-file.c:2961
 msgid "yesterday"
-msgstr "Westers"
+msgstr "gisteren"
 
 #. Current week, include day of week.
 #. * Note to localizers: Same issues as "today" string.
@@ -2677,51 +2687,51 @@ msgstr "Westers"
 #.
 #: libnautilus-private/nautilus-file.c:2972
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
-msgstr "Woensdag 00 September 00 0000 om 00:00:00 PM"
+msgstr "Woensdag 00 september 00 0000 om 00:00:00 PM"
 
 #: libnautilus-private/nautilus-file.c:2973
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
-msgstr "%A, %-d %B %Y om %-I:%M:%S %p"
+msgstr "%A %-d %B %Y om %H:%M:%S"
 
 #: libnautilus-private/nautilus-file.c:2975
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
-msgstr "Maa 00 Oct 0000 om 00:00:00 PM"
+msgstr "Ma 00 okt 0000 om 00:00:00"
 
 #: libnautilus-private/nautilus-file.c:2976
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
-msgstr "%a %-d %b %Y om %-I:%M:%S %p"
+msgstr "%a %-d %b %Y om %H:%M:%S"
 
 #: libnautilus-private/nautilus-file.c:2978
 msgid "Mon, Oct 00 0000 at 00:00 PM"
-msgstr "Maa 00 Oct 0000 om 00:00 PM"
+msgstr "Ma 00 okt 0000 om 00:00"
 
 #: libnautilus-private/nautilus-file.c:2979
 msgid "%a, %b %-d %Y at %-I:%M %p"
-msgstr "%a %-d %b %Y at %-I:%M %"
+msgstr "%a %-d %b %Y om %H:%M"
 
 #: libnautilus-private/nautilus-file.c:2981
 msgid "Oct 00 0000 at 00:00 PM"
-msgstr "00 Oct 0000 om 00:00 PM"
+msgstr "00 okt 0000 om 00:00"
 
 #: libnautilus-private/nautilus-file.c:2982
 msgid "%b %-d %Y at %-I:%M %p"
-msgstr "%-d %b %Y om %-I:%M %p"
+msgstr "%-d %b %Y om %H:%M"
 
 #: libnautilus-private/nautilus-file.c:2984
 msgid "Oct 00 0000, 00:00 PM"
-msgstr "00 Oct 0000, 00:00 PM"
+msgstr "00 okt 0000, 00:00"
 
 #: libnautilus-private/nautilus-file.c:2985
 msgid "%b %-d %Y, %-I:%M %p"
-msgstr "%-d %b %Y, %-I:%M %p"
+msgstr "%-d %b %Y, %H:%M"
 
 #: libnautilus-private/nautilus-file.c:2987
 msgid "00/00/00, 00:00 PM"
-msgstr "00/00/00, 00:00 PM"
+msgstr "00/00/00, 00:00"
 
 #: libnautilus-private/nautilus-file.c:2988
 msgid "%m/%-d/%y, %-I:%M %p"
-msgstr "%-d/%m/%y, %-I:%M %p"
+msgstr "%-d/%m/%y, %H:%M"
 
 #: libnautilus-private/nautilus-file.c:2990
 msgid "00/00/00"
@@ -3067,51 +3077,51 @@ msgstr "of we gemarkeerd zijn voor sleepactie loslaten"
 msgid "The selection rectangle"
 msgstr "De selectierechthoek"
 
-#: libnautilus-private/nautilus-icon-container.c:4179
+#: libnautilus-private/nautilus-icon-container.c:4185
 msgid "Frame Text"
 msgstr "Tekst omkaderen"
 
-#: libnautilus-private/nautilus-icon-container.c:4180
+#: libnautilus-private/nautilus-icon-container.c:4186
 msgid "Draw a frame around unselected text"
 msgstr "Kader om ongeselecteerde tekst tekenen"
 
-#: libnautilus-private/nautilus-icon-container.c:4186
+#: libnautilus-private/nautilus-icon-container.c:4192
 msgid "Selection Box Color"
 msgstr "Kleur selectieveld"
 
-#: libnautilus-private/nautilus-icon-container.c:4187
+#: libnautilus-private/nautilus-icon-container.c:4193
 msgid "Color of the selection box"
 msgstr "Naar van het selectieveld"
 
-#: libnautilus-private/nautilus-icon-container.c:4192
+#: libnautilus-private/nautilus-icon-container.c:4198
 msgid "Selection Box Alpha"
 msgstr "Alpha-waarde selectieveld"
 
-#: libnautilus-private/nautilus-icon-container.c:4193
+#: libnautilus-private/nautilus-icon-container.c:4199
 msgid "Opacity of the selection box"
 msgstr "Doorschijnendheid van het selectieveld"
 
-#: libnautilus-private/nautilus-icon-container.c:4200
+#: libnautilus-private/nautilus-icon-container.c:4206
 msgid "Highlight Alpha"
 msgstr "Alpha-waarde markering"
 
-#: libnautilus-private/nautilus-icon-container.c:4201
+#: libnautilus-private/nautilus-icon-container.c:4207
 msgid "Opacity of the highlight for selected icons"
 msgstr "Doorschijnendheid van de markering voor geselecteerde pictogrammen"
 
-#: libnautilus-private/nautilus-icon-container.c:4207
+#: libnautilus-private/nautilus-icon-container.c:4213
 msgid "Light Info Color"
 msgstr "Lichte informatiekleur"
 
-#: libnautilus-private/nautilus-icon-container.c:4208
+#: libnautilus-private/nautilus-icon-container.c:4214
 msgid "Color used for information text against a dark background"
 msgstr "Kleur voor informatietekst tegen een donkere achtergrond"
 
-#: libnautilus-private/nautilus-icon-container.c:4213
+#: libnautilus-private/nautilus-icon-container.c:4219
 msgid "Dark Info Color"
 msgstr "Donkere informatiekleur"
 
-#: libnautilus-private/nautilus-icon-container.c:4214
+#: libnautilus-private/nautilus-icon-container.c:4220
 msgid "Color used for information text against a light background"
 msgstr "Kleur voor informatietekst tegen een lichte achtergrond"
 
@@ -3468,6 +3478,7 @@ msgstr "Bezig met openen van %s"
 #. TODO: These strings suck pretty badly, but we're in string-freeze,
 #. * and I found these in other places to reuse. We should make them
 #. * better later.
+#. Shouldn't have gotten this error unless there's a : separator.
 #: libnautilus-private/nautilus-program-choosing.c:969
 #: libnautilus-private/nautilus-program-choosing.c:977
 #: libnautilus-private/nautilus-program-choosing.c:982
@@ -5312,6 +5323,7 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
+#. FIXME bugzilla.gnome.org 42538: When can this happen?
 #: src/nautilus-application.c:581 src/nautilus-application.c:599
 #: src/nautilus-application.c:606
 msgid "Nautilus can't be used now, due to an unexpected error."
@@ -5413,7 +5425,7 @@ msgstr "_Verbinden"
 msgid "Desktop"
 msgstr "Werkblad"
 
-#: src/nautilus-file-management-properties.c:295
+#: src/nautilus-file-management-properties.c:297
 msgid "None"
 msgstr "Geen"
 
@@ -5773,22 +5785,27 @@ msgid "Nautilus"
 msgstr "Nautilus"
 
 #: src/nautilus-main.c:259
+#, c-format
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus: --check kan niet gebruikt worden met URI's.\n"
 
 #: src/nautilus-main.c:263
+#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check kan niet gebruik worden met andere opties.\n"
 
 #: src/nautilus-main.c:267
+#, c-format
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus: --quit kan niet gebruikt worden met URI's.\n"
 
 #: src/nautilus-main.c:271
+#, c-format
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus: --restart kan niet gebruik worden met URI's.\n"
 
 #: src/nautilus-main.c:275
+#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry kan niet worden gebruik met meer dan één URI.\n"
 
