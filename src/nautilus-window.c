@@ -27,6 +27,7 @@
 #include "config.h"
 #include <gnome.h>
 #include "nautilus.h"
+#include "explorer-location-bar.h"
 
 static void nautilus_window_class_init (NautilusWindowClass *klass);
 static void nautilus_window_init (NautilusWindow *window);
@@ -41,6 +42,9 @@ static void nautilus_window_get_arg (GtkObject      *object,
                                      guint	      arg_id);
 static void nautilus_window_close (GtkWidget *widget,
                                    GtkWidget *window);
+static void nautilus_window_goto_url (GtkWidget *widget,
+                                      const char *url,
+                                      GtkWidget *window);
 static void nautilus_window_real_request_location_change (NautilusWindow *window,
 							  Nautilus_NavigationRequestInfo *loc,
 							  GtkWidget *requesting_view);
@@ -172,6 +176,22 @@ nautilus_window_set_status(NautilusWindow *window, const char *txt)
     }
   else
     window->statusbar_clear_id = 0;
+}
+
+static void
+nautilus_window_goto_url (GtkWidget *widget,
+                          const char *url,
+                          GtkWidget *window)
+{
+  Nautilus_NavigationRequestInfo navinfo;
+
+  memset(&navinfo, 0, sizeof(navinfo));
+  navinfo.requested_uri = url;
+  navinfo.new_window_default = navinfo.new_window_suggested = Nautilus_V_FALSE;
+  navinfo.new_window_enforced = V_UNKNOWN;
+
+  nautilus_window_request_location_change(NAUTILUS_WINDOW(window), &navinfo,
+                                          NULL);
 }
 
 static void
@@ -318,7 +338,9 @@ nautilus_window_constructed(NautilusWindow *window)
   gtk_widget_show_all(window->content_hbox);
 
 
-  window->ent_url = gtk_entry_new();
+  window->ent_url = explorer_location_bar_new();
+  gtk_signal_connect(GTK_OBJECT(window->ent_url), "location_changed",
+                     nautilus_window_goto_url, window);
   gnome_app_add_docked(app, window->ent_url, "url-entry",
                        GNOME_DOCK_ITEM_BEH_LOCKED|GNOME_DOCK_ITEM_BEH_EXCLUSIVE|GNOME_DOCK_ITEM_BEH_NEVER_VERTICAL,
                        GNOME_DOCK_TOP, 1, 0, 0);
@@ -577,6 +599,8 @@ nautilus_window_change_location(NautilusWindow *window,
   gtk_widget_set_sensitive(window->btn_back, window->uris_prev?TRUE:FALSE);
   gtk_widget_set_sensitive(window->btn_fwd, window->uris_next?TRUE:FALSE);
 
+  explorer_location_bar_set_uri_string(EXPLORER_LOCATION_BAR(window->ent_url),
+                                       loci->requested_uri);
   signum = gtk_signal_lookup("notify_location_change", nautilus_view_get_type());
 
   /* If we need to load a different IID, do that before sending the location change request */

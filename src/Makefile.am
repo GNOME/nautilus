@@ -15,4 +15,6 @@ nautilus_SOURCES=		\
 	ntl-view.h		\
 	ntl-view.c		\
 	ntl-window.h		\
-	ntl-window.c
+	ntl-window.c		\
+	explorer-location-bar.h	\
+	explorer-location-bar.c
