@@ -26,8 +26,6 @@ nautilus_music_view_SOURCES =			\
 	huffman.h				\
 	mp3head.c				\
 	mp3head.h				\
-	nautilus-music-model.c			\
-	nautilus-music-model.h			\
 	nautilus-music-view.c			\
 	nautilus-music-view.h			\
 	main.c					\
