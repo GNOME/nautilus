@@ -220,7 +220,6 @@ icon_set_position (NautilusIcon *icon,
 
 	if (nautilus_icon_container_get_is_fixed_size (container)) {
 		/* Clip the position of the icon within our desktop bounds */
-
 		left = GTK_WIDGET (container)->allocation.x;
 		top = GTK_WIDGET (container)->allocation.y;
 		right = left + GTK_WIDGET (container)->allocation.width;
@@ -241,7 +240,7 @@ icon_set_position (NautilusIcon *icon,
 		}
 		if (y < top) {
 			y = top;
-		}
+		}		
 	}
 
 	gnome_canvas_item_move (GNOME_CANVAS_ITEM (icon->item),
@@ -1333,8 +1332,8 @@ nautilus_icon_container_move_icon (NautilusIconContainer *container,
 	}
 	
 	if (emit_signal) {
-		position.x = x;
-		position.y = y;
+		position.x = icon->x;
+		position.y = icon->y;
 		position.scale_x = scale_x;
 		position.scale_y = scale_y;
 		gtk_signal_emit (GTK_OBJECT (container),

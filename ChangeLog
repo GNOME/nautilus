@@ -1,3 +1,15 @@
+2001-02-06  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 1736, if icons on desktop are offscreen, need to
+	move them somewhre on screen.
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(icon_set_position), (nautilus_icon_container_move_icon):
+	icon_set_position may modify the x and y location of the
+	icon.  nautilus_icon_container_move_icon should use the
+	modified position instead of the original x and y postion
+	when writing the position out into the metafile.
+
 2001-02-06  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/file-manager/fm-properties-window.c:
