@@ -24,10 +24,6 @@ AC_ARG_ENABLE(more-warnings,
 [--enable-more-warnings	Maximum compiler warnings],
 set_more_warnings="$enableval", set_more_warnings=yes)
 
-AC_ARG_ENABLE(fatal-warnings,
-[--enable-fatal-warnings	Make warnings fatal],
-set_fatal_warnings="$enableval", set_fatal_warnings=yes)
-
 # Arg is enabled
 if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 	echo "enable compile warnings = $set_more_warnings"
@@ -36,10 +32,10 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 	-Wnested-externs -Wpointer-arith \
 	-Wno-sign-compare -Wsign-promo"
 fi
-if test "$GCC" = "yes" -a "$set_fatal_warnings" != "no"; then
-	echo "enable fatal warnings = $set_fatal_warnings"
-	CFLAGS="$CFLAGS -Werror"
+if test "$GCC" = "yes"; then
+	WERROR="-Werror"
 fi
+AC_SUBST(WERROR)
 
 dnl Checks for libraries.
 AM_PATH_GLIB(1.2.0,,

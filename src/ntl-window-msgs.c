@@ -83,8 +83,6 @@ nautilus_window_request_location_change(NautilusWindow *window,
 static void
 nautilus_window_change_location_internal(NautilusWindow *window, NautilusNavigationInfo *loci, gboolean is_back)
 {
-  char *old_location;
-
   CORBA_free(window->si); window->si = NULL;
 
   /* Maintain history lists. */

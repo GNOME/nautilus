@@ -257,7 +257,7 @@ static char **
 fmt_map_entry(HyperbolaDocTree *tree, const char *name, char section)
 {
   TreeInfo *tinfo;
-  GSList *cur;
+  GSList *cur_slist;
 
   tinfo = tree->user_data;
   if(!tinfo)
@@ -285,9 +285,9 @@ fmt_map_entry(HyperbolaDocTree *tree, const char *name, char section)
       g_list_free(langlist);
     }
 
-  for(cur = tinfo->mappings[(int)section]; cur; cur = cur->next)
+  for(cur_slist = tinfo->mappings[(int)section]; cur_slist; cur_slist = cur_slist->next)
     {
-      ManpageMapping *mapent = cur->data;
+      ManpageMapping *mapent = cur_slist->data;
 
       if(!regexec(&mapent->regex_comp, name, 0, NULL, 0))
 	return mapent->path;

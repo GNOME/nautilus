@@ -1,4 +1,4 @@
-#include "ntl-window-state.h"
+#include "nautilus.h"
 
 void
 nautilus_window_set_initial_state(NautilusWindow *window)

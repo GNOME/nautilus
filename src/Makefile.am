@@ -5,8 +5,9 @@ bin_PROGRAMS=nautilus
 INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
 	$(BONOBO_CFLAGS) $(GNORBA_CFLAGS) \
 	$(GNOMEUI_CFLAGS) $(GDK_PIXBUF_CFLAGS) \
-	$(VFS_CFLAGS)	\
-	-DVERSION="\"$(VERSION)\""
+	$(VFS_CFLAGS) \
+	-DVERSION="\"$(VERSION)\"" \
+	$(WERROR)
 
 LDADD=	file-manager/libntl-file-manager.la \
 	../libnautilus/libnautilus.la \

@@ -3,7 +3,9 @@ noinst_LTLIBRARIES=libntl-file-manager.la
 INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
 	$(BONOBO_CFLAGS) $(GNORBA_CFLAGS) \
 	$(GNOMEUI_CFLAGS) -DVERSION="\"$(VERSION)\"" \
-	$(GDK_PIXBUF_CFLAGS)
+	$(GDK_PIXBUF_CFLAGS)				\
+	$(WERROR)
+
 dfos_corba_srcs=					\
 	GNOME_Desktop_FileOperationService.h		\
 	GNOME_Desktop_FileOperationService-stubs.c	\
