@@ -567,6 +567,9 @@ bonobo_activation_activation_callback (Bonobo_Unknown activated_object,
 	
 	handle = (NautilusBonoboActivationHandle *) callback_data;
 
+	if (activated_object == NULL)
+		g_warning ("activation failed: %s", error_reason);
+
 	handle->activated_object = activated_object;
 
 	if (handle->cancel) {
@@ -632,7 +635,7 @@ nautilus_bonobo_activate_cancel (NautilusBonoboActivationHandle *handle)
 	activation_handle_done (handle);
 
 	if (handle->idle_id == 0) {
-		/* no way to cancel the OAF part, so we just set a flag */
+		/* no way to cancel the underlying bonobo-activation call, so we just set a flag */
 		handle->cancel = TRUE;
 	} else {
 		gtk_idle_remove (handle->idle_id);

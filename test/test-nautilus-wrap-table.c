@@ -1,7 +1,6 @@
 #include "test.h"
 
 #include <eel/eel-wrap-table.h>
-#include <eel/eel-viewport.h>
 #include <eel/eel-labeled-image.h>
 #include <libnautilus-private/nautilus-customization-data.h>
 #include <libnautilus-private/nautilus-icon-factory.h>

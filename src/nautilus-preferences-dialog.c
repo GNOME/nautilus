@@ -28,6 +28,7 @@
 #include "libnautilus-private/nautilus-global-preferences.h"
 #include "libnautilus-private/nautilus-sidebar-functions.h"
 #include "nautilus-theme-selector.h"
+#include <eel/eel-debug.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-preferences-box.h>
 #include <gtk/gtkdialog.h>
@@ -576,7 +577,7 @@ global_preferences_get_dialog (void)
 	
 	if (preferences_dialog == NULL) {
 		preferences_dialog = preferences_dialog_create ();
-		g_atexit (preferences_dialog_destroy);
+		eel_debug_call_at_shutdown (preferences_dialog_destroy);
 	}
 
 	g_assert (GTK_IS_DIALOG (preferences_dialog));

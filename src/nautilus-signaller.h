@@ -29,7 +29,7 @@
 #ifndef NAUTILUS_SIGNALLER_H
 #define NAUTILUS_SIGNALLER_H
 
-#include <gtk/gtkobject.h>
+#include <glib-object.h>
 
 /* NautilusSignaller is a class that manages signals between
    disconnected Nautilus code. Nautilus objects connect to these signals
@@ -41,6 +41,6 @@
 */
 
 /* Get the one and only NautilusSignaller to connect with or emit signals for */
-GtkObject *nautilus_signaller_get_current (void);
+GObject *nautilus_signaller_get_current (void);
 
 #endif /* NAUTILUS_SIGNALLER_H */

@@ -22,17 +22,18 @@
 
 /* nautilus-component-adapter-factory.c - client wrapper for the
  * special adapter component, which wraps Bonobo components as
- * Nautilus Views and in the process keeps evil syncrhonous I/O out of
+ * Nautilus Views and in the process keeps evil synchronous I/O out of
  * the Nautilus process itself.
  */
 
 #include <config.h>
 #include "nautilus-component-adapter-factory.h"
 
-#include <bonobo/bonobo-moniker-util.h>
 #include <bonobo/bonobo-exception.h>
+#include <bonobo/bonobo-moniker-util.h>
 #include <bonobo/bonobo-object.h>
-#include <eel/eel-gtk-macros.h>
+#include <eel/eel-debug.h>
+#include <libgnome/gnome-macros.h>
 #include <libnautilus-adapter/nautilus-adapter-factory.h>
 
 #define NAUTILUS_COMPONENT_ADAPTER_FACTORY_IID "OAFIID:nautilus_adapter_factory:fd24ecfc-0a6e-47ab-bc53-69d7487c6ad4"
@@ -43,18 +44,15 @@ struct NautilusComponentAdapterFactoryDetails {
 
 static NautilusComponentAdapterFactory *global_component_adapter_factory = NULL;
 
-static void nautilus_component_adapter_factory_class_init (NautilusComponentAdapterFactoryClass *klass);
-static void nautilus_component_adapter_factory_init       (NautilusComponentAdapterFactory      *factory);
-
-EEL_CLASS_BOILERPLATE (NautilusComponentAdapterFactory,
-			      nautilus_component_adapter_factory,
-			      GTK_TYPE_OBJECT)
-
+GNOME_CLASS_BOILERPLATE (NautilusComponentAdapterFactory, nautilus_component_adapter_factory,
+			 GtkObject, GTK_TYPE_OBJECT)
 
 static void
 activate_factory (NautilusComponentAdapterFactory *factory)
 {
-	factory->details->corba_factory = bonobo_get_object (NAUTILUS_COMPONENT_ADAPTER_FACTORY_IID, "IDL:Nautilus/ComponentAdapterFactory:1.0", NULL);
+	factory->details->corba_factory = bonobo_get_object
+		(NAUTILUS_COMPONENT_ADAPTER_FACTORY_IID,
+		 "IDL:Nautilus/ComponentAdapterFactory:1.0", NULL);
 }
 
 static void
@@ -100,14 +98,16 @@ get_corba_factory (NautilusComponentAdapterFactory *factory)
 	CORBA_exception_free (&ev);
 
 	result = bonobo_object_dup_ref (factory->details->corba_factory, NULL);
+
 	if (need_unref) {
 		unref_factory (factory);
 	}
+
 	return result;
 }
 
 static void
-nautilus_component_adapter_factory_init (NautilusComponentAdapterFactory *factory)
+nautilus_component_adapter_factory_instance_init (NautilusComponentAdapterFactory *factory)
 {
 	factory->details = g_new0 (NautilusComponentAdapterFactoryDetails, 1);
 }
@@ -122,7 +122,7 @@ nautilus_component_adapter_factory_destroy (GtkObject *object)
 	release_factory (factory);
 	g_free (factory->details);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	GTK_OBJECT_CLASS (parent_class)->destroy (object);
 }
 
 static void
@@ -155,7 +155,7 @@ nautilus_component_adapter_factory_get (void)
 		gtk_object_sink (GTK_OBJECT (factory));
 		
 		global_component_adapter_factory = factory;
-		g_atexit (component_adapter_factory_at_exit_destructor);
+		eel_debug_call_at_shutdown (component_adapter_factory_at_exit_destructor);
 	}
 
 	return global_component_adapter_factory;
@@ -174,14 +174,20 @@ nautilus_component_adapter_factory_create_adapter (NautilusComponentAdapterFacto
 
 	nautilus_view = Bonobo_Unknown_queryInterface
 		(component, "IDL:Nautilus/View:1.0", &ev);
+	if (BONOBO_EX (&ev)) {
+		nautilus_view = CORBA_OBJECT_NIL;
+	}
 
-	if (!CORBA_Object_is_nil (nautilus_view, &ev)) {
+	if (nautilus_view != CORBA_OBJECT_NIL) {
 		/* Object has the View interface, great! We might not
 		 * need to adapt it.
 		 */
 		bonobo_control = Bonobo_Unknown_queryInterface
 			(component, "IDL:Bonobo/Control:1.0", &ev);
-		if (!CORBA_Object_is_nil (bonobo_control, &ev)) {
+		if (BONOBO_EX (&ev)) {
+			bonobo_control = CORBA_OBJECT_NIL;
+		}
+		if (bonobo_control != CORBA_OBJECT_NIL) {
 			/* It has the control interface too, so all is peachy. */
 			bonobo_object_release_unref (bonobo_control, NULL);
 		} else {
@@ -193,9 +199,7 @@ nautilus_component_adapter_factory_create_adapter (NautilusComponentAdapterFacto
 			nautilus_view = CORBA_OBJECT_NIL;
 		}
 	} else {
-		nautilus_view = CORBA_OBJECT_NIL;
 		/* No View interface, we must adapt the object */
-
 		corba_factory = get_corba_factory (factory);
 		nautilus_view = Nautilus_ComponentAdapterFactory_create_adapter 
 			(corba_factory, component, &ev);

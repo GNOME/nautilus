@@ -41,7 +41,6 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
-#include <eel/eel-image.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <eel/eel-string.h>
 #include <libnautilus/libnautilus.h>
@@ -447,7 +446,7 @@ setup_form_title (NautilusHardwareView *view,
 	if (image_name != NULL) {
  		file_name = gnome_pixmap_file (image_name);
 		if (file_name != NULL) {
-			temp_widget = eel_image_new (file_name);
+			temp_widget = gtk_image_new_from_file (file_name);
 			gtk_box_pack_start (GTK_BOX(temp_container), temp_widget, 0, 0, 8);		
 			gtk_widget_show (temp_widget);
 			g_free (file_name);
@@ -531,7 +530,7 @@ setup_overview_form (NautilusHardwareView *view)
 		gtk_widget_show (temp_box);
 
 		file_name = nautilus_pixmap_file ("cpu.png");
-                temp_widget = eel_image_new (file_name);
+                temp_widget = gtk_image_new_from_file (file_name);
 		gtk_box_pack_start (GTK_BOX(temp_box), temp_widget, 0, 0, 0);		
 		gtk_widget_show (temp_widget);
 		g_free (file_name);
@@ -551,7 +550,7 @@ setup_overview_form (NautilusHardwareView *view)
 	gtk_widget_show (temp_box);
 
  	file_name = nautilus_pixmap_file ("memory_chip.gif");
-  	temp_widget = eel_image_new (file_name);
+  	temp_widget = gtk_image_new_from_file (file_name);
 	gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0);		
   	gtk_widget_show(temp_widget);
   	g_free (file_name);
@@ -589,7 +588,7 @@ setup_overview_form (NautilusHardwareView *view)
                                         file_name = nautilus_pixmap_file ("i-harddisk.png");
                                 }
                                 
-				pixmap_widget = eel_image_new (file_name);
+				pixmap_widget = gtk_image_new_from_file (file_name);
 				gtk_box_pack_start (GTK_BOX(temp_box), pixmap_widget, 0, 0, 0);
 				gtk_widget_show(pixmap_widget);
 				g_free(file_name);

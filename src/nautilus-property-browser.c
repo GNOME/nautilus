@@ -40,12 +40,10 @@
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-image-table.h>
-#include <eel/eel-image.h>
 #include <eel/eel-labeled-image.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
-#include <eel/eel-viewport.h>
 #include <eel/eel-xml-extensions.h>
 #include <libxml/parser.h>
 #include <libxml/xmlmemory.h>
@@ -277,8 +275,7 @@ nautilus_property_browser_init (GtkObject *object)
 	gtk_container_set_border_width (GTK_CONTAINER (property_browser->details->category_container), 0);
  	property_browser->details->category_position = -1;	
  	
- 	viewport = eel_viewport_new (NULL, NULL);	
-	eel_viewport_set_never_smooth (EEL_VIEWPORT (viewport), FALSE);
+ 	viewport = gtk_viewport_new (NULL, NULL);	
 	gtk_widget_show (viewport);
 	gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_NONE);
 
@@ -1478,7 +1475,7 @@ element_clicked_callback (GtkWidget *image_table,
 	GdkPixbuf *pixbuf;
 	int x_delta, y_delta;
 	const char *element_name;
-	EelArtIPoint scroll_offset;
+	int scroll_offset_x, scroll_offset_y;
 
 	g_return_if_fail (EEL_IS_IMAGE_TABLE (image_table));
 	g_return_if_fail (EEL_IS_LABELED_IMAGE (child));
@@ -1516,10 +1513,8 @@ element_clicked_callback (GtkWidget *image_table,
 				  NULL);
 
 	/* compute the offsets for dragging */
-	scroll_offset = eel_viewport_get_scroll_offset (EEL_VIEWPORT (image_table->parent));
-
 	if (strcmp (drag_types[0].target, "application/x-color")) {
-		/*it's not a color, so, for now, it must be an image */
+		/* it's not a color, so, for now, it must be an image */
 		/* fiddle with the category to handle the "reset" case properly */
 		char * save_category = property_browser->details->category;
 		if (eel_strcmp (property_browser->details->category, "colors") == 0) {
@@ -1531,8 +1526,11 @@ element_clicked_callback (GtkWidget *image_table,
 		y_delta = gdk_pixbuf_get_height (pixbuf) / 2;
 	} else {
 		pixbuf = make_color_drag_image (property_browser, element_name, TRUE);
-		x_delta = event->x - child->allocation.x - scroll_offset.x;
-		y_delta = event->y - child->allocation.y - scroll_offset.y;
+		gdk_window_get_position (GTK_VIEWPORT (image_table->parent)->bin_window,
+					 &scroll_offset_x,
+					 &scroll_offset_y);
+		x_delta = event->x - child->allocation.x - scroll_offset_x;
+		y_delta = event->y - child->allocation.y - scroll_offset_y;
 	}
 
         /* set the pixmap and mask for dragging */       
@@ -1940,8 +1938,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 	/* allocate a new container, with a scrollwindow and viewport */
 	property_browser->details->content_frame = gtk_scrolled_window_new (NULL, NULL);
 	gtk_container_set_border_width (GTK_CONTAINER (property_browser->details->content_frame), 0);				
- 	viewport = eel_viewport_new (NULL, NULL);
-	eel_viewport_set_never_smooth (EEL_VIEWPORT (viewport), FALSE);
+ 	viewport = gtk_viewport_new (NULL, NULL);
 	gtk_widget_show(viewport);
 	gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_IN);
 	background = eel_get_widget_background (viewport);

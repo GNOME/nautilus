@@ -1070,6 +1070,7 @@ nautilus_file_rename (NautilusFile *file,
 
 	/* Do the renaming. */
 	partial_file_info = gnome_vfs_file_info_new ();
+	/* FIXME: Handle G_BROKEN_FILENAMES here? */
 	partial_file_info->name = g_strdup (new_name);
 	vfs_uri = nautilus_file_get_gnome_vfs_uri (file);
 	gnome_vfs_async_set_file_info (&op->handle,
@@ -2300,7 +2301,7 @@ make_valid_utf8 (char *name)
 char *
 nautilus_file_get_display_name (NautilusFile *file)
 {
-	char *name;
+	char *name, *utf8_name;
 
 	if (file == NULL) {
 		return NULL;
@@ -2318,6 +2319,18 @@ nautilus_file_get_display_name (NautilusFile *file)
 			 * but convenient for people who just want to display it.
 			 */
 			name = g_strdup (file->details->relative_uri);
+		} else {
+			/* Support the G_BROKEN_FILENAMES feature of
+			 * glib by using g_filename_to_utf8 to convert
+			 * local filenames to UTF-8.
+			 */
+			if (g_getenv ("G_BROKEN_FILENAMES") != NULL && nautilus_file_is_local (file)) {
+				utf8_name = g_filename_to_utf8 (name, -1, NULL, NULL, NULL);
+				if (utf8_name != NULL) {
+					name = utf8_name;
+					g_free (name);
+				}
+			}
 		}
 	}
 

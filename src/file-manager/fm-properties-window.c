@@ -32,12 +32,10 @@
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
-#include <eel/eel-image.h>
 #include <eel/eel-labeled-image.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
-#include <eel/eel-viewport.h>
 #include <eel/eel-wrap-table.h>
 #include <gtk/gtkalignment.h>
 #include <gtk/gtkcheckbutton.h>
@@ -46,6 +44,7 @@
 #include <gtk/gtkfilesel.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkhseparator.h>
+#include <gtk/gtkimage.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtknotebook.h>
@@ -250,12 +249,10 @@ get_pixbuf_for_properties_window (NautilusFile *file)
 }
 
 static void
-update_properties_window_icon (EelImage *image)
+update_properties_window_icon (GtkImage *image)
 {
 	GdkPixbuf	*pixbuf;
 	NautilusFile	*file;
-
-	g_assert (EEL_IS_IMAGE (image));
 
 	file = g_object_get_data (G_OBJECT (image), "nautilus_file");
 
@@ -263,7 +260,7 @@ update_properties_window_icon (EelImage *image)
 	
 	pixbuf = get_pixbuf_for_properties_window (file);
 
-	eel_image_set_pixbuf (image, pixbuf);
+	gtk_image_set_from_pixbuf (image, pixbuf);
 	
 	g_object_unref (pixbuf);
 }
@@ -299,13 +296,13 @@ fm_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 {
 	char **uris;
 	gboolean exactly_one;
-	EelImage *image;
+	GtkImage *image;
  	GtkWindow *window; 
 
 	uris = g_strsplit (selection_data->data, "\r\n", 0);
 	exactly_one = uris[0] != NULL && uris[1] == NULL;
 
-	image = EEL_IMAGE (widget);
+	image = GTK_IMAGE (widget);
  	window = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (image)));
 
 
@@ -347,7 +344,7 @@ create_image_widget_for_file (NautilusFile *file)
 	
 	pixbuf = get_pixbuf_for_properties_window (file);
 	
-	image = eel_image_new (NULL);
+	image = gtk_image_new ();
 
 	/* prepare the image to receive dropped objects to assign custom images */
 	gtk_drag_dest_set (GTK_WIDGET (image),
@@ -359,7 +356,7 @@ create_image_widget_for_file (NautilusFile *file)
 			    G_CALLBACK (fm_properties_window_drag_data_received), NULL);
 
 
-	eel_image_set_pixbuf (EEL_IMAGE (image), pixbuf);
+	gtk_image_set_from_pixbuf (GTK_IMAGE (image), pixbuf);
 
 	g_object_unref (pixbuf);
 

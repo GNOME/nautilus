@@ -55,12 +55,12 @@ libnautilus_la_SOURCES=					\
 	$(NULL)
 
 $(nautilus_view_component_idl_sources): nautilus_view_component_idl_stamp
-nautilus_view_component_idl_stamp: nautilus-view-component.idl
+nautilus_view_component_idl_stamp: nautilus-view-component.idl $(ORBIT_IDL)
 	$(ORBIT_IDL) $(LIBNAUTILUS_IDL_INCLUDES) --define=__nautilus_view_component_COMPILATION $<
 	touch $@
 
 $(nautilus_distributed_undo_idl_sources): nautilus_distributed_undo_idl_stamp
-nautilus_distributed_undo_idl_stamp: nautilus-distributed-undo.idl
+nautilus_distributed_undo_idl_stamp: nautilus-distributed-undo.idl $(ORBIT_IDL)
 	$(ORBIT_IDL) $(LIBNAUTILUS_IDL_INCLUDES) $<
 	touch $@
 

@@ -42,6 +42,7 @@
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-property-bag-client.h>
 #include <bonobo/bonobo-ui-util.h>
+#include <eel/eel-debug.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-generous-bin.h>
@@ -188,7 +189,7 @@ nautilus_window_class_init (NautilusWindowClass *klass)
 				(pixbuf, &mini_icon_pixmap, &mini_icon_mask,
 				 EEL_STANDARD_ALPHA_THRESHHOLD);
 			g_object_unref (pixbuf);
-			g_atexit (unref_mini_icon);
+			eel_debug_call_at_shutdown (unref_mini_icon);
 		}
         	g_free (filename);
 	}
@@ -1785,7 +1786,7 @@ add_to_history_list (NautilusBookmark *bookmark)
 	g_return_if_fail (NAUTILUS_IS_BOOKMARK (bookmark));
 
 	if (!free_history_list_is_set_up) {
-		g_atexit (free_history_list);
+		eel_debug_call_at_shutdown (free_history_list);
 		free_history_list_is_set_up = TRUE;
 	}
 

@@ -44,6 +44,7 @@
 #include <eel/eel-debug.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
+#include <eel/eel-gobject-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
@@ -971,7 +972,7 @@ get_bookmark_list (void)
 {
         if (bookmarks == NULL) {
                 bookmarks = nautilus_bookmark_list_new ();
-		g_atexit (free_bookmark_list);
+		eel_debug_call_at_shutdown (free_bookmark_list);
         }
 
         return bookmarks;
@@ -1092,15 +1093,14 @@ nautilus_window_initialize_go_menu (NautilusWindow *window)
 	/* Recreate bookmarks part of menu if history list changes
 	 * or if icon theme changes.
 	 */
-	gtk_signal_connect_object_while_alive (nautilus_signaller_get_current (),
+	eel_signal_connect_object_while_alive (nautilus_signaller_get_current (),
 			                       "history_list_changed",
 			                       G_CALLBACK (schedule_refresh_go_menu),
-			   	               GTK_OBJECT (window));
-	 
-	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
+			   	               G_OBJECT (window));
+	eel_signal_connect_object_while_alive (G_OBJECT (nautilus_icon_factory_get ()),
 					       "icons_changed",
 					       G_CALLBACK (schedule_refresh_go_menu),
-					       GTK_OBJECT (window));
+					       G_OBJECT (window));
 }
 
 /**

@@ -31,6 +31,7 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-iso9660.h"
 #include "nautilus-volume-monitor.h"
+#include <eel/eel-debug.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
@@ -395,7 +396,7 @@ nautilus_volume_monitor_get (void)
 					 NULL));
 		g_object_ref (global_volume_monitor);
 		gtk_object_sink (GTK_OBJECT (global_volume_monitor));
-		g_atexit (unref_global_volume_monitor);
+		eel_debug_call_at_shutdown (unref_global_volume_monitor);
 	}
 
 	return global_volume_monitor;

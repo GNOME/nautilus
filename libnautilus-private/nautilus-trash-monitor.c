@@ -30,6 +30,7 @@
 #include "nautilus-directory.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-trash-directory.h"
+#include <eel/eel-debug.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtksignal.h>
@@ -193,7 +194,7 @@ nautilus_trash_monitor_get (void)
 			(g_object_new (NAUTILUS_TYPE_TRASH_MONITOR, NULL));
 		g_object_ref (nautilus_trash_monitor);
 		gtk_object_sink (GTK_OBJECT (nautilus_trash_monitor));
-		g_atexit (unref_trash_monitor);
+		eel_debug_call_at_shutdown (unref_trash_monitor);
 		
 		/* make sure we get signalled when trash directories get added */
 		nautilus_trash_directory_finish_initializing

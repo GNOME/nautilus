@@ -1,7 +1,5 @@
 #include "test.h"
 
-#include <eel/eel-image.h>
-#include <eel/eel-image-with-background.h>
 #include <eel/eel-string-picker.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <unistd.h>

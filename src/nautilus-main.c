@@ -276,7 +276,9 @@ main (int argc, char *argv[])
 	}
 
 	poptFreeContext (popt_context);
+
 	gnome_vfs_shutdown ();
+	eel_debug_shut_down ();
 	bonobo_ui_debug_shutdown ();
 
 	/* If told to restart, exec() myself again. This is used when

@@ -38,9 +38,9 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
-#include <eel/eel-image-with-background.h>
 #include <eel/eel-string.h>
 #include <gtk/gtkhbox.h>
+#include <gtk/gtkimage.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwidget.h>
@@ -184,7 +184,7 @@ nautilus_sidebar_title_init (NautilusSidebarTitle *sidebar_title)
 			    G_CALLBACK (realize_callback), NULL);
 
 	/* Create the icon */
-	sidebar_title->details->icon = eel_image_new_with_background (NULL);
+	sidebar_title->details->icon = gtk_image_new ();
 	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->icon, 0, 0, 0);
 	gtk_widget_show (sidebar_title->details->icon);
 
@@ -493,7 +493,7 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 	}
 
 	if (!leave_pixbuf_unchanged) {
-		eel_image_set_pixbuf (EEL_IMAGE (sidebar_title->details->icon), pixbuf);
+		gtk_image_set_from_pixbuf (GTK_IMAGE (sidebar_title->details->icon), pixbuf);
 	}
 }
 
@@ -683,8 +683,7 @@ add_emblem (NautilusSidebarTitle *sidebar_title, GdkPixbuf *pixbuf)
 {
 	GtkWidget *image_widget;
 
-	image_widget = eel_image_new_with_background (NULL);
-	eel_image_set_pixbuf (EEL_IMAGE (image_widget), pixbuf);	
+	image_widget = gtk_image_new_from_pixbuf (pixbuf);
   	gtk_widget_show (image_widget);
 	gtk_container_add (GTK_CONTAINER (sidebar_title->details->emblem_box), image_widget);	
 }

@@ -39,6 +39,7 @@
 #include "nautilus-theme.h"
 #include "nautilus-thumbnails.h"
 #include "nautilus-trash-monitor.h"
+#include <eel/eel-debug.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
@@ -289,7 +290,7 @@ get_icon_factory (void)
 				  G_CALLBACK (mime_type_data_changed_callback),
 				  NULL);
 
-		g_atexit (destroy_icon_factory);
+		eel_debug_call_at_shutdown (destroy_icon_factory);
         }
         return global_icon_factory;
 }
@@ -1685,7 +1686,7 @@ load_icon_for_scaling (NautilusScalableIcon *scalable_icon,
 			 NULL);
 		fallback_icon = cache_icon_new (pixbuf, FALSE, FALSE, NULL);
 		fallback_icon->is_fallback = TRUE;
-		g_atexit (destroy_fallback_icon);
+		eel_debug_call_at_shutdown (destroy_fallback_icon);
 	}
 
 	*actual_size_result = NAUTILUS_ICON_SIZE_STANDARD;
@@ -2259,7 +2260,7 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 					      GINT_TO_POINTER (TRUE));
 		embedded_text_font_changed_callback (GINT_TO_POINTER (FALSE));
 
-		g_atexit (embedded_text_font_free);
+		eel_debug_call_at_shutdown (embedded_text_font_free);
 	}
 
 	g_return_val_if_fail (EEL_IS_SCALABLE_FONT (embedded_text_font), NULL);

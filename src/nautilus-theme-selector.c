@@ -34,14 +34,13 @@
 #include <eel/eel-image-chooser.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
-#include <eel/eel-viewport.h>
 #include <gtk/gtkalignment.h>
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkfilesel.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkmain.h>
+#include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtksignal.h>
-#include <gtk/gtkwindow.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libnautilus-private/nautilus-global-preferences.h>

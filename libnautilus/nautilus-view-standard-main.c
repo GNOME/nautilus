@@ -229,7 +229,6 @@ nautilus_view_standard_main_multi (const char *executable_name,
 	}
 
 	gnome_vfs_shutdown ();
-	bonobo_ui_debug_shutdown ();
 
 	return EXIT_SUCCESS;
 }

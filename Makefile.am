@@ -30,7 +30,6 @@ EXTRA_DIST=					\
 	nautilus.spec.in			\
 	nautilus.desktop			\
 	nautilus.desktop.in			\
-	nautilus-launch-icon.png		\
 	gnome-starthere-96.png			\
 	gnome-starthere.png			\
 	ChangeLog-20000414			\
@@ -47,8 +46,7 @@ EXTRA_DIST=					\
 	$(NULL)
 
 appicondir = $(datadir)/pixmaps
-appicon_DATA = 	nautilus-launch-icon.png 	\
-		gnome-starthere-96.png		\
+appicon_DATA = 	gnome-starthere-96.png		\
 		gnome-starthere.png
 
 Applicationsdir = $(datadir)/applications

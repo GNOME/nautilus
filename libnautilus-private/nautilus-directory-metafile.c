@@ -30,6 +30,7 @@
 #include "nautilus-metafile-factory.h"
 #include "nautilus-directory-metafile-monitor.h"
 #include "nautilus-metafile-server.h"
+#include <eel/eel-debug.h>
 #include <eel/eel-string.h>
 #include <bonobo-activation/bonobo-activation.h>
 #include <stdio.h>
@@ -111,7 +112,7 @@ get_factory (void)
 			factory = bonobo_object_dup_ref (bonobo_object_corba_objref (BONOBO_OBJECT (instance)), NULL);
 			bonobo_object_unref (BONOBO_OBJECT (instance));
 		}
-		g_atexit (free_factory);
+		eel_debug_call_at_shutdown (free_factory);
 	}
 
 	return factory;

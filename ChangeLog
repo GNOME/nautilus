@@ -1,3 +1,94 @@
+2002-01-18  Darin Adler  <darin@bentspoon.com>
+
+	* Makefile.am: Remove nautilus-launch-icon.png.
+	
+	* components/hardware/nautilus-hardware-view.c: (setup_form_title),
+	(setup_overview_form): Port from EelImage to GtkImage.
+	
+	* components/music/nautilus-music-view.c: Remove unused include.
+	* src/nautilus-theme-selector.c: Remove unused includes.
+	
+	* libnautilus-private/nautilus-bonobo-extensions.c:
+	(bonobo_activation_activation_callback): Add warning message so we
+	get to see the error from bonobo-activation.
+	
+	* libnautilus-private/nautilus-directory-metafile.c: (get_factory):
+	* libnautilus-private/nautilus-icon-factory.c: (get_icon_factory),
+	(load_icon_for_scaling), (embed_text):
+	* libnautilus-private/nautilus-metafile-factory.c:
+	(nautilus_metafile_factory_get_instance):
+	* libnautilus-private/nautilus-theme.c:
+	(nautilus_theme_get_theme_data_from_theme):
+	* libnautilus-private/nautilus-trash-monitor.c:
+	(nautilus_trash_monitor_get):
+	* libnautilus-private/nautilus-volume-monitor.c:
+	(nautilus_volume_monitor_get):
+	* src/file-manager/nautilus-indexing-info.c:
+	(show_indexing_info_dialog):
+	* src/nautilus-preferences-dialog.c:
+	(global_preferences_get_dialog):
+	* src/nautilus-window.c: (nautilus_window_class_init),
+	(add_to_history_list):
+	Use eel_debug_call_at_shutdown instead of g_atexit.
+	
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_get_display_name): Add G_BROKEN_FILENAMES support.
+	
+	* libnautilus-private/nautilus-global-preferences.c:
+	(nautilus_global_preferences_init): Remove eel_smooth_widget code.
+	
+	* libnautilus/Makefile.am: Add missing ORBIT_IDL dependency.
+	
+	* libnautilus/nautilus-view-standard-main.c:
+	(nautilus_view_standard_main_multi): Remove
+	bonobo_ui_debug_shutdown for now. It does us no good unless we
+	also do eel_debug_shut_down, but libnautilus can't depend on eel.
+	
+	* nautilus-launch-icon.png: Remove.
+	
+	* src/file-manager/fm-properties-window.c:
+	(update_properties_window_icon),
+	(fm_properties_window_drag_data_received),
+	(create_image_widget_for_file): Port from EelImage to GtkImage.
+	
+	* src/nautilus-component-adapter-factory.c:
+	(nautilus_component_adapter_factory_get): Use
+	eel_debug_call_at_shutdown instead of g_atexit.
+	(nautilus_component_adapter_factory_create_adapter): Look at
+	exceptions before looking at return values from CORBA calls.
+	
+	* src/nautilus-main.c: (main): Add a call to eel_debug_shut_down.
+	
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_init), (element_clicked_callback),
+	(nautilus_property_browser_update_contents): Port from EelViewport
+	to GtkViewport.
+	
+	* src/nautilus-search-bar-criterion.c:
+	(nautilus_search_bar_criterion_destroy),
+	(nautilus_search_bar_criterion_new_from_values): Fix for change
+	that made NautilusSignaller no longer a GtkObject.
+	
+	* src/nautilus-sidebar-title.c: (nautilus_sidebar_title_init),
+	(update_icon), (add_emblem): Port from EelImage to GtkImage.
+	
+	* src/nautilus-signaller.h:
+	* src/nautilus-signaller.c: (nautilus_signaller_get_current): Use
+	eel_debug_call_at_shutdown instead of g_atexit.
+	(nautilus_signaller_instance_init),
+	(nautilus_signaller_class_init): Change to GObject, not GtkObject.
+	
+	* src/nautilus-window-menus.c: (get_bookmark_list): Use
+	eel_debug_call_at_shutdown instead of g_atexit.
+	(nautilus_window_initialize_go_menu): Fix for change that made
+	NautilusSignaller no longer a GtkObject.
+	
+	* test/test-nautilus-preferences-change.c: Remove unused include.
+	* test/test-nautilus-preferences-display.c: Remove unused includes.
+	* test/test-nautilus-wrap-table.c: Remove unused includes.
+	* test/test.c: Remove unused function.
+	* test/test.h: Remove unused function.
+
 2002-01-18  Michael Meeks  <michael@ximian.com>
 
 	* libnautilus-private/nautilus-directory-background.c

@@ -195,7 +195,7 @@ static char *                         get_owner_location_for                    
 static void                           make_emblem_value_menu                        (NautilusSearchBarCriterion      *criterion);
 static void                           criterion_type_changed_callback               (GtkObject                       *object,
 										     gpointer                         data);
-static void                           emblems_changed_callback                      (GtkObject                       *signaller,
+static void                           emblems_changed_callback                      (GObject                         *signaller,
 										     gpointer                         data);
 static gboolean                       criterion_type_already_is_displayed           (GSList                          *criteria,
 										     NautilusSearchBarCriterionType   criterion_number);
@@ -233,8 +233,8 @@ nautilus_search_bar_criterion_destroy (GtkObject *object)
 	criterion = NAUTILUS_SEARCH_BAR_CRITERION (object);
 
 	/* FIXME bugzilla.gnome.org 42437: need more freeage */
-	gtk_signal_disconnect_by_data (nautilus_signaller_get_current (),
-				       criterion);
+	g_signal_handlers_disconnect_by_func (nautilus_signaller_get_current (),
+					      G_CALLBACK (emblems_changed_callback), criterion);
 	/*	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (criterion->details->value_entry), FALSE);
 		nautilus_undo_tear_down_nautilus_entry_for_undo (criterion->details->value_entry);
 	*/
@@ -297,14 +297,10 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 	details->bar = bar;
 	details->box = gtk_hwrap_box_new (FALSE);
 
-	g_signal_connect (details->box,
-			    "need_reallocation",
-			    G_CALLBACK (queue_bar_resize_callback),
-			    bar);
-	gtk_signal_connect (nautilus_signaller_get_current (),
-			    "emblems_changed",
-			    G_CALLBACK (emblems_changed_callback),
-			    criterion);
+	g_signal_connect (details->box, "need_reallocation",
+			  G_CALLBACK (queue_bar_resize_callback), bar);
+	g_signal_connect (nautilus_signaller_get_current (), "emblems_changed",
+			  G_CALLBACK (emblems_changed_callback), criterion);
 	
 
 	search_criteria_option_menu = gtk_option_menu_new ();
@@ -317,10 +313,8 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 		g_free (context_stripped_criteria_title);
 
 		g_object_set_data (G_OBJECT(item), "type", GINT_TO_POINTER(i));
-		g_signal_connect (item,
-				    "activate",
-				    G_CALLBACK (criterion_type_changed_callback),
-				    criterion);
+		g_signal_connect (item, "activate",
+				  G_CALLBACK (criterion_type_changed_callback), criterion);
 		gtk_menu_append (GTK_MENU (search_criteria_menu),
 				 item);
 		gtk_widget_show (item);
@@ -718,10 +712,8 @@ nautilus_search_bar_criterion_update_valid_criteria_choices (NautilusSearchBarCr
 		
 		g_object_set_data (G_OBJECT(item), "type", GINT_TO_POINTER(i));
 		
-		g_signal_connect (item,
-				    "activate",
-				    G_CALLBACK (criterion_type_changed_callback),
-				    criterion);
+		g_signal_connect (item, "activate",
+				  G_CALLBACK (criterion_type_changed_callback), criterion);
 		gtk_menu_append (GTK_MENU (new_menu),
 				 item);
 		gtk_widget_show (item);
@@ -1052,13 +1044,12 @@ criterion_type_changed_callback (GtkObject *object,
 }
 
 static void
-emblems_changed_callback (GtkObject *signaller,
+emblems_changed_callback (GObject *signaller,
 			  gpointer data)
 {
 	NautilusSearchBarCriterion *criterion;
 	GtkWidget *menu_widget;
 
-	g_return_if_fail (NAUTILUS_IS_SEARCH_BAR_CRITERION (data));
 	criterion = NAUTILUS_SEARCH_BAR_CRITERION (data);
 
 	if (criterion->details->type == NAUTILUS_EMBLEM_SEARCH_CRITERION) {
@@ -1077,8 +1068,6 @@ criterion_is_of_type (gconstpointer a,
 	NautilusSearchBarCriterion *criterion;
 	NautilusSearchBarCriterionType type;
 
-	g_return_val_if_fail (NAUTILUS_IS_SEARCH_BAR_CRITERION (a), 
-			      NAUTILUS_NUMBER_OF_SEARCH_CRITERIA);
 	criterion = NAUTILUS_SEARCH_BAR_CRITERION (a);
 	type = (NautilusSearchBarCriterionType) b;
 	

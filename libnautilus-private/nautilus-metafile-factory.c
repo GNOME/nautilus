@@ -24,6 +24,7 @@
 #include "nautilus-metafile-factory.h"
 #include "nautilus-metafile.h"
 
+#include <eel/eel-debug.h>
 #include <eel/eel-gtk-macros.h>
 #include "nautilus-bonobo-extensions.h"
 
@@ -74,7 +75,7 @@ nautilus_metafile_factory_get_instance (void)
 {
 	if (the_factory == NULL) {
 		the_factory = nautilus_metafile_factory_new ();
-		g_atexit (free_factory_instance);
+		eel_debug_call_at_shutdown (free_factory_instance);
 	}
 	
 	bonobo_object_ref (BONOBO_OBJECT (the_factory));

@@ -38,7 +38,6 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
-#include <eel/eel-image.h>
 #include <eel/eel-preferences.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>

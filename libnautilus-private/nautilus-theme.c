@@ -29,6 +29,7 @@
 #include "nautilus-file.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-metadata.h"
+#include <eel/eel-debug.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string-list.h>
@@ -171,7 +172,7 @@ nautilus_theme_get_theme_data_from_theme (const char *resource_name, const char 
 	} else {
 		/* release the old saved data, since the theme changed */
 		if (!did_set_up_free_last_theme) {
-			g_atexit (free_last_theme);
+			eel_debug_call_at_shutdown (free_last_theme);
 			did_set_up_free_last_theme = TRUE;
 		}
 		free_last_theme ();
@@ -197,7 +198,7 @@ nautilus_theme_get_theme_data_from_theme (const char *resource_name, const char 
 	if (theme_data == NULL) {
 		if (default_theme_document == NULL) {
 			default_theme_document = load_theme_document ("default");
-			g_atexit (free_default_theme);
+			eel_debug_call_at_shutdown (free_default_theme);
 		}
 
 		resource_node = eel_xml_get_child_by_name (xmlDocGetRootElement (default_theme_document), resource_name);

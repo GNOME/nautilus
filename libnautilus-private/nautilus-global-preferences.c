@@ -33,7 +33,6 @@
 #include <eel/eel-enumeration.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
-#include <eel/eel-smooth-widget.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <libgnome/gnome-i18n.h>
@@ -731,17 +730,6 @@ default_home_location_callback (void)
  * Public functions
  */
 
-/* Let the smooth widget machinery know about smoothness changes */
-static void
-smooth_graphics_mode_changed_callback (gpointer callback_data)
-{
-	gboolean is_smooth;
-
-	is_smooth = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
-	
-	eel_smooth_widget_global_set_is_smooth (is_smooth);
-}
-
 static void
 set_default_folder_viewer_in_gnome_vfs (const char *iid)
 {
@@ -843,10 +831,6 @@ nautilus_global_preferences_init (void)
 	eel_preferences_monitor_directory (SYSTEM_GNOME_VFS_PATH);
 
 	/* Set up storage for values accessed in this file */
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
-				      smooth_graphics_mode_changed_callback, 
-				      NULL);
-	
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER, 
 				      default_folder_viewer_changed_callback, 
 				      NULL);
@@ -854,11 +838,6 @@ nautilus_global_preferences_init (void)
  	eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT,
 				      default_icon_view_sort_order_or_manual_layout_changed_callback, 
 				      NULL);
-
-	/* Keep track of smooth graphics mode changes in order to notify the smooth
-	 * widget machinery.
-	 */
-	smooth_graphics_mode_changed_callback (NULL);
 
 	/* Preload everything in a big batch */
 	eel_gconf_preload_cache ("/apps/nautilus/preferences",

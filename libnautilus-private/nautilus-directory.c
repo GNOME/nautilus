@@ -63,7 +63,6 @@ static guint signals[LAST_SIGNAL];
 static GHashTable *directories;
 
 static void               nautilus_directory_finalize         (GObject                *object);
-static void               nautilus_directory_dispose          (GObject                *object);
 static void               nautilus_directory_init             (gpointer                object,
 							       gpointer                klass);
 static void               nautilus_directory_class_init (NautilusDirectoryClass *klass);
@@ -84,7 +83,6 @@ nautilus_directory_class_init (NautilusDirectoryClass *klass)
 	object_class = G_OBJECT_CLASS (klass);
 	
 	object_class->finalize = nautilus_directory_finalize;
-	object_class->dispose  = nautilus_directory_dispose;
 
 	signals[FILES_ADDED] =
 		g_signal_new ("files_added",
@@ -161,7 +159,7 @@ nautilus_directory_unref (NautilusDirectory *directory)
 }
 
 static void
-nautilus_directory_dispose (GObject *object)
+nautilus_directory_finalize (GObject *object)
 {
 	NautilusDirectory *directory;
 
@@ -205,16 +203,6 @@ nautilus_directory_dispose (GObject *object)
 		gnome_vfs_uri_unref (directory->details->vfs_uri);
 		directory->details->vfs_uri = NULL;
 	}
-
-	EEL_CALL_PARENT (G_OBJECT_CLASS, dispose, (object));
-}
-
-static void
-nautilus_directory_finalize (GObject *object)
-{
-	NautilusDirectory *directory;
-
-	directory = NAUTILUS_DIRECTORY (object);
 
 	g_assert (directory->details->file_list == NULL);
 	g_hash_table_destroy (directory->details->file_hash);

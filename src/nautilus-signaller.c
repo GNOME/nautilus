@@ -29,11 +29,11 @@
 #include <config.h>
 #include "nautilus-signaller.h"
 
-#include <gtk/gtksignal.h>
-#include <eel/eel-gtk-macros.h>
+#include <eel/eel-debug.h>
+#include <libgnome/gnome-macros.h>
 
-typedef GtkObject NautilusSignaller;
-typedef GtkObjectClass NautilusSignallerClass;
+typedef GObject NautilusSignaller;
+typedef GObjectClass NautilusSignallerClass;
 
 enum {
 	HISTORY_LIST_CHANGED,
@@ -43,63 +43,46 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-static GtkObject *global_signaller = NULL;
+static GType nautilus_signaller_get_type (void);
 
-static GtkType nautilus_signaller_get_type         (void);
-static void    nautilus_signaller_class_init (gpointer klass);
-static void    nautilus_signaller_init       (gpointer object,
-						    gpointer klass);
+GNOME_CLASS_BOILERPLATE (NautilusSignaller, nautilus_signaller,
+			 GObject, G_TYPE_OBJECT)
 
-EEL_CLASS_BOILERPLATE (NautilusSignaller,
-				   nautilus_signaller,
-				   GTK_TYPE_OBJECT)
-
-static void
-nautilus_signaller_class_init (gpointer klass)
-{
-	GtkObjectClass *object_class;
-
-	object_class = GTK_OBJECT_CLASS (klass);
-	
-	signals[HISTORY_LIST_CHANGED] =
-		g_signal_new ("history_list_changed",
-		              G_TYPE_FROM_CLASS (object_class),
-		              G_SIGNAL_RUN_LAST,
-		              0,
-		              NULL, NULL,
-		              gtk_marshal_NONE__NONE,
-		              G_TYPE_NONE, 0);
-	signals[EMBLEMS_CHANGED] =
-		g_signal_new ("emblems_changed",
-		              G_TYPE_FROM_CLASS (object_class),
-		              G_SIGNAL_RUN_LAST,
-		              0,
-		              NULL, NULL,
-		              gtk_marshal_NONE__NONE,
-		              G_TYPE_NONE, 0);
-}
-
-static void
-nautilus_signaller_init (gpointer object, gpointer klass)
-{
-	/* placeholder to allow use of boilerplate macro */
-}
-
-static void
-unref_global_signaller (void)
-{
-	g_object_unref (global_signaller);
-}
-
-GtkObject *
+GObject *
 nautilus_signaller_get_current (void)
 {
+	static GObject *global_signaller = NULL;
+
 	if (global_signaller == NULL) {
 		global_signaller = g_object_new (nautilus_signaller_get_type (), NULL);
-		g_object_ref (global_signaller);
-		gtk_object_sink (GTK_OBJECT (global_signaller));
-		g_atexit (unref_global_signaller);
+		eel_debug_call_at_shutdown_with_data (g_object_unref, global_signaller);
 	}
 
 	return global_signaller;
+}
+
+static void
+nautilus_signaller_instance_init (NautilusSignaller *signaller)
+{
+}
+
+static void
+nautilus_signaller_class_init (NautilusSignallerClass *class)
+{
+	signals[HISTORY_LIST_CHANGED] =
+		g_signal_new ("history_list_changed",
+		              G_TYPE_FROM_CLASS (class),
+		              G_SIGNAL_RUN_LAST,
+		              0,
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__VOID,
+		              G_TYPE_NONE, 0);
+	signals[EMBLEMS_CHANGED] =
+		g_signal_new ("emblems_changed",
+		              G_TYPE_FROM_CLASS (class),
+		              G_SIGNAL_RUN_LAST,
+		              0,
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__VOID,
+		              G_TYPE_NONE, 0);
 }

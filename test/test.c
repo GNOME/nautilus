@@ -127,33 +127,6 @@ test_pixbuf_new_named (const char *name, float scale)
 }
 
 GtkWidget *
-test_image_new (const char *pixbuf_name,
-		float scale,
-		gboolean with_background)
-{
-	GtkWidget *image;
-
-	if (with_background) {
-		image = eel_image_new_with_background (NULL);
-	} else {
-		image = eel_image_new (NULL);
-	}
-
-	if (pixbuf_name != NULL) {
-		GdkPixbuf *pixbuf;
-
-		pixbuf = test_pixbuf_new_named (pixbuf_name, scale);
-
-		if (pixbuf != NULL) {
-			eel_image_set_pixbuf (EEL_IMAGE (image), pixbuf);
-			g_object_unref (pixbuf);
-		}
-	}
-
-	return image;
-}
-
-GtkWidget *
 test_label_new (const char *text,
 		gboolean with_background,
 		int num_sizes_larger)

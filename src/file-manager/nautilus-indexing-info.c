@@ -271,7 +271,7 @@ show_indexing_info_dialog (void)
         }
 	if (dialogs == NULL) {
                 dialogs = g_new0 (IndexingInfoDialogs, 1);
-                g_atexit (destroy_indexing_info_dialogs_on_exit);
+                eel_debug_call_at_shutdown (destroy_indexing_info_dialogs_on_exit, NULL);
                 
                 dialogs->last_index_time_dialog = last_index_time_dialog_new ();
                 dialogs->index_in_progress_dialog = index_progress_dialog_new ();
