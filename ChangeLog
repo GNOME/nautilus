@@ -1,5 +1,13 @@
 2004-03-30  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-icon-container.c: (match_best_name),
+	(select_matching_name), (handle_typeahead), (key_press_event):
+	* src/file-manager/fm-list-view.c: (select_matching_name),
+	(handle_typeahead), (key_press_callback):
+	Fix non-ascii typeahead.
+
+2004-03-30  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-tree-view.c (create_tree):
 	Use correct icon for filesystem.
 

@@ -610,17 +610,21 @@ select_matching_name (FMListView *view,
 	gboolean match_found;
 	GValue value = { 0 };
 	const gchar *file_name;
+	int match_name_len, file_name_len;
 	
 	match_found = FALSE;
 	
 	if (!gtk_tree_model_get_iter_first (GTK_TREE_MODEL (view->details->model), &iter)) {
 		return FALSE;
 	}
-	
+
+	match_name_len = strlen (match_name);
 	do {
 		gtk_tree_model_get_value (GTK_TREE_MODEL (view->details->model), &iter, view->details->file_name_column_num, &value);
 		file_name = g_value_get_string (&value);
-		match_found = (g_ascii_strncasecmp (match_name, file_name, MIN (strlen (match_name), strlen (file_name))) == 0);
+		file_name_len = strlen (file_name);
+		match_found = file_name_len >= match_name_len &&
+			g_ascii_strncasecmp (match_name, file_name, MIN (match_name_len, file_name_len)) == 0;
 		g_value_unset (&value);
 
 		if (match_found) {
@@ -649,31 +653,33 @@ fm_list_view_flush_typeselect_state (FMListView *view)
 }
 
 static gboolean
-handle_typeahead (FMListView *view, const char *key_string)
+handle_typeahead (FMListView *view,
+		  GdkEventKey *event,
+		  gboolean *flush_typeahead)
 {
 	char *new_pattern;
 	gint64 now;
 	gint64 time_delta;
-	int key_string_length;
-	int index;
+	guint32 unichar;
+	char unichar_utf8[7];
+	int i;
 
-	g_assert (key_string != NULL);
-	g_assert (strlen (key_string) < 5);
+	unichar = gdk_keyval_to_unicode (event->keyval);
+	i = g_unichar_to_utf8 (unichar, unichar_utf8);
+	unichar_utf8[i] = 0;
+	
+	*flush_typeahead = FALSE;
 
-	key_string_length = strlen (key_string);
-
-	if (key_string_length == 0) {
+	if (*event->string == 0) {
 		/* can be an empty string if the modifier was held down, etc. */
 		return FALSE;
 	}
-
-	/* only handle if printable keys typed */
-	for (index = 0; index < key_string_length; index++) {
-		if (!g_ascii_isprint (key_string[index])) {
-			return FALSE;
-		}
+	
+	if (!g_unichar_isprint (unichar)) {
+		*flush_typeahead = TRUE;
+		return FALSE;
 	}
-
+	
 	/* lazily allocate the typeahead state */
 	if (view->details->type_select_state == NULL) {
 		view->details->type_select_state = g_new0 (TypeSelectState, 1);
@@ -691,10 +697,10 @@ handle_typeahead (FMListView *view, const char *key_string)
 	if (view->details->type_select_state->type_select_pattern != NULL) {
 		new_pattern = g_strconcat
 			(view->details->type_select_state->type_select_pattern,
-			 key_string, NULL);
+			 unichar_utf8, NULL);
 		g_free (view->details->type_select_state->type_select_pattern);
 	} else {
-		new_pattern = g_strdup (key_string);
+		new_pattern = g_strdup (unichar_utf8);
 	}
 
 	view->details->type_select_state->type_select_pattern = new_pattern;
@@ -758,8 +764,7 @@ key_press_callback (GtkWidget *widget, GdkEventKey *event, gpointer callback_dat
 		 * might be used for menus.
 		 */
 		handled = (event->state & (GDK_CONTROL_MASK | GDK_MOD1_MASK)) == 0 &&
-			handle_typeahead (FM_LIST_VIEW (view), event->string);
-		flush_typeahead = !handled;
+			handle_typeahead (FM_LIST_VIEW (view), event, &flush_typeahead);
 		break;
 	}
 	if (flush_typeahead) {

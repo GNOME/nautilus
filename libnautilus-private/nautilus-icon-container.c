@@ -2804,7 +2804,7 @@ keyboard_space (NautilusIconContainer *container,
  * search pattern
  */
 typedef struct {
-	char *name;
+	gunichar *name;
 	int last_match_length;
 } BestNameMatch;
 
@@ -2818,6 +2818,7 @@ match_best_name (NautilusIconContainer *container,
 	BestNameMatch *match_state;
 	const char *name;
 	int match_length;
+	gunichar unichar;
 
 	match_state = (BestNameMatch *) data;
 
@@ -2831,19 +2832,16 @@ match_best_name (NautilusIconContainer *container,
 	}
 
 	for (match_length = 0; ; match_length++) {
-		if (name[match_length] == '\0'
-		    || match_state->name[match_length] == '\0') {
+		if (*name == 0 ||
+		    match_state->name[match_length] == 0) {
 			break;
 		}
 
-		/* Require the match pattern to already be lowercase. */
-		g_assert (g_ascii_tolower (match_state->name[match_length])
-			  == match_state->name[match_length]);
-			
-		if (g_ascii_tolower (name[match_length])
-		    != match_state->name[match_length]) {
+		unichar = g_utf8_get_char (name);
+		if (g_unichar_tolower (unichar) != match_state->name[match_length]) {
 			break;
 		}
+		name = g_utf8_next_char (name);
 	}
 
 	if (match_length > match_state->last_match_length) {
@@ -2861,22 +2859,20 @@ static gboolean
 select_matching_name (NautilusIconContainer *container,
 		      const char *match_name)
 {
-	int index;
+	int i;
 	NautilusIcon *icon;
 	BestNameMatch match_state;
 
-	match_state.name = g_strdup (match_name);
+	match_state.name = g_new (gunichar, g_utf8_strlen (match_name, -1) + 1);
 	match_state.last_match_length = 0;
 
-	/* a little optimization for case-insensitive match - convert the
-	 * pattern to lowercase ahead of time
-	 */
-	for (index = 0; ; index++) {
-		if (match_state.name[index] == '\0')
-			break;
-		match_state.name[index] = g_ascii_tolower (match_state.name[index]);
+	i = 0;
+	while (*match_name != 0) {
+		match_state.name[i++] = g_unichar_tolower (g_utf8_get_char (match_name));
+		match_name = g_utf8_next_char (match_name);
 	}
-
+	match_state.name[i++] = 0;
+	
 	icon = find_best_icon (container,
 			       NULL,
 			       match_best_name,
@@ -3642,29 +3638,31 @@ begin_dave_bashing (void)
 }
 
 static gboolean
-handle_typeahead (NautilusIconContainer *container, const char *key_string)
+handle_typeahead (NautilusIconContainer *container,
+		  GdkEventKey *event,
+		  gboolean *flush_typeahead)
 {
 	char *new_pattern;
 	gint64 now;
 	gint64 time_delta;
-	int key_string_length;
-	int index;
+	guint32 unichar;
+	char unichar_utf8[7];
+	int i;
 
-	g_assert (key_string != NULL);
-	g_assert (strlen (key_string) < 5);
-
-	key_string_length = strlen (key_string);
-
-	if (key_string_length == 0) {
+	unichar = gdk_keyval_to_unicode (event->keyval);
+	i = g_unichar_to_utf8 (unichar, unichar_utf8);
+	unichar_utf8[i] = 0;
+	
+	*flush_typeahead = FALSE;
+	
+	if (*event->string == 0) {
 		/* can be an empty string if the modifier was held down, etc. */
 		return FALSE;
 	}
-
-	/* only handle if printable keys typed */
-	for (index = 0; index < key_string_length; index++) {
-		if (!g_ascii_isprint (key_string[index])) {
-			return FALSE;
-		}
+	
+	if (!g_unichar_isprint (unichar)) {
+		*flush_typeahead = TRUE;
+		return FALSE;
 	}
 
 	/* lazily allocate the typeahead state */
@@ -3684,10 +3682,10 @@ handle_typeahead (NautilusIconContainer *container, const char *key_string)
 	if (container->details->type_select_state->type_select_pattern != NULL) {
 		new_pattern = g_strconcat
 			(container->details->type_select_state->type_select_pattern,
-			 key_string, NULL);
+			 unichar_utf8, NULL);
 		g_free (container->details->type_select_state->type_select_pattern);
 	} else {
-		new_pattern = g_strdup (key_string);
+		new_pattern = g_strdup (unichar_utf8);
 	}
 
 	container->details->type_select_state->type_select_pattern = new_pattern;
@@ -3818,8 +3816,7 @@ key_press_event (GtkWidget *widget,
 			 * might be used for menus.
 			 */
 			handled = (event->state & (GDK_CONTROL_MASK | GDK_MOD1_MASK)) == 0 &&
-				handle_typeahead (container, event->string);
-			flush_typeahead = !handled;
+				handle_typeahead (container, event, &flush_typeahead);
 			break;
 		}
 	}
