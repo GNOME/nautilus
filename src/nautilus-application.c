@@ -464,7 +464,7 @@ void
 nautilus_application_close_desktop (void)
 {
 	if (nautilus_application_desktop_window != NULL) {
-		gtk_widget_unref (GTK_WIDGET (nautilus_application_desktop_window));
+		gtk_widget_destroy (GTK_WIDGET (nautilus_application_desktop_window));
 		nautilus_application_desktop_window = NULL;
 	}
 	
