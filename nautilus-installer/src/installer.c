@@ -999,11 +999,6 @@ install_failed (EazelInstall *service,
 		PackageData *pd,
 		EazelInstaller *installer)
 {
-        if (pd->status == PACKAGE_ALREADY_INSTALLED) {
-                /* not really an important failure */
-                return;
-        }
-
 	g_message ("INSTALL FAILED.");
 	
 	report_unusual_errors (pd, installer);

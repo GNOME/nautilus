@@ -1,3 +1,14 @@
+2001-03-01  Robey Pointer  <robey@eazel.com>
+
+	reviewed by: Eskil Heyn Olsen <eskil@eazel.com>
+
+	* nautilus-installer/src/installer.c: (install_failed):
+
+	No longer need to throw away install_failed signals since we'll
+	only get them for the toplevel package now.  Need to report this
+	error so that redundant installs won't be reported as servers
+	being down.
+
 2001-03-01  Michael Engber  <engber@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>
