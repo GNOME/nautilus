@@ -1,3 +1,12 @@
+2003-03-07  Dave Camp  <dave@ximian.com>
+
+	* components/text/Makefile.am:
+	* components/text/nautilus-text-view-ui.xml:
+	* components/text/nautilus-text-view.c: (copy_callback),
+	(bonobo_control_activate_callback),
+	(nautilus_text_view_instance_init): Implement Copy to clipboard.
+	Don't need cut or paste, since the view is read-only.
+
 2003-03-06  Dave Camp  <dave@ximian.com>
 
 	* src/nautilus-file-management-properties.glade: Fixed alignment
