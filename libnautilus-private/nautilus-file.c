@@ -1861,6 +1861,28 @@ nautilus_file_get_mime_type_as_string_attribute (NautilusFile *file)
 	return NULL;
 }
 
+static char *
+format_item_count_for_display (guint item_count, 
+			       gboolean includes_directories, 
+			       gboolean includes_files)
+{
+	g_return_val_if_fail (includes_directories || includes_files, NULL);
+
+	if (item_count == 0) {
+		return g_strdup (includes_directories
+			? (includes_files ? _("0 items") : _("0 directories"))
+			: _("0 files"));
+	}
+	if (item_count == 1) {
+		return g_strdup (includes_directories
+			? (includes_files ? _("1 item") : _("1 directory"))
+			: _("1 file"));
+	}
+	return g_strdup_printf (includes_directories
+		? (includes_files ? _("%u items") : _("%u directories"))
+		: _("%u files"), item_count);
+}
+
 /**
  * nautilus_file_get_size_as_string:
  * 
@@ -1888,19 +1910,149 @@ nautilus_file_get_size_as_string (NautilusFile *file)
 		if (!nautilus_file_get_directory_item_count (file, &item_count, &count_unreadable)) {
 			return NULL;
 		}
-		if (item_count == 0) {
-			return g_strdup (_("0 items"));
-		}
-		if (item_count == 1) {
-			return g_strdup (_("1 item"));
-		}
-		return g_strdup_printf (_("%u items"), item_count);
+
+		return format_item_count_for_display (item_count, TRUE, TRUE);
 	}
 	
 	if (info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_SIZE)) {
 		return NULL;
 	}
 	return gnome_vfs_format_file_size_for_display (file->details->info->size);
+}
+
+static char *
+nautilus_file_get_deep_count_as_string_internal (NautilusFile *file,
+						 gboolean report_size,
+						 gboolean report_directory_count,
+						 gboolean report_file_count)
+{
+	NautilusRequestStatus status;
+	guint directory_count;
+	guint file_count;
+	guint unreadable_count;
+	guint total_count;
+	GnomeVFSFileSize total_size;
+
+	/* Must ask for size or some kind of count, but not both. */
+	g_return_val_if_fail (!report_size || (!report_directory_count && !report_file_count), NULL);
+	g_return_val_if_fail (report_size || report_directory_count || report_file_count, NULL);
+
+	if (file == NULL) {
+		return NULL;
+	}
+	
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+	g_return_val_if_fail (nautilus_file_is_directory (file), NULL);
+
+	status = nautilus_file_get_deep_counts 
+		(file, &directory_count, &file_count, &unreadable_count, &total_size);
+
+	/* Check whether any info is available. */
+	if (status == NAUTILUS_REQUEST_NOT_STARTED) {
+		return NULL;
+	}
+
+	total_count = file_count + directory_count;
+
+	if (total_count == 0) {
+		switch (status) {
+		case NAUTILUS_REQUEST_IN_PROGRESS:
+			/* Don't return confident "zero" until we're finished looking,
+			 * because of next case.
+			 */
+			return NULL;
+		case NAUTILUS_REQUEST_DONE:
+			/* Don't return "zero" if we there were contents but we couldn't read them. */
+			if (unreadable_count != 0) {
+				return NULL;
+			}
+		default: break;
+		}
+	}
+
+	/* Note that we don't distinguish the "everything was readable" case
+	 * from the "some things but not everything was readable" case here.
+	 * Callers can distinguish them using nautilus_file_get_deep_counts
+	 * directly if desired.
+	 */
+	if (report_size) {
+		return gnome_vfs_format_file_size_for_display (total_size);
+	}
+
+	return format_item_count_for_display (report_directory_count
+		? (report_file_count ? total_count : directory_count)
+		: file_count,
+		report_directory_count, report_file_count);
+}
+
+/**
+ * nautilus_file_get_deep_size_as_string:
+ * 
+ * Get a user-displayable string representing the size of all contained
+ * items (only makes sense for directories). The caller
+ * is responsible for g_free-ing this string.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: Newly allocated string ready to display to the user.
+ * 
+ **/
+static char *
+nautilus_file_get_deep_size_as_string (NautilusFile *file)
+{
+	return nautilus_file_get_deep_count_as_string_internal (file, TRUE, FALSE, FALSE);
+}
+
+/**
+ * nautilus_file_get_deep_total_count_as_string:
+ * 
+ * Get a user-displayable string representing the count of all contained
+ * items (only makes sense for directories). The caller
+ * is responsible for g_free-ing this string.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: Newly allocated string ready to display to the user.
+ * 
+ **/
+static char *
+nautilus_file_get_deep_total_count_as_string (NautilusFile *file)
+{
+	return nautilus_file_get_deep_count_as_string_internal (file, FALSE, TRUE, TRUE);
+}
+
+/**
+ * nautilus_file_get_deep_file_count_as_string:
+ * 
+ * Get a user-displayable string representing the count of all contained
+ * items, not including directories. It only makes sense to call this
+ * function on a directory. The caller
+ * is responsible for g_free-ing this string.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: Newly allocated string ready to display to the user.
+ * 
+ **/
+static char *
+nautilus_file_get_deep_file_count_as_string (NautilusFile *file)
+{
+	return nautilus_file_get_deep_count_as_string_internal (file, FALSE, FALSE, TRUE);
+}
+
+/**
+ * nautilus_file_get_deep_directory_count_as_string:
+ * 
+ * Get a user-displayable string representing the count of all contained
+ * directories. It only makes sense to call this
+ * function on a directory. The caller
+ * is responsible for g_free-ing this string.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: Newly allocated string ready to display to the user.
+ * 
+ **/
+static char *
+nautilus_file_get_deep_directory_count_as_string (NautilusFile *file)
+{
+	return nautilus_file_get_deep_count_as_string_internal (file, FALSE, TRUE, FALSE);
 }
 
 /**
@@ -1913,9 +2065,9 @@ nautilus_file_get_size_as_string (NautilusFile *file)
  * 
  * @file: NautilusFile representing the file in question.
  * @attribute_name: The name of the desired attribute. The currently supported
- * set includes "name", "type", "mime_type", "size", "date_modified", "date_changed",
- * "date_accessed", "date_permissions", "owner", "group", "permissions", "octal_permissions", 
- * "uri", "parent_uri".
+ * set includes "name", "type", "mime_type", "size", "deep_size", "deep_directory_count",
+ * "deep_file_count", "deep_total_count", "date_modified", "date_changed", "date_accessed", 
+ * "date_permissions", "owner", "group", "permissions", "octal_permissions", "uri", "parent_uri".
  * 
  * Returns: Newly allocated string ready to display to the user, or NULL
  * if the value is unknown or @attribute_name is not supported.
@@ -1942,6 +2094,22 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 
 	if (strcmp (attribute_name, "size") == 0) {
 		return nautilus_file_get_size_as_string (file);
+	}
+
+	if (strcmp (attribute_name, "deep_size") == 0) {
+		return nautilus_file_get_deep_size_as_string (file);
+	}
+
+	if (strcmp (attribute_name, "deep_file_count") == 0) {
+		return nautilus_file_get_deep_file_count_as_string (file);
+	}
+
+	if (strcmp (attribute_name, "deep_directory_count") == 0) {
+		return nautilus_file_get_deep_directory_count_as_string (file);
+	}
+
+	if (strcmp (attribute_name, "deep_total_count") == 0) {
+		return nautilus_file_get_deep_total_count_as_string (file);
 	}
 
 	if (strcmp (attribute_name, "date_modified") == 0) {
@@ -2012,8 +2180,9 @@ char *
 nautilus_file_get_string_attribute_with_default (NautilusFile *file, const char *attribute_name)
 {
 	char *result;
-	gint item_count;
+	guint item_count;
 	gboolean count_unreadable;
+	NautilusRequestStatus status;
 
 	result = nautilus_file_get_string_attribute (file, attribute_name);
 
@@ -2029,6 +2198,16 @@ nautilus_file_get_string_attribute_with_default (NautilusFile *file, const char 
 			}
 			
 			result = g_strdup (count_unreadable ? _("xxx") : _("--"));
+		} else if (strcmp (attribute_name, "deep_size") == 0
+			   || strcmp (attribute_name, "deep_file_count") == 0
+			   || strcmp (attribute_name, "deep_directory_count") == 0
+			   || strcmp (attribute_name, "deep_total_count") == 0) {
+			status = nautilus_file_get_deep_counts (file, NULL, NULL, NULL, NULL);
+			if (status == NAUTILUS_REQUEST_DONE) {
+				/* This means no contents at all were readable */
+				return g_strdup (_("xxx"));
+			}
+			return g_strdup (_("--"));
 		} else if (strcmp (attribute_name, "type") == 0) {
 			result = g_strdup (_("unknown type"));
 		} else if (strcmp (attribute_name, "mime_type") == 0) {

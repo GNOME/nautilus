@@ -1,3 +1,42 @@
+2000-06-22  John Sullivan  <sullivan@eazel.com>
+
+	Finished task 970 (Properties window should show deep
+	directory sizes)
+
+	* libnautilus-extensions/nautilus-file.c:
+	(format_item_count_for_display): New utility function
+	used by some _as_string functions.
+	(nautilus_file_get_size_as_string): Now uses 
+	format_item_count_for_display
+	(nautilus_file_get_deep_count_as_string_internal),
+	(nautilus_file_get_deep_size_as_string),
+	(nautilus_file_get_deep_total_count_as_string),
+	(nautilus_file_get_deep_file_count_as_string),
+	(nautilus_file_get_deep_directory_count_as_string):
+	New functions to get various "deep" info about a
+	directory in handy string format.
+	(nautilus_file_get_string_attribute),
+	(nautilus_file_get_string_attribute_with_default):
+	Taught these two functions about deep directory counts.
+	
+	* src/file-manager/fm-properties-window.c: 
+	(create_properties_window): Now uses nautilus_file_monitor_add
+	to request the info it needs, including new deep counts. 
+	Formerly was just relying on all the information already having 
+	been requested by someone else, which worked in practice but was 
+	fragile and wouldn't work for deep counts.
+	(forget_properties_window): Renamed from remove_properties_window_
+	from_hash_table, and made it stop monitoring file.
+	(fm_properties_window_get_or_create): Account for name change.
+	(directory_contents_value_field_update),
+	(attach_directory_contents_value_field), 
+	(attach_directory_contents_fields): New functions that manage
+	showing the deep info.
+	(attach_label), (attach_value_field), (attach_title_field),
+	(attach_title_value_pair), (create_basic_page), 
+	(add_permissions_row_label), (create_permissions_page):
+	Some renamings and reorganization.
+
 2000-06-22  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory-private.h:

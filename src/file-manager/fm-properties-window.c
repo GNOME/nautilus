@@ -49,6 +49,7 @@
 #include <gtk/gtkvbox.h>
 
 #include <libnautilus-extensions/nautilus-entry.h>
+#include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
@@ -408,25 +409,37 @@ value_field_update (GtkLabel *label, NautilusFile *file)
 	g_free (attribute_value);
 }
 
-static void
-install_value_field (GtkTable *table,
-		     int row,
-		     int start_column,
-		     int column_span,
-		     NautilusFile *file,
-		     const char *file_attribute_name)
+static GtkLabel *
+attach_label (GtkTable *table,
+	      int row,
+	      int column,
+	      const char *initial_text)
 {
-	GtkWidget *value_field;
+	GtkWidget *label_field;
 
-	value_field = gtk_label_new ("");
+	label_field = gtk_label_new (initial_text);
 	/* Move widget to left edge (justifying text not the right thing here). */
-	gtk_misc_set_alignment (GTK_MISC (value_field), 0, 0.5);
-	gtk_widget_show (value_field);
-	gtk_table_attach (GTK_TABLE (table), value_field,
-			  start_column, start_column + column_span,
+	gtk_misc_set_alignment (GTK_MISC (label_field), 0, 0.5);
+	gtk_widget_show (label_field);
+	gtk_table_attach (table, label_field,
+			  column, column + 1,
 			  row, row + 1,
 			  GTK_FILL, 0,
 			  0, 0);
+
+	return GTK_LABEL (label_field);
+}	      
+
+static void
+attach_value_field (GtkTable *table,
+		    int row,
+		    int column,
+		    NautilusFile *file,
+		    const char *file_attribute_name)
+{
+	GtkLabel *value_field;
+
+	value_field = attach_label (table, row, column, "");
 
 	/* Stash a copy of the file attribute name in this field for the callback's sake. */
 	gtk_object_set_data_full (GTK_OBJECT (value_field),
@@ -435,35 +448,155 @@ install_value_field (GtkTable *table,
 				  (GtkDestroyNotify) g_free);
 
 	/* Fill in the value. */
-	value_field_update (GTK_LABEL (value_field), file);
+	value_field_update (value_field, file);
 
 	/* Connect to signal to update value when file changes. */
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
 					       "changed",
 					       value_field_update,
 					       GTK_OBJECT (value_field));	
-}		     
+}	
 
 static void
-install_title_value_pair (GtkTable *table, 
+directory_contents_value_field_update (GtkLabel *label, NautilusFile *file)
+{
+	NautilusRequestStatus status;
+	char *text, *temp;
+	guint directory_count;
+	guint file_count;
+	guint total_count;
+	guint unreadable_directory_count;
+	GnomeVFSFileSize total_size;
+	char *size_string;
+	GtkLabel *title_field;
+	gboolean used_two_lines;
+	
+	g_assert (GTK_IS_LABEL (label));
+	g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (nautilus_file_is_directory (file));
+
+	title_field = gtk_object_get_user_data (GTK_OBJECT (label));
+	g_assert (GTK_IS_LABEL (title_field));
+
+	status = nautilus_file_get_deep_counts (file, 
+						&directory_count, 
+						&file_count, 
+						&unreadable_directory_count, 
+						&total_size);
+
+	text = NULL;
+	total_count = file_count + directory_count;
+	used_two_lines = FALSE;
+
+	if (total_count == 0) {
+		switch (status) {
+		case NAUTILUS_REQUEST_DONE:
+			if (unreadable_directory_count == 0) {
+				text = g_strdup (_("nothing"));
+			} else {
+				text = g_strdup (_("unreadable"));
+			}
+			break;
+		default:
+			text = g_strdup (_("--"));
+						
+		}
+	} else {
+		size_string = gnome_vfs_format_file_size_for_display (total_size);
+		if (total_count == 1) {
+				text = g_strdup_printf (_("1 item, with size %s"), size_string);
+		} else {
+			text = g_strdup_printf (_("%d items, totalling %s"), total_count, size_string);
+		}
+		g_free (size_string);
+
+		if (unreadable_directory_count != 0) {
+			temp = text;
+			text = g_strconcat (temp, "\n", _("(some contents unreadable)"), NULL);
+			g_free (temp);
+			used_two_lines = TRUE;
+		}
+	}
+
+	gtk_label_set_text (label, text);
+	g_free (text);
+
+	/* Also set the title field here, with a trailing carriage return & space
+	 * if the value field has two lines. This is a hack to get the
+	 * "Contents:" title to line up with the first line of the 2-line value.
+	 * Maybe there's a better way to do this, but I couldn't think of one.
+	 */
+	text = g_strdup (_("Contents:"));
+	if (used_two_lines) {
+		temp = text;
+		text = g_strconcat (temp, "\n ", NULL);
+		g_free (temp);
+	}
+	gtk_label_set_text (title_field, text);
+	g_free (text);
+}
+
+static void
+attach_directory_contents_value_field (GtkTable *table,
+				       int row,
+				       NautilusFile *file,
+				       GtkLabel *title_field)
+{
+	GtkLabel *value_field;
+
+	value_field = attach_label (table, row, VALUE_COLUMN, "");
+	gtk_label_set_line_wrap (value_field, TRUE);
+
+	/* Bit of a hack; store a reference to the title field in
+	 * the value field so we can get it out without having to
+	 * invent a struct to pass as the callback data and later
+	 * free.
+	 */
+	gtk_object_set_user_data (GTK_OBJECT (value_field), title_field);
+
+	/* Always recompute from scratch when the window is shown. */
+	nautilus_file_recompute_deep_counts (file);
+
+	/* Fill in the initial value. */
+	directory_contents_value_field_update (value_field, file);
+
+	/* Connect to signal to update value when file changes. */
+	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
+					       "changed",
+					       directory_contents_value_field_update,
+					       GTK_OBJECT (value_field));	
+}					
+
+static GtkLabel *
+attach_title_field (GtkTable *table,
+		     int row,
+		     const char *title)
+{
+	return attach_label (table, row, TITLE_COLUMN, title);
+}		      
+
+static void
+attach_title_value_pair (GtkTable *table, 
 			  int row, 
 			  const char *title, 
 			  NautilusFile *file, 
 			  const char *file_attribute_name)
 {
-	GtkWidget *title_field;
+	attach_title_field (table, row, title);
+	attach_value_field (table, row, VALUE_COLUMN, file, file_attribute_name); 
+}
 
-	title_field = gtk_label_new (title);
-	/* Move widget to right edge (justifying text not the right thing here). */
-	gtk_misc_set_alignment (GTK_MISC (title_field), 1, 0.5);
-	gtk_widget_show (title_field);
-	gtk_table_attach (GTK_TABLE (table), title_field,
-			  TITLE_COLUMN, TITLE_COLUMN + 1,
-			  row, row + 1,
-			  GTK_FILL, 0,
-			  0, 0);
+static void
+attach_directory_contents_fields (GtkTable *table,
+				  int row,
+				  NautilusFile *file)
+{
+	GtkLabel *title_field;
 
-	install_value_field (table, row, VALUE_COLUMN, 1, file, file_attribute_name); 
+	title_field = attach_title_field (table, row, "");
+	gtk_label_set_line_wrap (title_field, TRUE);
+
+	attach_directory_contents_value_field (table, row, file, title_field);
 }
 
 static GtkWidget *
@@ -601,18 +734,23 @@ create_basic_page (GtkNotebook *notebook, NautilusFile *file)
 					       name_field_update_to_match_file,
 					       GTK_OBJECT (name_field));
 
-	install_title_value_pair (GTK_TABLE (table), BASIC_PAGE_LOCATION_ROW,
+	attach_title_value_pair (GTK_TABLE (table), BASIC_PAGE_LOCATION_ROW,
 				  _("Location:"), file, "parent_uri");
-	install_title_value_pair (GTK_TABLE (table), BASIC_PAGE_TYPE_ROW,
+	attach_title_value_pair (GTK_TABLE (table), BASIC_PAGE_TYPE_ROW,
 				  _("Type:"), file, "type");
-	install_title_value_pair (GTK_TABLE (table), BASIC_PAGE_SIZE_ROW,
-				  _("Size:"), file, "size");
-	install_title_value_pair (GTK_TABLE (table), BASIC_PAGE_MODIFIED_DATE_ROW,
+	if (is_directory) {
+		attach_directory_contents_fields
+			(GTK_TABLE (table), BASIC_PAGE_SIZE_ROW, file);
+	} else {
+		attach_title_value_pair (GTK_TABLE (table), BASIC_PAGE_SIZE_ROW,
+					  _("Size:"), file, "size");
+	}
+	attach_title_value_pair (GTK_TABLE (table), BASIC_PAGE_MODIFIED_DATE_ROW,
 				  _("Modified:"), file, "date_modified");
-	install_title_value_pair (GTK_TABLE (table), BASIC_PAGE_ACCESSED_DATE_ROW,
+	attach_title_value_pair (GTK_TABLE (table), BASIC_PAGE_ACCESSED_DATE_ROW,
 				  _("Accessed:"), file, "date_accessed");
 	if (!is_directory) {
-		install_title_value_pair (GTK_TABLE (table), BASIC_PAGE_MIME_TYPE_ROW,
+		attach_title_value_pair (GTK_TABLE (table), BASIC_PAGE_MIME_TYPE_ROW,
 					  _("MIME type:"), file, "mime_type");
 	}				  
 }
@@ -841,19 +979,9 @@ add_permissions_row_label (GtkTable *table,
 			   const char *pattern, 
 			   const char *attribute_name)
 {
-	GtkWidget *label;
+	GtkLabel *label;
 
-	label = gtk_label_new ("");
-
-	/* Move widget to right edge (justifying text not the right thing here). */
-	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
-	gtk_widget_show (label);
-	
-	gtk_table_attach (table, label,
-			  TITLE_COLUMN, TITLE_COLUMN + 1,
-			  row, row + 1,
-			  GTK_FILL, 0,
-			  0, 0);
+	label = attach_title_field (table, row, "");
 
 	/* Stash copies of the pattern and file attribute name in the label 
 	 * for the callback's sake. 
@@ -870,7 +998,7 @@ add_permissions_row_label (GtkTable *table,
 				  (GtkDestroyNotify) g_free);
 
 	/* Fill in the value. */
-	permissions_label_update (GTK_LABEL (label), file);
+	permissions_label_update (label, file);
 
 	/* Connect to signal to update value when file changes, if
 	 * there's an attribute that might change. 
@@ -1199,22 +1327,19 @@ create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
 			add_special_execution_flags (page_table, file);					  
 		}
 
-		install_value_field (page_table, 
+		attach_value_field (page_table, 
 				     PERMISSIONS_PAGE_FULL_STRING_ROW, 
 				     VALUE_COLUMN, 
-				     1, 
 				     file, "permissions"); 
 
-		install_value_field (page_table, 
+		attach_value_field (page_table, 
 				     PERMISSIONS_PAGE_FULL_OCTAL_ROW, 
 				     VALUE_COLUMN, 
-				     1, 
 				     file, "octal_permissions"); 
 
-		install_value_field (page_table, 
+		attach_value_field (page_table, 
 				     PERMISSIONS_PAGE_DATE_ROW, 
 				     VALUE_COLUMN, 
-				     1, 
 				     file, "date_permissions"); 
 	} else {
 		file_name = nautilus_file_get_name (file);
@@ -1230,6 +1355,7 @@ create_properties_window (NautilusFile *file)
 {
 	GtkWindow *window;
 	GtkWidget *notebook;
+	GList *attributes;
 
 	/* Create the window. */
 	window = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
@@ -1239,7 +1365,16 @@ create_properties_window (NautilusFile *file)
 	/* Set initial window title */
 	update_properties_window_title (window, file);
 
-	/* React to future name changes and file deletions. */
+	/* Start monitoring the file attributes we display */
+	attributes = nautilus_icon_factory_get_required_file_attributes ();
+	if (nautilus_file_is_directory (file)) {
+		attributes = g_list_prepend (attributes,
+					     NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS);
+	}
+	nautilus_file_monitor_add (file, window, attributes, TRUE);
+	g_list_free (attributes);
+
+	/* React to future property changes and file deletions. */
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
 					       "changed",
 					       properties_window_file_changed_callback,
@@ -1259,16 +1394,20 @@ create_properties_window (NautilusFile *file)
 }
 
 static void
-remove_properties_window_from_hash_table (gpointer data, gpointer user_data)
+forget_properties_window (gpointer data, gpointer user_data)
 {
 	NautilusFile *file;
+	GtkWindow *window;
 
 	g_assert (GTK_IS_WINDOW (data));
 	g_assert (NAUTILUS_IS_FILE (user_data));
 
+	window = GTK_WINDOW (data);
 	file = NAUTILUS_FILE (user_data);
+
 	g_hash_table_remove (windows, file);
 	nautilus_file_unref (file);
+	nautilus_file_monitor_remove (file, window);
 }
 
 GtkWindow *
@@ -1291,7 +1430,7 @@ fm_properties_window_get_or_create (NautilusFile *file)
 	
 		gtk_signal_connect (GTK_OBJECT (window),
 				    "destroy",
-				    remove_properties_window_from_hash_table,
+				    forget_properties_window,
 				    file);
 	}
 
