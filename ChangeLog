@@ -1,3 +1,22 @@
+2000-12-21  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-art-gtk-extensions.h:
+	* libnautilus-extensions/nautilus-art-gtk-extensions.c:
+	(nautilus_irect_assign_gdk_rectangle),
+	(nautilus_irect_screen_get_frame),
+	(nautilus_irect_gdk_window_get_bounds),
+	(nautilus_irect_gdk_window_get_screen_relative_bounds),
+	(nautilus_irect_gtk_widget_get_bounds),
+	(nautilus_irect_gdk_window_clip_dirty_area_to_screen):
+	New functions that accept gtk/gdk structures and
+	return their bounds/frames as ArtIRects.
+
+	These are very useful in code that uses libart functions
+	to do operations on ArtIRects (such as intersection)
+	
 2000-12-20  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/services/inventory/lib/trilobite-eazel-inventory-public.h:

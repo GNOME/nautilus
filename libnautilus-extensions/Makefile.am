@@ -49,6 +49,7 @@ libnautilus_extensions_la_LDFLAGS =	\
 
 libnautilus_extensions_la_SOURCES = 		\
 	nautilus-art-extensions.c		\
+	nautilus-art-gtk-extensions.c		\
 	nautilus-background-canvas-group.c	\
 	nautilus-background.c			\
 	nautilus-bonobo-extensions.c		\
@@ -140,6 +141,7 @@ libnautilus_extensions_la_SOURCES = 		\
 # Everything is private for now
 noinst_HEADERS =				\
 	nautilus-art-extensions.h		\
+	nautilus-art-gtk-extensions.h		\
 	nautilus-background-canvas-group.h	\
 	nautilus-background.h			\
 	nautilus-bonobo-extensions.h		\
