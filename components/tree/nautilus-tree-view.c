@@ -42,7 +42,9 @@
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-link.h>
 #include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libgnomevfs/gnome-vfs.h>
+
 
 #include <stdio.h>
 
@@ -532,6 +534,8 @@ nautilus_tree_view_insert_file (NautilusTreeView *view, NautilusFile *file)
 	char *name;
 	char *text[2];
 	char *canonical_uri;
+	GdkPixmap *pixmap;
+	GdkBitmap *mask;
 	
 	canonical_uri = nautilus_tree_view_get_canonical_uri (nautilus_file_get_uri (file));
 
@@ -551,14 +555,22 @@ nautilus_tree_view_insert_file (NautilusTreeView *view, NautilusFile *file)
 	node = g_hash_table_lookup (view->details->uri_to_node_map, canonical_uri);
 
 	if (node == NULL) {
+		
+		/* FIXME bugzilla.eazel.com 1524: still need to
+		   respond to icon theme changes. */
+
+
+		nautilus_icon_factory_get_pixmap_and_mask_for_file (file,
+								    NAUTILUS_ICON_SIZE_FOR_MENUS,
+								    &pixmap,
+								    &mask);
+
 		node = gtk_ctree_insert_node (GTK_CTREE (view->details->tree),
 					      parent_node, 
 					      previous_sibling_node,
 					      text,
 					      TREE_SPACING,
-					      /* FIXME bugzilla.eazel.com 1524: 
-						 get proper icons here maybe */
-					      NULL, NULL, NULL, NULL,
+					      pixmap, mask, pixmap, mask,
 					      FALSE,
 					      
 					      /* FIXME bugzilla.eazel.com 1525: should 

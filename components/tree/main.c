@@ -76,8 +76,6 @@ main (int argc, char *argv[])
 	CORBA_ORB orb;
 	BonoboGenericFactory *factory;
 
-        puts ("XXX: In tree component.");        
-
 	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
 	 * Unfortunately, this has to be done explicitly for each domain.
 	 */
