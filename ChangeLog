@@ -1,5 +1,12 @@
 2003-06-11  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-list-view.c (fm_list_view_did_not_drag) 
+	(button_press_callback):
+	Don't deselect multiple selected files when dragging
+	with middle button.
+
+2003-06-11  Alexander Larsson  <alexl@redhat.com>
+
 	* icons/Makefile.am:
 	* icons/crux_eggplant/Makefile.am:
 	* icons/crux_eggplant/decrement-i.png:

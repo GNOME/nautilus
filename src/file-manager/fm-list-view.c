@@ -177,7 +177,7 @@ fm_list_view_did_not_drag (FMListView *view,
 
 	if (gtk_tree_view_get_path_at_pos (tree_view, event->x, event->y,
 					   &path, NULL, NULL, NULL)) {
-		if(event->button == 1
+		if((event->button == 1 || event->button == 2)
 		   && (click_policy_auto_value == NAUTILUS_CLICK_POLICY_DOUBLE)
 		   && gtk_tree_selection_path_is_selected (selection, path)
 		   && !button_event_modifies_selection (event)) {
@@ -446,11 +446,13 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 		 * want that; we want the right click menu or single
 		 * click to apply to everything that's currently selected. */
 		
-		if (event->button == 3 && gtk_tree_selection_path_is_selected (selection, path)) {	
+		if (event->button == 3 && gtk_tree_selection_path_is_selected (selection, path)) {
 			call_parent = FALSE;
 		} 
 
-		if(!button_event_modifies_selection (event) && event->button == 1 && gtk_tree_selection_path_is_selected (selection, path)) {
+		if(!button_event_modifies_selection (event) &&
+		   (event->button == 1 || event->button == 2) &&
+		   gtk_tree_selection_path_is_selected (selection, path)) {
 			call_parent = FALSE;
 		}
 
