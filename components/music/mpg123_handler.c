@@ -131,7 +131,7 @@ void set_current_frame (int new_frame)
 
 }
 
-/* process signal handler, for notification if mpg123 dies */
+/* process signal handler, for notification if mpg123 terminates */
 static void sigchld_handler(int sig)
 {
 	pid_t child;
@@ -140,7 +140,6 @@ static void sigchld_handler(int sig)
 	signal(SIGCHLD, sigchld_handler);
 
 	child = waitpid(0, &status, 0);
-	printf("sigchild handler, sig = %d, status = %d, process is %d\n", sig, status, child);
 }
 
 
@@ -644,7 +643,7 @@ void start_playing_file(gchar* filename, gboolean start_from_beginning)
 	gint cmd_cnt = 0;
 
 	if (mpg123_status == STATUS_PLAY) return;
-
+	
 	if (start_from_beginning)
 		frames = 0;
 		
@@ -781,7 +780,8 @@ void stop_playing_file ()
 {
 	pid_t child;
 	gint  status_result;
-	if (mpg123_status == STATUS_STOP) return;
+	if (mpg123_status == STATUS_STOP) 
+		return;
 
 	if (debug_mode) printf("sending SIGTERM to pid = -%d\n", mp3_pid);
 

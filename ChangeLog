@@ -1,3 +1,19 @@
+2000-05-20  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/music/mpg123_handler.c: (sigchld_handler),
+	(start_playing_file), (stop_playing_file):
+	* components/music/nautilus-music-view.c: (selection_callback),
+	(update_play_controls_status), (reset_playtime),
+	(play_status_display), (go_to_next_track), (slider_moved_callback),
+	(xpm_dual_label_box), (add_play_controls):
+	pretty much finished up playing in the music view.  Made it reflect
+	play and pause status, advance to the next track when a song is completed,
+	and terminate at the end of the last song.  Made clicking on a new song
+	while playing work properly.
+	
+	* components/music/pixmaps.h:
+	added colored play and pause images to reflect status
+
 2000-05-20  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/install/command-line/eazel-install.c: (main):
