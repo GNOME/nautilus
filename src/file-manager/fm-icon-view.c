@@ -1428,10 +1428,13 @@ get_icon_text_callback (NautilusIconContainer *container,
 	
 	/* Handle link files specially. */
 	actual_uri = nautilus_file_get_uri (file);
-	if (actual_uri && nautilus_link_is_link_file (actual_uri)) {
-		*additional_text = nautilus_link_get_additional_text (actual_uri);
+	if (actual_uri) {
+		if (nautilus_link_is_link_file (actual_uri)) {
+			*additional_text = nautilus_link_get_additional_text (actual_uri);
+			g_free (actual_uri);
+			return;
+		}
 		g_free (actual_uri);
-		return;
 	}
 	
 	/* Find out what attributes go below each icon. */

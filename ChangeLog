@@ -1,3 +1,18 @@
+2000-06-06  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(get_themed_icon_file_path),
+	(nautilus_icon_factory_get_icon_for_file):
+	Fix leaks.
+	
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_get_default_component_for_uri_internal):
+	Add an assert to augument a funny if statement and trap 
+	a potential leak case.
+
+	* src/file-manager/fm-icon-view.c: (get_icon_text_callback):
+	Fix a leak
+
 2000-06-06  Andy Hertzfeld  <andy@eazel.com>
 
 	made gradient backgrounds work with the anti-aliased canvas.  This

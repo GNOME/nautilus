@@ -269,8 +269,11 @@ nautilus_mime_get_default_component_for_uri_internal (const char *uri, gboolean 
 		server = OAF_ServerInfo__copy (info_list->data);
 		gnome_vfs_mime_component_list_free (info_list);
 	} else {
+		g_assert (info_list == NULL);  /* or else we are leaking it */
 		server = NULL;
 	}
+
+	g_free (default_component_string);
 
 	CORBA_exception_free (&ev);
 

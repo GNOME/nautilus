@@ -609,7 +609,8 @@ get_themed_icon_file_path (const char *theme_name,
 			path = NULL;
 		}		
 	}
-	
+	g_free (themed_icon_name);
+
 	return path;
 }
 
@@ -805,7 +806,7 @@ nautilus_scalable_icon_equal (gconstpointer a,
 NautilusScalableIcon *
 nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifier)
 {
-	char *uri, *file_uri, *image_uri, *icon_name, *top_left_text = NULL;
+	char *uri, *file_uri, *image_uri, *icon_name, *mime_type, *top_left_text = NULL;
  	NautilusScalableIcon *scalable_icon;
 	
 	if (file == NULL) {
@@ -821,12 +822,16 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 	   put an entry on the thumbnail queue so we eventually make one */
 	 
 	/* also, dont make thumbnails for images in the thumbnails directory */  
-	if (uri == NULL && nautilus_str_has_prefix (nautilus_file_get_mime_type (file), "image/")) {
-		if (nautilus_file_get_size (file) < SELF_THUMBNAIL_SIZE_THRESHOLD) {
-			uri = nautilus_file_get_uri (file);
-		} else if (strstr(file_uri, "/.thumbnails/") == NULL) {
-			uri = nautilus_icon_factory_get_thumbnail_uri (file);
+	if (uri == NULL) {
+		mime_type = nautilus_file_get_mime_type (file);
+		if (nautilus_str_has_prefix (mime_type, "image/")) {
+			if (nautilus_file_get_size (file) < SELF_THUMBNAIL_SIZE_THRESHOLD) {
+				uri = nautilus_file_get_uri (file);
+			} else if (strstr(file_uri, "/.thumbnails/") == NULL) {
+				uri = nautilus_icon_factory_get_thumbnail_uri (file);
+			}
 		}
+		g_free (mime_type);
 	}
 	
 	/* handle nautilus link xml files, which may specify their own image */	
