@@ -1,3 +1,23 @@
+2000-07-27  John Sullivan  <sullivan@eazel.com>
+
+	Changed "Customize % Settings" to "Edit % Settings" to reduce
+	the confusion about the two "Customize" menu items. This matches
+	(one little bit of) Arlo's menu-layout proposal.
+
+	* src/nautilus-window-menus.c: 
+
+	(get_customize_user_level_settings_menu_string): Corrected the
+	spelling of this function (had three consecutive t's)
+	(clear_dynamic_bookmark_items): Renamed this from
+	"clear_appended_bookmark_items" since I'm about to add support
+	for appended bookmarks that aren't dynamic.
+
+	(refresh_bookmarks_menu), (refresh_go_menu),
+	(update_user_level_menu_items): updated callers to reflect name changes.
+
+	(nautilus_window_initialize_menus), (get_customize_user_level_string):
+	"Customize" -> "Change"	
+
 2000-07-27  Rebecca Schulman  <rebecka@eazel.com>
 
 	* src/nautilus-complex-search-bar.c:

@@ -58,7 +58,7 @@ static void                  append_bookmark_to_menu                        (Nau
 									     NautilusBookmark *bookmark,
 									     const char             *menu_item_path,
 									     gboolean		     is_in_bookmarks_menu);
-static void                  clear_appended_bookmark_items                  (NautilusWindow         *window,
+static void                  clear_dynamic_bookmark_items                  (NautilusWindow         *window,
 									     const char             *menu_path,
 									     const char             *last_static_item_path);
 static NautilusBookmarkList *get_bookmark_list                              (void);
@@ -74,7 +74,7 @@ static void                  edit_bookmarks                                 (Nau
 /* User level things */
 static guint                 convert_menu_path_to_user_level                (const char             *path);
 static const char *          convert_user_level_to_menu_path                (guint                   user_level);
-static char *                get_customize_user_level_setttings_menu_string (void);
+static char *                get_customize_user_level_settings_menu_string  (void);
 static void                  update_user_level_menu_items                   (NautilusWindow         *window);
 static char *                get_customize_user_level_string                (void);
 static void		     update_preferences_dialog_title		    (void);
@@ -631,7 +631,7 @@ append_bookmark_to_menu (NautilusWindow *window,
 }
 
 /**
- * clear_appended_bookmark_items
+ * clear_dynamic_bookmark_items
  * 
  * Remove the dynamic menu items from the end of this window's menu. Each dynamic
  * item should have callback data that's either NULL or is a BookmarkHolder *.
@@ -641,7 +641,7 @@ append_bookmark_to_menu (NautilusWindow *window,
  * leave in place (e.g. "/Go/Home"). All menu items after this one will be removed.
  */
 static void
-clear_appended_bookmark_items (NautilusWindow *window, 
+clear_dynamic_bookmark_items (NautilusWindow *window, 
                                const char *menu_path, 
                                const char *last_static_item_path)
 {
@@ -1239,8 +1239,8 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 
 	bonobo_ui_handler_menu_new_item (ui_handler,
 					 NAUTILUS_MENU_PATH_USER_LEVEL_CUSTOMIZE,
-					 _("Customize Settings..."),
-					 _("Customize Settings for the Current User Level"),
+					 _("Edit Settings..."),
+					 _("Edit Settings for the Current User Level"),
         				 -1,
         				 BONOBO_UI_HANDLER_PIXMAP_NONE,
         				 NULL,
@@ -1300,7 +1300,7 @@ refresh_bookmarks_menu (NautilusWindow *window)
 	bookmarks = get_bookmark_list ();
 
 	/* Remove old set of bookmarks. */
-	clear_appended_bookmark_items (window, 
+	clear_dynamic_bookmark_items (window, 
 				       NAUTILUS_MENU_PATH_BOOKMARKS_MENU, 
 				       NAUTILUS_MENU_PATH_EDIT_BOOKMARKS_ITEM);
 
@@ -1366,7 +1366,7 @@ refresh_go_menu (NautilusWindow *window)
 	nautilus_window_remove_go_menu_callback (window);
 
 	/* Remove old set of history items. */
-	clear_appended_bookmark_items (window, 
+	clear_dynamic_bookmark_items (window, 
 				       NAUTILUS_MENU_PATH_GO_MENU, 
 				       NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_HISTORY);
 
@@ -1421,7 +1421,7 @@ update_user_level_menu_items (NautilusWindow *window)
 
 	user_level = nautilus_user_level_manager_get_user_level ();
 
-	customize_string = get_customize_user_level_setttings_menu_string ();
+	customize_string = get_customize_user_level_settings_menu_string ();
 	g_assert (customize_string != NULL);
 
  	/* Update the user radio group to reflect reality */
@@ -1439,7 +1439,7 @@ update_user_level_menu_items (NautilusWindow *window)
 						(user_level > 0));
 
 
- 	/* Update the "Customize Settings..." item to reflect the user level to customize */
+ 	/* Update the "Edit Settings..." item to reflect the user level to customize */
 	bonobo_ui_handler_menu_set_label (window->ui_handler,
 					  NAUTILUS_MENU_PATH_USER_LEVEL_CUSTOMIZE,
 					  customize_string);
@@ -1504,7 +1504,7 @@ get_customize_user_level_string (void)
 	
 	g_free (user_level_string);
 
-	title = g_strdup_printf ("Customize %s Settings", capitalized_user_level_string);
+	title = g_strdup_printf ("Edit %s Settings", capitalized_user_level_string);
 
 	g_free (capitalized_user_level_string);
 
@@ -1512,7 +1512,7 @@ get_customize_user_level_string (void)
 }
 
 static char *
-get_customize_user_level_setttings_menu_string (void)
+get_customize_user_level_settings_menu_string (void)
 {
 	char *title;
 	char *ellipse_suffixed_title;
