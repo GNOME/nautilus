@@ -84,6 +84,13 @@ canonicalize_url (const char *in_url, const char *base_url)
     {
       char *cwd;
 
+      if(in_url)
+	{
+	  ctmp = strchr(in_url, ':');
+	  if(ctmp) /* OK, it's some funky URL scheme without any /'s */
+	    return g_strdup(in_url);
+	}
+
       cwd = g_get_current_dir();
       ctmp = g_strconcat("file://", cwd, "/", in_url, NULL);
       g_free(cwd);
@@ -98,7 +105,9 @@ canonicalize_url (const char *in_url, const char *base_url)
   /* Now fix up the /. and /.. pieces */
 
   ctmp = strstr(retval, "://");
-  g_assert(ctmp);
+  if(!ctmp)
+    return retval;
+
   ctmp += 3;
   ctmp = strchr(ctmp, '/');
   if(!ctmp) {
@@ -307,7 +316,7 @@ browser_do_post(HTRequest *request, HTStream *stream)
     }
 }
 
-static char vfs_read_buf[4096];
+static char vfs_read_buf[40960];
 
 static void
 browser_vfs_read_callback(GnomeVFSAsyncHandle *h, GnomeVFSResult res, gpointer buffer,
@@ -335,15 +344,24 @@ browser_vfs_callback(GnomeVFSAsyncHandle *h, GnomeVFSResult res, gpointer data)
 {
   VFSHandle *vfsh = data;
 
-  g_message("browser_vfs_callback");
+  g_message("browser_vfs_callback, res was %s", gnome_vfs_result_to_string(res));
 
   if(res != GNOME_VFS_OK)
     {
+      Nautilus_ProgressRequestInfo pri;
+
+      memset(&pri, 0, sizeof(pri));
+      pri.type = Nautilus_PROGRESS_DONE_ERROR;
+      nautilus_view_frame_request_progress_change(vfsh->bi->view_frame, &pri);
+
       gtk_html_end(GTK_HTML(vfsh->bi->htmlw), vfsh->sh, GTK_HTML_STREAM_ERROR);
       g_free(vfsh);
     }
   else
-    gnome_vfs_async_read(h, vfs_read_buf, sizeof(vfs_read_buf), browser_vfs_read_callback, vfsh);
+    {
+      res = gnome_vfs_async_read(h, vfs_read_buf, sizeof(vfs_read_buf), browser_vfs_read_callback, vfsh);
+      g_message("Did read, result was %s", gnome_vfs_result_to_string(res));
+    }
 }
 
 static void
@@ -397,6 +415,8 @@ browser_url_requested(GtkWidget *htmlw, const char *url, GtkHTMLStreamHandle han
   if(HTLoad(request, NO) == NO)
     {
       g_warning("Load failed");
+      do_vfs_load(vfsh);
+      writer->handle = NULL;
       HTRequest_delete(request);
     }
 }

@@ -5,6 +5,10 @@
 #include <string.h>
 #include <gnome.h>
 #include <zlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <limits.h>
 
 #include "data.h"
 #include "html.h"
@@ -24,6 +28,13 @@ static struct poptOption options[] = {
   {NULL}
 };
 
+static int
+file_exists(const char *fn)
+{
+  struct stat sbuf;
+  return (stat(fn, &sbuf) == 0);
+}
+
 int
 main(int argc, char **argv)
 {
@@ -32,23 +43,74 @@ main(int argc, char **argv)
 	poptContext ctx;
 	int result;
 	int foundit=0;
+	int i, n;
 
 	char convanc[1024];
 	NODE *node;
 
 	const char **args;
+	char *fixup_args[512];
 	int curarg;
 	
 	if (!be_quiet)
 		printf("info2html Version %s\n",INFO2HTML_VERSION);
 
-	ctx = poptGetContext("gnome-info2html2", argc, argv, options, 0);
+	ctx = poptGetContext("gnome-info2html2", argc, (const char **)argv, options, 0);
 
 	while(poptGetNextOpt(ctx) >= 0)
 	  /**/ ;
 
 	args = poptGetArgs(ctx);
 	curarg = 0;
+	if(!args)
+	  return 1;
+
+	for(n = 0; args[n]; n++) /* */;
+	if(n == 1 && !file_exists(args[0]))
+	  {
+	    char *ctmp, *infopath = getenv("INFOPATH");
+	    char *dirs[64], *ext;
+	    int ndirs;
+	    char buf[PATH_MAX];
+
+	    /* First, find the directory that the info file is in. */
+	    dirs[0] = "/usr/info";
+	    if(infopath)
+	      for(ndirs = 0, ctmp = strtok((char *)args[0], ":"); ndirs < 64 && ctmp; ndirs++, ctmp = strtok(NULL, ":"))
+		dirs[ndirs] = strdup(ctmp);
+
+	    for(i = 0; i < ndirs; i++)
+	      {
+		ext = "";
+		sprintf(buf, "%s/%s.info", dirs[i], args[0]);
+		if(file_exists(buf))
+		  break;
+		ext = ".gz";
+		sprintf(buf, "%s/%s.info.gz", dirs[i], args[0]);
+		if(file_exists(buf))
+		  break;
+	      }
+	    if(i >= ndirs)
+	      return 2;
+
+	    n = i;
+
+	    for(i = 0; ; i++)
+	      {
+		if(i)
+		  sprintf(buf, "%s/%s.info-%d%s", dirs[n], args[0], i, ext);
+		else
+		  sprintf(buf, "%s/%s.info%s", dirs[n], args[0], ext);
+		if(!file_exists(buf))
+		  {
+		    fixup_args[i] = NULL;
+		    break;
+		  }
+
+		fixup_args[i] = strdup(buf);
+	      }
+	    args = (const char **)fixup_args;
+	  }
 
 	if(requested_nodename)
 	  {
@@ -71,7 +133,6 @@ main(int argc, char **argv)
 	  }
 
 	work_line_number = 0;
-
 
 	/* hack, just send to stdout for now */
 	fprintf(stdout, "<BODY><HTML>\n");
