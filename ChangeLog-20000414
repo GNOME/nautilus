@@ -1,3 +1,25 @@
+2000-03-06  Darin Adler  <darin@eazel.com>
+
+	Fixed bug in Unstretch I just introduced.
+	Got emblems drawing.
+
+	* gnome-icon-container.c (gnome_icon_container_is_stretched),
+	(gnome_icon_container_unstretch): Fixed bug where Unstretch would do
+	all the icons, not just the selected ones.
+
+	* nautilus-icons-view-icon-item.c (draw_stretch_handles),
+	(emblem_layout_reset), (emblem_layout_next), (draw_pixbuf),
+	(nautilus_icons_view_icon_item_draw), (hit_test_pixbuf),
+	(hit_test), (nautilus_icons_view_icon_item_bounds): Added code to
+	draw emblems and take them into account for hit testing and bounds
+	calculation.
+
+	* gnome-icon-container.c (update_icon):
+	* nautilus-icons-view-icon-item.c (nautilus_icons_view_icon_item_draw):
+	Moved rule about which zoom levels can have text displayed out of the
+	canvas item class into the container. This is only one of many needed
+	cleanups to how the "text in an icon" is handled.
+
 2000-03-06  Elliot Lee  <sopwith@redhat.com>
 
 	* src/ntl-prefs.c: Use help search instead of help index.

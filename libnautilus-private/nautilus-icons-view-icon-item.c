@@ -39,6 +39,7 @@
 #include "nautilus-gtk-macros.h"
 
 #define STRETCH_HANDLE_THICKNESS 5
+#define EMBLEM_SPACING 4
 
 /* Private part of the NautilusIconsViewIconItem structure */
 struct NautilusIconsViewIconItemDetails {
@@ -60,7 +61,7 @@ struct NautilusIconsViewIconItemDetails {
 	guint show_stretch_handles : 1;
 };
 
-/* Object argument IDs. */
+/* Object argument IDs. */
 enum {
 	ARG_0,
 	ARG_PIXBUF,
@@ -72,6 +73,21 @@ enum {
     	ARG_TEXT_SOURCE
 };
 
+typedef enum {
+	RIGHT_SIDE,
+	BOTTOM_SIDE,
+	LEFT_SIDE,
+	TOP_SIDE
+} RectangleSide;
+
+typedef struct {
+	NautilusIconsViewIconItem *icon_item;
+	ArtIRect icon_rect;
+	RectangleSide side;
+	int position;
+	GList *emblem;
+} EmblemLayout;
+
 /* constants */
 
 #define MAX_TEXT_WIDTH 80
@@ -82,51 +98,62 @@ static char stipple_bits[] = { 0x02, 0x01 };
 static GdkFont *mini_text_font;
 
 /* GtkObject */
-static void   nautilus_icons_view_icon_item_initialize_class          (NautilusIconsViewIconItemClass  *class);
-static void   nautilus_icons_view_icon_item_initialize                (NautilusIconsViewIconItem       *item);
-static void   nautilus_icons_view_icon_item_destroy                   (GtkObject                       *object);
-static void   nautilus_icons_view_icon_item_set_arg                   (GtkObject                       *object,
-								       GtkArg                          *arg,
-								       guint                            arg_id);
-static void   nautilus_icons_view_icon_item_get_arg                   (GtkObject                       *object,
-								       GtkArg                          *arg,
-								       guint                            arg_id);
+static void     nautilus_icons_view_icon_item_initialize_class          (NautilusIconsViewIconItemClass  *class);
+static void     nautilus_icons_view_icon_item_initialize                (NautilusIconsViewIconItem       *item);
+static void     nautilus_icons_view_icon_item_destroy                   (GtkObject                       *object);
+static void     nautilus_icons_view_icon_item_set_arg                   (GtkObject                       *object,
+									 GtkArg                          *arg,
+									 guint                            arg_id);
+static void     nautilus_icons_view_icon_item_get_arg                   (GtkObject                       *object,
+									 GtkArg                          *arg,
+									 guint                            arg_id);
 
 /* GnomeCanvasItem */
-static void   nautilus_icons_view_icon_item_update                    (GnomeCanvasItem                 *item,
-								       double                          *affine,
-								       ArtSVP                          *clip_path,
-								       int                              flags);
-static void   nautilus_icons_view_icon_item_draw                      (GnomeCanvasItem                 *item,
-								       GdkDrawable                     *drawable,
-								       int                              x,
-								       int                              y,
-								       int                              width,
-								       int                              height);
-static double nautilus_icons_view_icon_item_point                     (GnomeCanvasItem                 *item,
-								       double                           x,
-								       double                           y,
-								       int                              cx,
-								       int                              cy,
-								       GnomeCanvasItem                **actual_item);
-static void   nautilus_icons_view_icon_item_bounds                    (GnomeCanvasItem                 *item,
-								       double                          *x1,
-								       double                          *y1,
-								       double                          *x2,
-								       double                          *y2);
+static void     nautilus_icons_view_icon_item_update                    (GnomeCanvasItem                 *item,
+									 double                          *affine,
+									 ArtSVP                          *clip_path,
+									 int                              flags);
+static void     nautilus_icons_view_icon_item_draw                      (GnomeCanvasItem                 *item,
+									 GdkDrawable                     *drawable,
+									 int                              x,
+									 int                              y,
+									 int                              width,
+									 int                              height);
+static double   nautilus_icons_view_icon_item_point                     (GnomeCanvasItem                 *item,
+									 double                           x,
+									 double                           y,
+									 int                              cx,
+									 int                              cy,
+									 GnomeCanvasItem                **actual_item);
+static void     nautilus_icons_view_icon_item_bounds                    (GnomeCanvasItem                 *item,
+									 double                          *x1,
+									 double                          *y1,
+									 double                          *x2,
+									 double                          *y2);
 
 /* private */
-static void   draw_or_measure_text_box                                (GnomeCanvasItem                 *item,
-								       GdkDrawable                     *drawable,
-								       int                              icon_left,
-								       int                              icon_bottom);
-static void   nautilus_icons_view_draw_text_box                       (GnomeCanvasItem                 *item,
-								       GdkDrawable                     *drawable,
-								       int                              icon_left,
-								       int                              icon_bottom);
-static void   nautilus_icons_view_measure_text_box                    (GnomeCanvasItem                 *item);
-static void   nautilus_icons_view_icon_item_get_icon_canvas_rectangle (NautilusIconsViewIconItem       *item,
-								       ArtIRect                        *rect);
+static void     draw_or_measure_text_box                                (GnomeCanvasItem                 *item,
+									 GdkDrawable                     *drawable,
+									 int                              icon_left,
+									 int                              icon_bottom);
+static void     nautilus_icons_view_draw_text_box                       (GnomeCanvasItem                 *item,
+									 GdkDrawable                     *drawable,
+									 int                              icon_left,
+									 int                              icon_bottom);
+static void     nautilus_icons_view_measure_text_box                    (GnomeCanvasItem                 *item);
+static void     nautilus_icons_view_icon_item_get_icon_canvas_rectangle (NautilusIconsViewIconItem       *item,
+									 ArtIRect                        *rect);
+static void     emblem_layout_reset                                     (EmblemLayout                    *layout,
+									 NautilusIconsViewIconItem       *icon_item,
+									 const ArtIRect                  *icon_rect);
+static gboolean emblem_layout_next                                      (EmblemLayout                    *layout,
+									 GdkPixbuf                      **emblem_pixbuf,
+									 ArtIRect                        *emblem_rect);
+static void     draw_pixbuf                                             (GdkPixbuf                       *pixbuf,
+									 GdkDrawable                     *drawable,
+									 int                              x,
+									 int                              y);
+
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconsViewIconItem, nautilus_icons_view_icon_item, GNOME_TYPE_CANVAS_ITEM)
 
@@ -217,10 +244,10 @@ nautilus_icons_view_icon_item_destroy (GtkObject *object)
 static gboolean
 pixbuf_is_acceptable (GdkPixbuf *pixbuf)
 {
-	return pixbuf->art_pixbuf->format == ART_PIX_RGB
-		&& (pixbuf->art_pixbuf->n_channels == 3
-		    || pixbuf->art_pixbuf->n_channels == 4)
-		&& pixbuf->art_pixbuf->bits_per_sample == 8;
+	return gdk_pixbuf_get_format (pixbuf) == ART_PIX_RGB
+		&& (gdk_pixbuf_get_n_channels (pixbuf) == 3
+		    || gdk_pixbuf_get_n_channels (pixbuf) == 4)
+		&& gdk_pixbuf_get_bits_per_sample (pixbuf) == 8;
 }
 
 /* Set_arg handler for the icon item. */
@@ -460,7 +487,7 @@ draw_or_measure_text_box (GnomeCanvasItem* item,
 	height_so_far = 0;
 
 	if (drawable != NULL) {
-		icon_width = details->pixbuf == NULL ? 0 : details->pixbuf->art_pixbuf->width;
+		icon_width = details->pixbuf == NULL ? 0 : gdk_pixbuf_get_width (details->pixbuf);
 		gc = gdk_gc_new (item->canvas->layout.bin_window);
 	}
 	
@@ -604,6 +631,178 @@ draw_mini_text (GnomeCanvasItem* item, GdkDrawable *drawable,
 	gdk_gc_unref(gc);
 }
 
+static void
+draw_stretch_handles (NautilusIconsViewIconItem *item, GdkDrawable *drawable,
+		      const ArtIRect *rect)
+{
+	GdkGC *gc;
+
+	if (!item->details->show_stretch_handles) {
+		return;
+	}
+
+	gc = gdk_gc_new (drawable);
+	
+	gdk_draw_rectangle (drawable, gc, TRUE,
+			    rect->x0,
+			    rect->y0,
+			    STRETCH_HANDLE_THICKNESS,
+			    STRETCH_HANDLE_THICKNESS);
+	gdk_draw_rectangle (drawable, gc, TRUE,
+			    rect->x1 - STRETCH_HANDLE_THICKNESS,
+			    rect->y0,
+			    STRETCH_HANDLE_THICKNESS,
+			    STRETCH_HANDLE_THICKNESS);
+	gdk_draw_rectangle (drawable, gc, TRUE,
+			    rect->x0,
+			    rect->y1 - STRETCH_HANDLE_THICKNESS,
+			    STRETCH_HANDLE_THICKNESS,
+			    STRETCH_HANDLE_THICKNESS);
+	gdk_draw_rectangle (drawable, gc, TRUE,
+			    rect->x1 - STRETCH_HANDLE_THICKNESS,
+			    rect->y1 - STRETCH_HANDLE_THICKNESS,
+			    STRETCH_HANDLE_THICKNESS,
+			    STRETCH_HANDLE_THICKNESS);
+	
+	gdk_gc_set_stipple (gc, stipple);
+	gdk_gc_set_fill (gc, GDK_STIPPLED);
+	gdk_draw_rectangle (drawable, gc, FALSE,
+			    rect->x0 + (STRETCH_HANDLE_THICKNESS - 1) / 2,
+			    rect->y0 + (STRETCH_HANDLE_THICKNESS - 1) / 2,
+			    rect->x1 - rect->x0 - (STRETCH_HANDLE_THICKNESS - 1) - 1,
+			    rect->y1 - rect->y0 - (STRETCH_HANDLE_THICKNESS - 1) - 1);
+	
+	gdk_gc_unref (gc);
+}
+
+static void
+emblem_layout_reset (EmblemLayout *layout, NautilusIconsViewIconItem *icon_item, const ArtIRect *icon_rect)
+{
+	layout->icon_item = icon_item;
+	layout->icon_rect = *icon_rect;
+	layout->side = RIGHT_SIDE;
+	layout->position = 0;
+	layout->emblem = icon_item->details->emblem_pixbufs;
+}
+
+static gboolean
+emblem_layout_next (EmblemLayout *layout,
+		    GdkPixbuf **emblem_pixbuf,
+		    ArtIRect *emblem_rect)
+{
+	GdkPixbuf *pixbuf;
+	int width, height, x, y;
+
+	/* Check if we have layed out all of the pixbufs. */
+	if (layout->emblem == NULL) {
+		return FALSE;
+	}
+
+	/* Get the pixbuf. */
+	pixbuf = layout->emblem->data;
+	width = gdk_pixbuf_get_width (pixbuf);
+	height = gdk_pixbuf_get_height (pixbuf);
+
+	/* Advance to the next emblem. */
+	layout->emblem = layout->emblem->next;
+
+	for (;;) {
+
+		/* Find the side to lay out along. */
+		switch (layout->side) {
+		case RIGHT_SIDE:
+			x = layout->icon_rect.x1;
+			y = layout->icon_rect.y0;
+			break;
+		case BOTTOM_SIDE:
+			x = layout->icon_rect.x1;
+			y = layout->icon_rect.y1;
+			break;
+		case LEFT_SIDE:
+			x = layout->icon_rect.x0;
+			y = layout->icon_rect.y1;
+			break;
+		case TOP_SIDE:
+			x = layout->icon_rect.x0;
+			y = layout->icon_rect.y0;
+			break;
+		}
+		if (layout->position != 0) {
+			switch (layout->side) {
+			case RIGHT_SIDE:
+				y += layout->position + height / 2;
+				break;
+			case BOTTOM_SIDE:
+				x -= layout->position + width / 2;
+				break;
+			case LEFT_SIDE:
+				y -= layout->position + height / 2;
+				break;
+			case TOP_SIDE:
+				x += layout->position + width / 2;
+				break;
+			}
+		}
+		
+		/* Check to see if emblem fits in current side. */
+		if (x >= layout->icon_rect.x0 || x <= layout->icon_rect.x1
+		    || y < layout->icon_rect.y0 || y > layout->icon_rect.y1) {
+
+			/* It fits. */
+
+			/* Advance along the side. */
+			switch (layout->side) {
+			case RIGHT_SIDE:
+			case LEFT_SIDE:
+				layout->position += height + EMBLEM_SPACING;
+				break;
+			case BOTTOM_SIDE:
+			case TOP_SIDE:
+				layout->position += width + EMBLEM_SPACING;
+				break;
+			}
+
+			/* Return the rectangle and pixbuf. */
+			*emblem_pixbuf = pixbuf;
+			emblem_rect->x0 = x - width / 2;
+			emblem_rect->y0 = y - height / 2;
+			emblem_rect->x1 = emblem_rect->x0 + width;
+			emblem_rect->y1 = emblem_rect->y0 + height;
+
+			return TRUE;
+		}
+	
+		/* It doesn't fit, so move to the next side. */
+		switch (layout->side) {
+		case RIGHT_SIDE:
+			layout->side = BOTTOM_SIDE;
+			break;
+		case BOTTOM_SIDE:
+			layout->side = LEFT_SIDE;
+			break;
+		case LEFT_SIDE:
+			layout->side = TOP_SIDE;
+			break;
+		case TOP_SIDE:
+		default:
+			return FALSE;
+		}
+		layout->position = 0;
+	}
+}
+
+static void
+draw_pixbuf (GdkPixbuf *pixbuf, GdkDrawable *drawable, int x, int y)
+{
+	/* FIXME: Dither would be better if we passed dither values. */
+	gdk_pixbuf_render_to_drawable_alpha (pixbuf, drawable, 0, 0, x, y,
+					     gdk_pixbuf_get_width (pixbuf),
+					     gdk_pixbuf_get_height (pixbuf),
+					     GDK_PIXBUF_ALPHA_BILEVEL, 128, GDK_RGB_DITHER_MAX,
+					     0, 0);
+
+}
+
 /* Draw the icon item. */
 static void
 nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
@@ -611,129 +810,111 @@ nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable
 {
 	NautilusIconsViewIconItem *icon_item;
 	NautilusIconsViewIconItemDetails *details;
-	ArtIRect pixbuf_rect, drawable_rect, draw_rect;
-	int zoom_index;
-	GdkGC *gc;
+	ArtIRect icon_rect, emblem_rect;
+	EmblemLayout emblem_layout;
+	GdkPixbuf *emblem_pixbuf;
 	
 	icon_item = NAUTILUS_ICONS_VIEW_ICON_ITEM (item);
 	details = icon_item->details;
 
-	/* Compute pixbuf rectangle in canvas coordinates. */
-	nautilus_icons_view_icon_item_get_icon_canvas_rectangle
-		(icon_item, &pixbuf_rect);
-	
         /* Draw the pixbuf. */
-     	if (details->pixbuf != NULL) {
-		/* Compute the area we need to draw. */
-		drawable_rect.x0 = x;
-		drawable_rect.y0 = y;
-		drawable_rect.x1 = x + width;
-		drawable_rect.y1 = y + height;
-		art_irect_intersect (&draw_rect, &pixbuf_rect, &drawable_rect);
-		if (!art_irect_empty (&draw_rect)) {
-			gdk_pixbuf_render_to_drawable_alpha
-				(details->pixbuf, drawable,
-				 draw_rect.x0 - pixbuf_rect.x0, draw_rect.y0 - pixbuf_rect.y0,
-				 draw_rect.x0 - x, draw_rect.y0 - y,
-				 draw_rect.x1 - draw_rect.x0, draw_rect.y1 - draw_rect.y0,
-				 GDK_PIXBUF_ALPHA_BILEVEL, 128, GDK_RGB_DITHER_MAX,
-				 draw_rect.x0, draw_rect.y0);
-		}
+     	if (details->pixbuf == NULL) {
+		return;
 	}
 
-	/* Draw stretching handles (if necessary). */
-	if (details->show_stretch_handles) {
-		gc = gdk_gc_new (drawable);
-		
-		gdk_draw_rectangle (drawable, gc, TRUE,
-				    pixbuf_rect.x0 - x,
-				    pixbuf_rect.y0 - y,
-				    STRETCH_HANDLE_THICKNESS,
-				    STRETCH_HANDLE_THICKNESS);
-		gdk_draw_rectangle (drawable, gc, TRUE,
-				    pixbuf_rect.x1 - x - STRETCH_HANDLE_THICKNESS,
-				    pixbuf_rect.y0 - y,
-				    STRETCH_HANDLE_THICKNESS,
-				    STRETCH_HANDLE_THICKNESS);
-		gdk_draw_rectangle (drawable, gc, TRUE,
-				    pixbuf_rect.x0 - x,
-				    pixbuf_rect.y1 - y - STRETCH_HANDLE_THICKNESS,
-				    STRETCH_HANDLE_THICKNESS,
-				    STRETCH_HANDLE_THICKNESS);
-		gdk_draw_rectangle (drawable, gc, TRUE,
-				    pixbuf_rect.x1 - x - STRETCH_HANDLE_THICKNESS,
-				    pixbuf_rect.y1 - y - STRETCH_HANDLE_THICKNESS,
-				    STRETCH_HANDLE_THICKNESS,
-				    STRETCH_HANDLE_THICKNESS);
+	/* Compute icon rectangle in drawable coordinates. */
+	nautilus_icons_view_icon_item_get_icon_canvas_rectangle
+		(icon_item, &icon_rect);
+	icon_rect.x0 -= x;
+	icon_rect.y0 -= y;
+	icon_rect.x1 -= x;
+	icon_rect.y1 -= y;
+	
+	/* Draw the icon's pixbuf. */
+	draw_pixbuf (details->pixbuf, drawable, icon_rect.x0, icon_rect.y0);
 
-		gdk_gc_set_stipple (gc, stipple);
-		gdk_gc_set_fill (gc, GDK_STIPPLED);
-		gdk_draw_rectangle (drawable, gc, FALSE,
-				    pixbuf_rect.x0 - x + (STRETCH_HANDLE_THICKNESS - 1) / 2,
-				    pixbuf_rect.y0 - y + (STRETCH_HANDLE_THICKNESS - 1) / 2,
-				    pixbuf_rect.x1 - pixbuf_rect.x0 - (STRETCH_HANDLE_THICKNESS - 1) - 1,
-				    pixbuf_rect.y1 - pixbuf_rect.y0 - (STRETCH_HANDLE_THICKNESS - 1) - 1);
-		
-		gdk_gc_unref (gc);
+	/* Draw the emblem pixbufs. */
+	emblem_layout_reset (&emblem_layout, icon_item, &icon_rect);
+	while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect)) {
+		draw_pixbuf (emblem_pixbuf, drawable, emblem_rect.x0, emblem_rect.y0);
 	}
 	
-	/* if necessary, draw the mini-text in the icon, obtained from the text source */
+	/* Draw stretching handles (if necessary). */
+	draw_stretch_handles (icon_item, drawable, &icon_rect);
+	
 	/* FIXME: The text reading does not belong here at all, but rather in the caller. */
-	zoom_index = gnome_icon_container_get_zoom_level (GNOME_ICON_CONTAINER (item->canvas));
-	if (details->text_source && details->text_source[0] != '\0' && zoom_index >= NAUTILUS_ZOOM_LEVEL_STANDARD)
-		draw_mini_text (item, drawable, pixbuf_rect.x0 - x, pixbuf_rect.y0 - y, 
-				pixbuf_rect.x1 - pixbuf_rect.x0, pixbuf_rect.y1 - pixbuf_rect.y0,
+	if (details->text_source) {
+		draw_mini_text (item, drawable, icon_rect.x0, icon_rect.y0,
+				icon_rect.x1 - icon_rect.x0, icon_rect.y1 - icon_rect.y0,
 				details->text_source);
+	}
 	
 	/* Draw the label text. */
-	nautilus_icons_view_draw_text_box (item, drawable,
-					   pixbuf_rect.x0 - x,
-					   pixbuf_rect.y1 - y);
+	nautilus_icons_view_draw_text_box (item, drawable, icon_rect.x0, icon_rect.y1);
 }
 
 
 
 static gboolean
+hit_test_pixbuf (GdkPixbuf *pixbuf, int pixbuf_x, int pixbuf_y, int probe_x, int probe_y)
+{
+	int relative_x, relative_y;
+	guint8 *pixel;
+	
+	/* You can get here without a pixbuf in some strage cases. */
+	if (pixbuf == NULL) {
+		return FALSE;
+	}
+	
+	/* Check to see if it's within the rectangle at all. */
+	relative_x = probe_x - pixbuf_x;
+	relative_y = probe_y - pixbuf_y;
+	if (relative_x < 0 || relative_y < 0
+	    || relative_x > gdk_pixbuf_get_width (pixbuf)
+	    || relative_y > gdk_pixbuf_get_height (pixbuf)) {
+		return FALSE;
+	}
+
+	/* If there's no alpha channel, it's opaque and we have a hit. */
+	if (!gdk_pixbuf_get_has_alpha (pixbuf)) {
+		return TRUE;
+	}
+	g_assert (gdk_pixbuf_get_n_channels (pixbuf) == 4);
+	
+	/* Check the alpha channel of the pixel to see if we have a hit. */
+	pixel = gdk_pixbuf_get_pixels (pixbuf)
+		+ relative_y * gdk_pixbuf_get_rowstride (pixbuf)
+		+ relative_x * 4;
+	return pixel[3] >= 128;
+}
+
+static gboolean
 hit_test (NautilusIconsViewIconItem *icon_item, int cx, int cy)
 {
 	NautilusIconsViewIconItemDetails *details;
-	ArtIRect rect;
-	ArtPixBuf *art_pixbuf;
-	guint8 *pixel;
+	ArtIRect icon_rect, emblem_rect;
+	EmblemLayout emblem_layout;
+	GdkPixbuf *emblem_pixbuf;
 	
 	details = icon_item->details;
-
-	/* Check to see if it's within the item's rectangle at all. */
-	nautilus_icons_view_icon_item_get_icon_canvas_rectangle (icon_item, &rect);
-	if (cx < rect.x0 || cx >= rect.x1 || cy < rect.y0 || cy >= rect.y1) {
-		return FALSE;
-	}
 
 	/* Check for hits in the stretch handles. */
 	if (nautilus_icons_view_icon_item_get_hit_stretch_handle (icon_item, cx, cy)) {
 		return TRUE;
 	}
 	
-	/* You can get here without a pixbuf if you happen to click on the
-	 * corner pixel of the icon.
-	 */
-	if (details->pixbuf == NULL) {
-		return FALSE;
-	}
-	
-	/* If there's no alpha channel, it's opaque and we have a hit. */
-	art_pixbuf = details->pixbuf->art_pixbuf;
-	if (!art_pixbuf->has_alpha) {
+	/* Check for hit in the icon. */
+	nautilus_icons_view_icon_item_get_icon_canvas_rectangle (icon_item, &icon_rect);
+	if (hit_test_pixbuf (details->pixbuf, icon_rect.x0, icon_rect.y0, cx, cy)) {
 		return TRUE;
 	}
-	g_assert (art_pixbuf->n_channels == 4);
-	
-	/* Check the alpha channel of the pixel to see if we have a hit. */
-	pixel = art_pixbuf->pixels
-		+ (cy - rect.y0) * art_pixbuf->rowstride
-		+ (cx - rect.x0) * 4;
-	if (pixel[3] >= 128) {
-		return TRUE;
+
+	/* Check for hit in the emblem pixbufs. */
+	emblem_layout_reset (&emblem_layout, icon_item, &icon_rect);
+	while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect)) {
+		if (hit_test_pixbuf (emblem_pixbuf, emblem_rect.x0, emblem_rect.y0, cx, cy)) {
+			return TRUE;
+		}
 	}
 
 	return FALSE;
@@ -761,9 +942,10 @@ nautilus_icons_view_icon_item_bounds (GnomeCanvasItem *item, double *x1, double 
 {
 	NautilusIconsViewIconItem *icon_item;
 	NautilusIconsViewIconItemDetails *details;
-	ArtIRect rect;
-	int pixbuf_width, pixbuf_height;
+	ArtIRect icon_rect, text_rect, total_rect, emblem_rect;
 	double pixels_per_unit;
+	EmblemLayout emblem_layout;
+	GdkPixbuf *emblem_pixbuf;
 
 	g_assert (x1 != NULL);
 	g_assert (y1 != NULL);
@@ -772,38 +954,44 @@ nautilus_icons_view_icon_item_bounds (GnomeCanvasItem *item, double *x1, double 
 	
 	icon_item = NAUTILUS_ICONS_VIEW_ICON_ITEM (item);
 	details = icon_item->details;
-	
+
+	/* Compute icon rectangle. */
+	icon_rect.x0 = 0;
+	icon_rect.y0 = 0;
 	if (details->pixbuf == NULL) {
-		pixbuf_width = 0;
-		pixbuf_height = 0;
+		icon_rect.x1 = 0;
+		icon_rect.y1 = 0;
 	} else {
-		pixbuf_width = details->pixbuf->art_pixbuf->width;
-		pixbuf_height = details->pixbuf->art_pixbuf->height;
+		icon_rect.x1 = gdk_pixbuf_get_width (details->pixbuf);
+		icon_rect.y1 = gdk_pixbuf_get_height (details->pixbuf);
 	}
 	
-	/* Compute rectangle enclosing both the icon and the text. */
-	if (pixbuf_width > details->text_width) {
-		rect.x0 = 0;
-		rect.x1 = pixbuf_width;
-	} else {
-		rect.x0 = (pixbuf_width - details->text_width) / 2;
-		rect.x1 = rect.x0 + details->text_width;
+	/* Compute text rectangle. */
+	text_rect.x0 = icon_rect.y1 / 2 - details->text_width / 2;
+	text_rect.y0 = icon_rect.y1;
+	text_rect.x1 = text_rect.x0 + details->text_width;
+	text_rect.y1 = text_rect.y1 + details->text_height;
+
+	/* Compute total rectangle, adding in emblem rectangles. */
+	art_irect_union (&total_rect, &icon_rect, &text_rect);
+	emblem_layout_reset (&emblem_layout, icon_item, &icon_rect);
+	while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect)) {
+		art_irect_union (&total_rect, &total_rect, &emblem_rect);
 	}
-	rect.y0 = 0;
-	rect.y1 = pixbuf_height + details->text_height;
+	
         
         /* Add 2 pixels slop to each side. */
-	rect.x0 -= 2;
-	rect.x1 += 2;
-	rect.y0 -= 2;
-	rect.y1 += 2;
+	total_rect.x0 -= 2;
+	total_rect.x1 += 2;
+	total_rect.y0 -= 2;
+	total_rect.y1 += 2;
 	
 	/* Return the result. */
 	pixels_per_unit = item->canvas->pixels_per_unit;
-	*x1 = rect.x0 / pixels_per_unit;
-	*y1 = rect.y0 / pixels_per_unit;
-	*x2 = rect.x1 / pixels_per_unit;
-	*y2 = rect.y1 / pixels_per_unit;
+	*x1 = total_rect.x0 / pixels_per_unit;
+	*y1 = total_rect.y0 / pixels_per_unit;
+	*x2 = total_rect.x1 / pixels_per_unit;
+	*y2 = total_rect.y1 / pixels_per_unit;
 }
 
 /* Get the rectangle of the icon only, in world coordinates. */
@@ -831,8 +1019,8 @@ nautilus_icons_view_icon_item_get_icon_world_rectangle (NautilusIconsViewIconIte
 	pixbuf = item->details->pixbuf;
 	pixels_per_unit = GNOME_CANVAS_ITEM (item)->canvas->pixels_per_unit;
 	
-	rect->x1 = rect->x0 + (pixbuf == NULL ? 0 : pixbuf->art_pixbuf->width) / pixels_per_unit;
-	rect->y1 = rect->y0 + (pixbuf == NULL ? 0 : pixbuf->art_pixbuf->height) / pixels_per_unit;
+	rect->x1 = rect->x0 + (pixbuf == NULL ? 0 : gdk_pixbuf_get_width (pixbuf)) / pixels_per_unit;
+	rect->y1 = rect->y0 + (pixbuf == NULL ? 0 : gdk_pixbuf_get_height (pixbuf)) / pixels_per_unit;
 }
 
 /* Get the rectangle of the icon only, in canvas coordinates. */
@@ -858,8 +1046,8 @@ nautilus_icons_view_icon_item_get_icon_canvas_rectangle (NautilusIconsViewIconIt
 
 	pixbuf = item->details->pixbuf;
 	
-	rect->x1 = rect->x0 + (pixbuf == NULL ? 0 : pixbuf->art_pixbuf->width);
-	rect->y1 = rect->y0 + (pixbuf == NULL ? 0 : pixbuf->art_pixbuf->height);
+	rect->x1 = rect->x0 + (pixbuf == NULL ? 0 : gdk_pixbuf_get_width (pixbuf));
+	rect->y1 = rect->y0 + (pixbuf == NULL ? 0 : gdk_pixbuf_get_height (pixbuf));
 }
 
 /* Get the rectangle of the icon only, in window coordinates. */
@@ -888,8 +1076,8 @@ nautilus_icons_view_icon_item_get_icon_window_rectangle (NautilusIconsViewIconIt
 
 	pixbuf = item->details->pixbuf;
 	
-	rect->x1 = rect->x0 + (pixbuf == NULL ? 0 : pixbuf->art_pixbuf->width);
-	rect->y1 = rect->y0 + (pixbuf == NULL ? 0 : pixbuf->art_pixbuf->height);
+	rect->x1 = rect->x0 + (pixbuf == NULL ? 0 : gdk_pixbuf_get_width (pixbuf));
+	rect->y1 = rect->y0 + (pixbuf == NULL ? 0 : gdk_pixbuf_get_height (pixbuf));
 }
 
 void

@@ -2556,8 +2556,12 @@ update_icon (GnomeIconContainer *container, GnomeIconContainerIcon *icon)
 
 	font = details->label_font[details->zoom_level];
         
-	contents_as_text = nautilus_icons_controller_get_icon_property  
-		(details->controller, icon->data, "contents_as_text");
+	if (details->zoom_level < NAUTILUS_ZOOM_LEVEL_STANDARD) {
+		contents_as_text = NULL;
+	} else {
+		contents_as_text = nautilus_icons_controller_get_icon_property  
+			(details->controller, icon->data, "contents_as_text");
+	}
 	
 	gnome_canvas_item_set (GNOME_CANVAS_ITEM (icon->item),
 			       "pixbuf", pixbuf,
@@ -3192,7 +3196,7 @@ gnome_icon_container_is_stretched (GnomeIconContainer *container)
 
 	for (p = container->details->icons; p != NULL; p = p->next) {
 		icon = p->data;
-		if (icon->scale_x != 1.0 || icon->scale_y != 1.0) {
+		if (icon->is_selected && (icon->scale_x != 1.0 || icon->scale_y != 1.0)) {
 			return TRUE;
 		}
 	}
@@ -3213,10 +3217,12 @@ gnome_icon_container_unstretch (GnomeIconContainer *container)
 
 	for (p = container->details->icons; p != NULL; p = p->next) {
 		icon = p->data;
-		gnome_icon_container_move_icon (container, icon,
-						icon->x, icon->y,
-						1.0, 1.0,
-						FALSE);
+		if (icon->is_selected) {
+			gnome_icon_container_move_icon (container, icon,
+							icon->x, icon->y,
+							1.0, 1.0,
+							FALSE);
+		}
 	}
 }
 
