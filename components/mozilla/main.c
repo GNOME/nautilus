@@ -35,6 +35,7 @@
 #include <gtkmozembed.h>
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 
 #define nopeDEBUG_mfleming 1
 
