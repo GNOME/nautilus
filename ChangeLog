@@ -1,3 +1,26 @@
+2001-01-19  Rebecca Schulman  <rebecka@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	* src/file-manager/fm-search-list-view.c: (load_location_callback),
+	(display_indexed_search_problems_dialog):
+	Added dialogs to explain problems that may occur when running a search.
+	There are separate dialogs to explain each of the following errors:
+	1.  No index files available 
+	2.  Index still being created
+	3.  Index files are available, but the search daemon isn't running
+	4.  No index files, and no reindexing service avaialble
+	We may be able to actually do something about some of these 
+	problems in the future (ie launch the search or indexing daemons
+	if they're not already running) but for PR3 explaining what is
+	going on in each of these cases should be a big step forward
+	* src/file-manager/nautilus-indexing-info.c:
+	(nautilus_indexing_info_show_dialog):
+	Show the index files status dialog if there are index files,
+	or indexing is going on, rather than if the search service
+	is available, so that a user can follow indexing progress,
+	even if an index isn't ready yet.
+
 2001-01-19  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/command-line/eazel-test-packsys.c:

@@ -256,6 +256,7 @@ show_search_service_not_available_dialog (void)
                                NULL);
 }
 
+
 void
 nautilus_indexing_info_request_reindex (void)
 {
@@ -289,14 +290,12 @@ void
 nautilus_indexing_info_show_dialog (void)
 {
 #ifdef HAVE_MEDUSA
-        /* FIXME bugzilla.eazel.com 2534: Is it ok to show the index
-         * dialog if we can't use the index right now? This assumes
-         * not.
-         */
-	if (medusa_indexed_search_is_available () != GNOME_VFS_OK) {
-		show_search_service_not_available_dialog ();
-	} else {
+        if (medusa_indexed_search_system_index_files_look_available () ||
+            medusa_index_service_is_available () == MEDUSA_INDEXER_ALREADY_INDEXING) {
                 show_indexing_info_dialog ();
+        }
+        else {
+                show_search_service_not_available_dialog ();
         }
 #else
         show_search_service_not_available_dialog ();
