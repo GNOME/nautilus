@@ -1,3 +1,15 @@
+2002-03-11  Anders Carlsson  <andersca@gnu.org>
+
+	* libnautilus-private/nautilus-file-operations-progress-icons.h:
+	* libnautilus-private/nautilus-file-operations-progress.c:
+	(nautilus_file_operations_progress_update_icon),
+	(nautilus_file_operations_progress_update),
+	(nautilus_file_operations_progress_init),
+	(nautilus_file_operations_progress_class_init):
+	Add progress jar feature; the progress dialog icon now looks like 
+	a jar that fills up as the files is copied. This idea was suggested
+	by Tuomas Kuosmanen.
+
 2002-03-11  Michael Meeks  <michael@ximian.com>
 
 	* libnautilus/nautilus-clipboard.c

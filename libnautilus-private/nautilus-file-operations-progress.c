@@ -39,8 +39,8 @@
 #include <gtk/gtkstock.h>
 #include <gtk/gtktable.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-stock-icons.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include "nautilus-file-operations-progress-icons.h"
 
 /* The default width of the progress dialog. It will be wider
  * only if the font is really huge and the fixed labels don't
@@ -52,6 +52,8 @@
 #define HORIZONTAL_SPACING 3
 
 #define MINIMUM_TIME_UP    1000
+
+static GdkPixbuf *empty_jar_pixbuf, *full_jar_pixbuf;
 
 static void nautilus_file_operations_progress_class_init (NautilusFileOperationsProgressClass *klass);
 static void nautilus_file_operations_progress_init       (NautilusFileOperationsProgress      *dialog);
@@ -83,13 +85,44 @@ struct NautilusFileOperationsProgressDetails {
 	gint64 start_time;
 
 	guint delayed_close_timeout_id;
+
+	int progress_jar_position;
 };
 
 /* Private functions. */
 
 static void
+nautilus_file_operations_progress_update_icon (NautilusFileOperationsProgress *progress,
+					       double fraction)
+{
+	GdkPixbuf *pixbuf;
+	int position;
+
+	position = gdk_pixbuf_get_height (empty_jar_pixbuf) * (1 - fraction);
+
+	if (position == progress->details->progress_jar_position) {
+		return;
+	}
+
+	progress->details->progress_jar_position = position;
+	
+	pixbuf = gdk_pixbuf_copy (empty_jar_pixbuf);
+	gdk_pixbuf_copy_area (full_jar_pixbuf,
+			      0, position,
+			      gdk_pixbuf_get_width (pixbuf), gdk_pixbuf_get_height (pixbuf) - position,
+			      pixbuf,
+			      0, position);
+
+	gtk_window_set_icon (GTK_WINDOW (progress), pixbuf);
+	g_object_unref (pixbuf);
+}
+
+
+static void
 nautilus_file_operations_progress_update (NautilusFileOperationsProgress *progress)
 {
+	double fraction;
+	
 	if (progress->details->bytes_total == 0) {
 		/* We haven't set up the file count yet, do not update
 		 * the progress bar until we do.
@@ -97,10 +130,13 @@ nautilus_file_operations_progress_update (NautilusFileOperationsProgress *progre
 		return;
 	}
 
+	fraction = (double)progress->details->bytes_copied /
+		progress->details->bytes_total;
+	
 	gtk_progress_bar_set_fraction
 		(GTK_PROGRESS_BAR (progress->details->progress_bar),
-		 (double) progress->details->bytes_copied /
-		 progress->details->bytes_total);
+		 fraction);
+	nautilus_file_operations_progress_update_icon (progress, fraction);
 }
 
 static void
@@ -260,6 +296,12 @@ nautilus_file_operations_progress_init (NautilusFileOperationsProgress *progress
 			     &progress->details->to_path_label);
 
 	gtk_box_pack_start (vbox, GTK_WIDGET (titled_label_table), FALSE, FALSE, 0);
+
+	/* Set window icon */
+	gtk_window_set_icon (GTK_WINDOW (progress), empty_jar_pixbuf);
+
+	/* Set progress jar position */
+	progress->details->progress_jar_position = gdk_pixbuf_get_height (empty_jar_pixbuf);
 }
 
 static void
@@ -289,6 +331,11 @@ nautilus_file_operations_progress_class_init (NautilusFileOperationsProgressClas
 	widget_class->map = map_callback;
 
 	dialog_class->close = close_callback;
+
+	/* Load the jar pixbufs */
+	empty_jar_pixbuf = gdk_pixbuf_new_from_inline (-1, progress_jar_empty_icon, FALSE, NULL);
+	full_jar_pixbuf = gdk_pixbuf_new_from_inline (-1, progress_jar_full_icon, FALSE, NULL);
+	
 }
 
 NautilusFileOperationsProgress *
