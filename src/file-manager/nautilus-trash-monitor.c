@@ -103,27 +103,34 @@ nautilus_trash_files_changed_callback (NautilusDirectory *directory, GList *file
 static void
 nautilus_trash_monitor_initialize (gpointer object, gpointer klass)
 {
+	NautilusDirectory *trash_directory;
 	NautilusTrashMonitor *trash_monitor;
 
 	trash_monitor = NAUTILUS_TRASH_MONITOR (object);
 
 	/* set up a NautilusDirectory for the Trash directory to monitor */
 
+	trash_directory = nautilus_directory_get ("trash:");
+
 	trash_monitor->details = g_new0 (NautilusTrashMonitorDetails, 1);
-	trash_monitor->details->trash_directory = nautilus_directory_get ("trash:");
+	trash_monitor->details->trash_directory = trash_directory;
 	trash_monitor->details->empty = TRUE;
 
-	nautilus_directory_file_monitor_add (trash_monitor->details->trash_directory,
-					     trash_monitor,
-					     NULL, TRUE, FALSE);
-
 	/* Make sure we get notified about changes */
-    	gtk_signal_connect (GTK_OBJECT (trash_monitor->details->trash_directory),
-			    "files_added", GTK_SIGNAL_FUNC (nautilus_trash_files_changed_callback),
-			    trash_monitor);
-    	gtk_signal_connect (GTK_OBJECT (trash_monitor->details->trash_directory),
-			    "files_changed", GTK_SIGNAL_FUNC (nautilus_trash_files_changed_callback),
-			    trash_monitor);
+	nautilus_directory_file_monitor_add
+		(trash_directory, trash_monitor, NULL, TRUE, FALSE);
+    	gtk_signal_connect_while_alive
+		(GTK_OBJECT (trash_directory),
+		 "files_added",
+		 nautilus_trash_files_changed_callback,
+		 trash_monitor,
+		 GTK_OBJECT (trash_monitor));
+    	gtk_signal_connect_while_alive
+		(GTK_OBJECT (trash_directory),
+		 "files_changed",
+		 nautilus_trash_files_changed_callback,
+		 trash_monitor,
+		 GTK_OBJECT (trash_monitor));
 }
 
 static void

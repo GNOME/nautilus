@@ -1,3 +1,17 @@
+2000-09-01  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(print_key_string), (free_hash_tables_at_exit),
+	(nautilus_g_hash_table_new_free_at_exit): Added code to print out
+	the keys for the hash table at exit time if it's a hash table with
+	string keys. I can tell the keys are strings because the hash
+	function is g_str_hash.
+	
+	* src/file-manager/nautilus-trash-monitor.c:
+	(nautilus_trash_monitor_initialize): Used connect_while_alive
+	instead of connect to get rid of some nasty problems with
+	lingering signal handlers.
+
 2000-09-01  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/tree/libmain.c (tree_shlib_object_destroyed): Don't

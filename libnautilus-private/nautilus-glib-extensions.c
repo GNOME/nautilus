@@ -34,6 +34,7 @@
 typedef struct {
 	GHashTable *hash_table;
 	char *display_name;
+	gboolean keys_known_to_be_strings;
 } HashTableToFree;
 
 GList *hash_tables_to_free_at_exit;
@@ -601,6 +602,14 @@ nautilus_get_system_time (void)
 }
 
 static void
+print_key_string (gpointer key, gpointer value, gpointer callback_data)
+{
+	g_assert (callback_data == NULL);
+
+	g_print ("-> %s\n", (char *) key);
+}
+
+static void
 free_hash_tables_at_exit (void)
 {
 	GList *p;
@@ -614,6 +623,11 @@ free_hash_tables_at_exit (void)
 		if (size != 0) {
 			g_warning ("hash table %s still has %u elements at quit time",
 				   hash_table_to_free->display_name, size);
+			if (hash_table_to_free->keys_known_to_be_strings) {
+				g_hash_table_foreach (hash_table_to_free->hash_table,
+						      print_key_string,
+						      NULL);
+			}
 		}
 
 		g_hash_table_destroy (hash_table_to_free->hash_table);
@@ -639,6 +653,8 @@ nautilus_g_hash_table_new_free_at_exit (GHashFunc hash_func,
 	hash_table_to_free = g_new (HashTableToFree, 1);
 	hash_table_to_free->hash_table = hash_table;
 	hash_table_to_free->display_name = g_strdup (display_name);
+	hash_table_to_free->keys_known_to_be_strings =
+		hash_func == g_str_hash;
 
 	hash_tables_to_free_at_exit = g_list_prepend
 		(hash_tables_to_free_at_exit, hash_table_to_free);
