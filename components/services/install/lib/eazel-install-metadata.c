@@ -225,6 +225,7 @@ init_default_transfer_configuration (void)
 	rv->tmp_dir = get_conf_string ("server/temp-dir", "/tmp/eazel-install");
 	rv->rpmrc_file = get_conf_string ("server/rpmrc", "/usr/lib/rpm/rpmrc");
 	rv->cgi_path = get_conf_string ("server/cgi-path", DEFAULT_CGI_PATH);
+	rv->eazel_auth = get_conf_boolean ("server/eazel-auth", TRUE);
 
 	return rv;
 }

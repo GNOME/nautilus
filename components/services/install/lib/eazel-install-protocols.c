@@ -792,10 +792,16 @@ char* get_search_url_for_package (EazelInstall *service,
 		return NULL;
 	}
 
-	url = g_strdup_printf ("http://%s:%d%s",
-			       eazel_install_get_server (service),
-			       eazel_install_get_server_port (service),
-			       eazel_install_get_cgi_path (service));
+	if (eazel_install_get_eazel_auth (service)) {
+		/* use eazel-auth: uri */
+		url = g_strdup_printf ("eazel-services:%s",
+				       eazel_install_get_cgi_path (service));
+	} else {
+		url = g_strdup_printf ("http://%s:%d%s",
+				       eazel_install_get_server (service),
+				       eazel_install_get_server_port (service),
+				       eazel_install_get_cgi_path (service));
+	}
 
 	dist = trilobite_get_distribution ();
 
@@ -821,7 +827,7 @@ char* get_search_url_for_package (EazelInstall *service,
 		arch = real_arch_name (buf.machine);
 		add_to_url (&url, "?provides=", (char*)data);
 		add_to_url (&url, "&arch=", arch);
-		/* hack, FIXME */
+		/* hack, FIXME bugzilla.eazel.com 3481 */
 		add_to_url (&url, "&flags=", "0");
 		add_to_url (&url, "&version=", "-");
 		g_free (arch);

@@ -209,7 +209,7 @@ trilobite_open_uri (const char *uri_text)
 	err = gnome_vfs_open_uri (&handle, uri, GNOME_VFS_OPEN_READ);
 	if (err != GNOME_VFS_OK) {
 
-		trilobite_debug ("fetch-uri: open failed: %s", gnome_vfs_result_to_string (err));
+		trilobite_debug ("fetch-uri on '%s': open failed: %s", uri_text, gnome_vfs_result_to_string (err));
 		handle = NULL;
 	}
 
@@ -244,6 +244,7 @@ trilobite_fetch_uri (const char *uri_text, char **body, int *length)
 	*length = 0;
 
 	while (1) {
+		/* i think this is probably pretty loser: */
 		g_main_iteration (FALSE);
 		err = gnome_vfs_read (handle, (*body) + (*length), buffer_size - (*length), &bytes);
 		if ((bytes == 0) || (err != GNOME_VFS_OK)) {
@@ -268,7 +269,7 @@ trilobite_fetch_uri (const char *uri_text, char **body, int *length)
 	return TRUE;
 
 fail:
-	trilobite_debug ("fetch-uri: %s", gnome_vfs_result_to_string (err));
+	trilobite_debug ("fetch-uri on %s: %s (%d)", uri_text, gnome_vfs_result_to_string (err), err);
 	gnome_vfs_close (handle);
 	return FALSE;
 }

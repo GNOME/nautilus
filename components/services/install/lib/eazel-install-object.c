@@ -86,7 +86,8 @@ enum {
 	ARG_PACKAGE_SYSTEM,
 	ARG_SERVER_PORT,
 	ARG_TRANSACTION_DIR,
-	ARG_CGI_PATH
+	ARG_CGI_PATH,
+	ARG_EAZEL_AUTH
 };
 
 /* The signal array, used for building the signal bindings */
@@ -335,6 +336,9 @@ eazel_install_set_arg (GtkObject *object,
 	case ARG_CGI_PATH:
 		eazel_install_set_cgi_path (service, (char*)GTK_VALUE_POINTER(*arg));
 		break;
+	case ARG_EAZEL_AUTH:
+		eazel_install_set_eazel_auth (service, GTK_VALUE_BOOL (*arg));
+		break;
 	}
 }
 
@@ -522,6 +526,10 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				 GTK_TYPE_POINTER,
 				 GTK_ARG_READWRITE,
 				 ARG_CGI_PATH);
+	gtk_object_add_arg_type ("EazelInstall::eazel_auth",
+				 GTK_TYPE_BOOL,
+				 GTK_ARG_READWRITE,
+				 ARG_EAZEL_AUTH);
 }
 
 static void
@@ -655,6 +663,7 @@ eazel_install_new_with_config (void)
 						 "package_list_storage_path", topts->pkg_list_storage_path,
 						 "server_port", topts->port_number,
 						 "cgi_path", topts->cgi_path,
+						 "eazel_auth", topts->eazel_auth,
 						 NULL));
 	gtk_object_ref (GTK_OBJECT (service));
 	gtk_object_sink (GTK_OBJECT (service));
@@ -1327,6 +1336,7 @@ ei_mutator_impl_copy (package_list, char*, iopts->pkg_list, g_strdup);
 ei_mutator_impl_copy (transaction_dir, char*, transaction_dir, g_strdup);
 ei_mutator_impl (server_port, guint, topts->port_number);
 ei_mutator_impl_copy (cgi_path, char*, topts->cgi_path, g_strdup);
+ei_mutator_impl (eazel_auth, gboolean, topts->eazel_auth);
 
 ei_mutator_impl (install_flags, int, install_flags);
 ei_mutator_impl (interface_flags, int, interface_flags);
@@ -1353,6 +1363,7 @@ ei_access_impl (transaction_dir, char*, transaction_dir, NULL);
 ei_access_impl (root_dirs, GList*, root_dirs, NULL);
 ei_access_impl (server_port, guint, topts->port_number, 0);
 ei_access_impl (cgi_path, char*, topts->cgi_path, NULL);
+ei_access_impl (eazel_auth, gboolean, topts->eazel_auth, FALSE);
 
 ei_access_impl (install_flags, int, install_flags, 0);
 ei_access_impl (interface_flags, int, interface_flags, 0);

@@ -112,6 +112,7 @@ struct _TransferOptions {
 	char* tmp_dir;                     /* Local directory to store incoming RPMs */
 	char* rpmrc_file;                  /* Location of the rpm resource file */
 	char* cgi_path;			   /* Path to CGI on remote server */
+	gboolean eazel_auth;		   /* use eazel-auth proxy for http */
 };
 void transferoptions_destroy (TransferOptions *topts);
 

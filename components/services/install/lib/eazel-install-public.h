@@ -258,6 +258,7 @@ ei_mutator_decl (root_dirs, GList*);
 ei_mutator_decl (transaction_dir, char*);
 ei_mutator_decl (server_port, guint);
 ei_mutator_decl (cgi_path, char*);
+ei_mutator_decl (eazel_auth, gboolean);
 
 ei_mutator_decl (install_flags, int);
 ei_mutator_decl (interface_flags, int);
@@ -284,6 +285,7 @@ ei_access_decl (root_dirs, GList*);
 ei_access_decl (transaction_dir, char*);
 ei_access_decl (server_port, guint);
 ei_access_decl (cgi_path, char*);
+ei_access_decl (eazel_auth, gboolean);
 
 ei_access_decl (install_flags, int);
 ei_access_decl (interface_flags, int);
