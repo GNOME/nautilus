@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-08-10 23:54+0200\n"
+"POT-Creation-Date: 2003-09-11 20:18+0200\n"
 "PO-Revision-Date: 2003-07-06 23:41+0100\n"
 "Last-Translator: Gnome PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
@@ -394,15 +394,15 @@ msgstr "(Pusty)"
 msgid "Loading..."
 msgstr "Wczytywanie..."
 
-#: components/tree/nautilus-tree-view.c:505 nautilus.desktop.in.h:1
+#: components/tree/nautilus-tree-view.c:519 nautilus.desktop.in.h:1
 msgid "Home Folder"
 msgstr "Folder domowy"
 
-#: components/tree/nautilus-tree-view.c:507
+#: components/tree/nautilus-tree-view.c:521
 msgid "Filesystem"
 msgstr "System plików"
 
-#: components/tree/nautilus-tree-view.c:509
+#: components/tree/nautilus-tree-view.c:523
 msgid "Network Neighbourhood"
 msgstr "Otoczenie sieciowe"
 
@@ -1752,7 +1752,7 @@ msgid "Can't delete volume"
 msgstr "Nie można usunąć wolumenu"
 
 #: libnautilus-private/nautilus-desktop-link.c:139
-#: libnautilus-private/nautilus-file.c:5592
+#: libnautilus-private/nautilus-file.c:5613
 #: libnautilus-private/nautilus-global-preferences.c:545
 #: libnautilus-private/nautilus-trash-directory.c:383
 msgid "Trash"
@@ -2197,7 +2197,7 @@ msgstr "Zastąp wszystkie"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1130
-#: libnautilus-private/nautilus-file.c:4420
+#: libnautilus-private/nautilus-file.c:4433
 #, c-format
 msgid "link to %s"
 msgstr "dowiązanie do %s"
@@ -2523,7 +2523,7 @@ msgid "Preparing to Empty the Trash..."
 msgstr "Przygotowywanie do opróżnienia śmietnika..."
 
 #: libnautilus-private/nautilus-file-operations.c:2263
-#: src/file-manager/fm-desktop-icon-view.c:999
+#: src/file-manager/fm-desktop-icon-view.c:1016
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:6
 msgid "Empty Trash"
 msgstr "Opróżnij śmietnik"
@@ -2937,77 +2937,77 @@ msgstr "00/00/00"
 msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
-#: libnautilus-private/nautilus-file.c:4000
+#: libnautilus-private/nautilus-file.c:4013
 msgid "0 items"
 msgstr "0 elementów"
 
-#: libnautilus-private/nautilus-file.c:4000
+#: libnautilus-private/nautilus-file.c:4013
 msgid "0 folders"
 msgstr "0 folderów"
 
-#: libnautilus-private/nautilus-file.c:4001
+#: libnautilus-private/nautilus-file.c:4014
 msgid "0 files"
 msgstr "0 plików"
 
-#: libnautilus-private/nautilus-file.c:4005
+#: libnautilus-private/nautilus-file.c:4018
 msgid "1 item"
 msgstr "1 element"
 
-#: libnautilus-private/nautilus-file.c:4005
+#: libnautilus-private/nautilus-file.c:4018
 msgid "1 folder"
 msgstr "1 folder"
 
-#: libnautilus-private/nautilus-file.c:4006
+#: libnautilus-private/nautilus-file.c:4019
 msgid "1 file"
 msgstr "1 plik"
 
-#: libnautilus-private/nautilus-file.c:4009
+#: libnautilus-private/nautilus-file.c:4022
 #, c-format
 msgid "%u items"
 msgstr "%u elementów"
 
-#: libnautilus-private/nautilus-file.c:4009
+#: libnautilus-private/nautilus-file.c:4022
 #, c-format
 msgid "%u folders"
 msgstr "%u folderów"
 
-#: libnautilus-private/nautilus-file.c:4010
+#: libnautilus-private/nautilus-file.c:4023
 #, c-format
 msgid "%u files"
 msgstr "%u plików"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4322
-#: libnautilus-private/nautilus-file.c:4338
+#: libnautilus-private/nautilus-file.c:4335
+#: libnautilus-private/nautilus-file.c:4351
 msgid "? items"
 msgstr "? elementów"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4328
+#: libnautilus-private/nautilus-file.c:4341
 msgid "? bytes"
 msgstr "? bajtów"
 
-#: libnautilus-private/nautilus-file.c:4343
+#: libnautilus-private/nautilus-file.c:4356
 msgid "unknown type"
 msgstr "nieznany typ"
 
-#: libnautilus-private/nautilus-file.c:4346
+#: libnautilus-private/nautilus-file.c:4359
 msgid "unknown MIME type"
 msgstr "nieznany typ MIME"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4352
+#: libnautilus-private/nautilus-file.c:4365
 #: src/file-manager/fm-properties-window.c:1128
 msgid "unknown"
 msgstr "nieznane"
 
-#: libnautilus-private/nautilus-file.c:4384
+#: libnautilus-private/nautilus-file.c:4397
 msgid "program"
 msgstr "program"
 
-#: libnautilus-private/nautilus-file.c:4396
+#: libnautilus-private/nautilus-file.c:4409
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -3017,7 +3017,7 @@ msgstr ""
 "to, że plik gnome-vfs.keys znajduje się w niewłaściwym miejscu lub nie "
 "został odnaleziony z innego powodu."
 
-#: libnautilus-private/nautilus-file.c:4400
+#: libnautilus-private/nautilus-file.c:4413
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -3026,11 +3026,11 @@ msgstr ""
 "Nie odnaleziono opisu typu MIME \"%s\" (plik \"%s\"), napisz na listę gnome-"
 "vfs (w języku angielskim)."
 
-#: libnautilus-private/nautilus-file.c:4414
+#: libnautilus-private/nautilus-file.c:4427
 msgid "link"
 msgstr "dowiązanie"
 
-#: libnautilus-private/nautilus-file.c:4434
+#: libnautilus-private/nautilus-file.c:4447
 msgid "link (broken)"
 msgstr "dowiązanie (uszkodzone)"
 
@@ -3342,55 +3342,55 @@ msgid "whether we are highlighted for a D&D drop"
 msgstr ""
 "Określa, czy element powinien być wyróżniany jako cel upuszczenia obiektu"
 
-#: libnautilus-private/nautilus-icon-container.c:2009
+#: libnautilus-private/nautilus-icon-container.c:2022
 msgid "The selection rectangle"
 msgstr "Prostokąt zaznaczenia"
 
-#: libnautilus-private/nautilus-icon-container.c:4011
+#: libnautilus-private/nautilus-icon-container.c:4079
 msgid "Frame Text"
 msgstr "Tekst w ramce"
 
-#: libnautilus-private/nautilus-icon-container.c:4012
+#: libnautilus-private/nautilus-icon-container.c:4080
 msgid "Draw a frame around unselected text"
 msgstr "Określa, czy wokół niezaznaczonego tekstu będzie rysowana ramka"
 
-#: libnautilus-private/nautilus-icon-container.c:4018
+#: libnautilus-private/nautilus-icon-container.c:4086
 msgid "Selection Box Color"
 msgstr "Kolor prostokąta zaznaczenia"
 
-#: libnautilus-private/nautilus-icon-container.c:4019
+#: libnautilus-private/nautilus-icon-container.c:4087
 msgid "Color of the selection box"
 msgstr "Kolor prostokąta zaznaczenia"
 
-#: libnautilus-private/nautilus-icon-container.c:4024
+#: libnautilus-private/nautilus-icon-container.c:4092
 msgid "Selection Box Alpha"
 msgstr "Wartość alfa prostokąta zaznaczenia"
 
-#: libnautilus-private/nautilus-icon-container.c:4025
+#: libnautilus-private/nautilus-icon-container.c:4093
 msgid "Opacity of the selection box"
 msgstr "Nieprzepuszczalność prostokąta zaznaczenia"
 
-#: libnautilus-private/nautilus-icon-container.c:4032
+#: libnautilus-private/nautilus-icon-container.c:4100
 msgid "Highlight Alpha"
 msgstr "Wartość alfa wyróżnienia"
 
-#: libnautilus-private/nautilus-icon-container.c:4033
+#: libnautilus-private/nautilus-icon-container.c:4101
 msgid "Opacity of the highlight for selected icons"
 msgstr "Nieprzepuszczalność wyróżnienia zaznaczonych ikon"
 
-#: libnautilus-private/nautilus-icon-container.c:4039
+#: libnautilus-private/nautilus-icon-container.c:4107
 msgid "Light Info Color"
 msgstr "Jasny kolor informacji"
 
-#: libnautilus-private/nautilus-icon-container.c:4040
+#: libnautilus-private/nautilus-icon-container.c:4108
 msgid "Color used for information text against a dark background"
 msgstr "Kolor używany przy tekstach informacyjnych na ciemnym tle"
 
-#: libnautilus-private/nautilus-icon-container.c:4045
+#: libnautilus-private/nautilus-icon-container.c:4113
 msgid "Dark Info Color"
 msgstr "Ciemny kolor informacji"
 
-#: libnautilus-private/nautilus-icon-container.c:4046
+#: libnautilus-private/nautilus-icon-container.c:4114
 msgid "Color used for information text against a light background"
 msgstr "Kolor używany przy tekstach informacyjnych na jasnym tle"
 
@@ -3536,7 +3536,7 @@ msgstr "Jest domyślny dla \"%s\"."
 #: libnautilus-private/nautilus-program-chooser.c:411
 #, c-format
 msgid "Is the default for \"%s\" items."
-msgstr "Jest domyślny dla elementów \"%s\"."
+msgstr "Jest wartością domyślną dla elementów \"%s\"."
 
 #: libnautilus-private/nautilus-program-chooser.c:414
 #, c-format
@@ -3613,7 +3613,7 @@ msgid ""
 "You can configure which programs are offered for which file types in the "
 "File Types and Programs dialog."
 msgstr ""
-"To, jakie programy są oferowane dla których typów plików, możesz "
+"To, jakie programy są oferowane dla których typów plików, można "
 "skonfigurować, korzystając z okna Typy plików i programy."
 
 #: libnautilus-private/nautilus-program-chooser.c:1493
@@ -4124,43 +4124,43 @@ msgstr "Wyświetlanie jako %s"
 msgid "%s Viewer"
 msgstr "Przeglądarka %s"
 
-#: libnautilus-private/nautilus-volume-monitor.c:897
+#: libnautilus-private/nautilus-volume-monitor.c:901
 msgid "Unknown"
 msgstr "Nieznane"
 
 #. Populate table with items we know localized names for.
-#: libnautilus-private/nautilus-volume-monitor.c:1070
+#: libnautilus-private/nautilus-volume-monitor.c:1074
 msgid "Floppy"
 msgstr "Dyskietka"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1071
-#: libnautilus-private/nautilus-volume-monitor.c:1100
+#: libnautilus-private/nautilus-volume-monitor.c:1075
+#: libnautilus-private/nautilus-volume-monitor.c:1104
 msgid "CD-ROM"
 msgstr "CD-ROM"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1072
+#: libnautilus-private/nautilus-volume-monitor.c:1076
 msgid "Zip Drive"
 msgstr "Napęd Zip"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1087
-#: libnautilus-private/nautilus-volume-monitor.c:1131
+#: libnautilus-private/nautilus-volume-monitor.c:1091
+#: libnautilus-private/nautilus-volume-monitor.c:1135
 msgid "Audio CD"
 msgstr "Płyta CD-audio"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1122
+#: libnautilus-private/nautilus-volume-monitor.c:1126
 msgid "Root Volume"
 msgstr "Wolumin nadrzędny"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1801
+#: libnautilus-private/nautilus-volume-monitor.c:1805
 msgid "Mount Error"
 msgstr "Błąd przy montowaniu"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1801
+#: libnautilus-private/nautilus-volume-monitor.c:1805
 msgid "Unmount Error"
 msgstr "Błąd przy odmontowywaniu"
 
 #. Handle floppy case
-#: libnautilus-private/nautilus-volume-monitor.c:1874
+#: libnautilus-private/nautilus-volume-monitor.c:1878
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
@@ -4169,14 +4169,14 @@ msgstr ""
 "dyskietki."
 
 #. All others
-#: libnautilus-private/nautilus-volume-monitor.c:1878
+#: libnautilus-private/nautilus-volume-monitor.c:1882
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
 msgstr ""
 "Nie można zamontować woluminu. Prawdopodobnie w urządzeniu nie ma nośnika."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1884
+#: libnautilus-private/nautilus-volume-monitor.c:1888
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
@@ -4184,7 +4184,7 @@ msgstr ""
 "Nie można zamontować napędu dyskietek. Prawdopodobnie dyskietka zawiera "
 "nieznany typ systemu plików."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1887
+#: libnautilus-private/nautilus-volume-monitor.c:1891
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
@@ -4192,20 +4192,20 @@ msgstr ""
 "Nie można zamontować woluminu. Prawdopodobnie nośnik zawiera nieznany typ "
 "systemu plików."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1892
+#: libnautilus-private/nautilus-volume-monitor.c:1896
 msgid "Nautilus was unable to mount the selected floppy drive."
 msgstr "Nie można zamontować wybranego napędu dyskietek."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1894
+#: libnautilus-private/nautilus-volume-monitor.c:1898
 msgid "Nautilus was unable to mount the selected volume."
 msgstr "Nie można zamontować wybranego woluminu."
 
 #. FIXME: Should we parse this message and report something more meaningful?
-#: libnautilus-private/nautilus-volume-monitor.c:1899
+#: libnautilus-private/nautilus-volume-monitor.c:1903
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr "Nie można odmontować wybranego woluminu."
 
-#: libnautilus-private/nautilus-volume-monitor.c:2104
+#: libnautilus-private/nautilus-volume-monitor.c:2148
 msgid "ISO 9660 Volume"
 msgstr "Wolumin ISO 9660"
 
@@ -4361,20 +4361,20 @@ msgstr "Wyświetlanie jako _Ikony"
 msgid "View as _List"
 msgstr "Wyświetlanie jako _Lista"
 
-#: src/file-manager/fm-desktop-icon-view.c:579
+#: src/file-manager/fm-desktop-icon-view.c:596
 msgid "Background"
 msgstr "Tło"
 
-#: src/file-manager/fm-desktop-icon-view.c:749
+#: src/file-manager/fm-desktop-icon-view.c:766
 #, c-format
 msgid "Error executing utility program '%s': %s"
 msgstr "Przy wykonywaniu programu narzędziowego \"%s\" wystąpił błąd: %s"
 
-#: src/file-manager/fm-desktop-icon-view.c:1017
+#: src/file-manager/fm-desktop-icon-view.c:1034
 msgid "E_ject"
 msgstr "Wy_suń"
 
-#: src/file-manager/fm-desktop-icon-view.c:1117
+#: src/file-manager/fm-desktop-icon-view.c:1134
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
 msgid "_Unmount Volume"
 msgstr "O_dmontuj wolumin"
@@ -5896,11 +5896,11 @@ msgstr "Wyświetl stan indeksowania"
 msgid "Show status of indexing used when searching"
 msgstr "Wyświetla stan indeksowania wykorzystywanego przy wyszukiwaniu"
 
-#: src/nautilus-application.c:220
+#: src/nautilus-application.c:221
 msgid "Couldn't Create Required Folder"
 msgstr "Nie można utworzyć wymaganego folderu"
 
-#: src/nautilus-application.c:221
+#: src/nautilus-application.c:222
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5911,11 +5911,11 @@ msgstr ""
 "uruchomieniem Nautilusa lub ustal uprawnienia tak, aby możliwe było ich "
 "utworzenie przez Nautilusa."
 
-#: src/nautilus-application.c:226
+#: src/nautilus-application.c:227
 msgid "Couldn't Create Required Folders"
 msgstr "Nie można utworzyć wymaganych folderów"
 
-#: src/nautilus-application.c:227
+#: src/nautilus-application.c:228
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5932,11 +5932,11 @@ msgstr ""
 "Utwórz te foldery przed uruchomieniem Nautilusa lub ustal uprawnienia tak, "
 "aby możliwe było ich utworzenie przez Nautilusa."
 
-#: src/nautilus-application.c:298
+#: src/nautilus-application.c:300
 msgid "Link To Old Desktop"
 msgstr "Odnośnik do starego biurka"
 
-#: src/nautilus-application.c:314
+#: src/nautilus-application.c:316
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
@@ -5946,7 +5946,7 @@ msgstr ""
 "dowiązanie o nazwie \"Odnośnik do starego biurka\". Można otworzyć je aby "
 "przenieść żądane pliki, a następnie usunąć dowiązanie."
 
-#: src/nautilus-application.c:317
+#: src/nautilus-application.c:319
 msgid "Migrated old desktop"
 msgstr "Przeniesione stare biurko"
 
@@ -5960,7 +5960,7 @@ msgstr "Przeniesione stare biurko"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:435
+#: src/nautilus-application.c:486
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5972,7 +5972,7 @@ msgstr ""
 "przeinstalować Nautilusa."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:441
+#: src/nautilus-application.c:492
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -6017,12 +6017,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:471 src/nautilus-application.c:489
-#: src/nautilus-application.c:496
+#: src/nautilus-application.c:522 src/nautilus-application.c:540
+#: src/nautilus-application.c:547
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Z powodu nieoczekiwanego błędu nie można teraz używać Nautilusa."
 
-#: src/nautilus-application.c:472
+#: src/nautilus-application.c:523
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -6031,7 +6031,7 @@ msgstr ""
 "nieoczekiwanego błędu zgłoszonego przez Bonobo przy próbie zarejestrowania "
 "serwera widoku menedżera plików."
 
-#: src/nautilus-application.c:490
+#: src/nautilus-application.c:541
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -6042,7 +6042,7 @@ msgstr ""
 "generatora obiektów. W naprawieniu problemu może pomóc usunięcie procesu "
 "bonobo-activation-server i ponowne uruchomienie Nautilusa."
 
-#: src/nautilus-application.c:497
+#: src/nautilus-application.c:548
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
