@@ -1,15 +1,17 @@
-------------------------------------------------------------------------------
--                         Building Nautilus RPMs                             -
-------------------------------------------------------------------------------
+--------------------------------------------------------------------------
+-                       Building Nautilus RPMs                           -
+--------------------------------------------------------------------------
 
+Building Nautilus RPMs from CVS HEAD usually works, since Eazel's build
+engineer tests the RPM building process regularly. We encourage people to
+test out RPM builds, and report bugs about them to the Nautilus mailing list:
+<nautilus-list@lists.eazel.com>.
 
-Building Naurilus RPMs usually works since Eazel' build engineer makes sure
-they work regularly. We thus stronly encourage people to try them, use them
-and report bugs abuot them to nautilus-list@lists.eazel.com
+However, we would prefer if no one distributed RPMs created from CVS versions
+of the source code: Eazel will make RPMs for releases of Nautilus, so that
+people can use it without going through the pain of setting up a build
+system, but we'd be happier if there weren't RPMs out there for other
+non-released versions.
 
-However, we would be happy if no one distributed them: Eazel will commit
-to distribute tested RPMs for stable releases of nautilus so that peole
-can use them without going through the pain of setting up a build system.
-
-If you are wiling nonetheless to distribute such RPMs, please make
-sure you contact nautilus maintainer: Darin Adler: darin@eazel.com
+If despite this, you decide to distribute your own RPMs, please contact
+the Nautilus maintainer, Darin Adler <darin@eazel.com>, and let him know.
