@@ -41,6 +41,7 @@
 #include <libnautilus/libnautilus.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
+#include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
@@ -1248,8 +1249,63 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_widget_show(table);
 }
 
-/* here's where we do most of the real work of populating the view with info from the new uri */
+/* set the album image, or hide it if none */
+static void
+nautilus_music_view_set_album_image (NautilusMusicView *music_view, const char *image_path_uri)
+{
+	char* image_path;
+	GdkPixbuf *pixbuf;
+	GdkPixbuf *scaled_pixbuf;
+	GdkPixmap *pixmap;
+	GdkBitmap *mask;	
 
+	if (image_path_uri != NULL) {
+  		image_path = gnome_vfs_get_local_path_from_uri(image_path_uri);
+  		pixbuf = gdk_pixbuf_new_from_file(image_path);
+		
+		if (pixbuf != NULL) {
+			scaled_pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit(pixbuf, 128, 128);
+			gdk_pixbuf_unref (pixbuf);
+
+       			gdk_pixbuf_render_pixmap_and_mask (scaled_pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
+			gdk_pixbuf_unref (scaled_pixbuf);
+			
+			if (music_view->details->album_image == NULL) {
+				music_view->details->album_image = gtk_pixmap_new(pixmap, mask);
+				gtk_box_pack_end (GTK_BOX(music_view->details->control_box), 
+					   	   music_view->details->album_image, FALSE, FALSE, 2);	
+			} else { 
+				gtk_pixmap_set (GTK_PIXMAP (music_view->details->album_image), pixmap, mask);
+			}
+		
+			gtk_widget_show (music_view->details->album_image);
+ 			g_free(image_path);
+		}
+	} else if (music_view->details->album_image != NULL) {
+		gtk_widget_hide (music_view->details->album_image);
+	}
+
+}
+
+/* handle callback that's invoked when file metadata is available */
+static void
+metadata_callback (NautilusFile *file, gpointer callback_data)
+{
+	char *album_image_path;
+	NautilusMusicView *music_view;
+	
+	music_view = NAUTILUS_MUSIC_VIEW (callback_data);
+	
+	album_image_path = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);	
+	if (album_image_path) {
+		nautilus_music_view_set_album_image (music_view, album_image_path);
+		g_free (album_image_path);
+	}
+	nautilus_file_unref (file);
+}
+
+
+/* here's where we do most of the real work of populating the view with info from the new uri */
 static void
 nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *uri)
 {
@@ -1261,20 +1317,14 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	
 	char* clist_entry[10];
 	GList *p;
-	GdkPixbuf *pixbuf;
-	GdkPixbuf *scaled_pixbuf;
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;	
-	GList *song_list;
+	GList *song_list, *attributes;
 	SongInfo *info;
 	char *path_uri, *escaped_name;
-	char *image_path, *image_path_uri;
-	char *album_path;
+	char *image_path_uri;
 	
 	int file_index;
 	int track_index;
 	int image_count;
-	gboolean got_image;
 	
 	song_list = NULL;
 	image_path_uri = NULL;
@@ -1284,7 +1334,7 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	
 	/* connect the music view background to directory metadata */	
 	nautilus_connect_background_to_file_metadata_by_uri (GTK_WIDGET (music_view), uri);
-			
+	
 	/* iterate through the directory, collecting mp3 files and extracting id3 data if present */
 
 	result = gnome_vfs_directory_list_load (&list, uri,
@@ -1384,60 +1434,22 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 		track_index += 1;
 	}
 	
-	/* install the album cover */
-	
-	got_image = FALSE;
-
-	/* first, see if we can get it from metadata */
-        /* FIXME bugzilla.eazel.com 3720: We have to actually monitor
-         * or wait for the metadata. Otherwise we will always get NULL.
-         */
-	file = nautilus_file_get (music_view->details->uri);
-	album_path = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
-	nautilus_file_unref (file);
-
-	if (album_path != NULL) {
-		g_free (image_path_uri);
-		image_path_uri = gnome_vfs_get_local_path_from_uri (album_path);
-		g_free (album_path);
-		image_count = 1;
-	}
-	
+	/* if there was more than one image in the directory, don't use any */	
 	if (image_count > 1) {
 		g_free (image_path_uri);
 		image_path_uri = NULL;
 	}
-	
-	if (image_path_uri != NULL) {
-  		image_path = gnome_vfs_get_local_path_from_uri(image_path_uri);
-  		pixbuf = gdk_pixbuf_new_from_file(image_path);
-		
-		if (pixbuf != NULL) {
-			scaled_pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit(pixbuf, 128, 128);
-			gdk_pixbuf_unref (pixbuf);
 
-       			gdk_pixbuf_render_pixmap_and_mask (scaled_pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
-			gdk_pixbuf_unref (scaled_pixbuf);
-			got_image = TRUE;
-			
-			if (music_view->details->album_image == NULL) {
-				music_view->details->album_image = gtk_pixmap_new(pixmap, mask);
-				gtk_box_pack_end (GTK_BOX(music_view->details->control_box), 
-					   	   music_view->details->album_image, FALSE, FALSE, 2);	
-			} else { 
-				gtk_pixmap_set (GTK_PIXMAP (music_view->details->album_image), pixmap, mask);
-			}
-		
-			gtk_widget_show (music_view->details->album_image);
- 			g_free(image_path_uri);
- 			g_free(image_path);
-		}
-	
-		if (!got_image && music_view->details->album_image != NULL) {
-			gtk_widget_hide (music_view->details->album_image);
-        	}
-	}
-		
+	/* set up the image (including hiding the widget if there isn't one */
+	nautilus_music_view_set_album_image (music_view, image_path_uri);
+	g_free (image_path_uri);
+
+	/* Check if one is specified in metadata; if so, it will be set by the callback */	
+	file = nautilus_file_get (music_view->details->uri);
+	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON);
+	nautilus_file_call_when_ready (file, attributes, metadata_callback, music_view);
+	g_list_free (attributes);
+						
 	/* determine the album title/artist line */
 	
 	if (music_view->details->album_title) {
@@ -1476,6 +1488,7 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 		release_song_info(info);
 	}
 	g_list_free (song_list);	
+	nautilus_file_unref (file);
 }
 
 

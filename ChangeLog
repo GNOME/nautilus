@@ -1,3 +1,18 @@
+2000-10-16  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_update_menus):
+	fixed occasional segfaults from fm_icon_view_update_menus
+	being called from idle after they've been destroyed; fixed by
+	exiting if the menus_ready boolean is clear.
+	
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_set_album_image), (metadata_callback),
+	(nautilus_music_view_update_from_uri):
+	fixed bug 3720, music view asks for album cover metadata incorrectly.
+	Fixed by doing it correctly, using nautilus_file_call_when_ready.
+	This also partially fixes bug 2261, but it's still too hidden, so
+	I won't close it out until we have an explicit way to do it.
+	
 2000-10-17  Mathieu Lacage  <mathieu@eazel.com>
 
 	fix "do nothing" part of bug 3640

@@ -1534,6 +1534,11 @@ static void
 fm_icon_view_update_menus (FMDirectoryView *view)
 {
         GList *selection;
+
+	/* don't update if the menus aren't ready */
+	if (!FM_ICON_VIEW (view)->details->menus_ready) {
+		return;
+	}
 	
 	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
 
