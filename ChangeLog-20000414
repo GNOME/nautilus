@@ -1,39 +1,45 @@
 2000-03-05  Andy Hertzfeld <andy@eazel.com>
 
- 	* components/music/nautilus-music-view.c: derive name and track position when there's
- 	no id3 tag present, and format the title better from the id3-derived information
+ 	* components/music/nautilus-music-view.c: derive name and 
+ 	track position when there's no id3 tag present, and format 
+ 	the title better from the id3-derived information
 	
 2000-03-05  Andy Hertzfeld <andy@eazel.com>
 
-	* libnautilus/nautilus-string.c,.h: added a nautilus_has_suffix routine in the style of
-	nautilus_has_prefix.
-	* components/music/nautilus-music-view: use nautilus_has_suffix in mp3 determination
+	* libnautilus/nautilus-string.c,.h: added a nautilus_has_suffix 
+	routine in the style of	nautilus_has_prefix.
+	* components/music/nautilus-music-view: use nautilus_has_suffix 
+	in mp3 determination
 	
-	* libnautilus/nautilus-icon-factory.c:  make sure all thumbnails have a png suffix, since
-	they're always pngs now.
-	Also, made thumbnailing machinery call ImageMagick to handle the conversion if gdk-pixbuf
-	comes up empty, so we can handle many more formats
+	* libnautilus/nautilus-icon-factory.c:  make sure all thumbnails 
+	have a png suffix, since they're always pngs now. Also, made 
+	thumbnailing machinery call ImageMagick to handle the conversion 
+	if gdk-pixbuf comes up empty, so we can handle many more formats
 	
 2000-03-05  Andy Hertzfeld <andy@eazel.com>
 
-	added a music view component for viewing directories of mp3 files.  This first cut only handles
- 	only the case when the mp3 files have id3 tags present (most do these days)
+	added a music view component for viewing directories of mp3 files.  
+	This first cut only handles only the case when the mp3 files have 
+	id3 tags present (most do these days)
  	
- 	* components/music/nautilus-music-view.c,.h: a new music view component gathers information from
- 	the id3 tags of mp3 files in the target directory and displays them in a list, sorted by track number.
- 	It also displays the album cover if it can find one.  For now, it launches xmms to do the playing,
- 	but it will eventually have an integrated player and support other file types.
+ 	* components/music/nautilus-music-view.c,.h: a new music view 
+ 	component gathers information from the id3 tags of mp3 files in 
+ 	the target directory and displays them in a list, sorted by track 
+ 	number. It also displays the album cover if it can find one.  For 
+ 	now, it launches xmms to do the playing, but it will eventually 
+ 	have an integrated player and support other file types.
  	* components/music/nautilus-music-view.goad: component activation file
  	* main.c: boiler-plate component stuff
  	* components/music/Makefile.am: makefile for music component
  	* configure.in: added music component
  	* components/Makefile.am: added music component
  	
- 	* src/ntl-uri-map: added a new way to install content view components, by
- 	having the components explicitly listed in the metadata for the object being displayed
- 	Used this to test the music view, but there's no way to manipulate it through the UI yet
- 	* libnautilus/nautilus-metadata.h: added a "CONTENT_VIEWS" tag for specifying content views
- 	in the metadata
+ 	* src/ntl-uri-map: added a new way to install content view components, 
+ 	by having the components explicitly listed in the metadata for the 
+ 	object being displayed.	Used this to test the music view, but there's 
+ 	no way to manipulate it through the UI yet
+ 	* libnautilus/nautilus-metadata.h: added a "CONTENT_VIEWS" tag for 
+ 	specifying content views in the metadata
  	
 2000-03-05  Maciej Stachowiak  <mjs@eazel.com>
 
