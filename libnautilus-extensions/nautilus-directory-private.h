@@ -102,6 +102,7 @@ void          nautilus_directory_notify_files_moved        (GList               
 void          nautilus_directory_notify_files_removed      (GList                     *uris);
 
 /* async. interface */
+void          nautilus_directory_async_state_changed       (NautilusDirectory         *directory);
 void          nautilus_directory_call_when_ready_internal  (NautilusDirectory         *directory,
 							    NautilusFile              *file,
 							    GList                     *file_attributes,

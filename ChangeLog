@@ -1,5 +1,35 @@
 2000-06-22  Darin Adler  <darin@eazel.com>
 
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(cancel_deep_count): Added code to make sure we don't see a
+	canceled deep count as an eternally "in progress" one.
+	(nautilus_directory_async_state_changed): Exported this
+	function for use in NautilusFile.
+	
+	* libnautilus-extensions/nautilus-file.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_deep_counts): Fixed the comment.
+	(nautilus_file_recompute_deep_counts): Added a function to
+	force the deep count to be recomputed.
+	
+	* libnautilus-extensions/nautilus-mime-actions.h:
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_set_default_action_type_for_uri),
+	(nautilus_mime_set_default_application_for_uri),
+	(nautilus_mime_set_default_component_for_uri),
+	(nautilus_mime_set_short_list_applications_for_uri),
+	(nautilus_mime_set_short_list_components_for_uri),
+	(nautilus_mime_add_application_to_short_list_for_uri),
+	(nautilus_mime_remove_application_from_short_list_for_uri),
+	(nautilus_mime_add_component_to_short_list_for_uri),
+	(nautilus_mime_remove_component_from_short_list_for_uri),
+	(nautilus_mime_extend_all_applications_for_uri),
+	(nautilus_mime_remove_from_all_applications_for_uri):
+	Added some rudimentary error handling.
+
+2000-06-22  Darin Adler  <darin@eazel.com>
+
 	Finished task 975 (Need API for asynchronously computing a
 	directory's recursive item count). More thorough testing will wait
 	for John to implement the high level feature.

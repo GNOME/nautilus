@@ -1477,13 +1477,13 @@ nautilus_file_get_directory_item_count (NautilusFile *file,
  * @file: NautilusFile representing a directory or file.
  * @directory_count: Place to put count of directories inside.
  * @files_count: Place to put count of files inside.
- * @unreadable_directory_count: Set to TRUE (if non-NULL) if permissions prevent
- * the item count from being read on this directory. Otherwise set to FALSE.
+ * @unreadable_directory_count: Number of directories encountered
+ * that were unreadable.
+ * @total_size: Total size of all files and directories visited.
  * 
- * Returns: TRUE if count is available.
+ * Returns: Status to indicate whether sizes are available.
  * 
  **/
-
 NautilusRequestStatus
 nautilus_file_get_deep_counts (NautilusFile *file,
 			       guint *directory_count,
@@ -1534,6 +1534,17 @@ nautilus_file_get_deep_counts (NautilusFile *file,
 
 	/* For other types, we are done, and the zeros are permanent. */
 	return NAUTILUS_REQUEST_DONE;
+}
+
+void
+nautilus_file_recompute_deep_counts (NautilusFile *file)
+{
+	if (file->details->deep_counts_status != NAUTILUS_REQUEST_IN_PROGRESS) {
+		file->details->deep_counts_status = NAUTILUS_REQUEST_NOT_STARTED;
+		if (file->details->directory != NULL) {
+			nautilus_directory_async_state_changed (file->details->directory);
+		}
+	}
 }
 
 /**

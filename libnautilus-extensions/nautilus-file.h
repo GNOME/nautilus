@@ -120,6 +120,7 @@ gboolean                nautilus_file_is_directory              (NautilusFile   
 gboolean                nautilus_file_get_directory_item_count  (NautilusFile                  *file,
 								 guint                         *count,
 								 gboolean                      *count_unreadable);
+void                    nautilus_file_recompute_deep_counts     (NautilusFile                  *file);
 NautilusRequestStatus   nautilus_file_get_deep_counts           (NautilusFile                  *file,
 								 guint                         *directory_count,
 								 guint                         *file_count,

@@ -637,6 +637,7 @@ nautilus_mime_get_all_components_for_uri (const char *uri)
 
 	return info_list;
 }
+
 gboolean
 nautilus_mime_has_any_components_for_uri (const char *uri)
 {
@@ -650,7 +651,7 @@ nautilus_mime_has_any_components_for_uri (const char *uri)
 	return result;
 }
 
-void
+GnomeVFSResult
 nautilus_mime_set_default_action_type_for_uri (const char             *uri,
 					       GnomeVFSMimeActionType  action_type)
 {
@@ -659,16 +660,15 @@ nautilus_mime_set_default_action_type_for_uri (const char             *uri,
 
 	switch (action_type) {
 	case GNOME_VFS_MIME_ACTION_TYPE_APPLICATION:
-		action_string="application";
+		action_string = "application";
 		break;		
 	case GNOME_VFS_MIME_ACTION_TYPE_COMPONENT:
-		action_string="component";
+		action_string = "component";
 		break;
 	case GNOME_VFS_MIME_ACTION_TYPE_NONE:
 	default:
-		action_string="none";
+		action_string = "none";
 	}
-
 
 	directory = nautilus_directory_get (uri);
 
@@ -676,10 +676,11 @@ nautilus_mime_set_default_action_type_for_uri (const char             *uri,
 	nautilus_directory_set_metadata 
 		(directory, NAUTILUS_METADATA_KEY_DEFAULT_ACTION_TYPE, NULL, action_string);
 	nautilus_directory_unref (directory);
+
+	return GNOME_VFS_OK;
 }
 
-
-void
+GnomeVFSResult
 nautilus_mime_set_default_application_for_uri (const char *uri,
 					       const char *application_id)
 {
@@ -695,12 +696,13 @@ nautilus_mime_set_default_application_for_uri (const char *uri,
 	/* If there's no default action type, set it to match this. */
 	if (application_id != NULL && 
 	    nautilus_mime_get_default_action_type_for_uri (uri) == GNOME_VFS_MIME_ACTION_TYPE_NONE) {
-		nautilus_mime_set_default_action_type_for_uri (uri, GNOME_VFS_MIME_ACTION_TYPE_APPLICATION);
+		return nautilus_mime_set_default_action_type_for_uri (uri, GNOME_VFS_MIME_ACTION_TYPE_APPLICATION);
 	}
+
+	return GNOME_VFS_OK;
 }
 
-
-void
+GnomeVFSResult
 nautilus_mime_set_default_component_for_uri (const char *uri,
 					     const char *component_iid)
 {
@@ -716,14 +718,15 @@ nautilus_mime_set_default_component_for_uri (const char *uri,
 	/* If there's no default action type, set it to match this. */
 	if (component_iid != NULL && 
 	    nautilus_mime_get_default_action_type_for_uri (uri) == GNOME_VFS_MIME_ACTION_TYPE_NONE) {
-		nautilus_mime_set_default_action_type_for_uri (uri, GNOME_VFS_MIME_ACTION_TYPE_COMPONENT);
+		return nautilus_mime_set_default_action_type_for_uri (uri, GNOME_VFS_MIME_ACTION_TYPE_COMPONENT);
 	}
+
+	return GNOME_VFS_OK;
 }
 
-
-void
+GnomeVFSResult
 nautilus_mime_set_short_list_applications_for_uri (const char *uri,
-						   GList      *applications)
+						   GList *applications)
 {
 	NautilusDirectory *directory;
 	GList *add_list;
@@ -761,9 +764,11 @@ nautilus_mime_set_short_list_applications_for_uri (const char *uri,
 	/* FIXME bugzilla.eazel.com 1269: 
 	 * need to free normal_short_list, normal_short_list_ids, add_list, remove_list 
 	 */
+
+	return GNOME_VFS_OK;
 }
 
-void
+GnomeVFSResult
 nautilus_mime_set_short_list_components_for_uri (const char *uri,
 						 GList      *components)
 {
@@ -803,84 +808,105 @@ nautilus_mime_set_short_list_components_for_uri (const char *uri,
 	/* FIXME bugzilla.eazel.com 1269: 
 	 * need to free normal_short_list, normal_short_list_ids, add_list, remove_list 
 	 */
+
+	return GNOME_VFS_OK;
 }
 
-void nautilus_mime_add_application_to_short_list_for_uri (const char *uri,
-						   	  const char *application_id)
+GnomeVFSResult
+nautilus_mime_add_application_to_short_list_for_uri (const char *uri,
+						     const char *application_id)
 {
 	GList *old_list, *new_list;
+	GnomeVFSResult result;
 
 	old_list = nautilus_mime_get_short_list_applications_for_uri (uri);
 
 	if (!gnome_vfs_mime_id_in_application_list (application_id, old_list)) {
 		new_list = g_list_append (gnome_vfs_mime_id_list_from_application_list (old_list), 
 					  g_strdup (application_id));
-		nautilus_mime_set_short_list_applications_for_uri (uri, new_list);
+		result = nautilus_mime_set_short_list_applications_for_uri (uri, new_list);
 		nautilus_g_list_free_deep (new_list);
 	}
 
 	gnome_vfs_mime_application_list_free (old_list);
-}						   
 
-void
+	return result;
+}
+
+GnomeVFSResult
 nautilus_mime_remove_application_from_short_list_for_uri (const char *uri,
 							  const char *application_id)
 {
 	GList *old_list, *new_list;
 	gboolean was_in_list;
+	GnomeVFSResult result;
 
 	old_list = nautilus_mime_get_short_list_applications_for_uri (uri);
 	old_list = gnome_vfs_mime_remove_application_from_list
 		(old_list, application_id, &was_in_list);
 
-	if (was_in_list) {
+	if (!was_in_list) {
+		result = GNOME_VFS_OK;
+	} else {
 		new_list = gnome_vfs_mime_id_list_from_application_list (old_list);
-		nautilus_mime_set_short_list_applications_for_uri (uri, new_list);
+		result = nautilus_mime_set_short_list_applications_for_uri (uri, new_list);
 		nautilus_g_list_free_deep (new_list);
 	}
 
 	gnome_vfs_mime_application_list_free (old_list);
-}						   
+	
+	return result;
+}
 
-void
+GnomeVFSResult
 nautilus_mime_add_component_to_short_list_for_uri (const char *uri,
 						   const char *iid)
 {
 	GList *old_list, *new_list;
+	GnomeVFSResult result;
 
 	old_list = nautilus_mime_get_short_list_components_for_uri (uri);
 
-	if (!gnome_vfs_mime_id_in_component_list (iid, old_list)) {
+	if (gnome_vfs_mime_id_in_component_list (iid, old_list)) {
+		result = GNOME_VFS_OK;
+	} else {
 		new_list = g_list_append (gnome_vfs_mime_id_list_from_component_list (old_list), 
 					  g_strdup (iid));
-		nautilus_mime_set_short_list_components_for_uri (uri, new_list);
+		result = nautilus_mime_set_short_list_components_for_uri (uri, new_list);
 		nautilus_g_list_free_deep (new_list);
 	}
 
 	gnome_vfs_mime_component_list_free (old_list);
-}						   
 
-void
+	return result;
+}
+
+GnomeVFSResult
 nautilus_mime_remove_component_from_short_list_for_uri (const char *uri,
 							const char *iid)
 {
 	GList *old_list, *new_list;
 	gboolean was_in_list;
+	GnomeVFSResult result;
 
 	old_list = nautilus_mime_get_short_list_components_for_uri (uri);
 	old_list = gnome_vfs_mime_remove_component_from_list 
 		(old_list, iid, &was_in_list);
 
-	if (was_in_list) {
+	if (!was_in_list) {
+		result = GNOME_VFS_OK;
+	} else {
 		new_list = gnome_vfs_mime_id_list_from_component_list (old_list);
-		nautilus_mime_set_short_list_components_for_uri (uri, new_list);
+		result = nautilus_mime_set_short_list_components_for_uri (uri, new_list);
 		nautilus_g_list_free_deep (new_list);
 	}
 
 	gnome_vfs_mime_component_list_free (old_list);
-}						   
 
-void
+	return result;
+}
+
+GnomeVFSResult
 nautilus_mime_extend_all_applications_for_uri (const char *uri,
 					       GList *applications)
 {
@@ -893,21 +919,28 @@ nautilus_mime_extend_all_applications_for_uri (const char *uri,
 	nautilus_directory_wait_until_ready (directory, NULL, TRUE);
 
 	metadata_application_ids = nautilus_directory_get_metadata_list 
-		(directory, NAUTILUS_METADATA_KEY_EXPLICIT_APPLICATION, NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
+		(directory,
+		 NAUTILUS_METADATA_KEY_EXPLICIT_APPLICATION,
+		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
 
 	extras = str_list_difference (applications, metadata_application_ids);
 
 	final_applications = g_list_concat (g_list_copy (metadata_application_ids), extras);
 
 	nautilus_directory_set_metadata_list 
-		(directory, NAUTILUS_METADATA_KEY_EXPLICIT_APPLICATION, NAUTILUS_METADATA_SUBKEY_APPLICATION_ID, final_applications);
+		(directory,
+		 NAUTILUS_METADATA_KEY_EXPLICIT_APPLICATION,
+		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID,
+		 final_applications);
+
 	nautilus_directory_unref (directory);
+
+	return GNOME_VFS_OK;
 }
 
-
-void
+GnomeVFSResult
 nautilus_mime_remove_from_all_applications_for_uri (const char *uri,
-						    GList      *applications)
+						    GList *applications)
 {
 	NautilusDirectory *directory;
 	GList *metadata_application_ids;
@@ -917,16 +950,21 @@ nautilus_mime_remove_from_all_applications_for_uri (const char *uri,
 	nautilus_directory_wait_until_ready (directory, NULL, TRUE);
 
 	metadata_application_ids = nautilus_directory_get_metadata_list 
-		(directory, NAUTILUS_METADATA_KEY_EXPLICIT_APPLICATION, NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
+		(directory,
+		 NAUTILUS_METADATA_KEY_EXPLICIT_APPLICATION,
+		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
 
 	final_applications = str_list_difference (metadata_application_ids, applications);
 
 	nautilus_directory_set_metadata_list 
-		(directory, NAUTILUS_METADATA_KEY_EXPLICIT_APPLICATION, NAUTILUS_METADATA_SUBKEY_APPLICATION_ID, final_applications);
+		(directory,
+		 NAUTILUS_METADATA_KEY_EXPLICIT_APPLICATION,
+		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID,
+		 final_applications);
 	nautilus_directory_unref (directory);
+
+	return GNOME_VFS_OK;
 }
-
-
 
 static gint
 gnome_vfs_mime_application_has_id (GnomeVFSMimeApplication *application, const char *id)
