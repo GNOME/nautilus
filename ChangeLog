@@ -1,3 +1,10 @@
+2000-04-30  Darin Adler  <darin@eazel.com>
+
+	* src/file-manager/fm-icon-view.c:
+	Fixed a typo that prevented my Bonobo bug fix from working.
+	We were still getting crashes when we switched views because
+	the radio group was in "Setings", not "Settings".
+
 2000-04-29  Christopher Blizzard  <blizzard@redhat.com>
 
 	* components/mozilla/Makefile.am (INCLUDES): Add $(BONOBO_CFLAGS)
@@ -13,6 +20,7 @@
 	use the flags set by that in the rsvg makefile.
 	
 2000-04-28  Gene Z. Ragan  <gzr@eazel.com>
+	
 	* libnautilus-extensions/nautilus-icon-text-item.c
 	* libnautilus-extensions/nautilus-icon-text-item.h
 	* libnautilus-extensions/nautilus-undo-manager-private.h

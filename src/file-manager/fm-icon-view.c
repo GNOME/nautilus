@@ -61,7 +61,7 @@
 #define MENU_PATH_AFTER_STRETCH_SEPARATOR   "/Settings/After Stretch Separator"
 #define MENU_PATH_CUSTOMIZE_ICON_TEXT   "/Settings/Icon Text"
 #define MENU_PATH_AFTER_CUSTOMIZE_SEPARATOR "/Settings/After Customize Separator"
-#define MENU_PATH_LAYOUT_GROUP "/Setings/Layout"
+#define MENU_PATH_LAYOUT_GROUP "/Settings/Layout"
 #define MENU_PATH_AUTO_LAYOUT "/Settings/Auto Layout"
 #define MENU_PATH_MANUAL_LAYOUT "/Settings/Manual Layout"
 #define MENU_PATH_RENAME "/File/Rename"
