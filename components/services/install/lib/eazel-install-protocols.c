@@ -98,7 +98,8 @@ http_fetch_remote_file (EazelInstall *service,
         ghttp_status status;
         char* body;
         FILE* file;
-	int total_bytes=0;
+	int total_bytes = 0;
+	int last_flush_bytes = 0;
 	gboolean first_emit;
 	const char *report;
 	char *target_file_premove;
@@ -168,6 +169,28 @@ http_fetch_remote_file (EazelInstall *service,
 							      curStat.bytes_read, 
 							      curStat.bytes_total);
 		}
+
+		/* arbitrary -- flush every 16k or so */
+		if (curStat.bytes_read > last_flush_bytes + 16384) {
+			ghttp_flush_response_buffer (request);
+			length = ghttp_get_body_len (request);
+			body = ghttp_get_body (request);
+			if (body != NULL) {
+				if (fwrite (body, length, 1, file) < 1) {
+					/* probably out of disk space */
+					g_warning (_("DISK FULL: could not write %s"), target_file);
+					service->private->disk_full = TRUE;
+					get_failed = 1;
+					break;
+				}
+			} else {
+				g_warning (_("Could not get request body!"));
+				get_failed = 1;
+				break;
+			}
+			last_flush_bytes = curStat.bytes_read;
+		}
+
 		g_main_iteration (FALSE);
         }
 	/* Last emit amount==total */

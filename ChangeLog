@@ -1,3 +1,20 @@
+2001-01-18  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-object.c:
+	* components/services/install/lib/eazel-install-protocols.c:
+	(http_fetch_remote_file):
+	* nautilus-installer/src/HACKING:
+
+	Change the bootstrap installer download function to use the new
+	gnome-http call to avoid buffering 8MB of package files in memory
+	at once.
+	
+	* components/services/trilobite/libtrilobite/trilobite-core-network
+	-slim.c: (trilobite_xml_get_string), (trilobite_fetch_uri),
+	(trilobite_fetch_uri_to_file):
+
+	Forgot to add this once -- needed by the bootstrap installer.
+
 2001-01-18  Eskil Olsen  <eskil@eazel.com>
 
 	* components/services/install/lib/eazel-install-rpm-glue.c:

@@ -1600,7 +1600,20 @@ eazel_install_emit_done_default (EazelInstall *service, gboolean result)
 
 
 /* Welcome to define madness. These are all the get/set methods. There is nothing of
- interest beyond this point, except for a fucking big dragon*/
+ * interest beyond this point, except for this dragon:
+                              _ _
+                       _     //` `\
+                   _,-"\%   // /``\`\
+              ~^~ >__^  |% // /  } `\`\
+                     )  )%// / }  } }`\`\
+                    /  (%/'/.\_/\_/\_/\`/
+                   (    '         `-._`
+                    \   ,     (  \   _`-.__.-;%>
+                   /_`\ \      `\ \." `-..-'`
+                  ``` /_/`"-=-'`/_/
+             jgs     ```       ```
+*/
+
 
 static void 
 string_list_copy (GList **in, 
