@@ -131,6 +131,13 @@ void eazel_install_emit_dependency_check_default (EazelInstall *service,
 void eazel_install_emit_done_default (EazelInstall *service, 
 				      gboolean result);
 
+#ifdef EAZEL_INSTALL_NO_CORBA
+static void eazel_install_log (const char *domain,
+			       GLogLevelFlags flags,
+			       const char *message,
+			       EazelInstall *service);
+#endif
+
 #ifndef EAZEL_INSTALL_NO_CORBA
 
 /*****************************************
@@ -285,6 +292,9 @@ eazel_install_set_arg (GtkObject *object,
 		break;
 	case ARG_SILENT:
 		eazel_install_set_silent (service, GTK_VALUE_BOOL(*arg));
+		break;
+	case ARG_DEBUG:
+		eazel_install_set_debug (service, GTK_VALUE_BOOL (*arg));
 		break;
 	case ARG_TEST:
 		eazel_install_set_test (service, GTK_VALUE_BOOL(*arg));
@@ -554,6 +564,14 @@ eazel_install_initialize (EazelInstall *service) {
 	}	
 #endif /* EAZEL_INSTALL_NO_CORBA */
 
+	/* when running as part of trilobite, don't catch logs */
+#ifdef EAZEL_INSTALL_NO_CORBA
+	g_log_set_handler (G_LOG_DOMAIN,
+			   G_LOG_LEVEL_DEBUG | G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_WARNING | G_LOG_LEVEL_ERROR, 
+			   (GLogFunc)eazel_install_log, 
+			   service);
+#endif
+
 	service->private = g_new0 (EazelInstallPrivate,1);
 	service->private->topts = g_new0 (TransferOptions, 1);
 	service->private->iopts = g_new0 (InstallOptions, 1);
@@ -570,6 +588,7 @@ eazel_install_initialize (EazelInstall *service) {
 	trilobite_debug ("packsys.rpm.dbs = 0x%x", service->private->packsys.rpm.dbs);
 	service->private->logfile = NULL;
 	service->private->logfilename = NULL;
+	service->private->log_to_stderr = FALSE;
 	service->private->name_to_package_hash = g_hash_table_new ((GHashFunc)g_str_hash,
 								   (GCompareFunc)g_str_equal);
 	service->private->downloaded_files = NULL;
@@ -750,7 +769,7 @@ eazel_install_fetch_remote_package_list (EazelInstall *service)
 	
 	SANITY_VAL(service, FALSE);
 
-	g_print (_("Getting package list from remote server ...\n"));
+	trilobite_debug (_("Getting package list from remote server ...\n"));
 
 	url = g_strdup_printf ("http://%s:%d%s%s", 
 			       eazel_install_get_server (service),
@@ -778,44 +797,78 @@ eazel_install_fetch_remote_package_list (EazelInstall *service)
 	return retval;
 } 
 
+#ifdef EAZEL_INSTALL_NO_CORBA
 static void 
 eazel_install_log (const char *domain,
 		   GLogLevelFlags flags,
 		   const char *message,
 		   EazelInstall *service)
 {
+	char *format;
+
 	SANITY (service);
-	if ( flags | G_LOG_LEVEL_MESSAGE) {
-		fprintf (service->private->logfile, " : %s\n", message);
-	} else if (flags | G_LOG_LEVEL_WARNING) {
-		fprintf (service->private->logfile, "w: %s\n", message);
-	} else if (flags | G_LOG_LEVEL_ERROR) {
-		fprintf (service->private->logfile, "E: %s\n", message);
-	} 
+
+	if (flags & G_LOG_LEVEL_DEBUG) {
+		format = "d: %s\n";
+	} else if (flags & G_LOG_LEVEL_MESSAGE) {
+		format = " : %s\n";
+	} else if (flags & G_LOG_LEVEL_WARNING) {
+		format = "w: %s\n";
+	} else if (flags & G_LOG_LEVEL_ERROR) {
+		format = "E: %s\n";
+	} else {
+		format = "?: %s\n";
+	}
+
+	if (service->private->logfile != NULL) {
+		fprintf (service->private->logfile, format, message);
+		fflush (service->private->logfile);
+	}
+	if (service->private->log_to_stderr || (service->private->logfile == NULL)) {
+		if ((flags & G_LOG_LEVEL_DEBUG) && ! service->private->iopts->mode_debug) {
+			/* don't log debug stuff to stderr unless debug mode is on */
+			return;
+		}
+		fprintf (stderr, format, message);
+	}
 }
+#endif
+
+void
+eazel_install_set_log (EazelInstall *service,
+		       FILE *logfp)
+{
+	if (service->private->logfile != NULL) {
+		fclose (service->private->logfile);
+	}
+	service->private->logfile = logfp;
+}	
 
 void 
 eazel_install_open_log (EazelInstall *service,
 			const char *fname)
 {
+	FILE *fp;
+
 	SANITY (service);
 
-	if (service->private->logfile) {
-		fclose (service->private->logfile);
+	fp = fopen (fname, "wt");
+	if (fp != NULL) {
+		eazel_install_set_log (service, fp);
+		if (service->private->logfilename) {
+			g_free (service->private->logfilename);
+		}
+		service->private->logfilename = g_strdup (fname);
+	} else {
+		g_warning (_("Cannot write to file %s, using default log handler"), fname);
 	}
-	service->private->logfile = fopen (fname, "wt");
-	if (service->private->logfilename) {
-		g_free (service->private->logfilename);
-	}
-	service->private->logfilename = g_strdup (fname);
-	if (service->private->logfile!=NULL) {
-		g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_WARNING | G_LOG_LEVEL_ERROR, 
-				   (GLogFunc)eazel_install_log, 
-				   service);
-		return;
-	} 
+}
 
-	g_warning (_("Cannot write to file %s, using default log handler"), fname);
+void
+eazel_install_log_to_stderr (EazelInstall *service,
+			     gboolean log_to_stderr)
+{
+	service->private->log_to_stderr = log_to_stderr;
 }
 
 static gboolean

@@ -1832,22 +1832,24 @@ static void
 dump_one_package (PackageData *pack, char *prefix)
 {
 	char *softprefix, *hardprefix, *modprefix, *breakprefix;
-	GList *iter;
-	int count;
+	char *packname;
 
-	trilobite_debug ("%s%s-%s-%s (stat %s/%s), 0x%08X", 
-			 prefix, 
-			 pack->name, pack->version, pack->minor,
+	if (pack->name == NULL) {
+		if (pack->provides && pack->provides->data) {
+			packname = g_strdup_printf ("[provider of %s]", (char *)(pack->provides->data));
+		} else {
+			packname = g_strdup ("[mystery package]");
+		}
+	} else {
+		packname = g_strdup_printf ("%s-%s-%s", pack->name, pack->version, pack->minor);
+	}
+
+	trilobite_debug ("%s%s (stat %s/%s), 0x%08X", 
+			 prefix, packname,
 			 packagedata_status_enum_to_str (pack->status),
 			 packagedata_modstatus_enum_to_str (pack->modify_status),
 			 (unsigned int)pack);
-	for (count = 0, iter = g_list_first (pack->provides); iter; iter = g_list_next (iter), count++) {
-		trilobite_debug ("\t\tprovides %s", (char *)(iter->data));
-		if (count >= 1) {
-			trilobite_debug("\t\t...and others");
-			iter = NULL;
-		}
-	}
+	g_free (packname);
 
 	softprefix = g_strdup_printf ("%s (s) ", prefix);
 	hardprefix = g_strdup_printf ("%s (h) ", prefix);

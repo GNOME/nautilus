@@ -1,3 +1,56 @@
+2000-11-03  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-logic.c:
+	(dump_one_package):
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_set_arg), (eazel_install_initialize),
+	(eazel_install_fetch_remote_package_list), (eazel_install_log),
+	(eazel_install_set_log), (eazel_install_open_log),
+	(eazel_install_log_to_stderr):
+	* components/services/install/lib/eazel-install-private.h:
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_rpm_set_settings):
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c
+	: (trilobite_add_log):
+
+	Clean up debug mode (was missing some pieces) and set up the g_log
+	handler to not work in corba mode (letting libtrilobite handle
+	them in corba mode).  Make it start up as early as possible and
+	let the service provide a file pointer for logging.
+
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (generate_summary_form):
+
+	Make the giant label a little bit more palatable to Arlo.
+	
+	* nautilus-installer/src/installer.c: (log_debug),
+	(add_bullet_point_to_vbox), (strip_categories),
+	(start_over_make_category_func), (start_over),
+	(start_over_callback), (dont_start_over_callback),
+	(start_over_timer), (jump_to_retry_page), (create_window),
+	(eazel_install_progress), (eazel_download_progress),
+	(add_force_packages), (add_force_remove), (add_update_package),
+	(get_detailed_errors_foreach), (get_detailed_errors),
+	(install_failed), (download_failed), (eazel_install_preflight),
+	(eazel_install_dep_check), (install_done), (check_if_next_okay),
+	(toggle_button_toggled), (eazel_installer_add_category),
+	(check_system), (more_check_system), (eazel_installer_do_install),
+	(draw_splash_text), (eazel_installer_finalize), (start_logging),
+	(find_old_tmpdir), (eazel_installer_initialize):
+	* nautilus-installer/src/installer.h:
+	* nautilus-installer/src/link.sh:
+	* nautilus-installer/src/main.c:
+	* nautilus-installer/src/prescript:
+
+	Use /tmp/eazel-install.log for logging (being very careful to make
+	sure the file is not a booby trap) instead of spamming all over
+	the terminal.  However, the --debug option will give you the
+	terminal spam if you want it (in addition to the logfile).  Fix
+	the annoying debug logs to use g_log so we can catch them.  Add a
+	--batch option that causes the installer to skip all question
+	screens.
+
 2000-11-03  Mathieu Lacage  <mathieu@eazel.com>
 
 	* user-guide/C/Makefile.am: fix pb with buildir != srcdir

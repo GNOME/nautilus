@@ -87,7 +87,8 @@ eazel_install_rpm_set_settings (EazelInstall *service) {
 	service->private->packsys.rpm.interface_flags = interface_flags;
 	service->private->packsys.rpm.problem_filters = problem_filters;
 
-	if (eazel_install_get_debug (service)) {
+	/* this spams to stderr -- is that what we really want? */
+	if (eazel_install_get_debug (service) && 0) {
 		rpmSetVerbosity (RPMMESS_DEBUG);
 	}
 

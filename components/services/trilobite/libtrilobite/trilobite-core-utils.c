@@ -165,7 +165,7 @@ trilobite_add_log (const char *domain, GLogLevelFlags flags, const char *message
 
 	if (flags & G_LOG_LEVEL_DEBUG) {
 		if (do_debug_log) {
-			prefix = "/// debug:";
+			prefix = "d:";
 		} else {
 			return;
 		}

@@ -120,8 +120,12 @@ POA_Trilobite_Eazel_Install__epv *eazel_install_get_epv (void);
 Trilobite_Eazel_Install eazel_install_create_corba_object (BonoboObject *service);
 #endif /* EAZEL_INSTALL_NO_CORBA */
 
+void eazel_install_set_log			  (EazelInstall *service,
+						   FILE *logfp);
 void eazel_install_open_log                       (EazelInstall *service,
 						   const char *fname);
+void eazel_install_log_to_stderr		  (EazelInstall *service,
+						   gboolean log_to_stderr);
 
 /* This sets mode 500 on tmpdir and all files in
    private->downloaded_files */

@@ -87,6 +87,7 @@ struct _EazelInstallPrivate {
 	/* The logfile used for the object */
 	FILE *logfile;
 	char *logfilename;
+	gboolean log_to_stderr;
 	
         /* TRUE if the rpm subcommand is running */
 	volatile gboolean subcommand_running;
