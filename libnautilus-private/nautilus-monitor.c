@@ -221,6 +221,17 @@ process_fam_notifications (GIOChannel *channel,
 	return TRUE;
 }
 
+static gboolean
+path_is_on_readonly_volume (const char *path)
+{
+	NautilusVolumeMonitor *volume_monitor;
+	NautilusVolume *volume;
+
+	volume_monitor = nautilus_volume_monitor_get ();
+	volume = nautilus_volume_monitor_get_volume_for_path (volume_monitor, path);
+	return (volume != NULL) && nautilus_volume_is_read_only (volume);
+}
+
 #endif /* HAVE_LIBFAM */
 
 gboolean
@@ -231,17 +242,6 @@ nautilus_monitor_active (void)
 #else
 	return get_fam_connection () != NULL;
 #endif
-}
-
-static gboolean
-path_is_on_readonly_volume (const char *path)
-{
-	NautilusVolumeMonitor *volume_monitor;
-	NautilusVolume *volume;
-
-	volume_monitor = nautilus_volume_monitor_get ();
-	volume = nautilus_volume_monitor_get_volume_for_path (volume_monitor, path);
-	return (volume != NULL) && nautilus_volume_is_read_only (volume);
 }
 
 NautilusMonitor *
