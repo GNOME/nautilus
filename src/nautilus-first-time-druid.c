@@ -697,7 +697,12 @@ GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gbo
 	}
 		
 	/* set up the initial page */
-	pixbuf = create_named_pixbuf ("druid_welcome.png");
+	/* The image is marked for translation because it is basically an
+	 * image of english text.  Other languages would probably want to
+	 * create another image and use that.  Theoretically in the future
+	 * gnome-canvas-text will support nice text drawing and this will
+	 * be a non-issue */
+	pixbuf = create_named_pixbuf (_("druid_welcome.png"));
 
 	if (pixbuf != NULL) {
 		nautilus_druid_page_eazel_set_title_image (NAUTILUS_DRUID_PAGE_EAZEL (start_page), pixbuf);
