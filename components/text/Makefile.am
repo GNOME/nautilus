@@ -38,4 +38,7 @@ nautilus_text_view_LDADD =			\
 
 OBJECT_DIRECTORY_LIBS = $(GNOME_LIBS) $(OAF_LIBS)
 
-EXTRA_DIST = $(oaf_DATA)
+EXTRA_DIST = 			\
+	$(oaf_DATA)		\
+	$(ui_DATA)		\
+	$(NULL)
