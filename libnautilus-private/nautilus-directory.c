@@ -1379,7 +1379,7 @@ nautilus_self_check_directory (void)
 	NAUTILUS_CHECK_STRING_RESULT (gnome_vfs_escape_slashes ("%2F"), "%252F");
 
 	/* nautilus_directory_make_uri_canonical */
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical (""), "file:");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical (""), "file:///");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("file:/"), "file:///");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("file:///"), "file:///");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("TRASH:XXX"), "trash:");
@@ -1394,7 +1394,12 @@ nautilus_self_check_directory (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("http://le-hackeur.org/"), "http://le-hackeur.org");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("http://le-hackeur.org/dir"), "http://le-hackeur.org/dir");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("http://le-hackeur.org/dir/"), "http://le-hackeur.org/dir");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("search://[file://]file_name contains stuff"), "search://[file://]file_name contains stuff");
+	/* FIXME: the "nested" URI loses some characters here. Maybe that's OK because we escape them in practice? */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("search://[file://]file_name contains stuff"), "search://[file/]file_name contains stuff");
+#ifdef EAZEL_SERVICES
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("eazel-services:/~turtle"), "eazel-services:///~turtle");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("eazel-services:///~turtle"), "eazel-services:///~turtle");
+#endif	
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

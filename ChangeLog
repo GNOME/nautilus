@@ -1,3 +1,18 @@
+2000-10-26  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 4064 (Can't get a right-click menu in vault)
+
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_make_uri_canonical): Changed this to call
+	gnome_vfs_uri_new () and gnome_vfs_uri_to_string () so
+	we get the same canonicalization behavior as gnome-vfs,
+	other than the special Nautilus-specific cases.
+	(nautilus_self_check_file_utilities): Added a bunch of
+	new checks, including copying & pasting many from
+	gnome-vfs.
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_self_check_directory): added a couple of checks.
+
 2000-10-26  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c

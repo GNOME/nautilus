@@ -278,6 +278,7 @@ char *
 nautilus_make_uri_canonical (const char *uri)
 {
 	char *canonical_uri, *old_uri, *p;
+	GnomeVFSURI *vfs_uri;
 
 	if (uri == NULL) {
 		return NULL;
@@ -321,12 +322,14 @@ nautilus_make_uri_canonical (const char *uri)
 		}
 	}
 
-	/* Convert file:/ to file:/// */
-	if (nautilus_str_has_prefix (canonical_uri, "file:/")
-	    && !nautilus_str_has_prefix (canonical_uri, "file:///")) {
-		old_uri = canonical_uri;
-		canonical_uri = g_strconcat ("file://", old_uri + 5, NULL);
-		g_free (old_uri);
+	vfs_uri = gnome_vfs_uri_new (canonical_uri);
+	/* If gnome-vfs knows about this scheme, take advantage of its
+	 * canonicalization mechanism.
+	 */
+	if (vfs_uri != NULL) {
+		g_free (canonical_uri);
+		canonical_uri = gnome_vfs_uri_to_string (vfs_uri, GNOME_VFS_URI_HIDE_NONE);
+		gnome_vfs_uri_unref (vfs_uri);
 	}
 
 	return canonical_uri;
@@ -1224,7 +1227,9 @@ nautilus_self_check_file_utilities (void)
 
 
 	/* nautilus_make_uri_canonical */
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical (""), "file:");
+	/* FIXME: this is a bizarre result from an empty string */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical (""), "file://");
+	
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:/"), "file:///");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///"), "file:///");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("TRASH:XXX"), "trash:");
@@ -1239,7 +1244,101 @@ nautilus_self_check_file_utilities (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://le-hackeur.org/"), "http://le-hackeur.org/");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://le-hackeur.org/dir"), "http://le-hackeur.org/dir");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://le-hackeur.org/dir/"), "http://le-hackeur.org/dir/");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("search://[file://]file_name contains stuff"), "search://[file://]file_name contains stuff");
+
+	/* FIXME: the "nested" URI loses some characters here. Maybe that's OK because we escape them in practice? */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("search://[file://]file_name contains stuff"), "search://[file/]file_name contains stuff");
+#ifdef EAZEL_SERVICES	
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("eazel-services:/~turtle"), "eazel-services:///~turtle");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("eazel-services:///~turtle"), "eazel-services:///~turtle");
+#endif
+
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/"), "file:///");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/."), "file:///");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/./."), "file:///");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/.//."), "file:///");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/.///."), "file:///");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a"), "file://a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/a/b/.."), "file:///a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a///"), "file://a/");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("./a"), "file://a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("../a"), "file://../a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("..//a"), "file://../a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/."), "file://a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/a/."), "file:///a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/a/.."), "file:///");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a//."), "file://a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("./a/."), "file://a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical (".//a/."), "file://a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("./a//."), "file://a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/.."), "file://");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a//.."), "file://");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("./a/.."), "file://");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical (".//a/.."), "file://");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("./a//.."), "file://");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical (".//a//.."), "file://");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/b/.."), "file://a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("./a/b/.."), "file://a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/./a/b/.."), "file:///a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/a/./b/.."), "file:///a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/a/b/./.."), "file:///a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/a/b/../."), "file:///a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/b/../.."), "file://");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("./a/b/../.."), "file://");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("././a/b/../.."), "file://");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/b/c/../.."), "file://a");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/b/c/../../d"), "file://a/d");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/b/../../d"), "file://d");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/../../d"), "file://../d");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/b/.././.././c"), "file://c");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("a/.././.././b/c"), "file://../b/c");
+
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.eazel.com"), "http://www.eazel.com");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.eazel.com/"), "http://www.eazel.com/");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.eazel.com/dir"), "http://www.eazel.com/dir");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.eazel.com/dir/"), "http://www.eazel.com/dir/");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://yakk:womble@www.eazel.com:42/blah/"), "http://yakk:womble@www.eazel.com:42/blah/");
+
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("FILE:///"), "file:///");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("FILE://"), "file://");
+
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///trash"), "file:///trash");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///Users/mikef"), "file:///Users/mikef");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("/trash"), "file:///trash");
+
+	/* Note: this is a special case that behaves differently than in gnome-vfs */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("trash"), "file://trash");
+
+	/* Note that gnome-vfs would return NULL for this case */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("glorp:"), "glorp:");
+
+	/* FIXME bugzilla.eazel.com 4101: Why append a slash in this case, but not in the http://www.eazel.com case? */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.eazel.com:80"), "http://www.eazel.com:80/");
+
+	/* FIXME bugzilla.eazel.com 3829: Is this useful behavior?
+	 * It turns a partial path name into a host name!
+	 */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("trash"), "file://trash");
+
+	/* FIXME bugzilla.eazel.com 4102: Is this useful behavior? */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:trash"), "file://trash");
+
+	/* FIXME bugzilla.eazel.com 3830: This turns a good path with
+	 * a redundant "/" in it into a completely different one.
+	 */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("//trash"), "file://trash");
+
+	/* FIXME bugzilla.eazel.com 2802: Is this the correct behavior
+	 * for these cases?
+	 */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:"), "file://");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http:"), "http://");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:/"), "file:///");
+
+	/* FIXME bugzilla.eazel.com 2803: Do we really want to add the
+         * "//" in this case?
+	 */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("pipe:gnome-info2html2 as"), "pipe://gnome-info2html2 as");
+
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */
