@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-05-16 20:39+0200\n"
+"POT-Creation-Date: 2004-06-01 09:36+0200\n"
 "PO-Revision-Date: 2004-05-17 05:34+0800\n"
 "Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
@@ -980,6 +980,7 @@ msgid "Label to display in the column"
 msgstr "要在列中显示的标签"
 
 #: libnautilus-extension/nautilus-column.c:196
+#: src/file-manager/fm-ditem-page.c:344 src/file-manager/fm-ditem-page.c:355
 msgid "Description"
 msgstr "描述"
 
@@ -2080,10 +2081,6 @@ msgid "Replace _All"
 msgstr "全部替换(_A)"
 
 #. appended to new link file
-#. Note to localizers: convert file type string for file
-#. * (e.g. "folder", "plain text") to file type for symbolic link
-#. * to that kind of file (e.g. "link to folder").
-#.
 #: libnautilus-private/nautilus-file-operations.c:1148
 #: libnautilus-private/nautilus-file.c:4735
 #, c-format
@@ -2138,9 +2135,6 @@ msgid " (another copy)"
 msgstr " (另一个复件)"
 
 #. localizers: tag used to detect the x11th copy of a file
-#. localizers: tag used to detect the x12th copy of a file
-#. localizers: tag used to detect the x13th copy of a file
-#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
 #: libnautilus-private/nautilus-file-operations.c:1210
@@ -2176,9 +2170,6 @@ msgid "%s (another copy)%s"
 msgstr "%s (另一个复件)%s"
 
 #. localizers: appended to x11th file copy
-#. localizers: appended to x12th file copy
-#. localizers: appended to x13th file copy
-#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
 #: libnautilus-private/nautilus-file-operations.c:1243
@@ -2947,51 +2938,51 @@ msgstr "是否突出显示 D&D 拖放"
 msgid "The selection rectangle"
 msgstr "矩形选区"
 
-#: libnautilus-private/nautilus-icon-container.c:4195
+#: libnautilus-private/nautilus-icon-container.c:4202
 msgid "Frame Text"
 msgstr "给文本装框"
 
-#: libnautilus-private/nautilus-icon-container.c:4196
+#: libnautilus-private/nautilus-icon-container.c:4203
 msgid "Draw a frame around unselected text"
 msgstr "在未选文本周围绘制外框"
 
-#: libnautilus-private/nautilus-icon-container.c:4202
+#: libnautilus-private/nautilus-icon-container.c:4209
 msgid "Selection Box Color"
 msgstr "选择外框颜色"
 
-#: libnautilus-private/nautilus-icon-container.c:4203
+#: libnautilus-private/nautilus-icon-container.c:4210
 msgid "Color of the selection box"
 msgstr "选择框颜色"
 
-#: libnautilus-private/nautilus-icon-container.c:4208
+#: libnautilus-private/nautilus-icon-container.c:4215
 msgid "Selection Box Alpha"
 msgstr "选择框 Alpha"
 
-#: libnautilus-private/nautilus-icon-container.c:4209
+#: libnautilus-private/nautilus-icon-container.c:4216
 msgid "Opacity of the selection box"
 msgstr "选择框不透明度"
 
-#: libnautilus-private/nautilus-icon-container.c:4216
+#: libnautilus-private/nautilus-icon-container.c:4223
 msgid "Highlight Alpha"
 msgstr "突出显示 Alpha"
 
-#: libnautilus-private/nautilus-icon-container.c:4217
+#: libnautilus-private/nautilus-icon-container.c:4224
 msgid "Opacity of the highlight for selected icons"
 msgstr "选中项目的突出显示不透明度"
 
-#: libnautilus-private/nautilus-icon-container.c:4223
+#: libnautilus-private/nautilus-icon-container.c:4230
 msgid "Light Info Color"
 msgstr "浅信息颜色"
 
-#: libnautilus-private/nautilus-icon-container.c:4224
+#: libnautilus-private/nautilus-icon-container.c:4231
 msgid "Color used for information text against a dark background"
 msgstr "深色背景上信息文字所使用的颜色"
 
-#: libnautilus-private/nautilus-icon-container.c:4229
+#: libnautilus-private/nautilus-icon-container.c:4236
 msgid "Dark Info Color"
 msgstr "深信息颜色"
 
-#: libnautilus-private/nautilus-icon-container.c:4230
+#: libnautilus-private/nautilus-icon-container.c:4237
 msgid "Color used for information text against a light background"
 msgstr "浅色背景上信息文字所使用的颜色"
 
@@ -3330,7 +3321,6 @@ msgstr "正在打开“%s”"
 #. TODO: These strings suck pretty badly, but we're in string-freeze,
 #. * and I found these in other places to reuse. We should make them
 #. * better later.
-#. Shouldn't have gotten this error unless there's a : separator.
 #: libnautilus-private/nautilus-program-choosing.c:969
 #: libnautilus-private/nautilus-program-choosing.c:977
 #: libnautilus-private/nautilus-program-choosing.c:982
@@ -3963,7 +3953,7 @@ msgid "There is nothing on the clipboard to paste."
 msgstr "剪贴板中没有东西可以粘贴。"
 
 #: src/file-manager/fm-directory-view.c:5050
-#: src/file-manager/fm-directory-view.c:6123
+#: src/file-manager/fm-directory-view.c:6128
 msgid "Mount Error"
 msgstr "挂载错误"
 
@@ -4099,14 +4089,38 @@ msgstr "显示(_D)"
 msgid "_Run"
 msgstr "运行(_R)"
 
-#: src/file-manager/fm-directory-view.c:6259
+#: src/file-manager/fm-directory-view.c:6264
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "打开“%s”。"
 
-#: src/file-manager/fm-directory-view.c:6266
+#: src/file-manager/fm-directory-view.c:6271
 msgid "Cancel Open?"
 msgstr "取消打开？"
+
+#: src/file-manager/fm-ditem-page.c:338 src/file-manager/fm-ditem-page.c:349
+#, fuzzy
+msgid "Comment"
+msgstr "Covalent"
+
+#: src/file-manager/fm-ditem-page.c:341
+msgid "URL"
+msgstr ""
+
+#: src/file-manager/fm-ditem-page.c:345
+#, fuzzy
+msgid "Link"
+msgstr "链接"
+
+#: src/file-manager/fm-ditem-page.c:352
+#, fuzzy
+msgid "Command"
+msgstr "Compaq"
+
+#: src/file-manager/fm-ditem-page.c:356
+#, fuzzy
+msgid "Launcher"
+msgstr "编辑启动器"
 
 #: src/file-manager/fm-error-reporting.c:57
 #, c-format
@@ -5084,7 +5098,6 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#. FIXME bugzilla.gnome.org 42538: When can this happen?
 #: src/nautilus-application.c:583 src/nautilus-application.c:601
 #: src/nautilus-application.c:608
 msgid "Nautilus can't be used now, due to an unexpected error."
@@ -5532,33 +5545,28 @@ msgid "File Manager"
 msgstr "文件管理器"
 
 #. Set initial window title
-#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:307
+#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:315
 #: src/nautilus-window-menus.c:601 src/nautilus-window.c:173
 msgid "Nautilus"
 msgstr "Nautilus"
 
 #: src/nautilus-main.c:259
-#, c-format
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus：--check 无法和 URI 一起使用。\n"
 
 #: src/nautilus-main.c:263
-#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus：--check 无法和其它选项一起使用。\n"
 
 #: src/nautilus-main.c:267
-#, c-format
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus：--quit 无法和 URI 一起使用。\n"
 
 #: src/nautilus-main.c:271
-#, c-format
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus：--restart 无法和 URI 一起使用。\n"
 
 #: src/nautilus-main.c:275
-#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus：--geometry 无法和多个URI 一起使用。\n"
 
@@ -5642,7 +5650,7 @@ msgid "Close all Navigation windows"
 msgstr "关闭全部打开导航窗口"
 
 #: src/nautilus-navigation-window-ui.xml.h:11
-#: src/nautilus-spatial-window-ui.xml.h:4
+#: src/nautilus-spatial-window-ui.xml.h:6
 msgid "Connect to _Server..."
 msgstr "连接到服务器(_S)..."
 
@@ -5659,12 +5667,12 @@ msgid "Forward"
 msgstr "前进"
 
 #: src/nautilus-navigation-window-ui.xml.h:15
-#: src/nautilus-spatial-window-ui.xml.h:6
+#: src/nautilus-spatial-window-ui.xml.h:8
 msgid "Go to templates folder"
 msgstr "转到模板文件夹"
 
 #: src/nautilus-navigation-window-ui.xml.h:16
-#: src/nautilus-spatial-window-ui.xml.h:7
+#: src/nautilus-spatial-window-ui.xml.h:9
 msgid "Go to the CD Creator"
 msgstr "转到 CD 刻录"
 
@@ -5677,7 +5685,7 @@ msgid "Go to the previous visited location"
 msgstr "转到上一个访问过的位置"
 
 #: src/nautilus-navigation-window-ui.xml.h:19
-#: src/nautilus-spatial-window-ui.xml.h:8
+#: src/nautilus-spatial-window-ui.xml.h:10
 msgid "Go to the trash folder"
 msgstr "转到回收站文件夹"
 
@@ -5726,7 +5734,7 @@ msgid "_Clear History"
 msgstr "清空历史(_G)"
 
 #: src/nautilus-navigation-window-ui.xml.h:31
-#: src/nautilus-spatial-window-ui.xml.h:12
+#: src/nautilus-spatial-window-ui.xml.h:14
 msgid "_Computer"
 msgstr "计算机(_C)"
 
@@ -5743,7 +5751,7 @@ msgid "_Go"
 msgstr "转到(_G)"
 
 #: src/nautilus-navigation-window-ui.xml.h:35
-#: src/nautilus-spatial-window-ui.xml.h:13
+#: src/nautilus-spatial-window-ui.xml.h:15
 msgid "_Home"
 msgstr "主文件夹(_H)"
 
@@ -5756,12 +5764,12 @@ msgid "_Side Pane"
 msgstr "窗格(_S)"
 
 #: src/nautilus-navigation-window-ui.xml.h:38
-#: src/nautilus-spatial-window-ui.xml.h:15
+#: src/nautilus-spatial-window-ui.xml.h:17
 msgid "_Templates"
 msgstr "模板(_T)"
 
 #: src/nautilus-navigation-window-ui.xml.h:39
-#: src/nautilus-spatial-window-ui.xml.h:16
+#: src/nautilus-spatial-window-ui.xml.h:18
 msgid "_Trash"
 msgstr "回收站(_T)"
 
@@ -6190,30 +6198,40 @@ msgid "Show %s"
 msgstr "显示 %s"
 
 #: src/nautilus-spatial-window-ui.xml.h:2
-msgid "Close P_arent Folders"
+#, fuzzy
+msgid "Clos_e All Folders"
 msgstr "关闭父文件夹(_A)"
 
 #: src/nautilus-spatial-window-ui.xml.h:3
+msgid "Close P_arent Folders"
+msgstr "关闭父文件夹(_A)"
+
+#: src/nautilus-spatial-window-ui.xml.h:4
+#, fuzzy
+msgid "Close all folder windows"
+msgstr "关闭全部打开导航窗口"
+
+#: src/nautilus-spatial-window-ui.xml.h:5
 msgid "Close this folder's parents"
 msgstr "关闭此文件夹的父文件夹"
 
-#: src/nautilus-spatial-window-ui.xml.h:5
+#: src/nautilus-spatial-window-ui.xml.h:7
 msgid "Go to Computer"
 msgstr "转到计算机"
 
-#: src/nautilus-spatial-window-ui.xml.h:9
+#: src/nautilus-spatial-window-ui.xml.h:11
 msgid "Open _Location..."
 msgstr "打开位置(_L)..."
 
-#: src/nautilus-spatial-window-ui.xml.h:10
+#: src/nautilus-spatial-window-ui.xml.h:12
 msgid "Open _Parent"
 msgstr "打开父文件夹(_P)"
 
-#: src/nautilus-spatial-window-ui.xml.h:11
+#: src/nautilus-spatial-window-ui.xml.h:13
 msgid "Open the parent folder"
 msgstr "打开父文件夹"
 
-#: src/nautilus-spatial-window-ui.xml.h:14
+#: src/nautilus-spatial-window-ui.xml.h:16
 msgid "_Places"
 msgstr "位置(_P)"
 
@@ -6412,4 +6430,3 @@ msgstr "网络服务器"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "在 Nautilus 文件管理器中查看您的网络服务器"
-

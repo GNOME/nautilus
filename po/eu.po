@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-19 16:41+0200\n"
+"POT-Creation-Date: 2004-06-01 09:36+0200\n"
 "PO-Revision-Date: 2004-04-16 20:41+0200\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
@@ -43,7 +43,7 @@ msgid "bonobo_ui_init() failed."
 msgstr "bonobo_ui_init()-ek huts egin du."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
-#: src/file-manager/fm-properties-window.c:2451
+#: src/file-manager/fm-properties-window.c:2456
 msgid "Emblems"
 msgstr "Ikurrak"
 
@@ -1022,6 +1022,7 @@ msgid "Label to display in the column"
 msgstr "Etiketa zutabean erakusteko"
 
 #: libnautilus-extension/nautilus-column.c:196
+#: src/file-manager/fm-ditem-page.c:344 src/file-manager/fm-ditem-page.c:355
 msgid "Description"
 msgstr "Azalpena"
 
@@ -1436,6 +1437,15 @@ msgstr ""
 "mahaigainean agertuko da."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
+#, fuzzy
+msgid ""
+"If this is set to true, icons linking to mounted volumes will be put on the "
+"desktop."
+msgstr ""
+"Hemen egia ezartzen bada, zakarrontziarekin estekatuta dagoen ikonoa "
+"mahaigainean agertuko da."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -1445,7 +1455,7 @@ msgstr ""
 "dira. Adibidez, izenaren arabera antolatuz gero, fitxategiak \"a\"-tik \"z\"-"
 "ra ordenatu beharrean \"z\"-tik \"a\"-ra ordenatuko dira."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -1458,22 +1468,22 @@ msgstr ""
 "ordenatuz gero, txikitik handira ordenatu beharrean handitik txikira "
 "ordenatuko dira."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
 msgid "If true, icons will be laid out tighter by default in new windows."
 msgstr ""
 "Egia bada, ikonoak lehenespenez estuago aurkeztuko dira leiho berrietan."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
 msgid ""
 "If true, labels will be placed beside icons rather than underneath them."
 msgstr ""
 "Egia bada, etiketak ikonoen ondoan ezarriko dira haien azpian ezarri ordez."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
 msgid "If true, new windows will use manual layout by default."
 msgstr "Egia bada, leiho berriek eskuzko diseinua erabiliko dute lehenespenez."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
 msgid ""
 "Images over this size (in bytes) won't be thumbnailed. The purpose of this "
 "setting is to avoid thumbnailing large images that may take a long time to "
@@ -1483,19 +1493,19 @@ msgstr ""
 "sartuko. Ezarpen horren helburua hauxe da: kargatzen luzaro irauten duten "
 "edo memoria asko erabiltzen duten irudi handiak koadro txikian sartzea."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
 msgid "List of possible captions on icons"
 msgstr "Ikonoetako epigrafe posibleen zerrenda"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
 msgid "Maximum handled files in a folder"
 msgstr "Direktorio batean maneiatutako fitxategien gehienezko kopurua"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
 msgid "Maximum image size for thumbnailing"
 msgstr "Koadro txikian sartzeko irudiaren gehienezko tamaina"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
 msgid ""
 "Name of the Nautilus theme to use. This has been deprecated as of Nautilus "
 "2.2. Please use the icon theme instead."
@@ -1504,21 +1514,21 @@ msgstr ""
 "zaharkituta geratu da da. Horren ordez, erabili ikono-gaia."
 
 #
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
 msgid "Nautilus handles drawing the desktop"
 msgstr "Nautilus-ek mahaigaineko marrazkia kudeatzen du"
 
 #
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
 msgid "Nautilus uses the users home folder as the desktop"
 msgstr ""
 "Nautilus-ek erabiltzaileen etxeko direktorioa mahaigain gisa erabiltzen du"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
 msgid "Only show folders in the tree sidebar"
 msgstr "Direktorioak zuhaitzaren alboko barran bakarrik erakutsi"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
 msgid ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
@@ -1526,46 +1536,51 @@ msgstr ""
 "Balio posibleak \"bakarra\" eta \"bikoitza\" dira, fitxategiak klik bakarrez "
 "edo klik bikoitzez abiarazteko, hurrenez hurren."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid "Put labels beside icons"
 msgstr "Jarri etiketak ikonoen ondoan"
 
 #
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
 msgid "Reverse sort order in new windows"
 msgstr "Alderantzikatu leiho berrien ordena"
 
 #
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
 msgid "Show folders first in windows"
 msgstr "Erakutsi direktorioak lehenik leihoetan"
 
 #
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
 msgid "Show location bar in new windows"
 msgstr "Erakutsi helbide-barra leiho berrietan"
 
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
+#, fuzzy
+msgid "Show mounted volumes on the desktop"
+msgstr "Zakarrontzia mahaigainean eduki behar da."
+
 #
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
 msgid "Show side pane in new windows"
 msgstr "Erakutsi albo-panela leiho berrietan"
 
 #
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid "Show status bar in new windows"
 msgstr "Bistaratu egoera-barra leiho berrietan"
 
 #
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
 msgid "Show toolbar in new windows"
 msgstr "Erakutsi tresna-barra leiho berrietan"
 
 #
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
 msgid "Side pane view"
 msgstr "Albo-panelaren ikuspegia"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
 msgid ""
 "Speed tradeoff for when to preview a sound file when mousing over a files "
 "icon. If set to \"always\" then always plays the sound, even if the file is "
@@ -1578,7 +1593,7 @@ msgstr ""
 "\"lokalak_bakarrik\" ezarriz gero, aurrebistak fitxategi-sistema lokaletan "
 "bakarrik egingo dira. \"Inoiz_ez\" ezarriz gero, ez du soinua inoiz joko."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 msgid ""
 "Speed tradeoff for when to show a preview of text file contents in the "
 "file's icon. If set to \"always\" then always show previews, even if the "
@@ -1593,7 +1608,7 @@ msgstr ""
 "bakarrik erakusten da. \"inoiz_ez\" ezartzen bada, ez dituzu inoiz "
 "aurrebista-datuak irakurriko."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
 msgid ""
 "Speed tradeoff for when to show an image file as a thumbnail. If set to "
 "\"always\" then always thumbnail, even if the folder is on a remote server. "
@@ -1608,7 +1623,7 @@ msgstr ""
 "\"inoiz_ez\" ezarriz gero, ez ditu inoiz irudiak koadro txikian sartuko, "
 "erabili ikono generiko bat."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
 msgid ""
 "Speed tradeoff for when to show the number of items in a folder. If set to "
 "\"always\" then always show item counts, even if the folder is on a remote "
@@ -1621,7 +1636,7 @@ msgstr ""
 "ezartzen bada, fitxategi-sistema lokaletakoak bakarrik kontatzen ditu. "
 "\"inoiz_ez\" ezartzen bada, ez ditu inoiz elementuak kontatuko."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
@@ -1629,7 +1644,7 @@ msgstr ""
 "Ikono-ikuspegiko elementuen ordena lehenetsia. Balio posibleak hauek dira: "
 "\"izena\", \"tamaina\", \"mota\", \"aldatze_data\", \"ikurrak\"."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
 msgid ""
 "The default sort-order for the items in the list view. Possible values are "
 "\"name\", \"size\", \"type\", and \"modification_date\"."
@@ -1638,21 +1653,21 @@ msgstr ""
 "dira: izena, tamaina, mota eta aldatze-data."
 
 #
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
 msgid "The default width of the side pane in new windows."
 msgstr "Albo-panelaren zabalera lehenetsia leiho berrietan."
 
 #
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
 msgid "The font description used for the icons on the desktop."
 msgstr "Mahaigaineko ikonoetan erabiltzen den letra-tipoaren azalpena."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
 msgid "The side pane view to show in newly opened windows."
 msgstr "Leiho ireki berrietan erakusteko albo-panelaren ikuspegia."
 
 #
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
 msgid ""
 "This name can be set if you want a custom name for the home icon on the "
 "desktop."
@@ -1661,7 +1676,7 @@ msgstr ""
 "pertsonalizatua nahi baduzu."
 
 #
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
@@ -1669,30 +1684,30 @@ msgstr ""
 "Izen hori ezar dezakezu, mahaigaineko zakarrontzi-ikonoarentzat izen "
 "pertsonalizatua nahi baduzu."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
 msgid "Trash icon visible on desktop"
 msgstr "Zakarrontzi-ikonoa ikusgai mahaigainean"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:90
 msgid "Type of click used to launch/open files"
 msgstr "Fitxategiak abiarazteko/irekitzeko erabiliko den klik mota"
 
 #
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
 msgid "Use manual layout in new windows"
 msgstr "Erabili eskuzko diseinua leiho berrietan"
 
 #
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:90
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:92
 msgid "Use tighter layout in new windows"
 msgstr "Erabili diseinu estuagoa leiho berrietan"
 
 #
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:93
 msgid "What to do with executable text files when activated"
 msgstr "Zer egin testu-fitxategi exekutagarriekin aktibatutakoan"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:92
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:94
 msgid ""
 "What to do with executable text files when they are activated (single or "
 "double clicked). Possible values are \"launch\" to launch them as programs, "
@@ -1704,7 +1719,7 @@ msgstr ""
 "abiarazteko, \"galdetu\" zer egin galdetzeko elkarrizketa-koadro baten "
 "bidez, eta \"bistaratu\" testu-fitxategi gisa bistaratzeko."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:93
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:95
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
 "another view for that particular folder. Possible values are \"list_view\" "
@@ -1715,60 +1730,60 @@ msgstr ""
 "\"zerrenda_ikuspegia\" eta \"ikono-ikuspegia\"."
 
 #
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:94
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:96
 msgid "When to show number of items in a folder"
 msgstr "Noiz erakutsi direktorioko elementu-kopurua"
 
 #
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:95
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:97
 msgid "When to show preview text in icons"
 msgstr "Noiz erakutsi testuaren aurrebista ikonoetan"
 
 #
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:96
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:98
 msgid "When to show thumbnails of image files"
 msgstr "Noiz erakutsi irudi-fitxategiak koadro txikietan"
 
 #
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:97
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:99
 msgid "Whether a custom default folder background has been set."
 msgstr ""
 "Direktorioaren atzeko plano lehenetsi pertsonalizatua ezarri den ala ez "
 "adierazten du."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:98
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:100
 msgid "Whether a custom default side pane background has been set."
 msgstr ""
 "Albo-panelean atzeko plano lehenetsi pertsonalizatua ezarri den ala ez "
 "adierazten du."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:99
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:101
 msgid "Whether to ask for confirmation when moving files to trash"
 msgstr ""
 "Fitxategiak zakarrontzira botatzean berrespena eskatuko den ala ez "
 "adierazten du"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:100
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:102
 msgid "Whether to enable immediate deletion"
 msgstr "Berehalako ezabatzea gaituko den ala ez adierazten du"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:101
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:103
 msgid "Whether to preview sounds when mousing over an icon"
 msgstr ""
 "Ikono gainetik sagua pasatzean soinuak aurreikusiko diren ala ez adierazten "
 "du"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:102
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:104
 msgid "Whether to show backup files"
 msgstr "Babeskopia-fitxategiak erakutsiko diren ala ez adierazten du"
 
 #
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:103
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:105
 msgid "Whether to show hidden files"
 msgstr "Fitxategi ezkutuak erakutsiko diren ala ez adierazten du"
 
 #
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:104
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:106
 msgid "Width of the side pane"
 msgstr "Albo-panelaren zabalera"
 
@@ -1845,7 +1860,7 @@ msgid "The group of the file."
 msgstr "Fitxategiaren taldea"
 
 #: libnautilus-private/nautilus-column-utilities.c:97
-#: src/file-manager/fm-properties-window.c:2922
+#: src/file-manager/fm-properties-window.c:2927
 msgid "Permissions"
 msgstr "Baimenak"
 
@@ -1999,6 +2014,7 @@ msgstr "Nora:"
 
 #: libnautilus-private/nautilus-file-operations.c:551
 #: libnautilus-private/nautilus-file-operations.c:599
+#: libnautilus-private/nautilus-file-operations.c:604
 #: libnautilus-private/nautilus-file-operations.c:614
 msgid "Error while moving."
 msgstr "Errorea lekuz aldatzean."
@@ -2036,10 +2052,6 @@ msgid ""
 msgstr ""
 "ezin da \"%s\" lekuz aldatu, bera edo bere karpeta gurasoa aldatzeko "
 "baimenik ez duzulako."
-
-#: libnautilus-private/nautilus-file-operations.c:604
-msgid "Error while moving. "
-msgstr "Errorea lekuz aldatzean. "
 
 #: libnautilus-private/nautilus-file-operations.c:605
 #, c-format
@@ -2827,7 +2839,7 @@ msgstr "MIME mota ezezaguna"
 #. * for which we have no more appropriate default.
 #.
 #: libnautilus-private/nautilus-file.c:4656
-#: src/file-manager/fm-properties-window.c:1198
+#: src/file-manager/fm-properties-window.c:1203
 msgid "unknown"
 msgstr "ezezaguna"
 
@@ -3131,55 +3143,55 @@ msgid "The selection rectangle"
 msgstr "Hautapen-errektangelua"
 
 #
-#: libnautilus-private/nautilus-icon-container.c:4179
+#: libnautilus-private/nautilus-icon-container.c:4202
 msgid "Frame Text"
 msgstr "Marko-testua"
 
-#: libnautilus-private/nautilus-icon-container.c:4180
+#: libnautilus-private/nautilus-icon-container.c:4203
 msgid "Draw a frame around unselected text"
 msgstr "Marraztu markoa hautatu gabeko testuaren inguruan"
 
 #
-#: libnautilus-private/nautilus-icon-container.c:4186
+#: libnautilus-private/nautilus-icon-container.c:4209
 msgid "Selection Box Color"
 msgstr "Hautapen-koadroaren kolorea"
 
 #
-#: libnautilus-private/nautilus-icon-container.c:4187
+#: libnautilus-private/nautilus-icon-container.c:4210
 msgid "Color of the selection box"
 msgstr "Hautapen-koadroaren kolorea"
 
 #
-#: libnautilus-private/nautilus-icon-container.c:4192
+#: libnautilus-private/nautilus-icon-container.c:4215
 msgid "Selection Box Alpha"
 msgstr "Alfaren hautapen-koadroa"
 
-#: libnautilus-private/nautilus-icon-container.c:4193
+#: libnautilus-private/nautilus-icon-container.c:4216
 msgid "Opacity of the selection box"
 msgstr "Hautapen-koadroaren opakutasuna"
 
-#: libnautilus-private/nautilus-icon-container.c:4200
+#: libnautilus-private/nautilus-icon-container.c:4223
 msgid "Highlight Alpha"
 msgstr "Nabarmendu alfa"
 
-#: libnautilus-private/nautilus-icon-container.c:4201
+#: libnautilus-private/nautilus-icon-container.c:4224
 msgid "Opacity of the highlight for selected icons"
 msgstr "Hautatutako ikonoen nabarmentzearen opakutasuna"
 
-#: libnautilus-private/nautilus-icon-container.c:4207
+#: libnautilus-private/nautilus-icon-container.c:4230
 msgid "Light Info Color"
 msgstr "Informazio-kolore argia"
 
-#: libnautilus-private/nautilus-icon-container.c:4208
+#: libnautilus-private/nautilus-icon-container.c:4231
 msgid "Color used for information text against a dark background"
 msgstr "Informazio-testuan erabiltzeko kolorea, atzeko plano ilunarekin"
 
 #
-#: libnautilus-private/nautilus-icon-container.c:4213
+#: libnautilus-private/nautilus-icon-container.c:4236
 msgid "Dark Info Color"
 msgstr "Informazio-kolore iluna"
 
-#: libnautilus-private/nautilus-icon-container.c:4214
+#: libnautilus-private/nautilus-icon-container.c:4237
 msgid "Color used for information text against a light background"
 msgstr "Informazio-testuan erabiltzeko kolorea, atzeko plano argiarekin"
 
@@ -4244,7 +4256,7 @@ msgid "There is nothing on the clipboard to paste."
 msgstr "Arbelean ez dago itsasteko ezer."
 
 #: src/file-manager/fm-directory-view.c:5050
-#: src/file-manager/fm-directory-view.c:6123
+#: src/file-manager/fm-directory-view.c:6128
 msgid "Mount Error"
 msgstr "Errorea muntatzean"
 
@@ -4395,14 +4407,38 @@ msgstr "_Bistaratu"
 msgid "_Run"
 msgstr "_Exekutatu"
 
-#: src/file-manager/fm-directory-view.c:6259
+#: src/file-manager/fm-directory-view.c:6264
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "\"%s\" irekitzen."
 
-#: src/file-manager/fm-directory-view.c:6266
+#: src/file-manager/fm-directory-view.c:6271
 msgid "Cancel Open?"
 msgstr "Irekitzea bertan behera utzi?"
+
+#: src/file-manager/fm-ditem-page.c:338 src/file-manager/fm-ditem-page.c:349
+msgid "Comment"
+msgstr "Iruzkina"
+
+#: src/file-manager/fm-ditem-page.c:341
+msgid "URL"
+msgstr ""
+
+#: src/file-manager/fm-ditem-page.c:345
+#, fuzzy
+msgid "Link"
+msgstr "esteka"
+
+#: src/file-manager/fm-ditem-page.c:352
+#, fuzzy
+msgid "Command"
+msgstr "Iruzkina"
+
+#
+#: src/file-manager/fm-ditem-page.c:356
+#, fuzzy
+msgid "Launcher"
+msgstr "Berrien panela"
 
 #: src/file-manager/fm-error-reporting.c:57
 #, c-format
@@ -4697,38 +4733,38 @@ msgstr "Propietateak"
 msgid "%s Properties"
 msgstr "%s - Propietateak"
 
-#: src/file-manager/fm-properties-window.c:1429
+#: src/file-manager/fm-properties-window.c:1434
 msgid "Cancel Group Change?"
 msgstr "Talde-aldaketa bertan behera utzi?"
 
-#: src/file-manager/fm-properties-window.c:1430
+#: src/file-manager/fm-properties-window.c:1435
 msgid "Changing group."
 msgstr "Taldea aldatzen"
 
-#: src/file-manager/fm-properties-window.c:1591
+#: src/file-manager/fm-properties-window.c:1596
 msgid "Cancel Owner Change?"
 msgstr "Jabe-aldaketa bertan behera utzi?"
 
-#: src/file-manager/fm-properties-window.c:1592
+#: src/file-manager/fm-properties-window.c:1597
 msgid "Changing owner."
 msgstr "Jabea aldatzen"
 
-#: src/file-manager/fm-properties-window.c:1798
+#: src/file-manager/fm-properties-window.c:1803
 msgid "nothing"
 msgstr "ezer ere ez"
 
-#: src/file-manager/fm-properties-window.c:1800
+#: src/file-manager/fm-properties-window.c:1805
 msgid "unreadable"
 msgstr "irakurtezina"
 
-#: src/file-manager/fm-properties-window.c:1810
+#: src/file-manager/fm-properties-window.c:1815
 #, c-format
 msgid "%d item, with size %s"
 msgid_plural "%d items, totalling %s"
 msgstr[0] "%d elementu, %s tamainakoa"
 msgstr[1] "elementu %d, %s tamainakoa"
 
-#: src/file-manager/fm-properties-window.c:1819
+#: src/file-manager/fm-properties-window.c:1824
 msgid "(some contents unreadable)"
 msgstr "(eduki batzuk irakurtezinak)"
 
@@ -4738,206 +4774,206 @@ msgstr "(eduki batzuk irakurtezinak)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:1836
+#: src/file-manager/fm-properties-window.c:1841
 msgid "Contents:"
 msgstr "Edukia:"
 
-#: src/file-manager/fm-properties-window.c:2227
+#: src/file-manager/fm-properties-window.c:2232
 msgid "Basic"
 msgstr "Oinarrizkoa"
 
 #
-#: src/file-manager/fm-properties-window.c:2255
+#: src/file-manager/fm-properties-window.c:2260
 msgid "_Names:"
 msgstr "_Izenak:"
 
 #
-#: src/file-manager/fm-properties-window.c:2257
+#: src/file-manager/fm-properties-window.c:2262
 msgid "_Name:"
 msgstr "_Izena:"
 
-#: src/file-manager/fm-properties-window.c:2306
+#: src/file-manager/fm-properties-window.c:2311
 msgid "Type:"
 msgstr "Mota:"
 
-#: src/file-manager/fm-properties-window.c:2308
-#: src/file-manager/fm-properties-window.c:2318
-#: src/file-manager/fm-properties-window.c:2324
-#: src/file-manager/fm-properties-window.c:2331
-#: src/file-manager/fm-properties-window.c:2335
-#: src/file-manager/fm-properties-window.c:2343
-#: src/file-manager/fm-properties-window.c:2349
-#: src/file-manager/fm-properties-window.c:2358
-#: src/file-manager/fm-properties-window.c:2364
-#: src/file-manager/fm-properties-window.c:2957
-#: src/file-manager/fm-properties-window.c:2978
-#: src/file-manager/fm-properties-window.c:3069
-#: src/file-manager/fm-properties-window.c:3073
-#: src/file-manager/fm-properties-window.c:3077
+#: src/file-manager/fm-properties-window.c:2313
+#: src/file-manager/fm-properties-window.c:2323
+#: src/file-manager/fm-properties-window.c:2329
+#: src/file-manager/fm-properties-window.c:2336
+#: src/file-manager/fm-properties-window.c:2340
+#: src/file-manager/fm-properties-window.c:2348
+#: src/file-manager/fm-properties-window.c:2354
+#: src/file-manager/fm-properties-window.c:2363
+#: src/file-manager/fm-properties-window.c:2369
+#: src/file-manager/fm-properties-window.c:2962
+#: src/file-manager/fm-properties-window.c:2983
+#: src/file-manager/fm-properties-window.c:3074
+#: src/file-manager/fm-properties-window.c:3078
+#: src/file-manager/fm-properties-window.c:3082
 msgid "--"
 msgstr "--"
 
-#: src/file-manager/fm-properties-window.c:2316
+#: src/file-manager/fm-properties-window.c:2321
 msgid "Size:"
 msgstr "Tamaina:"
 
-#: src/file-manager/fm-properties-window.c:2322 src/nautilus-location-bar.c:60
+#: src/file-manager/fm-properties-window.c:2327 src/nautilus-location-bar.c:60
 msgid "Location:"
 msgstr "Kokalekua:"
 
 #
-#: src/file-manager/fm-properties-window.c:2329
+#: src/file-manager/fm-properties-window.c:2334
 msgid "Volume:"
 msgstr "Bolumena:"
 
 #
-#: src/file-manager/fm-properties-window.c:2333
+#: src/file-manager/fm-properties-window.c:2338
 msgid "Free space:"
 msgstr "Leku librea:"
 
 #
-#: src/file-manager/fm-properties-window.c:2341
+#: src/file-manager/fm-properties-window.c:2346
 msgid "Link target:"
 msgstr "Estekaren helburua:"
 
 #
-#: src/file-manager/fm-properties-window.c:2347
+#: src/file-manager/fm-properties-window.c:2352
 msgid "MIME type:"
 msgstr "MIME mota:"
 
-#: src/file-manager/fm-properties-window.c:2356
+#: src/file-manager/fm-properties-window.c:2361
 msgid "Modified:"
 msgstr "Aldatze-data:"
 
-#: src/file-manager/fm-properties-window.c:2362
+#: src/file-manager/fm-properties-window.c:2367
 msgid "Accessed:"
 msgstr "Atzitze-data:"
 
 #
-#: src/file-manager/fm-properties-window.c:2378
+#: src/file-manager/fm-properties-window.c:2383
 msgid "_Select Custom Icon..."
 msgstr "_Hautatu ikono pertsonalizatua..."
 
 #
-#: src/file-manager/fm-properties-window.c:2384
+#: src/file-manager/fm-properties-window.c:2389
 msgid "_Remove Custom Icon"
 msgstr "_Kendu ikono pertsonalizatua"
 
 #
-#: src/file-manager/fm-properties-window.c:2736
+#: src/file-manager/fm-properties-window.c:2741
 msgid "_Read"
 msgstr "_Irakurri"
 
 #
-#: src/file-manager/fm-properties-window.c:2738
+#: src/file-manager/fm-properties-window.c:2743
 msgid "_Write"
 msgstr "I_datzi"
 
 #
-#: src/file-manager/fm-properties-window.c:2740
+#: src/file-manager/fm-properties-window.c:2745
 msgid "E_xecute"
 msgstr "E_xekutatu"
 
 #
-#: src/file-manager/fm-properties-window.c:2823
+#: src/file-manager/fm-properties-window.c:2828
 msgid "Set _user ID"
 msgstr "Ezarri _erabiltzailearen IDa"
 
 #
-#: src/file-manager/fm-properties-window.c:2828
+#: src/file-manager/fm-properties-window.c:2833
 msgid "Special flags:"
 msgstr "Bandera bereziak:"
 
 #
-#: src/file-manager/fm-properties-window.c:2831
+#: src/file-manager/fm-properties-window.c:2836
 msgid "Set gro_up ID"
 msgstr "Ezarri _taldearen IDa"
 
 #
-#: src/file-manager/fm-properties-window.c:2833
+#: src/file-manager/fm-properties-window.c:2838
 msgid "_Sticky"
 msgstr "Itsas_korra"
 
-#: src/file-manager/fm-properties-window.c:2932
+#: src/file-manager/fm-properties-window.c:2937
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Ez zara jabea, beraz ezin dituzu baimen hauek aldatu."
 
 #
-#: src/file-manager/fm-properties-window.c:2946
+#: src/file-manager/fm-properties-window.c:2951
 msgid "File _owner:"
 msgstr "Fitxategi-j_abea:"
 
 #
-#: src/file-manager/fm-properties-window.c:2952
+#: src/file-manager/fm-properties-window.c:2957
 msgid "File owner:"
 msgstr "Fitxategi-jabea:"
 
 #
-#: src/file-manager/fm-properties-window.c:2963
+#: src/file-manager/fm-properties-window.c:2968
 msgid "_File group:"
 msgstr "_Fitxategi-taldea:"
 
 #
-#: src/file-manager/fm-properties-window.c:2972
+#: src/file-manager/fm-properties-window.c:2977
 msgid "File group:"
 msgstr "Fitxategi-taldea:"
 
-#: src/file-manager/fm-properties-window.c:2984
+#: src/file-manager/fm-properties-window.c:2989
 msgid "Owner:"
 msgstr "Jabea:"
 
-#: src/file-manager/fm-properties-window.c:2985
+#: src/file-manager/fm-properties-window.c:2990
 msgid "Group:"
 msgstr "Taldea:"
 
-#: src/file-manager/fm-properties-window.c:2986
+#: src/file-manager/fm-properties-window.c:2991
 msgid "Others:"
 msgstr "Besterik:"
 
 #
-#: src/file-manager/fm-properties-window.c:3068
+#: src/file-manager/fm-properties-window.c:3073
 msgid "Text view:"
 msgstr "Testu-ikuspegia:"
 
 #
-#: src/file-manager/fm-properties-window.c:3072
+#: src/file-manager/fm-properties-window.c:3077
 msgid "Number view:"
 msgstr "Zenbaki-ikuspegia:"
 
 #
-#: src/file-manager/fm-properties-window.c:3076
+#: src/file-manager/fm-properties-window.c:3081
 msgid "Last changed:"
 msgstr "Azken aldaketa:"
 
-#: src/file-manager/fm-properties-window.c:3082
+#: src/file-manager/fm-properties-window.c:3087
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Ezin izan dira \"%s\"(r)en baimenak zehaztu."
 
 #
-#: src/file-manager/fm-properties-window.c:3085
+#: src/file-manager/fm-properties-window.c:3090
 msgid "The permissions of the selected file could not be determined."
 msgstr "Ezin izan dira hautatutako fitxategiaren baimenak zehaztu."
 
-#: src/file-manager/fm-properties-window.c:3243
+#: src/file-manager/fm-properties-window.c:3248
 msgid "There was an error displaying help."
 msgstr "Errorea gertatu da laguntza bistaratzean."
 
 #
-#: src/file-manager/fm-properties-window.c:3243
+#: src/file-manager/fm-properties-window.c:3248
 msgid "Couldn't Show Help"
 msgstr "Ezin izan da laguntza erakutsi"
 
-#: src/file-manager/fm-properties-window.c:3593
+#: src/file-manager/fm-properties-window.c:3598
 msgid "Cancel Showing Properties Window?"
 msgstr "Propietateen leihoa erakustea bertan behera utzi?"
 
-#: src/file-manager/fm-properties-window.c:3594
+#: src/file-manager/fm-properties-window.c:3599
 msgid "Creating Properties window."
 msgstr "Propietateen leihoa sortzen."
 
 #
-#: src/file-manager/fm-properties-window.c:3729
+#: src/file-manager/fm-properties-window.c:3756
 msgid "Select an icon"
 msgstr "Hautatu ikono bat"
 
@@ -5357,16 +5393,16 @@ msgstr "Hautatu zutabe ikusgaiak karpeta honetan"
 msgid "Visible _Columns..."
 msgstr "_Zutabe ikusgaiak..."
 
-#: src/nautilus-application.c:267
+#: src/nautilus-application.c:268
 msgid "Couldn't Create Required Folder"
 msgstr "Ezin izan da beharrezkoa den karpeta sortu"
 
-#: src/nautilus-application.c:268
+#: src/nautilus-application.c:269
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "Nautilus-ek ezin izan du %s karpeta sortu."
 
-#: src/nautilus-application.c:270
+#: src/nautilus-application.c:271
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
@@ -5374,16 +5410,16 @@ msgstr ""
 "Nautilus exekutatu aurretik, sortu karpeta hori edo ezarri Nautilus-ek "
 "karpeta sortzeko behar dituen baimenak."
 
-#: src/nautilus-application.c:273
+#: src/nautilus-application.c:274
 msgid "Couldn't Create Required Folders"
 msgstr "Ezin izan dira beharrezkoak diren karpetak sortu"
 
-#: src/nautilus-application.c:274
+#: src/nautilus-application.c:275
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "Nautilus-ek ezin izan du hurrengo karpetarik sortu: %s."
 
-#: src/nautilus-application.c:276
+#: src/nautilus-application.c:277
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -5392,15 +5428,15 @@ msgstr ""
 "karpetak sortzeko behar dituen baimenak."
 
 #
-#: src/nautilus-application.c:344
+#: src/nautilus-application.c:345
 msgid "Link To Old Desktop"
 msgstr "Estekatu mahaigain zaharrari"
 
-#: src/nautilus-application.c:360
+#: src/nautilus-application.c:361
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
 msgstr " \"Estekatu mahaigain zaharrari\" esteka sortu da mahaigainean."
 
-#: src/nautilus-application.c:361
+#: src/nautilus-application.c:362
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
@@ -5409,7 +5445,7 @@ msgstr ""
 "ireki dezakezu nahi dituzun fitxategiak lekuz aldatzeko; ondoren, ezabatu "
 "esteka."
 
-#: src/nautilus-application.c:363
+#: src/nautilus-application.c:364
 msgid "Migrated Old Desktop"
 msgstr "Mahaigain zaharra migratuta"
 
@@ -5424,7 +5460,7 @@ msgstr "Mahaigain zaharra migratuta"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:545
+#: src/nautilus-application.c:547
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5436,7 +5472,7 @@ msgstr ""
 
 #
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:551
+#: src/nautilus-application.c:553
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5482,13 +5518,13 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:581 src/nautilus-application.c:599
-#: src/nautilus-application.c:606
+#: src/nautilus-application.c:583 src/nautilus-application.c:601
+#: src/nautilus-application.c:608
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Orain ezin da Nautilus erabili, ustekabeko errore bat gertatu delako."
 
 #
-#: src/nautilus-application.c:582
+#: src/nautilus-application.c:584
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5498,7 +5534,7 @@ msgstr ""
 "delako."
 
 #
-#: src/nautilus-application.c:600
+#: src/nautilus-application.c:602
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5509,7 +5545,7 @@ msgstr ""
 "Nautilus berrabiarazteak arazoa konpon dezake."
 
 #
-#: src/nautilus-application.c:607
+#: src/nautilus-application.c:609
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5594,7 +5630,7 @@ msgstr "_Konektatu"
 msgid "Desktop"
 msgstr "Mahaigaina"
 
-#: src/nautilus-file-management-properties.c:295
+#: src/nautilus-file-management-properties.c:297
 msgid "None"
 msgstr "Bat ere ez"
 
@@ -5618,7 +5654,8 @@ msgid "500 KB"
 msgstr "500 KB"
 
 #: src/nautilus-file-management-properties.glade.h:24
-msgid "<span weight=\"bold\">Behaviour</span>"
+#, fuzzy
+msgid "<span weight=\"bold\">Behavior</span>"
 msgstr "<span weight=\"bold\">Portaera</span>"
 
 #: src/nautilus-file-management-properties.glade.h:25
@@ -5979,7 +6016,7 @@ msgid "File Manager"
 msgstr "Fitxategi-kudeatzailea"
 
 #. Set initial window title
-#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:307
+#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:315
 #: src/nautilus-window-menus.c:601 src/nautilus-window.c:173
 msgid "Nautilus"
 msgstr "Nautilus"
@@ -6088,7 +6125,7 @@ msgid "Close all Navigation windows"
 msgstr "Itxi nabigazioko leiho guztiak"
 
 #: src/nautilus-navigation-window-ui.xml.h:11
-#: src/nautilus-spatial-window-ui.xml.h:4
+#: src/nautilus-spatial-window-ui.xml.h:6
 msgid "Connect to _Server..."
 msgstr "Konektatu _zerbitzarira..."
 
@@ -6106,13 +6143,13 @@ msgstr "Aurrera"
 
 #
 #: src/nautilus-navigation-window-ui.xml.h:15
-#: src/nautilus-spatial-window-ui.xml.h:6
+#: src/nautilus-spatial-window-ui.xml.h:8
 msgid "Go to templates folder"
 msgstr "Joan txantiloien karpetara"
 
 #
 #: src/nautilus-navigation-window-ui.xml.h:16
-#: src/nautilus-spatial-window-ui.xml.h:7
+#: src/nautilus-spatial-window-ui.xml.h:9
 msgid "Go to the CD Creator"
 msgstr "Joan CD sortzailera"
 
@@ -6126,7 +6163,7 @@ msgstr "Bisitatutako aurreko helbidera joaten da"
 
 #
 #: src/nautilus-navigation-window-ui.xml.h:19
-#: src/nautilus-spatial-window-ui.xml.h:8
+#: src/nautilus-spatial-window-ui.xml.h:10
 msgid "Go to the trash folder"
 msgstr "Zakarrontziaren karpetara joaten da"
 
@@ -6179,7 +6216,7 @@ msgid "_Clear History"
 msgstr "Gar_bitu historia"
 
 #: src/nautilus-navigation-window-ui.xml.h:31
-#: src/nautilus-spatial-window-ui.xml.h:12
+#: src/nautilus-spatial-window-ui.xml.h:14
 msgid "_Computer"
 msgstr "_Ordenagailua"
 
@@ -6197,7 +6234,7 @@ msgid "_Go"
 msgstr "_Joan"
 
 #: src/nautilus-navigation-window-ui.xml.h:35
-#: src/nautilus-spatial-window-ui.xml.h:13
+#: src/nautilus-spatial-window-ui.xml.h:15
 msgid "_Home"
 msgstr "_Etxera"
 
@@ -6211,13 +6248,13 @@ msgid "_Side Pane"
 msgstr "Albo-_panela"
 
 #: src/nautilus-navigation-window-ui.xml.h:38
-#: src/nautilus-spatial-window-ui.xml.h:15
+#: src/nautilus-spatial-window-ui.xml.h:17
 msgid "_Templates"
 msgstr "_Txantiloiak"
 
 #
 #: src/nautilus-navigation-window-ui.xml.h:39
-#: src/nautilus-spatial-window-ui.xml.h:16
+#: src/nautilus-spatial-window-ui.xml.h:18
 msgid "_Trash"
 msgstr "_Zakarrontzia"
 
@@ -6669,44 +6706,55 @@ msgid "_View as..."
 msgstr "I_kusi honela..."
 
 #
-#: src/nautilus-side-pane.c:395
+#: src/nautilus-side-pane.c:426
 msgid "Close the side pane"
 msgstr "Itxi albo-panela"
 
-#: src/nautilus-side-pane.c:566
+#: src/nautilus-side-pane.c:597
 #, c-format
 msgid "Show %s"
 msgstr "Erakutsi %s"
 
 #
 #: src/nautilus-spatial-window-ui.xml.h:2
-msgid "Close P_arent Folders"
+#, fuzzy
+msgid "Clos_e All Folders"
 msgstr "Itxi karpeta g_urasoa"
 
 #
 #: src/nautilus-spatial-window-ui.xml.h:3
+msgid "Close P_arent Folders"
+msgstr "Itxi karpeta g_urasoa"
+
+#: src/nautilus-spatial-window-ui.xml.h:4
+#, fuzzy
+msgid "Close all folder windows"
+msgstr "Itxi nabigazioko leiho guztiak"
+
+#
+#: src/nautilus-spatial-window-ui.xml.h:5
 msgid "Close this folder's parents"
 msgstr "Itxi karpeta honen gurasoak"
 
-#: src/nautilus-spatial-window-ui.xml.h:5
+#: src/nautilus-spatial-window-ui.xml.h:7
 msgid "Go to Computer"
 msgstr "Joan ordenagailua"
 
-#: src/nautilus-spatial-window-ui.xml.h:9
+#: src/nautilus-spatial-window-ui.xml.h:11
 msgid "Open _Location..."
 msgstr "Ireki _helbidea..."
 
 #
-#: src/nautilus-spatial-window-ui.xml.h:10
+#: src/nautilus-spatial-window-ui.xml.h:12
 msgid "Open _Parent"
 msgstr "Ireki g_urasoa"
 
-#: src/nautilus-spatial-window-ui.xml.h:11
+#: src/nautilus-spatial-window-ui.xml.h:13
 msgid "Open the parent folder"
 msgstr "Ireki karpeta gurasoa"
 
 #
-#: src/nautilus-spatial-window-ui.xml.h:14
+#: src/nautilus-spatial-window-ui.xml.h:16
 msgid "_Places"
 msgstr "_Lekuak"
 
@@ -6864,21 +6912,26 @@ msgstr "Joan orri batzuk aurrerago"
 msgid "Display this location with \"%s\""
 msgstr "Bistaratu helbidea honekin: \"%s\""
 
+#: src/nautilus-window.c:1157
+#, fuzzy, c-format
+msgid "%s on %s"
+msgstr "%s - %s"
+
 #
-#: src/nautilus-window.c:1581
+#: src/nautilus-window.c:1598
 msgid "Application ID"
 msgstr "ID aplikazioa"
 
-#: src/nautilus-window.c:1582
+#: src/nautilus-window.c:1599
 msgid "The application ID of the window."
 msgstr "Leihoaren ID aplikazioa."
 
 #
-#: src/nautilus-window.c:1588
+#: src/nautilus-window.c:1605
 msgid "Application"
 msgstr "Aplikazioa"
 
-#: src/nautilus-window.c:1589
+#: src/nautilus-window.c:1606
 msgid "The NautilusApplication associated with this window."
 msgstr "Leiho honekin lotutako Nautilus aplikazioa."
 
@@ -6918,6 +6971,9 @@ msgstr "Sareko zerbitzariak"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Ikusi zure sareko zerbitzariak Nautilus fitxategi-kudeatzailean"
+
+#~ msgid "Error while moving. "
+#~ msgstr "Errorea lekuz aldatzean. "
 
 #~ msgid ""
 #~ "Some of the files could not be added as emblems because they did not "
@@ -8208,9 +8264,6 @@ msgstr "Ikusi zure sareko zerbitzariak Nautilus fitxategi-kudeatzailean"
 #~ msgid "Authentication Required"
 #~ msgstr "Autentifikazioa behar da"
 
-#~ msgid "The Trash must remain on the desktop."
-#~ msgstr "Zakarrontzia mahaigainean eduki behar da."
-
 #~ msgid "You cannot copy the Trash."
 #~ msgstr "Ezin duzu Zakarrontzia kopiatu."
 
@@ -9351,10 +9404,6 @@ msgstr "Ikusi zure sareko zerbitzariak Nautilus fitxategi-kudeatzailean"
 #~ msgid "New Folder"
 #~ msgstr "Karpeta berria"
 
-#
-#~ msgid "New La_uncher"
-#~ msgstr "Berrien panela"
-
 #~ msgid "Open Scripts Folder"
 #~ msgstr "Ireki script-en karpeta"
 
@@ -10043,9 +10092,6 @@ msgstr "Ikusi zure sareko zerbitzariak Nautilus fitxategi-kudeatzailean"
 #~ msgid "Charset Encoding"
 #~ msgstr "Karaktere-kodetzea"
 
-#~ msgid "%s - %s"
-#~ msgstr "%s - %s"
-
 #~ msgid "Could not initialize Bonobo"
 #~ msgstr "Ezin da Bonobo hasieratu"
 
@@ -10476,9 +10522,6 @@ msgstr "Ikusi zure sareko zerbitzariak Nautilus fitxategi-kudeatzailean"
 
 #~ msgid "Album"
 #~ msgstr "Albuma"
-
-#~ msgid "Comment"
-#~ msgstr "Iruzkina"
 
 #~ msgid "Channels"
 #~ msgstr "Kanalak"

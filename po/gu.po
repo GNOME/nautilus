@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-2.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-19 16:41+0200\n"
+"POT-Creation-Date: 2004-06-01 09:36+0200\n"
 "PO-Revision-Date: 2004-02-29 20:47+0530\n"
 "Last-Translator: Nirav, Ankit, Ankur, Atit, Bhavin, Kartik, Khushbu, Sweta. "
 "<magnet@magnet-i.com>\n"
@@ -40,7 +40,7 @@ msgid "bonobo_ui_init() failed."
 msgstr "bonobo_ui_init() નિષ્ફળ."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
-#: src/file-manager/fm-properties-window.c:2451
+#: src/file-manager/fm-properties-window.c:2456
 msgid "Emblems"
 msgstr "સાંકેતિક ચિહ્નો"
 
@@ -988,6 +988,7 @@ msgid "Label to display in the column"
 msgstr "સ્તંભમાં દર્શાવવા માટેનું લેબલ"
 
 #: libnautilus-extension/nautilus-column.c:196
+#: src/file-manager/fm-ditem-page.c:344 src/file-manager/fm-ditem-page.c:355
 msgid "Description"
 msgstr "વર્ણન"
 
@@ -1365,6 +1366,13 @@ msgid ""
 msgstr "જો ખરા તરીકે સુયોજિત કરેલ હોય તો, કચરાપેટી સાથે જાેડતા ચિહ્નને ડૅસ્કટોપ પર મૂકાશે."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
+#, fuzzy
+msgid ""
+"If this is set to true, icons linking to mounted volumes will be put on the "
+"desktop."
+msgstr "જો ખરા તરીકે સુયોજિત કરેલ હોય તો, કચરાપેટી સાથે જાેડતા ચિહ્નને ડૅસ્કટોપ પર મૂકાશે."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -1374,7 +1382,7 @@ msgstr ""
 "ક્રમમાં ગોઠવેલ હોય તો \"a\" થી \"z\" ના ક્રમમાં ગોઠવવાની જગ્યાએ ફાઇલો \"z\" થી \"a"
 "\" ના ક્રમમાં ગેઠવાશે."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -1386,20 +1394,20 @@ msgstr ""
 "\" ના ક્રમમાં ગેઠવાશે. જો માપ દ્વારા ક્રમમાં ગોઠવેલ હોય તો, ચડતા ક્રમની જગ્યાએ ઉતરતા "
 "ક્રમમાં ગોઠવાશે."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
 msgid "If true, icons will be laid out tighter by default in new windows."
 msgstr "જો ખરુ હોય તો, મૂળભુત રીતે નવી વિન્ડોમાં બધા ચિહ્નો સજ્જડ રીતે ગોઠવાયેલા હશે."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
 msgid ""
 "If true, labels will be placed beside icons rather than underneath them."
 msgstr "જો ખરુ હોય તો, લેબલ ચિહ્નની નીચે મૂકાવાની જગ્યાએ તેની પાછળ મૂકાશે."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
 msgid "If true, new windows will use manual layout by default."
 msgstr "જો ખરુ હોય તો, મૂળભુત રીતે નવી વિન્ડો તમે બનાવેલા દેખાવનો ઉપયાેગ કરશે."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
 msgid ""
 "Images over this size (in bytes) won't be thumbnailed. The purpose of this "
 "setting is to avoid thumbnailing large images that may take a long time to "
@@ -1409,19 +1417,19 @@ msgstr ""
 "કરવાનો હેતુ મોટા ચિત્રોને મોટા ચિહ્ન તરીકે દર્શવતા અટકાવવાનો છે કારણકે તેને લાવવામાં ઘણો "
 "સમય થશે અને તે વધારે મૅમરીનો ઉપયોગ કરશે."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
 msgid "List of possible captions on icons"
 msgstr "ચિહ્નો પરના શક્ય નામોની યાદી"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
 msgid "Maximum handled files in a folder"
 msgstr "ડિરેક્ટરીમાં મહત્તમ સચવાતી ફાઇલો"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
 msgid "Maximum image size for thumbnailing"
 msgstr "મોટાચિહ્ન તરીકે દર્શાવવા માટેનુ ચિત્રનુ મહત્તમ માપ"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
 msgid ""
 "Name of the Nautilus theme to use. This has been deprecated as of Nautilus "
 "2.2. Please use the icon theme instead."
@@ -1429,19 +1437,19 @@ msgstr ""
 "ઉપયોગમાં લેવાતી નોટિલસ થીમનું નામ. તે નોટિલસ ૨.૨ તરીકે અવગણાયેલ છે. મહેરબાની કરીને તેની "
 "જગ્યાએ ચિહ્ન થીમનો ઉપયોગ કરો."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
 msgid "Nautilus handles drawing the desktop"
 msgstr "નોટિલસ ડૅસ્કટોપ દોરવાનુ સંભાળે છે"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
 msgid "Nautilus uses the users home folder as the desktop"
 msgstr "નોટિલસ ડૅસ્કટોપ તરીકે વપરાશકર્તાની ઘર ડિરેક્ટરીનો ઉપયોગ કરે છે"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
 msgid "Only show folders in the tree sidebar"
 msgstr "ટ્રીની બાજુની પટ્ટીમાં ફક્ત ફોલ્ડરો બતાવો"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
 msgid ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
@@ -1449,39 +1457,44 @@ msgstr ""
 "ફાઇલને એક જ ક્લિકમાં શરૂ કરવા માટે શક્ય કિંમત \"એક\" , અથવા ફાઇલને બે ક્લિકમાં શરૂ કરવા "
 "માટે \"દ્વિ\" છે."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid "Put labels beside icons"
 msgstr "લેબલને ચિહ્નોની બાજુમાં મૂકો"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
 msgid "Reverse sort order in new windows"
 msgstr "નવી વિન્ડોમાં ગોઠવાવા માટેના ક્રમને ઉલટાવો"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
 msgid "Show folders first in windows"
 msgstr "ફોલ્ડરોને પહેલા વિન્ડોમાં બતાવો"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
 msgid "Show location bar in new windows"
 msgstr "નવી વિન્ડોમાં સ્થાન દર્શક પટ્ટી બતાવો"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
+#, fuzzy
+msgid "Show mounted volumes on the desktop"
+msgstr "ડૅસ્કટોપ પર ઘરનું ચિહ્ન દ્રશ્યમાન છે"
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
 msgid "Show side pane in new windows"
 msgstr "નવી વિન્ડોમાં બાજુની તકતી બતાવો"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid "Show status bar in new windows"
 msgstr "નવી વિન્ડોમાં સ્થિતિ દર્શક પટ્ટી બતાવો"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
 msgid "Show toolbar in new windows"
 msgstr "નવી વિન્ડોમાં સાધન દર્શક પટ્ટી બતાવો"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
 msgid "Side pane view"
 msgstr "બાજુની તકતીનુ દ્રશ્ય"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
 msgid ""
 "Speed tradeoff for when to preview a sound file when mousing over a files "
 "icon. If set to \"always\" then always plays the sound, even if the file is "
@@ -1494,7 +1507,7 @@ msgstr ""
 "અવાજનુ પૂર્વદર્શન વગાડશે. જો \"ક્યારેય નહિ\" તરીકે સુયોજિત કરેલ હોય તો, તે ક્યારેય પણ "
 "અવાજનુ પૂર્વદર્શન દર્શાવશે નહિ."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 msgid ""
 "Speed tradeoff for when to show a preview of text file contents in the "
 "file's icon. If set to \"always\" then always show previews, even if the "
@@ -1508,7 +1521,7 @@ msgstr ""
 "પૂર્વદર્શન બતાડવું. જો \"ક્યારેય નહિ\" સુયોજિત કરેલ હોય તો, પૂર્વદર્શન માહિતી વાંચવા માટે "
 "ક્યારેય વિચારવુ નહિ."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
 msgid ""
 "Speed tradeoff for when to show an image file as a thumbnail. If set to "
 "\"always\" then always thumbnail, even if the folder is on a remote server. "
@@ -1522,7 +1535,7 @@ msgstr ""
 "ચિહ્ન દર્શાવો. જો \"ક્યારેય નહિ\" તરીકે સુયોજિત કરેલ હોય તો, માેટા ચિહ્ન માટે ક્યારેય "
 "ચિંતા કરવી નહિ, ફક્ત સામાન્ય ચિહ્નો વાપરો."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
 msgid ""
 "Speed tradeoff for when to show the number of items in a folder. If set to "
 "\"always\" then always show item counts, even if the folder is on a remote "
@@ -1534,7 +1547,7 @@ msgstr ""
 "સ્થાનિક\" તરીકે સુયોજિત કરેલ હોય તો, ફક્ત સ્થાનિક ફાઇલ સિસ્ટમ માટેની ગણતરી બતાડવી. "
 "જો \"ક્યારેયનહિ\" સુયોજિત કરેલ હોય તો, વસ્તુઓની ગણતરી કરવી માટે ક્યારેય ચિંતા કરવી નહિ."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
@@ -1542,7 +1555,7 @@ msgstr ""
 "ચિહ્નના દ્રશ્યમાં વસ્તુઓ માટેનો મૂળભુત ક્રમ. શક્ય કિંમતો \"નામ\", \"માપ\", \"પ્રકાર\", "
 "\"બદલવાની તારીખ\", \"સાંકેતિક ચિહ્ન\" છે."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
 msgid ""
 "The default sort-order for the items in the list view. Possible values are "
 "\"name\", \"size\", \"type\", and \"modification_date\"."
@@ -1550,26 +1563,26 @@ msgstr ""
 "યાદીના દ્રશ્યમાં વસ્તુઓ માટેનો મૂળભુત ક્રમ. શક્ય કિંમતો \"નામ\", \"માપ\", \"પ્રકાર\" અને "
 "\"બદલવાની તારીખ\", છે."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
 msgid "The default width of the side pane in new windows."
 msgstr "નવી વિન્ડોમાં બાજુની તકતીની મૂળભુત પહોળાઇ."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
 msgid "The font description used for the icons on the desktop."
 msgstr "ડૅસ્કટોપ પર ઉપયોગમાં લેવાયેલ ચિહ્નો માટેના ફોન્ટનું વર્ણન."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
 msgid "The side pane view to show in newly opened windows."
 msgstr "નવી ખૂલેલી વિન્ડોેમાં બતાડવાની બાજુની તકતીનું દ્રશ્ય."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
 msgid ""
 "This name can be set if you want a custom name for the home icon on the "
 "desktop."
 msgstr ""
 "જો તમારે ડૅસ્કટોપ પર ઘરના ચિહ્ન માટે કસ્ટમ નામ જોઇતુ હોય તો આ નામને સુયોજિત કરી શકાશે."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
@@ -1577,27 +1590,27 @@ msgstr ""
 "જો તમારે ડૅસ્કટોપ પર કચરા પેટીના ચિહ્ન માટે કસ્ટમ નામ જોઇતુ હોય તો આ નામને સુયોજિત કરી "
 "શકાશે."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
 msgid "Trash icon visible on desktop"
 msgstr "ડૅસ્કટોપ પર કચરાપેટીનું ચિહ્ન દ્રશ્યમાન છે"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:90
 msgid "Type of click used to launch/open files"
 msgstr "ફાઇલને શરૂ કરવા/ખોલવા માટે ઉપયોગ કરાતા ક્લિકનો પ્રકાર"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
 msgid "Use manual layout in new windows"
 msgstr "નવી વિન્ડોમાં માનવીય દેખાવનો ઉપયોગ કરો"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:90
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:92
 msgid "Use tighter layout in new windows"
 msgstr "નવી વિન્ડો માટે સજ્જડ દેખાવનો ઉપયોગ કરો"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:93
 msgid "What to do with executable text files when activated"
 msgstr "જ્યારે સક્રિય કરવામાં આવે ત્યારે ચલાવી શકાય તેવી લખાણની ફાઇલો સાથે શું કરવું"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:92
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:94
 msgid ""
 "What to do with executable text files when they are activated (single or "
 "double clicked). Possible values are \"launch\" to launch them as programs, "
@@ -1609,7 +1622,7 @@ msgstr ""
 "કરવું તે માટે સંવાદ દ્વારા પૂછવા માટે, અને \"પ્રદર્શિત કરો\" તેમને લખાણની ફાઇલ તરીકે "
 "પ્રદર્શિત કરવા માટે."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:93
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:95
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
 "another view for that particular folder. Possible values are \"list_view\" "
@@ -1618,47 +1631,47 @@ msgstr ""
 "જ્યારે ફોલ્ડર જોવામાં આવે છે ત્યારે જ્યાં સુધી તમે બીજુ કોઇ દર્શાવનાર પસંદ ના કરો ત્યાં સુધી તે "
 "ફોલ્ડર માટે આ જ દ્રશ્યનો ઉપયોગ થશે. શક્ય કિંમતો \"યાદી_દ્રશ્ય\" અને \"ચિહ્ન_દ્રશ્ય\" છે. "
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:94
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:96
 msgid "When to show number of items in a folder"
 msgstr "ફોલ્ડરમાં વસ્તુઓની સંખ્યા ક્યારે બતાડવી"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:95
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:97
 msgid "When to show preview text in icons"
 msgstr "ચિહ્નમાં પૂર્વદર્શન લખાણ ક્યારે બતાડવું"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:96
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:98
 msgid "When to show thumbnails of image files"
 msgstr "ચિત્ર ફાઇલો માટેના માેટા ચિહ્ન ક્યારે બતાડવા"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:97
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:99
 msgid "Whether a custom default folder background has been set."
 msgstr "શું કસ્ટમ મૂળભુત ફોલ્ડરનો પાશ્વ ભાગ સુયોજિત છે."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:98
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:100
 msgid "Whether a custom default side pane background has been set."
 msgstr "શું કસ્ટમ મૂળભુત બાજુની તકતીનો પાશ્વ ભાગ સુયોજિત છે."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:99
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:101
 msgid "Whether to ask for confirmation when moving files to trash"
 msgstr "શું ફાઇલોને કચરાપેટીમાં ખસેડતી વખતે ખાતરી કરવી કે નહિ."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:100
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:102
 msgid "Whether to enable immediate deletion"
 msgstr "શું તુરંત જ કાઢી નાખવાનો વિકલ્પ સક્રિય કરવો કે નહિ"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:101
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:103
 msgid "Whether to preview sounds when mousing over an icon"
 msgstr "જ્યારે ચિહ્ન પર માઉસ લઇ જવામાં આવે ત્યારે અવાજનું પૂર્વદર્શન કરવું કે નહિ"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:102
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:104
 msgid "Whether to show backup files"
 msgstr "શું બૅક-અપ ફાઇલો બતાડવી કે નહિ"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:103
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:105
 msgid "Whether to show hidden files"
 msgstr "શું સંતાડેલી ફાઇલો બતાડવી કે નહિ"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:104
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:106
 msgid "Width of the side pane"
 msgstr "બાજુની તકતીની પહોળાઇ"
 
@@ -1735,7 +1748,7 @@ msgid "The group of the file."
 msgstr "ફાઈલનું જૂથ."
 
 #: libnautilus-private/nautilus-column-utilities.c:97
-#: src/file-manager/fm-properties-window.c:2922
+#: src/file-manager/fm-properties-window.c:2927
 msgid "Permissions"
 msgstr "પરવાનગીઓ"
 
@@ -1881,6 +1894,7 @@ msgstr "પ્રતિ:"
 
 #: libnautilus-private/nautilus-file-operations.c:551
 #: libnautilus-private/nautilus-file-operations.c:599
+#: libnautilus-private/nautilus-file-operations.c:604
 #: libnautilus-private/nautilus-file-operations.c:614
 msgid "Error while moving."
 msgstr "ખસેડતી વખતે ભૂલ."
@@ -1919,10 +1933,6 @@ msgid ""
 msgstr ""
 "\"%s\" ખસેડી શકાતી નથી કારણકે તેને અથવા તેના પિતૃ ફોલ્ડરને બદલવા માટે તમારી પાસે "
 "પરવાનગી નથી."
-
-#: libnautilus-private/nautilus-file-operations.c:604
-msgid "Error while moving. "
-msgstr "ખસેડતી વખતે ભૂલ."
 
 #: libnautilus-private/nautilus-file-operations.c:605
 #, c-format
@@ -2703,7 +2713,7 @@ msgstr "અજાણ્યો MIME પ્રકાર"
 #. * for which we have no more appropriate default.
 #.
 #: libnautilus-private/nautilus-file.c:4656
-#: src/file-manager/fm-properties-window.c:1198
+#: src/file-manager/fm-properties-window.c:1203
 msgid "unknown"
 msgstr "અજાણ્યુ"
 
@@ -2993,51 +3003,51 @@ msgstr "શું અમે D&D છોડવા માટે પ્રકાશ�
 msgid "The selection rectangle"
 msgstr "પસંદગીનું લંબચોરસ"
 
-#: libnautilus-private/nautilus-icon-container.c:4179
+#: libnautilus-private/nautilus-icon-container.c:4202
 msgid "Frame Text"
 msgstr "ચોકઠાનું લખાણ"
 
-#: libnautilus-private/nautilus-icon-container.c:4180
+#: libnautilus-private/nautilus-icon-container.c:4203
 msgid "Draw a frame around unselected text"
 msgstr "પસંદગી થયેલ ન હોય તેવી લખાણ ફરતે ચોકઠું દોરો"
 
-#: libnautilus-private/nautilus-icon-container.c:4186
+#: libnautilus-private/nautilus-icon-container.c:4209
 msgid "Selection Box Color"
 msgstr "પસંદગીની પેટીનો રંગ"
 
-#: libnautilus-private/nautilus-icon-container.c:4187
+#: libnautilus-private/nautilus-icon-container.c:4210
 msgid "Color of the selection box"
 msgstr "પસંદ કરેલ પેટીનો રંગ"
 
-#: libnautilus-private/nautilus-icon-container.c:4192
+#: libnautilus-private/nautilus-icon-container.c:4215
 msgid "Selection Box Alpha"
 msgstr "પસંદગીની પેટીનો આલ્ફા"
 
-#: libnautilus-private/nautilus-icon-container.c:4193
+#: libnautilus-private/nautilus-icon-container.c:4216
 msgid "Opacity of the selection box"
 msgstr "પસંદ કરેલ પેટીની અપારદર્શકતા"
 
-#: libnautilus-private/nautilus-icon-container.c:4200
+#: libnautilus-private/nautilus-icon-container.c:4223
 msgid "Highlight Alpha"
 msgstr "પ્રકાશિત કરેલ આલ્ફા"
 
-#: libnautilus-private/nautilus-icon-container.c:4201
+#: libnautilus-private/nautilus-icon-container.c:4224
 msgid "Opacity of the highlight for selected icons"
 msgstr "પસંદ કરેલા ચિહ્નોની નિતેજસ્વીતા"
 
-#: libnautilus-private/nautilus-icon-container.c:4207
+#: libnautilus-private/nautilus-icon-container.c:4230
 msgid "Light Info Color"
 msgstr "જાણકારી દર્શાવવા માટેનો ઝાંખો રંગ"
 
-#: libnautilus-private/nautilus-icon-container.c:4208
+#: libnautilus-private/nautilus-icon-container.c:4231
 msgid "Color used for information text against a dark background"
 msgstr "ઘાટા પાશ્વ ભાગને લીધે જાણકારીના લખાણ માટે ઉપયોગમાં લેવાયેલ રંગ"
 
-#: libnautilus-private/nautilus-icon-container.c:4213
+#: libnautilus-private/nautilus-icon-container.c:4236
 msgid "Dark Info Color"
 msgstr "જાણકારી માટેનો ઘાટો રંગ"
 
-#: libnautilus-private/nautilus-icon-container.c:4214
+#: libnautilus-private/nautilus-icon-container.c:4237
 msgid "Color used for information text against a light background"
 msgstr "આછા પાશ્વ ભાગને લીધે જાણકારીના લખાણ માટે ઉપયોગમાં લેવાયેલ રંગ"
 
@@ -4031,7 +4041,7 @@ msgid "There is nothing on the clipboard to paste."
 msgstr "ક્લિપબોર્ડ પર ચોંટાડવા માટે કશું જ નથી."
 
 #: src/file-manager/fm-directory-view.c:5050
-#: src/file-manager/fm-directory-view.c:6123
+#: src/file-manager/fm-directory-view.c:6128
 msgid "Mount Error"
 msgstr "ભૂલ માઉન્ટ કરો"
 
@@ -4169,14 +4179,38 @@ msgstr "પ્રદર્શિત કરો (_D)"
 msgid "_Run"
 msgstr "ચલાવો (_R)"
 
-#: src/file-manager/fm-directory-view.c:6259
+#: src/file-manager/fm-directory-view.c:6264
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "\"%s\" ખૂલી રહી છે."
 
-#: src/file-manager/fm-directory-view.c:6266
+#: src/file-manager/fm-directory-view.c:6271
 msgid "Cancel Open?"
 msgstr "ખોલવાની ક્રિયા રદ કરવી છે?"
+
+#: src/file-manager/fm-ditem-page.c:338 src/file-manager/fm-ditem-page.c:349
+#, fuzzy
+msgid "Comment"
+msgstr "સહસંયોજક"
+
+#: src/file-manager/fm-ditem-page.c:341
+msgid "URL"
+msgstr ""
+
+#: src/file-manager/fm-ditem-page.c:345
+#, fuzzy
+msgid "Link"
+msgstr "કડી"
+
+#: src/file-manager/fm-ditem-page.c:352
+#, fuzzy
+msgid "Command"
+msgstr "કોમ્પેક"
+
+#: src/file-manager/fm-ditem-page.c:356
+#, fuzzy
+msgid "Launcher"
+msgstr "શરૂ કરનારમાં ફેરફાર કરો"
 
 #: src/file-manager/fm-error-reporting.c:57
 #, c-format
@@ -4454,31 +4488,31 @@ msgstr "ગુણધર્મો"
 msgid "%s Properties"
 msgstr "%s ગુણધર્મો"
 
-#: src/file-manager/fm-properties-window.c:1429
+#: src/file-manager/fm-properties-window.c:1434
 msgid "Cancel Group Change?"
 msgstr "જૂથ બદલાવનુ રદ કરવુ છે?"
 
-#: src/file-manager/fm-properties-window.c:1430
+#: src/file-manager/fm-properties-window.c:1435
 msgid "Changing group."
 msgstr "જૂથ બદલી રહ્યા છે."
 
-#: src/file-manager/fm-properties-window.c:1591
+#: src/file-manager/fm-properties-window.c:1596
 msgid "Cancel Owner Change?"
 msgstr "માલિકી બદલવાનું રદ કરવું છે?"
 
-#: src/file-manager/fm-properties-window.c:1592
+#: src/file-manager/fm-properties-window.c:1597
 msgid "Changing owner."
 msgstr "માલિક બદલી રહ્યા છે."
 
-#: src/file-manager/fm-properties-window.c:1798
+#: src/file-manager/fm-properties-window.c:1803
 msgid "nothing"
 msgstr "કંઇ જ નહી"
 
-#: src/file-manager/fm-properties-window.c:1800
+#: src/file-manager/fm-properties-window.c:1805
 msgid "unreadable"
 msgstr "ન વાંયી શકાય તેવુ"
 
-#: src/file-manager/fm-properties-window.c:1810
+#: src/file-manager/fm-properties-window.c:1815
 #, c-format
 msgid "%d item, with size %s"
 msgid_plural "%d items, totalling %s"
@@ -4486,7 +4520,7 @@ msgstr[0] "%d વસ્તુ, %s માપની"
 msgstr[1] "%d વસ્તુઓ, %s માપની"
 
 # src/file-manager/fm-properties-window.c:1174
-#: src/file-manager/fm-properties-window.c:1819
+#: src/file-manager/fm-properties-window.c:1824
 msgid "(some contents unreadable)"
 msgstr "(કેટલીક સમાવિષ્ટ વસ્તુઓ વાંચી ન શકાય તેવી છે)"
 
@@ -4496,181 +4530,181 @@ msgstr "(કેટલીક સમાવિષ્ટ વસ્તુઓ વા�
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:1836
+#: src/file-manager/fm-properties-window.c:1841
 msgid "Contents:"
 msgstr "સમાવિષ્ટ વસ્તુઓ:"
 
-#: src/file-manager/fm-properties-window.c:2227
+#: src/file-manager/fm-properties-window.c:2232
 msgid "Basic"
 msgstr "આધારભૂત"
 
-#: src/file-manager/fm-properties-window.c:2255
+#: src/file-manager/fm-properties-window.c:2260
 msgid "_Names:"
 msgstr "નામો: (_N)"
 
-#: src/file-manager/fm-properties-window.c:2257
+#: src/file-manager/fm-properties-window.c:2262
 msgid "_Name:"
 msgstr "નામ: (_N)"
 
-#: src/file-manager/fm-properties-window.c:2306
+#: src/file-manager/fm-properties-window.c:2311
 msgid "Type:"
 msgstr "પ્રકાર:"
 
-#: src/file-manager/fm-properties-window.c:2308
-#: src/file-manager/fm-properties-window.c:2318
-#: src/file-manager/fm-properties-window.c:2324
-#: src/file-manager/fm-properties-window.c:2331
-#: src/file-manager/fm-properties-window.c:2335
-#: src/file-manager/fm-properties-window.c:2343
-#: src/file-manager/fm-properties-window.c:2349
-#: src/file-manager/fm-properties-window.c:2358
-#: src/file-manager/fm-properties-window.c:2364
-#: src/file-manager/fm-properties-window.c:2957
-#: src/file-manager/fm-properties-window.c:2978
-#: src/file-manager/fm-properties-window.c:3069
-#: src/file-manager/fm-properties-window.c:3073
-#: src/file-manager/fm-properties-window.c:3077
+#: src/file-manager/fm-properties-window.c:2313
+#: src/file-manager/fm-properties-window.c:2323
+#: src/file-manager/fm-properties-window.c:2329
+#: src/file-manager/fm-properties-window.c:2336
+#: src/file-manager/fm-properties-window.c:2340
+#: src/file-manager/fm-properties-window.c:2348
+#: src/file-manager/fm-properties-window.c:2354
+#: src/file-manager/fm-properties-window.c:2363
+#: src/file-manager/fm-properties-window.c:2369
+#: src/file-manager/fm-properties-window.c:2962
+#: src/file-manager/fm-properties-window.c:2983
+#: src/file-manager/fm-properties-window.c:3074
+#: src/file-manager/fm-properties-window.c:3078
+#: src/file-manager/fm-properties-window.c:3082
 msgid "--"
 msgstr "--"
 
-#: src/file-manager/fm-properties-window.c:2316
+#: src/file-manager/fm-properties-window.c:2321
 msgid "Size:"
 msgstr "માપ:"
 
-#: src/file-manager/fm-properties-window.c:2322 src/nautilus-location-bar.c:60
+#: src/file-manager/fm-properties-window.c:2327 src/nautilus-location-bar.c:60
 msgid "Location:"
 msgstr "સ્થાન:"
 
-#: src/file-manager/fm-properties-window.c:2329
+#: src/file-manager/fm-properties-window.c:2334
 msgid "Volume:"
 msgstr "અવાજનું પ્રમાણ:"
 
-#: src/file-manager/fm-properties-window.c:2333
+#: src/file-manager/fm-properties-window.c:2338
 msgid "Free space:"
 msgstr "ખાલી જગ્યા:"
 
-#: src/file-manager/fm-properties-window.c:2341
+#: src/file-manager/fm-properties-window.c:2346
 msgid "Link target:"
 msgstr "કડીનુ લક્ષ્યાંક:"
 
-#: src/file-manager/fm-properties-window.c:2347
+#: src/file-manager/fm-properties-window.c:2352
 msgid "MIME type:"
 msgstr "MIME પ્રકાર:"
 
-#: src/file-manager/fm-properties-window.c:2356
+#: src/file-manager/fm-properties-window.c:2361
 msgid "Modified:"
 msgstr "સુધારેલ છે:"
 
-#: src/file-manager/fm-properties-window.c:2362
+#: src/file-manager/fm-properties-window.c:2367
 msgid "Accessed:"
 msgstr "વાપરેલ છે:"
 
-#: src/file-manager/fm-properties-window.c:2378
+#: src/file-manager/fm-properties-window.c:2383
 msgid "_Select Custom Icon..."
 msgstr "કસ્ટમ ચિહ્ન પસંદ કરો... (_S)"
 
-#: src/file-manager/fm-properties-window.c:2384
+#: src/file-manager/fm-properties-window.c:2389
 msgid "_Remove Custom Icon"
 msgstr "કસ્ટમ ચિહ્ન દૂર કરો (_R)"
 
-#: src/file-manager/fm-properties-window.c:2736
+#: src/file-manager/fm-properties-window.c:2741
 msgid "_Read"
 msgstr "વાંચો (_R)"
 
-#: src/file-manager/fm-properties-window.c:2738
+#: src/file-manager/fm-properties-window.c:2743
 msgid "_Write"
 msgstr "લખો (_W)"
 
-#: src/file-manager/fm-properties-window.c:2740
+#: src/file-manager/fm-properties-window.c:2745
 msgid "E_xecute"
 msgstr "ચલાવો (_x)"
 
-#: src/file-manager/fm-properties-window.c:2823
+#: src/file-manager/fm-properties-window.c:2828
 msgid "Set _user ID"
 msgstr "વપરાશકર્તાના ID નુ સુયોજન કરો (_u)"
 
-#: src/file-manager/fm-properties-window.c:2828
+#: src/file-manager/fm-properties-window.c:2833
 msgid "Special flags:"
 msgstr "વિશેષ નિશાનીઓ:"
 
-#: src/file-manager/fm-properties-window.c:2831
+#: src/file-manager/fm-properties-window.c:2836
 msgid "Set gro_up ID"
 msgstr "જૂથ ID નુ સુયોજન કરો (_u)"
 
-#: src/file-manager/fm-properties-window.c:2833
+#: src/file-manager/fm-properties-window.c:2838
 msgid "_Sticky"
 msgstr "સ્ટીકી (_S)"
 
-#: src/file-manager/fm-properties-window.c:2932
+#: src/file-manager/fm-properties-window.c:2937
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "તમે માલિક નથી, તેથી તમે આ પરવાનગીઓ બદલી શકતા નથી."
 
-#: src/file-manager/fm-properties-window.c:2946
+#: src/file-manager/fm-properties-window.c:2951
 msgid "File _owner:"
 msgstr "ફાઇલનો માલિક: (_o)"
 
-#: src/file-manager/fm-properties-window.c:2952
+#: src/file-manager/fm-properties-window.c:2957
 msgid "File owner:"
 msgstr "ફાઇલનો માલિક:"
 
-#: src/file-manager/fm-properties-window.c:2963
+#: src/file-manager/fm-properties-window.c:2968
 msgid "_File group:"
 msgstr "ફાઇલનુ જૂથ: (_F)"
 
-#: src/file-manager/fm-properties-window.c:2972
+#: src/file-manager/fm-properties-window.c:2977
 msgid "File group:"
 msgstr "ફાઇલનું જૂથ:"
 
-#: src/file-manager/fm-properties-window.c:2984
+#: src/file-manager/fm-properties-window.c:2989
 msgid "Owner:"
 msgstr "માલિકી:"
 
-#: src/file-manager/fm-properties-window.c:2985
+#: src/file-manager/fm-properties-window.c:2990
 msgid "Group:"
 msgstr "જૂથ:"
 
-#: src/file-manager/fm-properties-window.c:2986
+#: src/file-manager/fm-properties-window.c:2991
 msgid "Others:"
 msgstr "અન્ય:"
 
-#: src/file-manager/fm-properties-window.c:3068
+#: src/file-manager/fm-properties-window.c:3073
 msgid "Text view:"
 msgstr "લખાણ દ્રશ્યઃ "
 
-#: src/file-manager/fm-properties-window.c:3072
+#: src/file-manager/fm-properties-window.c:3077
 msgid "Number view:"
 msgstr "સંખ્યા દ્રશ્યઃ "
 
-#: src/file-manager/fm-properties-window.c:3076
+#: src/file-manager/fm-properties-window.c:3081
 msgid "Last changed:"
 msgstr "છેલ્લે બદલાયેલઃ "
 
-#: src/file-manager/fm-properties-window.c:3082
+#: src/file-manager/fm-properties-window.c:3087
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "\"%s\" ની પરવાનગીઓ શોધી શકાઈ નથી."
 
-#: src/file-manager/fm-properties-window.c:3085
+#: src/file-manager/fm-properties-window.c:3090
 msgid "The permissions of the selected file could not be determined."
 msgstr "પસંદ કરેલ ફાઇલોની પરવાનગી શોધી શકાઈ નથી."
 
-#: src/file-manager/fm-properties-window.c:3243
+#: src/file-manager/fm-properties-window.c:3248
 msgid "There was an error displaying help."
 msgstr "મદદ દર્શાવતી વખતે ભૂલ હતી."
 
-#: src/file-manager/fm-properties-window.c:3243
+#: src/file-manager/fm-properties-window.c:3248
 msgid "Couldn't Show Help"
 msgstr "મદદ પ્રદર્શિત કરી શકતુ નથી"
 
-#: src/file-manager/fm-properties-window.c:3593
+#: src/file-manager/fm-properties-window.c:3598
 msgid "Cancel Showing Properties Window?"
 msgstr "ગુણધર્મોની વિન્ડો દર્શવવાનું રદ કરવુ છે?"
 
-#: src/file-manager/fm-properties-window.c:3594
+#: src/file-manager/fm-properties-window.c:3599
 msgid "Creating Properties window."
 msgstr "ગુણધર્મ માટેની વિન્ડો બનાવી રહ્યા છે."
 
-#: src/file-manager/fm-properties-window.c:3729
+#: src/file-manager/fm-properties-window.c:3756
 msgid "Select an icon"
 msgstr "ચિહ્ન પસંદ કરો"
 
@@ -5048,16 +5082,16 @@ msgstr "આ ફોલ્ડરમાં દેખાતા સ્તંભો �
 msgid "Visible _Columns..."
 msgstr "દ્રશ્યમાન સ્તંભો... (_C)"
 
-#: src/nautilus-application.c:267
+#: src/nautilus-application.c:268
 msgid "Couldn't Create Required Folder"
 msgstr "જરુરી ફોલ્ડર બનાવી શકાતુ નથી"
 
-#: src/nautilus-application.c:268
+#: src/nautilus-application.c:269
 #, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "નોટિલસ જરુરી ફોલ્ડર \"%s\" બનાવી શક્યુ નહિ."
 
-#: src/nautilus-application.c:270
+#: src/nautilus-application.c:271
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
@@ -5065,16 +5099,16 @@ msgstr ""
 "નોટિલસ ચાલુ કર્યા પહેલા, મહેરબાની કરીને આ ફોલ્ડર બનાવો, અથવા તેની પરવાનગી એવી રીતે "
 "સુયોજિત કરો કે જેથી નોટિલસ તે બનાવી શકે."
 
-#: src/nautilus-application.c:273
+#: src/nautilus-application.c:274
 msgid "Couldn't Create Required Folders"
 msgstr "જરુરી ફોલ્ડરો બનાવી શક્યુ નહિ"
 
-#: src/nautilus-application.c:274
+#: src/nautilus-application.c:275
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "નોટિલસ નીચેના જરુરી ફોલ્ડરો બનાવી શક્યુ નહિ: %s."
 
-#: src/nautilus-application.c:276
+#: src/nautilus-application.c:277
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
@@ -5082,15 +5116,15 @@ msgstr ""
 "નોટિલસ ચાલુ કર્યા પહેલા, મહેરબાની કરીને આ ફોલ્ડર બનાવો, અથવા તેની પરવાનગી એવી રીતે "
 "સુયોજિત કરો કે જેથી નોટિલસ તે બનાવી શકે."
 
-#: src/nautilus-application.c:344
+#: src/nautilus-application.c:345
 msgid "Link To Old Desktop"
 msgstr "જૂના ડેસ્કટોપ સાથે કડી કરો"
 
-#: src/nautilus-application.c:360
+#: src/nautilus-application.c:361
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
 msgstr "કડી \"જૂના ડેસ્કટોપ સાથે કડી કરો\" પહેલાથી જ ડેસ્કટોપ પર બની ગઈ છે."
 
-#: src/nautilus-application.c:361
+#: src/nautilus-application.c:362
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
@@ -5099,7 +5133,7 @@ msgstr ""
 "કડી ડૅસ્કટોપ પર બની ગયેલ છે. તમે બીજી ફાઇલો પર જવા માટે તેને ખોલી શકો છો, અને પછી તે "
 "કડીને કાઢી નાખજો."
 
-#: src/nautilus-application.c:363
+#: src/nautilus-application.c:364
 msgid "Migrated Old Desktop"
 msgstr "જૂના ડૅસ્કટોપનું સ્થળાંતર કરી દીધુ છે"
 
@@ -5113,7 +5147,7 @@ msgstr "જૂના ડૅસ્કટોપનું સ્થળાંતર 
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:545
+#: src/nautilus-application.c:547
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5124,7 +5158,7 @@ msgstr ""
 "કરો."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:551
+#: src/nautilus-application.c:553
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5167,12 +5201,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:581 src/nautilus-application.c:599
-#: src/nautilus-application.c:606
+#: src/nautilus-application.c:583 src/nautilus-application.c:601
+#: src/nautilus-application.c:608
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "અણધારી ભૂલના લીઘે નોટિલસ અત્યારે વાપરી શકાતુ નથી."
 
-#: src/nautilus-application.c:582
+#: src/nautilus-application.c:584
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5180,7 +5214,7 @@ msgstr ""
 "ફાઇલ વ્યવસ્થાપક દર્શક સર્વરની નોંધણી કરવાનો પ્રયત્ન કરતી વખતે બોનોબોમાંથી અણધારી ભૂલ "
 "આવી તેથી અત્યારે નોટિલસ ચાલુ કરી શકાતુ નથી."
 
-#: src/nautilus-application.c:600
+#: src/nautilus-application.c:602
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5190,7 +5224,7 @@ msgstr ""
 "શકાતુ નથી. બોનોબો એક્ટીવેશન સર્વરને મારી નાખો અને નોટિલસને ફરીથી શરૂ કરતા તે કદાચ "
 "સમસ્યા નક્કી કરવામાં મદદ કરશે."
 
-#: src/nautilus-application.c:607
+#: src/nautilus-application.c:609
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5268,7 +5302,7 @@ msgstr "સંપર્ક કરો (_C)"
 msgid "Desktop"
 msgstr "ડૅસ્કટોપ"
 
-#: src/nautilus-file-management-properties.c:295
+#: src/nautilus-file-management-properties.c:297
 msgid "None"
 msgstr "કોઇ જ નહીં"
 
@@ -5289,7 +5323,8 @@ msgid "500 KB"
 msgstr "૫૦૦ KB"
 
 #: src/nautilus-file-management-properties.glade.h:24
-msgid "<span weight=\"bold\">Behaviour</span>"
+#, fuzzy
+msgid "<span weight=\"bold\">Behavior</span>"
 msgstr "<span weight=\"bold\">વર્તણૂક</span>"
 
 #: src/nautilus-file-management-properties.glade.h:25
@@ -5617,7 +5652,7 @@ msgid "File Manager"
 msgstr "ફાઈલ વ્યવસ્થાપક"
 
 #. Set initial window title
-#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:307
+#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:315
 #: src/nautilus-window-menus.c:601 src/nautilus-window.c:173
 msgid "Nautilus"
 msgstr "નોટિલસ"
@@ -5722,7 +5757,7 @@ msgid "Close all Navigation windows"
 msgstr "બધી શોધખોળ વિન્ડો બંધ કરો"
 
 #: src/nautilus-navigation-window-ui.xml.h:11
-#: src/nautilus-spatial-window-ui.xml.h:4
+#: src/nautilus-spatial-window-ui.xml.h:6
 msgid "Connect to _Server..."
 msgstr "સર્વર સાથે સંપર્ક કરો... (_S)"
 
@@ -5739,12 +5774,12 @@ msgid "Forward"
 msgstr "આગળ"
 
 #: src/nautilus-navigation-window-ui.xml.h:15
-#: src/nautilus-spatial-window-ui.xml.h:6
+#: src/nautilus-spatial-window-ui.xml.h:8
 msgid "Go to templates folder"
 msgstr "ટેમ્પલેટોના ફોલ્ડરમાં જાઓ"
 
 #: src/nautilus-navigation-window-ui.xml.h:16
-#: src/nautilus-spatial-window-ui.xml.h:7
+#: src/nautilus-spatial-window-ui.xml.h:9
 msgid "Go to the CD Creator"
 msgstr "CD બનાવનારના ફોલ્ડરમાં જાઓ"
 
@@ -5757,7 +5792,7 @@ msgid "Go to the previous visited location"
 msgstr "આગળ જોયેલા સ્થાન પર જાઓ"
 
 #: src/nautilus-navigation-window-ui.xml.h:19
-#: src/nautilus-spatial-window-ui.xml.h:8
+#: src/nautilus-spatial-window-ui.xml.h:10
 msgid "Go to the trash folder"
 msgstr "કચરાપેટીના ફોલ્ડરમાં જાઓ"
 
@@ -5806,7 +5841,7 @@ msgid "_Clear History"
 msgstr "ઇતિહાસ સાફ કરો (_C)"
 
 #: src/nautilus-navigation-window-ui.xml.h:31
-#: src/nautilus-spatial-window-ui.xml.h:12
+#: src/nautilus-spatial-window-ui.xml.h:14
 msgid "_Computer"
 msgstr "કૅમ્પ્યુટર (_C)"
 
@@ -5823,7 +5858,7 @@ msgid "_Go"
 msgstr "જાઓ (_G)"
 
 #: src/nautilus-navigation-window-ui.xml.h:35
-#: src/nautilus-spatial-window-ui.xml.h:13
+#: src/nautilus-spatial-window-ui.xml.h:15
 msgid "_Home"
 msgstr "ઘર (_H)"
 
@@ -5836,12 +5871,12 @@ msgid "_Side Pane"
 msgstr "બાજુની તકતી (_S)"
 
 #: src/nautilus-navigation-window-ui.xml.h:38
-#: src/nautilus-spatial-window-ui.xml.h:15
+#: src/nautilus-spatial-window-ui.xml.h:17
 msgid "_Templates"
 msgstr "ટેમ્પલેટો (_T)"
 
 #: src/nautilus-navigation-window-ui.xml.h:39
-#: src/nautilus-spatial-window-ui.xml.h:16
+#: src/nautilus-spatial-window-ui.xml.h:18
 msgid "_Trash"
 msgstr "કચરાપેટી (_T)"
 
@@ -6260,40 +6295,50 @@ msgstr "છેલ્લી ક્રિયા રદ કરો (_U)"
 msgid "_View as..."
 msgstr "ની રીતે જુઓ... (_V)"
 
-#: src/nautilus-side-pane.c:395
+#: src/nautilus-side-pane.c:426
 msgid "Close the side pane"
 msgstr "બાજુની તકતી બંધ કરો"
 
-#: src/nautilus-side-pane.c:566
+#: src/nautilus-side-pane.c:597
 #, c-format
 msgid "Show %s"
 msgstr "%s દર્શાવો"
 
 #: src/nautilus-spatial-window-ui.xml.h:2
-msgid "Close P_arent Folders"
+#, fuzzy
+msgid "Clos_e All Folders"
 msgstr "પિતૃ ફોલ્ડરો બંધ કરો (_a)"
 
 #: src/nautilus-spatial-window-ui.xml.h:3
+msgid "Close P_arent Folders"
+msgstr "પિતૃ ફોલ્ડરો બંધ કરો (_a)"
+
+#: src/nautilus-spatial-window-ui.xml.h:4
+#, fuzzy
+msgid "Close all folder windows"
+msgstr "બધી શોધખોળ વિન્ડો બંધ કરો"
+
+#: src/nautilus-spatial-window-ui.xml.h:5
 msgid "Close this folder's parents"
 msgstr "આ ફોલ્ડરના પિતૃઓ બંધ કરો"
 
-#: src/nautilus-spatial-window-ui.xml.h:5
+#: src/nautilus-spatial-window-ui.xml.h:7
 msgid "Go to Computer"
 msgstr "કૅમ્પ્યુટરમાં જાઓ"
 
-#: src/nautilus-spatial-window-ui.xml.h:9
+#: src/nautilus-spatial-window-ui.xml.h:11
 msgid "Open _Location..."
 msgstr "સ્થાન ખોલો... (_L)"
 
-#: src/nautilus-spatial-window-ui.xml.h:10
+#: src/nautilus-spatial-window-ui.xml.h:12
 msgid "Open _Parent"
 msgstr "પિતૃ ખોલો (_P)"
 
-#: src/nautilus-spatial-window-ui.xml.h:11
+#: src/nautilus-spatial-window-ui.xml.h:13
 msgid "Open the parent folder"
 msgstr "પિતૃ ફોલ્ડર ખોલો"
 
-#: src/nautilus-spatial-window-ui.xml.h:14
+#: src/nautilus-spatial-window-ui.xml.h:16
 msgid "_Places"
 msgstr "જગ્યાઓ (_P)"
 
@@ -6450,19 +6495,24 @@ msgstr "થોડા પાના અાગળ જાઓ"
 msgid "Display this location with \"%s\""
 msgstr "\"%s\" સાથે આ સ્થાન પ્રદર્શિત કરો"
 
-#: src/nautilus-window.c:1581
+#: src/nautilus-window.c:1157
+#, fuzzy, c-format
+msgid "%s on %s"
+msgstr "%s (નકલ કરો)%s"
+
+#: src/nautilus-window.c:1598
 msgid "Application ID"
 msgstr "કાર્યક્રમનું ID"
 
-#: src/nautilus-window.c:1582
+#: src/nautilus-window.c:1599
 msgid "The application ID of the window."
 msgstr "વિન્ડોનું કાર્યક્રમ માટેનું ID"
 
-#: src/nautilus-window.c:1588
+#: src/nautilus-window.c:1605
 msgid "Application"
 msgstr "કાર્યક્રમ"
 
-#: src/nautilus-window.c:1589
+#: src/nautilus-window.c:1606
 msgid "The NautilusApplication associated with this window."
 msgstr "આ વિન્ડો સાથે સંકળાયેલ નોટિલસ કાર્યક્રમ."
 
@@ -6497,6 +6547,9 @@ msgstr "નેટવર્ક સર્વરો"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "નોટિલસ ફાઇલ વ્યવસ્થાપકમાં તમારા નેટવર્ક સર્વરને જુઓ"
+
+#~ msgid "Error while moving. "
+#~ msgstr "ખસેડતી વખતે ભૂલ."
 
 #~ msgid ""
 #~ "If you would like to enable fast searches, you can edit the file %s as "

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-19 16:41+0200\n"
+"POT-Creation-Date: 2004-06-01 09:36+0200\n"
 "PO-Revision-Date: 2000-07-07 12:30+0200\n"
 "Last-Translator: Andraz Tori <andraz.tori1@guest.arnes.si>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
@@ -41,7 +41,7 @@ msgid "bonobo_ui_init() failed."
 msgstr "bonobo_ui_init() ni uspel."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
-#: src/file-manager/fm-properties-window.c:2451
+#: src/file-manager/fm-properties-window.c:2456
 msgid "Emblems"
 msgstr "Emblemi"
 
@@ -1008,6 +1008,7 @@ msgid "Label to display in the column"
 msgstr ""
 
 #: libnautilus-extension/nautilus-column.c:196
+#: src/file-manager/fm-ditem-page.c:344 src/file-manager/fm-ditem-page.c:355
 #, fuzzy
 msgid "Description"
 msgstr "skripte"
@@ -1417,6 +1418,15 @@ msgstr ""
 "kazala na smeti."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
+#, fuzzy
+msgid ""
+"If this is set to true, icons linking to mounted volumes will be put on the "
+"desktop."
+msgstr ""
+"Če je to nastavljeno na resnično, bo na namizje postavljena ikona, ki bo "
+"kazala na smeti."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -1426,7 +1436,7 @@ msgstr ""
 "redu. Npr.: če so razvrščene po imenu, bodo namesto od \"a\" do \"ž\" "
 "razvrščene od \"ž\" do \"a\"."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -1438,22 +1448,22 @@ msgstr ""
 "razvrščene od \"ž\" do \"a\". Če so urejene po velikosti bodo namesto od "
 "večje proti manjši urejene od manjše proti večji."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
 #, fuzzy
 msgid "If true, icons will be laid out tighter by default in new windows."
 msgstr "Če je resnično, bodo ikone v novih oknih postavljene tesneje skupaj."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
 msgid ""
 "If true, labels will be placed beside icons rather than underneath them."
 msgstr "Če je resnično, bodo oznake postavljene ob ikone namesto pod njih."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
 msgid "If true, new windows will use manual layout by default."
 msgstr ""
 "Če je resnično, bodo nova okna uporabljala ročno postavitev namesto privzete."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
 msgid ""
 "Images over this size (in bytes) won't be thumbnailed. The purpose of this "
 "setting is to avoid thumbnailing large images that may take a long time to "
@@ -1463,20 +1473,20 @@ msgstr ""
 "nastavitev je izogniti se izdelavi sličic velikih datotek, kar bi lahko "
 "vzelo veliko časa in pomnilnika."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
 msgid "List of possible captions on icons"
 msgstr "Seznam možnih oznak na ikonah"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
 #, fuzzy
 msgid "Maximum handled files in a folder"
 msgstr "Največje število obravnavanih datotek v imeniku"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
 msgid "Maximum image size for thumbnailing"
 msgstr "Največja velikost slike za izdelavo sličic"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
 msgid ""
 "Name of the Nautilus theme to use. This has been deprecated as of Nautilus "
 "2.2. Please use the icon theme instead."
@@ -1484,21 +1494,21 @@ msgstr ""
 "Ime Nautilusove teme, ki naj se uporabi. Ta možnost je zastarela. Prosimo, "
 "namesto nje uporabljajte ikonsko temo."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
 msgid "Nautilus handles drawing the desktop"
 msgstr "Nautilus naj izrisuje namizje"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
 #, fuzzy
 msgid "Nautilus uses the users home folder as the desktop"
 msgstr "Nautilus naj kot namizje uporabi uporabnikov domač imenik"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
 #, fuzzy
 msgid "Only show folders in the tree sidebar"
 msgstr "Drevesu stranskega pulta kaži le imenike"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
 msgid ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
@@ -1506,40 +1516,45 @@ msgstr ""
 "Možne vrednosti so \"single\" za zagon datotek z enojnim klikom ali \"double"
 "\"za zagon datotek z dvojnim klikom."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid "Put labels beside icons"
 msgstr "Postavi oznake ob ikone"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
 msgid "Reverse sort order in new windows"
 msgstr "V novih oknih obrni razvrstitev"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
 #, fuzzy
 msgid "Show folders first in windows"
 msgstr "V oknih najprej kaži imenike"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
 msgid "Show location bar in new windows"
 msgstr "V novih oknih kaži vrstico z lokacijo"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
+#, fuzzy
+msgid "Show mounted volumes on the desktop"
+msgstr "Ali je na namizju vidna ikona Dom"
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
 msgid "Show side pane in new windows"
 msgstr "V novih oknih kaži stranski pult"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid "Show status bar in new windows"
 msgstr "V novih oknih kaži vrstico stanja"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
 msgid "Show toolbar in new windows"
 msgstr "V novih oknih kaži orodjarno"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
 msgid "Side pane view"
 msgstr "Pogled stranskega pulta"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
 msgid ""
 "Speed tradeoff for when to preview a sound file when mousing over a files "
 "icon. If set to \"always\" then always plays the sound, even if the file is "
@@ -1552,7 +1567,7 @@ msgstr ""
 "predvajajo le datoteke na krajevnih datotečnih sistemih. Če je nastavljeno "
 "na \"never\" potem se zvočne datoteke nikoli ne predvajajo."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 #, fuzzy
 msgid ""
 "Speed tradeoff for when to show a preview of text file contents in the "
@@ -1568,7 +1583,7 @@ msgstr ""
 "sistemih. Če je nastavljeno na \"never\" potem se datoteke z besedilom "
 "nikoli ne pokažejo v predogledu."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
 #, fuzzy
 msgid ""
 "Speed tradeoff for when to show an image file as a thumbnail. If set to "
@@ -1584,7 +1599,7 @@ msgstr ""
 "sistemih. Če je nastavljeno na \"never\" potem se nikoli ne naredijo "
 "predogledne sličice in se pokaže splošna ikona."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
 #, fuzzy
 msgid ""
 "Speed tradeoff for when to show the number of items in a folder. If set to "
@@ -1599,7 +1614,7 @@ msgstr ""
 "sistemih. Če je nastavljeno na \"never\" potem število predmetov v imenikih "
 "nikoli ne prešteje."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
 #, fuzzy
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
@@ -1608,7 +1623,7 @@ msgstr ""
 "Privzet vrstni red predmetov v ikonskem pogledu. Možne vrednosti so: \"name"
 "\"\", \"size\", \"type\", \"modification_date\" in \"emblems\"."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
 #, fuzzy
 msgid ""
 "The default sort-order for the items in the list view. Possible values are "
@@ -1617,52 +1632,52 @@ msgstr ""
 "Privzet vrstni red predmetov v seznamskem pogledu. Možne vrednosti so: \"name"
 "\"\", \"size\", \"type\", \"modification_date\" in \"emblems\"."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
 msgid "The default width of the side pane in new windows."
 msgstr "Privzeta širina stranskega pulta v novih oknih."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
 msgid "The font description used for the icons on the desktop."
 msgstr "Opis pisave, ki naj se uporabi za ikone in na namizju"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
 msgid "The side pane view to show in newly opened windows."
 msgstr "Pogled stranskega pulta, ki naj se pokaže v novo odprtih oknih."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
 msgid ""
 "This name can be set if you want a custom name for the home icon on the "
 "desktop."
 msgstr "Ime se lahko nastavi, če želite prikrojeno ime ikone doma na namizju."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
 msgstr "Ime se lahko nastavi, če želite prikrojeno ime ikone smeti na namizju."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
 msgid "Trash icon visible on desktop"
 msgstr "Ali je ikona Smeti vidna na namizju"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:90
 msgid "Type of click used to launch/open files"
 msgstr "Vrsta klika uporabljena za zagon/odpiranje datotek"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
 msgid "Use manual layout in new windows"
 msgstr "V novih oknih uporabi ročni razpored"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:90
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:92
 #, fuzzy
 msgid "Use tighter layout in new windows"
 msgstr "V novih oknih uporabi tesnejši razpored"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:93
 msgid "What to do with executable text files when activated"
 msgstr "Kaj storiti z izvršljivimi besedilnimi datotekami, ko so aktivirane"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:92
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:94
 msgid ""
 "What to do with executable text files when they are activated (single or "
 "double clicked). Possible values are \"launch\" to launch them as programs, "
@@ -1674,7 +1689,7 @@ msgstr ""
 "programa, \"ask\" za vprašanje uporabniku in \"display\" za prikaz kot "
 "besedilo."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:93
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:95
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
 "another view for that particular folder. Possible values are \"list_view\" "
@@ -1683,50 +1698,50 @@ msgstr ""
 "Kadar je obiskana mapa se uporabi ta pogled, če ni naveden drugačen za "
 "določeno mapo.Možne vrednosti sta \"list_view\" in \"icon_view\"."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:94
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:96
 #, fuzzy
 msgid "When to show number of items in a folder"
 msgstr "Kdaj naj se pokaže število predmetov v imeniku"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:95
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:97
 msgid "When to show preview text in icons"
 msgstr "Kdaj naj se pokaže predogled besedila v ikonah"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:96
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:98
 msgid "When to show thumbnails of image files"
 msgstr "Kdaj naj se pokažejo sličice datotek s slikami"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:97
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:99
 #, fuzzy
 msgid "Whether a custom default folder background has been set."
 msgstr "Ali je bilo nastavljeno prikrojeno privzeto ozadje imenika."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:98
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:100
 msgid "Whether a custom default side pane background has been set."
 msgstr "Ali je bilo nastavljeno prikrojeno privzeto ozadje stranskega pulta."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:99
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:101
 msgid "Whether to ask for confirmation when moving files to trash"
 msgstr "Ali naj se vpraša za potrditev ob prestavljanju datotek v smeti"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:100
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:102
 msgid "Whether to enable immediate deletion"
 msgstr "Ali naj se omogoči neposreden izbris datotek"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:101
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:103
 msgid "Whether to preview sounds when mousing over an icon"
 msgstr ""
 "Ali naj se predvajajo zvočne datoteke, ko je nad njihovimi ikonami miška"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:102
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:104
 msgid "Whether to show backup files"
 msgstr "Ali naj se kažejo varnostne kopije datotek"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:103
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:105
 msgid "Whether to show hidden files"
 msgstr "Ali naj se kažejo skrite datoteke"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:104
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:106
 msgid "Width of the side pane"
 msgstr "Širina stranskega pulta"
 
@@ -1810,7 +1825,7 @@ msgid "The group of the file."
 msgstr ""
 
 #: libnautilus-private/nautilus-column-utilities.c:97
-#: src/file-manager/fm-properties-window.c:2922
+#: src/file-manager/fm-properties-window.c:2927
 msgid "Permissions"
 msgstr "Dovoljenja"
 
@@ -1965,6 +1980,7 @@ msgstr "V:"
 
 #: libnautilus-private/nautilus-file-operations.c:551
 #: libnautilus-private/nautilus-file-operations.c:599
+#: libnautilus-private/nautilus-file-operations.c:604
 #: libnautilus-private/nautilus-file-operations.c:614
 msgid "Error while moving."
 msgstr "Napaka ob prestavljanju."
@@ -2011,11 +2027,6 @@ msgstr ""
 "\n"
 "\"%s\" ne more biti prestavljena, ker nimate dovoljenja za spremembo nje ali "
 "njene starševske mape."
-
-#: libnautilus-private/nautilus-file-operations.c:604
-#, fuzzy
-msgid "Error while moving. "
-msgstr "Napaka ob prestavljanju."
 
 #: libnautilus-private/nautilus-file-operations.c:605
 #, fuzzy, c-format
@@ -2862,7 +2873,7 @@ msgstr "neznana vrsta MIME"
 #. * for which we have no more appropriate default.
 #.
 #: libnautilus-private/nautilus-file.c:4656
-#: src/file-manager/fm-properties-window.c:1198
+#: src/file-manager/fm-properties-window.c:1203
 msgid "unknown"
 msgstr "neznan"
 
@@ -3153,51 +3164,51 @@ msgstr "ali smo osvetleni za spust pri vleci in spusti"
 msgid "The selection rectangle"
 msgstr "Pravokotnik izbire"
 
-#: libnautilus-private/nautilus-icon-container.c:4179
+#: libnautilus-private/nautilus-icon-container.c:4202
 msgid "Frame Text"
 msgstr "Uokviri besedilo"
 
-#: libnautilus-private/nautilus-icon-container.c:4180
+#: libnautilus-private/nautilus-icon-container.c:4203
 msgid "Draw a frame around unselected text"
 msgstr "Riši okvir okoli neizbranega besedil"
 
-#: libnautilus-private/nautilus-icon-container.c:4186
+#: libnautilus-private/nautilus-icon-container.c:4209
 msgid "Selection Box Color"
 msgstr "Barva izbirne škatle"
 
-#: libnautilus-private/nautilus-icon-container.c:4187
+#: libnautilus-private/nautilus-icon-container.c:4210
 msgid "Color of the selection box"
 msgstr "Barva izbirne škatle"
 
-#: libnautilus-private/nautilus-icon-container.c:4192
+#: libnautilus-private/nautilus-icon-container.c:4215
 msgid "Selection Box Alpha"
 msgstr "Alfa kanal izbirne škatle"
 
-#: libnautilus-private/nautilus-icon-container.c:4193
+#: libnautilus-private/nautilus-icon-container.c:4216
 msgid "Opacity of the selection box"
 msgstr "Prosojnost izbirne škatle"
 
-#: libnautilus-private/nautilus-icon-container.c:4200
+#: libnautilus-private/nautilus-icon-container.c:4223
 msgid "Highlight Alpha"
 msgstr "Alfa kanal osvetlitve"
 
-#: libnautilus-private/nautilus-icon-container.c:4201
+#: libnautilus-private/nautilus-icon-container.c:4224
 msgid "Opacity of the highlight for selected icons"
 msgstr "Prosojnost osvetlitve za izbrane ikone"
 
-#: libnautilus-private/nautilus-icon-container.c:4207
+#: libnautilus-private/nautilus-icon-container.c:4230
 msgid "Light Info Color"
 msgstr "Barva svetlih podatkov"
 
-#: libnautilus-private/nautilus-icon-container.c:4208
+#: libnautilus-private/nautilus-icon-container.c:4231
 msgid "Color used for information text against a dark background"
 msgstr "Barva, ki se uporabi za besedilo podatkov na temnem ozadju"
 
-#: libnautilus-private/nautilus-icon-container.c:4213
+#: libnautilus-private/nautilus-icon-container.c:4236
 msgid "Dark Info Color"
 msgstr "Barva temnih podatkov"
 
-#: libnautilus-private/nautilus-icon-container.c:4214
+#: libnautilus-private/nautilus-icon-container.c:4237
 msgid "Color used for information text against a light background"
 msgstr "Barva, ki se uporabi za besedilo podatkov na svetlem ozadju"
 
@@ -4268,7 +4279,7 @@ msgid "There is nothing on the clipboard to paste."
 msgstr "Na odložišču ni ničesar za prilepit."
 
 #: src/file-manager/fm-directory-view.c:5050
-#: src/file-manager/fm-directory-view.c:6123
+#: src/file-manager/fm-directory-view.c:6128
 msgid "Mount Error"
 msgstr "Napaka ob priklopu"
 
@@ -4416,14 +4427,38 @@ msgstr "_Prikaz"
 msgid "_Run"
 msgstr "_Poženi"
 
-#: src/file-manager/fm-directory-view.c:6259
+#: src/file-manager/fm-directory-view.c:6264
 #, fuzzy, c-format
 msgid "Opening \"%s\"."
 msgstr "Odpiram \"%s\""
 
-#: src/file-manager/fm-directory-view.c:6266
+#: src/file-manager/fm-directory-view.c:6271
 msgid "Cancel Open?"
 msgstr "Prekliči odpiranje?"
+
+#: src/file-manager/fm-ditem-page.c:338 src/file-manager/fm-ditem-page.c:349
+#, fuzzy
+msgid "Comment"
+msgstr "Končano"
+
+#: src/file-manager/fm-ditem-page.c:341
+msgid "URL"
+msgstr ""
+
+#: src/file-manager/fm-ditem-page.c:345
+#, fuzzy
+msgid "Link"
+msgstr "povezava"
+
+#: src/file-manager/fm-ditem-page.c:352
+#, fuzzy
+msgid "Command"
+msgstr "Ukazna vrstica"
+
+#: src/file-manager/fm-ditem-page.c:356
+#, fuzzy
+msgid "Launcher"
+msgstr "Nov _zaganjalnik"
 
 #: src/file-manager/fm-error-reporting.c:57
 #, c-format
@@ -4730,40 +4765,40 @@ msgstr "Lastnosti"
 msgid "%s Properties"
 msgstr "Lastnosti %s"
 
-#: src/file-manager/fm-properties-window.c:1429
+#: src/file-manager/fm-properties-window.c:1434
 msgid "Cancel Group Change?"
 msgstr "Prekliči spremembo skupine?"
 
-#: src/file-manager/fm-properties-window.c:1430
+#: src/file-manager/fm-properties-window.c:1435
 #, fuzzy
 msgid "Changing group."
 msgstr "Spreminjam skupino"
 
-#: src/file-manager/fm-properties-window.c:1591
+#: src/file-manager/fm-properties-window.c:1596
 msgid "Cancel Owner Change?"
 msgstr "Prekliči spremembo lastnika"
 
-#: src/file-manager/fm-properties-window.c:1592
+#: src/file-manager/fm-properties-window.c:1597
 #, fuzzy
 msgid "Changing owner."
 msgstr "Spreminjam lastnika"
 
-#: src/file-manager/fm-properties-window.c:1798
+#: src/file-manager/fm-properties-window.c:1803
 msgid "nothing"
 msgstr "nič"
 
-#: src/file-manager/fm-properties-window.c:1800
+#: src/file-manager/fm-properties-window.c:1805
 msgid "unreadable"
 msgstr "neberljiva"
 
-#: src/file-manager/fm-properties-window.c:1810
+#: src/file-manager/fm-properties-window.c:1815
 #, fuzzy, c-format
 msgid "%d item, with size %s"
 msgid_plural "%d items, totalling %s"
 msgstr[0] "1 predmet z velikostjo %s"
 msgstr[1] "1 predmet z velikostjo %s"
 
-#: src/file-manager/fm-properties-window.c:1819
+#: src/file-manager/fm-properties-window.c:1824
 msgid "(some contents unreadable)"
 msgstr "(nekaj vsebine ni berljive)"
 
@@ -4773,185 +4808,185 @@ msgstr "(nekaj vsebine ni berljive)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:1836
+#: src/file-manager/fm-properties-window.c:1841
 msgid "Contents:"
 msgstr "Vsebina:"
 
-#: src/file-manager/fm-properties-window.c:2227
+#: src/file-manager/fm-properties-window.c:2232
 msgid "Basic"
 msgstr "Osnovno"
 
-#: src/file-manager/fm-properties-window.c:2255
+#: src/file-manager/fm-properties-window.c:2260
 msgid "_Names:"
 msgstr "_Imena:"
 
-#: src/file-manager/fm-properties-window.c:2257
+#: src/file-manager/fm-properties-window.c:2262
 msgid "_Name:"
 msgstr "_Ime:"
 
-#: src/file-manager/fm-properties-window.c:2306
+#: src/file-manager/fm-properties-window.c:2311
 msgid "Type:"
 msgstr "Vrsta:"
 
-#: src/file-manager/fm-properties-window.c:2308
-#: src/file-manager/fm-properties-window.c:2318
-#: src/file-manager/fm-properties-window.c:2324
-#: src/file-manager/fm-properties-window.c:2331
-#: src/file-manager/fm-properties-window.c:2335
-#: src/file-manager/fm-properties-window.c:2343
-#: src/file-manager/fm-properties-window.c:2349
-#: src/file-manager/fm-properties-window.c:2358
-#: src/file-manager/fm-properties-window.c:2364
-#: src/file-manager/fm-properties-window.c:2957
-#: src/file-manager/fm-properties-window.c:2978
-#: src/file-manager/fm-properties-window.c:3069
-#: src/file-manager/fm-properties-window.c:3073
-#: src/file-manager/fm-properties-window.c:3077
+#: src/file-manager/fm-properties-window.c:2313
+#: src/file-manager/fm-properties-window.c:2323
+#: src/file-manager/fm-properties-window.c:2329
+#: src/file-manager/fm-properties-window.c:2336
+#: src/file-manager/fm-properties-window.c:2340
+#: src/file-manager/fm-properties-window.c:2348
+#: src/file-manager/fm-properties-window.c:2354
+#: src/file-manager/fm-properties-window.c:2363
+#: src/file-manager/fm-properties-window.c:2369
+#: src/file-manager/fm-properties-window.c:2962
+#: src/file-manager/fm-properties-window.c:2983
+#: src/file-manager/fm-properties-window.c:3074
+#: src/file-manager/fm-properties-window.c:3078
+#: src/file-manager/fm-properties-window.c:3082
 msgid "--"
 msgstr "--"
 
-#: src/file-manager/fm-properties-window.c:2316
+#: src/file-manager/fm-properties-window.c:2321
 msgid "Size:"
 msgstr "Velikost:"
 
-#: src/file-manager/fm-properties-window.c:2322 src/nautilus-location-bar.c:60
+#: src/file-manager/fm-properties-window.c:2327 src/nautilus-location-bar.c:60
 msgid "Location:"
 msgstr "Lokacija:"
 
-#: src/file-manager/fm-properties-window.c:2329
+#: src/file-manager/fm-properties-window.c:2334
 msgid "Volume:"
 msgstr "Zapis:"
 
-#: src/file-manager/fm-properties-window.c:2333
+#: src/file-manager/fm-properties-window.c:2338
 msgid "Free space:"
 msgstr "Neporabljen prostor"
 
-#: src/file-manager/fm-properties-window.c:2341
+#: src/file-manager/fm-properties-window.c:2346
 msgid "Link target:"
 msgstr "Cilj povezave:"
 
-#: src/file-manager/fm-properties-window.c:2347
+#: src/file-manager/fm-properties-window.c:2352
 msgid "MIME type:"
 msgstr "Vrsta MIME:"
 
-#: src/file-manager/fm-properties-window.c:2356
+#: src/file-manager/fm-properties-window.c:2361
 msgid "Modified:"
 msgstr "Spremenjena:"
 
-#: src/file-manager/fm-properties-window.c:2362
+#: src/file-manager/fm-properties-window.c:2367
 msgid "Accessed:"
 msgstr "Dostopana:"
 
-#: src/file-manager/fm-properties-window.c:2378
+#: src/file-manager/fm-properties-window.c:2383
 msgid "_Select Custom Icon..."
 msgstr "_Izberi prikrojeno ikono..."
 
-#: src/file-manager/fm-properties-window.c:2384
+#: src/file-manager/fm-properties-window.c:2389
 msgid "_Remove Custom Icon"
 msgstr "_Odstrani prikorjeno ikono"
 
-#: src/file-manager/fm-properties-window.c:2736
+#: src/file-manager/fm-properties-window.c:2741
 msgid "_Read"
 msgstr "_Beriljiva"
 
-#: src/file-manager/fm-properties-window.c:2738
+#: src/file-manager/fm-properties-window.c:2743
 msgid "_Write"
 msgstr "_Pisljiva"
 
-#: src/file-manager/fm-properties-window.c:2740
+#: src/file-manager/fm-properties-window.c:2745
 msgid "E_xecute"
 msgstr "_Izvršljiva"
 
-#: src/file-manager/fm-properties-window.c:2823
+#: src/file-manager/fm-properties-window.c:2828
 msgid "Set _user ID"
 msgstr "Nastavi ID _uporabnika"
 
-#: src/file-manager/fm-properties-window.c:2828
+#: src/file-manager/fm-properties-window.c:2833
 msgid "Special flags:"
 msgstr "Posebne zastavice:"
 
-#: src/file-manager/fm-properties-window.c:2831
+#: src/file-manager/fm-properties-window.c:2836
 msgid "Set gro_up ID"
 msgstr "Nastavi ID _skupine"
 
-#: src/file-manager/fm-properties-window.c:2833
+#: src/file-manager/fm-properties-window.c:2838
 msgid "_Sticky"
 msgstr "_Lepljiv"
 
-#: src/file-manager/fm-properties-window.c:2932
+#: src/file-manager/fm-properties-window.c:2937
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Niste lastnik, zato ne morete spremeniti teh dovoljenj."
 
-#: src/file-manager/fm-properties-window.c:2946
+#: src/file-manager/fm-properties-window.c:2951
 #, fuzzy
 msgid "File _owner:"
 msgstr "Lastnik datoteke:"
 
-#: src/file-manager/fm-properties-window.c:2952
+#: src/file-manager/fm-properties-window.c:2957
 msgid "File owner:"
 msgstr "Lastnik datoteke:"
 
-#: src/file-manager/fm-properties-window.c:2963
+#: src/file-manager/fm-properties-window.c:2968
 msgid "_File group:"
 msgstr "Skupina _datoteke:"
 
-#: src/file-manager/fm-properties-window.c:2972
+#: src/file-manager/fm-properties-window.c:2977
 msgid "File group:"
 msgstr "Skupina datoteke:"
 
-#: src/file-manager/fm-properties-window.c:2984
+#: src/file-manager/fm-properties-window.c:2989
 msgid "Owner:"
 msgstr "Lastnik:"
 
-#: src/file-manager/fm-properties-window.c:2985
+#: src/file-manager/fm-properties-window.c:2990
 msgid "Group:"
 msgstr "Skupina:"
 
-#: src/file-manager/fm-properties-window.c:2986
+#: src/file-manager/fm-properties-window.c:2991
 msgid "Others:"
 msgstr "Drugo:"
 
-#: src/file-manager/fm-properties-window.c:3068
+#: src/file-manager/fm-properties-window.c:3073
 msgid "Text view:"
 msgstr "Pogled besedila:"
 
-#: src/file-manager/fm-properties-window.c:3072
+#: src/file-manager/fm-properties-window.c:3077
 msgid "Number view:"
 msgstr "Pogled številk:"
 
-#: src/file-manager/fm-properties-window.c:3076
+#: src/file-manager/fm-properties-window.c:3081
 msgid "Last changed:"
 msgstr "Nazadnje spremenjena:"
 
-#: src/file-manager/fm-properties-window.c:3082
+#: src/file-manager/fm-properties-window.c:3087
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Dovoljenja za \"%s\" niso bila ugotovljena."
 
-#: src/file-manager/fm-properties-window.c:3085
+#: src/file-manager/fm-properties-window.c:3090
 msgid "The permissions of the selected file could not be determined."
 msgstr "Dovoljenja za izbrano datoteko ne morejo biti ugotovljena."
 
-#: src/file-manager/fm-properties-window.c:3243
+#: src/file-manager/fm-properties-window.c:3248
 #, fuzzy
 msgid "There was an error displaying help."
 msgstr "Prišlo je do napake ob prikazovanju pomoči: %s"
 
-#: src/file-manager/fm-properties-window.c:3243
+#: src/file-manager/fm-properties-window.c:3248
 #, fuzzy
 msgid "Couldn't Show Help"
 msgstr "Nisem mogel prikazati pomoči"
 
-#: src/file-manager/fm-properties-window.c:3593
+#: src/file-manager/fm-properties-window.c:3598
 msgid "Cancel Showing Properties Window?"
 msgstr "Prekini okno z lastnostmi?"
 
-#: src/file-manager/fm-properties-window.c:3594
+#: src/file-manager/fm-properties-window.c:3599
 #, fuzzy
 msgid "Creating Properties window."
 msgstr "Ustvarjam okno z lastnostmi"
 
-#: src/file-manager/fm-properties-window.c:3729
+#: src/file-manager/fm-properties-window.c:3756
 msgid "Select an icon"
 msgstr "Izberite ikono"
 
@@ -5345,16 +5380,16 @@ msgstr ""
 msgid "Visible _Columns..."
 msgstr ""
 
-#: src/nautilus-application.c:267
+#: src/nautilus-application.c:268
 msgid "Couldn't Create Required Folder"
 msgstr "Nisem mogel ustvariti zahtevane mape"
 
-#: src/nautilus-application.c:268
+#: src/nautilus-application.c:269
 #, fuzzy, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
 msgstr "Nautilus ni mogel ustvariti imenika %s."
 
-#: src/nautilus-application.c:270
+#: src/nautilus-application.c:271
 #, fuzzy
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
@@ -5363,16 +5398,16 @@ msgstr ""
 "Nautilus ni mogel ustvariti potrebne mape \"%s\". Ustvarite to mapo pred "
 "zagonom Nautilusa ali spremenite dovoljenja, da jo bo lahko ustvaril sam."
 
-#: src/nautilus-application.c:273
+#: src/nautilus-application.c:274
 msgid "Couldn't Create Required Folders"
 msgstr "Nisem mogel ustvariti zahtevanih map"
 
-#: src/nautilus-application.c:274
+#: src/nautilus-application.c:275
 #, fuzzy, c-format
 msgid "Nautilus could not create the following required folders: %s."
 msgstr "Nautilus ni mogel ustvariti imenika %s."
 
-#: src/nautilus-application.c:276
+#: src/nautilus-application.c:277
 #, fuzzy
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
@@ -5385,15 +5420,15 @@ msgstr ""
 "Ustvarite to mapo pred zagonom Nautilusa ali spremenite dovoljenja, da jo bo "
 "lahko ustvaril sam."
 
-#: src/nautilus-application.c:344
+#: src/nautilus-application.c:345
 msgid "Link To Old Desktop"
 msgstr "Povezava do starega namizja"
 
-#: src/nautilus-application.c:360
+#: src/nautilus-application.c:361
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
 msgstr ""
 
-#: src/nautilus-application.c:361
+#: src/nautilus-application.c:362
 #, fuzzy
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
@@ -5403,7 +5438,7 @@ msgstr ""
 "zato ustvarjena ikona \"Povezava do starega namizja\". Ta imenik lahko "
 "odprete, prestavite datoteke, ki jih želite in ga nato zbrišete."
 
-#: src/nautilus-application.c:363
+#: src/nautilus-application.c:364
 #, fuzzy
 msgid "Migrated Old Desktop"
 msgstr "Preseljeno staro namizje"
@@ -5418,7 +5453,7 @@ msgstr "Preseljeno staro namizje"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:545
+#: src/nautilus-application.c:547
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5429,7 +5464,7 @@ msgstr ""
 "namestitvijo Nautilusa."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:551
+#: src/nautilus-application.c:553
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5475,12 +5510,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:581 src/nautilus-application.c:599
-#: src/nautilus-application.c:606
+#: src/nautilus-application.c:583 src/nautilus-application.c:601
+#: src/nautilus-application.c:608
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautlusa trenutno ni mogoče uporabljati zaradi nepričakovane napake."
 
-#: src/nautilus-application.c:582
+#: src/nautilus-application.c:584
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5489,7 +5524,7 @@ msgstr ""
 "strani Bonoba, ko se je poskušalo registrirati strežnik pogleda "
 "upravljalnika datotek."
 
-#: src/nautilus-application.c:600
+#: src/nautilus-application.c:602
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5499,7 +5534,7 @@ msgstr ""
 "strani Bonoba, ko se je poskušalo najti tovarno. Ubitje bonobo-activation-"
 "server in vnovičen zagon Nautilusa lahko morda odpravita problem."
 
-#: src/nautilus-application.c:607
+#: src/nautilus-application.c:609
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5583,7 +5618,7 @@ msgstr "_Poveži se"
 msgid "Desktop"
 msgstr "Namizje"
 
-#: src/nautilus-file-management-properties.c:295
+#: src/nautilus-file-management-properties.c:297
 #, fuzzy
 msgid "None"
 msgstr "brez"
@@ -5605,7 +5640,8 @@ msgid "500 KB"
 msgstr "500 KB"
 
 #: src/nautilus-file-management-properties.glade.h:24
-msgid "<span weight=\"bold\">Behaviour</span>"
+#, fuzzy
+msgid "<span weight=\"bold\">Behavior</span>"
 msgstr "<span weight=\"bold\">Obnašanje</span>"
 
 #: src/nautilus-file-management-properties.glade.h:25
@@ -5949,7 +5985,7 @@ msgid "File Manager"
 msgstr "Upravljalnik datotek"
 
 #. Set initial window title
-#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:307
+#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:315
 #: src/nautilus-window-menus.c:601 src/nautilus-window.c:173
 msgid "Nautilus"
 msgstr "Nautilus"
@@ -6064,7 +6100,7 @@ msgid "Close all Navigation windows"
 msgstr "Zapri vsa Nautilusova okna"
 
 #: src/nautilus-navigation-window-ui.xml.h:11
-#: src/nautilus-spatial-window-ui.xml.h:4
+#: src/nautilus-spatial-window-ui.xml.h:6
 msgid "Connect to _Server..."
 msgstr ""
 
@@ -6081,13 +6117,13 @@ msgid "Forward"
 msgstr "Naprej"
 
 #: src/nautilus-navigation-window-ui.xml.h:15
-#: src/nautilus-spatial-window-ui.xml.h:6
+#: src/nautilus-spatial-window-ui.xml.h:8
 #, fuzzy
 msgid "Go to templates folder"
 msgstr "Pojdi v mapo \"Smeti\""
 
 #: src/nautilus-navigation-window-ui.xml.h:16
-#: src/nautilus-spatial-window-ui.xml.h:7
+#: src/nautilus-spatial-window-ui.xml.h:9
 #, fuzzy
 msgid "Go to the CD Creator"
 msgstr "Pojdi v mapo \"Smeti\""
@@ -6101,7 +6137,7 @@ msgid "Go to the previous visited location"
 msgstr "Pojdi na prejšnjo obiskano lokacijo"
 
 #: src/nautilus-navigation-window-ui.xml.h:19
-#: src/nautilus-spatial-window-ui.xml.h:8
+#: src/nautilus-spatial-window-ui.xml.h:10
 msgid "Go to the trash folder"
 msgstr "Pojdi v mapo \"Smeti\""
 
@@ -6150,7 +6186,7 @@ msgid "_Clear History"
 msgstr "Poč_isti zgodovino"
 
 #: src/nautilus-navigation-window-ui.xml.h:31
-#: src/nautilus-spatial-window-ui.xml.h:12
+#: src/nautilus-spatial-window-ui.xml.h:14
 #, fuzzy
 msgid "_Computer"
 msgstr "Računalnik"
@@ -6168,7 +6204,7 @@ msgid "_Go"
 msgstr "P_ojdi"
 
 #: src/nautilus-navigation-window-ui.xml.h:35
-#: src/nautilus-spatial-window-ui.xml.h:13
+#: src/nautilus-spatial-window-ui.xml.h:15
 msgid "_Home"
 msgstr "_Dom"
 
@@ -6181,13 +6217,13 @@ msgid "_Side Pane"
 msgstr "_Stranski pult"
 
 #: src/nautilus-navigation-window-ui.xml.h:38
-#: src/nautilus-spatial-window-ui.xml.h:15
+#: src/nautilus-spatial-window-ui.xml.h:17
 #, fuzzy
 msgid "_Templates"
 msgstr "_Times"
 
 #: src/nautilus-navigation-window-ui.xml.h:39
-#: src/nautilus-spatial-window-ui.xml.h:16
+#: src/nautilus-spatial-window-ui.xml.h:18
 msgid "_Trash"
 msgstr "_Smeti"
 
@@ -6624,46 +6660,56 @@ msgstr "_Razveljavi"
 msgid "_View as..."
 msgstr "_Glej kot drugo..."
 
-#: src/nautilus-side-pane.c:395
+#: src/nautilus-side-pane.c:426
 msgid "Close the side pane"
 msgstr "Zapri stranski pult"
 
-#: src/nautilus-side-pane.c:566
+#: src/nautilus-side-pane.c:597
 #, c-format
 msgid "Show %s"
 msgstr "Kaži %s"
 
 #: src/nautilus-spatial-window-ui.xml.h:2
 #, fuzzy
-msgid "Close P_arent Folders"
+msgid "Clos_e All Folders"
 msgstr "Nova _mapa"
 
 #: src/nautilus-spatial-window-ui.xml.h:3
 #, fuzzy
+msgid "Close P_arent Folders"
+msgstr "Nova _mapa"
+
+#: src/nautilus-spatial-window-ui.xml.h:4
+#, fuzzy
+msgid "Close all folder windows"
+msgstr "Zapri vsa Nautilusova okna"
+
+#: src/nautilus-spatial-window-ui.xml.h:5
+#, fuzzy
 msgid "Close this folder's parents"
 msgstr "Zapri stranski pult"
 
-#: src/nautilus-spatial-window-ui.xml.h:5
+#: src/nautilus-spatial-window-ui.xml.h:7
 #, fuzzy
 msgid "Go to Computer"
 msgstr "Računalnik"
 
-#: src/nautilus-spatial-window-ui.xml.h:9
+#: src/nautilus-spatial-window-ui.xml.h:11
 #, fuzzy
 msgid "Open _Location..."
 msgstr "_Lokacija..."
 
-#: src/nautilus-spatial-window-ui.xml.h:10
+#: src/nautilus-spatial-window-ui.xml.h:12
 #, fuzzy
 msgid "Open _Parent"
 msgstr "Odpri t_erminal"
 
-#: src/nautilus-spatial-window-ui.xml.h:11
+#: src/nautilus-spatial-window-ui.xml.h:13
 #, fuzzy
 msgid "Open the parent folder"
 msgstr "[Predmeti, ki so ]mape"
 
-#: src/nautilus-spatial-window-ui.xml.h:14
+#: src/nautilus-spatial-window-ui.xml.h:16
 #, fuzzy
 msgid "_Places"
 msgstr "_Vzorci"
@@ -6829,19 +6875,24 @@ msgstr "Pojdi nekaj strani naprej"
 msgid "Display this location with \"%s\""
 msgstr "Kaži to lokacijo z \"%s\""
 
-#: src/nautilus-window.c:1581
+#: src/nautilus-window.c:1157
+#, fuzzy, c-format
+msgid "%s on %s"
+msgstr "%s - %s"
+
+#: src/nautilus-window.c:1598
 msgid "Application ID"
 msgstr "ID programa"
 
-#: src/nautilus-window.c:1582
+#: src/nautilus-window.c:1599
 msgid "The application ID of the window."
 msgstr "ID programa tega okna."
 
-#: src/nautilus-window.c:1588
+#: src/nautilus-window.c:1605
 msgid "Application"
 msgstr "Program"
 
-#: src/nautilus-window.c:1589
+#: src/nautilus-window.c:1606
 msgid "The NautilusApplication associated with this window."
 msgstr "NautilusApplication povezan s tem oknom."
 
@@ -6876,6 +6927,10 @@ msgstr "Mrežni strežniki"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Glej svoje mrežne strežnike v upravljalniku daototek Nautilus"
+
+#, fuzzy
+#~ msgid "Error while moving. "
+#~ msgstr "Napaka ob prestavljanju."
 
 #~ msgid ""
 #~ "If you would like to enable fast searches, you can edit the file %s as "
@@ -9117,9 +9172,6 @@ msgstr "Glej svoje mrežne strežnike v upravljalniku daototek Nautilus"
 #~ msgid "New Folder"
 #~ msgstr "Nova mapa"
 
-#~ msgid "New La_uncher"
-#~ msgstr "Nov _zaganjalnik"
-
 #~ msgid "Open Scripts Folder"
 #~ msgstr "Odpri mapo skript"
 
@@ -9994,9 +10046,6 @@ msgstr "Glej svoje mrežne strežnike v upravljalniku daototek Nautilus"
 #~ msgid "Mono"
 #~ msgstr "Mono"
 
-#~ msgid "%s - %s"
-#~ msgstr "%s - %s"
-
 #~ msgid "Gnumeric"
 #~ msgstr "Gnumeric"
 
@@ -10379,9 +10428,6 @@ msgstr "Glej svoje mrežne strežnike v upravljalniku daototek Nautilus"
 
 #~ msgid "Config files"
 #~ msgstr "Nastavitvene datoteke"
-
-#~ msgid "Command Line"
-#~ msgstr "Ukazna vrstica"
 
 #~ msgid "APIs"
 #~ msgstr "Programski vmesniki"
@@ -10913,9 +10959,6 @@ msgstr "Glej svoje mrežne strežnike v upravljalniku daototek Nautilus"
 
 #~ msgid "Attempting to download package \"%s\"."
 #~ msgstr "Poskušam prenesti paket \"%s\"."
-
-#~ msgid "Complete"
-#~ msgstr "Končano"
 
 #~ msgid ""
 #~ "The package \"%s\" requires \"%s\" to run.\n"
