@@ -2472,7 +2472,6 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 	GnomeDesktopItem *entry;
 	GdkPoint point;
 	char *uri;
-	char *local_path;
 	char *stripped_uri;
 	char *container_uri_string;
 	char *container_path;
@@ -2565,19 +2564,13 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 		for (node = real_uri_list; node != NULL; node = node->next) {
 			/* Make a link using the desktop file contents? */
 			uri = node->data;
-			local_path = gnome_vfs_get_local_path_from_uri (uri);
-			if (local_path != NULL) {
-				entry = gnome_desktop_item_new_from_file (local_path, 0, NULL);
-				if (entry != NULL) {
-					/* FIXME: Handle name conflicts? */
-					nautilus_link_local_create_from_gnome_entry (entry, container_path, &point);
-					gnome_desktop_item_unref (entry);
-				}
-				g_free (local_path);
-				if (entry != NULL) {
-					continue;
+			entry = gnome_desktop_item_new_from_uri (uri, 0, NULL);
+			if (entry != NULL) {
+				/* FIXME: Handle name conflicts? */
+				nautilus_link_local_create_from_gnome_entry (entry, container_path, &point);
 
-				}
+				gnome_desktop_item_unref (entry);
+				continue;
 			}
 
 			/* Make a link from the URI alone. Generate the file
@@ -2587,7 +2580,6 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 			 * instead of a "roll our own" solution.
 			 */
 			stripped_uri = eel_str_strip_trailing_chr (uri, '/');
-			g_print ("local_path:%s\nstripped_uri:%s\n", local_path, stripped_uri);
 			last_slash = strrchr (stripped_uri, '/');
 			link_name = last_slash == NULL ? NULL : last_slash + 1;
 			

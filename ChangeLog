@@ -1,3 +1,8 @@
+2002-03-27  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/file-manager/fm-icon-view.c: (icon_view_handle_uri_list): don't
+	assume its a local uri, but instead use gnome_desktop_item_new_from_uri.
+
 2002-03-28  Alexander Larsson  <alla@lysator.liu.se>
 
 	* libnautilus-private/nautilus-thumbnails-jpeg.c:
@@ -97,6 +102,7 @@
 	(nautilus_window_instance_init): to here, so it will be
 	done by the time the throbber async activate comes in.
 
+>>>>>>> 1.5170
 2002-03-26  Michael Meeks  <michael@ximian.com>
 
 	* libnautilus-private/nautilus-icon-canvas-item.c
