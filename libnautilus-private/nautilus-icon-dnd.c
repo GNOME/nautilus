@@ -1380,14 +1380,15 @@ void
 nautilus_icon_dnd_set_stipple (NautilusIconContainer *container,
 			       GdkBitmap             *stipple)
 {
+	if (stipple != NULL) {
+		g_object_ref (stipple);
+	}
+	
 	if (container->details->dnd_info->stipple != NULL) {
 		g_object_unref (container->details->dnd_info->stipple);
-		container->details->dnd_info->stipple = NULL;
 	}
 
-	if (stipple != NULL) {
-		container->details->dnd_info->stipple = g_object_ref (stipple);
-	}
+	container->details->dnd_info->stipple = stipple;
 }
 
 void

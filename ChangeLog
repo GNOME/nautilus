@@ -1,5 +1,14 @@
 2002-07-03  Mark McLoughlin  <mark@skynet.ie>
 
+	* libnautilus-private/nautilus-icon-dnd.c:
+	(nautilus_icon_dnd_set_stipple): ref the new stipple
+	before unrefing the old.
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(icon_container_set_workarea): fix up sanity check.
+
+2002-07-03  Mark McLoughlin  <mark@skynet.ie>
+
 	* configure.in: check for gtk with multihead
 	support and define GTK_MULTIHEAD.
 

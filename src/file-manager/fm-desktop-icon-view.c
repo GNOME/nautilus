@@ -171,8 +171,7 @@ icon_container_set_workarea (NautilusIconContainer *icon_container,
 		int width  = workareas [i + 2];
 		int height = workareas [i + 3];
 
-		if (x > screen_width  || width > screen_width ||
-		    y > screen_height || height > screen_height)
+		if ((x + width) > screen_width || (y + height) > screen_height)
 			continue;
 
 		left   = MAX (left, x);
