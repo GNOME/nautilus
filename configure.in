@@ -1,3 +1,4 @@
+
 AC_INIT(src)
 
 if test -n "$GNOME2_PATH"; then
@@ -280,8 +281,8 @@ AC_MSG_ERROR([
 *** Gtk+ 1.2.0 or better is required. The latest version of GTK
 *** is always available from ftp://ftp.gtk.org/.]))
 
-
 AM_PATH_GNOME(1.0.0,,AC_MSG_ERROR([*** GNOME 1.0.0 or better is required.]), gnomecanvaspixbuf bonobo bonobox bonobox_print vfs idl)
+
 AC_SUBST(GNOMECANVASPIXBUF_LIBS)
 AC_SUBST(GNOMECANVASPIXBUF_INCLUDEDIR)
 AC_SUBST(GNORBA_CFLAGS)
@@ -523,6 +524,7 @@ libnautilus-extensions/Makefile
 src/Makefile
 src/file-manager/Makefile
 components/Makefile
+components/adapter/Makefile
 components/hardware/Makefile
 components/hardware/icons/Makefile
 components/history/Makefile

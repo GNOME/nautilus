@@ -36,7 +36,7 @@ module Nautilus {
 
 	interface ComponentAdapterFactory : Bonobo::Unknown {
 		/* FIXME: should use exceptions to report reasons for failure. */
-		Nautilus::View create_adapter (in Bonobo::Unknown object);
+		Nautilus::View create_adapter (in Bonobo::Unknown component);
 	};
 
 };

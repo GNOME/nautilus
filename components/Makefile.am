@@ -18,6 +18,7 @@ endif
 #
 
 SUBDIRS = \
+	adapter \
 	hardware \
 	help \
 	history \

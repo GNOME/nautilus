@@ -1,3 +1,19 @@
+2000-09-15  Maciej Stachowiak  <mjs@eazel.com>
+
+	Some work towards 1994.
+	
+	* libnautilus-adapter/nautilus-adapter-factory.idl: Changed
+	`object' argument to `component'.
+	* configure.in: Generate Makefile for components/adapter
+	directory.
+	* components/Makefile.am: Add adapter subdir to build.
+
+	* components/adapter/Makefile.am, components/adapter/main.c,
+	components/adapter/nautilus-adapter-factory-server.c,
+	components/adapter/nautilus-adapter-factory-server.h,
+	components/adapter/nautilus-adapter.oafinfo: Skeleton for the
+	adapter component.
+	
 2000-09-14  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-operations.c:
