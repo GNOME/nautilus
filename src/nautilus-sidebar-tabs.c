@@ -271,49 +271,49 @@ draw_one_tab(NautilusIndexTabs *index_tabs, GdkGC *gc, gchar *tab_name, gint x, 
 static gint
 draw_or_hit_test_all_tabs(NautilusIndexTabs *index_tabs, gboolean draw_flag, gint test_x, gint test_y)
 {
-  tabItem *second_item; 
-  GList *next_tab = index_tabs->details->tab_items;
-  GtkWidget *widget = GTK_WIDGET(index_tabs);  
-  GdkGC* temp_gc = gdk_gc_new(widget->window); 
-  gint tab_height = tab_left_edge->art_pixbuf->height + 4;
-  gint x_pos = widget->allocation.x - 3;
-  gint y_pos = widget->allocation.y + widget->allocation.height - tab_left_edge->art_pixbuf->height;
-  
-  /* we must draw two items at a time, drawing the second one first, because the first one overlaps the second */
-    
-  while (next_tab != NULL)
-    {
-      tabItem *this_item = (tabItem*) next_tab->data;
-      
-      /* draw the second tab first, if there is one */
-      if (next_tab->next)
-        {
-	  second_item = next_tab->next->data;
-          if (draw_flag)
-            draw_one_tab(index_tabs, temp_gc, second_item->tab_text, x_pos, y_pos - 3, TRUE);	
-	}
-
-      if (draw_flag)
-      	draw_one_tab(index_tabs, temp_gc, this_item->tab_text, x_pos, y_pos, FALSE);
-      else if ((test_y >= y_pos) && (test_y <= (y_pos + tab_left_edge->art_pixbuf->height)))
-        {   
-          gint name_width = gdk_string_width(tab_font, this_item->tab_text) - (2 * tab_indent);
-          gint edge_width =  tab_left_edge->art_pixbuf->width + tab_right_edge->art_pixbuf->width;
-	  
-	  if (test_x < (name_width + edge_width))
-	    return this_item->notebook_page;
-	  else if (next_tab->next)
-	      return second_item->notebook_page;
-        }
-        
-      next_tab = next_tab->next;
-      if (next_tab)
-      	next_tab = next_tab->next;
-      
-      y_pos += tab_height;
-    }  
-  gdk_gc_unref(temp_gc);
-  return -1;
+	tabItem *second_item; 
+	GList *next_tab = index_tabs->details->tab_items;
+	GtkWidget *widget = GTK_WIDGET(index_tabs);  
+	GdkGC* temp_gc; 
+	gint tab_height = tab_left_edge->art_pixbuf->height + 4;
+	gint x_pos = widget->allocation.x - 3;
+	gint y_pos = widget->allocation.y + widget->allocation.height - tab_left_edge->art_pixbuf->height;
+	
+	/* we must draw two items at a time, drawing the second one first, because the first one overlaps the second */
+	if (draw_flag)
+		temp_gc = gdk_gc_new (widget->window);
+	
+	while (next_tab != NULL) {
+		tabItem *this_item = (tabItem*) next_tab->data;
+		
+		/* draw the second tab first, if there is one */
+		if (next_tab->next) {
+			second_item = next_tab->next->data;
+			if (draw_flag)
+				draw_one_tab(index_tabs, temp_gc, second_item->tab_text, x_pos, y_pos - 3, TRUE);	
+		}
+		
+		if (draw_flag)
+			draw_one_tab(index_tabs, temp_gc, this_item->tab_text, x_pos, y_pos, FALSE);
+		else if ((test_y >= y_pos) && (test_y <= (y_pos + tab_left_edge->art_pixbuf->height))) {   
+			gint name_width = gdk_string_width(tab_font, this_item->tab_text) - (2 * tab_indent);
+			gint edge_width =  tab_left_edge->art_pixbuf->width + tab_right_edge->art_pixbuf->width;
+			
+			if (test_x < (name_width + edge_width))
+				return this_item->notebook_page;
+			else if (next_tab->next)
+				return second_item->notebook_page;
+		}
+		
+		next_tab = next_tab->next;
+		if (next_tab)
+			next_tab = next_tab->next;
+		
+		y_pos += tab_height;
+	}  
+	if (draw_flag)
+		gdk_gc_unref(temp_gc);
+	return -1;
 }
 
 /* find a tab with a given name, or return NULL if we can't find one */
