@@ -1,3 +1,72 @@
+2000-08-10  John Sullivan  <sullivan@eazel.com>
+
+	I accidentally committed before writing ChangeLog (wrong
+	directory). So I'm reconstructing the changes I checked in
+	a short while ago with no ChangeLog entry.
+
+	Fixed 2075: (use NautilusFile objects for actual files,
+	not symbolic links, in search interface).
+
+	As a happy side effect, this fixed 2027 (thumbnails do not
+	display in search results)
+
+	* src/file-manager/fm-directory-view.h,
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_queue_notice_file_change): New function for
+	subclasses to call when they want to put a file into the
+	changed-files queue (which they usually don't need to since
+	for the normal case the superclass handles this stuff)
+	
+	* src/file-manager/fm-icon-view.c: accidental white space 
+	change only
+	
+	* src/file-manager/fm-list-view.h:
+	(adding_file), (removing_file), (file_still_belongs):
+	New function pointers for subclasses to optionally override.
+	* src/file-manager/fm-list-view.c:
+	(fm_list_view_adding_file): New function, called on each file
+	as it is added to the NautilusList; calls overridable function
+	pointer.
+	(fm_list_view_removing_file): New function, called on each file
+	as it is removed from the NautilusList; calls overridable function
+	pointer.
+	(fm_list_view_file_still_belongs): New function, asks whether changed
+	file that was in list should be put back in; calls overridable function
+	pointer.
+	(real_adding_file): New function, refs file
+	(real_removing_file): New function, unrefs file
+	(real_file_still_belongs): New function, checks that file is still in
+	this directory
+	(fm_list_view_initialize_class): wire up these new function pointers
+	to their new "real_" implementations
+	(add_to_list): call fm_list_view_adding_file instead of just reffing
+	(fm_list_view_clear), (remove_from_list): call fm_list_view_removing_file 
+	instead of just unreffing; also, remove_from_list now returns a
+	boolean for whether the item had been in the list.
+	(fm_list_view_file_changed): Only re-insert the file if it had been
+	in the list and fm_list_view_file_still_belongs is true.
+
+	* src/file-manager/fm-search-list-view.c:
+	(fm_search_list_view_initialize_class): wire up all the new overridden
+	function pointers
+	(real_add_file): overridden to get the real file that the funky
+	search virtual file refers to, and put the real one in the list view
+	(real_adding_file): overridden to start monitoring the file since
+	the directory doesn't do it for us in this case
+	(real_removing_file): overridden to stop monitoring the file
+	(real_file_still_belongs): overridden to return TRUE as long as
+	the file still exists
+
+	* libnautilus-extensions/nautilus-file.c:
+	* libnautilus-extensions/nautilus-file.h:
+	Reverted all of rebecka's recent changes that made opening a
+	file in the search list show the real file. This behavior just works
+	automatically with no special code in the new design. But it turns
+	out I didn't actually need to remove the code to make the new design
+	work, because it never would have been called. There's still some
+	even older nautilus-search-result-specific code in here that might
+	be completely obsolete now.
+
 2000-08-10  Andy Hertzfeld  <andy@eazel.com>
 
 	added a text color paramter to nautilus_gdk_pixbuf_draw_text,
