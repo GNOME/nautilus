@@ -506,8 +506,11 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 		info = (SongInfo*) this_song->data;
 		
 		clist_entry[0] = malloc(4);
-		sprintf(clist_entry[0], "%d", info->track_number);
-		
+		if (info->track_number > 0)
+			sprintf(clist_entry[0], "%d", info->track_number);
+		else	
+			clist_entry[0] = '\0';
+			
 		clist_entry[1] = NULL;
 		clist_entry[2] = NULL;
 		clist_entry[3] = NULL;

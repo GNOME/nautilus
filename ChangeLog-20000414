@@ -1,3 +1,12 @@
+2000-03-09  Andy Hertzfeld <andy@eazel.com>
+
+	* libnautilus/nautilus-icons-view-icon-item.c:
+	tweaked constants used to control amount of pre-lighting in "lighten"
+	routine
+	* components/music/nautilus-music-view.c:
+	fixed bug that Maciej found where the track number would show up as -1
+	if there was no encoded track number; now they show up as blank.
+	
 2000-03-09  Maciej Stachowiak  <mjs@eazel.com>
 
 	* libnautilus/nautilus-zoomable.c
