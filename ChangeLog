@@ -1,3 +1,16 @@
+2000-12-19  Mike Fleming  <mfleming@eazel.com>
+
+	* components/services/nautilus-dependent-shared/shared-service-widg
+	ets.c:
+	Added fixme
+
+	* components/mozilla/main.c: (main):
+	* components/services/summary/nautilus-view/main.c: (main):
+
+	Cleaned up the ammonite/gconf initialization mess.  gconf should
+	always be initialized before ammonite, and ammonite should always be
+	initizalized if you're going to use it.
+
 2000-12-19  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Maciej Stachowiak <mjs@eazel.com>

@@ -30,6 +30,7 @@
 #include <bonobo.h>
 #include "nautilus-summary-view.h"
 #include <gconf/gconf.h>
+#include <libtrilobite/libammonite.h>
 
 static int object_count =0;
 
@@ -91,6 +92,8 @@ main (int argc, char *argv[])
 
 	gconf_init (argc, argv, NULL);
 
+	ammonite_init (bonobo_poa());
+	
         registration_id = oaf_make_registration_id ("OAFIID:nautilus_summary_view_factory:1b0b1018-e0ca-4f14-8d23-7a134486ab30", getenv ("DISPLAY"));
 
 	factory = bonobo_generic_factory_new_multi (registration_id, 

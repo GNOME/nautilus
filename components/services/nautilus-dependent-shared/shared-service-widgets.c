@@ -112,6 +112,11 @@ create_image_widget (const char *icon_name, const char *tile_icon_name)
 
 /* create and return an image widget from a uri and a tiled background.
    It also pins the image to the specified dimensions */
+
+/* FIXME bugzilla.eazel.com 5138
+ * this calls gnome-vfs synchronously for an HTTP uri and thus can block
+ * the UI indefinitely
+ */
 GtkWidget*
 create_image_widget_from_uri (const char *uri, const char *tile_icon_name,
 			      int max_width, int max_height)

@@ -33,6 +33,8 @@
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
 
+#include <gconf/gconf.h>
+
 #ifdef EAZEL_SERVICES
 #include <libtrilobite/libammonite-gtk.h>
 #endif
@@ -95,6 +97,8 @@ main (int argc, char *argv[])
 	BonoboGenericFactory *factory;
 	CORBA_ORB orb;
 	char *registration_id;
+	GError *error_gconf = NULL;
+	char *fake_argv[] = { "nautilus-mozilla-content-view", NULL };
 
 	if (argc == 2 && 0 == strcmp (argv[1], "--self-test")) {
 		gboolean success;
@@ -111,7 +115,13 @@ main (int argc, char *argv[])
 	orb = oaf_init (argc, argv);
 	
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
-	
+
+	/* the fake_argv thing is just superstition.  I just don't
+	 * want gconf mucking with my args
+	 */
+	if (!gconf_init (1, fake_argv, &error_gconf)) {
+		g_warning ("Couldn't init gconf");
+	}
 	
         registration_id = oaf_make_registration_id ("OAFIID:nautilus_mozilla_content_view_factory:020a0285-6b96-4685-84a1-4a56eb6baa2b", getenv ("DISPLAY"));
 	factory = bonobo_generic_factory_new_multi (registration_id, 
@@ -125,7 +135,7 @@ main (int argc, char *argv[])
 	if (ammonite_init ((PortableServer_POA) bonobo_poa)) {
 		nautilus_mozilla_content_view_user_control = ammonite_get_user_control ();
 	}
-#endif 
+#endif
 
 #ifdef DEBUG_mfleming
 	g_print ("OAF registration complete.\n");
