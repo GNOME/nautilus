@@ -2604,11 +2604,6 @@ nautilus_file_get_activation_uri (NautilusFile *file)
 	if (file->details->activation_uri != NULL) {
 		return g_strdup (file->details->activation_uri);
 	}
-
-	/* If the file is a symbolic link, we return the file the link points at */
-	if (nautilus_file_is_symbolic_link (file)) {
-		return nautilus_file_get_symbolic_link_target_uri (file);
-	}
 	
 	return nautilus_file_get_uri (file);
 }
