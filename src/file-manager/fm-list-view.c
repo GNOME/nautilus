@@ -39,6 +39,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-macros.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libnautilus-private/eggtreemultidnd.h>
 #include <libnautilus-private/nautilus-directory-background.h>
 #include <libnautilus-private/nautilus-dnd.h>
 #include <libnautilus-private/nautilus-file-dnd.h>
@@ -140,31 +141,27 @@ event_after_callback (GtkWidget *widget, GdkEventAny *event, gpointer callback_d
 		fm_directory_view_activate_files (view, file_list);
 		nautilus_file_list_free (file_list);
 	}
-
-	if (event->type == GDK_BUTTON_PRESS
-	    && event->window == gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget))
-	    && (((GdkEventButton *) event)->button == 3)) {
-		/* Put up the right kind of menu if we right click in the tree view. */
-		if (tree_view_has_selection (GTK_TREE_VIEW (widget))) {
-			fm_directory_view_pop_up_selection_context_menu (view, (GdkEventButton *) event);
-		} else {
-			fm_directory_view_pop_up_background_context_menu (view, (GdkEventButton *) event);
-		}
-	}
 }
 
 static gboolean
 button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callback_data)
 {
+	FMListView *view;
 	GtkTreeView *tree_view;
 	GtkTreePath *path;
 	gboolean result;
 
+	view = FM_LIST_VIEW (callback_data);
 	tree_view = GTK_TREE_VIEW (widget);
 
 	if (event->window != gtk_tree_view_get_bin_window (tree_view)) {
 		return FALSE;
 	}
+
+	fm_list_model_set_drag_view
+		(FM_LIST_MODEL (gtk_tree_view_get_model (tree_view)),
+		 tree_view,
+		 event->x, event->y);
 
 	result = FALSE;
 
@@ -204,6 +201,16 @@ button_release_callback (GtkWidget *widget, GdkEventButton *event, gpointer call
 		file_list = fm_list_view_get_selection (view);
 		fm_directory_view_activate_files (view, file_list);
 		nautilus_file_list_free (file_list);
+	}
+
+	if (event->window == gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget))
+	    && (event->button == 3)) {
+		/* Put up the right kind of menu if we right click in the tree view. */
+		if (tree_view_has_selection (GTK_TREE_VIEW (widget))) {
+			fm_directory_view_pop_up_selection_context_menu (FM_DIRECTORY_VIEW (view), (GdkEventButton *) event);
+		} else {
+			fm_directory_view_pop_up_background_context_menu (FM_DIRECTORY_VIEW (view), (GdkEventButton *) event);
+		}
 	}
 
 	return FALSE;
@@ -346,8 +353,22 @@ create_and_set_up_tree_view (FMListView *view)
 {
 	GtkCellRenderer *cell;
 	GtkTreeViewColumn *column;
-	
+	GtkTargetEntry *drag_types;
+	int num_drag_types;	
+
 	view->details->tree_view = GTK_TREE_VIEW (gtk_tree_view_new ());
+
+	fm_list_model_get_drag_types (&drag_types, &num_drag_types);
+
+	egg_tree_multi_drag_add_drag_support (view->details->tree_view);
+
+	gtk_tree_view_enable_model_drag_source
+		(view->details->tree_view,
+		 GDK_BUTTON1_MASK | GDK_BUTTON3_MASK,
+		 drag_types,
+		 num_drag_types,
+		 GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK | GDK_ACTION_ASK);
+
 	view->details->drag_dest = 
 		nautilus_tree_view_drag_dest_new (view->details->tree_view);
 

@@ -24,12 +24,14 @@
 
 #include <config.h>
 #include "fm-list-model.h"
+#include <libnautilus-private/eggtreemultidnd.h>
 
 #include <string.h>
 #include <eel/eel-gtk-macros.h>
 #include <gtk/gtktreednd.h>
 #include <gtk/gtktreesortable.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
+#include <libnautilus-private/nautilus-dnd.h>
 
 #define G_SLIST(x) ((GSList *) x)
 
@@ -46,12 +48,29 @@ struct FMListModelDetails {
 	GtkSortType order;
 
 	gboolean sort_directories_first;
+
+	GtkTreeView *drag_view;
+	int drag_begin_x;
+	int drag_begin_y;
 };
+
+typedef struct {
+	FMListModel *model;
+	
+	GList *path_list;
+} DragDataGetInfo;
 
 typedef struct {
 	const char *attribute_name;
 	int sort_column_id;
 } AttributeEntry;
+
+static GtkTargetEntry drag_types [] = {
+	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
+	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
+	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL },
+	{ NAUTILUS_ICON_DND_TEXT_TYPE, 0, NAUTILUS_ICON_DND_TEXT }
+};
 
 /*
  * Do not change the order of the type and size attributes, they 
@@ -70,6 +89,8 @@ static const AttributeEntry attributes[] = {
 	{ "icon", FM_LIST_MODEL_TYPE_COLUMN },
 	{ "date_modified", FM_LIST_MODEL_DATE_MODIFIED_COLUMN },
 };
+
+static GtkTargetList *drag_target_list = NULL;
 
 static guint
 fm_list_model_get_flags (GtkTreeModel *tree_model)
@@ -485,18 +506,108 @@ fm_list_model_has_default_sort_func (GtkTreeSortable *sortable)
 }
 
 static gboolean
-fm_list_model_row_draggable (GtkTreeDragSource *drag_source, GtkTreePath *path)
+fm_list_model_multi_row_draggable (EggTreeMultiDragSource *drag_source, GList *path_list)
 {
-	/* We always return FALSE here until we can fix the dnd support */
-	return FALSE;
+	return TRUE;
+}
+
+static void
+each_path_get_data_binder (NautilusDragEachSelectedItemDataGet data_get,
+			   gpointer context,
+			   gpointer data)
+{
+	DragDataGetInfo *info;
+	GList *l;
+	NautilusFile *file;
+	GtkTreeRowReference *row;
+	GtkTreePath *path;
+	char *uri;
+	GdkRectangle cell_area;
+	GtkTreeViewColumn *column;
+	GtkTreeIter iter;
+
+	info = context;
+
+	g_return_if_fail (info->model->details->drag_view);
+
+	column = gtk_tree_view_get_column (info->model->details->drag_view, 0);
+
+	for (l = info->path_list; l != NULL; l = l->next) {
+		row = l->data;
+
+		path = gtk_tree_row_reference_get_path (row);
+
+		if (gtk_tree_model_get_iter (GTK_TREE_MODEL (info->model), 
+					     &iter, path)) {
+			gtk_tree_model_get (GTK_TREE_MODEL (info->model), 
+					    &iter, 
+					    FM_LIST_MODEL_FILE_COLUMN, &file,
+					    -1);
+
+			if (file) {
+				gtk_tree_view_get_cell_area
+					(info->model->details->drag_view,
+					 path, 
+					 column,
+					 &cell_area);
+				
+				uri = nautilus_file_get_uri (file);
+				
+				(*data_get) (uri, 
+					     cell_area.x - info->model->details->drag_begin_x,
+					     cell_area.y - info->model->details->drag_begin_y,
+					     cell_area.width, cell_area.height, 
+					     data);
+				
+				g_free (uri);
+			}
+		}
+		
+		gtk_tree_path_free (path);
+	}
 }
 
 static gboolean
-fm_list_model_drag_data_get (GtkTreeDragSource *drag_source, GtkTreePath *path, GtkSelectionData *selection_data)
+fm_list_model_multi_drag_data_get (EggTreeMultiDragSource *drag_source, 
+				   GList *path_list, 
+				   GtkSelectionData *selection_data)
 {
-	return FALSE;
+	FMListModel *model;
+	DragDataGetInfo context;
+	guint target_info;
+	
+	model = FM_LIST_MODEL (drag_source);
+
+	context.model = model;
+	context.path_list = path_list;
+
+	if (!drag_target_list) {
+		drag_target_list = gtk_target_list_new 
+			(drag_types, G_N_ELEMENTS (drag_types));
+
+	}
+
+	if (gtk_target_list_find (drag_target_list,
+				  selection_data->target,
+				  &target_info)) {
+		nautilus_drag_drag_data_get (NULL,
+					     NULL,
+					     selection_data,
+					     target_info,
+					     GDK_CURRENT_TIME,
+					     &context,
+					     each_path_get_data_binder);
+		return TRUE;
+	} else {
+		return FALSE;
+	}
 }
 
+static gboolean
+fm_list_model_multi_drag_data_delete (EggTreeMultiDragSource *drag_source, GList *path_list)
+{
+	return TRUE;
+}
 
 void
 fm_list_model_add_file (FMListModel *model, NautilusFile *file)
@@ -809,6 +920,29 @@ fm_list_model_get_column_id_from_zoom_level (NautilusZoomLevel zoom_level)
 	g_return_val_if_reached (FM_LIST_MODEL_STANDARD_ICON_COLUMN);
 }
 
+void
+fm_list_model_set_drag_view (FMListModel *model,
+			     GtkTreeView *view,
+			     int drag_begin_x,
+			     int drag_begin_y)
+{
+	g_return_if_fail (model != NULL);
+	g_return_if_fail (FM_IS_LIST_MODEL (model));
+	g_return_if_fail (!view || GTK_IS_TREE_VIEW (view));
+	
+	model->details->drag_view = view;
+	model->details->drag_begin_x = drag_begin_x;
+	model->details->drag_begin_y = drag_begin_y;
+}
+
+void
+fm_list_model_get_drag_types (GtkTargetEntry **entries,
+			      int *num_entries)
+{
+	*entries = drag_types;
+	*num_entries = G_N_ELEMENTS (drag_types);
+}
+
 static void
 fm_list_model_finalize (GObject *object)
 {
@@ -866,10 +1000,11 @@ fm_list_model_sortable_init (GtkTreeSortableIface *iface)
 }
 
 static void
-fm_list_model_drag_source_init (GtkTreeDragSourceIface *iface)
+fm_list_model_multi_drag_source_init (EggTreeMultiDragSourceIface *iface)
 {
-	iface->row_draggable = fm_list_model_row_draggable;
-	iface->drag_data_get = fm_list_model_drag_data_get;
+	iface->row_draggable = fm_list_model_multi_row_draggable;
+	iface->drag_data_get = fm_list_model_multi_drag_data_get;
+	iface->drag_data_delete = fm_list_model_multi_drag_data_delete;
 }
 
 GType
@@ -902,8 +1037,8 @@ fm_list_model_get_type (void)
 			NULL
 		};
 
-		static const GInterfaceInfo drag_source_info = {
-			(GInterfaceInitFunc) fm_list_model_drag_source_init,
+		static const GInterfaceInfo multi_drag_source_info = {
+			(GInterfaceInitFunc) fm_list_model_multi_drag_source_init,
 			NULL,
 			NULL
 		};
@@ -916,8 +1051,8 @@ fm_list_model_get_type (void)
 					     GTK_TYPE_TREE_SORTABLE,
 					     &sortable_info);
 		g_type_add_interface_static (object_type,
-					     GTK_TYPE_TREE_DRAG_SOURCE,
-					     &drag_source_info);
+					     EGG_TYPE_TREE_MULTI_DRAG_SOURCE,
+					     &multi_drag_source_info);
 	}
 	
 	return object_type;

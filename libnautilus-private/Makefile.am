@@ -36,6 +36,8 @@ marshal_sources = \
 
 libnautilus_private_la_SOURCES = \
 	$(nautilus_metafile_server_idl_sources)	\
+	eggtreemultidnd.c \
+	eggtreemultidnd.h \
 	nautilus-audio-player.c \
 	nautilus-audio-player.h \
 	nautilus-authn-manager.c \

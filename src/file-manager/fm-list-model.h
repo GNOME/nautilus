@@ -23,6 +23,8 @@
 */
 
 #include <gtk/gtktreemodel.h>
+#include <gtk/gtktreeview.h>
+#include <gdk/gdkdnd.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 
@@ -86,5 +88,17 @@ NautilusFileSortType fm_list_model_get_sort_type_from_sort_column_id (int       
 
 NautilusZoomLevel fm_list_model_get_zoom_level_from_column_id (int               column);
 int               fm_list_model_get_column_id_from_zoom_level (NautilusZoomLevel zoom_level);
+
+NautilusFile *    fm_list_model_file_for_path (FMListModel *model, GtkTreePath *path);
+
+
+
+void              fm_list_model_set_drag_view (FMListModel *model,
+					       GtkTreeView *view,
+					       int begin_x, 
+					       int begin_y);
+
+void              fm_list_model_get_drag_types (GtkTargetEntry **entries,
+						int *num_entries);
 
 #endif /* FM_LIST_MODEL_H */

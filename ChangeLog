@@ -1,3 +1,24 @@
+2002-07-26  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/Makefile.am: Added eggtreemultidnd.[ch].
+	* libnautilus-private/eggtreemultidnd.c:
+	* libnautilus-private/eggtreemultidnd.h: New files.
+	* src/file-manager/fm-list-model.c:
+	(fm_list_model_multi_row_draggable),
+	(fm_list_model_file_for_path),
+	(each_path_get_data_binder), (fm_list_model_multi_drag_data_get),
+	(fm_list_model_multi_drag_data_delete),
+	(fm_list_model_set_drag_view), (fm_list_model_get_drag_types),
+	(fm_list_model_multi_drag_source_init), (fm_list_model_get_type):
+	Implemented the multi drag source.
+	* src/file-manager/fm-list-model.h:
+	* src/file-manager/fm-list-view.c: (event_after_callback): Moved 
+	the context menu out of here...
+	(button_release_callback): to here.
+	(button_press_callback): Pass the current view and the position
+	to the model.
+	(create_and_set_up_tree_view): Enable drag source on the view.
+
 2002-07-25  Michael Meeks  <michael@ximian.com>
 
 	* libnautilus-private/nautilus-icon-factory.c
