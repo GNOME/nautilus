@@ -114,6 +114,11 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 		mozilla_preference_set_boolean ("nglayout.widget.gfxscrollbars", FALSE);
 		mozilla_preference_set_boolean ("security.checkloaduri", FALSE);
 		mozilla_preference_set ("general.useragent.misc", "Nautilus");
+
+#if 0
+		mozilla_preference_set ("network.proxy.http", "proxy");
+		mozilla_preference_set_int ("network.proxy.http_port", 80);
+#endif
 	}
 
 	/* Add callbacks to the beast */

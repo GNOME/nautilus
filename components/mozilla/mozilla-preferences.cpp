@@ -70,5 +70,23 @@ mozilla_preference_set_boolean (const char	*preference_name,
 	return FALSE;
 }
 
+extern "C" gboolean
+mozilla_preference_set_int (const char	*preference_name,
+			    gint	new_int_value)
+{
+	g_return_val_if_fail (preference_name != NULL, FALSE);
+
+	nsCOMPtr<nsIPref> pref = do_CreateInstance(NS_PREF_PROGID);
+	
+	if (pref)
+	{
+		nsresult rv = pref->SetIntPref (preference_name, new_int_value);
+
+		return NS_SUCCEEDED (rv) ? TRUE : FALSE;
+	}
+
+	return FALSE;
+}
+
 // 		pref->SetBoolPref("nglayout.widget.gfxscrollbars", PR_FALSE);
 // 		pref->SetBoolPref("security.checkloaduri", PR_FALSE);

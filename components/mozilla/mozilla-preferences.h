@@ -38,6 +38,8 @@ gboolean mozilla_preference_set         (const char *preference_name,
 					 const char *new_value);
 gboolean mozilla_preference_set_boolean (const char *preference_name,
 					 gboolean    new_boolean_value);
+gboolean mozilla_preference_set_int     (const char *preference_name,
+					 gint        new_int_value);
 
 #ifdef __cplusplus
 }
