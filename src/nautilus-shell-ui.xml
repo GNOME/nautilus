@@ -142,7 +142,7 @@
 
 	<submenu name="View" _label="_View">
 		<menuitem name="Reload"
-			  _label="_Refresh"
+			  _label="_Reload"
 			  accel="*Control*r"
 			  pixtype="stock" pixname="refresh"
 			  verb="Reload"/>
@@ -301,8 +301,12 @@
 	          min_width="48"
 	          pixtype="stock" pixname="gtk-go-up"
 	          verb="Up"/>
+	<toolitem name="Stop" _label="Stop"
+	          min_width="48"
+	          pixtype="stock" pixname="gtk-stop"
+	          verb="Stop"/>	
 	<toolitem name="Reload"
-		  _label="Refresh"
+		  _label="Reload"
 	          min_width="48"
 	          pixtype="stock" pixname="gtk-refresh"
 		  verb="Reload"/>
@@ -319,13 +323,6 @@
 	          type="toggle"
 	          pixtype="stock" pixname="Search"
 		  verb="Toggle Find Mode"/>
-
-	<separator/>
-
-	<toolitem name="Stop" _label="Stop"
-	          min_width="48"
-	          pixtype="stock" pixname="gtk-stop"
-	          verb="Stop"/>	
 
 	<placeholder name="Extra Buttons Placeholder" delimit="top"/>
 		
