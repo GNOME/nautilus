@@ -41,13 +41,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-/* comment this back in to see messages about each load_directory call:
+#if 0
+/* comment this back in to see messages about each load_directory call: */
 #define DEBUG_LOAD_DIRECTORY
-*/
+#endif
 
-/* comment this back in to check if async. job calls are balanced
+#if 0
+/* comment this back in to check if async. job calls are balanced */
 #define DEBUG_ASYNC_JOBS
-*/
+#endif
 
 #define METAFILE_PERMISSIONS (GNOME_VFS_PERM_USER_READ | GNOME_VFS_PERM_USER_WRITE \
 			      | GNOME_VFS_PERM_GROUP_READ | GNOME_VFS_PERM_GROUP_WRITE \

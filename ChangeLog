@@ -1,3 +1,28 @@
+2000-12-28  Pavel Cisler  <pavel@eazel.com>
+
+	Fixed bug 4952 (Move or copy or large number of items fails).
+	Final part of fix for bug 956 (UI takes time to become operational
+	after drag&drop)
+	
+	* libnautilus-extensions/nautilus-file-changes-queue.c:
+	(nautilus_file_changes_consume_changes): Fixed a bug in
+	the logic that chunked up file change notifications into groups
+	that could be all handled at once - before the fix each change
+	was processed individually. Grouped move, metadata move, position
+	setting and copy, metadata copy, position setting respectively
+	into groups that would get all processed in a single chunk.
+	Tweaked the maximum size of a changes chunk.
+	
+	* libnautilus-extensions/nautilus-file-changes-queue.c:
+	(nautilus_file_changes_queue_schedule_metadata_copy),
+	(nautilus_file_changes_queue_schedule_metadata_move),
+	(nautilus_file_changes_queue_schedule_metadata_remove),
+	(nautilus_file_changes_queue_schedule_position_setting):
+	Some renamings.
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	Small tweak to make turning on debugging diagnostics easier.
+
 2000-12-28  Mike Fleming  <mfleming@eazel.com>
 
 	* components/services/summary/nautilus-view/main.c: (main):
