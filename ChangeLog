@@ -1,3 +1,17 @@
+2000-10-23  Pavel Cisler  <pavel@eazel.com>
+
+	Last part of fix to 2989 - Disk thrashing on Nautilus startup.
+	* libnautilus-extensions/nautilus-trash-directory.c: (add_volume):
+	When starting up, don't try to create a Trash up-front, just search
+	for existing Trash directories. The first time Nautilus ever runs,
+	this will still take the same ammount of time, the next time it
+	will use the cached entries.
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_can_move_file_to_trash):
+	Trash monitor no longer creates Trash directories on startup.
+	Create them lazily when trying to move an item to the Trash.
+
 2000-10-23  Mathieu Lacage  <mathieu@eazel.com>
 
 	* user-guide/C/Makefile.am: make it install files for real...

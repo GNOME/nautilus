@@ -2366,9 +2366,11 @@ fm_directory_view_can_move_file_to_trash (FMDirectoryView *view, NautilusFile *f
 		return FALSE;
 	}
 	directory_uri = gnome_vfs_uri_new (directory);
-	
+
+	/* Create a new trash if needed but don't go looking for an old Trash.
+	 */
 	result = gnome_vfs_find_directory (directory_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
-					   &trash_dir_uri, FALSE, FALSE, 0777) == GNOME_VFS_OK;
+					   &trash_dir_uri, TRUE, FALSE, 0777) == GNOME_VFS_OK;
 	if (result) {
 		if (gnome_vfs_uri_equal (trash_dir_uri, directory_uri)
 		    || gnome_vfs_uri_is_parent (trash_dir_uri, directory_uri, TRUE)) {

@@ -155,9 +155,10 @@ add_volume (NautilusTrashDirectory *trash,
 	vfs_uri_as_list.data = vfs_uri;
 	vfs_uri_as_list.next = NULL;
 	vfs_uri_as_list.prev = NULL;
+	/* Search for Trash directories but don't create new ones. */
 	gnome_vfs_async_find_directory
 		(&trash_volume->handle, &vfs_uri_as_list, 
-		 GNOME_VFS_DIRECTORY_KIND_TRASH, TRUE, TRUE, 0777,
+		 GNOME_VFS_DIRECTORY_KIND_TRASH, FALSE, TRUE, 0777,
 		 find_directory_callback, trash_volume);
 }
 
