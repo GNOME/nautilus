@@ -388,6 +388,21 @@ menu_bar_no_resize_hack (NautilusWindow *window)
 	menu_bar->klass = menu_bar_no_resize_hack_class;
 }
 
+/* handle bonobo events from the throbber */
+static void 
+throbber_location_changed_callback (BonoboListener    *listener,
+		 char              *event_name, 
+		 CORBA_any         *arg,
+		 CORBA_Environment *ev,
+		 gpointer           user_data)
+{
+	NautilusWindow *window = NAUTILUS_WINDOW (user_data);
+	gchar    *location;
+
+	location = BONOBO_ARG_GET_STRING (arg);
+	nautilus_window_goto_uri (window, location);
+}
+
 static void
 nautilus_window_constructed (NautilusWindow *window)
 {
@@ -537,10 +552,20 @@ nautilus_window_constructed (NautilusWindow *window)
 	nautilus_window_initialize_toolbars (window);
 
 	/* watch for throbber location changes, too */
-	/*
-	gtk_signal_connect (GTK_OBJECT (window->throbber), "location_changed",
-			    goto_uri_callback, window);
-	*/
+	if (window->throbber != NULL) {
+		CORBA_Environment ev;
+		Bonobo_PropertyBag property_bag;
+		
+		CORBA_exception_init (&ev);
+		property_bag = Bonobo_Control_getProperties (window->throbber, &ev);
+	
+		if (property_bag != NULL && !BONOBO_EX (&ev)) {	
+			window->details->throbber_listener_id = bonobo_event_source_client_add_listener (property_bag, throbber_location_changed_callback, 
+	        		"Bonobo/Property:change:location", NULL, window); 
+			bonobo_object_release_unref (property_bag, &ev);	
+		}
+		CORBA_exception_free (&ev);
+	}
 	
 	/* Set initial sensitivity of some buttons & menu items 
 	 * now that they're all created.
@@ -665,6 +690,23 @@ nautilus_window_destroy (GtkObject *object)
 		bonobo_object_unref (BONOBO_OBJECT (window->details->ui_container));
 	}
 
+	/* get rid of the CORBA objects */
+	if (window->throbber != NULL) {
+		CORBA_Environment ev;
+		Bonobo_PropertyBag property_bag;
+		
+		CORBA_exception_init (&ev);
+		property_bag = Bonobo_Control_getProperties (window->throbber, &ev);
+	
+		if (property_bag != NULL && !BONOBO_EX (&ev)) {	
+			bonobo_event_source_client_remove_listener (property_bag, window->details->throbber_listener_id, &ev);
+			bonobo_object_release_unref (property_bag, &ev);	
+		}
+
+		bonobo_object_release_unref (window->throbber, &ev);		
+		CORBA_exception_free (&ev);
+	}
+	
 	g_free (window->details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (GTK_OBJECT (window)));

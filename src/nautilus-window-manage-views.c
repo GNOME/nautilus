@@ -1770,6 +1770,14 @@ failed_callback (NautilusViewFrame *view,
         change_state (window, VIEW_FAILED, NULL, view);
 }
 
+/* idle routine to accomplish the state change at idle time */
+static gboolean
+change_state_at_idle (NautilusWindow *window)
+{
+	change_state (window, LOAD_UNDERWAY, NULL, NULL);
+	return FALSE;
+}
+
 static void
 load_underway_callback (NautilusViewFrame *view,
                         NautilusWindow *window)
@@ -1785,9 +1793,10 @@ load_underway_callback (NautilusViewFrame *view,
          * or new really equally interesting?
          */
 
+	/* only perform the state change at idle time to avoid conflicting with idle routines */
         if (view == window->new_content_view
             || view == window->content_view) {
-                change_state (window, LOAD_UNDERWAY, NULL, NULL);
+ 		gtk_idle_add ((GtkFunction) change_state_at_idle, window);              
         }
 }
 

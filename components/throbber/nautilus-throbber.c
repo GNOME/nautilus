@@ -52,6 +52,7 @@
 
 struct NautilusThrobberDetails {
 	BonoboObject *control;
+	BonoboPropertyBag *property_bag;
 	GList	*image_list;
 
 	GdkPixbuf *quiescent_pixbuf;
@@ -65,11 +66,6 @@ struct NautilusThrobberDetails {
 	gboolean small_mode;
 };
 
-enum {
-	LOCATION_CHANGED,
-	LAST_SIGNAL
-};
-static guint signals[LAST_SIGNAL];
 
 static void     nautilus_throbber_initialize_class	 (NautilusThrobberClass *klass);
 static void     nautilus_throbber_initialize		 (NautilusThrobber *throbber);
@@ -96,18 +92,6 @@ nautilus_throbber_initialize_class (NautilusThrobberClass *throbber_class)
 {
 	GtkObjectClass *object_class = GTK_OBJECT_CLASS (throbber_class);
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (throbber_class);
-
-
-	signals[LOCATION_CHANGED] = gtk_signal_new
-		("location_changed",
-		 GTK_RUN_LAST,
-		 object_class->type,
-		 GTK_SIGNAL_OFFSET (NautilusThrobberClass,
-				    location_changed),
-		 gtk_marshal_NONE__STRING,
-		 GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 	
 	object_class->destroy = nautilus_throbber_destroy;
 
@@ -123,8 +107,7 @@ nautilus_throbber_initialize_class (NautilusThrobberClass *throbber_class)
 
 enum {
 	THROBBING,
-	LOCATION,
-	LOCATION_CHANGED_NOTIFY
+	LOCATION
 } MyArgs;
 
 
@@ -144,13 +127,24 @@ get_bonobo_properties (BonoboPropertyBag *bag,
 	NautilusThrobber *throbber = NAUTILUS_THROBBER (user_data);
 
 	switch (arg_id) {
-
 		case THROBBING:
 		{
 			BONOBO_ARG_SET_BOOLEAN (arg, throbber->details->timer_task > 0);
 			break;
 		}
 
+		case LOCATION:
+		{
+			char *location = nautilus_theme_get_theme_data ("throbber", "URL");
+			if (location != NULL) {
+				BONOBO_ARG_SET_STRING (arg, location);
+				g_free (location);
+			} else {
+				BONOBO_ARG_SET_STRING (arg, "");			
+			}
+		
+		}
+		
 		default:
 			g_warning ("Unhandled arg %d", arg_id);
 			break;
@@ -166,7 +160,6 @@ set_bonobo_properties (BonoboPropertyBag *bag,
 {
 	NautilusThrobber *throbber = NAUTILUS_THROBBER (user_data);
 	switch (arg_id) {
-
 		case THROBBING:
 		{
 			gboolean throbbing;
@@ -194,16 +187,21 @@ set_bonobo_properties (BonoboPropertyBag *bag,
 static void 
 nautilus_throbber_destroy (GtkObject *object)
 {
-	nautilus_throbber_remove_update_callback (NAUTILUS_THROBBER (object));
+	NautilusThrobber *throbber = NAUTILUS_THROBBER (object);
 	
-	nautilus_throbber_unload_images (NAUTILUS_THROBBER (object));
+	nautilus_throbber_remove_update_callback (throbber);
+	nautilus_throbber_unload_images (throbber);
 
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
 					      nautilus_throbber_theme_changed,
 					      object);
 
-	g_free (NAUTILUS_THROBBER (object)->details);
-	
+	if (throbber->details->property_bag) {
+		bonobo_object_unref (BONOBO_OBJECT (throbber->details->property_bag));
+	}
+
+	g_free (throbber->details);
+
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
@@ -253,7 +251,6 @@ get_throbber_dimensions (NautilusThrobber *throbber, int *throbber_width, int* t
 static void
 nautilus_throbber_initialize (NautilusThrobber *throbber)
 {
-	BonoboPropertyBag *property_bag;	
 	GtkWidget *box;
 	char *delay_str;
 	GtkWidget *widget = GTK_WIDGET (throbber);
@@ -290,12 +287,13 @@ nautilus_throbber_initialize (NautilusThrobber *throbber)
 	throbber->details->control = (BonoboObject*) bonobo_control_new (box);
 	
 	/* attach a property bag with the configure property */
-	property_bag = bonobo_property_bag_new (get_bonobo_properties, set_bonobo_properties, throbber);
-	bonobo_control_set_properties (BONOBO_CONTROL(throbber->details->control), property_bag);
-	bonobo_object_unref (BONOBO_OBJECT (property_bag));
+	throbber->details->property_bag = bonobo_property_bag_new (get_bonobo_properties, set_bonobo_properties, throbber);
+	bonobo_control_set_properties (BONOBO_CONTROL(throbber->details->control), throbber->details->property_bag);
 	
-	bonobo_property_bag_add (property_bag, "throbbing", THROBBING, BONOBO_ARG_BOOLEAN, NULL,
+	bonobo_property_bag_add (throbber->details->property_bag, "throbbing", THROBBING, BONOBO_ARG_BOOLEAN, NULL,
 				 "Throbber active", 0);
+	bonobo_property_bag_add (throbber->details->property_bag, "location", LOCATION, BONOBO_ARG_STRING, NULL,
+				 "associated URL", 0);
 	
 	/* allocate the pixmap that holds the image */
 	nautilus_throbber_load_images (throbber);
@@ -573,19 +571,22 @@ nautilus_throbber_load_images (NautilusThrobber *throbber)
 	g_free (image_theme);
 }
 
-/* handle button presses by emitting the location changed signal */
+/* handle button presses by posting a change on the "location" property */
 
 static gboolean
 nautilus_throbber_button_press_event (GtkWidget *widget, GdkEventButton *event)
 {	
 	char *location;
-
+	NautilusThrobber *throbber;
+	BonoboArg *location_arg;
+	
+	throbber = NAUTILUS_THROBBER (widget);
 	location = nautilus_theme_get_theme_data ("throbber", "URL");
 	if (location != NULL) {
-		gtk_signal_emit (GTK_OBJECT (widget),
-			 signals[LOCATION_CHANGED],
-			 location);
-	
+		location_arg = bonobo_arg_new (BONOBO_ARG_STRING);
+		BONOBO_ARG_SET_STRING (location_arg, location);			
+		bonobo_property_bag_notify_listeners (throbber->details->property_bag, "location", location_arg, NULL);
+		bonobo_arg_release (location_arg);
 		g_free (location);
 	}
 	

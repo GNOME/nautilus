@@ -38,6 +38,8 @@ struct NautilusWindowDetails
         /* Bonobo. */
         BonoboUIContainer *ui_container;
         BonoboUIComponent *shell_ui;
+	Bonobo_EventSource_ListenerId throbber_listener_id;
+	
         gboolean updating_bonobo_state;
         
         /* Menus. */

@@ -1,3 +1,33 @@
+2001-01-16  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-window-manage-views.c: (change_state_at_idle),
+	(load_underway_callback):
+	fixed bug 5657, crash during menu update when switching views.  This is
+	also behind several other reported bugs.  Fixed it as Darin suggested,
+	which is to defer the window state change associated with loading
+	a new component until idle time, so it doesn't wreak havoc
+	by interrupting other idle routines.
+	
+	* components/throbber/nautilus-throbber.c:
+	(nautilus_throbber_initialize_class), (get_bonobo_properties),
+	(set_bonobo_properties), (nautilus_throbber_destroy),
+	(nautilus_throbber_initialize),
+	(nautilus_throbber_button_press_event):
+	added a location property and made it issue a notification when the
+	throbber is clicked on.  Also, removed the no longer used
+	"location_changed" signal and better memory management of the
+	property bag.
+		
+	* src/nautilus-window.c: (throbber_location_changed_callback),
+	(nautilus_window_constructed), (nautilus_window_destroy):
+	make clicking on the throbber work by adding a listener for
+	the throbber location property and changing the location
+	accordingly when the event is posted.  Also, fixed a leak
+	of the bonobo object.
+	
+	* src/nautilus-window-private.h:
+	added a field to hold the event source listener ID.
+
 2001-01-15  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/throbber/main.c: (main):
