@@ -44,6 +44,7 @@
 #include <gtk/gtkwindow.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-xfer.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
@@ -1106,9 +1107,15 @@ icon_container_activate_callback (NautilusIconContainer *container,
 
 static gint play_file(NautilusFile *file)
 {
-	char *file_uri, *mime_type;
+	char *file_uri, *file_path, *mime_type;
 	
 	file_uri = nautilus_file_get_uri(file);
+	gnome_vfs_unescape_string(file_uri);
+	if (nautilus_str_has_prefix(file_uri, "file://"))
+		file_path = file_uri + 7;
+	else
+		file_path = file_uri;
+		
 	mime_type = nautilus_file_get_mime_type(file);
 			
 	mp3_pid = fork ();
@@ -1116,10 +1123,9 @@ static gint play_file(NautilusFile *file)
 		/* set the group (session) id to this process for future killing */
 		setsid();
 		if (!nautilus_strcmp(mime_type, "audio/x-mp3"))
-			execlp ("mpg123", "mpg123", "-q", file_uri + 7, NULL);
+			execlp ("mpg123", "mpg123", "-q", file_path, NULL);
 		else
-			execlp ("play", "play", file_uri + 7, NULL);
-		
+			execlp ("play", "play", file_path, NULL);
 		_exit (0);
 	}
 

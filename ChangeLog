@@ -1,3 +1,18 @@
+2000-06-01  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/file-manager/fm-icon-view.c: (play_file):
+	fixed bug where sounds that had spaces or other special characters
+	in their name wouldn't preview properly; fixed by calling
+	gnome_vfs_unescape_string on the uri.
+	
+	* icons/Makefile.am:
+	* icons/computer.svg:
+	added a more generic, vector-based computer icon
+	* data/top/Computer.link:
+	switched the computer link to use the vector icon
+	* icons/eazel/i-directory-accept.svg:
+	changed the open folder icon to use a nicer one with gradients
+
 2000-06-01  Darin Adler  <darin@eazel.com>
 
 	* components/services/startup/nautilus-view/nautilus-service-startup-view.c:

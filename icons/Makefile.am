@@ -10,6 +10,7 @@ icon_DATA =\
 	backgrounds.png \
 	colors.png \
 	computer.png \
+	computer.svg \
 	eazel-logo.gif \
 	emblem-certified.gif \
 	emblem-changed.gif \
