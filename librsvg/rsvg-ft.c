@@ -867,17 +867,18 @@ rsvg_ft_measure_or_render_string (RsvgFTCtx *ctx,
 	init_y = affine[5];
 	n_glyphs = 0;
 
+	/* Alloc max length of wide char */
+	wcstr = g_new0 (wchar_t, length);
+	wclength = mbstowcs (wcstr, str, length);
+
 	/* mbstowcs fallback.  0 means not found any wide chars.
 	 * -1 means an invalid sequence was found.  In either of 
 	 * these two cases we fill in the wide char array with 
 	 * the single byte chars.
 	 */
-	wclength = mbstowcs (NULL, str, 0);
 	if (wclength > 0) {
-		wcstr = g_new0 (wchar_t, wclength + 1);
-		length = mbstowcs (wcstr, str, wclength + 1);
+		length = wclength;
 	} else {
-		wcstr = g_new0 (wchar_t, length);
 		for (i = 0; i < length; i++) {
 			wcstr[i] = (unsigned char) str[i];
 		}
