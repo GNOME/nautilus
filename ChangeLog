@@ -1,3 +1,24 @@
+2000-11-03  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* Makefile.am:
+	* configure.in:
+	* helper-scripts/.cvsignore:
+	* helper-scripts/Makefile.am:
+	* helper-scripts/nautilus-verify-rpm.sh:
+	Add a place to put helper-scripts.
+	
+	* helper-utilities/error-dialog/Makefile.am:
+	Dont link in with Nautilus libraries and dependencies.
+	
+	* helper-utilities/error-dialog/nautilus-error-dialog.c:
+	(find_message_label), (find_message_label_callback),
+	(show_message_box), (show_ok_box), (nautilus_error_dialog),
+	(nautilus_yes_no_dialog), (main):
+	Add support for specifying button labels on the command line.
+	
+	* src/run-nautilus:
+	Call the nautilus rpm verification script and bail if it fails.
+	
 2000-11-03  Darin Adler  <darin@eazel.com>
 
 	* README: Tell everyone that we are back on bonobo HEAD.

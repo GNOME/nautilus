@@ -14,6 +14,7 @@ SUBDIRS =			\
 	libnautilus-adapter	\
 	libnautilus-extensions 	\
 	helper-utilities 	\
+	helper-scripts		\
 	src 			\
 	components		\
 	$(APPLETS_SUBDIRS)	\
@@ -54,6 +55,3 @@ install-data-hook: nautilus-clean.sh
 	    $(INSTALL_PROGRAM) $(srcdir)/$$p $(DESTDIR)/$(prefix)/bin/$$p; \
 	  else :; fi; \
 	done
-
-caca:
-	@echo $(APPLETS_SUBDIRS)
