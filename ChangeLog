@@ -1,3 +1,17 @@
+2000-11-06  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (eazel_download_progress_signal),
+	(eazel_install_progress_signal), (tree_helper), (install_failed):
+	Nicer output from the cli tool.
+	* components/services/install/lib/eazel-install-logic.c:
+	(eazel_install_check_for_file_conflicts),
+	(eazel_install_do_file_conflict_check):
+	Fix for 4579.
+	
+	* nautilus-installer/src/link.sh:
+	turn off debug
+
 2000-11-06  Darin Adler  <darin@eazel.com>
 
 	* src/nautilus-shell.c: (display_caveat):

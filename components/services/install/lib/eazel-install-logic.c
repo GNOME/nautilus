@@ -370,10 +370,23 @@ eazel_install_check_for_file_conflicts (EazelInstall *service,
 						     1,
 						     pack->modifies);
 		if (g_list_length (owners) > 1) {
+			GList *pit;
 			/* FIXME: bugzilla.eazel.com 2959
 			   More then one packages owns this file,
 			   this cannot happen (or should not at least)
 			*/
+			trilobite_debug ("***************************************************");
+			trilobite_debug ("More then one package owns the file %s", filename);
+			trilobite_debug ("This is filed as bug 2959");
+			trilobite_debug ("Try rpm --rebuilddb");
+			for (pit = owners; pit; pit = g_list_next (pit)) {
+				char *tmp;
+				PackageData *owner = (PackageData*)(pit->data);
+				tmp = packagedata_get_readable_name (owner);
+				trilobite_debug ("a owner is %s", tmp);
+				g_free (tmp);
+			}
+			trilobite_debug ("halting...");
 			g_assert_not_reached ();
 		} else if (g_list_length (owners) == 1) {
 			PackageData *owner = (PackageData*)owners->data;
@@ -1989,9 +2002,16 @@ eazel_install_do_file_conflict_check (EazelInstall *service,
 					GList *reqiterator;
 					for (reqiterator = required;reqiterator;glist_step (reqiterator)) {
 						PackageData *required_pack = (PackageData*)reqiterator->data;
-						PackageRequirement *req;
-						req = packagerequirement_new (pack, required_pack);
-						(*requirements) = g_list_prepend (*requirements, req);
+						if (g_list_find_custom (*packages, 
+									required_pack->name,
+									(GCompareFunc)eazel_install_package_name_compare)) {
+							trilobite_debug ("but we're updating it (requirement)");
+							/* packagedata_destroy (broken_package, FALSE); */
+						} else {
+							PackageRequirement *req;
+							req = packagerequirement_new (pack, required_pack);
+							(*requirements) = g_list_prepend (*requirements, req);
+						}
 					}
 				} else {
 					GList *break_iterator;
@@ -2022,8 +2042,9 @@ eazel_install_do_file_conflict_check (EazelInstall *service,
 	
 	/* Now clean up */
 	for (iterator = tmp_failed; iterator; glist_step (iterator)) {
-		(*failedpackages) = g_list_prepend (*failedpackages, iterator->data);
-		(*packages) = g_list_remove (*packages, iterator->data);
+		PackageData *cpack = (PackageData*)(iterator->data);
+		(*failedpackages) = g_list_prepend (*failedpackages, cpack);
+		(*packages) = g_list_remove (*packages, cpack);
 	}
 }
 

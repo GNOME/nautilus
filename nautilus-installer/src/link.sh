@@ -1,6 +1,6 @@
 #! /bin/bash
 
-DEBUG="yes"
+DEBUG="no"
 
 GNOME=/gnome
 BUILD_DATE=`date +%d%b%y-%H%M`
