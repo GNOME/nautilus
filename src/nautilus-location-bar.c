@@ -1,3 +1,4 @@
+
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /*
@@ -305,7 +306,8 @@ try_to_expand_path (NautilusLocationBar *bar)
 	char *dir_name;
 	char *expand_text;
 	char *expand_name;
-	
+	char *tilde_expand_name;
+
 	editable = GTK_EDITABLE (bar->details->entry);
 	user_location = gtk_editable_get_chars (editable, 0, -1);
 	bar->details->idle_id = 0;
@@ -339,7 +341,7 @@ try_to_expand_path (NautilusLocationBar *bar)
 		g_free (current_path);
 		return FALSE;	
 	}
-	
+
 	base_length = strlen (base_name);
 	dir_name = gnome_vfs_uri_extract_dirname (uri);
 
@@ -372,11 +374,17 @@ try_to_expand_path (NautilusLocationBar *bar)
 	
 	/* if we've got something, add it to the entry */	
 	if (expand_text && !nautilus_str_has_suffix (current_path, expand_text)) {
-		gtk_entry_append_text (GTK_ENTRY (editable), expand_text + base_length);
- 		gtk_entry_select_region (GTK_ENTRY (editable), current_path_length - offset,
+	        gtk_entry_append_text (GTK_ENTRY (editable), expand_text + base_length);
+		gtk_entry_select_region (GTK_ENTRY (editable), current_path_length - offset,
 					 current_path_length + strlen (expand_text) - base_length - offset);
 		g_free (expand_text);
 	}
+
+	tilde_expand_name = gtk_entry_get_text (GTK_ENTRY (editable));
+	if (*tilde_expand_name == '~') {
+		gtk_entry_set_text (GTK_ENTRY (editable), gnome_vfs_expand_initial_tilde (tilde_expand_name));
+	}
+	g_free (tilde_expand_name);
 	
 	g_free (dir_name);
 	g_free (base_name);
@@ -540,6 +548,7 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 
 	entry = nautilus_entry_new ();
 	NAUTILUS_ENTRY (entry)->special_tab_handling = TRUE;
+	NAUTILUS_ENTRY (entry)->expand_tilde = TRUE;
 	
 	gtk_signal_connect_object (GTK_OBJECT (entry), "activate",
 				   nautilus_navigation_bar_location_changed, GTK_OBJECT (bar));

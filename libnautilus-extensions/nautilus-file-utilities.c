@@ -154,9 +154,14 @@ nautilus_make_uri_from_input (const char *location)
 		break;
 	case '~':
 		path = gnome_vfs_expand_initial_tilde (stripped);
-		uri = gnome_vfs_get_uri_from_local_path (path);
-		g_free (path);
-		break;
+                /* deliberately falling into default case on fail */
+		if (*path == '/') {
+			uri = gnome_vfs_get_uri_from_local_path (path);
+			g_free (path);
+			break;
+		}
+                g_free (path);
+                /* don't insert break here, read above comment */
 	default:
 		if (has_valid_scheme (stripped)) {
 			uri = g_strdup (stripped);

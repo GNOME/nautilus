@@ -1031,52 +1031,61 @@ add_pattern_to_browser (const char *path_name, gpointer *data)
 	
 	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER(data);
 
-	/* fetch the mime type and make sure that the file is an image */
-	path_uri = gnome_vfs_get_uri_from_local_path (path_name);	
+	/* FIXME this is not a problem in nautilus but rather in the
+        gtk widget that selects the tiles. that would have to be fixed to
+        support tilde's. at the moment this is the best we can do. */
+	if (*path_name != '~') {
+		/* fetch the mime type and make sure that the file is an image */
+		path_uri = gnome_vfs_get_uri_from_local_path (path_name);	
 
-	/* don't allow the user to change the reset image */
-	basename = nautilus_uri_get_basename (path_uri);
-	if (basename && nautilus_strcmp (basename, RESET_IMAGE_NAME) == 0) {
-		nautilus_show_error_dialog (_("Sorry, but you can't replace the reset image."), _("Not an Image"), NULL);
-		g_free (path_uri);
-		g_free (basename);
-		return;
-	}
+		/* don't allow the user to change the reset image */
+		basename = nautilus_uri_get_basename (path_uri);
+		if (basename && nautilus_strcmp (basename, RESET_IMAGE_NAME) == 0) {
+			nautilus_show_error_dialog (_("Sorry, but you can't replace the reset image."), _("Not an Image"), NULL);
+			g_free (path_uri);
+			g_free (basename);
+			return;
+		}
 		
-	g_free(path_uri);	
-	g_free (basename);
-	
-	user_directory = nautilus_get_user_directory ();
+		g_free (path_uri);	
+		g_free (basename);
+		
+		user_directory = nautilus_get_user_directory ();
+		
+		/* copy the image file to the patterns directory */
+		directory_path = nautilus_make_path (user_directory, property_browser->details->category);
+		g_free (user_directory);
+		source_file_name = strrchr (path_name, '/');
+		destination_name = nautilus_make_path (directory_path, source_file_name + 1);
 
-	/* copy the image file to the patterns directory */
-	directory_path = nautilus_make_path (user_directory, property_browser->details->category);
-	g_free (user_directory);
-	source_file_name = strrchr (path_name, '/');
-	destination_name = nautilus_make_path (directory_path, source_file_name + 1);
-	
-	/* make the directory if it doesn't exist */
-	if (!g_file_exists(directory_path)) {
-		directory_uri = gnome_vfs_get_uri_from_local_path (directory_path);
-		gnome_vfs_make_directory (directory_uri,
-					  GNOME_VFS_PERM_USER_ALL
-					  | GNOME_VFS_PERM_GROUP_ALL
-					  | GNOME_VFS_PERM_OTHER_READ);
-		g_free (directory_uri);
-	}
-	
-	g_free(directory_path);
-	
-	result = nautilus_copy_uri_simple (path_name, destination_name);		
-	if (result != GNOME_VFS_OK) {
-		char *message = g_strdup_printf (_("Sorry, but the pattern %s couldn't be installed."), path_name);
+		/* make the directory if it doesn't exist */
+		if (!g_file_exists(directory_path)) {
+			directory_uri = gnome_vfs_get_uri_from_local_path (directory_path);
+			gnome_vfs_make_directory (directory_uri,
+						  GNOME_VFS_PERM_USER_ALL
+						  | GNOME_VFS_PERM_GROUP_ALL
+						  | GNOME_VFS_PERM_OTHER_READ);
+			g_free (directory_uri);
+		}
+		
+		g_free (directory_path);
+		
+		result = nautilus_copy_uri_simple (path_name, destination_name);		
+		if (result != GNOME_VFS_OK) {
+			char *message = g_strdup_printf (_("Sorry, but the pattern %s couldn't be installed."), path_name);
+			nautilus_show_error_dialog (message, _("Couldn't install pattern"), GTK_WINDOW (property_browser));
+			g_free (message);
+		}
+		
+		g_free (destination_name);
+		
+		/* update the property browser's contents to show the new one */
+		nautilus_property_browser_update_contents (property_browser);
+	} else {
+	        char *message = g_strdup_printf (_("Sorry, but ~ as a directory is not currently supported.\n Please Type the full path."));
 		nautilus_show_error_dialog (message, _("Couldn't install pattern"), GTK_WINDOW (property_browser));
 		g_free (message);
 	}
-				
-	g_free(destination_name);
-	
-	/* update the property browser's contents to show the new one */
-	nautilus_property_browser_update_contents(property_browser);
 }
 
 /* here's where we initiate adding a new pattern by putting up a file selector */

@@ -27,6 +27,7 @@
 #include "nautilus-text-caption.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-glib-extensions.h"
+#include "nautilus-entry.h"
 
 #include <gtk/gtklabel.h>
 #include <gtk/gtkentry.h>
@@ -99,7 +100,7 @@ nautilus_text_caption_initialize (NautilusTextCaption *text_caption)
 	gtk_box_set_homogeneous (GTK_BOX (text_caption), FALSE);
 	gtk_box_set_spacing (GTK_BOX (text_caption), TEXT_CAPTION_SPACING);
 
-	text_caption->detail->text = gtk_entry_new ();
+	text_caption->detail->text = nautilus_entry_new ();
 
 	gtk_entry_set_editable (GTK_ENTRY (text_caption->detail->text), TRUE);
 
@@ -198,4 +199,13 @@ nautilus_text_caption_set_editable (NautilusTextCaption *text_caption,
 	g_return_if_fail (NAUTILUS_IS_TEXT_CAPTION (text_caption));
 
 	gtk_entry_set_editable (GTK_ENTRY (text_caption->detail->text), editable);
+}
+
+void
+nautilus_text_caption_set_expand_tilde (NautilusTextCaption *text_caption,
+					gboolean expand_tilde)
+{
+	g_return_if_fail (NAUTILUS_IS_TEXT_CAPTION (text_caption));
+
+	NAUTILUS_ENTRY (text_caption->detail->text)->expand_tilde = TRUE;
 }

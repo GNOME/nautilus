@@ -431,6 +431,13 @@ preferences_item_create_editable_string (NautilusPreferencesItem	*item,
 	
 	item->details->child = nautilus_text_caption_new ();
 
+	/* FIXME This is a special case for the home uri preference,
+	   in the future this should be generalized. */
+	if (g_strcasecmp (preference_name, "preferences/home_uri") == 0)
+	{
+		nautilus_text_caption_set_expand_tilde (NAUTILUS_TEXT_CAPTION (item->details->child), TRUE);
+	}
+
 	nautilus_caption_set_title_label (NAUTILUS_CAPTION (item->details->child), description);
 
 	g_free (description);

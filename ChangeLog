@@ -1,3 +1,46 @@
+2001-02-13  Arik Devens  <arik@eazel.com>
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+
+	Fixed bug 5837, 'Home Location' preference should accept ~.
+	Fixed bug 6463, GNOME-VFS spews critical errors as you type an
+	incomplete path in the location bar. 
+	Fixed bug 6478, nautilus crashes on ~somedir/ if that dir
+	doesn't exist.
+	Fixed bug 6506, Entering "~" in Add New Background Dialogue box
+	causes Nautilus to crash.
+
+	* libnautilus-extensions/nautilus-entry.c:
+	(nautilus_entry_initialize), (nautilus_entry_key_press): Added
+	setting of expand_tilde to FALSE. Added a slash case so that ~/
+	gets expanded to $(HOMEDIR).
+	* libnautilus-extensions/nautilus-entry.h: Added gboolean
+	expand_tilde to the NautilusEntry struct.
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_make_uri_from_input): Added falling into default case
+	on ~'s if the dir doesn't exist so they end up at http://'s.
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(preferences_item_create_editable_string): Added special case
+	setting of expand_tilde to TRUE on the home dir preference box.
+	As well as a FIXME saying this should be dealt with later on.
+	* libnautilus-extensions/nautilus-text-caption.c:
+	(nautilus_text_caption_initialize), (entry_changed_callback),
+	(nautilus_text_caption_set_editable),
+	(nautilus_text_caption_set_expand_tilde): Changed
+	NautilusTextCaption to use NautilusEntry instead of GtkEntry.
+	Added function to set expand tilde on NautilusText Caption.
+	Updated set_editable to work with NautilusEntry.
+	* libnautilus-extensions/nautilus-text-caption.h: Added
+	nautilus_text_caption_set_expand_tilde function prototype.
+	* src/nautilus-location-bar.c: (try_to_expand_path),
+	(nautilus_location_bar_initialize): Added expanding of ~'s at
+	the beginning of the location to full path. Added setting of
+	expand_tilde to TRUE.
+	* src/nautilus-property-browser.c: (add_pattern_to_browser):
+	Added if statement to not attempt to do anything if the dir
+	chosen uses ~ do to gtk brokenness. Also added error dialog
+	that explains what happened to the user.
+
 2001-02-13  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-theme-selector.c:

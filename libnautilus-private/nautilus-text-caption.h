@@ -71,6 +71,9 @@ void  nautilus_text_caption_set_text     (NautilusTextCaption *text_caption,
 void  nautilus_text_caption_set_editable (NautilusTextCaption *text_caption,
 					  gboolean             editable);
 
+void  nautilus_text_caption_set_expand_tilde (NautilusTextCaption *text_caption,
+                                             gboolean             expand_tilde);
+
 END_GNOME_DECLS
 
 #endif /* NAUTILUS_TEXT_CAPTION_H */
