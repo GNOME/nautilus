@@ -1,3 +1,28 @@
+2000-10-10  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(handle_gconf_error), (mozilla_content_view_set_proxy_preferences),
+	(mozilla_content_view_one_time_happenings),
+	(nautilus_mozilla_content_view_initialize):
+	Factor out the one time happenings (preferences mostly) into their
+	own function for clarity.  Make sure gconf errors are handled.
+
+2000-10-10  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* components/mozilla/Makefile.am:
+	* components/mozilla/eazel-protocol-handler/.cvsignore:
+	* components/mozilla/eazel-protocol-handler/Makefile.am:
+	* components/mozilla/eazel-protocol-handler/eazel-protocol-channel.cpp:
+	* components/mozilla/eazel-protocol-handler/eazel-protocol-channel.h:
+	* components/mozilla/eazel-protocol-handler/eazel-protocol-handler.cpp:
+	* components/mozilla/eazel-protocol-handler/eazel-protocol-handler.h:
+	* components/mozilla/eazel-protocol-handler/eazel-protocol-module.cpp:
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(nautilus_mozilla_content_view_initialize):
+	* configure.in:
+	Remove the eazel protocol handler monstrosity.  We have a better
+	way to do this using M18 and using the DOM to peek into the document.
+	
 2000-10-10  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-operations.c:

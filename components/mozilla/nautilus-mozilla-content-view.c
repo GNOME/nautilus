@@ -47,6 +47,8 @@
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <stdlib.h>
+#include <libgnomeui/gnome-dialog.h>
+#include <libgnomeui/gnome-dialog-util.h>
 
 struct NautilusMozillaContentViewDetails {
 	char				 *uri;
@@ -128,16 +130,131 @@ nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass 
 	object_class->destroy = nautilus_mozilla_content_view_destroy;
 }
 
-static gboolean mozilla_one_time_happenings = FALSE;
+/* Handle a gconf error.  Post an error dialog only the first time an error occurs.
+ * Return TRUE if there was an error.  FALSE if there was no error.
+ */
+static gboolean
+handle_gconf_error (GError **error)
+{
+	static gboolean shown_dialog = FALSE;
+	
+	g_return_val_if_fail (error != NULL, FALSE);
+
+	if (*error != NULL) {
+		g_warning (_("GConf error:\n  %s"), (*error)->message);
+		if (!shown_dialog) {
+			char *message;
+			GtkWidget *dialog;
+			
+			shown_dialog = TRUE;
+
+			message = g_strdup_printf (_("GConf error:\n  %s\n"
+						     "All further errors shown "
+						     "only on terminal"),
+						   (*error)->message);
+			
+			dialog = gnome_error_dialog (message);
+		}
+		g_error_free (*error);
+		*error = NULL;
+		
+		return TRUE;
+	}
+	
+	return FALSE;
+}
+
+/* Setup http proxy prefrecens.  This is done by using gconf to read the 
+ * /system/gnome-vfs/proxy preference and then seting this information
+ * for the mozilla networking library via mozilla preferences. 
+ */
+static void
+mozilla_content_view_set_proxy_preferences (NautilusMozillaContentView *view)
+{
+	GConfClient *gconf_client;
+	char *proxy_string = NULL;
+	
+        g_return_if_fail (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (view));
+	
+	/* Initialize gconf if needed */
+	if (!gconf_is_initialized ()) {
+		GError *error = NULL;
+		char *argv[] = { "nautilus-mozilla-component", NULL };
+		
+		if (!gconf_init (1, argv, &error)) {
+			
+			if (handle_gconf_error (&error)) {
+				return;
+			}
+		}
+	}
+	
+	gconf_client = gconf_client_get_default ();
+
+	if (gconf_client != NULL) {
+		GError *error = NULL;
+
+		if (gconf_client_get_bool (gconf_client, USE_PROXY_KEY, &error)) {
+			proxy_string = gconf_client_get_string (gconf_client, PROXY_KEY, &error);
+			if (handle_gconf_error (&error)) {
+				return;
+			}
+
+			if (proxy_string != NULL) {
+				char *proxy, *port;						
+				port = strchr (proxy_string, ':');
+				if (port != NULL) {
+					proxy = g_strdup (proxy_string);
+					proxy [port - proxy_string] = '\0';
+					port++;							
+					
+					mozilla_preference_set ("network.proxy.http", proxy);
+					mozilla_preference_set_int ("network.proxy.http_port", atoi (port));
+					
+					/* 1, Configure proxy settings manually */
+					mozilla_preference_set_int ("network.proxy.type", 1);
+					
+					g_free (proxy_string);
+					g_free (proxy);
+				}
+			}
+		}
+		else {
+			/* Default is 3, which conects to internet hosts directly */
+			mozilla_preference_set_int ("network.proxy.type", 3);
+		}
+		
+		gtk_object_unref (GTK_OBJECT (gconf_client));
+	}
+}
+
+static void
+mozilla_content_view_one_time_happenings (NautilusMozillaContentView *view)
+{
+	static gboolean once = FALSE;
+
+	if (once == TRUE) {
+		return;
+	}
+
+	once = TRUE;
+
+	/* Tell the gecko layout engine to use GTK scrollbars.  Currently BROKEN. */
+	mozilla_preference_set_boolean ("nglayout.widget.gfxscrollbars", FALSE);
+
+	/* Tell the security manager to allow ftp:// and file:// content through. */
+	mozilla_preference_set_boolean ("security.checkloaduri", FALSE);
+
+	/* Change http protocol user agent to include the string 'Nautilus' */
+	mozilla_preference_set ("general.useragent.misc", "Nautilus");
+
+	/* Locate and set proxy preferences */
+	mozilla_content_view_set_proxy_preferences (view);
+}
 
 static void
 nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 {
-	GConfClient *gconf_client;
-  	GError *error = NULL;
-  	char *argv[] = { "nautilus-mozilla-component", NULL };
-  	char *proxy_string = NULL;
-  	
 	view->details = g_new0 (NautilusMozillaContentViewDetails, 1);
 
 	view->details->uri = NULL;
@@ -147,50 +264,9 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 	/* Conjure up the beast.  May God have mercy on our souls. */
 	view->details->mozilla = gtk_moz_embed_new ();
 
-	if (!mozilla_one_time_happenings)
-	{
-		mozilla_one_time_happenings = TRUE;
+	/* Do preference/environment setup that needs to happen only once */
+	mozilla_content_view_one_time_happenings (view);
 
-		/*
-		 * Set some mozilla preferences 
-		 */
-		mozilla_preference_set_boolean ("nglayout.widget.gfxscrollbars", FALSE);
-		mozilla_preference_set_boolean ("security.checkloaduri", FALSE);
-		mozilla_preference_set ("general.useragent.misc", "Nautilus");
-
-		/* Locate and set proxy preferences */
-		if (gconf_init (1, argv, &error)) {
-			gconf_client = gconf_client_get_default ();
-			if (gconf_client != NULL) {
-				if (gconf_client_get_bool (gconf_client, USE_PROXY_KEY, &error)) {
-					proxy_string = gconf_client_get_string (gconf_client, PROXY_KEY, &error);
-					if (proxy_string != NULL) {
-						char *proxy, *port;						
-						port = strchr (proxy_string, ':');
-						if (port != NULL) {
-							proxy = g_strdup (proxy_string);
-							proxy [port - proxy_string] = '\0';
-							port++;							
-
-							mozilla_preference_set ("network.proxy.http", proxy);
-							mozilla_preference_set_int ("network.proxy.http_port", atoi (port));
-
-							/* 1, Configure proxy settings manually */
-							mozilla_preference_set_int ("network.proxy.type", 1);
-							
-							g_free (proxy_string);
-							g_free (proxy);
-						}
-					}
-				} else {
-					/* Default is 3, which conects to internet hosts directly */
-					mozilla_preference_set_int ("network.proxy.type", 3);
-				}
-				gtk_object_unref (GTK_OBJECT (gconf_client));
-			}
-		}
-	}
-	
 	/* Add callbacks to the beast */
 	gtk_signal_connect_while_alive (GTK_OBJECT (view->details->mozilla), 
 					"title",
