@@ -437,16 +437,16 @@ preferences_box_populate_pane (NautilusPreferencesBox *preferences_box,
 	g_return_if_fail (items != NULL);
 
 	/* Create the pane if needed */
-	pane = preferences_box_find_pane (preferences_box, pane_name);
+	pane = preferences_box_find_pane (preferences_box, _(pane_name));
 	if (pane == NULL) {
-		pane = NAUTILUS_PREFERENCES_PANE (preferences_box_add_pane (preferences_box, pane_name));
+		pane = NAUTILUS_PREFERENCES_PANE (preferences_box_add_pane (preferences_box, _(pane_name)));
 	}
 
 	group_names = eel_string_list_new (TRUE);
 
 	for (i = 0; items[i].group_name != NULL; i++) {
-		if (!eel_string_list_contains (group_names, items[i].group_name)) {
-			eel_string_list_insert (group_names, items[i].group_name);
+		if (!eel_string_list_contains (group_names, _(items[i].group_name))) {
+			eel_string_list_insert (group_names, _(items[i].group_name));
 			nautilus_preferences_pane_add_group (pane,
 							     _(items[i].group_name));
 		}
@@ -454,14 +454,14 @@ preferences_box_populate_pane (NautilusPreferencesBox *preferences_box,
 
 	for (i = 0; items[i].group_name != NULL; i++) {
 		group = NAUTILUS_PREFERENCES_GROUP (nautilus_preferences_pane_find_group (pane,
-											  items[i].group_name));
+											  _(items[i].group_name)));
 		g_return_if_fail (NAUTILUS_IS_PREFERENCES_GROUP (group));
 
 		if (items[i].preference_description != NULL) {
 			nautilus_preferences_set_description (items[i].preference_name,
 							      _(items[i].preference_description));
 		}
-
+		
 		if (items[i].preference_name != NULL) {
 			item = NAUTILUS_PREFERENCES_ITEM (nautilus_preferences_group_add_item (group,
 											       items[i].preference_name,
