@@ -401,6 +401,8 @@ update_properties_window_icon (GtkImage *image)
 	pixbuf = get_pixbuf_for_properties_window (window);
 
 	gtk_image_set_from_pixbuf (image, pixbuf);
+
+	gtk_window_set_icon (GTK_WINDOW (window), pixbuf);
 	
 	g_object_unref (pixbuf);
 }
