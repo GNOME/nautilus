@@ -37,7 +37,7 @@
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
-#include "fm-directory-view.h"
+#include <libnautilus-extensions/nautilus-link.h>
 
 typedef enum {
 	XFER_MOVE,
