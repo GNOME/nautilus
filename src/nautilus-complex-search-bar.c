@@ -36,6 +36,7 @@
 #include <gtk/gtkeventbox.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtkvbox.h>
+#include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-dock.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -232,7 +233,7 @@ nautilus_complex_search_bar_initialize (NautilusComplexSearchBar *bar)
 			    queue_search_bar_resize_callback,
 			    bar);
 
-	bar->details->more_options = gtk_button_new_with_label ("More Options");
+	bar->details->more_options = gtk_button_new_with_label (_("More Options"));
 	gtk_signal_connect (GTK_OBJECT (bar->details->more_options), "clicked",
 			    more_options_callback, bar);
 				
@@ -242,7 +243,7 @@ nautilus_complex_search_bar_initialize (NautilusComplexSearchBar *bar)
 			   FALSE, FALSE, FALSE, FALSE);
 	gtk_widget_show (bar->details->more_options);
 
-	bar->details->fewer_options = gtk_button_new_with_label ("Fewer Options");
+	bar->details->fewer_options = gtk_button_new_with_label (_("Fewer Options"));
 	gtk_signal_connect (GTK_OBJECT (bar->details->fewer_options), "clicked",
 			    fewer_options_callback, bar);
 
@@ -260,7 +261,7 @@ nautilus_complex_search_bar_initialize (NautilusComplexSearchBar *bar)
 				    TRUE,
 				    FALSE,
 				    1);
-	find_them_label = gtk_label_new ("Find Them!");
+	find_them_label = gtk_label_new (_("Find Them!"));
 	gtk_box_pack_start (GTK_BOX (find_them_box),
 			    find_them_label,
 			    TRUE,
