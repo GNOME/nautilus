@@ -379,16 +379,28 @@ file_list_to_mime_type_hash_table (GList *files)
                                         printf ("XXX content mime type: %s\n", mime_type);
 #endif
                                         g_hash_table_insert (result, mime_type, mime_type);
+                                } else {
+                                        g_free (mime_type);
                                 }
                         }
-
-                        g_free (mime_type);
                 }
         }
 
         return result;
 }
 
+static void
+free_key (gpointer key, gpointer value, gpointer user_data)
+{
+        g_free (key);
+}
+
+static void
+mime_type_hash_table_destroy (GHashTable *table)
+{
+        g_hash_table_foreach (table, free_key, NULL);
+        g_hash_table_destroy (table);
+}
 
 static gboolean
 server_matches_content_requirements (OAF_ServerInfo *server, GHashTable *type_table)
@@ -531,7 +543,7 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
                         }
                 }
 
-                g_hash_table_destroy (content_types);
+                mime_type_hash_table_destroy (content_types);
         } else {
                 CORBA_exception_free (&ev);
                 result_code = NAUTILUS_NAVIGATION_RESULT_NO_HANDLER_FOR_TYPE;

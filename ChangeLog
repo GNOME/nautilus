@@ -1,3 +1,14 @@
+2000-05-04  Darin Adler  <darin@eazel.com>
+
+	* src/ntl-uri-map.c: (file_list_to_mime_type_hash_table),
+	(free_key), (mime_type_hash_table_destroy),
+	(got_file_info_callback): Fixed bug I introduced earlier.
+	Now MIME types are just like other text -- potentially
+	dynamically computed and all.
+
+	Special thank-you fix for Carbamide. All his testing he deserves
+	some special treatment.
+
 2000-05-04  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/run-nautilus: Pass command line arguments on to the script.
