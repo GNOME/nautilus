@@ -39,6 +39,7 @@
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-client.h>
+#include <libgnomeui/gnome-ui-init.h>
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <stdlib.h>
 #include <string.h>
@@ -193,9 +194,11 @@ nautilus_view_standard_main_multi (const char *executable_name,
 #endif
 
 	/* Initialize libraries. */
-	g_thread_init (NULL);
-	gnome_vfs_init ();
-
+	gnome_program_init (executable_name, version,
+			    LIBGNOMEUI_MODULE,
+			    argc, argv,
+			    NULL);
+	
 	bonobo_ui_init (executable_name, version, &argc, argv);
 
 	/* Disable session manager connection */

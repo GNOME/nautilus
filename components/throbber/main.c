@@ -27,6 +27,7 @@
 
 #include <eel/eel-debug.h>
 #include <libgnomeui/gnome-client.h>
+#include <libgnomeui/gnome-ui-init.h>
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <string.h>
@@ -74,6 +75,13 @@ main (int argc, char *argv[])
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
 		eel_make_warnings_and_criticals_stop_in_debugger ();
 	}
+
+	/* Initialize libraries. */
+	gnome_program_init ("nautilus-throbber",
+			    VERSION,
+			    LIBGNOMEUI_MODULE,
+			    argc, argv,
+			    NULL);
 
 	bonobo_ui_init ("nautilus-throbber", VERSION, &argc, argv);
 
