@@ -1,5 +1,20 @@
 2000-02-15  John Sullivan <sullivan@eazel.com>
 
+	Moved NautilusBookmark to libnautilus, in preparation for
+	using it in the History metaview.
+
+	* src/nautilus-bookmark.c: Removed file.
+	* src/nautilus-bookmark.h: Removed file.
+	* src/Makefile.am: Took out these two files.
+	
+	* libnautilus/nautilus-bookmark.c: Added file.
+	* libnautilus/nautilus-bookmark.h: Added file.
+	* libnautilus/Makefile.am:  Build the two new files.
+
+	* src/nautilus-bookmarklist.h: Updated #include
+
+2000-02-15  John Sullivan <sullivan@eazel.com>
+
 	Right-click menus from Back and Forward buttons now include
 	small icons. To support this, window back/forward lists now
 	store NautilusBookmarks.

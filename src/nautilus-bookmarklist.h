@@ -26,7 +26,7 @@
 #define NAUTILUS_BOOKMARKLIST_H 1
 
 #include <gnome.h>
-#include "nautilus-bookmark.h"
+#include <libnautilus/nautilus-bookmark.h>
 
 typedef struct _NautilusBookmarklist NautilusBookmarklist;
 

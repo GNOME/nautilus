@@ -34,6 +34,7 @@ libnautilusinclude_HEADERS=			\
 	nautilus.h				\
 	nautilus-alloc.h			\
 	nautilus-background.h			\
+	nautilus-bookmark.h			\
 	nautilus-debug.h			\
 	nautilus-directory.h			\
 	nautilus-file-utilities.h		\
@@ -59,6 +60,7 @@ libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	gtkscrollframe.c			\
 	nautilus-background.c			\
 	nautilus-background-canvas-group.c	\
+	nautilus-bookmark.c			\
 	nautilus-debug.c			\
 	nautilus-default-file-icon.c		\
 	nautilus-default-file-icon.h		\

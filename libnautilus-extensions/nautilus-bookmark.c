@@ -22,9 +22,8 @@
    Authors: John Sullivan <sullivan@eazel.com>
 */
 
-#include "nautilus.h"
 #include "nautilus-bookmark.h"
-#include <libnautilus/nautilus-icon-factory.h>
+#include "nautilus-icon-factory.h"
 
 struct _NautilusBookmarkDetails
 {

@@ -22,8 +22,6 @@ LDADD=	file-manager/libntl-file-manager.la \
 nautilus_SOURCES=			\
 	explorer-location-bar.c         \
 	explorer-location-bar.h		\
-	nautilus-bookmark.c		\
-	nautilus-bookmark.h		\
 	nautilus-bookmarklist.c		\
 	nautilus-bookmarklist.h		\
 	nautilus-bookmarks-menu.c	\
