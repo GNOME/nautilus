@@ -252,7 +252,7 @@ eazel_install_download_packages (EazelInstall *service,
 		(*failed_packages) = remove_list;
 	}
 
-	return TRUE;
+	return result;
 }
 
 /* Checks for pre-existance of all the packages

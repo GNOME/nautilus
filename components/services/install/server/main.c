@@ -62,12 +62,12 @@ trilobite_service_factory_destroy (GtkObject *object)
 {
 	trilobites_active--;
 
-	g_message ("eazel_install trilobites active = %d", trilobites_active);
+	trilobite_debug ("destroy, eazel_install trilobites active = %d", trilobites_active);
 	if (trilobites_active != 0) {
 		return;
 	}
 
-	g_message ("Destroying factory object");
+	trilobite_debug ("Destroying factory object");
 
 	bonobo_object_unref (BONOBO_OBJECT (factory)); 
 	gtk_main_quit ();
@@ -130,30 +130,12 @@ int main(int argc, char *argv[]) {
 
 	g_datalist_init (&data);
 	g_datalist_set_data (&data, "debug", (void *)1);
-	if (trilobite_init ("trilobite-sample-service", "0.1", "/tmp/trilobite-install.log", argc, argv, data) == FALSE) {
+	if (trilobite_init ("trilobite-eazel-install-service", "0.1", "/tmp/trilobite-install.log",
+			    argc, argv, data) == FALSE) {
 		g_error ("Could not initialize trilobite. :(");
 		exit (1);
 	}
 	g_datalist_clear (&data);
-
-#if 0	/* hopefully obsoleted by trilobite_init */
-#define TEST_NEW_PASSWORD_STUFF
-#ifdef TEST_NEW_PASSWORD_STUFF
-
-	gnome_init_with_popt_table ("trilobite-sample-service", "0.1", argc, argv, oaf_popt_options, 0, NULL);
-	orb = oaf_init (argc, argv);
-#else
-	gtk_type_init ();
-	gnomelib_init ("trilobite-eazel-install-service-factory", "0.1");
-	gnomelib_register_popt_table (oaf_popt_options, "Trilobite-Eazel-Install-Server");
-	orb = oaf_init (argc, argv);
-	gnomelib_parse_args (argc, argv, 0);
-#endif 	
-
-	if (bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL) == FALSE) {
-		g_error ("Could not initialize Bonobo");
-	}
-#endif	/* 0 */
 
 	gnome_vfs_init ();
 

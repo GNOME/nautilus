@@ -1,3 +1,18 @@
+2000-09-05  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-protocols.c:
+	(eazel_install_fetch_package):
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_download_packages):
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_install_downloading):
+	* components/services/install/server/main.c:
+	(trilobite_service_factory_destroy), (main):
+
+	Fix small bug in eazel-install (don't set the downloaded flag if
+	the rpm didn't get downloaded); correct FIXME comment; clean up
+	install main to have the right log domain and remove unused code.
+
 2000-09-05  Michael Engber  <engber@eazel.com>
 	
 	We now update the gnome_config settings that store the list

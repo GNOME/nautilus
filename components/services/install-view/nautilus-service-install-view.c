@@ -510,8 +510,7 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const char *name
 	char *out;
 	const char *root_name, *tmp;
 
-	/* the "name" is annoyingly the entire path */
-	/* FIXME bugzilla.eazel.com 2586: this will change. */
+	/* sometimes the "name" is annoyingly the entire path */
 	root_name = name;
 	while ((tmp = strchr (root_name, '/')) != NULL) {
 		root_name = tmp+1;
