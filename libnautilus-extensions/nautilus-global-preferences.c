@@ -637,9 +637,9 @@ global_preferences_register (void)
 	/* Click activation type */
 	global_preferences_register_enum_with_defaults (NAUTILUS_PREFERENCES_CLICK_POLICY,
 							_("Click policy"),
-							NAUTILUS_CLICK_POLICY_SINGLE,
-							NAUTILUS_CLICK_POLICY_SINGLE,
-							NAUTILUS_CLICK_POLICY_SINGLE);
+							NAUTILUS_CLICK_POLICY_DOUBLE,
+							NAUTILUS_CLICK_POLICY_DOUBLE,
+							NAUTILUS_CLICK_POLICY_DOUBLE);
 	
 	nautilus_preference_enum_add_entry_by_name (NAUTILUS_PREFERENCES_CLICK_POLICY,
 						    _("single"),

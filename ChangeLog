@@ -1,3 +1,19 @@
+2000-09-14  Andy Hertzfeld  <andy@eazel.com>
+
+	changed the default click policy from single click to double click as
+	a result of our first wave of user testing
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_register):
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(in_single_click_mode):
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(button_press_event):
+	* src/file-manager/fm-icon-view.c:
+	(fm_icon_view_update_click_mode):
+	* src/file-manager/fm-list-view.c:
+	(fm_list_view_update_click_mode):
+
 2000-09-14  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-operations.c:

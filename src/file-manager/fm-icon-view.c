@@ -2272,7 +2272,7 @@ fm_icon_view_update_click_mode (FMIconView *icon_view)
 	g_assert (icon_container != NULL);
 
 	click_mode = nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
-						    NAUTILUS_CLICK_POLICY_SINGLE);
+						    NAUTILUS_CLICK_POLICY_DOUBLE);
 
 
 	nautilus_icon_container_set_single_click_mode (icon_container,

@@ -2105,7 +2105,7 @@ button_press_event (GtkWidget *widget,
 
 	/* Ignore double click if we are in single click mode */
 	click_mode = nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
-						    NAUTILUS_CLICK_POLICY_SINGLE);						    
+						    NAUTILUS_CLICK_POLICY_DOUBLE);						    
 	if (click_mode == NAUTILUS_CLICK_POLICY_SINGLE && click_count >= 2) {		
 		return TRUE;
 	}

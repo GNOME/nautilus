@@ -649,7 +649,7 @@ in_single_click_mode ()
 {
 	/* Perhaps this should be computed elsewhere and passed in. */
 	return nautilus_preferences_get_enum 
-		(NAUTILUS_PREFERENCES_CLICK_POLICY, NAUTILUS_CLICK_POLICY_SINGLE) == 
+		(NAUTILUS_PREFERENCES_CLICK_POLICY, NAUTILUS_CLICK_POLICY_DOUBLE) == 
 			NAUTILUS_CLICK_POLICY_SINGLE;
 
 }
