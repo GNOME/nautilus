@@ -88,6 +88,10 @@ static void nautilus_label_size_request     (GtkWidget              *widget,
 static void render_buffer_pixbuf            (NautilusBufferedWidget *buffered_widget,
 					     GdkPixbuf              *buffer);
 
+/* Private NautilusLabel things */
+static void label_recompute_line_geometries (NautilusLabel          *label);
+
+
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusLabel, nautilus_label, NAUTILUS_TYPE_BUFFERED_WIDGET)
 
 /* Class init methods */
@@ -315,17 +319,17 @@ render_buffer_pixbuf (NautilusBufferedWidget *buffered_widget, GdkPixbuf *buffer
 
 
 	if (total_text_width <= widget->allocation.width) {
-		area.x0 = (widget->allocation.width - total_text_width) / 2;
+		area.x0 = ((int) widget->allocation.width - (int) total_text_width) / 2;
 	}
 	else {
-		area.x0 = - (total_text_width - widget->allocation.width) / 2;
+		area.x0 = - ((int) total_text_width - (int) widget->allocation.width) / 2;
 	}
 	
 	if (total_text_height <= widget->allocation.height) {
-		area.y0 = (widget->allocation.height - total_text_height) / 2;
+		area.y0 = ((int) widget->allocation.height - (int) total_text_height) / 2;
 	}
 	else {
-		area.y0 = - (total_text_height - widget->allocation.height) / 2;
+		area.y0 = - ((int) total_text_height - (int) widget->allocation.height) / 2;
 	}
 
 	area.x1 = area.x0 + total_text_width + label->detail->drop_shadow_offset;
@@ -370,26 +374,12 @@ render_buffer_pixbuf (NautilusBufferedWidget *buffered_widget, GdkPixbuf *buffer
 	}
 }
 
-/* Public NautilusLabel */
-GtkWidget*
-nautilus_label_new (void)
-{
-	return GTK_WIDGET (gtk_type_new (nautilus_label_get_type ()));
-}
-
-void
-nautilus_label_set_text (NautilusLabel	*label,
-			 const gchar	*text)
+/* Private NautilusLabel things */
+static void
+label_recompute_line_geometries (NautilusLabel *label)
 {
 	g_return_if_fail (NAUTILUS_IS_LABEL (label));
 
-	if (nautilus_str_is_equal (text, label->detail->text)) {
-		return;
-	}
-	
-	g_free (label->detail->text);
-	label->detail->text = text ? g_strdup (text) : NULL;
-	
 	g_strfreev (label->detail->text_lines);
 	g_free (label->detail->text_line_widths);
 	g_free (label->detail->text_line_heights);
@@ -422,6 +412,29 @@ nautilus_label_set_text (NautilusLabel	*label,
 							   &label->detail->max_text_line_width,
 							   &label->detail->total_text_line_height);
 	}
+}
+
+/* Public NautilusLabel */
+GtkWidget*
+nautilus_label_new (void)
+{
+	return GTK_WIDGET (gtk_type_new (nautilus_label_get_type ()));
+}
+
+void
+nautilus_label_set_text (NautilusLabel	*label,
+			 const gchar	*text)
+{
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+
+	if (nautilus_str_is_equal (text, label->detail->text)) {
+		return;
+	}
+	
+	g_free (label->detail->text);
+	label->detail->text = text ? g_strdup (text) : NULL;
+	
+	label_recompute_line_geometries (label);
 
 	gtk_widget_queue_resize (GTK_WIDGET (label));
 }
@@ -441,6 +454,7 @@ nautilus_label_set_font (NautilusLabel		*label,
 {
 	g_return_if_fail (NAUTILUS_IS_LABEL (label));
 	g_return_if_fail (NAUTILUS_IS_SCALABLE_FONT (font));
+	g_return_if_fail (font != NULL);
 
 	if (label->detail->font == font) {
 		return;
@@ -454,6 +468,8 @@ nautilus_label_set_font (NautilusLabel		*label,
 	gtk_object_ref (GTK_OBJECT (font));
 
 	label->detail->font = font;
+
+	label_recompute_line_geometries (label);
 	
 	gtk_widget_queue_resize (GTK_WIDGET (label));
 }
@@ -483,6 +499,8 @@ nautilus_label_set_font_size (NautilusLabel	*label,
 	}
 
 	label->detail->font_size = font_size;
+
+	label_recompute_line_geometries (label);
 
 	gtk_widget_queue_resize (GTK_WIDGET (label));
 }

@@ -1,3 +1,20 @@
+2000-08-23  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-label.c: (render_buffer_pixbuf),
+	(label_recompute_line_geometries), (nautilus_label_new),
+	(nautilus_label_set_text), (nautilus_label_set_font),
+	(nautilus_label_set_font_size):
+	Bug 2286 - sidebar text gets cut off.  The problem was that the
+	text geometry was not being recomputed on changes that affected
+	it, like font and font size.   Put the geometry code to a new
+	function.
+
+	Also fix a dumb overflow bug caused by abusing guint16.
+	
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(nautilus_scalable_font_draw_text_lines):
+	Was not setting the rectangle end point.
+	
 2000-08-22  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 1570, Undo of typing when renaming says

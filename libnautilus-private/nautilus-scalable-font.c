@@ -909,7 +909,9 @@ nautilus_scalable_font_draw_text_lines (const NautilusScalableFont  *font,
 			g_assert_not_reached ();
 		}
 
+		area.x1 = area.x0 + text_line_widths[i];
 		area.y0 = y;
+		area.y1 = area.y0 + text_line_heights[i];
 
 		nautilus_scalable_font_draw_text (font,
 						  destination_pixbuf,
