@@ -100,7 +100,6 @@ static GList *nautilus_application_window_list;
 /* Keeps track of all the object windows */
 static GList *nautilus_application_spatial_window_list;
 
-static gboolean need_to_show_first_time_druid     (void);
 static void     desktop_changed_callback          (gpointer                  user_data);
 static void     desktop_location_changed_callback (gpointer                  user_data);
 static void     volume_unmounted_callback         (GnomeVFSVolumeMonitor    *monitor,
@@ -368,36 +367,6 @@ migrate_old_nautilus_files (void)
 	g_free (migrated_file);
 }
 
-static gint
-create_starthere_link_callback (gpointer data)
-{
-	char *desktop_path;
-	char *desktop_link_file;
-	char *cmd;
-	
-	/* Create default services icon on the desktop */
-	desktop_path = nautilus_get_desktop_directory ();
-	desktop_link_file = g_build_filename (desktop_path,
-					      "starthere.desktop",
-					      NULL);
-
-	cmd = g_strconcat ("/bin/cp ",
-			   NAUTILUS_DATADIR,
-			   "/starthere-link.desktop ",
-			   desktop_link_file,
-			   NULL);
-
-	if (system (cmd) != 0) {
-		g_warning ("Failed to execute command '%s'\n", cmd);
-	}
-	
-	g_free (desktop_path);
-	g_free (desktop_link_file);
-	g_free (cmd);
-	
-	return FALSE;
-}
-
 static void
 finish_startup (NautilusApplication *application)
 {
@@ -502,16 +471,6 @@ nautilus_application_startup (NautilusApplication *application,
 	 */
 	if (!kill_shell && !check_required_directories (application)) {
 		return;
-	}
-
-	/* Run the first time startup druid if needed. */
-	if (do_first_time_druid_check && need_to_show_first_time_druid ()) {
-		/* Do this at idle time, once nautilus has initialized
-		 * itself. Otherwise we may spawn a second nautilus
-		 * process when looking for a metadata factory..
-		 */
-		g_idle_add (create_starthere_link_callback, NULL);
-		nautilus_set_first_time_file_flag ();
 	}
 
 	initialize_kde_trash_hack ();
@@ -1102,51 +1061,6 @@ desktop_changed_callback (gpointer user_data)
 	 * itself changing since ordering is important
 	 */
 	update_session (gnome_master_client ());
-}
-
-/*
- * need_to_show_first_time_druid
- *
- * Determine whether Nautilus needs to show the first time druid.
- * 
- * Note that the flag file indicating whether the druid has been
- * presented is: ~/.nautilus/first-time-flag.
- *
- * Another alternative could be to use preferences to store this flag
- * However, there because of bug 41229 this is not yet possible.
- *
- * Also, for debugging purposes, it is convenient to have just one file
- * to kill in order to test the startup druid:
- *
- * rm -f ~/.nautilus/first-time-flag
- *
- * In order to accomplish the same thing with preferences, you would have
- * to either kill ALL your preferences or spend time digging in ~/.gconf
- * xml files finding the right one.
- */
-static gboolean
-need_to_show_first_time_druid (void)
-{
-	gboolean result;
-	char *user_directory;
-	char *druid_flag_file_name;
-	
-	user_directory = nautilus_get_user_directory ();
-
-	druid_flag_file_name = g_strconcat (user_directory, "/first-time-flag", NULL);
-	result = !g_file_test (druid_flag_file_name, G_FILE_TEST_EXISTS);
-	g_free (druid_flag_file_name);
-
-	/* we changed the name of the flag for version 1.0, so we should
-	 * check for and delete the old one, if the new one didn't exist 
-	 */
-	if (result) {
-		druid_flag_file_name = g_strconcat (user_directory, "/first-time-wizard-flag", NULL);
-		unlink (druid_flag_file_name);
-		g_free (druid_flag_file_name);
-	}
-	g_free (user_directory); 
-	return result;
 }
 
 static gboolean

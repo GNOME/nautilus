@@ -96,7 +96,6 @@
 #define ID_SHOW_HIDE_LOCATION_BAR                       "Show Hide Location Bar"
 #define ID_SHOW_HIDE_STATUS_BAR                         "Show Hide Statusbar"
 
-#define START_HERE_URI          "start-here:"
 #define COMPUTER_URI          "computer:"
 #define BURN_CD_URI          "burn:"
 
@@ -359,15 +358,6 @@ go_menu_home_callback (BonoboUIComponent *component,
 		       const char *verb) 
 {
 	nautilus_window_go_home (NAUTILUS_WINDOW (user_data));
-}
-
-static void
-go_menu_start_here_callback (BonoboUIComponent *component, 
-			     gpointer user_data, 
-			     const char *verb) 
-{
-	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
-			       START_HERE_URI);
 }
 
 static void
@@ -677,7 +667,6 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 		BONOBO_UI_VERB ("Backgrounds and Emblems", backgrounds_and_emblems_callback),
 		BONOBO_UI_VERB ("Up", go_menu_up_callback),
 		BONOBO_UI_VERB ("Home", go_menu_home_callback),
-		BONOBO_UI_VERB ("Start Here", go_menu_start_here_callback),
 		BONOBO_UI_VERB ("Go to Computer", go_menu_go_to_computer_callback),
 		BONOBO_UI_VERB ("Go to Templates", go_menu_go_to_templates_callback),
 		BONOBO_UI_VERB ("Go to Trash", go_menu_go_to_trash_callback),
