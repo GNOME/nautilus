@@ -32,7 +32,7 @@
 #include <gtk/gtkobject.h>
 
 /* NautilusSignaller is a class that manages signals between
-   disconnected file manager code. File manager objects connect to these signals
+   disconnected Nautilus code. Nautilus objects connect to these signals
    so that other objects can cause them to be emitted later, without
    the connecting and emit-causing objects needing to know about each
    other. It seems a shame to have to invent a subclass and a special
@@ -62,8 +62,6 @@ struct _NautilusSignaller
 struct _NautilusSignallerClass
 {
 	GtkObjectClass parent_class;
-
-	void (* icon_text_changed) (NautilusSignaller *signaller);
 };
 
 /* Basic GtkObject requirements. */

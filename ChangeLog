@@ -1,3 +1,59 @@
+2000-08-31  Rebecca Schulman  <rebecka@eazel.com>
+	Completed the rest of 2369 for the required
+	milestone.
+
+	* check-FIXME.pl: Make the script a little
+	bit smarter about recognizing FIXMEs with
+	bug reports.
+
+	* src/nautilus-search-bar-criterion.c:
+	* src/nautilus-search-bar-criterion.h:
+	* src/nautilus-search-bar-criterion-private.h:	
+	(nautilus_search_bar_criterion_destroy),
+	(nautilus_search_bar_criterion_new), (option_menu_callback),
+	(nautilus_search_bar_criterion_set_callback),
+	(nautilus_search_bar_criterion_new_from_values),
+	(nautilus_search_bar_criterion_next_new),
+	(nautilus_search_bar_criterion_first_new),
+	(nautilus_search_bar_criterion_get_location),
+	(get_next_default_search_criterion_type),
+	(nautilus_search_bar_criterion_show),
+	(nautilus_search_bar_criterion_hide),
+	(nautilus_search_bar_criterion_human_from_uri),
+	(nautilus_search_uri_get_first_criterion), (get_name_location_for),
+	(get_content_location_for), (get_file_type_location_for),
+	(get_size_location_for), (get_emblem_location_for),
+	(get_date_modified_location_for), (get_owner_location_for),
+	(make_emblem_value_menu), (emblems_changed_callback):
+	* libnautilus-extensions/Makefile.am:
+	* src/Makefile.am:
+	moved search bar criterion class out of 
+	libnautilus-extensions and into /src
+	Added acceptance of the emblems changed signal, which
+	causes a redraw of an emblem criteria menu.
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_destroy), (construct_private_metafile_vfs_uri),
+	(nautilus_directory_new):
+	Changed the name of metafile_vfs_uri function from
+	metafile_uri to reflect its return of a gnome vfs uri.
+	Check for the case where the metafile was not successfully 
+	created when freeing.
+
+	* src/nautilus-complex-search-bar.c: (criterion_callback):
+	got rid of extraneous print statement.
+	
+	* src/nautilus-property-browser.c: (remove_emblem),
+	(emblem_dialog_clicked), (emit_emblems_changed_signal):
+	Added the emission of signals that happen when the list of 
+	emblems change so that we tell the search bar about it.
+	
+	* src/nautilus-signaller.c: (nautilus_signaller_initialize_class):
+	* src/nautilus-signaller.h:
+	Added an "emblems changed" signal to the signaller's vocabulary,
+	since we need a global signal, so this seems to be the logical
+	object to attach it to.
+
 2000-08-31  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 2013 (Enter should start complex search when any

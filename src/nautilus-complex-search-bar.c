@@ -103,7 +103,6 @@ static void criterion_callback (NautilusSearchBarCriterion *old_criterion,
 				       old_criterion);
 	row = g_slist_position (bar->details->search_criteria,
 				criterion_list);
-	g_print ("row %d\n", row);
 
 	list = g_slist_remove (bar->details->search_criteria,
 			       old_criterion);

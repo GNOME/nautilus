@@ -32,7 +32,9 @@
 #include <math.h>
 #include <ctype.h>
 
+
 #include "nautilus-property-browser.h"
+#include "nautilus-signaller.h"
 
 #include <parser.h>
 #include <xmlmemory.h>
@@ -131,6 +133,7 @@ static void  nautilus_property_browser_drag_data_get    (GtkWidget              
 							 guint                    info,
 							 guint32                  time);
 static void  nautilus_property_browser_theme_changed	(gpointer user_data);
+void         emit_emblems_changed_signal                (void);
 
 /* misc utilities */
 static char *strip_extension                            (const char              *string_to_strip);
@@ -743,7 +746,9 @@ remove_emblem (NautilusPropertyBrowser *property_browser, const char* emblem_nam
 		 */
 		g_warning ("couldn't delete emblem %s", emblem_uri);
 	}
-	
+	else {
+		emit_emblems_changed_signal ();
+	}
 	g_free (emblem_uri);
 }
 
@@ -1152,7 +1157,9 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 		g_free(directory_path);
 				
 		/* perform the actual copy */
+		
 		command_str = g_strdup_printf("cp '%s' '%s'", property_browser->details->image_path, destination_name);
+		emit_emblems_changed_signal ();
 		if (system(command_str) != 0) {
 			g_warning("couldn't copy emblem %s", property_browser->details->image_path);
 		}
@@ -1798,3 +1805,11 @@ nautilus_property_browser_set_path (NautilusPropertyBrowser *property_browser,
 	/* populate the per-uri box with the info */
 	nautilus_property_browser_update_contents (property_browser);  	
 }
+
+void
+emit_emblems_changed_signal (void)
+{
+	gtk_signal_emit_by_name (GTK_OBJECT (nautilus_signaller_get_current ()),
+			 	 "emblems_changed");
+}
+

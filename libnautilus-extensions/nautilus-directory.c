@@ -174,7 +174,9 @@ nautilus_directory_destroy (GtkObject *object)
 	}
  
 	g_free (directory->details->uri);
-	gnome_vfs_uri_unref (directory->details->private_metafile_vfs_uri);
+	if (directory->details->private_metafile_vfs_uri != NULL) {
+		gnome_vfs_uri_unref (directory->details->private_metafile_vfs_uri);
+	}
 	if (directory->details->vfs_uri != NULL) {
 	    gnome_vfs_uri_unref (directory->details->vfs_uri);
 	}
@@ -339,7 +341,7 @@ nautilus_make_directory_and_parents (GnomeVFSURI *uri, guint permissions)
 }
 
 static GnomeVFSURI *
-construct_private_metafile_uri (const char *uri)
+construct_private_metafile_vfs_uri (const char *uri)
 {
 	GnomeVFSResult result;
 	char *user_directory;
@@ -389,7 +391,7 @@ nautilus_directory_new (const char *uri)
 	}
 
 	directory->details->uri = g_strdup (uri);
-	directory->details->private_metafile_vfs_uri = construct_private_metafile_uri (uri);
+	directory->details->private_metafile_vfs_uri = construct_private_metafile_vfs_uri (uri);
 
 	vfs_uri = gnome_vfs_uri_new (uri);
 

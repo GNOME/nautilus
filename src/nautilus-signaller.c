@@ -35,6 +35,7 @@
 enum 
 {
 	HISTORY_LIST_CHANGED,
+	EMBLEMS_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -59,7 +60,13 @@ nautilus_signaller_initialize_class (gpointer klass)
 				0,
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
-
+	nautilus_signaller_signals[EMBLEMS_CHANGED] =
+		gtk_signal_new ("emblems_changed",
+				GTK_RUN_LAST,
+				object_class->type,
+				0,
+				gtk_marshal_NONE__NONE,
+				GTK_TYPE_NONE, 0);
 	gtk_object_class_add_signals (object_class, nautilus_signaller_signals, LAST_SIGNAL);
 }
 
