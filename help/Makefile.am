@@ -1,1 +1,1 @@
-SUBDIRS = nautilus-user-manual
+SUBDIRS = nautilus-user-manual nautilus-quick-reference

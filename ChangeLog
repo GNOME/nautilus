@@ -1,3 +1,57 @@
+2001-02-22  Dan Mueth  <dan@eazel.com>
+
+        reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Generally, I removed old cruft, added COPYING-DOCS, added
+	a new HTML doc (nautilus-quick-reference), and updated
+	the build stuff and spec file as necessary.
+
+        * COPYING-DOCS: This is the GNU FDL, similar to COPYING.  It
+          should be installed with all modules with FDL'd docs.
+        * Makefile.am: Added COPYING-DOCS to EXTRA_DIST
+        * configure.in: Added nautilus-quick-reference 
+        * help/Makefile.am: Added nautilus-quick-reference
+        * help/htmldocs.make: Created this file.  This is the makefile
+	  to suck in for html docs.  Be sure to use index.html as
+	  your primary HTML file and put PNG images into figures/
+
+	This stuff is Vera's new Nautilus Quick Reference doc in HTML
+	format. <vera@eazel.com>  I purposefully left out two screenshots
+	with the Eazel logo in them.
+        * help/nautilus-quick-reference/C/Makefile.am: added
+        * help/nautilus-quick-reference/C/figures/colors_small.png: added
+        * help/nautilus-quick-reference/C/figures/emblems_small.png: added
+        * help/nautilus-quick-reference/C/figures/ff_small.png:
+        * help/nautilus-quick-reference/C/figures/find_small.png:
+        * help/nautilus-quick-reference/C/figures/locbar_small.png:
+        * help/nautilus-quick-reference/C/figures/menubar_small.png:
+        * help/nautilus-quick-reference/C/figures/music_small.png:
+        * help/nautilus-quick-reference/C/figures/sidebar_small.png:
+        * help/nautilus-quick-reference/C/figures/softcat.png:
+        * help/nautilus-quick-reference/C/figures/storage.png:
+        * help/nautilus-quick-reference/C/figures/themes_small.png:
+        * help/nautilus-quick-reference/C/index.html:
+        * help/nautilus-quick-reference/C/nautilus-quick-reference-C.omf:
+        * help/nautilus-quick-reference/Makefile.am:
+        * help/nautilus-user-manual/C/nautilus-user-manual-C.omf: Updated
+        * nautilus.spec.in: Added OMF files, Quick Ref, and COPYING-DOCS
+
+	Removed this old stuff:
+        * user-guide/C/Makefile.am: 
+        * user-guide/C/html/license.html:
+        * user-guide/C/img/custicon.png:
+        * user-guide/C/img/full.png: removed
+        * user-guide/C/img/locbar.png: 
+        * user-guide/C/img/player.png:
+        * user-guide/C/img/prefmenu.png:
+        * user-guide/C/img/sidebar.png:
+        * user-guide/C/img/viewmenu.png:
+        * user-guide/C/nautilus-C.omf:
+        * user-guide/C/sgml/nautilus.sgml:
+
+	Added this notice so people don't add stuff in user-guide/
+        * user-guide/NOTICE:
+
 2001-02-22  Gene Z. Ragan  <gzr@eazel.com>
  
  	reviewed by: Pavel Cisler <pavel@eazel.com>
@@ -22,6 +76,7 @@
  	(add_one_path_list):
  	Return a path, not a URI.
  	
+>>>>>>> 1.3873
 2001-02-22  Arlo Rose  <arlo@eazel.com>
 
 	* icons/hand.png:

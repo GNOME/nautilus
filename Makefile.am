@@ -33,6 +33,7 @@ SUBDIRS =			\
 
 EXTRA_DIST=					\
 	COPYING.LIB				\
+	COPYING-DOCS				\
 	RPMs-README				\
 	HACKING					\
 	MAINTAINERS				\

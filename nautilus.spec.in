@@ -156,7 +156,7 @@ fi
 %files
 
 %defattr(0555, bin, bin)
-%doc AUTHORS COPYING COPYING.LIB ChangeLog NEWS README
+%doc AUTHORS COPYING COPYING-DOCS COPYING.LIB ChangeLog NEWS README
 %{prefix}/bin/*.sh
 %{prefix}/bin/eazel-helper
 %{prefix}/bin/gnome-db2html2
@@ -257,8 +257,10 @@ fi
 %{prefix}/share/oaf/Nautilus_shell.oaf
 %{prefix}/share/oaf/Nautilus_Control_throbber.oaf
 %{prefix}/share/gnome/help/nautilus-user-manual/C/*
+%{prefix}/share/gnome/help/nautilus-quick-reference/C/*
 %{prefix}/share/gnome/help/gnufdl/C/*
 %{prefix}/share/gnome/help/gnugpl/C/*
+%{prefix}/share/omf/nautilus/*.omf
 
 %files devel
 
