@@ -43,9 +43,9 @@ static SummaryData * summary_data_new (void);
 static ServicesData * services_data_new (void);
 static EazelNewsData * eazel_news_data_new (void);
 static UpdateNewsData * update_news_data_new (void);
-static ServicesData * parse_a_service (xmlNodePtr node);
-static EazelNewsData * parse_a_eazel_news_item (xmlNodePtr node);
-static UpdateNewsData * parse_a_update_news_item (xmlNodePtr node);
+static ServicesData * parse_service (xmlNodePtr node);
+static EazelNewsData * parse_eazel_news_item (xmlNodePtr node);
+static UpdateNewsData * parse_update_news_item (xmlNodePtr node);
 
 
 static SummaryData *
@@ -114,7 +114,7 @@ update_news_data_new ()
 } /* end update_news_data_new */
 
 static ServicesData *
-parse_a_service (xmlNodePtr node)
+parse_service (xmlNodePtr node)
 {
 	ServicesData	*return_value;
 	char		*tempbuf;
@@ -122,49 +122,64 @@ parse_a_service (xmlNodePtr node)
 	return_value = services_data_new ();
 
 	return_value->name = g_strdup (trilobite_xml_get_string (node, "NAME"));
+
+	if (return_value->name == NULL) {
+		g_free (return_value);
+		return NULL;
+	}
+
 	return_value->icon = g_strdup (trilobite_xml_get_string (node, "ICON"));
 	return_value->button_label = g_strdup (trilobite_xml_get_string (node, "BUTTON_LABEL"));
 	return_value->uri = g_strdup (trilobite_xml_get_string (node, "URI"));
 	return_value->description_header = g_strdup (trilobite_xml_get_string (node, "DESCRIPTION_HEADER"));
 	return_value->description = g_strdup (trilobite_xml_get_string (node, "DESCRIPTION"));
 	tempbuf = g_strdup (trilobite_xml_get_string (node, "ENABLED"));
-	if (tempbuf[0] == 'T' || tempbuf[0] == 't') {
+	if (tempbuf != NULL && (tempbuf[0] == 'T' || tempbuf[0] == 't')) {
 		return_value->enabled = TRUE;
-	}
-	else if (tempbuf[0] == 'F' || tempbuf[0] == 'f') {
+	} else if (tempbuf != NULL && (tempbuf[0] == 'F' || tempbuf[0] == 'f')) {
 		return_value->enabled = FALSE;
-	}
-	else {
-		g_warning (_("Could not find a valid boolean value for grey_out!"));
+	} else {
 		return_value->enabled = FALSE;
 	}
 
 	return return_value;
 
-} /* end parse_a_service */
+} /* end parse_service */
 
 static EazelNewsData *
-parse_a_eazel_news_item (xmlNodePtr node)
+parse_eazel_news_item (xmlNodePtr node)
 {
 	EazelNewsData *return_value;
 	return_value = eazel_news_data_new ();
 
 	return_value->name = g_strdup (trilobite_xml_get_string (node, "NAME"));
+
+	if (return_value->name == NULL) {
+		g_free (return_value);
+		return NULL;
+	}
+
 	return_value->icon = g_strdup (trilobite_xml_get_string (node, "ICON"));
 	return_value->date = g_strdup (trilobite_xml_get_string (node, "DATE"));
 	return_value->message = g_strdup (trilobite_xml_get_string (node, "MESSAGE"));
 
 	return return_value;
 
-} /* end parse_a_eazel_news_item */
+} /* end parse_eazel_news_item */
 
 static UpdateNewsData *
-parse_a_update_news_item (xmlNodePtr node)
+parse_update_news_item (xmlNodePtr node)
 {
 	UpdateNewsData *return_value;
 	return_value = update_news_data_new ();
 
 	return_value->name = g_strdup (trilobite_xml_get_string (node, "NAME"));
+
+	if (return_value->name == NULL) {
+		g_free (return_value);
+		return NULL;
+	}
+
 	return_value->version = g_strdup (trilobite_xml_get_string (node, "VERSION"));
 	return_value->priority = g_strdup (trilobite_xml_get_string (node, "PRIORITY"));
 	return_value->description = g_strdup (trilobite_xml_get_string (node, "DESCRIPTION"));
@@ -175,26 +190,26 @@ parse_a_update_news_item (xmlNodePtr node)
 
 	return return_value;
 
-} /* end parse_a_update_news_item */
+} /* end parse_update_news_item */
 
 static GList *
 build_services_glist_from_xml (xmlNodePtr node)
 {
-	GList		*return_value;
-	xmlNodePtr	service;
-
+	GList *return_value;
+	xmlNodePtr service;
+	ServicesData *sdata;
+		
 	return_value = NULL;
 	service = node->xmlChildrenNode;
 	if (service == NULL) {
-		g_warning (_("There is no service data !\n"));
 		return NULL;
 	}
 
-	while (service) {
-		ServicesData	*sdata;
-
-		sdata = parse_a_service (service);
-		return_value = g_list_append (return_value, sdata);
+	while (service != NULL) {
+		sdata = parse_service (service);
+		if (sdata != NULL) {
+			return_value = g_list_append (return_value, sdata);
+		}
 		service = service->next;
 	}
 
@@ -205,46 +220,45 @@ build_services_glist_from_xml (xmlNodePtr node)
 static GList *
 build_eazel_news_glist_from_xml (xmlNodePtr node)
 {
-	GList		*return_value;
-	xmlNodePtr	news_item;
+	GList *return_value;
+	xmlNodePtr news_item;
+	EazelNewsData *ndata;
 
 	return_value = NULL;
 	news_item = node->xmlChildrenNode;
 	if (news_item == NULL) {
-		g_warning (_("There is no eazel news data !\n"));
 		return NULL;
 	}
 
 	while (news_item) {
-		EazelNewsData	*ndata;
-
-		ndata = parse_a_eazel_news_item (news_item);
-		return_value = g_list_append (return_value, ndata);
+		ndata = parse_eazel_news_item (news_item);
+		if (ndata != NULL) {
+			return_value = g_list_append (return_value, ndata);
+		}
 		news_item = news_item->next;
 	}
 
 	return return_value;
-
 } /* end build_eazel_news_glist_from_xml */
 
 static GList *
 build_update_news_glist_from_xml (xmlNodePtr node)
 {
-	GList		*return_value;
-	xmlNodePtr	news_item;
+	GList *return_value;
+	xmlNodePtr news_item;
+	UpdateNewsData *ndata;
 
 	return_value = NULL;
 	news_item = node->xmlChildrenNode;
 	if (news_item == NULL) {
-		g_warning (_("There is no eazel news data !\n"));
 		return NULL;
 	}
 
 	while (news_item) {
-		UpdateNewsData	*ndata;
-
-		ndata = parse_a_update_news_item (news_item);
-		return_value = g_list_append (return_value, ndata);
+		ndata = parse_update_news_item (news_item);
+		if (ndata != NULL) {
+			return_value = g_list_append (return_value, ndata);
+		}
 		news_item = news_item->next;
 	}
 

@@ -1,3 +1,16 @@
+2001-02-20  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Ian McKellar  <ian@eazel.com>
+
+	* components/services/summary/eazel-summary-shared.c
+	(parse_service), (parse_eazel_news_item),
+	(parse_update_news_item),
+	(build_services_glist_from_xml),
+	(build_eazel_news_glist_from_xml),
+	(build_update_news_glist_from_xml): Make this more robust against
+	unusual data from the server. In particular, if the SERVICES list
+	or other lists are emtpy, do not crash.
+
 2001-02-21  Andy Hertzfeld  <andy@eazel.com>
 
 	fixed bug 5939, margins in text icons are weirdly proportioned.
