@@ -84,6 +84,8 @@ static void     mozilla_net_state_callback                     (GtkMozEmbed     
 								gint                             state,
 								guint                            status,
 								gpointer                         user_data);
+static void     mozilla_net_stop_callback                      (GtkMozEmbed                     *mozilla,
+								gpointer                         user_data);
 static void     mozilla_link_message_callback                  (GtkMozEmbed                     *mozilla,
 								gpointer                         user_data);
 static void     mozilla_progress_callback                      (GtkMozEmbed                     *mozilla,
@@ -187,6 +189,12 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 	gtk_signal_connect_while_alive (GTK_OBJECT (view->details->mozilla), 
 					"net_state",
 					GTK_SIGNAL_FUNC (mozilla_net_state_callback),
+					view,
+					GTK_OBJECT (view->details->mozilla));
+
+	gtk_signal_connect_while_alive (GTK_OBJECT (view->details->mozilla), 
+					"net_stop",
+					GTK_SIGNAL_FUNC (mozilla_net_stop_callback),
 					view,
 					GTK_OBJECT (view->details->mozilla));
 	
@@ -639,6 +647,9 @@ mozilla_net_state_callback (GtkMozEmbed	*mozilla,
 
 	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla));
 
+#if defined(DEBUG_mfleming)
+	g_print ("gtkembedmoz signal: 'net_state'\n");
+#endif
 #if defined(DEBUG_ramiro)
 	g_print ("%s\n", __FUNCTION__);
 	debug_print_state_flags (state_flags);
@@ -655,6 +666,24 @@ mozilla_net_state_callback (GtkMozEmbed	*mozilla,
 	if (state_flags & GTK_MOZ_EMBED_FLAG_STOP) {
 		mozilla_content_view_clear_busy_cursor (view);
 	}
+}
+
+
+static void
+mozilla_net_stop_callback (GtkMozEmbed 	*mozilla,
+			   gpointer	user_data)
+{
+ 	NautilusMozillaContentView	*view;
+
+	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
+
+	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla));
+
+#if defined(DEBUG_mfleming)
+	g_print ("gtkembedmoz signal: 'net_stop'\n");
+#endif
+
+	nautilus_view_report_load_complete (view->details->nautilus_view);
 }
 
 static void
@@ -694,11 +723,20 @@ mozilla_progress_callback (GtkMozEmbed *mozilla,
 	g_print ("mozilla_progress_callback (max = %d, current = %d)\n", max_progress, current_progress);
 #endif
 
-	if (max_progress == current_progress || max_progress == 0) {
-		nautilus_view_report_load_complete (view->details->nautilus_view);
+	/* NOTE:
+	 * "max_progress" will be -1 if the filesize cannot be determined
+	 * On occasion, it appears that current_progress may actuall exceed max_progress
+	 */
+
+	if (max_progress == -1 || max_progress == 0) {
+		nautilus_view_report_load_progress (view->details->nautilus_view, 
+							    0);
+	} else if (max_progress < current_progress) {
+		nautilus_view_report_load_progress (view->details->nautilus_view, 
+							    1.0);
 	} else {
 		nautilus_view_report_load_progress (view->details->nautilus_view, 
-						    current_progress / max_progress);
+							    current_progress / max_progress);
 	}
 }
 

@@ -1,3 +1,19 @@
+2000-11-30  Mike Fleming  <mfleming@eazel.com>
+
+	reviewed by: ramiro@eazel.com
+
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(nautilus_mozilla_content_view_initialize),
+	(mozilla_net_state_callback), (mozilla_net_stop_callback),
+	(mozilla_progress_callback):
+
+	fix bugzilla.eazel.com 4113: 
+	Some web pages never finish loading (throbber spins)
+
+	Instead of replying on "max_progress == cur_progress"
+	doing mozilla_progress_callback, stop throbber on a "net_stop"
+	signal.  Galeon uses "net_stop" for this functionality as well.
+
 2000-11-30  Darin Adler  <darin@eazel.com>
 
 	Ran check-headers-in-Makefile since we had some problems
