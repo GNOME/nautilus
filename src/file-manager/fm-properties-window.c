@@ -1170,6 +1170,20 @@ should_show_file_type (FMPropertiesWindow *window)
 }
 
 static gboolean
+should_show_accessed_date (FMPropertiesWindow *window) 
+{
+	/* Accessed date for directory seems useless. If we some
+	 * day decide that it is useful, we should separately
+	 * consider whether it's useful for "trash:".
+	 */
+	if (nautilus_file_is_directory (window->details->file)) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static gboolean
 should_show_mime_type (FMPropertiesWindow *window) 
 {
 	/* FIXME bugzilla.eazel.com 5652:
@@ -1277,7 +1291,7 @@ create_basic_page (FMPropertiesWindow *window)
 	} else {
 		append_title_value_pair (table, _("Size:"), file, "size");
 	}
-	append_title_value_pair (table, _("Where:"), file, "parent_uri");
+	append_title_value_pair (table, _("Where:"), file, "where");
 	if (should_show_mime_type (window)) {
 		append_title_value_pair (table, _("MIME type:"), file, "mime_type");
 	}				  
@@ -1286,7 +1300,10 @@ create_basic_page (FMPropertiesWindow *window)
 	append_title_field (table, "");
 	
 	append_title_value_pair (table, _("Modified:"), file, "date_modified");
-	append_title_value_pair (table, _("Accessed:"), file, "date_accessed");
+
+	if (should_show_accessed_date (window)) {
+		append_title_value_pair (table, _("Accessed:"), file, "date_accessed");
+	}
 
 	if (should_show_custom_icon_buttons (window)) {
 		/* add command buttons for setting and clearing custom icons */

@@ -1,3 +1,38 @@
+2001-01-19  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Finished bug 2146 (Properties window for desktop Trash
+	should show Trash properties). The last two changes were
+	to remove the "accessed" field for all directories, since
+	it seems useless, and to fill in the "where" field with
+	"on the desktop".
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_where_string): New function, calls
+	virtual function so trash and normal files can report
+	different strings.
+	(nautilus_file_get_string_attribute): Changed "parent_uri"
+	string attribute to "where", since it is not the parent_uri
+	in the Trash case.
+	* libnautilus-extensions/nautilus-file.h: Virtual function
+	pointer for get_where_string.
+	* libnautilus-extensions/nautilus-trash-file.c:
+	(trash_file_get_where_string),
+	(nautilus_trash_file_initialize_class): Supply get_where_string
+	function that returns "on the desktop".
+	* libnautilus-extensions/nautilus-vfs-file.c:
+	(vfs_file_get_where_string), (nautilus_vfs_file_initialize_class):
+	Supply get_where_string function that returns parent_uri string.
+	* src/file-manager/fm-properties-window.c:
+	(should_show_accessed_date): New function, returns FALSE for
+	directories and TRUE for other files.
+	(create_basic_page): Honor should_show_accessed_date, and use
+	"where" instead of "parent_uri" string attribute.
+	* src/file-manager/fm-search-list-view.c:
+	(real_get_column_specification): Use "where" instead of "parent_uri"
+	string attribute.
+
 2001-01-19  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>

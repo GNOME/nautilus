@@ -337,7 +337,7 @@ real_get_column_specification (FMListView *view,
 		break;
 	case 3:
 		fm_list_view_column_set (specification,
-					 "parent_uri", _("Where"),
+					 "where", _("Where"),
 					 NAUTILUS_FILE_SORT_BY_DIRECTORY,
 					 30, 120, 500, FALSE);
 		break;

@@ -229,6 +229,12 @@ vfs_file_get_date (NautilusFile *file,
 	return FALSE;
 }
 
+static char *
+vfs_file_get_where_string (NautilusFile *file)
+{
+	return nautilus_file_get_parent_uri_for_display (file);
+}
+
 static void
 nautilus_vfs_file_initialize (gpointer object, gpointer klass)
 {
@@ -265,4 +271,5 @@ nautilus_vfs_file_initialize_class (gpointer klass)
 	file_class->get_item_count = vfs_file_get_item_count;
 	file_class->get_deep_counts = vfs_file_get_deep_counts;
 	file_class->get_date = vfs_file_get_date;
+	file_class->get_where_string = vfs_file_get_where_string;
 }

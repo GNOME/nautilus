@@ -2182,6 +2182,19 @@ nautilus_file_get_date (NautilusFile *file,
 				      get_date, (file, date_type, date));
 }
 
+static char *
+nautilus_file_get_where_string (NautilusFile *file)
+{
+	if (file == NULL) {
+		return NULL;
+	}
+
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+	return NAUTILUS_CALL_VIRTUAL (NAUTILUS_FILE_CLASS, file,
+				      get_where_string, (file));
+}
+
 /**
  * nautilus_file_get_date_as_string:
  * 
@@ -3488,7 +3501,7 @@ nautilus_file_get_deep_directory_count_as_string (NautilusFile *file)
  * @attribute_name: The name of the desired attribute. The currently supported
  * set includes "name", "type", "mime_type", "size", "deep_size", "deep_directory_count",
  * "deep_file_count", "deep_total_count", "date_modified", "date_changed", "date_accessed", 
- * "date_permissions", "owner", "group", "permissions", "octal_permissions", "uri", "parent_uri".
+ * "date_permissions", "owner", "group", "permissions", "octal_permissions", "uri", "where".
  * 
  * Returns: Newly allocated string ready to display to the user, or NULL
  * if the value is unknown or @attribute_name is not supported.
@@ -3556,8 +3569,8 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 	if (strcmp (attribute_name, "uri") == 0) {
 		return nautilus_file_get_uri (file);
 	}
-	if (strcmp (attribute_name, "parent_uri") == 0) {
-		return nautilus_file_get_parent_uri_for_display (file);
+	if (strcmp (attribute_name, "where") == 0) {
+		return nautilus_file_get_where_string (file);
 	}
 
 	return NULL;

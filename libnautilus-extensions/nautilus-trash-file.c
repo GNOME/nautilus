@@ -33,6 +33,8 @@
 #include "nautilus-gtk-macros.h"
 #include "nautilus-trash-directory.h"
 #include <gtk/gtksignal.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 
 struct NautilusTrashFileDetails {
 	NautilusTrashDirectory *trash_directory;
@@ -583,6 +585,12 @@ trash_file_get_date (NautilusFile *file,
 	return got_at_least_one && got_all;
 }
 
+static char *
+trash_file_get_where_string (NautilusFile *file)
+{
+	return g_strdup (_("on the desktop"));
+}
+
 
 static void
 remove_all_real_files (NautilusTrashFile *trash)
@@ -682,4 +690,5 @@ nautilus_trash_file_initialize_class (gpointer klass)
 	file_class->get_item_count = trash_file_get_item_count;
 	file_class->get_deep_counts = trash_file_get_deep_counts;
 	file_class->get_date = trash_file_get_date;
+	file_class->get_where_string = trash_file_get_where_string;
 }

@@ -331,6 +331,7 @@ typedef struct {
 	gboolean              (* get_date)               (NautilusFile         *file,
 							  NautilusDateType      type,
 							  time_t               *date);
+	char *                (* get_where_string)       (NautilusFile         *file);
 } NautilusFileClass;
 
 #endif /* NAUTILUS_FILE_H */
