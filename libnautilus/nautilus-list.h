@@ -48,13 +48,16 @@ typedef enum
   NAUTILUS_CELL_PIXMAP,	 	/* GTK_CELL_PIXMAP */
   NAUTILUS_CELL_PIXTEXT, 	/* GTK_CELL_PIXTEXT */
   NAUTILUS_CELL_WIDGET,	 	/* GTK_CELL_WIDGET */
-  NAUTILUS_CELL_PIXBUF_LIST   	/* new for Nautilus */
+  NAUTILUS_CELL_PIXBUF_LIST,   	/* new for Nautilus */
+  NAUTILUS_CELL_LINK_TEXT	/* new for Nautilus */
 } NautilusCellType;
 
 /* pointer casting for cells */
 #define NAUTILUS_CELL_PIXBUF_LIST(cell)	(((NautilusCellPixbufList *) &(cell)))
+/* no #define for NAUTILUS_CELL_LINK_TEXT, use GTK_CELL_TEXT instead */
 
 typedef struct _NautilusCellPixbufList NautilusCellPixbufList;
+/* no struct for NautilusCellLinkText, use GtkCellText instead */
 
 /*
  * Since the info in each cell must fit in the GtkCell struct that CList defines,
@@ -112,15 +115,18 @@ struct NautilusListClass {
 	void (* column_resize_track_end) (GtkWidget *widget, int column);
 };
 
-GtkType    nautilus_list_get_type        (void);
-GtkWidget *nautilus_list_new_with_titles (int                 columns,
-					  const char * const *titles);
-GList *    nautilus_list_get_selection   (NautilusList       *list);
-void       nautilus_list_set_selection   (NautilusList       *list, GList *selection);
-gboolean   nautilus_list_is_row_selected (NautilusList	     *list,
-					  int		      row);
-void 	   nautilus_list_set_pixbuf_list (NautilusList       *list,
-				      	  gint	   	      row,
-				      	  gint		      column,
-				      	  GList	     	     *pixbufs);
+GtkType    nautilus_list_get_type          (void);
+GtkWidget *nautilus_list_new_with_titles   (int                 columns,
+					    const char * const *titles);
+GList *    nautilus_list_get_selection     (NautilusList       *list);
+void       nautilus_list_set_selection     (NautilusList       *list, GList *selection);
+gboolean   nautilus_list_is_row_selected   (NautilusList       *list,
+					    int		        row);
+void 	   nautilus_list_set_pixbuf_list   (NautilusList       *list,
+				      	    gint	   	row,
+				      	    gint		column,
+				      	    GList	       *pixbufs);
+void	   nautilus_list_mark_cell_as_link (NautilusList       *list,
+					    gint 	        row,
+					    gint 	        column);
 #endif /* NAUTILUS_LIST_H */

@@ -440,11 +440,11 @@ nautilus_parse_rgb_with_white_default (const char *color_spec)
 	GdkColor color;
 
 	if (color_spec == NULL || !gdk_color_parse (color_spec, &color)) {
-		return 0xFFFFFF;
+		return NAUTILUS_RGB_COLOR_WHITE;
 	}
-	return ((color.red << 8) & 0xFF0000)
-		| (color.green & 0xFF00)
-		| ((color.blue >> 8) & 0xFF);
+	return ((color.red << 8) & NAUTILUS_RGB_COLOR_RED)
+		| (color.green & NAUTILUS_RGB_COLOR_GREEN)
+		| ((color.blue >> 8) & NAUTILUS_RGB_COLOR_BLUE);
 }
 
 /**

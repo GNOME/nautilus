@@ -27,6 +27,12 @@
 
 #include <gdk/gdktypes.h>
 
+#define NAUTILUS_RGB_COLOR_RED		0xFF0000
+#define NAUTILUS_RGB_COLOR_GREEN	0x00FF00
+#define NAUTILUS_RGB_COLOR_BLUE		0x0000FF
+#define NAUTILUS_RGB_COLOR_WHITE	0xFFFFFF
+#define NAUTILUS_RGB_COLOR_BLACK	0x000000
+
 /* A gradient spec. is a string that contains a specifier for either a
    color or a gradient. If the string has a "-" in it, then it's a gradient.
    The gradient is vertical by default and the spec. can end with ":v" to indicate that.

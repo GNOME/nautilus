@@ -34,6 +34,7 @@
 #include "nautilus-gdk-extensions.h"
 
 #include "nautilus-glib-extensions.h"
+#include "nautilus-gdk-extensions.h"
 #include "nautilus-gdk-pixbuf-extensions.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-background.h"
@@ -65,6 +66,45 @@ struct NautilusListDetails
 
 /* horizontal space between images in a pixbuf list cell */
 #define PIXBUF_LIST_SPACING	2
+
+/* Some #defines stolen from gtkclist.c that we need for other stolen code. */
+
+/* minimum allowed width of a column */
+#define COLUMN_MIN_WIDTH 5
+
+/* this defines the base grid spacing */
+#define CELL_SPACING 1
+
+/* added the horizontal space at the beginning and end of a row */
+#define COLUMN_INSET 3
+
+/* the width of the column resize windows */
+#define DRAG_WIDTH  6
+
+/* gives the left pixel of the given column in context of
+ * the clist's hoffset */
+#define COLUMN_LEFT_XPIXEL(clist, colnum)  ((clist)->column[(colnum)].area.x + \
+					    (clist)->hoffset)
+
+/* gives the top pixel of the given row in context of
+ * the clist's voffset */
+#define ROW_TOP_YPIXEL(clist, row) (((clist)->row_height * (row)) + \
+				    (((row) + 1) * CELL_SPACING) + \
+				    (clist)->voffset)
+
+/* returns the row index from a y pixel location in the 
+ * context of the clist's voffset */
+#define ROW_FROM_YPIXEL(clist, y)  (((y) - (clist)->voffset) / \
+				    ((clist)->row_height + CELL_SPACING))
+
+/* returns the GList item for the nth row */
+#define	ROW_ELEMENT(clist, row)	(((row) == (clist)->rows - 1) ? \
+				 (clist)->row_list_end : \
+				 g_list_nth ((clist)->row_list, (row)))
+
+/* returns the total height of the list */
+#define LIST_HEIGHT(clist)         (((clist)->row_height * ((clist)->rows)) + \
+				    (CELL_SPACING * ((clist)->rows + 1)))
 
 enum {
 	CONTEXT_CLICK_SELECTION,
@@ -433,6 +473,7 @@ nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 {
 	NautilusList *list;
 	GtkCList *clist;
+	GtkCListRow *clist_row;
 	int on_row;
 	gint row, col;
 	int retval;
@@ -466,8 +507,9 @@ nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 			list->details->dnd_select_pending_state = 0;
 		}
 
-		/* Activate on single click if not extending selection, mouse hasn't moved to
-		 * a different row, and not too much time has passed.
+		/* 
+		 * Activate on single click if not extending selection, mouse hasn't moved to
+		 * a different row, not too much time has passed, and this is a link-type cell.
 		 */
 		if (list->details->single_click_mode && 
 		    !(event->state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)))
@@ -476,7 +518,10 @@ nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 
 			if (elapsed_time < MAX_CLICK_TIME && list->details->button_down_row == row)
 			{
-				activate_row (list, row);
+				clist_row = ROW_ELEMENT (clist, row)->data;
+				if (clist_row->cell[col].type == NAUTILUS_CELL_LINK_TEXT) {
+					activate_row (list, row);
+				}
 			}
 		}		
 	
@@ -485,45 +530,6 @@ nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 
 	return retval;
 }
-
-/* stolen from gtkclist.c for now */
-
-/* minimum allowed width of a column */
-#define COLUMN_MIN_WIDTH 5
-
-/* this defines the base grid spacing */
-#define CELL_SPACING 1
-
-/* added the horizontal space at the beginning and end of a row */
-#define COLUMN_INSET 3
-
-/* the width of the column resize windows */
-#define DRAG_WIDTH  6
-
-/* gives the left pixel of the given column in context of
- * the clist's hoffset */
-#define COLUMN_LEFT_XPIXEL(clist, colnum)  ((clist)->column[(colnum)].area.x + \
-					    (clist)->hoffset)
-
-/* gives the top pixel of the given row in context of
- * the clist's voffset */
-#define ROW_TOP_YPIXEL(clist, row) (((clist)->row_height * (row)) + \
-				    (((row) + 1) * CELL_SPACING) + \
-				    (clist)->voffset)
-
-/* returns the row index from a y pixel location in the 
- * context of the clist's voffset */
-#define ROW_FROM_YPIXEL(clist, y)  (((y) - (clist)->voffset) / \
-				    ((clist)->row_height + CELL_SPACING))
-
-/* returns the GList item for the nth row */
-#define	ROW_ELEMENT(clist, row)	(((row) == (clist)->rows - 1) ? \
-				 (clist)->row_list_end : \
-				 g_list_nth ((clist)->row_list, (row)))
-
-/* returns the total height of the list */
-#define LIST_HEIGHT(clist)         (((clist)->row_height * ((clist)->rows)) + \
-				    (CELL_SPACING * ((clist)->rows + 1)))
 
 static void
 nautilus_list_realize (GtkWidget *widget)
@@ -1003,6 +1009,7 @@ draw_row (GtkCList     *clist,
       GtkStyle *style;
       GdkGC *fg_gc;
       GdkGC *bg_gc;
+      GdkGCValues saved_values;
 
       GList *p;
 
@@ -1010,6 +1017,7 @@ draw_row (GtkCList     *clist,
       gint height;
       gint pixmap_width;
       gint offset = 0;
+      gint baseline;
       gint row_center_offset;
 
       if (!clist->column[i].visible)
@@ -1043,6 +1051,7 @@ draw_row (GtkCList     *clist,
       switch ((NautilusCellType)clist_row->cell[i].type)
 	{
 	case NAUTILUS_CELL_TEXT:
+	case NAUTILUS_CELL_LINK_TEXT:
 	  width = gdk_string_width (style->font,
 				    GTK_CELL_TEXT (clist_row->cell[i])->text);
 	  break;
@@ -1110,6 +1119,7 @@ draw_row (GtkCList     *clist,
 			      (clip_rectangle.height - height) / 2);
 	  offset += GTK_CELL_PIXTEXT (clist_row->cell[i])->spacing;
 	case NAUTILUS_CELL_TEXT:
+	case NAUTILUS_CELL_LINK_TEXT:
 	  if (style != GTK_WIDGET (clist)->style)
 	    row_center_offset = (((clist->row_height - style->font->ascent -
 				  style->font->descent - 1) / 2) + 1.5 +
@@ -1117,14 +1127,35 @@ draw_row (GtkCList     *clist,
 	  else
 	    row_center_offset = clist->row_center_offset;
 
+	  baseline = row_rectangle.y + row_center_offset + clist_row->cell[i].vertical;
+
 	  gdk_gc_set_clip_rectangle (fg_gc, &clip_rectangle);
+
+	  /* For link text cells, draw with blue link-like color and use underline. */
+	  if ((NautilusCellType)clist_row->cell[i].type == NAUTILUS_CELL_LINK_TEXT
+	      && NAUTILUS_LIST (clist)->details->single_click_mode) {
+		if (state == GTK_STATE_NORMAL) {
+			gdk_gc_get_values (fg_gc, &saved_values);
+			gdk_rgb_gc_set_foreground (fg_gc, NAUTILUS_RGB_COLOR_BLUE);			
+		}
+	  }
 	  gdk_draw_string (clist->clist_window, style->font, fg_gc,
 			   offset,
-			   row_rectangle.y + row_center_offset + 
-			   clist_row->cell[i].vertical,
+			   baseline,
 			   ((NautilusCellType)clist_row->cell[i].type == GTK_CELL_PIXTEXT) ?
 			   GTK_CELL_PIXTEXT (clist_row->cell[i])->text :
 			   GTK_CELL_TEXT (clist_row->cell[i])->text);
+
+	  if ((NautilusCellType)clist_row->cell[i].type == NAUTILUS_CELL_LINK_TEXT
+	      && NAUTILUS_LIST (clist)->details->single_click_mode) {
+	        gdk_draw_line (clist->clist_window, fg_gc,
+	        	       offset, baseline + 1,
+	        	       offset + width, baseline + 1); 
+		/* Revert color change we made a moment ago. */
+		if (state == GTK_STATE_NORMAL) {
+			gdk_gc_set_foreground (fg_gc, &saved_values.foreground);
+		}
+	  }
 	  gdk_gc_set_clip_rectangle (fg_gc, NULL);
 	  break;
 	case NAUTILUS_CELL_PIXBUF_LIST:
@@ -1230,6 +1261,43 @@ nautilus_list_resize_column (GtkCList *clist, int column, int width)
 /* redraw the list if it's not frozen */
 #define CLIST_UNFROZEN(clist)     (((GtkCList*) (clist))->freeze_count == 0)
 
+/**
+ * nautilus_list_mark_cell_as_link:
+ * 
+ * Mark a text cell as a link cell. Link cells are drawn differently,
+ * and activate rather than select on single-click. The cell must
+ * be a text cell (not a pixmap cell or one of the other types).
+ * 
+ * @list: The NautilusList in question.
+ * @column: The column of the desired cell.
+ * @row: The row of the desired cell.
+ */
+void
+nautilus_list_mark_cell_as_link (NautilusList *list,
+				 gint row,
+				 gint column)
+{
+	GtkCListRow *clist_row;
+	GtkCList *clist;
+
+	g_return_if_fail (NAUTILUS_IS_LIST (list));
+
+	clist = GTK_CLIST (list);
+
+	g_return_if_fail (row >= 0 && row < clist->rows);
+	g_return_if_fail (column >= 0 && column < clist->columns);
+	
+	clist_row = ROW_ELEMENT (clist, row)->data;
+
+	/* 
+	 * We only support changing text cells to links. Maybe someday
+	 * we'll support pixmap or pixtext link cells too. 
+	 */
+	g_return_if_fail ((NautilusCellType)clist_row->cell[column].type == NAUTILUS_CELL_TEXT);
+
+	clist_row->cell[column].type = NAUTILUS_CELL_LINK_TEXT;
+}				
+
 
 static void
 nautilus_list_set_cell_contents (GtkCList    *clist,
@@ -1253,7 +1321,15 @@ nautilus_list_set_cell_contents (GtkCList    *clist,
 		nautilus_gdk_pixbuf_list_free (NAUTILUS_CELL_PIXBUF_LIST (clist_row->cell[column])->pixbufs);
 	}
 
+	/* If old cell was a link-text cell, convert it back to a normal text
+	 * cell so it gets cleaned up properly by GtkCList code.
+	 */
+	if ((NautilusCellType)clist_row->cell[column].type == NAUTILUS_CELL_LINK_TEXT) {
+		clist_row->cell[column].type = NAUTILUS_CELL_TEXT;
+	}
+
 	NAUTILUS_CALL_PARENT_CLASS (GTK_CLIST_CLASS, set_cell_contents, (clist, clist_row, column, type, text, spacing, pixmap, mask));
+
 
 	if ((NautilusCellType)type == NAUTILUS_CELL_PIXBUF_LIST) {
 		clist_row->cell[column].type = NAUTILUS_CELL_PIXBUF_LIST;

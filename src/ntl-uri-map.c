@@ -290,7 +290,7 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
                 
                 /* FIXME:  for now, we just do this for directories but it should apply to all places with available metadata */
                 add_components_from_metadata (navinfo);
-        } else if (strcmp (navinfo->navinfo.content_type, "special/webdav-directory")) {
+        } else if (strcmp (navinfo->navinfo.content_type, "special/webdav-directory") == 0) {
                 fallback_iid = "ntl_web_browser";
                 navinfo->content_identifiers = g_slist_append
                         (navinfo->content_identifiers, 
@@ -317,7 +317,7 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
                 navinfo->content_identifiers = g_slist_append
                         (navinfo->content_identifiers, 
                          nautilus_view_identifier_new ("nautilus_rpm_view", "Package"));      
-        } else if (strcmp(navinfo->navinfo.content_type, "special/eazel-service")) {
+        } else if (strcmp(navinfo->navinfo.content_type, "special/eazel-service") == 0) {
                 fallback_iid = "nautilus_service_startup_view";
                 navinfo->content_identifiers = g_slist_append
                         (navinfo->content_identifiers, 

@@ -1,3 +1,40 @@
+2000-04-06  John Sullivan  <sullivan@eazel.com>
+
+	Finished task 376 (Resolve single-click behavior)
+
+	* libnautilus/nautilus-gdk-extensions.h:
+	#defines for colors NAUTILUS_RGB_COLOR_RED, _GREEN,
+	_BLUE, _WHITE, and _BLACK.
+	* libnautilus/nautilus-gdk-extensions.c:
+	(nautilus_parse_rgb_with_white_default): Replaced
+	hard-wired numbers with these #defines.
+
+	* libnautilus/nautilus-list.h,
+	* libnautilus/nautilus-list.c:
+	added enum entry for NAUTILUS_CELL_LINK_TEXT;
+	(nautilus_list_mark_cell_as_link): New functions, converts
+	an ordinary text cell into a link-text cell.
+	(nautilus_list_button_release): Only activate link-text
+	cells on single click; other cells select as in other lists.
+	(draw_row): draw link-text cells with blue text and an
+	underline, so they look like typical web links.
+	(nautilus_list_set_cell_contents): Convert link-text cell
+	back to ordinary text cell before cleaning up old
+	contents so parent function will do the right thing.
+
+	* src/file-manager/fm-list-view.c:
+	(add_to_list): mark file name cell as link-text cell.
+	(remove_from_list): New function, extracted from...
+	(fm_list_view_file_changed): Followed Darin's advice on
+	how to simultaneously clarify this code and fix a 
+	storage leak.
+
+	For Darin, fixed a typo that caused every file to be
+	displayed as if it were a directory.
+
+	* src/ntl-uri-map.c:
+	(my_notify_when_ready): Added two missing "== 0"s.
+
 2000-04-06  Maciej Stachowiak  <mjs@eazel.com>
 
 	* src/file-manager/fm-directory-view.c

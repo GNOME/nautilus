@@ -431,6 +431,7 @@ list_selection_changed_callback (NautilusList *list,
 static int
 add_to_list (FMListView *list_view, NautilusFile *file)
 {
+	NautilusList *list;
 	GtkCList *clist;
 	char **text;
 	int new_row;
@@ -454,8 +455,9 @@ add_to_list (FMListView *list_view, NautilusFile *file)
 								    get_attribute_from_column (column));
 		}
 	}
-	
-	clist = GTK_CLIST (get_list(list_view));
+
+	list = get_list (list_view);
+	clist = GTK_CLIST (list);
 
 	/* Temporarily set user data value as hack for the problem
 	 * that compare_rows is called before the row data can be set.
@@ -464,6 +466,7 @@ add_to_list (FMListView *list_view, NautilusFile *file)
 	/* Note that since list is auto-sorted new_row isn't necessarily last row. */
 	new_row = gtk_clist_append (clist, text);
 	gtk_clist_set_row_data (clist, new_row, file);
+	nautilus_list_mark_cell_as_link (list, new_row, LIST_VIEW_COLUMN_NAME);
 	gtk_object_set_data (GTK_OBJECT (clist), PENDING_USER_DATA_KEY, NULL);
 
 	install_row_images (list_view, new_row);
@@ -586,12 +589,34 @@ fm_list_view_add_file (FMDirectoryView *view, NautilusFile *file)
 	add_to_list (FM_LIST_VIEW (view), file);
 }
 
+static gboolean
+remove_from_list (FMListView *list_view, NautilusFile *file)
+{
+	NautilusList *list;
+	int old_row;
+	gboolean was_selected;
+
+	list = get_list (list_view);
+	old_row = gtk_clist_find_row_from_data (GTK_CLIST (list), file);
+
+	g_return_val_if_fail (old_row >= 0, FALSE);
+	
+	/* Keep this item selected if necessary. */
+	was_selected = nautilus_list_is_row_selected (list, old_row);
+
+	/* Remove and re-add file to get new text/icon values and sort correctly. */
+	gtk_clist_remove (GTK_CLIST (list), old_row);
+	nautilus_file_unref (file);
+
+	return was_selected;
+}
+
 static void
 fm_list_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 {
 	FMListView *list_view;
-	NautilusList *nautilus_list;
-	int old_row, new_row;
+	GtkCList *clist;
+	int new_row;
 	gboolean was_selected;
 
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
@@ -601,32 +626,29 @@ fm_list_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 	 * existing file going away.
 	 */
 	list_view = FM_LIST_VIEW (view);
-	nautilus_list = get_list (list_view);
-	old_row = gtk_clist_find_row_from_data (GTK_CLIST (nautilus_list), file);
+	clist = GTK_CLIST (get_list (list_view));
 
-	if (old_row < 0) {
-		g_assert_not_reached ();
-		return;
-	}
-
-	/* Keep this item selected if necessary. */
-	was_selected = nautilus_list_is_row_selected (nautilus_list, old_row);
+	/* Ref it here so it doesn't go away entirely after we remove it
+	 * but before we reinsert it.
+	 */
+	nautilus_file_ref (file);
 	
-	gtk_clist_freeze (GTK_CLIST (nautilus_list));
+	gtk_clist_freeze (clist);
 
-	/* Remove and re-add file to get new text/icon values and sort correctly. */
-	gtk_clist_remove (GTK_CLIST (nautilus_list), old_row);
+	was_selected = remove_from_list (list_view, file);	
 
 	if (!nautilus_file_is_gone (file)) {
-		nautilus_file_unref (file);
 		new_row = add_to_list (list_view, file);
+
+		if (was_selected) {
+			gtk_clist_select_row (clist, new_row, -1);
+		}
 	}
 
-	if (was_selected && !nautilus_file_is_gone (file)) {
-		gtk_clist_select_row (GTK_CLIST (nautilus_list), new_row, -1);
-	}
+	gtk_clist_thaw (clist);
 
-	gtk_clist_thaw (GTK_CLIST (nautilus_list));
+	/* Unref to match our keep-it-alive-for-this-function ref. */
+	nautilus_file_unref (file);
 }
 
 static void
