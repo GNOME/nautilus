@@ -340,7 +340,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	if (view->details->logged_in) {
 		char *text;
 		g_free (view->details->user_name);
-		view->details->user_name = who_is_logged_in (view->details->user_control);
+		view->details->user_name = ammonite_who_is_logged_in (view->details->user_control);
 		text = g_strdup_printf (_("Welcome Back %s!"), view->details->user_name);
 		eazel_services_header_set_text (EAZEL_SERVICES_HEADER (title), text);
 		g_free (text);
@@ -1443,7 +1443,7 @@ nautilus_summary_view_load_uri (NautilusSummaryView	*view,
 
 	/* get xml data and verify network connections */
 	g_print ("start load\n");
-	view->details->logged_in = am_i_logged_in (view->details->user_control);
+	view->details->logged_in = ammonite_am_i_logged_in (view->details->user_control);
 
 	g_print ("start xml table fetch\n");
 	got_url_table = trilobite_redirect_fetch_table 
@@ -1604,7 +1604,7 @@ merge_bonobo_menu_items (BonoboControl *control, gboolean state, gpointer user_d
 							"nautilus-summary-view");
 									
 		bonobo_ui_component_add_verb_list_with_data (view->details->ui_component, verbs, view);
-		update_menu_items (view, am_i_logged_in (view->details->user_control));
+		update_menu_items (view, ammonite_am_i_logged_in (view->details->user_control));
 	}
 
         /* Note that we do nothing if state is FALSE. Nautilus content

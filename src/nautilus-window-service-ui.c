@@ -60,12 +60,12 @@ goto_online_storage (BonoboUIComponent *component,
 		user_control = ammonite_get_user_control ();
 	}
 
-	logged_in = am_i_logged_in (user_control);
+	logged_in = ammonite_am_i_logged_in (user_control);
 
 	if (!logged_in) {
 		url = g_strdup ("eazel-services://anonymous/services");
 	} else {
-		user_name = who_is_logged_in (user_control);
+		user_name = ammonite_who_is_logged_in (user_control);
 		url = g_strdup_printf ("eazel-services:/~%s", user_name);
 	}
 
@@ -91,7 +91,7 @@ goto_software_catalog (BonoboUIComponent *component,
 		user_control = ammonite_get_user_control ();
 	}
 
-	logged_in = am_i_logged_in (user_control);
+	logged_in = ammonite_am_i_logged_in (user_control);
 
 	if (!logged_in) {
 		url = g_strdup ("eazel-services://anonymous/catalog");
