@@ -31,6 +31,7 @@
 #include "fm-error-reporting.h"
 #include "fm-list-model.h"
 #include <eel/eel-cell-renderer-pixbuf-list.h>
+#include <gdk/gdkkeysyms.h>
 #include <gtk/gtkcellrendererpixbuf.h>
 #include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtktreeselection.h>
@@ -209,6 +210,29 @@ button_release_callback (GtkWidget *widget, GdkEventButton *event, gpointer call
 	return FALSE;
 }
 
+static gboolean
+key_press_callback (GtkWidget *widget, GdkEventKey *event, gpointer callback_data)
+{
+	FMDirectoryView *view;
+	GList *file_list;
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+
+	switch (event->keyval) {
+	case GDK_Return:
+	case GDK_KP_Enter:
+		file_list = fm_list_view_get_selection (view);
+		fm_directory_view_activate_files (view, file_list);
+		nautilus_file_list_free (file_list);
+		return TRUE;
+
+	default:
+		break;
+	}
+
+	return FALSE;
+}
+
 static void
 sort_column_changed_callback (GtkTreeSortable *sortable, 
 			      FMListView *view)
@@ -284,6 +308,8 @@ create_and_set_up_tree_view (FMListView *view)
 				 G_CALLBACK (button_press_callback), view, 0);
 	g_signal_connect_object (view->details->tree_view, "button_release_event",
 				 G_CALLBACK (button_release_callback), view, 0);
+	g_signal_connect_object (view->details->tree_view, "key_press_event",
+				 G_CALLBACK (key_press_callback), view, 0);
 	
 	view->details->model = g_object_new (FM_TYPE_LIST_MODEL, NULL);
 	gtk_tree_view_set_model (view->details->tree_view, GTK_TREE_MODEL (view->details->model));
