@@ -1,5 +1,12 @@
 AC_INIT(src)
 
+dnl ==========================================================================
+dnl
+dnl If you add a version number here, you *must* add an AC_SUBST line for
+dnl it too, or it will never make it into the spec file!
+dnl
+dnl ==========================================================================
+
 GNOME_REQUIRED=1.2.8
 GNOME_LIBS_REQUIRED=1.2.11
 GTK_REQUIRED=1.2.9
@@ -19,6 +26,17 @@ MEDUSA_REQUIRED=0.2.2
 ESOUND_REQUIRED=0.2
 LIBGHTTP_REQUIRED=1.0.9
 SCROLLKEEPER_REQUIRED=0.1.1
+
+AC_SUBST(IMLIB_REQUIRED)
+AC_SUBST(LIBXML_REQUIRED)
+AC_SUBST(ORBIT_REQUIRED)
+AC_SUBST(GNOME_VFS_REQUIRED)
+AC_SUBST(POPT_REQUIRED)
+AC_SUBST(FREETYPE_REQUIRED)
+AC_SUBST(MEDUSA_REQUIRED)
+AC_SUBST(ESOUND_REQUIRED)
+AC_SUBST(LIBGHTTP_REQUIRED)
+AC_SUBST(SCROLLKEEPER_REQUIRED)
 
 dnl ===========================================================================
 
