@@ -1,5 +1,14 @@
 2001-03-14  John Sullivan  <sullivan@eazel.com>
 
+	Fixed bug 7696 ("Find" does nothing if location bar hidden)
+
+	* src/nautilus-window-menus.c:
+	(file_menu_toggle_find_mode_callback): Show location bar
+	if it had been hidden. This is used by both Find/Browse menu
+	item and Find button.
+
+2001-03-14  John Sullivan  <sullivan@eazel.com>
+
 	Fixed bug 7597 (Cut Text's underline accelerator changes
 	to conflict with Copy Text's when a text field is focussed)
 

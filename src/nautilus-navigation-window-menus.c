@@ -224,6 +224,10 @@ file_menu_toggle_find_mode_callback (BonoboUIComponent *component,
 	window = NAUTILUS_WINDOW (user_data);
 
 	if (!window->details->updating_bonobo_state) {
+		/* Show location bar if it's hidden */
+		if (!nautilus_window_location_bar_showing (window)) {
+			nautilus_window_show_location_bar (window);
+		}
 		nautilus_window_set_search_mode 
 			(window, !nautilus_window_get_search_mode (window));
 	}
