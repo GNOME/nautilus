@@ -102,7 +102,8 @@ void sect_menu_start_element (Context *context, const char *name, const xmlChar 
 void sect_menu_end_element (Context *context, const char *name);
 void sect_informaltable_start_element (Context *context, const char *name, const xmlChar **atrs);
 void sect_informaltable_end_element (Context *context, const char *name);
-void sect_table_start_element (Context *context, const char *name, const xmlChar **atrs);
+void sect_table_with_border_start_element (Context *context, const char *name, const xmlChar **atrs);
+void sect_table_without_border_start_element (Context *context, const char *name, const xmlChar **atrs);
 void sect_table_end_element (Context *context, const char *name);
 void sect_row_start_element (Context *context, const char *name, const xmlChar **atrs);
 void sect_row_end_element (Context *context, const char *name);
@@ -113,4 +114,6 @@ void sect_thead_end_element (Context *context, const char *name);
 void sect_tbody_start_element (Context *context, const char *name, const xmlChar **atrs);
 void sect_tbody_end_element (Context *context, const char *name);
 void sect_country_characters (Context *context, const char *chars, int len);
+void sect_member_start_element (Context *context, const char *chars, const xmlChar **atrs);
+void sect_member_end_element (Context *context, const char *name);
 #endif

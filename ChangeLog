@@ -1,3 +1,15 @@
+2000-08-24  Ali Abdin  <aliabdin@aucegypt.edu>
+
+        * components/help/converters/gnome-db2html2/sect-elements.[ch]:
+        (sect_table_with_border_start_element): Renamed from
+        sect_table_start_element to this.
+        (sect_table_without_border_start_element): New function
+        (sect_member_start_element): ditto
+        (sect_member_end_element): ditto
+
+        * components/help/converters/gnome-db2html2/gdb3html.h:
+        Add in support for the <simplelist> and <member> tags
+
 2000-08-24  Darin Adler  <darin@eazel.com>
 
 	Moved functions to gnome-vfs.

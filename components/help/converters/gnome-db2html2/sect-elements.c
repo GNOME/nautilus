@@ -87,7 +87,7 @@ ElementInfo sect_elements[] = {
 	{ INTERFACE, "interface", NULL, NULL, (charactersSAXFunc) sect_write_characters},
 	{ LINK, "link", (startElementSAXFunc) sect_link_start_element, (endElementSAXFunc) sect_link_end_element, (charactersSAXFunc) sect_write_characters},
 	{ MENUCHOICE, "menuchoice", NULL, NULL, NULL},
-	{ TABLE, "table", (startElementSAXFunc) sect_table_start_element, (endElementSAXFunc) sect_table_end_element, NULL},
+	{ TABLE, "table", (startElementSAXFunc) sect_table_with_border_start_element, (endElementSAXFunc) sect_table_end_element, NULL},
 	{ INFORMALTABLE, "informaltable", (startElementSAXFunc) sect_informaltable_start_element, (endElementSAXFunc) sect_informaltable_end_element, NULL},
 	{ ROW, "row", (startElementSAXFunc) sect_row_start_element, (endElementSAXFunc) sect_row_end_element, NULL},
 	{ ENTRY, "entry", (startElementSAXFunc) sect_entry_start_element, (endElementSAXFunc) sect_entry_end_element, (charactersSAXFunc) sect_write_characters},
@@ -95,6 +95,8 @@ ElementInfo sect_elements[] = {
 	{ TBODY, "tbody", (startElementSAXFunc) sect_tbody_start_element, (endElementSAXFunc) sect_tbody_end_element, NULL},
 	{ ACRONYM, "acronym", NULL, NULL, (charactersSAXFunc) sect_write_characters},
 	{ MARKUP, "markup", NULL, NULL, (charactersSAXFunc) sect_write_characters},
+	{ SIMPLELIST, "simplelist", (startElementSAXFunc) sect_table_without_border_start_element, (endElementSAXFunc) sect_table_end_element, NULL},
+	{ MEMBER, "member", (startElementSAXFunc) sect_member_start_element, (endElementSAXFunc) sect_member_end_element, (charactersSAXFunc) sect_write_characters},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -1508,9 +1510,9 @@ sect_informaltable_end_element (Context *context,
 }
 
 void
-sect_table_start_element (Context *context,
-			  const char *name,
-			  const xmlChar **atrs)
+sect_table_with_border_start_element (Context *context,
+			  	      const char *name,
+			  	      const xmlChar **atrs)
 {
 	SectContext *sect_context;
 
@@ -1524,8 +1526,19 @@ sect_table_start_element (Context *context,
 }
 
 void
+sect_table_without_border_start_element (Context *context,
+					 const char *name,
+					 const xmlChar **atrs)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "<TABLE BORDER=\"0\"\n");
+}
+
+void
 sect_table_end_element (Context *context,
-			        const char *name)
+		        const char *name)
 {
 	if (!IS_IN_SECT (context))
 		return;
@@ -1662,3 +1675,23 @@ sect_tbody_end_element (Context *context,
         sect_print (context, "</TBODY>");
 }
 
+void
+sect_member_start_element (Context *context,
+			   const char *name,
+			   const xmlChar **atrs)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "<TR><TD>");
+}
+
+void
+sect_member_end_element (Context *context,
+			 const char *name)
+{
+	if (!IS_IN_SECT (context))
+		return;
+	
+	sect_print (context, "</TD></TR>\n");
+}
