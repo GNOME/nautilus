@@ -1,3 +1,22 @@
+2000-10-19  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/services/summary/nautilus-view/
+	nautilus-summary-view.c: (authn_cb_failed), (logout_button_cb), 
+	(logged_in_callback), (logged_out_callback),
+	(bonobo_logout_callback), (bonobo_preferences_callback),
+	(update_menu_items), (merge_bonobo_menu_items):
+	
+	fixed the login menu command, and added support for the preferences
+	and logout command.  Made it properly show and hide the appropriate
+	commands according to the logged_in state
+	
+	* components/services/summary/nautilus-view/
+	nautilus-summary-view-ui.xml:
+	added menu items for preferences and logout
+	
+	* src/nautilus-service-ui.xml:
+	added tooltips for service menu commands
+
 2000-10-19  Mathieu Lacage  <mathieu@eazel.com>
 
 	* user-guide/C/Makefile.am: modify to install sgml 

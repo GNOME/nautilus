@@ -32,6 +32,7 @@
 #include <bonobo/bonobo-control.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-background.h>
+#include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
@@ -181,10 +182,10 @@ static void	generate_update_news_entry_row		(NautilusSummaryView		*view,
 							 int				row);
 static void	login_button_cb				(GtkWidget			*button,
 							 NautilusSummaryView		*view); 
-/* static void	preferences_button_cb			(GtkWidget			*button,
-							 NautilusSummaryView		*view); */
-/* static void	logout_button_cb			(GtkWidget			*button,
-							 NautilusSummaryView		*view); */
+static void	preferences_button_cb			(GtkWidget			*button,
+							 NautilusSummaryView		*view);
+static void	logout_button_cb			(GtkWidget			*button,
+							 NautilusSummaryView		*view);
 static void	goto_service_cb				(GtkWidget			*button,
 							 ServicesButtonCallbackData	*cbdata);
 static void	goto_update_cb				(GtkWidget			*button,
@@ -194,7 +195,7 @@ static void	register_button_cb			(GtkWidget			*button,
 static gboolean	am_i_logged_in				(NautilusSummaryView		*view);
 static char*	who_is_logged_in			(NautilusSummaryView		*view);
 static gint	logged_in_callback			(gpointer			raw);
-/* static gint	logged_out_callback			(gpointer			raw); */
+static gint	logged_out_callback			(gpointer			raw);
 static void	generate_error_dialog			(NautilusSummaryView		*view);
 static void	generate_login_dialog			(NautilusSummaryView		*view);
 static void	widget_set_nautilus_background_color	(GtkWidget			*widget,
@@ -202,6 +203,8 @@ static void	widget_set_nautilus_background_color	(GtkWidget			*widget,
 static void	merge_bonobo_menu_items			(BonoboControl *control,
 							 gboolean state,
 							 gpointer user_data);
+static void	update_menu_items 			(NautilusSummaryView *view,
+							 gboolean logged_in);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSummaryView, nautilus_summary_view, GTK_TYPE_EVENT_BOX)
 
@@ -699,6 +702,9 @@ authn_cb_failed (const EazelProxy_User *user, const EazelProxy_AuthnFailInfo *in
 	g_message ("Login FAILED");
 	view->details->logged_in = FALSE;
 	view->details->feedback_text = g_strdup_printf ("Login Failed! Please try again.");
+	
+	update_menu_items (view, FALSE);
+	
 	generate_error_dialog (view);
 	
 	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
@@ -759,8 +765,7 @@ login_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 
 }
 
-/*
-callback to handle the logout button.  Right now only does a simple redirect.
+/* callback to handle the logout button.  Right now only does a simple redirect. */
 static void
 logout_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 {
@@ -771,7 +776,7 @@ logout_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 	CORBA_exception_init (&ev);
 
 	if (CORBA_OBJECT_NIL != view->details->user_control) {
-Get list of currently active users
+	/* Get list of currently active users */
 
 		users = EazelProxy_UserControl_get_active_users (
 			view->details->user_control, &ev
@@ -782,7 +787,7 @@ Get list of currently active users
 			return;
 		}
 
-Log out the current default user
+	/* Log out the current default user */
 		for (i = 0; i < users->_length ; i++) {
 			EazelProxy_User *cur;
 
@@ -805,7 +810,7 @@ Log out the current default user
 
 	CORBA_exception_free (&ev);
 }
-*/
+
 
 static gboolean
 am_i_logged_in (NautilusSummaryView	*view)
@@ -882,13 +887,14 @@ logged_in_callback (gpointer	raw)
 
 	view = NAUTILUS_SUMMARY_VIEW (raw);
 	view->details->logged_in = TRUE;
-
+	
+	update_menu_items (view, TRUE);
 	go_to_uri (view->details->nautilus_view, "eazel:");
 
 	return (FALSE);
 }
 
-/*
+
 static gint
 logged_out_callback (gpointer	raw)
 {
@@ -896,14 +902,14 @@ logged_out_callback (gpointer	raw)
 
 	view = NAUTILUS_SUMMARY_VIEW (raw);
 	view->details->logged_in = FALSE;
-
+	
+	update_menu_items (view, FALSE);
 	go_to_uri (view->details->nautilus_view, "eazel:");
 
 	return (FALSE);
-} */
+}
 
-/*
-callback to handle the maintenance button.  Right now only does a simple redirect.
+/* callback to handle the maintenance button.  Right now only does a simple redirect. */
 static void
 preferences_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 {
@@ -919,8 +925,6 @@ preferences_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 	g_free (url);
 
 }
-
-*/
 
 /* callback to handle the register button.  Right now only does a simple redirect. */
 static void
@@ -1308,12 +1312,54 @@ bonobo_login_callback (BonoboUIComponent *ui, gpointer user_data, const char *ve
 }
 
 static void
+bonobo_logout_callback (BonoboUIComponent *ui, gpointer user_data, const char *verb)
+{
+	NautilusSummaryView *view;
+	
+	view = NAUTILUS_SUMMARY_VIEW (user_data);
+	logout_button_cb (NULL, view);
+}
+
+static void
+bonobo_preferences_callback (BonoboUIComponent *ui, gpointer user_data, const char *verb)
+{
+	NautilusSummaryView *view;
+	
+	view = NAUTILUS_SUMMARY_VIEW (user_data);
+	preferences_button_cb (NULL, view);
+}
+
+/* update the visibility of the menu items according to the login state */
+static void
+update_menu_items (NautilusSummaryView *view, gboolean logged_in)
+{
+	nautilus_bonobo_set_hidden (view->details->ui_component,
+				    "/commands/Register",
+				    logged_in);
+	
+	nautilus_bonobo_set_hidden (view->details->ui_component,
+				     "/commands/Login",
+				    logged_in);
+
+	nautilus_bonobo_set_hidden (view->details->ui_component,
+				    "/commands/Preferences",
+				    !logged_in);
+	
+	nautilus_bonobo_set_hidden (view->details->ui_component,
+				    "/commands/Logout",
+				    !logged_in);				    				    
+}
+
+/* this routine is invoked when the view is activated to merge in our menu items */
+static void
 merge_bonobo_menu_items (BonoboControl *control, gboolean state, gpointer user_data)
 {
  	NautilusSummaryView *view;
 	BonoboUIVerb verbs [] = {
 		BONOBO_UI_VERB ("Register", bonobo_register_callback),
 		BONOBO_UI_VERB ("Login", bonobo_login_callback),
+		BONOBO_UI_VERB ("Logout", bonobo_logout_callback),
+		BONOBO_UI_VERB ("Preferences", bonobo_preferences_callback),		
 		BONOBO_UI_VERB_END
 	};
 
@@ -1328,12 +1374,10 @@ merge_bonobo_menu_items (BonoboControl *control, gboolean state, gpointer user_d
 							"nautilus-summary-view");
 									
 		bonobo_ui_component_add_verb_list_with_data (view->details->ui_component, verbs, view);
-	
-	
+		update_menu_items (view, am_i_logged_in (view));
 	}
 
         /* Note that we do nothing if state is FALSE. Nautilus content
          * views are never explicitly deactivated
 	 */
 }
-
