@@ -101,8 +101,8 @@ libeazelsoftcatinclude_HEADERS = 		\
 	$(NULL)
 
 libeazelsoftcat_la_SOURCES = 			\
-	eazel-install-types.o	 		\
-	eazel-softcat.o				\
+	eazel-install-types.c	 		\
+	eazel-softcat.c				\
 	$(NULL)
 
 libeazelinstall_la_LDFLAGS = \

@@ -1,3 +1,18 @@
+2000-11-27  Darin Adler  <darin@eazel.com>
+
+	* components/services/install/lib/Makefile.am:
+	Makefile listed ".o" files instead of sources, making srcdir ==
+	builddir builds not compile anything! Fixed so the files are
+	compiled even when srcdir == builddir; this makes us all see the
+	errors we were previously seeing only on the Tinderbox.
+	
+	* components/services/install/lib/eazel-softcat-private.h:
+	* components/services/install/lib/eazel-softcat.c:
+	(eazel_softcat_class_initialize):
+	* components/services/install/lib/eazel-softcat.h:
+	Tweaked and disabled enough code so it builds now. This fixes the
+	Tinderbox build.
+
 2000-11-27  Andy Hertzfeld  <andy@eazel.com>
 
 	* icons/Makefile.am:
@@ -9,7 +24,7 @@
 	removed some ancient, unused emblem images, and added updated
 	folder icons in eazel theme from Susan.
 		
-2000-11-16  Darin Adler  <darin@eazel.com>
+2000-11-27  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>
 
@@ -40,7 +55,7 @@
 	add line to sect_author_characters to print out contents of author
 	tag; fixing bug #4801
 	
-elements in body of doc
+	elements in body of doc
 
 2000-11-26  Maciej Stachowiak  <mjs@eazel.com>
 

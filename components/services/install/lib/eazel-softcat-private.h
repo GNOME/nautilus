@@ -27,10 +27,10 @@
 #include "eazel-softcat.h"
 
 struct _EazelSoftCatPrivate {
-	char *server,
-	unsigned int port,
-	unsigned int retries,
-        unsigned int delay
+	char *server;
+	unsigned int port;
+	unsigned int retries;
+        unsigned int delay;
 };
 
 #endif /* EAZEL_SOFTCAT_PRIVATE_H */

@@ -22,7 +22,8 @@
  */
 
 #include <config.h>
-#include <gnome.h>
+#include "eazel-softcat.h"
+
 #include "eazel-softcat-private.h"
 
 /* This is the parent class pointer */
@@ -47,13 +48,6 @@ eazel_softcat_finalize (GtkObject *object)
 	}
 }
 
-void eazel_softcat_unref (GtkObject *object) 
-{
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (EAZEL_SOFTCAT (object));
-	gtk_object_unref (object);
-}
-
 static void
 eazel_softcat_class_initialize (EazelSoftCatClass *klass) 
 {
@@ -61,29 +55,32 @@ eazel_softcat_class_initialize (EazelSoftCatClass *klass)
 
 	object_class = (GtkObjectClass*)klass;
 	object_class->finalize = eazel_softcat_finalize;
+#if 0
 	object_class->set_arg = eazel_softcat_set_arg;
+#endif
 	
 	eazel_softcat_parent_class = gtk_type_class (gtk_object_get_type ());
 
+#if 0
 	signals[START] = 
 		gtk_signal_new ("start",
 				GTK_RUN_LAST,
 				object_class->type,
-				GTK_SIGNAL_OFFSET (EazelSoftCatClass, download_progress),
+				GTK_SIGNAL_OFFSET (EazelSoftCatClass, start),
 				gtk_marshal_NONE__POINTER_INT_INT,
 				GTK_TYPE_NONE, 3, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT);	
 	signals[END] = 
 		gtk_signal_new ("end",
 				GTK_RUN_LAST,
 				object_class->type,
-				GTK_SIGNAL_OFFSET (EazelSoftCatClass, preflight_check),
+				GTK_SIGNAL_OFFSET (EazelSoftCatClass, end),
 				gtk_marshal_BOOL__POINTER_INT_INT,
 				GTK_TYPE_BOOL, 3, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT);
 	signals[PROGRESS] = 
 		gtk_signal_new ("progress",
 				GTK_RUN_LAST,
 				object_class->type,
-				GTK_SIGNAL_OFFSET (EazelSoftCatClass, install_progress),
+				GTK_SIGNAL_OFFSET (EazelSoftCatClass, progress),
 				eazel_softcat_gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT,
 				GTK_TYPE_NONE, 7, GTK_TYPE_POINTER, 
 				GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT, 
@@ -92,15 +89,12 @@ eazel_softcat_class_initialize (EazelSoftCatClass *klass)
 		gtk_signal_new ("failed",
 				GTK_RUN_LAST,
 				object_class->type,
-				GTK_SIGNAL_OFFSET (EazelSoftCatClass, download_failed),
+				GTK_SIGNAL_OFFSET (EazelSoftCatClass, failed),
 				gtk_marshal_NONE__POINTER,
 				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
-	klass->start = NULL;
-	klass->progress = NULL;
-	klass->failed = NULL;
-	klass->end = NULL;
+	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+#endif
 }
 
 static void

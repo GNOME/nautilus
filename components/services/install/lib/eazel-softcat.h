@@ -27,10 +27,6 @@
 #include "eazel-install-types.h"
 #include "eazel-softcat-private.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
 #define TYPE_EAZEL_SOFTCAT           (eazel_softcat_get_type ())
 #define EAZEL_SOFTCAT(obj)           (GTK_CHECK_CAST ((obj), TYPE_EAZEL_SOFTCAT, EazelSoftCat))
 #define EAZEL_SOFTCAT_CLASS(klass)   (GTK_CHECK_CLASS_CAST ((klass), TYPE_EAZEL_SOFTCAT, EazelSoftCatClass))
