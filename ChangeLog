@@ -1,5 +1,13 @@
 2000-10-13  John Sullivan  <sullivan@eazel.com>
 
+	* src/nautilus-applicable-views.c:
+	(get_nautilus_navigation_result_from_gnome_vfs_result):
+	added GNOME_VFS_ERROR_INTERNAL to the known list of
+	errors that we can't say anything useful about, since
+	this is firing in some cases when Mozilla fails.
+
+2000-10-13  John Sullivan  <sullivan@eazel.com>
+
 	* src/file-manager/fm-directory-view.c: Changed the
 	SILENT_WINDOW_OPEN_LIMIT from 10 to 5 after feedback that
 	opening 9 windows accidentally was dragging someone's
