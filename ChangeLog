@@ -1,3 +1,22 @@
+2000-08-25  Maciej Stachowiak  <mjs@eazel.com>
+
+	* components/tree/Makefile.am:
+	* components/tree/libmain.c: (tree_shlib_object_destroyed),
+	(tree_shlib_make_object):
+	* components/tree/main.c: (tree_exe_object_destroyed),
+	(tree_exe_make_object), (main):
+	* components/tree/nautilus-tree-view-iids.h:
+	* components/tree/nautilus-tree-view.oafinfo: Removed
+	* components/tree/nautilus-tree-view.oafinfo.exe: Added
+	* components/tree/nautilus-tree-view.oafinfo.shlib: Added
+	* configure.in:
+
+	Added capability to build the tree view as either a shared library
+	server or an executable server, as part of the plan to fix
+	1647. However, using the shlib component causes massive
+	instability in both the tree view and nautilus in general. I am
+	leaving the executable component the default until I fix this.
+	
 Fri Aug 25 02:17:17 2000  George Lebl <jirka@5z.com>
 
 	* cut-n-paste-code/widgets/nautilus-druid/Makefile.am,

@@ -17,14 +17,7 @@ INCLUDES =					\
 
 oafdir = $(datadir)/oaf
 
-oaf_DATA =					\
-	nautilus-tree-view.oafinfo
-
-
-bin_PROGRAMS =					\
-	nautilus-tree-view
-
-nautilus_tree_view_SOURCES =	        \
+TREE_VIEW_COMMON_SOURCES = 	        \
 	nautilus-tree-view.h            \
 	nautilus-tree-view.c            \
 	nautilus-tree-model.h           \
@@ -34,8 +27,37 @@ nautilus_tree_view_SOURCES =	        \
 	nautilus-tree-node.c            \
 	nautilus-tree-expansion-state.h \
 	nautilus-tree-expansion-state.c \
+	$(NULL)
+
+
+if TREE_VIEW_EXE_SERVER
+
+OAFINFO_FILE = nautilus-tree-view.oafinfo.exe
+
+bin_PROGRAMS =				\
+	nautilus-tree-view
+
+nautilus_tree_view_SOURCES =            \
+	$(TREE_VIEW_COMMON_SOURCES)     \
 	main.c                          \
 	$(NULL)
+
+else
+
+OAFINFO_FILE = nautilus-tree-view.oafinfo.shlib
+
+lib_LTLIBRARIES =				\
+	libnautilus-tree-view.la
+
+libnautilus_tree_view_la_SOURCES =         \
+	$(TREE_VIEW_COMMON_SOURCES)        \
+	libmain.c                          \
+	$(NULL)
+
+endif
+
+
+
 
 nautilus_tree_view_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
@@ -47,4 +69,16 @@ nautilus_tree_view_LDADD =			\
 	$(OAF_LIBS)                                      \
 	$(NULL)
 
-EXTRA_DIST = $(oaf_DATA)
+EXTRA_DIST = nautilus-tree-view.oafinfo.shlib nautilus-tree-view.oafinfo.exe
+
+install-data-hook: $(oaf_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(oafdir)
+	$(INSTALL_DATA) $(srcdir)/$(OAFINFO_FILE) $(DESTDIR)$(oafdir)/nautilus-tree-view.oafinfo
+
+uninstall-local:
+	@$(NORMAL_UNINSTALL)
+	rm -f $(DESTDIR)$(oafdir)/nautilus-tree-view.oafinfo; 
+
+
+

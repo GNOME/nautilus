@@ -28,6 +28,8 @@
 
 #include "nautilus-tree-view.h"
 
+#include "nautilus-tree-view-iids.h"
+
 #include <libnautilus-extensions/nautilus-debug.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-init.h>
@@ -38,8 +40,9 @@
 
 static int object_count = 0;
 
+
 static void
-tree_object_destroyed (GtkObject *object)
+tree_exe_object_destroyed (GtkObject *object)
 {
 	object_count--;
 	if (object_count <= 0) {
@@ -48,14 +51,14 @@ tree_object_destroyed (GtkObject *object)
 }
 
 static BonoboObject *
-tree_make_object (BonoboGenericFactory *factory, 
-		    const char *iid, 
-		    void *closure)
+tree_exe_make_object (BonoboGenericFactory *factory, 
+		      const char *iid, 
+		      void *closure)
 {
 	NautilusTreeView *view;
 	NautilusView *nautilus_view;
 
-	if (strcmp (iid, "OAFIID:nautilus_tree_view:2d826a6e-1669-4a45-94b8-23d65d22802d")) {
+	if (strcmp (iid, TREE_VIEW_IID)) {
 		return NULL;
 	}
 
@@ -65,10 +68,13 @@ tree_make_object (BonoboGenericFactory *factory,
 
 	nautilus_view = nautilus_tree_view_get_nautilus_view (view);
 
-	gtk_signal_connect (GTK_OBJECT (view), "destroy", tree_object_destroyed, NULL);
+	gtk_signal_connect (GTK_OBJECT (view), "destroy", tree_exe_object_destroyed, NULL);
 
 	return BONOBO_OBJECT (nautilus_view);
 }
+
+
+
 
 int
 main (int argc, char *argv[])
@@ -105,8 +111,8 @@ main (int argc, char *argv[])
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
 	factory = bonobo_generic_factory_new_multi
-		("OAFIID:nautilus_tree_view_factory:79f93d13-d404-4ef6-8de2-b8a0045a96ab",
-		 tree_make_object, NULL);
+		(TREE_VIEW_FACTORY_IID,
+		 tree_exe_make_object, NULL);
 		
 	do {
 		bonobo_main ();

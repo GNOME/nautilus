@@ -24,10 +24,23 @@ AC_ISC_POSIX
 dnl ORBit
 AM_PATH_ORBIT
 
+dnl Tree view build as executable
+
+TREE_VIEW_EXE_SERVER=1
+
+AC_ARG_ENABLE(enable-tree-view-exe-server,
+[  --enable-tree-view-exe-server	Build tree as executable component instead of shlib],
+TREE_VIEW_EXE_SERVER="$enableval",
+TREE_VIEW_EXE_SERVER=1)
+
+AM_CONDITIONAL(TREE_VIEW_EXE_SERVER, test "x$TREE_VIEW_EXE_SERVER" = "x1")
+
+
+
 dnl 
 EAZEL_SERVICES=
 AC_ARG_ENABLE(eazel-services,
-[--enable-eazel-services	Eazel services],
+[  --enable-eazel-services		Eazel services],
 EAZEL_SERVICES=1
 AC_DEFINE(EAZEL_SERVICES))
 
@@ -548,6 +561,17 @@ Eazel services		: YES"
 *)
 echo "
 Eazel services          : NO"
+;;
+esac
+dnl <= Tree view as exe or shlib =>
+case "X$TREE_VIEW_EXE_SERVER" in
+X1)
+echo "
+Tree View		: Executable"
+;;
+*)
+echo "
+Tree View               : Shared Library"
 ;;
 esac
 echo "=>"
