@@ -1,3 +1,33 @@
+2000-08-07  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 1422 (dropping an icon at the edge doesn't update
+	the scrollable area)
+
+	Start of bug 1969 (search controls need to adjust sensitivity
+	appropriately)
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_update_scroll_region): Renamed from
+	"update_scroll_region" since it's now in a header file.
+	(relayout), (nautilus_icon_container_clear): Updated for name change.
+	(nautilus_icon_container_move_icon): Added FIXME about how
+	update_scroll_region is handled at different levels at Darin's
+	request.
+	* libnautilus-extensions/nautilus-icon-private.h:
+	Put prototype for nautilus_icon_container_update_scroll_region
+	here so it could be called from drag-and-drop code.
+	* libnautilus-extensions/nautilus-icon-dnd.c: (handle_local_move):
+	Update scroll region after drag.
+	
+	* src/nautilus-complex-search-bar.c:
+	(update_options_buttons_state): New function, updates the sensitivity
+	of "Fewer Choices" button based on number of displayed criteria. Later
+	it will also handle "More Choices" button and perhaps others.
+	(nautilus_complex_search_bar_initialize): 
+	Call update_options_button_state after creating button widgets.
+	(more_options_callback), (fewer_options_callback): Call
+	update_options_button_state when number of criteria changes.
+
 2000-08-07  Darin Adler  <darin@eazel.com>
 
 	Fixed bug 1921 (reloading does not cause directory count to be

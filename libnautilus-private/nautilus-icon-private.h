@@ -202,4 +202,6 @@ gboolean      nautilus_icon_container_emit_preview_signal         (NautilusIconC
 void	      nautilus_icon_container_scroll			  (NautilusIconContainer *container,
 								   int 			  delta_x, 
 								   int 			  delta_y);
+
+void	      nautilus_icon_container_update_scroll_region	  (NautilusIconContainer *container);
 #endif /* NAUTILUS_ICON_CONTAINER_PRIVATE_H */

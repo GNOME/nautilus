@@ -67,7 +67,10 @@ static void  fewer_options_callback                       (GtkObject            
 static void  criterion_callback                           (NautilusSearchBarCriterion *old_criterion,
 							   NautilusSearchBarCriterion *new_criterion,
 							   gpointer data);
-static GtkWidget *  load_find_them_pixmap_widget                 (void);
+static GtkWidget * load_find_them_pixmap_widget           (void);
+
+static void	   update_options_buttons_state 	  (NautilusComplexSearchBar *bar);
+
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusComplexSearchBar, nautilus_complex_search_bar, NAUTILUS_TYPE_SEARCH_BAR)
 
@@ -208,6 +211,8 @@ nautilus_complex_search_bar_initialize (NautilusComplexSearchBar *bar)
 	gtk_widget_show (hbox);
 	gtk_widget_show (GTK_WIDGET (bar->details->bar_container));
 	gtk_container_add (GTK_CONTAINER (bar), GTK_WIDGET (bar->details->bar_container));
+
+	update_options_buttons_state (bar);
 }
 
 /* returned string should be g_freed by the caller */
@@ -357,7 +362,7 @@ more_options_callback (GtkObject *object,
 	attach_criterion_to_search_bar (bar, criterion, 
 					g_slist_length (bar->details->search_criteria));
 	nautilus_search_bar_criterion_show (criterion);
-
+	update_options_buttons_state (bar);
 }
 
 
@@ -395,8 +400,16 @@ fewer_options_callback (GtkObject *object,
 	   Any better fix is wellcome.
 	*/
 	gtk_widget_queue_resize (GTK_WIDGET (bar->details->bar_container)->parent->parent->parent->parent->parent->parent->parent->parent);
+
+	update_options_buttons_state (bar);
 }
 
+static void
+update_options_buttons_state (NautilusComplexSearchBar *bar)
+{
+	/* "Fewer Options" is enabled unless there's only one criterion */
+	gtk_widget_set_sensitive (GTK_WIDGET (bar->details->fewer_options), g_slist_length (bar->details->search_criteria) > 1);
+}
 
 
 

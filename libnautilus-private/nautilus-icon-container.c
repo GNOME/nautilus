@@ -422,8 +422,8 @@ get_all_icon_bounds (NautilusIconContainer *container,
 		 x1, y1, x2, y2);
 }
 
-static void
-update_scroll_region (NautilusIconContainer *container)
+void
+nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 {
 	double x1, y1, x2, y2;
 	GtkAdjustment *hadj, *vadj;
@@ -622,7 +622,7 @@ relayout (NautilusIconContainer *container)
 		lay_down_icons (container, container->details->icons, 0);
 	}
 
-	update_scroll_region (container);
+	nautilus_icon_container_update_scroll_region (container);
 }
 
 static void
@@ -748,6 +748,13 @@ nautilus_icon_container_move_icon (NautilusIconContainer *container,
 	if (raise) {
 		icon_raise (icon);
 	}
+
+	/* FIXME: Handling of the scroll region is inconsistent here. In
+	 * the scale-changing case, relayout is called, which updates the
+	 * scroll region appropriately. In other cases, it's up to the
+	 * caller to make sure the scroll region is updated. This could
+	 * lead to hard-to-track-down bugs.
+	 */
 }
 
 /* Implementation of rubberband selection.  */
@@ -2670,7 +2677,7 @@ nautilus_icon_container_clear (NautilusIconContainer *container)
 	g_list_free (details->new_icons);
 	details->new_icons = NULL;
 
-	update_scroll_region (container);
+	nautilus_icon_container_update_scroll_region (container);
 }
 
 /* utility routine to remove a single icon from the container */
