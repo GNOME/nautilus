@@ -1,3 +1,11 @@
+2000-05-21  J Shane Culpepper  <pepper@eazel.com>
+
+        * components/services/install/lib/eazel-install-rpm-glue.c:
+        (install_new_packages), (uninstall_packages), (do_rpm_install),
+        (do_rpm_uninstall), (rpm_uninstall): Adding uninstall depend checks.
+        More fixes for Bug # 731. Added a few minor tweaks to the rpm install
+        functions.
+
 2000-05-21  Ettore Perazzoli  <ettore@helixcode.com>
 
 	* components/html/ntl-web-browser.c: Updated for latest GtkHTML

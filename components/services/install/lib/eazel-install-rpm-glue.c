@@ -36,6 +36,8 @@
 #include "eazel-install-xml-package-list.h"
 #include "helixcode-utils.h"
 #include <rpm/rpmlib.h>
+#include <rpm/rpmmacro.h>
+#include <rpm/dbindex.h>
 #include <rpm/rpmurl.h>
 #include <string.h>
 #include <time.h>
@@ -53,6 +55,12 @@ static int rpm_install (char* root_dir,
                         rpm_install_cb callback,
                         void* user_data);
 
+static int rpm_uninstall (char* root_dir,
+                          char* file,
+                          int install_flags,
+                          int problem_filters,
+                          int interface_flags);
+
 static int do_rpm_install (char* root_dir,
                            GList* packages,
                            char* location,
@@ -61,6 +69,12 @@ static int do_rpm_install (char* root_dir,
                            int interface_flags,
                            rpm_install_cb callback,
                            void* user_data);
+
+static int do_rpm_uninstall (char* root_dir,
+                             GList* packages,
+                             int install_flags,
+                             int problem_filters,
+                             int interface_flags);
 
 static void* rpm_show_progress (const Header h,
                                 const rpmCallbackType callback_type,
@@ -91,7 +105,6 @@ install_new_packages (InstallOptions* iopts, TransferOptions* topts) {
 	}
 
 	if (iopts->mode_verbose == TRUE) {
-		interface_flags |= INSTALL_HASH;
 		rpmSetVerbosity (RPMMESS_VERBOSE);
 	}
 	else {
@@ -190,18 +203,18 @@ gboolean
 uninstall_packages (InstallOptions* iopts, TransferOptions* topts) {
 	GList* categories;
 	gboolean rv;
-	int uninstall_flags, interface_flags;
+	int uninstall_flags, interface_flags, problem_filters;
 	
 	categories = NULL;
 	uninstall_flags = 0;
 	interface_flags = 0;
+	problem_filters = 0;
 	
 	if (iopts->mode_test == TRUE) {
 		uninstall_flags |= RPMTRANS_FLAG_TEST;
 	}
 
 	if (iopts->mode_verbose == TRUE) {
-		interface_flags |= INSTALL_HASH;
 		rpmSetVerbosity (RPMMESS_VERBOSE);
 	}
 	else {
@@ -220,23 +233,23 @@ uninstall_packages (InstallOptions* iopts, TransferOptions* topts) {
 		g_print ("Uninstall Category - %s\n", c->name);
 		while (t) {
 			PackageData* pack = t->data;
-			const char* pkg[2]; 
-			char *tmpbuf;
+			char* pkg; 
 			int retval;
 
 			retval = 0;
 			if (g_strcasecmp (pack->archtype, "src") != 0) {
 
-				tmpbuf = g_strdup_printf ("%s-%s-%s",
-                                                          pack->name,
-                                                          pack->version,
-                                                          pack->minor);
-				pkg[0] = tmpbuf;
-				pkg[1] = NULL;
-				g_print ("Uninstalling %s\n", pack->summary);
-				retval = rpmErase ("/", pkg, uninstall_flags,
-                                                   interface_flags);
-
+				pkg = g_strdup_printf ("%s-%s-%s",
+                                                       pack->name,
+                                                       pack->version,
+                                                       pack->minor);
+				g_print ("Uninstalling %s\n", pkg);
+				retval = rpm_uninstall ("/",
+                                                        pkg,
+							uninstall_flags,
+                                                        problem_filters,
+                                                        interface_flags);
+				g_free (pkg);
 				if (retval == 0) {
 					g_print ("Package uninstall successful !\n");
 					rv = TRUE;
@@ -245,15 +258,14 @@ uninstall_packages (InstallOptions* iopts, TransferOptions* topts) {
 					g_print ("Package uninstall failed !\n");
 					rv = FALSE;
 				}
-				g_free(tmpbuf);
 			}
 			else {
-				tmpbuf = g_strdup_printf ("%s-%s-%s",
-                                                          pack->name,
-                                                          pack->version,
-                                                          pack->minor);
-  				g_print ("%s seems to be a source package.  Skipping ...\n", tmpbuf);
-  				g_free(tmpbuf);
+				pkg = g_strdup_printf ("%s-%s-%s",
+                                                       pack->name,
+                                                       pack->version,
+                                                       pack->minor);
+  				g_print ("%s seems to be a source package.  Skipping ...\n", pkg);
+			g_free (pkg);
   			}
 			t = t->next;
 		}
@@ -382,6 +394,10 @@ do_rpm_install (char* root_dir, GList* packages, char* location,
                                            &is_source,
                                            NULL,
                                            NULL);
+		if (is_source) {
+			g_warning (_("Source Package installs not supported!\n"
+                                     "Package %s skipped."), pkg_file);	
+		}
 		fdClose (fd);
 		if (binary_headers[num_binary_packages]) {
 			if (headerGetEntry (binary_headers[num_binary_packages],
@@ -427,21 +443,21 @@ do_rpm_install (char* root_dir, GList* packages, char* location,
                                             NULL);
 		}
 
-		if (!(interface_flags)) {
+		if (!(interface_flags & INSTALL_NODEPS)) {
 			if (rpmdepCheck (rpmdep, &conflicts, &num_conflicts)) {
 				num_failed = num_packages;
 				stop_install = 1;
 			}
 			if (!stop_install && conflicts) {
 				g_print (_("Dependancy check failed.\n"));
-				printDepProblems(stderr, conflicts,
-                                                 num_conflicts);
+				printDepProblems (stderr, conflicts,
+                                                  num_conflicts);
 				num_failed = num_packages;
 				stop_install = 1;
 				rpmdepFreeConflicts (conflicts, num_conflicts);
 			}
 		}
-		if (!(interface_flags)) {
+		if (!(interface_flags & INSTALL_NOORDER)) {
 			if (rpmdepOrder(rpmdep)) {
 				num_failed = num_packages;
 				stop_install = 1;
@@ -451,9 +467,9 @@ do_rpm_install (char* root_dir, GList* packages, char* location,
 	else {
 		db = NULL;
 	}
-	if (!stop_install && rpmdep != NULL) {
+	if (num_binary_packages && !stop_install && rpmdep != NULL) {
 		/* do the actual install */
-		if (interface_flags) {
+		if (interface_flags & INSTALL_UPGRADE) {
 			 g_print (_("Upgrading...\n"));
 		}
 		else {
@@ -481,6 +497,7 @@ do_rpm_install (char* root_dir, GList* packages, char* location,
 		headerFree (binary_headers[i]);
 	}
 	g_free (binary_headers);
+
 	if (db) {
 		rpmdbClose (db);
 	}
@@ -492,7 +509,109 @@ do_rpm_install (char* root_dir, GList* packages, char* location,
 	return num_failed;
 } /* end do_rpm_install */
 
-int
+static int
+do_rpm_uninstall (char* root_dir, GList* packages, int install_flags,
+                  int problem_filters, int interface_flags) {
+	rpmdb db;
+	int count, i;
+	int rc;
+	int mode;
+	int num_packages;
+	int num_failed;
+	int num_conflicts;
+	int  stop_uninstall;
+	char* pkg_name;
+	dbiIndexSet matches;
+	rpmTransactionSet rpmdep;
+	struct rpmDependencyConflict* conflicts;
+	rpmProblemSet probs;
+
+	num_failed = 0;
+	stop_uninstall = 0;
+	rpmdep = NULL;
+
+	if (install_flags & RPMTRANS_FLAG_TEST) {
+		mode = O_RDONLY;
+	}
+	else {
+		mode = O_RDWR | O_EXCL;
+	}
+	if (rpmdbOpen (root_dir, &db, mode, 0644)) {
+		const char* dn;
+		dn = rpmGetPath ((root_dir ? root_dir : ""), "%{_dbpath}", NULL);
+		if (!dn) {
+			g_error (_("Packages database query failed !\n"));
+		}
+		return g_list_length (packages);
+	}
+
+	rpmdep = rpmtransCreateSet (db, root_dir);
+	for (num_packages = 0; packages != NULL; packages = packages->next) {
+		pkg_name = packages->data;
+		rc = rpmdbFindByLabel (db, pkg_name, &matches);
+		switch (rc) {
+			case 1:
+				g_print (_("Package %s is not installed\n"), pkg_name);
+				num_failed++;
+				break;
+			case 2:
+				g_print (_("Error finding index to %s\n"), pkg_name);
+				num_failed++;
+				break;
+			default:
+				count = 0;
+				for (i = 0; i < dbiIndexSetCount (matches); i++) {
+					unsigned int rec_offset;
+					if (dbiIndexRecordOffset (matches, i)) {
+						count++;
+					}
+					rec_offset = dbiIndexRecordOffset (matches, i);
+					if (rec_offset) {
+						rpmtransRemovePackage (rpmdep, rec_offset);
+						num_packages++;
+					}
+				}
+				break;
+		}
+		dbiFreeIndexRecord (matches);
+	}
+
+	if (!(interface_flags & UNINSTALL_NODEPS)) {
+
+		if (rpmdepCheck (rpmdep, &conflicts, &num_conflicts)) {
+			num_failed = num_packages;
+			stop_uninstall = 1;
+		}
+
+		if (!stop_uninstall && conflicts) {
+
+			g_print (_("Dependancy check failed.\n"));
+			printDepProblems (stderr, conflicts,
+                                          num_conflicts);
+			num_failed += num_packages;
+			stop_uninstall = 1;
+			rpmdepFreeConflicts (conflicts, num_conflicts);
+		}
+	}
+	if (!stop_uninstall && rpmdep != NULL) {
+		num_failed += rpmRunTransactions (rpmdep,
+                                                  NULL,
+                                                  NULL,
+                                                  NULL,
+                                                  &probs,
+                                                  install_flags,
+                                                  problem_filters);
+	}
+
+	if (rpmdep != NULL) {
+		rpmtransFree (rpmdep);
+	}
+
+	rpmdbClose (db);
+	return num_failed;
+} /* end do_rpm_uninstall */
+
+static int
 rpm_install (char* root_dir,
              char* file,
              char* location,
@@ -517,4 +636,25 @@ rpm_install (char* root_dir,
 	g_list_free (list);
 	return result;
 } /* end rpm_install */
+
+static int
+rpm_uninstall (char* root_dir,
+               char* file,
+               int install_flags,
+               int problem_filters,
+               int interface_flags) {
+  GList* list;
+  int result;
+
+  list = g_list_append (NULL, file);
+
+  result = do_rpm_uninstall (root_dir,
+                             list,
+                             install_flags,
+                             problem_filters,
+                             interface_flags);
+
+  g_list_free (list);
+  return result;
+} /* end rpm_uninstall */
 
