@@ -25,11 +25,22 @@
 */
 
 #include <config.h>
+
+#include <sys/stat.h>
+
 #include "nautilus-gnome-extensions.h"
 
 #include <libart_lgpl/art_rgb.h>
 #include <libart_lgpl/art_rect.h>
 #include "nautilus-gdk-extensions.h"
+#include <libgnome/gnome-util.h>
+#include <limits.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <signal.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/wait.h>
 
 void
 nautilus_gnome_canvas_world_to_window_rectangle (GnomeCanvas *canvas,
@@ -365,4 +376,169 @@ nautilus_gnome_canvas_set_scroll_region_left_justify (GnomeCanvas *canvas,
 	nautilus_gnome_canvas_set_scroll_region
 		(canvas, x1, y1,
 		 MAX (x2, x1 + width), MAX (y2, y1 + height));
+}
+
+
+/* Code from GMC, contains all the voodoo needed to start
+ * a terminal from the file manager nicely
+ */
+
+static int
+max_open_files (void)
+{
+	static int files;
+
+	if (files != 0) {
+		return files;
+	}
+
+#ifdef HAVE_SYSCONF
+	files = sysconf (_SC_OPEN_MAX);
+	if (files != -1)
+		return files;
+#endif
+#ifdef OPEN_MAX
+	files = OPEN_MAX;
+#else
+	files = 256;
+#endif
+	return files;
+}
+
+static int 
+nautilus_gnome_terminal_shell_execute (const char *shell, const char *command)
+{
+	struct sigaction ignore, save_intr, save_quit, save_stop;
+	int status, i;
+	int pid;
+	
+	ignore.sa_handler = SIG_IGN;
+	sigemptyset (&ignore.sa_mask);
+	ignore.sa_flags = 0;
+	status = 0;
+    
+	sigaction (SIGINT, &ignore, &save_intr);    
+	sigaction (SIGQUIT, &ignore, &save_quit);
+
+	pid = fork ();
+	if (pid < 0){
+		return -1;
+	}
+	
+	if (pid == 0){
+		int top;
+		struct sigaction default_pipe;
+
+		top = max_open_files ();
+		sigaction (SIGINT,  &save_intr, NULL);
+		sigaction (SIGQUIT, &save_quit, NULL);
+
+		/*
+		 * reset sigpipe
+		 */
+		default_pipe.sa_handler = SIG_DFL;
+		sigemptyset (&default_pipe.sa_mask);
+		default_pipe.sa_flags = 0;
+		
+		sigaction (SIGPIPE, &default_pipe, NULL);
+		
+		for (i = 0; i < top; i++)
+			close (i);
+
+		/* Setup the file descriptor for the child */
+		   
+		/* stdin */
+		open ("/dev/null", O_APPEND);
+
+		/* stdout */
+		open ("/dev/null", O_RDONLY);
+
+		/* stderr */
+		open ("/dev/null", O_RDONLY);
+		
+		pid = fork ();
+		if (pid == 0){
+			execl (shell, shell, "-c", command, (char *) 0);
+			/* See note below for why we use _exit () */
+			_exit (127);		/* Exec error */
+		}
+		/* We need to use _exit instead of exit to avoid
+		 * calling the atexit handlers (specifically the gdk atexit
+		 * handler
+		 */
+		_exit (0);
+	}
+	waitpid (pid, &status, 0);
+	sigaction (SIGINT,  &save_intr, NULL);
+	sigaction (SIGQUIT, &save_quit, NULL);
+	sigaction (SIGTSTP, &save_stop, NULL);
+
+	return WEXITSTATUS(status);
+}
+
+void
+nautilus_gnome_open_terminal (const char *command)
+{
+	char *terminal_path;
+	char *shell;
+	gboolean quote_all;
+	char *command_line;
+
+
+	quote_all = FALSE;
+
+	/* figure out whichever shell we are using */
+    	shell = gnome_util_user_shell ();
+
+	/* Look up a well-known terminal app */
+	terminal_path = gnome_is_program_in_path ("gnome-terminal");
+	if (terminal_path != NULL) {
+		/* apparently gnome-terminal needs it's input nicely quoted and the other
+		 * terminals don't
+		 */
+		quote_all = TRUE;
+	}
+	
+	if (terminal_path == NULL) {
+		terminal_path = gnome_is_program_in_path ("dtterm");
+	}
+	
+	if (terminal_path == NULL) {
+		terminal_path = gnome_is_program_in_path ("nxterm");
+	}
+	
+	if (terminal_path == NULL) {
+		terminal_path = gnome_is_program_in_path ("dtterm");
+	}
+	
+	if (terminal_path == NULL) {
+		terminal_path = gnome_is_program_in_path ("color-xterm");
+	}
+	
+	if (terminal_path == NULL) {
+		terminal_path = gnome_is_program_in_path ("rxvt");
+	}
+	
+	if (terminal_path == NULL) {
+		terminal_path = gnome_is_program_in_path ("xterm");
+	}
+	
+
+	if (terminal_path == NULL){
+		g_message (" Could not start a terminal ");
+	} else if (command){
+		if (quote_all) {
+			command_line = g_strconcat (terminal_path, " -e '", command, "'", NULL);
+		} else {
+			command_line = g_strconcat (terminal_path, " -e ", command, NULL);
+		}
+		nautilus_gnome_terminal_shell_execute (shell, command_line);
+		g_free (command_line);
+	} else {
+		nautilus_gnome_terminal_shell_execute (shell, terminal_path);
+	}
+
+
+	g_free (shell);
+	g_free (terminal_path);
 }

@@ -266,5 +266,10 @@ NautilusDirectory *fm_directory_view_get_model                      (FMDirectory
 void               fm_directory_view_pop_up_background_context_menu (FMDirectoryView       *view);
 void               fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView       *view); 
 void               fm_directory_view_update_menus                   (FMDirectoryView       *view);
+void		   fm_directory_view_add_menu_item		    (FMDirectoryView 	   *view, 
+								     GtkMenu 		   *menu, 
+								     const char 	   *label,
+								     void 		  (* activate_handler) (GtkMenuItem *, FMDirectoryView *),
+								     gboolean 		   sensitive);
 
 #endif /* FM_DIRECTORY_VIEW_H */

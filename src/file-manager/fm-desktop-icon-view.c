@@ -40,6 +40,7 @@
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-extensions/nautilus-directory-private.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <mntent.h>
 #include <sys/ioctl.h>
@@ -209,6 +210,13 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 }
 
 static void
+new_terminal_menu_item_callback (GtkMenuItem *item, FMDirectoryView *view)
+{
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	nautilus_gnome_open_terminal (NULL);
+}
+
+static void
 fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view, GtkMenu *menu)
 {
 	GtkWidget *menu_item;
@@ -216,6 +224,8 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	g_assert (GTK_IS_MENU (menu));
 
+	fm_directory_view_add_menu_item (view, menu, _("New Terminal"), new_terminal_menu_item_callback,
+		       TRUE);
 	NAUTILUS_CALL_PARENT_CLASS
 		(FM_DIRECTORY_VIEW_CLASS, 
 		 create_background_context_menu_items, 

@@ -1,3 +1,39 @@
+2000-07-27  Pavel Cisler  <pavel@eazel.com>
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(new_terminal_menu_item_callback),
+	(fm_desktop_icon_view_create_background_context_menu_items):
+	Bug 1792 - "New Terminal" command in menus.
+	Added a menu item to the desktop context menu to start a new
+	terminal.
+	
+	* libnautilus-extensions/nautilus-gnome-extensions.c:
+	* libnautilus-extensions/nautilus-gnome-extensions.h:
+	(max_open_files), (nautilus_gnome_terminal_shell_execute),
+	(nautilus_gnome_open_terminal):
+	For the above, added a call to launch a new Terminal, pieced together
+	from the origina GMC code, getting rid of some cruft we do not
+	need and using stock glib calls where possible.
+
+	* src/file-manager/fm-directory-view.c:
+	(new_folder_menu_item_callback), (fm_directory_view_add_menu_item),
+	(fm_directory_view_real_create_background_context_menu_items),
+	(fm_directory_view_real_create_selection_context_menu_items):
+	* src/file-manager/fm-directory-view.h:
+	Did a part of 1063 - "The right click desktop menu needs more commands
+	to match gmc" that is not covered by a separate bug - added a "New
+	Folder" menu item.
+	Fixes 1065 and 1067.
+	
+	* src/file-manager/dfos-xfer-progress-dialog.c:
+	(create_titled_label), (dfos_xfer_progress_dialog_initialize):
+	Complete task 1504 - Copy progress dialog needs a visual redesign.
+	Made it so that the Copying:, From: and To: lines are packed more
+	snugly, as per the design. The spacing of the original GtkLabels
+	was too spacy.
+	Used a non-zero border to offset the items more from the dialog edges
+	to make it look more as designed.
+
 2000-07-27  Mathieu Lacage  <set EMAIL_ADDRESS environment variable>
 
 	Fixes a number of bugs from rebecka latest commit.

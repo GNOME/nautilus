@@ -162,7 +162,10 @@ create_titled_label (GtkBox *vbox, GtkWidget **title_widget, GtkWidget **label_t
 	GtkWidget *hbox;
 	
 	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_box_pack_start (vbox, hbox, FALSE, FALSE, 0);
+	/* There might be a cleaner way of packing the text labels closer together
+	 * than using -2 here. The default is too far appart.
+	 */
+	gtk_box_pack_start (vbox, hbox, FALSE, FALSE, -2);
 	gtk_widget_show (hbox);
 	gtk_widget_set_usize (hbox, LABEL_BOX_WIDTH, 0);
 
@@ -190,8 +193,12 @@ dfos_xfer_progress_dialog_initialize (DFOSXferProgressDialog *dialog)
 
 	dialog->details = g_new0 (DFOSXferProgressDialogDetails, 1);
 
+	
 	gnome_dialog = GNOME_DIALOG (dialog);
 	vbox = GTK_BOX (gnome_dialog->vbox);
+
+	/* This is evil but makes the dialog look less cramped. */
+	gtk_container_border_width (GTK_CONTAINER (vbox), 5);
 
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (vbox, hbox, TRUE, TRUE, 3);

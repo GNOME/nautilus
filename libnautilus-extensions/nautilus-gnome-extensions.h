@@ -107,4 +107,6 @@ gboolean   nautilus_art_irect_contains_irect                    (const ArtIRect 
 GtkButton *nautilus_gnome_dialog_get_button_by_index            (GnomeDialog     *dialog,
 								 int              index);
 
+/* Open up a new terminal, optionally passing in a command to execute */
+void	   nautilus_gnome_open_terminal 			(const char 	 *command);
 #endif /* NAUTILUS_GNOME_EXTENSIONS_H */

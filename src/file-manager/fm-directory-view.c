@@ -629,6 +629,13 @@ bonobo_menu_new_folder_callback (BonoboUIHandler *ui_handler, gpointer user_data
 }
 
 static void
+new_folder_menu_item_callback (GtkMenuItem *item, FMDirectoryView *directory_view)
+{
+	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
+	fm_directory_view_new_folder (directory_view);
+}
+
+static void
 bonobo_menu_open_properties_window_callback (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
 {
         FMDirectoryView *view;
@@ -1009,7 +1016,6 @@ stop_loading_callback (NautilusView *nautilus_view,
 	fm_directory_view_stop (directory_view);
 }
 
-
 
 static void
 done_loading (FMDirectoryView *view)
@@ -1020,8 +1026,6 @@ done_loading (FMDirectoryView *view)
 	nautilus_view_report_load_complete (view->details->nautilus_view);
 	view->details->loading = FALSE;
 }
-
-
 
 static void
 select_all_callback (GtkMenuItem *item, gpointer callback_data)
@@ -2089,8 +2093,8 @@ append_selection_menu_subtree (FMDirectoryView *view,
         			   GTK_WIDGET (child_menu));
 }
 
-static void
-add_menu_item (FMDirectoryView *view, GtkMenu *menu, const char *label,
+void
+fm_directory_view_add_menu_item (FMDirectoryView *view, GtkMenu *menu, const char *label,
 	       void (* activate_handler) (GtkMenuItem *, FMDirectoryView *),
 	       gboolean sensitive)
 {
@@ -2106,12 +2110,10 @@ static void
 fm_directory_view_real_create_background_context_menu_items (FMDirectoryView *view, 
 							     GtkMenu *menu)
 {
-	append_gtk_menu_item_with_view (view, 
-	                                menu, 
-	                                NULL, 
-	                                NAUTILUS_MENU_PATH_SELECT_ALL_ITEM, 
-			      		select_all_callback,
-			      		NULL);
+	fm_directory_view_add_menu_item (view, menu, _("New Folder"), new_folder_menu_item_callback,
+		       TRUE);
+	append_gtk_menu_item_with_view (view, menu, NULL, 
+	               NAUTILUS_MENU_PATH_SELECT_ALL_ITEM, select_all_callback, NULL);
 	/* FIXME bugzilla.eazel.com 1261: 
 	 * Need to think clearly about what items to include here.
 	 * We want the list to be pretty short, but not degenerately short.
@@ -2119,11 +2121,11 @@ fm_directory_view_real_create_background_context_menu_items (FMDirectoryView *vi
 	 * (for the current location, not selection -- but would have to not
 	 * include this item when there's a selection)? Add Bookmark? (same issue).
 	 */
-	add_menu_item (view, menu, _("Zoom In"), zoom_in_callback,
+	fm_directory_view_add_menu_item (view, menu, _("Zoom In"), zoom_in_callback,
 		       fm_directory_view_can_zoom_in (view));
-	add_menu_item (view, menu, _("Zoom Out"), zoom_out_callback,
+	fm_directory_view_add_menu_item (view, menu, _("Zoom Out"), zoom_out_callback,
 		       fm_directory_view_can_zoom_out (view));
-	add_menu_item (view, menu, _("Zoom to Default"), zoom_default_callback, TRUE);
+	fm_directory_view_add_menu_item (view, menu, _("Zoom to Default"), zoom_default_callback, TRUE);
 	append_gtk_menu_item_with_view (view,
 					menu,
 					NULL,
@@ -2338,9 +2340,6 @@ fm_directory_view_real_create_selection_context_menu_items (FMDirectoryView *vie
 	append_gtk_menu_item_with_view (view, menu, files,
 				    	FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW,
 				    	open_in_new_window_callback, files);
-	append_gtk_menu_item_with_view (view, menu, files,
-				    	FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER,
-				    	bonobo_menu_new_folder_callback, view);
 	append_selection_menu_subtree (view, menu, 
 				       create_open_with_gtk_menu (view, files), files,
 				       FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH);
