@@ -776,11 +776,11 @@ nautilus_tree_view_load_from_filesystem (NautilusTreeView *view)
 static GtkTargetEntry nautilus_tree_view_dnd_target_table[] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
-	{ NAUTILUS_ICON_DND_COLOR_TYPE, 0, NAUTILUS_ICON_DND_COLOR },
 	{ NAUTILUS_ICON_DND_BGIMAGE_TYPE, 0, NAUTILUS_ICON_DND_BGIMAGE },
-	{ NAUTILUS_ICON_DND_KEYWORD_TYPE, 0, NAUTILUS_ICON_DND_KEYWORD }
-
+	{ NAUTILUS_ICON_DND_KEYWORD_TYPE, 0, NAUTILUS_ICON_DND_KEYWORD },
+	{ NAUTILUS_ICON_DND_COLOR_TYPE, 0, NAUTILUS_ICON_DND_COLOR }
 };
+
 
 
 static void 
@@ -1504,8 +1504,6 @@ nautilus_tree_view_drag_motion (GtkWidget *widget, GdkDragContext *context,
 	/* auto scroll */
 	nautilus_tree_view_start_auto_scroll (tree_view);
 
-
-
 	/* update dragging cursor. */
 	nautilus_tree_view_get_drop_action  (tree_view, context, x, y, 
 					     &default_action, 
@@ -1545,10 +1543,8 @@ nautilus_tree_view_drag_drop (GtkWidget *widget,
 			   GPOINTER_TO_INT (context->targets->data),
 			   time);
 
-
 	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget),
 				      "drag_drop");
-
 	return TRUE;
 }
 
@@ -1617,13 +1613,13 @@ nautilus_tree_view_drag_data_received (GtkWidget *widget,
 			nautilus_background_receive_dropped_background_image
 				(nautilus_get_widget_background (widget),
 				 (char *)data->data);
-			gtk_drag_finish (context, FALSE, FALSE, time);
+			gtk_drag_finish (context, TRUE, FALSE, time);
 			break;
 		case NAUTILUS_ICON_DND_KEYWORD:
 			nautilus_tree_view_receive_dropped_keyword
 				(NAUTILUS_TREE_VIEW (tree_view),
 				 (char *)data->data, x, y);
-			gtk_drag_finish (context, FALSE, FALSE, time);
+			gtk_drag_finish (context, TRUE, FALSE, time);
 			break;
 		default:
 			gtk_drag_finish (context, FALSE, FALSE, time);
@@ -2344,6 +2340,7 @@ nautilus_tree_view_get_drop_action (NautilusTreeView *tree_view,
 
 	switch (drag_info->data_type) {
 	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
+	case NAUTILUS_ICON_DND_URI_LIST:
 		if (drag_info->selection_list == NULL) {
 			*default_action = 0;
 			*non_default_action = 0;
@@ -2363,6 +2360,8 @@ nautilus_tree_view_get_drop_action (NautilusTreeView *tree_view,
 							     non_default_action);
 		break;
 	case NAUTILUS_ICON_DND_COLOR:
+	case NAUTILUS_ICON_DND_KEYWORD:	
+	case NAUTILUS_ICON_DND_BGIMAGE:	
 		/* FIXME bugzilla.eazel.com 2572: Doesn't handle dropped keywords in list view? Do we need to support this? */
 		*default_action = context->suggested_action;
 		*non_default_action = context->suggested_action;
@@ -2448,7 +2447,7 @@ nautilus_tree_view_receive_dropped_icons (NautilusTreeView *view,
 static void
 nautilus_tree_view_receive_dropped_keyword (NautilusTreeView *tree_view, char* keyword, int x, int y)
 {
-	GList *keywords, *word;
+
 	GtkCTreeNode *view_node;
 	NautilusTreeNode *model_node;
 
@@ -2463,24 +2462,5 @@ nautilus_tree_view_receive_dropped_keyword (NautilusTreeView *tree_view, char* k
 
 	file = nautilus_tree_node_get_file (model_node);
 
-	/* special case the erase emblem */
-	if (!nautilus_strcmp (keyword, ERASE_KEYWORD)) {
-		keywords = NULL;
-	} else {
-		keywords = nautilus_file_get_keywords (file);
-		word = g_list_find_custom (keywords, keyword, (GCompareFunc) strcmp);
-		if (word == NULL) {
-			keywords = g_list_append (keywords, g_strdup (keyword));
-		} else {
-			keywords = g_list_remove_link (keywords, word);
-			g_free (word->data);
-			g_list_free (word);
-		}
-	}
-	
-	nautilus_file_set_keywords (file, keywords);
-
-#if 0
-	nautilus_icon_container_update_icon (container, drop_target_icon);
-#endif
+	nautilus_drag_file_receive_dropped_keyword (NAUTILUS_FILE (file), keyword);
 }

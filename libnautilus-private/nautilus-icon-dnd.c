@@ -548,7 +548,6 @@ receive_dropped_tile_image (NautilusIconContainer *container, GtkSelectionData *
 static void
 receive_dropped_keyword (NautilusIconContainer *container, char* keyword, int x, int y)
 {
-	GList *keywords, *word;
 	char *uri;
 	double world_x, world_y;
 
@@ -575,22 +574,8 @@ receive_dropped_keyword (NautilusIconContainer *container, char* keyword, int x,
 	file = nautilus_file_get (uri);
 	g_free (uri);
 	
-	/* special case the erase emblem */
-	if (!nautilus_strcmp (keyword, ERASE_KEYWORD)) {
-		keywords = NULL;
-	} else {
-		keywords = nautilus_file_get_keywords (file);
-		word = g_list_find_custom (keywords, keyword, (GCompareFunc) strcmp);
-		if (word == NULL) {
-			keywords = g_list_append (keywords, g_strdup (keyword));
-		} else {
-			keywords = g_list_remove_link (keywords, word);
-			g_free (word->data);
-			g_list_free (word);
-		}
-	}
-	
-	nautilus_file_set_keywords (file, keywords);
+	nautilus_drag_file_receive_dropped_keyword (file, keyword);
+
 	nautilus_file_unref (file);
 	nautilus_icon_container_update_icon (container, drop_target_icon);
 }

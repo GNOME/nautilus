@@ -38,6 +38,7 @@
 
 #include "nautilus-glib-extensions.h"
 #include "nautilus-link.h"
+#include <libnautilus-extensions/nautilus-string.h>
 
 void
 nautilus_drag_init (NautilusDragInfo *drag_info,
@@ -564,4 +565,30 @@ nautilus_drag_autoscroll_calculate_delta (GtkWidget *widget, float *x_scroll_del
 		*y_scroll_delta += MIN_AUTOSCROLL_DELTA;
 	}
 
+}
+
+
+void
+nautilus_drag_file_receive_dropped_keyword (NautilusFile *file, char *keyword)
+{
+	GList *keywords, *word;
+
+	g_assert (keyword != NULL);
+
+	/* special case the erase emblem */
+	if (!nautilus_strcmp (keyword, ERASE_KEYWORD)) {
+		keywords = NULL;
+	} else {
+		keywords = nautilus_file_get_keywords (file);
+		word = g_list_find_custom (keywords, keyword, (GCompareFunc) strcmp);
+		if (word == NULL) {
+			keywords = g_list_append (keywords, g_strdup (keyword));
+		} else {
+			keywords = g_list_remove_link (keywords, word);
+			g_free (word->data);
+			g_list_free (word);
+		}
+	}
+	
+	nautilus_file_set_keywords (file, keywords);
 }

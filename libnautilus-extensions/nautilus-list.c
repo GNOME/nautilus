@@ -181,7 +181,9 @@ static GtkTargetEntry nautilus_list_dnd_target_table[] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
 	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL },
-	{ NAUTILUS_ICON_DND_COLOR_TYPE, 0, NAUTILUS_ICON_DND_COLOR }
+	{ NAUTILUS_ICON_DND_COLOR_TYPE, 0, NAUTILUS_ICON_DND_COLOR },
+	{ NAUTILUS_ICON_DND_BGIMAGE_TYPE, 0, NAUTILUS_ICON_DND_BGIMAGE },
+	{ NAUTILUS_ICON_DND_KEYWORD_TYPE, 0, NAUTILUS_ICON_DND_KEYWORD }
 };
 
 static void     activate_row                            (NautilusList         *list,
@@ -2845,20 +2847,17 @@ nautilus_list_get_drop_action (NautilusList *list,
 		nautilus_drag_default_drop_action_for_icons (context, drop_target, 
 			drag_info->selection_list, 
 			default_action, non_default_action);
-
-
-
 		break;
 
 	case NAUTILUS_ICON_DND_COLOR:
+	case NAUTILUS_ICON_DND_BGIMAGE:
+	case NAUTILUS_ICON_DND_KEYWORD:
 	/* FIXME bugzilla.eazel.com 2572: Doesn't handle dropped keywords in list view? Do we need to support this? */
 		*default_action = context->suggested_action;
 		*non_default_action = context->suggested_action;
 		break;
-
 	default:
 	}
-
 }			       
 
 
@@ -2977,6 +2976,39 @@ nautilus_list_drag_drop (GtkWidget *widget, GdkDragContext *context,
 }
 
 static void
+nautilus_list_receive_dropped_icons (NautilusList *list,
+				     GdkDragContext *context, 
+				     int x, int y)
+{
+	NautilusDragInfo *drag_info;
+	GList *	selected_items;
+
+	g_assert (NAUTILUS_IS_LIST (list));
+	drag_info = list->details->drag_info;
+
+	/* Put selection list in local variable and NULL the global one
+	 * so it doesn't get munged in a modal popup-menu event loop
+	 * in the handle_dropped_icons handler.
+	 */
+	selected_items = drag_info->selection_list;
+	drag_info->selection_list = NULL;
+	gtk_signal_emit (GTK_OBJECT (list), list_signals[HANDLE_DROPPED_ICONS],
+			 selected_items, x, y, context->action);			
+	nautilus_drag_destroy_selection_list (selected_items);
+}
+
+static void
+nautilus_list_receive_dropped_keyword (NautilusList *list,
+				       char *keyword, int x, int y)
+{
+
+
+
+}
+
+
+
+static void
 nautilus_list_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 				  int x, int y, GtkSelectionData *data,
 				  guint info, guint time)
@@ -2987,35 +3019,40 @@ nautilus_list_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 	list = NAUTILUS_LIST (widget);
 	drag_info = list->details->drag_info;
 
+	drag_info->data_type = info;
+	drag_info->got_drop_data_type = TRUE;
+
+
 	switch (info) {
 	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
 		drag_info->selection_list = nautilus_drag_build_selection_list (data);
-		drag_info->got_drop_data_type = TRUE;
-	        drag_info->data_type = info;
+		break;
+	case NAUTILUS_ICON_DND_URI_LIST:
+		drag_info->selection_list = nautilus_drag_build_selection_list (data);
 		break;
 	case NAUTILUS_ICON_DND_COLOR:
-		drag_info->got_drop_data_type = TRUE;
-		drag_info->data_type = info;
+		break;
+	case NAUTILUS_ICON_DND_BGIMAGE:	
+		break;
+	case NAUTILUS_ICON_DND_KEYWORD:	
 		break;
 	default:
 		break;
 	}
 
-
 	if (drag_info->drop_occured == TRUE) {
-		GList *selected_items;
 
 		switch (info) {
 		case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
-			/* Put selection list in local variable and NULL the global one
-			 * so it doesn't get munged in a modal popup-menu event loop
-			 * in the handle_dropped_icons handler.
-			 */
-			selected_items = drag_info->selection_list;
-			drag_info->selection_list = NULL;
-			gtk_signal_emit (GTK_OBJECT (list), list_signals[HANDLE_DROPPED_ICONS],
-					 selected_items, x, y, context->action);			
-			nautilus_drag_destroy_selection_list (selected_items);
+			nautilus_list_receive_dropped_icons
+				(NAUTILUS_LIST (list),
+				 context, x, y);
+			gtk_drag_finish (context, TRUE, FALSE, time);
+			break;
+		case NAUTILUS_ICON_DND_URI_LIST:
+			nautilus_list_receive_dropped_icons
+				(NAUTILUS_LIST (list),
+				 context, x, y);
 			gtk_drag_finish (context, TRUE, FALSE, time);
 			break;
 		case NAUTILUS_ICON_DND_COLOR:
@@ -3023,6 +3060,18 @@ nautilus_list_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 				(nautilus_get_widget_background (widget),
 				 widget, x, y, data);
 			nautilus_list_setup_style_colors (NAUTILUS_LIST (list));
+			gtk_drag_finish (context, TRUE, FALSE, time);
+			break;
+		case NAUTILUS_ICON_DND_BGIMAGE:
+			nautilus_background_receive_dropped_background_image
+				(nautilus_get_widget_background (widget),
+				 (char *)data->data);
+			gtk_drag_finish (context, TRUE, FALSE, time);
+			break;
+		case NAUTILUS_ICON_DND_KEYWORD:
+			nautilus_list_receive_dropped_keyword
+				(NAUTILUS_LIST (list),
+				 (char *)data->data, x, y);
 			gtk_drag_finish (context, TRUE, FALSE, time);
 			break;
 		default:

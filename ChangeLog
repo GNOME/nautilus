@@ -1,5 +1,25 @@
 2000-09-09  Mathieu Lacage  <mathieu@eazel.com>
 
+	* components/tree/nautilus-tree-view.c: port to new
+	shared function.
+	* libnautilus-extensions/nautilus-icon-dnd.c: port to
+	new shared function.
+	* libnautilus-extensions/nautilus-drag.c:
+	(nautilus_drag_autoscroll_calculate_delta),
+	(nautilus_drag_file_receive_dropped_keyword): add a new 
+	fucntion to be shared.
+	* libnautilus-extensions/nautilus-drag.h: add prototype
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_get_drop_action),
+	(nautilus_list_receive_dropped_icons),
+	(nautilus_list_receive_dropped_keyword),
+	(nautilus_list_drag_data_received):
+	use the above function and add support to the list view 
+	for many new drop types. Need to fix bug 2485 properly
+	to get 2874 fully implemented.
+
+2000-09-09  Mathieu Lacage  <mathieu@eazel.com>
+
 	* components/tree/nautilus-tree-view.c: fix bug 2417.
 	cursor is now updated.
 	* libnautilus-extensions/nautilus-list.c:

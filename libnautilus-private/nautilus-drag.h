@@ -141,6 +141,8 @@ GdkDragAction		nautilus_drag_drop_action_ask			(GdkDragAction possible_actions);
 void                    nautilus_drag_autoscroll_calculate_delta        (GtkWidget *widget, 
 									 float *x_scroll_delta, 
 									 float *y_scroll_delta);
+void                    nautilus_drag_file_receive_dropped_keyword      (NautilusFile *file, 
+									 char *keyword);
 
 
 #endif
