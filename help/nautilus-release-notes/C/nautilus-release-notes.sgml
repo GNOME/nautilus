@@ -3,8 +3,8 @@
 
 <!--
       (Do not remove this comment block.)
-  Version: 1.0.2
-  Last modified: April 12, 2001
+  Version: 1.0.3
+  Last modified: April 26, 2001
   This document is maintained by Eazel Inc.
   Maintainers:
                Eazel Inc.
@@ -20,7 +20,7 @@
 <article id="index"> <!-- please do not change the id -->
 
   <artheader>
-    <title>Nautilus 1.0.2 Release Notes</title>
+    <title>Nautilus 1.0.3 Release Notes</title>
     <copyright>
       <year>2001</year>
       <holder>Eazel Inc.</holder>
@@ -29,7 +29,7 @@
   <!-- translators: uncomment this:
 
   <copyright>
-   <year>2000</year>
+   <year>2001</year>
    <holder>ME-THE-TRANSLATOR (Latin translation)</holder>
   </copyright>
 
@@ -44,11 +44,11 @@
    <para>
     Permission is granted to copy, distribute and/or modify this document
     under the terms of the <ulink type="help" 
-    url="gnome-help:gnufdl"><citetitle>GNU Free Documentation
+    url="gnome-help:fdl"><citetitle>GNU Free Documentation
     License</citetitle></ulink>, Version 1.1 or any later version 
     published by the Free Software Foundation with no Invariant Sections, 
     no Front-Cover Texts, and no Back-Cover Texts.  A copy of the license
-    can be found <ulink type="help" url="gnome-help:gnufdl">here</ulink>
+    can be found <ulink type="help" url="gnome-help:fdl">here</ulink>
     or in the file COPYING-DOCS which shipped as part of this package.
    </para>
    <para>
@@ -69,20 +69,20 @@
   <title>Introduction</title>
 
   <para>
-   These release notes, last updated April 12, 2001, describe known
-   issues for Nautilus versions 1.0.2.
+   These release notes, last updated April 26, 2001, describe known
+   issues for Nautilus versions 1.0.3.
   </para>
 
   <para>
-   For information about Mozilla, visit mozilla.org and read the
+   For information about Mozilla, visit <ulink type="http"
+   url="http://www.mozilla.org/">mozilla.org</ulink> and read the
    latest Mozilla release notes.
   </para>
 
   <para>
    Solutions to some common problems with Nautilus can be found at the
-   Eazel Customer Support site. Click <ulink type="http"
-   url="http://support.eazel.com"> here</ulink> to see if your problem
-   is described.
+   <ulink type="http" url="http://support.eazel.com">Eazel Support web
+   site</ulink>.
   </para>
 
  </sect1>
@@ -174,6 +174,133 @@
    </itemizedlist>
   </sect1>
 
+ <sect1 id="new103">
+  <title>What's New in Nautilus 1.0.3</title>
+
+  <para>
+   Nautilus 1.0.3 has many improvements over previous Nautilus
+   releases.  Many of these are new features and other changes which
+   were suggested by Nautilus users.  Nautilus 1.0.3 also has
+   significant performance improvements and many bug fixes.  Some of
+   the major improvements are described below.
+  </para>
+
+  <para>
+   Major new features and improvements:
+  <itemizedlist>
+
+   <listitem>
+    <para>
+     New News sidebar downloads headlines off of your favorite news
+     sources.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     Improved and faster audio preview.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     Improved integration with GNOME desktop and GNOME
+     <interface>Panel</interface>.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     Improved internationalization.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     New Script feature allows users to run any script on selected files.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     New Cut, Copy, and Paste feature for moving and copying files.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     New Delete feature which bypasses trash.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     Support for <application>Emacs</application> bindings, which can
+     be enabled in <interface>Preferences</interface> dialog.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     Identifies if files were changed outside of Nautilus and updates
+     views accordingly.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     Notes sidebar identifies whether a note exists for the directory by
+     displaying an icon in the tab.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     Tree view is faster and does not use processor when closed.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     Improved font selection dialog.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     New global view preferences.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     Support for HTTP proxies which require username and password.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     Improved help sidebar appearance.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     Improved compatibility with <application>gmc</application>.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     And many other improvements to make Nautilus more intuitive and
+     fun to use.
+    </para>
+   </listitem>
+
+   </itemizedlist>
+   </para>
+
+  </sect1>
 
   <sect1 id="require">
    <title>System Requirements</title>
@@ -199,8 +326,8 @@
    <para>
     If you installed Nautilus Preview Release 1, 2, or 3, you will
     lose some of your custom settings when you upgrade to Nautilus
-    1.0. One symptom of this problem is that your icons will look like
-    text files and your desktop may not be correctly drawn.
+    1.0.x. One symptom of this problem is that your icons will look
+    like text files and your desktop may not be correctly drawn.
    </para>
 
    <para>
@@ -267,6 +394,7 @@
     3. Restart Nautilus.
    </para>
 
+<!--
    <para><guimenuitem>Medusa Off by Default</guimenuitem></para>
 
    <para>The Medusa daemon, which indexes your hard disk so fast
@@ -295,6 +423,7 @@
    program must also be running. If you have turned off crond, Medusa
    won't work.
    </para>
+-->
 
   </sect1>
 
@@ -401,9 +530,8 @@
    <title>Mozilla</title>
 
    <para>
-    Note that there are some problems using Mozilla 0.8.1 with 
-    this release of Nautilus.  You should use Mozilla 0.8 
-    with this release of Nautilus.
+    Note that there are some problems using Mozilla 0.8.1 with this
+    release of Nautilus.  You should use Mozilla 0.8 instead.
    </para>
   </sect1>
 
@@ -412,7 +540,7 @@
 
    <para>
     The find features used to search the files on your local machine 
-    are not available in Nautilus 1.0.2.  These features will be
+    are not available in Nautilus 1.0.3.  These features will be
     available in another release soon. 
    </para>
   </sect1>
