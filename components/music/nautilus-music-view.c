@@ -32,14 +32,14 @@
 #include <dirent.h>
 
 #include <libnautilus/libnautilus.h>
-#include <libnautilus/nautilus-background.h>
-#include <libnautilus/nautilus-directory-background.h>
-#include <libnautilus/nautilus-file.h>
-#include <libnautilus/nautilus-file-utilities.h>
-#include <libnautilus/nautilus-glib-extensions.h>
-#include <libnautilus/nautilus-gtk-macros.h>
-#include <libnautilus/nautilus-metadata.h>
-#include <libnautilus/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-background.h>
+#include <libnautilus-extensions/nautilus-directory-background.h>
+#include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-metadata.h>
+#include <libnautilus-extensions/nautilus-string.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtksignal.h>
 #include <gnome.h>

@@ -43,9 +43,9 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkvbox.h>
 
-#include <libnautilus/nautilus-glib-extensions.h>
-#include <libnautilus/nautilus-icon-factory.h>
-#include <libnautilus/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <libnautilus-extensions/nautilus-string.h>
 
 static GHashTable *windows;
 

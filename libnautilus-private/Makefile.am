@@ -1,6 +1,6 @@
 NULL=
 
-lib_LTLIBRARIES=libnautilus.la
+lib_LTLIBRARIES=libnautilus-extensions.la
 
 INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
 	$(GNOME_CFLAGS) \
@@ -12,7 +12,7 @@ INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
 	$(WERROR) \
 	-D_REENTRANT
 
-libnautilus_la_LDFLAGS=\
+libnautilus_extensions_la_LDFLAGS=\
 	$(GNOME_LIBS) \
 	$(GNORBA_LIBS) \
 	$(BONOBO_LIBS) \
@@ -21,15 +21,14 @@ libnautilus_la_LDFLAGS=\
 	$(XML_LIBS) \
 	$(LIBPNG)
 
-nautilus_view_component_idl_sources=nautilus-view-component-stubs.c nautilus-view-component-skels.c nautilus-view-component.h nautilus-view-component-common.c
 fsextension_idl_sources=fsextension-stubs.c fsextension-skels.c fsextension-common.c fsextension.h
-BUILT_SOURCES=$(nautilus_view_component_idl_sources)
+BUILT_SOURCES=$(fsextension_idl_sources)
 
-libnautilusincludedir=$(includedir)/libnautilus
-libnautilusinclude_HEADERS=			\
+libnautilus_extensionsincludedir=$(includedir)/libnautilus
+libnautilus_extensionsinclude_HEADERS=			\
 	bonobo-stream-vfs.h			\
 	gtkscrollframe.h			\
-	libnautilus.h				\
+	libnautilus-extensions.h		\
 	nautilus-alloc.h			\
 	nautilus-background.h			\
 	nautilus-bonobo-extensions.h		\
@@ -56,14 +55,9 @@ libnautilusinclude_HEADERS=			\
 	nautilus-string-list.h			\
 	nautilus-string.h			\
 	nautilus-xml-extensions.h		\
-	nautilus-zoomable.h			\
-	nautilus-view-component.h		\
-	ntl-content-view-frame.h		\
-	ntl-meta-view-frame.h			\
-	ntl-view-frame.h			\
 	$(NULL)
 
-libnautilus_la_SOURCES=$(nautilus_view_component_idl_sources)	\
+libnautilus_extensions_la_SOURCES = \
 	bonobo-stream-vfs.c			\
 	gtkscrollframe.c			\
 	nautilus-background-canvas-group.c	\
@@ -97,24 +91,15 @@ libnautilus_la_SOURCES=$(nautilus_view_component_idl_sources)	\
 	nautilus-string-list.c			\
 	nautilus-string.c			\
 	nautilus-xml-extensions.c		\
-	nautilus-zoomable.c			\
-	ntl-content-view-frame.c		\
-	ntl-meta-view-frame.c			\
-	ntl-view-frame.c			\
 	$(fsextension_idl_sources)		\
 	$(NULL)
 
-$(nautilus_view_component_idl_sources): nautilus_view_component_idl_stamp
 $(fsextension_idl_sources): fsextension_idl_stamp
-
-nautilus_view_component_idl_stamp: nautilus-view-component.idl
-	orbit-idl `gnome-config --cflags idl` nautilus-view-component.idl
-	touch nautilus_view_component_idl_stamp
 
 fsextension_idl_stamp: $(top_srcdir)/idl/fsextension.idl
 	orbit-idl `gnome-config --cflags idl` $(top_srcdir)/idl/fsextension.idl
 	touch fsextension_idl_stamp
 
-CLEANFILES=nautilus_view_component_idl_stamp fsextension_idl_stamp
+CLEANFILES = fsextension_idl_stamp
 
-EXTRA_DIST = nautilus-view-component.idl
+#EXTRA_DIST =

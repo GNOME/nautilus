@@ -28,10 +28,10 @@
 #include <bonobo/bonobo-ui-handler.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkscrolledwindow.h>
-#include <libnautilus/ntl-content-view-frame.h>
-#include <libnautilus/nautilus-directory.h>
-#include <libnautilus/nautilus-file.h>
-#include <libnautilus/nautilus-icon-container.h>
+#include <libnautilus/nautilus-content-view-frame.h>
+#include <libnautilus-extensions/nautilus-directory.h>
+#include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-extensions/nautilus-icon-container.h>
 
 typedef struct FMDirectoryView FMDirectoryView;
 typedef struct FMDirectoryViewClass FMDirectoryViewClass;

@@ -23,7 +23,7 @@
 */
 
 #include "nautilus-bookmarks-window.h"
-#include <libnautilus/nautilus-icon-factory.h>
+#include <libnautilus-extensions/nautilus-icon-factory.h>
 
 /* Static variables to keep track of window state. If there were
  * more than one bookmark-editing window, these would be struct or

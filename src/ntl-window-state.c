@@ -25,8 +25,8 @@
  */
 
 #include "nautilus.h"
-#include <libnautilus/nautilus-file-utilities.h>
-#include <libnautilus/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 
 void
 nautilus_window_set_initial_state (NautilusWindow *window, const char *initial_url)

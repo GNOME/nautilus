@@ -29,10 +29,10 @@
 
 #include <gtk/gtksignal.h>
 
-#include <libnautilus/nautilus-file-utilities.h>
-#include <libnautilus/nautilus-gtk-macros.h>
-#include <libnautilus/nautilus-gtk-extensions.h>
-#include <libnautilus/nautilus-xml-extensions.h>
+#include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-xml-extensions.h>
 
 #include <parser.h>
 #include <tree.h>

@@ -22,99 +22,31 @@ libnautilus_la_LDFLAGS=\
 	$(LIBPNG)
 
 nautilus_view_component_idl_sources=nautilus-view-component-stubs.c nautilus-view-component-skels.c nautilus-view-component.h nautilus-view-component-common.c
-fsextension_idl_sources=fsextension-stubs.c fsextension-skels.c fsextension-common.c fsextension.h
 BUILT_SOURCES=$(nautilus_view_component_idl_sources)
 
 libnautilusincludedir=$(includedir)/libnautilus
+
 libnautilusinclude_HEADERS=			\
-	bonobo-stream-vfs.h			\
-	gtkscrollframe.h			\
 	libnautilus.h				\
-	nautilus-alloc.h			\
-	nautilus-background.h			\
-	nautilus-bonobo-extensions.h		\
-	nautilus-bookmark.h			\
-	nautilus-debug.h			\
-	nautilus-directory.h			\
-	nautilus-directory-background.h		\
-	nautilus-file-utilities.h		\
-	nautilus-file.h				\
-	nautilus-gdk-extensions.h		\
-	nautilus-gdk-pixbuf-extensions.h	\
-	nautilus-glib-extensions.h		\
-	nautilus-global-preferences.h		\
-	nautilus-gnome-extensions.h		\
-	nautilus-graphic-effects.h		\
-	nautilus-gtk-extensions.h		\
-	nautilus-icon-container.h		\
-	nautilus-icon-factory.h			\
-	nautilus-list-column-title.h		\
-	nautilus-list.h                         \
-	nautilus-metadata.h			\
-	nautilus-mime-type.h			\
-	nautilus-self-checks.h			\
-	nautilus-string-list.h			\
-	nautilus-string.h			\
-	nautilus-xml-extensions.h		\
-	nautilus-zoomable.h			\
 	nautilus-view-component.h		\
-	ntl-content-view-frame.h		\
-	ntl-meta-view-frame.h			\
-	ntl-view-frame.h			\
+	nautilus-content-view-frame.h		\
+	nautilus-meta-view-frame.h			\
+	nautilus-view-frame.h			\
 	$(NULL)
 
 libnautilus_la_SOURCES=$(nautilus_view_component_idl_sources)	\
-	bonobo-stream-vfs.c			\
-	gtkscrollframe.c			\
-	nautilus-background-canvas-group.c	\
-	nautilus-background.c			\
-	nautilus-bonobo-extensions.c		\
-	nautilus-bookmark.c			\
-	nautilus-debug.c			\
-	nautilus-default-file-icon.c		\
-	nautilus-default-file-icon.h		\
-	nautilus-directory.c			\
-	nautilus-directory-background.c		\
-	nautilus-file-utilities.c		\
-	nautilus-file.c				\
-	nautilus-gdk-extensions.c		\
-	nautilus-gdk-pixbuf-extensions.c	\
-	nautilus-glib-extensions.c		\
-	nautilus-global-preferences.c		\
-	nautilus-gnome-extensions.c		\
-	nautilus-graphic-effects.c		\
-	nautilus-gtk-extensions.c		\
-	nautilus-icon-canvas-item.c       	\
-	nautilus-icon-container.c		\
-	nautilus-icon-dnd.c			\
-	nautilus-icon-factory.c			\
-	nautilus-icon-grid.c			\
-	nautilus-lib-self-check-functions.c	\
-	nautilus-list-column-title.c		\
-	nautilus-list.c                         \
-	nautilus-mime-type.c			\
-	nautilus-self-checks.c			\
-	nautilus-string-list.c			\
-	nautilus-string.c			\
-	nautilus-xml-extensions.c		\
 	nautilus-zoomable.c			\
-	ntl-content-view-frame.c		\
-	ntl-meta-view-frame.c			\
-	ntl-view-frame.c			\
-	$(fsextension_idl_sources)		\
+	nautilus-content-view-frame.c		\
+	nautilus-meta-view-frame.c			\
+	nautilus-view-frame.c			\
 	$(NULL)
 
 $(nautilus_view_component_idl_sources): nautilus_view_component_idl_stamp
-$(fsextension_idl_sources): fsextension_idl_stamp
 
 nautilus_view_component_idl_stamp: nautilus-view-component.idl
 	orbit-idl `gnome-config --cflags idl` nautilus-view-component.idl
 	touch nautilus_view_component_idl_stamp
 
-fsextension_idl_stamp: $(top_srcdir)/idl/fsextension.idl
-	orbit-idl `gnome-config --cflags idl` $(top_srcdir)/idl/fsextension.idl
-	touch fsextension_idl_stamp
-
-CLEANFILES=nautilus_view_component_idl_stamp fsextension_idl_stamp
+CLEANFILES=nautilus_view_component_idl_stamp
 
 EXTRA_DIST = nautilus-view-component.idl

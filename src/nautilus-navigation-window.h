@@ -29,7 +29,7 @@
 #define NTL_WINDOW_H
 
 #include <libgnomeui/gnome-app.h>
-#include <libnautilus/nautilus-bookmark.h>
+#include <libnautilus-extensions/nautilus-bookmark.h>
 #include "ntl-uri-map.h"
 #include "ntl-view.h"
 #include "ntl-index-panel.h"

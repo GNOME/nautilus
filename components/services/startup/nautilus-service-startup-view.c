@@ -34,12 +34,12 @@
 #include <unistd.h>
 #include <gnome-xml/tree.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <libnautilus/nautilus-background.h>
-#include <libnautilus/nautilus-gtk-macros.h>
-#include <libnautilus/nautilus-glib-extensions.h>
-#include <libnautilus/nautilus-global-preferences.h>
-#include <libnautilus/nautilus-file-utilities.h>
-#include <libnautilus/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-background.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-string.h>
 
 #include <stdio.h>
 

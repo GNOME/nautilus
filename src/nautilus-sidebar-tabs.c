@@ -27,7 +27,7 @@
 
 #include <math.h>
 #include <stdio.h>
-#include <libnautilus/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>

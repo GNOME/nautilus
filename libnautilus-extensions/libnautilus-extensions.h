@@ -24,17 +24,13 @@
  *
  */
 
-/* libnautilus.h: Main library header file */
+/* libnautilus-extensions.h: Main library header file */
 
-#ifndef LIBNAUTILUS_H
-#define LIBNAUTILUS_H
+#ifndef LIBNAUTILUS_EXTENSIONS_H
+#define LIBNAUTILUS_EXTENSIONS_H
 
 #include <bonobo.h>
-#include <libnautilus/nautilus.h>
 #include <libnautilus/nautilus-alloc.h>
 #include <libnautilus/nautilus-directory.h>
-#include <libnautilus/ntl-view-frame.h>
-#include <libnautilus/ntl-meta-view-frame.h>
-#include <libnautilus/ntl-content-view-frame.h>
 
-#endif /* LIBNAUTILUS_H */
+#endif /* LIBNAUTILUS_EXTENSIONS_H */

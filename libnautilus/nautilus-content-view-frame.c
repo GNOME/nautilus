@@ -24,13 +24,13 @@
  *
  */
 
-/* ntl-content-view-frame.c: Implementation for object that
+/* nautilus-content-view-frame.c: Implementation for object that
    represents the frame a nautilus content view plugs into. */
 
 #include <config.h>
-#include "ntl-content-view-frame.h"
+#include "nautilus-content-view-frame.h"
 #include "nautilus-view-frame-private.h"
-#include <libnautilus/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <bonobo/bonobo-control.h>
 
 

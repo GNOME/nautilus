@@ -28,10 +28,10 @@
 
 #include "ntl-uri-map.h"
 
-#include <libnautilus/nautilus-directory.h>
-#include <libnautilus/nautilus-metadata.h>
-#include <libnautilus/nautilus-global-preferences.h>
-#include <libnautilus/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-directory.h>
+#include <libnautilus-extensions/nautilus-metadata.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-string.h>
 
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>

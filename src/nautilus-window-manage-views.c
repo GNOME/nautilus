@@ -38,9 +38,9 @@
 #include <libgnomeui/gnome-dialog-util.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
-#include <libnautilus/nautilus-string.h>
-#include <libnautilus/nautilus-gtk-extensions.h>
-#include <libnautilus/nautilus-metadata.h>
+#include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-metadata.h>
 #include "ntl-app.h"
 #include "ntl-meta-view.h"
 #include "ntl-uri-map.h"

@@ -27,7 +27,7 @@
 
 #include <gnome.h>
 #include <nautilus-widgets/nautilus-preferences.h>
-#include <libnautilus/nautilus-string-list.h>
+#include <libnautilus-extensions/nautilus-string-list.h>
 
 BEGIN_GNOME_DECLS
 

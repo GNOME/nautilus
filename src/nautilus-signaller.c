@@ -27,7 +27,7 @@
 #include "nautilus-signaller.h"
 
 #include <gtk/gtksignal.h>
-#include <libnautilus/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
 
 enum 
 {

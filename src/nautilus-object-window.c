@@ -38,9 +38,9 @@
 #include "ntl-index-panel.h"
 #include "ntl-miniicon.h"
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <libnautilus/nautilus-gtk-extensions.h>
-#include <libnautilus/nautilus-icon-factory.h>
-#include <libnautilus/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <libnautilus-extensions/nautilus-string.h>
 #include "nautilus-zoom-control.h"
 #include <ctype.h>
 #include <libgnomevfs/gnome-vfs-uri.h>

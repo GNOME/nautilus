@@ -24,7 +24,7 @@
 
 #include "nautilus-preferences-item.h"
 #include "nautilus-preferences.h"
-#include <libnautilus/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
 
 #include <gtk/gtkcheckbutton.h>
 #include <nautilus-widgets/nautilus-radio-button-group.h>

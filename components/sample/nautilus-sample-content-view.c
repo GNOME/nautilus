@@ -35,7 +35,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>
-#include <libnautilus/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
 
 /* A NautilusContentViewFrame's private information. */
 struct NautilusSampleContentViewDetails {

@@ -23,13 +23,13 @@
  *  Author: Elliot Lee <sopwith@redhat.com>
  *
  */
-/* ntl-meta-view-frame.h: Interface for object that represents the
+/* nautilus-meta-view-frame.h: Interface for object that represents the
    frame a nautilus meta view plugs into. */
 
-#ifndef NTL_META_VIEW_FRAME_H
-#define NTL_META_VIEW_FRAME_H
+#ifndef NAUTILUS_META_VIEW_FRAME_H
+#define NAUTILUS_META_VIEW_FRAME_H
 
-#include <libnautilus/ntl-view-frame.h>
+#include <libnautilus/nautilus-view-frame.h>
 #include <bonobo/bonobo-control.h>
 
 #define NAUTILUS_TYPE_META_VIEW_FRAME			(nautilus_meta_view_frame_get_type ())

@@ -31,11 +31,11 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-pixmap.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <libnautilus/nautilus-gtk-macros.h>
-#include <libnautilus/nautilus-list.h>
-#include <libnautilus/nautilus-directory-background.h>
-#include <libnautilus/nautilus-icon-factory.h>
-#include <libnautilus/nautilus-metadata.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-list.h>
+#include <libnautilus-extensions/nautilus-directory-background.h>
+#include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <libnautilus-extensions/nautilus-metadata.h>
 
 struct FMListViewDetails
 {

@@ -27,8 +27,8 @@
 #include "ntl-app.h"
 
 #include <gnome.h>
-#include <libnautilus/nautilus-bookmark.h>
-#include <libnautilus/nautilus-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-bookmark.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 
 /* forward declarations */
 static void nautilus_window_reload_cb (GtkWidget *widget, NautilusWindow *window);

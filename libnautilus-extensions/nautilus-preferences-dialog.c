@@ -23,7 +23,7 @@
 */
 
 #include <nautilus-widgets/nautilus-preferences-dialog.h>
-#include <libnautilus/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
 
 /* #include "caption-table.h" */
 

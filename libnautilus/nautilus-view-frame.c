@@ -24,17 +24,17 @@
  *
  */
 
-/* ntl-view-frame.c: Implementation for object that represents a
+/* nautilus-view-frame.c: Implementation for object that represents a
    nautilus view implementation. */
 
 #include <config.h>
-#include "ntl-view-frame.h"
+#include "nautilus-view-frame.h"
 #include "nautilus-view-frame-private.h"
 
 #include <gtk/gtksignal.h>
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-control.h>
-#include <libnautilus/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
 
 
 enum {

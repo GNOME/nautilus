@@ -27,7 +27,7 @@
 #include "nautilus.h"
 #include "ntl-view-private.h"
 #include <gtk/gtksignal.h>
-#include <libnautilus/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
 
 static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL };
 

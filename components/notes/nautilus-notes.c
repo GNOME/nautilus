@@ -28,15 +28,15 @@
 #include <config.h>
 
 #include <libnautilus/libnautilus.h>
-#include <libnautilus/nautilus-metadata.h>
+#include <libnautilus-extensions/nautilus-metadata.h>
 #include <gnome.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libgnorba/gnorba.h>
 #include <limits.h>
 #include <ctype.h>
-#include <libnautilus/nautilus-background.h>
-#include <libnautilus/nautilus-file.h>
-#include <libnautilus/nautilus-debug.h>
+#include <libnautilus-extensions/nautilus-background.h>
+#include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-extensions/nautilus-debug.h>
 
 #define NOTES_DEFAULT_BACKGROUND_COLOR "rgb:FFFF/FFFF/BBBB"
 

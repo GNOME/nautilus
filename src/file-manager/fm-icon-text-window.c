@@ -39,8 +39,8 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <libnautilus/nautilus-glib-extensions.h>
-#include <libnautilus/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 
 static void 	ensure_unique_attributes 	    (int 	menu_index);
 static gboolean fm_icon_text_window_delete_event_cb (GtkWidget *widget,

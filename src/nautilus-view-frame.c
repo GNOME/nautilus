@@ -29,7 +29,7 @@
 
 #include "ntl-view-private.h"
 #include "nautilus.h"
-#include <libnautilus/nautilus-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtk.h>
 

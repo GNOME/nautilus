@@ -39,9 +39,9 @@
 
 #include <libgnomeui/gnome-uidefs.h>
 
-#include <libnautilus/nautilus-string.h>
-#include <libnautilus/nautilus-glib-extensions.h>
-#include <libnautilus/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
 
 #define NAUTILUS_DND_URI_LIST_TYPE 	  "text/uri-list"
 #define NAUTILUS_DND_TEXT_PLAIN_TYPE 	  "text/plain"

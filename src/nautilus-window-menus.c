@@ -30,12 +30,12 @@
 #include "ntl-window-private.h"
 
 
-#include <libnautilus/nautilus-bonobo-extensions.h>
-#include <libnautilus/nautilus-glib-extensions.h>
-#include <libnautilus/nautilus-gtk-extensions.h>
-#include <libnautilus/nautilus-icon-factory.h>
-#include <libnautilus/nautilus-string.h>
-#include <libnautilus/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-bonobo-extensions.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 
 static void                  activate_bookmark_in_menu_item      (BonoboUIHandler *uih, 
                                                                   gpointer user_data, 

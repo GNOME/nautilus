@@ -26,7 +26,7 @@
 
 #include <gtk/gtkradiobutton.h>
 #include <gtk/gtksignal.h>
-#include <libnautilus/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
 
 static const gint RADIO_BUTTON_GROUP_INVALID = -1;
 

@@ -28,7 +28,7 @@
 
 #include "nautilus.h"
 #include "ntl-view-private.h"
-#include <libnautilus/bonobo-stream-vfs.h>
+#include <libnautilus-extensions/bonobo-stream-vfs.h>
 
 typedef struct {
   BonoboObject *container, *client_site, *view_frame;

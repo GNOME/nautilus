@@ -28,8 +28,8 @@
 #include "config.h"
 
 #include <libnautilus/libnautilus.h>
-#include <libnautilus/nautilus-bookmark.h>
-#include <libnautilus/nautilus-icon-factory.h>
+#include <libnautilus-extensions/nautilus-bookmark.h>
+#include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <libgnorba/gnorba.h>

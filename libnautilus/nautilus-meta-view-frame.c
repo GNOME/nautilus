@@ -24,16 +24,16 @@
  *
  */
 
-/* ntl-meta-view-frame.c: Implementation for object that represents a
+/* nautilus-meta-view-frame.c: Implementation for object that represents a
    nautilus meta view implementation. */
 
 #include <config.h>
-#include "ntl-meta-view-frame.h"
+#include "nautilus-meta-view-frame.h"
 
 #include <libgnome/gnome-i18n.h>
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-property-bag.h>
-#include <libnautilus/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
 
 struct NautilusMetaViewFrameDetails {
 	char *label;

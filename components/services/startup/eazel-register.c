@@ -34,7 +34,7 @@
 #include <gnome-xml/entities.h>
 #include <gnome-xml/parser.h>
 #include <gnome-xml/tree.h>
-#include <libnautilus/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-string.h>
 #include "eazel-register.h"
 
 void add_package_info(xmlDoc* configuration_metafile);

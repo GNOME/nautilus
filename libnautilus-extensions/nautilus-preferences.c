@@ -26,7 +26,7 @@
 #include "nautilus-preferences.h"
 
 #include <libgnome/gnome-config.h>
-#include <libnautilus/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
 
 static const char PREFERENCES_GLOBAL_DOMAIN[] = "Nautilus::Global";
 

@@ -41,15 +41,17 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-result.h>
-#include <libnautilus/nautilus-alloc.h>
-#include <libnautilus/nautilus-global-preferences.h>
-#include <libnautilus/nautilus-gtk-extensions.h>
-#include <libnautilus/nautilus-glib-extensions.h>
-#include <libnautilus/nautilus-gtk-macros.h>
-#include <libnautilus/nautilus-icon-factory.h>
-#include <libnautilus/nautilus-metadata.h>
-#include <libnautilus/nautilus-string.h>
+
 #include <libnautilus/nautilus-zoomable.h>
+
+#include <libnautilus-extensions/nautilus-alloc.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <libnautilus-extensions/nautilus-metadata.h>
+#include <libnautilus-extensions/nautilus-string.h>
 
 #include "fm-properties-window.h"
 #include "dfos-xfer.h"

@@ -26,7 +26,7 @@
 #include <gtkhtml/gtkhtml.h>
 #include <libgnorba/gnorba.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <libnautilus/nautilus-debug.h>
+#include <libnautilus-extensions/nautilus-debug.h>
 
 typedef struct {
   NautilusViewFrame *view_frame;

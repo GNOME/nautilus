@@ -1,3 +1,183 @@
+2000-04-14  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Split libnautilus into two pieces.  
+
+	libnautilus now only contains the view interfaces needed by nautilus 
+	components.
+
+	These are the interfaces defined in nautilus-view-component.idl.
+	
+	libnautilus-extensions containes the remainder of the stuff.
+
+	Also used the cvs repository munging opportunity to do some of the
+	ntl-* renaming outlined in the RENAIMING file.
+
+	* libnautilus/bonobo-stream-vfs.c
+	  libnautilus/bonobo-stream-vfs.h,
+	  libnautilus/gtkscrollframe.c,
+	  libnautilus/gtkscrollframe.h,
+	  libnautilus/nautilus-alloc.h,
+	  libnautilus/nautilus-background-canvas-group.c,
+	  libnautilus/nautilus-background-canvas-group.h,
+	  libnautilus/nautilus-background.c,
+	  libnautilus/nautilus-background.h,
+	  libnautilus/nautilus-bonobo-extensions.c,
+	  libnautilus/nautilus-bonobo-extensions.h,
+	  libnautilus/nautilus-bookmark.c,
+	  libnautilus/nautilus-bookmark.h,
+	  libnautilus/nautilus-debug.c,
+	  libnautilus/nautilus-debug.h,
+	  libnautilus/nautilus-default-file-icon.c,
+	  libnautilus/nautilus-default-file-icon.h,
+	  libnautilus/nautilus-directory-background.c,
+	  libnautilus/nautilus-directory-background.h,
+	  libnautilus/nautilus-directory-private.h,
+	  libnautilus/nautilus-directory.c,
+	  libnautilus/nautilus-directory.h,
+	  libnautilus/nautilus-file-private.h,
+	  libnautilus/nautilus-file-utilities.c,
+	  libnautilus/nautilus-file-utilities.h,
+	  libnautilus/nautilus-file.c,
+	  libnautilus/nautilus-file.h,
+	  libnautilus/nautilus-gdk-extensions.c,
+	  libnautilus/nautilus-gdk-extensions.h,
+	  libnautilus/nautilus-gdk-pixbuf-extensions.c,
+	  libnautilus/nautilus-gdk-pixbuf-extensions.h,
+	  libnautilus/nautilus-glib-extensions.c,
+	  libnautilus/nautilus-glib-extensions.h,
+	  libnautilus/nautilus-global-preferences.c,
+	  libnautilus/nautilus-global-preferences.h,
+	  libnautilus/nautilus-gnome-extensions.c,
+	  libnautilus/nautilus-gnome-extensions.h,
+	  libnautilus/nautilus-graphic-effects.c,
+	  libnautilus/nautilus-graphic-effects.h,
+	  libnautilus/nautilus-gtk-extensions.c,
+	  libnautilus/nautilus-gtk-extensions.h,
+	  libnautilus/nautilus-gtk-macros.h,
+	  libnautilus/nautilus-icon-canvas-item.c,
+	  libnautilus/nautilus-icon-canvas-item.h,
+	  libnautilus/nautilus-icon-container.c,
+	  libnautilus/nautilus-icon-container.h,
+	  libnautilus/nautilus-icon-dnd.c,
+	  libnautilus/nautilus-icon-dnd.h,
+	  libnautilus/nautilus-icon-factory.c,
+	  libnautilus/nautilus-icon-factory.h,
+	  libnautilus/nautilus-icon-grid.c,
+	  libnautilus/nautilus-icon-grid.h,
+	  libnautilus/nautilus-icon-private.h,
+	  libnautilus/nautilus-lib-self-check-functions.c,
+	  libnautilus/nautilus-lib-self-check-functions.h,
+	  libnautilus/nautilus-list-column-title.c,
+	  libnautilus/nautilus-list-column-title.h,
+	  libnautilus/nautilus-list.c,
+	  libnautilus/nautilus-list.h,
+	  libnautilus/nautilus-metadata.h,
+	  libnautilus/nautilus-mime-type.c,
+	  libnautilus/nautilus-mime-type.h,
+	  libnautilus/nautilus-self-checks.c,
+	  libnautilus/nautilus-self-checks.h,
+	  libnautilus/nautilus-string-list.c,
+	  libnautilus/nautilus-string-list.h,
+	  libnautilus/nautilus-string.c,
+	  libnautilus/nautilus-string.h,
+	  libnautilus/nautilus-xml-extensions.c,
+	  libnautilus/nautilus-xml-extensions.h: moved to
+	libnautilus-extensions.
+
+	  libnautilus/ntl-content-view-frame.c,
+	  libnautilus/ntl-content-view-frame.h,
+	  libnautilus/ntl-meta-view-frame.c,
+	  libnautilus/ntl-meta-view-frame.h,
+	  libnautilus/ntl-view-frame.c,
+	  libnautilus/ntl-view-frame.h: moved to
+	libnautilus-extensions and renamed from "ntl-*" to "nautilus-*"
+
+	* Makefile.am,
+	  configure.in: added libnautilus-extensions to the build.
+
+	* libnautilus/.cvsignore,
+	  libnautilus/Makefile.am,
+	  libnautilus/libnautilus.h,
+	  libnautilus/nautilus-content-view-frame.c,
+	  libnautilus/nautilus-content-view-frame.h,
+	  libnautilus/nautilus-meta-view-frame.c,
+	  libnautilus/nautilus-meta-view-frame.h,
+	  libnautilus/nautilus-view-frame-private.h,
+	  libnautilus/nautilus-view-frame.c,
+	  libnautilus/nautilus-view-frame.h,
+	  libnautilus/nautilus-zoomable.c: Updated for libnautilus ->
+	libnautilus-extensions changes. 
+
+	* libnautilus-extensions/Makefile.am,
+	  libnautilus-extensions/nautilus-global-preferences.c,
+	  libnautilus-extensions/nautilus-global-preferences.h,
+	  libnautilus-extensions/nautilus-icon-factory.h: Updated for libnautilus ->
+	libnautilus-extensions changes. 
+
+	* nautilus-widgets/nautilus-preferences-box.c,
+	  nautilus-widgets/nautilus-preferences-dialog.c,
+	  nautilus-widgets/nautilus-preferences-group.c,
+	  nautilus-widgets/nautilus-preferences-item.c,
+	  nautilus-widgets/nautilus-preferences-pane.c,
+	  nautilus-widgets/nautilus-preferences.c,
+	  nautilus-widgets/nautilus-radio-button-group.c: Updated for libnautilus ->
+	libnautilus-extensions changes. 
+
+	* src/Makefile.am,
+	  src/nautilus-bookmark-list.c,
+	  src/nautilus-bookmark-list.h,
+	  src/nautilus-bookmarks-window.c,
+	  src/nautilus-index-tabs.c,
+	  src/nautilus-index-title.c,
+	  src/nautilus-location-bar.c,
+	  src/nautilus-signaller.c,
+	  src/nautilus-window-menus.c,
+	  src/nautilus-window-toolbars.c,
+	  src/nautilus-zoom-control.c,
+	  src/ntl-app.c,
+	  src/ntl-index-panel.c,
+	  src/ntl-main.c,
+	  src/ntl-meta-view.c,
+	  src/ntl-uri-map.c,
+	  src/ntl-uri-map.h,
+	  src/ntl-view-bonobo-subdoc.c,
+	  src/ntl-view.c,
+	  src/ntl-window-msgs.c,
+	  src/ntl-window-state.c,
+	  src/ntl-window.c,
+	  src/ntl-window.h: Updated for libnautilus ->
+	libnautilus-extensions changes. 
+
+	* src/file-manager/fm-directory-view.c,
+	  src/file-manager/fm-directory-view.h,
+	  src/file-manager/fm-icon-text-window.c,
+	  src/file-manager/fm-icon-view.c,
+	  src/file-manager/fm-list-view.c,
+	  src/file-manager/fm-properties-window.c,
+	  src/file-manager/fm-properties-window.h: Updated for libnautilus ->
+	libnautilus-extensions changes. 
+
+	* components/history/Makefile.am,
+	  components/history/ntl-history-view.c,
+	  components/html/Makefile.am,
+	  components/html/ntl-web-browser.c,
+	  components/music/Makefile.am,
+	  components/music/nautilus-music-view.c,
+	  components/music/nautilus-music-view.h,
+	  components/notes/Makefile.am,
+	  components/notes/ntl-notes.c,
+	  components/rpmview/Makefile.am,
+	  components/rpmview/nautilus-rpm-view.c,
+	  components/rpmview/nautilus-rpm-view.h,
+	  components/sample/Makefile.am,
+	  components/sample/nautilus-sample-content-view.c,
+	  components/sample/nautilus-sample-content-view.h,
+	  components/services/startup/Makefile.am,
+	  components/services/startup/eazel-register.c,
+	  components/services/startup/nautilus-service-startup-view.c,
+	  components/services/startup/nautilus-service-startup-view.h:
+	Updated components for libnautilus -> libnautilus-extensions changes. 
+	
 2000-04-14  Fatih Demir	<kabalak@gmx.net>
 
 	* configure.in : Added tr to ALL_LINGUAS .

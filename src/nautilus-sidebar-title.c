@@ -34,12 +34,12 @@
 #include <gtk/gtksignal.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
-#include <libnautilus/nautilus-glib-extensions.h>
-#include <libnautilus/nautilus-gtk-extensions.h>
-#include <libnautilus/nautilus-gtk-macros.h>
-#include <libnautilus/nautilus-directory.h>
-#include <libnautilus/nautilus-icon-factory.h>
-#include <libnautilus/nautilus-metadata.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-directory.h>
+#include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <libnautilus-extensions/nautilus-metadata.h>
 
 static void     nautilus_index_title_initialize_class   (NautilusIndexTitleClass *klass);
 static void     nautilus_index_title_destroy           (GtkObject               *object);

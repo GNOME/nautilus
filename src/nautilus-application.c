@@ -29,7 +29,7 @@
 #include <bonobo.h>
 #include "file-manager/fm-icon-view.h"
 #include "file-manager/fm-list-view.h"
-#include <libnautilus/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 
 typedef struct {
   POA_Nautilus_Application servant;

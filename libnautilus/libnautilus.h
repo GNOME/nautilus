@@ -31,10 +31,8 @@
 
 #include <bonobo.h>
 #include <libnautilus/nautilus-view-component.h>
-#include <libnautilus/nautilus-alloc.h>
-#include <libnautilus/nautilus-directory.h>
-#include <libnautilus/ntl-view-frame.h>
-#include <libnautilus/ntl-meta-view-frame.h>
-#include <libnautilus/ntl-content-view-frame.h>
+#include <libnautilus/nautilus-view-frame.h>
+#include <libnautilus/nautilus-meta-view-frame.h>
+#include <libnautilus/nautilus-content-view-frame.h>
 
 #endif /* LIBNAUTILUS_H */

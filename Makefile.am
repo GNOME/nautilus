@@ -3,6 +3,7 @@ NULL=
 SUBDIRS =\
 	librsvg \
 	libnautilus \
+	libnautilus-extensions \
 	nautilus-widgets \
 	src \
 	components \

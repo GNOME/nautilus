@@ -28,7 +28,7 @@
 #include <config.h>
 #include "nautilus-zoomable.h"
 
-#include <libnautilus/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <gtk/gtksignal.h>
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-control.h>

@@ -39,15 +39,15 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-xfer.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
-#include <libnautilus/nautilus-metadata.h>
-#include <libnautilus/nautilus-gtk-extensions.h>
-#include <libnautilus/nautilus-gtk-macros.h>
-#include <libnautilus/nautilus-string.h>
-#include <libnautilus/nautilus-directory.h>
-#include <libnautilus/nautilus-directory-background.h>
-#include <libnautilus/nautilus-global-preferences.h>
-#include <libnautilus/nautilus-icon-factory.h>
-#include <libnautilus/nautilus-icon-container.h>
+#include <libnautilus-extensions/nautilus-metadata.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-directory.h>
+#include <libnautilus-extensions/nautilus-directory-background.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <libnautilus-extensions/nautilus-icon-container.h>
 
 /* Paths to use when creating & referring to bonobo menu items */
 #define MENU_PATH_BEFORE_STRETCH_SEPARATOR   "/Settings/Before Stretch Separator"

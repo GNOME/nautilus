@@ -24,13 +24,13 @@
  *
  */
 
-/* ntl-view-frame.h: Interface of the object representing the frame a
+/* nautilus-view-frame.h: Interface of the object representing the frame a
    data view plugs into. */
 
-#ifndef NTL_VIEW_FRAME_H
-#define NTL_VIEW_FRAME_H
+#ifndef NAUTILUS_VIEW_FRAME_H
+#define NAUTILUS_VIEW_FRAME_H
 
-#include <libnautilus/nautilus.h>
+#include <libnautilus/nautilus-view-component.h>
 #include <bonobo/bonobo-object.h>
 #include <gtk/gtkwidget.h>
 

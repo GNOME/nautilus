@@ -24,13 +24,13 @@
  *
  */
 
-/* ntl-content-view-frame.h: Interface for object that represents a
+/* nautilus-content-view-frame.h: Interface for object that represents a
    the frame a nautilus content view plugs into. */
 
-#ifndef NTL_CONTENT_VIEW_FRAME_H
-#define NTL_CONTENT_VIEW_FRAME_H
+#ifndef NAUTILUS_CONTENT_VIEW_FRAME_H
+#define NAUTILUS_CONTENT_VIEW_FRAME_H
 
-#include <libnautilus/ntl-view-frame.h>
+#include <libnautilus/nautilus-view-frame.h>
 
 #define NAUTILUS_TYPE_CONTENT_VIEW_FRAME			(nautilus_content_view_frame_get_type ())
 #define NAUTILUS_CONTENT_VIEW_FRAME(obj)			(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_CONTENT_VIEW_FRAME, NautilusContentViewFrame))

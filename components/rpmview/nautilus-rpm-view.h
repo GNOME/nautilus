@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_RPM_VIEW_H
 #define NAUTILUS_RPM_VIEW_H
 
-#include <libnautilus/ntl-content-view-frame.h>
+#include <libnautilus/nautilus-content-view-frame.h>
 #include <gtk/gtkeventbox.h>
 
 

@@ -28,7 +28,7 @@
 #include <nautilus-widgets/nautilus-preferences-group.h>
 #include <nautilus-widgets/nautilus-preferences-item.h>
 #include <nautilus-widgets/nautilus-preferences-dialog.h>
-#include <libnautilus/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
 
 /* 
  * Constants

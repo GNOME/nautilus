@@ -30,8 +30,8 @@
 #include <stdio.h>
 #include <gnome.h>
 #include <math.h>
-#include <libnautilus/nautilus-gtk-macros.h>
-#include <libnautilus/nautilus-icon-factory.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-icon-factory.h>
 #include "nautilus-zoom-control.h"
 
 enum {

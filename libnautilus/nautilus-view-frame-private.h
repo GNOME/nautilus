@@ -23,8 +23,8 @@
  *
  */
 
-#ifndef NTL_VIEW_FRAME_PRIVATE_H
-#define NTL_VIEW_FRAME_PRIVATE_H
+#ifndef NAUTILUS_VIEW_FRAME_PRIVATE_H
+#define NAUTILUS_VIEW_FRAME_PRIVATE_H
 
 struct _NautilusViewFramePrivate {
   BonoboObject *control;
