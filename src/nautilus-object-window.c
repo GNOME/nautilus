@@ -1589,7 +1589,7 @@ void
 nautilus_window_hide_sidebar (NautilusWindow *window)
 {
 	gtk_widget_hide (GTK_WIDGET (window->sidebar));
-	if (window->content_hbox != NULL) {
+	if (window->content_hbox != NULL && !NAUTILUS_IS_DESKTOP_WINDOW (window)) {
 		e_paned_set_position (E_PANED (window->content_hbox), 0);
 	}
 }
@@ -1601,7 +1601,7 @@ nautilus_window_show_sidebar (NautilusWindow *window)
 
 	widget = GTK_WIDGET (window->sidebar);
 	gtk_widget_show (widget);
-	if (window->content_hbox != NULL) {
+	if (window->content_hbox != NULL && !NAUTILUS_IS_DESKTOP_WINDOW (window)) {
 		e_paned_set_position (E_PANED (window->content_hbox), widget->allocation.width);
 	}
 }
