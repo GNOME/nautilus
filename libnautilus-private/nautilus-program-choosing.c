@@ -309,6 +309,37 @@ nautilus_cancel_choose_component_for_file (NautilusFile *file,
 	choose_component_destroy (choose_data);
 }
 
+
+static void
+dialog_response (GtkDialog *dialog,
+		 int response_id,
+		 ChooseApplicationCallbackData *choose_data)
+{
+	GnomeVFSMimeApplication *application;
+
+	application = NULL;
+
+	switch (response_id) {
+	case GTK_RESPONSE_OK:
+		application = nautilus_program_chooser_get_application (NAUTILUS_PROGRAM_CHOOSER (dialog));
+		break;
+
+	default:
+		break;
+	}
+
+	(* choose_data->callback) (application, choose_data->callback_data);
+
+	if (dialog != NULL) {
+		/* Destroy only after callback, since view identifier 
+		 * will be destroyed too.
+		 */
+		gtk_widget_destroy (GTK_WIDGET (dialog));
+	}
+
+	choose_application_destroy (choose_data);
+}
+
 /**
  * nautilus_choose_application_for_file:
  * 
@@ -346,29 +377,22 @@ choose_application_callback (NautilusFile *file,
 	if (nautilus_mime_has_any_applications_for_file_type (file)) {
 		dialog = set_up_program_chooser	(file, GNOME_VFS_MIME_ACTION_TYPE_APPLICATION,
 						 choose_data->parent_window);
-		if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK) {
-			application = nautilus_program_chooser_get_application (NAUTILUS_PROGRAM_CHOOSER (dialog));
-		}
+		g_signal_connect (G_OBJECT (dialog), "response",
+				  G_CALLBACK (dialog_response), choose_data);
+		gtk_widget_show (dialog);
 	} else {
 		nautilus_program_chooser_show_no_choices_message (GNOME_VFS_MIME_ACTION_TYPE_APPLICATION,
 								  file,
 								  choose_data->parent_window);
-	}	 
 
-	/* Call callback even if identifier is NULL, so caller can
-	 * free callback_data if necessary and present some cancel
-	 * UI if desired.
-	 */
-	(* choose_data->callback) (application, choose_data->callback_data);
-
-	if (dialog != NULL) {
-		/* Destroy only after callback, since application struct will
-		 * be destroyed too.
+		/* Call callback even if identifier is NULL, so caller can
+		 * free callback_data if necessary and present some cancel
+		 * UI if desired.
 		 */
-		gtk_widget_destroy (GTK_WIDGET (dialog));
+		(* choose_data->callback) (application, choose_data->callback_data);
+		
+		choose_application_destroy (choose_data);
 	}
-
-	choose_application_destroy (choose_data);
 }
 
 void

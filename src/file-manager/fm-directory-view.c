@@ -129,7 +129,6 @@
 #define FM_DIRECTORY_VIEW_COMMAND_CREATE_LINK                		"/commands/Create Link"
 #define FM_DIRECTORY_VIEW_COMMAND_PROPERTIES         			"/commands/Properties"
 #define FM_DIRECTORY_VIEW_COMMAND_OTHER_APPLICATION    			"/commands/OtherApplication"
-#define FM_DIRECTORY_VIEW_COMMAND_OTHER_VIEWER	   			"/commands/OtherViewer"
 #define FM_DIRECTORY_VIEW_COMMAND_CUT_FILES	    			"/commands/Cut Files"
 #define FM_DIRECTORY_VIEW_COMMAND_COPY_FILES				"/commands/Copy Files"
 #define FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES	   			"/commands/Paste Files"
@@ -150,9 +149,6 @@
 #define FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK                	 	"/menu/Edit/File Items Placeholder/Create Link"
 #define FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER    	"/menu/File/Open Placeholder/Open With/Applications Placeholder"
 #define FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION		    	"/menu/File/Open Placeholder/Open With/OtherApplication"
-#define FM_DIRECTORY_VIEW_MENU_PATH_BEFORE_VIEWERS_SEPARATOR            "/menu/File/Open Placeholder/Open With/Before Viewers"
-#define FM_DIRECTORY_VIEW_MENU_PATH_VIEWERS_PLACEHOLDER    		"/menu/File/Open Placeholder/Open With/Viewers Placeholder"
-#define FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER		    	"/menu/File/Open Placeholder/Open With/OtherViewer"
 #define FM_DIRECTORY_VIEW_MENU_PATH_SCRIPTS_PLACEHOLDER    		"/menu/File/Open Placeholder/Scripts/Scripts Placeholder"
 #define FM_DIRECTORY_VIEW_MENU_PATH_SCRIPTS_SEPARATOR    		"/menu/File/Open Placeholder/Scripts/After Scripts"
 #define FM_DIRECTORY_VIEW_MENU_PATH_NEW_DOCUMENTS_PLACEHOLDER  		"/menu/File/New Items Placeholder/New Documents/New Documents Placeholder"
@@ -174,8 +170,6 @@
 #define FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND_NEW_DOCUMENTS_SEPARATOR	"/popups/background/Before Zoom Items/New Documents/After New Documents"
 
 #define FM_DIRECTORY_VIEW_POPUP_PATH_APPLICATIONS_PLACEHOLDER    	"/popups/selection/Open Placeholder/Open With/Applications Placeholder"
-#define FM_DIRECTORY_VIEW_POPUP_PATH_BEFORE_VIEWERS_SEPARATOR 		"/popups/selection/Open Placeholder/Open With/Before Viewers"
-#define FM_DIRECTORY_VIEW_POPUP_PATH_VIEWERS_PLACEHOLDER    		"/popups/selection/Open Placeholder/Open With/Viewers Placeholder"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_SCRIPTS_PLACEHOLDER    		"/popups/selection/Open Placeholder/Scripts/Scripts Placeholder"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_SCRIPTS_SEPARATOR    		"/popups/selection/Open Placeholder/Scripts/After Scripts"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_OPEN_WITH				"/popups/selection/Open Placeholder/Open With"
@@ -813,15 +807,6 @@ other_application_callback (BonoboUIComponent *component, gpointer callback_data
 
 	open_with_other_program (FM_DIRECTORY_VIEW (callback_data), 
 				 GNOME_VFS_MIME_ACTION_TYPE_APPLICATION);
-}
-
-static void
-other_viewer_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
-{
-	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
-
-	open_with_other_program (FM_DIRECTORY_VIEW (callback_data), 
-				 GNOME_VFS_MIME_ACTION_TYPE_COMPONENT);
 }
 
 static void
@@ -3598,18 +3583,6 @@ bonobo_launch_application_callback (BonoboUIComponent *component, gpointer callb
 }				    
 
 static void
-bonobo_open_location_with_viewer_callback (BonoboUIComponent *component, gpointer callback_data, const char *path)
-{
-	ViewerLaunchParameters *launch_parameters;
-
-	launch_parameters = (ViewerLaunchParameters *) callback_data;
-
-	switch_location_and_view (launch_parameters->identifier,
-				  launch_parameters->uri,
-				  launch_parameters->directory_view);
-}
-
-static void
 add_numbered_menu_item (BonoboUIComponent *ui,
 			const char *parent_path,
 			const char *label,
@@ -3707,59 +3680,9 @@ add_application_to_bonobo_menu (FMDirectoryView *directory_view,
 }
 
 static void
-add_component_to_bonobo_menu (FMDirectoryView *directory_view,
-			      Bonobo_ServerInfo *content_view, 
-			      const char *uri,
-			      int index)
-{
-	NautilusViewIdentifier *identifier;
-	ViewerLaunchParameters *launch_parameters;
-	char *tip;
-	char *label;
-	
-	identifier = nautilus_view_identifier_new_from_content_view (content_view);
-	launch_parameters = viewer_launch_parameters_new (identifier, uri, directory_view);
-	nautilus_view_identifier_free (identifier);
-
-	label = g_strdup (launch_parameters->identifier->viewer_label);
-	tip = g_strdup_printf (_("Use \"%s\" to open the selected item"), label);
-
-	add_numbered_menu_item (directory_view->details->ui, 
-				FM_DIRECTORY_VIEW_MENU_PATH_VIEWERS_PLACEHOLDER,
-				label,
-				tip,
-				index,
-				NULL,
-				bonobo_open_location_with_viewer_callback,
-				launch_parameters,
-				(GDestroyNotify) viewer_launch_parameters_free);
-	/* Use same launch parameters and no DestroyNotify for popup item, which has same
-	 * lifetime as the item in the File menu in the menu bar.
-	 */
- 	add_numbered_menu_item (directory_view->details->ui, 
-				FM_DIRECTORY_VIEW_POPUP_PATH_VIEWERS_PLACEHOLDER,
-				label,
-				tip,
-				index,
-				NULL,
-				bonobo_open_location_with_viewer_callback,
-				launch_parameters,
-				NULL);
-	g_free (tip);
-	g_free (label);
-}
-
-static gboolean
-can_use_component_for_file (FMDirectoryView *view,
-			    NautilusFile *file)
-{
-	return (nautilus_file_is_directory (file) || NAUTILUS_IS_DESKTOP_ICON_FILE (file) || nautilus_view_get_window_type (view->details->nautilus_view) == Nautilus_WINDOW_NAVIGATION);
-}
-
-static void
 reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 {
-	GList *applications, *components, *node;
+	GList *applications, *node;
 	NautilusFile *file;
 	gboolean sensitive;
 	gboolean any_applications;
@@ -3771,11 +3694,7 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 	nautilus_bonobo_remove_menu_items_and_commands
 		(view->details->ui, FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER);
 	nautilus_bonobo_remove_menu_items_and_commands 
-		(view->details->ui, FM_DIRECTORY_VIEW_MENU_PATH_VIEWERS_PLACEHOLDER);
-	nautilus_bonobo_remove_menu_items_and_commands 
 		(view->details->ui, FM_DIRECTORY_VIEW_POPUP_PATH_APPLICATIONS_PLACEHOLDER);
-	nautilus_bonobo_remove_menu_items_and_commands 
-		(view->details->ui, FM_DIRECTORY_VIEW_POPUP_PATH_VIEWERS_PLACEHOLDER);
 	
 	/* This menu is only displayed when there's one selected item. */
 	if (!eel_g_list_exactly_one_item (selection)) {
@@ -3800,38 +3719,6 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 			 FM_DIRECTORY_VIEW_COMMAND_OTHER_APPLICATION,
 			 any_applications ? _("Other _Application...") : _("An _Application..."));
 
-		if (can_use_component_for_file (view, NAUTILUS_FILE (selection->data))) {
-			components = nautilus_mime_get_short_list_components_for_file (NAUTILUS_FILE (selection->data));
-			for (node = components, index = 0; node != NULL; node = node->next, index++) {
-				any_viewers = TRUE;
-				add_component_to_bonobo_menu (view, node->data, uri, index);
-			}
-			gnome_vfs_mime_component_list_free (components); 
-			
-			nautilus_bonobo_set_hidden (view->details->ui,
-						    FM_DIRECTORY_VIEW_MENU_PATH_BEFORE_VIEWERS_SEPARATOR,
-						    FALSE);
-			nautilus_bonobo_set_hidden (view->details->ui,
-						    FM_DIRECTORY_VIEW_POPUP_PATH_BEFORE_VIEWERS_SEPARATOR,
-						    FALSE);
-			nautilus_bonobo_set_hidden (view->details->ui,
-						    FM_DIRECTORY_VIEW_COMMAND_OTHER_VIEWER,
-						    FALSE);
-			nautilus_bonobo_set_label 
-				(view->details->ui,
-				 FM_DIRECTORY_VIEW_COMMAND_OTHER_VIEWER,
-				 any_applications ? _("Other _Viewer...") : _("A _Viewer..."));
-		} else {
-			nautilus_bonobo_set_hidden (view->details->ui,
-						    FM_DIRECTORY_VIEW_COMMAND_OTHER_VIEWER,
-						    TRUE);
-			nautilus_bonobo_set_hidden (view->details->ui,
-						    FM_DIRECTORY_VIEW_MENU_PATH_BEFORE_VIEWERS_SEPARATOR,
-						    TRUE);
-			nautilus_bonobo_set_hidden (view->details->ui,
-						    FM_DIRECTORY_VIEW_POPUP_PATH_BEFORE_VIEWERS_SEPARATOR,
-						    TRUE);
-		}
 		
 		g_free (uri);
 	}
@@ -5072,7 +4959,6 @@ real_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB ("OpenCloseParent", open_close_parent_callback),
 		BONOBO_UI_VERB ("OpenAlternate", open_alternate_callback),
 		BONOBO_UI_VERB ("OtherApplication", other_application_callback),
-		BONOBO_UI_VERB ("OtherViewer", other_viewer_callback),
 		BONOBO_UI_VERB ("Edit Launcher", edit_launcher_callback),
 		BONOBO_UI_VERB ("Paste Files", paste_files_callback),
 		BONOBO_UI_VERB ("Paste Files Into", paste_files_into_callback),
@@ -5782,6 +5668,16 @@ get_executable_text_file_action (FMDirectoryView *view, NautilusFile *file)
 		return ACTIVATION_ACTION_DO_NOTHING;
 	}
 }
+
+static gboolean
+can_use_component_for_file (FMDirectoryView *view,
+			    NautilusFile *file)
+{
+	return (nautilus_file_is_directory (file) ||
+		NAUTILUS_IS_DESKTOP_ICON_FILE (file) ||
+		nautilus_view_get_window_type (view->details->nautilus_view) == Nautilus_WINDOW_NAVIGATION);
+}
+
 
 static void
 activate_callback (NautilusFile *file, gpointer callback_data)

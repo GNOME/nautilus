@@ -1338,7 +1338,7 @@ nautilus_program_chooser_instance_init (NautilusProgramChooser *program_chooser)
 									 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
 
 	gtk_dialog_add_button (GTK_DIALOG (program_chooser),
-			       _("C_hoose"), GTK_RESPONSE_OK);
+			       GTK_STOCK_OK, GTK_RESPONSE_OK);
 
 	program_chooser->details->done_button = gtk_dialog_add_button (GTK_DIALOG (program_chooser),
 								       _("Done"), GTK_RESPONSE_CANCEL);

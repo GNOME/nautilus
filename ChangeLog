@@ -1,3 +1,18 @@
+2004-01-20  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-program-chooser.c:
+	(nautilus_program_chooser_instance_init):
+	Choose -> OK
+	* libnautilus-private/nautilus-program-choosing.c:
+	(dialog_response), (choose_application_callback):
+	Make open with other app dialog non-modal.
+	
+	* src/file-manager/fm-directory-view.c:
+	(reset_bonobo_open_with_menu), (real_merge_menus),
+	(can_use_component_for_file):
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	Remove open with views from menu
+
 2004-01-19  Alexander Larsson  <alexl@redhat.com>
 
 	* docs/Makefile.am (EXTRA_DIST):
