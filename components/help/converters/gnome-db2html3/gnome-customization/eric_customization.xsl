@@ -10,7 +10,7 @@
 
 <!-- Including a new title page stylesheet for customizing the placement 
 	 of tags in the title page. -->
-<xsl:include href="titlepage.xsl"/>
+<xsl:include href="eric_titlepage.xsl"/>
 <!--##################Variables and Parameters####################-->
 
 <xsl:param name="use.id.as.filename" select="1" doc:type='boolean'/>
