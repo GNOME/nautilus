@@ -1,5 +1,24 @@
 2001-03-30  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	Changed from Mike Fleming to hide the proxy authentication
+	preferences when the "Use Proxy" preference is FALSE.
+	
+	* libnautilus-extensions/nautilus-preferences-group.c:
+	(nautilus_preferences_group_add_item):
+	Change the item packing parameters so that items will be sized to
+	their natural sizes.  Otherwise they fill the avaialable space and
+	screw up the usage of control preferences to properly hide items
+	and have everything update accordingly.
+	
+	* libnautilus-extensions/nautilus-preferences-pane.c:
+	(preferences_pane_control_preference_changed_callback):
+	Force a queue resize when the pane is updated so that empty space
+	resulting from controlled preferences items being hidden will go
+	away.
+	
+2001-03-30  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-enumeration.h:
 	* libnautilus-extensions/nautilus-enumeration.c:
 	(nautilus_enumeration_new_from_tokens),

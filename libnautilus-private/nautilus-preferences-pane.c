@@ -249,6 +249,8 @@ preferences_pane_control_preference_changed_callback (gpointer callback_data)
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_PANE (callback_data));
 
 	nautilus_preferences_pane_update (NAUTILUS_PREFERENCES_PANE (callback_data));
+
+	gtk_widget_queue_resize (GTK_WIDGET (callback_data));
 }
 
 void

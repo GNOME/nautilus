@@ -256,8 +256,8 @@ nautilus_preferences_group_add_item (NautilusPreferencesGroup		*group,
 	
 	gtk_box_pack_start (GTK_BOX (group->details->content_box),
 			    item,
-			    TRUE,
-			    TRUE,
+			    FALSE,
+			    FALSE,
 			    0);
 
 	gtk_widget_show (item);
