@@ -135,7 +135,8 @@ global_preferences_create_dialog (void)
 								 "Sidebar Panels",
 								 "Sidebar Panels Description");
 	
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (sidebar_panels_pane), "Sidebar Panels");
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (sidebar_panels_pane), 
+					     "Choose which panels should appear in the sidebar");
 	
 	{
 		char *preference_key;
@@ -180,7 +181,7 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
-	
+
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane), "Toolbar Icons");
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
 							 1,
@@ -357,7 +358,6 @@ global_preferences_register_for_ui (void)
 
 	preference_for_ui_registered = TRUE;
 
-
 	/*
 	 * In the soon to come star trek future, the following information
 	 * will be fetched using the latest xml techniques.
@@ -385,7 +385,7 @@ global_preferences_register_for_ui (void)
 					     "Activate items with a double click",
 					     NAUTILUS_CLICK_POLICY_DOUBLE);
 
-	/* remote views */
+	/* Remote views */
 	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS,
 			               "Display text in icons even for remote text files",
 				       NAUTILUS_PREFERENCE_BOOLEAN,
@@ -418,18 +418,17 @@ global_preferences_register_for_ui (void)
 
 	/* Appearance options */
 	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
-				       "Use smoother (but slower) graohics",
+				       "Use smoother (but slower) graphics",
 				       NAUTILUS_PREFERENCE_BOOLEAN,
 				       (gconstpointer) FALSE);
-	 	
+
 	/* toolbar icons */
 	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_EAZEL_TOOLBAR_ICONS,
 				       "Use Eazel's toolbar icons",
 				       NAUTILUS_PREFERENCE_BOOLEAN,
 				       (gconstpointer) FALSE);
 	
-	/* miscellaneous */
-	
+	/* Miscellaneous */
 	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_SHOW_REAL_FILE_NAME,
 				       "Show entire file file",
 				       NAUTILUS_PREFERENCE_BOOLEAN,
