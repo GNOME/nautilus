@@ -3086,15 +3086,16 @@ real_update_menus (FMDirectoryView *view)
 /**
  * fm_directory_view_pop_up_selection_context_menu
  *
- * Pop up a context menu appropriate to the selected items at the last right click location.
+ * Pop up a context menu appropriate to the selected items.
  * @view: FMDirectoryView of interest.
- * @file: The model object for which a menu should be popped up.
+ * @event: The event that triggered this context menu.
  * 
  * Return value: NautilusDirectory for this view.
  * 
  **/
 void 
-fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView *view)
+fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView *view, 
+						  GdkEventButton *event)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
@@ -3102,7 +3103,7 @@ fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView *view)
 				      	(view, FM_DIRECTORY_VIEW_POPUP_PATH_SELECTION),
 				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
 				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
-				      0);
+				      event);
 }
 
 /**
@@ -3115,7 +3116,8 @@ fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView *view)
  * 
  **/
 void 
-fm_directory_view_pop_up_background_context_menu  (FMDirectoryView *view)
+fm_directory_view_pop_up_background_context_menu  (FMDirectoryView *view, 
+						   GdkEventButton *event)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
@@ -3123,7 +3125,7 @@ fm_directory_view_pop_up_background_context_menu  (FMDirectoryView *view)
 				      	(view, FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND),
 				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
 				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
-				      0);
+				      event);
 }
 
 static void

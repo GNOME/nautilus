@@ -637,7 +637,7 @@ nautilus_zoom_control_button_press_event (GtkWidget *widget, GdkEventButton *eve
 		nautilus_pop_up_context_menu (create_zoom_menu (widget), 
 					      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT, 
 					      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT, 
-					      CONTEXTUAL_MENU_BUTTON);
+					      event);
 		return TRUE;	  
  	}
 	

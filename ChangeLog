@@ -1,3 +1,81 @@
+2000-11-28  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixed bug 4257 (right click on background in icon or list
+	view doesn't leave context menus up)
+
+	This was a problem with nautilus_pop_up_context_menu. It
+	wasn't passing the event time, which caused GTK to think
+	that the button-release was for a later button press, and
+	consequently to close the context menu. It appears that the
+	root cause may be a gtk menu handling bug, but this checkin
+	fixes the problem as far as Nautilus is concerned.
+
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_pop_up_context_menu): Now takes event as a
+	parameter, and passes event->time through to gtk_menu_popup.
+	Passes 0 for button if event is a button release, to work with
+	subtle logic in gtk popup menu-handling.
+
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* libnautilus-extensions/nautilus-icon-container.c:
+	Add event parameters to context-click signal handlers.
+	(nautilus_icon_container_initialize_class): Change signal
+	marshal and signature.
+	(context_menu_parameters_new), (context_menu_parameters_free):
+	New helper functions to manage callback data when delaying
+	the appearance of a context menu.
+	(button_press_event), (button_release_event),
+	(show_context_menu_callback): Pass event when emitting signal.
+	(handle_icon_button_press): Pass event as well as container
+	to idle callback.
+	
+	* libnautilus-extensions/nautilus-list.h:
+	* libnautilus-extensions/nautilus-list.c:
+	Add event parameters to context-click signal handlers.
+	(nautilus_list_initialize_class): Change signal marshal and
+	signature.
+	(context_menu_parameters_new), (context_menu_parameters_free):
+	New helper functions to manage callback data when delaying
+	the appearance of a context menu.
+	(nautilus_list_button_press), (nautilus_list_button_release),
+	(show_context_menu_callback): Pass event when emitting signal
+	or setting up idle callback.
+	
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_pop_up_selection_context_menu),
+	(fm_directory_view_pop_up_background_context_menu):
+	Take event parameter and pass it to
+	nautilus_pop_up_context_menu.
+	
+	* src/file-manager/fm-icon-view.c:
+	(icon_container_context_click_selection_callback),
+	(icon_container_context_click_background_callback):
+	Add event parameter to match signal change, and pass
+	event when calling fm_directory_view_pop_up_xxx
+	
+	* src/file-manager/fm-list-view.c:
+	(context_click_selection_callback),
+	(context_click_background_callback):
+	Add event parameter to match signal change, and pass
+	event when calling fm_directory_view_pop_up_xxx
+	
+	* src/nautilus-window-toolbars.c:
+	(back_or_forward_button_clicked_callback):
+	Pass event for context menu on Back and Forward
+	buttons (this code is still #ifdeffed out from Bonobo
+	switchover, awaiting fix for bug 3510).
+
+	* src/nautilus-sidebar.c: (nautilus_sidebar_press_event):
+	Pass event for context menu in sidebar.
+
+	* src/nautilus-zoom-control.c:
+	(nautilus_zoom_control_button_press_event):
+	Pass event for context menu in zoom control.
+
 2000-11-28  Arlo Rose  <arlo@eazel.com>
 
 	* /icons/loading.png:

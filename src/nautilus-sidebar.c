@@ -954,7 +954,7 @@ nautilus_sidebar_press_event (GtkWidget *widget, GdkEventButton *event)
 		nautilus_pop_up_context_menu (GTK_MENU(menu),
 				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
 				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
-				      event->button);
+				      event);
 		return TRUE;
 	}
 	

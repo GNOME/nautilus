@@ -2334,7 +2334,7 @@ button_press_event (GtkWidget *widget,
 	/* Button 3 does a contextual menu. */
 	if (event->button == CONTEXTUAL_MENU_BUTTON) {
 		end_renaming_mode (container, TRUE);
-		gtk_signal_emit (GTK_OBJECT (widget), signals[CONTEXT_CLICK_BACKGROUND]);
+		gtk_signal_emit (GTK_OBJECT (widget), signals[CONTEXT_CLICK_BACKGROUND], event);
 		return TRUE;
 	}
 	
@@ -2530,7 +2530,8 @@ button_release_event (GtkWidget *widget,
 				details->drag_state = DRAG_STATE_INITIAL;
 				gtk_timeout_remove (details->context_menu_timeout_id);
 				gtk_signal_emit (GTK_OBJECT (container),
-						 signals[CONTEXT_CLICK_SELECTION]);
+						 signals[CONTEXT_CLICK_SELECTION],
+						 event);
 				break;
 			}
 			/* fall through */
@@ -2863,16 +2864,18 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
 						     context_click_selection),
-				  gtk_marshal_NONE__NONE,
-				  GTK_TYPE_NONE, 0);
+				  gtk_marshal_NONE__POINTER,
+				  GTK_TYPE_NONE, 1,
+				  GTK_TYPE_POINTER);
 	signals[CONTEXT_CLICK_BACKGROUND]
 		= gtk_signal_new ("context_click_background",
 				  GTK_RUN_LAST,
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
 						     context_click_background),
-				  gtk_marshal_NONE__NONE,
-				  GTK_TYPE_NONE, 0);
+				  gtk_marshal_NONE__POINTER,
+				  GTK_TYPE_NONE, 1,
+				  GTK_TYPE_POINTER);
 	signals[MIDDLE_CLICK]
 		= gtk_signal_new ("middle_click",
 				  GTK_RUN_LAST,
@@ -3167,29 +3170,54 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 	container->details->has_been_allocated = FALSE;
 }
 
-static gboolean
-show_context_menu_callback (void *cast_to_container)
-{
+typedef struct {
 	NautilusIconContainer *container;
+	GdkEventButton	      *event;
+} ContextMenuParameters;
 
-	container = (NautilusIconContainer *)cast_to_container;
+static ContextMenuParameters *
+context_menu_parameters_new (NautilusIconContainer *container,
+			     GdkEventButton *event)
+{
+	ContextMenuParameters *parameters;
 
-	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
+	parameters = g_new (ContextMenuParameters, 1);
+	parameters->container = container;
+	parameters->event = (GdkEventButton *)(gdk_event_copy ((GdkEvent *)event));
 
-	if (container->details->drag_state != DRAG_STATE_MOVE_COPY_OR_MENU) {
-		/* button was released */
-		return TRUE;
+	return parameters;
+}			     
+
+static void
+context_menu_parameters_free (ContextMenuParameters *parameters)
+{
+	gdk_event_free ((GdkEvent *)parameters->event);
+	g_free (parameters);
+}
+
+static gboolean
+show_context_menu_callback (void *cast_to_parameters)
+{
+	ContextMenuParameters *parameters;
+
+	parameters = (ContextMenuParameters *)cast_to_parameters;
+
+	g_assert (NAUTILUS_IS_ICON_CONTAINER (parameters->container));
+
+	if (parameters->container->details->drag_state == DRAG_STATE_MOVE_COPY_OR_MENU) {
+		parameters->container->details->drag_state = DRAG_STATE_INITIAL;
+		gtk_timeout_remove (parameters->container->details->context_menu_timeout_id);
+
+		/* Context menu applies to all selected items. The only
+		 * odd case is if this click deselected the icon under
+		 * the mouse, but at least the behavior is consistent.
+		 */
+		gtk_signal_emit (GTK_OBJECT (parameters->container),
+				 signals[CONTEXT_CLICK_SELECTION],
+				 parameters->event);
 	}
 
-	container->details->drag_state = DRAG_STATE_INITIAL;
-	gtk_timeout_remove (container->details->context_menu_timeout_id);
-
-	/* Context menu applies to all selected items. The only
-	 * odd case is if this click deselected the icon under
-	 * the mouse, but at least the behavior is consistent.
-	 */
-	gtk_signal_emit (GTK_OBJECT (container),
-			 signals[CONTEXT_CLICK_SELECTION]);
+	context_menu_parameters_free (parameters);
 
 	return TRUE;
 }
@@ -3244,7 +3272,8 @@ handle_icon_button_press (NautilusIconContainer *container,
 			 */
 			details->context_menu_timeout_id = gtk_timeout_add (
 				CONTEXT_MENU_TIMEOUT_INTERVAL, 
-				show_context_menu_callback, container);
+				show_context_menu_callback, 
+				context_menu_parameters_new (container, event));
 		}
 	}
 

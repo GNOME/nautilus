@@ -526,39 +526,41 @@ nautilus_truncate_text_for_menu_item (const char *text)
  * This function is more of a helper function than a gtk extension,
  * so perhaps it belongs in a different file.
  * 
- * When calling from a callback other than button_press, make sure to pass
- * 0 for button because otherwise the first button click after the button came
- * up would not be handled properly (a subtle fragility of gtk_menu_popup).
- * 
  * @menu: The menu to pop up under the mouse.
  * @offset_x: Number of pixels to displace the popup menu vertically
  * @offset_y: Number of pixels to displace the popup menu horizontally
- * @button: current button if called from button_press.
+ * @event: The event that invoked this popup menu.
  **/
 void 
-nautilus_pop_up_context_menu (GtkMenu	*menu,
-			      gint16	offset_x,
-			      gint16	offset_y,
-			      int	button)
+nautilus_pop_up_context_menu (GtkMenu	     *menu,
+			      gint16	      offset_x,
+			      gint16	      offset_y,
+			      GdkEventButton *event)
 {
 	GdkPoint offset;
+	int button;
 
 	g_return_if_fail (GTK_IS_MENU (menu));
 
 	offset.x = offset_x;
 	offset.y = offset_y;
 
-	/* We pass current time here instead of extracting it from
-	 * the event, for API simplicity. This does not seem to make
-	 * any practical difference. See man XGrabPointer for details.
+	/* The event button needs to be 0 if we're popping up this menu from
+	 * a button release, else a 2nd click outside the menu with any button
+	 * other than the one that invoked the menu will be ignored (instead
+	 * of dismissing the menu). This is a subtle fragility of the GTK menu code.
 	 */
+	button = event->type == GDK_BUTTON_RELEASE
+		? 0
+		: event->button;
+	
 	gtk_menu_popup (menu,					/* menu */
 			NULL,					/* parent_menu_shell */
 			NULL,					/* parent_menu_item */
 			nautilus_popup_menu_position_func,	/* func */
 			&offset,			        /* data */
 			button,					/* button */
-			GDK_CURRENT_TIME);			/* activate_time */
+			event->time);				/* activate_time */
 
 	gtk_object_sink (GTK_OBJECT(menu));
 }

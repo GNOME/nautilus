@@ -1471,22 +1471,26 @@ selection_changed_callback (NautilusIconContainer *container,
 
 static void
 icon_container_context_click_selection_callback (NautilusIconContainer *container,
+						 GdkEventButton *event,
 						 FMIconView *icon_view)
 {
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 
-	fm_directory_view_pop_up_selection_context_menu (FM_DIRECTORY_VIEW (icon_view));
+	fm_directory_view_pop_up_selection_context_menu 
+		(FM_DIRECTORY_VIEW (icon_view), event);
 }
 
 static void
 icon_container_context_click_background_callback (NautilusIconContainer *container,
+						  GdkEventButton *event,
 						  FMIconView *icon_view)
 {
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 
-	fm_directory_view_pop_up_background_context_menu (FM_DIRECTORY_VIEW (icon_view));
+	fm_directory_view_pop_up_background_context_menu 
+		(FM_DIRECTORY_VIEW (icon_view), event);
 }
 
 static gboolean

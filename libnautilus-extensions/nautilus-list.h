@@ -88,10 +88,12 @@ struct NautilusListClass {
 	NautilusCListClass parent_class;
 
 	/* Signal: invoke the popup menu for selected items */
-	void (* context_click_selection) (NautilusList *list, int row);
+	void (* context_click_selection) (NautilusList *list, 
+					  GdkEventButton *event);
 
 	/* Signal: invoke the popup menu for empty areas */
-	void (* context_click_background) (NautilusList *list);
+	void (* context_click_background) (NautilusList *list,
+					   GdkEventButton *event);
 
 	/* Signal: announce that one or more items have been activated. */
 	void (* activate) (NautilusList *list, GList *row_data_list);

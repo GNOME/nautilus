@@ -323,8 +323,10 @@ NautilusStringList *fm_directory_view_get_emblem_names_to_exclude   (FMDirectory
 NautilusDirectory  *fm_directory_view_get_model                     (FMDirectoryView       *view);
 NautilusFile       *fm_directory_view_get_directory_as_file         (FMDirectoryView       *view);
 NautilusBackground *fm_directory_view_get_background		    (FMDirectoryView 	   *view);
-void               fm_directory_view_pop_up_background_context_menu (FMDirectoryView       *view);
-void               fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView       *view); 
+void               fm_directory_view_pop_up_background_context_menu (FMDirectoryView 	   *view, 
+						  		     GdkEventButton 	   *event);
+void               fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView 	   *view, 
+						  		     GdkEventButton 	   *event); 
 void               fm_directory_view_update_menus                   (FMDirectoryView       *view);
 void		   fm_directory_view_new_folder			    (FMDirectoryView       *view);
 

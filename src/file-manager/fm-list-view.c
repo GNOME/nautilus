@@ -353,20 +353,26 @@ match_row_name (gconstpointer a, void *callback_data)
 }
 
 static void 
-context_click_selection_callback (NautilusCList *clist, FMListView *list_view)
+context_click_selection_callback (NautilusCList *clist, 
+				  GdkEventButton *event,
+				  FMListView *list_view)
 {
 	g_assert (NAUTILUS_IS_CLIST (clist));
 	g_assert (FM_IS_LIST_VIEW (list_view));
 
-	fm_directory_view_pop_up_selection_context_menu (FM_DIRECTORY_VIEW (list_view));
+	fm_directory_view_pop_up_selection_context_menu 
+		(FM_DIRECTORY_VIEW (list_view), event);
 }
 
 static void 
-context_click_background_callback (NautilusCList *clist, FMListView *list_view)
+context_click_background_callback (NautilusCList *clist,
+				   GdkEventButton *event,
+				   FMListView *list_view)
 {
 	g_assert (FM_IS_LIST_VIEW (list_view));
 
-	fm_directory_view_pop_up_background_context_menu (FM_DIRECTORY_VIEW (list_view));
+	fm_directory_view_pop_up_background_context_menu 
+		(FM_DIRECTORY_VIEW (list_view), event);
 }
 
 static GPtrArray *

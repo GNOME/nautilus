@@ -129,7 +129,7 @@ back_or_forward_button_clicked_callback (GtkWidget *widget,
 						     back),
                         NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
                         NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
-                        event->button);
+                        event);
 
 		return TRUE;
 	}

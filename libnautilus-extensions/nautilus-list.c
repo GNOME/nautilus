@@ -331,15 +331,17 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusListClass, context_click_selection),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+				gtk_marshal_NONE__POINTER,
+				GTK_TYPE_NONE, 1,
+				GTK_TYPE_POINTER);
 	list_signals[CONTEXT_CLICK_BACKGROUND] =
 		gtk_signal_new ("context_click_background",
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusListClass, context_click_background),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+				gtk_marshal_NONE__POINTER,
+				GTK_TYPE_NONE, 1,
+				GTK_TYPE_POINTER);
 	list_signals[ACTIVATE] =
 		gtk_signal_new ("activate",
 				GTK_RUN_LAST,
@@ -844,26 +846,56 @@ nautilus_list_select_all (NautilusCList *clist)
 	}
 }
 
-static gboolean
-show_context_menu_callback (void *cast_to_list)
-{
-	NautilusList *list;
+typedef struct {
+	NautilusList 	*list;
+	GdkEventButton	*event;
+} ContextMenuParameters;
 
-	list = NAUTILUS_LIST (cast_to_list);
+static ContextMenuParameters *
+context_menu_parameters_new (NautilusList *list,
+			     GdkEventButton *event)
+{
+	ContextMenuParameters *parameters;
+
+	parameters = g_new (ContextMenuParameters, 1);
+	parameters->list = list;
+	parameters->event = (GdkEventButton *)(gdk_event_copy ((GdkEvent *)event));
+
+	return parameters;
+}			     
+
+static void
+context_menu_parameters_free (ContextMenuParameters *parameters)
+{
+	gdk_event_free ((GdkEvent *)parameters->event);
+	g_free (parameters);
+}
+
+static gboolean
+show_context_menu_callback (void *cast_to_parameters)
+{
+	ContextMenuParameters *parameters;
+
+	parameters = (ContextMenuParameters *)cast_to_parameters;
+
+	g_assert (NAUTILUS_IS_LIST (parameters->list));
 
 	/* FIXME bugzilla.eazel.com 2574: 
 	 * Need to handle case where button has already been released,
 	 * a la NautilusIconContainer code?
 	 */
 
-	gtk_timeout_remove (list->details->context_menu_timeout_id);
+	gtk_timeout_remove (parameters->list->details->context_menu_timeout_id);
 
 	/* Context menu applies to all selected items. The only
 	 * odd case is if this click deselected the item under
 	 * the mouse, but at least the behavior is consistent.
 	 */
-	gtk_signal_emit (GTK_OBJECT (list),
-			 list_signals[CONTEXT_CLICK_SELECTION]);
+	gtk_signal_emit (GTK_OBJECT (parameters->list),
+			 list_signals[CONTEXT_CLICK_SELECTION],
+			 parameters->event);
+
+	context_menu_parameters_free (parameters);
 
 	return TRUE;
 }
@@ -909,7 +941,8 @@ nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event)
 	
 		if (event->button == CONTEXTUAL_MENU_BUTTON && !on_row) {
 			gtk_signal_emit (GTK_OBJECT (list),
-					 list_signals[CONTEXT_CLICK_BACKGROUND]);
+					 list_signals[CONTEXT_CLICK_BACKGROUND],
+					 event);
 
 			retval = TRUE;
 		} else if (event->button == ACTION_BUTTON || event->button == CONTEXTUAL_MENU_BUTTON) {
@@ -921,7 +954,8 @@ nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event)
 					 */
 					list->details->context_menu_timeout_id = gtk_timeout_add (
 						CONTEXT_MENU_TIMEOUT_INTERVAL, 
-						show_context_menu_callback, list);
+						show_context_menu_callback, 				
+						context_menu_parameters_new (list, event));
 				}
 
 				/* Save the clicked row_index for DnD and single-click activate */
@@ -1034,7 +1068,8 @@ nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 			/* Right click, drag never happened, immediately show context menu */
 			gtk_timeout_remove (list->details->context_menu_timeout_id);
 			gtk_signal_emit (GTK_OBJECT (list),
-					 list_signals[CONTEXT_CLICK_SELECTION]);
+					 list_signals[CONTEXT_CLICK_SELECTION],
+					 event);
 		}
 
 		/* 

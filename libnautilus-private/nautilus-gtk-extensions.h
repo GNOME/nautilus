@@ -117,7 +117,7 @@ char *		  nautilus_truncate_text_for_menu_item	       (const char	       *text);
 void              nautilus_pop_up_context_menu                 (GtkMenu                *menu,
 								gint16                  offset_x,
 								gint16                  offset_y,
-								int                     button);
+								GdkEventButton	       *event);
 GtkMenuItem	 *nautilus_gtk_menu_append_separator	       (GtkMenu		       *menu);
 GtkMenuItem	 *nautilus_gtk_menu_insert_separator	       (GtkMenu		       *menu,
 								int			index);

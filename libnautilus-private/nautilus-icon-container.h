@@ -71,14 +71,16 @@ typedef struct {
 	/* Operations on the container. */
 	int          (* button_press) 	          (NautilusIconContainer *container,
 						   GdkEventButton *event);
-	void         (* context_click_background) (NautilusIconContainer *container);
+	void         (* context_click_background) (NautilusIconContainer *container,
+						   GdkEventButton *event);
 	void         (* middle_click) 		  (NautilusIconContainer *container,
 						   GdkEventButton *event);
 
 	/* Operations on icons. */
 	void         (* activate)	  	  (NautilusIconContainer *container,
 						   NautilusIconData *data);
-	void         (* context_click_selection)  (NautilusIconContainer *container);
+	void         (* context_click_selection)  (NautilusIconContainer *container,
+						   GdkEventButton *event);
 	void	     (* move_copy_items)	  (NautilusIconContainer *container,
 						   GList *item_uris,
 						   GdkPoint *relative_item_points,
