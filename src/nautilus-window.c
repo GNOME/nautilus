@@ -161,6 +161,9 @@ nautilus_window_class_init (NautilusWindowClass *klass)
 	GtkWidgetClass *widget_class;
 	char *filename;
 	GdkPixbuf *pixbuf;
+	GList *icons;
+	guint i;
+	char *icon_filenames[] = { "nautilus-mini-logo.png", "nautilus-launch-icon.png" };
 	
 	gobject_class = (GObjectClass *) klass;
 	object_class = (GtkObjectClass *) klass;
@@ -195,6 +198,7 @@ nautilus_window_class_init (NautilusWindowClass *klass)
 	klass->add_current_location_to_history_list
 		= real_add_current_location_to_history_list;
 
+	/* Load the mini icon for backwards compat */
         filename = nautilus_pixmap_file ("nautilus-mini-logo.png");
         if (filename != NULL) {
                 pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
@@ -207,6 +211,25 @@ nautilus_window_class_init (NautilusWindowClass *klass)
 		}
         	g_free (filename);
 	}
+
+
+	/* Set default icon list for all windows */
+	icons = NULL;
+	for (i = 0; i < G_N_ELEMENTS (icon_filenames); i++) {
+		filename = nautilus_pixmap_file (icon_filenames[i]);
+		if (filename != NULL) {
+			pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+			if (pixbuf != NULL) {
+				icons = g_list_prepend (icons, pixbuf);
+			}
+			g_free (filename);
+		}
+	}
+	
+	gtk_window_set_default_icon_list (icons);
+	
+	g_list_foreach (icons, (GFunc) g_object_unref, NULL);
+	g_list_free (icons);
 }
 
 static void
@@ -1010,10 +1033,6 @@ nautilus_window_update_launcher (GdkWindow *window)
 static void
 nautilus_window_realize (GtkWidget *widget)
 {
-#ifdef GNOME2_CONVERSION_COMPLETE
-	char *filename;
-#endif
-
         /* Create our GdkWindow */
 	EEL_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
 
@@ -1021,16 +1040,6 @@ nautilus_window_realize (GtkWidget *widget)
 	if (mini_icon_pixmap != NULL) {
 		eel_set_mini_icon (widget->window, mini_icon_pixmap, mini_icon_mask);
 	}
-
-#ifdef GNOME2_CONVERSION_COMPLETE
-	/* Set the maxi icon */
-	filename = gnome_pixmap_file ("nautilus-launch-icon.png");
-	if (filename != NULL) {
-		gnome_window_icon_set_from_file (GTK_WINDOW (widget),
-						 filename);
-		g_free (filename);
-	}
-#endif
 
 	/* Notify the launcher that our window has been realized */
 	nautilus_window_update_launcher (widget->window);
