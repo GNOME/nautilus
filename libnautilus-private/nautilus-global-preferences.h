@@ -112,8 +112,6 @@ BEGIN_GNOME_DECLS
 
 /* File Indexing */
 #define NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE			"preferences/search_bar_type"
-#define NAUTILUS_PREFERENCES_MEDUSA_BLOCKED                     "preferences/medusa_blocked"
-#define NAUTILUS_PREFERENCES_USE_FAST_SEARCH                    "preferences/use_fast_search"
 
 /* searching */
 #define NAUTILUS_PREFERENCES_SEARCH_WEB_URI			"preferences/search_web_uri"			

@@ -37,6 +37,7 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-label.h>
+#include <libnautilus-extensions/nautilus-medusa-support.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
 #include <eel/eel-stock-dialogs.h>
 
@@ -71,8 +72,12 @@ get_index_percentage_complete (void)
         return medusa_index_progress_get_percentage_complete ();
 }
 
+/* We set up a callback so that if medusa state changes, we
+   close the dialog.  To avoid race conditions with removing
+   the callback entirely when we destroy it, we set it so
+   that the dialog just hides, rather than closing */
 static void
-initialize_dialog (GnomeDialog *dialog)
+set_close_hides_for_dialog (GnomeDialog *dialog)
 {
         gnome_dialog_set_close (dialog, TRUE /*click_closes*/);
         gnome_dialog_close_hides (dialog, TRUE /*just_hide*/);
@@ -113,7 +118,6 @@ dialog_close_cover (gpointer dialog_data)
         gnome_dialog_close (dialog_data);
 }
 
-
 static void
 show_index_progress_dialog (void)
 {
@@ -121,13 +125,13 @@ show_index_progress_dialog (void)
         
         gnome_dialog_close (dialogs->last_index_time_dialog);
         gtk_widget_show_all (GTK_WIDGET (dialogs->index_in_progress_dialog));
-        callback_id = medusa_execute_once_when_system_state_changes (MEDUSA_SYSTEM_STATE_DISABLED | MEDUSA_SYSTEM_STATE_BLOCKED,
-                                                                     dialog_close_cover,
+        callback_id = medusa_execute_once_when_system_state_changes (dialog_close_cover,
                                                                      dialogs->index_in_progress_dialog);
         gtk_signal_connect_object (GTK_OBJECT (dialogs->index_in_progress_dialog),
                                    "destroy",
                                    medusa_remove_state_changed_function,
                                    GINT_TO_POINTER (callback_id));
+#endif
 }
 
 
@@ -139,13 +143,14 @@ show_reindex_request_dialog (void)
 
         gnome_dialog_close (dialogs->index_in_progress_dialog);
         gtk_widget_show_all (GTK_WIDGET (dialogs->last_index_time_dialog));
-        callback_id = medusa_execute_once_when_system_state_changes (MEDUSA_SYSTEM_STATE_DISABLED | MEDUSA_SYSTEM_STATE_BLOCKED,
-                                                                     dialog_close_cover,
+        callback_id = medusa_execute_once_when_system_state_changes (dialog_close_cover,
                                                                      dialogs->last_index_time_dialog);
+#if 0
         gtk_signal_connect_object (GTK_OBJECT (dialogs->last_index_time_dialog),
                                    "destroy",
                                    medusa_remove_state_changed_function,
                                    GINT_TO_POINTER (callback_id));
+#endif
 }
 
 static void
@@ -231,7 +236,7 @@ last_index_time_and_reindex_button_dialog_new (void)
                 dialog = NULL;
         }
         
-        initialize_dialog (dialog);
+        set_close_hides_for_dialog (dialog);
         time_str = nautilus_indexing_info_get_last_index_time ();
         label_str = g_strdup_printf (_("Your files were last indexed at %s"),
                                      time_str);
@@ -279,7 +284,7 @@ index_progress_dialog_new (void)
         dialog = eel_create_info_dialog (_("Once a day your files and text content are indexed so "
                                                 "your searches are fast.  Your files are currently being indexed."),
                                               _("Indexing Status"), NULL);
-        initialize_dialog (dialog);        
+        set_close_hides_for_dialog (dialog);        
         percentage_complete = get_index_percentage_complete ();
         indexing_progress_bar = gtk_progress_bar_new ();
 
@@ -331,48 +336,28 @@ destroy_indexing_info_dialogs_on_exit (void)
         g_free (dialogs);
 }
 
+#ifdef HAVE_MEDUSA
 
 static void
 show_indexing_info_dialog (void)
 {
         GnomeDialog *dialog_shown;
+        char *details_string;
         int callback_id;
-        
-        if (medusa_system_services_are_blocked ()) {
-                dialog_shown = eel_show_info_dialog (_("To do a fast search, Find requires "
-                                                            "an index of the files on your system. "
-                                                            "Your system administrator has disabled "
-                                                            "fast search on your computer, so no "
-                                                            "index is available."),
-                                                          _("Fast searches are not available on your computer."),
-                                                          NULL);
-                callback_id = medusa_execute_once_when_system_state_changes (MEDUSA_SYSTEM_STATE_ENABLED | MEDUSA_SYSTEM_STATE_DISABLED,
-                                                                             dialog_close_cover,
-                                                                             dialog_shown);
-                gtk_signal_connect_object (GTK_OBJECT (dialog_shown),
-                                           "destroy",
-                                           medusa_remove_state_changed_function,
-                                           GINT_TO_POINTER (callback_id));
-                return;
-
-        }
 
         if (!medusa_system_services_are_enabled ()) {
-                dialog_shown = eel_show_info_dialog_with_details (_("To do a fast search, Find requires an index "
-                                                                         "of the files on your system. Fast search is "
-                                                                         "disabled in your Search preferences, so no "
-                                                                         "index is available."),
-                                                                       _("Fast searches are not available on your computer."),
-                                                                       _("To enable fast search, open the Preferences menu "
-                                                                         "and choose Preferences. Then select Search "
-                                                                         "preferences and put a checkmark in the Enable "
-                                                                         "Fast Search checkbox. An index will be generated "
-                                                                         "while your computer is idle, so your index won't "
-                                                                         "be available immediately."),
-                                                                       NULL);
+                details_string = nautilus_medusa_get_explanation_of_enabling ();
+                dialog_shown = eel_show_info_dialog_with_details (_("When Fast Search is enabled, Find creates an "
+                                                                    "index to speed up searches.  Fast searching "
+                                                                    "is not enabled on your computer, so you "
+                                                                    "do not have an index right now."),
+                                                                  _("There is no index of your files right now."),
+                                                                    details_string,
+                                                                  NULL);
+                g_free (details_string);
+                set_close_hides_for_dialog (dialog_shown);
                 
-                callback_id = medusa_execute_once_when_system_state_changes (MEDUSA_SYSTEM_STATE_ENABLED | MEDUSA_SYSTEM_STATE_BLOCKED,
-                                                                             dialog_close_cover,
+                callback_id = medusa_execute_once_when_system_state_changes (dialog_close_cover,
                                                                              dialog_shown);
                 gtk_signal_connect_object (GTK_OBJECT (dialog_shown),
                                            "destroy",
@@ -400,6 +385,7 @@ show_indexing_info_dialog (void)
 
 #endif /* HAVE_MEDUSA */
 
+#ifndef HAVE_MEDUSA
 static void
 show_search_service_not_available_dialog (void)
 {
@@ -407,6 +393,7 @@ show_search_service_not_available_dialog (void)
                                     _("Search Service Not Available"),
                                     NULL);
 }
+#endif
 
 
 void
@@ -446,13 +433,7 @@ void
 nautilus_indexing_info_show_dialog (void)
 {
 #ifdef HAVE_MEDUSA
-        if (medusa_indexed_search_system_index_files_look_available () ||
-            medusa_index_service_is_available () == MEDUSA_INDEXER_ALREADY_INDEXING) {
-                show_indexing_info_dialog ();
-        }
-        else {
-                show_search_service_not_available_dialog ();
-        }
+        show_indexing_info_dialog ();
 #else
         show_search_service_not_available_dialog ();
 #endif

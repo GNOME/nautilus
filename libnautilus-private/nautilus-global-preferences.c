@@ -29,7 +29,6 @@
 #include <eel/eel-font-manager.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
-#include "nautilus-medusa-support.h"
 #include "nautilus-preferences-dialog.h"
 #include "nautilus-preferences-group.h"
 #include "nautilus-preferences-item.h"
@@ -62,10 +61,8 @@ static gboolean   global_preferences_close_dialog_callback              (GtkWidg
 static void       global_preferences_install_sidebar_panel_defaults     (void);
 static void       global_preferences_install_defaults                   (void);
 static void       global_preferences_install_home_location_defaults     (void);
-static void       global_preferences_install_medusa_defaults            (void);
 static void       global_preferences_install_font_defaults              (void);
 static GtkWidget *global_preferences_create_dialog                      (void);
-static void       global_preferences_create_search_pane                 (NautilusPreferencesBox     *preference_box);
 static void       global_preferences_create_sidebar_panels_pane         (NautilusPreferencesBox     *preference_box);
 static GtkWidget *global_preferences_populate_pane                      (NautilusPreferencesBox     *preference_box,
 									 const char                 *pane_name,
@@ -450,9 +447,6 @@ global_preferences_install_defaults (void)
 
 	/* Fonts */
 	global_preferences_install_font_defaults ();
-
-	/* Medusa */
-	global_preferences_install_medusa_defaults ();
 }
 
 /*
@@ -785,6 +779,37 @@ static PreferenceDialogItem directory_views_items[] = {
 	{ NULL, NULL, NULL, 0, NULL, 0 }
 };
 
+static EnumerationEntry search_bar_type_enumeration[] = {
+	{ N_("search by text"),
+	  N_("Search for files by file name only"),
+	  NAUTILUS_SIMPLE_SEARCH_BAR,
+	},
+	{ N_("search by text and properties"),
+	  N_("Search for files by file name and file properties"),
+	  NAUTILUS_COMPLEX_SEARCH_BAR,
+	},
+	{ NULL, NULL, 0 }
+};
+
+static PreferenceDialogItem search_items[] = {
+	{ N_("Search Complexity Options"),
+	  NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
+	  N_("search type to do by default"),
+	  NAUTILUS_PREFERENCE_ITEM_ENUM,
+	  NULL,
+	  0,
+	  search_bar_type_enumeration
+	},
+	{ N_("Search Engines"),
+	  NAUTILUS_PREFERENCES_SEARCH_WEB_URI,
+	  N_("Search Engine Location"),
+	  NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING,
+	  NULL,
+	  0
+	},
+	{ NULL, NULL, NULL, 0, NULL, 0 }
+};
+
 static PreferenceDialogItem navigation_items[] = {
 	{ N_("Home"),
 	  NAUTILUS_PREFERENCES_HOME_URI,
@@ -950,7 +975,9 @@ global_preferences_create_dialog (void)
 	global_preferences_create_sidebar_panels_pane (preference_box);
 
 	/* Search */
-	global_preferences_create_search_pane (preference_box);
+	global_preferences_populate_pane (preference_box,
+					  _("Search"),
+					  search_items);
 
 	/* Navigation */
 	global_preferences_populate_pane (preference_box,
@@ -966,84 +993,6 @@ global_preferences_create_dialog (void)
 	nautilus_preferences_dialog_update (NAUTILUS_PREFERENCES_DIALOG (prefs_dialog));
 
 	return prefs_dialog;
-}
-
-/* Update the sensitivity of the search pane when the medusa blocked state changes */
-static void
-global_preferences_medusa_blocked_changed_callback (gpointer callback_data)
-{
-	gboolean medusa_blocked;
-	
-	g_return_if_fail (GTK_IS_WIDGET (callback_data));
-
-	medusa_blocked = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_MEDUSA_BLOCKED);
-
-	gtk_widget_set_sensitive (GTK_WIDGET (callback_data), !medusa_blocked);
-}
-
-static EnumerationEntry search_bar_type_enumeration[] = {
-	{ N_("search by text"),
-	  N_("Search for files by file name only"),
-	  NAUTILUS_SIMPLE_SEARCH_BAR,
-	},
-	{ N_("search by text and properties"),
-	  N_("Search for files by file name and file properties"),
-	  NAUTILUS_COMPLEX_SEARCH_BAR,
-	},
-	{ NULL, NULL, 0 }
-};
-
-static PreferenceDialogItem search_items[] = {
-	{ N_("Search Complexity Options"),
-	  NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
-	  N_("search type to do by default"),
-	  NAUTILUS_PREFERENCE_ITEM_ENUM,
-	  NULL,
-	  0,
-	  search_bar_type_enumeration
-	},
-	{ N_("Fast Search"),
-	  NAUTILUS_PREFERENCES_USE_FAST_SEARCH,
-	  N_("Enable fast search (indexes your hard drive)"),
-	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
-	  NULL,
-	  0
-	},
-	{ N_("Search Engines"),
-	  NAUTILUS_PREFERENCES_SEARCH_WEB_URI,
-	  N_("Search Engine Location"),
-	  NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING,
-	  NULL,
-	  0
-	},
-	{ NULL, NULL, NULL, 0, NULL, 0 }
-};
-
-static void
-global_preferences_create_search_pane (NautilusPreferencesBox *preference_box)
-{
-	GtkWidget *fast_search_group;
-	GtkWidget *search_pane;
-
-	g_return_if_fail (NAUTILUS_IS_PREFERENCES_BOX (preference_box));
-
-	search_pane = global_preferences_populate_pane (preference_box,
-							_("Search"),
-							search_items);
-
-	/* Setup callbacks so that we can update the sensitivity of
-	 * the search pane when the medusa blocked state changes
-	 */
-	fast_search_group = nautilus_preferences_pane_find_group (NAUTILUS_PREFERENCES_PANE (search_pane),
-								  _("Fast Search"));
-
-	g_assert (NAUTILUS_IS_PREFERENCES_GROUP (fast_search_group));
-
-	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_MEDUSA_BLOCKED,
-						       global_preferences_medusa_blocked_changed_callback,
-						       fast_search_group,
-						       GTK_OBJECT (fast_search_group));
-	global_preferences_medusa_blocked_changed_callback (fast_search_group);
 }
 
 static PreferenceDialogItem sidebar_items[] = {
@@ -1245,103 +1194,6 @@ global_preferences_install_font_defaults (void)
 						  12);
 
 	g_free (default_smooth_font);
-}
-
-static void
-global_preferences_use_fast_search_changed_callback (gpointer callback_data)
-{
-	gboolean use_fast_search;
-	gboolean services_are_blocked;
-	NautilusCronStatus cron_status;
-
-	if (global_prefs_dialog) {
-		use_fast_search = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_USE_FAST_SEARCH);
-		
-		nautilus_medusa_enable_services (use_fast_search);
-		services_are_blocked = nautilus_medusa_blocked ();
-		if (use_fast_search && !services_are_blocked) {
-			cron_status = nautilus_medusa_check_cron_is_enabled ();
-			switch (cron_status) {
-			case NAUTILUS_CRON_STATUS_OFF:
-				eel_show_info_dialog_with_details (_("Indexing is turned on, enabling the "
-									  "fast search feature. However, indexing "
-									  "currently can't be performed because "
-									  "the program crond, which does "
-									  "nightly tasks on your computer, "
-									  "is turned off. To make sure fast "
-									  "searches can be done, turn crond on."),
-									_("Files May Not Be Indexed"),
-									_("If you are running Linux, you can log "
-									  "in as root and type these commands "
-									  "to start cron:\n\n"
-									  "/sbin/chkconfig --level 345 crond on\n"
-									  "/etc/rc.d/init.d/cron start\n"),
-									NULL);
-				
-				break;
-			case NAUTILUS_CRON_STATUS_UNKNOWN:
-				eel_show_info_dialog_with_details (_("Indexing is turned on, enabling the "
-									  "fast search feature. However, indexing "
-									  "may not be performed because the "
-									  "program crond, which does nightly "
-									  "tasks on your computer, may be turned "
-									  "off. To make sure fast searches can be "
-									  "done, check to make sure that crond "
-									  "is turned on.\n\n"),
-									_("Files May Not Be Indexed"),
-									_("If you are running Linux, you can log "
-									  "in as root and type these commands "
-									  "to start cron:\n\n"
-									  "/sbin/chkconfig --level 345 crond on\n"
-									  "/etc/rc.d/init.d/cron start\n"),
-									NULL);
-				break;
-			default:
-				break;
-			}
-		}
-	}
-}
-	
-static void 
-global_preferences_medusa_state_changed_callback (gpointer callback_data)
-{
-	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_USE_FAST_SEARCH,
-					  nautilus_medusa_services_have_been_enabled_by_user ());
-	
-	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_MEDUSA_BLOCKED,
-					  nautilus_medusa_blocked ());
-
-}
-
-static void
-global_preferences_install_medusa_defaults (void)
-{
-	gboolean medusa_blocked;
-	gboolean use_fast_search;
-
-	medusa_blocked = nautilus_medusa_blocked ();
-	use_fast_search = nautilus_medusa_services_have_been_enabled_by_user ();
-
-	/* This one controls the sensitivity */
-	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_MEDUSA_BLOCKED,
-						  NAUTILUS_USER_LEVEL_NOVICE,
-						  medusa_blocked);
-
-	/* This is the one that appears in the preferences dialog */
-	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_USE_FAST_SEARCH,
-						  NAUTILUS_USER_LEVEL_NOVICE,
-						  use_fast_search);
-
-	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_USE_FAST_SEARCH,
-						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
-
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_USE_FAST_SEARCH,
-					   global_preferences_use_fast_search_changed_callback,
-					   NULL);
-
-	nautilus_medusa_add_system_state_changed_callback (global_preferences_medusa_state_changed_callback,
-							   NULL);
 }
 
 static gboolean

@@ -1,3 +1,71 @@
+2001-04-06  Rebecca Schulman  <rebecka@eazel.com>
+	Fix bugzilla.eazel.com bug 7933, and the nautilus
+	half of bug 7934, by removing the search preferences
+	from nautilus, and removing the ability to make a new
+	index from Nautilus.  These features may return at 
+	some point, but in the future will require a root
+	password.
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_defaults),
+	(global_preferences_create_dialog),
+	(global_preferences_install_font_defaults):
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	Remove all of the medusa preferences, including the
+	preference to make the preference itself sensitive and
+	insensitive, and all callbacks and set up related
+	to the search preference
+	
+	* libnautilus-extensions/nautilus-medusa-support.c:
+	(nautilus_medusa_services_are_enabled),
+	(nautilus_medusa_check_cron_is_enabled),
+	(nautilus_medusa_get_configuration_file_path),
+	(nautilus_medusa_get_explanation_of_enabling):
+	* libnautilus-extensions/nautilus-medusa-support.h:
+	Remove functions to enable / disable medusa,
+	and to check on cron.  Add new function
+	to explain how to turn on medusa as root, so that
+	the same message can be adjusted, and used in multiple 
+	dialogs
+	
+	* src/file-manager/fm-search-list-view.c:
+	(report_index_age_as_status), (load_location_callback),
+	(display_indexed_search_problems_dialog),
+	(display_system_services_are_disabled_dialog):
+	Remove dialog about medusa being blocked, since medusa
+	can only be either on or off now. Clarify the message
+	about medusa being off, and change the message to tell
+	the user how to turn medusa on as root, instead of
+	recommending they change their preference in nautilus about
+	searching. Refactor status message about last indexing
+	time to simplify the load_location_callback.  Don't tell
+	users that "an index can't be created right now", but instead
+	tell them how to create an index as root, when this information
+	is appopriate.   Remove two FIXMEs that are now obsolete.
+	
+	* src/file-manager/nautilus-indexing-info.c:
+	(set_close_hides_for_dialog), (show_index_progress_dialog),
+	(show_reindex_request_dialog),
+	(last_index_time_and_reindex_button_dialog_new),
+	(index_progress_dialog_new), (show_indexing_info_dialog),
+	(nautilus_indexing_info_show_dialog):
+	Remove dialog about medusa being blocked, and make the index
+	status dialog explain clearly that there is no index in the
+	case where medusa is turned off, instead of giving an error
+	message.  Change the state changed callbacks to coincide 
+	with concurrent changes to the medusa "system state" API.
+	Fix a bug that could cause nautilus to crash if the index
+	status dialog was up when medusa was turned on (a race condition
+	of two callbacks trying to destroy the same dialog)
+	
+	* src/nautilus-first-time-druid.c: (druid_finished),
+	(nautilus_first_time_druid_show):
+	Remove medusa and cron pages from the first time druid.  Includes
+	removing the callbacks to change the page order based on
+	whether medusa and/or cron are available. 
+
 2001-04-06  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fix a compile error in the volume monitor code.

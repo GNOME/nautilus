@@ -26,6 +26,8 @@
 
 #include <config.h>
 #include "nautilus-medusa-support.h"
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
@@ -37,44 +39,15 @@
 #include <libmedusa/medusa-system-state.h>
 #endif
 
+static const char *       nautilus_medusa_get_configuration_file_path        (void);
+
 gboolean
-nautilus_medusa_services_have_been_enabled_by_user (void)
+nautilus_medusa_services_are_enabled (void)
 {
 #ifdef HAVE_MEDUSA
-	return medusa_system_services_have_been_enabled_by_user (g_get_user_name ());
+	return medusa_system_services_are_enabled ();
 #else
 	return FALSE;
-#endif
-}
-
-gboolean
-nautilus_medusa_blocked (void)
-{
-#ifdef HAVE_MEDUSA
-	return medusa_system_services_are_blocked ();
-#else
-	return TRUE;
-#endif
-}
-
-void
-nautilus_medusa_enable_services (gboolean enable)
-{
-#ifdef HAVE_MEDUSA
-	medusa_enable_medusa_services (enable);
-#endif
-}
-
-void
-nautilus_medusa_add_system_state_changed_callback (NautilusMedusaChangedCallback callback,
-						   gpointer callback_data)
-{
-#ifdef HAVE_MEDUSA
-	medusa_execute_when_system_state_changes (MEDUSA_SYSTEM_STATE_ENABLED
-						  | MEDUSA_SYSTEM_STATE_DISABLED
-						  | MEDUSA_SYSTEM_STATE_BLOCKED,
-						  callback,
-						  callback_data);
 #endif
 }
 
@@ -136,4 +109,42 @@ nautilus_medusa_check_cron_is_enabled (void)
 
 	closedir (proc_directory);
 	return status;
+}
+
+static const char *
+nautilus_medusa_get_configuration_file_path (void)
+{
+#ifdef HAVE_MEDUSA
+	return medusa_get_configuration_file_path ();
+#else
+	return NULL;
+#endif
+}
+
+char *       
+nautilus_medusa_get_explanation_of_enabling (void)
+{
+#ifdef HAVE_MEDUSA	
+	return g_strdup_printf (_("If you would like to enable fast searches, you can "
+				  "edit the file %s as root. "
+				  "Setting the enabled flag to \"yes\" will turn medusa "
+				  "services on.\n"
+				  "To start indexing and search services right away, you "
+				  "should also run the following commands as root:\n"
+				  "\n"
+				  "medusa-indexd\n"
+				  "medusa-searchd\n"
+				  "\n"
+				  "Fast searches will not be available until an initial "
+				  "index of your files has been created.  This may take "
+				  "a long time."),
+				nautilus_medusa_get_configuration_file_path ());
+#else
+	return g_strdup_printf (_("Medusa, the application that performs searches, cannot be found on "
+				  "your system.  If you have compiled nautilus yourself, "
+				  "you will need to install a copy of medusa and recompile nautilus.  "
+				  "(A copy of Medusa may be available at ftp://ftp.gnome.org)\n"
+				  "If you are using a packaged version of Nautilus, fast searching is "
+				  "not available.\n"));
+#endif
 }

@@ -39,12 +39,9 @@ typedef enum {
 } NautilusCronStatus;
 	
 
-gboolean           nautilus_medusa_services_have_been_enabled_by_user (void);
-gboolean           nautilus_medusa_blocked                            (void);
-void               nautilus_medusa_enable_services                    (gboolean enable);
-void               nautilus_medusa_add_system_state_changed_callback  (NautilusMedusaChangedCallback callback,
-								       gpointer callback_data);
+gboolean           nautilus_medusa_services_are_enabled               (void);
 NautilusCronStatus nautilus_medusa_check_cron_is_enabled              (void);
+char *             nautilus_medusa_get_explanation_of_enabling        (void);
 
 #endif /* NAUTILUS_MEDUSA_SUPPORT_H */
 

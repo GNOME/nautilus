@@ -39,11 +39,11 @@
 #include <libmedusa/medusa-indexed-search.h>
 #include <libmedusa/medusa-unindexed-search.h>
 #include <libmedusa/medusa-index-service.h>
-#include <libmedusa/medusa-system-state.h>
 #endif
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-medusa-support.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-macros.h>
@@ -98,7 +98,6 @@ static void 	load_location_callback               	 (NautilusView 	   *nautilus_
 						      	  char 		   *location);
 static void	real_update_menus 		     	 (FMDirectoryView  *view);
 #ifdef HAVE_MEDUSA
-static void     display_system_services_are_blocked_dialog            (gboolean unindexed_search_is_available);
 static void     display_system_services_are_disabled_dialog           (gboolean unindexed_search_is_available);
 static void     display_indexed_search_problems_dialog                (gboolean unindexed_search_is_available);
 #endif
@@ -111,11 +110,28 @@ EEL_DEFINE_CLASS_BOILERPLATE (FMSearchListView,
 				   fm_search_list_view,
 				   FM_TYPE_LIST_VIEW)
 
+
+static void
+report_index_age_as_status (NautilusView *nautilus_view)
+{
+	char *last_indexing_time, *status_string;
+	
+	last_indexing_time = nautilus_indexing_info_get_last_index_time ();
+	if (last_indexing_time) {
+		status_string = g_strdup_printf (_("Search results may not include items modified after %s, "
+						   "when your drive was last indexed."),
+						 last_indexing_time);
+		
+		g_free (last_indexing_time);
+		nautilus_view_report_status (nautilus_view, status_string);
+		g_free (status_string);
+	}
+}
+
 static void
 load_location_callback (NautilusView *nautilus_view, char *location)
 {
 #ifdef HAVE_MEDUSA
-	char *last_indexing_time, *status_string;
 	char *unescaped_location;
 	gboolean unindexed_search_is_available_for_uri;
 	gboolean indexed_search_is_available;
@@ -127,29 +143,17 @@ load_location_callback (NautilusView *nautilus_view, char *location)
 	unindexed_search_is_available_for_uri = (medusa_unindexed_search_is_available_for_uri (unescaped_location) == GNOME_VFS_OK);
 	g_free (unescaped_location);
 
-	if (medusa_system_services_are_blocked ()) {
-		display_system_services_are_blocked_dialog (unindexed_search_is_available_for_uri);
-	} else if (!medusa_system_services_are_enabled ()) {
+	if (!nautilus_medusa_services_are_enabled ()) {
 		display_system_services_are_disabled_dialog (unindexed_search_is_available_for_uri);
 	}
 	else {
-		/* Medusa is enabled */
+		/* Fast (indexed) searching is enabled */
 		indexed_search_is_available = medusa_indexed_search_is_available () == GNOME_VFS_OK;
 
 		if (indexed_search_is_available) {
-			last_indexing_time = nautilus_indexing_info_get_last_index_time ();
-			if (last_indexing_time) {
-				status_string = g_strdup_printf (_("Search results may not include items modified after %s, "
-								   "when your drive was last indexed."),
-								 last_indexing_time);
-				
-				g_free (last_indexing_time);
-				nautilus_view_report_status (nautilus_view, status_string);
-				g_free (status_string);
-			}
+			report_index_age_as_status (nautilus_view);
 		}
-
-		if (!indexed_search_is_available) {
+		else {
 
 			display_indexed_search_problems_dialog (unindexed_search_is_available_for_uri);
 		}
@@ -179,8 +183,6 @@ real_load_error (FMDirectoryView *nautilus_view,
 	
 	switch (result) {
 	case GNOME_VFS_ERROR_SERVICE_OBSOLETE:
-		/* FIXME bugzilla.eazel.com 5058: Should be two messages, one for each of whether
-		   "slow complete search" turned on or not */
 		load_error_dialog = eel_show_yes_no_dialog (_("The search you have selected "
 							           "is newer than the index on your "
 							           "system.  The search will return "
@@ -236,7 +238,7 @@ display_indexed_search_problems_dialog (gboolean backup_search_is_available)
 	if (medusa_indexed_search_system_index_files_look_available ()) {
 		/* There is an index on the system, but there is no
 		   way to run a search anyways.  The system is
-		   confused.  Tell the user this */
+		   confused.  Tell the user this. */
 		error_string = backup_search_is_available 
 			? N_("To do a fast search, Find requires an index "
 			     "of the files on your system.  "
@@ -255,7 +257,7 @@ display_indexed_search_problems_dialog (gboolean backup_search_is_available)
 						           "but the Medusa search daemon, which handles "
 						           "index requests, isn't running.  "
 						           "To start this program, log in as root and "
-						           "enter this command at the command line: "
+						           "enter this command at the command line:\n"
 						           "medusa-searchd"),
 						         NULL);
 	}
@@ -324,26 +326,25 @@ display_indexed_search_problems_dialog (gboolean backup_search_is_available)
 		default:
 			error_string = backup_search_is_available
 				? N_("To do a fast search, Find requires an index "
-				     "of the files on your system.  "
-				     "An index can't be created "
-				     "right now. When an index is not "
-				     "available, searches will "
+				     "of the files on your system.  No index "
+				     "is available right now. You can create an "
+				     "index by running \"medusa-indexd\" as root "
+				     "on the command line.  Until a complete index "
+				     "is available, searches will "
 				     "take several minutes.")
 				: N_("To do a content search, Find requires an index "
-				     "of the content on your system.  "
-				     "An index can't be created "
-				     "right now.");
+				     "of the content on your system.  No index is "
+				     "available right now.  You can create an "
+				     "index by running \"medusa-indexd\" as root "
+				     "on the command line.  Until a complete index "
+				     "is available, content searches cannot be "
+				     "performed.");
 			title_string = backup_search_is_available
 				? N_("Indexed searches are not available")
 				: N_("Content searches are not available");
-			eel_show_error_dialog_with_details (error_string,
-							         title_string,
-							         _("The program that creates an index "
-							           "is not set up correctly.  You can "
-							           "create an index by hand by "
-							           "running \"medusa-indexd\" as root "
-							           "on the command line."),
-							         NULL);
+			eel_show_error_dialog (error_string,
+					       title_string,
+					       NULL);
 			break;
 		}
 	}
@@ -351,36 +352,22 @@ display_indexed_search_problems_dialog (gboolean backup_search_is_available)
 }
 
 static void     
-display_system_services_are_blocked_dialog (gboolean unindexed_search_is_available)
-{
-	GnomeDialog *dialog_shown;
-
-	/* It is not necessary to translate this text just yet; it has not been
-	   edited yet, and will be replaced by a final copy in a few days. */
-	dialog_shown = eel_show_info_dialog (_("To do a fast search, Find requires an index of "
-						    "the files on your system. Your system administrator "
-						    "has disabled fast search on your computer, so no index "
-						    "is available."),
-						  _("Fast searches are not available on your computer"),
-						  NULL);
-	
-}
-
-
-static void     
 display_system_services_are_disabled_dialog (gboolean unindexed_search_is_available)
 {
-	eel_show_info_dialog_with_details (_("To do a fast search, Find requires an index of "
-						  "the files on your system. Fast search is disabled "
-						  "in your Search preferences, so no index is available."),
-						_("Fast searches are not available on your computer."),
-						_("To enable fast search, open the Preferences menu and "
-						  "choose Preferences. Then select Search preferences and "
-						  "put a checkmark in the Enable Fast Search checkbox. "
-						  "An index will be generated while your computer is idle, "
-						  "so your index won't be available immediately."),
-						NULL);
+	GnomeDialog *dialog_shown;
+	char *details_string;
+
+	details_string = nautilus_medusa_get_explanation_of_enabling ();
+	dialog_shown = eel_show_info_dialog_with_details (_("To do a fast search, Find requires an index of "
+							    "the files on your system. Your system administrator "
+							    "has disabled fast search on your computer, so no index "
+							    "is available."),
+							  _("Fast searches are not enabled on your computer"),
+							  details_string,
+							  NULL);
+	g_free (details_string);
 }
+
 
 #endif	
 
