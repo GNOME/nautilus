@@ -1,3 +1,13 @@
+2002-11-18  Dave Camp  <dave@ximian.com>
+
+	Backported Alex's fix from HEAD:
+
+	* libnautilus-private/nautilus-file.c (update_info_internal): 
+	Don't invalidate DISPLAY_NAME for all files, since this will re-load
+        file_info making directory loads very slow! As a workaround, only do
+        this if file->details->display_name is already set. I don't know
+        if this is the correct way though.
+
 2002-11-09  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
 
 	* configure.in: Added Belarusian to ALL_LINGUAS
