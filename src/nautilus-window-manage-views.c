@@ -163,6 +163,10 @@ nautilus_window_load_content_view(NautilusWindow *window,
   NautilusView *content_view = window->content_view;
   NautilusView *new_view;
 
+  g_return_if_fail(iid);
+  g_return_if_fail(loci);
+  g_return_if_fail(requesting_view);
+
   if(!content_view || strcmp(nautilus_view_get_iid(content_view), iid))
     {
       if(*requesting_view == window->content_view) /* If we are going to be zapping the old view,

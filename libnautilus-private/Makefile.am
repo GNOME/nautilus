@@ -1,16 +1,13 @@
 lib_LTLIBRARIES=libnautilus.la
 
-INCLUDES=-I$(top_srcdir) -I$(top_builddir) $(GNOME_CFLAGS) $(GNORBA_CFLAGS)
+INCLUDES=-I$(top_srcdir) -I$(top_builddir) $(GNOME_CFLAGS) $(GNORBA_CFLAGS) $(WERROR)
 
 nautilus_idl_sources=nautilus-stubs.c nautilus-skels.c nautilus.h nautilus-common.c
 BUILT_SOURCES=$(nautilus_idl_sources)
 
 libnautilusincludedir=$(includedir)/libnautilus
 libnautilusinclude_HEADERS=			\
-	ntl-view-client.h			\
-	ntl-meta-view-client.h			\
-	ntl-content-view-client.h		\
-	nautilus.h				\
+	gdk-extensions.h			\
 	gnome-icon-container-dnd.h		\
 	gnome-icon-container-layout.h		\
 	gnome-icon-container-private.h		\
@@ -18,17 +15,22 @@ libnautilusinclude_HEADERS=			\
 	gnome-progressive-loader.c		\
 	gnome-progressive-loader.h		\
 	gtkflist.h				\
-	gtkscrollframe.h
+	gtkscrollframe.h			\
+	nautilus.h				\
+	ntl-content-view-client.h		\
+	ntl-meta-view-client.h			\
+	ntl-view-client.h
 
 libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
-	ntl-view-client.c			\
-	ntl-meta-view-client.c			\
-	ntl-content-view-client.c		\
+	gdk-extensions.c			\
 	gnome-icon-container-dnd.c		\
 	gnome-icon-container-layout.c		\
 	gnome-icon-container.c			\
 	gtkflist.c				\
-	gtkscrollframe.c
+	gtkscrollframe.c			\
+	ntl-content-view-client.c		\
+	ntl-meta-view-client.c			\
+	ntl-view-client.c
 
 libnautilus_la_LDFLAGS=$(GNOME_LIBS) $(GNORBA_LIBS) $(GDK_PIXBUF_LIBS)
 

@@ -1,3 +1,23 @@
+1999-12-16  Darin Adler  <darin@eazel.com>
+
+	* libnautilus/.cvsignore: Ignore all *.lo instead of listing each.
+	* libnautilus/Makefile.am: Added gdk-extensions.c and $(WERROR).
+	* libnautilus/gdk-extensions.[ch]: Added functions for filling with a
+	gradient. Currently they are named gdk_fill_rectangle_with_gradient
+	and gdk_interpolate_color, but perhaps the gdk_ prefix should be
+	replaced with another one. These functions are not yet tested, but they
+	compile and I want to get them in here before I leave for vacation.
+
+	* src/ntl-uri-map.c: (nautilus_navinfo_new): Some null checks in
+	the "click on an item" hack. This was a halfhearted attempt to get
+	the program to not segfault when you open icons.
+	* src/ntl-window-msgs.c: (nautilus_window_load_content_view):
+	Some g_return_if_fail in here. I'll add a ton more at some point.
+	These were part of the halfhearted attempt to get the program to
+	not segfault when you open icons.
+
+	* src/file-manager/.cvsignore: Igore all *.lo instead of listing each.
+
 1999-12-16  Elliot Lee  <sopwith@redhat.com>
 
 	* components/history/ntl-history-view.c: Now works.
@@ -61,11 +81,6 @@
 
 	* src/file-manager/fm-directory-view.c (directory_load_cb): 
 	changed assert to warning
-
-	* src/ntl-main.c (main): removed G_LOG_LEVEL_WARNING from
-	the set of fatal levels when NAUTILUS_DEBUG is defined,
-	so we can continue to work on other parts of nautilus 
-	until the only-one-icon-in-a-window vfs problem is fixed.
 
 1999-12-16  Elliot Lee  <sopwith@redhat.com>
 
