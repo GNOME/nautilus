@@ -1,3 +1,12 @@
+2000-07-28  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-sidebar-tabs.c: (draw_one_tab_themed):
+	removed hack I put in to compensate for unevenly sized tab pieces
+	now that Arlo has fixed them.
+	* src/nautilus-location-bar.c: (editable_key_press_callback):
+	added code to handle the right arrow properly for location
+	auto-completion.
+	
 2000-07-28  Robey Pointer  <robey@eazel.com>
 
 	*

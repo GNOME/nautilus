@@ -510,8 +510,7 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc,
 	/* draw the left edge piece */
 	current_pos = x;
 	if (first_flag) {
-		/* FIXME: subtract one from y to fix left parts not sized correctly..should fix images soon */
-		piece_width = draw_tab_piece (sidebar_tabs, gc, current_pos, y - 1, TAB_NORMAL_LEFT + highlight_offset);
+		piece_width = draw_tab_piece (sidebar_tabs, gc, current_pos, y, TAB_NORMAL_LEFT + highlight_offset);
 		current_pos += piece_width;
 	}
 	

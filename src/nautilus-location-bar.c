@@ -334,6 +334,7 @@ editable_key_press_callback (GtkObject *object,
 {
 	GtkEditable *editable;
 	GdkEventKey *event;
+	int position;
 	gboolean *return_value_location;
 
 	g_assert (data == NULL);
@@ -344,6 +345,12 @@ editable_key_press_callback (GtkObject *object,
 	event = GTK_VALUE_POINTER (args[0]);
 	return_value_location = GTK_RETLOC_BOOL (args[1]);
 
+	if (event->keyval == GDK_Right && editable->has_selection) {
+		position = strlen (gtk_entry_get_text (GTK_ENTRY (editable)));
+		gtk_entry_select_region (GTK_ENTRY (editable), position, position);
+		return;
+	}
+	
 	/* Only do an expand if we just handled a key that inserted
 	 * characters.
 	 */
