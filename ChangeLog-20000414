@@ -1,3 +1,32 @@
+2000-03-08  Ramiro Estrugo  <ramiro@eazel.com>
+
+	First whack at having a better preferences ui.
+
+	* src/nautilus-prefs-box.h,
+	src/nautilus-prefs-box.c: The main prefefernce widgetry widget.
+	It manages the preferene category list and the creation and 
+	management of right hand side panes.
+
+	* src/nautilus-prefs-dialog.h,
+	src/nautilus-prefs-dialog.c: A GnomeDialog sublass to make
+	it easier for the app to deal with prefs.
+
+	* src/nautilus-prefs-group.h,
+	src/nautilus-prefs-group.c: An abstract widget to manage a
+	group of related preferences.
+
+	* src/nautilus-prefs-group-check.h,
+	src/nautilus-prefs-group-check.c: A widget to manage a group
+	of boolean preferences.
+
+	* src/nautilus-prefs-group-radio.h,
+	src/nautilus-prefs-group-radio.c: A widget to manage a 
+	"one of many" preference.
+
+	* src/nautilus-prefs-pane.h,
+	src/nautilus-prefs-pane.c: A widget to manage the right hand
+	side of the prefs box.  
+
 2000-03-07  Darin Adler  <darin@eazel.com>
 
 	Reimplemented the delete command to use NautilusFile instead of
