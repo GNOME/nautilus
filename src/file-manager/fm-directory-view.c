@@ -5109,10 +5109,10 @@ volume_or_drive_unmounted_callback (gboolean succeeded,
 	if (!succeeded) {
 		if (eject) {
 			eel_show_error_dialog_with_details (error, NULL, 
-			                                    _("Unmount Error"), detailed_error, NULL);
+			                                    _("Eject Error"), detailed_error, NULL);
 		} else {
 			eel_show_error_dialog_with_details (error, NULL, 
-			                                    _("Eject Error"), detailed_error, NULL);
+			                                    _("Unmount Error"), detailed_error, NULL);
 		}
 	}
 }
