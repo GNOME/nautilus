@@ -8,6 +8,7 @@ eazel_DATA =					\
 	Home.png				\
 	Refresh.png				\
 	Search.png				\
+	SearchWeb.png				\
 	Services.png				\
 	Stop.png				\
 	Up.png					\

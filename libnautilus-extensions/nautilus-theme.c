@@ -159,12 +159,14 @@ nautilus_theme_get_theme_data (const char *resource_name, const char *property_n
 	return theme_data;
 }
 
-/* given the current theme, fetch the full path name of an image with the passed-in name */
-/* return NULL if there isn't a corresponding image */
+/* given the current theme, fetch the full path name of an image with the passed-in name  */
+/* return NULL if there isn't a corresponding image.  Optionally, add a .png suffix if we */
+/* cant otherwise find one. 								  */
+
 char *
 nautilus_theme_get_image_path (const char *image_name)
 {
-	char *theme_name, *image_path, *temp_str;
+	char *theme_name, *image_path, *png_string, *temp_str;
 	
 	theme_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME, "default");
 	
@@ -173,20 +175,44 @@ nautilus_theme_get_image_path (const char *image_name)
 		image_path = nautilus_pixmap_file (temp_str);
 	
 		g_free (theme_name);
-		g_free (temp_str);
 	
 		/* see if a theme-specific image exists; if so, return it */
-		if (image_path && g_file_exists (image_path))
+		if (image_path) {
+			g_free (temp_str);	
 			return image_path;
+		}
 		
-		g_free (image_path);
+		/* try if with a .png extension if it doesn't already have one */
+		if (!nautilus_istr_has_suffix (image_name, ".png")) {
+			png_string = g_strconcat (temp_str, ".png", NULL);
+			image_path = nautilus_pixmap_file (png_string);
+			g_free (png_string);
+			
+			if (image_path) {
+				g_free (temp_str);	
+				return image_path;
+			}
+		}		
+		g_free (temp_str);
 	}
 	
 	/* we couldn't find a theme specific one, so look for a general image */
 	image_path = nautilus_pixmap_file (image_name);
 	
-	if (image_path && g_file_exists (image_path))
+	if (image_path) {
 		return image_path;
+	}
+	
+	/* if it doesn't have a .png extension, try it with that */
+	if (!nautilus_istr_has_suffix (image_name, ".png")) {
+		png_string = g_strconcat (image_name, ".png", NULL);
+		image_path = nautilus_pixmap_file (png_string);
+		g_free (png_string);
+		
+		if (image_path) {
+			return image_path;
+		}
+	}
 		
 	/* we couldn't find anything, so return NULL */
 	g_free (image_path);

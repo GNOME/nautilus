@@ -1,3 +1,25 @@
+2000-09-17  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bug 2319, "Find" and "Web Search" shouldn't have the same icon.  Fixed by
+	adding a search web icon in the default and eazel themes, and changing the
+	toolbar code to properly fetch them using the theme routines.
+	
+	* icons/Makefile.am:
+	* icons/SearchWeb.png:
+	added web search icon done by Susan in the standard style
+	
+	* icons/eazel/Makefile.am:
+	* icons/eazel/SearchWeb.png:
+	added web search icon done by Susan in the eazel theme style
+	
+	* libnautilus-extensions/nautilus-theme.c:
+	(nautilus_theme_get_image_path):
+	made nautilus_theme_get_image_path optinally supply a ".png" suffix if the
+	passed in target doesn't have one.
+	* src/nautilus-window-toolbars.c: (set_up_button),
+	(set_up_toolbar_images):
+	use theme-based image fetching when setting up the toolbar images
+	
 2000-09-17  Mathieu Lacage  <mathieu@eazel.com>
 
 	* components/tree/nautilus-tree-view.c: remove auto-collapsing

@@ -170,6 +170,7 @@ icon_DATA =\
 	novice-selected.png \
 	rightarrow.png \
 	search.png \
+	SearchWeb.png \
 	temp-home.png \
 	theme_preview.png \
 	thumbnail_frame.aa.png \

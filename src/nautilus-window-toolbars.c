@@ -61,6 +61,8 @@ static void toolbar_services_callback (GtkWidget *widget, NautilusWindow *window
 #define TOOLBAR_STOP_BUTTON_INDEX		9
 #define TOOLBAR_SERVICES_INDEX			10
 
+#define GNOME_STOCK_PIXMAP_WEBSEARCH "SearchWeb"
+
 static void
 toolbar_back_callback (GtkWidget *widget, NautilusWindow *window)
 {
@@ -137,7 +139,7 @@ static GnomeUIInfo toolbar_info[] = {
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Web Search"), NAUTILUS_HINT_WEB_SEARCH,
 	 toolbar_search_web_callback,
-	 NAUTILUS_PIXMAPDIR "/eazel/Search.png"),
+	 NAUTILUS_PIXMAPDIR "/eazel/SearchWeb.png"),
 	
 	GNOMEUIINFO_SEPARATOR,
 	
@@ -276,19 +278,17 @@ find_toolbar_child(GtkToolbar *toolbar, GtkWidget *button)
 
 static void
 set_up_button (GtkWidget* button,
-	       const char *theme_name,
 	       const char *icon_name)
 {
 	GnomeStock *stock_widget;
 	char *full_name;
 	GtkToolbarChild *toolbar_child;
 
-	if (theme_name == NULL || strcmp (theme_name, "default") == 0) {
-		full_name = g_strdup (icon_name);
-	} else {
-		full_name = g_strdup_printf (NAUTILUS_PIXMAPDIR "/%s/%s.png", theme_name, icon_name);
+	full_name = nautilus_theme_get_image_path (icon_name);
+	if (full_name == NULL) {
+		full_name = g_strdup (icon_name);	
 	}
-	
+		
 	toolbar_child = find_toolbar_child (GTK_TOOLBAR (button->parent), button);
 	if (toolbar_child != NULL
 	    && toolbar_child->icon != NULL
@@ -314,20 +314,14 @@ set_up_button (GtkWidget* button,
 static void
 set_up_toolbar_images (NautilusWindow *window)
 {
-	char *theme_name;
-	
-	theme_name = nautilus_theme_get_theme_data ("toolbar", "ICON_THEME");
-
-	set_up_button (window->back_button, theme_name, GNOME_STOCK_PIXMAP_BACK);
-	set_up_button (window->forward_button, theme_name, GNOME_STOCK_PIXMAP_FORWARD);
-	set_up_button (window->up_button, theme_name, GNOME_STOCK_PIXMAP_UP);
-	set_up_button (window->home_button, theme_name,  GNOME_STOCK_PIXMAP_HOME);
-	set_up_button (window->reload_button, theme_name,  GNOME_STOCK_PIXMAP_REFRESH);
-	set_up_button (window->search_local_button, theme_name, GNOME_STOCK_PIXMAP_SEARCH);
-	set_up_button (window->search_web_button, theme_name, GNOME_STOCK_PIXMAP_SEARCH);
-	set_up_button (window->stop_button, theme_name, GNOME_STOCK_PIXMAP_STOP);
-
-	g_free(theme_name);
+	set_up_button (window->back_button, GNOME_STOCK_PIXMAP_BACK);
+	set_up_button (window->forward_button, GNOME_STOCK_PIXMAP_FORWARD);
+	set_up_button (window->up_button, GNOME_STOCK_PIXMAP_UP);
+	set_up_button (window->home_button, GNOME_STOCK_PIXMAP_HOME);
+	set_up_button (window->reload_button, GNOME_STOCK_PIXMAP_REFRESH);
+	set_up_button (window->search_local_button, GNOME_STOCK_PIXMAP_SEARCH);
+	set_up_button (window->search_web_button, GNOME_STOCK_PIXMAP_WEBSEARCH);
+	set_up_button (window->stop_button, GNOME_STOCK_PIXMAP_STOP);
 }
 
 static GtkWidget*
