@@ -1,3 +1,14 @@
+2001-02-15  J Shane Culpepper  <pepper@eazel.com>
+
+	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(handle_transfer_ok):
+
+	Fix for Bug #1505, Cancelled copy operations leave partial
+	files.  Nautilus now catches cancel and deletes the partial
+	file.
+
 2001-02-15  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>

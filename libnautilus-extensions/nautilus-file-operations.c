@@ -420,9 +420,19 @@ handle_transfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 {
 	if (transfer_info->cancelled
 		&& progress_info->phase != GNOME_VFS_XFER_PHASE_COMPLETED) {
-		/* If cancelled, return right away, unless we are calling
-		 * to shut down the progress dialog.
+		/* If cancelled, delete any partially copied files that are laying
+		 * around and return.
 		 */
+		if (progress_info->bytes_total != progress_info->bytes_copied) {
+			GList *delete_me = NULL;
+
+			delete_me = g_list_append (delete_me, progress_info->target_name);
+
+			nautilus_file_operations_delete (delete_me, transfer_info->parent_view);
+
+			g_list_free (delete_me);
+		}
+
 		return 0;
 	}
 	
