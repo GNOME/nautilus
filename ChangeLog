@@ -1,3 +1,31 @@
+2001-03-08  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed 7500 (Dragging WebDAV file to Trash has no effect.)
+	
+	* libnautilus-extensions/nautilus-file-operations.c:
+	* libnautilus-extensions/nautilus-file-operations.h:
+	(nautilus_file_operations_move_to_trash):
+	Got rid of the call.	
+
+	* src/file-manager/fm-directory-view.c: (trash_callback),
+	(fm_directory_view_can_move_uri_to_trash),
+	(trash_or_delete_files_common),
+	(fm_directory_view_trash_or_delete_files),
+	(report_broken_symbolic_link),
+	Got rid of callers to the eliminated nautilus_file_operations_move_to_trash,
+	Rework the trash and move calls to all operate on uri strings rather than
+	NautilusFile objects.
+	
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_move_copy_items):
+	Detect a move to Trash, handle it with trash_or_delete_files_common.
+	
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(nautilus_file_operations_copy_move),
+	Added a FIXME.
+
 2001-03-08  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: Adam Elman  <aelman@eazel.com>

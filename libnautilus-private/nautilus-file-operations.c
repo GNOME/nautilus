@@ -1909,6 +1909,12 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 				result = GNOME_VFS_ERROR_NOT_PERMITTED;
 				break;
 			}
+			
+			/* FIXME:
+			 * We should not have the case where a folder containing trash is moved into
+			 * the trash give a generic "cannot move into itself" message, rather,
+			 * we should have a trash specific message here.
+			 */
 
 			/* Don't allow recursive move/copy into itself. 
 			 * (We would get a file system error if we proceeded but it is nicer to
@@ -2101,121 +2107,6 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 
 	gnome_vfs_uri_list_free (target_uri_list);
 	gnome_vfs_uri_unref (parent_uri);
-}
-
-void 
-nautilus_file_operations_move_to_trash (const GList *item_uris, 
-					GtkWidget *parent_view)
-{
-	const GList *p;
-	GnomeVFSURI *trash_dir_uri;
-	GnomeVFSURI *source_uri;
-	GList *source_uri_list, *target_uri_list;
-	GnomeVFSResult result;
-	TransferInfo *transfer_info;
-	gboolean bail;
-	char *text;
-	char *item_name;
-	const char *source_uri_text;
-
-	g_assert (item_uris != NULL);
-	
-	trash_dir_uri = NULL;
-	source_uri_list = NULL;
-	target_uri_list = NULL;
-
-	result = GNOME_VFS_OK;
-
-	/* build the source and uri list, checking if any of the delete itmes are Trash */
-	for (p = item_uris; p != NULL; p = p->next) {
-		bail = FALSE;
-
-		source_uri_text = (const char *) p->data;
-		source_uri = gnome_vfs_uri_new (source_uri_text);
-		source_uri_list = g_list_prepend (source_uri_list, source_uri);
-
-		if (trash_dir_uri == NULL) {
-			GnomeVFSURI *source_dir_uri;
-			
-			source_dir_uri = gnome_vfs_uri_get_parent (source_uri);
-			result = gnome_vfs_find_directory (source_dir_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
-				&trash_dir_uri, FALSE, FALSE, 0777);
-			gnome_vfs_uri_unref (source_dir_uri);
-		}
-
-		if (result != GNOME_VFS_OK) {
-			break;
-		}
-
-		g_assert (trash_dir_uri != NULL);
-		target_uri_list = g_list_prepend (target_uri_list, append_basename (trash_dir_uri, source_uri));
-		
-		if (gnome_vfs_uri_equal (source_uri, trash_dir_uri)) {
-			nautilus_run_simple_dialog
-				(parent_view, 
-				 FALSE,
-				 _("The Trash must remain on the desktop."), 
-				 _("Can't Change Trash Location"),
-				 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
-			bail = TRUE;
-		} else if (gnome_vfs_uri_is_parent (source_uri, trash_dir_uri, TRUE)) {
-			item_name = extract_and_ellipsize_file_name_for_dialog (source_uri_text);
-			text = g_strdup_printf
-				(_("You cannot throw \"%s\" into the Trash."),
-				 item_name);
-			nautilus_run_simple_dialog
-				(parent_view, FALSE, text,
-				 _("Error Moving to Trash"),
-				 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
-			bail = TRUE;
-			g_free (text);
-			g_free (item_name);
-		}
-
-		if (bail) {
-			result = GNOME_VFS_ERROR_NOT_PERMITTED;
-			break;
-		}
-	}
-	source_uri_list = g_list_reverse (source_uri_list);
-	target_uri_list = g_list_reverse (target_uri_list);
-
-	if (result == GNOME_VFS_OK) {
-		g_assert (trash_dir_uri != NULL);
-
-		/* set up the move parameters */
-		transfer_info = transfer_info_new (parent_view);
-
-		/* Do an arbitrary guess that an operation will take very little
-		 * time and the progress shouldn't be shown.
-		 */
-		transfer_info->show_progress_dialog = g_list_length ((GList *)item_uris) > 20;
-
-		/* localizers: progress dialog title */
-		transfer_info->operation_title = _("Moving files to the Trash");
-		/* localizers: label prepended to the progress count */
-		transfer_info->action_label =_("Files thrown out:");
-		/* localizers: label prepended to the name of the current file moved */
-		transfer_info->progress_verb =_("Moving");
-		transfer_info->preparation_name =_("Preparing to Move to Trash...");
-		transfer_info->cleanup_name ="";
-
-		transfer_info->error_mode = GNOME_VFS_XFER_ERROR_MODE_QUERY;
-		transfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE;
-		transfer_info->kind = TRANSFER_MOVE_TO_TRASH;
-		
-		gnome_vfs_async_xfer (&transfer_info->handle, source_uri_list, target_uri_list,
-		      		      GNOME_VFS_XFER_REMOVESOURCE | GNOME_VFS_XFER_USE_UNIQUE_NAMES,
-		      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
-		      		      GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
-		      		      update_transfer_callback, transfer_info,
-		      		      sync_transfer_callback, NULL);
-
-	}
-
-	gnome_vfs_uri_list_free (source_uri_list);
-	gnome_vfs_uri_list_free (target_uri_list);
-	gnome_vfs_uri_unref (trash_dir_uri);
 }
 
 void 
