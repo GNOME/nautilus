@@ -124,6 +124,7 @@ static void
 free_factory_instance (void)
 {
 	bonobo_object_unref (BONOBO_OBJECT (the_factory));
+	the_factory = NULL;
 }
 
 NautilusMetafileFactory *

@@ -25,6 +25,7 @@
 #include <config.h>
 #include "nautilus-directory-private.h"
 
+#include "nautilus-metafile.h"
 #include "nautilus-directory-metafile.h"
 #include "nautilus-directory-notify.h"
 #include "nautilus-file-private.h"
@@ -180,7 +181,7 @@ nautilus_directory_destroy (GtkObject *object)
 		gtk_idle_remove (directory->details->dequeue_pending_idle_id);
 	}
  
-	nautilus_directory_metafile_destroy (directory);
+	nautilus_metafile_destroy (directory);
 
 	g_free (directory->details->uri);
 	if (directory->details->vfs_uri != NULL) {

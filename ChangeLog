@@ -1,3 +1,55 @@
+2001-02-12  Michael Engber  <engber@eazel.com>
+
+	reviewed by: John Sullivan
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(metafile_read_mark_done), (metafile_read_done_callback):
+	* libnautilus-extensions/nautilus-directory-metafile.c:
+	(free_factory), (get_metafile),
+	(nautilus_directory_get_file_metadata),
+	(nautilus_directory_get_file_metadata_list),
+	(nautilus_directory_set_file_metadata),
+	(nautilus_directory_set_file_metadata_list),
+	(nautilus_directory_copy_file_metadata),
+	(nautilus_directory_remove_file_metadata),
+	(nautilus_directory_rename_file_metadata):
+	* libnautilus-extensions/nautilus-directory-metafile.h:
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_destroy):
+	* libnautilus-extensions/nautilus-metafile-factory.c:
+	(free_factory_instance):
+	* libnautilus-extensions/nautilus-metafile-factory.h:
+	* libnautilus-extensions/nautilus-metafile-server.idl:
+	* libnautilus-extensions/nautilus-metafile.c: (destroy),
+	(corba_get), (corba_get_list), (corba_set), (corba_set_list),
+	(corba_copy), (corba_remove), (corba_rename),
+	(get_or_add_directory_monitor_list_entry),
+	(remove_directory_monitor_list_entry), (find_monitor_link),
+	(corba_register_monitor), (corba_unregister_monitor),
+	(get_metadata_from_node), (get_metadata_list_from_node),
+	(create_metafile_root), (get_file_node),
+	(get_metadata_string_from_metafile),
+	(get_metadata_list_from_metafile),
+	(set_metadata_string_in_metafile), (set_metadata_list_in_metafile),
+	(metadata_value_new), (metadata_value_new_list),
+	(metadata_value_destroy), (metadata_value_equal),
+	(set_metadata_in_metafile), (get_metadata_string_from_table),
+	(get_metadata_list_from_table), (str_or_null_hash),
+	(str_or_null_equal), (set_metadata_eat_value),
+	(free_file_table_entry), (free_directory_table_entry),
+	(destroy_metadata_changes_hash_table), (destroy_xml_string_key),
+	(nautilus_metafile_destroy), (get_file_metadata),
+	(get_file_metadata_list), (set_file_metadata),
+	(set_file_metadata_list), (rename_file_metadata),
+	(apply_one_change), (apply_file_changes), (apply_one_file_changes),
+	(nautilus_metafile_apply_pending_changes), (copy_file_metadata),
+	(remove_file_metadata), (nautilus_metafile_set_metafile_contents):
+	* libnautilus-extensions/nautilus-metafile.h:
+	* src/nautilus-application.h:
+
+	Metadata setting/getting is now done via CORBA so that
+	out of process components stay in sync. bug 5958
+
 2001-02-12  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

@@ -24,7 +24,7 @@
 
 #include <config.h>
 
-#include "nautilus-directory-metafile.h"
+#include "nautilus-metafile.h"
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-file-attributes.h"
@@ -454,7 +454,7 @@ metafile_read_mark_done (NautilusDirectory *directory)
 	directory->details->metafile_read = TRUE;
 
 	/* Move over the changes to the metafile that were in the hash table. */
-	nautilus_directory_metafile_apply_pending_changes (directory);
+	nautilus_metafile_apply_pending_changes (directory);
 
 	/* Tell change-watchers that we have update information. */
 	nautilus_directory_emit_metadata_changed (directory);
@@ -604,8 +604,8 @@ metafile_read_done_callback (GnomeVFSResult result,
 	/* The gnome-xml parser requires a zero-terminated array. */
 	buffer = g_realloc (file_contents, size + 1);
 	buffer[size] = '\0';
-	nautilus_directory_set_metafile_contents (directory,
-						  xmlParseMemory (buffer, size));
+	nautilus_metafile_set_metafile_contents (directory,
+						 xmlParseMemory (buffer, size));
 	g_free (buffer);
 
 	metafile_read_done (directory);

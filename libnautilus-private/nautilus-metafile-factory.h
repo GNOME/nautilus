@@ -44,6 +44,9 @@ typedef struct {
 
 GtkType nautilus_metafile_factory_get_type (void);
 
+
+#define METAFILE_FACTORY_IID "OAFIID:nautilus_metafile_factory:bc318c01-4106-4622-8d6c-b419ec89e4c6"
+
 NautilusMetafileFactory *nautilus_metafile_factory_get_instance (void);
 
 #endif /* NAUTILUS_METAFILE_FACTORY_H */

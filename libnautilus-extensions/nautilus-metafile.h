@@ -24,6 +24,9 @@
 #define NAUTILUS_METAFILE_H
 
 #include <bonobo/bonobo-object.h>
+#include <gnome-xml/tree.h>
+
+#include "nautilus-directory.h"
 
 #define NAUTILUS_TYPE_METAFILE	          (nautilus_metafile_get_type ())
 #define NAUTILUS_METAFILE(obj)	          (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_METAFILE, NautilusMetafile))
@@ -45,5 +48,14 @@ typedef struct {
 GtkType nautilus_metafile_get_type (void);
 
 NautilusMetafile *nautilus_metafile_new (const char *directory_uri);
+
+ 
+void nautilus_metafile_apply_pending_changes (NautilusDirectory *directory);
+
+void nautilus_metafile_destroy (NautilusDirectory *directory);
+
+void nautilus_metafile_set_metafile_contents (NautilusDirectory *directory,
+					  xmlDocPtr metafile_contents);
+
 
 #endif /* NAUTILUS_METAFILE_H */

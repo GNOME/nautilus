@@ -23,10 +23,6 @@
 */
 
 #include "nautilus-directory.h"
-#include <gnome-xml/tree.h>
-
-void     nautilus_directory_set_metafile_contents          (NautilusDirectory *directory,
-							    xmlDocPtr          metafile_contents);
 
 /* Interface for file metadata. */
 char *   nautilus_directory_get_file_metadata              (NautilusDirectory *directory,
@@ -76,7 +72,3 @@ void     nautilus_directory_remove_file_metadata           (NautilusDirectory *d
 void     nautilus_directory_rename_file_metadata           (NautilusDirectory *directory,
 							    const char        *old_file_name,
 							    const char        *new_file_name);
-
-/* Interface for housekeeping. */
-void     nautilus_directory_metafile_apply_pending_changes (NautilusDirectory *directory);
-void     nautilus_directory_metafile_destroy               (NautilusDirectory *directory);
