@@ -60,7 +60,7 @@ NautilusView *nautilus_rpm_view_get_nautilus_view (NautilusRPMView *view);
 
 /* URI handling */
 char*	      nautilus_rpm_view_get_uri		  (NautilusRPMView *view);
-void          nautilus_rpm_view_load_uri          (NautilusRPMView *view,
+gboolean      nautilus_rpm_view_load_uri          (NautilusRPMView *view,
 						   const char      *uri);
 gboolean      nautilus_rpm_view_get_installed     (NautilusRPMView *view);
 NautilusView* nautilus_rpm_view_get_view          (NautilusRPMView *view);

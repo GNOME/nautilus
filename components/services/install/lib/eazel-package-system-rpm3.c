@@ -759,6 +759,7 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 	headerGetEntry (hd,
 			RPMTAG_SIZE, NULL,
 			(void **) &sizep, NULL);	
+
 	pack->bytesize = *sizep;
 
 	pack->packsys_struc = (gpointer)hd;
@@ -907,6 +908,7 @@ rpm_packagedata_fill_from_file (EazelPackageSystemRpm3 *system,
 {
 	static FD_t fd;
 	Header hd;
+	int rpm_result;
 
 	/* Set filename field */
 	if (pack->filename != filename) {
@@ -930,12 +932,15 @@ rpm_packagedata_fill_from_file (EazelPackageSystemRpm3 *system,
 	}
 
 	/* Get Header block */
-	rpmReadPackageHeader (fd, &hd, &pack->source_package, NULL, NULL);
-	eazel_package_system_rpm3_packagedata_fill_from_header (system, pack, hd, detail_level);
-	pack->status = PACKAGE_UNKNOWN_STATUS;
+	rpm_result = rpmReadPackageHeader (fd, &hd, &pack->source_package, NULL, NULL);
+	if (rpm_result == 0) {
+		eazel_package_system_rpm3_packagedata_fill_from_header (system, pack, hd, detail_level);
+		pack->status = PACKAGE_UNKNOWN_STATUS;
+	}
 
 	fdClose (fd);
-	return TRUE;
+
+	return (rpm_result == 0) ? TRUE : FALSE;
 }
 
 static PackageData* 

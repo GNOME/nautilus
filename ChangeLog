@@ -1,5 +1,25 @@
 2001-02-07  Ian McKellar  <ian@eazel.com>
 
+	reviewed by: Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_update_from_uri), (nautilus_rpm_view_load_uri),
+	(rpm_view_load_location_callback):
+	* components/rpmview/nautilus-rpm-view.h:
+	If an RPM load fails then report it to Nautilus with:
+	nautilus_view_report_load_failed,
+
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(eazel_package_system_rpm3_packagedata_fill_from_header),
+	(rpm_packagedata_fill_from_file):
+	If an RPM load fails then report it to the caller.
+
+	* components/services/trilobite/libtrilobite/trilobite-core-network
+	.c: (trilobite_open_uri):
+	Changed the unsafe `setenv' call to the safer `trilobite_setenv'.
+
+2001-02-07  Ian McKellar  <ian@eazel.com>
+
 	reviewed by: Maciej Stachowiak <mjs@eazel.com>
 
 	* components/services/inventory/eazel-inventory-collect-hardware.c:

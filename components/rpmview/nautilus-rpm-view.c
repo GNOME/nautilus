@@ -460,7 +460,7 @@ add_to_clist (char *name,
 /* open the package and copy the information, and then set up the appropriate views with it */
 /* FIXME bugzilla.eazel.com 725: use gnome-vfs to open the package */
 
-static void 
+static gboolean
 nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 {
 	char *temp_str;
@@ -480,6 +480,10 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
                                                                         path_name,
                                                                         PACKAGE_FILL_EVERYTHING);
 	g_free (path_name);
+
+	if (rpm_view->details->package == NULL) {
+		return FALSE;
+	}
 
         /* Set the file list */
         gtk_clist_freeze (GTK_CLIST (rpm_view->details->package_file_list));
@@ -556,6 +560,7 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
                 gtk_widget_hide (rpm_view->details->package_verify_button);
         }	
 #endif /* EAZEL_SERVICES */              
+	return TRUE;
 }
 
 char*
@@ -576,12 +581,12 @@ nautilus_rpm_view_get_view (NautilusRPMView *view)
         return view->details->nautilus_view;
 }
 
-void
+gboolean
 nautilus_rpm_view_load_uri (NautilusRPMView *rpm_view, const char *uri)
 {
         g_free(rpm_view->details->current_uri);
         rpm_view->details->current_uri = g_strdup (uri);	
-        nautilus_rpm_view_update_from_uri(rpm_view, uri);
+        return nautilus_rpm_view_update_from_uri(rpm_view, uri);
 }
 
 static void
@@ -590,8 +595,11 @@ rpm_view_load_location_callback (NautilusView *view,
                                  NautilusRPMView *rpm_view)
 {
         nautilus_view_report_load_underway (rpm_view->details->nautilus_view);
-        nautilus_rpm_view_load_uri (rpm_view, location);
-        nautilus_view_report_load_complete (rpm_view->details->nautilus_view);
+        if (nautilus_rpm_view_load_uri (rpm_view, location)) {
+        	nautilus_view_report_load_complete (rpm_view->details->nautilus_view);
+	} else {
+		nautilus_view_report_load_failed (rpm_view->details->nautilus_view);
+	}
 }
 
 static gboolean
