@@ -22,11 +22,11 @@
 
 #include <config.h>
 #include "nautilus-metafile.h"
-#include "nautilus-metafile-server.h"
 
-#include <libnautilus/nautilus-bonobo-workarounds.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-directory.h>
+#include <libnautilus-extensions/nautilus-bonobo-extensions.h>
+#include <libnautilus/nautilus-bonobo-workarounds.h>
 
 #include "nautilus-string.h"
 #include "nautilus-metadata.h"
@@ -40,8 +40,8 @@
 
 #define METAFILE_XML_VERSION "1.0"
 
-static void nautilus_metafile_initialize       (NautilusMetafile      *metafile);
-static void nautilus_metafile_initialize_class (NautilusMetafileClass *klass);
+static void nautilus_metafile_init       (NautilusMetafile      *metafile);
+static void nautilus_metafile_class_init (NautilusMetafileClass *klass);
 
 static void destroy (GtkObject *metafile);
 
@@ -124,72 +124,29 @@ static void remove_file_metadata (NautilusDirectory *directory,
 static void call_metafile_changed_for_one_file (NautilusDirectory *directory,
 						 const CORBA_char  *file_name);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusMetafile, nautilus_metafile, BONOBO_OBJECT_TYPE)
+NAUTILUS_BONOBO_X_BOILERPLATE (NautilusMetafile, Nautilus_Metafile, BONOBO_X_OBJECT_TYPE, nautilus_metafile)
 
 static void
-nautilus_metafile_initialize_class (NautilusMetafileClass *klass)
+nautilus_metafile_class_init (NautilusMetafileClass *klass)
 {
 	GTK_OBJECT_CLASS (klass)->destroy = destroy;
-}
 
-static POA_Nautilus_Metafile__epv *
-nautilus_metafile_get_epv (void)
-{
-	static POA_Nautilus_Metafile__epv epv;
-	
-	epv.is_read            = corba_is_read;
-	epv.get                = corba_get;
-	epv.get_list           = corba_get_list;
-	epv.set                = corba_set;
-	epv.set_list           = corba_set_list;
-	epv.copy               = corba_copy;
-	epv.remove             = corba_remove;
-	epv.rename             = corba_rename;
-	epv.register_monitor   = corba_register_monitor;
-	epv.unregister_monitor = corba_unregister_monitor;
-
-	return &epv;
-}
-
-static POA_Nautilus_Metafile__vepv *
-nautilus_metafile_get_vepv (void)
-{
-	static POA_Nautilus_Metafile__vepv vepv;
-
-	vepv.Bonobo_Unknown_epv = nautilus_bonobo_object_get_epv ();
-	vepv.Nautilus_Metafile_epv = nautilus_metafile_get_epv ();
-
-	return &vepv;
-}
-
-static POA_Nautilus_Metafile *
-nautilus_metafile_create_servant (void)
-{
-	POA_Nautilus_Metafile *servant;
-	CORBA_Environment ev;
-
-	servant = (POA_Nautilus_Metafile *) g_new0 (BonoboObjectServant, 1);
-	servant->vepv = nautilus_metafile_get_vepv ();
-	CORBA_exception_init (&ev);
-	POA_Nautilus_Metafile__init ((PortableServer_Servant) servant, &ev);
-	if (ev._major != CORBA_NO_EXCEPTION){
-		g_error ("can't initialize Nautilus metafile");
-	}
-	CORBA_exception_free (&ev);
-
-	return servant;
+	klass->epv.is_read            = corba_is_read;
+	klass->epv.get                = corba_get;
+	klass->epv.get_list           = corba_get_list;
+	klass->epv.set                = corba_set;
+	klass->epv.set_list           = corba_set_list;
+	klass->epv.copy               = corba_copy;
+	klass->epv.remove             = corba_remove;
+	klass->epv.rename             = corba_rename;
+	klass->epv.register_monitor   = corba_register_monitor;
+	klass->epv.unregister_monitor = corba_unregister_monitor;
 }
 
 static void
-nautilus_metafile_initialize (NautilusMetafile *metafile)
+nautilus_metafile_init (NautilusMetafile *metafile)
 {
-	Nautilus_Metafile corba_metafile;
-
 	metafile->details = g_new0 (NautilusMetafileDetails, 1);
-
-	corba_metafile = bonobo_object_activate_servant
-		(BONOBO_OBJECT (metafile), nautilus_metafile_create_servant ());
-	bonobo_object_construct (BONOBO_OBJECT (metafile), corba_metafile);
 }
 
 static void

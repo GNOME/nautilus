@@ -22,17 +22,17 @@
 
 #include <config.h>
 #include "nautilus-metafile-factory.h"
-#include "nautilus-metafile-server.h"
 #include "nautilus-metafile.h"
 
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus/nautilus-bonobo-workarounds.h>
 
 struct NautilusMetafileFactoryDetails {
 };
 
-static void nautilus_metafile_factory_initialize       (NautilusMetafileFactory      *factory);
-static void nautilus_metafile_factory_initialize_class (NautilusMetafileFactoryClass *klass);
+static void nautilus_metafile_factory_init       (NautilusMetafileFactory      *factory);
+static void nautilus_metafile_factory_class_init (NautilusMetafileFactoryClass *klass);
 
 static void destroy (GtkObject *factory);
 
@@ -40,63 +40,20 @@ static Nautilus_Metafile corba_open (PortableServer_Servant  servant,
 				     const Nautilus_URI      directory,
 				     CORBA_Environment      *ev);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusMetafileFactory, nautilus_metafile_factory, BONOBO_OBJECT_TYPE)
+NAUTILUS_BONOBO_X_BOILERPLATE (NautilusMetafileFactory, Nautilus_MetafileFactory, BONOBO_X_OBJECT_TYPE, nautilus_metafile_factory)
 
 static void
-nautilus_metafile_factory_initialize_class (NautilusMetafileFactoryClass *klass)
+nautilus_metafile_factory_class_init (NautilusMetafileFactoryClass *klass)
 {
 	GTK_OBJECT_CLASS (klass)->destroy = destroy;
-}
 
-static POA_Nautilus_MetafileFactory__epv *
-nautilus_metafile_factory_get_epv (void)
-{
-	static POA_Nautilus_MetafileFactory__epv epv;
-
-	epv.open = corba_open;
-	
-	return &epv;
-}
-
-static POA_Nautilus_MetafileFactory__vepv *
-nautilus_metafile_factory_get_vepv (void)
-{
-	static POA_Nautilus_MetafileFactory__vepv vepv;
-
-	vepv.Bonobo_Unknown_epv = nautilus_bonobo_object_get_epv ();
-	vepv.Nautilus_MetafileFactory_epv = nautilus_metafile_factory_get_epv ();
-
-	return &vepv;
-}
-
-static POA_Nautilus_MetafileFactory *
-nautilus_metafile_factory_create_servant (void)
-{
-	POA_Nautilus_MetafileFactory *servant;
-	CORBA_Environment ev;
-
-	servant = (POA_Nautilus_MetafileFactory *) g_new0 (BonoboObjectServant, 1);
-	servant->vepv = nautilus_metafile_factory_get_vepv ();
-	CORBA_exception_init (&ev);
-	POA_Nautilus_MetafileFactory__init ((PortableServer_Servant) servant, &ev);
-	if (ev._major != CORBA_NO_EXCEPTION){
-		g_error ("can't initialize Nautilus metafile factory");
-	}
-	CORBA_exception_free (&ev);
-
-	return servant;
+	klass->epv.open = corba_open;
 }
 
 static void
-nautilus_metafile_factory_initialize (NautilusMetafileFactory *factory)
+nautilus_metafile_factory_init (NautilusMetafileFactory *factory)
 {
-	Nautilus_MetafileFactory corba_factory;
-
 	factory->details = g_new0 (NautilusMetafileFactoryDetails, 1);
-
-	corba_factory = bonobo_object_activate_servant
-		(BONOBO_OBJECT (factory), nautilus_metafile_factory_create_servant ());
-	bonobo_object_construct (BONOBO_OBJECT (factory), corba_factory);
 }
 
 static void

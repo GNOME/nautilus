@@ -23,7 +23,10 @@
 #ifndef NAUTILUS_METAFILE_FACTORY_H
 #define NAUTILUS_METAFILE_FACTORY_H
 
+#include "nautilus-metafile-server.h"
+
 #include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-xobject.h>
 
 #define NAUTILUS_TYPE_METAFILE_FACTORY	          (nautilus_metafile_factory_get_type ())
 #define NAUTILUS_METAFILE_FACTORY(obj)	          (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_METAFILE_FACTORY, NautilusMetafileFactory))
@@ -34,12 +37,13 @@
 typedef struct NautilusMetafileFactoryDetails NautilusMetafileFactoryDetails;
 
 typedef struct {
-	BonoboObject parent_slot;
+	BonoboXObject parent_slot;
 	NautilusMetafileFactoryDetails *details;
 } NautilusMetafileFactory;
 
 typedef struct {
-	BonoboObjectClass parent_slot;
+	BonoboXObjectClass parent_slot;
+	POA_Nautilus_MetafileFactory__epv epv;
 } NautilusMetafileFactoryClass;
 
 GtkType nautilus_metafile_factory_get_type (void);

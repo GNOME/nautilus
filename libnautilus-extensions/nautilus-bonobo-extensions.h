@@ -28,6 +28,7 @@
 #define NAUTILUS_BONOBO_EXTENSIONS_H
 
 #include <bonobo/bonobo-ui-component.h>
+#include <bonobo/bonobo-xobject.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
 typedef struct NautilusBonoboActivationHandle NautilusBonoboActivationHandle;
@@ -92,5 +93,41 @@ NautilusBonoboActivationHandle *nautilus_bonobo_activate_from_id                
 										     NautilusBonoboActivationCallback  callback,
 										     gpointer                          callback_data);
 void                            nautilus_bonobo_activate_cancel                     (NautilusBonoboActivationHandle   *handle);
+
+
+/* This macro is a copy of BONOBO_X_TYPE_FUNC_FULL (from bonobo-xobject.h)
+ * with the addition of support for the parent_class which is defined by
+ * NAUTILUS_DEFINE_CLASS_BOILERPLATE and used by NAUTILUS_CALL_PARENT.
+ * 
+ * Note: the argument order matches BONOBO_X_TYPE_FUNC_FULL which is different
+ * than NAUTILUS_DEFINE_CLASS_BOILERPLATE.
+ */
+#define NAUTILUS_BONOBO_X_BOILERPLATE(class_name, corba_name, parent, prefix) \
+static gpointer parent_class;                          /* Nautilus change */  \
+GtkType                                                                       \
+prefix##_get_type (void)                                                      \
+{                                                                             \
+	GtkType ptype;                                                        \
+	static GtkType type = 0;                                              \
+                                                                              \
+	if (type == 0) {                                                      \
+		static GtkTypeInfo info = {                                   \
+			#class_name,                                          \
+			sizeof (class_name),                                  \
+			sizeof (class_name##Class),                           \
+			(GtkClassInitFunc)prefix##_class_init,                \
+			(GtkObjectInitFunc)prefix##_init,                     \
+			NULL, NULL, (GtkClassInitFunc) NULL                   \
+		};                                                            \
+		ptype = (parent);                                             \
+		type = bonobo_x_type_unique (ptype,                           \
+			POA_##corba_name##__init, POA_##corba_name##__fini,   \
+			GTK_STRUCT_OFFSET (class_name##Class, epv),           \
+			&info);                                               \
+		parent_class = gtk_type_class (ptype); /* Nautilus change */  \
+	}                                                                     \
+	return type;                                                          \
+}
+
 
 #endif /* NAUTILUS_BONOBO_EXTENSIONS_H */
