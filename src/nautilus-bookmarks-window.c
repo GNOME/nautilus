@@ -138,31 +138,26 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 	window = gtk_dialog_new_with_buttons (_("Bookmarks"), NULL, 0,
 					      GTK_STOCK_CLOSE, GTK_RESPONSE_OK,
 					      NULL);
-	
+	gtk_dialog_set_has_separator (GTK_DIALOG (window), FALSE);
 	set_up_close_accelerator (window);
 	nautilus_undo_share_undo_manager (G_OBJECT (window), undo_manager_source);
 	gtk_window_set_wmclass (GTK_WINDOW (window), "bookmarks", "Nautilus");
-	gtk_widget_set_size_request (window, 
-				     BOOKMARKS_WINDOW_MIN_WIDTH, 
-				     BOOKMARKS_WINDOW_MIN_HEIGHT);
 	nautilus_bookmarks_window_restore_geometry (window);
 	
 	content_area = gtk_hbox_new (TRUE, GNOME_PAD);
 	gtk_widget_show (content_area);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox), content_area, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox), content_area, TRUE, TRUE, 0);
 
 	list_scroller = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_show (list_scroller);
 	gtk_box_pack_start (GTK_BOX (content_area), list_scroller, TRUE, TRUE, 0);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (list_scroller), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (list_scroller), GTK_SHADOW_IN);
-	gtk_container_set_border_width (GTK_CONTAINER (list_scroller), 7);
 
 	bookmark_list_widget = GTK_TREE_VIEW (gtk_tree_view_new ());
 	gtk_widget_show (GTK_WIDGET (bookmark_list_widget));
 	gtk_container_add (GTK_CONTAINER (list_scroller), 
 			   GTK_WIDGET (bookmark_list_widget));
-	gtk_widget_set_size_request (GTK_WIDGET (bookmark_list_widget), -1, 120);
 	gtk_tree_view_set_headers_visible (bookmark_list_widget, FALSE);
 	gtk_tree_view_set_reorderable (bookmark_list_widget, TRUE);
 		
