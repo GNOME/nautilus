@@ -23,12 +23,13 @@
 */
 
 #include <config.h>
-#include "nautilus-file-private.h"
-#include "nautilus-file-attributes.h"
+#include "nautilus-file.h"
 
 #include "nautilus-directory-metafile.h"
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
+#include "nautilus-file-attributes.h"
+#include "nautilus-file-private.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-gtk-extensions.h"
@@ -36,6 +37,8 @@
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-link.h"
 #include "nautilus-string.h"
+#include "nautilus-trash-file.h"
+#include "nautilus-vfs-file.h"
 #include <ctype.h>
 #include <gnome-xml/parser.h>
 #include <grp.h>
@@ -138,7 +141,7 @@ nautilus_file_new_from_relative_uri (NautilusDirectory *directory,
 	g_return_val_if_fail (relative_uri != NULL, NULL);
 	g_return_val_if_fail (relative_uri[0] != '\0', NULL);
 
-	file = NAUTILUS_FILE (gtk_object_new (NAUTILUS_TYPE_FILE, NULL));
+	file = NAUTILUS_FILE (gtk_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
 	gtk_object_ref (GTK_OBJECT (file));
 	gtk_object_sink (GTK_OBJECT (file));
 
@@ -248,7 +251,7 @@ nautilus_file_new_from_info (NautilusDirectory *directory,
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 	g_return_val_if_fail (info != NULL, NULL);
 
-	file = NAUTILUS_FILE (gtk_object_new (NAUTILUS_TYPE_FILE, NULL));
+	file = NAUTILUS_FILE (gtk_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
 
 #ifdef NAUTILUS_FILE_DEBUG_REF
 	printf("%10p ref'd\n", file);
@@ -2075,9 +2078,9 @@ nautilus_file_monitor_add (NautilusFile *file,
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (client != NULL);
 
-	nautilus_directory_monitor_add_internal
-		(file->details->directory, file,
-		 client, TRUE, TRUE, attributes);
+	NAUTILUS_CALL_VIRTUAL
+		(NAUTILUS_FILE_CLASS, file,
+		 monitor_add, (file, client, attributes));
 }   
 			   
 void
@@ -2087,8 +2090,9 @@ nautilus_file_monitor_remove (NautilusFile *file,
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (client != NULL);
 
-	nautilus_directory_monitor_remove_internal
-		(file->details->directory, file, client);
+	NAUTILUS_CALL_VIRTUAL
+		(NAUTILUS_FILE_CLASS, file,
+		 monitor_remove, (file, client));
 }			      
 
 
@@ -2310,16 +2314,9 @@ nautilus_file_get_directory_item_count (NautilusFile *file,
 		return FALSE;
 	}
 
-	if (count_unreadable != NULL) {
-		*count_unreadable = file->details->directory_count_failed;
-	}
-
-	if (!file->details->got_directory_count) {
-		return FALSE;
-	}
-
-	*count = file->details->directory_count;
-	return TRUE;
+	return NAUTILUS_CALL_VIRTUAL
+		(NAUTILUS_FILE_CLASS, file,
+		 get_item_count, (file, count, count_unreadable));
 }
 
 /**
@@ -2343,8 +2340,6 @@ nautilus_file_get_deep_counts (NautilusFile *file,
 			       guint *unreadable_directory_count,
 			       GnomeVFSFileSize *total_size)
 {
-	GnomeVFSFileType type;
-
 	if (directory_count != NULL) {
 		*directory_count = 0;
 	}
@@ -2360,35 +2355,13 @@ nautilus_file_get_deep_counts (NautilusFile *file,
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NAUTILUS_REQUEST_DONE);
 
-	if (!nautilus_file_is_directory (file)) {
-		return NAUTILUS_REQUEST_DONE;
-	}
-
-	if (file->details->deep_counts_status != NAUTILUS_REQUEST_NOT_STARTED) {
-		if (directory_count != NULL) {
-			*directory_count = file->details->deep_directory_count;
-		}
-		if (file_count != NULL) {
-			*file_count = file->details->deep_file_count;
-		}
-		if (unreadable_directory_count != NULL) {
-			*unreadable_directory_count = file->details->deep_unreadable_count;
-		}
-		if (total_size != NULL) {
-			*total_size = file->details->deep_size;
-		}
-		return file->details->deep_counts_status;
-	}
-
-	/* For directories, or before we know the type, we haven't started. */
-	type = nautilus_file_get_file_type (file);
-	if (type == GNOME_VFS_FILE_TYPE_UNKNOWN
-	    || type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
-		return NAUTILUS_REQUEST_NOT_STARTED;
-	}
-
-	/* For other types, we are done, and the zeros are permanent. */
-	return NAUTILUS_REQUEST_DONE;
+	return NAUTILUS_CALL_VIRTUAL
+		(NAUTILUS_FILE_CLASS, file,
+		 get_deep_counts, (file,
+				   directory_count,
+				   file_count,
+				   unreadable_directory_count,
+				   total_size));
 }
 
 void
@@ -4284,10 +4257,9 @@ nautilus_file_check_if_ready (NautilusFile *file,
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-	return nautilus_directory_check_if_ready_internal
-		(file->details->directory,
-		 file,
-		 file_attributes);
+	return NAUTILUS_CALL_VIRTUAL
+		(NAUTILUS_FILE_CLASS, file,
+		 check_if_ready, (file, file_attributes));
 }			      
 
 void
@@ -4306,9 +4278,10 @@ nautilus_file_call_when_ready (NautilusFile *file,
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
-	nautilus_directory_call_when_ready_internal
-		(file->details->directory, file,
-		 file_attributes, NULL, callback, callback_data);
+	NAUTILUS_CALL_VIRTUAL
+		(NAUTILUS_FILE_CLASS, file,
+		 call_when_ready, (file, file_attributes, 
+				   callback, callback_data));
 }
 
 void
@@ -4324,12 +4297,9 @@ nautilus_file_cancel_call_when_ready (NautilusFile *file,
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
-	nautilus_directory_cancel_callback_internal
-		(file->details->directory,
-		 file,
-		 NULL,
-		 callback,
-		 callback_data);
+	NAUTILUS_CALL_VIRTUAL
+		(NAUTILUS_FILE_CLASS, file,
+		 cancel_call_when_ready, (file, callback, callback_data));
 }
 
 static void

@@ -26,18 +26,142 @@
 #include <config.h>
 #include "nautilus-vfs-file.h"
 
+#include "nautilus-directory-private.h"
+#include "nautilus-file-private.h"
 #include "nautilus-gtk-macros.h"
 
 struct NautilusVFSFileDetails {
 };
 
 static void nautilus_vfs_file_initialize       (gpointer   object,
-						     gpointer   klass);
+						gpointer   klass);
 static void nautilus_vfs_file_initialize_class (gpointer   klass);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusVFSFile,
 				   nautilus_vfs_file,
 				   NAUTILUS_TYPE_FILE)
+
+static void             
+vfs_file_monitor_add (NautilusFile *file,
+		      gconstpointer client,
+		      GList *attributes)
+{
+	nautilus_directory_monitor_add_internal
+		(file->details->directory, file,
+		 client, TRUE, TRUE, attributes);
+}   
+			   
+static void
+vfs_file_monitor_remove (NautilusFile *file,
+			 gconstpointer client)
+{
+	nautilus_directory_monitor_remove_internal
+		(file->details->directory, file, client);
+}			      
+
+static void
+vfs_file_call_when_ready (NautilusFile *file,
+			  GList *file_attributes,
+			  NautilusFileCallback callback,
+			  gpointer callback_data)
+
+{
+	nautilus_directory_call_when_ready_internal
+		(file->details->directory, file,
+		 file_attributes, NULL, callback, callback_data);
+}
+
+static void
+vfs_file_cancel_call_when_ready (NautilusFile *file,
+				 NautilusFileCallback callback,
+				 gpointer callback_data)
+{
+	nautilus_directory_cancel_callback_internal
+		(file->details->directory,
+		 file,
+		 NULL,
+		 callback,
+		 callback_data);
+}
+
+static gboolean
+vfs_file_check_if_ready (NautilusFile *file,
+			 GList *file_attributes)
+{
+	return nautilus_directory_check_if_ready_internal
+		(file->details->directory,
+		 file,
+		 file_attributes);
+}
+
+static gboolean
+vfs_file_get_item_count (NautilusFile *file, 
+			 guint *count,
+			 gboolean *count_unreadable)
+{
+	if (count_unreadable != NULL) {
+		*count_unreadable = file->details->directory_count_failed;
+	}
+	if (!file->details->got_directory_count) {
+		*count = 0;
+		return FALSE;
+	}
+	*count = file->details->directory_count;
+	return TRUE;
+}
+
+static NautilusRequestStatus
+vfs_file_get_deep_counts (NautilusFile *file,
+			  guint *directory_count,
+			  guint *file_count,
+			  guint *unreadable_directory_count,
+			  GnomeVFSFileSize *total_size)
+{
+	GnomeVFSFileType type;
+
+	if (directory_count != NULL) {
+		*directory_count = 0;
+	}
+	if (file_count != NULL) {
+		*file_count = 0;
+	}
+	if (unreadable_directory_count != NULL) {
+		*unreadable_directory_count = 0;
+	}
+	if (total_size != NULL) {
+		*total_size = 0;
+	}
+
+	if (!nautilus_file_is_directory (file)) {
+		return NAUTILUS_REQUEST_DONE;
+	}
+
+	if (file->details->deep_counts_status != NAUTILUS_REQUEST_NOT_STARTED) {
+		if (directory_count != NULL) {
+			*directory_count = file->details->deep_directory_count;
+		}
+		if (file_count != NULL) {
+			*file_count = file->details->deep_file_count;
+		}
+		if (unreadable_directory_count != NULL) {
+			*unreadable_directory_count = file->details->deep_unreadable_count;
+		}
+		if (total_size != NULL) {
+			*total_size = file->details->deep_size;
+		}
+		return file->details->deep_counts_status;
+	}
+
+	/* For directories, or before we know the type, we haven't started. */
+	type = nautilus_file_get_file_type (file);
+	if (type == GNOME_VFS_FILE_TYPE_UNKNOWN
+	    || type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
+		return NAUTILUS_REQUEST_NOT_STARTED;
+	}
+
+	/* For other types, we are done, and the zeros are permanent. */
+	return NAUTILUS_REQUEST_DONE;
+}
 
 static void
 nautilus_vfs_file_initialize (gpointer object, gpointer klass)
@@ -66,5 +190,11 @@ nautilus_vfs_file_initialize_class (gpointer klass)
 	
 	object_class->destroy = vfs_destroy;
 
-	/* file_class-> */
+	file_class->monitor_add = vfs_file_monitor_add;
+	file_class->monitor_remove = vfs_file_monitor_remove;
+	file_class->call_when_ready = vfs_file_call_when_ready;
+	file_class->cancel_call_when_ready = vfs_file_cancel_call_when_ready;
+	file_class->check_if_ready = vfs_file_check_if_ready;
+	file_class->get_item_count = vfs_file_get_item_count;
+	file_class->get_deep_counts = vfs_file_get_deep_counts;
 }

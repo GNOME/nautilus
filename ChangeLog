@@ -1,3 +1,85 @@
+2001-01-15  Darin Adler  <darin@eazel.com>
+
+	Fix bug 5557 (Intermittent crash in
+	Nautilus_View_history_changed):
+	
+	* src/nautilus-view-frame.c: (send_history): Added a check for
+	NULL so we don't try to send a NULL history list through the
+	history machinery.
+
+	Fix bug 5360 ("menthos's Home" string is hard to translate):
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(update_home_link_and_delete_copies): Added comment to help
+	translators understand what to do with "%s's Home".
+
+	Fix bug 5641 ("xfree" does not work with newer versions of RPM 4
+	headers):
+	
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(eazel_package_system_rpm3_packagedata_fill_from_header): Just
+	use "free" instead of "xfree".
+
+	Fix bug 5631 (Tear-offs of right-click menus don't work):
+	
+	* src/nautilus-shell-ui.xml:
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	* src/file-manager/nautilus-icon-view-ui.xml:
+	Mark popups and submenus of the popups with tearoff="0" so they
+	don't have tear-off menu items.
+	
+	More work on bug 2147 (NautilusFile for trash needs non-empty
+	values for more properties).
+	
+	* libnautilus-extensions/nautilus-file.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_new_from_relative_uri),
+	(nautilus_file_new_from_info), (nautilus_file_monitor_add),
+	(nautilus_file_monitor_remove),
+	(nautilus_file_get_directory_item_count),
+	(nautilus_file_get_deep_counts), (nautilus_file_check_if_ready),
+	(nautilus_file_call_when_ready),
+	(nautilus_file_cancel_call_when_ready):
+	Put more of the machinery in place to make enough of NautilusFile
+	virtual so that we can implement the trash case.
+	
+	* libnautilus-extensions/nautilus-merged-directory.h:
+	* libnautilus-extensions/nautilus-merged-directory.c:
+	(merged_add_real_directory),
+	(nautilus_merged_directory_add_real_directory),
+	(merged_remove_real_directory),
+	(nautilus_merged_directory_remove_real_directory),
+	(remove_all_real_directories),
+	(nautilus_merged_directory_initialize_class):
+	Make adding and removing directories use signals so we can share
+	this list with the NautilusTrashFile.
+
+	* libnautilus-extensions/nautilus-trash-file.c:
+	(add_directory_callback), (remove_directory_callback),
+	(nautilus_trash_file_initialize), (trash_destroy):
+	Use a NautilusTrashDirectory object for the list of directories.
+	
+	* libnautilus-extensions/nautilus-vfs-file.c:
+	(vfs_file_monitor_add), (vfs_file_monitor_remove),
+	(vfs_file_call_when_ready), (vfs_file_cancel_call_when_ready),
+	(vfs_file_check_if_ready), (vfs_file_get_item_count),
+	(vfs_file_get_deep_counts), (nautilus_vfs_file_initialize_class):
+	Move the guts of these functions into the "VFS" subclass.
+
+	Other stuff:
+	
+	* libnautilus-extensions/nautilus-trash-directory.c:
+	(find_directory_start), (find_directory_end),
+	(find_directory_callback), (add_volume), (remove_trash_volume):
+	Fix bug in the recently-added timed-wait, to handle the case where
+	the call is cancelled as well as the case where it succeeds or
+	fails.
+	
+	* src/file-manager/fm-directory-view.c:
+	(zoomable_set_zoom_level_callback): Formatting tweak.
+	
+	* src/nautilus-main.c: (main): Fix the FIXME.
+
 2001-01-15  Ian McKellar  <ian@eazel.com>
 
 	* components/services/inventory-view/nautilus-inventory-config-page
@@ -1228,8 +1310,8 @@
 
 	* libnautilus-extensions/nautilus-file-operations.c:
 	(handle_transfer_overwrite):
-	We now check for special link files being overwritten and notify the user
-	that such an action is not allowed.
+	We now check for special link files being overwritten and
+	notify the user that such an action is not allowed.
 	
 2001-01-08  Andy Hertzfeld  <andy@eazel.com>
 

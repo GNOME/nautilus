@@ -1244,6 +1244,9 @@ send_history (NautilusViewFrame *view)
 	}
 
 	history = get_history_list (view);
+	if (history == NULL) {
+		return;
+	}
 	
 	CORBA_exception_init (&ev);
 	Nautilus_View_history_changed (get_CORBA_object (view), history, &ev);

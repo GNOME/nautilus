@@ -300,14 +300,6 @@ typedef struct {
 							  GList                *attributes);
 	void                  (* monitor_remove)         (NautilusFile         *file,
 							  gconstpointer         client);
-	gboolean              (* get_item_count)         (NautilusFile         *file,
-							  guint                *count,
-							  gboolean             *count_unreadable);
-	NautilusRequestStatus (* get_deep_counts)        (NautilusFile         *file,
-							  guint                *directory_count,
-							  guint                *file_count,
-							  guint                *unreadable_directory_count,
-							  GnomeVFSFileSize     *total_size);
 	void                  (* call_when_ready)        (NautilusFile         *file,
 							  GList                *attributes,
 							  NautilusFileCallback  callback,
@@ -317,6 +309,14 @@ typedef struct {
 							  gpointer              callback_data);
 	gboolean              (* check_if_ready)         (NautilusFile         *file,
 							  GList                *attributes);
+	gboolean              (* get_item_count)         (NautilusFile         *file,
+							  guint                *count,
+							  gboolean             *count_unreadable);
+	NautilusRequestStatus (* get_deep_counts)        (NautilusFile         *file,
+							  guint                *directory_count,
+							  guint                *file_count,
+							  guint                *unreadable_directory_count,
+							  GnomeVFSFileSize     *total_size);
 } NautilusFileClass;
 
 #endif /* NAUTILUS_FILE_H */

@@ -793,6 +793,12 @@ update_home_link_and_delete_copies (void)
 	char *desktop_path, *home_link_name, *home_dir_uri, *home_uri;
 
 	desktop_path = nautilus_get_desktop_directory ();
+
+	/* Note to translators: If it's hard to compose a good home
+	 * icon name from the user name, you can use a string without
+	 * an "%s" here, in which case the home icon name will not
+	 * include the user's name, which should be fine.
+	 */
 	home_link_name = g_strdup_printf (_("%s's Home"), g_get_user_name ());
 	
 	home_dir_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());

@@ -582,8 +582,8 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 			g_free (paths_copy[index]);
 		}
 		g_free (paths_copy);
-		xfree (paths);
-		xfree (names);
+		free (paths);
+		free (names);
 	}
 
 	/* FIXME: bugzill.eaze.com 5262

@@ -26,9 +26,15 @@
 #include <config.h>
 #include "nautilus-trash-file.h"
 
+#include "nautilus-file-utilities.h"
 #include "nautilus-gtk-macros.h"
+#include "nautilus-trash-directory.h"
+#include <gtk/gtksignal.h>
 
 struct NautilusTrashFileDetails {
+	NautilusTrashDirectory *as_directory;
+	guint add_directory_connection_id;
+	guint remove_directory_connection_id;
 };
 
 static void nautilus_trash_file_initialize       (gpointer   object,
@@ -40,18 +46,70 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTrashFile,
 				   NAUTILUS_TYPE_FILE)
 
 static void
+add_directory_callback (NautilusTrashDirectory *trash_directory,
+			NautilusDirectory *real_directory,
+			NautilusTrashFile *trash_file)
+{
+	g_assert (NAUTILUS_IS_TRASH_DIRECTORY (trash_directory));
+	g_assert (NAUTILUS_IS_DIRECTORY (real_directory));
+	g_assert (!NAUTILUS_IS_MERGED_DIRECTORY (real_directory));
+	g_assert (NAUTILUS_IS_TRASH_FILE (trash_file));
+	g_assert (trash_file->details->as_directory == trash_directory);
+}
+
+static void
+remove_directory_callback (NautilusTrashDirectory *trash_directory,
+			   NautilusDirectory *real_directory,
+			   NautilusTrashFile *trash_file)
+{
+	g_assert (NAUTILUS_IS_TRASH_DIRECTORY (trash_directory));
+	g_assert (NAUTILUS_IS_DIRECTORY (real_directory));
+	g_assert (!NAUTILUS_IS_MERGED_DIRECTORY (real_directory));
+	g_assert (NAUTILUS_IS_TRASH_FILE (trash_file));
+	g_assert (trash_file->details->as_directory == trash_directory);
+}
+
+static void
 nautilus_trash_file_initialize (gpointer object, gpointer klass)
 {
-	NautilusTrashFile *file;
+	NautilusTrashFile *trash_file;
+	NautilusTrashDirectory *trash_directory;
 
-	file = NAUTILUS_TRASH_FILE (object);
+	trash_file = NAUTILUS_TRASH_FILE (object);
 
-	file->details = g_new0 (NautilusTrashFileDetails, 1);
+	trash_directory = NAUTILUS_TRASH_DIRECTORY (nautilus_directory_get (NAUTILUS_TRASH_URI));
+
+	trash_file->details = g_new0 (NautilusTrashFileDetails, 1);
+	trash_file->details->as_directory = trash_directory;
+
+	trash_file->details->add_directory_connection_id = gtk_signal_connect
+		(GTK_OBJECT (trash_directory),
+		 "add_real_directory",
+		 add_directory_callback,
+		 trash_file);
+	trash_file->details->remove_directory_connection_id = gtk_signal_connect
+		(GTK_OBJECT (trash_directory),
+		 "remove_real_directory",
+		 remove_directory_callback,
+		 trash_file);
 }
 
 static void
 trash_destroy (GtkObject *object)
 {
+	NautilusTrashFile *trash_file;
+	NautilusTrashDirectory *trash_directory;
+
+	trash_file = NAUTILUS_TRASH_FILE (object);
+	trash_directory = trash_file->details->as_directory;
+
+	gtk_signal_disconnect (GTK_OBJECT (trash_directory),
+			       trash_file->details->add_directory_connection_id);
+	gtk_signal_disconnect (GTK_OBJECT (trash_directory),
+			       trash_file->details->remove_directory_connection_id);
+	nautilus_directory_unref (NAUTILUS_DIRECTORY (trash_directory));
+	g_free (trash_file->details);
+
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 

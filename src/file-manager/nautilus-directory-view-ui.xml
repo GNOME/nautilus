@@ -133,11 +133,11 @@
 		</placeholder>
 	</popup>
 	
-	<popup name="selection">
+	<popup name="selection" tearoff="0">
 		<placeholder name="Open Placeholder" delimit="none">
 			<menuitem name="Open" verb="Open"/>
 			<menuitem name="OpenNew" verb="OpenNew"/>
-			<submenu name="Open With" _label="Open With">
+			<submenu name="Open With" _label="Open With" tearoff="0">
 				<placeholder name="Applications Placeholder" delimit="none"/>
 				<menuitem name="OtherApplication" verb="OtherApplication"/>
 				<separator/>

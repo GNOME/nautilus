@@ -59,7 +59,31 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTrashDirectory,
 				   nautilus_trash_directory,
 				   NAUTILUS_TYPE_MERGED_DIRECTORY)
 
-static gint pending_find_directory_count = 0;
+static int pending_find_directory_count = 0;
+
+static void
+find_directory_start (void)
+{
+	if (pending_find_directory_count == 0) {
+		nautilus_timed_wait_start (NULL,
+					   add_volume,
+					   _("Searching Disks"),
+					   _("Nautilus is searching for trash folders."),
+					   NULL);
+	}
+
+	++pending_find_directory_count;
+}
+
+static void
+find_directory_end (void)
+{
+	--pending_find_directory_count;
+
+	if (pending_find_directory_count == 0) {
+		nautilus_timed_wait_stop (NULL, add_volume);
+	}
+}
 
 static void
 find_directory_callback (GnomeVFSAsyncHandle *handle,
@@ -73,17 +97,13 @@ find_directory_callback (GnomeVFSAsyncHandle *handle,
 
 	trash_volume = callback_data;
 
-	--pending_find_directory_count;
-
-	if (pending_find_directory_count == 0) {
-		nautilus_timed_wait_stop (NULL, &add_volume);
-	}
-
 	g_assert (nautilus_g_list_exactly_one_item (results));
 	g_assert (trash_volume != NULL);
 	g_assert (NAUTILUS_IS_TRASH_DIRECTORY (trash_volume->trash));
 	g_assert (trash_volume->real_directory == NULL);
 	g_assert (trash_volume->handle == handle);
+
+	find_directory_end ();
 	
 	/* We are done with the async. I/O. */
 	trash_volume->handle = NULL;
@@ -129,8 +149,8 @@ add_volume (NautilusTrashDirectory *trash,
 		return;
 	}
 	
-	volume_mount_uri = gnome_vfs_uri_new (
-		nautilus_volume_monitor_get_volume_mount_uri (volume));
+	volume_mount_uri = gnome_vfs_uri_new
+		(nautilus_volume_monitor_get_volume_mount_uri (volume));
 
 	/* Make the structure used to track the trash for this volume. */
 	trash_volume = g_new0 (TrashVolume, 1);
@@ -142,21 +162,13 @@ add_volume (NautilusTrashDirectory *trash,
 	vfs_uri_as_list.data = volume_mount_uri;
 	vfs_uri_as_list.next = NULL;
 	vfs_uri_as_list.prev = NULL;
+
 	/* Search for Trash directories but don't create new ones. */
+	find_directory_start ();
 	gnome_vfs_async_find_directory
 		(&trash_volume->handle, &vfs_uri_as_list, 
 		 GNOME_VFS_DIRECTORY_KIND_TRASH, FALSE, TRUE, 0777,
 		 find_directory_callback, trash_volume);
-
-	if (pending_find_directory_count == 0) {
-		nautilus_timed_wait_start (NULL,
-					   &add_volume,
-					   _("Searching Disks"),
-					   _("Nautilus is searching for trash folders."),
-					   NULL);
-	}
-
-	++pending_find_directory_count;
 }
 
 static void
@@ -167,6 +179,7 @@ remove_trash_volume (TrashVolume *trash_volume)
 	
 	if (trash_volume->handle != NULL) {
 		gnome_vfs_async_cancel (trash_volume->handle);
+		find_directory_end ();
 	}
 	if (trash_volume->real_directory != NULL) {
 		nautilus_merged_directory_remove_real_directory

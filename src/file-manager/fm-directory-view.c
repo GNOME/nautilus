@@ -1513,7 +1513,7 @@ nautilus_zoom_level_from_float(float zoom_level)
 static void
 zoomable_set_zoom_level_callback (BonoboZoomable *zoomable, float level, FMDirectoryView *view)
 {
-	fm_directory_view_zoom_to_level (view, nautilus_zoom_level_from_float(level));
+	fm_directory_view_zoom_to_level (view, nautilus_zoom_level_from_float (level));
 }
 
 static void

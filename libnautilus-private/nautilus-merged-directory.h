@@ -49,6 +49,11 @@ typedef struct {
 
 typedef struct {
 	NautilusDirectoryClass parent_slot;
+
+	void (* add_real_directory)    (NautilusMergedDirectory *merged_directory,
+					NautilusDirectory       *real_directory);
+	void (* remove_real_directory) (NautilusMergedDirectory *merged_directory,
+					NautilusDirectory       *real_directory);
 } NautilusMergedDirectoryClass;
 
 GtkType nautilus_merged_directory_get_type              (void);

@@ -60,6 +60,14 @@ typedef struct {
 	gboolean force_reload;
 } MergedMonitor;
 
+enum {
+	ADD_REAL_DIRECTORY,
+	REMOVE_REAL_DIRECTORY,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
+
 static void     nautilus_merged_directory_initialize       (gpointer                 object,
 							    gpointer                 klass);
 static void     nautilus_merged_directory_initialize_class (gpointer                 klass);
@@ -408,26 +416,6 @@ merged_is_not_empty (NautilusDirectory *directory)
 }
 
 static void
-nautilus_merged_directory_initialize_class (gpointer klass)
-{
-	GtkObjectClass *object_class;
-	NautilusDirectoryClass *directory_class;
-
-	object_class = GTK_OBJECT_CLASS (klass);
-	directory_class = NAUTILUS_DIRECTORY_CLASS (klass);
-	
-	object_class->destroy = merged_destroy;
-
-	directory_class->contains_file = merged_contains_file;
-	directory_class->call_when_ready = merged_call_when_ready;
-	directory_class->cancel_callback = merged_cancel_callback;
-	directory_class->file_monitor_add = merged_file_monitor_add;
-	directory_class->file_monitor_remove = merged_file_monitor_remove;
- 	directory_class->are_all_files_seen = merged_are_all_files_seen;
-	directory_class->is_not_empty = merged_is_not_empty;
-}
-
-static void
 forward_files_added_cover (NautilusDirectory *real_directory,
 			   GList *files,
 			   NautilusMergedDirectory *merged)
@@ -470,18 +458,14 @@ monitor_add_directory (gpointer key,
 		 monitor->force_reload);
 }
 
-void
-nautilus_merged_directory_add_real_directory (NautilusMergedDirectory *merged,
-					      NautilusDirectory *real_directory)
+static void
+merged_add_real_directory (NautilusMergedDirectory *merged,
+			   NautilusDirectory *real_directory)
 {
 	g_return_if_fail (NAUTILUS_IS_MERGED_DIRECTORY (merged));
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (real_directory));
 	g_return_if_fail (!NAUTILUS_IS_MERGED_DIRECTORY (real_directory));
-
-	/* Quietly do nothing if asked to add something that's already there. */
-	if (g_list_find (merged->details->directories, real_directory) != NULL) {
-		return;
-	}
+	g_return_if_fail (g_list_find (merged->details->directories, real_directory) == NULL);
 
 	/* Add to our list of directories. */
 	nautilus_directory_ref (real_directory);
@@ -515,6 +499,24 @@ nautilus_merged_directory_add_real_directory (NautilusMergedDirectory *merged,
 	/* FIXME bugzilla.eazel.com 2541: Do we need to add the directory to callbacks too? */
 }
 
+void
+nautilus_merged_directory_add_real_directory (NautilusMergedDirectory *merged,
+					      NautilusDirectory *real_directory)
+{
+	g_return_if_fail (NAUTILUS_IS_MERGED_DIRECTORY (merged));
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (real_directory));
+	g_return_if_fail (!NAUTILUS_IS_MERGED_DIRECTORY (real_directory));
+
+	/* Quietly do nothing if asked to add something that's already there. */
+	if (g_list_find (merged->details->directories, real_directory) != NULL) {
+		return;
+	}
+
+	gtk_signal_emit (GTK_OBJECT (merged),
+			 signals[ADD_REAL_DIRECTORY],
+			 real_directory);
+}
+
 static void
 merged_callback_remove_directory_cover (gpointer key,
 					gpointer value,
@@ -533,17 +535,13 @@ monitor_remove_directory (gpointer key,
 		(NAUTILUS_DIRECTORY (callback_data), value);
 }
 
-void
-nautilus_merged_directory_remove_real_directory (NautilusMergedDirectory *merged,
-						 NautilusDirectory *real_directory)
+static void
+merged_remove_real_directory (NautilusMergedDirectory *merged,
+			      NautilusDirectory *real_directory)
 {
 	g_return_if_fail (NAUTILUS_IS_MERGED_DIRECTORY (merged));
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (real_directory));
-
-	/* Quietly do nothing if asked to remove something that's not there. */
-	if (g_list_find (merged->details->directories, real_directory) == NULL) {
-		return;
-	}
+	g_return_if_fail (g_list_find (merged->details->directories, real_directory) != NULL);
 
 	/* Remove this directory from callbacks and monitors. */
 	nautilus_g_hash_table_safe_for_each
@@ -566,6 +564,22 @@ nautilus_merged_directory_remove_real_directory (NautilusMergedDirectory *merged
 	nautilus_directory_unref (real_directory);
 }
 
+void
+nautilus_merged_directory_remove_real_directory (NautilusMergedDirectory *merged,
+						 NautilusDirectory *real_directory)
+{
+	g_return_if_fail (NAUTILUS_IS_MERGED_DIRECTORY (merged));
+
+	/* Quietly do nothing if asked to remove something that's not there. */
+	if (g_list_find (merged->details->directories, real_directory) == NULL) {
+		return;
+	}
+
+	gtk_signal_emit (GTK_OBJECT (merged),
+			 signals[REMOVE_REAL_DIRECTORY],
+			 real_directory);
+}
+
 static void
 remove_all_real_directories (NautilusMergedDirectory *merged)
 {
@@ -573,4 +587,48 @@ remove_all_real_directories (NautilusMergedDirectory *merged)
 		nautilus_merged_directory_remove_real_directory
 			(merged, merged->details->directories->data);
 	}
+}
+
+static void
+nautilus_merged_directory_initialize_class (gpointer klass)
+{
+	GtkObjectClass *object_class;
+	NautilusDirectoryClass *directory_class;
+	NautilusMergedDirectoryClass *merged_directory_class;
+
+	object_class = GTK_OBJECT_CLASS (klass);
+	directory_class = NAUTILUS_DIRECTORY_CLASS (klass);
+	merged_directory_class = NAUTILUS_MERGED_DIRECTORY_CLASS (klass);
+	
+	object_class->destroy = merged_destroy;
+
+	directory_class->contains_file = merged_contains_file;
+	directory_class->call_when_ready = merged_call_when_ready;
+	directory_class->cancel_callback = merged_cancel_callback;
+	directory_class->file_monitor_add = merged_file_monitor_add;
+	directory_class->file_monitor_remove = merged_file_monitor_remove;
+ 	directory_class->are_all_files_seen = merged_are_all_files_seen;
+	directory_class->is_not_empty = merged_is_not_empty;
+
+	merged_directory_class->add_real_directory = merged_add_real_directory;
+	merged_directory_class->remove_real_directory = merged_remove_real_directory;
+
+	signals[ADD_REAL_DIRECTORY] 
+		= gtk_signal_new ("add_real_directory",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusMergedDirectoryClass, 
+						     add_real_directory),
+				  gtk_marshal_NONE__POINTER,
+				  GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+	signals[REMOVE_REAL_DIRECTORY] 
+		= gtk_signal_new ("remove_real_directory",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusMergedDirectoryClass, 
+						     remove_real_directory),
+				  gtk_marshal_NONE__POINTER,
+				  GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+
+	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);				  
 }

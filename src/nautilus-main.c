@@ -139,13 +139,20 @@ main (int argc, char *argv[])
 
 	struct poptOption options[] = {
 #ifndef NAUTILUS_OMIT_SELF_CHECK
-		{ "check", 'c', POPT_ARG_NONE, &perform_self_check, 0, N_("Perform a quick set of self-check tests."), NULL },
+		{ "check", 'c', POPT_ARG_NONE, &perform_self_check, 0,
+		  N_("Perform a quick set of self-check tests."), NULL },
 #endif
-		{ "geometry", 'g', POPT_ARG_STRING, &geometry, 0, N_("Create the initial window with the given geometry."), N_("GEOMETRY") },
-		{ "no-default-window", 'n', POPT_ARG_NONE, &no_default_window, 0, N_("Only create windows for explicitly specified URIs."), NULL },
-		{ "quit", 'q', POPT_ARG_NONE, &kill_shell, 0, N_("Quit Nautilus."), NULL },
-		{ "restart", '\0', POPT_ARG_NONE | POPT_ARGFLAG_DOC_HIDDEN, &restart_shell, 0, N_("Restart Nautilus."), NULL },
-		/* FIXME bugzilla.eazel.com 5510: These OAF options don't get translated for some reason. */
+		{ "geometry", 'g', POPT_ARG_STRING, &geometry, 0,
+		  N_("Create the initial window with the given geometry."), N_("GEOMETRY") },
+		{ "no-default-window", 'n', POPT_ARG_NONE, &no_default_window, 0,
+		  N_("Only create windows for explicitly specified URIs."), NULL },
+		{ "quit", 'q', POPT_ARG_NONE, &kill_shell, 0,
+		  N_("Quit Nautilus."), NULL },
+		{ "restart", '\0', POPT_ARG_NONE | POPT_ARGFLAG_DOC_HIDDEN, &restart_shell, 0,
+		  N_("Restart Nautilus."), NULL },
+		/* FIXME bugzilla.eazel.com 5228: The help for these OAF options
+		 * should be in a separate section.
+		 */
 		{ NULL, '\0', POPT_ARG_INCLUDE_TABLE, &oaf_popt_options, 0, NULL, NULL },
 		{ NULL, '\0', 0, NULL, 0, NULL, NULL }
 	};
