@@ -1,3 +1,33 @@
+2001-02-15  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	* libnautilus-extensions/nautilus-image-table.h:
+	* libnautilus-extensions/nautilus-image-table.c:
+	(nautilus_image_table_add_empty_image): New function to add an
+	empty space into the table.
+
+	* libnautilus-extensions/nautilus-wrap-table.h:
+	* libnautilus-extensions/nautilus-wrap-table.c:
+	(nautilus_wrap_table_destroy), (nautilus_wrap_table_expose_event),
+	(nautilus_wrap_table_map), (nautilus_wrap_table_unmap),
+	(nautilus_wrap_table_add), (nautilus_wrap_table_remove),
+	(nautilus_wrap_table_forall), (wrap_table_layout),
+	(wrap_table_get_max_child_dimensions),
+	(wrap_table_get_content_dimensions),
+	(wrap_table_find_child_at_point),
+	(nautilus_wrap_table_reorder_child): Change 'items' to 'childern'
+	(nautilus_wrap_table_get_num_children): New function to get the
+	number of chilren.
+
+	* src/nautilus-property-browser.c: (labeled_image_configure),
+	(labeled_image_new), (make_properties_from_directories),
+	(add_reset_property), (make_properties_from_xml_node),
+	(nautilus_property_browser_update_contents):
+	Modify some constants and add new ones for the image table
+	layout.  Andy is going to tweak these later.
+	Move the erase object back to the end of the table.
+
 2001-02-15  J Shane Culpepper  <pepper@eazel.com>
 
 	reviewed by: Gene Z. Ragan  <gzr@eazel.com>

@@ -143,46 +143,45 @@ struct NautilusPropertyBrowserDetails {
 	gboolean toggle_button_flag;
 };
 
-static void     nautilus_property_browser_initialize_class      (GtkObjectClass          *object_klass);
-static void     nautilus_property_browser_initialize            (GtkObject               *object);
-static void     nautilus_property_browser_destroy               (GtkObject               *object);
-static void     nautilus_property_browser_preferences_changed   (NautilusPropertyBrowser *property_browser);
-static void     nautilus_property_browser_update_contents       (NautilusPropertyBrowser *property_browser);
-static void     nautilus_property_browser_set_category          (NautilusPropertyBrowser *property_browser,
-								 const char              *new_category);
-static void     nautilus_property_browser_set_dragged_file      (NautilusPropertyBrowser *property_browser,
-								 const char              *dragged_file_name);
-static void     nautilus_property_browser_set_drag_type         (NautilusPropertyBrowser *property_browser,
-								 const char              *new_drag_type);
-static void     add_new_button_callback                         (GtkWidget               *widget,
-								 NautilusPropertyBrowser *property_browser);
-static void     cancel_remove_mode                              (NautilusPropertyBrowser *property_browser);
-static void     done_button_callback                            (GtkWidget               *widget,
-								 GtkWidget               *property_browser);
-static void     remove_button_callback                          (GtkWidget               *widget,
-								 NautilusPropertyBrowser *property_browser);
-static gboolean nautilus_property_browser_delete_event_callback (GtkWidget               *widget,
-								 GdkEvent                *event,
-								 gpointer                 user_data);
-static void     nautilus_property_browser_hide_callback 	(GtkWidget               *widget,
-								 gpointer                 user_data);
-static void     nautilus_property_browser_drag_end              (GtkWidget               *widget,
-								 GdkDragContext          *context);
-static void     nautilus_property_browser_drag_data_get         (GtkWidget               *widget,
-								 GdkDragContext          *context,
-								 GtkSelectionData        *selection_data,
-								 guint                    info,
-								 guint32                  time);
-static void     nautilus_property_browser_theme_changed         (gpointer                 user_data);
+static void     nautilus_property_browser_initialize_class      (GtkObjectClass                *object_klass);
+static void     nautilus_property_browser_initialize            (GtkObject                     *object);
+static void     nautilus_property_browser_destroy               (GtkObject                     *object);
+static void     nautilus_property_browser_preferences_changed   (NautilusPropertyBrowser       *property_browser);
+static void     nautilus_property_browser_update_contents       (NautilusPropertyBrowser       *property_browser);
+static void     nautilus_property_browser_set_category          (NautilusPropertyBrowser       *property_browser,
+								 const char                    *new_category);
+static void     nautilus_property_browser_set_dragged_file      (NautilusPropertyBrowser       *property_browser,
+								 const char                    *dragged_file_name);
+static void     nautilus_property_browser_set_drag_type         (NautilusPropertyBrowser       *property_browser,
+								 const char                    *new_drag_type);
+static void     add_new_button_callback                         (GtkWidget                     *widget,
+								 NautilusPropertyBrowser       *property_browser);
+static void     cancel_remove_mode                              (NautilusPropertyBrowser       *property_browser);
+static void     done_button_callback                            (GtkWidget                     *widget,
+								 GtkWidget                     *property_browser);
+static void     remove_button_callback                          (GtkWidget                     *widget,
+								 NautilusPropertyBrowser       *property_browser);
+static gboolean nautilus_property_browser_delete_event_callback (GtkWidget                     *widget,
+								 GdkEvent                      *event,
+								 gpointer                       user_data);
+static void     nautilus_property_browser_hide_callback         (GtkWidget                     *widget,
+								 gpointer                       user_data);
+static void     nautilus_property_browser_drag_end              (GtkWidget                     *widget,
+								 GdkDragContext                *context);
+static void     nautilus_property_browser_drag_data_get         (GtkWidget                     *widget,
+								 GdkDragContext                *context,
+								 GtkSelectionData              *selection_data,
+								 guint                          info,
+								 guint32                        time);
+static void     nautilus_property_browser_theme_changed         (gpointer                       user_data);
 static void     emit_emblems_changed_signal                     (void);
 
 /* misc utilities */
-static char *   strip_extension                                 (const char              *string_to_strip);
-
-static void element_clicked_callback (GtkWidget *image_table,
-				      GtkWidget *child,
-				      const NautilusImageTableEvent *event,
-				      gpointer callback_data);
+static char *   strip_extension                                 (const char                    *string_to_strip);
+static void     element_clicked_callback                        (GtkWidget                     *image_table,
+								 GtkWidget                     *child,
+								 const NautilusImageTableEvent *event,
+								 gpointer                       callback_data);
 
 
 #define BROWSER_BACKGROUND_COLOR "rgb:FFFF/FFFF/FFFF"
@@ -191,14 +190,16 @@ static void element_clicked_callback (GtkWidget *image_table,
 
 #define BROWSER_CATEGORIES_FILE_NAME "browser.xml"
 
-#define PROPERTY_BROWSER_WIDTH 528
-#define PROPERTY_BROWSER_HEIGHT 322
+#define PROPERTY_BROWSER_WIDTH 540
+#define PROPERTY_BROWSER_HEIGHT 340
 
 #define MAX_ICON_WIDTH 63
 #define MAX_ICON_HEIGHT 63
 #define COLOR_SQUARE_SIZE 48
 
-#define CONTENT_TABLE_HEIGHT 4
+#define LABELED_IMAGE_SPACING 2
+#define IMAGE_TABLE_X_SPACING 6
+#define IMAGE_TABLE_Y_SPACING 4
 
 #define ERASE_OBJECT_NAME "erase.png"
 
@@ -1579,35 +1580,42 @@ nautilus_property_browser_preferences_changed (NautilusPropertyBrowser *property
 	nautilus_property_browser_update_contents (property_browser);
 }
 
+static void
+labeled_image_configure (NautilusLabeledImage *labeled_image)
+{
+	g_return_if_fail (NAUTILUS_IS_LABELED_IMAGE (labeled_image));
+
+	nautilus_labeled_image_set_background_mode (labeled_image,
+						    NAUTILUS_SMOOTH_BACKGROUND_SOLID_COLOR);
+	nautilus_labeled_image_set_solid_background_color (labeled_image,
+							   NAUTILUS_RGB_COLOR_WHITE);		
+	nautilus_labeled_image_set_spacing (labeled_image, LABELED_IMAGE_SPACING);
+}
+
 /* Make a color tile for a property */
 static GtkWidget *
 labeled_image_new (const char *text,
 		   GdkPixbuf *pixbuf,
 		   const char *property_name,
-		   guint num_smaller,
-		   gboolean sensitive)
+		   guint num_smaller)
 {
-	GtkWidget *image;
+	GtkWidget *labeled_image;
 	
-	image = nautilus_labeled_image_new (text, pixbuf);
-	nautilus_labeled_image_set_background_mode (NAUTILUS_LABELED_IMAGE (image),
-						    NAUTILUS_SMOOTH_BACKGROUND_SOLID_COLOR);
-	nautilus_labeled_image_set_solid_background_color (NAUTILUS_LABELED_IMAGE (image),
-							   NAUTILUS_RGB_COLOR_WHITE);		
+	labeled_image = nautilus_labeled_image_new (text, pixbuf);
+	labeled_image_configure (NAUTILUS_LABELED_IMAGE (labeled_image));
 	if (num_smaller > 0) {
-		nautilus_labeled_image_make_smaller (NAUTILUS_LABELED_IMAGE (image), num_smaller);
+		nautilus_labeled_image_make_smaller (NAUTILUS_LABELED_IMAGE (labeled_image),
+						     num_smaller);
 	}
 
-	gtk_widget_set_sensitive (image, sensitive);
-
 	if (property_name != NULL) {
-		gtk_object_set_data_full (GTK_OBJECT (image),
+		gtk_object_set_data_full (GTK_OBJECT (labeled_image),
 					  "property-name",
 					  g_strdup (property_name),
 					  (GtkDestroyNotify) g_free);
 	}
 
-	return image;
+	return labeled_image;
 }
 
 static void
@@ -1617,6 +1625,14 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 	char *object_name;
 	char *object_label;
 	GdkPixbuf *object_pixbuf;
+	NautilusImageTable *image_table;
+	GtkWidget *reset_object = NULL;
+	GtkWidget *erase_object = NULL;
+
+	g_return_if_fail (NAUTILUS_IS_PROPERTY_BROWSER (property_browser));
+	g_return_if_fail (NAUTILUS_IS_IMAGE_TABLE (property_browser->details->content_table));
+	
+	image_table = NAUTILUS_IMAGE_TABLE (property_browser->details->content_table);
 	
 	if (property_browser->details->category_type == NAUTILUS_PROPERTY_EMBLEM) {
 		nautilus_g_list_free_deep (property_browser->details->keywords);	
@@ -1639,7 +1655,7 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 									 &object_label) == GNOME_VFS_OK) {
 		GtkWidget *property_image;
 
-		property_image = labeled_image_new (object_label, object_pixbuf, object_name, 2, TRUE);
+		property_image = labeled_image_new (object_label, object_pixbuf, object_name, 2);
 		
 		if (property_browser->details->category_type == NAUTILUS_PROPERTY_EMBLEM) {		
 			char *keyword;
@@ -1656,37 +1672,19 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 									      keyword);
 		}
 		
-		gtk_container_add (GTK_CONTAINER (property_browser->details->content_table), property_image);
+		gtk_container_add (GTK_CONTAINER (image_table), property_image);
 		gtk_widget_show (property_image);
 
-		/*
-		 * If the object is either a "pattern reset" or "emblem erase" always
-		 * place them at the start of the table
-		 */
-		if ((property_browser->details->category_type == NAUTILUS_PROPERTY_PATTERN
-		     && nautilus_str_is_equal (object_name, RESET_IMAGE_NAME))
-		    || ((property_browser->details->category_type == NAUTILUS_PROPERTY_EMBLEM)
-			&& nautilus_str_is_equal (object_name, ERASE_OBJECT_NAME))) {
-			nautilus_wrap_table_reorder_child (NAUTILUS_WRAP_TABLE (property_browser->details->content_table),
-							   property_image,
-							   0);
-		}
-
-		/*
-		 * If the object is a"emblem erase" add a blank object to separate it 
-		 * from the rest.
-		 */
-		if ((property_browser->details->category_type == NAUTILUS_PROPERTY_EMBLEM)
+		/* Keep track of ERASE objects to place them prominently later */
+		if (property_browser->details->category_type == NAUTILUS_PROPERTY_EMBLEM
 		    && nautilus_str_is_equal (object_name, ERASE_OBJECT_NAME)) {
-			GtkWidget *blank_image;
-
-			blank_image = labeled_image_new (NULL, NULL, NULL, 0, FALSE);
-				
-			gtk_container_add (GTK_CONTAINER (property_browser->details->content_table), blank_image);
-			nautilus_wrap_table_reorder_child (NAUTILUS_WRAP_TABLE (property_browser->details->content_table),
-							   blank_image,
-							   1);
-			gtk_widget_show (blank_image);
+			g_assert (erase_object == NULL);
+			erase_object = property_image;
+		/* Keep track of RESET objects to place them prominently later */
+		} else if (property_browser->details->category_type == NAUTILUS_PROPERTY_PATTERN
+			   && nautilus_str_is_equal (object_name, RESET_IMAGE_NAME)) {
+			g_assert (reset_object == NULL);
+			reset_object = property_image;
 		}
 		
 		gtk_widget_show (property_image);
@@ -1694,6 +1692,40 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 		g_free (object_name);
 		g_free (object_label);
 		gdk_pixbuf_unref (object_pixbuf);
+	}
+
+	/*
+	 * We place ERASE objects (for emblems) at the end with a blank in between.
+	 */
+	if (erase_object != NULL) {
+		GtkWidget *blank;
+		guint num_images;
+
+		g_assert (NAUTILUS_IS_LABELED_IMAGE (erase_object));
+
+		blank = nautilus_image_table_add_empty_image (image_table);
+		labeled_image_configure (NAUTILUS_LABELED_IMAGE (blank));
+		
+		num_images = nautilus_wrap_table_get_num_children (NAUTILUS_WRAP_TABLE (image_table));
+		g_assert (num_images > 0);
+		nautilus_wrap_table_reorder_child (NAUTILUS_WRAP_TABLE (image_table),
+						   blank,
+						   num_images - 1);
+		
+		gtk_widget_show (blank);
+		nautilus_wrap_table_reorder_child (NAUTILUS_WRAP_TABLE (image_table),
+						   erase_object,
+						   -1);
+	}
+
+	/*
+	 * We place RESET objects (for colors and patterns) at the beginning.
+	 */
+	if (reset_object != NULL) {
+		g_assert (NAUTILUS_IS_LABELED_IMAGE (reset_object));
+		nautilus_wrap_table_reorder_child (NAUTILUS_WRAP_TABLE (image_table),
+						   reset_object,
+						   0);
 	}
 
 	property_browser->details->has_local = nautilus_customization_data_private_data_was_displayed (customization_data);	
@@ -1712,7 +1744,7 @@ add_reset_property (NautilusPropertyBrowser *property_browser)
 	reset_pixbuf = gdk_pixbuf_new_from_file (reset_image_file_name);
 	g_free (reset_image_file_name);
 
-	reset_image = labeled_image_new (NULL, reset_pixbuf, RESET_IMAGE_NAME, 0, TRUE);
+	reset_image = labeled_image_new (NULL, reset_pixbuf, RESET_IMAGE_NAME, 0);
 	gtk_container_add (GTK_CONTAINER (property_browser->details->content_table), reset_image);
 	nautilus_wrap_table_reorder_child (NAUTILUS_WRAP_TABLE (property_browser->details->content_table),
 					   reset_image,
@@ -1759,7 +1791,7 @@ make_properties_from_xml_node (NautilusPropertyBrowser *property_browser,
 			pixbuf = make_color_drag_image (property_browser, color, FALSE);			
 
 			/* make the tile from the pixmap and name */
-			new_property = labeled_image_new (name, pixbuf, color, 2, TRUE);
+			new_property = labeled_image_new (name, pixbuf, color, 2);
 
 			gtk_container_add (GTK_CONTAINER (property_browser->details->content_table), new_property);
 			gtk_widget_show (new_property);
@@ -1906,6 +1938,10 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 
 	/* allocate a table to hold the content widgets */
   	property_browser->details->content_table = nautilus_image_table_new (TRUE);
+	nautilus_wrap_table_set_x_spacing (NAUTILUS_WRAP_TABLE (property_browser->details->content_table),
+					   IMAGE_TABLE_X_SPACING);
+	nautilus_wrap_table_set_y_spacing (NAUTILUS_WRAP_TABLE (property_browser->details->content_table),
+					   IMAGE_TABLE_Y_SPACING);
 	
 	gtk_signal_connect (GTK_OBJECT (property_browser->details->content_table),
 			    "child_pressed", 

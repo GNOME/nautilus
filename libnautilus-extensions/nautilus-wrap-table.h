@@ -85,6 +85,7 @@ gboolean              nautilus_wrap_table_get_homogeneous           (const Nauti
 void                  nautilus_wrap_table_reorder_child             (NautilusWrapTable       *wrap_table,
 								     GtkWidget               *child,
 								     int                      position);
+guint                 nautilus_wrap_table_get_num_children          (const NautilusWrapTable *wrap_table);
 
 END_GNOME_DECLS
 

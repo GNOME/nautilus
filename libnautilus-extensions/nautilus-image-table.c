@@ -732,3 +732,27 @@ nautilus_image_table_set_smooth_background_color (NautilusImageTable *image_tabl
 	
 	image_table->details->smooth_background_color = smooth_background_color;
 }
+
+/**
+ * nautilus_image_table_add_empty_child:
+ * @image_table: A NautilusImageTable.
+ *
+ * Add a "empty" child to the table.  Useful when you want to have
+ * empty space between 2 children.
+ *
+ * Returns: The empty child - A NautilusLabeledImage widget with no label
+ *          or pixbuf.
+ */
+GtkWidget *
+nautilus_image_table_add_empty_image (NautilusImageTable *image_table)
+{
+	GtkWidget *empty;
+
+	g_return_val_if_fail (NAUTILUS_IS_IMAGE_TABLE (image_table), NULL);
+
+	empty = nautilus_labeled_image_new (NULL, NULL);
+	gtk_container_add (GTK_CONTAINER (image_table), empty);
+	gtk_widget_set_sensitive (empty, FALSE);
+
+	return empty;
+}

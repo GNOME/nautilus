@@ -53,7 +53,7 @@ struct NautilusWrapTableDetails
 	NautilusJustification x_justification;
 	NautilusJustification y_justification;
 	gboolean homogeneous;
-	GList *items;
+	GList *children;
 };
 
 /* GtkObjectClass methods */
@@ -178,7 +178,7 @@ nautilus_wrap_table_destroy (GtkObject *object)
 	 */
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 
-	g_list_free (wrap_table->details->items);
+	g_list_free (wrap_table->details->children);
 
 	g_free (wrap_table->details);
 }
@@ -308,7 +308,7 @@ nautilus_wrap_table_expose_event (GtkWidget *widget,
 
   	wrap_table = NAUTILUS_WRAP_TABLE (widget);
 
-	for (iterator = wrap_table->details->items; iterator; iterator = iterator->next) {
+	for (iterator = wrap_table->details->children; iterator; iterator = iterator->next) {
 		GtkWidget *item;
 		GdkEventExpose item_event;
 
@@ -337,7 +337,7 @@ nautilus_wrap_table_map (GtkWidget *widget)
 
  	GTK_WIDGET_SET_FLAGS (widget, GTK_MAPPED);
 	
-	for (iterator = wrap_table->details->items; iterator; iterator = iterator->next) {
+	for (iterator = wrap_table->details->children; iterator; iterator = iterator->next) {
 		GtkWidget *item;
 
 		item = iterator->data;
@@ -360,7 +360,7 @@ nautilus_wrap_table_unmap (GtkWidget *widget)
 
 	GTK_WIDGET_UNSET_FLAGS (widget, GTK_MAPPED);
 
-	for (iterator = wrap_table->details->items; iterator; iterator = iterator->next) {
+	for (iterator = wrap_table->details->children; iterator; iterator = iterator->next) {
 		GtkWidget *item;
 
 		item = iterator->data;
@@ -386,7 +386,7 @@ nautilus_wrap_table_add (GtkContainer *container,
 
 	gtk_widget_set_parent (child, GTK_WIDGET (container));
 
-	wrap_table->details->items = g_list_append (wrap_table->details->items, child);
+	wrap_table->details->children = g_list_append (wrap_table->details->children, child);
 
 	if (GTK_WIDGET_REALIZED (container)) {
 		gtk_widget_realize (child);
@@ -415,7 +415,7 @@ nautilus_wrap_table_remove (GtkContainer *container,
 
 	child_was_visible = GTK_WIDGET_VISIBLE (child);
 	gtk_widget_unparent (child);
-	wrap_table->details->items = g_list_remove (wrap_table->details->items, child);
+	wrap_table->details->children = g_list_remove (wrap_table->details->children, child);
 
 	if (child_was_visible) {
 		gtk_widget_queue_resize (GTK_WIDGET (container));
@@ -437,7 +437,7 @@ nautilus_wrap_table_forall (GtkContainer *container,
 	
 	wrap_table = NAUTILUS_WRAP_TABLE (container);;
 	
-	for (node = wrap_table->details->items; node != NULL; node = next) {
+	for (node = wrap_table->details->children; node != NULL; node = next) {
 		g_assert (GTK_IS_WIDGET (node->data));
 		next = node->next;
 		(* callback) (GTK_WIDGET (node->data), callback_data);	
@@ -466,7 +466,7 @@ wrap_table_layout (NautilusWrapTable *wrap_table)
 	pos.x = content_bounds.x0;
 	pos.y = content_bounds.y0;
 
-	for (iterator = wrap_table->details->items; iterator; iterator = iterator->next) {
+	for (iterator = wrap_table->details->children; iterator; iterator = iterator->next) {
 		GtkWidget *item;
 
 		item = iterator->data;
@@ -561,7 +561,7 @@ wrap_table_get_max_child_dimensions (const NautilusWrapTable *wrap_table)
 
 	max_dimensions = NAUTILUS_DIMENSIONS_EMPTY;
 
-	for (iterator = wrap_table->details->items; iterator; iterator = iterator->next) {
+	for (iterator = wrap_table->details->children; iterator; iterator = iterator->next) {
 		GtkWidget *child;
 		
 		child = iterator->data;
@@ -609,7 +609,7 @@ wrap_table_get_content_dimensions (const NautilusWrapTable *wrap_table)
 
 	content_dimensions = NAUTILUS_DIMENSIONS_EMPTY;
 	
-	num_children = g_list_length (wrap_table->details->items);
+	num_children = g_list_length (wrap_table->details->children);
 
 	if (num_children > 0) {
 		NautilusDimensions max_child_dimensions;
@@ -691,7 +691,7 @@ wrap_table_find_child_at_point (const NautilusWrapTable *wrap_table,
 	
   	g_return_val_if_fail (NAUTILUS_IS_WRAP_TABLE (wrap_table), NULL);
 
-	for (iterator = wrap_table->details->items; iterator; iterator = iterator->next) {
+	for (iterator = wrap_table->details->children; iterator; iterator = iterator->next) {
 		GtkWidget *child;
 		
 		child = iterator->data;
@@ -950,16 +950,16 @@ nautilus_wrap_table_reorder_child (NautilusWrapTable *wrap_table,
 	gboolean found_child = FALSE;
 
 	g_return_if_fail (NAUTILUS_IS_WRAP_TABLE (wrap_table));
-	g_return_if_fail (g_list_length (wrap_table->details->items) > 0);
+	g_return_if_fail (g_list_length (wrap_table->details->children) > 0);
 
 	if (position == -1) {
-		position = g_list_length (wrap_table->details->items) - 1;
+		position = g_list_length (wrap_table->details->children) - 1;
 	}
 
 	g_return_if_fail (position >= 0);
-	g_return_if_fail ((guint) position < g_list_length (wrap_table->details->items));
+	g_return_if_fail ((guint) position < g_list_length (wrap_table->details->children));
 
-	for (node = wrap_table->details->items; node != NULL; node = node->next) {
+	for (node = wrap_table->details->children; node != NULL; node = node->next) {
 		GtkWidget *next_child;
 		next_child = node->data;
 		
@@ -971,8 +971,23 @@ nautilus_wrap_table_reorder_child (NautilusWrapTable *wrap_table,
 
 	g_return_if_fail (found_child);
 
-	wrap_table->details->items = g_list_remove (wrap_table->details->items, child);
-	wrap_table->details->items = g_list_insert (wrap_table->details->items, child, position);
+	wrap_table->details->children = g_list_remove (wrap_table->details->children, child);
+	wrap_table->details->children = g_list_insert (wrap_table->details->children, child, position);
 
 	gtk_widget_queue_resize (GTK_WIDGET (wrap_table));
 }
+
+/**
+ * nautilus_wrap_table_get_num_children:
+ * @wrap_table: A NautilusWrapTable.
+ *
+ * Returns: The number of children being managed by the wrap table.
+ */
+guint
+nautilus_wrap_table_get_num_children (const NautilusWrapTable *wrap_table)
+{
+	g_return_val_if_fail (NAUTILUS_IS_WRAP_TABLE (wrap_table), 0);
+	
+	return g_list_length (wrap_table->details->children);
+}
+

@@ -71,6 +71,7 @@ void       nautilus_image_table_set_smooth_background_color (NautilusImageTable 
 							     guint32             smooth_background_color);
 void       nautilus_image_table_set_is_smooth               (NautilusImageTable *image_table,
 							     gboolean            is_smooth);
+GtkWidget *nautilus_image_table_add_empty_image             (NautilusImageTable *image_table);
 
 END_GNOME_DECLS
 
