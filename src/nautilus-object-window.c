@@ -111,6 +111,49 @@ static void nautilus_window_goto_url_cb (GtkWidget *widget,
 /* milliseconds */
 #define STATUSBAR_CLEAR_TIMEOUT 5000
 
+/* menu definitions */
+
+static void
+file_menu_close_cb (GtkWidget *widget,
+	       gpointer data)
+{
+	GtkWidget *window;
+
+	window = GTK_WIDGET (data);
+	gtk_widget_destroy(window);
+}
+
+static void
+file_menu_exit_cb (GtkWidget *widget,
+	       gpointer data)
+{
+	gtk_main_quit();
+}
+
+static GnomeUIInfo file_menu_info[] = {
+	GNOMEUIINFO_MENU_CLOSE_ITEM(file_menu_close_cb,NULL),
+	GNOMEUIINFO_SEPARATOR,
+	GNOMEUIINFO_MENU_EXIT_ITEM(file_menu_exit_cb,NULL),
+	GNOMEUIINFO_END
+};
+
+static GnomeUIInfo main_menu[] = {
+	GNOMEUIINFO_MENU_FILE_TREE (file_menu_info),
+	GNOMEUIINFO_END
+};
+
+/* toolbar definitions */
+
+static GnomeUIInfo toolbar_info[] = {
+	GNOMEUIINFO_ITEM_STOCK
+		(N_("Back"), N_("Go to the previously visited directory"),
+		 nautilus_window_back, GNOME_STOCK_PIXMAP_BACK),
+	GNOMEUIINFO_ITEM_STOCK
+		(N_("Forward"), N_("Go to the next directory"),
+		 nautilus_window_fwd, GNOME_STOCK_PIXMAP_FORWARD),
+	GNOMEUIINFO_END
+};
+
 GtkType
 nautilus_window_get_type(void)
 {
@@ -269,10 +312,9 @@ static void
 nautilus_window_constructed(NautilusWindow *window)
 {
   GnomeApp *app;
-  GnomeUIInfo main_menu[] = {
-    GNOMEUIINFO_END
-  };
-  GtkWidget *menu_hbox, *menubar, *wtmp, *statusbar;
+  GtkWidget *location_bar_box, *wtmp, *statusbar;
+  GtkMenuBar *menubar;
+  GtkToolbar *toolbar;
   GtkAccelGroup *ag;
 
   app = GNOME_APP(window);
@@ -281,11 +323,22 @@ nautilus_window_constructed(NautilusWindow *window)
   gtk_object_set_data(GTK_OBJECT(app), "GtkAccelGroup", ag);
   gtk_window_add_accel_group(GTK_WINDOW(app), ag);
 
-  menu_hbox = gtk_hbox_new(FALSE, GNOME_PAD);
+  // set up menu bar
 
-  menubar = gtk_menu_bar_new();
-  gtk_box_pack_end(GTK_BOX(menu_hbox), menubar, FALSE, TRUE, GNOME_PAD_BIG);
+  menubar = GTK_MENU_BAR(gtk_menu_bar_new());
   gnome_app_fill_menu_with_data(GTK_MENU_SHELL(menubar), main_menu, ag, TRUE, 0, window);
+  gnome_app_set_menus(GNOME_APP(window), menubar);
+  gnome_app_install_menu_hints(app, main_menu);
+
+  // set up toolbar
+
+  toolbar = GTK_TOOLBAR(gtk_toolbar_new(GTK_ORIENTATION_HORIZONTAL, GTK_TOOLBAR_BOTH));
+  gnome_app_fill_toolbar(toolbar, toolbar_info, NULL);
+  window->btn_back = toolbar_info[0].widget;
+  window->btn_fwd = toolbar_info[1].widget;
+  gnome_app_set_toolbar(GNOME_APP(window), toolbar);
+
+  // set up location bar
 
   window->option_cvtype = gtk_option_menu_new();
   window->menu_cvtype = gtk_menu_new();
@@ -294,12 +347,24 @@ nautilus_window_constructed(NautilusWindow *window)
   gtk_container_add(GTK_CONTAINER(window->menu_cvtype), 
   	gtk_menu_item_new_with_label(_("View as (placeholder)")));
   gtk_widget_set_sensitive(window->option_cvtype, FALSE);
-  
+
+  location_bar_box = gtk_hbox_new(FALSE, GNOME_PAD);
+  gtk_container_set_border_width(GTK_CONTAINER(location_bar_box), GNOME_PAD_SMALL);
+
+  window->ent_url = explorer_location_bar_new();
+  gtk_signal_connect(GTK_OBJECT(window->ent_url), "location_changed",
+                     nautilus_window_goto_url_cb, window);
+  gtk_box_pack_start(GTK_BOX(location_bar_box), window->ent_url, TRUE, TRUE, GNOME_PAD);
+  gnome_app_add_docked(app, location_bar_box, "url-entry",
+  					   GNOME_DOCK_ITEM_BEH_LOCKED|GNOME_DOCK_ITEM_BEH_EXCLUSIVE|GNOME_DOCK_ITEM_BEH_NEVER_VERTICAL,
+                       GNOME_DOCK_TOP, 2, 0, 0);
+
   gtk_widget_show_all(window->menu_cvtype);
   gtk_option_menu_set_menu(GTK_OPTION_MENU(window->option_cvtype), window->menu_cvtype);
   gtk_option_menu_set_history(GTK_OPTION_MENU(window->option_cvtype), 0);
-  gtk_box_pack_end(GTK_BOX(menu_hbox), window->option_cvtype, FALSE, FALSE, GNOME_PAD_BIG);
+  gtk_box_pack_end(GTK_BOX(location_bar_box), window->option_cvtype, FALSE, FALSE, GNOME_PAD_BIG);
   gtk_widget_show(window->option_cvtype);
+  gtk_widget_show_all(location_bar_box);
 
   // For mysterious reasons, connecting these signals before laying out the menu
   // and option menu ends up making the option menu not know how to size itself (i.e, 
@@ -311,81 +376,12 @@ nautilus_window_constructed(NautilusWindow *window)
                                  GTK_SIGNAL_FUNC(gtk_option_menu_do_resize), window->option_cvtype,
                                  GTK_OBJECT(window->option_cvtype));
 
-
-
-  /* A hacked-up version of gnome_app_set_menu(). We need this to use our 'menubar' for the actual menubar stuff,
-     but our menu_hbox for the widget being docked. */
-  {
-    GtkWidget *dock_item;
-    GnomeDockItemBehavior behavior;
-
-    behavior = (GNOME_DOCK_ITEM_BEH_EXCLUSIVE
-		| GNOME_DOCK_ITEM_BEH_NEVER_VERTICAL);
-	
-    if (!gnome_preferences_get_menubar_detachable())
-      behavior |= GNOME_DOCK_ITEM_BEH_LOCKED;
-
-    dock_item = gnome_dock_item_new (GNOME_APP_MENUBAR_NAME,
-				     behavior);
-    gtk_container_add (GTK_CONTAINER (dock_item), GTK_WIDGET (menu_hbox));
-
-    app->menubar = GTK_WIDGET (menubar);
-
-    /* To have menubar relief agree with the toolbar (and have the relief outside of
-     * smaller handles), substitute the dock item's relief for the menubar's relief,
-     * but don't change the size of the menubar in the process. */
-    gtk_menu_bar_set_shadow_type (GTK_MENU_BAR (app->menubar), GTK_SHADOW_NONE);
-    if (gnome_preferences_get_menubar_relief ()) {
-      guint border_width;
-		
-      gtk_container_set_border_width (GTK_CONTAINER (dock_item), 2);
-      border_width = GTK_CONTAINER (app->menubar)->border_width;
-      if (border_width >= 2)
-	border_width -= 2;
-      gtk_container_set_border_width (GTK_CONTAINER (app->menubar),
-				      border_width);
-    } else
-      gnome_dock_item_set_shadow_type (GNOME_DOCK_ITEM (dock_item), GTK_SHADOW_NONE);
-
-    if (app->layout != NULL)
-      gnome_dock_layout_add_item (app->layout,
-				  GNOME_DOCK_ITEM (dock_item),
-				  GNOME_DOCK_TOP,
-				  0, 0, 0);
-    else
-      gnome_dock_add_item(GNOME_DOCK(app->dock),
-			  GNOME_DOCK_ITEM (dock_item),
-			  GNOME_DOCK_TOP,
-			  0, 0, 0, TRUE);
-
-    gtk_widget_show (menubar);
-    gtk_widget_show (dock_item);
-  }
-  gtk_widget_show (menu_hbox);
+  // set up status bar
 
   gnome_app_set_statusbar(app, (statusbar = gtk_statusbar_new()));
   window->statusbar_ctx = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar), "IhateGtkStatusbar");
 
-  gnome_app_install_menu_hints(app, main_menu); /* This needs a statusbar in order to work */
-
-  wtmp = gnome_stock_pixmap_widget(GTK_WIDGET(window), GNOME_STOCK_PIXMAP_BACK);
-  window->btn_back = gtk_button_new();
-  gtk_button_set_relief(GTK_BUTTON(window->btn_back), GTK_RELIEF_NONE);
-  gtk_widget_set_sensitive(window->btn_back, FALSE);
-  gtk_container_add(GTK_CONTAINER(window->btn_back), wtmp);
-  gtk_signal_connect(GTK_OBJECT(window->btn_back), "clicked", nautilus_window_back, window);
-
-  wtmp = gnome_stock_pixmap_widget(GTK_WIDGET(window), GNOME_STOCK_PIXMAP_FORWARD);
-  window->btn_fwd = gtk_button_new();
-  gtk_button_set_relief(GTK_BUTTON(window->btn_fwd), GTK_RELIEF_NONE);
-  gtk_widget_set_sensitive(window->btn_fwd, FALSE);
-  gtk_container_add(GTK_CONTAINER(window->btn_fwd), wtmp);
-  gtk_signal_connect(GTK_OBJECT(window->btn_fwd), "clicked", nautilus_window_fwd, window);
-
-  gtk_box_pack_start(GTK_BOX(menu_hbox), window->btn_back, FALSE, FALSE, GNOME_PAD_SMALL);
-  gtk_box_pack_start(GTK_BOX(menu_hbox), window->btn_fwd, FALSE, FALSE, GNOME_PAD_SMALL);
-  gtk_widget_show_all(window->btn_back);
-  gtk_widget_show_all(window->btn_fwd);
+  // set up window contents and policy
 
   gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, FALSE);
 
@@ -405,14 +401,6 @@ nautilus_window_constructed(NautilusWindow *window)
 #endif
   gtk_widget_show_all(window->content_hbox);
 
-
-  window->ent_url = explorer_location_bar_new();
-  gtk_signal_connect(GTK_OBJECT(window->ent_url), "location_changed",
-                     nautilus_window_goto_url_cb, window);
-  gnome_app_add_docked(app, window->ent_url, "url-entry",
-                       GNOME_DOCK_ITEM_BEH_LOCKED|GNOME_DOCK_ITEM_BEH_EXCLUSIVE|GNOME_DOCK_ITEM_BEH_NEVER_VERTICAL,
-                       GNOME_DOCK_TOP, 1, 0, 0);
-  gtk_widget_show(window->ent_url);
 
   /* CORBA stuff */
   window->ntl_viewwindow = impl_Nautilus_ViewWindow__create(window);
@@ -583,12 +571,10 @@ nautilus_window_back (GtkWidget *btn, NautilusWindow *window)
   g_assert(window->uris_prev);
 
   memset(&nri, 0, sizeof(nri));
-  nri.requested_uri = g_strdup(window->uris_prev->data);
+  nri.requested_uri = window->uris_prev->data;
   nri.new_window_default = nri.new_window_suggested = nri.new_window_enforced = Nautilus_V_FALSE;
 
   nautilus_window_change_location(window, &nri, NULL, TRUE);
-
-  g_free(nri.requested_uri);
 }
 
 static void
@@ -599,11 +585,7 @@ nautilus_window_fwd (GtkWidget *btn, NautilusWindow *window)
   g_assert(window->uris_next);
 
   memset(&nri, 0, sizeof(nri));
-  nri.requested_uri = g_strdup(window->uris_next->data);
+  nri.requested_uri = window->uris_next->data;
   nri.new_window_default = nri.new_window_suggested = nri.new_window_enforced = Nautilus_V_FALSE;
-  
   nautilus_window_change_location(window, &nri, NULL, FALSE);
-
-  g_free(nri.requested_uri);
 }
-

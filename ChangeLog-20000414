@@ -1,3 +1,15 @@
+1999-12-15  John Sullivan  <sullivan@eazel.com>
+
+	* src/ntl-window.c: (nautilus_window_constructed): Added beginnings
+	of a menu bar, and reorganized toolbar a little. There's a rudimentary
+	File menu now. The View As option menu moved down to the location bar
+	line. This is by no means a complete or final organization, but it's
+	a start.
+	* (file_menu_close_cb): new callback for File/Close menu item
+	* (file_menu_exit_cb): new callback for File/Quit menu item
+	* file_menu_info[]: new GNOMEUIINFO struct for File menu
+	* toolbar_info[]: new GNOMEUIINFO struct for toolbar
+
 1999-12-15  Elliot Lee  <sopwith@redhat.com>
 
 	* Warning fixes throughout.
