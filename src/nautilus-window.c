@@ -494,7 +494,7 @@ menu_bar_no_resize_hack_class_free (void)
 	g_free (menu_bar_no_resize_hack_class);
 }
 
-/* This fn is used to keep the desktop menu bar from resizing.
+/* This call is used to keep the desktop menu bar from resizing.
  * It patches out its class with one where the size_allocate
  * method has been replaced with a no-op.
  */
@@ -567,6 +567,26 @@ throbber_location_change_request_callback (BonoboListener *listener,
 	}
 }
 
+/* Add a dummy menu with a "View as ..." item when we first create the
+ * view_as_option_menu -- without this the menu draws empty and shrunk,
+ * once we populate it it grows and forces the toolbar and all the other
+ * views to re-layout.
+ */
+static void
+set_dummy_initial_view_as_menu (NautilusWindow *window)
+{
+	GtkWidget *new_menu;
+	GtkWidget *menu_item;
+
+	new_menu = gtk_menu_new ();
+	menu_item = gtk_menu_item_new_with_label (_("View as ..."));
+       	gtk_widget_show (menu_item);
+       	gtk_menu_append (GTK_MENU (new_menu), menu_item);
+
+        gtk_option_menu_set_menu (GTK_OPTION_MENU (window->view_as_option_menu),
+                                  new_menu);
+}
+
 static void
 nautilus_window_constructed (NautilusWindow *window)
 {
@@ -629,6 +649,10 @@ nautilus_window_constructed (NautilusWindow *window)
 	window->view_as_option_menu = gtk_option_menu_new ();
 	gtk_box_pack_end (GTK_BOX (view_as_menu_vbox), window->view_as_option_menu, TRUE, FALSE, 0);
 	gtk_widget_show (window->view_as_option_menu);
+ 	/* Make sure there is something in the option menu to prevent it from
+ 	 * growing later.
+ 	 */
+	set_dummy_initial_view_as_menu (window);
 	
 	/* Allocate the zoom control and place on the right next to the menu.
 	 * It gets shown later, if the view-frame contains something zoomable.

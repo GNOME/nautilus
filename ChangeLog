@@ -1,3 +1,16 @@
+2001-02-27  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fix 7116: (Location bar grows taller causing a re-layout
+		   of the icon view)
+	
+	* src/nautilus-window.c: (set_dummy_initial_view_as_menu),
+	(nautilus_window_constructed):
+	Populate the "View as" menu the first time it is created with
+	a dummy "View as ..." menu item to prevent it from comming up in
+	a shrunken state that gets resized later and re-shuffles the window.
+
 2001-02-26  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	reviewed by: Robey Pointer <robey@eazel.com> sez "Looks
