@@ -1419,13 +1419,6 @@ nautilus_window_set_content_view_widget (NautilusWindow *window,
 		window->content_view = NULL;
 	}
 
-	/* Here's an explicit check for a problem that happens all too often. */
-	if (bonobo_window_xml_node_exists (BONOBO_WINDOW (window),
-					   "/menu/File/Open Placeholder/Open")) {
-		g_warning ("There's a lingering Open menu item. "
-			   "This usually means a new Bonobo bug.");
-	}
-	
 	if (new_view != NULL) {
 		gtk_widget_show (GTK_WIDGET (new_view));
 		

@@ -1,5 +1,16 @@
 2000-11-03  Darin Adler  <darin@eazel.com>
 
+	Fixed bug 4483 (Crash while navigating in Vault).
+
+	* src/nautilus-window.c: (nautilus_window_set_content_view_widget):
+	Remove the idle with gtk_idle_remove, not gtk_timeout_remove.
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_destroy): Removed the check since it was giving
+	false alarms and not helping us for real.
+
+2000-11-03  Darin Adler  <darin@eazel.com>
+
 	* src/nautilus-shell.c: (display_caveat): Lets call the main
 	branch "Nautilus", not "Nautilus Preview Release 2". Later we
 	should change the caveat for cvs to be worded differently too.
