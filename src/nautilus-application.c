@@ -161,11 +161,19 @@ nautilus_application_init (NautilusApplication *application)
 NautilusApplication *
 nautilus_application_new (void)
 {
-	return NAUTILUS_APPLICATION (g_object_new (nautilus_application_get_type (), NULL));
+	NautilusApplication *application;
+
+	application = g_object_new (NAUTILUS_TYPE_APPLICATION, NULL);
+	
+	bonobo_generic_factory_construct_noreg (BONOBO_GENERIC_FACTORY (application),
+						FACTORY_IID,
+						NULL);
+	
+	return application;
 }
 
 static void
-nautilus_application_finalize (GObject *object)
+nautilus_application_destroy (BonoboObject *object)
 {
 	NautilusApplication *application;
 
@@ -175,7 +183,7 @@ nautilus_application_finalize (GObject *object)
 	
 	bonobo_object_unref (BONOBO_OBJECT (application->undo_manager));
 
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+	EEL_CALL_PARENT (BONOBO_OBJECT_CLASS, destroy, (object));
 }
 
 static gboolean
@@ -1042,7 +1050,7 @@ is_kdesktop_present (void)
 static void
 nautilus_application_class_init (NautilusApplicationClass *klass)
 {
-	G_OBJECT_CLASS (klass)->finalize = nautilus_application_finalize;
+	BONOBO_OBJECT_CLASS (klass)->destroy = nautilus_application_destroy;
 	
 	BONOBO_GENERIC_FACTORY_CLASS (klass)->epv.createObject = create_object;
 }

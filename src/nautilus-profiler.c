@@ -34,12 +34,15 @@
 #include <glib.h>
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkhbox.h>
+#include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtksignal.h>
-#include <gtk/gtktext.h>
+#include <gtk/gtktextbuffer.h>
+#include <gtk/gtktextview.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkvscrollbar.h>
 #include <gtk/gtkwindow.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -108,27 +111,38 @@ typedef struct
 {
 	GtkWidget *main_box;
 	GtkWidget *text;
-	GtkWidget *ver_scroll_bar;
+	GtkTextBuffer *text_buffer;
 } ScrolledText;
 
 static ScrolledText *
 scrolled_text_new (void)
 {
 	ScrolledText *scrolled_text;
-
+	GtkWidget *scrolled_window;
+	
 	scrolled_text = g_new (ScrolledText, 1);
 
 	scrolled_text->main_box = gtk_hbox_new (FALSE, 0);
+	scrolled_text->text_buffer = gtk_text_buffer_new (NULL);
 
-	scrolled_text->text = gtk_text_new (NULL, NULL);
+	gtk_text_buffer_create_tag (scrolled_text->text_buffer, "fixed_font",
+				    "family", "monospace",
+				    "wrap_mode", GTK_WRAP_NONE,
+				    NULL);
+	
 
-	scrolled_text->ver_scroll_bar = gtk_vscrollbar_new (GTK_TEXT (scrolled_text->text)->vadj);
+	scrolled_text->text = gtk_text_view_new_with_buffer (scrolled_text->text_buffer);
 
-	gtk_box_pack_start (GTK_BOX (scrolled_text->main_box), scrolled_text->text, TRUE, TRUE, 0);
-	gtk_box_pack_end (GTK_BOX (scrolled_text->main_box), scrolled_text->ver_scroll_bar, FALSE, FALSE, 0);
+	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),
+					GTK_POLICY_AUTOMATIC,
+					GTK_POLICY_AUTOMATIC);
+	gtk_container_add (GTK_CONTAINER (scrolled_window),
+			   scrolled_text->text);
 
-	gtk_widget_show (scrolled_text->ver_scroll_bar);
-	gtk_widget_show (scrolled_text->text);
+	gtk_box_pack_start (GTK_BOX (scrolled_text->main_box), scrolled_window, TRUE, TRUE, 0);
+
+	gtk_widget_show_all (scrolled_window);
 
 	return scrolled_text;
 }
@@ -180,7 +194,7 @@ dump_dialog_new (const char *title)
 	
 	dump_dialog = g_new (DumpDialog, 1);
 	
-	dump_dialog->window = gtk_window_new (GTK_WINDOW_DIALOG);
+	dump_dialog->window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	eel_gtk_window_set_up_close_accelerator 
 		(GTK_WINDOW (dump_dialog->window));
 	g_signal_connect (dump_dialog->window,
@@ -192,10 +206,8 @@ dump_dialog_new (const char *title)
 
 	main_box = gtk_vbox_new (FALSE, 0);
 	dump_dialog->scrolled_text = scrolled_text_new ();
-	gtk_text_set_editable (GTK_TEXT (dump_dialog->scrolled_text->text), FALSE);
-	gtk_text_set_word_wrap (GTK_TEXT (dump_dialog->scrolled_text->text), FALSE);
-	gtk_text_set_line_wrap (GTK_TEXT (dump_dialog->scrolled_text->text), FALSE);
-
+	gtk_text_view_set_editable (GTK_TEXT_VIEW (dump_dialog->scrolled_text->text), FALSE);
+	
 	print_button = gtk_button_new_with_label (_("Print"));
 	save_button = gtk_button_new_with_label (_("Save"));
 
@@ -232,37 +244,28 @@ static void
 dump_dialog_show (const char *dump_data, const char *title)
 {
 	static DumpDialog *dump_dialog = NULL;
-	GdkFont *font;
-
+	GtkTextBuffer *buffer;
+	GtkTextIter start_iter, end_iter;
+	
 	g_return_if_fail (dump_data != NULL);
-
+	
 	if (dump_dialog == NULL) {
 		dump_dialog = dump_dialog_new (_("Profile Dump"));
 	}
 
-	gtk_text_forward_delete (GTK_TEXT (dump_dialog->scrolled_text->text),
-				 gtk_text_get_length (GTK_TEXT (dump_dialog->scrolled_text->text)));
+	buffer = dump_dialog->scrolled_text->text_buffer;
 	
-	font = eel_gdk_font_get_fixed ();
-
-	gtk_text_freeze (GTK_TEXT (dump_dialog->scrolled_text->text));
-
 	/* delete existing text in buffer */
-	gtk_text_set_point (GTK_TEXT (dump_dialog->scrolled_text->text), 0);
-	gtk_text_forward_delete (GTK_TEXT (dump_dialog->scrolled_text->text), 
-		gtk_text_get_length(GTK_TEXT (dump_dialog->scrolled_text->text)));
-	
-	gtk_text_insert (GTK_TEXT (dump_dialog->scrolled_text->text),
-			 font,
-			 NULL,
-			 NULL,
-			 dump_data,
-			 strlen (dump_data));
+	gtk_text_buffer_get_bounds (buffer, &start_iter, &end_iter);
+	gtk_text_buffer_delete (buffer, &start_iter, &end_iter);
 
-	gtk_text_thaw (GTK_TEXT (dump_dialog->scrolled_text->text));
+	gtk_text_buffer_get_start_iter (buffer, &start_iter);
 
-	gdk_font_unref (font);
-
+	gtk_text_buffer_insert_with_tags_by_name (buffer, &start_iter,
+						  dump_data, -1,
+						  "fixed_font",
+						  NULL);
+				
 	if (title != NULL) {
 		gtk_window_set_title (GTK_WINDOW (dump_dialog->window), title);
 	}

@@ -46,7 +46,7 @@ static void                  nautilus_switchable_search_bar_set_location     (Na
 static char *                nautilus_switchable_search_bar_get_location     (NautilusNavigationBar            *bar);
 static void                  nautilus_switchable_search_bar_class_init (NautilusSwitchableSearchBarClass *class);
 static void                  nautilus_switchable_search_bar_init       (NautilusSwitchableSearchBar      *bar);
-static void  		     nautilus_switchable_search_bar_destroy          (GtkObject                	       *object);
+static void  		     nautilus_switchable_search_bar_finalize          (GObject                	       *object);
 
 static NautilusSearchBarMode other_search_mode                               (NautilusSearchBarMode            mode);
 static NautilusSearchBarMode nautilus_search_uri_to_search_bar_mode          (const char *uri);
@@ -64,7 +64,7 @@ nautilus_switchable_search_bar_class_init (NautilusSwitchableSearchBarClass *kla
 	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->get_location = nautilus_switchable_search_bar_get_location;
 	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->set_location = nautilus_switchable_search_bar_set_location;
 
-	GTK_OBJECT_CLASS (klass)->destroy = nautilus_switchable_search_bar_destroy;
+	G_OBJECT_CLASS (klass)->finalize = nautilus_switchable_search_bar_finalize;
 }
 
 static void
@@ -95,7 +95,7 @@ nautilus_switchable_search_bar_init (NautilusSwitchableSearchBar *bar)
 
 
 static void
-nautilus_switchable_search_bar_destroy (GtkObject *object)
+nautilus_switchable_search_bar_finalize (GObject *object)
 {
 	NautilusSwitchableSearchBar *bar;
 
@@ -105,7 +105,7 @@ nautilus_switchable_search_bar_destroy (GtkObject *object)
 					      search_bar_preference_changed_callback,
 					      bar);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 GtkWidget *

@@ -693,10 +693,8 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 	eel_gtk_adjustment_clamp_value (vadj);
 }
 
-static NautilusIconContainer *sort_hack_container;
-
 static int
-compare_icons (gconstpointer a, gconstpointer b)
+compare_icons (gconstpointer a, gconstpointer b, gpointer icon_container)
 {
 	const NautilusIcon *icon_a, *icon_b;
 	int result;
@@ -705,7 +703,7 @@ compare_icons (gconstpointer a, gconstpointer b)
 	icon_b = b;
 
 	result = 0;
-	g_signal_emit (sort_hack_container,
+	g_signal_emit (icon_container,
 			 signals[COMPARE_ICONS], 0,
 			 icon_a->data,
 			 icon_b->data,
@@ -717,12 +715,11 @@ static void
 sort_icons (NautilusIconContainer *container,
 	    GList **icons)
 {
-	sort_hack_container = container;
-	*icons = g_list_sort (*icons, compare_icons);
+	*icons = g_list_sort_with_data (*icons, compare_icons, container);
 }
 
 static int
-compare_icons_by_name (gconstpointer a, gconstpointer b)
+compare_icons_by_name (gconstpointer a, gconstpointer b, gpointer icon_container)
 {
 	const NautilusIcon *icon_a, *icon_b;
 	int result;
@@ -731,7 +728,7 @@ compare_icons_by_name (gconstpointer a, gconstpointer b)
 	icon_b = b;
 
 	result = 0;
-	g_signal_emit (sort_hack_container,
+	g_signal_emit (icon_container,
 			 signals[COMPARE_ICONS_BY_NAME], 0,
 			 icon_a->data,
 			 icon_b->data,
@@ -743,8 +740,7 @@ static void
 sort_icons_by_name (NautilusIconContainer *container,
 		    GList **icons)
 {
-	sort_hack_container = container;
-	*icons = g_list_sort (*icons, compare_icons_by_name);
+	*icons = g_list_sort_with_data (*icons, compare_icons_by_name, container);
 }
 
 

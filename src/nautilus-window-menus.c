@@ -92,11 +92,6 @@
 
 #define COMMAND_PATH_CLOSE_WINDOW			"/commands/Close"
 
-#define SWITCH_TO_BEGINNER_VERB				"Switch to Beginner Level"
-#define SWITCH_TO_INTERMEDIATE_VERB			"Switch to Intermediate Level"
-#define SWITCH_TO_ADVANCED_VERB				"Switch to Advanced Level"
-
-
 #define USER_MANUAL_URI		"help:nautilus-user-manual"
 #define QUICK_REFERENCE_URI	"help:nautilus-quick-reference"
 #define RELEASE_NOTES_URI	"help:nautilus-release-notes"
@@ -118,11 +113,6 @@ static void                  schedule_refresh_go_menu                      (Naut
 static void                  schedule_refresh_bookmarks_menu               (NautilusWindow   *window);
 static void                  edit_bookmarks                                (NautilusWindow   *window);
 static void                  add_bookmark_for_current_location             (NautilusWindow   *window);
-
-#define NAUTILUS_MENU_PATH_NOVICE_ITEM				"/menu/Preferences/User Levels Placeholder/Switch to Beginner Level"
-#define NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM			"/menu/Preferences/User Levels Placeholder/Switch to Intermediate Level"
-#define NAUTILUS_MENU_PATH_EXPERT_ITEM				"/menu/Preferences/User Levels Placeholder/Switch to Advanced Level"
-#define NAUTILUS_MENU_PATH_USER_LEVEL_CUSTOMIZE			"/menu/Preferences/User Level Customization"
 
 /* Struct that stores all the info necessary to activate a bookmark. */
 typedef struct {

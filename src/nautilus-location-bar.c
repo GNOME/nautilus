@@ -584,6 +584,18 @@ real_activate (NautilusNavigationBar *navigation_bar)
 }
 
 static void
+finalize (GObject *object)
+{
+	NautilusLocationBar *bar;
+
+	bar = NAUTILUS_LOCATION_BAR (object);
+
+	g_free (bar->details);
+
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+}
+
+static void
 destroy (GtkObject *object)
 {
 	NautilusLocationBar *bar;
@@ -593,17 +605,19 @@ destroy (GtkObject *object)
 	/* cancel the pending idle call, if any */
 	if (bar->details->idle_id != 0) {
 		gtk_idle_remove (bar->details->idle_id);
+		bar->details->idle_id = 0;
 	}
 	
 	if (bar->details->file_info_list) {
 		gnome_vfs_file_info_list_free (bar->details->file_info_list);	
-	
+		bar->details->file_info_list = NULL;
 	}
 	
 	g_free (bar->details->current_directory);
+	bar->details->current_directory = NULL;
 	
 	g_free (bar->details->last_location);
-	g_free (bar->details);
+	bar->details->last_location = NULL;
 	
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -611,8 +625,12 @@ destroy (GtkObject *object)
 static void
 nautilus_location_bar_class_init (NautilusLocationBarClass *class)
 {
+	GObjectClass *gobject_class;
 	GtkObjectClass *object_class;
 	NautilusNavigationBarClass *navigation_bar_class;
+
+	gobject_class = G_OBJECT_CLASS (class);
+	gobject_class->finalize = finalize;
 	
 	object_class = GTK_OBJECT_CLASS (class);
 	object_class->destroy = destroy;

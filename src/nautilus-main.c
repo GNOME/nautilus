@@ -37,6 +37,7 @@
 #include <X11/Xlib.h>
 #include <bonobo-activation/bonobo-activation.h>
 #include <bonobo/bonobo-main.h>
+#include <bonobo/bonobo-ui-main.h>
 #include <dlfcn.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-glib-extensions.h>
@@ -196,11 +197,6 @@ main (int argc, char *argv[])
 
 	popt_context = g_value_get_pointer (&context_as_value);
 
-#if GNOME2_CONVERSION_COMPLETE
-	gnomelib_register_popt_table (bonobo_activation_popt_options, 
-				      bonobo_activation_get_popt_table_name ());
-#endif
-
 	eel_setenv ("DISPLAY", DisplayString (GDK_DISPLAY ()), TRUE);
 
 	/* Check for argument consistency. */
@@ -274,7 +270,7 @@ main (int argc, char *argv[])
 			 geometry,
 			 args);
 		if (is_event_loop_needed ()) {
-			bonobo_main ();
+			gtk_main ();
 		}
 		bonobo_object_unref (BONOBO_OBJECT (application));
 	}
@@ -302,5 +298,5 @@ main (int argc, char *argv[])
 		execvp (argv[0], argv_copy);
 	}
 
-	return bonobo_debug_shutdown ();
+	return bonobo_ui_debug_shutdown ();
 }

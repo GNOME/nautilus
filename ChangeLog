@@ -1,3 +1,62 @@
+2002-01-08  Anders Carlsson  <andersca@gnu.org>
+ 
+	* src/nautilus-zoom-control.c (nautilus_zoom_control_finalize): Remove
+	preferences calback in ::finalize.
+	(nautilus_zoom_control_unload_images): Set image pointers to NULL after
+	unloading images.
+
+	* src/nautilus-window-menus.c: Remove some userlevel #defines.
+
+	* src/nautilus-switchable-search-bar.c 
+	(nautilus_switchable_search_bar_finalize): Remove the preferences callback
+	in ::finalize instead of ::destroy.
+ 
+	* src/nautilus-switchable-navigation-bar.c: Create the search bar lazily.
+	Creating the search bar came up high on the profile when creating new windows,
+	and doing it lazily helps, especially when we don't have medusa support yet.
+	(nautilus_switchable_navigation_bar_finalize): Free details in ::finalize.
+
+	* src/nautilus-simple-search-bar.c (nautilus_simple_search_bar_finalize):
+	Free details in ::finalize.
+	(nautilus_simple_search_bar_destroy): Disable the undo stuff. Perhaps we could
+	call connect to "destroy" in nautilus_undo_set_up_nautilus_entry_for_undo
+	and call nautilus_undo_tear_down_nautilus_entry_for_undo there instead.
+
+	* src/nautilus-sidebar.c (nautilus_sidebar_init): Ref and sink the title tab.
+	(nautilus_sidebar_finalize): Move things from ::finalize to ::destroy.
+
+	* src/nautilus-preferences-dialog.c 
+	(preferences_dialog_populate_themes_group): The image chooser isn't
+	broken anymore so we can enable it now.
+
+	* src/nautilus-main.c (main): Call gtk_main instead of bonobo_main
+	since bonobo_main is for non-gui apps and won't be affected by 
+	gtk_main_quit.
+
+	* src/nautilus-location-bar.c: Destroy things in ::finalize
+	instead of in ::destroy.
+
+	* src/nautilus-profiler.c: Port to GtkTextView.
+
+	* src/nautilus-application.c (nautilus_application_new): 
+	Call bonobo_generic_factory_construct_noreg so that we set
+	the IID.
+	(nautilus_application_destroy): Unref the undo manager
+	in ::destroy instead.
+
+	* libnautilus-private/nautilus-icon-container.c: 
+	Use g_list_sort_with_data when sorting icons so we can get rid
+	of the hack_icon_container hack.
+
+	* libnautilus-private/nautilus-entry.c: Free details struct
+	in ::finalize instead of in ::destroy
+
+	* libnautilus-private/nautilus-icon-dnd.c 
+	(confirm_switch_to_manual_layout): Compare with GTK_RESPONSE_YES.
+
+	* libnautilus-private/nautilus-file-operations.c 
+	(confirm_empty_trash): Compare with GTK_RESPONSE_YES.
+
 2002-01-07  Darin Adler  <darin@bentspoon.com>
 
 	* libnautilus-private/nautilus-desktop-file-loader.c:

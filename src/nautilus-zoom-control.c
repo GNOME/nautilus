@@ -101,6 +101,18 @@ void        draw_number                         (GtkWidget                *widge
 
 EEL_CLASS_BOILERPLATE (NautilusZoomControl, nautilus_zoom_control, GTK_TYPE_EVENT_BOX)
 
+static void
+nautilus_zoom_control_finalize (GObject *object)
+{
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
+					 nautilus_zoom_control_theme_changed,
+					 object);
+
+	g_free (NAUTILUS_ZOOM_CONTROL (object)->details);
+
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+}
+
 static void 
 nautilus_zoom_control_destroy (GtkObject *object)
 {
@@ -110,12 +122,6 @@ nautilus_zoom_control_destroy (GtkObject *object)
 	/* deallocate pixbufs */
 	nautilus_zoom_control_unload_images (NAUTILUS_ZOOM_CONTROL (object));
 
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
-					      nautilus_zoom_control_theme_changed,
-					      object);
-
-	g_free (NAUTILUS_ZOOM_CONTROL (object)->details);
-	
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
@@ -383,18 +389,22 @@ nautilus_zoom_control_unload_images (NautilusZoomControl *zoom_control)
 {
 	if (zoom_control->details->zoom_body_image) {
 		g_object_unref (zoom_control->details->zoom_body_image);
+		zoom_control->details->zoom_body_image = NULL;
 	}
 	
 	if (zoom_control->details->zoom_decrement_image) {
 		g_object_unref (zoom_control->details->zoom_decrement_image);
+		zoom_control->details->zoom_decrement_image = NULL;
 	}
 	
 	if (zoom_control->details->zoom_increment_image) {
 		g_object_unref (zoom_control->details->zoom_increment_image);
+		zoom_control->details->zoom_increment_image = NULL;
 	}
 
 	if (zoom_control->details->number_strip != NULL) {
 		g_object_unref (zoom_control->details->number_strip);
+		zoom_control->details->number_strip = NULL;
 	}
 
 	if (zoom_control->details->label_font != NULL) {
@@ -715,8 +725,11 @@ nautilus_zoom_control_can_zoom_out (NautilusZoomControl *zoom_control)
 static void
 nautilus_zoom_control_class_init (NautilusZoomControlClass *zoom_control_class)
 {
+	GObjectClass *gobject_class = G_OBJECT_CLASS (zoom_control_class);
 	GtkObjectClass *object_class = GTK_OBJECT_CLASS (zoom_control_class);
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (zoom_control_class);
+	
+	gobject_class->finalize = nautilus_zoom_control_finalize;
 	
 	object_class->destroy = nautilus_zoom_control_destroy;
 

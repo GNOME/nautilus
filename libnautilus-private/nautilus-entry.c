@@ -107,8 +107,8 @@ nautilus_entry_new_with_max_length (guint16 max)
 	return widget;
 }
 
-static void 
-nautilus_entry_destroy (GtkObject *object)
+static void
+nautilus_entry_finalize (GObject *object)
 {
 	NautilusEntry *entry;
 
@@ -120,7 +120,7 @@ nautilus_entry_destroy (GtkObject *object)
 	
 	g_free (entry->details);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 static void
@@ -439,11 +439,14 @@ nautilus_entry_class_init (NautilusEntryClass *class)
 {
 	GtkWidgetClass *widget_class;
 	GtkObjectClass *object_class;
+	GObjectClass *gobject_class;
+	
 #if GNOME2_CONVERSION_COMPLETE
 	GtkEditableClass *editable_class;
 #endif
 		
 	widget_class = GTK_WIDGET_CLASS (class);
+	gobject_class = G_OBJECT_CLASS (class);
 	object_class = GTK_OBJECT_CLASS (class);
 #if GNOME2_CONVERSION_COMPLETE
 	editable_class = GTK_EDITABLE_CLASS (class);
@@ -455,7 +458,7 @@ nautilus_entry_class_init (NautilusEntryClass *class)
 	widget_class->motion_notify_event = nautilus_entry_motion_notify;
 	widget_class->selection_clear_event = nautilus_entry_selection_clear;
 	
-	object_class->destroy = nautilus_entry_destroy;
+	gobject_class->finalize = nautilus_entry_finalize;
 	
 #if GNOME2_CONVERSION_COMPLETE
 	editable_class->insert_text = nautilus_entry_insert_text;

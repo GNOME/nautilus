@@ -796,7 +796,7 @@ confirm_switch_to_manual_layout (NautilusIconContainer *container)
 	response = gtk_dialog_run (dialog);
 	gtk_object_destroy (GTK_OBJECT (dialog));
 
-	return response == GTK_RESPONSE_OK;
+	return response == GTK_RESPONSE_YES;
 }
 
 static void

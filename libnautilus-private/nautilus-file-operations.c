@@ -2297,7 +2297,7 @@ confirm_empty_trash (GtkWidget *parent_view)
 
 	gtk_object_destroy (GTK_OBJECT (dialog));
 
-	return response == GTK_RESPONSE_OK;
+	return response == GTK_RESPONSE_YES;
 }
 
 void 

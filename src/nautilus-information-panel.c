@@ -105,6 +105,7 @@ static gboolean nautilus_sidebar_leave_event           (GtkWidget        *widget
 static gboolean nautilus_sidebar_motion_event          (GtkWidget        *widget,
 							GdkEventMotion   *event);
 static void     nautilus_sidebar_destroy               (GtkObject        *object);
+static void     nautilus_sidebar_finalize              (GObject          *object);
 static void     nautilus_sidebar_drag_data_received    (GtkWidget        *widget,
 							GdkDragContext   *context,
 							int               x,
@@ -175,14 +176,18 @@ static void
 nautilus_sidebar_class_init (GtkObjectClass *object_klass)
 {
 	GtkWidgetClass *widget_class;
+	GObjectClass *gobject_class;
 	
 	NautilusSidebarClass *klass;
 
 	widget_class = GTK_WIDGET_CLASS (object_klass);
 	klass = NAUTILUS_SIDEBAR_CLASS (object_klass);
+	gobject_class = G_OBJECT_CLASS (object_klass);
+	
+	gobject_class->finalize = nautilus_sidebar_finalize;
 
 	object_klass->destroy = nautilus_sidebar_destroy;
-
+	
 	widget_class->drag_data_received  = nautilus_sidebar_drag_data_received;
 	widget_class->motion_notify_event = nautilus_sidebar_motion_event;
 	widget_class->leave_notify_event = nautilus_sidebar_leave_event;
@@ -265,6 +270,9 @@ nautilus_sidebar_init (GtkObject *object)
 
 	/* also, allocate the title tab */
 	sidebar->details->title_tab = NAUTILUS_SIDEBAR_TABS (nautilus_sidebar_tabs_new ());
+	g_object_ref (sidebar->details->title_tab);
+	gtk_object_sink (GTK_OBJECT (sidebar->details->title_tab));
+
 	nautilus_sidebar_tabs_set_title_mode (sidebar->details->title_tab, TRUE);	
 	
 	gtk_widget_show (GTK_WIDGET (sidebar->details->sidebar_tabs));
@@ -304,35 +312,47 @@ nautilus_sidebar_destroy (GtkObject *object)
 
 	sidebar = NAUTILUS_SIDEBAR (object);
 
-	if (sidebar->details) {
+	if (sidebar->details->notebook != NULL) {
 		g_object_unref (sidebar->details->notebook);
-
-		if (sidebar->details->file != NULL) {
-			gtk_signal_disconnect (GTK_OBJECT (sidebar->details->file), 
-					       sidebar->details->file_changed_connection);
-			nautilus_file_monitor_remove (sidebar->details->file, sidebar);
-			nautilus_file_unref (sidebar->details->file);
-		}
-		
-		gtk_object_sink (GTK_OBJECT (sidebar->details->title_tab));
-		
-		g_free (sidebar->details->uri);
-		g_free (sidebar->details->default_background_color);
-		g_free (sidebar->details->default_background_image);
-		
-		g_free (sidebar->details);
-		sidebar->details = NULL;
-		
-		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
-						 nautilus_sidebar_theme_changed,
-						 sidebar);
-		
-		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
-						 nautilus_sidebar_confirm_trash_changed,
-						 sidebar);
+		sidebar->details->notebook = NULL;
 	}
-
+	if (sidebar->details->title_tab != NULL) {
+		g_object_unref (sidebar->details->title_tab);
+		sidebar->details->title_tab = NULL;
+	}
+	
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+}
+
+static void
+nautilus_sidebar_finalize (GObject *object)
+{
+	NautilusSidebar *sidebar;
+
+	sidebar = NAUTILUS_SIDEBAR (object);
+
+	if (sidebar->details->file != NULL) {
+		gtk_signal_disconnect (GTK_OBJECT (sidebar->details->file), 
+				       sidebar->details->file_changed_connection);
+		nautilus_file_monitor_remove (sidebar->details->file, sidebar);
+		nautilus_file_unref (sidebar->details->file);
+	}
+	
+	g_free (sidebar->details->uri);
+	g_free (sidebar->details->default_background_color);
+	g_free (sidebar->details->default_background_image);
+	g_free (sidebar->details);
+		
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
+					 nautilus_sidebar_theme_changed,
+					 sidebar);
+
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
+					 nautilus_sidebar_confirm_trash_changed,
+					 sidebar);
+
+
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 /* callback to handle resetting the background */

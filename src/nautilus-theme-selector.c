@@ -514,7 +514,7 @@ theme_selector_changed_callback (EelImageChooser *image_chooser,
 	selected_row_position = eel_image_chooser_get_selected_row (image_chooser);
 	
 	g_signal_emit (callback_data,
-			 theme_selector_signals[THEME_CHANGED], 0);
+		       theme_selector_signals[THEME_CHANGED], 0);
 }
 
 /* GtkObjectClass methods */
