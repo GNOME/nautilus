@@ -280,6 +280,11 @@ AC_SUBST(BONOBO_PRINT_CFLAGS)
 AC_SUBST(BONOBO_PRINT_LIBS)
 AC_SUBST(VFS_CFLAGS)
 AC_SUBST(VFS_LIBS)
+
+IDL_CFLAGS="${IDL_CFLAGS} -I\$(top_srcdir) -I\$(top_builddir)"
+
+echo "IDL_CFLAGS: $IDL_CFLAGS"
+
 AC_SUBST(IDL_CFLAGS)
 
 AM_PATH_OAF(0.3.0)
@@ -504,6 +509,7 @@ cut-n-paste-code/widgets/e-paned/Makefile
 cut-n-paste-code/freetype/Makefile
 librsvg/Makefile
 libnautilus/Makefile
+libnautilus-adapter/Makefile
 libnautilus-extensions/Makefile
 src/Makefile
 src/file-manager/Makefile

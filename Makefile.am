@@ -8,6 +8,7 @@ SUBDIRS =			\
 	cut-n-paste-code 	\
 	librsvg 		\
 	libnautilus 		\
+	libnautilus-adapter	\
 	libnautilus-extensions 	\
 	helper-utilities 	\
 	components 		\

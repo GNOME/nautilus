@@ -1,3 +1,20 @@
+000-09-06  Maciej Stachowiak  <mjs@eazel.com>
+
+	* libnautilus-adapter/nautilus-adapter-factory.idl: New IDL
+	interface for the special adapter component that will be used to
+	wrap ordinary Bonobo components to look like Nautilus::Views as
+	part of the solution to bugzilla.eazel.com #1994.
+	* libnautilus-adapter/Makefile.am: Build a library containing the
+	stubs and sekeletons.
+
+	* libnautilus/nautilus-view-component.idl: Some changes so this
+	IDL file can be included in others safely.
+	* libnautilus/Makefile.am: Made necessary build adjustments for
+	the above.
+
+	* configure.in, Makefile.am: add libnautilus-adapter directory to
+	build.
+	
 2000-09-06  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* README: added requirment of BEFORE_NEW_UI_HANDLER_1

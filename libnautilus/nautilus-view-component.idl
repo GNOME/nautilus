@@ -3,6 +3,14 @@
 #ifndef NAUTILUS_VIEW_COMPONENT_IDL
 #define NAUTILUS_VIEW_COMPONENT_IDL
 
+#if !defined(NAUTILUS_VIEW_COMPONENT_COMPILATION) && defined(__ORBIT_IDL__)
+%{
+#pragma include_defs libnautilus/nautilus-view-component.h
+%}
+#pragma inhibit push
+#endif
+
+
 #include <Bonobo.idl>
 
 module Nautilus {
@@ -148,5 +156,9 @@ module Nautilus {
 	};
 
 };
+
+#if !defined(NAUTILUS_VIEW_COMPONENT_COMPILATION) && defined(__ORBIT_IDL__)
+#pragma inhibit pop
+#endif
 
 #endif /* NAUTILUS_VIEW_COMPONENT_IDL */
