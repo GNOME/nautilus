@@ -164,7 +164,21 @@ nautilus_user_main_directory (void)
 				nautilus_file_unref (file);
 			}
 			g_free(file_uri);
+
+			/* now do the same for the about file */
+			file_uri = g_strdup_printf("file://%s/About.html", user_main_directory);
+			
+			file = nautilus_file_get (file_uri);
+			if (file != NULL) {
+				nautilus_file_set_metadata (file,
+							    NAUTILUS_METADATA_KEY_CUSTOM_ICON,
+							    NULL,
+							    image_uri);
+				nautilus_file_unref (file);
+			}
+			g_free(file_uri);
 			g_free(image_uri);
+
 		}
 	}
 
