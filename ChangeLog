@@ -1,3 +1,35 @@
+2001-02-28  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	* check-strings.pl:
+	* check-strings-functions:
+	* check-strings-patterns:
+	New script and correspoinding config files to help us find
+	untranslated strings. It's going to take some effort to make
+	this an easy-to-use tool.
+	
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_initialize): Fixed string that would not
+	get translated properly since it was using N_ and nothing
+	was going to use _() on it.
+	(nautilus_rpm_view_update_from_uri): Marked strings for
+	translation as requested in bug report 7149.
+	(nautilus_rpm_view_verify_files): Format tweak.
+	(nautilus_rpm_view_drag_data_received): Remove old dead code.
+	
+	* libnautilus-extensions/nautilus-tabs.c: (draw_tab_piece_aa):
+	Change to use C-style comments, not C++.
+	
+	* src/nautilus-application.c: (check_required_directories): Mark
+	strings for translation that we had missed before.
+	* src/nautilus-first-time-druid.c: Fix port string define so it
+	doesn't have to be repeated twice (and doesn't show up as an
+	"untranslated string").
+
+	* src/nautilus-about.c: Formatting tweak.
+	* src/nautilus-location-bar.c: Fix typo.
+
 2001-02-28  Gene Z. Ragan  <gzr@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>

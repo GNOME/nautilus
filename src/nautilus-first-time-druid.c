@@ -75,7 +75,7 @@ enum {
 
 /* Preference for http proxy settings */
 #define DEFAULT_HTTP_PROXY_PORT 8080
-#define DEFAULT_HTTP_PROXY_PORT_STRING "8080"
+#define DEFAULT_HTTP_PROXY_PORT_STRING #DEFAULT_HTTP_PROXY_PORT
 #define GNOME_VFS_PREFERENCES_HTTP_PROXY_HOST "/system/gnome-vfs/http-proxy-host"
 #define GNOME_VFS_PREFERENCES_HTTP_PROXY_PORT "/system/gnome-vfs/http-proxy-port"
 #define GNOME_VFS_PREFERENCES_USE_HTTP_PROXY "/system/gnome-vfs/use-http-proxy"

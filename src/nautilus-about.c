@@ -199,7 +199,7 @@ nautilus_about_new (const char *title,
 	
 	/* draw the info onto the pixbuf, once and for all */
 	nautilus_about_draw_info (about, title, version, copyright,
-					authors, comments, translators, time_stamp);
+				  authors, comments, translators, time_stamp);
 	
 	return GTK_WIDGET (about);
 }

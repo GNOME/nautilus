@@ -668,7 +668,7 @@ nautilus_location_bar_set_location (NautilusNavigationBar *navigation_bar,
  *
  * returns a newly allocated "string" containing the mangled
  * (by nautilus_make_uri_from_input) text that the user typed in...maybe a URI 
- * but not garunteed.
+ * but not guaranteed.
  *
  **/
 static char *

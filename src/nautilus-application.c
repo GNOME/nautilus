@@ -272,15 +272,17 @@ check_required_directories (NautilusApplication *application)
 
 		if (failed_count == 1) {
 			dialog_title = g_strdup (_("Couldn't Create Required Folder"));
-			error_string = g_strdup_printf ("Nautilus could not create the required folder \"%s\". "
-							"Before running Nautilus, please create this folder, or "
-							"set permissions such that Nautilus can create it.", dir_list_concatenated);
+			error_string = g_strdup_printf (_("Nautilus could not create the required folder \"%s\". "
+							  "Before running Nautilus, please create this folder, or "
+							  "set permissions such that Nautilus can create it."),
+							dir_list_concatenated);
 		} else {
 			dialog_title = g_strdup (_("Couldn't Create Required Folders"));
-			error_string = g_strdup_printf ("Nautilus could not create the following required folders:\n\n"
-							"%s\n\n"
-							"Before running Nautilus, please create these folders, or "
-							"set permissions such that Nautilus can create them.", dir_list_concatenated);
+			error_string = g_strdup_printf (_("Nautilus could not create the following required folders:\n\n"
+							  "%s\n\n"
+							  "Before running Nautilus, please create these folders, or "
+							  "set permissions such that Nautilus can create them."),
+							dir_list_concatenated);
 		}
 		
 		dialog = nautilus_show_error_dialog (error_string, dialog_title, NULL);

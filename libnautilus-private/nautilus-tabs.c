@@ -370,7 +370,7 @@ draw_tab_piece_aa (NautilusTabs *tabs, GdkPixbuf *dest_pixbuf, int x, int y, int
 	widget = GTK_WIDGET (tabs);
 	pixbuf = tabs->details->tab_piece_images[which_piece];
 
-	// if there's no pixbuf, just exit, returning a nominal size
+	/* if there's no pixbuf, just exit, returning a nominal size */
 	if (pixbuf == NULL) {
 		return 32;
 	}
@@ -380,7 +380,7 @@ draw_tab_piece_aa (NautilusTabs *tabs, GdkPixbuf *dest_pixbuf, int x, int y, int
 	dest_width = gdk_pixbuf_get_width (dest_pixbuf);
 	dest_height = gdk_pixbuf_get_height (dest_pixbuf);
 	
-	// trim tab piece to fit within the destination and the passed in limits
+	/* trim tab piece to fit within the destination and the passed in limits */
 
 	if (x_limit > 0) {
 		if (x_limit < dest_width) {

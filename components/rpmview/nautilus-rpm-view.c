@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*- */
 
 /*
- *  Copyright (C) 2000 Eazel, Inc.
+ *  Copyright (C) 2000, 2001 Eazel, Inc.
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
@@ -62,15 +62,11 @@
 #define RPM_VIEW_DEFAULT_BACKGROUND_COLOR  "rgb:DDDD/DDDD/BBBB"
 
 enum {
-	TARGET_URI_LIST,
 	TARGET_COLOR,
-        TARGET_GNOME_URI_LIST
 };
 
 static GtkTargetEntry rpm_dnd_target_table[] = {
-	{ "text/uri-list",  0, TARGET_URI_LIST },
 	{ "application/x-color", 0, TARGET_COLOR },
-	{ "x-special/gnome-icon-list",  0, TARGET_GNOME_URI_LIST }
 };
 
 static void nautilus_rpm_view_drag_data_received (GtkWidget            *widget,
@@ -347,6 +343,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
   	gtk_widget_show (temp_widget);
 
         /* use a tree list now */
+        list_headers[0] = _(list_headers[0]);
         rpm_view->details->package_file_tree = nautilus_ctree_new_with_titles (1, 0, list_headers);
         gtk_container_add (GTK_CONTAINER (temp_widget), rpm_view->details->package_file_tree);
         gtk_signal_connect (GTK_OBJECT (rpm_view->details->package_file_tree),
@@ -615,9 +612,11 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 			
 	/* set up the install message and buttons */
 	if (is_installed) {
-		gtk_label_set_text (GTK_LABEL(rpm_view->details->package_installed_message), "This package is currently installed");	
+		gtk_label_set_text (GTK_LABEL(rpm_view->details->package_installed_message),
+                                    _("This package is currently installed"));
 	} else {
-		gtk_label_set_text (GTK_LABEL(rpm_view->details->package_installed_message), "This package is currently not installed");
+		gtk_label_set_text (GTK_LABEL(rpm_view->details->package_installed_message),
+                                    _("This package is currently not installed"));
         }
 	
 	if (is_installed == 0) {
@@ -759,7 +758,8 @@ nautilus_rpm_view_verify_files (GtkWidget *widget,
 		
         if (rpm_view->details->verify_success) {
                 nautilus_rpm_verify_window_set_error_mode (NAUTILUS_RPM_VERIFY_WINDOW (rpm_view->details->verify_window), FALSE);
-                nautilus_rpm_verify_window_set_message (NAUTILUS_RPM_VERIFY_WINDOW (rpm_view->details->verify_window), _("Verification completed, package ok."));
+                nautilus_rpm_verify_window_set_message (NAUTILUS_RPM_VERIFY_WINDOW (rpm_view->details->verify_window),
+                                                        _("Verification completed, package ok."));
         } else {
         }
 }
@@ -782,12 +782,6 @@ nautilus_rpm_view_drag_data_received (GtkWidget *widget, GdkDragContext *context
         g_return_if_fail (NAUTILUS_IS_RPM_VIEW (widget));
 
         switch (info) {
-        case TARGET_GNOME_URI_LIST:
-        case TARGET_URI_LIST: 	
-                g_message ("dropped data on rpm_view: %s", selection_data->data); 			
-                break;
-  		
-                
         case TARGET_COLOR:
                 /* Let the background change based on the dropped color. */
                 nautilus_background_receive_dropped_color (nautilus_get_widget_background (widget),
