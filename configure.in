@@ -19,6 +19,7 @@ GTK_REQUIRED=2.1.1
 MEDUSA_REQUIRED=0.5.1
 RSVG_REQUIRED=2.0.1
 XML_REQUIRED=2.4.7
+STARTUP_NOTIFICATION_REQUIRED=0.5
 
 AC_SUBST(ART_REQUIRED)
 AC_SUBST(BONOBO_ACTIVATION_REQUIRED)
@@ -37,6 +38,7 @@ AC_SUBST(GTK_REQUIRED)
 AC_SUBST(MEDUSA_REQUIRED)
 AC_SUBST(RSVG_REQUIRED)
 AC_SUBST(XML_REQUIRED)
+AC_SUBST(STARTUP_NOTIFICATION_REQUIRED)
 
 dnl ===========================================================================
 
@@ -57,6 +59,20 @@ AC_PROG_MAKE_SET
 AM_DISABLE_STATIC
 AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
+AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
+
+if $PKG_CONFIG --atleast-version $STARTUP_NOTIFICATION_REQUIRED libstartup-notification-1.0; then
+  echo "Building with libstartup-notification"
+  AC_DEFINE(HAVE_STARTUP_NOTIFICATION)
+  with_startup_notification=yes
+  STARTUP_NOTIFICATION_PACKAGE=libstartup-notification-1.0
+else
+  echo "***** WARNING: Building without libstartup-notification"
+  with_startup_notification=no
+  STARTUP_NOTIFICATION_PACKAGE=
+fi
+
+AC_SUBST(STARTUP_NOTIFICATION_PACKAGE)
 
 PKG_CHECK_MODULES(ALL, \
 	esound >= $ESOUND_REQUIRED \
@@ -74,7 +90,8 @@ PKG_CHECK_MODULES(ALL, \
 	libgnome-2.0 >= $GNOME_REQUIRED \
 	libgnomeui-2.0 >= $GNOME_UI_REQUIRED \
 	librsvg-2.0 >= $RSVG_REQUIRED \
-	libxml-2.0 >= $XML_REQUIRED)
+	libxml-2.0 >= $XML_REQUIRED \
+	$STARTUP_NOTIFICATION_PACKAGE)
 dnl ==========================================================================
 
 ALL_LINGUAS="am ar az be bg ca cs da de el en_GB es et eu fa fi fr ga gl he hi hu is it ja ko lt lv mk ml mn ms nl nn no pl pt pt_BR ro ru sk sl sq sr sr@Latn sv th tr uk vi wa yi zh_CN zh_TW"
