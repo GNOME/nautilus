@@ -229,6 +229,7 @@ static void                zoomable_zoom_to_fit_callback                        
 										   FMDirectoryView      *directory_view);
 static void                schedule_update_menus                                  (FMDirectoryView      *view);
 static void                schedule_update_menus_callback                         (gpointer              callback_data);
+static void		   remove_update_menus_timeout_callback 		  (FMDirectoryView      *view);
 static void                schedule_idle_display_of_pending_files                 (FMDirectoryView      *view);
 static void                unschedule_idle_display_of_pending_files               (FMDirectoryView      *view);
 static void                schedule_timeout_display_of_pending_files              (FMDirectoryView      *view);
@@ -1116,9 +1117,7 @@ fm_directory_view_destroy (GtkObject *object)
 		gtk_idle_remove (view->details->display_selection_idle_id);
 	}
 
-	if (view->details->update_menus_timeout_id != 0) {
-		gtk_timeout_remove (view->details->update_menus_timeout_id);
-	}
+	remove_update_menus_timeout_callback (view);
 
 	fm_directory_view_ignore_hidden_file_preferences (view);
 
@@ -1807,6 +1806,26 @@ display_selection_info_idle_callback (gpointer data)
 	bonobo_object_unref (nautilus_view);
 
 	return FALSE;
+}
+
+static void
+remove_update_menus_timeout_callback (FMDirectoryView *view) 
+{
+	if (view->details->update_menus_timeout_id != 0) {
+		gtk_timeout_remove (view->details->update_menus_timeout_id);
+		view->details->update_menus_timeout_id = 0;
+	}
+}
+
+static void
+update_menus_if_pending (FMDirectoryView *view)
+{
+	if (!view->details->menu_states_untrustworthy) {
+		return;
+	}
+
+	remove_update_menus_timeout_callback (view);
+	fm_directory_view_update_menus (view);
 }
 
 static gboolean
@@ -3288,7 +3307,7 @@ fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView *view,
 	/* Make the context menu items not flash as they update to proper disabled,
 	 * etc. states by forcing menus to update now.
 	 */
-	fm_directory_view_update_menus (view);
+	update_menus_if_pending (view);
 
 	nautilus_pop_up_context_menu (create_popup_menu 
 				      	(view, FM_DIRECTORY_VIEW_POPUP_PATH_SELECTION),
@@ -3315,7 +3334,7 @@ fm_directory_view_pop_up_background_context_menu  (FMDirectoryView *view,
 	/* Make the context menu items not flash as they update to proper disabled,
 	 * etc. states by forcing menus to update now.
 	 */
-	fm_directory_view_update_menus (view);
+	update_menus_if_pending (view);
 
 	nautilus_pop_up_context_menu (create_popup_menu 
 				      	(view, FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND),

@@ -1,3 +1,23 @@
+2001-01-25  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Tweaked the recent menu-updating speedup.
+
+	* src/file-manager/fm-directory-view.c:
+	(remove_update_menus_timeout_callback): New helper function,
+	removes timeout callback if non-zero.
+	(fm_directory_view_destroy): Use helper function where it was
+	calling the guts directly.
+	(update_menus_if_pending): New function, does nothing if
+	no menu update is pending, otherwise removes callback and
+	does an update now.
+	(fm_directory_view_pop_up_selection_context_menu),
+	(fm_directory_view_pop_up_background_context_menu): Use
+	update_menus_if_pending instead of directly updating. This both
+	avoids an unnecessary update if none is pending and prevents an 
+	unnecessary future update is one is pending.
+
 2001-01-25  Laszlo Kovacs <laszlo.kovacs@sun.com>
 	* added various changes to the hyperbola component,
 	  some of these are Scrollkeeper related and disabled
