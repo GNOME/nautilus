@@ -133,18 +133,53 @@ view_has_icon_container (ExplorerDirectoryView *view)
 	return mode_uses_icon_container (view->mode);
 }
 
+static GnomeIconContainer *
+get_icon_container (ExplorerDirectoryView *view)
+{
+	GtkBin *bin;
+
+	g_return_val_if_fail (view_has_icon_container (view), NULL);
+
+	bin = GTK_BIN (view);
+
+	if (bin->child == NULL)
+		return NULL;	/* Avoid GTK+ complaints.  */
+	else
+		return GNOME_ICON_CONTAINER (bin->child);
+}
+
+static gint
+display_icon_container_selection_info_idle_cb (gpointer data)
+{
+	ExplorerDirectoryView *view;
+	GnomeIconContainer *icon_container;
+	GList *selection;
+
+	puts (__FUNCTION__);
+
+	view = EXPLORER_DIRECTORY_VIEW (data);
+	icon_container = get_icon_container (view);
+
+	selection = gnome_icon_container_get_selection (icon_container);
+	display_selection_info (view, selection);
+	g_list_free (selection);
+
+	view->display_selection_idle_id = 0;
+
+	return FALSE;
+}
+
 static void
 icon_container_selection_changed_cb (GnomeIconContainer *container,
 				     gpointer data)
 {
 	ExplorerDirectoryView *view;
-	GList *selection;
 
 	view = EXPLORER_DIRECTORY_VIEW (data);
-
-	selection = gnome_icon_container_get_selection (container);
-	display_selection_info (view, selection);
-	g_list_free (selection);
+	if (view->display_selection_idle_id == 0)
+		view->display_selection_idle_id = gtk_idle_add
+			(display_icon_container_selection_info_idle_cb,
+			 view);
 }
 
 static void
@@ -164,21 +199,6 @@ icon_container_activate_cb (GnomeIconContainer *icon_container,
 	gtk_signal_emit (GTK_OBJECT (directory_view),
 			 signals[ACTIVATE_URI], new_uri, info->mime_type);
 	gnome_vfs_uri_unref (new_uri);
-}
-
-static GnomeIconContainer *
-get_icon_container (ExplorerDirectoryView *view)
-{
-	GtkBin *bin;
-
-	g_return_val_if_fail (view_has_icon_container (view), NULL);
-
-	bin = GTK_BIN (view);
-
-	if (bin->child == NULL)
-		return NULL;	/* Avoid GTK+ complaints.  */
-	else
-		return GNOME_ICON_CONTAINER (bin->child);
 }
 
 static void
@@ -307,18 +327,51 @@ view_has_flist (ExplorerDirectoryView *view)
 	return mode_uses_flist (view->mode);
 }
 
+static GtkFList *
+get_flist (ExplorerDirectoryView *view)
+{
+	GtkBin *bin;
+
+	g_return_val_if_fail (view_has_flist (view), NULL);
+
+	bin = GTK_BIN (view);
+
+	if (bin->child == NULL)
+		return NULL;	/* Avoid GTK+ complaints.  */
+	else
+		return GTK_FLIST (bin->child);
+}
+
+static gint
+display_flist_selection_info_idle_cb (gpointer data)
+{
+	ExplorerDirectoryView *view;
+	GtkFList *flist;
+	GList *selection;
+
+	view = EXPLORER_DIRECTORY_VIEW (data);
+	flist = get_flist (view);
+
+	selection = gtk_flist_get_selection (flist);
+	display_selection_info (view, selection);
+	g_list_free (selection);
+
+	view->display_selection_idle_id = 0;
+
+	return FALSE;
+}
+
 static void
 flist_selection_changed_cb (GtkFList *flist,
 			    gpointer data)
 {
 	ExplorerDirectoryView *view;
-	GList *selection;
 
 	view = EXPLORER_DIRECTORY_VIEW (data);
-
-	selection = gtk_flist_get_selection (flist);
-	display_selection_info (view, selection);
-	g_list_free (selection);
+	if (view->display_selection_idle_id == 0)
+		view->display_selection_idle_id
+			= gtk_idle_add (display_flist_selection_info_idle_cb,
+					view);
 }
 
 static void
@@ -337,21 +390,6 @@ flist_activate_cb (GtkFList *flist,
 	gtk_signal_emit (GTK_OBJECT (directory_view),
 			 signals[ACTIVATE_URI], new_uri, info->mime_type);
 	gnome_vfs_uri_unref (new_uri);
-}
-
-static GtkFList *
-get_flist (ExplorerDirectoryView *view)
-{
-	GtkBin *bin;
-
-	g_return_val_if_fail (view_has_flist (view), NULL);
-
-	bin = GTK_BIN (view);
-
-	if (bin->child == NULL)
-		return NULL;	/* Avoid GTK+ complaints.  */
-	else
-		return GTK_FLIST (bin->child);
 }
 
 static void
@@ -606,6 +644,8 @@ init (ExplorerDirectoryView *directory_view)
 
 	directory_view->icon_layout = NULL;
 	directory_view->icons_not_in_layout = NULL;
+
+	directory_view->display_selection_idle_id = 0;
 
 	scroll_frame = GTK_SCROLL_FRAME (directory_view);
 

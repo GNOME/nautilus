@@ -77,6 +77,10 @@ struct _ExplorerDirectoryView {
 
 	const GnomeIconContainerLayout *icon_layout;
 	GList *icons_not_in_layout;
+
+	/* Idle ID for displaying information about the current selection at
+           idle time.  */
+	gint display_selection_idle_id;
 };
 
 struct _ExplorerDirectoryViewClass {
