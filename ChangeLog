@@ -1,3 +1,11 @@
+2000-09-29  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/music/nautilus-music-view.c: (play_current_file),
+	(add_play_controls):
+	fixed bug 3271, music view doesn't check if sound hardware is
+	present, by seeing if we can successfully open the sound device.
+	Still need to fix sound previewing similarily
+	
 2000-09-28  Andy Hertzfeld  <andy@eazel.com>
 
 	* icons/chit_frame.png:

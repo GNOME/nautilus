@@ -40,6 +40,7 @@
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
@@ -845,7 +846,11 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 	char *song_filename, *temp_str, *song_uri;
         GnomeVFSResult result;
         GnomeVFSFileInfo file_info;
-        
+
+	if (!music_view->details->sound_enabled) {
+		return;	
+	}
+       
 	play_mode = get_play_status();
 	gtk_clist_select_row (GTK_CLIST(music_view->details->song_list), music_view->details->selected_index, 0);
 	
@@ -1106,7 +1111,7 @@ add_play_controls (NautilusMusicView *music_view)
 	GtkWidget *table;
 	GtkWidget *box; 
 	GtkWidget *vbox, *hbox2;
-	GtkWidget *button;
+	GtkWidget *button, *label;
 	GtkTooltips *tooltips;
 	
 	tooltips = gtk_tooltips_new();
@@ -1173,8 +1178,9 @@ add_play_controls (NautilusMusicView *music_view)
 	button = gtk_button_new ();
 	gtk_tooltips_set_tip (GTK_TOOLTIPS(tooltips), button, _("Previous"), NULL);
 	gtk_container_add (GTK_CONTAINER(button), box);
-
 	gtk_signal_connect (GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(prev_button_callback), music_view);
+	gtk_widget_set_sensitive (button, music_view->details->sound_enabled);
+	
 	gtk_table_attach (GTK_TABLE(table), button, 0, 1, 1, 2, 0, 0, 0, 0);
 	gtk_button_set_relief (GTK_BUTTON(button), GTK_RELIEF_NORMAL);
 	gtk_widget_show (button);
@@ -1186,6 +1192,7 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_tooltips_set_tip (GTK_TOOLTIPS(tooltips), button, _("Play"), NULL);
 	gtk_button_set_relief (GTK_BUTTON(button), GTK_RELIEF_NORMAL);
 	gtk_container_add (GTK_CONTAINER(button), box);
+	gtk_widget_set_sensitive (button, music_view->details->sound_enabled);
 
 	gtk_signal_connect (GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(play_button_callback), music_view);
 	gtk_table_attach (GTK_TABLE(table), button, 1, 2, 1, 2, 0, 0, 0, 0);
@@ -1198,6 +1205,7 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_tooltips_set_tip (GTK_TOOLTIPS(tooltips), button, _("Pause"), NULL);
 	gtk_button_set_relief (GTK_BUTTON(button), GTK_RELIEF_NORMAL);
 	gtk_container_add (GTK_CONTAINER(button), box);
+	gtk_widget_set_sensitive (button, music_view->details->sound_enabled);
 
 	gtk_signal_connect (GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(pause_button_callback), music_view);
 	gtk_table_attach (GTK_TABLE(table), button, 2, 3, 1, 2, 0, 0, 0, 0);
@@ -1210,6 +1218,7 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_tooltips_set_tip (GTK_TOOLTIPS(tooltips), button, _("Stop"), NULL);
 	gtk_button_set_relief (GTK_BUTTON(button), GTK_RELIEF_NORMAL);
 	gtk_container_add (GTK_CONTAINER(button), box);
+	gtk_widget_set_sensitive (button, music_view->details->sound_enabled);
 
 	gtk_signal_connect(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(stop_button_callback), music_view);
 	gtk_table_attach (GTK_TABLE(table), button, 3, 4, 1, 2, 0, 0, 0, 0);
@@ -1222,11 +1231,22 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips), button, _("Next"), NULL);
 	gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_NORMAL);
 	gtk_container_add(GTK_CONTAINER(button), box);
+	gtk_widget_set_sensitive (button, music_view->details->sound_enabled);
 
 	gtk_signal_connect(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(next_button_callback), music_view);
 	gtk_table_attach (GTK_TABLE(table), button, 4, 5, 1, 2, 0, 0, 0, 0);
 	gtk_widget_show(button);
 
+	/* display the "cant play message if necessary */
+	
+	if (!music_view->details->sound_enabled) {
+		label = nautilus_label_new (_("No sound hardware detected!"));
+		nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
+		nautilus_label_set_text_color (NAUTILUS_LABEL (label), NAUTILUS_RGB_COLOR_RED);
+		gtk_widget_show (label);
+		gtk_table_attach (GTK_TABLE(table), label, 0, 5, 3, 4, 0, 0, 0, 0);
+	}
+	
 	gtk_widget_show(table);
 }
 
