@@ -1,3 +1,13 @@
+2001-01-22  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-sidebar-tabs.c: (draw_one_tab_themed),
+	(draw_or_layout_all_tabs):
+	fixed bug 5895, critical errors when you make the sidebar small.
+	Fixed by clipping the amount we draw to fit within the destination
+	buffer before calling gdk_pixbuf_composite.  Also fixed another crash
+	when trying to draw aa-text for the tab labels when the starting
+	offset is bigger than the buffer; in that case, don't draw anything.
+	
 2001-01-22  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/Makefile.am:
