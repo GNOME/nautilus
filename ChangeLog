@@ -1,3 +1,19 @@
+2001-03-08  John Harper  <jsh@eazel.com>
+
+	Merge from HEAD:
+
+	2001-03-08  John Harper  <jsh@eazel.com>
+
+	reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+	Tried to fix bug 7018 (Irreproducible segfaults in
+	nautilus_tree_node_get_file): 
+
+	* components/tree/nautilus-tree-view.c: add a reference to each
+	NautilusTreeNode while in the unparented_tree_nodes lists
+	(nautilus_tree_view_should_skip_file): skip the file if
+	nautilus_file_is_gone () returns true
+
 2001-03-08  Darin Adler  <darin@eazel.com>
 
 	Merge from HEAD:

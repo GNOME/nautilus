@@ -35,6 +35,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libgnome/gnome-i18n.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
@@ -168,6 +169,10 @@ static gboolean
 nautilus_tree_view_should_skip_file (NautilusTreeView *view,
 				     NautilusFile *file)
 {
+	if (nautilus_file_is_gone (file)) {
+		return TRUE;
+	}
+
 	return !(nautilus_file_should_show (file, 
 					    view->details->show_hidden_files, 
 					    view->details->show_backup_files) &&
@@ -542,6 +547,7 @@ register_unparented_node (NautilusTreeView *view, NautilusTreeNode *node)
 	g_return_if_fail (!nautilus_tree_node_is_toplevel (node));
 
 	if (g_list_find (view->details->unparented_tree_nodes, node) == NULL) {
+		gtk_object_ref (GTK_OBJECT (node));
 		view->details->unparented_tree_nodes = g_list_prepend (view->details->unparented_tree_nodes, node);
 	}
 }
@@ -552,7 +558,10 @@ forget_unparented_node (NautilusTreeView *view, NautilusTreeNode *node)
 	g_return_if_fail (NAUTILUS_IS_TREE_VIEW (view));
 	g_return_if_fail (NAUTILUS_IS_TREE_NODE (node));
 
-	view->details->unparented_tree_nodes = g_list_remove (view->details->unparented_tree_nodes, node);
+	if (g_list_find (view->details->unparented_tree_nodes, node) != NULL) {
+		view->details->unparented_tree_nodes = g_list_remove (view->details->unparented_tree_nodes, node);
+		gtk_object_unref (GTK_OBJECT (node));
+	}
 }
 
 static void
@@ -583,7 +592,7 @@ insert_unparented_nodes (NautilusTreeView *view, NautilusTreeNode *node)
 				sub_node = p->data;
 				view->details->unparented_tree_nodes = g_list_remove (view->details->unparented_tree_nodes, sub_node);
 				nautilus_tree_view_insert_model_node (view, sub_node);
-				
+				gtk_object_unref (GTK_OBJECT (sub_node));
 			}
 			g_list_free (to_add);
 		}
@@ -1073,7 +1082,7 @@ nautilus_tree_view_destroy (GtkObject *object)
 	nautilus_tree_expansion_state_save (view->details->expansion_state);
 	gtk_object_unref (GTK_OBJECT (view->details->expansion_state));
 
-	g_list_free (view->details->unparented_tree_nodes);
+	nautilus_gtk_object_list_free (view->details->unparented_tree_nodes);
 
 	g_free (view->details->current_main_view_uri);
 	g_free (view->details->selected_uri);
