@@ -16,7 +16,6 @@
 my $VERSION = "1.5beta3";
 my $LANG    = $ARGV[0];
 my $PACKAGE = "nautilus";
-my %HEADERS = ();
 $| = 1;
 
 
@@ -167,14 +166,12 @@ sub GenHeaders{
     while (<FILE>) {
        if ($_=~ /(.*)(\.xml\.h)/o){
           $filename = "\.\./$1\.xml";
-	  $HEADERS{"$filename\.h"} = [];
           $xmlfiles="\.\/ui-extract.pl --update $filename";
           system($xmlfiles);
           }
       
        elsif ($_=~ /(.*)(\.glade\.h)/o){
           $filename = "\.\./$1\.glade";
-	  $HEADERS{"$filename\.h"} = [];
           $xmlfiles="\.\/ui-extract.pl --update $filename";
           system($xmlfiles);  
        }
@@ -199,17 +196,20 @@ sub GeneratePot{
     print "Wrote $PACKAGE.pot\n";
 
     if(-e ".headerlock"){
-    unlink(".headerlock");
+       unlink(".headerlock");
 
-    print "Removing generated header (.h) files...";
+       print "Removing generated header (.h) files...";
 
-    foreach my $HEADER (sort keys %HEADERS) {
-    unlink($HEADER);
+       open FILE, "<POTFILES.in";
+       while (<FILE>) {
+          if ($_=~ /(.*)(\.xml\.h)/o){
+             $filename = "\.\./$1\.xml.h";
+	     unlink($filename);
+          }
+       }
+       close FILE;
     }
-
     print "done\n";
-
-    }
 }
 
 sub Merging{
