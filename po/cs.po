@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-06-01 09:36+0200\n"
-"PO-Revision-Date: 2004-05-29 18:08+0200\n"
+"POT-Creation-Date: 2004-06-02 04:09+0200\n"
+"PO-Revision-Date: 2004-06-02 11:33+0200\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -2166,6 +2166,10 @@ msgid "Replace _All"
 msgstr "Nahradit _vše"
 
 #. appended to new link file
+#. Note to localizers: convert file type string for file
+#. * (e.g. "folder", "plain text") to file type for symbolic link
+#. * to that kind of file (e.g. "link to folder").
+#.
 #: libnautilus-private/nautilus-file-operations.c:1148
 #: libnautilus-private/nautilus-file.c:4735
 #, c-format
@@ -2220,6 +2224,9 @@ msgid " (another copy)"
 msgstr " (další kopie)"
 
 #. localizers: tag used to detect the x11th copy of a file
+#. localizers: tag used to detect the x12th copy of a file
+#. localizers: tag used to detect the x13th copy of a file
+#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
 #: libnautilus-private/nautilus-file-operations.c:1210
@@ -2255,6 +2262,9 @@ msgid "%s (another copy)%s"
 msgstr "%s (další kopie)%s"
 
 #. localizers: appended to x11th file copy
+#. localizers: appended to x12th file copy
+#. localizers: appended to x13th file copy
+#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
 #: libnautilus-private/nautilus-file-operations.c:1243
@@ -2886,7 +2896,7 @@ msgid "Display _files when they are clicked"
 msgstr "_Zobrazit soubory, když je na ně kliknuto"
 
 #: libnautilus-private/nautilus-global-preferences.c:159
-#: src/nautilus-file-management-properties.glade.h:68
+#: src/nautilus-file-management-properties.glade.h:69
 msgid "_Ask each time"
 msgstr "_Vždy se ptát"
 
@@ -2900,13 +2910,13 @@ msgstr "Hledat soubory podle názvu a vlastností"
 
 #: libnautilus-private/nautilus-global-preferences.c:178
 #: src/file-manager/fm-icon-container.c:499
-#: src/nautilus-file-management-properties.glade.h:52
+#: src/nautilus-file-management-properties.glade.h:53
 msgid "Icon View"
 msgstr "Ikonový pohled"
 
 #: libnautilus-private/nautilus-global-preferences.c:179
 #: src/file-manager/fm-list-view.c:1120
-#: src/nautilus-file-management-properties.glade.h:54
+#: src/nautilus-file-management-properties.glade.h:55
 msgid "List View"
 msgstr "Seznamový pohled"
 
@@ -2915,27 +2925,27 @@ msgid "Manually"
 msgstr "Manuálně"
 
 #: libnautilus-private/nautilus-global-preferences.c:186
-#: src/nautilus-file-management-properties.glade.h:42
+#: src/nautilus-file-management-properties.glade.h:43
 msgid "By Name"
 msgstr "dle názvu"
 
 #: libnautilus-private/nautilus-global-preferences.c:187
-#: src/nautilus-file-management-properties.glade.h:43
+#: src/nautilus-file-management-properties.glade.h:44
 msgid "By Size"
 msgstr "dle velikosti"
 
 #: libnautilus-private/nautilus-global-preferences.c:188
-#: src/nautilus-file-management-properties.glade.h:44
+#: src/nautilus-file-management-properties.glade.h:45
 msgid "By Type"
 msgstr "dle typu"
 
 #: libnautilus-private/nautilus-global-preferences.c:189
-#: src/nautilus-file-management-properties.glade.h:41
+#: src/nautilus-file-management-properties.glade.h:42
 msgid "By Modification Date"
 msgstr "dle data změny"
 
 #: libnautilus-private/nautilus-global-preferences.c:190
-#: src/nautilus-file-management-properties.glade.h:40
+#: src/nautilus-file-management-properties.glade.h:41
 msgid "By Emblems"
 msgstr "dle emblémů"
 
@@ -3431,6 +3441,7 @@ msgstr "Otevírám %s"
 #. TODO: These strings suck pretty badly, but we're in string-freeze,
 #. * and I found these in other places to reuse. We should make them
 #. * better later.
+#. Shouldn't have gotten this error unless there's a : separator.
 #: libnautilus-private/nautilus-program-choosing.c:969
 #: libnautilus-private/nautilus-program-choosing.c:977
 #: libnautilus-private/nautilus-program-choosing.c:982
@@ -4108,7 +4119,7 @@ msgid "There is nothing on the clipboard to paste."
 msgstr "Ve schránce není nic ke vložení"
 
 #: src/file-manager/fm-directory-view.c:5050
-#: src/file-manager/fm-directory-view.c:6128
+#: src/file-manager/fm-directory-view.c:6134
 msgid "Mount Error"
 msgstr "Chyba při připojení"
 
@@ -4246,12 +4257,12 @@ msgstr "_Zobrazit"
 msgid "_Run"
 msgstr "_Spustit"
 
-#: src/file-manager/fm-directory-view.c:6264
+#: src/file-manager/fm-directory-view.c:6270
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Otevírám \"%s\"."
 
-#: src/file-manager/fm-directory-view.c:6271
+#: src/file-manager/fm-directory-view.c:6277
 msgid "Cancel Open?"
 msgstr "Zrušit otevření?"
 
@@ -5272,6 +5283,7 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
+#. FIXME bugzilla.gnome.org 42538: When can this happen?
 #: src/nautilus-application.c:583 src/nautilus-application.c:601
 #: src/nautilus-application.c:608
 msgid "Nautilus can't be used now, due to an unexpected error."
@@ -5306,7 +5318,7 @@ msgstr ""
 "server a restartováním Nautilu."
 
 #: src/nautilus-bookmarks-window.c:150
-#: src/nautilus-file-management-properties.c:219
+#: src/nautilus-file-management-properties.c:220
 #: src/nautilus-property-browser.c:1456 src/nautilus-window-menus.c:647
 #, c-format
 msgid ""
@@ -5373,7 +5385,7 @@ msgstr "_Připojit"
 msgid "Desktop"
 msgstr "Pracovní plocha"
 
-#: src/nautilus-file-management-properties.c:297
+#: src/nautilus-file-management-properties.c:298
 msgid "None"
 msgstr "Žádné"
 
@@ -5450,14 +5462,18 @@ msgid "Always"
 msgstr "Vždy"
 
 #: src/nautilus-file-management-properties.glade.h:38
+msgid "Always open in _browser windows"
+msgstr "Vždy otevírat v oknech _prohlížeče"
+
+#: src/nautilus-file-management-properties.glade.h:39
 msgid "Ask before _emptying the Trash or deleting files"
 msgstr "Zeptat se před _vyprázdněním koše nebo odstraňováním souborů"
 
-#: src/nautilus-file-management-properties.glade.h:39
+#: src/nautilus-file-management-properties.glade.h:40
 msgid "Behavior"
 msgstr "Chování"
 
-#: src/nautilus-file-management-properties.glade.h:45
+#: src/nautilus-file-management-properties.glade.h:46
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
@@ -5465,151 +5481,151 @@ msgstr ""
 "Zvolte pořadí informací, které se objeví pod názvy ikon. Objeví se tím více "
 "informací, čím větší použijete zvětšení."
 
-#: src/nautilus-file-management-properties.glade.h:46
+#: src/nautilus-file-management-properties.glade.h:47
 msgid "Choose the order of information to appear in the list view."
 msgstr "Zvolte pořadí informací, které se objeví v seznamovém pohledu."
 
-#: src/nautilus-file-management-properties.glade.h:47
+#: src/nautilus-file-management-properties.glade.h:48
 msgid "Count _number of items:"
 msgstr "Počítat _počet položek:"
 
-#: src/nautilus-file-management-properties.glade.h:48
+#: src/nautilus-file-management-properties.glade.h:49
 msgid "Default _zoom level:"
 msgstr "Implicitní úroveň z_většení:"
 
-#: src/nautilus-file-management-properties.glade.h:49
+#: src/nautilus-file-management-properties.glade.h:50
 msgid "File Management Preferences"
 msgstr "Nastavení správy souborů"
 
-#: src/nautilus-file-management-properties.glade.h:50
+#: src/nautilus-file-management-properties.glade.h:51
 msgid "I_nclude a Delete command that bypasses Trash"
 msgstr "Nabízet příkaz _Odstranit, který nepoužívá koš"
 
-#: src/nautilus-file-management-properties.glade.h:51
+#: src/nautilus-file-management-properties.glade.h:52
 msgid "Icon Captions"
 msgstr "Titulky ikon"
 
-#: src/nautilus-file-management-properties.glade.h:53
+#: src/nautilus-file-management-properties.glade.h:54
 msgid "List Columns"
 msgstr "Sloupce seznamu"
 
-#: src/nautilus-file-management-properties.glade.h:55
+#: src/nautilus-file-management-properties.glade.h:56
 msgid "Local Files Only"
 msgstr "Jen místní soubory"
 
-#: src/nautilus-file-management-properties.glade.h:56
+#: src/nautilus-file-management-properties.glade.h:57
 msgid "MIME type"
 msgstr "typ MIME"
 
-#: src/nautilus-file-management-properties.glade.h:57
+#: src/nautilus-file-management-properties.glade.h:58
 msgid "Never"
 msgstr "Nikdy"
 
-#: src/nautilus-file-management-properties.glade.h:58
+#: src/nautilus-file-management-properties.glade.h:59
 msgid "Preview"
 msgstr "Náhled"
 
-#: src/nautilus-file-management-properties.glade.h:59
+#: src/nautilus-file-management-properties.glade.h:60
 msgid "Preview _sound files:"
 msgstr "_Ukázky zvukových souborů:"
 
-#: src/nautilus-file-management-properties.glade.h:60
+#: src/nautilus-file-management-properties.glade.h:61
 msgid "Show _only folders"
 msgstr "Zobrazovat _jen adresáře"
 
-#: src/nautilus-file-management-properties.glade.h:61
+#: src/nautilus-file-management-properties.glade.h:62
 msgid "Show _thumbnails:"
 msgstr "Zobrazovat ná_hledy:"
 
-#: src/nautilus-file-management-properties.glade.h:62
+#: src/nautilus-file-management-properties.glade.h:63
 msgid "Show hidden and _backup files"
 msgstr "Zobrazovat _skryté a záložní soubory"
 
-#: src/nautilus-file-management-properties.glade.h:63
+#: src/nautilus-file-management-properties.glade.h:64
 msgid "Show te_xt in icons:"
 msgstr "Zobrazovat _text v ikonách:"
 
-#: src/nautilus-file-management-properties.glade.h:64
+#: src/nautilus-file-management-properties.glade.h:65
 msgid "Sort _folders before files"
 msgstr "Třídit _adresáře před soubory"
 
-#: src/nautilus-file-management-properties.glade.h:65
+#: src/nautilus-file-management-properties.glade.h:66
 msgid "View _new folders using:"
 msgstr "Prohlížet _nové adresáře pomocí:"
 
-#: src/nautilus-file-management-properties.glade.h:66
+#: src/nautilus-file-management-properties.glade.h:67
 msgid "Views"
 msgstr "Pohledy"
 
-#: src/nautilus-file-management-properties.glade.h:67
+#: src/nautilus-file-management-properties.glade.h:68
 msgid "_Arrange items:"
 msgstr "_Rozmístit položky:"
 
-#: src/nautilus-file-management-properties.glade.h:69
+#: src/nautilus-file-management-properties.glade.h:70
 msgid "_Default zoom level:"
 msgstr "_Implicitní úroveň zvětšení:"
 
-#: src/nautilus-file-management-properties.glade.h:70
+#: src/nautilus-file-management-properties.glade.h:71
 msgid "_Double click to activate items"
 msgstr "Aktivovat položky _dvojitým kliknutím"
 
-#: src/nautilus-file-management-properties.glade.h:71
+#: src/nautilus-file-management-properties.glade.h:72
 msgid "_Only for files smaller than:"
 msgstr "_Jen pro soubory menší než:"
 
-#: src/nautilus-file-management-properties.glade.h:72
+#: src/nautilus-file-management-properties.glade.h:73
 msgid "_Run executable text files when they are clicked"
 msgstr "_Spustit spustitelné textové soubory, když je na ně kliknuto"
 
-#: src/nautilus-file-management-properties.glade.h:73
+#: src/nautilus-file-management-properties.glade.h:74
 msgid "_Single click to activate items"
 msgstr "Aktivovat položky _jednoduchým kliknutím"
 
-#: src/nautilus-file-management-properties.glade.h:74
+#: src/nautilus-file-management-properties.glade.h:75
 msgid "_Text beside icons"
 msgstr "_Text vedle ikon"
 
-#: src/nautilus-file-management-properties.glade.h:75
+#: src/nautilus-file-management-properties.glade.h:76
 msgid "_Use compact layout"
 msgstr "Používat _kompaktní rozložení"
 
-#: src/nautilus-file-management-properties.glade.h:76
+#: src/nautilus-file-management-properties.glade.h:77
 msgid "_View executable text files when they are clicked"
 msgstr "_Zobrazit spustitelné textové soubory, když je na ně kliknuto"
 
-#: src/nautilus-file-management-properties.glade.h:77
+#: src/nautilus-file-management-properties.glade.h:78
 msgid "date accessed"
 msgstr "datum přístupu"
 
-#: src/nautilus-file-management-properties.glade.h:78
+#: src/nautilus-file-management-properties.glade.h:79
 msgid "date modified"
 msgstr "datum změny obsahu"
 
-#: src/nautilus-file-management-properties.glade.h:79
+#: src/nautilus-file-management-properties.glade.h:80
 msgid "group"
 msgstr "skupina"
 
-#: src/nautilus-file-management-properties.glade.h:80
+#: src/nautilus-file-management-properties.glade.h:81
 msgid "none"
 msgstr "žádné"
 
-#: src/nautilus-file-management-properties.glade.h:81
+#: src/nautilus-file-management-properties.glade.h:82
 msgid "octal permissions"
 msgstr "oprávnění osmičkově"
 
-#: src/nautilus-file-management-properties.glade.h:82
+#: src/nautilus-file-management-properties.glade.h:83
 msgid "owner"
 msgstr "vlastník"
 
-#: src/nautilus-file-management-properties.glade.h:83
+#: src/nautilus-file-management-properties.glade.h:84
 msgid "permissions"
 msgstr "oprávnění"
 
-#: src/nautilus-file-management-properties.glade.h:84
+#: src/nautilus-file-management-properties.glade.h:85
 msgid "size"
 msgstr "velikost"
 
-#: src/nautilus-file-management-properties.glade.h:85
+#: src/nautilus-file-management-properties.glade.h:86
 msgid "type"
 msgstr "typ"
 
@@ -5730,22 +5746,27 @@ msgid "Nautilus"
 msgstr "Nautilus"
 
 #: src/nautilus-main.c:259
+#, c-format
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus: --check nemůže být použito s URI.\n"
 
 #: src/nautilus-main.c:263
+#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check nemůže být použito s jinými volbami.\n"
 
 #: src/nautilus-main.c:267
+#, c-format
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus: --quit nemůže být použito s URI.\n"
 
 #: src/nautilus-main.c:271
+#, c-format
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus: --restart nemůže být použito s URI.\n"
 
 #: src/nautilus-main.c:275
+#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry nemůže být použito s více než jedním URI.\n"
 
@@ -6616,9 +6637,6 @@ msgstr "Síťové servery"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Zobrazit vaše síťové servery ve správci souborů Nautilus"
-
-#~ msgid "Error while moving. "
-#~ msgstr "Chyba při přesunu. "
 
 #~ msgid ""
 #~ "If you would like to enable fast searches, you can edit the file %s as "
