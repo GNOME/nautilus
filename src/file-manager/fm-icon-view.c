@@ -278,7 +278,8 @@ get_stored_icon_position_callback (NautilusIconContainer *container,
 	 * point values since there aren't locale-specific formats for
 	 * integers in C stdio.
 	 */
-	locale = setlocale (LC_NUMERIC, "C");
+	locale = g_strdup (setlocale (LC_NUMERIC, NULL));	
+	setlocale (LC_NUMERIC, "C");
 
 	/* Get the current position of this icon from the metadata. */
 	position_string = nautilus_file_get_metadata
@@ -311,7 +312,8 @@ get_stored_icon_position_callback (NautilusIconContainer *container,
 	g_free (scale_string);
 
 	setlocale (LC_NUMERIC, locale);
-
+	g_free (locale);
+	
 	return position_good;
 }
 
@@ -1911,7 +1913,8 @@ icon_position_changed_callback (NautilusIconContainer *container,
 	 * point values since there aren't locale-specific formats for
 	 * integers in C stdio.
 	 */
-	locale = setlocale (LC_NUMERIC, "C");
+	locale = g_strdup (setlocale (LC_NUMERIC, NULL));	
+	setlocale (LC_NUMERIC, "C");
 
 	/* Schedule updating menus for the next idle. Doing it directly here
 	 * noticeably slows down icon stretching.  The other work here to
@@ -1956,6 +1959,7 @@ icon_position_changed_callback (NautilusIconContainer *container,
 	g_free (scale_string);
 
 	setlocale (LC_NUMERIC, locale);
+	g_free (locale);
 }
 
 /* Attempt to change the filename to the new text.  Notify user if operation fails. */

@@ -1,3 +1,12 @@
+2003-01-14  Anders Carlsson  <andersca@codefactory.se>
+
+	* src/file-manager/fm-icon-view.c:
+	(get_stored_icon_position_callback),
+	(icon_position_changed_callback):
+	Store the value of the previous locale, not the C
+	one that we're setting. 
+	Fixes #45300, reported by Christian Rose. 
+
 === nautilus 2.1.91 ===
 
 2003-01-13  Alexander Larsson  <alexl@redhat.com>
