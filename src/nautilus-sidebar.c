@@ -219,6 +219,7 @@ nautilus_index_panel_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 					 gint x, gint y,
 					 GtkSelectionData *selection_data, guint info, guint time)
 {
+	NautilusIndexPanel *index_panel;
 	g_return_if_fail (NAUTILUS_IS_INDEX_PANEL (widget));
 
 	switch (info)
@@ -238,9 +239,28 @@ nautilus_index_panel_drag_data_received (GtkWidget *widget, GdkDragContext *cont
       
  		case TARGET_COLOR:
 			/* Let the background change based on the dropped color. */
-			nautilus_background_receive_dropped_color
-				(nautilus_get_widget_background (widget),
-				 widget, x, y, selection_data);
+			index_panel = NAUTILUS_INDEX_PANEL (widget);
+		
+			/* if the click is in the main tabs, tell them about it */
+			if (y >= index_panel->details->index_tabs->allocation.y) {
+				nautilus_index_tabs_receive_dropped_color
+					(NAUTILUS_INDEX_TABS(index_panel->details->index_tabs),
+					x, y, selection_data);
+						
+			}
+			/* try the title tab */
+			else
+				if ((y >= index_panel->details->title_tab->allocation.y) && 
+			   			(y <= (index_panel->details->title_tab->allocation.y + index_panel->details->title_tab->allocation.height)))
+					nautilus_index_tabs_receive_dropped_color
+						(NAUTILUS_INDEX_TABS(index_panel->details->title_tab),
+						x, y, selection_data);
+		
+			/* otherwise, pass it along to the index panel background */
+			else
+				nautilus_background_receive_dropped_color
+					(nautilus_get_widget_background (widget),
+				 	widget, x, y, selection_data);
 			break;
       
 		default:

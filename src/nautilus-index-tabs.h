@@ -64,8 +64,9 @@ GtkType	   	nautilus_index_tabs_get_type(void);
 GtkWidget* 	nautilus_index_tabs_new(void);
 
 gboolean	nautilus_index_tabs_add_view(NautilusIndexTabs *index_tabs, const gchar *name, GtkWidget *new_view, gint page_num);
-gchar*          nautilus_index_tabs_get_title_from_index(NautilusIndexTabs *index_tabs, gint which_tab);
+gchar*		nautilus_index_tabs_get_title_from_index(NautilusIndexTabs *index_tabs, gint which_tab);
 gint		nautilus_index_tabs_hit_test(NautilusIndexTabs *index_tabs, double x, double y);
+void		nautilus_index_tabs_receive_dropped_color(NautilusIndexTabs* index_tabs, gint x, gint y, GtkSelectionData *selection_data);
 void		nautilus_index_tabs_remove_view(NautilusIndexTabs *index_tabs, const gchar *name);
 void		nautilus_index_tabs_prelite_tab(NautilusIndexTabs *index_tabs, gint which_tab);
 void		nautilus_index_tabs_select_tab(NautilusIndexTabs *index_tabs, gint which_tab);

@@ -1,5 +1,14 @@
 2000-02-26  Andy Hertzfeld <andy@eazel.com>
 
+	made index tabs receive dropped colors and display them; it doesn't store it persistently yet
+	
+	* src/ntl-index-panel.c:
+	made it call call index_tabs_receive_dropped_color when dropped over the tabs
+	* src/nautilus-index-tabs.c,h:
+	added index_tabs_receive_dropped_color to set the tab_color and redraw
+	
+2000-02-26  Andy Hertzfeld <andy@eazel.com>
+
 	* src/ntl-index-panel.c:
 	made it call index_tabs_prelite for the title tabs at the appropriate times
 	* src/nautilus-index-tabs.c:

@@ -500,6 +500,31 @@ nautilus_index_tabs_select_tab(NautilusIndexTabs *index_tabs, int which_tab)
 	gtk_widget_queue_draw(GTK_WIDGET(index_tabs));	
 }
 
+/* receive a dropped color */
+
+void
+nautilus_index_tabs_receive_dropped_color(NautilusIndexTabs* index_tabs, gint x, gint y, GtkSelectionData *selection_data)
+{
+	guint16 *channels;
+	char *color_spec;
+	
+	/* Convert the selection data into a color spec. */
+	if (selection_data->length != 8 || selection_data->format != 16) {
+		g_warning ("received invalid color data");
+		return;
+	}
+	
+	channels = (guint16 *)selection_data->data;
+	color_spec = g_strdup_printf ("rgb:%04hX/%04hX/%04hX", channels[0], channels[1], channels[2]);
+	
+	gdk_color_parse (color_spec, &index_tabs->details->tab_color);
+	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (index_tabs)), 
+				  &index_tabs->details->tab_color, FALSE, TRUE);
+	
+	gtk_widget_queue_draw(GTK_WIDGET(index_tabs));	
+	g_free(color_spec);
+}
+
 /* set the title (used in title mode only) */
 void
 nautilus_index_tabs_set_title (NautilusIndexTabs* index_tabs, const char *new_title)
