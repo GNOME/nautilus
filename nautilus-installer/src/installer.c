@@ -115,7 +115,7 @@ typedef struct {
 #define D_RETRY_TITLE	_("Just so you know...")
 #define D_EVIL_RETRY_LABEL	_("A serious problem has been encountered, but we think we can\n" \
 				  "fix it.  We would like to try the following actions, but since it might\n" \
-				  "have undesireable sideeffects, you might want to skip to a install\n" \
+				  "have undesireable side effects, you might want to skip to an install\n" \
 				  "where file conflicts are ignored. If not, just press next...")
 #define D_EVIL_RETRY_TITLE	_("Serious problem encountered....")
 #define D_SPLASH_TITLE    _("Welcome to the Eazel Installer!")
@@ -1952,7 +1952,7 @@ eazel_installer_setup_texts (EazelInstaller *installer,
 
 	destination = g_strdup_printf ("%s/%s", dest_dir, TEXT_LIST);
 
-	g_message ("Trying to contact Eazel services, ignore any 404 errors...");
+	/* g_message ("Trying to contact Eazel services, ignore any 404 errors..."); */
 
 	if (! trilobite_fetch_uri_to_file (url, destination)) {
 		/* try again with proxy config */
@@ -2010,6 +2010,37 @@ eazel_install_get_depends (EazelInstaller *installer, const char *dest_dir)
 }
 
 static void
+early_log_catcher (const char *domain, GLogLevelFlags flags, const char *message)
+{
+	if (! installer_debug) {
+		return;
+	}
+
+	if (flags & G_LOG_LEVEL_DEBUG) {
+		fprintf (stderr, "debug: %s\n", message);
+	} else if (flags & G_LOG_LEVEL_MESSAGE) {
+		fprintf (stderr, "%s\n", message);
+	} else if (flags & G_LOG_LEVEL_WARNING) {
+		fprintf (stderr, "warning: %s\n", message);
+	} else if (flags & G_LOG_LEVEL_ERROR) {
+		fprintf (stderr, "ERROR: %s\n", message);
+	} else {
+		/* ignore */
+	}
+	fflush (stderr);
+}
+
+/* call this almost immediately so that most log messages from libraries are caught */
+static void
+catch_early_logs (void)
+{
+	g_log_set_handler (G_LOG_DOMAIN,
+			   G_LOG_LEVEL_DEBUG | G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_WARNING | G_LOG_LEVEL_ERROR, 
+			   (GLogFunc)early_log_catcher,
+			   NULL);
+}
+
+static void
 start_logging (EazelInstaller *installer)
 {
 	int flags;
@@ -2018,9 +2049,7 @@ start_logging (EazelInstaller *installer)
 	struct stat statbuf, lstatbuf;
 	char *filename;
 
-	if (installer_debug) {
-		eazel_install_log_to_stderr (installer->service, TRUE);
-	}
+	eazel_install_log_to_stderr (installer->service, installer_debug ? TRUE : FALSE);
 
 	/* try opening our favorite logfile */
 	flags = O_WRONLY | O_CREAT | O_APPEND;
@@ -2133,6 +2162,8 @@ eazel_installer_initialize (EazelInstaller *object) {
 
 	g_assert (object != NULL);
 	g_assert (IS_EAZEL_INSTALLER (object));
+
+	catch_early_logs ();
 
 	installer = EAZEL_INSTALLER (object);
 
@@ -2263,8 +2294,6 @@ eazel_installer_initialize (EazelInstaller *object) {
 		/* already posted error */
 		return;
 	}
-
-	/* now that we have text from the server, build up the other pages */
 
 	if (installer_package==NULL) {
 		installer->categories = parse_local_xml_package_list (package_destination, 
