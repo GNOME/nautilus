@@ -27,21 +27,22 @@
 
 #include <config.h>
 #include "nautilus-gtk-extensions.h"
-#include "nautilus-gdk-extensions.h"
-#include "nautilus-gdk-font-extensions.h"
 
+#include "nautilus-gdk-font-extensions.h"
+#include "nautilus-gdk-pixbuf-extensions.h"
+#include "nautilus-glib-extensions.h"
+#include "nautilus-string.h"
 #include <gdk/gdk.h>
 #include <gdk/gdkprivate.h>
 #include <gdk/gdkx.h>
+#include <gtk/gtkdnd.h>
 #include <gtk/gtkmain.h>
+#include <gtk/gtkrc.h>
 #include <gtk/gtkselection.h>
 #include <gtk/gtksignal.h>
-#include <gtk/gtkrc.h>
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-geometry.h>
 #include <libgnomeui/gnome-winhints.h>
-#include "nautilus-glib-extensions.h"
-#include "nautilus-string.h"
 
 /* This number should be large enough to be visually noticeable,
  * but small enough to not allow the user to perform other actions.
@@ -949,6 +950,19 @@ nautilus_gtk_marshal_INT__NONE (GtkObject *object,
 	* GTK_RETLOC_INT (args[0]) =
 		(* (int (*)(GtkObject *, gpointer)) func)
 		 (object,
+		 func_data);
+}
+
+void
+nautilus_gtk_marshal_POINTER__INT (GtkObject *object,
+				   GtkSignalFunc func,
+				   gpointer func_data,
+				   GtkArg *args)
+{
+	* GTK_RETLOC_POINTER (args[1]) =
+		(* (gpointer (*)(GtkObject *, int, gpointer)) func)
+		(object,
+		 GTK_VALUE_INT (args[0]),
 		 func_data);
 }
 
@@ -2121,3 +2135,23 @@ nautilus_get_current_event_time (void)
 	return time;
 }
 
+void
+nautilus_drag_set_icon_pixbuf (GdkDragContext *context,
+			       GdkPixbuf *pixbuf,
+			       int hot_x,
+			       int hot_y)
+{
+	GdkPixmap *pixmap;
+	GdkBitmap *mask;
+
+	gdk_pixbuf_render_pixmap_and_mask
+		(pixbuf, &pixmap, &mask,
+		 NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
+	gtk_drag_set_icon_pixmap
+		(context, gdk_rgb_get_cmap (), pixmap, mask, hot_x, hot_y);
+	/* FIXME: Verify that this does not leak the pixmap and mask.
+	 * We've always done it this way, but maybe we've always
+	 * leaked. Just doing the unref here definitely causes a
+	 * problem, so it's not that simple.
+	 */
+}

@@ -1,9 +1,9 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* nautilus-list.h: Enhanced version of GtkCList for Nautilus.
+/* nautilus-list.c: Enhanced version of GtkCList for Nautilus.
 
    Copyright (C) 1999, 2000 Free Software Foundation
-   Copyright (C) 2000 Eazel, Inc.
+   Copyright (C) 2000, 2001 Eazel, Inc.
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -193,7 +193,7 @@ enum {
 	HANDLE_DROPPED_ITEMS,
 	HANDLE_DRAGGED_ITEMS,
 	GET_DEFAULT_ACTION,
-	GET_DRAG_PIXMAP,
+	GET_DRAG_PIXBUF,
 	GET_SORT_COLUMN_INDEX,
 	LAST_SIGNAL
 };
@@ -281,14 +281,13 @@ static void     nautilus_list_style_set                 (GtkWidget            *w
 							 GtkStyle             *previous_style);
 static void     nautilus_list_realize                   (GtkWidget            *widget);
 static void     nautilus_list_unrealize                 (GtkWidget            *widget);
-static void     nautilus_list_set_cell_contents         (NautilusCList        *clist,
+static gboolean nautilus_list_set_cell_contents         (NautilusCList        *clist,
 							 NautilusCListRow     *row,
 							 int                   column_index,
 							 NautilusCellType      type,
 							 const gchar          *text,
 							 guint8                spacing,
-							 GdkPixmap            *pixmap,
-							 GdkBitmap            *mask);
+							 GdkPixbuf            *pixbuf);
 static void     nautilus_list_size_request              (GtkWidget            *widget,
 							 GtkRequisition       *requisition);
 static void     nautilus_list_resize_column             (NautilusCList        *widget,
@@ -438,17 +437,14 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 				GTK_TYPE_INT,
 				GTK_TYPE_INT,
 				GTK_TYPE_UINT);
-	list_signals[GET_DRAG_PIXMAP] =
-		gtk_signal_new ("get_drag_pixmap",
+	list_signals[GET_DRAG_PIXBUF] =
+		gtk_signal_new ("get_drag_pixbuf",
 				GTK_RUN_LAST,
 				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusListClass, get_drag_pixmap),
-				nautilus_gtk_marshal_NONE__POINTER_INT_POINTER_POINTER,
-				GTK_TYPE_NONE, 4,
-				GTK_TYPE_POINTER,
-				GTK_TYPE_INT,
-				GTK_TYPE_POINTER,
-				GTK_TYPE_POINTER);
+				GTK_SIGNAL_OFFSET (NautilusListClass, get_drag_pixbuf),
+				nautilus_gtk_marshal_POINTER__INT,
+				GTK_TYPE_POINTER, 1,
+				GTK_TYPE_INT);
 	list_signals[GET_SORT_COLUMN_INDEX] =
 		gtk_signal_new ("get_sort_column_index",
 				GTK_RUN_LAST,
@@ -546,9 +542,11 @@ nautilus_list_set_anti_aliased_mode (NautilusList *list,
 }
 
 
-static void
-nautilus_list_dnd_initialize (NautilusList *list)
+void
+nautilus_list_initialize_dnd (NautilusList *list)
 {
+	g_assert (list->details->drag_info == NULL);
+	g_assert (!GTK_WIDGET_REALIZED (list));
 
 	list->details->drag_info = g_new0 (NautilusDragInfo, 1);
 
@@ -577,7 +575,7 @@ nautilus_list_dnd_initialize (NautilusList *list)
 
 	gtk_signal_connect (GTK_OBJECT (list), 
 			    "drag_data_received", 
-			    GTK_SIGNAL_FUNC(nautilus_list_drag_data_received), 
+			    GTK_SIGNAL_FUNC (nautilus_list_drag_data_received), 
 			    list);
 
 
@@ -595,7 +593,6 @@ nautilus_list_dnd_initialize (NautilusList *list)
 static void
 nautilus_list_initialize (NautilusList *list)
 {	
-
 	list->details = g_new0 (NautilusListDetails, 1);
 	list->details->anchor_row = -1;
 
@@ -603,9 +600,6 @@ nautilus_list_initialize (NautilusList *list)
 	
 	/* GtkCList does not specify pointer motion by default */
 	gtk_widget_add_events (GTK_WIDGET (list), GDK_POINTER_MOTION_MASK);
-
-
-	nautilus_list_dnd_initialize (list);
 
 	/* Emit "selection changed" signal when parent class changes selection */
 	list->details->select_row_signal_id = gtk_signal_connect (GTK_OBJECT (list),
@@ -632,7 +626,9 @@ nautilus_list_destroy (GtkObject *object)
 
 	list = NAUTILUS_LIST (object);
 
-	nautilus_drag_finalize (list->details->drag_info);
+	if (list->details->drag_info != NULL) {
+		nautilus_drag_finalize (list->details->drag_info);
+	}
 
 	unschedule_keyboard_row_reveal (list);
 
@@ -2066,50 +2062,6 @@ get_cell_style (NautilusList *list, NautilusCListRow *row,
 	}
 }
 
-static void
-gdk_window_size_as_rectangle (GdkWindow *gdk_window, GdkRectangle *rectangle)
-{
-	int width, height;
-
-	gdk_window_get_size (gdk_window, &width, &height);	
-	rectangle->width = width;
-	rectangle->height = height;
-}
-
-static int
-draw_cell_pixmap (GdkWindow *window, GdkRectangle *clip_rectangle, GdkGC *fg_gc,
-		  GdkPixmap *pixmap, GdkBitmap *mask,
-		  int x, int y)
-{
-	GdkRectangle image_rectangle;
-	GdkRectangle intersect_rectangle;
-	
-	gdk_window_size_as_rectangle (pixmap, &image_rectangle);
-	image_rectangle.x = x;
-	image_rectangle.y = y;
-
-	if (!gdk_rectangle_intersect (clip_rectangle, &image_rectangle, &intersect_rectangle)) {
-		return x;
-	}
-	
-	if (mask) {
-		gdk_gc_set_clip_mask (fg_gc, mask);
-		gdk_gc_set_clip_origin (fg_gc, x, y);
-	}
-
-	gdk_draw_pixmap (window, fg_gc, pixmap, 
-			 intersect_rectangle.x - x, intersect_rectangle.y - y, 
-			 image_rectangle.x, image_rectangle.y, 
-			 intersect_rectangle.width, intersect_rectangle.height);
-
-	if (mask) {
-		gdk_gc_set_clip_origin (fg_gc, 0, 0);
-		gdk_gc_set_clip_mask (fg_gc, NULL);
-	}
-
-	return x + intersect_rectangle.width;
-}
-
 static int
 draw_cell_pixbuf (NautilusCList *clist, GdkWindow *window, GdkRectangle *clip_rectangle,
 		  GdkGC *fg_gc, guint32 bg_rgb, GdkPixbuf *pixbuf, int x, int y)
@@ -2238,7 +2190,7 @@ get_cell_greater_rectangle (GdkRectangle *cell_rect, GdkRectangle *result,
 
 static void
 draw_cell (NautilusCList *clist, GdkRectangle *area, int row_index, int column_index, 
-	NautilusCListRow *row)
+	   NautilusCListRow *row)
 {
 	GtkStyle *style;
 	GdkGC *fg_gc;
@@ -2250,7 +2202,7 @@ draw_cell (NautilusCList *clist, GdkRectangle *area, int row_index, int column_i
 
 	int width;
 	int height;
-	int pixmap_width;
+	int pixbuf_width;
 	int offset = 0;
 	int baseline;
 	int row_center_offset;
@@ -2280,8 +2232,7 @@ draw_cell (NautilusCList *clist, GdkRectangle *area, int row_index, int column_i
 
 	/* calculate real width for column justification */
 	width = 0;
-	pixmap_width = 0;
-	offset = 0;
+	height = 0;
 	
 	switch ((NautilusCellType)row->cell[column_index].type) {
 	case NAUTILUS_CELL_TEXT:
@@ -2289,15 +2240,14 @@ draw_cell (NautilusCList *clist, GdkRectangle *area, int row_index, int column_i
 		width = gdk_string_width (style->font,
 			NAUTILUS_CELL_TEXT (row->cell[column_index])->text);
 		break;
-	case NAUTILUS_CELL_PIXMAP:
-		gdk_window_get_size (NAUTILUS_CELL_PIXMAP (row->cell[column_index])->pixmap,
-		       &pixmap_width, &height);
-		width = pixmap_width;
+	case NAUTILUS_CELL_PIXBUF:
+		width = gdk_pixbuf_get_width (NAUTILUS_CELL_PIXBUF (row->cell[column_index])->pixbuf);
+		height = gdk_pixbuf_get_height (NAUTILUS_CELL_PIXBUF (row->cell[column_index])->pixbuf);
 		break;
 	case NAUTILUS_CELL_PIXTEXT:
-		gdk_window_get_size (NAUTILUS_CELL_PIXTEXT (row->cell[column_index])->pixmap,
-		       &pixmap_width, &height);
-		width = (pixmap_width +
+		pixbuf_width = gdk_pixbuf_get_width (NAUTILUS_CELL_PIXTEXT (row->cell[column_index])->pixbuf);
+		height = gdk_pixbuf_get_height (NAUTILUS_CELL_PIXTEXT (row->cell[column_index])->pixbuf);
+		width = (pixbuf_width +
 			NAUTILUS_CELL_PIXTEXT (row->cell[column_index])->spacing +
 			gdk_string_width (style->font, NAUTILUS_CELL_PIXTEXT (row->cell[column_index])->text));
 		break;
@@ -2310,73 +2260,53 @@ draw_cell (NautilusCList *clist, GdkRectangle *area, int row_index, int column_i
 			width += gdk_pixbuf_get_width (p->data);
 		}
 		break;
-	case NAUTILUS_CELL_PIXBUF:
-		width = gdk_pixbuf_get_width (NAUTILUS_CELL_PIXBUF (row->cell[column_index]));
-		break;
-	default:
+	case NAUTILUS_CELL_EMPTY:
+	case NAUTILUS_CELL_WIDGET:
 		return;
 	}
 
 	offset = get_cell_horizontal_start_position (clist, row, column_index, width);
 
-	/* Draw Text and/or Pixmap */
-	switch ((NautilusCellType)row->cell[column_index].type) {
-	case NAUTILUS_CELL_PIXMAP:
-		{
-			NautilusList *list = NAUTILUS_LIST (clist);
-			int dark_width, dark_height;
-			GdkPixbuf *src_pixbuf, *dark_pixbuf;
-			GdkPixmap *dark_pixmap;
-			GdkBitmap *dark_mask;
-
-			if (list->details->drag_prelight_row == row) {
-				
-				gdk_window_get_geometry (NAUTILUS_CELL_PIXMAP (row->cell[column_index])->pixmap,
-						 	 NULL, NULL, &dark_width, &dark_height, NULL);
-							
-				src_pixbuf = gdk_pixbuf_get_from_drawable 
-						(NULL,
-			      	 		 NAUTILUS_CELL_PIXMAP (row->cell[column_index])->pixmap,
-			      	 		 gdk_rgb_get_cmap (),
-			      	  		 0, 0, 0, 0, dark_width, dark_height);
-
-				if (src_pixbuf != NULL) {
-					/* Create darkened pixmap */			
-					dark_pixbuf = nautilus_create_darkened_pixbuf (src_pixbuf,
-							      	 	       0.8 * 255,
-							       		       0.8 * 255);
-					if (dark_pixbuf != NULL) {
-						gdk_pixbuf_render_pixmap_and_mask (dark_pixbuf,
-				   				   	   	   &dark_pixmap, &dark_mask,
-				   				   	   	   NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
-				   				   	   	   			
-						draw_cell_pixmap (clist->clist_window, &cell_rectangle, fg_gc,
-		    					  	  dark_pixmap, NAUTILUS_CELL_PIXMAP (row->cell[column_index])->mask, offset,
-		    					  	  cell_rectangle.y + row->cell[column_index].vertical +
-		    					  	 (cell_rectangle.height - height) / 2);
-
-						gdk_pixbuf_unref (dark_pixbuf);
-					}
-					gdk_pixbuf_unref (src_pixbuf);
-				}					
-			} else {		
-				draw_cell_pixmap (clist->clist_window, &cell_rectangle, fg_gc,
-		    			NAUTILUS_CELL_PIXMAP (row->cell[column_index])->pixmap,
-		    			NAUTILUS_CELL_PIXMAP (row->cell[column_index])->mask,
-		    			offset,
-		    			cell_rectangle.y + row->cell[column_index].vertical +
-		    			(cell_rectangle.height - height) / 2);
-			}
+	/* Draw Text and/or Pixbuf */
+	switch ((NautilusCellType) row->cell[column_index].type) {
+	case NAUTILUS_CELL_PIXBUF: {
+		NautilusList *list = NAUTILUS_LIST (clist);
+		GdkPixbuf *src_pixbuf, *dark_pixbuf;
+		
+		if (list->details->drag_prelight_row == row) {
+			
+			src_pixbuf = NAUTILUS_CELL_PIXBUF (row->cell[column_index])->pixbuf;
+			
+			if (src_pixbuf != NULL) {
+				/* Create darkened pixbuf */
+				dark_pixbuf = nautilus_create_darkened_pixbuf (src_pixbuf,
+									       0.8 * 255,
+									       0.8 * 255);
+				if (dark_pixbuf != NULL) {
+					draw_cell_pixbuf (clist, clist->clist_window, &cell_rectangle, fg_gc, bg_rgb,
+							  dark_pixbuf, offset,
+							  cell_rectangle.y + row->cell[column_index].vertical +
+							  (cell_rectangle.height - height) / 2);
+					
+					gdk_pixbuf_unref (dark_pixbuf);
+				}
+			}					
+		} else {		
+			draw_cell_pixbuf (clist, clist->clist_window, &cell_rectangle, fg_gc, bg_rgb,
+					  NAUTILUS_CELL_PIXBUF (row->cell[column_index])->pixbuf,
+					  offset,
+					  cell_rectangle.y + row->cell[column_index].vertical +
+					  (cell_rectangle.height - height) / 2);
 		}
 		break;
+	}
 
 	case NAUTILUS_CELL_PIXTEXT:
-		offset = draw_cell_pixmap (clist->clist_window, &cell_rectangle, fg_gc,
-		      NAUTILUS_CELL_PIXTEXT (row->cell[column_index])->pixmap,
-		      NAUTILUS_CELL_PIXTEXT (row->cell[column_index])->mask,
-		      offset,
-		      cell_rectangle.y + row->cell[column_index].vertical+
-		      (cell_rectangle.height - height) / 2);
+		offset = draw_cell_pixbuf (clist, clist->clist_window, &cell_rectangle, fg_gc, bg_rgb,
+					   NAUTILUS_CELL_PIXTEXT (row->cell[column_index])->pixbuf,
+					   offset,
+					   cell_rectangle.y + row->cell[column_index].vertical+
+					   (cell_rectangle.height - height) / 2);
 		offset += NAUTILUS_CELL_PIXTEXT (row->cell[column_index])->spacing;
 		/* fall through */
 	case NAUTILUS_CELL_TEXT:
@@ -2454,19 +2384,8 @@ draw_cell (NautilusCList *clist, GdkRectangle *area, int row_index, int column_i
 		}
 		break;
 	}
-	case NAUTILUS_CELL_PIXBUF: {
-		GdkPixbuf *pixbuf;
-		guint height;
-		pixbuf = NAUTILUS_CELL_PIXBUF (row->cell[column_index]);
-		height = gdk_pixbuf_get_height (pixbuf);
-		offset = draw_cell_pixbuf (clist, clist->clist_window,
-					   &cell_rectangle,
-					   fg_gc, bg_rgb, pixbuf,
-					   offset, cell_rectangle.y
-					   + row->cell[column_index].vertical
-					   + (cell_rectangle.height - height) / 2);
-	}
-	default:
+	case NAUTILUS_CELL_EMPTY:
+	case NAUTILUS_CELL_WIDGET:
 		break;
 	}
 }
@@ -2800,7 +2719,7 @@ nautilus_list_resize_column (NautilusCList *clist, int column_index, int width)
  * 
  * Mark a text cell as a link cell. Link cells are drawn differently,
  * and activate rather than select on single-click. The cell must
- * be a text cell (not a pixmap cell or one of the other types).
+ * be a text cell (not a pixbuf cell or one of the other types).
  * 
  * @list: The NautilusList in question.
  * @column_index: The column of the desired cell.
@@ -2825,7 +2744,7 @@ nautilus_list_mark_cell_as_link (NautilusList *list,
 
 	/* 
 	 * We only support changing text cells to links. Maybe someday
-	 * we'll support pixmap or pixtext link cells too. 
+	 * we'll support pixbuf or pixtext link cells too. 
 	 */
 	g_return_if_fail ((NautilusCellType)row->cell[column_index].type == NAUTILUS_CELL_TEXT);
 
@@ -2833,16 +2752,17 @@ nautilus_list_mark_cell_as_link (NautilusList *list,
 }				
 
 
-static void
+static gboolean
 nautilus_list_set_cell_contents (NautilusCList    *clist,
 		   		 NautilusCListRow *row,
 		   		 int         column_index,
 		   		 NautilusCellType  type,
 		   		 const gchar *text,
 		   		 guint8       spacing,
-		   		 GdkPixmap   *pixmap,
-		   		 GdkBitmap   *mask)
+		   		 GdkPixbuf   *pixbuf)
 {
+	gboolean result;
+
 	/* 
 	 * Note that we don't do the auto_resize bracketing here that's done
 	 * in the parent class. It would require copying over huge additional
@@ -2853,29 +2773,19 @@ nautilus_list_set_cell_contents (NautilusCList    *clist,
 	/* Clean up old data, which parent class doesn't know about. */
 	if ((NautilusCellType)row->cell[column_index].type == NAUTILUS_CELL_PIXBUF_LIST) {
 		nautilus_gdk_pixbuf_list_free (NAUTILUS_CELL_PIXBUF_LIST (row->cell[column_index])->pixbufs);
-	} else if ((NautilusCellType)row->cell[column_index].type == NAUTILUS_CELL_PIXBUF) {
-		gdk_pixbuf_unref (NAUTILUS_CELL_PIXBUF (row->cell[column_index]));
 	}
 
-	/* If old cell was a link-text cell, convert it back to a normal text
-	 * cell so it gets cleaned up properly by GtkCList code.
-	 */
-	if ((NautilusCellType)row->cell[column_index].type == NAUTILUS_CELL_LINK_TEXT) {
-		row->cell[column_index].type = NAUTILUS_CELL_TEXT;
-	}
-
-	NAUTILUS_CALL_PARENT (NAUTILUS_CLIST_CLASS, set_cell_contents,
-			      (clist, row, column_index, type, text, spacing, pixmap, mask));
+	result = NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+		(NAUTILUS_CLIST_CLASS, set_cell_contents,
+		 (clist, row, column_index, type, text, spacing, pixbuf));
 
 	if ((NautilusCellType)type == NAUTILUS_CELL_PIXBUF_LIST) {
 		row->cell[column_index].type = NAUTILUS_CELL_PIXBUF_LIST;
-		/* Hideously, we concealed our list of pixbufs in the pixmap parameter. */
-	  	NAUTILUS_CELL_PIXBUF_LIST (row->cell[column_index])->pixbufs = (GList *)pixmap;
-	} else if ((NautilusCellType)type == NAUTILUS_CELL_PIXBUF) {
-		row->cell[column_index].type = NAUTILUS_CELL_PIXBUF;
-		/* Hideously, we concealed our pixbuf in the pixmap parameter. */
-	  	NAUTILUS_CELL_PIXBUF (row->cell[column_index]) = pixmap;
+		/* Hideously, we concealed our list of pixbufs in the pixbuf parameter. */
+	  	NAUTILUS_CELL_PIXBUF_LIST (row->cell[column_index])->pixbufs = (GList *)pixbuf;
 	}
+
+	return result;
 }
 
 static void
@@ -2907,14 +2817,15 @@ set_list_cell (NautilusList *list,
 	 * expected parameter type, we have to sneak it in by casting it into
 	 * one of the expected parameters.
 	 */
-	NAUTILUS_CALL_METHOD (NAUTILUS_CLIST_CLASS, clist, set_cell_contents, 
-			      (clist, row, column_index, type, NULL, 0, (GdkPixmap *) data, NULL));
-
-	/* redraw the list if it's not frozen */
-	if (CLIST_UNFROZEN (clist) 
-	    && nautilus_clist_row_is_visible (clist, row_index) != GTK_VISIBILITY_NONE) {
-		NAUTILUS_CALL_METHOD (NAUTILUS_CLIST_CLASS, clist, draw_row, 
-				      (clist, NULL, row_index, row));
+	if (NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+	    (NAUTILUS_CLIST_CLASS, clist, set_cell_contents, 
+	     (clist, row, column_index, type, NULL, 0, data))) {
+		/* redraw the list if it's not frozen */
+		if (CLIST_UNFROZEN (clist) 
+		    && nautilus_clist_row_is_visible (clist, row_index) != GTK_VISIBILITY_NONE) {
+			NAUTILUS_CALL_METHOD (NAUTILUS_CLIST_CLASS, clist, draw_row, 
+					      (clist, NULL, row_index, row));
+		}
 	}
 }
 
@@ -2941,7 +2852,7 @@ get_list_cell (NautilusList *list,
 	row = ROW_ELEMENT (clist, row_index)->data;
 
 	if (row->cell[column_index].type == type) {
-		return NAUTILUS_CELL_PIXMAP (row->cell[column_index])->pixmap;
+		return NAUTILUS_CELL_PIXBUF (row->cell[column_index])->pixbuf;
 	}
 
 	return NULL;
@@ -3049,12 +2960,14 @@ nautilus_list_drag_start (GtkWidget *widget, GdkEventMotion *event)
 {
 	NautilusList *list;
 	GdkDragContext *context;
-	GdkPixmap *pixmap_for_dragged_file;
-	GdkBitmap *mask_for_dragged_file;
-	int x_offset, y_offset; 
+	GdkPixbuf *pixbuf;
 
 	g_return_if_fail (NAUTILUS_IS_LIST (widget));
 	list = NAUTILUS_LIST (widget);
+
+	if (list->details->drag_info == NULL) {
+		return;
+	}
 
 	list->details->drag_started = TRUE;
 	list->details->dnd_select_pending = FALSE;
@@ -3070,20 +2983,15 @@ nautilus_list_drag_start (GtkWidget *widget, GdkEventMotion *event)
 				  list->details->dnd_press_button,
 				  (GdkEvent *) event);
 
-	x_offset = 10;
-	y_offset = 10;
+	pixbuf = NULL;
+	gtk_signal_emit (GTK_OBJECT (list), list_signals[GET_DRAG_PIXBUF], 
+			 list->details->button_down_row, &pixbuf);
 
-	gtk_signal_emit (GTK_OBJECT (list), list_signals[GET_DRAG_PIXMAP], 
-			 list->details->button_down_row, &pixmap_for_dragged_file, 
-			 &mask_for_dragged_file);
-
-	if (pixmap_for_dragged_file) {
-	        /* set the pixmap and mask for dragging */
-	        gtk_drag_set_icon_pixmap (context,
-					  gtk_widget_get_colormap (widget),
-					  pixmap_for_dragged_file,
-					  mask_for_dragged_file,
-					  x_offset, y_offset);
+	if (pixbuf != NULL) {
+		/* FIXME: We can do better than 10,10. */
+		nautilus_drag_set_icon_pixbuf (context, pixbuf, 10, 10);
+		
+		gdk_pixbuf_unref (pixbuf);
 	}
 }
 
@@ -3414,7 +3322,7 @@ nautilus_list_receive_dropped_icons (NautilusList *list,
 				     int x, int y, guint info)
 {
 	NautilusDragInfo *drag_info;
-	GList *	selected_items;
+	GList *selected_items;
 
 	g_assert (NAUTILUS_IS_LIST (list));
 	drag_info = list->details->drag_info;

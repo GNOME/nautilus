@@ -1,3 +1,196 @@
+2001-03-27  Darin Adler  <darin@eazel.com>
+
+	reviewed (a bit) by: John Sullivan <sullivan@eazel.com>
+
+	Some tree view changes so it only does work when the tree view is
+	open, not when it's closed. Also improved speed by not creating so
+	many pixmaps, which required changing lots of classes to use
+	pixbufs instead of pixmaps.
+
+	* components/tree/libmain.c: (tree_shlib_object_destroyed),
+	(tree_shlib_make_object): Changed to use NautilusTreeView
+	subclass of NautilusView, not widget.
+	
+	* components/tree/main.c: (main): Use standard main.
+
+	* components/rpmview/nautilus-rpm-view.c:
+	(file_activation_callback), (fill_filename_tree_int),
+	(fill_filename_tree), (nautilus_rpm_view_update_from_uri):
+	Update to use NautilusCList instead of GtkCList.
+	
+	* components/tree/nautilus-tree-change-queue.h: Got rid of ADDED
+	(it's now the same as CHANGED).
+	
+	* components/tree/nautilus-tree-model.h:
+	* components/tree/nautilus-tree-model.c:
+	(nautilus_tree_model_initialize_class): No more ADDED.
+	(destroy_file_hash): New function.
+	(nautilus_tree_model_destroy): Destroy deferral hashes.
+	(nautilus_tree_model_node_begin_monitoring): Use changed instead
+	of added.
+	(report_node_changed): Emit changed instead of added.
+	(process_file_change): New function.
+	(process_directory_done_loading): New function.
+	(add_file_to_hash): New function.
+	(nautilus_tree_model_directory_files_changed_callback),
+	(nautilus_tree_model_directory_done_loading_callback): Either put
+	the file in the hash table or send the notification.
+	(process_one_changed_file), (process_one_done_loading_file):
+	Helper functions to send notifications.
+	(nautilus_tree_model_set_defer_notifications): Start deferring
+	notifications by making hash tables. Stop deferring notifications
+	by sending out all the notifications and then getting rid of the
+	hash tables.
+	
+	* components/tree/nautilus-tree-view.h:
+	* components/tree/nautilus-tree-view-private.h:
+	* components/tree/nautilus-tree-view.c:
+	(nautilus_tree_view_insert_model_node), (ctree_is_node_expanded),
+	(nautilus_tree_view_update_model_node),
+	(awaited_node_or_uri_found), (notify_done_loading),
+	(notify_node_seen), (get_selected_row),
+	(get_selected_row_position), (set_selected_row_position),
+	(dequeue_pending_idle_callback), (schedule_pending_idle_callback),
+	(unschedule_pending_idle_callback),
+	(nautilus_tree_view_load_from_filesystem), (ctree_compare_rows),
+	(create_tree), (tree_map_callback), (tree_unmap_callback),
+	(nautilus_tree_view_initialize), (nautilus_tree_view_destroy),
+	(get_uri_sequence_to_root),
+	(call_when_uri_loaded_or_parent_done_loading),
+	(cancel_selection_in_progress),
+	(expand_uri_sequence_and_select_end), (select_current_location),
+	(tree_load_location_callback), (got_activation_uri_callback),
+	(ctree_get_first_selected_node),
+	(nautilus_tree_view_update_all_icons),
+	(nautilus_tree_view_initialize_class):
+	Convert to use pixbufs instead of pixmaps. Convert to use
+	NautilusList instead of GtkCList. Fix storage leak of name.
+	Get rid of weak use of callback function pointers. Add feature
+	where the selected row is kept in position as new items are added.
+	Eliminated ADDED and jsut used CHANGED instead. Defer creating the
+	tree view until the first map. Turn off processing when unmapped.
+	Change NautilusTreeView to be NautilusView subclass, not a widget.
+	
+	* components/tree/nautilus-tree-view-dnd.c:
+	(nautilus_tree_view_drag_begin), (nautilus_tree_view_drag_motion),
+	(get_data_on_first_target_we_support),
+	(nautilus_tree_view_button_press),
+	(nautilus_tree_view_button_release),
+	(nautilus_tree_view_motion_notify),
+	(nautilus_tree_view_set_dnd_icon),
+	(nautilus_tree_view_collapse_node),
+	(nautilus_tree_view_expand_or_collapse_row),
+	(nautilus_tree_view_tree_node_at), (auto_scroll_timeout_callback),
+	(nautilus_tree_view_real_scroll),
+	(nautilus_tree_view_collapse_all),
+	(nautilus_tree_view_receive_dropped_icons),
+	(nautilus_tree_view_drag_destroy),
+	(nautilus_tree_view_drag_destroy_real):
+	Switch from GtkCList to NautilusCList. Also get rid of code that
+	assumes NautilusTreeView is a widget. Also convert to use pixbufs
+	instead of pixmaps.
+	
+	* cut-n-paste-code/widgets/nautilusclist/nautilusclist.h:
+	* cut-n-paste-code/widgets/nautilusclist/nautilusclist.c:
+	(nautilus_clist_optimal_column_width), (nautilus_clist_set_text),
+	(nautilus_clist_set_pixbuf), (nautilus_clist_get_pixbuf),
+	(nautilus_clist_set_pixtext), (nautilus_clist_get_pixtext),
+	(set_cell_contents), (cell_size_request), (real_insert_row),
+	(draw_row), (draw_rows), (row_delete):
+	Change to use pixbufs instead of pixmaps. Remove most of the
+	drawing code since this can only be used as a base class for
+	NautilusList anyway. Add boolean to set_cell_contents so it
+	redraws only if the cell has changed.
+	
+	* libnautilus-extensions/nautilus-ctree.h:
+	* libnautilus-extensions/nautilus-ctree.c: (COLUMN_FROM_XPIXEL),
+	(nautilus_ctree_get_type), (nautilus_ctree_class_init),
+	(nautilus_ctree_set_arg), (nautilus_ctree_get_arg),
+	(nautilus_ctree_init), (ctree_attach_styles),
+	(ctree_detach_styles), (nautilus_ctree_realize),
+	(nautilus_ctree_event), (nautilus_ctree_unrealize),
+	(nautilus_ctree_button_press), (draw_drag_highlight),
+	(nautilus_ctree_row_at), (get_cell_rectangle),
+	(nautilus_ctree_set_prelight), (draw_cell_pixbuf),
+	(get_cell_style), (nautilus_ctree_draw_expander),
+	(nautilus_ctree_draw_lines), (draw_row), (tree_draw_node),
+	(nautilus_ctree_link), (nautilus_ctree_unlink), (real_row_move),
+	(real_tree_move), (change_focus_row_expansion), (real_tree_expand),
+	(real_tree_collapse), (column_auto_resize), (auto_resize_columns),
+	(cell_size_request), (set_cell_contents), (set_node_info),
+	(row_new), (row_delete), (real_select_row), (real_unselect_row),
+	(real_tree_select), (real_tree_unselect), (select_row_recursive),
+	(real_select_all), (real_unselect_all), (ctree_is_hot_spot),
+	(nautilus_ctree_construct), (real_insert_row),
+	(nautilus_ctree_insert_node), (nautilus_ctree_insert_gnode),
+	(real_remove_row), (nautilus_ctree_remove_node), (real_clear),
+	(nautilus_ctree_post_recursive),
+	(nautilus_ctree_post_recursive_to_depth),
+	(nautilus_ctree_pre_recursive),
+	(nautilus_ctree_pre_recursive_to_depth),
+	(nautilus_ctree_find_node_ptr), (nautilus_ctree_node_nth),
+	(nautilus_ctree_find), (nautilus_ctree_find_by_row_data),
+	(nautilus_ctree_find_all_by_row_data),
+	(nautilus_ctree_find_by_row_data_custom),
+	(nautilus_ctree_find_all_by_row_data_custom),
+	(nautilus_ctree_is_hot_spot), (nautilus_ctree_expand_recursive),
+	(nautilus_ctree_expand_to_depth),
+	(nautilus_ctree_collapse_recursive),
+	(nautilus_ctree_collapse_to_depth),
+	(nautilus_ctree_toggle_expansion_recursive),
+	(nautilus_ctree_real_select_recursive),
+	(nautilus_ctree_node_set_text), (nautilus_ctree_node_set_pixbuf),
+	(nautilus_ctree_node_set_pixtext), (nautilus_ctree_set_node_info),
+	(nautilus_ctree_node_set_shift), (remove_grab),
+	(nautilus_ctree_node_set_selectable),
+	(nautilus_ctree_node_get_cell_type),
+	(nautilus_ctree_node_get_text), (nautilus_ctree_node_get_pixbuf),
+	(nautilus_ctree_node_get_pixtext), (nautilus_ctree_get_node_info),
+	(nautilus_ctree_node_set_cell_style),
+	(nautilus_ctree_node_get_cell_style),
+	(nautilus_ctree_node_set_row_style), (nautilus_ctree_node_moveto),
+	(nautilus_ctree_node_is_visible), (nautilus_ctree_set_indent),
+	(nautilus_ctree_set_spacing), (nautilus_ctree_set_show_stub),
+	(nautilus_ctree_set_line_style), (tree_sort),
+	(nautilus_ctree_sort_recursive), (real_sort_list),
+	(nautilus_ctree_sort_node), (nautilus_ctree_sort_single_node),
+	(fake_unselect_all), (selection_find), (resync_selection),
+	(real_undo_selection), (check_drag), (drag_dest_info_destroy),
+	(drag_dest_cell), (nautilus_ctree_drag_begin),
+	(nautilus_ctree_drag_motion), (nautilus_ctree_drag_data_received):
+	Change to use NautilusList instead of GtkCList. Change to use
+	pixbufs instead of pixmaps. Use set_cell_contents boolean to only
+	redraw when cell has changed.
+	
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_marshal_POINTER__INT): Add new marshal needed for
+	the pixbuf version of a NautilusList call.
+	(nautilus_drag_set_icon_pixbuf): Helper to convert pixbuf to
+	a pixmap and mask for GTK's sake.
+	
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_dnd_begin_drag): Use nautilus_drag_set_icon_pixbuf.
+	
+	* libnautilus-extensions/nautilus-list.h:
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_initialize_class), (nautilus_list_initialize_dnd),
+	(nautilus_list_initialize), (nautilus_list_destroy), (draw_cell),
+	(nautilus_list_mark_cell_as_link),
+	(nautilus_list_set_cell_contents), (set_list_cell),
+	(get_list_cell), (nautilus_list_drag_start),
+	(nautilus_list_receive_dropped_icons):
+	Take advantage of the new changes in NautilusCList, which now uses
+	pixmaps directly. Change drag signal to use a pixbuf, not a
+	pixmap. Change so it doesn't do the DND stuff unless you
+	explicitly call for it. Use set_cell_contents boolean to only
+	redraw when cell has changed.
+	
+	* src/file-manager/fm-list-view.c: (fm_list_get_drag_pixbuf),
+	(fm_list_get_sort_column_index), (create_list), (set_up_list):
+	Change to use the new pixbuf signal instead of the old pixmap one.
+	Make a call to ask NautilusList to do the DND stuff.
+
 2001-03-27  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/services/clone/.cvsignore:

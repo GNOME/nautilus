@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /* 
- * Copyright (C) 2000 Eazel, Inc
+ * Copyright (C) 2000, 2001 Eazel, Inc
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -26,25 +26,19 @@
 
 #include <config.h>
 
-#include "nautilus-tree-view.h"
-
 #include "nautilus-tree-view-iids.h"
-
-#include <liboaf/liboaf.h>
+#include "nautilus-tree-view.h"
 #include <bonobo.h>
+#include <liboaf/liboaf.h>
 
-
-
-
+/* FIXME bugzilla.eazel.com 2736: oaf_plugin_unuse can't possibly work! this sucks */
+#if 0
 static void
 tree_shlib_object_destroyed (GtkObject *object)
 {
-	/* FIXME bugzilla.eazel.com 2736: oaf_plugin_unuse can't possibly work! this sucks */
-#if 0
 	oaf_plugin_unuse (gtk_object_get_user_data (object));
-#endif
 }
-
+#endif
 
 static CORBA_Object
 tree_shlib_make_object (PortableServer_POA poa,
@@ -53,8 +47,6 @@ tree_shlib_make_object (PortableServer_POA poa,
 			CORBA_Environment *ev)
 {
 	NautilusTreeView *view;
-	NautilusView *nautilus_view;
-
 
 	if (strcmp (iid, TREE_VIEW_IID) != 0) {
 		return CORBA_OBJECT_NIL;
@@ -62,32 +54,22 @@ tree_shlib_make_object (PortableServer_POA poa,
 
 	view = NAUTILUS_TREE_VIEW (gtk_object_new (NAUTILUS_TYPE_TREE_VIEW, NULL));
 
-	nautilus_view = nautilus_tree_view_get_nautilus_view (view);
-
-	gtk_signal_connect (GTK_OBJECT (nautilus_view), "destroy", tree_shlib_object_destroyed, NULL);
-
-	gtk_object_set_user_data (GTK_OBJECT (nautilus_view), impl_ptr);
+#if 0
+	gtk_signal_connect (GTK_OBJECT (view), "destroy", tree_shlib_object_destroyed, NULL);
+#endif
 
 	oaf_plugin_use (poa, impl_ptr);
 
 	return CORBA_Object_duplicate (bonobo_object_corba_objref 
-				       (BONOBO_OBJECT (nautilus_view)), ev);
+				       (BONOBO_OBJECT (view)), ev);
 }
 
-
 static const OAFPluginObject tree_plugin_list[] = {
-	{
-  		TREE_VIEW_IID,
-		tree_shlib_make_object
-	},
-	
-  	{
-  		NULL
-  	}
+	{ TREE_VIEW_IID, tree_shlib_make_object },
+	{ NULL }
 };
 
 const OAFPlugin OAF_Plugin_info = {
 	tree_plugin_list,
 	"Nautilus Tree Sidebar Panel"
 };
-

@@ -31,7 +31,6 @@
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-pixmap.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-extensions/nautilus-art-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-art-extensions.h>
@@ -917,28 +916,20 @@ fm_list_drag_data_get (GtkWidget *widget, GdkDragContext *context,
 		info, time, widget, each_icon_get_data_binder);
 }
 
-static void
-fm_list_get_drag_pixmap (GtkWidget *widget, int row_index, GdkPixmap **pixmap, 
-			 GdkBitmap **mask, FMListView *list_view)
+static GdkPixbuf *
+fm_list_get_drag_pixbuf (GtkWidget *widget, int row_index, FMListView *list_view)
 {
-	GdkPixbuf *pixbuf;
+	g_assert (FM_IS_LIST_VIEW (list_view));
 
-	g_assert (NAUTILUS_IS_LIST (widget));
-
-	pixbuf = nautilus_list_get_pixbuf (NAUTILUS_LIST (widget),
-					   row_index, LIST_VIEW_COLUMN_ICON);
-
-	g_assert (pixbuf != NULL);
-
-	gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap, mask,
-					   NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
+	return nautilus_list_get_pixbuf (NAUTILUS_LIST (widget),
+					 row_index,
+					 LIST_VIEW_COLUMN_ICON);
 }
 
 static int
 fm_list_get_sort_column_index (GtkWidget *widget, FMListView *list_view)
 {
 	g_assert (NAUTILUS_IS_LIST (widget));
-	g_assert (FM_IS_LIST_VIEW (list_view));
 
 	return FM_LIST_VIEW (list_view)->details->sort_column;
 }
@@ -986,6 +977,7 @@ create_list (FMListView *list_view)
 	titles = get_column_titles (list_view);
 	list = NAUTILUS_LIST (nautilus_list_new_with_titles (get_number_of_columns (list_view),
 							     titles));
+	nautilus_list_initialize_dnd (list);
 	g_free (titles);
 
 	clist = NAUTILUS_CLIST (list);
@@ -1101,8 +1093,8 @@ set_up_list (FMListView *list_view)
 			    fm_list_drag_data_get,
 			    list_view);
 	gtk_signal_connect (GTK_OBJECT (list),
-			    "get_drag_pixmap",
-			    fm_list_get_drag_pixmap,
+			    "get_drag_pixbuf",
+			    GTK_SIGNAL_FUNC (fm_list_get_drag_pixbuf),
 			    list_view);
 	gtk_signal_connect (GTK_OBJECT (list),
 			    "get_sort_column_index",

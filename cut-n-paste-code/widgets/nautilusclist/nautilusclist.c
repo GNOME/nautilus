@@ -379,15 +379,6 @@ static void get_cell_style   (NautilusCList      *clist,
 			      GtkStyle     **style,
 			      GdkGC        **fg_gc,
 			      GdkGC        **bg_gc);
-static gint draw_cell_pixmap (GdkWindow     *window,
-			      GdkRectangle  *clip_rectangle,
-			      GdkGC         *fg_gc,
-			      GdkPixmap     *pixmap,
-			      GdkBitmap     *mask,
-			      gint           x,
-			      gint           y,
-			      gint           width,
-			      gint           height);
 static void draw_row         (NautilusCList      *clist,
 			      GdkRectangle  *area,
 			      gint           row,
@@ -416,14 +407,13 @@ static void columns_delete         (NautilusCList      *clist);
 static NautilusCListRow *row_new        (NautilusCList      *clist);
 static void row_delete             (NautilusCList      *clist,
 			            NautilusCListRow   *clist_row);
-static void set_cell_contents      (NautilusCList      *clist,
+static gboolean set_cell_contents  (NautilusCList      *clist,
 			            NautilusCListRow   *clist_row,
 				    gint           column,
 				    NautilusCellType    type,
 				    const gchar   *text,
 				    guint8         spacing,
-				    GdkPixmap     *pixmap,
-				    GdkBitmap     *mask);
+				    GdkPixbuf     *pixbuf);
 static gint real_insert_row        (NautilusCList      *clist,
 				    gint           row,
 				    gchar         *text[]);
@@ -1708,7 +1698,7 @@ nautilus_clist_optimal_column_width (NautilusCList *clist,
   if (NAUTILUS_CLIST_SHOW_TITLES(clist) && clist->column[column].button)
     width = (clist->column[column].button->requisition.width)
 #if 0
-	     (CELL_SPACING + (2 * COLUMN_INSET)))
+            + (CELL_SPACING + (2 * COLUMN_INSET))
 #endif
 		;
   else
@@ -2162,8 +2152,8 @@ column_title_passive_func (GtkWidget *widget,
  *   nautilus_clist_get_cell_type
  *   nautilus_clist_set_text
  *   nautilus_clist_get_text
- *   nautilus_clist_set_pixmap
- *   nautilus_clist_get_pixmap
+ *   nautilus_clist_set_pixbuf
+ *   nautilus_clist_get_pixbuf
  *   nautilus_clist_set_pixtext
  *   nautilus_clist_get_pixtext
  *   nautilus_clist_set_shift
@@ -2207,14 +2197,15 @@ nautilus_clist_set_text (NautilusCList    *clist,
   clist_row = ROW_ELEMENT (clist, row)->data;
 
   /* if text is null, then the cell is empty */
-  NAUTILUS_CLIST_CLASS_FW (clist)->set_cell_contents
-    (clist, clist_row, column, NAUTILUS_CELL_TEXT, text, 0, NULL, NULL);
-
-  /* redraw the list if it's not frozen */
-  if (CLIST_UNFROZEN (clist))
+  if (NAUTILUS_CLIST_CLASS_FW (clist)->set_cell_contents
+      (clist, clist_row, column, NAUTILUS_CELL_TEXT, text, 0, NULL))
     {
-      if (nautilus_clist_row_is_visible (clist, row) != GTK_VISIBILITY_NONE)
-	NAUTILUS_CLIST_CLASS_FW (clist)->draw_row (clist, NULL, row, clist_row);
+      /* redraw the list if it's not frozen */
+      if (CLIST_UNFROZEN (clist))
+	{
+	  if (nautilus_clist_row_is_visible (clist, row) != GTK_VISIBILITY_NONE)
+	    NAUTILUS_CLIST_CLASS_FW (clist)->draw_row (clist, NULL, row, clist_row);
+	}
     }
 }
 
@@ -2236,7 +2227,8 @@ nautilus_clist_get_text (NautilusCList  *clist,
 
   clist_row = ROW_ELEMENT (clist, row)->data;
 
-  if (clist_row->cell[column].type != NAUTILUS_CELL_TEXT)
+  if (clist_row->cell[column].type != NAUTILUS_CELL_TEXT
+      && clist_row->cell[column].type != NAUTILUS_CELL_LINK_TEXT)
     return 0;
 
   if (text)
@@ -2246,11 +2238,10 @@ nautilus_clist_get_text (NautilusCList  *clist,
 }
 
 void
-nautilus_clist_set_pixmap (NautilusCList  *clist,
+nautilus_clist_set_pixbuf (NautilusCList  *clist,
 		      gint       row,
 		      gint       column,
-		      GdkPixmap *pixmap,
-		      GdkBitmap *mask)
+			   GdkPixbuf *pixbuf)
 {
   NautilusCListRow *clist_row;
 
@@ -2264,27 +2255,23 @@ nautilus_clist_set_pixmap (NautilusCList  *clist,
 
   clist_row = ROW_ELEMENT (clist, row)->data;
   
-  gdk_pixmap_ref (pixmap);
-  
-  if (mask) gdk_pixmap_ref (mask);
-  
-  NAUTILUS_CLIST_CLASS_FW (clist)->set_cell_contents
-    (clist, clist_row, column, NAUTILUS_CELL_PIXMAP, NULL, 0, pixmap, mask);
-
-  /* redraw the list if it's not frozen */
-  if (CLIST_UNFROZEN (clist))
+  if (NAUTILUS_CLIST_CLASS_FW (clist)->set_cell_contents
+      (clist, clist_row, column, NAUTILUS_CELL_PIXBUF, NULL, 0, pixbuf))
     {
-      if (nautilus_clist_row_is_visible (clist, row) != GTK_VISIBILITY_NONE)
-	NAUTILUS_CLIST_CLASS_FW (clist)->draw_row (clist, NULL, row, clist_row);
+      /* redraw the list if it's not frozen */
+      if (CLIST_UNFROZEN (clist))
+	{
+	  if (nautilus_clist_row_is_visible (clist, row) != GTK_VISIBILITY_NONE)
+	    NAUTILUS_CLIST_CLASS_FW (clist)->draw_row (clist, NULL, row, clist_row);
+	}
     }
 }
 
 gint
-nautilus_clist_get_pixmap (NautilusCList   *clist,
+nautilus_clist_get_pixbuf (NautilusCList   *clist,
 		      gint        row,
 		      gint        column,
-		      GdkPixmap **pixmap,
-		      GdkBitmap **mask)
+		      GdkPixbuf **pixbuf)
 {
   NautilusCListRow *clist_row;
 
@@ -2298,14 +2285,12 @@ nautilus_clist_get_pixmap (NautilusCList   *clist,
 
   clist_row = ROW_ELEMENT (clist, row)->data;
 
-  if (clist_row->cell[column].type != NAUTILUS_CELL_PIXMAP)
+  if (clist_row->cell[column].type != NAUTILUS_CELL_PIXBUF)
     return 0;
 
-  if (pixmap)
+  if (pixbuf)
   {
-    *pixmap = NAUTILUS_CELL_PIXMAP (clist_row->cell[column])->pixmap;
-    /* mask can be NULL */
-    *mask = NAUTILUS_CELL_PIXMAP (clist_row->cell[column])->mask;
+    *pixbuf = NAUTILUS_CELL_PIXBUF (clist_row->cell[column])->pixbuf;
   }
 
   return 1;
@@ -2317,8 +2302,7 @@ nautilus_clist_set_pixtext (NautilusCList    *clist,
 		       gint         column,
 		       const gchar *text,
 		       guint8       spacing,
-		       GdkPixmap   *pixmap,
-		       GdkBitmap   *mask)
+		       GdkPixbuf   *pixbuf)
 {
   NautilusCListRow *clist_row;
 
@@ -2332,16 +2316,15 @@ nautilus_clist_set_pixtext (NautilusCList    *clist,
 
   clist_row = ROW_ELEMENT (clist, row)->data;
   
-  gdk_pixmap_ref (pixmap);
-  if (mask) gdk_pixmap_ref (mask);
-  NAUTILUS_CLIST_CLASS_FW (clist)->set_cell_contents
-    (clist, clist_row, column, NAUTILUS_CELL_PIXTEXT, text, spacing, pixmap, mask);
-
-  /* redraw the list if it's not frozen */
-  if (CLIST_UNFROZEN (clist))
+  if (NAUTILUS_CLIST_CLASS_FW (clist)->set_cell_contents
+      (clist, clist_row, column, NAUTILUS_CELL_PIXTEXT, text, spacing, pixbuf))
     {
-      if (nautilus_clist_row_is_visible (clist, row) != GTK_VISIBILITY_NONE)
-	NAUTILUS_CLIST_CLASS_FW (clist)->draw_row (clist, NULL, row, clist_row);
+      /* redraw the list if it's not frozen */
+      if (CLIST_UNFROZEN (clist))
+	{
+	  if (nautilus_clist_row_is_visible (clist, row) != GTK_VISIBILITY_NONE)
+	    NAUTILUS_CLIST_CLASS_FW (clist)->draw_row (clist, NULL, row, clist_row);
+	}
     }
 }
 
@@ -2351,8 +2334,7 @@ nautilus_clist_get_pixtext (NautilusCList   *clist,
 		       gint        column,
 		       gchar     **text,
 		       guint8     *spacing,
-		       GdkPixmap **pixmap,
-		       GdkBitmap **mask)
+		       GdkPixbuf **pixbuf)
 {
   NautilusCListRow *clist_row;
 
@@ -2373,11 +2355,8 @@ nautilus_clist_get_pixtext (NautilusCList   *clist,
     *text = NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->text;
   if (spacing)
     *spacing = NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->spacing;
-  if (pixmap)
-    *pixmap = NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->pixmap;
-
-  /* mask can be NULL */
-  *mask = NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->mask;
+  if (pixbuf)
+    *pixbuf = NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->pixbuf;
 
   return 1;
 }
@@ -2420,47 +2399,88 @@ nautilus_clist_set_shift (NautilusCList *clist,
  *   set_cell_contents
  *   cell_size_request
  */
-static void
+static gboolean
 set_cell_contents (NautilusCList    *clist,
 		   NautilusCListRow *clist_row,
 		   gint         column,
 		   NautilusCellType  type,
 		   const gchar *text,
 		   guint8       spacing,
-		   GdkPixmap   *pixmap,
-		   GdkBitmap   *mask)
+		   GdkPixbuf   *pixbuf)
 {
   GtkRequisition requisition;
 
-  g_return_if_fail (clist != NULL);
-  g_return_if_fail (NAUTILUS_IS_CLIST (clist));
-  g_return_if_fail (clist_row != NULL);
+  g_return_val_if_fail (NAUTILUS_IS_CLIST (clist), FALSE);
+  g_return_val_if_fail (clist_row != NULL, FALSE);
+
+  if (type == clist_row->cell[column].type)
+    {
+      switch (type)
+	{
+	case NAUTILUS_CELL_EMPTY:
+	  return FALSE;
+	case NAUTILUS_CELL_TEXT:
+	case NAUTILUS_CELL_LINK_TEXT:
+	  if (NAUTILUS_CELL_TEXT (clist_row->cell[column])->text == NULL)
+	    {
+	      if (text == NULL)
+		return FALSE;
+	    }
+	  else
+	    {
+	      if (text != NULL && strcmp (NAUTILUS_CELL_TEXT (clist_row->cell[column])->text, text) == 0)
+		return FALSE;
+	    }
+	  break;
+	case NAUTILUS_CELL_PIXBUF:
+	  if (pixbuf == NAUTILUS_CELL_PIXBUF (clist_row->cell[column])->pixbuf)
+	    return FALSE;
+	  break;
+	case NAUTILUS_CELL_PIXTEXT:
+	  if (pixbuf == NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->pixbuf)
+	    {
+	      if (NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->text == NULL)
+		{
+		  if (text == NULL)
+		    return FALSE;
+		}
+	      else
+		{
+		  if (text != NULL && strcmp (NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->text, text) == 0)
+		    return FALSE;
+		}
+	    }
+	  break;
+	case NAUTILUS_CELL_WIDGET:
+	  /* unimplemented */
+	  break;
+	default:
+	  break;
+	}
+    }
 
   if (clist->column[column].auto_resize &&
       !NAUTILUS_CLIST_AUTO_RESIZE_BLOCKED(clist))
     NAUTILUS_CLIST_CLASS_FW (clist)->cell_size_request (clist, clist_row,
-						   column, &requisition);
+							column, &requisition);
 
   switch (clist_row->cell[column].type)
     {
     case NAUTILUS_CELL_EMPTY:
       break;
     case NAUTILUS_CELL_TEXT:
+    case NAUTILUS_CELL_LINK_TEXT:
       g_free (NAUTILUS_CELL_TEXT (clist_row->cell[column])->text);
       break;
-    case NAUTILUS_CELL_PIXMAP:
-      gdk_pixmap_unref (NAUTILUS_CELL_PIXMAP (clist_row->cell[column])->pixmap);
-      if (NAUTILUS_CELL_PIXMAP (clist_row->cell[column])->mask)
-	gdk_bitmap_unref (NAUTILUS_CELL_PIXMAP (clist_row->cell[column])->mask);
+    case NAUTILUS_CELL_PIXBUF:
+      gdk_pixbuf_unref (NAUTILUS_CELL_PIXBUF (clist_row->cell[column])->pixbuf);
       break;
     case NAUTILUS_CELL_PIXTEXT:
       g_free (NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->text);
-      gdk_pixmap_unref (NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->pixmap);
-      if (NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->mask)
-	gdk_bitmap_unref (NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->mask);
+      gdk_pixbuf_unref (NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->pixbuf);
       break;
     case NAUTILUS_CELL_WIDGET:
-      /* unimplimented */
+      /* unimplemented */
       break;
     default:
       break;
@@ -2471,29 +2491,27 @@ set_cell_contents (NautilusCList    *clist,
   switch (type)
     {
     case NAUTILUS_CELL_TEXT:
+    case NAUTILUS_CELL_LINK_TEXT:
       if (text)
 	{
 	  clist_row->cell[column].type = NAUTILUS_CELL_TEXT;
 	  NAUTILUS_CELL_TEXT (clist_row->cell[column])->text = g_strdup (text);
 	}
       break;
-    case NAUTILUS_CELL_PIXMAP:
-      if (pixmap)
+    case NAUTILUS_CELL_PIXBUF:
+      if (pixbuf)
 	{
-	  clist_row->cell[column].type = NAUTILUS_CELL_PIXMAP;
-	  NAUTILUS_CELL_PIXMAP (clist_row->cell[column])->pixmap = pixmap;
-	  /* We set the mask even if it is NULL */
-	  NAUTILUS_CELL_PIXMAP (clist_row->cell[column])->mask = mask;
+	  clist_row->cell[column].type = NAUTILUS_CELL_PIXBUF;
+	  NAUTILUS_CELL_PIXBUF (clist_row->cell[column])->pixbuf = gdk_pixbuf_ref (pixbuf);
 	}
       break;
     case NAUTILUS_CELL_PIXTEXT:
-      if (text && pixmap)
+      if (text && pixbuf)
 	{
 	  clist_row->cell[column].type = NAUTILUS_CELL_PIXTEXT;
 	  NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->text = g_strdup (text);
 	  NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->spacing = spacing;
-	  NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->pixmap = pixmap;
-	  NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->mask = mask;
+	  NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->pixbuf = gdk_pixbuf_ref (pixbuf);
 	}
       break;
     default:
@@ -2503,6 +2521,8 @@ set_cell_contents (NautilusCList    *clist,
   if (clist->column[column].auto_resize &&
       !NAUTILUS_CLIST_AUTO_RESIZE_BLOCKED(clist))
     column_auto_resize (clist, clist_row, column, requisition.width);
+
+  return TRUE;
 }
 
 static void
@@ -2525,27 +2545,26 @@ cell_size_request (NautilusCList       *clist,
   switch (clist_row->cell[column].type)
     {
     case NAUTILUS_CELL_TEXT:
+    case NAUTILUS_CELL_LINK_TEXT:
       requisition->width =
 	gdk_string_width (style->font,
 			  NAUTILUS_CELL_TEXT (clist_row->cell[column])->text);
       requisition->height = style->font->ascent + style->font->descent;
       break;
     case NAUTILUS_CELL_PIXTEXT:
-      gdk_window_get_size (NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->pixmap,
-			   &width, &height);
+      width = gdk_pixbuf_get_height (NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->pixbuf);
       requisition->width = width +
 	NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->spacing +
 	gdk_string_width (style->font,
 			  NAUTILUS_CELL_TEXT (clist_row->cell[column])->text);
 
+      height = gdk_pixbuf_get_height (NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->pixbuf);
       requisition->height = MAX (style->font->ascent + style->font->descent,
 				 height);
       break;
-    case NAUTILUS_CELL_PIXMAP:
-      gdk_window_get_size (NAUTILUS_CELL_PIXMAP (clist_row->cell[column])->pixmap,
-			   &width, &height);
-      requisition->width = width;
-      requisition->height = height;
+    case NAUTILUS_CELL_PIXBUF:
+      requisition->width = gdk_pixbuf_get_width (NAUTILUS_CELL_PIXBUF (clist_row->cell[column])->pixbuf);
+      requisition->height = gdk_pixbuf_get_height (NAUTILUS_CELL_PIXBUF (clist_row->cell[column])->pixbuf);
       break;
     default:
       requisition->width  = 0;
@@ -2748,7 +2767,7 @@ real_insert_row (NautilusCList *clist,
   for (i = 0; i < clist->columns; i++)
     if (text[i])
       NAUTILUS_CLIST_CLASS_FW (clist)->set_cell_contents
-	(clist, clist_row, i, NAUTILUS_CELL_TEXT, text[i], 0, NULL ,NULL);
+	(clist, clist_row, i, NAUTILUS_CELL_TEXT, text[i], 0, NULL);
 
   if (!clist->rows)
     {
@@ -4830,82 +4849,16 @@ nautilus_clist_unmap (GtkWidget *widget)
 
 static void
 nautilus_clist_draw (GtkWidget    *widget,
-		GdkRectangle *area)
+		     GdkRectangle *area)
 {
-  NautilusCList *clist;
-  gint border_width;
-  GdkRectangle child_area;
-  int i;
-
-  g_assert (!"this should not be called, the NautilusList drawing would be disrupted by this");
-  g_return_if_fail (widget != NULL);
-  g_return_if_fail (NAUTILUS_IS_CLIST (widget));
-  g_return_if_fail (area != NULL);
-
-  if (GTK_WIDGET_DRAWABLE (widget))
-    {
-      clist = NAUTILUS_CLIST (widget);
-      border_width = GTK_CONTAINER (widget)->border_width;
-
-      gdk_window_clear_area (widget->window,
-			     area->x - border_width, 
-			     area->y - border_width,
-			     area->width, area->height);
-
-      /* draw list shadow/border */
-      gtk_draw_shadow (widget->style, widget->window,
-		       GTK_STATE_NORMAL, clist->shadow_type,
-		       0, 0, 
-		       clist->clist_window_width +
-		       (2 * widget->style->klass->xthickness),
-		       clist->clist_window_height +
-		       (2 * widget->style->klass->ythickness) +
-		       clist->column_title_area.height);
-
-      gdk_window_clear_area (clist->clist_window, 0, 0, 0, 0);
-      NAUTILUS_CLIST_CLASS_FW (clist)->draw_all (clist);
-
-      for (i = 0; i < clist->columns; i++)
-	{
-	  if (!clist->column[i].visible)
-	    continue;
-	  if (clist->column[i].button &&
-	      gtk_widget_intersect(clist->column[i].button, area, &child_area))
-	    gtk_widget_draw (clist->column[i].button, &child_area);
-	}
-    }
+  g_error ("this should not be called, the NautilusList drawing would be disrupted by this");
 }
 
 static gint
 nautilus_clist_expose (GtkWidget      *widget,
-		  GdkEventExpose *event)
+		       GdkEventExpose *event)
 {
-  NautilusCList *clist;
-
-  g_assert (!"this should not be called, the NautilusList drawing would be disrupted by this");
-  g_return_val_if_fail (widget != NULL, FALSE);
-  g_return_val_if_fail (NAUTILUS_IS_CLIST (widget), FALSE);
-  g_return_val_if_fail (event != NULL, FALSE);
-
-  if (GTK_WIDGET_DRAWABLE (widget))
-    {
-      clist = NAUTILUS_CLIST (widget);
-
-      /* draw border */
-      if (event->window == widget->window)
-	gtk_draw_shadow (widget->style, widget->window,
-			 GTK_STATE_NORMAL, clist->shadow_type,
-			 0, 0,
-			 clist->clist_window_width +
-			 (2 * widget->style->klass->xthickness),
-			 clist->clist_window_height +
-			 (2 * widget->style->klass->ythickness) +
-			 clist->column_title_area.height);
-
-      /* exposure events on the list */
-      if (event->window == clist->clist_window)
-        NAUTILUS_CLIST_CLASS_FW (clist)->draw_rows (clist, &event->area);
-    }
+  g_error ("this should not be called, the NautilusList drawing would be disrupted by this");
 
   return FALSE;
 }
@@ -5622,7 +5575,6 @@ nautilus_clist_forall (GtkContainer *container,
 
 /* PRIVATE DRAWING FUNCTIONS
  *   get_cell_style
- *   draw_cell_pixmap
  *   draw_row
  *   draw_rows
  *   draw_xor_line
@@ -5694,382 +5646,27 @@ get_cell_style (NautilusCList     *clist,
     }
 }
 
-static gint
-draw_cell_pixmap (GdkWindow    *window,
-		  GdkRectangle *clip_rectangle,
-		  GdkGC        *fg_gc,
-		  GdkPixmap    *pixmap,
-		  GdkBitmap    *mask,
-		  gint          x,
-		  gint          y,
-		  gint          width,
-		  gint          height)
-{
-  gint xsrc = 0;
-  gint ysrc = 0;
-
-  if (mask)
-    {
-      gdk_gc_set_clip_mask (fg_gc, mask);
-      gdk_gc_set_clip_origin (fg_gc, x, y);
-    }
-
-  if (x < clip_rectangle->x)
-    {
-      xsrc = clip_rectangle->x - x;
-      width -= xsrc;
-      x = clip_rectangle->x;
-    }
-  if (x + width > clip_rectangle->x + clip_rectangle->width)
-    width = clip_rectangle->x + clip_rectangle->width - x;
-
-  if (y < clip_rectangle->y)
-    {
-      ysrc = clip_rectangle->y - y;
-      height -= ysrc;
-      y = clip_rectangle->y;
-    }
-  if (y + height > clip_rectangle->y + clip_rectangle->height)
-    height = clip_rectangle->y + clip_rectangle->height - y;
-
-  gdk_draw_pixmap (window, fg_gc, pixmap, xsrc, ysrc, x, y, width, height);
-  gdk_gc_set_clip_origin (fg_gc, 0, 0);
-  if (mask)
-    gdk_gc_set_clip_mask (fg_gc, NULL);
-
-  return x + MAX (width, 0);
-}
-
 static void
-draw_row (NautilusCList     *clist,
-	  GdkRectangle *area,
-	  gint          row,
-	  NautilusCListRow  *clist_row)
+draw_row (NautilusCList    *clist,
+	  GdkRectangle     *area,
+	  gint              row,
+	  NautilusCListRow *clist_row)
 {
-  GtkWidget *widget;
-  GdkRectangle *rect;
-  GdkRectangle row_rectangle;
-  GdkRectangle cell_rectangle;
-  GdkRectangle clip_rectangle;
-  GdkRectangle intersect_rectangle;
-  gint last_column;
-  gint state;
-  gint i;
-
-  g_assert (!"this should not be called, the NautilusList drawing would be disrupted by this");
-  g_return_if_fail (clist != NULL);
-
-  /* bail now if we arn't drawable yet */
-  if (!GTK_WIDGET_DRAWABLE (clist) || row < 0 || row >= clist->rows)
-    return;
-
-  widget = GTK_WIDGET (clist);
-
-  /* if the function is passed the pointer to the row instead of null,
-   * it avoids this expensive lookup */
-  if (!clist_row)
-    clist_row = ROW_ELEMENT (clist, row)->data;
-
-  /* rectangle of the entire row */
-  row_rectangle.x = 0;
-  row_rectangle.y = ROW_TOP_YPIXEL (clist, row);
-  row_rectangle.width = clist->clist_window_width;
-  row_rectangle.height = clist->row_height;
-
-  /* rectangle of the cell spacing above the row */
-  cell_rectangle.x = 0;
-  cell_rectangle.y = row_rectangle.y - CELL_SPACING;
-  cell_rectangle.width = row_rectangle.width;
-  cell_rectangle.height = CELL_SPACING;
-
-  /* rectangle used to clip drawing operations, its y and height
-   * positions only need to be set once, so we set them once here. 
-   * the x and width are set withing the drawing loop below once per
-   * column */
-  clip_rectangle.y = row_rectangle.y;
-  clip_rectangle.height = row_rectangle.height;
-
-  if (clist_row->state == GTK_STATE_NORMAL)
-    {
-      if (clist_row->fg_set)
-	gdk_gc_set_foreground (clist->fg_gc, &clist_row->foreground);
-      if (clist_row->bg_set)
-	gdk_gc_set_foreground (clist->bg_gc, &clist_row->background);
-    }
-
-  state = clist_row->state;
-
-  /* draw the cell borders and background */
-  if (area)
-    {
-      rect = &intersect_rectangle;
-      if (gdk_rectangle_intersect (area, &cell_rectangle,
-				   &intersect_rectangle))
-	gdk_draw_rectangle (clist->clist_window,
-			    widget->style->base_gc[GTK_STATE_ACTIVE],
-			    TRUE,
-			    intersect_rectangle.x,
-			    intersect_rectangle.y,
-			    intersect_rectangle.width,
-			    intersect_rectangle.height);
-
-      /* the last row has to clear its bottom cell spacing too */
-      if (clist_row == clist->row_list_end->data)
-	{
-	  cell_rectangle.y += clist->row_height + CELL_SPACING;
-
-	  if (gdk_rectangle_intersect (area, &cell_rectangle,
-				       &intersect_rectangle))
-	    gdk_draw_rectangle (clist->clist_window,
-				widget->style->base_gc[GTK_STATE_ACTIVE],
-				TRUE,
-				intersect_rectangle.x,
-				intersect_rectangle.y,
-				intersect_rectangle.width,
-				intersect_rectangle.height);
-	}
-
-      if (!gdk_rectangle_intersect (area, &row_rectangle,&intersect_rectangle))
-	return;
-
-    }
-  else
-    {
-      rect = &clip_rectangle;
-      gdk_draw_rectangle (clist->clist_window,
-			  widget->style->base_gc[GTK_STATE_ACTIVE],
-			  TRUE,
-			  cell_rectangle.x,
-			  cell_rectangle.y,
-			  cell_rectangle.width,
-			  cell_rectangle.height);
-
-      /* the last row has to clear its bottom cell spacing too */
-      if (clist_row == clist->row_list_end->data)
-	{
-	  cell_rectangle.y += clist->row_height + CELL_SPACING;
-
-	  gdk_draw_rectangle (clist->clist_window,
-			      widget->style->base_gc[GTK_STATE_ACTIVE],
-			      TRUE,
-			      cell_rectangle.x,
-			      cell_rectangle.y,
-			      cell_rectangle.width,
-			      cell_rectangle.height);     
-	}	  
-    }
-  
-  for (last_column = clist->columns - 1;
-       last_column >= 0 && !clist->column[last_column].visible; last_column--)
-    ;
-
-  /* iterate and draw all the columns (row cells) and draw their contents */
-  for (i = 0; i < clist->columns; i++)
-    {
-      GtkStyle *style;
-      GdkGC *fg_gc;
-      GdkGC *bg_gc;
-
-      gint width;
-      gint height;
-      gint pixmap_width;
-      gint offset = 0;
-      gint row_center_offset;
-
-      if (!clist->column[i].visible)
-	continue;
-
-      get_cell_style (clist, clist_row, state, i, &style, &fg_gc, &bg_gc);
-
-      clip_rectangle.x = clist->column[i].area.x + clist->hoffset;
-      clip_rectangle.width = clist->column[i].area.width;
-
-      /* calculate clipping region clipping region */
-      clip_rectangle.x -= COLUMN_INSET + CELL_SPACING;
-      clip_rectangle.width += (2 * COLUMN_INSET + CELL_SPACING +
-			       (i == last_column) * CELL_SPACING);
-      
-      if (area && !gdk_rectangle_intersect (area, &clip_rectangle,
-					    &intersect_rectangle))
-	continue;
-
-      gdk_draw_rectangle (clist->clist_window, bg_gc, TRUE,
-			  rect->x, rect->y, rect->width, rect->height);
-
-      clip_rectangle.x += COLUMN_INSET + CELL_SPACING;
-      clip_rectangle.width -= (2 * COLUMN_INSET + CELL_SPACING +
-			       (i == last_column) * CELL_SPACING);
-
-      /* calculate real width for column justification */
-      pixmap_width = 0;
-      offset = 0;
-      switch (clist_row->cell[i].type)
-	{
-	case NAUTILUS_CELL_TEXT:
-	  width = gdk_string_width (style->font,
-				    NAUTILUS_CELL_TEXT (clist_row->cell[i])->text);
-	  break;
-	case NAUTILUS_CELL_PIXMAP:
-	  gdk_window_get_size (NAUTILUS_CELL_PIXMAP (clist_row->cell[i])->pixmap,
-			       &pixmap_width, &height);
-	  width = pixmap_width;
-	  break;
-	case NAUTILUS_CELL_PIXTEXT:
-	  gdk_window_get_size (NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->pixmap,
-			       &pixmap_width, &height);
-	  width = (pixmap_width +
-		   NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->spacing +
-		   gdk_string_width (style->font,
-				     NAUTILUS_CELL_PIXTEXT
-				     (clist_row->cell[i])->text));
-	  break;
-	default:
-	  continue;
-	  break;
-	}
-
-      switch (clist->column[i].justification)
-	{
-	case GTK_JUSTIFY_LEFT:
-	  offset = clip_rectangle.x + clist_row->cell[i].horizontal;
-	  break;
-	case GTK_JUSTIFY_RIGHT:
-	  offset = (clip_rectangle.x + clist_row->cell[i].horizontal +
-		    clip_rectangle.width - width);
-	  break;
-	case GTK_JUSTIFY_CENTER:
-	case GTK_JUSTIFY_FILL:
-	  offset = (clip_rectangle.x + clist_row->cell[i].horizontal +
-		    (clip_rectangle.width / 2) - (width / 2));
-	  break;
-	};
-
-      /* Draw Text and/or Pixmap */
-      switch (clist_row->cell[i].type)
-	{
-	case NAUTILUS_CELL_PIXMAP:
-	  draw_cell_pixmap (clist->clist_window, &clip_rectangle, fg_gc,
-			    NAUTILUS_CELL_PIXMAP (clist_row->cell[i])->pixmap,
-			    NAUTILUS_CELL_PIXMAP (clist_row->cell[i])->mask,
-			    offset,
-			    clip_rectangle.y + clist_row->cell[i].vertical +
-			    (clip_rectangle.height - height) / 2,
-			    pixmap_width, height);
-	  break;
-	case NAUTILUS_CELL_PIXTEXT:
-	  offset =
-	    draw_cell_pixmap (clist->clist_window, &clip_rectangle, fg_gc,
-			      NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->pixmap,
-			      NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->mask,
-			      offset,
-			      clip_rectangle.y + clist_row->cell[i].vertical+
-			      (clip_rectangle.height - height) / 2,
-			      pixmap_width, height);
-	  offset += NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->spacing;
-	case NAUTILUS_CELL_TEXT:
-	  if (style != GTK_WIDGET (clist)->style)
-	    row_center_offset = (((clist->row_height - style->font->ascent -
-				  style->font->descent - 1) / 2) + 1.5 +
-				 style->font->ascent);
-	  else
-	    row_center_offset = clist->row_center_offset;
-
-	  gdk_gc_set_clip_rectangle (fg_gc, &clip_rectangle);
-	  gdk_draw_string (clist->clist_window, style->font, fg_gc,
-			   offset,
-			   row_rectangle.y + row_center_offset + 
-			   clist_row->cell[i].vertical,
-			   (clist_row->cell[i].type == NAUTILUS_CELL_PIXTEXT) ?
-			   NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->text :
-			   NAUTILUS_CELL_TEXT (clist_row->cell[i])->text);
-	  gdk_gc_set_clip_rectangle (fg_gc, NULL);
-	  break;
-	default:
-	  break;
-	}
-    }
-
-  /* draw focus rectangle */
-  if (clist->focus_row == row &&
-      GTK_WIDGET_CAN_FOCUS (widget) && GTK_WIDGET_HAS_FOCUS(widget))
-    {
-      if (!area)
-	gdk_draw_rectangle (clist->clist_window, clist->xor_gc, FALSE,
-			    row_rectangle.x, row_rectangle.y,
-			    row_rectangle.width - 1, row_rectangle.height - 1);
-      else if (gdk_rectangle_intersect (area, &row_rectangle,
-					&intersect_rectangle))
-	{
-	  gdk_gc_set_clip_rectangle (clist->xor_gc, &intersect_rectangle);
-	  gdk_draw_rectangle (clist->clist_window, clist->xor_gc, FALSE,
-			      row_rectangle.x, row_rectangle.y,
-			      row_rectangle.width - 1,
-			      row_rectangle.height - 1);
-	  gdk_gc_set_clip_rectangle (clist->xor_gc, NULL);
-	}
-    }
+  g_error ("this should not be called, the NautilusList drawing would be disrupted by this");
 }
 
 
 static void
 draw_all (NautilusCList *clist)
 {
-  g_assert (!"this should not be called, the NautilusList drawing would be disrupted by this");
+  g_error ("this should not be called, the NautilusList drawing would be disrupted by this");
 }
 
 static void
-draw_rows (NautilusCList     *clist,
-	   GdkRectangle *area)
+draw_rows (NautilusCList *clist,
+	   GdkRectangle  *area)
 {
-  GList *list;
-  NautilusCListRow *clist_row;
-  gint i;
-  gint first_row;
-  gint last_row;
-
-  g_assert (!"this should not be called, the NautilusList drawing would be disrupted by this");
-  g_return_if_fail (clist != NULL);
-  g_return_if_fail (NAUTILUS_IS_CLIST (clist));
-
-  if (clist->row_height == 0 ||
-      !GTK_WIDGET_DRAWABLE (clist))
-    return;
-
-  if (area)
-    {
-      first_row = ROW_FROM_YPIXEL (clist, area->y);
-      last_row = ROW_FROM_YPIXEL (clist, area->y + area->height);
-    }
-  else
-    {
-      first_row = ROW_FROM_YPIXEL (clist, 0);
-      last_row = ROW_FROM_YPIXEL (clist, clist->clist_window_height);
-    }
-
-  /* this is a small special case which exposes the bottom cell line
-   * on the last row -- it might go away if I change the wall the cell
-   * spacings are drawn
-   */
-  if (clist->rows == first_row)
-    first_row--;
-
-  list = ROW_ELEMENT (clist, first_row);
-  i = first_row;
-  while (list)
-    {
-      clist_row = list->data;
-      list = list->next;
-
-      if (i > last_row)
-	return;
-
-      NAUTILUS_CLIST_CLASS_FW (clist)->draw_row (clist, area, i, clist_row);
-      i++;
-    }
-
-  if (!area)
-    gdk_window_clear_area (clist->clist_window, 0,
-			   ROW_TOP_YPIXEL (clist, i), 0, 0);
+  g_error ("this should not be called, the NautilusList drawing would be disrupted by this");
 }
 
 static void                          
@@ -6602,7 +6199,7 @@ row_delete (NautilusCList    *clist,
   for (i = 0; i < clist->columns; i++)
     {
       NAUTILUS_CLIST_CLASS_FW (clist)->set_cell_contents
-	(clist, clist_row, i, NAUTILUS_CELL_EMPTY, NULL, 0, NULL, NULL);
+	(clist, clist_row, i, NAUTILUS_CELL_EMPTY, NULL, 0, NULL);
       if (clist_row->cell[i].style)
 	{
 	  if (GTK_WIDGET_REALIZED (clist))
@@ -7360,6 +6957,7 @@ default_compare (NautilusCList      *clist,
   switch (row1->cell[clist->sort_column].type)
     {
     case NAUTILUS_CELL_TEXT:
+    case NAUTILUS_CELL_LINK_TEXT:
       text1 = NAUTILUS_CELL_TEXT (row1->cell[clist->sort_column])->text;
       break;
     case NAUTILUS_CELL_PIXTEXT:
@@ -7372,6 +6970,7 @@ default_compare (NautilusCList      *clist,
   switch (row2->cell[clist->sort_column].type)
     {
     case NAUTILUS_CELL_TEXT:
+    case NAUTILUS_CELL_LINK_TEXT:
       text2 = NAUTILUS_CELL_TEXT (row2->cell[clist->sort_column])->text;
       break;
     case NAUTILUS_CELL_PIXTEXT:

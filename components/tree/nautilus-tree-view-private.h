@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /* 
- * Copyright (C) 2000 Eazel, Inc
+ * Copyright (C) 2000, 2001 Eazel, Inc
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -35,8 +35,6 @@
 
 typedef struct NautilusTreeViewDndDetails NautilusTreeViewDndDetails;
 
-typedef void (*TreeViewCallback) (NautilusTreeView *view);
-
 #define	ROW_ELEMENT(clist, row)	(((row) == (clist)->rows - 1) ? \
 				 (clist)->row_list_end : \
 				 g_list_nth ((clist)->row_list, (row)))
@@ -47,6 +45,7 @@ typedef void (*TreeViewCallback) (NautilusTreeView *view);
 struct NautilusTreeViewDetails {
 	NautilusView *nautilus_view;
 
+	GtkWidget *scrolled_window;
 	GtkWidget *tree;
 
 	NautilusTreeModel *model;
@@ -67,10 +66,8 @@ struct NautilusTreeViewDetails {
 
 	GList *unparented_tree_nodes;
 
-	TreeViewCallback root_seen_callback;
 	char *wait_uri;
 	NautilusTreeNode *wait_node;
-	TreeViewCallback uri_loaded_or_parent_done_loading;
         GList *in_progress_select_uris;
         gboolean root_seen;
 

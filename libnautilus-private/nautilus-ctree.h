@@ -32,7 +32,7 @@
 #ifndef NAUTILUS_CTREE_H
 #define NAUTILUS_CTREE_H
 
-#include <gtk/gtkclist.h>
+#include "nautilus-list.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -102,7 +102,7 @@ typedef gboolean (*NautilusCTreeCompareDragFunc) (NautilusCTree     *ctree,
 
 struct _NautilusCTree
 {
-	GtkCList clist;
+	NautilusList list;
 	
 	GdkGC *lines_gc;
 	
@@ -122,7 +122,7 @@ struct _NautilusCTree
 
 struct _NautilusCTreeClass
 {
-  GtkCListClass parent_class;
+  NautilusListClass parent_class;
   
   void (*tree_select_row)   (NautilusCTree     *ctree,
 			     NautilusCTreeNode *row,
@@ -147,16 +147,14 @@ struct _NautilusCTreeClass
 
 struct _NautilusCTreeRow
 {
-	GtkCListRow row;
+	NautilusCListRow row;
   
 	NautilusCTreeNode *parent;
 	NautilusCTreeNode *sibling;
 	NautilusCTreeNode *children;
   
-	GdkPixmap *pixmap_closed;
-	GdkBitmap *mask_closed;
-	GdkPixmap *pixmap_opened;
-	GdkBitmap *mask_opened;
+	GdkPixbuf *pixbuf_closed;
+	GdkPixbuf *pixbuf_opened;
   
 	guint16 level;
   
@@ -192,10 +190,8 @@ NautilusCTreeNode * nautilus_ctree_insert_node        (NautilusCTree          *c
 						       NautilusCTreeNode      *sibling,
 						       gchar                  *text[],
 						       guint8                  spacing,
-						       GdkPixmap              *pixmap_closed,
-						       GdkBitmap              *mask_closed,
-						       GdkPixmap              *pixmap_opened,
-						       GdkBitmap              *mask_opened,
+						       GdkPixbuf              *pixbuf_closed,
+						       GdkPixbuf              *pixbuf_opened,
 						       gboolean                is_leaf,
 						       gboolean                expanded);
 void nautilus_ctree_remove_node                       (NautilusCTree          *ctree, 
@@ -318,26 +314,22 @@ void nautilus_ctree_node_set_text                     (NautilusCTree     *ctree,
 						       NautilusCTreeNode *node,
 						       gint          column,
 						       const gchar  *text);
-void nautilus_ctree_node_set_pixmap                   (NautilusCTree     *ctree,
+void nautilus_ctree_node_set_pixbuf                   (NautilusCTree     *ctree,
 						       NautilusCTreeNode *node,
 						       gint          column,
-						       GdkPixmap    *pixmap,
-						       GdkBitmap    *mask);
+						       GdkPixbuf    *pixbuf);
 void nautilus_ctree_node_set_pixtext                  (NautilusCTree     *ctree,
 						       NautilusCTreeNode *node,
 						       gint          column,
 						       const gchar  *text,
 						       guint8        spacing,
-						       GdkPixmap    *pixmap,
-						       GdkBitmap    *mask);
+						       GdkPixbuf    *pixbuf);
 void nautilus_ctree_set_node_info                     (NautilusCTree     *ctree,
 						       NautilusCTreeNode *node,
 						       const gchar  *text,
 						       guint8        spacing,
-						       GdkPixmap    *pixmap_closed,
-						       GdkBitmap    *mask_closed,
-						       GdkPixmap    *pixmap_opened,
-						       GdkBitmap    *mask_opened,
+						       GdkPixbuf    *pixbuf_closed,
+						       GdkPixbuf    *pixbuf_opened,
 						       gboolean      is_leaf,
 						       gboolean      expanded);
 void nautilus_ctree_node_set_shift                    (NautilusCTree     *ctree,
@@ -350,33 +342,29 @@ void nautilus_ctree_node_set_selectable               (NautilusCTree     *ctree,
 						       gboolean      selectable);
 gboolean nautilus_ctree_node_get_selectable           (NautilusCTree     *ctree,
 						       NautilusCTreeNode *node);
-GtkCellType nautilus_ctree_node_get_cell_type         (NautilusCTree     *ctree,
+NautilusCellType nautilus_ctree_node_get_cell_type    (NautilusCTree     *ctree,
 						       NautilusCTreeNode *node,
 						       gint          column);
 gint nautilus_ctree_node_get_text                     (NautilusCTree     *ctree,
 						       NautilusCTreeNode *node,
 						       gint          column,
 						       gchar       **text);
-gint nautilus_ctree_node_get_pixmap                   (NautilusCTree     *ctree,
+gint nautilus_ctree_node_get_pixbuf                   (NautilusCTree     *ctree,
 						       NautilusCTreeNode *node,
 						       gint          column,
-						       GdkPixmap   **pixmap,
-						       GdkBitmap   **mask);
+						       GdkPixbuf   **pixbuf);
 gint nautilus_ctree_node_get_pixtext                  (NautilusCTree     *ctree,
 						       NautilusCTreeNode *node,
 						       gint          column,
 						       gchar       **text,
 						       guint8       *spacing,
-						       GdkPixmap   **pixmap,
-						       GdkBitmap   **mask);
+						       GdkPixbuf   **pixbuf);
 gint nautilus_ctree_get_node_info                     (NautilusCTree     *ctree,
 						       NautilusCTreeNode *node,
 						       gchar       **text,
 						       guint8       *spacing,
-						       GdkPixmap   **pixmap_closed,
-						       GdkBitmap   **mask_closed,
-						       GdkPixmap   **pixmap_opened,
-						       GdkBitmap   **mask_opened,
+						       GdkPixbuf   **pixbuf_closed,
+						       GdkPixbuf   **pixbuf_opened,
 						       gboolean     *is_leaf,
 						       gboolean     *expanded);
 

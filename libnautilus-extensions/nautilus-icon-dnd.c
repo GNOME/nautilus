@@ -1251,8 +1251,6 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 	GnomeCanvas *canvas;
 	GdkDragContext *context;
 	GdkPixbuf *pixbuf;
-	GdkPixmap *pixmap_for_dragged_file;
-	GdkBitmap *mask_for_dragged_file;
 	int x_offset, y_offset;
 	ArtDRect world_rect;
 	ArtIRect window_rect;
@@ -1285,11 +1283,6 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
     	/* we want to drag semi-transparent pixbufs, but X is too slow dealing with
 	   stippled masks, so we had to remove the code; this comment is left as a memorial
 	   to it, with the hope that we get it back someday as X Windows improves */
-	       
-	gdk_pixbuf_render_pixmap_and_mask (pixbuf,
-					   &pixmap_for_dragged_file,
-					   &mask_for_dragged_file,
-					   NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
 	
         /* compute the image's offset */
 	nautilus_icon_canvas_item_get_icon_rectangle
@@ -1299,12 +1292,8 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
         x_offset = dnd_info->drag_info.start_x - window_rect.x0;
         y_offset = dnd_info->drag_info.start_y - window_rect.y0;
         
-        /* set the pixmap and mask for dragging */
-        gtk_drag_set_icon_pixmap (context,
-				  gtk_widget_get_colormap (GTK_WIDGET (container)),
-				  pixmap_for_dragged_file,
-				  mask_for_dragged_file,
-				  x_offset, y_offset);
+        /* set the icon for dragging */
+        nautilus_drag_set_icon_pixbuf (context, pixbuf, x_offset, y_offset);
 }
 
 static gboolean

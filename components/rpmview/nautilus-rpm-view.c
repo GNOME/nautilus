@@ -24,22 +24,20 @@
 /* The RPM view component is used to provide an easy-to-use overview of a rpm package */
 
 #include <config.h>
-
 #include "nautilus-rpm-view.h"
+
 #include "nautilus-rpm-verify-window.h"
-
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <dirent.h>
-#include <stdio.h>
 #include <errno.h>
-
-#include <libnautilus/libnautilus.h>
+#include <fcntl.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gnome.h>
+#include <gtk/gtklabel.h>
+#include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-ctree.h>
-#include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
@@ -48,12 +46,11 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 #include <libnautilus-extensions/nautilus-viewport.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gtk/gtklabel.h>
-#include <gnome.h>
-#include <libgnomevfs/gnome-vfs.h>
-#include <libgnorba/gnorba.h>
+#include <libnautilus/libnautilus.h>
 #include <limits.h>
+#include <stdio.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 /* must be after any services includes */
 #include "nautilus-rpm-view-private.h"
@@ -439,7 +436,7 @@ file_activation_callback (NautilusCTree *ctree, NautilusCTreeNode *node, int col
         path_name = g_strdup ("");
         while (1) {
                 nautilus_ctree_node_get_pixtext (ctree, node,
-                                                 0, &path_item, NULL, NULL, NULL);
+                                                 0, &path_item, NULL, NULL);
                 if (strcmp (path_item, "/") != 0) {
                         new_name = g_strdup_printf ("/%s%s", path_item, path_name);
                         g_free (path_name);
@@ -497,7 +494,7 @@ fill_filename_tree_int (GtkWidget *ctree, NautilusCTreeNode *parent, GNode *node
         for (child = g_node_first_child (node); child != NULL; child = g_node_next_sibling (child)) {
                 text[0] = (char *) child->data;
                 me = nautilus_ctree_insert_node (NAUTILUS_CTREE (ctree), parent, NULL, text,
-                                                 0, NULL, NULL, NULL, NULL,
+                                                 0, NULL, NULL,
                                                  (child->children == NULL) ? TRUE : FALSE,
                                                  TRUE);
                 fill_filename_tree_int (ctree, me, child);
@@ -512,7 +509,7 @@ fill_filename_tree (NautilusRPMView *rpm_view)
 
         top = nautilus_ctree_insert_node (NAUTILUS_CTREE (rpm_view->details->package_file_tree),
                                           NULL, NULL, text,
-                                          0, NULL, NULL, NULL, NULL,
+                                          0, NULL, NULL,
                                           FALSE, TRUE);
         fill_filename_tree_int (rpm_view->details->package_file_tree, top, rpm_view->details->filename_tree);
 }
@@ -554,8 +551,8 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 	}
 
         /* set the file tree */
-        gtk_clist_freeze (GTK_CLIST (rpm_view->details->package_file_tree));
-        gtk_clist_clear (GTK_CLIST (rpm_view->details->package_file_tree));
+        nautilus_clist_freeze (NAUTILUS_CLIST (rpm_view->details->package_file_tree));
+        nautilus_clist_clear (NAUTILUS_CLIST (rpm_view->details->package_file_tree));
         if (rpm_view->details->filename_tree != NULL) {
                 g_node_traverse (rpm_view->details->filename_tree, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
                                  (GNodeTraverseFunc)filename_node_free, NULL);
@@ -566,9 +563,9 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
         fill_filename_tree (rpm_view);
         temp_str = g_strdup_printf(_("Package Contents: %d files"), 
                                    g_list_length (rpm_view->details->package->provides));
-        gtk_clist_set_column_title (GTK_CLIST(rpm_view->details->package_file_tree), 0, temp_str);
+        nautilus_clist_set_column_title (NAUTILUS_CLIST(rpm_view->details->package_file_tree), 0, temp_str);
         g_free(temp_str);                
-        gtk_clist_thaw(GTK_CLIST(rpm_view->details->package_file_tree));
+        nautilus_clist_thaw(NAUTILUS_CLIST(rpm_view->details->package_file_tree));
                 
         temp_str = g_strdup_printf(_("Package \"%s\" "), rpm_view->details->package->name);
         gtk_label_set_text (GTK_LABEL (rpm_view->details->package_title), temp_str);

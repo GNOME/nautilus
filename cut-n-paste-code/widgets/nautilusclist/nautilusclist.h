@@ -40,6 +40,7 @@
 #include <gtk/gtkhscrollbar.h>
 #include <gtk/gtkvscrollbar.h>
 #include <gtk/gtkenums.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -66,12 +67,11 @@ typedef enum
 {
   NAUTILUS_CELL_EMPTY,
   NAUTILUS_CELL_TEXT,
-  NAUTILUS_CELL_PIXMAP,
-  NAUTILUS_CELL_PIXTEXT,
+  NAUTILUS_CELL_PIXBUF,   	/* new for Nautilus */
+  NAUTILUS_CELL_PIXTEXT,        /* now uses pixbuf */
   NAUTILUS_CELL_WIDGET,
   NAUTILUS_CELL_PIXBUF_LIST,   	/* new for Nautilus */
-  NAUTILUS_CELL_LINK_TEXT,	/* new for Nautilus */
-  NAUTILUS_CELL_PIXBUF,   	/* new for Nautilus */
+  NAUTILUS_CELL_LINK_TEXT	/* new for Nautilus */
 } NautilusCellType;
 
 typedef enum
@@ -116,7 +116,7 @@ typedef enum
 
 /* pointer casting for cells */
 #define NAUTILUS_CELL_TEXT(cell)     (((NautilusCellText *) &(cell)))
-#define NAUTILUS_CELL_PIXMAP(cell)   (((NautilusCellPixmap *) &(cell)))
+#define NAUTILUS_CELL_PIXBUF(cell)   (((NautilusCellPixbuf *) &(cell)))
 #define NAUTILUS_CELL_PIXTEXT(cell)  (((NautilusCellPixText *) &(cell)))
 #define NAUTILUS_CELL_WIDGET(cell)   (((NautilusCellWidget *) &(cell)))
 
@@ -127,7 +127,7 @@ typedef struct NautilusCListRow NautilusCListRow;
 
 typedef struct NautilusCell NautilusCell;
 typedef struct NautilusCellText NautilusCellText;
-typedef struct NautilusCellPixmap NautilusCellPixmap;
+typedef struct NautilusCellPixbuf NautilusCellPixbuf;
 typedef struct NautilusCellPixText NautilusCellPixText;
 typedef struct NautilusCellWidget NautilusCellWidget;
 
@@ -312,14 +312,13 @@ struct NautilusCListClass
 				 gchar          *text[]);
   void   (*remove_row)          (NautilusCList       *clist,
 				 gint            row);
-  void   (*set_cell_contents)   (NautilusCList       *clist,
+  gboolean (*set_cell_contents) (NautilusCList       *clist,
 				 NautilusCListRow    *clist_row,
 				 gint            column,
 				 NautilusCellType     type,
 				 const gchar    *text,
 				 guint8          spacing,
-				 GdkPixmap      *pixmap,
-				 GdkBitmap      *mask);
+				 GdkPixbuf      *pixbuf);
   void   (*cell_size_request)   (NautilusCList       *clist,
 				 NautilusCListRow    *clist_row,
 				 gint            column,
@@ -378,7 +377,7 @@ struct NautilusCellText
   gchar *text;
 };
 
-struct NautilusCellPixmap
+struct NautilusCellPixbuf
 {
   NautilusCellType type;
   
@@ -387,8 +386,7 @@ struct NautilusCellPixmap
   
   GtkStyle *style;
 
-  GdkPixmap *pixmap;
-  GdkBitmap *mask;
+  GdkPixbuf *pixbuf;
 };
 
 struct NautilusCellPixText
@@ -402,8 +400,7 @@ struct NautilusCellPixText
 
   gchar *text;
   guint8 spacing;
-  GdkPixmap *pixmap;
-  GdkBitmap *mask;
+  GdkPixbuf *pixbuf;
 };
 
 struct NautilusCellWidget
@@ -431,15 +428,13 @@ struct NautilusCell
     gchar *text;
     
     struct {
-      GdkPixmap *pixmap;
-      GdkBitmap *mask;
-    } pm;
+      GdkPixbuf *pixbuf;
+    } pb;
     
     struct {
       gchar *text;
       guint8 spacing;
-      GdkPixmap *pixmap;
-      GdkBitmap *mask;
+      GdkPixbuf *pixbuf;
     } pt;
     
     GtkWidget *widget;
@@ -607,35 +602,31 @@ gint nautilus_clist_get_text (NautilusCList  *clist,
 			 gint       column,
 			 gchar    **text);
 
-/* sets a given cell's pixmap, replacing its current contents */
-void nautilus_clist_set_pixmap (NautilusCList  *clist,
-			   gint       row,
-			   gint       column,
-			   GdkPixmap *pixmap,
-			   GdkBitmap *mask);
+/* sets a given cell's pixbuf, replacing its current contents */
+void nautilus_clist_set_pixbuf (NautilusCList  *clist,
+                          gint       row,
+                          gint       column,
+                          GdkPixbuf *pixbuf);
 
-gint nautilus_clist_get_pixmap (NautilusCList   *clist,
-			   gint        row,
-			   gint        column,
-			   GdkPixmap **pixmap,
-			   GdkBitmap **mask);
+gint nautilus_clist_get_pixbuf (NautilusCList   *clist,
+                          gint        row,
+                          gint        column,
+                          GdkPixbuf **pixbuf);
 
-/* sets a given cell's pixmap and text, replacing its current contents */
+/* sets a given cell's pixbuf and text, replacing its current contents */
 void nautilus_clist_set_pixtext (NautilusCList    *clist,
 			    gint         row,
 			    gint         column,
 			    const gchar *text,
 			    guint8       spacing,
-			    GdkPixmap   *pixmap,
-			    GdkBitmap   *mask);
+			    GdkPixbuf   *pixbuf);
 
 gint nautilus_clist_get_pixtext (NautilusCList   *clist,
 			    gint        row,
 			    gint        column,
 			    gchar     **text,
 			    guint8     *spacing,
-			    GdkPixmap **pixmap,
-			    GdkBitmap **mask);
+			    GdkPixbuf **pixbuf);
 
 /* sets the foreground color of a row, the color must already
  * be allocated

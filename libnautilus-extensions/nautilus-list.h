@@ -3,7 +3,7 @@
 /* nautilus-list.h: Enhanced version of GtkCList for Nautilus.
 
    Copyright (C) 1999, 2000 Free Software Foundation
-   Copyright (C) 2000 Eazel, Inc.
+   Copyright (C) 2000, 2001 Eazel, Inc.
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -30,8 +30,7 @@
 #define NAUTILUS_LIST_H
 
 #include <libgnome/gnome-defs.h>
-#include <widgets/nautilusclist/nautilusclist.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <cut-n-paste-code/widgets/nautilusclist/nautilusclist.h>
 
 /* This class was originally derived from the GtkFList class in gmc.
  */
@@ -43,7 +42,6 @@
 
 /* pointer casting for cells */
 #define NAUTILUS_CELL_PIXBUF_LIST(cell)	((NautilusCellPixbufList *) &(cell))
-#define NAUTILUS_CELL_PIXBUF(cell)	((GdkPixbuf *) ((cell).u.text))
 /* no #define for NAUTILUS_CELL_LINK_TEXT, use GTK_CELL_TEXT instead */
 
 /* returns the GList item for the nth row */
@@ -109,8 +107,8 @@ struct NautilusListClass {
 	void      (* select_matching_name)      (GtkWidget *widget, const char *);
 	void      (* select_previous_name)      (GtkWidget *widget);
 	void      (* select_next_name)          (GtkWidget *widget);
-	void      (* get_drag_pixmap)           (GtkWidget *widget, int row_index, GdkPixmap **pixmap, GdkBitmap **mask);
-	int       (* get_sort_column_index)     (void);
+	GdkPixbuf (* get_drag_pixbuf)           (NautilusList *list, int row_index);
+	int       (* get_sort_column_index)     (NautilusList *list);
 
 	/* dnd handling. defer the semantics of dnd to the application side, not nautilus-list */
 	gboolean  (* handle_dragged_items)      (GtkWidget     *widget,
@@ -141,6 +139,7 @@ typedef gboolean (* NautilusEachRowFunction) (NautilusCListRow *, int, gpointer)
 GtkType      nautilus_list_get_type                  (void);
 GtkWidget *  nautilus_list_new_with_titles           (int                      columns,
 						      const char * const      *titles);
+void         nautilus_list_initialize_dnd            (NautilusList            *list);
 GList *      nautilus_list_get_selection             (NautilusList            *list);
 void         nautilus_list_set_selection             (NautilusList            *list,
 						      GList                   *selection);

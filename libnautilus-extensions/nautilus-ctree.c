@@ -31,21 +31,19 @@
 
 
 #include <config.h>
-
 #include "nautilus-ctree.h"
 
-#include <gtk/gtkbindings.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtkdnd.h>
-#include <gdk/gdkx.h>
-#include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
+#include <gdk/gdkx.h>
+#include <gdk/gdkx.h>
+#include <gtk/gtkbindings.h>
+#include <gtk/gtkdnd.h>
+#include <gtk/gtkmain.h>
+#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
+#include <libnautilus-extensions/nautilus-graphic-effects.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <stdlib.h>
-#include <gtk/gtkclist.h>
-
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include "libnautilus-extensions/nautilus-graphic-effects.h"
-#include "libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h"
+#include <string.h>
 
 #define PM_SIZE                    8
 #define TAB_SIZE                   (PM_SIZE + 6)
@@ -64,7 +62,7 @@
 #define COLUMN_LEFT(clist, column) ((clist)->column[(column)].area.x)
 
 static inline gint
-COLUMN_FROM_XPIXEL (GtkCList * clist,
+COLUMN_FROM_XPIXEL (NautilusCList * clist,
 		    gint x)
 {
   gint i, cx;
@@ -83,11 +81,11 @@ COLUMN_FROM_XPIXEL (GtkCList * clist,
   return -1;
 }
 
-#define GTK_CLIST_CLASS_FW(_widget_) GTK_CLIST_CLASS (((GtkObject*) (_widget_))->klass)
-#define CLIST_UNFROZEN(clist)     (((GtkCList*) (clist))->freeze_count == 0)
+#define NAUTILUS_CLIST_CLASS_FW(_widget_) NAUTILUS_CLIST_CLASS (((GtkObject*) (_widget_))->klass)
+#define CLIST_UNFROZEN(clist)     (((NautilusCList*) (clist))->freeze_count == 0)
 #define CLIST_REFRESH(clist)    G_STMT_START { \
   if (CLIST_UNFROZEN (clist)) \
-    GTK_CLIST_CLASS_FW (clist)->refresh ((GtkCList*) (clist)); \
+    NAUTILUS_CLIST_CLASS_FW (clist)->refresh ((NautilusCList*) (clist)); \
 } G_STMT_END
 
 
@@ -123,17 +121,8 @@ static void ctree_attach_styles         (NautilusCTree       *ctree,
 static void ctree_detach_styles         (NautilusCTree       *ctree,
 					 NautilusCTreeNode   *node, 
 					 gpointer        data);
-static gint draw_cell_pixmap            (GdkWindow      *window,
-					 GdkRectangle   *clip_rectangle,
-					 GdkGC          *fg_gc,
-					 GdkPixmap      *pixmap,
-					 GdkBitmap      *mask,
-					 gint            x,
-					 gint            y,
-					 gint            width,
-					 gint            height);
-static void get_cell_style              (GtkCList       *clist,
-					 GtkCListRow    *clist_row,
+static void get_cell_style              (NautilusCList       *clist,
+					 NautilusCListRow    *clist_row,
 					 gint            state,
 					 gint            column,
 					 GtkStyle      **style,
@@ -154,32 +143,29 @@ static gint nautilus_ctree_draw_lines        (NautilusCTree       *ctree,
 					 GdkRectangle   *crect,
 					 GdkRectangle   *area,
 					 GtkStyle       *style);
-static void draw_row                    (GtkCList       *clist,
+static void draw_row                    (NautilusCList       *clist,
 					 GdkRectangle   *area,
 					 gint            row,
-					 GtkCListRow    *clist_row);
-static void draw_drag_highlight         (GtkCList        *clist,
-					 GtkCListRow     *dest_row,
+					 NautilusCListRow    *clist_row);
+static void draw_drag_highlight         (NautilusCList        *clist,
+					 NautilusCListRow     *dest_row,
 					 gint             dest_row_number,
-					 GtkCListDragPos  drag_pos);
+					 NautilusCListDragPos  drag_pos);
 static void tree_draw_node              (NautilusCTree      *ctree,
 					 NautilusCTreeNode  *node);
-static void set_cell_contents           (GtkCList      *clist,
-					 GtkCListRow   *clist_row,
+static gboolean set_cell_contents       (NautilusCList      *clist,
+					 NautilusCListRow   *clist_row,
 					 gint           column,
-					 GtkCellType    type,
+					 NautilusCellType    type,
 					 const gchar   *text,
 					 guint8         spacing,
-					 GdkPixmap     *pixmap,
-					 GdkBitmap     *mask);
+					 GdkPixbuf     *pixbuf);
 static void set_node_info               (NautilusCTree      *ctree,
 					 NautilusCTreeNode  *node,
 					 const gchar   *text,
 					 guint8         spacing,
-					 GdkPixmap     *pixmap_closed,
-					 GdkBitmap     *mask_closed,
-					 GdkPixmap     *pixmap_opened,
-					 GdkBitmap     *mask_opened,
+					 GdkPixbuf     *pixbuf_closed,
+					 GdkPixbuf     *pixbuf_opened,
 					 gboolean       is_leaf,
 					 gboolean       expanded);
 static NautilusCTreeRow *row_new             (NautilusCTree      *ctree);
@@ -191,7 +177,7 @@ static void tree_delete                 (NautilusCTree      *ctree,
 static void tree_delete_row             (NautilusCTree      *ctree, 
 					 NautilusCTreeNode  *node, 
 					 gpointer       data);
-static void real_clear                  (GtkCList      *clist);
+static void real_clear                  (NautilusCList      *clist);
 static void tree_update_level           (NautilusCTree      *ctree, 
 					 NautilusCTreeNode  *node, 
 					 gpointer       data);
@@ -201,8 +187,8 @@ static void tree_select                 (NautilusCTree      *ctree,
 static void tree_unselect               (NautilusCTree      *ctree, 
 					 NautilusCTreeNode  *node, 
 				         gpointer       data);
-static void real_select_all             (GtkCList      *clist);
-static void real_unselect_all           (GtkCList      *clist);
+static void real_select_all             (NautilusCList      *clist);
+static void real_unselect_all           (NautilusCList      *clist);
 static void tree_expand                 (NautilusCTree      *ctree, 
 					 NautilusCTreeNode  *node,
 					 gpointer       data);
@@ -217,11 +203,11 @@ static void tree_toggle_expansion       (NautilusCTree      *ctree,
 					 gpointer       data);
 static void change_focus_row_expansion  (NautilusCTree      *ctree,
 				         NautilusCTreeExpansionType expansion);
-static void real_select_row             (GtkCList      *clist,
+static void real_select_row             (NautilusCList      *clist,
 					 gint           row,
 					 gint           column,
 					 GdkEvent      *event);
-static void real_unselect_row           (GtkCList      *clist,
+static void real_unselect_row           (NautilusCList      *clist,
 					 gint           row,
 					 gint           column,
 					 GdkEvent      *event);
@@ -239,7 +225,7 @@ static void real_tree_move              (NautilusCTree      *ctree,
 					 NautilusCTreeNode  *node,
 					 NautilusCTreeNode  *new_parent, 
 					 NautilusCTreeNode  *new_sibling);
-static void real_row_move               (GtkCList      *clist,
+static void real_row_move               (NautilusCList      *clist,
 					 gint           source_row,
 					 gint           dest_row);
 static void real_tree_activate_row	(NautilusCTree	    *ctree,
@@ -263,38 +249,38 @@ static gboolean ctree_is_hot_spot       (NautilusCTree      *ctree,
 static void tree_sort                   (NautilusCTree      *ctree,
 					 NautilusCTreeNode  *node,
 					 gpointer       data);
-static void fake_unselect_all           (GtkCList      *clist,
+static void fake_unselect_all           (NautilusCList      *clist,
 					 gint           row);
-static GList * selection_find           (GtkCList      *clist,
+static GList * selection_find           (NautilusCList      *clist,
 					 gint           row_number,
 					 GList         *row_list_element);
-static void resync_selection            (GtkCList      *clist,
+static void resync_selection            (NautilusCList      *clist,
 					 GdkEvent      *event);
-static void real_undo_selection         (GtkCList      *clist);
+static void real_undo_selection         (NautilusCList      *clist);
 static void select_row_recursive        (NautilusCTree      *ctree, 
 					 NautilusCTreeNode  *node, 
 					 gpointer       data);
-static gint real_insert_row             (GtkCList      *clist,
+static gint real_insert_row             (NautilusCList      *clist,
 					 gint           row,
 					 gchar         *text[]);
-static void real_remove_row             (GtkCList      *clist,
+static void real_remove_row             (NautilusCList      *clist,
 					 gint           row);
-static void real_sort_list              (GtkCList      *clist);
-static void cell_size_request           (GtkCList       *clist,
-					 GtkCListRow    *clist_row,
+static void real_sort_list              (NautilusCList      *clist);
+static void cell_size_request           (NautilusCList       *clist,
+					 NautilusCListRow    *clist_row,
 					 gint            column,
 					 GtkRequisition *requisition);
-static void column_auto_resize          (GtkCList       *clist,
-					 GtkCListRow    *clist_row,
+static void column_auto_resize          (NautilusCList       *clist,
+					 NautilusCListRow    *clist_row,
 					 gint            column,
 					 gint            old_width);
-static void auto_resize_columns         (GtkCList       *clist);
+static void auto_resize_columns         (NautilusCList       *clist);
 
 
 static gboolean check_drag               (NautilusCTree         *ctree,
 			                  NautilusCTreeNode     *drag_source,
 					  NautilusCTreeNode     *drag_target,
-					  GtkCListDragPos   insert_pos);
+					  NautilusCListDragPos   insert_pos);
 static void nautilus_ctree_drag_begin         (GtkWidget        *widget,
 					  GdkDragContext   *context);
 static gint nautilus_ctree_drag_motion        (GtkWidget        *widget,
@@ -309,11 +295,11 @@ static void nautilus_ctree_drag_data_received (GtkWidget        *widget,
 					  GtkSelectionData *selection_data,
 					  guint             info,
 					  guint32           time);
-static void remove_grab                  (GtkCList         *clist);
-static void drag_dest_cell               (GtkCList         *clist,
+static void remove_grab                  (NautilusCList         *clist);
+static void drag_dest_cell               (NautilusCList         *clist,
 					  gint              x,
 					  gint              y,
-					  GtkCListDestInfo *dest_info);
+					  NautilusCListDestInfo *dest_info);
 
 
 enum
@@ -328,7 +314,7 @@ enum
 	LAST_SIGNAL
 };
 
-static GtkCListClass *parent_class = NULL;
+static NautilusCListClass *parent_class = NULL;
 static GtkContainerClass *container_class = NULL;
 static guint ctree_signals[LAST_SIGNAL] = {0};
 
@@ -352,7 +338,7 @@ nautilus_ctree_get_type (void)
         (GtkClassInitFunc) NULL,
       };
 
-      ctree_type = gtk_type_unique (GTK_TYPE_CLIST, &ctree_info);
+      ctree_type = gtk_type_unique (NAUTILUS_TYPE_LIST, &ctree_info);
     }
 
   return ctree_type;
@@ -363,15 +349,15 @@ nautilus_ctree_class_init (NautilusCTreeClass *klass)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
-	GtkCListClass *clist_class;
+	NautilusCListClass *clist_class;
 	GtkBindingSet *binding_set;
 
 	object_class = (GtkObjectClass *) klass;
 	widget_class = (GtkWidgetClass *) klass;
 	container_class = (GtkContainerClass *) klass;
-	clist_class = (GtkCListClass *) klass;
+	clist_class = (NautilusCListClass *) klass;
 
-	parent_class = gtk_type_class (GTK_TYPE_CLIST);
+	parent_class = gtk_type_class (NAUTILUS_TYPE_LIST);
 	container_class = gtk_type_class (GTK_TYPE_CONTAINER);
 
 	gtk_object_add_arg_type ("NautilusCTree::n_columns",
@@ -545,12 +531,12 @@ nautilus_ctree_set_arg (GtkObject      *object,
 			     MAX (1, GTK_VALUE_UINT (*arg)),
 			     ctree->tree_column, NULL);
       else
-	GTK_CLIST (ctree)->columns = MAX (1, GTK_VALUE_UINT (*arg));
+	NAUTILUS_CLIST (ctree)->columns = MAX (1, GTK_VALUE_UINT (*arg));
       break;
     case ARG_TREE_COLUMN: /* construct-only arg, only set when !GTK_CONSTRUCTED */
-      if (GTK_CLIST (ctree)->columns)
+      if (NAUTILUS_CLIST (ctree)->columns)
 	nautilus_ctree_construct (ctree,
-			     GTK_CLIST (ctree)->columns,
+			     NAUTILUS_CLIST (ctree)->columns,
 			     MAX (1, GTK_VALUE_UINT (*arg)),
 			     NULL);
       else
@@ -585,7 +571,7 @@ nautilus_ctree_get_arg (GtkObject      *object,
   switch (arg_id)
     {
     case ARG_N_COLUMNS:
-      GTK_VALUE_UINT (*arg) = GTK_CLIST (ctree)->columns;
+      GTK_VALUE_UINT (*arg) = NAUTILUS_CLIST (ctree)->columns;
       break;
     case ARG_TREE_COLUMN:
       GTK_VALUE_UINT (*arg) = ctree->tree_column;
@@ -611,12 +597,12 @@ nautilus_ctree_get_arg (GtkObject      *object,
 static void
 nautilus_ctree_init (NautilusCTree *ctree)
 {
-	GtkCList *clist;
+	NautilusCList *clist;
 
-	GTK_CLIST_SET_FLAG (ctree, CLIST_DRAW_DRAG_RECT);
-	GTK_CLIST_SET_FLAG (ctree, CLIST_DRAW_DRAG_LINE);
+	NAUTILUS_CLIST_SET_FLAG (ctree, CLIST_DRAW_DRAG_RECT);
+	NAUTILUS_CLIST_SET_FLAG (ctree, CLIST_DRAW_DRAG_LINE);
 
-	clist = GTK_CLIST (ctree);
+	clist = NAUTILUS_CLIST (ctree);
 
 	ctree->tree_indent    	= 20;
 	ctree->tree_spacing   	= 5;
@@ -626,7 +612,7 @@ nautilus_ctree_init (NautilusCTree *ctree)
 	ctree->show_stub      	= TRUE;
 	ctree->prelight_node	= NULL;
 	
-	clist->button_actions[0] |= GTK_BUTTON_EXPANDS;
+	clist->button_actions[0] |= NAUTILUS_BUTTON_EXPANDS;
 
 	gtk_signal_connect (GTK_OBJECT (ctree), "event",
 			    GTK_SIGNAL_FUNC (nautilus_ctree_event), ctree);
@@ -637,10 +623,10 @@ ctree_attach_styles (NautilusCTree     *ctree,
 		     NautilusCTreeNode *node,
 		     gpointer      data)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
   gint i;
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
   if (NAUTILUS_CTREE_ROW (node)->row.style)
     NAUTILUS_CTREE_ROW (node)->row.style =
@@ -669,10 +655,10 @@ ctree_detach_styles (NautilusCTree     *ctree,
 		     NautilusCTreeNode *node,
 		     gpointer      data)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
   gint i;
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
   if (NAUTILUS_CTREE_ROW (node)->row.style)
     gtk_style_detach (NAUTILUS_CTREE_ROW (node)->row.style);
@@ -685,7 +671,7 @@ static void
 nautilus_ctree_realize (GtkWidget *widget)
 {
   NautilusCTree *ctree;
-  GtkCList *clist;
+  NautilusCList *clist;
   GdkGCValues values;
   NautilusCTreeNode *node;
   NautilusCTreeNode *child;
@@ -697,7 +683,7 @@ nautilus_ctree_realize (GtkWidget *widget)
   GTK_WIDGET_CLASS (parent_class)->realize (widget);
 
   ctree = NAUTILUS_CTREE (widget);
-  clist = GTK_CLIST (widget);
+  clist = NAUTILUS_CLIST (widget);
 
   node = NAUTILUS_CTREE_NODE (clist->row_list);
   for (i = 0; i < clist->rows; i++)
@@ -714,7 +700,7 @@ nautilus_ctree_realize (GtkWidget *widget)
   values.background = widget->style->base[GTK_STATE_NORMAL];
   values.subwindow_mode = GDK_INCLUDE_INFERIORS;
   values.line_style = GDK_LINE_SOLID;
-  ctree->lines_gc = gdk_gc_new_with_values (GTK_CLIST(widget)->clist_window, 
+  ctree->lines_gc = gdk_gc_new_with_values (NAUTILUS_CLIST(widget)->clist_window, 
 					    &values,
 					    GDK_GC_FOREGROUND |
 					    GDK_GC_BACKGROUND |
@@ -741,19 +727,19 @@ nautilus_ctree_event (GtkWidget *widget, GdkEvent *event, gpointer user_data)
 	NautilusCTree *tree;
 	NautilusCTreeNode *node, *old_node;
 	NautilusCTreeRow *ctree_row;
-	GtkCList *clist;
+	NautilusCList *clist;
 	gint x, y;
 	GdkModifierType button;
 
 	tree = NAUTILUS_CTREE (widget);
-	clist = GTK_CLIST (widget);
+	clist = NAUTILUS_CLIST (widget);
 
 	/* Do prelighting */ 
 	if (event->type == GDK_MOTION_NOTIFY) {
 		motion = (GdkEventMotion *) event;
 
 		/* Get node that we are over */
-		row = gtk_clist_get_selection_info (clist, motion->x, motion->y, &press_row, &press_column);
+		row = nautilus_clist_get_selection_info (clist, motion->x, motion->y, &press_row, &press_column);
 		if (row <= 0) {
 			return FALSE;
 		}
@@ -816,7 +802,7 @@ static void
 nautilus_ctree_unrealize (GtkWidget *widget)
 {
   NautilusCTree *ctree;
-  GtkCList *clist;
+  NautilusCList *clist;
 
   g_return_if_fail (widget != NULL);
   g_return_if_fail (NAUTILUS_IS_CTREE (widget));
@@ -824,7 +810,7 @@ nautilus_ctree_unrealize (GtkWidget *widget)
   GTK_WIDGET_CLASS (parent_class)->unrealize (widget);
 
   ctree = NAUTILUS_CTREE (widget);
-  clist = GTK_CLIST (widget);
+  clist = NAUTILUS_CLIST (widget);
 
   if (GTK_WIDGET_REALIZED (widget))
     {
@@ -852,7 +838,7 @@ static gint
 nautilus_ctree_button_press (GtkWidget *widget, GdkEventButton *event)
 {
 	NautilusCTree *ctree;
-	GtkCList *clist;
+	NautilusCList *clist;
 	gint button_actions;
 	
 	g_return_val_if_fail (widget != NULL, FALSE);
@@ -860,11 +846,11 @@ nautilus_ctree_button_press (GtkWidget *widget, GdkEventButton *event)
 	g_return_val_if_fail (event != NULL, FALSE);
 
 	ctree = NAUTILUS_CTREE (widget);
-	clist = GTK_CLIST (widget);
+	clist = NAUTILUS_CLIST (widget);
 
 	button_actions = clist->button_actions[event->button - 1];
 
-	if (button_actions == GTK_BUTTON_IGNORED) {
+	if (button_actions == NAUTILUS_BUTTON_IGNORED) {
     		return FALSE;
     	}
 
@@ -879,13 +865,13 @@ nautilus_ctree_button_press (GtkWidget *widget, GdkEventButton *event)
 		x = event->x;
 		y = event->y;
 
-		if (!gtk_clist_get_selection_info (clist, x, y, &row, &column)) {
+		if (!nautilus_clist_get_selection_info (clist, x, y, &row, &column)) {
 			return FALSE;
 		}
 
       		work = NAUTILUS_CTREE_NODE (g_list_nth (clist->row_list, row));
 	  
-		if (button_actions & GTK_BUTTON_EXPANDS && 
+		if (button_actions & NAUTILUS_BUTTON_EXPANDS && 
 		    (!NAUTILUS_CTREE_ROW (work)->is_leaf  &&
 		     ctree_is_hot_spot (ctree, work, row, x, y)))
 		{
@@ -906,10 +892,10 @@ nautilus_ctree_button_press (GtkWidget *widget, GdkEventButton *event)
 }
 
 static void
-draw_drag_highlight (GtkCList        *clist,
-		     GtkCListRow     *dest_row,
+draw_drag_highlight (NautilusCList        *clist,
+		     NautilusCListRow     *dest_row,
 		     gint             dest_row_number,
-		     GtkCListDragPos  drag_pos)
+		     NautilusCListDragPos  drag_pos)
 {
   NautilusCTree *ctree;
   GdkPoint points[4];
@@ -928,11 +914,11 @@ draw_drag_highlight (GtkCList        *clist,
 
   switch (drag_pos)
     {
-    case GTK_CLIST_DRAG_NONE:
+    case NAUTILUS_CLIST_DRAG_NONE:
       break;
-    case GTK_CLIST_DRAG_AFTER:
+    case NAUTILUS_CLIST_DRAG_AFTER:
       y += clist->row_height + 1;
-    case GTK_CLIST_DRAG_BEFORE:
+    case NAUTILUS_CLIST_DRAG_BEFORE:
       
       if (clist->column[ctree->tree_column].visible)
 	switch (clist->column[ctree->tree_column].justification)
@@ -972,7 +958,7 @@ draw_drag_highlight (GtkCList        *clist,
 	gdk_draw_line (clist->clist_window, clist->xor_gc, 
 		       0, y, clist->clist_window_width, y);
       break;
-    case GTK_CLIST_DRAG_INTO:
+    case NAUTILUS_CLIST_DRAG_INTO:
       y = ROW_TOP_YPIXEL (clist, dest_row_number) + clist->row_height;
 
       if (clist->column[ctree->tree_column].visible)
@@ -1065,18 +1051,18 @@ nautilus_ctree_row_at (NautilusCTree *ctree, int y)
 
 	y -= (GTK_CONTAINER (ctree)->border_width +
 		GTK_WIDGET (ctree)->style->klass->ythickness +
-		GTK_CLIST (ctree)->column_title_area.height);
+		NAUTILUS_CLIST (ctree)->column_title_area.height);
 	
-	if (!gtk_clist_get_selection_info (GTK_CLIST (ctree), 10, y, &row_index, &column_index)) {
+	if (!nautilus_clist_get_selection_info (NAUTILUS_CLIST (ctree), 10, y, &row_index, &column_index)) {
 		return NULL;
 	}
 	
-	return g_list_nth (GTK_CLIST (ctree)->row_list, row_index)->data;
+	return g_list_nth (NAUTILUS_CLIST (ctree)->row_list, row_index)->data;
 }
 
 
 static void
-get_cell_rectangle (GtkCList *clist, int row_index, int column_index, GdkRectangle *result)
+get_cell_rectangle (NautilusCList *clist, int row_index, int column_index, GdkRectangle *result)
 {
 	result->x = clist->column[column_index].area.x + clist->hoffset;
 	result->y = ROW_TOP_YPIXEL (clist, row_index);
@@ -1089,13 +1075,13 @@ void
 nautilus_ctree_set_prelight (NautilusCTree      *ctree,
 			     int                 y)
 {
-	GtkCList *clist;
+	NautilusCList *clist;
 	NautilusCTreeRow *row, *last_row;
 
 	g_return_if_fail (ctree != NULL);
 	g_return_if_fail (NAUTILUS_IS_CTREE (ctree));
 
-	clist = GTK_CLIST (ctree);
+	clist = NAUTILUS_CLIST (ctree);
 
 	row = NULL;
 
@@ -1127,58 +1113,42 @@ nautilus_ctree_set_prelight (NautilusCTree      *ctree,
 	}
 }
 
-static gint
-draw_cell_pixmap (GdkWindow    *window,
-		  GdkRectangle *clip_rectangle,
-		  GdkGC        *fg_gc,
-		  GdkPixmap    *pixmap,
-		  GdkBitmap    *mask,
-		  gint          x,
-		  gint          y,
-		  gint          width,
-		  gint          height)
+static int
+draw_cell_pixbuf (GdkWindow *window, GdkRectangle *clip_rectangle,
+		  GdkGC *fg_gc, GdkPixbuf *pixbuf, int x, int y)
 {
-  gint xsrc = 0;
-  gint ysrc = 0;
+	GdkRectangle image_rectangle;
+	GdkRectangle intersect_rectangle;
 
-  if (mask)
-    {
-      gdk_gc_set_clip_mask (fg_gc, mask);
-      gdk_gc_set_clip_origin (fg_gc, x, y);
-    }
-  if (x < clip_rectangle->x)
-    {
-      xsrc = clip_rectangle->x - x;
-      width -= xsrc;
-      x = clip_rectangle->x;
-    }
-  if (x + width > clip_rectangle->x + clip_rectangle->width)
-    width = clip_rectangle->x + clip_rectangle->width - x;
+	if (pixbuf == NULL) {
+		return x;
+	}
 
-  if (y < clip_rectangle->y)
-    {
-      ysrc = clip_rectangle->y - y;
-      height -= ysrc;
-      y = clip_rectangle->y;
-    }
-  if (y + height > clip_rectangle->y + clip_rectangle->height)
-    height = clip_rectangle->y + clip_rectangle->height - y;
+	image_rectangle.width = gdk_pixbuf_get_width (pixbuf);
+	image_rectangle.height = gdk_pixbuf_get_height (pixbuf);
+	image_rectangle.x = x;
+	image_rectangle.y = y;
 
-  if (width > 0 && height > 0)
-    gdk_draw_pixmap (window, fg_gc, pixmap, xsrc, ysrc, x, y, width, height);
+	if (!gdk_rectangle_intersect (clip_rectangle, &image_rectangle, &intersect_rectangle)) {
+		return x;
+	}
 
-  if (mask)
-    {
-      gdk_gc_set_clip_rectangle (fg_gc, NULL);
-      gdk_gc_set_clip_origin (fg_gc, 0, 0);
-    }
+	gdk_pixbuf_render_to_drawable_alpha (pixbuf, window,
+					     intersect_rectangle.x - x,
+					     intersect_rectangle.y - y, 
+					     image_rectangle.x, image_rectangle.y, 
+					     intersect_rectangle.width,
+					     intersect_rectangle.height,
+					     GDK_PIXBUF_ALPHA_BILEVEL,
+					     NAUTILUS_STANDARD_ALPHA_THRESHHOLD,
+					     GDK_RGB_DITHER_MAX, 0, 0);
 
-  return x + MAX (width, 0);
+	return x + intersect_rectangle.width;
 }
 
 static void
-get_cell_style (GtkCList     *clist,
-		GtkCListRow  *clist_row,
+get_cell_style (NautilusCList     *clist,
+		NautilusCListRow  *clist_row,
 		gint          state,
 		gint          column,
 		GtkStyle    **style,
@@ -1246,13 +1216,13 @@ static gint
 nautilus_ctree_draw_expander (NautilusCTree *ctree, NautilusCTreeRow *ctree_row, GtkStyle *style,
 			      GdkRectangle *clip_rectangle, gint x)
 {
-	GtkCList *clist;
+	NautilusCList *clist;
 	GdkPoint points[3];
 	gint justification_factor;
 	gint y;
 	NautilusCTreeNode *node;
 
-	clist = GTK_CLIST (ctree);
+	clist = NAUTILUS_CLIST (ctree);
 	if (clist->column[ctree->tree_column].justification == GTK_JUSTIFY_RIGHT)
 		justification_factor = -1;
 	else
@@ -1319,7 +1289,7 @@ nautilus_ctree_draw_lines (NautilusCTree     *ctree,
 		      GdkRectangle *area,
 		      GtkStyle     *style)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
   NautilusCTreeNode *node;
   NautilusCTreeNode *parent;
   GdkRectangle tree_rectangle;
@@ -1336,7 +1306,7 @@ nautilus_ctree_draw_lines (NautilusCTree     *ctree,
   gint justify_right;
   gint justification_factor;
   
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
   ycenter = clip_rectangle->y + (clip_rectangle->height / 2);
   justify_right = (clist->column[column].justification == GTK_JUSTIFY_RIGHT);
 
@@ -1702,10 +1672,10 @@ nautilus_ctree_draw_lines (NautilusCTree     *ctree,
 }
 
 static void
-draw_row (GtkCList     *clist,
+draw_row (NautilusCList     *clist,
 	  GdkRectangle *area,
 	  gint          row,
-	  GtkCListRow  *clist_row)
+	  NautilusCListRow  *clist_row)
 {
   GtkWidget *widget;
   NautilusCTree  *ctree;
@@ -1878,7 +1848,7 @@ draw_row (GtkCList     *clist,
 
       gint width;
       gint height;
-      gint pixmap_width;
+      gint pixbuf_width;
       gint string_width;
       gint old_offset;
       gint row_center_offset;
@@ -1899,7 +1869,8 @@ draw_row (GtkCList     *clist,
       cell_rectangle.height = clip_rectangle.height;
 
       string_width = 0;
-      pixmap_width = 0;
+      pixbuf_width = 0;
+      height = 0;
 
       if (area && !gdk_rectangle_intersect (area, &cell_rectangle,
 					    &intersect_rectangle))
@@ -1915,34 +1886,35 @@ draw_row (GtkCList     *clist,
 	  /* calculate real width for column justification */
 	  switch (clist_row->cell[i].type)
 	    {
-	    case GTK_CELL_TEXT:
+	    case NAUTILUS_CELL_TEXT:
+	    case NAUTILUS_CELL_LINK_TEXT:
 	      width = gdk_string_width
-		(style->font, GTK_CELL_TEXT (clist_row->cell[i])->text);
+		(style->font, NAUTILUS_CELL_TEXT (clist_row->cell[i])->text);
 	      break;
-	    case GTK_CELL_PIXMAP:
-	      gdk_window_get_size
-		(GTK_CELL_PIXMAP (clist_row->cell[i])->pixmap, &pixmap_width,
-		 &height);
-	      width = pixmap_width;
+	    case NAUTILUS_CELL_PIXBUF:
+	      pixbuf_width = gdk_pixbuf_get_width (NAUTILUS_CELL_PIXBUF (clist_row->cell[i])->pixbuf);
+	      height = gdk_pixbuf_get_height (NAUTILUS_CELL_PIXBUF (clist_row->cell[i])->pixbuf);
+	      width = pixbuf_width;
 	      break;
-	    case GTK_CELL_PIXTEXT:
-	      if (GTK_CELL_PIXTEXT (clist_row->cell[i])->pixmap)
-		gdk_window_get_size
-		  (GTK_CELL_PIXTEXT (clist_row->cell[i])->pixmap,
-		   &pixmap_width, &height);
+	    case NAUTILUS_CELL_PIXTEXT:
+	      if (NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->pixbuf)
+	        {
+	          pixbuf_width = gdk_pixbuf_get_width (NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->pixbuf);
+	          height = gdk_pixbuf_get_height (NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->pixbuf);
+		}
 
-	      width = pixmap_width;
+	      width = pixbuf_width;
 
-	      if (GTK_CELL_PIXTEXT (clist_row->cell[i])->text)
+	      if (NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->text)
 		{
 		  string_width = gdk_string_width
-		    (style->font, GTK_CELL_PIXTEXT (clist_row->cell[i])->text);
+		    (style->font, NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->text);
 		  width += string_width;
 		}
 
-	      if (GTK_CELL_PIXTEXT (clist_row->cell[i])->text &&
-		  GTK_CELL_PIXTEXT (clist_row->cell[i])->pixmap)
-		width +=  GTK_CELL_PIXTEXT (clist_row->cell[i])->spacing;
+	      if (NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->text &&
+		  NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->pixbuf)
+		width +=  NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->spacing;
 
 	      if (i == ctree->tree_column)
 		width += (ctree->tree_indent *
@@ -1974,26 +1946,22 @@ draw_row (GtkCList     *clist,
 	      offset += clist_row->cell[i].horizontal;
 	      switch (clist_row->cell[i].type)
 		{
-		case GTK_CELL_PIXMAP:
-			offset = draw_cell_pixmap (clist->clist_window, &cell_rectangle, fg_gc,
-						   GTK_CELL_PIXMAP (clist_row->cell[i])->pixmap,
-						   GTK_CELL_PIXMAP (clist_row->cell[i])->mask,
+		case NAUTILUS_CELL_PIXBUF:
+			offset = draw_cell_pixbuf (clist->clist_window, &cell_rectangle, fg_gc,
+						   NAUTILUS_CELL_PIXBUF (clist_row->cell[i])->pixbuf,
 						   offset,
 						   clip_rectangle.y + clist_row->cell[i].vertical +
-						   (clip_rectangle.height - height) / 2,
-						   pixmap_width, height);
+						   (clip_rectangle.height - height) / 2);
 		  break;
-		case GTK_CELL_PIXTEXT:
-			offset = draw_cell_pixmap (clist->clist_window, &clip_rectangle, fg_gc,
-						   GTK_CELL_PIXTEXT (clist_row->cell[i])->pixmap,
-						   GTK_CELL_PIXTEXT (clist_row->cell[i])->mask,
+		case NAUTILUS_CELL_PIXTEXT:
+			offset = draw_cell_pixbuf (clist->clist_window, &clip_rectangle, fg_gc,
+						   NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->pixbuf,
 						   offset,
 						   clip_rectangle.y + clist_row->cell[i].vertical +
-						   (clip_rectangle.height - height) / 2,
-						   pixmap_width, height);
+						   (clip_rectangle.height - height) / 2);
 
-		  offset += GTK_CELL_PIXTEXT (clist_row->cell[i])->spacing;
-		case GTK_CELL_TEXT:
+		  offset += NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->spacing;
+		case NAUTILUS_CELL_TEXT:
 		  row_center_offset = ((clist->row_height -
 					(style->font->ascent
 					 + style->font->descent)) / 2
@@ -2005,9 +1973,9 @@ draw_row (GtkCList     *clist,
 		     offset,
 		     row_rectangle.y + row_center_offset +
 		     clist_row->cell[i].vertical,
-		     (clist_row->cell[i].type == GTK_CELL_PIXTEXT) ?
-		     GTK_CELL_PIXTEXT (clist_row->cell[i])->text :
-		     GTK_CELL_TEXT (clist_row->cell[i])->text);
+		     (clist_row->cell[i].type == NAUTILUS_CELL_PIXTEXT) ?
+		     NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->text :
+		     NAUTILUS_CELL_TEXT (clist_row->cell[i])->text);
 		  gdk_gc_set_clip_rectangle (fg_gc, NULL);
 		  break;
 		default:
@@ -2043,56 +2011,38 @@ draw_row (GtkCList     *clist,
 	offset += ctree->tree_spacing;
 
       if (clist->column[i].justification == GTK_JUSTIFY_RIGHT)
-	offset -= (pixmap_width + clist_row->cell[i].horizontal);
+	offset -= (pixbuf_width + clist_row->cell[i].horizontal);
       else
 	offset += clist_row->cell[i].horizontal;
 
       old_offset = offset;
       {
-	      int dark_width, dark_height;
 	      GdkPixbuf *src_pixbuf, *dark_pixbuf;
-	      GdkPixmap *dark_pixmap;
-	      GdkBitmap *dark_mask;
 
-	      if (((GtkCListRow *)ctree->dnd_prelighted_row) == clist_row) {
+	      if (((NautilusCListRow *)ctree->dnd_prelighted_row) == clist_row) {
 		      
-		      gdk_window_get_geometry (GTK_CELL_PIXTEXT (clist_row->cell[i])->pixmap,
-					       NULL, NULL, &dark_width, &dark_height, NULL);
-		      
-		      src_pixbuf = gdk_pixbuf_get_from_drawable 
-			      (NULL,
-			       GTK_CELL_PIXTEXT (clist_row->cell[i])->pixmap,
-			       gdk_rgb_get_cmap (),
-			       0, 0, 0, 0, dark_width, dark_height);
+		      src_pixbuf = NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->pixbuf;
 		      
 		      if (src_pixbuf != NULL) {
-			      /* Create darkened pixmap */			
+			      /* Create darkened pixbuf */			
 			      dark_pixbuf = nautilus_create_darkened_pixbuf (src_pixbuf,
 									     0.8 * 255,
 									     0.8 * 255);
 			      if (dark_pixbuf != NULL) {
-				      gdk_pixbuf_render_pixmap_and_mask (dark_pixbuf,
-									 &dark_pixmap, &dark_mask,
-									 NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
-				      
-				      offset = draw_cell_pixmap (clist->clist_window, &cell_rectangle, fg_gc,
-							dark_pixmap, GTK_CELL_PIXTEXT (clist_row->cell[i])->mask, offset,
+				      offset = draw_cell_pixbuf (clist->clist_window, &cell_rectangle, fg_gc,
+							dark_pixbuf, offset,
 							clip_rectangle.y + clist_row->cell[i].vertical +
-							(clip_rectangle.height - height) / 2,
-							pixmap_width, height);
+							(clip_rectangle.height - height) / 2);
 				      
-							gdk_pixbuf_unref (dark_pixbuf);
+				      gdk_pixbuf_unref (dark_pixbuf);
 			      }
-			      gdk_pixbuf_unref (src_pixbuf);
 		      }					
 	      } else {		
-		      offset = draw_cell_pixmap (clist->clist_window, &clip_rectangle, fg_gc,
-						 GTK_CELL_PIXTEXT (clist_row->cell[i])->pixmap,
-						 GTK_CELL_PIXTEXT (clist_row->cell[i])->mask,
+		      offset = draw_cell_pixbuf (clist->clist_window, &clip_rectangle, fg_gc,
+						 NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->pixbuf,
 						 offset,
 						 clip_rectangle.y + clist_row->cell[i].vertical +
-						 (clip_rectangle.height - height) / 2,
-						 pixmap_width, height);
+						 (clip_rectangle.height - height) / 2);
 
 
 	      }
@@ -2103,13 +2053,13 @@ draw_row (GtkCList     *clist,
 	  if (clist->column[i].justification == GTK_JUSTIFY_RIGHT)
 	    {
 	      offset = (old_offset - string_width);
-	      if (GTK_CELL_PIXTEXT (clist_row->cell[i])->pixmap)
-		offset -= GTK_CELL_PIXTEXT (clist_row->cell[i])->spacing;
+	      if (NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->pixbuf)
+		offset -= NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->spacing;
 	    }
 	  else
 	    {
-	      if (GTK_CELL_PIXTEXT (clist_row->cell[i])->pixmap)
-		offset += GTK_CELL_PIXTEXT (clist_row->cell[i])->spacing;
+	      if (NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->pixbuf)
+		offset += NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->spacing;
 	    }
 
 	  row_center_offset = ((clist->row_height -
@@ -2121,7 +2071,7 @@ draw_row (GtkCList     *clist,
 	  gdk_draw_string (clist->clist_window, style->font, fg_gc, offset,
 			   row_rectangle.y + row_center_offset +
 			   clist_row->cell[i].vertical,
-			   GTK_CELL_PIXTEXT (clist_row->cell[i])->text);
+			   NAUTILUS_CELL_PIXTEXT (clist_row->cell[i])->text);
 	}
       gdk_gc_set_clip_rectangle (fg_gc, NULL);
     }
@@ -2161,9 +2111,9 @@ static void
 tree_draw_node (NautilusCTree     *ctree, 
 	        NautilusCTreeNode *node)
 {
-	GtkCList *clist;
+	NautilusCList *clist;
   
-	clist = GTK_CLIST (ctree);
+	clist = NAUTILUS_CLIST (ctree);
 
 	if (CLIST_UNFROZEN (clist) && nautilus_ctree_is_viewable (ctree, node))
 	{
@@ -2177,9 +2127,9 @@ tree_draw_node (NautilusCTree     *ctree,
 			num++;
 		}
 		
-		if (work && gtk_clist_row_is_visible (clist, num) != GTK_VISIBILITY_NONE) {
-			GTK_CLIST_CLASS_FW (clist)->draw_row			
-	  			(clist, NULL, num, GTK_CLIST_ROW ((GList *) node));
+		if (work && nautilus_clist_row_is_visible (clist, num) != GTK_VISIBILITY_NONE) {
+			NAUTILUS_CLIST_CLASS_FW (clist)->draw_row			
+	  			(clist, NULL, num, NAUTILUS_CLIST_ROW ((GList *) node));
 		}
 	}
 }
@@ -2211,7 +2161,7 @@ nautilus_ctree_link (NautilusCTree     *ctree,
 		NautilusCTreeNode *sibling,
 		gboolean      update_focus_row)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
   GList *list_end;
   GList *list;
   GList *work;
@@ -2224,11 +2174,11 @@ nautilus_ctree_link (NautilusCTree     *ctree,
   g_return_if_fail (node != sibling);
   g_return_if_fail (node != parent);
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
   if (update_focus_row && clist->selection_mode == GTK_SELECTION_EXTENDED)
     {
-      GTK_CLIST_CLASS_FW (clist)->resync_selection (clist, NULL);
+      NAUTILUS_CLIST_CLASS_FW (clist)->resync_selection (clist, NULL);
       
       g_list_free (clist->undo_selection);
       g_list_free (clist->undo_unselection);
@@ -2357,7 +2307,7 @@ nautilus_ctree_unlink (NautilusCTree     *ctree,
 		  NautilusCTreeNode *node,
                   gboolean      update_focus_row)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
   gint rows;
   gint level;
   gint visible;
@@ -2369,11 +2319,11 @@ nautilus_ctree_unlink (NautilusCTree     *ctree,
   g_return_if_fail (NAUTILUS_IS_CTREE (ctree));
   g_return_if_fail (node != NULL);
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
   
   if (update_focus_row && clist->selection_mode == GTK_SELECTION_EXTENDED)
     {
-      GTK_CLIST_CLASS_FW (clist)->resync_selection (clist, NULL);
+      NAUTILUS_CLIST_CLASS_FW (clist)->resync_selection (clist, NULL);
       
       g_list_free (clist->undo_selection);
       g_list_free (clist->undo_unselection);
@@ -2477,7 +2427,7 @@ nautilus_ctree_unlink (NautilusCTree     *ctree,
 }
 
 static void
-real_row_move (GtkCList *clist,
+real_row_move (NautilusCList *clist,
 	       gint      source_row,
 	       gint      dest_row)
 {
@@ -2487,7 +2437,7 @@ real_row_move (GtkCList *clist,
   g_return_if_fail (clist != NULL);
   g_return_if_fail (NAUTILUS_IS_CTREE (clist));
 
-  if (GTK_CLIST_AUTO_SORT (clist))
+  if (NAUTILUS_CLIST_AUTO_SORT (clist))
     return;
 
   if (source_row < 0 || source_row >= clist->rows ||
@@ -2532,7 +2482,7 @@ real_tree_move (NautilusCTree     *ctree,
 		NautilusCTreeNode *new_parent, 
 		NautilusCTreeNode *new_sibling)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
   NautilusCTreeNode *work;
   gboolean visible = FALSE;
 
@@ -2549,13 +2499,13 @@ real_tree_move (NautilusCTree     *ctree,
     if (work == node)
       return;
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
   visible = nautilus_ctree_is_viewable (ctree, node);
 
   if (clist->selection_mode == GTK_SELECTION_EXTENDED)
     {
-      GTK_CLIST_CLASS_FW (clist)->resync_selection (clist, NULL);
+      NAUTILUS_CLIST_CLASS_FW (clist)->resync_selection (clist, NULL);
       
       g_list_free (clist->undo_selection);
       g_list_free (clist->undo_unselection);
@@ -2563,7 +2513,7 @@ real_tree_move (NautilusCTree     *ctree,
       clist->undo_unselection = NULL;
     }
 
-  if (GTK_CLIST_AUTO_SORT (clist))
+  if (NAUTILUS_CLIST_AUTO_SORT (clist))
     {
       if (new_parent == NAUTILUS_CTREE_ROW (node)->parent)
 	return;
@@ -2582,7 +2532,7 @@ real_tree_move (NautilusCTree     *ctree,
       new_sibling == NAUTILUS_CTREE_ROW (node)->sibling)
     return;
 
-  gtk_clist_freeze (clist);
+  nautilus_clist_freeze (clist);
 
   work = NULL;
   if (nautilus_ctree_is_viewable (ctree, node) ||
@@ -2601,26 +2551,26 @@ real_tree_move (NautilusCTree     *ctree,
     }
 
   if (clist->column[ctree->tree_column].auto_resize &&
-      !GTK_CLIST_AUTO_RESIZE_BLOCKED (clist) &&
+      !NAUTILUS_CLIST_AUTO_RESIZE_BLOCKED (clist) &&
       (visible || nautilus_ctree_is_viewable (ctree, node)))
-    gtk_clist_set_column_width
+    nautilus_clist_set_column_width
       (clist, ctree->tree_column,
-       gtk_clist_optimal_column_width (clist, ctree->tree_column));
+       nautilus_clist_optimal_column_width (clist, ctree->tree_column));
 
-  gtk_clist_thaw (clist);
+  nautilus_clist_thaw (clist);
 }
 
 static void
 change_focus_row_expansion (NautilusCTree          *ctree,
 			    NautilusCTreeExpansionType action)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
   NautilusCTreeNode *node;
 
   g_return_if_fail (ctree != NULL);
   g_return_if_fail (NAUTILUS_IS_CTREE (ctree));
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
   if (gdk_pointer_is_grabbed () && GTK_WIDGET_HAS_GRAB (ctree))
     return;
@@ -2657,7 +2607,7 @@ static void
 real_tree_expand (NautilusCTree     *ctree,
 		  NautilusCTreeNode *node)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
   NautilusCTreeNode *work;
   GtkRequisition requisition;
   gboolean visible;
@@ -2669,9 +2619,9 @@ real_tree_expand (NautilusCTree     *ctree,
   if (!node || NAUTILUS_CTREE_ROW (node)->expanded || NAUTILUS_CTREE_ROW (node)->is_leaf)
     return;
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
   
-  GTK_CLIST_CLASS_FW (clist)->resync_selection (clist, NULL);
+  NAUTILUS_CLIST_CLASS_FW (clist)->resync_selection (clist, NULL);
 
   NAUTILUS_CTREE_ROW (node)->expanded = TRUE;
   level = NAUTILUS_CTREE_ROW (node)->level;
@@ -2679,43 +2629,28 @@ real_tree_expand (NautilusCTree     *ctree,
   visible = nautilus_ctree_is_viewable (ctree, node);
   /* get cell width if tree_column is auto resized */
   if (visible && clist->column[ctree->tree_column].auto_resize &&
-      !GTK_CLIST_AUTO_RESIZE_BLOCKED (clist))
-    GTK_CLIST_CLASS_FW (clist)->cell_size_request
+      !NAUTILUS_CLIST_AUTO_RESIZE_BLOCKED (clist))
+    NAUTILUS_CLIST_CLASS_FW (clist)->cell_size_request
       (clist, &NAUTILUS_CTREE_ROW (node)->row, ctree->tree_column, &requisition);
 
-  /* unref/unset closed pixmap */
-  if (GTK_CELL_PIXTEXT 
-      (NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->pixmap)
+  /* unref/unset closed pixbuf */
+  if (NAUTILUS_CELL_PIXTEXT 
+      (NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->pixbuf)
     {
-      gdk_pixmap_unref
-	(GTK_CELL_PIXTEXT
-	 (NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->pixmap);
+      gdk_pixbuf_unref
+	(NAUTILUS_CELL_PIXTEXT
+	 (NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->pixbuf);
       
-      GTK_CELL_PIXTEXT
-	(NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->pixmap = NULL;
-      
-      if (GTK_CELL_PIXTEXT 
-	  (NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->mask)
-	{
-	  gdk_pixmap_unref
-	    (GTK_CELL_PIXTEXT 
-	     (NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->mask);
-	  GTK_CELL_PIXTEXT 
-	    (NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->mask = NULL;
-	}
+      NAUTILUS_CELL_PIXTEXT
+	(NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->pixbuf = NULL;
     }
 
-  /* set/ref opened pixmap */
-  if (NAUTILUS_CTREE_ROW (node)->pixmap_opened)
+  /* set/ref opened pixbuf */
+  if (NAUTILUS_CTREE_ROW (node)->pixbuf_opened)
     {
-      GTK_CELL_PIXTEXT 
-	(NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->pixmap = 
-	gdk_pixmap_ref (NAUTILUS_CTREE_ROW (node)->pixmap_opened);
-
-      if (NAUTILUS_CTREE_ROW (node)->mask_opened) 
-	GTK_CELL_PIXTEXT 
-	  (NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->mask = 
-	  gdk_pixmap_ref (NAUTILUS_CTREE_ROW (node)->mask_opened);
+      NAUTILUS_CELL_PIXTEXT
+	(NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->pixbuf = 
+	gdk_pixbuf_ref (NAUTILUS_CTREE_ROW (node)->pixbuf_opened);
     }
 
 
@@ -2728,7 +2663,7 @@ real_tree_expand (NautilusCTree     *ctree,
       gint row;
       gint i;
       
-      if (visible && !GTK_CLIST_AUTO_RESIZE_BLOCKED (clist))
+      if (visible && !NAUTILUS_CLIST_AUTO_RESIZE_BLOCKED (clist))
 	{
 	  cell_width = g_new0 (gint, clist->columns);
 	  if (clist->column[ctree->tree_column].auto_resize)
@@ -2740,7 +2675,7 @@ real_tree_expand (NautilusCTree     *ctree,
 	      for (i = 0; i < clist->columns; i++)
 		if (clist->column[i].auto_resize)
 		  {
-		    GTK_CLIST_CLASS_FW (clist)->cell_size_request
+		    NAUTILUS_CLIST_CLASS_FW (clist)->cell_size_request
 		      (clist, &NAUTILUS_CTREE_ROW (work)->row, i, &requisition);
 		    cell_width[i] = MAX (requisition.width, cell_width[i]);
 		  }
@@ -2779,7 +2714,7 @@ real_tree_expand (NautilusCTree     *ctree,
 	  for (i = 0; i < clist->columns; i++)
 	    if (clist->column[i].auto_resize &&
 		cell_width[i] > clist->column[i].width)
-	      gtk_clist_set_column_width (clist, i, cell_width[i]);
+	      nautilus_clist_set_column_width (clist, i, cell_width[i]);
 	  g_free (cell_width);
 
 	  /* update focus_row position */
@@ -2803,7 +2738,7 @@ static void
 real_tree_collapse (NautilusCTree     *ctree,
 		    NautilusCTreeNode *node)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
   NautilusCTreeNode *work;
   GtkRequisition requisition;
   gboolean visible;
@@ -2816,9 +2751,9 @@ real_tree_collapse (NautilusCTree     *ctree,
       NAUTILUS_CTREE_ROW (node)->is_leaf)
     return;
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
-  GTK_CLIST_CLASS_FW (clist)->resync_selection (clist, NULL);
+  NAUTILUS_CLIST_CLASS_FW (clist)->resync_selection (clist, NULL);
   
   NAUTILUS_CTREE_ROW (node)->expanded = FALSE;
   level = NAUTILUS_CTREE_ROW (node)->level;
@@ -2826,43 +2761,28 @@ real_tree_collapse (NautilusCTree     *ctree,
   visible = nautilus_ctree_is_viewable (ctree, node);
   /* get cell width if tree_column is auto resized */
   if (visible && clist->column[ctree->tree_column].auto_resize &&
-      !GTK_CLIST_AUTO_RESIZE_BLOCKED (clist))
-    GTK_CLIST_CLASS_FW (clist)->cell_size_request
+      !NAUTILUS_CLIST_AUTO_RESIZE_BLOCKED (clist))
+    NAUTILUS_CLIST_CLASS_FW (clist)->cell_size_request
       (clist, &NAUTILUS_CTREE_ROW (node)->row, ctree->tree_column, &requisition);
 
-  /* unref/unset opened pixmap */
-  if (GTK_CELL_PIXTEXT 
-      (NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->pixmap)
+  /* unref/unset opened pixbuf */
+  if (NAUTILUS_CELL_PIXTEXT 
+      (NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->pixbuf)
     {
-      gdk_pixmap_unref
-	(GTK_CELL_PIXTEXT
-	 (NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->pixmap);
+      gdk_pixbuf_unref
+	(NAUTILUS_CELL_PIXTEXT
+	 (NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->pixbuf);
       
-      GTK_CELL_PIXTEXT
-	(NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->pixmap = NULL;
-      
-      if (GTK_CELL_PIXTEXT 
-	  (NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->mask)
-	{
-	  gdk_pixmap_unref
-	    (GTK_CELL_PIXTEXT 
-	     (NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->mask);
-	  GTK_CELL_PIXTEXT 
-	    (NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->mask = NULL;
-	}
+      NAUTILUS_CELL_PIXTEXT
+	(NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->pixbuf = NULL;
     }
 
-  /* set/ref closed pixmap */
-  if (NAUTILUS_CTREE_ROW (node)->pixmap_closed)
+  /* set/ref closed pixbuf */
+  if (NAUTILUS_CTREE_ROW (node)->pixbuf_closed)
     {
-      GTK_CELL_PIXTEXT 
-	(NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->pixmap = 
-	gdk_pixmap_ref (NAUTILUS_CTREE_ROW (node)->pixmap_closed);
-
-      if (NAUTILUS_CTREE_ROW (node)->mask_closed) 
-	GTK_CELL_PIXTEXT 
-	  (NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->mask = 
-	  gdk_pixmap_ref (NAUTILUS_CTREE_ROW (node)->mask_closed);
+      NAUTILUS_CELL_PIXTEXT 
+	(NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->pixbuf = 
+	gdk_pixbuf_ref (NAUTILUS_CTREE_ROW (node)->pixbuf_closed);
     }
 
   work = NAUTILUS_CTREE_ROW (node)->children;
@@ -2907,7 +2827,7 @@ real_tree_collapse (NautilusCTree     *ctree,
 	}
     }
   else if (visible && clist->column[ctree->tree_column].auto_resize &&
-	   !GTK_CLIST_AUTO_RESIZE_BLOCKED (clist))
+	   !NAUTILUS_CLIST_AUTO_RESIZE_BLOCKED (clist))
     /* resize tree_column if needed */
     column_auto_resize (clist, &NAUTILUS_CTREE_ROW (node)->row, ctree->tree_column,
 			requisition.width);
@@ -2916,8 +2836,8 @@ real_tree_collapse (NautilusCTree     *ctree,
 }
 
 static void
-column_auto_resize (GtkCList    *clist,
-		    GtkCListRow *clist_row,
+column_auto_resize (NautilusCList    *clist,
+		    NautilusCListRow *clist_row,
 		    gint         column,
 		    gint         old_width)
 {
@@ -2925,26 +2845,26 @@ column_auto_resize (GtkCList    *clist,
   GtkRequisition requisition;
 
   if (!clist->column[column].auto_resize ||
-      GTK_CLIST_AUTO_RESIZE_BLOCKED (clist))
+      NAUTILUS_CLIST_AUTO_RESIZE_BLOCKED (clist))
     return;
 
   if (clist_row)
-    GTK_CLIST_CLASS_FW (clist)->cell_size_request (clist, clist_row,
+    NAUTILUS_CLIST_CLASS_FW (clist)->cell_size_request (clist, clist_row,
 						   column, &requisition);
   else
     requisition.width = 0;
 
   if (requisition.width > clist->column[column].width)
-    gtk_clist_set_column_width (clist, column, requisition.width);
+    nautilus_clist_set_column_width (clist, column, requisition.width);
   else if (requisition.width < old_width &&
 	   old_width == clist->column[column].width)
     {
       GList *list;
       gint new_width;
 
-      /* run a "gtk_clist_optimal_column_width" but break, if
+      /* run a "nautilus_clist_optimal_column_width" but break, if
        * the column doesn't shrink */
-      if (GTK_CLIST_SHOW_TITLES (clist) && clist->column[column].button)
+      if (NAUTILUS_CLIST_SHOW_TITLES (clist) && clist->column[column].button)
 	new_width = (clist->column[column].button->requisition.width -
 		     (CELL_SPACING + (2 * COLUMN_INSET)));
       else
@@ -2952,23 +2872,23 @@ column_auto_resize (GtkCList    *clist,
 
       for (list = clist->row_list; list; list = list->next)
 	{
-	  GTK_CLIST_CLASS_FW (clist)->cell_size_request
-	    (clist, GTK_CLIST_ROW (list), column, &requisition);
+	  NAUTILUS_CLIST_CLASS_FW (clist)->cell_size_request
+	    (clist, NAUTILUS_CLIST_ROW (list), column, &requisition);
 	  new_width = MAX (new_width, requisition.width);
 	  if (new_width == clist->column[column].width)
 	    break;
 	}
       if (new_width < clist->column[column].width)
-	gtk_clist_set_column_width (clist, column, new_width);
+	nautilus_clist_set_column_width (clist, column, new_width);
     }
 }
 
 static void
-auto_resize_columns (GtkCList *clist)
+auto_resize_columns (NautilusCList *clist)
 {
   gint i;
 
-  if (GTK_CLIST_AUTO_RESIZE_BLOCKED (clist))
+  if (NAUTILUS_CLIST_AUTO_RESIZE_BLOCKED (clist))
     return;
 
   for (i = 0; i < clist->columns; i++)
@@ -2976,8 +2896,8 @@ auto_resize_columns (GtkCList *clist)
 }
 
 static void
-cell_size_request (GtkCList       *clist,
-		   GtkCListRow    *clist_row,
+cell_size_request (NautilusCList       *clist,
+		   NautilusCListRow    *clist_row,
 		   gint            column,
 		   GtkRequisition *requisition)
 {
@@ -2996,23 +2916,24 @@ cell_size_request (GtkCList       *clist,
 
 	switch (clist_row->cell[column].type)
 	{
-		case GTK_CELL_TEXT:
+		case NAUTILUS_CELL_TEXT:
+		case NAUTILUS_CELL_LINK_TEXT:
 			requisition->width =
-				gdk_string_width (style->font, GTK_CELL_TEXT (clist_row->cell[column])->text);
+				gdk_string_width (style->font, NAUTILUS_CELL_TEXT (clist_row->cell[column])->text);
       			requisition->height = style->font->ascent + style->font->descent;
       			break;
       			
-		case GTK_CELL_PIXTEXT:
-			if (GTK_CELL_PIXTEXT (clist_row->cell[column])->pixmap) {
-				gdk_window_get_size (GTK_CELL_PIXTEXT (clist_row->cell[column])->pixmap,
-						     &width, &height);
-				width += GTK_CELL_PIXTEXT (clist_row->cell[column])->spacing;
+		case NAUTILUS_CELL_PIXTEXT:
+			if (NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->pixbuf) {
+				width = gdk_pixbuf_get_width (NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->pixbuf);
+				height = gdk_pixbuf_get_height (NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->pixbuf);
+				width += NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->spacing;
 			} else {
 				width = height = 0;
 			}
 				  
 			requisition->width = width + gdk_string_width (style->font,
-								       GTK_CELL_TEXT (clist_row->cell[column])->text);
+								       NAUTILUS_CELL_TEXT (clist_row->cell[column])->text);
       			requisition->height = MAX (style->font->ascent + style->font->descent, height);
 
 			if (column == ctree->tree_column) {
@@ -3026,8 +2947,9 @@ cell_size_request (GtkCList       *clist,
 			}		
       			break;
       			
-		case GTK_CELL_PIXMAP:
-			gdk_window_get_size (GTK_CELL_PIXMAP (clist_row->cell[column])->pixmap, &width, &height);
+		case NAUTILUS_CELL_PIXBUF:
+			width = gdk_pixbuf_get_width (NAUTILUS_CELL_PIXBUF (clist_row->cell[column])->pixbuf);
+			height = gdk_pixbuf_get_height (NAUTILUS_CELL_PIXBUF (clist_row->cell[column])->pixbuf);
 			requisition->width = width;
 			requisition->height = height;
 			break;
@@ -3042,28 +2964,73 @@ cell_size_request (GtkCList       *clist,
 	requisition->height += clist_row->cell[column].vertical;
 }
 
-static void
-set_cell_contents (GtkCList    *clist,
-		   GtkCListRow *clist_row,
+static gboolean
+set_cell_contents (NautilusCList    *clist,
+		   NautilusCListRow *clist_row,
 		   gint         column,
-		   GtkCellType  type,
+		   NautilusCellType  type,
 		   const gchar *text,
 		   guint8       spacing,
-		   GdkPixmap   *pixmap,
-		   GdkBitmap   *mask)
+		   GdkPixbuf   *pixbuf)
 {
   gboolean visible = FALSE;
   NautilusCTree *ctree;
   GtkRequisition requisition;
 
-  g_return_if_fail (clist != NULL);
-  g_return_if_fail (NAUTILUS_IS_CTREE (clist));
-  g_return_if_fail (clist_row != NULL);
+  g_return_val_if_fail (NAUTILUS_IS_CTREE (clist), FALSE);
+  g_return_val_if_fail (clist_row != NULL, FALSE);
 
   ctree = NAUTILUS_CTREE (clist);
 
+  if (type == clist_row->cell[column].type)
+    {
+      switch (type)
+	{
+	case NAUTILUS_CELL_EMPTY:
+	  return FALSE;
+	case NAUTILUS_CELL_TEXT:
+	case NAUTILUS_CELL_LINK_TEXT:
+	  if (NAUTILUS_CELL_TEXT (clist_row->cell[column])->text == NULL)
+	    {
+	      if (text == NULL)
+		return FALSE;
+	    }
+	  else
+	    {
+	      if (text != NULL && strcmp (NAUTILUS_CELL_TEXT (clist_row->cell[column])->text, text) == 0)
+		return FALSE;
+	    }
+	  break;
+	case NAUTILUS_CELL_PIXBUF:
+	  if (pixbuf == NAUTILUS_CELL_PIXBUF (clist_row->cell[column])->pixbuf)
+	    return FALSE;
+	  break;
+	case NAUTILUS_CELL_PIXTEXT:
+	  if (pixbuf == NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->pixbuf)
+	    {
+	      if (NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->text == NULL)
+		{
+		  if (text == NULL)
+		    return FALSE;
+		}
+	      else
+		{
+		  if (text != NULL && strcmp (NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->text, text) == 0)
+		    return FALSE;
+		}
+	    }
+	  break;
+	case NAUTILUS_CELL_WIDGET:
+	  /* unimplemented */
+	  break;
+	case NAUTILUS_CELL_PIXBUF_LIST:
+	  /* handled at the higher level */
+	  break;
+	}
+    }
+
   if (clist->column[column].auto_resize &&
-      !GTK_CLIST_AUTO_RESIZE_BLOCKED (clist))
+      !NAUTILUS_CLIST_AUTO_RESIZE_BLOCKED (clist))
     {
       NautilusCTreeNode *parent;
 
@@ -3072,37 +3039,32 @@ set_cell_contents (GtkCList    *clist,
 		      nautilus_ctree_is_viewable (ctree, parent)))
 	{
 	  visible = TRUE;
-	  GTK_CLIST_CLASS_FW (clist)->cell_size_request (clist, clist_row,
+	  NAUTILUS_CLIST_CLASS_FW (clist)->cell_size_request (clist, clist_row,
 							 column, &requisition);
 	}
     }
 
   switch (clist_row->cell[column].type)
     {
-    case GTK_CELL_EMPTY:
+    case NAUTILUS_CELL_EMPTY:
       break;
-      
-    case GTK_CELL_TEXT:
-      g_free (GTK_CELL_TEXT (clist_row->cell[column])->text);
+    case NAUTILUS_CELL_TEXT:
+    case NAUTILUS_CELL_LINK_TEXT:
+      g_free (NAUTILUS_CELL_TEXT (clist_row->cell[column])->text);
       break;
-    case GTK_CELL_PIXMAP:
-      gdk_pixmap_unref (GTK_CELL_PIXMAP (clist_row->cell[column])->pixmap);
-      if (GTK_CELL_PIXMAP (clist_row->cell[column])->mask)
-	gdk_bitmap_unref (GTK_CELL_PIXMAP (clist_row->cell[column])->mask);
+    case NAUTILUS_CELL_PIXBUF:
+      gdk_pixbuf_unref (NAUTILUS_CELL_PIXBUF (clist_row->cell[column])->pixbuf);
       break;
-    case GTK_CELL_PIXTEXT:
-      if (GTK_CELL_PIXTEXT (clist_row->cell[column])->text)
-	g_free (GTK_CELL_PIXTEXT (clist_row->cell[column])->text);
-      if (GTK_CELL_PIXTEXT (clist_row->cell[column])->pixmap)
+    case NAUTILUS_CELL_PIXTEXT:
+      if (NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->text)
+	g_free (NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->text);
+      if (NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->pixbuf)
 	{
-	  gdk_pixmap_unref
-	    (GTK_CELL_PIXTEXT (clist_row->cell[column])->pixmap);
-	  if (GTK_CELL_PIXTEXT (clist_row->cell[column])->mask)
-	    gdk_bitmap_unref
-	      (GTK_CELL_PIXTEXT (clist_row->cell[column])->mask);
+	  gdk_pixbuf_unref
+	    (NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->pixbuf);
 	}
       break;
-    case GTK_CELL_WIDGET:
+    case NAUTILUS_CELL_WIDGET:
       /* unimplimented */
       break;
       
@@ -3110,55 +3072,43 @@ set_cell_contents (GtkCList    *clist,
       break;
     }
 
-  clist_row->cell[column].type = GTK_CELL_EMPTY;
-  if (column == ctree->tree_column && type != GTK_CELL_EMPTY)
-    type = GTK_CELL_PIXTEXT;
+  clist_row->cell[column].type = NAUTILUS_CELL_EMPTY;
+  if (column == ctree->tree_column && type != NAUTILUS_CELL_EMPTY)
+    type = NAUTILUS_CELL_PIXTEXT;
 
   switch (type)
     {
-    case GTK_CELL_TEXT:
+    case NAUTILUS_CELL_TEXT:
+    case NAUTILUS_CELL_LINK_TEXT:
       if (text)
 	{
-	  clist_row->cell[column].type = GTK_CELL_TEXT;
-	  GTK_CELL_TEXT (clist_row->cell[column])->text = g_strdup (text);
+	  clist_row->cell[column].type = NAUTILUS_CELL_TEXT;
+	  NAUTILUS_CELL_TEXT (clist_row->cell[column])->text = g_strdup (text);
 	}
       break;
-    case GTK_CELL_PIXMAP:
-      if (pixmap)
+    case NAUTILUS_CELL_PIXBUF:
+      if (pixbuf)
 	{
-	  clist_row->cell[column].type = GTK_CELL_PIXMAP;
-	  GTK_CELL_PIXMAP (clist_row->cell[column])->pixmap = pixmap;
-	  /* We set the mask even if it is NULL */
-	  GTK_CELL_PIXMAP (clist_row->cell[column])->mask = mask;
+	  clist_row->cell[column].type = NAUTILUS_CELL_PIXBUF;
+	  NAUTILUS_CELL_PIXBUF (clist_row->cell[column])->pixbuf = gdk_pixbuf_ref (pixbuf);
 	}
       break;
-    case GTK_CELL_PIXTEXT:
+    case NAUTILUS_CELL_PIXTEXT:
       if (column == ctree->tree_column)
 	{
-	  clist_row->cell[column].type = GTK_CELL_PIXTEXT;
-	  GTK_CELL_PIXTEXT (clist_row->cell[column])->spacing = spacing;
-	  if (text)
-	    GTK_CELL_PIXTEXT (clist_row->cell[column])->text = g_strdup (text);
-	  else
-	    GTK_CELL_PIXTEXT (clist_row->cell[column])->text = NULL;
-	  if (pixmap)
-	    {
-	      GTK_CELL_PIXTEXT (clist_row->cell[column])->pixmap = pixmap;
-	      GTK_CELL_PIXTEXT (clist_row->cell[column])->mask = mask;
-	    }
-	  else
-	    {
-	      GTK_CELL_PIXTEXT (clist_row->cell[column])->pixmap = NULL;
-	      GTK_CELL_PIXTEXT (clist_row->cell[column])->mask = NULL;
-	    }
+	  if (pixbuf)
+	    pixbuf = gdk_pixbuf_ref (pixbuf);
+	  clist_row->cell[column].type = NAUTILUS_CELL_PIXTEXT;
+	  NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->text = g_strdup (text);
+	  NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->spacing = spacing;
+	  NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->pixbuf = pixbuf;
 	}
-      else if (text && pixmap)
+      else if (text && pixbuf)
 	{
-	  clist_row->cell[column].type = GTK_CELL_PIXTEXT;
-	  GTK_CELL_PIXTEXT (clist_row->cell[column])->text = g_strdup (text);
-	  GTK_CELL_PIXTEXT (clist_row->cell[column])->spacing = spacing;
-	  GTK_CELL_PIXTEXT (clist_row->cell[column])->pixmap = pixmap;
-	  GTK_CELL_PIXTEXT (clist_row->cell[column])->mask = mask;
+	  clist_row->cell[column].type = NAUTILUS_CELL_PIXTEXT;
+	  NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->text = g_strdup (text);
+	  NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->spacing = spacing;
+	  NAUTILUS_CELL_PIXTEXT (clist_row->cell[column])->pixbuf = gdk_pixbuf_ref (pixbuf);
 	}
       break;
     default:
@@ -3166,8 +3116,10 @@ set_cell_contents (GtkCList    *clist,
     }
   
   if (visible && clist->column[column].auto_resize &&
-      !GTK_CLIST_AUTO_RESIZE_BLOCKED (clist))
+      !NAUTILUS_CLIST_AUTO_RESIZE_BLOCKED (clist))
     column_auto_resize (clist, clist_row, column, requisition.width);
+
+  return TRUE;
 }
 
 static void 
@@ -3175,42 +3127,30 @@ set_node_info (NautilusCTree     *ctree,
 	       NautilusCTreeNode *node,
 	       const gchar  *text,
 	       guint8        spacing,
-	       GdkPixmap    *pixmap_closed,
-	       GdkBitmap    *mask_closed,
-	       GdkPixmap    *pixmap_opened,
-	       GdkBitmap    *mask_opened,
+	       GdkPixbuf    *pixbuf_closed,
+	       GdkPixbuf    *pixbuf_opened,
 	       gboolean      is_leaf,
 	       gboolean      expanded)
 {
-  if (NAUTILUS_CTREE_ROW (node)->pixmap_opened)
+  if (NAUTILUS_CTREE_ROW (node)->pixbuf_opened)
     {
-      gdk_pixmap_unref (NAUTILUS_CTREE_ROW (node)->pixmap_opened);
-      if (NAUTILUS_CTREE_ROW (node)->mask_opened) 
-	gdk_bitmap_unref (NAUTILUS_CTREE_ROW (node)->mask_opened);
+      gdk_pixbuf_unref (NAUTILUS_CTREE_ROW (node)->pixbuf_opened);
     }
-  if (NAUTILUS_CTREE_ROW (node)->pixmap_closed)
+  if (NAUTILUS_CTREE_ROW (node)->pixbuf_closed)
     {
-      gdk_pixmap_unref (NAUTILUS_CTREE_ROW (node)->pixmap_closed);
-      if (NAUTILUS_CTREE_ROW (node)->mask_closed) 
-	gdk_bitmap_unref (NAUTILUS_CTREE_ROW (node)->mask_closed);
+      gdk_pixbuf_unref (NAUTILUS_CTREE_ROW (node)->pixbuf_closed);
     }
 
-  NAUTILUS_CTREE_ROW (node)->pixmap_opened = NULL;
-  NAUTILUS_CTREE_ROW (node)->mask_opened   = NULL;
-  NAUTILUS_CTREE_ROW (node)->pixmap_closed = NULL;
-  NAUTILUS_CTREE_ROW (node)->mask_closed   = NULL;
+  NAUTILUS_CTREE_ROW (node)->pixbuf_opened = NULL;
+  NAUTILUS_CTREE_ROW (node)->pixbuf_closed = NULL;
 
-  if (pixmap_closed)
+  if (pixbuf_closed)
     {
-      NAUTILUS_CTREE_ROW (node)->pixmap_closed = gdk_pixmap_ref (pixmap_closed);
-      if (mask_closed) 
-	NAUTILUS_CTREE_ROW (node)->mask_closed = gdk_bitmap_ref (mask_closed);
+      NAUTILUS_CTREE_ROW (node)->pixbuf_closed = gdk_pixbuf_ref (pixbuf_closed);
     }
-  if (pixmap_opened)
+  if (pixbuf_opened)
     {
-      NAUTILUS_CTREE_ROW (node)->pixmap_opened = gdk_pixmap_ref (pixmap_opened);
-      if (mask_opened) 
-	NAUTILUS_CTREE_ROW (node)->mask_opened = gdk_bitmap_ref (mask_opened);
+      NAUTILUS_CTREE_ROW (node)->pixbuf_opened = gdk_pixbuf_ref (pixbuf_opened);
     }
 
   NAUTILUS_CTREE_ROW (node)->is_leaf  = is_leaf;
@@ -3218,10 +3158,10 @@ set_node_info (NautilusCTree     *ctree,
 
   if (NAUTILUS_CTREE_ROW (node)->expanded)
     nautilus_ctree_node_set_pixtext (ctree, node, ctree->tree_column,
-				text, spacing, pixmap_opened, mask_opened);
+				text, spacing, pixbuf_opened);
   else 
     nautilus_ctree_node_set_pixtext (ctree, node, ctree->tree_column,
-				text, spacing, pixmap_closed, mask_closed);
+				text, spacing, pixbuf_closed);
 }
 
 static void
@@ -3323,22 +3263,22 @@ tree_toggle_expansion (NautilusCTree     *ctree,
 static NautilusCTreeRow *
 row_new (NautilusCTree *ctree)
 {
-	GtkCList *clist;
+	NautilusCList *clist;
 	NautilusCTreeRow *ctree_row;
 	int i;
 
-	clist = GTK_CLIST (ctree);
+	clist = NAUTILUS_CLIST (ctree);
 	ctree_row = g_chunk_new (NautilusCTreeRow, clist->row_mem_chunk);
-	ctree_row->row.cell = g_chunk_new (GtkCell, clist->cell_mem_chunk);
+	ctree_row->row.cell = g_chunk_new (NautilusCell, clist->cell_mem_chunk);
 
 	for (i = 0; i < clist->columns; i++) {
-		ctree_row->row.cell[i].type = GTK_CELL_EMPTY;
+		ctree_row->row.cell[i].type = NAUTILUS_CELL_EMPTY;
 		ctree_row->row.cell[i].vertical = 0;
 		ctree_row->row.cell[i].horizontal = 0;
 		ctree_row->row.cell[i].style = NULL;
 	}
 
-	GTK_CELL_PIXTEXT (ctree_row->row.cell[ctree->tree_column])->text = NULL;
+	NAUTILUS_CELL_PIXTEXT (ctree_row->row.cell[ctree->tree_column])->text = NULL;
 
 	ctree_row->row.fg_set     = FALSE;
 	ctree_row->row.bg_set     = FALSE;
@@ -3353,10 +3293,8 @@ row_new (NautilusCTree *ctree)
 	ctree_row->parent        = NULL;
 	ctree_row->sibling       = NULL;
 	ctree_row->children      = NULL;
-	ctree_row->pixmap_closed = NULL;
-	ctree_row->mask_closed   = NULL;
-	ctree_row->pixmap_opened = NULL;
-	ctree_row->mask_opened   = NULL;
+	ctree_row->pixbuf_closed = NULL;
+	ctree_row->pixbuf_opened = NULL;
 	ctree_row->mouse_down    = FALSE;
 	ctree_row->in_hotspot    = FALSE;
 	
@@ -3367,15 +3305,15 @@ static void
 row_delete (NautilusCTree    *ctree,
 	    NautilusCTreeRow *ctree_row)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
   gint i;
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
   for (i = 0; i < clist->columns; i++)
     {
-      GTK_CLIST_CLASS_FW (clist)->set_cell_contents
-	(clist, &(ctree_row->row), i, GTK_CELL_EMPTY, NULL, 0, NULL, NULL);
+      NAUTILUS_CLIST_CLASS_FW (clist)->set_cell_contents
+	(clist, &(ctree_row->row), i, NAUTILUS_CELL_EMPTY, NULL, 0, NULL);
       if (ctree_row->row.cell[i].style)
 	{
 	  if (GTK_WIDGET_REALIZED (ctree))
@@ -3391,18 +3329,14 @@ row_delete (NautilusCTree    *ctree,
       gtk_style_unref (ctree_row->row.style);
     }
 
-  if (ctree_row->pixmap_closed)
+  if (ctree_row->pixbuf_closed)
     {
-      gdk_pixmap_unref (ctree_row->pixmap_closed);
-      if (ctree_row->mask_closed)
-	gdk_bitmap_unref (ctree_row->mask_closed);
+      gdk_pixbuf_unref (ctree_row->pixbuf_closed);
     }
 
-  if (ctree_row->pixmap_opened)
+  if (ctree_row->pixbuf_opened)
     {
-      gdk_pixmap_unref (ctree_row->pixmap_opened);
-      if (ctree_row->mask_opened)
-	gdk_bitmap_unref (ctree_row->mask_opened);
+      gdk_pixbuf_unref (ctree_row->pixbuf_opened);
     }
 
   if (ctree_row->row.destroy)
@@ -3432,7 +3366,7 @@ real_tree_activate_row (NautilusCTree *ctree,
 }
 
 static void
-real_select_row (GtkCList *clist,
+real_select_row (NautilusCList *clist,
 		 gint      row,
 		 gint      column,
 		 GdkEvent *event)
@@ -3449,7 +3383,7 @@ real_select_row (GtkCList *clist,
 }
 
 static void
-real_unselect_row (GtkCList *clist,
+real_unselect_row (NautilusCList *clist,
 		   gint      row,
 		   gint      column,
 		   GdkEvent *event)
@@ -3469,7 +3403,7 @@ real_tree_select (NautilusCTree     *ctree,
 		  NautilusCTreeNode *node,
 		  gint          column)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
   GList *list;
   NautilusCTreeNode *sel_row;
   gboolean node_selected;
@@ -3481,7 +3415,7 @@ real_tree_select (NautilusCTree     *ctree,
       !NAUTILUS_CTREE_ROW (node)->row.selectable)
     return;
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
   switch (clist->selection_mode)
     {
@@ -3528,7 +3462,7 @@ real_tree_unselect (NautilusCTree     *ctree,
 		    NautilusCTreeNode *node,
 		    gint          column)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
 
   g_return_if_fail (ctree != NULL);
   g_return_if_fail (NAUTILUS_IS_CTREE (ctree));
@@ -3536,7 +3470,7 @@ real_tree_unselect (NautilusCTree     *ctree,
   if (!node || NAUTILUS_CTREE_ROW (node)->row.state != GTK_STATE_SELECTED)
     return;
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
   if (clist->selection_end && clist->selection_end->data == node)
     clist->selection_end = clist->selection_end->prev;
@@ -3557,13 +3491,13 @@ select_row_recursive (NautilusCTree     *ctree,
       !NAUTILUS_CTREE_ROW (node)->row.selectable)
     return;
 
-  GTK_CLIST (ctree)->undo_unselection = 
-    g_list_prepend (GTK_CLIST (ctree)->undo_unselection, node);
+  NAUTILUS_CLIST (ctree)->undo_unselection = 
+    g_list_prepend (NAUTILUS_CLIST (ctree)->undo_unselection, node);
   nautilus_ctree_select (ctree, node);
 }
 
 static void
-real_select_all (GtkCList *clist)
+real_select_all (NautilusCList *clist)
 {
   NautilusCTree *ctree;
   NautilusCTreeNode *node;
@@ -3581,7 +3515,7 @@ real_select_all (GtkCList *clist)
 
     case GTK_SELECTION_EXTENDED:
 
-      gtk_clist_freeze (clist);
+      nautilus_clist_freeze (clist);
 
       g_list_free (clist->undo_selection);
       g_list_free (clist->undo_unselection);
@@ -3597,7 +3531,7 @@ real_select_all (GtkCList *clist)
 	   node = NAUTILUS_CTREE_NODE_NEXT (node))
 	nautilus_ctree_pre_recursive (ctree, node, select_row_recursive, NULL);
 
-      gtk_clist_thaw (clist);
+      nautilus_clist_thaw (clist);
       break;
 
     case GTK_SELECTION_MULTIPLE:
@@ -3611,7 +3545,7 @@ real_select_all (GtkCList *clist)
 }
 
 static void
-real_unselect_all (GtkCList *clist)
+real_unselect_all (NautilusCList *clist)
 {
   NautilusCTree *ctree;
   NautilusCTreeNode *node;
@@ -3667,8 +3601,8 @@ ctree_is_hot_spot (NautilusCTree     *ctree,
 		   gint          y)
 {
 	NautilusCTreeRow *tree_row;
-	GtkCList *clist;
-	GtkCellPixText *cell;
+	NautilusCList *clist;
+	NautilusCellPixText *cell;
 	gint xl;
 	gint yu;
   
@@ -3676,7 +3610,7 @@ ctree_is_hot_spot (NautilusCTree     *ctree,
 	g_return_val_if_fail (NAUTILUS_IS_CTREE (ctree), FALSE);
 	g_return_val_if_fail (node != NULL, FALSE);
 
-	clist = GTK_CLIST (ctree);
+	clist = NAUTILUS_CLIST (ctree);
 
 	if (!clist->column[ctree->tree_column].visible) {
 		return FALSE;
@@ -3684,7 +3618,7 @@ ctree_is_hot_spot (NautilusCTree     *ctree,
 
 	tree_row = NAUTILUS_CTREE_ROW (node);
 
-	cell = GTK_CELL_PIXTEXT(tree_row->row.cell[ctree->tree_column]);
+	cell = NAUTILUS_CELL_PIXTEXT(tree_row->row.cell[ctree->tree_column]);
 
 	yu = (ROW_TOP_YPIXEL (clist, row) + (clist->row_height - PM_SIZE) / 2 - (clist->row_height - 1) % 2);
 
@@ -3719,13 +3653,13 @@ nautilus_ctree_construct (NautilusCTree    *ctree,
 		     gint         tree_column,
 		     gchar       *titles[])
 {
-  GtkCList *clist;
+  NautilusCList *clist;
 
   g_return_if_fail (ctree != NULL);
   g_return_if_fail (NAUTILUS_IS_CTREE (ctree));
   g_return_if_fail (GTK_OBJECT_CONSTRUCTED (ctree) == FALSE);
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
   clist->row_mem_chunk = g_mem_chunk_new ("ctree row mem chunk",
 					  sizeof (NautilusCTreeRow),
@@ -3734,14 +3668,14 @@ nautilus_ctree_construct (NautilusCTree    *ctree,
 					  G_ALLOC_AND_FREE);
 
   clist->cell_mem_chunk = g_mem_chunk_new ("ctree cell mem chunk",
-					   sizeof (GtkCell) * columns,
-					   sizeof (GtkCell) * columns
+					   sizeof (NautilusCell) * columns,
+					   sizeof (NautilusCell) * columns
 					   * CLIST_OPTIMUM_SIZE, 
 					   G_ALLOC_AND_FREE);
 
   ctree->tree_column = tree_column;
 
-  gtk_clist_construct (clist, columns, titles);
+  nautilus_clist_construct (clist, columns, titles);
 }
 
 GtkWidget *
@@ -3768,7 +3702,7 @@ nautilus_ctree_new (gint columns,
 }
 
 static gint
-real_insert_row (GtkCList *clist,
+real_insert_row (NautilusCList *clist,
 		 gint      row,
 		 gchar    *text[])
 {
@@ -3784,9 +3718,9 @@ real_insert_row (GtkCList *clist,
     parent = NAUTILUS_CTREE_ROW (sibling)->parent;
 
   node = nautilus_ctree_insert_node (NAUTILUS_CTREE (clist), parent, sibling, text, 5,
-				     NULL, NULL, NULL, NULL, TRUE, FALSE);
+				     NULL, NULL, TRUE, FALSE);
 
-  if (GTK_CLIST_AUTO_SORT (clist) || !sibling)
+  if (NAUTILUS_CLIST_AUTO_SORT (clist) || !sibling)
     return g_list_position (clist->row_list, (GList *) node);
   
   return row;
@@ -3798,14 +3732,12 @@ nautilus_ctree_insert_node (NautilusCTree     *ctree,
 		       NautilusCTreeNode *sibling,
 		       gchar        *text[],
 		       guint8        spacing,
-		       GdkPixmap    *pixmap_closed,
-		       GdkBitmap    *mask_closed,
-		       GdkPixmap    *pixmap_opened,
-		       GdkBitmap    *mask_opened,
+		       GdkPixbuf    *pixbuf_closed,
+		       GdkPixbuf    *pixbuf_opened,
 		       gboolean      is_leaf,
 		       gboolean      expanded)
 {
-	GtkCList *clist;
+	NautilusCList *clist;
 	NautilusCTreeRow *new_row;
 	NautilusCTreeNode *node;
 	GList *list;
@@ -3821,7 +3753,7 @@ nautilus_ctree_insert_node (NautilusCTree     *ctree,
     		return NULL;
     	}
 
-	clist = GTK_CLIST (ctree);
+	clist = NAUTILUS_CLIST (ctree);
 
 	/* create the row */
 	new_row = row_new (ctree);
@@ -3832,15 +3764,15 @@ nautilus_ctree_insert_node (NautilusCTree     *ctree,
   if (text)
     for (i = 0; i < clist->columns; i++)
       if (text[i] && i != ctree->tree_column)
-	GTK_CLIST_CLASS_FW (clist)->set_cell_contents
-	  (clist, &(new_row->row), i, GTK_CELL_TEXT, text[i], 0, NULL, NULL);
+	NAUTILUS_CLIST_CLASS_FW (clist)->set_cell_contents
+	  (clist, &(new_row->row), i, NAUTILUS_CELL_TEXT, text[i], 0, NULL);
 
   set_node_info (ctree, node, text ?
-		 text[ctree->tree_column] : NULL, spacing, pixmap_closed,
-		 mask_closed, pixmap_opened, mask_opened, is_leaf, expanded);
+		 text[ctree->tree_column] : NULL, spacing, pixbuf_closed,
+		 pixbuf_opened, is_leaf, expanded);
 
   /* sorted insertion */
-  if (GTK_CLIST_AUTO_SORT (clist))
+  if (NAUTILUS_CLIST_AUTO_SORT (clist))
     {
       if (parent)
 	sibling = NAUTILUS_CTREE_ROW (parent)->children;
@@ -3855,7 +3787,7 @@ nautilus_ctree_insert_node (NautilusCTree     *ctree,
 
   nautilus_ctree_link (ctree, node, parent, sibling, TRUE);
 
-  if (text && !GTK_CLIST_AUTO_RESIZE_BLOCKED (clist) &&
+  if (text && !NAUTILUS_CLIST_AUTO_RESIZE_BLOCKED (clist) &&
       nautilus_ctree_is_viewable (ctree, node))
     {
       for (i = 0; i < clist->columns; i++)
@@ -3884,7 +3816,7 @@ nautilus_ctree_insert_gnode (NautilusCTree          *ctree,
 			NautilusCTreeGNodeFunc  func,
 			gpointer           data)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
   NautilusCTreeNode *cnode = NULL;
   NautilusCTreeNode *child = NULL;
   NautilusCTreeNode *new_child;
@@ -3899,7 +3831,7 @@ nautilus_ctree_insert_gnode (NautilusCTree          *ctree,
   if (sibling)
     g_return_val_if_fail (NAUTILUS_CTREE_ROW (sibling)->parent == parent, NULL);
   
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
   if (parent)
     depth = NAUTILUS_CTREE_ROW (parent)->level + 1;
@@ -3908,9 +3840,9 @@ nautilus_ctree_insert_gnode (NautilusCTree          *ctree,
   list->data = row_new (ctree);
   cnode = NAUTILUS_CTREE_NODE (list);
 
-  gtk_clist_freeze (clist);
+  nautilus_clist_freeze (clist);
 
-  set_node_info (ctree, cnode, "", 0, NULL, NULL, NULL, NULL, TRUE, FALSE);
+  set_node_info (ctree, cnode, "", 0, NULL, NULL, TRUE, FALSE);
 
   if (!func (ctree, depth, gnode, cnode, data))
     {
@@ -3918,7 +3850,7 @@ nautilus_ctree_insert_gnode (NautilusCTree          *ctree,
       return NULL;
     }
 
-  if (GTK_CLIST_AUTO_SORT (clist))
+  if (NAUTILUS_CLIST_AUTO_SORT (clist))
     {
       if (parent)
 	sibling = NAUTILUS_CTREE_ROW (parent)->children;
@@ -3940,7 +3872,7 @@ nautilus_ctree_insert_gnode (NautilusCTree          *ctree,
 	child = new_child;
     }	
   
-  gtk_clist_thaw (clist);
+  nautilus_clist_thaw (clist);
 
   return cnode;
 }
@@ -3995,7 +3927,7 @@ nautilus_ctree_export_to_gnode (NautilusCTree          *ctree,
 }
   
 static void
-real_remove_row (GtkCList *clist,
+real_remove_row (NautilusCList *clist,
 		 gint      row)
 {
   NautilusCTreeNode *node;
@@ -4013,14 +3945,14 @@ void
 nautilus_ctree_remove_node (NautilusCTree     *ctree, 
 		       NautilusCTreeNode *node)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
 
   g_return_if_fail (ctree != NULL);
   g_return_if_fail (NAUTILUS_IS_CTREE (ctree));
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
-  gtk_clist_freeze (clist);
+  nautilus_clist_freeze (clist);
 
   if (node)
     {
@@ -4032,18 +3964,18 @@ nautilus_ctree_remove_node (NautilusCTree     *ctree,
 				NULL);
       if (clist->selection_mode == GTK_SELECTION_BROWSE && !clist->selection &&
 	  clist->focus_row >= 0)
-	gtk_clist_select_row (clist, clist->focus_row, -1);
+	nautilus_clist_select_row (clist, clist->focus_row, -1);
 
       auto_resize_columns (clist);
     }
   else
-    gtk_clist_clear (clist);
+    nautilus_clist_clear (clist);
 
-  gtk_clist_thaw (clist);
+  nautilus_clist_thaw (clist);
 }
 
 static void
-real_clear (GtkCList *clist)
+real_clear (NautilusCList *clist)
 {
   NautilusCTree *ctree;
   NautilusCTreeNode *work;
@@ -4059,7 +3991,7 @@ real_clear (GtkCList *clist)
   clist->row_list = NULL;
   clist->row_list_end = NULL;
 
-  GTK_CLIST_SET_FLAG (clist, CLIST_AUTO_RESIZE_BLOCKED);
+  NAUTILUS_CLIST_SET_FLAG (clist, CLIST_AUTO_RESIZE_BLOCKED);
   while (work)
     {
       ptr = work;
@@ -4067,7 +3999,7 @@ real_clear (GtkCList *clist)
       nautilus_ctree_post_recursive (ctree, ptr, NAUTILUS_CTREE_FUNC (tree_delete_row), 
 				NULL);
     }
-  GTK_CLIST_UNSET_FLAG (clist, CLIST_AUTO_RESIZE_BLOCKED);
+  NAUTILUS_CLIST_UNSET_FLAG (clist, CLIST_AUTO_RESIZE_BLOCKED);
 
   parent_class->clear (clist);
 }
@@ -4095,7 +4027,7 @@ nautilus_ctree_post_recursive (NautilusCTree     *ctree,
   if (node)
     work = NAUTILUS_CTREE_ROW (node)->children;
   else
-    work = NAUTILUS_CTREE_NODE (GTK_CLIST (ctree)->row_list);
+    work = NAUTILUS_CTREE_NODE (NAUTILUS_CLIST (ctree)->row_list);
 
   while (work)
     {
@@ -4131,7 +4063,7 @@ nautilus_ctree_post_recursive_to_depth (NautilusCTree     *ctree,
   if (node)
     work = NAUTILUS_CTREE_ROW (node)->children;
   else
-    work = NAUTILUS_CTREE_NODE (GTK_CLIST (ctree)->row_list);
+    work = NAUTILUS_CTREE_NODE (NAUTILUS_CLIST (ctree)->row_list);
 
   if (work && NAUTILUS_CTREE_ROW (work)->level <= depth)
     {
@@ -4166,7 +4098,7 @@ nautilus_ctree_pre_recursive (NautilusCTree     *ctree,
       func (ctree, node, data);
     }
   else
-    work = NAUTILUS_CTREE_NODE (GTK_CLIST (ctree)->row_list);
+    work = NAUTILUS_CTREE_NODE (NAUTILUS_CLIST (ctree)->row_list);
 
   while (work)
     {
@@ -4203,7 +4135,7 @@ nautilus_ctree_pre_recursive_to_depth (NautilusCTree     *ctree,
 	func (ctree, node, data);
     }
   else
-    work = NAUTILUS_CTREE_NODE (GTK_CLIST (ctree)->row_list);
+    work = NAUTILUS_CTREE_NODE (NAUTILUS_CLIST (ctree)->row_list);
 
   if (work && NAUTILUS_CTREE_ROW (work)->level <= depth)
     {
@@ -4269,7 +4201,7 @@ nautilus_ctree_find_node_ptr (NautilusCTree    *ctree,
   if (ctree_row->parent)
     node = NAUTILUS_CTREE_ROW (ctree_row->parent)->children;
   else
-    node = NAUTILUS_CTREE_NODE (GTK_CLIST (ctree)->row_list);
+    node = NAUTILUS_CTREE_NODE (NAUTILUS_CLIST (ctree)->row_list);
 
   while (NAUTILUS_CTREE_ROW (node) != ctree_row)
     node = NAUTILUS_CTREE_ROW (node)->sibling;
@@ -4284,10 +4216,10 @@ nautilus_ctree_node_nth (NautilusCTree *ctree,
   g_return_val_if_fail (ctree != NULL, NULL);
   g_return_val_if_fail (NAUTILUS_IS_CTREE (ctree), NULL);
 
-  if ((row < 0) || (row >= GTK_CLIST(ctree)->rows))
+  if ((row < 0) || (row >= NAUTILUS_CLIST(ctree)->rows))
     return NULL;
  
-  return NAUTILUS_CTREE_NODE (g_list_nth (GTK_CLIST (ctree)->row_list, row));
+  return NAUTILUS_CTREE_NODE (g_list_nth (NAUTILUS_CLIST (ctree)->row_list, row));
 }
 
 gboolean
@@ -4299,7 +4231,7 @@ nautilus_ctree_find (NautilusCTree     *ctree,
     return FALSE;
 
   if (!node)
-    node = NAUTILUS_CTREE_NODE (GTK_CLIST (ctree)->row_list);
+    node = NAUTILUS_CTREE_NODE (NAUTILUS_CLIST (ctree)->row_list);
 
   while (node)
     {
@@ -4337,7 +4269,7 @@ nautilus_ctree_find_by_row_data (NautilusCTree     *ctree,
   NautilusCTreeNode *work;
   
   if (!node)
-    node = NAUTILUS_CTREE_NODE (GTK_CLIST (ctree)->row_list);
+    node = NAUTILUS_CTREE_NODE (NAUTILUS_CLIST (ctree)->row_list);
   
   while (node)
     {
@@ -4364,7 +4296,7 @@ nautilus_ctree_find_all_by_row_data (NautilusCTree     *ctree,
 
   /* if node == NULL then look in the whole tree */
   if (!node)
-    node = NAUTILUS_CTREE_NODE (GTK_CLIST (ctree)->row_list);
+    node = NAUTILUS_CTREE_NODE (NAUTILUS_CLIST (ctree)->row_list);
 
   while (node)
     {
@@ -4397,7 +4329,7 @@ nautilus_ctree_find_by_row_data_custom (NautilusCTree     *ctree,
   g_return_val_if_fail (func != NULL, NULL);
 
   if (!node)
-    node = NAUTILUS_CTREE_NODE (GTK_CLIST (ctree)->row_list);
+    node = NAUTILUS_CTREE_NODE (NAUTILUS_CLIST (ctree)->row_list);
 
   while (node)
     {
@@ -4426,7 +4358,7 @@ nautilus_ctree_find_all_by_row_data_custom (NautilusCTree     *ctree,
 
   /* if node == NULL then look in the whole tree */
   if (!node)
-    node = NAUTILUS_CTREE_NODE (GTK_CLIST (ctree)->row_list);
+    node = NAUTILUS_CTREE_NODE (NAUTILUS_CLIST (ctree)->row_list);
 
   while (node)
     {
@@ -4461,8 +4393,8 @@ nautilus_ctree_is_hot_spot (NautilusCTree *ctree,
 	g_return_val_if_fail (ctree != NULL, FALSE);
 	g_return_val_if_fail (NAUTILUS_IS_CTREE (ctree), FALSE);
 
-	if (gtk_clist_get_selection_info (GTK_CLIST (ctree), x, y, &row, &column)) {
-		if ((node = NAUTILUS_CTREE_NODE(g_list_nth (GTK_CLIST (ctree)->row_list, row)))) {
+	if (nautilus_clist_get_selection_info (NAUTILUS_CLIST (ctree), x, y, &row, &column)) {
+		if ((node = NAUTILUS_CTREE_NODE(g_list_nth (NAUTILUS_CLIST (ctree)->row_list, row)))) {
 			return ctree_is_hot_spot (ctree, node, row, x, y);
 		}
 	}
@@ -4508,27 +4440,27 @@ void
 nautilus_ctree_expand_recursive (NautilusCTree     *ctree,
 			    NautilusCTreeNode *node)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
   gboolean thaw = FALSE;
 
   g_return_if_fail (ctree != NULL);
   g_return_if_fail (NAUTILUS_IS_CTREE (ctree));
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
   if (node && NAUTILUS_CTREE_ROW (node)->is_leaf)
     return;
 
   if (CLIST_UNFROZEN (clist) && (!node || nautilus_ctree_is_viewable (ctree, node)))
     {
-      gtk_clist_freeze (clist);
+      nautilus_clist_freeze (clist);
       thaw = TRUE;
     }
 
   nautilus_ctree_post_recursive (ctree, node, NAUTILUS_CTREE_FUNC (tree_expand), NULL);
 
   if (thaw)
-    gtk_clist_thaw (clist);
+    nautilus_clist_thaw (clist);
 }
 
 void 
@@ -4536,20 +4468,20 @@ nautilus_ctree_expand_to_depth (NautilusCTree     *ctree,
 			   NautilusCTreeNode *node,
 			   gint          depth)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
   gboolean thaw = FALSE;
 
   g_return_if_fail (ctree != NULL);
   g_return_if_fail (NAUTILUS_IS_CTREE (ctree));
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
   if (node && NAUTILUS_CTREE_ROW (node)->is_leaf)
     return;
 
   if (CLIST_UNFROZEN (clist) && (!node || nautilus_ctree_is_viewable (ctree, node)))
     {
-      gtk_clist_freeze (clist);
+      nautilus_clist_freeze (clist);
       thaw = TRUE;
     }
 
@@ -4557,7 +4489,7 @@ nautilus_ctree_expand_to_depth (NautilusCTree     *ctree,
 				     NAUTILUS_CTREE_FUNC (tree_expand), NULL);
 
   if (thaw)
-    gtk_clist_thaw (clist);
+    nautilus_clist_thaw (clist);
 }
 
 void
@@ -4578,7 +4510,7 @@ void
 nautilus_ctree_collapse_recursive (NautilusCTree     *ctree,
 			      NautilusCTreeNode *node)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
   gboolean thaw = FALSE;
   gint i;
 
@@ -4588,24 +4520,24 @@ nautilus_ctree_collapse_recursive (NautilusCTree     *ctree,
   if (node && NAUTILUS_CTREE_ROW (node)->is_leaf)
     return;
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
   if (CLIST_UNFROZEN (clist) && (!node || nautilus_ctree_is_viewable (ctree, node)))
     {
-      gtk_clist_freeze (clist);
+      nautilus_clist_freeze (clist);
       thaw = TRUE;
     }
 
-  GTK_CLIST_SET_FLAG (clist, CLIST_AUTO_RESIZE_BLOCKED);
+  NAUTILUS_CLIST_SET_FLAG (clist, CLIST_AUTO_RESIZE_BLOCKED);
   nautilus_ctree_post_recursive (ctree, node, NAUTILUS_CTREE_FUNC (tree_collapse), NULL);
-  GTK_CLIST_UNSET_FLAG (clist, CLIST_AUTO_RESIZE_BLOCKED);
+  NAUTILUS_CLIST_UNSET_FLAG (clist, CLIST_AUTO_RESIZE_BLOCKED);
   for (i = 0; i < clist->columns; i++)
     if (clist->column[i].auto_resize)
-      gtk_clist_set_column_width (clist, i,
-				  gtk_clist_optimal_column_width (clist, i));
+      nautilus_clist_set_column_width (clist, i,
+				  nautilus_clist_optimal_column_width (clist, i));
 
   if (thaw)
-    gtk_clist_thaw (clist);
+    nautilus_clist_thaw (clist);
 }
 
 void 
@@ -4613,7 +4545,7 @@ nautilus_ctree_collapse_to_depth (NautilusCTree     *ctree,
 			     NautilusCTreeNode *node,
 			     gint          depth)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
   gboolean thaw = FALSE;
   gint i;
 
@@ -4623,26 +4555,26 @@ nautilus_ctree_collapse_to_depth (NautilusCTree     *ctree,
   if (node && NAUTILUS_CTREE_ROW (node)->is_leaf)
     return;
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
   if (CLIST_UNFROZEN (clist) && (!node || nautilus_ctree_is_viewable (ctree, node)))
     {
-      gtk_clist_freeze (clist);
+      nautilus_clist_freeze (clist);
       thaw = TRUE;
     }
 
-  GTK_CLIST_SET_FLAG (clist, CLIST_AUTO_RESIZE_BLOCKED);
+  NAUTILUS_CLIST_SET_FLAG (clist, CLIST_AUTO_RESIZE_BLOCKED);
   nautilus_ctree_post_recursive_to_depth (ctree, node, depth,
 				     NAUTILUS_CTREE_FUNC (tree_collapse_to_depth),
 				     GINT_TO_POINTER (depth));
-  GTK_CLIST_UNSET_FLAG (clist, CLIST_AUTO_RESIZE_BLOCKED);
+  NAUTILUS_CLIST_UNSET_FLAG (clist, CLIST_AUTO_RESIZE_BLOCKED);
   for (i = 0; i < clist->columns; i++)
     if (clist->column[i].auto_resize)
-      gtk_clist_set_column_width (clist, i,
-				  gtk_clist_optimal_column_width (clist, i));
+      nautilus_clist_set_column_width (clist, i,
+				  nautilus_clist_optimal_column_width (clist, i));
 
   if (thaw)
-    gtk_clist_thaw (clist);
+    nautilus_clist_thaw (clist);
 }
 
 void
@@ -4663,7 +4595,7 @@ void
 nautilus_ctree_toggle_expansion_recursive (NautilusCTree     *ctree,
 				      NautilusCTreeNode *node)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
   gboolean thaw = FALSE;
 
   g_return_if_fail (ctree != NULL);
@@ -4672,11 +4604,11 @@ nautilus_ctree_toggle_expansion_recursive (NautilusCTree     *ctree,
   if (node && NAUTILUS_CTREE_ROW (node)->is_leaf)
     return;
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
   if (CLIST_UNFROZEN (clist) && (!node || nautilus_ctree_is_viewable (ctree, node)))
     {
-      gtk_clist_freeze (clist);
+      nautilus_clist_freeze (clist);
       thaw = TRUE;
     }
   
@@ -4684,7 +4616,7 @@ nautilus_ctree_toggle_expansion_recursive (NautilusCTree     *ctree,
 			    NAUTILUS_CTREE_FUNC (tree_toggle_expansion), NULL);
 
   if (thaw)
-    gtk_clist_thaw (clist);
+    nautilus_clist_thaw (clist);
 }
 
 void
@@ -4731,13 +4663,13 @@ nautilus_ctree_real_select_recursive (NautilusCTree     *ctree,
 				 NautilusCTreeNode *node, 
 				 gint          state)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
   gboolean thaw = FALSE;
 
   g_return_if_fail (ctree != NULL);
   g_return_if_fail (NAUTILUS_IS_CTREE (ctree));
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
   if ((state && 
        (clist->selection_mode ==  GTK_SELECTION_BROWSE ||
@@ -4747,13 +4679,13 @@ nautilus_ctree_real_select_recursive (NautilusCTree     *ctree,
 
   if (CLIST_UNFROZEN (clist) && (!node || nautilus_ctree_is_viewable (ctree, node)))
     {
-      gtk_clist_freeze (clist);
+      nautilus_clist_freeze (clist);
       thaw = TRUE;
     }
 
   if (clist->selection_mode == GTK_SELECTION_EXTENDED)
     {
-      GTK_CLIST_CLASS_FW (clist)->resync_selection (clist, NULL);
+      NAUTILUS_CLIST_CLASS_FW (clist)->resync_selection (clist, NULL);
       
       g_list_free (clist->undo_selection);
       g_list_free (clist->undo_unselection);
@@ -4769,67 +4701,60 @@ nautilus_ctree_real_select_recursive (NautilusCTree     *ctree,
 			      NAUTILUS_CTREE_FUNC (tree_unselect), NULL);
   
   if (thaw)
-    gtk_clist_thaw (clist);
+    nautilus_clist_thaw (clist);
 }
 
 
 /***********************************************************
- *           Analogons of GtkCList functions               *
+ *           Analogons of NautilusCList functions               *
  ***********************************************************/
 
 
 void 
 nautilus_ctree_node_set_text (NautilusCTree     *ctree,
-			 NautilusCTreeNode *node,
-			 gint          column,
-			 const gchar  *text)
+			      NautilusCTreeNode *node,
+			      gint          column,
+			      const gchar  *text)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
 
   g_return_if_fail (ctree != NULL);
   g_return_if_fail (NAUTILUS_IS_CTREE (ctree));
   g_return_if_fail (node != NULL);
 
-  if (column < 0 || column >= GTK_CLIST (ctree)->columns)
+  if (column < 0 || column >= NAUTILUS_CLIST (ctree)->columns)
     return;
   
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
-  GTK_CLIST_CLASS_FW (clist)->set_cell_contents
-    (clist, &(NAUTILUS_CTREE_ROW(node)->row), column, GTK_CELL_TEXT,
-     text, 0, NULL, NULL);
-
-  tree_draw_node (ctree, node);
+  if (NAUTILUS_CLIST_CLASS_FW (clist)->set_cell_contents
+      (clist, &(NAUTILUS_CTREE_ROW(node)->row), column, NAUTILUS_CELL_TEXT,
+       text, 0, NULL))
+	  tree_draw_node (ctree, node);
 }
 
 void 
-nautilus_ctree_node_set_pixmap (NautilusCTree     *ctree,
+nautilus_ctree_node_set_pixbuf (NautilusCTree     *ctree,
 			   NautilusCTreeNode *node,
 			   gint          column,
-			   GdkPixmap    *pixmap,
-			   GdkBitmap    *mask)
+			   GdkPixbuf    *pixbuf)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
 
   g_return_if_fail (ctree != NULL);
   g_return_if_fail (NAUTILUS_IS_CTREE (ctree));
   g_return_if_fail (node != NULL);
-  g_return_if_fail (pixmap != NULL);
+  g_return_if_fail (pixbuf != NULL);
 
-  if (column < 0 || column >= GTK_CLIST (ctree)->columns)
+  if (column < 0 || column >= NAUTILUS_CLIST (ctree)->columns)
     return;
 
-  gdk_pixmap_ref (pixmap);
-  if (mask) 
-    gdk_pixmap_ref (mask);
+  clist = NAUTILUS_CLIST (ctree);
 
-  clist = GTK_CLIST (ctree);
-
-  GTK_CLIST_CLASS_FW (clist)->set_cell_contents
-    (clist, &(NAUTILUS_CTREE_ROW (node)->row), column, GTK_CELL_PIXMAP,
-     NULL, 0, pixmap, mask);
-
-  tree_draw_node (ctree, node);
+  if (NAUTILUS_CLIST_CLASS_FW (clist)->set_cell_contents
+      (clist, &(NAUTILUS_CTREE_ROW (node)->row), column, NAUTILUS_CELL_PIXBUF,
+       NULL, 0, pixbuf))
+	  tree_draw_node (ctree, node);
 }
 
 void 
@@ -4838,33 +4763,24 @@ nautilus_ctree_node_set_pixtext (NautilusCTree     *ctree,
 			    gint          column,
 			    const gchar  *text,
 			    guint8        spacing,
-			    GdkPixmap    *pixmap,
-			    GdkBitmap    *mask)
+			    GdkPixbuf    *pixbuf)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
 
   g_return_if_fail (ctree != NULL);
   g_return_if_fail (NAUTILUS_IS_CTREE (ctree));
   g_return_if_fail (node != NULL);
   if (column != ctree->tree_column)
-    g_return_if_fail (pixmap != NULL);
-  if (column < 0 || column >= GTK_CLIST (ctree)->columns)
+    g_return_if_fail (pixbuf != NULL);
+  if (column < 0 || column >= NAUTILUS_CLIST (ctree)->columns)
     return;
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
-  if (pixmap)
-    {
-      gdk_pixmap_ref (pixmap);
-      if (mask) 
-	gdk_pixmap_ref (mask);
-    }
-
-  GTK_CLIST_CLASS_FW (clist)->set_cell_contents
-    (clist, &(NAUTILUS_CTREE_ROW (node)->row), column, GTK_CELL_PIXTEXT,
-     text, spacing, pixmap, mask);
-
-  tree_draw_node (ctree, node);
+  if (NAUTILUS_CLIST_CLASS_FW (clist)->set_cell_contents
+      (clist, &(NAUTILUS_CTREE_ROW (node)->row), column, NAUTILUS_CELL_PIXTEXT,
+       text, spacing, pixbuf))
+	  tree_draw_node (ctree, node);
 }
 
 void 
@@ -4872,10 +4788,8 @@ nautilus_ctree_set_node_info (NautilusCTree     *ctree,
 			 NautilusCTreeNode *node,
 			 const gchar  *text,
 			 guint8        spacing,
-			 GdkPixmap    *pixmap_closed,
-			 GdkBitmap    *mask_closed,
-			 GdkPixmap    *pixmap_opened,
-			 GdkBitmap    *mask_opened,
+			 GdkPixbuf    *pixbuf_closed,
+			 GdkPixbuf    *pixbuf_opened,
 			 gboolean      is_leaf,
 			 gboolean      expanded)
 {
@@ -4903,8 +4817,8 @@ nautilus_ctree_set_node_info (NautilusCTree     *ctree,
 	}
     }
 
-  set_node_info (ctree, node, text, spacing, pixmap_closed, mask_closed,
-		 pixmap_opened, mask_opened, is_leaf, expanded);
+  set_node_info (ctree, node, text, spacing, pixbuf_closed,
+		 pixbuf_opened, is_leaf, expanded);
 
   if (!is_leaf && !old_leaf)
     {
@@ -4917,7 +4831,7 @@ nautilus_ctree_set_node_info (NautilusCTree     *ctree,
 
   NAUTILUS_CTREE_ROW (node)->expanded = (is_leaf) ? FALSE : expanded;
   
-  if (GTK_CLIST_AUTO_SORT (GTK_CLIST (ctree))
+  if (NAUTILUS_CLIST_AUTO_SORT (NAUTILUS_CLIST (ctree))
       && NAUTILUS_CTREE_ROW (node)->parent != NULL)
     {
       nautilus_ctree_sort_single_node (ctree, NAUTILUS_CTREE_ROW (node)->parent);
@@ -4933,7 +4847,7 @@ nautilus_ctree_node_set_shift (NautilusCTree     *ctree,
 			  gint          vertical,
 			  gint          horizontal)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
   GtkRequisition requisition;
   gboolean visible = FALSE;
 
@@ -4941,17 +4855,17 @@ nautilus_ctree_node_set_shift (NautilusCTree     *ctree,
   g_return_if_fail (NAUTILUS_IS_CTREE (ctree));
   g_return_if_fail (node != NULL);
 
-  if (column < 0 || column >= GTK_CLIST (ctree)->columns)
+  if (column < 0 || column >= NAUTILUS_CLIST (ctree)->columns)
     return;
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
   if (clist->column[column].auto_resize &&
-      !GTK_CLIST_AUTO_RESIZE_BLOCKED (clist))
+      !NAUTILUS_CLIST_AUTO_RESIZE_BLOCKED (clist))
     {
       visible = nautilus_ctree_is_viewable (ctree, node);
       if (visible)
-	GTK_CLIST_CLASS_FW (clist)->cell_size_request
+	NAUTILUS_CLIST_CLASS_FW (clist)->cell_size_request
 	  (clist, &NAUTILUS_CTREE_ROW (node)->row, column, &requisition);
     }
 
@@ -4966,7 +4880,7 @@ nautilus_ctree_node_set_shift (NautilusCTree     *ctree,
 }
 
 static void
-remove_grab (GtkCList *clist)
+remove_grab (NautilusCList *clist)
 {
   if (gdk_pointer_is_grabbed () && GTK_WIDGET_HAS_GRAB (clist))
     {
@@ -5003,9 +4917,9 @@ nautilus_ctree_node_set_selectable (NautilusCTree     *ctree,
 
   if (!selectable && NAUTILUS_CTREE_ROW (node)->row.state == GTK_STATE_SELECTED)
     {
-      GtkCList *clist;
+      NautilusCList *clist;
 
-      clist = GTK_CLIST (ctree);
+      clist = NAUTILUS_CLIST (ctree);
 
       if (clist->anchor >= 0 &&
 	  clist->selection_mode == GTK_SELECTION_EXTENDED)
@@ -5013,7 +4927,7 @@ nautilus_ctree_node_set_selectable (NautilusCTree     *ctree,
 	  clist->drag_button = 0;
 	  remove_grab (clist);
 
-	  GTK_CLIST_CLASS_FW (clist)->resync_selection (clist, NULL);
+	  NAUTILUS_CLIST_CLASS_FW (clist)->resync_selection (clist, NULL);
 	}
       nautilus_ctree_unselect (ctree, node);
     }      
@@ -5028,7 +4942,7 @@ nautilus_ctree_node_get_selectable (NautilusCTree     *ctree,
   return NAUTILUS_CTREE_ROW (node)->row.selectable;
 }
 
-GtkCellType 
+NautilusCellType 
 nautilus_ctree_node_get_cell_type (NautilusCTree     *ctree,
 			      NautilusCTreeNode *node,
 			      gint          column)
@@ -5037,7 +4951,7 @@ nautilus_ctree_node_get_cell_type (NautilusCTree     *ctree,
   g_return_val_if_fail (NAUTILUS_IS_CTREE (ctree), -1);
   g_return_val_if_fail (node != NULL, -1);
 
-  if (column < 0 || column >= GTK_CLIST (ctree)->columns)
+  if (column < 0 || column >= NAUTILUS_CLIST (ctree)->columns)
     return -1;
 
   return NAUTILUS_CTREE_ROW (node)->row.cell[column].type;
@@ -5053,39 +4967,37 @@ nautilus_ctree_node_get_text (NautilusCTree      *ctree,
   g_return_val_if_fail (NAUTILUS_IS_CTREE (ctree), 0);
   g_return_val_if_fail (node != NULL, 0);
 
-  if (column < 0 || column >= GTK_CLIST (ctree)->columns)
+  if (column < 0 || column >= NAUTILUS_CLIST (ctree)->columns)
     return 0;
 
-  if (NAUTILUS_CTREE_ROW (node)->row.cell[column].type != GTK_CELL_TEXT)
+  if (NAUTILUS_CTREE_ROW (node)->row.cell[column].type != NAUTILUS_CELL_TEXT
+      && NAUTILUS_CTREE_ROW (node)->row.cell[column].type != NAUTILUS_CELL_LINK_TEXT)
     return 0;
 
   if (text)
-    *text = GTK_CELL_TEXT (NAUTILUS_CTREE_ROW (node)->row.cell[column])->text;
+    *text = NAUTILUS_CELL_TEXT (NAUTILUS_CTREE_ROW (node)->row.cell[column])->text;
 
   return 1;
 }
 
 gint
-nautilus_ctree_node_get_pixmap (NautilusCTree     *ctree,
+nautilus_ctree_node_get_pixbuf (NautilusCTree     *ctree,
 			   NautilusCTreeNode *node,
 			   gint          column,
-			   GdkPixmap   **pixmap,
-			   GdkBitmap   **mask)
+			   GdkPixbuf   **pixbuf)
 {
   g_return_val_if_fail (ctree != NULL, 0);
   g_return_val_if_fail (NAUTILUS_IS_CTREE (ctree), 0);
   g_return_val_if_fail (node != NULL, 0);
 
-  if (column < 0 || column >= GTK_CLIST (ctree)->columns)
+  if (column < 0 || column >= NAUTILUS_CLIST (ctree)->columns)
     return 0;
 
-  if (NAUTILUS_CTREE_ROW (node)->row.cell[column].type != GTK_CELL_PIXMAP)
+  if (NAUTILUS_CTREE_ROW (node)->row.cell[column].type != NAUTILUS_CELL_PIXBUF)
     return 0;
 
-  if (pixmap)
-    *pixmap = GTK_CELL_PIXMAP (NAUTILUS_CTREE_ROW(node)->row.cell[column])->pixmap;
-  if (mask)
-    *mask = GTK_CELL_PIXMAP (NAUTILUS_CTREE_ROW (node)->row.cell[column])->mask;
+  if (pixbuf)
+    *pixbuf = NAUTILUS_CELL_PIXBUF (NAUTILUS_CTREE_ROW(node)->row.cell[column])->pixbuf;
 
   return 1;
 }
@@ -5096,29 +5008,26 @@ nautilus_ctree_node_get_pixtext (NautilusCTree      *ctree,
 			    gint           column,
 			    gchar        **text,
 			    guint8        *spacing,
-			    GdkPixmap    **pixmap,
-			    GdkBitmap    **mask)
+			    GdkPixbuf    **pixbuf)
 {
   g_return_val_if_fail (ctree != NULL, 0);
   g_return_val_if_fail (NAUTILUS_IS_CTREE (ctree), 0);
   g_return_val_if_fail (node != NULL, 0);
   
-  if (column < 0 || column >= GTK_CLIST (ctree)->columns)
+  if (column < 0 || column >= NAUTILUS_CLIST (ctree)->columns)
     return 0;
   
-  if (NAUTILUS_CTREE_ROW (node)->row.cell[column].type != GTK_CELL_PIXTEXT)
+  if (NAUTILUS_CTREE_ROW (node)->row.cell[column].type != NAUTILUS_CELL_PIXTEXT)
     return 0;
   
   if (text)
-    *text = GTK_CELL_PIXTEXT (NAUTILUS_CTREE_ROW (node)->row.cell[column])->text;
+    *text = NAUTILUS_CELL_PIXTEXT (NAUTILUS_CTREE_ROW (node)->row.cell[column])->text;
   if (spacing)
-    *spacing = GTK_CELL_PIXTEXT (NAUTILUS_CTREE_ROW 
+    *spacing = NAUTILUS_CELL_PIXTEXT (NAUTILUS_CTREE_ROW 
 				 (node)->row.cell[column])->spacing;
-  if (pixmap)
-    *pixmap = GTK_CELL_PIXTEXT (NAUTILUS_CTREE_ROW 
-				(node)->row.cell[column])->pixmap;
-  if (mask)
-    *mask = GTK_CELL_PIXTEXT (NAUTILUS_CTREE_ROW (node)->row.cell[column])->mask;
+  if (pixbuf)
+    *pixbuf = NAUTILUS_CELL_PIXTEXT (NAUTILUS_CTREE_ROW 
+				(node)->row.cell[column])->pixbuf;
   
   return 1;
 }
@@ -5128,10 +5037,8 @@ nautilus_ctree_get_node_info (NautilusCTree      *ctree,
 			 NautilusCTreeNode  *node,
 			 gchar        **text,
 			 guint8        *spacing,
-			 GdkPixmap    **pixmap_closed,
-			 GdkBitmap    **mask_closed,
-			 GdkPixmap    **pixmap_opened,
-			 GdkBitmap    **mask_opened,
+			 GdkPixbuf    **pixbuf_closed,
+			 GdkPixbuf    **pixbuf_opened,
 			 gboolean      *is_leaf,
 			 gboolean      *expanded)
 {
@@ -5140,19 +5047,15 @@ nautilus_ctree_get_node_info (NautilusCTree      *ctree,
   g_return_val_if_fail (node != NULL, 0);
   
   if (text)
-    *text = GTK_CELL_PIXTEXT 
+    *text = NAUTILUS_CELL_PIXTEXT 
       (NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->text;
   if (spacing)
-    *spacing = GTK_CELL_PIXTEXT 
+    *spacing = NAUTILUS_CELL_PIXTEXT 
       (NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->spacing;
-  if (pixmap_closed)
-    *pixmap_closed = NAUTILUS_CTREE_ROW (node)->pixmap_closed;
-  if (mask_closed)
-    *mask_closed = NAUTILUS_CTREE_ROW (node)->mask_closed;
-  if (pixmap_opened)
-    *pixmap_opened = NAUTILUS_CTREE_ROW (node)->pixmap_opened;
-  if (mask_opened)
-    *mask_opened = NAUTILUS_CTREE_ROW (node)->mask_opened;
+  if (pixbuf_closed)
+    *pixbuf_closed = NAUTILUS_CTREE_ROW (node)->pixbuf_closed;
+  if (pixbuf_opened)
+    *pixbuf_opened = NAUTILUS_CTREE_ROW (node)->pixbuf_opened;
   if (is_leaf)
     *is_leaf = NAUTILUS_CTREE_ROW (node)->is_leaf;
   if (expanded)
@@ -5167,7 +5070,7 @@ nautilus_ctree_node_set_cell_style (NautilusCTree     *ctree,
 			       gint          column,
 			       GtkStyle     *style)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
   GtkRequisition requisition;
   gboolean visible = FALSE;
 
@@ -5175,7 +5078,7 @@ nautilus_ctree_node_set_cell_style (NautilusCTree     *ctree,
   g_return_if_fail (NAUTILUS_IS_CTREE (ctree));
   g_return_if_fail (node != NULL);
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
   if (column < 0 || column >= clist->columns)
     return;
@@ -5184,11 +5087,11 @@ nautilus_ctree_node_set_cell_style (NautilusCTree     *ctree,
     return;
 
   if (clist->column[column].auto_resize &&
-      !GTK_CLIST_AUTO_RESIZE_BLOCKED (clist))
+      !NAUTILUS_CLIST_AUTO_RESIZE_BLOCKED (clist))
     {
       visible = nautilus_ctree_is_viewable (ctree, node);
       if (visible)
-	GTK_CLIST_CLASS_FW (clist)->cell_size_request
+	NAUTILUS_CLIST_CLASS_FW (clist)->cell_size_request
 	  (clist, &NAUTILUS_CTREE_ROW (node)->row, column, &requisition);
     }
 
@@ -5227,7 +5130,7 @@ nautilus_ctree_node_get_cell_style (NautilusCTree     *ctree,
   g_return_val_if_fail (NAUTILUS_IS_CTREE (ctree), NULL);
   g_return_val_if_fail (node != NULL, NULL);
 
-  if (column < 0 || column >= GTK_CLIST (ctree)->columns)
+  if (column < 0 || column >= NAUTILUS_CLIST (ctree)->columns)
     return NULL;
 
   return NAUTILUS_CTREE_ROW (node)->row.cell[column].style;
@@ -5238,7 +5141,7 @@ nautilus_ctree_node_set_row_style (NautilusCTree     *ctree,
 			      NautilusCTreeNode *node,
 			      GtkStyle     *style)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
   GtkRequisition requisition;
   gboolean visible;
   gint *old_width = NULL;
@@ -5248,19 +5151,19 @@ nautilus_ctree_node_set_row_style (NautilusCTree     *ctree,
   g_return_if_fail (NAUTILUS_IS_CTREE (ctree));
   g_return_if_fail (node != NULL);
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
   if (NAUTILUS_CTREE_ROW (node)->row.style == style)
     return;
   
   visible = nautilus_ctree_is_viewable (ctree, node);
-  if (visible && !GTK_CLIST_AUTO_RESIZE_BLOCKED (clist))
+  if (visible && !NAUTILUS_CLIST_AUTO_RESIZE_BLOCKED (clist))
     {
       old_width = g_new (gint, clist->columns);
       for (i = 0; i < clist->columns; i++)
 	if (clist->column[i].auto_resize)
 	  {
-	    GTK_CLIST_CLASS_FW (clist)->cell_size_request
+	    NAUTILUS_CLIST_CLASS_FW (clist)->cell_size_request
 	      (clist, &NAUTILUS_CTREE_ROW (node)->row, i, &requisition);
 	    old_width[i] = requisition.width;
 	  }
@@ -5285,7 +5188,7 @@ nautilus_ctree_node_set_row_style (NautilusCTree     *ctree,
 			    clist->clist_window);
     }
 
-  if (visible && !GTK_CLIST_AUTO_RESIZE_BLOCKED (clist))
+  if (visible && !NAUTILUS_CLIST_AUTO_RESIZE_BLOCKED (clist))
     {
       for (i = 0; i < clist->columns; i++)
 	if (clist->column[i].auto_resize)
@@ -5402,12 +5305,12 @@ nautilus_ctree_node_moveto (NautilusCTree     *ctree,
 		       gfloat        col_align)
 {
   gint row = -1;
-  GtkCList *clist;
+  NautilusCList *clist;
 
   g_return_if_fail (ctree != NULL);
   g_return_if_fail (NAUTILUS_IS_CTREE (ctree));
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
   while (node && !nautilus_ctree_is_viewable (ctree, node))
     node = NAUTILUS_CTREE_ROW (node)->parent;
@@ -5415,7 +5318,7 @@ nautilus_ctree_node_moveto (NautilusCTree     *ctree,
   if (node)
     row = g_list_position (clist->row_list, (GList *)node);
   
-  gtk_clist_moveto (clist, row, column, row_align, col_align);
+  nautilus_clist_moveto (clist, row, column, row_align, col_align);
 }
 
 GtkVisibility nautilus_ctree_node_is_visible (NautilusCTree     *ctree,
@@ -5426,8 +5329,8 @@ GtkVisibility nautilus_ctree_node_is_visible (NautilusCTree     *ctree,
   g_return_val_if_fail (ctree != NULL, 0);
   g_return_val_if_fail (node != NULL, 0);
   
-  row = g_list_position (GTK_CLIST (ctree)->row_list, (GList*) node);
-  return gtk_clist_row_is_visible (GTK_CLIST (ctree), row);
+  row = g_list_position (NAUTILUS_CLIST (ctree)->row_list, (GList*) node);
+  return nautilus_clist_row_is_visible (NAUTILUS_CLIST (ctree), row);
 }
 
 
@@ -5439,7 +5342,7 @@ void
 nautilus_ctree_set_indent (NautilusCTree *ctree, 
                       gint      indent)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
 
   g_return_if_fail (ctree != NULL);
   g_return_if_fail (NAUTILUS_IS_CTREE (ctree));
@@ -5448,14 +5351,14 @@ nautilus_ctree_set_indent (NautilusCTree *ctree,
   if (indent == ctree->tree_indent)
     return;
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
   ctree->tree_indent = indent;
 
   if (clist->column[ctree->tree_column].auto_resize &&
-      !GTK_CLIST_AUTO_RESIZE_BLOCKED (clist))
-    gtk_clist_set_column_width
+      !NAUTILUS_CLIST_AUTO_RESIZE_BLOCKED (clist))
+    nautilus_clist_set_column_width
       (clist, ctree->tree_column,
-       gtk_clist_optimal_column_width (clist, ctree->tree_column));
+       nautilus_clist_optimal_column_width (clist, ctree->tree_column));
   else
     CLIST_REFRESH (ctree);
 }
@@ -5464,7 +5367,7 @@ void
 nautilus_ctree_set_spacing (NautilusCTree *ctree, 
 		       gint      spacing)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
   gint old_spacing;
 
   g_return_if_fail (ctree != NULL);
@@ -5474,14 +5377,14 @@ nautilus_ctree_set_spacing (NautilusCTree *ctree,
   if (spacing == ctree->tree_spacing)
     return;
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
   old_spacing = ctree->tree_spacing;
   ctree->tree_spacing = spacing;
 
   if (clist->column[ctree->tree_column].auto_resize &&
-      !GTK_CLIST_AUTO_RESIZE_BLOCKED (clist))
-    gtk_clist_set_column_width (clist, ctree->tree_column,
+      !NAUTILUS_CLIST_AUTO_RESIZE_BLOCKED (clist))
+    nautilus_clist_set_column_width (clist, ctree->tree_column,
 				clist->column[ctree->tree_column].width +
 				spacing - old_spacing);
   else
@@ -5499,15 +5402,15 @@ nautilus_ctree_set_show_stub (NautilusCTree *ctree,
 
   if (show_stub != ctree->show_stub)
     {
-      GtkCList *clist;
+      NautilusCList *clist;
 
-      clist = GTK_CLIST (ctree);
+      clist = NAUTILUS_CLIST (ctree);
       ctree->show_stub = show_stub;
 
       if (CLIST_UNFROZEN (clist) && clist->rows &&
-	  gtk_clist_row_is_visible (clist, 0) != GTK_VISIBILITY_NONE)
-	GTK_CLIST_CLASS_FW (clist)->draw_row
-	  (clist, NULL, 0, GTK_CLIST_ROW (clist->row_list));
+	  nautilus_clist_row_is_visible (clist, 0) != GTK_VISIBILITY_NONE)
+	NAUTILUS_CLIST_CLASS_FW (clist)->draw_row
+	  (clist, NULL, 0, NAUTILUS_CLIST_ROW (clist->row_list));
     }
 }
 
@@ -5515,7 +5418,7 @@ void
 nautilus_ctree_set_line_style (NautilusCTree          *ctree, 
 			  NautilusCTreeLineStyle  line_style)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
   NautilusCTreeLineStyle old_style;
 
   g_return_if_fail (ctree != NULL);
@@ -5524,20 +5427,20 @@ nautilus_ctree_set_line_style (NautilusCTree          *ctree,
   if (line_style == ctree->line_style)
     return;
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
   old_style = ctree->line_style;
   ctree->line_style = line_style;
 
   if (clist->column[ctree->tree_column].auto_resize &&
-      !GTK_CLIST_AUTO_RESIZE_BLOCKED (clist))
+      !NAUTILUS_CLIST_AUTO_RESIZE_BLOCKED (clist))
     {
       if (old_style == NAUTILUS_CTREE_LINES_TABBED)
-	gtk_clist_set_column_width
+	nautilus_clist_set_column_width
 	  (clist, ctree->tree_column,
 	   clist->column[ctree->tree_column].width - 3);
       else if (line_style == NAUTILUS_CTREE_LINES_TABBED)
-	gtk_clist_set_column_width
+	nautilus_clist_set_column_width
 	  (clist, ctree->tree_column,
 	   clist->column[ctree->tree_column].width + 3);
     }
@@ -5584,9 +5487,9 @@ tree_sort (NautilusCTree     *ctree,
   NautilusCTreeNode *list_start;
   NautilusCTreeNode *cmp;
   NautilusCTreeNode *work;
-  GtkCList *clist;
+  NautilusCList *clist;
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
   if (node)
     list_start = NAUTILUS_CTREE_ROW (node)->children;
@@ -5627,19 +5530,19 @@ void
 nautilus_ctree_sort_recursive (NautilusCTree     *ctree, 
 			  NautilusCTreeNode *node)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
   NautilusCTreeNode *focus_node = NULL;
 
   g_return_if_fail (ctree != NULL);
   g_return_if_fail (NAUTILUS_IS_CTREE (ctree));
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
-  gtk_clist_freeze (clist);
+  nautilus_clist_freeze (clist);
 
   if (clist->selection_mode == GTK_SELECTION_EXTENDED)
     {
-      GTK_CLIST_CLASS_FW (clist)->resync_selection (clist, NULL);
+      NAUTILUS_CLIST_CLASS_FW (clist)->resync_selection (clist, NULL);
       
       g_list_free (clist->undo_selection);
       g_list_free (clist->undo_unselection);
@@ -5662,11 +5565,11 @@ nautilus_ctree_sort_recursive (NautilusCTree     *ctree,
       clist->undo_anchor = clist->focus_row;
     }
 
-  gtk_clist_thaw (clist);
+  nautilus_clist_thaw (clist);
 }
 
 static void
-real_sort_list (GtkCList *clist)
+real_sort_list (NautilusCList *clist)
 {
   nautilus_ctree_sort_recursive (NAUTILUS_CTREE (clist), NULL);
 }
@@ -5675,19 +5578,19 @@ void
 nautilus_ctree_sort_node (NautilusCTree     *ctree, 
 		     NautilusCTreeNode *node)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
   NautilusCTreeNode *focus_node = NULL;
 
   g_return_if_fail (ctree != NULL);
   g_return_if_fail (NAUTILUS_IS_CTREE (ctree));
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
-  gtk_clist_freeze (clist);
+  nautilus_clist_freeze (clist);
 
   if (clist->selection_mode == GTK_SELECTION_EXTENDED)
     {
-      GTK_CLIST_CLASS_FW (clist)->resync_selection (clist, NULL);
+      NAUTILUS_CLIST_CLASS_FW (clist)->resync_selection (clist, NULL);
       
       g_list_free (clist->undo_selection);
       g_list_free (clist->undo_unselection);
@@ -5707,7 +5610,7 @@ nautilus_ctree_sort_node (NautilusCTree     *ctree,
       clist->undo_anchor = clist->focus_row;
     }
 
-  gtk_clist_thaw (clist);
+  nautilus_clist_thaw (clist);
 }
 
 void
@@ -5715,13 +5618,13 @@ nautilus_ctree_sort_single_node (NautilusCTree *ctree,
 				 NautilusCTreeNode *node)
 {
   NautilusCTreeNode *sibling, *parent;
-  GtkCList *clist;
+  NautilusCList *clist;
 
-  clist = GTK_CLIST (ctree);
+  clist = NAUTILUS_CLIST (ctree);
 
-  gtk_clist_freeze (clist);
+  nautilus_clist_freeze (clist);
 
-  if (GTK_CLIST_AUTO_SORT (clist))
+  if (NAUTILUS_CLIST_AUTO_SORT (clist))
     {
       parent = NAUTILUS_CTREE_ROW (node)->parent;
 
@@ -5738,13 +5641,13 @@ nautilus_ctree_sort_single_node (NautilusCTree *ctree,
       nautilus_ctree_link (ctree, node, parent, sibling, TRUE);
     }
 
-  gtk_clist_thaw (clist);
+  nautilus_clist_thaw (clist);
 }
 
 /************************************************************************/
 
 static void
-fake_unselect_all (GtkCList *clist,
+fake_unselect_all (NautilusCList *clist,
 		   gint      row)
 {
   GList *list;
@@ -5758,9 +5661,9 @@ fake_unselect_all (GtkCList *clist,
 	  NAUTILUS_CTREE_ROW (focus_node)->row.state = GTK_STATE_SELECTED;
 	  
 	  if (CLIST_UNFROZEN (clist) &&
-	      gtk_clist_row_is_visible (clist, row) != GTK_VISIBILITY_NONE)
-	    GTK_CLIST_CLASS_FW (clist)->draw_row (clist, NULL, row,
-						  GTK_CLIST_ROW (focus_node));
+	      nautilus_clist_row_is_visible (clist, row) != GTK_VISIBILITY_NONE)
+	    NAUTILUS_CLIST_CLASS_FW (clist)->draw_row (clist, NULL, row,
+						  NAUTILUS_CLIST_ROW (focus_node));
 	}  
     }
 
@@ -5779,7 +5682,7 @@ fake_unselect_all (GtkCList *clist,
 }
 
 static GList *
-selection_find (GtkCList *clist,
+selection_find (NautilusCList *clist,
 		gint      row_number,
 		GList    *row_list_element)
 {
@@ -5787,7 +5690,7 @@ selection_find (GtkCList *clist,
 }
 
 static void
-resync_selection (GtkCList *clist, GdkEvent *event)
+resync_selection (NautilusCList *clist, GdkEvent *event)
 {
   NautilusCTree *ctree;
   GList *list;
@@ -5905,7 +5808,7 @@ resync_selection (GtkCList *clist, GdkEvent *event)
 }
 
 static void
-real_undo_selection (GtkCList *clist)
+real_undo_selection (NautilusCList *clist)
 {
   NautilusCTree *ctree;
   GList *work;
@@ -5918,7 +5821,7 @@ real_undo_selection (GtkCList *clist)
 
   if (!(clist->undo_selection || clist->undo_unselection))
     {
-      gtk_clist_unselect_all (clist);
+      nautilus_clist_unselect_all (clist);
       return;
     }
 
@@ -5950,9 +5853,9 @@ real_undo_selection (GtkCList *clist)
 
   if (ROW_TOP_YPIXEL (clist, clist->focus_row) + clist->row_height >
       clist->clist_window_height)
-    gtk_clist_moveto (clist, clist->focus_row, -1, 1, 0);
+    nautilus_clist_moveto (clist, clist->focus_row, -1, 1, 0);
   else if (ROW_TOP_YPIXEL (clist, clist->focus_row) < 0)
-    gtk_clist_moveto (clist, clist->focus_row, -1, 0, 0);
+    nautilus_clist_moveto (clist, clist->focus_row, -1, 0, 0);
 
 }
 
@@ -5970,7 +5873,7 @@ static gboolean
 check_drag (NautilusCTree        *ctree,
 	    NautilusCTreeNode    *drag_source,
 	    NautilusCTreeNode    *drag_target,
-	    GtkCListDragPos  insert_pos)
+	    NautilusCListDragPos  insert_pos)
 {
   g_return_val_if_fail (ctree != NULL, FALSE);
   g_return_val_if_fail (NAUTILUS_IS_CTREE (ctree), FALSE);
@@ -5981,9 +5884,9 @@ check_drag (NautilusCTree        *ctree,
     {
       switch (insert_pos)
 	{
-	case GTK_CLIST_DRAG_NONE:
+	case NAUTILUS_CLIST_DRAG_NONE:
 	  return FALSE;
-	case GTK_CLIST_DRAG_AFTER:
+	case NAUTILUS_CLIST_DRAG_AFTER:
 	  if (NAUTILUS_CTREE_ROW (drag_target)->sibling != drag_source)
 	    return (!ctree->drag_compare ||
 		    ctree->drag_compare (ctree,
@@ -5991,7 +5894,7 @@ check_drag (NautilusCTree        *ctree,
 					 NAUTILUS_CTREE_ROW (drag_target)->parent,
 					 NAUTILUS_CTREE_ROW(drag_target)->sibling));
 	  break;
-	case GTK_CLIST_DRAG_BEFORE:
+	case NAUTILUS_CLIST_DRAG_BEFORE:
 	  if (NAUTILUS_CTREE_ROW (drag_source)->sibling != drag_target)
 	    return (!ctree->drag_compare ||
 		    ctree->drag_compare (ctree,
@@ -5999,7 +5902,7 @@ check_drag (NautilusCTree        *ctree,
 					 NAUTILUS_CTREE_ROW (drag_target)->parent,
 					 drag_target));
 	  break;
-	case GTK_CLIST_DRAG_INTO:
+	case NAUTILUS_CLIST_DRAG_INTO:
 	  if (!NAUTILUS_CTREE_ROW (drag_target)->is_leaf &&
 	      NAUTILUS_CTREE_ROW (drag_target)->children != drag_source)
 	    return (!ctree->drag_compare ||
@@ -6019,22 +5922,22 @@ check_drag (NautilusCTree        *ctree,
 static void
 drag_dest_info_destroy (gpointer data)
 {
-  GtkCListDestInfo *info = data;
+  NautilusCListDestInfo *info = data;
 
   g_free (info);
 }
 
 static void
-drag_dest_cell (GtkCList         *clist,
+drag_dest_cell (NautilusCList         *clist,
 		gint              x,
 		gint              y,
-		GtkCListDestInfo *dest_info)
+		NautilusCListDestInfo *dest_info)
 {
   GtkWidget *widget;
 
   widget = GTK_WIDGET (clist);
 
-  dest_info->insert_pos = GTK_CLIST_DRAG_NONE;
+  dest_info->insert_pos = NAUTILUS_CLIST_DRAG_NONE;
 
   y -= (GTK_CONTAINER (widget)->border_width +
 	widget->style->klass->ythickness + clist->column_title_area.height);
@@ -6058,25 +5961,25 @@ drag_dest_cell (GtkCList         *clist,
 
       y_delta = y - ROW_TOP_YPIXEL (clist, dest_info->cell.row);
       
-      if (GTK_CLIST_DRAW_DRAG_RECT(clist) &&
+      if (NAUTILUS_CLIST_DRAW_DRAG_RECT(clist) &&
 	  !NAUTILUS_CTREE_ROW (g_list_nth (clist->row_list,
 				      dest_info->cell.row))->is_leaf)
 	{
-	  dest_info->insert_pos = GTK_CLIST_DRAG_INTO;
+	  dest_info->insert_pos = NAUTILUS_CLIST_DRAG_INTO;
 	  h = clist->row_height / 4;
 	}
-      else if (GTK_CLIST_DRAW_DRAG_LINE(clist))
+      else if (NAUTILUS_CLIST_DRAW_DRAG_LINE(clist))
 	{
-	  dest_info->insert_pos = GTK_CLIST_DRAG_BEFORE;
+	  dest_info->insert_pos = NAUTILUS_CLIST_DRAG_BEFORE;
 	  h = clist->row_height / 2;
 	}
 
-      if (GTK_CLIST_DRAW_DRAG_LINE(clist))
+      if (NAUTILUS_CLIST_DRAW_DRAG_LINE(clist))
 	{
 	  if (y_delta < h)
-	    dest_info->insert_pos = GTK_CLIST_DRAG_BEFORE;
+	    dest_info->insert_pos = NAUTILUS_CLIST_DRAG_BEFORE;
 	  else if (clist->row_height - y_delta < h)
-	    dest_info->insert_pos = GTK_CLIST_DRAG_AFTER;
+	    dest_info->insert_pos = NAUTILUS_CLIST_DRAG_AFTER;
 	}
     }
 }
@@ -6085,41 +5988,36 @@ static void
 nautilus_ctree_drag_begin (GtkWidget	     *widget,
 		      GdkDragContext *context)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
   NautilusCTree *ctree;
   gboolean use_icons;
+  GdkPixbuf *pixbuf;
 
   g_return_if_fail (widget != NULL);
   g_return_if_fail (NAUTILUS_IS_CTREE (widget));
   g_return_if_fail (context != NULL);
 
-  clist = GTK_CLIST (widget);
+  clist = NAUTILUS_CLIST (widget);
   ctree = NAUTILUS_CTREE (widget);
 
-  use_icons = GTK_CLIST_USE_DRAG_ICONS (clist);
-  GTK_CLIST_UNSET_FLAG (clist, CLIST_USE_DRAG_ICONS);
+  use_icons = NAUTILUS_CLIST_USE_DRAG_ICONS (clist);
+  NAUTILUS_CLIST_UNSET_FLAG (clist, CLIST_USE_DRAG_ICONS);
   GTK_WIDGET_CLASS (parent_class)->drag_begin (widget, context);
 
   if (use_icons)
     {
       NautilusCTreeNode *node;
 
-      GTK_CLIST_SET_FLAG (clist, CLIST_USE_DRAG_ICONS);
+      NAUTILUS_CLIST_SET_FLAG (clist, CLIST_USE_DRAG_ICONS);
       node = NAUTILUS_CTREE_NODE (g_list_nth (clist->row_list,
 					 clist->click_cell.row));
       if (node)
 	{
-	  if (GTK_CELL_PIXTEXT
-	      (NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->pixmap)
+	  pixbuf = NAUTILUS_CELL_PIXTEXT
+		  (NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->pixbuf;
+	  if (pixbuf)
 	    {
-	      gtk_drag_set_icon_pixmap
-		(context,
-		 gtk_widget_get_colormap (widget),
-		 GTK_CELL_PIXTEXT
-		 (NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->pixmap,
-		 GTK_CELL_PIXTEXT
-		 (NAUTILUS_CTREE_ROW (node)->row.cell[ctree->tree_column])->mask,
-		 -2, -2);
+	      nautilus_drag_set_icon_pixbuf (context, pixbuf, -2, -2);
 	      return;
 	    }
 	}
@@ -6134,37 +6032,37 @@ nautilus_ctree_drag_motion (GtkWidget      *widget,
 		       gint            y,
 		       guint           time)
 {
-  GtkCList *clist;
+  NautilusCList *clist;
   NautilusCTree *ctree;
-  GtkCListDestInfo new_info;
-  GtkCListDestInfo *dest_info;
+  NautilusCListDestInfo new_info;
+  NautilusCListDestInfo *dest_info;
 
   g_return_val_if_fail (widget != NULL, FALSE);
   g_return_val_if_fail (NAUTILUS_IS_CTREE (widget), FALSE);
 
-  clist = GTK_CLIST (widget);
+  clist = NAUTILUS_CLIST (widget);
   ctree = NAUTILUS_CTREE (widget);
 
-  dest_info = g_dataset_get_data (context, "gtk-clist-drag-dest");
+  dest_info = g_dataset_get_data (context, "nautilus-clist-drag-dest");
 
   if (!dest_info)
     {
-      dest_info = g_new (GtkCListDestInfo, 1);
+      dest_info = g_new (NautilusCListDestInfo, 1);
 	  
       dest_info->cell.row    = -1;
       dest_info->cell.column = -1;
-      dest_info->insert_pos  = GTK_CLIST_DRAG_NONE;
+      dest_info->insert_pos  = NAUTILUS_CLIST_DRAG_NONE;
 
-      g_dataset_set_data_full (context, "gtk-clist-drag-dest", dest_info,
+      g_dataset_set_data_full (context, "nautilus-clist-drag-dest", dest_info,
 			       drag_dest_info_destroy);
     }
 
   drag_dest_cell (clist, x, y, &new_info);
 
-  if (GTK_CLIST_REORDERABLE (clist))
+  if (NAUTILUS_CLIST_REORDERABLE (clist))
     {
       GList *list;
-      GdkAtom atom = gdk_atom_intern ("gtk-clist-drag-reorder", FALSE);
+      GdkAtom atom = gdk_atom_intern ("nautilus-clist-drag-reorder", FALSE);
 
       list = context->targets;
       while (list)
@@ -6201,7 +6099,7 @@ nautilus_ctree_drag_motion (GtkWidget      *widget,
 	       dest_info->insert_pos != new_info.insert_pos))
 	    {
 	      if (dest_info->cell.row >= 0)
-		GTK_CLIST_CLASS_FW (clist)->draw_drag_highlight
+		NAUTILUS_CLIST_CLASS_FW (clist)->draw_drag_highlight
 		  (clist,
 		   g_list_nth (clist->row_list, dest_info->cell.row)->data,
 		   dest_info->cell.row, dest_info->insert_pos);
@@ -6210,7 +6108,7 @@ nautilus_ctree_drag_motion (GtkWidget      *widget,
 	      dest_info->cell.row    = new_info.cell.row;
 	      dest_info->cell.column = new_info.cell.column;
 
-	      GTK_CLIST_CLASS_FW (clist)->draw_drag_highlight
+	      NAUTILUS_CLIST_CLASS_FW (clist)->draw_drag_highlight
 		(clist,
 		 g_list_nth (clist->row_list, dest_info->cell.row)->data,
 		 dest_info->cell.row, dest_info->insert_pos);
@@ -6237,7 +6135,7 @@ nautilus_ctree_drag_data_received (GtkWidget        *widget,
 			      guint32           time)
 {
   NautilusCTree *ctree;
-  GtkCList *clist;
+  NautilusCList *clist;
 
   g_return_if_fail (widget != NULL);
   g_return_if_fail (NAUTILUS_IS_CTREE (widget));
@@ -6245,21 +6143,21 @@ nautilus_ctree_drag_data_received (GtkWidget        *widget,
   g_return_if_fail (selection_data != NULL);
 
   ctree = NAUTILUS_CTREE (widget);
-  clist = GTK_CLIST (widget);
+  clist = NAUTILUS_CLIST (widget);
 
-  if (GTK_CLIST_REORDERABLE (clist) &&
+  if (NAUTILUS_CLIST_REORDERABLE (clist) &&
       gtk_drag_get_source_widget (context) == widget &&
       selection_data->target ==
-      gdk_atom_intern ("gtk-clist-drag-reorder", FALSE) &&
+      gdk_atom_intern ("nautilus-clist-drag-reorder", FALSE) &&
       selection_data->format == GTK_TYPE_POINTER &&
-      selection_data->length == sizeof (GtkCListCellInfo))
+      selection_data->length == sizeof (NautilusCListCellInfo))
     {
-      GtkCListCellInfo *source_info;
+      NautilusCListCellInfo *source_info;
 
-      source_info = (GtkCListCellInfo *)(selection_data->data);
+      source_info = (NautilusCListCellInfo *)(selection_data->data);
       if (source_info)
 	{
-	  GtkCListDestInfo dest_info;
+	  NautilusCListDestInfo dest_info;
 	  NautilusCTreeNode *source_node;
 	  NautilusCTreeNode *dest_node;
 
@@ -6275,29 +6173,29 @@ nautilus_ctree_drag_data_received (GtkWidget        *widget,
 
 	  switch (dest_info.insert_pos)
 	    {
-	    case GTK_CLIST_DRAG_NONE:
+	    case NAUTILUS_CLIST_DRAG_NONE:
 	      break;
-	    case GTK_CLIST_DRAG_INTO:
+	    case NAUTILUS_CLIST_DRAG_INTO:
 	      if (check_drag (ctree, source_node, dest_node,
 			      dest_info.insert_pos))
 		nautilus_ctree_move (ctree, source_node, dest_node,
 				NAUTILUS_CTREE_ROW (dest_node)->children);
-	      g_dataset_remove_data (context, "gtk-clist-drag-dest");
+	      g_dataset_remove_data (context, "nautilus-clist-drag-dest");
 	      break;
-	    case GTK_CLIST_DRAG_BEFORE:
+	    case NAUTILUS_CLIST_DRAG_BEFORE:
 	      if (check_drag (ctree, source_node, dest_node,
 			      dest_info.insert_pos))
 		nautilus_ctree_move (ctree, source_node,
 				NAUTILUS_CTREE_ROW (dest_node)->parent, dest_node);
-	      g_dataset_remove_data (context, "gtk-clist-drag-dest");
+	      g_dataset_remove_data (context, "nautilus-clist-drag-dest");
 	      break;
-	    case GTK_CLIST_DRAG_AFTER:
+	    case NAUTILUS_CLIST_DRAG_AFTER:
 	      if (check_drag (ctree, source_node, dest_node,
 			      dest_info.insert_pos))
 		nautilus_ctree_move (ctree, source_node,
 				NAUTILUS_CTREE_ROW (dest_node)->parent, 
 				NAUTILUS_CTREE_ROW (dest_node)->sibling);
-	      g_dataset_remove_data (context, "gtk-clist-drag-dest");
+	      g_dataset_remove_data (context, "nautilus-clist-drag-dest");
 	      break;
 	    }
 	}

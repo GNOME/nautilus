@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /* 
- * Copyright (C) 2000 Eazel, Inc
+ * Copyright (C) 2000, 2001 Eazel, Inc
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -28,7 +28,6 @@
 #define NAUTILUS_TREE_VIEW_H
 
 #include <libnautilus/nautilus-view.h>
-#include <gtk/gtkscrolledwindow.h>
 
 typedef struct NautilusTreeView NautilusTreeView;
 typedef struct NautilusTreeViewClass NautilusTreeViewClass;
@@ -42,21 +41,14 @@ typedef struct NautilusTreeViewClass NautilusTreeViewClass;
 typedef struct NautilusTreeViewDetails NautilusTreeViewDetails;
 
 struct NautilusTreeView {
-	GtkScrolledWindow parent;
+	NautilusView parent;
 	NautilusTreeViewDetails *details;
 };
 
 struct NautilusTreeViewClass {
-	GtkScrolledWindowClass parent_class;
+	NautilusViewClass parent_class;
 };
 
-/* GtkObject support */
-GtkType       nautilus_tree_view_get_type          (void);
-
-/* Component embedding support */
-NautilusView *nautilus_tree_view_get_nautilus_view (NautilusTreeView *view);
-
+GtkType nautilus_tree_view_get_type (void);
 
 #endif /* NAUTILUS_TREE_VIEW_H */
-
-

@@ -4,7 +4,7 @@
   			       gtk classes. Perhaps some of these should be
   			       rolled into gtk someday.
 
-   Copyright (C) 1999, 2000 Eazel, Inc.
+   Copyright (C) 1999, 2000, 2001 Eazel, Inc.
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -28,6 +28,7 @@
 #ifndef NAUTILUS_GTK_EXTENSIONS_H
 #define NAUTILUS_GTK_EXTENSIONS_H
 
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtkclist.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
@@ -41,7 +42,7 @@
 
 /* GtkButton */
 void              nautilus_gtk_button_auto_click                       (GtkButton                *button);
-void		  nautilus_gtk_button_set_standard_padding	       (GtkButton		 *button);
+void              nautilus_gtk_button_set_standard_padding             (GtkButton                *button);
 void              nautilus_gtk_button_set_padding                      (GtkButton                *button,
 									int                       pad_amount);
 
@@ -70,14 +71,13 @@ void              nautilus_gtk_signal_connect_full_while_alive         (GtkObjec
 									gboolean                  object_signal,
 									gboolean                  after,
 									GtkObject                *alive_object);
-
 void              nautilus_gtk_signal_connect_while_realized           (GtkObject                *object,
 									const char               *name,
 									GtkSignalFunc             callback,
 									gpointer                  callback_data,
 									GtkWidget                *realized_widget);
-void		  nautilus_nullify_when_destroyed	      	       (gpointer		  object_pointer_address);
-void		  nautilus_nullify_cancel			       (gpointer		  object_pointer_address);
+void              nautilus_nullify_when_destroyed                      (gpointer                  object_pointer_address);
+void              nautilus_nullify_cancel                              (gpointer                  object_pointer_address);
 
 /* list of GtkObject */
 GList *           nautilus_gtk_object_list_ref                         (GList                    *list);
@@ -87,7 +87,7 @@ GList *           nautilus_gtk_object_list_copy                        (GList   
 
 /* GtkWidget */
 void              nautilus_gtk_widget_set_shown                        (GtkWidget                *widget,
-									gboolean                 shown);
+									gboolean                  shown);
 gboolean          nautilus_point_in_allocation                         (const GtkAllocation      *allocation,
 									int                       x,
 									int                       y);
@@ -137,8 +137,8 @@ void              nautilus_pop_up_context_menu                         (GtkMenu 
 									gint16                    offset_x,
 									gint16                    offset_y,
 									GdkEventButton           *event);
-GtkMenuItem	 *nautilus_gtk_menu_append_separator                   (GtkMenu                  *menu);
-GtkMenuItem	 *nautilus_gtk_menu_insert_separator                   (GtkMenu                  *menu,
+GtkMenuItem *     nautilus_gtk_menu_append_separator                   (GtkMenu                  *menu);
+GtkMenuItem *     nautilus_gtk_menu_insert_separator                   (GtkMenu                  *menu,
 									int                       index);
 void              nautilus_gtk_menu_set_item_visibility                (GtkMenu                  *menu,
 									int                       index,
@@ -173,8 +173,13 @@ void              nautilus_gtk_style_shade                             (GdkColor
  * gtk style/theme purposes. */
 void              nautilus_gtk_class_name_make_like_existing_type      (const char               *class_name,
 									GtkType                   existing_gtk_type);
+GList *           nautilus_get_window_list_ordered_front_to_back       (void);
 
-GList		  *nautilus_get_window_list_ordered_front_to_back      (void);
+/* dnd */
+void              nautilus_drag_set_icon_pixbuf                        (GdkDragContext           *context,
+									GdkPixbuf                *pixbuf,
+									gint                      hot_x,
+									gint                      hot_y);
 
 /* marshals */
 
@@ -263,6 +268,10 @@ void nautilus_gtk_marshal_INT__POINTER_INT					(GtkObject     *object,
 										 gpointer       func_data,
 										 GtkArg        *args);
 void nautilus_gtk_marshal_POINTER__NONE                                         (GtkObject     *object,
+										 GtkSignalFunc  func,
+										 gpointer       func_data,
+										 GtkArg        *args);
+void nautilus_gtk_marshal_POINTER__INT                                          (GtkObject     *object,
 										 GtkSignalFunc  func,
 										 gpointer       func_data,
 										 GtkArg        *args);
