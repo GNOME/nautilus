@@ -1,3 +1,37 @@
+2002-03-27  Dave Emory Watson  <dwatson@cs.ucr.edu>
+
+        * libnautilus-private/nautilus-link.c,
+        libnautilus-private/nautilus-link.h:
+        (nautilus_link_local_is_volume_link),
+        (nautilus_link_local_is_home_link),
+        (nautilus_link_local_is_trash_link),
+        (nautilus_link_local_is_special_link): Share code between different
+        link implementations so that home directory link behavior can be
+        controlled from one place.
+
+        * libnautilus-private/nautilus-link-desktop-file.c,
+        libnautilus-private/nautilus-link-desktop-file.h:
+        (nautilus_link_desktop_file_local_is_volume_link),
+        (nautilus_link_desktop_file_local_is_home_link),
+        (nautilus_link_desktop_file_local_is_trash_link): Remove.
+
+        * libnautilus-private/nautilus-link-historical.h,
+        libnautilus-private/nautilus-link-historical.c:
+        (nautilus_link_historical_local_is_volume_link),
+        (nautilus_link_historical_local_is_home_link),
+        (nautilus_link_historical_local_is_trash_link): Remove.
+
+        * libnautilus-private/nautilus-file-operations.c:
+        (is_special_link): Use nautilus_link_local_is_special_link.
+
+        src/file-manager/fm-directory-view.c:
+        (is_link_type_special): Remove.
+        (special_link_in_selection):  Use nautilus_link_local_is_special_link.
+
+        * src/file-manager/fm-desktop-icon-view.c:
+        (update_home_link_and_delete_copies): Don't recreate the home directory
+        link when desktop==home.
+
 2002-03-27  Dave Camp  <dave@ximian.com>
 
 	* libnautilus-private/nautilus-file.c
