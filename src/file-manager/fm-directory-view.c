@@ -2985,9 +2985,13 @@ can_move_uri_to_trash (FMDirectoryView *view, const char *file_uri_string)
 		return FALSE;
 	}
 
-	/* Create a new trash if needed but don't go looking for an old Trash. */
+	/*
+	 * Create a new trash if needed but don't go looking for an old Trash.
+	 * Passing 0 permissions as gnome-vfs would override the permissions 
+	 * passed with 700 while creating .Trash directory
+	 */
 	result = gnome_vfs_find_directory (directory_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
-					   &trash_dir_uri, TRUE, FALSE, 0777) == GNOME_VFS_OK;
+					   &trash_dir_uri, TRUE, FALSE, 0) == GNOME_VFS_OK;
 	if (result) {
 		gnome_vfs_uri_unref (trash_dir_uri);
 	}

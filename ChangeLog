@@ -1,3 +1,13 @@
+2002-07-15  Rohit R  <rohit.raveendran@wipro.com>
+            Laavanya K R  <laavanya.gopalan@wipro.com>
+ 
+	* src/file-manager/fm-directory-view.c: (can_move_uri_to_trash)
+	* libnautilus-private/nautilus-dnd.c
+        (nautilus_drag_default_drop_action_for_icons): Changed the file
+	permission from 0777 to 0 for the .Trash while calling
+	gnome_vfs_find_directory, since gnome-vfs now ignores the
+	permissions parameter when creating trash.
+
 2002-07-15  jacob berkman  <jacob@ximian.com>
 
 	* libnautilus-private/nautilus-directory-background.c
