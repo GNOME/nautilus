@@ -26,6 +26,7 @@
 #include "fm-icon-view.h"
 
 #include "fm-icon-text-window.h"
+#include "fm-error-reporting.h"
 
 #include <ctype.h>
 #include <errno.h>
@@ -55,6 +56,10 @@
 #define MENU_PATH_RESTORE_STRETCHED_ICONS   "/Settings/Restore"
 #define MENU_PATH_AFTER_STRETCH_SEPARATOR   "/Settings/After Stretch Separator"
 #define MENU_PATH_CUSTOMIZE_ICON_TEXT   "/Settings/Icon Text"
+#define MENU_PATH_CLOSE		"/File/Close"
+#define MENU_PATH_RENAME	"/File/Rename"
+
+#define MENU_RENAME_TEXT   "Rename"
 
 /* forward declarations */
 static void                   add_icon_at_free_position                         (FMIconView             *icon_view,
@@ -99,6 +104,8 @@ static void                   fm_icon_view_set_selection                        
 										 GList                  *selection);
 static void                   fm_icon_view_set_zoom_level                       (FMIconView             *view,
 										 NautilusZoomLevel       new_level);
+static void					  fm_icon_view_icon_text_changed_callback 			(NautilusIconContainer *container,
+										 NautilusFile *file, char *new_name, FMIconView *icon_view);
 static void                   fm_icon_view_update_menus                         (FMDirectoryView        *view);
 static NautilusIconContainer *get_icon_container                                (FMIconView             *icon_view);
 static void                   icon_container_activate_callback                  (NautilusIconContainer  *container,
@@ -118,13 +125,16 @@ static NautilusScalableIcon * get_icon_images_callback                          
 static char *                 get_icon_uri_callback                             (NautilusIconContainer  *container,
 										 NautilusFile           *icon_data,
 										 FMIconView             *icon_view);
-static char *                 get_icon_text_callback                            (NautilusIconContainer  *container,
-										 NautilusFile           *icon_data,
-										 FMIconView             *icon_view);
 static char *                 get_icon_property_callback                        (NautilusIconContainer  *container,
 										 NautilusFile           *icon_data,
 										 const char             *property_name,
 										 FMIconView             *icon_view);
+static char *				  get_icon_additional_text_callback 				(NautilusIconContainer *container,
+										 NautilusFile *file,
+										 FMIconView *icon_view);
+static char *				  get_icon_editable_text_callback 					(NautilusIconContainer *container,
+										NautilusFile *file,
+										FMIconView *icon_view);
 static void                   text_attribute_names_changed_callback             (NautilusPreferences    *preferences,
 										 const char             *name,
 										 gconstpointer           value,
@@ -256,6 +266,10 @@ create_icon_container (FMIconView *icon_view)
 			    GTK_SIGNAL_FUNC (fm_icon_view_icon_changed_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "icon_text_changed",
+			    GTK_SIGNAL_FUNC (fm_icon_view_icon_text_changed_callback),
+			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "selection_changed",
 			    GTK_SIGNAL_FUNC (icon_container_selection_changed_callback),
 			    icon_view);
@@ -268,9 +282,13 @@ create_icon_container (FMIconView *icon_view)
 			    GTK_SIGNAL_FUNC (get_icon_uri_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "get_icon_text",
-			    GTK_SIGNAL_FUNC (get_icon_text_callback),
+			    "get_icon_editable_text",
+			    GTK_SIGNAL_FUNC (get_icon_editable_text_callback),
 			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "get_icon_additional_text",
+			    GTK_SIGNAL_FUNC (get_icon_additional_text_callback),
+			    icon_view);	
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "get_icon_property",
 			    GTK_SIGNAL_FUNC (get_icon_property_callback),
@@ -392,6 +410,15 @@ unstretch_icons_callback (gpointer ignored, gpointer view)
 	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (view));
 }
 
+
+static void
+rename_icon_callback (gpointer ignored, gpointer view)
+{
+	g_assert (FM_IS_ICON_VIEW (view));
+	
+	nautilus_icon_container_show_rename_widget (get_icon_container (FM_ICON_VIEW (view)));
+}
+
 static void
 fm_icon_view_compute_menu_item_info (FMIconView *view, 
 				     GList *files, 
@@ -425,9 +452,47 @@ fm_icon_view_compute_menu_item_info (FMIconView *view,
 
 	} else if (strcmp (MENU_PATH_CUSTOMIZE_ICON_TEXT, menu_path) == 0) {
                 name = g_strdup (_("Customize _Icon Text..."));
-        	*sensitive_return = TRUE;
+        	*sensitive_return = TRUE;	
+	/* Modify file name.  We only allow this on a single file selection */
+	} else if (strcmp (MENU_RENAME_TEXT, menu_path) == 0) {
+		name = g_strdup (_("_Rename"));
+
+		if (g_list_length (files) == 1) {
+			GList *list;
+			NautilusFile *file;
+
+			list = g_list_last(files);
+			g_assert(list != NULL);
+			
+			file = (NautilusFile *) list->data;
+			g_assert(file != NULL);
+			
+			*sensitive_return = nautilus_file_can_rename (file);
+		}
+		else {
+			*sensitive_return = FALSE;
+		}
+	/* Modify file name.  We only allow this on a single file selection */
+	} else if (strcmp (MENU_PATH_RENAME, menu_path) == 0) {
+		name = g_strdup (_("_Rename"));
+
+		if (g_list_length (files) == 1) {
+			GList *list;
+			NautilusFile *file;
+
+			list = g_list_last(files);
+			g_assert(list != NULL);
+			
+			file = (NautilusFile *) list->data;
+			g_assert(file != NULL);
+			
+			*sensitive_return = nautilus_file_can_rename (file);
+		}
+		else {
+			*sensitive_return = FALSE;
+		}
 	} else {
-                g_assert_not_reached ();
+			g_assert_not_reached ();
 	}
 
 	if (!include_accelerator_underbars) {
@@ -482,6 +547,9 @@ fm_icon_view_append_selection_context_menu_items (FMDirectoryView *view,
         append_one_context_menu_item (FM_ICON_VIEW (view), menu, files, 
                                       MENU_PATH_RESTORE_STRETCHED_ICONS, 
                                       GTK_SIGNAL_FUNC (unstretch_icons_callback));
+		append_one_context_menu_item (FM_ICON_VIEW (view), menu, files, 
+                                      MENU_RENAME_TEXT,
+                                      GTK_SIGNAL_FUNC (rename_icon_callback));
 }
 
 /* Note that this is used both as a Bonobo menu callback and a signal callback.
@@ -790,6 +858,19 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
                                  _("Choose which information appears beneath each icon's name"),
                                  (BonoboUIHandlerCallbackFunc) customize_icon_text_callback, view);
 
+
+        bonobo_ui_handler_menu_new_item (ui_handler,
+                                         MENU_PATH_RENAME,
+                                         _("Rename"),
+                                         _("Rename selected item"),
+                                         bonobo_ui_handler_menu_get_pos (ui_handler, MENU_PATH_CLOSE) + 5,
+                                         BONOBO_UI_HANDLER_PIXMAP_NONE,
+                                         NULL,
+                                         0,
+                                         0,
+                                         (BonoboUIHandlerCallbackFunc) rename_icon_callback,
+                                         view);
+
         nautilus_file_list_free (selection);
 }
 
@@ -802,10 +883,10 @@ update_bonobo_menu_item (FMIconView *view,
 	char *label;
 	gboolean sensitive;
 
-        fm_icon_view_compute_menu_item_info (view, files, menu_path, TRUE, &label, &sensitive);
-        bonobo_ui_handler_menu_set_sensitivity (ui_handler, menu_path, sensitive);
-        bonobo_ui_handler_menu_set_label (ui_handler, menu_path, label);
-        g_free (label);
+	fm_icon_view_compute_menu_item_info (view, files, menu_path, TRUE, &label, &sensitive);
+	bonobo_ui_handler_menu_set_sensitivity (ui_handler, menu_path, sensitive);
+	bonobo_ui_handler_menu_set_label (ui_handler, menu_path, label);
+	g_free (label);
 }
 
 static void
@@ -813,17 +894,22 @@ fm_icon_view_update_menus (FMDirectoryView *view)
 {
         GList *selection;
         BonoboUIHandler *ui_handler;
-
+		int count;
+	
 	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
 
         ui_handler = fm_directory_view_get_bonobo_ui_handler (view);
         selection = fm_directory_view_get_selection (view);
-        
+    	count = g_list_length (selection);
+                
         update_bonobo_menu_item (FM_ICON_VIEW (view), ui_handler, selection, 
                                  MENU_PATH_STRETCH_ICON);
         update_bonobo_menu_item (FM_ICON_VIEW (view), ui_handler, selection, 
                                  MENU_PATH_RESTORE_STRETCHED_ICONS);
-        nautilus_file_list_free (selection);
+        update_bonobo_menu_item (FM_ICON_VIEW (view), ui_handler, selection, 
+                                 MENU_PATH_RENAME);
+
+		nautilus_file_list_free (selection);
 }
 
 static void
@@ -966,6 +1052,36 @@ fm_icon_view_icon_changed_callback (NautilusIconContainer *container,
 	g_free (scale_string);
 }
 
+
+/* Attempt to change the filename to the new text.  Notify user if operation fails. */
+static void
+fm_icon_view_icon_text_changed_callback (NautilusIconContainer *container,
+				    NautilusFile *file,				    
+					char *new_name,
+					FMIconView *icon_view)
+{
+	GnomeVFSResult rename_result;
+	char *original_name;
+	
+	g_assert (NAUTILUS_IS_FILE (file));
+	if (nautilus_file_is_gone (file)) {
+		return;
+	}
+
+	rename_result = nautilus_file_rename (file, new_name);
+
+	if (rename_result == GNOME_VFS_OK) {
+		return;
+	}
+	
+	/* Rename failed. Notify user. */
+	original_name = nautilus_file_get_name (file);
+	fm_report_error_renaming_file (original_name, new_name, rename_result);
+	
+	g_free (original_name);
+}
+
+
 static NautilusScalableIcon *
 get_icon_images_callback (NautilusIconContainer *container,
 			  NautilusFile *file,
@@ -997,15 +1113,50 @@ get_icon_uri_callback (NautilusIconContainer *container,
 	return nautilus_file_get_uri (file);
 }
 
+
+/* This callback returns the text items that areeditable by the user
+ * using the "Rename" command.  In the case of FMIconView, this
+ * would be the attribute with the name "name"
+ */
+ 
 static char *
-get_icon_text_callback (NautilusIconContainer *container,
+get_icon_editable_text_callback (NautilusIconContainer *container,
+			NautilusFile *file,
+			FMIconView *icon_view)
+{
+	char *result;
+
+	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
+	g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (FM_IS_ICON_VIEW (icon_view));
+
+	result = nautilus_file_get_string_attribute(file, "name");
+		
+	/* Unknown attributes get turned into blank lines (also note that
+	 * leaving a NULL in text_array would cause it to be incompletely
+	 * freed).
+	 */
+	 
+	if (result == NULL) {
+		result = g_strdup ("");
+	}
+
+	return result;
+}
+
+/* This callback returns the text items that are not editable by the user
+ * using the "Rename" command.
+*/
+
+static char *
+get_icon_additional_text_callback (NautilusIconContainer *container,
 			NautilusFile *file,
 			FMIconView *icon_view)
 {
 	char *attribute_names;
 	char **text_array;
 	char *result;
-	int i;
+	int i, match;
 
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_assert (NAUTILUS_IS_FILE (file));
@@ -1019,20 +1170,27 @@ get_icon_text_callback (NautilusIconContainer *container,
 	for (i = 0; text_array[i] != NULL; i++)	{
 		char *attribute_string;
 
-		attribute_string = nautilus_file_get_string_attribute
-			(file, text_array[i]);
+		match = g_strcasecmp(text_array[i], "name");
+		if (match) {
+			attribute_string = nautilus_file_get_string_attribute(file, text_array[i]);
 		
-		/* Unknown attributes get turned into blank lines (also note that
-		 * leaving a NULL in text_array would cause it to be incompletely
-		 * freed).
-		 */
-		if (attribute_string == NULL) {
-			attribute_string = g_strdup ("");
-		}
+			/* Unknown attributes get turned into blank lines (also note that
+			 * leaving a NULL in text_array would cause it to be incompletely
+			 * freed).
+			 */
+			if (attribute_string == NULL) {
+				attribute_string = g_strdup ("");
+			}
 
-		/* Replace each attribute name in the array with its string value */
-		g_free (text_array[i]);
-		text_array[i] = attribute_string;
+			/* Replace each attribute name in the array with its string value */
+			g_free (text_array[i]);
+			text_array[i] = attribute_string;
+		}
+		else {
+			g_free (text_array[i]);
+			attribute_string = g_strdup ("");
+			text_array[i] = attribute_string;
+		}
 	}
 
 	result = g_strjoinv ("\n", text_array);

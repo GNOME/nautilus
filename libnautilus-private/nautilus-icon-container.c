@@ -26,6 +26,7 @@
 #include "nautilus-icon-container.h"
 
 #include <math.h>
+#include <stdio.h>
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtksignal.h>
@@ -38,6 +39,7 @@
 #include "nautilus-gtk-extensions.h"
 #include "nautilus-gnome-extensions.h"
 #include "nautilus-gtk-macros.h"
+#include "nautilus-icon-text-item.h"
 #include "nautilus-lib-self-check-functions.h"
 
 #include "nautilus-icon-grid.h"
@@ -70,18 +72,28 @@
  */
 #define MAXIMUM_INITIAL_ICON_SIZE 2
 
-static void          activate_selected_items                  (NautilusIconContainer      *container);
-static void          nautilus_icon_container_initialize_class (NautilusIconContainerClass *class);
-static void          nautilus_icon_container_initialize       (NautilusIconContainer      *container);
-static void          compute_stretch                          (StretchState               *start,
-							       StretchState               *current);
-static NautilusIcon *get_first_selected_icon                  (NautilusIconContainer      *container);
-static NautilusIcon *get_nth_selected_icon                    (NautilusIconContainer      *container,
-							       int                         index);
-static gboolean      has_multiple_selection                   (NautilusIconContainer      *container);
-static void          icon_destroy                             (NautilusIconContainer      *container,
-							       NautilusIcon               *icon);
-static guint         icon_get_actual_size                     (NautilusIcon               *icon);
+static void                    activate_selected_items               (NautilusIconContainer      *container);
+static void                    nautilus_icon_container_initialize_class (NautilusIconContainerClass *class);
+static void                    nautilus_icon_container_initialize       (NautilusIconContainer      *container);
+static void                    compute_stretch                       (StretchState            *start,
+								      StretchState            *current);
+static NautilusIcon *get_first_selected_icon               (NautilusIconContainer      *container);
+static NautilusIcon *get_nth_selected_icon                 (NautilusIconContainer      *container,
+								      int                      index);
+#if 0
+static gboolean                has_selection                         (NautilusIconContainer      *container);
+#endif
+static gboolean                has_multiple_selection                (NautilusIconContainer      *container);
+static void                    icon_destroy                          (NautilusIconContainer      *container,
+								      NautilusIcon  *icon);
+static guint                   icon_get_actual_size                  (NautilusIcon  *icon);
+static void 					end_renaming_mode (NautilusIconContainer *container, gboolean commit);
+
+#if 0
+static void 					update_rename_widget_text			(NautilusIconContainer *container, 
+																	 NautilusIcon *icon, char *new_text);
+#endif																	
+static void						hide_rename_widget (NautilusIconContainer *container, NautilusIcon *icon);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconContainer, nautilus_icon_container, GNOME_TYPE_CANVAS)
 
@@ -95,10 +107,12 @@ enum {
 	CONTEXT_CLICK_SELECTION,
 	GET_ICON_IMAGES,
 	GET_ICON_PROPERTY,
-	GET_ICON_TEXT,
+	GET_ICON_EDITABLE_TEXT,
+	GET_ICON_ADDITIONAL_TEXT,
 	GET_ICON_URI,
 	ICON_CHANGED,
-	SELECTION_CHANGED,
+	ICON_TEXT_CHANGED,
+	SELECTION_CHANGED,	
 	MOVE_COPY_ITEMS,
 	GET_CONTAINER_URI,
 	CAN_ACCEPT_ITEM,
@@ -125,7 +139,7 @@ icon_new (NautilusIconContainer *container,
 	  NautilusIconData *data)
 {
 	NautilusIcon *icon;
-        GnomeCanvas *canvas;
+	GnomeCanvas *canvas;
 	guint max_size, actual_size;
         
 	canvas = GNOME_CANVAS (container);
@@ -137,7 +151,7 @@ icon_new (NautilusIconContainer *container,
 	
 	icon->data = data;
 
-        icon->item = NAUTILUS_ICON_CANVAS_ITEM
+ 	icon->item = NAUTILUS_ICON_CANVAS_ITEM
 		(gnome_canvas_item_new (GNOME_CANVAS_GROUP (canvas->root),
 					nautilus_icon_canvas_item_get_type (),
 					NULL));
@@ -230,9 +244,9 @@ icon_get_actual_size (NautilusIcon *icon)
 	guint max_size;
 	
  	pixbuf = nautilus_icon_canvas_item_get_image (icon->item, NULL);
-	max_size = gdk_pixbuf_get_width (pixbuf);
-	if (gdk_pixbuf_get_height (pixbuf) > max_size) {
-		max_size = gdk_pixbuf_get_height (pixbuf);
+	max_size = gdk_pixbuf_get_width(pixbuf);
+	if (gdk_pixbuf_get_height(pixbuf) > max_size) {
+		max_size = gdk_pixbuf_get_height(pixbuf);
 	}
 
 	return max_size;
@@ -253,7 +267,9 @@ icon_show (NautilusIcon *icon)
 static void
 icon_toggle_selected (NautilusIconContainer *container,
 		      NautilusIcon *icon)
-{
+{		
+	end_renaming_mode(container, TRUE);
+
 	icon->is_selected = !icon->is_selected;
 	gnome_canvas_item_set (GNOME_CANVAS_ITEM (icon->item),
 			       "highlighted_for_selection", (gboolean) icon->is_selected,
@@ -1663,12 +1679,20 @@ motion_notify_event (GtkWidget *widget,
 				 */
 				motion->x = details->drag_x;
 				motion->y = details->drag_y;
-
-				/* drag action passed in here gets updated in
-				 * nautilus_icon_dnd_update_drop_action
-				 */
+			
 				nautilus_icon_dnd_begin_drag (container,
-							      GDK_ACTION_MOVE,
+							      GDK_ACTION_MOVE 
+#if 0
+	/* 
+	 * FIXME:
+	 *
+	 * disable copy operations for now -- the default drop action is
+	 * wrong (should be move, not copy) and the copy engine doesn't
+	 * handle conflicts correctly yet
+	 */
+							      | GDK_ACTION_COPY
+#endif
+							      ,
 							      details->drag_button,
 							      motion);
 			}
@@ -1690,7 +1714,7 @@ key_press_event (GtkWidget *widget,
 
 	/* allow the drag state update the drag action if modifiers changed */
 	nautilus_icon_dnd_update_drop_action (widget);
-	
+
 	if (NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, key_press_event, (widget, event))) {
 		return TRUE;
 	}
@@ -1720,7 +1744,15 @@ key_press_event (GtkWidget *widget,
 		keyboard_space (container, event);
 		break;
 	case GDK_Return:
-		activate_selected_items (container);
+		if (container->details->renaming == TRUE){
+			end_renaming_mode(container, TRUE);	
+		}
+		else{
+			activate_selected_items (container);
+		}
+		break;
+	case GDK_Escape:
+		end_renaming_mode(container, FALSE);
 		break;
 	default:
 		return FALSE;
@@ -1804,6 +1836,16 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  GTK_TYPE_INT,
 				  GTK_TYPE_DOUBLE,
 				  GTK_TYPE_DOUBLE);
+	signals[ICON_TEXT_CHANGED]
+		= gtk_signal_new ("icon_text_changed",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+						     icon_text_changed),
+				  gtk_marshal_NONE__POINTER_POINTER,
+				  GTK_TYPE_NONE, 2,
+				  GTK_TYPE_POINTER,
+				  GTK_TYPE_STRING);				  
 	signals[GET_ICON_IMAGES]
 		= gtk_signal_new ("get_icon_images",
 				  GTK_RUN_LAST,
@@ -1815,12 +1857,21 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  GTK_TYPE_POINTER,
 				  GTK_TYPE_POINTER,
 				  GTK_TYPE_POINTER);
-	signals[GET_ICON_TEXT]
-		= gtk_signal_new ("get_icon_text",
+	signals[GET_ICON_EDITABLE_TEXT]
+		= gtk_signal_new ("get_icon_editable_text",
 				  GTK_RUN_LAST,
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
-						     get_icon_text),
+						     get_icon_editable_text),
+				  nautilus_gtk_marshal_STRING__POINTER,
+				  GTK_TYPE_STRING, 1,
+				  GTK_TYPE_POINTER);
+	signals[GET_ICON_ADDITIONAL_TEXT]
+		= gtk_signal_new ("get_icon_additional_text",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+						     get_icon_additional_text),
 				  nautilus_gtk_marshal_STRING__POINTER,
 				  GTK_TYPE_STRING, 1,
 				  GTK_TYPE_POINTER);
@@ -1871,13 +1922,11 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
                     		 object_class->type,
                     		 GTK_SIGNAL_OFFSET (NautilusIconContainerClass, 
                     		 		    can_accept_item),
-		    		 nautilus_gtk_marshal_INT__POINTER_STRING,
-		    		 GTK_TYPE_INT, 2,
-		    		 GTK_TYPE_POINTER,
-		    		 GTK_TYPE_STRING);
-
-
-
+						nautilus_gtk_marshal_INT__POINTER_STRING,
+						GTK_TYPE_INT, 2,
+						GTK_TYPE_POINTER,
+						GTK_TYPE_STRING);
+						
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
 	/* GtkWidget class.  */
@@ -1906,6 +1955,35 @@ load_font (const char *name)
 	g_assert (font != NULL);
 	return font;
 }
+
+
+/* Handler for the editing_started signal of an icon text item.  We block the
+ * event handler so that it will not be called while the text is being edited.
+ */
+ 
+static void
+editing_started (NautilusIconTextItem *text_item, gpointer data)
+{
+	NautilusIconContainer *container;
+	NautilusIconContainerDetails *details;
+
+	container = (NautilusIconContainer *)data;
+	details = container->details;
+}
+
+/* Handler for the editing_stopped signal of an icon text item.  We unblock the
+ * event handler so that we can get events from it again.
+ */
+static void
+editing_stopped (NautilusIconTextItem *text_item, gpointer data)
+{
+	NautilusIconContainer *container;
+	NautilusIconContainerDetails *details;
+
+	container = (NautilusIconContainer *)data;
+	details = container->details;
+}
+
 
 static void
 nautilus_icon_container_initialize (NautilusIconContainer *container)
@@ -1943,7 +2021,10 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
 					       "icons_changed",
 					       nautilus_icon_container_request_update_all,
-					       GTK_OBJECT (container));
+					       GTK_OBJECT (container));	
+
+	container->details->rename_widget = NULL;
+	container->details->original_text = NULL;
 }
 
 
@@ -2048,19 +2129,6 @@ item_event_callback (GnomeCanvasItem *item,
 	g_return_val_if_fail (icon != NULL, FALSE);
 
 	switch (event->type) {
-	case GDK_ENTER_NOTIFY:
-		if (details->drag_button != 0) {
-			/* Drag motion callback will take care of the 
-			 * necessary update -- don't let the signal reach
-			 * the canvas item and cause a prelight.
-			 * We let the GDK_LEAVE_NOTIFY fly through here to
-			 * cause the "can_accept_drop" state to get turned off
-			 */
-	    		gtk_signal_emit_stop_by_name (GTK_OBJECT (item), "event");
-			return TRUE;
-		}
-		return FALSE;		
-
 	case GDK_BUTTON_PRESS:
 	case GDK_2BUTTON_PRESS:
 		if (handle_icon_button_press (container, icon, &event->button)) {
@@ -2104,6 +2172,8 @@ nautilus_icon_container_clear (NautilusIconContainer *container)
 
 	details = container->details;
 
+	end_renaming_mode(container, TRUE);
+	
 	clear_keyboard_focus (container);
 	details->stretch_icon = NULL;
 
@@ -2219,7 +2289,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	GdkPixbuf *pixbuf, *emblem_pixbuf;
 	ArtIRect text_rect;
 	GList *emblem_icons, *emblem_pixbufs, *p;
-	char *label;
+	char *editable_text, *additional_text;
 	char *contents_as_text;
 	GdkFont *font;
 
@@ -2258,17 +2328,24 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	nautilus_scalable_icon_unref (scalable_icon);
 	nautilus_scalable_icon_list_free (emblem_icons);
 
-	label = NULL;
+	/* Get both editable and static icon text */
 	gtk_signal_emit (GTK_OBJECT (container),
-			 signals[GET_ICON_TEXT],
+			 signals[GET_ICON_EDITABLE_TEXT],
 			 icon->data,
-			 &label);
+			 &editable_text);
+
+	gtk_signal_emit (GTK_OBJECT (container),
+			 signals[GET_ICON_ADDITIONAL_TEXT],
+			 icon->data,
+			 &additional_text);
+
+	end_renaming_mode(container, TRUE);
 
 	font = details->label_font[details->zoom_level];
         
-        /* Choose to show mini-text based on this icon's requested size,
-	 * not zoom level, since icon may be stretched big or small.
-         */
+	/* Choose to show mini-text based on this icon's requested size,
+	* not zoom level, since icon may be stretched big or small.
+	*/
 	contents_as_text = NULL;
 	if (!art_irect_empty (&text_rect)
 	    && icon_size_x >= NAUTILUS_ICON_SIZE_STANDARD
@@ -2281,11 +2358,13 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	}
 	
 	gnome_canvas_item_set (GNOME_CANVAS_ITEM (icon->item),
-			       "text", label,
+			       "editable_text", editable_text,
+			       "additional_text", additional_text,
 			       "font", font,
 			       "text_source", contents_as_text,
 			       "highlighted_for_drop", icon == details->drop_target,
 			       NULL);
+	
 	nautilus_icon_canvas_item_set_image (icon->item, pixbuf, &text_rect);
 	nautilus_icon_canvas_item_set_emblems (icon->item, emblem_pixbufs);
 
@@ -2293,8 +2372,9 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	gdk_pixbuf_unref (pixbuf);
 	nautilus_gdk_pixbuf_list_free (emblem_pixbufs);
 
-	g_free (label);
-        g_free (contents_as_text);
+	g_free (editable_text);
+	g_free (additional_text);
+	g_free (contents_as_text);
 }
 
 void
@@ -2421,9 +2501,11 @@ nautilus_icon_container_set_zoom_level(NautilusIconContainer *container, int new
 	NautilusIconContainerDetails *details;
         int pinned_level;
 	double pixels_per_unit;
-
+	
 	details = container->details;
 
+	end_renaming_mode(container, TRUE);
+		
 	pinned_level = new_level;
         if (pinned_level < NAUTILUS_ZOOM_LEVEL_SMALLEST) {
 		pinned_level = NAUTILUS_ZOOM_LEVEL_SMALLEST;
@@ -2870,6 +2952,128 @@ nautilus_self_check_compute_stretch (int icon_x, int icon_y, int icon_size,
 				current.icon_x,
 				current.icon_y,
 				current.icon_size);
+}
+
+/**
+ * nautilus_icon_container_show_rename_widget
+ * @container: An icon container widget.
+ * 
+ * Displays the edit name widget on the first selected icon
+ **/
+ 
+void
+nautilus_icon_container_show_rename_widget (NautilusIconContainer *container)
+{
+	NautilusIconContainerDetails *details;
+	NautilusIcon *icon;
+	ArtIRect text_rect;
+	GdkFont *font;
+	const char *editable_text;
+	
+	/* Check if it already in renaming mode. */
+	details = container->details;
+	if (details->renaming == TRUE) {
+		return;
+	}
+
+	/* Find selected icon */
+	icon = get_first_selected_icon (container);
+	if (icon == NULL) {
+		return;
+	}
+
+	/*	Get location of text item */
+	nautilus_icon_canvas_get_text_bounds(icon->item, &text_rect);
+
+	/* Make a copy of the original editable text for a later compare */
+	editable_text = nautilus_icon_canvas_get_editable_text(icon->item);
+	details->original_text = g_strdup(editable_text);
+
+	/* Create text renaming widget */	
+	details->rename_widget = NAUTILUS_ICON_TEXT_ITEM (gnome_canvas_item_new (gnome_canvas_root(GNOME_CANVAS (container)),
+								nautilus_icon_text_item_get_type (),
+								NULL));
+
+	font = details->label_font[details->zoom_level];
+	
+	nautilus_icon_text_item_configure (details->rename_widget, 
+									text_rect.x0,						/* x 		*/ 
+									text_rect.y0, 						/* y 		*/
+									(text_rect.x1 - text_rect.x0) + 4, 	/* width 	*/
+									font,
+									editable_text,	/* text */
+									1);
+	
+
+	
+	/* Set up the signals */
+	gtk_signal_connect (GTK_OBJECT (details->rename_widget), "editing_started",
+			    		GTK_SIGNAL_FUNC (editing_started),
+			    		container);
+
+	gtk_signal_connect (GTK_OBJECT (details->rename_widget), "editing_stopped",
+			    		GTK_SIGNAL_FUNC (editing_stopped),
+			    		container);
+		
+	nautilus_icon_text_item_start_editing (details->rename_widget);
+
+	nautilus_icon_container_update_icon (container, icon);
+	
+	/* We are in renaming mode */
+	details->renaming = TRUE;
+	nautilus_icon_canvas_item_set_renaming (icon->item, details->renaming);
+}
+
+#if 0
+/* Update the current text of the rename widget.  Do nothing if the text has not changed. */
+static void update_rename_widget_text(NautilusIconContainer *container, NautilusIcon *icon, char *new_text)
+{
+	if (container->details->renaming == TRUE && icon != NULL) {
+		gnome_icon_text_item_set_text(container->details->rename_widget, new_text);
+	}
+}
+#endif
+
+static void end_renaming_mode(NautilusIconContainer *container, gboolean commit)
+{
+	NautilusIcon *icon;
+	char *changed_text;
+		
+	if (container->details->renaming == TRUE) {	
+		icon = get_first_selected_icon (container);
+		if (icon != NULL) {
+			if (commit == TRUE) {						
+				/* Verify that text has been modified before signalling change */			
+				changed_text = nautilus_icon_text_item_get_text(container->details->rename_widget);
+
+				if (g_strcasecmp(container->details->original_text, changed_text) != 0) {			
+					gtk_signal_emit (GTK_OBJECT (container), signals[ICON_TEXT_CHANGED],
+				 				 	 icon->data, changed_text);
+				}
+			}			
+			hide_rename_widget(container, icon);
+		}
+	}
+}							
+
+static void
+hide_rename_widget (NautilusIconContainer *container, NautilusIcon *icon)
+{
+	nautilus_icon_text_item_stop_editing (container->details->rename_widget, TRUE);
+
+	/* Hide renaming widget */
+	gnome_canvas_item_hide (GNOME_CANVAS_ITEM (container->details->rename_widget));
+
+	gtk_object_destroy( GTK_OBJECT (container->details->rename_widget));
+	container->details->rename_widget = NULL;
+
+	if (container->details->original_text != NULL) {
+		g_free(container->details->original_text);
+	}
+	
+	/* We are not in renaming mode */	
+	container->details->renaming = FALSE;
+	nautilus_icon_canvas_item_set_renaming (icon->item, container->details->renaming);		
 }
 
 void

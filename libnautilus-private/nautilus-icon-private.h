@@ -29,6 +29,7 @@
 #include "nautilus-icon-dnd.h"
 #include "nautilus-icon-factory.h"
 #include "nautilus-icon-canvas-item.h"
+#include "nautilus-icon-text-item.h"
 
 /* An Icon. */
 
@@ -134,6 +135,11 @@ struct NautilusIconContainerDetails {
 	gboolean drag_started;
 	StretchState stretch_start;
 
+	/* Renaming Details */
+	gboolean renaming;
+	NautilusIconTextItem *rename_widget;	/* Editable text item */
+	gchar *original_text;					/* Copy of editable text for later compare */
+	
 	/* Idle ID. */
 	guint idle_id;
 

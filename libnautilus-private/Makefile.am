@@ -49,6 +49,7 @@ libnautilus_extensionsinclude_HEADERS=			\
 	nautilus-gtk-extensions.h		\
 	nautilus-icon-container.h		\
 	nautilus-icon-factory.h			\
+	nautilus-icon-text-item.h	\
 	nautilus-list-column-title.h		\
 	nautilus-list.h                         \
 	nautilus-metadata.h			\
@@ -86,6 +87,7 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-icon-dnd.c			\
 	nautilus-icon-factory.c			\
 	nautilus-icon-grid.c			\
+	nautilus-icon-text-item.c	\
 	nautilus-lib-self-check-functions.c	\
 	nautilus-list-column-title.c		\
 	nautilus-list.c                         \

@@ -50,7 +50,8 @@ struct NautilusIconCanvasItemDetails {
 	/* The image, text, font. */
 	GdkPixbuf *pixbuf;
 	GList *emblem_pixbufs;
-	char *text;
+	char *editable_text;		/* Text that can be modified by a renaming function */
+	char *additional_text;		/* Text that cannot be modifed, cuch as file sise, etc */
 	GdkFont *font;
 	ArtIRect embedded_text_rect;
 	char *embedded_text_file_URI;
@@ -65,12 +66,15 @@ struct NautilusIconCanvasItemDetails {
    	guint is_highlighted_for_drop : 1;
 	guint show_stretch_handles : 1;
 	guint is_prelit : 1;
+
+	gboolean is_renaming;
 };
 
 /* Object argument IDs. */
 enum {
 	ARG_0,
-	ARG_TEXT,
+	ARG_EDITABLE_TEXT,
+	ARG_ADDITIONAL_TEXT,
 	ARG_FONT,
     	ARG_HIGHLIGHTED_FOR_SELECTION,
     	ARG_HIGHLIGHTED_AS_KEYBOARD_FOCUS,
@@ -175,8 +179,10 @@ nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass *class)
 	object_class = GTK_OBJECT_CLASS (class);
 	item_class = GNOME_CANVAS_ITEM_CLASS (class);
 
-	gtk_object_add_arg_type	("NautilusIconCanvasItem::text",
-				 GTK_TYPE_STRING, GTK_ARG_READWRITE, ARG_TEXT);
+	gtk_object_add_arg_type	("NautilusIconCanvasItem::editable_text",
+				 GTK_TYPE_STRING, GTK_ARG_READWRITE, ARG_EDITABLE_TEXT);
+	gtk_object_add_arg_type	("NautilusIconCanvasItem::additional_text",
+				 GTK_TYPE_STRING, GTK_ARG_READWRITE, ARG_ADDITIONAL_TEXT);
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::font",
 				 GTK_TYPE_BOXED, GTK_ARG_READWRITE, ARG_FONT);	
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::highlighted_for_selection",
@@ -223,6 +229,8 @@ nautilus_icon_canvas_item_initialize (NautilusIconCanvasItem *icon_item)
 	details = g_new0 (NautilusIconCanvasItemDetails, 1);
 
 	icon_item->details = details;
+
+	icon_item->details->is_renaming = FALSE;
 }
 
 /* Destroy handler for the icon canvas item. */
@@ -245,13 +253,15 @@ nautilus_icon_canvas_item_destroy (GtkObject *object)
 		gdk_pixbuf_unref (details->pixbuf);
 	}
 	nautilus_gdk_pixbuf_list_free (details->emblem_pixbufs);
-	g_free (details->text);
+	g_free (details->editable_text);
+	g_free (details->additional_text);
 	if (details->font != NULL) {
 		gdk_font_unref (details->font);
 	}
 	
-	g_free (details->embedded_text_file_URI);
-				
+	if (details->embedded_text_file_URI)
+		g_free(details->embedded_text_file_URI);
+					
 	g_free (details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
@@ -283,13 +293,22 @@ nautilus_icon_canvas_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 
 	switch (arg_id) {
 
-	case ARG_TEXT:
-		if (nautilus_strcmp (details->text, GTK_VALUE_STRING (*arg)) == 0) {
+	case ARG_EDITABLE_TEXT:
+		if (nautilus_strcmp (details->editable_text, GTK_VALUE_STRING (*arg)) == 0) {
 			return;
 		}
 
-		g_free (details->text);
-		details->text = g_strdup (GTK_VALUE_STRING (*arg));
+		g_free (details->editable_text);
+		details->editable_text = g_strdup (GTK_VALUE_STRING (*arg));
+		break;
+
+	case ARG_ADDITIONAL_TEXT:
+		if (nautilus_strcmp (details->additional_text, GTK_VALUE_STRING (*arg)) == 0) {
+			return;
+		}
+
+		g_free (details->additional_text);
+		details->additional_text = g_strdup (GTK_VALUE_STRING (*arg));
 		break;
 
 	case ARG_FONT:
@@ -355,8 +374,12 @@ nautilus_icon_canvas_item_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 	
 	switch (arg_id) {
 		
-	case ARG_TEXT:
-		GTK_VALUE_STRING (*arg) = g_strdup (details->text);
+	case ARG_EDITABLE_TEXT:
+		GTK_VALUE_STRING (*arg) = g_strdup (details->editable_text);
+		break;
+
+	case ARG_ADDITIONAL_TEXT:
+		GTK_VALUE_STRING (*arg) = g_strdup (details->additional_text);
 		break;
 		
 	case ARG_FONT:
@@ -574,22 +597,27 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 			    int icon_bottom)
 {
 	NautilusIconCanvasItemDetails *details;
-        int width_so_far, height_so_far;
-        GdkGC* gc;
+	int width_so_far, height_so_far;
+	GdkGC* gc;
 	int max_text_width;
 	int icon_width, text_left, box_left;
 	GnomeIconTextInfo *icon_text_info;
 	char **pieces;
 	const char *text_piece;
 	int i;
+	gchar *combined_text;
 
 	details = item->details;
 
-	if (details->font == NULL || details->text == NULL || details->text[0] == '\0') {
+	if (details->font == NULL || details->editable_text == NULL || details->editable_text[0] == '\0'
+		|| details->additional_text == NULL) {
 		details->text_height = 0;
-		details->text_width = 0;
+		details->text_width = 0;			
 		return;
 	}
+
+	/* Combine editable and additonal text for processing */
+	combined_text = g_strdup_printf("%s%s", details->editable_text, details->additional_text);
 	
 	width_so_far = 0;
 	height_so_far = 0;
@@ -601,7 +629,8 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	
 	max_text_width = floor (MAX_TEXT_WIDTH * GNOME_CANVAS_ITEM (item)->canvas->pixels_per_unit);
 		
-	pieces = g_strsplit (details->text, "\n", 0);
+	pieces = g_strsplit (combined_text, "\n", 0);
+
 	for (i = 0; (text_piece = pieces[i]) != NULL; i++) {
 		/* Replace empty string with space for measurement and drawing.
 		 * This makes empty lines appear, instead of being collapsed out.
@@ -613,11 +642,12 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		icon_text_info = gnome_icon_layout_text
 			(details->font, text_piece, " -_,;.?/&", max_text_width, TRUE);
 		
-		if (drawable != NULL) {			
+		/* Draw text if we are not is user rename mode */
+		if (drawable != NULL && details->is_renaming == FALSE) {
 			text_left = icon_left + (icon_width - icon_text_info->width) / 2;
 			gnome_icon_paint_text (icon_text_info, drawable, gc,
 					       text_left, icon_bottom + height_so_far, GTK_JUSTIFY_CENTER);
-			
+						
 			/* if it's selected, embolden the text by drawing again offset by one pixel */
 			if (details->is_highlighted_for_selection || details->is_highlighted_for_drop)
 				gnome_icon_paint_text (icon_text_info, drawable, gc,
@@ -665,6 +695,8 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		details->text_width = width_so_far;
 		details->text_height = height_so_far;
 	}
+
+	g_free(combined_text);
 }
 
 static void
@@ -947,7 +979,7 @@ nautilus_icon_canvas_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 	ArtIRect icon_rect, emblem_rect;
 	EmblemLayout emblem_layout;
 	GdkPixbuf *emblem_pixbuf, *temp_pixbuf, *old_pixbuf;
-	
+			
 	icon_item = NAUTILUS_ICON_CANVAS_ITEM (item);
 	details = icon_item->details;
 
@@ -1048,6 +1080,24 @@ compute_text_rectangle (NautilusIconCanvasItem *item, const ArtIRect *icon_rect,
 	text_rect->y1 = text_rect->y0 + item->details->text_height;
 }
 
+static void
+compute_editable_text_rectangle (NautilusIconCanvasItem *item, const ArtIRect *icon_rect, ArtIRect *text_rect)
+{
+	gint text_width, text_height;
+	
+	/* Get editale text dimensions */
+	text_width 	= gdk_text_width(item->details->font, item->details->editable_text, 
+								 strlen(item->details->editable_text));
+	text_height = gdk_text_height(item->details->font, item->details->editable_text, 
+								  strlen(item->details->editable_text));
+
+	/* Compute text rectangle. */
+	text_rect->x0 = (icon_rect->x0 + icon_rect->x1) / 2 - text_width / 2;
+	text_rect->y0 = icon_rect->y1;
+	text_rect->x1 = text_rect->x0 + text_width;
+	text_rect->y1 = text_rect->y0 + text_height;
+}
+
 static gboolean
 hit_test_pixbuf (GdkPixbuf *pixbuf, const ArtIRect *pixbuf_location, const ArtIRect *probe_rect)
 {
@@ -1117,7 +1167,7 @@ hit_test (NautilusIconCanvasItem *icon_item, const ArtIRect *canvas_rect)
 
 	/* Check for hit in the text. */
 	compute_text_rectangle (icon_item, &icon_rect, &text_rect);
-	if (nautilus_art_irect_hits_irect (&text_rect, canvas_rect)) {
+	if (nautilus_art_irect_hits_irect (&text_rect, canvas_rect) && icon_item->details->is_renaming == FALSE) {
 		return TRUE;
 	}
 
@@ -1340,4 +1390,47 @@ nautilus_icon_canvas_item_hit_test_rectangle (NautilusIconCanvasItem *item,
 	nautilus_gnome_canvas_world_to_canvas_rectangle
 		(GNOME_CANVAS_ITEM (item)->canvas, world_rect, &canvas_rect);
 	return hit_test (item, &canvas_rect);
+}
+
+
+/* Return coordinates of icon text location */
+void
+nautilus_icon_canvas_get_text_bounds(NautilusIconCanvasItem *icon_item, ArtIRect *text_rect)
+{
+	ArtIRect icon_rect;
+
+	g_assert(icon_item != NULL);
+	
+	get_icon_canvas_rectangle (icon_item, &icon_rect);
+	compute_text_rectangle (icon_item, &icon_rect, text_rect);
+}
+
+
+/* Return coordinates of icon editable_text location */
+void
+nautilus_icon_canvas_get_editable_text_bounds(NautilusIconCanvasItem *icon_item, ArtIRect *text_rect)
+{
+	ArtIRect icon_rect;
+
+	g_assert(icon_item != NULL);
+	
+	get_icon_canvas_rectangle (icon_item, &icon_rect);
+	compute_editable_text_rectangle (icon_item, &icon_rect, text_rect);
+}
+
+
+const char *
+nautilus_icon_canvas_get_editable_text(NautilusIconCanvasItem *icon_item)
+{
+	return icon_item->details->editable_text;
+}
+
+
+
+void 
+nautilus_icon_canvas_item_set_renaming (NautilusIconCanvasItem *item, gboolean state )
+{
+	item->details->is_renaming = state;
+	
+	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (item));
 }

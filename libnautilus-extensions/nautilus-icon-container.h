@@ -66,6 +66,10 @@ struct NautilusIconContainerClass {
 							     NautilusIconData *data,
 							     int x, int y,
 							     double scale_x, double scale_y);
+
+	void                   (* icon_text_changed)     	(NautilusIconContainer *container,
+														NautilusIconData *data,
+														char *text);
 	
 	char *		       (* get_container_uri)	    (NautilusIconContainer *container);
 	gboolean	       (* can_accept_item)	    (NautilusIconContainer *container,
@@ -77,9 +81,10 @@ struct NautilusIconContainerClass {
 	 */
 	NautilusScalableIcon * (* get_icon_images)          (NautilusIconContainer *container,
 							     NautilusIconData *data,
-							     GList **emblem_images,
-							     const char *modifier);
-	char *                 (* get_icon_text)            (NautilusIconContainer *container,
+							     GList **emblem_images);
+	char *                 (* get_icon_editable_text)            (NautilusIconContainer *container,
+							     NautilusIconData *data);
+	char *                 (* get_icon_additional_text)            (NautilusIconContainer *container,
 							     NautilusIconData *data);
 	char *                 (* get_icon_uri)             (NautilusIconContainer *container,
 							     NautilusIconData *data);
@@ -128,6 +133,9 @@ gboolean   nautilus_icon_container_has_stretch_handles     (NautilusIconContaine
 gboolean   nautilus_icon_container_is_stretched            (NautilusIconContainer *container);
 void       nautilus_icon_container_show_stretch_handles    (NautilusIconContainer *container);
 void       nautilus_icon_container_unstretch               (NautilusIconContainer *container);
+
+void	   	nautilus_icon_container_show_rename_widget 	   (NautilusIconContainer *container);
+
 
 
 /* options */

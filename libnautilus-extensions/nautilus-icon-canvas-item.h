@@ -74,13 +74,21 @@ void       nautilus_icon_canvas_item_set_show_stretch_handles (NautilusIconCanva
 							       gboolean                show_stretch_handles);
 
 /* geometry and hit testing */
-gboolean   nautilus_icon_canvas_item_hit_test_rectangle       (NautilusIconCanvasItem *item,
+gboolean   	nautilus_icon_canvas_item_hit_test_rectangle       (NautilusIconCanvasItem *item,
 							       const ArtDRect         *world_rectangle);
-gboolean   nautilus_icon_canvas_item_hit_test_stretch_handles (NautilusIconCanvasItem *item,
+gboolean   	nautilus_icon_canvas_item_hit_test_stretch_handles (NautilusIconCanvasItem *item,
 							       const ArtPoint         *world_point);
-void       nautilus_icon_canvas_item_get_icon_rectangle       (NautilusIconCanvasItem *item,
+void       	nautilus_icon_canvas_item_get_icon_rectangle       (NautilusIconCanvasItem *item,
 							       ArtDRect               *world_rectangle);
-void       nautilus_icon_canvas_item_update_bounds            (NautilusIconCanvasItem *item);
+void       	nautilus_icon_canvas_item_update_bounds            (NautilusIconCanvasItem *item);
+
+void	  	nautilus_icon_canvas_get_text_bounds			  (NautilusIconCanvasItem *icon_item, 
+								   ArtIRect *text_rect);
+void		nautilus_icon_canvas_get_editable_text_bounds	  (NautilusIconCanvasItem *icon_item,
+ 								   ArtIRect *text_rect);
+const char 	*nautilus_icon_canvas_get_editable_text (NautilusIconCanvasItem *icon_item);
+void 		nautilus_icon_canvas_item_set_renaming  (NautilusIconCanvasItem *icon_item, gboolean state);
+
 
 END_GNOME_DECLS
 

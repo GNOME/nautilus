@@ -1,3 +1,101 @@
+2000-04-18  Gene Z. Ragan <gzr@eazel.com>
+	Added functionality to allow files to be renamed in icov view.  This feature is
+	available by either context click on the icon or selecting a single file and 			choosing "Rename" form the File menu.
+
+	* libnautilus-extensions/nautilus-icon-text-item.c
+	* libnautilus-extensions/nautilus-icon-text-item.h: New files.
+	This is an editable icon text item used in the renaming feature.
+	It is based on GnomeIconTextItem but modified to fix bugs in the 
+	original code and add extended functionality need by nautilus.  If 
+	thse changes were rolled into the current GnomeIconTextItem, it would 
+	break gmc.
+
+	* libnautilus-extensions/Makefile.am
+	Modified file so that the two new files listed above would properly
+	be included in generated makefiles.
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c
+	Split text class variable into two variables, editable_text and
+	additonal_text.  editable_text refers to attributes that the user can change
+	via rename in place.  additional_text is any other text that the user cannot
+	edit via the rename in place feature.  Added a boolean flag, is_renaming, to 
+	check against during various operations that effect the renaming feature.
+	Removed ARG_TEXT argument ID and replaced with ARG_EDITABLE_TEXT and 
+	ARG_ADDITIONAL_TEXT. 
+	(nautilus_icon_canvas_item_initialize_class):  Function now check for both
+	ARG_EDITABLE_TEXT and ARG_ADDITIONAL_TEXT.  Removed check for ARG_TEXT.
+	(nautilus_icon_canvas_item_destroy):  Both editable_text and
+	additonal_text are freed. 
+	(nautilus_icon_canvas_item_set_arg):  Removed ARG_TEXT and added 
+	handling of ARG_EDITABLE_TEXT and ARG_ADDITIONAL_TEXT.
+	(nautilus_icon_canvas_item_get_arg): Removed ARG_TEXT and added 
+	handling of ARG_EDITABLE_TEXT and ARG_ADDITIONAL_TEXT.
+	(draw_or_measure_label_text):  Modified function to not draw the label
+	icon text if we are renaming in place.
+	(draw_or_measure_label_text):  Function now combines editable and additional
+	text when performing the measuring operation.
+	(compute_editable_text_rectangle):  Added function to compute bounds of
+	editable text.  This is used to determine size and placement of editable
+	text item when in renaming mode.
+	(nautilus_icon_canvas_get_text_bounds):  Public API to get bounds of 
+	icon label text.
+	(nautilus_icon_canvas_get_editable_text_bounds): Public API to get bounds of 
+	editable icon label text.
+	(hit_test_pixbuf): Added check against is_renaming flag.
+	(nautilus_icon_canvas_get_editable_text):  Public API to get editable text string.
+	(nautilus_icon_canvas_item_set_renaming):  Public API to toggle is_renaming flag.
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.h
+	Added public API prototypes to functions described above.	
+
+	* libnautilus-extensions/nautilus-icon-container.c
+	Added GET_ICON_EDITABLE_TEXT and GET_ICON_ADDITONAL_TEXT signals.
+	Removed GET_ICON_TEXT signal.  Added ICON_TEXT_CHANGED signal.
+	(icon_toggle_selected):  Renaming mode is now exited when a selection/deselection occurs.
+	(key_press_event):  GDK_Return ends rename mode and attempts to accept modification.  GDK_Escpae
+	ends rename mode and reverts modification to original.
+	(nautilus_icon_container_initialize_class):  icon_text_changed, get_icon_editable_text and
+	get_icon_additional_text signals are registered.
+	(editing_started): New function.  Called when an edit begins.  Inits class member variables
+	for edit mode. 
+	(editing_stopped): New function.  Called when edit ends.  Cleans up edit mode.
+	(nautilus_icon_container_initialize): rename_widget and original_text private variables
+	are set to NULL.
+	(icon_toggle_selected):  Added call to end_renaming_mode.
+	(nautilus_icon_container_update_icon):  Added emitting of GET_ICON_EDITABLE_TEXT and
+	GET_ICON_ADDITIONAL_TEXT signals.  Updated gnome_canvas_item_set to use new arguments defined
+	in nautilus-icon-text-item.
+	(nautilus_icon_container_show_rename_widget):  New function.  Creates and displays renaming_widget.
+	Creates cached copy of original editable text for later compare, connects signals and enters
+	renaming mode.
+	(end_renaming_mode): New function.  Cleans up and end renaiming mode.
+	(hide_rename_widget):  Called by end_renaming_mode to hide and free renaming_widget.
+
+	* libnautilus-extensions/nautilus-icon-container.h
+	Added prototypes for public functions described above.
+
+	* libnautilus-extensions/nautilus-icon-private.h
+	Added boolean for renaming.  Added a NautilusIconTextItem variable for the renaiming widget.
+
+	* src/file-manager/fm-icon-view.c
+	Added defines MENU_PATH_RENAME. Added a char * to hold original editable text for a later compare.  
+	Removed get_icon_text_callback and added get_icon_editable_text_callback and 
+	get_icon_additonal_text_callback.  These return the editable and additonal text of the icon view.
+	(rename_icon_callback):  Added callback that attempts to rename the NautilusFile the icon view
+	represents.  Action in not taken if there has been no change to the editable text.  If the operation
+	fails, the user is notified.
+	(fm_icon_view_append_selection_context_menu_items):  Added Rename menu item.
+	(append_bonobo_menu_item):  Added Rename menu item and callback.
+	(update_bonobo_menu_item):  Added senesitivity check for the Rename item.  It is 
+	enabled only if a single item is selected.
+	(fm_icon_view_icon_text_changed_callback):  Added function to attempt to change the filename 
+	to the new text.  Notify user if operation fails.
+	(get_icon_editable_text_callback): This callback returns the text items that areeditable by 
+	the user using the "Rename" command.  In the case of FMIconView, this
+	would be the attribute with the name "name".
+	(get_icon_additional_text_callback): This callback returns the text items that are not 
+	editable by the user using the "Rename" command.
+
 2000-04-18  John Sullivan <sullivan@eazel.com>
 
 	* libnautilus-extensions/nautilus-file.c:
@@ -18,6 +116,7 @@
 
 2000-04-18  John Sullivan <sullivan@eazel.com>
 
+>>>>>>> 1.20
 	Fixed bugs, mostly related to editable text fields.
 
 	* README: Made the contents of this file slightly helpful.
