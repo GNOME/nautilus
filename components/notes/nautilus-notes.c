@@ -119,6 +119,7 @@ load_note_text_from_metadata (NautilusFile *file,
 	 * metadata has actually changed.
 	 */
         if (nautilus_strcmp (saved_text, notes->previous_saved_text) != 0) {
+		g_free (notes->previous_saved_text);
         	notes->previous_saved_text = saved_text;
         	cancel_pending_save (notes);
         	
