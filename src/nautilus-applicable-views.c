@@ -217,6 +217,26 @@ my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
 	/* FIXME:  for now, we just do this for directories but it should apply to all places with available metadata */
 	add_components_from_metadata(navinfo);
     }
+  else if(!strcmp(navinfo->navinfo.content_type, "special/webdav-directory"))
+    {
+      navinfo->default_content_iid = "ntl_web_browser";
+
+      navinfo->content_identifiers = g_slist_append (navinfo->content_identifiers, 
+                                                     nautilus_view_identifier_new ("ntl_web_browser", "Web Page"));
+      navinfo->content_identifiers = g_slist_append (navinfo->content_identifiers, 
+                                                     nautilus_view_identifier_new ("ntl_file_manager_icon_view", "Icons"));
+      navinfo->content_identifiers = g_slist_append (navinfo->content_identifiers, 
+                                                     nautilus_view_identifier_new ("ntl_file_manager_list_view", "List"));
+      navinfo->content_identifiers = g_slist_append (navinfo->content_identifiers, 
+                                                     nautilus_view_identifier_new ("embeddable:text-plain", "Text"));
+
+       
+      /* besides the information in OAF/GConf, we also want to offer components that are specifically refered to in the metadata,
+      so we ask the metadata for content views here and add them accordingly.  */      
+	   
+	/* FIXME:  for now, we just do this for directories but it should apply to all places with available metadata */
+	add_components_from_metadata(navinfo);
+    }
   else
     {
       /* Can't display file; nothing registered to handle this file type. */
