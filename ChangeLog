@@ -1,3 +1,29 @@
+2002-11-07  Jan Arne Petersen  <jpetersen@uni-bonn.de>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(draw_or_measure_label_text), (create_label_layout),
+	(get_label_layout), (nautilus_icon_canvas_item_event):
+
+	In single click mode use a hand cursor instead of underlining.
+
+	* src/nautilus-window.c: (create_view_as_menu_item):
+	* src/Nautilus_shell.server.in:
+
+	Add mnemonics to the 'View as List' and 'View as Icons' entries.
+
+	* icons/Makefile.am:
+	* src/nautilus-window-manage-views.c: (compute_title),
+	(nautilus_window_update_icon), (set_displayed_location),
+	(viewed_file_changed_callback), (location_has_really_changed),
+	(title_changed_callback):
+	* src/nautilus-window-private.h:
+	* src/nautilus-window.c: (icons_changed_callback),
+	(nautilus_window_instance_init):
+
+	Use the real file icons as window border icons in the nautilus window
+	and file properties dialog. Use a special desktop icon and title in
+	the Ctrl-Alt-Tab window.
+
 2002-11-06  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-program-chooser.c:

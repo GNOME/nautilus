@@ -22,6 +22,7 @@ icon_DATA =\
 	emblems.png \
 	increment.png \
 	knob.png \
+	nautilus-desktop.png \
 	nautilus-launch-icon.png \
 	nautilus-mini-logo.png \
 	nautilus-server-connect.png \

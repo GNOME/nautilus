@@ -178,7 +178,6 @@ static void     draw_label_layout                    (NautilusIconCanvasItem    
 
 static gboolean hit_test_stretch_handle              (NautilusIconCanvasItem        *item,
 						      ArtIRect                       canvas_rect);
-static void     update_label_layouts                 (NautilusIconCanvasItem        *item);
 static void     clear_rounded_corners                (GdkPixbuf                     *destination_pixbuf,
 						      GdkPixbuf                     *corner_pixbuf,
 						      int                            corner_size);
@@ -1241,23 +1240,6 @@ nautilus_icon_canvas_item_draw (EelCanvasItem *item, GdkDrawable *drawable,
 	draw_label_text (icon_item, drawable, icon_rect.x0, icon_rect.y1);
 }
 
-static void
-update_label_layouts (NautilusIconCanvasItem *item)
-{
-	PangoUnderline underline;
-
-	underline = (item->details->is_prelit && in_single_click_mode ()) ?
-		PANGO_UNDERLINE_SINGLE : PANGO_UNDERLINE_NONE;
-
-	if (item->details->editable_text_layout != NULL) {
-		eel_pango_layout_set_underline (item->details->editable_text_layout, underline);
-	}
-
-	if (item->details->additional_text_layout != NULL) {
-		eel_pango_layout_set_underline (item->details->additional_text_layout, underline);
-	}
-}
-
 static PangoLayout *
 create_label_layout (NautilusIconCanvasItem *item,
 		     const char *text)
@@ -1292,11 +1274,6 @@ create_label_layout (NautilusIconCanvasItem *item,
 	pango_layout_set_font_description (layout, desc);
 	pango_font_description_free (desc);
 	
-	/* if it's prelit, and we're in click-to-activate mode, underline the text */
-	if (item->details->is_prelit && in_single_click_mode ()) {
-		eel_pango_layout_set_underline (layout, PANGO_UNDERLINE_SINGLE);
-	}
-	
 	return layout;
 }
 
@@ -1307,8 +1284,6 @@ get_label_layout (PangoLayout **layout,
 {
 	if (*layout == NULL) {
 		*layout = create_label_layout (item, text);
-
-		update_label_layouts (item);
 	}
 	
 	g_object_ref (*layout);
@@ -1395,6 +1370,7 @@ static int
 nautilus_icon_canvas_item_event (EelCanvasItem *item, GdkEvent *event)
 {
 	NautilusIconCanvasItem *icon_item;
+	GdkCursor *cursor;
 
 	icon_item = NAUTILUS_ICON_CANVAS_ITEM (item);
 
@@ -1402,8 +1378,15 @@ nautilus_icon_canvas_item_event (EelCanvasItem *item, GdkEvent *event)
 	case GDK_ENTER_NOTIFY:
 		if (!icon_item->details->is_prelit) {
 			icon_item->details->is_prelit = TRUE;
-			update_label_layouts (icon_item);
 			eel_canvas_item_request_update (item);
+			/* show a hand cursor */
+			if (in_single_click_mode ()) {
+				cursor = gdk_cursor_new_for_display (gdk_display_get_default(),
+								     GDK_HAND2);
+				gdk_window_set_cursor (((GdkEventAny *)event)->window, cursor);
+				gdk_cursor_unref (cursor);
+			}
+
 			/* FIXME bugzilla.gnome.org 42473: 
 			 * We should emit our own signal here,
 			 * not one from the container; it could hook
@@ -1443,8 +1426,10 @@ nautilus_icon_canvas_item_event (EelCanvasItem *item, GdkEvent *event)
 			icon_item->details->is_prelit = FALSE;
 			icon_item->details->is_active = 0;			
 			icon_item->details->is_highlighted_for_drop = FALSE;
-			update_label_layouts (icon_item);
 			eel_canvas_item_request_update (item);
+
+			/* show default cursor */
+			gdk_window_set_cursor (((GdkEventAny *)event)->window, NULL);
 		}
 		return TRUE;
 		

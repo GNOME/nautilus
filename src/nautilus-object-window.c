@@ -155,6 +155,14 @@ set_up_default_icon_list (void)
 }
 
 static void
+icons_changed_callback (GObject *factory, NautilusWindow *window)
+{
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+
+	nautilus_window_update_icon (window);
+}
+
+static void
 nautilus_window_instance_init (NautilusWindow *window)
 {
 	window->details = g_new0 (NautilusWindowDetails, 1);
@@ -178,6 +186,12 @@ nautilus_window_instance_init (NautilusWindow *window)
 		(window->details->shell_ui,
 		 nautilus_window_get_ui_container (window),
 		 NULL);
+
+	/* Register IconFactory callback to update the window border icon
+	 * when the icon-theme is changed.
+	 */
+	g_signal_connect (nautilus_icon_factory_get (), "icons_changed",
+			  G_CALLBACK (icons_changed_callback), window);
 
 	/* Create a separate component so when we remove the status
 	 * we don't loose the status bar
@@ -1124,7 +1138,7 @@ create_view_as_menu_item (NautilusWindow *window,
         char *menu_label;
 
 	menu_label = g_strdup (_(identifier->view_as_label));
-	menu_item = gtk_menu_item_new_with_label (menu_label);
+	menu_item = gtk_menu_item_new_with_mnemonic (menu_label);
 	g_free (menu_label);
 
 	g_signal_connect_object (menu_item, "activate",

@@ -172,5 +172,6 @@ void               nautilus_window_add_current_location_to_history_list  (Nautil
 void               nautilus_remove_from_history_list_no_notify           (const char        *location);
 GList *            nautilus_get_history_list                             (void);
 void               nautilus_window_bookmarks_preference_changed_callback (gpointer           user_data);
+void		   nautilus_window_update_icon				 (NautilusWindow    *window);
 
 #endif /* NAUTILUS_WINDOW_PRIVATE_H */

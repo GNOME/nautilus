@@ -185,7 +185,11 @@ compute_title (NautilusWindow *window)
         char *title;
 
 	title = NULL;
-        if (window->new_content_view != NULL) {
+	
+	if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+		/* Special Desktop window title (displayed in the Ctrl-Alt-Tab window) */
+		title = g_strdup(_("Desktop"));
+	} else if (window->new_content_view != NULL) {
                 title = nautilus_view_frame_get_title (window->new_content_view);
         } else if (window->content_view != NULL) {
                 title = nautilus_view_frame_get_title (window->content_view);
@@ -258,6 +262,42 @@ update_title (NautilusWindow *window)
         g_free (title);
 }
 
+/* nautilus_window_update_icon:
+ * 
+ * Update the non-NautilusViewFrame objects that use the location's user-displayable
+ * icon in some way. Called when the location or icon-theme has changed.
+ * @window: The NautilusWindow in question.
+ * 
+ */
+void
+nautilus_window_update_icon (NautilusWindow *window)
+{
+	char *path;
+	GdkPixbuf *pixbuf;
+
+	pixbuf = NULL;
+	
+	/* Desktop window special icon */
+	if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+		path = nautilus_pixmap_file ("nautilus-desktop.png");
+
+		if (path != NULL) {
+			pixbuf = gdk_pixbuf_new_from_file (path, NULL);
+			
+			g_free (path);
+		}
+	} else {
+		pixbuf = nautilus_icon_factory_get_pixbuf_for_file (window->details->viewed_file,
+								    "open",
+								    NAUTILUS_ICON_SIZE_STANDARD);
+	}
+
+	if (pixbuf != NULL) {
+		gtk_window_set_icon (GTK_WINDOW (window), pixbuf);
+		g_object_unref (pixbuf);
+	}
+}
+
 /* set_displayed_location:
  * 
  * Update the non-NautilusViewFrame objects that use the location's user-displayable
@@ -290,6 +330,7 @@ set_displayed_location (NautilusWindow *window, const char *location)
         }
 
         update_title (window);
+	nautilus_window_update_icon (window);
 }
 
 static void
@@ -501,6 +542,7 @@ viewed_file_changed_callback (NautilusFile *file,
                 }
 
                 update_title (window);
+		nautilus_window_update_icon (window);
         }
 }
 
@@ -652,6 +694,7 @@ location_has_really_changed (NautilusWindow *window)
         free_location_change (window);
 
         update_title (window);
+	nautilus_window_update_icon (window);
 
         /* The whole window has been finished. Now show it, unless
          * we're still waiting for the saved positions from the
@@ -1964,6 +2007,7 @@ title_changed_callback (NautilusViewFrame *view,
         g_assert (NAUTILUS_IS_WINDOW (window));
 
         update_title (window);
+	nautilus_window_update_icon (window);
 }
 
 static void
