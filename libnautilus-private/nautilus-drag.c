@@ -34,6 +34,7 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomeui/gnome-popup-menu.h>
+#include <libgnome/gnome-i18n.h>
 #include <stdio.h>
 #include <string.h>
 #include <gtk/gtkmain.h>
@@ -479,11 +480,11 @@ nautilus_drag_modifier_based_action (int default_action, int non_default_action)
 
 /* The menu of DnD actions */
 static GnomeUIInfo menu_items[] = {
-	GNOMEUIINFO_ITEM_NONE ("_Move here", NULL, NULL),
-	GNOMEUIINFO_ITEM_NONE ("_Copy here", NULL, NULL),
-	GNOMEUIINFO_ITEM_NONE ("_Link here", NULL, NULL),
+	GNOMEUIINFO_ITEM_NONE (N_("_Move here"), NULL, NULL),
+	GNOMEUIINFO_ITEM_NONE (N_("_Copy here"), NULL, NULL),
+	GNOMEUIINFO_ITEM_NONE (N_("_Link here"), NULL, NULL),
 	GNOMEUIINFO_SEPARATOR,
-	GNOMEUIINFO_ITEM_NONE ("Cancel", NULL, NULL),
+	GNOMEUIINFO_ITEM_NONE (N_("Cancel"), NULL, NULL),
 	GNOMEUIINFO_END
 };
 

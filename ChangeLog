@@ -1,3 +1,18 @@
+2001-02-24  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Seth Nickell  <seth@eazel.com>
+	
+	Fixed bug 6944, "Move here"/"Copy here"/"Link here" popup
+	menu is untranslated
+	
+	* libnautilus-extensions/nautilus-drag.c:
+	Wrap text in N_ so that it will be properly
+	localized.
+	
+	* po/ChangeLog:
+	* po/POTFILES.in:
+	Add libnautilus-extensions/nautilus-drag.c
+
 Sat Feb 24 12:49:43 2001  George Lebl <jirka@5z.com>
 
 	Gene Z. Ragan  <gzr@eazel.com> says it won't cause global warming if
