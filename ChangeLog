@@ -1,3 +1,25 @@
+2001-03-07  John Harper  <jsh@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixed bug 7472 (Nautilus behavior after leaving first run
+	druid):
+
+	* src/nautilus-first-time-druid.c (http_is_known_to_work): new
+	global variable - only ever set true if we know for sure that
+	http connections will work
+
+	(finished_label, update_finished_label,
+	nautilus_first_time_druid_show): since we only launch the
+	services window when http requests are known to work, make the
+	text in the `Finished' page be conditional on that
+
+	(next_update_page_callback, download_callback): call update
+	finished_label
+
+	(download_callback): set http_is_known_to_work to true if the
+	connection succeeded
+
 2001-03-06  Ian McKellar  <ian@eazel.com>
 
 	reviewed by: Maciej Stachowiak <mjs@eazel.com> 

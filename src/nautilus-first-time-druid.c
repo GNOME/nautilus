@@ -107,12 +107,18 @@ static GtkWidget *finish_page;
 static GtkWidget *pages[NUMBER_OF_STANDARD_PAGES];
 
 static GtkWidget *download_label;
+static GtkWidget *finished_label;
 
 static int last_update_choice = 0;
 static int last_proxy_choice = 1;
 
 static GtkWidget *port_number_entry;
 static GtkWidget *proxy_address_entry;
+
+/* Only set true when we're absolutely totally positive that we've got
+ * an http connection to the outside world.
+ */
+static gboolean http_is_known_to_work = FALSE;
 
 /* Set by set_http_proxy; used by check_network_connectivity */
 
@@ -150,6 +156,7 @@ static gboolean set_http_proxy                   (const char 	*proxy_url);
 static gboolean attempt_http_proxy_autoconfigure (void);
 static gboolean check_network_connectivity	 (void);
 static void	convert_gmc_desktop_icons 	 (void);
+static void	update_finished_label		 (void);
 
 static void
 druid_cancel (GtkWidget *druid)
@@ -224,11 +231,7 @@ druid_finished (GtkWidget *druid_page)
 
 	signup_uris[0] = nautilus_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
 
-	if (Success == network_status) {
-		/* FIXME: even if the DNS resolution check didn't hang,
-		 * we still may not be able to load the services URL.
-		 * For example, we may not have a network connection!
-		 */
+	if (http_is_known_to_work) {
 		signup_uris[1] = EAZEL_SERVICES_URL;
 		signup_uris[2] = NULL;
 	} else {
@@ -751,6 +754,7 @@ next_update_page_callback (GtkWidget *button, GnomeDruid *druid)
 	}
 
 	/* the user declined to update, so skip the feedback page and go directly to finish */
+	update_finished_label ();
 	gnome_druid_set_page (druid, GNOME_DRUID_PAGE (finish_page));
 	return TRUE;
 }
@@ -1107,6 +1111,24 @@ make_title_page_icon_box (void)
 	return hbox;
 }
 
+static void
+update_finished_label (void)
+{
+	if (http_is_known_to_work) {
+		gtk_label_set_text (GTK_LABEL (finished_label),
+				    _("Click Finish to launch Nautilus. You'll start with two\n"
+				      "Nautilus windows: one shows your home folder, and the\n"
+				      "other tells you about Eazel's services that make the life\n"
+				      "of a Linux user easier.\n\n"
+				      "We hope you enjoy Nautilus!"));
+	} else {
+		gtk_label_set_text (GTK_LABEL (finished_label),
+				    _("Click Finish to launch Nautilus. You'll start with a\n"
+				      "window showing your home folder.\n\n"
+				      "We hope you enjoy Nautilus!"));
+	}
+}
+
 GtkWidget *
 nautilus_first_time_druid_show (NautilusApplication *application, gboolean manage_desktop, const char *urls[])
 {	
@@ -1176,14 +1198,11 @@ nautilus_first_time_druid_show (NautilusApplication *application, gboolean manag
 	gtk_widget_show (main_box);
 	gtk_container_add (GTK_CONTAINER (container), main_box);
 	
-	label = new_body_label ( _("Click Finish to launch Nautilus. You'll start with two\n"
-				   "Nautilus windows: one shows your home folder, and the\n"
-				   "other tells you about Eazel's services that make the life\n"
-				   "of a Linux user easier.\n\n"
-				   "We hope you enjoy Nautilus!"));
+	label = new_body_label ("");
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 0);
-		
+	finished_label = label;
+
 	/* set up the user level page */
 	set_page_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[USER_LEVEL_PAGE]), _("Choose Your User Level"));
 	set_up_user_level_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[USER_LEVEL_PAGE]));
@@ -1323,6 +1342,8 @@ download_callback (GnomeVFSResult result,
 		g_free (untar_command);
 		g_free (remove_command);
 
+		http_is_known_to_work = TRUE;
+
 		/* now that we're done, reenable the buttons */
 		gnome_druid_set_buttons_sensitive (druid, TRUE, TRUE, TRUE);
 	} else if (result == GNOME_VFS_ERROR_NOT_FOUND) {
@@ -1334,6 +1355,8 @@ download_callback (GnomeVFSResult result,
 
 		/* now that we're done, reenable the buttons */
 		gnome_druid_set_buttons_sensitive (druid, TRUE, TRUE, TRUE);
+
+		http_is_known_to_work = TRUE;
 	} else {
 		/* there was an error; see if we can't find some HTTP proxy config info */
 		/* note that attempt_http_proxy_autoconfigure returns FALSE if it's already been tried */ 
@@ -1344,6 +1367,11 @@ download_callback (GnomeVFSResult result,
 			gnome_druid_set_page (druid, GNOME_DRUID_PAGE (pages[PROXY_CONFIGURATION_PAGE]));
 		}
 	}
+
+	/* Make sure the state of the final body text reflects
+	 * the number of pages we'll be showing initially.
+	 */
+	update_finished_label ();
 }
 
 /* initiate downloading of the welcome package from the service */
