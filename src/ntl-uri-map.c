@@ -36,6 +36,7 @@ nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
 		     const char *referring_content_type,
 		     GtkWidget *requesting_view)
 {
+  const char *meta_keys[] = {"icon-filename", NULL};
   memset(navinfo, 0, sizeof(*navinfo));
 
   navinfo->navinfo.requested_uri = nri->requested_uri;
@@ -45,7 +46,13 @@ nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
 
   navinfo->requesting_view = requesting_view;
 
-  navinfo->navinfo.content_type = gnome_mime_type_of_file(navinfo->navinfo.requested_uri);
+  navinfo->vfs_fileinfo = gnome_vfs_file_info_new();
+  gnome_vfs_get_file_info(navinfo->navinfo.requested_uri,
+                          navinfo->vfs_fileinfo,
+                          GNOME_VFS_FILE_INFO_GETMIMETYPE
+                          |GNOME_VFS_FILE_INFO_FOLLOWLINKS,
+                          meta_keys);
+  navinfo->navinfo.content_type = gnome_vfs_file_info_get_mime_type(navinfo->vfs_fileinfo);
 
   /* Given a content type and a URI, what do we do? Basically the "expert system" below
      tries to answer that question
@@ -67,6 +74,10 @@ nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
          Find if the user has specified any default(s) globally, modify selection.
          Find if the user has specified any default(s) per-page, modify selection.
   */
+
+  g_message("Content type of %s is %s",
+            navinfo->navinfo.requested_uri,
+            navinfo->navinfo.content_type);
   if(!strcmp(navinfo->navinfo.content_type, "text/html"))
     {
       navinfo->content_iid = "embeddable:explorer-html-component";
@@ -81,12 +92,11 @@ nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
     }
 
 
-  return NULL;
+  return navinfo;
 }
 
 void
 nautilus_navinfo_free(NautilusNavigationInfo *navinfo)
 {
-  g_free(navinfo->navinfo.content_type);
-  g_free(navinfo->content_iid);
+  gnome_vfs_file_info_destroy(navinfo->vfs_fileinfo);
 }

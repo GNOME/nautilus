@@ -54,7 +54,10 @@ nautilus_make_object(GnomeGenericFactory *gfact, const char *goad_id, gpointer c
     return GNOME_OBJECT(theobj);
 
   if(NAUTILUS_IS_VIEW_CLIENT(theobj))
-    return nautilus_view_client_get_gnome_object(NAUTILUS_VIEW_CLIENT(theobj));
+    {
+      gtk_widget_show(GTK_WIDGET(theobj));
+      return nautilus_view_client_get_gnome_object(NAUTILUS_VIEW_CLIENT(theobj));
+    }
 
   gtk_object_destroy(theobj);
 
@@ -74,6 +77,8 @@ int main(int argc, char *argv[])
 
   orb = gnome_CORBA_init_with_popt_table("nautilus", VERSION, &argc, argv, options, 0, &ctx, GNORBA_INIT_SERVER_FUNC, &ev);
   bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
+  g_thread_init(NULL);
+  gnome_vfs_init();
 
   gfact = gnome_generic_factory_new_multi("nautilus_factory", nautilus_make_object, NULL);
 

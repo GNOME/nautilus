@@ -485,6 +485,7 @@ setup_flist (FMDirectoryView *view,
 static void
 real_location_change(NautilusViewClient *directory_view, Nautilus_NavigationInfo *nav_context)
 {
+	g_message("Directory view is loading URL %s", nav_context->requested_uri);
 	fm_directory_view_load_uri(FM_DIRECTORY_VIEW(directory_view), nav_context->requested_uri);
 }
 
@@ -525,13 +526,15 @@ static void
 class_init (FMDirectoryViewClass *class)
 {
 	GtkObjectClass *object_class;
+	NautilusViewClientClass *vc;
 
 	object_class = GTK_OBJECT_CLASS (class);
+	vc = NAUTILUS_VIEW_CLIENT_CLASS (class);
 
 	parent_class = gtk_type_class (gtk_type_parent(object_class->type));
 	object_class->destroy = destroy;
 
-	parent_class->notify_location_change = real_location_change;
+	vc->notify_location_change = real_location_change;
 }
 
 static void
@@ -559,6 +562,7 @@ init (FMDirectoryView *directory_view)
 				     GTK_POLICY_AUTOMATIC);
 	gtk_scroll_frame_set_shadow_type (GTK_SCROLL_FRAME(directory_view->scroll_frame), GTK_SHADOW_IN);
 	gtk_widget_show(directory_view->scroll_frame);
+
 	gtk_container_add(GTK_CONTAINER(directory_view), directory_view->scroll_frame);
 	fm_directory_view_set_mode (directory_view, FM_DIRECTORY_VIEW_MODE_ICONS);
 }

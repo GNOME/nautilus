@@ -150,8 +150,9 @@ impl_Nautilus_View__create(NautilusViewClient *view, CORBA_Environment * ev)
   newservant->servant.vepv = view_class->vepv;
   if(!newservant->servant.vepv->GNOME_Unknown_epv)
     newservant->servant.vepv->GNOME_Unknown_epv = gnome_object_get_epv();
-  newservant->view = view;
   servant_init_func((PortableServer_Servant) newservant, ev);
+
+  newservant->view = view;
 
   retval = gnome_object_new_from_servant(newservant);
 
@@ -302,6 +303,7 @@ nautilus_view_client_init (NautilusViewClient *view)
 
   CORBA_exception_init(&ev);
   view->view_client = impl_Nautilus_View__create(view, &ev);
+  gnome_object_add_interface(view->control, view->view_client);
   CORBA_exception_free(&ev);
 }
 

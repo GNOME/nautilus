@@ -29,6 +29,7 @@
 
 #include <gtk/gtk.h>
 #include <libnautilus/libnautilus.h>
+#include <libgnomevfs/gnome-vfs.h>
 
 typedef char *NautilusLocationReference;
 
@@ -36,6 +37,8 @@ typedef struct {
   Nautilus_NavigationInfo navinfo;
 
   GtkWidget *requesting_view;
+
+  GnomeVFSFileInfo *vfs_fileinfo;
 
   char *content_iid;
   GSList *meta_iids;

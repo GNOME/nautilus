@@ -9,6 +9,7 @@ libnautilusincludedir=$(includedir)/libnautilus
 libnautilusinclude_HEADERS=			\
 	ntl-view-client.h			\
 	ntl-meta-view-client.h			\
+	ntl-content-view-client.h		\
 	nautilus.h				\
 	gnome-icon-container-dnd.h		\
 	gnome-icon-container-layout.h		\
@@ -22,6 +23,7 @@ libnautilusinclude_HEADERS=			\
 libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	ntl-view-client.c			\
 	ntl-meta-view-client.c			\
+	ntl-content-view-client.c			\
 	gnome-icon-container-dnd.c		\
 	gnome-icon-container-layout.c		\
 	gnome-icon-container.c			\

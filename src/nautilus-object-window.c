@@ -93,8 +93,8 @@ impl_Nautilus_ViewWindow__create(NautilusWindow *window)
 static void nautilus_window_class_init (NautilusWindowClass *klass);
 static void nautilus_window_init (NautilusWindow *window);
 static void nautilus_window_destroy (NautilusWindow *window);
-static void nautilus_window_back (NautilusWindow *window);
-static void nautilus_window_fwd (NautilusWindow *window);
+static void nautilus_window_back (GtkWidget *btn, NautilusWindow *window);
+static void nautilus_window_fwd (GtkWidget *btn, NautilusWindow *window);
 static void nautilus_window_set_arg (GtkObject      *object,
                                      GtkArg         *arg,
                                      guint	      arg_id);
@@ -363,7 +363,7 @@ nautilus_window_constructed(NautilusWindow *window)
   gtk_button_set_relief(GTK_BUTTON(window->btn_back), GTK_RELIEF_NONE);
   gtk_widget_set_sensitive(window->btn_back, FALSE);
   gtk_container_add(GTK_CONTAINER(window->btn_back), wtmp);
-  gtk_signal_connect(GTK_OBJECT(window->btn_back), "clicked", nautilus_window_back, NULL);
+  gtk_signal_connect(GTK_OBJECT(window->btn_back), "clicked", nautilus_window_back, window);
 
   wtmp = gnome_stock_pixmap_widget(GTK_WIDGET(window), GNOME_STOCK_PIXMAP_FORWARD);
   window->btn_fwd = gtk_button_new();
@@ -651,7 +651,8 @@ nautilus_window_change_location(NautilusWindow *window,
 	  g_slist_foreach(window->uris_next, (GFunc)g_free, NULL);
 	  g_slist_free(window->uris_next); window->uris_next = NULL;
 	}
-      window->uris_prev = g_slist_prepend(window->uris_prev, append_val);
+      if(append_val)
+        window->uris_prev = g_slist_prepend(window->uris_prev, append_val);
     }
   gtk_widget_set_sensitive(window->btn_back, window->uris_prev?TRUE:FALSE);
   gtk_widget_set_sensitive(window->btn_fwd, window->uris_next?TRUE:FALSE);
@@ -661,7 +662,7 @@ nautilus_window_change_location(NautilusWindow *window,
   signum = gtk_signal_lookup("notify_location_change", nautilus_view_get_type());
 
   /* If we need to load a different IID, do that before sending the location change request */
-  if(strcmp(NAUTILUS_VIEW(window->content_view)->iid, loci->content_iid)) {
+  if(!window->content_view || strcmp(NAUTILUS_VIEW(window->content_view)->iid, loci->content_iid)) {
     NautilusView *new_view;
 
     if(requesting_view == window->content_view)
@@ -819,6 +820,9 @@ nautilus_window_save_state(NautilusWindow *window, const char *config_path)
 void
 nautilus_window_set_initial_state(NautilusWindow *window)
 {
+  nautilus_window_goto_url(NULL, "file://localhost/", (GtkWidget *)window);
+
+#if 0
   GSList *cur;
   GtkRequisition sreq;
   GdkGeometry geo;
@@ -849,6 +853,7 @@ nautilus_window_set_initial_state(NautilusWindow *window)
 
 #ifndef CONTENTS_AS_HBOX
   gtk_paned_set_position(GTK_PANED(window->content_hbox), MAX(400, GTK_WIDGET(window->content_view)->requisition.width));
+#endif
 #endif
 }
 
@@ -913,7 +918,7 @@ nautilus_window_load_state(NautilusWindow *window, const char *config_path)
 }
 
 static void
-nautilus_window_back (NautilusWindow *window)
+nautilus_window_back (GtkWidget *btn, NautilusWindow *window)
 {
   Nautilus_NavigationRequestInfo nri;
 
@@ -927,7 +932,7 @@ nautilus_window_back (NautilusWindow *window)
 }
 
 static void
-nautilus_window_fwd (NautilusWindow *window)
+nautilus_window_fwd (GtkWidget *btn, NautilusWindow *window)
 {
   Nautilus_NavigationRequestInfo nri;
 

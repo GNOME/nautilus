@@ -5,6 +5,7 @@ bin_PROGRAMS=nautilus
 INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
 	$(BONOBO_CFLAGS) $(GNORBA_CFLAGS) \
 	$(GNOMEUI_CFLAGS) $(GDK_PIXBUF_CFLAGS) \
+	$(VFS_CFLAGS)	\
 	-DVERSION="\"$(VERSION)\""
 
 LDADD=	file-manager/libntl-file-manager.la \
@@ -12,7 +13,8 @@ LDADD=	file-manager/libntl-file-manager.la \
 	$(BONOBO_LIBS) \
 	$(GNORBA_LIBS) \
 	$(GNOMEUI_LIBS) \
-	$(GDK_PIXBUF_LIBS)
+	$(GDK_PIXBUF_LIBS) \
+	$(VFS_LIBS)
 
 nautilus_SOURCES=		\
 	ntl-content-view.h	\
@@ -29,3 +31,7 @@ nautilus_SOURCES=		\
 	ntl-window.c		\
 	explorer-location-bar.h	\
 	explorer-location-bar.c
+
+goaddir=$(sysconfdir)/CORBA/servers
+goad_DATA=nautilus.goad
+EXTRA_DIST=$(goad_DATA)

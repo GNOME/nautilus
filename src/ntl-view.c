@@ -439,12 +439,13 @@ nautilus_view_load_client(NautilusView *view, const char *iid)
     {
       g_free(view->iid); view->iid = NULL;
       gtk_container_remove(GTK_CONTAINER(view), view->client); view->client = NULL;
+      CORBA_Object_release(view->view_client, &ev);
     }
 
-  view->client = gnome_bonobo_widget_new_subdoc((char *)iid, NAUTILUS_WINDOW(view->main_window)->uih);
+  view->client = gnome_bonobo_widget_new_control((char *)iid);
   g_return_if_fail(view->client);
   CORBA_exception_init(&ev);
-  CORBA_Object_release(view->view_client, &ev);
+
   frame = gnome_bonobo_widget_get_control_frame(GNOME_BONOBO_WIDGET(view->client));
   gnome_object_add_interface(GNOME_OBJECT(frame), view->view_frame);
   view->view_client = GNOME_Unknown_query_interface(gnome_control_frame_get_control(GNOME_CONTROL_FRAME(frame)),
@@ -467,9 +468,9 @@ nautilus_view_notify_location_change(NautilusView *view,
   CORBA_Environment ev;
 
   CORBA_exception_init(&ev);
-  g_return_if_fail(!CORBA_Object_is_nil(view->view_client, &ev));
 
-  Nautilus_View_notify_location_change(view->view_client, nav_context, &ev);
+  if(!CORBA_Object_is_nil(view->view_client, &ev))
+    Nautilus_View_notify_location_change(view->view_client, nav_context, &ev);
 
   CORBA_exception_free(&ev);
 }
@@ -480,9 +481,9 @@ nautilus_view_notify_selection_change(NautilusView *view,
 {
   CORBA_Environment ev;
   CORBA_exception_init(&ev);
-  g_return_if_fail(!CORBA_Object_is_nil(view->view_client, &ev));
 
-  Nautilus_View_notify_selection_change(view->view_client, nav_context, &ev);
+  if(!CORBA_Object_is_nil(view->view_client, &ev))
+    Nautilus_View_notify_selection_change(view->view_client, nav_context, &ev);
 
   CORBA_exception_free(&ev);
 }
