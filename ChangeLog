@@ -1,3 +1,10 @@
+2000-06-28  John Sullivan  <sullivan@eazel.com>
+
+	* src/nautilus-sidebar-title.c: (nautilus_sidebar_title_set_uri),
+	* src/nautilus-sidebar.c: (nautilus_sidebar_update_info): Added
+	a couple of NULL uri checks to get us cleanly past the case where
+	the URI is temporarily null at startup time when the theme is set.
+
 2000-06-28  Maciej Stachowiak  <mjs@eazel.com>
 
 	* libnautilus-extensions/nautilus-mime-actions.c:

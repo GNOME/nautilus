@@ -350,7 +350,12 @@ nautilus_sidebar_title_set_uri (NautilusSidebarTitle *sidebar_title,
 	GList *attributes;
 
 	release_file (sidebar_title);
-	sidebar_title->details->file = nautilus_file_get (new_uri);
+
+	if (new_uri == NULL) {
+		sidebar_title->details->file = NULL;
+	} else {
+		sidebar_title->details->file = nautilus_file_get (new_uri);
+	}
 
 	/* attach file */
 	if (sidebar_title->details->file != NULL) {

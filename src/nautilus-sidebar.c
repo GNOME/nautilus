@@ -1248,8 +1248,12 @@ nautilus_sidebar_update_info (NautilusSidebar *sidebar,
 	NautilusBackground *background;
 	char *background_color, *color_spec;
 	char *background_image, *temp_str;
-	
-	directory = nautilus_directory_get (sidebar->details->uri);
+
+	if (sidebar->details->uri == NULL) {
+		directory = NULL;
+	} else {
+		directory = nautilus_directory_get (sidebar->details->uri);
+	}
 	nautilus_directory_unref (sidebar->details->directory);
 	sidebar->details->directory = directory;
 	
