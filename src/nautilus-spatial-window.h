@@ -77,6 +77,16 @@ struct _NautilusWindow {
   NautilusView *content_view;
   GSList *meta_views;
 
+  /* Widgets to keep track of (for state changes, etc) */
+  GtkWidget *back_button;
+  GtkWidget *forward_button;
+  GtkWidget *up_button;
+  GtkWidget *reload_button;
+  GtkWidget *stop_button;
+  GtkWidget *back_menu_item;
+  GtkWidget *forward_menu_item;
+  GtkWidget *up_menu_item;
+
   /* Pending changes */
   NautilusNavigationInfo *pending_ni;
   NautilusView *new_content_view, *new_requesting_view;

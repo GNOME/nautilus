@@ -1664,8 +1664,9 @@ get_directory_item_count_hack (NautilusFile *file, gboolean ignore_invisible_ite
             count += 1;
             
     closedir(directory);
-    
-    return count;
+
+    /* This way of getting the count includes . and .., so we subtract those out */
+    return count - 2;
 
 }
 

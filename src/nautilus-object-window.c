@@ -563,6 +563,18 @@ nautilus_window_constructed(NautilusWindow *window)
                                                    after the statusbar
                                                    creation */
 
+  /* Remember some widgets now so their state can be changed later */
+  window->back_button = toolbar_info[TOOLBAR_BACK_BUTTON_INDEX].widget;
+  window->forward_button = toolbar_info[TOOLBAR_FORWARD_BUTTON_INDEX].widget;
+  window->up_button = toolbar_info[TOOLBAR_UP_BUTTON_INDEX].widget;
+  window->reload_button = toolbar_info[TOOLBAR_RELOAD_BUTTON_INDEX].widget;
+  window->stop_button = toolbar_info[TOOLBAR_STOP_BUTTON_INDEX].widget;
+
+  window->back_menu_item = go_menu_info[GO_MENU_BACK_ITEM_INDEX].widget;
+  window->forward_menu_item = go_menu_info[GO_MENU_FORWARD_ITEM_INDEX].widget;
+  window->up_menu_item = go_menu_info[GO_MENU_UP_ITEM_INDEX].widget;
+
+
   /* Set initial sensitivity of some buttons & menu items 
    * now that they're all created.
    */
@@ -943,34 +955,34 @@ nautilus_window_about_cb (GtkWidget *widget,
 void
 nautilus_window_allow_back (NautilusWindow *window, gboolean allow)
 {
-   gtk_widget_set_sensitive(toolbar_info[TOOLBAR_BACK_BUTTON_INDEX].widget, allow); 
-   gtk_widget_set_sensitive(go_menu_info[GO_MENU_BACK_ITEM_INDEX].widget, allow); 
+   gtk_widget_set_sensitive(window->back_button, allow); 
+   gtk_widget_set_sensitive(window->back_menu_item, allow); 
 }
 
 void
 nautilus_window_allow_forward (NautilusWindow *window, gboolean allow)
 {
-   gtk_widget_set_sensitive(toolbar_info[TOOLBAR_FORWARD_BUTTON_INDEX].widget, allow); 
-   gtk_widget_set_sensitive(go_menu_info[GO_MENU_FORWARD_ITEM_INDEX].widget, allow); 
+   gtk_widget_set_sensitive(window->forward_button, allow); 
+   gtk_widget_set_sensitive(window->forward_menu_item, allow); 
 }
 
 void
 nautilus_window_allow_up (NautilusWindow *window, gboolean allow)
 {
-   gtk_widget_set_sensitive(toolbar_info[TOOLBAR_UP_BUTTON_INDEX].widget, allow); 
-   gtk_widget_set_sensitive(go_menu_info[GO_MENU_UP_ITEM_INDEX].widget, allow); 
+   gtk_widget_set_sensitive(window->up_button, allow); 
+   gtk_widget_set_sensitive(window->up_menu_item, allow); 
 }
 
 void
 nautilus_window_allow_reload (NautilusWindow *window, gboolean allow)
 {
-   gtk_widget_set_sensitive(toolbar_info[TOOLBAR_RELOAD_BUTTON_INDEX].widget, allow); 
+   gtk_widget_set_sensitive(window->reload_button, allow); 
 }
 
 void
 nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 {
-  gtk_widget_set_sensitive(toolbar_info[TOOLBAR_STOP_BUTTON_INDEX].widget, allow); 
+  gtk_widget_set_sensitive(window->stop_button, allow); 
 }
 
 

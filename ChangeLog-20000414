@@ -1,5 +1,25 @@
 2000-02-11  John Sullivan <sullivan@eazel.com>
 
+	* src/ntl-window.h:
+	Return of the stored widgets for toolbar buttons that need
+	sensitivity changes, only this time do them all and add
+	the new menu items too.
+
+	* src/ntl-window.c:
+	(nautilus_window_constructed): Save away pointers to all the
+	widgets that need accessing later.
+	(nautilus_window_allow_back), (nautilus_window_allow_forward),
+	(nautilus_window_allow_up), (nautilus_window_allow_reload),
+	(nautilus_window_allow_stop): Use stored widget pointers rather
+	than GnomeUIInfo arrays to access the buttons and menu items.
+	Getting the widget from the array only worked until another
+	window was created.
+
+	* libnautilus/nautilus-directory.c: (get_directory_item_count_hack):
+	Subtract 2 from item count before returning, to account for . and ..
+
+2000-02-11  John Sullivan <sullivan@eazel.com>
+
 	Sensitized "Open" context menu item, and added
 	"Open in New Window". Extended the framework as
 	required to support opening into a new window.
