@@ -497,26 +497,24 @@ nautilus_link_local_is_trash_link (const char *path)
 void
 nautilus_link_local_create_from_gnome_entry (GnomeDesktopEntry *entry, const char *dest_path, const GdkPoint *position)
 {
-	const char *icon_name;
+	char *icon_name;
 	char *launch_string, *terminal_command;
 	char *quoted, *arguments, *temp_str;
-	gboolean create_link;
-	int index;
+	int i;
 
 	if (entry == NULL || dest_path == NULL) {
 		return;
 	}
 	
-	create_link = TRUE;
-	
-	/* Extract arguments from exec array */			
-	for (index = 0, arguments = NULL; index < entry->exec_length; ++index) {
-		quoted = eel_shell_quote (entry->exec[index]);
+	/* Extract arguments from exec array */
+	arguments = NULL;
+	for (i = 0; i < entry->exec_length; ++i) {
+		quoted = eel_shell_quote (entry->exec[i]);
 		if (arguments == NULL) {
 			arguments = quoted;
 		} else {
 			temp_str = arguments;
-			arguments = g_strdup_printf ("%s %s", temp_str, quoted);
+			arguments = g_strconcat (arguments, " ", quoted, NULL);
 			g_free (temp_str);
 			g_free (quoted);
 		}
@@ -535,21 +533,20 @@ nautilus_link_local_create_from_gnome_entry (GnomeDesktopEntry *entry, const cha
 	} else {
 		/* Unknown .desktop file type */
 		launch_string = NULL;
-		create_link = TRUE;		
 	}
 	
 	if (entry->icon != NULL) {
-		icon_name = entry->icon;
+		icon_name = eel_make_uri_from_half_baked_uri (entry->icon);
 	} else {
-		icon_name = "gnome-unknown.png";
+		icon_name = g_strdup ("gnome-unknown.png");
 	}
 	
-	if (create_link) {
+	if (launch_string != NULL) {
 		nautilus_link_local_create (dest_path, entry->name, icon_name, 
 			    	    	    launch_string, position, NAUTILUS_LINK_GENERIC);
 	}
-				
+	
+	g_free (icon_name);
 	g_free (launch_string);
 	g_free (arguments);
 }
-

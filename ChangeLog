@@ -1,5 +1,24 @@
 2001-05-03  Darin Adler  <darin@eazel.com>
 
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fixed bug 8230 (launchers dragged from panel don't get icons as
+	they did in Ximian's Nautilus 1.0.2):
+
+	* libnautilus-extensions/nautilus-link.c:
+	(nautilus_link_local_create_from_gnome_entry): Changed to use
+	eel_make_uri_from_half_baked_uri so we can handle the kind of
+	"URI"s that are in most .desktop files. Also did a lot of code
+	cleanup.
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(icon_view_handle_uri_list): Changed to use
+	eel_make_uri_from_half_baked_uri so we can handle the kind of
+	"URI"s that are passed when dragging from old programs. Also did a
+	lot of code cleanup.
+
+2001-05-03  Darin Adler  <darin@eazel.com>
+
 	Fixed bug 8228 (http://www.yahoo.com shows plain document icon,
 	not HTML icon).
 

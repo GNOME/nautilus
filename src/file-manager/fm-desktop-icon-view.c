@@ -449,7 +449,7 @@ create_mount_link (FMDesktopIconView *icon_view,
 		break;	
 	}
 
-	target_uri =  nautilus_volume_monitor_get_target_uri (volume);
+	target_uri = nautilus_volume_monitor_get_target_uri (volume);
 	
 	volume_name = create_unique_volume_name (volume);
 	
@@ -854,15 +854,12 @@ static void
 icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_uris,
 			   int x, int y, FMDirectoryView *view)
 {
-	const GList *element;
-	GList *uri_list;
-	char *local_path;
+	GList *uri_list, *node;
 	GnomeDesktopEntry *entry;
-	int index;
 	GdkPoint point;
-	const char *uri;
-	char *stripped_uri, *linkname;
-	gboolean made_entry_link;
+	char *uri, *local_path;
+	char *stripped_uri;
+	const char *last_slash, *link_name;
 	
 	if (item_uris == NULL) {
 		return;
@@ -873,53 +870,45 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 		
 	uri_list = gnome_uri_list_extract_uris (item_uris);
 
-	/* Iterate through all of the URIs in the list */
-	for (element = uri_list, index = 0; element != NULL; element = element->next, index++) {
-		uri = element->data;
-
-		/* I would use gnome_vfs_get_local_path_from_uri here, but it requires that the URI
-		 * be in the file:// format and the URIs we get from Netscape and panel drags are in
-		 * the file: format
+	for (node = uri_list; node != NULL; node = node->next) {
+		/* Most of what comes in here is not really URIs, but
+		 * rather paths that have a file: prefix in them.
 		 */
-		local_path = NULL;
-		stripped_uri = NULL;
-		made_entry_link = FALSE;
-			
-		if (eel_istr_has_prefix (uri, "file://")) {
-			local_path = eel_str_get_after_prefix (uri, "file://");
-		} else if (eel_istr_has_prefix (uri, "file:")) {
-			local_path = g_strdup (uri += strlen ("file:"));
-		}
-		
-		/* Is this a path that points to a .desktop file? */
+		uri = eel_make_uri_from_half_baked_uri (node->data);
+
+		/* Make a link using the desktop file contents? */
+		local_path = gnome_vfs_get_local_path_from_uri (uri);
 		if (local_path != NULL) {
 			entry = gnome_desktop_entry_load (local_path);		
 			if (entry != NULL) {
+				/* FIXME: Handle name conflicts? */
 				nautilus_link_local_create_from_gnome_entry (entry, desktop_directory, &point);
 				gnome_desktop_entry_free (entry);
-				made_entry_link = TRUE;
 			}
 			g_free (local_path);
+			if (entry != NULL) {
+				continue;
+			}
 		}
-				
-		if (!made_entry_link) {
-			/* We have some type of URI. Create a Nautilus link for it.
-			 * Generate the file name by extracting the basename of the URI.
-			 */							
-			if (eel_str_has_suffix (uri, "/")) {
-				stripped_uri = eel_str_strip_trailing_chr (uri, '/');
-				linkname = strrchr (stripped_uri, '/');
-			} else {
-				linkname = strrchr (uri, '/');
-			}
-							
-			if (linkname != NULL) {
-				linkname++;
-				nautilus_link_local_create (desktop_directory, linkname, "gnome-http-url", uri,
-							    &point, NAUTILUS_LINK_GENERIC);
-			}
-			g_free (stripped_uri);
-		}						
+		
+		/* Make a link from the URI alone. Generate the file
+		 * name by extracting the basename of the URI.
+		 */
+		/* FIXME: This should be using eel_uri_get_basename
+		 * instead of a "roll our own" solution.
+		 */
+		stripped_uri = eel_str_strip_trailing_chr (uri, '/');
+		last_slash = strrchr (stripped_uri, '/');
+		link_name = last_slash == NULL ? NULL : last_slash + 1;
+		
+		if (!eel_str_is_empty (link_name)) {
+			/* FIXME: Handle name conflicts? */
+			nautilus_link_local_create (desktop_directory, link_name,
+						    "gnome-http-url", uri,
+						    &point, NAUTILUS_LINK_GENERIC);
+		}
+		
+		g_free (stripped_uri);
 	}
 	
 	gnome_uri_list_free_strings (uri_list);
