@@ -29,6 +29,7 @@
 
 #include "nautilus-notes-viewer.h"
 
+#include "nautilus-file-utilities.h"
 #include <eel/eel-debug.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-string.h>
