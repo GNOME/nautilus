@@ -216,6 +216,9 @@ druid_finished (GtkWidget *druid_page)
 	/* write out the first time file to indicate that we've successfully traversed the druid */
 	druid_set_first_time_file_flag ();
 
+	/* Do the user level config */
+	nautilus_preferences_set_user_level (current_user_level);
+	
 	/* Here we check to see if we can resolve hostnames in a timely
 	 * fashion. If we can't then we silently tell nautilus to start up
 	 * pointing to the home directory and not any of the HTTP addresses--
@@ -239,9 +242,6 @@ druid_finished (GtkWidget *druid_page)
 	}
 
 
-	/* Do the user level config */
-	nautilus_preferences_set_user_level (current_user_level);
-	
 	/* Do the GMC to Nautilus Transition */
 	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP, draw_desktop);	
 	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_ADD_TO_SESSION, add_to_session);	

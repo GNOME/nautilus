@@ -1,3 +1,14 @@
+2001-03-07  John Harper  <jsh@eazel.com>
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+
+	Fixed bug 7511 (Nautilus sometimes uses wrong home directory
+	after going through druid):
+
+	* src/nautilus-first-time-druid.c (druid_finished): move the
+	call to set the user level preference to before the call that
+	asks for the user's home URI
+
 2001-03-07  Ramiro Estrugo  <ramiro@eazel.com>
  
  	reviewed by: John Sullivan <sullivan@eazel.com>
