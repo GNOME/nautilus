@@ -22,6 +22,10 @@
  */
 
 #include <config.h>
+
+#ifdef HAVE_RPM
+#ifdef HAVE_RPM_40
+
 #include <gnome.h>
 #include "eazel-package-system-rpm3-private.h"
 #include "eazel-package-system-rpm4.h"
@@ -303,3 +307,6 @@ eazel_package_system_implementation (GList *dbpaths)
 
 	return result;
 }
+
+#endif /* HAVE_RPM_40 */
+#endif /* HAVE_RPM */

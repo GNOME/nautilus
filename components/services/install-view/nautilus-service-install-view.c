@@ -1500,8 +1500,8 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 
 	/* get default host/port */
 	host = g_strdup (trilobite_get_services_address ());
-	if ((p = strchr (host, ':')) != NULL) {
-		g_message ("trilobite_get_services_address = %s", host);
+	p = strchr (host, ':');
+	if (p != NULL) {
 		*p = 0;
 		port = atoi (p+1);
 	} else {
@@ -1509,7 +1509,6 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	}
 	username = NULL;
 	set_auth = !(nautilus_install_parse_uri (uri, view, &host, &port, &username));
-	g_message ("set_auth = %d, host = %s, port = %d", set_auth, host, port);
 
 	if (! view->details->categories) {
 		return;

@@ -399,12 +399,13 @@ then
 	dnl =>
 	AC_CHECK_LIB(popt, poptParseArgvString, [rpm_libs="$rpm_libs -lpopt"])
 	AC_CHECK_FUNC(dbopen, [],
-	  AC_CHECK_LIB(db-3, __db185_open, [rpm_libs="$rpm_libs -ldb-3"],
-	    AC_CHECK_LIB(db2, dbopen, [rpm_libs="$rpm_libs -ldb2"],
-	      AC_CHECK_LIB(db1, dbopen, [rpm_libs="$rpm_libs -ldb1"],
-		AC_CHECK_LIB(db, dbopen, [rpm_libs="$rpm_libs -ldb"],
-		  AC_MSG_ERROR([sorry rpm requires a db-1.85 API])))))
-	             )
+	  AC_CHECK_LIB(db-3.1, __db185_open, [rpm_libs="$rpm_libs -ldb-3.1"],
+	    AC_CHECK_LIB(db-3, __db185_open, [rpm_libs="$rpm_libs -ldb-3"],
+	      AC_CHECK_LIB(db2, dbopen, [rpm_libs="$rpm_libs -ldb2"],
+	        AC_CHECK_LIB(db1, dbopen, [rpm_libs="$rpm_libs -ldb1"],
+		  AC_CHECK_LIB(db, dbopen, [rpm_libs="$rpm_libs -ldb"],
+		    AC_MSG_ERROR([sorry rpm requires a db-1.85 API]))))))
+	               )
 	AC_CHECK_LIB(rpmio, Fdopen, [rpm_libs="$rpm_libs -lrpmio"],[],$rpm_libs)
 	AC_CHECK_LIB(rpm, rpmRunTransactions,[have_rpm=yes],
 	  [have_rpm=no], $rpm_libs)

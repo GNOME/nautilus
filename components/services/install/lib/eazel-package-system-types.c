@@ -326,7 +326,11 @@ packagedata_finalize (GtkObject *obj)
 	pack->modifies = NULL;
 
 	if (pack->packsys_struc) {
+		/* FIXME: bugzilla.eazel.com 6007
+		 */
+#ifdef HAVE_RPM_30
 		headerFree ((Header) pack->packsys_struc);
+#endif /* HAVE_RPM_30 */
 		pack->packsys_struc = NULL;
 	}
 }

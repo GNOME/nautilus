@@ -1,3 +1,41 @@
+2001-01-25  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	These are some recent PR3 fixes
+	Bug 6009, 5978 and 5979
+	
+	* components/services/install/command-line/eazel-test-packsys.c:
+	(test_is_installed), (main):
+	Code to test changes made to eazel_package_system_is_installed.
+	
+	* components/services/install/lib/Makefile.am:
+	Fix for 5978.
+	
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(rpmmonitorpiggybag_new), (make_rpm_argument_list),
+	(monitor_rpm_process_pipe_percent_output),
+	(rpm_packagedata_fill_from_file),
+	(eazel_package_system_rpm3_install_uninstall):
+	Fix for 5978 and 5979
+	
+	* components/services/install/lib/eazel-package-system-rpm4.c:
+	Fix for 5978
+	
+	* components/services/install/lib/eazel-package-system-types.c:
+	(packagedata_finalize):
+	See bug 6007
+	
+	* components/services/install/lib/eazel-package-system.c:
+	(eazel_package_system_matches_versioning),
+	(eazel_package_system_is_installed):
+	Fix for 6009
+	
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_install_view_update_from_uri):
+	Removed debug output
+	
+	* configure.in:
+	Fix for 5979
+
 2001-01-24  Dan Mueth <dan@eazel.com>
 
 	* user-guide/gnufdl: Adding this directory for the GNU FDL.  
