@@ -1,3 +1,16 @@
+2000-10-25  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-label.c:
+	(nautilus_label_size_request), (render_buffer_pixbuf):
+	Make sure text layout honors the vertical and horizontal offsets.
+
+	(nautilus_scalable_font_draw_text):
+	* test/test-nautilus-image.c: (label_new), (label_enter_event),
+	(label_leave_event), (label_free_data),
+	(buffered_widget_add_prelighting), (header_new), (footer_item_new),
+	(footer_remainder_new), (footer_new), (main):
+	More work on prelighting footers.
+	
 2000-10-25  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/services/nautilus-dependent-shared/shared-service-widg

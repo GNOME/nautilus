@@ -316,8 +316,8 @@ nautilus_label_size_request (GtkWidget		*widget,
    	requisition->width = MAX (2, text_width);
    	requisition->height = MAX (2, MAX (text_height, tile_size.height));
 
-   	requisition->width += misc->xpad * 2;
-   	requisition->height += misc->ypad * 2;
+    	requisition->width += (misc->xpad * 2);
+    	requisition->height += (misc->ypad * 2);
 }
 
 /* NautilusBufferedWidgetClass methods */
@@ -327,11 +327,11 @@ render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
 		      int			horizontal_offset,
 		      int			vertical_offset)
 {
-	NautilusLabel	*label;
-	GtkWidget	*widget;
-	ArtIRect	clip_area;
-	int		text_x;
-	int		text_y;
+	NautilusLabel *label;
+	GtkWidget *widget;
+	ArtIRect clip_area;
+	int text_x;
+	int text_y;
 
 	g_return_if_fail (NAUTILUS_IS_LABEL (buffered_widget));
 	g_return_if_fail (buffer != NULL);
@@ -364,8 +364,8 @@ render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
 	clip_area.x1 = widget->allocation.width;
 	clip_area.y1 = widget->allocation.height;
 
-	text_x = 0;
-	text_y = 0;
+	text_x = horizontal_offset;
+	text_y = vertical_offset;
 
 	if (label->detail->num_text_lines == 0) {
 		return;
@@ -374,8 +374,8 @@ render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
 	/* Line wrapping */
 	if (label->detail->line_wrap) {
 		guint i;
-		guint x = 0;
-		guint y = 0;
+		guint x = text_x;
+		guint y = text_y;
 		
 		for (i = 0; i < label->detail->num_text_lines; i++) {
 			const NautilusTextLayout *text_layout = label->detail->text_layouts[i];
@@ -406,12 +406,10 @@ render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
 	/* No line wrapping */
 	else {
 		if (label->detail->drop_shadow_offset > 0) {
-			text_x += label->detail->drop_shadow_offset;
-			text_y += label->detail->drop_shadow_offset;
 			nautilus_scalable_font_draw_text_lines_with_dimensions (label->detail->font,
 										buffer,
-										text_x,
-										text_y,
+										text_x + label->detail->drop_shadow_offset,
+										text_y + label->detail->drop_shadow_offset,
 										&clip_area,
 										label->detail->font_size,
 										label->detail->font_size,
@@ -425,9 +423,6 @@ render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
 										label->detail->drop_shadow_color,
 										label->detail->text_alpha,
 										FALSE);
-
-			text_x -= label->detail->drop_shadow_offset;
-			text_y -= label->detail->drop_shadow_offset;
 		}
 
 		nautilus_scalable_font_draw_text_lines_with_dimensions (label->detail->font,
