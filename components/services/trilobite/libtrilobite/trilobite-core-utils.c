@@ -468,9 +468,7 @@ trilobite_init (const char *service_name, const char *version_name, const char *
 
 	if (log_filename != NULL) {
 		if ((log_filename[0] == '~') && (log_filename[1] == '/')) {
-			char *homedir = g_get_home_dir ();
-			real_log_filename = g_strdup_printf ("%s%s", homedir, log_filename+1);
-			g_free (homedir);
+			real_log_filename = g_strdup_printf ("%s%s", g_get_home_dir (), log_filename+1);
 		} else {
 			real_log_filename = g_strdup (log_filename);
 		}

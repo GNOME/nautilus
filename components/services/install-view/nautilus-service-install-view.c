@@ -345,11 +345,14 @@ create_package (char *name, int local_file)
 }
 
 /* quick & dirty: parse the url into (host, port) and a category list */
+/* format:
+ * "eazel-install:" [ "//" [ username "@" ] [ "hostname" [ ":" port ] ] "/" ] package-name [ "?version=" version ]
+ */
 static void
 nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view, GList **categories,
-			    char **host, int *port)
+			    char **host, int *port, char **username)
 {
-	char *p, *q, *package_name;
+	char *p, *q, *package_name, *host_spec;
 	GList *packages = NULL;
 	PackageData *pack;
 
@@ -362,7 +365,7 @@ nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view, G
 	}
 	p++;
 
-	/* "//host:port" spec? */
+	/* "//[user@]host[:port]" spec? */
 	if ((*p == '/') && (*(p+1) == '/')) {
 		p += 2;
 
@@ -370,14 +373,29 @@ nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view, G
 		if (! q) {
 			q = p + strlen(p);
 		}
-		g_free (*host);
-		*host = g_strndup (p, q - p);
+		host_spec = g_strndup (p, q - p);
 
-		/* optional ":port" */
-		p = strchr (*host, ':');
+		/* optional "user@" */
+		p = strchr (host_spec, '@');
 		if (p) {
 			*p = 0;
-			*port = atoi (p+1);
+			*username = host_spec;
+			if (*(p+1)) {
+				g_free (*host);
+				*host = g_strdup (p+1);
+			}
+		} else {
+			g_free (*host);
+			*host = host_spec;
+		}
+
+		if (*host) {
+			/* optional ":port" */
+			p = strchr (*host, ':');
+			if (p) {
+				*p = 0;
+				*port = atoi (p+1);
+			}
 		}
 
 		/* push p to past the trailing '/' */
@@ -407,6 +425,9 @@ nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view, G
 		packages = g_list_prepend (packages, pack);
 		g_free (package_name);
 	}
+
+	g_message ("host '%s:%d' username '%s'", *host ? *host : "(default)", *host ? *port : 0,
+		   *username ? *username : "(default)");
 
 	/* add to categories */
 	if (packages) {
@@ -1142,13 +1163,15 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	GList			*categories;
 	char			*host;
 	int			port;
+	char			*username;
 	Trilobite_Eazel_Install	service;
 	CORBA_Environment	ev;
 	char 			*out;
 
 	host = g_strdup (INSTALL_HOST);
 	port = INSTALL_PORT;
-	nautilus_install_parse_uri (uri, view, &categories, &host, &port);
+	username = NULL;
+	nautilus_install_parse_uri (uri, view, &categories, &host, &port, &username);
 
 	if (! categories) {
 		return;
@@ -1185,6 +1208,9 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	Trilobite_Eazel_Install__set_protocol (service, Trilobite_Eazel_PROTOCOL_HTTP, &ev);
 	Trilobite_Eazel_Install__set_server (service, host, &ev);
 	Trilobite_Eazel_Install__set_server_port (service, port, &ev);
+	if (username != NULL) {
+		Trilobite_Eazel_Install__set_username (service, username, &ev);
+	}
 	Trilobite_Eazel_Install__set_test_mode (service, FALSE, &ev);
 
 	/* attempt to create a directory we can use */

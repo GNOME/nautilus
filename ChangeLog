@@ -1,3 +1,23 @@
+2000-10-31  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_install_parse_uri),
+	(nautilus_service_install_view_update_from_uri):
+
+	Support [ username "@" ] in the eazel-install: URI so that a
+	username can be specified (like anonymous) to libeazelinstall.
+
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c
+	: (trilobite_init):
+
+	Don't free the result of g_get_home_dir(), because it unleashes
+	1000 demons.
+	
+	* nautilus-installer/src/installer.c: (create_what_to_do_page),
+	(eazel_installer_add_category):
+
+	Change the "what to install" header for the single-category case.
+
 2000-10-31  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-utilities.c:

@@ -117,7 +117,8 @@ typedef struct {
 			     " \xB7 /gnome-source\n" \
 			     "that you should manually remove.")
 
-#define WHAT_TO_INSTALL_LABEL _("What would you like to install?")
+#define WHAT_TO_INSTALL_LABEL		_("What would you like to install?")
+#define WHAT_TO_INSTALL_LABEL_SINGLE	_("What we'll install")
 
 #define NAUTILUS_INSTALLER_RELEASE
 
@@ -232,6 +233,7 @@ create_what_to_do_page (GtkWidget *druid, GtkWidget *window)
 	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (what_to_do_page));
 
 	vbox = gtk_vbox_new (FALSE, 0);
+	gtk_widget_ref (vbox);
 	gtk_object_set_data_full (GTK_OBJECT (window), "vbox3", vbox, (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show (vbox);
 	gtk_widget_set_uposition (vbox, CONTENT_X, CONTENT_Y);
@@ -239,6 +241,9 @@ create_what_to_do_page (GtkWidget *druid, GtkWidget *window)
 	title = gtk_label_new_with_font (WHAT_TO_INSTALL_LABEL, FONT_TITLE);
 	gtk_label_set_justify (GTK_LABEL (title), GTK_JUSTIFY_LEFT);
 	gtk_widget_show (title);
+	gtk_widget_ref (title);
+	gtk_object_set_data_full (GTK_OBJECT (window), "spice-girls", title, (GtkDestroyNotify) gtk_widget_unref);
+
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), title, FALSE, FALSE, 0);
 	gtk_widget_show (hbox);
@@ -1574,6 +1579,13 @@ eazel_installer_add_category (EazelInstaller *installer,
 	hbox = gtk_hbox_new (FALSE, 0);
 	button = gtk_check_button_new ();
 	button_name = gtk_label_new_with_font (category->name, FONT_NORM_BOLD);
+
+	if (only_one_category) {
+		/* change the heading */
+		label = gtk_object_get_data (GTK_OBJECT (installer->window), "spice-girls");
+		gtk_label_set_text (GTK_LABEL (label), WHAT_TO_INSTALL_LABEL_SINGLE);
+		label = NULL;
+	}
 
 	if (! only_one_category) {
 		gtk_widget_show (button);
