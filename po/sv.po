@@ -13,8 +13,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2000-10-13 18:50+0200\n"
-"PO-Revision-Date: 2000-10-13 18:53+0200\n"
+"POT-Creation-Date: 2000-10-15 12:56+0200\n"
+"PO-Revision-Date: 2000-10-15 12:57+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -558,24 +558,24 @@ msgstr ""
 msgid "Could not set URLType from config file!"
 msgstr "Kunde inte sätta URLType från konfigurationsfilen!"
 
-#: components/services/install/lib/eazel-install-object.c:742
+#: components/services/install/lib/eazel-install-object.c:746
 msgid "Getting package list from remote server ...\n"
 msgstr "Hämtar paketlistan från fjärrserver ...\n"
 
-#: components/services/install/lib/eazel-install-object.c:762
+#: components/services/install/lib/eazel-install-object.c:766
 msgid "Unable to retrieve package-list.xml!\n"
 msgstr "Kunde inte hämta package-list.xml!\n"
 
-#: components/services/install/lib/eazel-install-object.c:807
+#: components/services/install/lib/eazel-install-object.c:811
 #, c-format
 msgid "Cannot write to file %s, using default log handler"
 msgstr "Kan inte skriva till filen %s, använder standardlogghanteraren"
 
-#: components/services/install/lib/eazel-install-object.c:905
+#: components/services/install/lib/eazel-install-object.c:909
 msgid "Install failed"
 msgstr "Installationen misslyckades"
 
-#: components/services/install/lib/eazel-install-object.c:941
+#: components/services/install/lib/eazel-install-object.c:946
 msgid "Uninstall failed"
 msgstr "Avinstallationen misslyckades"
 
@@ -714,17 +714,17 @@ msgid "%s requires %s"
 msgstr "%s kräver %s"
 
 #. If we end here, it's a conflict is going to break something
-#: components/services/install/lib/eazel-install-rpm-glue.c:529
+#: components/services/install/lib/eazel-install-rpm-glue.c:584
 #, c-format
 msgid "Package %s conflicts with %s-%s"
 msgstr "Paketet %s är i konflikt med %s-%s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:543
+#: components/services/install/lib/eazel-install-rpm-glue.c:598
 #, c-format
 msgid "Processing dep for %s, requires library %s"
 msgstr "Behandlar beroenden för %s, kräver bibliotek %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:550
+#: components/services/install/lib/eazel-install-rpm-glue.c:605
 #, c-format
 msgid "Processing dep for %s, requires package %s"
 msgstr "Behandlar beroenden för %s, kräver paket %s"
@@ -1119,82 +1119,82 @@ msgstr "-adobe-helvetica-bold-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-extensions/nautilus-file.c:1923
+#: libnautilus-extensions/nautilus-file.c:1926
 msgid "today %-I:%M %p"
 msgstr "idag %H:%M"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:1928
+#: libnautilus-extensions/nautilus-file.c:1931
 msgid "yesterday %-I:%M %p"
 msgstr "igår %H:%M"
 
 #. Current week, include day of week.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:1933
+#: libnautilus-extensions/nautilus-file.c:1936
 msgid "%A %-m/%-d/%y %-I:%M %p"
 msgstr "%A %y-%m-%d %H:%M"
 
 #. Other dates.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:1938
+#: libnautilus-extensions/nautilus-file.c:1941
 msgid "%-m/%-d/%y %-I:%M %p"
 msgstr "%y-%m-%d %H:%M"
 
-#: libnautilus-extensions/nautilus-file.c:2941
+#: libnautilus-extensions/nautilus-file.c:2971
 msgid "0 items"
 msgstr "0 objekt"
 
-#: libnautilus-extensions/nautilus-file.c:2941
+#: libnautilus-extensions/nautilus-file.c:2971
 msgid "0 folders"
 msgstr "0 mappar"
 
-#: libnautilus-extensions/nautilus-file.c:2942
+#: libnautilus-extensions/nautilus-file.c:2972
 msgid "0 files"
 msgstr "0 filer"
 
-#: libnautilus-extensions/nautilus-file.c:2946
+#: libnautilus-extensions/nautilus-file.c:2976
 msgid "1 item"
 msgstr "1 objekt"
 
-#: libnautilus-extensions/nautilus-file.c:2946
+#: libnautilus-extensions/nautilus-file.c:2976
 msgid "1 folder"
 msgstr "1 mapp"
 
-#: libnautilus-extensions/nautilus-file.c:2947
+#: libnautilus-extensions/nautilus-file.c:2977
 msgid "1 file"
 msgstr "1 fil"
 
-#: libnautilus-extensions/nautilus-file.c:2950
+#: libnautilus-extensions/nautilus-file.c:2980
 #, c-format
 msgid "%u items"
 msgstr "%u objekt"
 
-#: libnautilus-extensions/nautilus-file.c:2950
+#: libnautilus-extensions/nautilus-file.c:2980
 #, c-format
 msgid "%u folders"
 msgstr "%u mappar"
 
-#: libnautilus-extensions/nautilus-file.c:2951
+#: libnautilus-extensions/nautilus-file.c:2981
 #, c-format
 msgid "%u files"
 msgstr "%u filer"
 
-#: libnautilus-extensions/nautilus-file.c:3266
+#: libnautilus-extensions/nautilus-file.c:3296
 msgid "unknown type"
 msgstr "okänd typ"
 
-#: libnautilus-extensions/nautilus-file.c:3268
+#: libnautilus-extensions/nautilus-file.c:3298
 msgid "unknown MIME type"
 msgstr "okänd MIME-typ"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-extensions/nautilus-file.c:3273
+#: libnautilus-extensions/nautilus-file.c:3303
 msgid "unknown"
 msgstr "okänd"
 
@@ -1203,16 +1203,20 @@ msgstr "okänd"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: libnautilus-extensions/nautilus-file-operations.c:529
-#: libnautilus-extensions/nautilus-file.c:3289
+#: libnautilus-extensions/nautilus-file.c:3319
 #, c-format
 msgid "link to %s"
 msgstr "länk till %s"
 
-#: libnautilus-extensions/nautilus-file.c:3316
+#: libnautilus-extensions/nautilus-file.c:3346
 msgid "link (broken)"
 msgstr "länk (trasig)"
 
-#: libnautilus-extensions/nautilus-file.c:3324
+#: libnautilus-extensions/nautilus-file.c:3355
+msgid "folder"
+msgstr "mapp"
+
+#: libnautilus-extensions/nautilus-file.c:3358
 msgid "program"
 msgstr "program"
 
@@ -1969,7 +1973,7 @@ msgid "Switch to Manual Layout?"
 msgstr "Byt till manuell layout?"
 
 #: libnautilus-extensions/nautilus-icon-dnd.c:750
-#: src/nautilus-window-menus.c:547
+#: src/nautilus-window-menus.c:548
 msgid "Switch"
 msgstr "Byt"
 
@@ -2005,7 +2009,7 @@ msgid "Prefs Box"
 msgstr "Inställningsfönster"
 
 #: libnautilus-extensions/nautilus-program-chooser.c:188
-#: src/nautilus-window.c:713
+#: src/nautilus-window.c:717
 #, c-format
 msgid "View as %s"
 msgstr "Visa som %s"
@@ -2672,20 +2676,20 @@ msgid "_New Folder"
 msgstr "_Ny mapp"
 
 #: src/file-manager/fm-directory-view.c:2890
-#: src/file-manager/fm-directory-view.c:3110
+#: src/file-manager/fm-directory-view.c:3112
 #, c-format
 msgid "%s Viewer"
 msgstr "%s-visare"
 
-#: src/file-manager/fm-directory-view.c:3144
+#: src/file-manager/fm-directory-view.c:3146
 msgid "Delete all selected items permanently"
 msgstr "Ta bort alla markerade objekt permanent"
 
-#: src/file-manager/fm-directory-view.c:3151
+#: src/file-manager/fm-directory-view.c:3153
 msgid "Move all selected items to the Trash"
 msgstr "Flytta alla markerade objekt till papperskorgen"
 
-#: src/file-manager/fm-directory-view.c:3461
+#: src/file-manager/fm-directory-view.c:3463
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the trash?"
@@ -2693,7 +2697,7 @@ msgstr ""
 "Den här länken kan inte användas eftersom den inte har något mål. Vill du "
 "kasta den här länken i papperskorgen?"
 
-#: src/file-manager/fm-directory-view.c:3464
+#: src/file-manager/fm-directory-view.c:3466
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -2702,15 +2706,15 @@ msgstr ""
 "Den här länken kan inte användas eftersom dess mål \"%s\" inte finns. Vill "
 "du kasta den här länken i papperskorgen?"
 
-#: src/file-manager/fm-directory-view.c:3470
+#: src/file-manager/fm-directory-view.c:3472
 msgid "Broken Link"
 msgstr "Trasig länk"
 
-#: src/file-manager/fm-directory-view.c:3471
+#: src/file-manager/fm-directory-view.c:3473
 msgid "Throw Away"
 msgstr "Kasta"
 
-#: src/file-manager/fm-directory-view.c:3534
+#: src/file-manager/fm-directory-view.c:3536
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
@@ -2718,7 +2722,7 @@ msgstr ""
 "Tyvärr, men du kan inte köra kommandon från en fjärrplats på grund av "
 "säkerhetsskäl."
 
-#: src/file-manager/fm-directory-view.c:3535
+#: src/file-manager/fm-directory-view.c:3537
 msgid "Can't execute remote links"
 msgstr "Kunde inte köra fjärrlänkar"
 
@@ -3302,7 +3306,7 @@ msgstr "Bokmärken"
 msgid "Location"
 msgstr "Plats"
 
-#: src/nautilus-bookmarks-window.c:191 src/nautilus-window-menus.c:758
+#: src/nautilus-bookmarks-window.c:191 src/nautilus-window-menus.c:759
 msgid "Remove"
 msgstr "Ta bort"
 
@@ -3542,20 +3546,20 @@ msgid "Add or remove sets of links by clicking on the checkboxes below."
 msgstr ""
 "Lägg till eller ta bort länksamlingar genom att klicka i kryssrutorna nedan."
 
-#: src/nautilus-location-bar.c:131
+#: src/nautilus-location-bar.c:134
 #, c-format
 msgid "Do you want to view these %d locations in separate windows?"
 msgstr "Vill du se dessa %d platser i separata fönster?"
 
-#: src/nautilus-location-bar.c:138
+#: src/nautilus-location-bar.c:141
 msgid "View in Multiple Windows?"
 msgstr "Visa i flera fönster?"
 
-#: src/nautilus-location-bar.c:446 src/nautilus-location-bar.c:573
+#: src/nautilus-location-bar.c:449 src/nautilus-location-bar.c:590
 msgid "Location:"
 msgstr "   Plats:"
 
-#: src/nautilus-location-bar.c:575
+#: src/nautilus-location-bar.c:592
 msgid "   Go To:"
 msgstr " Gå till:"
 
@@ -3937,11 +3941,11 @@ msgid "Open with..."
 msgstr "Öppna med..."
 
 #. Create button first so we can use it for auto_click
-#: src/nautilus-simple-search-bar.c:103
+#: src/nautilus-simple-search-bar.c:129
 msgid "Find Them!"
 msgstr "Hitta dem!"
 
-#: src/nautilus-switchable-search-bar.c:107
+#: src/nautilus-switchable-search-bar.c:132
 msgid "Search For:"
 msgstr "Sök efter:"
 
@@ -4027,21 +4031,21 @@ msgstr "Kunde inte ta bort tema"
 msgid "No information available for the  %s theme"
 msgstr "Ingen information finns tillgänglig för temat %s"
 
-#: src/nautilus-window.c:945
+#: src/nautilus-window.c:949
 #, c-format
 msgid "View as %s..."
 msgstr "Visa som %s..."
 
 #. Add "View as Other..." extra bonus choice.
-#: src/nautilus-window.c:967
+#: src/nautilus-window.c:971
 msgid "View as Other..."
 msgstr "Visa som annat...."
 
-#: src/nautilus-window.c:1492
+#: src/nautilus-window.c:1496
 msgid "Close"
 msgstr "Stäng"
 
-#: src/nautilus-window-manage-views.c:250 src/nautilus-window-menus.c:619
+#: src/nautilus-window-manage-views.c:250 src/nautilus-window-menus.c:620
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -4156,7 +4160,7 @@ msgstr "Kan inte visa plats"
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
 #.
-#: src/nautilus-window-menus.c:321
+#: src/nautilus-window-menus.c:322
 msgid ""
 "Are you sure you want to forget history? If you do, you will be doomed to "
 "repeat it."
@@ -4164,50 +4168,50 @@ msgstr ""
 "Är du säker på att du vill glömma historien? I så fall kommer du att vara "
 "dömd att återuppleva den."
 
-#: src/nautilus-window-menus.c:324
+#: src/nautilus-window-menus.c:325
 msgid ""
 "Are you sure you want Nautilus to forget which locations you have visited?"
 msgstr ""
 "Är du säker på att du vill att Nautilus ska glömma de platser som du har "
 "besökt?"
 
-#: src/nautilus-window-menus.c:329
+#: src/nautilus-window-menus.c:330
 msgid "Forget History?"
 msgstr "Glöm historik?"
 
-#: src/nautilus-window-menus.c:330
+#: src/nautilus-window-menus.c:331
 msgid "Forget"
 msgstr "Glöm"
 
-#: src/nautilus-window-menus.c:430
+#: src/nautilus-window-menus.c:431
 msgid "Hide Status Bar"
 msgstr "Göm statusrad"
 
-#: src/nautilus-window-menus.c:431
+#: src/nautilus-window-menus.c:432
 msgid "Show Status Bar"
 msgstr "Visa statusrad"
 
-#: src/nautilus-window-menus.c:436
+#: src/nautilus-window-menus.c:437
 msgid "Hide Sidebar"
 msgstr "Göm sidorad"
 
-#: src/nautilus-window-menus.c:437
+#: src/nautilus-window-menus.c:438
 msgid "Show Sidebar"
 msgstr "Visa sidorad"
 
-#: src/nautilus-window-menus.c:442
+#: src/nautilus-window-menus.c:443
 msgid "Hide Tool Bar"
 msgstr "Göm verktygsrad"
 
-#: src/nautilus-window-menus.c:443
+#: src/nautilus-window-menus.c:444
 msgid "Show Tool Bar"
 msgstr "Visa verktygsrad"
 
-#: src/nautilus-window-menus.c:448
+#: src/nautilus-window-menus.c:449
 msgid "Hide Location Bar"
 msgstr "Göm platsrad"
 
-#: src/nautilus-window-menus.c:449
+#: src/nautilus-window-menus.c:450
 msgid "Show Location Bar"
 msgstr "Visa platsrad"
 
@@ -4216,7 +4220,7 @@ msgstr "Visa platsrad"
 #. * names of the middle user level ("Intermediate"). The 3rd %s is the name of the highest user
 #. * level ("Advanced").
 #.
-#: src/nautilus-window-menus.c:532
+#: src/nautilus-window-menus.c:533
 #, c-format
 msgid ""
 "None of the settings for the %s level can be edited. If you want to edit the "
@@ -4230,12 +4234,12 @@ msgstr ""
 #. Localizers: This is the title of the dialog that appears if the user chooses "Edit Beginner Settings".
 #. * The %s is the name of the middle user level ("Intermediate").
 #.
-#: src/nautilus-window-menus.c:544
+#: src/nautilus-window-menus.c:545
 #, c-format
 msgid "Switch to %s Level?"
 msgstr "Byta till användarnivån %s?"
 
-#: src/nautilus-window-menus.c:623
+#: src/nautilus-window-menus.c:624
 msgid ""
 "Nautilus is a graphical shell \n"
 "for GNOME that makes it \n"
@@ -4247,7 +4251,7 @@ msgstr ""
 "att hantera dina filer och \n"
 "resten av ditt system."
 
-#: src/nautilus-window-menus.c:753
+#: src/nautilus-window-menus.c:754
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -4256,28 +4260,28 @@ msgstr ""
 "Platsen \"%s\" finns inte. Vill du ta bort alla bokmärken med denna plats "
 "från din lista?"
 
-#: src/nautilus-window-menus.c:757
+#: src/nautilus-window-menus.c:758
 msgid "Bookmark for Nonexistent Location"
 msgstr "Bokmärke för icke-existerande plats"
 
-#: src/nautilus-window-menus.c:771
+#: src/nautilus-window-menus.c:772
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "Platsen \"%s\" finns inte längre."
 
-#: src/nautilus-window-menus.c:772
+#: src/nautilus-window-menus.c:773
 msgid "Go to Nonexistent Location"
 msgstr "Gå till ickeexisterande plats"
 
-#: src/nautilus-window-menus.c:831
+#: src/nautilus-window-menus.c:833
 msgid "Go to the specified location"
 msgstr "Gå till den angivna platsen"
 
-#: src/nautilus-window-menus.c:1321
+#: src/nautilus-window-menus.c:1322
 msgid "_Browse"
 msgstr "_Bläddra"
 
-#: src/nautilus-window-menus.c:1322
+#: src/nautilus-window-menus.c:1323
 msgid "_Find"
 msgstr "_Sök"
 
@@ -4285,7 +4289,7 @@ msgstr "_Sök"
 #. * dialog. %s will be replaced with the name of a user level
 #. * ("Beginner", "Intermediate", or "Advanced").
 #.
-#: src/nautilus-window-menus.c:1515
+#: src/nautilus-window-menus.c:1518
 #, c-format
 msgid "Edit %s Settings"
 msgstr "Ändra inställningar för %s..."
@@ -4295,7 +4299,7 @@ msgstr "Ändra inställningar för %s..."
 #. * the name of a user level ("Beginner", "Intermediate", or
 #. * "Advanced").
 #.
-#: src/nautilus-window-menus.c:1537
+#: src/nautilus-window-menus.c:1540
 #, c-format
 msgid "Edit %s Settings..."
 msgstr "Ändra inställningar för %s..."
