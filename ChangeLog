@@ -2,6 +2,60 @@
 
 	GNOME2_CONVERSION_COMPLETE eradication campaign
 
+	* libnautilus-private/nautilus-icon-factory.c: (cache_icon_new):
+	No last_unref_handler any more.
+	(cache_icon_unref): Just keep one ref for the factory, just like
+	in the old days, since we don't have a "last_unref_handler" any
+	more.
+	(nautilus_icon_factory_possibly_free_cached_icon): Look at
+	ref_count rather than looking at "outstanding" flag.
+	(nautilus_icon_factory_get_pixbuf_for_icon): Just ref, no fancy
+	"oustanding" logic.
+	(embed_text): Rewrite to use Pango.
+	
+	* src/file-manager/fm-list-model.h: Tweak formatting and order.
+	* src/file-manager/fm-list-model.c: Tweak formatting and order.
+	* src/file-manager/fm-list-view.h: Tweak formatting and order.
+	* src/file-manager/fm-list-view.c: Tweak formatting and order.
+	
+	* src/file-manager/fm-properties-window.c:
+	(select_image_button_callback): Turn this code back on.
+	
+	* src/nautilus-bookmarks-window.c: (on_row_move): Remove puts.
+	
+	* src/nautilus-complex-search-bar.c:
+	(nautilus_complex_search_bar_queue_resize): GnomeDock -> BonoboDock.
+	
+	* src/nautilus-property-browser.c: (nautilus_emblem_dialog_new):
+	Finish porting to GtkDialog.
+	(nautilus_color_selection_dialog_new): Finish porting to
+	GtkDialog.
+	(add_new_pattern): Re-enable some code.
+	(labeled_image_configure): Re-enable some code, take out other stuff.
+	(labeled_image_new): Take out some dead code.
+	(property_browser_category_button_new): Take out some dead code.
+	
+	* src/nautilus-sidebar-tabs.c: (tab_item_destroy),
+	(tab_indicator_changed_callback),
+	(nautilus_sidebar_tabs_connect_view):
+	Use a listener object now, not a listener ID.
+
+	* src/nautilus-simple-search-bar.c:
+	(nautilus_simple_search_bar_class_init): Remove some undo code.
+	
+	* src/nautilus-switchable-navigation-bar.c:
+	(nautilus_switchable_navigation_bar_set_mode): GnomeDock -> BonoboDock.
+	
+	* src/nautilus-switchable-search-bar.c:
+	(nautilus_switchable_search_bar_set_mode): GnomeDock -> BonoboDock.
+	
+	* src/nautilus-view-frame.c: (destroy_view): Make deregister code use
+	the BonoboUIEngine instead of the BonoboWindow.
+
+2002-01-24  Darin Adler  <darin@bentspoon.com>
+
+	GNOME2_CONVERSION_COMPLETE eradication campaign
+
 	* components/hardware/nautilus-hardware-view.c:
 	(nautilus_hardware_view_init): Re-enable the property bag.
 	

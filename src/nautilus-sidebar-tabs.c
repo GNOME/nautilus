@@ -82,7 +82,7 @@ typedef struct {
 	char *indicator_pixbuf_name;
 	GdkPixbuf *indicator_pixbuf;
 	int notebook_page;
-	Bonobo_EventSource_ListenerId listener_id;
+	Bonobo_Listener listener;
 	GtkWidget *tab_view;
 	GdkRectangle tab_rect;
 } TabItem;
@@ -349,6 +349,7 @@ static void
 tab_item_destroy (TabItem *item)
 {
 	Bonobo_PropertyBag property_bag;
+	CORBA_Environment ev;
 
 	g_free (item->tab_text);
 	g_free (item->indicator_pixbuf_name);
@@ -357,16 +358,18 @@ tab_item_destroy (TabItem *item)
 		g_object_unref (item->indicator_pixbuf);
 	}
 
-	if (item->listener_id != 0) {
+	if (item->listener != CORBA_OBJECT_NIL) {
 		property_bag = get_property_bag (item);
-		if (property_bag != CORBA_OBJECT_NIL) {	
-#ifdef GNOME2_CONVERSION_COMPLETE
+		if (property_bag != CORBA_OBJECT_NIL) {
 			bonobo_event_source_client_remove_listener
-				(property_bag, item->listener_id, NULL);
-#endif
+				(property_bag, item->listener, NULL);
 			bonobo_object_release_unref (property_bag, NULL);
 		}
+		CORBA_exception_init (&ev);
+		CORBA_Object_release (item->listener, &ev);
+		CORBA_exception_free (&ev);
 	}
+
 	g_free (item);
 }
 
@@ -1376,8 +1379,6 @@ get_tab_item_from_view (NautilusSidebarTabs *sidebar_tabs, GtkWidget *view)
 	return NULL;
 }
 
-#ifdef GNOME2_CONVERSION_COMPLETE
-
 /* check all of the tabs to see if their indicator pixmaps are ready for updating */
 static void
 nautilus_sidebar_tabs_update_all_indicators (NautilusSidebarTabs *sidebar_tabs)
@@ -1390,8 +1391,6 @@ nautilus_sidebar_tabs_update_all_indicators (NautilusSidebarTabs *sidebar_tabs)
 		nautilus_sidebar_tabs_update_tab_item (sidebar_tabs, tab_item);				
 	}
 }
-
-#endif
 
 /* check all of the tabs to see if their indicator pixmaps are ready for updating */
 static void
@@ -1409,12 +1408,10 @@ nautilus_sidebar_tabs_update_indicator (NautilusSidebarTabs *sidebar_tabs, GtkWi
 	}
 }
 
-#if GNOME2_CONVERSION_COMPLETE
-
 static void
 tab_indicator_changed_callback (BonoboListener *listener,
-				char *event_name,
-				CORBA_any *arg,
+				const char *event_name,
+				const CORBA_any *arg,
 				CORBA_Environment *ev,
 				gpointer callback_data)
 {
@@ -1423,8 +1420,6 @@ tab_indicator_changed_callback (BonoboListener *listener,
 	sidebar_tabs = NAUTILUS_SIDEBAR_TABS (callback_data);
 	nautilus_sidebar_tabs_update_all_indicators (sidebar_tabs);	
 }
-
-#endif
 
 /* listen for changes on the tab_image property */
 void
@@ -1440,11 +1435,10 @@ nautilus_sidebar_tabs_connect_view (NautilusSidebarTabs *sidebar_tabs, GtkWidget
 	
 	property_bag = get_property_bag (tab_item);
 	if (property_bag != CORBA_OBJECT_NIL) {
-#ifdef GNOME2_CONVERSION_COMPLETE
-		tab_item->listener_id = bonobo_event_source_client_add_listener
-			(property_bag, tab_indicator_changed_callback, 
-			 "Bonobo/Property:change:tab_image", NULL, sidebar_tabs); 
-#endif
+		tab_item->listener = bonobo_event_source_client_add_listener_full
+			(property_bag,
+			 g_cclosure_new (G_CALLBACK (tab_indicator_changed_callback), sidebar_tabs, NULL), 
+			 "Bonobo/Property:change:tab_image", NULL); 
 		bonobo_object_release_unref (property_bag, NULL);
 	}
 

@@ -57,20 +57,15 @@ static char * nautilus_simple_search_criteria_to_search_uri      (const char    
 static void  nautilus_simple_search_bar_class_init         (NautilusSimpleSearchBarClass *class);
 static void  nautilus_simple_search_bar_init               (NautilusSimpleSearchBar      *bar);
 static void  nautilus_simple_search_bar_finalize 	 	 (GObject 		       *object);
-#ifdef GNOME2_CONVERSION_COMPLETE
-static void  nautilus_simple_search_bar_destroy 	 	 (GtkObject 		       *object);
-#endif
+
 EEL_CLASS_BOILERPLATE (NautilusSimpleSearchBar,
-				   nautilus_simple_search_bar,
-				   NAUTILUS_TYPE_SEARCH_BAR)
+		       nautilus_simple_search_bar,
+		       NAUTILUS_TYPE_SEARCH_BAR)
 
 static void
 nautilus_simple_search_bar_class_init (NautilusSimpleSearchBarClass *klass)
 {
 	G_OBJECT_CLASS (klass)->finalize = nautilus_simple_search_bar_finalize;
-#ifdef GNOME2_CONVERSION_COMPLETE
-	GTK_OBJECT_CLASS (klass)->destroy = nautilus_simple_search_bar_destroy;
-#endif
 	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->activate = real_activate;
 	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->get_location = nautilus_simple_search_bar_get_location;  
 	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->set_location = nautilus_simple_search_bar_set_location;  
@@ -101,21 +96,6 @@ nautilus_simple_search_bar_init (NautilusSimpleSearchBar *bar)
 {
 	bar->details = g_new0 (NautilusSimpleSearchBarDetails, 1);
 }
-
-#ifdef GNOME2_CONVERSION_COMPLETE
-static void
-nautilus_simple_search_bar_destroy (GtkObject *object)
-{
-	NautilusSimpleSearchBar *bar;
-
-	bar = NAUTILUS_SIMPLE_SEARCH_BAR (object);
-
-	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (bar->details->entry), FALSE);
-	nautilus_undo_tear_down_nautilus_entry_for_undo (bar->details->entry);
-
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
-}
-#endif
 
 static void
 nautilus_simple_search_bar_finalize (GObject *object)

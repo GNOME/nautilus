@@ -31,6 +31,7 @@
 
 #include "nautilus-complex-search-bar.h"
 #include "nautilus-simple-search-bar.h"
+#include <bonobo/bonobo-dock.h>
 #include <gtk/gtkeventbox.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkvbox.h>
@@ -191,9 +192,7 @@ nautilus_switchable_search_bar_set_mode (NautilusSwitchableSearchBar *bar,
 					 NautilusSearchBarMode mode)
 {
 	char *location;
-#if GNOME2_CONVERSION_COMPLETE
 	GtkWidget *dock;
-#endif
 
 	g_return_if_fail (NAUTILUS_IS_SWITCHABLE_SEARCH_BAR (bar));
 	g_return_if_fail (mode == NAUTILUS_SIMPLE_SEARCH_BAR
@@ -223,17 +222,15 @@ nautilus_switchable_search_bar_set_mode (NautilusSwitchableSearchBar *bar,
 		break;
 	}
 
-#if GNOME2_CONVERSION_COMPLETE
 	/* FIXME bugzilla.gnome.org 43171:
 	 * We don't know why this line is needed here, but if it's removed
 	 * then the bar won't shrink when we switch to the simple search bar
 	 * (though it does grow when switching to the complex one).
 	 */
-	dock = gtk_widget_get_ancestor (GTK_WIDGET (bar), GNOME_TYPE_DOCK);
+	dock = gtk_widget_get_ancestor (GTK_WIDGET (bar), BONOBO_TYPE_DOCK);
 	if (dock != NULL) {
 		gtk_widget_queue_resize (dock);
 	}
-#endif
 }
 
 static char *

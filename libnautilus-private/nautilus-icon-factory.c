@@ -45,6 +45,7 @@
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-macros.h>
+#include <eel/eel-pango-extensions.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtksignal.h>
@@ -201,9 +202,6 @@ typedef struct {
 typedef struct {
 	GdkPixbuf *pixbuf;
 	NautilusIconDetails details;
-
-	/* If true, outside clients have refs to the pixbuf. */
-	gboolean outstanding;
 
 	/* Number of internal clients with refs to the pixbuf. */
 	guint internal_ref_count;
@@ -386,26 +384,6 @@ cache_key_destroy (CacheKey *key)
 	g_free (key);
 }
 
-#if GNOME2_CONVERSION_COMPLETE
-static void
-mark_icon_not_outstanding (GdkPixbuf *pixbuf, gpointer callback_data)
-{
-	NautilusIconFactory *factory;
-	CacheIcon *icon;
-
-	g_assert (callback_data == NULL);
-
-	factory = get_icon_factory ();
-
-	icon = g_hash_table_lookup (factory->cache_icons, pixbuf);
-        g_return_if_fail (icon != NULL);
-	g_return_if_fail (icon->pixbuf == pixbuf);
-	g_return_if_fail (icon->outstanding);
-
-	icon->outstanding = FALSE;
-}
-#endif
- 
 static CacheIcon *
 cache_icon_new (GdkPixbuf *pixbuf,
 		IconRequest request,
@@ -422,10 +400,6 @@ cache_icon_new (GdkPixbuf *pixbuf,
 
 	/* Grab the pixbuf since we are keeping it. */
 	g_object_ref (pixbuf);
-#if GNOME2_CONVERSION_COMPLETE
-	gdk_pixbuf_set_last_unref_handler
-		(pixbuf, mark_icon_not_outstanding, NULL);
-#endif
 
 	/* Make the icon. */
 	icon = g_new0 (CacheIcon, 1);
@@ -508,18 +482,7 @@ cache_icon_unref (CacheIcon *icon)
 	/* Remove from the cache icons table. */
 	g_hash_table_remove (factory->cache_icons, icon->pixbuf);
 
-	/* Since it's no longer in the cache, we don't need to notice the last unref. */
-#if GNOME2_CONVERSION_COMPLETE
-	gdk_pixbuf_set_last_unref_handler (icon->pixbuf, NULL, NULL);
-#endif
-
-	/* Let go of the pixbuf if we were holding a reference to it.
-	 * If it was still outstanding, we didn't have a reference to it,
-	 * and we were counting on the unref handler to catch it.
-	 */
-	if (!icon->outstanding) {
-		g_object_unref (icon->pixbuf);
-	}
+	g_object_unref (icon->pixbuf);
 
 	g_free (icon);
 }
@@ -601,7 +564,7 @@ nautilus_icon_factory_possibly_free_cached_icon (gpointer key,
 	}
 
 	/* Don't free a cache entry if the pixbuf is still in use. */
-	if (icon->outstanding) {
+	if (G_OBJECT (icon->pixbuf)->ref_count > 1) {
 		return FALSE;
 	}
 
@@ -1609,11 +1572,10 @@ load_specific_icon (NautilusScalableIcon *scalable_icon,
 	return icon;
 }
 
-#if GNOME2_CONVESION_COMPLETE
-
 static void
 destroy_fallback_icon (void)
 {
+#if 0
 	CacheIcon *icon;
 
 	icon = fallback_icon;
@@ -1621,9 +1583,8 @@ destroy_fallback_icon (void)
 	cache_icon_ref (icon);
 	fallback_icon = NULL;
 	cache_icon_unref (icon);
-}
-
 #endif
+}
 
 /* This load function is not allowed to return NULL. */
 static CacheIcon *
@@ -1675,9 +1636,7 @@ load_icon_for_scaling (NautilusScalableIcon *scalable_icon,
 			 NULL);
 		fallback_icon = cache_icon_new (pixbuf, FALSE, FALSE, NULL);
 		fallback_icon->is_fallback = TRUE;
-#if GNOME2_CONVERSION_COMPLETE
 		eel_debug_call_at_shutdown (destroy_fallback_icon);
-#endif
 	}
 
 	*actual_size_result = NAUTILUS_ICON_SIZE_STANDARD;
@@ -2036,19 +1995,8 @@ nautilus_icon_factory_get_pixbuf_for_icon (NautilusScalableIcon *scalable_icon,
 		return NULL;
 	}
 	
-	/* The first time we hand out an icon we just leave it with a
-	 * single ref (we'll get called back for the unref), but
-	 * subsequent times we add additional refs.
-	 */
 	pixbuf = icon->pixbuf;
-	if (!icon->outstanding) {
-		icon->outstanding = TRUE;
-#ifndef GNOME2_CONVERSION_COMPLETE
-		g_object_ref (pixbuf);
-#endif
-	} else {
-		g_object_ref (pixbuf);
-	}
+	g_object_ref (pixbuf);
 	cache_icon_unref (icon);
 
 	return pixbuf;
@@ -2211,17 +2159,19 @@ embedded_text_font_free (void)
 
 static GdkPixbuf *
 embed_text (GdkPixbuf *pixbuf_without_text,
-	    ArtIRect embedded_text_rect,
+	    ArtIRect text_rect,
 	    const char *text)
 {
 	GdkPixbuf *pixbuf_with_text;
+	PangoLayout *layout;
+	static PangoContext *context;
 	
 	g_return_val_if_fail (pixbuf_without_text != NULL, NULL);
 	
 	/* Quick out for the case where there's no place to embed the
 	 * text or the place is too small or there's no text.
 	 */
-	if (!embedded_text_rect_usable (embedded_text_rect) || eel_strlen (text) == 0) {
+	if (!embedded_text_rect_usable (text_rect) || eel_strlen (text) == 0) {
 		return NULL;
 	}
 
@@ -2239,32 +2189,21 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 	}
 
 	g_return_val_if_fail (EEL_IS_SCALABLE_FONT (embedded_text_font), NULL);
-	
-	smooth_text_layout = eel_smooth_text_layout_new (text,
-							 eel_strlen (text),
-							 embedded_text_font,
-							 EMBEDDED_TEXT_FONT_SIZE,
-							 FALSE);
-	g_return_val_if_fail (EEL_IS_SMOOTH_TEXT_LAYOUT (smooth_text_layout), NULL);
-	eel_smooth_text_layout_set_line_spacing (smooth_text_layout, EMBEDDED_TEXT_LINE_SPACING);
-	eel_smooth_text_layout_set_empty_line_height (smooth_text_layout, EMBEDDED_TEXT_EMPTY_LINE_HEIGHT);
 #endif
+	
+	if (context == NULL) {
+		context = eel_pango_ft2_get_context ();
+		eel_debug_call_at_shutdown_with_data (g_object_unref, context);
+	}
+	layout = pango_layout_new (context);
+	pango_layout_set_text (layout, text, -1);
 	
 	pixbuf_with_text = gdk_pixbuf_copy (pixbuf_without_text);
-
-#if GNOME2_CONVERSION_COMPLETE	
-	eel_smooth_text_layout_draw_to_pixbuf (smooth_text_layout,
-					       pixbuf_with_text,
-					       0,
-					       0,
-					       embedded_text_rect,
-					       GTK_JUSTIFY_LEFT,
-					       FALSE,
-					       EEL_RGB_COLOR_BLACK,
-					       EEL_OPACITY_FULLY_OPAQUE);
-	
-	g_object_unref (smooth_text_layout);
-#endif
+	/* FIXME: Need a version of eel_gdk_pixbuf_draw_layout that does clipping. */
+	eel_gdk_pixbuf_draw_layout (pixbuf_with_text,
+				    text_rect.x0, text_rect.y0, 
+				    EEL_RGB_COLOR_BLACK, layout);
+	g_object_unref (layout);
 
 	return pixbuf_with_text;
 }

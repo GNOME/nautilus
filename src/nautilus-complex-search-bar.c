@@ -32,6 +32,7 @@
 #include "nautilus-search-bar-criterion-private.h"
 #include "nautilus-search-bar-criterion.h"
 #include "nautilus-window-private.h"
+#include <bonobo/bonobo-dock.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
@@ -349,9 +350,7 @@ nautilus_complex_search_bar_set_location (NautilusNavigationBar *navigation_bar,
 void  
 nautilus_complex_search_bar_queue_resize (NautilusComplexSearchBar      *bar)
 {
-#if GNOME2_CONVERSION_COMPLETE
 	GtkWidget *dock;
-#endif
 
 	gtk_widget_queue_resize (bar->details->criteria_container);
 	/* FIXME bugzilla.gnome.org 43171:
@@ -363,12 +362,10 @@ nautilus_complex_search_bar_queue_resize (NautilusComplexSearchBar      *bar)
 	 * shrink when pressing the fewer options button, but it will if the
 	 * window is fairly narrow.
 	 */
-#if GNOME2_CONVERSION_COMPLETE
-	dock = gtk_widget_get_ancestor (GTK_WIDGET (bar), GNOME_TYPE_DOCK);
+	dock = gtk_widget_get_ancestor (GTK_WIDGET (bar), BONOBO_TYPE_DOCK);
 	if (dock != NULL) {
 		gtk_widget_queue_resize (dock);
 	}
-#endif
 }
 
 static void

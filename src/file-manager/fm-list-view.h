@@ -35,19 +35,16 @@
 #define FM_IS_LIST_VIEW(obj)		(GTK_CHECK_TYPE ((obj), FM_TYPE_LIST_VIEW))
 #define FM_IS_LIST_VIEW_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((klass), FM_TYPE_LIST_VIEW))
 
-typedef struct _FMListView FMListView;
-typedef struct _FMListViewClass FMListViewClass;
-typedef struct _FMListViewDetails FMListViewDetails;
+typedef struct FMListViewDetails FMListViewDetails;
 
-struct _FMListView {
+typedef struct {
 	FMDirectoryView parent_instance;
-
 	FMListViewDetails *details;
-};
+} FMListView;
 
-struct _FMListViewClass {
+typedef struct {
 	FMDirectoryViewClass parent_class;
-};
+} FMListViewClass;
 
 GType fm_list_view_get_type (void);
 

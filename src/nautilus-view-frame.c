@@ -172,6 +172,7 @@ stop_activation (NautilusViewFrame *view)
 static void
 destroy_view (NautilusViewFrame *view)
 {
+	BonoboUIEngine *engine;
 	CORBA_Environment ev;
 
 	if (view->details->view == CORBA_OBJECT_NIL) {
@@ -191,11 +192,10 @@ destroy_view (NautilusViewFrame *view)
 	view->details->control_frame = NULL;
 	view->details->zoomable_frame = NULL;
 
-#if GNOME2_CONVERSION_COMPLETE
-	if (view->details->ui_container->win != NULL) {
-		bonobo_window_deregister_dead_components (view->details->ui_container->win);
+	engine = bonobo_ui_container_get_engine (view->details->ui_container);
+	if (engine != NULL) {
+		bonobo_ui_engine_deregister_dead_components (engine);
 	}
-#endif
 	bonobo_object_unref (BONOBO_OBJECT (view->details->ui_container));
 	view->details->ui_container = NULL;
 }

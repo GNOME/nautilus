@@ -44,30 +44,32 @@ enum {
 	FM_LIST_MODEL_NUM_COLUMNS
 };
 
-typedef struct _FMListModel FMListModel;
-typedef struct _FMListModelClass FMListModelClass;
-typedef struct _FMListModelDetails FMListModelDetails;
+typedef struct FMListModelDetails FMListModelDetails;
 
-struct _FMListModel {
+typedef struct FMListModel {
 	GObject parent_instance;
-
 	FMListModelDetails *details;
-};
+} FMListModel;
 
-struct _FMListModelClass {
+typedef struct {
 	GObjectClass parent_class;
-};
+} FMListModelClass;
 
-GType fm_list_model_get_type (void);
-
-void fm_list_model_add_file (FMListModel *model, NautilusFile *file);
-void fm_list_model_file_changed (FMListModel *model, NautilusFile *file);
-gboolean fm_list_model_is_empty (FMListModel *model);
-void fm_list_model_remove_file (FMListModel *model, NautilusFile *file);
-void fm_list_model_clear (FMListModel *model);
-gboolean fm_list_model_get_tree_iter_from_file (FMListModel *model, NautilusFile *file, GtkTreeIter *iter);
-void fm_list_model_set_should_sort_directories_first (FMListModel *model, gboolean sort_directories_first);
-int fm_list_model_get_sort_column_id_from_attribute (const char *attribute);
-int fm_list_model_get_sort_column_id_from_sort_type (NautilusFileSortType sort_type);
+GType    fm_list_model_get_type                          (void);
+void     fm_list_model_add_file                          (FMListModel          *model,
+							  NautilusFile         *file);
+void     fm_list_model_file_changed                      (FMListModel          *model,
+							  NautilusFile         *file);
+gboolean fm_list_model_is_empty                          (FMListModel          *model);
+void     fm_list_model_remove_file                       (FMListModel          *model,
+							  NautilusFile         *file);
+void     fm_list_model_clear                             (FMListModel          *model);
+gboolean fm_list_model_get_tree_iter_from_file           (FMListModel          *model,
+							  NautilusFile         *file,
+							  GtkTreeIter          *iter);
+void     fm_list_model_set_should_sort_directories_first (FMListModel          *model,
+							  gboolean              sort_directories_first);
+int      fm_list_model_get_sort_column_id_from_attribute (const char           *attribute);
+int      fm_list_model_get_sort_column_id_from_sort_type (NautilusFileSortType  sort_type);
 
 #endif /* FM_LIST_MODEL_H */

@@ -31,14 +31,15 @@
 #include "nautilus-switchable-navigation-bar.h"
 
 #include "nautilus-switchable-search-bar.h"
+#include <bonobo/bonobo-dock.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-string.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkvbox.h>
 #include <libgnome/gnome-i18n.h>
 #include <libnautilus-private/nautilus-directory.h>
-#include <eel/eel-gtk-macros.h>
 #include <libnautilus-private/nautilus-search-uri.h>
-#include <eel/eel-string.h>
 #include <stdio.h>
 
 struct NautilusSwitchableNavigationBarDetails {
@@ -189,9 +190,7 @@ nautilus_switchable_navigation_bar_set_mode (NautilusSwitchableNavigationBar    
 					     NautilusSwitchableNavigationBarMode  mode)
 {
 	GtkWidget *widget_to_hide, *widget_to_show;
-#if GNOME2_CONVERSION_COMPLETE
 	GtkWidget *dock;
-#endif
 
 	if (bar->details->mode == mode) {
 		return;
@@ -224,18 +223,16 @@ nautilus_switchable_navigation_bar_set_mode (NautilusSwitchableNavigationBar    
 
 	nautilus_switchable_navigation_bar_activate (bar);
 
-#if GNOME2_CONVERSION_COMPLETE
 	/* FIXME bugzilla.gnome.org 43171:
 	 * We don't know why this line is needed here, but if it's removed
 	 * then the bar won't shrink when we switch from the complex search
 	 * bar to the location bar (though it does grow when switching in
 	 * the other direction)
 	 */
-	dock = gtk_widget_get_ancestor (GTK_WIDGET (bar), GNOME_TYPE_DOCK);
+	dock = gtk_widget_get_ancestor (GTK_WIDGET (bar), BONOBO_TYPE_DOCK);
 	if (dock != NULL) {
 		gtk_widget_queue_resize (dock);
 	}
-#endif
 
 	g_signal_emit (bar, signals[MODE_CHANGED], 0, mode);
 }

@@ -32,7 +32,7 @@
 
 #define G_SLIST(x) ((GSList *) x)
 
-struct _FMListModelDetails {
+struct FMListModelDetails {
 	GSList *files;
 	GSList *tail;
 	int length;
@@ -50,7 +50,7 @@ typedef struct {
 	int sort_column_id;
 } AttributeEntry;
 
-AttributeEntry attributes[] = {
+static const AttributeEntry attributes[] = {
 	{ "name", FM_LIST_MODEL_NAME_COLUMN },
 	{ "icon", FM_LIST_MODEL_TYPE_COLUMN },
 #ifdef GNOME2_CONVERSION_COMPLETE
@@ -60,128 +60,6 @@ AttributeEntry attributes[] = {
 	{ "type", FM_LIST_MODEL_TYPE_COLUMN },
 	{ "date_modified", FM_LIST_MODEL_DATE_MODIFIED_COLUMN },
 };
-
-static void         fm_list_model_init            (FMListModel          *list_store);
-static void         fm_list_model_class_init      (FMListModelClass     *klass);
-static void         fm_list_model_tree_model_init (GtkTreeModelIface    *iface);
-static void         fm_list_model_sortable_init   (GtkTreeSortableIface *iface);
-static void         fm_list_model_drag_source_init (GtkTreeDragSourceIface *iface);
-static guint        fm_list_model_get_flags       (GtkTreeModel         *tree_model);
-static int          fm_list_model_get_n_columns   (GtkTreeModel         *tree_model);
-static GType        fm_list_model_get_column_type (GtkTreeModel         *tree_model,
-						   int                   index);
-static gboolean     fm_list_model_get_iter        (GtkTreeModel         *tree_model,
-						   GtkTreeIter          *iter,
-						   GtkTreePath          *path);
-static GtkTreePath *fm_list_model_get_path        (GtkTreeModel         *tree_model,
-						   GtkTreeIter          *iter);
-static void         fm_list_model_get_value       (GtkTreeModel         *tree_model,
-						   GtkTreeIter          *iter,
-						   int                   column,
-						   GValue               *value);
-static gboolean     fm_list_model_iter_next       (GtkTreeModel         *tree_model,
-						   GtkTreeIter          *iter);
-static gboolean     fm_list_model_iter_children   (GtkTreeModel         *tree_model,
-						   GtkTreeIter          *iter,
-						   GtkTreeIter          *parent);
-static gboolean     fm_list_model_iter_has_child  (GtkTreeModel         *tree_model,
-						   GtkTreeIter          *iter);
-static int          fm_list_model_iter_n_children (GtkTreeModel         *tree_model,
-						   GtkTreeIter          *iter);
-static gboolean     fm_list_model_iter_nth_child  (GtkTreeModel         *tree_model,
-						   GtkTreeIter          *iter,
-						   GtkTreeIter          *parent,
-						   int                   n);
-static gboolean     fm_list_model_iter_parent     (GtkTreeModel         *tree_model,
-						   GtkTreeIter          *iter,
-						   GtkTreeIter          *child);
-
-/* Sortable */
-static gboolean     fm_list_model_get_sort_column_id (GtkTreeSortable *sortable,
-						      gint            *sort_column_id,
-						      GtkSortType     *order);
-
-GType
-fm_list_model_get_type (void)
-{
-	static GType object_type = 0;
-
-	if (object_type == 0) {
-		static const GTypeInfo object_info = {
-			sizeof (FMListModelClass),
-			NULL,		/* base_init */
-			NULL,		/* base_finalize */
-			(GClassInitFunc) fm_list_model_class_init,
-			NULL,		/* class_finalize */
-			NULL,		/* class_data */
-			sizeof (FMListModel),
-			0,
-			(GInstanceInitFunc) fm_list_model_init,
-		};
-
-		static const GInterfaceInfo tree_model_info = {
-			(GInterfaceInitFunc) fm_list_model_tree_model_init,
-			NULL,
-			NULL
-		};
-
-		static const GInterfaceInfo sortable_info = {
-			(GInterfaceInitFunc) fm_list_model_sortable_init,
-			NULL,
-			NULL
-		};
-
-		static const GInterfaceInfo drag_source_info = {
-			(GInterfaceInitFunc) fm_list_model_drag_source_init,
-			NULL,
-			NULL
-		};
-		
-		object_type = g_type_register_static (G_TYPE_OBJECT, "FMListModel", &object_info, 0);
-		g_type_add_interface_static (object_type,
-					     GTK_TYPE_TREE_MODEL,
-					     &tree_model_info);
-		g_type_add_interface_static (object_type,
-					     GTK_TYPE_TREE_SORTABLE,
-					     &sortable_info);
-		g_type_add_interface_static (object_type,
-					     GTK_TYPE_TREE_DRAG_SOURCE,
-					     &drag_source_info);
-	}
-	
-	return object_type;
-	
-}
-
-static void
-fm_list_model_init (FMListModel *model)
-{
-	model->details = g_new0 (FMListModelDetails, 1);
-	model->details->stamp = g_random_int ();
-	model->details->sort_column_id = -1;
-}
-
-static void
-fm_list_model_class_init (FMListModelClass *klass)
-{
-}
-
-static void
-fm_list_model_tree_model_init (GtkTreeModelIface *iface)
-{
-	iface->get_flags = fm_list_model_get_flags;
-	iface->get_n_columns = fm_list_model_get_n_columns;
-	iface->get_column_type = fm_list_model_get_column_type;
-	iface->get_iter = fm_list_model_get_iter;
-	iface->get_path = fm_list_model_get_path;
-	iface->get_value = fm_list_model_get_value;
-	iface->iter_next = fm_list_model_iter_next;
-	iface->iter_children = fm_list_model_iter_children;
-	iface->iter_has_child = fm_list_model_iter_has_child;
-	iface->iter_n_children = fm_list_model_iter_n_children;
-	iface->iter_nth_child = fm_list_model_iter_nth_child;
-	iface->iter_parent = fm_list_model_iter_parent;
-}
 
 static guint
 fm_list_model_get_flags (GtkTreeModel *tree_model)
@@ -597,14 +475,6 @@ fm_list_model_has_default_sort_func (GtkTreeSortable *sortable)
 	return FALSE;
 }
 
-static void
-fm_list_model_sortable_init (GtkTreeSortableIface *iface)
-{
-	iface->get_sort_column_id = fm_list_model_get_sort_column_id;
-	iface->set_sort_column_id = fm_list_model_set_sort_column_id;
-	iface->has_default_sort_func = fm_list_model_has_default_sort_func;
-}
-
 static gboolean
 fm_list_model_row_draggable (GtkTreeDragSource *drag_source, GtkTreePath *path)
 {
@@ -618,13 +488,6 @@ fm_list_model_drag_data_get (GtkTreeDragSource *drag_source, GtkTreePath *path, 
 	return FALSE;
 }
 
-
-static void
-fm_list_model_drag_source_init (GtkTreeDragSourceIface *iface)
-{
-	iface->row_draggable = fm_list_model_row_draggable;
-	iface->drag_data_get = fm_list_model_drag_data_get;
-}
 
 void
 fm_list_model_add_file (FMListModel *model, NautilusFile *file)
@@ -855,4 +718,101 @@ fm_list_model_get_sort_column_id_from_sort_type (NautilusFileSortType sort_type)
 	}
 
 	return -1;
+}
+
+static void
+fm_list_model_init (FMListModel *model)
+{
+	model->details = g_new0 (FMListModelDetails, 1);
+	model->details->stamp = g_random_int ();
+	model->details->sort_column_id = -1;
+}
+
+static void
+fm_list_model_class_init (FMListModelClass *klass)
+{
+}
+
+static void
+fm_list_model_tree_model_init (GtkTreeModelIface *iface)
+{
+	iface->get_flags = fm_list_model_get_flags;
+	iface->get_n_columns = fm_list_model_get_n_columns;
+	iface->get_column_type = fm_list_model_get_column_type;
+	iface->get_iter = fm_list_model_get_iter;
+	iface->get_path = fm_list_model_get_path;
+	iface->get_value = fm_list_model_get_value;
+	iface->iter_next = fm_list_model_iter_next;
+	iface->iter_children = fm_list_model_iter_children;
+	iface->iter_has_child = fm_list_model_iter_has_child;
+	iface->iter_n_children = fm_list_model_iter_n_children;
+	iface->iter_nth_child = fm_list_model_iter_nth_child;
+	iface->iter_parent = fm_list_model_iter_parent;
+}
+
+static void
+fm_list_model_sortable_init (GtkTreeSortableIface *iface)
+{
+	iface->get_sort_column_id = fm_list_model_get_sort_column_id;
+	iface->set_sort_column_id = fm_list_model_set_sort_column_id;
+	iface->has_default_sort_func = fm_list_model_has_default_sort_func;
+}
+
+static void
+fm_list_model_drag_source_init (GtkTreeDragSourceIface *iface)
+{
+	iface->row_draggable = fm_list_model_row_draggable;
+	iface->drag_data_get = fm_list_model_drag_data_get;
+}
+
+GType
+fm_list_model_get_type (void)
+{
+	static GType object_type = 0;
+
+	if (object_type == 0) {
+		static const GTypeInfo object_info = {
+			sizeof (FMListModelClass),
+			NULL,		/* base_init */
+			NULL,		/* base_finalize */
+			(GClassInitFunc) fm_list_model_class_init,
+			NULL,		/* class_finalize */
+			NULL,		/* class_data */
+			sizeof (FMListModel),
+			0,
+			(GInstanceInitFunc) fm_list_model_init,
+		};
+
+		static const GInterfaceInfo tree_model_info = {
+			(GInterfaceInitFunc) fm_list_model_tree_model_init,
+			NULL,
+			NULL
+		};
+
+		static const GInterfaceInfo sortable_info = {
+			(GInterfaceInitFunc) fm_list_model_sortable_init,
+			NULL,
+			NULL
+		};
+
+		static const GInterfaceInfo drag_source_info = {
+			(GInterfaceInitFunc) fm_list_model_drag_source_init,
+			NULL,
+			NULL
+		};
+		
+		object_type = g_type_register_static (G_TYPE_OBJECT, "FMListModel", &object_info, 0);
+		g_type_add_interface_static (object_type,
+					     GTK_TYPE_TREE_MODEL,
+					     &tree_model_info);
+		g_type_add_interface_static (object_type,
+					     GTK_TYPE_TREE_SORTABLE,
+					     &sortable_info);
+		g_type_add_interface_static (object_type,
+					     GTK_TYPE_TREE_DRAG_SOURCE,
+					     &drag_source_info);
+	}
+	
+	return object_type;
+	
 }

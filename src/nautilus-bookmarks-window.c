@@ -480,7 +480,6 @@ on_row_move (GtkCList *clist,
 {
 	NautilusBookmark *bookmark;
 
-	puts (__FUNCTION__);
 	bookmark = nautilus_bookmark_copy(
 		nautilus_bookmark_list_item_at(bookmarks, old_row));
 

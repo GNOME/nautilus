@@ -955,11 +955,9 @@ nautilus_emblem_dialog_new (NautilusPropertyBrowser *property_browser)
 	gtk_entry_set_text(GTK_ENTRY(entry), property_browser->details->image_path);
 	
 	/* install the table in the dialog */	
-	gtk_widget_show(table);	
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), table, TRUE, TRUE, GNOME_PAD);
-#if GNOME2_CONVERSION_COMPLETE
-	gtk_dialog_set_default(GTK_DIALOG(dialog), GNOME_OK);
-#endif
+	gtk_widget_show (table);	
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), table, TRUE, TRUE, GNOME_PAD);
+	gtk_dialog_set_default_response (GTK_DIALOG(dialog), GTK_RESPONSE_OK);
 	gtk_window_set_wmclass(GTK_WINDOW(dialog), "emblem_dialog", "Nautilus");
 	
 	return dialog;
@@ -1005,16 +1003,12 @@ nautilus_color_selection_dialog_new (NautilusPropertyBrowser *property_browser)
 		
 	/* install the table in the dialog */
 	
-	gtk_widget_show(table);	
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), table, TRUE, TRUE, GNOME_PAD);
-#if GNOME2_CONVERSION_COMPLETE
-	gtk_dialog_set_default(GTK_DIALOG(dialog), GNOME_OK);
-#endif
+	gtk_widget_show (table);	
+	gtk_box_pack_start (GTK_BOX(GTK_DIALOG(dialog)->vbox), table, TRUE, TRUE, GNOME_PAD);
+	gtk_dialog_set_default_response (GTK_DIALOG(dialog), GTK_RESPONSE_OK);
 	
 	return dialog;
 }
-
-#if GNOME2_CONVERSION_COMPLETE
 
 /* add the newly selected file to the browser images */
 static void
@@ -1089,8 +1083,6 @@ add_pattern_to_browser (const char *path_name, gpointer *data)
 	nautilus_property_browser_update_contents (property_browser);
 }
 
-#endif
-
 /* here's where we initiate adding a new pattern by putting up a file selector */
 
 static void
@@ -1102,7 +1094,6 @@ add_new_pattern (NautilusPropertyBrowser *property_browser)
 			gdk_window_raise(property_browser->details->dialog->window);
 		}
 	} else {
-#if GNOME2_CONVERSION_COMPLETE
 		property_browser->details->dialog = 
 			eel_gnome_icon_selector_new (_("Select an image file to add as a pattern:"),
 				DATADIR "/pixmaps/tiles/",
@@ -1111,7 +1102,6 @@ add_new_pattern (NautilusPropertyBrowser *property_browser)
 				property_browser);						   
 
 		eel_nullify_when_destroyed (&property_browser->details->dialog);
-#endif
 	}
 }
 
@@ -1578,13 +1568,7 @@ labeled_image_configure (EelLabeledImage *labeled_image)
 {
 	g_return_if_fail (EEL_IS_LABELED_IMAGE (labeled_image));
 
-#if GNOME2_CONVERSION_COMPLETE
-	eel_labeled_image_set_background_mode (labeled_image,
-					       EEL_SMOOTH_BACKGROUND_SOLID_COLOR);
-	eel_labeled_image_set_solid_background_color (labeled_image,
-						      EEL_RGB_COLOR_WHITE);		
 	eel_labeled_image_set_spacing (labeled_image, LABELED_IMAGE_SPACING);
-#endif
 }
 
 /* Make a color tile for a property */
@@ -1598,12 +1582,6 @@ labeled_image_new (const char *text,
 	
 	labeled_image = eel_labeled_image_new (text, pixbuf);
 	labeled_image_configure (EEL_LABELED_IMAGE (labeled_image));
-#if GNOME2_CONVERSION_COMPLETE
-	if (num_smaller > 0) {
-		eel_labeled_image_make_smaller (EEL_LABELED_IMAGE (labeled_image),
-						     num_smaller);
-	}
-#endif
 
 	if (property_name != NULL) {
 		g_object_set_data_full (G_OBJECT (labeled_image),
@@ -1853,13 +1831,7 @@ property_browser_category_button_new (const char *display_name,
 	file_name = nautilus_pixmap_file (image); 
 	g_return_val_if_fail (file_name != NULL, NULL);
 
-	button = eel_labeled_image_toggle_button_new_from_file_name (display_name,
-									  file_name);
-
-#if GNOME2_CONVERSION_COMPLETE
-	/* We want the label to never be smooth */
-	eel_labeled_image_set_label_never_smooth (EEL_LABELED_IMAGE (GTK_BIN (button)->child), TRUE);
-#endif
+	button = eel_labeled_image_toggle_button_new_from_file_name (display_name, file_name);
 
 	/* We also want all of the buttons to be the same height */
 	eel_labeled_image_set_fixed_image_height (EEL_LABELED_IMAGE (GTK_BIN (button)->child), STANDARD_BUTTON_IMAGE_HEIGHT);

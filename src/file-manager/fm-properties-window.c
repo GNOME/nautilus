@@ -2510,17 +2510,15 @@ set_icon_callback (const char* icon_path, FMPropertiesWindow *properties_window)
 static void
 select_image_button_callback (GtkWidget *widget, FMPropertiesWindow *properties_window)
 {
-#if GNOME2_CONVERSION_COMPLETE
 	GtkWidget *dialog;
 
 	g_assert (FM_IS_PROPERTIES_WINDOW (properties_window));
 
 	dialog = eel_gnome_icon_selector_new (_("Select an icon:"),
-						   NULL,
-						   GTK_WINDOW (properties_window),
-						   (EelIconSelectionFunction) set_icon_callback,
-						   properties_window);						   
-#endif
+					      NULL,
+					      GTK_WINDOW (properties_window),
+					      (EelIconSelectionFunction) set_icon_callback,
+					      properties_window);						   
 }
 
 static void

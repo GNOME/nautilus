@@ -30,17 +30,17 @@
 #include "fm-list-model.h"
 #include <eel/eel-cell-renderer-pixbuf-list.h>
 #include <eel/eel-dnd.h>
-#include <eel/eel-gtk-macros.h>
 #include <gtk/gtkcellrendererpixbuf.h>
 #include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtktreeselection.h>
 #include <gtk/gtktreeview.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-macros.h>
 #include <libnautilus-private/nautilus-directory-background.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-metadata.h>
 
-struct _FMListViewDetails {
+struct FMListViewDetails {
 	GtkTreeView *tree_view;
 	FMListModel *model;
 };
@@ -61,34 +61,10 @@ static GtkTargetEntry drag_types [] = {
 static NautilusFileSortType	default_sort_order_auto_value;
 static gboolean			default_sort_reversed_auto_value;
 
-static void        fm_list_view_init                  (FMListView      *list_view);
-static void        fm_list_view_class_init            (FMListViewClass *klass);
-static void        create_and_set_up_tree_view        (FMListView      *view);
-
-static void        fm_list_view_begin_loading         (FMDirectoryView *view);
-static GtkWidget * fm_list_view_get_background_widget (FMDirectoryView *view);
 static GList *     fm_list_view_get_selection         (FMDirectoryView *view);
-static gboolean    fm_list_view_is_empty              (FMDirectoryView *view);
-static void        fm_list_view_remove_file           (FMDirectoryView *view,
-						       NautilusFile    *file);
-static void        fm_list_view_set_selection         (FMDirectoryView *view,
-						       GList           *selection);
-static void        fm_list_view_sort_directories_first_changed (FMDirectoryView *view);
 
-EEL_CLASS_BOILERPLATE (FMListView,
-				   fm_list_view,
-				   FM_TYPE_DIRECTORY_VIEW)
-
-static void
-fm_list_view_init (FMListView *list_view)
-{
-	list_view->details = g_new0 (FMListViewDetails, 1);
-
-	list_view->details->model = g_object_new (FM_TYPE_LIST_MODEL, NULL);
-	fm_list_model_set_should_sort_directories_first (list_view->details->model,
-							 fm_directory_view_should_sort_directories_first (FM_DIRECTORY_VIEW (list_view)));
-	create_and_set_up_tree_view (list_view);
-}
+GNOME_CLASS_BOILERPLATE (FMListView, fm_list_view,
+			 FMDirectoryView, FM_TYPE_DIRECTORY_VIEW)
 
 static void
 list_selection_changed_callback (GtkTreeSelection *selection, gpointer user_data)
@@ -126,6 +102,7 @@ create_and_set_up_tree_view (FMListView *view)
 	g_signal_connect (view->details->tree_view, "row_activated",
 			  G_CALLBACK (list_activate_callback), view);
 	
+	view->details->model = g_object_new (FM_TYPE_LIST_MODEL, NULL);
 	gtk_tree_view_set_model (view->details->tree_view, GTK_TREE_MODEL (view->details->model));
 	g_object_unref (view->details->model);
 	
@@ -212,9 +189,8 @@ set_sort_order_from_metadata_and_preferences (FMListView *list_view)
 				    sort_attribute);
 
 	if (sort_attribute == NULL) {
-		sort_column_id= fm_list_model_get_sort_column_id_from_sort_type (default_sort_order_auto_value);
-	}
-	else {
+		sort_column_id = fm_list_model_get_sort_column_id_from_sort_type (default_sort_order_auto_value);
+	} else {
 		sort_column_id = fm_list_model_get_sort_column_id_from_attribute (sort_attribute);
 	}
 	
@@ -319,13 +295,14 @@ fm_list_view_set_selection (FMDirectoryView *view, GList *selection)
 
 	for (list = selection; list; list = list->next) {
 		file = list->data;
-		if (fm_list_model_get_tree_iter_from_file (list_view->details->model, file, &iter) == TRUE) {
+		if (fm_list_model_get_tree_iter_from_file (list_view->details->model, file, &iter)) {
 			gtk_tree_selection_select_iter (gtk_tree_view_get_selection (list_view->details->tree_view), &iter);
 		}
 	}
 }
 
 #if 0
+
 static char *
 get_attribute_from_sort_type (NautilusFileSortType sort_type)
 {
@@ -363,13 +340,18 @@ fm_list_view_sort_directories_first_changed (FMDirectoryView *view)
 
 	fm_list_model_set_should_sort_directories_first (list_view->details->model,
 							 fm_directory_view_should_sort_directories_first (view));
-
 }
 
 static void
 fm_list_view_finalize (GObject *object)
 {
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+	FMListView *list_view;
+
+	list_view = FM_LIST_VIEW (object);
+
+	g_free (list_view->details);
+
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void
@@ -398,4 +380,14 @@ fm_list_view_class_init (FMListViewClass *klass)
 					  (int *) &default_sort_order_auto_value);
 	eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
 					  &default_sort_reversed_auto_value);
+}
+
+static void
+fm_list_view_instance_init (FMListView *list_view)
+{
+	list_view->details = g_new0 (FMListViewDetails, 1);
+
+	create_and_set_up_tree_view (list_view);
+
+	fm_list_view_sort_directories_first_changed (FM_DIRECTORY_VIEW (list_view));
 }
