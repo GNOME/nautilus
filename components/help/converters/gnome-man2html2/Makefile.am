@@ -7,9 +7,9 @@ INCLUDES = 			\
 
 LDADD =
 
-bin_PROGRAMS = gnome-man2html
+bin_PROGRAMS = gnome-man2html2
 
-gnome_man2html_SOURCES = gnome-man2html.c
+gnome_man2html2_SOURCES = gnome-man2html.c
 
 #CFLAGS += -Wall
 

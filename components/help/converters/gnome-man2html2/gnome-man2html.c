@@ -4,7 +4,18 @@
 **
 ** Permission is granted to distribute, modify and use this program as long
 ** as this comment is not removed or changed.
+* In addition,
+*
+* Copyright (C) 1999 Red Hat Software
+* Changes licensed under the GNU Public License.
 */
+
+/*
+ * gnome-man2html2
+ * This version modified for GNOME - December 1999
+ * Elliot Lee <sopwith@redhat.com>
+ * May this code live forever :)
+ */
 
 /* 
  * gnome-man2html
@@ -551,16 +562,16 @@ add_links(char *c)
 						       "file:/usr/man/man%c/%s.%c\">%s</A>", 
 						       sec, h, sec, h);
 #else
-					if (subsec)
-						printf("<A HREF=\"man:"
-						       "%s(%c%c)\">%s</A>",
-						       h, sec, 
-						       tolower(subsec), h);
-					else
-						printf("<A HREF=\"man:"
-						       "%s(%c)\">%s</A>",
-						       h, sec, h);
+					/* The code used to take
+					   'subsec' into account, but
+					   (a) 'subsec' can be more than
+					   one character (b) We have
+					   no use for that information */
 
+					printf("<A HREF=\"man:"
+					       "%s.%c\">%s</A>",
+					       h, sec,
+					       h);
 #endif
 					*e=t;
 					c=e;
