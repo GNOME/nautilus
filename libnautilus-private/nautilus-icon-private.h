@@ -54,7 +54,6 @@ typedef struct {
 	nautilus_boolean_bit was_selected_before_rubberband : 1;
 } NautilusIcon;
 
-
 
 /* Private NautilusIconContainer members. */
 
@@ -72,9 +71,11 @@ typedef struct {
 } NautilusIconRubberbandInfo;
 
 typedef enum {
-	DRAG_ACTION_MOVE_OR_COPY,
-	DRAG_ACTION_STRETCH
-} DragAction;
+	DRAG_STATE_INITIAL,
+	DRAG_STATE_MOVE_OR_COPY,
+	DRAG_STATE_MOVE_COPY_OR_MENU,
+	DRAG_STATE_STRETCH
+} DragState;
 
 typedef struct {
 	/* Pointer position in canvas coordinates. */
@@ -127,9 +128,10 @@ struct NautilusIconContainerDetails {
 	guint drag_button;
 	NautilusIcon *drag_icon;
 	int drag_x, drag_y;
-	DragAction drag_action;
+	DragState drag_state;
 	gboolean drag_started;
 	StretchState stretch_start;
+	int context_menu_timeout_id;
 
 	/* Renaming Details */
 	gboolean renaming;

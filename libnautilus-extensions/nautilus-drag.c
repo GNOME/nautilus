@@ -246,12 +246,14 @@ nautilus_drag_can_accept_items (NautilusFile *drop_target_item,
 }
 
 void
-nautilus_drag_default_drop_action (const char *target_uri_string, const GList *items,
+nautilus_drag_default_drop_action (GdkDragContext *context,
+	const char *target_uri_string, const GList *items,
 	int *default_action, int *non_default_action)
 {
 	gboolean same_fs;
 	GnomeVFSURI *target_uri;
 	GnomeVFSURI *dropped_uri;
+	GdkDragAction actions;
 	
 	if (target_uri_string == NULL) {
 		*default_action = 0;
@@ -259,6 +261,17 @@ nautilus_drag_default_drop_action (const char *target_uri_string, const GList *i
 		return;
 	}
 
+	actions = context->actions & (GDK_ACTION_MOVE | GDK_ACTION_COPY);
+	if (actions != (GDK_ACTION_MOVE | GDK_ACTION_COPY)) {
+		 /* We can't pick between copy and move, just
+		  * go with the suggested action.
+		  */
+		*default_action = context->suggested_action;
+		*non_default_action = context->suggested_action;
+
+		return;
+	}
+	
 	target_uri = gnome_vfs_uri_new (target_uri_string);
 
 	/* Compare the first dropped uri with the target uri for same fs match. */
@@ -401,7 +414,7 @@ nautilus_drag_drop_action_ask (GdkDragAction actions)
 		break;
 
 	default:
-		action = -1; 
+		action = 0; 
 	}
 
 	gtk_widget_destroy (menu);

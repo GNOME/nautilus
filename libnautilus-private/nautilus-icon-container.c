@@ -56,6 +56,8 @@
  */
 #define KEYBOARD_ICON_REVEAL_TIMEOUT 300
 
+#define CONTEXT_MENU_TIMEOUT_INTERVAL 500
+
 /* Maximum amount of milliseconds the mouse button is allowed to stay down
  * and still be considered a click.
  */
@@ -1828,7 +1830,7 @@ start_stretching (NautilusIconContainer *container)
 	}
 
 	/* Set up the dragging. */
-	details->drag_action = DRAG_ACTION_STRETCH;
+	details->drag_state = DRAG_STATE_STRETCH;
 	gnome_canvas_w2c (GNOME_CANVAS (container),
 			  details->drag_x,
 			  details->drag_y,
@@ -1921,20 +1923,27 @@ button_release_event (GtkWidget *widget,
 	if (event->button == details->drag_button) {
 		details->drag_button = 0;
 
-		switch (details->drag_action) {
-		case DRAG_ACTION_MOVE_OR_COPY:
+		switch (details->drag_state) {
+		case DRAG_STATE_MOVE_OR_COPY:
+		case DRAG_STATE_MOVE_COPY_OR_MENU:
 			if (!details->drag_started) {
 				nautilus_icon_container_did_not_drag (container, event);
 			} else {
 				nautilus_icon_dnd_end_drag (container);
 			}
 			break;
-		case DRAG_ACTION_STRETCH:
+		case DRAG_STATE_STRETCH:
 			end_stretching (container, event->x, event->y);
+			break;
+		default:
 			break;
 		}
 
 		details->drag_icon = NULL;
+		if (details->drag_state == DRAG_STATE_MOVE_COPY_OR_MENU) {
+			gtk_timeout_remove (details->context_menu_timeout_id);
+		}
+		details->drag_state = DRAG_STATE_INITIAL;
 		return TRUE;
 	}
 
@@ -1953,8 +1962,15 @@ motion_notify_event (GtkWidget *widget,
 	details = container->details;
 
 	if (details->drag_button != 0) {
-		switch (details->drag_action) {
-		case DRAG_ACTION_MOVE_OR_COPY:
+		switch (details->drag_state) {
+		case DRAG_STATE_MOVE_COPY_OR_MENU:
+			if (details->drag_started) {
+				break;
+			}
+			gtk_timeout_remove (details->context_menu_timeout_id);
+			/* fall through */
+
+		case DRAG_STATE_MOVE_OR_COPY:
 			if (details->drag_started) {
 				break;
 			}
@@ -1975,16 +1991,21 @@ motion_notify_event (GtkWidget *widget,
 				motion->y = details->drag_y;
 			
 				nautilus_icon_dnd_begin_drag (container,
-							      GDK_ACTION_MOVE 
-							      | GDK_ACTION_COPY 
-							      | GDK_ACTION_LINK
-							      | GDK_ACTION_ASK,
-							      details->drag_button,
-							      motion);
+				      details->drag_state == DRAG_STATE_MOVE_OR_COPY
+				      ? (GDK_ACTION_MOVE 
+				      	| GDK_ACTION_COPY 
+				      	| GDK_ACTION_LINK
+				      	| GDK_ACTION_ASK)
+				      : GDK_ACTION_ASK,
+				      details->drag_button,
+				      motion);
+				details->drag_state = DRAG_STATE_MOVE_OR_COPY;
 			}
 			break;
-		case DRAG_ACTION_STRETCH:
+		case DRAG_STATE_STRETCH:
 			continue_stretching (container, motion->x, motion->y);
+			break;
+		default:
 			break;
 		}
 	}
@@ -2420,6 +2441,33 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 	container->details->type_select_state = NULL;
 }
 
+static gboolean
+show_context_menu_callback (void *cast_to_container)
+{
+	NautilusIconContainer *container;
+
+	container = (NautilusIconContainer *)cast_to_container;
+
+	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
+
+	if (container->details->drag_state != DRAG_STATE_MOVE_COPY_OR_MENU) {
+		/* button was released */
+		return TRUE;
+	}
+
+	container->details->drag_state = DRAG_STATE_INITIAL;
+	gtk_timeout_remove (container->details->context_menu_timeout_id);
+
+	/* Context menu applies to all selected items. The only
+	 * odd case is if this click deselected the icon under
+	 * the mouse, but at least the behavior is consistent.
+	 */
+	gtk_signal_emit (GTK_OBJECT (container),
+			 signals[CONTEXT_CLICK_SELECTION]);
+
+	return TRUE;
+}
+
 /* NautilusIcon event handling.  */
 
 /* Conceptually, pressing button 1 together with CTRL or SHIFT toggles
@@ -2430,6 +2478,7 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
  * selected, because the user might select multiple icons and drag all
  * of them by doing a simple click-drag.
 */
+
 static gboolean
 handle_icon_button_press (NautilusIconContainer *container,
 			  NautilusIcon *icon,
@@ -2444,12 +2493,14 @@ handle_icon_button_press (NautilusIconContainer *container,
 
 	details = container->details;
 
-	if (event->button == DRAG_BUTTON) {
+	if (event->button == DRAG_BUTTON
+		|| event->button == CONTEXTUAL_MENU_BUTTON) {
 		details->drag_button = event->button;
 		details->drag_icon = icon;
 		details->drag_x = event->x;
 		details->drag_y = event->y;
-		details->drag_action = DRAG_ACTION_MOVE_OR_COPY;
+		details->drag_state = event->button == DRAG_BUTTON
+			? DRAG_STATE_MOVE_OR_COPY : DRAG_STATE_MOVE_COPY_OR_MENU;
 		details->drag_started = FALSE;
 
 		/* Check to see if this is a click on the stretch handles.
@@ -2459,6 +2510,15 @@ handle_icon_button_press (NautilusIconContainer *container,
 			if (start_stretching (container)) {
 				return TRUE;
 			}
+		}
+
+		if (event->button == CONTEXTUAL_MENU_BUTTON) {
+			/* after a timeout we will decide if this is a
+			 * context menu click or a drag start
+			 */
+			details->context_menu_timeout_id = gtk_timeout_add (
+				CONTEXT_MENU_TIMEOUT_INTERVAL, 
+				show_context_menu_callback, container);
 		}
 	}
 
@@ -2476,24 +2536,7 @@ handle_icon_button_press (NautilusIconContainer *container,
 				 signals[SELECTION_CHANGED]);
 	}
 
-	if (event->button == CONTEXTUAL_MENU_BUTTON) {
-		/* Note: this means you cannot drag with right click.
-		 * If we decide we want right drags, we will have to
-		 * set up a timeout and emit this signal if the
-                 *  timeout expires without movement.
-		 */
-
-		details->drag_button = 0;
-		details->drag_icon = NULL;
-
-		/* Context menu applies to all selected items. The only
-		 * odd case is if this click deselected the icon under
-		 * the mouse, but at least the behavior is consistent.
-		 */
-		gtk_signal_emit (GTK_OBJECT (container),
-				 signals[CONTEXT_CLICK_SELECTION]);
-
-	} else if (event->type == GDK_2BUTTON_PRESS) {
+	if (event->type == GDK_2BUTTON_PRESS) {
 		/* Double clicking does not trigger a D&D action. */
 		details->drag_button = 0;
 		details->drag_icon = NULL;

@@ -1,3 +1,30 @@
+2000-07-07  Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-drag.c:
+	(nautilus_drag_default_drop_action),
+	(nautilus_drag_drop_action_ask):
+	Clean fix up action handling - respect suggested actions, handle
+	actions better if they are different than GDK_ACTION_COPY and GDK_ACTION_MOVE.
+
+	* libnautilus-extensions/nautilus-drag.c:
+	(nautilus_drag_default_drop_action):
+	Fix a crash in the new drop context menu when Cancel gets selected.
+	
+	* libnautilus-extensions/nautilus-drag.h:
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(start_stretching), (button_release_event), (motion_notify_event),
+	(show_context_menu_callback), (handle_icon_button_press):
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_container_receive_dropped_icons),
+	(nautilus_icon_container_get_drop_action):
+	* libnautilus-extensions/nautilus-icon-private.h:
+	Fix 1551 - Make drop context menu show up when drag started with
+	right click. Turned out to be a bit harder than estimated.
+	To do this I made the right-click context menu come up with a slight
+	delay - a drag may be started if the mouse is moved before the delay
+	expires.
+	Renamed and reworked the click/drag state machine a bit.
+
 2000-07-07  Ali Abdin  <aliabdin@aucegypt.edu>
 
 	* components/html/ntl-web-browser.c:

@@ -701,7 +701,7 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 			(GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
 	}
 
-	if (context->action >= 0) {
+	if (context->action > 0) {
 	  	gnome_canvas_window_to_world (GNOME_CANVAS (container),
 					      x, y, &world_x, &world_y);
 
@@ -755,7 +755,7 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 			*non_default_action = 0;
 			return;
 		}
-		nautilus_drag_default_drop_action (drop_target, 
+		nautilus_drag_default_drop_action (context, drop_target, 
 			container->details->dnd_info->drag_info.selection_list, 
 			default_action, non_default_action);
 		g_free (drop_target);
@@ -764,8 +764,8 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 	case NAUTILUS_ICON_DND_COLOR:
 	case NAUTILUS_ICON_DND_BGIMAGE:
 	case NAUTILUS_ICON_DND_KEYWORD:
-		*default_action = GDK_ACTION_MOVE;
-		*default_action = GDK_ACTION_MOVE;
+		*default_action = context->suggested_action;
+		*default_action = context->suggested_action;
 		break;
 
 	default:

@@ -102,7 +102,8 @@ gboolean		nautilus_drag_can_accept_item 		(NautilusFile *drop_target_item,
 			       					 const char *item_uri);
 gboolean		nautilus_drag_can_accept_items 		(NautilusFile *drop_target_item,
 								 const GList *items);
-void			nautilus_drag_default_drop_action	(const char *target_uri,
+void			nautilus_drag_default_drop_action	(GdkDragContext *context,
+								 const char *target_uri,
 								 const GList *items,
 								 int *default_action,
 								 int *non_default_action);
