@@ -37,7 +37,6 @@
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
-#include <eel/eel-gtk-macros.h>
 #include <eel/eel-marshal.h>
 #include <eel/eel-string.h>
 #include <libgnomecanvas/gnome-canvas-pixbuf.h>
@@ -48,6 +47,7 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-macros.h>
 #include <libnautilus/nautilus-clipboard.h>
 #include <math.h>
 #include <stdio.h>
@@ -120,8 +120,6 @@ enum {
 };
 
 static void          activate_selected_items               (NautilusIconContainer      *container);
-static void          nautilus_icon_container_class_init    (NautilusIconContainerClass *class);
-static void          nautilus_icon_container_init          (NautilusIconContainer      *container);
 static void          nautilus_icon_container_theme_changed (gpointer                    user_data);
 static void          compute_stretch                       (StretchState               *start,
 							    StretchState               *current);
@@ -148,9 +146,8 @@ static void          process_pending_icon_to_rename        (NautilusIconContaine
 
 static int click_policy_auto_value;
 
-EEL_CLASS_BOILERPLATE (NautilusIconContainer,
-				   nautilus_icon_container,
-				   GNOME_TYPE_CANVAS)
+GNOME_CLASS_BOILERPLATE (NautilusIconContainer, nautilus_icon_container,
+			 GnomeCanvas, GNOME_TYPE_CANVAS)
 
 /* The NautilusIconContainer signals.  */
 enum {
@@ -2288,7 +2285,7 @@ destroy (GtkObject *object)
        
 	nautilus_icon_container_flush_typeselect_state (container);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	GTK_OBJECT_CLASS (parent_class)->destroy (object);
 }
 
 static void
@@ -2317,7 +2314,7 @@ finalize (GObject *object)
 
 	g_free (details);
 
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 /* GtkWidget methods.  */
@@ -2355,7 +2352,7 @@ size_allocate (GtkWidget *widget,
 		need_layout_redone = TRUE;
 	}
 	
-	EEL_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+	GTK_WIDGET_CLASS (parent_class)->size_allocate (widget, allocation);
 
 	container->details->has_been_allocated = TRUE;
 
@@ -2370,7 +2367,7 @@ realize (GtkWidget *widget)
 	GtkStyle *style;
 	GtkWindow *window;
 
-	EEL_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
+	GTK_WIDGET_CLASS (parent_class)->realize (widget);
 
 	style = gtk_style_copy (gtk_widget_get_style (widget));
 	style->bg[GTK_STATE_NORMAL] = style->base[GTK_STATE_NORMAL];
@@ -2394,7 +2391,7 @@ unrealize (GtkWidget *widget)
         window = GTK_WINDOW (gtk_widget_get_toplevel (widget));
 	gtk_window_set_focus (window, NULL);
 
-	EEL_CALL_PARENT (GTK_WIDGET_CLASS, unrealize, (widget));
+	GTK_WIDGET_CLASS (parent_class)->unrealize (widget);
 }
 
 static gboolean
@@ -2438,8 +2435,7 @@ button_press_event (GtkWidget *widget,
 	nautilus_icon_container_flush_typeselect_state (container);
 	
 	/* Invoke the canvas event handler and see if an item picks up the event. */
-	clicked_on_icon = EEL_CALL_PARENT_WITH_RETURN_VALUE
-		(GTK_WIDGET_CLASS, button_press_event, (widget, event));
+	clicked_on_icon = GTK_WIDGET_CLASS (parent_class)->button_press_event (widget, event);
 	
 	/* Move focus to icon container, unless we're still renaming (to avoid exiting
 	 * renaming mode)
@@ -2768,8 +2764,7 @@ button_release_event (GtkWidget *widget,
 		return TRUE;
 	}
 
-	return EEL_CALL_PARENT_WITH_RETURN_VALUE
-		(GTK_WIDGET_CLASS, button_release_event, (widget, event));
+	return GTK_WIDGET_CLASS (parent_class)->button_release_event (widget, event);
 }
 
 static int
@@ -2824,8 +2819,7 @@ motion_notify_event (GtkWidget *widget,
 		}
 	}
 
-	return EEL_CALL_PARENT_WITH_RETURN_VALUE
-		(GTK_WIDGET_CLASS, motion_notify_event, (widget, event));
+	return GTK_WIDGET_CLASS (parent_class)->motion_notify_event (widget, event);
 }
 
 void
@@ -2985,8 +2979,7 @@ key_press_event (GtkWidget *widget,
 	}
 
 	if (!handled) {
-		handled = EEL_CALL_PARENT_WITH_RETURN_VALUE
-			(GTK_WIDGET_CLASS, key_press_event, (widget, event));
+		handled = GTK_WIDGET_CLASS (parent_class)->key_press_event (widget, event);
 	}
 
 	return handled;
@@ -3310,7 +3303,7 @@ handle_focus_out_event (GtkWidget *widget, GdkEventFocus *event, gpointer user_d
 }
 
 static void
-nautilus_icon_container_init (NautilusIconContainer *container)
+nautilus_icon_container_instance_init (NautilusIconContainer *container)
 {
 	NautilusIconContainerDetails *details;
 	EelBackground *background;
@@ -3344,8 +3337,8 @@ nautilus_icon_container_init (NautilusIconContainer *container)
 	/* when the background changes, we must set up the label text color */
 	background = eel_get_widget_background (GTK_WIDGET (container));
 	
-	g_signal_connect (background, "appearance_changed",
-			  G_CALLBACK (update_label_color), container);
+	g_signal_connect_object (background, "appearance_changed",
+				 G_CALLBACK (update_label_color), G_OBJECT (container), 0);
 
 	g_signal_connect (container, "focus-out-event",
 			  G_CALLBACK (handle_focus_out_event), NULL);

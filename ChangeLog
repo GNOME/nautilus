@@ -1,5 +1,12 @@
 2002-03-06  Darin Adler  <darin@bentspoon.com>
 
+	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_instance_init): Use g_signal_connect_object
+	instead of g_signal_connnect to make sure we don't get called once
+	the widget is dead.
+
+2002-03-06  Darin Adler  <darin@bentspoon.com>
+
 	* src/nautilus-bookmarks-window.c: (create_bookmarks_window):
 	Say "Close" instead of "Done".
 	
