@@ -1,5 +1,9 @@
 2002-04-19  Anders Carlsson  <andersca@gnu.org>
 
+	* libnautilus-private/nautilus-file-operations.c 
+	(handle_transfer_vfs_error): Abort on GTK_RESPONSE_DELETE_EVENT.
+	Fixes #78948.
+
 	* libnautilus-private/nautilus-global-preferences.c:
 	* libnautilus-private/nautilus-global-preferences.h:
 	Remove NAUTILUS_PREFERENCES_CAN_ADD_CONTENT.

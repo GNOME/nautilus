@@ -923,6 +923,7 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 				error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_SKIP;
 				break;
 			case 1:
+			case GTK_RESPONSE_DELETE_EVENT:
 				error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 				break;
 			default:
