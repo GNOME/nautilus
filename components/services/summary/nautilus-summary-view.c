@@ -284,8 +284,6 @@ generate_summary_form (NautilusSummaryView	*view)
 	/* Create the Services Listing Box */
 	frame = gtk_vbox_new (FALSE, 0);
 
-	gtk_widget_show (frame);
-
 	gtk_table_attach (GTK_TABLE (parent), frame,
 			  0, 1,
 			  0, 1,
@@ -326,7 +324,6 @@ generate_summary_form (NautilusSummaryView	*view)
 	}
 
 	g_list_free (iterator);
-	g_list_free (view->details->xml_data->services_list);
 
 	/* draw parent vbox and connect it to the login frame */
 	gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->services_table), 0, 0, 0);
@@ -478,7 +475,6 @@ generate_summary_form (NautilusSummaryView	*view)
 	}
 
 	g_list_free (iterator);
-	g_list_free (view->details->xml_data->eazel_news_list);
 
 	/* draw parent vbox and connect it to the service news frame */
 	gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->service_news_table), TRUE, TRUE, 0);
@@ -527,7 +523,6 @@ generate_summary_form (NautilusSummaryView	*view)
 	}
 
 	g_list_free (iterator);
-	g_list_free (view->details->xml_data->update_news_list);
 	g_free (view->details->xml_data);
 
 	/* draw parent vbox and connect it to the update news frame */
@@ -537,7 +532,8 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	/* draw the parent frame box */
 	gtk_box_pack_start (GTK_BOX (view->details->form), GTK_WIDGET (parent), TRUE, TRUE, 0);
-	gtk_widget_show (GTK_WIDGET (parent));
+
+	gtk_widget_show_all (GTK_WIDGET (parent));
 
 	/*Finally, show the form that hold everything */
 	gtk_widget_show (view->details->form);

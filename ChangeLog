@@ -1,3 +1,10 @@
+2000-10-06  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (generate_summary_form):
+
+	Fixing gtk_widget_show crap.  Removed double frees.
+
 2000-10-06  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* nautilus.spec.in:
