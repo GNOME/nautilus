@@ -6,10 +6,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.0.5\n"
-"POT-Creation-Date: 2002-11-25 21:44-0500\n"
-"PO-Revision-Date: 2002-09-07 00:09-0300\n"
+"POT-Creation-Date: 2002-11-30 04:06-0200\n"
+"PO-Revision-Date: 2002-11-30 04:01-0300\n"
 "Last-Translator: Evandro Fernandes Giovanini <evandrofg@ig.com.br>\n"
-"Language-Team: Brazilian Portuguese <gnome-br@listas.cipsga.org.br>\n"
+"Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -45,14 +45,12 @@ msgid "Emblems"
 msgstr "Emblemas"
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:2
-#, fuzzy
 msgid "Nautilus Emblem side pane"
-msgstr "Painel da barra lateral de árvore do Nautilus"
+msgstr "Painel lateral de emblemas do Nautilus"
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:3
-#, fuzzy
 msgid "Nautilus Emblem view"
-msgstr "Visão exemplo do Nautilus"
+msgstr "Visão de emblemas do Nautilus"
 
 #: components/emblem/nautilus-emblem-view.c:202
 #, c-format
@@ -60,11 +58,12 @@ msgid ""
 "Couldn't remove emblem with name '%s'.  This is probably because the emblem "
 "is a permanent one, and not one you added yourself."
 msgstr ""
+"Não foi possível remover o emblema com o nome '%s'. Isto provavelmente "
+"ocorreu porque o emblema é permanente e não foi adicionado por você."
 
 #: components/emblem/nautilus-emblem-view.c:203
-#, fuzzy
 msgid "Couldn't remove emblem"
-msgstr "Não foi possível excluir o tema"
+msgstr "Não foi possível remover o emblema"
 
 #: components/emblem/nautilus-emblem-view.c:237
 #, c-format
@@ -72,82 +71,85 @@ msgid ""
 "Couldn't rename emblem with name '%s'.  This is probably because the emblem "
 "is a permanent one, and not one that you added yourself."
 msgstr ""
+"Não foi possível renomear o emblema com o nome '%s'. Isto provavelmente "
+"ocorreu porque o emblema é permanente e não foi adicionado por você."
 
 #: components/emblem/nautilus-emblem-view.c:238
-#, fuzzy
 msgid "Couldn't rename emblem"
-msgstr "Não foi possível instalar emblema"
+msgstr "Não foi possível renomear o emblema"
 
 #: components/emblem/nautilus-emblem-view.c:257
-#, fuzzy
 msgid "Rename Emblem"
-msgstr "_Remover um Emblema..."
+msgstr "Renomear Emblema"
 
 #: components/emblem/nautilus-emblem-view.c:276
-#, fuzzy
 msgid "Enter a new name for the displayed emblem:"
-msgstr "Selecione um arquivo de imagem para o novo emblema:"
+msgstr "Digite um novo nome para o emblema exibido:"
 
 #: components/emblem/nautilus-emblem-view.c:330
-#, fuzzy
 msgid "Rename"
-msgstr "_Renomear..."
+msgstr "Renomear"
 
 #: components/emblem/nautilus-emblem-view.c:497
-#, fuzzy
 msgid "Add Emblems..."
-msgstr "_Adicionar um novo emblema..."
+msgstr "_Adicionar Emblemas..."
 
 #: components/emblem/nautilus-emblem-view.c:513
 msgid ""
 "Enter a descriptive name next to each emblem.  This name will be used in "
 "other places to identify the emblem."
 msgstr ""
+"Digite um nome descritivo para cada emblema. O nome será utilizado em outros "
+"lugares para identificar o emblema."
 
 #: components/emblem/nautilus-emblem-view.c:515
 msgid ""
 "Enter a descriptive name next to the emblem.  This name will be used in "
 "other places to identify the emblem."
 msgstr ""
+"Digite um nome descritivo para o emblema. O nome será utilizado em outros "
+"lugares para identificar o emblema."
 
 #: components/emblem/nautilus-emblem-view.c:718
 msgid ""
 "Some of the files could not be added as emblems because they did not appear "
 "to be valid images."
 msgstr ""
+"Alguns arquivos não puderam ser adicionados como emblemas porque eles não "
+"são arquivos de imagem válidos."
 
 #: components/emblem/nautilus-emblem-view.c:718
 #: components/emblem/nautilus-emblem-view.c:720
-#, fuzzy
 msgid "Couldn't add emblems"
-msgstr "Não foi possível incluir tema"
+msgstr "Não foi possível adicionar emblemas"
 
 #: components/emblem/nautilus-emblem-view.c:720
 msgid ""
 "None of the files could not be added as emblems because they did not appear "
 "to be valid images."
 msgstr ""
+"Nenhum dos arquivos não pôde ser adicionado como emblema por não ser arquivo "
+"de imagem válido."
 
 #: components/emblem/nautilus-emblem-view.c:741
 msgid "The dragged text was not a valid file location."
-msgstr ""
+msgstr "O texto arrastado não era um local de arquivo válido."
 
 #: components/emblem/nautilus-emblem-view.c:741
 #: components/emblem/nautilus-emblem-view.c:765
 #: components/emblem/nautilus-emblem-view.c:814
-#, fuzzy
 msgid "Couldn't add emblem"
-msgstr "Não foi possível incluir tema"
+msgstr "Não foi possível adicionar o emblema"
 
 #: components/emblem/nautilus-emblem-view.c:760
 #: components/emblem/nautilus-emblem-view.c:813
 #, c-format
 msgid "The file '%s' does not appear to be a valid image."
-msgstr ""
+msgstr "O arquivo '%s' não parece ser uma imagem válida."
 
 #: components/emblem/nautilus-emblem-view.c:763
 msgid "The dragged file does not appear to be a valid image."
-msgstr ""
+msgstr "O arquivo arrastado não parece ser uma imagem válida."
 
 #: components/emblem/nautilus-emblem-view.c:878 data/browser.xml.h:35
 msgid "Erase"
@@ -253,24 +255,20 @@ msgid "History side pane for Nautilus"
 msgstr "Painel da barra lateral de histórico para o Nautilus"
 
 #: components/image_properties/Nautilus_View_image_properties.server.in.in.h:1
-#, fuzzy
 msgid "Image"
-msgstr "Imagem:"
+msgstr "Imagem"
 
 #: components/image_properties/Nautilus_View_image_properties.server.in.in.h:2
-#, fuzzy
 msgid "Image Properties content view component"
-msgstr "Componente exemplo de visão de conteúdo"
+msgstr "Visão de conteúdo do componente Propriedades de Imagem"
 
 #: components/image_properties/Nautilus_View_image_properties.server.in.in.h:3
-#, fuzzy
 msgid "Nautilus Image Properties view"
-msgstr "Visão de árvore do Nautilus"
+msgstr "Visão Propriedades de Imagem do Nautilus"
 
 #: components/image_properties/nautilus-image-properties-view.c:90
-#, fuzzy
 msgid "Failed to load image information"
-msgstr "Editar informações do lançador"
+msgstr "Erro ao carregar informações da imagem"
 
 #: components/image_properties/nautilus-image-properties-view.c:142
 #, c-format
@@ -278,15 +276,16 @@ msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
 msgstr ""
+"<b>Tipo de Imagem:</b> %s (%s)\n"
+"<b>Resolução:</b> %dx%d pixels\n"
 
 #: components/image_properties/nautilus-image-properties-view.c:239
-#, fuzzy
 msgid "loading..."
-msgstr "Carregando..."
+msgstr "carregando..."
 
 #: components/image_properties/nautilus-image-properties-view.c:252
 msgid "URI currently displayed"
-msgstr ""
+msgstr "URI exibida no momento"
 
 #: components/notes/Nautilus_View_notes.server.in.in.h:1
 msgid "Nodes side pane for Nautilus"
@@ -1242,12 +1241,11 @@ msgstr "Cancelar"
 
 #: libnautilus-private/nautilus-dnd.c:628
 msgid "Set as background for _all directories"
-msgstr ""
+msgstr "Definir como fundo p_ara todos os diretórios"
 
 #: libnautilus-private/nautilus-dnd.c:633
-#, fuzzy
 msgid "Set as background for _this directory"
-msgstr "Utilizar o fundo padrão para este local"
+msgstr "Definir como fundo para este diretório"
 
 #: libnautilus-private/nautilus-emblem-utils.c:194
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
@@ -1275,21 +1273,21 @@ msgstr ""
 #. * keyword to us anyway
 #.
 #: libnautilus-private/nautilus-emblem-utils.c:206
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Sorry, but there is already an emblem named \"%s\".  Please choose a "
 "different name for it."
 msgstr ""
-"Desculpe, mas \"%s\" já é uma palavra chave existente. Por favor use um nome "
+"Desculpe, mas já existe um emblema com o nome \"%s\". Por favor use um nome "
 "diferente."
 
 #: libnautilus-private/nautilus-emblem-utils.c:229
 msgid "Sorry, unable to save custom emblem."
-msgstr ""
+msgstr "Não foi possível salvar emblema personalizado."
 
 #: libnautilus-private/nautilus-emblem-utils.c:244
 msgid "Sorry, unable to save custom emblem name."
-msgstr ""
+msgstr "Não foi possível salvar o nome de emblema personalizado."
 
 #: libnautilus-private/nautilus-file-operations-progress.c:452
 #, c-format
@@ -2806,62 +2804,57 @@ msgstr "realçado para arrastar"
 msgid "whether we are highlighted for a D&D drop"
 msgstr "se está ou não realçado para Arrastar&Soltar"
 
-#: libnautilus-private/nautilus-icon-container.c:1712
+#: libnautilus-private/nautilus-icon-container.c:1713
 msgid "The selection rectangle"
 msgstr "O retângulo da seleção"
 
-#: libnautilus-private/nautilus-icon-container.c:3492
+#: libnautilus-private/nautilus-icon-container.c:3493
 msgid "Frame Text"
 msgstr "Texto do Frame"
 
-#: libnautilus-private/nautilus-icon-container.c:3493
+#: libnautilus-private/nautilus-icon-container.c:3494
 msgid "Draw a frame around unselected text"
 msgstr "Desenhar um frame ao redor do texto selecionado"
 
-#: libnautilus-private/nautilus-icon-container.c:3499
-#, fuzzy
-msgid "Selection Box Color"
-msgstr "Selecione uma cor para incluir"
-
 #: libnautilus-private/nautilus-icon-container.c:3500
-#, fuzzy
-msgid "Color of the selection box"
-msgstr "Vai para o local inicial"
+msgid "Selection Box Color"
+msgstr "Cor da Caixa de Seleção"
 
-#: libnautilus-private/nautilus-icon-container.c:3505
-#, fuzzy
-msgid "Selection Box Alpha"
-msgstr "Selecionar todos"
+#: libnautilus-private/nautilus-icon-container.c:3501
+msgid "Color of the selection box"
+msgstr "Cor da caixa de seleção"
 
 #: libnautilus-private/nautilus-icon-container.c:3506
-msgid "Opacity of the selection box"
-msgstr ""
+msgid "Selection Box Alpha"
+msgstr "Caixa de Seleção Alpha"
 
-#: libnautilus-private/nautilus-icon-container.c:3513
-msgid "Highlight Alpha"
-msgstr ""
+#: libnautilus-private/nautilus-icon-container.c:3507
+msgid "Opacity of the selection box"
+msgstr "Opacidade da caixa de seleção"
 
 #: libnautilus-private/nautilus-icon-container.c:3514
-#, fuzzy
-msgid "Opacity of the highlight for selected icons"
-msgstr "realçado para seleção"
+msgid "Highlight Alpha"
+msgstr "Realçar Alpha"
 
-#: libnautilus-private/nautilus-icon-container.c:3520
-msgid "Light Info Color"
-msgstr ""
+#: libnautilus-private/nautilus-icon-container.c:3515
+msgid "Opacity of the highlight for selected icons"
+msgstr "Opacidade do realce para os ícones selecionados"
 
 #: libnautilus-private/nautilus-icon-container.c:3521
-msgid "Color used for information text against a dark background"
-msgstr ""
+msgid "Light Info Color"
+msgstr "Informação da cor clara"
 
-#: libnautilus-private/nautilus-icon-container.c:3526
-#, fuzzy
-msgid "Dark Info Color"
-msgstr "Cortiça escura"
+#: libnautilus-private/nautilus-icon-container.c:3522
+msgid "Color used for information text against a dark background"
+msgstr "Cor usada para texto informativo em fundo escuro"
 
 #: libnautilus-private/nautilus-icon-container.c:3527
+msgid "Dark Info Color"
+msgstr "Informação da cor escura"
+
+#: libnautilus-private/nautilus-icon-container.c:3528
 msgid "Color used for information text against a light background"
-msgstr ""
+msgstr "Cor usada para texto informativo em fundo claro"
 
 #: libnautilus-private/nautilus-icon-dnd.c:725
 msgid ""
@@ -3668,12 +3661,11 @@ msgstr "Visualizar"
 
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
-msgstr ""
+msgstr "Alterar como os arquivos são gerenciados"
 
 #: nautilus-file-management-properties.desktop.in.h:2
-#, fuzzy
 msgid "File Management"
-msgstr "Nome do arquivo"
+msgstr "Gerenciamento de Arquivos"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -3767,14 +3759,12 @@ msgid "Search List"
 msgstr "Lista de busca"
 
 #: src/Nautilus_shell.server.in.h:20
-#, fuzzy
 msgid "View as _Icons"
-msgstr "Ver como ícones"
+msgstr "Ver como _Ícones"
 
 #: src/Nautilus_shell.server.in.h:21
-#, fuzzy
 msgid "View as _List"
-msgstr "Ver como lista"
+msgstr "Ver como _Lista"
 
 #: src/file-manager/fm-desktop-icon-view.c:785
 msgid "Background"
@@ -3996,11 +3986,11 @@ msgstr "Um _visualizador..."
 #: src/file-manager/fm-directory-view.c:3560
 #, c-format
 msgid "Could not complete specified action:  %s"
-msgstr ""
+msgstr "Não foi possível completar a ação especificada: %s"
 
 #: src/file-manager/fm-directory-view.c:3583
 msgid "Could not complete specified action."
-msgstr ""
+msgstr "Não foi possível completar a ação especificada."
 
 #: src/file-manager/fm-directory-view.c:4028
 #, c-format
@@ -4166,7 +4156,6 @@ msgid "_Copy Files"
 msgstr "_Copiar Arquivos"
 
 #: src/file-manager/fm-directory-view.c:4928
-#, fuzzy
 msgid ""
 "This link can't be used, because it has no target. Do you want to move this "
 "link to the Trash?"
@@ -4675,19 +4664,18 @@ msgstr ""
 "%s"
 
 #: src/file-manager/fm-properties-window.c:2359
-#, fuzzy
 msgid "Couldn't show help"
-msgstr "Não foi possível incluir tema"
+msgstr "Não foi possível exibir ajuda"
 
-#: src/file-manager/fm-properties-window.c:2621
+#: src/file-manager/fm-properties-window.c:2624
 msgid "Cancel Showing Properties Window?"
 msgstr "Cancelar exibição da janela Propriedades?"
 
-#: src/file-manager/fm-properties-window.c:2622
+#: src/file-manager/fm-properties-window.c:2625
 msgid "Creating Properties window"
 msgstr "Criando janela Propriedades"
 
-#: src/file-manager/fm-properties-window.c:2716
+#: src/file-manager/fm-properties-window.c:2719
 msgid "Select an icon:"
 msgstr "Selecione um ícone:"
 
@@ -5442,145 +5430,129 @@ msgstr "Localizá-los!"
 
 #: src/nautilus-file-management-properties.glade.h:1
 msgid "    "
-msgstr ""
+msgstr "    "
 
 #: src/nautilus-file-management-properties.glade.h:23
 msgid "<span weight=\"bold\">Behaviour</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Comportamento</span>"
 
 #: src/nautilus-file-management-properties.glade.h:24
 msgid "<span weight=\"bold\">Default View</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Visão Padrão</span>"
 
 #: src/nautilus-file-management-properties.glade.h:25
-#, fuzzy
 msgid "<span weight=\"bold\">Executable Text Files</span>"
-msgstr "Arquivos texto executáveis"
+msgstr "<span weight=\"bold\">Arquivos Texto executáveis</span>"
 
 #: src/nautilus-file-management-properties.glade.h:26
 msgid "<span weight=\"bold\">Folders</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Pastas</span>"
 
 #: src/nautilus-file-management-properties.glade.h:27
 msgid "<span weight=\"bold\">Icon Captions</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Legendas de Ícones</span>"
 
 #: src/nautilus-file-management-properties.glade.h:28
 msgid "<span weight=\"bold\">Icon View Defaults</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Padrões da Visão de Ícones</span>"
 
 #: src/nautilus-file-management-properties.glade.h:29
 msgid "<span weight=\"bold\">Image Files</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Arquivos de Imagens</span>"
 
 #: src/nautilus-file-management-properties.glade.h:30
 msgid "<span weight=\"bold\">List View Defaults</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Padrões da Visão de Lista</span>"
 
 #: src/nautilus-file-management-properties.glade.h:31
 msgid "<span weight=\"bold\">Sound Files</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Arquivos de Som</span>"
 
 #: src/nautilus-file-management-properties.glade.h:32
 msgid "<span weight=\"bold\">Text Files</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Arquivos de Texto</span>"
 
 #: src/nautilus-file-management-properties.glade.h:33
 msgid "<span weight=\"bold\">Trash</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Lixeira</span>"
 
 #: src/nautilus-file-management-properties.glade.h:34
 msgid "<span weight=\"bold\">Tree View Defaults</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Padrões da Visão de Árvore"
 
 #: src/nautilus-file-management-properties.glade.h:37
-#, fuzzy
 msgid "Always"
-msgstr "_Sempre"
+msgstr "Sempre"
 
 #: src/nautilus-file-management-properties.glade.h:38
-#, fuzzy
 msgid "Ask before _emptying the Trash or deleting files"
-msgstr "Perguntar _antes de esvaziar a Lixeira ou excluir arquivos"
+msgstr "Perguntar antes de _esvaziar a Lixeira ou excluir arquivos"
 
 #: src/nautilus-file-management-properties.glade.h:44
-#, fuzzy
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
 msgstr ""
-"Escolha a ordem em que a informação aparecerá sob os nomes do ícones.\n"
-"Mais informação aparecerá a medida que a visão se aproximar"
+"Escolha a ordem em que a informação aparecerá sob os nomes do ícones. Mais "
+"informação aparecerá a medida que a visão se aproximar"
 
 #: src/nautilus-file-management-properties.glade.h:45
 msgid "Default _zoom level:"
 msgstr "Nível padrão de _zoom:"
 
 #: src/nautilus-file-management-properties.glade.h:46
-#, fuzzy
 msgid "E_xecute scripts when they are clicked"
-msgstr "E_xecutar arquivos quando eles são clicados"
+msgstr "E_xecutar scripts quando eles são clicados"
 
 #: src/nautilus-file-management-properties.glade.h:47
-#, fuzzy
 msgid "File Management Preferences"
-msgstr "Preferências do Ambiente"
+msgstr "Preferências de Gerenciamento de Arquivos"
 
 #: src/nautilus-file-management-properties.glade.h:48
-#, fuzzy
 msgid "Files and Folders"
-msgstr "pasta sem título"
+msgstr "Arquivos e Pastas"
 
 #: src/nautilus-file-management-properties.glade.h:49
-#, fuzzy
 msgid "I_nclude a Delete command that bypasses Trash"
-msgstr "Incluir um comando Excluir que não usa a Lixeira"
+msgstr "I_ncluir um comando Excluir que não usa a Lixeira"
 
 #: src/nautilus-file-management-properties.glade.h:50
 msgid "Icon Captions"
 msgstr "Legendas de Ícones"
 
 #: src/nautilus-file-management-properties.glade.h:53
-#, fuzzy
 msgid "Local Files Only"
-msgstr "Apenas Arquivos _Locais"
+msgstr "Apenas Arquivos Locais"
 
 #: src/nautilus-file-management-properties.glade.h:55
-#, fuzzy
 msgid "Never"
-msgstr "_Nunca"
+msgstr "Nunca"
 
 #: src/nautilus-file-management-properties.glade.h:57
-#, fuzzy
 msgid "Preview _sound files:"
-msgstr "Prever Arquivos de Som"
+msgstr "Prever arquivos de _som:"
 
 #: src/nautilus-file-management-properties.glade.h:58
-#, fuzzy
 msgid "Show _number of items:"
-msgstr "Exibir a contagem de itens nas pastas"
+msgstr "Exibir a co_ntagem de itens:"
 
 #: src/nautilus-file-management-properties.glade.h:59
-#, fuzzy
 msgid "Show _only folders"
 msgstr "Exibir apenas pa_stas"
 
 #: src/nautilus-file-management-properties.glade.h:60
-#, fuzzy
 msgid "Show _thumbnails:"
-msgstr "Exibir miniaturas para arquivos de imagem"
+msgstr "Exibir minia_turas de imagens:"
 
 #: src/nautilus-file-management-properties.glade.h:61
 msgid "Show hidden and _backup files"
-msgstr ""
+msgstr "Exibir arquivos ocultos e de _backup"
 
 #: src/nautilus-file-management-properties.glade.h:62
-#, fuzzy
 msgid "Show te_xt in icons:"
-msgstr "Exibir texto nos ícones"
+msgstr "Exibir te_xto nos ícones:"
 
 #: src/nautilus-file-management-properties.glade.h:63
-#, fuzzy
 msgid "Sort _folders before files"
 msgstr "Pastas antes de arquiv_os"
 
@@ -5589,46 +5561,40 @@ msgid "Sort in _reverse"
 msgstr "Classificar em ordem inve_rtida"
 
 #: src/nautilus-file-management-properties.glade.h:65
-#, fuzzy
 msgid "Use _manual layout"
-msgstr "Usar aparência co_mpacta"
+msgstr "Usar aparência _manual"
 
 #: src/nautilus-file-management-properties.glade.h:66
-#, fuzzy
 msgid "View _new folders using:"
-msgstr "_Ver novas pastas usando:"
+msgstr "Ver _novas pastas usando:"
 
 #: src/nautilus-file-management-properties.glade.h:67
 msgid "Views"
-msgstr "Visualização"
+msgstr "Visões"
 
 #: src/nautilus-file-management-properties.glade.h:68
-#, fuzzy
 msgid "_Arrange Items:"
-msgstr "_Org_anizar itens:"
+msgstr "Org_anizar Itens:"
 
 #: src/nautilus-file-management-properties.glade.h:70
 msgid "_Default zoom level:"
 msgstr "Nível pa_drão de zoom:"
 
 #: src/nautilus-file-management-properties.glade.h:71
-#, fuzzy
 msgid "_Only for files smaller than:"
-msgstr "_Não gerar miniaturas para arquivos maiores que:"
+msgstr "Apenas para arquivos men_ores que:"
 
 #: src/nautilus-file-management-properties.glade.h:72
 msgid "_Open each file or folder in a new window"
-msgstr "_Abrir cada arquivo ou pasta em uma nova janela"
+msgstr "Abrir cada arquiv_o ou pasta em uma nova janela"
 
 #: src/nautilus-file-management-properties.glade.h:73
-#, fuzzy
 msgid "_Use compact layout"
-msgstr "Usar aparência co_mpacta"
+msgstr "_Usar aparência compacta"
 
 #: src/nautilus-file-management-properties.glade.h:74
-#, fuzzy
 msgid "_View scripts when they are clicked"
-msgstr "E_xecutar arquivos quando eles são clicados"
+msgstr "_Ver scripts quando eles são clicados"
 
 #: src/nautilus-first-time-druid.c:40
 msgid ""
@@ -6058,6 +6024,8 @@ msgid ""
 "Couldn't execute nautilus\n"
 "Make sure nautilus is in your path and correctly installed"
 msgstr ""
+"Não foi possível executar o nautilus\n"
+"Verifique se o nautilus está no path e que está instalado corretamente"
 
 #: src/nautilus-server-connect.c:387
 #, c-format
@@ -6066,26 +6034,30 @@ msgid ""
 "Please make sure that the address is correct and alternatively, type in this "
 "address in the file manager directly"
 msgstr ""
+"Não foi possível conectar ao URI %s\n"
+"Verifique que o endereço está correto e, como alternativa, digite o endereço "
+"no gerenciador de arquivos diretamente"
 
 #: src/nautilus-server-connect.c:452
 msgid ""
 "Glade file for the connect to server program is missing.\n"
 "Please check your installation of nautilus"
 msgstr ""
+"Arquivo Glade para o programa conectar ao servidor está faltando.\n"
+"Por favor cheque sua instalação do Nautilus"
 
 #: src/nautilus-server-connect.desktop.in.h:1
 msgid "Add a new server to your Network Servers and connect to it"
-msgstr ""
+msgstr "Adicionar um novo servidor à seus Servidores de Redes e conectar a ele"
 
 #: src/nautilus-server-connect.desktop.in.h:2
 #: src/nautilus-server-connect.glade.h:2
-#, fuzzy
 msgid "New Server"
-msgstr "New wave"
+msgstr "Novo Servidor"
 
 #: src/nautilus-server-connect.glade.h:1
 msgid "*"
-msgstr ""
+msgstr "*"
 
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
@@ -6408,14 +6380,13 @@ msgid "_View as..."
 msgstr "_Ver como..."
 
 #: src/nautilus-side-pane.c:395
-#, fuzzy
 msgid "Close the side pane"
-msgstr "Painel da barra lateral de notas"
+msgstr "Fechar o painel lateral"
 
 #: src/nautilus-side-pane.c:566
-#, fuzzy, c-format
+#, c-format
 msgid "Show %s"
-msgstr "Exibir Opções"
+msgstr "Exibir %s"
 
 #: src/nautilus-switchable-search-bar.c:129
 msgid "Find:"
@@ -6680,9 +6651,8 @@ msgid "Go forward a number of pages"
 msgstr "Avançar um certo número de páginas"
 
 #: src/nautilus-window.c:669
-#, fuzzy
 msgid "Information"
-msgstr "Internacional"
+msgstr "Informação"
 
 #: src/nautilus-window.c:1183
 #, c-format
@@ -6730,965 +6700,9 @@ msgid "Set the zoom level of the current view"
 msgstr "Definir o nível de aproximação da visão atual"
 
 #: src/network-scheme.desktop.in.h:1
-#, fuzzy
 msgid "Network Servers"
-msgstr "Netraverse"
+msgstr "Servidores de Rede"
 
 #: src/network-scheme.desktop.in.h:2
-#, fuzzy
 msgid "View your network servers in the Nautilus file manager"
-msgstr "Visualizar"
-
-#~ msgid "Content Loser"
-#~ msgstr "Perdedor de Conteúdo"
-
-#~ msgid "Content Loser Viewer"
-#~ msgstr "Visualizador de Perdedor de Conteúdo"
-
-#~ msgid "Nautilus Content Loser"
-#~ msgstr "Perdedor de Conteúdo do Nautilus"
-
-#~ msgid "Nautilus content loser component's factory"
-#~ msgstr "Fábrica do componente Perdedor de Conteúdo do Nautilus"
-
-#~ msgid "Nautilus content loser factory"
-#~ msgstr "Fábrica do Perdedor de Conteúdo do Nautilus"
-
-#~ msgid "Nautilus content view that fails on command"
-#~ msgstr "Visão de conteúdo do Nautilus que falha quando ordenado"
-
-#~ msgid "View as Content Loser"
-#~ msgstr "Ver como Perdedor de Conteúdo"
-
-#~ msgid "Kill Content Loser"
-#~ msgstr "Matar Perdedor de Conteúdo"
-
-#~ msgid "Kill the Loser content view"
-#~ msgstr "Mata a visão de conteúdo Perdedor"
-
-#~ msgid "_Kill Content Loser"
-#~ msgstr "_Matar Perdedor de Conteúdo"
-
-#~ msgid ""
-#~ "%s\n"
-#~ "\n"
-#~ "This is a Nautilus content view that fails on demand."
-#~ msgstr ""
-#~ "%s\n"
-#~ "\n"
-#~ "Esta é uma visão de conteúdo do Nautilus que falha por demanda."
-
-#~ msgid "You have tried to kill the Content Loser"
-#~ msgstr "Você tentou matar o Perdedor de Conteúdo"
-
-#~ msgid "Nautilus Sidebar Loser"
-#~ msgstr "Barra lateral perdedor do Nautilus"
-
-#~ msgid "Nautilus sidebar loser component's factory"
-#~ msgstr "Fábrica do componente barra lateral perdedor do Nautilus"
-
-#~ msgid "Nautilus sidebar loser factory"
-#~ msgstr "Fábrica da barra lateral perdedor do Nautilus"
-
-#~ msgid "Nautilus sidebar view that fails on command"
-#~ msgstr "Visão de barra lateral do Nautilus que falha quando ordenado"
-
-#~ msgid "Sidebar Loser"
-#~ msgstr "Barra lateral perdedor"
-
-#~ msgid "Kill Sidebar Loser"
-#~ msgstr "Matar barra lateral perdedor"
-
-#~ msgid "Kill the Loser sidebar panel"
-#~ msgstr "Mata a barra lateral perdedor"
-
-#~ msgid "_Kill Sidebar Loser"
-#~ msgstr "_Matar barra lateral perdedor"
-
-#~ msgid ""
-#~ "%s\n"
-#~ "\n"
-#~ "Loser sidebar."
-#~ msgstr ""
-#~ "%s\n"
-#~ "\n"
-#~ "Barra lateral Perdedor."
-
-#~ msgid "You have tried to kill the Sidebar Loser"
-#~ msgstr "Você tentou matar a barra lateral perdedor"
-
-#~ msgid "Nautilus Sample view"
-#~ msgstr "Visão exemplo do Nautilus"
-
-#~ msgid "Nautilus Sample view factory"
-#~ msgstr "Fábrica da visão exemplo do Nautilus"
-
-#~ msgid "Sample"
-#~ msgstr "Exemplo"
-
-#~ msgid "Sample Viewer"
-#~ msgstr "Visualizador exemplo"
-
-#~ msgid "Sample content view component"
-#~ msgstr "Componente exemplo de visão de conteúdo"
-
-#~ msgid "Sample content view component's factory"
-#~ msgstr "Fábrica de componente exemplo de visão de conteúdo"
-
-#~ msgid "View as Sample"
-#~ msgstr "Ver como exemplo"
-
-#~ msgid "This is a sample merged menu item"
-#~ msgstr "Este é um exemplo de item de menu mesclado"
-
-#~ msgid "This is a sample merged toolbar button"
-#~ msgstr "Este é um exemplo de botão de barra de ferramenta mesclado"
-
-#~ msgid "_Sample"
-#~ msgstr "_Exemplo"
-
-#~ msgid ""
-#~ "%s\n"
-#~ "\n"
-#~ "This is a sample Nautilus content view component."
-#~ msgstr ""
-#~ "%s\n"
-#~ "\n"
-#~ "Este é um exemplo de componente de visão de conteúdo do Nautilus."
-
-#~ msgid ""
-#~ "%s\n"
-#~ "\n"
-#~ "You selected the Sample menu item."
-#~ msgstr ""
-#~ "%s\n"
-#~ "\n"
-#~ "Você selecionou o item de menu Exemplo."
-
-#~ msgid ""
-#~ "%s\n"
-#~ "\n"
-#~ "You clicked the Sample toolbar button."
-#~ msgstr ""
-#~ "%s\n"
-#~ "\n"
-#~ "Você clicou o botão de barra de ferramentas Exemplo."
-
-#~ msgid "(none)"
-#~ msgstr "(nenhum)"
-
-#~ msgid "No description available for the \"%s\" theme"
-#~ msgstr "Não existe descrição disponível para o tema \"%s\""
-
-#~ msgid "Themes"
-#~ msgstr "Temas"
-
-#~ msgid "New Window Behavior"
-#~ msgstr "Comportamento para Nova janela"
-
-#~ msgid "New Window Display"
-#~ msgstr "Nova Janela Exibe"
-
-#~ msgid "Display _side pane"
-#~ msgstr "Exibir barra _lateral"
-
-#~ msgid "Display _toolbar"
-#~ msgstr "Exibir barra de _ferramentas"
-
-#~ msgid "Display location _bar"
-#~ msgstr "Exibir _barra de local"
-
-#~ msgid "Display st_atusbar"
-#~ msgstr "Exibir barra de _estado"
-
-#~ msgid "_Use Nautilus to draw the desktop"
-#~ msgstr "_Usar o Nautilus para desenhar a área de trabalho"
-
-#~ msgid "Use your _home folder as the desktop"
-#~ msgstr "Usar sua pasta _pessoal como área de trabalho"
-
-#~ msgid "Trash Behavior"
-#~ msgstr "Comportamento da Lixeira"
-
-#~ msgid "_Ask before emptying the Trash or deleting files"
-#~ msgstr "Perguntar _antes de esvaziar a Lixeira ou excluir arquivos"
-
-#~ msgid "_Include a Delete command that bypasses Trash"
-#~ msgstr "Incluir um comando Excluir que não usa a Lixeira"
-
-#~ msgid "Click Behavior"
-#~ msgstr "Comportamento dos Cliques"
-
-#~ msgid "Executable Text Files"
-#~ msgstr "Arquivos texto executáveis"
-
-#~ msgid "Show Options"
-#~ msgstr "Exibir Opções"
-
-#~ msgid "_Hidden files (filenames starting with \".\")"
-#~ msgstr "Arquivos _escondidos (nomes começam com \".\")"
-
-#~ msgid "_Backup files (filenames ending with \"~\")"
-#~ msgstr "Arquivos de _backup (nomes terminam com \"~\")"
-
-#~ msgid "Special flags in _Properties dialog"
-#~ msgstr "Exibir marcadores especiais no diálogo _Propriedades"
-
-#~ msgid "Sort"
-#~ msgstr "Exibir"
-
-#~ msgid "Fo_lders before files"
-#~ msgstr "Pastas antes de arquiv_os"
-
-#~ msgid ""
-#~ "Choose the order for information to appear beneath icon names.\n"
-#~ "More information appears as you zoom in closer"
-#~ msgstr ""
-#~ "Escolha a ordem em que a informação aparecerá sob os nomes do ícones.\n"
-#~ "Mais informação aparecerá a medida que a visão se aproximar"
-
-#~ msgid "Default View"
-#~ msgstr "Visualização padrão"
-
-#~ msgid "_View new folders using:"
-#~ msgstr "_Ver novas pastas usando:"
-
-#~ msgid "Icon View Defaults"
-#~ msgstr "Padrões de visualização de ícones"
-
-#~ msgid "_Arrange items:"
-#~ msgstr "_Org_anizar itens:"
-
-#~ msgid "_Sort in reverse"
-#~ msgstr "Cla_ssificar em ordem invertida"
-
-#~ msgid "Use co_mpact layout"
-#~ msgstr "Usar aparência co_mpacta"
-
-#~ msgid "List View Defaults"
-#~ msgstr "Padrões de visualização de lista"
-
-#~ msgid "Arrange _items:"
-#~ msgstr "Organizar _itens:"
-
-#~ msgid "Search Complexity Options"
-#~ msgstr "Opções de complexidade de busca"
-
-#~ msgid "search type to do by default"
-#~ msgstr "tipo de busca a ser executada por padrão"
-
-#~ msgid "Built-in Bookmarks"
-#~ msgstr "Marcadores padrão"
-
-#~ msgid "_Don't include the built-in bookmarks in the Bookmarks menu"
-#~ msgstr "Não incluir os marcadores pa_drão no menu Marcadores"
-
-#, fuzzy
-#~ msgid "Always show text in icons"
-#~ msgstr "Exibir texto nos ícones"
-
-#, fuzzy
-#~ msgid "Show text in icons for local files"
-#~ msgstr "Arrastar e soltar só é suportado em sistemas de arquivos locais."
-
-#, fuzzy
-#~ msgid "Never show text in icons"
-#~ msgstr "Exibir texto nos ícones"
-
-#, fuzzy
-#~ msgid "Always show the number of items in folders"
-#~ msgstr "Exibir a contagem de itens nas pastas"
-
-#, fuzzy
-#~ msgid "Show the number of items in local folders"
-#~ msgstr "Exibir a contagem de itens nas pastas"
-
-#, fuzzy
-#~ msgid "Never show the number of items in folders"
-#~ msgstr "Exibir a contagem de itens nas pastas"
-
-#, fuzzy
-#~ msgid "Show thumbnails for local files"
-#~ msgstr "Exibir miniaturas para arquivos de imagem"
-
-#, fuzzy
-#~ msgid "Always preview sound files"
-#~ msgstr "Prever Arquivos de Som"
-
-#, fuzzy
-#~ msgid "Preview local sound files"
-#~ msgstr "Prever Arquivos de Som"
-
-#, fuzzy
-#~ msgid "Never preview sound files"
-#~ msgstr "Prever Arquivos de Som"
-
-#~ msgid "Show Text in Icons"
-#~ msgstr "Exibir texto nos ícones"
-
-#~ msgid "Show Number of Items in Folders"
-#~ msgstr "Exibir a contagem de itens nas pastas"
-
-#~ msgid "Show Thumbnails for Image Files"
-#~ msgstr "Exibir miniaturas para arquivos de imagem"
-
-#~ msgid "_Do not make thumbnails for files larger than:"
-#~ msgstr "_Não gerar miniaturas para arquivos maiores que:"
-
-#~ msgid "Preview Sound Files"
-#~ msgstr "Prever Arquivos de Som"
-
-#~ msgid "Tabs"
-#~ msgstr "Abas"
-
-#~ msgid "_Show folders only"
-#~ msgstr "Exibir apenas pa_stas"
-
-#~ msgid "Maximum items per site"
-#~ msgstr "Máximo de itens por site"
-
-#~ msgid "_Maximum number of items displayed per site"
-#~ msgstr "Número _máximo de itens exibidos por site"
-
-#~ msgid "Update Minutes"
-#~ msgstr "Tempo de atualização (min)"
-
-#~ msgid "_Update frequency in minutes"
-#~ msgstr "Freqüência de at_ualização em minutos"
-
-#~ msgid "Appearance"
-#~ msgstr "Aparência"
-
-#~ msgid "Windows"
-#~ msgstr "Janela"
-
-#~ msgid "Desktop & Trash"
-#~ msgstr "Área de Trabalho & Lixeira"
-
-#~ msgid "Icon & List Views"
-#~ msgstr "Visões de ícone e lista"
-
-#~ msgid "Side Panes"
-#~ msgstr "Painéis Laterais"
-
-#~ msgid "Search"
-#~ msgstr "Buscar"
-
-#~ msgid "Navigation"
-#~ msgstr "Navegação"
-
-#~ msgid "Performance"
-#~ msgstr "Desempenho"
-
-#~ msgid "News Panel"
-#~ msgstr "Painel de Notícias"
-
-#~ msgid "Preferences"
-#~ msgstr "Preferências"
-
-#~ msgid "Click on a theme to remove it."
-#~ msgstr "Clique sobre um tema para removê-lo."
-
-#~ msgid "Click on a theme to change the appearance of Nautilus."
-#~ msgstr "Clique sobre um tema para alterar a aparência do Nautilus."
-
-#~ msgid "Sorry, but \"%s\" is not a valid theme folder."
-#~ msgstr "Desculpe, mas \"%s\" não é uma pasta de tema válida."
-
-#~ msgid "Couldn't add theme"
-#~ msgstr "Não foi possível incluir tema"
-
-#~ msgid "Sorry, but the \"%s\" theme couldn't be installed."
-#~ msgstr "Desculpe, não foi possível instalar o tema \"%s\"."
-
-#~ msgid "Couldn't install theme"
-#~ msgstr "Não foi possível instalar o tema"
-
-#~ msgid "Sorry, but \"%s\" is not a valid theme file."
-#~ msgstr "Desculpe, mas \"%s\" não é um arquivo de tema válido."
-
-#~ msgid "Select a theme folder to add as a new theme:"
-#~ msgstr "Selecione uma pasta de tema para adicionar como novo tema:"
-
-#~ msgid ""
-#~ "Sorry, but you can't remove the current theme. Please change to another "
-#~ "theme before removing this one."
-#~ msgstr ""
-#~ "Desculpe, mas você não pode remover o tema atual. Por favor, escolha "
-#~ "outro tema antes de remover este tema"
-
-#~ msgid "Can't delete current theme"
-#~ msgstr "Não é possível excluir o tema atual"
-
-#~ msgid "Sorry, but that theme could not be removed!"
-#~ msgstr "Desculpe, não foi possível remover este tema!"
-
-#~ msgid "Couldn't remove theme"
-#~ msgstr "Não foi possível excluir o tema"
-
-#~ msgid "_Add Theme..."
-#~ msgstr "_Adicionar Tema..."
-
-#~ msgid "_Remove Theme..."
-#~ msgstr "_Remover Tema..."
-
-#~ msgid "Cancel _Remove"
-#~ msgstr "Cancelar _Remoção"
-
-#~ msgid "Factory for music view"
-#~ msgstr "Fábrica para visão de música"
-
-#~ msgid "Music"
-#~ msgstr "Musica"
-
-#~ msgid "Music Viewer"
-#~ msgstr "Visualizador de música"
-
-#~ msgid "Music view"
-#~ msgstr "Visão de música"
-
-#~ msgid "Music view factory"
-#~ msgstr "Fábrica de visão de música"
-
-#~ msgid "View as Music"
-#~ msgstr "Ver como música"
-
-#~ msgid "Blues"
-#~ msgstr "Blues"
-
-#~ msgid "Classic Rock"
-#~ msgstr "Rock clássico"
-
-#~ msgid "Country"
-#~ msgstr "Country"
-
-#~ msgid "Dance"
-#~ msgstr "Dance"
-
-#~ msgid "Disco"
-#~ msgstr "Disco"
-
-#~ msgid "Funk"
-#~ msgstr "Funk"
-
-#~ msgid "Grunge"
-#~ msgstr "Grunge"
-
-#~ msgid "Hip-Hop"
-#~ msgstr "Hip-hop"
-
-#~ msgid "Jazz"
-#~ msgstr "Jazz"
-
-#~ msgid "Metal"
-#~ msgstr "Metal"
-
-#~ msgid "New Age"
-#~ msgstr "New age"
-
-#~ msgid "Oldies"
-#~ msgstr "Antigas"
-
-#~ msgid "Other"
-#~ msgstr "Outro"
-
-#~ msgid "Pop"
-#~ msgstr "Pop"
-
-#~ msgid "R&B"
-#~ msgstr "R&B"
-
-#~ msgid "Rap"
-#~ msgstr "Rap"
-
-#~ msgid "Reggae"
-#~ msgstr "Reggae"
-
-#~ msgid "Rock"
-#~ msgstr "Rock"
-
-#~ msgid "Techno"
-#~ msgstr "Techno"
-
-#~ msgid "Industrial"
-#~ msgstr "Industrial"
-
-#~ msgid "Alternative"
-#~ msgstr "Alternativo"
-
-#~ msgid "Ska"
-#~ msgstr "Ska"
-
-#~ msgid "Death Metal"
-#~ msgstr "Death metal"
-
-#~ msgid "Pranks"
-#~ msgstr "Pranks"
-
-#~ msgid "Soundtrack"
-#~ msgstr "Trilha sonora"
-
-#~ msgid "Euro-Techno"
-#~ msgstr "Euro-techno"
-
-#~ msgid "Ambient"
-#~ msgstr "Ambiente"
-
-#~ msgid "Trip-Hop"
-#~ msgstr "Trip-hop"
-
-#~ msgid "Vocal"
-#~ msgstr "Vocal"
-
-#~ msgid "Jazz+Funk"
-#~ msgstr "Jazz+Funk"
-
-#~ msgid "Fusion"
-#~ msgstr "Fusion"
-
-#~ msgid "Trance"
-#~ msgstr "Trance"
-
-#~ msgid "Classical"
-#~ msgstr "Clássico"
-
-#~ msgid "Instrumental"
-#~ msgstr "Instrumental"
-
-#~ msgid "Acid"
-#~ msgstr "Acid"
-
-#~ msgid "House"
-#~ msgstr "House"
-
-#~ msgid "Game"
-#~ msgstr "Jogo"
-
-#~ msgid "Sound Clip"
-#~ msgstr "Clip de áudio"
-
-#~ msgid "Gospel"
-#~ msgstr "Gospel"
-
-#~ msgid "Noise"
-#~ msgstr "Noise"
-
-#~ msgid "Alt"
-#~ msgstr "Alt"
-
-#~ msgid "Bass"
-#~ msgstr "Bass"
-
-#~ msgid "Soul"
-#~ msgstr "Soul"
-
-#~ msgid "Punk"
-#~ msgstr "Punk"
-
-#~ msgid "Space"
-#~ msgstr "Space"
-
-#~ msgid "Meditative"
-#~ msgstr "Meditativo"
-
-#~ msgid "Instrumental Pop"
-#~ msgstr "Pop instrumental"
-
-#~ msgid "Instrumental Rock"
-#~ msgstr "Rock instrumental"
-
-#~ msgid "Ethnic"
-#~ msgstr "Étnico"
-
-#~ msgid "Gothic"
-#~ msgstr "Gótico"
-
-#~ msgid "Darkwave"
-#~ msgstr "Darkwave"
-
-#~ msgid "Techno-Industrial"
-#~ msgstr "Techno-industrial"
-
-#~ msgid "Electronic"
-#~ msgstr "Eletrônico"
-
-#~ msgid "Pop-Folk"
-#~ msgstr "Pop-folk"
-
-#~ msgid "Eurodance"
-#~ msgstr "Eurodance"
-
-#~ msgid "Dream"
-#~ msgstr "Dream"
-
-#~ msgid "Southern Rock"
-#~ msgstr "Southern rock"
-
-#~ msgid "Comedy"
-#~ msgstr "Comédia"
-
-#~ msgid "Cult"
-#~ msgstr "Cult"
-
-#~ msgid "Gangsta Rap"
-#~ msgstr "Gangsta rap"
-
-#~ msgid "Top 40"
-#~ msgstr "Top 40"
-
-#~ msgid "Christian Rap"
-#~ msgstr "Christian rap"
-
-#~ msgid "Pop/Funk"
-#~ msgstr "Pop/funk"
-
-#~ msgid "Jungle"
-#~ msgstr "Jungle"
-
-#~ msgid "Native American"
-#~ msgstr "Indígena americano"
-
-#~ msgid "Cabaret"
-#~ msgstr "Cabaret"
-
-#~ msgid "Psychedelic"
-#~ msgstr "Psicodélico"
-
-#~ msgid "Rave"
-#~ msgstr "Rave"
-
-#~ msgid "Showtunes"
-#~ msgstr "Showtunes"
-
-#~ msgid "Trailer"
-#~ msgstr "Trailer"
-
-#~ msgid "Lo-Fi"
-#~ msgstr "Lo-Fi"
-
-#~ msgid "Tribal"
-#~ msgstr "Tribal"
-
-#~ msgid "Acid Punk"
-#~ msgstr "Acid punk"
-
-#~ msgid "Acid Jazz"
-#~ msgstr "Acid jazz"
-
-#~ msgid "Polka"
-#~ msgstr "Polka"
-
-#~ msgid "Retro"
-#~ msgstr "Retro"
-
-#~ msgid "Musical"
-#~ msgstr "Musical"
-
-#~ msgid "Rock & Roll"
-#~ msgstr "Rock & roll"
-
-#~ msgid "Hard Rock"
-#~ msgstr "Hard rock"
-
-#~ msgid "Folk"
-#~ msgstr "Folk"
-
-#~ msgid "Folk/Rock"
-#~ msgstr "Folk/rock"
-
-#~ msgid "National Folk"
-#~ msgstr "National folk"
-
-#~ msgid "Swing"
-#~ msgstr "Swing"
-
-#~ msgid "Fast-Fusion"
-#~ msgstr "Fast-fusion"
-
-#~ msgid "Bebob"
-#~ msgstr "Bebob"
-
-#~ msgid "Latin"
-#~ msgstr "Latino"
-
-#~ msgid "Revival"
-#~ msgstr "Revival"
-
-#~ msgid "Celtic"
-#~ msgstr "Celta"
-
-#~ msgid "Bluegrass"
-#~ msgstr "Bluegrass"
-
-#~ msgid "Avantgarde"
-#~ msgstr "Avantgarde"
-
-#~ msgid "Gothic Rock"
-#~ msgstr "Rock gótico"
-
-#~ msgid "Progressive Rock"
-#~ msgstr "Rock progressivo"
-
-#~ msgid "Psychedelic Rock"
-#~ msgstr "Rock psicodélico"
-
-#~ msgid "Symphonic Rock"
-#~ msgstr "Rock sinfônico"
-
-#~ msgid "Slow Rock"
-#~ msgstr "Rock lento"
-
-#~ msgid "Big Band"
-#~ msgstr "Big band"
-
-#~ msgid "Chorus"
-#~ msgstr "Coral"
-
-#~ msgid "Easy Listening"
-#~ msgstr "Easy listening"
-
-#~ msgid "Acoustic"
-#~ msgstr "Acústico"
-
-#~ msgid "Humour"
-#~ msgstr "Humor"
-
-#~ msgid "Speech"
-#~ msgstr "Voz"
-
-#~ msgid "Chanson"
-#~ msgstr "Chanson"
-
-#~ msgid "Opera"
-#~ msgstr "Ópera"
-
-#~ msgid "Chamber Music"
-#~ msgstr "Música de câmara"
-
-#~ msgid "Sonata"
-#~ msgstr "Sonata"
-
-#~ msgid "Symphony"
-#~ msgstr "Sinfonia"
-
-#~ msgid "Booty Bass"
-#~ msgstr "Pop instrumental"
-
-#~ msgid "Primus"
-#~ msgstr "Primus"
-
-#~ msgid "Porn Groove"
-#~ msgstr "Porn groove"
-
-#~ msgid "Satire"
-#~ msgstr "Sátira"
-
-#~ msgid "Slow Jam"
-#~ msgstr "Slow jam"
-
-#~ msgid "Club"
-#~ msgstr "Club"
-
-#~ msgid "Tango"
-#~ msgstr "Tango"
-
-#~ msgid "Samba"
-#~ msgstr "Samba"
-
-#~ msgid "Folklore"
-#~ msgstr "Folclórica"
-
-#~ msgid "Ballad"
-#~ msgstr "Balada"
-
-#~ msgid "Power Ballad"
-#~ msgstr "Power ballad"
-
-#~ msgid "Rhythmic Soul"
-#~ msgstr "Rhythmic soul"
-
-#~ msgid "Freestyle"
-#~ msgstr "Freestyle"
-
-#~ msgid "Duet"
-#~ msgstr "Dueto"
-
-#~ msgid "Punk Rock"
-#~ msgstr "Punk rock"
-
-#~ msgid "Drum Solo"
-#~ msgstr "Solo de bateria"
-
-#~ msgid "A Cappella"
-#~ msgstr "A cappella"
-
-#~ msgid "Euro-House"
-#~ msgstr "Euro-house"
-
-#~ msgid "Dance Hall"
-#~ msgstr "Dance hall"
-
-#~ msgid "Goa"
-#~ msgstr "Goa"
-
-#~ msgid "Drum & Bass"
-#~ msgstr "Drum & bass"
-
-#~ msgid "Club-House"
-#~ msgstr "Club-house"
-
-#~ msgid "Hardcore"
-#~ msgstr "Hardcore"
-
-#~ msgid "Terror"
-#~ msgstr "Terror"
-
-#~ msgid "Indie"
-#~ msgstr "Indie"
-
-#~ msgid "BritPop"
-#~ msgstr "BritPop"
-
-#~ msgid "Negerpunk"
-#~ msgstr "Negerpunk"
-
-#~ msgid "Polsk Punk"
-#~ msgstr "Polsk punk"
-
-#~ msgid "Beat"
-#~ msgstr "Beat"
-
-#~ msgid "Christian Gangsta Rap"
-#~ msgstr "Gangsta rap cristão"
-
-#~ msgid "Heavy Metal"
-#~ msgstr "Heavy metal"
-
-#~ msgid "Black Metal"
-#~ msgstr "Black metal"
-
-#~ msgid "Crossover"
-#~ msgstr "Crossover"
-
-#~ msgid "Contemporary Christian"
-#~ msgstr "Cristão conteponâneo"
-
-#~ msgid "Christian Rock"
-#~ msgstr "Rock cristão"
-
-#~ msgid "Merengue"
-#~ msgstr "Merengue"
-
-#~ msgid "Salsa"
-#~ msgstr "Salsa"
-
-#~ msgid "Thrash Metal"
-#~ msgstr "Thrash metal"
-
-#~ msgid "Anime"
-#~ msgstr "Anime"
-
-#~ msgid "JPop"
-#~ msgstr "JPop"
-
-#~ msgid "Synthpop"
-#~ msgstr "Synthpop"
-
-#~ msgid "Track"
-#~ msgstr "Faixa"
-
-#~ msgid "Title"
-#~ msgstr "Título"
-
-#~ msgid "Artist"
-#~ msgstr "Artista"
-
-#~ msgid "Bit Rate"
-#~ msgstr "Taxa de bits"
-
-#~ msgid "Time"
-#~ msgstr "Tempo"
-
-#~ msgid "Set Cover Image"
-#~ msgstr "Configurar imagem da capa"
-
-#~ msgid "Sorry, but '%s' is not a usable image file."
-#~ msgstr "Desculpe, mas '%s' não é um arquivo de imagem utilizável."
-
-#~ msgid "Select an image file for the album cover:"
-#~ msgstr "Selecione um arquivo de imagem para a capa do álbum:"
-
-#~ msgid ""
-#~ "Sorry, but the music view is unable to play back sound right now. This is "
-#~ "because the Enable sound server startup setting in the Sound section of "
-#~ "the Control Center is turned off."
-#~ msgstr ""
-#~ "Desculpe, mas a visão de música não pode reproduzir sons agora. Isso "
-#~ "ocorre porque a configuração de habilitação do servidor de sons na seção "
-#~ "de sons do Centro de Controle está desligada."
-
-#~ msgid "Unable to Play File"
-#~ msgstr "Não é possível tocar arquivo"
-
-#~ msgid ""
-#~ "Sorry, but the music view is unable to play back sound right now. Either "
-#~ "another program is using or blocking the sound card, or your sound card "
-#~ "is not configured properly. Try quitting any applications that may be "
-#~ "blocking use of the sound card."
-#~ msgstr ""
-#~ "Desculpe, mas a visão de música não pode reproduzir sons agora. Ou outro "
-#~ "programa está usando ou bloqueando a placa de som ou a sua placa de som "
-#~ "não está corretamente configurada. Tente sair de aplicativos que possam "
-#~ "estar bloqueando o uso da placa de som."
-
-#~ msgid "Sorry, but the music view can't play non-local files yet."
-#~ msgstr ""
-#~ "Desculpe, mas a visão de música não pode tocar arquivos remotos ainda."
-
-#~ msgid "Can't Play Remote Files"
-#~ msgstr "Não é possível tocar arquivos remotos"
-
-#~ msgid "Drag to seek within track"
-#~ msgstr "Arraste para mover dentro da faixa"
-
-#~ msgid "Previous"
-#~ msgstr "Anterior"
-
-#~ msgid "Play"
-#~ msgstr "Tocar"
-
-#~ msgid "Pause"
-#~ msgstr "Pausa"
-
-#~ msgid "Next"
-#~ msgstr "Próximo"
-
-#~ msgid "cover image"
-#~ msgstr "imagem de capa"
-
-#~ msgid "Sorry, but there was an error reading %s."
-#~ msgstr "Desculpe, mas ocorreu um erro ao ler %s."
-
-#~ msgid "Can't Read Folder"
-#~ msgstr "Não é possível ler pasta"
-
-#~ msgid "<span size=\"xx-large\">%s - %s</span>"
-#~ msgstr "<span size=\"xx-large\">%s - %s</span>"
-
-#~ msgid "Sorry, but the image at %s couldn't be installed as an emblem."
-#~ msgstr "Desculpe, não foi possível instalar a imagem %s como um emblema."
-
-#~ msgid "Delete"
-#~ msgstr "Excluir"
-
-#~ msgid "Re_move Custom Icons"
-#~ msgstr "Re_mover Ícones Personalizados"
-
-#~ msgid "Re_move Custom Icon"
-#~ msgstr "Re_mover Ícones Personalizados"
-
-#~ msgid "Throw Away"
-#~ msgstr "Jogar Fora"
-
-#~ msgid "Remove any custom images from selected icons"
-#~ msgstr "Remover quaisquer imagens personalizadas dos ícones selecionados"
+msgstr "Visualizar seus servidores de rede no gerenciador de arquivos Nautilus"
