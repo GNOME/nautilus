@@ -488,49 +488,6 @@ set_root_pixmap (GdkPixmap *pixmap, GdkScreen *screen)
 
 /* Free the root pixmap */
 static void
-free_root_pixmap (GdkScreen *screen)
-{
-	gulong   nitems;
-	Atom     type;
-	gint     format;
-	int      result;
-	int      screen_num;
-	guchar  *data_esetroot;
-	gulong   bytes_after;
-	Display *display;
-
-	screen_num = gdk_screen_get_number (screen);
-	display = GDK_DISPLAY_XDISPLAY (gdk_display_get_default ());
-	data_esetroot = NULL;
-
-	XGrabServer (display);
-
-	result = XGetWindowProperty (display, RootWindow (display, screen_num),
-				     gdk_x11_get_xatom_by_name ("ESETROOT_PMAP_ID"),
-				     0L, 1L, False, XA_PIXMAP,
-				     &type, &format, &nitems, &bytes_after,
-				     &data_esetroot);
-
-	if (data_esetroot != NULL) {
-		if (result == Success && type == XA_PIXMAP && format == 32 && nitems == 1) {
-			gdk_error_trap_push ();
-			XKillClient (display, *(Pixmap *)data_esetroot);
-			gdk_flush ();
-			gdk_error_trap_pop ();
-		}
-		XFree (data_esetroot);
-	}
-
-	XDeleteProperty (display, RootWindow (display, screen_num),
-			 gdk_x11_get_xatom_by_name ("ESETROOT_PMAP_ID"));
-	XDeleteProperty (display, RootWindow (display, screen_num),
-			 gdk_x11_get_xatom_by_name ("_XROOTPMAP_ID"));
-
-	XUngrabServer (display);
-	XFlush (display);
-}
-	
-static void
 image_loading_done_callback (EelBackground *background, gboolean successful_load, void *disconnect_signal)
 {
 	int           entire_width;
@@ -568,22 +525,9 @@ image_loading_done_callback (EelBackground *background, gboolean successful_load
                                           GINT_TO_POINTER (TRUE));
                         return;
                 }
-
-		pixmap = make_root_pixmap (screen, pixmap_width, pixmap_height);
-	        if (pixmap == NULL) {
-	                return;
-	        }
-        
-		gc = gdk_gc_new (pixmap);
-		eel_background_draw (background, pixmap, gc,
-                                     0, 0, 0, 0,
-                                     pixmap_width, pixmap_height);
-		g_object_unref (gc);
-		set_root_pixmap (pixmap, screen);
-		g_object_unref (pixmap);
-                
 	} else {
-		free_root_pixmap (screen);
+                pixmap_width = pixmap_height = 1;
+
 		background_window = gdk_screen_get_root_window (screen);
 		color_string = eel_background_get_color (background);
 
@@ -594,6 +538,19 @@ image_loading_done_callback (EelBackground *background, gboolean successful_load
 			}
 		}
 	}
+
+        pixmap = make_root_pixmap (screen, pixmap_width, pixmap_height);
+        if (pixmap == NULL) {
+                return;
+        }
+        
+        gc = gdk_gc_new (pixmap);
+        eel_background_draw (background, pixmap, gc,
+                             0, 0, 0, 0,
+                             pixmap_width, pixmap_height);
+        g_object_unref (gc);
+        set_root_pixmap (pixmap, screen);
+        g_object_unref (pixmap);
 }
 
 static void

@@ -1,3 +1,11 @@
+2003-06-15  Mark McLoughlin  <mark@skynet.ie>
+
+	* libnautilus-private/nautilus-directory-background.c:
+	(image_loading_done_callback): create a 1x1 pixmap with
+	the background colour and set _XROOTPMAP_ID when we have
+	a solid colour background. Fixes panel translucency with
+	solid colour backgrounds.
+
 2003-06-16  Taneem Ahmed  <taneem@eyetap.org>
 
 	* configure.in: Added "bn" to ALL_LINGUAS.
