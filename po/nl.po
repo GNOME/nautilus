@@ -13,8 +13,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2002-12-23 06:11+0100\n"
-"PO-Revision-Date: 2002-12-23 18:25+0100\n"
+"POT-Creation-Date: 2003-01-03 06:04+0100\n"
+"PO-Revision-Date: 2003-01-03 18:37+0100\n"
 "Last-Translator: Reinout van Schouwen <reinout@cs.vu.nl>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
 "MIME-Version: 1.0\n"
@@ -34,12 +34,12 @@ msgid ""
 "Factory for objects that wrap ordinary Bonobo Controls or Embeddables to "
 "look like Nautilus Views"
 msgstr ""
-"Fabriek voor objecten die gewone Bonobo Controls of Embeddables er uit laten "
-"zien als een Nautilus Venster"
+"Fabriek voor objecten die gewone Bonobo-controls of \"embeddables\" eruit "
+"laten zien als een Nautilusweergave"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:4
 msgid "Nautilus component adapter factory"
-msgstr "Nautilus component fabriek"
+msgstr "Nautilus componentadapterfabriek"
 
 #: components/adapter/main.c:100
 msgid "bonobo_ui_init() failed."
@@ -182,7 +182,7 @@ msgstr "Hardware-weergave"
 
 #: components/hardware/Nautilus_View_hardware.server.in.in.h:5
 msgid "View as Hardware"
-msgstr "Bekijken als Hardware"
+msgstr "Bekijken als hardware"
 
 #: components/hardware/Nautilus_View_hardware.server.in.in.h:6
 msgid "hardware view"
@@ -1075,7 +1075,7 @@ msgid "Can't find an hbox, using a normal file selection"
 msgstr "Kan hbox niet vinden, normale bestandsselectie wordt gebruikt"
 
 #: libbackground/preview-file-selection.c:212
-#: src/nautilus-file-management-properties.glade.h:56
+#: src/nautilus-file-management-properties.glade.h:54
 msgid "Preview"
 msgstr "Voorbeeld"
 
@@ -1248,12 +1248,12 @@ msgid "Cancel"
 msgstr "Annuleren"
 
 #: libnautilus-private/nautilus-dnd.c:628
-msgid "Set as background for _all directories"
-msgstr "Als achtergrond inste_llen voor alle mappen"
+msgid "Set as background for _all folders"
+msgstr "Als achtergrond instellen voor _alle mappen"
 
 #: libnautilus-private/nautilus-dnd.c:633
-msgid "Set as background for _this directory"
-msgstr "Als achtergrond instellen voor _deze map"
+msgid "Set as background for _this folder"
+msgstr "Als achtergrond ins_tellen voor deze map"
 
 #: libnautilus-private/nautilus-emblem-utils.c:194
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
@@ -1334,7 +1334,7 @@ msgstr ""
 "Fout bij verwijderen.\n"
 "\n"
 "\"%s\" kan niet verwijderd worden, want u heeft geen rechten om de "
-"bevattende map te wijzigen."
+"bovenliggende map te wijzigen."
 
 #: libnautilus-private/nautilus-file-operations.c:559
 #, c-format
@@ -1359,10 +1359,10 @@ msgstr ""
 "Fout bij verplaatsen.\n"
 "\n"
 "\"%s\" kan niet verplaatst worden, want u heeft geen rechten om dit item of "
-"de bevattende map te wijzigen."
+"de bovenliggende map te wijzigen."
 
 #: libnautilus-private/nautilus-file-operations.c:595
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Error while moving.\n"
 "\n"
@@ -1371,8 +1371,8 @@ msgid ""
 msgstr ""
 "Fout bij verplaatsen.\n"
 "\n"
-"\"%s\" kan niet verplaatst worden, want het item bevindt zich op een alleen-"
-"lezen schijf."
+"\"%s\" kan niet verplaatst worden, omdat dit item of zijn bovenliggende map "
+"zich bevindt in de bestemmingslocatie."
 
 #: libnautilus-private/nautilus-file-operations.c:605
 #, c-format
@@ -1385,7 +1385,7 @@ msgstr ""
 "Fout bij verplaatsen.\n"
 "\n"
 "\"%s\" kan niet naar de Prullenbak verplaatst worden, want u heeft geen "
-"rechten om dit item of de bevattende map te wijzigen."
+"rechten om dit item of de bovenliggende map te wijzigen."
 
 #: libnautilus-private/nautilus-file-operations.c:628
 #, c-format
@@ -1407,7 +1407,7 @@ msgid ""
 msgstr ""
 "Fout bij het kopiëren naar \"%s\".\n"
 "\n"
-"Er is onvoldoende ruimte op de plaats van bestemming."
+"Er is onvoldoende ruimte op de bestemmingslocatie."
 
 #: libnautilus-private/nautilus-file-operations.c:654
 #, c-format
@@ -1418,7 +1418,7 @@ msgid ""
 msgstr ""
 "Fout bij het verplaatsen naar \"%s\".\n"
 "\n"
-"Er is onvoldoende ruimte op de plaats van bestemming."
+"Er is onvoldoende ruimte op de bestemmingslocatie."
 
 #: libnautilus-private/nautilus-file-operations.c:658
 #, c-format
@@ -1427,9 +1427,9 @@ msgid ""
 "\n"
 "There is not enough space on the destination."
 msgstr ""
-"Fout bij het creëren van verwijzing in \"%s\".\n"
+"Fout bij het aanmaken van verwijzing in \"%s\".\n"
 "\n"
-"Er is onvoldoende ruimte op de plaats van bestemming."
+"Er is onvoldoende ruimte op de bestemmingslocatie."
 
 #: libnautilus-private/nautilus-file-operations.c:670
 #, c-format
@@ -1451,7 +1451,7 @@ msgid ""
 msgstr ""
 "Fout bij het kopiëren naar \"%s\".\n"
 "\n"
-"De plaats van bestemming is alleen-lezen."
+"De bestemmingslocatie is alleen-lezen."
 
 #: libnautilus-private/nautilus-file-operations.c:681
 #, c-format
@@ -1482,7 +1482,7 @@ msgid ""
 "\n"
 "You do not have permissions to write to this folder."
 msgstr ""
-"Fout bij het creëren van verwijzingen in \"%s\".\n"
+"Fout bij het aanmaken van verwijzingen in \"%s\".\n"
 "\n"
 "U heeft geen schrijfrechten voor deze map."
 
@@ -1493,7 +1493,7 @@ msgid ""
 "\n"
 "The destination disk is read-only."
 msgstr ""
-"Fout bij het creëren van verwijzingen in \"%s\".\n"
+"Fout bij het aanmaken van verwijzingen in \"%s\".\n"
 "\n"
 "De bestemmingsschijf is alleen-lezen."
 
@@ -1526,7 +1526,7 @@ msgid ""
 "\n"
 "Would you like to continue?"
 msgstr ""
-"Fout \"%s\" bij het creëren van een verwijzing naar \"%s\".\n"
+"Fout \"%s\" bij het aanmaken van een verwijzing naar \"%s\".\n"
 "\n"
 "Wilt u doorgaan?"
 
@@ -1570,7 +1570,7 @@ msgid ""
 "\n"
 "Would you like to continue?"
 msgstr ""
-"Fout \"%s\" bij het creëren van verwijzingen.\n"
+"Fout \"%s\" bij het aanmaken van verwijzingen.\n"
 "\n"
 "Wilt u doorgaan?"
 
@@ -1595,7 +1595,7 @@ msgstr "Fout tijdens het verplaatsen."
 
 #: libnautilus-private/nautilus-file-operations.c:898
 msgid "Error while linking."
-msgstr "Fout tijdens het creëren van verwijzingen."
+msgstr "Fout tijdens het aanmaken van verwijzingen."
 
 #: libnautilus-private/nautilus-file-operations.c:903
 msgid "Error while deleting."
@@ -1781,7 +1781,7 @@ msgstr "%s (%de kopie)%s"
 #: libnautilus-private/nautilus-file-operations.c:1227
 #, c-format
 msgid "%s (%dst copy)%s"
-msgstr "%s (%de kopie)%s"
+msgstr "%s (%dte kopie)%s"
 
 #. localizers: appended to x2nd file copy
 #: libnautilus-private/nautilus-file-operations.c:1229
@@ -1826,7 +1826,7 @@ msgstr "Eruit gegooid: "
 #: libnautilus-private/nautilus-file-operations.c:1862
 #: libnautilus-private/nautilus-file-operations.c:1873
 msgid "Moving"
-msgstr "Verplaatsen"
+msgstr "Bezig met verplaatsen"
 
 #: libnautilus-private/nautilus-file-operations.c:1863
 msgid "Preparing to Move to Trash..."
@@ -1853,7 +1853,7 @@ msgstr "Verplaatsing aan het voltooien..."
 #. localizers: progress dialog title
 #: libnautilus-private/nautilus-file-operations.c:1883
 msgid "Creating links to files"
-msgstr "Bezig met creëren van verwijzingen naar bestanden"
+msgstr "Bezig met aanmaken van verwijzingen naar bestanden"
 
 #. localizers: label prepended to the progress count
 #: libnautilus-private/nautilus-file-operations.c:1885
@@ -1867,11 +1867,11 @@ msgstr "Verwijzingen aan het maken"
 
 #: libnautilus-private/nautilus-file-operations.c:1888
 msgid "Preparing to Create Links..."
-msgstr "Bezig met voorbereiden van creëren van verwijzingen..."
+msgstr "Bezig met voorbereiden van aanmaken van verwijzingen..."
 
 #: libnautilus-private/nautilus-file-operations.c:1889
 msgid "Finishing Creating Links..."
-msgstr "Bezig met afronden van creëren van verwijzingen..."
+msgstr "Bezig met afronden van aanmaken van verwijzingen..."
 
 #. localizers: progress dialog title
 #: libnautilus-private/nautilus-file-operations.c:1895
@@ -1954,9 +1954,9 @@ msgid ""
 "\n"
 "You do not have permissions to write to the destination."
 msgstr ""
-"Fout bij creëren van nieuwe map.\n"
+"Fout bij aanmaken van nieuwe map.\n"
 "\n"
-"U heeft geen schrijfpermissies voor de plaats van bestemming."
+"U heeft geen schrijfpermissies voor de bestemmingslocatie."
 
 #: libnautilus-private/nautilus-file-operations.c:2046
 msgid ""
@@ -1964,18 +1964,18 @@ msgid ""
 "\n"
 "There is no space on the destination."
 msgstr ""
-"Fout bij creëren van nieuwe map.\n"
+"Fout bij aanmaken van nieuwe map.\n"
 "\n"
-"Er is geen ruimte op de plaats van bestemming."
+"Er is geen ruimte op de bestemmingslocatie."
 
 #: libnautilus-private/nautilus-file-operations.c:2049
 #, c-format
 msgid "Error \"%s\" creating new folder."
-msgstr "Fout \"%s\" bij het creëren van nieuwe map."
+msgstr "Fout \"%s\" bij het aanmaken van nieuwe map."
 
 #: libnautilus-private/nautilus-file-operations.c:2053
 msgid "Error creating new folder"
-msgstr "Fout bij het creëren van nieuwe map"
+msgstr "Fout bij het aanmaken van nieuwe map"
 
 #. localizers: the initial name of a new folder
 #: libnautilus-private/nautilus-file-operations.c:2140
@@ -2022,12 +2022,11 @@ msgstr "Prullenbak legen"
 msgid ""
 "Are you sure you want to permanently delete all of the items in the Trash?"
 msgstr ""
-"Weet u zeker dat u alle bestanden in de vuilnisbak permanent wilt "
-"verwijderen?"
+"Weet u zeker dat u alle objecten in de prullenbak permanent wilt verwijderen?"
 
 #: libnautilus-private/nautilus-file-operations.c:2273
 msgid "_Empty"
-msgstr "_Leeg"
+msgstr "_Legen"
 
 #: libnautilus-private/nautilus-file-operations.c:2320
 msgid "foo"
@@ -2586,12 +2585,10 @@ msgid "400%"
 msgstr "400%"
 
 #: libnautilus-private/nautilus-global-preferences.c:125
-#: src/nautilus-file-management-properties.glade.h:4
 msgid "100 K"
 msgstr "100 K"
 
 #: libnautilus-private/nautilus-global-preferences.c:126
-#: src/nautilus-file-management-properties.glade.h:20
 msgid "500 K"
 msgstr "500 K"
 
@@ -2621,12 +2618,10 @@ msgid "100 MB"
 msgstr "100 MB"
 
 #: libnautilus-private/nautilus-global-preferences.c:137
-#: src/nautilus-file-management-properties.glade.h:36
 msgid "Activate items with a _single click"
 msgstr "Items met _enkele klik activeren"
 
 #: libnautilus-private/nautilus-global-preferences.c:141
-#: src/nautilus-file-management-properties.glade.h:35
 msgid "Activate items with a _double click"
 msgstr "Items met _dubbelklik activeren"
 
@@ -2639,7 +2634,7 @@ msgid "Display _files when they are clicked"
 msgstr "Bestanden _weergeven bij aanklikken"
 
 #: libnautilus-private/nautilus-global-preferences.c:157
-#: src/nautilus-file-management-properties.glade.h:69
+#: src/nautilus-file-management-properties.glade.h:66
 msgid "_Ask each time"
 msgstr "_Elke keer vragen"
 
@@ -2652,12 +2647,12 @@ msgid "Search for files by file name and file properties"
 msgstr "Bestanden zoeken op bestandsnaam en eigenschappen"
 
 #: libnautilus-private/nautilus-global-preferences.c:176
-#: src/nautilus-file-management-properties.glade.h:51
+#: src/nautilus-file-management-properties.glade.h:49
 msgid "Icon View"
 msgstr "Pictogrammenweergave"
 
 #: libnautilus-private/nautilus-global-preferences.c:177
-#: src/nautilus-file-management-properties.glade.h:52
+#: src/nautilus-file-management-properties.glade.h:50
 msgid "List View"
 msgstr "Lijstweergave"
 
@@ -2667,31 +2662,31 @@ msgstr "Handmatig"
 
 #: libnautilus-private/nautilus-global-preferences.c:184
 #: libnautilus-private/nautilus-global-preferences.c:193
-#: src/nautilus-file-management-properties.glade.h:41
+#: src/nautilus-file-management-properties.glade.h:40
 msgid "By Name"
 msgstr "Op naam"
 
 #: libnautilus-private/nautilus-global-preferences.c:185
 #: libnautilus-private/nautilus-global-preferences.c:194
-#: src/nautilus-file-management-properties.glade.h:42
+#: src/nautilus-file-management-properties.glade.h:41
 msgid "By Size"
 msgstr "Op grootte"
 
 #: libnautilus-private/nautilus-global-preferences.c:186
 #: libnautilus-private/nautilus-global-preferences.c:195
-#: src/nautilus-file-management-properties.glade.h:43
+#: src/nautilus-file-management-properties.glade.h:42
 msgid "By Type"
 msgstr "Op type"
 
 #: libnautilus-private/nautilus-global-preferences.c:187
 #: libnautilus-private/nautilus-global-preferences.c:196
-#: src/nautilus-file-management-properties.glade.h:40
+#: src/nautilus-file-management-properties.glade.h:39
 msgid "By Modification Date"
 msgstr "Op wijzigingsdatum"
 
 #: libnautilus-private/nautilus-global-preferences.c:188
 #: libnautilus-private/nautilus-global-preferences.c:197
-#: src/nautilus-file-management-properties.glade.h:39
+#: src/nautilus-file-management-properties.glade.h:38
 msgid "By Emblems"
 msgstr "Op embleem"
 
@@ -2776,7 +2771,7 @@ msgid "octal permissions"
 msgstr "octale rechten"
 
 #: libnautilus-private/nautilus-global-preferences.c:224
-#: src/nautilus-file-management-properties.glade.h:54
+#: src/nautilus-file-management-properties.glade.h:52
 msgid "MIME type"
 msgstr "MIME-type"
 
@@ -4669,7 +4664,7 @@ msgstr "Eigenschappenvenster annuleren?"
 
 #: src/file-manager/fm-properties-window.c:2624
 msgid "Creating Properties window"
-msgstr "Bezig met creëren eigenschappenvenster"
+msgstr "Bezig met aanmaken eigenschappenvenster"
 
 #: src/file-manager/fm-properties-window.c:2718
 msgid "Select an icon:"
@@ -4826,10 +4821,11 @@ msgid ""
 "indexd\" as root on the command line.  Until a complete index is available, "
 "searches will take several minutes."
 msgstr ""
-"Om te kunnen snelzoeken heeft de Zoekdienst een index nodig van de bestanden "
-"op uw systeem. Op dit moment is er geen index beschikbaar. U kunt een index "
-"creëren als root op de opdrachtaanwijzing. Totdat een volledige index "
-"beschikbaar is, zal een zoekactie meerdere minuten in beslag nemen."
+"Om te kunnen snelzoeken heeft de Zoekfunctie een index nodig van de "
+"bestanden op uw systeem. Op dit moment is er geen index beschikbaar. U kunt "
+"een index aanmaken door \"medusa-indexd\" uit te voeren als root op de "
+"opdrachtaanwijzing.Totdat een volledige index beschikbaar is, zal een "
+"zoekactie meerdere minuten in beslag nemen."
 
 #: src/file-manager/fm-search-list-view.c:298
 msgid ""
@@ -4838,9 +4834,9 @@ msgid ""
 "running \"medusa-indexd\" as root on the command line.  Until a complete "
 "index is available, content searches cannot be performed."
 msgstr ""
-"Om te kunnen zoeken op inhoed, is er een index nodig van de inhoud van de "
+"Om te kunnen zoeken op inhoud, is er een index nodig van de inhoud van de "
 "bestanden op uw systeem. Uw computer heeft op dit moment geen index. Wilt u "
-"een index creëren dan dient u \"medusa-indexd\" te draaien als root op de "
+"een index aanmaken dan dient u \"medusa-indexd\" te draaien als root op de "
 "opdrachtaanwijzing. Totdat een volledige index beschikbaar is, kunnen geen "
 "inhoudszoekacties uitgevoerd worden."
 
@@ -4870,7 +4866,7 @@ msgstr "Waar"
 #: src/file-manager/fm-search-list-view.c:560
 #: src/file-manager/nautilus-search-list-view-ui.xml.h:6
 msgid "_Reveal in New Window"
-msgstr "In _nieuw venster tonen"
+msgstr "In nieuw venste_r onthullen"
 
 #. "Reveal in n New Windows" means open the parent folder for each
 #. * selected item in a separate new window, select each selected
@@ -4881,7 +4877,7 @@ msgstr "In _nieuw venster tonen"
 #: src/file-manager/fm-search-list-view.c:568
 #, c-format
 msgid "Reveal in %d _New Windows"
-msgstr "In %d _nieuwe vensters laten zien"
+msgstr "In %d _nieuwe vensters onthullen"
 
 #. Note that the number of items actually displayed varies somewhat due
 #. * to the way files are collected in batches. So you can't assume that
@@ -4892,7 +4888,7 @@ msgid ""
 "Nautilus found more search results than it can display. Some matching items "
 "will not be displayed. "
 msgstr ""
-"Nautilus vond meer zoekresultaten dan weergegeven kunnen worden. Sommige "
+"Nautilus heeft meer zoekresultaten gevonden dan het kan weergeven. Sommige "
 "resultaten worden niet weergegeven. "
 
 #: src/file-manager/fm-search-list-view.c:686
@@ -4906,7 +4902,7 @@ msgstr "_Bureaubladachtergrond wijzigen"
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:2
 #: src/file-manager/nautilus-directory-view-ui.xml.h:5
 msgid "Create a new launcher"
-msgstr "Nieuwe starter creëren"
+msgstr "Nieuwe starter aanmaken"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:3
 #: src/file-manager/nautilus-directory-view-ui.xml.h:9
@@ -4995,7 +4991,7 @@ msgstr "Andere weergave kiezen om het item mee te bekijken"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:4
 msgid "Create a new empty folder inside this folder"
-msgstr "Nieuwe lege map creëren in deze map"
+msgstr "Nieuwe lege map aanmaken in deze map"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:6
 msgid "Create a symbolic link for each selected item"
@@ -5264,7 +5260,7 @@ msgstr "Indexeringsstatus tonen die gebruikt wordt bij het zoeken"
 
 #: src/nautilus-application.c:218
 msgid "Couldn't Create Required Folder"
-msgstr "Kon vereiste map niet creëren"
+msgstr "Kon vereiste map niet aanmaken"
 
 #: src/nautilus-application.c:219
 #, c-format
@@ -5273,13 +5269,13 @@ msgid ""
 "Nautilus, please create this folder, or set permissions such that Nautilus "
 "can create it."
 msgstr ""
-"Nautilus kon de vereiste map \"%s\" niet creëren. Gelieve deze map aan te "
+"Nautilus kon de vereiste map \"%s\" niet aanmaken. Gelieve deze map aan te "
 "maken alvorens Nautilus te starten, of de rechten zodanig in te stellen "
-"zodat Nautilus hem kan creëren."
+"zodat Nautilus hem kan aanmaken."
 
 #: src/nautilus-application.c:224
 msgid "Couldn't Create Required Folders"
-msgstr "Kon vereiste mappen niet creëren"
+msgstr "Kon vereiste mappen niet aanmaken"
 
 #: src/nautilus-application.c:225
 #, c-format
@@ -5291,12 +5287,12 @@ msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
 msgstr ""
-"Nautilus kan de volgende vereiste mappen niet creëren:\n"
+"Nautilus kan de volgende vereiste mappen niet aanmaken:\n"
 "\n"
 "%s\n"
 "\n"
 "Gelieve deze mappen aan te maken alvorens Nautilus te starten, of de rechten "
-"zodanig in te stellen dat Nautilus ze kan creëren."
+"zodanig in te stellen dat Nautilus ze kan aanmaken."
 
 #. Can't register myself due to trouble locating the
 #. * Nautilus_Shell.server file. This has happened when you
@@ -5433,6 +5429,14 @@ msgstr "Zoeken!"
 msgid "    "
 msgstr "    "
 
+#: src/nautilus-file-management-properties.glade.h:4
+msgid "100 KB"
+msgstr "100 KB"
+
+#: src/nautilus-file-management-properties.glade.h:20
+msgid "500 KB"
+msgstr "500 KB"
+
 #: src/nautilus-file-management-properties.glade.h:23
 msgid "<span weight=\"bold\">Behaviour</span>"
 msgstr "<span weight=\"bold\">Gedrag</span>"
@@ -5481,17 +5485,21 @@ msgstr "<span weight=\"bold\">Prullenbak</span>"
 msgid "<span weight=\"bold\">Tree View Defaults</span>"
 msgstr "<span weight=\"bold\">Standaardinstellingen boomweergave</span>"
 
-#: src/nautilus-file-management-properties.glade.h:37
+#: src/nautilus-file-management-properties.glade.h:35
 msgid "Always"
 msgstr "Altijd"
 
-#: src/nautilus-file-management-properties.glade.h:38
+#: src/nautilus-file-management-properties.glade.h:36
 msgid "Ask before _emptying the Trash or deleting files"
 msgstr ""
 "B_evestiging vragen voor het legen van de Prullenbak of het wissen van "
 "bestanden"
 
-#: src/nautilus-file-management-properties.glade.h:44
+#: src/nautilus-file-management-properties.glade.h:37
+msgid "Behavior"
+msgstr "Gedrag"
+
+#: src/nautilus-file-management-properties.glade.h:43
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
@@ -5499,105 +5507,109 @@ msgstr ""
 "Kies de volgorde waarin informatie onder pictogram-namen verschijnt. Meer "
 "informatie verschijnt zodra u verder inzoomt."
 
+#: src/nautilus-file-management-properties.glade.h:44
+msgid "Count _number of items:"
+msgstr "Aa_ntal items tellen:"
+
 #: src/nautilus-file-management-properties.glade.h:45
 msgid "Default _zoom level:"
 msgstr "Standaard _zoomfactor:"
 
 #: src/nautilus-file-management-properties.glade.h:46
-msgid "E_xecute scripts when they are clicked"
-msgstr "Scripts _uitvoeren bij aanklikken"
-
-#: src/nautilus-file-management-properties.glade.h:47
 msgid "File Management Preferences"
 msgstr "Bestandsbeheer-voorkeuren"
 
-#: src/nautilus-file-management-properties.glade.h:48
-msgid "Files and Folders"
-msgstr "Bestanden en mappen"
-
-#: src/nautilus-file-management-properties.glade.h:49
+#: src/nautilus-file-management-properties.glade.h:47
 msgid "I_nclude a Delete command that bypasses Trash"
 msgstr "Een Verw_ijderen-opdracht aanbieden die voorbijgaat aan de Prullenbak"
 
-#: src/nautilus-file-management-properties.glade.h:50
+#: src/nautilus-file-management-properties.glade.h:48
 msgid "Icon Captions"
 msgstr "Pictogramtitels"
 
-#: src/nautilus-file-management-properties.glade.h:53
+#: src/nautilus-file-management-properties.glade.h:51
 msgid "Local Files Only"
 msgstr "Alleen lokale bestanden"
 
-#: src/nautilus-file-management-properties.glade.h:55
+#: src/nautilus-file-management-properties.glade.h:53
 msgid "Never"
 msgstr "Nooit"
 
-#: src/nautilus-file-management-properties.glade.h:57
+#: src/nautilus-file-management-properties.glade.h:55
 msgid "Preview _sound files:"
 msgstr "Fragment van geluid_sbestanden spelen:"
 
-#: src/nautilus-file-management-properties.glade.h:58
-msgid "Show _number of items:"
-msgstr "Aa_ntal items tonen:"
-
-#: src/nautilus-file-management-properties.glade.h:59
+#: src/nautilus-file-management-properties.glade.h:56
 msgid "Show _only folders"
 msgstr "Alleen mappen t_onen"
 
-#: src/nautilus-file-management-properties.glade.h:60
+#: src/nautilus-file-management-properties.glade.h:57
 msgid "Show _thumbnails:"
 msgstr "Minia_tuurafbeeldingen tonen:"
 
-#: src/nautilus-file-management-properties.glade.h:61
+#: src/nautilus-file-management-properties.glade.h:58
 msgid "Show hidden and _backup files"
 msgstr "Ver_borgen- en reservekopiebestanden tonen"
 
-#: src/nautilus-file-management-properties.glade.h:62
+#: src/nautilus-file-management-properties.glade.h:59
 msgid "Show te_xt in icons:"
 msgstr "Te_kst in pictogrammen tonen:"
 
-#: src/nautilus-file-management-properties.glade.h:63
+#: src/nautilus-file-management-properties.glade.h:60
 msgid "Sort _folders before files"
 msgstr "_Mappen vóór bestanden sorteren"
 
-#: src/nautilus-file-management-properties.glade.h:64
+#: src/nautilus-file-management-properties.glade.h:61
 msgid "Sort in _reverse"
 msgstr "In omgekee_rde volgorde sorteren"
 
-#: src/nautilus-file-management-properties.glade.h:65
+#: src/nautilus-file-management-properties.glade.h:62
 msgid "Use _manual layout"
 msgstr "Hand_matige lay-out gebruiken"
 
-#: src/nautilus-file-management-properties.glade.h:66
+#: src/nautilus-file-management-properties.glade.h:63
 msgid "View _new folders using:"
 msgstr "_Nieuwe mappen bekijken met:"
 
-#: src/nautilus-file-management-properties.glade.h:67
+#: src/nautilus-file-management-properties.glade.h:64
 msgid "Views"
 msgstr "Weergaven"
 
-#: src/nautilus-file-management-properties.glade.h:68
-msgid "_Arrange Items:"
+#: src/nautilus-file-management-properties.glade.h:65
+msgid "_Arrange items:"
 msgstr "Items _ordenen:"
 
-#: src/nautilus-file-management-properties.glade.h:70
+#: src/nautilus-file-management-properties.glade.h:67
 msgid "_Default zoom level:"
 msgstr "_Standaard zoomfactor:"
 
-#: src/nautilus-file-management-properties.glade.h:71
+#: src/nautilus-file-management-properties.glade.h:68
+msgid "_Double click to activate items"
+msgstr "_Dubbelklikken om items te activeren"
+
+#: src/nautilus-file-management-properties.glade.h:69
 msgid "_Only for files smaller than:"
 msgstr "Alleen v_oor bestanden kleiner dan:"
 
+#: src/nautilus-file-management-properties.glade.h:70
+msgid "_Open activated item in a new window"
+msgstr "Geactiveerd item in een nieuw venster _openen"
+
+#: src/nautilus-file-management-properties.glade.h:71
+msgid "_Run executable text files when they are clicked"
+msgstr "Uitvoe_rbare tekstbestanden activeren bij aanklikken"
+
 #: src/nautilus-file-management-properties.glade.h:72
-msgid "_Open each file or folder in a new window"
-msgstr "Elk bestand of map in een _nieuw venster openen"
+msgid "_Single click to activate items"
+msgstr "Eenmalig klikken om item_s te activeren"
 
 #: src/nautilus-file-management-properties.glade.h:73
 msgid "_Use compact layout"
 msgstr "Compacte lay-out gebr_uiken"
 
 #: src/nautilus-file-management-properties.glade.h:74
-msgid "_View scripts when they are clicked"
-msgstr "Scripts _bekijken bij aanklikken"
+msgid "_View executable text files when they are clicked"
+msgstr "Uit_voerbare tekstbestanden bekijken bij aanklikken"
 
 #: src/nautilus-first-time-druid.c:40
 msgid ""
@@ -5734,7 +5746,7 @@ msgstr "Embleem %s kon helaas niet worden verwijderd."
 
 #: src/nautilus-property-browser.c:975
 msgid "Create a New Emblem:"
-msgstr "Nieuw embleem creëren"
+msgstr "Nieuw embleem creëren:"
 
 #. make the keyword label and field
 #: src/nautilus-property-browser.c:988
@@ -6022,7 +6034,7 @@ msgstr "[Bestandseigenaar] is [root]"
 msgid "[File owner] is not [root]"
 msgstr "[Bestandseigenaar] is niet [root]"
 
-#: src/nautilus-server-connect.c:127
+#: src/nautilus-server-connect.c:129
 msgid ""
 "Couldn't execute nautilus\n"
 "Make sure nautilus is in your path and correctly installed"
@@ -6030,7 +6042,7 @@ msgstr ""
 "Kon Nautilus niet uitvoeren\n"
 "Zorg ervoor dat Nautilus in uw pad staat en correct geïnstalleerd is"
 
-#: src/nautilus-server-connect.c:387
+#: src/nautilus-server-connect.c:392
 #, c-format
 msgid ""
 "Couldn't connect to URI %s\n"
@@ -6041,7 +6053,7 @@ msgstr ""
 "Zorg er alstublieft voor dat het adres correct is. U kunt ook proberen dit "
 "adres direct in te voeren in het bestandsbeheer"
 
-#: src/nautilus-server-connect.c:452
+#: src/nautilus-server-connect.c:457
 msgid ""
 "Glade file for the connect to server program is missing.\n"
 "Please check your installation of nautilus"
@@ -6699,6 +6711,18 @@ msgstr "Netwerkservers"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Uw netwerkservers bekijken met Nautilus bestandsbeheer"
+
+#~ msgid "E_xecute scripts when they are clicked"
+#~ msgstr "Scripts _uitvoeren bij aanklikken"
+
+#~ msgid "Files and Folders"
+#~ msgstr "Bestanden en mappen"
+
+#~ msgid "_Open each file or folder in a new window"
+#~ msgstr "Elk bestand of map in een _nieuw venster openen"
+
+#~ msgid "_View scripts when they are clicked"
+#~ msgstr "Scripts _bekijken bij aanklikken"
 
 #~ msgid "Clear Text"
 #~ msgstr "Tekst wissen"
@@ -7426,9 +7450,6 @@ msgstr "Uw netwerkservers bekijken met Nautilus bestandsbeheer"
 
 #~ msgid "Use your _home folder as the desktop"
 #~ msgstr "Uw _persoonlijke map als bureablad gebruiken"
-
-#~ msgid "Trash Behavior"
-#~ msgstr "Prullenbakinstellingen"
 
 #~ msgid "Click Behavior"
 #~ msgstr "Klikinstellingen"
