@@ -70,7 +70,8 @@ static const char *black_listed_font_families[] = {
 	"mincho",
 	"gothic",
 	"MS Reference 2",
-	"MS Reference 1"
+	"MS Reference 1",
+	"Marlett"
 };
 
 static const char *black_listed_font_foundries[] = {
