@@ -47,6 +47,7 @@
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-search-uri.h>
+#include <libnautilus-extensions/nautilus-string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -113,10 +114,10 @@ static char *modified_relations [] = {
 	N_("is not"),
 	N_("is after"),
 	N_("is before"),
-	N_("--"),
+	"",
 	N_("is today"),
 	N_("is yesterday"),
-	N_("--"),
+	"",
 	N_("is within a week of"),
 	N_("is within a month of"),
 	NULL
@@ -255,7 +256,13 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 	relation_menu = gtk_menu_new ();
 	for (i = 0; relation_options[i] != NULL; i++) {
 		GtkWidget *item;
-		item = gtk_menu_item_new_with_label (_(relation_options[i]));
+		if (nautilus_str_is_empty (relation_options[i])) {
+			/* Empty text; make unselectable separator */
+			item = gtk_menu_item_new ();
+			gtk_widget_set_sensitive (item, FALSE);
+		} else {
+			item = gtk_menu_item_new_with_label (_(relation_options[i]));
+		}
 		gtk_object_set_data (GTK_OBJECT(item), "type", GINT_TO_POINTER(i));
 		gtk_menu_append (GTK_MENU (relation_menu),
 				 item);
@@ -664,10 +671,10 @@ get_date_modified_location_for (int relation_number,
 					     "is_not", 
 					     "is_after", 
 					     "is_before", 
-					     "--", 
+					     "", 
 					     "is_today",
 					     "is_yesterday",
-					     "--",
+					     "",
 					     "is_within_a_week_of", 
 					     "is_within_a_month_of" };
 	char *result;

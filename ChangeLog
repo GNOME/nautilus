@@ -1,3 +1,15 @@
+2000-09-06  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 2377 (Menu separators in search date criterion
+	look wrong and are selectable)
+
+	* src/nautilus-search-bar-criterion.c:
+	(get_date_modified_location_for): Replaced "--" with
+	"" when defining menu item text.
+	(nautilus_search_bar_criterion_new_from_values): When
+	constructing option menu items, treat empty string specially
+	by not translating it and making an insensitive separator.
+
 2000-09-06  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/lib/eazel-install-metadata.c:
