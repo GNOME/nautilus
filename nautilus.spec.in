@@ -95,27 +95,48 @@ fi
 
 %defattr(0555, bin, bin)
 %doc AUTHORS COPYING COPYING.LIB ChangeLog NEWS README
-# directories
-%{prefix}/bin
-%{prefix}/lib
-%{prefix}/share
-%config /etc/vfs
-# files
 %{prefix}/bin/*
 %{prefix}/lib/lib*.so*
 
 %defattr (0444, bin, bin)
-%{prefix}/share/*
-%config /etc/vfs/*
+%config /etc/vfs/modules/*conf
+%{prefix}/share/gnome/apps/Applications/*.desktop
+%{prefix}/share/hyperbola/maps/*map
+%{prefix}/share/locale/da/LC_MESSAGES/*.mo
+%{prefix}/share/locale/fr/LC_MESSAGES/*.mo
+%{prefix}/share/locale/gl/LC_MESSAGES/*.mo
+%{prefix}/share/locale/ja/LC_MESSAGES/*.mo
+%{prefix}/share/locale/ko/LC_MESSAGES/*.mo
+%{prefix}/share/locale/no/LC_MESSAGES/*.mo
+%{prefix}/share/locale/ru/LC_MESSAGES/*.mo
+%{prefix}/share/locale/sv/LC_MESSAGES/*.mo
+%{prefix}/share/locale/tr/LC_MESSAGES/*.mo
+%{prefix}/share/nautilus/*.xml
+%{prefix}/share/nautilus/backgrounds/*.jpg
+%{prefix}/share/nautilus/backgrounds/*.png
+%{prefix}/share/nautilus/emblems/*.gif
+%{prefix}/share/nautilus/linksets/*.xml
+%{prefix}/share/nautilus/top/*.html
+%{prefix}/share/nautilus/top/*.link
+%{prefix}/share/ntl-web-search/*.eng
+%{prefix}/share/oaf/*.oafinfo
+%{prefix}/share/pixmaps/nautilus*.*
+%{prefix}/share/pixmaps/trilobite*
+%{prefix}/share/pixmaps/nautilus/*.gif
+%{prefix}/share/pixmaps/nautilus/*.png
+%{prefix}/share/pixmaps/nautilus/eazel/*.png
+%{prefix}/share/pixmaps/nautilus/eazel/*.svg
+%{prefix}/share/pixmaps/nautilus/eazel/*.xml
+%{prefix}/share/pixmaps/nautilus/vector/*.svg
+%{prefix}/share/pixmaps/nautilus/vector/*.xml
 
 %files devel
 
 %defattr(0555, bin, bin)
-%{prefix}/lib
-%{prefix}/include
-%{prefix}/idl
 %{prefix}/lib/*a
 
 %defattr(0444, bin, bin)
-%{prefix}/include/*
 %{prefix}/idl/*.idl
+%{prefix}/include/libnautilus/*.h
+%{prefix}/include/librsvg/*.h
+%{prefix}/include/libtrilobite/*.h
