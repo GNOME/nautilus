@@ -5,18 +5,18 @@ MOZILLA_COMPONENT_SUBDIRS = mozilla
 endif
 
 SUBDIRS = 					\
-	sample 					\
+	help 					\
 	history 				\
+	image-viewer 				\
 	news					\
 	notes 					\
+	sample 					\
 	throbber 				\
 	$(NULL)
 
 XXX=
 	adapter 				\
 	hardware 				\
-	help 					\
-	image-viewer 				\
 	loser 					\
 	music 					\
 	text 					\

@@ -190,6 +190,7 @@ main (int argc, char *argv[])
 	 */
 #ifdef ENABLE_NLS
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
+	bind_textdomain_codeset (PACKAGE, "UTF-8");
 	textdomain (PACKAGE);
 #endif
 

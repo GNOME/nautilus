@@ -126,10 +126,9 @@ nautilus_about_instance_init (NautilusAbout *about)
 	about->details->background_pixbuf = gdk_pixbuf_new_from_file (background_path, NULL);
 	g_free (background_path);	
 
-	/* set the window title and standard close key accelerator */
+	/* set the window title */
 	gtk_window_set_title (GTK_WINDOW (about), _("About Nautilus"));
 	gtk_window_set_wmclass (GTK_WINDOW (about), "about", "Nautilus");
-	eel_gtk_window_set_up_close_accelerator (GTK_WINDOW (about));
 	
 	/* allocate a frame to hold the drawing area */
 	frame = gtk_frame_new (NULL);

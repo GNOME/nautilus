@@ -78,9 +78,13 @@ idl_DATA = \
 	nautilus-distributed-undo.idl	\
 	$(NULL)
 
+pkgconfigdir=$(libdir)/pkgconfig
+pkgconfig_DATA=libnautilus.pc
+
 EXTRA_DIST = \
 	$(ui_DATA)			\
 	$(idl_DATA)			\
+	libnautilus.pc.in		\
 	$(NULL)
 
 BUILT_SOURCES = \

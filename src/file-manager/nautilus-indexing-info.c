@@ -110,7 +110,7 @@ update_progress_display (gpointer callback_data)
 static void
 dialog_close_cover (gpointer dialog_data)
 {
-        g_assert (GNOME_IS_DIALOG (dialog_data));
+        g_assert (GTK_IS_DIALOG (dialog_data));
 
         gtk_dialog_close (dialog_data);
 }

@@ -628,11 +628,8 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 		    || strcmp (locale, "C") == 0
 		    || strcmp (locale, "POSIX") == 0
 		    || strcmp (locale, "en_US") == 0) {
-			/* The copyright character here is correct for
-			 * Latin-1 encoding, but not for UTF-8, so we
-			 * have to change it when we move to GTK 2.0.
-			 */
-			copyright = "Copyright \xA9 1999-2001 Eazel, Inc.";
+			/* The copyright character here is in UTF-8 */
+			copyright = "Copyright \xC2\xA9 1999-2001 Eazel, Inc.";
 		} else {
 			/* Localize to deal with issues in the copyright
 			 * symbol characters -- do not translate the company

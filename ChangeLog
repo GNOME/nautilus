@@ -1,3 +1,25 @@
+2001-12-05  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* libnautilus-private/nautilus-desktop-file-loader.c: remove
+	cut'n'pasted functions which are in glib now.
+	* src/nautilus-about.c (nautilus_about_instance_init): don't set
+	close key accelerator, Gtk+ does that already.
+
+2001-12-05  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* configure.in, libnautilus/Makefile.am,
+	libnautilus/libnautilus.pc.in: make libnautilus know to pkg-config
+
+2001-12-05  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* components/hardware/main.c, components/help/hyperbola-main.c,
+	components/image-viewer/nautilus-image-view.c,
+	components/mozilla/main.c, libnautilus/nautilus-view-standard-main.c,
+	src/nautilus-main.c: (main) get translated messages from nautilus
+	text domain in utf-8.
+	* src/nautilus-window-menus.c: (help_menu_about_nautilus_callback)
+	replace copyright symbol with utf-8 version of it.
+
 2001-12-04  Darin Adler  <darin@bentspoon.com>
 
 	Fix bugs exposed by "make check".

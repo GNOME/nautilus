@@ -294,50 +294,10 @@ nautilus_desktop_file_free (NautilusDesktopFile *df)
 }
 
 
-/* This is cut and pasted from glib 1.3.x
- * It should be removed when porting to glib 2
- */
-/**
- * g_strdupv:
- * @str_array: %NULL-terminated array of strings
- * 
- * Copies %NULL-terminated array of strings. The copy is a deep copy;
- * the new array should be freed by first freeing each string, then
- * the array itself. g_strfreev() does this for you. If called
- * on a %NULL value, g_strdupv() simply returns %NULL.
- * 
- * Return value: a new %NULL-terminated array of strings
- **/
-static gchar**
-cnp_g_strdupv (gchar **str_array)
-{
-        if (str_array) {
-                gint i;
-                gchar **retval;
-
-                i = 0;
-                while (str_array[i])
-                        ++i;
-          
-                retval = g_new (gchar*, i + 1);
-
-                i = 0;
-                while (str_array[i]) {
-                        retval[i] = g_strdup (str_array[i]);
-                        ++i;
-                }
-                retval[i] = NULL;
-
-                return retval;
-        } else {
-                return NULL;
-        }
-}
-
 char**
 nautilus_desktop_file_get_lines (NautilusDesktopFile *df)
 {
-        return cnp_g_strdupv (df->lines);
+        return g_strdupv (df->lines);
 }
 
 /* Custom hash functions allow us to avoid strdups */
@@ -1071,24 +1031,6 @@ validated_strdup (const char *str)
         return buf;
 }
 
-/* This is cut and pasted from glib 1.3.x
- * It should be removed when porting to glib 2
- */
-static void
-cnp_g_string_append_len (GString *str,
-			 const char *s,
-			 int len)
-{
-	if (len < 0) {
-		g_string_append (str, s);
-	} else {
-		char *tmp;
-		tmp = g_strndup (s, len);
-		g_string_append (str, tmp);
-		g_free (tmp);
-	}
-}
-
 static char*
 nautilus_desktop_file_sub_formats (NautilusDesktopFile *df,
 				   const char *src)
@@ -1107,7 +1049,7 @@ nautilus_desktop_file_sub_formats (NautilusDesktopFile *df,
 	while (p) {
 		if (p != end) {
 			/* Append what we just scanned over */
-		        cnp_g_string_append_len (new, end, p - end);
+		        g_string_append_len (new, end, p - end);
 		}
 
 		end = p;

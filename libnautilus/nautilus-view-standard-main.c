@@ -188,6 +188,7 @@ nautilus_view_standard_main_multi (const char *executable_name,
 	if (gettext_package_name != NULL
 	    && gettext_locale_directory != NULL) {
 		bindtextdomain (gettext_package_name, gettext_locale_directory);
+		bind_textdomain_codeset (gettext_package_name, "UTF-8");
 		textdomain (gettext_package_name);
 	}
 #endif
