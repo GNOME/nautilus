@@ -1,3 +1,25 @@
+2001-03-01  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fixed bug 7156 (Opening multiple folders with tree view on causes
+	timed wait dialogs for all but the first (folders never open)):
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(async_job_start), (async_job_end): Added some debug code (turned
+	off).
+	(dequeue_pending_idle_callback): Fix problem where in the cancel
+	case we did not do a nautilus_directory_async_state_changed. This
+	didn't actually cause the bug.
+	(nautilus_directory_stop_monitoring_file_list): The actual bug
+	fix. Use the correct cancel function here. The old one didn't do
+	all the cancelling work.
+	(cancel_loading_attributes),
+	(nautilus_directory_cancel_loading_file_attributes): Two more
+	cases where we needed a call to
+	nautilus_directory_async_state_changed. These didn't actually
+	cause the bug.
+
 2001-03-02  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: Seth Nickell  <seth@eazel.com>
@@ -6,6 +28,7 @@
 	to sources to fix tinderbox.
 
 2001-03-02  Laszlo Kovacs  <laszlo.kovacs@sun.com>
+
 	reviewed by Seth Nickell:
 
 	* components/help/hyperbola-filefmt.c:
@@ -190,8 +213,7 @@
 
 	reviewed by: John "I'll review that" Harper.
 
-	* components/services/inventory-view/nautilus-inventory-view-privat
-	e.h:
+	* components/services/inventory-view/nautilus-inventory-view-private.h:
 	Added file that Mike forgot.
 
 2001-03-01  Maciej Stachowiak  <mjs@eazel.com>
@@ -233,23 +255,21 @@
 	Makes "enable" and "disable" views look reasonable and 
 	adds a optional ? arg for the next URI.
 
-	* components/services/inventory-view/nautilus-inventory-disable-pag
-	e.c: (disable_inventory_callback),
+	* components/services/inventory-view/nautilus-inventory-disable-page.c:
+	(disable_inventory_callback),
 	(nautilus_inventory_disable_page_initialize),
 	(nautilus_inventory_disable_page_new),
 	(nautilus_inventory_disable_page_destroy),
 	(nautilus_inventory_disable_page_run):
-	* components/services/inventory-view/nautilus-inventory-disable-pag
-	e.h:
-	* components/services/inventory-view/nautilus-inventory-enable-page
-	.c: (callback_progress_update),
+	* components/services/inventory-view/nautilus-inventory-disable-page.h:
+	* components/services/inventory-view/nautilus-inventory-enable-page.c:
+	(callback_progress_update),
 	(nautilus_inventory_enable_page_initialize),
 	(nautilus_inventory_enable_page_new),
 	(callback_timeout_error_navigate), (callback_eazel_inventory),
 	(nautilus_inventory_enable_page_run),
 	(nautilus_inventory_enable_page_destroy):
-	* components/services/inventory-view/nautilus-inventory-enable-page
-	.h:
+	* components/services/inventory-view/nautilus-inventory-enable-page.h:
 	* components/services/inventory-view/nautilus-inventory-view.c:
 	(nautilus_inventory_view_initialize), (get_finish_uri),
 	(inventory_load_location_callback):
@@ -262,6 +282,7 @@
 	List view color tweak.
 
 2001-03-01  Rebecca Schulman  <rebecka@eazel.com>
+
 	Some leak checks that showed up on the top of the
 	leak checker profile. (bugzilla.eazel.com 7253)
 	These changes reduce leakage in a short session
@@ -317,8 +338,7 @@
 
 	reviewed by: Darin Adler  <darin@eazel.com>
 
-	* components/services/nautilus-dependent-shared/icons/eazel-logo-ri
-	ght-side-logo.png:
+	* components/services/nautilus-dependent-shared/icons/eazel-logo-right-side-logo.png:
 	* icons/about_background.png:
 	* icons/druid_header.png:
 	* icons/throbber/001.png:

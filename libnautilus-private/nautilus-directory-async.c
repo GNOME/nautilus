@@ -1,8 +1,8 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
 
-   nautilus-directory.c: Nautilus directory model.
+   nautilus-directory-async.c: Nautilus directory model state machine.
  
-   Copyright (C) 1999, 2000 Eazel, Inc.
+   Copyright (C) 1999, 2000, 2001 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -50,6 +50,11 @@
 /* turn this on to check if async. job calls are balanced */
 #if 0
 #define DEBUG_ASYNC_JOBS
+#endif
+
+/* turn this on to log things starting and stopping */
+#if 0
+#define DEBUG_START_STOP
 #endif
 
 #define METAFILE_PERMISSIONS (GNOME_VFS_PERM_USER_READ | GNOME_VFS_PERM_USER_WRITE \
@@ -201,6 +206,10 @@ async_job_start (NautilusDirectory *directory,
 	char *key;
 #endif
 
+#ifdef DEBUG_START_STOP
+	g_message ("starting %s in %s", job, directory->details->uri);
+#endif
+
 	g_assert (async_job_count >= 0);
 	g_assert (async_job_count <= MAX_ASYNC_JOBS);
 
@@ -245,6 +254,10 @@ async_job_end (NautilusDirectory *directory,
 #ifdef DEBUG_ASYNC_JOBS
 	char *key;
 	gpointer table_key, value;
+#endif
+
+#ifdef DEBUG_START_STOP
+	g_message ("stopping %s in %s", job, directory->details->uri);
 #endif
 
 	g_assert (async_job_count > 0);
@@ -1267,10 +1280,8 @@ dequeue_pending_idle_callback (gpointer callback_data)
 
 	/* If we are no longer monitoring, then throw away these. */
 	if (!nautilus_directory_is_file_list_monitored (directory)) {
-		gnome_vfs_file_info_list_free (pending_file_info);
 		load_directory_done (directory);
-		nautilus_directory_unref (directory);
-		return FALSE;
+		goto drain;
 	}
 
 	added_files = NULL;
@@ -1317,7 +1328,6 @@ dequeue_pending_idle_callback (gpointer callback_data)
 		}
 		added_files = g_list_prepend (added_files, file);
 	}
-	gnome_vfs_file_info_list_free (pending_file_info);
 
 	/* If we are done loading, then we assume that any unconfirmed
          * files are gone.
@@ -1368,6 +1378,9 @@ dequeue_pending_idle_callback (gpointer callback_data)
 
 		directory->details->directory_loaded_sent_notification = TRUE;
 	}
+
+ drain:
+	gnome_vfs_file_info_list_free (pending_file_info);
 
 	/* Get the state machine running again. */
 	nautilus_directory_async_state_changed (directory);
@@ -2044,7 +2057,7 @@ request_is_satisfied (NautilusDirectory *directory,
 	}
 
 	return TRUE;
-}		      
+}
 
 static gboolean
 call_ready_callbacks (NautilusDirectory *directory)
@@ -2217,6 +2230,7 @@ start_monitoring_file_list (NautilusDirectory *directory)
 	g_assert (directory->details->uri != NULL);
         directory->details->load_directory_file =
 		nautilus_directory_get_corresponding_file (directory);
+
 	directory->details->load_directory_file->details->loading_directory = TRUE;
 	directory->details->load_file_count = 0;
 	directory->details->load_file_count_filter = get_file_count_filter (directory);
@@ -2248,7 +2262,7 @@ nautilus_directory_stop_monitoring_file_list (NautilusDirectory *directory)
 	}
 
 	directory->details->file_list_monitored = FALSE;
-	directory_load_cancel (directory);
+	file_list_cancel (directory);
 	nautilus_file_list_unref (directory->details->file_list);
 	directory->details->directory_loaded = FALSE;
 }
@@ -3402,6 +3416,8 @@ cancel_loading_attributes (NautilusDirectory *directory,
 	
 	/* FIXME bugzilla.eazel.com 5064: implement cancelling metadata when we
 	   implement invalidating metadata */
+
+	nautilus_directory_async_state_changed (directory);
 }
 
 void
@@ -3435,4 +3451,6 @@ nautilus_directory_cancel_loading_file_attributes (NautilusDirectory *directory,
 
 	/* FIXME bugzilla.eazel.com 5064: implement cancelling metadata when we
 	   implement invalidating metadata */
+
+	nautilus_directory_async_state_changed (directory);
 }
