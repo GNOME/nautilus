@@ -1,3 +1,14 @@
+2002-01-29  Darin Adler  <darin@bentspoon.com>
+
+	* NEWS: Update for 1.1.3 release.
+	* configure.in: Bump version.
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_finalize), (real_merge_menus):
+	Use a weak pointer so we don't retain a pointer to the UI component
+	if the BonoboControl goes away, but we don't. This doesn't really
+	fix anything, but it also does no harm.
+
 2002-01-28  Seth Nickell  <snickell@stanford.edu>
 
 	* data/applications.desktop.in:
