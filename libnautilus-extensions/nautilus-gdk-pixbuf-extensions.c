@@ -1333,6 +1333,16 @@ nautilus_gdk_pixbuf_get_global_buffer (int minimum_width,
 	return global_buffer;
 }
 
+/* FIXME bugzilla.eazel.com 5813:
+ * As soon as gtk 1.2.9 is released, this hack needs to be exorcised.
+ */
+GdkPixbuf *
+NAUTILUS_BUG_5712_PR3_WORKAROUND__gdk_pixbuf_get_from_drawable (GdkPixbuf *dest,
+								GdkDrawable *src, GdkColormap *cmap,
+								int src_x, int src_y,
+								int dest_x, int dest_y,
+								int width, int height);
+	
 /* Same as gdk_pixbuf_get_from_drawable() except it deals with 
  * race conditions and other evil things that can happen */
 GdkPixbuf *
@@ -1387,15 +1397,15 @@ nautilus_gdk_pixbuf_get_from_window_safe (GdkWindow *window,
 	window_private = (GdkWindowPrivate*) window;
 	window_private->window_type = GDK_WINDOW_PIXMAP;
 
-	pixbuf = gdk_pixbuf_get_from_drawable (NULL,
-					       window,
-					       colormap,
-					       x,
-					       y,
-					       0,
-					       0,
-					       width,
-					       height);
+	pixbuf = NAUTILUS_BUG_5712_PR3_WORKAROUND__gdk_pixbuf_get_from_drawable (NULL,
+										 window,
+										 colormap,
+										 x,
+										 y,
+										 0,
+										 0,
+										 width,
+										 height);
 
 	/* Restore the window's guts */
 	window_private->window_type = save_window_type;

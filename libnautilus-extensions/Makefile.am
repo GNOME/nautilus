@@ -48,6 +48,9 @@ libnautilus_extensions_la_LDFLAGS =	\
 	$(NULL)
 
 libnautilus_extensions_la_SOURCES = 		\
+	bug-5712-pr3-workaround--gdk-pixbuf-drawable.c \
+	bug-5712-pr3-workaround--gdkimage.c \
+	bug-5712-pr3-workaround--gdk-pixbuf-private.h \
 	nautilus-art-extensions.c		\
 	nautilus-art-gtk-extensions.c		\
 	nautilus-background-canvas-group.c	\

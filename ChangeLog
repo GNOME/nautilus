@@ -1,3 +1,17 @@
+2001-01-19  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Nobody, because the "fix" is so revolting that none
+	of the high integrity Nautilus hackers would approve it.
+
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/bug-5712-pr3-workaround--gdk-pixbuf-drawable.c:
+	* libnautilus-extensions/bug-5712-pr3-workaround--gdk-pixbuf-private.h:
+	* libnautilus-extensions/bug-5712-pr3-workaround--gdkimage.c:
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	(nautilus_gdk_pixbuf_get_from_window_safe):
+	Workaround for bug 5712.  This is a temporary evil until GTK+
+	1.2.9 is released.
+	
 2001-01-19  John Sullivan  <sullivan@eazel.com>
 
 	Ramiro sent me this patch, which I tweaked slightly.
