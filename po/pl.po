@@ -1,4 +1,4 @@
-# Copyright (C) 2001 Free Software Foundation, Inc.
+# Copyright (C) 2001-2002 Free Software Foundation, Inc.
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Aktualn± wersjê tego pliku mo¿esz odnale¼æ w repozytorium cvs.gnome.pl
 # (:pserver:anonymous@cvs.gnome.pl:/home/cvs, puste has³o)
@@ -6,11 +6,13 @@
 # pomóc w jego rozwijaniu i pielêgnowaniu, napisz do nas na adres:
 # translators@gnome.pl
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+#: libnautilus-private/nautilus-authn-manager.c:1
+#: libnautilus-private/nautilus-authn-manager.c:1
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2001-11-12 11:32+0100\n"
-"PO-Revision-Date: 2001-11-12 11:39+0100\n"
+"POT-Creation-Date: 2002-01-18 16:49+0100\n"
+"PO-Revision-Date: 2002-01-18 16:53+0100\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1979,6 +1981,10 @@ msgstr ""
 "\n"
 "Zosta³ klikniêty przyk³adowy przycisk paska narzêdziowego."
 
+#: components/shell/shell.c:1
+msgid "Could not initialize Bonobo"
+msgstr "Nie mo¿na zainicjowaæ Bonobo"
+
 #: components/text/Nautilus_View_text.oaf.in.h:1
 msgid "Factory for text view"
 msgstr "Generator widoku tekstowego"
@@ -2720,6 +2726,38 @@ msgstr "Zmienia ustawienia systemowe (dotycz±ce wszystkich u¿ytkowników)"
 msgid "System Settings"
 msgstr "Ustawienia systemowe"
 
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:1
+msgid "Error"
+msgstr "B³±d"
+
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:1
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:1
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:1
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:1
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:1
+msgid "Question"
+msgstr "Pytanie"
+
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:1
+msgid "Message."
+msgstr "Komunikat"
+
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:1
+msgid "Title."
+msgstr "Tytu³"
+
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:1
+msgid "Button one label."
+msgstr "Etykieta na pierwszym przycisku"
+
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:1
+msgid "Button two label."
+msgstr "Etykieta na pierwszym przycisku"
+
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:1
+msgid "Ok"
+msgstr "Ok"
+
 #: icons/crux_eggplant/crux_eggplant.xml.h:1
 msgid "An Eggplant variation of the Crux theme."
 msgstr "Ober¿yna - odmiana motywu Zagadka."
@@ -2859,6 +2897,33 @@ msgstr "Wolumin XIAFS"
 #: libnautilus-private/filesystem-attributes.xml.h:1
 msgid "Xenix Volume"
 msgstr "Wolumin Xenix"
+
+#: libnautilus-private/nautilus-authn-manager.c:1
+msgid "Your HTTP Proxy requires you to log in.\n"
+msgstr "Po¶rednik HTTP wymaga zalogowania siê.\n"
+
+#: libnautilus-private/nautilus-authn-manager.c:1
+#, c-format
+msgid ""
+"You must log in to access \"%s\".\n"
+"\n"
+"%s"
+msgstr ""
+"Aby uzyskaæ dostêp do \"%s\" nale¿y siê zalogowaæ/\n"
+"\n"
+"%s"
+
+#: libnautilus-private/nautilus-authn-manager.c:1
+msgid "Your password will be transmitted unencrypted."
+msgstr "Twoje has³o zostanie przes³ane bez u¿ycia szyfrowania."
+
+#: libnautilus-private/nautilus-authn-manager.c:1
+msgid "Your password will be transmitted encrypted."
+msgstr "Twoje has³o zostanie przes³ane z u¿yciem szyfrowania."
+
+#: libnautilus-private/nautilus-authn-manager.c:1
+msgid "Authentication Required"
+msgstr "Wymagane jest uwierzytelnienie"
 
 #: libnautilus-private/nautilus-customization-data.c:1
 msgid "reset"
@@ -5066,6 +5131,10 @@ msgstr "S_kopiuj tekst"
 msgid "_Paste Text"
 msgstr "Wk_lej tekst"
 
+#: nautilus-help.desktop.in.h:1
+msgid "Documentation"
+msgstr "Dokumentacja"
+
 #: nautilus.desktop.in.h:1 src/nautilus-window-manage-views.c:1
 #: src/nautilus-window-menus.c:1
 msgid "Nautilus"
@@ -5074,10 +5143,6 @@ msgstr "Nautilus"
 #: nautilus.desktop.in.h:1
 msgid "Nautilus File Manager and Graphic Shell"
 msgstr "Mened¿er plików i pow³oka graficzna Nautilus"
-
-#: nautilus-help.desktop.in.h:1
-msgid "Documentation"
-msgstr "Dokumentacja"
 
 #: src/Nautilus_shell.oaf.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -7543,6 +7608,18 @@ msgstr "Panel nowo¶ci"
 #, c-format
 msgid "Display %s tab in sidebar"
 msgstr "Wy¶wietlanie na pasku bocznym zak³adki %s"
+
+#: src/nautilus-profiler.c:1
+msgid "Print"
+msgstr "Wydrukuj"
+
+#: src/nautilus-profiler.c:1
+msgid "Save"
+msgstr "Zapisz"
+
+#: src/nautilus-profiler.c:1
+msgid "Profile Dump"
+msgstr "Zrzut stanu profilowania"
 
 #. set the title and standard close accelerator
 #: src/nautilus-property-browser.c:1
