@@ -7,10 +7,6 @@
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 
-GtkWidget *service_name;
-GtkWidget *service_description;
-GtkWidget *services_row;
-
 void widget_set_nautilus_background_color (GtkWidget *widget, const char *color);
 
 static void
@@ -120,14 +116,16 @@ summary_view_item_header_label_new (char *label_text)
 					    TRUE);
 }	
 
-int
-main (int argc, char *argv[])
+static GtkWidget *
+create_row (char *header_text, char *item_text, gboolean constrain_width, gboolean constrain_height)
 {
 	GtkWidget *form_vbox;
+	GtkWidget *service_name;
+	GtkWidget *service_description;
+	GtkWidget *services_row;
 	GtkWidget *pane;
 	GtkWidget *summary_pane;
 	GtkWidget *viewport;
-	GtkWidget *nautilus_window;
 
 	GtkWidget *icon_box;
 	GtkWidget *description_vbox;
@@ -135,23 +133,25 @@ main (int argc, char *argv[])
 	GtkWidget *button_hbox;
 	GtkWidget *button;
 
-	gtk_init (&argc, &argv);
-
-	nautilus_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_policy (GTK_WINDOW (nautilus_window), TRUE, TRUE, FALSE);
-
-	gtk_signal_connect (GTK_OBJECT (nautilus_window), "delete_event", delete_event, NULL);
-
 	form_vbox = gtk_vbox_new (FALSE, 0);
-	gtk_container_add (GTK_CONTAINER (nautilus_window), form_vbox);
 	gtk_widget_show (form_vbox);
-	
+
 	pane = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (pane), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	if (constrain_width) {
+		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (pane), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	}
+	if (constrain_height) {
+		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (pane), GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
+	}
 	gtk_widget_show (pane);
 
 	viewport = nautilus_viewport_new (NULL, NULL);
-	nautilus_viewport_set_constrain_width (NAUTILUS_VIEWPORT (viewport), TRUE);
+	if (constrain_width) {
+		nautilus_viewport_set_constrain_width (NAUTILUS_VIEWPORT (viewport), TRUE);
+	}
+	if (constrain_height) {
+		nautilus_viewport_set_constrain_height (NAUTILUS_VIEWPORT (viewport), TRUE);
+	}
 	widget_set_nautilus_background_color (viewport, "rgb:FFFF/FFFF/FFFF");
 	gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);
 	gtk_container_add (GTK_CONTAINER (pane), viewport);
@@ -178,12 +178,12 @@ main (int argc, char *argv[])
 	gtk_widget_show (description_vbox);
 
 	/* Header */
-	service_name = summary_view_item_header_label_new ("Eazel Online Storage");
+	service_name = summary_view_item_header_label_new (header_text);
 	gtk_box_pack_start (GTK_BOX (description_vbox), service_name, FALSE, FALSE, 2);
 	gtk_widget_show (service_name);
 
 	/* Body */
-	service_description = summary_view_item_body_label_new ("Store files online and access them through Nautilus or from any browser.");
+	service_description = summary_view_item_body_label_new (item_text);
 	gtk_box_pack_start (GTK_BOX (description_vbox), service_description, FALSE, FALSE, 2);
 	gtk_widget_show (service_description);
 
@@ -200,7 +200,35 @@ main (int argc, char *argv[])
 	gtk_widget_show (button);
 	gtk_box_pack_end (GTK_BOX (button_hbox), button, FALSE, FALSE, 3);
 
-	gtk_widget_show (nautilus_window);
+	return form_vbox;
+}
+
+int
+main (int argc, char *argv[])
+{
+	GtkWidget *vbox;
+	GtkWidget *nautilus_window;
+	GtkWidget *row_one;
+	GtkWidget *row_two;
+
+	gtk_init (&argc, &argv);
+
+	nautilus_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_policy (GTK_WINDOW (nautilus_window), TRUE, TRUE, FALSE);
+
+	gtk_signal_connect (GTK_OBJECT (nautilus_window), "delete_event", delete_event, NULL);
+
+	vbox = gtk_vbox_new (0, 0);
+	gtk_container_add (GTK_CONTAINER (nautilus_window), vbox);
+	gtk_widget_show (vbox);
+
+	row_one = create_row ("Eazel Online Storage", "Store files online and access them through Nautilus or from any browser.", TRUE, FALSE);
+	row_two = create_row ("Eazel Monkey Storage", "Store your monkeys in our protective cages where they will be loved and cared for.", FALSE, TRUE);
+
+	gtk_box_pack_start (GTK_BOX (vbox), row_one, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), row_two, TRUE, TRUE, 0);
+
+	gtk_widget_show_all (nautilus_window);
 
 	gtk_main ();
 
