@@ -350,12 +350,17 @@ nautilus_throbber_unload_images (NautilusThrobber *throbber)
 }
 
 static GdkPixbuf*
-load_themed_image (const char *file_name, gboolean small_mode)
+load_themed_image (const char *file_name, const char *image_theme, gboolean small_mode)
 {
 	GdkPixbuf *pixbuf, *temp_pixbuf;
 	char *image_path;
 	
-	image_path = nautilus_theme_get_image_path (file_name);
+	if (image_theme == NULL) {
+		image_path = nautilus_theme_get_image_path (file_name);
+	} else {
+		image_path = nautilus_theme_get_image_path_from_theme (file_name, image_theme);	
+	}
+	
 	if (image_path) {
 		pixbuf = gdk_pixbuf_new_from_file (image_path);
 		
@@ -387,13 +392,14 @@ static void
 nautilus_throbber_load_images (NautilusThrobber *throbber)
 {
 	int index;
-	char *throbber_frame_name, *frames;
+	char *throbber_frame_name, *image_theme, *frames;
 	GdkPixbuf *pixbuf;
 	
 	nautilus_throbber_unload_images (throbber);
 
-	throbber->details->quiescent_pixbuf = load_themed_image ("throbber/rest.png", throbber->details->small_mode);
-	
+	image_theme = nautilus_theme_get_theme_data ("throbber", "IMAGE_THEME");
+	throbber->details->quiescent_pixbuf = load_themed_image ("throbber/rest.png", image_theme, throbber->details->small_mode);
+
 	/* images are of the form throbber/001.png, 002.png, etc, so load them into a list */
 
 	frames = nautilus_theme_get_theme_data ("throbber", "FRAME_COUNT");
@@ -407,7 +413,7 @@ nautilus_throbber_load_images (NautilusThrobber *throbber)
 	index = 1;
 	while (index <= throbber->details->max_frame) {
 		throbber_frame_name = make_throbber_frame_name (index);
-		pixbuf = load_themed_image (throbber_frame_name, throbber->details->small_mode);
+		pixbuf = load_themed_image (throbber_frame_name, image_theme, throbber->details->small_mode);
 		g_free (throbber_frame_name);
 		if (pixbuf == NULL) {
 			throbber->details->max_frame = index - 1;
@@ -416,6 +422,7 @@ nautilus_throbber_load_images (NautilusThrobber *throbber)
 		throbber->details->image_list = g_list_append (throbber->details->image_list, pixbuf);
 		index += 1;
 	}	
+	g_free (image_theme);
 }
 
 /* handle button presses by emitting the location changed signal */

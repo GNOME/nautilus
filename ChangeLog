@@ -1,3 +1,17 @@
+2000-10-15  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-throbber.c: (load_themed_image),
+	(nautilus_throbber_load_images):
+	implemented theme indirection for throbbers, so themes can
+	share throbbers
+	* icons/ardmore/ardmore.xml:
+	made the ardmore theme use the eazel theme's throbber
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_update_icon):
+	at Susan's suggestion, pinned emblem size to 100%, so emblems don't
+	get huge when you scale up.
+	
 2000-10-14  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-throbber.c: (nautilus_throbber_initialize_class),
