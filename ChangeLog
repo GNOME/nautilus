@@ -1,5 +1,48 @@
 2002-01-07  Darin Adler  <darin@bentspoon.com>
 
+	* libnautilus-private/nautilus-desktop-file-loader.c:
+	(validated_strdup): Fixed to use g_iconv instead of iconv,
+	starting with a patch from Jean Schurger <jschurger@schurger.org>.
+
+	* libnautilus-private/nautilus-font-factory.c: Remove.
+	* libnautilus-private/nautilus-font-factory.h: Remove.
+	* libnautilus-private/Makefile.am:
+	Remove nautilus-font-factory.[ch].
+
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_finalize),
+	(nautilus_icon_canvas_item_set_arg),
+	(nautilus_icon_canvas_item_get_arg), (draw_or_measure_label_text),
+	(nautilus_icon_canvas_item_class_init):
+	Get rid of the "font" arg. We'll have to replace this with something
+	that works with Pango -- maybe just a font name.
+
+	* src/file-manager/fm-list-view.c: (truncate_middle_callback),
+	(get_cell_text): Turn off the GdkFont ellipsizing code. I hope this
+	just goes away when Anders finishes his port to GtkTextView.
+
+	* src/file-manager/fm-properties-window.c:
+	(fm_properties_window_class_init), (real_destroy), (real_finalize):
+	Fix a bug where it would try to disconnect a signal on an object
+	that is already NULL by that time.
+
+	* src/nautilus-profiler.c:
+	(nautilus_profiler_bonobo_ui_report_callback): Disable the dump
+	window, pending a port to GtkTextView instead of GtkText.
+
+	* components/music/nautilus-music-view.c:
+	* components/news/nautilus-news.c:
+	* components/notes/nautilus-notes.c:
+	* components/text/nautilus-text-view.c:
+	* libnautilus-private/nautilus-file-operations-progress.c:
+	* libnautilus-private/nautilus-file-operations.c:
+	* libnautilus-private/nautilus-icon-container.c:
+	* src/file-manager/fm-icon-view.c:
+	* src/nautilus-sidebar-title.c:
+	Get rid of some includes of unused headers.
+
+2002-01-07  Darin Adler  <darin@bentspoon.com>
+
 	Integrate patches from Frank Worsley <fworlsey@shaw.ca>.
 
 	* libnautilus-private/nautilus-link.c:

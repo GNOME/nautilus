@@ -32,7 +32,6 @@
 #include "nautilus-theme.h"
 #include <eel/eel-art-extensions.h>
 #include <eel/eel-gdk-extensions.h>
-#include <eel/eel-gdk-font-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
@@ -73,7 +72,6 @@ struct NautilusIconCanvasItemDetails {
 	GList *emblem_pixbufs;
 	char *editable_text;		/* Text that can be modified by a renaming function */
 	char *additional_text;		/* Text that cannot be modifed, such as file size, etc. */
-	GdkFont *font;
 	NautilusEmblemAttachPoints *attach_points;
 	
 	/* Size of the text at current font. */
@@ -111,7 +109,6 @@ enum {
 	ARG_0,
 	ARG_EDITABLE_TEXT,
 	ARG_ADDITIONAL_TEXT,
-	ARG_FONT,
     	ARG_HIGHLIGHTED_FOR_SELECTION,
     	ARG_HIGHLIGHTED_AS_KEYBOARD_FOCUS,
     	ARG_HIGHLIGHTED_FOR_DROP,
@@ -215,10 +212,6 @@ nautilus_icon_canvas_item_finalize (GObject *object)
 	g_free (details->additional_text);
 	g_free (details->attach_points);
 	
-	if (details->font != NULL) {
-		gdk_font_unref (details->font);
-	}
-
 	if (details->rendered_pixbuf != NULL) {
 		g_object_unref (details->rendered_pixbuf);
 	}
@@ -265,7 +258,6 @@ nautilus_icon_canvas_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 {
 	NautilusIconCanvasItem *item;
 	NautilusIconCanvasItemDetails *details;
-	GdkFont *font;
 
 	item =  NAUTILUS_ICON_CANVAS_ITEM (object);
 	details = item->details;
@@ -290,23 +282,6 @@ nautilus_icon_canvas_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 
 		g_free (details->additional_text);
 		details->additional_text = g_strdup (GTK_VALUE_STRING (*arg));
-		
-		nautilus_icon_canvas_item_invalidate_label_size (item);		
-		break;
-
-	case ARG_FONT:
-		font = GTK_VALUE_POINTER (*arg);
-		if (eel_gdk_font_equal (font, details->font)) {
-			return;
-		}
-
-		if (font != NULL) {
-			gdk_font_ref (font);
-		}
-		if (details->font != NULL) {
-			gdk_font_unref (details->font);
-		}
-		details->font = font;
 		
 		nautilus_icon_canvas_item_invalidate_label_size (item);		
 		break;
@@ -358,10 +333,6 @@ nautilus_icon_canvas_item_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 		GTK_VALUE_STRING (*arg) = g_strdup (details->additional_text);
 		break;
 		
-	case ARG_FONT:
-		GTK_VALUE_POINTER (*arg) = details->font;
-		break;
-				
         case ARG_HIGHLIGHTED_FOR_SELECTION:
                 GTK_VALUE_BOOL (*arg) = details->is_highlighted_for_selection;
                 break;
@@ -652,7 +623,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 
 
 	/* No font or no text, then do no work. */
-	if (details->font == NULL || (!have_editable && !have_additional)) {
+	if (!have_editable && !have_additional) {
 		details->text_height = 0;
 		details->text_width = 0;			
 		return;
@@ -2051,8 +2022,6 @@ nautilus_icon_canvas_item_class_init (NautilusIconCanvasItemClass *class)
 				 G_TYPE_STRING, GTK_ARG_READWRITE, ARG_EDITABLE_TEXT);
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::additional_text",
 				 G_TYPE_STRING, GTK_ARG_READWRITE, ARG_ADDITIONAL_TEXT);
-	gtk_object_add_arg_type	("NautilusIconCanvasItem::font",
-				 GTK_TYPE_POINTER, GTK_ARG_READWRITE, ARG_FONT);	
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::highlighted_for_selection",
 				 G_TYPE_BOOLEAN, GTK_ARG_READWRITE, ARG_HIGHLIGHTED_FOR_SELECTION);
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::highlighted_as_keyboard_focus",

@@ -27,7 +27,6 @@
 #include <config.h>
 #include "nautilus-icon-container.h"
 
-#include "nautilus-font-factory.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-private.h"
 #include "nautilus-icon-text-item.h"

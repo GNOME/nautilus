@@ -38,7 +38,6 @@
 #include <bonobo/bonobo-property-bag.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-file.h>
-#include <libnautilus-private/nautilus-font-factory.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus/nautilus-clipboard.h>

@@ -51,7 +51,6 @@
 #include <libnautilus-private/nautilus-bonobo-extensions.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file.h>
-#include <libnautilus-private/nautilus-font-factory.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus/libnautilus.h>
 #include <libnautilus/nautilus-clipboard.h>

@@ -25,20 +25,18 @@
 
 #include <config.h>
 #include "nautilus-desktop-file-loader.h"
-#include "nautilus-program-choosing.h"
 
-#include <libgnome/libgnome.h>
-#include <libgnomevfs/gnome-vfs-ops.h>
+#include "nautilus-program-choosing.h"
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-vfs-extensions.h>
-
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <errno.h>
-#include <locale.h>
-#include <iconv.h>
 #include <langinfo.h>
+#include <libgnome/gnome-url.h>
+#include <libgnomevfs/gnome-vfs-ops.h>
+#include <locale.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 typedef struct NautilusDesktopFileSection NautilusDesktopFileSection;
 typedef struct NautilusDesktopFileAddition NautilusDesktopFileAddition;
@@ -993,7 +991,7 @@ validated_strdup (const char *str)
         static gboolean initialized = FALSE;
         gchar *pout, *pin, *buf;
         gint len, ulen = 0, ib, ob;
-        iconv_t fd;
+        GIConv fd;
 
         G_LOCK (init_validate);
         if (!initialized) {
@@ -1008,7 +1006,7 @@ validated_strdup (const char *str)
         
         len = strlen (str);
         if (looks_utf8 (str, len, NULL, &ulen)) {
-                if ((fd = iconv_open (locale, "UTF-8")) != (iconv_t)-1) {
+                if ((fd = g_iconv_open (locale, "UTF-8")) != (GIConv)-1) {
                         ib = len;
                         ob = ib * 3;
                         pout = buf = g_new0 (gchar, ob);
@@ -1016,12 +1014,12 @@ validated_strdup (const char *str)
 
                         /* not portable either */
                         
-                        if (iconv (fd, &pin, &ib, &pout, &ob) == (size_t)-1) {
+                        if (g_iconv (fd, &pin, &ib, &pout, &ob) == (size_t)-1) {
                                 g_free (buf);
                                 buf = NULL;
                         }
 
-                        iconv_close (fd);
+                        g_iconv_close (fd);
                 }
         } else {
                 buf = g_strdup (str);

@@ -34,7 +34,6 @@
 #include "pixmaps.h"
 #include <eel/eel-background.h>
 #include <eel/eel-gdk-extensions.h>
-#include <eel/eel-gdk-font-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
@@ -62,7 +61,6 @@
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file.h>
-#include <libnautilus-private/nautilus-font-factory.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-sound.h>

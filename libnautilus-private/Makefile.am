@@ -83,8 +83,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-file.h \
 	nautilus-find-icon-image.c \
 	nautilus-find-icon-image.h \
-	nautilus-font-factory.c \
-	nautilus-font-factory.h \
 	nautilus-global-preferences.c \
 	nautilus-global-preferences.h \
 	nautilus-horizontal-splitter.c \

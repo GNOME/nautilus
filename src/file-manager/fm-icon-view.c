@@ -56,7 +56,6 @@
 #include <libnautilus-private/nautilus-directory-background.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-font-factory.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-icon-container.h>
 #include <libnautilus-private/nautilus-icon-factory.h>

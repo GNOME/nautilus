@@ -30,7 +30,6 @@
 #include <eel/eel-art-extensions.h>
 #include <eel/eel-art-gtk-extensions.h>
 #include <eel/eel-dnd.h>
-#include <eel/eel-gdk-font-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
@@ -44,7 +43,6 @@
 #include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-private/nautilus-directory-background.h>
 #include <libnautilus-private/nautilus-file-dnd.h>
-#include <libnautilus-private/nautilus-font-factory.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-metadata.h>
@@ -1089,7 +1087,11 @@ measure_width_callback (const char *string, void *context)
 static char *
 truncate_middle_callback (const char *string, int width, void *context)
 {
+#if GNOME2_CONVERSION_COMPLETE	
 	return eel_string_ellipsize (string, (GdkFont *)context, width, EEL_ELLIPSIZE_MIDDLE);
+#else
+	return g_strdup (string);
+#endif
 }
 
 static char *
@@ -1126,8 +1128,12 @@ get_cell_text (GtkWidget *widget, int column_index, int cell_width,
 		cell_text = NULL;
 		break;
 	}
-		
+	
+#if GNOME2_CONVERSION_COMPLETE	
 	return eel_string_ellipsize (cell_text, font, cell_width, EEL_ELLIPSIZE_MIDDLE);
+#else
+	return g_strdup (cell_text);
+#endif
 }
 
 

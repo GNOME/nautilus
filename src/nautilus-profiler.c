@@ -31,7 +31,6 @@
 
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-vfs-extensions.h>
-#include <eel/eel-gdk-font-extensions.h>
 #include <glib.h>
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkhbox.h>
@@ -74,6 +73,8 @@ nautilus_profiler_bonobo_ui_stop_callback (BonoboUIComponent *component,
 {
 	profile_off ();
 }
+
+#if GNOME2_CONVERSION_COMPLETE
 
 static void
 widget_set_busy_cursor (GtkWidget *widget)
@@ -269,6 +270,8 @@ dump_dialog_show (const char *dump_data, const char *title)
 	gtk_widget_show (dump_dialog->window);
 }
 
+#endif
+
 void
 nautilus_profiler_bonobo_ui_report_callback (BonoboUIComponent *component, 
 					     gpointer user_data,
@@ -301,7 +304,9 @@ nautilus_profiler_bonobo_ui_report_callback (BonoboUIComponent *component,
 	uri = gnome_vfs_get_uri_from_local_path (dump_file_name);
 	
 	if (eel_read_entire_file (uri, &dump_size, &dump_contents) == GNOME_VFS_OK) {
+#if GNOME2_CONVERSION_COMPLETE
 		dump_dialog_show (dump_contents, uri);
+#endif
 	}
 
 	widget_clear_busy_cursor (window);

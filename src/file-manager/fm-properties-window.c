@@ -148,7 +148,6 @@ static GtkTargetEntry target_table[] = {
 
 static void real_destroy                          (GtkObject               *object);
 static void real_finalize                         (GObject                 *object);
-static void real_dispose                          (GObject                 *object);
 static void fm_properties_window_class_init       (FMPropertiesWindowClass *class);
 static void fm_properties_window_init             (FMPropertiesWindow      *window);
 static void create_properties_window_callback     (NautilusFile		   *file,
@@ -173,7 +172,6 @@ EEL_CLASS_BOILERPLATE (FMPropertiesWindow, fm_properties_window, GTK_TYPE_WINDOW
 static void
 fm_properties_window_class_init (FMPropertiesWindowClass *class)
 {
-	G_OBJECT_CLASS (class)->dispose = real_dispose;
 	G_OBJECT_CLASS (class)->finalize = real_finalize;
 	
 	GTK_OBJECT_CLASS (class)->destroy = real_destroy;
@@ -2437,22 +2435,6 @@ fm_properties_window_present (NautilusFile *original_file, FMDirectoryView *dire
 }
 
 static void
-real_dispose (GObject *object)
-{
-	FMPropertiesWindow *window;
-
-	window = FM_PROPERTIES_WINDOW (object);
-
-	/* Disconnect file-changed handler here to avoid infinite loop
-	 * of change notifications when file is removed; see bug 4911.
-	 */
-	gtk_signal_disconnect (GTK_OBJECT (window->details->target_file), 
-			       window->details->file_changed_handler_id);
-
-	EEL_CALL_PARENT (G_OBJECT_CLASS, dispose, (object));
-}
-
-static void
 real_destroy (GtkObject *object)
 {
 	FMPropertiesWindow *window;
@@ -2468,6 +2450,8 @@ real_destroy (GtkObject *object)
 	}
 
 	if (window->details->target_file != NULL) {
+		gtk_signal_disconnect (GTK_OBJECT (window->details->target_file), 
+				       window->details->file_changed_handler_id);
 		nautilus_file_monitor_remove (window->details->target_file, window);
 		nautilus_file_unref (window->details->target_file);
 		window->details->target_file = NULL;
@@ -2486,9 +2470,6 @@ real_destroy (GtkObject *object)
 		window->details->update_directory_contents_timeout_id = 0;
 	}
 
-	/* Note that file_changed_handler_id is disconnected in dispose,
-	 * and details are freed in finalize 
-	 */
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
@@ -2499,7 +2480,6 @@ real_finalize (GObject *object)
 
 	window = FM_PROPERTIES_WINDOW (object);
 
-	/* Note that file_changed_handler_id is disconnected in dispose */
 	g_free (window->details->pending_name);
 	g_free (window->details);
 

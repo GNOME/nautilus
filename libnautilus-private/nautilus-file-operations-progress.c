@@ -30,7 +30,6 @@
 #include "nautilus-file-operations-progress.h"
 
 #include <eel/eel-ellipsizing-label.h>
-#include <eel/eel-gdk-font-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
