@@ -127,10 +127,11 @@ nautilus_index_title_set_up_icon (NautilusIndexTitle *index_title, NautilusFile 
 	if (index_title->details->icon)
 		gtk_pixmap_set (GTK_PIXMAP (index_title->details->icon),
 				pixmap, mask);
-	else {  
+	else {
 		index_title->details->icon = GTK_WIDGET (gtk_pixmap_new (pixmap, mask));
 		gtk_widget_show (index_title->details->icon);
 		gtk_box_pack_start (GTK_BOX (index_title), index_title->details->icon, 0, 0, 0);
+		gtk_box_reorder_child (GTK_BOX (index_title), index_title->details->icon, 0);
 	}   
 }
 
@@ -254,6 +255,7 @@ nautilus_index_title_set_up_label (NautilusIndexTitle *index_title, const char *
 		gtk_label_set_justify(GTK_LABEL(index_title->details->title), GTK_JUSTIFY_CENTER);
 		gtk_widget_show (index_title->details->title);
 		gtk_box_pack_start (GTK_BOX (index_title), index_title->details->title, 0, 0, 0);
+		gtk_box_reorder_child (GTK_BOX (index_title), index_title->details->title, 1);
 	}   
 	
 	/* FIXME: don't use hardwired font like this - get it from preferences */    	
@@ -307,6 +309,7 @@ nautilus_index_title_set_up_info (NautilusIndexTitle *index_title, NautilusFile 
 		index_title->details->more_info = GTK_WIDGET(gtk_label_new(info_string));
 		gtk_widget_show (index_title->details->more_info);
 		gtk_box_pack_start (GTK_BOX (index_title), index_title->details->more_info, 0, 0, 0);
+		gtk_box_reorder_child (GTK_BOX (index_title), index_title->details->more_info, 2);
 	}   
 	
 	/* FIXME: shouldn't use hardwired font */     	
@@ -325,6 +328,7 @@ nautilus_index_title_set_up_info (NautilusIndexTitle *index_title, NautilusFile 
 			gtk_label_set_line_wrap(GTK_LABEL(index_title->details->notes), TRUE);
 			gtk_widget_show (index_title->details->notes);
 			gtk_box_pack_start (GTK_BOX (index_title), index_title->details->notes, 0, 0, 0);
+			gtk_box_reorder_child (GTK_BOX (index_title), index_title->details->notes, 3);
 		}
 		
 		/* FIXME: don't use hardwired font like this */    	
@@ -352,7 +356,7 @@ nautilus_index_title_set_uri(NautilusIndexTitle *index_title, const char* new_ur
 
 	/* add the name, in a variable-sized label */
 	nautilus_index_title_set_up_label (index_title, new_uri);
-	
+
 	/* add various info */
 	nautilus_index_title_set_up_info(index_title, file_object);
 

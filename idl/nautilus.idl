@@ -72,6 +72,15 @@ module Nautilus {
   };
 
   interface ViewWindow : ::Bonobo::Unknown {
+	readonly attribute string current_uri;
+	void open_uri(in string uri);
+	void close();
   };
 
+  typedef sequence<Object> ObjectList;
+
+  interface Application : ::GNOME::GenericFactory {
+	readonly attribute ObjectList windows;
+	ViewWindow new_window();
+  };
 };

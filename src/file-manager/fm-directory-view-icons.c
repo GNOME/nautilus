@@ -31,6 +31,7 @@
 
 #include <ctype.h>
 #include <errno.h>
+#include <stdio.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtksignal.h>
