@@ -380,7 +380,7 @@ nautilus_window_constructed(NautilusWindow *window)
   gtk_button_set_relief(GTK_BUTTON(window->btn_fwd), GTK_RELIEF_NONE);
   gtk_widget_set_sensitive(window->btn_fwd, FALSE);
   gtk_container_add(GTK_CONTAINER(window->btn_fwd), wtmp);
-  gtk_signal_connect(GTK_OBJECT(window->btn_fwd), "clicked", nautilus_window_fwd, NULL);
+  gtk_signal_connect(GTK_OBJECT(window->btn_fwd), "clicked", nautilus_window_fwd, window);
 
   gtk_box_pack_start(GTK_BOX(menu_hbox), window->btn_back, FALSE, FALSE, GNOME_PAD_SMALL);
   gtk_box_pack_start(GTK_BOX(menu_hbox), window->btn_fwd, FALSE, FALSE, GNOME_PAD_SMALL);

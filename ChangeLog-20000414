@@ -1,3 +1,19 @@
+1999-12-14  Darin Adler  <darin@eazel.com>
+
+	* src/ntl-window.c: (nautilus-window-constructed): Forward-button signal
+	was connected with NULL parameter instead of window. Fixed that so it
+	has a chance of working.
+
+	* .cvsignore: Ignore more generated files.
+	* components/.cvsignore: Ignore more generated files.
+	* help/.cvsignore: Ignore more generated files.
+	* history/.cvsignore: Ignore more generated files.
+	* icons/.cvsignore: Ignore more generated files.
+	* idl/.cvsignore: Ignore more generated files.
+	* libnautilus/.cvsignore: Ignore more generated files.
+	* src/.cvsignore: Ignore more generated files.
+	* src/file-manager/.cvsignore: Ignore more generated files.
+
 1999-12-14  John Sullivan  <sullivan@eazel.com>
 
 	* src/ntl-window.c: (nautilus-window-constructed): Reordered option menu

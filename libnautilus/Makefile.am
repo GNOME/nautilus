@@ -23,7 +23,7 @@ libnautilusinclude_HEADERS=			\
 libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	ntl-view-client.c			\
 	ntl-meta-view-client.c			\
-	ntl-content-view-client.c			\
+	ntl-content-view-client.c		\
 	gnome-icon-container-dnd.c		\
 	gnome-icon-container-layout.c		\
 	gnome-icon-container.c			\
@@ -39,4 +39,3 @@ nautilus_idl_stamp: $(top_srcdir)/idl/nautilus.idl
 	touch nautilus_idl_stamp
 
 CLEANFILES=nautilus_idl_stamp
-
