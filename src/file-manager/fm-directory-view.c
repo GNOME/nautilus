@@ -1253,20 +1253,18 @@ static void
 add_directory_to_scripts_directory_list (FMDirectoryView *view,
 					 NautilusDirectory *directory)
 {
-	GList *attributes;
+	NautilusFileAttributes attributes;
 
 	if (g_list_find (view->details->scripts_directory_list, directory) == NULL) {
 		nautilus_directory_ref (directory);
 
 		attributes = nautilus_icon_factory_get_required_file_attributes ();
-		attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_CAPABILITIES);
-		attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
+		attributes |= NAUTILUS_FILE_ATTRIBUTE_CAPABILITIES |
+			NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT;
  
 		nautilus_directory_file_monitor_add (directory, &view->details->scripts_directory_list,
 						     FALSE, FALSE, attributes,
 						     scripts_added_or_changed_callback, view);
-
-		g_list_free (attributes);
 
 		g_signal_connect_object (directory, "files_added",
 					 G_CALLBACK (scripts_added_or_changed_callback), view, 0);
@@ -5231,7 +5229,7 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 				 WindowChoice choice)
 {
 	ActivateParameters *parameters;
-	GList *attributes;
+	NautilusFileAttributes attributes;
 	char *file_name;
 	char *timed_wait_prompt;
 
@@ -5239,9 +5237,9 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
 	/* Might have to read some of the file to activate it. */
-	attributes = nautilus_mime_actions_get_minimum_file_attributes ();
-	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
-	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE);
+	attributes = nautilus_mime_actions_get_minimum_file_attributes () |
+		NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI |
+		NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE;
 	parameters = g_new (ActivateParameters, 1);
 	parameters->view = view;
 	parameters->file = file;
@@ -5260,8 +5258,6 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 	g_free (timed_wait_prompt);
 	nautilus_file_call_when_ready
 		(file, attributes, activate_callback, parameters);
-
-	g_list_free (attributes);
 }
 
 
@@ -5332,7 +5328,7 @@ load_directory (FMDirectoryView *view,
 {
 	NautilusDirectory *old_directory;
 	NautilusFile *old_file;
-	GList *attributes;
+	NautilusFileAttributes attributes;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
@@ -5364,7 +5360,7 @@ load_directory (FMDirectoryView *view,
          * well as doing a call when ready), in case external forces
          * change the directory's file metadata.
 	 */
-	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
+	attributes = NAUTILUS_FILE_ATTRIBUTE_METADATA;
 	view->details->metadata_for_directory_as_file_pending = TRUE;
 	view->details->metadata_for_files_in_directory_pending = TRUE;
 	nautilus_file_call_when_ready
@@ -5376,16 +5372,14 @@ load_directory (FMDirectoryView *view,
 		 attributes,
 		 FALSE,
 		 metadata_for_files_in_directory_ready_callback, view);
-	g_list_free (attributes);
 
 	/* If capabilities change, then we need to update the menus
 	 * because of New Folder, and relative emblems.
 	 */
-	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_CAPABILITIES);
+	attributes = NAUTILUS_FILE_ATTRIBUTE_CAPABILITIES;
 	nautilus_file_monitor_add (view->details->directory_as_file,
 				   &view->details->directory_as_file,
 				   attributes);
-	g_list_free (attributes);
 
 	view->details->file_changed_handler_id = g_signal_connect
 		(view->details->directory_as_file, "changed",
@@ -5395,7 +5389,7 @@ load_directory (FMDirectoryView *view,
 static void
 finish_loading (FMDirectoryView *view)
 {
-	GList *attributes;
+	NautilusFileAttributes attributes;
 
 	nautilus_view_report_load_underway (view->details->nautilus_view);
 
@@ -5428,14 +5422,10 @@ finish_loading (FMDirectoryView *view)
 	 * and possible custom name.
 	 */
 	attributes = nautilus_icon_factory_get_required_file_attributes ();
-	attributes = g_list_prepend (attributes,
-				     NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
-	attributes = g_list_prepend (attributes, 
-				     NAUTILUS_FILE_ATTRIBUTE_METADATA);
-	attributes = g_list_prepend (attributes, 
-				     NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
-	attributes = g_list_prepend (attributes, 
-				     NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME);
+	attributes |= NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT |
+		NAUTILUS_FILE_ATTRIBUTE_METADATA |
+		NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE |
+		NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME;
 
 	nautilus_directory_file_monitor_add (view->details->model,
 					     &view->details->model,
@@ -5443,8 +5433,6 @@ finish_loading (FMDirectoryView *view)
 					     view->details->show_backup_files,
 					     attributes,
 					     files_added_callback, view);
-
-	g_list_free (attributes);
 
     	view->details->files_added_handler_id = g_signal_connect
 		(view->details->model, "files_added",
@@ -6041,7 +6029,7 @@ monitor_file_for_open_with (FMDirectoryView *view, NautilusFile *file)
 {
 	NautilusFile **file_spot;
 	NautilusFile *old_file;
-	GList *attributes;
+	NautilusFileAttributes attributes;
 
 	/* Quick out when not changing. */
 	file_spot = &view->details->file_monitored_for_open_with;
@@ -6064,7 +6052,6 @@ monitor_file_for_open_with (FMDirectoryView *view, NautilusFile *file)
 	if (file != NULL) {
 		attributes = nautilus_mime_actions_get_full_file_attributes ();
 		nautilus_file_monitor_add (file, file_spot, attributes);
-		g_list_free (attributes);
 	}
 }
 

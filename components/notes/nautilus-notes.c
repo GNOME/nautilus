@@ -210,8 +210,8 @@ done_with_file (Notes *notes)
 static void
 notes_load_metainfo (Notes *notes)
 {
-        GList *attributes;
-
+        NautilusFileAttributes attributes;
+        
         done_with_file (notes);
         notes->file = nautilus_file_get (notes->uri);
 
@@ -221,15 +221,13 @@ notes_load_metainfo (Notes *notes)
 		return;
         }
 
-        attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
+        attributes = NAUTILUS_FILE_ATTRIBUTE_METADATA;
         nautilus_file_monitor_add (notes->file, notes, attributes);
 
 	if (nautilus_file_check_if_ready (notes->file, attributes)) {
 		load_note_text_from_metadata (notes->file, notes);
 	}
 	
-        g_list_free (attributes);
-        
 	g_signal_connect (notes->file, "changed",
                           G_CALLBACK (load_note_text_from_metadata), notes);
 }

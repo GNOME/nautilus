@@ -58,7 +58,7 @@ vfs_contains_file (NautilusDirectory *directory,
 
 static void
 vfs_call_when_ready (NautilusDirectory *directory,
-		     GList *file_attributes,
+		     NautilusFileAttributes file_attributes,
 		     gboolean wait_for_file_list,
 		     NautilusDirectoryCallback callback,
 		     gpointer callback_data)
@@ -95,7 +95,7 @@ vfs_file_monitor_add (NautilusDirectory *directory,
 		      gconstpointer client,
 		      gboolean monitor_hidden_files,
 		      gboolean monitor_backup_files,
-		      GList *file_attributes,
+		      NautilusFileAttributes file_attributes,
 		      NautilusDirectoryCallback callback,
 		      gpointer callback_data)
 {
@@ -124,14 +124,13 @@ vfs_file_monitor_remove (NautilusDirectory *directory,
 static void
 vfs_force_reload (NautilusDirectory *directory)
 {
-	GList *all_attributes;
+	NautilusFileAttributes all_attributes;
 
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
 	all_attributes = nautilus_file_get_all_attributes ();
 	nautilus_directory_force_reload_internal (directory,
 						  all_attributes);
-	g_list_free (all_attributes);
 }
 
 static gboolean

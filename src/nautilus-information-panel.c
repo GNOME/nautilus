@@ -1109,12 +1109,11 @@ nautilus_information_panel_update_appearance (NautilusInformationPanel *informat
 static void
 background_metadata_changed_callback (NautilusInformationPanel *information_panel)
 {
-	GList *attributes;
+	NautilusFileAttributes attributes;
 	gboolean ready;
 
 	attributes = nautilus_mime_actions_get_minimum_file_attributes ();
 	ready = nautilus_file_check_if_ready (information_panel->details->file, attributes);
-	g_list_free (attributes);
 
 	if (ready) {
 		nautilus_information_panel_update_appearance (information_panel);
@@ -1132,7 +1131,7 @@ nautilus_information_panel_set_uri (NautilusInformationPanel *information_panel,
 			  const char* initial_title)
 {       
 	NautilusFile *file;
-	GList *attributes;
+	NautilusFileAttributes attributes;
 
 	g_return_if_fail (NAUTILUS_IS_INFORMATION_PANEL (information_panel));
 	g_return_if_fail (new_uri != NULL);
@@ -1166,7 +1165,6 @@ nautilus_information_panel_set_uri (NautilusInformationPanel *information_panel,
 
 	attributes = nautilus_mime_actions_get_minimum_file_attributes ();
 	nautilus_file_monitor_add (information_panel->details->file, information_panel, attributes);
-	g_list_free (attributes);
 
 	background_metadata_changed_callback (information_panel);
 

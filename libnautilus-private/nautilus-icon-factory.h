@@ -109,8 +109,8 @@ guint                 nautilus_get_icon_size_for_zoom_level              (Nautil
 /* Choose the appropriate icon, but don't render it yet. */
 char *                nautilus_icon_factory_get_icon_for_file            (NautilusFile                *file,
 									  gboolean                     embedd_text);
-gboolean              nautilus_icon_factory_is_icon_ready_for_file       (NautilusFile                *file);
-GList *               nautilus_icon_factory_get_required_file_attributes (void);
+gboolean               nautilus_icon_factory_is_icon_ready_for_file       (NautilusFile                *file);
+NautilusFileAttributes nautilus_icon_factory_get_required_file_attributes (void);
 
 GList *               nautilus_icon_factory_get_emblem_icons_for_file    (NautilusFile                *file,
 									  EelStringList               *exclude);

@@ -302,7 +302,7 @@ static void
 selection_changed_callback (GtkTreeSelection *selection,
 			    NautilusTreeView *view)
 {
-	GList *attrs;
+	NautilusFileAttributes attributes;
 	GtkTreeIter iter;
 
         cancel_activation (view);
@@ -316,10 +316,9 @@ selection_changed_callback (GtkTreeSelection *selection,
 		return;
 	}
 		
-	attrs = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
-	nautilus_file_call_when_ready (view->details->activation_file, attrs,
+	attributes = NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI;
+	nautilus_file_call_when_ready (view->details->activation_file, attributes,
 				       got_activation_uri_callback, view);
-	g_list_free (attrs);
 }
 
 static int

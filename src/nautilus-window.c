@@ -1515,7 +1515,7 @@ cancel_view_as_callback (NautilusWindow *window)
 void
 nautilus_window_load_view_as_menus (NautilusWindow *window)
 {
-	GList *attributes;
+	NautilusFileAttributes attributes;
 
         g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
@@ -1526,8 +1526,6 @@ nautilus_window_load_view_as_menus (NautilusWindow *window)
 				       attributes, 
 				       load_view_as_menus_callback,
 				       window);
-
-	g_list_free (attributes);
 }
 
 void
@@ -2200,7 +2198,7 @@ void
 nautilus_window_set_viewed_file (NautilusWindow *window,
 				 NautilusFile *file)
 {
-	GList *attributes;
+	NautilusFileAttributes attributes;
 
 	if (window->details->viewed_file == file) {
 		return;
@@ -2217,9 +2215,8 @@ nautilus_window_set_viewed_file (NautilusWindow *window,
 	}
 
 	if (file != NULL) {
-		attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME);
+		attributes = NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME;
 		nautilus_file_monitor_add (file, window, attributes);
-		g_list_free (attributes);
 	}
 
 	nautilus_file_unref (window->details->viewed_file);

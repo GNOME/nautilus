@@ -876,22 +876,23 @@ done_loading_callback (NautilusDirectory *directory,
 	nautilus_file_unref (file);
 }
 
-static GList *
+static NautilusFileAttributes
 get_tree_monitor_attributes (void)
 {
-	GList *attrs;
+	NautilusFileAttributes attributes;
 
-	attrs = nautilus_icon_factory_get_required_file_attributes ();
-	attrs = g_list_prepend (attrs, NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY);
-	attrs = g_list_prepend (attrs, NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME);
-	return attrs;
+	attributes = nautilus_icon_factory_get_required_file_attributes ();
+	attributes |= NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY |
+		NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME;
+	
+	return attributes;
 }
 
 static void
 start_monitoring_directory (NautilusTreeModel *model, TreeNode *node)
 {
 	NautilusDirectory *directory;
-	GList *attrs;
+	NautilusFileAttributes attributes;
 
 	if (node->done_loading_id != 0) {
 		return;
@@ -914,12 +915,11 @@ start_monitoring_directory (NautilusTreeModel *model, TreeNode *node)
 
 	set_done_loading (model, node, nautilus_directory_are_all_files_seen (directory));
 	
-	attrs = get_tree_monitor_attributes ();
+	attributes = get_tree_monitor_attributes ();
 	nautilus_directory_file_monitor_add (directory, model,
 					     model->details->show_hidden_files,
 					     model->details->show_backup_files,
-					     attrs, files_changed_callback, model);
-	g_list_free (attrs);
+					     attributes, files_changed_callback, model);
 }
 
 static int
@@ -1380,7 +1380,7 @@ nautilus_tree_model_set_root_uri (NautilusTreeModel *model, const char *root_uri
 {
 	NautilusFile *file;
 	TreeNode *node;
-	GList *attrs;
+	NautilusFileAttributes attributes;
 	
 	g_return_if_fail (model->details->root_node == NULL);
 	
@@ -1392,9 +1392,8 @@ nautilus_tree_model_set_root_uri (NautilusTreeModel *model, const char *root_uri
 	g_signal_connect_object	(file, "changed",
 				 G_CALLBACK (root_node_file_changed_callback), model, 0);
 
-	attrs = get_tree_monitor_attributes ();
-	nautilus_file_monitor_add (file, model, attrs);
-	g_list_free (attrs);
+	attributes = get_tree_monitor_attributes ();
+	nautilus_file_monitor_add (file, model, attributes);
 
 	nautilus_file_unref (file);
 

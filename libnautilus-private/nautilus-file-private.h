@@ -167,14 +167,14 @@ gboolean      nautilus_file_should_get_top_left_text       (NautilusFile        
 /* Mark specified attributes for this file out of date without canceling current
  * I/O or kicking off new I/O.
  */
-void          nautilus_file_invalidate_attributes_internal (NautilusFile           *file,
-							    GList                  *file_attributes);
-GList *       nautilus_file_get_all_attributes             (void);
-gboolean      nautilus_file_is_self_owned                  (NautilusFile           *file);
-void          nautilus_file_invalidate_count_and_mime_list (NautilusFile           *file);
-gboolean      nautilus_file_rename_in_progress             (NautilusFile           *file);
+void                   nautilus_file_invalidate_attributes_internal (NautilusFile           *file,
+								     NautilusFileAttributes  file_attributes);
+NautilusFileAttributes nautilus_file_get_all_attributes             (void);
+gboolean               nautilus_file_is_self_owned                  (NautilusFile           *file);
+void                   nautilus_file_invalidate_count_and_mime_list (NautilusFile           *file);
+gboolean               nautilus_file_rename_in_progress             (NautilusFile           *file);
+GnomeVFSFileInfo *     nautilus_file_peek_vfs_file_info             (NautilusFile           *file);
 
-GnomeVFSFileInfo *nautilus_file_peek_vfs_file_info         (NautilusFile           *file);
 
 /* Thumbnailing: */
 void          nautilus_file_set_is_thumbnailing            (NautilusFile           *file,

@@ -86,19 +86,12 @@ fm_icon_container_start_monitor_top_left (NautilusIconContainer *container,
 					  gconstpointer          client)
 {
 	NautilusFile *file;
-	GList *attributes;
 
 	file = (NautilusFile *) data;
 
 	g_assert (NAUTILUS_IS_FILE (file));
 
-
-	attributes = NULL;
-	attributes = g_list_prepend (attributes,
-				     NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT);
-
-	nautilus_file_monitor_add (file, client, attributes);
-        g_list_free (attributes);
+	nautilus_file_monitor_add (file, client, NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT);
 }
 
 static void

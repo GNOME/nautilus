@@ -108,8 +108,8 @@ main (int argc, char **argv)
 	const char *field;
 	const char *value;
 	NautilusFile *file;
-	GList *attributes;
-
+	NautilusFileAttributes attributes;
+	
 	gnome_program_init ("test-nautilus-mime-actions-set", "0.0",
 			    LIBGNOMEUI_MODULE, argc, argv, NULL);
 
@@ -125,7 +125,6 @@ main (int argc, char **argv)
 
 	attributes = nautilus_mime_actions_get_full_file_attributes ();
 	nautilus_file_call_when_ready (file, attributes, ready_callback, NULL);
-	g_list_free (attributes);
 
 	while (!ready) {
 		gtk_main_iteration ();

@@ -229,7 +229,7 @@ nautilus_choose_component_for_file (NautilusFile *file,
 				    gpointer callback_data)
 {
 	ChooseComponentCallbackData *choose_data;
-	GList *attributes;
+	NautilusFileAttributes attributes;
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (parent_window == NULL || GTK_IS_WINDOW (parent_window));
@@ -266,7 +266,6 @@ nautilus_choose_component_for_file (NautilusFile *file,
 				       attributes,
 				       choose_component_callback,
 				       choose_data);
-	g_list_free (attributes);
 }
 
 void
@@ -369,7 +368,7 @@ nautilus_choose_application_for_file (NautilusFile *file,
 				      gpointer callback_data)
 {
 	ChooseApplicationCallbackData *choose_data;
-	GList *attributes;
+	NautilusFileAttributes attributes;
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (parent_window == NULL || GTK_IS_WINDOW (parent_window));
@@ -406,7 +405,6 @@ nautilus_choose_application_for_file (NautilusFile *file,
 				       attributes,
 				       choose_application_callback,
 				       choose_data);
-	g_list_free (attributes);
 }
 
 

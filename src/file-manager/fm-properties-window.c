@@ -2384,7 +2384,7 @@ static FMPropertiesWindow *
 create_properties_window (StartupData *startup_data)
 {
 	FMPropertiesWindow *window;
-	GList *attributes;
+	NautilusFileAttributes attributes;
 	GtkWidget *vbox;
 	GtkWidget *hbox;
 	GtkWidget *button;
@@ -2407,20 +2407,16 @@ create_properties_window (StartupData *startup_data)
 	 * target file.
 	 */
 	attributes = nautilus_icon_factory_get_required_file_attributes ();
-	attributes = g_list_prepend (attributes,
-				     NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME);
+	attributes |= NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME;
 	nautilus_file_monitor_add (window->details->original_file, window, attributes);
-	g_list_free (attributes);
 
-	attributes = NULL;
+	attributes = 0;
 	if (nautilus_file_is_directory (window->details->target_file)) {
-		attributes = g_list_prepend (attributes,
-					     NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS);
+		attributes |= NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS;
 	}
-	attributes = g_list_prepend (attributes,
-				     NAUTILUS_FILE_ATTRIBUTE_METADATA);
+	
+	attributes |= NAUTILUS_FILE_ATTRIBUTE_METADATA;
 	nautilus_file_monitor_add (window->details->target_file, window, attributes);
-	g_list_free (attributes);
 
 	/* React to future property changes and file deletions. */
 	window->details->file_changed_handler_id =
@@ -2591,7 +2587,6 @@ fm_properties_window_present (NautilusFile *original_file, FMDirectoryView *dire
 	GtkWidget *parent_window;
 	NautilusFile *target_file;
 	StartupData *startup_data;
-	GList attribute_list;
 
 	g_return_if_fail (NAUTILUS_IS_FILE (original_file));
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (directory_view));
@@ -2640,11 +2635,8 @@ fm_properties_window_present (NautilusFile *original_file, FMDirectoryView *dire
 		 _("Cancel Showing Properties Window?"),
 		 _("Creating Properties window"),
 		 parent_window == NULL ? NULL : GTK_WINDOW (parent_window));
-	attribute_list.data = NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY;
-	attribute_list.next = NULL;
-	attribute_list.prev = NULL;
 	nautilus_file_call_when_ready
-		(target_file, &attribute_list,
+		(target_file, NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY,
 		 create_properties_window_callback, startup_data);
 }
 

@@ -125,7 +125,7 @@ nautilus_trash_monitor_init (gpointer object, gpointer klass)
 {
 	NautilusDirectory *trash_directory;
 	NautilusTrashMonitor *trash_monitor;
-	GList *attributes;
+	NautilusFileAttributes attributes;
 
 	trash_monitor = NAUTILUS_TRASH_MONITOR (object);
 
@@ -137,14 +137,12 @@ nautilus_trash_monitor_init (gpointer object, gpointer klass)
 	trash_monitor->details->trash_directory = trash_directory;
 	trash_monitor->details->empty = TRUE;
 
-	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
+	attributes = NAUTILUS_FILE_ATTRIBUTE_METADATA;
 
 	/* Make sure we get notified about changes */
 	nautilus_directory_file_monitor_add
 		(trash_directory, trash_monitor, TRUE, TRUE, attributes,
 		 nautilus_trash_files_changed_callback, trash_monitor);
-
-	g_list_free (attributes);
 
     	g_signal_connect_object	(trash_directory, "files_added",
 				 G_CALLBACK (nautilus_trash_files_changed_callback), trash_monitor, 0);

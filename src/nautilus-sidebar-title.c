@@ -635,7 +635,7 @@ item_count_ready (NautilusSidebarTitle *sidebar_title)
 static void
 monitor_add (NautilusSidebarTitle *sidebar_title)
 {
-	GList *attributes;
+	NautilusFileAttributes attributes;
 
 	/* Monitor the things needed to get the right icon. Don't
 	 * monitor a directory's item count at first even though the
@@ -650,16 +650,13 @@ monitor_add (NautilusSidebarTitle *sidebar_title)
 	sidebar_title->details->monitoring_count = item_count_ready (sidebar_title);
 
 	attributes = nautilus_icon_factory_get_required_file_attributes ();		
-	attributes = g_list_prepend (attributes,
-				     NAUTILUS_FILE_ATTRIBUTE_METADATA);
+	attributes |= NAUTILUS_FILE_ATTRIBUTE_METADATA;
+	
 	if (sidebar_title->details->monitoring_count) {
-		attributes = g_list_prepend (attributes,
-					     NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
+		attributes |= NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT;
 	}
 
 	nautilus_file_monitor_add (sidebar_title->details->file, sidebar_title, attributes);
-
-	g_list_free (attributes);
 }
 
 static void

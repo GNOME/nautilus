@@ -27,6 +27,7 @@
 
 #include <gtk/gtkobject.h>
 #include <libgnomevfs/gnome-vfs-types.h>
+#include <libnautilus-private/nautilus-file-attributes.h>
 
 /* NautilusFile is an object used to represent a single element of a
  * NautilusDirectory. It's lightweight and relies on NautilusDirectory
@@ -100,7 +101,7 @@ void                    nautilus_file_unref                             (Nautilu
 /* Monitor the file. */
 void                    nautilus_file_monitor_add                       (NautilusFile                   *file,
 									 gconstpointer                   client,
-									 GList                          *attributes);
+									 NautilusFileAttributes          attributes);
 void                    nautilus_file_monitor_remove                    (NautilusFile                   *file,
 									 gconstpointer                   client);
 
@@ -109,16 +110,16 @@ void                    nautilus_file_monitor_remove                    (Nautilu
  * to other attributes as well.
  */
 void                    nautilus_file_call_when_ready                   (NautilusFile                   *file,
-									 GList                          *attributes,
+									 NautilusFileAttributes          attributes,
 									 NautilusFileCallback            callback,
 									 gpointer                        callback_data);
 void                    nautilus_file_cancel_call_when_ready            (NautilusFile                   *file,
 									 NautilusFileCallback            callback,
 									 gpointer                        callback_data);
 gboolean                nautilus_file_check_if_ready                    (NautilusFile                   *file,
-									 GList                          *attributes);
+									 NautilusFileAttributes          attributes);
 void                    nautilus_file_invalidate_attributes             (NautilusFile                   *file,
-									 GList                          *attributes);
+									 NautilusFileAttributes          attributes);
 void                    nautilus_file_invalidate_all_attributes         (NautilusFile                   *file);
 
 /* Basic attributes for file objects. */
@@ -344,33 +345,33 @@ typedef struct {
 	void                  (* updated_deep_count_in_progress) (NautilusFile *file);
 
 	/* Virtual functions (mainly used for trash directory). */
-	void                  (* monitor_add)            (NautilusFile         *file,
-							  gconstpointer         client,
-							  GList                *attributes);
-	void                  (* monitor_remove)         (NautilusFile         *file,
-							  gconstpointer         client);
-	void                  (* call_when_ready)        (NautilusFile         *file,
-							  GList                *attributes,
-							  NautilusFileCallback  callback,
-							  gpointer              callback_data);
-	void                  (* cancel_call_when_ready) (NautilusFile         *file,
-							  NautilusFileCallback  callback,
-							  gpointer              callback_data);
-	gboolean              (* check_if_ready)         (NautilusFile         *file,
-							  GList                *attributes);
-	GnomeVFSFileType      (* get_file_type)          (NautilusFile         *file);
-	gboolean              (* get_item_count)         (NautilusFile         *file,
-							  guint                *count,
-							  gboolean             *count_unreadable);
-	NautilusRequestStatus (* get_deep_counts)        (NautilusFile         *file,
-							  guint                *directory_count,
-							  guint                *file_count,
-							  guint                *unreadable_directory_count,
-							  GnomeVFSFileSize     *total_size);
-	gboolean              (* get_date)               (NautilusFile         *file,
-							  NautilusDateType      type,
-							  time_t               *date);
-	char *                (* get_where_string)       (NautilusFile         *file);
+	void                  (* monitor_add)            (NautilusFile           *file,
+							  gconstpointer           client,
+							  NautilusFileAttributes  attributes);
+	void                  (* monitor_remove)         (NautilusFile           *file,
+							  gconstpointer           client);
+	void                  (* call_when_ready)        (NautilusFile           *file,
+							  NautilusFileAttributes  attributes,
+							  NautilusFileCallback    callback,
+							  gpointer                callback_data);
+	void                  (* cancel_call_when_ready) (NautilusFile           *file,
+							  NautilusFileCallback    callback,
+							  gpointer                callback_data);
+	gboolean              (* check_if_ready)         (NautilusFile           *file,
+							  NautilusFileAttributes  attributes);
+	GnomeVFSFileType      (* get_file_type)          (NautilusFile           *file);
+	gboolean              (* get_item_count)         (NautilusFile           *file,
+							  guint                  *count,
+							  gboolean               *count_unreadable);
+	NautilusRequestStatus (* get_deep_counts)        (NautilusFile           *file,
+							  guint                  *directory_count,
+							  guint                  *file_count,
+							  guint                  *unreadable_directory_count,
+							  GnomeVFSFileSize       *total_size);
+	gboolean              (* get_date)               (NautilusFile           *file,
+							  NautilusDateType        type,
+							  time_t                 *date);
+	char *                (* get_where_string)       (NautilusFile           *file);
 } NautilusFileClass;
 
 #endif /* NAUTILUS_FILE_H */

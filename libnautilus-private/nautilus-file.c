@@ -917,7 +917,6 @@ rename_callback (GnomeVFSAsyncHandle *handle,
 	char *old_relative_uri;
 	char *old_uri;
 	char *new_uri;
-	GList name_attribute = { 0, };
 
 	op = callback_data;
 	g_assert (handle == op->handle);
@@ -961,9 +960,8 @@ rename_callback (GnomeVFSAsyncHandle *handle,
 		 * and a rename affects the contents of the desktop file.
 		 */
 		if (op->file->details->display_name != NULL) {
-			name_attribute.data = NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME;
-			nautilus_file_invalidate_attributes (op->file, 
-							     &name_attribute);
+			nautilus_file_invalidate_attributes (op->file,
+							     NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME);
 		}
 	}
 	operation_complete (op, result);
@@ -1065,9 +1063,8 @@ rename_guts (NautilusFile *file,
 		g_free (uri);
 
 		if (success) {
-			GList attributes = { 0 };
-			attributes.data = NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME;
-			nautilus_file_invalidate_attributes (file, &attributes);
+			nautilus_file_invalidate_attributes (file,
+							     NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME);
 			(* callback) (file, GNOME_VFS_OK, callback_data);
 			return;
 		} else {
@@ -2401,7 +2398,7 @@ nautilus_file_get_name (NautilusFile *file)
 void             
 nautilus_file_monitor_add (NautilusFile *file,
 			   gconstpointer client,
-			   GList *attributes)
+			   NautilusFileAttributes attributes)
 {
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (client != NULL);
@@ -5019,13 +5016,13 @@ nautilus_file_is_not_yet_confirmed (NautilusFile *file)
  * obtain the information, which might be slow network calls, e.g.
  *
  * @file: The file being queried.
- * @file_attributes: A GList of the desired information.
+ * @file_attributes: A bit-mask with the desired information.
  * 
  * Return value: TRUE if all of the specified attributes are currently readable.
  */
 gboolean
 nautilus_file_check_if_ready (NautilusFile *file,
-			      GList *file_attributes)
+			      NautilusFileAttributes file_attributes)
 {
 	/* To be parallel with call_when_ready, return
 	 * TRUE for NULL file.
@@ -5043,7 +5040,7 @@ nautilus_file_check_if_ready (NautilusFile *file,
 
 void
 nautilus_file_call_when_ready (NautilusFile *file,
-			       GList *file_attributes,
+			       NautilusFileAttributes file_attributes,
 			       NautilusFileCallback callback,
 			       gpointer callback_data)
 
@@ -5120,7 +5117,7 @@ invalidate_link_info (NautilusFile *file)
 
 void
 nautilus_file_invalidate_attributes_internal (NautilusFile *file,
-					      GList *file_attributes)
+					      NautilusFileAttributes file_attributes)
 {
 	Request request;
 
@@ -5180,7 +5177,7 @@ nautilus_file_set_is_thumbnailing (NautilusFile *file,
 
 void
 nautilus_file_invalidate_attributes (NautilusFile *file,
-				     GList *file_attributes)
+				     NautilusFileAttributes file_attributes)
 {
 	/* Cancel possible in-progress loads of any of these attributes */
 	nautilus_directory_cancel_loading_file_attributes (file->details->directory,
@@ -5196,37 +5193,30 @@ nautilus_file_invalidate_attributes (NautilusFile *file,
 	nautilus_directory_async_state_changed (file->details->directory);
 }
 
-GList *
+NautilusFileAttributes 
 nautilus_file_get_all_attributes (void)
 {
-	GList *attributes;
-
-	attributes = NULL;
-
-	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
-	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_CAPABILITIES);
-	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON);
-        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS);
-        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
-        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES);
-        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE);
-        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY);
-        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_METADATA);
-        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
-        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT);
-        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME);
-
-	return attributes;
+	return NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI |
+		NAUTILUS_FILE_ATTRIBUTE_CAPABILITIES |
+		NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON |
+		NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS |
+		NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT |
+		NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES |
+		NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE |
+		NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY |
+		NAUTILUS_FILE_ATTRIBUTE_METADATA |
+		NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE |
+		NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT |
+		NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME;
 }
 
 void
 nautilus_file_invalidate_all_attributes (NautilusFile *file)
 {
-	GList *all_attributes;
+	NautilusFileAttributes all_attributes;
 
 	all_attributes = nautilus_file_get_all_attributes ();
 	nautilus_file_invalidate_attributes (file, all_attributes);
-	g_list_free (all_attributes);
 }
 
 

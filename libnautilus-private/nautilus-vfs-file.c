@@ -41,7 +41,7 @@ EEL_CLASS_BOILERPLATE (NautilusVFSFile,
 static void             
 vfs_file_monitor_add (NautilusFile *file,
 		      gconstpointer client,
-		      GList *attributes)
+		      NautilusFileAttributes attributes)
 {
 	nautilus_directory_monitor_add_internal
 		(file->details->directory, file,
@@ -58,7 +58,7 @@ vfs_file_monitor_remove (NautilusFile *file,
 
 static void
 vfs_file_call_when_ready (NautilusFile *file,
-			  GList *file_attributes,
+			  NautilusFileAttributes file_attributes,
 			  NautilusFileCallback callback,
 			  gpointer callback_data)
 
@@ -80,7 +80,7 @@ vfs_file_cancel_call_when_ready (NautilusFile *file,
 
 static gboolean
 vfs_file_check_if_ready (NautilusFile *file,
-			 GList *file_attributes)
+			 NautilusFileAttributes file_attributes)
 {
 	return nautilus_directory_check_if_ready_internal
 		(file->details->directory, file,

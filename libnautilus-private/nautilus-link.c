@@ -125,7 +125,6 @@ nautilus_link_local_set_icon (const char *uri, const char *icon_name)
 {
 	gboolean result;
 	NautilusFile *file;
-	GList *attributes;
 
 	switch (get_link_style_for_local_file (uri, NULL)) {
 	case desktop:
@@ -139,10 +138,8 @@ nautilus_link_local_set_icon (const char *uri, const char *icon_name)
 	}
 
 	file = nautilus_file_get (uri);
-	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
-	nautilus_file_invalidate_attributes (file, attributes);
+	nautilus_file_invalidate_attributes (file, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
 	nautilus_file_unref (file);
-	g_list_free (attributes);
 
 	return result;
 }
@@ -152,7 +149,6 @@ nautilus_link_local_set_link_uri (const char *uri, const char *link_uri)
 {
 	gboolean result;
 	NautilusFile *file;
-	GList *attributes;
 
 	switch (get_link_style_for_local_file (uri, NULL)) {
 	case desktop:
@@ -168,10 +164,8 @@ nautilus_link_local_set_link_uri (const char *uri, const char *link_uri)
 
 	
 	file = nautilus_file_get (uri);
-	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
-	nautilus_file_invalidate_attributes (file, attributes);
+	nautilus_file_invalidate_attributes (file, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
 	nautilus_file_unref (file);
-	g_list_free (attributes);
 
 	return result;
 }

@@ -1,3 +1,42 @@
+2003-04-02  Alexander Larsson  <alexl@redhat.com>
+
+	* components/notes/nautilus-notes.c:
+	* components/tree/nautilus-tree-model.c:
+	* components/tree/nautilus-tree-view.c:
+	* libnautilus-private/nautilus-directory-async.c:
+	* libnautilus-private/nautilus-directory-background.c:
+	* libnautilus-private/nautilus-directory-private.h:
+	* libnautilus-private/nautilus-directory.c:
+	* libnautilus-private/nautilus-directory.h:
+	* libnautilus-private/nautilus-file-attributes.h:
+	* libnautilus-private/nautilus-file-private.h:
+	* libnautilus-private/nautilus-file.c: (rename_callback),
+	* libnautilus-private/nautilus-file.h:
+	* libnautilus-private/nautilus-icon-factory.c:
+	* libnautilus-private/nautilus-icon-factory.h:
+	* libnautilus-private/nautilus-link.c:
+	* libnautilus-private/nautilus-merged-directory.c:
+	* libnautilus-private/nautilus-mime-actions.c:
+	* libnautilus-private/nautilus-mime-actions.h:
+	* libnautilus-private/nautilus-program-choosing.c:
+	* libnautilus-private/nautilus-trash-file.c:
+	* libnautilus-private/nautilus-trash-monitor.c:
+	* libnautilus-private/nautilus-vfs-directory.c:
+	* libnautilus-private/nautilus-vfs-file.c:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-icon-container.c:
+	* src/file-manager/fm-properties-window.c:
+	* src/nautilus-applicable-views.c:
+	* src/nautilus-information-panel.c:
+	* src/nautilus-sidebar-title.c:
+	* src/nautilus-window-manage-views.c:
+	* src/nautilus-window.c:
+	* test/test-nautilus-mime-actions-set.c:
+	* test/test-nautilus-mime-actions.c:
+
+	Convert file attributes from list of strings to a bitmask.
+	Patch from andersca@codefactory.se.
+
 === nautilus 2.2.3 ===
 
 2003-03-31  Alexander Larsson  <alexl@redhat.com>

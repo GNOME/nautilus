@@ -863,7 +863,6 @@ nautilus_connect_background_to_file_metadata (GtkWidget    *widget,
 {
 	EelBackground *background;
 	gpointer old_file;
-        GList *attributes;
 
 	/* Get at the background object we'll be connecting. */
 	background = eel_get_widget_background (widget);
@@ -913,11 +912,9 @@ nautilus_connect_background_to_file_metadata (GtkWidget    *widget,
                                          G_CALLBACK (saved_settings_changed_callback), background, 0);
         	
 		/* arrange to receive file metadata */
-                attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
 		nautilus_file_monitor_add (file,
                                            background,
-                                           attributes);					     
-		g_list_free (attributes);
+                                           NAUTILUS_FILE_ATTRIBUTE_METADATA);
 
 		/* arrange for notification when the theme changes */
 		eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,

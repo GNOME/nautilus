@@ -847,19 +847,13 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, gboolean embedd_tex
 /**
  * nautilus_icon_factory_get_required_file_attributes
  * 
- * Get the list of file attributes required to obtain a file's icon.
- * Callers must free this list.
+ * Get the file attributes required to obtain a file's icon.
  */
-GList *
+NautilusFileAttributes 
 nautilus_icon_factory_get_required_file_attributes (void)
 {
-	GList *attributes;
-
-	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON);
-	attributes = g_list_prepend (attributes,
-				     NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
-
-	return attributes;
+	return NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON |
+		NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE;
 }
 
 
@@ -874,12 +868,11 @@ nautilus_icon_factory_get_required_file_attributes (void)
 gboolean
 nautilus_icon_factory_is_icon_ready_for_file (NautilusFile *file)
 {
-	GList *attributes;
+	NautilusFileAttributes attributes;
 	gboolean result;
 
 	attributes = nautilus_icon_factory_get_required_file_attributes ();
 	result = nautilus_file_check_if_ready (file, attributes);
-	g_list_free (attributes);
 
 	return result;
 }

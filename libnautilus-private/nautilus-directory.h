@@ -27,6 +27,7 @@
 
 #include <gtk/gtkobject.h>
 #include <libgnomevfs/gnome-vfs-types.h>
+#include <libnautilus-private/nautilus-file-attributes.h>
 
 /* NautilusDirectory is a class that manages the model for a directory,
    real or virtual, for Nautilus, mainly the file-manager component. The directory is
@@ -105,7 +106,7 @@ typedef struct
 	gboolean (* contains_file)       (NautilusDirectory         *directory,
 					  NautilusFile              *file);
 	void     (* call_when_ready)     (NautilusDirectory         *directory,
-					  GList                     *file_attributes,
+					  NautilusFileAttributes     file_attributes,
 					  gboolean                   wait_for_file_list,
 					  NautilusDirectoryCallback  callback,
 					  gpointer                   callback_data);
@@ -116,7 +117,7 @@ typedef struct
 					  gconstpointer              client,
 					  gboolean                   monitor_hidden_files,
 					  gboolean                   monitor_backup_files,
-					  GList                     *monitor_attributes,
+					  NautilusFileAttributes     monitor_attributes,
 					  NautilusDirectoryCallback  initial_files_callback,
 					  gpointer                   callback_data);
 	void     (* file_monitor_remove) (NautilusDirectory         *directory,
@@ -163,7 +164,7 @@ NautilusFile *     nautilus_directory_get_corresponding_file   (NautilusDirector
  * The file attribute and metadata keys are for files in the directory.
  */
 void               nautilus_directory_call_when_ready          (NautilusDirectory         *directory,
-								GList                     *file_attributes,
+								NautilusFileAttributes     file_attributes,
 								gboolean                   wait_for_all_files,
 								NautilusDirectoryCallback  callback,
 								gpointer                   callback_data);
@@ -177,7 +178,7 @@ void               nautilus_directory_file_monitor_add         (NautilusDirector
 								gconstpointer              client,
 								gboolean                   monitor_hidden_files,
 								gboolean                   monitor_backup_files,
-								GList                     *attributes,
+								NautilusFileAttributes     attributes,
 								NautilusDirectoryCallback  initial_files_callback,
 								gpointer                   callback_data);
 void               nautilus_directory_file_monitor_remove      (NautilusDirectory         *directory,

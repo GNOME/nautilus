@@ -612,7 +612,7 @@ update_for_new_location (NautilusWindow *window)
         file = nautilus_file_get (window->details->location);
         nautilus_window_set_viewed_file (window, file);
         window->details->viewed_file_seen = !nautilus_file_is_not_yet_confirmed (file);
-        nautilus_file_monitor_add (file, &window->details->viewed_file, NULL);
+        nautilus_file_monitor_add (file, &window->details->viewed_file, 0);
         g_signal_connect_object (file, "changed",
                                  G_CALLBACK (viewed_file_changed_callback), window, 0);
         nautilus_file_unref (file);
@@ -1265,7 +1265,7 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
         char *home_uri;
         const char *location;
 	GtkDialog *dialog;
-        GList *attributes;
+        NautilusFileAttributes attributes;
         GnomeVFSURI *vfs_uri;
        
         window = NAUTILUS_WINDOW (data);
@@ -1285,12 +1285,11 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
 		if (!GTK_WIDGET_VISIBLE (window)) {
 			file = nautilus_file_get (location);
                                 
-			attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
+			attributes = NAUTILUS_FILE_ATTRIBUTE_METADATA;
 			nautilus_file_call_when_ready (file,
                                                        attributes,
                                                        position_and_show_window_callback,
                                                        window);
-			g_list_free (attributes);
 		}
 
 		load_content_view (window, initial_view);

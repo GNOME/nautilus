@@ -143,7 +143,7 @@ nautilus_determine_initial_view (const char *location,
                                  gpointer callback_data)
 {
         NautilusDetermineViewHandle *handle;
-        GList *attributes;
+        NautilusFileAttributes attributes;
 
         g_return_val_if_fail (location != NULL, NULL);
         g_return_val_if_fail (callback != NULL, NULL);
@@ -160,7 +160,6 @@ nautilus_determine_initial_view (const char *location,
         attributes = nautilus_mime_actions_get_minimum_file_attributes ();
         nautilus_file_call_when_ready (handle->file, attributes,
                                        got_file_info_callback, handle);
-        g_list_free (attributes);
 
         if (handle != NULL) {
                 handle->early_completion_hook = NULL;

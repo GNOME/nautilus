@@ -52,8 +52,8 @@ typedef struct {
 	NautilusFileCallback callback;
 	gpointer callback_data;
 
-	GList *delegated_attributes;
-	GList *non_delegated_attributes;
+	NautilusFileAttributes delegated_attributes;
+	NautilusFileAttributes non_delegated_attributes;
 
 	GList *non_ready_files;
 
@@ -63,15 +63,9 @@ typedef struct {
 typedef struct {
 	NautilusTrashFile *trash;
 
-	GList *delegated_attributes;
-	GList *non_delegated_attributes;
+	NautilusFileAttributes delegated_attributes;
+	NautilusFileAttributes non_delegated_attributes;
 } TrashMonitor;
-
-static const char * const delegated_attributes[] = {
-	NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS,
-	NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT,
-	NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES
-};
 
 static void nautilus_trash_file_init       (gpointer   object,
 						  gpointer   klass);
@@ -81,44 +75,31 @@ EEL_CLASS_BOILERPLATE (NautilusTrashFile,
 		       nautilus_trash_file,
 		       NAUTILUS_TYPE_FILE)
 
-static gboolean
-is_delegated_attribute (const char *attribute)
+static NautilusFileAttributes 
+get_delegated_attributes_mask (void)
 {
-	guint i;
-
-	g_return_val_if_fail (attribute != NULL, FALSE);
-
-	for (i = 0; i < G_N_ELEMENTS (delegated_attributes); i++) {
-		if (strcmp (attribute, delegated_attributes[i]) == 0) {
-			return TRUE;
-		}
-	}
-	return FALSE;
-}
-
-static gboolean
-is_delegated_attribute_predicate (gpointer data,
-				  gpointer callback_data)
-{
-	return is_delegated_attribute (data);
+	return NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS |
+		NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT |
+		NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES;
 }
 
 static void
-partition_attributes (GList *attributes,
-		      GList **delegated_attributes,
-		      GList **non_delegated_attributes)
+partition_attributes (NautilusFileAttributes attributes,
+		      NautilusFileAttributes *delegated_attributes,
+		      NautilusFileAttributes *non_delegated_attributes)
 {
-	*delegated_attributes = eel_g_list_partition
-		(attributes,
-		 is_delegated_attribute_predicate,
-		 NULL,
-		 non_delegated_attributes);
+	NautilusFileAttributes mask;
+
+	mask = get_delegated_attributes_mask ();
+
+	*delegated_attributes = attributes & mask;
+	*non_delegated_attributes = attributes & ~mask;
 }
 
 static void             
 real_monitor_add (NautilusFile *file,
 		  gconstpointer client,
-		  GList *attributes)
+		  NautilusFileAttributes attributes)
 {
 	nautilus_directory_monitor_add_internal
 		(file->details->directory, file,
@@ -135,7 +116,7 @@ real_monitor_remove (NautilusFile *file,
 
 static void
 real_call_when_ready (NautilusFile *file,
-		      GList *attributes,
+		      NautilusFileAttributes attributes,
 		      NautilusFileCallback callback,
 		      gpointer callback_data)
 
@@ -157,7 +138,7 @@ real_cancel_call_when_ready (NautilusFile *file,
 
 static gboolean
 real_check_if_ready (NautilusFile *file,
-		     GList *attributes)
+		     NautilusFileAttributes attributes)
 {
 	return nautilus_directory_check_if_ready_internal
 		(file->details->directory, file,
@@ -194,8 +175,6 @@ trash_callback_destroy (TrashCallback *trash_callback)
 	g_assert (NAUTILUS_IS_TRASH_FILE (trash_callback->trash));
 
 	nautilus_file_unref (NAUTILUS_FILE (trash_callback->trash));
-	eel_g_list_free_deep (trash_callback->delegated_attributes);
-	eel_g_list_free_deep (trash_callback->non_delegated_attributes);
 	g_list_free (trash_callback->non_ready_files);
 	g_free (trash_callback);
 }
@@ -382,7 +361,7 @@ remove_directory_callback (NautilusTrashDirectory *trash_directory,
 
 static void
 trash_file_call_when_ready (NautilusFile *file,
-			    GList *attributes,
+			    NautilusFileAttributes attributes,
 			    NautilusFileCallback callback,
 			    gpointer callback_data)
 
@@ -409,7 +388,7 @@ trash_file_call_when_ready (NautilusFile *file,
 	trash_callback->callback_data = callback_data;
 	trash_callback->initializing = TRUE;
 
-	partition_attributes (eel_g_str_list_copy (attributes),
+	partition_attributes (attributes,
 			      &trash_callback->delegated_attributes,
 			      &trash_callback->non_delegated_attributes);
 
@@ -476,16 +455,16 @@ trash_file_cancel_call_when_ready (NautilusFile *file,
 
 static gboolean
 trash_file_check_if_ready (NautilusFile *file,
-			   GList *attributes)
+			   NautilusFileAttributes attributes)
 {
-	GList *delegated_attributes, *non_delegated_attributes;
+	NautilusFileAttributes delegated_attributes, non_delegated_attributes;
 	NautilusTrashFile *trash;
 	GList *node;
 	gboolean ready;
 
 	trash = NAUTILUS_TRASH_FILE (file);
 
-	partition_attributes (g_list_copy (attributes),
+	partition_attributes (attributes,
 			      &delegated_attributes,
 			      &non_delegated_attributes);
 
@@ -501,16 +480,13 @@ trash_file_check_if_ready (NautilusFile *file,
 		}
 	}
 
-	g_list_free (delegated_attributes);
-	g_list_free (non_delegated_attributes);
-
 	return ready;
 }
 
 static void
 trash_file_monitor_add (NautilusFile *file,
 			gconstpointer client,
-			GList *attributes)
+			NautilusFileAttributes attributes)
 {
 	NautilusTrashFile *trash;
 	TrashMonitor *monitor;
@@ -524,8 +500,6 @@ trash_file_monitor_add (NautilusFile *file,
 	monitor = g_hash_table_lookup (trash->details->monitors, client);
 	if (monitor != NULL) {
 		g_assert (monitor->trash == trash);
-		eel_g_list_free_deep (monitor->delegated_attributes);
-		eel_g_list_free_deep (monitor->non_delegated_attributes);
 	} else {
 		monitor = g_new0 (TrashMonitor, 1);
 		monitor->trash = trash;
@@ -533,7 +507,7 @@ trash_file_monitor_add (NautilusFile *file,
 				     (gpointer) client, monitor);
 	}
 
-	partition_attributes (eel_g_str_list_copy (attributes),
+	partition_attributes (attributes,
 			      &monitor->delegated_attributes,
 			      &monitor->non_delegated_attributes);
 
@@ -568,8 +542,6 @@ trash_file_monitor_remove (NautilusFile *file,
 		nautilus_file_monitor_remove (node->data, monitor);
 	}
 
-	eel_g_list_free_deep (monitor->delegated_attributes);
-	eel_g_list_free_deep (monitor->non_delegated_attributes);
 	g_free (monitor);
 }
 

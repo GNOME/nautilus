@@ -70,12 +70,11 @@ is_known_mime_type (const char *mime_type)
 static gboolean
 nautilus_mime_actions_check_if_minimum_attributes_ready (NautilusFile *file)
 {
-	GList *attributes;
+	NautilusFileAttributes attributes;
 	gboolean ready;
 
 	attributes = nautilus_mime_actions_get_minimum_file_attributes ();
 	ready = nautilus_file_check_if_ready (file, attributes);
-	g_list_free (attributes);
 
 	return ready;
 }
@@ -83,40 +82,30 @@ nautilus_mime_actions_check_if_minimum_attributes_ready (NautilusFile *file)
 static gboolean
 nautilus_mime_actions_check_if_full_attributes_ready (NautilusFile *file)
 {
-	GList *attributes;
+	NautilusFileAttributes attributes;
 	gboolean ready;
 
 	attributes = nautilus_mime_actions_get_full_file_attributes ();
 	ready = nautilus_file_check_if_ready (file, attributes);
-	g_list_free (attributes);
 
 	return ready;
 }
 
 
-GList *
+NautilusFileAttributes 
 nautilus_mime_actions_get_minimum_file_attributes (void)
 {
-	GList *attributes;
-
-	attributes = NULL;
-	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
-	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_METADATA);
-	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
-
-	return attributes;
+	return NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI |
+		NAUTILUS_FILE_ATTRIBUTE_METADATA |
+		NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE;
 }
 
 
-GList *
+NautilusFileAttributes 
 nautilus_mime_actions_get_full_file_attributes (void)
 {
-	GList *attributes;
-
-	attributes = nautilus_mime_actions_get_minimum_file_attributes ();
-	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES);
-
-	return attributes;
+	return nautilus_mime_actions_get_minimum_file_attributes () |
+		NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES;
 }
 
 

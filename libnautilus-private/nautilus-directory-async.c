@@ -104,19 +104,19 @@ static GHashTable *async_jobs;
 #endif
 
 /* Forward declarations for functions that need them. */
-static void     deep_count_load             (NautilusDirectory *directory,
-					     const char        *uri);
-static gboolean request_is_satisfied        (NautilusDirectory *directory,
-					     NautilusFile      *file,
-					     Request           *request);
-static void     cancel_loading_attributes   (NautilusDirectory *directory,
-					     GList             *file_attributes);
-static void     add_all_files_to_work_queue (NautilusDirectory *directory);
-static void     link_info_done              (NautilusDirectory *directory,
-					     NautilusFile      *file,
-					     const char        *uri,
-					     const char        *name, 
-					     const char        *icon);
+static void     deep_count_load             (NautilusDirectory      *directory,
+					     const char             *uri);
+static gboolean request_is_satisfied        (NautilusDirectory      *directory,
+					     NautilusFile           *file,
+					     Request                *request);
+static void     cancel_loading_attributes   (NautilusDirectory      *directory,
+					     NautilusFileAttributes  file_attributes);
+static void     add_all_files_to_work_queue (NautilusDirectory      *directory);
+static void     link_info_done              (NautilusDirectory      *directory,
+					     NautilusFile           *file,
+					     const char             *uri,
+					     const char             *name, 
+					     const char             *icon);
 static gboolean file_needs_high_priority_work_done (NautilusDirectory *directory,
 						    NautilusFile      *file);
 static gboolean file_needs_low_priority_work_done  (NautilusDirectory *directory,
@@ -505,56 +505,33 @@ remove_monitor (NautilusDirectory *directory,
 
 void
 nautilus_directory_set_up_request (Request *request,
-				   GList *file_attributes)
+				   NautilusFileAttributes file_attributes)
 {
 	memset (request, 0, sizeof (*request));
-
-	request->directory_count = g_list_find_custom
-		(file_attributes,
-		 NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT,
-		 eel_strcmp_compare_func) != NULL;
-	request->deep_count = g_list_find_custom
-		(file_attributes,
-		 NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS,
-		 eel_strcmp_compare_func) != NULL;
-	request->mime_list = g_list_find_custom
-		(file_attributes,
-		 NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES,
-		 eel_strcmp_compare_func) != NULL;
-	request->file_info = g_list_find_custom
-		(file_attributes,
-		 NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE,
-		 eel_strcmp_compare_func) != NULL;
-	request->file_info |= g_list_find_custom
-		(file_attributes,
-		 NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY,
-		 eel_strcmp_compare_func) != NULL;
-	request->file_info |= g_list_find_custom
-		(file_attributes,
-		 NAUTILUS_FILE_ATTRIBUTE_CAPABILITIES,
-		 eel_strcmp_compare_func) != NULL;
-	request->file_info |= g_list_find_custom
-		(file_attributes,
-		 NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE,
-		 eel_strcmp_compare_func) != NULL;
 	
-	if (g_list_find_custom (file_attributes,
-				NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT,
-				eel_strcmp_compare_func) != NULL) {
+	request->directory_count = (file_attributes & 
+				    NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT) != FALSE;
+	request->deep_count = (file_attributes &
+			       NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS) != FALSE;
+	request->mime_list = (file_attributes & 
+			      NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES) != FALSE;
+	request->file_info = (file_attributes & 
+			      (NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE |
+			       NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY |
+			       NAUTILUS_FILE_ATTRIBUTE_CAPABILITIES |
+			       NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE)) != FALSE;
+	
+	if (file_attributes & NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT) {
 		request->top_left_text = TRUE;
 		request->file_info = TRUE;
 	}
 	
-	if (g_list_find_custom (file_attributes,
-				NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI,
-				eel_strcmp_compare_func) != NULL) {
+	if (file_attributes & NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI) {
 		request->file_info = TRUE;
 		request->link_info = TRUE;
 	}
 
-	if (g_list_find_custom (file_attributes,
-				NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME,
-				eel_strcmp_compare_func) != NULL) {
+	if (file_attributes & NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME) {
 		request->file_info = TRUE;
 		request->link_info = TRUE;
 	}
@@ -570,39 +547,34 @@ nautilus_directory_set_up_request (Request *request,
 	 * directly (would need some funky char trick to prevent
 	 * namespace collisions).
 	 */
-	if (g_list_find_custom (file_attributes,
-				NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON,
-				eel_strcmp_compare_func) != NULL) {
+	if (file_attributes & NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON) {
 		request->metafile = TRUE;
 		request->file_info = TRUE;
 		request->link_info = TRUE;
 	}
 	
-	request->metafile |= g_list_find_custom
-		(file_attributes,
-		 NAUTILUS_FILE_ATTRIBUTE_METADATA,
-		 eel_strcmp_compare_func) != NULL;
-
+	request->metafile |= (file_attributes & 
+			      NAUTILUS_FILE_ATTRIBUTE_METADATA) != FALSE;
 }
 
 static void
 mime_db_changed_callback (GnomeVFSMIMEMonitor *ignore, NautilusDirectory *dir)
 {
 	const Monitor *monitor;
-	GList *ptr, *attrs;
+	NautilusFileAttributes attrs;
+	GList *ptr;
 	GList *file_list;
 
 	g_return_if_fail (dir != NULL);
 	g_return_if_fail (dir->details != NULL);
 
-	attrs = NULL;
-	attrs = g_list_prepend (attrs, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
-	attrs = g_list_prepend (attrs, NAUTILUS_FILE_ATTRIBUTE_CAPABILITIES);
-	attrs = g_list_prepend (attrs, NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON);
-	attrs = g_list_prepend (attrs, NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
-	attrs = g_list_prepend (attrs, NAUTILUS_FILE_ATTRIBUTE_METADATA);
-	attrs = g_list_prepend (attrs, NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE);
-	attrs = g_list_prepend (attrs, NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES);
+	attrs = NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI |
+		NAUTILUS_FILE_ATTRIBUTE_CAPABILITIES |
+		NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON |
+		NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE |
+		NAUTILUS_FILE_ATTRIBUTE_METADATA |
+		NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE |
+		NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES;
 
 	file_list = NULL;
 	for (ptr = dir->details->monitor_list ; ptr != NULL ; ptr = ptr->next) {
@@ -627,7 +599,6 @@ mime_db_changed_callback (GnomeVFSMIMEMonitor *ignore, NautilusDirectory *dir)
 		}
 		g_list_free (file_list);
 	}
-	g_list_free (attrs);
 }
 
 void
@@ -636,7 +607,7 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 					 gconstpointer client,
 					 gboolean monitor_hidden_files,
 					 gboolean monitor_backup_files,
-					 GList *file_attributes,
+					 NautilusFileAttributes file_attributes,
 					 NautilusDirectoryCallback callback,
 					 gpointer callback_data)
 {
@@ -1287,7 +1258,7 @@ ready_callback_call (NautilusDirectory *directory,
 void
 nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 					     NautilusFile *file,
-					     GList *file_attributes,
+					     NautilusFileAttributes file_attributes,
 					     gboolean wait_for_file_list,
 					     NautilusDirectoryCallback directory_callback,
 					     NautilusFileCallback file_callback,
@@ -1351,7 +1322,7 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 gboolean      
 nautilus_directory_check_if_ready_internal (NautilusDirectory *directory,
 					    NautilusFile *file,
-					    GList *file_attributes)
+					    NautilusFileAttributes file_attributes)
 {
 	Request request;
 
@@ -2043,10 +2014,10 @@ file_list_start_or_stop (NautilusDirectory *directory)
 void
 nautilus_file_invalidate_count_and_mime_list (NautilusFile *file)
 {
-	GList *attributes = NULL;
-
-	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
-	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES);
+	NautilusFileAttributes attributes;
+	
+	attributes = NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT |
+		NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES;
 	
 	nautilus_file_invalidate_attributes (file, attributes);
 }
@@ -2072,8 +2043,8 @@ nautilus_directory_invalidate_count_and_mime_list (NautilusDirectory *directory)
 }
 
 static void
-nautilus_directory_invalidate_file_attributes (NautilusDirectory *directory,
-					       GList             *file_attributes)
+nautilus_directory_invalidate_file_attributes (NautilusDirectory      *directory,
+					       NautilusFileAttributes  file_attributes)
 {
 	GList *node;
 
@@ -2091,8 +2062,8 @@ nautilus_directory_invalidate_file_attributes (NautilusDirectory *directory,
 }
 
 void
-nautilus_directory_force_reload_internal (NautilusDirectory *directory,
-					  GList *file_attributes)
+nautilus_directory_force_reload_internal (NautilusDirectory     *directory,
+					  NautilusFileAttributes file_attributes)
 {
 	/* invalidate attributes that are getting reloaded for all files */
 	nautilus_directory_invalidate_file_attributes (directory, file_attributes);
@@ -3205,7 +3176,7 @@ cancel_link_info_for_file (NautilusDirectory *directory,
 
 static void
 cancel_loading_attributes (NautilusDirectory *directory,
-			   GList *file_attributes)
+			   NautilusFileAttributes file_attributes)
 {
 	Request request;
 	
@@ -3238,9 +3209,9 @@ cancel_loading_attributes (NautilusDirectory *directory,
 }
 
 void
-nautilus_directory_cancel_loading_file_attributes (NautilusDirectory *directory,
-						   NautilusFile      *file,
-						   GList             *file_attributes)
+nautilus_directory_cancel_loading_file_attributes (NautilusDirectory      *directory,
+						   NautilusFile           *file,
+						   NautilusFileAttributes  file_attributes)
 {
 	Request request;
 	

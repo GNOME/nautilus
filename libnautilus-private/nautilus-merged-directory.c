@@ -44,7 +44,7 @@ typedef struct {
 	NautilusDirectoryCallback callback;
 	gpointer callback_data;
 
-	GList *wait_for_attributes;
+	NautilusFileAttributes wait_for_attributes;
 	gboolean wait_for_file_list;
 
 	GList *non_ready_directories;
@@ -56,7 +56,7 @@ typedef struct {
 
 	gboolean monitor_hidden_files;
 	gboolean monitor_backup_files;
-	GList *monitor_attributes;
+	NautilusFileAttributes monitor_attributes;
 } MergedMonitor;
 
 enum {
@@ -99,7 +99,6 @@ merged_callback_destroy (MergedCallback *merged_callback)
 	g_assert (merged_callback != NULL);
 	g_assert (NAUTILUS_IS_MERGED_DIRECTORY (merged_callback->merged));
 
-	eel_g_list_free_deep (merged_callback->wait_for_attributes);
 	g_list_free (merged_callback->non_ready_directories);
 	nautilus_file_list_free (merged_callback->merged_file_list);
 	g_free (merged_callback);
@@ -158,7 +157,7 @@ directory_ready_callback (NautilusDirectory *directory,
 
 static void
 merged_call_when_ready (NautilusDirectory *directory,
-			GList *file_attributes,
+			NautilusFileAttributes file_attributes,
 			gboolean wait_for_file_list,
 			NautilusDirectoryCallback callback,
 			gpointer callback_data)
@@ -182,7 +181,7 @@ merged_call_when_ready (NautilusDirectory *directory,
 	merged_callback->merged = merged;
 	merged_callback->callback = callback;
 	merged_callback->callback_data = callback_data;
-	merged_callback->wait_for_attributes = eel_g_str_list_copy (file_attributes);
+	merged_callback->wait_for_attributes = file_attributes;
 	merged_callback->wait_for_file_list = wait_for_file_list;
 	for (node = merged->details->directories; node != NULL; node = node->next) {
 		merged_callback->non_ready_directories = g_list_prepend
@@ -254,12 +253,12 @@ build_merged_callback_list (NautilusDirectory *directory,
 /* Create a monitor on each of the directories in the list. */
 static void
 merged_monitor_add (NautilusDirectory *directory,
-			 gconstpointer client,
-			 gboolean monitor_hidden_files,
-			 gboolean monitor_backup_files,
-			 GList *file_attributes,
-			 NautilusDirectoryCallback callback,
-			 gpointer callback_data)
+		    gconstpointer client,
+		    gboolean monitor_hidden_files,
+		    gboolean monitor_backup_files,
+		    NautilusFileAttributes file_attributes,
+		    NautilusDirectoryCallback callback,
+		    gpointer callback_data)
 {
 	NautilusMergedDirectory *merged;
 	MergedMonitor *monitor;
@@ -274,7 +273,6 @@ merged_monitor_add (NautilusDirectory *directory,
 	monitor = g_hash_table_lookup (merged->details->monitors, client);
 	if (monitor != NULL) {
 		g_assert (monitor->merged == merged);
-		eel_g_list_free_deep (monitor->monitor_attributes);
 	} else {
 		monitor = g_new0 (MergedMonitor, 1);
 		monitor->merged = merged;
@@ -283,7 +281,7 @@ merged_monitor_add (NautilusDirectory *directory,
 	}
 	monitor->monitor_hidden_files = monitor_hidden_files;
 	monitor->monitor_backup_files = monitor_backup_files;
-	monitor->monitor_attributes = eel_g_str_list_copy (file_attributes);
+	monitor->monitor_attributes = file_attributes;
 	
 	/* Call through to the real directory add calls. */
 	merged_callback_list = NULL;
@@ -310,7 +308,6 @@ merged_monitor_destroy (NautilusMergedDirectory *merged, MergedMonitor *monitor)
 		nautilus_directory_file_monitor_remove (node->data, monitor);
 	}
 
-	eel_g_list_free_deep (monitor->monitor_attributes);
 	g_free (monitor);
 }
 
