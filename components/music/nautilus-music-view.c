@@ -141,9 +141,9 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 
 	/* allocate a vbox to contain all of the views */
 	
-	music_view->details->album_container = GTK_VBOX (gtk_vbox_new (FALSE, 0));
+	music_view->details->album_container = GTK_VBOX (gtk_vbox_new (FALSE, 8));
+	gtk_container_set_border_width (GTK_CONTAINER (music_view->details->album_container), 4);
 	gtk_container_add (GTK_CONTAINER (music_view), GTK_WIDGET (music_view->details->album_container));
-	gtk_container_set_border_width (GTK_CONTAINER (music_view), 4);
 	
 	gtk_widget_show (GTK_WIDGET (music_view->details->album_container));
 	
@@ -169,18 +169,18 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
                             "select_row", GTK_SIGNAL_FUNC (selection_callback), NULL);
  
 	scrollwindow = gtk_scrolled_window_new (NULL, gtk_clist_get_vadjustment (GTK_CLIST (music_view->details->song_list)));
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);   
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_container_add (GTK_CONTAINER (scrollwindow), music_view->details->song_list);	
 	gtk_clist_set_selection_mode (GTK_CLIST (music_view->details->song_list), GTK_SELECTION_BROWSE);
 
-	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), scrollwindow, FALSE, FALSE, 8);	
+	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), scrollwindow, TRUE, TRUE, 0);	
 	gtk_widget_show (music_view->details->song_list);
 	gtk_widget_show (scrollwindow);
 
 	/* make an hbox to hold the optional cover and other controls */
 	
 	control_box = gtk_hbox_new (FALSE, 4);
-	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), control_box, TRUE, TRUE, 4);	
+	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), control_box, FALSE, FALSE, 0);	
 	gtk_widget_show (control_box);
 	
 	/* allocate a placeholder widget for the album cover, but don't show it yet */
