@@ -1,3 +1,14 @@
+2002-01-07  Dave Camp  <dave@ximian.com>
+
+	* src/nautilus-preferences-dialog.c
+	(preferences_dialog_populate_themes_group): Take out the return.
+	The EelLabel exorcism did in fact mostly fix the theme selector.
+
+	* src/nautilus-theme-selector.c (theme_selector_finalize): Moved here
+	from theme_selector_destroy.
+	(nautilus_theme_selector_class_init): Fixed the argument type list for
+	the theme_changed signal, and reflect the destroy->finalize change.
+
 2002-01-05  Michael Meeks  <michael@ximian.com>
 
 	* configure.in (IMLIB_REQUIRED, GDK_PIXBUF_REQUIRED),

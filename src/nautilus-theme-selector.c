@@ -77,7 +77,7 @@ static guint theme_selector_signals[LAST_SIGNAL];
 /* GtkObjectClass methods */
 static void     nautilus_theme_selector_class_init              (NautilusThemeSelectorClass  *theme_selector_class);
 static void     nautilus_theme_selector_init                    (NautilusThemeSelector       *theme_selector);
-static void     theme_selector_destroy                                (GtkObject                   *object);
+static void     theme_selector_finalize                               (GObject                     *object);
 
 /* Private stuff */
 static void     theme_selector_populate_list                          (EelImageChooser             *image_chooser,
@@ -105,12 +105,12 @@ EEL_CLASS_BOILERPLATE (NautilusThemeSelector, nautilus_theme_selector, GTK_TYPE_
 static void
 nautilus_theme_selector_class_init (NautilusThemeSelectorClass *theme_selector_class)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 
-	object_class = GTK_OBJECT_CLASS (theme_selector_class);
+	object_class = G_OBJECT_CLASS (theme_selector_class);
 
-	/* GtkObjectClass */
-	object_class->destroy = theme_selector_destroy;
+	/* GObjectClass */
+	object_class->finalize = theme_selector_finalize;
 
 	/* Signals */
 	theme_selector_signals[THEME_CHANGED] = g_signal_new
@@ -120,7 +120,7 @@ nautilus_theme_selector_class_init (NautilusThemeSelectorClass *theme_selector_c
 		 0,
 		 NULL, NULL,
 		 g_cclosure_marshal_VOID__STRING,
-		 G_TYPE_NONE, 0);
+		 G_TYPE_NONE, 1, G_TYPE_STRING);
 }
 
 static void
@@ -519,7 +519,7 @@ theme_selector_changed_callback (EelImageChooser *image_chooser,
 
 /* GtkObjectClass methods */
 static void
-theme_selector_destroy (GtkObject *object)
+theme_selector_finalize (GObject *object)
 {
 	NautilusThemeSelector *theme_selector;
 	
@@ -528,10 +528,8 @@ theme_selector_destroy (GtkObject *object)
 	theme_selector = NAUTILUS_THEME_SELECTOR (object);
 	theme_selector->details->theme_selector_changed_connection = 0;
 
-	g_free (theme_selector->details);
-
-	/* Chain destroy */
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	/* Chain finalize */
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 /* Private stuff */

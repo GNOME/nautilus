@@ -527,12 +527,6 @@ preferences_dialog_populate_themes_group (EelPreferencesGroup *group)
 
 	g_return_if_fail (EEL_IS_PREFERENCES_GROUP (group));
 
-	/* FIXME: The image chooser is broken because of EelLabel usage.
-	   Im hopeful that a general exorcism of EelLabel will fix this
-	   along with many other label related problems.
-	*/
-	return;
-
 	child = nautilus_theme_selector_new ();
 
 	parent_window = gtk_widget_get_ancestor (GTK_WIDGET (group), GTK_TYPE_WINDOW);
