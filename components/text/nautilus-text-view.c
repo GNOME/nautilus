@@ -38,7 +38,6 @@
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-xml-extensions.h>
-#include <ghttp.h>
 #include <libxml/parser.h>
 #include <libxml/xmlmemory.h>
 #include <gnome.h>
