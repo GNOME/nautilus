@@ -1,3 +1,39 @@
+2002-02-05  Anders Carlsson  <andersca@gnu.org>
+
+	* components/tree/Makefile.am:
+	* components/tree/nautilus-tree-model.c:
+	(nautilus_tree_node_set_parent), (nautilus_tree_node_new),
+	(nautilus_dummy_tree_node_new), (nautilus_tree_node_update_icons),
+	(nautilus_tree_model_get_type), (nautilus_tree_model_init),
+	(nautilus_tree_model_class_init), (uri_get_parent_text),
+	(nautilus_tree_model_get_node_from_file),
+	(nautilus_tree_model_get_node), (report_node_changed),
+	(report_root_node_if_possible), (process_file_change),
+	(nautilus_tree_model_directory_files_changed_callback),
+	(nautilus_tree_model_directory_done_loading_callback),
+	(nautilus_tree_model_begin_monitoring_directory),
+	(nautilus_tree_model_get_n_columns),
+	(nautilus_tree_model_get_column_type),
+	(nautilus_tree_model_get_iter), (nautilus_tree_model_get_path),
+	(nautilus_tree_model_get_value), (nautilus_tree_model_iter_next),
+	(nautilus_tree_model_iter_children),
+	(nautilus_tree_model_iter_parent),
+	(nautilus_tree_model_iter_has_child),
+	(nautilus_tree_model_iter_nth_child),
+	(nautilus_tree_model_tree_model_init),
+	(nautilus_tree_model_root_node_file_monitor),
+	(nautilus_tree_model_set_root_uri), (nautilus_tree_model_new),
+	(nautilus_tree_model_dump_helper), (nautilus_tree_model_dump):
+	* components/tree/nautilus-tree-model.h:
+	* components/tree/nautilus-tree-view.c: (create_tree),
+	(tree_activate_callback), (dump_tree), (nautilus_tree_view_init),
+	(nautilus_tree_view_class_init):
+	* components/tree/nautilus-tree-view.h:
+	Port to GtkTreeView, lots of work still remains though.
+	
+	* src/nautilus-application.c: (finish_startup):
+	Remove GMC trash migration.
+	
 2002-02-04  Michael Meeks  <michael@ximian.com>
 
 	* src/file-manager/fm-icon-view.c

@@ -2,6 +2,7 @@
 
 /* 
  * Copyright (C) 2000, 2001 Eazel, Inc
+ * Copyright (C) 2002 Anders Carlsson
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -18,7 +19,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * Author: Maciej Stachowiak <mjs@eazel.com>
+ * Authors: Maciej Stachowiak <mjs@eazel.com>
+ *          Anders Carlsson <andersca@gnu.org> 
  */
 
 /* nautilus-tree-view.h - tree view. */

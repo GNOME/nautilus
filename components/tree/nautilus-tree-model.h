@@ -27,7 +27,6 @@
 #define NAUTILUS_TREE_MODEL_H
 
 #include <gtk/gtkobject.h>
-#include "nautilus-tree-node.h"
 
 typedef struct NautilusTreeModel NautilusTreeModel;
 typedef struct NautilusTreeModelClass NautilusTreeModelClass;
@@ -38,83 +37,29 @@ typedef struct NautilusTreeModelClass NautilusTreeModelClass;
 #define NAUTILUS_IS_TREE_MODEL(obj)	    (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_TREE_MODEL))
 #define NAUTILUS_IS_TREE_MODEL_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_TREE_MODEL))
 
+enum {
+	NAUTILUS_TREE_MODEL_DISPLAY_NAME_COLUMN,
+	NAUTILUS_TREE_MODEL_CLOSED_PIXBUF_COLUMN,
+	NAUTILUS_TREE_MODEL_NUM_COLUMNS,
+};
+
 typedef struct NautilusTreeModelDetails NautilusTreeModelDetails;
 
 
 struct NautilusTreeModel {
-	GtkObject parent;
+	GObject parent;
 	NautilusTreeModelDetails *details;
 };
 
 struct NautilusTreeModelClass {
-	GtkObjectClass parent_class;
-
-	void         (*node_changed)          (NautilusTreeModel *model,
-					       NautilusTreeNode *node);
-
-	void         (*node_removed)          (NautilusTreeModel *model,
-					       NautilusTreeNode *node);
-
-	void         (*node_being_renamed)    (NautilusTreeModel *model,
-					       const char *old_uri,
-					       const char *new_uri);
-
-	void         (*done_loading_children) (NautilusTreeModel *model,
-					       NautilusTreeNode *node);
+	GObjectClass parent_class;
 };
 
-typedef void (*NautilusTreeModelCallback) (NautilusTreeModel *model,
-					   NautilusTreeNode  *node,
-					   gpointer           callback_data);
+GType nautilus_tree_model_get_type (void);
 
-
-GtkType            nautilus_tree_model_get_type                 (void);
-
-NautilusTreeModel *nautilus_tree_model_new                      (const char *root_uri);
-
-
-void               nautilus_tree_model_monitor_add              (NautilusTreeModel         *model,
-								 gconstpointer              client,
-								 NautilusTreeModelCallback  initial_nodes_callback,
-								 gpointer                   callback_data);
-
-void               nautilus_tree_model_monitor_remove           (NautilusTreeModel         *model,
-								 gconstpointer              client);
-
-void               nautilus_tree_model_monitor_node             (NautilusTreeModel         *model,
-								 NautilusTreeNode          *node,
-								 gconstpointer              client,
-								 gboolean                   force_reload); 
-
-void               nautilus_tree_model_stop_monitoring_node     (NautilusTreeModel         *model,
-								 NautilusTreeNode          *node,
-								 gconstpointer              client);
-
-void               nautilus_tree_model_stop_monitoring_node_recursive (NautilusTreeModel *model,
-								       NautilusTreeNode  *node,
-								       gconstpointer      client);
-
-NautilusTreeNode  *nautilus_tree_model_get_node                 (NautilusTreeModel *model,
-								 const char        *uri);
-
-
-NautilusTreeNode  *nautilus_tree_model_get_node_from_file       (NautilusTreeModel *model,
-								 NautilusFile      *file);
-
-#if 0
-NautilusTreeNode  *nautilus_tree_model_get_nearest_parent_node  (NautilusTreeModel *model,
-								 NautilusFile      *file);
-
-
-NautilusTreeNode  *nautilus_tree_model_get_root_node            (NautilusTreeModel *model);
-#endif
-
-void               nautilus_tree_model_set_defer_notifications  (NautilusTreeModel *model,
-								 gboolean           defer);
+NautilusTreeModel *nautilus_tree_model_new (const char *root_uri);
 
 /* Debugging */
-void		   nautilus_tree_model_dump_files		(NautilusTreeModel *model);
-
+void		   nautilus_tree_model_dump		(NautilusTreeModel *model);
 
 #endif /* NAUTILUS_TREE_MODEL_H */
-

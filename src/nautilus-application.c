@@ -277,31 +277,6 @@ nautilus_make_uri_list_from_shell_strv (const char * const *strv)
 	return uri_list;
 }
 
-/* Find ~/.gnome-desktop/Trash and rename it to ~/.gnome-desktop/Trash.gmc
- * Only if it is a directory
- */
-static void
-migrate_gmc_trash (void)
-{
-	char *dp, *trash_dir, *dest;
-	struct stat buf;
-
-	dp = nautilus_get_desktop_directory ();
-	trash_dir = g_strconcat (dp, "/", "Trash", NULL);
-	dest = g_strconcat (dp, "/", "Trash.gmc", NULL);
-	
-	if (stat (trash_dir, &buf) == 0 && S_ISDIR (buf.st_mode)) {
-		rename (trash_dir, dest);
-#if GNOME2_CONVERSION_COMPLETE
-		gnome_metadata_rename (trash_dir, dest);
-#endif
-	}
-	
-	g_free (dp);
-	g_free (trash_dir);
-	g_free (dest);
-}
-
 static void
 migrate_old_nautilus_files (void)
 {
@@ -395,8 +370,7 @@ finish_startup (NautilusApplication *application)
 	/* initialize URI authentication manager */
 	nautilus_authentication_manager_init ();
 
-	/* Make the desktop work with gmc and old Nautilus. */
-	migrate_gmc_trash ();
+	/* Make the desktop work with old Nautilus. */
 	migrate_old_nautilus_files ();
 }
 
