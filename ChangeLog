@@ -1,3 +1,10 @@
+2002-03-20  Havoc Pennington  <hp@redhat.com>
+
+	* libnautilus-private/nautilus-thumbnails.c: Add patch to
+	re-thumbnail if the thumbnail timestamp is different from the 
+	thumbnailed file (vs. newer). Fixes the case where people have
+	files with future timestamps.
+
 2002-02-28  Darin Adler  <darin@bentspoon.com>
 
 	* configure.in: Fix flags in mozilla check. Patch from jacbre@internet.gr.

@@ -52,6 +52,10 @@
 					   GNOME_VFS_PERM_GROUP_READ | \
 					   GNOME_VFS_PERM_GROUP_WRITE | \
 					   GNOME_VFS_PERM_OTHER_READ)
+
+/* Should never be a reasonable actual mtime */
+#define INVALID_MTIME 0
+
 /* thumbnail task state */
 static GList *thumbnails;
 static char *new_thumbnail_uri;
@@ -219,33 +223,60 @@ make_thumbnail_uri (const char *image_uri, gboolean directory_only, gboolean use
 	return thumbnail_uri;
 }
 
-/* utility routine that takes two uris and returns true if the first file has been modified later than the second */
-/* FIXME bugzilla.gnome.org 42565: it makes synchronous file info calls, so for now, it returns FALSE if either of the uri's are non-local */
 static gboolean
-first_file_more_recent (const char* file_uri, const char* other_file_uri)
+get_file_mtime (const char *file_uri, time_t* mtime)
 {
-	gboolean more_recent;
-	
-	GnomeVFSFileInfo *file_info, *other_file_info;
+	GnomeVFSFileInfo *file_info;
 
-	/* if either file is remote, return FALSE.  Eventually we'll make this async to fix this */
-	if (!uri_is_local (file_uri) || !uri_is_local (other_file_uri)) {
+	if (!uri_is_local (file_uri)) {
+		*mtime = INVALID_MTIME;
 		return FALSE;
 	}
 	
 	/* gather the info and then compare modification times */
 	file_info = gnome_vfs_file_info_new ();
 	gnome_vfs_get_file_info (file_uri, file_info, GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
-	
-	other_file_info = gnome_vfs_file_info_new ();
-	gnome_vfs_get_file_info (other_file_uri, other_file_info, GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
 
-	more_recent = file_info->mtime > other_file_info->mtime;
+	if (file_info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MTIME)
+		*mtime = file_info->mtime;
+	else
+		*mtime = INVALID_MTIME;
 
 	gnome_vfs_file_info_unref (file_info);
-	gnome_vfs_file_info_unref (other_file_info);
+	
+	return TRUE;
+}
 
-	return more_recent;
+/* utility routine that checks mtime identity on file one and file two, and returns
+ * mtime of the first file. If anything goes wrong, it claims the files have the
+ * same mtime, which is a very thumbnailing-specific kind of fallback.
+ */
+/* FIXME bugzilla.gnome.org 42565: it makes synchronous file info calls, so for now, it returns FALSE if either of the uri's are non-local */
+static gboolean
+files_have_different_mtime (const char* file_uri, const char* other_file_uri, time_t* first_file_mtime)
+{
+	gboolean different_mtime;
+	time_t file_mtime, other_file_mtime;
+
+	/* if either file is remote, return FALSE.  Eventually we'll make this async to fix this */
+
+	*first_file_mtime = INVALID_MTIME;
+	
+	/* gather the info and then compare modification times */
+	if (!get_file_mtime (file_uri, &file_mtime)) {
+		return FALSE;
+	}
+	
+	if (!get_file_mtime (other_file_uri, &other_file_mtime)) {
+		return FALSE;
+	}
+
+	different_mtime = file_mtime != other_file_mtime;
+	if (first_file_mtime) {
+		*first_file_mtime = file_mtime;
+	}
+
+	return different_mtime;
 }
 
 /* structure used for making thumbnails, associating a uri with where the thumbnail is to be stored */
@@ -254,6 +285,7 @@ typedef struct {
 	char *thumbnail_uri;
 	gboolean is_local;
 	pid_t thumbnail_task;
+	time_t original_file_mtime;
 } NautilusThumbnailInfo;
 
 /* GCompareFunc-style function for comparing NautilusThumbnailInfos.
@@ -324,11 +356,14 @@ nautilus_get_thumbnail_uri (NautilusFile *file)
 	NautilusFile *destination_file;
 	gboolean local_flag = TRUE;
 	gboolean  remake_thumbnail = FALSE;
+	time_t file_mtime;
 	
 	file_uri = nautilus_file_get_uri (file);
 		
 	thumbnail_uri = make_thumbnail_uri (file_uri, FALSE, TRUE, TRUE);
-		
+	
+	file_mtime = INVALID_MTIME;
+	
 	/* if the thumbnail file already exists locally, simply return the uri */
 	
 	/* note: thumbnail_uri is always local here, so it's not a disaster that we make a synchronous call below.
@@ -336,7 +371,7 @@ nautilus_get_thumbnail_uri (NautilusFile *file)
 	if (vfs_file_exists (thumbnail_uri)) {
 		
 		/* see if the file changed since it was thumbnailed by comparing the modification time */
-		remake_thumbnail = first_file_more_recent (file_uri, thumbnail_uri);
+		remake_thumbnail = files_have_different_mtime (file_uri, thumbnail_uri, &file_mtime);
 		
 		/* if the file hasn't changed, return the thumbnail uri */
 		if (!remake_thumbnail) {
@@ -360,7 +395,7 @@ nautilus_get_thumbnail_uri (NautilusFile *file)
 		if (vfs_file_exists (thumbnail_uri)) {
 		
 			/* see if the file changed since it was thumbnailed by comparing the modification time */
-			remake_thumbnail = first_file_more_recent(file_uri, thumbnail_uri);
+			remake_thumbnail = files_have_different_mtime (file_uri, thumbnail_uri, &file_mtime);
 		
 			/* if the file hasn't changed, return the thumbnail uri */
 			if (!remake_thumbnail) {
@@ -403,13 +438,23 @@ nautilus_get_thumbnail_uri (NautilusFile *file)
 	}
 	
 	/* the thumbnail needs to be created (or recreated), so add an entry to the thumbnail list */
- 
+
+	if (file_mtime == INVALID_MTIME) {
+		/* This may fail, but the thumbnailing code handles
+		 * INVALID_MTIME in the NautilusThumbnailInfo
+		 */
+		get_file_mtime (file_uri, &file_mtime);
+	}
+	
 	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_FILE_EXISTS) {
 		g_warning ("error when making thumbnail directory %d, for %s", result, thumbnail_uri);	
 	} else {
-		NautilusThumbnailInfo *info = g_new0 (NautilusThumbnailInfo, 1);
+		NautilusThumbnailInfo *info;
+		
+		info = g_new0 (NautilusThumbnailInfo, 1);
 		info->thumbnail_uri = file_uri;
 		info->is_local = local_flag;
+		info->original_file_mtime = file_mtime;
 		
 		if (g_list_find_custom (thumbnails, info, compare_thumbnail_info) == NULL) {
 			thumbnails = g_list_append (thumbnails, info);
@@ -562,6 +607,7 @@ make_thumbnails (gpointer data)
 			NautilusFile *file;
 			GnomeVFSFileSize file_size;
 			char *thumbnail_path;
+			GnomeVFSFileInfo *file_info;
 			
 			file = nautilus_file_get (info->thumbnail_uri);
 			file_size = nautilus_file_get_size (file);
@@ -605,8 +651,9 @@ make_thumbnails (gpointer data)
 			} else {
 				/* gdk-pixbuf couldn't load the image, so trying using ImageMagick */
 				char *temp_str;
-
+				
 				thumbnail_path = gnome_vfs_get_local_path_from_uri (new_thumbnail_uri);
+				
 				if (thumbnail_path != NULL) {
 					temp_str = g_strdup_printf ("png:%s", thumbnail_path);
 					g_free (thumbnail_path);
@@ -620,6 +667,24 @@ make_thumbnails (gpointer data)
 				}
 				
 				/* we don't come back from this call, so no point in freeing anything up */
+			}
+			
+			if (info->original_file_mtime != INVALID_MTIME) {
+				file_info = gnome_vfs_file_info_new ();
+				file_info->mtime = info->original_file_mtime;
+				/* we don't care about atime, but gnome-vfs
+				 * makes us set it along with mtime.
+				 * FIXME if we weren't lame, we would
+				 * perhaps read the old atime and set it back,
+				 * but we're lame.
+				 */
+				file_info->atime = info->original_file_mtime;
+				
+				gnome_vfs_set_file_info (new_thumbnail_uri,
+							 file_info,
+							 GNOME_VFS_SET_FILE_INFO_TIME);
+							 
+				gnome_vfs_file_info_unref (file_info);
 			}
 			
 			_exit(0);
