@@ -26,6 +26,8 @@
 #include "nautilus-bookmarklist.h"
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-signaller.h"
+#include "ntl-app.h"
+#include "ntl-prefs.h"
 #include "ntl-window-private.h"
 
 #include <libnautilus/nautilus-gtk-extensions.h>
@@ -44,6 +46,10 @@ static void                  clear_appended_bookmark_items       (NautilusWindow
                                                                   const char *last_static_item_path);
 static NautilusBookmarklist *get_bookmark_list                   ();
 static GtkWidget            *get_bookmarks_window                ();
+static void                  nautilus_window_about_cb            (GtkWidget *widget,
+                                                                  NautilusWindow *window);
+static void                  debug_menu_show_color_picker_cb     (GtkWidget *widget, 
+                                                                  NautilusWindow *window);
 static void                  refresh_bookmarks_in_go_menu        (NautilusWindow *window);
 static void                  refresh_bookmarks_in_bookmarks_menu (NautilusWindow *window);
 
@@ -53,6 +59,198 @@ typedef struct {
         const NautilusBookmark *bookmark;
         NautilusWindow *window;
 } BookmarkHolder;
+
+
+/* menu definitions */
+
+static void
+file_menu_close_cb (GtkWidget *widget,
+                    gpointer data)
+{
+        g_assert (NAUTILUS_IS_WINDOW (data));
+	nautilus_window_close (NAUTILUS_WINDOW (data));
+}
+
+static void
+file_menu_new_window_cb (GtkWidget *widget,
+                         gpointer data)
+{
+  NautilusWindow *current_mainwin;
+  NautilusWindow *new_mainwin;
+
+  g_return_if_fail(NAUTILUS_IS_WINDOW(data));
+  
+  current_mainwin = NAUTILUS_WINDOW(data);
+
+  new_mainwin = nautilus_app_create_window();
+
+  nautilus_window_goto_uri(new_mainwin, 
+                           nautilus_window_get_requested_uri(current_mainwin));
+
+  gtk_widget_show(GTK_WIDGET(new_mainwin));
+}
+
+static void
+file_menu_exit_cb (GtkWidget *widget,
+                   gpointer data)
+{
+  gtk_main_quit();
+}
+
+static void
+edit_menu_prefs_cb(GtkWidget *widget,
+                   GtkWindow *mainwin)
+{
+  nautilus_prefs_ui_show(mainwin);
+}
+
+static GnomeUIInfo file_menu_info[] = {
+  {
+    GNOME_APP_UI_ITEM,
+    N_("New Window"), N_("Create a new window"),
+    file_menu_new_window_cb, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    'N', GDK_CONTROL_MASK, NULL
+  },
+  GNOMEUIINFO_MENU_CLOSE_ITEM(file_menu_close_cb, NULL),
+  GNOMEUIINFO_SEPARATOR,
+  GNOMEUIINFO_MENU_EXIT_ITEM(file_menu_exit_cb, NULL),
+  GNOMEUIINFO_END
+};
+
+/* FIXME: These all need implementation, though we might end up doing that
+ * separately for each content view (and merging with the insensitive items here)
+ */
+static GnomeUIInfo edit_menu_info[] = {
+  GNOMEUIINFO_MENU_UNDO_ITEM(NULL, NULL),
+  GNOMEUIINFO_SEPARATOR,
+  GNOMEUIINFO_MENU_CUT_ITEM(NULL, NULL),
+  GNOMEUIINFO_MENU_COPY_ITEM(NULL, NULL),
+  GNOMEUIINFO_MENU_PASTE_ITEM(NULL, NULL),
+  GNOMEUIINFO_MENU_CLEAR_ITEM(NULL, NULL),
+  GNOMEUIINFO_SEPARATOR,
+  /* Didn't use standard SELECT_ALL_ITEM 'cuz it didn't have accelerator */
+  {
+    GNOME_APP_UI_ITEM,
+    N_("Select All"), NULL,
+    NULL, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    'A', GDK_CONTROL_MASK, NULL
+  },
+  GNOMEUIINFO_SEPARATOR,
+  GNOMEUIINFO_MENU_PREFERENCES_ITEM(edit_menu_prefs_cb, NULL),
+  GNOMEUIINFO_END
+};
+
+static GnomeUIInfo go_menu_info[] = {
+  {
+    GNOME_APP_UI_ITEM,
+    N_("Back"), N_("Go to the previous visited location"),
+    nautilus_window_back_cb, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    'B', GDK_CONTROL_MASK, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM,
+    N_("Forward"), N_("Go to the next visited location"),
+    nautilus_window_forward_cb, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    'F', GDK_CONTROL_MASK, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM,
+    N_("Up"), N_("Go to the location that contains this one"),
+    nautilus_window_up_cb, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    'U', GDK_CONTROL_MASK, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM,
+    N_("Home"), N_("Go to the home location"),
+    nautilus_window_home_cb, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    'H', GDK_CONTROL_MASK, NULL
+  },
+  GNOMEUIINFO_END
+};
+
+static void
+add_bookmark_cb (GtkMenuItem* item, gpointer func_data)
+{
+	g_return_if_fail(NAUTILUS_IS_WINDOW (func_data));
+
+        nautilus_window_add_bookmark_for_current_location (NAUTILUS_WINDOW (func_data));
+}
+
+/* handle the OK button being pushed on the color selector */
+/* for now, just vanquish it, since it's only for testing */
+static void
+debug_color_confirm (GtkWidget *widget)
+{
+	gtk_widget_destroy (gtk_widget_get_toplevel (widget));
+}
+
+static void 
+debug_menu_show_color_picker_cb (GtkWidget *btn, NautilusWindow *window)
+{
+	GtkWidget *c;
+
+	c = gtk_color_selection_dialog_new (_("Color selector"));
+	gtk_signal_connect (GTK_OBJECT (GTK_COLOR_SELECTION_DIALOG (c)->ok_button),
+			    "clicked", GTK_SIGNAL_FUNC (debug_color_confirm), c);
+	gtk_widget_hide (GTK_COLOR_SELECTION_DIALOG (c)->cancel_button);
+	gtk_widget_hide (GTK_COLOR_SELECTION_DIALOG (c)->help_button);
+	gtk_widget_show (c);
+}
+
+static void
+edit_bookmarks_cb(GtkMenuItem* item, gpointer user_data)
+{
+        g_return_if_fail (NAUTILUS_IS_WINDOW (user_data));
+
+        nautilus_window_edit_bookmarks (NAUTILUS_WINDOW (user_data));
+}
+
+static GnomeUIInfo bookmarks_menu_info[] = {
+  { 
+    GNOME_APP_UI_ITEM, 
+    N_("_Add Bookmark"),
+    N_("Add a bookmark for the current location to this menu."),
+    (gpointer)add_bookmark_cb, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL, 0, (GdkModifierType) 0, NULL
+  },
+  GNOMEUIINFO_ITEM_NONE(N_("_Edit Bookmarks..."), 
+  		        N_("Display a window that allows editing the bookmarks in this menu."), 
+		        edit_bookmarks_cb),
+  GNOMEUIINFO_END
+};
+
+static GnomeUIInfo help_menu_info[] = {
+  {
+    GNOME_APP_UI_ITEM,
+    N_("About Nautilus..."), N_("Info about the Nautilus program"),
+    nautilus_window_about_cb, NULL, NULL,
+    GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_ABOUT,
+    0, 0, NULL
+  },
+  GNOMEUIINFO_END
+};
+
+static GnomeUIInfo debug_menu_info [] = {
+	GNOMEUIINFO_ITEM_NONE (N_("Show Color selector..."), N_("Show the color picker window"), debug_menu_show_color_picker_cb),
+	GNOMEUIINFO_END
+};
+
+
+static GnomeUIInfo main_menu[] = {
+  GNOMEUIINFO_MENU_FILE_TREE (file_menu_info),
+  GNOMEUIINFO_MENU_EDIT_TREE (edit_menu_info),
+  GNOMEUIINFO_SUBTREE(N_("_Go"), go_menu_info),
+  GNOMEUIINFO_SUBTREE(N_("_Bookmarks"), bookmarks_menu_info),
+  GNOMEUIINFO_MENU_HELP_TREE (help_menu_info),
+  GNOMEUIINFO_SUBTREE(N_("_Debug"), debug_menu_info),
+  GNOMEUIINFO_END
+};
 
 
 static void
@@ -193,6 +391,45 @@ nautilus_bookmarks_exiting ()
 }
 
 /**
+ * nautilus_window_about_cb:
+ * 
+ * Display about box, creating it first if necessary. Callback used when 
+ * user selects "About Nautilus".
+ * @widget: ignored
+ * @window: ignored
+ **/
+static void
+nautilus_window_about_cb (GtkWidget *widget,
+                          NautilusWindow *window)
+{
+  static GtkWidget *aboot = NULL;
+
+  if (aboot == NULL)
+  {
+    const char *authors[] = {
+      "Darin Adler",
+      "Andy Hertzfeld",
+      "Elliot Lee",
+      "Ettore Perazzoli",
+      "Maciej Stachowiak",
+      "John Sullivan",
+      NULL
+    };
+
+    aboot = gnome_about_new(_("Nautilus"),
+                            VERSION,
+                            "Copyright (C) 1999, 2000",
+                            authors,
+                            _("The Cool Shell Program"),
+                            "nautilus/nautilus3.jpg");
+
+    gnome_dialog_close_hides (GNOME_DIALOG (aboot), TRUE);
+  }
+
+  nautilus_gtk_window_present (GTK_WINDOW (aboot));
+}
+
+/**
  * nautilus_window_add_bookmark_for_current_location
  * 
  * Add a bookmark for the displayed location to the bookmarks menu.
@@ -226,7 +463,7 @@ nautilus_window_edit_bookmarks (NautilusWindow *window)
  * Fill in bookmarks menu with stored bookmarks, and wire up signals
  * so we'll be notified when bookmark list changes.
  */
-void 
+static void 
 nautilus_window_initialize_bookmarks_menu (NautilusWindow *window)
 {
         /* Add current set of bookmarks */
@@ -252,7 +489,7 @@ nautilus_window_initialize_bookmarks_menu (NautilusWindow *window)
  * 
  * Wire up signals so we'll be notified when history list changes.
  */
-void 
+static void 
 nautilus_window_initialize_go_menu (NautilusWindow *window)
 {
 	/* Recreate bookmarks part of menu if history list changes
@@ -268,6 +505,44 @@ nautilus_window_initialize_go_menu (NautilusWindow *window)
 					       refresh_bookmarks_in_go_menu,
 					       GTK_OBJECT (window));
 
+}
+
+/**
+ * nautilus_window_initialize_menus
+ * 
+ * Create and install the set of menus for this window.
+ * @window: A recently-created NautilusWindow.
+ */
+void 
+nautilus_window_initialize_menus (NautilusWindow *window)
+{
+        BonoboUIHandler *ui_handler;
+        BonoboUIHandlerMenuItem *menu_items;
+
+        ui_handler = window->uih;
+        g_assert (ui_handler != NULL);
+        
+        bonobo_ui_handler_create_menubar (ui_handler);
+
+        /* Convert the menu items from their GnomeUIInfo form.
+         * Maybe we should eliminate this initial form altogether.
+         */
+        menu_items = bonobo_ui_handler_menu_parse_uiinfo_list_with_data (main_menu, window);
+        bonobo_ui_handler_menu_add_list (ui_handler, "/", menu_items);
+        bonobo_ui_handler_menu_free_list (menu_items);
+
+        /* desensitize the items that haven't yet been implemented
+         * FIXME: these all need to be implemented.
+         */
+        bonobo_ui_handler_menu_set_sensitivity(ui_handler, "/Edit/Undo", FALSE);
+        bonobo_ui_handler_menu_set_sensitivity(ui_handler, "/Edit/Cut", FALSE);
+        bonobo_ui_handler_menu_set_sensitivity(ui_handler, "/Edit/Copy", FALSE);
+        bonobo_ui_handler_menu_set_sensitivity(ui_handler, "/Edit/Paste", FALSE);
+        bonobo_ui_handler_menu_set_sensitivity(ui_handler, "/Edit/Clear", FALSE);
+        bonobo_ui_handler_menu_set_sensitivity(ui_handler, "/Edit/Select All", FALSE);
+
+        nautilus_window_initialize_bookmarks_menu (window);
+        nautilus_window_initialize_go_menu (window);
 }
 
 /**

@@ -48,8 +48,11 @@ GSList *nautilus_get_history_list (void);
 
 void nautilus_window_add_bookmark_for_current_location (NautilusWindow *window);
 void nautilus_window_edit_bookmarks (NautilusWindow *window);
-void nautilus_window_initialize_bookmarks_menu (NautilusWindow *window);
-void nautilus_window_initialize_go_menu (NautilusWindow *window);
+void nautilus_window_initialize_menus (NautilusWindow *window);
 
+void nautilus_window_back_cb (GtkWidget *widget, NautilusWindow *window);
+void nautilus_window_forward_cb (GtkWidget *widget, NautilusWindow *window);
+void nautilus_window_up_cb (GtkWidget *widget, NautilusWindow *window);
+void nautilus_window_home_cb (GtkWidget *widget, NautilusWindow *window);
 
 #endif

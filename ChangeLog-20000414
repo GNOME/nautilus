@@ -1,5 +1,22 @@
 2000-02-28  John Sullivan <sullivan@eazel.com>
 
+        Separated out more menu-handling code into new file.
+
+        * src/ntl-app.h: Added #include ntl-window.h.
+        * src/nautilus-window-menus.c:
+        * src/ntl-window-private.h:
+          (nautilus_window_initialize_bookmarks_menu),
+          (nautilus_window_initialize_go_menu): Removed prototypes.
+          (nautilus_window_initialize_menus), (nautilus_window_back_cb),
+          (nautilus_window_forward_cb), (nautilus_window_up_cb),
+          (nautilus_window_home_cb): Added prototypes.
+        * src/ntl-window.c: Moved all the static menu definitions and
+          most of the callback functions out of here.
+        * src/nautilus-window-menus.c: Moved all of the static menu
+          definitions and most of the callback functions into here.
+
+2000-02-28  John Sullivan <sullivan@eazel.com>
+
         Switched NautilusWindow over to using BonoboUIHandler-style
         menus. Everything works except that the Go and Bookmarks
         menu items don't show icons for now. Apparently the part of

@@ -174,13 +174,7 @@ impl_Nautilus_ViewWindow__create(NautilusWindow *window)
 static void nautilus_window_class_init (NautilusWindowClass *klass);
 static void nautilus_window_init (NautilusWindow *window);
 static void nautilus_window_destroy (NautilusWindow *window);
-static void nautilus_window_back (GtkWidget *btn, NautilusWindow *window);
-static void nautilus_window_fwd (GtkWidget *btn, NautilusWindow *window);
-static void nautilus_window_up (GtkWidget *btn, NautilusWindow *window);
 static void nautilus_window_reload (GtkWidget *btn, NautilusWindow *window);
-static void nautilus_window_home (GtkWidget *btn, NautilusWindow *window);
-static void nautilus_window_color_confirm (GtkWidget *widget);
-static void nautilus_window_show_color_picker (GtkWidget *btn, NautilusWindow *window);
 static void nautilus_window_stop (GtkWidget *btn, NautilusWindow *window);
 static void nautilus_window_set_arg (GtkObject      *object,
                                      GtkArg         *arg,
@@ -191,185 +185,11 @@ static void nautilus_window_get_arg (GtkObject      *object,
 static void nautilus_window_goto_uri_cb (GtkWidget *widget,
                                          const char *uri,
                                          GtkWidget *window);
-static void nautilus_window_about_cb (GtkWidget *widget,
-                                      NautilusWindow *window);
 
 /* #define CONTENTS_AS_HBOX 1 */
 
 /* milliseconds */
 #define STATUSBAR_CLEAR_TIMEOUT 5000
-
-/* menu definitions */
-
-static void
-file_menu_close_cb (GtkWidget *widget,
-                    gpointer data)
-{
-        g_assert (NAUTILUS_IS_WINDOW (data));
-	nautilus_window_close (NAUTILUS_WINDOW (data));
-}
-
-static void
-file_menu_new_window_cb (GtkWidget *widget,
-                         gpointer data)
-{
-  NautilusWindow *current_mainwin;
-  NautilusWindow *new_mainwin;
-
-  g_return_if_fail(NAUTILUS_IS_WINDOW(data));
-  
-  current_mainwin = NAUTILUS_WINDOW(data);
-
-  new_mainwin = nautilus_app_create_window();
-
-  nautilus_window_goto_uri(new_mainwin, 
-                           nautilus_window_get_requested_uri(current_mainwin));
-
-  gtk_widget_show(GTK_WIDGET(new_mainwin));
-}
-
-static void
-file_menu_exit_cb (GtkWidget *widget,
-                   gpointer data)
-{
-  gtk_main_quit();
-}
-
-static void
-edit_menu_prefs_cb(GtkWidget *widget,
-                   GtkWindow *mainwin)
-{
-  nautilus_prefs_ui_show(mainwin);
-}
-
-static GnomeUIInfo file_menu_info[] = {
-  {
-    GNOME_APP_UI_ITEM,
-    N_("New Window"), N_("Create a new window"),
-    file_menu_new_window_cb, NULL, NULL,
-    GNOME_APP_PIXMAP_NONE, NULL,
-    'N', GDK_CONTROL_MASK, NULL
-  },
-  GNOMEUIINFO_MENU_CLOSE_ITEM(file_menu_close_cb, NULL),
-  GNOMEUIINFO_SEPARATOR,
-  GNOMEUIINFO_MENU_EXIT_ITEM(file_menu_exit_cb, NULL),
-  GNOMEUIINFO_END
-};
-
-/* FIXME: These all need implementation, though we might end up doing that
- * separately for each content view (and merging with the insensitive items here)
- */
-static GnomeUIInfo edit_menu_info[] = {
-  GNOMEUIINFO_MENU_UNDO_ITEM(NULL, NULL),
-  GNOMEUIINFO_SEPARATOR,
-  GNOMEUIINFO_MENU_CUT_ITEM(NULL, NULL),
-  GNOMEUIINFO_MENU_COPY_ITEM(NULL, NULL),
-  GNOMEUIINFO_MENU_PASTE_ITEM(NULL, NULL),
-  GNOMEUIINFO_MENU_CLEAR_ITEM(NULL, NULL),
-  GNOMEUIINFO_SEPARATOR,
-  /* Didn't use standard SELECT_ALL_ITEM 'cuz it didn't have accelerator */
-  {
-    GNOME_APP_UI_ITEM,
-    N_("Select All"), NULL,
-    NULL, NULL, NULL,
-    GNOME_APP_PIXMAP_NONE, NULL,
-    'A', GDK_CONTROL_MASK, NULL
-  },
-  GNOMEUIINFO_SEPARATOR,
-  GNOMEUIINFO_MENU_PREFERENCES_ITEM(edit_menu_prefs_cb, NULL),
-  GNOMEUIINFO_END
-};
-
-static GnomeUIInfo go_menu_info[] = {
-  {
-    GNOME_APP_UI_ITEM,
-    N_("Back"), N_("Go to the previous visited location"),
-    nautilus_window_back, NULL, NULL,
-    GNOME_APP_PIXMAP_NONE, NULL,
-    'B', GDK_CONTROL_MASK, NULL
-  },
-  {
-    GNOME_APP_UI_ITEM,
-    N_("Forward"), N_("Go to the next visited location"),
-    nautilus_window_fwd, NULL, NULL,
-    GNOME_APP_PIXMAP_NONE, NULL,
-    'F', GDK_CONTROL_MASK, NULL
-  },
-  {
-    GNOME_APP_UI_ITEM,
-    N_("Up"), N_("Go to the location that contains this one"),
-    nautilus_window_up, NULL, NULL,
-    GNOME_APP_PIXMAP_NONE, NULL,
-    'U', GDK_CONTROL_MASK, NULL
-  },
-  {
-    GNOME_APP_UI_ITEM,
-    N_("Home"), N_("Go to the home location"),
-    nautilus_window_home, NULL, NULL,
-    GNOME_APP_PIXMAP_NONE, NULL,
-    'H', GDK_CONTROL_MASK, NULL
-  },
-  GNOMEUIINFO_END
-};
-
-static void
-add_bookmark_cb (GtkMenuItem* item, gpointer func_data)
-{
-	g_return_if_fail(NAUTILUS_IS_WINDOW (func_data));
-
-        nautilus_window_add_bookmark_for_current_location (NAUTILUS_WINDOW (func_data));
-}
-
-static void
-edit_bookmarks_cb(GtkMenuItem* item, gpointer user_data)
-{
-        g_return_if_fail (NAUTILUS_IS_WINDOW (user_data));
-
-        nautilus_window_edit_bookmarks (NAUTILUS_WINDOW (user_data));
-}
-
-static GnomeUIInfo bookmarks_menu_info[] = {
-  { 
-    GNOME_APP_UI_ITEM, 
-    N_("_Add Bookmark"),
-    N_("Add a bookmark for the current location to this menu."),
-    (gpointer)add_bookmark_cb, NULL, NULL,
-    GNOME_APP_PIXMAP_NONE, NULL, 0, (GdkModifierType) 0, NULL
-  },
-  GNOMEUIINFO_ITEM_NONE(N_("_Edit Bookmarks..."), 
-  		        N_("Display a window that allows editing the bookmarks in this menu."), 
-		        edit_bookmarks_cb),
-  GNOMEUIINFO_END
-};
-
-static GnomeUIInfo help_menu_info[] = {
-  {
-    GNOME_APP_UI_ITEM,
-    N_("About Nautilus..."), N_("Info about the Nautilus program"),
-    nautilus_window_about_cb, NULL, NULL,
-    GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_ABOUT,
-    0, 0, NULL
-  },
-  GNOMEUIINFO_END
-};
-
-static GnomeUIInfo debug_menu_info [] = {
-	GNOMEUIINFO_ITEM_NONE (N_("Show Color selector..."), N_("Show the color picker window"), nautilus_window_show_color_picker),
-	GNOMEUIINFO_END
-};
-
-
-#define GO_MENU_INDEX		2
-#define BOOKMARKS_MENU_INDEX	3
-static GnomeUIInfo main_menu[] = {
-  GNOMEUIINFO_MENU_FILE_TREE (file_menu_info),
-  GNOMEUIINFO_MENU_EDIT_TREE (edit_menu_info),
-  GNOMEUIINFO_SUBTREE(N_("_Go"), go_menu_info),
-  GNOMEUIINFO_SUBTREE(N_("_Bookmarks"), bookmarks_menu_info),
-  GNOMEUIINFO_MENU_HELP_TREE (help_menu_info),
-  GNOMEUIINFO_SUBTREE(N_("_Debug"), debug_menu_info),
-  GNOMEUIINFO_END
-};
 
 /* toolbar definitions */
 
@@ -384,20 +204,20 @@ static GnomeUIInfo main_menu[] = {
 static GnomeUIInfo toolbar_info[] = {
   GNOMEUIINFO_ITEM_STOCK
   (N_("Back"), N_("Go to the previously visited directory"),
-   nautilus_window_back, GNOME_STOCK_PIXMAP_BACK),
+   nautilus_window_back_cb, GNOME_STOCK_PIXMAP_BACK),
   GNOMEUIINFO_ITEM_STOCK
   (N_("Forward"), N_("Go to the next directory"),
-   nautilus_window_fwd, GNOME_STOCK_PIXMAP_FORWARD),
+   nautilus_window_forward_cb, GNOME_STOCK_PIXMAP_FORWARD),
   GNOMEUIINFO_ITEM_STOCK
   (N_("Up"), N_("Go up a level in the directory heirarchy"),
-   nautilus_window_up, GNOME_STOCK_PIXMAP_UP),
+   nautilus_window_up_cb, GNOME_STOCK_PIXMAP_UP),
   GNOMEUIINFO_ITEM_STOCK
   (N_("Reload"), N_("Reload this view"),
    nautilus_window_reload, GNOME_STOCK_PIXMAP_REFRESH),
   GNOMEUIINFO_SEPARATOR,
   GNOMEUIINFO_ITEM_STOCK
   (N_("Home"), N_("Go to your home directory"),
-   nautilus_window_home, GNOME_STOCK_PIXMAP_HOME),
+   nautilus_window_home_cb, GNOME_STOCK_PIXMAP_HOME),
   GNOMEUIINFO_SEPARATOR,
   GNOMEUIINFO_ITEM_STOCK
   (N_("Stop"), N_("Interrupt loading"),
@@ -644,7 +464,6 @@ nautilus_window_constructed(NautilusWindow *window)
   GtkWidget *location_bar_box, *statusbar;
   GtkWidget *temp_frame, *zoom_control;
   GtkWidget *toolbar;
-  BonoboUIHandlerMenuItem *menu_items;
   
   app = GNOME_APP(window);
 
@@ -728,39 +547,15 @@ nautilus_window_constructed(NautilusWindow *window)
   /* enable mouse tracking for the index panel */
   gtk_widget_add_events(GTK_WIDGET (window->index_panel), GDK_POINTER_MOTION_MASK);
 
-  /* CORBA stuff */
+  /* CORBA and Bonobo setup */
   window->ntl_viewwindow = impl_Nautilus_ViewWindow__create(window);
   window->uih = bonobo_ui_handler_new();
-
-  /* set up menu bar */
   bonobo_ui_handler_set_app(window->uih, app);
   bonobo_ui_handler_set_toolbar(window->uih, "Main", toolbar);
   bonobo_ui_handler_set_statusbar(window->uih, statusbar);
-  bonobo_ui_handler_create_menubar(window->uih);
-  menu_items = bonobo_ui_handler_menu_parse_uiinfo_list_with_data(main_menu, window);
-  bonobo_ui_handler_menu_add_list(window->uih, "/", menu_items);
-  bonobo_ui_handler_menu_free_list(menu_items);
 
-  /* desensitize the items that haven't yet been implemented
-   * FIXME: these all need to be implemented.
-   */
-
-  bonobo_ui_handler_menu_set_sensitivity(window->uih,
-                                         "/Edit/Undo", FALSE);
-  bonobo_ui_handler_menu_set_sensitivity(window->uih,
-                                         "/Edit/Cut", FALSE);
-  bonobo_ui_handler_menu_set_sensitivity(window->uih,
-                                         "/Edit/Copy", FALSE);
-  bonobo_ui_handler_menu_set_sensitivity(window->uih,
-                                         "/Edit/Paste", FALSE);
-  bonobo_ui_handler_menu_set_sensitivity(window->uih,
-                                         "/Edit/Clear", FALSE);
-  bonobo_ui_handler_menu_set_sensitivity(window->uih,
-                                         "/Edit/Select All", FALSE);
-
-  /* Initialize dynamic menus. */
-  nautilus_window_initialize_bookmarks_menu (window);
-  nautilus_window_initialize_go_menu (window);
+  /* Create menus */
+  nautilus_window_initialize_menus (window);
 
   /* Remember some widgets now so their state can be changed later */
   window->back_button = toolbar_info[TOOLBAR_BACK_BUTTON_INDEX].widget;
@@ -1038,14 +833,14 @@ nautilus_window_back_or_forward (NautilusWindow *window, gboolean back)
   nautilus_window_change_location(window, &nri, NULL, back, FALSE);
 }
 
-static void
-nautilus_window_back (GtkWidget *btn, NautilusWindow *window)
+void
+nautilus_window_back_cb (GtkWidget *widget, NautilusWindow *window)
 {
   nautilus_window_back_or_forward (window, TRUE);
 }
 
-static void
-nautilus_window_fwd (GtkWidget *btn, NautilusWindow *window)
+void
+nautilus_window_forward_cb (GtkWidget *widget, NautilusWindow *window)
 {
   nautilus_window_back_or_forward (window, FALSE);
 }
@@ -1062,8 +857,8 @@ nautilus_window_get_uih(NautilusWindow *window)
   return window->uih;
 }
 
-static void
-nautilus_window_up (GtkWidget *btn, NautilusWindow *window)
+void
+nautilus_window_up_cb (GtkWidget *widget, NautilusWindow *window)
 {
   const char *requested_uri;
   GnomeVFSURI *current_uri;
@@ -1096,32 +891,11 @@ nautilus_window_reload (GtkWidget *btn, NautilusWindow *window)
   nautilus_window_change_location(window, &nri, NULL, FALSE, TRUE);
 }
 
-static void
-nautilus_window_home (GtkWidget *btn, NautilusWindow *window)
+void
+nautilus_window_home_cb (GtkWidget *widget, NautilusWindow *window)
 {
   nautilus_window_set_initial_state(window, NULL);
 }
-
-/* handle the OK button being pushed on the color selector */
-/* for now, just vanquish it, since it's only for testing */
-static void
-nautilus_window_color_confirm (GtkWidget *widget)
-{
-	gtk_widget_destroy (gtk_widget_get_toplevel (widget));
-}
-
-static void nautilus_window_show_color_picker (GtkWidget *btn, NautilusWindow *window)
-{
-	GtkWidget *c;
-
-	c = gtk_color_selection_dialog_new (_("Color selector"));
-	gtk_signal_connect (GTK_OBJECT (GTK_COLOR_SELECTION_DIALOG (c)->ok_button),
-			    "clicked", GTK_SIGNAL_FUNC (nautilus_window_color_confirm), c);
-	gtk_widget_hide (GTK_COLOR_SELECTION_DIALOG (c)->cancel_button);
-	gtk_widget_hide (GTK_COLOR_SELECTION_DIALOG (c)->help_button);
-	gtk_widget_show (c);
-}
-
 
 static void
 nautilus_window_stop (GtkWidget *btn, NautilusWindow *window)
@@ -1129,45 +903,6 @@ nautilus_window_stop (GtkWidget *btn, NautilusWindow *window)
   nautilus_window_set_state_info(window, RESET_TO_IDLE, 0);
 }
 
-
-/**
- * nautilus_window_about_cb:
- * 
- * Display about box, creating it first if necessary. Callback used when 
- * user selects "About Nautilus".
- * @widget: ignored
- * @window: ignored
- **/
-static void
-nautilus_window_about_cb (GtkWidget *widget,
-                          NautilusWindow *window)
-{
-  static GtkWidget *aboot = NULL;
-
-  if (aboot == NULL)
-  {
-    const char *authors[] = {
-      "Darin Adler",
-      "Andy Hertzfeld",
-      "Elliot Lee",
-      "Ettore Perazzoli",
-      "Maciej Stachowiak",
-      "John Sullivan",
-      NULL
-    };
-
-    aboot = gnome_about_new(_("Nautilus"),
-                            VERSION,
-                            "Copyright (C) 1999, 2000",
-                            authors,
-                            _("The Cool Shell Program"),
-                            "nautilus/nautilus3.jpg");
-
-    gnome_dialog_close_hides (GNOME_DIALOG (aboot), TRUE);
-  }
-
-  nautilus_gtk_window_present (GTK_WINDOW (aboot));
-}
 
 void
 nautilus_window_allow_back (NautilusWindow *window, gboolean allow)
