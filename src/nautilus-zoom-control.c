@@ -555,6 +555,7 @@ create_zoom_menu_item (GtkMenu *menu, GtkWidget *widget, double zoom_level)
 	zoom_level_ptr = g_new (double, 1);
 	*zoom_level_ptr = zoom_level;
 
+	gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM (menu_item), TRUE);
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), 
 					zoom_level == zoom_control->details->zoom_level);
 	

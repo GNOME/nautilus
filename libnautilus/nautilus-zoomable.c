@@ -79,45 +79,45 @@ typedef struct {
 
 void                 nautilus_zoomable_real_set_bonobo_control  (NautilusZoomable           *view,
 								 BonoboControl              *bonobo_control);
-static CORBA_double  impl_Nautilus_Zoomable__get_zoom_level     (impl_POA_Nautilus_Zoomable *servant,
+static CORBA_float  impl_Nautilus_Zoomable__get_zoom_level     (PortableServer_Servant      servant,
 								 CORBA_Environment          *ev);
-static void          impl_Nautilus_Zoomable__set_zoom_level     (impl_POA_Nautilus_Zoomable *servant,
-								 const CORBA_double          zoom_level,
+static void          impl_Nautilus_Zoomable__set_zoom_level     (PortableServer_Servant      servant,
+								 const CORBA_float           zoom_level,
 								 CORBA_Environment          *ev);
-static CORBA_double  impl_Nautilus_Zoomable__get_min_zoom_level (impl_POA_Nautilus_Zoomable *servant,
+static CORBA_float  impl_Nautilus_Zoomable__get_min_zoom_level (PortableServer_Servant      servant,
 								 CORBA_Environment          *ev);
-static CORBA_double  impl_Nautilus_Zoomable__get_max_zoom_level (impl_POA_Nautilus_Zoomable *servant,
+static CORBA_float  impl_Nautilus_Zoomable__get_max_zoom_level (PortableServer_Servant      servant,
 								 CORBA_Environment          *ev);
-static CORBA_boolean impl_Nautilus_Zoomable__get_is_continuous (impl_POA_Nautilus_Zoomable *servant,
+static CORBA_boolean impl_Nautilus_Zoomable__get_is_continuous (PortableServer_Servant      servant,
 								 CORBA_Environment          *ev);
 static Nautilus_ZoomLevelList* impl_Nautilus_Zoomable__get_preferred_zoom_level_list
-							        (impl_POA_Nautilus_Zoomable *servant,
+							        (PortableServer_Servant      servant,
 								 CORBA_Environment          *ev);
-static void          impl_Nautilus_Zoomable_zoom_in             (impl_POA_Nautilus_Zoomable *servant,
+static void          impl_Nautilus_Zoomable_zoom_in             (PortableServer_Servant      servant,
 								 CORBA_Environment          *ev);
-static void          impl_Nautilus_Zoomable_zoom_out            (impl_POA_Nautilus_Zoomable *servant,
+static void          impl_Nautilus_Zoomable_zoom_out            (PortableServer_Servant      servant,
 								 CORBA_Environment          *ev);
-static void          impl_Nautilus_Zoomable_zoom_to_fit         (impl_POA_Nautilus_Zoomable *servant,
+static void          impl_Nautilus_Zoomable_zoom_to_fit         (PortableServer_Servant      servant,
 								 CORBA_Environment          *ev);
 
 POA_Nautilus_Zoomable__epv libnautilus_Nautilus_Zoomable_epv =
 {
 	NULL,			/* _private */
-	(gpointer) &impl_Nautilus_Zoomable__get_zoom_level,
-	(gpointer) &impl_Nautilus_Zoomable__set_zoom_level,
-	(gpointer) &impl_Nautilus_Zoomable__get_min_zoom_level,
-	(gpointer) &impl_Nautilus_Zoomable__get_max_zoom_level,
-	(gpointer) &impl_Nautilus_Zoomable__get_is_continuous,
-	(gpointer) &impl_Nautilus_Zoomable__get_preferred_zoom_level_list,
-	(gpointer) &impl_Nautilus_Zoomable_zoom_in,
-	(gpointer) &impl_Nautilus_Zoomable_zoom_out,
-	(gpointer) &impl_Nautilus_Zoomable_zoom_to_fit
+	&impl_Nautilus_Zoomable__get_zoom_level,
+	&impl_Nautilus_Zoomable__set_zoom_level,
+	&impl_Nautilus_Zoomable__get_min_zoom_level,
+	&impl_Nautilus_Zoomable__get_max_zoom_level,
+	&impl_Nautilus_Zoomable__get_is_continuous,
+	&impl_Nautilus_Zoomable__get_preferred_zoom_level_list,
+	&impl_Nautilus_Zoomable_zoom_in,
+	&impl_Nautilus_Zoomable_zoom_out,
+	&impl_Nautilus_Zoomable_zoom_to_fit
 };
 
-//static PortableServer_ServantBase__epv base_epv;
+/* static PortableServer_ServantBase__epv base_epv; */
 static POA_Nautilus_Zoomable__vepv impl_Nautilus_Zoomable_vepv =
 {
-//	&base_epv,
+/*	&base_epv, */
 	NULL,
 	NULL,
 	&libnautilus_Nautilus_Zoomable_epv
@@ -155,52 +155,76 @@ nautilus_ZoomLevelListBuffer_from_zoom_levels (const double *zoom_levels, int nu
 	return buffer;
 }
 
-static CORBA_double
-impl_Nautilus_Zoomable__get_zoom_level (impl_POA_Nautilus_Zoomable *servant,
+static CORBA_float
+impl_Nautilus_Zoomable__get_zoom_level (PortableServer_Servant      servant,
 					CORBA_Environment          *ev)
 {
-	return servant->gtk_object->details->zoom_level;
+	impl_POA_Nautilus_Zoomable *zoomable;
+
+	zoomable = (impl_POA_Nautilus_Zoomable *)servant;
+
+	return zoomable->gtk_object->details->zoom_level;
 }
 
 static void 
-impl_Nautilus_Zoomable__set_zoom_level (impl_POA_Nautilus_Zoomable *servant,
-					const CORBA_double          zoom_level,
+impl_Nautilus_Zoomable__set_zoom_level (PortableServer_Servant      servant,
+					const CORBA_float          zoom_level,
 					CORBA_Environment          *ev)
 {
-	gtk_signal_emit (GTK_OBJECT (servant->gtk_object), signals[SET_ZOOM_LEVEL], zoom_level);
+	impl_POA_Nautilus_Zoomable *zoomable;
+
+	zoomable = (impl_POA_Nautilus_Zoomable *)servant;
+
+	gtk_signal_emit (GTK_OBJECT (zoomable->gtk_object), signals[SET_ZOOM_LEVEL], zoom_level);
 	
 }
 
-static CORBA_double
-impl_Nautilus_Zoomable__get_min_zoom_level (impl_POA_Nautilus_Zoomable *servant,
+static CORBA_float
+impl_Nautilus_Zoomable__get_min_zoom_level (PortableServer_Servant      servant,
 					    CORBA_Environment      *ev)
 {
-	return servant->gtk_object->details->min_zoom_level;
+	impl_POA_Nautilus_Zoomable *zoomable;
+
+	zoomable = (impl_POA_Nautilus_Zoomable *)servant;
+
+	return zoomable->gtk_object->details->min_zoom_level;
 }
-static CORBA_double
-impl_Nautilus_Zoomable__get_max_zoom_level (impl_POA_Nautilus_Zoomable *servant,
+
+static CORBA_float
+impl_Nautilus_Zoomable__get_max_zoom_level (PortableServer_Servant      servant,
 					    CORBA_Environment      *ev)
 {
-	return servant->gtk_object->details->max_zoom_level;
+	impl_POA_Nautilus_Zoomable *zoomable;
+
+	zoomable = (impl_POA_Nautilus_Zoomable *)servant;
+
+	return zoomable->gtk_object->details->max_zoom_level;
 }
 
 static CORBA_boolean
-impl_Nautilus_Zoomable__get_is_continuous (impl_POA_Nautilus_Zoomable *servant,
+impl_Nautilus_Zoomable__get_is_continuous (PortableServer_Servant      servant,
 					   CORBA_Environment      *ev)
 {
-	return servant->gtk_object->details->is_continuous;
+	impl_POA_Nautilus_Zoomable *zoomable;
+
+	zoomable = (impl_POA_Nautilus_Zoomable *)servant;
+
+	return zoomable->gtk_object->details->is_continuous;
 }
 
 static Nautilus_ZoomLevelList *
-impl_Nautilus_Zoomable__get_preferred_zoom_level_list (impl_POA_Nautilus_Zoomable *servant,
+impl_Nautilus_Zoomable__get_preferred_zoom_level_list (PortableServer_Servant      servant,
 					    		  CORBA_Environment      *ev)
 {
 	Nautilus_ZoomLevelList *list;
+	impl_POA_Nautilus_Zoomable *zoomable;
+
+	zoomable = (impl_POA_Nautilus_Zoomable *)servant;
 
 	list = Nautilus_ZoomLevelList__alloc ();
-	list->_maximum = servant->gtk_object->details->num_preferred_zoom_levels;
-	list->_length = servant->gtk_object->details->num_preferred_zoom_levels;
-	list->_buffer = servant->gtk_object->details->preferred_zoom_levels;
+	list->_maximum = zoomable->gtk_object->details->num_preferred_zoom_levels;
+	list->_length = zoomable->gtk_object->details->num_preferred_zoom_levels;
+	list->_buffer = zoomable->gtk_object->details->preferred_zoom_levels;
 	
 	/*  set_release defaults to FALSE - CORBA_sequence_set_release (list, FALSE) */ 
 
@@ -208,29 +232,41 @@ impl_Nautilus_Zoomable__get_preferred_zoom_level_list (impl_POA_Nautilus_Zoomabl
 }
 
 static void
-impl_Nautilus_Zoomable_zoom_in (impl_POA_Nautilus_Zoomable *servant,
+impl_Nautilus_Zoomable_zoom_in (PortableServer_Servant      servant,
 				CORBA_Environment          *ev)
 {	
-	gtk_signal_emit (GTK_OBJECT (servant->gtk_object), signals[ZOOM_IN]);
+	impl_POA_Nautilus_Zoomable *zoomable;
+
+	zoomable = (impl_POA_Nautilus_Zoomable *)servant;
+
+	gtk_signal_emit (GTK_OBJECT (zoomable->gtk_object), signals[ZOOM_IN]);
 }
 
 static void
-impl_Nautilus_Zoomable_zoom_out (impl_POA_Nautilus_Zoomable *servant,
+impl_Nautilus_Zoomable_zoom_out (PortableServer_Servant      servant,
 				 CORBA_Environment *ev)
 {
-	gtk_signal_emit (GTK_OBJECT (servant->gtk_object), signals[ZOOM_OUT]);
+	impl_POA_Nautilus_Zoomable *zoomable;
+
+	zoomable = (impl_POA_Nautilus_Zoomable *)servant;
+
+	gtk_signal_emit (GTK_OBJECT (zoomable->gtk_object), signals[ZOOM_OUT]);
 }
 
 static void
-impl_Nautilus_Zoomable_zoom_to_fit (impl_POA_Nautilus_Zoomable *servant,
+impl_Nautilus_Zoomable_zoom_to_fit (PortableServer_Servant      servant,
 				    CORBA_Environment *ev)
 {
-	gtk_signal_emit (GTK_OBJECT (servant->gtk_object), signals[ZOOM_TO_FIT]);
+	impl_POA_Nautilus_Zoomable *zoomable;
+
+	zoomable = (impl_POA_Nautilus_Zoomable *)servant;
+
+	gtk_signal_emit (GTK_OBJECT (zoomable->gtk_object), signals[ZOOM_TO_FIT]);
 }
 
 static void
 impl_Nautilus_Zoomable__destroy (BonoboObject *obj,
-				 impl_POA_Nautilus_Zoomable *servant)
+				 PortableServer_Servant      servant)
 {
 	PortableServer_ObjectId *objid;
 	CORBA_Environment ev;
@@ -242,7 +278,7 @@ impl_Nautilus_Zoomable__destroy (BonoboObject *obj,
 	CORBA_free (objid);
 	obj->servant = NULL;
 	
-	POA_Nautilus_Zoomable__fini ((PortableServer_Servant) servant, &ev);
+	POA_Nautilus_Zoomable__fini (servant, &ev);
 	g_free (servant);
 	CORBA_exception_free(&ev);
 }
