@@ -5,10 +5,7 @@ INCLUDES = 			\
 	-I$(top_srcdir)/intl -I$(top_builddir)/intl
 
 
-LDADD = \
-	$(GNOME_LIBDIR)					\
-	$(GNOMEUI_LIBS)					\
-	$(INTLLIBS)
+LDADD =
 
 bin_PROGRAMS = gnome-man2html
 
