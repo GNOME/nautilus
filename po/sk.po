@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 0.5.0\n"
-"POT-Creation-Date: 2001-01-26 14:46+0100\n"
-"PO-Revision-Date: 2001-01-26 14:49CET\n"
+"POT-Creation-Date: 2001-01-29 17:42+0100\n"
+"PO-Revision-Date: 2001-01-29 17:47CET\n"
 "Last-Translator: Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>\n"
 "Language-Team: Slovak <sk-i18n@rak.isternet.sk>\n"
 "MIME-Version: 1.0\n"
@@ -373,7 +373,7 @@ msgstr "Prehliadaè obrázkov pre Nautilus"
 msgid "Nautilus Image viewer factory"
 msgstr "Vytváracie rozhranie pre Prehliadaè obrázkov pre Nautilus"
 
-#: components/image-viewer/nautilus-image-view.c:820
+#: components/image-viewer/nautilus-image-view.c:823
 msgid "I could not initialize Bonobo"
 msgstr "Nie je mo¾né inicializova» Bonobo"
 
@@ -3773,13 +3773,13 @@ msgstr "%d. odkaz na %s"
 #.
 #. localizers: tag used to detect the first copy of a file
 #: libnautilus-extensions/nautilus-file-operations.c:1185
-#: libnautilus-extensions/nautilus-file-operations.c:2287
+#: libnautilus-extensions/nautilus-file-operations.c:2313
 msgid " (copy)"
 msgstr " (kópia)"
 
 #. localizers: tag used to detect the second copy of a file
 #: libnautilus-extensions/nautilus-file-operations.c:1187
-#: libnautilus-extensions/nautilus-file-operations.c:2287
+#: libnautilus-extensions/nautilus-file-operations.c:2313
 msgid " (another copy)"
 msgstr " (ïal¹ia kópia)"
 
@@ -3851,7 +3851,7 @@ msgid " (%d"
 msgstr " (%d"
 
 #: libnautilus-extensions/nautilus-file-operations.c:1464
-#: libnautilus-extensions/nautilus-file-operations.c:2002
+#: libnautilus-extensions/nautilus-file-operations.c:2028
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "Neznámy GnomeVFSXferProgressStatus %d"
@@ -3868,7 +3868,7 @@ msgstr "Presunuté súbory:"
 
 #. localizers: label prepended to the name of the current file moved
 #: libnautilus-extensions/nautilus-file-operations.c:1781
-#: libnautilus-extensions/nautilus-file-operations.c:2135
+#: libnautilus-extensions/nautilus-file-operations.c:2161
 msgid "Moving"
 msgstr "Presúvam"
 
@@ -3930,45 +3930,73 @@ msgstr "Nie je mo¾né kopírova» polo¾ky do Odpadkov."
 msgid "Can't Copy to Trash"
 msgstr "Nie je mo¾né kopírova» do Odpadkov"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1853
-#: libnautilus-extensions/nautilus-file-operations.c:2093
+#: libnautilus-extensions/nautilus-file-operations.c:1859
+#: libnautilus-extensions/nautilus-file-operations.c:2119
 msgid "The Trash must remain on the desktop."
 msgstr "Prieèinok Odpadky musí zosta» na ploche."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1854
+#: libnautilus-extensions/nautilus-file-operations.c:1860
 msgid "You cannot move this trash folder."
 msgstr "Toto nie je mo¾né presunú» do prieèinku s odpadkami."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1856
+#: libnautilus-extensions/nautilus-file-operations.c:1862
 msgid "You cannot copy the Trash."
 msgstr "Nie je mo¾né kopírova» Odpadky."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1857
+#: libnautilus-extensions/nautilus-file-operations.c:1863
 msgid "You cannot copy this trash folder."
 msgstr "Nemô¾ete kopírova» tento prieèinok s odpadkami."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1859
-#: libnautilus-extensions/nautilus-file-operations.c:2094
+#: libnautilus-extensions/nautilus-file-operations.c:1865
+#: libnautilus-extensions/nautilus-file-operations.c:2120
 msgid "Can't Change Trash Location"
 msgstr "Nie je mo¾né zmeni» umiestnenie Odpadkov"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1860
+#: libnautilus-extensions/nautilus-file-operations.c:1866
 msgid "Can't Copy Trash"
 msgstr "Nie je mo¾né kopírova» Odpadky"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1878
+#: libnautilus-extensions/nautilus-file-operations.c:1883
 msgid "You cannot move a folder into itself."
 msgstr "Nie je mo¾né presunú» prieèinok do seba samého."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1879
+#: libnautilus-extensions/nautilus-file-operations.c:1884
 msgid "You cannot copy a folder into itself."
 msgstr "Nie je mo¾né kopírova» prieèinok do seba samého."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1880
+#: libnautilus-extensions/nautilus-file-operations.c:1886
 msgid "Can't Move Into Self"
 msgstr "Nie je mo¾ný presun"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1931
+#: libnautilus-extensions/nautilus-file-operations.c:1887
+msgid "Can't Copy Into Self"
+msgstr "Nie je mo¾né kopírova» do seba samého"
+
+#: libnautilus-extensions/nautilus-file-operations.c:1898
+msgid "You cannot link a file to itself."
+msgstr "Nie je mo¾né vytvori» odkaz na seba samého."
+
+#: libnautilus-extensions/nautilus-file-operations.c:1900
+msgid "You cannot move a file onto itself."
+msgstr "Nie je mo¾né presunú» súbor do seba samého."
+
+#: libnautilus-extensions/nautilus-file-operations.c:1901
+msgid "You cannot copy a file over itself."
+msgstr "Nie je mo¾né kopírova» súbor do seba samého."
+
+#: libnautilus-extensions/nautilus-file-operations.c:1903
+msgid "Can't Link To Self"
+msgstr "Nie je mo¾né vytvori» odkaz na seba samého"
+
+#: libnautilus-extensions/nautilus-file-operations.c:1905
+msgid "Can't Move Onto Self"
+msgstr "Nie je mo¾ný presun do seba samého"
+
+#: libnautilus-extensions/nautilus-file-operations.c:1906
+msgid "Can't Copy Over Self"
+msgstr "Nie je mo¾né kopírova» do seba samého"
+
+#: libnautilus-extensions/nautilus-file-operations.c:1957
 msgid ""
 "Error creating new folder.\n"
 "\n"
@@ -3978,7 +4006,7 @@ msgstr ""
 "\n"
 "Nemáte práva na zápis."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1934
+#: libnautilus-extensions/nautilus-file-operations.c:1960
 msgid ""
 "Error creating new folder.\n"
 "\n"
@@ -3988,257 +4016,257 @@ msgstr ""
 "\n"
 "Nedostatok miesta."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1937
+#: libnautilus-extensions/nautilus-file-operations.c:1963
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "Chyba \"%s\" pri vytváraní nového prieèinku."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1941
+#: libnautilus-extensions/nautilus-file-operations.c:1967
 msgid "Error creating new folder"
 msgstr "Chyba pri vytváraní nového prieèinku"
 
 #. localizers: the initial name of a new folder
-#: libnautilus-extensions/nautilus-file-operations.c:2028
+#: libnautilus-extensions/nautilus-file-operations.c:2054
 msgid "untitled folder"
 msgstr "prieèinok bez mena"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2100
+#: libnautilus-extensions/nautilus-file-operations.c:2126
 #, c-format
 msgid "You cannot throw \"%s\" into the Trash."
 msgstr "Nie je mo¾né zahodi» \"%s\" do Odpadkov."
 
-#: libnautilus-extensions/nautilus-file-operations.c:2104
+#: libnautilus-extensions/nautilus-file-operations.c:2130
 msgid "Error Moving to Trash"
 msgstr "Chyba pri presune do Odpadkov"
 
 #. localizers: progress dialog title
-#: libnautilus-extensions/nautilus-file-operations.c:2131
+#: libnautilus-extensions/nautilus-file-operations.c:2157
 msgid "Moving files to the Trash"
 msgstr "Presúvam súbory do Odpadkov"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-extensions/nautilus-file-operations.c:2133
+#: libnautilus-extensions/nautilus-file-operations.c:2159
 msgid "Files thrown out:"
 msgstr "Vyhodených súborov:"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2136
+#: libnautilus-extensions/nautilus-file-operations.c:2162
 msgid "Preparing to Move to Trash..."
 msgstr "Pripravujem presun do Odpadkov..."
 
 #. localizers: progress dialog title
-#: libnautilus-extensions/nautilus-file-operations.c:2176
+#: libnautilus-extensions/nautilus-file-operations.c:2202
 msgid "Deleting files"
 msgstr "Odstraòujem súbory"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-extensions/nautilus-file-operations.c:2178
-#: libnautilus-extensions/nautilus-file-operations.c:2213
+#: libnautilus-extensions/nautilus-file-operations.c:2204
+#: libnautilus-extensions/nautilus-file-operations.c:2239
 msgid "Files deleted:"
 msgstr "Odstránených súborov:"
 
 #. localizers: label prepended to the name of the current file deleted
-#: libnautilus-extensions/nautilus-file-operations.c:2180
-#: libnautilus-extensions/nautilus-file-operations.c:2215
+#: libnautilus-extensions/nautilus-file-operations.c:2206
+#: libnautilus-extensions/nautilus-file-operations.c:2241
 msgid "Deleting"
 msgstr "Odstraòujem"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2181
+#: libnautilus-extensions/nautilus-file-operations.c:2207
 msgid "Preparing to Delete files..."
 msgstr "Pripravujem odstránenie súborov..."
 
 #. localizers: progress dialog title
-#: libnautilus-extensions/nautilus-file-operations.c:2211
+#: libnautilus-extensions/nautilus-file-operations.c:2237
 msgid "Emptying the Trash"
 msgstr "Vyprázdòujem Odpadky"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2216
+#: libnautilus-extensions/nautilus-file-operations.c:2242
 msgid "Preparing to Empty the Trash..."
 msgstr "Pripravujem vyprázdnenie Odpadkov..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:2247
+#: libnautilus-extensions/nautilus-file-operations.c:2273
 msgid "Are you sure you want to permanently delete all of the items in the trash?"
 msgstr "Naozaj chcete nav¾dy odstráni» v¹etky polo¾ky v Odpadkoch?"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2249
+#: libnautilus-extensions/nautilus-file-operations.c:2275
 msgid "Delete Trash Contents?"
 msgstr "Odstráni» Odpadky?"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2250
+#: libnautilus-extensions/nautilus-file-operations.c:2276
 msgid "Empty"
 msgstr "Vyprázdni»"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2288
+#: libnautilus-extensions/nautilus-file-operations.c:2314
 msgid "foo"
 msgstr "bla"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2288
-#: libnautilus-extensions/nautilus-file-operations.c:2298
+#: libnautilus-extensions/nautilus-file-operations.c:2314
+#: libnautilus-extensions/nautilus-file-operations.c:2324
 msgid "foo (copy)"
 msgstr "bla (kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2289
+#: libnautilus-extensions/nautilus-file-operations.c:2315
 msgid ".bashrc"
 msgstr ".bashrc"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2289
+#: libnautilus-extensions/nautilus-file-operations.c:2315
 msgid ".bashrc (copy)"
 msgstr ".bashrc (kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2290
+#: libnautilus-extensions/nautilus-file-operations.c:2316
 msgid ".foo.txt"
 msgstr ".bla.txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2290
+#: libnautilus-extensions/nautilus-file-operations.c:2316
 msgid ".foo (copy).txt"
 msgstr ".bla (kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2291
+#: libnautilus-extensions/nautilus-file-operations.c:2317
 msgid "foo foo"
 msgstr "bla bla"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2291
+#: libnautilus-extensions/nautilus-file-operations.c:2317
 msgid "foo foo (copy)"
 msgstr "bla bla (kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2292
+#: libnautilus-extensions/nautilus-file-operations.c:2318
 msgid "foo.txt"
 msgstr "bla.txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2292
-#: libnautilus-extensions/nautilus-file-operations.c:2299
+#: libnautilus-extensions/nautilus-file-operations.c:2318
+#: libnautilus-extensions/nautilus-file-operations.c:2325
 msgid "foo (copy).txt"
 msgstr "bla (kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2293
+#: libnautilus-extensions/nautilus-file-operations.c:2319
 msgid "foo foo.txt"
 msgstr "bla bla.txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2293
-#: libnautilus-extensions/nautilus-file-operations.c:2313
+#: libnautilus-extensions/nautilus-file-operations.c:2319
+#: libnautilus-extensions/nautilus-file-operations.c:2339
 msgid "foo foo (copy).txt"
 msgstr "bla bla (kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2294
+#: libnautilus-extensions/nautilus-file-operations.c:2320
 msgid "foo foo.txt txt"
 msgstr "bla bla.txt txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2294
+#: libnautilus-extensions/nautilus-file-operations.c:2320
 msgid "foo foo (copy).txt txt"
 msgstr "bla bla (kópia).txt txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2295
+#: libnautilus-extensions/nautilus-file-operations.c:2321
 msgid "foo...txt"
 msgstr "bla...txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2295
+#: libnautilus-extensions/nautilus-file-operations.c:2321
 msgid "foo.. (copy).txt"
 msgstr "bla.. (kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2296
+#: libnautilus-extensions/nautilus-file-operations.c:2322
 msgid "foo..."
 msgstr "bla..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:2296
+#: libnautilus-extensions/nautilus-file-operations.c:2322
 msgid "foo... (copy)"
 msgstr "bla...(kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2297
+#: libnautilus-extensions/nautilus-file-operations.c:2323
 msgid "foo. (copy)"
 msgstr "bla. (kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2297
+#: libnautilus-extensions/nautilus-file-operations.c:2323
 msgid "foo. (another copy)"
 msgstr "bla. (ïal¹ia kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2298
-#: libnautilus-extensions/nautilus-file-operations.c:2300
+#: libnautilus-extensions/nautilus-file-operations.c:2324
+#: libnautilus-extensions/nautilus-file-operations.c:2326
 msgid "foo (another copy)"
 msgstr "bla (ïal¹ia kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2299
-#: libnautilus-extensions/nautilus-file-operations.c:2301
+#: libnautilus-extensions/nautilus-file-operations.c:2325
+#: libnautilus-extensions/nautilus-file-operations.c:2327
 msgid "foo (another copy).txt"
 msgstr "bla (ïal¹ia kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2300
+#: libnautilus-extensions/nautilus-file-operations.c:2326
 msgid "foo (3rd copy)"
 msgstr "bla (3. kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2301
+#: libnautilus-extensions/nautilus-file-operations.c:2327
 msgid "foo (3rd copy).txt"
 msgstr "bla (3. kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2302
+#: libnautilus-extensions/nautilus-file-operations.c:2328
 msgid "foo foo (another copy).txt"
 msgstr "bla bla (ïal¹ia kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2302
+#: libnautilus-extensions/nautilus-file-operations.c:2328
 msgid "foo foo (3rd copy).txt"
 msgstr "bla bla (3. kópia).txt3."
 
-#: libnautilus-extensions/nautilus-file-operations.c:2303
+#: libnautilus-extensions/nautilus-file-operations.c:2329
 msgid "foo (21st copy)"
 msgstr "bla (21. kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2303
-#: libnautilus-extensions/nautilus-file-operations.c:2305
+#: libnautilus-extensions/nautilus-file-operations.c:2329
+#: libnautilus-extensions/nautilus-file-operations.c:2331
 msgid "foo (22nd copy)"
 msgstr "bla (22. kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2304
+#: libnautilus-extensions/nautilus-file-operations.c:2330
 msgid "foo (21st copy).txt"
 msgstr "bla (21. kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2304
-#: libnautilus-extensions/nautilus-file-operations.c:2306
+#: libnautilus-extensions/nautilus-file-operations.c:2330
+#: libnautilus-extensions/nautilus-file-operations.c:2332
 msgid "foo (22nd copy).txt"
 msgstr "bla (22. kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2305
-#: libnautilus-extensions/nautilus-file-operations.c:2307
+#: libnautilus-extensions/nautilus-file-operations.c:2331
+#: libnautilus-extensions/nautilus-file-operations.c:2333
 msgid "foo (23rd copy)"
 msgstr "bla (23. kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2306
-#: libnautilus-extensions/nautilus-file-operations.c:2308
+#: libnautilus-extensions/nautilus-file-operations.c:2332
+#: libnautilus-extensions/nautilus-file-operations.c:2334
 msgid "foo (23rd copy).txt"
 msgstr "bla (23. kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2307
-#: libnautilus-extensions/nautilus-file-operations.c:2309
+#: libnautilus-extensions/nautilus-file-operations.c:2333
+#: libnautilus-extensions/nautilus-file-operations.c:2335
 msgid "foo (24th copy)"
 msgstr "bla (24. kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2308
-#: libnautilus-extensions/nautilus-file-operations.c:2310
+#: libnautilus-extensions/nautilus-file-operations.c:2334
+#: libnautilus-extensions/nautilus-file-operations.c:2336
 msgid "foo (24th copy).txt"
 msgstr "bla (24. kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2309
+#: libnautilus-extensions/nautilus-file-operations.c:2335
 msgid "foo (25th copy)"
 msgstr "bla (25. kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2310
+#: libnautilus-extensions/nautilus-file-operations.c:2336
 msgid "foo (25th copy).txt"
 msgstr "bla (25. kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2311
+#: libnautilus-extensions/nautilus-file-operations.c:2337
 msgid "foo foo (24th copy)"
 msgstr "bla bla (24. kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2311
+#: libnautilus-extensions/nautilus-file-operations.c:2337
 msgid "foo foo (25th copy)"
 msgstr "bla bla (25. kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2312
+#: libnautilus-extensions/nautilus-file-operations.c:2338
 msgid "foo foo (24th copy).txt"
 msgstr "bla bla (24. kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2312
+#: libnautilus-extensions/nautilus-file-operations.c:2338
 msgid "foo foo (25th copy).txt"
 msgstr "bla bla (25. kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2313
+#: libnautilus-extensions/nautilus-file-operations.c:2339
 msgid "foo foo (100000000000000th copy).txt"
 msgstr "bla bla (100000000000000. kópia).txt"
 
@@ -4355,8 +4383,8 @@ msgid ""
 "some other reason."
 msgstr ""
 "Nie je mo¾né nájs» popis ani pre \"x-directory/normal\". To asi znamená, ¾e "
-"súbor gnome-vfs.keys nie je na správnom mieste alebo z nejakého iného "
-"dôvodu sa nedá nájs»."
+"súbor gnome-vfs.keys nie je na správnom mieste alebo z nejakého iného dôvodu "
+"sa nedá nájs»."
 
 #: libnautilus-extensions/nautilus-file.c:3700
 #, c-format
@@ -4364,8 +4392,8 @@ msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), tell "
 "sullivan@eazel.com"
 msgstr ""
-"Pre typ MIME \"%s\" (súbor je \"%s\") nebol nájdený ¾iadny popis. Oznámte "
-"to na adresu sullivan@eazel.com"
+"Pre typ MIME \"%s\" (súbor je \"%s\") nebol nájdený ¾iadny popis. Oznámte to "
+"na adresu sullivan@eazel.com"
 
 #: libnautilus-extensions/nautilus-file.c:3714
 msgid "link"
@@ -4697,7 +4725,7 @@ msgstr "Nikdy"
 msgid " -_,;.?/&"
 msgstr " -_,;.?/&"
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:720
+#: libnautilus-extensions/nautilus-icon-dnd.c:725
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it? This will clobber the stored "
@@ -4707,7 +4735,7 @@ msgstr ""
 "rozmiestnenia a necha» pustenú polo¾ku tam, kam ste ju umiestnili? To "
 "rozhád¾e ruèné rozmiestnenie."
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:724
+#: libnautilus-extensions/nautilus-icon-dnd.c:729
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them? This will clobber the stored "
@@ -4717,7 +4745,7 @@ msgstr ""
 "rozmiestnenia a necha» pustené polo¾ky tam, kam ste ich umiestnili? To "
 "rozhád¾e ruèné rozmiestnenie."
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:730
+#: libnautilus-extensions/nautilus-icon-dnd.c:735
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it?"
@@ -4725,7 +4753,7 @@ msgstr ""
 "Tento prieèinok pou¾íva automatické rozmiestnenie. Chcete prepnú» do ruèného "
 "rozmiestnenia a necha» túto polo¾ku tam, kam ste ju umiestnili?"
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:733
+#: libnautilus-extensions/nautilus-icon-dnd.c:738
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them?"
@@ -4733,11 +4761,11 @@ msgstr ""
 "Tento prieèinok pou¾íva automatické rozmiestnenie. Chcete prepnú» do ruèného "
 "rozmiestnenia a necha» tieto polo¾ky tam, kam ste ich umiestnili?"
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:738
+#: libnautilus-extensions/nautilus-icon-dnd.c:743
 msgid "Switch to Manual Layout?"
 msgstr "Prepnú» do ruèného rozmiestnenia?"
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:739
+#: libnautilus-extensions/nautilus-icon-dnd.c:744
 msgid "Switch"
 msgstr "Prepnú»"
 
@@ -4773,7 +4801,7 @@ msgstr "Opakova» vrátené Písanie"
 msgid "Restore the changed name"
 msgstr "Obnovi» zmenené meno"
 
-#: libnautilus-extensions/nautilus-preferences-dialog.c:203
+#: libnautilus-extensions/nautilus-preferences-dialog.c:207
 msgid "Prefs Box"
 msgstr "Nastavenie"
 
@@ -5312,46 +5340,46 @@ msgstr "Opakova» vrátenú úpravu"
 msgid "Redo the edit"
 msgstr "Opakova» vrátenú úpravu"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:398
-#: libnautilus-extensions/nautilus-volume-monitor.c:420
+#: libnautilus-extensions/nautilus-volume-monitor.c:465
+#: libnautilus-extensions/nautilus-volume-monitor.c:487
 msgid "Audio CD"
 msgstr "Audio CD"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1121
+#: libnautilus-extensions/nautilus-volume-monitor.c:1280
 msgid "Mount Error"
 msgstr "Chyba pripojenia"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1123
+#: libnautilus-extensions/nautilus-volume-monitor.c:1282
 msgid "Unmount Error"
 msgstr "Chyba odpojenia"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1150
+#: libnautilus-extensions/nautilus-volume-monitor.c:1309
 msgid "is write-protected, mounting read-only"
 msgstr "je chránený proti zápisu, pripojený len pre èítanie"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1153
+#: libnautilus-extensions/nautilus-volume-monitor.c:1312
 msgid "is not a valid block device"
 msgstr "nie je platné blokové zariadenie"
 
 #. Handle floppy case
-#: libnautilus-extensions/nautilus-volume-monitor.c:1157
+#: libnautilus-extensions/nautilus-volume-monitor.c:1316
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
 msgstr "Nautilus nemohol pripoji» disketovú mechaniku. Mo¾no v nej nie je disketa."
 
 #. All others
-#: libnautilus-extensions/nautilus-volume-monitor.c:1161
+#: libnautilus-extensions/nautilus-volume-monitor.c:1320
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
 msgstr "Nautilus nemohol pripoji» disk. Mo¾no v òom nie je médium."
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1164
+#: libnautilus-extensions/nautilus-volume-monitor.c:1323
 msgid "wrong fs type, bad option, bad superblock on"
 msgstr "nesprávny typ súborového systému, nesprávna voµba, chybný superblok na"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1167
+#: libnautilus-extensions/nautilus-volume-monitor.c:1326
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
@@ -5359,7 +5387,7 @@ msgstr ""
 "Nautilus nemohol pripoji» disketovú mechaniku. Disketa asi obsahuje systém "
 "súborov, ktorý sa nedá pripoji»."
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1170
+#: libnautilus-extensions/nautilus-volume-monitor.c:1329
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
@@ -5367,43 +5395,43 @@ msgstr ""
 "Nautilus nemohol pripoji» vybraný disk. Disk asi obsahuje systém súborov, "
 "ktorý sa nedá pripoji»."
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1175
+#: libnautilus-extensions/nautilus-volume-monitor.c:1334
 msgid "Nautilus was unable to mount the selected floppy drive."
 msgstr "Nautilus nemohol pripoji» vybranú disketovú mechaniku."
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1177
+#: libnautilus-extensions/nautilus-volume-monitor.c:1336
 msgid "Nautilus was unable to mount the selected volume."
 msgstr "Nautilus nemohol pripoji» vybraný disk."
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1181
+#: libnautilus-extensions/nautilus-volume-monitor.c:1340
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr "Nautilus nemohol odpoji» vybraný disk."
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1267
+#: libnautilus-extensions/nautilus-volume-monitor.c:1477
 msgid "ISO 9660 Volume"
 msgstr "Disk ISO 9660"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1280
+#: libnautilus-extensions/nautilus-volume-monitor.c:1492
 msgid "Root"
 msgstr "Koreò"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1286
+#: libnautilus-extensions/nautilus-volume-monitor.c:1499
 msgid "Ext2 Volume"
 msgstr "Disk ext2"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1300
+#: libnautilus-extensions/nautilus-volume-monitor.c:1514
 msgid "MSDOS Volume"
 msgstr "Disk MSDOS"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1314
+#: libnautilus-extensions/nautilus-volume-monitor.c:1529
 msgid "NFS Volume"
 msgstr "Disk NFS"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1328
+#: libnautilus-extensions/nautilus-volume-monitor.c:1544
 msgid "Floppy"
 msgstr "Disketa"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1342
+#: libnautilus-extensions/nautilus-volume-monitor.c:1559
 msgid "Unknown Volume"
 msgstr "Neznámy disk"
 
@@ -5506,21 +5534,21 @@ msgid "Search List"
 msgstr "Zoznam hµadania"
 
 #. FIXME bugzilla.eazel.com 5623: Create better text here
-#: src/file-manager/fm-desktop-icon-view.c:662
+#: src/file-manager/fm-desktop-icon-view.c:710
 msgid "Nautilus does not currently support launchers that require a terminal."
 msgstr "Nautilus momentálne nepodporuje programy, ktoré vy¾adujú terminál."
 
-#: src/file-manager/fm-desktop-icon-view.c:664
+#: src/file-manager/fm-desktop-icon-view.c:712
 msgid "Unable to Create Link"
 msgstr "Nepodarilo sa vytvori» odkaz"
 
-#: src/file-manager/fm-desktop-icon-view.c:695
-#: src/file-manager/fm-desktop-icon-view.c:700
+#: src/file-manager/fm-desktop-icon-view.c:743
+#: src/file-manager/fm-desktop-icon-view.c:748
 #, c-format
 msgid "Link to %s"
 msgstr "Odkaz na %s"
 
-#: src/file-manager/fm-desktop-icon-view.c:697
+#: src/file-manager/fm-desktop-icon-view.c:745
 msgid "Link to Unknown"
 msgstr "Odkaz na neznámy"
 
@@ -5532,22 +5560,22 @@ msgstr "Odkaz na neznámy"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: src/file-manager/fm-desktop-icon-view.c:805
+#: src/file-manager/fm-desktop-icon-view.c:853
 #, c-format
 msgid "%s's Home"
 msgstr "%s's Domov"
 
-#: src/file-manager/fm-desktop-icon-view.c:1091
+#: src/file-manager/fm-desktop-icon-view.c:1135
 msgid "Empty Trash..."
 msgstr "Vyprázdni» odpadky..."
 
-#: src/file-manager/fm-desktop-icon-view.c:1093
+#: src/file-manager/fm-desktop-icon-view.c:1137
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
 #: src/file-manager/nautilus-directory-view-ui.xml.h:11
 msgid "Empty Trash"
 msgstr "Vyprázdni» odpadky"
 
-#: src/file-manager/fm-desktop-icon-view.c:1113
+#: src/file-manager/fm-desktop-icon-view.c:1157
 msgid "Unmount Volume"
 msgstr "Odpoji» disk"
 
@@ -8145,7 +8173,7 @@ msgstr "Pre tému \"%s\" nie je k dispozícii ¾iadny popis"
 #. * time stamps really best described as "preview
 #. * release"?.
 #.
-#: src/nautilus-window-manage-views.c:201
+#: src/nautilus-window-manage-views.c:196
 #, c-format
 msgid "Preview Release %s: %s"
 msgstr "Uká¾ková verzia %s: %s"
@@ -8154,24 +8182,24 @@ msgstr "Uká¾ková verzia %s: %s"
 #. * Latin-1 encoding, but not for UTF-8, so we have
 #. * to change it when we upgrade to GTK 2.0.
 #.
-#: src/nautilus-window-manage-views.c:238 src/nautilus-window-menus.c:553
+#: src/nautilus-window-manage-views.c:233 src/nautilus-window-menus.c:553
 msgid "Nautilus"
 msgstr "Nautilus"
 
-#: src/nautilus-window-manage-views.c:660
+#: src/nautilus-window-manage-views.c:652
 #, c-format
 msgid "You do not have the permissions necessary to view \"%s\"."
 msgstr "Nemáte dostatoèné práva pre zobrazenie \"%s\"."
 
-#: src/nautilus-window-manage-views.c:662
+#: src/nautilus-window-manage-views.c:654
 msgid "Inadequate Permissions"
 msgstr "Nedostatoèné práva"
 
-#: src/nautilus-window-manage-views.c:780
+#: src/nautilus-window-manage-views.c:772
 msgid "View Failed"
 msgstr "Zobrazenie zlyhalo"
 
-#: src/nautilus-window-manage-views.c:791
+#: src/nautilus-window-manage-views.c:783
 #, c-format
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
@@ -8180,12 +8208,12 @@ msgstr ""
 "Pohµad %s zaznamenal chybu a nie je schopný pokraèova» v èinnosti. Mô¾ete "
 "vybra» iný pohµad alebo prejs» na iné miesto."
 
-#: src/nautilus-window-manage-views.c:802
+#: src/nautilus-window-manage-views.c:794
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "Pohµad %s zaznamenal chybu pri spú¹taní."
 
-#: src/nautilus-window-manage-views.c:902
+#: src/nautilus-window-manage-views.c:872
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
@@ -8193,7 +8221,7 @@ msgstr ""
 "Jeden z boèných panelov narazil na chybu a nie je schopný pokraèova» v "
 "èinnosti. Bohu¾iaµ, nie je mo¾né poveda», ktorý."
 
-#: src/nautilus-window-manage-views.c:906
+#: src/nautilus-window-manage-views.c:876
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -8202,21 +8230,21 @@ msgstr ""
 "Boèný panel %s zaznamenal chybu a nie je schopný pokraèova» v èinnosti. Ak "
 "sa to bude opakova», mo¾no budete chcie» tento panel vypnú»."
 
-#: src/nautilus-window-manage-views.c:911
+#: src/nautilus-window-manage-views.c:881
 msgid "Sidebar Panel Failed"
 msgstr "Boèný panel zlyhal"
 
-#: src/nautilus-window-manage-views.c:1304
+#: src/nautilus-window-manage-views.c:1211
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr "Nie je mo¾né nájs» \"%s\". Prosím, overte zadaný text a skúste to znovu."
 
-#: src/nautilus-window-manage-views.c:1310
+#: src/nautilus-window-manage-views.c:1217
 #, c-format
 msgid "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr "\"%s\" nie je platné miesto. Prosím, overte zadaný text a skúste to znovu."
 
-#: src/nautilus-window-manage-views.c:1324
+#: src/nautilus-window-manage-views.c:1231
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -8225,30 +8253,30 @@ msgstr ""
 "Nie je mo¾né zobrazi» \"%s\", preto¾e Nautilus nie je schopný urèi» typ "
 "súboru."
 
-#: src/nautilus-window-manage-views.c:1332
+#: src/nautilus-window-manage-views.c:1239
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr "Nautilus nemá nain¹talovaný ¾iadny program schopný zobrazi» \"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1344
+#: src/nautilus-window-manage-views.c:1251
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "Nie je mo¾né zobrazi» \"%s\", preto¾e Nautilus nie je schopný pracova» s "
 "miestami %s:."
 
-#: src/nautilus-window-manage-views.c:1350
+#: src/nautilus-window-manage-views.c:1257
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr "Nie je mo¾né zobrazi» \"%s\", preto¾e pokus o prihlásenie zlyhal."
 
-#: src/nautilus-window-manage-views.c:1355
+#: src/nautilus-window-manage-views.c:1262
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "Nie je mo¾né zobrazi» \"%s\", preto¾e bol prístup odmietnutý."
 
-#: src/nautilus-window-manage-views.c:1360
+#: src/nautilus-window-manage-views.c:1267
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host couldn't be found. Check that your "
@@ -8257,7 +8285,7 @@ msgstr ""
 "Nie je mo¾né zobrazi» \"%s\", preto¾e hostiteµ nebol nájdený. Overte, èi "
 "máte správne nastavené proxy."
 
-#: src/nautilus-window-manage-views.c:1366
+#: src/nautilus-window-manage-views.c:1273
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
@@ -8266,7 +8294,7 @@ msgstr ""
 "Nie je mo¾né zobrazi» \"%s\", preto¾e meno hostiteµa je prázdne. Overte, ¾e "
 "máte správne nastavené proxy."
 
-#: src/nautilus-window-manage-views.c:1378
+#: src/nautilus-window-manage-views.c:1285
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -8277,16 +8305,16 @@ msgstr ""
 "vyhµadávacia slu¾ba nefunguje. Overte, ¾e ste spustili vyhµadávaciu slu¾bu "
 "Medusa a ak nemáte index, ¾e be¾í indexaèný program pre slu¾bu Medusa."
 
-#: src/nautilus-window-manage-views.c:1382
+#: src/nautilus-window-manage-views.c:1289
 msgid "Searching Unavailable"
 msgstr "Hµadanie nie je k dispozícii"
 
-#: src/nautilus-window-manage-views.c:1386
+#: src/nautilus-window-manage-views.c:1293
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus nemô¾e zobrazi» \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1399
+#: src/nautilus-window-manage-views.c:1306
 msgid "Can't Display Location"
 msgstr "Nie je mo¾né zobrazi» miesto"
 
