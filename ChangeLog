@@ -1,5 +1,12 @@
 2001-01-15  Andy Hertzfeld  <andy@eazel.com>
 
+	* components/throbber/main.c: (main):
+	fixed recently introduced bug where the throbber wasn't respecting
+	the theme; I had forgotten to initialize global preferences in the
+	throbber component.
+	
+2001-01-15  Andy Hertzfeld  <andy@eazel.com>
+
 	fixed bug 4369, throbber frozen during long refresh, by making the
 	throbber a bonobo component so it's driven by its own thread.
 	Note that clicking on the throbber is temporarily broken; I'll

@@ -29,6 +29,7 @@
 #include <gnome.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-extensions/nautilus-debug.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <liboaf/liboaf.h>
 
 static int object_count = 0;
@@ -104,6 +105,7 @@ main (int argc, char *argv[])
 	/* initialize gnome-vfs, etc */
 	g_thread_init (NULL);
 	gnome_vfs_init ();
+	nautilus_global_preferences_initialize ();   
 	
 	registration_id = oaf_make_registration_id ("OAFIID:nautilus_throbber_factory", getenv ("DISPLAY"));
 	factory = bonobo_generic_factory_new_multi (registration_id, 
