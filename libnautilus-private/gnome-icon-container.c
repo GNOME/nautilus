@@ -55,7 +55,7 @@ static GnomeCanvasClass *parent_class;
 /* WARNING: Keep this in sync with the `GnomeIconContainerIconMode' enum in
    `gnome-icon-container.h'.  */
 GnomeIconContainerIconModeInfo gnome_icon_container_icon_mode_info[] = {
-	{ 48, 48, 80, 80, 4, 24, 28 }, /* GNOME_ICON_CONTAINER_NORMAL_ICONS */
+	{ 48, 48, 80, 80, 4, 12, 28 }, /* GNOME_ICON_CONTAINER_NORMAL_ICONS */
 	{ 24, 24, 100, 40, 4, 16, 16 } /* GNOME_ICON_CONTAINER_SMALL_ICONS */
 };
 
@@ -189,6 +189,8 @@ icon_new_pixbuf (GnomeIconContainer *container,
 					 "pixbuf", image,
 					 "x", (gdouble) 0,
 					 "y", (gdouble) 0,
+					 "x_set", TRUE,
+					 "width_set", TRUE,
 					 NULL);
 
 	icon_configure (new, container);

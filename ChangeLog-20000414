@@ -1,3 +1,11 @@
+2000-01-18  Andy Hertzfeld <andy@eazel.com>
+
+	* libnautilus/gnome-icon-container.c
+	made icon centered in cell by setting "x_set" pixbuf property so it listens to our offset
+	also, adjusted x_offset constant
+	* libnautilus/gnome-icon-container-dnd.c
+	made shadow be centered properly by taking difference between cellwidth and iconwidth into account
+	
 2000-01-18  Ettore Perazzoli  <ettore@helixcode.com>
 
 	* src/file-manager/dfos-xfer.c (xfer_info_destroy): Removed `#if

@@ -50,6 +50,9 @@ static GtkTargetEntry drop_types [] = {
 };
 static const int num_drop_types = sizeof (drop_types) / sizeof (drop_types[0]);
 
+/* number of pixels of margin for shadow box  */
+#define SHADOW_MARGIN 8
+
 static GnomeCanvasItem *
 create_selection_shadow (GnomeIconContainer *container,
 			 GList *list)
@@ -61,6 +64,7 @@ create_selection_shadow (GnomeIconContainer *container,
 	gint min_x, min_y;
 	gint icon_width, icon_height;
 	gint cell_width, cell_height;
+	gint x_offset;
 	GList *p;
 
 	if (list == NULL)
@@ -73,7 +77,8 @@ create_selection_shadow (GnomeIconContainer *container,
 	icon_height = GNOME_ICON_CONTAINER_ICON_HEIGHT (container);
 	cell_width = GNOME_ICON_CONTAINER_CELL_WIDTH (container);
 	cell_height = GNOME_ICON_CONTAINER_CELL_HEIGHT (container);
-
+	x_offset = cell_width - icon_width - SHADOW_MARGIN;
+	
 	canvas = GNOME_CANVAS (container);
 
 	/* Creating a big set of rectangles in the canvas can be expensive, so
@@ -100,11 +105,11 @@ create_selection_shadow (GnomeIconContainer *container,
 
 		item = p->data;
 
-		x1 = item->x;
+		x1 = item->x + x_offset;
 		y1 = item->y;
-		x2 = item->x + icon_width;
+		x2 = item->x + icon_width + x_offset;
 		y2 = item->y + icon_height;
-
+        				
 		if (x2 >= min_x && x1 <= max_x && y2 >= min_y && y1 <= max_y) {
 			GnomeCanvasItem *rect;
 
