@@ -1,5 +1,11 @@
 2003-06-12  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-icon-canvas-item.c (nautilus_icon_canvas_item_draw):
+	Only draw exposed area.
+	Patch from sandmann@daimi.au.dk
+
+2003-06-12  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-file.c (nautilus_file_fit_date_as_string):
 	Don't call gettext on NULL string.
 	Patch from hidetoshi.tajima@sun.com

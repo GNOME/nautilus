@@ -1324,6 +1324,7 @@ nautilus_icon_canvas_item_draw (EelCanvasItem *item, GdkDrawable *drawable,
 	ArtIRect icon_rect, emblem_rect;
 	EmblemLayout emblem_layout;
 	GdkPixbuf *emblem_pixbuf, *temp_pixbuf;
+	GdkRectangle draw_rect, pixbuf_rect;
 			
 	icon_item = NAUTILUS_ICON_CANVAS_ITEM (item);
 	details = icon_item->details;
@@ -1333,12 +1334,27 @@ nautilus_icon_canvas_item_draw (EelCanvasItem *item, GdkDrawable *drawable,
 		return;
 	}
 
-	/* Compute icon rectangle in drawable coordinates. */
 	icon_rect = icon_item->details->canvas_rect;
-
+	
 	/* if the pre-lit or selection flag is set, make a pre-lit or darkened pixbuf and draw that instead */
 	temp_pixbuf = map_pixbuf (icon_item);
-	draw_pixbuf (temp_pixbuf, drawable, icon_rect.x0, icon_rect.y0);
+	pixbuf_rect.x = icon_rect.x0;
+	pixbuf_rect.y = icon_rect.y0;
+	pixbuf_rect.width = gdk_pixbuf_get_width (temp_pixbuf);
+	pixbuf_rect.height = gdk_pixbuf_get_height (temp_pixbuf);
+	if (gdk_rectangle_intersect (&(expose->area), &pixbuf_rect, &draw_rect)) {
+		gdk_draw_pixbuf (drawable,
+				 NULL,
+				 temp_pixbuf,
+				 draw_rect.x - pixbuf_rect.x,
+				 draw_rect.y - pixbuf_rect.y,
+				 draw_rect.x,
+				 draw_rect.y,
+				 draw_rect.width,
+				 draw_rect.height,
+				 GDK_RGB_DITHER_NORMAL,
+				 0,0);
+	}
 	g_object_unref (temp_pixbuf);
 
 	draw_embedded_text (icon_item, drawable,  icon_rect.x0, icon_rect.y0);
