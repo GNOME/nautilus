@@ -748,14 +748,21 @@ static void
 osd_parse_file_list (PackageData *pack, xmlNodePtr node)
 {
 	xmlNodePtr child;
-	char *tmp;
+	char *tmp, *filename, *dir;
 
 	child = node->xmlChildrenNode;
 	while (child) {
 		if (g_strcasecmp (child->name, "FILE") == 0) {
 			tmp = xmlNodeGetContent (child);
-			pack->provides = g_list_prepend (pack->provides, g_strdup (tmp));
+			dir = trilobite_xml_get_string (child, "DIRECTORY");
+			if (dir != NULL) {
+				filename = g_strdup_printf ("%s/", tmp);
+				g_free (dir);
+			} else {
+				filename = g_strdup (tmp);
+			}
 			xmlFree (tmp);
+			pack->provides = g_list_prepend (pack->provides, filename);
 		} else {
 			/* bad : thing in file list that isn't a file */
 			trilobite_debug ("XML file list contains %s (not FILE)", child->name);

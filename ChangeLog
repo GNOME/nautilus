@@ -1,3 +1,24 @@
+2001-02-16  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-logic2.c:
+	(check_no_two_packages_has_same_file):
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(osd_parse_file_list):
+	* components/services/install/lib/eazel-softcat.c:
+	(eazel_softcat_initialize),
+	(remove_directories_from_provides_list), (eazel_softcat_get_info):
+
+	Nobody wants to review my patch because everyone hates me.  This
+	fixes the weird file/directory checks we were doing by using the
+	new softcat fields to determine which ones are directories.  No
+	more guesswork.  Also there's a softcat bug which causes the file
+	list to sometimes contain repeated filenames, so this patch does a
+	workaround for that too.
+
+	* components/services/trilobite/doc/gconf.txt:
+
+	Fix my dumb typo: jump-url is not a bool.
+	
 2001-02-16  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 6606, only show user-mountable volumes in Disks menu

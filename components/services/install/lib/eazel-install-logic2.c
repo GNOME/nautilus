@@ -1383,14 +1383,6 @@ check_no_two_packages_has_same_file (EazelInstall *service,
 		for (iter_file = g_list_first (pack->provides); iter_file != NULL; iter_file = g_list_next (iter_file)) {
 			filename = (char *)(iter_file->data);
 
-			/* FIXME: bugzilla.eazel.com 5720
-			   this is a patch to circumvent unwanted behaviour.
-			   Softcat doens't strip directories when giving NO_DIRS_IN_PROVIDES as fillflag,
-			   till it does, I use this check */
-			if (g_file_test (filename, G_FILE_TEST_ISDIR)) {
-				continue;
-			}
-
 			pack_other = g_hash_table_lookup (file_table, filename);
 			if (pack_other != NULL) {
 				/* Dang, this file is provided by both 'pack' and 'pack_other' */

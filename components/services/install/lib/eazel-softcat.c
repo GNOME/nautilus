@@ -119,7 +119,8 @@ eazel_softcat_class_initialize (EazelSoftCatClass *klass)
 }
 
 static void
-eazel_softcat_initialize (EazelSoftCat *softcat) {
+eazel_softcat_initialize (EazelSoftCat *softcat)
+{
 	g_assert (softcat != NULL);
 	g_assert (EAZEL_IS_SOFTCAT (softcat));
 
@@ -586,35 +587,22 @@ get_search_url_for_package (EazelSoftCat *softcat, const PackageData *package, i
 }
 
 
-static gboolean
-is_filename_probably_a_directory (const char *filename, const GList *provides)
-{
-	const GList *iter;
-	gboolean is_dir = FALSE;
-
-	for (iter = g_list_first ((GList *)provides); iter != NULL; iter = g_list_next (iter)) {
-		const char *filename2 = (const char *)(iter->data);
-		/* substring match is not sufficient (think of "libfoo.so.0" & "libfoo.so.0.0") */
-		if ((strlen (filename2) > strlen (filename)) &&
-		    (strncmp (filename, filename2, strlen (filename)) == 0) &&
-		    (filename2[strlen (filename)] == '/')) {
-			is_dir = TRUE;
-			break;
-		}
-	}
-	return is_dir;
-}
-
-/* this doesn't completely workaround forseti bug 1279 :( */
+/* directories will end with '/' */
+/* TEMPORARY FIXME: to work around a very odd bug in softcat, throw away duplicate filenames */
 static void
 remove_directories_from_provides_list (PackageData *pack)
 {
 	GList *iter, *next_iter;
+	GList *newlist;
+	char *filename;
 
+	newlist = NULL;
 	for (iter = g_list_first (pack->provides); iter != NULL; ) {
-		if (is_filename_probably_a_directory ((char *)(iter->data), pack->provides)) {
-			next_iter = iter->prev;
+		filename = (char *)(iter->data);
 
+		if ((filename != NULL) && (filename[0] != '\0') &&
+		    (filename[strlen (filename)-1] == '/')) {
+			next_iter = iter->prev;
 			g_free (iter->data);
 			pack->provides = g_list_remove (pack->provides, iter->data);
 			iter = next_iter;
@@ -622,9 +610,17 @@ remove_directories_from_provides_list (PackageData *pack)
 				iter = g_list_first (pack->provides);
 			}
 		} else {
+			if (g_list_find_custom (newlist, filename, (GCompareFunc)strcmp) == NULL) {
+				newlist = g_list_prepend (newlist, g_strdup (filename));
+			}
 			iter = g_list_next (iter);
 		}
 	}
+
+	/* replace old pack->provides with newlist */
+	g_list_foreach (pack->provides, (GFunc)g_free, NULL);
+	g_list_free (pack->provides);
+	pack->provides = newlist;
 }
 
 EazelSoftCatError
@@ -738,7 +734,9 @@ eazel_softcat_get_info (EazelSoftCat *softcat, PackageData *package, int sense_f
 
 	full_package = PACKAGEDATA (packages->data);
 	packagedata_fill_in_missing (package, full_package, fill_flags);
-	remove_directories_from_provides_list (package);
+	if (fill_flags & PACKAGE_FILL_NO_DIRS_IN_PROVIDES) {
+		remove_directories_from_provides_list (package);
+	}
 	g_list_foreach (packages, (GFunc)gtk_object_unref, NULL);
 	g_list_free (packages);
 	return err;
