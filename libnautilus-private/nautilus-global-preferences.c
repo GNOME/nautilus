@@ -1039,7 +1039,7 @@ global_preferences_register (void)
 		hacker_home_location = g_strdup_printf ("file://%s", g_get_home_dir());
 		
 		global_preferences_register_string_with_defaults (NAUTILUS_PREFERENCES_HOME_URI,
-								  "Home Location",
+								  _("Home Location"),
 								  novice_home_location,
 								  intermediate_home_location,
 								  hacker_home_location);
