@@ -105,7 +105,7 @@ register_later_cb (GtkWidget *button, NautilusServicesContentView *view)
 	gchar* home_path = get_home_uri(); 
   	memset(&nri, 0, sizeof(nri));
   	nri.requested_uri = home_path;
-  	nautilus_view_frame_request_location_change((NautilusContentViewFrame*)view->details->view_frame, &nri);
+  	nautilus_view_frame_request_location_change((NautilusViewFrame*)view->details->view_frame, &nri);
 	g_free(home_path);
 }
 
