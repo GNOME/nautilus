@@ -34,7 +34,7 @@ typedef struct
   guint motion_notify_handler;
   guint button_release_handler;
   guint drag_data_get_handler;
-  GdkEvent *press_event;
+  GSList *events;
 } EggTreeMultiDndData;
 
 /* CUT-N-PASTE from gtktreeview.c */
@@ -165,15 +165,17 @@ static void
 stop_drag_check (GtkWidget *widget)
 {
   EggTreeMultiDndData *priv_data;
+  GSList *l;
 
   priv_data = g_object_get_data (G_OBJECT (widget), EGG_TREE_MULTI_DND_STRING);
-
-  gdk_event_free (priv_data->press_event);
-  priv_data->press_event = NULL;
+  
+  for (l = priv_data->events; l != NULL; l = l->next)
+    gdk_event_free (l->data);
+  
+  g_slist_free (priv_data->events);
+  priv_data->events = NULL;
   g_signal_handler_disconnect (widget, priv_data->motion_notify_handler);
   g_signal_handler_disconnect (widget, priv_data->button_release_handler);
-  /* FIXME */
-/*  g_signal_handler_disconnect (widget, priv_data->drag_data_get_handler);*/
 }
 
 static gboolean
@@ -182,10 +184,12 @@ egg_tree_multi_drag_button_release_event (GtkWidget      *widget,
 					  gpointer        data)
 {
   EggTreeMultiDndData *priv_data;
+  GSList *l;
 
   priv_data = g_object_get_data (G_OBJECT (widget), EGG_TREE_MULTI_DND_STRING);
 
-  gtk_propagate_event (widget, priv_data->press_event);
+  for (l = priv_data->events; l != NULL; l = l->next) 
+    gtk_propagate_event (widget, l->data);
   
   stop_drag_check (widget);
 
@@ -343,9 +347,6 @@ egg_tree_multi_drag_button_press_event (GtkWidget      *widget,
   GtkTreeSelection *selection;
   EggTreeMultiDndData *priv_data;
 
-  if (event->type == GDK_2BUTTON_PRESS)
-    return FALSE;
-
   tree_view = GTK_TREE_VIEW (widget);
   priv_data = g_object_get_data (G_OBJECT (tree_view), EGG_TREE_MULTI_DND_STRING);
   if (priv_data == NULL)
@@ -354,7 +355,17 @@ egg_tree_multi_drag_button_press_event (GtkWidget      *widget,
       g_object_set_data (G_OBJECT (tree_view), EGG_TREE_MULTI_DND_STRING, priv_data);
     }
 
-  if ((GdkEvent *) event == priv_data->press_event)
+  if (g_slist_find (priv_data->events, event)) 
+    return FALSE;
+
+  if (priv_data->events) 
+    {
+      /* save the event to be propagated in order */
+      priv_data->events = g_slist_append (priv_data->events, gdk_event_copy ((GdkEvent*)event));
+      return TRUE;
+    }
+  
+  if (event->type == GDK_2BUTTON_PRESS)
     return FALSE;
 
   gtk_tree_view_get_path_at_pos (tree_view,
@@ -369,7 +380,7 @@ egg_tree_multi_drag_button_press_event (GtkWidget      *widget,
       priv_data->pressed_button = event->button;
       priv_data->x = event->x;
       priv_data->y = event->y;
-      priv_data->press_event = gdk_event_copy ((GdkEvent *)event);
+      priv_data->events = g_slist_append (priv_data->events, gdk_event_copy ((GdkEvent*)event));
       priv_data->motion_notify_handler =
 	g_signal_connect (G_OBJECT (tree_view), "motion_notify_event", G_CALLBACK (egg_tree_multi_drag_motion_event), NULL);
       priv_data->button_release_handler =
