@@ -1,5 +1,29 @@
 2000-02-15  John Sullivan <sullivan@eazel.com>
 
+	History metaview now lists all locations visited in this
+	session, from most recent (top) to longest ago, with no
+	duplicates.
+
+	* components/history/ntl-history-view.c:
+	Removed last_row field from HistoryView struct. This was used
+	to keep track of previously-visited location, but since the most
+	recently-visited location is always first now, this is always 0.
+	(get_bookmark_from_row): New helper function to extract the bookmark
+	stored in the row data.
+	(get_uri_from_row): Use get_bookmark_from_row.
+	(hyperbola_navigation_history_notify_location_change):
+	Remove existing row for this location, if any, and then prepend
+	new row. Replaces back/forward/reload logic that wasn't quite right
+	anyway.
+	(hyperbola_navigation_history_select_row): Move gtk_clist_freeze
+	after early bail-out; change bail-out to just check for row 0;
+	remove setting of last_row; add comment about dragging bug.
+	(menu_setup): Change menu item from "Do nothing" to 
+	"Do nothing (menu merge test)" for clarity.
+	(make_obj) Remove initialization for last_row.
+
+2000-02-15  John Sullivan <sullivan@eazel.com>
+
 	Added small icons to history metaview.
 
 	* components/history/ntl-history-view.c:

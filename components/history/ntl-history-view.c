@@ -39,7 +39,7 @@ typedef struct {
 
   GtkCList *clist;
 
-  gint notify_count, last_row;
+  gint notify_count;
 
   BonoboUIHandler *uih;
 } HistoryView;
@@ -48,14 +48,17 @@ typedef struct {
 #define HISTORY_VIEW_COLUMN_NAME	1
 #define HISTORY_VIEW_COLUMN_COUNT	2
 
+static const NautilusBookmark *
+get_bookmark_from_row (GtkCList *clist, int row)
+{
+  g_assert (NAUTILUS_IS_BOOKMARK (gtk_clist_get_row_data (clist, row)));
+  return NAUTILUS_BOOKMARK (gtk_clist_get_row_data (clist, row));  
+}
+
 static const char *
 get_uri_from_row (GtkCList *clist, int row)
 {
-  NautilusBookmark *bookmark;
-  
-  g_assert (NAUTILUS_IS_BOOKMARK (gtk_clist_get_row_data (clist, row)));
-  bookmark = NAUTILUS_BOOKMARK (gtk_clist_get_row_data (clist, row));
-  return nautilus_bookmark_get_uri (bookmark);
+  return nautilus_bookmark_get_uri (get_bookmark_from_row (clist, row));
 }
 
 
@@ -89,64 +92,40 @@ hyperbola_navigation_history_notify_location_change (NautilusViewFrame *view,
   int new_rownum;
   GtkCList *clist;
   NautilusBookmark *bookmark;
+  int i;
 
   hview->notify_count++;
 
   clist = hview->clist;
-
-  if(hview->last_row >= 0)
-    {
-      const char *uri;
-      int i, j;
-
-      /* If we are moving 'forward' in history, must either just
-	 select a new row that is farther ahead in history, or delete
-	 all the history ahead of this point */
-
-      for(i = -1; i <= 1; i++)
-	{
-	  if((hview->last_row + i) < 0)
-	    continue;
-
-	  /* FIXME: This is checking for back/reload/forward, by checking
-	   * "nearby" uris in the list. This isn't really correct (it doesn't
-	   * distinguish using the back/forward UI from coincidentally revisiting
-	   * one of those pages, like web browsers do). It also doesn't handle
-	   * cases where the user went to an arbitrary item in the back or
-	   * forward list. That information is not currently being passed around,
-	   * but will need to be to get the exact right behavior.
-	   */
-	   
-	  if (hview->last_row + i >= clist->rows)
-	    continue;
-	  
-	  uri = get_uri_from_row (clist, hview->last_row + i);
-	  if(!strcmp(uri, loci->requested_uri))
-	    {
-	      hview->last_row = new_rownum = hview->last_row + i;
-	      goto skip_prepend;
-	    }
-	}
-
-      for(j = 0; j < hview->last_row; j++)
-	gtk_clist_remove(clist, 0);
-    }
+  gtk_clist_freeze(clist);
 
   bookmark = nautilus_bookmark_new (loci->requested_uri, loci->requested_uri);
 
-  gtk_clist_freeze(clist);
+  /* If a bookmark for this location was already in list, remove it
+   * (no duplicates in list, new one goes at top)
+   */
+  for (i = 0; i < clist->rows; ++i)
+    {
+      if (nautilus_bookmark_compare_with (get_bookmark_from_row (clist, i), 
+      					  bookmark)
+      		== 0)
+        {
+          gtk_clist_remove (clist, i);
+          /* Since we check with each insertion, no need to check further */
+          break;
+        }
+    }
+
   cols[HISTORY_VIEW_COLUMN_ICON] = NULL;
   /* Ugh. Gotta cast away the const */
   cols[HISTORY_VIEW_COLUMN_NAME] = (char *)nautilus_bookmark_get_name (bookmark);
-  hview->last_row = new_rownum = gtk_clist_prepend(clist, cols);
+  new_rownum = gtk_clist_prepend(clist, cols);
   gtk_clist_set_row_data_full (clist,
   			       new_rownum,
   			       bookmark,
   			       (GtkDestroyNotify)gtk_object_unref);
   install_icon (clist, bookmark, new_rownum);
 
-
- skip_prepend:
   gtk_clist_columns_autosize(clist);
 
   if(gtk_clist_row_is_visible(clist, new_rownum) != GTK_VISIBILITY_FULL)
@@ -168,12 +147,13 @@ hyperbola_navigation_history_select_row(GtkCList *clist, gint row, gint column, 
   if(hview->notify_count > 0)
     return;
 
+  /* First row is always current location, by definition, so don't activate */
+  if (row == 0)
+      return;
+
+  /* FIXME: There are bugs here if you drag up & down */
+
   gtk_clist_freeze(clist);
-
-  if(hview->last_row == row)
-    return;
-
-  hview->last_row = row;
 
   if(gtk_clist_row_is_visible(clist, row) != GTK_VISIBILITY_FULL)
     gtk_clist_moveto(clist, row, -1, 0.5, 0.0);
@@ -204,7 +184,7 @@ menu_setup(BonoboObject *ctl, HistoryView *hview)
 {
   Bonobo_UIHandler remote_uih;
   GnomeUIInfo history_menu[] = {
-    GNOMEUIINFO_MENU_NEW_ITEM("_Do nothing", "Testing", NULL, NULL),
+    GNOMEUIINFO_MENU_NEW_ITEM("_Do nothing (menu merge test)", "Testing", NULL, NULL),
     GNOMEUIINFO_END
   };
 
@@ -227,7 +207,6 @@ static BonoboObject * make_obj(BonoboGenericFactory *Factory, const char *goad_i
   g_return_val_if_fail(!strcmp(goad_id, "ntl_history_view"), NULL);
 
   hview = g_new0(HistoryView, 1);
-  hview->last_row = -1;
   frame = gtk_widget_new(nautilus_meta_view_frame_get_type(), NULL);
   gtk_signal_connect(GTK_OBJECT(frame), "destroy", do_destroy, NULL);
   object_count++;
