@@ -76,6 +76,8 @@ static char * up_xpm[] = {
 	"......"
 };
 
+#define COLUMN_TITLE_THEME_STYLE_NAME "menu"
+
 struct NautilusListColumnTitleDetails 
 {
 	/* gc for blitting sort order pixmaps, lazily allocated */
@@ -84,6 +86,14 @@ struct NautilusListColumnTitleDetails
  	/* sort order indicator pixmaps, lazily allocated */
  	GnomePixmap *up_indicator;
  	GnomePixmap *down_indicator;
+
+	/* offscreen drawing support */
+	/* FIXME: consolidate this into it's own class once I figure out all the
+	 * details
+	 */
+ 	GtkWidget *offscreen_widget;
+ 	GdkPixmap *offscreen_pixmap;
+ 	GdkGC *offscreen_blitting_gc;
 
 	int tracking_column_resize;
 		/* index of the column we are currently tracking or -1 */
@@ -95,11 +105,12 @@ struct NautilusListColumnTitleDetails
 	int last_tracking_x;
 		/* last horizontal track point so we can only resize when needed */
  	gboolean resize_cursor_on;
+
 };
 
 static void nautilus_list_column_title_initialize_class	(gpointer klass);
 static void nautilus_list_column_title_initialize       (gpointer object, gpointer klass);
-static void nautilus_list_column_title_paint		(GtkWidget *widget, GdkRectangle *area);
+static void nautilus_list_column_title_paint		(GtkWidget *widget, GtkWidget *draw_target, GdkDrawable *target_drawable, GdkRectangle *area);
 static void nautilus_list_column_title_draw 		(GtkWidget *widget, GdkRectangle *box);
 static void nautilus_list_column_title_buffered_draw	(GtkWidget *widget);
 static gboolean nautilus_list_column_title_expose 	(GtkWidget *widget, GdkEventExpose *event);
@@ -155,6 +166,9 @@ nautilus_list_column_title_initialize (gpointer object, gpointer klass)
 	column_title->details->copy_area_gc = NULL;
 	column_title->details->up_indicator = NULL;
 	column_title->details->down_indicator = NULL;
+	column_title->details->offscreen_widget = NULL;
+	column_title->details->offscreen_pixmap = NULL;
+	column_title->details->offscreen_blitting_gc = NULL;
 
 	column_title->details->resize_cursor_on = FALSE;
 	column_title->details->tracking_column_resize = -1;
@@ -212,14 +226,23 @@ nautilus_list_column_title_finalize (GtkObject *object)
 
 	column_title = NAUTILUS_LIST_COLUMN_TITLE(object);
 
-	if (column_title->details->up_indicator != NULL)
+	if (column_title->details->up_indicator != NULL) {
 		gtk_widget_destroy (GTK_WIDGET (column_title->details->up_indicator));
-	if (column_title->details->down_indicator != NULL)
+	}
+	if (column_title->details->down_indicator != NULL) {
 		gtk_widget_destroy (GTK_WIDGET (column_title->details->down_indicator));
+	}
 
-	/* FIXME:
-	 * figure out if we need to delete the copy_area_gc here
-	 */
+	if (column_title->details->offscreen_widget != NULL) {
+		gdk_pixmap_unref (column_title->details->offscreen_pixmap);
+		gtk_widget_unref (column_title->details->offscreen_widget);
+		gdk_gc_destroy (column_title->details->offscreen_blitting_gc);
+		
+	}
+
+	if (column_title->details->copy_area_gc != NULL) {
+		gdk_gc_destroy (column_title->details->copy_area_gc);
+	}
 
 	g_free (column_title->details);
 	
@@ -310,7 +333,8 @@ enum {
 };
 
 static void
-nautilus_list_column_title_paint (GtkWidget *widget, GdkRectangle *area)
+nautilus_list_column_title_paint (GtkWidget *widget, GtkWidget *draw_target, 
+				  GdkDrawable *target_drawable, GdkRectangle *area)
 {
 	NautilusListColumnTitle *column_title;
 	GtkCList *parent_clist;
@@ -360,16 +384,16 @@ nautilus_list_column_title_paint (GtkWidget *widget, GdkRectangle *area)
 			text_x_offset = cell_rectangle.x + CELL_TITLE_INSET;
 		}
 
-		/* Paint the column title tiles as rectangles using "menu" style 
-		 * buttons as used by GtkCList produce round corners in some themes.
+		/* Paint the column title tiles as rectangles using "menu" (COLUMN_TITLE_THEME_STYLE_NAME)
+		 * style buttons as used by GtkCList produce round corners in some themes.
 		 * Eventually we might consider having a separate style for column titles
 		 */
-		gtk_paint_box (widget->style, widget->window,
+		gtk_paint_box (widget->style, target_drawable,
 			       column_title->details->tracking_column_prelight == index ? 
 			       		GTK_STATE_PRELIGHT : GTK_STATE_NORMAL,
 			       column_title->details->tracking_column_press == index ? 
 			       		GTK_SHADOW_IN : GTK_SHADOW_OUT,
-			       area, widget, "menu",
+			       area, draw_target, COLUMN_TITLE_THEME_STYLE_NAME,
 			       cell_rectangle.x, cell_rectangle.y, 
 			       cell_rectangle.width, cell_rectangle.height);
 
@@ -398,13 +422,23 @@ nautilus_list_column_title_paint (GtkWidget *widget, GdkRectangle *area)
 			gdk_gc_set_clip_origin (column_title->details->copy_area_gc, sort_indicator_x_offset, y_offset);
 
 
-			gdk_draw_pixmap (widget->window, column_title->details->copy_area_gc, 
+			gdk_draw_pixmap (target_drawable, column_title->details->copy_area_gc, 
 					 sort_indicator->pixmap, 0, 0, sort_indicator_x_offset, y_offset, 
 					 -1, -1);
 
 		}
 			
 		if (cell_label) {
+			/* extend the redraw area vertically to contain the entire cell 
+			 * -- seems like if I don't do this, for short exposed areas no text
+			 * will get drawn
+			 * this happens when the title is half off-screen and you move it up by a pixel or two;
+			 * if you move it up faster, it gets redrawn properly
+			 */
+			cell_redraw_area.y = cell_rectangle.y;
+			cell_redraw_area.height = cell_rectangle.height;
+
+
 			/* clip a little more than the cell rectangle to
 			 * not have the text draw over the cell broder
 			 * (this might no longer be needed when the 
@@ -416,8 +450,8 @@ nautilus_list_column_title_paint (GtkWidget *widget, GdkRectangle *area)
 				text_x_offset -= gdk_string_width (widget->style->font, cell_label) + 4;
 			}
 
-			gtk_paint_string (widget->style, widget->window, GTK_STATE_NORMAL,
-					  &cell_redraw_area, widget, "label", 
+			gtk_paint_string (widget->style, target_drawable, GTK_STATE_NORMAL,
+					  &cell_redraw_area, draw_target, "label", 
 					  text_x_offset,
 					  cell_rectangle.y + cell_rectangle.height - TITLE_BASELINE_OFFSET,
 					  cell_label);
@@ -435,25 +469,74 @@ nautilus_list_column_title_draw (GtkWidget *widget, GdkRectangle *area)
 		return;
 	}
 
-	nautilus_list_column_title_paint (widget, area);
+	nautilus_list_column_title_paint (widget, widget, widget->window, area);
 }
 
 static void
 nautilus_list_column_title_buffered_draw (GtkWidget *widget)
 {
-	/* draw using an offscreen bitmap
-	 * for now just draw directly
-	 * add code here to lazily allocate an offscreen and pass it to the paint call
-	 * without the offscreen you can now see a funny artifact when part of the
-	 * old column border does not get erased properly when shrinking a column
-	 */
+	/* draw using an offscreen_widget bitmap */
 	GdkRectangle redraw_area;
+	NautilusListColumnTitle *column_title;
+
+	column_title = NAUTILUS_LIST_COLUMN_TITLE(widget);
+	
 	redraw_area.x = widget->allocation.x;
 	redraw_area.y = widget->allocation.y;
 	redraw_area.width = widget->allocation.width;
 	redraw_area.height = widget->allocation.height;
+	
+	if (column_title->details->offscreen_widget != NULL
+	    && (column_title->details->offscreen_widget->allocation.x < redraw_area.x
+		|| column_title->details->offscreen_widget->allocation.y < redraw_area.y
+		|| column_title->details->offscreen_widget->allocation.width > redraw_area.width
+		|| column_title->details->offscreen_widget->allocation.height > redraw_area.height)) {
+		/* existing offscreen_widget not large enough, need to
+		 * allocate a new one, get rid of the old one first
+		 */
+		gdk_pixmap_unref (column_title->details->offscreen_pixmap);
+		gtk_widget_unref (column_title->details->offscreen_widget);
+		column_title->details->offscreen_widget = NULL;
+	}
+	
+	if (column_title->details->offscreen_widget == NULL) {
+		/* allocate a new offscreen_widget */
+		column_title->details->offscreen_pixmap = gdk_pixmap_new (widget->window, 
+									  redraw_area.width, 
+									  redraw_area.height, -1);
+		column_title->details->offscreen_widget = 
+			gtk_type_new (gtk_widget_get_type ());
 
-	nautilus_list_column_title_draw (widget, &redraw_area);
+		gdk_window_set_user_data (column_title->details->offscreen_pixmap, 
+					  column_title->details->offscreen_widget);
+		gtk_widget_show (column_title->details->offscreen_widget);
+	}
+
+
+	/* Erase the offscreen background.
+	 * We are using the GtkStyle call to draw the background - this is a tiny bit
+	 * less efficient but gives us the convenience of setting up the right colors and
+	 * gc for the style we are using to blit the column titles.
+	 */
+	gtk_paint_box (widget->style, column_title->details->offscreen_pixmap,
+		       GTK_STATE_NORMAL, GTK_SHADOW_OUT,
+		       &redraw_area, column_title->details->offscreen_widget, 
+		       COLUMN_TITLE_THEME_STYLE_NAME,
+		       redraw_area.x, redraw_area.y, 
+		       redraw_area.width, redraw_area.height);
+
+	/* render the column titles into the offscreen */
+	nautilus_list_column_title_paint (widget, column_title->details->offscreen_widget, 
+		column_title->details->offscreen_pixmap, &redraw_area);
+
+	if (column_title->details->offscreen_blitting_gc == NULL)
+		/* allocate a gc to blit the offscreen if needed */
+		column_title->details->offscreen_blitting_gc = gdk_gc_new (widget->window);
+
+	/* blit the offscreen into the real view */
+	gdk_draw_pixmap (widget->window, column_title->details->offscreen_blitting_gc, 
+			 column_title->details->offscreen_pixmap, 
+			 0, 0, 0, 0, -1, -1);
 }
 
 static gboolean
@@ -461,12 +544,12 @@ nautilus_list_column_title_expose (GtkWidget *widget, GdkEventExpose *event)
 {
 	g_assert (NAUTILUS_IS_LIST_COLUMN_TITLE (widget));
 	g_assert (event != NULL);
-
+	
 	if (!GTK_WIDGET_DRAWABLE (widget)) {
 		return FALSE;
 	}
 
-	nautilus_list_column_title_paint (widget, &event->area);
+	nautilus_list_column_title_paint (widget, widget, widget->window, &event->area);
 
 	return FALSE;
 }
@@ -592,12 +675,14 @@ nautilus_list_column_title_motion (GtkWidget *widget, GdkEventMotion *event)
 	NautilusListColumnTitle *column_title;
 	GtkWidget *parent_list;
 	int mouse_x, mouse_y;
+	gboolean title_update_needed;
 	
 	g_assert (GTK_FLIST (widget->parent) != NULL);
 	g_assert (NAUTILUS_IS_LIST_COLUMN_TITLE (widget));
 
 	column_title = NAUTILUS_LIST_COLUMN_TITLE(widget);
 	parent_list = GTK_WIDGET (widget->parent);
+	title_update_needed = FALSE;
 
 	gdk_window_get_pointer (widget->window, &mouse_x, &mouse_y, NULL);
 
@@ -609,6 +694,7 @@ nautilus_list_column_title_motion (GtkWidget *widget, GdkEventMotion *event)
 			(GTK_FLIST_CLASS (NAUTILUS_KLASS (parent_list)))->
 				column_resize_track (parent_list, 
 					column_title->details->tracking_column_resize);
+			title_update_needed = TRUE;
 		}
 	} else {
 		/* make sure we are showing the right cursor */
@@ -617,7 +703,9 @@ nautilus_list_column_title_motion (GtkWidget *widget, GdkEventMotion *event)
 	}
 
 	/* see if we need to update the prelight state of a column */
-	if (track_prelight (widget, mouse_x, mouse_y)) {
+	title_update_needed |= track_prelight (widget, mouse_x, mouse_y);
+
+	if (title_update_needed) {
 		nautilus_list_column_title_buffered_draw (widget);
 	}
 

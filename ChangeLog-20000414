@@ -1,3 +1,23 @@
+2000-03-20  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus/nautilus-list-column-title.c
+	(nautilus_list_column_title_paint), (nautilus_list_column_title_draw),
+	(nautilus_list_column_title_buffered_draw),
+	(nautilus_list_column_title_expose):
+	Use an offscreen bitmap to draw the column title during column resizing
+	and column prelighting.
+
+	* libnautilus/nautilus-list-column-title.c
+	(nautilus_list_column_title_finalize):
+	Clean up properly - destroy a gc used to blit the sort order indicators
+	
+	* libnautilus/gtkflist.c
+	* libnautilus/nautilus-list-column-title.c
+	(gtk_flist_track_new_column_width),
+	(nautilus_list_column_title_motion):
+	Remove the column title update from the flist, have the mouse tracking 
+	routine in the list column title take care of it.
+	
 2000-03-17  Darin Adler  <darin@eazel.com>
 
 	Fixed the "tall line of icons" bug.

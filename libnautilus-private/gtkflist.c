@@ -1134,7 +1134,6 @@ static void
 gtk_flist_track_new_column_width (GtkCList *clist, int column, int new_width)
 {
 	GtkFList *flist;
-	GdkRectangle title_redraw_area;
 
 	flist = GTK_FLIST (clist);
 
@@ -1167,18 +1166,6 @@ gtk_flist_track_new_column_width (GtkCList *clist, int column, int new_width)
 
 		draw_rows (clist, &area);
 	}
-
-	/* draw the column title
-	 * ToDo:
-	 * fix this up
-	 */
-	title_redraw_area.x = GTK_WIDGET (flist->details->title)->allocation.x;
-	title_redraw_area.y = GTK_WIDGET (flist->details->title)->allocation.y;
-	title_redraw_area.width = GTK_WIDGET (flist->details->title)->allocation.width;
-	title_redraw_area.height = GTK_WIDGET (flist->details->title)->allocation.height;
-
-	(GTK_WIDGET_CLASS (NAUTILUS_KLASS (flist->details->title)))->
-		draw (flist->details->title, &title_redraw_area);
 }
 
 /* Our handler for motion_notify events.  We override all of GtkCList's broken
