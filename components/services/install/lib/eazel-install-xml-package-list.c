@@ -240,7 +240,7 @@ generate_xml_package_list (const char* pkg_template_file,
 
 		package_array = g_strsplit (entry_array[index], ":", 7);
 
- /* FIXME this has no error control right now.  It needs to be improved alot.  */
+ /* FIXME bugzilla.eazel.com 1283: this has no error control right now.  It needs to be improved alot.  */
  
 		if ((doc->root->childs == NULL) ||
 		   (xmlGetProp (doc->root->childs, package_array[0]))) {
@@ -263,7 +263,9 @@ generate_xml_package_list (const char* pkg_template_file,
 		return FALSE;
 	}
 
-	/* FIXME this should check to see if target_file already exists and save a copy. */
+	/* FIXME bugzilla.eazel.com 1284: 
+	 * this should check to see if target_file already exists and save a copy. 
+	 */
 
 	xmlSaveFile (target_file, doc);
 	xmlFreeDoc (doc);

@@ -292,7 +292,8 @@ nautilus_user_level_manager_get_user_level (void)
 	gint			 index;
 
 	user_level_string = nautilus_user_level_manager_get_user_level_as_string ();
-	/* FIXME: Asserting based on something that's read from GConf
+	/* FIXME bugzilla.eazel.com 1293: 
+	 * Asserting based on something that's read from GConf
 	 * seems like a bad idea. It means we core dump if
 	 * something's wrong.
 	 */
@@ -303,7 +304,8 @@ nautilus_user_level_manager_get_user_level (void)
 
 	g_free (user_level_string);
 
-	/* FIXME: Asserting based on something that's read from GConf
+	/* FIXME bugzilla.eazel.com 1293: 
+	 * Asserting based on something that's read from GConf
 	 * seems like a bad idea. It means we core dump if
 	 * something's wrong.
 	 */

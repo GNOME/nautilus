@@ -134,7 +134,7 @@ eazel_install_destroy (GtkObject *object)
 
 	service = EAZEL_INSTALL (object);
 
-	/* FIXME 
+	/* FIXME bugzilla.eazel.com 1282.
 	   implement this properly */
 	g_message ("in eazel_install_destroy");
 }

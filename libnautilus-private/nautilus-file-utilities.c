@@ -153,10 +153,14 @@ nautilus_get_user_main_directory (void)
 
 			src = gnome_datadir_file ("nautilus/top");
 
-			/* FIXME: Is it OK to use cp like this? What about quoting the parameters? */
+			/* FIXME bugzilla.eazel.com 1285: 
+			 * Is it OK to use cp like this? What about quoting the parameters? 
+			 */
 			command = g_strdup_printf ("cp -R %s %s", src, user_main_directory);
 
-			/* FIXME: Is a g_warning good enough here? This seems like a big problem. */
+			/* FIXME bugzilla.eazel.com 1286: 
+			 * Is a g_warning good enough here? This seems like a big problem. 
+			 */
 			if (system (command) != 0) {
 				g_warning ("could not execute '%s'.  Make sure you typed 'make install'", 
 					   command);

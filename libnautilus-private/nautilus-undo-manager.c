@@ -244,7 +244,7 @@ nautilus_undo_manager_undo (NautilusUndoManager *manager)
 	
 	/* Place transaction into redo list */
 	if (manager->details->enable_redo) {
-		/* FIXME: Implement redo. */
+		/* FIXME bugzilla.eazel.com 1290: Implement redo. */
 		/* nautilus_undo_manager_add_redo_transaction (undo_transaction); */
 	} else {
 		/* Purge transaction */

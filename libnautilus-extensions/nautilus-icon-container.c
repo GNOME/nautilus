@@ -2843,8 +2843,8 @@ nautilus_icon_container_add (NautilusIconContainer *container,
 
 	details = container->details;
 
-	/* FIXME: I guess we need to use an indexed data structure to
-	 * avoid this loop.
+	/* FIXME bugzilla.eazel.com 1288: 
+	 * I guess we need to use an indexed data structure to avoid this loop.
 	 */
 	for (p = details->icons; p != NULL; p = p->next) {
 		icon = p->data;
@@ -2919,8 +2919,8 @@ nautilus_icon_container_remove (NautilusIconContainer *container,
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), FALSE);
 	g_return_val_if_fail (data != NULL, FALSE);
 
-	/* FIXME: I guess we need to use an indexed data structure to
-	 * avoid this loop.
+	/* FIXME bugzilla.eazel.com 1288: 
+	 * I guess we need to use an indexed data structure to avoid this loop.
 	 */
 	for (p = container->details->icons; p != NULL; p = p->next) {
 		icon = p->data;

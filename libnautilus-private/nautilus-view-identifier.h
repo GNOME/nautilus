@@ -25,7 +25,8 @@
 #ifndef NAUTILUS_VIEW_IDENTIFIER_H
 #define NAUTILUS_VIEW_IDENTIFIER_H
 
-/* FIXME: Without this define liboaf doesn't include popt.h, causing trouble
+/* FIXME bugzilla.eazel.com 1291: 
+ * Without this define liboaf doesn't include popt.h, causing trouble
  * later; this mechanism should be fixed. 
  */
 #define HAVE_POPT_H

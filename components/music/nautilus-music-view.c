@@ -419,7 +419,7 @@ release_song_info (SongInfo *info)
 }
 
 /* determine if the passed in filename is an mp3 file by looking at the extension */
-/* FIXME: use mime-type for this? */
+/* FIXME bugzilla.eazel.com 1281: use mime-type for this? */
 static gboolean
 is_mp3_file(const char *song_uri)
 {
@@ -1260,7 +1260,7 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 						GNOME_VFS_FILE_INFO_GETMIMETYPE, 
 						NULL, NULL);
 	if (result != GNOME_VFS_OK) {
-		/* FIXME: need to show an alert here */
+		/* FIXME bugzilla.eazel.com 1280: need to show an alert here */
 		g_warning("cant open %s in music_view_update", uri);		
 		return;
 	}
