@@ -345,6 +345,14 @@ go_menu_start_here_callback (BonoboUIComponent *component,
 }
 
 static void
+forget_history_if_yes (GtkDialog *dialog, int response, gpointer callback_data)
+{
+	if (response == GTK_RESPONSE_YES) {
+		nautilus_forget_history ();
+	}
+}
+
+static void
 forget_history_if_confirmed (NautilusWindow *window)
 {
 	GtkDialog *dialog;
@@ -366,22 +374,16 @@ forget_history_if_confirmed (NautilusWindow *window)
 	}
 					   
 	dialog = eel_show_yes_no_dialog (prompt,
-					 _("Forget History?"),
-					 _("Forget"),
-					 _("Cancel"),
+					 _("Forget History?"), _("Forget"), GTK_STOCK_CANCEL,
 					 GTK_WINDOW (window));
 	g_free (prompt);					 
 	
-#if GNOME2_CONVERSION_COMPLETE
-	gtk_signal_connect
-		(GTK_OBJECT (eel_gnome_dialog_get_button_by_index
-			     (dialog, GNOME_OK)),
-		 "clicked",
-		 nautilus_forget_history,
-		 NULL);
-
-	gnome_dialog_set_default (dialog, GNOME_CANCEL);
-#endif
+	g_signal_connect (GTK_OBJECT (dialog),
+			  "response",
+			  G_CALLBACK (forget_history_if_yes),
+			  NULL);
+	
+	gtk_dialog_set_default_response (dialog, GTK_RESPONSE_NO);
 }
 
 static void
@@ -777,21 +779,19 @@ user_level_menu_item_callback (BonoboUIComponent *component,
 	switch_to_user_level (window, convert_verb_to_user_level (verb));
 }
 
-#if GNOME2_CONVERSION_COMPLETE
-
 static void
-remove_bookmarks_for_uri (GtkWidget *button, gpointer callback_data)
+remove_bookmarks_for_uri_if_yes (GtkDialog *dialog, int response, gpointer callback_data)
 {
 	const char *uri;
 
-	g_assert (GTK_IS_WIDGET (button));
+	g_assert (GTK_IS_DIALOG (dialog));
 	g_assert (callback_data != NULL);
 
-	uri = callback_data;
-	nautilus_bookmark_list_delete_items_with_uri (get_bookmark_list (), uri);
+	if (response == GTK_RESPONSE_YES) {
+		uri = callback_data;
+		nautilus_bookmark_list_delete_items_with_uri (get_bookmark_list (), uri);
+	}
 }
-
-#endif
 
 static void
 show_bogus_bookmark_window (BookmarkHolder *holder)
@@ -810,20 +810,16 @@ show_bogus_bookmark_window (BookmarkHolder *holder)
 					    "location from your list?"), uri_for_display);
 		dialog = eel_show_yes_no_dialog (prompt,
 						 _("Bookmark for Nonexistent Location"),
-						 _("Remove"),
-						 _("Cancel"),
+						 _("Remove"), GTK_STOCK_CANCEL,
 						 GTK_WINDOW (holder->window));
 
-#if GNOME2_CONVERSION_COMPLETE
 		eel_gtk_signal_connect_free_data
-			(GTK_OBJECT (eel_gnome_dialog_get_button_by_index
-				     (dialog, GNOME_OK)),
-			 "clicked",
-			 remove_bookmarks_for_uri,
+			(GTK_OBJECT (dialog),
+			 "response",
+			 G_CALLBACK (remove_bookmarks_for_uri_if_yes),
 			 g_strdup (uri));
 
-		gnome_dialog_set_default (dialog, GNOME_CANCEL);
-#endif
+		gtk_dialog_set_default_response (dialog, GTK_RESPONSE_NO);
 	} else {
 		prompt = g_strdup_printf (_("The location \"%s\" no longer exists."), uri_for_display);
 		dialog = eel_show_info_dialog (prompt, _("Go to Nonexistent Location"), GTK_WINDOW (holder->window));

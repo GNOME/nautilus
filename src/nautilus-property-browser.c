@@ -61,6 +61,7 @@
 #include <gtk/gtklabel.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkselection.h>
+#include <gtk/gtkstock.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtkvbox.h>
@@ -914,11 +915,10 @@ nautilus_emblem_dialog_new (NautilusPropertyBrowser *property_browser)
 	GtkWidget *dialog;
 	GtkWidget *table = gtk_table_new(2, 2, FALSE);
 
-#if GNOME2_CONVERSION_COMPLETE
-	dialog = gtk_dialog_new(_("Create a New Emblem:"), _("OK"), _("Cancel"), NULL);
-#else
-	dialog = NULL;
-#endif
+	dialog = gtk_dialog_new_with_buttons (_("Create a New Emblem:"), NULL, GTK_DIALOG_MODAL,
+					      GTK_STOCK_OK, GTK_RESPONSE_OK,
+					      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					      NULL);
 
 	/* make the keyword label and field */	
 	
@@ -971,11 +971,10 @@ nautilus_color_selection_dialog_new (NautilusPropertyBrowser *property_browser)
 	GtkWidget *dialog;
 	GtkWidget *table = gtk_table_new(2, 2, FALSE);
 
-#ifdef GNOME2_CONVERSION_COMPLETE
-	dialog = gtk_dialog_new(_("Create a New Color:"), _("OK"), _("Cancel"), NULL);
-#else
-	dialog = NULL;
-#endif
+	dialog = gtk_dialog_new_with_buttons (_("Create a New Color:"), NULL, GTK_DIALOG_MODAL,
+					      GTK_STOCK_OK, GTK_RESPONSE_OK,
+					      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					      NULL);
 
 	/* make the name label and field */	
 	

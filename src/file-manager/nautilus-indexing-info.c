@@ -54,14 +54,14 @@ typedef struct {
 } ProgressChangeData;
 
 typedef struct {
-        GnomeDialog *last_index_time_dialog;
-        GnomeDialog *index_in_progress_dialog;
+        GtkDialog *last_index_time_dialog;
+        GtkDialog *index_in_progress_dialog;
         gboolean indexing_is_in_progress;
 } IndexingInfoDialogs;
 
 static IndexingInfoDialogs *dialogs = NULL;
 
-static GnomeDialog *   last_index_time_dialog_new      (void);
+static GtkDialog *   last_index_time_dialog_new      (void);
 
 static int
 get_index_percentage_complete (void)
@@ -74,10 +74,10 @@ get_index_percentage_complete (void)
    the callback entirely when we destroy it, we set it so
    that the dialog just hides, rather than closing */
 static void
-set_close_hides_for_dialog (GnomeDialog *dialog)
+set_close_hides_for_dialog (GtkDialog *dialog)
 {
-        gnome_dialog_set_close (dialog, TRUE /*click_closes*/);
-        gnome_dialog_close_hides (dialog, TRUE /*just_hide*/);
+        gtk_dialog_set_close (dialog, TRUE /*click_closes*/);
+        gtk_dialog_close_hides (dialog, TRUE /*just_hide*/);
 
 }
 
@@ -112,7 +112,7 @@ dialog_close_cover (gpointer dialog_data)
 {
         g_assert (GNOME_IS_DIALOG (dialog_data));
 
-        gnome_dialog_close (dialog_data);
+        gtk_dialog_close (dialog_data);
 }
 
 static void
@@ -120,7 +120,7 @@ show_index_progress_dialog (void)
 {
         int callback_id;
         
-        gnome_dialog_close (dialogs->last_index_time_dialog);
+        gtk_dialog_close (dialogs->last_index_time_dialog);
         gtk_widget_show_all (GTK_WIDGET (dialogs->index_in_progress_dialog));
         callback_id = medusa_execute_once_when_system_state_changes (dialog_close_cover,
                                                                      dialogs->index_in_progress_dialog);
@@ -136,7 +136,7 @@ show_last_index_time_dialog (void)
 {
         int callback_id;
 
-        gnome_dialog_close (dialogs->index_in_progress_dialog);
+        gtk_dialog_close (dialogs->index_in_progress_dialog);
         gtk_widget_show_all (GTK_WIDGET (dialogs->last_index_time_dialog));
         callback_id = medusa_execute_once_when_system_state_changes (dialog_close_cover,
                                                                      dialogs->last_index_time_dialog);
@@ -146,13 +146,13 @@ show_last_index_time_dialog (void)
                                    GINT_TO_POINTER (callback_id));
 }
 
-static GnomeDialog *
+static GtkDialog *
 last_index_time_dialog_new (void)
 {
 	char *time_str;
 	char *label_str;
         GtkWidget *label;
-        GnomeDialog *dialog;
+        GtkDialog *dialog;
 
         dialog = eel_create_info_dialog (_("Once a day your files and text content are indexed so "
                                            "your searches are fast. "),
@@ -181,13 +181,13 @@ timeout_remove_callback (gpointer callback_data)
         gtk_timeout_remove (GPOINTER_TO_UINT (callback_data));
 }
 
-static GnomeDialog *
+static GtkDialog *
 index_progress_dialog_new (void)
 {
         GtkWidget *progress_label;
         GtkWidget *indexing_progress_bar;
         GtkWidget *progress_bar_hbox, *embedded_vbox;
-        GnomeDialog *dialog;
+        GtkDialog *dialog;
         char *progress_string;
         int percentage_complete;
         ProgressChangeData *progress_data;
@@ -249,7 +249,7 @@ destroy_indexing_info_dialogs_on_exit (void)
 static void
 show_indexing_info_dialog (void)
 {
-        GnomeDialog *dialog_shown;
+        GtkDialog *dialog_shown;
         char *details_string;
         int callback_id;
 

@@ -332,11 +332,16 @@ center_dialog_over_window (GtkWindow *window, GtkWindow *over)
 	center_dialog_over_rect (window, rect);
 }
 
-static gboolean
-handle_close_callback (GnomeDialog *dialog, TransferInfo *tranfer_info)
+static void
+handle_response_callback (GtkDialog *dialog, int response, TransferInfo *transfer_info)
 {
-	tranfer_info->cancelled = TRUE;
-	return FALSE;
+	transfer_info->cancelled = TRUE;
+}
+
+static void
+handle_close_callback (GtkDialog *dialog, TransferInfo *transfer_info)
+{
+	transfer_info->cancelled = TRUE;
 }
 
 static void
@@ -356,13 +361,13 @@ create_transfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
 	 * the same as clicking cancel.
 	 */
 	g_signal_connect (G_OBJECT (transfer_info->progress_dialog),
-			    "clicked",
-			    G_CALLBACK (gnome_dialog_close),
-			    NULL);
+			  "response",
+			  G_CALLBACK (handle_response_callback),
+			  NULL);
 	g_signal_connect (G_OBJECT (transfer_info->progress_dialog),
-			    "close",
-			    G_CALLBACK (handle_close_callback),
-			    transfer_info);
+			  "close",
+			  G_CALLBACK (handle_close_callback),
+			  transfer_info);
 
 	/* Make the progress dialog show up over the window we are copying into */
 	if (transfer_info->parent_view != NULL) {
@@ -1083,7 +1088,7 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 		}
 		
 		eel_run_simple_dialog (parent_for_error_dialog (transfer_info), TRUE, text,
-					_("Unable to replace file."), _("OK"), NULL, NULL);
+				       _("Unable to replace file."), GTK_STOCK_OK, NULL, NULL);
 
 		g_free (text);
 		g_free (formatted_name);
@@ -2269,6 +2274,7 @@ confirm_empty_trash (GtkWidget *parent_view)
 {
 	GtkDialog *dialog;
 	GtkWindow *parent_window;
+	int response;
 
 	/* Just Say Yes if the preference says not to confirm. */
 	if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH)) {
@@ -2287,7 +2293,11 @@ confirm_empty_trash (GtkWidget *parent_view)
 
 	gtk_dialog_set_default_response (dialog, GTK_RESPONSE_CANCEL);
 
-	return gtk_dialog_run (dialog) == GTK_RESPONSE_OK;
+	response = gtk_dialog_run (dialog);
+
+	gtk_object_destroy (GTK_OBJECT (dialog));
+
+	return response == GTK_RESPONSE_OK;
 }
 
 void 

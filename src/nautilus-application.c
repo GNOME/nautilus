@@ -81,7 +81,6 @@ static GList *nautilus_application_window_list;
 
 static void     nautilus_application_init         (NautilusApplication      *application);
 static void     nautilus_application_class_init   (NautilusApplicationClass *klass);
-static gboolean confirm_ok_to_run_as_root         (void);
 static gboolean need_to_show_first_time_druid     (void);
 static void     desktop_changed_callback          (gpointer                  user_data);
 static void     desktop_location_changed_callback (gpointer                  user_data);
@@ -419,13 +418,6 @@ nautilus_application_startup (NautilusApplication *application,
 
 	num_failures = 0;
 
-	/* Perform check for nautilus being run as super user */
-	if (!(kill_shell || restart_shell)) {
-		if (!confirm_ok_to_run_as_root ()) {
-			return;
-		}
-	}
-
 	/* Check the user's ~/.nautilus directories and post warnings
 	 * if there are problems.
 	 */
@@ -688,36 +680,6 @@ nautilus_application_create_window (NautilusApplication *application)
 	 */
 
 	return window;
-}
-
-/*
- * confirm_ok_to_run_as_root:
- *
- * Puts out a warning if the user is running nautilus as root.
- */
-static gboolean
-confirm_ok_to_run_as_root (void)
-{
-	GtkWidget *dialog;
-	int result;
-
-	if (geteuid () != 0) {
-		return TRUE;
-	}
-
-	if (g_getenv ("NAUTILUS_OK_TO_RUN_AS_ROOT") != NULL) {
-		return TRUE;
-	}
-
-	dialog = gnome_message_box_new
-		(_("You are about to run Nautilus as root.\n\n"
-		   "As root, you can damage your system if you are not careful, and\n"
-		   "Nautilus will not stop you from doing it."),
-		 GNOME_MESSAGE_BOX_WARNING,
-		 GNOME_STOCK_BUTTON_OK, _("Quit"), NULL);
-	result = gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
-	
-	return result == 0;
 }
 
 /* callback for changing the directory the desktop points to */

@@ -26,18 +26,17 @@
 #ifndef NAUTILUS_PROGRAM_CHOOSER_H
 #define NAUTILUS_PROGRAM_CHOOSER_H
 
-#include <gtk/gtkwindow.h>
-#include <libgnomeui/gnome-dialog.h>
+#include <gtk/gtkdialog.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 
 #include "nautilus-file.h"
 #include "nautilus-view-identifier.h"
 
-GnomeDialog 		*nautilus_program_chooser_new 		  	  (GnomeVFSMimeActionType  type, 
+GtkDialog 		*nautilus_program_chooser_new 		  	  (GnomeVFSMimeActionType  type, 
 					   			   	   NautilusFile 	  *file);
 
-GnomeVFSMimeApplication *nautilus_program_chooser_get_application 	  (GnomeDialog 		  *program_chooser);
-NautilusViewIdentifier  *nautilus_program_chooser_get_component   	  (GnomeDialog 		  *program_chooser);
+GnomeVFSMimeApplication *nautilus_program_chooser_get_application 	  (GtkDialog 		  *program_chooser);
+NautilusViewIdentifier  *nautilus_program_chooser_get_component   	  (GtkDialog 		  *program_chooser);
 
 void			 nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType action_type,
 									   NautilusFile	  	  *file,

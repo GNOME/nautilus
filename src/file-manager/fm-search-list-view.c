@@ -317,7 +317,7 @@ display_indexed_search_problems_dialog (gboolean backup_search_is_available)
 static void     
 display_system_services_are_disabled_dialog (gboolean unindexed_search_is_available)
 {
-	GnomeDialog *dialog_shown;
+	GtkDialog *dialog_shown;
 	char *details_string;
 
 	details_string = nautilus_medusa_get_explanation_of_enabling ();

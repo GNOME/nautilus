@@ -37,6 +37,7 @@
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkprogressbar.h>
+#include <gtk/gtkstock.h>
 #include <gtk/gtktable.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock-icons.h>
@@ -57,8 +58,8 @@ static void nautilus_file_operations_progress_class_init (NautilusFileOperations
 static void nautilus_file_operations_progress_init       (NautilusFileOperationsProgress      *dialog);
 
 EEL_CLASS_BOILERPLATE (NautilusFileOperationsProgress,
-				   nautilus_file_operations_progress,
-				   GNOME_TYPE_DIALOG);
+		       nautilus_file_operations_progress,
+		       GTK_TYPE_DIALOG)
 
 struct NautilusFileOperationsProgressDetails {
 	GtkWidget *progress_title_label;
@@ -121,10 +122,9 @@ set_text_unescaped_trimmed (EelEllipsizingLabel *label, const char *text)
 /* This is just to make sure the dialog is not closed without explicit
  * intervention.
  */
-static gboolean
-close_callback (GnomeDialog *dialog)
+static void
+close_callback (GtkDialog *dialog)
 {
-	return FALSE;
 }
 
 /* GtkObject methods.  */
@@ -201,7 +201,7 @@ nautilus_file_operations_progress_init (NautilusFileOperationsProgress *progress
 
 	progress->details = g_new0 (NautilusFileOperationsProgressDetails, 1);
 
-	vbox = GTK_BOX (GNOME_DIALOG (progress)->vbox);
+	vbox = GTK_BOX (GTK_DIALOG (progress)->vbox);
 
 	/* This is evil but makes the dialog look less cramped. */
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), OUTER_BORDER);
@@ -260,11 +260,11 @@ nautilus_file_operations_progress_class_init (NautilusFileOperationsProgressClas
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
-	GnomeDialogClass *dialog_class;
+	GtkDialogClass *dialog_class;
 
 	object_class = GTK_OBJECT_CLASS (klass);
 	widget_class = GTK_WIDGET_CLASS (klass);
-	dialog_class = GNOME_DIALOG_CLASS (klass);
+	dialog_class = GTK_DIALOG_CLASS (klass);
 
 	object_class->destroy = nautilus_file_operations_progress_destroy;
 
@@ -299,8 +299,7 @@ nautilus_file_operations_progress_new (const char *title,
 	gtk_window_set_title (GTK_WINDOW (widget), title);
 	gtk_window_set_wmclass (GTK_WINDOW (widget), "file_progress", "Nautilus");
 
-	gnome_dialog_append_button (GNOME_DIALOG (widget),
-				    GNOME_STOCK_BUTTON_CANCEL);
+	gtk_dialog_add_button (GTK_DIALOG (widget), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
 
 	progress->details->from_prefix = from_prefix;
 	progress->details->to_prefix = to_prefix;
@@ -437,7 +436,7 @@ nautilus_file_operations_progress_done (NautilusFileOperationsProgress *progress
 	}
 	
 	/* No cancel button once the operation is done. */
-	gnome_dialog_set_sensitive (GNOME_DIALOG (progress), 0, FALSE);
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (progress), GTK_RESPONSE_CANCEL, FALSE);
 
 	progress->details->delayed_close_timeout_id = gtk_timeout_add
 		(MINIMUM_TIME_UP - time_up,

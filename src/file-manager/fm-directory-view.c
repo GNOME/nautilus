@@ -48,6 +48,7 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkstock.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-uidefs.h>
@@ -91,6 +92,9 @@
 #define DUPLICATE_VERTICAL_ICON_OFFSET   30
 
 #define NAUTILUS_COMMAND_SPECIFIER "command:"
+
+#define RESPONSE_RUN 1000
+#define RESPONSE_DISPLAY 1001
 
 /* MOD2 is num lock -- I would include MOD3-5 if I was sure they were not lock keys */
 #define ALL_NON_LOCK_MODIFIER_KEYS (GDK_SHIFT_MASK | GDK_CONTROL_MASK | GDK_MOD1_MASK)
@@ -454,6 +458,7 @@ fm_directory_view_confirm_multiple_windows (FMDirectoryView *view, int count)
 	GtkDialog *dialog;
 	char *prompt;
 	char *title;
+	int response;
 
 	if (count <= SILENT_WINDOW_OPEN_LIMIT) {
 		return TRUE;
@@ -463,12 +468,15 @@ fm_directory_view_confirm_multiple_windows (FMDirectoryView *view, int count)
 				    "Are you sure you want to do this?"), count);
 	title = g_strdup_printf (_("Open %d Windows?"), count);
 	dialog = eel_show_yes_no_dialog (prompt, title, 
-					 _("OK"), _("Cancel"),
+					 GTK_STOCK_OK, GTK_STOCK_CANCEL,
 					 fm_directory_view_get_containing_window (view));
 	g_free (prompt);
 	g_free (title);
 
-	return gtk_dialog_run (dialog) == GTK_RESPONSE_OK;
+	response = gtk_dialog_run (dialog);
+	gtk_object_destroy (GTK_OBJECT (dialog));
+
+	return response == GTK_RESPONSE_YES;
 }
 
 static gboolean
@@ -754,6 +762,7 @@ confirm_delete_directly (FMDirectoryView *view,
 	char *prompt;
 	char *file_name;
 	int uri_count;
+	int response;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
@@ -777,14 +786,15 @@ confirm_delete_directly (FMDirectoryView *view,
 
 	dialog = eel_show_yes_no_dialog
 		(prompt,
-		 _("Delete?"),
-		 _("Delete"),
-		 _("Cancel"),
+		 _("Delete?"), _("Delete"), GTK_STOCK_CANCEL,
 		 fm_directory_view_get_containing_window (view));
 
 	g_free (prompt);
 
-	return gtk_dialog_run (dialog) == GTK_RESPONSE_OK;
+	response = gtk_dialog_run (dialog);
+	gtk_object_destroy (GTK_OBJECT (dialog));
+
+	return response == GTK_RESPONSE_YES;
 }
 
 static void
@@ -2920,6 +2930,7 @@ fm_directory_view_confirm_deletion (FMDirectoryView *view, GList *uris, gboolean
 	char *prompt;
 	int uri_count;
 	char *file_name;
+	int response;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
@@ -2946,14 +2957,15 @@ fm_directory_view_confirm_deletion (FMDirectoryView *view, GList *uris, gboolean
 
 	dialog = eel_show_yes_no_dialog
 		(prompt,
-		 _("Delete Immediately?"),
-		 _("Delete"),
-		 _("Cancel"),
+		 _("Delete Immediately?"), _("Delete"), GTK_STOCK_CANCEL,
 		 fm_directory_view_get_containing_window (view));
 	
 	g_free (prompt);
 
-	return gtk_dialog_run (dialog) == GTK_RESPONSE_OK;
+	response = gtk_dialog_run (dialog);
+	gtk_object_destroy (GTK_OBJECT (dialog));
+
+	return response == GTK_RESPONSE_YES;
 }
 
 static gboolean
@@ -2963,6 +2975,7 @@ confirm_delete_from_trash (FMDirectoryView *view, GList *uris)
 	char *prompt;
 	char *file_name;
 	int uri_count;
+	int response;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
@@ -2986,14 +2999,15 @@ confirm_delete_from_trash (FMDirectoryView *view, GList *uris)
 
 	dialog = eel_show_yes_no_dialog (
 		prompt,
-		_("Delete From Trash?"),
-		_("Delete"),
-		_("Cancel"),
+		_("Delete From Trash?"),_("Delete"), GTK_STOCK_CANCEL,
 		fm_directory_view_get_containing_window (view));
 
 	g_free (prompt);
+	
+	response = gtk_dialog_run (dialog);
+	gtk_object_destroy (GTK_OBJECT (dialog));
 
-	return gtk_dialog_run (dialog) == GTK_RESPONSE_OK;
+	return response == GTK_RESPONSE_YES;
 }
 
 static void
@@ -4486,6 +4500,7 @@ report_broken_symbolic_link (FMDirectoryView *view, NautilusFile *file)
 	char *prompt;
 	GtkDialog *dialog;
 	GList file_as_list;
+	int response;
 	
 	g_assert (nautilus_file_is_broken_symbolic_link (file));
 
@@ -4500,12 +4515,10 @@ report_broken_symbolic_link (FMDirectoryView *view, NautilusFile *file)
 	}
 
 	dialog = eel_show_yes_no_dialog (prompt,
-					 _("Broken Link"),
-					 _("Throw Away"),
-					 _("Cancel"),
+					 _("Broken Link"), _("Throw Away"), GTK_STOCK_CANCEL,
 					 fm_directory_view_get_containing_window (view));
 
-	gtk_dialog_set_default_response (dialog, GTK_RESPONSE_OK);
+	gtk_dialog_set_default_response (dialog, GTK_RESPONSE_YES);
 
 	/* Make this modal to avoid problems with reffing the view & file
 	 * to keep them around in case the view changes, which would then
@@ -4515,7 +4528,11 @@ report_broken_symbolic_link (FMDirectoryView *view, NautilusFile *file)
 	 * unmerge in Destroy. But since BonoboUIHandler is probably going
 	 * to change wildly, I don't want to mess with this now.
 	 */
-	if (gtk_dialog_run (dialog) == GTK_RESPONSE_OK) {
+
+	response = gtk_dialog_run (dialog);
+	gtk_object_destroy (GTK_OBJECT (dialog));
+
+	if (response == GTK_RESPONSE_YES) {
 		file_as_list.data = file;
 		file_as_list.next = NULL;
 		file_as_list.prev = NULL;
@@ -4533,6 +4550,7 @@ get_executable_text_file_action (FMDirectoryView *view, NautilusFile *file)
 	char *file_name;
 	char *prompt;
 	int preferences_value;
+	int response;
 
 	g_assert (nautilus_file_contains_text (file));
 
@@ -4561,21 +4579,21 @@ get_executable_text_file_action (FMDirectoryView *view, NautilusFile *file)
 
 	dialog = eel_create_question_dialog (prompt,
 					     _("Run or Display?"),
-					     _("Run"),
-					     _("Display"),
+					     _("Run"), RESPONSE_RUN,
+					     _("Display"), RESPONSE_DISPLAY,
 					     fm_directory_view_get_containing_window (view));
-
-#if GNOME2_CONVERSION_COMPLETE
-	gtk_dialog_append_button (dialog, _("Cancel"));
-#endif
+	gtk_dialog_add_button (dialog, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
 	gtk_widget_show (GTK_WIDGET (dialog));
 	
 	g_free (prompt);
+
+	response = gtk_dialog_run (dialog);
+	gtk_object_destroy (GTK_OBJECT (dialog));
 	
-	switch (gtk_dialog_run (dialog)) {
-	case 0:
+	switch (response) {
+	case RESPONSE_RUN:
 		return ACTIVATION_ACTION_LAUNCH;
-	case 1:
+	case RESPONSE_DISPLAY:
 		return ACTIVATION_ACTION_DISPLAY;
 	default:
 		return ACTIVATION_ACTION_DO_NOTHING;

@@ -717,14 +717,14 @@ void mpg123_configure(void)
 	gtk_button_box_set_spacing(GTK_BUTTON_BOX(bbox), 5);
 	gtk_box_pack_start(GTK_BOX(vbox), bbox, FALSE, FALSE, 0);
 
-	ok = gtk_button_new_with_label(_("Ok"));
+	ok = gtk_button_new_from_stock (GTK_STOCK_OK);
 	gtk_signal_connect(GTK_OBJECT(ok), "clicked", G_CALLBACK(mpg123_configurewin_ok), NULL);
 	GTK_WIDGET_SET_FLAGS(ok, GTK_CAN_DEFAULT);
 	gtk_box_pack_start(GTK_BOX(bbox), ok, TRUE, TRUE, 0);
 	gtk_widget_show(ok);
 	gtk_widget_grab_default(ok);
 
-	cancel = gtk_button_new_with_label(_("Cancel"));
+	cancel = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
 	gtk_signal_connect_object(GTK_OBJECT(cancel), "clicked", G_CALLBACK(gtk_widget_destroy), GTK_OBJECT(mpg123_configurewin));
 	GTK_WIDGET_SET_FLAGS(cancel, GTK_CAN_DEFAULT);
 	gtk_box_pack_start(GTK_BOX(bbox), cancel, TRUE, TRUE, 0);

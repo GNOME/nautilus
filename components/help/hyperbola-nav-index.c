@@ -2036,8 +2036,8 @@ create_index_select_page(HyperbolaNavigationIndex *hni)
 	hni->none_button = gtk_button_new();
 	gtk_container_add(GTK_CONTAINER(hni->none_button), label);
 
-	ok_button = gtk_button_new_with_label(_("OK"));
-	cancel_button = gtk_button_new_with_label(_("Cancel"));
+	ok_button = gtk_button_new_from_stock (GTK_STOCK_OK);
+	cancel_button = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
 	
 	gtk_signal_connect(GTK_OBJECT(ok_button), "clicked",
 			       hyperbola_navigation_index_OK_button, hni);
@@ -2245,7 +2245,7 @@ make_index_display_page(HyperbolaNavigationIndex *hni)
 	gtk_box_pack_start(GTK_BOX(top_hbox),hni->specific_rbutton,TRUE, TRUE, 0);
 
 	
-	button = gtk_button_new_with_label("...");
+	button = gtk_button_new_with_label ("...");
 	gtk_signal_connect(GTK_OBJECT(button),"clicked",make_index_select_page,hni);
 
 	gtk_box_pack_end(GTK_BOX(top_hbox), button, FALSE, FALSE, 5);

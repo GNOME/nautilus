@@ -851,7 +851,7 @@ mozilla_title_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
 static void
 mozilla_new_window_callback (GtkMozEmbed *mozilla, GtkMozEmbed **new_mozilla, guint chromemask, NautilusMozillaContentView *view)
 {
-	static GnomeDialog *dialog;
+	static GtkDialog *dialog;
 	NautilusMozillaContentViewChrome *chrome;
 
 	/* it's a chrome window so just create a simple shell to play with. */

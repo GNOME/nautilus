@@ -47,6 +47,7 @@
 #include <gdk/gdkx.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkstock.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomecanvas/gnome-canvas-rect-ellipse.h>
 #include <libgnomeui/gnome-stock-icons.h>
@@ -760,6 +761,7 @@ confirm_switch_to_manual_layout (NautilusIconContainer *container)
 {
 	const char *message;
 	GtkDialog *dialog;
+	int response;
 
 	/* FIXME bugzilla.gnome.org 40915: Use of the word "directory"
 	 * makes this FMIconView specific. Move these messages into
@@ -787,11 +789,14 @@ confirm_switch_to_manual_layout (NautilusIconContainer *container)
 	}
 
 	dialog = eel_show_yes_no_dialog (message, _("Switch to Manual Layout?"),
-					 _("Switch"), _("Cancel"),
+					 _("Switch"), GTK_STOCK_CANCEL,
 					 GTK_WINDOW (gtk_widget_get_ancestor 
 						     (GTK_WIDGET (container), GTK_TYPE_WINDOW)));
 	
-	return gtk_dialog_run (dialog) == GTK_RESPONSE_OK;
+	response = gtk_dialog_run (dialog);
+	gtk_object_destroy (GTK_OBJECT (dialog));
+
+	return response == GTK_RESPONSE_OK;
 }
 
 static void

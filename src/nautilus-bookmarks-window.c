@@ -120,9 +120,9 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 
 	bookmarks = list;
 
-	window = gnome_dialog_new (_("Bookmarks"), _("Done"), NULL);
-	gnome_dialog_close_hides (GNOME_DIALOG (window), TRUE);
-	gnome_dialog_set_close (GNOME_DIALOG (window), TRUE);
+	window = gtk_dialog_new_with_buttons (_("Bookmarks"), NULL, 0,
+					      _("Done"), GTK_RESPONSE_OK,
+					      NULL);
 	
 	set_up_close_accelerator (window);
 	nautilus_undo_share_undo_manager (G_OBJECT (window), undo_manager_source);
@@ -135,7 +135,7 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 	
 	content_area = gtk_hbox_new (TRUE, GNOME_PAD);
 	gtk_widget_show (content_area);
-	gtk_box_pack_start (GTK_BOX ((GNOME_DIALOG (window))->vbox), content_area, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox), content_area, FALSE, FALSE, 0);
 
 	list_scroller = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_show (list_scroller);

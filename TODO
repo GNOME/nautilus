@@ -1,1 +1,12 @@
-You can see our planned tasks as bugs in http://bugzilla.gnome.org.
+For tasks outside the porting effort, we track them as bugs in
+http://bugzilla.gnome.org.
+
+Porting tasks. Some are necessary and some are just cleanup.
+
+- Get EelLabel working and switch back to it on the sidebar.
+- Get rid of all the direct freetype use and switch to using
+  Pango instead.
+- Visit all the destroy and move things into finalize or dispose
+  and make them callable twice as appropriate.
+- Change things that use destroy handlers to use weak references
+  instead.

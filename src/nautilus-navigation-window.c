@@ -1895,9 +1895,8 @@ nautilus_window_display_error (NautilusWindow *window, const char *error_msg)
 {
 	GtkWidget *dialog;
 	
-	dialog = gnome_message_box_new (error_msg, GNOME_MESSAGE_BOX_ERROR, _("Close"), NULL);
-	gnome_dialog_set_close (GNOME_DIALOG (dialog), TRUE);
-	gnome_dialog_set_default (GNOME_DIALOG (dialog), 0);
+	dialog = gtk_message_dialog_new (GTK_WINDOW (window), 0, GTK_MESSAGE_ERROR,
+					 GTK_BUTTONS_CLOSE, error_msg, NULL);
 	gtk_widget_show (dialog);
 }
 

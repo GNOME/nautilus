@@ -2013,7 +2013,7 @@ add_command_buttons (News *news_data, const char* label, gboolean from_configure
 		      (GtkSignalFunc) add_site_button_clicked, news_data);
 	}
 	
-	button = gtk_button_new_with_label (label);
+	button = gtk_button_new_from_stock (label);
 	gtk_container_add (GTK_CONTAINER (button_box), button);
 
 	g_signal_connect (G_OBJECT (button), "clicked",
@@ -2354,7 +2354,7 @@ set_up_edit_widgets (News *news, GtkWidget *container)
 	gtk_box_pack_start (GTK_BOX (expand_box), temp_vbox, TRUE, TRUE, 0);
 	
 	/* add the button box at the bottom with a cancel button */
-	button_box = add_command_buttons (news, _("Cancel"), FALSE);
+	button_box = add_command_buttons (news, GTK_STOCK_CANCEL, FALSE);
 	gtk_box_pack_start (GTK_BOX (news->edit_site_box), button_box, FALSE, FALSE, 0);	
 }
 

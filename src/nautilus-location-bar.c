@@ -160,8 +160,7 @@ drag_data_received_callback (GtkWidget *widget,
 			 TRUE,
 			 prompt,
 			 _("View in Multiple Windows?"),
-			 _("OK"),
-			 _("Cancel"),
+			 GTK_STOCK_OK, GTK_STOCK_CANCEL,
 			 NULL) == GNOME_OK;
 
 		g_free (prompt);

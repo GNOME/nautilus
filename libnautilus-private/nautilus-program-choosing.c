@@ -137,25 +137,19 @@ choose_component_destroy (ChooseComponentCallbackData *choose_data)
  * 
  * Return value: The program-choosing dialog, ready to be run.
  */
-static GnomeDialog *
+static GtkDialog *
 set_up_program_chooser (NautilusFile *file, 
 			GnomeVFSMimeActionType type, 
 			GtkWindow *parent)
 {
-	GnomeDialog *dialog;
+	GtkDialog *dialog;
 
 	g_assert (NAUTILUS_IS_FILE (file));
 
 	dialog = nautilus_program_chooser_new (type, file);
 	if (parent != NULL) {
-		gnome_dialog_set_parent (dialog, parent);
+		gtk_window_set_transient_for (GTK_WINDOW (dialog), parent);
 	}
-
-	/* Don't destroy on close because callers will need 
-	 * to extract some information from the dialog after 
-	 * it closes.
-	 */
-	gnome_dialog_close_hides (dialog, TRUE);
 
 	return dialog;	
 }
@@ -178,7 +172,7 @@ choose_component_callback (NautilusFile *file,
 {
 	ChooseComponentCallbackData *choose_data;
 	NautilusViewIdentifier *identifier;
-	GnomeDialog *dialog;
+	GtkDialog *dialog;
 
 	choose_data = callback_data;
 
@@ -197,7 +191,7 @@ choose_component_callback (NautilusFile *file,
 	if (nautilus_mime_has_any_components_for_file (file)) {
 		dialog = set_up_program_chooser (file, GNOME_VFS_MIME_ACTION_TYPE_COMPONENT,
 						 choose_data->parent_window);
-		if (gnome_dialog_run (dialog) == GNOME_OK) {
+		if (gtk_dialog_run (dialog) == GTK_RESPONSE_OK) {
 			identifier = nautilus_program_chooser_get_component (dialog);
 		}
 	} else {
@@ -317,7 +311,7 @@ choose_application_callback (NautilusFile *file,
 			     gpointer callback_data)
 {
 	ChooseApplicationCallbackData *choose_data;
-	GnomeDialog *dialog;
+	GtkDialog *dialog;
 	GnomeVFSMimeApplication *application;
 
 	choose_data = callback_data;
@@ -337,7 +331,7 @@ choose_application_callback (NautilusFile *file,
 	if (nautilus_mime_has_any_applications_for_file_type (file)) {
 		dialog = set_up_program_chooser	(file, GNOME_VFS_MIME_ACTION_TYPE_APPLICATION,
 						 choose_data->parent_window);
-		if (gnome_dialog_run (dialog) == GNOME_OK) {
+		if (gtk_dialog_run (dialog) == GTK_RESPONSE_OK) {
 			application = nautilus_program_chooser_get_application (dialog);
 		}
 	} else {
@@ -487,6 +481,7 @@ application_cannot_open_location (GnomeVFSMimeApplication *application,
 	LaunchParameters *launch_parameters;
 	char *message;
 	char *file_name;
+	int response;
 
 	file_name = nautilus_file_get_display_name (file);
 
@@ -497,10 +492,12 @@ application_cannot_open_location (GnomeVFSMimeApplication *application,
 					   application->name, uri_scheme);
 		message_dialog = eel_show_yes_no_dialog (message, 
 							 _("Can't Open Location"), 
-							 _("OK"),
-							 _("Cancel"),
+							 GTK_STOCK_OK,
+							 GTK_STOCK_CANCEL,
 							 parent_window);
-		if (gtk_dialog_run (message_dialog) == GTK_RESPONSE_OK) {
+		response = gtk_dialog_run (message_dialog);
+		gtk_object_destroy (GTK_OBJECT (message_dialog));
+		if (response == GTK_RESPONSE_YES) {
 			launch_parameters = launch_parameters_new (file, parent_window);
 			nautilus_choose_application_for_file 
 				(file,
@@ -509,7 +506,6 @@ application_cannot_open_location (GnomeVFSMimeApplication *application,
 				 launch_parameters);
 				 
 		}
-		
 	}
 	else {
 		message = g_strdup_printf (_("\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "

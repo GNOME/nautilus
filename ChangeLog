@@ -1,3 +1,38 @@
+2001-11-08  Darin Adler  <darin@bentspoon.com>
+
+	* NEWS: Remove Nautilus 1 news. This file is empty for now.
+	* RENAMING: Add some renaming ideas.
+	* TODO: Add a tiny porting to-do list. I should take that
+	survey of GNOME2_CONVERSION_COMPLETE that Havoc did and put
+	it in here.
+	* TRADEMARK_NOTICE: Removed this file. Eazel logo isn't in
+	here any more.
+	* Makefile.am: Remove TRADEMARK_NOTICE.
+	
+	* components/help/hyperbola-nav-index.c:
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	* libnautilus-private/nautilus-authn-manager.c:
+	* libnautilus-private/nautilus-file-operations-progress.c:
+	* libnautilus-private/nautilus-file-operations-progress.h:
+	* libnautilus-private/nautilus-file-operations.c:
+	* libnautilus-private/nautilus-icon-dnd.c:
+	* libnautilus-private/nautilus-program-chooser.c:
+	* libnautilus-private/nautilus-program-chooser.h:
+	* libnautilus-private/nautilus-program-choosing.c:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-search-list-view.c:
+	* src/file-manager/nautilus-indexing-info.c:
+	* src/nautilus-about.c:
+	* src/nautilus-about.h:
+	* src/nautilus-application.c:
+	* src/nautilus-bookmarks-window.c:
+	* src/nautilus-location-bar.c:
+	* src/nautilus-property-browser.c:
+	* src/nautilus-shell.c:
+	* src/nautilus-window-menus.c:
+	* src/nautilus-window.c:
+	First cut at converting to GtkDialog from GnomeDialog.
+
 2001-11-08  Anders Carlsson  <andersca@gnu.org>
  
  	* libnautilus-private/nautilus-icon-dnd.c 

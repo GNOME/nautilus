@@ -88,7 +88,9 @@ static int      update_authors_if_necessary     (gpointer             callback_d
 #define UPDATE_TIME_INTERVAL 8
 
 /* gtk class definition boilerplate */
-EEL_CLASS_BOILERPLATE (NautilusAbout, nautilus_about, GNOME_TYPE_DIALOG)
+EEL_CLASS_BOILERPLATE (NautilusAbout,
+		       nautilus_about,
+		       GTK_TYPE_DIALOG)
 
 static void
 nautilus_about_class_init (NautilusAboutClass *about_class)
@@ -145,7 +147,7 @@ nautilus_about_init (NautilusAbout *about)
 	frame = gtk_frame_new (NULL);
 	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_ETCHED_IN);
 
-	gtk_container_add (GTK_CONTAINER (GNOME_DIALOG(about)->vbox),
+	gtk_container_add (GTK_CONTAINER (GTK_DIALOG(about)->vbox),
 			   GTK_WIDGET(frame));
 	gtk_widget_show (frame);
 	
@@ -169,11 +171,8 @@ nautilus_about_init (NautilusAbout *about)
 	about->details->timer_task = gtk_timeout_add (2000, update_authors_if_necessary, about); 
 	       
 	/* configure the dialog */                                  
-	gnome_dialog_append_button (GNOME_DIALOG(about),
-				    GNOME_STOCK_BUTTON_OK);
-	
-	gnome_dialog_set_close (GNOME_DIALOG(about), TRUE);			
-	gnome_dialog_close_hides (GNOME_DIALOG(about), TRUE);
+	gtk_dialog_add_button (GTK_DIALOG (about),
+			       GTK_STOCK_OK, GTK_RESPONSE_OK);
 
 	gtk_signal_connect
 	        (GTK_OBJECT (about),

@@ -12,6 +12,9 @@ When we rename files in the repository, we do it by this process:
 
 This retains the history in both the old and new locations.
 
+Remove a lot of nautilus prefixes since nothing outside libnautilus is
+intended for use with other programs, so it doesn't need namespacing.
+
 ------
 macros
 ------
@@ -23,6 +26,7 @@ directory names
 ----------
 file names
 ----------
+*-ui.xml -> *.ui
 src/file-manager/fm-* -> ?
 hyperbola -> nautilus-help-system
 nautilus-authn-manager.c -> nautilus-authentication-manager.c

@@ -25,7 +25,6 @@ XXX = \
 	$(NULL)
 
 EXTRA_DIST=					\
-	TRADEMARK_NOTICE			\
 	COPYING.LIB				\
 	COPYING-DOCS				\
 	HACKING					\

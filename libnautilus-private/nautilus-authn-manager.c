@@ -118,7 +118,7 @@ mark_callback_completed (CallbackInfo *info)
 }
 
 static void
-authentication_dialog_button_clicked (GnomeDialog *dialog, 
+authentication_dialog_button_clicked (GtkDialog *dialog, 
 				      gint button_number, 
 				      CallbackInfo *info)
 {
@@ -137,7 +137,7 @@ authentication_dialog_button_clicked (GnomeDialog *dialog,
 }
 
 static void
-authentication_dialog_closed (GnomeDialog *dialog, CallbackInfo *info)
+authentication_dialog_closed (GtkDialog *dialog, CallbackInfo *info)
 {
 	DEBUG_MSG (("+%s\n", __FUNCTION__));
 
@@ -145,7 +145,7 @@ authentication_dialog_closed (GnomeDialog *dialog, CallbackInfo *info)
 }
 
 static void
-authentication_dialog_destroyed (GnomeDialog *dialog, CallbackInfo *info)
+authentication_dialog_destroyed (GtkDialog *dialog, CallbackInfo *info)
 {
 	DEBUG_MSG (("+%s\n", __FUNCTION__));
 

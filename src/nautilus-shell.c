@@ -48,11 +48,6 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <stdlib.h>
 
-/* turn this on to enable the caveat dialog */
-#if 0
-#define SHOW_CAVEAT
-#endif
-
 /* Keep window from shrinking down ridiculously small; numbers are somewhat arbitrary */
 #define APPLICATION_WINDOW_MIN_WIDTH	300
 #define APPLICATION_WINDOW_MIN_HEIGHT	100
@@ -128,100 +123,6 @@ nautilus_shell_new (NautilusApplication *application)
 	return shell;
 }
 
-#ifdef SHOW_CAVEAT
-
-static void
-display_caveat (GtkWindow *parent_window)
-{
-	GtkWidget *dialog;
-	GtkWidget *frame;
-	GtkWidget *pixmap;
-	GtkWidget *hbox;
-	GtkWidget *vbox;
-	GtkWidget *text;
-	char *file_name;
-
-	dialog = gnome_dialog_new (_("Caveat"),
-				   GNOME_STOCK_BUTTON_OK,
-				   NULL);
-  	gtk_container_set_border_width (GTK_CONTAINER (dialog), GNOME_PAD);
-  	gtk_window_set_policy (GTK_WINDOW (dialog), FALSE, FALSE, FALSE);
-	gtk_window_set_wmclass (GTK_WINDOW (dialog), "caveat", "Nautilus");
-
-  	hbox = gtk_hbox_new (FALSE, GNOME_PAD);
-  	gtk_container_set_border_width (GTK_CONTAINER (hbox), GNOME_PAD);
-  	gtk_widget_show (hbox);
-  	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox), 
-  			    hbox,
-  			    FALSE, FALSE, 0);
-
-	vbox = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox);
-	gtk_box_pack_start (GTK_BOX (hbox), vbox, FALSE, FALSE, 0);
-
-	file_name = nautilus_pixmap_file ("About_Image.png");
-	if (file_name != NULL) {
-		pixmap = gnome_pixmap_new_from_file (file_name);
-		g_free (file_name);
-
-		if (pixmap != NULL) {
-			frame = gtk_frame_new (NULL);
-			gtk_widget_show (frame);
-			gtk_frame_set_shadow_type (GTK_FRAME (frame),
-						   GTK_SHADOW_IN);
-			gtk_box_pack_start (GTK_BOX (vbox), frame,
-					    FALSE, FALSE, 0);
-
-			gtk_widget_show (pixmap);
-			gtk_container_add (GTK_CONTAINER (frame), pixmap);
-		}
-	}
-
-  	text = eel_label_new
-		(_("Thank you for your interest in Nautilus.\n "
-		   "\n"
-		   "As with any software under development, you should exercise caution when "
-		   "using Nautilus. We do not provide any guarantee that it will work "
-		   "properly, or assume any liability for your use of it.  Please use it at your "
-		   "own risk.\n"
-		   "\n"
-		   "Please write a mail to <nautilus-list@eazel.com> to provide feedback, "
-		   "comments, and suggestions."));
-	eel_label_make_larger (EEL_LABEL (text), 1);
-	eel_label_set_justify (EEL_LABEL (text), GTK_JUSTIFY_LEFT);
-	eel_label_set_wrap (EEL_LABEL (text), TRUE);
-	gtk_widget_show (text);
-  	gtk_box_pack_start (GTK_BOX (hbox), text, FALSE, FALSE, 0);
-
-  	gnome_dialog_set_close (GNOME_DIALOG (dialog), TRUE);
-	gnome_dialog_set_parent (GNOME_DIALOG (dialog), parent_window);
-
-	gtk_widget_show (GTK_WIDGET (dialog));
-}
-
-#endif /* SHOW_CAVEAT */
-
-static void
-display_caveat_first_time (NautilusShell *shell, NautilusWindow *window)
-{
-#ifdef SHOW_CAVEAT
-	static gboolean showed_caveat;
-
-	/* Show the "not ready for prime time" dialog after the first
-	 * window appears, so it's on top.
-	 */
-	/* FIXME bugzilla.gnome.org 41256: It's not on top of the
-         * windows other than the first one.
-	 */
-	if (!showed_caveat
-	    && g_getenv ("NAUTILUS_NO_CAVEAT_DIALOG") == NULL) {
-		g_signal_connect (G_OBJECT (window), "show",
-				    display_caveat, window);
-	}
-	showed_caveat = TRUE;
-#endif /* SHOW_CAVEAT */
-}
-
 static void
 open_window (NautilusShell *shell, const char *uri, const char *geometry)
 {
@@ -241,7 +142,6 @@ open_window (NautilusShell *shell, const char *uri, const char *geometry)
 	} else {
 		nautilus_window_go_to (window, uri);
 	}
-	display_caveat_first_time (shell, window);
 }
 
 static void
@@ -404,7 +304,6 @@ restore_one_window_callback (const char *attributes,
 
 	gtk_widget_set_uposition (GTK_WIDGET (window), x, y);
 	gtk_widget_set_usize (GTK_WIDGET (window), width, height);
-	display_caveat_first_time (shell, window);
 
 	g_free (location);
 	eel_string_list_free (attribute_list);

@@ -29,17 +29,17 @@
 #ifndef NAUTILUS_FILE_OPERATIONS_PROGRESS_H
 #define NAUTILUS_FILE_OPERATIONS_PROGRESS_H
 
-#include <libgnomeui/gnome-dialog.h>
+#include <gtk/gtkdialog.h>
 
 typedef struct NautilusFileOperationsProgressDetails NautilusFileOperationsProgressDetails;
 
 typedef struct {
-	GnomeDialog dialog;
+	GtkDialog dialog;
 	NautilusFileOperationsProgressDetails *details;
 } NautilusFileOperationsProgress;
 
 typedef struct {
-	GnomeDialogClass parent_class;
+	GtkDialogClass parent_class;
 } NautilusFileOperationsProgressClass;
 
 #define NAUTILUS_FILE_OPERATIONS_PROGRESS(obj) \

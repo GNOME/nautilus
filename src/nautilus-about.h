@@ -28,8 +28,7 @@
 #ifndef NAUTILUS_ABOUT_H
 #define NAUTILUS_ABOUT_H
 
-#include <gdk/gdk.h>
-#include <libgnomeui/gnome-dialog.h>
+#include <gtk/gtkdialog.h>
 
 #define NAUTILUS_TYPE_ABOUT		(nautilus_about_get_type ())
 #define NAUTILUS_ABOUT(obj)		(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_ABOUT, NautilusAbout))
@@ -42,12 +41,12 @@ typedef struct NautilusAboutClass NautilusAboutClass;
 typedef struct NautilusAboutDetails NautilusAboutDetails;
 
 struct NautilusAbout {
-	GnomeDialog parent;
+	GtkDialog parent;
 	NautilusAboutDetails *details;
 };
 
 struct NautilusAboutClass {
-	GnomeDialogClass parent_class;
+	GtkDialogClass parent_class;
 };
 
 GtkType    nautilus_about_get_type       (void);
