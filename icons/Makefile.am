@@ -76,7 +76,6 @@ icon_DATA =\
 	gnome-audio-x-xm.png \
 	gnome-audio.png \
 	gnome-compressed.png \
-	gnome-core.png \
 	gnome-font-afm.png \
 	gnome-font-ttf.png \
 	gnome-font-x-pcf.png \
