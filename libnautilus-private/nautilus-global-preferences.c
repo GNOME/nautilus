@@ -549,7 +549,7 @@ static const PreferenceDefault preference_defaults[] = {
 	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
 	  PREFERENCE_INTEGER,
 	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_ZOOM_LEVEL_STANDARD) },
+	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_ZOOM_LEVEL_SMALLER) },
 	  { USER_LEVEL_NONE },
 	  "default_zoom_level"
 	},
@@ -927,7 +927,7 @@ static PreferenceDialogItem view_preferences_items[] = {
 	  NULL, 0, 1
 	},
 	{ N_("List View Defaults"),
-	  "xxx",
+	  "dummy-string",
 	  NULL,
 	  NAUTILUS_PREFERENCE_ITEM_PADDING,
 	  NULL, 0, 1

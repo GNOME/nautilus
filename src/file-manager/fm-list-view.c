@@ -1358,13 +1358,20 @@ fm_list_view_zoom_to_level (FMDirectoryView *view, int zoom_level)
 	fm_list_view_set_zoom_level (list_view, zoom_level, FALSE);
 }
 
+static NautilusZoomLevel default_zoom_level = NAUTILUS_ZOOM_LEVEL_SMALLER;
+
 static NautilusZoomLevel
-get_default_zoom_level (FMListView *view)
+get_default_zoom_level (void)
 {
-	/* FIXME: This should return a value read from preferences.
-	 * It should use one of those auto-preference-storage thingies.
-	 */
-	return NAUTILUS_ZOOM_LEVEL_SMALLER;
+	static gboolean auto_storaged_added = FALSE;
+
+	if (auto_storaged_added == FALSE) {
+		auto_storaged_added = TRUE;
+		nautilus_preferences_add_auto_integer (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
+						       (int *) &default_zoom_level);
+	}
+
+	return CLAMP (default_zoom_level, NAUTILUS_ZOOM_LEVEL_SMALLEST, NAUTILUS_ZOOM_LEVEL_LARGEST);
 }
 
 static void
@@ -1376,7 +1383,7 @@ fm_list_view_restore_default_zoom_level (FMDirectoryView *view)
 
 	list_view = FM_LIST_VIEW (view);
 
-	fm_list_view_set_zoom_level (list_view, get_default_zoom_level (list_view), FALSE);
+	fm_list_view_set_zoom_level (list_view, get_default_zoom_level (), FALSE);
 }
 
 static gboolean 
@@ -1458,7 +1465,7 @@ fm_list_view_begin_loading (FMDirectoryView *view)
 		nautilus_file_get_integer_metadata (
 			file, 
 			NAUTILUS_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL, 
-			get_default_zoom_level (list_view)),
+			get_default_zoom_level ()),
 		TRUE);
 
 	default_sort_attribute = get_default_sort_attribute (list_view);
@@ -1685,7 +1692,7 @@ fm_list_view_set_zoom_level (FMListView *list_view,
 	nautilus_file_set_integer_metadata
 		(fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (list_view)), 
 		 NAUTILUS_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL, 
-		 get_default_zoom_level (list_view),
+		 get_default_zoom_level (),
 		 new_level);
 
 	fm_directory_view_set_zoom_level (FM_DIRECTORY_VIEW (list_view), new_level);

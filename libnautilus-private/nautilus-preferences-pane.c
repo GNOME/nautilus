@@ -66,14 +66,27 @@ nautilus_preferences_pane_initialize_class (NautilusPreferencesPaneClass *prefer
 }
 
 static void
+preferences_pane_update_and_resize_callback (gpointer callback_data)
+{
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_PANE (callback_data));
+
+	nautilus_preferences_pane_update (NAUTILUS_PREFERENCES_PANE (callback_data));
+
+	gtk_widget_queue_resize (GTK_WIDGET (callback_data));
+}
+
+static void
 nautilus_preferences_pane_initialize (NautilusPreferencesPane *preferences_pane)
 {
 	preferences_pane->details = g_new0 (NautilusPreferencesPaneDetails, 1);
+	
+ 	nautilus_preferences_add_callback_while_alive ("user_level",
+						       preferences_pane_update_and_resize_callback,
+						       preferences_pane,
+						       GTK_OBJECT (preferences_pane));
 }
 
-/*
- *  GtkObjectClass methods
- */
+/* GtkObjectClass methods */
 static void
 nautilus_preferences_pane_destroy (GtkObject* object)
 {
@@ -297,16 +310,6 @@ nautilus_preferences_pane_find_group (const NautilusPreferencesPane *pane,
 	return NULL;
 }
 
-static void
-preferences_pane_control_preference_changed_callback (gpointer callback_data)
-{
-	g_return_if_fail (NAUTILUS_IS_PREFERENCES_PANE (callback_data));
-
-	nautilus_preferences_pane_update (NAUTILUS_PREFERENCES_PANE (callback_data));
-
-	gtk_widget_queue_resize (GTK_WIDGET (callback_data));
-}
-
 void
 nautilus_preferences_pane_add_control_preference (NautilusPreferencesPane *pane,
 						  const char *control_preference_name)
@@ -327,7 +330,7 @@ nautilus_preferences_pane_add_control_preference (NautilusPreferencesPane *pane,
 				     control_preference_name);
 
  	nautilus_preferences_add_callback_while_alive (control_preference_name,
-						       preferences_pane_control_preference_changed_callback,
+						       preferences_pane_update_and_resize_callback,
 						       pane,
 						       GTK_OBJECT (pane));
 }

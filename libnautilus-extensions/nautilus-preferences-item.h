@@ -89,12 +89,12 @@ void       nautilus_preferences_item_set_control_preference    (NautilusPreferen
 								const char                           *control_preference_name);
 void       nautilus_preferences_item_set_control_action        (NautilusPreferencesItem              *preferences_item,
 								NautilusPreferencesItemControlAction  control_action);
-gboolean   nautilus_preferences_item_get_control_showing       (const NautilusPreferencesItem        *preferences_item);
 gboolean   nautilus_preferences_item_child_is_caption          (const NautilusPreferencesItem        *preferences_item);
 int        nautilus_preferences_item_get_child_width           (const NautilusPreferencesItem        *item);
 void       nautilus_preferences_item_set_caption_extra_spacing (NautilusPreferencesItem              *item,
 								int                                   extra_spacing);
 void       nautilus_preferences_item_update_showing            (NautilusPreferencesItem              *item);
+gboolean   nautilus_preferences_item_is_showing                (const NautilusPreferencesItem        *item);
 
 END_GNOME_DECLS
 

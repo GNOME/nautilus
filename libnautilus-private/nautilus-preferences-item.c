@@ -944,8 +944,8 @@ nautilus_preferences_item_set_control_action (NautilusPreferencesItem *preferenc
 	preferences_item->details->control_action = control_action;
 }
 
-gboolean
-nautilus_preferences_item_get_control_showing (const NautilusPreferencesItem *preferences_item)
+static gboolean
+preferences_item_get_control_showing (const NautilusPreferencesItem *preferences_item)
 {
 	gboolean value;
 
@@ -1007,18 +1007,25 @@ nautilus_preferences_item_set_caption_extra_spacing (NautilusPreferencesItem *it
 					    extra_spacing);
 }
 
+gboolean
+nautilus_preferences_item_is_showing (const NautilusPreferencesItem *item)
+{
+	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (item), FALSE);
+	
+	if (item->details->item_type == NAUTILUS_PREFERENCE_ITEM_PADDING) {
+		return TRUE;
+	} else if (nautilus_preferences_is_visible (item->details->preference_name)) {
+		return preferences_item_get_control_showing (item);
+	}
+	
+	return FALSE;
+}
+
 void
 nautilus_preferences_item_update_showing (NautilusPreferencesItem *item)
 {
-	gboolean shown = FALSE;
-
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (item));
 
-	if (item->details->item_type == NAUTILUS_PREFERENCE_ITEM_PADDING) {
-		shown = TRUE;
-	} else if (nautilus_preferences_is_visible (item->details->preference_name)) {
-		shown = nautilus_preferences_item_get_control_showing (item);
-	}
-	
-	eel_gtk_widget_set_shown (GTK_WIDGET (item), shown);
+	eel_gtk_widget_set_shown (GTK_WIDGET (item),
+				  nautilus_preferences_item_is_showing (item));
 }

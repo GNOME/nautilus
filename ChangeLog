@@ -1,3 +1,57 @@
+2001-04-09  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	Fix list view default zoom level value.
+
+	* libnautilus-extensions/nautilus-preferences-group.c:
+	(nautilus_preferences_group_get_num_visible_items),
+	(nautilus_preferences_group_get_max_caption_width),
+	(nautilus_preferences_group_align_captions):
+	Use nautilus_prefereces_item_is_showing() instead of GTK_VISIBLE
+	and nautilus_preferences_is_visible().
+	
+	* libnautilus-extensions/nautilus-preferences-item.h:
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(nautilus_preferences_item_is_showing): New function.
+	(preferences_item_get_control_showing): Make this one private.
+	(nautilus_preferences_item_update_showing): Use new function.
+	
+	* libnautilus-extensions/nautilus-preferences-pane.c:
+	(preferences_pane_update_and_resize_callback),
+	(nautilus_preferences_pane_initialize),
+	(nautilus_preferences_pane_add_control_preference):
+	Update the pane on user level changes as well so that alignment
+	are right.  This is a bit of a hack.
+	
+	* src/file-manager/fm-icon-view.c: (get_default_sort_order),
+	(fm_icon_view_real_get_directory_sort_by),
+	(fm_icon_view_set_directory_sort_by),
+	(fm_icon_view_real_set_directory_sort_by),
+	(get_default_sort_in_reverse_order),
+	(fm_icon_view_real_get_directory_sort_reversed),
+	(fm_icon_view_set_directory_sort_reversed),
+	(fm_icon_view_real_set_directory_sort_reversed),
+	(get_default_directory_tighter_layout),
+	(fm_icon_view_real_get_directory_tighter_layout),
+	(fm_icon_view_set_directory_tighter_layout),
+	(fm_icon_view_real_set_directory_tighter_layout),
+	(get_sort_criterion_by_sort_type), (get_default_zoom_level),
+	(fm_icon_view_begin_loading), (fm_icon_view_get_zoom_level),
+	(fm_icon_view_set_zoom_level), (fm_icon_view_zoom_to_level),
+	(fm_icon_view_restore_default_zoom_level),
+	(default_zoom_level_font_size_changed_callback),
+	(default_sort_order_changed_callback),
+	(default_sort_in_reverse_order_changed_callback),
+	(default_use_tighter_layout_changed_callback),
+	(default_zoom_level_changed_callback), (fm_icon_view_initialize),
+	(fm_icon_view_update_icon_container_font_size_table):
+	Use preferences to obtain the default values for zoom level,
+	zoom level font size, sort order, sort reversed and tighter
+	layout.
+
+	* src/file-manager/fm-list-view.c: (get_default_zoom_level):
+	Use preferences to obtain the default zoom level.
+	
 2001-04-08  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-global-preferences.c:

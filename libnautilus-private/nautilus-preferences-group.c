@@ -186,24 +186,19 @@ nautilus_preferences_group_get_num_visible_items (const NautilusPreferencesGroup
 {
 	guint n = 0;
 	GList *node;
-	char *name;
 
 	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_GROUP (group), 0);
 
 	for (node = group->details->items[0]; node != NULL; node = node->next) {
-		name = nautilus_preferences_item_get_name (NAUTILUS_PREFERENCES_ITEM (node->data));
-		if (nautilus_preferences_is_visible (name)) {
+		if (nautilus_preferences_item_is_showing (NAUTILUS_PREFERENCES_ITEM (node->data))) {
 			n++;
 		}
-		g_free (name);
 	}
 
 	for (node = group->details->items[1]; node != NULL; node = node->next) {
-		name = nautilus_preferences_item_get_name (NAUTILUS_PREFERENCES_ITEM (node->data));
-		if (nautilus_preferences_is_visible (name)) {
+		if (nautilus_preferences_item_is_showing (NAUTILUS_PREFERENCES_ITEM (node->data))) {
 			n++;
 		}
-		g_free (name);
 	}
 	
 	return n;
@@ -233,7 +228,8 @@ nautilus_preferences_group_get_max_caption_width (const NautilusPreferencesGroup
 		g_assert (NAUTILUS_IS_PREFERENCES_ITEM (node->data));
 		item = NAUTILUS_PREFERENCES_ITEM (node->data);
 		
-		if (GTK_WIDGET_VISIBLE (item) && nautilus_preferences_item_child_is_caption (item)) {
+		if (nautilus_preferences_item_is_showing (item)
+		    && nautilus_preferences_item_child_is_caption (item)) {
 			max_caption_width = MAX (max_caption_width,
 						 nautilus_preferences_item_get_child_width (item));
 		}
@@ -260,8 +256,8 @@ nautilus_preferences_group_align_captions (NautilusPreferencesGroup *group,
 	for (node = group->details->items[column]; node != NULL; node = node->next) {
 		g_assert (NAUTILUS_IS_PREFERENCES_ITEM (node->data));
 		item = NAUTILUS_PREFERENCES_ITEM (node->data);
-		
-		if (GTK_WIDGET_VISIBLE (item)
+
+		if (nautilus_preferences_item_is_showing (item)		
 		    && nautilus_preferences_item_child_is_caption (item)) {
 			width = nautilus_preferences_item_get_child_width (item);
 			g_assert (width <= max_caption_width);
