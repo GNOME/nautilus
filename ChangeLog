@@ -1,3 +1,32 @@
+2000-06-08  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 1097 (double-click in list should activate
+	"Choose" button in View as Other dialog)
+
+	* libnautilus-extensions/nautilus-gnome-extensions.h:
+	* libnautilus-extensions/nautilus-gnome-extensions.c:
+	(nautilus_gnome_dialog_get_button_by_index): New
+	function, returns one of the bottom-of-the-dialog buttons
+	specified by index.
+
+	* libnautilus-extensions/nautilus-gtk-extensions.h,
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_button_auto_click): New function, 
+	acts as if invisible finger had clicked the specified
+	button.
+	(finish_button_activation): New idle function used by
+	auto_click.
+	
+	(nautilus_gtk_clist_set_double_click_button):
+	New function, specifies a button to be auto-clicked
+	when a clist gets a double-click.
+	(activate_button_on_double_click): New signal handler
+	function used by set_double_click_button.
+
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(nautilus_program_chooser_new): Wire up the "Choose"
+	button with nautilus_gtk_clist_set_double_click_button.
+
 2000-06-08  Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/install/command-line/Makefile.am:

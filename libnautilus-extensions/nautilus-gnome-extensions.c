@@ -433,3 +433,19 @@ nautilus_error_dialog_parented (const char *error,
 {
 	return show_ok_box (error, GNOME_MESSAGE_BOX_ERROR, parent);
 }
+
+GtkButton *
+nautilus_gnome_dialog_get_button_by_index (GnomeDialog *dialog, int index)
+{
+	gpointer data;
+
+	g_return_val_if_fail (GNOME_IS_DIALOG (dialog), NULL);
+	g_return_val_if_fail (index >= 0, NULL);
+
+	data = g_list_nth_data (GNOME_DIALOG (dialog)->buttons, index);
+	if (data == NULL) {
+		return NULL;
+	}
+
+	return GTK_BUTTON (data);
+}

@@ -26,6 +26,7 @@
 #include <config.h>
 #include "nautilus-program-chooser.h"
 
+#include "nautilus-gnome-extensions.h"
 #include "nautilus-gtk-extensions.h"
 #include "nautilus-view-identifier.h"
 #include "nautilus-mime-actions.h"
@@ -35,6 +36,7 @@
 #include <gtk/gtkframe.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
+#include <gtk/gtkmain.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkvbox.h>
 
@@ -587,7 +589,6 @@ run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 	gtk_widget_destroy (dialog);
 }
 
-
 GnomeDialog *
 nautilus_program_chooser_new (GnomeVFSMimeActionType type,
 			      NautilusFile *file)
@@ -657,6 +658,11 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType type,
 	gtk_widget_show (clist);
 	gtk_container_add (GTK_CONTAINER (list_scroller), clist);
 	gtk_clist_column_titles_hide (GTK_CLIST (clist));
+
+	nautilus_gtk_clist_set_double_click_button 
+		(GTK_CLIST (clist), 
+		 nautilus_gnome_dialog_get_button_by_index 
+			(GNOME_DIALOG (window), GNOME_OK));
 
 	gtk_object_set_data (GTK_OBJECT (window), "list", clist);
 

@@ -28,6 +28,8 @@
 #define NAUTILUS_GNOME_EXTENSIONS_H
 
 #include <libgnomeui/gnome-canvas.h>
+#include <libgnomeui/gnome-dialog.h>
+#include <gtk/gtkbutton.h>
 #include <gtk/gtkwindow.h>
 
 typedef struct {
@@ -92,5 +94,9 @@ GtkWidget *nautilus_warning_dialog_parented                     (const char     
 GtkWidget *nautilus_error_dialog                                (const char      *error);
 GtkWidget *nautilus_error_dialog_parented                       (const char      *error,
 								 GtkWindow       *parent);
+
+/* More functions for GnomeDialog */
+GtkButton *nautilus_gnome_dialog_get_button_by_index 		(GnomeDialog 	 *dialog, 
+								 int 		  index);
 
 #endif /* NAUTILUS_GNOME_EXTENSIONS_H */

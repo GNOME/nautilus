@@ -32,6 +32,56 @@
 #include <libgnomeui/gnome-geometry.h>
 #include "nautilus-glib-extensions.h"
 
+/* This number should be large enough to be visually noticeable,
+ * but small enough to not allow the user to perform other actions.
+ */
+#define BUTTON_AUTO_HIGHLIGHT_MILLISECONDS	100
+
+static gboolean
+finish_button_activation (gpointer data)
+{
+	GtkButton *button;
+	
+	g_assert (GTK_IS_BUTTON (data));
+
+	button = GTK_BUTTON (data);
+
+	if (!button->in_button) {
+		gtk_button_clicked (GTK_BUTTON (data));
+	}
+	gtk_button_released (GTK_BUTTON (data));
+
+	return FALSE;	
+}
+
+/**
+ * nautilus_gtk_button_auto_click:
+ * 
+ * Programatically activate a button as if the user had clicked on it,
+ * including briefly drawing the button's pushed-in state.
+ * @button: Any GtkButton.
+ **/
+void
+nautilus_gtk_button_auto_click (GtkButton *button)
+{
+	g_return_if_fail (GTK_IS_BUTTON (button));
+
+	button->in_button = TRUE;
+	gtk_button_pressed (button);
+	button->in_button = FALSE;
+
+	/* FIXME:
+	 * Nothing is preventing other events from occuring between
+	 * now and when this timeout function fires, which means in
+	 * theory the user could click on a different row or otherwise
+	 * get in between the double-click and the button activation.
+	 * In practice the timeout is short enough that this probably
+	 * isn't a problem.
+	 */
+	g_timeout_add (BUTTON_AUTO_HIGHLIGHT_MILLISECONDS, 
+		       finish_button_activation, button);
+}
+
 /**
  * nautilus_gtk_button_set_padding
  * 
@@ -106,6 +156,47 @@ nautilus_gtk_clist_get_last_selected_row (GtkCList *list)
 	}
 
 	return -1;
+}
+
+static gint
+activate_button_on_double_click (GtkWidget *widget,
+		     		 GdkEventButton *event,
+		     		 gpointer user_data)
+{
+	g_assert (GTK_IS_CLIST (widget));
+	g_assert (GTK_IS_BUTTON (user_data));
+
+	/* Treat double-click like single click followed by
+	 * click on specified button.
+	 */
+	if (event->type == GDK_2BUTTON_PRESS 
+	    && GTK_WIDGET_SENSITIVE (GTK_WIDGET (user_data))) {
+		nautilus_gtk_button_auto_click (GTK_BUTTON (user_data));
+	}
+	
+	return FALSE;
+}	
+
+/**
+ * nautilus_gtk_clist_set_double_click_button:
+ * 
+ * Set a button to be auto-clicked when a clist gets a double-click.
+ * @clist: Any GtkCList
+ * @button: A GtkButton that will be auto-clicked when the clist gets
+ * a double-click event. If the button is not sensitive, this function
+ * does nothing.
+ **/
+void
+nautilus_gtk_clist_set_double_click_button (GtkCList *clist, GtkButton *button)
+{
+	g_return_if_fail (GTK_IS_CLIST (clist));
+	g_return_if_fail (GTK_IS_BUTTON (button));
+
+	gtk_signal_connect (GTK_OBJECT (clist), 
+			    "button_press_event",
+			    (GtkSignalFunc) activate_button_on_double_click,
+			    button);
+
 }
 
 /**
