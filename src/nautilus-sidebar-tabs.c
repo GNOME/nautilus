@@ -233,8 +233,28 @@ nautilus_sidebar_tabs_load_theme_data (NautilusSidebarTabs *sidebar_tabs)
 	 */
 	
 	/* use the default font.  In the future, it should fetch the font name and properties from the theme */
-	sidebar_tabs->details->tab_font = nautilus_scalable_font_get_default_bold_font ();
+	sidebar_tabs->details->tab_font = nautilus_global_preferences_get_smooth_bold_font ();
 	sidebar_tabs->details->font_size = 12;
+}
+
+static void
+smooth_font_changed_callback (gpointer callback_data)
+{
+	NautilusScalableFont *new_font;
+	NautilusSidebarTabs *sidebar_tabs;
+
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TABS (callback_data));
+
+	sidebar_tabs = NAUTILUS_SIDEBAR_TABS (callback_data);
+	new_font = nautilus_global_preferences_get_smooth_bold_font ();
+
+	if (sidebar_tabs->details->tab_font != NULL) {
+		gtk_object_unref (GTK_OBJECT (sidebar_tabs->details->tab_font));
+	}
+
+	sidebar_tabs->details->tab_font = new_font;
+
+	gtk_widget_queue_resize (GTK_WIDGET (sidebar_tabs));
 }
 
 /* initialize a newly allocated sidebar tabs object */
@@ -273,6 +293,9 @@ nautilus_sidebar_tabs_initialize (NautilusSidebarTabs *sidebar_tabs)
 	nautilus_preferences_add_callback(NAUTILUS_PREFERENCES_THEME, 
 						(NautilusPreferencesCallback) nautilus_sidebar_tabs_load_theme_data, 
 						sidebar_tabs);
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_SMOOTH_FONT,
+					   smooth_font_changed_callback,
+					   sidebar_tabs);
 	
 	sidebar_tabs->details->title_prelit = FALSE;
 }
@@ -320,6 +343,9 @@ nautilus_sidebar_tabs_destroy (GtkObject *object)
 	
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME, 
 					      (NautilusPreferencesCallback) nautilus_sidebar_tabs_load_theme_data, 
+					      sidebar_tabs);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_SMOOTH_FONT,
+					      smooth_font_changed_callback,
 					      sidebar_tabs);
 		
 	g_free (sidebar_tabs->details);

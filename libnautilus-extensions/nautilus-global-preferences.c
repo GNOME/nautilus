@@ -1261,6 +1261,12 @@ nautilus_global_preferences_set_dialog_title (const char *title)
 	gtk_window_set_title (GTK_WINDOW (dialog), title);
 }
 
+/**
+ * nautilus_global_preferences_get_smooth_font
+ *
+ * Return value: The user's preferred smooth font.  Need to 
+ *               unref the returned GtkObject when done with it.
+ */
 NautilusScalableFont *
 nautilus_global_preferences_get_smooth_font (void)
 {
@@ -1278,6 +1284,35 @@ nautilus_global_preferences_get_smooth_font (void)
 	g_assert (NAUTILUS_IS_SCALABLE_FONT (scalable_font));
 
 	return scalable_font;
+}
+
+/**
+ * nautilus_global_preferences_get_smooth_bold_font
+ *
+ * Return value: A bold flavor on the user's preferred smooth font.  If
+ *               no bold font is found, then the plain preffered font is
+ *               used. Need to unref the returned GtkObject when done
+ *               with it.
+ */
+NautilusScalableFont *
+nautilus_global_preferences_get_smooth_bold_font (void)
+{
+	NautilusScalableFont *plain_font;
+	NautilusScalableFont *bold_font;
+
+	plain_font = nautilus_global_preferences_get_smooth_font ();
+	g_assert (NAUTILUS_IS_SCALABLE_FONT (plain_font));
+
+	bold_font = nautilus_scalable_font_make_bold (plain_font);
+
+	if (bold_font == NULL) {
+		bold_font = plain_font;
+	} else {
+		gtk_object_unref (GTK_OBJECT (plain_font));
+	}
+
+	g_assert (NAUTILUS_IS_SCALABLE_FONT (bold_font));
+	return bold_font;
 }
 
 void

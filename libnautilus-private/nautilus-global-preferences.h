@@ -144,6 +144,7 @@ void                         nautilus_global_preferences_set_dialog_title       
 /* Sidebar */
 GList *                      nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers (void);
 struct NautilusScalableFont *nautilus_global_preferences_get_smooth_font                            (void);
+struct NautilusScalableFont *nautilus_global_preferences_get_smooth_bold_font                       (void);
 
 END_GNOME_DECLS
 
