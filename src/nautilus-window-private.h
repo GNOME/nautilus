@@ -38,7 +38,8 @@ typedef enum {
         NAUTILUS_LOCATION_CHANGE_STANDARD,
         NAUTILUS_LOCATION_CHANGE_BACK,
         NAUTILUS_LOCATION_CHANGE_FORWARD,
-        NAUTILUS_LOCATION_CHANGE_RELOAD
+        NAUTILUS_LOCATION_CHANGE_RELOAD,
+        NAUTILUS_LOCATION_CHANGE_REDIRECT
 } NautilusLocationChangeType;
 
 /* FIXME bugzilla.eazel.com 2575: Migrate more fields into here. */
@@ -148,7 +149,7 @@ void               nautilus_window_set_viewed_file                       (Nautil
                                                                           NautilusFile      *file);
 void               nautilus_send_history_list_changed                    (void);
 void               nautilus_window_add_current_location_to_history_list  (NautilusWindow    *window);
-void               nautilus_add_to_history_list                          (NautilusBookmark  *bookmark);
+void               nautilus_remove_from_history_list_no_notify           (const char        *location);
 GList *            nautilus_get_history_list                             (void);
 void               nautilus_window_bookmarks_preference_changed_callback (gpointer           user_data);
 

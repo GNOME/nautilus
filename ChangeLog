@@ -1,3 +1,34 @@
+2001-02-27  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Finished bug 6950 (need new report_redirect call in addition to
+	report_location_change).
+
+	* src/nautilus-window-manage-views.c: (update_history): Split
+	out this part of update_for_new_location, since it really was
+	begging for a case statement. Added a redirect case, which does
+	nothing (just like reload, but it needs a separate case to make
+	sense anyway).
+	(update_for_new_location): Use the new update_history.
+	(report_redirect_callback): Do nothing if we are no longer at the
+	"from" location of the redirect. In the case where we do redirect,
+	make sure we update history properly, but don't update the back
+	and forward lists at all.
+
+	* src/nautilus-window-private.h:
+	* src/nautilus-window.c: (remove_from_history_list): New function
+	shared by the normal add case and the new remove call.
+	(add_to_history_list): New name for nautilus_add_to_history_list
+	to help emphasize it's a private function. Change to use
+	remove_from_history_list.
+	(nautilus_remove_from_history_list_no_notify): New call for use by
+	the redirect code.
+	(real_add_current_location_to_history_list),
+	(nautilus_window_add_current_location_to_history_list): Moved
+	these functions down to avoid adding a prototype for
+	add_to_history_list.
+
 2001-02-27  Pavel Cisler  <pavel@eazel.com>
 
 	reviewed by: Gene Z. Ragan  <gzr@eazel.com>

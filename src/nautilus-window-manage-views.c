@@ -536,6 +536,34 @@ cancel_viewed_file_changed_callback (NautilusWindow *window)
         }
 }
 
+static void
+update_history (NautilusWindow *window,
+                NautilusLocationChangeType type,
+                const char *new_location)
+{
+        switch (type) {
+        case NAUTILUS_LOCATION_CHANGE_STANDARD:
+                nautilus_window_add_current_location_to_history_list (window);
+                handle_go_elsewhere (window, new_location);
+                return;
+        case NAUTILUS_LOCATION_CHANGE_RELOAD:
+                /* for reload there is no work to do */
+                return;
+        case NAUTILUS_LOCATION_CHANGE_BACK:
+                nautilus_window_add_current_location_to_history_list (window);
+                handle_go_back (window, new_location);
+                return;
+        case NAUTILUS_LOCATION_CHANGE_FORWARD:
+                nautilus_window_add_current_location_to_history_list (window);
+                handle_go_forward (window, new_location);
+                return;
+        case NAUTILUS_LOCATION_CHANGE_REDIRECT:
+                /* for the redirect case, the caller can do the updating */
+                return;
+        }
+	g_return_if_fail (FALSE);
+}
+
 /* Handle the changes for the NautilusWindow itself. */
 static void
 update_for_new_location (NautilusWindow *window)
@@ -546,22 +574,8 @@ update_for_new_location (NautilusWindow *window)
         new_location = window->details->pending_location;
         window->details->pending_location = NULL;
         
-        /* Maintain history lists. */
-        if (window->details->location_change_type != NAUTILUS_LOCATION_CHANGE_RELOAD) {
-                /* Always add new location to history list. */
-                nautilus_window_add_current_location_to_history_list (window);
+        update_history (window, window->details->location_change_type, new_location);
                 
-                /* Update back and forward list. */
-                if (window->details->location_change_type == NAUTILUS_LOCATION_CHANGE_BACK) {
-                        handle_go_back (window, new_location);
-                } else if (window->details->location_change_type == NAUTILUS_LOCATION_CHANGE_FORWARD) {
-                        handle_go_forward (window, new_location);
-                } else {
-                        g_assert (window->details->location_change_type == NAUTILUS_LOCATION_CHANGE_STANDARD);
-                        handle_go_elsewhere (window, new_location);
-                }
-        }
-        
         /* Set the new location. */
         g_free (window->details->location);
         window->details->location = new_location;
@@ -1832,6 +1846,8 @@ report_redirect_callback (NautilusViewFrame *view,
                           const char *title,
                           NautilusWindow *window)
 {
+        const char *existing_location;
+
         g_assert (NAUTILUS_IS_WINDOW (window));
 
         if (view != window->content_view) {
@@ -1839,9 +1855,15 @@ report_redirect_callback (NautilusViewFrame *view,
                 return;
         }
 
-        /* FIXME bugzilla.eazel.com 6950: Ignore redirect if we aren't
-         * at "from_location".
-         */
+        /* Ignore redirect if we aren't already at "from_location". */
+        existing_location = window->details->pending_location;
+        if (existing_location == NULL) {
+                existing_location = window->details->location;
+        }
+        if (existing_location == NULL
+            || !nautilus_uris_match (existing_location, from_location)) {
+                return;
+        }
 
         end_location_change (window);
 
@@ -1849,14 +1871,13 @@ report_redirect_callback (NautilusViewFrame *view,
                                         to_location,
                                         selection,
                                         view);
+
+        nautilus_remove_from_history_list_no_notify (from_location);
+        nautilus_window_add_current_location_to_history_list (window);
         
-        window->details->location_change_type = NAUTILUS_LOCATION_CHANGE_STANDARD;
+        window->details->location_change_type = NAUTILUS_LOCATION_CHANGE_REDIRECT;
         window->details->pending_location = g_strdup (to_location);
         update_for_new_location (window);
-
-        /* FIXME bugzilla.eazel.com 6950: Make the history element for
-         * this location overwrite the old one.
-         */
 }
 
 static void

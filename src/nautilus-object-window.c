@@ -1509,32 +1509,39 @@ free_history_list (void)
 	history_list = NULL;
 }
 
+/* Remove the this URI from the history list.
+ * Do not sent out a change notice.
+ * We pass in a bookmark for convenience.
+ */
 static void
-real_add_current_location_to_history_list (NautilusWindow *window)
+remove_from_history_list (NautilusBookmark *bookmark)
 {
-	g_assert (NAUTILUS_IS_WINDOW (window));
+	GList *node;
 
-	nautilus_add_to_history_list (window->current_location_bookmark);
+	/* Compare only the uris here. Comparing the names also is not
+	 * necessary and can cause problems due to the asynchronous
+	 * nature of when the title of the window is set.
+	 */
+	node = g_list_find_custom (history_list, 
+				   bookmark,
+				   nautilus_bookmark_compare_uris);
+	
+	/* Remove any older entry for this same item. There can be at most 1. */
+	if (node != NULL) {
+		history_list = g_list_remove_link (history_list, node);
+		gtk_object_unref (node->data);
+		g_list_free_1 (node);
+	}
 }
 
-void
-nautilus_window_add_current_location_to_history_list (NautilusWindow *window)
-{
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
-	NAUTILUS_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
-			      add_current_location_to_history_list, (window));
-}
-
-void
-nautilus_add_to_history_list (NautilusBookmark *bookmark)
+static void
+add_to_history_list (NautilusBookmark *bookmark)
 {
 	/* Note that the history is shared amongst all windows so
 	 * this is not a NautilusWindow function. Perhaps it belongs
 	 * in its own file.
 	 */
 	static gboolean free_history_list_is_set_up;
-	GList *found_link;
 
 	g_return_if_fail (NAUTILUS_IS_BOOKMARK (bookmark));
 
@@ -1544,29 +1551,40 @@ nautilus_add_to_history_list (NautilusBookmark *bookmark)
 	}
 
 	gtk_object_ref (GTK_OBJECT (bookmark));
-
-	/* Compare only the uris here. Comparing the names also is not necessary
-	 * and can cause problems due to the asynchronous nature of when the title
-	 * of the window is set. 
-	 */
-	found_link = g_list_find_custom (history_list, 
-					 bookmark,
-					 nautilus_bookmark_compare_uris);
-	
-	/* Remove any older entry for this same item. There can be at most 1. */
-	if (found_link != NULL) {
-		history_list = g_list_remove_link (history_list, found_link);
-		gtk_object_unref (found_link->data);
-		g_list_free_1 (found_link);
-	}
-
-	/* New item goes first. */
+	remove_from_history_list (bookmark);
 	history_list = g_list_prepend (history_list, bookmark);
 
 	/* Tell world that history list has changed. At least all the
 	 * NautilusWindows (not just this one) are listening.
 	 */
 	nautilus_send_history_list_changed ();
+}
+
+void
+nautilus_remove_from_history_list_no_notify (const char *uri)
+{
+	NautilusBookmark *bookmark;
+
+	bookmark = nautilus_bookmark_new (uri, "");
+	remove_from_history_list (bookmark);
+	gtk_object_unref (GTK_OBJECT (bookmark));
+}
+
+static void
+real_add_current_location_to_history_list (NautilusWindow *window)
+{
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	add_to_history_list (window->current_location_bookmark);
+}
+
+void
+nautilus_window_add_current_location_to_history_list (NautilusWindow *window)
+{
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	NAUTILUS_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+			      add_current_location_to_history_list, (window));
 }
 
 void
