@@ -47,7 +47,6 @@
 
 #include "eazel-install-metadata.h"
 #include "eazel-install-protocols.h"
-#include "eazel-install-logic.h"
 #include "eazel-install-logic2.h"
 #include "eazel-package-system-types.h"
 
@@ -1608,7 +1607,7 @@ eazel_install_emit_download_progress (EazelInstall *service,
 				      int total)
 {
 	EAZEL_INSTALL_SANITY(service);
-	//gtk_signal_emit (GTK_OBJECT (service), signals[DOWNLOAD_PROGRESS], pack, amount, total);
+	gtk_signal_emit (GTK_OBJECT (service), signals[DOWNLOAD_PROGRESS], pack, amount, total);
 }
 
 void 

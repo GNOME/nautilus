@@ -38,17 +38,14 @@ libeazelinstallinclude_HEADERS = 		\
 	trilobite-eazel-install.h		\
 	libeazelinstall.h			\
 	eazel-install-corba-types.h	 	\
-	eazel-install-logic.h			\
 	eazel-install-metadata.h		\
 	eazel-install-protocols.h		\
-	eazel-install-rpm-glue.h		\
 	eazel-install-rpm-signature.h		\
 	eazel-install-query.h			\
 	eazel-install-tests.h			\
 	eazel-install-private.h			\
 	eazel-install-corba-callback.h		\
 	eazel-install-problem.h			\
-	eazel-install-logic.h			\
 	eazel-install-logic2.h			\
 	$(NULL)
 
@@ -59,9 +56,7 @@ libeazelinstall_la_SOURCES = \
 	eazel-install-corba-callback.c	\
 	eazel-install-metadata.c		\
 	eazel-install-protocols.c		\
-	eazel-install-logic.c			\
 	eazel-install-logic2.c			\
-	eazel-install-rpm-glue.c		\
 	eazel-install-rpm-signature.c		\
 	eazel-install-tests.c			\
 	eazel-install-object.c			\

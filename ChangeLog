@@ -1,3 +1,35 @@
+2001-02-09  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	reviewed by: Robey Pointer  <robey@eazel.com>
+
+	Fix for 6190, reuse check_if_related. If a package being revived
+	is related to the broken (related by name and version diff), don't
+	ask softcat for an update, but ask for an exact version.
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	* components/services/install/lib/eazel-install-rpm-glue.h:
+	* components/services/install/lib/eazel-install-logic.c:
+	* components/services/install/lib/eazel-install-logic.h:
+	* components/services/install/lib/Makefile.am:
+	Removed rpm-glue and logic.
+	
+	* components/services/install/lib/eazel-install-logic2.c:
+	(is_satisfied), (check_if_related_package), (check_tree_helper),
+	(download_packages):
+	is_satisfied checks name!=null before doing is_installed.
+	check_tree_helper now uses check_if_related before doing the
+	softcat_available_update. If the packages are related, use
+	get_info to get an exacat version (sense=EQ).
+	Moved check_if_related here
+	Output tuning...
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_emit_download_progress):
+	Woops, undid a comment about bug 6425
+	
+	* components/services/install/lib/eazel-softcat.c:
+	(eazel_softcat_available_update):
+	Indention...
+
 2001-02-08  John Harper  <jsh@eazel.com>
 
 	reviewed by: Maciej Stachowiak <mjs@eazel.com>

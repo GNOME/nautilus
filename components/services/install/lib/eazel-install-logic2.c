@@ -21,7 +21,6 @@
  *          Robey Pointer <robey@eazel.com>
  */
 
-#include "eazel-install-logic.h"
 #include "eazel-install-logic2.h"
 #include "eazel-install-public.h"
 #include "eazel-install-private.h"
@@ -726,7 +725,7 @@ is_satisfied (EazelInstall *service,
 		break;
 	}
 	default: {				
-		if (dep->version) {
+		if (dep->package->name && dep->version) {
 			if (eazel_package_system_is_installed (service->private->package_system,
 							       service->private->cur_root,
 							       dep->package->name,
@@ -738,7 +737,8 @@ is_satisfied (EazelInstall *service,
 #endif
 				result = TRUE;
 			}
-		} else if (eazel_package_system_is_installed (service->private->package_system,
+		} else if (dep->package->name &&
+			   eazel_package_system_is_installed (service->private->package_system,
 							      service->private->cur_root,
 							      dep->package->name,
 							      NULL, 
@@ -931,6 +931,86 @@ void check_no_two_packages_has_same_file (EazelInstall *service, GList *packages
 void check_feature_consistency (EazelInstall *service, GList *packages);
 void check_conflicts_against_already_installed_packages (EazelInstall *service, GList *packages);
 void check_tree_for_conflicts (EazelInstall *service, GList **packages, GList **extra_packages);
+gboolean check_if_related_package (EazelInstall *service, PackageData *package, PackageData *dep);
+
+/*
+  This function tests wheter "package" and "dep"
+  seems to be related in some way.
+  This is done by checking the package->modifies list for
+  elements that have same version as dep->version.
+  I then compare these elements against dep->name,
+  and if one matches the x-y-z vs dep->name=x-y scheme,
+  I declare that "package" and "dep" are related
+*/
+gboolean
+check_if_related_package (EazelInstall *service,
+			  PackageData *package,
+			  PackageData *dep)
+{
+	/* Pessimisn mode = HIGH */
+	gboolean result = FALSE;
+	GList *potiental_mates;
+	char **dep_name_elements;
+	
+	dep_name_elements = g_strsplit (dep->name, "-", 80);
+
+	/* First check, if package modifies a package with the same version
+	   number as dep->version */
+	potiental_mates = package->modifies;
+	while ((potiental_mates = g_list_find_custom (potiental_mates, 
+						      dep->version, 
+						      (GCompareFunc)eazel_install_package_version_compare))!=NULL) {
+		PackageData *modpack = (PackageData*)potiental_mates->data;
+		
+		if ((modpack->modify_status == PACKAGE_MOD_UPGRADED) ||
+		    (modpack->modify_status == PACKAGE_MOD_DOWNGRADED)) {			
+			char **mod_name_elements;
+			char *dep_name_iterator;
+			char *mod_name_iterator;
+			int cnt = 0;
+
+			mod_name_elements = g_strsplit (modpack->name, "-", 80);
+			
+			for (cnt=0; TRUE;cnt++) {
+				dep_name_iterator = dep_name_elements[cnt];
+				mod_name_iterator = mod_name_elements[cnt];
+#if 0
+				trilobite_debug ("dep name iterator = \"%s\"", dep_name_iterator);
+				trilobite_debug ("mod name iterator = \"%s\"", mod_name_iterator);
+#endif
+				if ((dep_name_iterator==NULL) ||
+				    (mod_name_iterator==NULL)) {
+					break;
+				}
+				if ((strlen (dep_name_iterator) == strlen (mod_name_iterator)) &&
+				    (strcmp (dep_name_iterator, mod_name_iterator)==0)) {
+					continue;
+				}
+				break;
+			}
+			if (cnt >= 1) {
+				trilobite_debug ("%s-%s seems to be a child package of %s-%s, which %s-%s updates",
+						 dep->name, dep->version, 
+						 modpack->name, modpack->version,
+						 package->name, package->version);
+				if (!result) {
+					result = TRUE;
+				} else {
+					trilobite_debug ("but what blows is, the previous also did!!");
+					g_assert_not_reached ();
+				}				
+			} else {
+				trilobite_debug ("%s-%s is not related to %s-%s", 
+						 dep->name, dep->version, 
+						 package->name, package->version);
+			}
+			g_strfreev (mod_name_elements);			
+		}
+		potiental_mates = g_list_next (potiental_mates);
+	}
+	g_strfreev (dep_name_elements);
+	return result;
+}
 
 static gboolean
 check_update_for_no_more_file_conflicts (PackageFileConflict *conflict, 
@@ -983,12 +1063,48 @@ check_tree_helper (EazelInstall *service,
 				PackageFileConflict *conflict = PACKAGEFILECONFLICT (breakage); 
 				PackageData *pack_broken = packagebreaks_get_package (breakage);
 				PackageData *pack_update = NULL;
+				gboolean update_available = FALSE;
 
-				/* reset pack_broken to some sane values */
-				if (eazel_softcat_available_update (service->private->softcat,
-								    pack_broken,
-								    &pack_update,
-								    UPDATE_MUST_HAVE)) {
+				if (check_if_related_package (service,
+							      pack,
+							      pack_broken)) {
+					char *a, *b;
+					a = packagedata_get_readable_name (pack);
+					b = packagedata_get_readable_name (pack_broken);
+					g_message ("%s is related to %s",
+						   a, b);
+
+					/* Create the pack_update */
+					pack_update = packagedata_new ();
+					pack_update->name = g_strdup (pack_broken->name);
+					pack_update->version = g_strdup (pack->version);
+					pack_update->distribution = pack_broken->distribution;
+					pack_update->archtype = g_strdup (pack_broken->archtype);
+
+					/* Try and get the info */
+					if (eazel_softcat_get_info (service->private->softcat,
+								    pack_update,
+								    EAZEL_SOFTCAT_SENSE_EQ,
+								    UPDATE_MUST_HAVE) 
+					    != EAZEL_SOFTCAT_SUCCESS) {
+						update_available = FALSE;
+					        /* if we failed, delete the package object */
+						gtk_object_unref (GTK_OBJECT (pack_update));
+					} else {
+						update_available = TRUE;
+					}
+					
+					g_free (a);
+					g_free (b);
+				} else {
+					update_available = 
+						eazel_softcat_available_update (service->private->softcat,
+										pack_broken,
+										&pack_update,
+										UPDATE_MUST_HAVE);
+				}
+
+				if (update_available) {
 					if (check_update_for_no_more_file_conflicts (conflict, pack_update)) {
 #if EI2_DEBUG & 0x4
 						trilobite_debug ("adding %s to packages to be installed", 
@@ -1004,6 +1120,7 @@ check_tree_helper (EazelInstall *service,
 										    pack_update);
 						pack_update->status = PACKAGE_PARTLY_RESOLVED;
 						remove = g_list_prepend (remove, breakage);
+						/* reset pack_broken to some sane values */
 						pack->status = PACKAGE_PARTLY_RESOLVED;
 						pack_update->toplevel = TRUE;
 					} else {
@@ -1016,6 +1133,8 @@ check_tree_helper (EazelInstall *service,
 #endif
 						gtk_object_unref (GTK_OBJECT (pack_update));
 					}
+				} else {
+					g_message (_("could not revive %s"), pack->name);
 				}
 			}
 		}
@@ -1567,9 +1686,8 @@ download_packages (EazelInstall *service,
 	GList *iterator;
 	
 	flat_packages = flatten_packagedata_dependency_tree (packages);
-#if EI2_DEBUG & 0x4
-	trilobite_debug ("downloading %d packages", g_list_length (packages));
-#endif
+	g_message ("downloading %d packages", g_list_length (packages));
+
 	service->private->cancel_download = FALSE;
 	for (iterator = flat_packages; iterator; iterator = g_list_next (iterator)) {
 		PackageData *pack = PACKAGEDATA (iterator->data);

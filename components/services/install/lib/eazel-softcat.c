@@ -711,7 +711,10 @@ eazel_softcat_get_info (EazelSoftCat *softcat, PackageData *package, int sense_f
  * Returns TRUE and fills in 'newpack' if there is, returns FALSE otherwise.
  */
 gboolean
-eazel_softcat_available_update (EazelSoftCat *softcat, PackageData *oldpack, PackageData **newpack, int fill_flags)
+eazel_softcat_available_update (EazelSoftCat *softcat, 
+				PackageData *oldpack, 
+				PackageData **newpack, 
+				int fill_flags)
 {
 	PackageData *tmp_pack;
 	gboolean result = TRUE;
