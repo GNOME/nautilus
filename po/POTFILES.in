@@ -1,3 +1,4 @@
+applets/launcher/nautilus-launcher-applet.c
 components/help/hyperbola-filefmt.c
 components/help/hyperbola-nav-index.c
 components/help/hyperbola-types.h
@@ -8,7 +9,9 @@ components/loser/content/nautilus-content-loser.c
 components/loser/sidebar/nautilus-sidebar-loser-ui.xml
 components/loser/sidebar/nautilus-sidebar-loser.c
 components/mozilla/nautilus-mozilla-content-view.c
+components/mozilla/mozilla-preferences.cpp
 components/mozilla/nautilus-mozilla-ui.xml
+components/music/mpg123.c
 components/music/nautilus-music-view.c
 components/notes/nautilus-notes.c
 components/rpmview/nautilus-rpm-verify-window.c
@@ -21,6 +24,7 @@ components/services/install/command-line/eazel-gen-xml.c
 components/services/install/lib/eazel-install-logic.c
 components/services/install/lib/eazel-install-metadata.c
 components/services/install/lib/eazel-install-object.c
+components/services/install/lib/eazel-install-problem.c
 components/services/install/lib/eazel-install-protocols.c
 components/services/install/lib/eazel-install-rpm-glue.c
 components/services/install/lib/eazel-install-tests.c
@@ -32,8 +36,10 @@ components/services/install/lib/eazel-softcat.c
 components/services/install/nautilus-view/nautilus-service-install-view.c
 components/services/login/nautilus-view/nautilus-change-password-view.c
 components/services/summary/lib/eazel-summary-shared.c
+components/services/summary/nautilus-view/nautilus-summary-dialogs.c
 components/services/summary/nautilus-view/nautilus-summary-view-ui.xml
 components/services/summary/nautilus-view/nautilus-summary-view.c
+components/services/summary/nautilus-view/nautilus-summary-view-private.h
 components/services/time/command-line/main.c
 components/services/time/nautilus-view/main.c
 components/services/time/nautilus-view/trilobite-eazel-time-view.c
@@ -47,6 +53,7 @@ data/linksets/desktop.xml
 data/linksets/portals.xml
 data/linksets/search_engines.xml
 data/static_bookmarks.xml
+#helper-utilities/error-dialog/nautilus-error-dialog.c
 libnautilus-extensions/nautilus-druid-page-eazel.c
 libnautilus-extensions/nautilus-druid.c
 libnautilus-extensions/nautilus-entry.c

@@ -11,13 +11,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.1\n"
-"POT-Creation-Date: 2000-12-11 15:41+0100\n"
-"PO-Revision-Date: 2000-12-11 15:42+01:00\n"
+"POT-Creation-Date: 2000-12-12 20:49+0100\n"
+"PO-Revision-Date: 2000-12-12 11:15+01:00\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8-bit\n"
+
+#: applets/launcher/nautilus-launcher-applet.c:279
+msgid "Can't create nautilus-launcher-applet!"
+msgstr "Kan ikke opprette nautilus-launcher-applet!"
 
 #. * From 'man(7)':
 #.
@@ -192,6 +196,28 @@ msgstr ""
 msgid "You have tried to kill the Sidebar Loser"
 msgstr "Du har prøvd å drepe sidelinjetaperen"
 
+#: components/mozilla/mozilla-preferences.cpp:117
+#: libnautilus-extensions/nautilus-preferences.c:1086
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"GConf feil:\n"
+"  %s"
+
+#: components/mozilla/mozilla-preferences.cpp:124
+#: libnautilus-extensions/nautilus-preferences.c:1093
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s\n"
+"All further errors shown only on terminal"
+msgstr ""
+"GConf feil:\n"
+"  %s\n"
+"Alle videre feil vises kun på kommandolinjen"
+
 #: po/tmp/nautilus-mozilla-ui.xml.h:1
 msgid "Mozilla Test"
 msgstr "Mozilla test"
@@ -208,124 +234,716 @@ msgstr "Dette er en flettet verktøylinjeknapp for mozilla"
 msgid "_Mozilla Test"
 msgstr "_Mozilla test"
 
+#: components/music/mpg123.c:29
+msgid "Blues"
+msgstr "Blues"
+
+#: components/music/mpg123.c:29
+msgid "Classic Rock"
+msgstr "Klassisk rock"
+
+#: components/music/mpg123.c:29
+msgid "Country"
+msgstr "Country"
+
+#: components/music/mpg123.c:29
+msgid "Dance"
+msgstr "Dance"
+
+#: components/music/mpg123.c:30
+msgid "Disco"
+msgstr "Disko"
+
+#: components/music/mpg123.c:30
+msgid "Funk"
+msgstr "Funk"
+
+#: components/music/mpg123.c:30
+msgid "Grunge"
+msgstr "Grunge"
+
+#: components/music/mpg123.c:30
+msgid "Hip-Hop"
+msgstr "Hip-Hop"
+
+#: components/music/mpg123.c:31
+msgid "Jazz"
+msgstr "Jazz"
+
+#: components/music/mpg123.c:31
+msgid "Metal"
+msgstr "Metal"
+
+#: components/music/mpg123.c:31
+msgid "New Age"
+msgstr "New Age"
+
+#: components/music/mpg123.c:31
+msgid "Oldies"
+msgstr "Oldies"
+
+#: components/music/mpg123.c:32
+msgid "Other"
+msgstr "Andre"
+
+#: components/music/mpg123.c:32
+msgid "Pop"
+msgstr "Pop"
+
+#: components/music/mpg123.c:32
+msgid "R&B"
+msgstr "R&B"
+
+#: components/music/mpg123.c:32
+msgid "Rap"
+msgstr "Rapp"
+
+#: components/music/mpg123.c:32
+msgid "Reggae"
+msgstr "Reggae"
+
+#: components/music/mpg123.c:33
+msgid "Rock"
+msgstr "Rock"
+
+#: components/music/mpg123.c:33
+msgid "Techno"
+msgstr "Tekno"
+
+#: components/music/mpg123.c:33
+msgid "Industrial"
+msgstr "Industriell"
+
+#: components/music/mpg123.c:33
+msgid "Alternative"
+msgstr "Alternativ"
+
+#: components/music/mpg123.c:34
+msgid "Ska"
+msgstr "Ska"
+
+#: components/music/mpg123.c:34
+msgid "Death Metal"
+msgstr "Death metal"
+
+#: components/music/mpg123.c:34
+msgid "Pranks"
+msgstr "Pranks"
+
+#: components/music/mpg123.c:34
+msgid "Soundtrack"
+msgstr "Filmmusikk"
+
+#: components/music/mpg123.c:35
+msgid "Euro-Techno"
+msgstr "Euro-tekno"
+
+#: components/music/mpg123.c:35
+msgid "Ambient"
+msgstr "Ambient"
+
+#: components/music/mpg123.c:35
+msgid "Trip-Hop"
+msgstr "Trip-Hop"
+
+#: components/music/mpg123.c:35
+msgid "Vocal"
+msgstr "Vokal"
+
+#: components/music/mpg123.c:36
+msgid "Jazz+Funk"
+msgstr "Jazz+funk"
+
+#: components/music/mpg123.c:36
+msgid "Fusion"
+msgstr "Fusion"
+
+#: components/music/mpg123.c:36
+msgid "Trance"
+msgstr "Trance"
+
+#: components/music/mpg123.c:36
+msgid "Classical"
+msgstr "Klassisk"
+
+#: components/music/mpg123.c:37
+msgid "Instrumental"
+msgstr "Intstrumental"
+
+#: components/music/mpg123.c:37
+msgid "Acid"
+msgstr "Acid"
+
+#: components/music/mpg123.c:37
+msgid "House"
+msgstr "House"
+
+#: components/music/mpg123.c:37
+msgid "Game"
+msgstr "Spill"
+
+#: components/music/mpg123.c:38
+msgid "Sound Clip"
+msgstr "Lydklipp"
+
+#: components/music/mpg123.c:38
+msgid "Gospel"
+msgstr "Gospel"
+
+#: components/music/mpg123.c:38
+msgid "Noise"
+msgstr "Støy"
+
+#: components/music/mpg123.c:38
+msgid "Alt"
+msgstr "Alt"
+
+#: components/music/mpg123.c:39
+msgid "Bass"
+msgstr "Bass"
+
+#: components/music/mpg123.c:39
+msgid "Soul"
+msgstr "Soul"
+
+#: components/music/mpg123.c:39
+msgid "Punk"
+msgstr "Pønk"
+
+#: components/music/mpg123.c:39
+msgid "Space"
+msgstr "Space"
+
+#: components/music/mpg123.c:40
+msgid "Meditative"
+msgstr "Meditativ"
+
+#: components/music/mpg123.c:40
+msgid "Instrumental Pop"
+msgstr "Instrumental pop"
+
+#: components/music/mpg123.c:41
+msgid "Instrumental Rock"
+msgstr "Instrumental rock"
+
+#: components/music/mpg123.c:41
+msgid "Ethnic"
+msgstr "Etnisk"
+
+#: components/music/mpg123.c:41
+msgid "Gothic"
+msgstr "Gotisk"
+
+#: components/music/mpg123.c:42
+msgid "Darkwave"
+msgstr "Darkwave"
+
+#: components/music/mpg123.c:42
+msgid "Techno-Industrial"
+msgstr "Tekno-industriell"
+
+#: components/music/mpg123.c:42
+msgid "Electronic"
+msgstr "Elektronisk"
+
+#: components/music/mpg123.c:43
+msgid "Pop-Folk"
+msgstr "Pop-folk"
+
+#: components/music/mpg123.c:43
+msgid "Eurodance"
+msgstr "Eurodance"
+
+#: components/music/mpg123.c:43
+msgid "Dream"
+msgstr "Dream"
+
+#: components/music/mpg123.c:44
+msgid "Southern Rock"
+msgstr "Southern rock"
+
+#: components/music/mpg123.c:44
+msgid "Comedy"
+msgstr "Komedie"
+
+#: components/music/mpg123.c:44
+msgid "Cult"
+msgstr "Cult"
+
+#: components/music/mpg123.c:45
+msgid "Gangsta Rap"
+msgstr "Gangsta rap"
+
+#: components/music/mpg123.c:45
+msgid "Top 40"
+msgstr "Topp 40"
+
+#: components/music/mpg123.c:45
+msgid "Christian Rap"
+msgstr "Kristen rapp"
+
+#: components/music/mpg123.c:46
+msgid "Pop/Funk"
+msgstr "Pop/funk"
+
+#: components/music/mpg123.c:46
+msgid "Jungle"
+msgstr "Jungle"
+
+#: components/music/mpg123.c:46
+msgid "Native American"
+msgstr "Native american"
+
+#: components/music/mpg123.c:47
+msgid "Cabaret"
+msgstr "Kabarét"
+
+#: components/music/mpg123.c:47
+msgid "New Wave"
+msgstr "New wave"
+
+#: components/music/mpg123.c:47
+msgid "Psychedelic"
+msgstr "Psykedelisk"
+
+#: components/music/mpg123.c:47
+msgid "Rave"
+msgstr "Rave"
+
+#: components/music/mpg123.c:48
+msgid "Showtunes"
+msgstr "Showtunes"
+
+#: components/music/mpg123.c:48
+msgid "Trailer"
+msgstr "Trailer"
+
+#: components/music/mpg123.c:48
+msgid "Lo-Fi"
+msgstr "Lo-fi"
+
+#: components/music/mpg123.c:48
+msgid "Tribal"
+msgstr "Tribal"
+
+#: components/music/mpg123.c:49
+msgid "Acid Punk"
+msgstr "Acid punk"
+
+#: components/music/mpg123.c:49
+msgid "Acid Jazz"
+msgstr "Acid jazz"
+
+#: components/music/mpg123.c:49
+msgid "Polka"
+msgstr "Polka"
+
+#: components/music/mpg123.c:49
+msgid "Retro"
+msgstr "Retro"
+
+#: components/music/mpg123.c:50
+msgid "Musical"
+msgstr "Musical"
+
+#: components/music/mpg123.c:50
+msgid "Rock & Roll"
+msgstr "Rock & roll"
+
+#: components/music/mpg123.c:50
+msgid "Hard Rock"
+msgstr "Hard rock"
+
+#: components/music/mpg123.c:50
+msgid "Folk"
+msgstr "Folk"
+
+#: components/music/mpg123.c:51
+msgid "Folk/Rock"
+msgstr "Folk/rock"
+
+#: components/music/mpg123.c:51
+msgid "National Folk"
+msgstr "National folk"
+
+#: components/music/mpg123.c:51
+msgid "Swing"
+msgstr "Swing"
+
+#: components/music/mpg123.c:52
+msgid "Fast-Fusion"
+msgstr "Fast-fusion"
+
+#: components/music/mpg123.c:52
+msgid "Bebob"
+msgstr "Bebop"
+
+#: components/music/mpg123.c:52
+msgid "Latin"
+msgstr "Latin"
+
+#: components/music/mpg123.c:52
+msgid "Revival"
+msgstr "Revival"
+
+#: components/music/mpg123.c:53
+msgid "Celtic"
+msgstr "Keltisk"
+
+#: components/music/mpg123.c:53
+msgid "Bluegrass"
+msgstr "Bluegrass"
+
+#: components/music/mpg123.c:53
+msgid "Avantgarde"
+msgstr "Avantgarde"
+
+#: components/music/mpg123.c:54
+msgid "Gothic Rock"
+msgstr "Gotisk rock"
+
+#: components/music/mpg123.c:54
+msgid "Progressive Rock"
+msgstr "Progressiv rock"
+
+#: components/music/mpg123.c:55
+msgid "Psychedelic Rock"
+msgstr "Psykedelisk rock"
+
+#: components/music/mpg123.c:55
+msgid "Symphonic Rock"
+msgstr "Symfonisk rock"
+
+#: components/music/mpg123.c:55
+msgid "Slow Rock"
+msgstr "Slow rock"
+
+#: components/music/mpg123.c:56
+msgid "Big Band"
+msgstr "Storband"
+
+#: components/music/mpg123.c:56
+msgid "Chorus"
+msgstr "Kor"
+
+#: components/music/mpg123.c:56
+msgid "Easy Listening"
+msgstr "Easy listening"
+
+#: components/music/mpg123.c:57
+msgid "Acoustic"
+msgstr "Akustisk"
+
+#: components/music/mpg123.c:57
+msgid "Humour"
+msgstr "Humor"
+
+#: components/music/mpg123.c:57
+msgid "Speech"
+msgstr "Tale"
+
+#: components/music/mpg123.c:57
+msgid "Chanson"
+msgstr "Chanson"
+
+#: components/music/mpg123.c:58
+msgid "Opera"
+msgstr "Opera"
+
+#: components/music/mpg123.c:58
+msgid "Chamber Music"
+msgstr "Kammermusikk"
+
+#: components/music/mpg123.c:58
+msgid "Sonata"
+msgstr "Sonate"
+
+#: components/music/mpg123.c:58
+msgid "Symphony"
+msgstr "Symfoni"
+
+#: components/music/mpg123.c:59
+msgid "Booty Bass"
+msgstr "Booty bass"
+
+#: components/music/mpg123.c:59
+msgid "Primus"
+msgstr "Primus"
+
+#: components/music/mpg123.c:59
+msgid "Porn Groove"
+msgstr "Porn groove"
+
+#: components/music/mpg123.c:60
+msgid "Satire"
+msgstr "Satire"
+
+#: components/music/mpg123.c:60
+msgid "Slow Jam"
+msgstr "Slow jam"
+
+#: components/music/mpg123.c:60
+msgid "Club"
+msgstr "Club"
+
+#: components/music/mpg123.c:60
+msgid "Tango"
+msgstr "Tango"
+
+#: components/music/mpg123.c:61
+msgid "Samba"
+msgstr "Samba"
+
+#: components/music/mpg123.c:61
+msgid "Folklore"
+msgstr "Folklore"
+
+#: components/music/mpg123.c:61
+msgid "Ballad"
+msgstr "Ballade"
+
+#: components/music/mpg123.c:61
+msgid "Power Ballad"
+msgstr "Power ballade"
+
+#: components/music/mpg123.c:62
+msgid "Rhythmic Soul"
+msgstr "Rytmisk soul"
+
+#: components/music/mpg123.c:62
+msgid "Freestyle"
+msgstr "Freestyle"
+
+#: components/music/mpg123.c:62
+msgid "Duet"
+msgstr "Duett"
+
+#: components/music/mpg123.c:63
+msgid "Punk Rock"
+msgstr "Pønkrock"
+
+#: components/music/mpg123.c:63
+msgid "Drum Solo"
+msgstr "Trommesolo"
+
+#: components/music/mpg123.c:63
+msgid "A Cappella"
+msgstr "A capella"
+
+#: components/music/mpg123.c:64
+msgid "Euro-House"
+msgstr "Euro-house"
+
+#: components/music/mpg123.c:64
+msgid "Dance Hall"
+msgstr "Dance hall"
+
+#: components/music/mpg123.c:64
+msgid "Goa"
+msgstr "Goa"
+
+#: components/music/mpg123.c:65
+msgid "Drum & Bass"
+msgstr "Drum & bass"
+
+#: components/music/mpg123.c:65
+msgid "Club-House"
+msgstr "Club-house"
+
+#: components/music/mpg123.c:65
+msgid "Hardcore"
+msgstr "Hardcore"
+
+#: components/music/mpg123.c:66
+msgid "Terror"
+msgstr "Terror"
+
+#: components/music/mpg123.c:66
+msgid "Indie"
+msgstr "Indie"
+
+#: components/music/mpg123.c:66
+msgid "BritPop"
+msgstr "Britpop"
+
+#: components/music/mpg123.c:66
+msgid "Negerpunk"
+msgstr "Negerpønk"
+
+#: components/music/mpg123.c:67
+msgid "Polsk Punk"
+msgstr "Polsk pønk"
+
+#: components/music/mpg123.c:67
+msgid "Beat"
+msgstr "Beat"
+
+#: components/music/mpg123.c:67
+msgid "Christian Gangsta Rap"
+msgstr "Kristen gangsta rapp"
+
+#: components/music/mpg123.c:68
+msgid "Heavy Metal"
+msgstr "Heavy metal"
+
+#: components/music/mpg123.c:68
+msgid "Black Metal"
+msgstr "Black metal"
+
+#: components/music/mpg123.c:68
+msgid "Crossover"
+msgstr "Crossover"
+
+#: components/music/mpg123.c:69
+msgid "Contemporary Christian"
+msgstr "Kristen samtidsmusikk"
+
+#: components/music/mpg123.c:69
+msgid "Christian Rock"
+msgstr "Kristenrock"
+
+#: components/music/mpg123.c:70
+msgid "Merengue"
+msgstr "Merengue"
+
+#: components/music/mpg123.c:70
+msgid "Salsa"
+msgstr "Salsa"
+
+#: components/music/mpg123.c:70
+msgid "Thrash Metal"
+msgstr "Trash metal"
+
+#: components/music/mpg123.c:71
+msgid "Anime"
+msgstr "Anime"
+
+#: components/music/mpg123.c:71
+msgid "JPop"
+msgstr "JPop"
+
+#: components/music/mpg123.c:71
+msgid "Synthpop"
+msgstr "Synthpop"
+
 #. FIXME: I think this is not portable. It works in gcc, but not other C compilers.
-#: components/music/nautilus-music-view.c:231
+#: components/music/nautilus-music-view.c:234
 msgid "Track "
 msgstr "Spor"
 
-#: components/music/nautilus-music-view.c:231
+#: components/music/nautilus-music-view.c:234
 msgid "Title"
 msgstr "Tittel"
 
-#: components/music/nautilus-music-view.c:231
+#: components/music/nautilus-music-view.c:234
 msgid "Artist"
 msgstr "Artist"
 
-#: components/music/nautilus-music-view.c:231
+#: components/music/nautilus-music-view.c:234
 msgid "Year"
 msgstr "År"
 
-#: components/music/nautilus-music-view.c:231
+#: components/music/nautilus-music-view.c:234
 msgid "Bitrate "
 msgstr "Bitrate: "
 
-#: components/music/nautilus-music-view.c:231
+#: components/music/nautilus-music-view.c:234
 msgid "Time "
 msgstr "Tid "
 
-#: components/music/nautilus-music-view.c:231
+#: components/music/nautilus-music-view.c:234
 msgid "Album"
 msgstr "Album"
 
-#: components/music/nautilus-music-view.c:231
+#: components/music/nautilus-music-view.c:234
 msgid "Comment"
 msgstr "Kommentar"
 
-#: components/music/nautilus-music-view.c:231
+#: components/music/nautilus-music-view.c:234
 msgid "Channels"
 msgstr "Kanaler"
 
-#: components/music/nautilus-music-view.c:231
+#: components/music/nautilus-music-view.c:234
 msgid "Sample Rate"
 msgstr "Samplerate"
 
-#: components/music/nautilus-music-view.c:326
+#: components/music/nautilus-music-view.c:333
 msgid "Set Cover Image"
 msgstr "Sett bilde for omslag"
 
-#: components/music/nautilus-music-view.c:490
+#: components/music/nautilus-music-view.c:513
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file."
 msgstr "Beklager, men '%s' er ikke en brukbar bildefil."
 
-#: components/music/nautilus-music-view.c:492
+#: components/music/nautilus-music-view.c:515
 #: src/file-manager/fm-properties-window.c:2065
 #: src/nautilus-property-browser.c:993 src/nautilus-property-browser.c:1129
 msgid "Not an Image"
 msgstr "Ikke et bilde"
 
-#: components/music/nautilus-music-view.c:540
+#: components/music/nautilus-music-view.c:563
 msgid "Select an image file for the album cover:"
 msgstr "Velg en bildefil for plateomslaget:"
 
-#: components/music/nautilus-music-view.c:1037
+#: components/music/nautilus-music-view.c:1068
 msgid "Sorry, but the music view can't play non-local files yet."
 msgstr "Beklager, men musikkvisning kan ikke spille av eksterne filer ennå."
 
-#: components/music/nautilus-music-view.c:1038
+#: components/music/nautilus-music-view.c:1069
 msgid "Can't Play Remote Files"
 msgstr "Kunne ikke spille eksterne filer"
 
-#: components/music/nautilus-music-view.c:1345
+#: components/music/nautilus-music-view.c:1385
 msgid "Drag to seek within track"
 msgstr "Dra for å søke i et spor"
 
-#: components/music/nautilus-music-view.c:1367
+#: components/music/nautilus-music-view.c:1407
 msgid "Previous"
 msgstr "Forrige"
 
-#: components/music/nautilus-music-view.c:1382
+#: components/music/nautilus-music-view.c:1422
 msgid "Play"
 msgstr "Spill"
 
-#: components/music/nautilus-music-view.c:1397
+#: components/music/nautilus-music-view.c:1437
 msgid "Pause"
 msgstr "Pause"
 
-#: components/music/nautilus-music-view.c:1411
+#: components/music/nautilus-music-view.c:1451
 #: libnautilus-extensions/nautilus-file-operations.c:658
 #: libnautilus-extensions/nautilus-file-operations.c:715
 #: libnautilus-extensions/nautilus-file-operations.c:786
-#: po/tmp/nautilus-shell-ui.xml.h:56
+#: po/tmp/nautilus-shell-ui.xml.h:55
 msgid "Stop"
 msgstr "Stopp"
 
-#: components/music/nautilus-music-view.c:1425
+#: components/music/nautilus-music-view.c:1465
 msgid "Next"
 msgstr "Neste"
 
-#: components/music/nautilus-music-view.c:1438
+#: components/music/nautilus-music-view.c:1478
 msgid "Sound hardware missing or busy!"
 msgstr "Lydkort mangler eller er opptatt!"
 
-#: components/music/nautilus-music-view.c:1542
+#: components/music/nautilus-music-view.c:1582
 #, c-format
 msgid "Sorry, but there was an error reading %s."
 msgstr "Beklager, en feil oppsto under lesing av %s."
 
-#: components/music/nautilus-music-view.c:1543
+#: components/music/nautilus-music-view.c:1583
 msgid "Can't Read Folder"
 msgstr "Kan ikke lese mappe"
 
-#: components/music/nautilus-music-view.c:1616
+#: components/music/nautilus-music-view.c:1656
 msgid "Stereo"
 msgstr "Stereo"
 
-#: components/music/nautilus-music-view.c:1616
+#: components/music/nautilus-music-view.c:1656
 msgid "Mono"
 msgstr "Mono"
 
-#: components/music/nautilus-music-view.c:1658
+#: components/music/nautilus-music-view.c:1698
 #, c-format
 msgid "%s by %s"
 msgstr "%s for %s"
@@ -345,8 +963,8 @@ msgstr "Feilet på \"%s\""
 #. %s is the filename, %d/%d is filenumber of total-number-of-files
 #: components/rpmview/nautilus-rpm-verify-window.c:213
 #, c-format
-msgid "Checking \"%s\" (%d/%d)"
-msgstr "Sjekker \"%s\" (%d/%d)"
+msgid "Checking \"%s\" (%ld/%ld)"
+msgstr "Sjekker \"%s\" (%ld/%ld)"
 
 #: components/rpmview/nautilus-rpm-view-install.c:107
 #, c-format
@@ -759,6 +1377,107 @@ msgstr "Installasjon feilet"
 msgid "Uninstall failed"
 msgstr "Avinstallering feilet"
 
+#: components/services/install/lib/eazel-install-problem.c:88
+#: components/services/install/lib/eazel-install-problem.c:229
+#, c-format
+msgid "%s is a source package, which is not yet supported"
+msgstr "%s er en kildepakke, hvilket ikke er støttet ennå"
+
+#: components/services/install/lib/eazel-install-problem.c:93
+#, c-format
+msgid "%s had a file conflict with %s which %s required"
+msgstr "%s hadde en filkonflikt med %s som %s er avhengig av"
+
+#: components/services/install/lib/eazel-install-problem.c:98
+#, c-format
+msgid "%s had a file conflict with %s"
+msgstr "%s hadde en filkonflikt med %s"
+
+#: components/services/install/lib/eazel-install-problem.c:110
+#: components/services/install/lib/eazel-install-problem.c:121
+#, c-format
+msgid "%s would break other packages"
+msgstr "%s ville ødelegge andre pakker"
+
+#: components/services/install/lib/eazel-install-problem.c:113
+#, c-format
+msgid "%s would break"
+msgstr "%s vil ikke fungere"
+
+#: components/services/install/lib/eazel-install-problem.c:119
+#, c-format
+msgid "%s would break %s"
+msgstr "%s vil ødelegge %s"
+
+#: components/services/install/lib/eazel-install-problem.c:129
+#, c-format
+msgid "%s requires %s, which could not be found on the server"
+msgstr "%s trenger %s, som ikke kunne finnes på tjeneren"
+
+#: components/services/install/lib/eazel-install-problem.c:133
+#, c-format
+msgid "%s could not be found on the server"
+msgstr "%s kunne ikke finnes på tjeneren"
+
+#: components/services/install/lib/eazel-install-problem.c:140
+#: components/services/install/lib/eazel-install-problem.c:254
+#, c-format
+msgid "%s is already installed"
+msgstr "%s er allerede installert"
+
+#: components/services/install/lib/eazel-install-problem.c:172
+#, c-format
+msgid "%s, which is newer, is already installed"
+msgstr "%s, som er nyere, er allerede installert"
+
+#. Possibly the implest case, we're installing package A, which requires
+#. B that is not installed.
+#: components/services/install/lib/eazel-install-problem.c:237
+#: components/services/install/lib/eazel-install-problem.c:240
+#: components/services/install/lib/eazel-install-rpm-glue.c:311
+#, c-format
+msgid "%s requires %s"
+msgstr "%s er avhengig av %s"
+
+#: components/services/install/lib/eazel-install-problem.c:248
+#, c-format
+msgid "%s is not installed"
+msgstr "%s er ikke installert"
+
+#. TRANSLATORS : This string is a solution to a dependency problem,
+#. %s is a package name or filename
+#: components/services/install/lib/eazel-install-problem.c:726
+#, c-format
+msgid "Check for a new version of %s"
+msgstr "Sjekk etter en ny versjon av %s"
+
+#. TRANSLATORS : This string is a solution to a dependency problem,
+#. both %s's are package names or filenames
+#: components/services/install/lib/eazel-install-problem.c:737
+#, c-format
+msgid "Install both %s and %s"
+msgstr "Installér både %s og %s"
+
+#. TRANSLATORS : This string is a solution to a dependency problem,
+#. %s is a package name or filename
+#: components/services/install/lib/eazel-install-problem.c:752
+#, c-format
+msgid "Remove %s from your system"
+msgstr "Fjern %s fra ditt system"
+
+#. TRANSLATORS : This string is a solution to a dependency problem,
+#. %s is a package name or filename. "Force" is in the rpm sense of force,
+#. meaning that no dependency checking etc will be done
+#: components/services/install/lib/eazel-install-problem.c:765
+#, c-format
+msgid "Force the removal of %s from your system"
+msgstr "Tvungen fjerning av %s fra ditt system"
+
+#. TRANSLATORS : This string is a solution to a dependency problem
+#: components/services/install/lib/eazel-install-problem.c:773
+msgid "Package database has an inconsistency"
+msgstr "Pakkedatabasen er ikke konsistent"
+
 #: components/services/install/lib/eazel-install-protocols.c:102
 #: components/services/install/lib/eazel-install-protocols.c:221
 #, c-format
@@ -853,30 +1572,23 @@ msgstr "Pakke %s hadde versjon %s og ikke %s"
 msgid "File download failed"
 msgstr "Nedlasting av fil feilet"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:268
+#: components/services/install/lib/eazel-install-rpm-glue.c:266
 #, c-format
 msgid "Processing dep for %s, requires library %s"
 msgstr "Prosesserer avhengighet for %s, trenger bibliotek %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:275
+#: components/services/install/lib/eazel-install-rpm-glue.c:273
 #, c-format
 msgid "Processing dep for %s, requires package %s"
 msgstr "Prosesserer avhengighet for %s, trenger pakke %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:301
+#: components/services/install/lib/eazel-install-rpm-glue.c:299
 #, c-format
 msgid "package %s is already in requirements, whew!"
 msgstr "pakke %s er allerede listet som nødvendig, puh!"
 
-#. Possibly the implest case, we're installing package A, which requires
-#. B that is not installed.
-#: components/services/install/lib/eazel-install-rpm-glue.c:313
-#, c-format
-msgid "%s requires %s"
-msgstr "%s er avhengig av %s"
-
 #. If we end here, it's a conflict is going to break something
-#: components/services/install/lib/eazel-install-rpm-glue.c:449
+#: components/services/install/lib/eazel-install-rpm-glue.c:447
 #, c-format
 msgid "Package %s conflicts with %s-%s"
 msgstr "Pakke %s er i konflikt med %s-%s"
@@ -987,27 +1699,27 @@ msgstr "*** Hopper ut av osd tolking! ***\n"
 msgid "Could not parse the xml (length %d)"
 msgstr "Kunne ikke tolke xml (lengde %d)"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:412
+#: components/services/install/lib/eazel-package-system-rpm3.c:403
 #, c-format
 msgid "Opened packages database in %s"
 msgstr "Åpnet pakkedatabasen i %s"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:417
+#: components/services/install/lib/eazel-package-system-rpm3.c:408
 #, c-format
 msgid "Opening packages database in %s failed"
 msgstr "Åpning av pakkedatabasen i %s feilet"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:440
+#: components/services/install/lib/eazel-package-system-rpm3.c:431
 #, c-format
 msgid "Closing db for %s (open)"
 msgstr "Lukker db for %s (åpen)"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:445
+#: components/services/install/lib/eazel-package-system-rpm3.c:436
 #, c-format
 msgid "Closing db for %s (not open)"
 msgstr "Lukker db for %s (ikke åpen)"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:609
+#: components/services/install/lib/eazel-package-system-rpm3.c:600
 #, c-format
 msgid "Cannot open %s"
 msgstr "Kan ikke åpne %s"
@@ -1279,7 +1991,49 @@ msgstr "Kunne ikke finne sammendragskonfigurasjonsdata!\n"
 msgid "Bailing from summary configuration parse!\n"
 msgstr "Hopper ut av innlesing av sammendragskonfigurasjon!\n"
 
-#. parse_summary_xml_file
+#: components/services/summary/nautilus-view/nautilus-summary-dialogs.c:70
+msgid "Service Error"
+msgstr "Feil i tjeneste"
+
+#: components/services/summary/nautilus-view/nautilus-summary-dialogs.c:94
+msgid "Register Now"
+msgstr "Registrér deg nå"
+
+#: components/services/summary/nautilus-view/nautilus-summary-dialogs.c:96
+msgid "Help"
+msgstr "Hjelp"
+
+#: components/services/summary/nautilus-view/nautilus-summary-dialogs.c:99
+msgid "Services Login"
+msgstr "Innlogging til tjenester"
+
+#: components/services/summary/nautilus-view/nautilus-summary-dialogs.c:111
+msgid "Username:"
+msgstr "Brukernavn:"
+
+#: components/services/summary/nautilus-view/nautilus-summary-dialogs.c:118
+msgid "Password:"
+msgstr "Passord:"
+
+#: components/services/summary/nautilus-view/nautilus-summary-dialogs.c:126
+#: components/services/summary/nautilus-view/nautilus-summary-dialogs.c:138
+msgid "Please log in to Eazel services"
+msgstr "Vennligst logg inn til Eazel-tjenester"
+
+#: components/services/summary/nautilus-view/nautilus-summary-dialogs.c:130
+msgid ""
+"Your user name or password were not correct, or you have not activated your "
+"account.  Please try again, or check your email for an account activation "
+"notice."
+msgstr ""
+"Ditt brukernavn og passord var ikke korrekt, eller du har ikke aktivert din "
+"konto. Vennligst prøv igjen, eller sjekk din e-post for en melding om "
+"aktivering av konto."
+
+#: components/services/summary/nautilus-view/nautilus-summary-dialogs.c:134
+msgid "We're sorry, but your name and password are still not recognized."
+msgstr "Beklager, men navn og passord ble fremdeles ikke gjenkjent."
+
 #: po/tmp/nautilus-summary-view-ui.xml.h:1
 msgid "Configure your service preferences"
 msgstr "Konfigurér brukervalg for tjenester"
@@ -1477,108 +2231,108 @@ msgid "Azul"
 msgstr "Azul"
 
 #: po/tmp/browser.xml.h:3
-msgid "Backgrounds"
-msgstr "Bakgrunner"
-
-#: po/tmp/browser.xml.h:4
 msgid "Black"
 msgstr "Sort"
 
-#: po/tmp/browser.xml.h:5
+#: po/tmp/browser.xml.h:4
 msgid "Bubble Gum"
 msgstr "Tyggegummi"
 
-#: po/tmp/browser.xml.h:6
+#: po/tmp/browser.xml.h:5
 msgid "Charcoal"
 msgstr "Kull"
 
-#: po/tmp/browser.xml.h:7
+#: po/tmp/browser.xml.h:6
 msgid "Colors"
 msgstr "Farger"
 
-#: po/tmp/browser.xml.h:8
+#: po/tmp/browser.xml.h:7
 msgid "Concrete"
 msgstr "Betong"
 
-#: po/tmp/browser.xml.h:9
+#: po/tmp/browser.xml.h:8
 msgid "Danube"
 msgstr "Danube"
 
-#: po/tmp/browser.xml.h:10
+#: po/tmp/browser.xml.h:9
 msgid "Dark Cork"
 msgstr "Mørk kork"
 
-#: po/tmp/browser.xml.h:11
+#: po/tmp/browser.xml.h:10
 msgid "Deep Teal"
 msgstr ""
 
-#: po/tmp/browser.xml.h:12
-msgid "Drag a background tile to an object to change it"
-msgstr "Dra en bakgrunnsflis til et objekt for å endre det"
-
-#: po/tmp/browser.xml.h:13
+#: po/tmp/browser.xml.h:11
 msgid "Drag a color to an object to change it to that color"
 msgstr "Dra en farge til et objekt for å endre det til den fargen"
 
-#: po/tmp/browser.xml.h:14
+#: po/tmp/browser.xml.h:12
+msgid "Drag a pattern tile to an object to change it"
+msgstr "Dra en mønsterflis til et objekt for å endre den"
+
+#: po/tmp/browser.xml.h:13
 msgid "Drag an emblem to an object to add it to the object"
 msgstr "Dra et emblem til et objekt for å legge det til objektet"
 
-#: po/tmp/browser.xml.h:15
+#: po/tmp/browser.xml.h:14
 msgid "Eclipse"
 msgstr "Eklipse"
 
-#: po/tmp/browser.xml.h:16 src/file-manager/fm-properties-window.c:1390
+#: po/tmp/browser.xml.h:15 src/file-manager/fm-properties-window.c:1390
 msgid "Emblems"
 msgstr "Emblemer"
 
-#: po/tmp/browser.xml.h:17
+#: po/tmp/browser.xml.h:16
 msgid "Envy"
 msgstr "Misunnelse"
 
-#: po/tmp/browser.xml.h:18
+#: po/tmp/browser.xml.h:17
 msgid "Fire Engine"
 msgstr "Brannbil"
 
-#: po/tmp/browser.xml.h:19
+#: po/tmp/browser.xml.h:18
 msgid "Granite"
 msgstr "Granitt"
 
-#: po/tmp/browser.xml.h:20
+#: po/tmp/browser.xml.h:19
 msgid "Grapefruit"
 msgstr "Grapefrukt"
 
-#: po/tmp/browser.xml.h:21
+#: po/tmp/browser.xml.h:20
 msgid "Indigo"
 msgstr "Indigo"
 
-#: po/tmp/browser.xml.h:22
+#: po/tmp/browser.xml.h:21
 msgid "Leaf"
 msgstr "Løv"
 
-#: po/tmp/browser.xml.h:23
+#: po/tmp/browser.xml.h:22
 msgid "Lemon"
 msgstr "Sitron"
 
-#: po/tmp/browser.xml.h:24
+#: po/tmp/browser.xml.h:23
 msgid "Mango"
 msgstr "Mango"
 
-#: po/tmp/browser.xml.h:25
+#: po/tmp/browser.xml.h:24
 msgid "Mud"
 msgstr "Søle"
 
-#: po/tmp/browser.xml.h:26
+#: po/tmp/browser.xml.h:25
 msgid "Onyx"
 msgstr "Onyx"
 
-#: po/tmp/browser.xml.h:27
+#: po/tmp/browser.xml.h:26
 msgid "Orange"
 msgstr "Oransje"
 
-#: po/tmp/browser.xml.h:28
+#: po/tmp/browser.xml.h:27
 msgid "Pale Blue"
 msgstr "Lys blå"
+
+#: po/tmp/browser.xml.h:28
+msgid "Patterns"
+msgstr "Mønstre"
 
 #: po/tmp/browser.xml.h:29
 msgid "Ruby"
@@ -1602,7 +2356,7 @@ msgstr "Himmel"
 
 #: po/tmp/browser.xml.h:34
 msgid "Tangerine"
-msgstr ""
+msgstr "Mandarin"
 
 #: po/tmp/browser.xml.h:35
 msgid "Violet"
@@ -1629,7 +2383,7 @@ msgstr "GIMP"
 msgid "Desktop"
 msgstr "Skrivebord"
 
-#: libnautilus-extensions/nautilus-file.c:4641
+#: libnautilus-extensions/nautilus-file.c:4623
 #: libnautilus-extensions/nautilus-trash-directory.c:286
 #: po/tmp/desktop.xml.h:2
 msgid "Trash"
@@ -2149,7 +2903,7 @@ msgstr "Erstatt alle"
 
 #. appended to new link file
 #: libnautilus-extensions/nautilus-file-operations.c:901
-#: libnautilus-extensions/nautilus-file.c:3673
+#: libnautilus-extensions/nautilus-file.c:3675
 #, c-format
 msgid "link to %s"
 msgstr "lenke til %s"
@@ -2601,100 +3355,100 @@ msgstr "foo foo (100000000000000te kopi).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-extensions/nautilus-file.c:2216
+#: libnautilus-extensions/nautilus-file.c:2218
 msgid "today at %-I:%M %p"
 msgstr "i dag, %-I:%M %p"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2221
+#: libnautilus-extensions/nautilus-file.c:2223
 msgid "yesterday at %-I:%M %p"
 msgstr "i går, %-I:%M %p"
 
 #. Current week, include day of week.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2226
+#: libnautilus-extensions/nautilus-file.c:2228
 msgid "%A %-m/%-d/%y at %-I:%M %p"
 msgstr "%A %-m/%-d/%y, %-I:%M %p"
 
 #. Other dates.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2231
+#: libnautilus-extensions/nautilus-file.c:2233
 msgid "%-m/%-d/%y at %-I:%M %p"
 msgstr "%-m/%-d/%y, %-I:%M %p"
 
-#: libnautilus-extensions/nautilus-file.c:3268
+#: libnautilus-extensions/nautilus-file.c:3270
 msgid "0 items"
 msgstr "0 oppføringer"
 
-#: libnautilus-extensions/nautilus-file.c:3268
+#: libnautilus-extensions/nautilus-file.c:3270
 msgid "0 folders"
 msgstr "0 mapper"
 
-#: libnautilus-extensions/nautilus-file.c:3269
+#: libnautilus-extensions/nautilus-file.c:3271
 msgid "0 files"
 msgstr "0 filer"
 
-#: libnautilus-extensions/nautilus-file.c:3273
+#: libnautilus-extensions/nautilus-file.c:3275
 msgid "1 item"
 msgstr "1 oppføring"
 
-#: libnautilus-extensions/nautilus-file.c:3273
+#: libnautilus-extensions/nautilus-file.c:3275
 msgid "1 folder"
 msgstr "1 mappe"
 
-#: libnautilus-extensions/nautilus-file.c:3274
+#: libnautilus-extensions/nautilus-file.c:3276
 msgid "1 file"
 msgstr "1 fil"
 
-#: libnautilus-extensions/nautilus-file.c:3277
+#: libnautilus-extensions/nautilus-file.c:3279
 #, c-format
 msgid "%u items"
 msgstr "%u oppføringer"
 
-#: libnautilus-extensions/nautilus-file.c:3277
+#: libnautilus-extensions/nautilus-file.c:3279
 #, c-format
 msgid "%u folders"
 msgstr "%u mapper"
 
-#: libnautilus-extensions/nautilus-file.c:3278
+#: libnautilus-extensions/nautilus-file.c:3280
 #, c-format
 msgid "%u files"
 msgstr "%u filer"
 
 #. This means no contents at all were readable
-#: libnautilus-extensions/nautilus-file.c:3578
-#: libnautilus-extensions/nautilus-file.c:3592
+#: libnautilus-extensions/nautilus-file.c:3580
+#: libnautilus-extensions/nautilus-file.c:3594
 msgid "? items"
 msgstr "? oppføringer"
 
-#: libnautilus-extensions/nautilus-file.c:3596
+#: libnautilus-extensions/nautilus-file.c:3598
 msgid "unknown type"
 msgstr "ukjent type"
 
-#: libnautilus-extensions/nautilus-file.c:3598
+#: libnautilus-extensions/nautilus-file.c:3600
 msgid "unknown MIME type"
 msgstr "ukjent MIME-type"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-extensions/nautilus-file.c:3603
+#: libnautilus-extensions/nautilus-file.c:3605
 msgid "unknown"
 msgstr "ukjent"
 
-#: libnautilus-extensions/nautilus-file.c:3638
+#: libnautilus-extensions/nautilus-file.c:3640
 msgid "program"
 msgstr "program"
 
-#: libnautilus-extensions/nautilus-file.c:3667
+#: libnautilus-extensions/nautilus-file.c:3669
 msgid "link"
 msgstr "lenke"
 
-#: libnautilus-extensions/nautilus-file.c:3687
+#: libnautilus-extensions/nautilus-file.c:3689
 msgid "link (broken)"
 msgstr "lenke (ødelagt)"
 
@@ -3071,26 +3825,6 @@ msgstr "-_,;.?/&"
 #: libnautilus-extensions/nautilus-preferences-dialog.c:204
 msgid "Prefs Box"
 msgstr "Brukervalg-boks"
-
-#: libnautilus-extensions/nautilus-preferences.c:1086
-#, c-format
-msgid ""
-"GConf error:\n"
-"  %s"
-msgstr ""
-"GConf feil:\n"
-"  %s"
-
-#: libnautilus-extensions/nautilus-preferences.c:1093
-#, c-format
-msgid ""
-"GConf error:\n"
-"  %s\n"
-"All further errors shown only on terminal"
-msgstr ""
-"GConf feil:\n"
-"  %s\n"
-"Alle videre feil vises kun på kommandolinjen"
 
 #: libnautilus-extensions/nautilus-program-chooser.c:186
 #: src/nautilus-window.c:863
@@ -3550,11 +4284,11 @@ msgstr "F_jern tekst"
 msgid "Copy the selected text to the clipboard"
 msgstr "Kopiér valgt tekst til utklippstavlen"
 
-#: po/tmp/nautilus-clipboard-ui.xml.h:3 po/tmp/nautilus-shell-ui.xml.h:18
+#: po/tmp/nautilus-clipboard-ui.xml.h:3 po/tmp/nautilus-shell-ui.xml.h:17
 msgid "Cut the selected text to the clipboard"
 msgstr "Klipp ut valgt tekst til utklippstavlen"
 
-#: po/tmp/nautilus-clipboard-ui.xml.h:4 po/tmp/nautilus-shell-ui.xml.h:44
+#: po/tmp/nautilus-clipboard-ui.xml.h:4 po/tmp/nautilus-shell-ui.xml.h:43
 msgid "Paste the text stored on the clipboard"
 msgstr "Lim inn tekst som er lagret på utklippstavlen"
 
@@ -3825,7 +4559,7 @@ msgstr "Ødelagt lenke"
 msgid "Throw Away"
 msgstr "Kast bort"
 
-#: src/file-manager/fm-directory-view.c:3330
+#: src/file-manager/fm-directory-view.c:3328
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
@@ -3833,7 +4567,7 @@ msgstr ""
 "Beklager, men du kan ikke kjøre kommandoer fra en ekstern tjener av "
 "sikkerhetshensyn."
 
-#: src/file-manager/fm-directory-view.c:3331
+#: src/file-manager/fm-directory-view.c:3329
 msgid "Can't execute remote links"
 msgstr "Kunne ikke kjøre eksterne lenker"
 
@@ -5075,8 +5809,8 @@ msgstr "nautilus: --restart kan ikke brukes med URIer.\n"
 
 #. set the title and standard close accelerator
 #: src/nautilus-property-browser.c:254
-msgid "Customization Options"
-msgstr "Alternativer for tilpasning"
+msgid "Backgrounds and Emblems"
+msgstr "Bakgrunner og emblemer"
 
 #. add the title label
 #: src/nautilus-property-browser.c:324 src/nautilus-property-browser.c:2085
@@ -5093,12 +5827,12 @@ msgstr "Fjern..."
 
 #: src/nautilus-property-browser.c:888
 #, c-format
-msgid "Sorry, but background %s couldn't be deleted."
-msgstr "Beklager, men bakgrunn %s kunne ikke slettes."
+msgid "Sorry, but pattern %s couldn't be deleted."
+msgstr "Beklager, men mønster %s kunne ikke slettes."
 
 #: src/nautilus-property-browser.c:889 src/nautilus-property-browser.c:918
-msgid "Couldn't delete background"
-msgstr "Kunne ikke slette bakgrunn"
+msgid "Couldn't delete pattern"
+msgstr "Kunne ikke slette mønster"
 
 #: src/nautilus-property-browser.c:917
 #, c-format
@@ -5134,16 +5868,16 @@ msgstr "Fargeverdi:"
 
 #: src/nautilus-property-browser.c:1157
 #, c-format
-msgid "Sorry, but the background %s couldn't be installed."
-msgstr "Beklager, men bakgrunn %s kunne ikke installeres."
+msgid "Sorry, but the pattern %s couldn't be installed."
+msgstr "Beklager, men mønster %s kunne ikke installeres."
 
 #: src/nautilus-property-browser.c:1158
-msgid "Couldn't install background"
-msgstr "Kunne ikke installere bakgrunn"
+msgid "Couldn't install pattern"
+msgstr "Kunne ikke installere mønster"
 
 #: src/nautilus-property-browser.c:1183
-msgid "Select an image file to add as a background:"
-msgstr "Velg en bildefil som skal legges til som bakgrunn:"
+msgid "Select an image file to add as a pattern:"
+msgstr "Velg en bildefil som skal legges til som mønster:"
 
 #: src/nautilus-property-browser.c:1253
 msgid "Sorry, but you must specify a non-blank name for the new color."
@@ -5191,8 +5925,8 @@ msgid "Cancel Remove"
 msgstr "Avbryt fjern"
 
 #: src/nautilus-property-browser.c:2097
-msgid "Add a new background"
-msgstr "Legg til en ny bakgrunn"
+msgid "Add a new pattern"
+msgstr "Legg til en nytt mønster"
 
 #: src/nautilus-property-browser.c:2100
 msgid "Add a new color"
@@ -5203,8 +5937,8 @@ msgid "Add a new emblem"
 msgstr "Legg til et nytt emblem"
 
 #: src/nautilus-property-browser.c:2126
-msgid "Click on a background to remove it"
-msgstr "Klikk på en bakgrunn for å fjerne den"
+msgid "Click on a pattern to remove it"
+msgstr "Klikk på et mønster for å fjerne det."
 
 #: src/nautilus-property-browser.c:2129
 msgid "Click on a color to remove it"
@@ -5215,8 +5949,8 @@ msgid "Click on an emblem to remove it"
 msgstr "Klikk på et emblem for å fjerne den"
 
 #: src/nautilus-property-browser.c:2141
-msgid "Backgrounds:"
-msgstr "Bakgrunner:"
+msgid "Patterns:"
+msgstr "Mønstre:"
 
 #: src/nautilus-property-browser.c:2144
 msgid "Colors:"
@@ -5227,8 +5961,8 @@ msgid "Emblems:"
 msgstr "Emblemer:"
 
 #: src/nautilus-property-browser.c:2165
-msgid "Remove a background"
-msgstr "Fjern en bakgrunn"
+msgid "Remove a pattern"
+msgstr "Fjern et mønster"
 
 #: src/nautilus-property-browser.c:2168
 msgid "Remove a color"
@@ -5451,218 +6185,218 @@ msgid "Close this window"
 msgstr "Lukk dette vinduet"
 
 #: po/tmp/nautilus-shell-ui.xml.h:16
-msgid "Custo_mization..."
-msgstr "_Tilpasning..."
-
-#: po/tmp/nautilus-shell-ui.xml.h:17
 msgid "Cut _Text"
 msgstr "Klipp ut _tekst"
 
-#: po/tmp/nautilus-shell-ui.xml.h:19
+#: po/tmp/nautilus-shell-ui.xml.h:18
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "Vis et vindu som tillater redigering av bokmerkene i denne menyen"
 
-#: po/tmp/nautilus-shell-ui.xml.h:20
+#: po/tmp/nautilus-shell-ui.xml.h:19
 msgid "Display credits for the creators of Nautilus"
 msgstr "Vis informasjon om dem som laget Nautilus"
 
-#: po/tmp/nautilus-shell-ui.xml.h:21
+#: po/tmp/nautilus-shell-ui.xml.h:20
 msgid "Display on-line help for Nautilus"
 msgstr "Vis hjelp for Nautilus"
 
-#: po/tmp/nautilus-shell-ui.xml.h:22
+#: po/tmp/nautilus-shell-ui.xml.h:21
 msgid "Display the Property Browser, containing patterns, colors, and emblems"
 msgstr "Visning av egenskaper, inneholder mønstre, farger og emblemer"
 
-#: po/tmp/nautilus-shell-ui.xml.h:23
+#: po/tmp/nautilus-shell-ui.xml.h:22
 msgid "Display the latest contents of the current location"
 msgstr "Vis det nyeste innholder i aktiv lokasjon"
 
-#: po/tmp/nautilus-shell-ui.xml.h:24
+#: po/tmp/nautilus-shell-ui.xml.h:23
 msgid "Display the license for Nautilus"
 msgstr "Vis lisensinformasjon for Nautilus"
 
-#: po/tmp/nautilus-shell-ui.xml.h:25
+#: po/tmp/nautilus-shell-ui.xml.h:24
 msgid "Display the set of available appearance themes"
 msgstr "Vis tilgjengelige temaer for utseende"
 
-#: po/tmp/nautilus-shell-ui.xml.h:26
+#: po/tmp/nautilus-shell-ui.xml.h:25
 msgid "Edit Settings..."
 msgstr "Redigér innstillinger..."
 
-#: po/tmp/nautilus-shell-ui.xml.h:27
+#: po/tmp/nautilus-shell-ui.xml.h:26
 msgid "Edit settings for the current user level"
 msgstr "Redigér innstillinger for aktivt brukernivå"
 
-#: po/tmp/nautilus-shell-ui.xml.h:28
+#: po/tmp/nautilus-shell-ui.xml.h:27
 msgid "Find"
 msgstr "Finn"
 
-#: po/tmp/nautilus-shell-ui.xml.h:29
+#: po/tmp/nautilus-shell-ui.xml.h:28
 msgid "For_get History"
 msgstr "_Glem historikk"
 
-#: po/tmp/nautilus-shell-ui.xml.h:30
+#: po/tmp/nautilus-shell-ui.xml.h:29
 msgid "Go to Eazel Services"
 msgstr "Gå til Eazel tjenester"
 
-#: po/tmp/nautilus-shell-ui.xml.h:31
+#: po/tmp/nautilus-shell-ui.xml.h:30
 msgid "Go to the home location"
 msgstr "Gå til hovedsiden"
 
-#: po/tmp/nautilus-shell-ui.xml.h:32
+#: po/tmp/nautilus-shell-ui.xml.h:31
 msgid "Go to the location that contains this one"
 msgstr "Gå til lokasjonen som inneholder denne"
 
-#: po/tmp/nautilus-shell-ui.xml.h:33
+#: po/tmp/nautilus-shell-ui.xml.h:32
 msgid "Go to the next visited location"
 msgstr "Gå til neste besøkte lokasjon"
 
-#: po/tmp/nautilus-shell-ui.xml.h:34
+#: po/tmp/nautilus-shell-ui.xml.h:33
 msgid "Go to the previous visited location"
 msgstr "Gå til forrige besøkte lokasjon"
 
-#: po/tmp/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:444
+#: po/tmp/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:444
 msgid "Hide Location Bar"
 msgstr "Skjul adresselinje"
 
-#: po/tmp/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:432
+#: po/tmp/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:432
 msgid "Hide Sidebar"
 msgstr "Skjul sidelinje"
 
-#: po/tmp/nautilus-shell-ui.xml.h:37 src/nautilus-window-menus.c:426
+#: po/tmp/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:426
 msgid "Hide Status Bar"
 msgstr "Skjul statuslinje"
 
-#: po/tmp/nautilus-shell-ui.xml.h:38 src/nautilus-window-menus.c:438
+#: po/tmp/nautilus-shell-ui.xml.h:37 src/nautilus-window-menus.c:438
 msgid "Hide Tool Bar"
 msgstr "Skjul verktøylinje"
 
-#: po/tmp/nautilus-shell-ui.xml.h:39
+#: po/tmp/nautilus-shell-ui.xml.h:38
 msgid "Home"
 msgstr "Hjem"
 
-#: po/tmp/nautilus-shell-ui.xml.h:40
+#: po/tmp/nautilus-shell-ui.xml.h:39
 msgid "Nautilus _Feedback..."
 msgstr "Nautilus til_bakemeldinger..."
 
-#: po/tmp/nautilus-shell-ui.xml.h:41
+#: po/tmp/nautilus-shell-ui.xml.h:40
 msgid "New Window"
 msgstr "Nytt vindu"
 
-#: po/tmp/nautilus-shell-ui.xml.h:42
+#: po/tmp/nautilus-shell-ui.xml.h:41
 msgid "Normal Size"
 msgstr "Normal størrelse"
 
-#: po/tmp/nautilus-shell-ui.xml.h:43
+#: po/tmp/nautilus-shell-ui.xml.h:42
 msgid "Open another Nautilus window for the displayed location"
 msgstr "Åpne et nytt Nautilus-vindu for vist lokasjon"
 
-#: po/tmp/nautilus-shell-ui.xml.h:45
+#: po/tmp/nautilus-shell-ui.xml.h:44
 msgid "Refresh"
 msgstr "Gjenoppfrisk"
 
-#: po/tmp/nautilus-shell-ui.xml.h:46
+#: po/tmp/nautilus-shell-ui.xml.h:45
 msgid "Removes the selected text without putting it on the clipboard"
 msgstr "Fjerner den valgte teksten uten å plassere den på utklippstavlen"
 
-#: po/tmp/nautilus-shell-ui.xml.h:47
+#: po/tmp/nautilus-shell-ui.xml.h:46
 msgid "Report Profiling"
 msgstr "Rapportér profilering"
 
-#: po/tmp/nautilus-shell-ui.xml.h:48
+#: po/tmp/nautilus-shell-ui.xml.h:47
 msgid "Reset Profiling"
 msgstr "Nullstill profilering"
 
-#: po/tmp/nautilus-shell-ui.xml.h:49
+#: po/tmp/nautilus-shell-ui.xml.h:48
 msgid "Search the World Wide Web"
 msgstr "Søk på World Wide Web"
 
-#: po/tmp/nautilus-shell-ui.xml.h:50
+#: po/tmp/nautilus-shell-ui.xml.h:49
 msgid "Search this computer for files"
 msgstr "Søk etter filer på denne datamaskinen"
 
-#: po/tmp/nautilus-shell-ui.xml.h:51
+#: po/tmp/nautilus-shell-ui.xml.h:50
 msgid ""
 "Show a page from which you can send feedback about Nautilus to its creators"
 msgstr ""
 "Vis en side du kan sende tilbakemeldinger om Nautilus til programmererene fra"
 
-#: po/tmp/nautilus-shell-ui.xml.h:52
+#: po/tmp/nautilus-shell-ui.xml.h:51
 msgid "Show the contents at the normal size"
 msgstr "Vis innholdet i normal størrelse"
 
-#: po/tmp/nautilus-shell-ui.xml.h:53
+#: po/tmp/nautilus-shell-ui.xml.h:52
 msgid "Show the contents in less detail"
 msgstr "Vis innholdet med mindre grad av detaljer"
 
-#: po/tmp/nautilus-shell-ui.xml.h:54
+#: po/tmp/nautilus-shell-ui.xml.h:53
 msgid "Show the contents in more detail"
 msgstr "Vis innhold med større grad av detaljer"
 
-#: po/tmp/nautilus-shell-ui.xml.h:55
+#: po/tmp/nautilus-shell-ui.xml.h:54
 msgid "Start Profiling"
 msgstr "Start profilering"
 
-#: po/tmp/nautilus-shell-ui.xml.h:57
+#: po/tmp/nautilus-shell-ui.xml.h:56
 msgid "Stop Profiling"
 msgstr "Stopp profilering"
 
-#: po/tmp/nautilus-shell-ui.xml.h:58
+#: po/tmp/nautilus-shell-ui.xml.h:57
 msgid "Stop loading this location"
 msgstr "Stopp nedlasting av denne lokasjonen"
 
-#: po/tmp/nautilus-shell-ui.xml.h:59
+#: po/tmp/nautilus-shell-ui.xml.h:58
 msgid "Undo the last text change"
 msgstr "Angre siste tekstendring"
 
-#: po/tmp/nautilus-shell-ui.xml.h:60
+#: po/tmp/nautilus-shell-ui.xml.h:59
 msgid "Up"
 msgstr "Opp"
 
-#: po/tmp/nautilus-shell-ui.xml.h:61
+#: po/tmp/nautilus-shell-ui.xml.h:60
 msgid "Use Advanced settings"
 msgstr "Bruk avanserte innstillinger"
 
-#: po/tmp/nautilus-shell-ui.xml.h:62
+#: po/tmp/nautilus-shell-ui.xml.h:61
 msgid "Use Beginner settings"
 msgstr "Bruk innstillinger for begynner"
 
-#: po/tmp/nautilus-shell-ui.xml.h:63
+#: po/tmp/nautilus-shell-ui.xml.h:62
 msgid "Use Intermediate settings"
 msgstr "Bruk innstillinger for viderekommen"
 
-#: po/tmp/nautilus-shell-ui.xml.h:64
+#: po/tmp/nautilus-shell-ui.xml.h:63
 msgid "Web Search"
 msgstr "Web-søk"
 
-#: po/tmp/nautilus-shell-ui.xml.h:65
+#: po/tmp/nautilus-shell-ui.xml.h:64
 msgid "Zoom In"
 msgstr "Zoom inn"
 
-#: po/tmp/nautilus-shell-ui.xml.h:66
+#: po/tmp/nautilus-shell-ui.xml.h:65
 msgid "Zoom Out"
 msgstr "Zoom ut"
 
-#: po/tmp/nautilus-shell-ui.xml.h:67
+#: po/tmp/nautilus-shell-ui.xml.h:66
 msgid "Zoom _In"
 msgstr "Zoom _inn"
 
-#: po/tmp/nautilus-shell-ui.xml.h:68
+#: po/tmp/nautilus-shell-ui.xml.h:67
 msgid "Zoom _Out"
 msgstr "Zoom _ut"
 
-#: po/tmp/nautilus-shell-ui.xml.h:69
+#: po/tmp/nautilus-shell-ui.xml.h:68
 msgid "_About Nautilus..."
 msgstr "_Om Nautilus..."
 
-#: po/tmp/nautilus-shell-ui.xml.h:70
+#: po/tmp/nautilus-shell-ui.xml.h:69
 msgid "_Add Bookmark"
 msgstr "_Legg til bokmerke"
 
-#: po/tmp/nautilus-shell-ui.xml.h:71
+#: po/tmp/nautilus-shell-ui.xml.h:70
 msgid "_Back"
 msgstr "_Tilbake"
+
+#: po/tmp/nautilus-shell-ui.xml.h:71
+msgid "_Backgrounds and Emblems..."
+msgstr "_Bakgrunner og emblemer..."
 
 #: po/tmp/nautilus-shell-ui.xml.h:72
 msgid "_Bookmarks"
@@ -6201,6 +6935,36 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 msgid "%.0f%%"
 msgstr "%.0f%%"
 
+#~ msgid "Message."
+#~ msgstr "Melding."
+
+#~ msgid "Title."
+#~ msgstr "Tittel."
+
+#~ msgid "Button one label."
+#~ msgstr "Etikett for knapp én."
+
+#~ msgid "Button two label."
+#~ msgstr "Etikett for knapp to."
+
+#~ msgid "Ok"
+#~ msgstr "Ok"
+
+#~ msgid "Customization Options"
+#~ msgstr "Alternativer for tilpasning"
+
+#~ msgid "Couldn't install background"
+#~ msgstr "Kunne ikke installere bakgrunn"
+
+#~ msgid "Click on a background to remove it"
+#~ msgstr "Klikk på en bakgrunn for å fjerne den"
+
+#~ msgid "Backgrounds:"
+#~ msgstr "Bakgrunner:"
+
+#~ msgid "Custo_mization..."
+#~ msgstr "_Tilpasning..."
+
 #~ msgid "version %s-%s"
 #~ msgstr "versjon %s-%s"
 
@@ -6212,36 +6976,3 @@ msgstr "%.0f%%"
 
 #~ msgid "Verification completed."
 #~ msgstr "Verifisering fullført."
-
-#~ msgid "Service Error"
-#~ msgstr "Feil i tjeneste"
-
-#~ msgid "Register Now"
-#~ msgstr "Registrér deg nå"
-
-#~ msgid "Help"
-#~ msgstr "Hjelp"
-
-#~ msgid "Services Login"
-#~ msgstr "Innlogging til tjenester"
-
-#~ msgid "Username:"
-#~ msgstr "Brukernavn:"
-
-#~ msgid "Password:"
-#~ msgstr "Passord:"
-
-#~ msgid "Please log in to Eazel services"
-#~ msgstr "Vennligst logg inn til Eazel-tjenester"
-
-#~ msgid ""
-#~ "Your user name or password were not correct, or you have not activated your "
-#~ "account.  Please try again, or check your email for an account activation "
-#~ "notice."
-#~ msgstr ""
-#~ "Ditt brukernavn og passord var ikke korrekt, eller du har ikke aktivert din "
-#~ "konto. Vennligst prøv igjen, eller sjekk din e-post for en melding om "
-#~ "aktivering av konto."
-
-#~ msgid "We're sorry, but your name and password are still not recognized."
-#~ msgstr "Beklager, men navn og passord ble fremdeles ikke gjenkjent."
