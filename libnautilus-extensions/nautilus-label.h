@@ -93,6 +93,12 @@ GtkJustification      nautilus_label_get_text_justification (const NautilusLabel
 void                  nautilus_label_set_line_offset        (NautilusLabel        *label,
 							     guint                 alpha);
 guint                 nautilus_label_get_line_offset        (const NautilusLabel  *label);
+void                  nautilus_label_set_drop_shadow_offset (NautilusLabel        *label,
+							     guint                 alpha);
+guint                 nautilus_label_get_drop_shadow_offset (const NautilusLabel  *label);
+void                  nautilus_label_set_drop_shadow_color  (NautilusLabel        *label,
+							     guint32               color);
+guint32               nautilus_label_get_drop_shadow_color  (const NautilusLabel  *label);
 
 
 END_GNOME_DECLS

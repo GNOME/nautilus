@@ -1,5 +1,24 @@
 2000-08-21  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-label.c:
+	(nautilus_label_initialize), (nautilus_label_size_request),
+	(render_buffer_pixbuf), (nautilus_label_set_text),
+	(nautilus_label_set_font), (nautilus_label_set_text_color),
+	(nautilus_label_set_text_alpha),
+	(nautilus_label_set_drop_shadow_offset),
+	(nautilus_label_get_drop_shadow_offset),
+	(nautilus_label_set_drop_shadow_color):
+	* libnautilus-extensions/nautilus-label.h:
+
+	Add support for drop shadows.
+
+	* src/nautilus-sidebar-title.c:
+	(nautilus_sidebar_title_initialize):
+
+	Make the offset between labels more pleasing to comrade arlo.
+	
+2000-08-21  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-scalable-font.c:
 	(nautilus_scalable_font_measure_text_lines):
 

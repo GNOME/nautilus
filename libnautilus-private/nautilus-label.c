@@ -52,6 +52,10 @@ struct _NautilusLabelDetail
 	GtkJustification	text_justification;
 	guint			line_offset;
 
+	/* Drop shadow */
+	guint			drop_shadow_offset;
+	guint32			drop_shadow_color;
+
 	/* Font */
 	NautilusScalableFont	*font;
 	guint			font_size;
@@ -140,6 +144,7 @@ nautilus_label_initialize (NautilusLabel *label)
 	label->detail->font_size = 48;
 
 	label->detail->text_color = NAUTILUS_RGBA_COLOR_PACK (0, 0, 0, 255);
+	label->detail->drop_shadow_color = NAUTILUS_RGBA_COLOR_PACK (255, 255, 255, 255);
 	label->detail->text_alpha = 255;
 	label->detail->text_width = 0;
 	label->detail->text_height = 0;
@@ -152,7 +157,8 @@ nautilus_label_initialize (NautilusLabel *label)
 	label->detail->text_line_widths = NULL;
 	label->detail->text_line_heights = NULL;
 
-	 label->detail->line_offset = 2;
+	label->detail->line_offset = 2;
+	label->detail->drop_shadow_offset = 0;
 }
 
 /* GtkObjectClass methods */
@@ -272,6 +278,9 @@ nautilus_label_size_request (GtkWidget		*widget,
 		text_height = label->detail->total_text_line_height;
 
 		text_height += ((label->detail->num_text_lines - 1) * label->detail->line_offset);
+
+		text_width += label->detail->drop_shadow_offset;
+		text_height += label->detail->drop_shadow_offset;
 	}
 
    	requisition->width = MAX (2, text_width);
@@ -319,10 +328,32 @@ render_buffer_pixbuf (NautilusBufferedWidget *buffered_widget, GdkPixbuf *buffer
 		area.y0 = - (total_text_height - widget->allocation.height) / 2;
 	}
 
-	area.x1 = area.x0 + total_text_width;
-	area.y1 = area.y0 + total_text_width;
+	area.x1 = area.x0 + total_text_width + label->detail->drop_shadow_offset;
+	area.y1 = area.y0 + total_text_width + label->detail->drop_shadow_offset;
 	
 	if (label->detail->num_text_lines > 0) {
+		if (label->detail->drop_shadow_offset > 0) {
+			nautilus_scalable_font_draw_text_lines (label->detail->font,
+								buffer,
+								&area,
+								label->detail->font_size,
+								label->detail->font_size,
+								(const char **) label->detail->text_lines,
+								label->detail->text_line_widths,
+								label->detail->text_line_heights,
+								label->detail->text_justification,
+								label->detail->num_text_lines,
+								label->detail->line_offset,
+								label->detail->drop_shadow_color,
+								label->detail->text_alpha);
+
+			area.x0 -= label->detail->drop_shadow_offset;
+			area.y0 -= label->detail->drop_shadow_offset;
+			
+			area.x1 -= label->detail->drop_shadow_offset;
+			area.y1 -= label->detail->drop_shadow_offset;
+		}
+
 		nautilus_scalable_font_draw_text_lines (label->detail->font,
 							buffer,
 							&area,
@@ -351,6 +382,10 @@ nautilus_label_set_text (NautilusLabel	*label,
 			 const gchar	*text)
 {
 	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+
+	if (nautilus_str_is_equal (text, label->detail->text)) {
+		return;
+	}
 	
 	g_free (label->detail->text);
 	label->detail->text = text ? g_strdup (text) : NULL;
@@ -406,6 +441,10 @@ nautilus_label_set_font (NautilusLabel		*label,
 {
 	g_return_if_fail (NAUTILUS_IS_LABEL (label));
 	g_return_if_fail (NAUTILUS_IS_SCALABLE_FONT (font));
+
+	if (label->detail->font == font) {
+		return;
+	}
 
 	if (label->detail->font != NULL) {
 		gtk_object_unref (GTK_OBJECT (label->detail->font));
@@ -463,6 +502,10 @@ nautilus_label_set_text_color (NautilusLabel	*label,
 {
 	g_return_if_fail (NAUTILUS_IS_LABEL (label));
 
+	if (label->detail->text_color == text_color) {
+		return;
+	}
+
 	label->detail->text_color = text_color;
 	
 	nautilus_buffered_widget_clear_buffer (NAUTILUS_BUFFERED_WIDGET (label));
@@ -484,6 +527,10 @@ nautilus_label_set_text_alpha (NautilusLabel	*label,
 			       guchar		text_alpha)
 {
 	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+
+	if (label->detail->text_alpha == text_alpha) {
+		return;
+	}
 
 	label->detail->text_alpha = text_alpha;
 
@@ -529,9 +576,10 @@ nautilus_label_get_text_justification (const NautilusLabel *label)
 }
 
 /**
- * nautilus_label_get_line_offset:
+ * nautilus_label_set_line_offset:
  *
  * @label: A NautilusLabel
+ * @line_offset: The new line offset offset in pixels.
  *
  * Change the line offset.  Obviously, this is only interesting if the 
  * label is displaying text that contains '\n' characters.
@@ -567,3 +615,86 @@ nautilus_label_get_line_offset (const NautilusLabel *label)
 
 	return label->detail->line_offset;
 }
+
+/**
+ * nautilus_label_set_drop_shadow_offset:
+ *
+ * @label: A NautilusLabel
+ * @drop_shadow_offset: The new drop shadow offset.  
+
+ * The drop shadow offset is specified in pixels.  If greater than zero,
+ * the label will render on top of a nice shadow.  The shadow will be
+ * offset from the label text by 'drop_shadow_offset' pixels.
+ */
+void
+nautilus_label_set_drop_shadow_offset (NautilusLabel	*label,
+				       guint		drop_shadow_offset)
+{
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+
+	if (label->detail->drop_shadow_offset == drop_shadow_offset) {
+		return;
+	}
+
+	label->detail->drop_shadow_offset = drop_shadow_offset;
+	
+	gtk_widget_queue_resize (GTK_WIDGET (label));
+}
+
+/**
+ * nautilus_label_get_drop_shadow_offset:
+ *
+ * @label: A NautilusLabel
+ *
+ * Return value: The line offset in pixels.
+ */
+guint
+nautilus_label_get_drop_shadow_offset (const NautilusLabel *label)
+{
+	g_return_val_if_fail (label != NULL, 0);
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), 0);
+
+	return label->detail->drop_shadow_offset;
+}
+
+/**
+ * nautilus_label_set_drop_shadow_color:
+ *
+ * @label: A NautilusLabel
+ * @drop_shadow_color: The new drop shadow color.
+ *
+ * Return value: The drop shadow color.
+ */
+void
+nautilus_label_set_drop_shadow_color (NautilusLabel	*label,
+				      guint32		drop_shadow_color)
+{
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+
+	if (label->detail->drop_shadow_color == drop_shadow_color) {
+		return;
+	}
+	
+	label->detail->drop_shadow_color = drop_shadow_color;
+	
+	nautilus_buffered_widget_clear_buffer (NAUTILUS_BUFFERED_WIDGET (label));
+	
+	gtk_widget_queue_draw (GTK_WIDGET (label));
+}
+
+/**
+ * nautilus_label_get_drop_shadow_color:
+ *
+ * @label: A NautilusLabel
+ *
+ * Return value: The drop shadow color.
+ */
+guint32
+nautilus_label_get_drop_shadow_color (const NautilusLabel *label)
+{
+	g_return_val_if_fail (label != NULL, 0);
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), 0);
+
+	return label->detail->drop_shadow_color;
+}
+

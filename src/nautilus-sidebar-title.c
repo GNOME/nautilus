@@ -123,7 +123,7 @@ nautilus_sidebar_title_initialize (NautilusSidebarTitle *sidebar_title)
 
 	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->image_box, 0, 0, 0);
 	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->label_box, 0, 0, 0);
-	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->more_info_box, 0, 0, 0);
+	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->more_info_box, 0, 0, 3);
 
 	gtk_widget_show (sidebar_title->details->image_box);
 	gtk_widget_show (sidebar_title->details->label_box);
