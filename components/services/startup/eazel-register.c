@@ -40,6 +40,7 @@ void add_package_info(xmlDoc* configuration_metafile);
 void add_hardware_info(xmlDoc* configuration_metafile);
 gchar* read_proc_info(const gchar* proc_filename);
 void add_info(xmlNode *node_ptr, gchar* data, const gchar *tag, const gchar *field_name);
+void add_io_info(xmlNode *node_ptr, gchar *io_data);
 
 /* add package data from the package database to the passed in xml document */
 
@@ -154,11 +155,39 @@ void add_info(xmlNode *node_ptr, gchar* data, const gchar *tag, const gchar *fie
 	g_strfreev(info_array);
 }
 
+/* utility routine to process io info */
+
+void add_io_info(xmlNode *node_ptr, gchar *io_data)
+{
+	gint index;
+	gchar *temp_str;
+	xmlNode *new_node;
+	gchar **info_array;
+	
+	/* parse the data into a string array */
+	info_array = g_strsplit(io_data, "\n", 64);
+	/* iterate through the data creating a record for each line */
+	for (index = 0; index < 64; index++) {
+		if (info_array[index] == NULL)
+			break;
+		new_node = xmlNewChild(node_ptr, NULL, "IORANGE", NULL);
+		temp_str = strchr(info_array[index], ':');
+		if (temp_str) {
+			*temp_str = '\0';
+			xmlSetProp(new_node, "RANGE", g_strstrip(info_array[index]));
+			xmlSetProp(new_node, "TYPE",  g_strstrip(temp_str + 1));
+		}
+		
+	}
+	
+	g_strfreev(info_array);
+}
+
 /* add hardware info from the /proc directory to the passed in xml document */
 
 void add_hardware_info(xmlDoc *configuration_metafile)
 {
-    	xmlNode *cpu_node;
+    	xmlNode *cpu_node, *this_node;
 	gchar *temp_string;
 	
 	/* add the HARDWARE node */
@@ -185,6 +214,11 @@ void add_hardware_info(xmlDoc *configuration_metafile)
 	add_info(cpu_node, temp_string, "CACHE", "cache size");
 	g_free(temp_string);	
 
+	/* now handle IO port info */
+	this_node = xmlNewChild(hardware_node, NULL, "IOPORTS", NULL);
+	temp_string = read_proc_info("ioports");
+	add_io_info(this_node, temp_string);
+	g_free(temp_string);	
 }
 
 /* synchronize an existing metafile with the rpm database */
