@@ -1,3 +1,15 @@
+2001-02-24  Arik Devens  <arik@eazel.com>
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+
+	Fixed bug 6974, the verify button is currently non functional and
+	should be disabled.
+	
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_initialize),
+	(nautilus_rpm_view_update_from_uri): Removed the widget->show code
+	for the verify button because it was deemed to buggy for 1.0.
+
 2001-02-23  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: Ian McKellar  <ian@eazel.com>

@@ -326,13 +326,18 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	gtk_container_add (GTK_CONTAINER (rpm_view->details->package_verify_button), temp_widget); 	
 	gtk_box_pack_start(GTK_BOX (temp_box), rpm_view->details->package_verify_button,
 				 FALSE, FALSE, 4);		
-	gtk_widget_show(rpm_view->details->package_verify_button);
+        /* FIXME - 6974, 5123 This feature is buggy and is therefore
+         * being disabled for 1.0. It should either be turned on and
+         * fixed after 1.0 or should be left to the planned 1.2
+         * rewrite.
+         gtk_widget_show(rpm_view->details->package_verify_button);
+        */
 
         gtk_signal_connect (GTK_OBJECT (rpm_view->details->package_verify_button), 
                             "clicked", 
                             GTK_SIGNAL_FUNC (nautilus_rpm_view_verify_package_callback), 
                             rpm_view);
-		
+
 	/* add the list of files contained in the package */
 
   	temp_widget = gtk_scrolled_window_new(NULL, NULL);
@@ -627,10 +632,20 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 	}
 	if (is_installed != 0) {
 		gtk_widget_show (rpm_view->details->package_uninstall_button);
-                gtk_widget_show (rpm_view->details->package_verify_button);
+                /* FIXME - 6974, 5123 This feature is buggy and is therefore
+                 * being disabled for 1.0. It should either be turned on and
+                 * fixed after 1.0 or should be left to the planned 1.2
+                 * rewrite.
+                 gtk_widget_show (rpm_view->details->package_verify_button);
+                */
         } else {
                 gtk_widget_hide (rpm_view->details->package_uninstall_button);
-                gtk_widget_hide (rpm_view->details->package_verify_button);
+                /* FIXME - 6974, 5123 This feature is buggy and is therefore
+                 * being disabled for 1.0. It should either be turned on and
+                 * fixed after 1.0 or should be left to the planned 1.2
+                 * rewrite.
+                 gtk_widget_hide (rpm_view->details->package_verify_button);
+                */
         }	
 #endif /* EAZEL_SERVICES */              
 	return TRUE;
