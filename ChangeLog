@@ -1,3 +1,11 @@
+2000-11-13  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bug 4703, add new background crashes when you pick trash.
+	
+	* src/nautilus-property-browser.c: (add_background_to_browser):
+	fixed by removing a double-free in the case when the selected
+	file is not an image.
+	
 2000-11-13  John Sullivan  <sullivan@eazel.com>
 
 	More work towards converting directory view context menus

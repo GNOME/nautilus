@@ -1057,7 +1057,6 @@ add_background_to_browser (GtkWidget *widget, gpointer *data)
 		nautilus_error_dialog (message, _("Not an Image"), NULL);
 		g_free (message);
 		g_free (path_name);
-		g_free (path_uri);	
 		return;
 	}
 
