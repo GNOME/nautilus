@@ -77,7 +77,7 @@ msgid "Config files"
 msgstr "Konfig-filer"
 
 #: components/help/hyperbola-filefmt.c:398
-#: components/help/hyperbola-filefmt.c:683 po/tmp/apps.xml.h:1
+#: components/help/hyperbola-filefmt.c:683
 msgid "Applications"
 msgstr "Applikationer"
 
@@ -132,24 +132,6 @@ msgstr " (se også \""
 msgid "I could not initialize Bonobo"
 msgstr "Kunne ikke initiere Bonobo"
 
-#: po/tmp/nautilus-content-loser-ui.xml.h:1
-msgid "Kill Content Loser"
-msgstr "Dræb indholdstaber"
-
-#: po/tmp/nautilus-content-loser-ui.xml.h:2
-msgid "Kill the Loser content view"
-msgstr "Dræb taberens indholdsvisning"
-
-#: po/tmp/nautilus-content-loser-ui.xml.h:3 po/tmp/nautilus-mozilla-ui.xml.h:4
-#: po/tmp/nautilus-sample-content-view-ui.xml.h:4
-#: po/tmp/nautilus-shell-ui.xml.h:77 po/tmp/nautilus-sidebar-loser-ui.xml.h:3
-msgid "_File"
-msgstr "_Fil"
-
-#: po/tmp/nautilus-content-loser-ui.xml.h:4
-msgid "_Kill Content Loser"
-msgstr "_Dræb indholdstaber"
-
 #: components/loser/content/nautilus-content-loser.c:140
 #, c-format
 msgid ""
@@ -166,18 +148,6 @@ msgstr ""
 msgid "You have tried to kill the Content Loser"
 msgstr "Du har forsøgt at dræbe indholdstaberen"
 
-#: po/tmp/nautilus-sidebar-loser-ui.xml.h:1
-msgid "Kill Sidebar Loser"
-msgstr "Dræb sidelinje-taber"
-
-#: po/tmp/nautilus-sidebar-loser-ui.xml.h:2
-msgid "Kill the Loser sidebar panel"
-msgstr "Dræb taber sidelinjepanel"
-
-#: po/tmp/nautilus-sidebar-loser-ui.xml.h:4
-msgid "_Kill Sidebar Loser"
-msgstr "_Dræb sidelinje-taber"
-
 #: components/loser/sidebar/nautilus-sidebar-loser.c:143
 #, c-format
 msgid ""
@@ -192,22 +162,6 @@ msgstr ""
 #: components/loser/sidebar/nautilus-sidebar-loser.c:192
 msgid "You have tried to kill the Sidebar Loser"
 msgstr "Du har prøvet at dræbe sidelinjetaberen"
-
-#: po/tmp/nautilus-mozilla-ui.xml.h:1
-msgid "Mozilla Test"
-msgstr "Mozilla test"
-
-#: po/tmp/nautilus-mozilla-ui.xml.h:2
-msgid "This is a Mozilla merged menu item"
-msgstr "Dette er en flettet menuopføring for Mozilla"
-
-#: po/tmp/nautilus-mozilla-ui.xml.h:3
-msgid "This is a Mozilla merged tool bar button"
-msgstr "Dette er en flettet værktøjlinjeknap for Mozilla"
-
-#: po/tmp/nautilus-mozilla-ui.xml.h:5
-msgid "_Mozilla Test"
-msgstr "_Mozilla test"
 
 #. FIXME: I think this is not portable. It works in gcc, but not other C compilers.
 #: components/music/nautilus-music-view.c:231
@@ -260,7 +214,7 @@ msgid "Sorry, but '%s' is not a usable image file."
 msgstr "Beklager, men '%s' er ikke en brugbar billedfil."
 
 #: components/music/nautilus-music-view.c:492
-#: src/nautilus-property-browser.c:980 src/nautilus-property-browser.c:1116
+#: src/nautilus-property-browser.c:993 src/nautilus-property-browser.c:1129
 msgid "Not an Image"
 msgstr "Ikke et billede"
 
@@ -296,7 +250,6 @@ msgstr "Pause"
 #: libnautilus-extensions/nautilus-file-operations.c:658
 #: libnautilus-extensions/nautilus-file-operations.c:715
 #: libnautilus-extensions/nautilus-file-operations.c:786
-#: po/tmp/nautilus-shell-ui.xml.h:56
 msgid "Stop"
 msgstr "Stop"
 
@@ -490,22 +443,6 @@ msgstr "fil %s har en fejl!"
 #: components/rpmview/nautilus-rpm-view.c:878
 msgid "Verification completed."
 msgstr "Efterprøvning fuldført."
-
-#: po/tmp/nautilus-sample-content-view-ui.xml.h:1
-msgid "Sample"
-msgstr "Prøve"
-
-#: po/tmp/nautilus-sample-content-view-ui.xml.h:2
-msgid "This is a sample merged menu item"
-msgstr "Dette er et prøve på et samlet menuelement"
-
-#: po/tmp/nautilus-sample-content-view-ui.xml.h:3
-msgid "This is a sample merged tool bar button"
-msgstr "Dette er et eksempel på en flettet værktøjslinjeknap"
-
-#: po/tmp/nautilus-sample-content-view-ui.xml.h:5
-msgid "_Sample"
-msgstr "_Prøve"
 
 #: components/sample/nautilus-sample-content-view.c:83
 msgid "(none)"
@@ -1284,85 +1221,52 @@ msgstr "Kunne ikke finde nogen sammendrags-konfigurationsdata\n"
 msgid "Bailing from summary configuration parse!\n"
 msgstr "Hopper ud af fortolkning af sammendrags-konfiguration!\n"
 
-#. parse_summary_xml_file
-#: po/tmp/nautilus-summary-view-ui.xml.h:1
-msgid "Configure your service preferences"
-msgstr "Konfigurér brugervalg for tjenester"
-
-#: po/tmp/nautilus-summary-view-ui.xml.h:2
-msgid "Go to the Eazel Services Registration Form"
-msgstr "Gå til registrering for Eazel tjenester"
-
-#: po/tmp/nautilus-summary-view-ui.xml.h:3
-msgid "Log out from Eazel Services"
-msgstr "Log af Eazel's tjenester"
-
-#: po/tmp/nautilus-summary-view-ui.xml.h:4
-msgid "Service _Preferences"
-msgstr "Tjenestevalg"
-
-#: po/tmp/nautilus-summary-view-ui.xml.h:5
-msgid "Show the log-in dialog box"
-msgstr "Vis dialogboksen for indlogning"
-
-#: po/tmp/nautilus-summary-view-ui.xml.h:6
-msgid "_Log in to Eazel Services"
-msgstr "_Log på Eazel's tjenester"
-
-#: po/tmp/nautilus-summary-view-ui.xml.h:7
-msgid "_Log out from Eazel Services"
-msgstr "_Log af Eazel's tjenester"
-
-#: po/tmp/nautilus-summary-view-ui.xml.h:8
-msgid "_Register for Eazel Services"
-msgstr "Registrér dig for Eazel tjenester"
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:283
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:109
 msgid "Register"
 msgstr "Registrér"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:284
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:110
 msgid "Login"
 msgstr "Log på"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:285
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:293
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:111
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:119
 msgid "Terms of Use"
 msgstr "Brugsbetingelser"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:286
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:294
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:112
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:120
 msgid "Privacy Statement"
 msgstr "Erklæring om konfidensialitet"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:291
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:117
 msgid "Account Preferences"
 msgstr "Brugervalg for konto"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:292
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:118
 msgid "Logout"
 msgstr "Log af"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:346
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:172
 #, c-format
 msgid "Welcome Back %s!"
 msgstr "Velkommen tilbage %s!"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:352
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:178
 msgid "You are not logged in!"
 msgstr "Du er ikke logget ind!"
 
 #. add the tab
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:444
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:270
 msgid "Your Services"
 msgstr "Dine tjenester"
 
 #. create the Additional Services pane
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:508
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:334
 msgid "Additional Services"
 msgstr "Tillægstjenester"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:528
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:354
 msgid ""
 "\n"
 "Check back here for new system management\n"
@@ -1373,59 +1277,16 @@ msgstr ""
 "tjenester som vil hjælpe med at gøre Linux nemmere at bruge."
 
 #. add the tab
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:567
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:393
 msgid "Current Updates"
 msgstr "Tilgængelige opdateringer"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:600
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:426
 #, c-format
 msgid "Version %s"
 msgstr "Version %s"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1210
-msgid "Service Error"
-msgstr "Fejl i tjeneste"
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1246
-msgid "Register Now"
-msgstr "Registrér nu"
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1248
-msgid "Help"
-msgstr "Hjælp"
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1251
-msgid "Services Login"
-msgstr "Indlogning til tjenester"
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1263
-msgid "Username:"
-msgstr "Brugernavn:"
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1270
-msgid "Password:"
-msgstr "Ny adgangskode:"
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1278
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1290
-msgid "Please log in to Eazel services"
-msgstr "Log venligst på til Eazel's tjenester"
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1282
-msgid ""
-"Your user name or password were not correct, or you have not activated your "
-"account.  Please try again, or check your email for an account activation "
-"notice."
-msgstr ""
-"Dit brugernavn og adgangskode var ikke korrekt, eller du har ikke aktiveret "
-"din konto. Prøv venligst igen, eller tjek din e-post for en besked om "
-"aktivering af konto."
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1286
-msgid "We're sorry, but your name and password are still not recognized."
-msgstr "Beklager, men navn og adgangskode blev stadig ikke genkendt."
-
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1486
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:899
 msgid ""
 "Unable to connect to Eazel's server. The server might be unavailable right "
 "now, or your computer might be configured incorrectly.You could try again "
@@ -1435,7 +1296,7 @@ msgstr ""
 "eller måske er din datamaskine ikke rigtigt konfigureret. Du kan prøve igen "
 "senere."
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:1504
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:917
 msgid ""
 "Found problem with data on Eazel servers. Please contact support@eazel.com."
 msgstr ""
@@ -1516,350 +1377,6 @@ msgstr ""
 "Fejl: Ugyldig syntaks\n"
 "Syntaks: %s\n"
 
-#: po/tmp/browser.xml.h:1
-msgid "Apparition"
-msgstr "Spøgelse"
-
-#: po/tmp/browser.xml.h:2
-msgid "Azul"
-msgstr "Azul"
-
-#: po/tmp/browser.xml.h:3
-msgid "Backgrounds"
-msgstr "Baggrunde"
-
-#: po/tmp/browser.xml.h:4
-msgid "Black"
-msgstr "Sort"
-
-#: po/tmp/browser.xml.h:5
-msgid "Bubble Gum"
-msgstr "Tyggegummi"
-
-#: po/tmp/browser.xml.h:6
-msgid "Charcoal"
-msgstr "Trækul"
-
-#: po/tmp/browser.xml.h:7
-msgid "Colors"
-msgstr "Farver"
-
-#: po/tmp/browser.xml.h:8
-msgid "Concrete"
-msgstr "Beton"
-
-#: po/tmp/browser.xml.h:9
-msgid "Danube"
-msgstr "Donau"
-
-#: po/tmp/browser.xml.h:10
-msgid "Dark Cork"
-msgstr "Mørk kork"
-
-#: po/tmp/browser.xml.h:11
-msgid "Deep Teal"
-msgstr "Dyp teal"
-
-#: po/tmp/browser.xml.h:12
-msgid "Drag a background tile to an object to change it"
-msgstr "Træk en baggrundsbrik til et objekt for at ændre det"
-
-#: po/tmp/browser.xml.h:13
-msgid "Drag a color to an object to change it to that color"
-msgstr "Træk en farve til et objekt for at ændre det til den farve"
-
-#: po/tmp/browser.xml.h:14
-msgid "Drag an emblem to an object to add it to the object"
-msgstr "Træk et emblem til et objekt for at tilføje det til objektet"
-
-#: po/tmp/browser.xml.h:15
-msgid "Eclipse"
-msgstr "Formørkelse"
-
-#: po/tmp/browser.xml.h:16 src/file-manager/fm-properties-window.c:1355
-msgid "Emblems"
-msgstr "Emblemer"
-
-#: po/tmp/browser.xml.h:17
-msgid "Envy"
-msgstr "Misundelse"
-
-#: po/tmp/browser.xml.h:18
-msgid "Fire Engine"
-msgstr "Brandbil"
-
-#: po/tmp/browser.xml.h:19
-msgid "Granite"
-msgstr "Granit"
-
-#: po/tmp/browser.xml.h:20
-msgid "Grapefruit"
-msgstr "Grapefrugt"
-
-#: po/tmp/browser.xml.h:21
-msgid "Indigo"
-msgstr "Indigoblåt"
-
-#: po/tmp/browser.xml.h:22
-msgid "Leaf"
-msgstr "Løv"
-
-#: po/tmp/browser.xml.h:23
-msgid "Lemon"
-msgstr "Citron"
-
-#: po/tmp/browser.xml.h:24
-msgid "Mango"
-msgstr "Mango"
-
-#: po/tmp/browser.xml.h:25
-msgid "Mud"
-msgstr "Ler"
-
-#: po/tmp/browser.xml.h:26
-msgid "Onyx"
-msgstr "Onyx"
-
-#: po/tmp/browser.xml.h:27
-msgid "Orange"
-msgstr "Orange"
-
-#: po/tmp/browser.xml.h:28
-msgid "Pale Blue"
-msgstr "Lyseblå"
-
-#: po/tmp/browser.xml.h:29
-msgid "Ruby"
-msgstr "Rubin"
-
-#: po/tmp/browser.xml.h:30
-msgid "Sea Foam"
-msgstr "Havsskum"
-
-#: po/tmp/browser.xml.h:31
-msgid "Shale"
-msgstr "Skiffer"
-
-#: po/tmp/browser.xml.h:32
-msgid "Silver"
-msgstr "Sølv"
-
-#: po/tmp/browser.xml.h:33
-msgid "Sky"
-msgstr "Himmel"
-
-#: po/tmp/browser.xml.h:34
-msgid "Tangerine"
-msgstr "Tangerine"
-
-#: po/tmp/browser.xml.h:35
-msgid "Violet"
-msgstr "Lilla"
-
-#: po/tmp/browser.xml.h:36
-msgid "White"
-msgstr "Hvid"
-
-#: po/tmp/apps.xml.h:2
-msgid "Gnumeric"
-msgstr "Gnumeric"
-
-#: po/tmp/apps.xml.h:3
-msgid "Netscape"
-msgstr "Netscape"
-
-#: po/tmp/apps.xml.h:4
-msgid "The Gimp"
-msgstr "Gimp"
-
-#: libnautilus-extensions/nautilus-global-preferences.c:243
-#: po/tmp/desktop.xml.h:1
-msgid "Desktop"
-msgstr "Skrivebord"
-
-#: libnautilus-extensions/nautilus-file.c:4659
-#: libnautilus-extensions/nautilus-trash-directory.c:286
-#: po/tmp/desktop.xml.h:2
-msgid "Trash"
-msgstr "Papirkurv"
-
-#: po/tmp/portals.xml.h:1
-msgid "Excite"
-msgstr "Excite"
-
-#: po/tmp/portals.xml.h:2
-msgid "Portals"
-msgstr "Portaler"
-
-#: po/tmp/portals.xml.h:3
-msgid "Yahoo"
-msgstr "Yahoo"
-
-#: po/tmp/search_engines.xml.h:1
-msgid "Alta Vista"
-msgstr "Alta Vista"
-
-#: po/tmp/search_engines.xml.h:2
-msgid "Google"
-msgstr "Google"
-
-#: po/tmp/search_engines.xml.h:3
-msgid "Search Engines"
-msgstr "Søgemotorer"
-
-#: po/tmp/static_bookmarks.xml.h:1
-msgid "CNET Computers.com"
-msgstr "CNET Computers.com"
-
-#: po/tmp/static_bookmarks.xml.h:2
-msgid "CNET Linux Center"
-msgstr "CNET Linux Center"
-
-#: po/tmp/static_bookmarks.xml.h:3
-msgid "Caldera"
-msgstr "Caldera"
-
-#: po/tmp/static_bookmarks.xml.h:4
-msgid "Collab.net"
-msgstr "Collab.net"
-
-#: po/tmp/static_bookmarks.xml.h:5
-msgid "Compaq"
-msgstr "Compaq"
-
-#: po/tmp/static_bookmarks.xml.h:6
-msgid "Debian.org"
-msgstr "Debian.org"
-
-#: po/tmp/static_bookmarks.xml.h:7
-msgid "Dell"
-msgstr "Dell"
-
-#: po/tmp/static_bookmarks.xml.h:8
-msgid "Eazel"
-msgstr "Eazel"
-
-#: po/tmp/static_bookmarks.xml.h:9
-msgid "Freshmeat.net"
-msgstr "Freshmeat.net"
-
-#: po/tmp/static_bookmarks.xml.h:10
-msgid "GNOME.org"
-msgstr "GNOME.org"
-
-#: po/tmp/static_bookmarks.xml.h:11
-msgid "GNU.org"
-msgstr "GNU.org"
-
-#: po/tmp/static_bookmarks.xml.h:12
-msgid "Hardware"
-msgstr "Maskinel"
-
-#: po/tmp/static_bookmarks.xml.h:13
-msgid "Helix Code"
-msgstr "Helix Code"
-
-#: po/tmp/static_bookmarks.xml.h:14
-msgid "Hewlett-Packard"
-msgstr "Hewlett-Packard"
-
-#: po/tmp/static_bookmarks.xml.h:15
-msgid "IBM"
-msgstr "IBM"
-
-#: po/tmp/static_bookmarks.xml.h:16
-msgid "Inprise"
-msgstr "Inprise"
-
-#: po/tmp/static_bookmarks.xml.h:17
-msgid "Linux Companies"
-msgstr "Linuxfirmaer"
-
-#: po/tmp/static_bookmarks.xml.h:18
-msgid "Linux Documentation Project"
-msgstr "Linux Documentation Project"
-
-#: po/tmp/static_bookmarks.xml.h:19
-msgid "Linux Online"
-msgstr "Linux Online"
-
-#: po/tmp/static_bookmarks.xml.h:20
-msgid "Linux Resources"
-msgstr "Linuxresurser"
-
-#: po/tmp/static_bookmarks.xml.h:21
-msgid "Linux at IBM"
-msgstr "Linux ved IBM"
-
-#: po/tmp/static_bookmarks.xml.h:22
-msgid "LinuxNewbie.org"
-msgstr "LinuxNewbie.org"
-
-#: po/tmp/static_bookmarks.xml.h:23
-msgid "Linuxcare"
-msgstr "Linuxcare"
-
-#: po/tmp/static_bookmarks.xml.h:24
-msgid "Myplay"
-msgstr "Myplay"
-
-#: po/tmp/static_bookmarks.xml.h:25 src/nautilus-window-manage-views.c:222
-#: src/nautilus-window-menus.c:629
-msgid "Nautilus"
-msgstr "Nautilus"
-
-#: po/tmp/static_bookmarks.xml.h:26
-msgid "News and Media"
-msgstr "Nyheder og media"
-
-#: po/tmp/static_bookmarks.xml.h:27
-msgid "OSDN"
-msgstr "OSDN"
-
-#: po/tmp/static_bookmarks.xml.h:28
-msgid "OpenOffice"
-msgstr "OpenOffice"
-
-#: po/tmp/static_bookmarks.xml.h:29
-msgid "Red Hat"
-msgstr "Red Hat"
-
-#: po/tmp/static_bookmarks.xml.h:30
-msgid "Slashdot.org"
-msgstr "Slashdot.org"
-
-#: po/tmp/static_bookmarks.xml.h:31
-msgid "Software"
-msgstr "Programmel"
-
-#: po/tmp/static_bookmarks.xml.h:32
-msgid "SourceForge"
-msgstr "SourceForge"
-
-#: po/tmp/static_bookmarks.xml.h:33
-msgid "SourceXchange"
-msgstr "SourceXchange"
-
-#: po/tmp/static_bookmarks.xml.h:34
-msgid "Sun StarOffice"
-msgstr "Sun StarOffice"
-
-#: po/tmp/static_bookmarks.xml.h:35
-msgid "VA Linux"
-msgstr "VA Linux"
-
-#: po/tmp/static_bookmarks.xml.h:36
-msgid "VMware"
-msgstr "VMware"
-
-#: po/tmp/static_bookmarks.xml.h:37
-msgid "Web Services"
-msgstr "Nettjenester"
-
-#: po/tmp/static_bookmarks.xml.h:38
-msgid "ZDNet Linux Resource Center"
-msgstr "ZDNet Linux Resource Center"
-
 #: libnautilus-extensions/nautilus-druid-page-eazel.c:343
 msgid "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
 msgstr "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
@@ -1902,8 +1419,7 @@ msgid ""
 "folder."
 msgstr ""
 "Fejl ved flytning.\n"
-"%s kan ikke flyttes fordi du ikke har lov til at ændre dens "
-"forældremappe."
+"%s kan ikke flyttes fordi du ikke har lov til at ændre dens forældremappe."
 
 #: libnautilus-extensions/nautilus-file-operations.c:542
 #, c-format
@@ -2198,7 +1714,7 @@ msgstr "Erstat alt"
 
 #. appended to new link file
 #: libnautilus-extensions/nautilus-file-operations.c:901
-#: libnautilus-extensions/nautilus-file.c:3691
+#: libnautilus-extensions/nautilus-file.c:3673
 #, c-format
 msgid "link to %s"
 msgstr "lænke til %s"
@@ -2362,8 +1878,7 @@ msgid ""
 "Error creating new folder.\n"
 "You do not have permissions to write to the destination."
 msgstr ""
-"Fejl ved oprettelse af ny mappe"
-"Du har ikke lov til at skrive til målet."
+"Fejl ved oprettelse af ny mappeDu har ikke lov til at skrive til målet."
 
 #: libnautilus-extensions/nautilus-file-operations.c:1694
 msgid ""
@@ -2650,107 +2165,107 @@ msgstr "foo foo (100000000000000te kopi).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-extensions/nautilus-file.c:2215
+#: libnautilus-extensions/nautilus-file.c:2216
 msgid "today at %-I:%M %p"
 msgstr "i dag kl %H:%M"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2220
+#: libnautilus-extensions/nautilus-file.c:2221
 msgid "yesterday at %-I:%M %p"
 msgstr "i går kl %H:%M"
 
 #. Current week, include day of week.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2225
+#: libnautilus-extensions/nautilus-file.c:2226
 msgid "%A %-m/%-d/%y at %-I:%M %p"
 msgstr "%A %Y-%-m-%-d %H:%M"
 
 #. Other dates.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2230
+#: libnautilus-extensions/nautilus-file.c:2231
 msgid "%-m/%-d/%y at %-I:%M %p"
 msgstr "%Y-%-m-%-d %H:%M"
 
-#: libnautilus-extensions/nautilus-file.c:3267
+#: libnautilus-extensions/nautilus-file.c:3268
 msgid "0 items"
 msgstr "0 ting"
 
-#: libnautilus-extensions/nautilus-file.c:3267
+#: libnautilus-extensions/nautilus-file.c:3268
 msgid "0 folders"
 msgstr "0 mapper"
 
-#: libnautilus-extensions/nautilus-file.c:3268
+#: libnautilus-extensions/nautilus-file.c:3269
 msgid "0 files"
 msgstr "0 filer"
 
-#: libnautilus-extensions/nautilus-file.c:3272
+#: libnautilus-extensions/nautilus-file.c:3273
 msgid "1 item"
 msgstr "1 ting"
 
-#: libnautilus-extensions/nautilus-file.c:3272
+#: libnautilus-extensions/nautilus-file.c:3273
 msgid "1 folder"
 msgstr "1 mappe"
 
-#: libnautilus-extensions/nautilus-file.c:3273
+#: libnautilus-extensions/nautilus-file.c:3274
 msgid "1 file"
 msgstr "1 fil"
 
-#: libnautilus-extensions/nautilus-file.c:3276
+#: libnautilus-extensions/nautilus-file.c:3277
 #, c-format
 msgid "%u items"
 msgstr "%u ting"
 
-#: libnautilus-extensions/nautilus-file.c:3276
+#: libnautilus-extensions/nautilus-file.c:3277
 #, c-format
 msgid "%u folders"
 msgstr "%u mapper"
 
-#: libnautilus-extensions/nautilus-file.c:3277
+#: libnautilus-extensions/nautilus-file.c:3278
 #, c-format
 msgid "%u files"
 msgstr "%u filer"
 
 #. This means no contents at all were readable
-#: libnautilus-extensions/nautilus-file.c:3577
-#: libnautilus-extensions/nautilus-file.c:3591
+#: libnautilus-extensions/nautilus-file.c:3578
+#: libnautilus-extensions/nautilus-file.c:3592
 msgid "? items"
 msgstr "? opføringer"
 
-#: libnautilus-extensions/nautilus-file.c:3595
+#: libnautilus-extensions/nautilus-file.c:3596
 msgid "unknown type"
 msgstr "ukendt type"
 
-#: libnautilus-extensions/nautilus-file.c:3597
+#: libnautilus-extensions/nautilus-file.c:3598
 msgid "unknown MIME type"
 msgstr "ukendt MIME-type"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-extensions/nautilus-file.c:3602
+#: libnautilus-extensions/nautilus-file.c:3603
 msgid "unknown"
 msgstr "ukendt"
 
-#: libnautilus-extensions/nautilus-file.c:3650
-#: src/nautilus-search-bar-criterion.c:106
-msgid "folder"
-msgstr "mappe"
-
-#: libnautilus-extensions/nautilus-file.c:3653
+#: libnautilus-extensions/nautilus-file.c:3638
 msgid "program"
 msgstr "program"
 
-#: libnautilus-extensions/nautilus-file.c:3685
+#: libnautilus-extensions/nautilus-file.c:3667
 msgid "link"
 msgstr "lænke"
 
-#: libnautilus-extensions/nautilus-file.c:3705
+#: libnautilus-extensions/nautilus-file.c:3687
 msgid "link (broken)"
 msgstr "lænke (ødelagt)"
+
+#: libnautilus-extensions/nautilus-file.c:4641
+#: libnautilus-extensions/nautilus-trash-directory.c:286
+msgid "Trash"
+msgstr "Papirkurv"
 
 #: libnautilus-extensions/nautilus-font-factory.c:321
 msgid "fixed"
@@ -2815,6 +2330,10 @@ msgstr "Skrifttyper"
 #: libnautilus-extensions/nautilus-global-preferences.c:225
 msgid "Views"
 msgstr "Visninger"
+
+#: libnautilus-extensions/nautilus-global-preferences.c:243
+msgid "Desktop"
+msgstr "Skrivebord"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:254
 msgid "Speed Tradeoffs"
@@ -3093,28 +2612,27 @@ msgstr "Skift"
 #. FIXME bugzilla.eazel.com 1102: Embedded text should use preferences to determine
 #. * the font it uses
 #.
-#: libnautilus-extensions/nautilus-icon-factory.c:2288
+#: libnautilus-extensions/nautilus-icon-factory.c:2315
 msgid "-*-helvetica-medium-r-normal-*-10-*-*-*-*-*-*-*"
 msgstr "-*-helvetica-medium-r-normal-*-10-*-*-*-*-*-*-*"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1547
-#: po/tmp/nautilus-icon-view-ui.xml.h:14
+#: libnautilus-extensions/nautilus-icon-text-item.c:1550
 msgid "Rename"
 msgstr "Omdøb"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1548
+#: libnautilus-extensions/nautilus-icon-text-item.c:1551
 msgid "Undo Typing"
 msgstr "Fortryd indtasting"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1549
+#: libnautilus-extensions/nautilus-icon-text-item.c:1552
 msgid "Restore the old name"
 msgstr "Genskab det gamle navn"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1550
+#: libnautilus-extensions/nautilus-icon-text-item.c:1553
 msgid "Redo Typing"
 msgstr "Genopret indtasting"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1551
+#: libnautilus-extensions/nautilus-icon-text-item.c:1554
 msgid "Restore the changed name"
 msgstr "Genskab det ændrede navn"
 
@@ -3122,7 +2640,7 @@ msgstr "Genskab det ændrede navn"
 msgid " -_,;.?/&"
 msgstr " -_,;.?/&"
 
-#: libnautilus-extensions/nautilus-preferences-dialog.c:201
+#: libnautilus-extensions/nautilus-preferences-dialog.c:204
 msgid "Prefs Box"
 msgstr "Boks for indstillinger"
 
@@ -3249,7 +2767,7 @@ msgstr "Inkludér ikke i menuen for \"%s\" opføringer."
 #: libnautilus-extensions/nautilus-program-chooser.c:1164
 #: src/file-manager/fm-list-view.c:1909
 #: src/file-manager/fm-search-list-view.c:330
-#: src/nautilus-bookmarks-window.c:161 src/nautilus-search-bar-criterion.c:67
+#: src/nautilus-bookmarks-window.c:166 src/nautilus-search-bar-criterion.c:67
 msgid "Name"
 msgstr "Navn"
 
@@ -3280,7 +2798,7 @@ msgid "Choose"
 msgstr "Vælg"
 
 #: libnautilus-extensions/nautilus-program-chooser.c:1230
-#: src/nautilus-property-browser.c:358
+#: src/nautilus-property-browser.c:361
 msgid "Done"
 msgstr "Færdig"
 
@@ -3511,15 +3029,15 @@ msgstr "Elementer %s"
 msgid "Items %s %s"
 msgstr "Elementer %s %s"
 
-#: libnautilus-extensions/nautilus-search-uri.c:679
+#: libnautilus-extensions/nautilus-search-uri.c:685
 msgid "Items with \"stuff\" in the name"
 msgstr "Elementer med \"ting\" i navnet"
 
-#: libnautilus-extensions/nautilus-search-uri.c:682
+#: libnautilus-extensions/nautilus-search-uri.c:688
 msgid "Items with \"stuff\" in the name and are regular files"
 msgstr "Elementer med \"ting\" i navnet og som er almindelige filer"
 
-#: libnautilus-extensions/nautilus-search-uri.c:686
+#: libnautilus-extensions/nautilus-search-uri.c:692
 msgid ""
 "Items with \"stuff\" in the name, are regular files and smaller than 2000 "
 "bytes"
@@ -3527,7 +3045,7 @@ msgstr ""
 "Elementer med \"ting\" i navnet, som er almindelige filer og som er mindre "
 "end 2000 bytes"
 
-#: libnautilus-extensions/nautilus-search-uri.c:690
+#: libnautilus-extensions/nautilus-search-uri.c:696
 msgid "Items with \"medusa\" in the name and are folders"
 msgstr "Ting med \"medusa\" i navnet og som er mapper"
 
@@ -3596,54 +3114,20 @@ msgstr "Ext2 delarkiv"
 msgid "Floppy"
 msgstr "Diskette"
 
-#: po/tmp/nautilus-clipboard-ui.xml.h:1 po/tmp/nautilus-shell-ui.xml.h:6
-msgid "C_lear Text"
-msgstr "_Ryd tekst"
-
-#: po/tmp/nautilus-clipboard-ui.xml.h:2 po/tmp/nautilus-shell-ui.xml.h:15
-msgid "Copy the selected text to the clipboard"
-msgstr "Kopiér valgt tekst til klippebordet"
-
-#: po/tmp/nautilus-clipboard-ui.xml.h:3 po/tmp/nautilus-shell-ui.xml.h:18
-msgid "Cut the selected text to the clipboard"
-msgstr "Klip valgt tekst ud til klippebordet"
-
-#: po/tmp/nautilus-clipboard-ui.xml.h:4 po/tmp/nautilus-shell-ui.xml.h:44
-msgid "Paste the text stored on the clipboard"
-msgstr "Indsæt tekst som er gemt på klippebordet"
-
-#: po/tmp/nautilus-clipboard-ui.xml.h:5
-msgid "Remove the selected text without putting it on the clipboard"
-msgstr "Fjern den valgte tekst uden at placere den på klippebordet"
-
-#: po/tmp/nautilus-clipboard-ui.xml.h:6 po/tmp/nautilus-shell-ui.xml.h:74
-msgid "_Copy Text"
-msgstr "_Indsæt tekst"
-
-#: po/tmp/nautilus-clipboard-ui.xml.h:7
-msgid "_Cut Text"
-msgstr "_Klip tekst"
-
-#: po/tmp/nautilus-clipboard-ui.xml.h:8 po/tmp/nautilus-shell-ui.xml.h:87
-msgid "_Paste Text"
-msgstr "_Indsæt tekst"
-
-#: src/file-manager/fm-desktop-icon-view.c:591
-#: src/file-manager/fm-desktop-icon-view.c:596
+#: src/file-manager/fm-desktop-icon-view.c:583
+#: src/file-manager/fm-desktop-icon-view.c:588
 msgid "Link to"
 msgstr "Lænk til"
 
-#: src/file-manager/fm-desktop-icon-view.c:593
+#: src/file-manager/fm-desktop-icon-view.c:585
 msgid "Link to Unknown"
 msgstr "Lænk til ukendt"
 
-#: src/file-manager/fm-desktop-icon-view.c:1090
+#: src/file-manager/fm-desktop-icon-view.c:1082
 msgid "Empty Trash..."
 msgstr "Tøm papirkurv..."
 
-#: po/tmp/nautilus-desktop-icon-view-ui.xml.h:4
-#: po/tmp/nautilus-directory-view-ui.xml.h:11
-#: src/file-manager/fm-desktop-icon-view.c:1092
+#: src/file-manager/fm-desktop-icon-view.c:1084
 msgid "Empty Trash"
 msgstr "Tøm papirkurv"
 
@@ -3734,7 +3218,7 @@ msgstr ""
 msgid "Too many Files"
 msgstr "For mange filer"
 
-#: src/file-manager/fm-directory-view.c:2464
+#: src/file-manager/fm-directory-view.c:2468
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the trash. Do you want to delete it immediately?"
@@ -3742,7 +3226,7 @@ msgstr ""
 "\"%s\" kan ikke flyttes til papirkurven. Ønsker du at slette den med det "
 "samme?"
 
-#: src/file-manager/fm-directory-view.c:2469
+#: src/file-manager/fm-directory-view.c:2473
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the trash. Do you want to delete "
@@ -3751,7 +3235,7 @@ msgstr ""
 "De %d valgte opføringer kan ikke flyttes til papirkurven. Vil du slette dem "
 "med det samme?"
 
-#: src/file-manager/fm-directory-view.c:2473
+#: src/file-manager/fm-directory-view.c:2477
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the trash. Do you want to delete "
@@ -3760,21 +3244,21 @@ msgstr ""
 "%d af de valgte opføringer kan ikke flyttes til papirkurven. Vil du slette "
 "disse %d opføringer med det samme?"
 
-#: src/file-manager/fm-directory-view.c:2481
+#: src/file-manager/fm-directory-view.c:2485
 msgid "Delete Immediately?"
 msgstr "Slet med det samme?"
 
-#: src/file-manager/fm-directory-view.c:2482
-#: src/file-manager/fm-directory-view.c:2523
+#: src/file-manager/fm-directory-view.c:2486
+#: src/file-manager/fm-directory-view.c:2527
 msgid "Delete"
 msgstr "Slet"
 
-#: src/file-manager/fm-directory-view.c:2512
+#: src/file-manager/fm-directory-view.c:2516
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Er du sikker på at du vil slette \"%s\" fra papirkurven for altid?"
 
-#: src/file-manager/fm-directory-view.c:2516
+#: src/file-manager/fm-directory-view.c:2520
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
@@ -3782,79 +3266,75 @@ msgid ""
 msgstr ""
 "Er du sikker på at du vil slette %d valgte ting i papirkurven for altid?"
 
-#: src/file-manager/fm-directory-view.c:2522
+#: src/file-manager/fm-directory-view.c:2526
 msgid "Delete From Trash?"
 msgstr "Slet fra papirkurven?"
 
-#: src/file-manager/fm-directory-view.c:2793
-#: src/file-manager/fm-directory-view.c:2834
+#: src/file-manager/fm-directory-view.c:2797
+#: src/file-manager/fm-directory-view.c:2838
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Brug \"%s\" for at åbne det markerede objekt"
 
-#: src/file-manager/fm-directory-view.c:2832
+#: src/file-manager/fm-directory-view.c:2836
 #, c-format
 msgid "%s Viewer"
 msgstr "%s Fremviser"
 
-#: src/file-manager/fm-directory-view.c:3020
+#: src/file-manager/fm-directory-view.c:3024
 msgid "Open in _New Window"
 msgstr "Åbn i _nyt vindue"
 
-#: src/file-manager/fm-directory-view.c:3022
+#: src/file-manager/fm-directory-view.c:3026
 #, c-format
 msgid "Open in %d _New Windows"
 msgstr "Åbn i %d _nye vinduer"
 
-#: src/file-manager/fm-directory-view.c:3048
+#: src/file-manager/fm-directory-view.c:3052
 msgid "Delete all selected items permanently"
 msgstr "Slet alle valgte opføringer permanent"
 
-#: src/file-manager/fm-directory-view.c:3053
+#: src/file-manager/fm-directory-view.c:3057
 msgid "Delete from _Trash..."
 msgstr "Sle_t fra papirkurven..."
 
-#: src/file-manager/fm-directory-view.c:3054
+#: src/file-manager/fm-directory-view.c:3058
 msgid "Delete from _Trash"
 msgstr "Sle_t fra papirkurven"
 
-#: src/file-manager/fm-directory-view.c:3058
+#: src/file-manager/fm-directory-view.c:3062
 msgid "Move all selected items to the Trash"
 msgstr "Flyt alle valgte ting til papirkurv"
 
-#: po/tmp/nautilus-directory-view-ui.xml.h:14
-#: src/file-manager/fm-directory-view.c:3062
+#: src/file-manager/fm-directory-view.c:3066
 msgid "Move to _Trash"
 msgstr "Fly_t til papirkurv"
 
-#: src/file-manager/fm-directory-view.c:3091
+#: src/file-manager/fm-directory-view.c:3095
 msgid "Create _Links"
 msgstr "Opret _lænker"
 
-#: po/tmp/nautilus-directory-view-ui.xml.h:5
-#: src/file-manager/fm-directory-view.c:3092
+#: src/file-manager/fm-directory-view.c:3096
 msgid "Create _Link"
 msgstr "Opret _lænke"
 
-#: src/file-manager/fm-directory-view.c:3110
+#: src/file-manager/fm-directory-view.c:3114
 msgid "_Empty Trash..."
 msgstr "_Tøm papirkurv..."
 
-#: po/tmp/nautilus-directory-view-ui.xml.h:39
-#: src/file-manager/fm-directory-view.c:3111
+#: src/file-manager/fm-directory-view.c:3115
 msgid "_Empty Trash"
 msgstr "_Tøm papirkurv"
 
-#: po/tmp/nautilus-directory-view-ui.xml.h:26
-#: src/file-manager/fm-directory-view.c:3122
+#: src/file-manager/fm-directory-view.c:3126
 msgid "R_emove Custom Images"
 msgstr "Fj_ern personlige billeder"
 
-#: src/file-manager/fm-directory-view.c:3123
+#: src/file-manager/fm-directory-view.c:3127
 msgid "R_emove Custom Image"
 msgstr "Fj_ern personligt billede"
 
-#: src/file-manager/fm-directory-view.c:3254
+#: src/file-manager/fm-directory-view.c:3258
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the trash?"
@@ -3862,7 +3342,7 @@ msgstr ""
 "Denne lænke kan ikke bruges fordi den ikke har noget mål. Ønsker du at "
 "flytte denne lænke til papirkurven?"
 
-#: src/file-manager/fm-directory-view.c:3257
+#: src/file-manager/fm-directory-view.c:3261
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -3871,15 +3351,15 @@ msgstr ""
 "Denne lænke kan ikke bruges fordi målet, \"%s\", ikke eksisterer. Vil du "
 "lægge denne lænke i papirkurven?"
 
-#: src/file-manager/fm-directory-view.c:3263
+#: src/file-manager/fm-directory-view.c:3267
 msgid "Broken Link"
 msgstr "Ødelagt lænke"
 
-#: src/file-manager/fm-directory-view.c:3264
+#: src/file-manager/fm-directory-view.c:3268
 msgid "Throw Away"
 msgstr "Kast væk"
 
-#: src/file-manager/fm-directory-view.c:3326
+#: src/file-manager/fm-directory-view.c:3330
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
@@ -3887,7 +3367,7 @@ msgstr ""
 "Desværre, men du kan ikke udføre kommandoer fra et ekstern websted pga. "
 "sikkerhedshensyn."
 
-#: src/file-manager/fm-directory-view.c:3327
+#: src/file-manager/fm-directory-view.c:3331
 msgid "Can't execute remote links"
 msgstr "Kunne ikke udføre eksterne lænker"
 
@@ -3903,7 +3383,8 @@ msgstr ""
 msgid ""
 "There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
 msgstr ""
-"Der er ingen '%s' i denne mappe. Måske er den lige blevet flyttet eller slettet?"
+"Der er ingen '%s' i denne mappe. Måske er den lige blevet flyttet eller "
+"slettet?"
 
 #: src/file-manager/fm-error-reporting.c:65
 #, c-format
@@ -3916,15 +3397,13 @@ msgid ""
 "The name \"%s\" is not valid because it contains the character \"/\". Please "
 "use a different name."
 msgstr ""
-"Navnet \"%s\" er ikke gyldigt fordi det indeholder tegnet '/'. "
-"Benyt venligst et andet navn."
+"Navnet \"%s\" er ikke gyldigt fordi det indeholder tegnet '/'. Benyt "
+"venligst et andet navn."
 
 #: src/file-manager/fm-error-reporting.c:74
 #, c-format
 msgid "The name \"%s\" is not valid. Please use a different name."
-msgstr ""
-"Navnet \"%s\" er ikke gyldigt. "
-"Benyt venligst et andet navn."
+msgstr "Navnet \"%s\" er ikke gyldigt. Benyt venligst et andet navn."
 
 #. fall through
 #: src/file-manager/fm-error-reporting.c:83
@@ -3978,55 +3457,55 @@ msgstr "Omdøber '%s' til '%s'"
 msgid "Cancel Rename?"
 msgstr "Fortryd omdøbning?"
 
-#: src/file-manager/fm-icon-text-window.c:76
+#: src/file-manager/fm-icon-text-window.c:77
 msgid "size"
 msgstr "størrelse"
 
-#: src/file-manager/fm-icon-text-window.c:77
+#: src/file-manager/fm-icon-text-window.c:78
 msgid "type"
 msgstr "type"
 
-#: src/file-manager/fm-icon-text-window.c:78
+#: src/file-manager/fm-icon-text-window.c:79
 msgid "date modified"
 msgstr "dato for skrivning"
 
-#: src/file-manager/fm-icon-text-window.c:79
+#: src/file-manager/fm-icon-text-window.c:80
 msgid "date changed"
 msgstr "dato for ændring"
 
-#: src/file-manager/fm-icon-text-window.c:80
+#: src/file-manager/fm-icon-text-window.c:81
 msgid "date accessed"
 msgstr "dato for adgang"
 
-#: src/file-manager/fm-icon-text-window.c:81
+#: src/file-manager/fm-icon-text-window.c:82
 msgid "owner"
 msgstr "ejer"
 
-#: src/file-manager/fm-icon-text-window.c:82
+#: src/file-manager/fm-icon-text-window.c:83
 msgid "group"
 msgstr "gruppe"
 
-#: src/file-manager/fm-icon-text-window.c:83
+#: src/file-manager/fm-icon-text-window.c:84
 msgid "permissions"
 msgstr "rettigheder"
 
-#: src/file-manager/fm-icon-text-window.c:84
+#: src/file-manager/fm-icon-text-window.c:85
 msgid "octal permissions"
 msgstr "oktale rettigheder"
 
-#: src/file-manager/fm-icon-text-window.c:85
+#: src/file-manager/fm-icon-text-window.c:86
 msgid "MIME type"
 msgstr "MIME-type"
 
-#: src/file-manager/fm-icon-text-window.c:86
+#: src/file-manager/fm-icon-text-window.c:87
 msgid "none"
 msgstr "ingen"
 
-#: src/file-manager/fm-icon-text-window.c:261
+#: src/file-manager/fm-icon-text-window.c:263
 msgid "Icon Captions"
 msgstr "Ikon indfangning"
 
-#: src/file-manager/fm-icon-text-window.c:268
+#: src/file-manager/fm-icon-text-window.c:270
 msgid ""
 "Choose the order for information to appear beneath icon names. More "
 "information appears as you zoom in closer."
@@ -4034,47 +3513,47 @@ msgstr ""
 "Vælg rækkefølgen for information der skal vises under ikonnavnene. Mere "
 "information kommer frem når du zoomer nærmere ind."
 
-#: po/tmp/nautilus-icon-view-ui.xml.h:38 src/file-manager/fm-icon-view.c:155
+#: src/file-manager/fm-icon-view.c:155
 msgid "by _Name"
 msgstr "efter _navn"
 
-#: po/tmp/nautilus-icon-view-ui.xml.h:7 src/file-manager/fm-icon-view.c:156
+#: src/file-manager/fm-icon-view.c:156
 msgid "Keep icons sorted by name in rows"
 msgstr "Hold ikoner sorteret efter navn i rækker"
 
-#: po/tmp/nautilus-icon-view-ui.xml.h:39 src/file-manager/fm-icon-view.c:162
+#: src/file-manager/fm-icon-view.c:162
 msgid "by _Size"
 msgstr "efter _størrelse"
 
-#: po/tmp/nautilus-icon-view-ui.xml.h:8 src/file-manager/fm-icon-view.c:163
+#: src/file-manager/fm-icon-view.c:163
 msgid "Keep icons sorted by size in rows"
 msgstr "Hold ikoner sorteret efter størrelse i rækker"
 
-#: po/tmp/nautilus-icon-view-ui.xml.h:40 src/file-manager/fm-icon-view.c:169
+#: src/file-manager/fm-icon-view.c:169
 msgid "by _Type"
 msgstr "efter _type"
 
-#: po/tmp/nautilus-icon-view-ui.xml.h:9 src/file-manager/fm-icon-view.c:170
+#: src/file-manager/fm-icon-view.c:170
 msgid "Keep icons sorted by type in rows"
 msgstr "Hold ikoner sorteret efter type i rækker"
 
-#: po/tmp/nautilus-icon-view-ui.xml.h:33 src/file-manager/fm-icon-view.c:176
+#: src/file-manager/fm-icon-view.c:176
 msgid "by Modification _Date"
 msgstr "efter modifikations_dato"
 
-#: po/tmp/nautilus-icon-view-ui.xml.h:6 src/file-manager/fm-icon-view.c:177
+#: src/file-manager/fm-icon-view.c:177
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Hold ikoner sorteret efter ændringsdato i rækker"
 
-#: po/tmp/nautilus-icon-view-ui.xml.h:37 src/file-manager/fm-icon-view.c:183
+#: src/file-manager/fm-icon-view.c:183
 msgid "by _Emblems"
 msgstr "efter _emblemer"
 
-#: po/tmp/nautilus-icon-view-ui.xml.h:5 src/file-manager/fm-icon-view.c:184
+#: src/file-manager/fm-icon-view.c:184
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Hold ikoner sorteret efter emblemer i rækker"
 
-#: po/tmp/nautilus-icon-view-ui.xml.h:27 src/file-manager/fm-icon-view.c:1201
+#: src/file-manager/fm-icon-view.c:1201
 msgid "_Restore Icons' Original Sizes"
 msgstr "_Genopret ikonets oprindelige størrelser"
 
@@ -4104,46 +3583,46 @@ msgstr "Type"
 msgid "Date Modified"
 msgstr "Dato for ændring"
 
-#: src/file-manager/fm-properties-window.c:499
+#: src/file-manager/fm-properties-window.c:501
 #, c-format
 msgid "%s Properties"
 msgstr "Egenskaber for %s"
 
-#: src/file-manager/fm-properties-window.c:626
+#: src/file-manager/fm-properties-window.c:628
 msgid "Cancel Group Change?"
 msgstr "Fortryd ændring af gruppe?"
 
-#: src/file-manager/fm-properties-window.c:627
+#: src/file-manager/fm-properties-window.c:629
 msgid "Changing group"
 msgstr "Ændrer gruppe"
 
-#: src/file-manager/fm-properties-window.c:786
+#: src/file-manager/fm-properties-window.c:788
 msgid "Cancel Owner Change?"
 msgstr "Fortryd ændring af ejer?"
 
-#: src/file-manager/fm-properties-window.c:787
+#: src/file-manager/fm-properties-window.c:789
 msgid "Changing owner"
 msgstr "Ændrer ejer"
 
-#: src/file-manager/fm-properties-window.c:946
+#: src/file-manager/fm-properties-window.c:948
 msgid "nothing"
 msgstr "ingenting"
 
-#: src/file-manager/fm-properties-window.c:948
+#: src/file-manager/fm-properties-window.c:950
 msgid "unreadable"
 msgstr "ulæselig"
 
-#: src/file-manager/fm-properties-window.c:957
+#: src/file-manager/fm-properties-window.c:959
 #, c-format
 msgid "1 item, with size %s"
 msgstr "1 ting, med størrelse %s"
 
-#: src/file-manager/fm-properties-window.c:959
+#: src/file-manager/fm-properties-window.c:961
 #, c-format
 msgid "%d items, totalling %s"
 msgstr "%d ting, totalt %s"
 
-#: src/file-manager/fm-properties-window.c:965
+#: src/file-manager/fm-properties-window.c:967
 msgid "(some contents unreadable)"
 msgstr "(noget indhold ulæseligt)"
 
@@ -4152,107 +3631,111 @@ msgstr "(noget indhold ulæseligt)"
 #. * "Contents:" title to line up with the first line of the 2-line value.
 #. * Maybe there's a better way to do this, but I couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:979
+#: src/file-manager/fm-properties-window.c:981
 msgid "Contents:"
 msgstr "Indhold:"
 
-#: src/file-manager/fm-properties-window.c:1121
+#: src/file-manager/fm-properties-window.c:1123
 msgid "Basic"
 msgstr "Basal"
 
-#: src/file-manager/fm-properties-window.c:1198
+#: src/file-manager/fm-properties-window.c:1200
 msgid "Where:"
 msgstr "Hvor:"
 
-#: src/file-manager/fm-properties-window.c:1200
+#: src/file-manager/fm-properties-window.c:1202
 msgid "Type:"
 msgstr "Type:"
 
-#: src/file-manager/fm-properties-window.c:1206
+#: src/file-manager/fm-properties-window.c:1208
 msgid "Size:"
 msgstr "Størrelse:"
 
-#: src/file-manager/fm-properties-window.c:1213
+#: src/file-manager/fm-properties-window.c:1215
 msgid "Modified:"
 msgstr "Ændret:"
 
-#: src/file-manager/fm-properties-window.c:1215
+#: src/file-manager/fm-properties-window.c:1217
 msgid "Accessed:"
 msgstr "Berørt:"
 
-#: src/file-manager/fm-properties-window.c:1218
+#: src/file-manager/fm-properties-window.c:1220
 msgid "MIME type:"
 msgstr "MIME-type:"
 
-#: src/file-manager/fm-properties-window.c:1587
+#: src/file-manager/fm-properties-window.c:1357
+msgid "Emblems"
+msgstr "Emblemer"
+
+#: src/file-manager/fm-properties-window.c:1589
 msgid "Special Flags:"
 msgstr "Specielle kørselsflag:"
 
-#: src/file-manager/fm-properties-window.c:1591
+#: src/file-manager/fm-properties-window.c:1593
 msgid "Set User ID"
 msgstr "Sæt bruger-ID"
 
-#: src/file-manager/fm-properties-window.c:1595
+#: src/file-manager/fm-properties-window.c:1597
 msgid "Set Group ID"
 msgstr "Sæt gruppe-ID"
 
-#: src/file-manager/fm-properties-window.c:1599
+#: src/file-manager/fm-properties-window.c:1601
 msgid "Sticky"
 msgstr "Klæbrig"
 
-#: src/file-manager/fm-properties-window.c:1628
+#: src/file-manager/fm-properties-window.c:1630
 msgid "Permissions"
 msgstr "Rettigheder"
 
-#: src/file-manager/fm-properties-window.c:1634
+#: src/file-manager/fm-properties-window.c:1636
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Du er ikke ejeren, så du kan ikke ændre disse rettigheder."
 
-#: src/file-manager/fm-properties-window.c:1668
+#: src/file-manager/fm-properties-window.c:1670
 msgid "File Owner:"
 msgstr "Filens ejer:"
 
-#: src/file-manager/fm-properties-window.c:1683
+#: src/file-manager/fm-properties-window.c:1685
 msgid "File Group:"
 msgstr "Filens gruppe:"
 
-#: src/file-manager/fm-properties-window.c:1710
+#: src/file-manager/fm-properties-window.c:1712
 msgid "Owner:"
 msgstr "Ejer:"
 
-#: src/file-manager/fm-properties-window.c:1714
+#: src/file-manager/fm-properties-window.c:1716
 msgid "Group:"
 msgstr "Gruppe"
 
-#: src/file-manager/fm-properties-window.c:1718
+#: src/file-manager/fm-properties-window.c:1720
 msgid "Others:"
 msgstr "Andre:"
 
-#: src/file-manager/fm-properties-window.c:1725
+#: src/file-manager/fm-properties-window.c:1727
 msgid "Text View:"
 msgstr "Tekst syn:"
 
-#: src/file-manager/fm-properties-window.c:1729
+#: src/file-manager/fm-properties-window.c:1731
 msgid "Number View:"
 msgstr "Tal syn:"
 
-#: src/file-manager/fm-properties-window.c:1733
+#: src/file-manager/fm-properties-window.c:1735
 msgid "Last Changed:"
 msgstr "Senest ændret:"
 
-#: src/file-manager/fm-properties-window.c:1737
+#: src/file-manager/fm-properties-window.c:1739
 msgid "Read"
 msgstr "Læs"
 
-#: src/file-manager/fm-properties-window.c:1741
+#: src/file-manager/fm-properties-window.c:1743
 msgid "Write"
 msgstr "Skriv"
 
-#: src/file-manager/fm-properties-window.c:1745
+#: src/file-manager/fm-properties-window.c:1747
 msgid "Execute"
 msgstr "Udfør"
 
-#: src/file-manager/fm-properties-window.c:1802
+#: src/file-manager/fm-properties-window.c:1804
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Rettighederne for '%s' kunne ikke bestemmes."
@@ -4287,8 +3770,8 @@ msgid ""
 "your results."
 msgstr ""
 "Alle indekserede filer på din maskine passer på det kriterium, du har valgt. "
-"Du kan tjekke stavemåden for dine valg, eller tilføje flere kriterier "
-"for at indsnævre resultaterne."
+"Du kan tjekke stavemåden for dine valg, eller tilføje flere kriterier for at "
+"indsnævre resultaterne."
 
 #: src/file-manager/fm-search-list-view.c:160
 #, c-format
@@ -4304,7 +3787,6 @@ msgstr "Hvor"
 #. * and scroll as necessary to make that item visible (this comment
 #. * is to inform translators of this tricky concept).
 #.
-#: po/tmp/nautilus-search-list-view-ui.xml.h:6
 #: src/file-manager/fm-search-list-view.c:388
 msgid "_Reveal in New Window"
 msgstr "_Åbn i et nyt vindue"
@@ -4319,319 +3801,6 @@ msgstr "_Åbn i et nyt vindue"
 #, c-format
 msgid "Reveal in %d _New Windows"
 msgstr "Åbn i %d _nye vinduer"
-
-#: po/tmp/nautilus-desktop-icon-view-ui.xml.h:1
-msgid "Change Desktop Background"
-msgstr "Ændr skrivebordsbaggrund"
-
-#: po/tmp/nautilus-desktop-icon-view-ui.xml.h:2
-#: po/tmp/nautilus-directory-view-ui.xml.h:8
-msgid "Delete all items in the trash"
-msgstr "Slet alle ting i papirkurven"
-
-#: po/tmp/nautilus-desktop-icon-view-ui.xml.h:3
-msgid "Disks"
-msgstr "Diske"
-
-#: po/tmp/nautilus-desktop-icon-view-ui.xml.h:5
-msgid "Mount or unmount disks"
-msgstr "Montér eller afmontér diske"
-
-#: po/tmp/nautilus-desktop-icon-view-ui.xml.h:6
-msgid "New Terminal"
-msgstr "Ny terminal"
-
-#: po/tmp/nautilus-desktop-icon-view-ui.xml.h:7
-msgid "Open a new GNOME terminal window"
-msgstr "Åbn et nyt Gnome terminalvindue"
-
-#: po/tmp/nautilus-desktop-icon-view-ui.xml.h:8
-msgid "Quit Nautilus Desktop"
-msgstr "Afslut Nautilus skrivebordet"
-
-#: po/tmp/nautilus-desktop-icon-view-ui.xml.h:9
-msgid "Remove any custom pattern or color from the desktop background"
-msgstr ""
-"Fjern ethvert egendefineret mønster eller farve fra skrivebordsbaggrunden"
-
-#: po/tmp/nautilus-desktop-icon-view-ui.xml.h:10
-msgid "Reset Desktop Background"
-msgstr "Nulstil skrivebordsbaggrund"
-
-#: po/tmp/nautilus-desktop-icon-view-ui.xml.h:11
-msgid ""
-"Show a window that lets you set your desktop background's pattern or color"
-msgstr ""
-"Vis et vindue som lader dig sætte mønstret eller farven på din "
-"skrivebordsbaggrund"
-
-#: po/tmp/nautilus-desktop-icon-view-ui.xml.h:12
-msgid "Stop letting Nautilus draw the desktop"
-msgstr "Stop Nautilus med at tegne skrivebordet."
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:1
-msgid "Choose a program with which to open the selected item"
-msgstr "Vælg et program som du vil bruge til at åbne den valgte ting"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:2
-msgid "Choose another application with which to open the selected item"
-msgstr "Vælg en anden anvendelse som du vil bruge til at åbne den valgte ting"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:3
-msgid "Choose another viewer with which to view the selected item"
-msgstr "Vælg en anden fremviser som du vil bruge til at vise den valgte ting"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:4
-msgid "Create Link"
-msgstr "Opret lænke"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:6
-msgid "Create a new empty folder inside this folder"
-msgstr "Opret en ny tom mappe i denne mappe"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:7
-msgid "Create a symbolic link for each selected item"
-msgstr "Opret en symbolsk lænke for hver valgt opføring"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:9
-msgid "Duplicate"
-msgstr "Duplikér"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:10
-msgid "Duplicate each selected item"
-msgstr "Duplikér alle valgte opføringer"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:12
-msgid "Move each selected item to the trash"
-msgstr "Flyt hver valgt opføring til papirkurven"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:13
-msgid "Move to Trash"
-msgstr "Flyt til papirkurv"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:15
-msgid "New Folder"
-msgstr "Nyt katalog"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:16
-msgid "New _Folder"
-msgstr "Nyt _katalog"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:17
-msgid "Open"
-msgstr "Åbn"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:18
-msgid "Open With"
-msgstr "Åbn med"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:19
-msgid "Open each selected item in a new window"
-msgstr "Åbn hver valgt ting i et nyt vindue"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:20
-msgid "Open in New Window"
-msgstr "Åbn i nyt vindue"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:21
-msgid "Open the selected item in this window"
-msgstr "Åben den valgte ting i dette vindue"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:22
-msgid "Other Application..."
-msgstr "Andre applikationer..."
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:23
-msgid "Other Viewer..."
-msgstr "Anden fremviser"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:24
-msgid "Other _Application..."
-msgstr "Andre _applikationer..."
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:25
-msgid "Other _Viewer..."
-msgstr "Andet _visningsprogram..."
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:27
-msgid "Remove Custom Images"
-msgstr "Fjern personlige billeder"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:28
-msgid "Remove any custom images from selected icons"
-msgstr "Fjern egendefinerede billeder fra valgte ikoner"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:29
-msgid "Remove any custom pattern or color from the background of this location"
-msgstr ""
-"Fjern alle tilpassede mønstre eller farver fra baggrunden på dette sted"
-
-#. add the reset background item, possibly disabled
-#: po/tmp/nautilus-directory-view-ui.xml.h:30 src/nautilus-sidebar.c:446
-msgid "Reset Background"
-msgstr "Nulstil baggrund"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:31
-msgid "Select All Files"
-msgstr "Vælg alle filer"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:32
-msgid "Select all items in this window"
-msgstr "Vælg alle ting i dette vindue"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:33
-msgid "Show Properties"
-msgstr "Vis egenskaber"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:34
-msgid "Show Trash"
-msgstr "Vis papirkurv"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:35
-msgid "Show _Properties"
-msgstr "Vis _egenskaber"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:36
-msgid "Show the contents of the trash"
-msgstr "Vis indholdet i normal størrelse"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:37
-msgid "View or modify the properties of each selected item"
-msgstr "Vis eller modificér egenskaberne for hver af de valgte opføringer"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:38
-msgid "_Duplicate"
-msgstr "_Duplikér"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:40
-msgid "_Open"
-msgstr "_Åbn"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:41
-msgid "_Open in New Window"
-msgstr "_Åbn i et nyt vindue"
-
-#: po/tmp/nautilus-directory-view-ui.xml.h:42
-msgid "_Select All Files"
-msgstr "_Vælg alle filer"
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:1
-msgid "Choose which information appears beneath each icon's name"
-msgstr "Vælg hvilken information der skal vises underhvert ikonnavn"
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:2
-msgid "Clean Up by Name"
-msgstr "Ryd op efter navn"
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:3
-msgid "Display icons in the opposite order"
-msgstr "Vis ikoner i omvendt rækkefølge"
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:4
-msgid "Icon Captions..."
-msgstr "Ikon-fangst..."
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:10
-msgid "Lay out items"
-msgstr "Placér opføringer"
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:11
-msgid "Leave icons wherever they are dropped"
-msgstr "Lad ikoner være hvor de placeres"
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:12
-msgid "Make the selected icon stretchable"
-msgstr "Gør den valgte ikon udstrækkelig"
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:13
-msgid "Re_versed Order"
-msgstr "Om_vendt rækkefølge"
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:15
-msgid "Rename selected icon"
-msgstr "Giv nyt navn til valgt ikon"
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:16
-msgid "Reposition icons to better fit in the window and avoid overlapping"
-msgstr ""
-"Repositionér ikonene sådan at de passer bedre til vinduerne og undgår "
-"overlapning"
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:17
-msgid "Restore Icons' Original Sizes"
-msgstr "Genopret ikonets oprindelige størrelser"
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:18
-msgid "Restore each selected icon to its original size"
-msgstr "Genskab hvert valgt ikon i dets oprindelige størrelse"
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:19
-msgid "Reversed Order"
-msgstr "Omvendt rækkefølge"
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:20
-msgid "Stretch Icon"
-msgstr "Stræk ikon"
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:21
-msgid "Tighter Layout"
-msgstr "Tættere placering"
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:22
-msgid "Toggle using a tighter layout scheme"
-msgstr "Slå brug af tættere placering fra/til"
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:23
-msgid "_Clean Up by Name"
-msgstr "R_yd op efter navn"
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:24
-msgid "_Icon Captions..."
-msgstr "_Ikon mærkat..."
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:25
-msgid "_Lay out items"
-msgstr "_Placér opføringer"
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:26
-msgid "_Rename"
-msgstr "Omdøb"
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:28
-msgid "_Stretch Icon"
-msgstr "_Stræk ikon"
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:29
-msgid "_Tighter Layout"
-msgstr "_Tættere placering"
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:30
-msgid "_manually"
-msgstr "_manuel"
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:31
-msgid "by Emblems"
-msgstr "efter emblemer"
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:32
-msgid "by Modification Date"
-msgstr "efter modifikationsdato"
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:34
-msgid "by Name"
-msgstr "efter navn"
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:35
-msgid "by Size"
-msgstr "efter størrelse"
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:36
-msgid "by Type"
-msgstr "efter type"
-
-#: po/tmp/nautilus-icon-view-ui.xml.h:41
-msgid "manually"
-msgstr "manuel"
 
 #: src/file-manager/nautilus-indexing-info.c:106
 msgid "Busy"
@@ -4686,33 +3855,13 @@ msgstr ""
 "søgninger bliver hurtige. Hvis du behøver at opdatere dit indeks nu, skal du "
 "klikke på \"Opdatér nu\"-knappen for det ønskede indeks.\n"
 
-#: po/tmp/nautilus-search-list-view-ui.xml.h:1
-msgid "Reveal each selected item in its original folder"
-msgstr "Vis hver valgt opføring i dens oprindelige mappe"
-
-#: po/tmp/nautilus-search-list-view-ui.xml.h:2
-msgid "Reveal in New Window"
-msgstr "Åbn i et nyt vindue"
-
-#: po/tmp/nautilus-search-list-view-ui.xml.h:3
-msgid "Show Indexing Status"
-msgstr "Vis indekseringsstatus"
-
-#: po/tmp/nautilus-search-list-view-ui.xml.h:4
-msgid "Show _Indexing Status"
-msgstr "Vis _indekseringsstatus"
-
-#: po/tmp/nautilus-search-list-view-ui.xml.h:5
-msgid "Show status of indexing used when searching"
-msgstr "Vis status for indeksering som bruges for søgning"
-
-#. set the window title
+#. set the window title and standard close key accelerator
 #: src/nautilus-about.c:139
 msgid "About Nautilus"
 msgstr "Om Nautilus"
 
 #. draw the authors title
-#: src/nautilus-about.c:355
+#: src/nautilus-about.c:356
 msgid "Authors"
 msgstr "Forfattere"
 
@@ -4807,7 +3956,7 @@ msgstr ""
 "Nautilus kan ikke bruges nu, pga en uventet fejl fra OAF ved forsøg på at at "
 "finde fabrikken."
 
-#: src/nautilus-application.c:547
+#: src/nautilus-application.c:543
 msgid ""
 "You are running Nautilus as root.\n"
 "\n"
@@ -4819,15 +3968,15 @@ msgstr ""
 "Du kan, som root, ødelægge dit system hvis du ikke er forsigtig, og\n"
 "Nautilus vil ikke hindre dig i at gøre dette."
 
-#: src/nautilus-bookmarks-window.c:125
+#: src/nautilus-bookmarks-window.c:130
 msgid "Bookmarks"
 msgstr "Bogmærker"
 
-#: src/nautilus-bookmarks-window.c:174
+#: src/nautilus-bookmarks-window.c:179
 msgid "Location"
 msgstr "Placering"
 
-#: src/nautilus-bookmarks-window.c:187 src/nautilus-window-menus.c:789
+#: src/nautilus-bookmarks-window.c:192 src/nautilus-window-menus.c:789
 msgid "Remove"
 msgstr "Fjern"
 
@@ -5099,147 +4248,131 @@ msgid "Restart Nautilus."
 msgstr "Start Nautilus igen."
 
 #: src/nautilus-main.c:144
-msgid "Don't draw background and icons on desktop."
-msgstr "Tegn ikke baggrund og ikoner på skrivebordet."
+msgid "Only create Nautilus windows for explicity specified URIs."
+msgstr "Opret kun Nautilus-vinduer for udtrykkeligt anførte URI-er."
 
-#: src/nautilus-main.c:145
-msgid "Draw background and icons on desktop."
-msgstr "Tegn baggrund og ikoner på skrivebord."
-
-#: src/nautilus-main.c:196
+#: src/nautilus-main.c:195
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus: --check kan ikke bruges med URIer.\n"
 
-#: src/nautilus-main.c:200
+#: src/nautilus-main.c:199
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check kan ikke bruges med andre valgmuligheder.\n"
 
-#: src/nautilus-main.c:204
+#: src/nautilus-main.c:203
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus: --quit kan ikke bruges med URIer.\n"
 
-#: src/nautilus-main.c:208
+#: src/nautilus-main.c:207
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus: --restart kan ikke bruges med URIer.\n"
 
-#: src/nautilus-main.c:212
-msgid "nautilus: --quit and --start-desktop cannot be used together.\n"
-msgstr "nautilus: --quit og --start-desktop kan ikke bruges sammen.\n"
-
-#: src/nautilus-main.c:216
-msgid "nautilus: --restart and --start-desktop cannot be used together.\n"
-msgstr "nautilus: --restart og --start-desktop kan ikke bruges sammen.\n"
-
-#: src/nautilus-main.c:220
-msgid "nautilus: --stop-desktop and --start-desktop cannot be used together.\n"
-msgstr "nautilus: --stop-desktop og --start-desktop kan ikke bruges sammen.\n"
-
-#. set the title
-#: src/nautilus-property-browser.c:252
+#. set the title and standard close accelerator
+#: src/nautilus-property-browser.c:254
 msgid "Customization Options"
 msgstr "Tilpas muligheder"
 
 #. add the title label
-#: src/nautilus-property-browser.c:321 src/nautilus-property-browser.c:2072
+#: src/nautilus-property-browser.c:324 src/nautilus-property-browser.c:2085
 msgid "Select A Category:"
 msgstr "Vælg en kategori:"
 
-#: src/nautilus-property-browser.c:368
+#: src/nautilus-property-browser.c:371
 msgid "Add new..."
 msgstr "Tilføj ny..."
 
-#: src/nautilus-property-browser.c:382
+#: src/nautilus-property-browser.c:385
 msgid "Remove..."
 msgstr "Fjern..."
 
-#: src/nautilus-property-browser.c:875
+#: src/nautilus-property-browser.c:888
 #, c-format
 msgid "Sorry, but background %s couldn't be deleted."
 msgstr "Beklager, men bagrund %s kunne ikke slettes."
 
-#: src/nautilus-property-browser.c:876 src/nautilus-property-browser.c:905
+#: src/nautilus-property-browser.c:889 src/nautilus-property-browser.c:918
 msgid "Couldn't delete background"
 msgstr "Kunne ikke slette baggrund"
 
-#: src/nautilus-property-browser.c:904
+#: src/nautilus-property-browser.c:917
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
 msgstr "Desværre, men emblem %s kunne ikke slettes."
 
-#: src/nautilus-property-browser.c:978 src/nautilus-property-browser.c:1115
+#: src/nautilus-property-browser.c:991 src/nautilus-property-browser.c:1128
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Beklager, men '%s' er ikke en brugbar billedfil!"
 
-#: src/nautilus-property-browser.c:1005
+#: src/nautilus-property-browser.c:1018
 msgid "Create a New Emblem:"
 msgstr "Opret et nyt emblem:"
 
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:1010
+#: src/nautilus-property-browser.c:1023
 msgid "Keyword:"
 msgstr "Nøgleord:"
 
 #. set up a gnome file entry to pick the image file
-#: src/nautilus-property-browser.c:1027
+#: src/nautilus-property-browser.c:1040
 msgid "Select an image file for the new emblem:"
 msgstr "Vælg en billedfil for det nye emblem:"
 
-#: src/nautilus-property-browser.c:1054
+#: src/nautilus-property-browser.c:1067
 msgid "Create a New Color:"
 msgstr "Opret en ny farve:"
 
 #. make the name label and field
-#: src/nautilus-property-browser.c:1059
+#: src/nautilus-property-browser.c:1072
 msgid "Color name:"
 msgstr "Farvenavn:"
 
-#: src/nautilus-property-browser.c:1070
+#: src/nautilus-property-browser.c:1083
 msgid "Color value:"
 msgstr "Farveværdi:"
 
-#: src/nautilus-property-browser.c:1144
+#: src/nautilus-property-browser.c:1157
 #, c-format
 msgid "Sorry, but the background %s couldn't be installed."
 msgstr "Desværre, men baggrunden %s kunne ikke installeres."
 
-#: src/nautilus-property-browser.c:1145
+#: src/nautilus-property-browser.c:1158
 msgid "Couldn't install background"
 msgstr "Kunne ikke installere baggrund"
 
-#: src/nautilus-property-browser.c:1170
+#: src/nautilus-property-browser.c:1183
 msgid "Select an image file to add as a background:"
 msgstr "Vælg en billedfil som skal tilføjes som baggrund:"
 
-#: src/nautilus-property-browser.c:1240
+#: src/nautilus-property-browser.c:1253
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Desværre, men du skal angive et ikke-tomt for den nye farve."
 
-#: src/nautilus-property-browser.c:1241
+#: src/nautilus-property-browser.c:1254
 msgid "Couldn't install color"
 msgstr "Kunne ikke installere farve"
 
-#: src/nautilus-property-browser.c:1298
+#: src/nautilus-property-browser.c:1311
 msgid "Select a color to add:"
 msgstr "Vælg en farve der skal tilføjes:"
 
-#: src/nautilus-property-browser.c:1377
+#: src/nautilus-property-browser.c:1390
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
 msgstr "Desværre, men du skal angive et ikke-tomt nøgleord for det nye emblem."
 
-#: src/nautilus-property-browser.c:1378 src/nautilus-property-browser.c:1381
-#: src/nautilus-property-browser.c:1385 src/nautilus-property-browser.c:1414
+#: src/nautilus-property-browser.c:1391 src/nautilus-property-browser.c:1394
+#: src/nautilus-property-browser.c:1398 src/nautilus-property-browser.c:1427
 msgid "Couldn't install emblem"
 msgstr "Kunne ikke installere emblem"
 
-#: src/nautilus-property-browser.c:1380
+#: src/nautilus-property-browser.c:1393
 msgid ""
 "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
 "Desværre, men emblem-nøgleord kan kun indeholde bogstaver, mellemrum og "
 "cifre."
 
-#: src/nautilus-property-browser.c:1383
+#: src/nautilus-property-browser.c:1396
 #, c-format
 msgid ""
 "Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
@@ -5248,48 +4381,60 @@ msgstr ""
 "Desværre, navnet \"%s\" er et eksisterende nøgleord. Benyt venligst et andet "
 "navn."
 
-#: src/nautilus-property-browser.c:1413
+#: src/nautilus-property-browser.c:1426
 #, c-format
 msgid "Sorry, but the image at %s couldn't be installed as an emblem."
 msgstr "Desværre, men billedet på %s kunne ikke installeres som et emblem."
 
-#: src/nautilus-property-browser.c:2080 src/nautilus-theme-selector.c:478
+#: src/nautilus-property-browser.c:2093 src/nautilus-theme-selector.c:479
 msgid "Cancel Remove"
 msgstr "Fortryd Fjern"
 
-#: src/nautilus-property-browser.c:2084
+#: src/nautilus-property-browser.c:2097
 msgid "Add a new background"
 msgstr "Tilføj en ny baggrund"
 
-#: src/nautilus-property-browser.c:2087
+#: src/nautilus-property-browser.c:2100
 msgid "Add a new color"
 msgstr "Tilføj en ny farve"
 
-#: src/nautilus-property-browser.c:2090
+#: src/nautilus-property-browser.c:2103
 msgid "Add a new emblem"
 msgstr "Tilføj nyt emblem"
 
-#: src/nautilus-property-browser.c:2120
+#: src/nautilus-property-browser.c:2126
 msgid "Click on a background to remove it"
 msgstr "Klik på en baggrund for at fjerne den"
 
-#: src/nautilus-property-browser.c:2123
+#: src/nautilus-property-browser.c:2129
 msgid "Click on a color to remove it"
 msgstr "Klik på en farve for at fjerne den"
 
-#: src/nautilus-property-browser.c:2126
+#: src/nautilus-property-browser.c:2132
 msgid "Click on an emblem to remove it"
 msgstr "Klik på et emblem for at fjerne det."
 
-#: src/nautilus-property-browser.c:2154
+#: src/nautilus-property-browser.c:2141
+msgid "Backgrounds:"
+msgstr "Baggrunde:"
+
+#: src/nautilus-property-browser.c:2144
+msgid "Colors:"
+msgstr "Farver:"
+
+#: src/nautilus-property-browser.c:2147
+msgid "Emblems:"
+msgstr "Emblemer:"
+
+#: src/nautilus-property-browser.c:2165
 msgid "Remove a background"
 msgstr "Fjern en baggrund"
 
-#: src/nautilus-property-browser.c:2157
+#: src/nautilus-property-browser.c:2168
 msgid "Remove a color"
 msgstr "Fjern en farve"
 
-#: src/nautilus-property-browser.c:2160
+#: src/nautilus-property-browser.c:2171
 msgid "Remove an emblem"
 msgstr "Fjern et emblem"
 
@@ -5369,6 +4514,10 @@ msgstr "tekstfil"
 msgid "application"
 msgstr "applikation"
 
+#: src/nautilus-search-bar-criterion.c:106
+msgid "folder"
+msgstr "mappe"
+
 #: src/nautilus-search-bar-criterion.c:112
 msgid "larger than"
 msgstr "større end"
@@ -5409,409 +4558,6 @@ msgstr "er inden en uge"
 msgid "is within a month of"
 msgstr "er inden en måned"
 
-#: po/tmp/nautilus-service-ui.xml.h:1
-msgid "Display support information for Eazel Services"
-msgstr "Registrér dig for Eazel's tjenester"
-
-#: po/tmp/nautilus-service-ui.xml.h:2
-msgid "Go to the Eazel Services Summary Page"
-msgstr "Gå til Eazel tjenesters sammendrag-side"
-
-#: po/tmp/nautilus-service-ui.xml.h:3
-msgid "Go to the Eazel Software Catalog"
-msgstr "Gå til Eazel's programmelkatalog"
-
-#: po/tmp/nautilus-service-ui.xml.h:4
-msgid "Go to your online storage repository"
-msgstr "Gå til dit lagringsområde på nettet"
-
-#: po/tmp/nautilus-service-ui.xml.h:5
-msgid "Services"
-msgstr "Tjenester"
-
-#: po/tmp/nautilus-service-ui.xml.h:6
-msgid "Software _Catalog"
-msgstr "Programvarekatalog"
-
-#: po/tmp/nautilus-service-ui.xml.h:7
-msgid "_Eazel Services Home"
-msgstr "_Eazel tjenesters indeks"
-
-#: po/tmp/nautilus-service-ui.xml.h:8
-msgid "_Online Storage"
-msgstr "_Netlagring"
-
-#: po/tmp/nautilus-service-ui.xml.h:9
-msgid "_Services"
-msgstr "Tjene_ster"
-
-#: po/tmp/nautilus-service-ui.xml.h:10
-msgid "_Support"
-msgstr "_Brugerhjælp"
-
-#: po/tmp/nautilus-shell-ui.xml.h:1
-msgid " Advanced"
-msgstr " Avanceret"
-
-#: po/tmp/nautilus-shell-ui.xml.h:2
-msgid " Beginner"
-msgstr " Begynder"
-
-#: po/tmp/nautilus-shell-ui.xml.h:3
-msgid " Intermediate"
-msgstr " Mellem"
-
-#: po/tmp/nautilus-shell-ui.xml.h:4
-msgid "Add a bookmark for the current location to this menu"
-msgstr "Tilføj et bogmærke for det nuværende sted til denne menu"
-
-#: po/tmp/nautilus-shell-ui.xml.h:5
-msgid "C_hange Appearance..."
-msgstr "Æn_dr udseende..."
-
-#: po/tmp/nautilus-shell-ui.xml.h:7
-msgid "Change the visibility of this window's location bar"
-msgstr "Ændr synligheden for dette vindues adresselinje"
-
-#: po/tmp/nautilus-shell-ui.xml.h:8
-msgid "Change the visibility of this window's sidebar"
-msgstr "Ændr synligheden for dette vindues sidelinje"
-
-#: po/tmp/nautilus-shell-ui.xml.h:9
-msgid "Change the visibility of this window's status bar"
-msgstr "Ændr synligheden for dette vindues statuslinje"
-
-#: po/tmp/nautilus-shell-ui.xml.h:10
-msgid "Change the visibility of this window's tool bar"
-msgstr "Ændr synligheden for dette vindues værktøjslinje"
-
-#: po/tmp/nautilus-shell-ui.xml.h:11
-msgid "Clear contents of Go menu and Back/Forward lists"
-msgstr "Tøm indhold af Go-menuen og frem/tilbage- listerne"
-
-#: po/tmp/nautilus-shell-ui.xml.h:12
-msgid "Close _All Windows"
-msgstr "Luk _Alle vinduer"
-
-#: po/tmp/nautilus-shell-ui.xml.h:13
-msgid "Close all Nautilus windows"
-msgstr "Luk alle Nautilus vinduer"
-
-#: po/tmp/nautilus-shell-ui.xml.h:14
-msgid "Close this window"
-msgstr "Luk dette vindue"
-
-#: po/tmp/nautilus-shell-ui.xml.h:16
-msgid "Custo_mization..."
-msgstr "_Tilpasning..."
-
-#: po/tmp/nautilus-shell-ui.xml.h:17
-msgid "Cut _Text"
-msgstr "Klip _tekst ud"
-
-#: po/tmp/nautilus-shell-ui.xml.h:19
-msgid "Display a window that allows editing the bookmarks in this menu"
-msgstr "Vis et vindue der tillader redigering af bogmærker i denne menu"
-
-#: po/tmp/nautilus-shell-ui.xml.h:20
-msgid "Display credits for the creators of Nautilus"
-msgstr "Vis information om dem som lavede Nautilus"
-
-#: po/tmp/nautilus-shell-ui.xml.h:21
-msgid "Display on-line help for Nautilus"
-msgstr "Vis hjælp for Nautilus"
-
-#: po/tmp/nautilus-shell-ui.xml.h:22
-msgid "Display the Property Browser, containing patterns, colors, and emblems"
-msgstr "Visning af egenskaber, indeholder mønstre, farver og emblemer"
-
-#: po/tmp/nautilus-shell-ui.xml.h:23
-msgid "Display the latest contents of the current location"
-msgstr "Vis det nyeste indhold i aktiv lokation"
-
-#: po/tmp/nautilus-shell-ui.xml.h:24
-msgid "Display the license for Nautilus"
-msgstr "Vis licensen for Nautilus"
-
-#: po/tmp/nautilus-shell-ui.xml.h:25
-msgid "Display the set of available appearance themes"
-msgstr "Vis tilgængelige temaer for udseende"
-
-#: po/tmp/nautilus-shell-ui.xml.h:26
-msgid "Edit Settings..."
-msgstr "Ændr indstillinger..."
-
-#: po/tmp/nautilus-shell-ui.xml.h:27
-msgid "Edit settings for the current user level"
-msgstr "Redigér indstillinger for aktivt brugerniveau"
-
-#: po/tmp/nautilus-shell-ui.xml.h:28
-msgid "Find"
-msgstr "Find"
-
-#: po/tmp/nautilus-shell-ui.xml.h:29
-msgid "For_get History"
-msgstr "_Glem historik"
-
-#: po/tmp/nautilus-shell-ui.xml.h:30
-msgid "Go to Eazel Services"
-msgstr "Gå til Eazel tjenester"
-
-#: po/tmp/nautilus-shell-ui.xml.h:31
-msgid "Go to the home location"
-msgstr "Gå til hjemstedet"
-
-#: po/tmp/nautilus-shell-ui.xml.h:32
-msgid "Go to the location that contains this one"
-msgstr "Gå til stedet der indeholder denne"
-
-#: po/tmp/nautilus-shell-ui.xml.h:33
-msgid "Go to the next visited location"
-msgstr "Gå til næste besøgte lokation"
-
-#: po/tmp/nautilus-shell-ui.xml.h:34
-msgid "Go to the previous visited location"
-msgstr "Gå til forrige besøgte placering"
-
-#: po/tmp/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:444
-msgid "Hide Location Bar"
-msgstr "Skjul adresselinje"
-
-#: po/tmp/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:432
-msgid "Hide Sidebar"
-msgstr "Skjul sidelinje"
-
-#: po/tmp/nautilus-shell-ui.xml.h:37 src/nautilus-window-menus.c:426
-msgid "Hide Status Bar"
-msgstr "Skjul statuslinje"
-
-#: po/tmp/nautilus-shell-ui.xml.h:38 src/nautilus-window-menus.c:438
-msgid "Hide Tool Bar"
-msgstr "Skjul værktøjslinje"
-
-#: po/tmp/nautilus-shell-ui.xml.h:39
-msgid "Home"
-msgstr "Hjem"
-
-#: po/tmp/nautilus-shell-ui.xml.h:40
-msgid "Nautilus _Feedback..."
-msgstr "Nautilus til_bagemeldinger..."
-
-#: po/tmp/nautilus-shell-ui.xml.h:41
-msgid "New Window"
-msgstr "Nyt vindue"
-
-#: po/tmp/nautilus-shell-ui.xml.h:42
-msgid "Normal Size"
-msgstr "Normal størrelse"
-
-#: po/tmp/nautilus-shell-ui.xml.h:43
-msgid "Open another Nautilus window for the displayed location"
-msgstr "Åbn et nyt Nautilus-vindue for vist lokation"
-
-#: po/tmp/nautilus-shell-ui.xml.h:45
-msgid "Refresh"
-msgstr "Opdatér"
-
-#: po/tmp/nautilus-shell-ui.xml.h:46
-msgid "Removes the selected text without putting it on the clipboard"
-msgstr "Fjerner den valgte tekst uden at putte den på klippebordet"
-
-#: po/tmp/nautilus-shell-ui.xml.h:47
-msgid "Report Profiling"
-msgstr "Rapportér profilering"
-
-#: po/tmp/nautilus-shell-ui.xml.h:48
-msgid "Reset Profiling"
-msgstr "Nulstil profilering"
-
-#: po/tmp/nautilus-shell-ui.xml.h:49
-msgid "Search the World Wide Web"
-msgstr "Søg på webbet"
-
-#: po/tmp/nautilus-shell-ui.xml.h:50
-msgid "Search this computer for files"
-msgstr "Søg efter filer på denne datamaskine"
-
-#: po/tmp/nautilus-shell-ui.xml.h:51
-msgid ""
-"Show a page from which you can send feedback about Nautilus to its creators"
-msgstr ""
-"Vis en side, fra hvilken du kan sende tilbagemeldinger om Nautilus til dens "
-"programmører"
-
-#: po/tmp/nautilus-shell-ui.xml.h:52
-msgid "Show the contents at the normal size"
-msgstr "Vis indholdet i normal størrelse"
-
-#: po/tmp/nautilus-shell-ui.xml.h:53
-msgid "Show the contents in less detail"
-msgstr "Vis indholdet med mindre grad af detaljer"
-
-#: po/tmp/nautilus-shell-ui.xml.h:54
-msgid "Show the contents in more detail"
-msgstr "Vis indhold med større grad af detaljer"
-
-#: po/tmp/nautilus-shell-ui.xml.h:55
-msgid "Start Profiling"
-msgstr "Start profilering"
-
-#: po/tmp/nautilus-shell-ui.xml.h:57
-msgid "Stop Profiling"
-msgstr "Stop profilering"
-
-#: po/tmp/nautilus-shell-ui.xml.h:58
-msgid "Stop loading this location"
-msgstr "Stop indlæsning af denne lokation"
-
-#: po/tmp/nautilus-shell-ui.xml.h:59
-msgid "Undo the last text change"
-msgstr "Fortryd sidste tekstændring"
-
-#: po/tmp/nautilus-shell-ui.xml.h:60
-msgid "Up"
-msgstr "Op"
-
-#: po/tmp/nautilus-shell-ui.xml.h:61
-msgid "Use Advanced settings"
-msgstr "Brug avancerede indstillinger"
-
-#: po/tmp/nautilus-shell-ui.xml.h:62
-msgid "Use Beginner settings"
-msgstr "Brug indstillinger for begynder"
-
-#: po/tmp/nautilus-shell-ui.xml.h:63
-msgid "Use Intermediate settings"
-msgstr "Brug indstillinger for viderekomne"
-
-#: po/tmp/nautilus-shell-ui.xml.h:64
-msgid "Web Search"
-msgstr "Websøgning"
-
-#: po/tmp/nautilus-shell-ui.xml.h:65
-msgid "Zoom In"
-msgstr "Zoom ind"
-
-#: po/tmp/nautilus-shell-ui.xml.h:66
-msgid "Zoom Out"
-msgstr "Zoom ud"
-
-#: po/tmp/nautilus-shell-ui.xml.h:67
-msgid "Zoom _In"
-msgstr "Zoom _Ind"
-
-#: po/tmp/nautilus-shell-ui.xml.h:68
-msgid "Zoom _Out"
-msgstr "Zoom _Ud"
-
-#: po/tmp/nautilus-shell-ui.xml.h:69
-msgid "_About Nautilus..."
-msgstr "_Om Nautilus..."
-
-#: po/tmp/nautilus-shell-ui.xml.h:70
-msgid "_Add Bookmark"
-msgstr "_Tilføj bogmærke"
-
-#: po/tmp/nautilus-shell-ui.xml.h:71
-msgid "_Back"
-msgstr "_Tilbage"
-
-#: po/tmp/nautilus-shell-ui.xml.h:72
-msgid "_Bookmarks"
-msgstr "_Bogmærker"
-
-#: po/tmp/nautilus-shell-ui.xml.h:73
-msgid "_Close Window"
-msgstr "_Luk vindue"
-
-#: po/tmp/nautilus-shell-ui.xml.h:75
-msgid "_Edit"
-msgstr "_Redigér"
-
-#: po/tmp/nautilus-shell-ui.xml.h:76
-msgid "_Edit Bookmarks..."
-msgstr "_Ændr bogmærker..."
-
-#: po/tmp/nautilus-shell-ui.xml.h:78 src/nautilus-window-menus.c:1351
-msgid "_Find"
-msgstr "_Find"
-
-#: po/tmp/nautilus-shell-ui.xml.h:79
-msgid "_Forward"
-msgstr "_Fremad"
-
-#: po/tmp/nautilus-shell-ui.xml.h:80
-msgid "_Go"
-msgstr "_Gå"
-
-#: po/tmp/nautilus-shell-ui.xml.h:81
-msgid "_Help"
-msgstr "_Hjælp"
-
-#: po/tmp/nautilus-shell-ui.xml.h:82
-msgid "_Home"
-msgstr "_Hjem"
-
-#: po/tmp/nautilus-shell-ui.xml.h:83
-msgid "_Nautilus License"
-msgstr "_Nautilus licens"
-
-#: po/tmp/nautilus-shell-ui.xml.h:84
-msgid "_Nautilus User Manual"
-msgstr "_Nautilus brugerhåndbog"
-
-#: po/tmp/nautilus-shell-ui.xml.h:85
-msgid "_New Window"
-msgstr "_Nyt vindue"
-
-#: po/tmp/nautilus-shell-ui.xml.h:86
-msgid "_Normal Size"
-msgstr "_Normal størrelse"
-
-#: po/tmp/nautilus-shell-ui.xml.h:88
-msgid "_Profiler"
-msgstr "_Profilering"
-
-#: po/tmp/nautilus-shell-ui.xml.h:89
-msgid "_Refresh"
-msgstr "_Genopfrisk"
-
-#: po/tmp/nautilus-shell-ui.xml.h:90
-msgid "_Report Profiling"
-msgstr "_Rapportér profilering"
-
-#: po/tmp/nautilus-shell-ui.xml.h:91
-msgid "_Reset Profiling"
-msgstr "_Nulstil profilering"
-
-#: po/tmp/nautilus-shell-ui.xml.h:92
-msgid "_Select All"
-msgstr "_Vælg alt"
-
-#: po/tmp/nautilus-shell-ui.xml.h:93
-msgid "_Start Profiling"
-msgstr "_Start profilering"
-
-#: po/tmp/nautilus-shell-ui.xml.h:94
-msgid "_Stop Profiling"
-msgstr "_Stop profilering"
-
-#: po/tmp/nautilus-shell-ui.xml.h:95
-msgid "_Undo"
-msgstr "_Fortryd"
-
-#: po/tmp/nautilus-shell-ui.xml.h:96
-msgid "_Up a Level"
-msgstr "_Op et niveau"
-
-#: po/tmp/nautilus-shell-ui.xml.h:97
-msgid "_View"
-msgstr "_Vis"
-
-#: po/tmp/nautilus-shell-ui.xml.h:98
-msgid "_Web Search"
-msgstr "_Websøgning"
-
 #: src/nautilus-shell.c:167
 msgid "Caveat"
 msgstr "Advarsel"
@@ -5837,6 +4583,11 @@ msgstr ""
 "\n"
 "Besøg venligst http://www.eazel.com/feedback.html for at give kommentarer, "
 "samt forslag til forbedring af programmet."
+
+#. add the reset background item, possibly disabled
+#: src/nautilus-sidebar.c:446
+msgid "Reset Background"
+msgstr "Nulstil baggrund"
 
 #: src/nautilus-sidebar.c:619
 msgid ""
@@ -5893,51 +4644,51 @@ msgstr "Find dem!"
 msgid "Search For:"
 msgstr "Søg efter:"
 
-#. set the title
+#. set the title and standard close accelerator
 #: src/nautilus-theme-selector.c:157
 msgid "Nautilus Theme Selector"
 msgstr "Nautilus tema-vælger"
 
 #. add the title label
-#: src/nautilus-theme-selector.c:191
+#: src/nautilus-theme-selector.c:192
 msgid "Nautilus Theme:"
 msgstr "Nautilus tema:"
 
-#: src/nautilus-theme-selector.c:249
+#: src/nautilus-theme-selector.c:250
 msgid "Add new theme"
 msgstr "Tilføj nyt tema"
 
-#: src/nautilus-theme-selector.c:261
+#: src/nautilus-theme-selector.c:262
 msgid "Remove theme"
 msgstr "Fjern tema"
 
-#: src/nautilus-theme-selector.c:373
+#: src/nautilus-theme-selector.c:374
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid theme folder."
 msgstr "Desværre, men '%s' er ikke et gyldigt tema-katalog."
 
-#: src/nautilus-theme-selector.c:374
+#: src/nautilus-theme-selector.c:375
 msgid "Couldn't add theme"
 msgstr "Kunne ikke tilføje tema"
 
-#: src/nautilus-theme-selector.c:402
+#: src/nautilus-theme-selector.c:403
 #, c-format
 msgid "Sorry, but the \"%s\" theme couldn't be installed."
 msgstr "Desværre, men temaet '%s' kunne ikke installeres."
 
-#: src/nautilus-theme-selector.c:403
+#: src/nautilus-theme-selector.c:404
 msgid "Couldn't install theme"
 msgstr "Kunne ikke installere tema"
 
-#: src/nautilus-theme-selector.c:444
+#: src/nautilus-theme-selector.c:445
 msgid "Select a theme folder to add as a new theme:"
 msgstr "Vælg et tema-katalog der skal tilføjes som et nyt tema:"
 
-#: src/nautilus-theme-selector.c:476 src/nautilus-theme-selector.c:523
+#: src/nautilus-theme-selector.c:477 src/nautilus-theme-selector.c:524
 msgid "Click on a theme to remove it."
 msgstr "Klik på et tema for at fjerne det."
 
-#: src/nautilus-theme-selector.c:526
+#: src/nautilus-theme-selector.c:527
 msgid ""
 "Click on a theme to change the\n"
 "appearance of Nautilus."
@@ -5946,11 +4697,11 @@ msgstr ""
 "Nautilus udseende."
 
 #. change the add button label back to it's normal state
-#: src/nautilus-theme-selector.c:539
+#: src/nautilus-theme-selector.c:540
 msgid "Add New Theme"
 msgstr "Tilføj nyt tema"
 
-#: src/nautilus-theme-selector.c:567
+#: src/nautilus-theme-selector.c:568
 msgid ""
 "Sorry, but you can't remove the current theme. Please change to another "
 "theme before removing this one."
@@ -5958,22 +4709,26 @@ msgstr ""
 "Desværre, men du kan ikke fjerne det aktuelle tema. Ændr venligst til et "
 "andet tema før dette fjernes."
 
-#: src/nautilus-theme-selector.c:569
+#: src/nautilus-theme-selector.c:570
 msgid "Can't delete current theme"
 msgstr "Kan ikke slette aktuelle tema"
 
-#: src/nautilus-theme-selector.c:590
+#: src/nautilus-theme-selector.c:591
 msgid "Sorry, but that theme could not be removed!"
 msgstr "Desværre, men det tema kunne ikke fjernes!"
 
-#: src/nautilus-theme-selector.c:591
+#: src/nautilus-theme-selector.c:592
 msgid "Couldn't remove theme"
 msgstr "Kunne ikke fjerne tema"
 
-#: src/nautilus-theme-selector.c:680
+#: src/nautilus-theme-selector.c:681
 #, c-format
 msgid "No information available for the \"%s\" theme"
 msgstr "Ingen information tilstede for '%s' temaet"
+
+#: src/nautilus-window-manage-views.c:222 src/nautilus-window-menus.c:629
+msgid "Nautilus"
+msgstr "Nautilus"
 
 #: src/nautilus-window-manage-views.c:588
 #, c-format
@@ -6026,8 +4781,8 @@ msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
 "it is."
 msgstr ""
-"Kunne ikke vise \"%s\", fordi Nautilus ikke kan finde ud af hvilken "
-"filtype det er."
+"Kunne ikke vise \"%s\", fordi Nautilus ikke kan finde ud af hvilken filtype "
+"det er."
 
 #: src/nautilus-window-manage-views.c:1213
 #, c-format
@@ -6117,17 +4872,33 @@ msgstr "Glem historik?"
 msgid "Forget"
 msgstr "Glem"
 
+#: src/nautilus-window-menus.c:426
+msgid "Hide Status Bar"
+msgstr "Skjul statuslinje"
+
 #: src/nautilus-window-menus.c:427
 msgid "Show Status Bar"
 msgstr "Vis statuslinje"
+
+#: src/nautilus-window-menus.c:432
+msgid "Hide Sidebar"
+msgstr "Skjul sidelinje"
 
 #: src/nautilus-window-menus.c:433
 msgid "Show Sidebar"
 msgstr "Vis sidelinje"
 
+#: src/nautilus-window-menus.c:438
+msgid "Hide Tool Bar"
+msgstr "Skjul værktøjslinje"
+
 #: src/nautilus-window-menus.c:439
 msgid "Show Tool Bar"
 msgstr "Vis værktøjslinje"
+
+#: src/nautilus-window-menus.c:444
+msgid "Hide Location Bar"
+msgstr "Skjul adresselinje"
 
 #: src/nautilus-window-menus.c:445
 msgid "Show Location Bar"
@@ -6199,6 +4970,10 @@ msgstr "Gå til stedet givet ved dette bogmærke"
 msgid "_Browse"
 msgstr "_Gennemse"
 
+#: src/nautilus-window-menus.c:1351
+msgid "_Find"
+msgstr "_Find"
+
 #. Localizers: This is the title of the user-level settings
 #. * dialog. %s will be replaced with the name of a user level
 #. * ("Beginner", "Intermediate", or "Advanced").
@@ -6250,6 +5025,922 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 #: src/nautilus-zoom-control.c:579
 msgid "%.0f%%"
 msgstr "%.0f%%"
+
+#~ msgid "Kill Content Loser"
+#~ msgstr "Dræb indholdstaber"
+
+#~ msgid "Kill the Loser content view"
+#~ msgstr "Dræb taberens indholdsvisning"
+
+#~ msgid "_File"
+#~ msgstr "_Fil"
+
+#~ msgid "_Kill Content Loser"
+#~ msgstr "_Dræb indholdstaber"
+
+#~ msgid "Kill Sidebar Loser"
+#~ msgstr "Dræb sidelinje-taber"
+
+#~ msgid "Kill the Loser sidebar panel"
+#~ msgstr "Dræb taber sidelinjepanel"
+
+#~ msgid "_Kill Sidebar Loser"
+#~ msgstr "_Dræb sidelinje-taber"
+
+#~ msgid "Mozilla Test"
+#~ msgstr "Mozilla test"
+
+#~ msgid "This is a Mozilla merged menu item"
+#~ msgstr "Dette er en flettet menuopføring for Mozilla"
+
+#~ msgid "This is a Mozilla merged tool bar button"
+#~ msgstr "Dette er en flettet værktøjlinjeknap for Mozilla"
+
+#~ msgid "_Mozilla Test"
+#~ msgstr "_Mozilla test"
+
+#~ msgid "Sample"
+#~ msgstr "Prøve"
+
+#~ msgid "This is a sample merged menu item"
+#~ msgstr "Dette er et prøve på et samlet menuelement"
+
+#~ msgid "This is a sample merged tool bar button"
+#~ msgstr "Dette er et eksempel på en flettet værktøjslinjeknap"
+
+#~ msgid "_Sample"
+#~ msgstr "_Prøve"
+
+#~ msgid "Configure your service preferences"
+#~ msgstr "Konfigurér brugervalg for tjenester"
+
+#~ msgid "Go to the Eazel Services Registration Form"
+#~ msgstr "Gå til registrering for Eazel tjenester"
+
+#~ msgid "Log out from Eazel Services"
+#~ msgstr "Log af Eazel's tjenester"
+
+#~ msgid "Service _Preferences"
+#~ msgstr "Tjenestevalg"
+
+#~ msgid "Show the log-in dialog box"
+#~ msgstr "Vis dialogboksen for indlogning"
+
+#~ msgid "_Log in to Eazel Services"
+#~ msgstr "_Log på Eazel's tjenester"
+
+#~ msgid "_Log out from Eazel Services"
+#~ msgstr "_Log af Eazel's tjenester"
+
+#~ msgid "_Register for Eazel Services"
+#~ msgstr "Registrér dig for Eazel tjenester"
+
+#~ msgid "Service Error"
+#~ msgstr "Fejl i tjeneste"
+
+#~ msgid "Register Now"
+#~ msgstr "Registrér nu"
+
+#~ msgid "Help"
+#~ msgstr "Hjælp"
+
+#~ msgid "Services Login"
+#~ msgstr "Indlogning til tjenester"
+
+#~ msgid "Username:"
+#~ msgstr "Brugernavn:"
+
+#~ msgid "Password:"
+#~ msgstr "Ny adgangskode:"
+
+#~ msgid "Please log in to Eazel services"
+#~ msgstr "Log venligst på til Eazel's tjenester"
+
+#~ msgid ""
+#~ "Your user name or password were not correct, or you have not activated your "
+#~ "account.  Please try again, or check your email for an account activation "
+#~ "notice."
+#~ msgstr ""
+#~ "Dit brugernavn og adgangskode var ikke korrekt, eller du har ikke aktiveret "
+#~ "din konto. Prøv venligst igen, eller tjek din e-post for en besked om "
+#~ "aktivering af konto."
+
+#~ msgid "We're sorry, but your name and password are still not recognized."
+#~ msgstr "Beklager, men navn og adgangskode blev stadig ikke genkendt."
+
+#~ msgid "Apparition"
+#~ msgstr "Spøgelse"
+
+#~ msgid "Azul"
+#~ msgstr "Azul"
+
+#~ msgid "Black"
+#~ msgstr "Sort"
+
+#~ msgid "Bubble Gum"
+#~ msgstr "Tyggegummi"
+
+#~ msgid "Charcoal"
+#~ msgstr "Trækul"
+
+#~ msgid "Concrete"
+#~ msgstr "Beton"
+
+#~ msgid "Danube"
+#~ msgstr "Donau"
+
+#~ msgid "Dark Cork"
+#~ msgstr "Mørk kork"
+
+#~ msgid "Deep Teal"
+#~ msgstr "Dyp teal"
+
+#~ msgid "Drag a background tile to an object to change it"
+#~ msgstr "Træk en baggrundsbrik til et objekt for at ændre det"
+
+#~ msgid "Drag a color to an object to change it to that color"
+#~ msgstr "Træk en farve til et objekt for at ændre det til den farve"
+
+#~ msgid "Drag an emblem to an object to add it to the object"
+#~ msgstr "Træk et emblem til et objekt for at tilføje det til objektet"
+
+#~ msgid "Eclipse"
+#~ msgstr "Formørkelse"
+
+#~ msgid "Envy"
+#~ msgstr "Misundelse"
+
+#~ msgid "Fire Engine"
+#~ msgstr "Brandbil"
+
+#~ msgid "Granite"
+#~ msgstr "Granit"
+
+#~ msgid "Grapefruit"
+#~ msgstr "Grapefrugt"
+
+#~ msgid "Indigo"
+#~ msgstr "Indigoblåt"
+
+#~ msgid "Leaf"
+#~ msgstr "Løv"
+
+#~ msgid "Lemon"
+#~ msgstr "Citron"
+
+#~ msgid "Mango"
+#~ msgstr "Mango"
+
+#~ msgid "Mud"
+#~ msgstr "Ler"
+
+#~ msgid "Onyx"
+#~ msgstr "Onyx"
+
+#~ msgid "Orange"
+#~ msgstr "Orange"
+
+#~ msgid "Pale Blue"
+#~ msgstr "Lyseblå"
+
+#~ msgid "Ruby"
+#~ msgstr "Rubin"
+
+#~ msgid "Sea Foam"
+#~ msgstr "Havsskum"
+
+#~ msgid "Shale"
+#~ msgstr "Skiffer"
+
+#~ msgid "Silver"
+#~ msgstr "Sølv"
+
+#~ msgid "Sky"
+#~ msgstr "Himmel"
+
+#~ msgid "Tangerine"
+#~ msgstr "Tangerine"
+
+#~ msgid "Violet"
+#~ msgstr "Lilla"
+
+#~ msgid "White"
+#~ msgstr "Hvid"
+
+#~ msgid "Gnumeric"
+#~ msgstr "Gnumeric"
+
+#~ msgid "Netscape"
+#~ msgstr "Netscape"
+
+#~ msgid "The Gimp"
+#~ msgstr "Gimp"
+
+#~ msgid "Excite"
+#~ msgstr "Excite"
+
+#~ msgid "Portals"
+#~ msgstr "Portaler"
+
+#~ msgid "Yahoo"
+#~ msgstr "Yahoo"
+
+#~ msgid "Alta Vista"
+#~ msgstr "Alta Vista"
+
+#~ msgid "Google"
+#~ msgstr "Google"
+
+#~ msgid "Search Engines"
+#~ msgstr "Søgemotorer"
+
+#~ msgid "CNET Computers.com"
+#~ msgstr "CNET Computers.com"
+
+#~ msgid "CNET Linux Center"
+#~ msgstr "CNET Linux Center"
+
+#~ msgid "Caldera"
+#~ msgstr "Caldera"
+
+#~ msgid "Collab.net"
+#~ msgstr "Collab.net"
+
+#~ msgid "Compaq"
+#~ msgstr "Compaq"
+
+#~ msgid "Debian.org"
+#~ msgstr "Debian.org"
+
+#~ msgid "Dell"
+#~ msgstr "Dell"
+
+#~ msgid "Eazel"
+#~ msgstr "Eazel"
+
+#~ msgid "Freshmeat.net"
+#~ msgstr "Freshmeat.net"
+
+#~ msgid "GNOME.org"
+#~ msgstr "GNOME.org"
+
+#~ msgid "GNU.org"
+#~ msgstr "GNU.org"
+
+#~ msgid "Hardware"
+#~ msgstr "Maskinel"
+
+#~ msgid "Helix Code"
+#~ msgstr "Helix Code"
+
+#~ msgid "Hewlett-Packard"
+#~ msgstr "Hewlett-Packard"
+
+#~ msgid "IBM"
+#~ msgstr "IBM"
+
+#~ msgid "Inprise"
+#~ msgstr "Inprise"
+
+#~ msgid "Linux Companies"
+#~ msgstr "Linuxfirmaer"
+
+#~ msgid "Linux Documentation Project"
+#~ msgstr "Linux Documentation Project"
+
+#~ msgid "Linux Online"
+#~ msgstr "Linux Online"
+
+#~ msgid "Linux Resources"
+#~ msgstr "Linuxresurser"
+
+#~ msgid "Linux at IBM"
+#~ msgstr "Linux ved IBM"
+
+#~ msgid "LinuxNewbie.org"
+#~ msgstr "LinuxNewbie.org"
+
+#~ msgid "Linuxcare"
+#~ msgstr "Linuxcare"
+
+#~ msgid "Myplay"
+#~ msgstr "Myplay"
+
+#~ msgid "News and Media"
+#~ msgstr "Nyheder og media"
+
+#~ msgid "OSDN"
+#~ msgstr "OSDN"
+
+#~ msgid "OpenOffice"
+#~ msgstr "OpenOffice"
+
+#~ msgid "Red Hat"
+#~ msgstr "Red Hat"
+
+#~ msgid "Slashdot.org"
+#~ msgstr "Slashdot.org"
+
+#~ msgid "Software"
+#~ msgstr "Programmel"
+
+#~ msgid "SourceForge"
+#~ msgstr "SourceForge"
+
+#~ msgid "SourceXchange"
+#~ msgstr "SourceXchange"
+
+#~ msgid "Sun StarOffice"
+#~ msgstr "Sun StarOffice"
+
+#~ msgid "VA Linux"
+#~ msgstr "VA Linux"
+
+#~ msgid "VMware"
+#~ msgstr "VMware"
+
+#~ msgid "Web Services"
+#~ msgstr "Nettjenester"
+
+#~ msgid "ZDNet Linux Resource Center"
+#~ msgstr "ZDNet Linux Resource Center"
+
+#~ msgid "C_lear Text"
+#~ msgstr "_Ryd tekst"
+
+#~ msgid "Copy the selected text to the clipboard"
+#~ msgstr "Kopiér valgt tekst til klippebordet"
+
+#~ msgid "Cut the selected text to the clipboard"
+#~ msgstr "Klip valgt tekst ud til klippebordet"
+
+#~ msgid "Paste the text stored on the clipboard"
+#~ msgstr "Indsæt tekst som er gemt på klippebordet"
+
+#~ msgid "Remove the selected text without putting it on the clipboard"
+#~ msgstr "Fjern den valgte tekst uden at placere den på klippebordet"
+
+#~ msgid "_Copy Text"
+#~ msgstr "_Indsæt tekst"
+
+#~ msgid "_Cut Text"
+#~ msgstr "_Klip tekst"
+
+#~ msgid "_Paste Text"
+#~ msgstr "_Indsæt tekst"
+
+#~ msgid "Change Desktop Background"
+#~ msgstr "Ændr skrivebordsbaggrund"
+
+#~ msgid "Delete all items in the trash"
+#~ msgstr "Slet alle ting i papirkurven"
+
+#~ msgid "Disks"
+#~ msgstr "Diske"
+
+#~ msgid "Mount or unmount disks"
+#~ msgstr "Montér eller afmontér diske"
+
+#~ msgid "New Terminal"
+#~ msgstr "Ny terminal"
+
+#~ msgid "Open a new GNOME terminal window"
+#~ msgstr "Åbn et nyt Gnome terminalvindue"
+
+#~ msgid "Quit Nautilus Desktop"
+#~ msgstr "Afslut Nautilus skrivebordet"
+
+#~ msgid "Remove any custom pattern or color from the desktop background"
+#~ msgstr ""
+#~ "Fjern ethvert egendefineret mønster eller farve fra skrivebordsbaggrunden"
+
+#~ msgid "Reset Desktop Background"
+#~ msgstr "Nulstil skrivebordsbaggrund"
+
+#~ msgid ""
+#~ "Show a window that lets you set your desktop background's pattern or color"
+#~ msgstr ""
+#~ "Vis et vindue som lader dig sætte mønstret eller farven på din "
+#~ "skrivebordsbaggrund"
+
+#~ msgid "Stop letting Nautilus draw the desktop"
+#~ msgstr "Stop Nautilus med at tegne skrivebordet."
+
+#~ msgid "Choose a program with which to open the selected item"
+#~ msgstr "Vælg et program som du vil bruge til at åbne den valgte ting"
+
+#~ msgid "Choose another application with which to open the selected item"
+#~ msgstr ""
+#~ "Vælg en anden anvendelse som du vil bruge til at åbne den valgte ting"
+
+#~ msgid "Choose another viewer with which to view the selected item"
+#~ msgstr ""
+#~ "Vælg en anden fremviser som du vil bruge til at vise den valgte ting"
+
+#~ msgid "Create Link"
+#~ msgstr "Opret lænke"
+
+#~ msgid "Create a new empty folder inside this folder"
+#~ msgstr "Opret en ny tom mappe i denne mappe"
+
+#~ msgid "Create a symbolic link for each selected item"
+#~ msgstr "Opret en symbolsk lænke for hver valgt opføring"
+
+#~ msgid "Duplicate"
+#~ msgstr "Duplikér"
+
+#~ msgid "Duplicate each selected item"
+#~ msgstr "Duplikér alle valgte opføringer"
+
+#~ msgid "Move each selected item to the trash"
+#~ msgstr "Flyt hver valgt opføring til papirkurven"
+
+#~ msgid "Move to Trash"
+#~ msgstr "Flyt til papirkurv"
+
+#~ msgid "New Folder"
+#~ msgstr "Nyt katalog"
+
+#~ msgid "New _Folder"
+#~ msgstr "Nyt _katalog"
+
+#~ msgid "Open"
+#~ msgstr "Åbn"
+
+#~ msgid "Open With"
+#~ msgstr "Åbn med"
+
+#~ msgid "Open each selected item in a new window"
+#~ msgstr "Åbn hver valgt ting i et nyt vindue"
+
+#~ msgid "Open in New Window"
+#~ msgstr "Åbn i nyt vindue"
+
+#~ msgid "Open the selected item in this window"
+#~ msgstr "Åben den valgte ting i dette vindue"
+
+#~ msgid "Other Application..."
+#~ msgstr "Andre applikationer..."
+
+#~ msgid "Other Viewer..."
+#~ msgstr "Anden fremviser"
+
+#~ msgid "Other _Application..."
+#~ msgstr "Andre _applikationer..."
+
+#~ msgid "Other _Viewer..."
+#~ msgstr "Andet _visningsprogram..."
+
+#~ msgid "Remove Custom Images"
+#~ msgstr "Fjern personlige billeder"
+
+#~ msgid "Remove any custom images from selected icons"
+#~ msgstr "Fjern egendefinerede billeder fra valgte ikoner"
+
+#~ msgid ""
+#~ "Remove any custom pattern or color from the background of this location"
+#~ msgstr ""
+#~ "Fjern alle tilpassede mønstre eller farver fra baggrunden på dette sted"
+
+#~ msgid "Select All Files"
+#~ msgstr "Vælg alle filer"
+
+#~ msgid "Select all items in this window"
+#~ msgstr "Vælg alle ting i dette vindue"
+
+#~ msgid "Show Properties"
+#~ msgstr "Vis egenskaber"
+
+#~ msgid "Show Trash"
+#~ msgstr "Vis papirkurv"
+
+#~ msgid "Show _Properties"
+#~ msgstr "Vis _egenskaber"
+
+#~ msgid "Show the contents of the trash"
+#~ msgstr "Vis indholdet i normal størrelse"
+
+#~ msgid "View or modify the properties of each selected item"
+#~ msgstr "Vis eller modificér egenskaberne for hver af de valgte opføringer"
+
+#~ msgid "_Duplicate"
+#~ msgstr "_Duplikér"
+
+#~ msgid "_Open"
+#~ msgstr "_Åbn"
+
+#~ msgid "_Open in New Window"
+#~ msgstr "_Åbn i et nyt vindue"
+
+#~ msgid "_Select All Files"
+#~ msgstr "_Vælg alle filer"
+
+#~ msgid "Choose which information appears beneath each icon's name"
+#~ msgstr "Vælg hvilken information der skal vises underhvert ikonnavn"
+
+#~ msgid "Clean Up by Name"
+#~ msgstr "Ryd op efter navn"
+
+#~ msgid "Display icons in the opposite order"
+#~ msgstr "Vis ikoner i omvendt rækkefølge"
+
+#~ msgid "Icon Captions..."
+#~ msgstr "Ikon-fangst..."
+
+#~ msgid "Lay out items"
+#~ msgstr "Placér opføringer"
+
+#~ msgid "Leave icons wherever they are dropped"
+#~ msgstr "Lad ikoner være hvor de placeres"
+
+#~ msgid "Make the selected icon stretchable"
+#~ msgstr "Gør den valgte ikon udstrækkelig"
+
+#~ msgid "Re_versed Order"
+#~ msgstr "Om_vendt rækkefølge"
+
+#~ msgid "Rename selected icon"
+#~ msgstr "Giv nyt navn til valgt ikon"
+
+#~ msgid "Reposition icons to better fit in the window and avoid overlapping"
+#~ msgstr ""
+#~ "Repositionér ikonene sådan at de passer bedre til vinduerne og undgår "
+#~ "overlapning"
+
+#~ msgid "Restore Icons' Original Sizes"
+#~ msgstr "Genopret ikonets oprindelige størrelser"
+
+#~ msgid "Restore each selected icon to its original size"
+#~ msgstr "Genskab hvert valgt ikon i dets oprindelige størrelse"
+
+#~ msgid "Reversed Order"
+#~ msgstr "Omvendt rækkefølge"
+
+#~ msgid "Stretch Icon"
+#~ msgstr "Stræk ikon"
+
+#~ msgid "Tighter Layout"
+#~ msgstr "Tættere placering"
+
+#~ msgid "Toggle using a tighter layout scheme"
+#~ msgstr "Slå brug af tættere placering fra/til"
+
+#~ msgid "_Clean Up by Name"
+#~ msgstr "R_yd op efter navn"
+
+#~ msgid "_Icon Captions..."
+#~ msgstr "_Ikon mærkat..."
+
+#~ msgid "_Lay out items"
+#~ msgstr "_Placér opføringer"
+
+#~ msgid "_Rename"
+#~ msgstr "Omdøb"
+
+#~ msgid "_Stretch Icon"
+#~ msgstr "_Stræk ikon"
+
+#~ msgid "_Tighter Layout"
+#~ msgstr "_Tættere placering"
+
+#~ msgid "_manually"
+#~ msgstr "_manuel"
+
+#~ msgid "by Emblems"
+#~ msgstr "efter emblemer"
+
+#~ msgid "by Modification Date"
+#~ msgstr "efter modifikationsdato"
+
+#~ msgid "by Name"
+#~ msgstr "efter navn"
+
+#~ msgid "by Size"
+#~ msgstr "efter størrelse"
+
+#~ msgid "by Type"
+#~ msgstr "efter type"
+
+#~ msgid "manually"
+#~ msgstr "manuel"
+
+#~ msgid "Reveal each selected item in its original folder"
+#~ msgstr "Vis hver valgt opføring i dens oprindelige mappe"
+
+#~ msgid "Reveal in New Window"
+#~ msgstr "Åbn i et nyt vindue"
+
+#~ msgid "Show Indexing Status"
+#~ msgstr "Vis indekseringsstatus"
+
+#~ msgid "Show _Indexing Status"
+#~ msgstr "Vis _indekseringsstatus"
+
+#~ msgid "Show status of indexing used when searching"
+#~ msgstr "Vis status for indeksering som bruges for søgning"
+
+#~ msgid "Don't draw background and icons on desktop."
+#~ msgstr "Tegn ikke baggrund og ikoner på skrivebordet."
+
+#~ msgid "Draw background and icons on desktop."
+#~ msgstr "Tegn baggrund og ikoner på skrivebord."
+
+#~ msgid "nautilus: --quit and --start-desktop cannot be used together.\n"
+#~ msgstr "nautilus: --quit og --start-desktop kan ikke bruges sammen.\n"
+
+#~ msgid "nautilus: --restart and --start-desktop cannot be used together.\n"
+#~ msgstr "nautilus: --restart og --start-desktop kan ikke bruges sammen.\n"
+
+#~ msgid ""
+#~ "nautilus: --stop-desktop and --start-desktop cannot be used together.\n"
+#~ msgstr ""
+#~ "nautilus: --stop-desktop og --start-desktop kan ikke bruges sammen.\n"
+
+#~ msgid "Display support information for Eazel Services"
+#~ msgstr "Registrér dig for Eazel's tjenester"
+
+#~ msgid "Go to the Eazel Services Summary Page"
+#~ msgstr "Gå til Eazel tjenesters sammendrag-side"
+
+#~ msgid "Go to the Eazel Software Catalog"
+#~ msgstr "Gå til Eazel's programmelkatalog"
+
+#~ msgid "Go to your online storage repository"
+#~ msgstr "Gå til dit lagringsområde på nettet"
+
+#~ msgid "Services"
+#~ msgstr "Tjenester"
+
+#~ msgid "Software _Catalog"
+#~ msgstr "Programvarekatalog"
+
+#~ msgid "_Eazel Services Home"
+#~ msgstr "_Eazel tjenesters indeks"
+
+#~ msgid "_Online Storage"
+#~ msgstr "_Netlagring"
+
+#~ msgid "_Services"
+#~ msgstr "Tjene_ster"
+
+#~ msgid "_Support"
+#~ msgstr "_Brugerhjælp"
+
+#~ msgid " Advanced"
+#~ msgstr " Avanceret"
+
+#~ msgid " Beginner"
+#~ msgstr " Begynder"
+
+#~ msgid " Intermediate"
+#~ msgstr " Mellem"
+
+#~ msgid "Add a bookmark for the current location to this menu"
+#~ msgstr "Tilføj et bogmærke for det nuværende sted til denne menu"
+
+#~ msgid "C_hange Appearance..."
+#~ msgstr "Æn_dr udseende..."
+
+#~ msgid "Change the visibility of this window's location bar"
+#~ msgstr "Ændr synligheden for dette vindues adresselinje"
+
+#~ msgid "Change the visibility of this window's sidebar"
+#~ msgstr "Ændr synligheden for dette vindues sidelinje"
+
+#~ msgid "Change the visibility of this window's status bar"
+#~ msgstr "Ændr synligheden for dette vindues statuslinje"
+
+#~ msgid "Change the visibility of this window's tool bar"
+#~ msgstr "Ændr synligheden for dette vindues værktøjslinje"
+
+#~ msgid "Clear contents of Go menu and Back/Forward lists"
+#~ msgstr "Tøm indhold af Go-menuen og frem/tilbage- listerne"
+
+#~ msgid "Close _All Windows"
+#~ msgstr "Luk _Alle vinduer"
+
+#~ msgid "Close all Nautilus windows"
+#~ msgstr "Luk alle Nautilus vinduer"
+
+#~ msgid "Close this window"
+#~ msgstr "Luk dette vindue"
+
+#~ msgid "Custo_mization..."
+#~ msgstr "_Tilpasning..."
+
+#~ msgid "Cut _Text"
+#~ msgstr "Klip _tekst ud"
+
+#~ msgid "Display a window that allows editing the bookmarks in this menu"
+#~ msgstr "Vis et vindue der tillader redigering af bogmærker i denne menu"
+
+#~ msgid "Display credits for the creators of Nautilus"
+#~ msgstr "Vis information om dem som lavede Nautilus"
+
+#~ msgid "Display on-line help for Nautilus"
+#~ msgstr "Vis hjælp for Nautilus"
+
+#~ msgid ""
+#~ "Display the Property Browser, containing patterns, colors, and emblems"
+#~ msgstr "Visning af egenskaber, indeholder mønstre, farver og emblemer"
+
+#~ msgid "Display the latest contents of the current location"
+#~ msgstr "Vis det nyeste indhold i aktiv lokation"
+
+#~ msgid "Display the license for Nautilus"
+#~ msgstr "Vis licensen for Nautilus"
+
+#~ msgid "Display the set of available appearance themes"
+#~ msgstr "Vis tilgængelige temaer for udseende"
+
+#~ msgid "Edit Settings..."
+#~ msgstr "Ændr indstillinger..."
+
+#~ msgid "Edit settings for the current user level"
+#~ msgstr "Redigér indstillinger for aktivt brugerniveau"
+
+#~ msgid "Find"
+#~ msgstr "Find"
+
+#~ msgid "For_get History"
+#~ msgstr "_Glem historik"
+
+#~ msgid "Go to Eazel Services"
+#~ msgstr "Gå til Eazel tjenester"
+
+#~ msgid "Go to the home location"
+#~ msgstr "Gå til hjemstedet"
+
+#~ msgid "Go to the location that contains this one"
+#~ msgstr "Gå til stedet der indeholder denne"
+
+#~ msgid "Go to the next visited location"
+#~ msgstr "Gå til næste besøgte lokation"
+
+#~ msgid "Go to the previous visited location"
+#~ msgstr "Gå til forrige besøgte placering"
+
+#~ msgid "Home"
+#~ msgstr "Hjem"
+
+#~ msgid "Nautilus _Feedback..."
+#~ msgstr "Nautilus til_bagemeldinger..."
+
+#~ msgid "New Window"
+#~ msgstr "Nyt vindue"
+
+#~ msgid "Normal Size"
+#~ msgstr "Normal størrelse"
+
+#~ msgid "Refresh"
+#~ msgstr "Opdatér"
+
+#~ msgid "Removes the selected text without putting it on the clipboard"
+#~ msgstr "Fjerner den valgte tekst uden at putte den på klippebordet"
+
+#~ msgid "Report Profiling"
+#~ msgstr "Rapportér profilering"
+
+#~ msgid "Reset Profiling"
+#~ msgstr "Nulstil profilering"
+
+#~ msgid "Search the World Wide Web"
+#~ msgstr "Søg på webbet"
+
+#~ msgid "Search this computer for files"
+#~ msgstr "Søg efter filer på denne datamaskine"
+
+#~ msgid ""
+#~ "Show a page from which you can send feedback about Nautilus to its creators"
+#~ msgstr ""
+#~ "Vis en side, fra hvilken du kan sende tilbagemeldinger om Nautilus til dens "
+#~ "programmører"
+
+#~ msgid "Show the contents at the normal size"
+#~ msgstr "Vis indholdet i normal størrelse"
+
+#~ msgid "Show the contents in less detail"
+#~ msgstr "Vis indholdet med mindre grad af detaljer"
+
+#~ msgid "Show the contents in more detail"
+#~ msgstr "Vis indhold med større grad af detaljer"
+
+#~ msgid "Start Profiling"
+#~ msgstr "Start profilering"
+
+#~ msgid "Stop Profiling"
+#~ msgstr "Stop profilering"
+
+#~ msgid "Stop loading this location"
+#~ msgstr "Stop indlæsning af denne lokation"
+
+#~ msgid "Undo the last text change"
+#~ msgstr "Fortryd sidste tekstændring"
+
+#~ msgid "Up"
+#~ msgstr "Op"
+
+#~ msgid "Use Advanced settings"
+#~ msgstr "Brug avancerede indstillinger"
+
+#~ msgid "Use Beginner settings"
+#~ msgstr "Brug indstillinger for begynder"
+
+#~ msgid "Use Intermediate settings"
+#~ msgstr "Brug indstillinger for viderekomne"
+
+#~ msgid "Web Search"
+#~ msgstr "Websøgning"
+
+#~ msgid "Zoom In"
+#~ msgstr "Zoom ind"
+
+#~ msgid "Zoom Out"
+#~ msgstr "Zoom ud"
+
+#~ msgid "Zoom _In"
+#~ msgstr "Zoom _Ind"
+
+#~ msgid "Zoom _Out"
+#~ msgstr "Zoom _Ud"
+
+#~ msgid "_About Nautilus..."
+#~ msgstr "_Om Nautilus..."
+
+#~ msgid "_Add Bookmark"
+#~ msgstr "_Tilføj bogmærke"
+
+#~ msgid "_Back"
+#~ msgstr "_Tilbage"
+
+#~ msgid "_Bookmarks"
+#~ msgstr "_Bogmærker"
+
+#~ msgid "_Close Window"
+#~ msgstr "_Luk vindue"
+
+#~ msgid "_Edit"
+#~ msgstr "_Redigér"
+
+#~ msgid "_Edit Bookmarks..."
+#~ msgstr "_Ændr bogmærker..."
+
+#~ msgid "_Forward"
+#~ msgstr "_Fremad"
+
+#~ msgid "_Go"
+#~ msgstr "_Gå"
+
+#~ msgid "_Help"
+#~ msgstr "_Hjælp"
+
+#~ msgid "_Home"
+#~ msgstr "_Hjem"
+
+#~ msgid "_Nautilus License"
+#~ msgstr "_Nautilus licens"
+
+#~ msgid "_Nautilus User Manual"
+#~ msgstr "_Nautilus brugerhåndbog"
+
+#~ msgid "_New Window"
+#~ msgstr "_Nyt vindue"
+
+#~ msgid "_Normal Size"
+#~ msgstr "_Normal størrelse"
+
+#~ msgid "_Profiler"
+#~ msgstr "_Profilering"
+
+#~ msgid "_Refresh"
+#~ msgstr "_Genopfrisk"
+
+#~ msgid "_Report Profiling"
+#~ msgstr "_Rapportér profilering"
+
+#~ msgid "_Reset Profiling"
+#~ msgstr "_Nulstil profilering"
+
+#~ msgid "_Select All"
+#~ msgstr "_Vælg alt"
+
+#~ msgid "_Start Profiling"
+#~ msgstr "_Start profilering"
+
+#~ msgid "_Stop Profiling"
+#~ msgstr "_Stop profilering"
+
+#~ msgid "_Undo"
+#~ msgstr "_Fortryd"
+
+#~ msgid "_Up a Level"
+#~ msgstr "_Op et niveau"
+
+#~ msgid "_View"
+#~ msgstr "_Vis"
+
+#~ msgid "_Web Search"
+#~ msgstr "_Websøgning"
 
 #~ msgid "Preflight (%ld bytes, %ld packages)"
 #~ msgstr "Forhåndssendt (%ld byte, %ld pakker)"
