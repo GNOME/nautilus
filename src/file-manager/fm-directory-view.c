@@ -4588,7 +4588,7 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 	monitor_file_for_activation (view, file);
 
 	/* Might have to read some of the file to activate it. */
-	attributes = nautilus_mime_actions_get_full_file_attributes ();
+	attributes = nautilus_mime_actions_get_minimum_file_attributes ();
 	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
 	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE);
 	parameters = g_new (ActivateParameters, 1);

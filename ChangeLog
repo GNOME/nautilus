@@ -1,3 +1,18 @@
+2001-05-13  Maciej Stachowiak  <mjs@eazel.com>
+
+	Integrated patch from Yoann Vandoorselaere
+	<yoann@mandrakesoft.com>. Yoann found that double-clicking on on a
+	directory would wait for all the files to be read in before
+	displaying anything, while typing the path in the location bar
+	would should proper progressive loading. This checkin solves that
+	problem.
+	
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_activate_file): Only call_when_ready on the
+	minimum attributes, not full. All the checks in activate_callback
+	only depend on the minimum attributes, and do not need the extra
+	directory item mime types attribute.
+
 2001-05-11  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Yoann Vandoorselaere <yoann@mandrakesoft.com>
