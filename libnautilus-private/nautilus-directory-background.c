@@ -35,8 +35,6 @@
 #include "nautilus-metadata.h"
 #include "nautilus-file-attributes.h"
 #include <eel/eel-string.h>
-#include <X11/Xatom.h>
-#include <gdk/gdkx.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-config.h>
@@ -55,58 +53,10 @@ static void saved_settings_changed_callback (NautilusFile       *file,
                                          
 static void nautilus_file_background_receive_gconf_changes (EelBackground *background);
 
-static void nautilus_file_update_root_pixmaps (EelBackground *background);
-
 static void nautilus_file_background_write_desktop_settings (char *color,
 							     char *image,
 							     EelBackgroundImagePlacement placement);
 static void nautilus_file_background_theme_changed (gpointer user_data);
-
-static void
-screen_size_changed (GdkScreen *screen, NautilusIconContainer *icon_container)
-{
-        EelBackground *background;
-        
-        background = eel_get_widget_background (GTK_WIDGET (icon_container));
-
-	nautilus_file_update_root_pixmaps (background);        
-}
-
-static void
-remove_connection (NautilusIconContainer *icon_container, GdkScreen *screen)
-{
-        g_signal_handlers_disconnect_by_func
-                (screen,
-                 G_CALLBACK (screen_size_changed),
-                 icon_container);
-}
-
-static void
-desktop_background_realized (NautilusIconContainer *icon_container, void *disconnect_signal)
-{
-	EelBackground *background;
-
-        if (GPOINTER_TO_INT (disconnect_signal)) {
-                g_signal_handlers_disconnect_by_func
-                        (icon_container,
-                         G_CALLBACK (desktop_background_realized),
-                         disconnect_signal);
-	}
-
-	background = eel_get_widget_background (GTK_WIDGET (icon_container));
-                                          
-	g_object_set_data (G_OBJECT (background), "icon_container", (gpointer) icon_container);
-
-	g_object_set_data (G_OBJECT (background), "screen",
-			   gtk_widget_get_screen (GTK_WIDGET (icon_container)));
-
-	nautilus_file_update_root_pixmaps (background);
-
-        g_signal_connect (gtk_widget_get_screen (GTK_WIDGET (icon_container)), "size_changed",
-                          G_CALLBACK (screen_size_changed), icon_container);
-        g_signal_connect (icon_container, "unrealize", G_CALLBACK (remove_connection), 
-                          gtk_widget_get_screen (GTK_WIDGET (icon_container)));
-}
 
 void
 nautilus_connect_desktop_background_to_file_metadata (NautilusIconContainer *icon_container,
@@ -115,9 +65,9 @@ nautilus_connect_desktop_background_to_file_metadata (NautilusIconContainer *ico
 	EelBackground *background;
 
 	background = eel_get_widget_background (GTK_WIDGET (icon_container));
-        eel_background_set_is_constant_size (background, TRUE);
 
-	g_object_set_data (G_OBJECT (background), "is_desktop", (gpointer)1);
+	eel_background_set_is_constant_size (background, TRUE);
+	eel_background_set_desktop (background, GTK_WIDGET (icon_container), TRUE);
 
 	/* Strictly speaking, we don't need to know about metadata changes, since
 	 * the desktop setting aren't stored there. But, hooking up to metadata
@@ -129,20 +79,7 @@ nautilus_connect_desktop_background_to_file_metadata (NautilusIconContainer *ico
 	 */
 	nautilus_connect_background_to_file_metadata (GTK_WIDGET (icon_container), file, NAUTILUS_DND_ACTION_SET_AS_FOLDER_BACKGROUND);
 
-	if (GTK_WIDGET_REALIZED (icon_container)) {
-		desktop_background_realized (icon_container, GINT_TO_POINTER (FALSE));
-	} else {
-		g_signal_connect (icon_container, "realize",
-                                  G_CALLBACK (desktop_background_realized), GINT_TO_POINTER (TRUE));
-	}
-
 	nautilus_file_background_receive_gconf_changes (background); 
-}
-
-static gboolean
-background_is_desktop (EelBackground *background)
-{
-	return g_object_get_data (G_OBJECT (background), "is_desktop") != 0;
 }
 
 static void
@@ -350,6 +287,7 @@ call_settings_changed (EelBackground *background)
 	if (file) {
 		saved_settings_changed_callback (file, background);
 	}
+	g_object_set_data (G_OBJECT (background), "desktop_gconf_notification_timeout", GUINT_TO_POINTER (0));
 	return FALSE;
 }
 
@@ -357,15 +295,33 @@ static void
 desktop_background_destroyed_callback (EelBackground *background, void *georgeWBush)
 {
 	guint notification_id;
+	guint notification_timeout_id;
 
         notification_id = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (background), "desktop_gconf_notification"));
 	eel_gconf_notification_remove (notification_id);
+
+	notification_timeout_id = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (background), "desktop_gconf_notification_timeout"));
+        if (notification_timeout_id != 0) {
+                g_source_remove (notification_timeout_id);
+        }
 }
 
 static void
 desktop_background_gconf_notify_cb (GConfClient *client, guint notification_id, GConfEntry *entry, gpointer data)
 {
-	call_settings_changed (EEL_BACKGROUND (data));
+	EelBackground *background;
+	guint notification_timeout_id;
+	
+	background = EEL_BACKGROUND (data);
+	/* 
+	 * Wallpaper capplet changes picture, background color and placement with
+	 * gconf_change_set API, but unfortunately, this operation is not atomic in
+	 * GConf as it should be. So we update background after small timeout to
+	 * let GConf change all values.
+	 */
+	notification_timeout_id = g_timeout_add (300, (GSourceFunc) call_settings_changed, background);
+
+	g_object_set_data (G_OBJECT (background), "desktop_gconf_notification_timeout", GUINT_TO_POINTER (notification_timeout_id));
 }
 
 static void
@@ -380,190 +336,6 @@ nautilus_file_background_receive_gconf_changes (EelBackground *background)
 			
 	g_signal_connect (background, "destroy",
                           G_CALLBACK (desktop_background_destroyed_callback), NULL);
-}
-
-/* Create a persistent pixmap. We create a separate display
- * and set the closedown mode on it to RetainPermanent
- * (copied from gnome-source/control-panels/capplets/background-properties/render-background.c)
- */
-static GdkPixmap *
-make_root_pixmap (GdkScreen *screen, gint width, gint height)
-{
-	Display *display;
-        const char *display_name;
-	Pixmap result;
-	GdkPixmap *gdk_pixmap;
-	int screen_num;
-
-	screen_num = gdk_screen_get_number (screen);
-
-	gdk_flush ();
-
-	display_name = gdk_display_get_name (gdk_screen_get_display (screen));
-	display = XOpenDisplay (display_name);
-
-        if (display == NULL) {
-                g_warning ("Unable to open display '%s' when setting background pixmap\n",
-                           (display_name) ? display_name : "NULL");
-                return NULL;
-        }
-
-	XSetCloseDownMode (display, RetainPermanent);
-
-	result = XCreatePixmap (display,
-				RootWindow (display, screen_num),
-				width, height,
-				DefaultDepth (display, screen_num));
-
-	XCloseDisplay (display);
-
-	gdk_pixmap = gdk_pixmap_foreign_new (result);
-	gdk_drawable_set_colormap (GDK_DRAWABLE (gdk_pixmap),
-				   gdk_drawable_get_colormap (gdk_screen_get_root_window (screen)));
-
-	return gdk_pixmap;
-}
-
-/* Set the root pixmap, and properties pointing to it. We
- * do this atomically with XGrabServer to make sure that
- * we won't leak the pixmap if somebody else it setting
- * it at the same time. (This assumes that they follow the
- * same conventions we do
- * (copied from gnome-source/control-panels/capplets/background-properties/render-background.c)
- */
-static void 
-set_root_pixmap (GdkPixmap *pixmap, GdkScreen *screen)
-{
-	int      result;
-	gint     format;
-	gulong   nitems;
-	gulong   bytes_after;
-	guchar  *data_esetroot;
-	Pixmap   pixmap_id;
-	Atom     type;
-	Display *display;
-	int      screen_num;
-
-	screen_num = gdk_screen_get_number (screen);
-
-	data_esetroot = NULL;
-	display = GDK_DISPLAY_XDISPLAY (gdk_screen_get_display (screen));
-
-	XGrabServer (display);
-
-	result = XGetWindowProperty (display, RootWindow (display, screen_num),
-				     gdk_x11_get_xatom_by_name ("ESETROOT_PMAP_ID"),
-				     0L, 1L, False, XA_PIXMAP,
-				     &type, &format, &nitems, &bytes_after,
-				     &data_esetroot);
-
-	if (data_esetroot != NULL) {
-		if (result == Success && type == XA_PIXMAP && format == 32 && nitems == 1) {
-			gdk_error_trap_push ();
-			XKillClient (display, *(Pixmap *)data_esetroot);
-			gdk_flush ();
-			gdk_error_trap_pop ();
-		}
-		XFree (data_esetroot);
-	}
-
-	pixmap_id = GDK_WINDOW_XWINDOW (pixmap);
-
-	XChangeProperty (display, RootWindow (display, screen_num),
-			 gdk_x11_get_xatom_by_name ("ESETROOT_PMAP_ID"), XA_PIXMAP,
-			 32, PropModeReplace,
-			 (guchar *) &pixmap_id, 1);
-	XChangeProperty (display, RootWindow (display, screen_num),
-			 gdk_x11_get_xatom_by_name ("_XROOTPMAP_ID"), XA_PIXMAP,
-			 32, PropModeReplace,
-			 (guchar *) &pixmap_id, 1);
-
-	XSetWindowBackgroundPixmap (display, RootWindow (display, screen_num), pixmap_id);
-	XClearWindow (display, RootWindow (display, screen_num));
-
-	XUngrabServer (display);
-	
-	XFlush (display);
-}
-
-/* Free the root pixmap */
-static void
-image_loading_done_callback (EelBackground *background, gboolean successful_load, void *disconnect_signal)
-{
-	int           entire_width;
-	int           entire_height;
-	int           pixmap_width;
-	int           pixmap_height;
-	GdkGC        *gc;
-	GdkPixmap    *pixmap;
-	GdkWindow    *background_window;
-	GdkScreen    *screen;
-        GdkColor parsed_color;
-        char * color_string;
-
-        if (GPOINTER_TO_INT (disconnect_signal)) {
-		g_signal_handlers_disconnect_by_func
-                        (background,
-                         G_CALLBACK (image_loading_done_callback),
-                         disconnect_signal);
-	}
-
-	screen = g_object_get_data (G_OBJECT (background), "screen");
-	if (screen == NULL) {
-		return;
-        }
-	entire_width = gdk_screen_get_width (screen);
-	entire_height = gdk_screen_get_height (screen);
-
-	if (eel_background_get_suggested_pixmap_size (background, entire_width, entire_height,
-                                                      &pixmap_width, &pixmap_height)) {
-                eel_background_pre_draw (background, entire_width, entire_height);
-                /* image resize may have forced us to reload the image */
-                if (!eel_background_is_loaded (background)) {
-                        g_signal_connect (background, "image_loading_done",
-                                          G_CALLBACK (image_loading_done_callback),
-                                          GINT_TO_POINTER (TRUE));
-                        return;
-                }
-	} else {
-                pixmap_width = pixmap_height = 1;
-
-		background_window = gdk_screen_get_root_window (screen);
-		color_string = eel_background_get_color (background);
-
-		if (background_window != NULL && color_string != NULL) {
-			if (eel_gdk_color_parse (color_string, &parsed_color)) {
-                                gdk_rgb_find_color (gdk_drawable_get_colormap (background_window), &parsed_color);
-				gdk_window_set_background (background_window, &parsed_color);
-			}
-		}
-		g_free (color_string);
-	}
-
-        pixmap = make_root_pixmap (screen, pixmap_width, pixmap_height);
-        if (pixmap == NULL) {
-                return;
-        }
-        
-        gc = gdk_gc_new (pixmap);
-        eel_background_draw (background, pixmap, gc,
-                             0, 0, 0, 0,
-                             pixmap_width, pixmap_height);
-        g_object_unref (gc);
-        set_root_pixmap (pixmap, screen);
-        g_object_unref (pixmap);
-}
-
-static void
-nautilus_file_update_root_pixmaps (EelBackground *background)
-{
-	if (eel_background_is_loaded (background)) {
-		image_loading_done_callback (background, TRUE, GINT_TO_POINTER (FALSE));
-	} else {
-		g_signal_connect (background, "image_loading_done",
-                                  G_CALLBACK (image_loading_done_callback),
-                                  GINT_TO_POINTER (TRUE));
-	}
 }
 
 /* return true if the background is not in the default state */
@@ -603,7 +375,7 @@ background_changed_callback (EelBackground *background,
 	color = eel_background_get_color (background);
 	image = eel_background_get_image_uri (background);
 
-	if (background_is_desktop (background)) {
+	if (eel_background_is_desktop (background)) {
 		nautilus_file_background_write_desktop_settings (color, image, eel_background_get_image_placement (background));
 	} else {
 	        /* Block the other handler while we are writing metadata so it doesn't
@@ -657,10 +429,6 @@ background_changed_callback (EelBackground *background,
 
 	g_free (color);
 	g_free (image);
-	
-	if (background_is_desktop (background)) {
-		nautilus_file_update_root_pixmaps (background);
-	}
 }
 
 static gboolean
@@ -677,7 +445,7 @@ initialize_background_from_settings (NautilusFile *file,
         g_assert (g_object_get_data (G_OBJECT (background), "eel_background_file")
                   == file);
 
-	if (background_is_desktop (background)) {
+	if (eel_background_is_desktop (background)) {
 		nautilus_file_background_read_desktop_settings (&color, &image, &placement);
 	} else {
 		color = nautilus_file_get_metadata (file,
@@ -715,7 +483,7 @@ initialize_background_from_settings (NautilusFile *file,
 
         old_image = eel_background_get_image_uri (background);
         if (eel_strcmp (image, old_image) != 0) {
-                if (background_is_desktop(background)) {
+                if (eel_background_is_desktop(background)) {
                         eel_background_set_image_uri_sync (background, image);
                 }
                 else {
@@ -750,10 +518,6 @@ saved_settings_changed_callback (NautilusFile *file,
 {
         gboolean changed;
 	changed = initialize_background_from_settings (file, background);
-	
-	if (changed && background_is_desktop (background)) {
-		nautilus_file_update_root_pixmaps (background);
-	}
 }
 
 /* handle the theme changing */
@@ -778,7 +542,7 @@ background_reset_callback (EelBackground *background,
         char *color;
         char *image;
 
-	if (background_is_desktop (background)) {
+	if (eel_background_is_desktop (background)) {
 		nautilus_file_background_write_desktop_default_settings ();
 	} else {
 	        /* Block the other handler while we are writing metadata so it doesn't

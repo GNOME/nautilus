@@ -1,3 +1,16 @@
+2005-03-16  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Require eel 2.10.1 (for EelBackground changes)
+	
+	* libnautilus-private/nautilus-icon-dnd.c:
+	* libnautilus-private/nautilus-directory-background.c:
+	Use the background setting now in eel.
+	Delay background setting slightly after gconf change to group
+	together multiple changes. (#169347)
+
+	Patch from Nickolay V. Shmyrev
+
 2005-03-15  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:
