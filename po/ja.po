@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-24 14:56+0100\n"
-"PO-Revision-Date: 2004-02-14 00:58+0900\n"
+"POT-Creation-Date: 2004-02-24 23:37+0900\n"
+"PO-Revision-Date: 2004-02-24 23:27+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -1198,6 +1198,8 @@ msgstr "ファイル設定ダイアログの '特別' なフラグを有効に�
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
 msgid "Enables the classic Nautilus behavior, where all windows are browsers"
 msgstr ""
+"全てのウィンドウがブラウザに統一されている旧バージョンの Nautilus の動作を有"
+"効にする"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
 msgid ""
@@ -1326,6 +1328,9 @@ msgid ""
 "how Nautilus used to behave before version 2.6, and some people prefer this "
 "behavior."
 msgstr ""
+"TRUE にすると、全ての Nautilus ウィンドウがブラウザ型式のウィンドウになりま"
+"す。これはバージョン 2.6 以前の Nautilus の動作を再現するものです (このスタイ"
+"ルを好む人たちがいるため)。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid ""
@@ -1674,26 +1679,23 @@ msgstr "サイド・ペインの幅"
 
 #: libnautilus-private/nautilus-column-chooser.c:365
 msgid "Move _Up"
-msgstr ""
+msgstr "上げる(_U)"
 
 #: libnautilus-private/nautilus-column-chooser.c:374
 msgid "Move _Down"
-msgstr ""
+msgstr "下げる(_D)"
 
 #: libnautilus-private/nautilus-column-chooser.c:383
-#, fuzzy
 msgid "_Show"
-msgstr "%s の表示"
+msgstr "表示する(_S)"
 
 #: libnautilus-private/nautilus-column-chooser.c:393
-#, fuzzy
 msgid "_Hide"
-msgstr "ヘルプ(_H)"
+msgstr "表示しない(_H)"
 
 #: libnautilus-private/nautilus-column-chooser.c:406
-#, fuzzy
 msgid "_Use Default"
-msgstr "デフォルトの背景(_D)"
+msgstr "デフォルトに戻す(_U)"
 
 #: libnautilus-private/nautilus-column-utilities.c:44
 msgid "The name and icon of the file."
@@ -2138,6 +2140,10 @@ msgid "Replace _All"
 msgstr "全て置き換える(_A)"
 
 #. appended to new link file
+#. Note to localizers: convert file type string for file
+#. * (e.g. "folder", "plain text") to file type for symbolic link
+#. * to that kind of file (e.g. "link to folder").
+#.
 #: libnautilus-private/nautilus-file-operations.c:1148
 #: libnautilus-private/nautilus-file.c:4714
 #, c-format
@@ -2192,6 +2198,9 @@ msgid " (another copy)"
 msgstr " (別のコピー)"
 
 #. localizers: tag used to detect the x11th copy of a file
+#. localizers: tag used to detect the x12th copy of a file
+#. localizers: tag used to detect the x13th copy of a file
+#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
 #: libnautilus-private/nautilus-file-operations.c:1210
@@ -2227,6 +2236,9 @@ msgid "%s (another copy)%s"
 msgstr "%s (別のコピー)%s"
 
 #. localizers: appended to x11th file copy
+#. localizers: appended to x12th file copy
+#. localizers: appended to x13th file copy
+#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
 #: libnautilus-private/nautilus-file-operations.c:1243
@@ -4155,9 +4167,9 @@ msgid "An _Application..."
 msgstr "アプリケーション(_A)..."
 
 #: src/file-manager/fm-directory-view.c:3915
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot open %s"
-msgstr "ゴミ箱はコピーできません"
+msgstr "%s は開けません"
 
 #: src/file-manager/fm-directory-view.c:3918
 #, c-format
@@ -4171,6 +4183,15 @@ msgid ""
 "extension for \"%s\", then open the file normally. Alternatively, use the "
 "Open With menu to choose a specific application for the file. "
 msgstr ""
+"ファイル名 \"%s\" から、このファイルの種類は \"%s\" であると思われます。この"
+"ファイルの内容は \"%s\" の種類に該当します。よって、このファイルを開くと、お"
+"使いのシステムにセキュリティ上の問題を発生させる危険があります。\n"
+"\n"
+"あなた自身で作成したものと確信できる、または信頼できるソースから受け取った"
+"ファイルと確信できる場合を除いて、このファイルを開かない下さい。このファイル"
+"を開く場合は、拡張子 \"%s\" を付けて正常なファイル名に変更してからファイルを"
+"開いて下さい。もしくは、[アプリケーションから開く] メニューから特定のアプリで"
+"ファイルを開いて下さい。"
 
 #: src/file-manager/fm-directory-view.c:4289
 #, c-format
@@ -5432,7 +5453,7 @@ msgstr "選択したアイテムのプロパティを表示または変更しま
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:51
 msgid "_Empty File"
-msgstr "ファイルを空にする(_E)"
+msgstr "空のファイル(_E)"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:53
 msgid "_Format"
@@ -5759,6 +5780,7 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
+#. FIXME bugzilla.gnome.org 42538: When can this happen?
 #: src/nautilus-application.c:570 src/nautilus-application.c:588
 #: src/nautilus-application.c:595
 msgid "Nautilus can't be used now, due to an unexpected error."
@@ -6242,22 +6264,27 @@ msgid "Nautilus"
 msgstr "Nautilus"
 
 #: src/nautilus-main.c:259
+#, c-format
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus: --check オプションには URI を指定できません。\n"
 
 #: src/nautilus-main.c:263
+#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check オプションには他のオプションを指定できません。\n"
 
 #: src/nautilus-main.c:267
+#, c-format
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus: --quit オプションには URI を指定できません。\n"
 
 #: src/nautilus-main.c:271
+#, c-format
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus: --restart オプションには URI を指定できません。\n"
 
 #: src/nautilus-main.c:275
+#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry オプションには複数の URI を指定できません。\n"
 
@@ -6429,7 +6456,7 @@ msgstr "進む(_F)"
 
 #: src/nautilus-navigation-window-ui.xml.h:32
 msgid "_Go"
-msgstr "ジャンプ(_G)"
+msgstr "移動(_G)"
 
 #: src/nautilus-navigation-window-ui.xml.h:33
 #: src/nautilus-spatial-window-ui.xml.h:13
@@ -7311,127 +7338,3 @@ msgstr "ネットワーク・サーバ"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Nautilus でお使いのネットワークのサーバを表示します"
-
-#~ msgid "Can't find an hbox, using a normal file selection"
-#~ msgstr "hbox が見つからないので普通のファイル選択を使用します"
-
-#~ msgid "AFFS Volume"
-#~ msgstr "AFFS ボリューム"
-
-#~ msgid "AFS Network Volume"
-#~ msgstr "AFS ネットワークボリューム"
-
-#~ msgid "Auto-detected Volume"
-#~ msgstr "自動検出したボリューム"
-
-#~ msgid "CD Digital Audio"
-#~ msgstr "CD デジタル・オーディオ"
-
-#~ msgid "CD-ROM Drive"
-#~ msgstr "CD-ROM ドライブ"
-
-#~ msgid "CDROM Volume"
-#~ msgstr "CDROM ボリューム"
-
-#~ msgid "DVD Volume"
-#~ msgstr "DVD ボリューム"
-
-#~ msgid "Enhanced DOS Volume"
-#~ msgstr "拡張 DOS ボリューム"
-
-#~ msgid "Ext2 Linux Volume"
-#~ msgstr "Ext2 Linux ボリューム"
-
-#~ msgid "Ext3 Linux Volume"
-#~ msgstr "Ext3 Linux ボリューム"
-
-#~ msgid "Hardware Device Volume"
-#~ msgstr "ハードウェアのデバイス・ボリューム"
-
-#~ msgid "Hsfs CDROM Volume"
-#~ msgstr "HSFS CDROM ボリューム"
-
-#~ msgid "JFS Volume"
-#~ msgstr "JFS ボリューム"
-
-#~ msgid "MSDOS Volume"
-#~ msgstr "MSDOS ボリューム"
-
-#~ msgid "MacOS Volume"
-#~ msgstr "MacOS ボリューム"
-
-#~ msgid "Minix Volume"
-#~ msgstr "Minix ボリューム"
-
-#~ msgid "NFS Network Volume"
-#~ msgstr "NFS ネットワーク・ボリューム"
-
-#~ msgid "Pcfs Solaris Volume"
-#~ msgstr "PCFS Solaris ボリューム"
-
-#~ msgid "ReiserFS Linux Volume"
-#~ msgstr "ReiserFS Linux ボリューム"
-
-#~ msgid "Solaris/BSD Volume"
-#~ msgstr "Solaris/BSD ボリューム"
-
-#~ msgid "SuperMount Volume"
-#~ msgstr "スーパーマウント・ボリューム"
-
-#~ msgid "System Volume"
-#~ msgstr "システム・ボリューム"
-
-#~ msgid "Udfs Solaris Volume"
-#~ msgstr "UDFS Solaris ボリューム"
-
-#~ msgid "Windows NT Volume"
-#~ msgstr "Windows NT ボリューム"
-
-#~ msgid "Windows Shared Volume"
-#~ msgstr "Windows 共有ボリューム"
-
-#~ msgid "Windows VFAT Volume"
-#~ msgstr "Windows VFAT ボリューム"
-
-#~ msgid "XFS Linux Volume"
-#~ msgstr "XFS Linux ボリューム"
-
-#~ msgid "XIAFS Volume"
-#~ msgstr "XIAFS ボリューム"
-
-#~ msgid "Xenix Volume"
-#~ msgstr "Xenix ボリューム"
-
-#~ msgid ""
-#~ "Couldn't execute nautilus\n"
-#~ "Make sure nautilus is in your path and correctly installed"
-#~ msgstr ""
-#~ "Nautilus を起動できませんでした。\n"
-#~ "Nautilus が正しくインストールされ ${PATH} に存在するか確認して下さい。"
-
-#~ msgid ""
-#~ "Couldn't connect to URI %s\n"
-#~ "Please make sure that the address is correct and alternatively, type in "
-#~ "this address in the file manager directly"
-#~ msgstr ""
-#~ "URI %s に接続できませんでした。\n"
-#~ "そのアドレスが正しいかどうかを確認して下さい。"
-
-#~ msgid ""
-#~ "Glade file for the connect to server program is missing.\n"
-#~ "Please check your installation of nautilus"
-#~ msgstr ""
-#~ "サーバに接続するプログラムの Glade ファイルが見つかりません。\n"
-#~ "Nautilus のインストールを確認して下さい。"
-
-#~ msgid "Add a new server to your Network Servers and connect to it"
-#~ msgstr "新しいサーバをお使いのネットワーク・サーバに追加して接続します"
-
-#~ msgid "New Server"
-#~ msgstr "新しいサーバ"
-
-#~ msgid "*"
-#~ msgstr "*"
-
-#~ msgid "_Connect"
-#~ msgstr "接続(_C)"
