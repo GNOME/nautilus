@@ -110,6 +110,9 @@ nautilus_view_standard_main_multi (const char                 *executable_name,
 	CallbackData callback_data;
 	char *registration_id;
 
+	/* Disable session manager connection */
+	gnome_client_disable_master_connection ();
+
 	/* Initialize libraries. */
         gnome_init_with_popt_table (executable_name, version, 
 				    argc, argv,

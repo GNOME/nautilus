@@ -127,6 +127,9 @@ main (int argc, char *argv[])
 
 		exit (success ? 0 : -1);
 	}
+	
+	/* Disable session manager connection */
+	gnome_client_disable_master_connection ();
 
 	gnome_init_with_popt_table ("nautilus-mozilla-content-view", VERSION, 
 				    argc, argv,

@@ -96,6 +96,9 @@ main (int argc, char *argv[])
 		nautilus_make_warnings_and_criticals_stop_in_debugger
 			(G_LOG_DOMAIN, g_log_domain_glib, "Gdk", "Gtk", "GnomeVFS", "GnomeUI", "Bonobo", "ORBit", NULL);
 	}
+	
+	/* Disable session manager connection */
+	gnome_client_disable_master_connection ();
 
 	/* Initialize libraries. */
         gnome_init_with_popt_table ("nautilus-adapter", VERSION, 

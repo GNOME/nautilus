@@ -237,6 +237,9 @@ main(int argc, char *argv[])
 	textdomain (PACKAGE);
 #endif
 	
+	/* Disable session manager connection */
+	gnome_client_disable_master_connection ();
+	
         /* initialize CORBA and Bonobo */
 
         gnome_init_with_popt_table("nautilus-notes", VERSION,

@@ -96,6 +96,9 @@ main (int argc, char *argv[])
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
 #endif
+
+	/* Disable session manager connection */
+	gnome_client_disable_master_connection ();
 	
 	/* Initialize the services that we use. */
 

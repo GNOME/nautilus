@@ -98,6 +98,9 @@ main (int argc, char *argv[])
 			 "ORBit",
 			 NULL);
 	}
+	
+	/* Disable session manager connection */
+	gnome_client_disable_master_connection ();
 
         gnome_init_with_popt_table("nautilus-music-view", VERSION, 
 				   argc, argv,

@@ -808,6 +808,9 @@ init_server_factory (int argc, char **argv)
 {
 	CORBA_Environment ev;
 	CORBA_exception_init (&ev);
+	
+	/* Disable session manager connection */
+	gnome_client_disable_master_connection ();
 
         gnome_init_with_popt_table("bonobo-image-generic", VERSION,
 				   argc, argv,

@@ -52,6 +52,9 @@ main(int argc, char *argv[])
   bindtextdomain (PACKAGE, GNOMELOCALEDIR);
   textdomain (PACKAGE);
 #endif	
+	
+  /* Disable session manager connection */
+  gnome_client_disable_master_connection ();
 
   gnome_init_with_popt_table ("hyperbola", VERSION, 
 			      argc, argv,

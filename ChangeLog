@@ -1,3 +1,27 @@
+Fri Jan 26 23:58:42 2001  George Lebl <jirka@5z.com>
+
+	Holy piss sprinkled on this by Arik <arik@eazel.com>
+
+	* components/adapter/main.c (main)
+	  components/help/hyperbola-main.c (main)
+	  components/image-viewer/nautilus-image-view.c (init_server_factory)
+	  components/mozilla/main.c (main)
+	  components/music/main.c (main)
+	  components/notes/nautilus-notes.c (main)
+	  components/services/install/nautilus-view/main.c (main)
+	  components/services/inventory/main.c (main)
+	  components/services/login/nautilus-view/main.c (main)
+	  components/services/summary/nautilus-view/main.c (main)
+	  components/shell/shell.c (init_bonobo)
+	  components/text/main.c (main)
+	  components/throbber/main.c (main)
+	  components/tree/main.c (main)
+	  libnautilus/nautilus-view-standard-main.c
+	  (nautilus_view_standard_main_multi):
+	  Add gnome_client_disable_master_connection call to all out of
+	  process component main functions since they should not register
+	  with the session manager.  Fixes bug #6051
+
 2001-01-26  Seth Nickell  <seth@eazel.com>
 
 	* icons/eazel/sidebar_tab_pieces/.cvsignore:
