@@ -42,15 +42,15 @@ CLEANFILES+=$(CORBA_GENERATED) $(CORBA_HEADER)
 ## Binaries
 
 bin_PROGRAMS =					\
-	trilobite-eazel-time-service-cli
+	eazel-time
 
-trilobite_eazel_time_service_cli_SOURCES =	\
+eazel_time_SOURCES =	\
 	main.c					\
 	trilobite-eazel-time-service-common.c	\
 	trilobite-eazel-time-service-stubs.c	\
 	$(NULL)
 
-trilobite_eazel_time_service_cli_LDFLAGS =	\
+eazel_time_LDFLAGS =	\
 	$(BONOBO_LIBS)				\
 	$(GNOMEUI_LIBS)				\
 	$(GCONF_LIBS)				\
@@ -58,7 +58,7 @@ trilobite_eazel_time_service_cli_LDFLAGS =	\
 	$(OAF_LIBS)				\
 	$(NULL)
 
-trilobite_eazel_time_service_cli_LDADD = 	\
+eazel_time_LDADD = 	\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(NULL)
 

@@ -262,8 +262,8 @@ trilobite_eazel_time_service_initialize (TrilobiteEazelTimeService *service) {
 	/* Default to the eazel test time server */
 	service->private->time_url = g_strdup ("http://eazel24.eazel.com/time.pl");
 
-	/* Default to 5 secs diff, to allow for network latency, bad weather and whotnot */
-	service->private->maxd = 5;
+	/* Default to 180 seconds allowed diff */
+	service->private->maxd = 180;
 
 	/* This sets the bonobo structures in service using the corba object */
 	if (!bonobo_object_construct (BONOBO_OBJECT (service), corba_service)) {
