@@ -1,5 +1,12 @@
 2000-08-31  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* src/nautilus-window-menus.c: 
+	(nautilus_window_initialize_menus): Use
+	gtk_signal_connect_while_alive() for user_level_changed_callback
+	so that we dont get callbacks after we are dead.
+
+2000-08-31  Ramiro Estrugo  <ramiro@eazel.com>
+
 	Task 1229.  Need support for preferences not coupled to user level.
 	
 	* libnautilus-extensions/nautilus-global-preferences.c:

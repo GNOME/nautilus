@@ -1567,10 +1567,11 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 
 	/* connect to the user level changed signal, so we can update the menu when the
 	   user level changes */
-	gtk_signal_connect (GTK_OBJECT (nautilus_user_level_manager_get ()),
-			    "user_level_changed",
-			    user_level_changed_callback,
-			    window);
+	gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_user_level_manager_get ()),
+					"user_level_changed",
+					user_level_changed_callback,
+					window,
+					GTK_OBJECT (window));
 
 	/* create the user level menu.  First, the menu item itself */
 
