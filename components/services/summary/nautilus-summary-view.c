@@ -103,7 +103,7 @@ struct _NautilusSummaryViewDetails {
 
 	/* Services control panel */
 	int		current_service_row;
-	GtkTable	*services_table;
+	GtkWidget	*services_row;
 	GtkWidget	*services_icon_container;
 	GtkWidget	*services_icon_widget;
 	char		*services_icon_name;
@@ -137,7 +137,7 @@ struct _NautilusSummaryViewDetails {
 	/* Eazel news panel */
 	int		current_news_row;
 	gboolean	*news_has_data;
-	GtkTable	*service_news_table;
+	GtkWidget	*service_news_row;
 	GtkWidget	*news_icon_container;
 	GtkWidget	*news_icon_widget;
 	char		*news_icon_name;
@@ -151,7 +151,7 @@ struct _NautilusSummaryViewDetails {
 	/* Update control panel */
 	int		current_update_row;
 	gboolean	*updates_has_data;
-	GtkTable	*updates_table;
+	GtkWidget	*updates_row;
 	GtkWidget	*update_icon_container;
 	GtkWidget	*update_icon_widget;
 	char		*update_icon_name;
@@ -290,27 +290,28 @@ generate_summary_form (NautilusSummaryView	*view)
 	temp_box = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (temp_box);
 
-	view->details->service_news_table = GTK_TABLE (gtk_table_new (4, 2, FALSE));
-	gtk_widget_show (GTK_WIDGET (view->details->service_news_table));
-
 	/* build the eazel news table from the xml file */
 	for (iterator = view->details->xml_data->eazel_news_list; iterator; iterator = g_list_next (iterator)) {
+
+		view->details->service_news_row = gtk_hbox_new (FALSE, 0);
+		gtk_widget_show (view->details->service_news_row);
 
 		view->details->current_news_row++;
 		eazel_news_node = iterator->data;
 		view->details->news_icon_name = eazel_news_node->icon;
 		view->details->news_date = eazel_news_node->date;
-		view->details->news_description_body = eazel_news_node->message;
+		view->details->news_description_body = g_strdup_printf ("- %s", eazel_news_node->message);
 		generate_eazel_news_entry_row (view, view->details->current_news_row);
 
 		g_free (eazel_news_node);
+
+		gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->service_news_row), TRUE, TRUE, 0);
 
 	}
 
 	g_list_free (view->details->xml_data->eazel_news_list);
 
 	/* draw parent vbox and connect it to the service news frame */
-	gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->service_news_table), TRUE, TRUE, 0);
 	gtk_container_add (GTK_CONTAINER (viewport), temp_box);
 	gtk_container_add (GTK_CONTAINER (temp_scrolled_window), viewport);
 	gtk_box_pack_start (GTK_BOX (frame), temp_scrolled_window, TRUE, TRUE, 0);
@@ -351,12 +352,11 @@ generate_summary_form (NautilusSummaryView	*view)
 	temp_box = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (temp_box);
 
-	/* Create the parent table to hold 5 rows */
-	view->details->services_table = GTK_TABLE (gtk_table_new (5, 3, FALSE));
-	gtk_widget_show (GTK_WIDGET (view->details->services_table));
-
 	/* build the services table from the xml file */
 	for (iterator = view->details->xml_data->services_list; iterator; iterator = g_list_next (iterator)) {
+
+		view->details->services_row = gtk_hbox_new (FALSE, 0);
+		gtk_widget_show (GTK_WIDGET (view->details->services_row));
 
 		view->details->current_service_row++;
 		service_node = iterator->data;
@@ -370,12 +370,13 @@ generate_summary_form (NautilusSummaryView	*view)
 
 		g_free (service_node);
 
+		gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->services_row), FALSE, FALSE, 0);
+
 	}
 
 	g_list_free (view->details->xml_data->services_list);
 
 	/* draw parent vbox and connect it to the login frame */
-	gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->services_table), 0, 0, 0);
 	gtk_container_add (GTK_CONTAINER (viewport), temp_box);
 	gtk_container_add (GTK_CONTAINER (temp_scrolled_window), viewport);
 	gtk_box_pack_start (GTK_BOX (frame), temp_scrolled_window, TRUE, TRUE, 0);
@@ -455,12 +456,12 @@ generate_summary_form (NautilusSummaryView	*view)
 	temp_box = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (temp_box);
 
-	/* create the default update table with 4 rows */
-	view->details->updates_table = GTK_TABLE (gtk_table_new (4, 3, FALSE));
-	gtk_widget_show (GTK_WIDGET (view->details->updates_table));
-
 	/* build the updates table from the xml file */
 	for (iterator = view->details->xml_data->update_news_list; iterator; iterator = g_list_next (iterator)) {
+
+		/* create the default update table with 4 rows */
+		view->details->updates_row = gtk_hbox_new (FALSE, 0);
+		gtk_widget_show (GTK_WIDGET (view->details->updates_row));
 
 		view->details->current_update_row++;
 		update_news_node = iterator->data;
@@ -476,6 +477,8 @@ generate_summary_form (NautilusSummaryView	*view)
 
 		g_free (update_news_node);
 
+		gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->updates_row), TRUE, TRUE, 0);
+
 	}
 
 	g_list_free (view->details->xml_data->update_news_list);
@@ -484,7 +487,6 @@ generate_summary_form (NautilusSummaryView	*view)
 	view->details->xml_data = NULL;
 
 	/* draw parent vbox and connect it to the update news frame */
-	gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->updates_table), TRUE, TRUE, 0);
 	gtk_container_add (GTK_CONTAINER (viewport), temp_box);
 	gtk_container_add (GTK_CONTAINER (temp_scrolled_window), viewport);
 	gtk_box_pack_start (GTK_BOX (frame), temp_scrolled_window, TRUE, TRUE, 0);
@@ -511,7 +513,7 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	g_assert (view->details->services_icon_widget != NULL);
 	gtk_box_pack_start (GTK_BOX (view->details->services_icon_container), view->details->services_icon_widget, 0, 0, 0);
 	gtk_widget_show (view->details->services_icon_widget);
-	gtk_table_attach (view->details->services_table, view->details->services_icon_container, 0, 1, row - 1 , row, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_box_pack_start (GTK_BOX (view->details->services_row), view->details->services_icon_container, FALSE, FALSE, 2);
 
 	/* Generate second Column with service title and summary */
 	temp_vbox = gtk_vbox_new (FALSE, 0);
@@ -529,8 +531,8 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	gtk_widget_show (view->details->services_description_header_widget);
 	g_free (view->details->services_description_header);
 	view->details->services_description_header = NULL;
-	gtk_box_pack_start (GTK_BOX (temp_hbox), view->details->services_description_header_widget, FALSE, FALSE, 4);
-	gtk_box_pack_start (GTK_BOX (temp_vbox), temp_hbox, FALSE, FALSE, 4);
+	gtk_box_pack_start (GTK_BOX (temp_hbox), view->details->services_description_header_widget, FALSE, FALSE, 2);
+	gtk_box_pack_start (GTK_BOX (temp_vbox), temp_hbox, FALSE, FALSE, 2);
 	/* Body */
 	temp_hbox = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (temp_hbox);
@@ -541,16 +543,16 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	gtk_widget_show (view->details->services_description_body_widget);
 	g_free (view->details->services_description_body);
 	view->details->services_description_body = NULL;
-	gtk_box_pack_start (GTK_BOX (temp_hbox), view->details->services_description_body_widget, FALSE, FALSE, 6);
-	gtk_box_pack_start (GTK_BOX (temp_vbox), temp_hbox, FALSE, FALSE, 4);
-	gtk_table_attach (view->details->services_table, temp_vbox, 1, 2, row - 1, row, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_box_pack_start (GTK_BOX (temp_hbox), view->details->services_description_body_widget, FALSE, FALSE, 2);
+	gtk_box_pack_start (GTK_BOX (temp_vbox), temp_hbox, FALSE, FALSE, 2);
+	gtk_box_pack_start (GTK_BOX (view->details->services_row), temp_vbox, FALSE, FALSE, 0);
 
 	/* Add the redirect button to the third column */
 	view->details->services_button_container = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (view->details->services_button_container);
 	view->details->services_goto_button = gtk_button_new ();
 	gtk_widget_show (view->details->services_goto_button);
-	gtk_widget_set_usize (view->details->services_goto_button, 80, -1);
+	gtk_widget_set_usize (view->details->services_goto_button, 80, 15);
 	view->details->services_goto_label_widget = gtk_label_new (view->details->services_goto_label);
 	font = nautilus_font_factory_get_font_from_preferences (12);
 	nautilus_gtk_widget_set_font (view->details->services_goto_label_widget, font);
@@ -560,12 +562,12 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	view->details->services_goto_label = NULL;
 	
 	gtk_container_add (GTK_CONTAINER (view->details->services_goto_button), view->details->services_goto_label_widget);
-	gtk_box_pack_end (GTK_BOX (view->details->services_button_container), view->details->services_goto_button, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX (view->details->services_button_container), view->details->services_goto_button, FALSE, FALSE, 3);
 	cbdata->nautilus_view = view->details->nautilus_view;
 	cbdata->uri = view->details->services_redirects[view->details->current_service_row - 1];
 	gtk_signal_connect (GTK_OBJECT (view->details->services_goto_button), "clicked", GTK_SIGNAL_FUNC (goto_service_cb), cbdata);
 
-	gtk_table_attach (view->details->services_table, view->details->services_button_container, 2, 3, row - 1, row, 0, 0, 0, 0);
+	gtk_box_pack_end (GTK_BOX (view->details->services_row), view->details->services_button_container, FALSE, FALSE, 2);
 
 }
 
@@ -573,19 +575,31 @@ static void
 generate_eazel_news_entry_row  (NautilusSummaryView	*view, int	row)
 {
 
-	/* Generate first column with icon */
+	/* Generate first bos with icon */
 	view->details->news_icon_container = gtk_hbox_new (TRUE, 4);
 	gtk_widget_show (view->details->news_icon_container);
 	view->details->news_icon_widget = create_image_widget (view->details->news_icon_name, DEFAULT_SUMMARY_BACKGROUND_COLOR);
 	g_assert (view->details->news_icon_widget != NULL);
 	gtk_box_pack_start (GTK_BOX (view->details->news_icon_container), view->details->news_icon_widget, 0, 0, 0);
 	gtk_widget_show (view->details->news_icon_widget);
-	gtk_table_attach (view->details->service_news_table, view->details->news_icon_container, 0, 1, row - 1, row, GTK_FILL, GTK_FILL, 0, 0);
-	/* Generate second Column with news content */
+	gtk_box_pack_start (GTK_BOX (view->details->service_news_row), view->details->news_icon_container, FALSE, FALSE, 3);
+	/* generate second box with bold type date */
+	view->details->news_date_widget = nautilus_label_new (view->details->news_date);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->news_date_widget), 12);
+	nautilus_label_set_font_from_components (NAUTILUS_LABEL (view->details->news_date_widget),
+						 "helvetica",
+						 "bold",
+						 NULL,
+						 NULL);
+	gtk_box_pack_start (GTK_BOX (view->details->service_news_row), view->details->news_date_widget, FALSE, FALSE, 2);
+	gtk_widget_show (view->details->news_date_widget);
+	g_free (view->details->news_date);
+	view->details->news_date = NULL;
+	/* Generate third box with news content */
 	view->details->news_description_body_widget = nautilus_label_new (view->details->news_description_body);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->news_description_body_widget), 12);
 	nautilus_label_set_line_wrap (NAUTILUS_LABEL (view->details->news_description_body_widget), TRUE);
-	gtk_table_attach (view->details->service_news_table, view->details->news_description_body_widget, 1, 2, row - 1, row, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_box_pack_start (GTK_BOX (view->details->service_news_row), view->details->news_description_body_widget, FALSE, FALSE, 2);
 	gtk_widget_show (view->details->news_description_body_widget);
 	g_free (view->details->news_description_body);
 	view->details->news_description_body = NULL;
@@ -602,16 +616,16 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 
 	cbdata = g_new0 (ServicesButtonCallbackData, 1);
 
-	/* Generate first column with icon */
+	/* Generate first box with icon */
 	view->details->update_icon_container = gtk_hbox_new (TRUE, 4);
 	gtk_widget_show (view->details->update_icon_container);
 	view->details->update_icon_widget = create_image_widget (view->details->update_icon_name, DEFAULT_SUMMARY_BACKGROUND_COLOR);
 	g_assert (view->details->update_icon_widget != NULL);
 	gtk_box_pack_start (GTK_BOX (view->details->update_icon_container), view->details->update_icon_widget, 0, 0, 0);
-	gtk_table_attach (view->details->updates_table, view->details->update_icon_container, 0, 1, row - 1, row, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_box_pack_start (GTK_BOX (view->details->updates_row), view->details->update_icon_container, FALSE, FALSE, 0);
 	gtk_widget_show (view->details->update_icon_widget);
 
-	/* Generate second Column with update title, summary, and version */
+	/* Generate second box with update title, summary, and version */
 	temp_vbox = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (temp_vbox);
 	/* Header */
@@ -658,14 +672,14 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 	gtk_box_pack_start (GTK_BOX (temp_hbox), view->details->update_description_version_widget, FALSE, FALSE, 1);
 	gtk_box_pack_start (GTK_BOX (temp_vbox), temp_hbox, FALSE, FALSE, 0);
 
-	gtk_table_attach (view->details->updates_table, temp_vbox, 1, 2, row - 1, row, FALSE, FALSE, 0, 0);
+	gtk_box_pack_start (GTK_BOX (view->details->updates_row), temp_vbox, FALSE, FALSE, 0);
 
 	/* Add the redirect button to the third column */
 	view->details->update_button_container = gtk_hbox_new (TRUE, 0);
 	gtk_widget_show (view->details->update_button_container);
 	view->details->update_goto_button = gtk_button_new ();
 	gtk_widget_show (view->details->update_goto_button);
-	gtk_widget_set_usize (view->details->update_goto_button, 80, -1);
+	gtk_widget_set_usize (view->details->update_goto_button, 80, 15);
 	view->details->update_goto_label_widget = gtk_label_new (view->details->update_goto_label);
 	font = nautilus_font_factory_get_font_from_preferences (12);
 	nautilus_gtk_widget_set_font (view->details->update_goto_label_widget, font);
@@ -679,7 +693,7 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 	cbdata->nautilus_view = view->details->nautilus_view;
 	cbdata->uri = view->details->update_redirects[view->details->current_update_row - 1];
 	gtk_signal_connect (GTK_OBJECT (view->details->update_goto_button), "clicked", GTK_SIGNAL_FUNC (goto_update_cb), cbdata);
-	gtk_table_attach (view->details->updates_table, view->details->update_button_container, 2, 3, row - 1, row, 0, 0, 0, 0);
+	gtk_box_pack_end (GTK_BOX (view->details->updates_row), view->details->update_button_container, FALSE, FALSE, 0);
 
 }
 
