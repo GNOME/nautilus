@@ -976,7 +976,7 @@ load_content_view (NautilusWindow *window,
                                                 window->application->undo_manager);
 
                 eel_accessibility_set_name (view, _("Content View"));
-                eel_accessibility_set_description (view, _("View of the current file or directory"));
+                eel_accessibility_set_description (view, _("View of the current file or folder"));
                 
                 window->new_content_view = view;
                 g_object_ref (view);
