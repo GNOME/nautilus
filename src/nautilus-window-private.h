@@ -95,6 +95,9 @@ struct NautilusWindowDetails
 
         /* Location bar */
         gboolean temporary_navigation_bar;
+
+        /* Side Pane */
+        int side_pane_width;
 };
 
 #define NAUTILUS_MENU_PATH_BACK_ITEM			"/menu/Go/Back"

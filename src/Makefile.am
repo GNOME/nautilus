@@ -50,6 +50,7 @@ nautilus_SOURCES = \
 	nautilus-component-adapter-factory.c	\
 	nautilus-desktop-window.c		\
 	nautilus-first-time-druid.c		\
+	nautilus-information-panel.c            \
 	nautilus-location-bar.c         	\
 	nautilus-main.c 			\
 	nautilus-navigation-bar.c         	\
@@ -60,9 +61,8 @@ nautilus_SOURCES = \
 	nautilus-search-bar.c			\
 	nautilus-self-check-functions.c 	\
 	nautilus-shell.c			\
-	nautilus-sidebar-tabs.c			\
+	nautilus-side-pane.c                    \
 	nautilus-sidebar-title.c		\
-	nautilus-sidebar.c			\
 	nautilus-signaller.c			\
 	nautilus-simple-search-bar.c		\
 	nautilus-switchable-navigation-bar.c	\
@@ -84,6 +84,7 @@ nautilus_SOURCES = \
 	nautilus-component-adapter-factory.h	\
 	nautilus-desktop-window.h		\
 	nautilus-first-time-druid.h		\
+	nautilus-information-panel.h            \
 	nautilus-location-bar.h			\
 	nautilus-main.h				\
 	nautilus-navigation-bar.h		\
@@ -96,9 +97,8 @@ nautilus_SOURCES = \
 	nautilus-search-bar.h			\
 	nautilus-self-check-functions.h 	\
 	nautilus-shell.h			\
-	nautilus-sidebar-tabs.h			\
+	nautilus-side-pane.h			\
 	nautilus-sidebar-title.h		\
-	nautilus-sidebar.h			\
 	nautilus-signaller.h			\
 	nautilus-simple-search-bar.h		\
 	nautilus-switchable-navigation-bar.h	\

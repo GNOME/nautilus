@@ -35,8 +35,9 @@
 #include <libnautilus-private/nautilus-view-identifier.h>
 #include "nautilus-applicable-views.h"
 #include "nautilus-view-frame.h"
-#include "nautilus-sidebar.h"
 #include "nautilus-application.h"
+#include "nautilus-information-panel.h"
+#include "nautilus-side-pane.h"
 
 #define NAUTILUS_TYPE_WINDOW              (nautilus_window_get_type())
 #define NAUTILUS_WINDOW(obj)	          (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_WINDOW, NautilusWindow))
@@ -76,7 +77,8 @@ struct NautilusWindow {
         NautilusWindowDetails *details;
         
         /** UI stuff **/
-        NautilusSidebar *sidebar;
+        NautilusSidePane *sidebar;
+        NautilusInformationPanel *information_panel;
         GtkWidget *content_hbox;
         GtkWidget *view_as_option_menu;
         GtkWidget *navigation_bar;

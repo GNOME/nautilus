@@ -32,8 +32,8 @@
 
 #include "nautilus-application.h"
 #include "nautilus-bookmarks-window.h"
+#include "nautilus-information-panel.h"
 #include "nautilus-main.h"
-#include "nautilus-sidebar.h"
 #include "nautilus-signaller.h"
 #include "nautilus-switchable-navigation-bar.h"
 #include "nautilus-window-manage-views.h"
@@ -89,6 +89,10 @@
 #define STATUS_BAR_CLEAR_TIMEOUT 10000	/* milliseconds */
 #define MAX_HISTORY_ITEMS 50
 
+/* FIXME bugzilla.gnome.org 41245: hardwired sizes */
+#define SIDE_PANE_MINIMUM_WIDTH 1
+#define SIDE_PANE_MINIMUM_HEIGHT 400
+
 /* dock items */
 #define LOCATION_BAR_PATH	"/Location Bar"
 #define TOOLBAR_PATH            "/Toolbar"
@@ -111,6 +115,7 @@ enum {
 };
 
 static GList *history_list;
+static int side_pane_width_auto_value = SIDE_PANE_MINIMUM_WIDTH;
 
 static void update_sidebar_panels_from_preferences (NautilusWindow *window);
 static void sidebar_panels_changed_callback        (gpointer        user_data);
@@ -530,28 +535,97 @@ set_dummy_initial_view_as_menu (NautilusWindow *window)
 }
 
 static void
+side_pane_close_requested_callback (GtkWidget *widget,
+				    gpointer user_data)
+{
+	NautilusWindow *window;
+	
+	window = NAUTILUS_WINDOW (user_data);
+
+	nautilus_window_hide_sidebar (window);
+}
+
+static void
+side_pane_size_allocate_callback (GtkWidget *widget,
+				  GtkAllocation *allocation,
+				  gpointer user_data)
+{
+	NautilusWindow *window;
+	
+	window = NAUTILUS_WINDOW (user_data);
+	
+	if (allocation->width != window->details->side_pane_width) {
+		window->details->side_pane_width = allocation->width;
+		eel_preferences_set_integer
+			(NAUTILUS_PREFERENCES_SIDEBAR_WIDTH, 
+			 allocation->width);
+	}
+}
+
+static void
+setup_side_pane_width (NautilusWindow *window)
+{
+	static gboolean setup_auto_value= TRUE;
+
+	g_return_if_fail (window->sidebar != NULL);
+	
+	if (setup_auto_value) {
+		setup_auto_value = FALSE;
+		eel_preferences_add_auto_integer 
+			(NAUTILUS_PREFERENCES_SIDEBAR_WIDTH,
+			 &side_pane_width_auto_value);
+	}
+
+	window->details->side_pane_width = side_pane_width_auto_value;
+
+	/* FIXME bugzilla.gnome.org 41245: Saved in pixels instead of in %? */
+        /* FIXME bugzilla.gnome.org 41245: No reality check on the value? */
+	
+	gtk_paned_set_position (GTK_PANED (window->content_hbox), 
+				side_pane_width_auto_value);
+}
+
+static void
 nautilus_window_set_up_sidebar (NautilusWindow *window)
 {
-	window->sidebar = nautilus_sidebar_new ();
+	window->sidebar = nautilus_side_pane_new ();
 
-	if (window->details->location != NULL &&
-	    window->details->title != NULL) {
-		nautilus_sidebar_set_uri (window->sidebar,
-					  window->details->location,
-					  window->details->title);
-	}
-	
-	g_signal_connect_object (window->sidebar, "location_changed",
-				 G_CALLBACK (go_to_callback), window, 0);
+	g_signal_connect (window->sidebar,
+			  "close_requested",
+			  G_CALLBACK (side_pane_close_requested_callback),
+			  window);
+
 	gtk_paned_pack1 (GTK_PANED (window->content_hbox),
 			 GTK_WIDGET (window->sidebar),
 			 FALSE, TRUE);
+
+	setup_side_pane_width (window);
+	g_signal_connect (window->sidebar, 
+			  "size_allocate",
+			  G_CALLBACK (side_pane_size_allocate_callback),
+			  window);
 	
-	nautilus_sidebar_setup_width (window->sidebar);
+	window->information_panel = nautilus_information_panel_new ();
+	
+	if (window->details->location != NULL &&
+	    window->details->title != NULL) {
+		nautilus_information_panel_set_uri (window->information_panel,
+						    window->details->location,
+						    window->details->title);
+	}
+
+	g_signal_connect_object (window->information_panel, "location_changed",
+				 G_CALLBACK (go_to_callback), window, 0);
+
+	gtk_widget_show (GTK_WIDGET (window->information_panel));
+
+	nautilus_side_pane_add_panel (NAUTILUS_SIDE_PANE (window->sidebar), 
+				      GTK_WIDGET (window->information_panel),
+				      _("Information"));
 
 	/* Set up the sidebar panels. */
 	update_sidebar_panels_from_preferences (window);
-
+	
 	gtk_widget_show (GTK_WIDGET (window->sidebar));
 }
 
@@ -1401,12 +1475,20 @@ void
 nautilus_window_add_sidebar_panel (NautilusWindow *window,
 				   NautilusViewFrame *sidebar_panel)
 {
+	char *label;
+
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (sidebar_panel));
-	g_return_if_fail (NAUTILUS_IS_SIDEBAR (window->sidebar));
+	g_return_if_fail (NAUTILUS_IS_SIDE_PANE (window->sidebar));
 	g_return_if_fail (g_list_find (window->sidebar_panels, sidebar_panel) == NULL);
 	
-	nautilus_sidebar_add_panel (window->sidebar, sidebar_panel);
+	label = nautilus_view_frame_get_label (sidebar_panel);
+	
+	nautilus_side_pane_add_panel (window->sidebar, 
+				      GTK_WIDGET (sidebar_panel), 
+				      label);
+
+	g_free (label);
 
 	g_object_ref (sidebar_panel);
 	window->sidebar_panels = g_list_prepend (window->sidebar_panels, sidebar_panel);
@@ -1422,7 +1504,8 @@ nautilus_window_remove_sidebar_panel (NautilusWindow *window, NautilusViewFrame 
 		return;
 	}
 	
-	nautilus_sidebar_remove_panel (window->sidebar, sidebar_panel);
+	nautilus_side_pane_remove_panel (window->sidebar, 
+					 GTK_WIDGET (sidebar_panel));
 	window->sidebar_panels = g_list_remove (window->sidebar_panels, sidebar_panel);
 	g_object_unref (sidebar_panel);
 }

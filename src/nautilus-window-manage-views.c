@@ -30,6 +30,7 @@
 
 #include "nautilus-applicable-views.h"
 #include "nautilus-application.h"
+#include "nautilus-information-panel.h"
 #include "nautilus-location-bar.h"
 #include "nautilus-main.h"
 #include "nautilus-window-private.h"
@@ -226,9 +227,9 @@ update_title (NautilusWindow *window)
                 gtk_window_set_title (GTK_WINDOW (window), window_title);
                 g_free (window_title);
         }
-
-	if (window->sidebar != NULL) {
-        	nautilus_sidebar_set_title (window->sidebar, title);
+	if (window->information_panel) {
+        	nautilus_information_panel_set_title 
+                        (window->information_panel, title);
 	}
         
         if (title [0] != '\0' && window->current_location_bookmark &&
@@ -584,15 +585,15 @@ update_for_new_location (NautilusWindow *window)
         nautilus_navigation_bar_set_location (NAUTILUS_NAVIGATION_BAR (window->navigation_bar),
                                               window->details->location);
         
-        /* Notify the sidebar of the location change. */
+        /* Notify the information panel of the location change. */
         /* FIXME bugzilla.gnome.org 40211:
          * Eventually, this will not be necessary when we restructure the 
          * sidebar itself to be a NautilusViewFrame.
          */
-	if (window->sidebar != NULL) {
-		nautilus_sidebar_set_uri (window->sidebar,
-					  window->details->location,
-					  window->details->title);
+	if (window->information_panel) {
+		nautilus_information_panel_set_uri (window->information_panel,
+                                                    window->details->location,
+                                                    window->details->title);
 	}
 }
 
@@ -1036,9 +1037,6 @@ handle_view_failure (NautilusWindow *window,
 	if (view_frame_is_sidebar_panel (view)) {
                 report_sidebar_panel_failure_to_user (window, view);
 		current_iid = nautilus_view_frame_get_view_iid (view);
-		if (window->sidebar != NULL) {
-			nautilus_sidebar_hide_active_panel_if_matches (window->sidebar, current_iid);
-		}
 		disconnect_and_destroy_sidebar_panel (window, view);
 	} else {
 	        if (view == window->content_view) {
@@ -1571,9 +1569,6 @@ nautilus_window_set_sidebar_panels (NautilusWindow *window,
 						 compare_view_identifier_with_iid);
 		if (found_node == NULL) {
 			current_iid = nautilus_view_frame_get_view_iid (sidebar_panel);
-			if (window->sidebar != NULL) {
-				nautilus_sidebar_hide_active_panel_if_matches (window->sidebar, current_iid);
-			}
 			disconnect_and_destroy_sidebar_panel (window, sidebar_panel);
 		} else {
                         identifier = (NautilusViewIdentifier *) found_node->data;

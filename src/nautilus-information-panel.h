@@ -25,54 +25,45 @@
  *  in a vertical panel and hosts the meta-views.
  */
 
-#ifndef NAUTILUS_SIDEBAR_H
-#define NAUTILUS_SIDEBAR_H
+#ifndef NAUTILUS_INFORMATION_PANEL_H
+#define NAUTILUS_INFORMATION_PANEL_H
 
 #include <eel/eel-background-box.h>
 
 #include "nautilus-view-frame.h"
 
-#define NAUTILUS_TYPE_SIDEBAR \
-	(nautilus_sidebar_get_type ())
-#define NAUTILUS_SIDEBAR(obj) \
-	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SIDEBAR, NautilusSidebar))
-#define NAUTILUS_SIDEBAR_CLASS(klass) \
-	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SIDEBAR, NautilusSidebarClass))
-#define NAUTILUS_IS_SIDEBAR(obj) \
-	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_SIDEBAR))
-#define NAUTILUS_IS_SIDEBAR_CLASS(klass) \
-	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SIDEBAR))
+#define NAUTILUS_TYPE_INFORMATION_PANEL \
+	(nautilus_information_panel_get_type ())
+#define NAUTILUS_INFORMATION_PANEL(obj) \
+	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_INFORMATION_PANEL, NautilusInformationPanel))
+#define NAUTILUS_INFORMATION_PANEL_CLASS(klass) \
+	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_INFORMATION_PANEL, NautilusInformationPanelClass))
+#define NAUTILUS_IS_INFORMATION_PANEL(obj) \
+	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_INFORMATION_PANEL))
+#define NAUTILUS_IS_INFORMATION_PANEL_CLASS(klass) \
+	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_INFORMATION_PANEL))
 
-typedef struct NautilusSidebarDetails NautilusSidebarDetails;
+typedef struct NautilusInformationPanelDetails NautilusInformationPanelDetails;
 
 typedef struct {
 	EelBackgroundBox parent_slot;
-	NautilusSidebarDetails *details;
-} NautilusSidebar;
+	NautilusInformationPanelDetails *details;
+} NautilusInformationPanel;
 
 typedef struct {
 	EelBackgroundBoxClass parent_slot;
 	
-	void (*location_changed) (NautilusSidebar *sidebar,
+	void (*location_changed) (NautilusInformationPanel *information_panel,
 				  const char *location);
-} NautilusSidebarClass;
+} NautilusInformationPanelClass;
 
-GtkType          nautilus_sidebar_get_type     (void);
-NautilusSidebar *nautilus_sidebar_new          (void);
-void             nautilus_sidebar_add_panel    (NautilusSidebar   *sidebar,
-						NautilusViewFrame *panel);
-GtkWidget 	*nautilus_sidebar_create_context_menu (NautilusSidebar *sidebar);
-
-void		 nautilus_sidebar_hide_active_panel_if_matches (NautilusSidebar *sidebar,
-							  	const char *sidebar_id);
-
-void             nautilus_sidebar_remove_panel (NautilusSidebar   *sidebar,
-						NautilusViewFrame *panel);
-void             nautilus_sidebar_set_uri      (NautilusSidebar   *sidebar,
+GtkType          nautilus_information_panel_get_type     (void);
+NautilusInformationPanel *nautilus_information_panel_new          (void);
+void             nautilus_information_panel_set_uri      (NautilusInformationPanel   *information_panel,
 						const char        *new_uri,
 						const char        *initial_title);
-void             nautilus_sidebar_set_title    (NautilusSidebar   *sidebar,
+void             nautilus_information_panel_set_title    (NautilusInformationPanel   *information_panel,
 						const char        *new_title);
-void             nautilus_sidebar_setup_width  (NautilusSidebar   *sidebar);
+void             nautilus_information_panel_setup_width  (NautilusInformationPanel   *information_panel);
 
-#endif /* NAUTILUS_SIDEBAR_H */
+#endif /* NAUTILUS_INFORMATION_PANEL_H */
