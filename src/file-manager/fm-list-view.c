@@ -244,6 +244,7 @@ create_and_set_up_tree_view (FMListView *view)
 	view->details->file_name_column = gtk_tree_view_column_new ();
 	gtk_tree_view_column_set_sort_column_id (view->details->file_name_column, FM_LIST_MODEL_NAME_COLUMN);
 	gtk_tree_view_column_set_title (view->details->file_name_column, _("File name"));
+	gtk_tree_view_column_set_resizable (view->details->file_name_column, TRUE);
 
 	gtk_tree_view_column_pack_start (view->details->file_name_column, cell, FALSE);
 	gtk_tree_view_column_set_attributes (view->details->file_name_column, cell,
@@ -276,6 +277,7 @@ create_and_set_up_tree_view (FMListView *view)
 							   cell,
 							   "text", FM_LIST_MODEL_SIZE_COLUMN,
 							   NULL);
+	gtk_tree_view_column_set_resizable (column, TRUE);
 	gtk_tree_view_column_set_sort_column_id (column, FM_LIST_MODEL_SIZE_COLUMN);
 	gtk_tree_view_append_column (view->details->tree_view, column);
 
@@ -285,6 +287,7 @@ create_and_set_up_tree_view (FMListView *view)
 							   cell,
 							   "text", FM_LIST_MODEL_TYPE_COLUMN,
 							   NULL);
+	gtk_tree_view_column_set_resizable (column, TRUE);
 	gtk_tree_view_column_set_sort_column_id (column, FM_LIST_MODEL_TYPE_COLUMN);	
 	gtk_tree_view_append_column (view->details->tree_view, column);
 
@@ -294,6 +297,7 @@ create_and_set_up_tree_view (FMListView *view)
 							   cell,
 							   "text", FM_LIST_MODEL_DATE_MODIFIED_COLUMN,
 							   NULL);
+	gtk_tree_view_column_set_resizable (column, TRUE);
 	gtk_tree_view_column_set_sort_column_id (column, FM_LIST_MODEL_DATE_MODIFIED_COLUMN);
 	gtk_tree_view_append_column (view->details->tree_view, column);
 

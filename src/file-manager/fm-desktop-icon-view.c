@@ -622,6 +622,21 @@ new_terminal_callback (BonoboUIComponent *component, gpointer data, const char *
 }
 
 static void
+new_launcher_callback (BonoboUIComponent *component, gpointer data, const char *verb)
+{
+	char *desktop_directory;
+	
+	desktop_directory = nautilus_get_desktop_directory ();
+
+	nautilus_launch_application_from_command ("gnome-desktop-item-edit", 
+						  "gnome-desktop-item-edit --create-new",
+						  desktop_directory, 
+						  FALSE);
+	g_free (desktop_directory);
+
+}
+
+static void
 change_background_callback (BonoboUIComponent *component, 
 	  		    gpointer data, 
 			    const char *verb)
@@ -1200,6 +1215,7 @@ real_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB ("Change Background", change_background_callback),
 		BONOBO_UI_VERB ("Empty Trash Conditional", empty_trash_callback),
 		BONOBO_UI_VERB ("New Terminal", new_terminal_callback),
+		BONOBO_UI_VERB ("New Launcher", new_launcher_callback),
 		BONOBO_UI_VERB ("Reset Background", reset_background_callback),
 		BONOBO_UI_VERB ("Unmount Volume Conditional", unmount_volume_callback),
 		BONOBO_UI_VERB_END
