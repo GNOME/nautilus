@@ -202,19 +202,28 @@ fm_desktop_icon_view_handle_middle_click (NautilusIconContainer *icon_container,
 		    ButtonPressMask, (XEvent *) &x_event);
 }
 
-static gboolean
-startup_create_mount_links (const NautilusVolume *volume, gpointer data)
+static void
+create_mount_link (const NautilusVolume *volume)
 {
 	gboolean result;
 	char *desktop_path, *target_uri, *icon_name;
 
+	/* FIXME bugzilla.eazel.com 2174: This hack was moved here
+	 * from the volume monitor code.
+	 */
+	/* Make a link only for the root partition for now. */
+	if (volume->type == NAUTILUS_VOLUME_EXT2
+	    && strcmp (volume->mount_path, "/") != 0) {
+		return;
+	}
+			
 	/* Get icon type */
-	if (strcmp (volume->mount_type, "cdrom") == 0) {
-		icon_name = g_strdup("i-cdrom.png");
-	} else if (strcmp (volume->mount_type, "floppy") == 0) {
-		icon_name = g_strdup("i-floppy.png");
+	if (volume->type == NAUTILUS_VOLUME_CDROM) {
+		icon_name = g_strdup ("i-cdrom.png");
+	} else if (volume->type == NAUTILUS_VOLUME_FLOPPY) {
+		icon_name = g_strdup ("i-floppy.png");
 	} else {
-		icon_name = g_strdup("i-blockdev.png");
+		icon_name = g_strdup ("i-blockdev.png");
 	}
 	
 	desktop_path = nautilus_get_desktop_directory ();
@@ -223,11 +232,17 @@ startup_create_mount_links (const NautilusVolume *volume, gpointer data)
 	/* Create link */
 	result = nautilus_link_create (desktop_path, volume->volume_name, icon_name, 
 				       target_uri, NAUTILUS_LINK_MOUNT);
-				       	
+	/* FIXME: Ignoring the result here OK? */
+
 	g_free (desktop_path);
 	g_free (target_uri);
 	g_free (icon_name);
-	
+}
+
+static gboolean
+startup_create_mount_links (const NautilusVolume *volume, gpointer data)
+{
+	create_mount_link (volume);
 	return TRUE;
 }
 
@@ -473,35 +488,16 @@ fm_desktop_icon_view_trash_state_changed_callback (NautilusTrashMonitor *trash_m
 }
 
 static void
-volume_mounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volume, 
+volume_mounted_callback (NautilusVolumeMonitor *monitor,
+			 NautilusVolume *volume, 
 			 FMDesktopIconView *icon_view)
 {
-	gboolean result;
-	char *desktop_path, *target_uri, *icon_name;
-			
-	/* Get icon type */
-	if (strcmp (volume->mount_type, "cdrom") == 0) {
-		icon_name = g_strdup("i-cdrom.png");
-	} else if (strcmp (volume->mount_type, "floppy") == 0) {
-		icon_name = g_strdup("i-floppy.png");
-	} else {
-		icon_name = g_strdup("i-blockdev.png");
-	}
-	
-	desktop_path = nautilus_get_desktop_directory ();
-	target_uri = gnome_vfs_get_uri_from_local_path (volume->mount_path);
-
-	/* Create link */
-	result = nautilus_link_create (desktop_path, volume->volume_name, icon_name, 
-				       target_uri, NAUTILUS_LINK_MOUNT);
-				       	
-	g_free (desktop_path);
-	g_free (target_uri);
-	g_free (icon_name);
+	create_mount_link (volume);
 }
 
 static void
-volume_unmounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volume, 
+volume_unmounted_callback (NautilusVolumeMonitor *monitor,
+			   NautilusVolume *volume, 
 			   FMDesktopIconView *icon_view)
 {
 	GnomeVFSResult result;

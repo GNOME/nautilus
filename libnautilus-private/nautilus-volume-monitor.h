@@ -53,35 +53,26 @@ struct NautilusVolumeMonitorClass {
 				   const NautilusVolume      	 *volume);
 };
 
-#define NAUTILUS_MOUNT_TYPE_ISO9660 	"iso9660"
-#define NAUTILUS_MOUNT_TYPE_EXT2 	"ext2"
-#define NAUTILUS_MOUNT_OPTIONS_USER 	"user"
-#define NAUTILUS_MOUNT_OPTIONS_OWNER 	"owner"
-
-#define NAUTILUS_CHECK_INTERVAL 	2000
-
 typedef enum { 
-	STATE_ACTIVE = 0, 
-	STATE_INACTIVE, 
-	STATE_EMPTY, 
-	STATE_LAST,
+	NAUTILUS_VOLUME_ACTIVE, 
+	NAUTILUS_VOLUME_INACTIVE, 
+	NAUTILUS_VOLUME_EMPTY, 
+	NAUTILUS_VOLUME_NUMBER_OF_STATES
 } NautilusVolumeState;
 
 typedef enum { 
-	VOLUME_CDROM, 
-	VOLUME_FLOPPY,
-	VOLUME_EXT2,
-	VOLUME_OTHER 
+	NAUTILUS_VOLUME_CDROM, 
+	NAUTILUS_VOLUME_FLOPPY,
+	NAUTILUS_VOLUME_EXT2,
+	NAUTILUS_VOLUME_OTHER 
 } NautilusVolumeType;
 
 struct NautilusVolume {
 	NautilusVolumeType type;
 	NautilusVolumeState state;
-	int volume_fd;
 	
 	char *fsname;
 	char *mount_path;
-	char *mount_type;
 	char *volume_name;
 	
 	gboolean is_mounted;

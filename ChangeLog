@@ -1,3 +1,49 @@
+2000-08-25  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-volume-monitor.h:
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(is_floppy_mount_path): Added helper.
+	(floppy_sort): Simplified logic.
+	(nautilus_volume_monitor_get_removable_volume_names): Used the
+	prepend/reverse idiom instead of append.
+	(nautilus_volume_monitor_volume_is_mounted): Fixed extremely
+	unlikely but possible buffer overflow and checked result from
+	sscanf.
+	(mount_volume_mount): Use g_strchomp instead of rolling our own.
+	Took out some dead code.
+	(mount_volumes_update_is_mounted): Fixed extremely unlikely but
+	possible buffer overflow and checked result from sscanf.
+	(mount_volume_add_aliases): Fixed possible buffer overflow and
+	storage leak.
+	(mount_volume_ext2_add): Removed code to ignore all ext2 volumes
+	other than "/". Moved the hack into FMDesktopIconView.
+	(mount_volume_cdrom_set_state), (mount_volume_floppy_set_state),
+	(mount_volume_ext2_set_state), (mount_volume_set_state),
+	(volume_set_state_empty) (mount_volume_activate_cdrom),
+	(mount_volume_activate_floppy), (mount_volume_activate_ext2),
+	(mount_volume_activate), (eject_cdrom), (mount_volume_deactivate),
+	(mount_volume_check_change), (check_permissions),
+	(mount_volume_floppy_add),
+	(cdrom_ioctl_frenzy), (mount_volume_iso9660_add),
+	(add_mount_volume), (mntent_is_removable_fs), (find_volumes),
+	(nautilus_volume_monitor_mount_unmount_removable),
+	(free_volume_info), (get_iso9660_volume_name),
+	(get_ext2_volume_name), (get_floppy_volume_name):
+	Removed mount_type and volume_fd. Made a bunch of formerly-
+	public things private and added NAUTILUS_ prefix to some public
+	identifier that didn't have it.
+
+	* libnautilus-extensions/nautilus-trash-directory.c:
+	(get_volume_vfs_uri_if_writable):
+	Changed callers to use the constants with the NAUTILUS_ prefix.
+	
+	* src/file-manager/fm-desktop-icon-view.c: (create_mount_link):
+	Moved the "/" hack here (marked with a FIXME and bug number) and
+	made the two cases that create mount links share code. Also
+	made it use type instead of the now-gone mount_type.
+	(startup_create_mount_links), (volume_mounted_callback): Call the
+	new common routine instead of having two copies of the same code.
+
 2000-08-25  John Sullivan  <sullivan@eazel.com>
 
 	Made sorting by size put big ones first, to match
