@@ -1461,7 +1461,6 @@ nautilus_window_stop_loading (NautilusWindow *window)
 void
 nautilus_window_set_content_view (NautilusWindow *window, NautilusViewIdentifier *id)
 {
-        NautilusDirectory *directory;
 	NautilusFile *file;
         NautilusViewFrame *view;
 
@@ -1469,12 +1468,10 @@ nautilus_window_set_content_view (NautilusWindow *window, NautilusViewIdentifier
         g_return_if_fail (window->location != NULL);
 	g_return_if_fail (id != NULL);
 
-        directory = nautilus_directory_get (window->location);
 	file = nautilus_file_get (window->location);
-	g_assert (directory != NULL);
+	g_assert (file != NULL);
         nautilus_mime_set_default_component_for_uri
-		(directory, file, id->iid);
-        nautilus_directory_unref (directory);
+		(file, id->iid);
         nautilus_file_unref (file);
         
         nautilus_window_allow_stop (window, TRUE);

@@ -41,19 +41,16 @@ any_programs_available_for_file (GnomeVFSMimeActionType action_type, NautilusFil
 {
 	gboolean result;
 	char *uri;
-	NautilusDirectory *directory;
 	
 	uri = nautilus_file_get_uri (file);
-	directory = nautilus_directory_get (uri);
 
 	if (action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
-		result = nautilus_mime_has_any_components_for_uri (directory, file);
+		result = nautilus_mime_has_any_components_for_uri (file);
 	} else {
 		g_assert (action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION);
-		result = nautilus_mime_has_any_applications_for_uri (directory, file);
+		result = nautilus_mime_has_any_applications_for_uri (file);
 	}
 
-	nautilus_directory_unref (directory);
 	g_free (uri);
 
 	return result;

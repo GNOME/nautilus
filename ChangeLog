@@ -1,3 +1,81 @@
+2000-10-17  Maciej Stachowiak  <mjs@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(cancel_mime_list, set_up_request_by_file_attributes,
+	lacks_mime_list, nautilus_directory_invalidate_counts,
+	mime_list_callback, mime_list_start): Fix assorted bugs which made
+	NautilusFile think the list was never complete.
+
+	* libnautilus-extensions/nautilus-wait-until-ready.h: Include
+	<libnautilus-extensions/nautilus-directory.h> and
+	<libnautilus-extensions/nautilus-file.h>.
+
+	* libnautilus-extensions/nautilus-file-attributes.h: Rename
+	MIME_LIST attroibute to DIRECTORY_ITEM_MIME_TYPES.
+
+	* libnautilus-extensions/nautilus-file.h,
+	libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_directory_item_mime_types): Renamed from
+	nautilus_file_get_mime_list.
+
+	* libnautilus-extensions/nautilus-mime-actions.h,
+	libnautilus-extensions/nautilus-mime-actions.c
+	(nautilus_file_wait_for_metadata,
+	nautilus_file_wait_for_mime_action_attributes,
+	nautilus_mime_get_default_action_type_for_uri,
+	nautilus_mime_get_default_action_for_uri,
+	nautilus_mime_get_default_application_for_uri_internal,
+	nautilus_mime_get_default_application_for_uri,
+	nautilus_mime_is_default_application_for_uri_user_chosen,
+	nautilus_mime_get_default_component_for_uri_internal,
+	nautilus_mime_get_default_component_for_uri,
+	nautilus_mime_is_default_component_for_uri_user_chosen,
+	nautilus_mime_get_short_list_applications_for_uri,
+	nautilus_mime_get_short_list_components_for_uri,
+	nautilus_mime_get_short_list_methods_for_uri,
+	nautilus_mime_get_all_applications_for_uri,
+	nautilus_mime_has_any_applications_for_uri,
+	nautilus_mime_get_all_components_for_uri,
+	nautilus_mime_has_any_components_for_uri,
+	nautilus_mime_set_default_action_type_for_uri,
+	nautilus_mime_set_default_application_for_uri,
+	nautilus_mime_set_default_component_for_uri,
+	nautilus_mime_set_short_list_applications_for_uri,
+	nautilus_mime_set_short_list_components_for_uri,
+	nautilus_mime_add_application_to_short_list_for_uri,
+	nautilus_mime_remove_application_from_short_list_for_uri,
+	nautilus_mime_add_component_to_short_list_for_uri,
+	nautilus_mime_remove_component_from_short_list_for_uri,
+	nautilus_mime_extend_all_applications_for_uri,
+	nautilus_mime_remove_from_all_applications_for_uri,
+	mime_type_list_to_hash_table, nautilus_do_component_query): Use
+	all the new NautilusFile APIs and stop using NautilusDirectory. No
+	longer take NautilusDirectory as a parameter in addition to
+	NautilusFile.
+
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(repopulate_program_list, is_application_default_for_uri,
+	is_component_default_for_uri, is_component_in_short_list_for_uri,
+	is_application_in_short_list_for_uri,
+	program_file_pair_is_default_for_file, add_to_short_list_for_file,
+	remove_from_short_list_for_file, remove_default_for_item,
+	set_default_for_item): Stop passing NautilusDirectory to
+	nautilus-mime-actions functions.
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	(any_programs_available_for_file): Likewise.
+	* src/file-manager/fm-directory-view.c (switch_location_and_view,
+	files_added_callback, files_changed_callback,
+	create_open_with_gtk_menu, reset_bonobo_open_with_menu,
+	activate_callback):  Likewise.
+	* src/nautilus-applicable-views.c (got_file_info_callback): Likewise.
+	* src/nautilus-sidebar.c (nautilus_sidebar_update_buttons): Likewise.
+	* src/nautilus-window-manage-views.c
+	(nautilus_window_set_content_view): Likewise.
+	* src/nautilus-window.c (nautilus_window_load_content_view_menu):
+	Likewise.
+	* test/test-nautilus-mime-actions-set.c (main): Likewise.
+	* test/test-nautilus-mime-actions.c (main): Likewise.
+
 2000-10-17  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-logic.c:

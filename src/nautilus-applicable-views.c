@@ -116,7 +116,7 @@ got_file_info_callback (NautilusFile *file,
                 goto out;
         }
 
-        default_component = nautilus_mime_get_default_component_for_uri (navinfo->directory, navinfo->file);
+        default_component = nautilus_mime_get_default_component_for_uri (navinfo->file);
         if (default_component != NULL) {
         	default_id = nautilus_view_identifier_new_from_content_view (default_component);
                 CORBA_free (default_component);
@@ -134,7 +134,7 @@ got_file_info_callback (NautilusFile *file,
                 /* Map GnomeVFSResult to one of the types that Nautilus knows how to handle. */
                 if (vfs_result_code == GNOME_VFS_OK && default_id == NULL) {
                 	/* If the complete list is non-empty, the default shouldn't have been NULL */
-                    	g_assert (!nautilus_mime_has_any_components_for_uri (navinfo->directory, navinfo->file));
+                    	g_assert (!nautilus_mime_has_any_components_for_uri (navinfo->file));
                         result_code = NAUTILUS_NAVIGATION_RESULT_NO_HANDLER_FOR_TYPE;
                 }
 

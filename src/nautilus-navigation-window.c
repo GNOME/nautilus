@@ -925,7 +925,6 @@ nautilus_window_load_content_view_menu (NautilusWindow *window)
         GtkWidget *new_menu;
         GtkWidget *menu_item;
 	char *label;
-	NautilusDirectory *directory;
 	NautilusFile *file;
 
         g_return_if_fail (NAUTILUS_IS_WINDOW (window));
@@ -934,9 +933,8 @@ nautilus_window_load_content_view_menu (NautilusWindow *window)
         new_menu = gtk_menu_new ();
         
 	file = nautilus_file_get (window->location);
-	directory = nautilus_directory_get (window->location);
         /* Add a menu item for each view in the preferred list for this location. */
-        components = nautilus_mime_get_short_list_components_for_uri (directory, file);
+        components = nautilus_mime_get_short_list_components_for_uri (file);
         for (p = components; p != NULL; p = p->next) {
                 menu_item = create_content_view_menu_item 
                 	(window, nautilus_view_identifier_new_from_content_view (p->data));
@@ -949,7 +947,7 @@ nautilus_window_load_content_view_menu (NautilusWindow *window)
 	 * one way trip if you choose one of these view menu items, but
 	 * it's better than nothing.
 	 */
-	method = nautilus_mime_get_short_list_methods_for_uri (directory, file);
+	method = nautilus_mime_get_short_list_methods_for_uri (file);
 	/* FIXME bugzilla.eazel.com 2466: Name of the function is plural, but it returns only
 	 * one item. That must be fixed.
 	 */
@@ -992,7 +990,6 @@ nautilus_window_load_content_view_menu (NautilusWindow *window)
                                   new_menu);
 
 
-	nautilus_directory_unref (directory);
 	nautilus_file_unref (file);
 
 	nautilus_window_synch_content_view_menu (window);

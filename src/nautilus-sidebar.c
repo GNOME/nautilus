@@ -1276,7 +1276,6 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 {
 	char *button_data;
 	GList *short_application_list;
-	NautilusDirectory *directory;
 	
 	/* dispose of any existing buttons */
 	if (sidebar->details->has_buttons) {
@@ -1299,11 +1298,9 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 	 * unless there aren't any applications at all in complete list. 
 	 */
 
-	directory = nautilus_directory_get (sidebar->details->uri);
-
-	if (nautilus_mime_has_any_applications_for_uri (directory, sidebar->details->file)) {
+	if (nautilus_mime_has_any_applications_for_uri (sidebar->details->file)) {
 		short_application_list = 
-			nautilus_mime_get_short_list_applications_for_uri (directory, sidebar->details->file);
+			nautilus_mime_get_short_list_applications_for_uri (sidebar->details->file);
 		add_command_buttons (sidebar, short_application_list);
 		gnome_vfs_mime_application_list_free (short_application_list);
 
@@ -1315,8 +1312,6 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 			gtk_widget_show (GTK_WIDGET (sidebar->details->button_box_centerer));
 		}
 	}
-
-	nautilus_directory_unref (directory);
 }
 
 void

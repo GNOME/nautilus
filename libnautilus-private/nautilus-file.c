@@ -2051,7 +2051,7 @@ nautilus_file_recompute_deep_counts (NautilusFile *file)
 }
 
 /**
- * nautilus_file_get_mime_list
+ * nautilus_file_get_directory_item_mime_types
  * 
  * Get the list of mime-types present in a directory.
  * @file: NautilusFile representing a directory. It is an error to
@@ -2062,14 +2062,14 @@ nautilus_file_recompute_deep_counts (NautilusFile *file)
  * 
  **/
 gboolean
-nautilus_file_get_mime_list (NautilusFile *file,
-			     GList **mime_list)
+nautilus_file_get_directory_item_mime_types (NautilusFile *file,
+					     GList **mime_list)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-	g_return_val_if_fail (nautilus_file_is_directory (file), FALSE);
 	g_return_val_if_fail (mime_list != NULL, FALSE);
 
-	if (! file->details->got_mime_list) {
+	if (! nautilus_file_is_directory (file) || ! file->details->got_mime_list) {
+		*mime_list = NULL;
 		return FALSE;
 	}
 

@@ -243,8 +243,6 @@ mime_list_cancel (NautilusDirectory *directory)
 
 		gnome_vfs_async_cancel (directory->details->mime_list_in_progress);
 
-		directory->details->mime_list_file->details->mime_list_status = NAUTILUS_REQUEST_NOT_STARTED;
-
 		directory->details->mime_list_file = NULL;
 		directory->details->mime_list_in_progress = NULL;
 		g_free (directory->details->mime_list_uri);
@@ -877,7 +875,7 @@ set_up_request_by_file_attributes (Request *request,
 		 nautilus_str_compare) != NULL;
 	request->mime_list = g_list_find_custom
 		(file_attributes,
-		 NAUTILUS_FILE_ATTRIBUTE_MIME_LIST,
+		 NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES,
 		 nautilus_str_compare) != NULL;
 	request->top_left_text = g_list_find_custom
 		(file_attributes,
@@ -1662,7 +1660,7 @@ static gboolean
 lacks_mime_list (NautilusFile *file)
 {
 	return nautilus_file_is_directory (file)
-		&& file->details->mime_list_status != NAUTILUS_REQUEST_DONE;
+		&& file->details->got_mime_list == FALSE;
 }
 
 static gboolean
@@ -1928,7 +1926,6 @@ nautilus_directory_invalidate_counts (NautilusDirectory *directory)
 		file->details->deep_counts_status = NAUTILUS_REQUEST_NOT_STARTED;
 		file->details->got_mime_list = FALSE;
 		file->details->mime_list_failed = FALSE;
-		file->details->mime_list_status = NAUTILUS_REQUEST_NOT_STARTED;
 
 		if (parent_directory != directory) {
 			nautilus_directory_async_state_changed (parent_directory);
@@ -2357,7 +2354,6 @@ mime_list_callback (GnomeVFSAsyncHandle *handle,
 	NautilusDirectory *directory;
 	NautilusFile *file;
 	GnomeVFSDirectoryListPosition last_handled, p;
-	gboolean done;
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
 	g_assert (directory->details->mime_list_in_progress == handle);
@@ -2378,23 +2374,33 @@ mime_list_callback (GnomeVFSAsyncHandle *handle,
 	}
 	directory->details->mime_list_last_handled = last_handled;
 
-	done = FALSE;
-	if (result != GNOME_VFS_OK) {
-		directory->details->mime_list_in_progress = NULL;
-		g_free (directory->details->mime_list_uri);
-		directory->details->mime_list_uri = NULL;
-
-		file->details->mime_list_status = NAUTILUS_REQUEST_DONE;
-		directory->details->mime_list_file = NULL;
-		done = TRUE;
+	if (result == GNOME_VFS_OK) {
+		return;
 	}
+
+	/* Record either a failure or success. */
+	if (result != GNOME_VFS_ERROR_EOF) {
+		file->details->directory_count_failed = TRUE;
+		nautilus_g_list_free_deep (file->details->mime_list);
+		file->details->mime_list = NULL;
+	} else {
+		file->details->got_mime_list = TRUE;
+	}
+
+	g_free (directory->details->mime_list_uri);
+	directory->details->mime_list_uri = NULL;
+	directory->details->mime_list_in_progress = NULL;
+	directory->details->mime_list_file = NULL;
+
+	/* Send file-changed even if getting the item type list
+	 * failed, so interested parties can distinguish between
+	 * unknowable and not-yet-known cases.  */
 
 	nautilus_file_changed (file);
 
-	if (done) {
-		async_job_end ();
-		nautilus_directory_async_state_changed (directory);
-	}
+	/* Start up the next one. */
+	async_job_end ();
+	nautilus_directory_async_state_changed (directory);
 }
 
 static void
@@ -2461,6 +2467,7 @@ mime_list_start (NautilusDirectory *directory)
 
 	/* Start counting. */
 	file->details->mime_list_status = NAUTILUS_REQUEST_IN_PROGRESS;
+
 	/* FIXME: clear out mime_list_whatever */
 	directory->details->mime_list_file = file;
 	uri = nautilus_file_get_uri (file);

@@ -116,7 +116,6 @@ main (int argc, char **argv)
 	GList *short_list_components;
 	GList *short_list_applications;
 	NautilusFile *file;
-	NautilusDirectory *directory;
 
 	g_thread_init (NULL);
 	oaf_init (argc, argv);
@@ -131,39 +130,38 @@ main (int argc, char **argv)
 
 	uri = argv[1];
 	file = nautilus_file_get (uri);
-	directory = nautilus_directory_get (uri);
 	
-	default_action = nautilus_mime_get_default_action_for_uri (directory, file);
+	default_action = nautilus_mime_get_default_action_for_uri (file);
 	puts ("Default Action");
 	print_action (default_action);
 	puts ("");
 
-	default_application = nautilus_mime_get_default_application_for_uri (directory, file);
+	default_application = nautilus_mime_get_default_application_for_uri (file);
 	puts("Default Application");
 	print_application (default_application);
 	puts ("");
 		
-	default_component = nautilus_mime_get_default_component_for_uri (directory, file);
+	default_component = nautilus_mime_get_default_component_for_uri (file);
 	puts("Default Component");
 	print_component (default_component);
 	puts ("");
 
-	short_list_applications = nautilus_mime_get_short_list_applications_for_uri (directory, file); 
+	short_list_applications = nautilus_mime_get_short_list_applications_for_uri (file); 
 	puts("Short List Applications");
 	print_application_list (short_list_applications);
 	puts ("");
 
-	short_list_components = nautilus_mime_get_short_list_components_for_uri (directory, file); 
+	short_list_components = nautilus_mime_get_short_list_components_for_uri (file); 
 	puts("Short List Components");
 	print_component_list (short_list_components);
 	puts ("");
 
-	all_applications = nautilus_mime_get_all_applications_for_uri (directory, file); 
+	all_applications = nautilus_mime_get_all_applications_for_uri (file); 
 	puts("All Applications");
 	print_application_list (all_applications);
 	puts ("");
 
-	all_components = nautilus_mime_get_all_components_for_uri (directory, file); 
+	all_components = nautilus_mime_get_all_components_for_uri (file); 
 	puts("All Components");
 	print_component_list (all_components);
 	puts ("");

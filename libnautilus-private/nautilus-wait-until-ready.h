@@ -23,6 +23,11 @@
  * Authors: Maciej Stachowiak
  */
 
+#include <glib.h>
+#include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-extensions/nautilus-directory.h>
+
+
 /* nautilus-wait-until-ready.h: I'm adding this file as a temporary
  * measure in the process of eliminating the wait_until_ready calls. It
  * is deprecated! Do not use these calls in new code! 
