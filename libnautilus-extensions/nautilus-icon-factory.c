@@ -66,7 +66,9 @@ static const char *icon_file_name_suffixes[] =
 	".png",
 	".PNG",
 	".gif",
-	".GIF"
+	".GIF",
+	".xpm",
+	".XPM"
 };
 
 #define ICON_NAME_DIRECTORY             "i-directory"

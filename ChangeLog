@@ -1,3 +1,10 @@
+2000-10-11  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	fixed bug 3627, when an .xpm file is used as an emblem, it
+	shows up as a generic icon.  Fixed by adding .xpm to the list
+	of image suffixes supported by the icon factory.
+	
 2000-10-11  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 3671 (Crash after closing & opening window)
