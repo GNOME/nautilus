@@ -11,8 +11,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
-"POT-Creation-Date: 2003-06-04 10:07+0200\n"
-"PO-Revision-Date: 2003-05-21 00:28+0900\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-06-06 00:26+0900\n"
+"PO-Revision-Date: 2003-06-06 00:24+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -1710,11 +1711,13 @@ msgid ""
 "You cannot delete a volume icon. If you want to eject the volume, please use "
 "Eject in the right-click menu of the volume."
 msgstr ""
+"ボリューム・アイコンは削除できません。\n"
+"ボリュームをアンマウントする際は、アイコンの右クリック・メニューからアンマウ"
+"ントを選択して下さい。"
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:107
-#, fuzzy
 msgid "Can't delete volume"
-msgstr "選択したボリュームをフォーマットします"
+msgstr "ボリュームは削除できません"
 
 #: libnautilus-private/nautilus-desktop-link.c:139
 #: libnautilus-private/nautilus-file.c:5576
@@ -5201,9 +5204,8 @@ msgid "Creating Properties window"
 msgstr "プロパティ・ウィンドウの作成中"
 
 #: src/file-manager/fm-properties-window.c:2714
-#, fuzzy
 msgid "Select an icon"
-msgstr "アイコンの選択:"
+msgstr "アイコンの選択"
 
 #: src/file-manager/fm-search-list-view.c:124
 #, c-format
@@ -5945,18 +5947,16 @@ msgid "No bookmarks defined"
 msgstr "ブックマークは定義されていません"
 
 #: src/nautilus-bookmarks-window.glade.h:1
-#, fuzzy
 msgid "<b>_Bookmarks</b>"
-msgstr "ブックマーク(_B)"
+msgstr "<b>ブックマーク(_B)</b>"
 
 #: src/nautilus-bookmarks-window.glade.h:2
-#, fuzzy
 msgid "<b>_Location</b>"
-msgstr "場所(_L):"
+msgstr "<b>場所(_L)</b>"
 
 #: src/nautilus-bookmarks-window.glade.h:3
 msgid "<b>_Name</b>"
-msgstr ""
+msgstr "<b>名前(_N)</b>"
 
 #: src/nautilus-bookmarks-window.glade.h:4
 msgid "Edit Bookmarks"
@@ -6400,9 +6400,8 @@ msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "画像ファイル '%s' は利用できません！"
 
 #: src/nautilus-property-browser.c:2037
-#, fuzzy
 msgid "Select a Category:"
-msgstr "カテゴリの選択:"
+msgstr "カテゴリの選択"
 
 #: src/nautilus-property-browser.c:2046
 msgid "C_ancel Remove"
@@ -6651,9 +6650,8 @@ msgid "*"
 msgstr "*"
 
 #: src/nautilus-server-connect.glade.h:3
-#, fuzzy
 msgid "_Connect"
-msgstr "Connectiva"
+msgstr "接続(_C)"
 
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
@@ -7322,24 +7320,3 @@ msgstr "ネットワーク・サーバ"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Nautilus でお使いのネットワークのサーバを表示します"
-
-#~ msgid "Your HTTP Proxy requires you to log in.\n"
-#~ msgstr "HTTP プロクシを使用するにはログインする必要があります。\n"
-
-#~ msgid ""
-#~ "You must log in to access \"%s\".\n"
-#~ "\n"
-#~ "%s"
-#~ msgstr ""
-#~ "\"%s\"にアクセスするにはログインする必要があります。\n"
-#~ "\n"
-#~ "%s"
-
-#~ msgid "Your password will be transmitted unencrypted."
-#~ msgstr "パスワードは暗号化されずに転送されます。"
-
-#~ msgid "Your password will be transmitted encrypted."
-#~ msgstr "パスワードは暗号化されて転送されます。"
-
-#~ msgid "Authentication Required"
-#~ msgstr "認証が必要です"
