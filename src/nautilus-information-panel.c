@@ -1120,15 +1120,20 @@ command_button_callback (GtkWidget *button, char *id_str)
    a shell to handle general ones */
 /* for now, we only handle a few built in commands */
 static void
-metadata_button_callback (GtkWidget *button, char *command_str)
+metadata_button_callback (GtkWidget *button, const char *command_str)
 {
 	GtkWindow *window;
 	NautilusSidebar *sidebar;
+	char *path;
 	
 	sidebar = NAUTILUS_SIDEBAR (gtk_object_get_user_data (GTK_OBJECT (button)));
-	if (!strcmp(command_str, "#linksets")) {
+	if (strcmp (command_str, "#linksets") == 0) {
 		window = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (sidebar)));
-		nautilus_link_set_toggle_configure_window(sidebar->details->uri, window);
+		path = gnome_vfs_get_local_path_from_uri (sidebar->details->uri);
+		if (path != NULL) {
+			nautilus_link_set_toggle_configure_window (path, window);
+			g_free (path);
+		}
 	}
 }
 
@@ -1226,7 +1231,7 @@ add_command_buttons (NautilusSidebar *sidebar, GList *application_list)
 /* utility to construct command buttons for the sidebar from the passed in metadata string */
 
 static void
-add_buttons_from_metadata(NautilusSidebar *sidebar, const char *button_data)
+add_buttons_from_metadata (NautilusSidebar *sidebar, const char *button_data)
 {
 	char **terms;
 	char *current_term, *temp_str;
@@ -1251,25 +1256,24 @@ add_buttons_from_metadata(NautilusSidebar *sidebar, const char *button_data)
 			        if (button_name != NULL) {
 			        	temp_button = gtk_button_new_with_label (button_name);		    
 					gtk_box_pack_start (GTK_BOX (sidebar->details->button_box), 
-						    temp_button, 
-						    FALSE, FALSE, 
-						    0);
+							    temp_button, 
+							    FALSE, FALSE, 
+							    0);
 					sidebar->details->has_buttons = TRUE;
-
-					command_string = g_strdup(temp_str + 1);		
-					g_free(button_name);
-
+					command_string = g_strdup (temp_str + 1);
+					g_free (button_name);
+					
 					nautilus_gtk_signal_connect_free_data 
 						(GTK_OBJECT (temp_button), "clicked",
-					 	GTK_SIGNAL_FUNC (metadata_button_callback), command_string);
+						 GTK_SIGNAL_FUNC (metadata_button_callback), command_string);
 		                	gtk_object_set_user_data (GTK_OBJECT (temp_button), sidebar);
-				
+					
 					gtk_widget_show (temp_button);			
 				}
 			}
 		}
 		g_free(current_term);
-	}	
+	}
 	g_strfreev (terms);
 }
 

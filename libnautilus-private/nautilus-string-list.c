@@ -236,8 +236,7 @@ nautilus_string_list_clear (NautilusStringList *string_list)
 {
 	g_return_if_fail (string_list != NULL);
 
-	nautilus_g_list_free_deep_custom (string_list->strings, (GFunc) g_free, NULL);
-
+	nautilus_g_list_free_deep (string_list->strings);
 	string_list->strings = NULL;
 }
 

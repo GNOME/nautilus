@@ -1,3 +1,33 @@
+2000-09-26  Darin Adler  <darin@eazel.com>
+
+	Got leaks in "nautilus --check" down to 0.
+	
+	Fixed bug 2488 (path name for link set determined incorrectly) by
+	using only paths for link sets, never URIs.
+
+	* tools/leak-checker/nautilus-leak-checker.c: Added more "known to
+	leak" symbols.
+	
+	* libnautilus-extensions/nautilus-link-set.c: (create_new_link),
+	(nautilus_link_set_is_installed), (nautilus_link_set_remove):
+	Changed functions to always expect paths, so they can now use
+	nautilus_make_path instead of link_set_path_name.
+	* src/nautilus-sidebar.c: (metadata_button_callback): Changed to
+	turn the URI into a path before calling the link-set functions.
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_notify_files_moved): Use
+	nautilus_file_list_free instead of
+	nautilus_g_list_free_deep_custom.
+	* libnautilus-extensions/nautilus-string-list.c:
+	(nautilus_string_list_clear): Use nautilus_g_list_free_deep
+	instead of nautilus_g_list_free_deep_custom.
+	* libnautilus-extensions/nautilus-view-identifier.c:
+	(nautilus_view_identifier_free_callback),
+	(nautilus_view_identifier_list_free): Fixed call to
+	nautilus_g_list_free_deep_custom so it doesn't need a function
+	pointer type cast any more.
+	
 2000-09-26  Josh Barrow  <linuxfan@ionet.net>
 
 	* src/nautilus-theme-selector.c: (add_theme_to_icons),

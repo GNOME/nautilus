@@ -62,6 +62,7 @@ int  (* real_start_main) (int (*main) (int, char **, char **), int argc,
  * For ones that don't, list tell-tale stack crawl function names.
  */
 static const char * const known_leakers[] = {
+	"ConfigServer_remove_listener", /* gconf */
 	"XSupportsLocale",
 	"__bindtextdomain",
 	"__pthread_initialize_manager",
@@ -77,6 +78,7 @@ static const char * const known_leakers[] = {
 	"g_get_any_init",
 	"g_hash_node_new",
 	"g_log_set_handler",
+	"g_main_add_poll_unlocked",  /* no easy way to make it not cache blocks */
 	"g_quark_new",
 	"g_thread_init",
 	"gconf_postinit",
@@ -105,6 +107,7 @@ static const char * const known_leakers[] = {
 	"register_client", /* gconf */
 	"setlocale",
 	"stock_pixmaps", /* gnome-libs */
+	"try_to_contact_server", /* gconf */
 	"tzset_internal",
 };
 

@@ -44,25 +44,6 @@
 #include "nautilus-preferences.h"
 #include "nautilus-file-utilities.h"
 
-/* utility routine to build the link set path name */
-
-static char *
-link_set_path_name (const char *directory_path, const char *name)
-{
-	const char *path_start;
-
-	/* FIXME bugzilla.eazel.com 2488: 
-	 * This hack is unacceptable. Either it's a URI and the
-	 * file:// must be removed with the function that does that,
-	 * or it's a path, and there's no reason to remove the prefix.
-	 */
-	if (nautilus_str_has_prefix(directory_path, "file://"))
-		path_start = directory_path + 7;
-	else
-		path_start = directory_path;
-	return nautilus_make_path (path_start, name);
-}
-
 /* routine to create a new link file in the specified directory */
 static gboolean
 create_new_link (const char *directory_path, const char *name, const char *image, const char *uri)
@@ -88,7 +69,7 @@ create_new_link (const char *directory_path, const char *name, const char *image
 	xmlSetProp (root_node, "LINK", uri);
 	
 	/* all done, so save the xml document as a link file */
-	file_name = link_set_path_name (directory_path, name);
+	file_name = nautilus_make_path (directory_path, name);
 	result = xmlSaveFile (file_name, output_document);
 	g_free (file_name);
 	
@@ -195,7 +176,7 @@ nautilus_link_set_is_installed (const char *directory_path, const char *link_set
 	     node != NULL; node = node->next) {
 		if (strcmp (node->name, "link") == 0) {
 			link_name = xmlGetProp (node, "name");
-			file_name = link_set_path_name (directory_path, link_name);
+			file_name = nautilus_make_path (directory_path, link_name);
 			if (!g_file_exists(file_name)) {
 				g_free(file_name);
 				return FALSE;
@@ -230,7 +211,7 @@ nautilus_link_set_remove (const char *directory_path, const char *link_set_name)
 		if (strcmp (node->name, "link") == 0) {
 			link_name = xmlGetProp (node, "name");
 			/* formulate the link file path name */
-			file_name = link_set_path_name (directory_path, link_name); 
+			file_name = nautilus_make_path (directory_path, link_name); 
 			/* delete the file */
 			unlink(file_name);
 			g_free(link_name);
