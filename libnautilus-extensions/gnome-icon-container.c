@@ -64,7 +64,7 @@
 #define CONTEXTUAL_MENU_BUTTON 3
 
 /* maximum size allowed for icons at the time they are installed - the user can still stretch them further */
-#define MAXIMUM_INITIAL_ICON_SIZE  96
+#define MAXIMUM_INITIAL_ICON_SIZE 2
 
 static void  gnome_icon_container_activate_selected_items (GnomeIconContainer      *container);
 static void  gnome_icon_container_initialize_class        (GnomeIconContainerClass *class);
@@ -124,7 +124,7 @@ icon_new (GnomeIconContainer *container,
 {
 	GnomeIconContainerIcon *new;
         GnomeCanvas *canvas;
-	guint actual_size;
+	guint max_size, actual_size;
         
 	canvas = GNOME_CANVAS (container);
 	
@@ -150,9 +150,11 @@ icon_new (GnomeIconContainer *container,
 	 * I think that the best way to implement this is probably to put something in
 	 * the icon factory that enforces this rule.
 	 */
+	max_size = nautilus_get_icon_size_for_zoom_level (container->details->zoom_level)
+		* MAXIMUM_INITIAL_ICON_SIZE;
 	actual_size = icon_get_actual_size (new);
-	if (actual_size > MAXIMUM_INITIAL_ICON_SIZE) {
-		new->scale_x = MAXIMUM_INITIAL_ICON_SIZE / actual_size;
+	if (actual_size > max_size) {
+		new->scale_x = max_size / (double) actual_size;
 		new->scale_y = new->scale_x;
 		update_icon (container, new);
 	}
@@ -222,13 +224,10 @@ icon_set_size (GnomeIconContainer *container,
 static guint
 icon_get_actual_size (GnomeIconContainerIcon *icon)
 {
-	GtkArg pixbuf_arg;
 	GdkPixbuf *pixbuf;
 	guint max_size;
 	
-	pixbuf_arg.name = "NautilusIconsViewIconItem::pixbuf";
-	gtk_object_getv (GTK_OBJECT (icon->item), 1, &pixbuf_arg);
- 	pixbuf = GTK_VALUE_BOXED (pixbuf_arg);
+ 	pixbuf = nautilus_icons_view_icon_item_get_image (icon->item, NULL);
 	max_size = pixbuf->art_pixbuf->width;
 	if (pixbuf->art_pixbuf->height > max_size) {
 		max_size = pixbuf->art_pixbuf->height;
@@ -278,8 +277,9 @@ icon_set_selected (GnomeIconContainer *container,
 	 * might pass a value other than 1 or 0 so we have to pass do the
 	 * same thing there.
 	 */
-	if (!select == !icon->is_selected)
+	if (!select == !icon->is_selected) {
 		return FALSE;
+	}
 
 	icon_toggle_selected (container, icon);
 	g_assert (!select == !icon->is_selected);
@@ -1897,6 +1897,7 @@ button_press_event (GtkWidget *widget,
 		    GdkEventButton *event)
 {
 	GnomeIconContainer *container;
+	gboolean selection_changed;
 	gboolean return_value;
 
 	container = GNOME_ICON_CONTAINER (widget);
@@ -1906,23 +1907,25 @@ button_press_event (GtkWidget *widget,
         set_kbd_current (container, NULL, FALSE);
 	
 	/* Invoke the canvas event handler and see if an item picks up the event. */
-	if (NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, button_press_event, (widget, event)))
+	if (NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, button_press_event, (widget, event))) {
 		return TRUE;
+	}
 	
-	/* An item didn't take the press, so it's a background press. */
-        /* We ignore dbl clicks on the desktop for now */
-	if ((event->type == GDK_2BUTTON_PRESS) || (event->type == GDK_3BUTTON_PRESS))
+	/* An item didn't take the press, so it's a background press.
+         * We ignore double clicks on the desktop for now.
+	 */
+	if (event->type == GDK_2BUTTON_PRESS || event->type == GDK_3BUTTON_PRESS) {
 		return TRUE;
+	}
 
 	/* Button 1 does rubber banding. */
 	if (event->button == RUBBERBAND_BUTTON) {
 		if (! button_event_modifies_selection (event)) {
-			gboolean selection_changed;
-
 			selection_changed = unselect_all (container);
-			if (selection_changed)
+			if (selection_changed) {
 				gtk_signal_emit (GTK_OBJECT (container),
 						 signals[SELECTION_CHANGED]);
+			}
 		}
 
 		start_rubberbanding (container, event);
@@ -2014,6 +2017,12 @@ start_stretching (GnomeIconContainer *container)
 	icon_get_size (container, icon,
 		       &details->stretch_start.icon_size, NULL);
 
+	gnome_canvas_item_grab (GNOME_CANVAS_ITEM (icon->item),
+				(GDK_POINTER_MOTION_MASK
+				 | GDK_BUTTON_RELEASE_MASK),
+				NULL,
+				GDK_CURRENT_TIME);
+
 	return TRUE;
 }
 
@@ -2028,6 +2037,10 @@ continue_stretching (GnomeIconContainer *container,
 
 	details = container->details;
 	icon = details->stretch_icon;
+
+	if (icon == NULL) {
+		return;
+	}
 
 	gnome_canvas_window_to_world (GNOME_CANVAS (container),
 				      window_x, window_y,
@@ -2048,10 +2061,18 @@ continue_stretching (GnomeIconContainer *container,
 }
 
 static void
+ungrab_stretch_icon (GnomeIconContainer *container)
+{
+	gnome_canvas_item_ungrab (GNOME_CANVAS_ITEM (container->details->stretch_icon->item),
+				  GDK_CURRENT_TIME);
+}
+
+static void
 end_stretching (GnomeIconContainer *container,
 		int window_x, int window_y)
 {
 	continue_stretching (container, window_x, window_y);
+	ungrab_stretch_icon (container);
 }
 
 static gboolean
@@ -2476,6 +2497,7 @@ item_event_cb (GnomeCanvasItem *item,
     			gtk_signal_emit_stop_by_name (GTK_OBJECT (item), "event");
 			return TRUE;
 		}
+		return FALSE;
 	default:
 		return FALSE;
 	}
@@ -2617,6 +2639,7 @@ update_icon (GnomeIconContainer *container, GnomeIconContainerIcon *icon)
 	NautilusScalableIcon *scalable_icon;
 	guint icon_size_x, icon_size_y;
 	GdkPixbuf *pixbuf, *emblem_pixbuf;
+	ArtIRect text_rect;
 	GList *emblem_icons, *emblem_pixbufs, *p;
 	char *label;
 	char *contents_as_text;
@@ -2636,11 +2659,11 @@ update_icon (GnomeIconContainer *container, GnomeIconContainerIcon *icon)
 	/* Get the corresponding pixbufs for this size. */
 	icon_get_size (container, icon, &icon_size_x, &icon_size_y);
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
-		(scalable_icon, icon_size_x, icon_size_y);
+		(scalable_icon, icon_size_x, icon_size_y, &text_rect);
 	emblem_pixbufs = NULL;
 	for (p = emblem_icons; p != NULL; p = p->next) {
 		emblem_pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
-			(p->data, icon_size_x, icon_size_y);
+			(p->data, icon_size_x, icon_size_y, NULL);
 		if (emblem_pixbuf != NULL) {
 			emblem_pixbufs = g_list_prepend
 				(emblem_pixbufs, emblem_pixbuf);
@@ -2660,11 +2683,12 @@ update_icon (GnomeIconContainer *container, GnomeIconContainerIcon *icon)
 
 	font = details->label_font[details->zoom_level];
         
-        /* Choose to show mini-text based on this icon's size, not zoom level,
-         * since icon may be stretched big or small.
+        /* Choose to show mini-text based on this icon's requested size,
+	 * not zoom level, since icon may be stretched big or small.
          */
 	contents_as_text = NULL;
-	if (icon_size_x >= NAUTILUS_ICON_SIZE_STANDARD
+	if (!art_irect_empty (&text_rect)
+	    && icon_size_x >= NAUTILUS_ICON_SIZE_STANDARD
 	    && icon_size_y >= NAUTILUS_ICON_SIZE_STANDARD) {
 		gtk_signal_emit (GTK_OBJECT (container),
 				 signals[GET_ICON_PROPERTY],
@@ -2674,11 +2698,11 @@ update_icon (GnomeIconContainer *container, GnomeIconContainerIcon *icon)
 	}
 	
 	gnome_canvas_item_set (GNOME_CANVAS_ITEM (icon->item),
-			       "pixbuf", pixbuf,
 			       "text", label,
 			       "font", font,
 			       "text_source", contents_as_text,
 			       NULL);
+	nautilus_icons_view_icon_item_set_image (icon->item, pixbuf, &text_rect);
 	nautilus_icons_view_icon_item_set_emblems (icon->item, emblem_pixbufs);
 
 	/* Let the pixbufs go. */
@@ -3327,18 +3351,22 @@ gnome_icon_container_show_stretch_handles (GnomeIconContainer *container)
 	GnomeIconContainerIcon *icon;
 
 	icon = get_first_selected_icon (container);
-	if (icon == NULL)
+	if (icon == NULL) {
 		return;
+	}
 
 	/* Check if it already has stretch handles. */
 	details = container->details;
-	if (details->stretch_icon == icon)
+	if (details->stretch_icon == icon) {
 		return;
+	}
 
 	/* Get rid of the existing stretch handles and put them on the new icon. */
-	if (details->stretch_icon != NULL)
+	if (details->stretch_icon != NULL) {
 		nautilus_icons_view_icon_item_set_show_stretch_handles
 			(details->stretch_icon->item, FALSE);
+		ungrab_stretch_icon (container);
+	}
 	nautilus_icons_view_icon_item_set_show_stretch_handles (icon->item, TRUE);
 	details->stretch_icon = icon;
 }

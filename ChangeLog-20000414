@@ -1,3 +1,94 @@
+2000-03-14  Darin Adler  <darin@eazel.com>
+
+	Added additional data to icons so they can specify where the
+	embedded text fits in each icon.
+
+	* icons/eazel/Makefile.am, icons/eazel/i-regular.xml: Added the
+	file to specify attributes of icons. Specifically added the
+	attribute that says there is space for embedded text in the
+	Eazel-theme regular icon.
+
+	* libnautilus/nautilus-icon-factory.h:
+	* libnautilus/nautilus-icon-factory.c:
+	(get_child_node_by_property), (get_themed_icon_file_path),
+	(get_icon_file_path), (nautilus_icon_factory_get_thumbnail_uri),
+	(load_specific_image), (load_image_for_scaling),
+	(get_image_from_cache), (load_image_scale_if_necessary),
+	(nautilus_icon_factory_get_pixbuf_for_icon),
+	(nautilus_icon_factory_get_pixbuf_for_file):
+	Added code to read a rectangle for the embedded text along with
+	the icon, cache it with the icon, scale it with the icon, and
+	return it to the caller along with the icon.
+
+	* libnautilus/nautilus-icons-view-icon-item.c: 
+	(nautilus_icons_view_icon_item_initialize_class),
+	(nautilus_icons_view_icon_item_set_arg),
+	(nautilus_icons_view_icon_item_get_arg),
+	(nautilus_icons_view_icon_item_get_image),
+	(nautilus_icons_view_icon_item_set_image),
+	(nautilus_art_irect_to_gdk_rectangle),
+	(draw_mini_text), (draw_embedded_text),
+	(nautilus_icons_view_icon_item_draw):
+	Changed the code that draws the embedded text to respect the
+	text rectangle passed in. Changed the pixbuf setting to use a
+	function instead of the arg interface and take a text rectangle
+	along with the pixbuf.
+
+	* libnautilus/gnome-icon-container-dnd.c
+	(gnome_icon_container_dnd_begin_drag):
+	* libnautilus/gnome-icon-container.c:
+	(icon_get_actual_size): Got rid of callers who were using the arg
+	interface to get at the image of an icon
+	("NautilusIconsViewIconItem::pixbuf").
+
+	* src/file-manager/fm-directory-view-icons.c:
+	(get_icon_property_cb): Get rid of hard-coded rule that only
+	themes with eazel at the front of their names can display text
+	inside the icons.
+
+	* libnautilus/gnome-icon-container.c:
+	(icon_new): Fixed a bug where icons would be super-tiny if they
+	got too big, like if you entered a directory that was zoomed all
+	the way in.
+	(start_stretching), (ungrab_stretch_icon), (end_stretching),
+	(gnome_icon_container_show_stretch_handles): Added code to grab
+	the pointer while stretching an icon.
+	(item_event_cb): Added a return statement that John forgot when
+	he was editing. Without that, it was falling through to the next
+	case, which had the same effect anyway.
+	(update_icon): Pass the text rectangle through from the icon
+	factory to the icon canvas item, using the new call instead of the
+	old arg interface approach.
+
+	* components/help/.cvsignore: Added entries for
+	.la and .lo files.
+
+	* components/help/Makefile.am:
+	* components/help/hyperbola-nav-index.c:
+	* components/help/hyperbola-nav-search.c:
+	* libnautilus/nautilus-directory-private.h:
+	* libnautilus/nautilus-directory.c:
+	* src/nautilus-bookmarklist.c:
+	Fixed flags for gnome-xml
+	includes. Someone pointed out that you are supposed to include
+	these as "#include <tree.h>", not "#include <gnome-xml/tree.h>" so
+	I fixed our uses to work that way.
+
+	* libnautilus/nautilus-directory.c:
+	(nautilus_directory_get_file_metadata_node): Fixed code that was
+	destroying something allocated by gnome-xml with g_free instead
+	of xmlFree.
+
+	* libnautilus/nautilus-file.c:
+	(nautilus_file_get_keywords), (nautilus_file_set_keywords):
+	Fixed storage leak where we were getting a property and not freeing it.
+
+	* libnautilus/nautilus-default-file-icon.h:
+	* libnautilus/nautilus-default-file-icon.c:
+	* libnautilus/nautilus-icon-factory.c:
+	(load_image_for_scaling): Got rid of the global that tells whether
+	the default icon has an alpha channel -- it's not hardwired TRUE.
+
 2000-03-14  John Sullivan  <sullivan@eazel.com>
 
 	When a directory with no explicitly-chosen viewer is
@@ -61,7 +152,7 @@
 
 	* libnautilus/gnome-icon-container-dnd.c (drag_drop_cb): Add a
 	gtk_drag_finish to hopefully solve half the flying windows
-	problem.  Needs more thought then this, though...
+	problem.  Needs more thought then this, though.
 
 2000-03-14  John Sullivan  <sullivan@eazel.com>
 
@@ -126,10 +217,10 @@
 	directory because all the '/' characters were stripped off
 	the URI.
 
-	* /src/file-manager/fm-directory-view.c: 
+	* src/file-manager/fm-directory-view.c: 
 	* nautilus-widgets/nautilus-preferences.c: 
 	Tiny formatting fixes.
-	
+
 2000-03-13  Maciej Stachowiak  <mjs@eazel.com>
 
 	* src/ntl-window.c (nautilus_window_constructed): Connect to

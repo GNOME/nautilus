@@ -27,6 +27,7 @@
 
 #include <libgnome/gnome-defs.h>
 #include <libgnomeui/gnome-canvas.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 BEGIN_GNOME_DECLS
 
@@ -55,22 +56,27 @@ struct NautilusIconsViewIconItemClass {
 };
 
 /* GtkObject */
-GtkType  nautilus_icons_view_icon_item_get_type                  (void);
+GtkType    nautilus_icons_view_icon_item_get_type                 (void);
 
 /* attributes */
-void     nautilus_icons_view_icon_item_set_emblems               (NautilusIconsViewIconItem *item,
-								  GList                     *emblem_pixbufs);
-void     nautilus_icons_view_icon_item_set_show_stretch_handles  (NautilusIconsViewIconItem *item,
-								  gboolean                   show_stretch_handles);
+void       nautilus_icons_view_icon_item_set_image                (NautilusIconsViewIconItem *item,
+								   GdkPixbuf                 *image,
+								   const ArtIRect            *embedded_text_rectangle);
+GdkPixbuf *nautilus_icons_view_icon_item_get_image                (NautilusIconsViewIconItem *item,
+								   ArtIRect                  *embedded_text_rectangle);
+void       nautilus_icons_view_icon_item_set_emblems              (NautilusIconsViewIconItem *item,
+								   GList                     *emblem_pixbufs);
+void       nautilus_icons_view_icon_item_set_show_stretch_handles (NautilusIconsViewIconItem *item,
+								   gboolean                   show_stretch_handles);
 
 
 /* geometry and hit testing */
-gboolean nautilus_icons_view_icon_item_hit_test_rectangle        (NautilusIconsViewIconItem *item,
-								  const ArtDRect            *world_rectangle);
-gboolean nautilus_icons_view_icon_item_hit_test_stretch_handles  (NautilusIconsViewIconItem *item,
-								  const ArtPoint            *world_point);
-void     nautilus_icons_view_icon_item_get_icon_rectangle        (NautilusIconsViewIconItem *item,
-								  ArtDRect                  *world_rectangle);
+gboolean   nautilus_icons_view_icon_item_hit_test_rectangle       (NautilusIconsViewIconItem *item,
+								   const ArtDRect            *world_rectangle);
+gboolean   nautilus_icons_view_icon_item_hit_test_stretch_handles (NautilusIconsViewIconItem *item,
+								   const ArtPoint            *world_point);
+void       nautilus_icons_view_icon_item_get_icon_rectangle       (NautilusIconsViewIconItem *item,
+								   ArtDRect                  *world_rectangle);
 
 END_GNOME_DECLS
 

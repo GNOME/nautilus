@@ -20,7 +20,9 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Author: Ettore Perazzoli <ettore@gnu.org>
+   Authors: Ettore Perazzoli <ettore@gnu.org>,
+            Darin Adler <darin@eazel.com>,
+	    Andy Hertzfeld <andy@eazel.com>
 */
 
 #include <config.h>
@@ -432,7 +434,7 @@ gnome_icon_container_dropped_icon_feedback (GtkWidget *widget,
 		gtk_object_destroy (GTK_OBJECT (dnd_info->shadow));
 
 	/* Build the selection list and the shadow. */
-	get_gnome_icon_list_selection (container, data);		
+	get_gnome_icon_list_selection (container, data);
 	dnd_info->shadow = create_selection_shadow (container, dnd_info->selection_list);
 	gnome_icon_container_position_shadow (container, x, y);
 }
@@ -725,8 +727,8 @@ gnome_icon_container_dnd_fini (GnomeIconContainer *container)
 
 /* FIXME: this should probably be in a graphics effects library instead of here */
 
-static GdkPixbuf* 
-make_semi_transparent(GdkPixbuf* source_pixbuf)
+static GdkPixbuf * 
+make_semi_transparent(GdkPixbuf *source_pixbuf)
 {
 	gint i, j, temp_alpha;
 	gint width, height, has_alpha, src_rowstride, dst_rowstride;
@@ -736,7 +738,7 @@ make_semi_transparent(GdkPixbuf* source_pixbuf)
 	guchar *pixdest;
 	guchar alpha_value;
 	GdkPixbuf *dest_pixbuf;
-	guchar start_alpha_value = 255;
+	guchar start_alpha_value;
 	
 	has_alpha = gdk_pixbuf_get_has_alpha (source_pixbuf);
 	width = gdk_pixbuf_get_width (source_pixbuf);
@@ -745,11 +747,11 @@ make_semi_transparent(GdkPixbuf* source_pixbuf)
 	
 	/* allocate the destination pixbuf to be a clone of the source */
 
-	dest_pixbuf = gdk_pixbuf_new(gdk_pixbuf_get_format(source_pixbuf),
-			     TRUE,
-			     gdk_pixbuf_get_bits_per_sample(source_pixbuf),
-			     width,
-			     height);
+	dest_pixbuf = gdk_pixbuf_new (gdk_pixbuf_get_format (source_pixbuf),
+				      TRUE,
+				      gdk_pixbuf_get_bits_per_sample (source_pixbuf),
+				      width,
+				      height);
 	dst_rowstride = gdk_pixbuf_get_rowstride (dest_pixbuf);
 	
 	/* set up pointers to the actual pixels */
@@ -758,25 +760,27 @@ make_semi_transparent(GdkPixbuf* source_pixbuf)
 
 	/* loop through the pixels to do the actual work, copying from the source to the destination */
 	
+	start_alpha_value = ~0;
 	for (i = 0; i < height; i++) {
-		pixdest = target_pixels + i*dst_rowstride;
-		pixsrc = original_pixels + i*src_rowstride;
+		pixdest = target_pixels + i * dst_rowstride;
+		pixsrc = original_pixels + i * src_rowstride;
 		alpha_value = start_alpha_value;
 		for (j = 0; j < width; j++) {
-			*pixdest++ = *(pixsrc++); /* red */
-			*pixdest++ = *(pixsrc++); /* green */
-			*pixdest++ = *(pixsrc++); /* blue */
+			*pixdest++ = *pixsrc++; /* red */
+			*pixdest++ = *pixsrc++; /* green */
+			*pixdest++ = *pixsrc++; /* blue */
 			
-			if (has_alpha)
+			if (has_alpha) {
 				temp_alpha = *pixsrc++;
-			else
-				temp_alpha = 255;
+			} else {
+				temp_alpha = ~0;
+			}
 			*pixdest++ = temp_alpha & alpha_value;
 			
-			alpha_value = alpha_value ? 0 : 255;
+			alpha_value = ~alpha_value;
 		}
 		
-		start_alpha_value = start_alpha_value ? 0 : 255;
+		start_alpha_value = ~start_alpha_value;
 	}
 	
 	return dest_pixbuf;
@@ -791,8 +795,6 @@ gnome_icon_container_dnd_begin_drag (GnomeIconContainer *container,
 	GnomeIconContainerDndInfo *dnd_info;
 	GnomeCanvas *canvas;
 	GdkDragContext *context;
-	GtkArg pixbuf_arg;
-	GnomeCanvasItem *item;
 	GdkPixbuf *pixbuf, *transparent_pixbuf;
 	GdkPixmap *pixmap_for_dragged_file;
 	GdkBitmap *mask_for_dragged_file;
@@ -822,10 +824,7 @@ gnome_icon_container_dnd_begin_drag (GnomeIconContainer *container,
 				  (GdkEvent *) event);
 	  
         /* create a pixmap and mask to drag with */
-        item = GNOME_CANVAS_ITEM (container->details->drag_icon->item);
-        pixbuf_arg.name = "NautilusIconsViewIconItem::pixbuf";
-        gtk_object_getv (GTK_OBJECT (item), 1, &pixbuf_arg);
-        pixbuf = GTK_VALUE_BOXED (pixbuf_arg);
+        pixbuf = nautilus_icons_view_icon_item_get_image (container->details->drag_icon->item, NULL);
         
 	/* unfortunately, X is very slow when using a stippled mask, so only use the stipple
 	   for relatively small pixbufs.  Eventually, we may have to remove this entirely
@@ -854,8 +853,10 @@ gnome_icon_container_dnd_begin_drag (GnomeIconContainer *container,
         y_offset = dnd_info->start_y - window_rect.y0;
         
         /* set the pixmap and mask for dragging */
-        gtk_drag_set_icon_pixmap (context, gtk_widget_get_colormap (GTK_WIDGET (container)),
-				  pixmap_for_dragged_file, mask_for_dragged_file,
+        gtk_drag_set_icon_pixmap (context,
+				  gtk_widget_get_colormap (GTK_WIDGET (container)),
+				  pixmap_for_dragged_file,
+				  mask_for_dragged_file,
 				  x_offset, y_offset);
 }
 
@@ -868,4 +869,8 @@ gnome_icon_container_dnd_end_drag (GnomeIconContainer *container)
 
 	dnd_info = container->details->dnd_info;
 	g_return_if_fail (dnd_info != NULL);
+
+	/* Do nothing.
+	 * Can that possibly be right?
+	 */
 }

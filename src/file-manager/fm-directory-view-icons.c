@@ -1127,30 +1127,20 @@ get_icon_property_cb (GnomeIconContainer *container,
 		      const char *property_name,
 		      FMDirectoryViewIcons *icon_view)
 {
+	const char *mime_type;
+
 	g_assert (GNOME_IS_ICON_CONTAINER (container));
 	g_assert (NAUTILUS_IS_FILE (file));
 	g_assert (property_name != NULL);
 	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (icon_view));
-
+	
 	if (strcmp (property_name, "contents_as_text") == 0) {
-		const char *mime_type;
-		char *theme_name;
-		gboolean use_text;
-
-		/* FIXME: We need a better way to know when to use the mini-text than 
-		 * the theme name starting with eazel.
-		 */
-		theme_name = nautilus_icon_factory_get_theme ();
-		use_text = nautilus_str_has_prefix (theme_name, "eazel");
-		g_free (theme_name);
-		
 		mime_type = nautilus_file_get_mime_type (file);
-		if (use_text && (mime_type == NULL || nautilus_str_has_prefix (mime_type, "text/"))) {
+		if (mime_type == NULL || nautilus_str_has_prefix (mime_type, "text/")) {
 			return nautilus_file_get_uri (file);
 		}
 	}
 	
-	/* nothing applied, so return an empty string */
-	 
-	return g_strdup ("");		
+	/* nothing applied, so return nothing */
+	return NULL;		
 }

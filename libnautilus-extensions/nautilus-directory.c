@@ -30,8 +30,8 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmain.h>
 
-#include <gnome-xml/parser.h>
-#include <gnome-xml/xmlmemory.h>
+#include <parser.h>
+#include <xmlmemory.h>
 
 #include "nautilus-gtk-macros.h"
 #include "nautilus-string.h"
@@ -983,6 +983,7 @@ nautilus_directory_get_file_metadata_node (NautilusDirectory *directory,
 					   gboolean create)
 {
 	xmlNode *root, *child;
+	gboolean match;
 	xmlChar *property;
 
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
@@ -999,7 +1000,9 @@ nautilus_directory_get_file_metadata_node (NautilusDirectory *directory,
 		for (child = root->childs; child != NULL; child = child->next) {
 			if (strcmp (child->name, "FILE") == 0) {
 				property = xmlGetProp (child, "NAME");
-				if (nautilus_eat_strcmp (property, file_name) == 0) {
+				match = nautilus_strcmp (property, file_name) == 0;
+				xmlFree (property);
+				if (match) {
 					return child;
 				}
 			}

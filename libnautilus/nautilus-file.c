@@ -31,6 +31,9 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 
+#include <stdlib.h>
+#include <xmlmemory.h>
+
 #include "nautilus-glib-extensions.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-string.h"
@@ -878,6 +881,7 @@ nautilus_file_get_keywords (NautilusFile *file)
 				if (property != NULL) {
 					keywords = g_list_prepend (keywords,
 								   g_strdup (property));
+					xmlFree (property);
 				}
 			}
 		}
@@ -917,13 +921,15 @@ nautilus_file_set_keywords (NautilusFile *file, GList *keywords)
 			next = child->next;
 			if (strcmp (child->name, "KEYWORD") == 0) {
 				property = xmlGetProp (child, "NAME");
-				if (property != NULL && p != NULL && strcmp (property, (char *)p->data) == 0) {
+				if (property != NULL && p != NULL
+				    && strcmp (property, (char *) p->data) == 0) {
 					p = p->next;
 				} else {
 					xmlUnlinkNode (child);
 					xmlFreeNode (child);
 					need_write = TRUE;
 				}
+				xmlFree (property);
 			}
 		}
 

@@ -27,9 +27,9 @@
 
 #include <libnautilus/nautilus-file-utilities.h>
 
-#include <gnome-xml/parser.h>
-#include <gnome-xml/tree.h>
-#include <gnome-xml/xmlmemory.h>
+#include <parser.h>
+#include <tree.h>
+#include <xmlmemory.h>
 
 enum {
 	CONTENTS_CHANGED,

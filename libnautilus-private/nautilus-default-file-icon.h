@@ -27,7 +27,6 @@
 
 extern const int nautilus_default_file_icon_width;
 extern const int nautilus_default_file_icon_height;
-extern const int nautilus_default_file_icon_has_alpha;
 extern const unsigned char nautilus_default_file_icon[];
 
 #endif /* NAUTILUS_DEFAULT_FILE_ICON_H */

@@ -48,8 +48,9 @@ struct NautilusIconsViewIconItemDetails {
 	GdkPixbuf *pixbuf;
 	GList *emblem_pixbufs;
 	char *text;
-	char *text_source;
 	GdkFont *font;
+	ArtIRect embedded_text_rect;
+	char *embedded_text_file_URI;
 	
 	/* Size of the text at current font. */
 	int text_width;
@@ -66,7 +67,6 @@ struct NautilusIconsViewIconItemDetails {
 /* Object argument IDs. */
 enum {
 	ARG_0,
-	ARG_PIXBUF,
 	ARG_TEXT,
 	ARG_FONT,
     	ARG_HIGHLIGHTED_FOR_SELECTION,
@@ -97,7 +97,7 @@ typedef struct {
 /* Bitmap for stippled selection rectangles. */
 static GdkBitmap *stipple;
 static char stipple_bits[] = { 0x02, 0x01 };
-static GdkFont *mini_text_font;
+static GdkFont *embedded_text_font;
 
 /* GtkObject */
 static void     nautilus_icons_view_icon_item_initialize_class          (NautilusIconsViewIconItemClass  *class);
@@ -172,8 +172,6 @@ nautilus_icons_view_icon_item_initialize_class (NautilusIconsViewIconItemClass *
 	object_class = GTK_OBJECT_CLASS (class);
 	item_class = GNOME_CANVAS_ITEM_CLASS (class);
 
-	gtk_object_add_arg_type ("NautilusIconsViewIconItem::pixbuf",
-				 GTK_TYPE_BOXED, GTK_ARG_READWRITE, ARG_PIXBUF);
 	gtk_object_add_arg_type ("NautilusIconsViewIconItem::text",
 				 GTK_TYPE_STRING, GTK_ARG_READWRITE, ARG_TEXT);
 	gtk_object_add_arg_type ("NautilusIconsViewIconItem::font",
@@ -199,7 +197,7 @@ nautilus_icons_view_icon_item_initialize_class (NautilusIconsViewIconItemClass *
 	
 	stipple = gdk_bitmap_create_from_data (NULL, stipple_bits, 2, 2);
         /* FIXME: the font shouldn't be hard-wired like this */
-        mini_text_font = gdk_font_load("-bitstream-charter-medium-r-normal-*-9-*-*-*-*-*-*-*");
+        embedded_text_font = gdk_font_load("-bitstream-charter-medium-r-normal-*-9-*-*-*-*-*-*-*");
 }
 
 /* Object initialization function for the icon item. */
@@ -261,30 +259,11 @@ static void
 nautilus_icons_view_icon_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 {
 	NautilusIconsViewIconItemDetails *details;
-	GdkPixbuf *pixbuf;
 	GdkFont *font;
 
 	details = NAUTILUS_ICONS_VIEW_ICON_ITEM (object)->details;
 
 	switch (arg_id) {
-
-	case ARG_PIXBUF:
-		pixbuf = GTK_VALUE_BOXED (*arg);
-		if (pixbuf == details->pixbuf) {
-			return;
-		}
-		
-		if (pixbuf != NULL) {
-			g_return_if_fail (pixbuf_is_acceptable (pixbuf));
-			gdk_pixbuf_ref (pixbuf);
-		}
-		
-		if (details->pixbuf != NULL) {
-			gdk_pixbuf_unref (details->pixbuf);
-		}
-		
-		details->pixbuf = pixbuf;
-		break;
 
 	case ARG_TEXT:
 		if (nautilus_strcmp (details->text, GTK_VALUE_STRING (*arg)) == 0) {
@@ -332,12 +311,12 @@ nautilus_icons_view_icon_item_set_arg (GtkObject *object, GtkArg *arg, guint arg
 		break;
         
         case ARG_TEXT_SOURCE:
-		if (nautilus_strcmp (details->text_source, GTK_VALUE_STRING (*arg)) == 0) {
+		if (nautilus_strcmp (details->embedded_text_file_URI, GTK_VALUE_STRING (*arg)) == 0) {
 			return;
 		}
 		
-		g_free (details->text_source);
-		details->text_source = g_strdup (GTK_VALUE_STRING (*arg));
+		g_free (details->embedded_text_file_URI);
+		details->embedded_text_file_URI = g_strdup (GTK_VALUE_STRING (*arg));
 		break;
 		
 	default:
@@ -357,10 +336,6 @@ nautilus_icons_view_icon_item_get_arg (GtkObject *object, GtkArg *arg, guint arg
 	details = NAUTILUS_ICONS_VIEW_ICON_ITEM (object)->details;
 	
 	switch (arg_id) {
-		
-	case ARG_PIXBUF:
-		GTK_VALUE_BOXED (*arg) = details->pixbuf;
-		break;
 		
 	case ARG_TEXT:
 		GTK_VALUE_STRING (*arg) = g_strdup (details->text);
@@ -383,13 +358,67 @@ nautilus_icons_view_icon_item_get_arg (GtkObject *object, GtkArg *arg, guint arg
                 break;
         
         case ARG_TEXT_SOURCE:
-		GTK_VALUE_STRING (*arg) = g_strdup (details->text_source);
+		GTK_VALUE_STRING (*arg) = g_strdup (details->embedded_text_file_URI);
                 break;
 		
         default:
 		arg->type = GTK_TYPE_INVALID;
 		break;
 	}
+}
+
+GdkPixbuf *
+nautilus_icons_view_icon_item_get_image (NautilusIconsViewIconItem *item,
+					 ArtIRect *embedded_text_rect)
+{
+	NautilusIconsViewIconItemDetails *details;
+
+	g_return_val_if_fail (NAUTILUS_IS_ICONS_VIEW_ICON_ITEM (item), NULL);
+
+	details = item->details;
+
+	if (embedded_text_rect != NULL) {
+		*embedded_text_rect = details->embedded_text_rect;
+	}
+	return details->pixbuf;
+}
+
+void
+nautilus_icons_view_icon_item_set_image (NautilusIconsViewIconItem *item,
+					 GdkPixbuf *image,
+					 const ArtIRect *embedded_text_rect)
+{
+	NautilusIconsViewIconItemDetails *details;
+	ArtIRect empty_rect;
+
+	g_return_if_fail (NAUTILUS_IS_ICONS_VIEW_ICON_ITEM (item));
+	g_return_if_fail (image == NULL || pixbuf_is_acceptable (image));
+
+	details = item->details;
+
+	if (embedded_text_rect == NULL) {
+		memset (&empty_rect, 0, sizeof (empty_rect));
+		embedded_text_rect = &empty_rect;
+	}
+
+	if (details->pixbuf == image
+	    && memcmp (embedded_text_rect,
+		       &details->embedded_text_rect,
+		       sizeof (ArtIRect)) == 0) {
+		return;
+	}
+
+	if (image != NULL) {
+		gdk_pixbuf_ref (image);
+	}
+	if (details->pixbuf != NULL) {
+		gdk_pixbuf_unref (details->pixbuf);
+	}
+
+	details->pixbuf = image;
+	details->embedded_text_rect = *embedded_text_rect;
+	
+	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (item));
 }
 
 void
@@ -597,19 +626,32 @@ nautilus_icons_view_draw_text_box (GnomeCanvasItem* item, GdkDrawable *drawable,
 /* FIXME: We should cache the text in the object instead
  * of reading each time we draw, so we can work well over the network.
  */
+/* FIXME: The text reading does not belong here at all, but rather in the caller. */
 
 static void
-draw_mini_text (GnomeCanvasItem* item, GdkDrawable *drawable,
-		int x_pos, int y_pos, int icon_width, int icon_height, char *text_source)
+nautilus_art_irect_to_gdk_rectangle (GdkRectangle *destination,
+				     const ArtIRect *source)
+{
+	destination->x = source->x0;
+	destination->y = source->y0;
+	destination->width = source->x1 - source->x0;
+	destination->height = source->y1 - source->y0;
+}
+
+static void
+draw_embedded_text (GnomeCanvasItem* item,
+		    GdkDrawable *drawable,
+		    const ArtIRect *icon_rect)
 {
 	FILE *text_file;
 	char *file_name;
 	GdkRectangle clip_rect;
 	NautilusIconsViewIconItem *icon_item;
 	NautilusIconsViewIconItemDetails *details;
-	char text_buffer[256];
-	int cur_x, cur_y, y_limit;
+	char line_buffer[256];
+	int cur_y;
 	GdkGC *gc;
+	ArtIRect text_rect;
 	
 	icon_item = NAUTILUS_ICONS_VIEW_ICON_ITEM (item);
 	details = icon_item->details;
@@ -617,8 +659,22 @@ draw_mini_text (GnomeCanvasItem* item, GdkDrawable *drawable,
 	/* Draw the first few lines of the text file until we fill up the icon */
 	/* FIXME: need to use gnome_vfs to read the file  */
 	
-	file_name = details->text_source;
-	if (nautilus_str_has_prefix (details->text_source, "file://")) {
+	file_name = details->embedded_text_file_URI;
+	if (file_name == NULL) {
+		return;
+	}
+
+	text_rect.x0 = icon_rect->x0 + details->embedded_text_rect.x0;
+	text_rect.y0 = icon_rect->y0 + details->embedded_text_rect.y0;
+	text_rect.x1 = icon_rect->x0 + details->embedded_text_rect.x1;
+	text_rect.y1 = icon_rect->y0 + details->embedded_text_rect.y1;
+	art_irect_intersect (&text_rect, &text_rect, icon_rect);
+
+	if (art_irect_empty (&text_rect)) {
+		return;
+	}
+
+	if (nautilus_str_has_prefix (file_name, "file://")) {
 		file_name += 7;
 	}
         text_file = fopen(file_name, "r");
@@ -628,27 +684,27 @@ draw_mini_text (GnomeCanvasItem* item, GdkDrawable *drawable,
 
 	gc = gdk_gc_new (drawable);
 	
-	/* clip to the icon bounds */         
-	clip_rect.x = x_pos;
-	clip_rect.y = y_pos;
-	clip_rect.width = icon_width - 4;
-	clip_rect.height = icon_height;
+	/* clip to the text bounds */
+	nautilus_art_irect_to_gdk_rectangle (&clip_rect, &text_rect);
 	gdk_gc_set_clip_rectangle (gc, &clip_rect);
 	
-	cur_x = x_pos + 6;
-	cur_y = y_pos + 13;
-	y_limit = y_pos + icon_height - 8;
-	while (fgets (text_buffer, 256, text_file)) {
-		gdk_draw_string (drawable, mini_text_font, gc, cur_x, cur_y, text_buffer);
-		cur_y += 9;
-		if (cur_y > y_limit) {
-				break;
+	cur_y = text_rect.y0 + embedded_text_font->ascent;
+	while (fgets (line_buffer, sizeof (line_buffer), text_file)) {
+		if (cur_y + embedded_text_font->descent > text_rect.y1) {
+			break;
 		}
+		gdk_draw_string (drawable,
+				 embedded_text_font,
+				 gc,
+				 text_rect.x0,
+				 cur_y,
+				 line_buffer);
+		cur_y += embedded_text_font->descent + embedded_text_font->ascent;
 	}
 	
-	fclose (text_file);
-	
 	gdk_gc_unref(gc);
+
+	fclose (text_file);
 }
 
 static void
@@ -928,12 +984,8 @@ nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable
 	/* Draw stretching handles (if necessary). */
 	draw_stretch_handles (icon_item, drawable, &icon_rect);
 	
-	/* FIXME: The text reading does not belong here at all, but rather in the caller. */
-	if (details->text_source) {
-		draw_mini_text (item, drawable, icon_rect.x0, icon_rect.y0,
-				icon_rect.x1 - icon_rect.x0, icon_rect.y1 - icon_rect.y0,
-				details->text_source);
-	}
+	/* Draw embedded text. */
+	draw_embedded_text (item, drawable, &icon_rect);
 	
 	/* Draw the label text. */
 	nautilus_icons_view_draw_text_box (item, drawable, icon_rect.x0, icon_rect.y1);

@@ -7,9 +7,9 @@ eazel_DATA =					\
 	i-directory-72.png			\
 	i-directory-96.png			\
 	i-regular.png				\
+	i-regular.xml				\
 	i-regular-36.png			\
 	i-regular-72.png			\
 	i-regular-96.png
-	
 
 EXTRA_DIST = $(eazel_DATA)

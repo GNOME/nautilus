@@ -29,6 +29,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libnautilus/nautilus-file.h>
 #include <gtk/gtkobject.h>
+#include <libart_lgpl/art_rect.h>
 
 /* NautilusIconFactory is a class that knows how to hand out icons to be
  * used for representing files and some other objects. It was designed
@@ -97,11 +98,14 @@ GList *               nautilus_icon_factory_get_emblem_icons_for_file    (Nautil
 /* Render an icon to a particular size.
  * Ownership of a ref. count in this pixbuf comes with the deal.
  * This allows scaling in both dimensions. All other calls assume
- * that X and Y scaling are the same.
+ * that X and Y scaling are the same. The text rectangle tells where
+ * this icon can accomodate text. If the icon can't accomodate any
+ * text, then the rectangle is (0, 0, 0, 0).
  */
 GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_icon          (NautilusScalableIcon  *scalable_icon,
 									  guint                  size_in_pixels_x,
-									  guint                  size_in_pixels_y);
+									  guint                  size_in_pixels_y,
+									  ArtIRect              *embedded_text_rectangle);
 
 /* Convenience functions for the common case where you want to choose
  * and render the icon into a pixbuf all at once.

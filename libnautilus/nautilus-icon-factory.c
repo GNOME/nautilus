@@ -38,6 +38,9 @@
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
 
+#include <parser.h>
+#include <xmlmemory.h>
+
 #include "nautilus-string.h"
 #include "nautilus-default-file-icon.h"
 #include "nautilus-metadata.h"
@@ -170,6 +173,7 @@ typedef struct {
 
 	gboolean custom;
 	gboolean scaled;
+	ArtIRect text_rect;
 } NautilusIconCacheKey;
 
 /* forward declarations */
@@ -194,7 +198,8 @@ static GdkPixbuf *           get_image_from_cache                    (NautilusSc
 								      guint                     size_in_pixels_x,
 								      guint                     size_in_pixels_y,
 								      gboolean                  picky,
-								      gboolean                  custom);
+								      gboolean                  custom,
+								      ArtIRect                 *text_rect);
 static gboolean              check_for_thumbnails                    (NautilusIconFactory      *factory);
 static int                   nautilus_icon_factory_make_thumbnails   (gpointer                  data);
 
@@ -311,13 +316,15 @@ nautilus_icon_factory_possibly_free_cached_image (gpointer key,
 
 	/* Don't free a cache entry that is in the recently used list. */
 	icon_key = key;
-        if (icon_key->recently_used_node.next != NULL)
+        if (icon_key->recently_used_node.next != NULL) {
                 return FALSE;
+	}
 
 	/* Don't free a cache entry if the image is still in use. */
 	image = value;
-	if (image->ref_count > 1)
+	if (image->ref_count > 1) {
 		return FALSE;
+	}
 
 	/* Free the item. */
         return nautilus_icon_factory_destroy_cached_image (key, value, NULL);
@@ -350,8 +357,9 @@ nautilus_icon_factory_schedule_sweep (void)
 
 	factory = nautilus_get_current_icon_factory ();
 
-        if (factory->sweep_timer != 0)
+        if (factory->sweep_timer != 0) {
                 return;
+	}
 
         factory->sweep_timer = g_timeout_add (ICON_CACHE_SWEEP_TIMEOUT,
 					      nautilus_icon_factory_sweep,
@@ -438,15 +446,54 @@ nautilus_icon_factory_get_icon_name_for_file (NautilusFile *file)
         }
 }
 
+static xmlNodePtr
+get_child_node_by_property (xmlNodePtr parent,
+			    const char *child_nodes_name,
+			    const char *child_node_property,
+			    const char *child_node_property_value)
+{
+	xmlNodePtr child;
+	xmlChar *property;
+	gboolean match;
+
+	if (parent == NULL) {
+		return NULL;
+	}
+	for (child = parent->childs; child != NULL; child = child->next) {
+		if (strcmp (child->name, child_nodes_name) == 0) {
+			property = xmlGetProp (child, child_node_property);
+			match = nautilus_strcmp (property, child_node_property_value) == 0;
+			xmlFree (property);
+			if (match) {
+				return child;
+			}
+		}
+	}
+	return NULL;
+}
+
 /* Pick a particular icon to use, trying all the various suffixes.
  * Return the path of the icon or NULL if no icon is found.
  */
 static char *
-get_themed_icon_file_path (const char *theme_name, const char *icon_name, guint icon_size)
+get_themed_icon_file_path (const char *theme_name,
+			   const char *icon_name,
+			   guint icon_size,
+			   ArtIRect *text_rect)
 {
 	int i;
 	gboolean include_size;
-	char *partial_path, *path;
+	char *themed_icon_name, *partial_path, *path, *xml_path;
+	xmlDocPtr doc;
+	xmlNodePtr node;
+	char *size_as_string, *property;
+	ArtIRect parsed_rect;
+
+	if (theme_name == NULL) {
+		themed_icon_name = g_strdup (icon_name);
+	} else {
+		themed_icon_name = g_strconcat (theme_name, "/", icon_name, NULL);
+	}
 
 	include_size = icon_size != NAUTILUS_ICON_SIZE_STANDARD;
 
@@ -454,30 +501,60 @@ get_themed_icon_file_path (const char *theme_name, const char *icon_name, guint 
 	for (i = 0; i < NAUTILUS_N_ELEMENTS (icon_file_name_suffixes); i++) {
 
 		/* Build a path for this icon. */
-		partial_path = g_strdup_printf
-			("nautilus/%s%s%s%s%.0u%s",
-			 theme_name == NULL ? "" : theme_name,
-			 theme_name == NULL ? "" : "/",
-			 icon_name,
-			 include_size ? "-" : "",
-			 include_size ? icon_size : 0,
-			 icon_file_name_suffixes[i]);
+		partial_path = g_strdup_printf ("nautilus/%s%s%.0u%s",
+						themed_icon_name,
+						include_size ? "-" : "",
+						include_size ? icon_size : 0,
+						icon_file_name_suffixes[i]);
 		path = gnome_pixmap_file (partial_path);
 		g_free (partial_path);
 
 		/* Return the path if the file exists. */
 		if (path != NULL && g_file_exists (path)) {
-			return path;
+			break;
 		}
 		g_free (path);
 	}
 
-	return NULL;
+	/* Open the XML file to get the text rectangle. */
+	if (path != NULL && text_rect != NULL) {
+		memset (text_rect, 0, sizeof (*text_rect));
+
+		partial_path = g_strdup_printf ("nautilus/%s.xml",
+						themed_icon_name);
+		xml_path = gnome_pixmap_file (partial_path);
+		g_free (partial_path);
+
+		doc = xmlParseFile (xml_path);
+		g_free (xml_path);
+
+		size_as_string = g_strdup_printf ("%u", icon_size);
+		node = get_child_node_by_property (xmlDocGetRootElement (doc),
+						   "ICON", "SIZE", size_as_string);
+		g_free (size_as_string);
+
+		property = xmlGetProp (node, "EMBEDDED_TEXT_RECTANGLE");
+		if (property != NULL) {
+			if (sscanf (property,
+				    " %d , %d , %d , %d %*s",
+				    &parsed_rect.x0,
+				    &parsed_rect.y0,
+				    &parsed_rect.x1,
+				    &parsed_rect.y1) == 4) {
+				*text_rect = parsed_rect;
+			}
+			xmlFree (property);
+		}
+
+		xmlFreeDoc (doc);
+	}
+
+	return path;
 }
 
 /* Choose the file name to load, taking into account theme vs. non-theme icons. */
 static char *
-get_icon_file_path (const char *name, guint size_in_pixels)
+get_icon_file_path (const char *name, guint size_in_pixels, ArtIRect *text_rect)
 {
 	gboolean use_theme_icon;
 	const char *theme_name;
@@ -493,7 +570,8 @@ get_icon_file_path (const char *name, guint size_in_pixels)
 	if (theme_name != NULL) {
 		path = get_themed_icon_file_path (theme_name,
 						  name,
-						  NAUTILUS_ICON_SIZE_STANDARD);		
+						  NAUTILUS_ICON_SIZE_STANDARD,
+						  NULL);		
 		if (path != NULL) {
 			use_theme_icon = TRUE;
 			g_free (path);
@@ -503,7 +581,8 @@ get_icon_file_path (const char *name, guint size_in_pixels)
 	/* Now we know whether or not to use the theme. */
 	return get_themed_icon_file_path (use_theme_icon ? theme_name : NULL,
 					  name,
-					  size_in_pixels);
+					  size_in_pixels,
+					  text_rect);
 }
 
 /* Get or create a scalable icon. */
@@ -518,8 +597,8 @@ nautilus_scalable_icon_get (const char *uri,
 	hash_table = nautilus_get_current_icon_factory ()->scalable_icons;
 
 	/* Check to see if it's already in the table. */
-	icon_key.uri = (char *)uri;
-	icon_key.name = (char *)name;
+	icon_key.uri = (char *) uri;
+	icon_key.name = (char *) name;
 	icon = g_hash_table_lookup (hash_table, &icon_key);
 	if (icon == NULL) {
 		/* Not in the table, so create it and put it in. */
@@ -550,8 +629,9 @@ nautilus_scalable_icon_unref (NautilusScalableIcon *icon)
 	g_return_if_fail (icon != NULL);
 	g_return_if_fail (icon->ref_count != 0);
 	
-	if (--icon->ref_count != 0)
+	if (--icon->ref_count != 0) {
 		return;
+	}
 
 	hash_table = nautilus_get_current_icon_factory ()->scalable_icons;
 	g_hash_table_remove (hash_table, icon);
@@ -570,12 +650,14 @@ nautilus_scalable_icon_hash (gconstpointer p)
 	icon = p;
 	hash = 0;
 
-	if (icon->uri != NULL)
+	if (icon->uri != NULL) {
 		hash = g_str_hash (icon->uri);
+	}
 
 	hash <<= 4;
-	if (icon->name != NULL)
+	if (icon->name != NULL) {
 		hash ^= g_str_hash (icon->name);
+	}
 
 	return hash;
 }
@@ -600,8 +682,9 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
         const char *name;
 	NautilusScalableIcon *scalable_icon;
 	
-	if (file == NULL)
+	if (file == NULL) {
 		return NULL;
+	}
 	
 	/* if there is a custom image in the metadata, use that. */
 	uri = nautilus_file_get_metadata (file, NAUTILUS_CUSTOM_ICON_METADATA_KEY, NULL);
@@ -611,10 +694,11 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
 	   put an entry on the thumbnail queue so we eventually make one */
 	   
 	if (uri == NULL && nautilus_str_has_prefix (nautilus_file_get_mime_type (file), "image/")) {
-		if (nautilus_file_get_size (file) < SELF_THUMBNAIL_SIZE_THRESHOLD)
+		if (nautilus_file_get_size (file) < SELF_THUMBNAIL_SIZE_THRESHOLD) {
 			uri = nautilus_file_get_uri (file);
-		else
-			uri = nautilus_icon_factory_get_thumbnail_uri (file);	
+		} else {
+			uri = nautilus_icon_factory_get_thumbnail_uri (file);
+		}
 	}
 	
 	/* Get the generic icon set for this file. */
@@ -683,9 +767,9 @@ make_thumbnail_path (const char *image_uri, gboolean directory_only)
 	char *last_slash = strrchr (temp_str, '/');
 	*last_slash = '\0';
 	
-	if (directory_only)
+	if (directory_only) {
 		thumbnail_uri = g_strdup_printf ("%s/.thumbnails", temp_str);
-	else {
+	} else {
 		if (nautilus_str_has_suffix (image_uri, ".png")
 		    || nautilus_str_has_suffix (image_uri, ".PNG")) {
 			thumbnail_uri = g_strdup_printf ("%s/.thumbnails/%s", temp_str, last_slash + 1);
@@ -774,7 +858,8 @@ nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file)
 	
 	/* return the uri to the "loading image" icon */
 	return get_icon_file_path (ICON_NAME_THUMBNAIL_LOADING,
-				   NAUTILUS_ICON_SIZE_STANDARD);
+				   NAUTILUS_ICON_SIZE_STANDARD,
+				   NULL);
 }
 
 static guint
@@ -860,8 +945,11 @@ get_next_icon_size_to_try (guint target_size, guint *current_size)
 static GdkPixbuf *
 load_specific_image (NautilusScalableIcon *scalable_icon,
 		     guint size_in_pixels,
-		     gboolean custom)
+		     gboolean custom,
+		     ArtIRect *text_rect)
 {
+	g_assert (text_rect != NULL);
+
 	if (custom) {
 		/* Custom icon. */
 
@@ -871,6 +959,7 @@ load_specific_image (NautilusScalableIcon *scalable_icon,
 		 */
 		if (size_in_pixels == NAUTILUS_ICON_SIZE_STANDARD
 		    && nautilus_str_has_prefix (scalable_icon->uri, "file://")) {
+			memset (text_rect, 0, sizeof (*text_rect));
 			return gdk_pixbuf_new_from_file (scalable_icon->uri + 7);
 		}
 
@@ -881,7 +970,8 @@ load_specific_image (NautilusScalableIcon *scalable_icon,
 		GdkPixbuf *image;
 		
 		path = get_icon_file_path (scalable_icon->name,
-					   size_in_pixels);
+					   size_in_pixels,
+					   text_rect);
 		if (path == NULL) {
 			return NULL;
 		}
@@ -896,7 +986,8 @@ static GdkPixbuf *
 load_image_for_scaling (NautilusScalableIcon *scalable_icon,
 			guint requested_size,
 			guint *actual_size_result,
-			gboolean *custom)
+			gboolean *custom,
+			ArtIRect *text_rect)
 {
         GdkPixbuf *image;
 	guint actual_size;
@@ -905,7 +996,12 @@ load_image_for_scaling (NautilusScalableIcon *scalable_icon,
 	/* First check for a custom image. */
 	actual_size = 0;
 	while (get_next_icon_size_to_try (requested_size, &actual_size)) {
-		image = get_image_from_cache (scalable_icon, actual_size, actual_size, TRUE, TRUE);
+		image = get_image_from_cache (scalable_icon,
+					      actual_size,
+					      actual_size,
+					      TRUE,
+					      TRUE,
+					      text_rect);
 		if (image != NULL) {
 			*actual_size_result = actual_size;
 			*custom = TRUE;
@@ -916,7 +1012,12 @@ load_image_for_scaling (NautilusScalableIcon *scalable_icon,
 	/* Next, go for the normal image. */
 	actual_size = 0;
 	while (get_next_icon_size_to_try (requested_size, &actual_size)) {
-		image = get_image_from_cache (scalable_icon, actual_size, actual_size, TRUE, FALSE);
+		image = get_image_from_cache (scalable_icon,
+					      actual_size,
+					      actual_size,
+					      TRUE,
+					      FALSE,
+					      text_rect);
 		if (image != NULL) {
 			*actual_size_result = actual_size;
 			*custom = FALSE;
@@ -925,17 +1026,20 @@ load_image_for_scaling (NautilusScalableIcon *scalable_icon,
 	}
 
 	/* Finally, fall back on the hard-coded image. */
-	if (fallback_image == NULL)
+	if (fallback_image == NULL) {
 		fallback_image = gdk_pixbuf_new_from_data
 			(nautilus_default_file_icon,
 			 ART_PIX_RGB,
-			 nautilus_default_file_icon_has_alpha,
+			 TRUE,
 			 nautilus_default_file_icon_width,
 			 nautilus_default_file_icon_height,
 			 nautilus_default_file_icon_width * 4, /* stride */
 			 NULL, /* don't destroy data */
 			 NULL);
+	}
 	gdk_pixbuf_ref (fallback_image);
+
+	memset (text_rect, 0, sizeof (*text_rect));
 	*actual_size_result = NAUTILUS_ICON_SIZE_STANDARD;
 	*custom = FALSE;
         return fallback_image;
@@ -947,7 +1051,8 @@ load_image_scale_if_necessary (NautilusScalableIcon *scalable_icon,
 			       guint requested_size_x,
 			       guint requested_size_y,
 			       gboolean *scaled,
-			       gboolean *custom)
+			       gboolean *custom,
+			       ArtIRect *text_rect)
 {
         GdkPixbuf *image, *scaled_image;
 	guint actual_size;
@@ -955,17 +1060,23 @@ load_image_scale_if_necessary (NautilusScalableIcon *scalable_icon,
 	
 	/* Load the image for the icon that's closest in size to what we want. */
 	image = load_image_for_scaling (scalable_icon, requested_size_x,
-					&actual_size, custom);
+					&actual_size, custom, text_rect);
         if (requested_size_x == actual_size && requested_size_y == actual_size) {
 		*scaled = FALSE;
 		return image;
 	}
 	
 	/* Scale the image to the size we want. */
-	scaled_width = (gdk_pixbuf_get_width (image) * requested_size_x) / actual_size;
-	scaled_height = (gdk_pixbuf_get_height (image) * requested_size_y) / actual_size;
+	scaled_width = gdk_pixbuf_get_width (image) * requested_size_x / actual_size;
+	scaled_height = gdk_pixbuf_get_height (image) * requested_size_y / actual_size;
 	scaled_image = gdk_pixbuf_scale_simple
 		(image, scaled_width, scaled_height, ART_FILTER_BILINEAR);
+
+	/* Scale the text rectangle to the same size. */
+	text_rect->x0 = text_rect->x0 * requested_size_x / actual_size;
+	text_rect->y0 = text_rect->y0 * requested_size_y / actual_size;
+	text_rect->x1 = text_rect->x1 * requested_size_x / actual_size;
+	text_rect->y1 = text_rect->y1 * requested_size_y / actual_size;
 	
 	gdk_pixbuf_unref (image);
 	*scaled = TRUE;
@@ -1029,7 +1140,8 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 		      guint size_in_pixels_x,
 		      guint size_in_pixels_y,
 		      gboolean picky,
-		      gboolean custom)
+		      gboolean custom,
+		      ArtIRect *text_rect)
 {
 	NautilusIconFactory *factory;
 	GHashTable *hash_table;
@@ -1050,17 +1162,20 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 					  &key_in_table, &value)) {
 		/* Found it in the table. */
 		key = key_in_table;
-		image = value;
-		g_assert (image != NULL);
 
 		/* If we're going to be picky, then don't accept anything
 		 * other than exactly what we are looking for.
 		 */
-		if (picky && (key->scaled || custom != key->custom))
+		if (picky && (key->scaled || custom != key->custom)) {
 			return NULL;
+		}
+
+		image = value;
+		g_assert (image != NULL);
 	} else {
 		gboolean got_scaled_image;
 		gboolean got_custom_image;
+		ArtIRect key_text_rect;
 		
 		/* Not in the table, so load the image. */
 		if (picky) {
@@ -1069,7 +1184,8 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 			}
 			image = load_specific_image (scalable_icon,
 						     size_in_pixels_x,
-						     custom);
+						     custom,
+						     &key_text_rect);
 			if (image == NULL) {
 				return NULL;
 			}
@@ -1081,7 +1197,8 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 							       size_in_pixels_x,
 							       size_in_pixels_y,
 							       &got_scaled_image,
-							       &got_custom_image);
+							       &got_custom_image,
+							       &key_text_rect);
 			g_assert (image != NULL);
 		}
 
@@ -1093,9 +1210,15 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 		key->size_in_pixels_y = size_in_pixels_y;
 		key->scaled = got_scaled_image;
 		key->custom = got_custom_image;
+		key->text_rect = key_text_rect;
 		
 		/* Add the item to the hash table. */
 		g_hash_table_insert (hash_table, key, image);
+	}
+
+	/* Return the text rect if the caller asked for it. */
+	if (text_rect != NULL) {
+		*text_rect = key->text_rect;
 	}
 
 	/* Since this item was used, keep it in the cache longer. */
@@ -1111,11 +1234,12 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 
 GdkPixbuf *
 nautilus_icon_factory_get_pixbuf_for_icon (NautilusScalableIcon *scalable_icon,
-					   guint size_in_pixels_x, guint size_in_pixels_y)
+					   guint size_in_pixels_x, guint size_in_pixels_y,
+					   ArtIRect *text_rect)
 {
 	return get_image_from_cache (scalable_icon,
 				     size_in_pixels_x, size_in_pixels_y,
-				     FALSE, FALSE);
+				     FALSE, FALSE, text_rect);
 }
 
 static void
@@ -1193,7 +1317,8 @@ nautilus_icon_factory_get_pixbuf_for_file (NautilusFile *file,
 	icon = nautilus_icon_factory_get_icon_for_file (file);
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon (icon,
 							    size_in_pixels,
-							    size_in_pixels);
+							    size_in_pixels,
+							    NULL);
 	nautilus_scalable_icon_unref (icon);
 	return pixbuf;
 }

@@ -4,14 +4,17 @@ bin_PROGRAMS=hyperbola
 lib_LTLIBRARIES=libvfs-help.la
 
 INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
-	$(GNOMEUI_CFLAGS) $(BONOBO_CFLAGS) \
+	$(GNOMEUI_CFLAGS) \
+	$(BONOBO_CFLAGS) \
+	$(XML_CFLAGS) \
 	-DINFODIR=\"$(infodir)\"
 
 LDADD =\
 	$(top_builddir)/nautilus-widgets/libnautilus-widgets.la \
-	$(top_builddir)/libnautilus/libnautilus.la	\
-	$(BONOBO_LIBS)					\
-	$(GNOMEUI_LIBS)
+	$(top_builddir)/libnautilus/libnautilus.la \
+	$(BONOBO_LIBS) \
+	$(GNOMEUI_LIBS) \
+	$(XML_LIBS)
 
 hyperbola_SOURCES=		\
 	hyperbola-nav-tree.c 	\
