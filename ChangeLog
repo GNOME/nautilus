@@ -1,3 +1,73 @@
+2000-08-23  John Sullivan  <sullivan@eazel.com>
+
+	More work on bug 1653 (new menu layout). Now there's a
+	permanent "View" menu that contains Refresh and zooming
+	items and the icon view merges its stuff in there. The
+	icon view now has a "Clean Up by Name" item to do a
+	one-shot sort of icons in manual layout mode.
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(key_press_event): 
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_key_press):
+	Don't use any control-key combinations for type-select 
+	(this was blocking Control-= and others)
+	
+	* libnautilus/nautilus-bonobo-ui.h: Added #defines for View menu
+	and placeholders in it.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_initialize_class), (bump_zoom_level),
+	(zoom_to_level), (restore_default_zoom_level), (can_zoom_in),
+	(can_zoom_out): Override all zoom-related functions to do
+	nothing, so you can't use keyboard equivalents or other trickery
+	to zoom on the desktop.
+		
+	* src/file-manager/fm-icon-view.h:
+	Define clean_up function pointer
+	* src/file-manager/fm-icon-view.c: 
+	(set_sort_criterion): Just moved this function.
+	(fm_icon_view_clean_up): New function, calls virtual function.
+	(fm_icon_view_real_clean_up): New function, sorts one time by name.
+	(clean_up_callback): New function, calls fm_icon_view_clean_up
+	(compute_menu_item_info): Add clean up case
+	(update_layout_menus): Update sensitivity of Clean Up item
+	(get_next_position): New helper function to get a position for
+	a Bonobo menu item based on the one you want to be after. Works
+	around Bonobo bug where the last item's position is reported as -1.
+	(fm_icon_view_merge_menus): Deploy get_next_position; get rid of
+	Layout menu and redo items in View menu to match design in bug 1653.
+	(fm_icon_view_initialize_class): Wire up clean_up function pointer
+	
+	* src/nautilus-window-menus.c: 
+	(view_menu_reload_callback): Renamed from go_menu_reload_callback
+	(view_menu_zoom_in_callback), (view_menu_zoom_out_callback),
+	(view_menu_zoom_normal_callback): New functions, used by zooming menu
+	items.
+	(nautilus_window_initialize_menus): Add View menu; move Reload to
+	View menu and rename it Refresh; add zooming menu items.
+	* src/nautilus-window-private.h: Add #defines for zooming menu item paths;
+	add prototypes for nautilus_window_zoom_xxx functions.
+	* src/nautilus-window.c: 
+	(nautilus_window_zoom_in),
+	(nautilus_window_zoom_to_level), (nautilus_window_zoom_out),
+	(nautilus_window_zoom_to_fit): Renamed these to better match new
+	shared-between-files status, and reordered the parameters.
+	(nautilus_window_constructed): use gtk_signal_connect_object with
+	nautilus_window_zoom functions since their parameters have flipped.
+	(nautilus_window_zoom_level_changed_callback): Set sensitivity of
+	zooming menu items appropriately.
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_load_content_view): Desensitize the zoom menu items
+	when we hide the zoom control.
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_real_create_background_context_menu_items):
+	Change "Zoom to Default" to "Normal Size" in the context menu,
+	to match terminology in View menu.
+	* src/nautilus-window-toolbars.c: Rename Reload to Refresh to match
+	menu item & new design
+
 2000-08-23  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-undo-signal-handlers.c:

@@ -225,36 +225,32 @@ navigation_bar_mode_changed_callback (GtkWidget *widget,
 }
 
 
-static void
-zoom_in_callback (NautilusZoomControl *zoom_control,
-            NautilusWindow      *window)
+void
+nautilus_window_zoom_in (NautilusWindow *window)
 {
 	if (window->content_view != NULL) {
 		nautilus_view_frame_zoom_in (window->content_view);
 	}
 }
 
-static void
-zoom_to_level_callback (NautilusZoomControl *zoom_control, double level,
-            		NautilusWindow      *window)
+void
+nautilus_window_zoom_to_level (NautilusWindow *window, double level)
 {
 	if (window->content_view != NULL) {
 		nautilus_view_frame_set_zoom_level (window->content_view, level);
 	}
 }
 
-static void
-zoom_out_callback (NautilusZoomControl *zoom_control,
-                             NautilusWindow      *window)
+void
+nautilus_window_zoom_out (NautilusWindow *window)
 {
 	if (window->content_view != NULL) {
 		nautilus_view_frame_zoom_out (window->content_view);
 	}
 }
 
-static void
-zoom_to_fit_callback (NautilusZoomControl *zoom_control,
-            	       NautilusWindow      *window)
+void
+nautilus_window_zoom_to_fit (NautilusWindow *window)
 {
 	if (window->content_view != NULL) {
 		nautilus_view_frame_zoom_to_fit (window->content_view);
@@ -305,10 +301,10 @@ nautilus_window_constructed (NautilusWindow *window)
 	 * It gets shown later, if the view-frame contains something zoomable.
 	 */
 	window->zoom_control = nautilus_zoom_control_new ();
-	gtk_signal_connect (GTK_OBJECT (window->zoom_control), "zoom_in", zoom_in_callback, window);
-	gtk_signal_connect (GTK_OBJECT (window->zoom_control), "zoom_out", zoom_out_callback, window);
-	gtk_signal_connect (GTK_OBJECT (window->zoom_control), "zoom_to_level", zoom_to_level_callback, window);
-	gtk_signal_connect (GTK_OBJECT (window->zoom_control), "zoom_to_fit", zoom_to_fit_callback, window);
+	gtk_signal_connect_object (GTK_OBJECT (window->zoom_control), "zoom_in", nautilus_window_zoom_in, GTK_OBJECT (window));
+	gtk_signal_connect_object (GTK_OBJECT (window->zoom_control), "zoom_out", nautilus_window_zoom_out, GTK_OBJECT (window));
+	gtk_signal_connect_object (GTK_OBJECT (window->zoom_control), "zoom_to_level", nautilus_window_zoom_to_level, GTK_OBJECT (window));
+	gtk_signal_connect_object (GTK_OBJECT (window->zoom_control), "zoom_to_fit", nautilus_window_zoom_to_fit, GTK_OBJECT (window));
 	gtk_box_pack_end (GTK_BOX (location_bar_box), window->zoom_control, FALSE, FALSE, 0);
 	
 	gtk_widget_show (location_bar_box);
@@ -1248,8 +1244,20 @@ nautilus_window_zoom_level_changed_callback (NautilusViewFrame *view,
 		nautilus_zoom_control_set_preferred_zoom_levels
 			(NAUTILUS_ZOOM_CONTROL (window->zoom_control),
 			 nautilus_view_frame_get_preferred_zoom_levels (view));
+			 
 		gtk_widget_show (window->zoom_control);
+
 	}
+
+	bonobo_ui_handler_menu_set_sensitivity (window->ui_handler,
+						NAUTILUS_MENU_PATH_ZOOM_IN_ITEM,
+						zoom_level < nautilus_view_frame_get_max_zoom_level (view));
+	bonobo_ui_handler_menu_set_sensitivity (window->ui_handler,
+						NAUTILUS_MENU_PATH_ZOOM_OUT_ITEM,
+						zoom_level > nautilus_view_frame_get_min_zoom_level (view));
+	bonobo_ui_handler_menu_set_sensitivity (window->ui_handler,
+						NAUTILUS_MENU_PATH_ZOOM_NORMAL_ITEM,
+						TRUE);
 }
 
 static Nautilus_HistoryList *

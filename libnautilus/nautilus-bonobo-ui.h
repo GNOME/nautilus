@@ -37,6 +37,7 @@
 
 #define NAUTILUS_MENU_PATH_FILE_MENU			"/File"
 #define NAUTILUS_MENU_PATH_EDIT_MENU			"/Edit"
+#define NAUTILUS_MENU_PATH_VIEW_MENU			"/View"
 #define NAUTILUS_MENU_PATH_GO_MENU			"/Go"
 #define NAUTILUS_MENU_PATH_BOOKMARKS_MENU		"/Bookmarks"
 #define NAUTILUS_MENU_PATH_HELP_MENU			"/Help"
@@ -91,6 +92,18 @@
  * individual files, such as "Remove Custom Image"
  */
 #define NAUTILUS_MENU_PATH_EDIT_ITEMS_PLACEHOLDER	"/Edit/Edit Items Placeholder"
+
+/**
+ * Use the "show/hide" placeholder to insert other View menu items that
+ * control the visibility of some piece of the UI, such as "Show/Hide Status Bar".
+ */
+#define NAUTILUS_MENU_PATH_SHOW_HIDE_PLACEHOLDER	"/View/Show Hide Placeholder"
+
+/**
+ * Use the "view items" placeholder to insert other View menu items that
+ * are specific to a component, such as the Icon View's layout options.
+ */
+#define NAUTILUS_MENU_PATH_VIEW_ITEMS_PLACEHOLDER	"/View/View Items Placeholder"
 
 /* Use the "extra help items" placeholder to add help-related items */
 #define NAUTILUS_MENU_PATH_EXTRA_HELP_ITEMS_PLACEHOLDER	"/Help/Extra Help Items"

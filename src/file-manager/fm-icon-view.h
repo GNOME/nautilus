@@ -59,6 +59,9 @@ struct FMIconViewClass {
 
 	gboolean (* get_directory_auto_layout)   (FMIconView *icon_view, NautilusDirectory *directory);
 	void     (* set_directory_auto_layout)   (FMIconView *icon_view, NautilusDirectory *directory, gboolean auto_layout);
+
+	/* Override "clean_up" if your subclass has its own notion of where icons should be positioned */
+	void	 (* clean_up)			 (FMIconView *icon_view);
 };
 
 /* GtkObject support */

@@ -2553,8 +2553,12 @@ key_press_event (GtkWidget *widget,
 			handled = TRUE;
 			break;
 		default:
-			handled = nautilus_icon_container_handle_typeahead (container, 
-									    event->string);
+			/* Don't use control keys for type-selecting, because they
+			 * might be used for menus.
+			 */
+			handled = (event->state & GDK_CONTROL_MASK) == 0 &&
+				   nautilus_icon_container_handle_typeahead 
+				   	(container, event->string);
 			flush_typeahead = !handled;
 			break;
 		}

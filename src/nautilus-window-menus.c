@@ -72,6 +72,8 @@
 #define NAUTILUS_MENU_PATH_SEPARATOR_AFTER_CLEAR	"/Edit/Separator after Clear"
 #define NAUTILUS_MENU_PATH_SEPARATOR_AFTER_SELECT_ALL	"/Edit/Separator after Select All"
 
+#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_ZOOM	"/View/Separator before Zoom"
+
 #define NAUTILUS_MENU_PATH_HOME_ITEM			"/Go/Home"
 
 #define NAUTILUS_MENU_PATH_HISTORY_ITEMS_PLACEHOLDER	"/Go/History Placeholder"
@@ -160,8 +162,6 @@ bookmark_holder_free (BookmarkHolder *bookmark_holder)
 
 #define NAUTILUS_MENU_PATH_CUSTOMIZE_ITEM			"/Edit/Customize"
 #define NAUTILUS_MENU_PATH_CHANGE_APPEARANCE_ITEM		"/Edit/Change_Appearance"
-
-#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_RELOAD		"/Go/Separator before Reload"
 
 #define NAUTILUS_MENU_PATH_USER_LEVEL				"/UserLevel"
 #define NAUTILUS_MENU_PATH_NOVICE_ITEM				"/UserLevel/Novice"
@@ -331,11 +331,35 @@ go_menu_home_callback (BonoboUIHandler *ui_handler,
 }
 
 static void
-go_menu_reload_callback (BonoboUIHandler *ui_handler, 
-		         gpointer user_data,
-		         const char *path) 
+view_menu_reload_callback (BonoboUIHandler *ui_handler, 
+		           gpointer user_data,
+		           const char *path) 
 {
 	nautilus_window_reload (NAUTILUS_WINDOW (user_data));
+}
+
+static void
+view_menu_zoom_in_callback (BonoboUIHandler *ui_handler, 
+		            gpointer user_data,
+		            const char *path) 
+{
+	nautilus_window_zoom_in (NAUTILUS_WINDOW (user_data));
+}
+
+static void
+view_menu_zoom_out_callback (BonoboUIHandler *ui_handler, 
+		             gpointer user_data,
+		             const char *path) 
+{
+	nautilus_window_zoom_out (NAUTILUS_WINDOW (user_data));
+}
+
+static void
+view_menu_zoom_normal_callback (BonoboUIHandler *ui_handler, 
+		                gpointer user_data,
+		                const char *path) 
+{
+	nautilus_window_zoom_to_fit (NAUTILUS_WINDOW (user_data));
 }
 
 static void
@@ -1262,6 +1286,63 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         append_placeholder (window, NAUTILUS_MENU_PATH_GLOBAL_EDIT_ITEMS_PLACEHOLDER);
         append_placeholder (window, NAUTILUS_MENU_PATH_EDIT_ITEMS_PLACEHOLDER);
 
+        /* View menu */
+        new_top_level_menu (window, NAUTILUS_MENU_PATH_VIEW_MENU, _("_View"));
+
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_RELOAD_ITEM,
+        				 _("_Refresh"),
+        				 _("Display the latest contents of the current location"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
+        				 NULL,
+        				 'R',
+        				 GDK_CONTROL_MASK,
+        				 view_menu_reload_callback,
+        				 window);
+
+        append_placeholder (window, NAUTILUS_MENU_PATH_SHOW_HIDE_PLACEHOLDER);
+        append_placeholder (window, NAUTILUS_MENU_PATH_VIEW_ITEMS_PLACEHOLDER);
+
+        append_separator (window, NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_ZOOM);
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_ZOOM_IN_ITEM,
+        				 _("Zoom _In"),
+        				 _("Show the contents in more detail"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
+        				 NULL,
+        				 '=',
+        				 GDK_CONTROL_MASK,
+        				 view_menu_zoom_in_callback,
+        				 window);
+
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_ZOOM_OUT_ITEM,
+        				 _("Zoom _Out"),
+        				 _("Show the contents in less detail"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
+        				 NULL,
+        				 '-',
+        				 GDK_CONTROL_MASK,
+        				 view_menu_zoom_out_callback,
+        				 window);
+
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_ZOOM_NORMAL_ITEM,
+        				 _("_Normal Size"),
+        				 _("Show the contents at the normal size"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
+        				 NULL,
+        				 0,
+        				 0,
+        				 view_menu_zoom_normal_callback,
+        				 window);
+
+        
+
 	/* Go menu */
         new_top_level_menu (window, NAUTILUS_MENU_PATH_GO_MENU, _("_Go"));
 
@@ -1311,20 +1392,6 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 'H',
         				 GDK_CONTROL_MASK,
         				 go_menu_home_callback,
-        				 window);
-
-	append_separator (window, NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_RELOAD);
-
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_RELOAD_ITEM,
-        				 _("_Reload"),
-        				 _("Display the latest contents of the current location"),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
-        				 NULL,
-        				 'R',
-        				 GDK_CONTROL_MASK,
-        				 go_menu_reload_callback,
         				 window);
 
         append_placeholder (window, NAUTILUS_MENU_PATH_HISTORY_ITEMS_PLACEHOLDER);

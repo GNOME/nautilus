@@ -63,28 +63,35 @@
 #include <unistd.h>
 
 /* Paths to use when creating & referring to Bonobo menu items */
+#define MENU_PATH_RENAME 			"/File/Rename"
+#define MENU_PATH_CUSTOMIZE_ICON_TEXT 		"/Edit/Icon Text"
 #define MENU_PATH_STRETCH_ICON 			"/Edit/Stretch"
 #define MENU_PATH_UNSTRETCH_ICONS 		"/Edit/Unstretch"
-#define MENU_PATH_CUSTOMIZE_ICON_TEXT 		"/Edit/Icon Text"
-#define MENU_PATH_LAYOUT_MENU 			"/Layout"
-#define MENU_PATH_MANUAL_LAYOUT 		"/Layout/Manual Layout"
-#define MENU_PATH_LAYOUT_SEPARATOR 		"/Layout/Separator"
-#define MENU_PATH_SORT_DIRECTION_SEPARATOR 	"/Layout/SortDirectionSeparator"
-#define MENU_PATH_SORT_DIRECTION_RADIO_GROUP 	"/Layout/SortDirectionRadioGroup"
-#define MENU_PATH_SORT_ASCENDING	   	"/Layout/Ascending"
-#define MENU_PATH_SORT_DESCENDING	   	"/Layout/Descending"
-#define MENU_PATH_RENAME 			"/File/Rename"
+#define MENU_PATH_LAYOUT_SEPARATOR 		"/View/LayoutSeparator"
+#define MENU_PATH_LAY_OUT			"/View/Lay Out"
+#define MENU_PATH_MANUAL_LAYOUT 		"/View/Lay Out/Manual Layout"
+#define MENU_PATH_AUTO_LAYOUT_SEPARATOR 	"/View/Lay Out/AutoLayoutSeparator"
+#define MENU_PATH_CLEAN_UP			"/View/Clean Up"
+#define MENU_PATH_SORT_DIRECTION_RADIO_GROUP 	"/View/SortDirectionRadioGroup"
+#define MENU_PATH_SORT_ASCENDING	   	"/View/Ascending"
+#define MENU_PATH_SORT_DESCENDING	   	"/View/Descending"
 
 /* forward declarations */
-static void create_icon_container                    (FMIconView        *icon_view);
-static void fm_icon_view_initialize                  (FMIconView        *icon_view);
-static void fm_icon_view_initialize_class            (FMIconViewClass   *klass);
-static void fm_icon_view_set_zoom_level              (FMIconView        *view,
-						      NautilusZoomLevel  new_level,
-						      gboolean           always_set_level);
-static void fm_icon_view_update_icon_container_fonts (FMIconView        *icon_view);
-static void fm_icon_view_update_click_mode           (FMIconView        *icon_view);
-static void fm_icon_view_update_smooth_graphics_mode (FMIconView        *icon_view);
+static void 	create_icon_container                    (FMIconView        *icon_view);
+static void 	fm_icon_view_initialize                  (FMIconView        *icon_view);
+static void 	fm_icon_view_initialize_class            (FMIconViewClass   *klass);
+static void	fm_icon_view_set_directory_sort_by 	 (FMIconView 	    *icon_view, 
+							  NautilusDirectory *directory, 
+							  const char 	    *sort_by);
+static void 	fm_icon_view_set_zoom_level              (FMIconView        *view,
+						      	  NautilusZoomLevel  new_level,
+						      	  gboolean           always_set_level);
+static void 	fm_icon_view_update_icon_container_fonts (FMIconView        *icon_view);
+static void 	fm_icon_view_update_click_mode           (FMIconView        *icon_view);
+static void 	fm_icon_view_update_smooth_graphics_mode (FMIconView        *icon_view);
+static gboolean set_sort_reversed 			 (FMIconView 	    *icon_view, 
+							  gboolean 	     new_value);
+static void	update_layout_menus 			 (FMIconView 	    *view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMIconView, fm_icon_view, FM_TYPE_DIRECTORY_VIEW);
 
@@ -104,36 +111,36 @@ static const SortCriterion sort_criteria[] = {
 	{
 		NAUTILUS_FILE_SORT_BY_NAME,
 		"name",
-		"/Layout/Sort by Name",
-		N_("Sort by _Name"),
+		"/View/Lay Out/Sort by Name",
+		N_("by _Name"),
 		N_("Keep icons sorted by name in rows")
 	},
 	{
 		NAUTILUS_FILE_SORT_BY_SIZE,
 		"size",
-		"/Layout/Sort by Size",
-		N_("Sort by _Size"),
+		"/View/Lay Out/Sort by Size",
+		N_("by _Size"),
 		N_("Keep icons sorted by size in rows")
 	},
 	{
 		NAUTILUS_FILE_SORT_BY_TYPE,
 		"type",
-		"/Layout/Sort by Type",
-		N_("Sort by _Type"),
+		"/View/Lay Out/Sort by Type",
+		N_("by _Type"),
 		N_("Keep icons sorted by type in rows")
 	},
 	{
 		NAUTILUS_FILE_SORT_BY_MTIME,
 		"modification date",
-		"/Layout/Sort by Modification Date",
-		N_("Sort by Modification _Date"),
+		"/View/Lay Out/Sort by Modification Date",
+		N_("by Modification _Date"),
 		N_("Keep icons sorted by modification date in rows")
 	},
 	{
 		NAUTILUS_FILE_SORT_BY_EMBLEMS,
 		"emblems",
-		"/Layout/Sort by Emblems",
-		N_("Sort by _Emblems"),
+		"/View/Lay Out/Sort by Emblems",
+		N_("by _Emblems"),
 		N_("Keep icons sorted by emblems in rows")
 	}
 };
@@ -242,6 +249,26 @@ get_stored_icon_position_callback (NautilusIconContainer *container,
 	return position_good;
 }
 
+static gboolean
+set_sort_criterion (FMIconView *icon_view, const SortCriterion *sort)
+{
+	if (sort == NULL) {
+		return FALSE;
+	}
+	if (icon_view->details->sort == sort) {
+		return FALSE;
+	}
+	icon_view->details->sort = sort;
+
+	/* Store the new sort setting. */
+	fm_icon_view_set_directory_sort_by (icon_view, fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view)), sort->metadata_text);
+	
+	/* Update the layout menus to match the new sort setting. */
+	update_layout_menus (icon_view);
+
+	return TRUE;
+}
+
 /**
  * Note that this is used both as a Bonobo menu callback and a signal callback.
  * The first parameter is different in these cases, but we just ignore it anyway.
@@ -272,6 +299,42 @@ unstretch_icons_callback (gpointer ignored, gpointer view)
 
         /* Update menus because Stretch and Unstretch items have changed state */
 	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (view));
+}
+
+static void
+fm_icon_view_clean_up (FMIconView *icon_view)
+{
+	NAUTILUS_CALL_VIRTUAL (FM_ICON_VIEW_CLASS, icon_view, clean_up, (icon_view));
+}
+
+static void
+fm_icon_view_real_clean_up (FMIconView *icon_view)
+{
+	NautilusIconContainer *icon_container;
+	gboolean saved_sort_reversed;
+
+	icon_container = get_icon_container (icon_view);
+
+	/* Hardwire Clean Up to always be by name, in forward order */
+	saved_sort_reversed = icon_view->details->sort_reversed;
+	
+	set_sort_reversed (icon_view, FALSE);
+	set_sort_criterion (icon_view, &sort_criteria[0]);
+	
+	nautilus_icon_container_sort (icon_container);
+	nautilus_icon_container_freeze_icon_positions (icon_container);
+
+	set_sort_reversed (icon_view, saved_sort_reversed);
+}
+
+/**
+ * Note that this is used both as a Bonobo menu callback and a signal callback.
+ * The first parameter is different in these cases, but we just ignore it anyway.
+ */
+static void
+clean_up_callback (gpointer ignored, gpointer view)
+{
+	fm_icon_view_clean_up (FM_ICON_VIEW (view));
 }
 
 /**
@@ -327,6 +390,9 @@ compute_menu_item_info (FMIconView *view,
 		name = g_strdup (_("_Rename"));
 		*sensitive_return = nautilus_g_list_exactly_one_item (selection)
 			&& nautilus_file_can_rename (selection->data);
+	} else if (strcmp (MENU_PATH_CLEAN_UP, menu_path) == 0) {
+		name = g_strdup (_("_Clean Up by Name"));
+		*sensitive_return = TRUE;
 	} else {
 
 		g_assert_not_reached ();
@@ -530,7 +596,7 @@ update_layout_menus (FMIconView *view)
 		(ui_handler, MENU_PATH_SORT_DESCENDING, is_auto_layout);
 	bonobo_ui_handler_menu_set_sensitivity
 		(ui_handler, MENU_PATH_SORT_ASCENDING, is_auto_layout);
-		 
+
 	/* Mark sort order. */
 	if (view->details->sort_reversed) {
 		path = MENU_PATH_SORT_DESCENDING;
@@ -539,6 +605,10 @@ update_layout_menus (FMIconView *view)
 	}
 	bonobo_ui_handler_menu_set_radio_state (ui_handler, path, TRUE);
 
+	/* Clean Up is only relevant for manual layout */
+	bonobo_ui_handler_menu_set_sensitivity
+		(ui_handler, MENU_PATH_CLEAN_UP, !is_auto_layout);	
+		 
 	view->details->updating_bonobo_radio_menu_item = FALSE;
 }
 
@@ -647,26 +717,6 @@ fm_icon_view_real_set_directory_auto_layout (FMIconView *icon_view,
 	nautilus_directory_set_boolean_metadata
 		(directory, NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT, TRUE,
 		 auto_layout);
-}
-
-static gboolean
-set_sort_criterion (FMIconView *icon_view, const SortCriterion *sort)
-{
-	if (sort == NULL) {
-		return FALSE;
-	}
-	if (icon_view->details->sort == sort) {
-		return FALSE;
-	}
-	icon_view->details->sort = sort;
-
-	/* Store the new sort setting. */
-	fm_icon_view_set_directory_sort_by (icon_view, fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view)), sort->metadata_text);
-	
-	/* Update the layout menus to match the new sort setting. */
-	update_layout_menus (icon_view);
-
-	return TRUE;
 }
 
 static gboolean
@@ -1040,13 +1090,30 @@ fm_icon_view_start_renaming_item  (FMDirectoryView *view, const char *uri)
 		(get_icon_container (FM_ICON_VIEW (view)));
 }
 
+/** 
+ * FIXME: this whole function is a workaround for a Bonobo bug in
+ * which asking for the position of the last item returns -1.
+ */
+static int
+get_next_position (BonoboUIHandler *ui_handler, const char *path)
+{
+	int position;
+
+	position = bonobo_ui_handler_menu_get_pos (ui_handler, path);
+	if (position < 0) {
+		return position;
+	}
+
+	return ++position;
+}
+
 static void
 fm_icon_view_merge_menus (FMDirectoryView *view)
 {
         GList *selection;
         BonoboUIHandler *ui_handler;
 	FMIconView *icon_view;
-	int position, i;
+	int i;
 	
         g_assert (FM_IS_ICON_VIEW (view));
 
@@ -1062,56 +1129,62 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 		(icon_view, ui_handler, selection,
 		 MENU_PATH_CUSTOMIZE_ICON_TEXT,
 		 _("Choose which information appears beneath each icon's name"),
-		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_GLOBAL_EDIT_ITEMS_PLACEHOLDER) + 1,
+		 get_next_position (ui_handler, NAUTILUS_MENU_PATH_GLOBAL_EDIT_ITEMS_PLACEHOLDER),
 		 (BonoboUIHandlerCallback) customize_icon_text_callback, view);
         insert_bonobo_menu_item
 		(icon_view, ui_handler, selection,
 		 MENU_PATH_STRETCH_ICON,
 		 _("Make the selected icon stretchable"),
-		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_EDIT_ITEMS_PLACEHOLDER) + 1,
+		 get_next_position (ui_handler, NAUTILUS_MENU_PATH_EDIT_ITEMS_PLACEHOLDER),
 		 (BonoboUIHandlerCallback) show_stretch_handles_callback, view);
         insert_bonobo_menu_item
 		(icon_view, ui_handler, selection,
 		 MENU_PATH_UNSTRETCH_ICONS,
 		 _("Restore each selected icon to its original size"),
-		 bonobo_ui_handler_menu_get_pos (ui_handler, MENU_PATH_STRETCH_ICON + 1),
+		 get_next_position (ui_handler, MENU_PATH_STRETCH_ICON),
 		 (BonoboUIHandlerCallback) unstretch_icons_callback, view);
 
-	/* Layout menu. */
-	/* Put it just after the Settings menu, which is just before
-	 * the Help menu assuming nobody else has snuck a menu in there.
-	 */
-	position = bonobo_ui_handler_menu_get_pos
-		(ui_handler,
-		 NAUTILUS_MENU_PATH_BOOKMARKS_MENU) + 1,
- 	bonobo_ui_handler_menu_new_subtree
-		(ui_handler,
-		 MENU_PATH_LAYOUT_MENU,
-		 _("_Layout"),
-		 NULL, position,
-		 BONOBO_UI_HANDLER_PIXMAP_NONE,
-		 NULL, 0, 0);
+	/* Additions to View menu. */
 	icon_view->details->updating_bonobo_radio_menu_item = TRUE;
+
+	bonobo_ui_handler_menu_new_separator
+		(ui_handler, MENU_PATH_LAYOUT_SEPARATOR, 
+		 get_next_position (ui_handler, NAUTILUS_MENU_PATH_VIEW_ITEMS_PLACEHOLDER));
+        bonobo_ui_handler_menu_new_subtree
+		(ui_handler, 
+		 MENU_PATH_LAY_OUT, 
+		 _("_Lay out items"),
+		 _("Choose an order for the icons in this folder"),
+		 get_next_position (ui_handler, MENU_PATH_LAYOUT_SEPARATOR),
+		 BONOBO_UI_HANDLER_PIXMAP_NONE,	 NULL,
+		 0, 0);
 	bonobo_ui_handler_menu_new_radioitem
 		(ui_handler,
 		 MENU_PATH_MANUAL_LAYOUT,
-		 _("_Manual Layout"),
+		 _("_manually"),
 		 _("Leave icons wherever they are dropped"),
-		 -1, 0, 0,
+		 get_next_position (ui_handler, MENU_PATH_LAYOUT_SEPARATOR),
+		 0, 0,
 		 manual_layout_callback, view);
 	bonobo_ui_handler_menu_new_separator
-		(ui_handler, MENU_PATH_LAYOUT_SEPARATOR, -1);
+		(ui_handler, MENU_PATH_AUTO_LAYOUT_SEPARATOR, -1);
+		 
 	for (i = 0; i < NAUTILUS_N_ELEMENTS (sort_criteria); i++) {
 		bonobo_ui_handler_menu_new_radioitem
 			(ui_handler,
 			 sort_criteria[i].menu_path,
 			 _(sort_criteria[i].menu_label),
 			 _(sort_criteria[i].menu_hint),
-			 -1, 0, 0,
+			 -1, 
+			 0, 0,
 			 sort_callback, view);
 	}
-	bonobo_ui_handler_menu_new_separator
-		(ui_handler, MENU_PATH_SORT_DIRECTION_SEPARATOR, -1);
+        insert_bonobo_menu_item
+		(icon_view, ui_handler, selection,
+		 MENU_PATH_CLEAN_UP,
+		 _("Reposition icons to better fit in the window and avoid overlapping"),
+		 get_next_position (ui_handler, MENU_PATH_LAY_OUT),
+		 (BonoboUIHandlerCallback) clean_up_callback, view);
 	bonobo_ui_handler_menu_new_radiogroup 
 		(ui_handler, MENU_PATH_SORT_DIRECTION_RADIO_GROUP);
 	bonobo_ui_handler_menu_new_radioitem
@@ -1119,32 +1192,25 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 		 MENU_PATH_SORT_ASCENDING,
 		 _("_Ascending"),
 		 _("Sort icons from \"smallest\" to \"largest\" according to sort criteria"),
-		 -1, 0, 0,
+		 get_next_position (ui_handler, MENU_PATH_CLEAN_UP),
+		 0, 0,
 		 sort_direction_callback, view);
 	bonobo_ui_handler_menu_new_radioitem
 		(ui_handler,
 		 MENU_PATH_SORT_DESCENDING,
 		 _("Des_cending"),
 		 _("Sort icons from \"largest\" to \"smallest\" according to sort criteria"),
-		 -1, 0, 0,
+		 get_next_position (ui_handler, MENU_PATH_SORT_ASCENDING),
+		 0, 0,
 		 sort_direction_callback, view);
 	icon_view->details->updating_bonobo_radio_menu_item = FALSE;
 
 	/* File menu. */
-	/* Rename goes right after the Duplicate item that
-	 * fm-directory-view places in the File menu.
-	 */
-	position = bonobo_ui_handler_menu_get_pos
-		(ui_handler,
-		 FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE) + 1,
-        bonobo_ui_handler_menu_new_item
-		(ui_handler,
+        insert_bonobo_menu_item
+		(icon_view, ui_handler, selection,
 		 MENU_PATH_RENAME,
-		 _("Rename"),
 		 _("Rename selected item"),
-		 position,
-		 BONOBO_UI_HANDLER_PIXMAP_NONE,
-		 NULL, 0, 0,
+		 get_next_position (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE),
 		 (BonoboUIHandlerCallback) rename_icon_callback, view);
 
         nautilus_file_list_free (selection);
@@ -1717,6 +1783,7 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
         fm_directory_view_class->smooth_graphics_mode_changed = fm_icon_view_smooth_graphics_mode_changed;
 
 
+	klass->clean_up			   = fm_icon_view_real_clean_up;
         klass->get_directory_sort_by       = fm_icon_view_real_get_directory_sort_by;
         klass->set_directory_sort_by       = fm_icon_view_real_set_directory_sort_by;
         klass->get_directory_sort_reversed = fm_icon_view_real_get_directory_sort_reversed;

@@ -91,6 +91,14 @@ static int      desktop_icons_compare_callback                            (Nauti
 									   FMDesktopIconView      *icon_view);
 static void	create_or_rename_trash 					  (void);
 								   
+static void	bump_zoom_level 					  (FMDirectoryView 	  *view, 
+									   int 			   zoom_increment);
+static void	zoom_to_level 						  (FMDirectoryView 	  *view, 
+									   int 			   zoom_level);
+static void	restore_default_zoom_level 				  (FMDirectoryView 	  *view);
+static gboolean can_zoom_in 						  (FMDirectoryView 	  *view);
+static gboolean can_zoom_out 						  (FMDirectoryView 	  *view);
+
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDesktopIconView,
 				   fm_desktop_icon_view,
 				   FM_TYPE_ICON_VIEW)
@@ -135,6 +143,11 @@ fm_desktop_icon_view_initialize_class (FMDesktopIconViewClass *klass)
 	object_class->destroy = fm_desktop_icon_view_destroy;
 
         fm_directory_view_class->create_background_context_menu_items = fm_desktop_icon_view_create_background_context_menu_items;
+	fm_directory_view_class->bump_zoom_level = bump_zoom_level;
+	fm_directory_view_class->zoom_to_level = zoom_to_level;
+	fm_directory_view_class->restore_default_zoom_level = restore_default_zoom_level;
+	fm_directory_view_class->can_zoom_in = can_zoom_in;
+	fm_directory_view_class->can_zoom_out = can_zoom_out;
 
         fm_icon_view_class->get_directory_sort_by       = fm_desktop_icon_view_get_directory_sort_by;
         fm_icon_view_class->set_directory_sort_by       = fm_desktop_icon_view_set_directory_sort_by;
@@ -778,3 +791,35 @@ desktop_icons_compare_callback (NautilusIconContainer *container,
 		return +1;
 	}
 }
+
+
+/** Turn off all the zoom handling, so there's no 
+ * sneaky backdoor way to zoom the desktop.
+ */
+static void
+bump_zoom_level (FMDirectoryView *view, int zoom_increment)
+{
+}
+
+static void
+zoom_to_level (FMDirectoryView *view, int zoom_level)
+{
+}
+
+static void
+restore_default_zoom_level (FMDirectoryView *view)
+{
+}
+
+static gboolean 
+can_zoom_in (FMDirectoryView *view) 
+{
+	return FALSE;
+}
+
+static gboolean 
+can_zoom_out (FMDirectoryView *view) 
+{
+	return FALSE;
+}
+

@@ -2425,7 +2425,7 @@ fm_directory_view_real_create_background_context_menu_items (FMDirectoryView *vi
 		       fm_directory_view_can_zoom_in (view));
 	fm_directory_view_add_menu_item (view, menu, _("Zoom Out"), zoom_out_callback,
 		       fm_directory_view_can_zoom_out (view));
-	fm_directory_view_add_menu_item (view, menu, _("Zoom to Default"), zoom_default_callback, TRUE);
+	fm_directory_view_add_menu_item (view, menu, _("Normal Size"), zoom_default_callback, TRUE);
 	append_gtk_menu_item_with_view (view,
 					menu,
 					NULL,

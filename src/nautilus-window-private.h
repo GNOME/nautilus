@@ -52,7 +52,12 @@ struct NautilusWindowDetails
 #define NAUTILUS_MENU_PATH_BACK_ITEM			"/Go/Back"
 #define NAUTILUS_MENU_PATH_FORWARD_ITEM			"/Go/Forward"
 #define NAUTILUS_MENU_PATH_UP_ITEM			"/Go/Up"
-#define NAUTILUS_MENU_PATH_RELOAD_ITEM			"/Go/Reload"
+
+#define NAUTILUS_MENU_PATH_RELOAD_ITEM			"/View/Reload"
+#define NAUTILUS_MENU_PATH_ZOOM_IN_ITEM			"/View/Zoom In"
+#define NAUTILUS_MENU_PATH_ZOOM_OUT_ITEM		"/View/Zoom Out"
+#define NAUTILUS_MENU_PATH_ZOOM_NORMAL_ITEM		"/View/Zoom Normal"
+
 
 void                 nautilus_window_set_state_info                    (NautilusWindow             *window,
 									... /* things to set, plus optional parameters */);
@@ -90,5 +95,10 @@ void		     nautilus_window_remove_bookmarks_menu_callback    (NautilusWindow 		 
 void		     nautilus_window_remove_go_menu_callback 	       (NautilusWindow 		   *window);
 void		     nautilus_window_remove_bookmarks_menu_items       (NautilusWindow 		   *window);
 void		     nautilus_window_remove_go_menu_items 	       (NautilusWindow 		   *window);
+void		     nautilus_window_zoom_in 			       (NautilusWindow 		   *window);
+void		     nautilus_window_zoom_out 			       (NautilusWindow 		   *window);
+void		     nautilus_window_zoom_to_level	       	       (NautilusWindow 		   *window,
+									double			    level);
+void		     nautilus_window_zoom_to_fit 		       (NautilusWindow 		   *window);
 
 #endif /* NAUTILUS_WINDOW_PRIVATE_H */

@@ -117,7 +117,7 @@ static GnomeUIInfo toolbar_info[] = {
 	 NAUTILUS_PIXMAPDIR "/eazel/Up.png"),
 	
 	GNOMEUIINFO_ITEM_STOCK
-	(N_("Reload"), N_("Reload this view"),
+	(N_("Refresh"), N_("Display the latest contents of the current location"),
 	 toolbar_reload_callback,
 	 NAUTILUS_PIXMAPDIR "/eazel/Refresh.png"),
 	
