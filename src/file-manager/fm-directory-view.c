@@ -182,9 +182,6 @@ struct FMDirectoryViewDetails
 	guint done_loading_handler_id;
 	guint file_changed_handler_id;
 
-	GtkObject *key_press_handler_object;
-	guint key_press_handler_id;
-	
 	GList *pending_files_added;
 	GList *pending_files_changed;
 	GList *pending_uris_selected;
@@ -801,6 +798,9 @@ delete_selected_files (FMDirectoryView *view)
 static void
 delete_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
 {
+	if (!show_delete_command_auto_value) {
+		return;
+	}
         delete_selected_files (FM_DIRECTORY_VIEW (callback_data));
 }
 
@@ -952,56 +952,6 @@ all_selected_items_in_trash (FMDirectoryView *view)
 }
 
 static void
-key_press_event_callback (GtkObject *object,
-			  gpointer callback_data,
-			  guint n_args,
-			  GtkArg *args)
-{
-	FMDirectoryView *view;
-	GdkEventKey *event;
-	gboolean *return_value_location;
-	gboolean handled;
-
-	view = FM_DIRECTORY_VIEW (callback_data);
-	event = GTK_VALUE_POINTER (args[0]);
-	return_value_location = GTK_RETLOC_BOOL (args[1]);
-
-	if (*return_value_location) {
-		return;
-	}
-
-	handled = FALSE;
-
-	/* Delete or Control-Backspace means "Move to Trash".
-	 * Shift-Delete means "Delete". We don't use key bindings to
-	 * implement this because there is already a key binding for
-	 * "Move to Trash".
-	 */
-	if (event->keyval == GDK_BackSpace) {
-		if ((event->state & ALL_NON_LOCK_MODIFIER_KEYS) == GDK_CONTROL_MASK) {
-			trash_or_delete_selected_files (view);
-			handled = TRUE;
-		}
-	} else if (event->keyval == GDK_Delete || event->keyval == GDK_KP_Delete) {
-		if ((event->state & ALL_NON_LOCK_MODIFIER_KEYS) == 0) {
-			trash_or_delete_selected_files (view);
-			handled = TRUE;
-		} else if ((event->state & ALL_NON_LOCK_MODIFIER_KEYS) == GDK_SHIFT_MASK) {
-			if (show_delete_command_auto_value) {
-				delete_selected_files (view);
-			}
-			handled = TRUE;
-		}
-	}
-
-	if (handled) {
-		gtk_signal_emit_stop_by_name (object,
-					      "key_press_event");
-		*return_value_location = TRUE;
-	}
-}
-
-static void
 bonobo_control_activate_callback (BonoboObject *control, gboolean state, gpointer callback_data)
 {
         FMDirectoryView *view;
@@ -1016,24 +966,6 @@ bonobo_control_activate_callback (BonoboObject *control, gboolean state, gpointe
 
 	        /* Set initial sensitivity, wording, toggle state, etc. */       
                 fm_directory_view_update_menus (view);
-
-		/* Handle some additional keyboard commands. */
-		/* Can't use eel_gtk_signal_connect_full_while_alive
-		 * yet because it had a bad return_if_fail in it and
-		 * we don't want to depend on a new eel. Later we can
-		 * simplify this code by using that.
-		 */
-		if (view->details->key_press_handler_id == 0) {
-			view->details->key_press_handler_object =
-				GTK_OBJECT (gtk_widget_get_toplevel (GTK_WIDGET (view)));
-			eel_nullify_when_destroyed (&view->details->key_press_handler_object);
-			view->details->key_press_handler_id = gtk_signal_connect_full
-				(view->details->key_press_handler_object,
-				 "key_press_event",
-				 NULL, key_press_event_callback,
-				 view, NULL,
-				 FALSE, TRUE);
-		}
         }
 
         /* 
@@ -1341,14 +1273,6 @@ fm_directory_view_destroy (GtkObject *object)
 
 	if (view->details->display_selection_idle_id != 0) {
 		gtk_idle_remove (view->details->display_selection_idle_id);
-	}
-
-	if (view->details->key_press_handler_object != NULL) {
-		if (view->details->key_press_handler_id != 0) {
-			gtk_signal_disconnect (view->details->key_press_handler_object,
-					       view->details->key_press_handler_id);
-		}
-		eel_nullify_cancel (&view->details->key_press_handler_object);
 	}
 
 	remove_update_menus_timeout_callback (view);

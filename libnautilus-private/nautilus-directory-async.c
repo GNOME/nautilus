@@ -2820,7 +2820,9 @@ activation_uri_start (NautilusDirectory *directory)
 		if (file != NULL) {
 			g_assert (NAUTILUS_IS_FILE (file));
 			g_assert (file->details->directory == directory);
-			if (is_needy (file, lacks_info, wants_info)) {
+			if (is_needy (file,
+				      lacks_activation_uri,
+				      wants_activation_uri)) {
 				return;
 			}
 		}

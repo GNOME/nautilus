@@ -1,5 +1,26 @@
 2001-05-17  Darin Adler  <darin@eazel.com>
 
+	Yoann and I did some more debugging and analysis and we stumbled
+	over a bug that was responsible for some big slowdowns.
+
+	* libnautilus-private/nautilus-directory-async.c:
+	(activation_uri_start): Fixed bug that was causing activation URI
+	reads to work strangely.
+	
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	* src/file-manager/fm-directory-view.c: (delete_callback),
+	(bonobo_control_activate_callback), (fm_directory_view_destroy):
+	* src/nautilus-shell-ui.xml:
+	* src/nautilus-window.c: (nautilus_window_initialize_class),
+	(nautilus_window_realize):
+	Rip out keybinding hack and use Bonobo's (undocumented as far as I
+	can tell) keybinding machinery instead.
+	
+	* libnautilus-private/nautilus-metafile.c: (schedule_next_read):
+	Use (void), not ().
+	
+2001-05-17  Darin Adler  <darin@eazel.com>
+
 	* configure.in:
 	* nautilus.spec.in:
 	Don't require ammonite any more in the default Nautilus RPM. I

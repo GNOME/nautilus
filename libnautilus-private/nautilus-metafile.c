@@ -380,7 +380,7 @@ GList *pending_reads;
 #endif
 
 static void
-schedule_next_read ()
+schedule_next_read (void)
 {	
 	const int kMaxAsyncReads = 10;
 	
