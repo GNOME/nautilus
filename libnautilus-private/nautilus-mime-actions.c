@@ -138,16 +138,18 @@ nautilus_mime_get_default_action_type_for_file (NautilusFile *file)
 		mime_type = nautilus_file_get_mime_type (file);
 		action_type = gnome_vfs_mime_get_default_action_type (mime_type);
 		g_free (mime_type);
-		return action_type;
 	} else {
 		if (g_ascii_strcasecmp (action_type_string, "application") == 0) {
-			return GNOME_VFS_MIME_ACTION_TYPE_APPLICATION;
+			action_type = GNOME_VFS_MIME_ACTION_TYPE_APPLICATION;
 		} else if (g_ascii_strcasecmp (action_type_string, "component") == 0) {
-			return GNOME_VFS_MIME_ACTION_TYPE_COMPONENT;
+			action_type = GNOME_VFS_MIME_ACTION_TYPE_COMPONENT;
 		} else {
-			return GNOME_VFS_MIME_ACTION_TYPE_NONE;
+			action_type = GNOME_VFS_MIME_ACTION_TYPE_NONE;
 		}
+		g_free (action_type_string);
 	}
+
+	return action_type;
 }
 
 GnomeVFSMimeAction *
@@ -224,6 +226,8 @@ nautilus_mime_get_default_application_for_file_internal (NautilusFile *file,
 	if (user_chosen != NULL) {
 		*user_chosen = used_user_chosen_info;
 	}
+
+	g_free (default_application_string);
 
 	return result;
 }
@@ -410,6 +414,7 @@ nautilus_mime_get_default_component_for_file_internal (NautilusFile *file,
 	}
 	
 	eel_g_list_free_deep (item_mime_types);
+	eel_g_list_free_deep (explicit_iids);
 	g_strfreev (sort_conditions);
 
 	g_free (uri_scheme);
@@ -509,6 +514,9 @@ nautilus_mime_get_short_list_applications_for_file (NautilusFile      *file)
 		}
 	}
 	result = g_list_reverse (result);
+
+	eel_g_list_free_deep (metadata_application_add_ids);
+	eel_g_list_free_deep (metadata_application_remove_ids);
 
 	return result;
 }
@@ -622,6 +630,9 @@ nautilus_mime_get_short_list_components_for_file (NautilusFile *file)
 	}
 
 	eel_g_list_free_deep (item_mime_types);
+	eel_g_list_free_deep (explicit_iids);
+	eel_g_list_free_deep (metadata_component_add_ids);
+	eel_g_list_free_deep (metadata_component_remove_ids);	
 	gnome_vfs_mime_component_list_free (servers);
 	g_list_free (iids);
 	g_free (uri_scheme);
@@ -664,6 +675,7 @@ nautilus_mime_get_all_applications_for_file (NautilusFile      *file)
 		}
 	}
 
+	eel_g_list_free_deep (metadata_application_ids);
 	g_free (mime_type);
 	return result;
 }
@@ -915,14 +927,13 @@ nautilus_mime_set_short_list_applications_for_file (NautilusFile      *file,
 		normal_short_list_ids = g_list_prepend (normal_short_list_ids, ((GnomeVFSMimeApplication *) p->data)->id);
 	}
 
-	gnome_vfs_mime_application_list_free (normal_short_list);
-
 	/* compute delta */
 
 	add_list = str_list_difference (applications, normal_short_list_ids);
 	remove_list = str_list_difference (normal_short_list_ids, applications);
 
-	eel_g_list_free_deep (normal_short_list_ids);
+	gnome_vfs_mime_application_list_free (normal_short_list);
+	g_list_free (normal_short_list_ids);
 
 	nautilus_file_set_metadata_list 
 		(file,
@@ -1125,6 +1136,10 @@ nautilus_mime_extend_all_applications_for_file (NautilusFile *file,
 		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID,
 		 final_applications);
 
+	eel_g_list_free_deep (metadata_application_ids);
+	eel_g_list_free_deep (extras);
+	g_list_free (final_applications);
+
 	return GNOME_VFS_OK;
 }
 
@@ -1150,6 +1165,9 @@ nautilus_mime_remove_from_all_applications_for_file (NautilusFile *file,
 		 NAUTILUS_METADATA_KEY_EXPLICIT_APPLICATION,
 		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID,
 		 final_applications);
+
+	eel_g_list_free_deep (metadata_application_ids);
+	eel_g_list_free_deep (final_applications);
 	
 	return GNOME_VFS_OK;
 }
@@ -1628,7 +1646,7 @@ str_list_difference (GList *a,
 
 	for (p = a; p != NULL; p = p->next) {
 		if (g_list_find_custom (b, p->data, (GCompareFunc) strcmp) == NULL) {
-			retval = g_list_prepend (retval, p->data);
+			retval = g_list_prepend (retval, g_strdup (p->data));
 		}
 	}
 

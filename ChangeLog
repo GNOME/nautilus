@@ -1,4 +1,21 @@
-2002-05-03  Dave Camp  <dave@ximian.com>
+2002-05-09  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-mime-actions.c:
+	(nautilus_mime_get_default_action_type_for_file): 
+	(nautilus_mime_get_default_application_for_file_internal): 
+	(nautilus_mime_get_default_component_for_file_internal): 
+	(nautilus_mime_get_short_list_applications_for_file):
+	(nautilus_mime_get_short_list_components_for_file):
+	(nautilus_mime_get_all_applications_for_file): 
+	(nautilus_mime_extend_all_applications_for_file): 
+	(nautilus_mime_remove_from_all_applications_for_file): Plug leaks.
+	(nautilus_mime_set_short_list_applications_for_file): Free the
+	normal_short_list after computing the delta, and use g_list_free
+	on normal_short_list_ids rather than eel_g_list_free_deep.
+	(str_list_difference): Duplicate the strings before inserting them
+	into the list.
+
+2002-05-09  Dave Camp  <dave@ximian.com>
  
 	* src/file-manager/fm-desktop-icon-view.c (mount_parameters_new): 
 	(mount_parameters_free): Don't hold references to the view.
