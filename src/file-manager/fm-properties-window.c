@@ -49,6 +49,7 @@
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-image.h>
 #include <libnautilus-extensions/nautilus-link.h>
@@ -59,6 +60,11 @@
 #include <string.h>
 
 static GHashTable *windows;
+
+struct FMPropertiesWindowDetails {
+	NautilusFile *file;
+	guint file_changed_handler_id;
+};
 
 enum {
 	BASIC_PAGE_ICON_AND_NAME_ROW,
@@ -118,8 +124,31 @@ enum {
 #define ERASE_EMBLEM_FILENAME	"erase.png"
 #define EMBLEM_COLUMN_COUNT 2
 
-static void cancel_group_change_callback (gpointer callback_data);
-static void cancel_owner_change_callback (gpointer callback_data);
+static void	  real_destroy 		     		     (GtkObject 	      *object);
+static void	  real_shutdown	     		     	     (GtkObject 	      *object);
+static void       fm_properties_window_initialize_class      (FMPropertiesWindowClass *class);
+static void       fm_properties_window_initialize            (FMPropertiesWindow      *window);
+static void 	  cancel_group_change_callback 		     (gpointer 		       callback_data);
+static void 	  cancel_owner_change_callback 		     (gpointer 		       callback_data);
+
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMPropertiesWindow, fm_properties_window, GTK_TYPE_WINDOW)
+
+static void
+fm_properties_window_initialize_class (FMPropertiesWindowClass *class)
+{
+	GtkObjectClass *object_class;
+
+	object_class = GTK_OBJECT_CLASS (class);
+
+	object_class->destroy = real_destroy;
+	object_class->shutdown = real_shutdown;
+}
+
+static void
+fm_properties_window_initialize (FMPropertiesWindow *window)
+{
+	window->details = g_new0 (FMPropertiesWindowDetails, 1);
+}
 
 typedef struct {
 	NautilusFile *file;
@@ -347,6 +376,13 @@ name_field_done_editing (NautilusEntry *name_field)
 	file = gtk_object_get_data (GTK_OBJECT (name_field), "nautilus_file");
 
 	g_assert (NAUTILUS_IS_FILE (file));
+
+	/* This gets called when the window is closed, which might be
+	 * caused by the file having been deleted.
+	 */
+	if (nautilus_file_is_gone (file)) {
+		return;
+	}
 
 	new_name = gtk_editable_get_chars (GTK_EDITABLE (name_field), 0, -1);
 
@@ -600,6 +636,9 @@ create_group_menu_item (NautilusFile *file, const char *group_name)
 {
 	GtkWidget *menu_item;
 
+	g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (group_name != NULL);
+
 	menu_item = gtk_menu_item_new_with_label (group_name);
 	gtk_widget_show (menu_item);
 
@@ -646,7 +685,7 @@ synch_groups_menu (GtkOptionMenu *option_menu, NautilusFile *file)
 	 * This can happen if the current group is an id with no matching
 	 * group in the groups file.
 	 */
-	if (current_group_index < 0) {
+	if (current_group_index < 0 && current_group_name != NULL) {
 		if (groups != NULL) {
 			menu_item = gtk_menu_item_new ();
 			gtk_widget_show (menu_item);
@@ -759,6 +798,9 @@ create_owner_menu_item (NautilusFile *file, const char *user_name)
 	char **name_array;
 	char *label_text;
 
+	g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (user_name != NULL);
+
 	name_array = g_strsplit (user_name, "\n", 2);
 	if (name_array[1] != NULL) {
 		label_text = g_strdup_printf ("%s - %s", name_array[0], name_array[1]);
@@ -814,7 +856,7 @@ synch_user_menu (GtkOptionMenu *option_menu, NautilusFile *file)
 	 * This can happen if the owner is an id with no matching
 	 * identifier in the passwords file.
 	 */
-	if (owner_index < 0) {
+	if (owner_index < 0 && owner_name != NULL) {
 		if (users != NULL) {
 			menu_item = gtk_menu_item_new ();
 			gtk_widget_show (menu_item);
@@ -882,7 +924,7 @@ directory_contents_value_field_update (GtkLabel *label, NautilusFile *file)
 	
 	g_assert (GTK_IS_LABEL (label));
 	g_assert (NAUTILUS_IS_FILE (file));
-	g_assert (nautilus_file_is_directory (file));
+	g_assert (nautilus_file_is_directory (file) || nautilus_file_is_gone (file));
 
 	title_field = gtk_object_get_user_data (GTK_OBJECT (label));
 	g_assert (GTK_IS_LABEL (title_field));
@@ -1392,6 +1434,11 @@ update_permissions_check_button_state (GtkWidget *check_button, NautilusFile *fi
 
 	g_assert (GTK_IS_CHECK_BUTTON (check_button));
 	g_assert (NAUTILUS_IS_FILE (file));
+
+	if (nautilus_file_is_gone (file)) {
+		return;
+	}
+	
 	g_assert (nautilus_file_can_get_permissions (file));
 
 	toggled_signal_id = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (check_button),
@@ -1750,37 +1797,43 @@ create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
 	}
 }
 
-static GtkWindow *
+static FMPropertiesWindow *
 create_properties_window (NautilusFile *file)
 {
-	GtkWindow *window;
+	FMPropertiesWindow *window;
 	GtkWidget *notebook;
 	GList *attributes;
 
-	/* Create the window. */
-	window = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
+	window = FM_PROPERTIES_WINDOW (gtk_widget_new (fm_properties_window_get_type (), NULL));
+	/* Note that we've already reffed file in get_and_ref_file_for_display,
+	 * both for our use here and for the windows hash table. It gets unreffed
+	 * in real_destroy.
+	 */
+	window->details->file = file;
+	
   	gtk_container_set_border_width (GTK_CONTAINER (window), GNOME_PAD);
-  	gtk_window_set_policy (window, FALSE, TRUE, FALSE);
+  	gtk_window_set_policy (GTK_WINDOW (window), FALSE, TRUE, FALSE);
 
 	/* Set initial window title */
-	update_properties_window_title (window, file);
+	update_properties_window_title (GTK_WINDOW (window), window->details->file);
 
 	/* Start monitoring the file attributes we display */
 	attributes = nautilus_icon_factory_get_required_file_attributes ();
-	if (nautilus_file_is_directory (file)) {
+	if (nautilus_file_is_directory (window->details->file)) {
 		attributes = g_list_prepend (attributes,
 					     NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS);
 	}
 	attributes = g_list_prepend (attributes,
 				     NAUTILUS_FILE_ATTRIBUTE_METADATA);
-	nautilus_file_monitor_add (file, window, attributes);
+	nautilus_file_monitor_add (window->details->file, window, attributes);
 	g_list_free (attributes);
 
 	/* React to future property changes and file deletions. */
-	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
-					       "changed",
-					       properties_window_file_changed_callback,
-					       GTK_OBJECT (window));
+	window->details->file_changed_handler_id =
+		gtk_signal_connect_object (GTK_OBJECT (window->details->file),
+					   "changed",
+					   properties_window_file_changed_callback,
+					   GTK_OBJECT (window));
 
 	/* Create the notebook tabs. */
 	notebook = gtk_notebook_new ();
@@ -1788,28 +1841,11 @@ create_properties_window (NautilusFile *file)
 	gtk_container_add (GTK_CONTAINER (window), notebook);
 
 	/* Create the pages. */
-	create_basic_page (GTK_NOTEBOOK (notebook), file);
-	create_emblems_page (GTK_NOTEBOOK (notebook), file);
-	create_permissions_page (GTK_NOTEBOOK (notebook), file);
+	create_basic_page (GTK_NOTEBOOK (notebook), window->details->file);
+	create_emblems_page (GTK_NOTEBOOK (notebook), window->details->file);
+	create_permissions_page (GTK_NOTEBOOK (notebook), window->details->file);
 
 	return window;
-}
-
-static void
-forget_properties_window (gpointer data, gpointer user_data)
-{
-	NautilusFile *file;
-	GtkWindow *window;
-
-	g_assert (GTK_IS_WINDOW (data));
-	g_assert (NAUTILUS_IS_FILE (user_data));
-
-	window = GTK_WINDOW (data);
-	file = NAUTILUS_FILE (user_data);
-
-	nautilus_file_monitor_remove (file, window);
-	g_hash_table_remove (windows, file);
-	nautilus_file_unref (file);
 }
 
 static NautilusFile *
@@ -1860,20 +1896,15 @@ get_and_ref_file_to_display (NautilusFile *file)
 static void
 create_properties_window_callback (NautilusFile *file, gpointer data)
 {
-	GtkWindow *new_window;
+	FMPropertiesWindow *new_window;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (data));
 
 	new_window = create_properties_window (file);
 	g_hash_table_insert (windows, file, new_window);
 
-	gtk_signal_connect (GTK_OBJECT (new_window),
-			    "destroy",
-			    forget_properties_window,
-			    file);
-
 	nautilus_undo_share_undo_manager (GTK_OBJECT (new_window), GTK_OBJECT (data));
-	nautilus_gtk_window_present (new_window);
+	nautilus_gtk_window_present (GTK_WINDOW (new_window));
 }
 
 void
@@ -1909,3 +1940,37 @@ fm_properties_window_present (NautilusFile *file, FMDirectoryView *directory_vie
 		(file_to_display, &attribute_list,
 		 create_properties_window_callback, directory_view);
 }
+
+static void
+real_shutdown (GtkObject *object)
+{
+	FMPropertiesWindow *window;
+
+	window = FM_PROPERTIES_WINDOW (object);
+
+	/* Disconnect file-changed handler here to avoid infinite loop
+	 * of change notifications when file is removed; see bug 4911.
+	 */
+	gtk_signal_disconnect (GTK_OBJECT (window->details->file), 
+			       window->details->file_changed_handler_id);
+
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, shutdown, (object));
+}
+
+static void
+real_destroy (GtkObject *object)
+{
+	FMPropertiesWindow *window;
+
+	window = FM_PROPERTIES_WINDOW (object);
+
+	nautilus_file_monitor_remove (window->details->file, window);
+	g_hash_table_remove (windows, window->details->file);
+	nautilus_file_unref (window->details->file);
+
+	/* Note that file_changed_handler_id is disconnected in shutdown */
+	g_free (window->details);
+
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+}
+

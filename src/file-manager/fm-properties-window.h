@@ -31,6 +31,36 @@
 #include <gtk/gtkwindow.h>
 #include <libnautilus-extensions/nautilus-file.h>
 
-void fm_properties_window_present (NautilusFile *file, FMDirectoryView *directory_view);
+typedef struct FMPropertiesWindow FMPropertiesWindow;
+
+#define FM_TYPE_PROPERTIES_WINDOW \
+	(fm_properties_window_get_type ())
+#define FM_PROPERTIES_WINDOW(obj) \
+	(GTK_CHECK_CAST ((obj), FM_TYPE_PROPERTIES_WINDOW, FMPropertiesWindow))
+#define FM_PROPERTIES_WINDOW_CLASS(klass) \
+	(GTK_CHECK_CLASS_CAST ((klass), FM_TYPE_PROPERTIES_WINDOW, FMPropertiesWindowClass))
+#define FM_IS_PROPERTIES_WINDOW(obj) \
+	(GTK_CHECK_TYPE ((obj), FM_TYPE_PROPERTIES_WINDOW))
+#define FM_IS_PROPERTIES_WINDOW_CLASS(klass) \
+	(GTK_CHECK_CLASS_TYPE ((klass), FM_TYPE_PROPERTIES_WINDOW))
+
+typedef struct FMPropertiesWindowDetails FMPropertiesWindowDetails;
+
+struct FMPropertiesWindow {
+	GtkWindow window;
+	FMPropertiesWindowDetails *details;	
+};
+
+struct FMPropertiesWindowClass {
+	GtkWindowClass parent_class;
+};
+
+typedef struct FMPropertiesWindowClass FMPropertiesWindowClass;
+
+
+
+GtkType fm_properties_window_get_type   (void);
+void 	fm_properties_window_present 	(NautilusFile    *file, 
+					 FMDirectoryView *directory_view);
 
 #endif /* FM_PROPERTIES_WINDOW_H */

@@ -43,28 +43,33 @@ fm_report_error_renaming_file (NautilusFile *file,
 	char *original_name;
 	char *message;
 
-	switch (error) {
-	case GNOME_VFS_OK:
+	if (error == GNOME_VFS_OK) {
 		return;
+	}
+
+	original_name = nautilus_file_get_name (file);
+	
+	switch (error) {
 	case GNOME_VFS_ERROR_FILE_EXISTS:
 		message = g_strdup_printf (_("The name \"%s\" is already used in this folder.\nPlease use a different name."), 
 					   new_name);
 		break;
+	case GNOME_VFS_ERROR_NOT_FOUND:
+		message = g_strdup_printf (_("There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"), 
+					   new_name);
+		break;
 	case GNOME_VFS_ERROR_ACCESS_DENIED:
-		original_name = nautilus_file_get_name (file);
 		message = g_strdup_printf (_("You do not have the permissions necessary to rename \"%s.\""),
 					   original_name);
-		g_free (original_name);
 		break;
 	default:
 		/* We should invent decent error messages for every case we actually experience. */
 		g_warning ("Hit unhandled case %d in fm_report_error_renaming_file, tell sullivan@eazel.com", error);
 		/* fall through */
-		original_name = nautilus_file_get_name (file);
 		message = g_strdup_printf (_("Sorry, couldn't rename \"%s\" to \"%s\"."),
 					   original_name, new_name);
-		g_free (original_name);
 	}
+	g_free (original_name);
 
 	nautilus_error_dialog (message, _("Renaming Error"), NULL);
 	g_free (message);

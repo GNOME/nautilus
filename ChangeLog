@@ -1,3 +1,55 @@
+2000-12-01  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+	Fixed bug 4911 (Crash emptying trash while displaying
+	properties window for trashed file)
+
+	This crawled out of the woodwork recently, and required
+	several small fixes here and there to solve it nicely,
+	including making FMPropertiesWindow a subclass --
+	formerly it was just a GtkWindow with a bunch of wired-up
+	widgets.
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_directory_item_count),
+	(nautilus_file_get_deep_counts): Allow non-directory items
+	(files marked gone don't count as directories). Fill in
+	return values in all cases, even return_if_fail cases.
+	
+	* src/file-manager/fm-error-reporting.c:
+	(fm_report_error_renaming_file): Specific error message for
+	the case where the file being renamed no longer exists. I
+	ran into this partway through my changes, tested this fix,
+	then changed the caller to not hit this case.
+	
+	* src/file-manager/fm-properties-window.h:
+	Standard header stuff now that FMPropertiesWindow is a class
+	and not just some grouped functions.
+	* src/file-manager/fm-properties-window.c:
+	(fm_properties_window_initialize_class),
+	(fm_properties_window_initialize): Standard functions needed
+	for class.
+	(name_field_done_editing): Don't try to rename file that's gone.
+	(create_group_menu_item), (create_owner_menu_item): 
+	Added some parameter checking.
+	(synch_groups_menu), (synch_owner_menu): Check for NULL result
+	from nautilus_file_get_string_attribute before making a menu
+	item from it (GTK is unhappy with using NULL for a label).
+	(directory_contents_value_field_update): Soften assert to make
+	it not fire when file is gone.
+	(update_permissions_check_button_state): Bail out if file is gone.
+	(create_properties_window): Create an FMPropertiesWindow instead
+	of a GtkWindow; set up its Details.
+	(create_properties_window_callback): Removed signal handler for
+	"destroy" now that there's a default handler for this class.
+	(forget_properties_window): Removed function, guts now in 
+	real_destroy.
+	(real_shutdown): Disconnect file-changed signal here. This is the
+	core fix of the infinite loop reported in bug 4911.
+	(real_destroy): Do the stuff formerly done in 
+	forget_properties_window here.
+
 2000-12-01  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-window.c: (nautilus_window_destroy):

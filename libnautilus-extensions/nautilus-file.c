@@ -2236,8 +2236,7 @@ nautilus_file_get_date_as_string (NautilusFile *file, NautilusDateType date_type
  * nautilus_file_get_directory_item_count
  * 
  * Get the number of items in a directory.
- * @file: NautilusFile representing a directory. It is an error to
- * call this function on a file that is not a directory.
+ * @file: NautilusFile representing a directory.
  * @count: Place to put count.
  * @count_unreadable: Set to TRUE (if non-NULL) if permissions prevent
  * the item count from being read on this directory. Otherwise set to FALSE.
@@ -2250,9 +2249,19 @@ nautilus_file_get_directory_item_count (NautilusFile *file,
 					guint *count,
 					gboolean *count_unreadable)
 {
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-	g_return_val_if_fail (nautilus_file_is_directory (file), FALSE);
+	if (count_unreadable != NULL) {
+		*count_unreadable = 0;
+	}
+
 	g_return_val_if_fail (count != NULL, FALSE);
+
+	*count = 0;
+	
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+	if (!nautilus_file_is_directory (file)) {
+		return FALSE;
+	}
 
 	if (count_unreadable != NULL) {
 		*count_unreadable = file->details->directory_count_failed;
@@ -2289,8 +2298,24 @@ nautilus_file_get_deep_counts (NautilusFile *file,
 {
 	GnomeVFSFileType type;
 
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-	g_return_val_if_fail (nautilus_file_is_directory (file), FALSE);
+	if (directory_count != NULL) {
+		*directory_count = 0;
+	}
+	if (file_count != NULL) {
+		*file_count = 0;
+	}
+	if (unreadable_directory_count != NULL) {
+		*unreadable_directory_count = 0;
+	}
+	if (total_size != NULL) {
+		*total_size = 0;
+	}
+
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NAUTILUS_REQUEST_DONE);
+
+	if (!nautilus_file_is_directory (file)) {
+		return NAUTILUS_REQUEST_DONE;
+	}
 
 	if (file->details->deep_counts_status != NAUTILUS_REQUEST_NOT_STARTED) {
 		if (directory_count != NULL) {
@@ -2306,19 +2331,6 @@ nautilus_file_get_deep_counts (NautilusFile *file,
 			*total_size = file->details->deep_size;
 		}
 		return file->details->deep_counts_status;
-	}
-
-	if (directory_count != NULL) {
-		*directory_count = 0;
-	}
-	if (file_count != NULL) {
-		*file_count = 0;
-	}
-	if (unreadable_directory_count != NULL) {
-		*unreadable_directory_count = 0;
-	}
-	if (total_size != NULL) {
-		*total_size = 0;
 	}
 
 	/* For directories, or before we know the type, we haven't started. */
