@@ -93,7 +93,8 @@ typedef struct {
 
 static void nautilus_text_view_class_init (NautilusTextViewClass *klass);
 static void nautilus_text_view_init       (NautilusTextView      *view);
-static void nautilus_text_view_destroy          (GtkObject             *object);
+static void nautilus_text_view_destroy          (BonoboObject          *object);
+static void nautilus_text_view_finalize         (GObject               *object);
 static void nautilus_text_view_update           (NautilusTextView      *text_view);
 static void text_view_load_location_callback    (NautilusView          *view,
 						 const char            *location,
@@ -130,10 +131,13 @@ static const int max_preferred_zoom_levels = (sizeof (text_view_preferred_zoom_l
 static void
 nautilus_text_view_class_init (NautilusTextViewClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *gobject_class;
+	BonoboObjectClass *object_class;
 	
-	object_class = GTK_OBJECT_CLASS (klass);
+	gobject_class = G_OBJECT_CLASS (klass);
+	object_class = BONOBO_OBJECT_CLASS (klass);
 	
+        gobject_class->finalize = nautilus_text_view_finalize;
 	object_class->destroy = nautilus_text_view_destroy;
 
 	/* Text view component fonts */
@@ -243,7 +247,7 @@ detach_file (NautilusTextView *text_view)
 }
 
 static void
-nautilus_text_view_destroy (GtkObject *object)
+nautilus_text_view_destroy (BonoboObject *object)
 {
 	NautilusTextView *text_view;
 	
@@ -255,12 +259,23 @@ nautilus_text_view_destroy (GtkObject *object)
 		gnome_vfs_async_cancel (text_view->details->file_handle);
 	}
 	
-        gtk_widget_unref (text_view->details->text_display);
-	g_free (text_view->details->buffer);
+        if (text_view->details->text_display) {
+                gtk_widget_unref (text_view->details->text_display);
+                text_view->details->text_display = NULL;
+        }
+}
 
+static void
+nautilus_text_view_finalize (GObject *object)
+{
+	NautilusTextView *text_view;
+	
+        text_view = NAUTILUS_TEXT_VIEW (object);
+
+	g_free (text_view->details->buffer);
 	g_free (text_view->details);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 /* here's a callback for the async close, which does nothing */

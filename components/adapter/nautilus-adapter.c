@@ -152,10 +152,11 @@ nautilus_adapter_new (Bonobo_Unknown component)
 	control = bonobo_control_new (bin);
 	adapter->details->nautilus_view = nautilus_view_new_from_bonobo_control (control);
 
-	gtk_signal_connect_object (GTK_OBJECT (adapter->details->nautilus_view),
-				   "destroy",
-				   gtk_object_unref,
-				   GTK_OBJECT (adapter));
+	g_signal_connect_closure (
+		G_OBJECT (adapter->details->nautilus_view),
+		"destroy", g_cclosure_new_swap (
+			G_CALLBACK (g_object_unref),
+			G_OBJECT (adapter), NULL), 0);
 
 	/* Get the class to handle embedding this kind of component. */
 	adapter->details->embed_strategy = nautilus_adapter_embed_strategy_get (component);
@@ -170,8 +171,8 @@ nautilus_adapter_new (Bonobo_Unknown component)
 		bonobo_object_add_interface (BONOBO_OBJECT (control), zoomable);
 
 	g_signal_connect (control, "activate",
-			    G_CALLBACK (nautilus_adapter_activate_callback),
-			    adapter);
+			  G_CALLBACK (nautilus_adapter_activate_callback),
+			  adapter);
 
 	g_signal_connect (adapter->details->embed_strategy, "open_location", 
 			    nautilus_adapter_open_location_callback, adapter);

@@ -83,8 +83,8 @@ static void     nautilus_tree_view_update_all_icons  (NautilusTreeView      *vie
 static void     cancel_possible_activation           (NautilusTreeView      *view);
 static void     nautilus_tree_view_update_model_node (NautilusTreeView      *view,
 						      NautilusTreeNode      *node);
-static void     nautilus_tree_view_class_init  (NautilusTreeViewClass *klass);
-static void     nautilus_tree_view_init        (NautilusTreeView      *view);
+static void     nautilus_tree_view_class_init        (NautilusTreeViewClass *klass);
+static void     nautilus_tree_view_init              (NautilusTreeView      *view);
 static void     register_unparented_node             (NautilusTreeView      *view,
 						      NautilusTreeNode      *node);
 static void     forget_unparented_node               (NautilusTreeView      *view,
@@ -1101,7 +1101,7 @@ free_view_node_to_uri_map_entry (gpointer key, gpointer value, gpointer callback
 }
 
 static void
-nautilus_tree_view_destroy (GtkObject *object)
+nautilus_tree_view_destroy (BonoboObject *object)
 {
 	NautilusTreeView *view;
 	
@@ -1151,16 +1151,28 @@ nautilus_tree_view_destroy (GtkObject *object)
 		
 		nautilus_tree_expansion_state_save (view->details->expansion_state);
 		g_object_unref (G_OBJECT (view->details->expansion_state));
+
+		view->details->tree = NULL;
 	}
 
 	eel_gtk_object_list_free (view->details->unparented_tree_nodes);
 	
+	EEL_CALL_PARENT (BONOBO_OBJECT_CLASS, destroy, (object));
+}
+
+static void
+nautilus_tree_view_finalize (GObject *object)
+{
+	NautilusTreeView *view;
+	
+	view = NAUTILUS_TREE_VIEW (object);
+
 	g_free (view->details->current_main_view_uri);
 	g_free (view->details->selected_uri);
 
 	g_free (view->details);
-	
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 static EelCTreeNode *
@@ -1624,9 +1636,12 @@ nautilus_tree_view_update_all_icons (NautilusTreeView *view)
 static void
 nautilus_tree_view_class_init (NautilusTreeViewClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *gobject_class;
+	BonoboObjectClass *object_class;
 	
-	object_class = GTK_OBJECT_CLASS (klass);
+	gobject_class = G_OBJECT_CLASS (klass);
+	object_class = BONOBO_OBJECT_CLASS (klass);
 	
 	object_class->destroy = nautilus_tree_view_destroy;
+	gobject_class->finalize = nautilus_tree_view_finalize;
 }

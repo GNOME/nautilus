@@ -233,13 +233,15 @@ EEL_CLASS_BOILERPLATE (NautilusMusicView,
 static void
 nautilus_music_view_class_init (NautilusMusicViewClass *klass)
 {
-	GtkObjectClass *object_class;
-	
-	object_class = GTK_OBJECT_CLASS (klass);
+	GObjectClass *gobject_class;
+	BonoboObjectClass *object_class;
+
+	gobject_class = G_OBJECT_CLASS (klass);
+	object_class = BONOBO_OBJECT_CLASS (klass);
 
 	object_class->destroy = nautilus_music_view_destroy;
+        gobject_class->finalize = nautilus_music_view_finalize;
 }
-
 
 static char *
 get_cell_text (GtkWidget *widget, int column_index, int cell_width,
@@ -415,7 +417,7 @@ eel_clist_set_column_width (EEL_CLIST (music_view->details->song_list), BITRATE,
 }
 
 static void
-nautilus_music_view_destroy (GtkObject *object)
+nautilus_music_view_destroy (BonoboObject *object)
 {
 	NautilusMusicView *music_view;
 
@@ -432,9 +434,20 @@ nautilus_music_view_destroy (GtkObject *object)
 	}
 
         detach_file (music_view);
+
+	EEL_CALL_PARENT (BONOBO_OBJECT_CLASS, destroy, (object));
+}
+
+static void
+nautilus_music_view_finalize (GObject *object)
+{
+	NautilusMusicView *music_view;
+
+        music_view = NAUTILUS_MUSIC_VIEW (object);
+
 	g_free (music_view->details);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 static gboolean

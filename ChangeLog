@@ -1,3 +1,28 @@
+2001-11-13  Michael Meeks  <michael@ximian.com>
+
+	* components/tree/nautilus-tree-view.c
+	(nautilus_tree_view_destroy): allow double destroys &
+	split out
+	(nautilus_tree_view_finalize): impl.
+	(nautilus_tree_view_class_init): upd.
+
+	* components/text/nautilus-text-view.c
+	(nautilus_text_view_class_init): upd.
+	(nautilus_text_view_destroy): allow double destroys.
+	(nautilus_text_view_finalize): impl.
+
+	* components/music/nautilus-music-view.c
+	(nautilus_music_view_class_init): upd.
+	(nautilus_music_view_destroy): upd.
+	(nautilus_music_view_finalize): impl.
+
+	* components/notes/nautilus-notes.c (do_destroy): don't
+	do hacks around the old bonobo.
+
+	* components/adapter/nautilus-adapter.c
+	(nautilus_adapter_new): don't gtk_signal_connect_object to a 
+	BonoboObject.
+
 2001-11-14  Darin Adler  <darin@bentspoon.com>
 
 	* src/nautilus-main.c: (main): Remove g_log_domain_gruntime.
