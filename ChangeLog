@@ -1,3 +1,18 @@
+2001-03-08  John Harper  <jsh@eazel.com>
+
+	Merge from HEAD:
+
+	2001-03-08  John Harper  <jsh@eazel.com>
+
+	reviewed by: Robin * Slomkowski <rslomkow@eazel.com>
+
+	Fixed bug 7550 (SOLARIS: text drawn incorrectly in anti-aliased
+	mode): 
+
+	* configure.in: added `AC_C_BIGENDIAN' check - this means that
+	the WORDS_BIGENDIAN macro gets defined on big-endian systems.
+	This is required by at least the librsvg/arg_rgba.c file
+
 2001-03-08  Eric Fischer  <eric@eazel.com>
 
 	Merge from HEAD:
