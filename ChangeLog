@@ -1,3 +1,14 @@
+2000-07-28  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 1824, Remove automounter callback
+
+	Added an element to details that holds the timer callback id
+	so that we can remove it as the first thing we do in destroy.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_destroy), (find_mount_devices):
+	Add and remove timer callback.
+	
 2000-07-28  Andy Hertzfeld  <andy@eazel.com>
 
 	* icons/arlo/sidebar_tab_pieces/Makefile.am:

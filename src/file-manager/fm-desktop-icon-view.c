@@ -106,6 +106,7 @@ struct FMDesktopIconViewDetails
 {
 	GHashTable *devices_by_fsname;
 	GList *devices;
+	guint mount_device_timer_id;
 };
 
 static void fm_desktop_icon_view_initialize		(FMDesktopIconView        *desktop_icon_view);
@@ -148,6 +149,9 @@ fm_desktop_icon_view_destroy (GtkObject *object)
 	FMDesktopIconView *icon_view;
 
 	icon_view = FM_DESKTOP_ICON_VIEW (object);
+
+	/* Remove timer function */
+	gtk_timeout_remove (icon_view->details->mount_device_timer_id);
 
 	/* Remove mount link files */
 	g_list_foreach (icon_view->details->devices, (GFunc)remove_mount_links, icon_view);
@@ -871,7 +875,8 @@ find_mount_devices (FMDesktopIconView *icon_view, const char *fstab_path)
 	g_list_foreach (icon_view->details->devices, (GFunc) device_set_state_empty, icon_view);
 
 	/* Add a timer function to check for status change in mounted devices */
-	gtk_timeout_add (CHECK_INTERVAL, (GtkFunction) mount_devices_check_status, icon_view);
+	icon_view->details->mount_device_timer_id = 
+		gtk_timeout_add (CHECK_INTERVAL, (GtkFunction) mount_devices_check_status, icon_view);
 }
 
 
