@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus.HEAD\n"
+"Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-07-01 01:21+0200\n"
-"PO-Revision-Date: 2003-07-01 01:27+0200\n"
+"POT-Creation-Date: 2003-08-08 22:17+0200\n"
+"PO-Revision-Date: 2003-08-09 12:17+0200\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -1042,36 +1042,37 @@ msgstr "Shikoje"
 msgid ""
 "A list of captions below an icon in the icon view and the desktop. The "
 "actual number of captions shown depends on the zoom level. Possible values "
-"are: size, type, date_modified, date_changed, date_accessed, owner, group, "
-"permissions, octal_permissions and mime_type"
+"are: \"size\", \"type\", \"date_modified\", \"date_changed\", \"date_accessed"
+"\", \"owner\", \"group\", \"permissions\", \"octal_permissions\" and "
+"\"mime_type\"."
 msgstr ""
 "Lista e përshkrimeve nën ikonë në paraqitjen e ikonës dhe desktopit. Numri "
 "aktual i përshkrimeve të shfaquar varet nga shkalla e zmadhimit. Vlerat e "
-"mundëshme janë: madhësia, lloji, data_ndryshimit, data_modifikimit, "
-"data_hyrjes, pronari, grupi, të drejtat, të_drejtat si numra dhe lloji_mime"
+"mundëshme janë: \"madhësia\", \"lloji\", \"data_ndryshimit\", \"data_modifikimit\", "
+"\"data_hyrjes\", \"pronari\", \"grupi\", \"të drejtat\", \"të_drejtat si numra\" dhe \"lloji_mime\"."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:2
-msgid "Add nautilus to session"
-msgstr "Shto nautilus tek seanca"
+msgid "Add Nautilus to session"
+msgstr "Shto Nautilus tek seanca"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:3
 msgid "Bring up a new window for every opened file"
 msgstr "Hap një dritare të re për çdo file të hapur"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:4
-msgid "Criteria for search bar searching."
-msgstr "Kriteri i kërkimit për menu e kërkimit."
+msgid "Criteria for search bar searching"
+msgstr "Kriteri i kërkimit për menu e kërkimit"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:5
 msgid ""
 "Criteria when matching files searched for in the search bar. If set to "
-"search_by_text, then nautilus will Search for files by file name only. If "
-"set to search_by_text_and_properties\", then nautilus will search for files "
-"by file name and file properties."
+"\"search_by_text\", then Nautilus will Search for files by file name only. "
+"If set to \"search_by_text_and_properties\", then Nautilus will search for "
+"files by file name and file properties."
 msgstr ""
 "Kriteri i kërkimit të files tek menu e kërkimit. Nëse vendoset tek "
-"kërko_sipas_tekstit, nautilus do të kryejë një kërkim vetëm në bazë të emrit "
-"të file. Nëse vendoset tek kërko_sipas_tekstit_dhe_pronësisë\", nautilus do "
+"\"kërko_sipas_tekstit\", nautilus do të kryejë një kërkim vetëm në bazë të emrit "
+"të file. Nëse vendoset tek \"kërko_sipas_tekstit_dhe_pronësisë\", nautilus do "
 "të kërkojë files në bazë të emrit dhe pronësive të tyre."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
@@ -1107,20 +1108,20 @@ msgid "Default folder viewer"
 msgstr "Pamja e prezgjedhur e kartelës"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:14
+msgid "Default icon zoom level"
+msgstr "Niveli i zoom i prezgjedhur:"
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:15
+msgid "Default list zoom level"
+msgstr "Niveli i zoom i prezgjedhur:"
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:16
 msgid "Default sort order"
 msgstr "Renditja e prezgjedhur"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:15
-msgid "Default zoom level used by the icon view"
-msgstr "Shkallën e prezgjedhur e zmadhimit për paraqitjen e ikonës"
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:16
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:17
 msgid "Default zoom level used by the icon view."
 msgstr "Niveli i prezgjedhur i përdorur për paraqitjen e ikonës."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:17
-msgid "Default zoom level used by the list view"
-msgstr "Shkalla e zmadhimit e prezgjedhur për paraqitjen si listë"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:18
 msgid "Default zoom level used by the list view."
@@ -1139,10 +1140,22 @@ msgid "Desktop trash icon name"
 msgstr "Emri i ikonës trash (koshi) të desktop-it"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:22
+msgid ""
+"Directories over this size will be truncated to around this size. The "
+"purpose of this is to avoid unintentionally blowing the heap and killing "
+"Nautilus on massive directories. A negative value denotes no limit. The "
+"limit is approximate due to the reading of directories chunk-wise."
+msgstr ""
+"Directories over this size will be truncated to around this size. The "
+"purpose of this is to avoid unintentionally blowing the heap and killing "
+"Nautilus on massive directories. A negative value denotes no limit. The "
+"limit is approximate due to the reading of directories chunk-wise."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:23
 msgid "Enable 'special' flags in file preferences dialog"
 msgstr "Shfaq flags 'specialë' tek dialogu i pronësive"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:23
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
 msgid ""
 "Filename for the default directory background. Only used if background_set "
 "is true."
@@ -1150,7 +1163,7 @@ msgstr ""
 "Emri i file për sfondin e prezgjedhur të directory. Përdoret vetëm nëse "
 "sfondi_zgjedhur është e vërtetë."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
 msgid ""
 "Filename for the default side pane background. Only used if "
 "side_pane_background_set is true."
@@ -1158,47 +1171,63 @@ msgstr ""
 "Emri i file për sfondin e prezgjedhur të panelit anësor. Përdoret vetëm nëse "
 "sfondi_zgjedhur_panelit_anësor është e vërtetë."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
-msgid "Hide default bookmarks in the bookmark menu."
-msgstr "Mos shfaq të preferuarit e prezgjedhur tek menu e të preferuarve."
-
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:26
+msgid "Hide default bookmarks in the bookmark menu"
+msgstr "Mos shfaq të preferuarit e prezgjedhur tek menu e të preferuarve"
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:27
 msgid "Home icon visible on desktop"
 msgstr "Ikona shtëpi e dukshme në desktop"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:27
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
 msgid ""
-"If set to true, Nautilus will show only show directories in the tree "
-"sidebar. Otherwise it will show both directories and files."
+"If set to true, Nautilus will only show directories in the tree side pane. "
+"Otherwise it will show both directories and files."
 msgstr ""
 "Nëse e vërtetë, Nautilus do të shfaqë vetëm directories në paraqitjen e "
-"degëzuar. Përndryshe do të shfaqë si directories ashtu dhe files."
+"degëzuar anësore. Përndryshe do të shfaqë si directories ashtu dhe files."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
 msgid "If set to true, newly opened windows will have the location bar visible."
 msgstr ""
 "Nëse e vërtetë, dritaret e reja të hapura do të kenë panelin e pozicionit të "
 "dukshëm."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
-msgid "If set to true, newly opened windows will have the side bar visible."
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
+msgid "If set to true, newly opened windows will have the side pane visible."
 msgstr ""
-"Nëse e vërtetë, dritaret e reja të hapura do të kenë panelin anësor të "
+"Nëse e vërtetë, dritaret e reja që do të hapen do të kenë panelin anësor të "
 "dukshëm."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:31
 msgid "If set to true, newly opened windows will have the status bar visible."
 msgstr ""
 "Nëse e vërtetë, dritaret e reja të hapura do të kenë panelin e gjendjes të "
 "dukshëm."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:31
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:32
 msgid "If set to true, newly opened windows will have toolbars visible."
 msgstr ""
 "Nëse e vërtetë, dritaret e reja të hapura do të kenë panelin e veglave të "
 "dukshëm."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:32
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:33
+msgid ""
+"If set to true, then Nautilus lets you edit some of the more esoteric "
+"options of a file in the file preferences dialog."
+msgstr ""
+"Nëse e vërtetë, Nautilus ju mundëson ndryshimin e disa nga opcionet e shumta "
+"të një file nga dialogu i preferimeve të file."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:34
+msgid ""
+"If set to true, then Nautilus shows directories prior to showing files in "
+"the icon and list views."
+msgstr ""
+"Nëse e vërtetë, Nautilus do të shfaqë directories para files në paraqitjet "
+"si ikona dhe listë."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
 msgid ""
 "If set to true, then Nautilus will ask for confirmation when you attempt to "
 "put files in the trash."
@@ -1206,7 +1235,19 @@ msgstr ""
 "Nëse e vërtetë, Nautilus do të kërkojë konfermimin tuaj para se të hedhë "
 "files në kosh."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:33
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
+msgid ""
+"If set to true, then Nautilus will bring up a new Nautilus window by default "
+"whenever an item is opened."
+msgstr ""
+"Nëse e vërtetë, Nautilus do të krijojë një dritare të re Nautilus sa herë që të hapet "
+"një element."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:37
+msgid "If set to true, then Nautilus will draw the icons on the desktop."
+msgstr "Nëse e vërtetë, Nautilus do të vizatojë ikonat në desktop."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:38
 msgid ""
 "If set to true, then Nautilus will have a feature allowing you to delete a "
 "file immediately and in-place, instead of moving it to the trash. This "
@@ -1216,7 +1257,23 @@ msgstr ""
 "menjëherëshme të file, pa e kaluar nëpër kosh. Kjo veçori mund të jetë e "
 "rrezikshme, prandaj kini kujdes."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:34
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:39
+msgid ""
+"If set to true, then Nautilus will just show the user's bookmarks in the "
+"bookmark menu."
+msgstr ""
+"Nëse e vërtetë, Nautilus do të shfaqë vetëm të preferuarit e përdoruesit tek "
+"menu e të preferuarve."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
+msgid ""
+"If set to true, then Nautilus will use the user's home directory as the "
+"desktop. If it is false, then it will use ~/Desktop as the desktop."
+msgstr ""
+"Nëse e vërtetë, Nautilus do të përdorë directory home të përdoruesit si "
+"desktop. Nëse jo, atëhere do të përdorë ~/Desktop si desktop."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
 msgid ""
 "If set to true, then backup files such as those created by Emacs are "
 "displayed. Currently, only files ending in a tilde (~) are considered backup "
@@ -1226,57 +1283,15 @@ msgstr ""
 "të dukshëm. Aktualisht, vetëm files që përfundojnë me tilde (~) konsiderohen "
 "files të backup."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
-msgid "If set to true, then hidden files (dotfiles) are shown in the file manager."
-msgstr ""
-"Nëse e vërtetë, files e fshehur (dotfiles) do të jenë të dukshëm tek "
-"manazhuesi i file."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
-msgid ""
-"If set to true, then nautilus lets you edit some of the more esoteric "
-"options of a file in the file preferences dialog."
-msgstr ""
-"Nëse e vërtetë, nautilus ju mundëson ndryshimin e disa nga opcionet e shumta "
-"të një file nga dialogu i preferimeve të file."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:37
-msgid ""
-"If set to true, then nautilus shows directories prior to showing files in "
-"the icon and list views."
-msgstr ""
-"Nëse e vërtetë, nautilus do të shfaqë directories para files në paraqitjet "
-"si ikona dhe listë."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:38
-msgid ""
-"If set to true, then nautilus will bring up a new nautilus window by default "
-"whenever an item is opened."
-msgstr ""
-"Nëse e vërtetë, nautilus do të ngrejë një dritare të re sa herë që të hapet "
-"një objekt i ri."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:39
-msgid "If set to true, then nautilus will draw the icons on the desktop."
-msgstr "Nëse e vërtetë, nautilus do të vizatojë ikonat në desktop."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
-msgid ""
-"If set to true, then nautilus will just show the user's bookmarks in the "
-"bookmark menu."
-msgstr ""
-"Nëse e vërtetë, nautilus do të shfaqë vetëm të preferuarit e përdoruesit tek "
-"menu e të preferuarve."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
-msgid ""
-"If set to true, then nautilus will use the user's home directory as the "
-"desktop. If it is false, then it will use ~/Desktop as the desktop."
-msgstr ""
-"Nëse e vërtetë, nautilus do të përdorë directory home të përdoruesit si "
-"desktop. Nëse jo, atëhere do të përdorë ~/Desktop si desktop."
-
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
+msgid ""
+"If set to true, then hidden files are shown in the file manager. Hidden "
+"files are either dotfiles or are listed in the directory's .hidden file."
+msgstr ""
+"Nëse e vërtetë, file e padukshëm do të jenë të dukshëm në manazhuesin e file. "
+"Files e padukshëm janë dotfiles ose gjenden në directory e file të .padukshëm."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
 msgid ""
 "If this is set to true, Nautilus adds itself to the session when it starts "
 "up. This means it will be started the next time you log in."
@@ -1285,7 +1300,7 @@ msgstr ""
 "saj. Kjo do të thotë që herën e ardhëshme kur të kryeni log-in ai do të "
 "fillohet."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
 msgid ""
 "If this is set to true, an icon linking to the home directory will be put on "
 "the desktop."
@@ -1293,13 +1308,13 @@ msgstr ""
 "Nëse e vërtetë, një ikonë e lidhur me directory home do të vendoset në "
 "desktop."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
 msgid ""
 "If this is set to true, an icon linking to the trash will be put on the "
 "desktop."
 msgstr "Nëse e vërtetë, një ikonë e lidhur me koshin do të vendoset në desktop."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -1309,7 +1324,7 @@ msgstr ""
 "reverse. P.sh., nëse janë rregulluar sipas emrit, në vend që të vendosen nga "
 "\"a\" në \"z\", do të renditen nga \"z\" tek \"a\"."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -1321,25 +1336,21 @@ msgstr ""
 "\"a\" në \"z\", do të renditen nga \"z\" tek \"a\"; nëse të rregulluar sipas "
 "madhësisë, në vend që të fillojnë në rritje do të renditen në zbritje."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid "If true, icons will be layed out tighter by default in new windows."
 msgstr "If true, icons will be layed out tighter by default in new windows."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
-msgid ""
-"If true, labels will be placed beside icons icons rather than underneath "
-"them."
-msgstr ""
-"If true, labels will be placed beside icons icons rather than underneath "
-"them."
-
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
+msgid "If true, labels will be placed beside icons rather than underneath them."
+msgstr "If true, labels will be placed beside icons rather than underneath them."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
 msgid "If true, new windows will use manual layout by default."
 msgstr ""
 "Nëse e vërtetë, dritaret e reja do të përdorin paraqitjen manuale si të "
 "prezgjedhur."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
 msgid ""
 "Images over this size (in bytes) won't be thumbnailed. The purpose of this "
 "setting is to avoid thumbnailing large images that may take a long time to "
@@ -1350,19 +1361,19 @@ msgstr ""
 "mund të kërkojnë një kohë të gjatë për tu ngarkuar apo të shpenzojnë shumë "
 "kujtesë."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
 msgid "List of possible captions on icons"
 msgstr "Lista e përshkrimeve të mundëshme tek ikonat"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
 msgid "Maximum handled files in a directory"
 msgstr "Numri maksimum i files në një directory"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
 msgid "Maximum image size for thumbnailing"
 msgstr "Madhësia maksimum e figurës për minjaturizim"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid ""
 "Name of the Nautilus theme to use. This has been deprecated as of Nautilus "
 "2.2. Please use the icon theme instead."
@@ -1370,19 +1381,19 @@ msgstr ""
 "Emri i temës që do të përdoret për Nautilus. Nuk përdoret më që nga Nautilus "
 "2.2. Ju lutem përdor në vend të tij ikonën e temës."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
 msgid "Nautilus handles drawing the desktop"
 msgstr "Përdor Nautilus për të vizatuar desktop-in"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
 msgid "Nautilus uses the users home directory as the desktop"
 msgstr "Nautilus përdor directory home të përdoruesit si desktop"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
 msgid "Only show directories in the tree sidebar"
 msgstr "Vizualizo vetëm directories tek paneli i përmbajtjes së degëzuar"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
 msgid ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
@@ -1390,63 +1401,49 @@ msgstr ""
 "Vlerat e mundëshme janë \"një\" për të lëshuar files me një klikim të vetëm, "
 "ose \"dopjo\" për t'i lëshuar me dopjo klik."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
 msgid "Put labels beside icons"
 msgstr "Vendos nivelet anash ikonave"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
 msgid "Reverse sort order in new windows"
 msgstr "Renditje e kundërt tek dritaret e reja"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
 msgid "Show directories first in windows"
 msgstr "Shfaq në fillim directories në dritaret"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
 msgid "Show location bar in new windows"
 msgstr "Shfaq menu e pozicionit tek dritaret e reja"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
-msgid "Show side bar in new windows"
-msgstr "Shfaq panelin anësor tek dritaret e reja"
-
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
+msgid "Show side pane in new windows"
+msgstr "Bëj të dukshëm panelin anësor tek dritaret e reja"
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
 msgid "Show status bar in new windows"
 msgstr "Shfaq status bar tek dritaret e reja"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
 msgid "Show toolbar in new windows"
 msgstr "Shfaq menu e veglave tek dritaret e reja"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
 msgid "Side pane view"
 msgstr "Paraqitja e panelit anësor"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
-msgid ""
-"Speed tradeoff for when to preview a sound file when mousing over a files "
-"icon. If set to \"always\" then always plays the sound, even if the file is "
-"on a remote server. If set to \"local_only\" then only plays previews on "
-"local filesystems. If set to \"never\" then it never previews sound."
-msgstr ""
-"Speed tradeoff for when to preview a sound file when mousing over a files "
-"icon. If set to \"always\" then always plays the sound, even if the file is "
-"on a remote server. If set to \"local_only\" then only plays previews on "
-"local filesystems. If set to \"never\" then it never previews sound."
-
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
 msgid ""
-"Speed tradeoff for when to show a image files as a thumbnail. If set to "
-"\"always\" then always thumbnail, even if the directory is on a remote "
-"server. If set to \"local_only\" then only show thumbnails for local "
-"filesystems. If set to \"never\" then never bother to thumbnail images, just "
-"use a generic icon."
+"Speed tradeoff for when to preview a sound file when mousing over a files "
+"icon. If set to \"always\" then always plays the sound, even if the file is "
+"on a remote server. If set to \"local_only\" then only plays previews on "
+"local filesystems. If set to \"never\" then it never previews sound."
 msgstr ""
-"Speed tradeoff for when to show a image files as a thumbnail. If set to "
-"\"always\" then always thumbnail, even if the directory is on a remote "
-"server. If set to \"local_only\" then only show thumbnails for local "
-"filesystems. If set to \"never\" then never bother to thumbnail images, just "
-"use a generic icon."
+"Speed tradeoff for when to preview a sound file when mousing over a files "
+"icon. If set to \"always\" then always plays the sound, even if the file is "
+"on a remote server. If set to \"local_only\" then only plays previews on "
+"local filesystems. If set to \"never\" then it never previews sound."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid ""
@@ -1464,25 +1461,39 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
 msgid ""
-"Speed tradeoff for when to show the number of items in a directory. If set "
-"to \"always\" then always show item counts, even if the directory is on a "
-"remote server. If set to \"local_only\" then only show counts for local "
-"filesystems. If set to \"never\" then never bother to compute item counts."
+"Speed tradeoff for when to show an image file as a thumbnail. If set to "
+"\"always\" then always thumbnail, even if the directory is on a remote "
+"server. If set to \"local_only\" then only show thumbnails for local "
+"filesystems. If set to \"never\" then never bother to thumbnail images, just "
+"use a generic icon."
 msgstr ""
-"Speed tradeoff for when to show the number of items in a directory. If set "
-"to \"always\" then always show item counts, even if the directory is on a "
-"remote server. If set to \"local_only\" then only show counts for local "
-"filesystems. If set to \"never\" then never bother to compute item counts."
+"Speed tradeoff for when to show an image file as a thumbnail. If set to "
+"\"always\" then always thumbnail, even if the directory is on a remote "
+"server. If set to \"local_only\" then only show thumbnails for local "
+"filesystems. If set to \"never\" then never bother to thumbnail images, just "
+"use a generic icon."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
 msgid ""
-"The default sort-order for the item in the icon view. Possible values are "
-"name, size, type, modification_date, emblems."
+"Speed tradeoff for when to show the number of items in a directory. If set "
+"to \"always\" then always show item counts, even if the directory is on a "
+"remote server. If set to \"local_only\" then only show counts for local "
+"filesystems. If set to \"never\" then never bother to compute item counts."
 msgstr ""
-"Renditja e prezgjedhur për objektet në paraqitjen me ikona. Vlerat e "
-"mundëshme janë emri, madhësia, lloji, data_ndryshimit, emblemat."
+"Speed tradeoff for when to show the number of items in a directory. If set "
+"to \"always\" then always show item counts, even if the directory is on a "
+"remote server. If set to \"local_only\" then only show counts for local "
+"filesystems. If set to \"never\" then never bother to compute item counts."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
+msgid ""
+"The default sort-order for items in the icon view. Possible values are \"name"
+"\", \"size\", \"type\", \"modification_date\", \"emblems\"."
+msgstr ""
+"Renditja e prezgjedhur për objektet në paraqitjen me ikona. Vlerat e "
+"mundëshme janë \"emri\", \"madhësia\", \"lloji\", \"data_ndryshimit\", \"emblemat\"."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
 msgid ""
 "The default sort-order for the item in the list view. Possible values are "
 "name, size, type, and modification_date."
@@ -1490,27 +1501,27 @@ msgstr ""
 "Renditja e prezgjedhur për objektet në paraqitjen si listë. Vlerat e "
 "mundëshme janë emri, madhësia, lloji, dhe data_ndryshimit."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
-msgid "The default width of the sidebar in new windows."
-msgstr "Gjërësia e prezgjedhur e kornizës tek dritaret e reja."
-
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
+msgid "The default width of the side pane in new windows."
+msgstr "Gjërësia e prezgjedhur e panelit anësor tek dritaret e reja."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid "The font description used for the icons on the desktop."
 msgstr "Gërma për përshkrimin e përdorur për ikonat në desktop."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
 msgid "The side pane view to show in newly opened windows."
 msgstr "Paraqitja e panelit anësor tek dritaret e reja të hapura."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
 msgid ""
-"This name can be set if you want a custom name for the home link icon on the "
+"This name can be set if you want a custom name for the home icon on the "
 "desktop."
 msgstr ""
-"Ky emër duhet zgjedhur nëse dëshiron një emër të personalizuar për ikonën e "
-"lidhjes me home në desktop."
+"Ky emër mund të zgjidhet nëse dëshiron një emër të personalizuar për ikonën e "
+"home në desktop."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
@@ -1518,33 +1529,21 @@ msgstr ""
 "Ky emër duhet zgjedhur nëse dëshiron një emër të personalizuar për ikonën e "
 "lidhjes me koshin në desktop."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 msgid "Trash icon visible on desktop"
 msgstr "Ikona e koshit e dukshme në desktop"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
 msgid "Type of click used to launch/open files"
 msgstr "Lloji i klik i përdorur për të hapur/lëshuar files"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
-msgid "Use manual layout new windows"
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
+msgid "Use manual layout in new windows"
 msgstr "Përdor paraqitjen manuale tek dritaret e reja"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
 msgid "Use tighter Layout in new windows"
 msgstr "Përdor paraqitjen tighter për dritaret e reja"
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
-msgid ""
-"Vast directories, over this size will be truncated to around this size. The "
-"purpose of this is to avoid unintentionally blowing the heap and killing "
-"nautilus on massive directories. A negative value denotes no limit. The "
-"limit is approximate due to the reading of directories chunk-wise."
-msgstr ""
-"Vast directories, over this size will be truncated to around this size. The "
-"purpose of this is to avoid unintentionally blowing the heap and killing "
-"nautilus on massive directories. A negative value denotes no limit. The "
-"limit is approximate due to the reading of directories chunk-wise."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
 msgid "What to do with executable text files when activated"
@@ -1565,12 +1564,12 @@ msgstr ""
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
-"another view for that particular folder. Possible values are list_view and "
-"icon_view."
+"another view for that particular folder. Possible values are \"list_view\" "
+"and \"icon_view\"."
 msgstr ""
 "Kur vizitohet një kartelë do të përdoret ky shikues po të mos keni zgjedhur "
 "një lloj tjetër paraqitje për atë kartelë të veçantë. Vlerat e mundëshme "
-"janë paraqitja_listë dhe paraqitja_ikona."
+"janë \"paraqitja_listë\" dhe \"paraqitja_ikona\"."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
 msgid "When to show number of items in a directory"
@@ -1609,12 +1608,12 @@ msgid "Whether to show backup files"
 msgstr "Se duhet të shfaq files e backup"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:95
-msgid "Whether to show dotfiles"
-msgstr "Se duhet të shfaq dotfiles"
+msgid "Whether to show hidden files"
+msgstr "Nëse duhet të shfaqë files e padukshëm"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:96
-msgid "width of the sidebar"
-msgstr "gjerësia e sidebar"
+msgid "Width of the side pane"
+msgstr "Gjërësia e panelit anësor"
 
 #: libnautilus-private/filesystem-attributes.xml.h:1
 msgid "AFFS Volume"
@@ -1755,7 +1754,7 @@ msgid "Can't delete volume"
 msgstr "E pamundur fshirja e volumit"
 
 #: libnautilus-private/nautilus-desktop-link.c:139
-#: libnautilus-private/nautilus-file.c:5589
+#: libnautilus-private/nautilus-file.c:5592
 #: libnautilus-private/nautilus-global-preferences.c:545
 #: libnautilus-private/nautilus-trash-directory.c:383
 msgid "Trash"
@@ -1790,19 +1789,19 @@ msgstr "Zgjidhe si sfond për të gjith_a kartelat"
 msgid "Set as background for _this folder"
 msgstr "Zgjidhe si sfond për kë_të kartelë"
 
-#: libnautilus-private/nautilus-emblem-utils.c:208
+#: libnautilus-private/nautilus-emblem-utils.c:197
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
 msgstr "Më vjen keq, duhet të specifikoni një fjalëkyç jo bosh për simbolin e ri."
 
-#: libnautilus-private/nautilus-emblem-utils.c:209
+#: libnautilus-private/nautilus-emblem-utils.c:198
+#: libnautilus-private/nautilus-emblem-utils.c:202
 #: libnautilus-private/nautilus-emblem-utils.c:213
-#: libnautilus-private/nautilus-emblem-utils.c:222
-#: libnautilus-private/nautilus-emblem-utils.c:244
-#: libnautilus-private/nautilus-emblem-utils.c:259
+#: libnautilus-private/nautilus-emblem-utils.c:256
+#: libnautilus-private/nautilus-emblem-utils.c:271
 msgid "Couldn't install emblem"
 msgstr "I pamundur instalimi i simbolit"
 
-#: libnautilus-private/nautilus-emblem-utils.c:212
+#: libnautilus-private/nautilus-emblem-utils.c:201
 msgid "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
 "Më vjen keq, por fjalëkyçi i simbolit mund të përmbajë vetëm gërma, hapsira "
@@ -1812,7 +1811,7 @@ msgstr ""
 #. * what a keyword is, and people should be passing a unique
 #. * keyword to us anyway
 #.
-#: libnautilus-private/nautilus-emblem-utils.c:220
+#: libnautilus-private/nautilus-emblem-utils.c:211
 #, c-format
 msgid ""
 "Sorry, but there is already an emblem named \"%s\".  Please choose a "
@@ -1821,11 +1820,11 @@ msgstr ""
 "Më vjen keq, por një simbol me emrin \"%s\" ekziston. Ju lutem zgjidh një "
 "emër tjetër."
 
-#: libnautilus-private/nautilus-emblem-utils.c:243
+#: libnautilus-private/nautilus-emblem-utils.c:255
 msgid "Sorry, unable to save custom emblem."
 msgstr "Më vjen keq, i pamundur shpëtimi i simbolit të krijuar."
 
-#: libnautilus-private/nautilus-emblem-utils.c:258
+#: libnautilus-private/nautilus-emblem-utils.c:270
 msgid "Sorry, unable to save custom emblem name."
 msgstr "Më vjen keq, i pamundur shpëtimi i emrit të simbolit të krijuar."
 
@@ -2203,7 +2202,7 @@ msgstr "Zevëndësoi të gjithë"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1130
-#: libnautilus-private/nautilus-file.c:4419
+#: libnautilus-private/nautilus-file.c:4420
 #, c-format
 msgid "link to %s"
 msgstr "lidhje me %s"
@@ -2822,64 +2821,64 @@ msgstr "foo (kopja e 124).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2658
+#: libnautilus-private/nautilus-file.c:2659
 msgid "today at 00:00:00 PM"
 msgstr "sot në 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2659
+#: libnautilus-private/nautilus-file.c:2660
 msgid "today at %-I:%M:%S %p"
 msgstr "sot në %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2661
+#: libnautilus-private/nautilus-file.c:2662
 msgid "today at 00:00 PM"
 msgstr "sot në 00:00"
 
-#: libnautilus-private/nautilus-file.c:2662
+#: libnautilus-private/nautilus-file.c:2663
 msgid "today at %-I:%M %p"
 msgstr "sot në %-H:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2664
+#: libnautilus-private/nautilus-file.c:2665
 msgid "today, 00:00 PM"
 msgstr "sot, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2665
+#: libnautilus-private/nautilus-file.c:2666
 msgid "today, %-I:%M %p"
 msgstr "sot, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2667
 #: libnautilus-private/nautilus-file.c:2668
+#: libnautilus-private/nautilus-file.c:2669
 msgid "today"
 msgstr "sot"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2677
+#: libnautilus-private/nautilus-file.c:2678
 msgid "yesterday at 00:00:00 PM"
 msgstr "dje në 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2678
+#: libnautilus-private/nautilus-file.c:2679
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "dje në %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2680
+#: libnautilus-private/nautilus-file.c:2681
 msgid "yesterday at 00:00 PM"
 msgstr "dje në 00:00"
 
-#: libnautilus-private/nautilus-file.c:2681
+#: libnautilus-private/nautilus-file.c:2682
 msgid "yesterday at %-I:%M %p"
 msgstr "dje në %-H:%M "
 
-#: libnautilus-private/nautilus-file.c:2683
+#: libnautilus-private/nautilus-file.c:2684
 msgid "yesterday, 00:00 PM"
 msgstr "dje, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2684
+#: libnautilus-private/nautilus-file.c:2685
 msgid "yesterday, %-I:%M %p"
 msgstr "dje, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2686
 #: libnautilus-private/nautilus-file.c:2687
+#: libnautilus-private/nautilus-file.c:2688
 msgid "yesterday"
 msgstr "dje"
 
@@ -2888,133 +2887,133 @@ msgstr "dje"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2698
+#: libnautilus-private/nautilus-file.c:2699
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Të mërkurën, më 00 Shtator 0000 në 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2699
+#: libnautilus-private/nautilus-file.c:2700
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %-d %B %Y alle %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2701
+#: libnautilus-private/nautilus-file.c:2702
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Hën, 00 Tet 0000 në 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2702
+#: libnautilus-private/nautilus-file.c:2703
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %-d %b %Y në %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2704
+#: libnautilus-private/nautilus-file.c:2705
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Hën, 00 Tet në 00:00"
 
-#: libnautilus-private/nautilus-file.c:2705
+#: libnautilus-private/nautilus-file.c:2706
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %-d %b %Y në %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2707
+#: libnautilus-private/nautilus-file.c:2708
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "00 Tet 0000 në orën 00:00"
 
-#: libnautilus-private/nautilus-file.c:2708
+#: libnautilus-private/nautilus-file.c:2709
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d %b %Y në %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2710
+#: libnautilus-private/nautilus-file.c:2711
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "00 Tet 0000, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2711
+#: libnautilus-private/nautilus-file.c:2712
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d %b %Y, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2713
+#: libnautilus-private/nautilus-file.c:2714
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2714
+#: libnautilus-private/nautilus-file.c:2715
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d/%m/%y, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2716
+#: libnautilus-private/nautilus-file.c:2717
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-private/nautilus-file.c:2717
+#: libnautilus-private/nautilus-file.c:2718
 msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
-#: libnautilus-private/nautilus-file.c:3999
+#: libnautilus-private/nautilus-file.c:4000
 msgid "0 items"
 msgstr "0 objekte"
 
-#: libnautilus-private/nautilus-file.c:3999
+#: libnautilus-private/nautilus-file.c:4000
 msgid "0 folders"
 msgstr "0 kartela"
 
-#: libnautilus-private/nautilus-file.c:4000
+#: libnautilus-private/nautilus-file.c:4001
 msgid "0 files"
 msgstr "0 files"
 
-#: libnautilus-private/nautilus-file.c:4004
+#: libnautilus-private/nautilus-file.c:4005
 msgid "1 item"
 msgstr "1 objekt"
 
-#: libnautilus-private/nautilus-file.c:4004
+#: libnautilus-private/nautilus-file.c:4005
 msgid "1 folder"
 msgstr "1 kartelë"
 
-#: libnautilus-private/nautilus-file.c:4005
+#: libnautilus-private/nautilus-file.c:4006
 msgid "1 file"
 msgstr "1 file"
 
-#: libnautilus-private/nautilus-file.c:4008
+#: libnautilus-private/nautilus-file.c:4009
 #, c-format
 msgid "%u items"
 msgstr "%u objekte"
 
-#: libnautilus-private/nautilus-file.c:4008
+#: libnautilus-private/nautilus-file.c:4009
 #, c-format
 msgid "%u folders"
 msgstr "%u kartela"
 
-#: libnautilus-private/nautilus-file.c:4009
+#: libnautilus-private/nautilus-file.c:4010
 #, c-format
 msgid "%u files"
 msgstr "%u files"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4321
-#: libnautilus-private/nautilus-file.c:4337
+#: libnautilus-private/nautilus-file.c:4322
+#: libnautilus-private/nautilus-file.c:4338
 msgid "? items"
 msgstr "? objekte"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4327
+#: libnautilus-private/nautilus-file.c:4328
 msgid "? bytes"
 msgstr "? bytes"
 
-#: libnautilus-private/nautilus-file.c:4342
+#: libnautilus-private/nautilus-file.c:4343
 msgid "unknown type"
 msgstr "tip i panjohur"
 
-#: libnautilus-private/nautilus-file.c:4345
+#: libnautilus-private/nautilus-file.c:4346
 msgid "unknown MIME type"
 msgstr "tip MIME i panjohur"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4351
+#: libnautilus-private/nautilus-file.c:4352
 #: src/file-manager/fm-properties-window.c:1126
 msgid "unknown"
 msgstr "i panjohur"
 
-#: libnautilus-private/nautilus-file.c:4383
+#: libnautilus-private/nautilus-file.c:4384
 msgid "program"
 msgstr "program"
 
-#: libnautilus-private/nautilus-file.c:4395
+#: libnautilus-private/nautilus-file.c:4396
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -3024,7 +3023,7 @@ msgstr ""
 "që ndoshta fili juaj gnome-vfs.keys ndodhet në një pozicion të gabuar ose "
 "nuk arrin të gjehet për ndonjë arsye tjetër."
 
-#: libnautilus-private/nautilus-file.c:4399
+#: libnautilus-private/nautilus-file.c:4400
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -3033,11 +3032,11 @@ msgstr ""
 "Nuk u gjet asnjë përshkrim për tipin mime \"%s\" (fili është \"%s\"), ju "
 "lutem lajmëroni mailing list të gnome-vfs."
 
-#: libnautilus-private/nautilus-file.c:4413
+#: libnautilus-private/nautilus-file.c:4414
 msgid "link"
 msgstr "lidhje"
 
-#: libnautilus-private/nautilus-file.c:4433
+#: libnautilus-private/nautilus-file.c:4434
 msgid "link (broken)"
 msgstr "lidhje (e shkëputur)"
 
@@ -3304,99 +3303,99 @@ msgstr "asnjëra"
 msgid "%s's Home"
 msgstr "Shtëpia e %s"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2118
+#: libnautilus-private/nautilus-icon-canvas-item.c:2147
 msgid "file icon"
 msgstr "ikona e file"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2491
+#: libnautilus-private/nautilus-icon-canvas-item.c:2520
 msgid "editable text"
 msgstr "tekst i ndryshueshëm"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2492
+#: libnautilus-private/nautilus-icon-canvas-item.c:2521
 msgid "the editable label"
 msgstr "etiketë e ndryshueshme"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2499
+#: libnautilus-private/nautilus-icon-canvas-item.c:2528
 msgid "additional text"
 msgstr "tekst shtesë"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2500
+#: libnautilus-private/nautilus-icon-canvas-item.c:2529
 msgid "some more text"
 msgstr "tekst tjetër"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2507
+#: libnautilus-private/nautilus-icon-canvas-item.c:2536
 msgid "highlighted for selection"
 msgstr "vëre në dukje për t'a zgjedhur"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2508
+#: libnautilus-private/nautilus-icon-canvas-item.c:2537
 msgid "whether we are highlighted for a selection"
 msgstr "kur zgjedhja e vë në dukje"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2515
+#: libnautilus-private/nautilus-icon-canvas-item.c:2544
 msgid "highlighted as keyboard focus"
 msgstr "highlighted as keyboard focus"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2516
+#: libnautilus-private/nautilus-icon-canvas-item.c:2545
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "whether we are highlighted to render keyboard focus"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2524
+#: libnautilus-private/nautilus-icon-canvas-item.c:2553
 msgid "highlighted for drop"
 msgstr "i vënë në dukje për t'u lëshuar"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2525
+#: libnautilus-private/nautilus-icon-canvas-item.c:2554
 msgid "whether we are highlighted for a D&D drop"
 msgstr "nëse D&D e vë në dukje"
 
-#: libnautilus-private/nautilus-icon-container.c:2003
+#: libnautilus-private/nautilus-icon-container.c:2009
 msgid "The selection rectangle"
 msgstr "Katrori i seleksionimit"
 
-#: libnautilus-private/nautilus-icon-container.c:3937
+#: libnautilus-private/nautilus-icon-container.c:4011
 msgid "Frame Text"
 msgstr "Teksti i mbajtësit"
 
-#: libnautilus-private/nautilus-icon-container.c:3938
+#: libnautilus-private/nautilus-icon-container.c:4012
 msgid "Draw a frame around unselected text"
 msgstr "Vizato një përmbajtës rreth tekstit të pa seleksionuar"
 
-#: libnautilus-private/nautilus-icon-container.c:3944
+#: libnautilus-private/nautilus-icon-container.c:4018
 msgid "Selection Box Color"
 msgstr "Kutia e zgjedhjes së ngjyrave"
 
-#: libnautilus-private/nautilus-icon-container.c:3945
+#: libnautilus-private/nautilus-icon-container.c:4019
 msgid "Color of the selection box"
 msgstr "Ngjyra e kutisë seleksionuese"
 
-#: libnautilus-private/nautilus-icon-container.c:3950
+#: libnautilus-private/nautilus-icon-container.c:4024
 msgid "Selection Box Alpha"
 msgstr "Selection Box Alpha"
 
-#: libnautilus-private/nautilus-icon-container.c:3951
+#: libnautilus-private/nautilus-icon-container.c:4025
 msgid "Opacity of the selection box"
 msgstr "Trasparenca e kutisë seleksionuese"
 
-#: libnautilus-private/nautilus-icon-container.c:3958
+#: libnautilus-private/nautilus-icon-container.c:4032
 msgid "Highlight Alpha"
 msgstr "Highlight Alpha"
 
-#: libnautilus-private/nautilus-icon-container.c:3959
+#: libnautilus-private/nautilus-icon-container.c:4033
 msgid "Opacity of the highlight for selected icons"
 msgstr "Opacity of the highlight for selected icons"
 
-#: libnautilus-private/nautilus-icon-container.c:3965
+#: libnautilus-private/nautilus-icon-container.c:4039
 msgid "Light Info Color"
 msgstr "Light Info Color"
 
-#: libnautilus-private/nautilus-icon-container.c:3966
+#: libnautilus-private/nautilus-icon-container.c:4040
 msgid "Color used for information text against a dark background"
 msgstr "Color used for information text against a dark background"
 
-#: libnautilus-private/nautilus-icon-container.c:3971
+#: libnautilus-private/nautilus-icon-container.c:4045
 msgid "Dark Info Color"
 msgstr "Dark Info Color"
 
-#: libnautilus-private/nautilus-icon-container.c:3972
+#: libnautilus-private/nautilus-icon-container.c:4046
 msgid "Color used for information text against a light background"
 msgstr "Color used for information text against a light background"
 
@@ -4127,43 +4126,43 @@ msgstr "Shikoje si %s"
 msgid "%s Viewer"
 msgstr "Vizualizues i %s"
 
-#: libnautilus-private/nautilus-volume-monitor.c:831
+#: libnautilus-private/nautilus-volume-monitor.c:897
 msgid "Unknown"
 msgstr "E panjohur"
 
 #. Populate table with items we know localized names for.
-#: libnautilus-private/nautilus-volume-monitor.c:1004
+#: libnautilus-private/nautilus-volume-monitor.c:1070
 msgid "Floppy"
 msgstr "Floppy"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1005
-#: libnautilus-private/nautilus-volume-monitor.c:1034
+#: libnautilus-private/nautilus-volume-monitor.c:1071
+#: libnautilus-private/nautilus-volume-monitor.c:1100
 msgid "CD-ROM"
 msgstr "CD-ROM"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1006
+#: libnautilus-private/nautilus-volume-monitor.c:1072
 msgid "Zip Drive"
 msgstr "Lexues Zip"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1021
-#: libnautilus-private/nautilus-volume-monitor.c:1065
+#: libnautilus-private/nautilus-volume-monitor.c:1087
+#: libnautilus-private/nautilus-volume-monitor.c:1131
 msgid "Audio CD"
 msgstr "CD Audio"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1056
+#: libnautilus-private/nautilus-volume-monitor.c:1122
 msgid "Root Volume"
 msgstr "Volumi Root"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1735
+#: libnautilus-private/nautilus-volume-monitor.c:1801
 msgid "Mount Error"
 msgstr "Gabim i mount"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1735
+#: libnautilus-private/nautilus-volume-monitor.c:1801
 msgid "Unmount Error"
 msgstr "Gabim gjatë zmontimit"
 
 #. Handle floppy case
-#: libnautilus-private/nautilus-volume-monitor.c:1808
+#: libnautilus-private/nautilus-volume-monitor.c:1874
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
@@ -4172,7 +4171,7 @@ msgstr ""
 "asnjë disketë në lexues."
 
 #. All others
-#: libnautilus-private/nautilus-volume-monitor.c:1812
+#: libnautilus-private/nautilus-volume-monitor.c:1878
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
@@ -4180,7 +4179,7 @@ msgstr ""
 "Nautilus nuk arrin të montojë volumin. Ndoshta nuk ka asnjë gjë tek "
 "periferiku."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1818
+#: libnautilus-private/nautilus-volume-monitor.c:1884
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
@@ -4188,7 +4187,7 @@ msgstr ""
 "Nautilus nuk arrin të montojë njësinë disketë. Ndoshta disketa është në një "
 "format që nuk mund të montohet."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1821
+#: libnautilus-private/nautilus-volume-monitor.c:1887
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
@@ -4196,20 +4195,20 @@ msgstr ""
 "Nautilus nuk arrin të montojë volumin e zgjedhur. Ndoshta volumi është i një "
 "formati që nuk mund të montohet."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1826
+#: libnautilus-private/nautilus-volume-monitor.c:1892
 msgid "Nautilus was unable to mount the selected floppy drive."
 msgstr "Nautilus nuk arrin të montojë disketën e zgjedhur."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1828
+#: libnautilus-private/nautilus-volume-monitor.c:1894
 msgid "Nautilus was unable to mount the selected volume."
 msgstr "Nautilus nuk arrin të montojë volumin e zgjedhur."
 
 #. FIXME: Should we parse this message and report something more meaningful?
-#: libnautilus-private/nautilus-volume-monitor.c:1833
+#: libnautilus-private/nautilus-volume-monitor.c:1899
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr "Nautilus nuk arrin të zmontojë volumin e zgjedhur."
 
-#: libnautilus-private/nautilus-volume-monitor.c:2038
+#: libnautilus-private/nautilus-volume-monitor.c:2104
 msgid "ISO 9660 Volume"
 msgstr "Volum ISO 9660"
 
@@ -5885,11 +5884,11 @@ msgstr "Trego gjendjen e _Indeksimit"
 msgid "Show status of indexing used when searching"
 msgstr "Trego gjendjen e indeksimit të përdorur gjatë kërkimit"
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:220
 msgid "Couldn't Create Required Folder"
 msgstr "I pamundur krijimi i kartelës së kërkuar"
 
-#: src/nautilus-application.c:224
+#: src/nautilus-application.c:221
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5900,11 +5899,11 @@ msgstr ""
 "ekzekutoni Nautilus, ju lutem krijoni atë kartelë, ose vendosni të drejtat e "
 "duhura qe Nautilus të mund t'a krijojë atë."
 
-#: src/nautilus-application.c:229
+#: src/nautilus-application.c:226
 msgid "Couldn't Create Required Folders"
 msgstr "I pamundur krijimi i kartelave të kërkuara"
 
-#: src/nautilus-application.c:230
+#: src/nautilus-application.c:227
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5921,13 +5920,13 @@ msgstr ""
 "Përpara se të ekzekutoni Nautilus, ju lutem krijoni kartelat, ose vendosni "
 "të drejtat e duhura qe Nautilus të mund t'i krijojë."
 
-#: src/nautilus-application.c:301
+#: src/nautilus-application.c:298
 msgid "Link To Old Desktop"
 msgstr "Lidhje me desktop-in e vjetër"
 
-#: src/nautilus-application.c:317
+#: src/nautilus-application.c:314
 msgid ""
-"The location of the desktop directory has changed in Gnome 2.4. A link "
+"The location of the desktop directory has changed in GNOME 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
 msgstr ""
@@ -5935,7 +5934,7 @@ msgstr ""
 "quajtur \"Lidhje me Desktop-in e Vjetër\" është krijuar në desktop. Mund t'a "
 "hapni për të lëvizuar files që dëshironi, pastaj eleminoni lidhjen."
 
-#: src/nautilus-application.c:320
+#: src/nautilus-application.c:317
 msgid "Migrated old desktop"
 msgstr "Desktopi i vjetër i migruar"
 
@@ -5949,7 +5948,7 @@ msgstr "Desktopi i vjetër i migruar"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:438
+#: src/nautilus-application.c:435
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5960,7 +5959,7 @@ msgstr ""
 "provoni të rinisni kompjuterin ose të instaloni Nautilus edhe njëherë."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:444
+#: src/nautilus-application.c:441
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -6007,12 +6006,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:474 src/nautilus-application.c:492
-#: src/nautilus-application.c:499
+#: src/nautilus-application.c:471 src/nautilus-application.c:489
+#: src/nautilus-application.c:496
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus nuk mund të përdoret tani, për arsye të një difekti të papritur."
 
-#: src/nautilus-application.c:475
+#: src/nautilus-application.c:472
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -6021,7 +6020,7 @@ msgstr ""
 "ana e Bonobo gjatë përpjekjes së regjistrimit të server-it për paraqitjen e "
 "file manager. "
 
-#: src/nautilus-application.c:493
+#: src/nautilus-application.c:490
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -6031,7 +6030,7 @@ msgstr ""
 "Bonobo gjatë përpjekjes së lokalizimit të fabrikës. Duke vrarë bonobo-"
 "activation-server dhe duke rinisur Nautilus ndoshta problemi zgjidhet."
 
-#: src/nautilus-application.c:500
+#: src/nautilus-application.c:497
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -6945,7 +6944,7 @@ msgstr "Sipër"
 
 #. Add "View as..." extra bonus choice.
 #: src/nautilus-shell-ui.xml.h:50 src/nautilus-window.c:522
-#: src/nautilus-window.c:1500
+#: src/nautilus-window.c:1506
 msgid "View as..."
 msgstr "Shikoje si..."
 
@@ -7235,12 +7234,8 @@ msgstr ""
 
 #: src/nautilus-window-manage-views.c:1398
 #, c-format
-msgid ""
-"Couldn't display \"%s\", because the host name was empty. Check that your "
-"proxy settings are correct."
-msgstr ""
-"E pamundur shfaqja e \"%s\" sepse emri i host ishte bosh. Verifiko që "
-"konfigurimi proxy të jetë korrekt."
+msgid "Couldn't display \"%s\". Check that your proxy settings are correct."
+msgstr "E pamundur shfaqja e \"%s\". Verifiko që konfigurimet e proxy janë korrekte."
 
 #: src/nautilus-window-manage-views.c:1405
 #, c-format
@@ -7365,28 +7360,28 @@ msgstr "Kthehu disa faqe mbrapa"
 msgid "Go forward a number of pages"
 msgstr "Shko përpara një numër faqesh"
 
-#: src/nautilus-window.c:672
+#: src/nautilus-window.c:678
 msgid "Information"
 msgstr "Informacion"
 
-#: src/nautilus-window.c:1206
+#: src/nautilus-window.c:1212
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Shiko këtë pozicion me \"%s\""
 
-#: src/nautilus-window.c:2258
+#: src/nautilus-window.c:2278
 msgid "Application ID"
 msgstr "ID e aplikacionit"
 
-#: src/nautilus-window.c:2259
+#: src/nautilus-window.c:2279
 msgid "The application ID of the window."
 msgstr "ID e aplikacionit të dritares."
 
-#: src/nautilus-window.c:2265
+#: src/nautilus-window.c:2285
 msgid "Application"
 msgstr "Aplikacion"
 
-#: src/nautilus-window.c:2266
+#: src/nautilus-window.c:2286
 msgid "The NautilusApplication associated with this window."
 msgstr "AplikacioniNautilus i shoqëruar me këtë faqe."
 
@@ -7421,6 +7416,19 @@ msgstr "Rrjeti i Server-ve"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Shiko rrjetin tuaj të server-ve tek file manager i Nautilus"
+
+#~ msgid "Default zoom level used by the icon view"
+#~ msgstr "Shkallën e prezgjedhur e zmadhimit për paraqitjen e ikonës"
+
+#~ msgid "Default zoom level used by the list view"
+#~ msgstr "Shkalla e zmadhimit e prezgjedhur për paraqitjen si listë"
+
+#~ msgid ""
+#~ "If set to true, then hidden files (dotfiles) are shown in the file "
+#~ "manager."
+#~ msgstr ""
+#~ "Nëse e vërtetë, files e fshehur (dotfiles) do të jenë të dukshëm tek "
+#~ "manazhuesi i file."
 
 #~ msgid "_New Folder"
 #~ msgstr "Kartelë e _Re"
