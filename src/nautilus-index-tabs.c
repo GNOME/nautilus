@@ -356,16 +356,18 @@ draw_or_hit_test_all_tabs(NautilusIndexTabs *index_tabs, gboolean draw_flag, gin
         }
         
       next_tab = next_tab->next;
-
+      if (next_tab != NULL)
+         this_item = (tabItem*) next_tab->data;	
+      
       /* bump the x-position, and see if it fits */
       x_pos += tab_width - 10;
       
-      if (x_pos > (widget->allocation.x + widget->allocation.width - 32))
+      if (x_pos > (widget->allocation.x + widget->allocation.width - 48))
         {
  	/* wrap to the next line */
  	  x_pos = widget->allocation.x - 3;     
           y_pos -= tab_height; 
-          if (next_tab != NULL)
+          if ((next_tab != NULL) && ((next_tab->next != NULL) || this_item->visible))
             total_height += tab_height;
         }                  
     }  
@@ -509,6 +511,7 @@ nautilus_index_tabs_select_tab(NautilusIndexTabs *index_tabs, gint which_tab)
       item->visible = (item->notebook_page != which_tab);
     }
   
+  recalculate_size(index_tabs);
   gtk_widget_queue_draw(GTK_WIDGET(index_tabs));	
 }
 
