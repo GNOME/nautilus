@@ -281,7 +281,7 @@ eazel_helper_start (int *pipe_stdin, int *pipe_stdout, int *child_pid)
 		case '7':
 		case '8':
 			/* informational messages from userhelper -- don't care */
-			trilobite_debug ("roothelper: info msg '%c'", buffer[0]);
+			/* trilobite_debug ("roothelper: info msg '%c'", buffer[0]); */
 			discard_line (*pipe_stdout);
 			continue;
 		case '*':

@@ -47,7 +47,7 @@
 #include "eazel-install-metadata.h"
 #include "eazel-install-protocols.h"
 #include "eazel-install-logic.h"
-#include "eazel-install-types.h"
+#include "eazel-package-system-types.h"
 
 #include <sys/stat.h>
 #include <unistd.h>

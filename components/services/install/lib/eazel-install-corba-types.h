@@ -24,7 +24,7 @@
 #ifndef EAZEL_INSTALL_SERVICES_CORBA_TYPES_H
 #define EAZEL_INSTALL_SERVICES_CORBA_TYPES_H
 
-#include <eazel-install-types.h>
+#include <eazel-package-system-types.h>
 #include <trilobite-eazel-install.h>
 #include <glib.h>
 

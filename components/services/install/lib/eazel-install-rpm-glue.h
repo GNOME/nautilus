@@ -29,7 +29,7 @@
 #ifndef EAZEL_INSTALL_RPM_GLUE_H
 #define EAZEL_INSTALL_RPM_GLUE_H
 
-#include "eazel-install-types.h"
+#include "eazel-package-system-types.h"
 #include "eazel-install-public.h"
 
 void eazel_install_rpm_set_settings (EazelInstall *service);

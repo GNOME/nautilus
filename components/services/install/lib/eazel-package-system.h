@@ -24,7 +24,7 @@
 #ifndef EAZEL_PACKAGE_SYSTEM_PUBLIC_H
 #define EAZEL_PACKAGE_SYSTEM_PUBLIC_H
 
-#include "eazel-install-types.h"
+#include "eazel-package-system-types.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -136,8 +136,7 @@ void                 eazel_package_system_uninstall (EazelPackageSystem *package
 						     unsigned long flags);
 void                 eazel_package_system_verify (EazelPackageSystem *package_system, 
 						  const char *dbpath,
-						  GList* packages,
-						  unsigned long flags);
+						  GList* packages);
 
 #endif /* EAZEL_PACKAGE_SYSTEM_PUBLIC_H */
 

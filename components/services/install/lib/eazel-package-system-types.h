@@ -27,8 +27,8 @@
  * file and install a services generated package-list.xml.
  */
 
-#ifndef EAZEL_INSTALL_SERVICES_TYPES_H
-#define EAZEL_INSTALL_SERVICES_TYPES_H
+#ifndef EAZEL_PACKAGE_SYSTEM_TYPES_H
+#define EAZEL_PACKAGE_SYSTEM_TYPES_H
 
 #include <gnome.h>
 #include <stdio.h>
@@ -52,7 +52,7 @@ typedef enum _PackageSystemStatus PackageSystemStatus;
     - packagedata_from_corba_packagedatastruct
     - corba_packagedatastruct_from_packagedata)
   and
-  eazel-install-types.c
+  eazel-package-system-types.c
     - packagedata_status_enum_to_str
     - packagedata_status_str_to_enum
  */
@@ -90,7 +90,7 @@ const char* packagedata_modstatus_enum_to_str (PackageModification st);
 /* NOTE: if you add protocols here, modify the following places :
    idl/trilobite-eazel-install.idl
    lib/eazel-install-protocols.c (eazel_install_fill_file_fetch_table)
-   lib/eazel-install-types.c (protocol_as_string)
+   lib/eazel-package-system-types.c (protocol_as_string)
    lib/eazel-install-corba.c (impl_Eazel_Install__set_protocol) (impl_Eazel_Install__get_protocol)
  */
 enum _URLType {
@@ -105,6 +105,7 @@ enum _PackageFillFlags {
 	PACKAGE_FILL_NO_TEXT = 0x01,
 	PACKAGE_FILL_NO_PROVIDES = 0x02,
 	PACKAGE_FILL_NO_DEPENDENCIES = 0x04,
+	PACKAGE_FILL_NO_DIRS_IN_PROVIDES = 0x8, /* only used if PACKAGE_FILL_NO_PROVIDES is not set */
 	PACKAGE_FILL_MINIMAL = 0xff
 };
 
@@ -192,6 +193,8 @@ struct _PackageData {
 	/* These are the files that the package provides
 	   NOTE: should not be corbafied in eazel-install-corba-types.c */
 	GList *provides;
+	/* This is true if provides contains directories */
+	gboolean provides_has_dirs; 
 
 	/* List of packages that this package modifies */
 	GList *modifies;
@@ -278,4 +281,4 @@ void eazel_install_gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT (GtkObject 
 
 char *packagedata_dump (const PackageData *package, gboolean deep);
 
-#endif /* EAZEL_INSTALL_SERVICES_TYPES_H */
+#endif /* EAZEL_PACKAGE_SYSTEM_TYPES_H */

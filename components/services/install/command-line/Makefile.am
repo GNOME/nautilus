@@ -20,10 +20,6 @@ INCLUDES = \
 	$(NULL)
 
 LDADD =                                           \
-        $(top_builddir)/components/services/install/lib/libeazelinstall.la	\
-        $(top_builddir)/components/services/install/lib/libeazelpackagesystem.la	\
-        $(top_builddir)/components/services/install/lib/libeazelpackagesystem-rpm3.la	\
-	$(top_builddir)/components/services/install/lib/libeazelsoftcat.la	\
         $(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(BONOBO_LIBS) \
 	$(GNOME_LIBS)                   \
@@ -39,24 +35,47 @@ eazel_install_SOURCES = 		\
 	eazel-alt-install-corba.c	\
 	$(NULL)
 
+eazel_install_LDADD = \
+	$(LDADD) \
+        $(top_builddir)/components/services/install/lib/libeazelinstall.la	\
+        $(top_builddir)/components/services/install/lib/libeazelpackagesystem.la	\
+        $(top_builddir)/components/services/install/lib/libeazelpackagesystem-rpm3.la	\
+	$(NULL)
+
 eazel_gen_xml_SOURCES = 	\
 	eazel-gen-xml.c         \
 	$(NULL)                
+
+eazel_gen_xml_LDADD = \
+	$(LDADD) \
+        $(top_builddir)/components/services/install/lib/libeazelinstall.la	\
+        $(top_builddir)/components/services/install/lib/libeazelpackagesystem.la	\
+        $(top_builddir)/components/services/install/lib/libeazelpackagesystem-rpm3.la	\
+	$(NULL)
 
 eazel_test_packsys_SOURCES = 	\
 	eazel-test-packsys.c         \
 	$(NULL)                
 
 eazel_test_packsys_LDADD = \
-	$(top_builddir)/components/services/install/lib/libeazelpackagesystem.la \
-	$(top_builddir)/components/services/install/lib/libeazelpackagesystem-rpm3.la \
 	$(LDADD) \
+	$(top_builddir)/components/services/install/lib/libeazelpackagesystem.la	\
 	$(NULL)
+
+eazel_test_types_SOURCES = 	\
+	eazel-test-types.c         \
+	$(NULL)                
 
 eazel_test_types_LDADD = \
 	$(LDADD) \
+        $(top_builddir)/components/services/install/lib/libeazelpackagesystem.la	\
 	$(NULL)
 
 eazel_softcat_SOURCES =	\
 	eazel-test-softcat.c	\
+	$(NULL)
+
+eazel_softcat_LDADD = \
+	$(LDADD) \
+        $(top_builddir)/components/services/install/lib/libeazelpackagesystem.la	\
 	$(NULL)

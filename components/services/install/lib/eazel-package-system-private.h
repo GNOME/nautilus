@@ -63,8 +63,7 @@ typedef void (*EazelPackageSytemUninstallFunc) (EazelPackageSystem*,
 						unsigned long);
 typedef void (*EazelPackageSytemVerifyFunc) (EazelPackageSystem*, 
 					     const char*,
-					     GList*, 
-					     unsigned long);
+					     GList*);
 
 struct _EazelPackageSystemPrivate {	
 	EazelPackageSytemLoadPackageFunc load_package;
@@ -83,8 +82,8 @@ gboolean eazel_package_system_emit_start (EazelPackageSystem*,
 					  const PackageData*);
 gboolean eazel_package_system_emit_progress (EazelPackageSystem*, 
 					     EazelPackageSystemOperation, 
-					     unsigned long[EAZEL_PACKAGE_SYSTEM_PROGRESS_LONGS],
-					     const PackageData*);
+					     const PackageData*, 
+					     unsigned long[EAZEL_PACKAGE_SYSTEM_PROGRESS_LONGS]);
 gboolean eazel_package_system_emit_failed (EazelPackageSystem*, 
 					   EazelPackageSystemOperation, 
 					   const PackageData*);

@@ -236,7 +236,7 @@ eazel_install_download_packages (EazelInstall *service,
 				package = eazel_package_system_load_package (service->private->package_system,
 									     package, 
 									     package->filename,
-									     PACKAGE_FILL_EVERYTHING);
+									     PACKAGE_FILL_NO_DIRS_IN_PROVIDES);
 			} else {
 				/* The file didn't exist, remove the 
 				   leading path and set the filename, plus
@@ -361,7 +361,7 @@ eazel_install_check_for_file_conflicts (EazelInstall *service,
 						     service->private->cur_root,
 						     filename,
 						     EAZEL_PACKAGE_SYSTEM_QUERY_OWNS,
-						     PACKAGE_FILL_EVERYTHING);
+						     PACKAGE_FILL_NO_DIRS_IN_PROVIDES);
 		packagedata_list_prune (&owners, pack->modifies, TRUE, TRUE);
 		
 		if (g_list_length (owners) > 1) {
@@ -881,11 +881,18 @@ gboolean eazel_install_start_signal (EazelPackageSystem *system,
 				     EazelInstall *service)
 {
 	service->private->infoblock[2]++;
-	eazel_install_emit_install_progress (service, 
-					     pack,
-					     service->private->infoblock[2], service->private->infoblock[3],
-					     0, pack->bytesize,
-					     service->private->infoblock[4], service->private->infoblock[5]);				     
+	switch (op) {
+	case EAZEL_PACKAGE_SYSTEM_OPERATION_INSTALL:
+	case EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL:
+		eazel_install_emit_install_progress (service, 
+						     pack,
+						     service->private->infoblock[2], service->private->infoblock[3],
+						     0, pack->bytesize,
+						     service->private->infoblock[4], service->private->infoblock[5]);				     
+		break;
+	default:
+		break;
+	}
 	return TRUE;
 }
 
@@ -894,27 +901,41 @@ gboolean eazel_install_end_signal (EazelPackageSystem *system,
 				   const PackageData *pack,
 				   EazelInstall *service)
 {
-	eazel_install_emit_install_progress (service, 
-					     pack,
-					     service->private->infoblock[2], service->private->infoblock[3],
-					     pack->bytesize, pack->bytesize,
-					     service->private->infoblock[4], service->private->infoblock[5]);				     
+	switch (op) {
+	case EAZEL_PACKAGE_SYSTEM_OPERATION_INSTALL:
+	case EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL:
+		eazel_install_emit_install_progress (service, 
+						     pack,
+						     service->private->infoblock[2], service->private->infoblock[3],
+						     pack->bytesize, pack->bytesize,
+						     service->private->infoblock[4], service->private->infoblock[5]);				     
+		break;
+	default:
+		break;
+	}
 	return TRUE;
 }
 
 gboolean  eazel_install_progress_signal (EazelPackageSystem *system,
 					 EazelPackageSystemOperation op,
-					 unsigned long *info,
 					 const PackageData *pack,
+					 unsigned long *info,
 					 EazelInstall *service)
 {
 	service->private->infoblock[4] = info[4];
 	if ((info[0] != 0) && (info[0] != info[1])) {
-		eazel_install_emit_install_progress (service, 
-						     pack,
-						     service->private->infoblock[2], service->private->infoblock[3],
-						     info[0], pack->bytesize,
-						     info[4], info[5]);
+		switch (op) {
+		case EAZEL_PACKAGE_SYSTEM_OPERATION_INSTALL:
+		case EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL:
+			eazel_install_emit_install_progress (service, 
+							     pack,
+							     service->private->infoblock[2], service->private->infoblock[3],
+							     info[0], pack->bytesize,
+							     info[4], info[5]);
+			break;
+		default:
+			break;
+		}
 	}
 	return TRUE;
 }
@@ -1185,7 +1206,7 @@ eazel_install_check_existing_packages (EazelInstall *service,
 							service->private->cur_root,
 							pack->name,
 							EAZEL_PACKAGE_SYSTEM_QUERY_MATCHES,
-							PACKAGE_FILL_EVERYTHING);
+							PACKAGE_FILL_NO_DIRS_IN_PROVIDES);
 	if (existing_packages) {
 		/* Get the existing package, set it's modify flag and add it */
 		GList *iterator;
@@ -2023,7 +2044,7 @@ eazel_uninstall_upward_traverse (EazelInstall *service,
 						      service->private->cur_root,
 						      pack,
 						      EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES,
-						      PACKAGE_FILL_EVERYTHING);
+						      PACKAGE_FILL_NO_DIRS_IN_PROVIDES);
 		packagedata_list_prune (&matches, *packages, TRUE, TRUE);
 		
 		for (match_iterator = matches; match_iterator; match_iterator = g_list_next (match_iterator)) {
@@ -2110,7 +2131,7 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 						      service->private->cur_root,
 						      pack->name,
 						      EAZEL_PACKAGE_SYSTEM_QUERY_MATCHES,
-						      PACKAGE_FILL_EVERYTHING);
+						      PACKAGE_FILL_NO_DIRS_IN_PROVIDES);
 		trilobite_debug ("%s had %d hits", pack->name, g_list_length (matches));
 
 		/* Now iterate over all packages that match pack->name */
@@ -2146,7 +2167,7 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 									    service->private->cur_root,
 									    tmp_pack,
 									    EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES,
-									    PACKAGE_FILL_EVERYTHING);
+									    PACKAGE_FILL_NO_DIRS_IN_PROVIDES);
 					packagedata_list_prune (&second_matches, *packages, TRUE, TRUE);
 					packagedata_list_prune (&second_matches, *requires, TRUE, TRUE);
 					packagedata_destroy (tmp_pack, TRUE);
@@ -2180,7 +2201,7 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 											    service->private->cur_root,
 											    pack->name,
 											    EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES,
-											    PACKAGE_FILL_EVERYTHING);
+											    PACKAGE_FILL_NO_DIRS_IN_PROVIDES);
 							packagedata_list_prune (&third_matches, 
 										*packages, TRUE, TRUE);
 							packagedata_list_prune (&third_matches, 
@@ -2256,7 +2277,7 @@ eazel_uninstall_check_for_install (EazelInstall *service,
 						      service->private->cur_root,
 						      pack->name,
 						      EAZEL_PACKAGE_SYSTEM_QUERY_MATCHES,
-						      PACKAGE_FILL_NO_TEXT | PACKAGE_FILL_NO_DEPENDENCIES);
+						      PACKAGE_FILL_NO_TEXT | PACKAGE_FILL_NO_DEPENDENCIES | PACKAGE_FILL_NO_DIRS_IN_PROVIDES);
 		/* If it's installed, continue */
 		if (matches) {
 			GList *match_it;

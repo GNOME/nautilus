@@ -21,9 +21,30 @@
  *
  */
 
+/* 
+   IMPLEMENTATION NOTE:
+
+   Originally, the rpm3 package system module would open the dbs
+   in _new, and close the in _finalize. Addtionally, it would
+   close before any rpm spawning and reopen afterwards. This
+   close/reopen was needed since rpm needs exclusive lock on
+   the db files.
+
+   However, since I now also use the packagesystem object in
+   rpmview/packageview, that meant I would keep the db system
+   open when installing, thus the install would fail, since
+   the view had a open fd on the db's.
+
+   So now, before any operation, I open the db's and close
+   afterwards. This sucks pretty much, since eg. during file conflicts
+   checking in libeazelinstall, I execute potientially several hundred
+   queries in a row - and each query opens/closes the db's. Blech.
+
+*/
+
 #include <config.h>
 #include <gnome.h>
-#include "eazel-package-system-rpm3.h"
+#include "eazel-package-system-rpm3-private.h"
 #include "eazel-package-system-private.h"
 #include <libtrilobite/trilobite-core-utils.h>
 
@@ -247,8 +268,8 @@ monitor_rpm_process_pipe (GIOChannel *source,
 
 				eazel_package_system_emit_progress (EAZEL_PACKAGE_SYSTEM (pig->system),
 								    pig->op,
-								    longs,
-								    pig->pack);
+								    pig->pack, 
+								    longs);
 			}
 			/* By invalidating the pointer here, we
 			   only emit with amount==total once and
@@ -303,7 +324,8 @@ monitor_rpm_process_pipe (GIOChannel *source,
 				if (pig->package_name && 
 				    pig->package_name->str &&
 				    ((strcmp (pig->package_name->str, "warning:") == 0) ||
-				     (strcmp (pig->package_name->str, "error:") == 0))) {
+				     (strcmp (pig->package_name->str, "error:") == 0) ||
+				     (strcmp (pig->package_name->str, "cannot") == 0))) {
 					while (tmp != '\n') {
 						g_string_append_c (pig->package_name, tmp);
 						g_io_channel_read (source, &tmp, 1, &bytes_read);
@@ -330,8 +352,8 @@ monitor_rpm_process_pipe (GIOChannel *source,
 								 pig->pack);
 				eazel_package_system_emit_progress (EAZEL_PACKAGE_SYSTEM (pig->system),
 								    pig->op,
-								    longs,
-								    pig->pack);
+								    pig->pack,
+								    longs);
 
 			}
 		}
@@ -362,8 +384,8 @@ rpm_create_db (char *dbpath,
 	}
 }
 
-static void
-rpm_create_dbs (EazelPackageSystemRpm3 *system)
+void
+eazel_package_system_rpm3_create_dbs (EazelPackageSystemRpm3 *system)
 {	
 	g_assert (system);
 	g_assert (IS_EAZEL_PACKAGE_SYSTEM_RPM3 (system));
@@ -397,8 +419,8 @@ rpm_open_db (char *dbpath,
 	}
 }
 
-static void
-rpm_open_dbs (EazelPackageSystemRpm3 *system)
+void
+eazel_package_system_rpm3_open_dbs (EazelPackageSystemRpm3 *system)
 {
 	g_assert (system);
 	g_assert (IS_EAZEL_PACKAGE_SYSTEM_RPM3 (system));
@@ -426,8 +448,8 @@ rpm_close_db (char *key,
 	return TRUE;
 }
 
-static gboolean
-rpm_close_dbs (EazelPackageSystemRpm3 *system)
+gboolean
+eazel_package_system_rpm3_close_dbs (EazelPackageSystemRpm3 *system)
 {
 	/* Close all the db's */
 	g_assert (system->dbs);
@@ -447,8 +469,8 @@ rpm_free_db (char *key,
 	return TRUE;
 }
 
-static gboolean
-rpm_free_dbs (EazelPackageSystemRpm3 *system)
+gboolean
+eazel_package_system_rpm3_free_dbs (EazelPackageSystemRpm3 *system)
 {
 	/* Close all the db's */
 	g_assert (system->dbs);
@@ -463,7 +485,8 @@ rpm_free_dbs (EazelPackageSystemRpm3 *system)
 *************************************************************/
 
 static void 
-rpm_packagedata_fill_from_rpm_header (PackageData *pack, 
+rpm_packagedata_fill_from_rpm_header (EazelPackageSystemRpm3 *system,
+				      PackageData *pack, 
 				      Header hd,
 				      unsigned long detail_level)
 {
@@ -533,13 +556,15 @@ rpm_packagedata_fill_from_rpm_header (PackageData *pack,
 			} else {
 				fullname = g_strdup (names[index]);
 			}
-			/* Check it's not a dirname, by looping through all
-			   paths_copy and check that fullname does not occur there */
-			for (index2 = 0; index2 < num_paths; index2++) {
-				if (strcmp (paths_copy[index2], fullname)==0) {
-					g_free (fullname);
-					fullname = NULL;
-					break;
+			if (detail_level & PACKAGE_FILL_NO_DIRS_IN_PROVIDES) {
+				/* Check it's not a dirname, by looping through all
+				   paths_copy and check that fullname does not occur there */
+				for (index2 = 0; index2 < num_paths; index2++) {
+					if (strcmp (paths_copy[index2], fullname)==0) {
+						g_free (fullname);
+						fullname = NULL;
+						break;
+					}
 				}
 			}
 			if (fullname) {
@@ -547,6 +572,7 @@ rpm_packagedata_fill_from_rpm_header (PackageData *pack,
 				pack->provides = g_list_prepend (pack->provides, fullname);
 			}
 		}
+		pack->provides = g_list_reverse (pack->provides);
 		for (index=0; index<num_paths; index++) {
 			g_free (paths_copy[index]);
 		}
@@ -557,7 +583,10 @@ rpm_packagedata_fill_from_rpm_header (PackageData *pack,
 }
 
 static gboolean 
-rpm_packagedata_fill_from_file (PackageData *pack, const char *filename, unsigned long detail_level)
+rpm_packagedata_fill_from_file (EazelPackageSystemRpm3 *system,
+				PackageData *pack, 
+				const char *filename, 
+				unsigned long detail_level)
 {
 	static FD_t fd;
 	Header hd;
@@ -584,7 +613,7 @@ rpm_packagedata_fill_from_file (PackageData *pack, const char *filename, unsigne
 
 	/* Get Header block */
 	rpmReadPackageHeader (fd, &hd, &pack->source_package, NULL, NULL);
-	rpm_packagedata_fill_from_rpm_header (pack, hd, detail_level);	
+	rpm_packagedata_fill_from_rpm_header (system, pack, hd, detail_level);	
 
 	pack->status = PACKAGE_UNKNOWN_STATUS;
 
@@ -593,16 +622,18 @@ rpm_packagedata_fill_from_file (PackageData *pack, const char *filename, unsigne
 }
 
 static PackageData* 
-rpm_packagedata_new_from_file (const char *file, unsigned long detail_level)
+rpm_packagedata_new_from_file (EazelPackageSystemRpm3 *system,
+			       const char *file, 
+			       unsigned long detail_level)
 {
 	PackageData *pack;
 
 	pack = packagedata_new ();
-	rpm_packagedata_fill_from_file (pack, file, detail_level);
+	rpm_packagedata_fill_from_file (system, pack, file, detail_level);
 	return pack;
 }
 
-static PackageData*
+PackageData*
 eazel_package_system_rpm3_load_package (EazelPackageSystemRpm3 *system,
 					PackageData *in_package,
 					const char *filename,
@@ -612,9 +643,9 @@ eazel_package_system_rpm3_load_package (EazelPackageSystemRpm3 *system,
 
 	if (in_package) {
 		result = in_package;
-		rpm_packagedata_fill_from_file (result, filename, detail_level);
+		rpm_packagedata_fill_from_file (system, result, filename, detail_level);
 	} else {
-		result = rpm_packagedata_new_from_file (filename, detail_level);
+		result = rpm_packagedata_new_from_file (system, filename, detail_level);
 	}
 
 	return result;
@@ -675,7 +706,7 @@ eazel_package_system_rpm3_query_impl (EazelPackageSystemRpm3 *system,
 			offset = dbiIndexRecordOffset (matches, i);
 			hd = rpmdbGetRecord (db, offset);
 			pack = packagedata_new ();
-			rpm_packagedata_fill_from_rpm_header (pack, hd, detail_level);
+			rpm_packagedata_fill_from_rpm_header (system, pack, hd, detail_level);
 			g_free (pack->install_root);
 			pack->install_root = g_strdup (dbpath);
 			if (g_list_find_custom (*result, 
@@ -718,10 +749,10 @@ eazel_package_system_rpm3_query_substr (EazelPackageSystemRpm3 *system,
 		hd = rpmdbGetRecord (db, offset);
 		pack = packagedata_new ();
 
-		rpm_packagedata_fill_from_rpm_header (pack, hd, 0);
+		rpm_packagedata_fill_from_rpm_header (system, pack, hd, 0);
 
 		if (strstr (pack->name, key)) {
-			rpm_packagedata_fill_from_rpm_header (pack, hd, detail_level);
+			rpm_packagedata_fill_from_rpm_header (system, pack, hd, detail_level);
 			(*result) = g_list_prepend (*result, pack);
 		} else {
 			packagedata_destroy (pack, TRUE);
@@ -798,7 +829,7 @@ eazel_package_system_rpm3_query_foreach (char *dbpath,
 	}
 }
 
-static GList*               
+GList*               
 eazel_package_system_rpm3_query (EazelPackageSystemRpm3 *system,
 				 const char *dbpath,
 				 const gpointer key,
@@ -814,6 +845,7 @@ eazel_package_system_rpm3_query (EazelPackageSystemRpm3 *system,
 	pig.detail_level = detail_level;
 	pig.result = &result;
 	
+	eazel_package_system_rpm3_open_dbs (system);
 	if (dbpath==NULL) {
 		g_hash_table_foreach (system->dbs, 
 				      (GHFunc)eazel_package_system_rpm3_query_foreach,
@@ -821,6 +853,7 @@ eazel_package_system_rpm3_query (EazelPackageSystemRpm3 *system,
 	} else {
 		eazel_package_system_rpm3_query_foreach ((char*)dbpath, NULL, &pig);
 	}
+	eazel_package_system_rpm3_close_dbs (system);
 
 	return result;
 }
@@ -922,10 +955,16 @@ check_if_all_packages_seen (EazelPackageSystemRpm3 *system,
 {
 	GList *iterator;
 	
+	/* HACK: that fixes bugzilla.eazel.com 4914 */		  
+	eazel_package_system_rpm3_open_dbs (system);
+
 	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
 		PackageData *pack = (PackageData*)iterator->data;
 		/* HACK: that fixes bugzilla.eazel.com 4914 */		  
 		if (op==EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL) {
+			eazel_package_system_emit_start (EAZEL_PACKAGE_SYSTEM (system),
+							 op,
+							 pack);
 			if (eazel_package_system_is_installed (EAZEL_PACKAGE_SYSTEM (system),
 							       dbpath,
 							       pack->name,
@@ -933,25 +972,28 @@ check_if_all_packages_seen (EazelPackageSystemRpm3 *system,
 							       pack->minor)) {
 				fail (system, "%s is still installed", pack->name);
 				eazel_package_system_emit_failed (EAZEL_PACKAGE_SYSTEM (system), op, pack);
-			} else {
-				eazel_package_system_emit_start (EAZEL_PACKAGE_SYSTEM (system),
-								 op,
-								 pack);
-				eazel_package_system_emit_end (EAZEL_PACKAGE_SYSTEM (system),
-							       op,
-							       pack);
-
-
-			}
+			} 
+			eazel_package_system_emit_end (EAZEL_PACKAGE_SYSTEM (system),
+						       op,
+						       pack);
 		} else {
 			if (!g_list_find_custom (seen, 
 						 pack,
 						 (GCompareFunc)eazel_install_package_compare)) {
 				fail (system, "did not see %s", pack->name);
+				eazel_package_system_emit_start (EAZEL_PACKAGE_SYSTEM (system),
+								 op,
+								 pack);
 				eazel_package_system_emit_failed (EAZEL_PACKAGE_SYSTEM (system), op, pack);
+				eazel_package_system_emit_end (EAZEL_PACKAGE_SYSTEM (system),
+							       op,
+							       pack);
 			}
 		}
 	}
+
+	/* HACK: that fixes bugzilla.eazel.com 4914 */		  
+	eazel_package_system_rpm3_close_dbs (system);
 }
 			    
 
@@ -979,11 +1021,9 @@ eazel_package_system_rpm3_install_uninstall (EazelPackageSystemRpm3 *system,
 	pig.package_name = NULL;
 	pig.name_to_package = rpm_make_names_to_package_hash (packages);
 
-	rpm_close_dbs (system);
 	make_rpm_argument_list (system, op, flags, dbpath, packages, &args);
 	eazel_package_system_rpm3_execute (system, &pig, args);
 	destroy_string_list (args);
-	rpm_open_dbs (system);
 
 	check_if_all_packages_seen (system, dbpath, op, packages, pig.packages_seen);
 	g_list_free (pig.packages_seen);
@@ -992,7 +1032,7 @@ eazel_package_system_rpm3_install_uninstall (EazelPackageSystemRpm3 *system,
 	g_hash_table_destroy (pig.name_to_package);
 }
 
-static void                 
+void                 
 eazel_package_system_rpm3_install (EazelPackageSystemRpm3 *system, 
 				   const char *dbpath,
 				   GList* packages,
@@ -1011,7 +1051,7 @@ eazel_package_system_rpm3_install (EazelPackageSystemRpm3 *system,
  Uninstall implemementation
 *************************************************************/
 
-static void                 
+void                 
 eazel_package_system_rpm3_uninstall (EazelPackageSystemRpm3 *system, 
 				     const char *dbpath,
 				     GList* packages,
@@ -1029,13 +1069,116 @@ eazel_package_system_rpm3_uninstall (EazelPackageSystemRpm3 *system,
  Verify implemementation
 *************************************************************/
 
-static void                 
+static void
+eazel_package_system_rpm3_verify_impl (EazelPackageSystemRpm3 *system, 
+				       const char *root,
+				       PackageData *package,
+				       unsigned long *info,
+				       gboolean *cont)
+{
+	unsigned int i;
+	int result;
+	unsigned long infoblock[EAZEL_PACKAGE_SYSTEM_PROGRESS_LONGS];
+
+	g_assert (package->packsys_struc);
+
+	infoblock[0] = 0;
+	infoblock[1] = g_list_length (package->provides);
+	infoblock[2] = info[0];
+	infoblock[3] = info[1];
+	infoblock[4] = info[2];
+	infoblock[5] = info[3];
+
+	(*cont) = eazel_package_system_emit_start (EAZEL_PACKAGE_SYSTEM (system), 
+						   EAZEL_PACKAGE_SYSTEM_OPERATION_VERIFY,
+						   package);
+	/* abort if signal returns false */
+	if (*cont == FALSE) {
+		return;
+	}
+	for (i = 0; i < g_list_length (package->provides); i++) {
+		int res;
+		/* next file... */
+		infoblock [0]++;
+		infoblock [4]++;
+		
+		info (system, "checking file %d/%d \"%s\" from \"%s\"", 
+		      infoblock[0], g_list_length (package->provides),
+		      (char*)((g_list_nth (package->provides, i))->data),
+		      package->name);
+
+		(*cont) = eazel_package_system_emit_progress (EAZEL_PACKAGE_SYSTEM (system), 
+							      EAZEL_PACKAGE_SYSTEM_OPERATION_VERIFY,
+							      package, 
+							      infoblock);
+		/* abort if signal returns false */
+		if (*cont == FALSE) {
+			break;
+		}
+		res = rpmVerifyFile ("", (Header)package->packsys_struc, i, &result, 0);
+		if (res!=0) {
+			fail (system, "%d failed", i);
+			(*cont) = eazel_package_system_emit_failed (EAZEL_PACKAGE_SYSTEM (system), 
+								    EAZEL_PACKAGE_SYSTEM_OPERATION_VERIFY,
+								    package);
+			
+			/* abort if signal returns false */
+			if (*cont == FALSE) {
+				break;
+			}
+		} 
+		
+	}
+	/* Update the total-amount-completed counter */
+	info[2] = infoblock[4];
+
+	if (*cont) {
+		(*cont) = eazel_package_system_emit_end (EAZEL_PACKAGE_SYSTEM (system), 
+							 EAZEL_PACKAGE_SYSTEM_OPERATION_VERIFY,
+							 package);
+		/* no need to check, called will abort if *cont == FALSE */
+	}
+}
+
+static unsigned long
+get_num_of_files_in_packages (GList *packages)
+{
+	GList *iterator;
+	unsigned long result = 0;
+	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
+		PackageData *pack = (PackageData*)iterator->data;
+		result += g_list_length (pack->provides);
+	}
+	return result;
+}
+
+void                 
 eazel_package_system_rpm3_verify (EazelPackageSystemRpm3 *system, 
 				  const char *dbpath,
-				  GList* packages,
-				  unsigned long flags)
+				  GList* packages)
 {
+	GList *iterator;
+	char *root = ""; /* FIXME: fill this using dbpath */
+	unsigned long info[4];
+	gboolean cont = TRUE;
+
+	info[0] = 0;
+	info[1] = g_list_length (packages);
+	info[2] = 0; /* updated by eazel_package_system_rpm3_verify_impl */
+	info[3] = get_num_of_files_in_packages (packages);
+
 	info (system, "eazel_package_system_rpm3_verify");
+
+	eazel_package_system_rpm3_open_dbs (system);
+	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
+		PackageData *pack = (PackageData*)iterator->data;
+		info[0] ++;
+		eazel_package_system_rpm3_verify_impl (system, root, pack, info, &cont);
+		if (cont == FALSE) {
+			break;
+		}
+	}
+	eazel_package_system_rpm3_close_dbs (system);
 }
 
 /************************************************************
@@ -1057,8 +1200,7 @@ eazel_package_system_rpm3_finalize (GtkObject *object)
 
 	system = EAZEL_PACKAGE_SYSTEM_RPM3 (object);
 
-	rpm_close_dbs (system);
-	rpm_free_dbs (system);
+	eazel_package_system_rpm3_free_dbs (system);
 	g_hash_table_destroy (system->dbs);
 
 	if (GTK_OBJECT_CLASS (eazel_package_system_rpm3_parent_class)->finalize) {
@@ -1132,8 +1274,7 @@ eazel_package_system_rpm3_new (GList *dbpaths)
 		info (system, "Adding %s as root for %s", root, db);
 		g_hash_table_insert (system->db_to_root, db, root);
 	}
-	rpm_create_dbs (system);
-	rpm_open_dbs (system);
+	eazel_package_system_rpm3_create_dbs (system);
 
 	return system;
 }
@@ -1144,6 +1285,8 @@ eazel_package_system_implementation (GList *dbpaths)
 	EazelPackageSystem *result;
 	GList *tdbpaths = dbpaths;
 
+	g_message ("Eazel Package System - rpm3");
+	
 	tdbpaths = g_list_prepend (tdbpaths, g_strdup (DEFAULT_ROOT));
 	tdbpaths = g_list_prepend (tdbpaths, g_strdup (DEFAULT_DB_PATH));
 	result = EAZEL_PACKAGE_SYSTEM (eazel_package_system_rpm3_new (tdbpaths));

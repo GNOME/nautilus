@@ -28,7 +28,7 @@
 #include "bonobo.h"
 #include "trilobite-eazel-install.h"
 
-#include "eazel-install-types.h"
+#include "eazel-package-system-types.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -60,6 +60,10 @@ struct NautilusRPMVerifyWindowClass {
 GtkType		nautilus_rpm_verify_window_get_type	(void);
 GtkWidget*	nautilus_rpm_verify_window_new	(const char *package_name);
 void		nautilus_rpm_verify_window_set_message (NautilusRPMVerifyWindow *window, const char *message);
+void            nautilus_rpm_verify_window_set_progress (NautilusRPMVerifyWindow *window, 
+							 const char *file, 
+							 unsigned long amount, 
+							 unsigned long total);
 void		nautilus_rpm_verify_window_set_error_mode (NautilusRPMVerifyWindow *window, gboolean error_mode);
 
 #ifdef __cplusplus

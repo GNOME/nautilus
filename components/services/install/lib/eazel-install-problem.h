@@ -38,7 +38,7 @@
 #ifndef EAZEL_INSTALL_PROBLEM_H
 #define EAZEL_INSTALL_PROBLEM_H
 
-#include "eazel-install-types.h"
+#include "eazel-package-system-types.h"
 #ifdef EAZEL_INSTALL_NO_CORBA
 #include "eazel-install-public.h"
 #else /* EAZEL_INSTALL_NO_CORBA */

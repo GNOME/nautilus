@@ -87,9 +87,7 @@ eazel_package_system_skeleton_uninstall (EazelPackageSystemSkeleton *system,
 
 static void                 
 eazel_package_system_skeleton_verify (EazelPackageSystemSkeleton *system, 
-				      const char *dbpath,
-				      GList* packages,
-				      unsigned long flags)
+				      GList* packages)
 {
 	g_assert (system);
 	g_assert (IS_EAZEL_PACKAGE_SYSTEM_SKELETON (system));

@@ -21,11 +21,11 @@
  */
 
 #include "nautilus-rpm-view-install.h"
-#include <libtrilobite/libtrilobite.h>
-#include <libeazelinstall.h>
+#include "libtrilobite/libtrilobite.h"
+#include "libeazelinstall.h"
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-password-dialog.h>
-#include <libtrilobite/libtrilobite.h>
+#include "libtrilobite/libtrilobite.h"
 #include "nautilus-rpm-view-private.h"
 
 /* don't try to access a remote server for install */
@@ -395,7 +395,6 @@ nautilus_rpm_view_install_package_callback (GtkWidget *widget,
                                             NautilusRPMView *rpm_view)
 {
 	GList *categories;
-	PackageData *pack;
 	CategoryData *category;
 	CORBA_Environment ev;
 	EazelInstallCallback *cb;
@@ -414,14 +413,13 @@ nautilus_rpm_view_install_package_callback (GtkWidget *widget,
 	gtk_widget_set_sensitive (GTK_WIDGET (rpm_view->details->package_uninstall_button), FALSE);
 	nautilus_view_report_load_underway (nautilus_rpm_view_get_view (rpm_view));
 
-	pack = (PackageData *) gtk_object_get_data (GTK_OBJECT (rpm_view), "packagedata");
-	g_assert (pack);
-
+	g_assert (rpm_view->details->package);
 	category = categorydata_new ();
-	category->packages = g_list_prepend (NULL, pack);
+	category->packages = g_list_prepend (NULL, rpm_view->details->package);
 	categories = g_list_prepend (NULL, category);
 
 	cb = eazel_install_callback_new ();
+
 	rpm_view->details->installer = cb;
 	rpm_view->details->root_client = set_root_client (eazel_install_callback_bonobo (cb), rpm_view);
 	
@@ -440,8 +438,7 @@ nautilus_rpm_view_install_package_callback (GtkWidget *widget,
 
 	eazel_install_callback_install_packages (cb, categories, NULL, &ev);
 
-	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
-	gtk_object_set_data (GTK_OBJECT (rpm_view), "packagedata", NULL);
+	/* Leak the categories here */
 	
 	CORBA_exception_free (&ev);               
 }
@@ -452,7 +449,6 @@ nautilus_rpm_view_uninstall_package_callback (GtkWidget *widget,
 {
 	CategoryData *category;
 	GList *categories;
-	PackageData *pack;
 	CORBA_Environment ev;
 	EazelInstallCallback *cb;		
 
@@ -470,13 +466,13 @@ nautilus_rpm_view_uninstall_package_callback (GtkWidget *widget,
 	gtk_widget_set_sensitive (GTK_WIDGET (rpm_view->details->package_uninstall_button), FALSE);
 	nautilus_view_report_load_underway (nautilus_rpm_view_get_view (rpm_view));
 
-	pack = (PackageData *) gtk_object_get_data (GTK_OBJECT (rpm_view), "packagedata");
-	g_assert (pack);
+	g_assert (rpm_view->details->package);
 	category = categorydata_new ();
-	category->packages = g_list_prepend (NULL, pack);
+	category->packages = g_list_prepend (NULL, rpm_view->details->package);
 	categories = g_list_prepend (NULL, category);
 
 	cb = eazel_install_callback_new ();
+
 	rpm_view->details->installer = cb;
 	rpm_view->details->root_client = set_root_client (eazel_install_callback_bonobo (cb), rpm_view);
 	
@@ -491,9 +487,7 @@ nautilus_rpm_view_uninstall_package_callback (GtkWidget *widget,
 	gtk_signal_connect (GTK_OBJECT (cb), "preflight_check", GTK_SIGNAL_FUNC (preflight_check), NULL);
 	
 	eazel_install_callback_uninstall_packages (cb, categories, NULL, &ev);
-
-	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
-	gtk_object_set_data (GTK_OBJECT (rpm_view), "packagedata", NULL);
+	/* Leak the categories here */
 	
 	CORBA_exception_free (&ev);               
 }

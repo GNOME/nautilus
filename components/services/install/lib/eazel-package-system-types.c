@@ -27,7 +27,7 @@
  */
 
 #include <config.h>
-#include "eazel-install-types.h"
+#include "eazel-package-system-types.h"
 
 #include <rpm/rpmlib.h>
 #include <rpm/rpmmacro.h>
@@ -876,31 +876,19 @@ eazel_install_package_matches_versioning (PackageData *a,
 	int result = 0;
 
 	if (version && minor) {
-		g_message ("strcmp (%s, %s) = %d strcmp (%s, %s)= %d", 
-			   a->minor, minor, 
-			   strcmp (a->minor, minor), 
-			   a->version, version,
-			   strcmp (a->version, version));
 		if (strcmp (a->minor, minor)==0 &&
 		    strcmp (a->version, version)==0) {
 			result = 1;
 		}
 	} else if (version && !minor) {
-		g_message ("strcmp (%s, %s)= %d", 
-			   a->version, version,
-			   strcmp (a->version, version));
 		if (strcmp (a->version, version)==0) {
 			result = 1;
 		}
 	} else if (!version && minor) {
-		g_message ("strcmp (%s, %s)= %d", 
-			   a->minor, minor,
-			   strcmp (a->minor, minor));
 		if (strcmp (a->minor, minor)==0) {
 			result = 1;
 		}
 	} else if (!version && !minor) {
-		g_message ("!version && !minor");
 		result = 1;
 	}
  	

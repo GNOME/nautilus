@@ -30,7 +30,7 @@
 #ifndef EAZEL_INSTALL_XML_PACKAGE_LIST_H
 #define EAZEL_INSTALL_XML_PACKAGE_LIST_H
 
-#include "eazel-install-types.h"
+#include "eazel-package-system-types.h"
 #include <libtrilobite/helixcode-utils.h>
 #include <gnome-xml/tree.h>
 

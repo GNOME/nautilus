@@ -189,8 +189,25 @@ progress_signal (EazelPackageSystem *system,
 		 const PackageData *pack,
 		 gboolean *signals)
 {
+	if (op==EAZEL_PACKAGE_SYSTEM_OPERATION_VERIFY) {
+		g_message ("checking file \"%s\" (%ld/%ld %ld/%ld %ld/%ld)",
+			   (char*)((g_list_nth (pack->provides, info[0]-1))->data),
+			   info [0], info [1],
+			   info [2], info [3],
+			   info [4], info [5]);
+	}
 	signals[1] = TRUE;
 	return TRUE;
+}
+
+static gboolean
+failed_signal (EazelPackageSystem *system,
+	       EazelPackageSystemOperation op, 
+	       const PackageData *package,
+	       gpointer unused)
+{
+	return TRUE;
+		   
 }
 	  
 static gboolean
@@ -321,10 +338,37 @@ test_verify (EazelPackageSystem *packsys,
 	     const char *package_file_name)
 {
 	GList *packages = get_package_list (packsys, package_file_name);
+	gboolean *signals;
+	guint h1, h2, h3, h4;
+
+	signals = g_new0 (gboolean, 4);
+
+	h1 = gtk_signal_connect (GTK_OBJECT (packsys), 
+				 "start",
+				 (GtkSignalFunc)start_signal,
+				 signals);
+	h2 = gtk_signal_connect (GTK_OBJECT (packsys), 
+				 "end",
+				 (GtkSignalFunc)end_signal,
+				 signals);
+	h3 = gtk_signal_connect (GTK_OBJECT (packsys), 
+				 "progress",
+				 (GtkSignalFunc)progress_signal,
+				 signals);
+	h4 = gtk_signal_connect (GTK_OBJECT (packsys), 
+				 "failed",
+				 (GtkSignalFunc)failed_signal,
+				 signals);
+
 	eazel_package_system_verify (packsys,
 				     dbpath,
-				     packages,
-				     0);
+				     packages);
+
+	gtk_signal_disconnect (GTK_OBJECT (packsys), h1);
+	gtk_signal_disconnect (GTK_OBJECT (packsys), h2);
+	gtk_signal_disconnect (GTK_OBJECT (packsys), h3);
+	gtk_signal_disconnect (GTK_OBJECT (packsys), h4);
+	g_free (signals);
 }
 
 int main(int argc, char *argv[]) {
@@ -338,7 +382,7 @@ int main(int argc, char *argv[]) {
 	gnome_init ("Eazel Test Packsys", "1.0", argc, argv);
 	home_dbpath = g_strdup_printf ("%s/.nautilus/packagedb", g_get_home_dir ());
 	packsys = init_package_system (home_dbpath, g_strdup (g_get_home_dir ()));
-	eazel_package_system_set_debug (packsys, EAZEL_PACKAGE_SYSTEM_DEBUG_VERBOSE); 
+	eazel_package_system_set_debug (packsys, EAZEL_PACKAGE_SYSTEM_DEBUG_FAIL); 
 
 	test_package_load (packsys, argv[1]);
 	test_matches_query (packsys);

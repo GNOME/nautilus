@@ -23,6 +23,7 @@
 
 #include <config.h>
 #include <gnome.h>
+#include <gmodule.h>
 #include "eazel-package-system-private.h"
 #include <libtrilobite/trilobite-core-distribution.h>
 
@@ -33,10 +34,6 @@ enum {
 	FAILED,
 	LAST_SIGNAL
 };
-
-/* FIXME bugzilla.eazel.com 4852 
-   This extern is to be removed when 4582 is fixed */
-extern EazelPackageSystemConstructorFunc eazel_package_system_implementation;
 
 /* The signal array, used for building the signal bindings */
 static guint signals[LAST_SIGNAL] = { 0 };
@@ -85,20 +82,22 @@ static EazelPackageSystem*
 eazel_package_system_load_implementation (EazelPackageSystemId id, GList *roots)
 {
 	EazelPackageSystem *result;
-	EazelPackageSystemConstructorFunc const_func;
+	EazelPackageSystemConstructorFunc const_func = NULL;
+	GModule *module = NULL;
 
-	/* FIXME bugzilla.eazel.com 4852
-	   - id to string
-	   - lookup library using string (in some config file)
-           - g_module_open library and get the const_func
-	   - call const_func to get the object */
+	switch (id) {
+	case EAZEL_PACKAGE_SYSTEM_RPM_3:
+		module = g_module_open ("libeazelpackagesystem-rpm3.so", G_MODULE_BIND_LAZY);
+		break;
+	case EAZEL_PACKAGE_SYSTEM_RPM_4:
+		module = g_module_open ("libeazelpackagesystem-rpm4.so", G_MODULE_BIND_LAZY);
+		break;
+	default:
+		g_assert_not_reached ();
+	};
 
-	/* The constructor function will be a function called
-	   eazel_package_system_implementation in the .so file.
-	   So for now, I link against the rpm implementation and
-	   simply assign this function to const_func and call it */
-
-	const_func = (EazelPackageSystemConstructorFunc)&eazel_package_system_implementation;
+	g_module_make_resident (module);
+	g_module_symbol (module, "eazel_package_system_implementation", (gpointer)&const_func);
 
 	result = (*const_func)(roots);
 
@@ -192,13 +191,12 @@ eazel_package_system_uninstall (EazelPackageSystem *system,
 
 void                 
 eazel_package_system_verify (EazelPackageSystem *system, 
-			     const char *root,
-			     GList* packages,
-			     unsigned long flags)
+			     const char *dbpath,
+			     GList* packages)
 {
 	EPS_SANE (system);
 	g_assert (system->private->verify);
-	(*system->private->verify) (system, root, packages, flags);
+	(*system->private->verify) (system, dbpath, packages);
 }
 
 /******************************************
@@ -223,8 +221,8 @@ eazel_package_system_emit_start (EazelPackageSystem *system,
 gboolean 
 eazel_package_system_emit_progress (EazelPackageSystem *system, 
 				    EazelPackageSystemOperation op, 
-				    unsigned long info[EAZEL_PACKAGE_SYSTEM_PROGRESS_LONGS],
-				    const PackageData *package)
+				    const PackageData *package,
+				    unsigned long info[EAZEL_PACKAGE_SYSTEM_PROGRESS_LONGS])
 {
 	gboolean result = TRUE;
 	int infos;
@@ -239,8 +237,8 @@ eazel_package_system_emit_progress (EazelPackageSystem *system,
 	gtk_signal_emit (GTK_OBJECT (system),
 			 signals [PROGRESS],
 			 op, 
-			 infoblock,
 			 package,
+			 infoblock,
 			 &result);
 
 	g_free (infoblock);

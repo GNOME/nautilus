@@ -53,6 +53,9 @@ struct NautilusRPMVerifyWindowDetails {
 	gboolean error_mode;
 	GtkWidget *continue_button;
 	GtkWidget *cancel_button;
+
+	unsigned long amount, total;
+	char *current_file;
 };
 
 enum {
@@ -123,7 +126,7 @@ nautilus_rpm_verify_window_initialize (NautilusRPMVerifyWindow *rpm_verify_windo
 	GtkWidget *label, *button_box;
 	
 	rpm_verify_window->details = g_new0 (NautilusRPMVerifyWindowDetails, 1);
-	
+	rpm_verify_window->details->current_file = NULL;
 	/* allocate a vbox to hold the contents */
 
 	window_contents = gtk_vbox_new (FALSE, 0);
@@ -133,7 +136,7 @@ nautilus_rpm_verify_window_initialize (NautilusRPMVerifyWindow *rpm_verify_windo
 	/* allocate the package title label */
         label = nautilus_label_new ("");
 	gtk_widget_show (label);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 20);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 14);
 	nautilus_label_set_text_justification (NAUTILUS_LABEL(label), GTK_JUSTIFY_CENTER);
 	gtk_box_pack_start (GTK_BOX (window_contents), label, FALSE, FALSE, 8);
 	rpm_verify_window->details->package_name = label;
@@ -141,7 +144,7 @@ nautilus_rpm_verify_window_initialize (NautilusRPMVerifyWindow *rpm_verify_windo
 	/* allocate the message label */
         label = nautilus_label_new ("");
 	gtk_widget_show (label);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 14);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
 	nautilus_label_set_text_justification (NAUTILUS_LABEL(label), GTK_JUSTIFY_CENTER);
 	gtk_box_pack_start (GTK_BOX (window_contents), label, FALSE, FALSE, 8);
 	rpm_verify_window->details->file_message = label;
@@ -160,7 +163,7 @@ nautilus_rpm_verify_window_initialize (NautilusRPMVerifyWindow *rpm_verify_windo
 	gtk_signal_connect(GTK_OBJECT (rpm_verify_window->details->cancel_button), "clicked", GTK_SIGNAL_FUNC (cancel_button_callback), rpm_verify_window);
 	
 	/* configure the dialog */                                  
-	gtk_widget_set_usize (GTK_WIDGET (rpm_verify_window), 320, 180);
+	gtk_widget_set_usize (GTK_WIDGET (rpm_verify_window), 420, 180);
 	
 	gnome_dialog_append_button ( GNOME_DIALOG(rpm_verify_window),
 				     GNOME_STOCK_BUTTON_OK);
@@ -193,6 +196,39 @@ void
 nautilus_rpm_verify_window_set_message (NautilusRPMVerifyWindow *window, const char *message)
 {
 	nautilus_label_set_text (NAUTILUS_LABEL (window->details->file_message), message);
+        while (gtk_events_pending ()) {
+                gtk_main_iteration ();
+        }
+}
+
+static void
+nautilus_rpm_verify_window_update_message (NautilusRPMVerifyWindow *window)
+{
+	char *message = NULL;
+	if (window->details->error_mode) {
+		message = g_strdup_printf (_("Failed on \"%s\""), window->details->current_file); 
+	} else {
+		/* TRANSLATORS: this is printed while verifying files from packages, 
+		   %s is the filename, %d/%d is filenumber of total-number-of-files */
+		message = g_strdup_printf (_("Checking \"%s\" (%d/%d)"), 
+					   window->details->current_file, 
+					   window->details->amount, 
+					   window->details->total);
+	}
+	nautilus_rpm_verify_window_set_message (window, message);
+	g_free (message);
+}
+
+void
+nautilus_rpm_verify_window_set_progress (NautilusRPMVerifyWindow *window, 
+					 const char *file, 
+					 unsigned long amount, 
+					 unsigned long total)
+{
+	g_free (window->details->current_file);
+	window->details->current_file = g_strdup (file);
+	window->details->amount = amount;
+	window->details->total = total;
 }
 
 void
@@ -207,6 +243,7 @@ nautilus_rpm_verify_window_set_error_mode (NautilusRPMVerifyWindow *window, gboo
 			gtk_widget_hide (window->details->continue_button);
 			gtk_widget_hide (window->details->cancel_button);
 		}
+		nautilus_rpm_verify_window_update_message (window);			
 	}
 }
 

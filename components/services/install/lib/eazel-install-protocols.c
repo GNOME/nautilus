@@ -379,6 +379,7 @@ gnome_vfs_fetch_remote_file (EazelInstall *service,
 				     cbstruct);
 
 	if (result==GNOME_VFS_OK) {
+		chmod (target_file, 0600);
 		trilobite_debug ("File download successfull");
 	} else {
 		trilobite_debug ("File download failed");
@@ -547,7 +548,7 @@ eazel_install_fetch_package (EazelInstall *service,
 			package = eazel_package_system_load_package (service->private->package_system,
 								     package, 
 								     targetname,
-								     PACKAGE_FILL_EVERYTHING);
+								     PACKAGE_FILL_NO_DIRS_IN_PROVIDES);
 							   
 			if (name) {
 				if (strcmp (name, package->name)) {

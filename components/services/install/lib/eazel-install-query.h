@@ -23,7 +23,7 @@
 #ifndef EAZEL_INSTALL_QUERY_H
 #define EAZEL_INSTALL_QUERY_H
 
-#include "eazel-install-types.h"
+#include "eazel-package-system-types.h"
 #include "eazel-install-public.h"
 
 typedef enum {

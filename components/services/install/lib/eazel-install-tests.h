@@ -28,7 +28,7 @@
 #ifndef EAZEL_INSTALL_TESTS_H
 #define EAZEL_INSTALL_TESTS_H
 
-#include "eazel-install-types.h"
+#include "eazel-package-system-types.h"
 
 void dump_package_list (PackageData* pkg);
 

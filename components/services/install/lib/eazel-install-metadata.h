@@ -28,7 +28,7 @@
 #ifndef EAZEL_INSTALL_METADATA_H
 #define EAZEL_INSTALL_METADATA_H
 
-#include "eazel-install-types.h"
+#include "eazel-package-system-types.h"
 #include "eazel-softcat.h"
 
 InstallOptions *init_default_install_configuration (void);

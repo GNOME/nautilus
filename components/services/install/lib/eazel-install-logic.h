@@ -28,7 +28,7 @@
 #ifndef EAZEL_INSTALL_LOGIC_H
 #define EAZEL_INSTALL_LOGIC_H
 
-#include "eazel-install-types.h"
+#include "eazel-package-system-types.h"
 #include "eazel-install-protocols.h"
 #include "eazel-install-public.h"
 #include <eazel-package-system.h>
@@ -50,8 +50,8 @@ gboolean eazel_install_end_signal (EazelPackageSystem *system,
 				   EazelInstall *service);
 gboolean  eazel_install_progress_signal (EazelPackageSystem *system,
 					 EazelPackageSystemOperation op,
-					 unsigned long *info,
 					 const PackageData *pack,
+					 unsigned long *info,
 					 EazelInstall *service);
 gboolean eazel_install_failed_signal (EazelPackageSystem *system,
 				      EazelPackageSystemOperation op,

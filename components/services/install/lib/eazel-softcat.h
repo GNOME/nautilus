@@ -24,7 +24,7 @@
 #ifndef EAZEL_SOFTCAT_PUBLIC_H
 #define EAZEL_SOFTCAT_PUBLIC_H
 
-#include "eazel-install-types.h"
+#include "eazel-package-system-types.h"
 #include "eazel-softcat-private.h"
 
 #define TYPE_EAZEL_SOFTCAT           (eazel_softcat_get_type ())

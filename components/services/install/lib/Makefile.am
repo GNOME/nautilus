@@ -21,9 +21,9 @@ INCLUDES = \
 
 lib_LTLIBRARIES = \
 	libeazelinstall.la \
-	libeazelsoftcat.la	\
 	libeazelpackagesystem.la \
 	libeazelpackagesystem-rpm3.la \
+	libeazelpackagesystem-rpm4.la \
 	libeazelpackagesystem-skeleton.la \
 	$(NULL)
 
@@ -36,7 +36,6 @@ libeazelinstallinclude_HEADERS = 		\
 	eazel-install-public.h			\
 	trilobite-eazel-install.h		\
 	libeazelinstall.h			\
-	eazel-install-types.h	 		\
 	eazel-install-corba-types.h	 	\
 	eazel-install-logic.h			\
 	eazel-install-md5.h			\
@@ -46,7 +45,6 @@ libeazelinstallinclude_HEADERS = 		\
 	eazel-install-rpm-signature.h		\
 	eazel-install-query.h			\
 	eazel-install-tests.h			\
-	eazel-install-xml-package-list.h	\
 	eazel-install-private.h			\
 	eazel-install-corba-callback.h		\
 	eazel-install-problem.h			\
@@ -57,7 +55,6 @@ libeazelinstall_la_SOURCES = \
 	eazel-install-corba.c		\
 	eazel-install-corba-types.c	\
 	eazel-install-corba-callback.c	\
-	eazel-install-types.c	 		\
 	eazel-install-md5.c			\
 	eazel-install-metadata.c		\
 	eazel-install-protocols.c		\
@@ -65,7 +62,6 @@ libeazelinstall_la_SOURCES = \
 	eazel-install-rpm-glue.c		\
 	eazel-install-rpm-signature.c		\
 	eazel-install-tests.c			\
-	eazel-install-xml-package-list.c	\
 	eazel-install-object.c			\
 	eazel-install-problem.c			\
 	$(NULL)
@@ -78,14 +74,19 @@ libeazelinstall_la_LDFLAGS = \
 libeazelpackagesystemincludedir=$(includedir)/libtrilobite/eazel/package-system/
 
 libeazelpackagesysteminclude_HEADERS = 		\
-	eazel-install-types.h	 		\
 	eazel-package-system.h			\
 	eazel-package-system-private.h		\
+	eazel-package-system-types.h	 	\
+	eazel-install-xml-package-list.h	\
+	eazel-softcat.h				\
+	eazel-softcat-private.h			\
 	$(NULL)
 
 libeazelpackagesystem_la_SOURCES = 		\
-	eazel-install-types.c	 		\
+	eazel-package-system-types.c		\
 	eazel-package-system.c			\
+	eazel-softcat.c				\
+	eazel-install-xml-package-list.c	\
 	$(NULL)
 
 # libeazelpackagesystem-skeleton
@@ -104,20 +105,13 @@ libeazelpackagesystem_rpm3_la_SOURCES = 	\
 	$(NULL)
 
 
-# libeazelsoftcat
+# libeazelpackagesystem-rpm4
 
-libeazelsoftcatincludedir=$(includedir)/libtrilobite/eazel/softcat/
-
-libeazelsoftcatinclude_HEADERS = 		\
-	eazel-install-types.h	 		\
-	eazel-softcat.h				\
-	eazel-softcat-private.h			\
+libeazelpackagesystem_rpm4_la_SOURCES = 	\
+	eazel-package-system-rpm4.h		\
+	eazel-package-system-rpm4.c		\
 	$(NULL)
 
-libeazelsoftcat_la_SOURCES = 			\
-	eazel-install-types.c	 		\
-	eazel-softcat.c				\
-	$(NULL)
 
 # stuff
 

@@ -36,7 +36,7 @@
 #include "trilobite-eazel-install.h"
 #endif /*  EAZEL_INSTALL_NO_CORBA */
 
-#include "eazel-install-types.h"
+#include "eazel-package-system-types.h"
 
 #ifdef __cplusplus
 extern "C" {

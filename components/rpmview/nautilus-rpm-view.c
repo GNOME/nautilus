@@ -34,7 +34,6 @@
 #include <dirent.h>
 #include <stdio.h>
 #include <errno.h>
-#include <rpm/rpmlib.h>
 
 #include <libnautilus/libnautilus.h>
 #include <libnautilus-extensions/nautilus-background.h>
@@ -54,12 +53,6 @@
 #include <libgnomevfs/gnome-vfs.h>
 #include <libgnorba/gnorba.h>
 #include <limits.h>
-
-#ifdef EAZEL_SERVICES
-#include <libeazelinstall.h>
-#include <libtrilobite/libtrilobite.h>
-#include "nautilus-rpm-view-install.h"
-#endif /* EAZEL_SERVICES */        
 
 /* must be after any services includes */
 #include "nautilus-rpm-view-private.h"
@@ -95,10 +88,6 @@ static void rpm_view_load_location_callback      (NautilusView         *view,
 static void nautilus_rpm_view_verify_package_callback (GtkWidget *widget,
 				   		  NautilusRPMView *rpm_view);
 
-static gint check_installed                      (NautilusRPMView      *rpm_view,
-						  gchar                *package_name,
-                                                  gchar                *package_version,
-                                                  gchar                *package_release);
 static void file_selection_callback              (GtkCList             *clist,
                                                   int                   row,
                                                   int                   column,
@@ -106,8 +95,6 @@ static void file_selection_callback              (GtkCList             *clist,
                                                   NautilusRPMView      *rpm_view);
 static void go_to_button_callback                (GtkWidget            *widget,
                                                   NautilusRPMView      *rpm_view);
-
-static void rpm_view_continue_verify (GtkWidget *window, NautilusRPMView *rpm_view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusRPMView, nautilus_rpm_view, GTK_TYPE_EVENT_BOX)
 
@@ -139,6 +126,10 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
   	static gchar *list_headers[] = { N_("Package Contents") };
 	
 	rpm_view->details = g_new0 (NautilusRPMViewDetails, 1);
+
+	rpm_view->details->package_system = eazel_package_system_new (NULL);
+        eazel_package_system_set_debug (rpm_view->details->package_system, EAZEL_PACKAGE_SYSTEM_DEBUG_VERBOSE);
+        rpm_view->details->package = NULL;
 
 	rpm_view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (rpm_view));
 
@@ -418,6 +409,9 @@ nautilus_rpm_view_destroy (GtkObject *object)
 	if (rpm_view->details->installer) {
 		eazel_install_callback_unref (GTK_OBJECT (rpm_view->details->installer));
 	}
+	if (rpm_view->details->package_system) {
+		gtk_object_unref (GTK_OBJECT (rpm_view->details->package_system));
+	}
 
 	g_free (rpm_view->details->remembered_password);
 #endif /* EAZEL_SERVICES */
@@ -459,64 +453,11 @@ go_to_button_callback (GtkWidget * widget, NautilusRPMView *rpm_view)
 	nautilus_view_open_location (rpm_view->details->nautilus_view, path_name);
 }
 
-/* use the package database to see if the passed-in package is installed or not */
-/* return 0 if it's not installed, one if it is, -1 if same package, different version */
-
-static gint 
-check_installed (NautilusRPMView *rpm_view, gchar *package_name, gchar *package_version, gchar *package_release)
+static void
+add_to_clist (char *name,
+              NautilusRPMView *view)
 {
- 	rpmdb rpm_db;
- 	Header header;
- 	char time_buffer[512];
- 	gint rpm_result, find_result;
-	gint index;
-	dbiIndexSet matches;
-	gint result = 0;
-	gchar *version_ptr, *release_ptr, *install_time_ptr;
-	
-	
- 	rpmReadConfigFiles (NULL, NULL);   
-    	rpm_result = rpmdbOpen ("", &rpm_db, O_RDONLY, 0644);
-	if (rpm_result != 0) {
-		g_message ("couldn't open package database: %d", rpm_result);
-		return 0;
-	}
-	
-	/* see if it's installed - if not, return */
-	find_result = rpmdbFindPackage(rpm_db, package_name, &matches);
-	if ((find_result != 0) || !matches.count) {
-		rpmdbClose(rpm_db);
-		return 0;
-	}
-
-	/* a package with our name is installed - now see if our version matches */
-	for (index = 0; index < matches.count; index++)
-	  {
-	  	header = rpmdbGetRecord(rpm_db, matches.recs[index].recOffset);
-	  	headerGetEntry(header, RPMTAG_VERSION, NULL, (void **) &version_ptr, NULL);
-	  	headerGetEntry(header, RPMTAG_RELEASE, NULL, (void **) &release_ptr, NULL);
-	  	
-	  	install_time_ptr = NULL;
-	  	headerGetEntry(header, RPMTAG_INSTALLTIME, NULL, (void **) &install_time_ptr, NULL);
-	  	if (install_time_ptr) {
-			strftime(time_buffer, 511, "%a %b %d %I:%M:%S %Z %Y", gmtime((time_t *) install_time_ptr));
-			gtk_label_set_text (GTK_LABEL (rpm_view->details->package_idate), time_buffer);
-	  	}
-	  	
-	  	if (!strcmp(version_ptr, package_version) && !strcmp(release_ptr, package_release))
-	  		result = 1;
-	  	headerFree(header);
-
-	  }
-	  		
-	dbiFreeIndexRecord(matches);
-	rpmdbClose(rpm_db);
-
-	if (result == 1) {
-		return 1;
-	} else {
-		return -1;
-        }
+        gtk_clist_append (GTK_CLIST(view->details->package_file_list), &name);
 }
 
 /* here's where we do most of the real work of populating the view with info from the package */
@@ -526,32 +467,9 @@ check_installed (NautilusRPMView *rpm_view, gchar *package_name, gchar *package_
 static void 
 nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 {
-	/* open the package */
-	HeaderIterator iterator;
-	Header header_info, signature;
-	char buffer[512];
-	
-	int descriptor;
-	int iterator_tag, type, data_size, result, index, file_count;
-	char *data_ptr, *temp_str;
+	char *temp_str;
 	gboolean is_installed;
-	FD_t file_descriptor;
-	int *integer_ptr;
-        char *summary;
-        char *description;
-	char *default_icon_path;
-
-#ifndef RPMTAG_FILENAMES
-	char **paths = NULL;
-        int *pathindex;
-#endif
-
-	char **basenames = NULL;
-	char **links = NULL;	
-	char *temp_version = NULL;
-	char *temp_release = NULL;
-
-	char *path_name;
+	char *path_name, *default_icon_path;
 	
 	path_name = gnome_vfs_get_local_path_from_uri (uri);
 		
@@ -559,158 +477,61 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 	default_icon_path = nautilus_theme_get_image_path ("gnome-pack-rpm.png");
     	gnome_pixmap_load_file (GNOME_PIXMAP (rpm_view->details->package_image), default_icon_path);
         g_free (default_icon_path);
-		
-	file_descriptor = fdOpen (path_name, O_RDONLY, 0644);     
+
+#ifdef EAZEL_SERVICES	       
+        rpm_view->details->package = eazel_package_system_load_package (rpm_view->details->package_system,
+                                                                        rpm_view->details->package,
+                                                                        path_name,
+                                                                        PACKAGE_FILL_EVERYTHING);
 	g_free (path_name);
-	
-	if (file_descriptor != NULL) {    
-		/* read out the appropriate fields, and set them up in the view */
-		result = rpmReadPackageInfo (file_descriptor, &signature, &header_info);
-		if (result) {
-			g_message("couldnt read package!");
-			return;
-		}
-			
-                /* add the files in the package to the list */
-                
-                gtk_clist_freeze (GTK_CLIST (rpm_view->details->package_file_list));
-                gtk_clist_clear (GTK_CLIST (rpm_view->details->package_file_list));
-                
-                /* support the RPM 3.0 way and earlier way of accessing the files, depending on whether
-                   RPMTAG_FILENAMES is defined or not */
-                
-#ifndef RPMTAG_FILENAMES
-                headerGetEntry(header_info, RPMTAG_BASENAMES, NULL, (void **)&basenames, &file_count);
-                headerGetEntry(header_info, RPMTAG_DIRINDEXES, NULL, (void **)&pathindex, NULL);
-                headerGetEntry(header_info, RPMTAG_DIRNAMES, NULL, (void **)&paths, NULL);
-                headerGetEntry(header_info, RPMTAG_FILELINKTOS, NULL, (void **)&links, NULL); 
-                rpm_view->details->file_count = file_count;
-                
-                for (index = 0; index < file_count; index++) {
-                        if (*(links[index]) == '\0') {
-                                g_snprintf(buffer, 511, "%s%s", 
-                                           paths[pathindex[index]], 
-                                           basenames[index]);
-                                temp_str = buffer;
-                        } else {
-                                g_snprintf(buffer, 511, "%s%s -> %s", 
-                                           paths[pathindex[index]], 
-                                           basenames[index], 
-                                           links[index]);
-                                temp_str = buffer;
-                        }
 
-                        gtk_clist_append (GTK_CLIST(rpm_view->details->package_file_list), &temp_str);
-                }
-#else
-                headerGetEntry(header_info, RPMTAG_FILENAMES, NULL, (void **)&basenames, &file_count);
-                headerGetEntry(header_info, RPMTAG_FILELINKTOS, NULL, (void **)&links, NULL);
-                rpm_view->details->file_count = file_count;
+        /* Set the file list */
+        gtk_clist_freeze (GTK_CLIST (rpm_view->details->package_file_list));
+        gtk_clist_clear (GTK_CLIST (rpm_view->details->package_file_list));              
+        temp_str = g_strdup_printf(_("Package Contents: %d files"), 
+                                   g_list_length (rpm_view->details->package->provides));
+        g_list_foreach (rpm_view->details->package->provides, (GFunc)add_to_clist, rpm_view);
+        gtk_clist_set_column_title (GTK_CLIST(rpm_view->details->package_file_list), 0, temp_str);
+        g_free(temp_str);                
+        gtk_clist_thaw(GTK_CLIST(rpm_view->details->package_file_list));
                 
-                for (index = 0; index < file_count; index++) {
-                        
-                        if (*(links[index]) == '\0') {
-                                temp_str = basenames[index];
-                        } else {
-                                g_snprintf (buffer, 511, "%s -> %s",
-                                            basenames[index],
-                                            links[index]);
-                                temp_str = buffer;
-                        }
-                        gtk_clist_append (GTK_CLIST(rpm_view->details->package_file_list), &temp_str);
-                }
-#endif  	
-                
-                temp_str = g_strdup_printf(_("Package Contents: %d files"), file_count);
-                gtk_clist_set_column_title (GTK_CLIST(rpm_view->details->package_file_list), 0, temp_str);
-                g_free(temp_str);
-                
-                gtk_clist_thaw(GTK_CLIST(rpm_view->details->package_file_list));
-                
-		iterator = headerInitIterator(header_info);
-		while (headerNextIterator(iterator, &iterator_tag, &type, (void**)&data_ptr, &data_size)) {
-			integer_ptr = (int*) data_ptr;
-			switch (iterator_tag) {
-                        case RPMTAG_NAME:
-                                rpm_view->details->package_name = g_strdup(data_ptr);
-				temp_str = g_strdup_printf(_("Package \"%s\" "), rpm_view->details->package_name);
-                                gtk_label_set_text (GTK_LABEL (rpm_view->details->package_title), temp_str);
-                                g_free(temp_str);
-                                break;
-                        case RPMTAG_VERSION:
-                                temp_version = g_strdup(data_ptr);
-                                break;
-                        case RPMTAG_RELEASE:
-                                temp_release = g_strdup(data_ptr);
-                                break;
-                        case RPMTAG_SIZE:
-                                temp_str = gnome_vfs_format_file_size_for_display (*integer_ptr);
-                                gtk_label_set_text (GTK_LABEL (rpm_view->details->package_size), temp_str);
-                                g_free (temp_str);					
-                                break;
-                        case RPMTAG_DISTRIBUTION:
-                                gtk_label_set_text (GTK_LABEL (rpm_view->details->package_distribution), data_ptr+4);
-                                break;
-                        case RPMTAG_GROUP:
-                                break;
-                        case RPMTAG_ICON:
-                                break;
-                         case RPMTAG_BUILDTIME:
-                                strftime(buffer, 511, "%a %b %d %I:%M:%S %Z %Y", gmtime((time_t *) data_ptr));
-                                gtk_label_set_text (GTK_LABEL (rpm_view->details->package_bdate), buffer);
-                                break;
-                        case RPMTAG_INSTALLTIME:
-                                strftime(buffer, 511, "%a %b %d %I:%M:%S %Z %Y", gmtime((time_t *) data_ptr));
-                                gtk_label_set_text (GTK_LABEL (rpm_view->details->package_idate), buffer);
-                                break;
-                        case RPMTAG_VENDOR:
-                                gtk_label_set_text (GTK_LABEL (rpm_view->details->package_vendor), data_ptr);
-                                break;
-                        case RPMTAG_GIF:
-    				descriptor = open("/tmp/rpm.gif", O_RDWR | O_CREAT, 0666);
-    				write (descriptor, data_ptr, data_size);
-    				close (descriptor);
-    				
-    				gnome_pixmap_load_file (GNOME_PIXMAP (rpm_view->details->package_image), "/tmp/rpm.gif");   				
-    				unlink ("/tmp/rpm.gif");  
-				break;
-                        case RPMTAG_XPM:
-     				descriptor = open("/tmp/rpm.xpm", O_RDWR | O_CREAT, 0666);
-    				write (descriptor, data_ptr, data_size);
-    				close (descriptor);
-    				gnome_pixmap_load_file (GNOME_PIXMAP (rpm_view->details->package_image), "/tmp/rpm.xpm");   				
-    				unlink ("/tmp/rpm.xpm");  
-                                break;
-			}
-			free (data_ptr);
-		}
-		
-                /* NOTE: (bugzilla.eazel.com 1657) These are not read in the iteration loop,
-                   since that can lead to leading garbage in the strings because of differing 
-                   rpm versions. So this is not as hackish as it looks */
-                headerGetEntry (header_info, RPMTAG_DESCRIPTION, NULL, (void**)&description, NULL);
-                headerGetEntry (header_info, RPMTAG_SUMMARY, NULL, (void**)&summary, NULL);
-                gtk_label_set_text (GTK_LABEL (rpm_view->details->package_description), description );
-                gtk_label_set_text (GTK_LABEL (rpm_view->details->package_summary), summary );
+        temp_str = g_strdup_printf(_("Package \"%s\" "), rpm_view->details->package->name);
+        gtk_label_set_text (GTK_LABEL (rpm_view->details->package_title), temp_str);
+        g_free(temp_str);
 
-                /* FIXME bugzilla.eazel.com 2409:
-                   Should they (things returned from headerGetEntry and the
-                   iteration) be freed ? (see also bug 2351) */
+        temp_str = gnome_vfs_format_file_size_for_display (rpm_view->details->package->bytesize);
+        gtk_label_set_text (GTK_LABEL (rpm_view->details->package_size), temp_str);
+        g_free (temp_str);					
 
-		if (temp_version) {
-			temp_str = g_strdup_printf (_("version %s-%s"), temp_version, temp_release);
-			gtk_label_set_text (GTK_LABEL (rpm_view->details->package_release), temp_str);				 
-			g_free (temp_str);
-		}
-		
-                headerFreeIterator (iterator);
+        temp_str = trilobite_get_distribution_name (rpm_view->details->package->distribution, TRUE, FALSE);
+        gtk_label_set_text (GTK_LABEL (rpm_view->details->package_distribution), 
+                            temp_str);
+        g_free (temp_str);
+        
+        /* I no longer set
+           buildtime
+           installtime
+           vendor
+           gif
+           xpm
+        */
+        
+        gtk_label_set_text (GTK_LABEL (rpm_view->details->package_description), 
+                            rpm_view->details->package->description);
+        gtk_label_set_text (GTK_LABEL (rpm_view->details->package_summary), 
+                            rpm_view->details->package->summary );
 
-		/* close the package */
-                fdClose (file_descriptor);
-        }
+        
+        temp_str = packagedata_get_readable_name (rpm_view->details->package);
+        gtk_label_set_text (GTK_LABEL (rpm_view->details->package_release), temp_str);
+        g_free (temp_str);
 	
 	/* determine if the package is installed */
-	is_installed = check_installed(rpm_view, rpm_view->details->package_name, temp_version, temp_release);
+	is_installed = eazel_package_system_is_installed (rpm_view->details->package_system,
+                                                          NULL,
+                                                          rpm_view->details->package->name,
+                                                          rpm_view->details->package->version,
+                                                          rpm_view->details->package->minor);
 	rpm_view->details->package_installed = is_installed != 0;
 			
 	/* set up the install message and buttons */
@@ -737,37 +558,7 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
                 gtk_widget_hide (rpm_view->details->package_uninstall_button);
                 gtk_widget_hide (rpm_view->details->package_verify_button);
         }	
-        
-#ifdef EAZEL_SERVICES
-/* NOTE: This adds a libeazelinstall packagedata object to the rpm_view */
-        { 
-                PackageData *pack;        
-                char *ptr;
-
-                pack = (PackageData *) gtk_object_get_data (GTK_OBJECT (rpm_view), "packagedata");
-                if (pack != NULL) {
-                        /* Destroy the old */
-                        packagedata_destroy (pack, TRUE);
-                } 
-                pack = packagedata_new ();
-                pack->toplevel = TRUE;
-                pack->name = g_strdup (rpm_view->details->package_name);
-                pack->version = g_strdup (temp_version);
-                pack->minor = g_strdup (temp_release);
-                
-                /* Find the "://" of the url and skip to after it */
-                ptr = strstr (nautilus_rpm_view_get_uri (rpm_view), "file://");
-                ptr += strlen ("file://");
-                
-/* make a package and add to it to a categorylist */
-                pack->filename = g_strdup (ptr);
-                gtk_object_set_data (GTK_OBJECT (rpm_view), "packagedata", pack);
-        }
 #endif /* EAZEL_SERVICES */              
-        
-        g_free (temp_version);
-        g_free (temp_release);
-	
 }
 
 char*
@@ -806,78 +597,78 @@ rpm_view_load_location_callback (NautilusView *view,
         nautilus_view_report_load_complete (rpm_view->details->nautilus_view);
 }
 
+static gboolean
+verify_failed_signal (EazelPackageSystem *system,
+                      EazelPackageSystemOperation op, 
+                      const PackageData *package,
+                      GtkWidget *verify_window)
+{
+        g_assert (verify_window);
+        g_assert (NAUTILUS_RPM_VERIFY_WINDOW (verify_window));
+
+        nautilus_rpm_verify_window_set_error_mode (NAUTILUS_RPM_VERIFY_WINDOW (verify_window), TRUE);
+
+        return FALSE;
+}
+
+static gboolean  
+verify_progress_signal (EazelPackageSystem *system,
+                        EazelPackageSystemOperation op,
+                        const PackageData *pack,
+                        unsigned long *info,
+                        GtkWidget *verify_window)
+{
+        g_assert (verify_window);
+        g_assert (NAUTILUS_RPM_VERIFY_WINDOW (verify_window));
+        nautilus_rpm_verify_window_set_progress (NAUTILUS_RPM_VERIFY_WINDOW (verify_window),
+                                                 (g_list_nth (pack->provides, info[0]-1))->data,
+                                                 info[0], info[1]);
+        return TRUE;
+}
 
 /* routine to handle the verify command */
 static void 
 nautilus_rpm_view_verify_files (GtkWidget *widget,
-                                           NautilusRPMView *rpm_view)
+                                NautilusRPMView *rpm_view)
 {
-	int index, initial_index;
-	int file_result, info_result, file_count;
-	Header package_header, signature;
-	char *path_name, *file_message, *temp_str;
-	FD_t file_descriptor;
-	
-	path_name = gnome_vfs_get_local_path_from_uri (rpm_view->details->current_uri);
-	file_descriptor = fdOpen (path_name, O_RDONLY, 0644);     
-	g_free (path_name);
-	
-	if (file_descriptor != NULL) {    
-		/* get the package header info */
-		info_result = rpmReadPackageInfo (file_descriptor, &signature, &package_header);
-		if (info_result) {
-                	fdClose (file_descriptor);
-			g_message("couldnt read package!");
-			return;
-		}
-	}
-	
-	file_count = GTK_CLIST (rpm_view->details->package_file_list)->rows;
-	
+        GList *packages = g_list_prepend (NULL, rpm_view->details->package);
+        guint failsignal, progresssignal;
+        
 	/* put up a window to give file handling feedback */
 	if (rpm_view->details->verify_window == NULL) {
-		rpm_view->details->verify_window = nautilus_rpm_verify_window_new (rpm_view->details->package_name);	
+		rpm_view->details->verify_window = nautilus_rpm_verify_window_new (rpm_view->details->package->name);	
+                /*
 		gtk_signal_connect (GTK_OBJECT (rpm_view->details->verify_window), 
 			    "continue",
 			    GTK_SIGNAL_FUNC (rpm_view_continue_verify), 
 			    rpm_view);
+                */
 	
 	}
 	
 	nautilus_gtk_window_present (GTK_WINDOW (rpm_view->details->verify_window));
 
-	/* iterate through the files, verifying one at a time and presenting the result
-	   in the verify window */	
-	
-	initial_index = rpm_view->details->last_file_index;
-	for (index = initial_index; index < file_count; index++) {
-		rpmVerifyFile ("", package_header, index, &file_result, 0);
-		gtk_clist_get_text (GTK_CLIST (rpm_view->details->package_file_list), index, 0, &temp_str);
-		
-		if (file_result == 0) {
-			file_message = g_strdup_printf (_("checking %s..."), temp_str);
-		} else {
-			file_message = g_strdup_printf (_("file %s has an error!"), temp_str);		
-		}
-				
-		nautilus_rpm_verify_window_set_message (NAUTILUS_RPM_VERIFY_WINDOW (rpm_view->details->verify_window), file_message);		
-		g_free (file_message);
+        failsignal = gtk_signal_connect (GTK_OBJECT (rpm_view->details->package_system),
+                                         "failed",
+                                         (GtkSignalFunc)verify_failed_signal,
+                                         rpm_view->details->verify_window);
+        progresssignal = gtk_signal_connect (GTK_OBJECT (rpm_view->details->package_system),
+                                             "progress",
+                                             (GtkSignalFunc)verify_progress_signal,
+                                             rpm_view->details->verify_window);
 
-		while (gtk_events_pending ())
-			gtk_main_iteration ();
-	
-		if (file_result != 0) {
-			nautilus_rpm_verify_window_set_error_mode (NAUTILUS_RPM_VERIFY_WINDOW (rpm_view->details->verify_window), TRUE);
-			rpm_view->details->last_file_index = index + 1;
-			fdClose (file_descriptor);
-			return; 
-		}
-	}
-	
+        eazel_package_system_verify (rpm_view->details->package_system,
+                                     NULL, 
+                                     packages);
+
+        gtk_signal_disconnect (GTK_OBJECT (rpm_view->details->package_system), failsignal);
+        gtk_signal_disconnect (GTK_OBJECT (rpm_view->details->package_system), progresssignal);                               
+        g_list_free (packages);
+		
+/*
 	nautilus_rpm_verify_window_set_error_mode (NAUTILUS_RPM_VERIFY_WINDOW (rpm_view->details->verify_window), FALSE);
 	nautilus_rpm_verify_window_set_message (NAUTILUS_RPM_VERIFY_WINDOW (rpm_view->details->verify_window), _("Verification completed."));
-	
-	fdClose (file_descriptor);
+*/
 }
 
 /* callback to handle the verify command */
@@ -887,14 +678,6 @@ nautilus_rpm_view_verify_package_callback (GtkWidget *widget,
 {
 	rpm_view->details->last_file_index = 0;
 	nautilus_rpm_view_verify_files (widget, rpm_view);
-}
-
-/* respond to the continue signal by continuing the verify command */
-static void
-rpm_view_continue_verify (GtkWidget *window, NautilusRPMView *rpm_view)
-{
-	nautilus_rpm_verify_window_set_error_mode (NAUTILUS_RPM_VERIFY_WINDOW (rpm_view->details->verify_window), FALSE);
-	nautilus_rpm_view_verify_files (window, rpm_view);
 }
 
 /* handle drag and drop */

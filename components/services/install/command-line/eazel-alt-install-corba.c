@@ -27,7 +27,7 @@
 #include <bonobo.h>
 #include <sys/utsname.h>
 
-#include <eazel-install-types.h>
+#include <eazel-package-system-types.h>
 #include <eazel-install-corba-types.h>
 #include <eazel-install-corba-callback.h>
 #include <eazel-install-problem.h>

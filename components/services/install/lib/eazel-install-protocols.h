@@ -28,7 +28,7 @@
 #ifndef EAZEL_INSTALL_PROTOCOLS_H
 #define EAZEL_INSTALL_PROTOCOLS_H
 
-#include "eazel-install-types.h"
+#include "eazel-package-system-types.h"
 #include "eazel-install-public.h"
 
 gboolean eazel_install_fetch_file (EazelInstall *service,

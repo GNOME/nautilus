@@ -29,6 +29,13 @@
 #  include <config.h>
 #endif
 
+#ifdef EAZEL_SERVICES
+#include "libeazelinstall.h"
+#include "libtrilobite/libtrilobite.h"
+#include "eazel-package-system.h"
+#include "nautilus-rpm-view-install.h"
+#endif /* EAZEL_SERVICES */        
+
 struct NautilusRPMViewDetails {
 	char *current_uri;
 	char *package_name;
@@ -69,8 +76,10 @@ struct NautilusRPMViewDetails {
 #ifdef EAZEL_SERVICES
         /* for installing an rpm */
 	EazelInstallCallback *installer;
+	EazelPackageSystem *package_system;
 	TrilobiteRootClient *root_client;
 
+	PackageData *package;
 	/* for password queries */
 	char *remembered_password;
 	int password_attempts;

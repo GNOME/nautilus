@@ -49,10 +49,10 @@
 #endif
 
 #include "eazel-package-system.h"
-#include "eazel-package-system-rpm3.h"
 
-#define PERCENTS_PER_RPM_HASH 2
-#undef DEBUG_RPM_OUTPUT
+/* WAAAAAAHH! */
+#include "eazel-package-system-rpm3.h"
+#include "eazel-package-system-rpm3-private.h"
 
 PackageData* packagedata_new_from_rpm_conflict (struct rpmDependencyConflict);
 PackageData* packagedata_new_from_rpm_conflict_reversed (struct rpmDependencyConflict);
@@ -226,6 +226,7 @@ eazel_install_do_rpm_dependency_check (EazelInstall *service,
 
 	g_assert (EAZEL_PACKAGE_SYSTEM_RPM3 (service->private->package_system)->dbs);
 
+	eazel_package_system_rpm3_open_dbs (EAZEL_PACKAGE_SYSTEM_RPM3 (service->private->package_system));
 	db = (rpmdb)g_hash_table_lookup (EAZEL_PACKAGE_SYSTEM_RPM3 (service->private->package_system)->dbs,
 					 service->private->cur_root);
 	if (!db) {
@@ -233,12 +234,12 @@ eazel_install_do_rpm_dependency_check (EazelInstall *service,
 	}
 
 	set =  rpmtransCreateSet (db, service->private->cur_root);
-	
 	eazel_install_add_to_rpm_set (service, set, packages, failedpackages); 
 
 	/* Reorder the packages as per. deps and do the dep check */
 	rpmdepOrder (set);		
 	rpmdepCheck (set, &conflicts, &num_conflicts);
+	eazel_package_system_rpm3_close_dbs (EAZEL_PACKAGE_SYSTEM_RPM3 (service->private->package_system));
 
 	/* FIXME bugzilla.eazel.com 1512:
 	   This piece of code is rpm specific. It has some generic algorithm
