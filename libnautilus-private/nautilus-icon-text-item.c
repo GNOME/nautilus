@@ -264,12 +264,12 @@ iti_start_editing (Iti *iti)
 	if (priv->entry_top == NULL) {
 		priv->entry = (NautilusEntry *) nautilus_entry_new ();
 		g_signal_connect (G_OBJECT (priv->entry), "activate",
-				    GTK_SIGNAL_FUNC (iti_entry_activate), iti);
+				    G_CALLBACK (iti_entry_activate), iti);
 		/* Make clipboard functions cause an update the appearance of 
 		   the icon text item itself, since the clipboard functions 
 		   will change the offscreen entry */
 		gtk_signal_connect_after (GTK_OBJECT (priv->entry), "changed",
-					  GTK_SIGNAL_FUNC (iti_entry_text_changed_by_clipboard), iti);
+					  G_CALLBACK (iti_entry_text_changed_by_clipboard), iti);
 
 		priv->entry_top = gtk_window_new (GTK_WINDOW_POPUP);
 		gtk_container_add (GTK_CONTAINER (priv->entry_top), GTK_WIDGET (priv->entry));
@@ -727,7 +727,7 @@ iti_render (GnomeCanvasItem *item, GnomeCanvasBuf *buffer)
 		
 	/* draw the pixbuf containing the label */
 	draw_pixbuf_aa (text_pixbuf, buffer, affine, eel_round (item->x1), eel_round (item->y1));
-	gdk_pixbuf_unref (text_pixbuf);
+	g_object_unref (G_OBJECT (text_pixbuf));
 
 	buffer->is_bg = FALSE;
 	buffer->is_buf = TRUE;

@@ -262,7 +262,7 @@ void draw_number (GtkWidget *widget, GdkRectangle *box)
 	}
 	
 	if (number_pixbuf != zoom_control->details->number_strip) {
-		gdk_pixbuf_unref (number_pixbuf);
+		g_object_unref (G_OBJECT (number_pixbuf));
 	}
 	
 	gdk_gc_unref(temp_gc);
@@ -289,7 +289,7 @@ draw_pixbuf_with_prelight (NautilusZoomControl *zoom_control, GdkPixbuf *pixbuf,
 	}
 	draw_pixbuf (temp_pixbuf, GTK_WIDGET (zoom_control)->window, x_pos, y_pos + zoom_control->details->y_offset);
 	if (pixbuf != temp_pixbuf) {
-		gdk_pixbuf_unref (temp_pixbuf);
+		g_object_unref (G_OBJECT (temp_pixbuf));
 	}
 
 }
@@ -382,19 +382,19 @@ static void
 nautilus_zoom_control_unload_images (NautilusZoomControl *zoom_control)
 {
 	if (zoom_control->details->zoom_body_image) {
-		gdk_pixbuf_unref (zoom_control->details->zoom_body_image);
+		g_object_unref (G_OBJECT (zoom_control->details->zoom_body_image));
 	}
 	
 	if (zoom_control->details->zoom_decrement_image) {
-		gdk_pixbuf_unref (zoom_control->details->zoom_decrement_image);
+		g_object_unref (G_OBJECT (zoom_control->details->zoom_decrement_image));
 	}
 	
 	if (zoom_control->details->zoom_increment_image) {
-		gdk_pixbuf_unref (zoom_control->details->zoom_increment_image);
+		g_object_unref (G_OBJECT (zoom_control->details->zoom_increment_image));
 	}
 
 	if (zoom_control->details->number_strip != NULL) {
-		gdk_pixbuf_unref (zoom_control->details->number_strip);
+		g_object_unref (G_OBJECT (zoom_control->details->number_strip));
 	}
 
 	if (zoom_control->details->label_font != NULL) {
@@ -461,7 +461,7 @@ zoom_menu_callback (GtkMenuItem *item, gpointer callback_data)
 		return;
 	}
 
-	zoom_level = * (double *) gtk_object_get_data (GTK_OBJECT (item), "zoom_level");
+	zoom_level = * (double *) g_object_get_data (G_OBJECT (item), "zoom_level");
 
 	/* Assume we can zoom and then check whether we're right. */
 	can_zoom = TRUE;
@@ -514,9 +514,9 @@ create_zoom_menu_item (GtkMenu *menu, GtkWidget *widget, float zoom_level,
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), 
 					zoom_level == zoom_control->details->zoom_level);
 	
-	gtk_object_set_data_full (GTK_OBJECT (menu_item), "zoom_level", zoom_level_ptr, g_free);
+	g_object_set_data_full (G_OBJECT (menu_item), "zoom_level", zoom_level_ptr, g_free);
 	g_signal_connect (G_OBJECT (menu_item), "activate",
-			    GTK_SIGNAL_FUNC (zoom_menu_callback),
+			    G_CALLBACK (zoom_menu_callback),
 			    zoom_control);
 
   	gtk_widget_show (menu_item);

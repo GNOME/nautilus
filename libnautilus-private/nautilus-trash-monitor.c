@@ -175,7 +175,7 @@ destroy (GtkObject *object)
 static void
 unref_trash_monitor (void)
 {
-	gtk_object_unref (GTK_OBJECT (nautilus_trash_monitor));
+	g_object_unref (G_OBJECT (nautilus_trash_monitor));
 }
 
 NautilusTrashMonitor *
@@ -191,7 +191,7 @@ nautilus_trash_monitor_get (void)
 		
 		nautilus_trash_monitor = NAUTILUS_TRASH_MONITOR
 			(g_object_new (NAUTILUS_TYPE_TRASH_MONITOR, NULL));
-		gtk_object_ref (GTK_OBJECT (nautilus_trash_monitor));
+		g_object_ref (G_OBJECT (nautilus_trash_monitor));
 		gtk_object_sink (GTK_OBJECT (nautilus_trash_monitor));
 		g_atexit (unref_trash_monitor);
 		

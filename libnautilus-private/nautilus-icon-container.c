@@ -2322,11 +2322,11 @@ destroy (GtkObject *object)
 	}
 
 	if (container->details->smooth_label_font != NULL) {
-		gtk_object_unref (GTK_OBJECT (container->details->smooth_label_font));
+		g_object_unref (G_OBJECT (container->details->smooth_label_font));
 	}
 
 	if (container->details->highlight_frame != NULL) {
-		gdk_pixbuf_unref (container->details->highlight_frame);
+		g_object_unref (G_OBJECT (container->details->highlight_frame));
 	}
 
 	if (container->details->rename_widget != NULL) {
@@ -3811,7 +3811,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 		scaled_height = floor (height * scale_factor + .5);
 		saved_pixbuf = pixbuf;
 		pixbuf = gdk_pixbuf_scale_simple (pixbuf, scaled_width, scaled_height, GDK_INTERP_BILINEAR);
-		gdk_pixbuf_unref (saved_pixbuf);
+		g_object_unref (G_OBJECT (saved_pixbuf));
 	}
 		
 	emblem_pixbufs = NULL;
@@ -3874,7 +3874,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	nautilus_icon_canvas_item_set_emblems (icon->item, emblem_pixbufs);
 
 	/* Let the pixbufs go. */
-	gdk_pixbuf_unref (pixbuf);
+	g_object_unref (G_OBJECT (pixbuf));
 	eel_gdk_pixbuf_list_free (emblem_pixbufs);
 
 	g_free (editable_text);
@@ -3917,7 +3917,7 @@ finish_adding_icon (NautilusIconContainer *container,
 	gnome_canvas_item_show (GNOME_CANVAS_ITEM (icon->item));
 
 	g_signal_connect (G_OBJECT (icon->item), "event",
-			    GTK_SIGNAL_FUNC (item_event_callback), container);
+			    G_CALLBACK (item_event_callback), container);
 }
 
 static void
@@ -5038,8 +5038,8 @@ nautilus_icon_container_set_smooth_label_font (NautilusIconContainer *container,
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_return_if_fail (EEL_IS_SCALABLE_FONT (font));
 
-	gtk_object_ref (GTK_OBJECT (font));
-	gtk_object_unref (GTK_OBJECT (container->details->smooth_label_font));
+	g_object_ref (G_OBJECT (font));
+	g_object_unref (G_OBJECT (container->details->smooth_label_font));
 
 	container->details->smooth_label_font = font;
 }
@@ -5163,7 +5163,7 @@ nautilus_icon_container_theme_changed (gpointer user_data)
 	/* load the highlight frame */		
 	text_frame_path = nautilus_theme_get_image_path ("text-selection-frame-aa.png");
 	if (container->details->highlight_frame) {
-		gdk_pixbuf_unref (container->details->highlight_frame);
+		g_object_unref (G_OBJECT (container->details->highlight_frame));
 	}
 	
 	container->details->highlight_frame = gdk_pixbuf_new_from_file (text_frame_path, NULL);
