@@ -1666,8 +1666,14 @@ nautilus_text_layout_paint (const NautilusTextLayout	*text_layout,
 	g_return_if_fail (text_layout != NULL);
 	g_return_if_fail (destination_pixbuf != NULL);
 	g_return_if_fail (justification >= GTK_JUSTIFY_LEFT && justification <= GTK_JUSTIFY_FILL);
-
- 	/* y += text_layout->font->ascent; */
+	
+	/* FIXME: Make sure the color we are fed is opaque.  The real solution is 
+	 * to fix the callers.
+	 */
+	color = NAUTILUS_RGBA_COLOR_PACK (NAUTILUS_RGBA_COLOR_GET_R (color),
+					  NAUTILUS_RGBA_COLOR_GET_G (color),
+					  NAUTILUS_RGBA_COLOR_GET_B (color),
+					  255);
 
 	for (item = text_layout->rows; item; item = item->next) {
 		if (item->data) {
@@ -1702,7 +1708,7 @@ nautilus_text_layout_paint (const NautilusTextLayout	*text_layout,
 							  text_layout->font_size,
 							  row->text,
 							  row->text_length,
-							  NAUTILUS_RGBA_COLOR_PACK (255, 255, 255, 255),
+							  color,
 							  255,
 							  inverted);
 

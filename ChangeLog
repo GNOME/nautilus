@@ -1,3 +1,15 @@
+2000-09-07  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_initialize_class),
+	(draw_or_measure_label_text):
+	Simplify the highlight color initialization.
+	
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(nautilus_text_layout_paint):
+	Restore rendering in the passed in color.  Add a mini hack to make
+	sure the color is opaque.
+	
 2000-09-07  John Sullivan  <sullivan@eazel.com>
 
 	Better job of what I did in my last checkin. I caught one case

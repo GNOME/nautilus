@@ -120,9 +120,9 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-static	GdkColor highlight_background_color;
-static	GdkColor highlight_text_color;
-static  GdkColor highlight_text_info_color;
+static	guint32 highlight_background_color = NAUTILUS_RGBA_COLOR_PACK (0x00, 0x00, 0x00, 255);
+static	guint32 highlight_text_color	   = NAUTILUS_RGBA_COLOR_PACK (0xFF, 0xFF, 0xFF, 255);
+static  guint32 highlight_text_info_color  = NAUTILUS_RGBA_COLOR_PACK (0xAA, 0xAA, 0xAA, 255);
 
 /* GtkObject */
 static void     nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass   *class);
@@ -246,11 +246,6 @@ nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass *class)
 	item_class->point = nautilus_icon_canvas_item_point;
 	item_class->bounds = nautilus_icon_canvas_item_bounds;
 	item_class->event = nautilus_icon_canvas_item_event;
-
-	/* set up the highlight colors - soon, get these from preferences */
-	gdk_color_parse ("rgb:00/00/00", &highlight_background_color);
-	gdk_color_parse ("rgb:FF/FF/FF", &highlight_text_color);	
-	gdk_color_parse ("rgb:AA/AA/AA", &highlight_text_info_color);	
 }
 
 /* Object initialization function for the icon item. */
@@ -706,17 +701,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 				
 	/* if the icon is highlighted, do some set-up */
 	if (needs_highlight && drawable != NULL && !details->is_renaming) {
-		gdk_colormap_alloc_color
-			(gtk_widget_get_colormap (GTK_WIDGET (canvas_item->canvas)),
-			 &highlight_background_color, FALSE, TRUE);
-		gdk_colormap_alloc_color
-			(gtk_widget_get_colormap (GTK_WIDGET (canvas_item->canvas)),
-			 &highlight_text_color, FALSE, TRUE);
-		gdk_colormap_alloc_color
-			(gtk_widget_get_colormap (GTK_WIDGET (canvas_item->canvas)),
-			 &highlight_text_info_color, FALSE, TRUE);
-
-		gdk_gc_set_foreground (gc, &highlight_background_color);
+		gdk_rgb_gc_set_foreground (gc, highlight_background_color);
 		
 		gdk_draw_rectangle
 			(drawable, gc, TRUE,
@@ -724,7 +709,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 			 icon_bottom,
 			 details->text_width, details->text_height);
 
-		gdk_gc_set_foreground (gc, &highlight_text_color);
+		gdk_rgb_gc_set_foreground (gc, highlight_text_color);
 	}
 	
 	if (!needs_highlight && drawable != NULL) {
@@ -774,8 +759,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 
 		if (drawable != NULL && i == 0) {
 			if (needs_highlight) {
-				gdk_gc_set_foreground (gc, &highlight_text_info_color);
-
+				gdk_rgb_gc_set_foreground (gc, highlight_text_info_color);
 			} else {
 				label_color = nautilus_icon_container_get_label_color (NAUTILUS_ICON_CONTAINER (canvas_item->canvas), FALSE);
 				gdk_rgb_gc_set_foreground (gc, label_color);
