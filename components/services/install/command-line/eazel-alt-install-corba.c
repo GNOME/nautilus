@@ -67,7 +67,8 @@ int     arg_dry_run,
 	arg_revert,
 	arg_ssl_rename,
 	arg_provides,
-	arg_verbose;
+	arg_verbose,
+	arg_id;
 char    *arg_server,
 	*arg_config_file,
 	*arg_package_list,
@@ -87,9 +88,10 @@ static const struct poptOption options[] = {
 	{"ftp", 'f', POPT_ARG_NONE, &arg_ftp, 0, N_("Use ftp"), NULL},
 	{"local", 'l', POPT_ARG_NONE, &arg_local, 0, N_("Use local"), NULL},
 	{"http", 'h', POPT_ARG_NONE, &arg_http, 0, N_("Use http"), NULL},
+	{"id", 'i', POPT_ARG_NONE, &arg_id, 0, N_("RPM args are Eazel Ids"), NULL},
 	{"packagefile", '\0', POPT_ARG_STRING, &arg_package_list, 0, N_("Specify package file"), NULL},
 	{"port", '\0', POPT_ARG_INT, &arg_port, 0 , N_("Set port numer (80)"), NULL},
-	{"provides", '\0', POPT_ARG_NONE, &arg_provides, 0, N_("RPM args are needes files"), NULL},
+	{"provides", '\0', POPT_ARG_NONE, &arg_provides, 0, N_("RPM args are needed files"), NULL},
 	{"query", 'q', POPT_ARG_NONE, &arg_query, 0, N_("Run Query"), NULL},
 	{"revert", 'r', POPT_ARG_NONE, &arg_revert, 0, N_("Revert"), NULL},
 	{"root", '\0', POPT_ARG_STRING, &arg_root, 0, N_("Set root"), NULL},
@@ -483,6 +485,8 @@ create_package (char *name)
 			g_strdup_printf ("%s/%s", g_get_current_dir (), name);
 	} else if (arg_provides) {
 		pack->provides = g_list_prepend (pack->provides, g_strdup (name));
+	} else if (arg_id) {
+		pack->eazel_id = g_strdup (name);
 	} else {
 		pack->name = g_strdup (name);
 	}
@@ -681,6 +685,7 @@ int main(int argc, char *argv[]) {
 				p = (PackageData*)match_it->data;
 				if (arg_verbose) {
 					char *tmp;
+					GList *provide_iterator;
 					tmp = trilobite_get_distribution_name (p->distribution, TRUE, FALSE);
 					fprintf (stdout, "Name         : %s\n", p->name?p->name:"?"); 
 					fprintf (stdout, "Version      : %s\n", p->version?p->version:"?");
@@ -693,6 +698,14 @@ int main(int argc, char *argv[]) {
 						 p->description?p->description:"?");
 					fprintf (stdout, "Install root : %s\n", 
 						 p->install_root?p->install_root:"?");
+					if (p->provides) {
+						fprintf (stdout, "Provides     : \n");
+						for (provide_iterator = p->provides; provide_iterator; 
+						     provide_iterator = g_list_next (provide_iterator)) {
+							fprintf (stdout, "\t%s\n", 
+								 (char*)provide_iterator->data);
+						}
+					}
 				} else {
 					fprintf (stdout, "%s %s %50.50s\n", p->name, p->version, p->description);
 				}

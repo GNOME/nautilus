@@ -39,10 +39,6 @@ gboolean eazel_install_fetch_file (EazelInstall *service,
 gboolean eazel_install_fetch_package (EazelInstall *service,
 				      PackageData *package);
 
-gboolean eazel_install_fetch_package_by_id (EazelInstall *service,
-					    const char *id,
-					    PackageData *package);
-
 void eazel_install_fetch_definitive_category_info (EazelInstall *service,
 						   CategoryData *category);
 

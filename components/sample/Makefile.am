@@ -29,6 +29,8 @@ nautilus_sample_content_view_LDADD =		\
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(GNOMEUI_LIBS)				\
 	$(BONOBO_LIBS)				\
+	$(GCONF_LIBS)				\
+	$(VFS_LIBS)				\
 	$(OAF_LIBS)
 
 EXTRA_DIST = $(oaf_DATA) $(ui_DATA)

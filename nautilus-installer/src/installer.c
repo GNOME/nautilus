@@ -55,7 +55,7 @@
 #define EAZEL_SERVICES_DIR_HOME "/var/eazel"
 #define EAZEL_SERVICES_DIR EAZEL_SERVICES_DIR_HOME "/services"
 
-#define HOSTNAME "services.eazel.com"
+#define HOSTNAME "stage-web.eazel.com"
 #define PORT_NUMBER 80
 #define CGI_PATH "/catalog/find"
 #define TMP_DIR "/tmp/eazel-install"
@@ -510,10 +510,10 @@ static GtkWidget*
 create_window (EazelInstaller *installer)
 {
 	GtkWidget *window;
+	GtkWidget *install_page;
 	GtkWidget *druid;
 	GtkWidget *start_page;
 	GtkWidget *what_to_do_page;
-	GtkWidget *install_page;
 	int x, y;
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);	
@@ -1113,18 +1113,14 @@ check_system (EazelInstaller *installer)
 		return FALSE;
 	}
 
-#if 0
-	if (installer_no_helix || !g_file_test ("/etc/pam.d/helix-update", G_FILE_TEST_ISFILE)) {
-		create_info_druid_page (installer, 
-					"HelixCode GNOME missing...",
-					_("You do not have HelixCode gnome installed.\n\n"
-					  "This means I will install the required parts for you, but you might\n"
-					  "want to abort the installer and go to http://www.helixcode.com and\n"
-					  "download the full HelixCode Gnome installation"));
-		installer->implicit_must_have = g_list_prepend (installer->implicit_must_have,
-								g_strdup ("HelixCode basics"));
+	if (g_file_test ("/etc/eazel/profile/bashrc", G_FILE_TEST_ISFILE)) {
+		jump_to_error_page (installer, NULL,
+				    _("No, you've got the eazel-hacking environment.\n"
+				      "You definitely do not want to run the installer\n"
+				      "as it will screw up your system."));
+		return FALSE;
 	}
-#endif
+
 	return TRUE;
 }
 
@@ -1147,12 +1143,11 @@ revert_nautilus_install (EazelInstall *service)
 #endif 
 
 void 
-eazel_installer_do_install (EazelInstaller *installer,
-			    GList *categories)
+eazel_installer_do_install (EazelInstaller *installer, GList *install_categories)
 {
        	GList *iter;
 
-	eazel_install_install_packages (installer->service, categories, NULL);
+	eazel_install_install_packages (installer->service, install_categories, NULL);
 
 /*
   FIXME: bugzilla.eazel.com 2604
@@ -1292,10 +1287,10 @@ eazel_installer_initialize (EazelInstaller *object) {
 
 	installer->window = create_window (installer);
 
+	gtk_widget_show (installer->window);
 	if (! check_system (installer)) {
 		return;
 	}
-	gtk_widget_show (installer->window);
 	gnome_druid_set_buttons_sensitive (installer->druid, FALSE, FALSE, TRUE);
 
 	/* show what we have so far */
@@ -1304,7 +1299,7 @@ eazel_installer_initialize (EazelInstaller *object) {
 	}
 
 	installer->failure_info = NULL;
-	
+
 	installer->service =  
 		EAZEL_INSTALL (gtk_object_new (TYPE_EAZEL_INSTALL,
 					       "verbose", TRUE,

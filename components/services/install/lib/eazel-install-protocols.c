@@ -118,7 +118,7 @@ http_fetch_remote_file (EazelInstall *service,
         ghttp_status status;
         char* body;
         FILE* file;
-	int total_bytes;
+	int total_bytes=0;
 	gboolean first_emit;
 	const char *report;
 
@@ -594,57 +594,6 @@ eazel_install_fetch_package (EazelInstall *service,
 
 	return result;
 }
-
-gboolean eazel_install_fetch_package_by_id (EazelInstall *service,
-					    const char *id,
-					    PackageData *package)
-{
-	gboolean result;
-	char *url;
-	char *targetname;
-
-	g_assert (package != NULL);
-
-	result = FALSE;
-
-	switch (eazel_install_get_protocol (service)) {
-	case PROTOCOL_FTP:
-	case PROTOCOL_HTTP: 
-		url = get_url_for_package (service, RPMSEARCH_ENTRY_ID, (const gpointer)id, package);
-		break;
-	case PROTOCOL_LOCAL:
-		g_warning (_("Using local protocol cannot fetch by id"));
-		url = NULL;
-		break;
-	default:
-		url = NULL;
-		break;
-	};
-
-	if (url == NULL) {
-		g_warning (_("Could not get a URL for package id %s"), id);
-	} else {
-		/* FIXME bugzilla.eazel.com 1315:
-		   Loose the check once a proper rpmsearch.cgi is up and running */
-		if (filename_from_url (url) && strlen (filename_from_url (url))>1) {
-			targetname = g_strdup_printf ("%s/%s",
-						      eazel_install_get_tmp_dir (service),
-						      filename_from_url (url));
-			result = eazel_install_fetch_file (service, url, NULL, targetname);
-			if (result) {
-				packagedata_fill_from_file (package, targetname);
-			} else {
-				package->status = PACKAGE_DEPENDENCY_FAIL;
-				g_warning (_("File download failed"));
-			}
-			g_free (targetname);
-		}
-		g_free (url);
-	}
-
-	return result;
-}
-
 
 #define EVILCHAR(c)  (((c) == '+') || ((c) < '-') || ((c) == '?') || ((c) == '\\') || ((c) > 'z'))
 static void

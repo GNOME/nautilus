@@ -77,6 +77,11 @@ struct _NautilusServiceInstallViewDetails {
 	int		using_local_file;
 	gboolean	failure;
 	gboolean	cancelled;
+	
+	/* Crude fix for 
+	   FIXME bugzilla.eazel.com 3431
+	*/
+	gboolean core_package;
 };
 
 

@@ -31,8 +31,6 @@ bin_PROGRAMS = nautilus-service-install-view
 nautilus_service_install_view_SOURCES =		        \
 	nautilus-service-install-view.h			\
 	nautilus-service-install-view.c			\
-	nautilus-service-install.h			\
-	nautilus-service-install.c			\
 	main.c						\
 	$(NULL)
 

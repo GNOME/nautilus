@@ -344,7 +344,12 @@ eazel_install_add_to_rpm_set (EazelInstall *service,
 						  interface_flags, 
 						  NULL);
 			if (err!=0) {
-				g_warning ("rpmtransAddPackage (..., %s, ...) = %d", pack->name, err);
+				trilobite_debug ("rpmtransAddPackage (..., %s, ...) = %d", pack->name, err);
+				if (pack->source_package) {
+					pack->status = PACKAGE_SOURCE_NOT_SUPPORTED;
+				} else {
+					pack->status = PACKAGE_INVALID;
+				}
 				/* We cannot remove the thing immediately from packages, as
 				   we're iterating it, so add to a tmp list and nuke later */
 				tmp_failed = g_list_prepend (tmp_failed, pack);
@@ -470,8 +475,15 @@ eazel_install_do_rpm_dependency_check (EazelInstall *service,
 									 (gpointer)conflict.needsName,
 									 (GCompareFunc)eazel_install_package_modifies_provides_compare); 					
 					if (pack_entry == NULL) {
-						trilobite_debug ("This was certainly unexpected!");
-						g_assert_not_reached ();
+						/* Kühl, we probably already moved it to 
+						   failed packages */
+						pack_entry = g_list_find_custom (*failedpackages, 
+										 (gpointer)conflict.needsName,
+										 (GCompareFunc)eazel_install_package_modifies_provides_compare); 					
+						if (pack_entry == NULL) {
+							trilobite_debug ("This was certainly unexpected v2!");
+							g_assert_not_reached ();
+						} 
 					}
 				}
 				
@@ -492,6 +504,7 @@ eazel_install_do_rpm_dependency_check (EazelInstall *service,
 					g_free (dep->version);
 					dep->version = g_strdup (pack->version);
 				} else {
+					trilobite_debug ("check_if_related_package returned FALSE");
 					/* not the devel package, are we in force mode ? */
 					if (!eazel_install_get_force (service)) {
 						/* if not, remove the package */
@@ -568,5 +581,8 @@ eazel_install_do_rpm_dependency_check (EazelInstall *service,
 	}
 
 	rpmdepFreeConflicts (conflicts, num_conflicts);
+	trilobite_debug ("eazel_install_do_rpm_dependency_check ended with %d fails and %d requirements", 
+			 g_list_length (*failedpackages),
+			 g_list_length (*requirements));
 }
 

@@ -85,7 +85,8 @@ main (int argc, char *argv[])
 }
 
 
-/* Dummy functions to make linking work */
+/* Dummy functions to make linking work 
+   (this is the type of code your mother warned you about) */
 
 const gpointer oaf_popt_options = NULL;
 gpointer oaf_init (int argc, char *argv[]) { return NULL; }

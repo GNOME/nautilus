@@ -275,15 +275,7 @@ eazel_install_download_packages (EazelInstall *service,
 		} 
 
 		if (fetch_package) {
-			/* FIXME: bugzilla.eazel.com 3413
-			   Ugh, this isn't very nice. Not that there's a chance
-			   that any package will have the name "id%3D", but... */
-			if (package->name && strncmp (package->name, "id%3D", 5) == 0) {
-				/* nautilus encodes "id=" to "id%3D" */
-				result = eazel_install_fetch_package_by_id (service, package->name + 5, package);
-			} else {
-				result = eazel_install_fetch_package (service, package);
-			}
+			result = eazel_install_fetch_package (service, package);
 
 			if (!result) {
 				remove_list = g_list_prepend (remove_list, package);
@@ -933,7 +925,7 @@ eazel_install_start_transaction (EazelInstall *service,
 				 GList* packages) 
 {
 #ifdef EAZEL_INSTALL_SLIM
-	int child_pid, child_status;
+	int child_pid = -1, child_status;
 #else
 	TrilobiteRootHelper *root_helper;
 	TrilobiteRootHelperStatus root_helper_stat;
@@ -1041,7 +1033,7 @@ eazel_install_start_transaction (EazelInstall *service,
 		int installed_packages;
 		installed_packages = eazel_install_monitor_subcommand_pipe (service,
 									    fd,
-								 (GIOFunc)eazel_install_monitor_process_pipe);
+									    (GIOFunc)eazel_install_monitor_process_pipe);
 		res = g_list_length (packages) - installed_packages;
 #ifdef EAZEL_INSTALL_SLIM
 		waitpid (child_pid, &child_status, 0);
@@ -1309,9 +1301,26 @@ eazel_install_check_existing_packages (EazelInstall *service,
 				existing_package = NULL;
 				continue;
 			}
+
+			g_assert (pack->version);
+			g_assert (existing_package->version);
+
 			/* The order of arguments to rpmvercmp is important... */
 			res = rpmvercmp (pack->version, existing_package->version);
 			
+			/* check against minor version */
+			if (res==0) {
+				trilobite_debug ("versions are equal, comparing minor");
+				if (pack->minor && existing_package->minor) {
+					res = rpmvercmp (pack->minor, existing_package->minor);
+				} else if (!pack->minor && existing_package->minor) {
+					/* If the given packages does not have a minor,
+					   but the installed has, assume we're updated */
+					res = 1;
+				}
+			}
+
+			/* Set the modify_status flag */
 			if (res == 0) {
 				existing_package->modify_status = PACKAGE_MOD_UNTOUCHED;
 			} else if (res > 0) {
@@ -1320,6 +1329,7 @@ eazel_install_check_existing_packages (EazelInstall *service,
 				existing_package->modify_status = PACKAGE_MOD_DOWNGRADED;
 			}
 
+			/* Calc the result */
 			if (res == 0 && result > 0) {
 				result = 0;
 			} else if (res > 0 && result > 1) {
@@ -1328,6 +1338,7 @@ eazel_install_check_existing_packages (EazelInstall *service,
 				result = -1;
 			}
 		
+			/* Debug && setting modifes list */
 			if (result!=0) {
 				if (result>0) {
 					trilobite_debug (_("%s upgrades from version %s to %s"),
@@ -1888,6 +1899,7 @@ eazel_install_ensure_deps (EazelInstall *service,
 		for (iterator = *failedpackages; iterator; iterator = g_list_next (iterator)) {
 			PackageData *pack;
 			pack = (PackageData*)iterator->data;
+			trilobite_debug ("calling prune on %s", pack->name);
 			eazel_install_prune_packages (service, pack, packages, 
 							      &extrapackages, NULL);
 		}			

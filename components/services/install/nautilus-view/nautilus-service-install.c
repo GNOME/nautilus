@@ -26,42 +26,8 @@
 
 #define OAF_ID "OAFIID:trilobite_eazel_install_service:8ff6e815-1992-437c-9771-d932db3b4a17"
 
-static void 
-nautilus_service_install_download_progress_signal (EazelInstallCallback *service, 
-					    const char *name,
-					    int amount, 
-					    int total,
-					    NautilusServiceInstallView *view) 
-{
-	fprintf (stdout, "Download progress - %s %% %f\r",  name,
-		 (total ? ((float)
-			   ((((float) amount) / total) * 100))
-		  : 100.0));
-	fflush (stdout);
-	if (amount == total && total!=0) {
-		fprintf (stdout, "\n");
-	}
-}
-
-static void 
-nautilus_service_install_progress_signal (EazelInstallCallback *service, 
-					   const PackageData *pack,
-					   int amount, 
-					   int total,
-					   NautilusServiceInstallView *view) 
-{
-	fprintf (stdout, "Install progress - %s %% %f\r", pack->name,
-		 (total ? ((float)
-			   ((((float) amount) / total) * 100))
-		  : 100.0));
-	fflush (stdout);
-	if (amount == total && total!=0) {
-		fprintf (stdout, "\n");
-	}
-}
-
 static void
-nautilus_service_install_download_failed (EazelInstallCallback *service, 
+xnautilus_service_install_download_failed (EazelInstallCallback *service, 
 				   const char *name,
 				   NautilusServiceInstallView *view)
 {
@@ -72,7 +38,7 @@ nautilus_service_install_download_failed (EazelInstallCallback *service,
   This dumps the entire tree for the failed package.
  */
 static void
-nautilus_service_install_failed_helper (EazelInstallCallback *service,
+xnautilus_service_install_failed_helper (EazelInstallCallback *service,
 					 const PackageData *pd,
 					 gchar *indent,
 					 NautilusServiceInstallView *view)
@@ -104,7 +70,7 @@ nautilus_service_install_failed_helper (EazelInstallCallback *service,
 		char *indent2;
 		indent2 = g_strconcat (indent, iterator->next ? " |" : "  " , NULL);
 		pack = (PackageData*)iterator->data;
-		nautilus_service_install_failed_helper (service, pack, indent2, view);
+		xnautilus_service_install_failed_helper (service, pack, indent2, view);
 		g_free (indent2);
 	}
 	for (iterator = pd->breaks; iterator; iterator = iterator->next) {			
@@ -112,13 +78,13 @@ nautilus_service_install_failed_helper (EazelInstallCallback *service,
 		char *indent2;
 		indent2 = g_strconcat (indent, iterator->next ? " |" : "  " , NULL);
 		pack = (PackageData*)iterator->data;
-		nautilus_service_install_failed_helper (service, pack, indent2, view);
+		xnautilus_service_install_failed_helper (service, pack, indent2, view);
 		g_free (indent2);
 	}
 }
 
 static void
-nautilus_service_install_failed (EazelInstallCallback *service,
+xnautilus_service_install_failed (EazelInstallCallback *service,
 				  const PackageData *pd,
 				  NautilusServiceInstallView *view)
 {
@@ -127,7 +93,7 @@ nautilus_service_install_failed (EazelInstallCallback *service,
 
 
 static void
-nautilus_service_install_dependency_check (EazelInstallCallback *service,
+xnautilus_service_install_dependency_check (EazelInstallCallback *service,
 				    const PackageData *package,
 				    const PackageData *needs,
 				    NautilusServiceInstallView *view) 
@@ -136,18 +102,20 @@ nautilus_service_install_dependency_check (EazelInstallCallback *service,
 }
 
 static void
-nautilus_service_install_done (EazelInstallCallback *service,
-				NautilusServiceInstallView *view)
+xnautilus_service_install_done (EazelInstallCallback *service,
+			       gboolean result,
+			       NautilusServiceInstallView *view)
 {
 	char *tmp;
 	eazel_install_callback_unref (GTK_OBJECT (service));
+	
 	tmp = g_strdup (view->details->uri);
 	nautilus_service_install_view_load_uri (view, tmp);
 	g_free (tmp);
 }
 
 void 
-nautilus_service_install_view_install_package_callback (GtkWidget *widget,
+xnautilus_service_install_view_install_package_callback (GtkWidget *widget,
                                                         NautilusServiceInstallView *view)
 {
 	GList *packages;
@@ -209,7 +177,7 @@ nautilus_service_install_view_install_package_callback (GtkWidget *widget,
 }
 
 void 
-nautilus_service_install_view_uninstall_package_callback (GtkWidget *widget,
+xnautilus_service_install_view_uninstall_package_callback (GtkWidget *widget,
 			                		  NautilusServiceInstallView *view)
 {
 	GList *packages;

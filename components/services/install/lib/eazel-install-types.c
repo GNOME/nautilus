@@ -179,6 +179,37 @@ packagedata_new_from_rpm_header (Header *hd)
 	return pack;
 };
 
+/*
+PackageData* 
+packagedata_copy (const PackageData *pack)
+{
+	PackageData *result;
+	g_assert (pack);
+
+	result = packagedata_new ();
+	result->name = g_strdup (pack->name);
+	result->version = g_strdup (pack->version);
+	result->minor = g_strdup (pack->minor);
+	result->archtype = g_strdup (pack->archtype);
+	result->description = g_strdup (pack->description);
+	result->filename = g_strdup (pack->filename);
+	result->remote_url = g_strdup (pack->remote_url);
+	result->install_root = g_strdup (pack->install_root);
+	result->eazel_id = g_strdup (pack->eazel_id);
+
+	result->toplevel = pack->toplevel;
+	result->status = pack->status;
+	result->modify_status = pack->modify_status;
+	result->source_package = pack->source_package;
+	result->conflicts_checked = pack->conflicts_checked;
+
+	result->distribution = pack->distribution;
+	result->bytesize = pack->bytesize;
+
+	return result;
+}
+*/
+
 /* FIXME bugzilla.eazel.com 2351:
    check possible leaks from using headerGetEntry.
    Addition ; it looks like it depends on the tag type. From reading

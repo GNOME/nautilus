@@ -67,6 +67,7 @@ begin_install (EazelInstaller  *installer)
 			install_categories = g_list_append (install_categories, category);
 		}
 	}
+
 	if (install_categories) {
 		eazel_installer_do_install (installer, install_categories);
 	}

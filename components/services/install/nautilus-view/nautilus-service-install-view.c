@@ -25,7 +25,6 @@
 #include <config.h>
 
 #include "nautilus-service-install-view.h"
-#include "nautilus-service-install.h"
 #include "shared-service-widgets.h"
 #include "shared-service-utilities.h"
 #include <libeazelinstall.h>
@@ -45,6 +44,7 @@
 #include <libnautilus-extensions/nautilus-image.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-password-dialog.h>
+#include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <dirent.h>
@@ -247,6 +247,11 @@ nautilus_service_install_view_initialize (NautilusServiceInstallView *view)
 	background = nautilus_get_widget_background (GTK_WIDGET (view));
 	nautilus_background_set_color (background, SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
 
+	/* Crude fix for 
+	   FIXME bugzilla.eazel.com 3431
+	*/
+	view->details->core_package = FALSE;
+
 	gtk_widget_show (GTK_WIDGET (view));
 }
 
@@ -291,10 +296,14 @@ create_package (char *name, int local_file)
 	struct utsname buf;
 	PackageData *pack;
 
+	g_assert (name);
+
 	uname (&buf);
 	pack = packagedata_new ();
 	if (local_file) {
 		pack->filename = g_strdup (name);
+	} else if (strncmp (name, "id%3D", 5)==0) {
+		pack->eazel_id = g_strdup (name+5);
 	} else {
 		pack->name = g_strdup (name);
 	}
@@ -695,6 +704,30 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 		out = g_strdup_printf (_("Installing package %d of %d"), current_package, total_packages);
 		show_overall_feedback (view, out);
 		g_free (out);
+
+		/* Crude fix for 
+		   FIXME bugzilla.eazel.com 3431
+		*/	
+		if (pack->name) {		
+			if (strncasecmp (pack->name, "nautilus", 8)==0) {
+				view->details->core_package = TRUE;
+			} 
+		}
+		/* Crude fix for 
+		   FIXME bugzilla.eazel.com 3431
+		   should go into nautilus_service_install_done, and only by called 
+		   if result==TRUE
+		*/
+		if (view->details->core_package) {
+			GtkWidget *toplevel;
+			GnomeDialog *dialog;
+			toplevel = gtk_widget_get_toplevel (GTK_WIDGET (view->details->nautilus_view));
+			dialog = nautilus_info_dialog (_("A core package of nautilus has been updated.\n"
+							 "You should restart nautilus."),
+						       _("Nautilus updated"),
+						       GTK_WINDOW (toplevel));
+		}
+
 
 		make_new_status (view);
 		gtk_progress_set_percentage (GTK_PROGRESS (view->details->current_progress_bar), 0.0);
