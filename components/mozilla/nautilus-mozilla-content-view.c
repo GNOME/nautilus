@@ -53,10 +53,6 @@
 #include <libgnomevfs/gnome-vfs.h>
 #include <stdlib.h>
 
-#ifdef HAVE_AMMONITE
-#include <libtrilobite/libammonite-gtk.h>
-#endif
-
 #define nopeDEBUG_ramiro 1
 #define nopeDEBUG_mfleming 1
 #define nopeDEBUG_pepper 1
@@ -206,11 +202,6 @@ static void     mozilla_chrome_title_callback                  (GtkMozEmbed     
 
 /* Private NautilusMozillaContentView functions */ 
 
-static char *	translate_uri_nautilus_to_mozilla 		(NautilusMozillaContentView 	*view,
-								 const char 			*uri);
-static char * 	translate_uri_mozilla_to_nautilus 		(NautilusMozillaContentView 	*view,
-								 const char 			*uri);
-
 #ifdef BUSY_CURSOR
 static void     set_busy_cursor           			(NautilusMozillaContentView     *view);
 static void     clear_busy_cursor				(NautilusMozillaContentView     *view);
@@ -245,19 +236,6 @@ static gint	string_list_get_index_of_string 		(const char			*string_list[],
 
 static void	pre_widget_initialize				(void);
 static void	post_widget_initialize				(void);
-
-#ifdef HAVE_AMMONITE
-
-/*
- * URL scheme hack for the eazel-services: scheme
- */
-
-static char *	eazel_services_scheme_to_http			(NautilusMozillaContentView	*view,
-								 const char			*uri);
-
-static char *	eazel_services_scheme_from_http			(NautilusMozillaContentView	*view,
-				  				 const char			*uri);
-#endif /* HAVE_AMMONITE */
 
 /* BonoboControl callbacks */
 static void bonobo_control_activate_callback (BonoboObject *control, gboolean state, gpointer callback_data);
@@ -978,7 +956,6 @@ mozilla_location_callback (GtkMozEmbed *mozilla, gpointer user_data)
 {
  	NautilusMozillaContentView	*view;
 	char				*new_location;
-	char				*new_location_translated;
 
 	DEBUG_MSG (("+%s\n", __FUNCTION__));
 
@@ -991,9 +968,7 @@ mozilla_location_callback (GtkMozEmbed *mozilla, gpointer user_data)
 
 	new_location = gtk_moz_embed_get_location (view->details->mozilla);
 
-	new_location_translated = translate_uri_mozilla_to_nautilus (view, new_location);
-
-	DEBUG_MSG (("=%s : current='%s' new='%s'\n", __FUNCTION__, view->details->uri, new_location_translated));
+	DEBUG_MSG (("=%s : current='%s' new='%s'\n", __FUNCTION__, view->details->uri, new_location));
 
 	/*
 	 * FIXME bug 7114
@@ -1015,19 +990,19 @@ mozilla_location_callback (GtkMozEmbed *mozilla, gpointer user_data)
 	 */
 
 	if (view->details->uri == NULL 
-	    || (!uris_identical (new_location_translated, view->details->uri))) {
+	    || (!uris_identical (new_location, view->details->uri))) {
 		if (view->details->user_initiated_navigation) {
-			update_nautilus_uri (view, new_location_translated);
+			update_nautilus_uri (view, new_location);
 		} else {
 			DEBUG_MSG (("=%s : Navigation not user initiated, reporting as redirect\n", __FUNCTION__));
 
-			DEBUG_MSG ((">nautilus_view_report_redirect (%s,%s)\n", view->details->uri, new_location_translated));
+			DEBUG_MSG ((">nautilus_view_report_redirect (%s,%s)\n", view->details->uri, new_location));
 
 			nautilus_view_report_redirect (view->details->nautilus_view, 
-				view->details->uri, new_location_translated, NULL, new_location_translated);
+				view->details->uri, new_location, NULL, new_location);
 
 			g_free (view->details->uri);
-			view->details->uri = g_strdup (new_location_translated);
+			view->details->uri = g_strdup (new_location);
 		}
 	} else {
 		DEBUG_MSG (("=%s : URI's identical, ignoring request\n", __FUNCTION__));
@@ -1035,12 +1010,7 @@ mozilla_location_callback (GtkMozEmbed *mozilla, gpointer user_data)
 
 	view->details->user_initiated_navigation = FALSE;
 
-	g_free (new_location_translated);
-	new_location_translated = NULL;	
-
 	g_free (new_location);
-	new_location = NULL;
-
 
 	DEBUG_MSG (("-%s\n", __FUNCTION__));
 }
@@ -1163,7 +1133,6 @@ mozilla_link_message_callback (GtkMozEmbed *mozilla, gpointer user_data)
 {
  	NautilusMozillaContentView	*view;
 	char				*link_message;
-	char				*translated_link_message;
 
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
 
@@ -1179,13 +1148,9 @@ mozilla_link_message_callback (GtkMozEmbed *mozilla, gpointer user_data)
 	 * for fragments inside a document).
 	 */
 
-	/* This is actually not that efficient */
-	translated_link_message = translate_uri_mozilla_to_nautilus (view, link_message);
+	/* DEBUG_MSG (("=%s new link message '%s'\n", __FUNCTION__, link_message)); */
 
-	/* DEBUG_MSG (("=%s new link message '%s'\n", __FUNCTION__, translated_link_message)); */
-
-	nautilus_view_report_status (view->details->nautilus_view, translated_link_message);
-	g_free (translated_link_message);
+	nautilus_view_report_status (view->details->nautilus_view, link_message);
 	g_free (link_message);
 
 	/* DEBUG_MSG (("-%s\n", __FUNCTION__)) */
@@ -1261,12 +1226,10 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
  	NautilusMozillaContentView	*view;
 	char				*href;
 	char 				*href_full;
-	char 				*href_mozilla;
 	gint				ret;
 
 	href = NULL;
 	href_full = NULL;
-	href_mozilla = NULL;
 	ret = NS_DOM_EVENT_IGNORED;
 
 	g_return_val_if_fail (GTK_IS_MOZ_EMBED (mozilla), NS_DOM_EVENT_IGNORED);
@@ -1287,56 +1250,11 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 
 	if (href != NULL) {
 
-		/*
-		 * What's up with these translations?
-		 * mozilla_to_nautilus translates http://localhost:160xx -> eazel-services:///
-		 * nautilus_to_mozilla translates eazel--services -> http://localhost:160xx
-		 * 
-		 * Case 0)
-		 *  "href" is a full normal HTTP uri
-		 *  href_full is identical to href
-		 *  Both the mozilla and nautilus versions of the href are identical
-		 *  We let the navigate continue w/o interrupting
-		 *
-		 * Case 1)
-		 *  "href" is a partial URI inside a normal HTTP page
-		 *  href_full is the full version of the uri
-		 *  Like in case 0,
-		 *  Both the mozilla and nautilus versions of the href are identical
-		 *  We let the navigate continue w/o interrupting
-		 *
-		 * Case 2)
-		 *   "href" is a relative link inside an eazel-services page
-		 *   href_full is "eazel-services:///<whatever>"
-		 *   href_mozilla is "http://localhost:160xx/<whatever>"
-		 *   We let the navigate continue w/o interrupting
-		 * 
-		 * Case 3)
-		 *   "href" is a full eazel-services: URI
-		 *   href_full is "eazel-services:///<whatever>"
-		 *   href_mozilla is "http://localhost:160xx/<whatever>"
-		 *   We need to interrupt the navigate to translate.  It's the
-		 *   same case as case (2) in the if statement below
-		 *
-		 * It's not actually feasible to get an http://localhost:160xx
-		 * as href_full here, so we don't handle the case where
-		 * href_full needs to be converted to a "nautilus" URI
-		 */
-	
 		href_full = make_full_uri_from_relative (view->details->uri, href);
-		href_mozilla = translate_uri_nautilus_to_mozilla (view, href_full);
 
-		DEBUG_MSG (("=%s href='%s' full='%s' xlate='%s'\n", __FUNCTION__, href, href_full, href_mozilla));
+		DEBUG_MSG (("=%s href='%s' full='%s'\n", __FUNCTION__, href, href_full));
 
-		if (href_mozilla == NULL) {
-			/* An eazel-services URL when the user isn't logged in.
-			 * Right now, we report a load error.  But we
-			 * could tell ammonite to prompt for login
-			 */
-			DEBUG_MSG ((">nautilus_view_report_load_failed\n"));
-			nautilus_view_report_load_failed (view->details->nautilus_view);
-			ret = NS_DOM_EVENT_CONSUMED;
-		} else if (href[0] == '#') {
+		if (href[0] == '#') {
 			/* a navigation to an anchor within the same page */
 			view->details->user_initiated_navigation = TRUE;
 
@@ -1366,8 +1284,7 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 		} else if (should_uri_navigate_bypass_nautilus (href_full)) {
 			view->details->user_initiated_navigation = TRUE;
 
-			if ((should_mozilla_load_uri_directly (href_full) 
-			     && 0 == strcmp (href_full, href_mozilla))
+			if (should_mozilla_load_uri_directly (href_full)
 			     || is_uri_relative (href)) {
 				/* If the URI doesn't need to be translated and we can load it directly,
 				 * then just keep going...report_location_change will happen in the
@@ -1399,7 +1316,6 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 		DEBUG_MSG (("=%s no href, ignoring\n", __FUNCTION__));
 	}
 
-	g_free (href_mozilla);
 	g_free (href_full);
 	g_free (href);
 
@@ -1484,53 +1400,6 @@ vfs_read_callback (GnomeVFSAsyncHandle *handle, GnomeVFSResult result, gpointer 
 /***********************************************************************************/
 /***********************************************************************************/
 
-/*
- * FIXME
- * Both of these calls can make outbound CORBA calls which
- * can allow incoming CORBA calls that can cause things to bust
- */
-
-/*
- * FIXME
- * Right now, if you're on a normal HTML page and you encounter a link
- * to eazel-services:///<something>, you'll get a failure from Mozilla instead
- * of a login prompt.  Login prompting needs to be added to Mozilla like
- * the eazel-install view
- */
-
-/* A NULL return from this function must trigger a nautilus load error */
-static char *
-translate_uri_nautilus_to_mozilla (NautilusMozillaContentView *view, const char *uri)
-{
-	/* gint i; */
-	char *ret;
-
-	g_return_val_if_fail (uri != NULL, NULL);
-
-
-#ifdef HAVE_AMMONITE
-	if (0 == strncmp (uri, "eazel-services:", strlen ("eazel-services:"))) {
-		ret = eazel_services_scheme_to_http (view, uri);
-	} else
-#endif /* HAVE_AMMONITE */
-		{
-		ret = g_strdup (uri);
-	}
-
-	return ret;
-
-}
-
-static char *
-translate_uri_mozilla_to_nautilus (NautilusMozillaContentView *view, const char *uri)
-{
-#ifdef HAVE_AMMONITE
-	return eazel_services_scheme_from_http (view, uri);
-#else
-	return g_strdup (uri);
-#endif /* HAVE_AMMONITE */
-}
-
 #ifdef BUSY_CURSOR
 static void
 set_busy_cursor (NautilusMozillaContentView *view)
@@ -1577,22 +1446,12 @@ cancel_pending_vfs_operation (NautilusMozillaContentView *view)
 
 /* this takes a "nautilus" uri, not a "mozilla" uri */
 static void
-navigate_mozilla_to_nautilus_uri (NautilusMozillaContentView     *view,
-			 	  const char			*nautilus_uri)
+navigate_mozilla_to_nautilus_uri (NautilusMozillaContentView    *view,
+			 	  const char			*uri)
 {
-	char *mozilla_uri;
-	char *old_mozilla_uri;
-	char *old_nautilus_uri;
-
-	mozilla_uri = translate_uri_nautilus_to_mozilla (view, nautilus_uri);
+	char *old_uri;
 
 	cancel_pending_vfs_operation (view);
-
-	if (mozilla_uri == NULL) {
-		DEBUG_MSG ((">nautilus_view_report_load_failed\n"));
-		nautilus_view_report_load_failed (view->details->nautilus_view);
-		goto error;
-	}
 
 	if (!GTK_WIDGET_REALIZED (view->details->mozilla)) {
 
@@ -1607,7 +1466,7 @@ navigate_mozilla_to_nautilus_uri (NautilusMozillaContentView     *view,
 		DEBUG_MSG (("=%s: Postponing navigation request to widget realization\n", __FUNCTION__));
 		/* Note that view->details->uri is still set below */
 	} else {
-		if (should_mozilla_load_uri_directly (nautilus_uri)) {
+		if (should_mozilla_load_uri_directly (uri)) {
 
 			/* See if the current URI is the same as what mozilla already
 			 * has.  If so, issue a reload rather than a load.
@@ -1617,36 +1476,27 @@ navigate_mozilla_to_nautilus_uri (NautilusMozillaContentView     *view,
 			 * locations)
 			 */
 
-			old_mozilla_uri = gtk_moz_embed_get_location (view->details->mozilla);
-			old_nautilus_uri = translate_uri_mozilla_to_nautilus (view, old_mozilla_uri);
+			old_uri = gtk_moz_embed_get_location (view->details->mozilla);
 
-			if (old_nautilus_uri != NULL && uris_identical (nautilus_uri, old_nautilus_uri)) {
+			if (old_uri != NULL && uris_identical (uri, old_uri)) {
 				DEBUG_MSG (("=%s uri's identical, telling mozilla to reload\n", __FUNCTION__));
 				gtk_moz_embed_reload (view->details->mozilla,
 					GTK_MOZ_EMBED_FLAG_RELOADBYPASSCACHE);
 			} else {
-				gtk_moz_embed_load_url (view->details->mozilla,
-							mozilla_uri);
+				gtk_moz_embed_load_url (view->details->mozilla, uri);
 			}
 
-			g_free (old_mozilla_uri);
-			old_mozilla_uri = NULL;
-			g_free (old_nautilus_uri);
-			old_nautilus_uri = NULL;
+			g_free (old_uri);
 		} else {
 			DEBUG_MSG (("=%s loading URI via gnome-vfs\n", __FUNCTION__));
-			gnome_vfs_async_open (&(view->details->vfs_handle), nautilus_uri, GNOME_VFS_OPEN_READ, vfs_open_callback, view);
+			gnome_vfs_async_open (&(view->details->vfs_handle), uri, GNOME_VFS_OPEN_READ, vfs_open_callback, view);
 		}
 	}
 
 	g_free (view->details->uri);
-	view->details->uri = g_strdup (nautilus_uri);
+	view->details->uri = g_strdup (uri);
 
 	DEBUG_MSG (("=%s current URI is now '%s'\n", __FUNCTION__, view->details->uri));
-
-error:
-	g_free (mozilla_uri);
-	mozilla_uri = NULL;
 }
 
 static void
@@ -2126,85 +1976,3 @@ post_widget_initialize (void)
 
 	cache_dir = NULL;
 }
-
-
-#ifdef HAVE_AMMONITE
-
-/*
- * URL scheme hack for the eazel-services: scheme
- */
-
-/* A NULL return from this function must trigger a nautilus load error */
-static char *
-eazel_services_scheme_to_http (NautilusMozillaContentView	*view,
-			       const char			*uri)
-{
-	const char *uri_minus_scheme;
-	char *new_uri = NULL;
-	char *ret = NULL;
-	AmmoniteError err;
-	GnomeVFSURI *vfs_uri;
-
-	/* Chew off the the scheme, leave the colon */
-	uri_minus_scheme = strchr (uri, (unsigned char)':');
-
-	g_assert (uri_minus_scheme);
-
-	err = ammonite_http_url_for_eazel_url (uri_minus_scheme, &new_uri);
-
-	switch (err) {
-	case ERR_Success:
-		ret = g_strconcat ("http", new_uri, NULL);
-		g_free (new_uri);
-		new_uri = NULL;
-	break;
-	case ERR_UserNotLoggedIn:
-		/* Rather than try to use the ammonite login dialog directly here,
-		 * we're going to coax the ammonite autoprompter to come
-		 * up by using gnome-vfs
-		 */
-		vfs_uri = gnome_vfs_uri_new (uri);
-		if (vfs_uri != NULL) {
-			/* Don't remove: no-op to force ammonite login */
-			gnome_vfs_uri_is_local (vfs_uri);
-			gnome_vfs_uri_unref (vfs_uri);
-			vfs_uri = NULL;
-		}
-
-		err = ammonite_http_url_for_eazel_url (uri_minus_scheme, &new_uri);
-
-		if (err == ERR_Success) {
-			ret = g_strconcat ("http", new_uri, NULL);
-			g_free (new_uri);
-			new_uri = NULL;
-		} else {
-			ret = NULL;
-		}
-	break;
-	default:
-		ret = NULL;
-	break;
-	}
-
-	return ret;
-}
-
-static char *
-eazel_services_scheme_from_http	(NautilusMozillaContentView	*view,
-				 const char			*uri)
-{
-	AmmoniteError err;
-	char *ret;
-
-	err = ammonite_eazel_url_for_http_url (uri, &ret);
-
-	if (ERR_Success == err) {
-		DEBUG_MSG (("%s untranslated uri '%s' to '%s'\n", __FUNCTION__, uri, ret));
-	} else {
-		ret = g_strdup (uri);
-	}
-
-	return ret;
-}
-
-#endif /* HAVE_AMMONITE */

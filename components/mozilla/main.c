@@ -36,10 +36,6 @@
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <stdlib.h>
 
-#ifdef HAVE_AMMONITE
-#include <libtrilobite/libammonite-gtk.h>
-#endif
-
 #define nopeDEBUG_mfleming 1
 
 #ifdef DEBUG_mfleming
@@ -255,10 +251,6 @@ main (int argc, char *argv[])
 #endif
 
 	gnome_vfs_init ();
-
-#ifdef HAVE_AMMONITE
-	ammonite_init ((PortableServer_POA) bonobo_poa);
-#endif
 
 	/* We want the XPCOM runtime to stick around longer than
 	 * the lifetime of a gtkembedmoz widget.

@@ -7,11 +7,9 @@ dnl it too, or it will never make it into the spec file!
 dnl
 dnl ==========================================================================
 
-BONOBO_REQUIRED=0.37
-EEL_REQUIRED=1.0
+BONOBO_REQUIRED=1.0.9
+EEL_REQUIRED=1.0.2
 ESOUND_REQUIRED=0.2.22
-FREETYPE_LIBRARY_REQUIRED=6.1.0
-FREETYPE_REQUIRED=2.0.1
 GCONF_REQUIRED=0.12
 GDK_PIXBUF_REQUIRED=0.10.0
 GLIB_REQUIRED=1.2.9
@@ -20,7 +18,7 @@ GNOME_REQUIRED=1.2.8
 GNOME_VFS_REQUIRED=1.0.2
 GTK_REQUIRED=1.2.9
 IMLIB_REQUIRED=1.9.8
-LIBRSVG_REQUIRED=1.0.0
+LIBRSVG_REQUIRED=1.0.1
 LIBXML_REQUIRED=1.8.10
 MEDUSA_REQUIRED=0.5.1
 OAF_REQUIRED=0.6.5
@@ -30,7 +28,6 @@ SCROLLKEEPER_REQUIRED=0.1.4
 
 AC_SUBST(EEL_REQUIRED)
 AC_SUBST(ESOUND_REQUIRED)
-AC_SUBST(FREETYPE_REQUIRED)
 AC_SUBST(GNOME_VFS_REQUIRED)
 AC_SUBST(IMLIB_REQUIRED)
 AC_SUBST(LIBRSVG_REQUIRED)
@@ -41,11 +38,6 @@ AC_SUBST(POPT_REQUIRED)
 AC_SUBST(SCROLLKEEPER_REQUIRED)
 
 dnl ===========================================================================
-
-if test -n "$GNOME2_PATH"; then
-	PATH="$GNOME2_PATH/bin:$PATH"
-	export PATH
-fi
 
 AM_INIT_AUTOMAKE(nautilus, 1.0.4.1)
 AM_CONFIG_HEADER(config.h)
@@ -120,22 +112,6 @@ dnl ====================================
 _system_is_x86="no"
 AC_CHECK_HEADER( asm/vm86.h, _system_is_x86="yes" )
 AM_CONDITIONAL(X86_OPTIMIZED, test "x$_system_is_x86" = "xyes")
-
-dnl =======================
-dnl = begin tests for FreeType2
-dnl =======================
-NAUTILUS_PATH_FREETYPE2($FREETYPE_LIBRARY_REQUIRED,,
-AC_MSG_ERROR([
-*** FreeType2 $FREETYPE_REQUIRED or better is required. You can obtain a
-*** packaged version of FreeType2 over here:
-*** http://developer.eazel.com/eazel-hacking/updates/freetype2
-*** source versions are available from ftp://ftp.freetype.org]))
-
-AC_SUBST(FREETYPE2_CFLAGS)
-AC_SUBST(FREETYPE2_LIBS)
-dnl =======================
-dnl = End tests for FreeType2
-dnl =======================
 
 dnl ====================================
 dnl = mozilla embedded component support
@@ -354,7 +330,7 @@ dnl = End mozilla hacks
 dnl ====================================
 
 dnl ====================================
-dnl = Bzip2
+dnl = Bzip2, for the help converters
 dnl ====================================
 BZ_LIBS=
 AC_CHECK_LIB(bz2, bzread, [AC_DEFINE(HAVE_LIBBZ2)
@@ -388,7 +364,10 @@ AC_CHECK_HEADERS(cdda_interface.h cdda_paranoia.h, [
 		AM_CONDITIONAL(HAVE_CDDA, true);
 	])
 
-dnl Checks for libraries.
+dnl ====================================
+dnl Gnome libraries.
+dnl ====================================
+
 AM_PATH_GLIB($GLIB_REQUIRED,,
 AC_MSG_ERROR([
 *** GLIB $GLIB_REQUIRED or better is required. The latest version of GLIB
@@ -414,13 +393,6 @@ fi
 
 NAUTILUS_VERSION_INSIST(gnome-libs, $GNOME_CONFIG --version | awk '{print $2}', >=, GNOME_LIBS_REQUIRED)
 
-dnl check for gnome_canvas_set_dither existence
-_libs="$LIBS"
-LIBS=$GNOMEUI_LIBS
-AC_CHECK_FUNCS(gnome_canvas_set_dither)
-LIBS="$_libs"
-
-dnl Bonobo
 NAUTILUS_VERSION_INSIST(bonobo, $GNOME_CONFIG --modversion bonobo | awk -F- '{print $2}', >=, BONOBO_REQUIRED)
 
 AC_SUBST(GNOMECANVASPIXBUF_LIBS)
@@ -438,9 +410,9 @@ AC_SUBST(LIBRSVG_CFLAGS)
 AC_SUBST(EEL_LIBS)
 AC_SUBST(EEL_CFLAGS)
 
-dnl   Bug 7315: Rediscover CFLAGS for GTK, because gnome-config won't know
+dnl   Rediscover CFLAGS for GTK, because gnome-config won't know
 dnl   all the necessary flags if GTK has been upgraded more recently than
-dnl   it has.
+dnl   it has. See bugzilla.gnome.org bug 47315.
 
 AC_PATH_PROG(GTK_CONFIG,gtk-config,false)
 AC_MSG_CHECKING(for gtk-config cflags)
@@ -522,7 +494,7 @@ dnl = End tests for scrollkeeper
 dnl =======================
 
 dnl ====================================
-dnl = Test whether jw is installed
+dnl = Test whether jw is installed for doc build
 dnl ====================================
 AC_PATH_PROG(JW,jw,no)
 if test x$JW = xno; then
@@ -577,7 +549,9 @@ dnl ====================================
 dnl = end gdk-pixbuf checks
 dnl ====================================
 
-
+dnl ====================================
+dnl = zlib for help converters
+dnl ====================================
 AC_CHECK_LIB(z, gzopen, [Z_LIBS=-lz
 AC_SUBST(Z_LIBS)], AC_MSG_ERROR([*** zlib is required]))
 
@@ -606,34 +580,6 @@ AC_SUBST(MEDUSA_CFLAGS)
 AC_SUBST(MEDUSA_LIBS)
 dnl =======================
 dnl = End tests for medusa
-dnl =======================
-
-dnl ====================================
-dnl = Begin tests for ammonite
-dnl ====================================
-ammonite_module=`$GNOME_CONFIG --modversion ammonite 2> /dev/null | awk -F"-" '{ print $1; }'`
-
-if test "$ammonite_module" = "ammonite"
-then
-	HAVE_AMMONITE=1
-	AC_DEFINE(HAVE_AMMONITE)
-else
-	HAVE_AMMONITE=0
-fi
-
-AC_SUBST(HAVE_AMMONITE)
-
-if test "$HAVE_AMMONITE" = "1"
-then
-	NAUTILUS_VERSION_INSIST(ammonite, $GNOME_CONFIG --modversion ammonite | awk -F- '{print $2}', >=, AMMONITE_REQUIRED)
-
-	AMMONITE_CFLAGS=`$GNOME_CONFIG --cflags ammonite`
-	AMMONITE_LIBS=`$GNOME_CONFIG --libs ammonite`
-	AC_SUBST(AMMONITE_CFLAGS)
-	AC_SUBST(AMMONITE_LIBS)
-fi
-dnl =======================
-dnl = End tests for ammonite
 dnl =======================
 
 dnl ====================================
@@ -915,11 +861,6 @@ case "X$ENABLE_PROFILER" in
 	echo "Enable profiler                   : NO"
 	;;
 esac
-
-dnl <= Ammonite =>
-echo "HAVE_AMMONITE                     : $HAVE_AMMONITE"
-echo "AMMONITE_CFLAGS                   : $AMMONITE_CFLAGS"
-echo "AMMONITE_LIBS                     : $AMMONITE_LIBS"
 
 dnl <= Snapshot things =>
 echo "EAZEL_BUILD_TIMESTAMP             : $EAZEL_BUILD_TIMESTAMP"

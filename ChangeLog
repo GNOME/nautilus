@@ -1,5 +1,29 @@
 2001-10-09  Darin Adler  <darin@bentspoon.com>
 
+	* configure.in: Require newer versions of various libraries to
+	cut down on the bug reports with people using newer nautilus
+	and older versions of those libraries. Including bonobo 1.0.9,
+	eel 1.0.2, librsvg 1.0.1. Remove the freetype stuff here, since
+	that's all taken care of in librsvg. Remove old GNOME2_PATH thing
+	that is definitely not needed. Remove gnome_canvas_set_dither
+	check which is now in eel if needed at all. Remove ammonite
+	configure flags.
+
+	* nautilus.spec.in: Remove freetype dependencies. This is now
+	handled in librsvg.
+	
+	* components/mozilla/Makefile.am:
+	* components/mozilla/main.c: (main):
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(mozilla_location_callback), (mozilla_link_message_callback),
+	(mozilla_dom_mouse_click_callback),
+	(navigate_mozilla_to_nautilus_uri), (post_widget_initialize):
+	* src/Makefile.am:
+	Remove dependencies on ammonite and some more remnants of
+	Eazel services code.
+
+2001-10-09  Darin Adler  <darin@bentspoon.com>
+
 	* libnautilus-private/nautilus-find-icon-image.c:
 	(get_themed_icon_file_path): Fix typo.
 

@@ -9,7 +9,6 @@ INCLUDES =\
 	-I$(top_srcdir)/cut-n-paste-code/widgets/e-paned \
 	-I$(top_srcdir)/cut-n-paste-code/widgets/gimphwrapbox \
 	$(NAUTILUS_PRIVATE_CFLAGS) \
-	$(AMMONITE_CFLAGS) \
 	-DVERSION="\"$(VERSION)\"" \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
@@ -22,7 +21,6 @@ LDADD =\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la \
 	$(top_builddir)/libnautilus-private/libnautilus-private.la  \
-        $(AMMONITE_LIBS) \
 	$(NAUTILUS_PRIVATE_LIBS) \
 	$(NULL)
 
