@@ -1,3 +1,10 @@
+2002-04-20	Diego González  <diego@pemas.net>
+
+	* libnautilus-private/nautilus-find-icon-image.c (make_full_icon_path):
+	  if the path is not partial also check that the icon exists with the
+	  suffix passed. With this we are able to see the correct icons when they
+	  are given with the whole path.
+ 
 2002-04-20  Anders Carlsson  <set EMAIL_ADDRESS environment variable>
 
 	* libnautilus-private/nautilus-drag-window.c:

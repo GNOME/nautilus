@@ -56,7 +56,7 @@ make_full_icon_path (const char *path,
 	
 	partial_path = g_strconcat (path, suffix, NULL);
 
-	if (path[0] == '/') {
+	if (path[0] == '/' && g_file_test (partial_path, G_FILE_TEST_EXISTS)) {
 		return partial_path;
 	}
 
