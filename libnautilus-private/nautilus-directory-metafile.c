@@ -76,18 +76,18 @@ get_metafile (NautilusDirectory *directory)
 	char *uri;
 	CORBA_Environment ev;
 
-	uri = nautilus_directory_get_uri (directory);
-	
-	CORBA_exception_init (&ev);
-
 	if (directory->details->metafile_corba_object == CORBA_OBJECT_NIL) {
+		uri = nautilus_directory_get_uri (directory);
+	
+		CORBA_exception_init (&ev);
+
 		directory->details->metafile_corba_object = Nautilus_MetafileFactory_open (get_factory (), uri, &ev);
+
+		/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+		CORBA_exception_free (&ev);
+	
+		g_free (uri);
 	}
-	
-	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
-	CORBA_exception_free (&ev);
-	
-	g_free (uri);
 
 	return bonobo_object_dup_ref (directory->details->metafile_corba_object, NULL);	
 }

@@ -1,3 +1,10 @@
+2001-06-29  Ettore Perazzoli  <ettore@ximian.com>
+
+	* libnautilus-private/nautilus-directory-metafile.c
+	(get_metafile): Avoid initializing the exception and getting the
+	URI if we already have a CORBA object, as they are not needed in
+	that case.
+
 2001-06-29  Darin Adler  <darin@bentspoon.com>
 
 	* src/run-nautilus: Get rid of all the "smarts" in this
