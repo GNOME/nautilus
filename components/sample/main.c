@@ -53,6 +53,6 @@ main (int argc, char *argv[])
 	return nautilus_view_standard_main (EXECUTABLE_NAME, VERSION,
 					    argc, argv,
 					    FACTORY_IID, VIEW_IID,
-					    nautilus_view_create_from_get_type,
+					    nautilus_view_create_from_get_type_function,
 					    GET_TYPE_FUNCTION);
 }

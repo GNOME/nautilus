@@ -1,5 +1,21 @@
 2000-12-21  John Sullivan  <sullivan@eazel.com>
 
+	* components/sample/main.c: (main): Changed
+	nautilus_view_create_from_get_type to
+	nautilus_view_create_from_get_type_function so it would
+	compile. My guess is this was a last-minute rename from
+	Maciej's previous checkin.
+
+	Fixed bug 5319 (two menu items in Help menu use same underline
+	accelerator key)
+	Fixed bug 5293 ("Nautilus Feedback..." should just be "Feedback..."
+	since it's not only for Nautilus feedback.)
+	
+	* src/nautilus-shell-ui.xml: Moved an underscore, changed a label,
+	tweaked a tip.
+
+2000-12-21  John Sullivan  <sullivan@eazel.com>
+
 	reviewed by: Pavel Cisler <pavel@eazel.com>
 
 	Fixed bug 5282 (Two file-name-conflict dialogs renaming in
