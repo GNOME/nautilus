@@ -563,21 +563,22 @@ nautilus_sidebar_create_context_menu (NautilusSidebar *sidebar)
 	
 	menu = gtk_menu_new ();
 	
+	/* add the sidebar panels */
+	sidebar_add_panel_context_menu_items (sidebar, menu);
+
+	/* add a separator */
+	menu_item = gtk_menu_item_new ();
+	gtk_widget_show (menu_item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+
 	/* add the reset background item, possibly disabled */
-	menu_item = gtk_menu_item_new_with_label (_("Reset Background"));
+	menu_item = gtk_menu_item_new_with_mnemonic (_("Use _Default Background"));
  	gtk_widget_show (menu_item);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
         gtk_widget_set_sensitive (menu_item, has_background);
 	g_signal_connect_object (menu_item, "activate",
 				 G_CALLBACK (reset_background_callback), sidebar, 0);
 
-	/* add a separator */
-	menu_item = gtk_menu_item_new ();
-	gtk_widget_show (menu_item);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
-	
-	/* add the sidebar panels */
-	sidebar_add_panel_context_menu_items (sidebar, menu);
 	return menu;
 }
 
