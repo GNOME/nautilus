@@ -56,10 +56,10 @@ nautilus_report_check_failure (char *result, char *expected)
 		printf ("\n");
 	}
 
-	printf ("FAIL: check failed in %s, line %d\n", current_file_name, current_line_number);
-	printf ("      evaluated: %s\n", current_expression);
-	printf ("       expected: %s\n", expected == NULL ? "NULL" : expected);
-	printf ("            got: %s\n", result == NULL ? "NULL" : result);
+	fprintf (stderr, "FAIL: check failed in %s, line %d\n", current_file_name, current_line_number);
+	fprintf (stderr, "      evaluated: %s\n", current_expression);
+	fprintf (stderr, "       expected: %s\n", expected == NULL ? "NULL" : expected);
+	fprintf (stderr, "            got: %s\n", result == NULL ? "NULL" : result);
 	
 	failed = TRUE;
 
@@ -140,7 +140,7 @@ nautilus_check_string_result (char *result, const char *expected)
 void
 nautilus_before_check_function (const char *name)
 {
-	g_print ("running %s\n", name);
+	fprintf (stderr, "running %s\n", name);
 }
 
 void
