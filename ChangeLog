@@ -1,3 +1,31 @@
+2001-12-17  Darin Adler  <darin@bentspoon.com>
+
+	* libnautilus-private/nautilus-icon-canvas-item.h:
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_init),
+	(nautilus_icon_canvas_item_finalize),
+	(nautilus_icon_canvas_item_invalidate_label_size),
+	(nautilus_icon_canvas_item_set_arg),
+	(nautilus_icon_canvas_item_get_arg), (draw_or_measure_label_text),
+	(measure_label_text), (create_label_layout), (get_label_layout),
+	(draw_label_layout), (draw_or_measure_label_text_aa),
+	(draw_label_text_aa), (nautilus_icon_canvas_item_class_init):
+	Do text drawing with Pango for the anti-aliased case. Remove all
+	use of the non-Pango Eel anti-aliased text drawing code.
+	
+	* libnautilus-private/nautilus-icon-container.h:
+	* libnautilus-private/nautilus-icon-container.c: (finalize),
+	(nautilus_icon_container_init),
+	(nautilus_icon_container_update_icon),
+	(nautilus_icon_container_set_label_font_for_zoom_level):
+	* src/file-manager/fm-icon-view.c: (create_icon_container),
+	(fm_icon_view_init):
+	Remove the smooth-font stuff. We're going to use a single font
+	once we change everything to use Pango.
+	
+	* icons/Makefile.am: Remove help-system icons.
+	* icons/hyperbola-*: Remove help-system icons.
+	
 2001-12-14  Seth Nickell  <snickell@stanford.edu>
 
         The programs:/ URI is now applications:/ to conform with the

@@ -2337,10 +2337,6 @@ finalize (GObject *object)
         		gdk_font_unref (details->label_font[i]);
 	}
 
-	if (details->smooth_label_font != NULL) {
-		g_object_unref (details->smooth_label_font);
-	}
-
 	if (details->highlight_frame != NULL) {
 		g_object_unref (details->highlight_frame);
 	}
@@ -3374,8 +3370,6 @@ nautilus_icon_container_init (NautilusIconContainer *container)
         details->label_font[NAUTILUS_ZOOM_LEVEL_LARGEST] = nautilus_font_factory_get_font_by_family ("helvetica", 18);
 #endif
 
-        details->smooth_label_font = eel_scalable_font_get_default_font ();
-	
 	/* These are the default font sizes.  The font sizes are configurable via
 	 * nautilus_icon_container_set_font_size_table() 
 	 */
@@ -3759,7 +3753,6 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	GList *emblem_scalable_icons, *emblem_pixbufs, *p;
 	char *editable_text, *additional_text;
 	GdkFont *font;
-	int smooth_font_size;
 
 	if (icon == NULL) {
 		return;
@@ -3854,15 +3847,11 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	
 	font = details->label_font[details->zoom_level];
 
-	smooth_font_size = details->font_size_table[details->zoom_level];
-        
 	gnome_canvas_item_set (GNOME_CANVAS_ITEM (icon->item),
 			       "editable_text", editable_text,
 			       "additional_text", additional_text,
 			       "font", font,
 			       "highlighted_for_drop", icon == details->drop_target,
-			       "smooth_font_size", smooth_font_size,
-			       "smooth_font", details->smooth_label_font,
 			       NULL);
 	
 	nautilus_icon_canvas_item_set_image (icon->item, pixbuf);
@@ -5025,19 +5014,6 @@ nautilus_icon_container_set_label_font_for_zoom_level (NautilusIconContainer *co
 	gdk_font_ref (font);
 	
 	container->details->label_font[zoom_level] = font;
-}
-
-void
-nautilus_icon_container_set_smooth_label_font (NautilusIconContainer *container,
-					       EelScalableFont *font)
-{
-	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
-	g_return_if_fail (EEL_IS_SCALABLE_FONT (font));
-
-	g_object_ref (font);
-	g_object_unref (container->details->smooth_label_font);
-
-	container->details->smooth_label_font = font;
 }
 
 void

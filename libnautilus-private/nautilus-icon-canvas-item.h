@@ -78,7 +78,6 @@ const char *nautilus_icon_canvas_item_get_editable_text        (NautilusIconCanv
 void        nautilus_icon_canvas_item_set_renaming             (NautilusIconCanvasItem       *icon_item,
 								gboolean                      state);
 
-
 /* geometry and hit testing */
 gboolean    nautilus_icon_canvas_item_hit_test_rectangle       (NautilusIconCanvasItem       *item,
 								ArtIRect                      canvas_rect);
@@ -87,10 +86,6 @@ gboolean    nautilus_icon_canvas_item_hit_test_stretch_handles (NautilusIconCanv
 void        nautilus_icon_canvas_item_invalidate_label_size    (NautilusIconCanvasItem       *item);
 ArtDRect    nautilus_icon_canvas_item_get_icon_rectangle       (const NautilusIconCanvasItem *item);
 void        nautilus_icon_canvas_item_update_bounds            (NautilusIconCanvasItem       *item);
-void        nautilus_icon_canvas_item_set_smooth_font          (NautilusIconCanvasItem       *item,
-								EelScalableFont              *font);
-void        nautilus_icon_canvas_item_set_smooth_font_size     (NautilusIconCanvasItem       *item,
-								int                           font_size);
 
 G_END_DECLS
 

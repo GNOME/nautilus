@@ -215,8 +215,6 @@ void              nautilus_icon_container_set_anti_aliased_mode         (Nautilu
 void              nautilus_icon_container_set_label_font_for_zoom_level (NautilusIconContainer  *container,
 									 int                     zoom_level,
 									 GdkFont                *font);
-void              nautilus_icon_container_set_smooth_label_font         (NautilusIconContainer  *container,
-									 EelScalableFont   *font);
 gboolean          nautilus_icon_container_get_is_fixed_size             (NautilusIconContainer  *container);
 void              nautilus_icon_container_set_is_fixed_size             (NautilusIconContainer  *container,
 									 gboolean                is_fixed_size);

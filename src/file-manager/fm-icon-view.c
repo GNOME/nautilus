@@ -128,7 +128,6 @@ static void                 fm_icon_view_set_zoom_level                        (
 										gboolean               always_set_level);
 gboolean                    fm_icon_view_supports_auto_layout                  (FMIconView            *view);
 static void                 fm_icon_view_update_icon_container_fonts           (FMIconView            *icon_view);
-static void                 fm_icon_view_update_icon_container_smooth_font     (FMIconView            *icon_view);
 static void                 fm_icon_view_update_icon_container_font_size_table (FMIconView            *icon_view);
 static void                 fm_icon_view_update_click_mode                     (FMIconView            *icon_view);
 static void                 fm_icon_view_update_smooth_graphics_mode           (FMIconView            *icon_view);
@@ -157,7 +156,6 @@ static void                 default_use_manual_layout_changed_callback         (
 static void                 default_zoom_level_changed_callback                (gpointer               callback_data);
 static void                 default_zoom_level_font_size_changed_callback      (gpointer               callback_data);
 static void                 font_changed_callback                              (gpointer               callback_data);
-static void                 smooth_font_changed_callback                       (gpointer               callback_data);
 static void                 icon_view_handle_uri_list                          (NautilusIconContainer *container,
 										const char            *item_uris,
 										GdkDragAction          action,
@@ -2097,14 +2095,6 @@ font_changed_callback (gpointer callback_data)
 }
 
 static void
-smooth_font_changed_callback (gpointer callback_data)
-{
- 	g_return_if_fail (FM_IS_ICON_VIEW (callback_data));
-
-	fm_icon_view_update_icon_container_smooth_font (FM_ICON_VIEW (callback_data));
-}
-
-static void
 default_zoom_level_font_size_changed_callback (gpointer callback_data)
 {
  	g_return_if_fail (FM_IS_ICON_VIEW (callback_data));
@@ -2378,25 +2368,6 @@ fm_icon_view_update_icon_container_font_size_table (FMIconView *icon_view)
 }
 
 static void
-fm_icon_view_update_icon_container_smooth_font (FMIconView *icon_view)
-{
-	NautilusIconContainer *icon_container;
-	EelScalableFont *scalable_font;
-
-	icon_container = get_icon_container (icon_view);
-	g_assert (icon_container != NULL);
-	
-	scalable_font = nautilus_global_preferences_get_icon_view_smooth_font ();
-	g_assert (EEL_IS_SCALABLE_FONT (scalable_font));
-
-	nautilus_icon_container_set_smooth_label_font (icon_container,
-						       scalable_font);
-	g_object_unref (scalable_font);
-	
-	nautilus_icon_container_request_update_all (icon_container);
-}
-
-static void
 fm_icon_view_update_click_mode (FMIconView *icon_view)
 {
 	NautilusIconContainer	*icon_container;
@@ -2534,7 +2505,6 @@ create_icon_container (FMIconView *icon_view)
 			   GTK_WIDGET (icon_container));
 
 	fm_icon_view_update_icon_container_fonts (icon_view);
-	fm_icon_view_update_icon_container_smooth_font (icon_view);
 	fm_icon_view_update_icon_container_font_size_table (icon_view);
 	fm_icon_view_update_click_mode (icon_view);
 	fm_icon_view_update_smooth_graphics_mode (icon_view);
@@ -2770,10 +2740,6 @@ fm_icon_view_init (FMIconView *icon_view)
 
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_FONT,
 						  font_changed_callback, 
-						  icon_view,
-						  G_OBJECT (icon_view));
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT,
-						  smooth_font_changed_callback, 
 						  icon_view,
 						  G_OBJECT (icon_view));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
