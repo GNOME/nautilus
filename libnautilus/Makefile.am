@@ -21,7 +21,6 @@ libnautilus_la_LDFLAGS=\
 	$(XML_LIBS) \
 	$(LIBPNG)
 
-
 nautilus_view_component_idl_sources =		\
 	nautilus-view-component-stubs.c		\
 	nautilus-view-component-skels.c		\
@@ -64,7 +63,6 @@ libnautilus_la_SOURCES=					\
 	$(NULL)
 
 $(nautilus_view_component_idl_sources): nautilus_view_component_idl_stamp
-
 nautilus_view_component_idl_stamp: nautilus-view-component.idl
 	$(ORBIT_IDL) $(IDL_CFLAGS) --define=NAUTILUS_VIEW_COMPONENT_COMPILATION $(srcdir)/nautilus-view-component.idl
 	touch nautilus_view_component_idl_stamp
@@ -73,6 +71,8 @@ $(nautilus_distributed_undo_idl_sources): nautilus_distributed_undo_idl_stamp
 nautilus_distributed_undo_idl_stamp: nautilus-distributed-undo.idl
 	$(ORBIT_IDL) $(IDL_CFLAGS) $(srcdir)/nautilus-distributed-undo.idl
 	touch nautilus_distributed_undo_idl_stamp
+
+$(libnautilus_la_OBJECTS): nautilus_view_component_idl_stamp nautilus_distributed_undo_idl_stamp
 
 uidir = $(datadir)/gnome/ui
 ui_DATA = \

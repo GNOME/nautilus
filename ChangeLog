@@ -1,3 +1,15 @@
+2001-04-18  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(start_rubberbanding): Use the new EelCanvasRect instead of
+	GnomeCanvasRect for better rubber-banding speed in AA mode.
+
+	* src/Makefile.am:
+	* libnautilus/Makefile.am:
+	* libnautilus-extensions/Makefile.am:
+	Added dependencies so the IDL files get recompiled before we
+	compile any .c files.
+
 2001-04-18  Gene Z. Ragan  <gzr@eazel.com>
 	
 	Fixed bug 7925, Nautilus prevents playing audio cds.
@@ -214,7 +226,6 @@
         * reviewed by laszlo.kovacs@sun.com
         * gdb3html.h, sect-elements.[h,c], toc-elements.c 
         fixing bugs #7605, #8001, #7059, #6890
-	
 
 2001-04-17  Ramiro Estrugo  <ramiro@eazel.com>
 
@@ -279,8 +290,7 @@
 	* libnautilus-extensions/nautilus-volume-monitor.h:
 	(nautilus_volume_monitor_initialize_class):
 	Add two new signals, volume_unmount_started and volume_unmount_failed.
-	 (display_mount_error),
-	(close_error_pipe),
+	(display_mount_error), (close_error_pipe),
 	(nautilus_volume_monitor_mount_unmount_removable):
 	Prepare for and call volume_unmount_failed in the case that an
 	unmount is unable to be completed.
@@ -288,10 +298,9 @@
 	* libnautilus-extensions/nautilus-trash-directory.c:
 	(nautilus_trash_directory_initialize):
 	Connect to new volume monitor signal.
-		
 	(volume_unmount_started_callback):
-	Rename callback to be consistant with the new volume monitor signal
-	name.
+	Rename callback to be consistent with the new volume monitor
+	signal name.
 
 2001-04-16  Ramiro Estrugo  <ramiro@eazel.com>
 

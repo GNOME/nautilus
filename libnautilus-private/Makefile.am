@@ -209,10 +209,11 @@ noinst_HEADERS = \
 $(lib_LTLIBRARIES): $(dependency_static_libs)
 
 $(nautilus_metafile_server_idl_sources): nautilus_metafile_server_idl_stamp
-
 nautilus_metafile_server_idl_stamp: nautilus-metafile-server.idl $(ORBIT_IDL)
 	$(ORBIT_IDL) $(IDL_CFLAGS) $(srcdir)/nautilus-metafile-server.idl
 	touch nautilus_metafile_server_idl_stamp
+
+$(libnautilus_extensions_la_OBJECTS): nautilus_metafile_server_idl_stamp
 
 EXTRA_DIST = \
 	nautilus-metafile-server.idl	\

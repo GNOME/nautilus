@@ -35,6 +35,7 @@
 #include "nautilus-theme.h"
 #include <ctype.h>
 #include <eel/eel-background.h>
+#include <eel/eel-canvas-rect.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
@@ -47,7 +48,6 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-canvas-rect-ellipse.h>
 #include <libnautilus/nautilus-clipboard.h>
 #include <math.h>
 #include <stdio.h>
@@ -1562,16 +1562,16 @@ start_rubberbanding (NautilusIconContainer *container,
 
 		band_info->selection_rectangle = gnome_canvas_item_new
 			(gnome_canvas_root
-		 	(GNOME_CANVAS (container)),
-		 	gnome_canvas_rect_get_type (),
-		 	"x1", band_info->start_x,
-		 	"y1", band_info->start_y,
-		 	"x2", band_info->start_x,
-		 	"y2", band_info->start_y,
-		 	"fill_color_rgba", fill_color,
-		 	"outline_color_rgba", outline_color,
-		 	"width_pixels", 1,
-		 	NULL);
+			 (GNOME_CANVAS (container)),
+			 eel_canvas_rect_get_type (),
+			 "x1", band_info->start_x,
+			 "y1", band_info->start_y,
+			 "x2", band_info->start_x,
+			 "y2", band_info->start_y,
+			 "fill_color_rgba", fill_color,
+			 "outline_color_rgba", outline_color,
+			 "width_pixels", 1,
+			 NULL);
 	
 	} else {
 		fill_color_str = nautilus_theme_get_theme_data ("directory", "selection_box_color");
@@ -1581,17 +1581,17 @@ start_rubberbanding (NautilusIconContainer *container,
 
 		band_info->selection_rectangle = gnome_canvas_item_new
 			(gnome_canvas_root
-		 	(GNOME_CANVAS (container)),
-		 	gnome_canvas_rect_get_type (),
-		 	"x1", band_info->start_x,
-		 	"y1", band_info->start_y,
-		 	"x2", band_info->start_x,
-		 	"y2", band_info->start_y,
-		 	"fill_color", fill_color_str,
-		 	"fill_stipple", stipple,
-		 	"outline_color", fill_color_str,
-		 	"width_pixels", 1,
-		 	NULL);
+			 (GNOME_CANVAS (container)),
+			 eel_canvas_rect_get_type (),
+			 "x1", band_info->start_x,
+			 "y1", band_info->start_y,
+			 "x2", band_info->start_x,
+			 "y2", band_info->start_y,
+			 "fill_color", fill_color_str,
+			 "fill_stipple", stipple,
+			 "outline_color", fill_color_str,
+			 "width_pixels", 1,
+			 NULL);
 		g_free (fill_color_str);
 	}
 	
