@@ -319,10 +319,9 @@ nautilus_user_level_manager_get_user_level (void)
 	gint			 index;
 
 	user_level_string = nautilus_user_level_manager_get_user_level_as_string ();
-	/* FIXME bugzilla.eazel.com 1293: 
-	 * Asserting based on something that's read from GConf
-	 * seems like a bad idea. It means we core dump if
-	 * something's wrong.
+
+	/* The user_level_string is guranteed to be ok now.  The above function, will
+	 * make sure of that and deal with gconf problems too.
 	 */
 	g_assert (user_level_string != NULL);
 
@@ -331,11 +330,6 @@ nautilus_user_level_manager_get_user_level (void)
 
 	g_free (user_level_string);
 
-	/* FIXME bugzilla.eazel.com 1293: 
-	 * Asserting based on something that's read from GConf
-	 * seems like a bad idea. It means we core dump if
-	 * something's wrong.
-	 */
 	g_assert (index != NAUTILUS_STRING_LIST_NOT_FOUND);
 
 	return (guint) index;

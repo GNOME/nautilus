@@ -1,5 +1,15 @@
 2000-08-31  Ramiro Estrugo  <ramiro@eazel.com>
 
+	Bug 1293.  Core dump if gconf returns bad values
+	
+	* libnautilus-extensions/nautilus-user-level-manager.c:
+	(nautilus_user_level_manager_get_user_level):
+	Add blurb explaining why its ok to trust the returned string.
+	This was actually fixed by komrade Jirka's last checkin to this
+	file.
+	
+2000-08-31  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* src/nautilus-window-menus.c: 
 	(nautilus_window_initialize_menus): Use
 	gtk_signal_connect_while_alive() for user_level_changed_callback
