@@ -1,3 +1,22 @@
+2000-08-18  Michael Engber  <engber@eazel.com>
+
+	Final cut at syncing our desktop background with GNOME's (bug 1047)
+	Now we are notified when the background capplet makes a change
+	to the desktop. There are still some problems, e.g. we don't get
+	notified when the "try" button is hit. A separate bug has been
+	filed about the remaining issues.
+
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(nautilus_directory_background_set_desktop),
+	(call_settings_changed),
+	(nautilus_directory_background_event_filter),
+	(desktop_background_destroyed_callback),
+	(nautilus_directory_background_receive_root_window_changes),
+	(background_changed_callback), (saved_settings_changed_callback),
+	(nautilus_directory_background_theme_changed),
+	(background_reset_callback), (background_destroyed_callback),
+	(nautilus_connect_background_to_directory_metadata):
+
 2000-08-18  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-link.c:

@@ -39,12 +39,12 @@
 #include <gdk/gdkx.h>
 #include <X11/Xatom.h>
 
-static void background_changed_callback (NautilusBackground *background,
-                                         NautilusDirectory  *directory);
-static void directory_changed_callback  (NautilusDirectory  *directory,
-                                         NautilusBackground *background);
-static void background_reset_callback   (NautilusBackground *background,
-                                         NautilusDirectory  *directory);
+static void background_changed_callback     (NautilusBackground *background, NautilusDirectory  *directory);
+static void background_reset_callback       (NautilusBackground *background, NautilusDirectory  *directory);
+
+static void saved_settings_changed_callback (NautilusDirectory  *directory, NautilusBackground *background);
+                                         
+static void nautilus_directory_background_receive_root_window_changes (NautilusBackground *background);
 
 static const char *default_theme_source = "directory";
 static const char *desktop_theme_source = "desktop";
@@ -52,7 +52,8 @@ static const char *desktop_theme_source = "desktop";
 void
 static nautilus_directory_background_set_desktop (NautilusBackground *background)
 {
-	gtk_object_set_data (GTK_OBJECT (background), "theme_source", (gpointer) desktop_theme_source); 
+	gtk_object_set_data (GTK_OBJECT (background), "theme_source", (gpointer) desktop_theme_source);
+	nautilus_directory_background_receive_root_window_changes (background); 
 }
 
 static gboolean
@@ -292,6 +293,70 @@ nautilus_directory_background_write_desktop_default_settings ()
 	nautilus_directory_background_write_desktop_settings (color, image, placement, combine);
 }
 
+static int
+call_settings_changed (NautilusBackground *background)
+{
+	NautilusDirectory *directory;
+	directory = gtk_object_get_data (GTK_OBJECT (background), "nautilus_background_directory");
+	if (directory) {
+		saved_settings_changed_callback (directory, background);
+	}
+	return FALSE;
+}
+
+static GdkFilterReturn
+nautilus_directory_background_event_filter (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data)
+{
+	XEvent *xevent;
+	NautilusBackground *background;
+
+	xevent = (XEvent *) gdk_xevent;
+
+	if (xevent->type == PropertyNotify && xevent->xproperty.atom == gdk_atom_intern("ESETROOT_PMAP_ID", TRUE)) {
+	    	background = NAUTILUS_BACKGROUND (data);
+	    	/* FIXME bugzilla.eazel.com 2220:
+	    	 * We'd like to call saved_settings_changed_callback right here, directly.
+	    	 * However, the current version of the property-background capplet saves
+	    	 * the new setting in gnome_config AFTER setting the root window's property -
+	    	 * i.e. after we get this event. How long afterwards is not knowable - we
+	    	 * guess half a second. Fixing this requires changing the capplet.
+	    	 */
+	    	gtk_timeout_add (500, (GtkFunction) (call_settings_changed), background);
+	}
+
+	return GDK_FILTER_CONTINUE;
+}
+
+static void
+desktop_background_destroyed_callback (NautilusBackground *background, void *georgeWBush)
+{
+	gdk_window_remove_filter (GDK_ROOT_PARENT(), nautilus_directory_background_event_filter, background);
+}
+
+static void
+nautilus_directory_background_receive_root_window_changes (NautilusBackground *background)
+{
+	XWindowAttributes attribs = { 0 };
+
+	/* set up a filter on the root window to get notified about property changes */
+	gdk_window_add_filter (GDK_ROOT_PARENT(), nautilus_directory_background_event_filter, background);
+
+	gdk_error_trap_push ();
+
+	/* select events, we need to trap the kde status thingies anyway */
+	XGetWindowAttributes (GDK_DISPLAY (), GDK_ROOT_WINDOW (), &attribs);
+	XSelectInput (GDK_DISPLAY (), GDK_ROOT_WINDOW (), attribs.your_event_mask | PropertyChangeMask);
+	
+	gdk_flush ();
+
+	gdk_error_trap_pop ();
+
+	gtk_signal_connect (GTK_OBJECT (background),
+ 			    "destroy",
+			    GTK_SIGNAL_FUNC (desktop_background_destroyed_callback),
+			    NULL);
+}
+
 /* Create a persistant pixmap. We create a separate display
  * and set the closedown mode on it to RetainPermanent
  * (copied from gnome-source/control-panels/capplets/background-properties/render-background.c)
@@ -486,7 +551,7 @@ background_changed_callback (NautilusBackground *background,
 	         * try to change the background.
 	         */
 	        gtk_signal_handler_block_by_func (GTK_OBJECT (directory),
-	                                          directory_changed_callback,
+	                                          saved_settings_changed_callback,
 	                                          background);
 
 		nautilus_directory_set_metadata (directory,
@@ -501,7 +566,7 @@ background_changed_callback (NautilusBackground *background,
 						 
 	        /* Unblock the handler. */
 	        gtk_signal_handler_unblock_by_func (GTK_OBJECT (directory),
-	                                            directory_changed_callback,
+	                                            saved_settings_changed_callback,
 	                                            background);
 	}
 
@@ -515,7 +580,7 @@ background_changed_callback (NautilusBackground *background,
 
 /* handle the directory changed signal */
 static void
-directory_changed_callback (NautilusDirectory *directory,
+saved_settings_changed_callback (NautilusDirectory *directory,
                             NautilusBackground *background)
 {
         char *color;
@@ -577,10 +642,9 @@ nautilus_directory_background_theme_changed (gpointer user_data)
 	NautilusBackground *background;
 
 	background = NAUTILUS_BACKGROUND (user_data);
-	directory = gtk_object_get_data (GTK_OBJECT (background),
-					"nautilus_background_directory");
+	directory = gtk_object_get_data (GTK_OBJECT (background), "nautilus_background_directory");
 	if (directory) {
-		directory_changed_callback (directory, background);
+		saved_settings_changed_callback (directory, background);
 	}
 }
 
@@ -596,7 +660,7 @@ background_reset_callback (NautilusBackground *background,
 	         * try to change the background.
 	         */
 	        gtk_signal_handler_block_by_func (GTK_OBJECT (directory),
-	                                          directory_changed_callback,
+	                                          saved_settings_changed_callback,
 	                                          background);
 
 		/* reset the metadata */
@@ -611,11 +675,11 @@ background_reset_callback (NautilusBackground *background,
 						 NULL);
 	        /* Unblock the handler. */
 	        gtk_signal_handler_unblock_by_func (GTK_OBJECT (directory),
-	                                            directory_changed_callback,
+	                                            saved_settings_changed_callback,
 	                                            background);
 	}
 
-	directory_changed_callback (directory, background);
+	saved_settings_changed_callback (directory, background);
 
 	/* We don't want the default reset handler running.
 	 * It will set color and image_uri  to NULL.
@@ -633,7 +697,7 @@ background_destroyed_callback (NautilusBackground *background,
                                NautilusDirectory *directory)
 {
         gtk_signal_disconnect_by_func (GTK_OBJECT (directory),
-                                       GTK_SIGNAL_FUNC (directory_changed_callback),
+                                       GTK_SIGNAL_FUNC (saved_settings_changed_callback),
                                        background);
         nautilus_directory_file_monitor_remove (directory, background);
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
@@ -654,8 +718,7 @@ nautilus_connect_background_to_directory_metadata (GtkWidget *widget,
 
 
 	/* Check if it is already connected. */
-	old_directory = gtk_object_get_data (GTK_OBJECT (background),
-                                             "nautilus_background_directory");
+	old_directory = gtk_object_get_data (GTK_OBJECT (background), "nautilus_background_directory");
 	if (old_directory == directory) {
 		return;
 	}
@@ -673,7 +736,7 @@ nautilus_connect_background_to_directory_metadata (GtkWidget *widget,
                                                GTK_SIGNAL_FUNC (background_reset_callback),
                                                old_directory);
 		gtk_signal_disconnect_by_func (GTK_OBJECT (old_directory),
-                                               GTK_SIGNAL_FUNC (directory_changed_callback),
+                                               GTK_SIGNAL_FUNC (saved_settings_changed_callback),
                                                background);
 		nautilus_directory_file_monitor_remove (old_directory, background);
 		nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
@@ -705,7 +768,7 @@ nautilus_connect_background_to_directory_metadata (GtkWidget *widget,
 				    directory);
 		gtk_signal_connect (GTK_OBJECT (directory),
                                     "metadata_changed",
-                                    GTK_SIGNAL_FUNC (directory_changed_callback),
+                                    GTK_SIGNAL_FUNC (saved_settings_changed_callback),
                                     background);
         	
 		/* arrange to receive directory metadata */
@@ -727,7 +790,7 @@ nautilus_connect_background_to_directory_metadata (GtkWidget *widget,
 	}
 
         /* Update the background based on the directory metadata. */
-        directory_changed_callback (directory, background);
+        saved_settings_changed_callback (directory, background);
 }
 
 void
