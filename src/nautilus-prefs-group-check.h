@@ -1,0 +1,69 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
+/* nautilus-prefs-group-check.h - Check button prefs group interface.
+
+   Copyright (C) 1999, 2000 Eazel, Inc.
+
+   The Gnome Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Library General Public License as
+   published by the Free Software Foundation; either version 2 of the
+   License, or (at your option) any later version.
+
+   The Gnome Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Library General Public License for more details.
+
+   You should have received a copy of the GNU Library General Public
+   License along with the Gnome Library; see the file COPYING.LIB.  If not,
+   write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+   Boston, MA 02111-1307, USA.
+
+   Authors: Ramiro Estrugo <ramiro@eazel.com>
+*/
+
+#ifndef NAUTILUS_PREFS_GROUP_CHECK_H
+#define NAUTILUS_PREFS_GROUP_CHECK_H
+
+#include "nautilus-prefs-group.h"
+
+BEGIN_GNOME_DECLS
+
+#define NAUTILUS_TYPE_PREFS_GROUP_CHECK            (nautilus_prefs_group_check_get_type ())
+#define NAUTILUS_PREFS_GROUP_CHECK(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_PREFS_GROUP_CHECK, NautilusPrefsGroupCheck))
+#define NAUTILUS_PREFS_GROUP_CHECK_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_PREFS_GROUP_CHECK, NautilusPrefsGroupCheckClass))
+#define NAUTILUS_IS_PREFS_GROUP_CHECK(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_PREFS_GROUP_CHECK))
+#define NAUTILUS_IS_PREFS_GROUP_CHECK_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_PREFS_GROUP_CHECK))
+#define NAUTILUS_PREFS_GROUP_CHECK_INVOKE_METHOD_IF(group, method) \
+NAUTILUS_INVOKE_METHOD_IF (group, NAUTILUS_TYPE_PREFS_GROUP_CHECK, NautilusPrefsGroupCheckClass, method)
+
+typedef struct _NautilusPrefsGroupCheck		  NautilusPrefsGroupCheck;
+typedef struct _NautilusPrefsGroupCheckClass      NautilusPrefsGroupCheckClass;
+typedef struct _NautilusPrefsGroupCheckPrivate    NautilusPrefsGroupCheckPrivate;
+
+struct _NautilusPrefsGroupCheck
+{
+	/* Super Class */
+	NautilusPrefsGroup		prefs_group;
+	
+	/* Private stuff */
+	NautilusPrefsGroupCheckPrivate	*priv;
+};
+
+struct _NautilusPrefsGroupCheckClass
+{
+	NautilusPrefsGroupClass	parent_class;
+};
+
+GtkType    nautilus_prefs_group_check_get_type (void);
+GtkWidget* nautilus_prefs_group_check_new      (const gchar             *group_title);
+void       nautilus_prefs_group_check_clear    (NautilusPrefsGroupCheck *prefs_group_check);
+void       nautilus_prefs_group_check_insert   (NautilusPrefsGroupCheck *prefs_group_check,
+						const gchar             *label,
+						gboolean                 active);
+
+BEGIN_GNOME_DECLS
+
+#endif /* NAUTILUS_PREFS_GROUP_CHECK_H */
+
+
