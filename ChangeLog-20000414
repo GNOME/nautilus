@@ -1,3 +1,13 @@
+2000-01-15	Andy Hertzfeld <andy@eazel.com>
+
+	*libnautilus/gnome-icon-container-dnd.c:
+	made dragging files within a window actually work graphically, and set the stage for dragging between windows
+	made drag_leave_cb no longer delete the selection_list
+	made drag_data_received_cb delete selection if present instead of asserting it's gone
+	made drag_drop_cb use the selection_list to determine the directory we're dragging from,
+	if it's the same, move within the window, otherwise copy between (coming soon)
+	didn't update positions in the metafile yet
+	
 2000-01-14  John Sullivan  <sullivan@eazel.com>
 
 	* src/file-manager/fm-directory-view.c:

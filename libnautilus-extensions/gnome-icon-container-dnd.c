@@ -24,7 +24,6 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
-
 #include "gnome-icon-container-private.h"
 
 #include "gnome-icon-container-dnd.h"
@@ -179,9 +178,7 @@ destroy_selection_list (GList *list)
 		dnd_selection_item_destroy ((DndSelectionItem *) p->data);
 
 	g_list_free (list);
-}
-
-
+}
 /* Source-side handling of the drag.  */
 
 /* Encode a "special/x-gnome-icon-list" selection.  */
@@ -225,7 +222,7 @@ set_gnome_icon_list_selection (GnomeIconContainer *container,
 		      - GNOME_ICON_CONTAINER_ICON_HEIGHT (container) / 2);
 
 		if (priv->base_uri != NULL)
-			s = g_strdup_printf ("%s%s\r%d:%d\r\n",
+			s = g_strdup_printf ("%s/%s\r%d:%d\r\n",
 					     priv->base_uri, icon->text,
 					     x, y);
 		else
@@ -412,11 +409,19 @@ drag_data_received_cb (GtkWidget *widget,
 
 	container = GNOME_ICON_CONTAINER (widget);
 	dnd_info = container->priv->dnd_info;
-	g_return_if_fail (dnd_info->selection_list == NULL);
+
+/* delete old selection list if any */
+
+	if (dnd_info->selection_list != NULL) {
+		destroy_selection_list (dnd_info->selection_list);
+		dnd_info->selection_list = NULL;
+	}
+
+/* build the selection list from the drag data */
 
 	switch (info) {
 	case GNOME_ICON_CONTAINER_DND_GNOME_ICON_LIST:
-		get_gnome_icon_list_selection (container, data);
+		get_gnome_icon_list_selection (container, data);		
 		break;
 	case GNOME_ICON_CONTAINER_DND_URI_LIST:
 		puts ("Bad!  URI list!"); /* FIXME */
@@ -482,6 +487,26 @@ drag_end_cb (GtkWidget *widget,
 	dnd_info->selection_list = NULL;
 }
 
+/* utility routine to extract the directory from an item_uri (which may have geometry info attached) */
+
+static gchar* extract_directory(const gchar* item_uri)
+{
+	gchar *last_slash;
+	gchar *temp_str = strdup(item_uri);
+	gchar *geom_ptr = strchr(temp_str, '\r');
+
+	/* strip geometry info if present */
+	if  (geom_ptr) {
+		*geom_ptr = '\0';
+	}
+	
+	last_slash = strrchr(temp_str, '/');
+	if (last_slash)
+		*last_slash = '\0';
+	
+	return temp_str;	
+}
+
 static gboolean
 drag_drop_cb (GtkWidget *widget,
 	      GdkDragContext *context,
@@ -491,25 +516,39 @@ drag_drop_cb (GtkWidget *widget,
 	      gpointer data)
 {
 	GnomeIconContainer *container;
+	DndSelectionItem *item;
 	GnomeIconContainerDndInfo *dnd_info;
-	GtkWidget *source_widget;
 
 	container = GNOME_ICON_CONTAINER (widget);
 	dnd_info = container->priv->dnd_info;
-	source_widget = gtk_drag_get_source_widget (context);
+	item = (DndSelectionItem*) dnd_info->selection_list->data;
+	
+	if (dnd_info->selection_list) {	    
+		gchar *item_directory_uri = extract_directory(item->uri);
+		
+		if (strcmp(item_directory_uri, container->priv->base_uri)) {
+			/* copy files from other directory */
+			printf("drop from other directory: %s\n", item_directory_uri);
+		}
+		else {
+		/* copy files in same directory */
+		
+			if (context->action == GDK_ACTION_MOVE) {
+				double world_x, world_y;
 
-	if (source_widget == widget && context->action == GDK_ACTION_MOVE) {
-		double world_x, world_y;
+				gnome_canvas_window_to_world (GNOME_CANVAS (container),
+						      x, y, &world_x, &world_y);
 
-		gnome_canvas_window_to_world (GNOME_CANVAS (container),
-					      x, y, &world_x, &world_y);
-
-		gnome_icon_container_xlate_selected (container,
-						     world_x - dnd_info->start_x,
-						     world_y - dnd_info->start_y,
-						     TRUE);
-	}
-
+				gnome_icon_container_xlate_selected (container,
+							     world_x - dnd_info->start_x,
+							     world_y - dnd_info->start_y,
+							     TRUE);
+			}
+		}
+		g_free(item_directory_uri);	
+	    destroy_selection_list (dnd_info->selection_list);
+	    dnd_info->selection_list = NULL;	
+	}		
 	return FALSE;
 }
 
@@ -528,13 +567,9 @@ drag_leave_cb (GtkWidget *widget,
 		dnd_info->shadow = NULL;
 	}
 
-	if (dnd_info->selection_list != NULL) {
-		destroy_selection_list (dnd_info->selection_list);
-		dnd_info->selection_list = NULL;
-	}
 }
 
-
+
 void
 gnome_icon_container_dnd_init (GnomeIconContainer *container,
 			       GdkBitmap *stipple)
