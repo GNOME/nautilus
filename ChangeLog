@@ -1,3 +1,13 @@
+2000-10-25  Darin Adler  <darin@eazel.com>
+
+	* src/nautilus-applicable-views.c: (nautilus_navigation_info_new),
+	(nautilus_navigation_info_free),
+	(nautilus_navigation_info_get_location): Changed to store the
+	location URI separate from the NautilusFile object. NautilusFile
+	was munging URLs that had queries in them, causing big problems
+	for the software catalog among other things. This is a good
+	short-term fix.
+
 2000-10-25  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/lib/eazel-install-query.c:

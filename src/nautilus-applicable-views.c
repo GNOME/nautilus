@@ -54,6 +54,7 @@
 struct NautilusNavigationInfo {
 	NautilusNavigationCallback callback;
 	gpointer callback_data;
+        char *location;
         NautilusFile *file;
         NautilusDirectory *directory;
 	NautilusViewIdentifier *initial_content_id;
@@ -184,6 +185,11 @@ nautilus_navigation_info_new (const char *location,
         info->callback = notify_when_ready;
         info->callback_data = notify_data;
         
+        /* Remember the location separately, since nautilus_file_get
+         * currently munges locations that have unescaped characters
+         * in the "file name" part.
+         */
+        info->location = g_strdup (location);
         info->file = nautilus_file_get (location);
         info->directory = nautilus_directory_get (location);
 
@@ -229,6 +235,7 @@ nautilus_navigation_info_free (NautilusNavigationInfo *info)
         
         nautilus_navigation_info_cancel (info);
 
+        g_free (info->location);
         nautilus_file_unref (info->file);
         nautilus_directory_unref (info->directory);
         nautilus_view_identifier_free (info->initial_content_id);
@@ -239,7 +246,7 @@ nautilus_navigation_info_free (NautilusNavigationInfo *info)
 char *
 nautilus_navigation_info_get_location (NautilusNavigationInfo *info)
 {
-        return nautilus_file_get_uri (info->file);
+        return g_strdup (info->location);
 }
 
 NautilusViewIdentifier *
