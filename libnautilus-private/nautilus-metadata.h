@@ -73,7 +73,7 @@
 #define NAUTILUS_METADATA_KEY_CUSTOM_ICON                	"custom_icon"
 
 #define	NAUTILUS_METADATA_KEY_FILE_DIGEST			"digest"
-#define	NAUTILUS_METADATA_KEY_NOTE_COUNT			"note_count"
+#define	NAUTILUS_METADATA_KEY_NOTES_INFO			"notes_info"
 
 #define	NAUTILUS_METADATA_KEY_CONTROL_MONIKER			"control_moniker"
 #define	NAUTILUS_METADATA_KEY_CONTROL_DATA			"control_data"

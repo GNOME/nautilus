@@ -82,6 +82,7 @@ struct NautilusDigestFileHandle {
 	NautilusCalculateDigestCallback callback;
 	NautilusFile *file;
 	char *buffer;
+	gboolean opened;
 	MD5Context digest_context;
 };
 
@@ -90,6 +91,7 @@ struct NautilusDigestFileHandle {
 
 
 static GList* annotation_request_queue = NULL;
+static GHashTable *files_awaiting_annotation = NULL;
 
 static void md5_transform (guint32 buf[4], const guint32 in[16]);
 
@@ -197,9 +199,6 @@ md5_update (MD5Context *ctx, const guchar *buf, guint32 len)
 }
 
 
-
-
-
 /*
  * Final wrapup - pad to 64-byte boundary with the bit pattern 
  * 1 0* (64-bit count of bits processed, MSB-first)
@@ -254,8 +253,6 @@ md5_final (MD5Context *ctx, guchar digest[16])
 		_byte_reverse ((guchar *) ctx->buf, 4);
 	memcpy (digest, ctx->buf, 16);
 }
-
-
 
 
 /* The four core functions - F1 is optimized somewhat */
@@ -380,10 +377,13 @@ digest_file_completed (NautilusDigestFileHandle *digest_handle)
 	char*  hex_string = "0123456789abcdef";
 	int index, result_index;
 	int current_value;
+
+	if (digest_handle->opened) {
 	
-	gnome_vfs_async_close (digest_handle->handle,
+		gnome_vfs_async_close (digest_handle->handle,
 				       digest_file_close_callback,
 				       NULL);
+	}
 	
 	/* Invoke the callback to continue processing the annotation */
 	md5_final (&digest_handle->digest_context, digest_result);
@@ -403,6 +403,7 @@ digest_file_completed (NautilusDigestFileHandle *digest_handle)
 	
 	(* digest_handle->callback) (digest_handle->file, &digest_string[0]);
 	
+	nautilus_file_unref (digest_handle->file);
 	g_free (digest_handle->buffer);
 	g_free (digest_handle);
 }
@@ -411,13 +412,15 @@ digest_file_completed (NautilusDigestFileHandle *digest_handle)
 static void
 digest_file_failed (NautilusDigestFileHandle *digest_handle, GnomeVFSResult result)
 {
-	gnome_vfs_async_close (digest_handle->handle,
+	if (digest_handle->opened) {
+		gnome_vfs_async_close (digest_handle->handle,
 				       digest_file_close_callback,
 				       NULL);
-	
+	}
 	g_free (digest_handle->buffer);
 	
 	(* digest_handle->callback) (digest_handle->file, NULL);
+	nautilus_file_unref (digest_handle->file);	
 	g_free (digest_handle);
 }
 
@@ -478,6 +481,7 @@ read_file_open_callback (GnomeVFSAsyncHandle *handle,
 	}
 
 	/* read in the first chunk of the file */
+	digest_handle->opened = TRUE;
 	gnome_vfs_async_read (digest_handle->handle,
 			      digest_handle->buffer,
 			      READ_CHUNK_SIZE,
@@ -501,13 +505,15 @@ calculate_file_digest (NautilusFile *file, NautilusCalculateDigestCallback callb
 	uri = nautilus_file_get_uri (file);
 	
 	handle->callback = callback;
+	handle->opened = FALSE;
 	handle->file = file;
-
+	nautilus_file_ref (file);
+	
 	/* allocate the buffer */
 	handle->buffer = g_malloc (READ_CHUNK_SIZE);
 	
 	/* initialize the MD5 stuff */
-	md5_init(&handle->digest_context);		
+	md5_init (&handle->digest_context);		
 	
 	/* open the file */
 	gnome_vfs_async_open (&handle->handle,
@@ -516,7 +522,18 @@ calculate_file_digest (NautilusFile *file, NautilusCalculateDigestCallback callb
 			      read_file_open_callback,
 			      handle);
 	g_free (uri);
-	return handle;	
+	return handle;
+}
+
+/* given a digest, retrieve an associated file object from the hash table */
+static NautilusFile *
+get_file_from_digest (const char *digest)
+{
+	if (files_awaiting_annotation == NULL) {
+		return NULL;
+	}
+	
+	return g_hash_table_lookup (files_awaiting_annotation, digest);
 }
 
 /* given a digest value, return the path to it in the local cache */
@@ -524,14 +541,26 @@ static char *
 get_annotation_path (const char *digest)
 {
 	char *user_directory, *annotation_directory;
-	char *annotation_path;
+	char *annotation_path, *directory_uri;
 	
 	user_directory = nautilus_get_user_directory ();
 	annotation_directory = nautilus_make_path (user_directory, "annotations");
 	annotation_path = nautilus_make_path (annotation_directory, digest);
 	
+	/* create the annotation directory if it doesn't exist */
+	if (!g_file_exists (annotation_directory)) {
+		directory_uri = gnome_vfs_get_uri_from_local_path (annotation_directory);
+		gnome_vfs_make_directory (directory_uri,
+						 GNOME_VFS_PERM_USER_ALL
+						 | GNOME_VFS_PERM_GROUP_ALL
+						 | GNOME_VFS_PERM_OTHER_READ);
+		g_free (directory_uri);
+	}
+	
+	/* free up the intermediate strings and return the complete path */
 	g_free (user_directory);
 	g_free (annotation_directory);
+	
 	return annotation_path;
 }
 
@@ -568,21 +597,140 @@ has_local_annotation (const char *digest)
 	
 	path = get_annotation_path (digest);
 	has_annotation = g_file_exists (path);
+	
 	g_free (path);
 	return has_annotation;
+}
+
+/* utility routine to add the passed-in xml node to the file associated with the passed-in
+ * digest.  If there isn't a file, create one
+ */
+static void
+add_annotations_to_file (xmlNodePtr node_ptr, const char *digest)
+{
+	char *digest_path;
+	xmlDocPtr document;
+	
+	digest_path = get_annotation_path (digest);
+
+	/* save the subtree as a new document, by making a new document and adding the new node */
+	document = xmlNewDoc ("1.0");
+	xmlDocSetRootElement (document, node_ptr);
+			
+	/* save the xml tree as a file in the cache area */
+	xmlSaveFile	(digest_path, document);
+	
+	xmlFreeDoc (document);
+	g_free (digest_path);
+}
+
+/* remember the file object by adding it to a hash table */
+static void
+remember_file (NautilusFile *file, const char *digest)
+{
+	nautilus_file_ref (file);
+	
+	if (files_awaiting_annotation == NULL) {
+		files_awaiting_annotation = g_hash_table_new (g_str_hash, g_str_equal);
+		/* g_atexit (annotations_file_table_free); */
+	}
+
+	g_hash_table_insert (files_awaiting_annotation, g_strdup (digest), file);
+}
+
+/* forget a file when we're done with it by removing it from the table */
+static void
+forget_file (const char *digest)
+{
+	NautilusFile *file;
+	if (files_awaiting_annotation == NULL) {
+		return;
+	}
+	
+	file = g_hash_table_lookup (files_awaiting_annotation, digest);	
+	if (file != NULL) {
+		nautilus_file_unref (file);
+		g_hash_table_remove (files_awaiting_annotation, digest);
+	}
 }
 
 /* completion routine invoked when we've loaded the an annotation file from the service.
  * We must parse it, and walk through it to save the annotations in the local cache.
  */
-
 static void
 got_annotations_callback (GnomeVFSResult result,
 			 GnomeVFSFileSize file_size,
 			 char *file_contents,
 			 gpointer callback_data)
 {
-	g_message ("got annotation callback, result is %d, file size is %d, file is %s", (int) result, (int) file_size, file_contents);
+	NautilusFile *file;
+	xmlDocPtr annotations;
+	xmlNodePtr next_annotation, item;
+	xmlNodePtr saved_annotation;
+	int annotation_count;
+	char *buffer, *digest, *info_str;
+	time_t date_stamp;
+	
+	/* exit if there was an error */
+	if (result != GNOME_VFS_OK) {
+		g_assert (file_contents == NULL);
+		return;
+	}
+	
+	/* inexplicably, the gnome-xml parser requires a zero-terminated array, so add the null at the end. */
+	buffer = g_realloc (file_contents, file_size + 1);
+	buffer[file_size] = '\0';
+	annotations = xmlParseMemory (buffer, file_size);
+	g_free (buffer);
+	
+	/* iterate through the xml document, handling each annotation entry */	
+	if (annotations != NULL) {
+		next_annotation = xmlDocGetRootElement (annotations)->childs;
+		while (next_annotation != NULL) {
+			if (nautilus_strcmp (next_annotation->name, "annotations") == 0) {
+				/* get the digest associated with the annotations */
+				digest = xmlGetProp (next_annotation, "digest");
+				if (digest != NULL) {
+					/* count the number of annotations contained in the node */
+					annotation_count = 0;
+					item = next_annotation->childs;
+					while (item != NULL) {
+						if (nautilus_strcmp (item->name, "annotation") == 0) {
+							annotation_count += 1;
+						}
+						item = item->next;
+					}
+					
+					/* write the annotation out to our cache area, if necessary */
+					if (annotation_count > 0) {
+						saved_annotation = xmlCopyNode (next_annotation, TRUE);
+						add_annotations_to_file (saved_annotation, digest);
+					}
+					
+					/* retrieve the file object, and update it's count and time stamp */
+					
+					file = get_file_from_digest (digest);	
+					time (&date_stamp);
+					info_str = g_strdup_printf ("%lu:%d", date_stamp, annotation_count);
+					
+					nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_NOTES_INFO, NULL, info_str);
+					g_free (info_str);
+					
+					/* issue the changed signal */
+					nautilus_file_emit_changed (file);
+				
+					/* remove the file from the hash table and unref it */
+					forget_file (digest);
+					xmlFree (digest);
+				}
+			}
+			next_annotation = next_annotation->next;
+		}
+				
+	
+		/* free the xml document */
+		xmlFreeDoc (annotations);
+	}
 }
 
 /* format the request, and send it to the server */
@@ -619,19 +767,25 @@ fetch_annotations_from_server (void)
 	g_string_free (temp_string, TRUE);
 	nautilus_g_list_free_deep (save_entry);
 	
-	g_message ("asking server for %s", uri);
-	
 	/* read the result from the server asynchronously */
 	nautilus_read_entire_file_async (uri, got_annotations_callback, NULL);
 	g_free (uri);
 }
 
+
 /* ask the server for an annotation asynchronously  */
 static void
 get_annotation_from_server (NautilusFile *file, const char *file_digest)
 {
+	/* see if there's a request for this one already pending - if so, we can return */
+	if (get_file_from_digest (file_digest) != NULL) {
+		return;
+	}	
+
 	/* add the request to the queue, and kick it off it there's enough of them */
 	annotation_request_queue = g_list_prepend (annotation_request_queue, g_strdup (file_digest));
+	
+	remember_file (file, file_digest);
 	fetch_annotations_from_server ();
 }
 
@@ -641,12 +795,14 @@ get_annotation_from_server (NautilusFile *file, const char *file_digest)
 static void
 got_file_digest (NautilusFile *file, const char *file_digest)
 {
-	/* save the digest in the file metadata */
 	
 	if (file_digest == NULL) {
 		return;
 	}
-	
+
+	/* save the digest in the file metadata */
+	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_FILE_DIGEST, NULL, file_digest);
+
 	/* lookup the annotations associated with the file. If there is one, flag the change and we're done */
 	if (has_local_annotation (file_digest)) {
 		nautilus_file_emit_changed (file);
@@ -664,8 +820,17 @@ got_file_digest (NautilusFile *file, const char *file_digest)
  */
 char	*nautilus_annotation_get_annotation (NautilusFile *file)
 {
-	char *digest, *annotations;
+	char *digest;
+	char *annotations;
+	char *digest_info;
 	
+	/* if it's a directory, return NULL, at least until we figure out how to handle directory
+	 * annotations
+	 */
+	if (nautilus_file_is_directory (file)) {
+		return NULL;
+	}
+	 
 	/* see if there's a digest available in metadata */
 	digest = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_FILE_DIGEST, NULL);
 	
@@ -682,8 +847,16 @@ char	*nautilus_annotation_get_annotation (NautilusFile *file)
 		return annotations;
 	}
 		
-	/* we don't have a local annotation, so queue a request from the server */
-	get_annotation_from_server (file, digest);
+	/* we don't have a local annotation, so queue a request from the server, if we haven't already tried */
+	/* soon, we'll inspect the time stamp, and look it up anyway if it's too old */
+	
+	digest_info = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_NOTES_INFO, NULL);
+	if (digest_info == NULL) {
+		get_annotation_from_server (file, digest);
+	} else {
+		g_free (digest_info);
+	}
+	
 	g_free (digest);
 	return NULL;	
 }

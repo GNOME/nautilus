@@ -1,3 +1,22 @@
+2001-02-25  Andy Hertzfeld  <andy@eazel.com>
+
+	finished first pass at underlying annotation infrastructure:
+		async md5 checksum calculation
+		saving the checksum in the metadata
+		batching multiple lookups into a single request
+		posting the request to the server and parsing the response
+		caching annotations locally, saving count in metadata
+	
+	* libnautilus-extensions/nautilus-annotation.c:
+	(digest_file_completed), (digest_file_failed),
+	(read_file_open_callback), (calculate_file_digest),
+	(get_file_from_digest), (get_annotation_path),
+	(has_local_annotation), (add_annotations_to_file), (remember_file),
+	(forget_file), (got_annotations_callback),
+	(fetch_annotations_from_server), (get_annotation_from_server),
+	(got_file_digest), (nautilus_annotation_get_annotation):
+	* libnautilus-extensions/nautilus-metadata.h:
+
 2001-02-22  Andy Hertzfeld  <andy@eazel.com>
 
 	post-1_0_6 branch with annotation stuff
