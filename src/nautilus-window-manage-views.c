@@ -918,13 +918,11 @@ report_content_view_failure_to_user (NautilusWindow *window)
 }
 
 static void
-report_sidebar_panel_failure_to_user (NautilusWindow *window, NautilusViewFrame *panel)
+report_sidebar_panel_failure_to_user (NautilusWindow *window)
 {
-	char *name;
 	char *message;
 
-	name = nautilus_view_frame_get_label (panel);
-        if (name == NULL) {
+        if (window->details->dead_view_name == NULL) {
                 message = g_strdup
                         (_("One of the sidebar panels encountered an error and can't continue. "
                            "Unfortunately I couldn't tell which one."));
@@ -932,10 +930,8 @@ report_sidebar_panel_failure_to_user (NautilusWindow *window, NautilusViewFrame 
                 message = g_strdup_printf
                         (_("The %s sidebar panel encountered an error and can't continue. "
                            "If this keeps happening, you might want to turn this panel off."),
-                         name);
+                         window->details->dead_view_name);
         }
-
-	g_free (name);
 
 	nautilus_error_dialog (message, _("Sidebar Panel Failed"), GTK_WINDOW (window));
 
@@ -973,7 +969,7 @@ nautilus_window_update_state (gpointer data)
 #endif
         
         /* Now make any needed state changes based on available information */
-        if (window->view_bombed_out && window->error_views != NULL) {
+        if (window->view_bombed_out) {
                 for (p = window->error_views; p != NULL; p = p->next) {
                         NautilusViewFrame *error_view = p->data;
                         
@@ -981,9 +977,7 @@ nautilus_window_update_state (gpointer data)
                                 made_changes = TRUE;
                                 window->reset_to_idle = TRUE;
                                 window->cv_progress_error = TRUE;
-                        }
-                        
-                        if (error_view == window->content_view) {
+                        } else if (error_view == window->content_view) {
                                 if (GTK_WIDGET (window->content_view)->parent) {
                                         gtk_container_remove (GTK_CONTAINER (GTK_WIDGET (window->content_view)->parent),
                                                               GTK_WIDGET (window->content_view));
@@ -993,7 +987,7 @@ nautilus_window_update_state (gpointer data)
                                 made_changes = TRUE;
                                 window->cv_progress_error = TRUE;
                         } else {
-	                        report_sidebar_panel_failure_to_user (window, error_view);
+	                        report_sidebar_panel_failure_to_user (window);
                         }
 
                         if (g_list_find (window->new_sidebar_panels, error_view) != NULL) {
@@ -1004,6 +998,14 @@ nautilus_window_update_state (gpointer data)
                         nautilus_window_remove_sidebar_panel (window, error_view);
 
                         gtk_widget_unref (GTK_WIDGET (error_view));
+
+                        /* The dead_view_name refers only to the first error_view, so
+                         * clear it out here after handling the first one. Subsequent
+                         * times through this loop, if that ever actually happens, nothing
+                         * will happen here.
+                         */
+                        g_free (window->details->dead_view_name);
+                        window->details->dead_view_name = NULL;
                 }
                 g_list_free (window->error_views);
                 window->error_views = NULL;
@@ -1186,6 +1188,18 @@ nautilus_window_set_state_info (NautilusWindow *window, ...)
                         x_message (("VIEW_ERROR on %p", new_view));
                         g_warning ("A view failed. The UI will handle this with a dialog but this should be debugged.");
                         window->view_bombed_out = TRUE;
+                        /* Get label now, since view frame may be destroyed later. */
+
+			/* FIXME: We're only saving the name of the first error_view
+			 * here. The rest of this code is structured to handle multiple
+			 * error_views. I didn't go to the extra effort of saving a 
+			 * name with teach error_view since (A) we only see one at a
+			 * time in practice, and (B) all this code is likely to be
+			 * rewritten soon.
+			 */
+                        if (window->details->dead_view_name == NULL) {
+	                        window->details->dead_view_name = nautilus_view_frame_get_label (new_view);
+                        }
                         gtk_object_ref (GTK_OBJECT (new_view));
                         window->error_views = g_list_prepend (window->error_views, new_view);
                         break;
@@ -1360,7 +1374,7 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                 }
                 if (type_string == NULL) {
 	                error_message = g_strdup_printf
-                                (_("Couldn't display \"%s\", because Nautilus cannot handle items of this type."),
+                                (_("Couldn't display \"%s\", because Nautilus cannot handle items of this unknown type."),
                                  uri_for_display);
         	} else {
 	                error_message = g_strdup_printf

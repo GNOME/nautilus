@@ -3440,21 +3440,24 @@ create_selection_context_menu (FMDirectoryView *view)
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	
-	menu = GTK_MENU (gtk_menu_new ());
 	selected_files = fm_directory_view_get_selection (view);
-	if (selected_files != NULL) {
-		/* Attach selection to menu, and free it when menu is freed.
-		 * This lets menu item callbacks hold onto the files parameter.
-		 */
-		gtk_object_set_data_full (GTK_OBJECT (menu),
-					  "selected_items",
-					  selected_files,
-					  (GtkDestroyNotify) nautilus_file_list_free);
 
-		gtk_signal_emit (GTK_OBJECT (view),
-				 signals[CREATE_SELECTION_CONTEXT_MENU_ITEMS], 
-				 menu, selected_files);		
-	}
+	/* We've seen this happen in at least bugzilla.eazel.com 3322 */
+	g_return_val_if_fail (selected_files != NULL, NULL);
+
+	menu = GTK_MENU (gtk_menu_new ());
+
+	/* Attach selection to menu, and free it when menu is freed.
+	 * This lets menu item callbacks hold onto the files parameter.
+	 */
+	gtk_object_set_data_full (GTK_OBJECT (menu),
+				  "selected_items",
+				  selected_files,
+				  (GtkDestroyNotify) nautilus_file_list_free);
+
+	gtk_signal_emit (GTK_OBJECT (view),
+			 signals[CREATE_SELECTION_CONTEXT_MENU_ITEMS], 
+			 menu, selected_files);		
 	
 	return menu;
 }
@@ -3503,12 +3506,17 @@ create_background_context_menu (FMDirectoryView *view)
 void 
 fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView *view)
 {
+	GtkMenu *menu;
+
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
-	
-	nautilus_pop_up_context_menu (create_selection_context_menu (view),
-				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
-				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
-				      0);
+
+	menu = create_selection_context_menu (view);
+	if (menu != NULL) {
+		nautilus_pop_up_context_menu (menu,
+					      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
+					      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
+					      0);
+	}
 }
 
 /**

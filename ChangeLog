@@ -1,4 +1,51 @@
-2000-09-28  Andy Hertzfeld  <set EMAIL_ADDRESS environment variable>
+2000-09-28  John Sullivan  <sullivan@eazel.com>
+
+	Fixed part of bug 3322 (context menus don't work correctly
+	in icon view when using FTP). Now there is no degenerate menu
+	displayed, but the real menu still doesn't appear due to the
+	remaining selection bug.
+
+	Also did some more work to make some sidebar view failures 
+	less deadly to Nautilus.
+
+	* src/file-manager/fm-directory-view.c:
+	(create_selection_context_menu): Complain and return NULL if
+	no files are selected.
+	(fm_directory_view_pop_up_selection_context_menu):
+	Don't put up a menu at all if create_selection_context_menu
+	returned NULL.
+
+	* src/nautilus-window-private.h: 
+	Added field details->dead_view_name.
+	* src/nautilus-view-frame.c: (nautilus_view_frame_get_label):
+	return-if-fail if view frame has already been destroyed but
+	not finalized (so details is NULL). It used to segfault. I
+	also changed the one caller I knew about that sometimes called
+	this function in this situation.
+	
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_set_state_info): in VIEW_ERROR case, store the
+	name of the (first) failing view frame here, where it can still
+	be reliably read.
+	(nautilus_window_update_state): Removed redundant and misleading
+	window->error_views != NULL check; changed if/else logic to
+	not check whether new_content_view is also content_view, since 
+	when this check failed the code would assume that new_content_view
+	was a sidebar panel (I don't know of anyone ever running into
+	this case though); free and NULL out dead_view_name after
+	processing first error_view.
+	(report_sidebar_panel_failure_to_user): Use previously-stored
+	dead_view_name rather than trusting the view frame to still
+	have useful information in this case, since it doesn't in
+	the many cases where it self-destructed when running into
+	a problem.
+	(nautilus_window_end_location_change_callback): Tweaked an
+	error message.
+	
+	* src/nautilus-window.c: (nautilus_window_destroy):
+	free details->dead_view_name.
+
+2000-09-28  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/file-manager/fm-properties-window.c:
 	(get_property_names_from_uri):

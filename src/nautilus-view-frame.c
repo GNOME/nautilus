@@ -985,6 +985,7 @@ char *
 nautilus_view_frame_get_label (NautilusViewFrame *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), NULL);
+	g_return_val_if_fail (view->details != NULL, NULL);
 
 	return g_strdup (view->details->label);
 }

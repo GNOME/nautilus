@@ -529,6 +529,8 @@ nautilus_window_destroy (GtkObject *object)
 	/* Let go of the file for the current location */
 	nautilus_file_unref (window->details->viewed_file);
 
+	g_free (window->details->dead_view_name);
+
 	/* Dont keep track of sidebar panel changes no more */
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE,
 					      sidebar_panels_changed_callback,

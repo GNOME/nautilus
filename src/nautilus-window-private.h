@@ -49,6 +49,8 @@ struct NautilusWindowDetails
 	guint refresh_go_menu_idle_id;
 
 	NautilusFile *viewed_file;
+
+	char *dead_view_name;
 };
 
 #define NAUTILUS_MENU_PATH_BACK_ITEM			"/Go/Back"
