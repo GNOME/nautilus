@@ -679,6 +679,12 @@ has_local_annotation (const char *digest)
 static void
 save_local_annotations (xmlDocPtr document, const char *digest)
 {
+	char *path;
+	
+	path = get_annotation_path (digest);
+	xmlSaveFile (path, document);
+	
+	g_free (path);
 }
 
 /* utility routine to add the passed-in xml node to the file associated with the passed-in
@@ -1036,6 +1042,8 @@ void	nautilus_annotation_add_annotation (NautilusFile *file,
 {
 	char *digest;
 	char *annotations;
+	char *info_str;
+	time_t date_stamp;
 	xmlDocPtr xml_document;
 	xmlNodePtr root_node, node;
 	
@@ -1088,6 +1096,12 @@ void	nautilus_annotation_add_annotation (NautilusFile *file,
 	save_local_annotations (xml_document, digest);
 	
 	/* update the metadata date and count */
+
+	time (&date_stamp);
+	info_str = g_strdup_printf ("%lu:%d", date_stamp, 1); /* FIXME: hardwired to 1 for now */
+					
+	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_NOTES_INFO, NULL, info_str);
+	g_free (info_str);
 	
 	/* issue file changed symbol to update the emblem */
 	nautilus_file_emit_changed (file);

@@ -252,8 +252,20 @@ create_options_table (FMAnnotationWindow *window)
 static void
 annotation_clicked_callback (GtkWidget *dialog, int which_button, gpointer user_data)
 {
+	char *notes_text;
+	FMAnnotationWindow *window;
+	
+	window = FM_ANNOTATION_WINDOW (dialog);
+	
 	if (which_button == GNOME_OK) {
-		g_message ("OK button %d clicked", which_button);	
+		notes_text = gtk_editable_get_chars (GTK_EDITABLE (window->details->text_field), 0 , -1);
+		
+		/* type and access fields hard-wired for now */
+		nautilus_annotation_add_annotation (window->details->file,
+						    "text",
+						    notes_text,
+						    "local"); 
+		g_free (notes_text);
 	}
 	gtk_widget_destroy (dialog);
 }
