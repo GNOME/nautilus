@@ -1007,7 +1007,9 @@ end_startup_notification (GtkWidget  *widget,
 	GdkDisplay *display;
 	GdkScreen  *screen;
 
-	g_return_if_fail (startup_id != NULL);
+	if (startup_id == NULL) {
+		return;
+	}
   
 	if (!GTK_WIDGET_REALIZED (widget)) {
 		gtk_widget_realize (widget);

@@ -1,5 +1,15 @@
 2005-02-22  Alexander Larsson  <alexl@redhat.com>
 
+	* src/nautilus-application.c: (end_startup_notification):
+	Don't give critical warnings if we have no startup_id.
+	
+	* src/nautilus-window.c: (nautilus_window_update_icon):
+	Use names and not pixbufs for the window icons.
+	This means the icons of the best size are used.
+	Patch from Jaap Haitsma <jaap@haitsma.org>
+
+2005-02-22  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-application.c: (create_window):
 	* src/nautilus-window-private.h:
 	* src/nautilus-window.c: (nautilus_window_init),

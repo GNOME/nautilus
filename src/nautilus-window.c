@@ -1072,28 +1072,19 @@ nautilus_window_update_title (NautilusWindow *window)
 void
 nautilus_window_update_icon (NautilusWindow *window)
 {
-	GdkPixbuf *pixbuf;
-        GtkIconTheme *icon_theme;
+	char *icon_name = NULL;
 
-	pixbuf = NULL;
-	
 	/* Desktop window special icon */
 	if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-                icon_theme = nautilus_icon_factory_get_icon_theme ();
-                pixbuf = gtk_icon_theme_load_icon (icon_theme,
-						   "gnome-fs-desktop", 48,
-						   0, NULL);
-                g_object_unref(icon_theme);
-
+		icon_name = g_strdup ("gnome-fs-desktop");
 	} else {
-		pixbuf = nautilus_icon_factory_get_pixbuf_for_file (window->details->viewed_file,
-								    "open",
-								    NAUTILUS_ICON_SIZE_STANDARD);
+		icon_name = nautilus_icon_factory_get_icon_for_file (window->details->viewed_file,
+								     FALSE);
 	}
 
-	if (pixbuf != NULL) {
-		gtk_window_set_icon (GTK_WINDOW (window), pixbuf);
-		g_object_unref (pixbuf);
+	if (icon_name != NULL) {
+		gtk_window_set_icon_name (GTK_WINDOW (window), icon_name);
+		g_free (icon_name);
 	}
 }
 
