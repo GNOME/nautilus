@@ -686,6 +686,8 @@ gtk_scroll_frame_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 		guint count = 0;
 
 		do {
+			gint16 possible_new_size;
+
 			compute_relative_allocation (widget, &relative_allocation);
 
 			priv->frame_x = relative_allocation.x + allocation->x;
@@ -695,8 +697,10 @@ gtk_scroll_frame_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 
 			child_allocation.x = priv->frame_x + xthickness;
 			child_allocation.y = priv->frame_y + ythickness;
-			child_allocation.width = MAX(1, priv->frame_w - 2 * xthickness);
-			child_allocation.height = MAX(1, priv->frame_h - 2 * ythickness);
+			possible_new_size = priv->frame_w - 2 * xthickness;
+			child_allocation.width = MAX(1, possible_new_size);
+			possible_new_size = priv->frame_h - 2 * ythickness;
+			child_allocation.height = MAX(1, possible_new_size);
 
 			previous_hvis = priv->hsb_visible;
 			previous_vvis = priv->vsb_visible;
