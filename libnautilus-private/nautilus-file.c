@@ -770,7 +770,7 @@ nautilus_file_can_rename (NautilusFile *file)
 		/* FIXME: This reads the link file every time -- seems
 		 * bad to do that even though it's known to be local.
 		 */
-		switch (nautilus_link_local_get_link_type (path)) {
+		switch (nautilus_link_local_get_link_type (path, file->details->info)) {
 		case NAUTILUS_LINK_TRASH:
 		case NAUTILUS_LINK_MOUNT:
 			can_rename = FALSE;
@@ -974,7 +974,7 @@ rename_guts (NautilusFile *file,
 	Operation *op;
 	GnomeVFSFileInfo *partial_file_info;
 	GnomeVFSURI *vfs_uri;
-	char *uri;
+	char *uri, *old_name;
 	gboolean success;
 	gboolean is_local_desktop_file;
 
@@ -982,14 +982,15 @@ rename_guts (NautilusFile *file,
 	g_return_if_fail (new_name != NULL);
 	g_return_if_fail (callback != NULL);
 
+	uri = nautilus_file_get_uri (file);
 	is_local_desktop_file =
 		(nautilus_file_is_mime_type (file, "application/x-gnome-app-info") ||
 		 nautilus_file_is_mime_type (file, "application/x-desktop")) &&
-		has_local_path (file);
+		!eel_vfs_has_capability (uri, 
+					 EEL_VFS_CAPABILITY_IS_REMOTE_AND_SLOW);
 	
 	/* Return an error for incoming names containing path separators.
 	 * But not for .desktop files as '/' are allowed for them */
-	uri = nautilus_file_get_uri (file);
 	if (strstr (new_name, "/") != NULL && !is_local_desktop_file) {
 		(* callback) (file, GNOME_VFS_ERROR_NOT_PERMITTED, callback_data);
 		return;
@@ -1034,8 +1035,17 @@ rename_guts (NautilusFile *file,
 	}
 	
 	if (is_local_desktop_file) {
-		uri = nautilus_file_get_uri (file);
-		success = nautilus_link_desktop_file_local_set_text (uri, new_name);
+		/* Don't actually change the name if the new name is the same.
+		 * This helps for the vfolder method where this can happen and
+		 * we want to minimize actual changes
+		 */
+		old_name = nautilus_link_desktop_file_local_get_text (uri);
+		if (old_name != NULL && strcmp (new_name, old_name) == 0) {
+			success = TRUE;
+		} else {
+			success = nautilus_link_desktop_file_local_set_text (uri, new_name);
+		}
+		g_free (old_name);
 		g_free (uri);
 
 		if (success) {
@@ -1049,6 +1059,7 @@ rename_guts (NautilusFile *file,
 			return;
 		}
 	}
+	g_free (uri);
 
 	/* Set up a renaming operation. */
 	op = operation_new (file, callback, callback_data);

@@ -2258,7 +2258,7 @@ get_target_file (NautilusFile *file)
 		if (nautilus_file_is_local (file)) {
 			uri = nautilus_file_get_uri (file);
 
-			switch (nautilus_link_local_get_link_type (uri)) {
+			switch (nautilus_link_local_get_link_type (uri, NULL)) {
 			case NAUTILUS_LINK_MOUNT:
 			case NAUTILUS_LINK_TRASH:
 			case NAUTILUS_LINK_HOME:

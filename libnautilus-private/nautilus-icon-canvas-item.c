@@ -586,6 +586,52 @@ in_single_click_mode (void)
 	return click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE;
 }
 
+/* Multiplies each pixel in a pixbuf by the specified color */
+static void
+multiply_pixbuf_rgba (GdkPixbuf *pixbuf, guint rgba)
+{
+	guchar *pixels;
+	int r, g, b, a;
+	int width, height, rowstride;
+	gboolean has_alpha;
+	int x, y;
+	guchar *p;
+
+	g_return_if_fail (gdk_pixbuf_get_colorspace (pixbuf) == GDK_COLORSPACE_RGB);
+	g_return_if_fail (gdk_pixbuf_get_n_channels (pixbuf) == 3
+			  || gdk_pixbuf_get_n_channels (pixbuf) == 4);
+
+	r = EEL_RGBA_COLOR_GET_R (rgba);
+	g = EEL_RGBA_COLOR_GET_G (rgba);
+	b = EEL_RGBA_COLOR_GET_B (rgba);
+	a = EEL_RGBA_COLOR_GET_A (rgba);
+
+	width = gdk_pixbuf_get_width (pixbuf);
+	height = gdk_pixbuf_get_height (pixbuf);
+	rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+	has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
+
+	pixels = gdk_pixbuf_get_pixels (pixbuf);
+
+	for (y = 0; y < height; y++) {
+		p = pixels;
+
+		for (x = 0; x < width; x++) {
+			p[0] = p[0] * r / 255;
+			p[1] = p[1] * g / 255;
+			p[2] = p[2] * b / 255;
+
+			if (has_alpha) {
+				p[3] = p[3] * a / 255;
+				p += 4;
+			} else
+				p += 3;
+		}
+
+		pixels += rowstride;
+	}
+}
+
 /* Keep these for a bit while we work on performance of draw_or_measure_label_text. */
 
 /*
@@ -673,8 +719,13 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 							   details->text_height);
 			eel_gdk_pixbuf_fill_rectangle_with_color (selection_pixbuf,
 								  eel_gdk_pixbuf_whole_pixbuf,
-								  container->details->highlight_color_rgba);
-			clear_rounded_corners (selection_pixbuf, container->details->highlight_frame, 5);
+								  0xffffffff);
+			/* container->details->highlight_color_rgba); */
+			clear_rounded_corners (selection_pixbuf,
+					       container->details->highlight_frame,
+					       5);
+			multiply_pixbuf_rgba (selection_pixbuf,
+					      container->details->highlight_color_rgba);
 			draw_pixbuf (selection_pixbuf, drawable, 
 				     icon_left + (icon_width - details->text_width) / 2,
 				     icon_bottom);

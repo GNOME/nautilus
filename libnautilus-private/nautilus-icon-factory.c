@@ -1166,13 +1166,14 @@ nautilus_gdk_pixbuf_supported (char *mime_type)
 		"image/x-xpixmap"
 	};
 
-	formats = eel_g_hash_table_new_free_at_exit (
-		g_str_hash, g_str_equal, "nautilus-icon-factory.c: formats");
+	if (!formats) {
+		formats = g_hash_table_new (g_str_hash, g_str_equal);
 
-	for (i = 0; i < G_N_ELEMENTS (types); i++)
-		g_hash_table_insert (formats,
-				     (gpointer) types [i],
-				     GUINT_TO_POINTER (1));	
+		for (i = 0; i < G_N_ELEMENTS (types); i++)
+			g_hash_table_insert (formats,
+					     (gpointer) types [i],
+					     GUINT_TO_POINTER (1));	
+	}
 
 	if (g_hash_table_lookup (formats, mime_type))
 		return TRUE;

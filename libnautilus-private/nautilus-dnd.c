@@ -286,6 +286,11 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 		if (actions & GDK_ACTION_MOVE) {
 			*action = GDK_ACTION_MOVE;
 		}
+
+		if (target_uri) {
+			gnome_vfs_uri_unref (target_uri);
+		}
+
 		return;
 
 	} else if (eel_str_has_prefix (target_uri_string, NAUTILUS_COMMAND_SPECIFIER)
@@ -730,6 +735,7 @@ nautilus_drag_selection_includes_special_link (GList *selection_list)
 	GList *node;
 	char *uri, *local_path;
 	gboolean link_in_selection;
+	GnomeVFSFileInfo *info;
 
 	link_in_selection = FALSE;
 
@@ -738,10 +744,20 @@ nautilus_drag_selection_includes_special_link (GList *selection_list)
 
 		/* FIXME bugzilla.gnome.org 43020: This does sync. I/O and works only locally. */
 		local_path = gnome_vfs_get_local_path_from_uri (uri);
-		link_in_selection = local_path != NULL
-			&& (nautilus_link_local_is_trash_link (local_path) || nautilus_link_local_is_home_link (local_path) ||
-			nautilus_link_local_is_volume_link (local_path));
-		g_free (local_path);
+
+		if (local_path) {
+			info = gnome_vfs_file_info_new ();
+			gnome_vfs_get_file_info
+				(local_path, info, 
+				 GNOME_VFS_FILE_INFO_GET_MIME_TYPE |
+				 GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
+			/* assume info is blank on failure */
+			link_in_selection = (nautilus_link_local_is_trash_link (local_path, info) ||
+					     nautilus_link_local_is_home_link (local_path, info) ||
+					     nautilus_link_local_is_volume_link (local_path, info));
+			gnome_vfs_file_info_unref (info);
+			g_free (local_path);
+		}
 		
 		if (link_in_selection) {
 			break;

@@ -154,6 +154,7 @@ append_bookmark_node (gpointer data, gpointer user_data)
 		xmlSetProp (bookmark_node, "icon_name", icon_name);
 		nautilus_scalable_icon_unref (icon);
 		g_free (icon_uri);
+		g_free (icon_mime_type);
 		g_free (icon_name);
 	}
 }

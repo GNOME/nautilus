@@ -1,3 +1,156 @@
+2002-08-12  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-dnd.c:
+	(nautilus_drag_default_drop_action_for_icons): Unref target_uri
+	before returning when eel_uri_is_trash (target_uri_string).
+	* libnautilus-private/nautilus-file-operations.c:
+	(append_basename): Free the filename returned from 
+	gnome_vfs_uri_etract_short_name().
+	* libnautilus-private/nautilus-theme.c: (attributes_free): Free
+	the attributes struct.
+	* libnautilus-private/nautilus-undo-manager.c: (finalize): Free
+	the details struct.
+	* src/nautilus-bookmark-list.c: (append_bookmark_node): Free the
+	mime type string.
+
+2002-08-12  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file.c (rename_guts):
+	Don't actually change desktop files when renaming and the
+	new and old name are the same. This happens in the properties dialog
+	when you switch notebook pages and is especially bad for vfolder
+	directories.
+
+2002-08-11  Frank Worsley  <fworsley@shaw.ca>
+
+	* libnautilus-private/nautilus-file-operations-progress.h:
+	* libnautilus-private/nautilus-file-operations-progress.c:
+	(nautilus_file_operations_progress_update),
+	(nautilus_file_operations_progress_destroy), (map_callback),
+	(delayed_show_callback), (nautilus_file_operations_progress_new),
+	(nautilus_file_operations_progress_new_file),
+	(nautilus_file_operations_progress_done),
+	(nautilus_file_operations_progress_pause_timeout),
+	(nautilus_file_operations_progress_resume_timeout):
+	use a timeout for showing the progress dialog
+
+	* libnautilus-private/nautilus-file-operations.c:
+	(create_transfer_dialog), (handle_transfer_vfs_error),
+	(handle_transfer_overwrite), (nautilus_file_operations_copy_move),
+	(nautilus_file_operations_delete), (do_empty_trash):
+	modified to support timeout
+
+2002-07-10  Jody Goldberg <jody@gnome.org>
+
+	* libnautilus-private/nautilus-directory-async.c
+	(mime_db_changed_callback) : if the mime db changes invalidate a pile
+	  of stuff for anything that is monitoring file information.
+	(nautilus_directory_monitor_add_internal) : add a mime-db monitor if
+	  necessary.
+
+2002-08-09  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-directory.c
+	(call_files_changed_common): Don't add files to the work queue of
+	a directory they don't belong to.
+
+	* libnautilus-private/nautilus-directory-async.c
+	(mime_list_start): Replaced got_directory_count with
+	got_mime_list.
+	(nautilus_directory_add_file_to_work_queue): Added a 
+	g_return_if_fail (file->details->directory == directory)	
+
+2002-08-08  Federico Mena Quintero  <federico@ximian.com>
+
+	* icons/crux_teal/crux_teal.xml: Added the "highlight_color_rgba"
+	attribute to directory lists so that they will look pretty.
+
+2002-08-08  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-directory-async.c
+	(nautilus_directory_cancel_loading_file_attributes): Remove the
+	file from the work queue.
+
+2002-08-08  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-icon-factory.c
+	(nautilus_gdk_pixbuf_supported): fix ugly leak and
+	daftness.
+
+2002-08-07  Federico Mena Quintero  <federico@ximian.com>
+
+	* libnautilus-private/nautilus-icon-container.c
+	(nautilus_icon_container_theme_changed): Move sub-block variables
+	to the function level, making this uglier, less clear, and more
+	prone to uninitialized values, but following the Nautilus coding
+	guidelines, which in this respect are incompatible with the GNOME
+	Programming Guidelines via the GNU Coding Standards.
+
+	* libnautilus-private/nautilus-icon-canvas-item.c
+	(draw_or_measure_label_text): Likewise.
+
+2002-08-07  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-file.c
+	(nautilus_file_can_rename): pass in info if we
+	have it already.
+
+	* src/file-manager/fm-desktop-icon-view.c
+	(update_trash_link_and_delete_copies),
+	(update_home_link_and_delete_copies),
+	(delete_all_mount_links): kill in favour of
+	(update_desktop_directory): so we don't stat / mime
+	sniff everything 3+ times.
+	(update_link_and_delete_copies): push this method and
+	it's file / sniff loop upwards.
+
+	* src/file-manager/fm-directory-view.c
+	(special_link_in_selection): upd.
+	(fm_directory_link_type_in_selection): kill, unused.
+	
+	* libnautilus-private/nautilus-link.c
+	(get_link_style_for_local_file): operate on the passed
+	in GnomeVFSInfo if we have it.
+
+	* libnautilus-private/nautilus-dnd.c
+	(nautilus_drag_selection_includes_special_link): upd
+	for efficiency.
+
+2002-08-06  Alex Graveley  <alex@ximian.com>
+
+	* libnautilus-private/nautilus-file.c (rename_guts): Use
+	eel_vfs_has_capability() to check if file is local (instead of
+	explicitly looking for a file:/// uri) so that renaming .desktop
+	files works with vfolder uris.  Fixes #73773.
+
+2002-07-02  Jody Goldberg <jody@gnome.org>
+
+	* libnautilus-private/nautilus-program-chooser.c
+	(launch_mime_capplet) : That a NautilusFile and pass both the mime
+	  type and the name to the capplet so that it can make more
+	  intelligent defaults if necessary.
+	(launch_mime_capplet_on_ok) : adjust to changes in launch_mime_capplet.
+	(launch_mime_capplet_and_close_dialog) : ditto.
+
+2002-08-06  Federico Mena Quintero  <federico@ximian.com>
+
+	Fixes #82194.
+
+	* icons/text-selection-frame.png: Made the base frame image white
+	with rounded corners over a transparent background.
+
+	* libnautilus-private/nautilus-icon-container.c
+	(nautilus_icon_container_theme_changed): If the theme does not
+	specify a color for the text highlight color, use the widget
+	style's base[GTK_STATE_SELECTED].
+
+	* libnautilus-private/nautilus-icon-canvas-item.c
+	(draw_or_measure_label_text): Multiply the (white) selection
+	pixbuf by the highlight color so that we get a tinted pixbuf with
+	proper alpha.
+
+=== nautilus 2.0.3 ===
+	
 2002-08-05  Dave Camp  <dave@ximian.com>
 
 	* NEWS: updated.

@@ -61,6 +61,7 @@ struct NautilusDirectoryDetails
 	GList *monitor_list;
 
 	NautilusMonitor *monitor;
+	gulong 		 mime_db_monitor;
 
 	NautilusIdleQueue *idle_queue;
 	NautilusMetafileMonitor *metafile_monitor;

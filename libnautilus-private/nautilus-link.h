@@ -28,6 +28,7 @@
 
 #include <gdk/gdktypes.h>
 #include <libgnome/gnome-desktop-item.h>
+#include <libgnomevfs/gnome-vfs-file-info.h>
 
 /* Link types */
 typedef enum {
@@ -79,23 +80,27 @@ char *           nautilus_link_local_get_additional_text         (const char    
 /* Returns the link type of a link file.
  * Works only if the file is local and does sync. I/O
  */
-NautilusLinkType nautilus_link_local_get_link_type               (const char       *uri);
+NautilusLinkType nautilus_link_local_get_link_type               (const char       *uri,
+								  GnomeVFSFileInfo *info);
 
 
 /* Returns if a link is a mount link.
- * Works only if the file is local and does sync. I/O
+ * the Mime type field is neccessary for correct detection.
  */
-gboolean         nautilus_link_local_is_volume_link              (const char       *uri);
+gboolean         nautilus_link_local_is_volume_link              (const char       *uri,
+								  GnomeVFSFileInfo *info);
 
 /* Returns if a link is a home link.
- * Works only if the file is local and does sync. I/O
+ * the Mime type field is neccessary for correct detection.
  */
-gboolean         nautilus_link_local_is_home_link                (const char       *uri);
+gboolean         nautilus_link_local_is_home_link                (const char       *uri,
+								  GnomeVFSFileInfo *info);
 
 /* Returns if a link is a trash link.
- * Works only if the file is local and does sync. I/O
+ * the Mime type field is neccessary for correct detection.
  */
-gboolean         nautilus_link_local_is_trash_link               (const char       *uri);
+gboolean         nautilus_link_local_is_trash_link               (const char       *uri,
+								  GnomeVFSFileInfo *info);
 
 /* Returns TRUE if the link is special (i.e. can NOT be copied or deleted), FALSE otherwise.
  * Works only if the file is local and does sync. I/O

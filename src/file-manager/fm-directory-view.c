@@ -2887,42 +2887,6 @@ fm_directory_view_duplicate_selection (FMDirectoryView *view, GList *files,
 	eel_g_list_free_deep (uris);
 }
 
-gboolean
-fm_directory_link_type_in_selection (FMDirectoryView *view,
-				     NautilusLinkType link_type)
-{
-	gboolean saw_link;
-	GList *selection, *node;
-	NautilusFile *file;
-	char *uri;
-
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
-
-	saw_link = FALSE;
-
-	selection = fm_directory_view_get_selection (FM_DIRECTORY_VIEW (view));
-
-	for (node = selection; node != NULL; node = node->next) {
-		file = NAUTILUS_FILE (node->data);
-
-		uri = nautilus_file_get_uri (file);
-		/* FIXME: This reads the link file every single time. */
-		saw_link = nautilus_file_is_local (file)
-			&& nautilus_file_is_nautilus_link (file)
-			&& nautilus_link_local_get_link_type (uri) == link_type;
-		
-		g_free (uri);
-		
-		if (saw_link) {
-			break;
-		}
-	}
-	
-	nautilus_file_list_free (selection);
-	
-	return saw_link;
-}
-
 /* special_link_in_selection
  * 
  * Return TRUE if one of our special links is in the selection.

@@ -55,6 +55,8 @@
 
 #define MINIMUM_TIME_UP    1000
 
+#define SHOW_TIMEOUT	   1200
+
 static GdkPixbuf *empty_jar_pixbuf, *full_jar_pixbuf;
 
 static void nautilus_file_operations_progress_class_init (NautilusFileOperationsProgressClass *klass);
@@ -83,10 +85,17 @@ struct NautilusFileOperationsProgressDetails {
 	gulong files_total;
 	gulong bytes_total;
 
-	/* system time (microseconds) when dialog was mapped */
+	/* system time (microseconds) when show timeout was started */
 	gint64 start_time;
 
+	/* system time (microseconds) when dialog was mapped */
+	gint64 show_time;
+	
+	/* time remaining in show timeout if it's paused and resumed */
+	guint remaining_time;
+
 	guint delayed_close_timeout_id;
+	guint delayed_show_timeout_id;
 
 	int progress_jar_position;
 };
@@ -124,7 +133,7 @@ static void
 nautilus_file_operations_progress_update (NautilusFileOperationsProgress *progress)
 {
 	double fraction;
-	
+
 	if (progress->details->bytes_total == 0) {
 		/* We haven't set up the file count yet, do not update
 		 * the progress bar until we do.
@@ -191,6 +200,11 @@ nautilus_file_operations_progress_destroy (GtkObject *object)
 		progress->details->delayed_close_timeout_id = 0;
 	}
 	
+	if (progress->details->delayed_show_timeout_id != 0) {
+		g_source_remove (progress->details->delayed_show_timeout_id);
+		progress->details->delayed_show_timeout_id = 0;
+	}
+	
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
@@ -228,7 +242,7 @@ map_callback (GtkWidget *widget)
 
 	EEL_CALL_PARENT (GTK_WIDGET_CLASS, map, (widget));
 
-	progress->details->start_time = eel_get_system_time ();
+	progress->details->show_time = eel_get_system_time ();
 }
 
 static gboolean
@@ -335,13 +349,28 @@ nautilus_file_operations_progress_class_init (NautilusFileOperationsProgressClas
 	
 }
 
+static gboolean
+delayed_show_callback (gpointer callback_data)
+{
+	NautilusFileOperationsProgress *progress;
+	
+	progress = NAUTILUS_FILE_OPERATIONS_PROGRESS (callback_data);
+	
+	progress->details->delayed_show_timeout_id = 0;
+	
+	gtk_widget_show (GTK_WIDGET (progress));
+	
+	return FALSE;
+}
+
 NautilusFileOperationsProgress *
 nautilus_file_operations_progress_new (const char *title,
 				       const char *operation_string,
 				       const char *from_prefix,
 				       const char *to_prefix,
 				       gulong total_files,
-				       gulong total_bytes)
+				       gulong total_bytes,
+				       gboolean use_timeout)
 {
 	GtkWidget *widget;
 	NautilusFileOperationsProgress *progress;
@@ -359,6 +388,12 @@ nautilus_file_operations_progress_new (const char *title,
 
 	progress->details->from_prefix = from_prefix;
 	progress->details->to_prefix = to_prefix;
+
+	if (use_timeout) {
+		progress->details->start_time = eel_get_system_time ();	
+		progress->details->delayed_show_timeout_id =
+			g_timeout_add (SHOW_TIMEOUT, delayed_show_callback, progress);
+	}
 	
 	return progress;
 }
@@ -400,7 +435,6 @@ nautilus_file_operations_progress_new_file (NautilusFileOperationsProgress *prog
 	char *progress_count;
 
 	g_return_if_fail (NAUTILUS_IS_FILE_OPERATIONS_PROGRESS (progress));
-	g_return_if_fail (GTK_WIDGET_REALIZED (progress));
 
 	progress->details->from_prefix = from_prefix;
 	progress->details->to_prefix = to_prefix;
@@ -485,7 +519,7 @@ nautilus_file_operations_progress_done (NautilusFileOperationsProgress *progress
 	g_assert (progress->details->start_time != 0);
 
 	/* compute time up in milliseconds */
-	time_up = (eel_get_system_time () - progress->details->start_time) / 1000;
+	time_up = (eel_get_system_time () - progress->details->show_time) / 1000;
 	if (time_up >= MINIMUM_TIME_UP) {
 		gtk_object_destroy (GTK_OBJECT (progress));
 		return;
@@ -498,4 +532,48 @@ nautilus_file_operations_progress_done (NautilusFileOperationsProgress *progress
 		(MINIMUM_TIME_UP - time_up,
 		 delayed_close_callback,
 		 progress);
+}
+
+void
+nautilus_file_operations_progress_pause_timeout (NautilusFileOperationsProgress *progress)
+{
+	guint time_up;
+
+	if (progress->details->delayed_show_timeout_id == 0) {
+		progress->details->remaining_time = 0;
+		return;
+	}
+	
+	time_up = (eel_get_system_time () - progress->details->start_time) / 1000;
+	
+	if (time_up >= SHOW_TIMEOUT) {
+		progress->details->remaining_time = 0;
+		return;
+	}
+	
+	g_source_remove (progress->details->delayed_show_timeout_id);
+	progress->details->delayed_show_timeout_id = 0;
+	progress->details->remaining_time = SHOW_TIMEOUT - time_up;
+}
+
+void
+nautilus_file_operations_progress_resume_timeout (NautilusFileOperationsProgress *progress)
+{
+	if (progress->details->delayed_show_timeout_id != 0) {
+		return;
+	}
+	
+	if (progress->details->remaining_time <= 0) {
+		return;
+	}
+	
+	progress->details->delayed_show_timeout_id =
+		g_timeout_add (progress->details->remaining_time,
+			       delayed_show_callback,
+			       progress);
+			       
+	progress->details->start_time = eel_get_system_time () - 
+			1000 * (SHOW_TIMEOUT - progress->details->remaining_time);
+					
+	progress->details->remaining_time = 0;
 }

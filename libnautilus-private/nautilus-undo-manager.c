@@ -209,6 +209,8 @@ finalize (GObject *object)
 	manager = NAUTILUS_UNDO_MANAGER (object);
 
 	release_transaction (manager);
+
+	g_free (manager->details);
 	
 	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }

@@ -276,7 +276,7 @@ get_sort_category (NautilusFile *file)
 
 		uri = nautilus_file_get_uri (file);
 		
-		switch (nautilus_link_local_get_link_type (uri)) {
+		switch (nautilus_link_local_get_link_type (uri, NULL)) {
 		case NAUTILUS_LINK_HOME:
 			category = SORT_HOME_LINK;
 			break;
