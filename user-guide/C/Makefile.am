@@ -21,15 +21,12 @@ install-data-local:
 		$(INSTALL_DATA) $$i $(DESTDIR)$(TARGET_DIR)$$basefile; 	\
 	done; 							\
 	fi
-	$(mkinstalldirs) $(DESTDIR)$(SGML_DIR)/fdl/$(LANG)/
-	$(INSTALL_DATA) $(srcdir)/fdl.sgml $(DESTDIR)$(SGML_DIR)/fdl/$(LANG)/fdl.sgml
 
 dist-hook:
 	mkdir $(distdir)/sgml 
 	mkdir $(distdir)/html 
 	mkdir $(distdir)/img
 	-cp $(srcdir)/sgml/*.sgml $(distdir)/sgml
-	-cp $(srcdir)/fdl.sgml $(distdir)
 	-cp $(srcdir)/img/*.png $(distdir)/img
 	-cp $(srcdir)/html/*.html $(distdir)/html
 

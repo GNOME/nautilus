@@ -1,3 +1,14 @@
+2000-11-09  Mathieu Lacage  <mathieu@eazel.com>
+
+	Fix bug 4619. fdl of nautilus collides with help from gnome-core.
+	This is a workaround till we have a new shipped gnome-core.
+	* nautilus.spec.in: remove fdl directory
+	* user-guide/C/Makefile.am: remove fdl installation
+	* user-guide/C/fdl.sgml: remove
+	* user-guide/C/sgml/fdl.sgml: add
+	* user-guide/C/sgml/nautilus.sgml: change to use the new fdl file.
+	
+
 2000-11-09  Darin Adler  <darin@eazel.com>
 
 	buddy: John Sullivan <sullivan@eazel.com>
