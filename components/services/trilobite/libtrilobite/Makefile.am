@@ -16,7 +16,6 @@ INCLUDES = \
 	$(GCONF_CFLAGS)		\
 	$(OAF_CFLAGS)		\
 	$(XML_CFLAGS)		\
-	$(WERROR)		\
 	$(NULL)
 
 libtrilobite_la_LDFLAGS =	\

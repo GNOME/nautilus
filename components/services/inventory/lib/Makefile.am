@@ -14,7 +14,6 @@ INCLUDES = \
 	$(GNOME_CFLAGS)						\
 	$(GCONF_CFLAGS)						\
 	$(GHTTP_CFLAGS)						\
-	$(WERROR)						\
 	$(NULL)
 
 noinst_LIBRARIES = libinventory.a libinventory_corba.a

@@ -59,7 +59,7 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 static void
 fm_desktop_icon_view_quit_menu_item_callback (GtkMenuItem *item, gpointer callback_data)
 {
-	fm_directory_view_quit_nautilus( FM_DIRECTORY_VIEW (callback_data));
+	fm_directory_view_quit_nautilus (FM_DIRECTORY_VIEW (callback_data));
 }
 
 static void
@@ -83,4 +83,3 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
 }
-

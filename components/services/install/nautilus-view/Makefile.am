@@ -14,7 +14,6 @@ INCLUDES =						\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	$(GNOMEUI_CFLAGS)				\
 	$(VFS_CFLAGS)					\
-	$(WERROR)					\
 	$(NULL)
 
 oafdir = $(datadir)/oaf

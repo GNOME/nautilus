@@ -13,7 +13,6 @@ INCLUDES = \
 	$(GNOME_CFLAGS)						\
 	$(GCONF_CFLAGS)						\
 	$(GHTTP_CFLAGS)						\
-	$(WERROR)						\
 	$(NULL)
 
 noinst_LIBRARIES = libsummary_corba.a

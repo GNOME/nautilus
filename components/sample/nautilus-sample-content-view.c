@@ -38,29 +38,38 @@
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 
-/* A NautilusContentView's private information. */
 struct NautilusSampleContentViewDetails {
-	char *uri;
+	char *location;
 	NautilusView *nautilus_view;
 };
+
+#define SAMPLE_MENU_ITEM_PATH    NAUTILUS_MENU_PATH_FILE_MENU "/Sample"
+#define SAMPLE_TOOLBAR_ITEM_PATH NAUTILUS_TOOLBAR_PATH_MAIN_TOOLBAR "/Sample"
 
 static void nautilus_sample_content_view_initialize_class (NautilusSampleContentViewClass *klass);
 static void nautilus_sample_content_view_initialize       (NautilusSampleContentView      *view);
 static void nautilus_sample_content_view_destroy          (GtkObject                      *object);
 static void sample_load_location_callback                 (NautilusView                   *nautilus_view,
 							   const char                     *location,
-							   NautilusSampleContentView      *view);
-static void sample_merge_bonobo_items_callback            (BonoboObject                   *control,
+							   gpointer                        user_data);
+static void sample_merge_bonobo_items_callback            (BonoboControl                  *control,
 							   gboolean                        state,
 							   gpointer                        user_data);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSampleContentView, nautilus_sample_content_view, GTK_TYPE_LABEL)
+/* FIXME: Should we use this Nautilus-only macro in a class that's
+ * supposed to be a sample?
+ */
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSampleContentView,
+				   nautilus_sample_content_view,
+				   GTK_TYPE_LABEL)
      
 static void
 nautilus_sample_content_view_initialize_class (NautilusSampleContentViewClass *klass)
 {
 	GtkObjectClass *object_class;
 	
+	g_assert (NAUTILUS_IS_SAMPLE_CONTENT_VIEW_CLASS (klass));
+
 	object_class = GTK_OBJECT_CLASS (klass);
 	
 	object_class->destroy = nautilus_sample_content_view_destroy;
@@ -69,20 +78,21 @@ nautilus_sample_content_view_initialize_class (NautilusSampleContentViewClass *k
 static void
 nautilus_sample_content_view_initialize (NautilusSampleContentView *view)
 {
+	g_assert (NAUTILUS_IS_SAMPLE_CONTENT_VIEW (view));
+
 	view->details = g_new0 (NautilusSampleContentViewDetails, 1);
 	
-	gtk_label_set_text (GTK_LABEL (view), g_strdup ("(none)"));
+	gtk_label_set_text (GTK_LABEL (view), g_strdup (_("(none)")));
 	
 	view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (view));
 	
 	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
 			    "load_location",
-			    GTK_SIGNAL_FUNC (sample_load_location_callback), 
+			    sample_load_location_callback, 
 			    view);
 
-	/* 
-	 * Get notified when our bonobo control is activated so we
-	 * can merge menu & toolbar items into Nautilus's UI.
+	/* Get notified when our bonobo control is activated so we can
+	 * merge menu & toolbar items into the shell's UI.
 	 */
         gtk_signal_connect (GTK_OBJECT (nautilus_view_get_bonobo_control
 					(view->details->nautilus_view)),
@@ -100,7 +110,7 @@ nautilus_sample_content_view_destroy (GtkObject *object)
 	
 	view = NAUTILUS_SAMPLE_CONTENT_VIEW (object);
 	
-	g_free (view->details->uri);
+	g_free (view->details->location);
 	g_free (view->details);
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
@@ -111,31 +121,30 @@ nautilus_sample_content_view_destroy (GtkObject *object)
  *
  * Return the NautilusView object associated with this view; this
  * is needed to export the view via CORBA/Bonobo.
+ *
  * @view: NautilusSampleContentView to get the nautilus_view from..
- * 
  **/
 NautilusView *
 nautilus_sample_content_view_get_nautilus_view (NautilusSampleContentView *view)
 {
+	g_return_val_if_fail (NAUTILUS_IS_SAMPLE_CONTENT_VIEW (view), NULL);
+
 	return view->details->nautilus_view;
 }
 
-/**
- * nautilus_sample_content_view_load_uri:
- *
- * Load the resource pointed to by the specified URI.
- * 
- **/
-void
-nautilus_sample_content_view_load_uri (NautilusSampleContentView *view,
-				       const char               *uri)
+static void
+load_location (NautilusSampleContentView *view,
+	       const char *location)
 {
 	char *label_text;
-	
-	g_free (view->details->uri);
-	view->details->uri = g_strdup (uri);
 
-	label_text = g_strdup_printf (_("%s\n\nThis is a sample Nautilus content view component."), uri);
+	g_assert (NAUTILUS_IS_SAMPLE_CONTENT_VIEW (view));
+	g_assert (location != NULL);
+	
+	g_free (view->details->location);
+	view->details->location = g_strdup (location);
+
+	label_text = g_strdup_printf (_("%s\n\nThis is a sample Nautilus content view component."), location);
 	gtk_label_set_text (GTK_LABEL (view), label_text);
 	g_free (label_text);
 }
@@ -143,8 +152,15 @@ nautilus_sample_content_view_load_uri (NautilusSampleContentView *view,
 static void
 sample_load_location_callback (NautilusView *nautilus_view, 
 			       const char *location,
-			       NautilusSampleContentView *view)
+			       gpointer user_data)
 {
+	NautilusSampleContentView *view;
+	
+	g_assert (NAUTILUS_IS_VIEW (nautilus_view));
+	g_assert (location != NULL);
+	
+	view = NAUTILUS_SAMPLE_CONTENT_VIEW (user_data);
+	
 	g_assert (nautilus_view == view->details->nautilus_view);
 	
 	/* It's mandatory to send an underway message once the
@@ -157,7 +173,7 @@ sample_load_location_callback (NautilusView *nautilus_view,
 	nautilus_view_report_load_underway (nautilus_view);
 	
 	/* Do the actual load. */
-	nautilus_sample_content_view_load_uri (view, location);
+	load_location (view, location);
 	
 	/* It's mandatory to call report_load_complete once the
 	 * component is done loading successfully, or
@@ -176,15 +192,18 @@ bonobo_sample_callback (BonoboUIHandler *ui_handler, gpointer user_data, const c
  	NautilusSampleContentView *view;
 	char *label_text;
 
-        g_assert (NAUTILUS_IS_SAMPLE_CONTENT_VIEW (user_data));
+	g_assert (BONOBO_IS_UI_HANDLER (ui_handler));
+        g_assert (path != NULL);
 
 	view = NAUTILUS_SAMPLE_CONTENT_VIEW (user_data);
 
-	if (strcmp (path, "/File/Sample") == 0) {
-		label_text = g_strdup_printf ("%s\n\nYou selected the Sample menu item.", view->details->uri);
+	if (strcmp (path, SAMPLE_MENU_ITEM_PATH) == 0) {
+		label_text = g_strdup_printf ("%s\n\nYou selected the Sample menu item.",
+					      view->details->location);
 	} else {
-		g_assert (strcmp (path, "/Main/Sample") == 0);
-		label_text = g_strdup_printf (_("%s\n\nYou clicked the Sample toolbar button."), view->details->uri);
+		g_assert (strcmp (path, SAMPLE_TOOLBAR_ITEM_PATH) == 0);
+		label_text = g_strdup_printf (_("%s\n\nYou clicked the Sample toolbar button."),
+					      view->details->location);
 	}
 	
 	gtk_label_set_text (GTK_LABEL (view), label_text);
@@ -192,59 +211,51 @@ bonobo_sample_callback (BonoboUIHandler *ui_handler, gpointer user_data, const c
 }
 
 static void
-sample_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpointer user_data)
+sample_merge_bonobo_items_callback (BonoboControl *control, gboolean state, gpointer user_data)
 {
  	NautilusSampleContentView *view;
-	BonoboUIHandler *local_ui_handler;
-	GdkPixbuf		*pixbuf;
+	BonoboUIHandler *ui_handler;
+	GdkPixbuf *pixbuf;
 	BonoboUIHandlerPixmapType pixmap_type;
-	char *path;
-	
-	g_assert (NAUTILUS_IS_SAMPLE_CONTENT_VIEW (user_data));
 
+	g_assert (BONOBO_IS_CONTROL (control));
+	
 	view = NAUTILUS_SAMPLE_CONTENT_VIEW (user_data);
-	local_ui_handler = bonobo_control_get_ui_handler (BONOBO_CONTROL (control));
+	ui_handler = bonobo_control_get_ui_handler (control);
 
 	if (state) {
 		/* Tell the Nautilus window to merge our bonobo_ui_handler items with its ones */
-		bonobo_ui_handler_set_container (local_ui_handler, 
-                                                 bonobo_control_get_remote_ui_handler (BONOBO_CONTROL (control)));
+		bonobo_ui_handler_set_container (ui_handler, 
+                                                 bonobo_control_get_remote_ui_handler (control));
 
-		/* Load test pixbuf */
-		pixbuf = gdk_pixbuf_new_from_file ("/gnome/share/pixmaps/nautilus/i-directory-24.png");		
-		if (pixbuf != NULL)
+		/* Load test pixbuf (used for both menu item and toolbar). */
+		pixbuf = gdk_pixbuf_new_from_file (ICON_DIR "/i-directory-24.png");		
+		if (pixbuf != NULL) {
 			pixmap_type = BONOBO_UI_HANDLER_PIXMAP_PIXBUF_DATA;
-		else
+		} else {
 			pixmap_type = BONOBO_UI_HANDLER_PIXMAP_NONE;
+		}
 
-	       /* Create our sample menu item. */ 
-		path = bonobo_ui_handler_build_path (NULL,
-						     "File", 
-						     "Sample",
-						     NULL);
+		/* Create our sample menu item. */ 
 		bonobo_ui_handler_menu_new_item 
-			(local_ui_handler,					/* BonoboUIHandler */
-	        	 path,							/* menu item path, must start with /some-existing-menu-path and be otherwise unique */
-	                 _("_Sample"),						/* menu item user-displayed label */
-	                 _("This is a sample merged menu item"),		/* hint that appears in status bar */
-	                 bonobo_ui_handler_menu_get_pos 
-	                 	(local_ui_handler, 
-	                         NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM) + 1, 	/* position within menu; -1 means last */
-	                 pixmap_type,						/* pixmap type */
-	                 pixbuf,						/* pixmap data */
-	                 'M',							/* accelerator key, couldn't bear the thought of using Control-S for anything except Save */
-	                 GDK_CONTROL_MASK,					/* accelerator key modifiers */
-	                 bonobo_sample_callback,				/* callback function */
-	                 view);                					/* callback function data */
-		g_free (path);
+			(ui_handler,
+	        	 SAMPLE_MENU_ITEM_PATH,				/* menu item path, must start with /some-existing-menu-path and be otherwise unique */
+	                 _("_Sample"),					/* menu item user-displayed label */
+	                 _("This is a sample merged menu item"),	/* hint that appears in status bar */
+	                 bonobo_ui_handler_menu_get_pos  		/* position within menu; -1 means last */
+	                 	(ui_handler, 
+	                         NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM) + 1,
+	                 pixmap_type,					/* pixmap type */
+	                 pixbuf,					/* pixmap data */
+	                 'M',						/* accelerator key (couldn't bear the thought of using Control-S for anything except Save) */
+	                 GDK_CONTROL_MASK,				/* accelerator key modifiers */
+	                 bonobo_sample_callback,			/* callback function */
+	                 view);                				/* callback function data */
 
                 /* Create our sample toolbar button. */ 
-                path = bonobo_ui_handler_build_path (NAUTILUS_TOOLBAR_PATH_MAIN_TOOLBAR, 
-                				     "Sample",
-                				     NULL);
 	        bonobo_ui_handler_toolbar_new_item 
-	        	(local_ui_handler,				/* BonoboUIHandler */
-	        	 path,						/* button path, must start with /some-existing-toolbar-path and be otherwise unique */
+	        	(ui_handler,
+	        	 SAMPLE_TOOLBAR_ITEM_PATH,			/* button path, must start with /some-existing-toolbar-path and be otherwise unique */
 	        	 _("Sample"),					/* button user-displayed label */
 	        	 _("This is a sample merged toolbar button"),	/* hint that appears in status bar */
 	        	 -1,						/* position, -1 means last */
@@ -254,15 +265,13 @@ sample_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpoin
 	        	 0,						/* accelerator key modifiers */
 	        	 bonobo_sample_callback,			/* callback function */
 	        	 view);						/* callback function's data */
-	        g_free (path);
-	} else {
-		/* Do nothing. */
 	}
 
-        /* 
-         * Note that we do nothing if state is FALSE. Nautilus content views are activated
-         * when installed, but never explicitly deactivated. When the view changes to another,
-         * the content view object is destroyed, which ends up calling bonobo_ui_handler_unset_container,
-         * which removes its merged menu & toolbar items.
-         */
+        /* Note that we do nothing if state is FALSE. Nautilus content
+         * views are activated when installed, but never explicitly
+         * deactivated. When the view changes to another, the content
+         * view object is destroyed, which ends up calling
+         * bonobo_ui_handler_unset_container, which removes its merged
+         * menu & toolbar items.
+	 */
 }

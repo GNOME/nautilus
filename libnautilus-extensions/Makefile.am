@@ -12,7 +12,6 @@ INCLUDES = \
 	$(GHTTP_CFLAGS) \
 	$(VFS_CFLAGS) \
 	$(XML_CFLAGS) \
-	$(WERROR) \
 	-D_REENTRANT \
 	-DDATADIR=\""$(datadir)"\" \
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \

@@ -6,8 +6,7 @@ INCLUDES =					\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
 	$(GCONF_CFLAGS) \
-	$(GNOMEUI_CFLAGS)                       \
-	$(WERROR)
+	$(GNOMEUI_CFLAGS)
 
 oafdir = $(datadir)/oaf
 

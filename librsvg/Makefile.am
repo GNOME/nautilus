@@ -4,6 +4,7 @@ bin_PROGRAMS=test-rsvg
 
 test_rsvg_LDADD =\
 	$(GNOMEUI_LIBS) \
+	$(LIBPNG) \
 	librsvg.la
 
 lib_LTLIBRARIES=librsvg.la
@@ -12,7 +13,6 @@ INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
 	$(GNOME_CFLAGS) \
 	$(GDK_PIXBUF_CFLAGS) \
 	$(XML_CFLAGS) \
-	$(WERROR) \
 	-D_REENTRANT
 
 librsvg_la_LDFLAGS=\

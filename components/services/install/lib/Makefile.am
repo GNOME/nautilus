@@ -16,7 +16,6 @@ INCLUDES = \
 	$(GCONF_CFLAGS)						\
 	$(XML_CFLAGS)						\
 	$(GHTTP_CFLAGS)						\
-	$(WERROR)						\
 	$(NULL)
 
 lib_LTLIBRARIES = libeazelinstall.la

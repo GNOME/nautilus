@@ -11,7 +11,6 @@ INCLUDES = \
 	$(GNOME_CFLAGS)						\
 	$(GCONF_CFLAGS)						\
 	$(XML_CFLAGS)						\
-	$(WERROR)						\
 	$(NULL)
 
 noinst_LIBRARIES = libstartup.a

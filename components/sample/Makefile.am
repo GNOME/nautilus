@@ -1,19 +1,19 @@
 CPPFLAGS =					\
-	-DPREFIX=\"$(prefix)\"
-	-DG_LOG_DOMAIN=\"Nautilus-Sample\"
+	-DPREFIX=\"$(prefix)\"			\
+	-DG_LOG_DOMAIN=\"Nautilus-Sample\"	\
+	-DICON_DIR=\"$(datadir)/pixmaps/nautilus\"
 
 INCLUDES =					\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
-	$(GCONF_CFLAGS) \
 	$(GNOMEUI_CFLAGS)                       \
-	$(WERROR)
+	$(BONOBO_CFLAGS)			\
+	$(OAF_CFLAGS)
 
 oafdir = $(datadir)/oaf
 
 oaf_DATA =					\
 	nautilus-sample-content-view.oafinfo
-
 
 bin_PROGRAMS =					\
 	nautilus-sample-content-view
@@ -23,15 +23,10 @@ nautilus_sample_content_view_SOURCES =		\
 	nautilus-sample-content-view.c          \
 	main.c
 
-nautilus_sample_content_view_LDADD =			\
+nautilus_sample_content_view_LDADD =		\
 	$(top_builddir)/libnautilus/libnautilus.la	\
-	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
-	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la \
-	$(top_builddir)/librsvg/librsvg.la		\
-	$(GNOMEUI_LIBS)					\
-	$(BONOBO_LIBS)					\
-	$(GCONF_LIBS) \
-	$(VFS_LIBS)					\
+	$(GNOMEUI_LIBS)				\
+	$(BONOBO_LIBS)				\
 	$(OAF_LIBS)
 
 EXTRA_DIST = $(oaf_DATA)

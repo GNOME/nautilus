@@ -15,7 +15,6 @@ INCLUDES =							\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"		\
 	$(GHTTP_CFLAGS) 					\
 	$(VFS_CFLAGS)	 					\
-	$(WERROR)						\
 	$(NULL)
 
 oafdir = $(datadir)/oaf

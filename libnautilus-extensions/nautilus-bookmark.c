@@ -79,7 +79,7 @@ nautilus_bookmark_destroy (GtkObject *object)
 
 	g_free (bookmark->details->name);
 	g_free (bookmark->details->uri);
-	if (bookmark->details->icon) {
+	if (bookmark->details->icon != NULL) {
 		nautilus_scalable_icon_unref (bookmark->details->icon);
 	}
 	nautilus_file_unref (bookmark->details->file);
@@ -382,7 +382,6 @@ nautilus_bookmark_new_with_icon (const char *uri, const char *name,
 	new_bookmark->details->icon = icon;
 
 	new_bookmark->details->file = nautilus_file_get (uri);
-	nautilus_file_ref (new_bookmark->details->file);
 
 	/* Set initial icon based on available information. */
 	if (!nautilus_bookmark_update_icon (new_bookmark)) {

@@ -18,7 +18,6 @@ INCLUDES = \
 	$(GNOME_INCLUDEDIR) 	\
 	$(OAF_CFLAGS) 		\
 	$(XML_CFLAGS) 		\
-	$(WERROR) 		\
 	$(NULL)
 
 LDFLAGS = \

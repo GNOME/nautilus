@@ -21,45 +21,39 @@
  * Author: Maciej Stachowiak <mjs@eazel.com>
  */
 
-/* nautilus-sample-content-view.h - sample content view
-   component. This component just displays a simple label of the URI
-   and does nothing else. It should be a good basis for writing
-   out-of-proc content views.*/
+/* nautilus-sample-content-view.h - Sample view component. This
+ * component just displays a simple message and includes a menu item
+ * and a toolbar button else. It should be a good basis for writing
+ * Nautilus view components.
+ */
 
 #ifndef NAUTILUS_SAMPLE_CONTENT_VIEW_H
 #define NAUTILUS_SAMPLE_CONTENT_VIEW_H
 
-#include <libnautilus/nautilus-view.h>
 #include <gtk/gtklabel.h>
-
-typedef struct NautilusSampleContentView NautilusSampleContentView;
-typedef struct NautilusSampleContentViewClass NautilusSampleContentViewClass;
+#include <libnautilus/nautilus-view.h>
 
 #define NAUTILUS_TYPE_SAMPLE_CONTENT_VIEW	     (nautilus_sample_content_view_get_type ())
 #define NAUTILUS_SAMPLE_CONTENT_VIEW(obj)	     (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SAMPLE_CONTENT_VIEW, NautilusSampleContentView))
 #define NAUTILUS_SAMPLE_CONTENT_VIEW_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SAMPLE_CONTENT_VIEW, NautilusSampleContentViewClass))
 #define NAUTILUS_IS_SAMPLE_CONTENT_VIEW(obj)	     (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_SAMPLE_CONTENT_VIEW))
-#define NAUTILUS_IS_SAMPLE_CONTENT_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_SAMPLE_CONTENT_VIEW))
+#define NAUTILUS_IS_SAMPLE_CONTENT_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SAMPLE_CONTENT_VIEW))
 
 typedef struct NautilusSampleContentViewDetails NautilusSampleContentViewDetails;
 
-struct NautilusSampleContentView {
-	GtkLabel parent;
+typedef struct {
+	GtkLabel parent_slot;
 	NautilusSampleContentViewDetails *details;
-};
+} NautilusSampleContentView;
 
-struct NautilusSampleContentViewClass {
-	GtkLabelClass parent_class;
-};
+typedef struct {
+	GtkLabelClass parent_slot;
+} NautilusSampleContentViewClass;
 
 /* GtkObject support */
 GtkType       nautilus_sample_content_view_get_type          (void);
 
 /* Component embedding support */
 NautilusView *nautilus_sample_content_view_get_nautilus_view (NautilusSampleContentView *view);
-
-/* URI handling */
-void          nautilus_sample_content_view_load_uri          (NautilusSampleContentView *view,
-							      const char                *uri);
 
 #endif /* NAUTILUS_SAMPLE_CONTENT_VIEW_H */

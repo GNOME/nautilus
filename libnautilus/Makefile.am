@@ -8,7 +8,6 @@ INCLUDES=-I$(top_srcdir) -I$(top_builddir) -I. \
 	$(OAF_CFLAGS) \
 	$(VFS_CFLAGS) \
 	$(XML_CFLAGS) \
-	$(WERROR) \
 	-D_REENTRANT
 
 libnautilus_la_LDFLAGS=\

@@ -6,7 +6,6 @@ INCLUDES = \
 	-I$(top_builddir)/cut-n-paste-code \
 	$(GNOME_CFLAGS) \
 	$(GDK_PIXBUF_CFLAGS) \
-	$(WERROR) \
 	$(NULL)
 
 libnautilus_druid_la_LDFLAGS=\

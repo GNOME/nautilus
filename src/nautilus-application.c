@@ -408,6 +408,9 @@ static void
 nautilus_application_destroy_window (GtkObject *obj, NautilusApplication *application)
 {
 	application->windows = g_slist_remove (application->windows, obj);
+	if (application->windows == NULL && !application->has_desktop) {
+		gtk_main_quit ();
+	}
 }
 
 void 

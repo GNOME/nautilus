@@ -10,7 +10,6 @@ INCLUDES = \
 	$(GNOMEUI_CFLAGS) \
 	$(VFS_CFLAGS) \
 	-DVERSION="\"$(VERSION)\"" \
-	$(WERROR) \
 	-D_REENTRANT \
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
 	$(NULL)	

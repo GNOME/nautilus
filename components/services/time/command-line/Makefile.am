@@ -10,7 +10,6 @@ INCLUDES =					\
 	-I$(top_srcdir)/components/services/trilobite \
 	$(GNOMEUI_CFLAGS)                       \
 	$(GCONF_CFLAGS)				\
-	$(WERROR)				\
 	$(NULL)
 
 

@@ -26,7 +26,6 @@ eazel_helper_LDADD = \
 
 INCLUDES = \
 	$(GLIB_CFLAGS)		\
-	$(WERROR)		\
 	$(NULL)
 
 EXTRA_DIST = \

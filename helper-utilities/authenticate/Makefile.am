@@ -7,7 +7,6 @@ CPPFLAGS = \
 INCLUDES = \
 	-I$(top_srcdir) \
 	$(GNOMEUI_CFLAGS) \
-	$(WERROR) \
 	$(NULL)
 
 bin_PROGRAMS = nautilus-authenticate

@@ -14,7 +14,6 @@ INCLUDES =\
 	$(XML_CFLAGS) \
 	-DVERSION="\"$(VERSION)\"" \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	$(WERROR) \
 	$(NULL)
 
 LDADD =\

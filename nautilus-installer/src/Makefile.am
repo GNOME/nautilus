@@ -16,7 +16,7 @@ INCLUDES = \
 
 CPPFLAGS = -DEAZEL_INSTALL_NO_CORBA
 
-CFLAGS = -g $(WERROR)
+CFLAGS = -g
 ##LDFLAGS = -static
 
 bin_PROGRAMS = nautilus-installer

@@ -8,8 +8,7 @@ INCLUDES=\
 	$(GNOMEUI_CFLAGS)	\
 	$(GCONF_CFLAGS)		\
 	$(BONOBO_CFLAGS)	\
-	$(VFS_CFLAGS)		\
-	$(WERROR) 
+	$(VFS_CFLAGS)
 
 LDADD=\
 	$(top_builddir)/libnautilus/libnautilus.la \

@@ -1,3 +1,93 @@
+2000-07-12  Darin Adler  <darin@eazel.com>
+
+	* src/nautilus-view-frame.c: (nautilus_view_frame_destroy_client):
+	Change to use bonobo_object_unref now that the leaks have been
+	fixed.  This requires the new Bonobo or you'll have lots of leaked
+	processes. Luckily, Nautilus won't compile without the new Bonobo
+	due to my use of bonobo_object_shutdown in main :-)
+
+	* configure.in:
+	Fix the way -Werror works so it affects all directories, not just
+	ones where we use WERROR.
+	
+	* components/hardware/Makefile.am:
+	* components/help/Makefile.am:
+	* components/history/Makefile.am:
+	* components/loser/content/Makefile.am:
+	* components/loser/sidebar/Makefile.am:
+	* components/mozilla/Makefile.am:
+	* components/music/Makefile.am:
+	* components/notes/Makefile.am:
+	* components/rpmview/Makefile.am:
+	* components/sample/Makefile.am:
+	* components/services/install/command-line/Makefile.am:
+	* components/services/install/lib/Makefile.am:
+	* components/services/install/nautilus-view/Makefile.am:
+	* components/services/install/server/Makefile.am:
+	* components/services/inventory/lib/Makefile.am:
+	* components/services/inventory/nautilus-view/Makefile.am:
+	* components/services/inventory/service/Makefile.am:
+	* components/services/login/lib/Makefile.am:
+	* components/services/login/nautilus-view/Makefile.am:
+	* components/services/login/service/Makefile.am:
+	* components/services/startup/command-line/Makefile.am:
+	* components/services/startup/lib/Makefile.am:
+	* components/services/startup/nautilus-view/Makefile.am:
+	* components/services/summary/lib/Makefile.am:
+	* components/services/summary/nautilus-view/Makefile.am:
+	* components/services/summary/service/Makefile.am:
+	* components/services/time/command-line/Makefile.am:
+	* components/services/time/nautilus-view/Makefile.am:
+	* components/services/time/service/Makefile.am:
+	* components/services/trilobite/helper/Makefile.am:
+	* components/services/trilobite/libtrilobite/Makefile.am:
+	* components/services/trilobite/sample/command-line/.cvsignore:
+	* components/services/trilobite/sample/command-line/Makefile.am:
+	* components/services/trilobite/sample/lib/Makefile.am:
+	* components/services/trilobite/sample/nautilus-view/Makefile.am:
+	* components/services/trilobite/sample/service/Makefile.am:
+	* components/services/vault/command-line/Makefile.am:
+	* components/services/vault/lib/Makefile.am:
+	* components/services/vault/nautilus-view/Makefile.am:
+	* components/services/vault/service/Makefile.am:
+	* components/tree/Makefile.am:
+	* components/websearch/Makefile.am:
+	* cut-n-paste-code/widgets/nautilus-druid/Makefile.am:
+	* helper-utilities/authenticate/Makefile.am:
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus/Makefile.am:
+	* librsvg/Makefile.am:
+	* nautilus-installer/src/Makefile.am:
+	* src/Makefile.am:
+	* src/file-manager/Makefile.am:
+	* test/Makefile.am:
+	Got rid of the WERROR shell variable. The -Werror switch is no
+	longer a per-directory thing.
+	
+	* librsvg/Makefile.am:
+	Added libpng to the libraries for the test program. Maybe this was
+	the wrong thing to do, but before this change the link failed.
+
+	* components/sample/Makefile.am:
+	* components/sample/main.c:
+	* components/sample/nautilus-sample-content-view.c:
+	* components/sample/nautilus-sample-content-view.h:
+	A clean-up of the sample, including fixing many bugs and adding
+	lots of comments. I figure we want this to be as close to
+	exemplary as possible since people will continue to start with it
+	for new components.
+	
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(nautilus_bookmark_new_with_icon): Removed a bogus extra ref of a
+	NautilusFile object that I spotted in here.
+
+	* src/nautilus-application.c: (nautilus_application_destroy_window):
+	Re-added the code to quit when the last window is closed that Mike
+	removed in his recent check-in.
+	
+	* src/nautilus-main.c: (main): Added a call to bonobo_shutdown.
+	We don't need this call, but I say, "Why not?"
+	
 2000-07-12  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/login/nautilus-view/nautilus-login-view.c:
@@ -14,9 +104,8 @@
 
 2000-07-12  J Shane Culpepper  <pepper@eazel.com>
 
-	*
-	components/services/install/nautilus-view/nautilus-service-install-
-	view.c: (generate_install_form):
+	* components/services/install/nautilus-view/nautilus-service-install-view.c:
+	(generate_install_form):
 
 	Formatting tweaks to the Description.
 
@@ -49,18 +138,12 @@
 
 	* components/services/trilobite/idl/trilobite-service.idl:
 	* components/services/trilobite/libtrilobite/Makefile.am:
-	*
-	components/services/trilobite/libtrilobite/libtrilobite-service.h:
+	* components/services/trilobite/libtrilobite/libtrilobite-service.h:
 	* components/services/trilobite/libtrilobite/libtrilobite.h:
-	*
-	components/services/trilobite/libtrilobite/trilobite-service-passwo
-	rdquery-private.h:
-	*
-	components/services/trilobite/libtrilobite/trilobite-service-passwo
-	rdquery-public.h:
-	*
-	components/services/trilobite/libtrilobite/trilobite-service-passwo
-	rdquery.c: (impl_Trilobite_PasswordQuery_set_query_client),
+	* components/services/trilobite/libtrilobite/trilobite-service-passwordquery-private.h:
+	* components/services/trilobite/libtrilobite/trilobite-service-passwordquery-public.h:
+	* components/services/trilobite/libtrilobite/trilobite-service-passwordquery.c:
+	(impl_Trilobite_PasswordQuery_set_query_client),
 	(trilobite_passwordquery_get_epv),
 	(trilobite_passwordquery_destroy),
 	(trilobite_passwordquery_set_arg),
@@ -69,7 +152,6 @@
 	(trilobite_passwordquery_add_interface),
 	(trilobite_passwordquery_get_password),
 	(trilobite_passwordquery_set_prompt):
-	*
 	Added the trilobite_passwordquery interface and
 	trilobite_passwordquery_client. You add the _passwordquery
 	interface to your service, and the client (view or cli tool)
@@ -83,8 +165,7 @@
 	we should loose then when Robey does the gtk interface to be used
 	in views and cli tools.
 	
-	components/services/trilobite/libtrilobite/trilobite-service-public
-	.h:
+	* components/services/trilobite/libtrilobite/trilobite-service-public.h:
 	* components/services/trilobite/libtrilobite/trilobite-service.c:
 	(trilobite_service_add_interface):
 	Added the trilobite_service_add_interface. All trilobite
@@ -96,8 +177,7 @@
 	* components/services/trilobite/sample/service/Makefile.am:
 	* components/services/trilobite/sample/service/main.c:
 	(trilobite_sample_service_factory):
-	*
-	components/services/trilobite/sample/service/sample-service-impl.c:
+	* components/services/trilobite/sample/service/sample-service-impl.c:
 	(impl_Trilobite_Eazel_Sample_list_it), (sample_service_get_epv):
 	Added a list_it call, that given a dir does a ls on it. (proof of
 	concept stuff).	So I've also added the trilobite_passwordquery
@@ -140,14 +220,12 @@
 	* components/history/nautilus-history-view.c:
 	(history_load_location), (history_button_press),
 	(history_button_release), (make_obj):
-	Removed drag move from list.  Changed navigation
-	to occur on mouse up, not on select row.  This is
-	because select row is called on rows during a drag.
-	Tghis can be annoying if you are trying to drag a
-	row item and Nautilus is navigating to the item you
-	ared dragging over.  This behavior happens even if we 
-	are not supporting drag move of items. Now navigation
-	occurs on the mouse up.
+	Removed drag move from list. Changed navigation to occur on mouse
+	up, not on select row. This is because select row is called on
+	rows during a drag. This can be annoying if you are trying to drag
+	a row item and Nautilus is navigating to the item you ared
+	dragging over. This behavior happens even if we are not supporting
+	drag move of items. Now navigation occurs on the mouse up.
 
 2000-07-11  Michael Engber  <engber@eazel.com>
 

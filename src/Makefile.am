@@ -17,7 +17,6 @@ INCLUDES =\
 	$(XML_CFLAGS) \
 	-DVERSION="\"$(VERSION)\"" \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	$(WERROR) \
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
 	$(NULL)
 

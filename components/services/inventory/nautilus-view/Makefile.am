@@ -16,7 +16,6 @@ INCLUDES =								\
 	$(GCONF_CFLAGS) 						\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"			\
 	$(VFS_CFLAGS) 							\
-	$(WERROR)							\
 	$(NULL)
 
 oafdir = $(datadir)/oaf

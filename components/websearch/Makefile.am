@@ -7,8 +7,7 @@ INCLUDES=\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	$(GNOMEUI_CFLAGS)			\
 	$(GCONF_CFLAGS)				\
-	$(BONOBO_CFLAGS)			\
-	$(WERROR)
+	$(BONOBO_CFLAGS)
 
 LDADD=\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \

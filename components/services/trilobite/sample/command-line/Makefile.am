@@ -11,7 +11,6 @@ INCLUDES =								\
 	-I$(top_srcdir)/components/services/trilobite/sample/lib 	\
 	$(GNOMEUI_CFLAGS)                       			\
 	$(GCONF_CFLAGS)							\
-	$(WERROR)							\
 	$(NULL)
 
 bin_PROGRAMS =								\

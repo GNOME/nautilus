@@ -41,9 +41,6 @@
 #include <libnautilus/nautilus-view.h>
 #include <libnautilus/nautilus-zoomable.h>
 
-/* FIXME bugzilla.eazel.com 917: This should be removed. See below. */
-void bonobo_object_destroy (BonoboObject *object);
-
 enum {
 	OPEN_LOCATION,
 	OPEN_LOCATION_IN_NEW_WINDOW,
@@ -232,12 +229,7 @@ nautilus_view_frame_destroy_client (NautilusViewFrame *view)
 		view->component_class->destroy (view, &ev);
 	}
 	
-	/* FIXME bugzilla.eazel.com 917: This should be removed, but
-	 * there is a circular reference between Bonobo_Control and
-	 * Bonobo_ControlFrame that prevents it from working. Once
-	 * that's fixed, we'd really like to remove it.
-	 */
-	bonobo_object_destroy (view->view_frame);
+	bonobo_object_unref (view->view_frame);
 
 	view->view_frame = NULL;
 	
