@@ -236,7 +236,7 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
   gtk_widget_show_all(wtmp);
 
   /* create object */
-  hview->view = NAUTILUS_VIEW (nautilus_meta_view_new (wtmp));
+  hview->view = nautilus_view_new (wtmp);
   gtk_signal_connect (GTK_OBJECT (hview->view), "destroy", do_destroy, hview);
   object_count++;
 

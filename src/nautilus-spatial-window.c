@@ -880,7 +880,7 @@ void
 nautilus_window_add_meta_view(NautilusWindow *window, NautilusViewFrame *meta_view)
 {
   g_return_if_fail (!g_list_find (window->meta_views, meta_view));
-  g_return_if_fail (NAUTILUS_IS_META_VIEW_FRAME (meta_view));
+  g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (meta_view));
 
   nautilus_index_panel_add_meta_view (window->index_panel, meta_view);
   window->meta_views = g_list_prepend (window->meta_views, meta_view);

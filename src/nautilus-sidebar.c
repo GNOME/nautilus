@@ -471,7 +471,7 @@ nautilus_index_panel_add_meta_view (NautilusIndexPanel *index_panel, NautilusVie
 	int page_num;
 	
 	g_return_if_fail (NAUTILUS_IS_INDEX_PANEL (index_panel));
-	g_return_if_fail (NAUTILUS_IS_META_VIEW_FRAME (meta_view));
+	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (meta_view));
 	
 	description = nautilus_meta_view_frame_get_label (NAUTILUS_META_VIEW_FRAME (meta_view));
 	if (description == NULL) {

@@ -63,7 +63,7 @@ global_preferences_create_dialog (void)
 	NautilusPreferencesBox	*preference_box;
 	GtkWidget		*user_level_pane;
 	GtkWidget		*directory_views_pane;
-	GtkWidget		*meta_view_pane;
+	GtkWidget		*sidebar_view_pane;
 	GtkWidget		*appearance_pane;
 
 
@@ -123,14 +123,14 @@ global_preferences_create_dialog (void)
 	/*
 	 * Meta view pane
 	 */
-	meta_view_pane = nautilus_preferences_box_add_pane (preference_box,
+	sidebar_view_pane = nautilus_preferences_box_add_pane (preference_box,
 							    "Meta Views",
 							    "Meta Views Something");
 	
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (meta_view_pane), "Meta Views");
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (sidebar_view_pane), "Meta Views");
 	
 	{
-		char *meta_view_pref;
+		char *sidebar_view_pref;
 		GList *view_identifiers;
 		GList *p;
 		NautilusViewIdentifier *identifier;
@@ -141,17 +141,17 @@ global_preferences_create_dialog (void)
 		for (p = view_identifiers; p != NULL; p = p->next) {
 			identifier = (NautilusViewIdentifier *) (p->data);
 
-			meta_view_pref = g_strconcat ("/nautilus/metaviews/", 
+			sidebar_view_pref = g_strconcat ("/nautilus/metaviews/", 
 						      identifier->iid,
 						      NULL);
 
 			nautilus_preferences_pane_add_item_to_nth_group 
-				(NAUTILUS_PREFERENCES_PANE (meta_view_pane),
+				(NAUTILUS_PREFERENCES_PANE (sidebar_view_pane),
 				 0,
-				 meta_view_pref,
+				 sidebar_view_pref,
 				 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 	
-			g_free (meta_view_pref);
+			g_free (sidebar_view_pref);
 
 		}
 	
@@ -188,28 +188,27 @@ global_preferences_create_dialog (void)
 GList *
 nautilus_global_preferences_get_sidebar_panel_view_identifiers (void)
 {
-        OAF_ServerInfoList *oaf_result;
-	const char *query;
 	CORBA_Environment ev;
+	const char *query;
+        OAF_ServerInfoList *oaf_result;
 	int i;
+	NautilusViewIdentifier *id;
 	GList *view_identifiers;
 
 	CORBA_exception_init (&ev);
 
-	view_identifiers = NULL;
+	query = "nautilus:sidebar_panel_name.defined() AND repo_ids.has ('IDL:Bonobo/Control:1.0')";
 
-	oaf_result = NULL;
-	
-	query = "repo_ids.has_all (['IDL:Nautilus/MetaView:1.0','IDL:Bonobo/Control:1.0'])";
-
-	oaf_result = oaf_query (query, NULL /* alphabetize by name in the future */, &ev);
+	oaf_result = oaf_query (query, NULL /* FIXME: alphabetize by name in the future? */, &ev);
 		
-        if (ev._major == CORBA_NO_EXCEPTION && oaf_result != NULL && oaf_result->_length > 0) {
+	view_identifiers = NULL;
+        if (ev._major == CORBA_NO_EXCEPTION && oaf_result != NULL) {
 		for (i = 0; i < oaf_result->_length; i++) {
-			view_identifiers = g_list_append (view_identifiers,
-							  nautilus_view_identifier_new_from_sidebar_panel 
-							  (&oaf_result->_buffer[i]));
+			id = nautilus_view_identifier_new_from_sidebar_panel
+				(&oaf_result->_buffer[i]);
+			view_identifiers = g_list_prepend (view_identifiers, id);
 		}
+		view_identifiers = g_list_reverse (view_identifiers);
 	} 
 
 	if (oaf_result != NULL) {
@@ -223,7 +222,7 @@ nautilus_global_preferences_get_sidebar_panel_view_identifiers (void)
 
 
 /* 
- * Presummably, the following would be registered
+ * Presumably, the following would be registered
  * only if the component was present.  Once we
  * have smarter activation, that will be case.
  * 
@@ -231,27 +230,27 @@ nautilus_global_preferences_get_sidebar_panel_view_identifiers (void)
  */
 
 NautilusStringList *
-nautilus_global_preferences_get_meta_view_iids (void)
+nautilus_global_preferences_get_sidebar_view_iids (void)
 {
-	NautilusStringList *meta_view_names;
+	NautilusStringList *sidebar_view_names;
 	GList *view_identifiers;
 	GList *p;
 	NautilusViewIdentifier *identifier;
 
 	view_identifiers = nautilus_global_preferences_get_sidebar_panel_view_identifiers ();
 
-	meta_view_names = nautilus_string_list_new ();
+	sidebar_view_names = nautilus_string_list_new ();
 
 
 	for (p = view_identifiers; p != NULL; p = p->next) {
 		identifier = (NautilusViewIdentifier *) (p->data);
-		nautilus_string_list_insert (meta_view_names, 
+		nautilus_string_list_insert (sidebar_view_names, 
 					     identifier->iid);
 	}
 	
 	nautilus_view_identifier_free_list (view_identifiers);
 
-	return meta_view_names;
+	return sidebar_view_names;
 }
 
 static GtkWidget *
@@ -271,7 +270,7 @@ global_preferences_get_dialog (void)
 
 
 static void
-nautilus_preferences_register_meta_view_preferences_for_ui (void)
+nautilus_preferences_register_sidebar_view_preferences_for_ui (void)
 {
 	GList *view_identifiers;
 	GList *p;
@@ -283,7 +282,7 @@ nautilus_preferences_register_meta_view_preferences_for_ui (void)
 	for (p = view_identifiers; p != NULL; p = p->next) {
 		identifier = (NautilusViewIdentifier *) (p->data);
 
-		preference_key = g_strconcat ("/nautilus/metaviews/", identifier->iid, NULL);
+		preference_key = g_strconcat ("/nautilus/sidebar-views/", identifier->iid, NULL);
 
 		nautilus_preferences_set_info (preference_key,
 					       identifier->name,
@@ -370,9 +369,9 @@ global_preferences_register_for_ui ()
 					     "Hacker",
 					     NAUTILUS_USER_LEVEL_HACKER);
 
-	/* Meta views */
+	/* Sidebar views */
 
-	nautilus_preferences_register_meta_view_preferences_for_ui ();
+	nautilus_preferences_register_sidebar_view_preferences_for_ui ();
 
 	/* Appearance options */
 	

@@ -195,7 +195,7 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
         gtk_widget_show_all (vbox);
         
         /* Create CORBA object. */
-        notes->view = NAUTILUS_VIEW (nautilus_meta_view_new (vbox));
+        notes->view = nautilus_view_new (vbox);
         gtk_signal_connect (GTK_OBJECT (notes->view), "destroy", do_destroy, notes);
 
         notes_object_count++;

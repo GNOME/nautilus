@@ -69,7 +69,7 @@ enum
 void                      nautilus_global_preferences_startup                            (void);
 void                      nautilus_global_preferences_shutdown                           (void);
 void                      nautilus_global_preferences_show_dialog                        (void);
-NautilusStringList       *nautilus_global_preferences_get_meta_view_iids                 (void);
+NautilusStringList       *nautilus_global_preferences_get_sidebar_view_iids              (void);
 GList                    *nautilus_global_preferences_get_sidebar_panel_view_identifiers (void);
 
 BEGIN_GNOME_DECLS

@@ -1,3 +1,46 @@
+2000-05-24  Darin Adler  <darin@eazel.com>
+
+	* libnautilus/Makefile.am:
+	* libnautilus/libnautilus.h:
+	* libnautilus/nautilus-meta-view-frame.c: [deleted]
+	* libnautilus/nautilus-meta-view-frame.h: [deleted]
+	* libnautilus/nautilus-view-component.idl:
+	* po/POTFILES.in:
+	* src/ntl-index-panel.c: (nautilus_index_panel_add_meta_view):
+	* src/ntl-window.c: (nautilus_window_add_meta_view):
+	Removed Nautilus::MetaView and all the related classes.
+	We still have Nautilus::MetaViewFrame (will go soon).
+	
+	* components/help/hyperbola-nav-index.c:
+	(hyperbola_navigation_index_new):
+	* components/help/hyperbola-nav-search.c:
+	(hyperbola_navigation_search_new):
+	* components/help/hyperbola-nav-tree.c:
+	(hyperbola_navigation_tree_new):
+	* components/history/ntl-history-view.c: (make_obj):
+	* components/loser/sidebar/nautilus-sidebar-loser.c:
+	(nautilus_sidebar_loser_initialize),
+	(loser_notify_location_change_callback):
+	* components/loser/sidebar/nautilus-sidebar-loser.h:
+	* components/notes/ntl-notes.c: (make_notes_view):
+	* components/websearch/ntl-web-search.c: (make_obj):
+	Changed to use just plain view insetad of meta_view.
+	
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog),
+	(nautilus_global_preferences_get_sidebar_panel_view_identifiers),
+	(nautilus_global_preferences_get_sidebar_view_iids),
+	(nautilus_preferences_register_sidebar_view_preferences_for_ui),
+	(global_preferences_register_for_ui):
+	Changed naming to call them sidebar views instead of meta views,
+	and got rid of code that depends on MetaView interface. We now
+	use the sidebar_panel_name to determine if a view should show
+	up in the sidebar.
+	
+	* src/ntl-view.h: Fixed a comment to reflect the future
+	instead of the past.
+	
 2000-05-24  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus-extensions/nautilus-program-chooser.c:

@@ -717,7 +717,7 @@ BonoboObject *hyperbola_navigation_index_new(void)
   gtk_clist_thaw(GTK_CLIST(hni->clist));
   gtk_widget_show_all(vbox);
 
-  hni->view_frame = NAUTILUS_VIEW (nautilus_meta_view_new (vbox));
+  hni->view_frame = nautilus_view_new (vbox);
 
   return BONOBO_OBJECT (hni->view_frame);
 }

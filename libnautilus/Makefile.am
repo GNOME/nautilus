@@ -44,7 +44,6 @@ libnautilusinclude_HEADERS=			\
 	nautilus-bonobo-ui.h			\
 	nautilus-clipboard.h			\
 	nautilus-content-view-frame.h		\
-	nautilus-meta-view-frame.h		\
 	nautilus-view-component.h		\
 	nautilus-view-frame.h			\
 	nautilus-undo-context.h			\
@@ -61,7 +60,6 @@ libnautilus_la_SOURCES=					\
 	$(nautilus_undo_idl_sources)			\
 	nautilus-clipboard.c				\
 	nautilus-content-view-frame.c			\
-	nautilus-meta-view-frame.c			\
 	nautilus-view-frame.c				\
 	nautilus-undo-context.c				\
 	nautilus-undo-manager.c				\

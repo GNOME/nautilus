@@ -91,7 +91,7 @@ hyperbola_navigation_tree_new(void)
   gtk_widget_show(view->ctree);
   gtk_widget_show(wtmp);
 
-  view->view_frame = NAUTILUS_VIEW (nautilus_meta_view_new (wtmp));
+  view->view_frame = nautilus_view_new (wtmp);
   gtk_signal_connect (GTK_OBJECT(view->view_frame), "notify_location_change", 
 		      hyperbola_navigation_tree_notify_location_change,
 		      view);

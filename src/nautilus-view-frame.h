@@ -25,8 +25,7 @@
  */
 
 /* ntl-view.h: Interface of the object representing a data
-   view. NautilusContentViewFrame and NautilusMetaViewFrame derive from
-   this class. */
+   view. */
 
 #ifndef NTL_VIEW_H
 #define NTL_VIEW_H

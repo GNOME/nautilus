@@ -32,7 +32,6 @@
 #include <bonobo.h>
 #include <libnautilus/nautilus-view-component.h>
 #include <libnautilus/nautilus-view-frame.h>
-#include <libnautilus/nautilus-meta-view-frame.h>
 #include <libnautilus/nautilus-content-view-frame.h>
 
 #endif /* LIBNAUTILUS_H */

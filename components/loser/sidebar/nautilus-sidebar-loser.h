@@ -28,7 +28,7 @@
 #ifndef NAUTILUS_SIDEBAR_LOSER_H
 #define NAUTILUS_SIDEBAR_LOSER_H
 
-#include <libnautilus/nautilus-meta-view-frame.h>
+#include <libnautilus/nautilus-view-frame.h>
 #include <gtk/gtklabel.h>
 
 typedef struct NautilusSidebarLoser      NautilusSidebarLoser;
@@ -52,17 +52,17 @@ struct NautilusSidebarLoserClass {
 };
 
 /* GtkObject support */
-GtkType           nautilus_sidebar_loser_get_type          (void);
+GtkType       nautilus_sidebar_loser_get_type          (void);
 
 /* Component embedding support */
-NautilusMetaView *nautilus_sidebar_loser_get_nautilus_view (NautilusSidebarLoser *view);
+NautilusView *nautilus_sidebar_loser_get_nautilus_view (NautilusSidebarLoser *view);
 
 /* URI handling */
-void              nautilus_sidebar_loser_load_uri          (NautilusSidebarLoser *view,
-							    const char           *uri);
+void          nautilus_sidebar_loser_load_uri          (NautilusSidebarLoser *view,
+							const char           *uri);
 
 /* Failing on command. */
-void              nautilus_sidebar_loser_maybe_fail        (const char           *location);
+void          nautilus_sidebar_loser_maybe_fail        (const char           *location);
 
 #endif /* NAUTILUS_SIDEBAR_LOSER_H */
 

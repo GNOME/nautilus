@@ -42,7 +42,7 @@
 /* A NautilusSidebarLoser's private information. */
 struct NautilusSidebarLoserDetails {
 	char *uri;
-	NautilusMetaView *nautilus_view;
+	NautilusView *nautilus_view;
 };
 
 static void nautilus_sidebar_loser_initialize_class (NautilusSidebarLoserClass *klass);
@@ -51,7 +51,7 @@ static void nautilus_sidebar_loser_destroy          (GtkObject                  
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSidebarLoser, nautilus_sidebar_loser, GTK_TYPE_LABEL)
      
-static void loser_notify_location_change_callback        (NautilusMetaView  *nautilus_view, 
+static void loser_notify_location_change_callback        (NautilusView  *nautilus_view, 
 							   Nautilus_NavigationInfo   *navinfo, 
 							   NautilusSidebarLoser *view);
 static void loser_merge_bonobo_items_callback 		  (BonoboObject 	     *control, 
@@ -80,7 +80,7 @@ nautilus_sidebar_loser_initialize (NautilusSidebarLoser *view)
 	
 	gtk_label_set_text (GTK_LABEL (view), g_strdup ("(none)"));
 	
-	view->details->nautilus_view = nautilus_meta_view_new (GTK_WIDGET (view));
+	view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (view));
 	
 	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
 			    "notify_location_change",
@@ -123,7 +123,7 @@ nautilus_sidebar_loser_destroy (GtkObject *object)
  * @view: NautilusSidebarLoser to get the nautilus_view from..
  * 
  **/
-NautilusMetaView *
+NautilusView *
 nautilus_sidebar_loser_get_nautilus_view (NautilusSidebarLoser *view)
 {
 	return view->details->nautilus_view;
@@ -151,7 +151,7 @@ nautilus_sidebar_loser_load_uri (NautilusSidebarLoser *view,
 }
 
 static void
-loser_notify_location_change_callback (NautilusMetaView  *nautilus_view, 
+loser_notify_location_change_callback (NautilusView  *nautilus_view, 
 				  	Nautilus_NavigationInfo   *navinfo, 
 				  	NautilusSidebarLoser *view)
 {

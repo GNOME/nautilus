@@ -214,7 +214,7 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
   
   /* create CORBA object */
 
-  hview->view = NAUTILUS_VIEW (nautilus_meta_view_new (vbox));
+  hview->view = nautilus_view_new (vbox);
   gtk_signal_connect(GTK_OBJECT (hview->view), "destroy", do_destroy, NULL);
   object_count++;
 
