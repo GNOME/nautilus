@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-11-24 13:23+0100\n"
-"PO-Revision-Date: 2004-10-14 20:03-0400\n"
+"POT-Creation-Date: 2004-11-24 21:15-0500\n"
+"PO-Revision-Date: 2004-11-24 20:03-0400\n"
 "Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: English/Canada <adamw@FreeBSD.org>\n"
 "MIME-Version: 1.0\n"
@@ -3254,9 +3254,8 @@ msgid "Desktop"
 msgstr "Desktop"
 
 #: src/file-manager/fm-desktop-icon-view.c:768
-#, fuzzy
 msgid "_Desktop"
-msgstr "Desktop"
+msgstr "_Desktop"
 
 #: src/file-manager/fm-directory-view.c:509
 #, c-format
@@ -3369,10 +3368,6 @@ msgstr "%s, Free space: %s"
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
 
-#. Note that the number of items actually displayed varies somewhat due
-#. * to the way files are collected in batches. So you can't assume that
-#. * no more than the constant limit are displayed.
-#.
 #: src/file-manager/fm-directory-view.c:1957
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
@@ -3652,9 +3647,8 @@ msgstr "_Scripts"
 
 #. name, stock id, label
 #: src/file-manager/fm-directory-view.c:5695
-#, fuzzy
 msgid "Run or manage scripts from ~/.gnome2/nautilus-scripts"
-msgstr "Run or manage scripts from ~/Nautilus/scripts"
+msgstr "Run or manage scripts from ~/.gnome2/nautilus-scripts"
 
 #. name, stock id
 #: src/file-manager/fm-directory-view.c:5697
@@ -3921,9 +3915,8 @@ msgstr "Unmount the selected volume"
 
 #. name, stock id
 #: src/file-manager/fm-directory-view.c:5812
-#, fuzzy
 msgid "Open File and Close window"
-msgstr "Open in New Window"
+msgstr "Open File and Close window"
 
 #. name, stock id
 #: src/file-manager/fm-directory-view.c:5819
@@ -4249,9 +4242,8 @@ msgstr "Clean _Up by Name"
 
 #. label, accelerator
 #: src/file-manager/fm-icon-view.c:1402
-#, fuzzy
 msgid "Reposition icons to better fit in the window and avoaction overlapping"
-msgstr "Reposition icons to better fit in the window and avoid overlapping"
+msgstr "Reposition icons to better fit in the window and avoaction overlapping"
 
 #. name, stock id
 #: src/file-manager/fm-icon-view.c:1408
@@ -4337,9 +4329,8 @@ msgid "An invalid drag type was used."
 msgstr "An invalid drag type was used."
 
 #: src/file-manager/fm-icon-view.c:2842
-#, fuzzy
 msgid "_Icons"
-msgstr "Icons"
+msgstr "_Icons"
 
 #: src/file-manager/fm-list-view.c:1564
 #, c-format
@@ -4361,9 +4352,8 @@ msgid "Select the columns visible in this folder"
 msgstr "Select the columns visible in this folder"
 
 #: src/file-manager/fm-list-view.c:2269
-#, fuzzy
 msgid "_List"
-msgstr "List"
+msgstr "_List"
 
 #: src/file-manager/fm-properties-window.c:478
 msgid "You can't assign more than one custom icon at a time!"
@@ -4738,16 +4728,6 @@ msgstr ""
 msgid "Migrated Old Desktop"
 msgstr "Migrated Old Desktop"
 
-#. Can't register myself due to trouble locating the
-#. * Nautilus_Shell.server file. This has happened when you
-#. * launch Nautilus with an LD_LIBRARY_PATH that
-#. * doesn't include the directory containing the oaf
-#. * library. It could also happen if the
-#. * Nautilus_Shell.server file was not present for some
-#. * reason. Sometimes killing oafd and gconfd fixes
-#. * this problem but we don't exactly understand why,
-#. * since neither of the above causes explain it.
-#.
 #: src/nautilus-application.c:506
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
@@ -4758,7 +4738,6 @@ msgstr ""
 "console may fix the problem. If not, you can try rebooting the computer or "
 "installing Nautilus again."
 
-#. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
 #: src/nautilus-application.c:512
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
@@ -5625,7 +5604,7 @@ msgstr "_Location..."
 #: src/nautilus-navigation-window-menus.c:545
 #: src/nautilus-spatial-window.c:578
 msgid "Specify a location to open"
-msgstr ""
+msgstr "Specify a location to open"
 
 #: src/nautilus-navigation-window-menus.c:547
 msgid "_Clear History"
@@ -5977,19 +5956,16 @@ msgid "Content View"
 msgstr "Content View"
 
 #: src/nautilus-window-manage-views.c:986
-#, fuzzy
 msgid "View of the current folder"
-msgstr "View of the current file or folder"
+msgstr "View of the current folder"
 
 #: src/nautilus-window-manage-views.c:1347
-#, fuzzy
 msgid "Nautilus has no installed viewer capable of displaying the folder."
-msgstr "Nautilus has no installed viewer capable of displaying the file."
+msgstr "Nautilus has no installed viewer capable of displaying the folder."
 
 #: src/nautilus-window-manage-views.c:1353
-#, fuzzy
 msgid "The location is not a folder."
-msgstr "The location \"%s\" does not exist."
+msgstr "The location is not a folder."
 
 #: src/nautilus-window-manage-views.c:1380
 #, c-format
@@ -6187,9 +6163,8 @@ msgstr "Connect to _Server..."
 
 #. label, accelerator
 #: src/nautilus-window-menus.c:627
-#, fuzzy
 msgid "Set up a connection to a network server"
-msgstr "Make a permanent connection to this server"
+msgstr "Set up a connection to a network server"
 
 #. name, stock id
 #: src/nautilus-window-menus.c:630
@@ -6198,9 +6173,8 @@ msgstr "_Home"
 
 #. label, accelerator
 #: src/nautilus-window-menus.c:631
-#, fuzzy
 msgid "Go to the home folder"
-msgstr "Go to the trash folder"
+msgstr "Go to the home folder"
 
 #. name, stock id
 #: src/nautilus-window-menus.c:634
@@ -6209,21 +6183,18 @@ msgstr "_Computer"
 
 #. label, accelerator
 #: src/nautilus-window-menus.c:635
-#, fuzzy
 msgid "Go to the computer location"
-msgstr "Go to the home location"
+msgstr "Go to the computer location"
 
 #. name, stock id
 #: src/nautilus-window-menus.c:638
-#, fuzzy
 msgid "T_emplates"
-msgstr "_Templates"
+msgstr "T_emplates"
 
 #. label, accelerator
 #: src/nautilus-window-menus.c:639
-#, fuzzy
 msgid "Go to the templates folder"
-msgstr "Go to templates folder"
+msgstr "Go to the templates folder"
 
 #. name, stock id
 #: src/nautilus-window-menus.c:642
@@ -6271,13 +6242,12 @@ msgid "Zoom Out"
 msgstr "Zoom Out"
 
 #: src/nautilus-zoom-control.c:87
-#, fuzzy
 msgid "Zoom to Default"
-msgstr "Zoom to Fit"
+msgstr "Zoom to Default"
 
 #: src/nautilus-zoom-control.c:99
 msgid "Show in the default detail level"
-msgstr ""
+msgstr "Show in the default detail level"
 
 #: src/nautilus-zoom-control.c:802
 msgid "Zoom"
@@ -6294,280 +6264,3 @@ msgstr "Network Servers"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "View your network servers in the Nautilus file manager"
-
-#~ msgid "bonobo_ui_init() failed."
-#~ msgstr "bonobo_ui_init() failed."
-
-#~ msgid "Factory for Nautilus component adapter factories"
-#~ msgstr "Factory for Nautilus component adapter factories"
-
-#~ msgid "Factory for Nautilus component adapter factories "
-#~ msgstr "Factory for Nautilus component adapter factories "
-
-#~ msgid ""
-#~ "Factory for objects that wrap ordinary Bonobo Controls or Embeddables to "
-#~ "look like Nautilus Views"
-#~ msgstr ""
-#~ "Factory for objects that wrap ordinary Bonobo Controls or Embeddables to "
-#~ "look like Nautilus Views"
-
-#~ msgid "Nautilus component adapter factory"
-#~ msgstr "Nautilus component adapter factory"
-
-#~ msgid "Nautilus Emblem side pane"
-#~ msgstr "Nautilus Emblem side pane"
-
-#~ msgid "Nautilus Emblem view"
-#~ msgstr "Nautilus Emblem view"
-
-#~ msgid "History side pane"
-#~ msgstr "History side pane"
-
-#~ msgid "History side pane for Nautilus"
-#~ msgstr "History side pane for Nautilus"
-
-#~ msgid "URI currently displayed"
-#~ msgstr "URI currently displayed"
-
-#~ msgid "Image Properties content view component"
-#~ msgstr "Image Properties content view component"
-
-#~ msgid "Nautilus Image Properties view"
-#~ msgstr "Nautilus Image Properties view"
-
-#~ msgid "Notes side pane"
-#~ msgstr "Notes side pane"
-
-#~ msgid "Notes side pane for Nautilus"
-#~ msgstr "Notes side pane for Nautilus"
-
-#~ msgid "Factory for text view"
-#~ msgstr "Factory for text view"
-
-#~ msgid "Text"
-#~ msgstr "Text"
-
-#~ msgid "Text Viewer"
-#~ msgstr "Text Viewer"
-
-#~ msgid "Text view"
-#~ msgstr "Text view"
-
-#~ msgid "Text view factory"
-#~ msgstr "Text view factory"
-
-#~ msgid "View as Text"
-#~ msgstr "View as Text"
-
-#~ msgid "animation to indicate on-going activity"
-#~ msgstr "animation to indicate on-going activity"
-
-#~ msgid "throbber factory"
-#~ msgstr "throbber factory"
-
-#~ msgid "throbber object factory"
-#~ msgstr "throbber object factory"
-
-#~ msgid "C_lear Text"
-#~ msgstr "C_lear Text"
-
-#~ msgid "Cut Text"
-#~ msgstr "Cut Text"
-
-#~ msgid "Remove the selected text without putting it on the clipboard"
-#~ msgstr "Remove the selected text without putting it on the clipboard"
-
-#~ msgid "Hide default bookmarks in the bookmark menu"
-#~ msgstr "Hide default bookmarks in the bookmark menu"
-
-#~ msgid ""
-#~ "If set to true, then Nautilus will just show the user's bookmarks in the "
-#~ "bookmark menu."
-#~ msgstr ""
-#~ "If set to true, then Nautilus will just show the user's bookmarks in the "
-#~ "bookmark menu."
-
-#~ msgid "%s Viewer"
-#~ msgstr "%s Viewer"
-
-#~ msgid "Could not complete specified action:  %s"
-#~ msgstr "Could not complete specified action:  %s"
-
-#~ msgid "Could not complete specified action."
-#~ msgstr "Could not complete specified action."
-
-#~ msgid "Use the default desktop background"
-#~ msgstr "Use the default desktop background"
-
-#~ msgid "Edit Launcher"
-#~ msgstr "Edit Launcher"
-
-#~ msgid "Edit the launcher information"
-#~ msgstr "Edit the launcher information"
-
-#~ msgid "Format the selected volume"
-#~ msgstr "Format the selected volume"
-
-#~ msgid "Medi_a Properties"
-#~ msgstr "Medi_a Properties"
-
-#~ msgid "Prot_ect"
-#~ msgstr "Prot_ect"
-
-#~ msgid "Protect the selected volume"
-#~ msgstr "Protect the selected volume"
-
-#~ msgid "Show media properties for the selected volume"
-#~ msgstr "Show media properties for the selected volume"
-
-#~ msgid "_Format"
-#~ msgstr "_Format"
-
-#~ msgid "One of the side panels encountered an error and can't continue."
-#~ msgstr "One of the side panels encountered an error and can't continue."
-
-#~ msgid "Unfortunately I couldn't tell which one."
-#~ msgstr "Unfortunately I couldn't tell which one."
-
-#~ msgid "The %s side panel encountered an error and can't continue."
-#~ msgstr "The %s side panel encountered an error and can't continue."
-
-#~ msgid "If this keeps happening, you might want to turn this panel off."
-#~ msgstr "If this keeps happening, you might want to turn this panel off."
-
-#~ msgid "Side Panel Failed"
-#~ msgstr "Side Panel Failed"
-
-#~ msgid "Side Pane"
-#~ msgstr "Side Pane"
-
-#~ msgid "Contains a side pane view"
-#~ msgstr "Contains a side pane view"
-
-#~ msgid "Back"
-#~ msgstr "Back"
-
-#~ msgid "Find"
-#~ msgstr "Find"
-
-#~ msgid "Forward"
-#~ msgstr "Forward"
-
-#~ msgid "Home"
-#~ msgstr "Home"
-
-#~ msgid "Reload"
-#~ msgstr "Reload"
-
-#~ msgid "Search this computer for files"
-#~ msgstr "Search this computer for files"
-
-#~ msgid "Stop"
-#~ msgstr "Stop"
-
-#~ msgid "Up"
-#~ msgstr "Up"
-
-#~ msgid "Print"
-#~ msgstr "Print"
-
-#~ msgid "Save"
-#~ msgstr "Save"
-
-#~ msgid "Profile Dump"
-#~ msgstr "Profile Dump"
-
-#~ msgid "Display the latest contents of the current location"
-#~ msgstr "Display the latest contents of the current location"
-
-#~ msgid "Go to Empty CD folder"
-#~ msgstr "Go to Empty CD folder"
-
-#~ msgid "Go up one level"
-#~ msgstr "Go up one level"
-
-#~ msgid "Report Profiling"
-#~ msgstr "Report Profiling"
-
-#~ msgid "Reset Profiling"
-#~ msgstr "Reset Profiling"
-
-#~ msgid "Start Profiling"
-#~ msgstr "Start Profiling"
-
-#~ msgid "Stop Profiling"
-#~ msgstr "Stop Profiling"
-
-#~ msgid "Stop loading this location"
-#~ msgstr "Stop loading this location"
-
-#~ msgid "_CD/DVD Creator"
-#~ msgstr "_CD/DVD Creator"
-
-#~ msgid "_Profiler"
-#~ msgstr "_Profiler"
-
-#~ msgid "_Report Profiling"
-#~ msgstr "_Report Profiling"
-
-#~ msgid "_Reset Profiling"
-#~ msgstr "_Reset Profiling"
-
-#~ msgid "_Start Profiling"
-#~ msgstr "_Start Profiling"
-
-#~ msgid "_Stop Profiling"
-#~ msgstr "_Stop Profiling"
-
-#~ msgid "Go to Computer"
-#~ msgstr "Go to Computer"
-
-#~ msgid "a title"
-#~ msgstr "a title"
-
-#~ msgid "the browse history"
-#~ msgstr "the browse history"
-
-#~ msgid "the current selection"
-#~ msgstr "the current selection"
-
-#~ msgid "the type of window the view is embedded in"
-#~ msgstr "the type of window the view is embedded in"
-
-#~ msgid "whether to show hidden files in the view"
-#~ msgstr "whether to show hidden files in the view"
-
-#~ msgid "Application ID"
-#~ msgstr "Application ID"
-
-#~ msgid "The application ID of the window."
-#~ msgstr "The application ID of the window."
-
-#~ msgid "Nautilus cannot determine what type of file it is."
-#~ msgstr "Nautilus cannot determine what type of file it is."
-
-#~ msgid ""
-#~ "Searching is unavailable right now, because you either have no index, or "
-#~ "the search service isn't running."
-#~ msgstr ""
-#~ "Searching is unavailable right now, because you either have no index, or "
-#~ "the search service isn't running."
-
-#~ msgid ""
-#~ "Be sure that you have started the Medusa search service, and if you don't "
-#~ "have an index, that the Medusa indexer is running."
-#~ msgstr ""
-#~ "Be sure that you have started the Medusa search service, and if you don't "
-#~ "have an index, that the Medusa indexer is running."
-
-#~ msgid "Searching Unavailable"
-#~ msgstr "Searching Unavailable"
-
-#~ msgid "Go back a few pages"
-#~ msgstr "Go back a few pages"
-
-#~ msgid "Go forward a number of pages"
-#~ msgstr "Go forward a number of pages"
-
-#~ msgid "Try to fit in window"
-#~ msgstr "Try to fit in window"
