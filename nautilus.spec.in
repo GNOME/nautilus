@@ -117,7 +117,6 @@ fi
 %{prefix}/bin/nautilus-rpm-view
 %{prefix}/bin/nautilus-sample-content-view
 %{prefix}/bin/nautilus-sidebar-loser
-%{prefix}/bin/nautilus-tree-view
 %{prefix}/bin/run-nautilus
 %{prefix}/bin/test-ft
 %{prefix}/bin/test-rsvg
@@ -128,7 +127,7 @@ fi
 %{prefix}/share/hyperbola/maps/*.map
 
 %defattr (0444, bin, bin)
-%config %{sysconfig}/vfs/modules/*.conf
+%config %{sysconfdir}/vfs/modules/*.conf
 %{prefix}/share/locale/*/LC_MESSAGES/*.mo
 %{prefix}/share/nautilus/*.xml
 %{prefix}/share/nautilus/backgrounds/*.jpg
@@ -136,8 +135,7 @@ fi
 %{prefix}/share/nautilus/emblems/*.gif
 %{prefix}/share/nautilus/emblems/*.png
 %{prefix}/share/nautilus/linksets/*.xml
-%{prefix}/share/nautilus/top/*.html
-%{prefix}/share/nautilus/top/*.xml
+%{prefix}/share/nautilus/top/About.html
 %{prefix}/share/nautilus/top/Computer
 %{prefix}/share/nautilus/top/Services
 %{prefix}/share/oaf/*.oafinfo
@@ -152,7 +150,6 @@ fi
 %{prefix}/share/pixmaps/nautilus/arlo/sidebar_tab_pieces/*.png
 %{prefix}/share/pixmaps/nautilus/eazel/*.png
 %{prefix}/share/pixmaps/nautilus/eazel/*.xml
-%{prefix}/share/pixmaps/nautilus/vector/*.png
 %{prefix}/share/pixmaps/nautilus/vector/*.svg
 %{prefix}/share/pixmaps/nautilus/vector/*.xml
 
