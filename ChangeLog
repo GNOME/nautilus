@@ -1,3 +1,11 @@
+2000-09-21  Darin Adler  <darin@eazel.com>
+
+	* components/tree/nautilus-tree-model.c: (report_node_changed):
+	Add ref/unref to fix problem with renaming.
+	
+	* src/check-nautilus: Add "--g-fatal-warnings" so tests fail if
+	there are warning messages.
+
 2000-09-21  Josh Barrow  <linuxfan@ionet.net>
 
 	* icons/theme_preview.png:

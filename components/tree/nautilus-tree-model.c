@@ -568,12 +568,16 @@ report_node_changed (NautilusTreeModel *model,
 		} else {
 			/* A move or rename - model it as a remove followed by an add */
 
+			gtk_object_ref (GTK_OBJECT (node));
+
 			report_node_removed (model, node);
 			
 			g_free (node->details->uri);
 			node->details->uri = file_uri;
 
 			report_node_changed (model, node);
+
+			gtk_object_unref (GTK_OBJECT (node));
 		}
 	}
 	
