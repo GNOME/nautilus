@@ -72,11 +72,14 @@ enum _EazelInstallProblemEnum {
 	EI_PROBLEM_FORCE_INSTALL_BOTH,     /* two packages are fighting it out, install both ? */	
         EI_PROBLEM_FORCE_REMOVE,           /* Okaeh, force remove the package */
 	EI_PROBLEM_CANNOT_SOLVE,           /* The water is too deep */
+	EI_PROBLEM_CASCADE_REMOVE,         /* Delete a lot of stuff */
+	EI_PROBLEM_CONTINUE_WITH_FORCE,    /* Ok, just barge ahead with the operation */
         EI_PROBLEM_INCONSISTENCY           /* There's an inconsistency in the db */ 
 };
 
 struct _EazelInstallProblemCase {
 	EazelInstallProblemEnum problem;
+	gboolean file_conflict;
 	union {
 		struct {
 			PackageData *pack;
@@ -94,10 +97,16 @@ struct _EazelInstallProblemCase {
 		struct {
 			EazelInstallProblemCase *problem;
 		} cannot_solve;
+		struct {
+			EazelInstallProblemCase *problem;
+		} force;
+		struct {
+			GList *packages;
+		} cascade;
 	} u;
 };
 
-EazelInstallProblemCase *eazel_install_problem_case_new (void);
+EazelInstallProblemCase *eazel_install_problem_case_new (EazelInstallProblemEnum problem_type);
 void eazel_install_problem_case_destroy (EazelInstallProblemCase *pcase);
 void eazel_install_problem_case_list_destroy (GList *list);
 
@@ -113,10 +122,18 @@ struct _EazelInstallProblem {
 	/* The fist set of attributes are lists of previously encountered problems.
 	   If I'm about to add a problem with the same stuff, don't,
 	   but "upgrade it".
-	   Eg. 
+	   Eg for install:
 	   EI_PROBLEM_UPDATE -> EI_PROBLEM_REMOVE
-	   EI_PROBLEM_REMOVE -> EI_PROBLEM_FORCE_REMOVE
-	   EI_PROBLEM_FORCE_REMOVE -> no help
+	   EI_PROBLEM_REMOVE -> EI_PROBLEM_CASCADE_REMOVE
+	   EI_PROBLEM_CASCADE_REMOVE -> EI_PROBLEM_FORCE_REMOVE
+	   EI_PROBLEM_FORCE_REMOVE -> EI_PROBLEM_CONTINUE_WITH_FORCE
+	   EI_PROBLEM_CONTINUE_WITH_FORCE -> EI_PROBLEM_CANNOT_SOLVE
+
+	   Uninstall will start at EI_PROBLEM_CASCADE_REMOVE
+	   for uninstall, EI_PROBLEM_CONTINUE_WITH_FORCE == EI_PROBLEM_FORCE_REMOVE
+
+	   This logic is implemented in the add_*_case functions and
+	   in eazel_install_problem_step_problem.
 	*/
 
 	GHashTable *attempts;
@@ -124,6 +141,7 @@ struct _EazelInstallProblem {
 	   called eazel_install_problem_step moves these into
 	   atttempts */
 	GHashTable *pre_step_attempts;
+	gboolean in_step_problem_mode;
 };
 
 EazelInstallProblem *eazel_install_problem_new (void);
@@ -135,12 +153,14 @@ void eazel_install_problem_step (EazelInstallProblem *problem);
    encountered problems in the given PackageData tree */
 void eazel_install_problem_tree_to_case (EazelInstallProblem *problem,
 					 const PackageData *pack,
+					 gboolean uninstall,
 					 GList **output);
 
 /* This returns a GList<char*> list containing the 
    encountered problems in the given PackageData tree */
 GList * eazel_install_problem_tree_to_string (EazelInstallProblem *problem,
-					      const PackageData *pack);
+					      const PackageData *pack,
+					      gboolean uninstall);
 
 /* This returns a GList<char*> list containing the 
    encountered problems in the given PackageData tree */
@@ -154,6 +174,23 @@ EazelInstallProblemEnum
 eazel_install_problem_find_dominant_problem_type (EazelInstallProblem *problem,
 						  GList *problems);
 
+/*
+  If you're not satisfied with the given dominant problem,
+  use this to get a peek at what the next step will be.
+  If you like the result, you can g_list_free the "problems", 
+  if not, g_list_free the result. Do _not_ destroy the 
+  problem's themselves.
+  If you like the result, pass them to eazel_install_problem_use_set 
+*/
+GList *
+eazel_install_problem_step_problem (EazelInstallProblem *problem,
+				    EazelInstallProblemEnum problem_type,
+				    GList *problems);
+
+void
+eazel_install_problem_use_set  (EazelInstallProblem *problem,
+				GList *problems);
+
 /* Given a series of problems, it will remove
    the most important ones, and execute them given 
    a EazelInstall service object */
@@ -166,6 +203,7 @@ void eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 
 					 GList **problems,
 					 GList **install_categories,
+					 GList **uninstall_categories,
 					 char *root);
 
 #ifdef __cplusplus

@@ -48,6 +48,8 @@ struct _EazelInstallPrivate {
 				localhost. This is to make stuff work
 				with ssl tunneling */
 
+	gboolean ignore_file_conflicts; /* Instructs the installer to ignore file conflicts */
+
 	gboolean revert; /* If true, the current operation is a reversion */
 
 	/* This holds the files that were downloaded */

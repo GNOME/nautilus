@@ -1,5 +1,90 @@
+2000-11-17  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (something_failed), (install_failed), (uninstall_failed),
+	(delete_files):
+	Updated the cli tool's use of the problem-handler
+	
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	Added a flag to ignore file conflicts
+	
+	* components/services/install/lib/eazel-install-corba.c:
+	(impl_Eazel_Install__set_ignore_file_conflicts),
+	(impl_Eazel_Install__get_ignore_file_conflicts),
+	(eazel_install_get_epv):
+	Code to set the ignore file conflicts flag.
+	
+	* components/services/install/lib/eazel-install-logic.c:
+	(eazel_install_do_transaction_all_files_check),
+	(eazel_install_prune_packages_helper),
+	(eazel_install_fetch_dependencies),
+	(eazel_install_do_file_conflict_check), (eazel_uninstall_globber):
+	Code to use the ignore file conflicts flag
+	
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-private.h:
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_initialize), (eazel_install_install_packages):
+	Changed some 0x%xs to %p and added the nessecary things for the
+	extra ignore_file_conflicts flags.
+	
+	* components/services/install/lib/eazel-install-problem.h: *
+	components/services/install/lib/eazel-install-problem.c:
+	(get_detailed_messages_foreach),
+	(get_detailed_uninstall_messages_foreach), (compare_problem_case),
+	(add_case), (add_cannot_solve_case),
+	(add_continue_with_force_case), (add_force_install_both_case),
+	(add_force_remove_case), (add_remove_case), (add_update_case),
+	(add_cascade_remove), (get_detailed_cases_foreach),
+	(get_detailed_uninstall_cases_foreach),
+	(eazel_install_problem_case_to_string),
+	(eazel_install_problem_case_foreach_destroy),
+	(eazel_install_problem_case_new),
+	(eazel_install_problem_tree_to_case),
+	(eazel_install_problem_tree_to_string),
+	(build_categories_from_problem_list),
+	(eazel_install_problem_use_set),
+	(eazel_install_problem_step_problem),
+	(eazel_install_problem_handle_cases): loads of code, so for a
+	given set of problems, you can get the dominant type, and step
+	forward to the next way of solving the problem. Also fixed the
+	problem about updates not including the previous sets of pacakges.
+	Also added some new cases.
+
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_add_to_rpm_set),
+	Commented out robeys flailing, which caused some erratic crashes
+	because of a NULL packsys struct.
+	(eazel_install_start_transaction_make_rpm_argument_list),
+	Add --force on ignore_file_conflicts
+	(eazel_install_do_rpm_dependency_check):
+	%x to %p
+	
+	* components/services/install/lib/eazel-install-types.c:
+	(categorydata_new), (categorydata_destroy_foreach),
+	(packagedata_new), (packagedata_destroy):
+	%x to %p
+	
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_install_done),
+	(nautilus_service_install_failed):
+	Updated to the new signatures of the problem handler functions.
+	
+	* nautilus-installer/src/callbacks.c: (begin_install):
+	* nautilus-installer/src/installer.c: (jump_to_retry_page),
+	(collect_failure_info), (install_failed), (uninstall_failed),
+	(eazel_installer_setup_texts), (eazel_install_get_depends),
+	(eazel_installer_initialize):
+	Partial fix for 4706, I just want to commit before I slaughter it
+	completely.
+	
+	* nautilus-installer/src/prescript:
+	Fixed 4763 by changing the wording.
+
 2000-11-17  Michael Engber  <engber@eazel.com>
 
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_ensure_gradient_buffered):
 	* libnautilus-extensions/nautilus-background.c:
 	(nautilus_background_ensure_gradient_buffered):
 	Damn gradients! Fixed round off error which could

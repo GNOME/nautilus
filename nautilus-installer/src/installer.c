@@ -73,7 +73,7 @@ typedef struct {
 #define RPMRC		"/usr/lib/rpm/rpmrc"
 #define REMOTE_RPM_DIR	"/RPMS"
 #define PACKAGE_LIST	"package-list.xml"
-#define TEXT_LIST	"installer-strings.xml"
+#define TEXT_LIST	"installer-strings"
 
 #define LOGFILE		"eazel-install.log"
 
@@ -133,9 +133,10 @@ typedef struct {
 				       "systems.  You will have to download the source yourself.\n" \
 				       "In the future, we will support other packaging formats.")
 #define D_ERROR_UNTESTED_RPM_BASED_SYSTEM_TEXT _("You're running the installer on a\n" \
-					         "RPM-based system, but not a Red Hat\n" \
-					         "Linux release. I'll try it anyway.")
-#define D_ERROR_UNTESTED_RPM_BASED_SYSTEM_TITLE _("Untested distribution")
+						 "untested and unsupported RPM-based system\n" \
+						 "Linux distribution. I'll try anyways, but\n" \
+						 "it will most likely not work.")
+#define D_ERROR_UNTESTED_RPM_BASED_SYSTEM_TITLE _("Untested and unsupported distribution")
 #define D_ERROR_RED_HAT_7_NOT_SUPPORTED _("Sorry, but this preview installer won't work for Red Hat\n" \
 					  "Linux 7.x systems.")
 
@@ -759,6 +760,33 @@ jump_to_retry_page (EazelInstaller *installer)
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
 	add_padding_to_box (vbox, 0, 15);
+
+	{
+		gboolean foo = TRUE;
+		while (foo) {
+ 			EazelInstallProblemEnum p;
+			GList *tmp;
+			p = eazel_install_problem_find_dominant_problem_type (installer->problem,
+									      installer->problems);
+			g_message ("%s:%d: problem = %d", __FILE__, __LINE__, p);
+			switch (p) {
+			case EI_PROBLEM_REMOVE:
+			case EI_PROBLEM_FORCE_REMOVE:
+			case EI_PROBLEM_CASCADE_REMOVE:
+				g_message ("%s:%d: skipping a problem", __FILE__, __LINE__);
+				tmp = eazel_install_problem_step_problem (installer->problem,
+									  p,
+									  installer->problems);
+				g_list_free (installer->problems);
+				installer->problems = tmp;
+				break;
+			default:
+				foo = FALSE;
+				break;
+			} 
+		}
+	}
+
 	problems_as_strings = eazel_install_problem_cases_to_string (installer->problem,
 								     installer->problems);
 	for (iter = problems_as_strings; iter != NULL; iter = g_list_next (iter)) {
@@ -766,6 +794,31 @@ jump_to_retry_page (EazelInstaller *installer)
 		g_free (iter->data);
 	}
 	g_list_free (problems_as_strings);
+
+	{
+		char *tmp = NULL;
+		switch (eazel_install_problem_find_dominant_problem_type (installer->problem, 
+									  installer->problems)) {
+		case EI_PROBLEM_UPDATE:
+			tmp = g_strdup ("Eskils says : updating is good!");
+			break;
+		case EI_PROBLEM_REMOVE:
+			tmp = g_strdup ("Eskils says : removing is non-optimal!");
+			break;
+		case EI_PROBLEM_FORCE_REMOVE:
+			tmp = g_strdup ("Eskils says : force removing evil!");
+			break;
+		case EI_PROBLEM_FORCE_INSTALL_BOTH:
+			tmp = g_strdup ("Eskils says : force installing both is evil!");
+			break;
+		default:
+			break;
+
+		}
+		if (tmp) {
+			add_bullet_point_to_vbox (vbox, tmp);
+		}
+	}
 
 	add_padding_to_box (vbox, 0, 15);
 
@@ -1083,21 +1136,20 @@ get_detailed_errors (const PackageData *pack, EazelInstaller *installer)
 
 
 static void
-install_failed (EazelInstall *service,
-		const PackageData *pd,
-		EazelInstaller *installer)
+collect_failure_info (EazelInstall *service,
+		      const PackageData *pd,
+		      EazelInstaller *installer,
+		      gboolean uninstall)
 {
 	GList *failure_info_addition;
-	log_debug ("INSTALL FAILED.");
-	
-	get_detailed_errors (pd, installer);
-
 	eazel_install_problem_tree_to_case (installer->problem,
 					    pd,
+					    uninstall,
 					    &(installer->problems));
 	if (!installer->failure_info) {
 		failure_info_addition = eazel_install_problem_tree_to_string (installer->problem,
-									      pd);
+									      pd,
+									      uninstall);
 		if (installer->failure_info) {
 			installer->failure_info = g_list_concat (installer->failure_info, 
 								 failure_info_addition);
@@ -1109,6 +1161,26 @@ install_failed (EazelInstall *service,
 	while (gtk_events_pending ()) {
 		gtk_main_iteration ();
 	}
+}
+
+static void
+install_failed (EazelInstall *service,
+		const PackageData *pd,
+		EazelInstaller *installer)
+{
+	log_debug ("INSTALL FAILED.");
+	
+	get_detailed_errors (pd, installer);
+	collect_failure_info (service, pd, installer, FALSE);
+}
+
+static void
+uninstall_failed (EazelInstall *service,
+		  const PackageData *pd,
+		  EazelInstaller *installer)
+{
+	log_debug ("UNINSTALL FAILED.");
+	collect_failure_info (service, pd, installer, TRUE);
 }
 
 static void
@@ -1782,11 +1854,27 @@ eazel_installer_setup_texts (EazelInstaller *installer,
 {
 	char *url;
 	char *destination;
+	char *lang;
+	char *ptr;
+	gboolean result = TRUE;
 
-	url = g_strdup_printf ("http://%s:%d/%s", 
-			       eazel_install_get_server (installer->service),
-			       eazel_install_get_server_port (installer->service),
-			       TEXT_LIST);
+	lang = getenv ("LANG");
+	if (lang && (ptr = strchr (lang, '_')) != NULL) {
+		*ptr = 0;
+	}
+	if (lang) {
+		url = g_strdup_printf ("http://%s:%d/%s-%s.xml", 
+				       eazel_install_get_server (installer->service),
+				       eazel_install_get_server_port (installer->service),
+				       TEXT_LIST,
+				       lang);
+	} else {
+		url = g_strdup_printf ("http://%s:%d/%s-%s.xml", 
+				       eazel_install_get_server (installer->service),
+				       eazel_install_get_server_port (installer->service),
+				       TEXT_LIST,
+				       lang);
+	}
 
 	destination = g_strdup_printf ("%s/%s", dest_dir, TEXT_LIST);
 
@@ -1796,19 +1884,21 @@ eazel_installer_setup_texts (EazelInstaller *installer,
 		if (! attempt_http_proxy_autoconfigure (installer_homedir) ||
 		    ! trilobite_fetch_uri_to_file (url, destination)) {
 			eazel_installer_set_default_texts (installer);
-			return FALSE;
+			result = FALSE;
 		}
 	}
 
-	/* Now I need to parse the texts and set them */
-	/* FIXME bugzilla.eazel.com
-	 */
-	eazel_installer_set_default_texts (installer);
+	if (result) {
+		/* Now I need to parse the texts and set them */
+		/* FIXME bugzilla.eazel.com 1094
+		 */
+		eazel_installer_set_default_texts (installer);
+	}
 
 	g_free (destination);
 	g_free (url);
-	return TRUE;
 
+	return result;
 }
 
 static gboolean
@@ -1816,6 +1906,7 @@ eazel_install_get_depends (EazelInstaller *installer, const char *dest_dir)
 {
 	char *url;
 	char *destination;
+	gboolean result = TRUE;
 
 	url = g_strdup_printf ("http://%s:%d/%s", 
 			       eazel_install_get_server (installer->service),
@@ -1831,13 +1922,13 @@ eazel_install_get_depends (EazelInstaller *installer, const char *dest_dir)
 		    ! trilobite_fetch_uri_to_file (url, destination)) {
 			jump_to_error_page (installer, NULL, ERROR_NEED_TO_SET_PROXY, "");
 			rmdir (installer->tmpdir);
-			return FALSE;
+			result = FALSE;
 		}
 	}
 
 	g_free (destination);
 	g_free (url);
-	return TRUE;
+	return result;
 }
 
 static void
@@ -2007,18 +2098,14 @@ eazel_installer_initialize (EazelInstaller *object) {
 
 	package_destination = g_strdup_printf ("%s/%s", installer->tmpdir, PACKAGE_LIST);
 
-	/* make druid */
+	eazel_installer_setup_texts (installer, tmpdir);
 	installer->window = create_window (installer);
-	gtk_widget_show (installer->window);
+	create_what_to_do_page (installer);
+	create_install_page (installer);
 
+	gtk_widget_show (installer->window);
 	if (! check_system (installer)) {
 		return;
-	}
-	gnome_druid_set_buttons_sensitive (installer->druid, FALSE, FALSE, TRUE);
-
-	/* show what we have so far */
-	while (gtk_events_pending ()) {
-		gtk_main_iteration ();
 	}
 
 	installer->service =  
@@ -2043,6 +2130,17 @@ eazel_installer_initialize (EazelInstaller *object) {
 					       "transaction_dir", installer_tmpdir,
 					       "cgi_path", installer_cgi_path ? installer_cgi_path : CGI_PATH,
 					       NULL));
+	
+	gnome_druid_set_buttons_sensitive (installer->druid, FALSE, FALSE, TRUE);
+
+	/* show what we have so far */
+	while (gtk_events_pending ()) {
+		gtk_main_iteration ();
+	}
+
+	if (installer_package==NULL) {
+		more_check_system (installer);
+	}
 
 	installer->problem = eazel_install_problem_new ();
 	
@@ -2072,7 +2170,7 @@ eazel_installer_initialize (EazelInstaller *object) {
 			    installer);
 	gtk_signal_connect (GTK_OBJECT (installer->service), 
 			    "uninstall_failed", 
-			    GTK_SIGNAL_FUNC (install_failed), 
+			    GTK_SIGNAL_FUNC (uninstall_failed), 
 			    installer);
 	gtk_signal_connect (GTK_OBJECT (installer->service), 
 			    "done", 
@@ -2087,15 +2185,7 @@ eazel_installer_initialize (EazelInstaller *object) {
 		return;
 	}
 
-	eazel_installer_setup_texts (installer, tmpdir);
-
 	/* now that we have text from the server, build up the other pages */
-	create_what_to_do_page (installer);
-	create_install_page (installer);
-
-	if (installer_package==NULL) {
-		more_check_system (installer);
-	}
 
 	if (installer_package==NULL) {
 		installer->categories = parse_local_xml_package_list (package_destination, 

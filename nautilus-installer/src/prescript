@@ -42,7 +42,7 @@ if test $UID -ne 0 -a "x$QUICK" '!=' "xyes"; then
     echo ""
 
     # Start
-    echo "Please enter root password at the prompt."
+    echo "Please enter root password at the prompt (if you're asked to)..."
     xhost +localhost
     /bin/su -s /bin/sh -c "$params && $export && cd $PWD && echo Uncompressing... && /bin/sh $0 $* --user $USER"
     xhost -localhost

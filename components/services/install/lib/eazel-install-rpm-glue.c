@@ -103,9 +103,13 @@ eazel_install_start_transaction_make_rpm_argument_list (EazelInstall *service,
 	if (eazel_install_get_force (service)) {
 		g_warning ("Force mode!");
 		if (!eazel_install_get_uninstall (service)) {
-			(*args) = g_list_prepend (*args, g_strdup ("--force"));
+			(*args) = g_list_prepend (*args, g_strdup ("--nodeps"));
 		}
-		(*args) = g_list_prepend (*args, g_strdup ("--nodeps"));
+		(*args) = g_list_prepend (*args, g_strdup ("--force"));
+	}
+	if (eazel_install_get_ignore_file_conflicts (service) &&
+	    !eazel_install_get_force (service)) {
+		(*args) = g_list_prepend (*args, g_strdup ("--force"));
 	}
 	if (eazel_install_get_uninstall (service)) {
 		(*args) = g_list_prepend (*args, g_strdup ("-e"));
@@ -363,7 +367,6 @@ eazel_install_add_to_rpm_set (EazelInstall *service,
 		int err;
 
 		pack = (PackageData*)iterator->data;
-
 		if (!eazel_install_get_uninstall (service)) {
 			g_assert (pack->packsys_struc);
 			err = rpmtransAddPackage (set,
@@ -383,10 +386,11 @@ eazel_install_add_to_rpm_set (EazelInstall *service,
 				   we're iterating it, so add to a tmp list and nuke later */
 				tmp_failed = g_list_prepend (tmp_failed, pack);
 			}
-			/* just flailing around here (robey) */
+			/* just flailing around here (robey) 
 			if (pack->soft_depends) {
 				eazel_install_add_to_rpm_set (service, set, &pack->soft_depends, failed);
 			}
+			*/
 		} else {
 			g_assert_not_reached ();
 		}
@@ -613,10 +617,10 @@ eazel_install_do_rpm_dependency_check (EazelInstall *service,
 							trilobite_debug ("Cannot lookup %s in *failedpackages",
 									 conflict.needsName);
 							
-							trilobite_debug ("packages = 0x%x", packages);
-							trilobite_debug ("*packages = 0x%x", *packages);
-							trilobite_debug ("failedpackages = 0x%x", failedpackages);
-							trilobite_debug ("*failedpackages = 0x%x", *failedpackages);
+							trilobite_debug ("packages = 0x%p", packages);
+							trilobite_debug ("*packages = 0x%p", *packages);
+							trilobite_debug ("failedpackages = 0x%p", failedpackages);
+							trilobite_debug ("*failedpackages = 0x%p", *failedpackages);
 							
 							trilobite_debug ("g_list_length (*packages) = %d", g_list_length (*packages));
 							trilobite_debug ("g_list_length (*failedpackages) = %d", g_list_length (*failedpackages));

@@ -591,6 +591,7 @@ eazel_install_initialize (EazelInstall *service) {
 	service->private->transaction = NULL;
 	service->private->revert = FALSE;
 	service->private->ssl_rename = FALSE;
+	service->private->ignore_file_conflicts = FALSE;
 	eazel_install_set_rpmrc_file (service, "/usr/lib/rpm/rpmrc");
 
 	/* when running as part of trilobite, don't catch logs */
@@ -602,7 +603,7 @@ eazel_install_initialize (EazelInstall *service) {
 #endif
 
 	trilobite_debug (_("Transactions are stored in %s"), service->private->transaction_dir);
-	trilobite_debug ("packsys.rpm.dbs = 0x%x", service->private->packsys.rpm.dbs);
+	trilobite_debug ("packsys.rpm.dbs = 0x%p", service->private->packsys.rpm.dbs);
 
 	/* Set default root dirs list */
 	{
@@ -997,7 +998,7 @@ eazel_install_install_packages (EazelInstall *service,
 		} 
 		
 		eazel_install_unlock_tmp_dir (service);
-		trilobite_debug ("service->private->downloaded_files = 0x%x", 
+		trilobite_debug ("service->private->downloaded_files = 0x%p", 
 				 (unsigned int)service->private->downloaded_files);
 		
 		g_free (service->private->cur_root);
@@ -1468,6 +1469,7 @@ ei_mutator_impl_copy (cgi_path, char*, topts->cgi_path, g_strdup);
 ei_mutator_impl (eazel_auth, gboolean, topts->eazel_auth);
 ei_mutator_impl (package_system, int, package_system);
 ei_mutator_impl (ssl_rename, gboolean, ssl_rename);
+ei_mutator_impl (ignore_file_conflicts, gboolean, ignore_file_conflicts);
 
 ei_access_impl (verbose, gboolean, iopts->mode_verbose, FALSE);
 ei_access_impl (silent, gboolean, iopts->mode_silent, FALSE);
@@ -1490,10 +1492,9 @@ ei_access_impl (root_dirs, GList*, root_dirs, NULL);
 ei_access_impl (server_port, guint, topts->port_number, 0);
 ei_access_impl (cgi_path, char*, topts->cgi_path, NULL);
 ei_access_impl (eazel_auth, gboolean, topts->eazel_auth, FALSE);
-
 ei_access_impl (package_system, int, package_system, 0);
-
 ei_access_impl (ssl_rename, gboolean, ssl_rename, FALSE);
+ei_access_impl (ignore_file_conflicts, gboolean, ignore_file_conflicts, FALSE);
 
 void eazel_install_set_root_dirs (EazelInstall *service,
 				  const GList *new_roots) 

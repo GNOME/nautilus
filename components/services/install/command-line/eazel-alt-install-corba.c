@@ -373,25 +373,30 @@ tree_helper (EazelInstallCallback *service,
 	}
 }
 
-/*
-  This dumps the entire tree for the failed package.
- */
 static void
-install_failed (EazelInstallCallback *service,
+something_failed (EazelInstallCallback *service,
 		const PackageData *pd,
-		EazelInstallProblem *problem)
+		  EazelInstallProblem *problem,
+		  gboolean uninstall)
 {
 	char *title;
 	GList *stuff = NULL;	
 
-	title = g_strdup_printf ("\nPackage %s failed to install. Here's the tree...\n", pd->name);
+	if (uninstall) {
+		title = g_strdup_printf ("\nPackage %s failed to uninstall. Here's the tree...\n", pd->name);
+	} else {
+		title = g_strdup_printf ("\nPackage %s failed to install. Here's the tree...\n", pd->name);
+	}
+
 	if (arg_debug) {
 		tree_helper (service, pd, "", "", 4, title);
 	}
 	fprintf (stdout, "\n");
 
+	g_free (title);
+
 	if (problem) {
-		stuff = eazel_install_problem_tree_to_string (problem, pd);
+		stuff = eazel_install_problem_tree_to_string (problem, pd, uninstall);
 		if (stuff) {
 			GList *it;
 			for (it = stuff; it; it = g_list_next (it)) {
@@ -399,7 +404,7 @@ install_failed (EazelInstallCallback *service,
 			}
 		}
 		
-		eazel_install_problem_tree_to_case (problem, pd, &cases);
+		eazel_install_problem_tree_to_case (problem, pd, uninstall, &cases);
 		stuff = eazel_install_problem_cases_to_string (problem, cases);
 		if (cases) {
 			stuff = eazel_install_problem_cases_to_string (problem, cases);
@@ -411,19 +416,25 @@ install_failed (EazelInstallCallback *service,
 			}
 		}
 	}
-	
-	g_free (title);
+}
+
+/*
+  This dumps the entire tree for the failed package.
+ */
+static void
+install_failed (EazelInstallCallback *service,
+		const PackageData *pd,
+		EazelInstallProblem *problem)
+{
+	something_failed (service, pd, problem, FALSE);
 }
 
 static void
 uninstall_failed (EazelInstallCallback *service,
 		  const PackageData *pd,		
-		  gpointer unused)
+		  EazelInstallProblem *problem)
 {
-	char *title;
-	title = g_strdup_printf ("\nPackage %s failed to uninstall. Here's the tree...\n", pd->name);
-	tree_helper (service, pd, "", "", 4, title);
-	g_free (title);
+	something_failed (service, pd, problem, TRUE);
 }
 
 static gboolean
@@ -543,7 +554,12 @@ delete_files (EazelInstallCallback *service, EazelInstallProblem *problem)
 		}
 		if (answer[0] == 'y' || answer[0] == 'Y') {
 			fflush (stdout);
-			eazel_install_problem_handle_cases (problem, service, &cases, &categories, arg_root);
+			eazel_install_problem_handle_cases (problem, 
+							    service, 
+							    &cases, 
+							    &categories, 
+							    NULL,
+							    arg_root);
 			ask_delete = FALSE;
 			result = FALSE;
 		} else {
@@ -552,7 +568,7 @@ delete_files (EazelInstallCallback *service, EazelInstallProblem *problem)
 		}		
 	} 
 
-	if (!arg_file && ask_delete) {
+	if (!arg_query && !arg_erase && !arg_file && ask_delete) {
 		printf ("should i delete the RPM files? (y/n) ");
 		fflush (stdout);
 		if (arg_batch) {			

@@ -935,6 +935,12 @@ eazel_install_do_transaction_all_files_check (EazelInstall *service,
 				     has the same file */
 	GHashTable *file_to_pack; /* maps from a filename to a packagedata struct */
 	
+	if (eazel_install_get_force (service) || 
+	    eazel_install_get_ignore_file_conflicts (service)) {		
+		trilobite_debug ("not performing file conflict check");
+		return result;
+	}
+
 	file_to_pack = g_hash_table_new (g_str_hash, g_str_equal);
 
 	/* Check all the packages */
@@ -1274,7 +1280,7 @@ eazel_install_prune_packages_helper (EazelInstall *service,
 		return;
 	}
 	tmp = packagedata_get_readable_name (pack);
-	trilobite_debug (_("Removing package %s (0x%x) %s"), 
+	trilobite_debug (_("Removing package %s (0x%p) %s"), 
 			 tmp,
 			 pack,
 			 pack->toplevel ? "(emit fail)" :"()");
@@ -1720,12 +1726,13 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 				pack_entry = g_list_find_custom (*packages,
 								 dep,
 								 (GCompareFunc)eazel_install_package_other_version_compare);
-				trilobite_debug ("Circular dependency  %s-%s-%s at 0x%x", dep->name, dep->version, dep->minor, dep);
+				trilobite_debug ("Circular dependency  %s-%s-%s at 0x%p", 
+						 dep->name, dep->version, dep->minor, dep);
 
 				if (pack_entry) {
 					PackageData *evil_package = packagedata_copy ((PackageData*)(pack_entry->data), FALSE);
 					packagedata_add_pack_to_breaks (dep, evil_package); 
-					trilobite_debug ("Circular dependency caused by %s-%s-%s at 0x%x", 
+					trilobite_debug ("Circular dependency caused by %s-%s-%s at 0x%p", 
 							 evil_package->name,
 							 evil_package->version,
 							 evil_package->minor, 
@@ -2002,14 +2009,18 @@ eazel_install_do_file_conflict_check (EazelInstall *service,
 	GList *iterator;
 	GList *tmp_failed = NULL;
 
+	if (eazel_install_get_ignore_file_conflicts (service) ||
+	    eazel_install_get_force (service)) {
+		trilobite_debug ("not performing file conflict check");
+	}
+
 	/* Now do file conflicts on all packages */
 	for (iterator = *packages; iterator; glist_step (iterator)) {
 		PackageData *pack = (PackageData*)iterator->data;
 		GList *required = NULL;
 
 		/* If we haven't tested conflicts yet */
-		if (pack->conflicts_checked == FALSE &&
-		    eazel_install_get_force (service) == FALSE) {
+		if (pack->conflicts_checked == FALSE) {
 			GList *breaks = NULL;
 			pack->conflicts_checked = TRUE;			
 			if (eazel_install_check_for_file_conflicts (service, pack, &breaks, &required)) {
@@ -2549,8 +2560,10 @@ eazel_uninstall_globber (EazelInstall *service,
 		eazel_uninstall_upward_traverse (service, packages, failed, &tmp);
 		print_package_list ("FAILED", *failed, TRUE);
 		for (iterator = *failed; iterator; iterator = g_list_next (iterator)) {
-			trilobite_debug ("failed %s", ((PackageData*)iterator->data)->name);
-			eazel_install_emit_uninstall_failed (service, (PackageData*)iterator->data);
+			PackageData *pack = (PackageData*)iterator->data;
+			trilobite_debug ("failed %s", pack->name);
+			dump_one_package (pack, "");
+			eazel_install_emit_uninstall_failed (service, pack);
 		}
 		g_list_free (tmp);
 	}

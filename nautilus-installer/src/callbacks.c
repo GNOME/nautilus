@@ -30,7 +30,6 @@
 #include "support.h"
 #include "installer.h"
 
-
 void
 druid_cancel (GnomeDruid      *gnomedruid,
 	      EazelInstaller  *installer)
@@ -86,10 +85,12 @@ begin_install (EazelInstaller  *installer)
 						    installer->service,
 						    &(installer->problems),
 						    &(installer->install_categories),
+						    NULL,
 						    NULL);
 		eazel_installer_post_install (installer);
 		/* return TRUE; */
-	} else if (installer->successful && installer->install_categories) { 
+	} else 
+	if (installer->successful && installer->install_categories) { 
 		eazel_installer_do_install (installer, installer->install_categories, FALSE);
 		eazel_installer_post_install (installer);
 	}

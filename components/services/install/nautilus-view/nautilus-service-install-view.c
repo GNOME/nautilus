@@ -967,6 +967,7 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 						    view->details->installer, 
 						    &(view->details->problem_cases), 
 						    &(view->details->categories),
+						    NULL,
 						    NULL);
 	} else {
 		if (success && view->details->desktop_files) {
@@ -1092,6 +1093,7 @@ nautilus_service_install_failed (EazelInstallCallback *cb, const PackageData *pa
 	/* Get the new set of problem cases */
 	eazel_install_problem_tree_to_case (view->details->problem,
 					    package,
+					    FALSE,
 					    &(view->details->problem_cases));
 
 }

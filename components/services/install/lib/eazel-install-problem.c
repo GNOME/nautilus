@@ -36,7 +36,7 @@ static GtkObjectClass *eazel_install_problem_parent_class;
                             g_return_val_if_fail (IS_EAZEL_INSTALL_PROBLEM(s), val);
 
 
-#undef EIP_DEBUG
+#define EIP_DEBUG
 
 /* Data argument to get_detailed_errors_foreach.
    Contains the installer and a path in the tree
@@ -45,6 +45,7 @@ typedef struct {
 	EazelInstallProblem *problem;
 	GList *errors;
 	GList *path;
+	GList *packs;
 } GetErrorsForEachData;
 
 #ifdef EIP_DEBUG
@@ -102,12 +103,14 @@ get_detailed_messages_foreach (PackageData *pack, GetErrorsForEachData *data)
 		if (pack->soft_depends || pack->hard_depends) {
 
 		} else {
-			if (previous_pack->status == PACKAGE_BREAKS_DEPENDENCY) {
+			if (previous_pack && previous_pack->status == PACKAGE_BREAKS_DEPENDENCY) {
 				if (required_by) {
 
 				} else {
 					message = g_strdup_printf (_("%s would break other packages"), required);
 				}				
+			} else {
+				message = g_strdup_printf (_("%s would break"), required);
 			}
 		}
 		break;
@@ -196,6 +199,86 @@ get_detailed_messages_foreach (PackageData *pack, GetErrorsForEachData *data)
 	data->path = g_list_remove (data->path, pack);
 }
 
+static void
+get_detailed_uninstall_messages_foreach (PackageData *pack, 
+					 GetErrorsForEachData *data)
+{
+	char *message = NULL;
+	char *required = NULL;
+	char *required_by = NULL;
+	char *top_name = NULL;
+	GList **errors = &(data->errors);
+	PackageData *previous_pack = NULL;
+	PackageData *top_pack = NULL;
+
+	if (data->path) {
+		previous_pack = (PackageData*)(data->path->data);
+		top_pack = (PackageData*)(g_list_last (data->path)->data);
+		if (top_pack == previous_pack) {
+			previous_pack = NULL;
+		}
+		required = packagedata_get_readable_name (previous_pack);
+		top_name = packagedata_get_readable_name (top_pack);
+	}
+	required_by = packagedata_get_readable_name (pack);
+
+	switch (pack->status) {
+	case PACKAGE_UNKNOWN_STATUS:
+		break;
+	case PACKAGE_SOURCE_NOT_SUPPORTED:
+		message = g_strdup_printf (_("%s is a source package, which is not yet supported"), 
+					   required);
+		break;
+	case PACKAGE_FILE_CONFLICT:
+		break;
+	case PACKAGE_DEPENDENCY_FAIL:
+	case PACKAGE_BREAKS_DEPENDENCY:
+		if (previous_pack) {
+			message = g_strdup_printf (_("%s requires %s"), 
+						   required_by, required);
+		} else if (top_pack) {
+			message = g_strdup_printf (_("%s requires %s"), 
+						   required_by, top_name);
+		}
+		break;
+		break;
+	case PACKAGE_INVALID:
+		break;
+	case PACKAGE_CANNOT_OPEN:
+		message = g_strdup_printf (_("%s is not installed"), 
+					   required_by);
+		break;
+	case PACKAGE_PARTLY_RESOLVED:
+		break;
+	case PACKAGE_ALREADY_INSTALLED:
+		message = g_strdup_printf (_("%s is already installed"), required);
+		break;
+	case PACKAGE_CIRCULAR_DEPENDENCY: 
+		break;
+	case PACKAGE_RESOLVED:
+		break;
+	}
+
+	if (message != NULL) {
+		(*errors) = g_list_append (*errors, message);
+	}
+
+	g_free (required);
+	g_free (required_by);
+	g_free (top_name);
+
+	/* Create the path list */
+	data->path = g_list_prepend (data->path, pack);
+
+	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_uninstall_messages_foreach, data);
+	g_list_foreach (pack->hard_depends, (GFunc)get_detailed_uninstall_messages_foreach, data);
+	g_list_foreach (pack->modifies, (GFunc)get_detailed_uninstall_messages_foreach, data);
+	g_list_foreach (pack->breaks, (GFunc)get_detailed_uninstall_messages_foreach, data);
+
+	/* Pop the currect pack from the path */
+	data->path = g_list_remove (data->path, pack);
+}
+
 static int
 compare_problem_case (EazelInstallProblemCase *a, EazelInstallProblemCase *b)
 {
@@ -231,6 +314,29 @@ compare_problem_case (EazelInstallProblemCase *a, EazelInstallProblemCase *b)
 			result = compare_problem_case (a->u.cannot_solve.problem,
 						       b->u.cannot_solve.problem);
 			break;
+		case EI_PROBLEM_CONTINUE_WITH_FORCE:
+			result = 0;
+			break;
+		case EI_PROBLEM_CASCADE_REMOVE: {
+			GList *a_iterator;
+			result = 0;
+			/* same number of packages ? */
+			if (g_list_length (a->u.cascade.packages) != g_list_length (b->u.cascade.packages)) {
+				result = 1;
+			} else
+			/* Check that all packages in a occur in b */
+			for (a_iterator = a->u.cascade.packages; 
+			     a_iterator && !result; a_iterator = g_list_next (a_iterator)) {
+				PackageData *a_pack = (PackageData*)a_iterator->data;
+				GList *b_iterator;
+				for (b_iterator = b->u.cascade.packages; b_iterator; 
+				     b_iterator = g_list_next (b_iterator)) {
+					PackageData *b_pack = (PackageData*)b_iterator->data;
+					result = eazel_install_package_compare (a_pack, b_pack);
+				}
+			}
+		}
+		break;
 		}
 	}
 	return result;
@@ -245,23 +351,20 @@ add_case (EazelInstallProblem *problem,
 	GList *case_list;
 
 #ifdef EIP_DEBUG
-	g_hash_table_foreach (problem->attempts,
-			      (GHFunc)eazel_install_problem_debug_attempts,
-			      problem);
-#endif
-#ifdef EIP_DEBUG
 	g_message ("add_case, pcase->problem = %d", pcase->problem);
 	g_message ("g_hash_table_size (problem->attempts) = %d", 
 		   g_hash_table_size (problem->attempts));
 #endif /* EIP_DEBUG */
 
 	/* Did a previous atttempt generate this case ? */
+	/* first get the list for this case type */
 	case_list = g_hash_table_lookup (problem->attempts, 
 					 &(pcase->problem));
 #ifdef EIP_DEBUG
 	g_message ("g_list_length (case_list) = %d", 
 		   g_list_length (case_list));
 #endif /* EIP_DEBUG */
+	/* then lookup the problem */
 	already_attempted = g_list_find_custom (case_list,
 						pcase,
 						(GCompareFunc)compare_problem_case);
@@ -282,11 +385,13 @@ add_case (EazelInstallProblem *problem,
 						(GCompareFunc)compare_problem_case);
 	if (!already_attempted) {
 		/* No ? Then add it */
-		case_list = g_list_prepend (case_list,
-					    pcase);
-		g_hash_table_insert (problem->pre_step_attempts,
-				     &(pcase->problem),
-				     case_list);
+		if (!problem->in_step_problem_mode) {
+			case_list = g_list_prepend (case_list,
+						    pcase);
+			g_hash_table_insert (problem->pre_step_attempts,
+					     &(pcase->problem),
+					     case_list);
+		}
 		(*output) = g_list_prepend (*output,
 					    pcase);
 	} else {
@@ -308,13 +413,12 @@ add_cannot_solve_case (EazelInstallProblem *problem,
 		       EazelInstallProblemCase *org_pcase,
 		       GList **output)
 {
-	EazelInstallProblemCase *pcase = eazel_install_problem_case_new ();
+	EazelInstallProblemCase *pcase = eazel_install_problem_case_new (EI_PROBLEM_CANNOT_SOLVE);
 
 #ifdef EIP_DEBUG
-	g_message ("add_force_install_both_case");
+	g_message ("add_cannot_solve_case");
 #endif /* EIP_DEBUG */
 
-	pcase->problem = EI_PROBLEM_CANNOT_SOLVE;
 	pcase->u.cannot_solve.problem = org_pcase;
 
 	if (!add_case (problem, pcase, output)) {
@@ -324,76 +428,98 @@ add_cannot_solve_case (EazelInstallProblem *problem,
 }
 
 static void
+add_continue_with_force_case (EazelInstallProblem *problem,
+			      EazelInstallProblemCase *org_pcase,
+			      gboolean file_conflict,
+			      GList **output)
+{
+	EazelInstallProblemCase *pcase = eazel_install_problem_case_new (EI_PROBLEM_CONTINUE_WITH_FORCE);
+
+#ifdef EIP_DEBUG
+	g_message ("add_continue_with_force_case");
+#endif /* EIP_DEBUG */
+
+	pcase->u.cannot_solve.problem = org_pcase;
+	pcase->file_conflict = file_conflict;
+
+	if (!add_case (problem, pcase, output)) {
+		eazel_install_problem_case_destroy (pcase);
+		add_cannot_solve_case (problem, org_pcase, output);
+	}
+}
+
+static void
 add_force_install_both_case (EazelInstallProblem *problem,
 			     const PackageData *pack_1, 
 			     const PackageData *pack_2,
 			     GList **output) 
 {
-	EazelInstallProblemCase *pcase = eazel_install_problem_case_new ();
+	EazelInstallProblemCase *pcase = eazel_install_problem_case_new (EI_PROBLEM_FORCE_INSTALL_BOTH);
 	PackageData *copy_1 = packagedata_copy (pack_1, FALSE);
 	PackageData *copy_2 = packagedata_copy (pack_2, FALSE);
 
 #ifdef EIP_DEBUG
 	g_message ("add_force_install_both_case");
 #endif /* EIP_DEBUG */
-
-	pcase->problem = EI_PROBLEM_FORCE_INSTALL_BOTH;
 	pcase->u.force_install_both.pack_1 = copy_1;
 	pcase->u.force_install_both.pack_2 = copy_2;
 	
 	if (!add_case (problem, pcase, output)) {
-		add_cannot_solve_case (problem, pcase, output);
+		add_continue_with_force_case (problem, pcase, FALSE, output);
 	}
 }
 
 static void
 add_force_remove_case (EazelInstallProblem *problem,
 		       const PackageData *pack,
+		       gboolean file_conflict,
 		       GList **output) 
 {
-	EazelInstallProblemCase *pcase = eazel_install_problem_case_new ();
+	EazelInstallProblemCase *pcase = eazel_install_problem_case_new (EI_PROBLEM_FORCE_REMOVE);
 	PackageData *copy = packagedata_copy (pack, FALSE);
 
 #ifdef EIP_DEBUG
 	g_message ("add_force_remove_case");
 #endif /* EIP_DEBUG */
 
-	pcase->problem = EI_PROBLEM_FORCE_REMOVE;
 	pcase->u.force_remove.pack = copy;
+	pcase->file_conflict = file_conflict;
 	
 	if (!add_case (problem, pcase, output)) {
-		add_cannot_solve_case (problem, pcase, output);
+		add_continue_with_force_case (problem, pcase, file_conflict, output);
 	}
 }
 
 static void
 add_remove_case (EazelInstallProblem *problem,
 		 const PackageData *pack,
-		 GList **output) 
+		 gboolean file_conflict,
+		 GList **output)
 {
 
-	EazelInstallProblemCase *pcase = eazel_install_problem_case_new ();
+	EazelInstallProblemCase *pcase = eazel_install_problem_case_new (EI_PROBLEM_REMOVE);
 	PackageData *copy = packagedata_copy (pack, FALSE);
 
 #ifdef EIP_DEBUG
 	g_message ("add_remove_case");
 #endif /* EIP_DEBUG */
 
-	pcase->problem = EI_PROBLEM_REMOVE;
 	pcase->u.remove.pack = copy;
+	pcase->file_conflict = file_conflict;
 	
 	if (!add_case (problem, pcase, output)) {
 		eazel_install_problem_case_destroy (pcase);
-		add_force_remove_case (problem, pack, output);
+		add_force_remove_case (problem, pack, file_conflict, output);
 	}
 }
 
 static void
 add_update_case (EazelInstallProblem *problem,
 		 const PackageData *pack,
+		 gboolean file_conflict,
 		 GList **output)
 {
-	EazelInstallProblemCase *pcase = eazel_install_problem_case_new ();
+	EazelInstallProblemCase *pcase = eazel_install_problem_case_new (EI_PROBLEM_UPDATE);
 	PackageData *copy = packagedata_new ();
 
 #ifdef EIP_DEBUG
@@ -404,14 +530,39 @@ add_update_case (EazelInstallProblem *problem,
 	copy->distribution = pack->distribution;
 	copy->archtype = g_strdup (pack->archtype);
 
-	pcase->problem = EI_PROBLEM_UPDATE;
 	pcase->u.update.pack = copy;
-	
+	pcase->file_conflict = file_conflict;
+
 	if (!add_case (problem, pcase, output)) {
-		eazel_install_problem_case_destroy (pcase);
-		add_remove_case (problem, pack, output);
+		add_remove_case (problem, pack, file_conflict, output);
 	}
 }
+
+static void
+add_cascade_remove (EazelInstallProblem *problem,
+		    GList **packs,
+		    gboolean file_conflict,
+		    GList **output)
+{
+	EazelInstallProblemCase *pcase = eazel_install_problem_case_new (EI_PROBLEM_CASCADE_REMOVE);
+
+#ifdef EIP_DEBUG
+	g_message ("add_cascade_remove_case");
+#endif /* EIP_DEBUG */
+
+	pcase->u.cascade.packages = (*packs);
+	pcase->file_conflict = file_conflict;
+	
+	if (!add_case (problem, pcase, output)) {
+		GList *iterator;
+		for (iterator = *packs; iterator; iterator = g_list_next (iterator)) {
+			PackageData *pack = (PackageData*)(iterator->data);
+			add_force_remove_case (problem, pack, file_conflict, output);
+		}
+		eazel_install_problem_case_destroy (pcase);
+	}
+}
+
 
 /* 
    FIXME bugzilla.eazel.com
@@ -425,7 +576,7 @@ get_detailed_cases_foreach (PackageData *pack, GetErrorsForEachData *data)
 	PackageData *previous_pack = NULL;
 
 #ifdef EIP_DEBUG
-	g_message ("get_detailed_cases_foreach (data->path = 0x%x)", (int)(data->path));
+	g_message ("get_detailed_cases_foreach (data->path = 0x%p)", data->path);
 	g_message ("get_detailed_cases_foreach (pack->status = %s)", 
 		   packagedata_status_enum_to_str (pack->status));
 #endif /* EIP_DEBUG */
@@ -440,8 +591,9 @@ get_detailed_cases_foreach (PackageData *pack, GetErrorsForEachData *data)
 	case PACKAGE_SOURCE_NOT_SUPPORTED:
 		break;
 	case PACKAGE_FILE_CONFLICT:
+		g_message ("%s:%d", __FILE__, __LINE__);
 		if ((pack->name!= NULL) && previous_pack && (strcmp (pack->name, previous_pack->name) != 0)) {
-			add_update_case (data->problem, pack, &(data->errors)); 
+			add_update_case (data->problem, pack, TRUE, &(data->errors)); 
 		} else {
 			g_warning ("%s:%d : oops", __FILE__,__LINE__);
 		}
@@ -450,7 +602,7 @@ get_detailed_cases_foreach (PackageData *pack, GetErrorsForEachData *data)
 		if (pack->soft_depends || pack->hard_depends) {
 		} else {
 			if (previous_pack && previous_pack->status == PACKAGE_BREAKS_DEPENDENCY) {
-				add_update_case (data->problem, pack, &(data->errors)); 
+				add_update_case (data->problem, pack, FALSE, &(data->errors)); 
 			} else {
 				g_warning ("%s:%d : oops", __FILE__,__LINE__);
 			}
@@ -487,6 +639,78 @@ get_detailed_cases_foreach (PackageData *pack, GetErrorsForEachData *data)
 
 	/* Pop the currect pack from the path */
 	data->path = g_list_remove (data->path, pack);
+}
+
+/* 
+   FIXME bugzilla.eazel.com
+   Needs to handle the following :
+   - package status looks ok, check modification_status
+*/
+static void
+get_detailed_uninstall_cases_foreach (PackageData *pack, GetErrorsForEachData *data)
+{
+	PackageData *previous_pack = NULL;
+	
+#ifdef EIP_DEBUG
+	g_message ("get_detailed_uninstall_cases_foreach (data->path = 0x%p)", data->path);
+	g_message ("get_detailed_uninstall_cases_foreach (pack->status = %s)", 
+		   packagedata_status_enum_to_str (pack->status));
+#endif /* EIP_DEBUG */
+
+	if (data->path) {
+		previous_pack = (PackageData*)(data->path->data);
+	}
+
+	if (pack->toplevel) {
+		data->packs = NULL;
+	}
+
+	switch (pack->status) {
+	case PACKAGE_UNKNOWN_STATUS:
+		break;
+	case PACKAGE_SOURCE_NOT_SUPPORTED:
+		break;
+	case PACKAGE_FILE_CONFLICT:
+		break;
+	case PACKAGE_DEPENDENCY_FAIL:
+	case PACKAGE_BREAKS_DEPENDENCY:
+		/* This is what a uninstall fail tree will normally have */
+		data->packs = g_list_prepend (data->packs, packagedata_copy (pack, FALSE));
+		break;
+	case PACKAGE_INVALID:
+		break;
+	case PACKAGE_CANNOT_OPEN:
+		break;
+	case PACKAGE_PARTLY_RESOLVED:
+		break;
+	case PACKAGE_ALREADY_INSTALLED:
+		break;
+	case PACKAGE_CIRCULAR_DEPENDENCY: 
+		break;
+	case PACKAGE_RESOLVED:
+		break;
+	}
+
+	/* Create the path list */
+	data->path = g_list_prepend (data->path, pack);
+
+	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_uninstall_cases_foreach, data);
+	g_list_foreach (pack->hard_depends, (GFunc)get_detailed_uninstall_cases_foreach, data);
+	g_list_foreach (pack->modifies, (GFunc)get_detailed_uninstall_cases_foreach, data);
+	g_list_foreach (pack->breaks, (GFunc)get_detailed_uninstall_cases_foreach, data);
+
+	/* Pop the currect pack from the path */
+	data->path = g_list_remove (data->path, pack);
+	if (g_list_length (data->path) == 0) {
+		g_list_free (data->path);
+		data->path = NULL;
+	}
+
+	if (pack->toplevel) {
+                /* This is just to make sure the toplevel is first */
+		data->packs = g_list_reverse (data->packs);
+		add_cascade_remove (data->problem, &(data->packs), FALSE, &(data->errors));
+	}
 }
 
 static char*
@@ -545,6 +769,40 @@ eazel_install_problem_case_to_string (EazelInstallProblemCase *pcase)
 		g_free (tmp);
 	}
 	break;
+	case EI_PROBLEM_CASCADE_REMOVE: {
+		GList *iterator;
+		GString *str = g_string_new ("Remove ");
+		
+		iterator  = pcase->u.cascade.packages;
+		while (iterator) {
+			PackageData *pack = (PackageData*)iterator->data;
+			iterator = g_list_next (iterator);
+			if (iterator) {
+				if (g_list_next (iterator)) {
+					str = g_string_append (str, pack->name);
+					str = g_string_append (str, ", ");
+				} else {
+					str = g_string_append (str, pack->name);
+					str = g_string_append (str, ", ");
+				}
+			} else {
+				str = g_string_append (str, pack->name);
+			}
+		}
+		message = g_strdup (str->str);
+		g_string_free (str, TRUE);
+	}
+	break;
+	case EI_PROBLEM_CONTINUE_WITH_FORCE: {
+		/* FIXME
+		   needs better string */
+		if (pcase->file_conflict) {
+			message = g_strdup_printf ("Complete operation by ignoring file conflicts");
+		} else {
+			message = g_strdup_printf ("Complete operation by ignoring problems");
+		}
+	}
+	break;
 	}
 	return message;
 }
@@ -586,15 +844,25 @@ eazel_install_problem_case_foreach_destroy (EazelInstallProblemCase *pcase,
 	case EI_PROBLEM_CANNOT_SOLVE:
 		eazel_install_problem_case_foreach_destroy (pcase->u.cannot_solve.problem, NULL);
 		break;
+	case EI_PROBLEM_CONTINUE_WITH_FORCE:
+		break;
+	case EI_PROBLEM_CASCADE_REMOVE:
+		g_list_foreach (pcase->u.cascade.packages,
+				(GFunc)packagedata_destroy,
+				GINT_TO_POINTER (TRUE));
+		break;
 	}
 	g_free (pcase);
 }
 
 EazelInstallProblemCase*
-eazel_install_problem_case_new ()
+eazel_install_problem_case_new (EazelInstallProblemEnum problem_type)
 {
 	EazelInstallProblemCase *result;
 	result = g_new0 (EazelInstallProblemCase, 1);
+	result->problem = problem_type;
+	result->file_conflict = FALSE;
+	/* g_new0 ensures that all union members are NULL */
 	return result;
 }
 
@@ -742,6 +1010,7 @@ eazel_install_problem_step (EazelInstallProblem *problem)
 void
 eazel_install_problem_tree_to_case (EazelInstallProblem *problem,
 				    const PackageData *pack,
+				    gboolean uninstall,
 				    GList **output)
 {
 	GetErrorsForEachData data;
@@ -749,15 +1018,21 @@ eazel_install_problem_tree_to_case (EazelInstallProblem *problem,
 
 	P_SANITY (problem);
 
-	g_message ("eazel_install_problem_tree_to_case ( pack = 0x%x)", 
-		   (int)pack);
+	g_message ("eazel_install_problem_tree_to_case ( pack = 0x%p, uninstall=%s)", 
+		   pack,  
+		   uninstall ? "TRUE" : "FALSE");
 
 	data.problem = problem;
 	data.errors = (*output);
 	data.path = NULL;
 	pack_copy = packagedata_copy (pack, TRUE);
+	problem->in_step_problem_mode = FALSE;
 
-	get_detailed_cases_foreach (pack_copy, &data);
+	if (uninstall) {
+		get_detailed_uninstall_cases_foreach (pack_copy, &data);
+	} else {
+		get_detailed_cases_foreach (pack_copy, &data);
+	}
 
 	packagedata_destroy (pack_copy, TRUE);
 	(*output) = data.errors;
@@ -766,8 +1041,9 @@ eazel_install_problem_tree_to_case (EazelInstallProblem *problem,
 /* This returns a GList<char*> list containing the 
    encountered problems in the given PackageData tree */
 GList* 
-eazel_install_problem_tree_to_string (EazelInstallProblem *problem,
-				      const PackageData *pack)
+eazel_install_problem_tree_to_string (EazelInstallProblem *problem,				      
+				      const PackageData *pack,
+				      gboolean uninstall)
 {
 	GList *result = NULL;
 	GetErrorsForEachData data;
@@ -780,7 +1056,11 @@ eazel_install_problem_tree_to_string (EazelInstallProblem *problem,
 	data.path = NULL;
 	pack_copy = packagedata_copy (pack, TRUE);
 
-	get_detailed_messages_foreach (pack_copy, &data);
+	if (uninstall) {
+		get_detailed_uninstall_messages_foreach (pack_copy, &data);
+	} else {
+		get_detailed_messages_foreach (pack_copy, &data);
+	}
 
 	packagedata_destroy (pack_copy, TRUE);
 	result = data.errors;
@@ -893,12 +1173,21 @@ build_categories_from_problem_list (EazelInstallProblem *problem,
 			packages = g_list_prepend (packages, 
 						   packagedata_copy (pcase->u.force_remove.pack, TRUE));
 			break;
+		case EI_PROBLEM_CASCADE_REMOVE: {
+			GList *iterator;
+			g_message ("%s:%d cascade", __FILE__, __LINE__);
+			for (iterator = pcase->u.cascade.packages; iterator; iterator = g_list_next (iterator)) {
+				packages = g_list_prepend (packages, iterator->data);
+			}
+		}
+		break;
+		case EI_PROBLEM_CONTINUE_WITH_FORCE:
 		case EI_PROBLEM_INCONSISTENCY:
 		case EI_PROBLEM_CANNOT_SOLVE:
-			g_message ("%s:%d I have no clue ?!", __FILE__, __LINE__);
 			break;
 		case EI_PROBLEM_BASE:
 			g_warning ("%s:%d: should not be reached", __FILE__, __LINE__);
+			g_assert_not_reached ();
 			break;
 		}		
 	}
@@ -913,6 +1202,106 @@ build_categories_from_problem_list (EazelInstallProblem *problem,
 	return result;
 }
 
+void
+eazel_install_problem_use_set  (EazelInstallProblem *problem,
+				GList *problems)
+{
+	GList *iterator;
+
+	for (iterator = problems; iterator; iterator = g_list_next (iterator)) {
+		EazelInstallProblemCase *pcase = (EazelInstallProblemCase*)iterator->data;
+		GList *case_list;
+
+		case_list = g_hash_table_lookup (problem->attempts, 
+						 &(pcase->problem));
+
+		case_list = g_list_prepend (case_list,
+					    pcase);
+
+		g_hash_table_insert (problem->pre_step_attempts,
+				     &(pcase->problem),
+				     case_list);
+	}
+}
+
+/*
+  If you're not satisfied with the given dominant problem,
+  use this to get a peek at what the next step will be */
+GList *
+eazel_install_problem_step_problem (EazelInstallProblem *problem,
+				    EazelInstallProblemEnum problem_type,
+				    GList *problems)
+{
+	GList *result = NULL;
+	GList *unwanted = NULL;
+	GList *iterator;
+
+	problem->in_step_problem_mode = TRUE;
+
+	unwanted = find_problems_of_type (problem, problems, problem_type);	
+	g_message ("eazel_install_problem_discard_problem %d unwanted", g_list_length (unwanted));
+	for (iterator = unwanted; iterator; iterator = g_list_next (iterator)) {
+		EazelInstallProblemCase *pcase = (EazelInstallProblemCase*)iterator->data;
+		
+		switch (pcase->problem) {
+		case EI_PROBLEM_UPDATE:
+			g_message ("%s:%d, conflict = %s", __FILE__, __LINE__, pcase->file_conflict ? "TRUE":"FALSE");
+			add_remove_case (problem, 
+					 pcase->u.update.pack,
+					 pcase->file_conflict,
+					 &result);
+			break;
+		case EI_PROBLEM_CONTINUE_WITH_FORCE:		
+			g_message ("%s:%d, conflict = %s", __FILE__, __LINE__, pcase->file_conflict ? "TRUE":"FALSE");
+			add_cannot_solve_case (problem, 
+					       pcase, 
+					       &result);
+			break;
+		case EI_PROBLEM_FORCE_INSTALL_BOTH:
+			g_message ("%s:%d, conflict = %s", __FILE__, __LINE__, pcase->file_conflict ? "TRUE":"FALSE");
+			add_continue_with_force_case (problem, 
+						      pcase, 
+						      pcase->file_conflict,
+						      &result);
+			break;
+		case EI_PROBLEM_CASCADE_REMOVE:
+			g_message ("%s:%d, conflict = %s", __FILE__, __LINE__, pcase->file_conflict ? "TRUE":"FALSE");
+			add_force_remove_case (problem, 
+					       pcase->u.force_remove.pack,
+					       pcase->file_conflict,
+					       &result);
+			break;
+		case EI_PROBLEM_REMOVE:
+			g_message ("%s:%d, conflict = %s", __FILE__, __LINE__, pcase->file_conflict ? "TRUE":"FALSE");
+			add_force_remove_case (problem, 
+					       pcase->u.remove.pack,
+					       pcase->file_conflict,
+					       &result);
+			break;
+		case EI_PROBLEM_FORCE_REMOVE:
+			g_message ("%s:%d, conflict = %s", __FILE__, __LINE__, pcase->file_conflict ? "TRUE":"FALSE");
+			add_continue_with_force_case (problem, 
+						      pcase, 
+						      pcase->file_conflict,
+						      &result);
+			break;
+		case EI_PROBLEM_INCONSISTENCY:
+			g_message ("%s:%d, conflict = %s", __FILE__, __LINE__, pcase->file_conflict ? "TRUE":"FALSE");
+			result = g_list_prepend (result, pcase);
+			break;
+		case EI_PROBLEM_CANNOT_SOLVE:
+			g_message ("%s:%d, conflict = %s", __FILE__, __LINE__, pcase->file_conflict ? "TRUE":"FALSE");
+			result = g_list_prepend (result, pcase);
+			break;
+		case EI_PROBLEM_BASE:
+			g_assert_not_reached ();
+			break;
+		}
+	}
+	g_message ("eazel_install_problem_discard_problem %d left", g_list_length (result));
+
+	return result;
+}
 
 /* #IFDEF HELL!!!
    This function can be compiled for the corba object
@@ -938,11 +1327,12 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 				    
 				    GList **problems,
 				    GList **install_categories,
+				    GList **uninstall_categories,
 				    char *root)
 {
 	EazelInstallProblemEnum dominant_problem_type;
 	GList *dominant_problems;
-	gboolean service_force, service_update, service_downgrade;
+	gboolean service_force, service_update, service_downgrade, service_uninstall;
 	gboolean force, update, downgrade;
 	GList *categories, *final_categories = NULL;
 #ifndef EAZEL_INSTALL_NO_CORBA
@@ -954,6 +1344,26 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 	if ((*problems)==NULL) { return; }
 
 	P_SANITY (problem);
+
+	service_force = FALSE; 
+	service_update = FALSE; 
+	service_downgrade = FALSE; 
+	service_uninstall = FALSE;
+	force = FALSE; 
+	update = FALSE; 
+	downgrade = FALSE;
+
+	if (install_categories && uninstall_categories) {
+		g_warning ("%s: didn't expect both install_categories and uninstall_categories to be set", 
+			   G_GNUC_PRETTY_FUNCTION);
+	}
+	if (uninstall_categories) {
+		g_message ("uninstall TRUE");
+		service_uninstall = TRUE;
+	} else {
+		g_message ("uninstall FALSE");
+		service_uninstall = FALSE;
+	}
 
 #ifndef EAZEL_INSTALL_NO_CORBA
 	CORBA_exception_init (&ev);
@@ -987,11 +1397,21 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 		update = TRUE;
 		downgrade = FALSE;
 		break;
+	case EI_PROBLEM_CONTINUE_WITH_FORCE:		
+		/* FIXME
+		   this is a complete hack to make the installer
+		   work without force installing */
+#ifdef EAZEL_INSTALL_NO_CORBA		
+		eazel_install_set_ignore_file_conflicts (service, TRUE);
+#else /* EAZEL_INSTALL_NO_CORBA */
+		Trilobite_Eazel_Install__set_ignore_file_conflicts (corba_service, TRUE, &ev);
+#endif /* EAZEL_INSTALL_NO_CORBA */
 	case EI_PROBLEM_FORCE_INSTALL_BOTH:
 		force = TRUE;
 		update = TRUE;
-		downgrade = TRUE;
+		downgrade = FALSE;
 		break;
+	case EI_PROBLEM_CASCADE_REMOVE:
 	case EI_PROBLEM_REMOVE:
 		force = FALSE;
 		update = TRUE;
@@ -999,8 +1419,8 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 		break;
 	case EI_PROBLEM_FORCE_REMOVE:
 		force = TRUE;
-		update = TRUE;
-		downgrade = FALSE;
+		update = FALSE;
+		downgrade = TRUE;
 		break;
 	case EI_PROBLEM_INCONSISTENCY:
 	case EI_PROBLEM_CANNOT_SOLVE:
@@ -1023,10 +1443,56 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 
 	/* do we add any of the usergiven cateogries ? */
 	switch (dominant_problem_type) {
+	case EI_PROBLEM_CASCADE_REMOVE:
+		if (service_uninstall) {
+			final_categories = g_list_concat (g_list_copy (categories), *uninstall_categories);
+		} else {
+			final_categories = g_list_copy (categories);
+		}
+		break;
+	case EI_PROBLEM_CONTINUE_WITH_FORCE:
+		g_message ("SMØLF 2!");
+		g_message ("categories = 0x%p", categories);
+		g_message ("uninstall categories = 0x%p", uninstall_categories);
+		g_message ("install categories = 0x%p", install_categories);
+
+		if (uninstall_categories)
+			g_message ("*uninstall categories = 0x%p", *uninstall_categories);
+		else
+			g_message ("hest");
+
+		if (install_categories)
+			g_message ("*install categories = 0x%p", *install_categories);
+		else
+			g_message ("odder");
+
+		if (service_uninstall) {
+			if (!categories) {
+				final_categories = *uninstall_categories;
+			} else {
+				final_categories = g_list_concat (g_list_copy (categories), 
+								  *uninstall_categories);
+			}
+		} else if (install_categories) {
+			if (!categories) {
+				final_categories = *install_categories;
+			} else {
+				final_categories = g_list_concat (g_list_copy (categories), 
+								  *install_categories);
+			}
+		} else {
+			final_categories = g_list_copy (categories);
+		}
+		break;
+		g_message ("SMØLF 1!");
 	case EI_PROBLEM_UPDATE:
 	case EI_PROBLEM_FORCE_INSTALL_BOTH:
 		/* Add the install_categories */
-		final_categories = g_list_concat (g_list_copy (categories), *install_categories);
+		if (install_categories) {
+			final_categories = g_list_concat (g_list_copy (categories), *install_categories);
+		}  else {
+			final_categories = g_list_copy (categories);
+		}
 		break;
 	case EI_PROBLEM_REMOVE:
 	case EI_PROBLEM_FORCE_REMOVE:
@@ -1044,6 +1510,24 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 
 	/* fire it off */
 	switch (dominant_problem_type) {
+	case EI_PROBLEM_CONTINUE_WITH_FORCE:
+		g_message ("SMØLF a!");
+		if (service_uninstall) {
+		g_message ("SMØLF b!");
+#ifdef EAZEL_INSTALL_NO_CORBA
+			eazel_install_uninstall_packages (service, final_categories, root);
+#else /* EAZEL_INSTALL_NO_CORBA */
+			eazel_install_callback_uninstall_packages (service, final_categories, root, &ev);
+#endif /* EAZEL_INSTALL_NO_CORBA */
+		} else {
+		g_message ("SMØLF c!");
+#ifdef EAZEL_INSTALL_NO_CORBA
+			eazel_install_install_packages (service, final_categories, root);
+#else /* EAZEL_INSTALL_NO_CORBA */
+			eazel_install_callback_install_packages (service, final_categories, root, &ev);
+#endif /* EAZEL_INSTALL_NO_CORBA */
+		}
+		break;
 	case EI_PROBLEM_UPDATE:
 	case EI_PROBLEM_FORCE_INSTALL_BOTH:
 #ifdef EAZEL_INSTALL_NO_CORBA
@@ -1052,6 +1536,7 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 		eazel_install_callback_install_packages (service, final_categories, root, &ev);
 #endif /* EAZEL_INSTALL_NO_CORBA */
 		break;
+	case EI_PROBLEM_CASCADE_REMOVE:
 	case EI_PROBLEM_REMOVE:
 	case EI_PROBLEM_FORCE_REMOVE:
 #ifdef EAZEL_INSTALL_NO_CORBA

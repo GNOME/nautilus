@@ -72,7 +72,7 @@ categorydata_new (void)
 	result = g_new0 (CategoryData, 1);
 #ifdef DEBUG_PACKAGE_ALLOCS
 	category_allocs ++;
-	trilobite_debug ("category_allocs inced to %d (0x%x)", category_allocs, result);
+	trilobite_debug ("category_allocs inced to %d (0x%p)", category_allocs, result);
 #endif /* DEBUG_PACKAGE_ALLOCS */
 	result->name = NULL;
 	result->description = NULL;
@@ -123,7 +123,7 @@ categorydata_destroy_foreach (CategoryData *cd, gpointer ununsed)
 {
 #ifdef DEBUG_PACKAGE_ALLOCS
 	category_allocs --;
-	trilobite_debug ("category_allocs = %d (0x%x) %s", category_allocs, cd, cd ? cd->name: "?");
+	trilobite_debug ("category_allocs = %d (0x%p) %s", category_allocs, cd, cd ? cd->name: "?");
 #endif /* DEBUG_PACKAGE_ALLOCS */
 
 	g_return_if_fail (cd != NULL);
@@ -166,7 +166,7 @@ packagedata_new ()
 
 #ifdef DEBUG_PACKAGE_ALLOCS
 	package_allocs ++;
-	trilobite_debug ("package_allocs inced to %d (0x%x)", package_allocs, pack);
+	trilobite_debug ("package_allocs inced to %d (0x%p)", package_allocs, pack);
 #endif /* DEBUG_PACKAGE_ALLOCS */
 
 	
@@ -482,15 +482,15 @@ packagedata_destroy (PackageData *pack, gboolean deep)
 	package_allocs --;
 	if (pack) {
 		if (pack->name) {
-			trilobite_debug ("package_allocs = %d (0x%x) %s", package_allocs, pack,pack->name);
+			trilobite_debug ("package_allocs = %d (0x%p) %s", package_allocs, pack,pack->name);
 		} else if (pack->provides) {
-			trilobite_debug ("package_allocs = %d (0x%x) providing %s", package_allocs, pack,
+			trilobite_debug ("package_allocs = %d (0x%p) providing %s", package_allocs, pack,
 					 (char*)pack->provides->data);
 		} else {
-			trilobite_debug ("package_allocs = %d (0x%x) ?", package_allocs, pack);
+			trilobite_debug ("package_allocs = %d (0x%p) ?", package_allocs, pack);
 		}
 	} else {
-		trilobite_debug ("package_allocs = %d (0x%x) ??", package_allocs, pack);
+		trilobite_debug ("package_allocs = %d (0x%p) ??", package_allocs, pack);
 	}
 #endif /* DEBUG_PACKAGE_ALLOCS */
 

@@ -276,6 +276,22 @@ impl_Eazel_Install__get_ssl_rename (impl_POA_Trilobite_Eazel_Install *servant,
 }
 
 static void
+impl_Eazel_Install__set_ignore_file_conflicts (impl_POA_Trilobite_Eazel_Install *servant,
+				    const CORBA_boolean value,
+				    CORBA_Environment *ev)
+{
+	eazel_install_set_ignore_file_conflicts (servant->object, value);
+}
+
+
+static CORBA_boolean
+impl_Eazel_Install__get_ignore_file_conflicts (impl_POA_Trilobite_Eazel_Install *servant,
+				    CORBA_Environment *ev)
+{
+	return eazel_install_get_ignore_file_conflicts (servant->object);
+}
+
+static void
 impl_Eazel_Install__set_server (impl_POA_Trilobite_Eazel_Install *servant,
 				const CORBA_char *value,
 				CORBA_Environment *ev)
@@ -472,6 +488,9 @@ eazel_install_get_epv ()
 
 	epv->_set_tmp_dir = (gpointer)&impl_Eazel_Install__set_tmp_dir;
 	epv->_get_tmp_dir = (gpointer)&impl_Eazel_Install__get_tmp_dir;
+
+	epv->_set_ignore_file_conflicts = (gpointer)&impl_Eazel_Install__set_ignore_file_conflicts;
+	epv->_get_ignore_file_conflicts = (gpointer)&impl_Eazel_Install__get_ignore_file_conflicts;
 
 	epv->_set_ssl_rename = (gpointer)&impl_Eazel_Install__set_ssl_rename;
 	epv->_get_ssl_rename = (gpointer)&impl_Eazel_Install__get_ssl_rename;
