@@ -2567,7 +2567,7 @@ confirm_empty_trash (GtkWidget *parent_view)
 						    "it will be permanently "
 						    "lost. Please note that "
 						    "you can also delete them "
-						    "sepately."));
+						    "separately."));
 
 	gtk_window_set_screen (GTK_WINDOW (dialog), screen);
 	atk_object_set_role (gtk_widget_get_accessible (dialog), ATK_ROLE_ALERT);
