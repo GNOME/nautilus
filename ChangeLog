@@ -1,3 +1,16 @@
+2002-01-25  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-bookmark.c
+	(nautilus_bookmark_set_name): return a 'changed'
+	boolean.
+
+	* src/nautilus-window-manage-views.c
+	(update_title): only re-send history if it changed.
+
+	* src/nautilus-window.c (add_to_history_list): prune
+	the end of the list more succinctly, don't fire
+	send_history_list_changed if we didn't change the list.
+
 2002-01-24  Darin Adler  <darin@bentspoon.com>
 
 	GNOME2_CONVERSION_COMPLETE eradication campaign

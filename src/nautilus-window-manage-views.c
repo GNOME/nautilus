@@ -263,10 +263,12 @@ update_title (NautilusWindow *window)
 	if (window->sidebar != NULL) {
         	nautilus_sidebar_set_title (window->sidebar, title);
 	}
-        nautilus_bookmark_set_name (window->current_location_bookmark, title);
         
-        /* Name of item in history list may have changed, tell listeners. */
-        nautilus_send_history_list_changed ();
+        if (title [0] != '\0' &&
+            nautilus_bookmark_set_name (window->current_location_bookmark, title)) {
+                /* Name of item in history list changed, tell listeners. */
+                nautilus_send_history_list_changed ();
+        }        
 
         /* warn all views and sidebar panels of the potential title change */
         if (window->content_view != NULL) {

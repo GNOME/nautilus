@@ -79,7 +79,7 @@ NautilusBookmark *    nautilus_bookmark_copy                (NautilusBookmark   
 char *                nautilus_bookmark_get_name            (NautilusBookmark     *bookmark);
 char *                nautilus_bookmark_get_uri             (NautilusBookmark     *bookmark);
 NautilusScalableIcon *nautilus_bookmark_get_icon	    (NautilusBookmark     *bookmark);
-void		      nautilus_bookmark_set_name 	    (NautilusBookmark 	  *bookmark, 
+gboolean              nautilus_bookmark_set_name 	    (NautilusBookmark 	  *bookmark, 
 							     const char 	  *new_name);
 gboolean	      nautilus_bookmark_uri_known_not_to_exist (NautilusBookmark  *bookmark);
 int                   nautilus_bookmark_compare_with        (gconstpointer         a,

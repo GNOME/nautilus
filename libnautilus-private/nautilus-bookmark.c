@@ -152,7 +152,7 @@ nautilus_bookmark_compare_with (gconstpointer a, gconstpointer b)
 	}
 
 	if (!eel_uris_match (bookmark_a->details->uri,
-		    		  bookmark_b->details->uri)) {
+			     bookmark_b->details->uri)) {
 		return 1;
 	}
 	
@@ -182,7 +182,7 @@ nautilus_bookmark_compare_uris (gconstpointer a, gconstpointer b)
 	bookmark_b = NAUTILUS_BOOKMARK (b);
 
 	return !eel_uris_match (bookmark_a->details->uri,
-		    		     bookmark_b->details->uri);
+				bookmark_b->details->uri);
 }
 
 NautilusBookmark *
@@ -284,21 +284,24 @@ nautilus_bookmark_get_uri (NautilusBookmark *bookmark)
  * Change the user-displayed name of a bookmark.
  * @new_name: The new user-displayed name for this bookmark, mustn't be NULL.
  * 
+ * Returns: TRUE if the name changed else FALSE.
  **/
-void
+gboolean
 nautilus_bookmark_set_name (NautilusBookmark *bookmark, const char *new_name)
 {
-	g_return_if_fail(NAUTILUS_IS_BOOKMARK (bookmark));
-	g_return_if_fail (new_name != NULL);
+	g_return_val_if_fail (new_name != NULL, FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK (bookmark), FALSE);
 
 	if (strcmp (new_name, bookmark->details->name) == 0) {
-		return;
+		return FALSE;
 	}
 
 	g_free (bookmark->details->name);
 	bookmark->details->name = g_strdup (new_name);
 
 	g_signal_emit (bookmark, signals[APPEARANCE_CHANGED], 0);
+
+	return TRUE;
 }
 
 static gboolean

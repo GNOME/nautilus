@@ -1734,7 +1734,7 @@ void
 nautilus_send_history_list_changed (void)
 {
 	g_signal_emit_by_name (nautilus_signaller_get_current (),
-			 	 "history_list_changed");
+			       "history_list_changed");
 }
 
 static void
@@ -1776,8 +1776,9 @@ add_to_history_list (NautilusBookmark *bookmark)
 	 * this is not a NautilusWindow function. Perhaps it belongs
 	 * in its own file.
 	 */
+	int i;
+	GList *l, *next;
 	static gboolean free_history_list_is_set_up;
-	int extra_count, index;
 
 	g_return_if_fail (NAUTILUS_IS_BOOKMARK (bookmark));
 
@@ -1786,21 +1787,27 @@ add_to_history_list (NautilusBookmark *bookmark)
 		free_history_list_is_set_up = TRUE;
 	}
 
-	g_object_ref (bookmark);
-	remove_from_history_list (bookmark);
-	history_list = g_list_prepend (history_list, bookmark);
+/*	g_warning ("Add to history list '%s' '%s'",
+		   nautilus_bookmark_get_name (bookmark),
+		   nautilus_bookmark_get_uri (bookmark)); */
 
-	extra_count = g_list_length (history_list) - MAX_HISTORY_ITEMS;
-	if (extra_count > 0) {
-		history_list = g_list_reverse (history_list);
-		for (index = 0; index < extra_count; ++index) {
-			g_object_unref (history_list->data);
-			history_list = g_list_remove (history_list, history_list->data);
+	if (!history_list ||
+	    nautilus_bookmark_compare_uris (history_list->data, bookmark)) {
+		g_object_ref (bookmark);
+		remove_from_history_list (bookmark);
+		history_list = g_list_prepend (history_list, bookmark);
+
+		for (i = 0, l = history_list; l; l = next) {
+			next = l->next;
+			
+			if (i++ >= MAX_HISTORY_ITEMS) {
+				g_object_unref (l->data);
+				history_list = g_list_delete_link (history_list, l);
+			}
 		}
-		history_list = g_list_reverse (history_list);
-	}
 
-	nautilus_send_history_list_changed ();
+		nautilus_send_history_list_changed ();
+	}
 }
 
 void
