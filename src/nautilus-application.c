@@ -69,7 +69,6 @@ static CORBA_Object  create_object                               (PortableServer
 static void          nautilus_application_initialize             (NautilusApplication      *application);
 static void          nautilus_application_initialize_class       (NautilusApplicationClass *klass);
 static void          nautilus_application_destroy                (GtkObject                *object);
-static void          nautilus_application_check_user_directories (NautilusApplication      *application);
 static gboolean	     check_for_and_run_as_super_user 		 (void);
 static gboolean	     need_to_show_first_time_druid		 (void);
 static void	     desktop_changed_callback 		         (gpointer 		   user_data);
@@ -209,13 +208,18 @@ nautilus_application_destroy (GtkObject *object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
-static void
-nautilus_application_check_user_directories (NautilusApplication *application)
+static gboolean
+check_required_directories (NautilusApplication *application)
 {
 	char			*user_directory;
 	char			*user_main_directory;
 	char			*desktop_directory;
 	NautilusStringList	*dir_list;
+	char 			*dir_list_concatenated;
+	char 			*error_string;
+	char 			*dialog_title;
+	GnomeDialog 		*dialog;
+	int			 failed_count;
 	
 	g_assert (NAUTILUS_IS_APPLICATION (application));
 
@@ -225,44 +229,51 @@ nautilus_application_check_user_directories (NautilusApplication *application)
 
 	dir_list = nautilus_string_list_new (TRUE);
 	
-	/* FIXME bugzilla.eazel.com 1115: Need better name for "User Directory"
-	 * and "User Data Directory". Perhaps it's OK to use the word "directory"
-	 * instead of "folder" in this technical error case.
-	 */
-
 	if (!g_file_test (user_directory, G_FILE_TEST_ISDIR)) {
-		nautilus_string_list_insert (dir_list, _("User Directory"));
+		nautilus_string_list_insert (dir_list, user_directory);
 	}
 	g_free (user_directory);
 	    
 	if (!g_file_test (user_main_directory, G_FILE_TEST_ISDIR)) {
-		nautilus_string_list_insert (dir_list, _("User Main Directory"));
+		nautilus_string_list_insert (dir_list, user_main_directory);
 	}
 	g_free (user_main_directory);
 	    
 	if (!g_file_test (desktop_directory, G_FILE_TEST_ISDIR)) {
-		nautilus_string_list_insert (dir_list, _("Desktop Directory"));
+		nautilus_string_list_insert (dir_list, desktop_directory);
 	}
 	g_free (desktop_directory);
 
-	if (nautilus_string_list_get_length (dir_list) > 0) {
-		char *dir_list_concatenated;
-		char *error_string;
+	failed_count = nautilus_string_list_get_length (dir_list);
 
+	if (failed_count != 0) {
 		dir_list_concatenated = nautilus_string_list_as_concatenated_string (dir_list, "\n");
-		
-		error_string = g_strdup_printf ("%s\n\n%s\n\n%s",
-						"The following directories are missing:",
-						dir_list_concatenated,
-						"Please restart Nautilus to fix this problem.");
 
-		nautilus_error_dialog (error_string, _("Missing Directories"), NULL);
+		if (failed_count == 1) {
+			dialog_title = g_strdup (_("Couldn't Create Required Folder"));
+			error_string = g_strdup_printf ("Nautilus could not create the required folder \"%s\". "
+							"Before running Nautilus, please create this folder, or "
+							"set permissions such that Nautilus can create it.", dir_list_concatenated);
+		} else {
+			dialog_title = g_strdup (_("Couldn't Create Required Folders"));
+			error_string = g_strdup_printf ("Nautilus could not create the following required folders:\n\n"
+							"%s\n\n"
+							"Before running Nautilus, please create these folders, or "
+							"set permissions such that Nautilus can create them.", dir_list_concatenated);
+		}
+		
+		dialog = nautilus_error_dialog (error_string, dialog_title, NULL);
+		/* We need the main event loop so the user has a chance to see the dialog. */
+		nautilus_main_event_loop_register (GTK_OBJECT (dialog));
 
 		g_free (dir_list_concatenated);
 		g_free (error_string);
+		g_free (dialog_title);
 	}
 
 	nautilus_string_list_free (dir_list);
+
+	return failed_count == 0;
 }
 
 static int
@@ -323,7 +334,9 @@ nautilus_application_startup (NautilusApplication *application,
 	/* Check the user's ~/.nautilus directories and post warnings
 	 * if there are problems.
 	 */
-	nautilus_application_check_user_directories (application);
+	if (!check_required_directories (application)) {
+		return;
+	}
 
 	/* initialize the sound machinery */
 	nautilus_sound_initialize ();

@@ -1,3 +1,34 @@
+2000-12-18  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 4037 (Error dialog every time on launch when
+	permissions are set strangely)
+
+	Fixed bug 1115 (Need better name for "User Directory" 
+	and "User Data Directory")
+
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_get_user_main_directory): Removed g_warning when
+	Nautilus fails to create ~/Nautilus directory, improved
+	FIXME comments.
+	(nautilus_get_user_directory), (nautilus_get_desktop_directory):
+	Added FIXME comments.
+	
+	* src/nautilus-application.c:
+	(check_required_directories): Renamed from nautilus_application_
+	check_user_directories; now returns FALSE if any required
+	directories were not created. Reworded error dialog to mention
+	directories by path rather than using confusing invented symbolic
+	names, and to tell the user to address the problem by creating
+	specified directories or setting permissions such that Nautilus
+	can create specified directories. (It used to say "restart 
+	Nautilus", which was pretty much guaranteed to have no effect.)
+	(nautilus_application_startup): Now returns if 
+	check_required_directories fails. The user has to address the
+	problem described in the error message before Nautilus will
+	launch.
+
 2000-12-18  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed an unused variable error.

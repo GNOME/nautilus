@@ -443,6 +443,13 @@ nautilus_get_user_directory (void)
 
 	if (!g_file_exists (user_directory)) {
 		mkdir (user_directory, DEFAULT_NAUTILUS_DIRECTORY_MODE);
+		/* FIXME bugzilla.eazel.com 1286: 
+		 * How should we handle the case where this mkdir fails? 
+		 * Note that nautilus_application_startup will refuse to launch if this 
+		 * directory doesn't get created, so that case is OK. But the directory 
+		 * could be deleted after Nautilus was launched, and perhaps
+		 * there is some bad side-effect of not handling that case.
+		 */
 	}
 
 	return user_directory;
@@ -466,6 +473,13 @@ nautilus_get_desktop_directory (void)
 
 	if (!g_file_exists (desktop_directory)) {
 		mkdir (desktop_directory, DEFAULT_DESKTOP_DIRECTORY_MODE);
+		/* FIXME bugzilla.eazel.com 1286: 
+		 * How should we handle the case where this mkdir fails? 
+		 * Note that nautilus_application_startup will refuse to launch if this 
+		 * directory doesn't get created, so that case is OK. But the directory 
+		 * could be deleted after Nautilus was launched, and perhaps
+		 * there is some bad side-effect of not handling that case.
+		 */
 	}
 
 	return desktop_directory;
@@ -535,15 +549,20 @@ nautilus_get_user_main_directory (void)
 					 GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
 					 NULL, NULL);
 		
+		/* FIXME bugzilla.eazel.com 1286: 
+		 * How should we handle error codes returned from gnome_vfs_xfer_uri? 
+		 * Note that nautilus_application_startup will refuse to launch if this 
+		 * directory doesn't get created, so that case is OK. But the directory 
+		 * could be deleted after Nautilus was launched, and perhaps
+		 * there is some bad side-effect of not handling that case.
+		 */
+
 		gnome_vfs_uri_unref (source_uri);
 		gnome_vfs_uri_unref (destination_uri);
-		
-		/* FIXME bugzilla.eazel.com 1286: 
-		 * Is a g_warning good enough here? This seems like a big problem. 
+
+		/* If this fails to create the directory, nautilus_application_startup will
+		 * notice and refuse to launch.
 		 */
-		if (result != GNOME_VFS_OK) {
-			g_warning ("could not install the novice home directory.  Make sure you typed 'make install'");
-		}
 					
 		/* assign a custom image for the directory icon */
 		file_uri = gnome_vfs_get_uri_from_local_path (user_main_directory);
