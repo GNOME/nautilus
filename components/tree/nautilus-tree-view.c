@@ -84,6 +84,8 @@ static void              nautilus_tree_view_remove_model_node (NautilusTreeView 
 
 static void reload_model_node                   (NautilusTreeView      *view,
 						 NautilusTreeNode      *node);
+static void reload_model_node_recursive         (NautilusTreeView      *view,
+						 NautilusTreeNode      *node);
 static void reload_whole_tree                   (NautilusTreeView *view);
 static void tree_load_location_callback         (NautilusView          *nautilus_view,
 						 const char            *location,
@@ -265,6 +267,11 @@ nautilus_tree_view_remove_model_node (NautilusTreeView *view, NautilusTreeNode *
 
 	file = nautilus_tree_node_get_file (node);
 
+#ifdef DEBUG_TREE
+	printf ("XXX - Removing URI from tree: %s\n", nautilus_file_get_uri (file));
+#endif
+
+
  	view_node = nautilus_tree_view_model_node_to_view_node (view, node);
  	if (view_node != NULL) {
 		forget_view_node_and_children (view, view_node);
@@ -318,6 +325,10 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 		nautilus_tree_view_remove_model_node (view, node);
 		return;
 	}
+
+#ifdef DEBUG_TREE
+	printf ("XXX - Updating URI in tree: %s\n", nautilus_file_get_uri (file));
+#endif
 
 	view_node = nautilus_tree_view_model_node_to_view_node (view, node);
 
@@ -878,7 +889,10 @@ expand_uri_sequence_and_select_end (NautilusTreeView *view)
 	GList *old_sequence;
 	NautilusCTreeNode *view_node;
 	gboolean at_least_one_found;
+	gboolean expanded_most_recent_node;
 	NautilusFile *file;
+
+	view_node = NULL;
 
 	at_least_one_found = FALSE;
 	uri = NULL;
@@ -887,6 +901,8 @@ expand_uri_sequence_and_select_end (NautilusTreeView *view)
 		call_when_root_seen (view, expand_uri_sequence_and_select_end);
 		return;
 	}
+
+	expanded_most_recent_node = FALSE;
 
 	for (p = view->details->in_progress_select_uris; p != NULL; p = p->next) {
 		uri = (char *) p->data;
@@ -899,11 +915,20 @@ expand_uri_sequence_and_select_end (NautilusTreeView *view)
 			break;
 		}
 
+		expanded_most_recent_node = FALSE;
 		at_least_one_found = TRUE;
 
 		if (p->next != NULL) {
-			nautilus_ctree_expand (NAUTILUS_CTREE (view->details->tree),
-					  view_node);
+			/* We don't want to expand the node if it's
+			 * already expanded, as that will trigger a deep force reload, which we
+			 * don't want.
+			 */
+
+			if (!ctree_is_node_expanded (NAUTILUS_CTREE (view->details->tree), view_node)) {
+				nautilus_ctree_expand (NAUTILUS_CTREE (view->details->tree),
+						       view_node);
+				expanded_most_recent_node = TRUE;
+			}
 		} else {
 			g_free (view->details->selected_uri);
 			view->details->selected_uri = g_strdup (uri);
@@ -928,6 +953,13 @@ expand_uri_sequence_and_select_end (NautilusTreeView *view)
 		
 		view->details->in_progress_select_uris = p;
 
+		if (!expanded_most_recent_node) {
+			/* Force a shallow reload. */
+			reload_model_node (view,
+					   nautilus_tree_view_node_to_model_node (view,
+										  view_node));
+		}
+	
 		call_when_uri_loaded_or_parent_done_loading (view, uri, 
 							     nautilus_tree_model_get_node (view->details->model,
 											   (char *) p->prev->data),
@@ -992,8 +1024,6 @@ tree_load_location_callback (NautilusView *nautilus_view,
 }
 
 
-
-
 static void
 reload_model_node (NautilusTreeView *view,
 		   NautilusTreeNode *node)
@@ -1008,7 +1038,29 @@ reload_model_node (NautilusTreeView *view,
 		
 		for (p = nautilus_tree_node_get_children (node); p != NULL; p = p->next) {
 			nautilus_tree_view_update_model_node (view, (NautilusTreeNode *) p->data);
-			reload_model_node (view, (NautilusTreeNode *) p->data);
+		}
+	}
+	
+	g_free (uri);
+}
+
+
+
+static void
+reload_model_node_recursive (NautilusTreeView *view,
+			     NautilusTreeNode *node)
+{
+	GList *p;
+	char *uri;
+
+	uri = nautilus_file_get_uri (nautilus_tree_node_get_file (node));
+
+	if (nautilus_tree_expansion_state_is_node_expanded (view->details->expansion_state, uri)) {
+		nautilus_tree_model_monitor_node (view->details->model, node, view);
+		
+		for (p = nautilus_tree_node_get_children (node); p != NULL; p = p->next) {
+			nautilus_tree_view_update_model_node (view, (NautilusTreeNode *) p->data);
+			reload_model_node_recursive (view, (NautilusTreeNode *) p->data);
 		}
 	}
 	
@@ -1019,7 +1071,7 @@ reload_model_node (NautilusTreeView *view,
 static void
 reload_whole_tree (NautilusTreeView *view)
 {
-	reload_model_node (view, nautilus_tree_model_get_node (view->details->model, "file:///"));
+	reload_model_node_recursive (view, nautilus_tree_model_get_node (view->details->model, "file:///"));
 }
 
 
@@ -1035,9 +1087,9 @@ expand_node_for_file (NautilusTreeView *view,
 						   uri);
 	g_free (uri);
 	
-	reload_model_node (view, 
-			   nautilus_tree_model_get_node_from_file (view->details->model, 
-								   file));
+	reload_model_node_recursive (view, 
+				     nautilus_tree_model_get_node_from_file (view->details->model, 
+									     file));
 }
 
 static void
