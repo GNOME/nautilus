@@ -702,7 +702,7 @@ nautilus_window_switch_views (NautilusWindow *window, NautilusViewIdentifier *id
         
         nautilus_window_allow_stop (window, TRUE);
         
-        view = nautilus_window_load_content_view (window, id, NULL);
+        view = nautilus_window_load_content_view (window, id);
         nautilus_window_set_state_info
 		(window,
 		 (NautilusWindowStateItem) NEW_CONTENT_VIEW_ACTIVATED, view,
@@ -1057,7 +1057,6 @@ nautilus_window_back_or_forward (NautilusWindow *window, gboolean back, guint di
 	nautilus_window_begin_location_change
 		(window,
 		 uri,
-		 NULL,
 		 back ? NAUTILUS_LOCATION_CHANGE_BACK : NAUTILUS_LOCATION_CHANGE_FORWARD,
 		 distance);
 
@@ -1326,26 +1325,10 @@ nautilus_window_open_location_callback (NautilusViewFrame *view,
 static void
 nautilus_window_open_location_in_new_window_callback (NautilusViewFrame *view,
 						      const char *location,
+						      GList *selection,
 						      NautilusWindow *window)
 {
-	nautilus_window_open_location_in_new_window (window, location, view);
-}
-
-static void
-nautilus_window_open_in_new_window_and_select_callback (NautilusViewFrame *view,
-						        const char *location,
-						        GList *selection,
-						        NautilusWindow *window)
-{
-	nautilus_window_open_in_new_window_and_select (window, location, selection, view);
-}
-
-static void
-nautilus_window_report_location_change_callback (NautilusViewFrame *view,
-						 const char *location,
-						 NautilusWindow *window)
-{
-	nautilus_window_report_location_change (window, location, view);
+	nautilus_window_open_location_in_new_window (window, location, selection, view);
 }
 
 static void
@@ -1484,8 +1467,6 @@ nautilus_window_connect_view (NautilusWindow *window, NautilusViewFrame *view)
 
 	CONNECT (open_location);
 	CONNECT (open_location_in_new_window);
-	CONNECT (open_in_new_window_and_select);
-	CONNECT (report_location_change);
 	CONNECT (report_selection_change);
 	CONNECT (report_status);
 	CONNECT (report_load_underway);
@@ -1593,7 +1574,7 @@ void
 nautilus_window_reload (NautilusWindow *window)
 {
 	nautilus_window_begin_location_change
-		(window, window->location, NULL,
+		(window, window->location,
 		 NAUTILUS_LOCATION_CHANGE_RELOAD, 0);
 }
 

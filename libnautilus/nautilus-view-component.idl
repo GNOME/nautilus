@@ -13,6 +13,11 @@
 
 #include <Bonobo.idl>
 
+/* FIXME bugzilla.eazel.com 2974: Use of doubles causes alignment
+ * problems in Solaris due to an ORBit bug; we use floats throughout
+ * this file as a workaround.
+ */
+
 module Nautilus {
 
 	/* URIs are just plain strings, but we use a typedef to make
@@ -53,18 +58,13 @@ module Nautilus {
 	 */
 	interface ViewFrame : ::Bonobo::Unknown {
 		/* Called by the view component to change the location
-		 * shown in the window or to open a new window. The
-		 * "report" version is used when the view has already
-		 * changed its location and would confused by an
-		 * additional load call, but it's deprecated and may
-		 * be removed from a future version of this interface.
-		 * The "and_select" version is used to specify the
-		 * initial selection in the new location.
+		 * shown in the window or to open a new window. In the
+		 * case of a new window, you can specify the initial
+		 * selection in the new location.
 		 */
 		oneway void open_location (in URI location);
-		oneway void open_location_in_new_window (in URI location);
-		oneway void open_in_new_window_and_select (in URI location, in URIList selection);
-		oneway void report_location_change (in URI location);
+		oneway void open_location_in_new_window (in URI location,
+							 in URIList selection);
 
 		/* Called by a view component to announce a change in the
 		 * selection. This selection change will be reported back
@@ -91,7 +91,6 @@ module Nautilus {
 		 */
 		oneway void report_load_underway ();
 
-		/* FIXME bugzilla.eazel.com 2974: use of doubles causes alignment problems in Solaris; using floats is a workaround */
 		oneway void report_load_progress (in float fraction_done);
 		oneway void report_load_complete ();
 		oneway void report_load_failed ();
@@ -100,7 +99,6 @@ module Nautilus {
 		oneway void set_title (in string new_title);
 	};		
 
-	/* FIXME bugzilla.eazel.com 2974: use of doubles causes alignment problems in Solaris; using floats is a workaround */
 	typedef float ZoomLevel;
 	typedef sequence<ZoomLevel> ZoomLevelList;
 	
@@ -112,11 +110,9 @@ module Nautilus {
 	 */
 	interface Zoomable : ::Bonobo::Unknown {
 		/* Set this attribute to make the thing zoom. */
-		/* FIXME bugzilla.eazel.com 2974: use of doubles causes alignment problems in Solaris; using floats is a workaround */
 		attribute float zoom_level;
 
 		/* Information about the type of zooming that's supported. */
-		/* FIXME bugzilla.eazel.com 2974: use of doubles causes alignment problems in Solaris; using floats is a workaround */
 		readonly attribute float min_zoom_level;
 		readonly attribute float max_zoom_level;
 		readonly attribute boolean is_continuous;
@@ -138,7 +134,6 @@ module Nautilus {
 	 * its own or due to calls from the zoomable interface).
 	 */
 	interface ZoomableFrame : ::Bonobo::Unknown {
-		/* FIXME bugzilla.eazel.com 2974: use of doubles causes alignment problems in Solaris; using floats is a workaround */
 		oneway void report_zoom_level_changed (in float zoom_level);
 	};
 

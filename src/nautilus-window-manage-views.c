@@ -530,17 +530,11 @@ nautilus_window_update_internals (NautilusWindow *window)
 }
 
 static void
-nautilus_window_update_view (NautilusWindow *window,
-                             NautilusViewFrame *view,
-                             const char *new_location,
-                             GList *new_selection,
-                             NautilusViewFrame *requesting_view,
-                             NautilusViewFrame *content_view)
+update_view (NautilusViewFrame *view,
+             const char *new_location,
+             GList *new_selection)
 {
-        if (view != requesting_view) {
-                nautilus_view_frame_load_location (view, new_location);
-        }
-        
+        nautilus_view_frame_load_location (view, new_location);
         nautilus_view_frame_selection_changed (view, new_selection);
 }
 
@@ -660,8 +654,7 @@ nautilus_window_free_load_info (NautilusWindow *window)
 /* Meta view handling */
 static NautilusViewFrame *
 nautilus_window_load_sidebar_panel (NautilusWindow *window,
-                                    const char *iid,
-                                    NautilusViewFrame *requesting_view)
+                                    const char *iid)
 {
         NautilusViewFrame *sidebar_panel;
         GList *p;
@@ -731,8 +724,7 @@ static void
 open_location (NautilusWindow *window,
                const char *location,
                gboolean force_new_window,
-               GList *new_selection,
-               NautilusViewFrame *view_if_already_loading)
+               GList *new_selection)
 {
         NautilusWindow *traverse_window;
         gboolean create_new_window;
@@ -758,8 +750,6 @@ open_location (NautilusWindow *window,
         }
 
         if (create_new_window) {
-                g_assert (view_if_already_loading == NULL);
-
                 /* Determine if a window with this uri is already open.  If so, activate it */
 		/* FIXME bugzilla.eazel.com 2464: 
 		 * This may be the desired bahavior, but the prefs UI still says open
@@ -775,9 +765,8 @@ open_location (NautilusWindow *window,
 		}
 
 		/* No open window found.  Create a new one. */
-                open_location (
-                	nautilus_application_create_window (window->application), 
-                	location, FALSE, new_selection, NULL);
+                open_location (nautilus_application_create_window (window->application), 
+                               location, FALSE, new_selection);
                 return;
         }
 
@@ -786,7 +775,6 @@ open_location (NautilusWindow *window,
 
         nautilus_window_begin_location_change
                (window, location,
-                view_if_already_loading,
                 NAUTILUS_LOCATION_CHANGE_STANDARD, 0);
 }
 
@@ -795,41 +783,21 @@ nautilus_window_open_location (NautilusWindow *window,
                                const char *location,
                                NautilusViewFrame *view)
 {
-        /* Don't pass along the view because everyone should be told to load. */
-        open_location (window, location, FALSE, NULL, NULL);
+        open_location (window, location, FALSE, NULL);
 }
 
 void
 nautilus_window_open_location_in_new_window (NautilusWindow *window,
                                              const char *location,
+                                             GList *selection,
                                              NautilusViewFrame *view)
 {
-        /* Don't pass along the view because everyone should be told to load. */
-        open_location (window, location, TRUE, NULL, NULL);
-}
-
-void
-nautilus_window_open_in_new_window_and_select (NautilusWindow *window,
-                                               const char *location,
-                                               GList *selection,
-                                               NautilusViewFrame *view)
-{
-        /* Don't pass along the view because everyone should be told to load. */
-        open_location (window, location, TRUE, selection, NULL);
-}
-
-void
-nautilus_window_report_location_change (NautilusWindow *window,
-                                        const char *location,
-                                        NautilusViewFrame *view)
-{
-        open_location (window, location, FALSE, NULL, view);
+        open_location (window, location, TRUE, selection);
 }
 
 NautilusViewFrame *
 nautilus_window_load_content_view (NautilusWindow *window,
-                                   NautilusViewIdentifier *id,
-                                   NautilusViewFrame **requesting_view)
+                                   NautilusViewIdentifier *id)
 {
         const char *iid;
         NautilusViewFrame *content_view;
@@ -868,14 +836,6 @@ nautilus_window_load_content_view (NautilusWindow *window,
         if (!NAUTILUS_IS_VIEW_FRAME (content_view)
             || strcmp (nautilus_view_frame_get_iid (content_view), iid) != 0) {
 
-                if (requesting_view != NULL && *requesting_view == window->content_view) {
-                        /* If we are going to be zapping the old view,
-                         * we definitely don't want any of the new views
-                         * thinking they made the request
-                        */
-                        *requesting_view = NULL;
-                }
-                
                 new_view = nautilus_view_frame_new (window->ui_handler,
                                                     window->application->undo_manager);
                 nautilus_window_connect_view (window, new_view);
@@ -1032,17 +992,13 @@ nautilus_window_update_state (gpointer data)
                         /* Tell previously-notified views to go back to the old page */
                         for (p = window->sidebar_panels; p != NULL; p = p->next) {
                                 if (g_list_find (window->new_sidebar_panels, p->data) != NULL) {
-                                        nautilus_window_update_view (window, p->data,
-                                                                     window->location, window->selection,
-                                                                     NULL, window->content_view);
+                                        update_view (p->data, window->location, window->selection);
                                 }
                         }
                         
-                        if (window->new_content_view
+                        if (window->new_content_view != NULL
                             && window->new_content_view == window->content_view) {
-                                nautilus_window_update_view (window, window->content_view,
-                                                             window->location, window->selection,
-                                                             NULL, window->content_view);
+                                update_view (window->content_view, window->location, window->selection);
                         }
                 }
                 
@@ -1065,8 +1021,7 @@ nautilus_window_update_state (gpointer data)
                     && !window->view_activation_complete) {
 
                         window->new_content_view = nautilus_window_load_content_view
-                                (window, window->pending_ni->initial_content_id,
-                                 &window->new_requesting_view);
+                                (window, window->pending_ni->initial_content_id);
 
 			sidebar_panel_identifiers = 
 				nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers ();
@@ -1078,7 +1033,7 @@ nautilus_window_update_state (gpointer data)
                                 identifier = (NautilusViewIdentifier *) p->data;
                                 
                                 sidebar_panel = nautilus_window_load_sidebar_panel
-                                        (window, identifier->iid, window->new_requesting_view);
+                                        (window, identifier->iid);
                                 if (sidebar_panel != NULL) {
                                         nautilus_view_frame_set_label (sidebar_panel, identifier->name);
                                         window->new_sidebar_panels = g_list_prepend (window->new_sidebar_panels, sidebar_panel);
@@ -1109,20 +1064,15 @@ nautilus_window_update_state (gpointer data)
                         
                         x_message (("!!! Sending update_view"));
                         
-                        if (window->new_content_view) {
-                                nautilus_window_update_view (window, window->new_content_view,
-                                                             location, selection,
-                                                             window->new_requesting_view, window->new_content_view);
+                        if (window->new_content_view != NULL) {
+                                update_view (window->new_content_view, location, selection);
                         } else {
                                 /* FIXME bugzilla.eazel.com 2457: Silent error here! */
                                 window->cv_progress_error = TRUE;
                         }
                         
                         for (p = window->new_sidebar_panels; p != NULL; p = p->next) {
-                                nautilus_window_update_view (window, p->data,
-                                                             location, selection,
-                                                             window->new_requesting_view,
-                                                             window->new_content_view);
+                                update_view (p->data, location, selection);
                         }
 
                         nautilus_g_list_free_deep (window->pending_selection);
@@ -1464,7 +1414,6 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
  * Change a window's location.
  * @window: The NautilusWindow whose location should be changed.
  * @loc: A Nautilus_NavigationRequestInfo specifying info about this transition.
- * @requesting_view: The view from which this location change originated, can be NULL.
  * @type: Which type of location change is this? Standard, back, forward, or reload?
  * @distance: If type is back or forward, the index into the back or forward chain. If
  * type is standard or reload, this is ignored, and must be 0.
@@ -1472,7 +1421,6 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
 void
 nautilus_window_begin_location_change (NautilusWindow *window,
                                        const char *location,
-                                       NautilusViewFrame *requesting_view,
                                        NautilusLocationChangeType type,
                                        guint distance)
 {
@@ -1496,7 +1444,6 @@ nautilus_window_begin_location_change (NautilusWindow *window,
         
         window->location_change_type = type;
         window->location_change_distance = distance;
-        window->new_requesting_view = requesting_view;
         
         nautilus_window_allow_stop (window, TRUE);
         

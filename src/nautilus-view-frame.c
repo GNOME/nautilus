@@ -48,8 +48,6 @@
 enum {
 	OPEN_LOCATION,
 	OPEN_LOCATION_IN_NEW_WINDOW,
-	OPEN_IN_NEW_WINDOW_AND_SELECT,
-	REPORT_LOCATION_CHANGE,
 	REPORT_SELECTION_CHANGE,
 	REPORT_STATUS,
 	REPORT_LOAD_UNDERWAY,
@@ -110,24 +108,8 @@ nautilus_view_frame_initialize_class (NautilusViewFrameClass *klass)
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
 						   open_location_in_new_window),
-				gtk_marshal_NONE__STRING,
-				GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
-	signals[OPEN_IN_NEW_WINDOW_AND_SELECT] =
-		gtk_signal_new ("open_in_new_window_and_select",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
-						   open_in_new_window_and_select),
 				nautilus_gtk_marshal_NONE__STRING_POINTER,
 				GTK_TYPE_NONE, 2, GTK_TYPE_STRING, GTK_TYPE_POINTER);
-	signals[REPORT_LOCATION_CHANGE] =
-		gtk_signal_new ("report_location_change",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
-						   report_location_change),
-				gtk_marshal_NONE__STRING,
-				GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
 	signals[REPORT_SELECTION_CHANGE] =
 		gtk_signal_new ("report_selection_change",
 				GTK_RUN_LAST,
@@ -855,37 +837,14 @@ nautilus_view_frame_open_location (NautilusViewFrame *view,
 
 void
 nautilus_view_frame_open_location_in_new_window (NautilusViewFrame *view,
-                                                 const char *location)
+                                                 const char *location,
+						 GList *selection)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 
 	view_frame_wait_is_over (view);
-	gtk_signal_emit (GTK_OBJECT (view), signals[OPEN_LOCATION_IN_NEW_WINDOW], location);
-}
-
-void
-nautilus_view_frame_open_in_new_window_and_select (NautilusViewFrame *view,
-                                                   const char *location,
-                                                   GList *selection)
-{
-	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
-
-	view_frame_wait_is_over (view);
-	gtk_signal_emit (GTK_OBJECT (view),
-			 signals[OPEN_IN_NEW_WINDOW_AND_SELECT],
+	gtk_signal_emit (GTK_OBJECT (view), signals[OPEN_LOCATION_IN_NEW_WINDOW],
 			 location, selection);
-}
-
-void
-nautilus_view_frame_report_location_change (NautilusViewFrame *view,
-                                            const char *location)
-{
-	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
-
-	set_up_for_new_location (view);
-	gtk_signal_emit (GTK_OBJECT (view),
-			 signals[REPORT_LOCATION_CHANGE], location);
-	view_frame_underway (view);
 }
 
 void

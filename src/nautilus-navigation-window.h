@@ -118,7 +118,7 @@ struct NautilusWindow {
   
   /* Pending changes */
   NautilusNavigationInfo *pending_ni;
-  NautilusViewFrame *new_content_view, *new_requesting_view;
+  NautilusViewFrame *new_content_view;
   GList *pending_selection;
   GList *new_sidebar_panels;
   GList *error_views;

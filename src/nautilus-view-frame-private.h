@@ -50,8 +50,6 @@ BonoboObject *impl_Nautilus_ZoomableFrame__create             (NautilusViewFrame
 void          nautilus_view_frame_open_location               (NautilusViewFrame *view,
                                                                const char        *location);
 void          nautilus_view_frame_open_location_in_new_window (NautilusViewFrame *view,
-                                                               const char        *location);
-void          nautilus_view_frame_open_in_new_window_and_select (NautilusViewFrame *view,
                                                                const char        *location,
                                                                GList             *selection);
 void          nautilus_view_frame_report_location_change      (NautilusViewFrame *view,

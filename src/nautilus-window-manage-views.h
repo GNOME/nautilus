@@ -34,13 +34,7 @@ void               nautilus_window_open_location               (NautilusWindow  
                                                                 NautilusViewFrame       *view);
 void               nautilus_window_open_location_in_new_window (NautilusWindow          *window,
                                                                 const char              *location,
-                                                                NautilusViewFrame       *view);
-void               nautilus_window_open_in_new_window_and_select (NautilusWindow          *window,
-                                                                const char              *location,
                                                                 GList                   *selection,
-                                                                NautilusViewFrame       *view);
-void               nautilus_window_report_location_change      (NautilusWindow          *window,
-                                                                const char              *location,
                                                                 NautilusViewFrame       *view);
 void               nautilus_window_report_selection_change     (NautilusWindow          *window,
                                                                 GList                   *selection,
@@ -60,7 +54,6 @@ void               nautilus_window_report_load_failed          (NautilusWindow  
 void               nautilus_window_title_changed               (NautilusWindow          *window,
                                                                 NautilusViewFrame       *view);
 NautilusViewFrame *nautilus_window_load_content_view           (NautilusWindow          *window,
-                                                                NautilusViewIdentifier  *id,
-                                                                NautilusViewFrame      **requesting_view);
+                                                                NautilusViewIdentifier  *id);
 
 #endif /* NAUTILUS_WINDOW_MANAGE_VIEWS_H */

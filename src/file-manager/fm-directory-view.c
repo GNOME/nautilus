@@ -541,7 +541,7 @@ fm_directory_view_switch_location (FMDirectoryView *directory_view,
 
 	if (use_new_window) {
 		nautilus_view_open_location_in_new_window
-			(directory_view->details->nautilus_view, new_uri);
+			(directory_view->details->nautilus_view, new_uri, NULL);
 	} else {
 		nautilus_view_open_location
 			(directory_view->details->nautilus_view, new_uri);

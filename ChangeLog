@@ -1,3 +1,46 @@
+2000-09-29  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-private.h:
+	Removed unused "self_owned" field.
+	
+	* libnautilus/nautilus-view-component.idl:
+	* libnautilus/nautilus-view.h:
+	* libnautilus/nautilus-view.c:
+	(nautilus_view_open_location_in_new_window):
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_switch_location):
+	* src/file-manager/fm-search-list-view.c:
+	(reveal_selected_items_callback):
+	* src/nautilus-view-frame-corba.c:
+	(impl_Nautilus_ViewFrame_open_location),
+	(impl_Nautilus_ViewFrame_open_location_in_new_window),
+	(impl_Nautilus_ViewFrame_report_selection_change):
+	* src/nautilus-view-frame-private.h:
+	* src/nautilus-view-frame.h:
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_initialize_class),
+	(nautilus_view_frame_open_location_in_new_window):
+	Removed report_location_change and
+	open_in_new_window_and_select. The open_location_in_new_window
+	call now always does a selection operation.
+	
+	* src/nautilus-window-manage-views.h:
+	* src/nautilus-window-manage-views.c: (update_view),
+	(nautilus_window_load_sidebar_panel), (open_location),
+	(nautilus_window_open_location),
+	(nautilus_window_open_location_in_new_window),
+	(nautilus_window_load_content_view),
+	(nautilus_window_update_state),
+	(nautilus_window_begin_location_change):
+	* src/nautilus-window-private.h:
+	* src/nautilus-window.h:
+	* src/nautilus-window.c: (nautilus_window_switch_views),
+	(nautilus_window_back_or_forward),
+	(nautilus_window_open_location_in_new_window_callback),
+	(nautilus_window_connect_view), (nautilus_window_reload):
+	Made some simplifications that are possible because we don't
+	have the old report_location_change to support.
+
 2000-09-29  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-thumbnails.c:

@@ -53,12 +53,11 @@ typedef struct {
 	BonoboObjectClass parent_spot;
 	
 	void (*load_location)     (NautilusView *view,
-		                   const char   *location_uri,
-		                   const char   *referring_location_uri);
+		                   const char   *location_uri);
 	void (*stop_loading)      (NautilusView *view);
 	void (*selection_changed) (NautilusView *view,
 				   GList        *selection); /* list of URI char *s */
-	void (*title_changed) (NautilusView *view);
+	void (*title_changed)     (NautilusView *view);
 } NautilusViewClass;
 
 GtkType           nautilus_view_get_type                    (void);
@@ -67,26 +66,22 @@ NautilusView *    nautilus_view_new_from_bonobo_control     (BonoboControl      
 BonoboControl *   nautilus_view_get_bonobo_control          (NautilusView           *view);
 
 /* Calls to the Nautilus shell via the view frame. See the IDL for detailed comments. */
-void              nautilus_view_report_location_change        (NautilusView           *view,
-							       const char             *location_uri);
-void              nautilus_view_open_location                 (NautilusView           *view,
-							       const char             *location_uri);
-void              nautilus_view_open_location_in_new_window   (NautilusView           *view,
-							       const char             *location_uri);
-void              nautilus_view_open_in_new_window_and_select (NautilusView           *view,
-							       const char             *location_uri,
-							       GList		      *selection);
-void              nautilus_view_report_selection_change       (NautilusView           *view,
-							       GList                  *selection); /* list of URI char *s */
-void              nautilus_view_report_status                 (NautilusView           *view,
-							       const char             *status);
-void              nautilus_view_report_load_underway          (NautilusView           *view);
-void              nautilus_view_report_load_progress          (NautilusView           *view,
-							       double                  fraction_done);
-void              nautilus_view_report_load_complete          (NautilusView           *view);
-void              nautilus_view_report_load_failed            (NautilusView           *view);
-void              nautilus_view_set_title                     (NautilusView           *view,
-							       const char             *title);
+void              nautilus_view_open_location               (NautilusView           *view,
+							     const char             *location_uri);
+void              nautilus_view_open_location_in_new_window (NautilusView           *view,
+							     const char             *location_uri,
+							     GList                  *selection); /* list of URI char *s */
+void              nautilus_view_report_selection_change     (NautilusView           *view,
+							     GList                  *selection); /* list of URI char *s */
+void              nautilus_view_report_status               (NautilusView           *view,
+							     const char             *status);
+void              nautilus_view_report_load_underway        (NautilusView           *view);
+void              nautilus_view_report_load_progress        (NautilusView           *view,
+							     double                  fraction_done);
+void              nautilus_view_report_load_complete        (NautilusView           *view);
+void              nautilus_view_report_load_failed          (NautilusView           *view);
+void              nautilus_view_set_title                   (NautilusView           *view,
+							     const char             *title);
 
 /* Some utility functions useful for doing the CORBA work directly.
  * Not needed by most components, but shared with the view frame code,

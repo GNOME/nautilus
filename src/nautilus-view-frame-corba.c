@@ -42,14 +42,8 @@ static void impl_Nautilus_ViewFrame_open_location               (PortableServer_
 								 CORBA_Environment      *ev);
 static void impl_Nautilus_ViewFrame_open_location_in_new_window (PortableServer_Servant  servant,
 								 Nautilus_URI            location,
-								 CORBA_Environment      *ev);
-static void impl_Nautilus_ViewFrame_open_in_new_window_and_select (PortableServer_Servant servant,
-						       		 Nautilus_URI location,
 						       		 const Nautilus_URIList *selection,
 						       		 CORBA_Environment *ev);
-static void impl_Nautilus_ViewFrame_report_location_change      (PortableServer_Servant  servant,
-								 Nautilus_URI            location,
-								 CORBA_Environment      *ev);
 static void impl_Nautilus_ViewFrame_report_selection_change     (PortableServer_Servant  servant,
 								 const Nautilus_URIList *selection,
 								 CORBA_Environment      *ev);
@@ -74,8 +68,6 @@ POA_Nautilus_ViewFrame__epv impl_Nautilus_ViewFrame_epv =
 	NULL,
 	&impl_Nautilus_ViewFrame_open_location,
 	&impl_Nautilus_ViewFrame_open_location_in_new_window,
-	&impl_Nautilus_ViewFrame_open_in_new_window_and_select,
-	&impl_Nautilus_ViewFrame_report_location_change,
 	&impl_Nautilus_ViewFrame_report_selection_change,
 	&impl_Nautilus_ViewFrame_report_status,
 	&impl_Nautilus_ViewFrame_report_load_underway,
@@ -142,6 +134,7 @@ impl_Nautilus_ViewFrame_open_location (PortableServer_Servant servant,
 #if DEBUG_MATHIEU
 	g_print ("open location \n");
 #endif /* DEBUG_MATHIEU */
+
 	nautilus_view_frame_open_location
 		(((impl_POA_Nautilus_ViewFrame *) servant)->view, location);
 }
@@ -149,41 +142,19 @@ impl_Nautilus_ViewFrame_open_location (PortableServer_Servant servant,
 static void
 impl_Nautilus_ViewFrame_open_location_in_new_window (PortableServer_Servant servant,
 						     Nautilus_URI location,
+						     const Nautilus_URIList *selection,
 						     CORBA_Environment *ev)
 {
+	GList *selection_as_g_list;
+
 #if DEBUG_MATHIEU
 	g_print ("open location in new window\n");
 #endif /* DEBUG_MATHIEU */
-	nautilus_view_frame_open_location_in_new_window
-		(((impl_POA_Nautilus_ViewFrame *) servant)->view, location);
-}
 
-static void 
-impl_Nautilus_ViewFrame_open_in_new_window_and_select (PortableServer_Servant servant,
-						       Nautilus_URI location,
-						       const Nautilus_URIList *selection,
-						       CORBA_Environment *ev)
-{
-	GList *selection_as_g_list;
-#if DEBUG_MATHIEU
-	g_print ("open location in new window and select\n");
-#endif /* DEBUG_MATHIEU */
 	selection_as_g_list = nautilus_shallow_g_list_from_uri_list (selection);
-	nautilus_view_frame_open_in_new_window_and_select
+	nautilus_view_frame_open_location_in_new_window
 		(((impl_POA_Nautilus_ViewFrame *) servant)->view, location, selection_as_g_list);
 	g_list_free (selection_as_g_list);
-}
-
-static void
-impl_Nautilus_ViewFrame_report_location_change (PortableServer_Servant servant,
-						Nautilus_URI location,
-						CORBA_Environment *ev)
-{
-#if DEBUG_MATHIEU
-	g_print ("report location change \n");
-#endif /* DEBUG_MATHIEU */
-	nautilus_view_frame_report_location_change
-		(((impl_POA_Nautilus_ViewFrame *) servant)->view, location);
 }
 
 static void
@@ -192,6 +163,7 @@ impl_Nautilus_ViewFrame_report_selection_change (PortableServer_Servant servant,
 						 CORBA_Environment *ev)
 {
 	GList *selection_as_g_list;
+
 #if DEBUG_MATHIEU
 	g_print ("selection change \n");
 #endif /* DEBUG_MATHIEU */

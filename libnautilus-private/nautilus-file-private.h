@@ -28,7 +28,6 @@
 struct NautilusFileDetails
 {
 	NautilusDirectory *directory;
-	gboolean self_owned;
 	gboolean unconfirmed;
 
 	gboolean is_gone;

@@ -112,7 +112,6 @@ void                 nautilus_window_toolbar_remove_theme_callback     (Nautilus
 NautilusUndoManager *nautilus_window_get_undo_manager                  (NautilusWindow             *window);
 void                 nautilus_window_begin_location_change             (NautilusWindow             *window,
 									const char                 *location,
-									NautilusViewFrame          *requesting_view,
 									NautilusLocationChangeType  type,
 									guint                       distance);
 void		     nautilus_window_remove_bookmarks_menu_callback    (NautilusWindow 		   *window);

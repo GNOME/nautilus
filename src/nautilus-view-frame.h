@@ -75,8 +75,6 @@ typedef struct {
         void (* open_location)	               (NautilusViewFrame *view,
                                                 const char *location);
         void (* open_location_in_new_window)   (NautilusViewFrame *view,
-                                                const char *location);
-        void (* open_in_new_window_and_select) (NautilusViewFrame *view,
                                                 const char *location,
                                                 GList *selection); /* list of char * */
         void (* report_location_change)	       (NautilusViewFrame *view,
