@@ -32,6 +32,7 @@
 
 #include <parser.h>
 #include <xmlmemory.h>
+#include <stdlib.h>
 
 #include "nautilus-string.h"
 #include "nautilus-glib-extensions.h"
