@@ -21,6 +21,8 @@
 	 _label="New Window"
 	 _tip="Open another Nautilus window for the displayed location"/>
 	<cmd name="Stop"
+	 _tip="Go to the home location"/>
+	<cmd name="Stop"
 	 _tip="Stop loading this location"/>
 	<cmd name="Select All" accel="*Control*a" sensitive="0"/>
         <cmd name="Cut" accel="*Control*x" sensitive="0"/>
@@ -29,6 +31,8 @@
         <cmd name="Clear" sensitive="0"/>
 	<cmd name="Up"
 	 _tip="Go up to the location that contains the displayed location"/>
+	<cmd name="Reload"
+	 _tip="Display the latest contents of the current location"/>
 	<cmd name="Zoom In" _label="Zoom In"
 	 _tip="Show the contents in more detail"/>
 	<cmd name="Zoom Out" _label="Zoom Out"
@@ -137,7 +141,6 @@
 	<submenu name="View" _label="_View">
 		<menuitem name="Reload"
 			  _label="_Refresh"
-			  _tip="Display the latest contents of the current location"
 			  accel="*Control*r"
 			  pixtype="stock" pixname="refresh"
 			  verb="Reload"/>
@@ -199,7 +202,6 @@
 			  verb="Up"/>
 		<menuitem name="Home" 
 			  _label="_Home" 
-			  _tip="Go to the home location"
 			  accel="*Control*h"
 			  verb="Home"/>
 		<menuitem name="Start Here" 
@@ -294,7 +296,6 @@
 	          verb="Up"/>
 	<toolitem name="Reload"
 		  _label="Refresh"
-		  _tip="Display the latest contents of the current location"
 	          min_width="48"
 	          pixtype="stock" pixname="gtk-refresh"
 		  verb="Reload"/>
@@ -303,7 +304,6 @@
 
 	<toolitem name="Home"
 		  _label="Home"
-		  _tip="Go to the home location"
 	          min_width="48"
 	          pixtype="stock" pixname="gtk-home"
 		  verb="Home"/>

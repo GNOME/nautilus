@@ -1,3 +1,39 @@
+2002-04-05  Michael Meeks  <michael@ximian.com>
+
+	* components/throbber/nautilus-throbber.c
+	(nautilus_throbber_accessible_class_init),
+	(nautilus_throbber_accessible_initialize), 
+	(nautilus_throbber_accessible_get_type),
+	(nautilus_throbber_get_accessible): impl.
+	(nautilus_throbber_class_init): upd.
+	(nautilus_throbber_accessible_image_get_size): 
+	(nautilus_throbber_accessible_image_interface_init): 
+	(nautilus_throbber_set_location): split out of
+	(nautilus_throbber_button_release_event): here.
+	(nautilus_icon_container_accessible_do_action): use it.
+	(nautilus_throbber_accessible_get_n_actions),
+	(nautilus_throbber_accessible_action_get_description),
+	(nautilus_throbber_accessible_action_get_name),
+	(nautilus_throbber_accessible_action_get_keybinding),
+	(nautilus_throbber_accessible_action_set_description),
+	(nautilus_throbber_accessible_action_interface_init): impl.
+
+2002-04-04  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-window-toolbars.c
+	(create_back_or_forward_toolbar_item): add tooltip
+	parameter so we can get a11y descriptions.
+	(nautilus_window_initialize_toolbars): upd.
+
+	* src/nautilus-window.c
+	(nautilus_window_instance_init): create a tooltips object.
+	(nautilus_window_destroy): kill it.
+
+	* src/nautilus-shell-ui.xml: prune some cruft.
+
+	* components/music/nautilus-music-view.c
+	(nautilus_music_view_set_album_image): set image name.
+
 2002-04-04  jacob berkman  <jacob@ximian.com>
 
 	* src/file-manager/fm-desktop-icon-view.c

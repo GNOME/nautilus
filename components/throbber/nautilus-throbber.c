@@ -32,6 +32,7 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-graphic-effects.h>
 #include <eel/eel-gtk-extensions.h>
+#include <eel/eel-accessibility.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
@@ -71,6 +72,7 @@ static void nautilus_throbber_load_images            (NautilusThrobber *throbber
 static void nautilus_throbber_unload_images          (NautilusThrobber *throbber);
 static void nautilus_throbber_theme_changed          (gpointer          user_data);
 static void nautilus_throbber_remove_update_callback (NautilusThrobber *throbber);
+static AtkObject *nautilus_throbber_get_accessible   (GtkWidget *widget);
 
 GNOME_CLASS_BOILERPLATE (NautilusThrobber, nautilus_throbber,
 			 GtkEventBox, GTK_TYPE_EVENT_BOX)
@@ -576,28 +578,35 @@ nautilus_throbber_button_press_event (GtkWidget *widget, GdkEventButton *event)
 		(GTK_WIDGET_CLASS, button_press_event, (widget, event), FALSE);
 }
 
+static void
+nautilus_throbber_set_location (NautilusThrobber *throbber)
+{
+	char *location;
+	BonoboArg *location_arg;
+
+	location = nautilus_theme_get_theme_data ("throbber", "url");
+	if (location != NULL) {
+		location_arg = bonobo_arg_new (BONOBO_ARG_STRING);
+		BONOBO_ARG_SET_STRING (location_arg, location);
+		bonobo_event_source_notify_listeners_full (
+			throbber->details->property_bag->es,
+			"Bonobo/Property", "change", "location",
+			location_arg, NULL);
+		bonobo_arg_release (location_arg);
+		g_free (location);
+	}
+}
+
 static gboolean
 nautilus_throbber_button_release_event (GtkWidget *widget, GdkEventButton *event)
 {	
 	NautilusThrobber *throbber;
-	char *location;
-	BonoboArg *location_arg;
 	
 	throbber = NAUTILUS_THROBBER (widget);
 
 	if (event->button == 1) {
 		if (throbber->details->button_in) {
-			location = nautilus_theme_get_theme_data ("throbber", "url");
-			if (location != NULL) {
-				location_arg = bonobo_arg_new (BONOBO_ARG_STRING);
-				BONOBO_ARG_SET_STRING (location_arg, location);
-				bonobo_event_source_notify_listeners_full (
-					throbber->details->property_bag->es,
-					"Bonobo/Property", "change", "location",
-					location_arg, NULL);
-				bonobo_arg_release (location_arg);
-				g_free (location);
-			}
+			nautilus_throbber_set_location (throbber);
 		}
 		throbber->details->button_down = FALSE;
 		gtk_widget_queue_draw (widget);
@@ -672,4 +681,184 @@ nautilus_throbber_class_init (NautilusThrobberClass *class)
 	widget_class->leave_notify_event = nautilus_throbber_leave_notify_event;
 	widget_class->size_request = nautilus_throbber_size_request;	
 	widget_class->map = nautilus_throbber_map;
+	widget_class->get_accessible = nautilus_throbber_get_accessible;
+}
+
+static AtkObjectClass *a11y_parent_class = NULL;
+
+static void
+nautilus_throbber_accessible_initialize (AtkObject *accessible,
+					 gpointer   widget)
+{
+	atk_object_set_name (accessible, _("throbber"));
+	atk_object_set_description (accessible, _("provides visual status"));
+
+	a11y_parent_class->initialize (accessible, widget);
+}
+
+static void
+nautilus_throbber_accessible_class_init (AtkObjectClass *klass)
+{
+	a11y_parent_class = g_type_class_peek_parent (klass);
+
+	klass->initialize = nautilus_throbber_accessible_initialize;
+}
+
+static void
+nautilus_throbber_accessible_image_get_size (AtkImage *image,
+					     gint     *width,
+					     gint     *height)
+{
+	GtkWidget *widget;
+
+	widget = GTK_ACCESSIBLE (image)->widget;
+	if (!widget) {
+		*width = *height = 0;
+	} else {
+		*width = widget->allocation.width;
+		*height = widget->allocation.height;
+	}
+}
+
+static void
+nautilus_throbber_accessible_image_interface_init (AtkImageIface *iface)
+{
+	iface->get_image_size = nautilus_throbber_accessible_image_get_size;
+}
+
+/* AtkAction interface */
+
+enum {
+	ACTION_ACTIVATE,
+	LAST_ACTION
+};
+
+static const char *nautilus_throbber_accessible_action_names[] = {
+	"activate",
+	NULL
+};
+
+static const char *nautilus_throbber_accessible_action_descriptions[] = {
+	"Activate selected items",
+	NULL
+};
+
+
+static gboolean
+nautilus_throbber_accessible_do_action (AtkAction *accessible, int i)
+{
+	GtkWidget *widget;
+
+	g_return_val_if_fail (i < LAST_ACTION, FALSE);
+
+	widget = GTK_ACCESSIBLE (accessible)->widget;
+	if (!widget) {
+		return FALSE;
+	}
+	
+	switch (i) {
+	case ACTION_ACTIVATE :
+		nautilus_throbber_set_location (NAUTILUS_THROBBER (widget));
+		return TRUE;
+	default:
+		return FALSE;
+	}
+}
+
+static int
+nautilus_throbber_accessible_get_n_actions (AtkAction *accessible)
+{
+	return LAST_ACTION;
+}
+
+static const char *
+nautilus_throbber_accessible_action_get_description (AtkAction *accessible, 
+							   int i)
+{
+	g_return_val_if_fail (i < LAST_ACTION, NULL);
+
+	return nautilus_throbber_accessible_action_descriptions[i];
+}
+
+static const char *
+nautilus_throbber_accessible_action_get_name (AtkAction *accessible, int i)
+{
+	g_return_val_if_fail (i < LAST_ACTION, NULL);
+
+	return nautilus_throbber_accessible_action_names [i];
+}
+
+static const char *
+nautilus_throbber_accessible_action_get_keybinding (AtkAction *accessible, 
+						    int        i)
+{
+	return NULL;
+}
+
+static gboolean
+nautilus_throbber_accessible_action_set_description (AtkAction  *accessible, 
+						     int         i, 
+						     const char *description)
+{
+	return FALSE;
+}
+
+static void
+nautilus_throbber_accessible_action_interface_init (AtkActionIface *iface)
+{
+	iface->do_action = nautilus_throbber_accessible_do_action;
+	iface->get_n_actions = nautilus_throbber_accessible_get_n_actions;
+	iface->get_description = nautilus_throbber_accessible_action_get_description;
+	iface->get_name = nautilus_throbber_accessible_action_get_name;
+	iface->get_keybinding = nautilus_throbber_accessible_action_get_keybinding;
+	iface->set_description = nautilus_throbber_accessible_action_set_description;
+}
+
+static GType
+nautilus_throbber_accessible_get_type (void)
+{
+        static GType type = 0;
+
+	/* Action interface
+	   Name etc. ... */
+        if (!type) {
+                static GInterfaceInfo atk_action_info = {
+                        (GInterfaceInitFunc) nautilus_throbber_accessible_action_interface_init,
+                        (GInterfaceFinalizeFunc) NULL,
+                        NULL
+                };              
+
+		static const GInterfaceInfo atk_image_info = {
+			(GInterfaceInitFunc) nautilus_throbber_accessible_image_interface_init,
+			(GInterfaceFinalizeFunc) NULL,
+			NULL
+		};
+
+		type = eel_accessibility_create_derived_type 
+			("NautilusThrobberAccessible",
+			 GTK_TYPE_IMAGE,
+			 nautilus_throbber_accessible_class_init);
+		
+                g_type_add_interface_static (type, ATK_TYPE_ACTION,
+                                             &atk_action_info);
+                g_type_add_interface_static (type, ATK_TYPE_IMAGE,
+                                             &atk_image_info);
+        }
+
+        return type;
+}
+
+static AtkObject *
+nautilus_throbber_get_accessible (GtkWidget *widget)
+{
+	AtkObject *accessible;
+	
+	if ((accessible = eel_accessibility_get_atk_object (widget))) {
+		return accessible;
+	}
+	
+	accessible = g_object_new 
+		(nautilus_throbber_accessible_get_type (), NULL);
+	
+	return eel_accessibility_set_atk_object_return (widget, accessible);
 }

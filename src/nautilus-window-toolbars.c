@@ -355,6 +355,7 @@ back_or_forward_toolbar_item_property_set_cb (BonoboPropertyBag *bag,
 static BonoboUIToolbarButtonItem *
 create_back_or_forward_toolbar_item (NautilusWindow *window, 
 				     const char     *label, 
+				     const char     *tooltip,
 				     const char     *control_path)
 {
 	BonoboUIToolbarButtonItem *item;
@@ -367,6 +368,9 @@ create_back_or_forward_toolbar_item (NautilusWindow *window,
 	gtk_widget_show (GTK_WIDGET (item));
 
 	button = bonobo_ui_toolbar_button_item_get_button_widget (item);
+	gtk_tooltips_set_tip (window->details->tooltips,
+			      GTK_WIDGET (button),
+			      tooltip, NULL);
 	g_signal_connect_object (button, "button_press_event",
 				 G_CALLBACK (back_or_forward_button_pressed_callback),
 				 window, 0);
@@ -548,11 +552,13 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 		}
 		CORBA_exception_free (&ev);
 	}
-	
+
 	window->details->back_button_item = create_back_or_forward_toolbar_item 
-		(window, _("Back"), "/Toolbar/BackWrapper");
+		(window, _("Back"), _("Go to the previous visited location"),
+		 "/Toolbar/BackWrapper");
 	window->details->forward_button_item = create_back_or_forward_toolbar_item 
-		(window, _("Forward"), "/Toolbar/ForwardWrapper");
+		(window, _("Forward"), _("Go to the next visited location"),
+		 "/Toolbar/ForwardWrapper");
 
 	set_up_toolbar_images (window);
 

@@ -61,6 +61,7 @@ struct NautilusWindowDetails
 	guint refresh_go_menu_idle_id;
 
 	/* Toolbar. */
+        GtkTooltips *tooltips;
 	BonoboUIToolbarButtonItem *back_button_item;
 	BonoboUIToolbarButtonItem *forward_button_item;
 

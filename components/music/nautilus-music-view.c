@@ -32,6 +32,7 @@
 #include "mp3head.h"
 #include "mpg123.h"
 #include "pixmaps.h"
+#include <eel/eel-accessibility.h>
 #include <eel/eel-background.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
@@ -1635,8 +1636,10 @@ nautilus_music_view_set_album_image (NautilusMusicView *music_view, const char *
 
 			if (music_view->details->album_image == NULL) {
 				music_view->details->album_image = gtk_image_new_from_pixbuf (scaled_pixbuf);
-				gtk_box_pack_start (GTK_BOX (music_view->details->image_box), 
-                                                    music_view->details->album_image, FALSE, FALSE, 2);	
+				gtk_box_pack_start (GTK_BOX (music_view->details->image_box),
+                                                    music_view->details->album_image, FALSE, FALSE, 2);
+                                eel_accessibility_set_name (music_view->details->album_image,
+                                                            _("cover image"));
 			} else {
 				gtk_image_set_from_pixbuf (GTK_IMAGE (music_view->details->album_image), scaled_pixbuf);
 			}

@@ -177,6 +177,10 @@ nautilus_window_instance_init (NautilusWindow *window)
 	bonobo_ui_container_set_engine (window->details->ui_container,
 					bonobo_window_get_ui_engine (BONOBO_WINDOW (window)));
 
+	window->details->tooltips = gtk_tooltips_new ();
+	g_object_ref (G_OBJECT (window->details->tooltips));
+	gtk_object_sink (GTK_OBJECT (window->details->tooltips));
+
 	window->details->shell_ui = bonobo_ui_component_new ("Nautilus Shell");
 	bonobo_ui_component_set_container
 		(window->details->shell_ui,
@@ -780,6 +784,11 @@ nautilus_window_destroy (GtkObject *object)
 	if (window->content_view != NULL) {
 		gtk_object_destroy (GTK_OBJECT (window->content_view));
 		window->content_view = NULL;
+	}
+
+	if (window->details->tooltips) {
+		g_object_unref (G_OBJECT (window->details->tooltips));
+		window->details->tooltips = NULL;
 	}
 
 	GTK_OBJECT_CLASS (parent_class)->destroy (object);
