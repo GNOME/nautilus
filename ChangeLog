@@ -1,3 +1,18 @@
+2001-02-16  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 6606, only show user-mountable volumes in Disks menu
+		
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(has_removable_mntent_options):
+	Utility function to check the mntent structure for options
+	that we have determined will do the best job of guessing that
+	a volume is removable.
+	
+	(get_removable_volumes),
+	(volume_is_removable), (get_current_mount_list),
+	(mount_volume_add_filesystem), (open_cdda_device):
+	Did some code cleanup.
+
 2001-02-16  Darin Adler  <darin@eazel.com>
 
 	Fix bug 6435 (report_location_change does not record in history).

@@ -119,7 +119,8 @@ static void     	mount_volume_deactivate                          (NautilusVolum
 									 NautilusVolume             	*volume);
 static void     	mount_volume_activate_floppy                    (NautilusVolumeMonitor      	*view,
 									 NautilusVolume             	*volume);
-static gboolean 	mount_volume_add_filesystem 			(NautilusVolume 		*volume);
+static GList 		*mount_volume_add_filesystem 			(NautilusVolume 		*volume,
+									 GList 				*volume_list);
 static NautilusVolume	*copy_volume					(NautilusVolume             	*volume);									 
 static void		find_volumes 					(NautilusVolumeMonitor 		*monitor);
 static void		free_mount_list 				(GList 				*mount_list);
@@ -258,6 +259,17 @@ nautilus_volume_monitor_get_removable_volumes (NautilusVolumeMonitor *monitor)
 	return monitor->details->removable_volumes;
 }
 
+static gboolean
+has_removable_mntent_options (struct mntent *ent)
+{
+	/* Use "owner" or "user" or "users" as our way of determining a removable volume */
+	if (hasmntopt (ent, "user") != NULL || hasmntopt (ent, "users") != NULL
+	    || hasmntopt (ent, "owner") != NULL) {
+	    return TRUE;
+	}
+	
+	return FALSE;
+}
 
 /* get_removable_volumes
  *	
@@ -281,17 +293,12 @@ get_removable_volumes (void)
 	}
 	
 	while ((ent = getmntent (file)) != NULL) {
-		/* Use noauto as our way of determining a removable volume */
-		if (strstr (ent->mnt_opts, MNTOPT_NOAUTO) != NULL) {
+		if (has_removable_mntent_options (ent)) {
 			volume = g_new0 (NautilusVolume, 1);
 			volume->device_path = g_strdup (ent->mnt_fsname);
 			volume->mount_path = g_strdup (ent->mnt_dir);
 			volume->filesystem = g_strdup (ent->mnt_type);
-			if (mount_volume_add_filesystem (volume)) {				
-				volumes = g_list_append (volumes, volume);
-			} else {
-				nautilus_volume_monitor_free_volume (volume);
-			}
+			volumes = mount_volume_add_filesystem (volume, volumes);
 		}	
 	}
 			
@@ -323,15 +330,13 @@ volume_is_removable (const NautilusVolume *volume)
 	
 	/* Search for our device in the fstab */
 	while ((ent = getmntent (file)) != NULL) {
-		if (strcmp (volume->device_path, ent->mnt_fsname) == 0) {
-			/* Use "owner" or "user" as our way of determining a removable volume */
-			if (hasmntopt (ent, "user") != NULL || hasmntopt (ent, "owner") != NULL) {
-				fclose (file);
-				return TRUE;
-			}
+		if (strcmp (volume->device_path, ent->mnt_fsname) == 0
+		    && has_removable_mntent_options (ent)) {
+			fclose (file);
+			return TRUE;
 		}	
 	}
-				
+	
 	fclose (file);
 	return FALSE;
 }
@@ -776,21 +781,17 @@ get_current_mount_list (void)
 
 	while (fgets (line, sizeof(line), fh)) {
 		if (sscanf (line, "%s", device_name) == 1) {
-				list = nautilus_string_list_new_from_tokens (line, " ", FALSE);
+			list = nautilus_string_list_new_from_tokens (line, " ", FALSE);			
 			if (list != NULL) {
 				/* The string list needs to have at least 3 items per line.
-				 * We need to find at least device path, mount path and file system type. */
+				 * We need to find at least device path, mount path and file system type.
+				 */
 				if (nautilus_string_list_get_length (list) >= 3) {
 					volume = g_new0 (NautilusVolume, 1);
 					volume->device_path = nautilus_string_list_nth (list, 0);
 					volume->mount_path = nautilus_string_list_nth (list, 1);
 					volume->filesystem = nautilus_string_list_nth (list, 2);
-
-					if (mount_volume_add_filesystem (volume)) {
-						current_mounts = g_list_append (current_mounts, volume);
-					} else {
-						nautilus_volume_monitor_free_volume (volume);
-					}					
+					current_mounts = mount_volume_add_filesystem (volume, current_mounts);
 				}				
 				nautilus_string_list_free (list);
 			}			
@@ -1590,8 +1591,8 @@ get_generic_volume_name (NautilusVolume *volume)
 	}
 }
 
-static gboolean
-mount_volume_add_filesystem (NautilusVolume *volume)
+static GList *
+mount_volume_add_filesystem (NautilusVolume *volume, GList *volume_list)
 {
 	gboolean mounted = FALSE;
 			
@@ -1637,9 +1638,12 @@ mount_volume_add_filesystem (NautilusVolume *volume)
 		volume->is_removable = volume_is_removable (volume);
 		volume->is_read_only = volume_is_read_only (volume);
 		mount_volume_get_name (volume);
+		volume_list = g_list_append (volume_list, volume);
+	} else {
+		nautilus_volume_monitor_free_volume (volume);	
 	}
 			
-	return mounted;
+	return volume_list;
 }
 
 
@@ -1667,18 +1671,18 @@ open_cdda_device (GnomeVFSURI *uri)
   		case -3:
   		case -4:
   		case -5:
-    		//g_message ("Unable to open disc.  Is there an audio CD in the drive?");
+    		/*g_message ("Unable to open disc.  Is there an audio CD in the drive?");*/
     		return NULL;
 
   		case -6:
-    		//g_message ("CDDA method could not find a way to read audio from this drive.");
+    		/*g_message ("CDDA method could not find a way to read audio from this drive.");*/
     		return NULL;
     			
   		case 0:
     		break;
 
   		default:
-    		//g_message ("Unable to open disc.");
+    		/*g_message ("Unable to open disc.");*/
     		return NULL;
 	}
 	
