@@ -23,8 +23,8 @@
 #ifndef EAZEL_SUMMARY_SHARED_H
 #define EAZEL_SUAMMRY_SHARED_H
 
-#include <libnautilus/nautilus-view.h>
-#include <gtk/gtk.h>
+#include <libgnomevfs/gnome-vfs-types.h>
+#include <glib.h>
 
 typedef struct _ServicesData ServicesData;
 typedef struct _EazelNewsData EazelNewsData;
@@ -65,6 +65,18 @@ struct _SummaryData {
 	GList	*update_news_list;
 };
 
-SummaryData * parse_summary_xml_file (const char *url);
+
+typedef void     (* EazelSummaryFetchCallback) (GnomeVFSResult result,
+						SummaryData *summary_data,
+						gpointer callback_data);
+
+typedef struct EazelSummaryFetchHandle EazelSummaryFetchHandle;
+
+EazelSummaryFetchHandle *eazel_summary_fetch_data_async (const char *uri,
+							 EazelSummaryFetchCallback callback,
+							 gpointer callback_data);
+
+void                     eazel_summary_fetch_data_cancel (EazelSummaryFetchHandle *handle);
+
 
 #endif /* EAZEL_SUMMARY_SHARED_H */

@@ -32,6 +32,8 @@
 #include <gconf/gconf.h>
 #include <libtrilobite/libammonite.h>
 #include <libtrilobite/trilobite-core-messaging.h>
+#include <libtrilobite/trilobite-core-utils.h>
+#include <libgnomevfs/gnome-vfs-init.h>
 
 static int object_count =0;
 
@@ -91,9 +93,12 @@ main (int argc, char *argv[])
 
         gnome_init ("nautilus-summary-view", VERSION, 
 		    argc, argv);
-
 	gdk_rgb_init ();
-	
+
+	trilobite_setenv ("GNOME_VFS_HTTP_USER_AGENT", trilobite_get_useragent_string (NULL), 1);
+	g_thread_init (NULL);
+	gnome_vfs_init ();
+
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
 	gconf_init (argc, argv, NULL);
@@ -113,6 +118,11 @@ main (int argc, char *argv[])
 	do {
 		bonobo_main ();
 	} while (object_count > 0);
+
+	/* Let the factory go. */
+	bonobo_object_unref (BONOBO_OBJECT (factory));
+
+	gnome_vfs_shutdown ();
 
 	return 0;
 }

@@ -5,7 +5,7 @@
  *  a remote xml file, store it in gconf, and then lookup entries
  *  later.  this may only be useful for eazel services.
  *
- *  Copyright (C) 2000 Eazel, Inc
+ *  Copyright (C) 2000, 2001 Eazel, Inc
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public
@@ -25,19 +25,25 @@
  */
 
 #include <config.h>
+#include "trilobite-redirect.h"
+
+#include "trilobite-core-network.h"
+#include "trilobite-core-utils.h"
+#include "trilobite-file-utilities.h"
+#include <libgnomevfs/gnome-vfs.h>
+#include <gconf/gconf.h>
+#include <gconf/gconf-engine.h>
+#include <gnome-xml/parser.h>
+#include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glib.h>
-#include <libgnomevfs/gnome-vfs.h>
-#include <gnome-xml/parser.h>
-#include <gconf/gconf.h>
-#include <gconf/gconf-engine.h>
-#include "trilobite-core-utils.h"
-#include "trilobite-core-network.h"
-#include "trilobite-redirect.h"
+#include <ctype.h>
 
-#define REDIRECT_TABLE_URL	"eazel-services:/table.xml"
+static gboolean trilobite_redirect_parse_xml (char *blob, 
+					      int   length);
+
+#define REDIRECT_TABLE_URI	"eazel-services:/table.xml"
 #define REDIRECT_GCONF_PATH	"/apps/eazel-trilobite/redirect-table"
 
 #define SERVICES_DEFAULT_HOST	"services.eazel.com"
@@ -126,45 +132,41 @@ add_redirect (const char *key, const char *value)
 }
 
 /* parse an xml file into the redirect table */
-void
+gboolean
 trilobite_redirect_parse_xml (char *blob, int length)
 {
 	xmlDocPtr doc;
 	xmlNodePtr base, child, child2;
 	char *name, *uri;
 
-	g_return_if_fail (blob != NULL);
-	g_return_if_fail (length > 0);
+	g_return_val_if_fail (blob != NULL, FALSE);
+	g_return_val_if_fail (length > 0, FALSE);
 
 	/* <rant> libxml will have a temper tantrum if there is whitespace before the
 	 * first tag.  so we must babysit it.
 	 */
-	while ((length > 0) && (*blob <= ' ')) {
-		blob++, length--;
+	while ((length > 0) && (isspace (*blob))) {
+		blob++;
+		length--;
 	}
 
+	blob[length] = '\0';
+
 	doc = xmlParseMemory (blob, length);
-	if (doc == NULL) {
-		g_warning ("trilobite redirect: bad XML: '%s'", blob);
-		return;
+	if (doc == NULL || doc->root == NULL ||
+	    g_strcasecmp (doc->root->name, "location_data") != 0) {
+		goto bad;
 	}
 
 	base = doc->root;
-	if (base == NULL) {
-		g_warning ("trilobite redirect: empty XML!");
-		goto out;
-	}
-	if (g_strcasecmp (base->name, "location_data") != 0) {
-		g_warning ("trilobite redirect: no redirect table!");
-		goto bad;
-	}
 
 	wipe_redirect_table ();
 
 	for (child = base->xmlChildrenNode; child; child = child->next) {
 		if (g_strcasecmp (child->name, "location") == 0) {
 			/* libxml sucks */
-			name = uri = NULL;
+			name = NULL;
+			uri = NULL;
 
 			for (child2 = child->xmlChildrenNode; child2; child2 = child2->next) {
 				if (g_strcasecmp (child2->name, "name") == 0) {
@@ -177,47 +179,78 @@ trilobite_redirect_parse_xml (char *blob, int length)
 
 			if ((name != NULL) && (uri != NULL)) {
 				add_redirect (name, uri);
-			} else {
-				g_warning ("trilobite redirect: incomplete node");
-			}
+			} 
 			g_free (name);
 			g_free (uri);
-		} else {
-			g_warning ("trilobite redirect: ignoring directive '%s'", child->name);
-		}
+		
+		} 
 	}
 	xmlFreeDoc (doc);
-	return;
+	return TRUE;
 
 bad:
-	g_warning ("trilobite redirect: dysfunctional XML was '%s'", blob);
-
-out:
 	xmlFreeDoc (doc);
+	return FALSE;
 }
 
 
-/* fetch xml file all at once, blocking until we have some closure.
- * you will definitely want to ref any objects you own before calling this function,
- * since it involves iterations of gtk_main.
- * ( is this really needed? )
- */
-gboolean
-trilobite_redirect_fetch_table (const char *url)
-{
-	char *body;
-	int length;
+struct TrilobiteRedirectFetchHandle {
+	TrilobiteReadFileHandle *handle;
+	TrilobiteRedirectFetchCallback callback;
+	gpointer callback_data;
+};
 
-	if (! trilobite_fetch_uri (url == NULL ? REDIRECT_TABLE_URL : url, &body, &length)) {
-		return FALSE;
+
+static void
+redirect_fetch_callback (GnomeVFSResult    result,
+			 GnomeVFSFileSize  file_size,
+			 char             *file_contents,
+			 gpointer          callback_data)
+{
+	TrilobiteRedirectFetchHandle *handle;
+	gboolean parsed_xml;
+
+	parsed_xml = FALSE;
+
+	handle = callback_data;
+
+	if (result == GNOME_VFS_OK) {
+		parsed_xml = trilobite_redirect_parse_xml (file_contents, file_size);
 	}
 
-	trilobite_redirect_parse_xml (body, length);
-	return TRUE;
+	(*handle->callback) (result, parsed_xml, handle->callback_data);
+	g_free (handle);
+	g_free (file_contents);
 }
 
 
-/* find the url for a redirect (you must free the string when done) */
+TrilobiteRedirectFetchHandle *
+trilobite_redirect_fetch_table_async (const char *uri,
+				      TrilobiteRedirectFetchCallback callback,
+				      gpointer callback_data)
+{
+	TrilobiteRedirectFetchHandle *handle;
+
+	handle = g_new0 (TrilobiteRedirectFetchHandle, 1);
+
+	handle->callback = callback;
+	handle->callback_data = callback_data;
+
+	handle->handle = trilobite_read_entire_file_async (uri, redirect_fetch_callback, handle);
+
+	return handle;
+}
+
+void
+trilobite_redirect_fetch_table_cancel (TrilobiteRedirectFetchHandle *handle)
+{
+	trilobite_read_file_cancel (handle->handle);
+	g_free (handle);
+}
+
+
+
+/* find the uri for a redirect (you must free the string when done) */
 char *
 trilobite_redirect_lookup (const char *key)
 {

@@ -318,6 +318,10 @@ eazel_services_footer_update (EazelServicesFooter *footer,
 	g_return_if_fail (items != NULL);
 	g_return_if_fail (num_items > 0);
 
+	gtk_container_foreach (GTK_CONTAINER (footer),
+			       (GtkCallback) gtk_widget_destroy, 
+			       NULL);
+
 	for (i = 0; i < num_items; i++) {
 		GtkWidget *item;
 		

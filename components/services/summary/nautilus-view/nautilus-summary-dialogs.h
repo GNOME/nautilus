@@ -23,14 +23,14 @@
 #ifndef NAUTILUS_SUMMARY_DIALOGS_H
 #define NAUTILUS_SUMMARY_DIALOGS_H
 
-void	nautilus_summary_login_failure_dialog 	(NautilusSummaryView 		*view,
-						 const char 			*message);
+void	nautilus_summary_show_login_failure_dialog (NautilusSummaryView *view,
+						    const char 		*message);
 
-void	generate_error_dialog			(NautilusSummaryView		*view,
-						 const char			*message);
-void	generate_login_dialog			(NautilusSummaryView		*view);
-void	widget_set_nautilus_background_color	(GtkWidget			*widget,
-						 const char			*color);
+void	nautilus_summary_show_error_dialog         (NautilusSummaryView	*view,
+						    const char		*message);
+void	nautilus_summary_show_login_dialog         (NautilusSummaryView	*view);
+void	widget_set_nautilus_background_color	   (GtkWidget		*widget,
+						    const char		*color);
 
 #endif /* NAUTILUS_SUMMARY_DIALOGS_H */
 

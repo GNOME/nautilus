@@ -3,7 +3,7 @@
  *  trilobite-core-network: functions for retrieving files from the
  *  network and parsing XML documents
  *
- *  Copyright (C) 2000 Eazel, Inc
+ *  Copyright (C) 2000, 2001 Eazel, Inc
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public
@@ -23,16 +23,14 @@
  *	     Robey Pointer <robey@eazel.com>
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
+#include "trilobite-core-network.h"
 
+#include "trilobite-core-utils.h"
+#include <libgnomevfs/gnome-vfs.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <libgnomevfs/gnome-vfs.h>
-#include "trilobite-core-utils.h"
-#include "trilobite-core-network.h"
 
 
 /* function for lazy bastards who can't be bothered to figure out the format of the xml they're parsing:
@@ -109,7 +107,9 @@ trilobite_open_uri (const char *uri_text)
  * and also makes it easy to manipulate a small body using string operations).
  */
 gboolean
-trilobite_fetch_uri (const char *uri_text, char **body, int *length)
+trilobite_fetch_uri (const char *uri_text, 
+		     char **body, 
+		     int *length)
 {
 	GnomeVFSResult err;
 	GnomeVFSHandle *handle;
@@ -127,6 +127,7 @@ trilobite_fetch_uri (const char *uri_text, char **body, int *length)
 	*length = 0;
 
 	while (1) {
+		/* FIXME: this is almost certainly a mistake */
 		/* i think this is probably pretty loser: */
 		g_main_iteration (FALSE);
 		err = gnome_vfs_read (handle, (*body) + (*length), buffer_size - (*length), &bytes);
@@ -192,3 +193,5 @@ trilobite_fetch_uri_to_file (const char *uri_text, const char *filename)
 
 	return (err == GNOME_VFS_OK);
 }
+
+

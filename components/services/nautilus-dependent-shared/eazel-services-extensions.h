@@ -75,6 +75,11 @@ GtkWidget *eazel_services_image_new_from_uri      (const char *uri,
 						   guint32     background_color,
 						   int         max_width,
 						   int         max_height);
+GtkWidget *eazel_services_clickable_image_new_from_uri (const char *uri,
+							const char *tile_name,
+							guint32     background_color,
+							int         max_width,
+							int         max_height);
 GtkWidget *eazel_services_label_new               (const char *text,
 						   guint       drop_shadow_offset,
 						   float       xalign,

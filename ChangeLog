@@ -1,5 +1,117 @@
 2001-02-19  Maciej Stachowiak  <mjs@eazel.com>
 
+	reviewed by: John Harper  <jsh@eazel.com> 
+
+	Fixed bugs 3743 (Summary view gives the same vague error message
+	for many different causes), 3972 (If user can't connect to
+	service, they end up with gray content view), 5973 (blank summary
+	view after install view finishes) and 6166 (Summary Login dialog
+	does not have initial focus) and 6018 (Nautilus returns to wrong
+	directory if services are unavailable). Also did much code
+	cleanup, and made the service and featured download icons in the
+	summary view prelighting and clickable. Fixed many other nits as
+	well.
+
+	* components/services/nautilus-dependent-shared/eazel-services-extensions.h,
+	components/services/nautilus-dependent-shared/eazel-services-extensions.c
+	(eazel_services_clickable_image_new_from_uri): Convenience wrapper
+	to make a new clickable image from a URI.
+	* components/services/nautilus-dependent-shared/eazel-services-footer.c
+	(eazel_services_footer_update): Clear the footer before updating,
+	instead of just dumping the new items in along with the old ones.
+
+	* components/services/trilobite/libtrilobite/trilobite-core-network.h,
+	components/services/trilobite/libtrilobite/trilobite-core-network.c:
+	Adjusted formatting, fixed headers.
+
+	* components/services/trilobite/libtrilobite/trilobite-file-utilities.h,
+	components/services/trilobite/libtrilobite/trilobite-file-utilities.c:
+	Cut 'n' pasted some useful code from libnautilus-extensions to
+	avoid depending on it, whee.
+	* components/services/trilobite/libtrilobite/Makefile.am: Added
+	above to the build.
+
+	* components/services/trilobite/libtrilobite/trilobite-redirect.h,
+	components/services/trilobite/libtrilobite/trilobite-redirect.c:
+	(trilobite_redirect_fetch_table_async,
+	trilobite_redirect_fetch_table_cancel): Asynchronous version of
+	redirect fetching code.
+	(redirect_fetch_callback): Helper function.
+	(trilobite_redirect_parse_xml): Null terminate buffer properly or
+	XML parsing code will get confused.
+	(trilobite_redirect_fetch_table): Removed the old synchronous code
+	since now no one is using it.
+
+	* components/services/summary/lib/eazel-summary-shared.h,
+	components/services/summary/lib/eazel-summary-shared.c:
+	(eazel_summary_fetch_data_cancel, eazel_summary_fetch_data_async):
+	Asynchronous version of summary fetching code.
+	(summary_data_fetch_callback): Helper function.
+	(eazel_summary_data_parse_xml): Same null termination trick as for
+	redirects.
+	(parse_summary_xml_file): Removed old synchronous code since now
+	no one is unsing it.
+
+	* components/services/summary/nautilus-view/main.c (main): Set
+	user agent to trilobite user agent; intialize gnome-vfs.
+	
+	* components/services/summary/nautilus-view/nautilus-summary-dialogs.h,
+	components/services/summary/nautilus-view/nautilus-summary-dialogs.c 
+	(nautilus_summary_show_login_failure_dialog): Renamed from
+	`nautilus_summary_login_failure_dialog'
+	(nautilus_summary_show_error_dialog): Renamed from
+	`generate_error_dialog'.
+	(nautilus_summary_show_login_dialog): Renamed from
+	`generate_login_dialog'.
+	(error_dialog_cancel_cb): Go back instead of (incorrectly) trying
+	to go back to the user's homedir.
+	(set_dialog_parent): Do the magic coordinate adjustment like
+	gnome_dialog_set_parent, but do not set it transient, or it will
+	not get focus in click to focus mode.
+
+	* components/services/summary/nautilus-view/nautilus-summary-callbacks.c:
+	(authn_cb_failed): Adjust to above renaming.
+	* components/services/summary/nautilus-view/nautilus-summary-footer.c 
+	(footer_item_clicked_callback): Ditto.
+	* components/services/summary/nautilus-view/nautilus-summary-menu-items.c: 
+	(bonobo_login_callback): Ditto.
+
+	* components/services/summary/nautilus-view/nautilus-summary-view-private.h:
+	Removed unused fields. Added async handles for redirect and summary XML 
+	fetch.
+
+	* components/services/summary/nautilus-view/nautilus-summary-view.c:
+	(services_button_callback_data_free, summary_view_button_callback,
+	goto_uri_on_clicked, summary_view_button_new,
+	summary_view_link_image_new): Cleaned up summary view button code,
+	added code for the clickable icons and refactored a bit.
+	(create_header): Start out saying "Connecting to Eazel
+	Services..." instead of blank, and don't call `update_header' from
+	here.
+	(update_footer): fix incorrect polarity of offline and online.
+	(create_footer): remove call to update_footer; leave offline items
+	in place until connected.
+	(create_news_pane, create_services_list_pane,
+	create_featured_downloads_pane): Do not call corresponding update
+	func, updating is now separate from creating.
+	(generate_service_entry_row, generate_update_news_entry_row): Make
+	icons clickable.
+	(update_summary_form): New function to update the existing summary
+	view with new data, to avoid recreating even the fixed widgets
+	from scratch all the time.
+	(create_summary_form): Do not destroy all widgets at the
+	beginning. Remove some useless widgetry.
+	(nautilus_summary_view_initialize): Create the widgetry but do not
+	fill it with data.
+	(nautilus_summary_view_destroy, summary_fetch_callback,
+	redirect_fetch_callback, cancel_load_in_progress),
+	nautilus_summary_view_load_uri, summary_load_location_callback):
+	Change things around so loading of the summary data is
+	asynchronous.
+	(summary_stop_loading_callback): Handle "stop_loading".
+
+2001-02-19  Maciej Stachowiak  <mjs@eazel.com>
+
 	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
 
 	Added auto-prelighting feature to NautilusClickableImage, and

@@ -126,12 +126,6 @@ eazel_services_image_new_from_uri (const char *uri,
 
 	g_return_val_if_fail (uri != NULL, NULL);
 
-	/* as an optimization, it can be a local file.  If it doesn't start with http://,
-	   just pass it on to create_image_widget */
-	if (!nautilus_istr_has_prefix (uri, "http://")) {
-		return eazel_services_image_new (uri, tile_name, background_color);
-	}
-
 	/* load the image - synchronously, at least at first */
 	pixbuf = nautilus_gdk_pixbuf_load (uri);
 	
@@ -153,6 +147,47 @@ eazel_services_image_new_from_uri (const char *uri,
 
 	return image;
 }
+
+
+
+GtkWidget *
+eazel_services_clickable_image_new_from_uri (const char *uri,
+					     const char *tile_name,
+					     guint32     background_color,
+					     int         max_width,
+					     int         max_height)
+{
+	GtkWidget *image = NULL;
+	GdkPixbuf *pixbuf;
+	GdkPixbuf *scaled_pixbuf;
+
+	g_return_val_if_fail (uri != NULL, NULL);
+
+	/* load the image - synchronously, at least at first */
+	pixbuf = nautilus_gdk_pixbuf_load (uri);
+	
+	/* pin the image to the specified dimensions if necessary */
+	if (pixbuf && max_width > 0 && max_height > 0) {
+		scaled_pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit (pixbuf, max_width, max_height);
+		gdk_pixbuf_unref (pixbuf);
+		pixbuf = scaled_pixbuf;
+	}
+		
+	/* create the image widget then release the pixbuf*/
+	image = eazel_services_image_new_clickable (NULL, tile_name, background_color);
+
+	if (pixbuf != NULL) {
+		nautilus_labeled_image_set_pixbuf (NAUTILUS_LABELED_IMAGE (image), 
+						   pixbuf);
+	}
+
+	nautilus_gdk_pixbuf_unref_if_not_null (pixbuf);
+
+	return image;
+}
+
+
+
 
 GtkWidget *
 eazel_services_label_new (const char *text,

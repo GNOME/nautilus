@@ -164,7 +164,7 @@ bonobo_login_callback (BonoboUIComponent *ui, gpointer user_data, const char *ve
 	NautilusSummaryView *view;
 	
 	view = NAUTILUS_SUMMARY_VIEW (user_data);
-	generate_login_dialog (view);
+	nautilus_summary_show_login_dialog (view);
 }
 
 static void

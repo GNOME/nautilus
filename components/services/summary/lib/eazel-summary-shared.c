@@ -26,13 +26,15 @@
 #include "eazel-summary-shared.h"
 
 #include <libtrilobite/libtrilobite.h>
+#include <libtrilobite/trilobite-file-utilities.h>
 #include <gnome.h>
-#include <glib.h>
 #include <gnome-xml/tree.h>
 #include <gnome-xml/parser.h>
+#include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <ctype.h>
 
 static GList * build_services_glist_from_xml (xmlNodePtr node);
 static GList * build_eazel_news_glist_from_xml (xmlNodePtr node);
@@ -251,62 +253,48 @@ build_update_news_glist_from_xml (xmlNodePtr node)
 } /* end build_update_news_glist_from_xml */
 
 
-SummaryData *
-parse_summary_xml_file (const char *url)
-{
 
+
+static SummaryData *
+eazel_summary_data_parse_xml (char *body,
+			      int   length)
+{
 	SummaryData	*return_value;
-	char		*body;
-	int		length;
 	xmlDocPtr	doc;
 	xmlNodePtr	base;
 	xmlNodePtr	child;
 
-	/* fetch remote config file into memory */
-	if (! trilobite_fetch_uri (url, &body, &length)) {
-		g_assert (_("Could not fetch summary configuration !"));
-		return NULL;
-	}
-
 	/* <rant> libxml will have a temper tantrum if there is whitespace before the
 	*          * first tag.  so we must babysit it.
 	*                   */
-	while ((length > 0) && (*body <= ' ')) {
+	while ((length > 0) && isspace (*body)) {
 		body++, length--;
 	}
 
-	doc = xmlParseMemory (body, length);
-	 if (doc == NULL) {
-		 g_warning ("Invalid data in summary configuration: %s", body);
-		 return NULL;
-	}
+	body[length] = '\0';
 
-	return_value = summary_data_new ();
+	doc = xmlParseMemory (body, length);
+	if (doc == NULL) {
+		return NULL;
+	}
 
 	base = doc->root;
 
-	if (base == NULL) {
+	if (base == NULL || 
+	    g_strcasecmp (base->name, "SUMMARY_DATA") != 0) {
 		xmlFreeDoc (doc);
-		g_warning (_("The summary configuration contains no data!\n"));
 		return NULL;
 	}
-
-	if (g_strcasecmp (base->name, "SUMMARY_DATA")) {
-		g_print (_("Cannot find the SUMMARY_DATA xmlnode!\n"));
-		xmlFreeDoc (doc);
-		g_warning (_("Bailing from the SUMMARY_DATA parse!\n"));
-		return NULL;
-	}
-
-	child = doc->root->xmlChildrenNode;
-
+	
+	return_value = summary_data_new ();
+	
+	child = base->xmlChildrenNode;
+	
 	if (child == NULL) {
-		g_print (_("Could not find any summary configuration data!\n"));
 		xmlFreeDoc (doc);
-		g_warning (_("Bailing from summary configuration parse!\n"));
 		return NULL;
 	}
-
+	
 	while (child) {
 		if (g_strcasecmp (child->name, "SERVICES") == 0) {
 			return_value->services_list = build_services_glist_from_xml (child);
@@ -319,8 +307,64 @@ parse_summary_xml_file (const char *url)
 		}
 		child = child->next;
 	}
-
+	
 	return return_value;
+}
 
-} /* parse_summary_xml_file */
+
+struct EazelSummaryFetchHandle {
+	TrilobiteReadFileHandle *handle;
+	EazelSummaryFetchCallback callback;
+	gpointer callback_data;
+};
+
+
+
+static void
+summary_data_fetch_callback (GnomeVFSResult    result,
+			     GnomeVFSFileSize  file_size,
+			     char             *file_contents,
+			     gpointer          callback_data)
+{
+	EazelSummaryFetchHandle *handle;
+	SummaryData *summary_data;
+
+	summary_data = NULL; 
+	handle = callback_data;
+
+	if (result == GNOME_VFS_OK) {
+		summary_data = eazel_summary_data_parse_xml (file_contents, 
+							     file_size);
+	}
+	
+	(*handle->callback) (result, summary_data, handle->callback_data);
+	g_free (handle);
+	g_free (file_contents);
+}
+
+
+EazelSummaryFetchHandle *
+eazel_summary_fetch_data_async (const char *uri,
+				EazelSummaryFetchCallback callback,
+				gpointer callback_data)
+{
+	EazelSummaryFetchHandle *handle;
+
+	handle = g_new0 (EazelSummaryFetchHandle, 1);
+
+	handle->callback = callback;
+	handle->callback_data = callback_data;
+
+	handle->handle = trilobite_read_entire_file_async (uri, summary_data_fetch_callback, handle);
+
+	return handle;
+}
+
+
+void
+eazel_summary_fetch_data_cancel (EazelSummaryFetchHandle *handle)
+{
+	trilobite_read_file_cancel (handle->handle);
+	g_free (handle);
+}
 

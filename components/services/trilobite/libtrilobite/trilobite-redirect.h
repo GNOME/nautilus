@@ -5,7 +5,7 @@
  *  a remote xml file, store it in gconf, and then lookup entries
  *  later.  this may only be useful for eazel services.
  *
- *  Copyright (C) 2000 Eazel, Inc
+ *  Copyright (C) 2000, 2001 Eazel, Inc
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public
@@ -24,12 +24,28 @@
  *  Authors: Robey Pointer <robey@eazel.com>
  */
 
-#ifndef _TRILOBITE_REDIRECT_H_
-#define _TRILOBITE_REDIRECT_H_
+#ifndef TRILOBITE_REDIRECT_H
+#define TRILOBITE_REDIRECT_H
 
-void trilobite_redirect_parse_xml (char *blob, int length);
-gboolean trilobite_redirect_fetch_table (const char *url);
+#include <libgnomevfs/gnome-vfs.h>
+#include <glib.h>
+
+typedef void     (* TrilobiteRedirectFetchCallback) (GnomeVFSResult result,
+						     gboolean parsed_xml,
+						     gpointer callback_data);
+
+typedef struct TrilobiteRedirectFetchHandle TrilobiteRedirectFetchHandle;
+
+
+TrilobiteRedirectFetchHandle *trilobite_redirect_fetch_table_async (const char *uri,
+								    TrilobiteRedirectFetchCallback callback,
+								    gpointer callback_data);
+
+void                          trilobite_redirect_fetch_table_cancel (TrilobiteRedirectFetchHandle *handle);
+
+
 char *trilobite_redirect_lookup (const char *key);
+
 const char *trilobite_get_services_address (void);
 
-#endif	/* _TRILOBITE_REDIRECT_H_ */
+#endif	/* TRILOBITE_REDIRECT_H */

@@ -38,6 +38,7 @@
 #include "eazel-services-header.h"
 #include "eazel-services-extensions.h"
 
+#include <libnautilus-extensions/nautilus-clickable-image.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
@@ -75,9 +76,12 @@
 #define SUMMARY_TEXT_HEADER_SIZE_REL (0)
 #define SUMMARY_TEXT_BODY_SIZE_REL (-2)
 
+typedef struct ServicesButtonCallbackData ServicesButtonCallbackData;
 
-
-
+struct ServicesButtonCallbackData {
+	NautilusView    *view;
+	char            *uri;
+};
 
 static void     nautilus_summary_view_initialize_class (NautilusSummaryViewClass   *klass);
 static void     nautilus_summary_view_initialize       (NautilusSummaryView        *view);
@@ -85,8 +89,9 @@ static void     nautilus_summary_view_destroy          (GtkObject               
 static void     summary_load_location_callback         (NautilusView               *nautilus_view,
 							const char                 *location,
 							NautilusSummaryView        *view);
-static void     generate_summary_form                  (NautilusSummaryView        *view);
-static GtkWidget *generate_eazel_news_entry_row        (NautilusSummaryView        *view,
+static void     summary_stop_loading_callback          (NautilusView               *nautilus_view,
+							NautilusSummaryView        *view);
+static GtkWidget * generate_eazel_news_entry_row       (NautilusSummaryView        *view,
 							void                       *data);
 static GtkWidget * generate_service_entry_row          (NautilusSummaryView        *view,
 							void                       *data);
@@ -94,21 +99,23 @@ static GtkWidget * generate_update_news_entry_row      (NautilusSummaryView     
 							void                       *data);
 static void     summary_view_button_callback           (GtkWidget                  *button, 
 							ServicesButtonCallbackData *cbdata);
+static void     cancel_load_in_progress                (NautilusSummaryView *view);
+
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSummaryView, nautilus_summary_view, GTK_TYPE_EVENT_BOX)
 
 static const char *footer_online_items[] =
 {
-	N_("Register"),
-	N_("Login"),
+	N_("Account Preferences"),
+	N_("Logout"),
 	N_("Terms of Use"),
 	N_("Privacy Statement")
 };
 
 static const char *footer_offline_items[] =
 {
-	N_("Account Preferences"),
-	N_("Logout"),
+	N_("Register"),
+	N_("Login"),
 	N_("Terms of Use"),
 	N_("Privacy Statement")
 };
@@ -133,8 +140,7 @@ update_header (NautilusSummaryView *view)
 static void
 create_header (NautilusSummaryView *view)
 {
-	view->details->header = eazel_services_header_title_new ("");
-	update_header (view);
+	view->details->header = eazel_services_header_title_new (_("Connecting to Eazel Services..."));
 }
 
 
@@ -143,12 +149,12 @@ update_footer (NautilusSummaryView *view)
 {
 	if (view->details->logged_in) {
 		eazel_services_footer_update (EAZEL_SERVICES_FOOTER (view->details->footer),
-					      footer_offline_items,
-					      NAUTILUS_N_ELEMENTS (footer_offline_items));
-	} else {
-		eazel_services_footer_update (EAZEL_SERVICES_FOOTER (view->details->footer),
 					      footer_online_items,
 					      NAUTILUS_N_ELEMENTS (footer_online_items));
+	} else {
+		eazel_services_footer_update (EAZEL_SERVICES_FOOTER (view->details->footer),
+					      footer_offline_items,
+					      NAUTILUS_N_ELEMENTS (footer_offline_items));
 	}
 }
 
@@ -157,34 +163,56 @@ create_footer (NautilusSummaryView *view)
 {
 	view->details->footer = eazel_services_footer_new ();
 
+	eazel_services_footer_update (EAZEL_SERVICES_FOOTER (view->details->footer),
+				      footer_offline_items,
+				      NAUTILUS_N_ELEMENTS (footer_offline_items));
+
 	gtk_signal_connect (GTK_OBJECT (view->details->footer), "item_clicked", 
 			    GTK_SIGNAL_FUNC (footer_item_clicked_callback), view);
-
-	update_footer (view);
 }
 
 
+static void
+services_button_callback_data_free (ServicesButtonCallbackData *cbdata)
+{
+	g_free (cbdata->uri);
+	g_free (cbdata);
+}
 
-/* callback to handle the goto a service button. */
+
 static void
 summary_view_button_callback (GtkWidget                  *button, 
 			      ServicesButtonCallbackData *cbdata)
 {
 	
-	nautilus_view_open_location_in_this_window (cbdata->nautilus_view, cbdata->uri);
+	nautilus_view_open_location_in_this_window (cbdata->view, cbdata->uri);
+}
+
+static void
+goto_uri_on_clicked (GtkWidget *widget,
+		     NautilusView *view,
+		     const char *uri)
+{
+	ServicesButtonCallbackData *cbdata;
+	
+	cbdata = g_new0 (ServicesButtonCallbackData, 1);
+	cbdata->view = view;
+	cbdata->uri = g_strdup (uri);
+	
+	gtk_signal_connect_full (GTK_OBJECT (widget), "clicked",
+			         GTK_SIGNAL_FUNC (summary_view_button_callback), NULL,
+				 cbdata, (GtkDestroyNotify) services_button_callback_data_free,
+				 FALSE, FALSE);
 }
 
 static GtkWidget *
 summary_view_button_new (char *label_text,
 			 NautilusView *view,
-			 char *uri)
+			 const char *uri)
 {
 	GtkWidget *button;
 	GtkWidget *label;
-	ServicesButtonCallbackData *cbdata;
-
-	cbdata = g_new0 (ServicesButtonCallbackData, 1);
-
+	
 	button = gtk_button_new ();
 	/* FIXME: hardcoded width! */
 	gtk_widget_set_usize (button, 80, -1);
@@ -193,16 +221,29 @@ summary_view_button_new (char *label_text,
 	gtk_widget_show (label);
 	gtk_container_add (GTK_CONTAINER (button), label);
 	
-	cbdata->nautilus_view = view;
-	cbdata->uri = uri;
-	
-	/* FIXME: g_free won't free all the data */
-	gtk_signal_connect_full (GTK_OBJECT (button), "clicked",
-			         GTK_SIGNAL_FUNC (summary_view_button_callback), NULL,
-				 cbdata, g_free, FALSE, FALSE);
+	goto_uri_on_clicked (button, view, uri);
 	
 	return button;
 }
+
+static GtkWidget *
+summary_view_link_image_new (NautilusSummaryView *view,
+			     const char *image_uri,
+			     const char *click_uri)
+{
+	GtkWidget *image;
+
+	image = eazel_services_clickable_image_new_from_uri (image_uri,
+							     NULL,
+							     DEFAULT_SUMMARY_BACKGROUND_COLOR_RGB,
+							     MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT);
+	nautilus_clickable_image_set_prelight (NAUTILUS_CLICKABLE_IMAGE (image), TRUE);
+
+	goto_uri_on_clicked (image, view->details->nautilus_view, click_uri);
+	
+	return image;
+}
+
 
 static GtkWidget *
 summary_view_item_label_new (char *label_text, 
@@ -262,6 +303,8 @@ append_hseparator_to_vbox (GtkWidget *vbox)
 			    separator, FALSE, FALSE, 8);
 
 }
+
+
 
 
 static GtkWidget *
@@ -387,7 +430,6 @@ create_news_pane (NautilusSummaryView *view)
 {
 	view->details->news_pane = summary_view_create_pane 
 		(view, &view->details->news_item_vbox);
-	update_news_pane (view);
 }
 
 
@@ -416,11 +458,9 @@ generate_service_entry_row  (NautilusSummaryView *view,
 
 	gtk_widget_show (icon_box);
 
-	icon = eazel_services_image_new_from_uri (services_node->icon,
-						  NULL,
-						  DEFAULT_SUMMARY_BACKGROUND_COLOR_RGB,
-						  MAX_IMAGE_WIDTH,
-						  MAX_IMAGE_HEIGHT);
+	icon =  summary_view_link_image_new (view,
+					     services_node->icon,
+					     services_node->uri);
 	gtk_widget_show (icon);
 	gtk_box_pack_start (GTK_BOX (icon_box), icon, FALSE, FALSE, 0);
 
@@ -479,7 +519,6 @@ create_services_list_pane (NautilusSummaryView *view)
 {
 	view->details->services_list_pane = summary_view_create_pane 
 		(view, &view->details->services_list_vbox);
-	update_services_list_pane (view);
 }
 
 
@@ -510,12 +549,9 @@ generate_update_news_entry_row  (NautilusSummaryView *view,
 	gtk_widget_show (icon_box);
 	gtk_box_pack_start (GTK_BOX (update_row), icon_box, FALSE, FALSE, 0);
 
-	icon = eazel_services_image_new_from_uri (update_node->icon,
-						  NULL,
-						  DEFAULT_SUMMARY_BACKGROUND_COLOR_RGB,
-						  MAX_IMAGE_WIDTH,
-						  MAX_IMAGE_HEIGHT);
-
+	icon =  summary_view_link_image_new (view,
+					     update_node->icon,
+					     update_node->softcat_uri);
 	gtk_widget_show (icon);
 	gtk_box_pack_start (GTK_BOX (icon_box), icon, FALSE, FALSE, 0);
 
@@ -596,139 +632,72 @@ create_featured_downloads_pane (NautilusSummaryView *view)
 {
 	view->details->featured_downloads_pane = summary_view_create_pane 
 		(view, &view->details->featured_downloads_vbox);
-	update_featured_downloads_pane (view);
 }
 
 
 static void
-generate_summary_form (NautilusSummaryView *view)
+update_summary_form (NautilusSummaryView *view,
+		     SummaryData *xml_data)
 {
-	GtkWidget		*notebook;
+	view->details->xml_data = xml_data;
+
+	update_header (view);
+	update_news_pane (view);
+	update_services_list_pane (view);
+	update_featured_downloads_pane (view);
+	update_footer (view);
+}
+
+
+static void
+create_summary_form (NautilusSummaryView *view)
+{
 	GtkWidget               *notebook_tabs;
-	GtkWidget		*notebook_vbox;
 	
-	if (view->details->form != NULL) {
-		gtk_container_remove (GTK_CONTAINER (view), view->details->form);
-		view->details->form = NULL;
-	}
-
-#ifdef DEBUG_pepper
-	g_print ("Start summary view load.\n");
-
-#endif
 	/* allocate the parent box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (view), view->details->form);
 
-	/* setup the title */
-#ifdef DEBUG_pepper
-	g_print ("Start title load.\n");
-#endif
-
 	create_header (view);
-
 	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->header, FALSE, FALSE, 0);
 	gtk_widget_show (view->details->header);
-#ifdef DEBUG_pepper
-	g_print ("end title load.\n");
-#endif
 
-
-#ifdef DEBUG_pepper
-	g_print ("start news load.\n");
-#endif
-
+	/* Create the News pane */
 	create_news_pane (view);
-	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->news_pane, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->news_pane, FALSE, FALSE, 0);
 	gtk_widget_show (view->details->news_pane);		
 
-
-#ifdef DEBUG_pepper
-	g_print ("end news load.\n");
-#endif
-	
-	/* add a set of tabs to control the notebook page switching */
-#ifdef DEBUG_pepper
-	g_print ("start tab load.\n");
-#endif
+	/* Header for Services pane */
 	notebook_tabs = nautilus_tabs_new ();
+	nautilus_tabs_add_tab (NAUTILUS_TABS (notebook_tabs), _("Services"), 0);
 	gtk_widget_show (notebook_tabs);
 	gtk_box_pack_start (GTK_BOX (view->details->form), notebook_tabs, FALSE, FALSE, 0);
 
-	/* Create the notebook container for services */
-	notebook = gtk_notebook_new ();
-	gtk_widget_show (notebook);
-	gtk_box_pack_start (GTK_BOX (view->details->form), notebook, TRUE, TRUE, 0);
-	
-	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), FALSE);
-
-	/* add the tab */
-	nautilus_tabs_add_tab (NAUTILUS_TABS (notebook_tabs), _("Services"), 0);
-#ifdef DEBUG_pepper
-	g_print ("end tab load.\n");
-#endif
-	
-	/* Create the Services Listing Box */
-#ifdef DEBUG_pepper
-	g_print ("start services load.\n");
-#endif
+	/* Create the Services pane */
 	create_services_list_pane (view);
 	gtk_widget_show (view->details->services_list_pane);
-	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), view->details->services_list_pane, NULL);
+	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->services_list_pane, TRUE, TRUE, 0);
 
-#ifdef DEBUG_pepper
-	g_print ("end services load.\n");
-#endif
-
-	/* Create the notebook container for updates */
-#ifdef DEBUG_pepper
-	g_print ("start updates load.\n");
-#endif
-	/* add a set of tabs to control the updates page switching */
-	notebook_vbox = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (notebook_vbox);
+	/* Header for Featured Downloads pane */
 	notebook_tabs = nautilus_tabs_new ();
-	gtk_widget_show (notebook_tabs);
-	gtk_box_pack_start (GTK_BOX (notebook_vbox), notebook_tabs, FALSE, FALSE, 0);
-
-	notebook = gtk_notebook_new ();
-	gtk_widget_show (notebook);
-	gtk_container_add (GTK_CONTAINER (notebook_vbox), notebook);
-	gtk_box_pack_start (GTK_BOX (view->details->form), notebook_vbox, TRUE, TRUE, 0);
-	
-	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), FALSE);
-	
-	/* add the tab */
 	nautilus_tabs_add_tab (NAUTILUS_TABS (notebook_tabs), _("Featured Downloads"), 0);
+	gtk_widget_show (notebook_tabs);
+	gtk_box_pack_start (GTK_BOX (view->details->form), notebook_tabs, FALSE, FALSE, 0);
 
-	/* Create the Update News Frame */
+	/* Create the Featured Downloads pane */
 	create_featured_downloads_pane (view);
-
 	gtk_widget_show (view->details->featured_downloads_pane);
-	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), view->details->featured_downloads_pane, NULL);
-
-#ifdef DEBUG_pepper
-	g_print ("end updates load.\n");
-
-	g_print ("start footer load.\n");
-#endif
+	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->featured_downloads_pane, TRUE, TRUE, 0);
 
 	create_footer (view);
 	gtk_widget_show (view->details->footer);
-
 	gtk_box_pack_start (GTK_BOX (view->details->form), 
 			    view->details->footer, 
 			    FALSE, FALSE, 0);
 
-#ifdef DEBUG_pepper
-	g_print ("end footer load.\n");
-#endif
 
 	/* Finally, show the form that hold everything */
 	gtk_widget_show (view->details->form);
-#ifdef DEBUG_pepper
-	g_print ("Load summary view end.\n");
-#endif
 }
 
 
@@ -761,6 +730,13 @@ nautilus_summary_view_initialize (NautilusSummaryView *view)
 			    GTK_SIGNAL_FUNC (summary_load_location_callback), 
 			    view);
 
+	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
+			    "stop_loading",
+			    GTK_SIGNAL_FUNC (summary_stop_loading_callback), 
+			    view);
+
+
+
 	view->details->user_control = ammonite_get_user_control ();
 
 	if (CORBA_NO_EXCEPTION != ev._major) {
@@ -776,6 +752,8 @@ nautilus_summary_view_initialize (NautilusSummaryView *view)
                             merge_bonobo_menu_items,
                             view);
 
+	create_summary_form (view);
+
 	gtk_widget_show (GTK_WIDGET (view));
 
 	CORBA_exception_free (&ev);
@@ -786,12 +764,14 @@ static void
 nautilus_summary_view_destroy (GtkObject *object)
 {
 
-	NautilusSummaryView	*view;
+	NautilusSummaryView *view;
 	CORBA_Environment ev;
 
 	CORBA_exception_init (&ev);
 
 	view = NAUTILUS_SUMMARY_VIEW (object);
+
+	cancel_load_in_progress (view);
 
 	if (view->details->uri) {
 		g_free (view->details->uri);
@@ -816,83 +796,130 @@ nautilus_summary_view_get_nautilus_view (NautilusSummaryView *view)
 
 }
 
+static void
+summary_fetch_callback (GnomeVFSResult result,
+			SummaryData *xml_data,
+			gpointer callback_data)
+{
+	NautilusSummaryView *view;
+
+	view = NAUTILUS_SUMMARY_VIEW (callback_data);
+	view->details->summary_fetch_handle = NULL;
+
+	if (result != GNOME_VFS_OK) {
+		nautilus_summary_show_error_dialog 
+			(view, _("Unable to get services data from Eazel's server. "
+				 "The server might be unavailable right now, "
+				 "or your computer might be configured incorrectly."
+				 "Please contact support@eazel.com."));
+		return;
+	} 
+
+	
+	if (xml_data == NULL) {
+		nautilus_summary_show_error_dialog 
+			(view, _("Found a problem with services data on Eazel servers. "
+				 "Please contact support@eazel.com."));
+		return;
+	} 
+
+	update_summary_form (view, xml_data);		
+		
+	if (!view->details->logged_in) {
+		nautilus_summary_show_login_dialog (view);
+	}
+
+	nautilus_view_report_load_complete (view->details->nautilus_view);
+}
+
+
+static void
+redirect_fetch_callback (GnomeVFSResult result,
+			 gboolean parsed_xml,
+			 gpointer callback_data)
+{
+	NautilusSummaryView *view;
+	char *uri;
+
+	view = NAUTILUS_SUMMARY_VIEW (callback_data);
+
+	view->details->redirect_fetch_handle = NULL;
+
+	if (result != GNOME_VFS_OK) {
+		nautilus_summary_show_error_dialog 
+			(view, _("Unable to connect to Eazel's server. "
+				 "The server might be unavailable right now, "
+				 "or your computer might be configured incorrectly."
+				 "You could try again later."));
+		return;
+	} 
+
+
+	if (!parsed_xml) {
+		nautilus_summary_show_error_dialog 
+			(view, _("Found a problem with redirect data on Eazel servers. "
+				 "Please contact support@eazel.com."));
+		return;
+	} 
+
+	/* Read and parse summary view XML */
+
+	uri = trilobite_redirect_lookup (SUMMARY_XML_KEY);
+
+	if (uri == NULL) {
+		nautilus_summary_show_error_dialog 
+			(view, _("Information is missing from the redirect data on Eazel servers. "
+				 "Please contact support@eazel.com."));
+		return;
+	}
+
+
+	view->details->summary_fetch_handle = eazel_summary_fetch_data_async 
+		(uri, summary_fetch_callback, view);
+	g_free (uri);
+}
+
+
+
+
+static void
+cancel_load_in_progress (NautilusSummaryView *view)
+{
+	if (view->details->redirect_fetch_handle != NULL) {
+		trilobite_redirect_fetch_table_cancel (view->details->redirect_fetch_handle);
+		view->details->redirect_fetch_handle = NULL;
+	}
+
+	if (view->details->summary_fetch_handle != NULL) {
+		eazel_summary_fetch_data_cancel (view->details->summary_fetch_handle);
+		view->details->summary_fetch_handle = NULL;
+	}
+}
+
 void
 nautilus_summary_view_load_uri (NautilusSummaryView	*view,
 			        const char		*uri)
 {
-	char		*url;
 	char		*user_name;
-	gboolean	got_url_table;
-
-	url = NULL;
 
 	/* set up some sanity values for error control */
 	view->details->attempt_number = 0;
 	view->details->current_attempt = initial;
 
-	/* dispose of any old uri and copy in the new one */	
 	g_free (view->details->uri);
 	view->details->uri = g_strdup (uri);
-
-	/* get xml data and verify network connections */
-#ifdef DEBUG_pepper
-	g_print ("start load\n");
-#endif
 
 	user_name = ammonite_get_default_user_username ();
 	view->details->logged_in = (NULL != user_name);
 	g_free (user_name);
 	user_name = NULL;
 
-#ifdef DEBUG_pepper
-	g_print ("start xml table fetch\n");
-#endif
-	got_url_table = trilobite_redirect_fetch_table 
-		(view->details->logged_in
-		 ? URL_REDIRECT_TABLE_HOME_2
-		 : URL_REDIRECT_TABLE_HOME);
+	cancel_load_in_progress (view);
 
-	if (!got_url_table) {
-		/* FIXME bugzilla.eazel.com 3743:
-		 * We should do more to figure out why this failed so we can
-		 * present a much more helpful message. There are several different
-		 * reasons why it might have failed.
-		 */
-		generate_error_dialog 
-			(view, _("Unable to connect to Eazel's server. "
-				 "The server might be unavailable right now, "
-				 "or your computer might be configured incorrectly."
-				 "You could try again later."));
-	} else {
-#ifdef DEBUG_pepper
-		g_print ("end xml table fetch\n");
-		/* fetch and parse the xml file */
-		g_print ("start xml config fetch\n");
-#endif
-		url = trilobite_redirect_lookup (SUMMARY_XML_KEY);
-		if (!url) {
-			g_assert ("Failed to get summary xml home !\n");
-		}
-		view->details->xml_data = parse_summary_xml_file (url);
-		g_free (url);
-		if (view->details->xml_data == NULL) {
-			generate_error_dialog 
-				(view, _("Found problem with data on Eazel servers. "
-					 "Please contact support@eazel.com."));
-		} else {
-#ifdef DEBUG_pepper
-			g_print ("end xml config fetch\n");
-			g_print ("start summary draw\n");
-#endif
-			generate_summary_form (view);		
-#ifdef DEBUG_pepper
-			g_print ("end summary draw\n");
-#endif
-			if (!view->details->logged_in) {
-				generate_login_dialog (view);
-			}
-		}
-	}
+	view->details->redirect_fetch_handle = trilobite_redirect_fetch_table_async 
+		(view->details->logged_in ? URL_REDIRECT_TABLE_HOME_2 : URL_REDIRECT_TABLE_HOME,
+		 redirect_fetch_callback,
+		 view);
 }
 
 static void
@@ -907,6 +934,14 @@ summary_load_location_callback (NautilusView		*nautilus_view,
 	nautilus_view_set_title (nautilus_view, "Eazel Services");
 	
 	nautilus_summary_view_load_uri (view, location);
+}
 
-	nautilus_view_report_load_complete (nautilus_view);
+
+
+static void
+summary_stop_loading_callback (NautilusView               *nautilus_view,
+			       NautilusSummaryView        *view)
+
+{
+	cancel_load_in_progress (view);
 }

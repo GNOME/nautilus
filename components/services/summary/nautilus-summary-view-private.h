@@ -25,6 +25,8 @@
 
 #include <libtrilobite/libammonite.h>
 
+#include <libtrilobite/trilobite-redirect.h>
+
 #include <gnome.h>
 
 #define DEFAULT_SUMMARY_BACKGROUND_COLOR_SPEC	"rgb:FFFF/FFFF/FFFF"
@@ -70,8 +72,6 @@ enum {
 	LOGIN_DIALOG_CANCEL_BUTTON
 };
 
-typedef struct _ServicesButtonCallbackData ServicesButtonCallbackData;
-
 typedef enum {
 	Pending_None,
 	Pending_Login,
@@ -83,11 +83,6 @@ typedef enum {
 	fail,
 } SummaryLoginAttemptType;
 
-
-struct _ServicesButtonCallbackData {
-	NautilusView    *nautilus_view;
-	char            *uri;
-};
 
 /* A NautilusContentView's private information. */
 struct _NautilusSummaryViewDetails {
@@ -118,23 +113,12 @@ struct _NautilusSummaryViewDetails {
 	SummaryPendingOperationType	pending_operation;
 	EazelProxy_AuthnCallback	authn_callback;
 
-	/* Login Frame Widgets */
+	/* Login Dialog */
 	GnomeDialog			*login_dialog;
-	GtkWidget			*username_label;
-	GtkWidget			*password_label;
-	GtkWidget			*username_entry;
-	GtkWidget			*password_entry;
-	/* Buttons available if user is not logged in */
-	GtkWidget			*login_button;
-	GtkWidget			*login_label;
-	GtkWidget			*register_button;
-	GtkWidget			*register_label;
-	/* Buttons available if user is logged in */
-	GtkWidget			*preferences_button;
-	GtkWidget			*preferences_label;
-	GtkWidget			*logout_button;
-	GtkWidget			*logout_label;
 
+	/* Async XML fetch handles */
+	TrilobiteRedirectFetchHandle *redirect_fetch_handle;
+	EazelSummaryFetchHandle *summary_fetch_handle;
 };
 
 

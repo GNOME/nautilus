@@ -90,7 +90,7 @@ footer_item_clicked_callback (GtkWidget *widget, int index, gpointer callback_da
 
 	case FOOTER_LOGIN_OR_LOGOUT:
 		if (!view->details->logged_in) {
-			generate_login_dialog (view);
+			nautilus_summary_show_login_dialog (view);
 		} else {
 			logout_button_cb (NULL, view);
 		}

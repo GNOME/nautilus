@@ -28,9 +28,11 @@
 
 #include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>
+#include <glib.h>
 
 char *trilobite_xml_get_string (xmlNode *node, const char *name);
 gboolean trilobite_fetch_uri (const char *uri_text, char **body, int *length);
 gboolean trilobite_fetch_uri_to_file (const char *uri_text, const char *filename);
+
 
 #endif /* TRILOBITE_CORE_NETWORK_H */

@@ -62,7 +62,8 @@ static void		name_or_password_field_activated	(GtkWidget			*caption_table,
 								 gpointer			user_data);
 
 void
-nautilus_summary_login_failure_dialog (NautilusSummaryView *view, const char *message)
+nautilus_summary_show_login_failure_dialog (NautilusSummaryView *view, 
+					    const char *message)
 {
 	nautilus_show_error_dialog (message, 
 			            _("Eazel Service Login Error"), 
@@ -70,7 +71,8 @@ nautilus_summary_login_failure_dialog (NautilusSummaryView *view, const char *me
 }
 
 void
-generate_error_dialog (NautilusSummaryView *view, const char *message)
+nautilus_summary_show_error_dialog (NautilusSummaryView *view, 
+				     const char *message)
 {
 	GnomeDialog	*dialog;
 
@@ -84,7 +86,7 @@ generate_error_dialog (NautilusSummaryView *view, const char *message)
 }
 
 void
-generate_login_dialog (NautilusSummaryView	*view)
+nautilus_summary_show_login_dialog (NautilusSummaryView *view)
 {
 	GnomeDialog	*dialog;
 	GtkWidget	*hbox;
@@ -225,12 +227,10 @@ widget_set_nautilus_background_color (GtkWidget *widget, const char *color)
 
 /* callback to handle cancel error_dialog button. */
 static void
-error_dialog_cancel_cb (GtkWidget      *button, NautilusSummaryView	*view)
+error_dialog_cancel_cb (GtkWidget *button, 
+			NautilusSummaryView *view)
 {
-	char	*user_home;
-	user_home = nautilus_get_user_main_directory ();	
-	nautilus_view_open_location_in_this_window (view->details->nautilus_view, user_home);
-	g_free (user_home);
+	nautilus_view_go_back (view->details->nautilus_view);
 }
 
 static GtkWindow *
@@ -251,14 +251,40 @@ get_window_from_summary_view (NautilusSummaryView *view)
 static void
 set_dialog_parent (NautilusSummaryView *view, GnomeDialog *dialog)
 {
-	GtkWindow *parent_window;
+	GtkWindow *parent;
 
 	g_assert (NAUTILUS_IS_SUMMARY_VIEW (view));
 	g_assert (GNOME_IS_DIALOG (dialog));
 
-	parent_window = get_window_from_summary_view (view);
-	if (parent_window != NULL) {
-		gnome_dialog_set_parent (dialog, parent_window);
+	parent = get_window_from_summary_view (view);
+	if (parent != NULL && gnome_preferences_get_dialog_centered ()) {
+		/* User wants us to center over parent */
+		
+		/* FIXME: this is cut and pasted from gnome-dialog.h,
+		 * because calling gnome_dialog_set_parent would make
+		 * the dialog transient for the summary view's plug
+		 * widget, not the top level window, thus making it
+		 * not get focus.
+		 */
+		gint x, y, w, h, dialog_x, dialog_y;
+		
+		if (!GTK_WIDGET_VISIBLE (parent)) return; /* Can't get its
+							     size/pos */
+		
+		/* Throw out other positioning */
+		gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_NONE);
+		
+		gdk_window_get_origin (GTK_WIDGET (parent)->window, &x, &y);
+		gdk_window_get_size (GTK_WIDGET (parent)->window, &w, &h);
+		
+		/* The problem here is we don't know how big the dialog is.
+		   So "centered" isn't really true. We'll go with 
+		   "kind of more or less on top" */
+		
+		dialog_x = x + w/4;
+		dialog_y = y + h/4;
+		
+		gtk_widget_set_uposition (GTK_WIDGET (dialog), dialog_x, dialog_y); 
 	}
 }
 
