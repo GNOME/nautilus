@@ -1808,6 +1808,11 @@ nautilus_self_check_file_utilities (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http:///?"), "http:///?");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http:///x"), "http:///x");
 
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.Eazel.Com/xXx"), "http://www.eazel.com/xXx");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("ftp://Darin@www.Eazel.Com/xXx"), "ftp://Darin@www.eazel.com/xXx");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.Eazel.Com:80/xXx"), "http://www.eazel.com:80/xXx");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("ftp://Darin@www.Eazel.Com:80/xXx"), "ftp://Darin@www.eazel.com:80/xXx");
+
 	/* FIXME bugzilla.eazel.com 4101: Why append a slash in this case, but not in the http://www.eazel.com case? */
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.eazel.com:80"), "http://www.eazel.com:80/");
 
@@ -1868,14 +1873,14 @@ nautilus_self_check_file_utilities (void)
 	TEST_PARTIAL ("g/../", "http://a/b/c/");
 	TEST_PARTIAL ("g/../g", "http://a/b/c/g");
 
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display (""), "/");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display (":"), ":");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///h/user"), "/h/user");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///%68/user/foo%2ehtml"), "/h/user/foo.html");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///h/user/foo.html#fragment"), "file:///h/user/foo.html#fragment");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("http://www.eazel.com"), "http://www.eazel.com");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("http://www.eazel.com/jobs#Engineering"), "http://www.eazel.com/jobs#Engineering");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file"), "file:///file");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display (""), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display (":"), ":");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file"), "/file");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///#"), "file:///#");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///"), "/");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///%20%23"), "/ #");
@@ -1894,15 +1899,16 @@ nautilus_self_check_file_utilities (void)
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/file#gunzip:///", "file:///h/user/file"), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/file.html.gz#gunzip:///#fragment", "file:///h/user/file.html.gz"), TRUE);
 
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("http://www.Eazel.Com:80", "http://www.eazel.com:80"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("http://www.Eazel.Com:80", "http://www.eazel.com:80"), TRUE);
+
 	/* Note that it's illegal to have a # in a scheme name */
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("fi#le:///h/user/file", "fi#le:"), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("fi#le:///h/user/file", "fi"), FALSE);
 
-	/* FIXME bugzilla.eazel.com 6798: Host names should compare case-insensitive. */
+	/* FIXME bugzilla.eazel.com 6798: Host names don't compare case-insensitive in this case. */
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.Eazel.Com"), "http://www.Eazel.Com");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.Eazel.Com:80"), "http://www.Eazel.Com:80");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.Eazel.Com:80/xXx"), "http://www.Eazel.Com:80/xXx");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("ftp://Darin@www.Eazel.Com:80/xXx"), "ftp://Darin@www.Eazel.Com:80/xXx");
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("http://www.Eazel.Com", "http://www.eazel.com"), FALSE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("http://www.Eazel.Com", "http://www.eazel.com"), FALSE);
 
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("", ""), TRUE);
