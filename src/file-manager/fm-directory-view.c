@@ -2069,15 +2069,12 @@ static gboolean
 display_pending_idle_callback (gpointer data)
 {
 	FMDirectoryView *view;
-	
+		
 	view = FM_DIRECTORY_VIEW (data);
 
 	view->details->display_pending_idle_id = 0;
-	display_pending_files (view);
 
-	/* Don't do another idle until we receive more files. */
-
-	return FALSE;
+	return ! display_pending_files (view);
 }
 
 static gboolean

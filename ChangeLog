@@ -1,3 +1,15 @@
+2001-05-18  Yoann Vandoorselaere  <yoann@mandrakesoft.com>
+
+	Code reviewed by Darin Adler <darin@bentspoon.com>.
+	
+	* src/file-manager/fm-directory-view.c (display_pending_idle_callback): 
+	return TRUE if real_display_pending_files() return FALSE which mean 
+	that there is other icon to be drawn (the idle won't be removed until
+	the idle callback return FALSE).
+
+	return FALSE if real_display_pending_files() return TRUE, which mean
+	all files were drawn.
+
 2001-05-18  Jon K Hellan  <hellan@acm.org>
 
 	Code reviewed by Darin Adler <darin@bentspoon.com>
