@@ -1,5 +1,14 @@
 2000-04-19  John Sullivan  <sullivan@eazel.com>
 
+	* libnautilus-extensions/nautilus-directory.c:
+	(dequeue_pending_idle_callback), 
+	(nautilus_directory_file_monitor_remove_internal),
+	(nautilus_directory_notify_files_added): Deployed
+	new is_file_list_monitored function in three places.
+	Two of these were bugs, one was code duplication.
+
+2000-04-19  John Sullivan  <sullivan@eazel.com>
+
 	Fixed bug 494 (initial directory count never appears in sidebar).
 
 	This was a missing pieces of the async framework. Darin helped

@@ -1097,7 +1097,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
 	}
 
 	/* If we stopped monitoring, then throw away these. */
-	if (directory->details->file_monitors == NULL) {
+	if (!is_file_list_monitored (directory)) {
 		nautilus_gnome_vfs_file_info_list_free (pending_file_info);
 		return FALSE;
 	}
@@ -1223,25 +1223,12 @@ nautilus_directory_file_monitor_remove_internal (NautilusDirectory *directory,
 						 NautilusFile *file,
 						 gconstpointer client)
 {
-	GList *p;
-	FileMonitor *monitor;
-
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 
 	remove_file_monitor (directory, file, client);
 	cancel_unneeded_file_attribute_requests (directory);
 
-	/* Stop monitoring unless there are remaining monitors
-	 * that are watching all files (file == NULL).
-	 */	
-	for (p = directory->details->file_monitors; p != NULL; p = p->next) {
-		monitor = p->data;
-		if (monitor->file == NULL) {
-			break;
-		}
-	}
-	
-	if (p == NULL) {
+	if (!is_file_list_monitored (directory)) {
 		stop_monitoring_files (directory);
 	}
 }
@@ -1894,10 +1881,7 @@ nautilus_directory_notify_files_added (GList *uris)
 		}
 
 		/* If no one is monitoring files in the directory, nothing to do. */
-		/* FIXME: With John's changes this check may no longer be
-		 * correct.
-		 */
-		if (directory->details->file_monitors == NULL) {
+		if (!is_file_list_monitored (directory)) {
 			continue;
 		}
 
