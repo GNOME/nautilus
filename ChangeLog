@@ -1,3 +1,18 @@
+2000-11-06  Darin Adler  <darin@eazel.com>
+
+	Rolled fix for bug 4504 (select "view as others" leads to core dump)
+	here from HEAD.
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_directory_item_mime_types):
+	Change to return a copy of the MIME type list as designed.
+	
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_get_default_component_for_file_internal),
+	(nautilus_mime_get_short_list_components_for_file):
+	Change the callers that don't free the MIME type list so that they
+	now do.
+
 2000-11-06  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* nautilus-clean.sh:

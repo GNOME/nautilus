@@ -2092,12 +2092,13 @@ nautilus_file_get_directory_item_mime_types (NautilusFile *file,
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 	g_return_val_if_fail (mime_list != NULL, FALSE);
 
-	if (! nautilus_file_is_directory (file) || ! file->details->got_mime_list) {
+	if (!nautilus_file_is_directory (file)
+	    || !file->details->got_mime_list) {
 		*mime_list = NULL;
 		return FALSE;
 	}
 
-	*mime_list = file->details->mime_list;
+	*mime_list = nautilus_g_str_list_copy (file->details->mime_list);
 	return TRUE;
 }
 
