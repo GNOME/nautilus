@@ -322,6 +322,12 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 		target_uri = gnome_vfs_uri_new (target_uri_string);
 	}
 
+	if (target_uri == NULL) {
+		*default_action = 0;
+		*non_default_action = 0;
+		return;
+	}
+
 	/* Compare the first dropped uri with the target uri for same fs match. */
 	dropped_uri = gnome_vfs_uri_new (((DragSelectionItem *)items->data)->uri);
 	same_fs = TRUE;

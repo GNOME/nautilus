@@ -345,7 +345,7 @@ nautilus_icon_container_dropped_icon_feedback (GtkWidget *widget,
 
 	container = NAUTILUS_ICON_CONTAINER (widget);
 	dnd_info = container->details->dnd_info;
-
+	
 	/* Delete old selection list. */
 	nautilus_drag_destroy_selection_list (dnd_info->drag_info.selection_list);
 	dnd_info->drag_info.selection_list = NULL;
@@ -1344,7 +1344,7 @@ nautilus_icon_dnd_end_drag (NautilusIconContainer *container)
 	NautilusIconDndInfo *dnd_info;
 
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
-
+		
 	dnd_info = container->details->dnd_info;
 	g_return_if_fail (dnd_info != NULL);
 	stop_auto_scroll (container);

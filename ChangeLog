@@ -1,3 +1,15 @@
+2001-02-09  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 6453, Gnome VFS_CRITICAL received when dragging
+	nautilus link icons over each other.
+	
+	* libnautilus-extensions/nautilus-drag.c:
+	(nautilus_drag_default_drop_action_for_icons):
+	
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_container_dropped_icon_feedback),
+	(nautilus_icon_dnd_end_drag):
+
 2001-02-08  Robey Pointer  <robey@eazel.com>
 
 	* components/mozilla/nautilus-mozilla-content-view.c:
