@@ -26,14 +26,16 @@
 #include <config.h>
 #include "nautilus-program-choosing.h"
 
-#include <eel/eel-glib-extensions.h>
-#include <eel/eel-gnome-extensions.h>
 #include "nautilus-mime-actions.h"
 #include "nautilus-program-chooser.h"
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gnome-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <gtk/gtk.h>
+#include <libgnome/gnome-config.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -595,8 +597,44 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 static char *
 get_xalf_prefix (const char *name)
 {
-	/* FIXME bugzilla.eazel.com 7830: Add xalf support. */
-	return g_strdup ("");
+	char *xalf_executable;
+	GString *s;
+	int argc, i;
+	char **argv;
+	char *quoted;
+	char *prefix;
+
+	if (!gnome_config_get_bool ("/xalf/settings/enabled=true")) {
+		return g_strdup ("");
+	}
+	xalf_executable = gnome_is_program_in_path ("xalf");
+	if (xalf_executable != NULL) {
+		return g_strdup ("");
+	}
+
+	s = g_string_new (xalf_executable);
+	g_string_append (s, " --title ");
+	quoted = eel_shell_quote (name);
+	g_string_append (s, quoted);
+	g_free (quoted);
+	g_string_append_c (s, ' ');
+
+	gnome_config_get_vector ("/xalf/settings/options",
+				 &argc, &argv);
+	for (i = 0; i < argc; i++) {
+		quoted = eel_shell_quote (argv[i]);
+		g_free (argv[i]);
+
+		g_string_append (s, quoted);
+		g_string_append_c (s, ' ');
+
+		g_free (quoted);
+	}
+	g_free (argv);
+
+	prefix = s->str;
+	g_string_free (s, FALSE);
+	return prefix;
 }
 
 /**

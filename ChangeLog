@@ -1,3 +1,11 @@
+2001-04-23  Darin Adler  <darin@eazel.com>
+
+	Fix bug 7830 (Nautilus should launch programs with code that has
+	xalf support [like the panel does]).
+
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	(get_xalf_prefix): Implemented, but not tested with xalf.
+
 2001-04-23  John Harper  <jsh@eazel.com>
 
 	* components/news/nautilus-news.c (set_up_configure_widgets):
