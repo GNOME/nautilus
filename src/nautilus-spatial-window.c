@@ -449,7 +449,6 @@ nautilus_window_goto_uri (NautilusWindow *window, const char *uri)
   navinfo.new_window_enforced = Nautilus_V_UNKNOWN;
 
   nautilus_window_request_location_change (window, &navinfo, NULL);
-  nautilus_index_panel_set_uri (NAUTILUS_INDEX_PANEL (window->index_panel), uri); 
 }
 
 static void

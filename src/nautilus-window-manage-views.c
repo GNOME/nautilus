@@ -54,12 +54,15 @@ nautilus_window_progress_indicate(NautilusWindow *window, ProgressType type, dou
 {
   if(type == PROGRESS_ERROR)
     {
+      char *the_uri;
+
       gtk_widget_show(gnome_error_dialog_parented(msg, GTK_WINDOW(window)));
 
       /* If it was an error loading a URI that had been dragged to the location bar, we might
          need to reset the URI */
+      the_uri = window->ni?window->ni->requested_uri:"";
       explorer_location_bar_set_uri_string(EXPLORER_LOCATION_BAR(window->ent_uri),
-                                           window->ni?window->ni->requested_uri:"");
+                                           the_uri);
     }
 }
 
@@ -267,6 +270,7 @@ nautilus_window_update_internals(NautilusWindow *window, NautilusNavigationInfo 
   
   explorer_location_bar_set_uri_string(EXPLORER_LOCATION_BAR(window->ent_uri),
 				       window->ni->requested_uri);
+  nautilus_index_panel_set_uri (NAUTILUS_INDEX_PANEL (window->index_panel), window->ni->requested_uri);
 
   nautilus_window_refresh_title (window);
 }

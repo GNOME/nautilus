@@ -248,7 +248,7 @@ nautilus_directory_get (const char *uri)
 		gtk_object_ref (GTK_OBJECT (directory));
 	} else {
 		/* Create a new directory object instead. */
-		directory = NAUTILUS_DIRECTORY (nautilus_directory_new (uri));
+		directory = nautilus_directory_new (uri);
 		if (directory == NULL)
 			return NULL;
 

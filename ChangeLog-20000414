@@ -1,5 +1,17 @@
 2000-02-16  Elliot Lee  <sopwith@redhat.com>
 
+	* components/help/hyperbola-main.c: Fix the GOAD ID for help index.
+	* components/help/hyperbola.goad: Add help index.
+	* libnautilus/nautilus-directory.c: To avoid a warning in case
+	nautilus_directory_new fails, and speed things up, remove
+	unnecessary cast.
+	* libnautilus/nautilus-icon-factory.c: Add sanity checks to avoid segfaults.
+	* src/nautilus-index-title.c: Add sanity check, plus try to handle
+	case where nautilus_file_get() returns NULL.
+	* src/ntl-window.c, src/ntl-window-msgs.c: Notify the index panel
+	of a URI change when we notify everyone else, instead of doing it when
+	the user requests a change.
+
 	* components/html/ntl-web-browser.c: Fixups for VFS usage.
 	* components/help/converters/gnome-info2html2/main.c: Search info path for files.
 

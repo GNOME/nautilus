@@ -658,6 +658,8 @@ nautilus_icon_factory_get_pixbuf_for_icon (NautilusScalableIcon *scalable_icon,
         GdkPixbuf *image;
 	gpointer key_in_table, value;
 
+	g_return_val_if_fail(scalable_icon, NULL);
+
 	factory = nautilus_get_current_icon_factory ();
 	hash_table = factory->icon_cache;
 
@@ -796,6 +798,12 @@ nautilus_icon_factory_get_pixmap_and_mask_for_file (NautilusFile *file,
 						    GdkBitmap **mask)
 {
 	GdkPixbuf *pixbuf;
+
+	if(!file) {
+		*pixmap = NULL;
+		*mask = NULL;
+	}
+	g_return_if_fail(file);
 
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (file, size_in_pixels);
 	gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap, mask, 128);

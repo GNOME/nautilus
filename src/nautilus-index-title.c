@@ -115,6 +115,8 @@ nautilus_index_title_set_up_icon (NautilusIndexTitle *index_title, NautilusFile 
 {
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
+
+	g_return_if_fail(file_object);
 	
 	nautilus_icon_factory_get_pixmap_and_mask_for_file
 		(file_object, NAUTILUS_ICON_SIZE_STANDARD,
@@ -344,15 +346,17 @@ nautilus_index_title_set_uri(NautilusIndexTitle *index_title, const char* new_ur
 	NautilusFile *file_object;
 
 	file_object = nautilus_file_get(new_uri);
+
+	if(file_object) {
+		nautilus_index_title_set_up_icon (index_title, file_object);
 	
-	nautilus_index_title_set_up_icon (index_title, file_object);
-	
+		/* add various info */
+		nautilus_index_title_set_up_info(index_title, file_object);
+	}
+
 	/* add the name, in a variable-sized label */
 	nautilus_index_title_set_up_label (index_title, new_uri);
-	
-	/* add various info */
-	nautilus_index_title_set_up_info(index_title, file_object);
-	
+
 	/* FIXME: file_object can be NULL if this is a bad url, or one that
 	 * NautilusFile can't handle (e.g. http). The UI here needs to
 	 * be changed to account for that too.

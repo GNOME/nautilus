@@ -26,7 +26,7 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, void *closure)
 
   if(!strcmp(goad_id, "hyperbola_navigation_tree"))
     retval = hyperbola_navigation_tree_new();
-  else if(!strcmp(goad_id, "hyperbola_index_view"))
+  else if(!strcmp(goad_id, "hyperbola_navigation_index"))
     retval = hyperbola_navigation_index_new();
 
   if(retval)
