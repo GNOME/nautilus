@@ -1,3 +1,10 @@
+2002-04-14  Alexander Larsson  <alla@lysator.liu.se>
+
+	* libnautilus-private/nautilus-icon-container.c (nautilus_icon_container_add):
+	Avoid gnome-canvas move to top operation if there is no
+	rubber-band selection, because the new item will be on top already,
+	and the extra move_to_top was showing up badly on profiles.
+
 2002-04-13  Alexander Larsson  <alla@lysator.liu.se>
 
 	* components/text/Makefile.am:

@@ -3937,6 +3937,7 @@ nautilus_icon_container_add (NautilusIconContainer *container,
 {
 	NautilusIconContainerDetails *details;
 	NautilusIcon *icon;
+	GnomeCanvasItem *band, *item;
 	
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), FALSE);
 	g_return_val_if_fail (data != NULL, FALSE);
@@ -3962,7 +3963,11 @@ nautilus_icon_container_add (NautilusIconContainer *container,
 	icon->item->user_data = icon;
 
 	/* Make sure the icon is under the selection_rectangle */
-	icon_raise (icon);
+	item = GNOME_CANVAS_ITEM (icon->item);
+	band = NAUTILUS_ICON_CONTAINER (item->canvas)->details->rubberband_info.selection_rectangle;
+	if (band) {
+		eel_gnome_canvas_item_send_behind (item, band);
+	}
 	
 	/* Put it on both lists. */
 	details->icons = g_list_prepend (details->icons, icon);
