@@ -38,3 +38,4 @@ struct NautilusFileDetails
 NautilusFile *nautilus_file_new          (NautilusDirectory *directory,
 					  GnomeVFSFileInfo  *info);
 void          nautilus_file_emit_changed (NautilusFile      *file);
+void          nautilus_file_mark_gone    (NautilusFile      *file);

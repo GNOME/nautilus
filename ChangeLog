@@ -1,3 +1,24 @@
+2000-04-18  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(uri_get_directory_part), (uri_get_basename),
+	(get_parent_directory), (get_parent_directory_if_exists),
+	(call_files_added), (call_files_changed),
+	(hash_table_list_prepend),
+	(nautilus_directory_notify_files_added),
+	(nautilus_directory_notify_files_removed),
+	(nautilus_directory_notify_files_moved):
+	Another cut at the notify code.
+	
+	* libnautilus-extensions/nautilus-file-private.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_mark_gone): Made part of the deleted code
+	accessible for the notify code.
+
+	* libnautilus-extensions/nautilus-directory-private.h:
+	Renamed remove_file_monitor_link to add a nautilus
+	prefix since it's no longer a local function.
+	
 2000-04-18  John Sullivan  <sullivan@eazel.com>
 
 	Distinguished the item count for unreadable directories
@@ -17,7 +38,7 @@
 	(directory_count_callback): Call nautilus_file_changed
 	even when we discover that the count is unreadable.
 	* src/file-manager/fm-directory-view.c:
-	(display_selection_info): pass NULL for unreadable parameter
+	(display_selection_info): Pass NULL for unreadable parameter
 	because this caller doesn't care why it's not known.
 
 2000-04-18  Pavel Cisler  <pavel@eazel.com>
@@ -80,7 +101,6 @@
 
 	* components/services/install/eazel-install-lib-rpm.c - fixing the
           segfault in rpmInstall.
-
 
 2000-04-18  John Sullivan  <sullivan@eazel.com>
 

@@ -920,7 +920,8 @@ cancel_unneeded_file_attribute_requests (NautilusDirectory *directory)
 }
 
 void
-remove_file_monitor_link (NautilusDirectory *directory, GList *link)
+nautilus_directory_remove_file_monitor_link (NautilusDirectory *directory,
+					     GList *link)
 {
 	directory->details->file_monitors =
 		g_list_remove_link (directory->details->file_monitors, link);
@@ -935,7 +936,8 @@ remove_file_monitor (NautilusDirectory *directory,
 		     NautilusFile *file,
 		     gconstpointer client)
 {
-	remove_file_monitor_link (directory, find_file_monitor (directory, file, client));
+	nautilus_directory_remove_file_monitor_link
+		(directory, find_file_monitor (directory, file, client));
 }
 
 static gboolean
@@ -1830,11 +1832,8 @@ process_pending_file_attribute_requests (NautilusDirectory *directory)
 	g_free (uri);
 }
 
-/* If a directory object exists for this one's parent, then
- * return it, otherwise return NULL.
- */
-static NautilusDirectory *
-parent_directory_if_exists (const char *uri)
+static char *
+uri_get_directory_part (const char *uri)
 {
 	GnomeVFSURI *vfs_uri, *directory_vfs_uri;
 	char *directory_uri;
@@ -1856,20 +1855,84 @@ parent_directory_if_exists (const char *uri)
 	directory_uri = gnome_vfs_uri_to_string (directory_vfs_uri,
 						 GNOME_VFS_URI_HIDE_NONE);
 	gnome_vfs_uri_unref (directory_vfs_uri);
+	
+	return directory_uri;
+}
+
+static char *
+uri_get_basename (const char *uri)
+{
+	GnomeVFSURI *vfs_uri;
+	char *name;
+
+	/* Make VFS version of URI. */
+	vfs_uri = gnome_vfs_uri_new (uri);
+	if (vfs_uri == NULL) {
+		return NULL;
+	}
+
+	/* Extract name part. */
+	name = gnome_vfs_uri_extract_short_name (vfs_uri);
+	gnome_vfs_uri_unref (vfs_uri);
+
+	return name;
+}
+
+/* Return a directory object for this one's parent. */
+static NautilusDirectory *
+get_parent_directory (const char *uri)
+{
+	char *directory_uri;
+	NautilusDirectory *directory;
+
+	directory_uri = uri_get_directory_part (uri);
+	directory = nautilus_directory_get (directory_uri);
+	g_free (directory_uri);
+	return directory;
+}
+
+/* If a directory object exists for this one's parent, then
+ * return it, otherwise return NULL.
+ */
+static NautilusDirectory *
+get_parent_directory_if_exists (const char *uri)
+{
+	char *directory_uri;
+	NautilusDirectory *directory;
+
+	/* Make text version of directory URI. */
+	directory_uri = uri_get_directory_part (uri);
 	g_assert (is_canonical_uri (directory_uri));
 
 	/* Get directory from hash table. */
 	if (directory_objects == NULL) {
-		return NULL;
+		directory = NULL;
+	} else {
+		directory = g_hash_table_lookup (directory_objects, directory_uri);
 	}
-	return g_hash_table_lookup (directory_objects, directory_uri);
+	g_free (directory_uri);
+	return directory;
 }
 
 static NautilusFile *
-file_if_exists (const char *uri)
+get_file_if_exists (const char *uri)
 {
-	/* FIXME: Darin will implement this soon. */
-	return NULL;
+	NautilusDirectory *directory;
+	char *name;
+	NautilusFile *file;
+
+	/* Get parent directory. */
+	directory = get_parent_directory_if_exists (uri);
+	if (directory == NULL) {
+		return NULL;
+	}
+
+	/* Find the file. */
+	name = uri_get_basename (uri);
+	file = nautilus_directory_find_file (directory, name);
+	g_free (name);
+
+	return file;
 }
 
 void
@@ -1887,7 +1950,7 @@ nautilus_directory_notify_files_added (GList *uris)
 #endif
 
 		/* See if the directory is already known. */
-		directory = parent_directory_if_exists (uri);
+		directory = get_parent_directory_if_exists (uri);
 		if (directory == NULL) {
 			continue;
 		}
@@ -1896,7 +1959,7 @@ nautilus_directory_notify_files_added (GList *uris)
 		if (!is_file_list_monitored (directory)) {
 			continue;
 		}
-
+		
 		/* FIXME: Queue up files to have get_file_info called on them.
 		 * We can't just call it synchronously.
 		 * Once the NautilusFile objects are created we can emit
@@ -1907,13 +1970,50 @@ nautilus_directory_notify_files_added (GList *uris)
 	}
 }
 
+static void
+call_files_added (gpointer key, gpointer value, gpointer user_data)
+{
+	g_assert (NAUTILUS_IS_DIRECTORY (key));
+	g_assert (value != NULL);
+	g_assert (user_data == NULL);
+
+	gtk_signal_emit (GTK_OBJECT (key),
+			 signals[FILES_ADDED],
+			 value);
+}
+
+static void
+call_files_changed (gpointer key, gpointer value, gpointer user_data)
+{
+	g_assert (NAUTILUS_IS_DIRECTORY (key));
+	g_assert (value != NULL);
+	g_assert (user_data == NULL);
+
+	nautilus_directory_files_changed (key, value);
+}
+
+static void
+hash_table_list_prepend (GHashTable *table, gconstpointer key, gpointer data)
+{
+	GList *list;
+
+	list = g_hash_table_lookup (table, key);
+	list = g_list_prepend (list, data);
+	g_hash_table_insert (table, (gpointer) key, list);
+}
+
 void
 nautilus_directory_notify_files_removed (GList *uris)
 {
+	GHashTable *changed_lists;
 	GList *p;
 	const char *uri;
 	NautilusFile *file;
 
+	/* Make a list of changed files in each directory. */
+	changed_lists = g_hash_table_new (g_direct_hash, g_direct_equal);
+
+	/* Go through all the notifications. */
 	for (p = uris; p != NULL; p = p->next) {
 		uri = (const char *) p->data;
 
@@ -1921,17 +2021,22 @@ nautilus_directory_notify_files_removed (GList *uris)
 		g_message ("removed %s", p->data);
 #endif
 
-		file = file_if_exists (uri);
+		/* Find the file. */
+		file = get_file_if_exists (uri);
+		if (file == NULL) {
+			continue;
+		}
 
-		/* FIXME: Set the is_gone flag on the file, remove it
-		 * from the directory, and call
-		 * nautilus_directory_files_changed.  Do this in a way
-		 * that results in a single
-		 * nautilus_directory_files_changed per directory
-		 * instead of many single-file calls (little hash
-		 * table full of lists?).
-		 */
+		/* Mark it gone and prepare to send the changed signal. */
+		nautilus_file_mark_gone (file);
+		hash_table_list_prepend (changed_lists,
+					 file->details->directory,
+					 file);
 	}
+
+	/* Now send out the changed signals. */
+	g_hash_table_foreach (changed_lists, call_files_changed, NULL);
+	g_hash_table_destroy (changed_lists);
 }
 
 void
@@ -1940,7 +2045,15 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 	GList *p;
 	URIPair *pair;
 	NautilusFile *file;
-	NautilusDirectory *from_directory, *to_directory;
+	NautilusDirectory *old_directory, *new_directory;
+	GList *new_files_list;
+	GHashTable *added_lists, *changed_lists;
+	GList **files;
+
+	/* Make a list of added and changed files in each directory. */
+	new_files_list = NULL;
+	added_lists = g_hash_table_new (g_direct_hash, g_direct_equal);
+	changed_lists = g_hash_table_new (g_direct_hash, g_direct_equal);
 
 	for (p = uri_pairs; p != NULL; p = p->next) {
 		pair = p->data;
@@ -1949,19 +2062,52 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 		g_message ("moved %s to %s", pair->from_uri, pair->to_uri);
 #endif
 
-		file = file_if_exists (pair->from_uri);
-		from_directory = parent_directory_if_exists (pair->from_uri);
-		to_directory = parent_directory_if_exists (pair->to_uri);
+		/* Move an existing file. */
+		file = get_file_if_exists (pair->from_uri);
+		if (file != NULL) {
+			/* Handle this as it it was a new file. */
+			new_files_list = g_list_prepend (new_files_list,
+							 pair->to_uri);
+		} else {
+			/* Handle notification in the old directory. */
+			old_directory = file->details->directory;
+			hash_table_list_prepend (changed_lists,
+						 old_directory,
+						 file);
 
-		/* FIXME: If both directories are the same, send out a
-		 * files_changed for the file. If the directories are
-		 * different, move the file into the new directory and
-		 * send out a file added. Do this in a way that
-		 * results in a single files_changed or file_added per
-		 * directory instead of many single-file calls (little
-		 * hash table full of lists?).
-		 */
+			/* Locate the new directory. */
+			new_directory = get_parent_directory (pair->to_uri);
+			if (new_directory != old_directory) {
+				/* Remove from old directory. */
+				files = &old_directory->details->files;
+				g_assert (g_list_find (*files, file) != NULL);
+				*files = g_list_remove (*files, file);
+				
+				/* Add to new directory. */
+				files = &new_directory->details->files;
+				g_assert (g_list_find (*files, file) == NULL);
+				*files = g_list_prepend (*files, file);
+				
+				/* Handle notification in the new directory. */
+				hash_table_list_prepend (added_lists,
+							 new_directory,
+							 file);
+			}
+			
+			/* Done with the old directory. */
+			nautilus_directory_unref (old_directory);
+		}
 	}
+
+	/* Now send out the changed and added signals for existing file objects. */
+	g_hash_table_foreach (changed_lists, call_files_changed, NULL);
+	g_hash_table_destroy (changed_lists);
+	g_hash_table_foreach (added_lists, call_files_added, NULL);
+	g_hash_table_destroy (added_lists);
+
+	/* Separate handling for brand new file objects. */
+	nautilus_directory_notify_files_added (new_files_list);
+	g_list_free (new_files_list);
 }
 
 gboolean

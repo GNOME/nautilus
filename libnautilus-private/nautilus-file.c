@@ -219,7 +219,7 @@ destroy (GtkObject *object)
 		if (file_monitor->file == file) {
 			/* Client should have removed monitor earlier. */
 			g_warning ("destroyed file still being monitored");
-			remove_file_monitor_link (file->details->directory, p);
+			nautilus_directory_remove_file_monitor_link (file->details->directory, p);
 		}
 		p = next;
 	}
@@ -1523,16 +1523,22 @@ nautilus_file_delete (NautilusFile *file)
 
 	/* Mark the file gone. */
 	if (result == GNOME_VFS_OK || result == GNOME_VFS_ERROR_NOTFOUND) {
-		file->details->is_gone = TRUE;
-
-		/* Let the directory know it's gone. */
-		g_assert (g_list_find (file->details->directory->details->files, file) != NULL);
-		file->details->directory->details->files
-			= g_list_remove (file->details->directory->details->files, file);
-		
-		/* Send out a signal. */
+		nautilus_file_mark_gone (file);
 		nautilus_file_changed (file);
 	}
+}
+
+void
+nautilus_file_mark_gone (NautilusFile *file)
+{
+	GList **files;
+
+	file->details->is_gone = TRUE;
+	
+	/* Let the directory know it's gone. */
+	files = &file->details->directory->details->files;
+	g_assert (g_list_find (*files, file) != NULL);
+	*files = g_list_remove (*files, file);
 }
 
 /**
