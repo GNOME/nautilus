@@ -231,6 +231,7 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	GtkWidget *button;
         /* FIXME: I think this is not portable. It works in gcc, but not other C compilers. */
 	char *titles[] = {N_("Track "), N_("Title"), N_("Artist"), N_("Year"), N_("Bitrate "), N_("Time "), N_("Album"),  N_("Comment"), N_("Channels"),  N_("Sample Rate"),};
+	int i;
 	
 	music_view->details = g_new0 (NautilusMusicViewDetails, 1);
 
@@ -263,6 +264,11 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), music_view->details->album_title, FALSE, FALSE, 0);	
 	gtk_widget_show (music_view->details->album_title);
 	
+        /* Localize the titles */
+        for (i = 0; i < 10; i++) {
+		titles[i] = _(titles[i]);
+	}
+
 	/* allocate a list widget to hold the song list */
 	music_view->details->song_list = gtk_clist_new_with_titles (10, titles);
 		
