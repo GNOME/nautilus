@@ -678,6 +678,7 @@ sidebar_title_create_title_label (void)
 	title_label = nautilus_label_new_with_background ("");
 	nautilus_label_make_bold (NAUTILUS_LABEL (title_label));
 	nautilus_label_set_wrap (NAUTILUS_LABEL (title_label), TRUE);
+	nautilus_label_set_justify (NAUTILUS_LABEL (title_label), GTK_JUSTIFY_CENTER);
 
 	return title_label;
 }
@@ -689,6 +690,7 @@ sidebar_title_create_more_info_label (void)
 
 	more_info_label = nautilus_label_new_with_background ("");
 	nautilus_label_make_smaller (NAUTILUS_LABEL (more_info_label), 2);
+	nautilus_label_set_justify (NAUTILUS_LABEL (more_info_label), GTK_JUSTIFY_CENTER);
 	
 	return more_info_label;
 }
