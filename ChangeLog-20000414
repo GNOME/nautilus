@@ -1,5 +1,13 @@
 1999-12-28  John Sullivan  <sullivan@eazel.com>
 
+	* src/ntl-view.c: (nautilus_view_load_client):
+	  Undid the previous change. It turned out I
+	  needed to rebuild the latest ORBit and then
+	  the latest gnome-libs. I had built them in
+	  the wrong order before.
+	  
+1999-12-28  John Sullivan  <sullivan@eazel.com>
+
 	* src/ntl-view.c: (nautilus_view_load_client): cast
 	  a const CORBA_char * to a CORBA_char * in call to
 	  GNOME_Unknown_query_interface to fix the build.

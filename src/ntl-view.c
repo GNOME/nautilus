@@ -339,11 +339,8 @@ nautilus_view_load_client(NautilusView *view, const char *iid)
 
   for(i = 0; component_types[i] && !view->component_class; i++)
     {
-      /* FIXME: (CORBA_char *) cast required because API won't take const CORBA_char *.
-       * GNOME_Unknown_query_interface should be changed to allow const CORBA_char * for 2nd parameter.
-       */
       obj = GNOME_Unknown_query_interface(gnome_object_corba_objref(GNOME_OBJECT(view->client_object)),
-                                          (CORBA_char *)component_types[i]->primary_repoid, &ev);
+                                          component_types[i]->primary_repoid, &ev);
       if(ev._major != CORBA_NO_EXCEPTION)
         obj = CORBA_OBJECT_NIL;
 
