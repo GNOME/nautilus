@@ -249,13 +249,14 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 			    music_view_background_appearance_changed_callback, 
 			    music_view);
 
+	/* NOTE: we don't show the widgets until the directory has been loaded,
+	   to avoid showing degenerate widgets during the loading process */
+	   
 	/* allocate a vbox to contain all of the views */	
 	music_view->details->album_container = GTK_VBOX (gtk_vbox_new (FALSE, 8));
 	gtk_container_set_border_width (GTK_CONTAINER (music_view->details->album_container), 4);
 	gtk_container_add (GTK_CONTAINER (music_view), GTK_WIDGET (music_view->details->album_container));
-	
-	gtk_widget_show (GTK_WIDGET (music_view->details->album_container));
-	
+		
 	/* allocate a widget for the album title */	
 	music_view->details->album_title = nautilus_label_new ("");
         /* FIXME bugzilla.eazel.com 4418: Hardcoded font and size! */
@@ -264,7 +265,6 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	nautilus_label_set_font_size (NAUTILUS_LABEL (music_view->details->album_title), 20);
 
 	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), music_view->details->album_title, FALSE, FALSE, 0);	
-	gtk_widget_show (music_view->details->album_title);
 	
         /* Localize the titles */
         for (i = 0; i < NAUTILUS_N_ELEMENTS (titles); i++) {
@@ -311,8 +311,6 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	gtk_clist_set_selection_mode (GTK_CLIST (music_view->details->song_list), GTK_SELECTION_BROWSE);
 
 	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), music_view->details->scroll_window, TRUE, TRUE, 0);	
-	gtk_widget_show (music_view->details->song_list);
-	gtk_widget_show (music_view->details->scroll_window);
 
 	/* Stash column sort modes for later retreival */
 	clist = GTK_CLIST (music_view->details->song_list);
@@ -334,18 +332,14 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	/* make an hbox to hold the optional cover and other controls */
 	music_view->details->control_box = gtk_hbox_new (FALSE, 2);
 	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), music_view->details->control_box, FALSE, FALSE, 2);	
-	gtk_widget_show (music_view->details->control_box);
 	
 	/* make the "set album button"  and show it */
   	music_view->details->image_box = gtk_vbox_new (0, FALSE);
-  	gtk_widget_show (music_view->details->image_box);
-  	button = gtk_button_new ();
-	gtk_widget_show (button);
+   	button = gtk_button_new ();
 	gtk_box_pack_end (GTK_BOX (music_view->details->image_box), button, FALSE, FALSE, 2);
 	gtk_widget_set_usize (button, -1, 20);
 	
 	label = gtk_label_new (_("Set Cover Image"));
-	gtk_widget_show (label);
 	gtk_container_add (GTK_CONTAINER(button), label);
 	gtk_box_pack_end (GTK_BOX(music_view->details->control_box), music_view->details->image_box, FALSE, FALSE, 4);  
  	gtk_signal_connect (GTK_OBJECT (button), "clicked", image_button_callback, music_view);
@@ -358,9 +352,6 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 
 	music_view->details->player_state = PLAYER_STOPPED;
 	music_view->details->last_player_state = PLAYER_STOPPED;
-
-	/* finally, show the view itself */	
-	gtk_widget_show (GTK_WIDGET (music_view));
 	
 	music_view->details->sort_mode = SORT_BY_NUMBER;
 }
@@ -1893,6 +1884,9 @@ nautilus_music_view_load_uri (NautilusMusicView *music_view, const char *uri)
         detach_file (music_view);
         music_view->details->file = nautilus_file_get (uri);
 	nautilus_music_view_update (music_view);
+	
+	/* show all the widgets now, since they weren't shown during initialization */
+	gtk_widget_show_all (GTK_WIDGET (music_view));
 }
 
 static void

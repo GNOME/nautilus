@@ -1,5 +1,12 @@
 2001-01-05  Andy Hertzfeld  <andy@eazel.com>
 
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize), (nautilus_music_view_load_uri):
+	fixed bug 4045, unfinished widgets during load in music view, by
+	not showing the widgets until the load is completed.
+	
+2001-01-05  Andy Hertzfeld  <andy@eazel.com>
+
 	* src/nautilus-property-browser.c: (ensure_uri_is_image),
 	(add_pattern_to_browser):
 	fixed bug 5265, you shouldn't be able to replace the reset image
