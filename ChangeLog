@@ -1,3 +1,10 @@
+2000-11-02  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* components/notes/nautilus-notes.c: (finish_loading_note),
+	(notes_load_location), (make_notes_view):
+	#if 0 out the undo code which is currently not working.  I filed a
+	bug for this issue:  4436.
+	
 2000-11-02  Josh Barrow  <josh@eazel.com>
 
 	* nautilus-installer/src/prescript:

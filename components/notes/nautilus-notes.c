@@ -37,7 +37,12 @@
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
+/* FIXME bugzilla.eazel.com 4436: 
+ * Undo not working in notes-view.
+ */
+#if 0
 #include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
+#endif
 #include <libnautilus/libnautilus.h>
 #include <libnautilus/nautilus-clipboard.h>
 #include <liboaf/liboaf.h>
@@ -76,7 +81,12 @@ finish_loading_note (NautilusFile *file,
                                   &position);
 	g_free (notes_text);
 
+/* FIXME bugzilla.eazel.com 4436: 
+ * Undo not working in notes-view.
+ */
+#if 0
 	nautilus_undo_set_up_editable_for_undo (GTK_EDITABLE (notes->note_text_field));
+#endif
 }
 
 static void
@@ -128,7 +138,12 @@ notes_load_location (NautilusView *view,
                      Notes *notes)
 {
         if (strcmp (notes->uri, location) != 0) {
+/* FIXME bugzilla.eazel.com 4436: 
+ * Undo not working in notes-view.
+ */
+#if 0
 		nautilus_undo_tear_down_editable_for_undo (GTK_EDITABLE (notes->note_text_field));
+#endif
                 notes_save_metainfo (notes);
                 g_free (notes->uri);
                 notes->uri = g_strdup (location);
@@ -189,8 +204,13 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
                 (GTK_EDITABLE (notes->note_text_field),
                  nautilus_view_get_bonobo_control (notes->view));
 
+/* FIXME bugzilla.eazel.com 4436: 
+ * Undo not working in notes-view.
+ */
+#if 0
 	nautilus_undo_set_up_editable_for_undo (GTK_EDITABLE (notes->note_text_field));
 	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (notes->note_text_field), TRUE);
+#endif
 
         return BONOBO_OBJECT (notes->view);
 }
