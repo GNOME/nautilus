@@ -1852,7 +1852,10 @@ button_press_event (GtkWidget *widget,
 		return TRUE;
 	
 	/* An item didn't take the press, so it's a background press. */
-        
+        /* We ignore dbl clicks on the desktop for now */
+	if ((event->type == GDK_2BUTTON_PRESS) || (event->type == GDK_3BUTTON_PRESS))
+		return TRUE;
+
 	/* Button 1 does rubber banding. */
 	if (event->button == RUBBERBAND_BUTTON) {
 		if (! button_event_modifies_selection (event)) {
