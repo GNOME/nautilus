@@ -5,9 +5,11 @@ SUBDIRS = ardmore arlo eazel gnome vector villanova throbber
 icondir = $(datadir)/pixmaps/nautilus
 
 icon_DATA =\
+	About_Image.png \
+	SearchWeb.png \
+	Services.png \
 	about_background.png \
 	audio.png \
-	About_Image.png \
 	backgrounds.png \
 	chit_frame.png \
 	colors.png \
@@ -15,10 +17,11 @@ icon_DATA =\
 	computer.svg \
 	decrement.png \
 	default.xml \
-	druid_sidebar.png \
 	druid_header.png \
 	druid_header_stretch.png \
+	druid_sidebar.png \
 	eazel-logo.gif \
+	emblem-OK.svg \
 	emblem-certified.svg \
 	emblem-changed.gif \
 	emblem-cool.svg \
@@ -32,18 +35,17 @@ icon_DATA =\
 	emblem-noread.svg \
 	emblem-nowrite.svg \
 	emblem-ohno.svg \
-	emblem-OK.svg \
 	emblem-personal.svg \
 	emblem-remote.gif \
-	emblem-trash.png \
 	emblem-secret.svg \
 	emblem-shared.svg \
 	emblem-special.svg \
 	emblem-symbolic-link.png \
+	emblem-trash.png \
 	emblem-urgent.svg \
 	emblems.png \
-	expert.png \
 	expert-selected.png \
+	expert.png \
 	gnome-application-encapsulated_postscript.png \
 	gnome-application-pdf.png \
 	gnome-application-pgp.png \
@@ -123,9 +125,9 @@ icon_DATA =\
 	home.png \
 	i-blockdev.png \
 	i-bookmark-20.png \
-	i-bookmark.png \
 	i-bookmark-missing-20.png \
 	i-bookmark-missing.png \
+	i-bookmark.png \
 	i-broken-image.png \
 	i-cdrom.png \
 	i-chardev.png \
@@ -142,49 +144,48 @@ icon_DATA =\
 	i-executable.png \
 	i-fifo.png \
 	i-floppy.png \
-	i-music.png \
 	i-music-aa.png \
+	i-music.png \
 	i-nfs.png \
 	i-printer.png \
-	i-regular-12.png \
 	i-regular-12-aa.png \
-	i-regular-24.png \
+	i-regular-12.png \
 	i-regular-24-aa.png \
-	i-regular-36.png \
+	i-regular-24.png \
 	i-regular-36-aa.png \
-	i-regular-72.png \
+	i-regular-36.png \
 	i-regular-72-aa.png \
-	i-regular-96.png \
+	i-regular-72.png \
 	i-regular-96-aa.png \
-	i-regular.png \
+	i-regular-96.png \
 	i-regular-aa.png \
+	i-regular.png \
 	i-regular.xml \
 	i-search-72.png \
 	i-sock.png \
-	i-spreadsheet.png \
 	i-spreadsheet-aa.png \
+	i-spreadsheet.png \
 	i-stalled.png \
 	i-symlink.png \
 	i-web-72.png \
 	i-zipdisk.png \
 	i-zipdisk2.png \
 	increment.png \
-	intermediate.png \
 	intermediate-selected.png \
+	intermediate.png \
 	knob.png \
 	leftarrow.png \
 	loading.png \
 	multi-ok.png \
+	nautilus-launch-icon.png \
 	nautilus-logo.png \
 	nautilus-mini-logo.png \
 	netscape.png \
 	not.png \
-	novice.png \
 	novice-selected.png \
+	novice.png \
 	rightarrow.png \
 	search.png \
-	SearchWeb.png \
-	Services.png \
 	services-rpm-72.png \
 	temp-home.png \
 	text-selection-frame.png \

@@ -1,10 +1,48 @@
 #!/bin/sh
 
-nautilus-clean.sh -q -x
+##
+## Disable the gnome crash dialog.  Once bug buddy supports 
+## Bugzilla, we will turn take this hack out.
+##
+GNOME_DISABLE_CRASH_DIALOG=1 ; export GNOME_DISABLE_CRASH_DIALOG
 
-nautilus ${1+"$@"}
-RETURN=$?
+##
+## Find out if Nautilus is already running
+##
+ps ax|awk '{ print $5; }' | grep -w -e  "nautilus$" > /dev/null 2>&1
 
-nautilus-clean.sh -q -x
+ps_rv=$?
+echo "ps_rv = $ps_rv"
 
+if [ $ps_rv -eq 1 ]
+then
+  ##
+  ## Start with a fresh environment
+  ##
+  echo "nautilus-clean.sh -q -x"
+  nautilus-clean.sh -q -x
+
+  ##
+  ## Run Nautilus with optional command line arguments.
+  ## This should open the first Nautilus window.
+  ##
+  echo nautilus ${1+"$@"}
+  nautilus ${1+"$@"}
+  RETURN=$?
+
+  ##
+  ## End with a fresh environment
+  ##
+  echo "nautilus-clean.sh -q -x"
+  nautilus-clean.sh -q -x
+else
+  ##
+  ## Run Nautilus with optional command line arguments
+  ## This should open a new window on the currently running Nautilus
+  echo nautilus ${1+"$@"}
+  nautilus ${1+"$@"}
+  RETURN=$?
+fi
+
+echo "exit $RETURN"
 exit $RETURN

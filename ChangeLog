@@ -1,3 +1,37 @@
+2000-10-27  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Fix bug 4054 - fix nautilus GNOME menu item so it does not
+	"crash" nautilus.
+
+	Fix bug 4117 - change default for PR2 back to desktop off.
+
+	Also fix the issue about turning off the gnome crash dialog for
+	out of process components.
+	
+	* icons/Makefile.am:
+	* icons/nautilus-launch-icon.png:
+	New launch icon from Arlo.
+
+	* src/run-nautilus:
+	Change this beast to not always run nautilus-clean.sh.  It only
+	runs nautilus-clean.sh right before/after running Nautilus and not
+	for every single invocation of 'run-nautilus'.  
+
+	Also, dont start the desktop anymore, since there is not a
+	preference in Nautilus to toggle the desktop.
+
+	Finally, turn on the environment variable needed to prevent the
+	gnome crash dialog from showing up for out of process components.
+	
+	* nautilus.desktop:
+	Update icon and launch script back to run-nautilus.
+
+	* nautilus.spec.in:
+	We're back to using run-nautilus.
+	
+	* src/launch-nautilus:
+	Retire.
+
 2000-10-27  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/server/Makefile.am:
