@@ -36,7 +36,10 @@
 	components/websearch/ntl-web-search.c, src/ntl-app.c,
 	src/file-manager/fm-directory-view.c: Fixed initialization and
 	object creation functions to deal with the above API change.
-	
+
+	* libnautilus/ntl-view-frame.c, libnautilus/ntl-view-frame.h:
+	Moved fields from object struct to separate private struct.
+
 2000-02-18  Maciej Stachowiak  <mjs@eazel.com>
 
 	* RENAMING: Suggest swapping the names NautilusView and

@@ -73,4 +73,20 @@ module Nautilus {
 
   interface ViewWindow : ::Bonobo::Unknown {
   };
+
+  interface Zoomable : Bonobo::Unknown {
+    attribute double zoom_level;
+    readonly attribute double min_zoom_level;
+    readonly attribute double max_zoom_level;
+    readonly attribute boolean is_continuous;
+    
+    oneway void zoom_in ();
+    oneway void zoom_out ();
+    oneway void zoom_to_fit ();
+  };
+
+  interface ZoomObserver : ::Bonobo::Unknown {
+    oneway void notify_zoom_level (in double zoom_level);
+  };
+
 };

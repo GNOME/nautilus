@@ -34,6 +34,11 @@
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-control.h>
 
+struct _NautilusViewFramePrivate {
+  BonoboObject *control;
+  Nautilus_ViewFrame view_frame;
+};
+
 enum {
   NOTIFY_LOCATION_CHANGE,
   NOTIFY_SELECTION_CHANGE,
@@ -316,8 +321,8 @@ nautilus_view_frame_set_arg (GtkObject      *object,
 
 static void
 nautilus_view_frame_get_arg (GtkObject      *object,
-			      GtkArg         *arg,
-			      guint	        arg_id)
+			     GtkArg         *arg,
+			     guint	     arg_id)
 {
   NautilusViewFrame *view;
 
@@ -325,7 +330,7 @@ nautilus_view_frame_get_arg (GtkObject      *object,
 
   switch(arg_id) {
   case ARG_CONTROL:
-    GTK_VALUE_OBJECT (*arg) = GTK_OBJECT (view->control);
+    GTK_VALUE_OBJECT (*arg) = GTK_OBJECT (nautilus_view_frame_get_bonobo_control (NAUTILUS_VIEW_FRAME (object)));
   }
 }
 
@@ -334,6 +339,8 @@ nautilus_view_frame_init (NautilusViewFrame *view)
 {
   CORBA_Environment ev;
   CORBA_exception_init(&ev);
+
+  view->private = g_new (NautilusViewFramePrivate, 1);
 
   bonobo_object_construct (BONOBO_OBJECT (view), impl_Nautilus_View__create (view, &ev));
 
@@ -367,36 +374,59 @@ nautilus_view_frame_destroy (NautilusViewFrame *view)
 {
   NautilusViewFrameClass *klass = NAUTILUS_VIEW_FRAME_CLASS(GTK_OBJECT(view)->klass);
 
-  bonobo_object_destroy(view->control);
+  bonobo_object_destroy(view->private->control);
+
+  g_free (view->private);
 
   if(((GtkObjectClass *)klass->parent_class)->destroy)
     ((GtkObjectClass *)klass->parent_class)->destroy((GtkObject *)view);
 }
 
+static gboolean
+nautilus_view_frame_ensure_view_frame (NautilusViewFrame *view)
+{
+  CORBA_Environment ev;
+
+  g_assert (view != NULL);
+  g_assert (NAUTILUS_IS_VIEW_FRAME (view));
+
+  CORBA_exception_init (&ev);
+
+  if (CORBA_Object_is_nil (view->private->view_frame, &ev))
+    view->private->view_frame = Bonobo_Unknown_query_interface 
+      (bonobo_control_get_control_frame 
+       (BONOBO_CONTROL (nautilus_view_frame_get_bonobo_control (view))),
+       "IDL:Nautilus/ViewFrame:1.0", &ev);
+
+  if (ev._major != CORBA_NO_EXCEPTION)
+    view->private->view_frame = CORBA_OBJECT_NIL;
+
+  if (CORBA_Object_is_nil (view->private->view_frame, &ev)) {
+    CORBA_exception_free (&ev);
+    return FALSE;
+  } else {
+    CORBA_exception_free (&ev);
+    return TRUE;
+  }
+}
+
 void
-nautilus_view_frame_request_location_change(NautilusViewFrame *view,
-					    Nautilus_NavigationRequestInfo *loc)
+nautilus_view_frame_request_location_change (NautilusViewFrame *view,
+					     Nautilus_NavigationRequestInfo *loc)
 {
   CORBA_Environment ev;
 
   g_return_if_fail (view != NULL);
   g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 
-  CORBA_exception_init(&ev);
-  if(CORBA_Object_is_nil(view->view_frame, &ev))
-    view->view_frame = Bonobo_Unknown_query_interface(bonobo_control_get_control_frame(BONOBO_CONTROL(view->control)),
-						     "IDL:Nautilus/ViewFrame:1.0", &ev);
-  if(ev._major != CORBA_NO_EXCEPTION)
-    view->view_frame = CORBA_OBJECT_NIL;
-  if(CORBA_Object_is_nil(view->view_frame, &ev))
-    return;
-
-  Nautilus_ViewFrame_request_location_change(view->view_frame, loc, &ev);
-  if(ev._major != CORBA_NO_EXCEPTION)
-    {
-      CORBA_Object_release(view->view_frame, &ev);
-      view->view_frame = CORBA_OBJECT_NIL;
-    }
+  if (nautilus_view_frame_ensure_view_frame (view)) {
+    Nautilus_ViewFrame_request_location_change(view->private->view_frame, loc, &ev);
+    if(ev._major != CORBA_NO_EXCEPTION)
+      {
+	CORBA_Object_release(view->private->view_frame, &ev);
+	view->private->view_frame = CORBA_OBJECT_NIL;
+      }
+  }
   
   CORBA_exception_free(&ev);
 }
@@ -411,20 +441,15 @@ nautilus_view_frame_request_selection_change (NautilusViewFrame              *vi
   g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 
   CORBA_exception_init(&ev);
-  if(CORBA_Object_is_nil(view->view_frame, &ev))
-    view->view_frame = Bonobo_Unknown_query_interface(bonobo_control_get_control_frame(BONOBO_CONTROL(view->control)),
-						     "IDL:Nautilus/ViewFrame:1.0", &ev);
-  if(ev._major != CORBA_NO_EXCEPTION)
-    view->view_frame = CORBA_OBJECT_NIL;
-  if(CORBA_Object_is_nil(view->view_frame, &ev))
-    return;
 
-  Nautilus_ViewFrame_request_selection_change(view->view_frame, loc, &ev);
-  if(ev._major != CORBA_NO_EXCEPTION)
-    {
-      CORBA_Object_release(view->view_frame, &ev);
-      view->view_frame = CORBA_OBJECT_NIL;
-    }
+  if (nautilus_view_frame_ensure_view_frame (view)) {
+    Nautilus_ViewFrame_request_selection_change(view->private->view_frame, loc, &ev);
+    if(ev._major != CORBA_NO_EXCEPTION)
+      {
+	CORBA_Object_release(view->private->view_frame, &ev);
+	view->private->view_frame = CORBA_OBJECT_NIL;
+      }
+  }
   
   CORBA_exception_free(&ev);
 }
@@ -439,21 +464,16 @@ nautilus_view_frame_request_status_change    (NautilusViewFrame        *view,
   g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 
   CORBA_exception_init(&ev);
-  if(CORBA_Object_is_nil(view->view_frame, &ev))
-    view->view_frame = Bonobo_Unknown_query_interface(bonobo_control_get_control_frame(BONOBO_CONTROL(view->control)),
-						     "IDL:Nautilus/ViewFrame:1.0", &ev);
-  if(ev._major != CORBA_NO_EXCEPTION)
-    view->view_frame = CORBA_OBJECT_NIL;
-  if(CORBA_Object_is_nil(view->view_frame, &ev))
-    return;
 
-  Nautilus_ViewFrame_request_status_change(view->view_frame, loc, &ev);
-  if(ev._major != CORBA_NO_EXCEPTION)
-    {
-      CORBA_Object_release(view->view_frame, &ev);
-      view->view_frame = CORBA_OBJECT_NIL;
-    }
-  
+  if (nautilus_view_frame_ensure_view_frame (view)) {
+    Nautilus_ViewFrame_request_status_change(view->private->view_frame, loc, &ev);
+    if(ev._major != CORBA_NO_EXCEPTION)
+      {
+	CORBA_Object_release(view->private->view_frame, &ev);
+	view->private->view_frame = CORBA_OBJECT_NIL;
+      }
+  }
+
   CORBA_exception_free(&ev);
 }
 
@@ -467,21 +487,16 @@ nautilus_view_frame_request_progress_change(NautilusViewFrame        *view,
   g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 
   CORBA_exception_init(&ev);
-  if(CORBA_Object_is_nil(view->view_frame, &ev))
-    view->view_frame = Bonobo_Unknown_query_interface(bonobo_control_get_control_frame(BONOBO_CONTROL(view->control)),
-						     "IDL:Nautilus/ViewFrame:1.0", &ev);
-  if(ev._major != CORBA_NO_EXCEPTION)
-    view->view_frame = CORBA_OBJECT_NIL;
-  if(CORBA_Object_is_nil(view->view_frame, &ev))
-    return;
 
-  Nautilus_ViewFrame_request_progress_change(view->view_frame, loc, &ev);
-  if(ev._major != CORBA_NO_EXCEPTION)
-    {
-      CORBA_Object_release(view->view_frame, &ev);
-      view->view_frame = CORBA_OBJECT_NIL;
-    }
-  
+  if (nautilus_view_frame_ensure_view_frame (view)) {
+    Nautilus_ViewFrame_request_progress_change(view->private->view_frame, loc, &ev);
+    if(ev._major != CORBA_NO_EXCEPTION)
+      {
+	CORBA_Object_release(view->private->view_frame, &ev);
+	view->private->view_frame = CORBA_OBJECT_NIL;
+      }
+  }
+
   CORBA_exception_free(&ev);
 }
 
@@ -489,7 +504,7 @@ nautilus_view_frame_request_progress_change(NautilusViewFrame        *view,
 BonoboObject *
 nautilus_view_frame_get_bonobo_control (NautilusViewFrame *view)
 {
-  return view->control;
+  return view->private->control;
 }
 
 
@@ -502,9 +517,9 @@ nautilus_view_frame_real_set_bonobo_control (NautilusViewFrame *view,
   CORBA_exception_init(&ev);
 
   /* FIXME: what if this fails? Create a new control, or bomb somehow? */
-  view->control = bonobo_object_query_local_interface (bonobo_control, "IDL:Bonobo/Control:1.0");
+  view->private->control = bonobo_object_query_local_interface (bonobo_control, "IDL:Bonobo/Control:1.0");
   
-  bonobo_object_add_interface (BONOBO_OBJECT (view), view->control);
+  bonobo_object_add_interface (BONOBO_OBJECT (view), view->private->control);
 
   CORBA_exception_free(&ev);
 }

@@ -65,12 +65,12 @@ struct _NautilusViewFrameClass
 	gpointer servant_init_func, servant_destroy_func, vepv;
 };
 
+typedef struct _NautilusViewFramePrivate NautilusViewFramePrivate;
+
 struct _NautilusViewFrame
 {
 	BonoboObject parent;
-	BonoboObject *control;
-
-	Nautilus_ViewFrame view_frame;
+	NautilusViewFramePrivate *private;
 };
 
 GtkType            nautilus_view_frame_get_type                 (void);
