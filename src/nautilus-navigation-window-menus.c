@@ -668,25 +668,24 @@ help_menu_about_nautilus_callback (BonoboUIHandler *ui_handler,
 
 /* utility routine to return an image corresponding to the passed-in user level */
 
-static GdkPixbuf*
+static GdkPixbuf *
 get_user_level_image (int user_level, gboolean is_selected)
 {
 	const char *image_name;
 	char *temp_str, *full_image_name;
 	GdkPixbuf *pixbuf;
 	
-	switch (user_level)
-	{
-		case NAUTILUS_USER_LEVEL_NOVICE:
-			image_name = "novice";
-			break;
-		case NAUTILUS_USER_LEVEL_HACKER:
-			image_name = "expert";
-			break;
-		case NAUTILUS_USER_LEVEL_INTERMEDIATE:
-		default:
-			image_name = "intermediate";
-			break;
+	switch (user_level) {
+	case NAUTILUS_USER_LEVEL_NOVICE:
+		image_name = "novice";
+		break;
+	case NAUTILUS_USER_LEVEL_HACKER:
+		image_name = "expert";
+		break;
+	case NAUTILUS_USER_LEVEL_INTERMEDIATE:
+	default:
+		image_name = "intermediate";
+		break;
 	}
 	
 	if (is_selected) {

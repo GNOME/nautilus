@@ -27,8 +27,9 @@
 #include "nautilus-undo-context.h"
 
 #include "nautilus-gtk-macros.h"
-#include <gtk/gtksignal.h>
 #include <bonobo/bonobo-main.h>
+#include <gtk/gtksignal.h>
+#include <libnautilus/nautilus-bonobo-workarounds.h>
 
 typedef struct {
 	POA_Nautilus_Undo_Context servant;
@@ -88,7 +89,7 @@ impl_Nautilus_Undo_Context__create (NautilusUndoContext *bonobo_object,
 
 	servant = g_new0 (impl_POA_Nautilus_Undo_Context, 1);
 	servant->servant.vepv = &vepv;
-	vepv.Bonobo_Unknown_epv = bonobo_object_get_epv ();
+	vepv.Bonobo_Unknown_epv = nautilus_bonobo_object_get_epv ();
 	POA_Nautilus_Undo_Context__init ((PortableServer_Servant) servant, ev);
 
   	gtk_signal_connect (GTK_OBJECT (bonobo_object), "destroy",

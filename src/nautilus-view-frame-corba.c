@@ -34,6 +34,7 @@
 #include "nautilus-view-frame-private.h"
 #include "nautilus-window.h"
 #include <libnautilus/nautilus-view.h>
+#include <libnautilus/nautilus-bonobo-workarounds.h>
 #include <bonobo/bonobo-main.h>
 
 static void impl_Nautilus_ViewFrame_open_location               (PortableServer_Servant  servant,
@@ -118,7 +119,7 @@ impl_Nautilus_ViewFrame__create (NautilusViewFrame *view, CORBA_Environment *ev)
 	BonoboObject *bonobo_object;
 	impl_POA_Nautilus_ViewFrame *servant;
 
-	impl_Nautilus_ViewFrame_vepv.Bonobo_Unknown_epv = bonobo_object_get_epv ();
+	impl_Nautilus_ViewFrame_vepv.Bonobo_Unknown_epv = nautilus_bonobo_object_get_epv ();
 
 	servant = g_new0 (impl_POA_Nautilus_ViewFrame, 1);
 	servant->servant.vepv = &impl_Nautilus_ViewFrame_vepv;

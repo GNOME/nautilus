@@ -119,8 +119,7 @@ static void     mount_volume_deactivate                               	(Nautilus
 									 NautilusVolume             	*volume);
 static void     mount_volume_activate_floppy                          	(NautilusVolumeMonitor      	*view,
 									 NautilusVolume             	*volume);
-static void	free_volume_info             				(NautilusVolume             	*volume,
-						 	 	 	 NautilusVolumeMonitor      	*monitor);
+static void	free_volume             				(NautilusVolume             	*volume);
 static void	find_volumes 						(NautilusVolumeMonitor 		*monitor);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusVolumeMonitor,
@@ -178,7 +177,7 @@ nautilus_volume_monitor_destroy (GtkObject *object)
 	gtk_timeout_remove (monitor->details->mount_volume_timer_id);
 		
 	/* Clean up other volume info */
-	g_list_foreach (monitor->details->volumes, (GFunc) free_volume_info, monitor);
+	g_list_foreach (monitor->details->volumes, (GFunc) free_volume, NULL);
 	
 	/* Clean up details */	 
 	g_hash_table_destroy (monitor->details->volumes_by_fsname);
@@ -949,7 +948,6 @@ mntent_add_mount_volume (NautilusVolumeMonitor *monitor, struct mntent *ent)
 	
 	if (nautilus_str_has_prefix (ent->mnt_fsname, FLOPPY_DEVICE_PATH_PREFIX)) {		
 		mounted = mount_volume_floppy_add (monitor, volume);
-		
 	} else if (strcmp (ent->mnt_type, "affs") == 0) {		
 		mounted = mount_volume_affs_add (volume);
 	} else if (strcmp (ent->mnt_type, "ext2") == 0) {		
@@ -1144,12 +1142,12 @@ nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
 }
 
 static void
-free_volume_info (NautilusVolume *volume,
-		  NautilusVolumeMonitor *monitor)
+free_volume (NautilusVolume *volume)
 {
 	g_free (volume->fsname);
 	g_free (volume->mount_path);
 	g_free (volume->volume_name);
+	g_free (volume);
 }
 
 static void

@@ -149,7 +149,7 @@ static NautilusCTreeNode *uri_to_view_node                    (NautilusTreeView 
 static NautilusCTreeNode *model_node_to_view_node             (NautilusTreeView *view,
 							  NautilusTreeNode *node);
 
-static const char   *view_node_to_uri                    (NautilusTreeView *view,
+static char   *view_node_to_uri                    (NautilusTreeView *view,
 							  NautilusCTreeNode *node);
 
 
@@ -351,13 +351,13 @@ insert_hack_node (NautilusTreeView *view, const char *uri)
 		view_node = uri_to_view_node (view, uri);
 
 		hack_node = nautilus_ctree_insert_node (NAUTILUS_CTREE (view->details->tree),
-						   view_node, 
-						   NULL,
-						   text,
-						   TREE_SPACING,
-						   NULL, NULL, NULL, NULL,
-						   FALSE,
-						   FALSE);
+							view_node, 
+							NULL,
+							text,
+							TREE_SPACING,
+							NULL, NULL, NULL, NULL,
+							FALSE,
+							FALSE);
 
 		g_assert (g_hash_table_lookup (view->details->uri_to_hack_node_map, uri) == NULL);
 		g_hash_table_insert (view->details->uri_to_hack_node_map, 
@@ -419,7 +419,7 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 	NautilusCTreeNode *parent_view_node;
  	NautilusCTreeNode *view_node;
 	NautilusFile *file;
-	char *uri;
+	char *uri, *parent_uri;
 	char *text[2];
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
@@ -495,7 +495,9 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 	g_free (text[0]);
 
 	if (parent_view_node != NULL) {
-		remove_hack_node (view, view_node_to_uri (view, parent_view_node));
+		parent_uri = view_node_to_uri (view, parent_view_node);
+		remove_hack_node (view, parent_uri);
+		g_free (parent_uri);
 	}
 
 	g_free (uri);
@@ -1014,6 +1016,21 @@ disconnect_model_handlers (NautilusTreeView *view)
 	}
 }
 
+static void
+free_uri_to_node_map_entry (gpointer key, gpointer value, gpointer callback_data)
+{
+	g_assert (callback_data == NULL);
+
+	g_free (key);
+}
+
+static void
+free_uri_to_hack_node_map_entry (gpointer key, gpointer value, gpointer callback_data)
+{
+	g_assert (callback_data == NULL);
+
+	g_free (key);
+}
 
 static void
 nautilus_tree_view_destroy (GtkObject *object)
@@ -1021,10 +1038,20 @@ nautilus_tree_view_destroy (GtkObject *object)
 	NautilusTreeView *view;
 	
 	view = NAUTILUS_TREE_VIEW (object);
+
+	g_hash_table_foreach (view->details->uri_to_node_map,
+			      free_uri_to_node_map_entry,
+			      NULL);
+	g_hash_table_destroy (view->details->uri_to_node_map);
+	
+	g_hash_table_foreach (view->details->uri_to_hack_node_map,
+			      free_uri_to_hack_node_map_entry,
+			      NULL);
+	g_hash_table_destroy (view->details->uri_to_hack_node_map);
 	
 	/* you do not need to unref the normal style */
 	if (view->details->dnd->highlight_style != NULL) {
-		gtk_style_unref(view->details->dnd->highlight_style);
+		gtk_style_unref (view->details->dnd->highlight_style);
 	}
 	nautilus_drag_finalize (view->details->dnd->drag_info);
 	g_free (view->details->dnd);
@@ -1094,7 +1121,7 @@ view_node_to_model_node (NautilusTreeView *view,
 	return tree_node;
 }
 
-static const char *
+static char *
 view_node_to_uri (NautilusTreeView *view,
 		  NautilusCTreeNode *node)
 {
@@ -1334,11 +1361,13 @@ tree_expand_callback (NautilusCTree         *ctree,
 		      NautilusCTreeNode     *node,
 		      NautilusTreeView *view)
 {
-	const char *uri;
+	char *uri;
 
 	uri = view_node_to_uri (view, node);
 
 	expand_node_for_uri (view, uri);
+
+	g_free (uri);
 }
 
 
@@ -1348,7 +1377,7 @@ tree_collapse_callback (NautilusCTree         *ctree,
 			NautilusCTreeNode     *node,
 			NautilusTreeView *view)
 {
-	const char *uri;
+	char *uri;
 
 	uri = view_node_to_uri (view, node);
 
@@ -1359,6 +1388,8 @@ tree_collapse_callback (NautilusCTree         *ctree,
 							    nautilus_tree_model_get_node (view->details->model,
 											  uri),
 							    view);
+
+	g_free (uri);
 }
 
 
@@ -1370,7 +1401,7 @@ tree_select_row_callback (NautilusCTree              *tree,
 			  gint                   column,
 			  NautilusTreeView      *view)
 {
-	const char *uri;
+	char *uri;
 	
 	uri = view_node_to_uri (view, node);
 	
@@ -1381,6 +1412,8 @@ tree_select_row_callback (NautilusCTree              *tree,
 		g_free (view->details->selected_uri);
 		view->details->selected_uri = g_strdup (uri);
 	}
+
+	g_free (uri);
 
 }
 
@@ -2148,18 +2181,14 @@ static char *
 nautilus_tree_view_item_at (NautilusTreeView *tree_view,
 			    int x, int y)
 {
-	char *retval;
 	NautilusCTreeNode *node;
 
-	node = NULL;
 	node = nautilus_tree_view_tree_node_at (tree_view, x, y);
 	if (node == NULL) {
 		return NULL;
 	}
 
-	retval = g_strdup (view_node_to_uri(tree_view, node));
-
-	return retval;
+	return view_node_to_uri (tree_view, node);
 }
 
 
@@ -2217,16 +2246,18 @@ nautilus_dump_info (NautilusTreeView *tree_view)
 {
 	char *retval, *temp;
 	GSList *list, *tmp;
+	NautilusCTreeNode *node;
+	char *uri;
+
 	list = tree_view->details->dnd->expanded_nodes;
 
 	retval = NULL;
 	for (tmp = list; tmp != NULL;tmp = tmp->next) {
-		NautilusCTreeNode *node;
-		const char *uri;
 		node = (NautilusCTreeNode *) tmp->data;
 		uri = view_node_to_uri (tree_view, 
 					node);
 		temp = g_strconcat (uri, ", ", retval, NULL);
+		g_free (uri);
 		g_free (retval);
 		retval = temp;
 	}
@@ -2537,13 +2568,17 @@ nautilus_tree_view_collapse_all (NautilusTreeView *tree_view,
 		expanded_node = (NautilusCTreeNode *) temp_list->data;
 		if (nautilus_ctree_is_ancestor (NAUTILUS_CTREE (tree_view->details->tree), 
 						expanded_node, current_node) == FALSE) {
+#if 0
 			{
-				const char *expanded_uri, *current_uri;
+				char *expanded_uri, *current_uri;
 				expanded_uri = view_node_to_uri (tree_view, expanded_node);
 				current_uri = view_node_to_uri (tree_view, current_node);
 
 				g_print ("collapsing %s in %s\n", expanded_uri, current_uri);
+				g_free (expanded_uri);
+				g_free (current_uri);
 			}
+#endif
 			nautilus_tree_view_collapse_node (NAUTILUS_CTREE (tree_view->details->tree), 
 							  expanded_node);
 		}

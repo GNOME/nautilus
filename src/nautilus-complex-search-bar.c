@@ -318,17 +318,20 @@ nautilus_complex_search_bar_get_location (NautilusNavigationBar *navigation_bar)
 		g_free (criterion_text);
 		criteria_text = temp_criterion;
 	}
+
 	trimmed_fragment = nautilus_str_strip_trailing_str (criteria_text, " & ");
 	g_free (criteria_text);
 
 	escaped_fragment = gnome_vfs_escape_string (trimmed_fragment);
+	g_free (trimmed_fragment);
+
 	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SEARCH_METHOD, FALSE)) {
 		search_uri = g_strconcat ("search:index-with-backup", escaped_fragment, NULL);
-	}
-	else {
+	} else {
 		search_uri = g_strconcat ("search:index-only", escaped_fragment, NULL);
 	}
 	g_free (escaped_fragment);
+
 	return search_uri;
 }
 

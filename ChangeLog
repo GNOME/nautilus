@@ -1,3 +1,79 @@
+2000-09-26  Darin Adler  <darin@eazel.com>
+
+	Fix more storage leaks.	
+	
+	* components/tree/nautilus-tree-node.c: (nautilus_tree_node_new):
+	Get rid of extra allocation of node->details that caused a storage
+	leak.
+	* components/tree/nautilus-tree-view.c:
+	(nautilus_tree_view_insert_model_node): Add a g_free.
+	(free_uri_to_node_map_entry), (free_uri_to_hack_node_map_entry),
+	(nautilus_tree_view_destroy): Free the keys of the hash table.
+	(tree_expand_callback), (tree_collapse_callback),
+	(tree_select_row_callback): Added missing g_free.
+	(nautilus_tree_view_item_at): Removed an excess g_strdup.
+	* libnautilus-extensions/nautilus-preference.c:
+	(preference_initialize_if_needed): Destroy the global preference
+	table on exit.
+	(preference_hash_node_free_func): Free the hash key as well as
+	the node value.
+	(preference_register): Use strdup on keys as then are entered
+	into the hash table.
+	(preference_hash_node_lookup_with_registration): Remove the strdup
+	in here since preference_register now handles it.
+	(destroy_global_preference_table): Renamed and simplified the
+	existing unused function.
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(nautilus_volume_monitor_destroy), (free_volume): Free the volume
+	itself, not just the fields within it.
+	* src/nautilus-complex-search-bar.c:
+	(nautilus_complex_search_bar_get_location): Added a missing
+	g_free.
+	* src/nautilus-sidebar-tabs.c: (tab_item_destroy_cover),
+	(nautilus_sidebar_tabs_destroy): Free the tab items too, not just
+	the list they are stored in.
+	* src/nautilus-switchable-search-bar.c:
+	(search_bar_preference_changed_callback): Added a missing g_free.
+	
+	* libnautilus-extensions/nautilus-theme.c: (free_default_theme),
+	(nautilus_theme_get_theme_data): Add code to free the default
+	theme on program exit to make leak detection easier.
+	* src/nautilus-main.c: (main): Clean up the memory used by the XML
+	parser on exit to make leak detection easier.
+	
+	* libnautilus/Makefile.am:
+	* libnautilus/nautilus-bonobo-workarounds.c:
+	* libnautilus/nautilus-bonobo-workarounds.h:
+	Added version of bonobo_object_get_epv that shares a single global
+	instance instead of allocating a new one each time it's called.
+	
+	* components/adapter/nautilus-adapter-factory-server.c:
+	(impl_Nautilus_ComponentAdapterFactory__create):
+	* libnautilus-extensions/bonobo-stream-vfs.c:
+	(bonobo_stream_vfs_class_init):
+	* libnautilus-extensions/nautilus-undo-context.c:
+	(impl_Nautilus_Undo_Context__create):
+	* libnautilus-extensions/nautilus-undo-manager.c:
+	(nautilus_undo_manager_initialize_class):
+	* libnautilus/nautilus-undo-transaction.c:
+	(impl_Nautilus_Undo_Transaction__create):
+	* libnautilus/nautilus-view.c: (impl_Nautilus_View__create):
+	* src/nautilus-history-frame.c:
+	(impl_Nautilus_HistoryFrame__create):
+	* src/nautilus-shell.c: (nautilus_shell_get_vepv):
+	* src/nautilus-view-frame-corba.c:
+	(impl_Nautilus_ViewFrame__create):
+	* src/nautilus-zoomable-frame-corba.c:
+	(impl_Nautilus_ZoomableFrame__create):
+	Use the new cover for bonobo_object_get_epv to avoid
+	making lots of copies of it.
+	
+	* src/nautilus-window-menus.c: (get_user_level_image): Formatting
+	tweak.
+	
+	* tools/leak-checker/nautilus-leak-checker.c: Added more "known to
+	allocate and not free on exit" functions.
+
 2000-09-26  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 3244 (already-computed folder counts don't update

@@ -45,6 +45,7 @@
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <liboaf/liboaf.h>
 #include <gtk/gtkmain.h>
+#include <parser.h>
 #include <popt.h>
 #include <stdlib.h>
 
@@ -201,13 +202,12 @@ main (int argc, char *argv[])
 	}
 
 	/* Initialize the services that we use. */
+	g_atexit (xmlCleanupParser);
 	g_thread_init (NULL);
 	orb = oaf_init (argc, argv);
-
-	if (getenv ("NAUTILUS_ENABLE_TEST_COMPONENTS") != NULL) {
+	if (g_getenv ("NAUTILUS_ENABLE_TEST_COMPONENTS") != NULL) {
 		oaf_set_test_components_enabled (TRUE);
 	}
-
 	gnome_vfs_init ();
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 	bonobo_activate (); /* do now since we need it before main loop */
@@ -245,7 +245,7 @@ main (int argc, char *argv[])
 	 * an update takes place.
 	 */
 
-	if (getenv ("_NAUTILUS_RESTART") != NULL) {
+	if (g_getenv ("_NAUTILUS_RESTART") != NULL) {
 		nautilus_unsetenv ("_NAUTILUS_RESTART");
 		
 		/* Might eventually want to copy all the parameters

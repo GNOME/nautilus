@@ -70,6 +70,8 @@ nautilus_switchable_search_bar_initialize_class (NautilusSwitchableSearchBarClas
 static void
 search_bar_preference_changed_callback (gpointer user_data)
 {
+	char *location;
+
 	g_assert (NAUTILUS_IS_SWITCHABLE_SEARCH_BAR (user_data));
 
 	/* Switch immediately as long as the current search_uri doesn't veto the switch.
@@ -77,11 +79,12 @@ search_bar_preference_changed_callback (gpointer user_data)
 	 * Perhaps switch immediately anyway and blow away partially-formed
 	 * search criteria?
 	 */
+	location = nautilus_switchable_search_bar_get_location 
+		(NAUTILUS_NAVIGATION_BAR (user_data));
 	nautilus_switchable_search_bar_set_mode 
 		(NAUTILUS_SWITCHABLE_SEARCH_BAR (user_data), 
-		 nautilus_search_uri_to_search_bar_mode 
-			(nautilus_switchable_search_bar_get_location 
-				(NAUTILUS_NAVIGATION_BAR (user_data))));
+		 nautilus_search_uri_to_search_bar_mode (location));
+	g_free (location);
 }
 
 static void

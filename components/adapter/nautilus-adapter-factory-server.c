@@ -27,17 +27,18 @@
 
 #include <config.h>
 #include "nautilus-adapter-factory-server.h"
-#include "nautilus-adapter.h"
 
+#include "nautilus-adapter.h"
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-main.h>
-#include <gtk/gtksignal.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>
-#include <libnautilus/nautilus-bonobo-ui.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-adapter/nautilus-adapter-factory.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus/nautilus-bonobo-ui.h>
+#include <libnautilus/nautilus-bonobo-workarounds.h>
 
 typedef struct {
 	POA_Nautilus_ComponentAdapterFactory  servant;
@@ -183,7 +184,7 @@ impl_Nautilus_ComponentAdapterFactory__create (NautilusAdapterFactoryServer *bon
 {
 	impl_POA_Nautilus_ComponentAdapterFactory *servant;
 	
-	impl_Nautilus_ComponentAdapterFactory_vepv.Bonobo_Unknown_epv = bonobo_object_get_epv ();
+	impl_Nautilus_ComponentAdapterFactory_vepv.Bonobo_Unknown_epv = nautilus_bonobo_object_get_epv ();
 
 	servant = g_new0 (impl_POA_Nautilus_ComponentAdapterFactory, 1);
 	servant->servant.vepv = &impl_Nautilus_ComponentAdapterFactory_vepv;

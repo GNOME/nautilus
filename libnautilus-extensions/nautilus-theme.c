@@ -73,7 +73,7 @@ nautilus_theme_set_theme (const char *new_theme)
 
 /* load and parse a theme file */
 static xmlDocPtr
-load_theme_document (const char * theme_name)
+load_theme_document (const char *theme_name)
 {
 	xmlDocPtr theme_document;
 	char *theme_path, *temp_str;
@@ -126,6 +126,12 @@ free_last_theme (void)
 	g_free (last_theme_name);
 }
 
+static void
+free_default_theme (void)
+{
+	xmlFreeDoc (default_theme_document);
+}
+
 /* fetch data from the current theme.  Cache the last theme file as a parsed xml document */
 char *
 nautilus_theme_get_theme_data (const char *resource_name, const char *property_name)
@@ -153,7 +159,7 @@ nautilus_theme_get_theme_data (const char *resource_name, const char *property_n
 		last_theme_name = g_strdup (theme_name);
 		last_theme_document = load_theme_document (theme_name);
 		theme_document = last_theme_document;
-	}			
+	}
 	
 	if (theme_document != NULL) {
 		/* fetch the resource node */			
@@ -171,11 +177,12 @@ nautilus_theme_get_theme_data (const char *resource_name, const char *property_n
 	if (theme_data == NULL) {
 		if (default_theme_document == NULL) {
 			default_theme_document = load_theme_document ("default");
+			g_atexit (free_default_theme);
 		}
 
-		resource_node = nautilus_xml_get_child_by_name(xmlDocGetRootElement (default_theme_document), resource_name);
+		resource_node = nautilus_xml_get_child_by_name (xmlDocGetRootElement (default_theme_document), resource_name);
 		if (resource_node) {		
-			temp_str = xmlGetProp(resource_node, property_name);
+			temp_str = xmlGetProp (resource_node, property_name);
 			if (temp_str) {
 				theme_data = g_strdup (temp_str);
 				xmlFree (temp_str);
@@ -183,7 +190,7 @@ nautilus_theme_get_theme_data (const char *resource_name, const char *property_n
 		}
 
 	}
-	g_free(theme_name); 
+	g_free (theme_name);
 
 	return theme_data;
 }

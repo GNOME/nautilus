@@ -70,16 +70,10 @@ nautilus_tree_node_destroy (GtkObject *object)
 
 	node = NAUTILUS_TREE_NODE (object);
 
-	if (node->details->directory != NULL) {
-		nautilus_directory_unref (node->details->directory);
-	}
-
+	nautilus_directory_unref (node->details->directory);
 	nautilus_file_unref (node->details->file);
-
 	g_list_free (node->details->children);
-
 	g_free (node->details->uri);
-
 	g_free (node->details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
@@ -94,7 +88,6 @@ nautilus_tree_node_new (NautilusFile *file)
 	gtk_object_ref (GTK_OBJECT (node));
 	gtk_object_sink (GTK_OBJECT (node));
 
-	node->details = g_new0 (NautilusTreeNodeDetails, 1);
 	node->details->file = nautilus_file_ref (file);
 	node->details->uri = nautilus_file_get_uri (file);
 

@@ -27,9 +27,10 @@
 #include <config.h>
 #include "nautilus-undo-transaction.h"
 
+#include "nautilus-undo-private.h"
 #include <bonobo/bonobo-main.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include "nautilus-undo-private.h"
+#include <libnautilus/nautilus-bonobo-workarounds.h>
 
 #define NAUTILUS_UNDO_TRANSACTION_LIST_DATA "Nautilus undo transaction list"
 
@@ -104,7 +105,7 @@ impl_Nautilus_Undo_Transaction__create (NautilusUndoTransaction *bonobo_object,
 
 	servant = g_new0 (impl_POA_Nautilus_Undo_Transaction, 1);
 
-	vepv.Bonobo_Unknown_epv = bonobo_object_get_epv ();
+	vepv.Bonobo_Unknown_epv = nautilus_bonobo_object_get_epv ();
 	servant->servant.vepv = &vepv;
   	POA_Nautilus_Undo_Transaction__init ((PortableServer_Servant) servant, ev);
 

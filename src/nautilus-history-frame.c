@@ -29,6 +29,8 @@
 #include <config.h>
 #include "nautilus-history-frame.h"
 
+#include <libnautilus/nautilus-bonobo-workarounds.h>
+
 typedef struct {
 	POA_Nautilus_HistoryFrame servant;
 	BonoboObject *bonobo_object;
@@ -79,7 +81,7 @@ impl_Nautilus_HistoryFrame__create (NautilusViewFrame *view,
 	BonoboObject *bonobo_object;
 	impl_POA_Nautilus_HistoryFrame *servant;
 
-	impl_Nautilus_HistoryFrame_vepv.Bonobo_Unknown_epv = bonobo_object_get_epv();
+	impl_Nautilus_HistoryFrame_vepv.Bonobo_Unknown_epv = nautilus_bonobo_object_get_epv ();
 
 	servant = g_new0 (impl_POA_Nautilus_HistoryFrame, 1);
 	servant->servant.vepv = &impl_Nautilus_HistoryFrame_vepv;

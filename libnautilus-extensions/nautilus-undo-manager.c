@@ -29,6 +29,7 @@
 #include "nautilus-gtk-extensions.h"
 #include <gtk/gtksignal.h>
 #include <bonobo/bonobo-main.h>
+#include <libnautilus/nautilus-bonobo-workarounds.h>
 #include <libnautilus/nautilus-undo-private.h>
 #include "nautilus-undo-context.h"
 
@@ -259,7 +260,7 @@ nautilus_undo_manager_initialize_class (NautilusUndoManagerClass *klass)
 {
 	GtkObjectClass *object_class;
 
-	vepv.Bonobo_Unknown_epv = bonobo_object_get_epv ();
+	vepv.Bonobo_Unknown_epv = nautilus_bonobo_object_get_epv ();
 
 	object_class = GTK_OBJECT_CLASS (klass);
 

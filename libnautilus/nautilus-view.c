@@ -30,11 +30,12 @@
 #include <config.h>
 #include "nautilus-view.h"
 
-#include <gtk/gtksignal.h>
-#include <bonobo/bonobo-main.h>
-#include <bonobo/bonobo-control.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include "nautilus-bonobo-workarounds.h"
 #include "nautilus-undo.h"
+#include <bonobo/bonobo-control.h>
+#include <bonobo/bonobo-main.h>
+#include <gtk/gtksignal.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
 
 enum {
 	LOAD_LOCATION,
@@ -200,7 +201,7 @@ impl_Nautilus_View__create (NautilusView *bonobo_object,
 {
 	impl_POA_Nautilus_View *servant;
 	
-	impl_Nautilus_View_vepv.Bonobo_Unknown_epv = bonobo_object_get_epv ();
+	impl_Nautilus_View_vepv.Bonobo_Unknown_epv = nautilus_bonobo_object_get_epv ();
 
 	servant = g_new0 (impl_POA_Nautilus_View, 1);
 	servant->servant.vepv = &impl_Nautilus_View_vepv;

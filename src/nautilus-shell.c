@@ -26,25 +26,25 @@
  */
 
 #include <config.h>
-#include <stdlib.h>
 #include "nautilus-shell.h"
-
-#include "nautilus-shell-interface.h"
 
 #include "nautilus-desktop-window.h"
 #include "nautilus-main.h"
-#include <gtk/gtklabel.h>
+#include "nautilus-shell-interface.h"
 #include <gtk/gtkframe.h>
+#include <gtk/gtklabel.h>
 #include <gtk/gtkmain.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-label.h>
-#include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
+#include <libnautilus-extensions/nautilus-stock-dialogs.h>
+#include <libnautilus/nautilus-bonobo-workarounds.h>
+#include <stdlib.h>
 
 #define START_STATE_CONFIG	"start-state"
 
@@ -95,7 +95,7 @@ static POA_Nautilus_Shell__vepv *
 nautilus_shell_get_vepv (void)
 {
 	static POA_Nautilus_Shell__vepv vepv;
-	vepv.Bonobo_Unknown_epv = bonobo_object_get_epv ();
+	vepv.Bonobo_Unknown_epv = nautilus_bonobo_object_get_epv ();
 	vepv.Nautilus_Shell_epv = nautilus_shell_get_epv ();
 	return &vepv;
 }

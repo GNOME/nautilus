@@ -31,6 +31,7 @@
 #include "nautilus-view-frame-private.h"
 
 #include <bonobo/bonobo-main.h>
+#include <libnautilus/nautilus-bonobo-workarounds.h>
 
 typedef struct {
 	POA_Nautilus_ZoomableFrame servant;
@@ -40,65 +41,65 @@ typedef struct {
 } impl_POA_Nautilus_ZoomableFrame;
 
 static void impl_Nautilus_ZoomableFrame_report_zoom_level_changed (PortableServer_Servant  servant,
-							    CORBA_float            level,
-							    CORBA_Environment      *ev);
+								   CORBA_float             level,
+								   CORBA_Environment      *ev);
 
-POA_Nautilus_ZoomableFrame__epv impl_Nautilus_ZoomableFrame_epv =
+static POA_Nautilus_ZoomableFrame__epv impl_Nautilus_ZoomableFrame_epv =
 {
-   NULL,
-   impl_Nautilus_ZoomableFrame_report_zoom_level_changed,
+	NULL,
+	impl_Nautilus_ZoomableFrame_report_zoom_level_changed,
 };
 
 static PortableServer_ServantBase__epv base_epv;
-POA_Nautilus_ZoomableFrame__vepv impl_Nautilus_ZoomableFrame_vepv =
+static POA_Nautilus_ZoomableFrame__vepv impl_Nautilus_ZoomableFrame_vepv =
 {
-   &base_epv,
-   NULL,
-   &impl_Nautilus_ZoomableFrame_epv
+	&base_epv,
+	NULL,
+	&impl_Nautilus_ZoomableFrame_epv
 };
 
 static void
 impl_Nautilus_ZoomableFrame__destroy (BonoboObject *object, 
                                       impl_POA_Nautilus_ZoomableFrame *servant)
 {
-   PortableServer_ObjectId *object_id;
-   CORBA_Environment ev;
-
-   CORBA_exception_init (&ev);
-
-   object_id = PortableServer_POA_servant_to_id (bonobo_poa (), servant, &ev);
-   PortableServer_POA_deactivate_object (bonobo_poa (), object_id, &ev);
-   CORBA_free (object_id);
-   object->servant = NULL;
-
-   POA_Nautilus_ZoomableFrame__fini ((PortableServer_Servant) servant, &ev);
-   g_free (servant);
-
-   CORBA_exception_free (&ev);
+	PortableServer_ObjectId *object_id;
+	CORBA_Environment ev;
+	
+	CORBA_exception_init (&ev);
+	
+	object_id = PortableServer_POA_servant_to_id (bonobo_poa (), servant, &ev);
+	PortableServer_POA_deactivate_object (bonobo_poa (), object_id, &ev);
+	CORBA_free (object_id);
+	object->servant = NULL;
+	
+	POA_Nautilus_ZoomableFrame__fini ((PortableServer_Servant) servant, &ev);
+	g_free (servant);
+	
+	CORBA_exception_free (&ev);
 }
 
 BonoboObject *
 impl_Nautilus_ZoomableFrame__create (NautilusViewFrame *view, 
                                      CORBA_Environment * ev)
 {
-   BonoboObject *retval;
-   impl_POA_Nautilus_ZoomableFrame *newservant;
-
-   newservant = g_new0 (impl_POA_Nautilus_ZoomableFrame, 1);
-
-   impl_Nautilus_ZoomableFrame_vepv.Bonobo_Unknown_epv = bonobo_object_get_epv();
-
-   newservant->servant.vepv = &impl_Nautilus_ZoomableFrame_vepv;
-
-   newservant->view = view;
-   POA_Nautilus_ZoomableFrame__init ((PortableServer_Servant) newservant, ev);
-
-   retval = bonobo_object_new_from_servant (newservant);
-
-   gtk_signal_connect (GTK_OBJECT (retval), "destroy", 
-                       GTK_SIGNAL_FUNC (impl_Nautilus_ZoomableFrame__destroy), newservant);
-
-   return retval;
+	BonoboObject *retval;
+	impl_POA_Nautilus_ZoomableFrame *newservant;
+	
+	newservant = g_new0 (impl_POA_Nautilus_ZoomableFrame, 1);
+	
+	impl_Nautilus_ZoomableFrame_vepv.Bonobo_Unknown_epv = nautilus_bonobo_object_get_epv ();
+	
+	newservant->servant.vepv = &impl_Nautilus_ZoomableFrame_vepv;
+	
+	newservant->view = view;
+	POA_Nautilus_ZoomableFrame__init ((PortableServer_Servant) newservant, ev);
+	
+	retval = bonobo_object_new_from_servant (newservant);
+	
+	gtk_signal_connect (GTK_OBJECT (retval), "destroy", 
+			    GTK_SIGNAL_FUNC (impl_Nautilus_ZoomableFrame__destroy), newservant);
+	
+	return retval;
 }
 
 static void

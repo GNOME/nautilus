@@ -29,6 +29,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include <libnautilus/nautilus-bonobo-workarounds.h>
 
 static BonoboStreamClass *bonobo_stream_vfs_parent_class;
 static POA_Bonobo_Stream__vepv vepv;
@@ -252,8 +253,8 @@ bonobo_stream_vfs_class_init (BonoboStreamVFSClass *klass)
 	
 	bonobo_stream_vfs_parent_class = gtk_type_class (bonobo_stream_get_type ());
 
-	vepv.Bonobo_Unknown_epv = bonobo_object_get_epv ();
-	vepv.Bonobo_Stream_epv = bonobo_stream_get_epv ();
+	vepv.Bonobo_Unknown_epv = nautilus_bonobo_object_get_epv ();
+	vepv.Bonobo_Stream_epv = nautilus_bonobo_stream_get_epv ();
 
 	sclass->write    = vfs_write;
 	sclass->read     = vfs_read;

@@ -25,23 +25,21 @@
 #include <config.h>
 #include "nautilus-sidebar-tabs.h"
 
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-util.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-scalable-font.h>
 #include <libnautilus-extensions/nautilus-theme.h>
-
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <libart_lgpl/art_rect.h>
-#include <libart_lgpl/art_rgb.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-util.h>
+#include <math.h>
+#include <stdio.h>
+#include <string.h>
 
 /* constants for the tab piece pixbuf array */
 
@@ -278,6 +276,13 @@ tab_item_destroy (TabItem *item)
 }
 
 static void
+tab_item_destroy_cover (gpointer item, gpointer callback_data)
+{
+	g_assert (callback_data == NULL);
+	tab_item_destroy (item);
+}
+
+static void
 nautilus_sidebar_tabs_destroy (GtkObject *object)
 {
 	NautilusSidebarTabs *sidebar_tabs = NAUTILUS_SIDEBAR_TABS(object);
@@ -285,19 +290,20 @@ nautilus_sidebar_tabs_destroy (GtkObject *object)
 	/* deallocate the tab piece images, if any */
 	if (sidebar_tabs->details->tab_piece_images[0] != NULL) {
 		nautilus_sidebar_tabs_unload_tab_pieces (sidebar_tabs);
-	}		
+	}
 	
-	if (sidebar_tabs->details->tab_font) {
+	if (sidebar_tabs->details->tab_font != NULL) {
 		gtk_object_unref (GTK_OBJECT (sidebar_tabs->details->tab_font));
 	}
 	
 	/* release the tab list, if any */
-	if (sidebar_tabs->details->tab_items)
-		g_list_free (sidebar_tabs->details->tab_items);
-
-	nautilus_preferences_remove_callback(NAUTILUS_PREFERENCES_THEME, 
-						(NautilusPreferencesCallback) nautilus_sidebar_tabs_load_theme_data, 
-						sidebar_tabs);
+	nautilus_g_list_free_deep_custom (sidebar_tabs->details->tab_items,
+					  tab_item_destroy_cover,
+					  NULL);
+	
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME, 
+					      (NautilusPreferencesCallback) nautilus_sidebar_tabs_load_theme_data, 
+					      sidebar_tabs);
 		
 	g_free (sidebar_tabs->details);
   	
@@ -1186,7 +1192,7 @@ nautilus_sidebar_tabs_add_view (NautilusSidebarTabs *sidebar_tabs, const char *n
 	new_tab_item->notebook_page = page_num;
 
 	/* add it to the list */
-	sidebar_tabs->details->tab_items = g_list_append(sidebar_tabs->details->tab_items, new_tab_item);
+	sidebar_tabs->details->tab_items = g_list_append (sidebar_tabs->details->tab_items, new_tab_item);
 	
 	sidebar_tabs->details->tab_count += 1;
 	recalculate_size (sidebar_tabs);
