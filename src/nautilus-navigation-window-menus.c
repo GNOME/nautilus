@@ -551,9 +551,15 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 
 
 	if (about == NULL) {
+		/* timestamp overrides build message, because timestamp
+		 * should only be set on tinderbox for hourly builds
+		 */
 		time_stamp = nautilus_get_build_time_stamp ();
 		if (time_stamp == NULL) {
-			time_stamp = g_strdup ("");
+			time_stamp = nautilus_get_build_message ();
+			if (time_stamp == NULL) {
+				time_stamp = g_strdup ("");
+			}
 		}
 		
 		/* The copyright character in here is correct for

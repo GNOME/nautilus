@@ -1,3 +1,22 @@
+2001-03-10  Mike Fleming  <mfleming@eazel.com>
+
+	reviewed by: <rslomkow@eazel.com>
+
+	Bug 6826: 
+
+	Added --with-build-message to ./configure.  A build message will
+	display in the about box if no EAZEL_TIMESTAMP (used by hourly builds)
+	has been set.
+
+	The default build message for CVS builds "Development Version"
+
+	* acconfig.h:
+	* configure.in:
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_get_build_message):
+	* libnautilus-extensions/nautilus-file-utilities.h:
+	* src/nautilus-window-menus.c: (help_menu_about_nautilus_callback):
+
 2001-03-09  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>
