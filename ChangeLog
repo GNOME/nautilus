@@ -1,3 +1,105 @@
+2000-06-13  Darin Adler  <darin@eazel.com>
+
+	Some build fixes.
+
+	* acconfig.h:
+	* configure.in:
+	Removed the NAUTILUS_PREFIX that I added. I did it wrong.
+	
+	* libnautilus-extensions/nautilus-file-utilities.h:
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_pixmap_file):
+	* components/hardware/nautilus-hardware-view.c:
+	(setup_overview_form):
+	* components/services/startup/nautilus-view/nautilus-service-startup-view.c:
+	(setup_form_title), (setup_signup_form), (setup_config_form):
+	* libnautilus-extensions/nautilus-icon-canvas-item.c: (map_pixbuf):
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(make_full_icon_path):
+	* src/nautilus-application.c: (display_caveat):
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize),
+	(nautilus_emblem_dialog_new), (make_category_link):
+	* src/nautilus-zoom-control.c: (nautilus_zoom_control_initialize):
+	Replaced most uses of gnome_pixmap_file on "nautilus/"
+	with a call to a new nautilus_pixmap_file in an attempt to
+	make installations where nautilus has a different prefix
+	from gnome-libs work. I now think this is a waste of time,
+	but Mathieu Lacage says this is still an improvement.
+	
+	* components/help/Makefile.am:
+	* components/help/hyperbola-filefmt.c: (fmt_map_entry):
+	Use HYPERBOLA_DATADIR instead of NAUTILUS_PREFIX.
+	
+	* components/websearch/ntl-web-search.c:
+	(web_search_populate_engines):
+	Use WEB_SEARCH_DATADIR instead of NAUTILUS_PREFIX.
+	
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(nautilus_mozilla_content_view_initialize),
+	(mozilla_content_view_set_busy_cursor),
+	(mozilla_content_view_request_progress_change),
+	(mozilla_content_view_clear_busy_cursor),
+	(mozilla_load_location_callback), (bonobo_mozilla_callback),
+	(mozilla_merge_bonobo_items_callback),
+	(mozilla_title_changed_callback),
+	(mozilla_location_changed_callback), (mozilla_net_status_callback),
+	(mozilla_link_message_callback), (mozilla_progress_callback),
+	(mozilla_open_uri_callback):
+	Took a cut at fixing the Mozilla component for the new API.
+	Ramiro will have to take care of the rest.
+	
+	* components/services/install/lib/Makefile.am:
+	* components/services/time/command-line/Makefile.am:
+	* components/services/time/nautilus-view/Makefile.am:
+	* components/services/time/service/Makefile.am:
+	* components/services/trilobite/libtrilobite/Makefile.am:
+	* components/services/trilobite/sample/command-line/Makefile.am:
+	* components/services/trilobite/sample/service/Makefile.am:
+	* libnautilus/Makefile.am:
+	Updated all ORBit IDL compiles to use IDL_CFLAGS as suggested
+	in the form of a patch by Martijn van Beers.
+	
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_get_user_main_directory),
+	(nautilus_get_pixmap_directory):
+	* libnautilus-extensions/nautilus-link-set.c:
+	(get_link_set_document):
+	* src/Makefile.am:
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_drag_data_get), (make_drag_image),
+	(get_xml_path), (make_properties_from_directory):
+	* src/nautilus-link-set-window.c: (get_link_set_names):
+	* src/file-manager/Makefile.am:
+	* src/file-manager/fm-properties-window.c: (get_property_names):
+	Used NAUTILUS_DATADIR and DATADIR instead of NAUTILUS_PREFIX.
+	
+	* libnautilus-extensions/nautilus-file-utilities.h:
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_get_uri_from_local_path): Added a new helper function for
+	use when you have a path and need a URI. This does a better job
+	than just adding a "file://" on the front.
+	
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(get_first_callback), (nautilus_gtk_container_get_first_child):
+	* src/nautilus-window-toolbars.c: (setup_button):
+	* src/nautilus-window.c:
+	(replace_special_current_view_in_content_view_menu):
+	Implemented the first_child function and used it where appropriate.
+	
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(add_icon_themes): Use nautilus_get_pixmap_directory intead of
+	misusing gnome_pixmap_file by calling it on a directory name.
+	
+	* nautilus-installer/src/support.c: (create_pixmap),
+	(create_image): Added FIXMEs since it isn't clear if this code
+	will work with a Nautilus prefix that's not the same as the
+	gnome-libs prefix.
+	
+	* Makefile.am: Tweaked white space.
+	
 2000-06-13  Seth Nickell  <seth@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory.c:
