@@ -107,6 +107,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-icon-dnd.c			\
 	nautilus-icon-factory.c			\
 	nautilus-icon-text-item.c		\
+	nautilus-image-table.c			\
 	nautilus-image-with-background.c	\
 	nautilus-image.c			\
 	nautilus-keep-last-vertical-box.c	\
@@ -119,8 +120,8 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-list-column-title.c		\
 	nautilus-list.c                         \
 	nautilus-merged-directory.c		\
-	nautilus-metafile.c                     \
 	nautilus-metafile-factory.c             \
+	nautilus-metafile.c                     \
 	nautilus-mime-actions.c			\
 	nautilus-password-dialog.c		\
 	nautilus-preferences-box.c		\
@@ -157,6 +158,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-view-identifier.c		\
 	nautilus-viewport.c			\
 	nautilus-volume-monitor.c		\
+	nautilus-wrap-table.c			\
 	nautilus-xml-extensions.c		\
 	$(NULL)
 
@@ -218,6 +220,7 @@ noinst_HEADERS =				\
 	nautilus-icon-factory.h			\
 	nautilus-icon-private.h			\
 	nautilus-icon-text-item.h		\
+	nautilus-image-table.h			\
 	nautilus-image-with-background.h	\
 	nautilus-image.h			\
 	nautilus-iso9660.h			\
@@ -232,8 +235,8 @@ noinst_HEADERS =				\
 	nautilus-list.h                         \
 	nautilus-merged-directory.h		\
 	nautilus-metadata.h			\
-	nautilus-metafile.h                     \
 	nautilus-metafile-factory.h             \
+	nautilus-metafile.h                     \
 	nautilus-mime-actions.h			\
 	nautilus-password-dialog.h		\
 	nautilus-preferences-box.h		\
@@ -273,6 +276,7 @@ noinst_HEADERS =				\
 	nautilus-view-identifier.h		\
 	nautilus-viewport.h			\
 	nautilus-volume-monitor.h		\
+	nautilus-wrap-table.h			\
 	nautilus-xml-extensions.h		\
 	$(NULL)
 

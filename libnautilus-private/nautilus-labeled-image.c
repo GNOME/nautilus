@@ -32,12 +32,11 @@
 #include "nautilus-art-gtk-extensions.h"
 #include "nautilus-label.h"
 #include "nautilus-image.h"
+#include "nautilus-debug-drawing.h"
 
 #include <gtk/gtkbutton.h>
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtkcheckbutton.h>
-
-#include "nautilus-debug-drawing.h"
 
 #define DEFAULT_SPACING 0
 #define DEFAULT_X_PADDING 0
@@ -1631,6 +1630,51 @@ nautilus_labeled_image_toggle_button_new_from_file_name (const char *text,
 	return toggle_button;
 }
 
+/*
+ * Workaround some bugs in GtkCheckButton where the widget 
+ * does not redraw properly after leave or focus out events
+ * 
+ * The workaround is to draw a little bit more than the 
+ * widget itself - 4 pixels worth.  For some reason the
+ * widget does not properly redraw its edges.
+ */
+static void
+button_leave_callback (GtkWidget *widget,
+		       gpointer callback_data)
+{
+	g_return_if_fail (GTK_IS_WIDGET (widget));
+
+	if (GTK_WIDGET_DRAWABLE (widget)) {
+		const int fudge = 4;
+		ArtIRect bounds;
+
+		bounds = nautilus_irect_gtk_widget_get_bounds (widget);
+		
+		bounds.x0 -= fudge;
+		bounds.y0 -= fudge;
+		bounds.x1 += fudge;
+		bounds.y1 += fudge;
+		
+		gtk_widget_queue_draw_area (widget->parent,
+					    bounds.x0,
+					    bounds.y0,
+					    nautilus_art_irect_get_width (&bounds),
+					    nautilus_art_irect_get_height (&bounds));
+	}
+}
+
+static gint
+button_focus_out_event_callback (GtkWidget *widget,
+				 GdkEventFocus *event,
+				 gpointer callback_data)
+{
+	g_return_val_if_fail (GTK_IS_WIDGET (widget), FALSE);
+
+	button_leave_callback (widget, callback_data);
+
+	return FALSE;
+}
+
 /**
  * nautilus_labeled_image_check_button_new:
  * @text: Text to use for label or NULL.
@@ -1650,6 +1694,21 @@ nautilus_labeled_image_check_button_new (const char *text,
 	labeled_image = nautilus_labeled_image_new (text, pixbuf);
 	gtk_container_add (GTK_CONTAINER (check_button), labeled_image);
 	gtk_widget_show (labeled_image);
+	
+	/*
+	 * Workaround some bugs in GtkCheckButton where the widget 
+	 * does not redraw properly after leave or focus out events
+	 */
+	gtk_signal_connect_while_alive (GTK_OBJECT (check_button),
+					"leave",
+					GTK_SIGNAL_FUNC (button_leave_callback),
+					NULL,
+					GTK_OBJECT (check_button));
+	gtk_signal_connect_while_alive (GTK_OBJECT (check_button),
+					"focus_out_event",
+					GTK_SIGNAL_FUNC (button_focus_out_event_callback),
+					NULL,
+					GTK_OBJECT (check_button));
 	
 	return check_button;
 }
@@ -1965,3 +2024,14 @@ nautilus_labeled_image_set_text_color (NautilusLabeledImage *labeled_image,
 	}
 }
 
+void
+nautilus_labeled_image_set_label_never_smooth (NautilusLabeledImage *labeled_image,
+					       gboolean never_smooth)
+{
+	g_return_if_fail (NAUTILUS_IS_LABELED_IMAGE (labeled_image));
+
+	if (labeled_image->details->label != NULL) {
+		nautilus_label_set_never_smooth (NAUTILUS_LABEL (labeled_image->details->label),
+						 never_smooth);
+	}
+}

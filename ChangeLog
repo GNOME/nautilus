@@ -1,3 +1,40 @@
+2001-02-07  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Mike Fleming <mfleming@eazel.com>
+	Minus the 2 new widgets.
+		
+	* libnautilus-extensions/Makefile.am:
+	New files.
+
+	* libnautilus-extensions/nautilus-labeled-image.h:
+	* libnautilus-extensions/nautilus-labeled-image.c:
+	(button_leave_callback), (button_focus_out_event_callback),
+	(nautilus_labeled_image_check_button_new): Add workaround for
+	rendering problems with GtkCheckButton.
+	(nautilus_labeled_image_set_label_never_smooth): New function to
+	make the label part possibly never smooth.
+
+	* libnautilus-extensions/nautilus-clickable-image.h:
+	* libnautilus-extensions/nautilus-clickable-image.c:
+	(ancestor_button_press_event), (ancestor_button_release_event),
+	(nautilus_clickable_image_new),
+	(nautilus_clickable_image_new_from_file_name): New function to
+	create clickable images from image files.  Add grab/ungrab calls
+	to match the logic in GtkButton.
+
+	* libnautilus-extensions/nautilus-wrap-table.h:
+	* libnautilus-extensions/nautilus-wrap-table.c:
+	New class.
+	
+	* libnautilus-extensions/nautilus-image-table.c:
+	* libnautilus-extensions/nautilus-image-table.h:
+	New class.
+
+	* test/test-nautilus-image-table.c:
+	* test/.cvsignore:
+	* test/Makefile.am:
+	Image table test.
+	
 2001-02-07  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-object.c:

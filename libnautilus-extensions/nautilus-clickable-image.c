@@ -30,6 +30,8 @@
 #include "nautilus-gtk-extensions.h"
 #include "nautilus-art-gtk-extensions.h"
 
+#include <gtk/gtkmain.h>
+
 /* Arguments */
 enum
 {
@@ -409,6 +411,8 @@ ancestor_button_press_event (GtkWidget *widget,
 
  	clickable_image = NAUTILUS_CLICKABLE_IMAGE (event_data);
 
+	gtk_grab_add (widget);
+
 	if (clickable_image->details->pointer_inside) {
 		label_handle_button_press (NAUTILUS_CLICKABLE_IMAGE (event_data));
 	}
@@ -428,6 +432,8 @@ ancestor_button_release_event (GtkWidget *widget,
 	g_return_val_if_fail (event != NULL, FALSE);
 
  	clickable_image = NAUTILUS_CLICKABLE_IMAGE (event_data);
+
+	gtk_grab_remove (widget);
 
 	if (clickable_image->details->pointer_inside) {
 		label_handle_button_release (NAUTILUS_CLICKABLE_IMAGE (event_data));
@@ -481,6 +487,21 @@ nautilus_clickable_image_new (const char *text,
 	if (text != NULL) {
 		nautilus_labeled_image_set_text (NAUTILUS_LABELED_IMAGE (clickable_image), text);
 	}
+
+	return GTK_WIDGET (clickable_image);
+}
+
+GtkWidget*
+nautilus_clickable_image_new_from_file_name (const char *text,
+					     const char *pixbuf_file_name)
+{
+	NautilusClickableImage *clickable_image;
+
+	g_return_val_if_fail (pixbuf_file_name != NULL, NULL);
+	
+	clickable_image = NAUTILUS_CLICKABLE_IMAGE (nautilus_clickable_image_new (text, NULL));
+	
+	nautilus_labeled_image_set_pixbuf_from_file_name (NAUTILUS_LABELED_IMAGE (clickable_image), pixbuf_file_name);
 
 	return GTK_WIDGET (clickable_image);
 }

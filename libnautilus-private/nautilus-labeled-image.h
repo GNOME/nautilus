@@ -158,6 +158,8 @@ void            nautilus_labeled_image_set_smooth_drop_shadow_color     (Nautilu
 									 guint32                       drop_shadow_color);
 void            nautilus_labeled_image_set_text_color                   (NautilusLabeledImage         *labeled_image,
 									 guint32                       text_color);
+void            nautilus_labeled_image_set_label_never_smooth           (NautilusLabeledImage         *labeled_image,
+									 gboolean                      never_smooth);
 
 END_GNOME_DECLS
 

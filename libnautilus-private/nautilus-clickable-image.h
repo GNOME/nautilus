@@ -72,20 +72,22 @@ struct _NautilusClickableImageClass
 	void (*leave) (NautilusClickableImage *image);
 };
 
-GtkType    nautilus_clickable_image_get_type  (void);
-GtkWidget *nautilus_clickable_image_new       (const char *text,
-					       GdkPixbuf  *pixbuf);
-GtkWidget *nautilus_clickable_image_new_solid (const char *text,
-					       GdkPixbuf  *pixbuf,
-					       guint       drop_shadow_offset,
-					       guint32     drop_shadow_color,
-					       guint32     text_color,
-					       float       x_alignment,
-					       float       y_alignment,
-					       int         x_padding,
-					       int         y_padding,
-					       guint32     background_color,
-					       GdkPixbuf  *tile_pixbuf);
+GtkType    nautilus_clickable_image_get_type           (void);
+GtkWidget *nautilus_clickable_image_new                (const char *text,
+							GdkPixbuf  *pixbuf);
+GtkWidget *nautilus_clickable_image_new_from_file_name (const char *text,
+							const char *pixbuf_file_name);
+GtkWidget *nautilus_clickable_image_new_solid          (const char *text,
+							GdkPixbuf  *pixbuf,
+							guint       drop_shadow_offset,
+							guint32     drop_shadow_color,
+							guint32     text_color,
+							float       x_alignment,
+							float       y_alignment,
+							int         x_padding,
+							int         y_padding,
+							guint32     background_color,
+							GdkPixbuf  *tile_pixbuf);
 
 END_GNOME_DECLS
 

@@ -4,6 +4,7 @@ INCLUDES =\
 	-I$(top_srcdir) 		\
 	-I$(top_builddir) 		\
 	-I$(top_builddir)/libnautilus 	\
+	-I$(top_srcdir)/cut-n-paste-code\
 	$(BONOBO_CFLAGS) 		\
 	$(OAF_CFLAGS) 			\
 	$(GCONF_CFLAGS) 		\
@@ -39,6 +40,7 @@ noinst_PROGRAMS =\
 	test-nautilus-image-scrolled \
 	test-nautilus-image-simple \
 	test-nautilus-image-tile \
+	test-nautilus-image-table \
 	test-nautilus-label \
 	test-nautilus-label-background \
 	test-nautilus-label-flavorful \
@@ -65,6 +67,7 @@ test_nautilus_font_picker_SOURCES = test-nautilus-font-picker.c
 test_nautilus_font_simple_SOURCES = test-nautilus-font-simple.c test.c
 test_nautilus_image_SOURCES = test-nautilus-image.c
 test_nautilus_image_background_SOURCES = test-nautilus-image-background.c test.c
+test_nautilus_image_table_SOURCES = test-nautilus-image-table.c test.c
 test_nautilus_image_scrolled_SOURCES = test-nautilus-image-scrolled.c test.c
 test_nautilus_image_simple_SOURCES = test-nautilus-image-simple.c
 test_nautilus_image_tile_SOURCES = test-nautilus-image-tile.c test.c
