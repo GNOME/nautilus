@@ -279,6 +279,9 @@ nautilus_make_uri_canonical (const char *uri)
 {
 	char *canonical_uri, *old_uri, *p;
 	GnomeVFSURI *vfs_uri;
+	gboolean relative_uri;
+
+	relative_uri = FALSE;
 
 	if (uri == NULL) {
 		return NULL;
@@ -289,6 +292,24 @@ nautilus_make_uri_canonical (const char *uri)
 	 */
 	if (nautilus_uri_is_trash (uri)) {
 		return g_strdup ("trash:");
+	}
+
+	/* FIXME:
+	 * humor some old broken behavior until we can fix places that depend on this
+	 * to expect the correct forms. (We may simpli just remove the corresponding 
+	 * tests for some of these).
+	 */
+	if (strcasecmp (uri, "file:trash") == 0) {
+		return g_strdup ("file:///trash");
+	}
+	if (strcasecmp (uri, "file://") == 0) {
+		return g_strdup ("file:///");
+	}
+	if (strcasecmp (uri, "file:") == 0) {
+		return g_strdup ("file:///");
+	}
+	if (strcasecmp (uri, "http:") == 0) {
+		return g_strdup ("http://");
 	}
 
 	/* FIXME bugzilla.eazel.com 648: 
@@ -310,7 +331,24 @@ nautilus_make_uri_canonical (const char *uri)
 	/* Add file: if there is no scheme. */
 	if (strchr (canonical_uri, ':') == NULL) {
 		old_uri = canonical_uri;
-		canonical_uri = g_strconcat ("file:", old_uri, NULL);
+
+		if (old_uri[0] != '/') {
+			/* FIXME: bandaid alert. Is this really the right thing to do?
+			 * 
+			 * We got what really is a relative path. We do a little bit of
+			 * a stretch here and assume it was meant to be a cryptic absolute path,
+			 * and convert it to one. Since we can't call gnome_vfs_uri_new and
+			 * gnome_vfs_uri_to_string to do the right make-canonical conversion,
+			 * we have to do it ourselves.
+			 */
+			relative_uri = TRUE;
+			canonical_uri = gnome_vfs_make_canonical_pathname (old_uri);
+			g_free (old_uri);
+			old_uri = canonical_uri;
+			canonical_uri = g_strconcat ("file:///", old_uri, NULL);
+		} else {
+			canonical_uri = g_strconcat ("file:", old_uri, NULL);
+		}
 		g_free (old_uri);
 	}
 
@@ -322,16 +360,18 @@ nautilus_make_uri_canonical (const char *uri)
 		}
 	}
 
-	vfs_uri = gnome_vfs_uri_new (canonical_uri);
-	/* If gnome-vfs knows about this scheme, take advantage of its
-	 * canonicalization mechanism.
-	 */
-	if (vfs_uri != NULL) {
-		g_free (canonical_uri);
-		canonical_uri = gnome_vfs_uri_to_string (vfs_uri, GNOME_VFS_URI_HIDE_NONE);
-		gnome_vfs_uri_unref (vfs_uri);
+	if (!relative_uri) {
+		vfs_uri = gnome_vfs_uri_new (canonical_uri);
+		/* If gnome-vfs knows about this scheme, take advantage of its
+		 * canonicalization mechanism.
+		 */
+		if (vfs_uri != NULL) {
+			g_free (canonical_uri);
+			canonical_uri = gnome_vfs_uri_to_string (vfs_uri, GNOME_VFS_URI_HIDE_NONE);
+			gnome_vfs_uri_unref (vfs_uri);
+		}
 	}
-
+	
 	/* FIXME bugzilla.eazel.com 2802:
 	 * Work around gnome-vfs's desire to convert file:foo into file://foo
 	 * by converting to file:///foo here. When you remove this, check that
@@ -1316,10 +1356,7 @@ nautilus_self_check_file_utilities (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http:"), "http://");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:/"), "file:///");
 
-	/* FIXME bugzilla.eazel.com 2803: Do we really want to add the
-         * "//" in this case?
-	 */
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("pipe:gnome-info2html2 as"), "pipe://gnome-info2html2 as");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("pipe:gnome-info2html2 as"), "pipe:gnome-info2html2 as");
 
 }
 

@@ -1,3 +1,20 @@
+2000-10-30  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_make_uri_canonical),
+	(nautilus_self_check_file_utilities):
+	nautilus_make_uri_canonical was relying on GnomeVFSURI sort-of
+	handling relative uris, even though they are illegal in GnomeVFS.
+	My earlier fix in gnome-vfs "broke" some of this broken behavior. 
+	Added more special-case handling of cryptic absolute to 
+	nautilus_make_uri_canonical to make it behave like before and not
+	break existing behavior that depends on it. Added some bandaids for
+	conversions that are clearly wrong but that may need more work 
+	throughout the code that depends on it, for now I'm making it
+	behave like the old call.
+	My earlier fix to gnome-vfs fixes 2803. Change the test to reflect 
+	the correct behavior.
+
 2000-10-30  Robey Pointer  <robey@eazel.com>
 
 	* components/services/trilobite/helper/README:
