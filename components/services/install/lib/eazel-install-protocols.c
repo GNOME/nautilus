@@ -202,7 +202,12 @@ http_fetch_remote_file (EazelInstall *service,
 		length = ghttp_get_body_len (request);
 		body = ghttp_get_body (request);
 		if (body != NULL) {
-			fwrite (body, length, 1, file);
+			if (fwrite (body, length, 1, file) < 1) {
+				/* probably out of disk space */
+				g_warning (_("DISK FULL: could not write %s"), target_file);
+				service->private->disk_full = TRUE;
+				get_failed = 1;
+			}
 		} else {
 			g_warning (_("Could not get request body!"));
 			get_failed = 1;
@@ -214,7 +219,11 @@ http_fetch_remote_file (EazelInstall *service,
         if (request) {
                 ghttp_request_destroy (request);
         }
-        fclose (file);
+        if (fclose (file) != 0) {
+		g_warning (_("DISK FULL: could not write %s"), target_file);
+		service->private->disk_full = TRUE;
+		get_failed = 1;
+	}
 
 	if (! get_failed) {
 		rename (target_file_premove, target_file);

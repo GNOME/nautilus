@@ -95,6 +95,9 @@ struct _EazelInstallPrivate {
 
 	/* used to cancel a download before it finished */
 	gboolean cancel_download;
+
+	/* hacky way to notice if the disk is full */
+	gboolean disk_full;
 };
 
 #endif /* EAZEL_INSTALL_PRIVATE_H */

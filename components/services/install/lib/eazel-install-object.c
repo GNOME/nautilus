@@ -576,14 +576,12 @@ eazel_install_initialize (EazelInstall *service) {
 	service->private->cur_root = NULL;
 	if (g_get_home_dir ()) {
 		service->private->transaction_dir = g_strdup_printf ("%s/.nautilus/transactions", g_get_home_dir () );
-		trilobite_debug (_("Transactions are stored in %s"), service->private->transaction_dir);
 	} else {
 		service->private->transaction_dir = NULL;
 		g_message (_("Transactions are not stored, could not find home dir"));
 	}
 	service->private->packsys.rpm.rpmrc_read = FALSE;
 	service->private->packsys.rpm.dbs = g_hash_table_new (g_str_hash, g_str_equal);
-	trilobite_debug ("packsys.rpm.dbs = 0x%x", service->private->packsys.rpm.dbs);
 	service->private->logfile = NULL;
 	service->private->logfilename = NULL;
 	service->private->log_to_stderr = FALSE;
@@ -594,6 +592,17 @@ eazel_install_initialize (EazelInstall *service) {
 	service->private->revert = FALSE;
 	service->private->ssl_rename = FALSE;
 	eazel_install_set_rpmrc_file (service, "/usr/lib/rpm/rpmrc");
+
+	/* when running as part of trilobite, don't catch logs */
+#ifdef EAZEL_INSTALL_NO_CORBA
+	g_log_set_handler (G_LOG_DOMAIN,
+			   G_LOG_LEVEL_DEBUG | G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_WARNING | G_LOG_LEVEL_ERROR, 
+			   (GLogFunc)eazel_install_log, 
+			   service);
+#endif
+
+	trilobite_debug (_("Transactions are stored in %s"), service->private->transaction_dir);
+	trilobite_debug ("packsys.rpm.dbs = 0x%x", service->private->packsys.rpm.dbs);
 
 	/* Set default root dirs list */
 	{
@@ -619,14 +628,6 @@ eazel_install_initialize (EazelInstall *service) {
 		g_free (tmp);
 		g_list_free (list);
 	}
-
-	/* when running as part of trilobite, don't catch logs */
-#ifdef EAZEL_INSTALL_NO_CORBA
-	g_log_set_handler (G_LOG_DOMAIN,
-			   G_LOG_LEVEL_DEBUG | G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_WARNING | G_LOG_LEVEL_ERROR, 
-			   (GLogFunc)eazel_install_log, 
-			   service);
-#endif
 }
 
 GtkType
@@ -875,6 +876,12 @@ eazel_install_log_to_stderr (EazelInstall *service,
 			     gboolean log_to_stderr)
 {
 	service->private->log_to_stderr = log_to_stderr;
+}
+
+gboolean
+eazel_install_failed_because_of_disk_full (EazelInstall *service)
+{
+	return service->private->disk_full;
 }
 
 static gboolean

@@ -1,3 +1,46 @@
+2000-11-15  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_initialize), (eazel_install_log_to_stderr),
+	(eazel_install_failed_because_of_disk_full):
+	* components/services/install/lib/eazel-install-private.h:
+	* components/services/install/lib/eazel-install-protocols.c:
+	(http_fetch_remote_file):
+	* components/services/install/lib/eazel-install-public.h:
+
+	Re-shuffle logging stuff again to try to make sure that we log as
+	little as possible until the log handler is set up.  Add a flag to
+	the installer service that indicates if the installer ran out of
+	disk space.  Then, you know, actually check the return codes of
+	fwrite/fclose to see if they failed.
+	
+	* nautilus-installer/src/Makefile:
+
+	More crap.
+	
+	* nautilus-installer/src/installer.c: (create_what_to_do_page),
+	(create_install_page), (create_window), (get_detailed_errors),
+	(download_failed), (eazel_install_preflight), (install_done),
+	(eazel_installer_initialize):
+
+	Re-shuffle some of the initialization to move as much as possible
+	after the fetching of the text strings.  It isn't possible to
+	cover 100% of the cases this way, so load the default text strings
+	first, so we'll have text to display in early errors.  Fix a
+	dyslexic typo that would occasionally cause an assertion to fail.
+	Notice the new disk-full flag and give an appropriate error
+	message.
+
+	* nautilus-installer/src/main.c: (check_disk_space), (main):
+
+	Check for disk space before starting, and refuse to even start
+	unless there's N space in /tmp and M space in /.  For now, N = M =
+	75 MB.
+
+	* nautilus-installer/src/prescript:
+
+	Apply kisza's patch (4729) to fix xhost parameters.
+
 2000-11-14  Mathieu Lacage  <mathieu@eazel.com>
 
 	Buddy: john harper.

@@ -126,6 +126,7 @@ void eazel_install_open_log                       (EazelInstall *service,
 						   const char *fname);
 void eazel_install_log_to_stderr		  (EazelInstall *service,
 						   gboolean log_to_stderr);
+gboolean eazel_install_failed_because_of_disk_full (EazelInstall *service);
 
 /* This sets mode 500 on tmpdir and all files in
    private->downloaded_files */
