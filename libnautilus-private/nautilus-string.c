@@ -248,6 +248,37 @@ nautilus_eat_str_to_int (char *source, int *integer)
 	return result;
 }
 
+char *
+nautilus_str_underscore_escape (const char *string)
+{
+  char *q;
+  char *escaped;
+  int underscores = 0;
+  const char *p;
+
+  g_return_val_if_fail (string != NULL, NULL);
+  p=string;
+
+  while (*p != '\000') {
+	  underscores += (*p++ == '_');
+  }
+
+  if (!underscores) {
+	  return g_strdup (string);
+  }
+  escaped = g_new (gchar, strlen (string) + underscores + 1);
+  for(p=string, q=escaped; *p ; ) {
+	  /* Add a slash */
+	  if (*p == '_') {
+		  *q++ = '_';
+	  }
+	  *q++ = *p++;
+  }
+  *q = '\000';
+
+  return escaped;
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 static int
@@ -361,6 +392,15 @@ nautilus_self_check_string (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_chr ("foo_", '_'), "foo");	
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_chr ("_foo__", '_'), "_foo");	
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_chr ("_f_o__o_", '_'), "_f_o__o");	
+	
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_underscore_escape (NULL), NULL);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_underscore_escape (""), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_underscore_escape ("foo"), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_underscore_escape ("foo_bar"), "foo\\_bar");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_underscore_escape ("foo_bar_2"), "foo\\_bar\\_2");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_underscore_escape ("_foo"), "\\_foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_underscore_escape ("foo_"), "foo\\_");
+	
         
 	#define TEST_INTEGER_CONVERSION_FUNCTIONS(string, boolean_result, integer_result) \
 		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_to_int (string, &integer), boolean_result); \
@@ -368,6 +408,7 @@ nautilus_self_check_string (void)
 		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_eat_str_to_int (g_strdup (string), &integer), boolean_result); \
 		NAUTILUS_CHECK_INTEGER_RESULT (call_eat_str_to_int (g_strdup (string)), integer_result);
 
+	
 	TEST_INTEGER_CONVERSION_FUNCTIONS (NULL, FALSE, 9999)
 	TEST_INTEGER_CONVERSION_FUNCTIONS ("", FALSE, 9999)
 	TEST_INTEGER_CONVERSION_FUNCTIONS ("a", FALSE, 9999)

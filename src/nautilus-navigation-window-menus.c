@@ -302,7 +302,7 @@ static void
 activate_bookmark_in_menu_item (BonoboUIHandler *uih, gpointer user_data, const char *path)
 {
         BookmarkHolder *holder = (BookmarkHolder *)user_data;
-
+	
         nautilus_window_goto_uri (holder->window, 
                                   nautilus_bookmark_get_uri (holder->bookmark));
 }
@@ -333,12 +333,11 @@ append_bookmark_to_menu (NautilusWindow *window,
 	
 	bookmark_holder = g_new (BookmarkHolder, 1);
 	bookmark_holder->window = window;
-	bookmark_holder->bookmark = bookmark;
 
  	bonobo_ui_handler_menu_new_item (	window->uih,
                                   		menu_item_path,
-                                       	nautilus_bookmark_get_name (bookmark),
-                                       	_("Go to the specified location"),
+                                       	nautilus_bookmark_get_menu_display_name (bookmark),
+                                       	("Go to the specified location"),
                                        	-1,
                                        	pixmap_type,
                                        	pixbuf_data,
