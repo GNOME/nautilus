@@ -1,3 +1,33 @@
+2000-07-25  Andy Hertzfeld  <andy@eazel.com>
+
+	reworked the zoom control to make it themable.  It now gets its pieces from
+	three separate images, for flexible theming.  It's not watching the
+	theme preference yet, but will be soon
+		
+	* src/nautilus-zoom-control.c,h: (nautilus_zoom_control_destroy),
+	(get_zoom_width), (nautilus_zoom_control_initialize),
+	(draw_number), (draw_pixbuf), (draw_zoom_control_image),
+	(nautilus_zoom_control_draw), (nautilus_zoom_control_expose),
+	(nautilus_zoom_control_unload_images), (load_themed_image),
+	(nautilus_zoom_control_load_images), (zoom_menu_callback),
+	(create_zoom_menu), (nautilus_zoom_control_button_press_event),
+	(nautilus_zoom_control_set_zoom_level),
+	(nautilus_zoom_control_set_min_zoom_level),
+	(nautilus_zoom_control_set_max_zoom_level),
+	(nautilus_zoom_control_set_preferred_zoom_levels),
+	(nautilus_zoom_control_get_zoom_level),
+	(nautilus_zoom_control_get_min_zoom_level),
+	(nautilus_zoom_control_get_max_zoom_level):
+	rework to make instance variables private, and use separate images fetched
+	using the theme mechansim.
+	* icons/Makefile.am:
+	* icons/increment.png:
+	* icons/decrement.png:
+	* icons/zoom_body.png:
+	new images for the reworked zoom control. Removed the old "zoom.png" image	
+	* libnautilus-extensions/nautilus-theme.c:
+	some small clean-ups
+
 2000-07-25  Gene Z. Ragan  <gzr@eazel.com>
 	
 	* libnautilus-extensions/nautilus-icon-factory.c:

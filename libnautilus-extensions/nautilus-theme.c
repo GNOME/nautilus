@@ -170,7 +170,6 @@ nautilus_theme_get_image_path (const char *image_name)
 }
 
 /* create a pixbuf that represents the passed in theme name */
-/* this is a placeholder until we get Arlo's design */
 
 GdkPixbuf *
 nautilus_theme_make_selector (const char *theme_name)

@@ -12,6 +12,7 @@ icon_DATA =\
 	colors.png \
 	computer.png \
 	computer.svg \
+	decrement.png \
 	default.xml \
 	eazel-logo.gif \
 	emblem-certified.gif \
@@ -141,6 +142,7 @@ icon_DATA =\
 	i-stalled.png \
 	i-zipdisk.png \
 	i-zipdisk2.png \
+	increment.png \
 	intermediate.png \
 	knob.png \
 	leftarrow.png \
@@ -159,7 +161,7 @@ icon_DATA =\
 	trash-empty.png \
 	trash-full.png \
 	uparrow.png \
-	zoom.png \
+	zoom_body.png \
 	$(NULL)
 
 EXTRA_DIST = $(icon_DATA)

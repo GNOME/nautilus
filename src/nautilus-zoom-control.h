@@ -41,14 +41,11 @@ extern "C" {
 
 typedef struct NautilusZoomControl NautilusZoomControl;
 typedef struct NautilusZoomControlClass NautilusZoomControlClass;
+typedef struct NautilusZoomControlDetails NautilusZoomControlDetails;
 
 struct NautilusZoomControl {
 	GtkEventBox parent;
-	
-	double zoom_level;
-	double min_zoom_level;	 
-	double max_zoom_level;
-	GList *preferred_zoom_levels;
+	NautilusZoomControlDetails *details;
 };
 
 struct NautilusZoomControlClass {
