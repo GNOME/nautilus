@@ -362,7 +362,7 @@ add_buttons (NautilusColumnChooser *chooser)
 	box = gtk_vbox_new (FALSE, 8);
 	gtk_widget_show (box);
 	
-	chooser->details->move_up_button = gtk_button_new_with_mnemonic ("Move _Up");
+	chooser->details->move_up_button = gtk_button_new_with_mnemonic (_("Move _Up"));
 	g_signal_connect (chooser->details->move_up_button, 
 			  "clicked",  G_CALLBACK (move_up_clicked_callback),
 			  chooser);
@@ -371,7 +371,7 @@ add_buttons (NautilusColumnChooser *chooser)
 	gtk_box_pack_start (GTK_BOX (box), chooser->details->move_up_button,
 			    FALSE, FALSE, 0);
 
-	chooser->details->move_down_button = gtk_button_new_with_mnemonic ("Move _Down");
+	chooser->details->move_down_button = gtk_button_new_with_mnemonic (_("Move _Down"));
 	g_signal_connect (chooser->details->move_down_button, 
 			  "clicked",  G_CALLBACK (move_down_clicked_callback),
 			  chooser);
@@ -380,7 +380,7 @@ add_buttons (NautilusColumnChooser *chooser)
 	gtk_box_pack_start (GTK_BOX (box), chooser->details->move_down_button,
 			    FALSE, FALSE, 0);
 
-	chooser->details->show_button = gtk_button_new_with_mnemonic ("_Show");
+	chooser->details->show_button = gtk_button_new_with_mnemonic (_("_Show"));
 	g_signal_connect (chooser->details->show_button, 
 			  "clicked",  G_CALLBACK (show_clicked_callback),
 			  chooser);
@@ -390,7 +390,7 @@ add_buttons (NautilusColumnChooser *chooser)
 	gtk_box_pack_start (GTK_BOX (box), chooser->details->show_button,
 			    FALSE, FALSE, 0);
 
-	chooser->details->hide_button = gtk_button_new_with_mnemonic ("_Hide");
+	chooser->details->hide_button = gtk_button_new_with_mnemonic (_("_Hide"));
 	g_signal_connect (chooser->details->hide_button, 
 			  "clicked",  G_CALLBACK (hide_clicked_callback),
 			  chooser);
@@ -403,7 +403,7 @@ add_buttons (NautilusColumnChooser *chooser)
 	gtk_widget_show (separator);
 	gtk_box_pack_start (GTK_BOX (box), separator, FALSE, FALSE, 0);	
 
-	chooser->details->use_default_button = gtk_button_new_with_mnemonic ("_Use Default");
+	chooser->details->use_default_button = gtk_button_new_with_mnemonic (_("_Use Default"));
 	g_signal_connect (chooser->details->use_default_button, 
 			  "clicked",  G_CALLBACK (use_default_clicked_callback),
 			  chooser);
