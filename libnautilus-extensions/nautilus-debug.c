@@ -85,20 +85,20 @@ nautilus_make_warnings_and_criticals_stop_in_debugger (const char *first_domain,
 	va_end (domains);
 }
 
-void 
-nautilus_print_available_file_descriptor_count (const char *message)
+int 
+nautilus_get_available_file_descriptor_count (void)
 {
-	int result;
+	int count;
 	GList *list;
 	GList *p;
 	FILE *file;
 
 	list = NULL;
-
-	for (result = 0; ; result++) {
+	for (count = 0; ; count++) {
 		file = fopen("/dev/null", "r");
-		if (file == NULL)
+		if (file == NULL) {
 			break;
+		}
 		list = g_list_prepend (list, file);
 	}
 
@@ -107,6 +107,5 @@ nautilus_print_available_file_descriptor_count (const char *message)
 	}
 	g_list_free (list);
 
-	printf("%s %d file descriptors available\n", 
-		message == NULL ? "" : message, result);
+	return count;
 }

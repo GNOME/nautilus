@@ -1186,12 +1186,16 @@ nautilus_directory_file_monitor_remove (NautilusDirectory *directory,
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
+#include "nautilus-debug.h"
 #include "nautilus-file-attributes.h"
 
 static int data_dummy;
 static guint file_count;
 static gboolean got_metadata_flag;
 static gboolean got_files_flag;
+static gboolean file_open_flag;
+static gboolean file_closed_flag;
+GnomeVFSAsyncHandle *file_handle;
 
 static void
 get_files_callback (NautilusDirectory *directory, GList *files, gpointer callback_data)
@@ -1223,6 +1227,30 @@ got_files_callback (NautilusDirectory *directory, GList *files, gpointer callbac
 	got_files_flag = TRUE;
 }
 
+static void
+file_open_callback (GnomeVFSAsyncHandle *handle,
+		    GnomeVFSResult result,
+		    gpointer callback_data)
+{
+	g_assert (file_handle == handle);
+	g_assert (result == GNOME_VFS_OK);
+	g_assert (callback_data == &data_dummy);
+
+	file_open_flag = TRUE;
+}
+
+static void
+file_close_callback (GnomeVFSAsyncHandle *handle,
+		     GnomeVFSResult result,
+		     gpointer callback_data)
+{
+	g_assert (file_handle == handle);
+	g_assert (result == GNOME_VFS_OK);
+	g_assert (callback_data == &data_dummy);
+
+	file_closed_flag = TRUE;
+}
+
 /* Return the number of extant NautilusDirectories */
 int
 nautilus_directory_number_outstanding (void)
@@ -1230,11 +1258,67 @@ nautilus_directory_number_outstanding (void)
         return g_hash_table_size (directory_objects);
 }
 
+static void
+open_and_close_one (void)
+{
+	file_open_flag = FALSE;
+	gnome_vfs_async_open (&file_handle,
+			      "file:///etc/passwd",
+			      GNOME_VFS_OPEN_READ,
+			      file_open_callback,
+			      &data_dummy);
+	while (!file_open_flag) {
+		gtk_main_iteration ();
+	}
+	file_closed_flag = FALSE;
+	gnome_vfs_async_close (file_handle,
+			       file_close_callback,
+			       &data_dummy);
+	while (!file_closed_flag) {
+		gtk_main_iteration ();
+	}
+}
+
 void
 nautilus_self_check_directory (void)
 {
 	NautilusDirectory *directory;
 	GList *keys, *attributes;
+	int available_before, file_descriptors_consumed;
+	GnomeVFSHandle *file_handle;
+
+	available_before = nautilus_get_available_file_descriptor_count ();
+	gnome_vfs_open (&file_handle,
+			"file:///etc/passwd",
+			GNOME_VFS_OPEN_READ);
+	gnome_vfs_close (file_handle);
+	file_descriptors_consumed = available_before
+		- nautilus_get_available_file_descriptor_count ();
+	NAUTILUS_CHECK_INTEGER_RESULT (file_descriptors_consumed, 0);
+
+	/* GNOME VFS test here (wrong place for it, but...) */
+	open_and_close_one ();
+	open_and_close_one ();
+
+	available_before = nautilus_get_available_file_descriptor_count ();
+	open_and_close_one ();
+	file_descriptors_consumed = available_before
+		- nautilus_get_available_file_descriptor_count ();
+	NAUTILUS_CHECK_INTEGER_RESULT (file_descriptors_consumed, 0);
+
+	available_before = nautilus_get_available_file_descriptor_count ();
+	open_and_close_one ();
+	file_descriptors_consumed = available_before
+		- nautilus_get_available_file_descriptor_count ();
+	NAUTILUS_CHECK_INTEGER_RESULT (file_descriptors_consumed, 0);
+
+	available_before = nautilus_get_available_file_descriptor_count ();
+	open_and_close_one ();
+	file_descriptors_consumed = available_before
+		- nautilus_get_available_file_descriptor_count ();
+	NAUTILUS_CHECK_INTEGER_RESULT (file_descriptors_consumed, 0);
+
+	/* END GNOME VFS test */
 
 	keys = g_list_prepend (NULL, "TEST");
 

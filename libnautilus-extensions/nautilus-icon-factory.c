@@ -2134,7 +2134,9 @@ nautilus_self_check_icon_factory (void)
 	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (0), 12);
 	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (1), 12);
 	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (11), 12);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (12), 24);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (12), 20);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (19), 20);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (20), 24);
 	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (23), 24);
 	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (24), 36);
 	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (35), 36);
@@ -2153,7 +2155,9 @@ nautilus_self_check_icon_factory (void)
 	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (1), 12);
 	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (11), 12);
 	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (12), 12);
-	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (24), 12);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (20), 12);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (21), 20);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (24), 20);
 	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (25), 24);
 	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (36), 24);
 	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (37), 36);
@@ -2168,7 +2172,8 @@ nautilus_self_check_icon_factory (void)
 	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (0xFFFFFFFF), 192);
 
 	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 0), "TRUE,12");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 12), "TRUE,24");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 12), "TRUE,20");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 20), "TRUE,24");
 	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 24), "TRUE,36");
 	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 36), "TRUE,48");
 	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 48), "TRUE,72");
@@ -2182,7 +2187,8 @@ nautilus_self_check_icon_factory (void)
 	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 72), "TRUE,96");
 	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 96), "TRUE,192");
 	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 192), "TRUE,24");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 24), "TRUE,12");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 24), "TRUE,20");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 20), "TRUE,12");
 	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 12), "FALSE,12");
 
 	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 0), "TRUE,48");
@@ -2191,7 +2197,8 @@ nautilus_self_check_icon_factory (void)
 	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 96), "TRUE,192");
 	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 192), "TRUE,36");
 	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 36), "TRUE,24");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 24), "TRUE,12");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 24), "TRUE,20");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 20), "TRUE,12");
 	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 12), "FALSE,12");
 
 	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 0), "TRUE,192");
@@ -2200,7 +2207,8 @@ nautilus_self_check_icon_factory (void)
 	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 72), "TRUE,48");
 	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 48), "TRUE,36");
 	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 36), "TRUE,24");
-	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 24), "TRUE,12");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 24), "TRUE,20");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 20), "TRUE,12");
 	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 12), "FALSE,12");
 }
 
