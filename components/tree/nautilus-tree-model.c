@@ -711,19 +711,16 @@ nautilus_tree_model_directory_files_changed_callback (NautilusDirectory        *
 	GList *p;
 	NautilusFile     *file;
 	NautilusTreeNode *node;
-	char *uri;
 
 	for (p = changed_files; p != NULL; p = p->next) {
 		file = (NautilusFile *) p->data;
 		
-		uri = nautilus_file_get_uri (file);
-		node = nautilus_tree_model_get_node (model, uri);
+		node = (NautilusTreeNode *) g_hash_table_lookup (model->details->file_to_node_map, file);
 
 		if (node == NULL) {
-			printf ("ANOMALY: %s\n", uri);
-			g_free (uri);
+			printf ("ANOMALY: %s\n", nautilus_file_get_uri (file));
+			/* Do we need to add this node? */
 		} else {
-			g_free (uri);
 			if (!nautilus_directory_contains_file (directory, file)) {
 				report_node_removed (model, node);
 			} else {			

@@ -1,3 +1,10 @@
+2000-09-07  Maciej Stachowiak  <mjs@eazel.com>
+
+	* components/tree/nautilus-tree-model.c
+	(nautilus_tree_model_directory_files_changed_callback): Look up
+	the node based on the NautilusFile, not the uri, since the URI may
+	have changed, if we are getting a "change" signal.
+	
 2000-09-07  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/command-line/eazel-alt-install-corba.
