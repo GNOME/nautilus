@@ -1242,10 +1242,10 @@ ready_callback_key_compare (gconstpointer a, gconstpointer b)
 			return 1;
 		}
 	} else {
-		if (callback_a->callback.file < callback_b->callback.file) {
+		if ((void *)callback_a->callback.file < (void *)callback_b->callback.file) {
 			return -1;
 		}
-		if (callback_a->callback.file > callback_b->callback.file) {
+		if ((void *)callback_a->callback.file > (void *)callback_b->callback.file) {
 			return 1;
 		}
 	}
