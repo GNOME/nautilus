@@ -1,3 +1,21 @@
+2001-01-17  Andy Hertzfeld  <andy@eazel.com>
+
+	changed the throbber component to use the new translated oaf file
+	scheme.  The throbber still doesn't show up, due to recent bonobo
+	changes, which I'm looking into further.
+	
+	* components/throbber/.cvsignore:
+	cvs should ignore the translated oaf file
+	* components/throbber/Makefile.am:
+	change use of oaf files
+	* components/throbber/Nautilus_Control_throbber.oaf.in:
+	added new style oaf file\
+	* components/throbber/nautilus-throbber.oafinfo:
+	removed the old file
+	* src/nautilus-window-toolbars.c:
+	(nautilus_window_initialize_toolbars):
+	more descriptive message when we get an exception
+
 2001-01-17  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-self-checks.c:

@@ -359,7 +359,7 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 	
 	if (BONOBO_EX (&ev)) {
 		char *txt;
-		g_warning ("Activation exception '%s'",
+		g_warning ("Throbber Activation exception '%s'",
 			   (txt = bonobo_exception_get_text (&ev)));
 		g_free (txt);
 		window->throbber = CORBA_OBJECT_NIL;

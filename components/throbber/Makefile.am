@@ -4,7 +4,7 @@ SUBDIRS =
 
 INCLUDES =					\
 	-DPREFIX=\"$(prefix)\"			\
-	-DG_LOG_DOMAIN=\"Nautilus-Thrpbber-Control\"	\
+	-DG_LOG_DOMAIN=\"Nautilus-Throbber-Control\"	\
 	-DDATADIR=\""$(datadir)"\" 		\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
@@ -15,11 +15,6 @@ INCLUDES =					\
 	$(OAF_CFLAGS)				\
 	$(BONOBO_CFLAGS)			\
 	$(VFS_CFLAGS)
-
-oafdir = $(datadir)/oaf
-oaf_DATA =					\
-	nautilus-throbber.oafinfo
-
 
 bin_PROGRAMS =					\
 	nautilus-throbber
@@ -39,6 +34,14 @@ nautilus_throbber_LDADD =			\
 	$(GNORBA_LIBS)
 
 OBJECT_DIRECTORY_LIBS = $(GNOME_LIBS) $(OAF_LIBS)
+
+oafdir = $(datadir)/oaf
+oaf_in_files =					\
+	Nautilus_Control_throbber.oaf.in	\
+	$(NULL)
+oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+
+@XML_I18N_MERGE_OAF_RULE@
 
 EXTRA_DIST = 			\
 	$(oaf_DATA)		\
