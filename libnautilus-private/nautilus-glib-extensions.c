@@ -540,9 +540,6 @@ check_tm_to_g_date (time_t time)
 				       before_conversion->tm_year);
 }
 
-/* FIXME bugzilla.eazel.com 1277: 
- * nautilus_g_list_partition test is broken.
- */
 static gboolean
 nautilus_test_predicate (char *data,
 			 char *user_data)
@@ -628,10 +625,6 @@ nautilus_self_check_glib_extensions (void)
 	nautilus_g_list_free_deep (compare_list_3);
 	nautilus_g_list_free_deep (compare_list_4);
 	nautilus_g_list_free_deep (compare_list_5);
-
-	/* FIXME bugzilla.eazel.com 1277: 
-	 * nautilus_g_list_partition test is broken.
-	 */
 
 	/* nautilus_g_list_partition */
 
