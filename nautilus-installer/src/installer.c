@@ -1739,7 +1739,7 @@ eazel_installer_setup_texts (EazelInstaller *installer,
 
 	destination = g_strdup_printf ("%s/%s", dest_dir, TEXT_LIST);
 
-	g_message ("Trying to contact Eazel services, ignore any 404 warnings at the next line"); 
+	g_message ("Trying to contact Eazel Services, ignore any 404 warnings at the next line"); 
 
 	if (! trilobite_fetch_uri_to_file (url, destination)) {
 		/* try again with proxy config */
@@ -1778,7 +1778,7 @@ eazel_install_get_depends (EazelInstaller *installer, const char *dest_dir)
 
 	destination = g_strdup_printf ("%s/%s", dest_dir, PACKAGE_LIST);
 
-	g_message ("Trying to contact Eazel services...");
+	g_message ("Trying to contact Eazel Services...");
 
 	if (! trilobite_fetch_uri_to_file (url, destination)) {
 		/* try again with proxy config */

@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* 
  * eazel-helper is a standalone binary app that's meant to be used
- * via 'userhelper' by the Eazel services.  You can send it commands
+ * via 'userhelper' by the Eazel Services.  You can send it commands
  * over stdin, and it will do certain functions for you (assuming it's
  * running as root).  The command API may change at random, so you
  * should always use TrilobiteRootHelper instead of using eazel-helper

@@ -1,3 +1,19 @@
+2001-02-26  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Rebecca Schulman <rebecka@eazel.com>
+
+	Fix bug 7051 (Login dialog mis-capitalizes "Services")
+
+	* components/services/summary/nautilus-summary-dialogs.c
+	(nautilus_summary_show_login_dialog): Change "Eazel services" to
+	"Eazel Services".
+
+	* components/services/trilobite/helper/eazel-helper.c: *
+	configure.in: * nautilus-installer/src/installer.c:
+	(eazel_installer_setup_texts), (eazel_install_get_depends): *
+	nautilus.spec.in: Fixed other references I found to "Eazel
+	services" by grepping,
+
 2001-02-27  Mike Fleming  <mfleming@eazel.com>
 
 	reviewed by: Eskil Olsen <eskil@eazel.com>

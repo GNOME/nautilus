@@ -111,7 +111,7 @@ dnl = Begin tests for eazel-services
 dnl ====================================
 AC_ARG_ENABLE(
 	[eazel-services],
-	[  --enable-eazel-services	Enable support for Eazel services (default is no)],
+	[  --enable-eazel-services	Enable support for Eazel Services (default is no)],
 	[ EAZEL_SERVICES_ENABLED=$enableval ], 
 	[ EAZEL_SERVICES_ENABLED=no ])
 
@@ -954,15 +954,15 @@ echo "
 Mozilla component	: NO"
 ;;
 esac
-dnl <= Do we want Eazel services =>
+dnl <= Do we want Eazel Services =>
 case "X$EAZEL_SERVICES_ENABLED" in
 Xyes)
 echo "
-Eazel services		: YES"
+Eazel Services		: YES"
 ;;
 *)
 echo "
-Eazel services          : NO"
+Eazel Services          : NO"
 ;;
 esac
 

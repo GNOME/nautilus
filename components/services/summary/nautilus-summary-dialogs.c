@@ -143,7 +143,7 @@ nautilus_summary_show_login_dialog (NautilusSummaryView *view)
 	switch (view->details->current_attempt) {
 		case initial:
 			image_name = "big_services_icon.png";
-			message_text = _("Please log in to Eazel services");
+			message_text = _("Please log in to Eazel Services");
 			break;
 		case retry:
 			image_name = "serv_dialog_alert.png";
@@ -152,7 +152,7 @@ nautilus_summary_show_login_dialog (NautilusSummaryView *view)
 		default:
 			g_assert_not_reached();
 			image_name = "big_services_icon.png";
-			message_text = _("Please log in to Eazel services");
+			message_text = _("Please log in to Eazel Services");
 			break;
 	}
 
