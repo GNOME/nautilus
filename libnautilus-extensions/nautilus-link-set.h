@@ -27,8 +27,9 @@
 
 #include <glib.h>
 
-gboolean	nautilus_link_set_install	(const char *file_uri, const char *link_set_name);
-void		nautilus_link_set_remove	(const char *file_uri, const char *link_set_name);
+gboolean nautilus_link_set_install (const char *directory_path,
+				    const char *link_set_name);
+void     nautilus_link_set_remove  (const char *directory_path,
+				    const char *link_set_name);
 
-
-#endif /* NAUTILUS_LINK_H */
+#endif /* NAUTILUS_LINK_SET_H */

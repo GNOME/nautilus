@@ -1,3 +1,41 @@
+2000-06-02  Darin Adler  <darin@eazel.com>
+
+	* components/services/install/idl/.cvsignore:
+	* components/services/time/idl/.cvsignore:
+	Ignore some Makefile and Makefile.in files.
+	
+	* data/linksets/Makefile.am:
+	* data/linksets/desktop.xml:
+	Added a link set for the trash on the desktop.
+	
+	* icons/Makefile.am:
+	Added a trash icon (actually a copy of the Nautilus icon right
+	now :-).
+	
+	* libnautilus-extensions/nautilus-link-set.h:
+	* libnautilus-extensions/nautilus-link-set.c: (create_new_link),
+	(nautilus_link_set_install), (nautilus_link_set_remove):
+	Fixed some URI-related issues and added a special case for the ~
+	character so we can have link sets that are for the home directory.
+	
+	* libnautilus-extensions/nautilus-string.c:
+	(nautilus_str_capitalize): Got rid of the unneeded call to strlen.
+	strlen == 0 is the slowest way I know to check for an empty string.
+	Also check islower before calling toupper for paranoia like the
+	calls in glib do (internally).
+	
+	* src/nautilus-desktop-window.c: (nautilus_desktop_window_new):
+	Install the desktop link set when we are created. For now this
+	installs the trash (in a fairly lame way).
+	
+	* src/nautilus-property-browser.c: (remove_color),
+	(add_color_to_file), (make_properties_from_xml_node),
+	(nautilus_property_browser_update_contents):
+	Changed code to not reference "childs" directly so it's easy to
+	switch to a new version of gnome-xml.
+	
+	* test/.cvsignore: Ignore test-nautilus-mime-actions-set.
+
 2000-06-02  Ramiro Estrugo  <ramiro@eazel.com>
 
 	Task 518.  Support for changing preferecens individually
@@ -122,7 +160,6 @@
 
 	It would be a lot nicer it the contents updated on the fly instead
 	of rebuilding the whole thing.  I can do that later.
-	
 
 2000-06-02  Pavel Cisler  <pavel@eazel.com>
 

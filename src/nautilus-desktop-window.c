@@ -28,7 +28,9 @@
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-link-set.h>
 #include <libgnomeui/gnome-winhints.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 
 struct NautilusDesktopWindowDetails {
 	GList *unref_list;
@@ -83,7 +85,9 @@ NautilusDesktopWindow *
 nautilus_desktop_window_new (NautilusApp *application)
 {
 	NautilusDesktopWindow *window;
-	char *desktop_directory;
+	const char *desktop_directory_path;
+	char *desktop_directory_path_in_uri_format;
+	char *desktop_directory_uri;
 
 	window = NAUTILUS_DESKTOP_WINDOW
 		(gtk_object_new (nautilus_desktop_window_get_type(),
@@ -91,12 +95,29 @@ nautilus_desktop_window_new (NautilusApp *application)
 				 "app_id", "nautilus",
 				 NULL));
 
+	desktop_directory_path = nautilus_get_desktop_directory ();
+
+	/* Create the trash.
+	 * We can do this at some other time if we want, but this
+	 * might be a good time.
+	 */
+	nautilus_link_set_install (desktop_directory_path, "desktop");
+
+	/* FIXME: This little ditty is just the way you convert a
+	 * local path to a file: URI. Should be a utility somewhere
+	 * to do the two steps at once.
+	 */
+	desktop_directory_path_in_uri_format = gnome_vfs_escape_string
+		(desktop_directory_path, GNOME_VFS_URI_UNSAFE_PATH);
+	desktop_directory_uri = g_strconcat
+		("file://", desktop_directory_path_in_uri_format, NULL);
+	g_free (desktop_directory_path_in_uri_format);
+
 	/* Point window at the desktop folder.
 	 * Note that nautilus_desktop_window_initialize is too early to do this.
 	 */
-	desktop_directory = g_strconcat ("file://", nautilus_get_desktop_directory (), NULL);
-	nautilus_window_goto_uri (NAUTILUS_WINDOW (window), desktop_directory);
-	g_free (desktop_directory);
+	nautilus_window_goto_uri (NAUTILUS_WINDOW (window), desktop_directory_uri);
+	g_free (desktop_directory_uri);
 
 	gtk_widget_show (GTK_WIDGET (window));
 

@@ -49,6 +49,7 @@
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-xml-extensions.h>
 
 struct NautilusPropertyBrowserDetails {
 	GtkVBox *container;
@@ -513,16 +514,18 @@ remove_color(NautilusPropertyBrowser *property_browser, const char* color_value)
 	xmlDocPtr document = xmlParseFile (xml_path);
 	g_free(xml_path);
 
-	if (document == NULL)
+	if (document == NULL) {
 		return;
+	}
 
 	/* find the colors category */
-	for (cur_node = document->root->childs; cur_node != NULL; cur_node = cur_node->next) {
+	for (cur_node = nautilus_xml_get_children (xmlDocGetRootElement (document));
+	     cur_node != NULL; cur_node = cur_node->next) {
 		if (strcmp(cur_node->name, "category") == 0) {
 			char* category_name =  xmlGetProp (cur_node, "name");
 			if (strcmp(category_name, "colors") == 0) {
 				/* loop through the colors to find one that matches */
-				xmlNodePtr color_node = cur_node->childs;
+				xmlNodePtr color_node = nautilus_xml_get_children (cur_node);
 				while (color_node != NULL) {
 					char* color_content = xmlNodeGetContent(color_node);
 					if (color_content && !strcmp(color_content, color_value)) {
@@ -852,8 +855,8 @@ add_color_to_file(NautilusPropertyBrowser *property_browser, const char *color_s
 	}
 
 	/* find the colors category */
-	cur_node = document->root->childs;
-	for (cur_node = document->root->childs; cur_node != NULL; cur_node = cur_node->next) {
+	for (cur_node = nautilus_xml_get_children (xmlDocGetRootElement (document));
+	     cur_node != NULL; cur_node = cur_node->next) {
 		if (strcmp(cur_node->name, "category") == 0) {
 			char* category_name =  xmlGetProp (cur_node, "name");
 			if (strcmp(category_name, "colors") == 0) {
@@ -1267,15 +1270,16 @@ make_properties_from_directory(NautilusPropertyBrowser *property_browser, const 
 /* for now, we just handle color nodes */
 
 static void
-make_properties_from_xml_node(NautilusPropertyBrowser *property_browser, xmlNodePtr node)
+make_properties_from_xml_node (NautilusPropertyBrowser *property_browser, xmlNodePtr node)
 {
-	xmlNode *current_node = node->childs;
+	xmlNode *current_node;
 	int index = 0;
 	gboolean local_only = property_browser->details->remove_mode;
 	
 	property_browser->details->has_local = FALSE;
 	
-	while (current_node != NULL) {
+	for (current_node = nautilus_xml_get_children (node);
+	     current_node != NULL; current_node = current_node->next) {
 		NautilusBackground *background;
 		GtkWidget *frame;
 		char* color_str = xmlNodeGetContent(current_node);
@@ -1312,8 +1316,6 @@ make_properties_from_xml_node(NautilusPropertyBrowser *property_browser, xmlNode
 
 			add_to_content_table(property_browser, frame, index++, 12);				
 		}
-		
-		current_node = current_node->next;
 	}
 }
 
@@ -1424,8 +1426,8 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 	gtk_widget_show (GTK_WIDGET (property_browser->details->content_table));
 	
 	/* iterate through the xml file to generate the widgets */
-	cur_node = document->root->childs;
-	while (cur_node != NULL) {
+	for (cur_node = nautilus_xml_get_children (xmlDocGetRootElement (document));
+	     cur_node != NULL; cur_node = cur_node->next) {
 		if (strcmp(cur_node->name, "category") == 0) {
 			char* category_name =  xmlGetProp (cur_node, "name");
 			char* category_image = xmlGetProp (cur_node, "image");
@@ -1442,13 +1444,10 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 				make_category_link(property_browser, category_name, category_image, index++);
 			}
 		}
-		cur_node = cur_node->next;
 	}
 	
 	/* release the  xml document and we're done */
-	if (document) {
-		xmlFreeDoc(document);
-	}
+	xmlFreeDoc (document);
 
 	/* update the title and button */
 
