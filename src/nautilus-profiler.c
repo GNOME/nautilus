@@ -192,6 +192,9 @@ dump_dialog_new (const char *title)
 	print_button = gtk_button_new_with_label ("Print");
 	save_button = gtk_button_new_with_label ("Save");
 
+	gtk_widget_set_sensitive (print_button, FALSE);
+	gtk_widget_set_sensitive (save_button, FALSE);
+
 	gtk_signal_connect (GTK_OBJECT (print_button),
 			    "clicked", 
 			    GTK_SIGNAL_FUNC (window_print_button_callback),

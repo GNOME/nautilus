@@ -40,6 +40,7 @@
 #define NAUTILUS_MENU_PATH_VIEW_MENU			"/menu/View"
 #define NAUTILUS_MENU_PATH_GO_MENU			"/menu/Go"
 #define NAUTILUS_MENU_PATH_BOOKMARKS_MENU		"/menu/Bookmarks"
+#define NAUTILUS_MENU_PATH_PROFILER			"/menu/Profiler"
 #define NAUTILUS_MENU_PATH_HELP_MENU			"/menu/Help"
 
 /** 
