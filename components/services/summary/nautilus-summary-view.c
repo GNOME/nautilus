@@ -39,6 +39,7 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
+#include <libgnomeui/gnome-stock.h>
 #include <stdio.h>
 #include <unistd.h>
 
@@ -52,7 +53,7 @@
 #define DEFAULT_SUMMARY_BACKGROUND_COLOR	"rgb:FFFF/FFFF/FFFF"
 
 /* #define	SUMMARY_XML_HOME			"http://localhost/summary-configuration.xml" */
-#define	SUMMARY_XML_HOME			"eazel-services://anonymous/services"
+#define	SUMMARY_XML_HOME			"eazel-services://anonymous/servicer"
 #define	SUMMARY_XML_HOME_2			"eazel-services:/services"
 #define	URL_REDIRECT_TABLE_HOME			"eazel-services://anonymous/services/urls"
 #define	URL_REDIRECT_TABLE_HOME_2		"eazel-services:/services/urls"
@@ -78,7 +79,7 @@ struct _NautilusSummaryViewDetails {
 	NautilusView	*nautilus_view;
 
 	SummaryData	*xml_data;
-	GtkWidget	*feedback_text;
+	char		*feedback_text;
 
 	/* Parent form and title */
 	GtkWidget	*form;
@@ -189,6 +190,7 @@ static gboolean	am_i_logged_in				(NautilusSummaryView		*view);
 static char*	who_is_logged_in			(NautilusSummaryView		*view);
 static gint	logged_in_callback			(gpointer			raw);
 static gint	logged_out_callback			(gpointer			raw);
+static void	generate_error_dialog			(NautilusSummaryView		*view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSummaryView, nautilus_summary_view, GTK_TYPE_EVENT_BOX)
 
@@ -227,13 +229,14 @@ generate_summary_form (NautilusSummaryView	*view)
 		/* fetch urls */
 		got_url_table = trilobite_redirect_fetch_table (URL_REDIRECT_TABLE_HOME_2);
 		if (!got_url_table) {
-			g_assert ("Could not get url table !\n");
+			view->details->feedback_text = g_strdup_printf ("Unable to connect to Eazel servers!");
+			generate_error_dialog (view);
 		}
 		/* fetch and parse the xml file */
 		view->details->xml_data = parse_summary_xml_file (SUMMARY_XML_HOME_2);
 		if (view->details->xml_data == NULL) {
-			g_error (_("Could not get summary configuration file !\n"));
-			return;
+			view->details->feedback_text = g_strdup_printf ("Unable to connect to Eazel servers!");
+			generate_error_dialog (view);
 		}
 
 	}
@@ -242,15 +245,15 @@ generate_summary_form (NautilusSummaryView	*view)
 		/* fetch urls */
 		got_url_table = trilobite_redirect_fetch_table (URL_REDIRECT_TABLE_HOME);
 		if (!got_url_table) {
-			g_error (_("Could not get url table !\n"));
-			return;
+			view->details->feedback_text = g_strdup_printf ("Unable to connect to Eazel servers!");
+			generate_error_dialog (view);
 		}
 
 		/* fetch and parse the xml file */
 		view->details->xml_data = parse_summary_xml_file (SUMMARY_XML_HOME);
 		if (view->details->xml_data == NULL) {
-			g_error (_("Could not get summary configuration file !\n"));
-			return;
+			view->details->feedback_text = g_strdup_printf ("Unable to connect to Eazel servers!");
+			generate_error_dialog (view);
 		}
 	}
 
@@ -410,12 +413,6 @@ generate_summary_form (NautilusSummaryView	*view)
 		gtk_box_pack_start (GTK_BOX (button_box), view->details->register_button, FALSE, FALSE, 0);
 		gtk_signal_connect (GTK_OBJECT (view->details->register_button), "clicked", GTK_SIGNAL_FUNC (register_button_cb), view);
 		gtk_box_pack_start (GTK_BOX (temp_box), button_box, FALSE, FALSE, 4);
-
-		/* Add a label for error status messages */
-		view->details->feedback_text = nautilus_label_new ("");
-		nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->feedback_text), 12);
-		nautilus_label_set_text_color (NAUTILUS_LABEL (view->details->feedback_text), NAUTILUS_RGB_COLOR_RED);
-		gtk_box_pack_end (GTK_BOX (temp_box), view->details->feedback_text, 0, 0, 15);
 	}
 	else {
 		/* preferences button */
@@ -814,7 +811,8 @@ authn_cb_failed (const EazelProxy_User *user, const EazelProxy_AuthnFailInfo *in
 	g_message ("Login FAILED");
 	view->details->logged_in = FALSE;
 	gtk_widget_set_sensitive (view->details->login_button, FALSE);
-	show_feedback (view->details->feedback_text, "Login Failed Please try again.");
+	view->details->feedback_text = g_strdup_printf ("Login Failed! Please try again.");
+	generate_error_dialog (view);
 	
 	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
 }
@@ -1045,13 +1043,79 @@ goto_service_cb (GtkWidget      *button, ServicesButtonCallbackData	*cbdata)
 
 }
 
-/* callback to handle install netscape  button.  Right now only does a simple redirect. */
+/* callback to handle update buttons. */
 static void
 goto_update_cb (GtkWidget      *button, ServicesButtonCallbackData	*cbdata)
 {
 	
 	go_to_uri (cbdata->nautilus_view, cbdata->uri);
 
+}
+
+/* callback to handle retry error_dialog button. */
+static void
+error_dialog_retry_cb (GtkWidget      *button, NautilusSummaryView	*view)
+{
+	
+	go_to_uri (view->details->nautilus_view, "eazel:");
+
+}
+
+/* callback to handle cancel error_dialog button. */
+static void
+error_dialog_cancel_cb (GtkWidget      *button, NautilusSummaryView	*view)
+{
+	char	*user_home;
+	user_home = nautilus_get_user_main_directory ();	
+	go_to_uri (view->details->nautilus_view, user_home);
+	g_free (user_home);
+
+}
+
+static void
+generate_error_dialog (NautilusSummaryView *view)
+{
+	GtkWidget	*dialog;
+	GtkWidget	*icon_container;
+	GtkWidget	*icon_widget;
+	GtkWidget	*hbox;
+	GtkWidget	*error_text;
+	int		reply;
+
+	dialog = NULL;
+
+	dialog = gnome_dialog_new (_("Service Error"), _("Retry"), _("CANCEL"), NULL);
+
+	gtk_signal_connect (GTK_OBJECT (dialog), "destroy", GTK_SIGNAL_FUNC (gtk_widget_destroyed), &dialog);
+	gtk_container_set_border_width (GTK_CONTAINER (dialog), GNOME_PAD);
+	gtk_window_set_policy (GTK_WINDOW (dialog), FALSE, FALSE, FALSE);
+
+	hbox = gtk_hbox_new (FALSE, GNOME_PAD);
+	gtk_container_set_border_width (GTK_CONTAINER (hbox), GNOME_PAD);
+	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox), hbox, FALSE, FALSE, 0);
+
+	icon_container = gtk_hbox_new (TRUE, 4);
+	icon_widget = create_image_widget ("gnome-warning.png", DEFAULT_SUMMARY_BACKGROUND_COLOR);
+	g_assert (icon_widget != NULL);
+	gtk_box_pack_start (GTK_BOX (icon_container), icon_widget, 0, 0, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), icon_container, FALSE, FALSE, 0);
+	gtk_widget_show (icon_widget);
+	gtk_widget_show (icon_container);
+
+	error_text = nautilus_label_new (view->details->feedback_text);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (error_text), 12);
+	gtk_widget_show (error_text);
+	gtk_box_pack_start (GTK_BOX (hbox), error_text, FALSE, FALSE, 0);
+
+
+	gnome_dialog_set_close (GNOME_DIALOG (dialog), TRUE);
+/*	gnome_dialog_set_parent (GNOME_DIALOG (dialog), view->details->nautilus_view); */
+
+	gtk_widget_show (hbox);
+	gtk_widget_show (GTK_WIDGET (dialog));
+	gnome_dialog_button_connect (GNOME_DIALOG (dialog), 0, GTK_SIGNAL_FUNC (error_dialog_retry_cb), view);
+	gnome_dialog_button_connect (GNOME_DIALOG (dialog), 1, GTK_SIGNAL_FUNC (error_dialog_cancel_cb), view);
+	reply = gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
 }
 
 static void

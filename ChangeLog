@@ -1,3 +1,14 @@
+2000-10-08  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (generate_summary_form), (authn_cb_failed), (goto_update_cb),
+	(error_dialog_retry_cb), (error_dialog_cancel_cb),
+	(generate_error_dialog):
+
+	Added dialog to catch errors like unable to connect and login failed.
+	Doesn't look great yet but Arlo is going to give me some ideas to
+	make it look a bit better.
+
 2000-10-07  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-theme.c:
