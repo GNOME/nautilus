@@ -846,10 +846,22 @@ nautilus_emblem_view_create_container (NautilusEmblemView *emblem_view)
 	return scroller;
 }
 
+static gint
+emblem_widget_sort_func (gconstpointer a, gconstpointer b)
+{
+	GObject *obj_a, *obj_b;
+
+	obj_a = G_OBJECT (a);
+	obj_b = G_OBJECT (b);
+
+	return strcmp (g_object_get_data (obj_a, "emblem-display-name"),
+		       g_object_get_data (obj_b, "emblem-display-name"));
+}
+
 static void
 nautilus_emblem_view_populate (NautilusEmblemView *emblem_view)
 {
-	GList *icons, *l;
+	GList *icons, *l, *widgets;
 	GtkWidget *emblem_widget;
 	char *name;
 	char *path;
@@ -872,9 +884,9 @@ nautilus_emblem_view_populate (NautilusEmblemView *emblem_view)
 
 
 	icons = nautilus_emblem_list_availible ();
-	icons = g_list_sort (icons, (GCompareFunc)eel_strcasecmp);
 
 	l = icons;
+	widgets = NULL;
 	while (l != NULL) {
 		name = (char *)l->data;
 		l = l->next;
@@ -885,11 +897,21 @@ nautilus_emblem_view_populate (NautilusEmblemView *emblem_view)
 
 		emblem_widget = create_emblem_widget (emblem_view, name);
 		
-		gtk_container_add
-			(GTK_CONTAINER (emblem_view->details->emblems_table),
-			 emblem_widget);
+		widgets = g_list_prepend (widgets, emblem_widget);
 	}
 	eel_g_list_free_deep (icons);
+
+	/* sort the emblems by display name */
+	widgets = g_list_sort (widgets, emblem_widget_sort_func);
+
+	l = widgets;
+	while (l != NULL) {
+		gtk_container_add
+			(GTK_CONTAINER (emblem_view->details->emblems_table),
+			 l->data);
+		l = l->next;
+	}
+	g_list_free (widgets);
 
 	gtk_widget_show_all (emblem_view->details->emblems_table);
 }
