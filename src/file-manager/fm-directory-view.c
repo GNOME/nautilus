@@ -4103,7 +4103,9 @@ fm_directory_view_stop (FMDirectoryView *view)
 	display_pending_files (view);
 	/* Free extra undisplayed files */
 	nautilus_file_list_free (view->details->pending_files_added);
+	view->details->pending_files_added = NULL;
 	nautilus_file_list_free (view->details->pending_files_changed);
+	view->details->pending_files_changed = NULL;
 
 	if (view->details->model != NULL) {
 		nautilus_directory_file_monitor_remove (view->details->model, view);

@@ -1,3 +1,13 @@
+2001-03-02  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: John Harper  <jsh@eazel.com>
+
+	Fix 7297: Segmentation fault when rapidly pressing refresh twice.
+	
+	* src/file-manager/fm-directory-view.c: (fm_directory_view_stop):
+	Need to set pending_files_added and pending_files_changed to NULL
+	after freeing them.
+
 2001-03-02  John Harper  <jsh@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>
