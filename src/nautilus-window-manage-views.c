@@ -333,6 +333,27 @@ nautilus_window_title_changed (NautilusWindow *window,
 
 /* The bulk of this file - location changing */
 
+static gboolean
+check_last_bookmark_location_matches_window (NautilusWindow *window)
+{
+	char *uri;
+	gboolean result;
+
+	uri = nautilus_bookmark_get_uri (window->last_location_bookmark);
+	result = strcmp (uri, window->location) == 0;
+	if (!result) {
+        	/* FIXME bugzilla.eazel.com 2872: This is always a bug, and there might be multiple bugs here.
+                 * Right now one of them is so common that I'm changing this from an
+                 * assert to a message to stop blocking other work. The common case is the
+                 * two locations differing by the trailing slash.
+                 */
+		 g_message ("last_location_bookmark is %s, but should match %s", uri, window->location);
+	}
+	g_free (uri);
+
+	return result;
+}
+
 static void
 handle_go_back (NautilusWindow *window, const char *location)
 {
@@ -347,8 +368,8 @@ handle_go_back (NautilusWindow *window, const char *location)
         g_assert (window->location != NULL);
         
         /* Move current location to Forward list */
-        nautilus_assert_computed_str (nautilus_bookmark_get_uri (window->last_location_bookmark),
-                                      window->location);
+
+        check_last_bookmark_location_matches_window (window);
 
         /* Use the first bookmark in the history list rather than creating a new one. */
         window->forward_list = g_list_prepend (window->forward_list, window->last_location_bookmark);
@@ -382,9 +403,8 @@ handle_go_forward (NautilusWindow *window, const char *location)
         g_assert (window->location != NULL);
                                 
         /* Move current location to Back list */
-        nautilus_assert_computed_str
-                (nautilus_bookmark_get_uri (window->last_location_bookmark),
-                 window->location);
+
+        check_last_bookmark_location_matches_window (window);
         
         /* Use the first bookmark in the history list rather than creating a new one. */
         window->back_list = g_list_prepend (window->back_list, window->last_location_bookmark);
@@ -417,18 +437,7 @@ handle_go_elsewhere (NautilusWindow *window, const char *location)
                  */
                 if (strcmp (window->location, location) != 0) {
                         /* Store bookmark for current location in back list, unless there is no current location */
-                        char * bookmark_uri;
-
-                        bookmark_uri = nautilus_bookmark_get_uri (window->last_location_bookmark);
-                        if (strcmp (bookmark_uri, window->location) != 0) {
-                        	/* FIXME bugzilla.eazel.com 2872: This is always a bug, and there might be multiple bugs here.
-                        	 * Right now one of them is so common that I'm changing this from an
-                        	 * assert to a message to stop blocking other work. The common case is the
-                        	 * two locations differing by the trailing slash.
-                        	 */
-				g_message ("last_location is %s, but should match %s", bookmark_uri, window->location);
-                        }
-                        g_free (bookmark_uri);
+	                check_last_bookmark_location_matches_window (window);
                         
                         /* Use the first bookmark in the history list rather than creating a new one. */
                         window->back_list = g_list_prepend (window->back_list, window->last_location_bookmark);
