@@ -31,8 +31,8 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtkobject.h>
 #include <libnautilus-private/nautilus-file.h>
-#include <libgnome/gnome-icon-loader.h>
-#include "gnome-thumbnail.h"
+#include <libgnomeui/gnome-icon-theme.h>
+#include <libgnomeui/gnome-thumbnail.h>
 
 /* NautilusIconFactory is a class that knows how to hand out icons to be
  * used for representing files and some other objects. It was designed
@@ -147,7 +147,7 @@ GdkPixbuf *           nautilus_icon_factory_get_pixbuf_from_name         (const 
 									  const char                  *modifer,
 									  guint                        size_in_pixels);
 
-GnomeIconLoader *      nautilus_icon_factory_get_icon_loader              (void);
+GnomeIconTheme *       nautilus_icon_factory_get_icon_theme               (void);
 GnomeThumbnailFactory *nautilus_icon_factory_get_thumbnail_factory        (void);
 
 #endif /* NAUTILUS_ICON_FACTORY_H */

@@ -27,7 +27,6 @@
 
 #include <config.h>
 #include "nautilus-icon-factory.h"
-#include "gnome-icon-lookup.h"
 
 #include "nautilus-default-file-icon.h"
 #include "nautilus-file-attributes.h"
@@ -54,6 +53,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnome/gnome-macros.h>
+#include <libgnomeui/gnome-icon-lookup.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-mime-monitor.h>
@@ -137,7 +137,7 @@ typedef struct {
 	GdkPixbuf *thumbnail_frame;
 
 	/* Used for icon themes according to the freedesktop icon spec. */
-	GnomeIconLoader *icon_loader;
+	GnomeIconTheme *icon_theme;
 	GnomeThumbnailFactory *thumbnail_factory;
 
 	CircularList recently_used_dummy_head;
@@ -234,8 +234,8 @@ nautilus_icon_factory_get (void)
 }
 
 static void
-icon_loader_changed_callback (GnomeIconLoader *icon_loader,
-			      gpointer user_data)
+icon_theme_changed_callback (GnomeIconTheme *icon_theme,
+			     gpointer user_data)
 {
 	NautilusIconFactory *factory;
 
@@ -245,14 +245,14 @@ icon_loader_changed_callback (GnomeIconLoader *icon_loader,
 		       signals[ICONS_CHANGED], 0);
 }
 
-GnomeIconLoader *
-nautilus_icon_factory_get_icon_loader (void)
+GnomeIconTheme *
+nautilus_icon_factory_get_icon_theme (void)
 {
 	NautilusIconFactory *factory;
 
 	factory = get_icon_factory ();
 
-	return g_object_ref (factory->icon_loader);
+	return g_object_ref (factory->icon_theme);
 }
 
 GnomeThumbnailFactory *
@@ -324,11 +324,11 @@ nautilus_icon_factory_instance_init (NautilusIconFactory *factory)
 						     (GDestroyNotify)cache_key_destroy,
 						     (GDestroyNotify)cache_icon_unref);
 	
-	factory->icon_loader = gnome_icon_loader_new ();
-	gnome_icon_loader_set_allow_svg (factory->icon_loader, TRUE);
-	g_signal_connect_object (factory->icon_loader,
+	factory->icon_theme = gnome_icon_theme_new ();
+	gnome_icon_theme_set_allow_svg (factory->icon_theme, TRUE);
+	g_signal_connect_object (factory->icon_theme,
 				 "changed",
-				 G_CALLBACK (icon_loader_changed_callback),
+				 G_CALLBACK (icon_theme_changed_callback),
 				 factory, 0);
 
 
@@ -451,8 +451,8 @@ cache_icon_unref (CacheIcon *icon)
 	g_object_unref (icon->pixbuf);
 	
 	if (icon->icon_data) {
-		g_free (icon->icon_data->display_name);
-		g_free (icon->icon_data);
+		gnome_icon_data_free (icon->icon_data);
+		icon->icon_data = NULL;
 	}
 
 	g_free (icon);
@@ -707,7 +707,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
 	
 	file_info = nautilus_file_peek_vfs_file_info (file);
 		
-	icon_name = gnome_icon_lookup (factory->icon_loader,
+	icon_name = gnome_icon_lookup (factory->icon_theme,
 				       factory->thumbnail_factory,
 				       file_uri,
 				       custom_icon,
@@ -1128,11 +1128,11 @@ create_normal_cache_icon (const char *icon,
 			name_with_modifier = (char *)icon;
 		}
 
-		filename = gnome_icon_loader_lookup_icon_extended (factory->icon_loader,
-								   name_with_modifier,
-								   nominal_size,
-								   &src_icon_data,
-								   &base_size);
+		filename = gnome_icon_theme_lookup_icon (factory->icon_theme,
+							 name_with_modifier,
+							 nominal_size,
+							 &src_icon_data,
+							 &base_size);
 		if (name_with_modifier != icon) {
 			g_free (name_with_modifier);
 		}
@@ -1140,8 +1140,7 @@ create_normal_cache_icon (const char *icon,
 		/* Make a copy of the icon data */
 		icon_data = NULL;
 		if (src_icon_data) {
-			icon_data = g_memdup (src_icon_data, sizeof (GnomeIconData));
-			icon_data->display_name = g_strdup (src_icon_data->display_name);
+			icon_data = gnome_icon_data_dup (src_icon_data);
 		}
 	}
 
@@ -1286,7 +1285,7 @@ nautilus_icon_factory_get_pixbuf_for_icon (const char                  *icon,
 	if (attach_points != NULL) {
 		if (cached_icon->icon_data != NULL) {
 			icon_data = cached_icon->icon_data;
-			attach_points->num_points = MAX (icon_data->n_attach_points,
+			attach_points->num_points = MIN (icon_data->n_attach_points,
 							 MAX_ATTACH_POINTS);
 			for (i = 0; i < attach_points->num_points; i++) {
 				attach_points->points[i].x = icon_data->attach_points[i].x;

@@ -1,3 +1,19 @@
+2002-09-27  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Require eel 2.1.0, libgnomeui 2.1.0
+	Bump version to 2.1.0
+
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/gnome-icon-lookup.[ch]:
+	* libnautilus-private/gnome-thumbnail-pixbuf-utils.c:
+	* libnautilus-private/gnome-thumbnail.[ch]:
+	Removed. Moved to libgnomeui.
+	
+	* libnautilus-private/nautilus-icon-factory.[ch]:
+	* libnautilus-private/nautilus-link-desktop-file.c:
+	Update to new APIs.
+
 2002-09-26  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/Makefile.am:

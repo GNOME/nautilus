@@ -336,7 +336,7 @@ nautilus_link_desktop_file_get_link_name_from_desktop (GnomeDesktopItem *desktop
 static char *
 nautilus_link_desktop_file_get_link_icon_from_desktop (GnomeDesktopItem *desktop_file)
 {
-	GnomeIconLoader *icon_loader;
+	GnomeIconTheme *icon_theme;
 	char *icon_uri;
 	char *absolute;
 
@@ -346,8 +346,8 @@ nautilus_link_desktop_file_get_link_icon_from_desktop (GnomeDesktopItem *desktop
 	}
 
 	/* Fall back to a standard icon. */
-	icon_loader = nautilus_icon_factory_get_icon_loader ();
-	absolute = gnome_desktop_item_get_icon (desktop_file, icon_loader);
+	icon_theme = nautilus_icon_factory_get_icon_theme ();
+	absolute = gnome_desktop_item_get_icon (desktop_file, icon_theme);
 	
 	if (absolute == NULL) {
 		return NULL;

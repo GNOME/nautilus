@@ -39,11 +39,6 @@ libnautilus_private_la_SOURCES = \
 	$(nautilus_metafile_server_idl_sources)	\
 	eggtreemultidnd.c \
 	eggtreemultidnd.h \
-	gnome-icon-lookup.c \
-	gnome-icon-lookup.h \
-	gnome-thumbnail.c \
-	gnome-thumbnail.h \
-	gnome-thumbnail-pixbuf-utils.c \
 	nautilus-audio-player.c \
 	nautilus-audio-player.h \
 	nautilus-authn-manager.c \
