@@ -3,7 +3,7 @@
 
 <!--
       (Do not remove this comment block.)
-  Version: 0.9.0
+  Version: 1.0.0
   Last modified: Feb 19, 2001
   This document is maintained by Eazel Inc.
   Maintainers: 
@@ -21,7 +21,7 @@
 
  <bookinfo>
   <title>Manual del Usuario de Nautilus</title>
-  <edition>v0.9</edition>
+  <edition>v1.0</edition>
   <authorgroup>
    <author>
     <firstname>Vera</firstname>
@@ -67,7 +67,7 @@
 
   <!-- this is the version of manual, not application --> 
   <releaseinfo>
-   Esta es la versión 0.9 de la Guía del Usuario de Nautilus.
+   Esta es la versión 1.0 de la Guía del Usuario de Nautilus.
   </releaseinfo>
 
  </bookinfo>
@@ -82,8 +82,8 @@
 
   <para>
    Nautilus es un componente del núcleo del ambiente de escritorio GNOME.
-   Nautilus provee una forma sencilla de ver, manejar y personalizar sus
-   propios archivos y carpetas como así también navegar por Internet.
+   Nautilus provee una forma sencilla para usted de ver, manejar y personalizar sus
+   archivos y carpetas como así también navegar por Internet.
   </para>
 
   <para>
@@ -106,7 +106,7 @@
    </figure>
 
    <para>
-    <guimenu>Barra del Menú</guimenu>
+    <guimenu>barra del menú</guimenu>
    </para> 
 
    <para>
@@ -114,12 +114,12 @@
     que se realizan sobre archivos y carpetas, y le dejan personalizar
     la vista de todas las aplicaciones, carpetas, y archivos que contenga
     en su disco rígido. El menú de Preferencias representado por el símbolo
-    que se encuentra a la derecha del menú Ayuda le deja seleccionar su 
+    que se encuentra a la derecha del menú Ayuda le deja especificar su 
     nivel de experiencia en Linux y GNOME.
    </para>
 
    <para>
-    <guimenu>Barra de Herramientas</guimenu>
+    <guimenu>barra de herramientas</guimenu>
    </para>
 
    <para>
@@ -131,27 +131,27 @@
    </para>
 
    <para>
-    <guimenu>Barra de Dirección</guimenu>
+    <guimenu>barra de dirección</guimenu>
    </para>
 
    <para>
     Use la barra de dirección para ingresar rutas de archivos, direcciones
     Web (URLs) u otro tipo de direcciones. El menú pop-up que esta sobre el
     final del lado derecho de la barra le permite elegir diferentes vistas,
-    por ejemplo, Ver como íconos ó como una Lista. Haga clic en el signo mas
-    y menos para agrandar o reducir los íconos en cualquier tipo de vista.
+    por ejemplo, Ver como íconos ó como una Lista. Haga clic en el signo +
+    y - para agrandar o reducir los íconos en las vistas icono o lista.
     También puede hacer clic el la Lupa para volver a ver lo íconos en su
-    tamaño normal. (Si ha cambiado el tema por omisión de Nautilus la lupa puede haber sido cambiada
-    por un símbolo diferente.)
+    tamaño original. (Si ha cambiado el tema por omisión de Nautilus la lupa pudo haber sido cambiada
+    por otro símbolo.)
    </para>
 
    <para>
-    <guimenu>Barra Lateral</guimenu>
+    <guimenu>barra lateral</guimenu>
    </para>
 
    <para>
-    La Barra Lateral muestra información sobre el archivo o la carpeta
-    actual. Cada una de las cuatro solapas que están en la base de la Barra
+    La barra lateral muestra información sobre el archivo o la carpeta
+    actual. Cada una de las cuatro solapas que están en la base de la barra
     proveen ayuda o información adicional:
    </para>
 
@@ -159,7 +159,7 @@
 
     <listitem>
      <para>
-      La solapa Arbol muestra el Arbol - una vista jerárquica de la
+      La solapa árbol muestra el árbol - una vista jerárquica de la
       organización de archivos y carpetas en su computadora -
      </para>
     </listitem>
@@ -174,7 +174,7 @@
 
     <listitem>
      <para>
-      La solapa Ayuda le brinda un acceso rápido a todos los recursos
+      La solapa Ayuda le brinda un acceso rápido a los recursos
       de información - manuales, páginas info de GNOME, páginas man de Linux
       y más también.
      </para>
@@ -183,8 +183,7 @@
     <listitem>
      <para>
       La solapa Notas provee un espacio donde puede dejar comentarios
-      acerca de la carpeta actual, crear listas "para hacer", grabar
-      estados, y cosas por el estilo.
+      acerca de la carpeta actual.
      </para>
     </listitem>
 
@@ -192,7 +191,7 @@
 
    <para>
     Nota: Si su nivel de usuario esta configurado como Principiante o
-    si usted ha cambiado las preferencias de la Barra Lateral puede ocurrir
+    si usted ha cambiado las preferencias de la barra lateral puede ocurrir
     que no vea las cuatro solapas.
    </para>
 
@@ -203,7 +202,7 @@
    <para>
     El panel principal en la ventana de Nautilus es donde usted lleva 
     a cabo la mayoría de la navegación. Archivos, carpetas y aplicaciones
-    son mostradas aquí. Hay varias opciones para modificar y personalizar
+    son mostradas aquí. Usted tiene varias opciones para modificar y personalizar
     sus vistas.
    </para>
 
@@ -213,18 +212,37 @@
    <title>El Escritorio de Nautilus</title>
 
    <para>
-    El escritorio es el área posterior de su pantalla. Por omisión en
-    su sistema GNOME Nautilus esta encargado de dibujar el escritorio.
+    El escritorio es el área posterior de su pantalla. Si Nautilus fué
+    pre-instalado en su sistema GNOME entonces Nautilus será el encargado de dibujar el escritorio.
     El escritorio de su computadora puede verse como su escritorio físico
     - puede estar lleno de carpetas, íconos y trabajos pendientes, o puede
     estar completamente limpio. Nautilus le deja organizarlo de la forma en
     que usted desee.
-   </para>
 
+    Si Nautilus no dibuja el escritorio en este momento en su sistema haga esto:
+ 
+    <ordered list>
+     <listitem><para>Abra el menú preferencias (mostrado a continuación) y seleccione Preferencias.</para></listitem>
+     <listitem><para>En la sección Escritorio seleccione "Usar Nautilus para dibujar el Escritorio"</para></listitem>
+     <listitem><para>Haga clic en Aceptar.</para></listitem>
+    </ordered list>
+
+    <figure id="prefmenu11">
+     <title>El menu Preferencias</title>
+     <screenshot>
+      <screeninfo>Captura de Pantalla del menu Preferencias</screeninfo>
+      <graphic format="png" fileref="figures/prefmenu">
+      </graphic>
+     </screenshot>
+    </figure>  
+
+   </para>
+   
    <para>
-    Al principio el escritorio contiene sólo dos elementos: un ícono
-    de una casa que representa su directorio personal y un ícono de
-    una Papelera.
+    Al principio el escritorio contiene tres elementos: un ícono
+    de una casa que representa su directorio personal , un ícono de
+    una papelera y un icono de Servicios Eazel que lo llevará hasta
+    el sitio Web de Eazel.
    </para>
 
    <para>
@@ -244,40 +262,6 @@
 
   </sect1>
 
-  <!-- Introducing Nautilus: Adding Nautilus to the Panel  -->
-  <sect1 id="default">
-  <title>Agregando Nautilus al Panel de GNOME</title>
-
-   <note>
-    <title>Intente hacer lo siguiente:</title>
-    <para>
-     Para tener a Nautilus siempre a su alcance agregue su ícono al
-     Panel de GNOME:
-    </para>
-
-    <orderedlist>
-
-     <listitem>
-      <para>
-       Abra el <guimenu>Menú Principal de GNOME</guimenu> (haga clic en el
-       ícono que tiene una huella).
-      </para>
-     </listitem>
-
-     <listitem>
-      <para>
-       Seleccione <menuchoice> <guimenu>Programas</guimenu>
-       <guisubmenu>Aplicaciones</guisubmenu>
-       <guimenuitem>Nautilus</guimenuitem> </menuchoice>. Mantenga presionado
-       el botón izquierdo sobre el ícono del menú que corresponde a Nautilus,
-       luego arrástrelo hacia el Panel de GNOME.
-      </para>
-     </listitem>
-
-    </orderedlist>
-   </note>
-
-  </sect1>
   <!-- Introducing Nautilus: About GNOME  -->
   <sect1 id="gnome">
    <title>Acerca de GNOME</title>
@@ -316,7 +300,7 @@
      <link linkend="navigating">Navegando en sus archivos y carpetas</link>
     </member>
     <member>
-     <link linkend="tree">El Arbol</link>
+     <link linkend="tree">El árbol</link>
     </member>
     <member>
      <link linkend="viewopen">Visualizando y abriendo archivos</link>
@@ -325,7 +309,7 @@
      <link linkend="music">Visualizando y escuchando archivos MP3</link>
     </member>
     <member>
-     <link linkend="mount">Montando disquetera y unidades de CDROM</link>
+     <link linkend="mount">Montando las disqueteras y unidades de CDROM</link>
     </member>
     <member>
      <link linkend="internet">Navegando en Internet</link>
@@ -354,7 +338,7 @@
 
     <listitem>
      <para>
-      La <guimenu>Barra Lateral</guimenu>, la cual contiene un ícono de
+      La <guimenu>barra lateral</guimenu>, la cual contiene un ícono de
       una carpeta representando la carpeta actual.
      </para>
     </listitem>
@@ -368,7 +352,7 @@
 
     <listitem>
      <para>
-      La <guimenu>Barra de direcciones</guimenu>, que contiene la 
+      La <guimenu>barra de direcciones</guimenu>, que contiene la 
       ruta de la carpeta actual.
      </para>
     </listitem>
@@ -376,7 +360,7 @@
    </itemizedlist>
  
    <figure id="part">
-    <title>Barra de Dirección, Barra Lateral, y Panel Principal</title>
+    <title>barra de dirección, barra lateral, y Panel Principal</title>
     <screenshot>
      <screeninfo>Diagrama de Nautilus</screeninfo>
      <graphic format="png" fileref="figures/part">
@@ -412,7 +396,7 @@
     la ventana de Nautilus.
    </para>
 
-   <note>
+   <tip>
     <title>Intente lo siguiente</title>
     <para>
      Usando su directorio personal como punto de referencia navegue
@@ -424,7 +408,7 @@
      <listitem>
       <para>
        Para ver su directorio personal haga clic en el <guibutton>botón 
-       Inicio</guibutton>.
+       inicio</guibutton>.
       </para>
      </listitem>
 
@@ -466,32 +450,30 @@
      </listitem>
 
     </itemizedlist>
-   </note>
+   </tip>
 
   </sect1>
 
   <!--  NAVIGATING YOUR COMPUTER AND THE INTERNET: The Tree  -->
   <sect1 id="tree">
-   <title>El Arbol</title>
+   <title>El árbol</title>
 
    <para>
     Puede obtener una vista de todas las carpetas y todos los archivos
-    de su computadora utilizando el Arbol. Mucha gente encuentra que
-    utilizar el Arbol para navegar es más rápido que seleccionar y abrir
+    de su computadora utilizando el árbol. Mucha gente encuentra que
+    utilizar el árbol para navegar es más rápido que seleccionar y abrir
     carpetas.
    </para>
 
    <para>
-    Para ver el Arbol, haga clic en la solapa Arbol que esta
-    en la parte inferior de la Barra Lateral. Haga clic en la
-    solapa una vez más para quitar el Arbol de su vista.
+    Para ver el árbol, haga clic en la solapa árbol que esta
+    en la parte inferior de la barra lateral. Haga clic en la
+    solapa una vez más para quitar el árbol de su vista.
    </para>
 
    <para>
-    Si no ve la solapa Arbol haga un clic con el botón derecho del mouse
-    y elija Arbol en el menú contextual que aparecerá. Si su nivel de
-    usuario esta configurado como Principiante quizás no pueda ver la 
-    solapa Arbol.
+    Si no ve la solapa Árbol haga un clic con el botón derecho del mouse
+    y elija Árbol en el menú contextual que aparecerá.
    </para>
 
    <para>
@@ -501,21 +483,21 @@
     todas sus carpetas y archivos. Los elementos en su computadora son
     acomodados de una forma jerarquica. El directorio raíz puede listar
     direcciones de red además de direcciones de su computadora. (Nota:
-    Además del directorio raíz identificado por "/" hay un directorio
+    Además del directorio raíz identificado por / hay un directorio
     llamado "root.")
    </para>
 
-   <note>
+   <tip>
     <title>Intente lo siguiente:</title>
     <para>
-     Abrir y cerrar una carpeta en el Arbol:
+     Abrir y cerrar una carpeta en el árbol:
     </para>
 
     <itemizedlist>
 
      <listitem>
       <para>
-       Para abrir o cerrar una carpeta en el Arbol haga clic
+       Para abrir o cerrar una carpeta en el árbol haga clic
        en su triangulo.
       </para>
      </listitem>
@@ -523,12 +505,12 @@
      <listitem>
       <para>
        Para ver el contenido de una carpeta en el panel principal
-       haga clic en el nombre de la carpeta en el Arbol.
+       haga clic en el nombre de la carpeta en el árbol.
       </para>
      </listitem>
 
     </itemizedlist>
-   </note>
+   </tip>
 
   </sect1>
 
@@ -540,14 +522,13 @@
 
    <para>
     La primera vez que ejecuta Nautilus puede ver las carpetas y
-    los archivos representados como íconos. Esta es la vista ícono,
-    la cual es la predeterminada.
+    los archivos representados como íconos. Esta es la vista ícono.
    </para>
 
-   <note>
+   <tip>
     <title>Intente lo siguiente:</title>
     <para>
-     Observando sus archivos y carpeta de dos formas diferentes:
+     Observando sus archivos y carpetas de dos formas:
     </para>
 
     <itemizedlist>
@@ -587,9 +568,9 @@
      </listitem>
 
     </itemizedlist>
-   </note>
+   </tip>
 
-   <figure id="viewmenú">
+   <figure id="viewmenu">
     <title>El menú pop-up Ver como</title>
     <screenshot>
      <screeninfo>Captura de Pantalla de menú</screeninfo>
@@ -608,7 +589,7 @@
     sólo en la vista ícono.
    </para>
 
-   <note>
+   <tip>
     <title>Intente lo siguiente</title>
     <para>
      Agrandando y Encongiendo íconos en la vista ícono o la vista lista:
@@ -619,7 +600,7 @@
      <listitem>
       <para>
        Para agrandar o encoger todos los íconos al mismo tiempo
-       haga clic en los símbolos suma (+) y resta (-) en la
+       haga clic en los símbolos + y - en la
        barra de dirección.
       </para>
      </listitem>
@@ -633,9 +614,9 @@
      </listitem>
 
     </itemizedlist>
-   </note>
+   </tip>
 
-   <note>
+   <tip>
     <title>Intente lo siguiente</title>
     <para>
      Redimensionar un ícono en la vista ícono:
@@ -661,7 +642,7 @@
      <listitem>
       <para>
        Haga clic en un tirador y arrastre el mouse para redimensionar el
-       ícono. Para cancelar el redimensionado presione la tecla Esc.
+       ícono. Para cancelar el redimensionado presione la tecla Escape.
       </para>
      </listitem>
 
@@ -672,7 +653,7 @@
      </listitem>
 
     </orderedlist>
-   </note>
+   </tip>
 
    <para>
     Para dejar un ícono en su tamaño normal seleccione el ícono y
@@ -726,7 +707,7 @@
     Puede usar la ventana de Nautilus para ver los contenidos de
     un archivo sin tener que abrirlo para editarlo en una aplicación.
     Utilizar Nautilus como un visualizador en vez de abrir una 
-    aplicación puede ahorrarle tiempo y recursos del sistema.
+    aplicación puede ahorrarle tiempo y memoria de su sistema.
    </para>
 
    <para>
@@ -740,8 +721,7 @@
 
    <para>
     Nota: Puede controlar con que visualizador o aplicación se abrirá
-    automaticamente un archivo. Vea <link linkend="chapter6">Configurando 
-    Manejadores de Archivos</link>.
+    automaticamente un archivo. Vea <link linkend="chapter6">Seleccionando Aplicaciones para Manejar Archivos</link>.
    </para>
 
    <para>
@@ -832,11 +812,11 @@
     Nautilus provee una conjunto especial de caracteristicas que le ayudan
     a disfrutar sus archivos MP3. Usando la opción Ver como Música puede
     configurar una carpeta de archivos MP3 como si fuese un albúm, conteniendo
-    temas de su elección y representados por una tapa (ícono personalizado) que
+    temas de su elección y representados por una tapa (una imagen personalizada) que
     usted puede especificar.
    </para>
 
-   <note>
+   <tip>
     <title>Intente lo siguiente</title>
     <para>
      Use su colección de archivos MP3 para crear un albúm de música personalizado:
@@ -852,13 +832,12 @@
 
      <listitem>
       <para>
-       Haga clic en el menú pop-up <guimenu>Ver como</guimenu> y
-       elija <guimenuitem>Ver como Música</guimenuitem>.
+       Haga clic en el menú pop-up Ver como y elija Ver como Música.
       </para>
      </listitem>
 
     </orderedlist>
-   </note>
+   </tip>
 
    <figure id="view2">
     <title>El Menú Pop-Up Ver Como</title>
@@ -939,7 +918,7 @@
 
   <!-- NAVIGATING YOUR COMPUTER AND THE INTERNET:Mounting Floppy and CD-ROM Drives  -->
   <sect1 id="mount">
-   <title>Montando disquetera y unidades de CDROM</title>
+   <title>Montando las disqueteras y unidades de CDROM</title>
 
    <para>
     Si tiene un disco insertado en unidad de CD-ROM o una disquetera puede
@@ -979,21 +958,21 @@
    </para>
 
    <para>
-    Para ver una página web escriba su dirección de web (URL) en la
-    Barra de Dirección.
+    Para ver una página Web escriba su dirección de Web (URL) en la
+    barra de dirección.
    </para>
 
-   <note>
+   <tip>
     <title>Intente lo Siguiente:</title>
     <para>
-     Conectese al sitio web de Eazel escribiendo <userinput>eazel.com</userinput>
-     en la Barra de Dirección y presionando luego la tecla Enter. No
+     Conectese al sitio Web de Eazel escribiendo <userinput>eazel.com</userinput>
+     en la barra de dirección y presionando luego la tecla Enter. No
      es necesario escribir "http://" o "www."
     </para>
-   </note>
+   </tip>
 
    <figure id="locbar">
-    <title>La Barra Dirección</title>
+    <title>La barra dirección</title>
     <screenshot>
      <screeninfo>Captura de Pantalla de la barra de dirección</screeninfo>
      <graphic format="png" fileref="figures/locbar">
@@ -1002,16 +981,16 @@
    </figure>
 
    <para>
-    Cuando esta viendo una página web Nautilus le da opciones adicionales
+    Cuando esta viendo una página Web Nautilus le da opciones adicionales
     del Navegador en caso de que quiera usar un navegador externo. Para 
     seleccionar un navegador diferente haga clic en alguno de los botones
-    que aparecen en la Barra Lateral.
+    que aparecen en la barra lateral.
    </para>
 
    <figure id="sidebar">
-    <title>La Barra Lateral</title>
+    <title>La barra lateral</title>
     <screenshot>
-     <screeninfo>Captura de Pantalla de la Barra Lateral</screeninfo>
+     <screeninfo>Captura de Pantalla de la barra lateral</screeninfo>
      <graphic format="png" fileref="figures/sidebar">
      </graphic>
     </screenshot>
@@ -1046,7 +1025,7 @@
     <listitem>
      <para>
       Haga clic en la solapa <guimenuitem>Histórico</guimenuitem> que se
-      encuentra en la parte inferior de la Barra Lateral. (Para quitar de
+      encuentra en la parte inferior de la barra lateral. (Para quitar de
       su vista la solapa Histórico haga clic en la misma nuevamente.)
      </para>
     </listitem>
@@ -1088,7 +1067,7 @@
 
    <para>
     Probablemente descubra que frecuentemente visita cierto tipo de
-    direcciones - páginas web, carpetas en su computadora y sus fotos
+    direcciones - páginas Web, carpetas en su computadora y sus fotos
     o textos favoritos -. Puede Marcar estos elementos en Nautilus, de
     esta forma puede volver a ellos de una forma más sencilla.
    </para>
@@ -1158,8 +1137,7 @@
 
     <listitem>
      <para>
-      Seleccione <guimenuitem>No incluir los marcadores Internos en el menú</guimenuitem>.
-
+      Seleccione No Incluir los Marcadores Internos en el menú Marcadores.
      </para>
     </listitem>
 
@@ -1171,7 +1149,7 @@
 
    </orderedlist>
 
-   <figure id="prefmenú1">
+   <figure id="prefmenu1">
     <title>El menú Preferencias</title>
     <screenshot>
      <screeninfo>Captura de pantalla del menú Preferencias</screeninfo>
@@ -1227,8 +1205,8 @@
   <title>Buscando en su computadora y en Internet</title>
 
   <para>
-   Nautilus ofrece una opción de Búsqueda para localizar archivos y directorios
-   en su computadora y una opción de Búsqueda Web para buscar páginas web.
+   Nautilus ofrece una opción de búsqueda para localizar archivos y directorios
+   en su computadora y una opción de búsqueda Web para buscar páginas Web.
   </para>
 
   <sect1 id="toc3">
@@ -1236,8 +1214,8 @@
 
    <simplelist>
     <member><link linkend="find">Buscando elementos en su computadora</link></member>
-    <member><link linkend="simple">Búsquedas simples</link></member>
-    <member><link linkend="medusa">Búsquedas rápidas</link></member>
+    <member><link linkend="simple">Búsquedas Simples</link></member>
+    <member><link linkend="medusa">Búsquedas Complejas</link></member>
     <member><link linkend="search">Buscando en Internet</link></member>
    </simplelist>
 
@@ -1256,16 +1234,15 @@
 
     <listitem>
      <para>
-      Búsquedas simples: Si su nivel de usuario esta configurado con Principiante o
-      prefirió no utilizar Medusa cuando realizó la primera instalación entonces 
-      Nautilus realizará una búsqueda rápida y sencilla por nombre de archivo.
+      Búsquedas Simples: Si su nivel de usuario esta configurado con Principiante entonces 
+      Nautilus realiza una búsqueda rápida y sencilla por nombre de archivo.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Búsquedas rápidas: Si su nivel de usuario esta configurado con Intermedio y si
-      esta utilizando Medusa entonces Nautilus podrá buscar archivos en su computadora
+      Búsquedas Complejas: Si su nivel de usuario esta configurado como Intermedio o Avanzado 
+      entonces Nautilus busca archivos en su computadora
       por nombre de archivo, creador, tipo de archivo y otros atributos, así también
       como por el actual contenido de los archivos.
      </para>
@@ -1274,70 +1251,12 @@
    </itemizedlist>
 
    <para>
-    <guimenu>Medusa</guimenu>
+    <guimenu>Búsquedas Rápidas Versus Búsquedas Lentas</guimenu>
    </para>
-
-   <para>
-    Medusa en un proceso de indexado - un pequeño utilitario que corre en
-    segundo plano cuando su computadora esta desocupada. Medusa indexa todo
-    el contenido de los archivos que hay en su computadora y en las unidades
-    que se encuentren montadas (por ejemplo discos CD-ROM), de esta forma
-    puede encontrar rápidamente cualquier cadena de texto en cualquiera de
-    sus archivos.
-   </para>
-
-  </sect1>
-
-  <!--  Searching Your Computer and the Internet: Simple Searches -->
-  <sect1 id="simple">
-   <title>Búsquedas simples</title>
-
-   <para>
-    Para buscar un elementos en su disco rígido (nivel de usuario Principiante):
-   </para>
-
-   <orderedlist>
-
-    <listitem>
-     <para>
-      Haga clic en el botón <guimenuitem>Buscar</guimenuitem> que se encuentra
-      en la barra de herramientas. La barra de dirección entonces es
-      reemplazada por la barra de búsqueda.
-     </para>
-    </listitem>
-
-    <listitem>
-     <para>
-      Ingrese el nombre del elemento que quiere buscar en el
-      campo <guimenuitem>Buscar:</guimenuitem>.
-     </para>
-    </listitem>
-
-    <listitem>
-     <para>
-      Luego haga clic en <guimenuitem>Buscar</guimenuitem>.
-     </para>
-    </listitem>
-
-    <listitem>
-     <para>
-      Cuando la búsqueda haya finalizado haga clic nuevamente en el
-      botón <guimenuitem>Buscar</guimenuitem> para asi ocultar la 
-      barra de búsqueda.
-     </para>
-    </listitem>
-
-   </orderedlist>
-
-  </sect1>
-
-  <!--  Searching Your Computer and the Internet: Fast Searches -->
-  <sect1 id="medusa">
-   <title>Búsquedas rápidas</title>
-
+   
    <para>
     Nautilus utiliza Medusa (un proceso), el cual es una pieza de software
-    que se ejecuta en segundo plano cuando su computadora esta desocupada.
+    que se ejecuta en segundo plano.
     Medusa crea un índice de todos los elementos que hay en su disco rígido y
     en las unidades que se encuentren montadas, incluyendo dentro de este los
     nombres de archivo, tamaño, fecha de creación y otros atributos. Además
@@ -1346,6 +1265,10 @@
     su computadora cuando haga una búsqueda por contenido.
    </para>
 
+   <para>
+    Medusa corre cuando su computadora esta desocupada, de este modo no interrumpe sus actividades.
+   </para>
+   
    <para>
     Si Medusa no ha terminado de indexar su sistema o no se esta ejecutando
     en su computadora entonces cuando realice una búsqueda puede aparecerle
@@ -1377,6 +1300,77 @@
     </listitem>
 
    </orderedlist>
+   
+   <para>Si Medusa aún no esta ejecutandose haga esto:</para>
+   
+   <orderedlist>
+    <listitem>
+     <para>
+      Abra el menú Preferencias y seleccione Preferencias.
+     </para>
+    </listitem>
+    
+    <listitem>
+     <para>
+      Desde el lado izquierdo de la caja de dialogo de Preferencias seleccione la opción Búsqueda
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      En la sección Búsqueda Rápida active la opción "Habilitar Búsqueda Rápida".
+     </para>
+    </listitem>        
+   </orderedlist>
+
+  </sect1>
+
+  <!--  Searching Your Computer and the Internet: Simple Searches -->
+  <sect1 id="simple">
+   <title>Búsquedas simples</title>
+
+   <para>
+    Para buscar un elementos en su disco rígido (nivel de usuario Principiante):
+   </para>
+
+   <orderedlist>
+
+    <listitem>
+     <para>
+      Haga clic en el botón <guimenuitem>Buscar</guimenuitem> que se encuentra
+      en la barra de herramientas. La barra de dirección entonces es
+      reemplazada por la barra de búsqueda.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Ingrese el nombre del elemento que quiere buscar en el
+      campo Buscar:.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Luego haga clic en <guimenuitem>Buscar</guimenuitem>.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Cuando la búsqueda haya finalizado haga clic nuevamente en el
+      botón <guimenuitem>Buscar</guimenuitem> para asi ocultar la 
+      barra de búsqueda.
+     </para>
+    </listitem>
+
+   </orderedlist>
+
+  </sect1>
+
+  <!--  Searching Your Computer and the Internet: Fast Searches -->
+  <sect1 id="medusa">
+   <title>Búsquedas Complejas</title>
 
    <para>
     Para buscar un elemento en su disco rígido (Nivel de usuario Intermedio o Avanzado):
@@ -1534,11 +1528,11 @@
        <entry>Dueño</entry>
 
        <entry>
-        Elija "es" o "no es" para incluir o excluir archivos adueñados por un grupo en particular.
+        Elija "es" o "no es" para incluir o excluir archivos adueñados por un usuario en particular.
        </entry>
 
        <entry>
-        Ingrese el nombre de un usuario que posee archivos en su sistema.
+        Ingrese el nombre de un usuario que posea archivos en su sistema.
        </entry>
 
       </row>
@@ -1588,7 +1582,7 @@
 
     <listitem>
      <para>
-      En la sección Búsqueda Web ingrese la dirección web (URL) de
+      En la sección Búsqueda Web ingrese la dirección Web (URL) de
       su servicio de búsqueda favorito.   
      </para>
     </listitem>
@@ -1601,8 +1595,8 @@
 
    </orderedlist>
 
-   <figure id="prefmenú5">
-    <title>El Menú Preferencias</title>
+   <figure id="prefmenu5">
+    <title>El menú preferencias</title>
     <screenshot>
      <screeninfo>Captura de Pantalla del menú Preferencias</screeninfo>
      <graphic format="png" fileref="figures/prefmenu">
@@ -2005,8 +1999,8 @@
      <para>
       En la tabla haga clic para poner una marca debajo de cada tipo de permiso
       que quiera otorgar. Por ejemplo usted puede darle al dueño y los usuarios 
-      de un grupo permisos para leer (ver), escribir (editar) y ejecutar archivos en
-      el grupo y darle otros permisos para leer archivos, pero no para escribirlos.
+      de un grupo permisos para leer (ver), escribir (editar) y ejecutar el archivo y 
+      darle otros permisos para leer archivos, pero no para escribirlos.
      </para>
     </listitem>
 
@@ -2089,7 +2083,7 @@
     Para cambiar su nivel de usuario abra el menú Preferencias y seleccione el nivel que quiera.
    </para>
 
-   <figure id="prefmenú2">
+   <figure id="prefmenu2">
     <title>El menú Preferencias</title>
     <screenshot>
      <screeninfo>Captura de pantalla del menú Preferencias</screeninfo>
@@ -2119,16 +2113,16 @@
 
    <para>
     Las configuraciones de Preferencias ajustan la Apariencia de Nautilus, el
-    comportamiento de archivos y carpetas cuando usted hace clic sobre ellos, los
-    lenguages usados al mostrar páginas Web, el tipo de búsquedas ejecutadas cuando
-    hace clic en los botones Buscar y Búsqueda Web y muchas más cosas.
+    comportamiento de archivos y carpetas cuando usted hace clic sobre ellos, 
+    el tipo de búsquedas ejecutadas cuando hace clic en los botones Buscar 
+    y Búsqueda Web y muchas cosas más.
    </para>
 
    <para>
     Para abrir la caja de dialogo Preferencias use el menú Preferencias mostrado aquí.
    </para>
 
-   <figure id="prefmenú7">
+   <figure id="prefmenu7">
     <title>El menú Preferencias</title>
     <screenshot>
      <screeninfo>Captura de Pantalla del menú Preferencias</screeninfo>
@@ -2152,7 +2146,7 @@
     <listitem>
      <para>
       Del lado izquierdo de la caja de dialogo de Preferencias seleccione el tipo  
-      de configuración que quiere ajustar (por ejemplo, Vista de Carpetas).
+      de configuración que quiere ajustar (por ejemplo, las vistas Icono y Carpeta).
      </para>
     </listitem>
 
@@ -2164,7 +2158,7 @@
 
     <listitem>
      <para>
-      Cuando termine haga clic en el botón <guimenuitem>OK</guimenuitem>.
+      Cuando termine haga clic en el botón OK para cerrar la ventana.
      </para>
     </listitem>
 
@@ -2181,10 +2175,10 @@
    </para>
 
    <itemizedlist>
-    <listitem><para>Barra Lateral</para></listitem>
-    <listitem><para>Barra de Herramientas</para></listitem>
-    <listitem><para>Barra de Dirección</para></listitem>
-    <listitem><para>Barra de Estado (en la parte inferior de la ventana de Nautilus)</para></listitem>
+    <listitem><para>barra lateral</para></listitem>
+    <listitem><para>barra de herramientas</para></listitem>
+    <listitem><para>barra de dirección</para></listitem>
+    <listitem><para>barra de estado (en la parte inferior de la ventana de Nautilus)</para></listitem>
    </itemizedlist>
 
    <figure id="full3">
@@ -2209,8 +2203,8 @@
     <listitem>
      <para>
       Abra el menú <guimenu>Ver</guimenu> y seleccione una de las opciones de la
-      segunda sección. Por ejemplo para ocultar la Barra Lateral haga clic en
-      Ocultar Barra Lateral.
+      segunda sección. Por ejemplo para ocultar la barra lateral haga clic en
+      Ocultar barra lateral.
      </para>
     </listitem>
 
@@ -2258,7 +2252,7 @@
 
    </orderedlist>
 
-   <figure id="prefmenú8">
+   <figure id="prefmenu8">
     <title>El menú Preferencias</title>
     <screenshot>
      <screeninfo>Captura de Pantalla del menú Preferencias</screeninfo>
@@ -2370,8 +2364,7 @@
 
     <listitem>
      <para>
-      Abra el menú <guimenu>Editar</guimenu> y seleccione 
-      <guimenuitem>Temas de Nautilus</guimenuitem>.
+      Abra el menú Editar y seleccione Temas de Nautilus.
      </para>
     </listitem>
 
@@ -2413,7 +2406,7 @@
     <listitem>
      <para>
       Arrastre una muestra hacia una parte de la ventana de Nautilus. Por ejemplo,
-      cambie el color de la Barra Lateral arrastrando el color amarillo. Para restaurar
+      cambie el color de la barra lateral arrastrando el color amarillo. Para restaurar
       el color original arrastre la muestra que dice "Reset".
      </para>
     </listitem>
@@ -2631,7 +2624,7 @@
    </para>
 
    <para>
-    <guimenu>Personalizando un ícono</guimenu>
+    <guimenu>Personalizando Iconos</guimenu>
    </para>
 
    <para>
@@ -2680,7 +2673,7 @@
 
     <listitem>
      <para>
-      Si tiene una solapa (Arbol,Notas,Histórico o Ayuda) abierta en la Barra Lateral
+      Si tiene una solapa (árbol,Notas,Histórico o Ayuda) abierta en la barra lateral
       cierrela para que de ese modo pueda ver el ícono que quiera personalizar.
       (Para cerrar una solapa haga clic sobre ella.)
      </para>
@@ -2689,7 +2682,7 @@
     <listitem>
      <para>
       Haga doble clic en el elemento que quiera personalizar para que de ese modo su ícono sea
-      visible en la Barra Lateral.
+      visible en la barra lateral.
      </para>
     </listitem>
 
@@ -2712,7 +2705,7 @@
 
    <para>
     Consejo: Puede trabajar con dos ventanas de Nautilus cuando
-    personalice un ícono de directorio. Abra el menú Archivo y seleccione
+    personalice un ícono . Abra el menú Archivo y seleccione
     Ventana Nueva. Puede arrastrar una imagen desde una de las ventanas hacia
     la otra ventana donde esta el ícono que quiere personalizar.
    </para>
@@ -2767,12 +2760,12 @@
     Puede agregar al ícono tantas marcas como desee.
    </para>
 
-   <note>
+   <tip>
     <title>Intente esto:</title>
     <para>
      Usar marcas para organizar sus archivos.
     </para>
-   </note>
+   </tip>
 
    <para>
     Agregue la marca Oh No! o Urgente a los archivos que necesitan atención inmediata, luego abra el menú
@@ -2799,7 +2792,7 @@
     <listitem>
      <para>
       Ponga el puntero del mouse sobre un área libre del escritorio y haga clic con el botón derecho, luego
-      seleccione la opción <guimenuitem>Configurar Imagen de fondo</guimenuitem> del menú pop-up que aparece.
+      seleccione la opción Configurar Imagen de fondo del menú pop-up que aparece.
       Entonces se abrirá el Centro de Control GNOME.
      </para>
     </listitem>
@@ -2856,12 +2849,10 @@
 
  <!-- CHAPTER 6: FILE HANDLERS  -->
  <chapter id="chapter6">
-  <title>Manejadores de archivo</title>
+  <title>Seleccionando Aplicaciones para Manejar Archivos</title>
 
   <para>
-   Los manejadores de archivos, también conocidos como tipos MIME o tipos de archivo le dejan
-   personalizar la forma en en los archivos son abiertos para ser editados o visualizados. Esta sección
-   le explica como personalizar los manejadores de archivo en su sistema.
+   Esa sección explica como personalizar la forma en que los archivos son abiertos para ser vistos o editados.
   </para>
 
   <sect1 id="toc6">
@@ -2870,11 +2861,11 @@
    <simplelist>
 
     <member>
-     <link linkend="handlers">¿Qué son los manejadores de archivos?</link>     
+     <link linkend="handlers">¿Qué son los tipos MIME?</link>     
     </member>
 
     <member>
-     <link linkend="menú">Agregando y quitando Aplicaciones</link>     
+     <link linkend="menu">Agregando y quitando Aplicaciones</link>     
     </member>
 
     <member>
@@ -2894,33 +2885,36 @@
   </sect1>
 
   <sect1 id="handlers">
-   <title>¿Qué son los Manejadores de Archivo?</title>   
+   <title>¿Qué son los tipos MIME?</title>   
 
    <para>
-    Cuando abre un archivo al menos que especifique una aplicación en particular o
-    un visualizador para ese archivo este normalmente se abre automáticamente en
-    una aplicación que sea la apropiada para ese archivo. Por ejemplo, un archivo
-    de gráficos normalmente se abrirá automáticamente en una aplicación
+    Los tipos MIME son una forma estandar para identificar archivos, de este modo estos
+    pueden ser transmitidos facilmente por Internet. MIME significa "Multipurpose Internet
+    Mail Extention." (Extención Multipropósito de Correo Internet). Cada tipo de archivo
+    es asignado a un tipo determinado MIME. Por ejemplo el tipo MIME para los archivos 
+    HTML es "text/html" y el tipo MIME para los archivos JPEG es "image/jpeg". El tipo MIME
+    de un archivo le dice a las aplicaciones de Internet como Navegadores y programas
+    de correo electrónico que tipo de archivo esta siendo intercambiado, como codificarlo para
+    transmitirlo y como decodificarlo al recibirlo.
+   </para>
+   
+   <para>
+    Al menos que haya especificado que una aplicación o un visualizador en particular debe abrir el archivo
+    este normalmente se abre automáticamente en una aplicación que sea la apropiada para ese archivo. 
+    Por ejemplo, un archivo JPEG normalmente se abrirá automáticamente en una aplicación
     que maneje gráficos.
    </para>
 
    <para>
-    La aplicación que esta configurada para abrir automáticamente un
-    tipo de archivo particular es conocida como el manejar de archivo para
-    este tipo de archivo. Los manejadores de archivos también son llamados
-    tipos MIME o tipos de archivo.
-   </para>
-
-   <para>
     Usted puede elegir que aplicación o visualizador abrirá automáticamente
-    un tipo de archivo en particular. También puede configurar un manejador
-    de archivo nuevo.
+    un tipo de archivo en particular. También puede configurar nuevas aplicaciones
+    para manejar este tipo de archivos en particular.
    </para>
 
   </sect1>
 
   <!-- File Handlers: Adding and Removing Applications  -->
-  <sect1 id="menú">
+  <sect1 id="menu">
    <title>Agregando y Quitando Aplicaciones</title>
 
    <para>
@@ -2984,7 +2978,8 @@
    Para modificar la lista de los visualizadores que ve cuando selecciona Abrir Con 
    siga los pasos 1 a 6 mostrados anteriormente pero seleccione Otro visualizador en vez de
    Otra Aplicación en el paso 2. (Un visualizador le deja ver pero no editar un archivo.
-   Al abrir un archivo puede ahorrar tiempo y recursos del sistema.)
+   Al abrir un archivo puede ahorrar tiempo y memoria del sistema.)
+
   </para>
 
   </sect1>
@@ -3159,8 +3154,8 @@ ga clic en en botón "Ir ahí".
     <listitem>
      <para>
       Abra el <guimenu>Menú Principal de GNOME</guimenu> y seleccione 
-      <menuchoice>Programas<guimenu>Configuración</guimenu>
-      <guisubmenu></guisubmenu> <guimenuitem>Centro de Control GNOME</guimenuitem></menuchoice>.
+      <menuchoice><guimenu>Programas</guimenu>
+      <guisubmenu>Configuración</guisubmenu> <guimenuitem>Centro de Control GNOME</guimenuitem></menuchoice>.
      </para>
     </listitem>
 
@@ -3521,7 +3516,7 @@ ga clic en en botón "Ir ahí".
    Un ícono de enlace denota un archivo que no tiene contenido por sus propios medios, pero
    apunta a un archivo o carpeta localizada en cualquier otro lugar de la computadora.
    Haciendo clic en este ícono se abrirá la carpeta o el archivo al que se encuentre enlazado. 
-   (Un enlace es lo mismo que un acceso directo en Windows o un alias en el sistema operativo de Mac).
+   (Un enlace similar a un acceso directo en Windows o un alias en el sistema operativo de Mac).
   </para>
 
  </chapter>
@@ -3541,6 +3536,8 @@ ga clic en en botón "Ir ahí".
     <citetitle>Licencia Pública General GNU</citetitle></ulink> como
     es publicada por la Free Software Foundation ya sea la versión 2 de la misma
     o (como lo desee) cualquier versión posterior.
+    Junto con el programa se provee una copia de la licencia dentro del archivo
+    <filename>COPYING-DOCS</filename>.
    </para>
 
    <para>
@@ -3548,7 +3545,6 @@ ga clic en en botón "Ir ahí".
     sin NINGUN TIPO DE GARANTIA, sin siquiera la garantía implicita de
     MERCANTIBILIDAD o con la CUMPLIR UN PROPOSITO EN PARTICULAR. Vea la
     <citetitle>GNU General Public License</citetitle> para mas detalles.
-  
    </para>
 
   </sect1>
@@ -3583,10 +3579,10 @@ ga clic en en botón "Ir ahí".
    <title>Acerca de la traducción</title>
  
   <sect1 id="equipo">
-    <title>Traductores de la versión 0.9</title>    
+    <title>Traductores de la versión 1.0</title>    
     
     <para>
-     Esta es una lista de la gente que colaboró con la traducción de esta guía.
+     Esta es una lista de la gente que colaboró con la traducción de esta guía.
     </para>
     
     <itemizedlist>
@@ -3595,7 +3591,7 @@ ga clic en en botón "Ir ahí".
         <para>
           Ivan Avila [ivan@avila.org]
         </para>
-      </listitem> 
+      </listitem> 
 
       <listitem>
        <para>
@@ -3609,6 +3605,12 @@ ga clic en en botón "Ir ahí".
        </para>
       </listitem>
 
+      <listitem>
+       <para>
+        Miguel Guirao [thinkfreemx@yahoo.com.mx]
+       </para>
+      </listitem>
+      
       <listitem>
        <para>
         Pablo Gonzalo del Campo [pablodc@bigfoot.com]
@@ -3649,13 +3651,13 @@ ga clic en en botón "Ir ahí".
 
     <listitem>
       <para>
-      Portada del documento.
+      Portada del documento.
       </para> 
     </listitem>
 
     <listitem>
       <para>
-       Apéndice "Acerca de la traducción".
+       Apéndice "Acerca de la traducción".
       </para> 
     </listitem>
 
@@ -3686,7 +3688,7 @@ ga clic en en botón "Ir ahí".
      <para>
       A todo el equipo de desarrollo de GNOME.
      </para>
-    </listitem> 
+    </listitem> 
 
     <listitem>
      <para>
@@ -3706,68 +3708,10 @@ ga clic en en botón "Ir ahí".
      </para>
     </listitem>
 
-    </itemizedlist> 
+    </itemizedlist> 
 
   </sect1>  
 
  </chapter> 
  
- 
 </book>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
