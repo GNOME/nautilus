@@ -37,12 +37,7 @@
 static nsModuleComponentInfo gResComponents[] = {
     { "The Eazel Protocol Handler", 
       NS_EAZELHANDLER_CID,
-      NS_NETWORK_PROTOCOL_PROGID_PREFIX "eazel",
-      eazelProtocolHandler::Create
-    },
-    { "The Eazel Protocol Handler", 
-      NS_EAZELHANDLER_CID,
-      NS_NETWORK_PROTOCOL_PROGID_PREFIX "eazel-summary",
+      NS_NETWORK_PROTOCOL_CONTRACTID_PREFIX "eazel",
       eazelProtocolHandler::Create
     },
 };

@@ -48,7 +48,7 @@ mozilla_components_register_library (const char *class_uuid,
 	
 	nsCOMPtr<nsILocalFile> spec;
 
-	nsresult rv = nsComponentManager::CreateInstance (NS_LOCAL_FILE_PROGID, 
+	nsresult rv = nsComponentManager::CreateInstance (NS_LOCAL_FILE_CONTRACTID, 
 							  nsnull, 
 							  NS_GET_IID (nsILocalFile), 
 							  getter_AddRefs (spec));

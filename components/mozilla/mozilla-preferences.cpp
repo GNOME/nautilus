@@ -39,7 +39,7 @@ mozilla_preference_set (const char	*preference_name,
 	g_return_val_if_fail (preference_name != NULL, FALSE);
 	g_return_val_if_fail (new_value != NULL, FALSE);
 
-	nsCOMPtr<nsIPref> pref = do_CreateInstance(NS_PREF_PROGID);
+	nsCOMPtr<nsIPref> pref = do_CreateInstance(NS_PREF_CONTRACTID);
 	
 	if (pref)
 	{
@@ -57,7 +57,7 @@ mozilla_preference_set_boolean (const char	*preference_name,
 {
 	g_return_val_if_fail (preference_name != NULL, FALSE);
 
-	nsCOMPtr<nsIPref> pref = do_CreateInstance(NS_PREF_PROGID);
+	nsCOMPtr<nsIPref> pref = do_CreateInstance(NS_PREF_CONTRACTID);
 	
 	if (pref)
 	{
@@ -76,7 +76,7 @@ mozilla_preference_set_int (const char	*preference_name,
 {
 	g_return_val_if_fail (preference_name != NULL, FALSE);
 
-	nsCOMPtr<nsIPref> pref = do_CreateInstance(NS_PREF_PROGID);
+	nsCOMPtr<nsIPref> pref = do_CreateInstance(NS_PREF_CONTRACTID);
 	
 	if (pref)
 	{
