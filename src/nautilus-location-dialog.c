@@ -43,8 +43,7 @@ EEL_CLASS_BOILERPLATE (NautilusLocationDialog,
 		       nautilus_location_dialog,
 		       GTK_TYPE_DIALOG)
 enum {
-	RESPONSE_OPEN,
-	RESPONSE_CANCEL
+	RESPONSE_OPEN
 };	
 
 static void
@@ -96,7 +95,7 @@ response_callback (NautilusLocationDialog *dialog,
 		break;
 	case GTK_RESPONSE_NONE :
 	case GTK_RESPONSE_DELETE_EVENT :
-	case RESPONSE_CANCEL :
+	case GTK_RESPONSE_CANCEL :
 		gtk_widget_destroy (GTK_WIDGET (dialog));
 		break;
 	default :
@@ -162,7 +161,7 @@ nautilus_location_dialog_init (NautilusLocationDialog *dialog)
 
 	gtk_dialog_add_button (GTK_DIALOG (dialog),
 			       GTK_STOCK_CANCEL,
-			       RESPONSE_CANCEL);
+			       GTK_RESPONSE_CANCEL);
 	gtk_dialog_add_button (GTK_DIALOG (dialog),
 			       GTK_STOCK_OPEN,
 			       RESPONSE_OPEN);

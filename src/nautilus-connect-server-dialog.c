@@ -46,8 +46,7 @@ EEL_CLASS_BOILERPLATE (NautilusConnectServerDialog,
 		       nautilus_connect_server_dialog,
 		       GTK_TYPE_DIALOG)
 enum {
-	RESPONSE_CONNECT,
-	RESPONSE_CANCEL
+	RESPONSE_CONNECT
 };	
 
 static void
@@ -132,7 +131,7 @@ response_callback (NautilusConnectServerDialog *dialog,
 		break;
 	case GTK_RESPONSE_NONE:
 	case GTK_RESPONSE_DELETE_EVENT:
-	case RESPONSE_CANCEL:
+	case GTK_RESPONSE_CANCEL:
 		gtk_widget_destroy (GTK_WIDGET (dialog));
 		break;
 	default :
@@ -223,7 +222,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 
 	gtk_dialog_add_button (GTK_DIALOG (dialog),
 			       GTK_STOCK_CANCEL,
-			       RESPONSE_CANCEL);
+			       GTK_RESPONSE_CANCEL);
 	gtk_dialog_add_button (GTK_DIALOG (dialog),
 			       _("Connect"),
 			       RESPONSE_CONNECT);

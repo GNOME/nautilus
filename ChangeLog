@@ -1,3 +1,13 @@
+2003-12-10  Federico Mena Quintero  <federico@ximian.com>
+
+	* src/nautilus-connect-server-dialog.c (response_callback): Use
+	GTK_RESPONSE_CANCEL, not a homegrown RESPONSE_CANCEL.  This way we
+	can close the dialog by pressing Escape.
+	(nautilus_connect_server_dialog_init): Likewise.
+
+	* src/nautilus-location-dialog.c (response_callback): Likewise.
+	(nautilus_location_dialog_init): Likewise.
+
 2003-12-10  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/apps_nautilus_preferences.schemas.in:
