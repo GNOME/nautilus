@@ -1,3 +1,12 @@
+2004-10-29  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-list-view.c: (fm_list_view_reveal_selection),
+	(fm_list_view_start_renaming_file):
+	Don't scroll to top if file already visible when renaming and
+	revealing selection on alt-up.
+
+	Patch from Jimmy Do.
+
 2004-10-28  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:

@@ -1447,7 +1447,22 @@ fm_list_view_reveal_selection (FMDirectoryView *view)
 
 	/* Make sure at least one of the selected items is scrolled into view */
 	if (selection != NULL) {
-		fm_list_view_scroll_to_file (FM_LIST_VIEW (view), selection->data);
+		FMListView *list_view;
+		NautilusFile *file;
+		GtkTreeIter iter;
+		GtkTreePath *path;
+		
+		list_view = FM_LIST_VIEW (view);
+		file = selection->data;
+		if (!fm_list_model_get_tree_iter_from_file (list_view->details->model, file, &iter)) {
+			return;
+		}
+		path = gtk_tree_model_get_path (GTK_TREE_MODEL (list_view->details->model), &iter);
+
+		gtk_tree_view_scroll_to_cell (list_view->details->tree_view, path, NULL, FALSE, 0.0, 0.0);
+
+		gtk_tree_path_free (path);
+		path = NULL;
 	}
 
         nautilus_file_list_free (selection);
@@ -1841,7 +1856,7 @@ fm_list_view_start_renaming_file (FMDirectoryView *view, NautilusFile *file)
 	gtk_tree_view_scroll_to_cell (list_view->details->tree_view,
 				      path,
 				      list_view->details->file_name_column,
-				      TRUE, 0.0, 1.0);
+				      FALSE, 0.0, 1.0);
 	gtk_tree_view_set_cursor (list_view->details->tree_view,
 				  path,
 				  list_view->details->file_name_column,
