@@ -422,6 +422,11 @@ nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks)
 	/* Wipe out old list. */
 	clear (bookmarks);
 
+	if (!g_file_test (nautilus_bookmark_list_get_file_path (bookmarks),
+			  G_FILE_TEST_EXISTS)) {
+		return;
+	}
+
 	/* Read new list from file */
 	doc = xmlParseFile (nautilus_bookmark_list_get_file_path (bookmarks));
 	for (node = eel_xml_get_root_children (doc);

@@ -1,3 +1,9 @@
+2002-05-10  Anders Carlsson  <andersca@gnu.org>
+
+	* src/nautilus-bookmark-list.c: (nautilus_bookmark_list_load_file):
+	Check that the file exists before trying to parse it. This stops
+	libxml from spewing crack "entity not found" messages.
+	
 2002-05-10  Damon Chaplin  <damon@ximian.com>
 
 	* libnautilus-private/nautilus-directory-async.c (link_info_read_done):
