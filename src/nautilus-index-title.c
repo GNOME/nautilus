@@ -116,7 +116,8 @@ nautilus_index_title_set_up_icon (NautilusIndexTitle *index_title, NautilusFile 
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
 
-	g_return_if_fail(file_object);
+	if (file_object == NULL)
+		return;
 	
 	nautilus_icon_factory_get_pixmap_and_mask_for_file
 		(file_object, NAUTILUS_ICON_SIZE_STANDARD,
@@ -252,6 +253,7 @@ nautilus_index_title_set_up_label (NautilusIndexTitle *index_title, const char *
 	else {  
 		index_title->details->title = GTK_WIDGET (gtk_label_new (file_name));
 		gtk_label_set_line_wrap (GTK_LABEL (index_title->details->title), TRUE);   
+		gtk_label_set_justify(GTK_LABEL(index_title->details->title), GTK_JUSTIFY_CENTER);
 		gtk_widget_show (index_title->details->title);
 		gtk_box_pack_start (GTK_BOX (index_title), index_title->details->title, 0, 0, 0);
 	}   
@@ -347,15 +349,14 @@ nautilus_index_title_set_uri(NautilusIndexTitle *index_title, const char* new_ur
 
 	file_object = nautilus_file_get(new_uri);
 
-	if(file_object) {
-		nautilus_index_title_set_up_icon (index_title, file_object);
-	
-		/* add various info */
-		nautilus_index_title_set_up_info(index_title, file_object);
-	}
+	/* add the icon */
+	nautilus_index_title_set_up_icon (index_title, file_object);
 
 	/* add the name, in a variable-sized label */
 	nautilus_index_title_set_up_label (index_title, new_uri);
+	
+	/* add various info */
+	nautilus_index_title_set_up_info(index_title, file_object);
 
 	/* FIXME: file_object can be NULL if this is a bad url, or one that
 	 * NautilusFile can't handle (e.g. http). The UI here needs to

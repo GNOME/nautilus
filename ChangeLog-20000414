@@ -1,3 +1,11 @@
+2000-02-16  Andy Hertzfeld <andy@eazel.com>
+
+	* src/nautilus-index-title.c:
+	made the title be about the additional info again; Elliot broke this
+	when he added the checks for null file objects.  Fixed by putting
+	the checks in the subroutines that do that real work.  Also, made
+	the label center justified.
+	
 2000-02-16  Elliot Lee  <sopwith@redhat.com>
 
 	* components/help/hyperbola-nav-tree.c: Show the stinking view. :)
