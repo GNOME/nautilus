@@ -29,6 +29,7 @@
 #include <libgnomeui/gnome-canvas.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "nautilus-icon-factory.h"
+#include "nautilus-scalable-font.h"
 
 BEGIN_GNOME_DECLS
 
@@ -63,6 +64,7 @@ struct NautilusIconCanvasItemClass {
 /* GtkObject */
 GtkType     nautilus_icon_canvas_item_get_type                 (void);
 
+
 /* attributes */
 void        nautilus_icon_canvas_item_set_image                (NautilusIconCanvasItem *item,
 								GdkPixbuf              *image);
@@ -71,12 +73,13 @@ void        nautilus_icon_canvas_item_set_emblems              (NautilusIconCanv
 								GList                  *emblem_pixbufs);
 void        nautilus_icon_canvas_item_set_show_stretch_handles (NautilusIconCanvasItem *item,
 								gboolean                show_stretch_handles);
-void	    nautilus_icon_canvas_item_set_attach_points	       (NautilusIconCanvasItem *item,
+void        nautilus_icon_canvas_item_set_attach_points        (NautilusIconCanvasItem *item,
 								EmblemAttachPoints     *attach_points);
 double      nautilus_icon_canvas_item_get_max_text_width       (NautilusIconCanvasItem *item);
 const char *nautilus_icon_canvas_item_get_editable_text        (NautilusIconCanvasItem *icon_item);
 void        nautilus_icon_canvas_item_set_renaming             (NautilusIconCanvasItem *icon_item,
 								gboolean                state);
+
 
 /* geometry and hit testing */
 gboolean    nautilus_icon_canvas_item_hit_test_rectangle       (NautilusIconCanvasItem *item,
@@ -86,6 +89,11 @@ gboolean    nautilus_icon_canvas_item_hit_test_stretch_handles (NautilusIconCanv
 void        nautilus_icon_canvas_item_get_icon_rectangle       (NautilusIconCanvasItem *item,
 								ArtDRect               *world_rectangle);
 void        nautilus_icon_canvas_item_update_bounds            (NautilusIconCanvasItem *item);
+void        nautilus_icon_canvas_item_set_smooth_font          (NautilusIconCanvasItem *item,
+								NautilusScalableFont   *font);
+void        nautilus_icon_canvas_item_set_smooth_font_size     (NautilusIconCanvasItem *item,
+								guint                   font_size);
+
 
 END_GNOME_DECLS
 

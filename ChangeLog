@@ -1,3 +1,19 @@
+2000-09-05  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_initialize_class),
+	(nautilus_icon_canvas_item_initialize),
+	(nautilus_icon_canvas_item_destroy),
+	(nautilus_icon_canvas_item_set_arg),
+	(nautilus_icon_canvas_item_get_arg), (icon_canvas_item_is_smooth),
+	(nautilus_icon_canvas_item_get_max_text_width),
+	(nautilus_icon_canvas_item_set_smooth_font),
+	(nautilus_icon_canvas_item_set_smooth_font_size):
+	* libnautilus-extensions/nautilus-icon-canvas-item.h:
+	Add arguments and setter functions to set the font and font size
+	in smooth mode.  Also added a function to determine whether we are
+	in smooth mode or not.
+	
 2000-09-05  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory-notify.h:
