@@ -881,7 +881,7 @@ logged_in_callback (gpointer	raw)
 	view = NAUTILUS_SUMMARY_VIEW (raw);
 	view->details->logged_in = TRUE;
 
-	generate_summary_form (view);
+	go_to_uri (view->details->nautilus_view, "eazel:");
 
 	return (FALSE);
 }
@@ -895,7 +895,7 @@ logged_out_callback (gpointer	raw)
 	view = NAUTILUS_SUMMARY_VIEW (raw);
 	view->details->logged_in = FALSE;
 
-	generate_summary_form (view);
+	go_to_uri (view->details->nautilus_view, "eazel:");
 
 	return (FALSE);
 } */
