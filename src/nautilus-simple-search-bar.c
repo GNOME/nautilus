@@ -29,6 +29,7 @@
 #include "nautilus-simple-search-bar.h"
 
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-search-bar-criterion.h>
@@ -83,16 +84,6 @@ update_simple_find_button_state (NautilusSimpleSearchBar *bar)
 }
 
 static void
-activated_search_field (NautilusSimpleSearchBar *bar)
-{
-	/* Might be called when there's no text. */
-	if (!search_text_is_invalid (bar)) {
-		nautilus_navigation_bar_location_changed 
-			(NAUTILUS_NAVIGATION_BAR (bar));
-	}
-}
-
-static void
 nautilus_simple_search_bar_initialize (NautilusSimpleSearchBar *bar)
 {
 	GtkWidget *hbox;
@@ -101,15 +92,18 @@ nautilus_simple_search_bar_initialize (NautilusSimpleSearchBar *bar)
 
 	hbox = gtk_hbox_new (0, FALSE);
 	
+	/* Create button first so we can use it for auto_click */
+	bar->details->find_button = gtk_button_new_with_label (_("Find Them!"));
+
 	bar->details->entry = GTK_ENTRY (gtk_entry_new ());
 	gtk_signal_connect_object (GTK_OBJECT (bar->details->entry), "activate",
-				   activated_search_field, GTK_OBJECT (bar));
+				   nautilus_gtk_button_auto_click, 
+				   GTK_OBJECT (bar->details->find_button));
 	gtk_signal_connect_object (GTK_OBJECT (bar->details->entry), "changed",
 				   update_simple_find_button_state, GTK_OBJECT (bar));
 
 	gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (bar->details->entry), TRUE, TRUE, 0);
 
-	bar->details->find_button = gtk_button_new_with_label (_("Find Them!"));
 	gtk_signal_connect_object (GTK_OBJECT (bar->details->find_button), "clicked",
 				   nautilus_navigation_bar_location_changed,
 				   GTK_OBJECT (bar));

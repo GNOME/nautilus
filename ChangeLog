@@ -1,5 +1,27 @@
 2000-08-31  John Sullivan  <sullivan@eazel.com>
 
+	Fixed bug 2013 (Enter should start complex search when any
+	search text field has focus)
+
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_button_auto_click): Now checks for insensitive
+	state and does nothing in that case.
+	
+	* src/nautilus-complex-search-bar.c:
+	(nautilus_complex_search_bar_initialize):
+	Made find button get created before criteria widgets.
+	(attach_criterion_to_search_bar): Wire up "activate"
+	signal for text field to auto_click the find button.
+	* src/nautilus-simple-search-bar.c:
+	(nautilus_simple_search_bar_initialize): Now the
+	"activate" signal for the one text field here calls
+	auto_click on the button instead of calling a separate
+	callback that checks button sensitivity (indirectly) and 
+	then starts search. Watch the button depress as if by magic! 
+	Impress your friends!
+
+2000-08-31  John Sullivan  <sullivan@eazel.com>
+
 	Fixed bug 1037 (Use "folder" instead of "directory" consistently)
 
 	I think I found them all. If you find any others, fix them or

@@ -67,6 +67,10 @@ nautilus_gtk_button_auto_click (GtkButton *button)
 {
 	g_return_if_fail (GTK_IS_BUTTON (button));
 
+	if (!GTK_WIDGET_IS_SENSITIVE (GTK_WIDGET (button))) {
+		return;
+	}
+
 	button->in_button = TRUE;
 	gtk_button_pressed (button);
 	button->in_button = FALSE;

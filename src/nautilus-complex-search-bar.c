@@ -36,6 +36,7 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-search-bar-criterion.h>
@@ -150,6 +151,10 @@ nautilus_complex_search_bar_initialize (NautilusComplexSearchBar *bar)
 
 	gtk_container_set_resize_mode (GTK_CONTAINER (bar->details->table),
 				       GTK_RESIZE_IMMEDIATE);
+
+	/* Create button before criterion so we text fields can hook to criterion's signal */
+	bar->details->find_them = gtk_button_new ();
+
 	file_name_criterion = nautilus_search_bar_criterion_first_new ();
 	nautilus_search_bar_criterion_set_callback (file_name_criterion, 
 						    criterion_callback,
@@ -170,7 +175,6 @@ nautilus_complex_search_bar_initialize (NautilusComplexSearchBar *bar)
 	hbox = gtk_hbox_new (FALSE, 1);
 
 
-	bar->details->find_them = gtk_button_new ();
 	find_them_box = gtk_hbox_new (FALSE, 1);
 	find_them_pixmap_widget = load_find_them_pixmap_widget ();
 	if (find_them_pixmap_widget != NULL)
@@ -331,6 +335,13 @@ attach_criterion_to_search_bar (NautilusComplexSearchBar *bar,
 				    	   "changed", 
 				    	   update_find_button_state, 
 				    	   GTK_OBJECT (bar));
+
+		/* We want to activate the "Find" button when any entry text is not empty */
+		g_assert (GTK_IS_BUTTON (bar->details->find_them));
+		gtk_signal_connect_object (GTK_OBJECT (criterion->details->value_entry), 
+					   "activate",
+					   nautilus_gtk_button_auto_click, 
+					   GTK_OBJECT (bar->details->find_them));
 	}
 	if (criterion->details->use_value_menu) {
 		gtk_table_attach_defaults (bar->details->table,
