@@ -58,14 +58,6 @@ static GObjectClass *parent_class = NULL;
 static GtkEditableClass *parent_editable_interface = NULL;
 
 static void
-emacs_shortcuts_preference_changed_callback (gpointer callback_data)
-{
-	NautilusEntry *entry;
-
-	entry = NAUTILUS_ENTRY (callback_data);
-}
-
-static void
 nautilus_entry_init (NautilusEntry *entry)
 {
 	GtkWidget *widget;
@@ -76,7 +68,6 @@ nautilus_entry_init (NautilusEntry *entry)
 	entry->details->user_edit = TRUE;
 
 	nautilus_undo_set_up_nautilus_entry_for_undo (entry);
-	emacs_shortcuts_preference_changed_callback (entry);
 }
 
 GtkWidget *

@@ -426,10 +426,6 @@ static const PreferenceDefault preference_defaults[] = {
 	  PREFERENCE_BOOLEAN,
 	  GINT_TO_POINTER (FALSE)
 	},
-	{ NAUTILUS_PREFERENCES_USE_EMACS_SHORTCUTS,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (FALSE)
-	},
 	/* FIXME bugzilla.gnome.org 41245: Saved in pixels instead of in %? */
 	{ NAUTILUS_PREFERENCES_SIDEBAR_WIDTH,
 	  PREFERENCE_INTEGER,

@@ -114,15 +114,6 @@ static EelPreferencesItemDescription windows_and_desktop_items[] = {
 	  N_("Include a Delete command that bypasses Trash"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
-	/* FIXME: This group clearly doesn't belong in Windows &
-	 * Desktop, but there's no obviously-better place for it and
-	 * it probably doesn't deserve a pane of its own.
-	 */
-	{ N_("Keyboard Shortcuts"),
-	  NAUTILUS_PREFERENCES_USE_EMACS_SHORTCUTS,
-	  N_("Use Emacs-style keyboard shortcuts in text fields"),
-	  EEL_PREFERENCE_ITEM_BOOLEAN
-	},
 	{ NULL }
 };
 
