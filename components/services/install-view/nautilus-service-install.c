@@ -166,7 +166,7 @@ nautilus_service_install_view_install_package_callback (GtkWidget *widget,
 		PackageData *pack;
 
 		/* Find the :// of the url and skip to after it */
-		ptr = strstr (view->details->current_uri, "file://");
+		ptr = strstr (view->details->uri, "file://");
 		ptr += strlen ("file://");
 
 		/* make a package and add to it to a categorylist */

@@ -1,5 +1,22 @@
 2000-07-08  J Shane Culpepper  <pepper@eazel.com>
 
+	* components/services/install/nautilus-view/Makefile.am:
+	*
+	components/services/install/nautilus-view/nautilus-service-install-
+	view.c: (generate_install_form), (show_feedback),
+	(nautilus_service_install_view_update_from_uri),
+	(nautilus_service_install_view_load_uri):
+	*
+	components/services/install/nautilus-view/nautilus-service-install-
+	view.h:
+	*
+	components/services/install/nautilus-view/nautilus-service-install.
+	c: (nautilus_service_install_view_install_package_callback):
+
+	First cut of the skeleton for easy install view.
+
+2000-07-08  J Shane Culpepper  <pepper@eazel.com>
+
 	*
 	components/services/startup/nautilus-view/nautilus-service-startup-
 	view.c: (generate_startup_form), (generate_form_logo),

@@ -46,6 +46,22 @@ struct _NautilusServiceInstallViewClass {
         GtkVBoxClass				parent_class;
 };
 
+/* A NautilusContentView's private information. */
+struct _NautilusServiceInstallViewDetails {
+	char            *uri;
+	NautilusView    *nautilus_view;
+	GtkWidget       *form;
+	GtkWidget       *form_title;
+	GtkWidget       *package_name;
+	GtkWidget       *package_details;
+	GtkWidget       *package_summary;
+	GtkWidget       *package_version;
+	GtkWidget       *total_progress_bar;
+	GtkWidget       *current_progress_bar;
+	GtkWidget       *feedback_text;
+};
+
+
 /* GtkObject support */
 GtkType		nautilus_service_install_view_get_type			(void);
 

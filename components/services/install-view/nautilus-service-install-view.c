@@ -23,6 +23,11 @@
 
 #include <config.h>
 
+#include "nautilus-service-install-view.h"
+#include "nautilus-service-install.h"
+#include <libeazelinstall.h>
+
+#include <rpm/rpmlib.h>
 #include <gnome-xml/tree.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-background.h>
@@ -34,20 +39,11 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
 #include <stdio.h>
+#include <fcntl.h>
+#include <dirent.h>
 #include <unistd.h>
-
-#include "nautilus-service-install-view.h"
-
-
-
-/* A NautilusContentView's private information. */
-struct _NautilusServiceInstallViewDetails {
-	char 		*uri;
-	NautilusView	*nautilus_view;
-	GtkWidget	*form;
-	GtkWidget	*form_title;
-	GtkWidget	*feedback_text;
-};
+#include <errno.h>
+#include <sys/stat.h>
 
 #define SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR	"rgb:FFFF/FFFF/FFFF"
 #define SERVICE_DOMAIN_NAME			"testmachine.eazel.com"
@@ -58,16 +54,23 @@ static void	nautilus_service_install_view_destroy		(GtkObject				*object);
 static void	service_install_load_location_callback		(NautilusView				*nautilus_view,
 								 const char				*location,
 		 						 NautilusServiceInstallView		*view);
-static void	generate_install_form			(NautilusServiceInstallView		*view);
-static void	generate_form_title			(NautilusServiceInstallView		*view,
-							 const char				*title_text);
+static void	generate_install_form				(NautilusServiceInstallView		*view);
+static void	generate_form_title				(NautilusServiceInstallView		*view,
+								 const char				*title_text);
+static void	nautilus_service_install_view_update_from_uri	(NautilusServiceInstallView		*view,
+								 const char				*uri);
+static void	show_feedback					(NautilusServiceInstallView		*view,
+								 char					*error_message);
+
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusServiceInstallView, nautilus_service_install_view, GTK_TYPE_EVENT_BOX)
 
 static void
 generate_install_form (NautilusServiceInstallView	*view) {
 
-	GtkWidget	*temp_widget;
+	GtkWidget	*temp_box;
+	GdkFont		*font;
+	int		counter;
 
 	/* allocate the parent box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
@@ -77,10 +80,104 @@ generate_install_form (NautilusServiceInstallView	*view) {
 	/* setup the title */
 	generate_form_title (view, "Easy Install");
 
-	/* put a mystery label here as a placeholder. */
-	temp_widget = gtk_label_new ("I am just a view.  One day I will be gone.");
-	gtk_box_pack_start (GTK_BOX (view->details->form), temp_widget, 0, 0, 0);
-	gtk_widget_show (temp_widget);
+	/* Add package information */
+
+	view->details->package_name = gtk_label_new (_("Package Title"));
+	font = nautilus_font_factory_get_font_from_preferences (18);
+	nautilus_gtk_widget_set_font (view->details->package_name, font);
+	gdk_font_unref (font);
+
+	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->package_name, FALSE, FALSE, 2);
+	gtk_widget_show (view->details->package_name);
+
+	view->details->package_summary = gtk_label_new ("Summary: ");
+	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->package_summary, FALSE, FALSE, 2);
+	gtk_label_set_line_wrap (GTK_LABEL (view->details->package_summary), TRUE);
+	gtk_widget_show (view->details->package_summary);
+
+	view->details->package_details = gtk_label_new ("Description: ");
+	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->package_details, FALSE, FALSE, 2);
+	gtk_label_set_line_wrap (GTK_LABEL (view->details->package_details), TRUE);
+	gtk_widget_show (view->details->package_details);
+
+	view->details->package_version = gtk_label_new ("Version 0");
+	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->package_version, FALSE, FALSE, 2);
+	gtk_widget_show (view->details->package_version);
+
+	/* add a label for error messages, but don't show it until there's an error */
+	view->details->feedback_text = gtk_label_new ("");
+	gtk_box_pack_end (GTK_BOX (view->details->form), view->details->feedback_text, 0, 0, 8);
+
+	/* Add progress meters */
+
+        /* Add the single package meter */
+	/* Create a center alignment object */
+	temp_box = gtk_alignment_new (0.5, 0.5, 0, 0);
+	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 4);
+			    gtk_widget_show (temp_box);
+	gtk_widget_show (temp_box);
+	view->details->current_progress_bar = gtk_progress_bar_new ();
+	gtk_container_add (GTK_CONTAINER (temp_box), view->details->current_progress_bar);
+	gtk_widget_show (view->details->current_progress_bar);
+
+	/* bogus current progress loop */
+	for (counter = 1; counter <= 5000; counter++) {
+		float value;
+
+		value = (float) counter / 5000;
+
+		if (counter == 1) {
+			show_feedback (view, "Installing package foo ...");
+		}
+		if (counter == 5000) {
+			break;
+		}
+		else {
+			gtk_progress_bar_update (GTK_PROGRESS_BAR (view->details->current_progress_bar), value);
+			while (gtk_events_pending ()) {
+				gtk_main_iteration ();
+			}
+		}
+	}
+
+        /* Add the overall progress meter */
+	/* Create a center alignment object */
+	temp_box = gtk_alignment_new (0.5, 0.5, 0, 0);
+	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 4);
+			    gtk_widget_show (temp_box);
+	gtk_widget_show (temp_box);
+	view->details->total_progress_bar = gtk_progress_bar_new ();
+	gtk_container_add (GTK_CONTAINER (temp_box), view->details->total_progress_bar);
+	gtk_widget_show (view->details->total_progress_bar);
+
+	/* bogus current progress loop */
+	for (counter = 1; counter <= 20000; counter++) {
+		float value;
+
+		value = (float) counter / 20000;
+
+		if (counter == 1) {
+			show_feedback (view, "Installing package 1 of 4 ...");
+		}
+		if (counter == 5000) {
+			show_feedback (view, "Installing package 2 of 4 ...");
+		}
+		if (counter == 10000) {
+			show_feedback (view, "Installing package 3 of 4 ...");
+		}
+		if (counter == 15000) {
+			show_feedback (view, "Installing package 4 of 4 ...");
+		}
+		if (counter == 20000) {
+			break;
+		}
+		else {
+			gtk_progress_bar_update (GTK_PROGRESS_BAR (view->details->total_progress_bar), value);
+			while (gtk_events_pending ()) {
+				gtk_main_iteration ();
+			}
+		}
+	}
 
 }
 
@@ -112,6 +209,14 @@ generate_form_title (NautilusServiceInstallView	*view,
 
         gtk_box_pack_start (GTK_BOX (temp_container), view->details->form_title, 0, 0, 8);
         gtk_widget_show (view->details->form_title);
+}
+
+/* utility routine to show an error message */
+static void
+show_feedback (NautilusServiceInstallView	*view, char	*error_message) {
+
+	gtk_label_set_text (GTK_LABEL (view->details->feedback_text), error_message);
+	gtk_widget_show (view->details->feedback_text);
 }
 
 static void
@@ -167,6 +272,126 @@ nautilus_service_install_view_get_nautilus_view (NautilusServiceInstallView *vie
 
 }
 
+/* here's where we do most of the real work of populating the view with info from the package */
+/* open the package and copy the information, and then set up the appropriate views with it */
+/* FIXME bugzilla.eazel.com 725: use gnome-vfs to open the package */
+
+static void
+nautilus_service_install_view_update_from_uri (NautilusServiceInstallView	*view, const char	*uri) {
+
+	/* open the package */
+	HeaderIterator		iterator;
+	Header			header_info;
+	Header			signature;
+	int			iterator_tag;
+	int			type;
+	int			data_size;
+	int			result;
+	char			*data_ptr;
+	char			*temp_str;
+	FD_t			file_descriptor;
+	int			*integer_ptr;
+	PackageData		*pack;
+
+	char			*temp_version = NULL;
+	char			*temp_release = NULL;
+	char			*package_name = NULL;
+
+	const char		*path_name = uri + 7;
+
+	file_descriptor = fdOpen (path_name, O_RDONLY, 0644);
+
+	if (file_descriptor != NULL) {
+
+		/* read out the appropriate fields, and set them up in the view */
+		result = rpmReadPackageInfo (file_descriptor, &signature, &header_info);
+		if (result) {
+			g_message ("couldn't read package!");
+			return;
+		}
+
+		iterator = headerInitIterator (header_info);
+		while (headerNextIterator (iterator, &iterator_tag, &type, (void**) &data_ptr, &data_size)) {
+			integer_ptr = (int*) data_ptr;
+			switch (iterator_tag) {
+				case RPMTAG_NAME:
+					package_name = g_strdup (data_ptr);
+					temp_str = g_strdup_printf (_("Installing \"%s\" "), data_ptr);
+					gtk_label_set (GTK_LABEL (view->details->package_name), temp_str);
+					g_free (temp_str);
+					break;
+				case RPMTAG_VERSION:
+					temp_version = g_strdup (data_ptr);
+					break;
+				case RPMTAG_RELEASE:
+					temp_release = g_strdup (data_ptr);
+					break;
+				case RPMTAG_SUMMARY:
+					gtk_label_set (GTK_LABEL (view->details->package_summary), data_ptr+4);
+					break;
+				case RPMTAG_DESCRIPTION:
+					gtk_label_set (GTK_LABEL (view->details->package_details), data_ptr+4);
+					break;
+				case RPMTAG_SIZE:
+					break;
+				case RPMTAG_DISTRIBUTION:
+					break;
+				case RPMTAG_GROUP:
+					break;
+				case RPMTAG_ICON:
+					break;
+				case RPMTAG_LICENSE:
+					break;
+				case RPMTAG_BUILDTIME:
+					break;
+				case RPMTAG_INSTALLTIME:
+					break;
+				case RPMTAG_VENDOR:
+					break;
+				case RPMTAG_GIF:
+					break;
+				case RPMTAG_XPM:
+					break;
+			}
+
+		}
+
+		if (temp_version) {
+			temp_str = g_strdup_printf (_("Version %s-%s"), temp_version, temp_release);
+			gtk_label_set (GTK_LABEL (view->details->package_version), temp_str);
+			g_free (temp_str);
+		}
+
+		headerFreeIterator (iterator);
+
+		/* close the package */
+		fdClose (file_descriptor);
+	}
+
+	/* NOTE: This adds a libeazelinstall packagedata object to the view */
+	pack = (PackageData*) gtk_object_get_data (GTK_OBJECT (view), "packagedata");
+	if (pack != NULL) {
+		/* Destroy the old */
+			packagedata_destroy (pack);
+	}
+	pack = packagedata_new ();
+	pack->name = g_strdup (package_name);
+	pack->version = g_strdup (temp_version);
+	pack->minor = g_strdup (temp_release);
+	gtk_object_set_data (GTK_OBJECT (view), "packagedata", pack);
+
+	if (package_name) {
+		g_free (package_name);
+	}
+	if (temp_version) {
+		g_free (temp_version);
+	}
+	if (temp_release) {
+		g_free (temp_release);
+	}
+
+}
+
 void
 nautilus_service_install_view_load_uri (NautilusServiceInstallView	*view,
 			     	        const char			*uri) {
@@ -182,6 +407,7 @@ nautilus_service_install_view_load_uri (NautilusServiceInstallView	*view,
 	}
 
 	generate_install_form (view);
+	nautilus_service_install_view_update_from_uri (view, uri);
 }
 
 static void
