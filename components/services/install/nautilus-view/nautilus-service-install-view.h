@@ -28,6 +28,7 @@
 #include <eazel-install-types.h>
 #include <eazel-install-corba-types.h>
 #include <eazel-install-corba-callback.h>
+#include "libtrilobite/libtrilobite.h"
 
 typedef struct _NautilusServiceInstallView NautilusServiceInstallView;
 typedef struct _NautilusServiceInstallViewClass NautilusServiceInstallViewClass;
@@ -67,10 +68,12 @@ struct _NautilusServiceInstallViewDetails {
 	GtkWidget       *current_feedback_text;
 	GtkWidget       *current_progress_bar;
 	EazelInstallCallback *installer;
+	TrilobiteRootClient *root_client;
 	char		*current_rpm;
 	int		current_package;
 	char		*remembered_password;
 	int		password_attempts;
+	guint		cylon_timer;
 };
 
 

@@ -1,3 +1,28 @@
+2000-08-24  Robey Pointer  <robey@eazel.com>
+	 
+	components/services/install/nautilus-view/nautilus-service-install-
+	view.c: (nautilus_service_install_view_destroy),
+	(nautilus_install_parse_uri), (spin_cylon),
+	(nautilus_service_install_downloading),
+	(nautilus_service_install_download_failed),
+	(nautilus_service_install_done), (nautilus_service_install_failed),
+	(nautilus_service_install_view_update_from_uri):
+	components/services/install/nautilus-view/nautilus-service-install-
+	view.h:
+
+	Hardcode rpm install server host/port (for now), changing the url
+	format to the requested "eazel-install:xfig".  Unref the root
+	client and install service correctly.  Spin a cylon when waiting
+	to contact the remote server.
+	 
+	components/services/nautilus-dependent-shared/shared-service-widget
+	s.c: (create_label_widget), (create_services_title_widget),
+	(create_services_header_widget):
+	 
+	components/services/trilobite/libtrilobite/trilobite-core-utils.c:
+	(trilobite_init):
+	* libnautilus/nautilus-view.c: (view_frame_call_end):
+
 2000-08-24  Mathieu Lacage  <mathieu@eazel.com>
 
 	* nautilus-gdk-extensions.c: (nautilus_gdk_color_to_rgb): space,

@@ -60,6 +60,10 @@
 
 #define NEXT_SERVICE_VIEW				"eazel-summary:"
 
+/* this stuff will need to be configurable, once we have a config pane */
+#define INSTALL_HOST	      	"ham.eazel.com"
+#define INSTALL_PORT		8888
+
 /* This ensures that if the arch is detected as i[3-9]86, the
    requested archtype will be set to i386 */
 #define ASSUME_ix86_IS_i386 
@@ -254,6 +258,13 @@ nautilus_service_install_view_destroy (GtkObject *object)
 	g_list_free (view->details->message_right);
 	g_free (view->details->current_rpm);
 	g_free (view->details->remembered_password);
+
+	if (view->details->root_client) {
+		trilobite_root_client_unref (GTK_OBJECT (view->details->root_client));
+	}
+
+	eazel_install_callback_unref (GTK_OBJECT (view->details->installer));
+
 	g_free (view->details);
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
@@ -295,13 +306,11 @@ create_package (char *name)
 
 /* quick & dirty: parse the url into (host, port) and a category list */
 static void
-nautilus_install_parse_uri (const char *uri, char **host, int *port, GList **categories)
+nautilus_install_parse_uri (const char *uri, GList **categories)
 {
-	char *p, *q, *plist, *package_name;
+	char *p, *plist, *package_name;
 	GList *packages = NULL;
 
-	*host = NULL;
-	*port = 80;
 	*categories = NULL;
 
 	p = strchr (uri, ':');
@@ -314,38 +323,8 @@ nautilus_install_parse_uri (const char *uri, char **host, int *port, GList **cat
 		p += 2;
 	}
 
-	/* p = beginning of host.  now find ending "/" */
-	q = strchr (p, '/');
-	if (q) {
-		*host = g_strndup (p, q-p);
-	} else {
-		*host = g_strdup (p);
-	}
+	plist = p;
 
-	/* *host contains host[:port] -- pull off the port if it's there */
-	p = strchr(*host, ':');
-	if (p) {
-		*port = atoi (p+1);
-		*p = 0;
-	}
-
-	if (! q) {
-		/* no trailing slash after the host -> no package list */
-		return;
-	}
-
-	plist = q+1;
-#if 0		/* won't ever be more than one package */
-	p = strchr (plist, ',');
-	while (p) {
-		package_name = g_strndup (plist, p - plist);
-		packages = g_list_prepend (packages, create_package (package_name));
-		g_free (package_name);
-
-		plist = p+1;
-		p = strchr (plist, ',');
-	}
-#endif
 	/* last one */
 	if (*plist) {
 		package_name = g_strdup (plist);
@@ -429,7 +408,7 @@ make_new_status (NautilusServiceInstallView *view)
 
 
 /* when the overall progress bar is in cylon mode, this will tap it to keep it spinning. */
-static void
+static gint
 spin_cylon (NautilusServiceInstallView *view)
 {
 	gfloat val;
@@ -440,6 +419,9 @@ spin_cylon (NautilusServiceInstallView *view)
 		val = 0.0;
 	}
 	gtk_progress_set_value (GTK_PROGRESS (view->details->total_progress_bar), val);
+
+	/* in case we're being called as a timer */
+	return TRUE;
 }
 
 /* replace the current progress bar (in the message box) with a centered label saying "Complete!" */
@@ -489,6 +471,11 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const char *name
 		if (view->details->current_rpm && (strcmp (view->details->current_rpm, root_name) == 0)) {
 			spin_cylon (view);
 			return;
+		}
+
+		if (view->details->cylon_timer) {
+			gtk_timeout_remove (view->details->cylon_timer);
+			view->details->cylon_timer = 0;
 		}
 
 		g_free (view->details->current_rpm);
@@ -563,6 +550,11 @@ nautilus_service_install_download_failed (EazelInstallCallback *cb, const char *
 {
 	char *out;
 
+	if (view->details->cylon_timer) {
+		gtk_timeout_remove (view->details->cylon_timer);
+		view->details->cylon_timer = 0;
+	}
+
 	out = g_strdup_printf ("Download of package %s failed!", name);
 	show_overall_feedback (view, out);
 	g_free (out);
@@ -620,6 +612,11 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 static void
 nautilus_service_install_done (EazelInstallCallback *cb, NautilusServiceInstallView *view)
 {
+	if (view->details->cylon_timer) {
+		gtk_timeout_remove (view->details->cylon_timer);
+		view->details->cylon_timer = 0;
+	}
+
 	show_overall_feedback (view, "Installation complete!");
 }
 
@@ -627,6 +624,11 @@ nautilus_service_install_done (EazelInstallCallback *cb, NautilusServiceInstallV
 static void
 nautilus_service_install_failed (EazelInstallCallback *cb, const PackageData *pack, NautilusServiceInstallView *view)
 {
+	if (view->details->cylon_timer) {
+		gtk_timeout_remove (view->details->cylon_timer);
+		view->details->cylon_timer = 0;
+	}
+
 	show_overall_feedback (view, "Installation failed!! :( :( :(");
 	g_message ("I am sad.");
 }
@@ -707,12 +709,13 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	GList			*categories;
 	char			*host;
 	int			port;
-	EazelInstallCallback	*cb;
 	Trilobite_Eazel_Install	service;
 	CORBA_Environment	ev;
 	char 			*out;
 
-	nautilus_install_parse_uri (uri, &host, &port, &categories);
+	nautilus_install_parse_uri (uri, &categories);
+	host = INSTALL_HOST;
+	port = INSTALL_PORT;
 
 	if (! categories) {
 		return;
@@ -736,24 +739,37 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	g_free (out);
 
 	CORBA_exception_init (&ev);
-	cb = eazel_install_callback_new ();
-	set_root_client (eazel_install_callback_bonobo (cb), view);
-	service = eazel_install_callback_corba_objref (cb);
+	view->details->installer = eazel_install_callback_new ();
+	view->details->root_client = set_root_client (eazel_install_callback_bonobo (view->details->installer), view);
+	service = eazel_install_callback_corba_objref (view->details->installer);
 	Trilobite_Eazel_Install__set_protocol (service, Trilobite_Eazel_PROTOCOL_HTTP, &ev);
 	Trilobite_Eazel_Install__set_tmp_dir (service, "/tmp/eazel-install", &ev);
 	Trilobite_Eazel_Install__set_server (service, host, &ev);
 	Trilobite_Eazel_Install__set_server_port (service, port, &ev);
 
-	gtk_signal_connect (GTK_OBJECT (cb), "download_progress", nautilus_service_install_downloading, view);
-	gtk_signal_connect (GTK_OBJECT (cb), "download_failed", nautilus_service_install_download_failed, view);
-	gtk_signal_connect (GTK_OBJECT (cb), "dependency_check", nautilus_service_install_dependency_check, view);
-	gtk_signal_connect (GTK_OBJECT (cb), "preflight_check", nautilus_service_install_preflight_check, view);
-	gtk_signal_connect (GTK_OBJECT (cb), "install_progress", nautilus_service_install_installing, view);
-	gtk_signal_connect (GTK_OBJECT (cb), "install_failed", nautilus_service_install_failed, view);
-	gtk_signal_connect (GTK_OBJECT (cb), "done", nautilus_service_install_done, view);
-	eazel_install_callback_install_packages (cb, categories, &ev);
+	gtk_signal_connect (GTK_OBJECT (view->details->installer), "download_progress",
+			    nautilus_service_install_downloading, view);
+	gtk_signal_connect (GTK_OBJECT (view->details->installer), "download_failed",
+			    nautilus_service_install_download_failed, view);
+	gtk_signal_connect (GTK_OBJECT (view->details->installer), "dependency_check",
+			    nautilus_service_install_dependency_check, view);
+	gtk_signal_connect (GTK_OBJECT (view->details->installer), "preflight_check",
+			    nautilus_service_install_preflight_check, view);
+	gtk_signal_connect (GTK_OBJECT (view->details->installer), "install_progress",
+			    nautilus_service_install_installing, view);
+	gtk_signal_connect (GTK_OBJECT (view->details->installer), "install_failed",
+			    nautilus_service_install_failed, view);
+	gtk_signal_connect (GTK_OBJECT (view->details->installer), "done",
+			    nautilus_service_install_done, view);
+	eazel_install_callback_install_packages (view->details->installer, categories, &ev);
 
 	CORBA_exception_free (&ev);
+
+	show_overall_feedback (view, "Contacting install server ...");
+
+	/* might take a while... cylon a bit */
+	gtk_progress_set_activity_mode (GTK_PROGRESS (view->details->total_progress_bar), TRUE);
+	view->details->cylon_timer = gtk_timeout_add (100, (GtkFunction)spin_cylon, view);
 }
 
 void
