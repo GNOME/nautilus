@@ -22,7 +22,6 @@
 
 #include "eazel-install-logic.h"
 #include "eazel-install-xml-package-list.h"
-#include "eazel-install-md5.h"
 #include "eazel-install-public.h"
 #include "eazel-install-private.h"
 #include "eazel-install-rpm-glue.h"
@@ -39,6 +38,7 @@
 #include <libtrilobite/trilobite-root-helper.h>
 #endif
 
+#include <libtrilobite/trilobite-md5-tools.h>
 #include <libtrilobite/trilobite-core-utils.h>
 #include <string.h>
 #include <time.h>

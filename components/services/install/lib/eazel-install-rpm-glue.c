@@ -24,12 +24,12 @@
  */
 
 #include "eazel-install-rpm-glue.h"
-#include "eazel-install-md5.h"
 #include "eazel-install-public.h"
 #include "eazel-install-private.h"
 #include "eazel-install-logic.h"
 
 #include <libtrilobite/trilobite-core-utils.h>
+#include <libtrilobite/trilobite-md5-tools.h>
 
 #include <rpm/rpmlib.h>
 #include <string.h>

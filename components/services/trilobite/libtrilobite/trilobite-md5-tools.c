@@ -23,7 +23,7 @@
  */
 
 
-#include "eazel-install-md5.h"
+#include "trilobite-md5-tools.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

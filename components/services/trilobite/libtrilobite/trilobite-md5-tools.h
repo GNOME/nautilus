@@ -23,8 +23,8 @@
  */
 
 
-#ifndef MD5_UTILS_H
-#define MD5_UTILS_H
+#ifndef TRILOBITE_MD5_TOOLS_H
+#define TRILOBITE_MD5_TOOLS_H
 
 #include <glib.h>
 
@@ -51,4 +51,5 @@ void md5_get_digest_from_md5_string (const char *md5string, unsigned char pmd5[1
 /* Converts a 16 byte md5 digest to a 32 char hex'ified */
 const char *md5_get_string_from_md5_digest (const unsigned char md5[16]);
 
-#endif	/* MD5_UTILS_H */
+#endif	/* TRILOBITE_MD5_TOOLS_H */
+

@@ -17,22 +17,19 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Authors: Andy Hertzfeld <andy@eazel.com>
- *          J Shane Culpepper <pepper@eazel.com>
+ * Authors: J Shane Culpepper <pepper@eazel.com>
  *
  * This is the header file for the service inventory stuff
  *
  */
 
-#ifndef TRILOBOITE_INVENTORY_UTILS_H
-#define TRILOBITE_INVENTORY_UTILS_H
+#ifndef EAZEL_INVENTORY_UTILS_H
+#define EAZEL_INVENTORY_UTILS_H
 
 #include <gnome-xml/entities.h>
 #include <gnome-xml/parser.h>
 #include <gnome-xml/tree.h>
 
-xmlDocPtr trilobite_create_configuration_metafile		(void);
-xmlDocPtr trilobite_synchronize_configuration_metafile		(void);
-xmlDocPtr trilobite_update_configuration_metafile		(void);
+xmlDocPtr eazel_create_configuration_metafile		(void);
 
-#endif /* TRILOBITE_INVENTORY_UTILS_H */
+#endif /* EAZEL_INVENTORY_UTILS_H */

@@ -46,7 +46,6 @@ libeazelinstallinclude_HEADERS = 		\
 	libeazelinstall.h			\
 	eazel-install-corba-types.h	 	\
 	eazel-install-logic.h			\
-	eazel-install-md5.h			\
 	eazel-install-metadata.h		\
 	eazel-install-protocols.h		\
 	eazel-install-rpm-glue.h		\
@@ -63,7 +62,6 @@ libeazelinstall_la_SOURCES = \
 	eazel-install-corba.c		\
 	eazel-install-corba-types.c	\
 	eazel-install-corba-callback.c	\
-	eazel-install-md5.c			\
 	eazel-install-metadata.c		\
 	eazel-install-protocols.c		\
 	eazel-install-logic.c			\

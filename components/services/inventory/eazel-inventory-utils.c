@@ -17,8 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Author: Andy Hertzfeld <andy@eazel.com>
- *         J Shane Culpepper <pepper@eazel.com>
+ * Authors: J Shane Culpepper <pepper@eazel.com>
  *
  * The code responsible for the client inventory manipulation.
  *
@@ -35,7 +34,7 @@
 #include <gnome-xml/entities.h>
 #include <gnome-xml/parser.h>
 #include <gnome-xml/tree.h>
-#include "trilobite-inventory-utils.h"
+#include "eazel-inventory-utils.h"
 
 static void	add_package_info	(xmlDocPtr 	configuration_metafile);
 static void	add_hardware_info	(xmlDocPtr 	configuration_metafile);
@@ -255,29 +254,9 @@ add_hardware_info (xmlDocPtr	configuration_metafile)
 	g_free (temp_string);	
 }
 
-/* synchronize an existing metafile with the rpm database */
-xmlDocPtr
-trilobite_synchronize_configuration_metafile ()
-{
-
-	return NULL;
-
-}
-
-/* update_package_metafile is called during initialization time to create or
-   synchronize the packages metafile */
-
-xmlDocPtr
-trilobite_update_configuration_metafile ()
-{
-
-	return NULL;
-
-}
-
 /* create the configuration metafile and add package and hardware configuration info to it */
 xmlDocPtr
-trilobite_create_configuration_metafile (void)
+eazel_create_configuration_metafile (void)
 {
 
 	/* create a new xml document */

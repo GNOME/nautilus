@@ -1,3 +1,33 @@
+2000-12-13  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/install/lib/Makefile.am:
+	* components/services/install/lib/eazel-install-logic.c:
+	* components/services/install/lib/eazel-install-md5.c:
+	* components/services/install/lib/eazel-install-md5.h:
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	* components/services/install/lib/eazel-inventory-utils.c:
+	(add_package_info), (read_proc_info), (add_info), (add_io_info),
+	(add_hardware_info), (eazel_create_configuration_metafile),
+	(str_has_prefix):
+	* components/services/install/lib/eazel-inventory-utils.h:
+	* components/services/trilobite/libtrilobite/Makefile.am:
+	* components/services/trilobite/libtrilobite/trilobite-inventory-ut
+	ils.c:
+	* components/services/trilobite/libtrilobite/trilobite-inventory-ut
+	ils.h:
+	* components/services/trilobite/libtrilobite/trilobite-md5-tools.c:
+	(_byte_reverse), (md5_init), (md5_update), (md5_final),
+	(md5_transform), (md5_get_digest), (md5_get_digest_from_file),
+	(md5_get_digest_from_md5_string), (md5_get_string_from_md5_digest),
+	(main):
+	* components/services/trilobite/libtrilobite/trilobite-md5-tools.h:
+
+	More inventory gymnastics.  Moving the md5 utils to libtrilobite where
+	they belong and moving the rpm specific inventory code into libeps.
+	Still not hooked up to the build until I remove the hardcoded rpm
+	stuff.
+	
+
 2000-12-13  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Rebecca Shulman <rebecka@eazel.com>
