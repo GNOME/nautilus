@@ -208,7 +208,8 @@ notes_save_metainfo (Notes *notes)
                                           
         notes_text = gtk_editable_get_chars (GTK_EDITABLE (notes->note_text_field), 0 , -1);
         nautilus_file_set_metadata (notes->file, NAUTILUS_METADATA_KEY_ANNOTATION, NULL, notes_text);
-        g_free (notes_text);
+	g_free (notes->previous_saved_text);
+	notes->previous_saved_text = notes_text;
         
         gtk_signal_handler_unblock_by_func (GTK_OBJECT (notes->file),
                                             load_note_text_from_metadata,
