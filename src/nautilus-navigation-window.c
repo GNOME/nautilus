@@ -863,7 +863,7 @@ nautilus_window_reload (GtkWidget *btn, NautilusWindow *window)
 static void
 nautilus_window_home (GtkWidget *btn, NautilusWindow *window)
 {
-  nautilus_window_set_initial_state(window);
+  nautilus_window_set_initial_state(window, NULL);
 }
 
 static void

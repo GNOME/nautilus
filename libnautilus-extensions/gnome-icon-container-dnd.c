@@ -36,11 +36,10 @@ struct _DndSelectionItem {
 };
 typedef struct _DndSelectionItem DndSelectionItem;
 
-
 static GtkTargetEntry drag_types [] = {
 	{ GNOME_ICON_CONTAINER_DND_GNOME_ICON_LIST_TYPE, 0, GNOME_ICON_CONTAINER_DND_GNOME_ICON_LIST },
 	{ GNOME_ICON_CONTAINER_DND_URI_LIST_TYPE, 0, GNOME_ICON_CONTAINER_DND_URI_LIST },
-	/*  { GNOME_ICON_CONTAINER_DND_URL_TYPE, 0, GNOME_ICON_CONTAINER_DND_URL } */
+	{ GNOME_ICON_CONTAINER_DND_URL_TYPE, 0, GNOME_ICON_CONTAINER_DND_URL }
 };
 static const int num_drag_types = sizeof (drag_types) / sizeof (drag_types[0]);
 
@@ -51,7 +50,6 @@ static GtkTargetEntry drop_types [] = {
 };
 static const int num_drop_types = sizeof (drop_types) / sizeof (drop_types[0]);
 
-
 static GnomeCanvasItem *
 create_selection_shadow (GnomeIconContainer *container,
 			 GList *list)

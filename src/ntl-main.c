@@ -35,6 +35,7 @@ int main(int argc, char *argv[])
   struct poptOption options[] = {
     { NULL, '\0', 0, NULL, 0, NULL, NULL }
   };
+  const char **args;
 
   /* FIXME: This should also include G_LOG_LEVEL_WARNING, but I had to take it
    * out temporarily so we could continue to work on other parts of the software
@@ -48,7 +49,8 @@ int main(int argc, char *argv[])
   g_thread_init(NULL);
   gnome_vfs_init();
 
-  nautilus_app_init();
+  args = poptGetArgs(ctx);
+  nautilus_app_init(args?args[0]:NULL);
 
   bonobo_main();
   return 0;

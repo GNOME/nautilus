@@ -29,7 +29,7 @@ nautilus_make_object(GnomeGenericFactory *gfact, const char *goad_id, gpointer c
 }
 
 void
-nautilus_app_init(void)
+nautilus_app_init(const char *initial_url)
 {
   NautilusWindow *mainwin;
 
@@ -39,7 +39,7 @@ nautilus_app_init(void)
   /* Set default configuration */
   mainwin = nautilus_app_create_window();
   bonobo_activate();
-  nautilus_window_set_initial_state(mainwin);
+  nautilus_window_set_initial_state(mainwin, initial_url);
 }
 
 static void

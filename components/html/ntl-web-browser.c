@@ -183,8 +183,11 @@ static int netin_stream_flush (HTStream * me)
 
 static int netin_stream_free (HTStream * me)
 {
+  g_return_val_if_fail(me->handle, HT_ERROR);
+
+  g_message("netin_stream_free");
   gtk_html_end(GTK_HTML(me->bi->htmlw), me->handle, GTK_HTML_STREAM_OK);
-  gtk_html_stream_unref(me->handle);
+  me->handle = NULL;
   g_free(me);
 
   return HT_OK;
@@ -192,8 +195,8 @@ static int netin_stream_free (HTStream * me)
 
 static int netin_stream_abort (HTStream * me, HTList * e)
 {
-  gtk_html_end(GTK_HTML(me->bi->htmlw), me->handle, GTK_HTML_STREAM_OK);
-  gtk_html_stream_unref(me->handle);
+  g_message("netin_stream_abort");
+  gtk_html_end(GTK_HTML(me->bi->htmlw), me->handle, GTK_HTML_STREAM_ERROR);
   g_free(me);
 
   return HT_OK;
@@ -219,10 +222,29 @@ netin_stream_new (BrowserInfo *bi, GtkHTMLStreamHandle handle)
 
   retval->isa = &netin_stream_class;
   retval->bi = bi;
-  retval->handle = gtk_html_stream_ref(handle);
+  retval->handle = handle;
 
   return retval;
 }
+
+static gboolean
+do_request_delete(gpointer req)
+{
+  HTRequest_delete(req);
+
+  return FALSE;
+}
+
+static int
+request_terminator (HTRequest * request, HTResponse * response, void * param, int status) {
+  if (status != HT_LOADED) 
+    g_print("Load couldn't be completed successfully (%p)\n", request);
+
+  g_idle_add(do_request_delete, request);
+
+  return HT_OK;
+}
+
 
 static void
 browser_url_requested(GtkWidget *htmlw, const char *url, GtkHTMLStreamHandle handle, BrowserInfo *bi)
@@ -235,6 +257,7 @@ browser_url_requested(GtkWidget *htmlw, const char *url, GtkHTMLStreamHandle han
 
   request = HTRequest_new();
   writer = netin_stream_new(bi, handle);
+  HTRequest_setContext(request, writer);
   HTRequest_setOutputFormat(request, WWW_SOURCE);
   HTRequest_setOutputStream(request, writer);
   HTRequest_setAnchor(request, HTAnchor_findAddress(real_url));
@@ -267,6 +290,7 @@ browser_set_base_target(GtkWidget *htmlw, const char *base_target_url, BrowserIn
 static void
 browser_goto_url_real(GtkWidget *htmlw, const char *url, BrowserInfo *bi)
 {
+  HTNet_killAll();
   g_free(bi->base_url);
   g_free(bi->base_target_url);
 
@@ -368,6 +392,7 @@ int main(int argc, char *argv[])
 					 GNORBA_INIT_SERVER_FUNC, &ev);
   gdk_rgb_init();
   glibwww_init("ntl-web-browser", VERSION);
+  HTNet_addAfter(request_terminator, NULL, NULL, HT_ALL, HT_FILTER_LAST);
   bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
   factory = gnome_generic_factory_new_multi("ntl_web_browser_factory", make_obj, NULL);

@@ -5,6 +5,6 @@
 
 void nautilus_window_save_state(NautilusWindow *window, const char *config_path);
 void nautilus_window_load_state(NautilusWindow *window, const char *config_path);
-void nautilus_window_set_initial_state(NautilusWindow *window);
+void nautilus_window_set_initial_state(NautilusWindow *window, const char *initial_url);
 
 #endif

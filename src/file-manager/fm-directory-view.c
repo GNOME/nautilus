@@ -571,11 +571,19 @@ init (FMDirectoryView *directory_view)
 
 	directory_view->display_selection_idle_id = 0;
 
+#if 0
 	directory_view->scroll_frame = gtk_scroll_frame_new(NULL, NULL);
 	gtk_scroll_frame_set_policy (GTK_SCROLL_FRAME(directory_view->scroll_frame),
 				     GTK_POLICY_AUTOMATIC,
 				     GTK_POLICY_AUTOMATIC);
 	gtk_scroll_frame_set_shadow_type (GTK_SCROLL_FRAME(directory_view->scroll_frame), GTK_SHADOW_IN);
+#else
+	directory_view->scroll_frame = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW(directory_view->scroll_frame),
+					GTK_POLICY_AUTOMATIC,
+					GTK_POLICY_AUTOMATIC);
+
+#endif
 	gtk_widget_show(directory_view->scroll_frame);
 
 	gtk_container_add(GTK_CONTAINER(directory_view), directory_view->scroll_frame);

@@ -1,12 +1,19 @@
 #include "nautilus.h"
 
 void
-nautilus_window_set_initial_state(NautilusWindow *window)
+nautilus_window_set_initial_state(NautilusWindow *window, const char *initial_url)
 {
-  GString* path_name = g_string_new("file://");
-  g_string_append(path_name, g_get_home_dir());
-  nautilus_window_goto_uri(window, path_name->str);
-  g_string_free(path_name, TRUE);
+  if(initial_url)
+    nautilus_window_goto_uri(window, initial_url);
+  else
+    {
+      GString* path_name;
+
+      path_name = g_string_new("file://");
+      g_string_append(path_name, g_get_home_dir());
+      nautilus_window_goto_uri(window, path_name->str);
+      g_string_free(path_name, TRUE);
+    }
 }
 
 void
