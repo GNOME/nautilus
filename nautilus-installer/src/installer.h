@@ -82,9 +82,6 @@ struct _EazelInstaller
 
 	gboolean successful;
 
-	GList *attempted_updates; /* This is a list of packages we tried to update,
-				   Before we add, check this list. */
-
 	/* once we've got this, we know mystery errors were caused by rpm (this is kind of a hack) */
 	gboolean got_dep_check;
 };

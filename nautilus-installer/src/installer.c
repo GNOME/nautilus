@@ -144,7 +144,7 @@ typedef struct {
 				  "packages.  Your current versions may still work, but if you would\n" \
 				  "like us to remove these packages for you, we can.")
 #define D_EVIL_RETRY_LABEL_S	_("There doesn't appear to be a new version of this package.  Your\n" \
-				  "current version may still work, but if you like us to remove this\n" \
+				  "current version may still work, but if you would like us to remove this\n" \
 				  "package for you, we can.")
 
 
@@ -195,8 +195,8 @@ char *installer_tmpdir = "/tmp";
 char *installer_homedir = NULL;
 
 static void check_if_next_okay (GnomeDruidPage *page, void *unused, EazelInstaller *installer);
-static gboolean start_over_callback (GnomeDruidPage *druid_page, GnomeDruid *druid, EazelInstaller *installer);
 static void jump_to_retry_page (EazelInstaller *installer);
+static void jump_to_error_page (EazelInstaller *installer, GList *bullets, char *text, char *text2);
 static GtkObjectClass *eazel_installer_parent_class;
 
 
@@ -292,6 +292,37 @@ add_padding_to_box (GtkWidget *box, int pad_x, int pad_y)
 	gtk_box_pack_start (GTK_BOX (box), filler, FALSE, FALSE, 0);
 }
 
+static void
+start_over (EazelInstaller *installer)
+{
+	GtkWidget *install_page;
+	g_message ("START OVER");
+	install_page = gtk_object_get_data (GTK_OBJECT (installer->window), "install_page");
+	gnome_druid_set_page (installer->druid, GNOME_DRUID_PAGE (install_page));
+}
+
+static gboolean
+start_over_callback_druid (GnomeDruidPage *druid_page, 
+			   GnomeDruid *druid,
+			   EazelInstaller *installer)
+{
+	start_over (installer);
+	return TRUE;	/* yes, i handled the page change */
+}
+
+static gboolean
+dont_start_over_callback (GnomeDruidPage *druid_page,
+			  GnomeDruid *druid,
+			  EazelInstaller *installer)
+{
+	log_debug ("NE: give up");
+	jump_to_error_page (installer, 
+			    installer->failure_info, 
+			    text_labels [ERROR_LABEL], 
+			    text_labels [ERROR_LABEL_2]);
+	return TRUE;	/* go to error page instead of cancelling */
+}
+
 static GtkWidget*
 create_what_to_do_page (EazelInstaller *installer)
 {
@@ -333,7 +364,7 @@ create_what_to_do_page (EazelInstaller *installer)
 	nautilus_druid_page_eazel_put_widget (NAUTILUS_DRUID_PAGE_EAZEL (what_to_do_page), vbox);
 
 	gtk_signal_connect (GTK_OBJECT (what_to_do_page), "next",
-			    GTK_SIGNAL_FUNC (start_over_callback),
+			    GTK_SIGNAL_FUNC (start_over_callback_druid),
 			    installer);
 	gtk_signal_connect (GTK_OBJECT (what_to_do_page), "prepare",
 			    GTK_SIGNAL_FUNC (check_if_next_okay),
@@ -623,37 +654,6 @@ jump_to_error_page (EazelInstaller *installer, GList *bullets, char *text, char 
 }
 
 static void
-start_over (EazelInstaller *installer)
-{
-	GtkWidget *install_page;
-	g_message ("START OVER");
-	install_page = gtk_object_get_data (GTK_OBJECT (installer->window), "install_page");
-	gnome_druid_set_page (installer->druid, GNOME_DRUID_PAGE (install_page));
-}
-
-static gboolean
-start_over_callback (GnomeDruidPage *druid_page, 
-		     GnomeDruid *druid,
-		     EazelInstaller *installer)
-{
-	start_over (installer);
-	return TRUE;	/* yes, i handled the page change */
-}
-
-static gboolean
-dont_start_over_callback (GnomeDruidPage *druid_page,
-			  GnomeDruid *druid,
-			  EazelInstaller *installer)
-{
-	log_debug ("NE: give up");
-	jump_to_error_page (installer, 
-			    installer->failure_info, 
-			    text_labels [ERROR_LABEL], 
-			    text_labels [ERROR_LABEL_2]);
-	return TRUE;	/* go to error page instead of cancelling */
-}
-
-static void
 insert_info_page (EazelInstaller *installer,
 		  char *title_text,
 		  char *info_text)
@@ -823,6 +823,10 @@ jump_to_retry_page (EazelInstaller *installer)
 		problems_as_strings = eazel_install_problem_cases_to_package_names (installer->problem,
 										    installer->problems);
 		problem_count = g_list_length (problems_as_strings);
+		if (p == EI_PROBLEM_CASCADE_REMOVE) {
+			problem_count = 2;
+		}
+
 		if (problem_count == 1) {
 			label = gtk_label_new (text_labels [EVIL_RETRY_LABEL_S]);
 		} else {
@@ -881,8 +885,6 @@ jump_to_retry_page (EazelInstaller *installer)
 	add_padding_to_box (vbox, 0, 15);
 
 	if (installer->uninstalling) {
-		g_message ("ranglebær");
-
 		hbox = gtk_hbox_new (FALSE, 0);
 		gtk_widget_show (hbox);
 
@@ -926,7 +928,7 @@ jump_to_retry_page (EazelInstaller *installer)
 			    installer);
 	if (! installer->uninstalling) {
 		gtk_signal_connect (GTK_OBJECT (retry_page), "next",
-				    GTK_SIGNAL_FUNC (start_over_callback),
+				    GTK_SIGNAL_FUNC (start_over_callback_druid),
 				    installer);
 	}
 	gtk_signal_connect (GTK_OBJECT (retry_page), "cancel",
@@ -1808,7 +1810,7 @@ eazel_installer_do_install (EazelInstaller *installer,
 			(GFunc)g_free, 
 			NULL);
 	g_list_free (installer->failure_info);
-	installer->failure_info = NULL;
+	installer->failure_info = NULL;	
 
 	if (remove) {
 		eazel_install_set_uninstall (installer->service, TRUE);
@@ -2000,7 +2002,7 @@ eazel_installer_setup_texts (EazelInstaller *installer,
 
 	destination = g_strdup_printf ("%s/%s", dest_dir, TEXT_LIST);
 
-	/* g_message ("Trying to contact Eazel services, ignore any 404 errors..."); */
+	g_message ("Trying to contact Eazel services, ignore any 404 warnings at the next line"); 
 
 	if (! trilobite_fetch_uri_to_file (url, destination)) {
 		/* try again with proxy config */

@@ -126,7 +126,7 @@ MAKEINFO = makeinfo
 MEDUSA_CFLAGS = -I/gnome/include -I/gnome/lib/vfs/include -I/gnome/include/glib-1.2 -I/gnome/lib/glib/include -D_REENTRANT -Wsign-promo -Wno-sign-compare
 MEDUSA_LIBS = -rdynamic -L/gnome/lib -lmedusa -lgnomevfs -lgmodule -lgthread -lglib -lpthread -ldl
 MKINSTALLDIRS = ./mkinstalldirs
-MOZILLA_COMPONENT_CFLAGS = -I/usr/include/mozilla
+MOZILLA_COMPONENT_CFLAGS = -I/usr/include/mozilla -fno-rtti -fno-exceptions
 MOZILLA_COMPONENT_DEBUG_FLAGS = 
 MOZILLA_COMPONENT_LDFLAGS = -L/usr/lib/mozilla
 MOZILLA_COMPONENT_LIBS = -lgtkembedmoz 				-lgtksuperwin 				-lxpcom 				-lnspr4 				-lplc4 				-lplds4
@@ -166,7 +166,7 @@ INCLUDES =  	-I$(top_srcdir)/libnautilus-extensions		 		-I$(top_srcdir)/componen
 
 bin_PROGRAMS = eazel-installer
 
-eazel_installer_SOURCES =  	main.c 	support.c support.h 	callbacks.c callbacks.h 	proxy.c proxy.h 	installer.c installer.h 
+eazel_installer_SOURCES =  	main.c 	callbacks.c callbacks.h 	proxy.c proxy.h 	installer.c installer.h 
 
 
 eazel_installer_LDFLAGS = -static
@@ -183,8 +183,7 @@ DEFS = -DHAVE_CONFIG_H -I. -I$(srcdir) -I../..
 CPPFLAGS = 
 LDFLAGS = 
 LIBS = 
-eazel_installer_OBJECTS =  main.o support.o callbacks.o proxy.o \
-installer.o
+eazel_installer_OBJECTS =  main.o callbacks.o proxy.o installer.o
 eazel_installer_DEPENDENCIES =  \
 $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o \
 $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o \
@@ -205,7 +204,7 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = gtar
 GZIP_ENV = --best
 DEP_FILES =  .deps/callbacks.P .deps/installer.P .deps/main.P \
-.deps/proxy.P .deps/support.P
+.deps/proxy.P
 SOURCES = $(eazel_installer_SOURCES)
 OBJECTS = $(eazel_installer_OBJECTS)
 

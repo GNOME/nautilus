@@ -720,9 +720,9 @@ eazel_install_problem_case_to_string (EazelInstallProblemCase *pcase, gboolean n
 	switch (pcase->problem) {
 	case EI_PROBLEM_UPDATE: {
 		char *required = packagedata_get_readable_name (pcase->u.update.pack);
+		if (! name_only) {
 		/* TRANSLATORS : This string is a solution to a dependency problem,
 		   %s is a package name or filename */
-		if (! name_only) {
 			message = g_strdup_printf (_("Check for a new version of %s"), required);
 		}
 		g_free (required);
@@ -731,9 +731,9 @@ eazel_install_problem_case_to_string (EazelInstallProblemCase *pcase, gboolean n
 	case EI_PROBLEM_FORCE_INSTALL_BOTH: {
 		char *required_1 = packagedata_get_readable_name (pcase->u.force_install_both.pack_1);
 		char *required_2 = packagedata_get_readable_name (pcase->u.force_install_both.pack_2);
+		if (! name_only) {
 		/* TRANSLATORS : This string is a solution to a dependency problem,
 		   both %s's are package names or filenames */
-		if (! name_only) {
 			message = g_strdup_printf (_("Install both %s and %s"), 
 						   required_1, 
 						   required_2);
@@ -744,11 +744,11 @@ eazel_install_problem_case_to_string (EazelInstallProblemCase *pcase, gboolean n
 	break;
 	case EI_PROBLEM_REMOVE: {
 		char *required = packagedata_get_readable_name (pcase->u.remove.pack);
-		/* TRANSLATORS : This string is a solution to a dependency problem,
-		   %s is a package name or filename */
 		if (name_only) {
 			message = required;
 		} else {
+		/* TRANSLATORS : This string is a solution to a dependency problem,
+		   %s is a package name or filename */
 			message = g_strdup_printf (_("Remove %s from your system"), required);
 			g_free (required);
 		}
@@ -756,20 +756,20 @@ eazel_install_problem_case_to_string (EazelInstallProblemCase *pcase, gboolean n
 	break;
 	case EI_PROBLEM_FORCE_REMOVE: {
 		char *required = packagedata_get_readable_name (pcase->u.force_remove.pack);
-		/* TRANSLATORS : This string is a solution to a dependency problem,
-		   %s is a package name or filename. "Force" is in the rpm sense of force,
-		   meaning that no dependency checking etc will be done */
 		if (name_only) {
 			message = required;
 		} else {
+		/* TRANSLATORS : This string is a solution to a dependency problem,
+		   %s is a package name or filename. "Force" is in the rpm sense of force,
+		   meaning that no dependency checking etc will be done */
 			message = g_strdup_printf (_("Force the removal of %s from your system"), required);
 			g_free (required);
 		}
 	}
 	break;
 	case EI_PROBLEM_INCONSISTENCY: {
-		/* TRANSLATORS : This string is a solution to a dependency problem */
 		if (! name_only) {
+		/* TRANSLATORS : This string is a solution to a dependency problem */
 			message = g_strdup (_("Package database has an inconsistency"));
 		}
 	}
@@ -1491,51 +1491,37 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 	switch (dominant_problem_type) {
 	case EI_PROBLEM_CASCADE_REMOVE:
 		if (service_uninstall) {
-			final_categories = g_list_concat (g_list_copy (categories), *uninstall_categories);
+			final_categories = g_list_concat (g_list_copy (categories), 
+							  categorydata_list_copy (*uninstall_categories));
 		} else {
 			final_categories = g_list_copy (categories);
 		}
 		break;
 	case EI_PROBLEM_CONTINUE_WITH_FORCE:
-		g_message ("SMØLF 2!");
-		g_message ("categories = 0x%p", categories);
-		g_message ("uninstall categories = 0x%p", uninstall_categories);
-		g_message ("install categories = 0x%p", install_categories);
-
-		if (uninstall_categories)
-			g_message ("*uninstall categories = 0x%p", *uninstall_categories);
-		else
-			g_message ("hest");
-
-		if (install_categories)
-			g_message ("*install categories = 0x%p", *install_categories);
-		else
-			g_message ("odder");
-
 		if (service_uninstall) {
 			if (!categories) {
-				final_categories = *uninstall_categories;
+				final_categories = categorydata_list_copy (*uninstall_categories);
 			} else {
 				final_categories = g_list_concat (g_list_copy (categories), 
-								  *uninstall_categories);
+								  categorydata_list_copy (*uninstall_categories));
 			}
 		} else if (install_categories) {
 			if (!categories) {
-				final_categories = *install_categories;
+				final_categories = categorydata_list_copy (*install_categories);
 			} else {
 				final_categories = g_list_concat (g_list_copy (categories), 
-								  *install_categories);
+								  categorydata_list_copy (*install_categories));
 			}
 		} else {
 			final_categories = g_list_copy (categories);
 		}
 		break;
-		g_message ("SMØLF 1!");
 	case EI_PROBLEM_UPDATE:
 	case EI_PROBLEM_FORCE_INSTALL_BOTH:
 		/* Add the install_categories */
 		if (install_categories) {
-			final_categories = g_list_concat (g_list_copy (categories), *install_categories);
+			final_categories = g_list_concat (g_list_copy (categories), 
+							  categorydata_list_copy (*install_categories));
 		}  else {
 			final_categories = g_list_copy (categories);
 		}
@@ -1557,16 +1543,13 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 	/* fire it off */
 	switch (dominant_problem_type) {
 	case EI_PROBLEM_CONTINUE_WITH_FORCE:
-		g_message ("SMØLF a!");
 		if (service_uninstall) {
-		g_message ("SMØLF b!");
 #ifdef EAZEL_INSTALL_NO_CORBA
 			eazel_install_uninstall_packages (service, final_categories, root);
 #else /* EAZEL_INSTALL_NO_CORBA */
 			eazel_install_callback_uninstall_packages (service, final_categories, root, &ev);
 #endif /* EAZEL_INSTALL_NO_CORBA */
 		} else {
-		g_message ("SMØLF c!");
 #ifdef EAZEL_INSTALL_NO_CORBA
 			eazel_install_install_packages (service, final_categories, root);
 #else /* EAZEL_INSTALL_NO_CORBA */
@@ -1617,6 +1600,6 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 	/* the dominant problems list are not leaked, as they're
 	 kept in problem->attempts */
 	g_list_free (dominant_problems);
-	categorydata_list_destroy (categories);
+	categorydata_list_destroy (final_categories);
 
 }

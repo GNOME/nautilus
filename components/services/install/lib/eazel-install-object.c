@@ -989,7 +989,7 @@ eazel_install_install_packages (EazelInstall *service,
 		
 		g_free (service->private->cur_root);
 		service->private->cur_root = g_strdup (root?root:DEFAULT_RPM_DB_ROOT);
-		
+		eazel_install_set_uninstall (service, FALSE);
 		eazel_install_prepare_package_system (service);
 		result = install_packages (service, categories);
 		

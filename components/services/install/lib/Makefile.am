@@ -19,9 +19,18 @@ INCLUDES = \
 	$(GHTTP_CFLAGS)						\
 	$(NULL)
 
-lib_LTLIBRARIES = libeazelinstall.la
+lib_LTLIBRARIES = \
+	libeazelinstall.la \
+	libeazelpackagesystem.la \
+	libeazelsoftcat.la	\
+	$(NULL)
 
-noinst_HEADERS = \
+# libeazelinstall
+
+libeazelinstallincludedir=$(includedir)/eazel/install
+
+libeazelinstallinclude_HEADERS = 		\
+	eazel-install-public.h			\
 	trilobite-eazel-install.h		\
 	libeazelinstall.h			\
 	eazel-install-types.h	 		\
@@ -38,12 +47,6 @@ noinst_HEADERS = \
 	eazel-install-private.h			\
 	eazel-install-corba-callback.h		\
 	eazel-install-problem.h			\
-	$(NULL)
-
-libeazelinstallincludedir=$(includedir)/eazel-install
-
-libeazelinstallinclude_HEADERS = 		\
-	eazel-install-public.h			\
 	$(NULL)
 
 libeazelinstall_la_SOURCES = \
@@ -67,6 +70,45 @@ libeazelinstall_la_SOURCES = \
 
 libeazelinstall_la_LDFLAGS = \
 	$(GHTTP_LIBS)
+
+# libeazelpackagesystem
+
+libeazelpackagesystemincludedir=$(includedir)/eazel/package-system/
+
+libeazelpackagesysteminclude_HEADERS = 		\
+	eazel-install-types.h	 		\
+	eazel-package-system.h			\
+	eazel-package-system-private.h		\
+	$(NULL)
+
+libeazelpackagesystem_la_SOURCES = 		\
+	eazel-install-types.o	 		\
+	eazel-package-system.o			\
+	$(NULL)
+
+libeazelinstall_la_LDFLAGS = \
+	$(GHTTP_LIBS)
+
+# libeazelsoftcat
+
+libeazelsoftcatincludedir=$(includedir)/eazel/package-system/
+
+libeazelsoftcatinclude_HEADERS = 		\
+	eazel-install-types.h	 		\
+	eazel-softcat.h				\
+	eazel-softcat-private.h			\
+	$(NULL)
+
+libeazelsoftcat_la_SOURCES = 			\
+	eazel-install-types.o	 		\
+	eazel-softcat.o				\
+	$(NULL)
+
+libeazelinstall_la_LDFLAGS = \
+	$(GHTTP_LIBS)
+
+
+# stuff
 
 EXTRA_DIST = eazel-install-query-lex.l
 
