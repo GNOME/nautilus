@@ -1,3 +1,10 @@
+2002-05-31  Michael Meeks  <michael@ximian.com>
+
+	* src/file-manager/fm-directory-view.c
+	(display_pending_idle_callback): only NIL the idle_id
+	if we are going to return FALSE and disconnect
+	ourselves #83591
+
 2002-05-30  Dave Camp  <dave@ximian.com>
 
 	* src/file-manager/fm-desktop-icon-view.c (fm_desktop_icon_view_init): Setup the

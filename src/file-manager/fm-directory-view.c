@@ -2286,9 +2286,8 @@ display_pending_idle_callback (gpointer data)
 		ret = TRUE;
 	} else {
 		ret = FALSE;
+		view->details->display_pending_idle_id = 0;
 	}
-
-	view->details->display_pending_idle_id = 0;
 
 	g_object_unref (G_OBJECT (view));
 
