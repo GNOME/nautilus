@@ -44,9 +44,9 @@ struct NautilusMonitor {
 
 static gboolean got_connection;
 
-static void process_fam_notifications (gpointer          callback_data,
-				       int               fd,
-				       GdkInputCondition condition);
+static gboolean process_fam_notifications (GIOChannel *channel,
+					   GIOCondition cond,
+					   gpointer callback_data);
 
 /* singleton object, instantiate and connect if it doesn't already exist */
 static FAMConnection *
@@ -54,6 +54,7 @@ get_fam_connection (void)
 {
 	static gboolean tried_connection;
 	static FAMConnection connection;
+	GIOChannel *ioc;
 	
 	/* Only try once. */
         if (tried_connection) {
@@ -69,10 +70,9 @@ get_fam_connection (void)
 		/* Make the main loop's select function watch the FAM
                  * connection's file descriptor for us.
 		 */
-		gdk_input_add (FAMCONNECTION_GETFD (&connection),
-			       GDK_INPUT_READ, 
-			       process_fam_notifications,
-			       NULL);
+		ioc = g_io_channel_unix_new (FAMCONNECTION_GETFD (&connection));
+		g_io_add_watch (ioc, G_IO_IN | G_IO_HUP, process_fam_notifications, NULL);
+		g_io_channel_unref (ioc);
 
 		got_connection = TRUE;
 	}
@@ -117,25 +117,26 @@ get_event_uri (const FAMEvent *event)
         return uri;
 }
 
-static void
-process_fam_notifications (gpointer callback_data, int fd, GdkInputCondition condition)
+static gboolean
+process_fam_notifications (GIOChannel *channel,
+			   GIOCondition cond,
+			   gpointer callback_data)
 {
         FAMConnection *connection;
         FAMEvent event;
 	char *uri;
 
         connection = get_fam_connection ();
-	g_return_if_fail (connection != NULL);
+	g_return_val_if_fail (connection != NULL, FALSE);
 
         /* Process all the pending events right now. */
 
         while (FAMPending (connection)) {
                 if (FAMNextEvent (connection, &event) != 1) {
                         g_warning ("connection to FAM died");
-                        gdk_input_remove (fd);
                         FAMClose (connection);
                         got_connection = FALSE;
-                        return;
+                        return FALSE;
                 }
 
                 switch (event.code) {
@@ -215,6 +216,8 @@ process_fam_notifications (gpointer callback_data, int fd, GdkInputCondition con
         }
 
 	nautilus_file_changes_consume_changes (TRUE);
+	
+	return TRUE;
 }
 
 #endif /* HAVE_LIBFAM */

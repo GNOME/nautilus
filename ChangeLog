@@ -1,3 +1,10 @@
+2001-07-12  Alex Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-monitor.c:
+	Use a GIOChannel instead of gdk_input_add. This fixes the bug
+	where when the fam connection dies it did gdk_input_remove (fd)
+	instead of gdk_input_remove (tag)
+
 2001-07-11  Alex Larsson  <alexl@redhat.com>
 	
 	* libnautilus-private/nautilus-volume-monitor.[ch]:
