@@ -950,7 +950,8 @@ launch_mime_capplet_and_close_dialog (GtkButton *button, gpointer callback_data)
 	
 	g_free (mime_type);
 
-	gtk_object_destroy (GTK_OBJECT (callback_data));
+	gtk_dialog_response (GTK_DIALOG (callback_data),
+		GTK_RESPONSE_DELETE_EVENT);
 }
 
 static void

@@ -1,3 +1,10 @@
+2002-03-29  Jody Goldberg <jody@gnome.org>
+
+	* libnautilus-private/nautilus-program-chooser.c
+	(launch_mime_capplet_and_close_dialog) : don't delete the dialog, we
+	  need to have it send a response (anything but OK I think) so that
+	  the nested main loop will exit.
+
 2002-03-27  Mark McLoughlin  <mark@skynet.ie>
 
 	* src/file-manager/fm-icon-view.c: (icon_view_handle_uri_list): don't
