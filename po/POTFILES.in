@@ -1,20 +1,5 @@
 # List of source files containing translatable strings.
 # Please keep this file sorted alphabetically.
-components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in
-components/adapter/main.c
-components/emblem/Nautilus_View_emblem.server.in.in
-components/emblem/nautilus-emblem-view.c
-components/history/Nautilus_View_history.server.in.in
-components/history/nautilus-history-view.c
-components/image_properties/Nautilus_View_image_properties.server.in.in
-components/image_properties/nautilus-image-properties-view.c
-components/notes/Nautilus_View_notes.server.in.in
-components/notes/nautilus-notes.c
-components/text/Nautilus_View_text.server.in.in
-components/text/nautilus-text-view-ui.xml
-components/text/nautilus-text-view.c
-components/throbber/Nautilus_Control_throbber.server.in.in
-components/throbber/nautilus-throbber.c
 data/applications.desktop.in
 data/browser.xml
 data/favorites.desktop.in
@@ -29,6 +14,7 @@ libnautilus-extension/nautilus-column.c
 libnautilus-extension/nautilus-menu-item.c
 libnautilus-extension/nautilus-property-page.c
 libnautilus-private/apps_nautilus_preferences.schemas.in
+libnautilus-private/nautilus-clipboard.c
 libnautilus-private/nautilus-column-chooser.c
 libnautilus-private/nautilus-column-utilities.c
 libnautilus-private/nautilus-customization-data.c
@@ -54,8 +40,6 @@ libnautilus-private/nautilus-trash-directory.c
 libnautilus-private/nautilus-trash-file.c
 libnautilus-private/nautilus-tree-view-drag-dest.c
 libnautilus-private/nautilus-undo-signal-handlers.c
-libnautilus/nautilus-clipboard-ui.xml
-libnautilus/nautilus-clipboard.c
 nautilus-computer.desktop.in
 nautilus-file-management-properties.desktop.in
 nautilus-home.desktop.in
@@ -103,6 +87,7 @@ src/nautilus-side-pane.c
 src/nautilus-sidebar-title.c
 src/nautilus-spatial-window-ui.xml
 src/nautilus-spatial-window.c
+src/nautilus-throbber.c
 src/nautilus-window-manage-views.c
 src/nautilus-window-menus.c
 src/nautilus-window-private.h
