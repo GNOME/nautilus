@@ -176,7 +176,7 @@ bookmark_holder_free (BookmarkHolder *bookmark_holder)
  * don't want other code relying on their existence.
  */
 
-#define NAUTILUS_MENU_PATH_CUSTOMIZE_ITEM			"/Edit/Customize"
+#define NAUTILUS_MENU_PATH_CUSTOMIZE_ITEM			"/Edit/Customization"
 #define NAUTILUS_MENU_PATH_CHANGE_APPEARANCE_ITEM		"/Edit/Change_Appearance"
 
 #define NAUTILUS_MENU_PATH_USER_LEVEL				"/UserLevel"
@@ -184,7 +184,7 @@ bookmark_holder_free (BookmarkHolder *bookmark_holder)
 #define NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM			"/UserLevel/Intermediate"
 #define NAUTILUS_MENU_PATH_EXPERT_ITEM				"/UserLevel/Expert"
 #define NAUTILUS_MENU_PATH_AFTER_USER_LEVEL_SEPARATOR		"/UserLevel/After User Level Separator"
-#define NAUTILUS_MENU_PATH_USER_LEVEL_CUSTOMIZE			"/UserLevel/User Level Customize"
+#define NAUTILUS_MENU_PATH_USER_LEVEL_CUSTOMIZE			"/UserLevel/User Level Customization"
 
 #define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_CANNED_BOOKMARKS	"/Bookmarks/Before Canned Separator"
 
@@ -1535,7 +1535,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 	
 	bonobo_ui_handler_menu_new_item (ui_handler,
         				 NAUTILUS_MENU_PATH_CUSTOMIZE_ITEM,
-        				 _("_Customize..."),
+        				 _("_Customization..."),
         				 _("Displays the Property Browser, to add properties to objects and customize appearance"),
         				 -1,
         				 BONOBO_UI_HANDLER_PIXMAP_NONE,

@@ -53,7 +53,6 @@
 /* Comment this out if the new smooth fonts code give you problems
  * This isnt meant to be permanent.  Its just a precaution.
  */
-#define STRETCH_HANDLE_THICKNESS 5
 #define EMBLEM_SPACING 2
 
 #define MAX_TEXT_WIDTH_STANDARD 135
@@ -210,6 +209,10 @@ static void     draw_pixbuf_aa                             (GdkPixbuf           
 							    int                            x_offset,
 							    int                            y_offset);
 static gboolean icon_canvas_item_is_smooth                 (const NautilusIconCanvasItem  *icon_item);
+
+static void draw_dashed_rectangle_aa 			   (guchar *pixels, int rowstride, gboolean has_alpha,
+		   					    int width, int height,
+		   					    int left, int right, int top, int bottom);
 
 
 
@@ -850,46 +853,37 @@ draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 		      const ArtIRect *rect)
 {
 	GdkGC *gc;
-
+	char *knob_filename;
+	GdkPixbuf *knob_pixbuf;
+	int knob_width, knob_height;
+	
 	if (!item->details->show_stretch_handles) {
 		return;
 	}
 
 	gc = gdk_gc_new (drawable);
+
+	knob_filename = nautilus_theme_get_image_path ("knob.png");
+	knob_pixbuf = gdk_pixbuf_new_from_file (knob_filename);
+	knob_width = gdk_pixbuf_get_width (knob_pixbuf);
+	knob_height = gdk_pixbuf_get_height (knob_pixbuf);
+		
+	draw_pixbuf (knob_pixbuf, drawable, rect->x0, rect->y0);
+	draw_pixbuf (knob_pixbuf, drawable, rect->x0,  rect->y1 - knob_height);
+	draw_pixbuf (knob_pixbuf, drawable, rect->x1 - knob_width, rect->y0);
+	draw_pixbuf (knob_pixbuf, drawable, rect->x1 - knob_width, rect->y1 - knob_height);
 	
-	gdk_draw_rectangle
-		(drawable, gc, TRUE,
-		 rect->x0,
-		 rect->y0,
-		 STRETCH_HANDLE_THICKNESS,
-		 STRETCH_HANDLE_THICKNESS);
-	gdk_draw_rectangle
-		(drawable, gc, TRUE,
-		 rect->x1 - STRETCH_HANDLE_THICKNESS,
-		 rect->y0,
-		 STRETCH_HANDLE_THICKNESS,
-		 STRETCH_HANDLE_THICKNESS);
-	gdk_draw_rectangle
-		(drawable, gc, TRUE,
-		 rect->x0,
-		 rect->y1 - STRETCH_HANDLE_THICKNESS,
-		 STRETCH_HANDLE_THICKNESS,
-		 STRETCH_HANDLE_THICKNESS);
-	gdk_draw_rectangle
-		(drawable, gc, TRUE,
-		 rect->x1 - STRETCH_HANDLE_THICKNESS,
-		 rect->y1 - STRETCH_HANDLE_THICKNESS,
-		 STRETCH_HANDLE_THICKNESS,
-		 STRETCH_HANDLE_THICKNESS);
-	
+	g_free(knob_filename);
+	gdk_pixbuf_unref(knob_pixbuf);	
+		
 	gdk_gc_set_stipple (gc, nautilus_stipple_bitmap ());
 	gdk_gc_set_fill (gc, GDK_STIPPLED);
 	gdk_draw_rectangle
 		(drawable, gc, FALSE,
-		 rect->x0 + (STRETCH_HANDLE_THICKNESS - 1) / 2,
-		 rect->y0 + (STRETCH_HANDLE_THICKNESS - 1) / 2,
-		 rect->x1 - rect->x0 - (STRETCH_HANDLE_THICKNESS - 1) - 1,
-		 rect->y1 - rect->y0 - (STRETCH_HANDLE_THICKNESS - 1) - 1);
+		 rect->x0 + (knob_width - 1) / 2,
+		 rect->y0 + (knob_height - 1) / 2,
+		 rect->x1 - rect->x0 - (knob_width - 1)  - 1,
+		 rect->y1 - rect->y0 - (knob_height - 1) - 1);
 	
 	gdk_gc_unref (gc);
 }
@@ -924,7 +918,16 @@ draw_stretch_handles_aa (NautilusIconCanvasItem *item, GnomeCanvasBuf *buf,
 	draw_pixbuf_aa (knob_pixbuf, buf, affine, icon_rect.x0,  icon_rect.y1 - knob_height);
 	draw_pixbuf_aa (knob_pixbuf, buf, affine, icon_rect.x1 - knob_width, icon_rect.y0);
 	draw_pixbuf_aa (knob_pixbuf, buf, affine, icon_rect.x1 - knob_width, icon_rect.y1 - knob_height);
-	
+
+	/* now draw a box to connect the dots */
+        /* 
+	draw_dashed_rectangle_aa (buf->buf, buf->buf_rowstride, TRUE, 
+				  buf->rect.x1 - buf->rect.x0, buf->rect.y1 - buf->rect.y0,
+				  icon_rect.x0 + (knob_width  - 1) / 2,
+				  icon_rect.y0 + (knob_height - 1) / 2,
+				  icon_rect.x1 - knob_width - 1,
+				  icon_rect.y1 - knob_height - 1);
+	*/		
 	g_free(knob_filename);
 	gdk_pixbuf_unref(knob_pixbuf);	
 }
@@ -1234,30 +1237,22 @@ nautilus_icon_canvas_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 }
 
 static void
-draw_focus_rect (GdkPixbuf *pixbuf, int left, int top, int right, int bottom)
+draw_dashed_rectangle_aa (guchar *pixels, int rowstride, gboolean has_alpha,
+		   int width, int height,
+		   int left, int top, int right, int bottom)
 {
 	GdkRectangle	area;
 	guint32		color, color_dash;
 	guchar		red, green, blue, alpha, dash_color, dash_alpha;
-	guint		width, height;
-	gboolean	has_alpha;
-	guint		pixel_offset, rowstride;
+	guint		pixel_offset;
 	int		x, y, x1, y1, x2, y2;
-	guchar		*pixels, *row_offset, *offset;
+	guchar		*row_offset, *offset;
 	int 		index, dash_width;
 	
-	g_return_if_fail (pixbuf != NULL);
-
 	dash_width = 1;
 
 	color = NAUTILUS_RGBA_COLOR_PACK (0, 0, 0, 255);
 	color_dash = NAUTILUS_RGBA_COLOR_PACK (255, 255, 255, 0);
-
-	width = gdk_pixbuf_get_width (pixbuf);
-	height = gdk_pixbuf_get_height (pixbuf);
-	pixels = gdk_pixbuf_get_pixels (pixbuf);
-	rowstride = gdk_pixbuf_get_rowstride (pixbuf);
-	has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
 
 	pixel_offset = has_alpha ? 4 : 3;
 
@@ -1401,6 +1396,25 @@ draw_focus_rect (GdkPixbuf *pixbuf, int left, int top, int right, int bottom)
 			index = 0;
 		}
 	}
+}
+
+static void
+draw_focus_rect (GdkPixbuf *pixbuf, int left, int top, int right, int bottom)
+{
+	int width, height, rowstride;
+	guchar *pixels;
+	gboolean has_alpha;
+
+	g_return_if_fail (pixbuf != NULL);
+	
+	width = gdk_pixbuf_get_width (pixbuf);
+	height = gdk_pixbuf_get_height (pixbuf);
+	pixels = gdk_pixbuf_get_pixels (pixbuf);
+	rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+	has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
+
+	draw_dashed_rectangle_aa (pixels, rowstride, has_alpha, width, height, 
+			   left, top, right, bottom);
 }
 
 static void
@@ -2022,7 +2036,10 @@ hit_test_stretch_handle (NautilusIconCanvasItem *item,
 			 const ArtIRect *probe_canvas_rect)
 {
 	ArtIRect icon_rect;
-
+	char *knob_filename;
+	GdkPixbuf *knob_pixbuf;
+	int knob_width, knob_height;
+	
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item), FALSE);
 
 	/* Make sure there are handles to hit. */
@@ -2035,12 +2052,20 @@ hit_test_stretch_handle (NautilusIconCanvasItem *item,
 	if (!nautilus_art_irect_hits_irect (probe_canvas_rect, &icon_rect)) {
 		return FALSE;
 	}
+
+	knob_filename = nautilus_theme_get_image_path ("knob.png");
+	knob_pixbuf = gdk_pixbuf_new_from_file (knob_filename);
+	knob_width = gdk_pixbuf_get_width (knob_pixbuf);
+	knob_height = gdk_pixbuf_get_height (knob_pixbuf);
+
+	g_free(knob_filename);
+	gdk_pixbuf_unref(knob_pixbuf);	
 	
 	/* Check for hits in the stretch handles. */
-	return (probe_canvas_rect->x0 < icon_rect.x0 + STRETCH_HANDLE_THICKNESS
-     		|| probe_canvas_rect->x1 >= icon_rect.x1 - STRETCH_HANDLE_THICKNESS)
-		&& (probe_canvas_rect->y0 < icon_rect.y0 + STRETCH_HANDLE_THICKNESS
-		    || probe_canvas_rect->y1 >= icon_rect.y1 - STRETCH_HANDLE_THICKNESS);
+	return (probe_canvas_rect->x0 < icon_rect.x0 + knob_width
+     		|| probe_canvas_rect->x1 >= icon_rect.x1 - knob_width)
+		&& (probe_canvas_rect->y0 < icon_rect.y0 + knob_height
+		    || probe_canvas_rect->y1 >= icon_rect.y1 - knob_height);
 }
 
 gboolean

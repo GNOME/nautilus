@@ -1,3 +1,19 @@
+2000-09-29  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_stretch_handles), (draw_stretch_handles_aa),
+	(draw_dashed_rectangle_aa), (draw_focus_rect),
+	(hit_test_stretch_handle):
+	fixed a series of bugs involving the stretch handles (3084, 3281,
+	others); I'm not quite finished yet with 3239
+	
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize):
+	changed the name of the window for Arlo
+	
+	* src/nautilus-window-menus.c: (nautilus_window_initialize_menus):
+	changed the "customize" command to "customization" for Arlo.
+	
 2000-09-29  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-factory.c:
