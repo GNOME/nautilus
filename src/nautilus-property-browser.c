@@ -1952,6 +1952,8 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 
 	/* allocate a table to hold the content widgets */
   	property_browser->details->content_table = nautilus_image_table_new (TRUE);
+	gtk_container_set_border_width (GTK_CONTAINER (property_browser->details->content_table), 8);
+	
 	nautilus_wrap_table_set_x_spacing (NAUTILUS_WRAP_TABLE (property_browser->details->content_table),
 					   IMAGE_TABLE_X_SPACING);
 	nautilus_wrap_table_set_y_spacing (NAUTILUS_WRAP_TABLE (property_browser->details->content_table),

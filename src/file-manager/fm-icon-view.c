@@ -1848,7 +1848,7 @@ get_icon_annotation_callback (NautilusIconContainer *container,
 	GList *keyword_list, *selected_keyword;
 	char  *keyword;
 		
-	keyword_list = nautilus_file_get_keywords (file);
+	keyword_list = nautilus_file_get_emblem_names (file);
 	if (keyword_list == NULL) {
 		return NULL;
 	}
