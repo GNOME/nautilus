@@ -1,3 +1,10 @@
+2002-05-08  Damon Chaplin  <damon@ximian.com>
+
+	* src/nautilus-window-manage-views.c (nautilus_window_back_or_forward):
+	If we can't move in the given direction just return, and if the given
+	distance to move is off the end of our history list just jump to the
+	end. Do all this rather than a g_assert(). Fixes bug #77681.
+
 2002-05-08  Alex Larsson  <alexl@redhat.com>
 
 	* data/browser.xml:

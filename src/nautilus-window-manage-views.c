@@ -2027,9 +2027,20 @@ nautilus_window_back_or_forward (NautilusWindow *window, gboolean back, guint di
 {
 	GList *list;
 	char *uri;
+        guint len;
 	
 	list = back ? window->back_list : window->forward_list;
-	g_assert (g_list_length (list) > distance);
+
+        len = (guint) g_list_length (list);
+
+        /* If we can't move in the direction at all, just return. */
+        if (len == 0)
+                return;
+
+        /* If the distance to move is off the end of the list, go to the end
+           of the list. */
+        if (distance >= len)
+                distance = len - 1;
 
 	uri = nautilus_bookmark_get_uri (g_list_nth_data (list, distance));
 	begin_location_change
