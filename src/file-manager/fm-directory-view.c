@@ -6000,6 +6000,9 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 	view = FM_DIRECTORY_VIEW (parameters->view);
 
 	if (!activate_check_mime_types (view, file)) {
+		nautilus_file_unref (file);
+		g_free (parameters);
+		
 		return;
 	}
 
@@ -6125,6 +6128,8 @@ activate_activation_uri_ready_callback (NautilusFile *file, gpointer callback_da
 	if (nautilus_file_is_broken_symbolic_link (file)) {
 		eel_timed_wait_stop (cancel_activate_callback, parameters);
 		report_broken_symbolic_link (parameters->view, file);
+		nautilus_file_unref (parameters->file);
+		g_free (parameters);
 		return;
 	}
 
