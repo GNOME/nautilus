@@ -3529,7 +3529,6 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 	ActivateParameters *parameters;
 	FMDirectoryView *view;
 	char *uri, *command, *executable_path, *quoted_path;
-	GnomeVFSMimeActionType action_type;
 	GnomeVFSMimeApplication *application;
 	ActivationAction action;
 	gboolean need_to_continue_monitoring_file_for_activation;
