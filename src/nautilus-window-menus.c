@@ -58,6 +58,7 @@
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libgnomevfs/gnome-vfs-ops.h>
 #include <libnautilus-private/nautilus-bonobo-extensions.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-icon-factory.h>

@@ -1,3 +1,15 @@
+2001-07-07  Seth Nickell  <snickell@stanford.edu>
+
+	* libnautilus-private/nautilus-directory-private.h:
+	* libnautilus-private/nautilus-metafile.c:
+	* libnautilus-private/nautilus-thumbnails.c:
+	* src/nautilus-window-menus.c:
+
+	Add includes that were inadevertantly pulled in
+	by the older kinder GnomeVFS include heirarchy but
+	aren't anymore (people forgot to include some headers 
+	because the compiler never complained).
+	
 2001-07-05  Darin Adler  <darin@bentspoon.com>
 
 	* AUTHORS:

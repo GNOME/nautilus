@@ -32,6 +32,7 @@
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus/nautilus-idle-queue.h>
 
 typedef struct ActivationURIReadState ActivationURIReadState;
