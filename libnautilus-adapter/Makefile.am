@@ -9,6 +9,7 @@ INCLUDES=\
 	$(NULL)
 
 libnautilus_adapter_la_LDFLAGS= \
+	-version-info 2:0:0	\
 	$(NULL)
 
 nautilus_adapter_factory_idl_sources =	        \

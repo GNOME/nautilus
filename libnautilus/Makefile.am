@@ -11,6 +11,7 @@ INCLUDES=\
 	$(NULL)
 
 libnautilus_la_LDFLAGS=\
+	-version-info 2:0:0 \
 	$(NULL)
 
 nautilus_view_component_idl_sources =		\
