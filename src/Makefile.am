@@ -5,6 +5,7 @@ SUBDIRS=file-manager
 bin_PROGRAMS=					\
 	nautilus				\
 	nautilus-file-management-properties	\
+	nautilus-connect-server			\
 	$(NULL)
 
 INCLUDES =							\
@@ -62,6 +63,7 @@ nautilus_SOURCES = \
 	nautilus-bookmarks-window.h		\
 	nautilus-connect-server-dialog.c	\
 	nautilus-connect-server-dialog.h	\
+	nautilus-connect-server-dialog-nonmain.c\
 	nautilus-desktop-window.c		\
 	nautilus-desktop-window.h		\
 	nautilus-emblem-sidebar.c		\
@@ -124,6 +126,14 @@ nautilus_file_management_properties_SOURCES= \
 	nautilus-file-management-properties.c		\
 	nautilus-file-management-properties.h		\
 	nautilus-file-management-properties-main.c	\
+	$(NULL)
+
+nautilus_connect_server_SOURCES= \
+	nautilus-connect-server-dialog.c	\
+	nautilus-connect-server-dialog.h	\
+	nautilus-connect-server-dialog-main.c	\
+	nautilus-location-entry.c		\
+	nautilus-location-entry.h		\
 	$(NULL)
 
 $(nautilus_shell_interface_idl_sources): nautilus_shell_interface_idl_stamp

@@ -1,5 +1,21 @@
 2005-01-14  Alexander Larsson  <alexl@redhat.com>
 
+	* Makefile.am:
+	* src/.cvsignore:
+	* src/Makefile.am:
+	* src/nautilus-connect-server-dialog-main.c: (dialog_destroyed),
+	(show_uri), (nautilus_connect_server_dialog_present_uri), (main):
+	* src/nautilus-connect-server-dialog-nonmain.c:
+	(nautilus_connect_server_dialog_present_uri):
+	* src/nautilus-connect-server-dialog.c: (connect_to_server),
+	(response_callback), (nautilus_connect_server_dialog_new):
+	* src/nautilus-connect-server-dialog.h:
+	Make connect to server dialog availible as separate application.
+
+	Patch from Vincent Untz <vincent@vuntz.net>
+	
+2005-01-14  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-file-utilities.[ch]:
 	New function nautilus_ensure_unique_file_name
 

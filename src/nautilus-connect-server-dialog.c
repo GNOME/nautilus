@@ -29,7 +29,10 @@
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-vfs-extensions.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libgnomevfs/gnome-vfs-volume.h>
+#include <glib/gi18n.h>
 #include <gtk/gtkhbox.h>
+#include <gtk/gtkvbox.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkstock.h>
@@ -288,10 +291,9 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 
 
 	if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
-		nautilus_application_present_spatial_window (dialog->details->application,
-							     NULL,
-							     uri,
-							     gtk_widget_get_screen (GTK_WIDGET (dialog)));
+		nautilus_connect_server_dialog_present_uri (dialog->details->application,
+							    uri,
+							    GTK_WIDGET (dialog));
 	}
 
 	g_free (uri);
@@ -303,20 +305,11 @@ response_callback (NautilusConnectServerDialog *dialog,
 		   int response_id,
 		   gpointer data)
 {
-	NautilusWindow *window;
-	
 	switch (response_id) {
 	case RESPONSE_BROWSE:
-		if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
-			window = nautilus_application_create_navigation_window (dialog->details->application,
-										gtk_widget_get_screen (GTK_WIDGET (dialog)));
-			nautilus_window_go_to (window, "network:///");
-		} else {
-			nautilus_application_present_spatial_window (dialog->details->application,
-								     NULL,
-								     "network:///",
-								     gtk_widget_get_screen (GTK_WIDGET (dialog)));
-		}
+		nautilus_connect_server_dialog_present_uri (dialog->details->application,
+							    "network:///",
+							    GTK_WIDGET (dialog));
 		gtk_widget_destroy (GTK_WIDGET (dialog));
 		break;
 	case RESPONSE_CONNECT:
@@ -724,9 +717,8 @@ nautilus_connect_server_dialog_new (NautilusWindow *window)
 	if (window) {
 		gtk_window_set_screen (GTK_WINDOW (dialog),
 				       gtk_window_get_screen (GTK_WINDOW (window)));
+		NAUTILUS_CONNECT_SERVER_DIALOG (dialog)->details->application = window->application;
 	}
-
-	NAUTILUS_CONNECT_SERVER_DIALOG (dialog)->details->application = window->application;
 
 	return dialog;
 }
