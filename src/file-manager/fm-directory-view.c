@@ -1374,7 +1374,7 @@ fm_directory_view_destroy (GtkObject *object)
 
 	if (view->details->recent_model) {
 		g_object_unref (view->details->recent_model);
-		view->details->model = NULL;
+		view->details->recent_model = NULL;
 	}
 
 	/* Since we are owned by the NautilusView, if we're going it's
