@@ -1,3 +1,9 @@
+2000-01-20  Andy Hertzfeld <andy@eazel.com>
+
+	* libnautilus/gnome-icon-container.c:
+	disabled the pernicious call to relayout in size_allocate.  We will want to do automatic layout
+	when the window size changes, but this is the wrong level for it, it happens too frequently
+	
 2000-01-20  Elliot Lee  <sopwith@redhat.com>
 
 	* src/ntl-window-msgs.c:
