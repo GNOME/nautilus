@@ -20,6 +20,7 @@ back_DATA = \
 	grass.png \
 	gray_fabric.png \
 	greenery.jpg \
+	ice.png \
 	manila.jpg \
 	pink_fabric.png \
 	puzzle.jpg \

@@ -4,6 +4,7 @@ icondir = $(datadir)/pixmaps/nautilus
 
 icon_DATA =					\
 	backgrounds.png				\
+	colors.png				\
 	computer.png				\
 	eazel-logo.gif				\
 	emblem-certified.gif			\
