@@ -63,7 +63,7 @@ typedef struct {
 
 	double start_x, start_y;
 
-	GnomeCanvasItem *selection_rectangle;
+	EelCanvasItem *selection_rectangle;
 
 	guint timer_id;
 
@@ -157,7 +157,7 @@ struct NautilusIconContainerDetails {
 
 	/* Renaming Details */
 	gboolean renaming;
-	GnomeIconTextItem *rename_widget;	/* Editable text item */
+	GtkWidget *rename_widget;	/* Editable text item */
 	char *original_text;			/* Copy of editable text for later compare */
 
 	/* typeahead selection state */

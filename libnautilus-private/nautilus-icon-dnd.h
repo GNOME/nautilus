@@ -37,7 +37,7 @@ typedef struct {
 	NautilusDragInfo drag_info;
 
 	/* Shadow for the icons being dragged.  */
-	GnomeCanvasItem *shadow;
+	EelCanvasItem *shadow;
 } NautilusIconDndInfo;
 
 

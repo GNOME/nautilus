@@ -1,3 +1,17 @@
+2002-09-26  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-canvas-item.[ch]:
+	Update to new canvas
+	use DITHER_NORMAL instead of DITHER_MAX for performance on non-24bit
+	and remote.
+	* libnautilus-private/nautilus-icon-container.[ch]:
+	* libnautilus-private/nautilus-icon-dnd.[ch]:
+	* libnautilus-private/nautilus-icon-private.h:
+	Update to new canvas and rename widget.
+	
+	* src/nautilus-sidebar-title.c:
+	Build fix.
+
 2002-09-23  Dave Camp  <dave@ximian.com>
 
 	* src/nautilus-side-pane.c: (switch_page_callback): Removed the

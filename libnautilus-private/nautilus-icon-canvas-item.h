@@ -25,7 +25,9 @@
 #ifndef NAUTILUS_ICON_CANVAS_ITEM_H
 #define NAUTILUS_ICON_CANVAS_ITEM_H
 
-#include <libgnomecanvas/gnome-canvas.h>
+#include <libart_lgpl/art_rect.h>
+#include <libart_lgpl/art_point.h>
+#include <eel/eel-canvas.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 
 G_BEGIN_DECLS
@@ -46,13 +48,13 @@ typedef struct NautilusIconCanvasItemClass NautilusIconCanvasItemClass;
 typedef struct NautilusIconCanvasItemDetails NautilusIconCanvasItemDetails;
 
 struct NautilusIconCanvasItem {
-	GnomeCanvasItem item;
+	EelCanvasItem item;
 	NautilusIconCanvasItemDetails *details;
 	gpointer user_data;
 };
 
 struct NautilusIconCanvasItemClass {
-	GnomeCanvasItemClass parent_class;
+	EelCanvasItemClass parent_class;
 };
 
 /* GtkObject */
@@ -80,7 +82,8 @@ gboolean    nautilus_icon_canvas_item_hit_test_stretch_handles (NautilusIconCanv
 								ArtPoint                      world_point);
 void        nautilus_icon_canvas_item_invalidate_label_size    (NautilusIconCanvasItem       *item);
 ArtDRect    nautilus_icon_canvas_item_get_icon_rectangle       (const NautilusIconCanvasItem *item);
-void        nautilus_icon_canvas_item_update_bounds            (NautilusIconCanvasItem       *item);
+void        nautilus_icon_canvas_item_update_bounds            (NautilusIconCanvasItem       *item,
+								double i2w_dx, double i2w_dy);
 
 G_END_DECLS
 

@@ -26,7 +26,7 @@
 #ifndef NAUTILUS_ICON_CONTAINER_H
 #define NAUTILUS_ICON_CONTAINER_H
 
-#include <libgnomecanvas/gnome-canvas.h>
+#include <eel/eel-canvas.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 
 #define NAUTILUS_ICON_CONTAINER(obj) \
@@ -64,12 +64,12 @@ typedef enum {
 typedef struct NautilusIconContainerDetails NautilusIconContainerDetails;
 
 typedef struct {
-	GnomeCanvas canvas;
+	EelCanvas canvas;
 	NautilusIconContainerDetails *details;
 } NautilusIconContainer;
 
 typedef struct {
-	GnomeCanvasClass parent_slot;
+	EelCanvasClass parent_slot;
 
 	/* Operations on the container. */
 	int          (* button_press) 	          (NautilusIconContainer *container,

@@ -49,7 +49,7 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkstock.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomecanvas/gnome-canvas-rect-ellipse.h>
+#include <eel/eel-canvas-rect-ellipse.h>
 #include <libgnomeui/gnome-stock-icons.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
@@ -78,12 +78,12 @@ static GtkTargetEntry drop_types [] = {
 
 static GtkTargetList *drop_types_list = NULL;
 
-static GnomeCanvasItem *
+static EelCanvasItem *
 create_selection_shadow (NautilusIconContainer *container,
 			 GList *list)
 {
-	GnomeCanvasGroup *group;
-	GnomeCanvas *canvas;
+	EelCanvasGroup *group;
+	EelCanvas *canvas;
 	GdkBitmap *stipple;
 	int max_x, max_y;
 	int min_x, min_y;
@@ -101,7 +101,7 @@ create_selection_shadow (NautilusIconContainer *container,
 	stipple = container->details->dnd_info->drag_info.stipple;
 	g_return_val_if_fail (stipple != NULL, NULL);
 
-	canvas = GNOME_CANVAS (container);
+	canvas = EEL_CANVAS (container);
 
 	/* Creating a big set of rectangles in the canvas can be expensive, so
            we try to be smart and only create the maximum number of rectangles
@@ -115,9 +115,9 @@ create_selection_shadow (NautilusIconContainer *container,
 
 	/* Create a group, so that it's easier to move all the items around at
            once.  */
-	group = GNOME_CANVAS_GROUP
-		(gnome_canvas_item_new (GNOME_CANVAS_GROUP (canvas->root),
-					gnome_canvas_group_get_type (),
+	group = EEL_CANVAS_GROUP
+		(eel_canvas_item_new (EEL_CANVAS_GROUP (canvas->root),
+					eel_canvas_group_get_type (),
 					NULL));
 	
 	for (p = list; p != NULL; p = p->next) {
@@ -136,9 +136,9 @@ create_selection_shadow (NautilusIconContainer *container,
 		y2 = y1 + item->icon_height;
 			
 		if (x2 >= min_x && x1 <= max_x && y2 >= min_y && y1 <= max_y)
-			gnome_canvas_item_new
+			eel_canvas_item_new
 				(group,
-				 gnome_canvas_rect_get_type (),
+				 eel_canvas_rect_get_type (),
 				 "x1", (double) x1,
 				 "y1", (double) y1,
 				 "x2", (double) x2,
@@ -149,26 +149,19 @@ create_selection_shadow (NautilusIconContainer *container,
 				 NULL);
 	}
 
-	return GNOME_CANVAS_ITEM (group);
+	return EEL_CANVAS_ITEM (group);
 }
 
 /* Set the affine instead of the x and y position.
  * Simple, and setting x and y was broken at one point.
  */
 static void
-set_shadow_position (GnomeCanvasItem *shadow,
+set_shadow_position (EelCanvasItem *shadow,
 		     double x, double y)
 {
-	double affine[6];
-
-	affine[0] = 1.0;
-	affine[1] = 0.0;
-	affine[2] = 0.0;
-	affine[3] = 1.0;
-	affine[4] = x;
-	affine[5] = y;
-
-	gnome_canvas_item_affine_absolute (shadow, affine);
+	eel_canvas_item_set (shadow,
+			     "x", x, "y", y,
+			     NULL);
 }
 
 
@@ -180,6 +173,36 @@ typedef struct {
 	NautilusDragEachSelectedItemDataGet iteratee;
 	gpointer iteratee_data;
 } IconGetDataBinderContext;
+
+static void
+canvas_rect_world_to_widget (EelCanvas *canvas,
+			     ArtDRect *world_rect,
+			     ArtIRect *widget_rect)
+{
+	ArtDRect window_rect;
+	
+	eel_canvas_world_to_window (canvas,
+				    world_rect->x0, world_rect->y0,
+				    &window_rect.x0, &window_rect.y0);
+	eel_canvas_world_to_window (canvas,
+				    world_rect->x1, world_rect->y1,
+				    &window_rect.x1, &window_rect.y1);
+	widget_rect->x0 = (int) window_rect.x0 - gtk_adjustment_get_value (gtk_layout_get_hadjustment (GTK_LAYOUT (canvas)));
+	widget_rect->y0 = (int) window_rect.y0 - gtk_adjustment_get_value (gtk_layout_get_vadjustment (GTK_LAYOUT (canvas)));
+	widget_rect->x1 = (int) window_rect.x1 - gtk_adjustment_get_value (gtk_layout_get_hadjustment (GTK_LAYOUT (canvas)));
+	widget_rect->y1 = (int) window_rect.y1 - gtk_adjustment_get_value (gtk_layout_get_vadjustment (GTK_LAYOUT (canvas)));
+}
+
+static void
+canvas_widget_to_world (EelCanvas *canvas,
+			double widget_x, double widget_y,
+			double *world_x, double *world_y)
+{
+	eel_canvas_window_to_world (canvas,
+				    widget_x + gtk_adjustment_get_value (gtk_layout_get_hadjustment (GTK_LAYOUT (canvas))),
+				    widget_y + gtk_adjustment_get_value (gtk_layout_get_vadjustment (GTK_LAYOUT (canvas))),
+				    world_x, world_y);
+}
 
 static gboolean
 icon_get_data_binder (NautilusIcon *icon, gpointer data)
@@ -197,8 +220,8 @@ icon_get_data_binder (NautilusIcon *icon, gpointer data)
 	container = NAUTILUS_ICON_CONTAINER (context->iterator_context);
 
 	world_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
-	widget_rect = eel_gnome_canvas_world_to_widget_rectangle
-		(GNOME_CANVAS (container), world_rect);
+
+	canvas_rect_world_to_widget (EEL_CANVAS (container), &world_rect, &widget_rect);
 
 	uri = nautilus_icon_container_get_icon_uri (container, icon);
 	if (uri == NULL) {
@@ -211,7 +234,7 @@ icon_get_data_binder (NautilusIcon *icon, gpointer data)
 		- container->details->dnd_info->drag_info.start_y);
 
 	widget_rect = eel_art_irect_scale_by (widget_rect, 
-		1 / GNOME_CANVAS (container)->pixels_per_unit);
+		1 / EEL_CANVAS (container)->pixels_per_unit);
 	
 	/* pass the uri, mouse-relative x/y and icon width/height */
 	context->iteratee (uri, 
@@ -295,18 +318,19 @@ static void
 nautilus_icon_container_position_shadow (NautilusIconContainer *container,
 					 int x, int y)
 {
-	GnomeCanvasItem *shadow;
+	EelCanvasItem *shadow;
 	double world_x, world_y;
 
 	shadow = container->details->dnd_info->shadow;
 	if (shadow == NULL) {
 		return;
 	}
-	eel_gnome_canvas_widget_to_world (GNOME_CANVAS (container),
-					  x, y, &world_x, &world_y);
+
+	canvas_widget_to_world (EEL_CANVAS (container), x, y,
+				&world_x, &world_y);
 
 	set_shadow_position (shadow, world_x, world_y);
-	gnome_canvas_item_show (shadow);
+	eel_canvas_item_show (shadow);
 }
 
 static void
@@ -404,7 +428,7 @@ nautilus_icon_container_item_at (NautilusIconContainer *container,
 	 * non-empty even at the smallest scale factor
 	 */
 	
-	size = MAX (1, 1 + (1 / GNOME_CANVAS (container)->pixels_per_unit));
+	size = MAX (1, 1 + (1 / EEL_CANVAS (container)->pixels_per_unit));
 	point.x0 = x;
 	point.y0 = y;
 	point.x1 = x + size;
@@ -414,8 +438,16 @@ nautilus_icon_container_item_at (NautilusIconContainer *container,
 		NautilusIcon *icon;
 		icon = p->data;
 		
-		canvas_point = eel_gnome_canvas_world_to_canvas_rectangle (GNOME_CANVAS_ITEM (icon->item)->canvas,
-									   point);
+		eel_canvas_w2c (EEL_CANVAS (container),
+				point.x0,
+				point.y0,
+				&canvas_point.x0,
+				&canvas_point.y0);
+		eel_canvas_w2c (EEL_CANVAS (container),
+				point.x1,
+				point.y1,
+				&canvas_point.x1,
+				&canvas_point.y1);
 		if (nautilus_icon_canvas_item_hit_test_rectangle (icon->item, canvas_point)) {
 			return icon;
 		}
@@ -485,7 +517,7 @@ receive_dropped_keyword (NautilusIconContainer *container, const char *keyword, 
 	g_assert (keyword != NULL);
 
 	/* find the item we hit with our drop, if any */
-  	eel_gnome_canvas_widget_to_world (GNOME_CANVAS (container), x, y, &world_x, &world_y);
+	canvas_widget_to_world (EEL_CANVAS (container), x, y, &world_x, &world_y);
 	drop_target_icon = nautilus_icon_container_item_at (container, world_x, world_y);
 	if (drop_target_icon == NULL) {
 		return;
@@ -757,8 +789,7 @@ nautilus_icon_container_find_drop_target (NautilusIconContainer *container,
 		return NULL;
 	}
 
-  	eel_gnome_canvas_widget_to_world (GNOME_CANVAS (container),
-					  x, y, &world_x, &world_y);
+	canvas_widget_to_world (EEL_CANVAS (container), x, y, &world_x, &world_y);
 	
 	/* FIXME bugzilla.gnome.org 42485: 
 	 * These "can_accept_items" tests need to be done by
@@ -864,8 +895,10 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 	}
 		
 	if (context->action > 0) {
-	  	eel_gnome_canvas_widget_to_world (GNOME_CANVAS (container),
-						  x, y, &world_x, &world_y);
+		eel_canvas_window_to_world (EEL_CANVAS (container),
+					    x + gtk_adjustment_get_value (gtk_layout_get_hadjustment (GTK_LAYOUT (container))),
+					    y + gtk_adjustment_get_value (gtk_layout_get_vadjustment (GTK_LAYOUT (container))),
+					    &world_x, &world_y);
 
 		drop_target = nautilus_icon_container_find_drop_target (container, 
 			context, x, y, &icon_hit);
@@ -909,8 +942,7 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 	}
 
 	/* find out if we're over an icon */
-  	eel_gnome_canvas_widget_to_world (GNOME_CANVAS (container),
-					  x, y, &world_x, &world_y);
+	canvas_widget_to_world (EEL_CANVAS (container), x, y, &world_x, &world_y);
 	
 	icon = nautilus_icon_container_item_at (container, world_x, world_y);
 
@@ -994,8 +1026,7 @@ nautilus_icon_dnd_update_drop_target (NautilusIconContainer *container,
 		return;
 	}
 
-  	eel_gnome_canvas_widget_to_world (GNOME_CANVAS (container),
-					  x, y, &world_x, &world_y);
+	canvas_widget_to_world (EEL_CANVAS (container), x, y, &world_x, &world_y);
 
 	/* Find the item we hit with our drop, if any. */
 	icon = nautilus_icon_container_item_at (container, world_x, world_y);
@@ -1052,7 +1083,7 @@ drag_leave_callback (GtkWidget *widget,
 	dnd_info = NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info;
 	
 	if (dnd_info->shadow != NULL)
-		gnome_canvas_item_hide (dnd_info->shadow);
+		eel_canvas_item_hide (dnd_info->shadow);
 	
 	stop_auto_scroll (NAUTILUS_ICON_CONTAINER (widget));
 	nautilus_icon_container_free_drag_data(NAUTILUS_ICON_CONTAINER (widget));
@@ -1065,7 +1096,7 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 			      GdkEventMotion *event)
 {
 	NautilusIconDndInfo *dnd_info;
-	GnomeCanvas *canvas;
+	EelCanvas *canvas;
 	GdkDragContext *context;
 	GdkPixbuf *pixbuf;
 	int x_offset, y_offset;
@@ -1081,7 +1112,7 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 	/* Notice that the event is in bin_window coordinates, because of
            the way the canvas handles events.
 	*/
-	canvas = GNOME_CANVAS (container);
+	canvas = EEL_CANVAS (container);
 	dnd_info->drag_info.start_x = event->x - gtk_adjustment_get_value (gtk_layout_get_hadjustment (GTK_LAYOUT (canvas)));
 	dnd_info->drag_info.start_y = event->y - gtk_adjustment_get_value (gtk_layout_get_vadjustment (GTK_LAYOUT (canvas)));	
 
@@ -1095,7 +1126,10 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
         /* compute the image's offset */
 	world_rect = nautilus_icon_canvas_item_get_icon_rectangle
 		(container->details->drag_icon->item);
-	widget_rect = eel_gnome_canvas_world_to_widget_rectangle (canvas, world_rect);
+
+	canvas_rect_world_to_widget (EEL_CANVAS (container),
+				     &world_rect, &widget_rect);
+	
         x_offset = dnd_info->drag_info.start_x - widget_rect.x0;
         y_offset = dnd_info->drag_info.start_y - widget_rect.y0;
         

@@ -55,6 +55,7 @@
 #include <libnautilus-private/nautilus-theme.h>
 #include <math.h>
 #include <string.h>
+#include <stdlib.h>
 
 /* maximum allowable size to be displayed as the title */
 #define MAX_TITLE_SIZE 		256
