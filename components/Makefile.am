@@ -1,9 +1,5 @@
 NULL=
 
-if BUILD_MOZILLA_COMPONENT
-MOZILLA_COMPONENT_SUBDIRS = mozilla
-endif
-
 SUBDIRS = 					\
 	help 					\
 	history 				\
@@ -21,5 +17,4 @@ XXX=
 	music 					\
 	text 					\
 	tree 					\
-	$(MOZILLA_COMPONENT_SUBDIRS) 		\
 	$(NULL)

@@ -1,5 +1,31 @@
 2001-12-06  Darin Adler  <darin@bentspoon.com>
 
+	* components/Makefile.am:
+	* components/mozilla/.cvsignore:
+	* components/mozilla/Makefile.am:
+	* components/mozilla/Nautilus_View_mozilla.server.in:
+	* components/mozilla/bonobo-extensions.c:
+	* components/mozilla/bonobo-extensions.h:
+	* components/mozilla/main.c:
+	* components/mozilla/mozilla-components.cpp:
+	* components/mozilla/mozilla-components.h:
+	* components/mozilla/mozilla-events.cpp:
+	* components/mozilla/mozilla-events.h:
+	* components/mozilla/mozilla-preferences.cpp:
+	* components/mozilla/mozilla-preferences.h:
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	* components/mozilla/nautilus-mozilla-content-view.h:
+	* components/mozilla/nautilus-mozilla-embed-extensions.cpp:
+	* components/mozilla/nautilus-mozilla-embed-extensions.h:
+	* components/mozilla/nautilus-mozilla-encoding-tables.c:
+	* components/mozilla/nautilus-mozilla-encoding-tables.h:
+	* components/mozilla/nautilus-mozilla-ui.xml:
+	* configure.in:
+	* nautilus.spec.in:
+	Moved mozilla component into its own module.
+
+2001-12-06  Darin Adler  <darin@bentspoon.com>
+
 	* lots of files
 	Get rid of casts in callers to g_object_ref/g_object_unref.
 	Remove parameters to eel_make_warnings_and_criticals_stop_in_debugger.

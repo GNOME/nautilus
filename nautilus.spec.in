@@ -51,7 +51,6 @@ BuildRequires:	libpng-devel
 BuildRequires:	librsvg-devel >= @LIBRSVG_REQUIRED@
 BuildRequires:	libxml-devel >= @LIBXML_REQUIRED@
 BuildRequires:	medusa-devel >= @MEDUSA_REQUIRED@
-BuildRequires:	mozilla-devel >= 0.8
 BuildRequires:	popt >= @POPT_REQUIRED@
 BuildRequires:	scrollkeeper >= @SCROLLKEEPER_REQUIRED@
 BuildRequires:	xpdf >= 0.90
@@ -72,17 +71,6 @@ Requires:	%name = %{PACKAGE_VERSION}
 This package provides the necessary development libraries and include
 files to allow you to develop Nautilus components.
 
-%package mozilla
-Summary:        Nautilus component for use with Mozilla
-Group:          User Interface/Desktop
-Requires:       %name = %{PACKAGE_VERSION}
-Requires:	mozilla >= 0.9.5
-Conflicts:	mozilla = M18
-Conflicts:	mozilla = M17
-
-%description mozilla
-This enables the use of embedded Mozilla as a Nautilus component.
-
 %package extras
 Summary:	Extra goodies to use with Nautilus
 Group:          User Interface/Desktop
@@ -95,7 +83,6 @@ This is a meta-package that requires useful add-ons for Nautilus.
 Summary:	Nautilus and a suggested set of components
 Group:          User Interface/Desktop
 Requires:       %name = %{PACKAGE_VERSION}
-Requires:	%name-mozilla = %{PACKAGE_VERSION}
 Requires:	%name-extras = %{PACKAGE_VERSION}
 
 %description suggested
@@ -254,14 +241,6 @@ scrollkeeper-update
 
 %defattr(0444, bin, bin)
 %{_includedir}/libnautilus/*.h
-
-%files mozilla
-
-%defattr(0555, bin, bin)
-%{_bindir}/nautilus-mozilla-content-view
-
-%defattr(0444, bin, bin)
-%{_libdir}/bonobo/servers/Nautilus_View_mozilla.server
 
 %files extras
 
