@@ -91,6 +91,7 @@ static int  nautilus_rss_control_expose (GtkWidget *widget, GdkEventExpose *even
 static gboolean nautilus_rss_control_button_press_event (GtkWidget *widget, GdkEventButton *event);
 static gboolean nautilus_rss_control_motion_event (GtkWidget *widget, GdkEventMotion *event);
 static gboolean nautilus_rss_control_leave_event (GtkWidget *widget, GdkEventCrossing *event);
+static void nautilus_rss_control_size_request (GtkWidget *widget, GtkRequisition *request);
 
 static void nautilus_rss_control_set_uri (NautilusRSSControl *rss_control, const char *uri);
 
@@ -116,6 +117,7 @@ nautilus_rss_control_initialize_class (NautilusRSSControlClass *klass)
 	widget_class->button_press_event = nautilus_rss_control_button_press_event;
 	widget_class->motion_notify_event = nautilus_rss_control_motion_event;
 	widget_class->leave_notify_event = nautilus_rss_control_leave_event;
+	widget_class->size_request = nautilus_rss_control_size_request;
 
 }
 
@@ -743,6 +745,15 @@ nautilus_rss_control_leave_event (GtkWidget *widget, GdkEventCrossing *event)
 
 	return TRUE;
 }
+
+/* handle size requests by requesting a fixed size */
+static void
+nautilus_rss_control_size_request (GtkWidget *widget, GtkRequisition *request)
+{
+	request->width = 240;
+	request->height = 140;
+}
+
 
 /* handle button press events */
 static gboolean

@@ -1,3 +1,52 @@
+2001-01-28  Andy Hertzfeld  <andy@eazel.com>
+
+	added better sizing of components by using size_request
+	
+	* components/Makefile.am:
+	added vcard component
+	
+	* components/rss-control/nautilus-rss-control.c:
+	(nautilus_rss_control_initialize_class),
+	(nautilus_rss_control_size_request):
+	added size_request call to rss-control
+	
+	* components/vcard/.cvsignore:
+	* components/vcard/Makefile.am:
+	* components/vcard/main.c: (vcard_object_destroyed),
+	(vcard_make_object), (main):
+	* components/vcard/nautilus-vcard.c:
+	(nautilus_vcard_initialize_class), (get_bonobo_properties),
+	(set_bonobo_properties), (nautilus_vcard_initialize),
+	(nautilus_vcard_destroy), (nautilus_vcard_get_control),
+	(vcard_logo_callback), (vcard_read_done_callback), (load_vcard),
+	(nautilus_vcard_set_uri), (vcard_pixbuf_composite),
+	(draw_vcard_logo_image), (draw_vcard_name_and_title),
+	(draw_vcard_addresses), (nautilus_vcard_draw),
+	(nautilus_vcard_expose), (nautilus_vcard_motion_event),
+	(nautilus_vcard_size_request), (nautilus_vcard_leave_event),
+	(nautilus_vcard_button_press_event):
+	* components/vcard/nautilus-vcard.h:
+	* components/vcard/nautilus-vcard.oaf:
+	* components/vcard/vcard.c: (vcard_full_name), (vcard_title),
+	(vcard_logo), (vcard_postal), (vcard_streetaddress),
+	(vcard_city_state_zip), (vcard_company), (vcard_email),
+	(vcard_fax), (vcard_web), (vcard_address_list):
+	* components/vcard/vcard.h:
+	new vcard component for displaying graphical business cards, not
+	finished yet
+	
+	* configure.in:
+	added vcard component
+
+	* nautilus-clean.sh:
+	added vcard to nautilus-clean
+		
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_get_icon_width),
+	(nautilus_icon_canvas_item_get_icon_height),
+	(nautilus_icon_canvas_item_update_bounds):
+	better sizing of components
+	
 2001-01-24  Andy Hertzfeld  <andy@eazel.com>
 
 	added missing files to post-1_0_1 branch, plus some more

@@ -96,6 +96,7 @@ nautilus-summary-view \
 nautilus-text-view \
 nautilus-throbber \
 nautilus-tree-view \
+nautilus-vcard \
 trilobite-eazel-install-service  \
 trilobite-eazel-time-view \
 "

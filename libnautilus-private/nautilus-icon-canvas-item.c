@@ -356,6 +356,15 @@ nautilus_icon_canvas_item_invalidate_label_size (NautilusIconCanvasItem *item)
 static int
 nautilus_icon_canvas_item_get_icon_width (NautilusIconCanvasItem *item)
 {
+	GtkRequisition size_requisition;
+	double scale_factor = GNOME_CANVAS_ITEM (item)->canvas->pixels_per_unit;
+
+	gtk_widget_size_request (item->details->control, &size_requisition);		
+
+	if (item->details->control != NULL) {
+		return size_requisition.width * scale_factor;
+	}
+	
 	if (item->details->pixbuf == NULL) {
 		return	NAUTILUS_ICON_SIZE_STANDARD;
 	}
@@ -366,6 +375,14 @@ nautilus_icon_canvas_item_get_icon_width (NautilusIconCanvasItem *item)
 static int
 nautilus_icon_canvas_item_get_icon_height (NautilusIconCanvasItem *item)
 {
+	GtkRequisition size_requisition;
+	double scale_factor = GNOME_CANVAS_ITEM (item)->canvas->pixels_per_unit;
+
+	gtk_widget_size_request (item->details->control, &size_requisition);		
+
+	if (item->details->control != NULL) {
+		return size_requisition.height * scale_factor;
+	}
 	if (item->details->pixbuf == NULL) {
 		return	NAUTILUS_ICON_SIZE_STANDARD;
 	}
@@ -663,11 +680,14 @@ recompute_bounding_box (NautilusIconCanvasItem *icon_item)
 
 }
 
+
 void
 nautilus_icon_canvas_item_update_bounds (NautilusIconCanvasItem *item)
 {
 	ArtIRect before, after;
-
+	GtkRequisition size_requisition;
+	int item_width, item_height;
+	
 	/* Compute new bounds. */
 	nautilus_gnome_canvas_item_get_current_canvas_bounds
 		(GNOME_CANVAS_ITEM (item), &before);
@@ -680,14 +700,14 @@ nautilus_icon_canvas_item_update_bounds (NautilusIconCanvasItem *item)
 		return;
 	}
 
-	/* if there is an embedded control, resize it appropriately */
-	if (item->details->control) {
-		/* for now, size it the same as the underlying image */
-		int image_width = nautilus_icon_canvas_item_get_icon_width (item);
-		int image_height = nautilus_icon_canvas_item_get_icon_height (item);
-		
-		gtk_widget_set_usize (item->details->control,
-					image_width, image_height);
+	/* if there is an embedded control, make a size request and size accordingly */
+	if (item->details->control) {	
+		/* size the control appropriately */
+		gtk_widget_size_request (item->details->control, &size_requisition);		
+		item_width = size_requisition.width * GNOME_CANVAS_ITEM (item)->canvas->pixels_per_unit;
+		item_height = size_requisition.height * GNOME_CANVAS_ITEM (item)->canvas->pixels_per_unit;
+
+		gtk_widget_set_usize (item->details->control, item_width, item_height);
 		}
 	
 	/* Send out the bounds_changed signal and queue a redraw. */
