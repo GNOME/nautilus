@@ -1,3 +1,13 @@
+2000-03-23  John Sullivan  <sullivan@eazel.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_real_merge_menus): Put in a commented-out
+	sample merged toolbar button, as a starting point for the
+	ones we plan to implement later.
+
+	* src/ntl-window-msgs.c: (nautilus_window_set_state_info):
+	Put an #ifdef EXTREME_DEBUGGING around "Doing sync - action tag"
+
 2000-03-23  Darin Adler  <darin@eazel.com>
 
 	Fixed bug 336 (merged menu items don't go away when component

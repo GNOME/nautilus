@@ -914,7 +914,9 @@ nautilus_window_set_state_info(NautilusWindow *window, ...)
         {
           if(window->action_tag)
             {
+#ifdef EXTREME_DEBUGGING
               g_message("Doing sync - action_tag was %d", window->action_tag);
+#endif
               g_source_remove(window->action_tag);
               window->action_tag = 0;
             }
