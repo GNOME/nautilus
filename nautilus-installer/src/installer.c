@@ -1414,7 +1414,7 @@ eazel_installer_initialize (EazelInstaller *object) {
 			GtkWidget *label;
 			GtkWidget *vbox, *hbox1, *hbox2;
 
-			/* but it in an hbox so it won't be indirectly centered */
+			/* put it in an hbox so it won't be indirectly centered */
 			title = gtk_label_new_with_font (_("Welcome to the Eazel Installer!"), FONT_TITLE);
 			gtk_label_set_justify (GTK_LABEL (title), GTK_JUSTIFY_LEFT);
 			gtk_widget_show (title);

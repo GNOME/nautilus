@@ -645,7 +645,7 @@ add_to_url (char **url,
 
 	if (needs_quoting) {
 		/* url quote the sucker. */
-		q = quoted = g_malloc (strlen (val) + needs_quoting);
+		q = quoted = g_malloc (strlen (val) + (needs_quoting*2) + 1);
 		for (p = val; p && *p; p++) {
 			if (EVILCHAR (*p)) {
 				*q++ = '%';

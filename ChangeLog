@@ -1,3 +1,11 @@
+2000-10-05  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-protocols.c:
+	(add_to_url):
+	* nautilus-installer/src/installer.c: (eazel_installer_initialize):
+
+	Fix off-by-2x bug in allocating quoted URL segments.
+
 2000-10-05  Darin Adler  <darin@eazel.com>
 
 	* README: Change required versions.
