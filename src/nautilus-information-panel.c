@@ -45,7 +45,6 @@
 #include <libnautilus-extensions/nautilus-program-choosing.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <nautilus-widgets/nautilus-preferences.h>
-#include "ntl-meta-view.h"
 #include "nautilus-index-tabs.h"
 #include "nautilus-index-title.h"
 
@@ -466,23 +465,16 @@ void
 nautilus_index_panel_add_meta_view (NautilusIndexPanel *index_panel, NautilusViewFrame *meta_view)
 {
 	GtkWidget *label;
-	char cbuf[32];
-	const char *description;
+	char *description;
 	int page_num;
 	
 	g_return_if_fail (NAUTILUS_IS_INDEX_PANEL (index_panel));
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (meta_view));
 	
-	description = nautilus_meta_view_frame_get_label (NAUTILUS_META_VIEW_FRAME (meta_view));
-	if (description == NULL) {
-		/* FIXME bugzilla.eazel.com 599: 
-		 * Why is a hex address better than an empty string? 
-		 */
-		g_snprintf (cbuf, sizeof (cbuf), "%p", meta_view);
-		description = cbuf;
-	} 
-	
+	description = nautilus_view_frame_get_label (meta_view);
 	label = gtk_label_new (description);
+	g_free (description);
+
 	gtk_widget_show (label);
 	
 	gtk_notebook_append_page (GTK_NOTEBOOK (index_panel->details->notebook),

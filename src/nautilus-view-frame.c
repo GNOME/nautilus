@@ -30,7 +30,6 @@
 #include <config.h>
 
 #include "ntl-view-private.h"
-#include "ntl-meta-view.h"
 #include "ntl-content-view.h"
 #include "ntl-window.h"
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
@@ -352,11 +351,12 @@ nautilus_view_frame_handle_client_destroy(GtkWidget *widget, NautilusViewFrame *
 static void
 nautilus_view_frame_handle_client_destroy_2(GtkObject *object, CORBA_Object cobject, CORBA_Environment *ev, NautilusViewFrame *view)
 {
-  /* ICK! */
-  if(NAUTILUS_IS_META_VIEW_FRAME(view))
-    nautilus_window_remove_meta_view(NAUTILUS_WINDOW(view->main_window), view);
-  else if(NAUTILUS_IS_CONTENT_VIEW_FRAME(view))
-    nautilus_window_set_content_view(NAUTILUS_WINDOW(view->main_window), NULL);
+  NautilusWindow *window;
+
+  window = NAUTILUS_WINDOW (view->main_window);
+  nautilus_window_remove_meta_view (window, view);
+  if (view == window->content_view)
+    nautilus_window_set_content_view (window, NULL);
 }
 
 gboolean /* returns TRUE if successful */
@@ -838,4 +838,20 @@ nautilus_view_frame_set_active_errors(NautilusViewFrame *view, gboolean enabled)
           view->timer_id = 0;
         }
     }
+}
+
+char *
+nautilus_view_frame_get_label (NautilusViewFrame *view)
+{
+  g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), NULL);
+  return g_strdup (view->label);
+}
+
+void
+nautilus_view_frame_set_label (NautilusViewFrame *view,
+                               const char *label)
+{
+  g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+  g_free (view->label);
+  view->label = g_strdup (label);
 }

@@ -45,7 +45,6 @@
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-view-identifier.h>
 #include "ntl-app.h"
-#include "ntl-meta-view.h"
 #include "ntl-uri-map.h"
 #include "ntl-window-private.h"
 #include "ntl-window-state.h"
@@ -584,8 +583,8 @@ nautilus_window_load_meta_view(NautilusWindow *window,
         }
         
         if (p == NULL) {
-                meta_view = NAUTILUS_VIEW_FRAME (gtk_widget_new (nautilus_meta_view_frame_get_type(),
-                                                           "main_window", window, NULL));
+                meta_view = NAUTILUS_VIEW_FRAME (gtk_widget_new (nautilus_view_frame_get_type(),
+                                                                 "main_window", window, NULL));
                 nautilus_window_connect_view (window, meta_view);
                 if (!nautilus_view_frame_load_client (meta_view, iid)) {
                         gtk_widget_unref (GTK_WIDGET (meta_view));
@@ -749,32 +748,29 @@ nautilus_window_update_state (gpointer data)
                 for (p = window->error_views; p != NULL; p = p->next) {
                         NautilusViewFrame *error_view = p->data;
                         
-                        if (NAUTILUS_IS_CONTENT_VIEW_FRAME(error_view)) {
-                                if (error_view == window->new_content_view) {
-                                        window->made_changes++;
-                                        window->reset_to_idle = TRUE;
-                                }
-                                
-                                if (error_view == window->content_view) {
-                                        if (GTK_WIDGET (window->content_view)->parent) {
-                                                gtk_container_remove (GTK_CONTAINER (GTK_WIDGET (window->content_view)->parent),
-                                                                      GTK_WIDGET (window->content_view));
-                                        }
-                                        window->content_view = NULL;
-                                        window->made_changes++;
-                                }
+                        if (error_view == window->new_content_view) {
+                                window->made_changes++;
+                                window->reset_to_idle = TRUE;
                                 window->cv_progress_error = TRUE;
                         }
-                        else if (NAUTILUS_IS_META_VIEW_FRAME(error_view))
-                        {
-                                if (g_list_find (window->new_meta_views, error_view) != NULL) {
-                                        window->new_meta_views = g_list_remove (window->new_meta_views, error_view);
-                                        gtk_widget_unref (GTK_WIDGET (error_view));
+                        
+                        if (error_view == window->content_view) {
+                                if (GTK_WIDGET (window->content_view)->parent) {
+                                        gtk_container_remove (GTK_CONTAINER (GTK_WIDGET (window->content_view)->parent),
+                                                              GTK_WIDGET (window->content_view));
                                 }
-                                if (g_list_find (window->meta_views, error_view) != NULL) {
-                                        nautilus_window_remove_meta_view (window, error_view);
-                                }
+                                window->content_view = NULL;
+                                window->made_changes++;
+                                window->cv_progress_error = TRUE;
                         }
+
+                        if (g_list_find (window->new_meta_views, error_view) != NULL) {
+                                window->new_meta_views = g_list_remove (window->new_meta_views, error_view);
+                                gtk_widget_unref (GTK_WIDGET (error_view));
+                        }
+
+                        nautilus_window_remove_meta_view (window, error_view);
+
                         gtk_widget_unref (GTK_WIDGET (error_view));
                 }
                 g_list_free (window->error_views);
@@ -845,14 +841,12 @@ nautilus_window_update_state (gpointer data)
                                 NautilusViewFrame *meta_view;
                                 NautilusViewIdentifier *identifier;
 
-                                identifier = (NautilusViewIdentifier *) (p->data);
+                                identifier = (NautilusViewIdentifier *) p->data;
 
                                 meta_view = nautilus_window_load_meta_view
                                         (window, identifier->iid, window->new_requesting_view);
-
                                 if (meta_view != NULL) {
-                                        nautilus_meta_view_frame_set_label (NAUTILUS_META_VIEW_FRAME (meta_view), 
-                                                                      identifier->name);
+                                        nautilus_view_frame_set_label (meta_view, identifier->name);
                                         window->new_meta_views = g_list_prepend (window->new_meta_views, meta_view);
                                 }
                         }

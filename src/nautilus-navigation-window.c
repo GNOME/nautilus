@@ -33,7 +33,6 @@
 #include "ntl-window-msgs.h"
 #include "ntl-window-state.h"
 #include "ntl-app.h"
-#include "ntl-meta-view.h"
 
 #include <gnome.h>
 #include <math.h>

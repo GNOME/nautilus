@@ -100,6 +100,8 @@ struct NautilusViewFrame {
         
         guint timer_id;
         guint checking;
+
+        char *label;
 };
 
 GtkType       nautilus_view_frame_get_type                (void);
@@ -133,6 +135,9 @@ gboolean      nautilus_view_frame_get_is_continuous       (NautilusViewFrame    
 void          nautilus_view_frame_zoom_in                 (NautilusViewFrame       *view);
 void          nautilus_view_frame_zoom_out                (NautilusViewFrame       *view);
 void          nautilus_view_frame_zoom_to_fit             (NautilusViewFrame       *view);
+char *        nautilus_view_frame_get_label               (NautilusViewFrame       *view);
+void          nautilus_view_frame_set_label               (NautilusViewFrame       *view,
+                                                           const char              *label);
 
 /* This is a "protected" operation */
 void          nautilus_view_frame_construct_arg_set       (NautilusViewFrame       *view);

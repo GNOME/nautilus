@@ -1,3 +1,19 @@
+2000-05-24  Darin Adler  <darin@eazel.com>
+
+	* libnautilus/nautilus-view-component.idl:
+	* src/Makefile.am:
+	* src/ntl-index-panel.c: (nautilus_index_panel_add_meta_view):
+	* src/ntl-meta-view.c: [deleted]
+	* src/ntl-meta-view.h: [deleted]
+	* src/ntl-view.c: (nautilus_view_frame_handle_client_destroy_2),
+	(nautilus_view_frame_set_active_errors),
+	(nautilus_view_frame_get_label), (nautilus_view_frame_set_label):
+	* src/ntl-view.h:
+	* src/ntl-window-msgs.c: (nautilus_window_load_meta_view),
+	(nautilus_window_update_state):
+	* src/ntl-window.c:
+	Removed Nautilus::MetaViewFrame and all the related classes.
+
 2000-05-24  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus/nautilus-undo-context.c:

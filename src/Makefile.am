@@ -67,8 +67,6 @@ nautilus_SOURCES =\
 	ntl-index-panel.c		\
 	ntl-index-panel.h		\
 	ntl-main.c 			\
-	ntl-meta-view.c			\
-	ntl-meta-view.h			\
 	ntl-miniicon.c			\
 	ntl-miniicon.h			\
 	ntl-types.h			\
