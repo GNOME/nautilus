@@ -1098,6 +1098,14 @@ go_to_previous_track (NautilusMusicView *music_view)
 static void
 play_button_callback (GtkWidget *widget, NautilusMusicView *music_view)
 {
+	int play_mode;
+
+	/* Exit if we are aready playing */
+	play_mode = get_play_status();
+	if (play_mode == STATUS_PLAY) {
+		return;
+	}
+	
 	play_current_file (music_view, FALSE);
 }
 

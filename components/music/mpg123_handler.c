@@ -643,10 +643,13 @@ void start_playing_file(gchar* filename, gboolean start_from_beginning)
 	gchar *cmd_ptr[17];
 	gint cmd_cnt = 0;
 
-	if (mpg123_status == STATUS_PLAY) return;
+	if (mpg123_status == STATUS_PLAY) {
+		return;
+	}
 	
-	if (start_from_beginning)
+	if (start_from_beginning) {
 		frames = 0;
+	}
 		
 	/* create all command line arguments */
 

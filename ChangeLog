@@ -1,5 +1,18 @@
 2000-11-30  Gene Z. Ragan  <gzr@eazel.com>
 
+	Fixed bug 3891, Repeatedly clicking the "Play" button
+	crashes Nautilus.
+	
+	* components/music/nautilus-music-view.c: 
+	(play_button_callback): Don't start playback machinery
+	if a file is already playing.
+
+	* components/music/mpg123_handler.c: (start_playing_file):
+	Add check for playback before starting playback of another
+	file.
+	
+2000-11-30  Gene Z. Ragan  <gzr@eazel.com>
+
 	Fixed bug 3888, Deleting an MP3 file while in use -> Nautilus crashes
 
 	Added a check for the existence of a file before beginning playback.
