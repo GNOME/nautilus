@@ -129,9 +129,16 @@ nautilus_link_desktop_file_local_create (const char        *directory_uri,
 							   strlen (contents),
 							   0,
 							   NULL);
-	if (!gnome_desktop_item_save (desktop_item, NULL, FALSE, NULL)) {
+	if (!desktop_item) {
+		g_free (contents);
+		g_free (uri);
+		return FALSE;
+	}
+
+	if (!gnome_desktop_item_save (desktop_item, uri, TRUE, NULL)) {
 		gnome_desktop_item_unref (desktop_item);
 		g_free (contents);
+		g_free (uri);
 		return FALSE;
 	}
 
