@@ -367,6 +367,14 @@ desktop_link_finalize (GObject *object)
 						 link);
 	}
 	
+	if (link->details->type == NAUTILUS_DESKTOP_LINK_VOLUME) {
+		g_free (link->details->mount_path);
+	}
+
+	g_free (link->details->filename);
+	g_free (link->details->display_name);
+	g_free (link->details->activation_uri);
+	g_free (link->details->icon);
 	g_free (link->details);
 
 	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));

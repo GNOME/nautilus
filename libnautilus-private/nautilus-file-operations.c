@@ -1054,7 +1054,8 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 			(parent_for_error_dialog (transfer_info), TRUE, text, 
 			 _("Conflict while copying"),
 			 _("Replace"), _("Skip"), NULL);
-			 
+		g_free (text);	 
+
 		nautilus_file_operations_progress_resume_timeout (transfer_info->progress_dialog);
 					 
 		switch (result) {
@@ -1071,6 +1072,7 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 			(parent_for_error_dialog (transfer_info), TRUE, text, 
 			 _("Conflict while copying"),
 			 _("Replace All"), _("Replace"), _("Skip"), NULL);
+		g_free (text);
 
 		nautilus_file_operations_progress_resume_timeout (transfer_info->progress_dialog);
 

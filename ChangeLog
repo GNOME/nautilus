@@ -1,3 +1,14 @@
+2003-10-21  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-desktop-link.c:
+	* libnautilus-private/nautilus-file-operations.c:
+	* libnautilus-private/nautilus-file.c:
+	* libnautilus-private/nautilus-icon-factory.c: 
+	* src/nautilus-application.c:
+	* src/nautilus-bookmark-list.c:
+	Fix leaks.
+	Patch from Martin Wehner <martin.wehner@epost.de>
+
 Mon Oct 20 13:38:16 2003  Jonathan Blandford  <jrb@gnome.org>
  
 	* src/Makefile.am (INCLUDES): remove GTK and
