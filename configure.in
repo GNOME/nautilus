@@ -327,21 +327,20 @@ dnl
 if test "x$found_mozilla" = "xtrue"
 then
 dnl EVIL1:
-	grep -w net_state $_mozilla_include_place/gtkmozembed.h > /dev/null 2>&1
+	grep -w gtk_moz_embed_set_profile_path $_mozilla_include_place/gtkmozembed.h > /dev/null 2>&1
 
 	if test $? -eq 0
 	then
-		MOZILLA_MILESTONE=17
-
-		echo "grep -w GetName $_mozilla_include_place/nsIRequest.h" > /tmp/loglog
+		MOZILLA_MILESTONE=19
+	else
 		grep -w GetName $_mozilla_include_place/nsIRequest.h > /dev/null 2>&1
 
 		if test $? -eq 0
 		then
 			MOZILLA_MILESTONE=18
+		else
+			MOZILLA_MILESTONE=17
 		fi
-	else
-		MOZILLA_MILESTONE=16
 	fi
 
 	AC_SUBST(MOZILLA_MILESTONE)
@@ -363,11 +362,11 @@ dnl EVIL2:
 
 	AC_SUBST(MOZILLA_COMPONENT_DEBUG_FLAGS)
 
-	if test "$MOZILLA_MILESTONE" != "18"
+	if test "$MOZILLA_MILESTONE" != "18" -a "$MOZILLA_MILESTONE" != "19"
 	then
 
 	AC_MSG_ERROR([
-*** Mozilla M18 is required to build the Nautilus Mozilla component.
+*** Mozilla M18 or greater is required to build the Nautilus Mozilla component.
 *** A package for M18 is available here:
 *** http://developer.eazel.com/eazel-hacking/updates/mozilla/.])
 
