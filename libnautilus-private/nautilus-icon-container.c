@@ -4732,14 +4732,15 @@ nautilus_icon_container_get_icon_images (NautilusIconContainer *container,
 					 NautilusIconData      *data,
 					 GList                **emblem_icons,
 					 char                 **embedded_text,
-					 gboolean              *embedded_text_needs_loading)
+					 gboolean              *embedded_text_needs_loading,
+					 gboolean              *has_open_window)
 {
 	NautilusIconContainerClass *klass;
 
 	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
 	g_return_val_if_fail (klass->get_icon_images != NULL, NULL);
 
-	return klass->get_icon_images (container, data, emblem_icons, embedded_text, embedded_text_needs_loading);
+	return klass->get_icon_images (container, data, emblem_icons, embedded_text, embedded_text_needs_loading, has_open_window);
 }
 
 
@@ -4865,6 +4866,8 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	char *embedded_text;
 	GdkRectangle embedded_text_rect;
 	gboolean embedded_text_needs_loading;
+	gboolean has_open_window;
+	char *modifier;
 	
 	if (icon == NULL) {
 		return;
@@ -4878,7 +4881,8 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	icon_name = nautilus_icon_container_get_icon_images (
 		container, icon->data, 
 		&emblem_icon_names,
-		&embedded_text, &embedded_text_needs_loading);
+		&embedded_text, &embedded_text_needs_loading,
+		&has_open_window);
 
 	/* compute the maximum size based on the scale factor */
 	min_image_size = MINIMUM_IMAGE_SIZE * EEL_CANVAS (container)->pixels_per_unit;
@@ -4889,10 +4893,18 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 
 	icon_size = MAX (icon_size, min_image_size);
 	icon_size = MIN (icon_size, max_image_size);
+
+	modifier = NULL;
+	if (has_open_window) {
+		modifier = "visiting";
+	}
+	if (icon == details->drop_target) {
+		modifier = "accept";
+	}
 	
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
 		(icon_name,
-		(icon == details->drop_target) ? "accept" : NULL,
+		 modifier,
 		 icon_size,
 		 &attach_points,
 		 &embedded_text_rect,

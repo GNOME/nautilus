@@ -1,3 +1,33 @@
+2003-12-18  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Require gtk/glib 2.3.0
+
+	* libnautilus-private/nautilus-directory.c:
+	Use gobject private data for details
+	
+	* libnautilus-private/nautilus-file-private.h:
+	* libnautilus-private/nautilus-file.[ch]:
+	Use gobject private data for details
+	Add has_open_window flag and setter/getter
+	
+	* libnautilus-private/nautilus-icon-container.[ch]:
+	* src/file-manager/fm-icon-container.c:
+	Support visiting modifier for icons with open windows
+	
+	* src/file-manager/fm-directory-view.c:
+	Don't use filename extension in templates name
+	
+	* src/file-manager/fm-list-model.c:
+	Support accept and visiting icon modifiers
+	
+	* src/file-manager/fm-list-view.c:
+	Always set the drag_view on the model so that the accept
+	modifier works
+	
+	* src/nautilus-window.c: (nautilus_window_set_viewed_file):
+	Set has_open_window on file
+
 2003-12-17  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-window.h: 

@@ -1427,11 +1427,18 @@ nautilus_window_set_viewed_file (NautilusWindow *window,
 	cancel_chose_component_callback (window);
 
 	if (window->details->viewed_file != NULL) {
+		if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
+			nautilus_file_set_has_open_window (window->details->viewed_file,
+							   FALSE);
+		}
 		nautilus_file_monitor_remove (window->details->viewed_file,
 					      window);
 	}
 
 	if (file != NULL) {
+		if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
+			nautilus_file_set_has_open_window (file, TRUE);
+		}
 		attributes = NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME;
 		nautilus_file_monitor_add (file, window, attributes);
 	}

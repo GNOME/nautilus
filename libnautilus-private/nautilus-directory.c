@@ -120,6 +120,8 @@ nautilus_directory_class_init (NautilusDirectoryClass *klass)
 		              G_TYPE_NONE, 1, G_TYPE_INT);
 
 	klass->get_name_for_self_as_new_file = real_get_name_for_self_as_new_file;
+
+	g_type_class_add_private (klass, sizeof (NautilusDirectoryDetails));
 }
 
 static void
@@ -129,7 +131,7 @@ nautilus_directory_init (gpointer object, gpointer klass)
 
 	directory = NAUTILUS_DIRECTORY(object);
 
-	directory->details = g_new0 (NautilusDirectoryDetails, 1);
+	directory->details = G_TYPE_INSTANCE_GET_PRIVATE ((directory), NAUTILUS_TYPE_DIRECTORY, NautilusDirectoryDetails);
 	directory->details->file_hash = g_hash_table_new (g_str_hash, g_str_equal);
 	directory->details->high_priority_queue = nautilus_file_queue_new ();
 	directory->details->low_priority_queue = nautilus_file_queue_new ();
@@ -212,8 +214,6 @@ nautilus_directory_finalize (GObject *object)
 	g_assert (directory->details->count_in_progress == NULL);
 	g_assert (directory->details->dequeue_pending_idle_id == 0);
 	gnome_vfs_file_info_list_unref (directory->details->pending_file_info);
-
-	g_free (directory->details);
 
 	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }

@@ -56,7 +56,8 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 				   NautilusIconData      *data,
 				   GList                **emblem_icons,
 				   char                 **embedded_text,
-				   gboolean              *embedded_text_needs_loading)
+				   gboolean              *embedded_text_needs_loading,
+				   gboolean              *has_window_open)
 {
 	FMIconView *icon_view;
 	EelStringList *emblems_to_ignore;
@@ -80,6 +81,8 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 		eel_string_list_free (emblems_to_ignore);
 	}
 
+	*has_window_open = nautilus_file_has_open_window (file);
+	
 	return nautilus_icon_factory_get_icon_for_file (file, TRUE);
 }
 

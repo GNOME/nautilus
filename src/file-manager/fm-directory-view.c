@@ -4635,11 +4635,19 @@ add_template_to_templates_menus (FMDirectoryView *directory_view,
 {
 	char *tip;
 	char *name;
+	char *dot;
 	GdkPixbuf *pixbuf;
 	CreateTemplateParameters *parameters;
 
 	name = nautilus_file_get_display_name (file);
+	
 	tip = g_strdup_printf (_("Create Document from template \"%s\""), name);
+
+	/* Remove extension */
+	dot = strrchr (name, '.');
+	if (dot != NULL) {
+		*dot = 0;
+	}
 
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_file 
 		(file, NULL, NAUTILUS_ICON_SIZE_FOR_MENUS);

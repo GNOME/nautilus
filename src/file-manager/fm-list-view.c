@@ -785,6 +785,9 @@ create_and_set_up_tree_view (FMListView *view)
 	
 	view->details->model = g_object_new (FM_TYPE_LIST_MODEL, NULL);
 	gtk_tree_view_set_model (view->details->tree_view, GTK_TREE_MODEL (view->details->model));
+	/* Need the model for the dnd drop icon "accept" change */
+	fm_list_model_set_drag_view (FM_LIST_MODEL (view->details->model),
+				     view->details->tree_view,  0, 0);
 
 	g_signal_connect_object (view->details->model, "sort_column_changed",
 				 G_CALLBACK (sort_column_changed_callback), view, 0);

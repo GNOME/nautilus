@@ -311,6 +311,10 @@ char *                  nautilus_file_get_drop_target_uri               (Nautilu
 char *                  nautilus_file_get_custom_icon                   (NautilusFile                   *file);
 
 
+gboolean                nautilus_file_has_open_window                   (NautilusFile                   *file);
+void                    nautilus_file_set_has_open_window               (NautilusFile                   *file,
+									 gboolean                        has_open_window);
+
 /* Thumbnailing handling */
 gboolean                nautilus_file_is_thumbnailing                   (NautilusFile                   *file);
 
