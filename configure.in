@@ -92,14 +92,27 @@ AC_ARG_WITH(mozilla,
 	fi
 )
 
-dnl FIXME bugzilla.eazel.com 724: there obviously needs to be a better test that checking for libxpcom.so
+dnl 
+dnl The strategy for detecting mozilla here is to look for the mozilla shared libs
+dnl that the mozilla component links against and the header files for the gtkmozembed
+dnl widget.
+dnl
+dnl This is the best i can do given the lameness of mozilla versioning.  If someone
+dnl has a better way to do this, please send mail to ramiro@eazel.com
+dnl
 if test "$try_mozilla" = "true"
 then
 	found_mozilla="false"
+	moz_lib=$mozilla_place/dist/bin
+	moz_src=$mozilla_place/dist/include
 
-	if test -d $mozilla_place/dist/bin
+	if test -d $lib_place
 	then
-		if test -x $mozilla_place/dist/bin/libxpcom.so
+		if test -x $moz_lib/libxpcom.so -a \
+                        -x $moz_lib/libnspr4.so -a \
+                        -x $moz_lib/libgtkembedmoz.so -a \
+                        -x $moz_lib/libgtksuperwin.so -a \
+                        -f $moz_src/gtkmozembed.h
 		then
 			found_mozilla="true"
 		fi
