@@ -26,8 +26,8 @@ nautilus_sample_content_view_SOURCES =		\
 
 nautilus_sample_content_view_LDADD =		\
 	$(top_builddir)/libnautilus/libnautilus.la	\
-	$(GNOMEUI_LIBS)				\
 	$(BONOBO_LIBS)				\
+	$(BONOBOX_LIBS)				\
 	$(GCONF_LIBS)				\
 	$(VFS_LIBS)				\
 	$(LIBRSVG_LIBS)				\

@@ -1,3 +1,13 @@
+2001-07-21  Anders Carlsson  <andersca@gnome.org>
+
+	* components/help/Makefile.am:
+	* components/sample/Makefile.am:
+	* libnautilus-adapter/Makefile.am:
+	* libnautilus-private/Makefile.am:
+	* libnautilus/Makefile.am:
+	Remove multiple references to $(NAUTILUS_PRIVATE_LIBS) since 
+	having multiple references makes linking very slow with libtool 1.4.
+
 2001-07-20  Maciej Stachowiak  <mjs@eazel.com>
 
 	Fixed bugzilla.eazel.com bug 7015 (Item count not updated when

@@ -20,12 +20,7 @@ INCLUDES = \
 LDADD =\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-private/libnautilus-private.la \
-	$(EEL_LIBS) \
-	$(LIBRSVG_LIBS) \
-	$(BONOBO_LIBS) \
-	$(GCONF_LIBS) \
-	$(GNOMEUI_LIBS) \
-	$(XML_LIBS)
+	$(NAUTILUS_PRIVATE_LIBS) 
 
 hyperbola_SOURCES=		\
 	hyperbola-nav.h		\

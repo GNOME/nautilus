@@ -28,7 +28,6 @@ endif
 
 libnautilus_private_la_LDFLAGS =	\
 	$(dependency_static_libs)	\
-	$(NAUTILUS_PRIVATE_LIBS)	\
 	$(ESD_LIBS)			\
 	$(LIBJPEG) 			\
 	$(MEDUSA_LIBS) 			\

@@ -10,7 +10,6 @@ INCLUDES=\
 	$(NULL)
 
 libnautilus_adapter_la_LDFLAGS= \
-	$(NAUTILUS_PRIVATE_LIBS) \
 	$(NULL)
 
 
