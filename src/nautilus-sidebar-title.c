@@ -265,13 +265,15 @@ update_font (NautilusSidebarTitle *sidebar_title)
 	GdkFont *label_font;
 
 	/* FIXME bugzilla.eazel.com 1103: Make this use the font
-	 * factory.
+	 * factory and be failsafe if the given font is not found.
 	 */
+
 	/* FIXME: Where does the "4" come from? */
 	label_font = nautilus_get_largest_fitting_font
 		(sidebar_title->details->title_text,
 		 GTK_WIDGET (sidebar_title)->allocation.width - 4,
-		 "-*-helvetica-medium-r-normal-*-%d-*-*-*-*-*-*-*");
+		 "-urw-helvetica-medium-r-normal-*-%d-*-*-*-*-*-*-*");
+	
 	nautilus_gtk_widget_set_font (sidebar_title->details->title, label_font);
 	/* FIXME: Is there a font leak here? */
 }
