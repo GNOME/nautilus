@@ -1,3 +1,25 @@
+2001-03-01  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fix bug 7208 (History and Notes panels intermittently die at
+	startup or window launch). The bug turned out to be a logic error
+	at the shell level, not a panel crashing as I had been assuming.
+	
+	* src/nautilus-view-frame.c: (nautilus_view_frame_stop),
+	(nautilus_view_frame_selection_changed),
+	(nautilus_view_frame_title_changed), (send_history): Check whether
+	the CORBA view object is NIL instead of looking at state. The view
+	will be NIL at all the right times, and it's a simpler and more
+	reliable check. In particular, it's correct during the early
+	loading stage, when the state does not reflect whether the view is
+	present yet or not.
+
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(nautilus_g_hash_table_new_free_at_exit): Only complain on systems
+	where NAUTILUS_DEBUG is set, because this could confuse real users
+	(the message doesn't really represent a bug).
+
 2001-03-01  Eric Fischer  <eric@eazel.com>
 
 	reviewed by: Robin * Slomkowski <rslomkow@eazel.com>

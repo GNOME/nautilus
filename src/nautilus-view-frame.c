@@ -327,7 +327,7 @@ stop_activation (NautilusViewFrame *view)
 static void
 destroy_view (NautilusViewFrame *view)
 {
-	if (view->details->view == NULL) {
+	if (view->details->view == CORBA_OBJECT_NIL) {
 		return;
 	}
 	
@@ -724,7 +724,7 @@ queue_view_frame_failed (NautilusViewFrame *view)
 
 static void
 attach_view (NautilusViewFrame *view,
-	       BonoboObjectClient *client)
+	     BonoboObjectClient *client)
 {
 	GtkWidget *widget;
   	
@@ -869,7 +869,7 @@ nautilus_view_frame_stop (NautilusViewFrame *view)
 	
 	stop_activation (view);
 
-	if (view->details->state != VIEW_FRAME_EMPTY) {
+	if (view->details->view != CORBA_OBJECT_NIL) {
 		CORBA_exception_init (&ev);
 		Nautilus_View_stop_loading (view->details->view, &ev);
 		if (ev._major != CORBA_NO_EXCEPTION) {
@@ -888,15 +888,8 @@ nautilus_view_frame_selection_changed (NautilusViewFrame *view,
 	
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 	
-	switch (view->details->state) {
-	case VIEW_FRAME_EMPTY:
-	case VIEW_FRAME_FAILED:
+	if (view->details->view == CORBA_OBJECT_NIL) {
 		return;
-	case VIEW_FRAME_NO_LOCATION:
-	case VIEW_FRAME_UNDERWAY:
-	case VIEW_FRAME_LOADED:
-	case VIEW_FRAME_WAITING:
-		break;
 	}
 
 	uri_list = nautilus_uri_list_from_g_list (selection);
@@ -919,15 +912,8 @@ nautilus_view_frame_title_changed (NautilusViewFrame *view,
 	
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 	
-	switch (view->details->state) {
-	case VIEW_FRAME_EMPTY:
-	case VIEW_FRAME_FAILED:
+	if (view->details->view == CORBA_OBJECT_NIL) {
 		return;
-	case VIEW_FRAME_NO_LOCATION:
-	case VIEW_FRAME_UNDERWAY:
-	case VIEW_FRAME_LOADED:
-	case VIEW_FRAME_WAITING:
-		break;
 	}
 
 	CORBA_exception_init (&ev);
@@ -1346,15 +1332,8 @@ send_history (NautilusViewFrame *view)
 
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 	
-	switch (view->details->state) {
-	case VIEW_FRAME_EMPTY:
-	case VIEW_FRAME_FAILED:
+	if (view->details->view == CORBA_OBJECT_NIL) {
 		return;
-	case VIEW_FRAME_NO_LOCATION:
-	case VIEW_FRAME_WAITING:
-	case VIEW_FRAME_UNDERWAY:
-	case VIEW_FRAME_LOADED:
-		break;
 	}
 
 	history = get_history_list (view);

@@ -930,7 +930,12 @@ nautilus_g_hash_table_new_free_at_exit (GHashFunc hash_func,
 	GHashTable *hash_table;
 	HashTableToFree *hash_table_to_free;
 
-	if (hash_tables_to_free_at_exit == NULL) {
+	/* FIXME: We can take out the NAUTILUS_DEBUG check once we
+	 * have fixed more of the leaks. For now, it's a bit too noisy
+	 * for the general public.
+	 */
+	if (hash_tables_to_free_at_exit == NULL
+	    && g_getenv ("NAUTILUS_DEBUG") != NULL) {
 		g_atexit (free_hash_tables_at_exit);
 	}
 
