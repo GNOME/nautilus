@@ -709,7 +709,7 @@ icon_view_create_nautilus_links (NautilusIconContainer *container, const GList *
 				/* FIXME bugzilla.eazel.com 5623: Create better text here */				
 				message = _("Nautilus does not currently support "
 					    "launchers that require a terminal.");
-				nautilus_warning_dialog (message, _("Unable to Create Link"),
+				nautilus_show_warning_dialog (message, _("Unable to Create Link"),
 					  fm_directory_view_get_containing_window (view));
 				break;
 			}

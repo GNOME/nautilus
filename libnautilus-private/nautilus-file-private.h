@@ -108,7 +108,6 @@ gboolean      nautilus_file_info_missing                   (NautilusFile        
 							    GnomeVFSFileInfoFields  needed_mask);
 char *        nautilus_extract_top_left_text               (const char             *text,
 							    int                     length);
-gboolean      nautilus_file_contains_text                  (NautilusFile           *file);
 void          nautilus_file_set_directory                  (NautilusFile           *file,
 							    NautilusDirectory      *directory);
 gboolean      nautilus_file_get_date                       (NautilusFile           *file,

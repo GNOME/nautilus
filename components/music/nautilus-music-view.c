@@ -687,7 +687,7 @@ set_album_cover (GtkWidget *widget, gpointer *data)
 		char *message = g_strdup_printf
 			(_("Sorry, but '%s' is not a usable image file."),
 			 path_name);
-		nautilus_error_dialog (message, _("Not an Image"), NULL);
+		nautilus_show_error_dialog (message, _("Not an Image"), NULL);
 		g_free (message);
 		
 		g_free (path_uri);
@@ -1185,12 +1185,12 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 	int length;
 
 	if (esdout_playing ()) {
-		nautilus_error_dialog (_("Sorry, but the music view is unable to play back sound right now. "
-					 "Either another program is using or blocking the sound card, "
-					 "or your sound card is not configured properly. Try quitting any "
-					 "applications that may be blocking use of the sound card."),
-				         _("Unable to Play File"),
-					GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (&music_view->parent))));
+		nautilus_show_error_dialog (_("Sorry, but the music view is unable to play back sound right now. "
+					      "Either another program is using or blocking the sound card, "
+					      "or your sound card is not configured properly. Try quitting any "
+					      "applications that may be blocking use of the sound card."),
+				            _("Unable to Play File"),
+					    GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (&music_view->parent))));
 		
 		return;	
 	}
@@ -1209,7 +1209,7 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 
 	/* for now, we can only play local files, so apologize to the user and give up */	
 	if (song_filename == NULL) {
-                nautilus_error_dialog
+                nautilus_show_error_dialog
                         ( _("Sorry, but the music view can't play non-local files yet."),
                           _("Can't Play Remote Files"),
                           NULL);
@@ -1717,8 +1717,8 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 	if (result != GNOME_VFS_OK) {
 		path = gnome_vfs_get_local_path_from_uri (uri);
 		message = g_strdup_printf (_("Sorry, but there was an error reading %s."), path);
-		nautilus_error_dialog (message, _("Can't Read Folder"), 
-				       GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (music_view))));
+		nautilus_show_error_dialog (message, _("Can't Read Folder"), 
+				            GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (music_view))));
 		g_free (path);
 		g_free (message);
                 g_free (uri);

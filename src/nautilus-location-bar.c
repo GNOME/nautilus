@@ -139,7 +139,7 @@ drag_data_received_callback (GtkWidget *widget,
 		prompt = g_strdup_printf (_("Do you want to view these %d locations "
 					  "in separate windows?"), 
 					  name_count);
-		new_windows_for_extras = nautilus_simple_dialog 
+		new_windows_for_extras = nautilus_run_simple_dialog 
 			(GTK_WIDGET (nautilus_location_bar_get_window (widget)),
 			 TRUE,
 			 prompt,

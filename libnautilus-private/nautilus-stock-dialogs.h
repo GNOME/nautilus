@@ -46,7 +46,7 @@ void         nautilus_timed_wait_stop           (NautilusCancelCallback  cancel_
 						 gpointer                callback_data);
 
 /* Basic dialog with buttons. */
-int          nautilus_simple_dialog             (GtkWidget              *parent,
+int          nautilus_run_simple_dialog         (GtkWidget              *parent,
 						 gboolean               ignore_close_box,
 						 const char             *text,
 						 const char             *title,
@@ -56,23 +56,29 @@ int          nautilus_simple_dialog             (GtkWidget              *parent,
  * bother with non-parented versions, we allow setting the title,
  * and we return GnomeDialog pointers instead of GtkWidget pointers.
  */
-GnomeDialog *nautilus_info_dialog               (const char             *informative_message,
-						 const char		*dialog_title,
-						 GtkWindow              *parent);
-GnomeDialog *nautilus_warning_dialog            (const char             *warning_message,
-						 const char		*dialog_title,
-						 GtkWindow              *parent);
-GnomeDialog *nautilus_error_dialog              (const char             *error_message,
-						 const char		*dialog_title,
-						 GtkWindow              *parent);
-GnomeDialog *nautilus_error_dialog_with_details (const char             *error_message,
-						 const char		*dialog_title,
-						 const char             *detailed_error_message,
-						 GtkWindow              *parent);
-GnomeDialog *nautilus_yes_no_dialog             (const char             *question,
-						 const char		*dialog_title,
-						 const char             *yes_label,
-						 const char             *no_label,
-						 GtkWindow              *parent);
+GnomeDialog *nautilus_show_info_dialog               (const char             *informative_message,
+						      const char	     *dialog_title,
+						      GtkWindow              *parent);
+GnomeDialog *nautilus_show_warning_dialog            (const char             *warning_message,
+						      const char	     *dialog_title,
+						      GtkWindow              *parent);
+GnomeDialog *nautilus_show_error_dialog              (const char             *error_message,
+						      const char	     *dialog_title,
+						      GtkWindow              *parent);
+GnomeDialog *nautilus_show_error_dialog_with_details (const char             *error_message,
+						      const char	     *dialog_title,
+						      const char             *detailed_error_message,
+						      GtkWindow              *parent);
+GnomeDialog *nautilus_show_yes_no_dialog             (const char             *question,
+						      const char	     *dialog_title,
+						      const char             *yes_label,
+						      const char             *no_label,
+						      GtkWindow              *parent);
+
+GnomeDialog *nautilus_create_question_dialog         (const char             *question,
+						      const char	     *dialog_title,
+						      const char             *answer_zero,
+						      const char             *answer_one,
+						      GtkWindow              *parent);
 
 #endif /* NAUTILUS_STOCK_DIALOGS_H */

@@ -314,7 +314,7 @@ delete_event_callback (gpointer data,
 }
 
 int
-nautilus_simple_dialog (GtkWidget *parent, gboolean ignore_close_box,
+nautilus_run_simple_dialog (GtkWidget *parent, gboolean ignore_close_box,
 			const char *text, const char *title, ...)
 {
 	va_list button_title_args;
@@ -397,11 +397,11 @@ find_message_label_callback (GtkWidget *widget, gpointer callback_data)
 }
 
 static GnomeDialog *
-show_message_box (const char *message,
+create_message_box (const char *message,
 		  const char *dialog_title,
 		  const char *type,
-		  const char *button_one,
-		  const char *button_two,
+		  const char *button_0,
+		  const char *button_1,
 		  GtkWindow *parent)
 {  
 	GtkWidget *box;
@@ -409,7 +409,7 @@ show_message_box (const char *message,
 
 	g_assert (dialog_title != NULL);
 
-	box = gnome_message_box_new (message, type, button_one, button_two, NULL);
+	box = gnome_message_box_new (message, type, button_0, button_1, NULL);
 	gtk_window_set_title (GTK_WINDOW (box), dialog_title);
 	gtk_window_set_wmclass (GTK_WINDOW (box), "stock_dialog", "Nautilus");
 	
@@ -424,8 +424,24 @@ show_message_box (const char *message,
 	if (parent != NULL) {
 		gnome_dialog_set_parent (GNOME_DIALOG (box), parent);
 	}
-	gtk_widget_show (box);
 	return GNOME_DIALOG (box);
+}
+
+static GnomeDialog *
+show_message_box (const char *message,
+		  const char *dialog_title,
+		  const char *type,
+		  const char *button_0,
+		  const char *button_1,
+		  GtkWindow *parent)
+{
+	GnomeDialog *dialog;
+
+	dialog = create_message_box (message, dialog_title, type, 
+				     button_0, button_1, parent);  
+	gtk_widget_show (GTK_WIDGET (dialog));
+
+	return dialog;
 }
 
 static GnomeDialog *
@@ -438,9 +454,9 @@ show_ok_box (const char *message,
 }
 
 GnomeDialog *
-nautilus_info_dialog (const char *info,
-	 	      const char *dialog_title,
-		      GtkWindow *parent)
+nautilus_show_info_dialog (const char *info,
+	 	      	   const char *dialog_title,
+		      	   GtkWindow *parent)
 {
 	return show_ok_box (info, 
 			    dialog_title == NULL ? _("Info") : dialog_title, 
@@ -448,9 +464,9 @@ nautilus_info_dialog (const char *info,
 }
 
 GnomeDialog *
-nautilus_warning_dialog (const char *warning,
-	 	      	 const char *dialog_title,
-			 GtkWindow *parent)
+nautilus_show_warning_dialog (const char *warning,
+	 	      	      const char *dialog_title,
+			      GtkWindow *parent)
 {
 	return show_ok_box (warning, 
 			    dialog_title == NULL ? _("Warning") : dialog_title, 
@@ -458,9 +474,9 @@ nautilus_warning_dialog (const char *warning,
 }
 
 GnomeDialog *
-nautilus_error_dialog (const char *error,
-	 	       const char *dialog_title,
-		       GtkWindow *parent)
+nautilus_show_error_dialog (const char *error,
+	 	       	    const char *dialog_title,
+		       	    GtkWindow *parent)
 {
 	return show_ok_box (error,
 			    dialog_title == NULL ? _("Error") : dialog_title, 
@@ -487,10 +503,10 @@ clicked_callback (GnomeDialog *dialog,
 }
 
 GnomeDialog *
-nautilus_error_dialog_with_details (const char *error_message,
-				    const char *dialog_title,
-				    const char *detailed_error_message,
-				    GtkWindow *parent)
+nautilus_show_error_dialog_with_details (const char *error_message,
+				    	 const char *dialog_title,
+				    	 const char *detailed_error_message,
+				    	 GtkWindow *parent)
 {
 	GnomeDialog *dialog;
 
@@ -499,7 +515,7 @@ nautilus_error_dialog_with_details (const char *error_message,
 
 	if (detailed_error_message == NULL
 	    || strcmp (error_message, detailed_error_message) == 0) {
-		return nautilus_error_dialog (error_message, dialog_title, parent);
+		return nautilus_show_error_dialog (error_message, dialog_title, parent);
 	}
 
 	dialog = show_message_box (error_message, 
@@ -517,22 +533,23 @@ nautilus_error_dialog_with_details (const char *error_message,
 }
 
 /**
- * nautilus_yes_no_dialog:
+ * nautilus_show_yes_no_dialog:
  * 
- * Create a dialog asking a question with two choices.
+ * Create and show a dialog asking a question with two choices.
  * The caller needs to set up any necessary callbacks 
- * for the buttons.
+ * for the buttons. Use nautilus_create_question_dialog instead
+ * if any visual changes need to be made, to avoid flashiness.
  * @question: The text of the question.
  * @yes_label: The label of the "yes" button.
  * @no_label: The label of the "no" button.
  * @parent: The parent window for this dialog.
  */
 GnomeDialog *
-nautilus_yes_no_dialog (const char *question, 
-		    	const char *dialog_title,
-			const char *yes_label,
-			const char *no_label,
-			GtkWindow *parent)
+nautilus_show_yes_no_dialog (const char *question, 
+		    	     const char *dialog_title,
+			     const char *yes_label,
+			     const char *no_label,
+			     GtkWindow *parent)
 {
 	return show_message_box (question,
 				 dialog_title == NULL ? _("Question") : dialog_title, 
@@ -541,3 +558,31 @@ nautilus_yes_no_dialog (const char *question,
 				 no_label,
 				 parent);
 }
+
+/**
+ * nautilus_create_question_dialog:
+ * 
+ * Create a dialog asking a question with at least two choices.
+ * The caller needs to set up any necessary callbacks 
+ * for the buttons. The dialog is not yet shown, so that the
+ * caller can add additional buttons or make other visual changes
+ * without causing flashiness.
+ * @question: The text of the question.
+ * @answer_0: The label of the leftmost button (index 0)
+ * @answer_1: The label of the 2nd-to-leftmost button (index 1)
+ * @parent: The parent window for this dialog.
+ */
+GnomeDialog *
+nautilus_create_question_dialog (const char *question,
+				 const char *dialog_title,
+				 const char *answer_0,
+				 const char *answer_1,
+				 GtkWindow *parent)
+{
+	return create_message_box (question,
+				   dialog_title == NULL ? _("Question") : dialog_title, 
+				   GNOME_MESSAGE_BOX_QUESTION,
+				   answer_0,
+				   answer_1,
+				   parent);
+}				 

@@ -136,9 +136,9 @@ load_location_callback (NautilusView *nautilus_view, char *location)
 		display_indexed_search_problems_dialog (unindexed_search_is_available_for_uri);
 	}
 #else
-	nautilus_error_dialog (_("Sorry, but the Medusa search service is not available because it is not installed."),
-			       _("Search Service Not Available"),
-			       NULL);
+	nautilus_show_error_dialog (_("Sorry, but the Medusa search service is not available because it is not installed."),
+			            _("Search Service Not Available"),
+			            NULL);
 #endif
 
 	nautilus_view_set_title (nautilus_view, _("Search Results"));
@@ -159,15 +159,15 @@ load_error_callback (FMDirectoryView *nautilus_view,
 	case GNOME_VFS_ERROR_SERVICE_OBSOLETE:
 		/* FIXME bugzilla.eazel.com 5058: Should be two messages, one for each of whether
 		   "slow complete search" turned on or not */
-		load_error_dialog = nautilus_yes_no_dialog (_("The search you have selected "
-							      "is newer than the index on your "
-							      "system.  The search will return "
-							      "no results right now.  Would you like "
-							      "to create a new index now?"),
-							    _("Search for items that are too new"),
-							    _("Create a new index"),
-							    _("Don't create index"),
-							    NULL);
+		load_error_dialog = nautilus_show_yes_no_dialog (_("The search you have selected "
+							           "is newer than the index on your "
+							           "system.  The search will return "
+							           "no results right now.  Would you like "
+							           "to create a new index now?"),
+							         _("Search for items that are too new"),
+							         _("Create a new index"),
+							         _("Don't create index"),
+							         NULL);
 		gtk_signal_connect (GTK_OBJECT (nautilus_gnome_dialog_get_button_by_index
 						(load_error_dialog, GNOME_OK)),
 				    "clicked",
@@ -175,12 +175,12 @@ load_error_callback (FMDirectoryView *nautilus_view,
 				    NULL);
 		break;
 	case GNOME_VFS_ERROR_TOO_BIG:
-		nautilus_error_dialog (_("Every indexed file on your computer "
-					 "matches the criteria you selected. "
-					 "You can check the spelling on your selections "
-					 "or add more criteria to narrow your results."),
-				       _("Error during search"),
-				       NULL);
+		nautilus_show_error_dialog (_("Every indexed file on your computer "
+					      "matches the criteria you selected. "
+					      "You can check the spelling on your selections "
+					      "or add more criteria to narrow your results."),
+				            _("Error during search"),
+				            NULL);
 		break;
 	case GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE:
 		/* We've handled this case in load_location_callback */
@@ -190,9 +190,9 @@ load_error_callback (FMDirectoryView *nautilus_view,
 							  "this search's contents: "
 							  "%s"),
 							gnome_vfs_result_to_string (result));
-		nautilus_error_dialog (error_string,
-				       _("Error during search"),
-				       NULL);
+		nautilus_show_error_dialog (error_string,
+				            _("Error during search"),
+				            NULL);
 		g_free (error_string);
 		
 	}
@@ -225,15 +225,15 @@ display_indexed_search_problems_dialog (gboolean backup_search_is_available)
 		title_string = backup_search_is_available 
 			?  N_("Fast searches are not available")
 			:  N_("Content searches are not available");
-		nautilus_error_dialog_with_details (error_string,
-						    title_string,
-						    _("Your index files are available "
-						      "but the Medusa search daemon, which handles "
-						      "index requests, isn't running.  "
-						      "To start this program, log in as root and "
-						      "enter this command at the command line: "
-						      "medusa-searchd"),
-						    NULL);
+		nautilus_show_error_dialog_with_details (error_string,
+						         title_string,
+						         _("Your index files are available "
+						           "but the Medusa search daemon, which handles "
+						           "index requests, isn't running.  "
+						           "To start this program, log in as root and "
+						           "enter this command at the command line: "
+						           "medusa-searchd"),
+						         NULL);
 	}
 	else {
 		/* There is currently no index available, so we need to explain
@@ -265,11 +265,11 @@ display_indexed_search_problems_dialog (gboolean backup_search_is_available)
 			title_string = backup_search_is_available
 				? N_("Indexed searches are not available")
 				: N_("Content searches are not available");
-			index_problem_dialog = nautilus_yes_no_dialog (error_string,
-								       title_string,
-								       _("Create an Index"),
-								       _("Don't Create an Index Now"),
-								       NULL);
+			index_problem_dialog = nautilus_show_yes_no_dialog (error_string,
+								            title_string,
+								            _("Create an Index"),
+								            _("Don't Create an Index Now"),
+								            NULL);
 			create_index_button = nautilus_gnome_dialog_get_button_by_index (index_problem_dialog,
 											  GNOME_OK);
 			gtk_signal_connect (GTK_OBJECT (create_index_button),
@@ -293,9 +293,9 @@ display_indexed_search_problems_dialog (gboolean backup_search_is_available)
 			title_string = backup_search_is_available
 				? N_("Indexed searches are not available")
 				: N_("Content searches are not available");
-			nautilus_error_dialog (error_string,
-					       title_string,
-					       NULL);
+			nautilus_show_error_dialog (error_string,
+					            title_string,
+					            NULL);
 			break;
 		default:
 			error_string = backup_search_is_available
@@ -312,14 +312,14 @@ display_indexed_search_problems_dialog (gboolean backup_search_is_available)
 			title_string = backup_search_is_available
 				? N_("Indexed searches are not available")
 				: N_("Content searches are not available");
-			nautilus_error_dialog_with_details (error_string,
-							    title_string,
-							    _("The program that creates an index "
-							      "is not set up correctly.  You can "
-							      "create an index by hand by "
-							      "running \"medusa-indexd\" as root "
-							      "on the command line."),
-							    NULL);
+			nautilus_show_error_dialog_with_details (error_string,
+							         title_string,
+							         _("The program that creates an index "
+							           "is not set up correctly.  You can "
+							           "create an index by hand by "
+							           "running \"medusa-indexd\" as root "
+							           "on the command line."),
+							         NULL);
 			break;
 		}
 	}
@@ -667,10 +667,10 @@ real_file_limit_reached (FMDirectoryView *view)
 	 * to the way files are collected in batches. So you can't assume that
 	 * no more than the constant limit are displayed.
 	 */
-	nautilus_warning_dialog (_("Nautilus found more search results than it can display. "
-				   "Some matching items will not be displayed. "), 
-				 _("Too Many Matches"),
-				 fm_directory_view_get_containing_window (view));
+	nautilus_show_warning_dialog (_("Nautilus found more search results than it can display. "
+				        "Some matching items will not be displayed. "), 
+				      _("Too Many Matches"),
+				      fm_directory_view_get_containing_window (view));
 }
 
 static void

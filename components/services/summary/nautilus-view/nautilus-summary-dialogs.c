@@ -64,9 +64,9 @@ static void		name_or_password_field_activated	(GtkWidget			*caption_table,
 void
 nautilus_summary_login_failure_dialog (NautilusSummaryView *view, const char *message)
 {
-	nautilus_error_dialog (message, 
-				        _("Eazel Service Login Error"), 
-				        get_window_from_summary_view (view));
+	nautilus_show_error_dialog (message, 
+			            _("Eazel Service Login Error"), 
+				    get_window_from_summary_view (view));
 }
 
 void
@@ -74,9 +74,9 @@ generate_error_dialog (NautilusSummaryView *view, const char *message)
 {
 	GnomeDialog	*dialog;
 
-	dialog = nautilus_error_dialog (message, 
-				        _("Service Error"), 
-				        get_window_from_summary_view (view));
+	dialog = nautilus_show_error_dialog (message, 
+				             _("Service Error"), 
+				             get_window_from_summary_view (view));
 	gtk_signal_connect (GTK_OBJECT (dialog),
 			    "destroy",
 			    error_dialog_cancel_cb,

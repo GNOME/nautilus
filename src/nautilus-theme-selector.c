@@ -409,7 +409,7 @@ add_theme_to_icons (GtkWidget *widget, gpointer *data)
 	
 	if (!g_file_exists (xml_path)) {
 		char *message = g_strdup_printf (_("Sorry, but \"%s\" is not a valid theme folder."), theme_path);
-		nautilus_error_dialog (message, _("Couldn't add theme"), GTK_WINDOW (theme_selector));
+		nautilus_show_error_dialog (message, _("Couldn't add theme"), GTK_WINDOW (theme_selector));
 		g_free (message);
 	} else {
 		/* copy the theme directory into ~/.nautilus/themes.  First, create the themes directory if it doesn't exist */
@@ -438,7 +438,7 @@ add_theme_to_icons (GtkWidget *widget, gpointer *data)
 		
 		if (result != GNOME_VFS_OK) {
 			char *message = g_strdup_printf (_("Sorry, but the \"%s\" theme couldn't be installed."), theme_path);
-			nautilus_error_dialog (message, _("Couldn't install theme"), GTK_WINDOW (theme_selector));
+			nautilus_show_error_dialog (message, _("Couldn't install theme"), GTK_WINDOW (theme_selector));
 			g_free (message);
 		
 		} else {	
@@ -593,10 +593,10 @@ theme_select_row_callback (GtkCList * clist, int row, int column, GdkEventButton
 		if (nautilus_strcmp (theme_name, current_theme) == 0) {
 			g_free (current_theme);
 			exit_remove_mode (theme_selector);
-			nautilus_error_dialog (_("Sorry, but you can't remove the current theme. "
-						 "Please change to another theme before removing this one."),
-				       _("Can't delete current theme"),
-				       GTK_WINDOW (theme_selector));
+			nautilus_show_error_dialog (_("Sorry, but you can't remove the current theme. "
+						      "Please change to another theme before removing this one."),
+				                    _("Can't delete current theme"),
+				                    GTK_WINDOW (theme_selector));
 			theme_selector->details->handling_theme_change = FALSE;	
 			
 			return;
@@ -616,8 +616,8 @@ theme_select_row_callback (GtkCList * clist, int row, int column, GdkEventButton
 		gnome_vfs_uri_list_free (uri_list);
 				   
 		if (result != GNOME_VFS_OK) {
-			nautilus_error_dialog (_("Sorry, but that theme could not be removed!"), 
-					       _("Couldn't remove theme"), GTK_WINDOW (theme_selector));
+			nautilus_show_error_dialog (_("Sorry, but that theme could not be removed!"), 
+					            _("Couldn't remove theme"), GTK_WINDOW (theme_selector));
 		
 		}
 				

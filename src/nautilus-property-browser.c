@@ -865,7 +865,7 @@ remove_pattern(NautilusPropertyBrowser *property_browser, const char* pattern_na
 	/* delete the pattern from the pattern directory */
 	if (gnome_vfs_unlink (pattern_uri) != GNOME_VFS_OK) {
 		char *message = g_strdup_printf (_("Sorry, but pattern %s couldn't be deleted."), pattern_name);
-		nautilus_error_dialog (message, _("Couldn't delete pattern"), GTK_WINDOW (property_browser));
+		nautilus_show_error_dialog (message, _("Couldn't delete pattern"), GTK_WINDOW (property_browser));
 		g_free (message);
 	}
 	
@@ -894,7 +894,7 @@ remove_emblem (NautilusPropertyBrowser *property_browser, const char* emblem_nam
 	/* delete the emblem from the emblem directory */
 	if (gnome_vfs_unlink (emblem_uri) != GNOME_VFS_OK) {
 		char *message = g_strdup_printf (_("Sorry, but emblem %s couldn't be deleted."), emblem_name);
-		nautilus_error_dialog (message, _("Couldn't delete pattern"), GTK_WINDOW (property_browser));
+		nautilus_show_error_dialog (message, _("Couldn't delete pattern"), GTK_WINDOW (property_browser));
 		g_free (message);
 	}
 	else {
@@ -955,7 +955,7 @@ emblem_image_file_changed (GtkWidget *entry, NautilusPropertyBrowser *property_b
 		char *message = g_strdup_printf
 			(_("Sorry, but '%s' is not a usable image file!"),
 			 gtk_entry_get_text(GTK_ENTRY(entry)));
-		nautilus_error_dialog (message, _("Not an Image"), GTK_WINDOW (property_browser));
+		nautilus_show_error_dialog (message, _("Not an Image"), GTK_WINDOW (property_browser));
 		g_free (message);
 		
 		gtk_entry_set_text(GTK_ENTRY(entry), property_browser->details->image_path);
@@ -1091,7 +1091,7 @@ add_pattern_to_browser (GtkWidget *widget, gpointer *data)
 	/* don't allow the user to change the reset image */
 	basename = nautilus_uri_get_basename (path_uri);
 	if (basename && nautilus_strcmp (basename, RESET_IMAGE_NAME) == 0) {
-		nautilus_error_dialog (_("Sorry, but you can't replace the reset image."), _("Not an Image"), NULL);
+		nautilus_show_error_dialog (_("Sorry, but you can't replace the reset image."), _("Not an Image"), NULL);
 		g_free (path_name);
 		g_free (path_uri);
 		g_free (basename);
@@ -1104,7 +1104,7 @@ add_pattern_to_browser (GtkWidget *widget, gpointer *data)
 	
 	if (!is_image) {
 		char *message = g_strdup_printf (_("Sorry, but '%s' is not a usable image file!"), path_name);
-		nautilus_error_dialog (message, _("Not an Image"), NULL);
+		nautilus_show_error_dialog (message, _("Not an Image"), NULL);
 		g_free (message);
 		g_free (path_name);
 		return;
@@ -1133,7 +1133,7 @@ add_pattern_to_browser (GtkWidget *widget, gpointer *data)
 	result = nautilus_copy_uri_simple (path_name, destination_name);		
 	if (result != GNOME_VFS_OK) {
 		char *message = g_strdup_printf (_("Sorry, but the pattern %s couldn't be installed."), path_name);
-		nautilus_error_dialog (message, _("Couldn't install pattern"), GTK_WINDOW (property_browser));
+		nautilus_show_error_dialog (message, _("Couldn't install pattern"), GTK_WINDOW (property_browser));
 		g_free (message);
 	}
 				
@@ -1228,8 +1228,8 @@ add_color_to_browser (GtkWidget *widget, int which_button, gpointer *data)
 		color_name = gtk_entry_get_text (GTK_ENTRY (property_browser->details->color_name));
 		stripped_color_name = g_strstrip (g_strdup (color_name));
 		if (strlen (stripped_color_name) == 0) {
-			nautilus_error_dialog (_("Sorry, but you must specify a non-blank name for the new color."), 
-						_("Couldn't install color"), GTK_WINDOW (property_browser));
+			nautilus_show_error_dialog (_("Sorry, but you must specify a non-blank name for the new color."), 
+						    _("Couldn't install color"), GTK_WINDOW (property_browser));
 		
 		} else {
 			add_color_to_file (property_browser, color_spec, stripped_color_name);
@@ -1368,7 +1368,7 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 				} else {
 					char *message = g_strdup_printf
 						(_("Sorry, but '%s' is not a usable image file!"), emblem_path);
-					nautilus_error_dialog (message, _("Not an Image"), GTK_WINDOW (property_browser));
+					nautilus_show_error_dialog (message, _("Not an Image"), GTK_WINDOW (property_browser));
 					g_free (message);
 					g_free (emblem_path);
 					return;
@@ -1385,15 +1385,15 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 		}
 		
 		if (stripped_keyword == NULL || strlen (stripped_keyword) == 0) {
-			nautilus_error_dialog (_("Sorry, but you must specify a non-blank keyword for the new emblem."), 
-						_("Couldn't install emblem"), GTK_WINDOW (property_browser));
+			nautilus_show_error_dialog (_("Sorry, but you must specify a non-blank keyword for the new emblem."), 
+						    _("Couldn't install emblem"), GTK_WINDOW (property_browser));
 		} else if (!emblem_keyword_valid (stripped_keyword)) {
-			nautilus_error_dialog (_("Sorry, but emblem keywords can only contain letters, spaces and numbers."), 
-						_("Couldn't install emblem"), GTK_WINDOW (property_browser));
+			nautilus_show_error_dialog (_("Sorry, but emblem keywords can only contain letters, spaces and numbers."), 
+						    _("Couldn't install emblem"), GTK_WINDOW (property_browser));
 		} else if (is_reserved_keyword (property_browser, stripped_keyword)) {
 			error_string = g_strdup_printf (_("Sorry, but \"%s\" is an existing keyword.  Please choose a different name for it."), stripped_keyword);
-			nautilus_error_dialog (error_string, 
-						_("Couldn't install emblem"), GTK_WINDOW (property_browser));
+			nautilus_show_error_dialog (error_string, 
+						    _("Couldn't install emblem"), GTK_WINDOW (property_browser));
 			g_free (error_string);
 		} else {		
 			user_directory = nautilus_get_user_directory ();
@@ -1422,7 +1422,7 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 		
 			if (result != GNOME_VFS_OK) {
 				char *message = g_strdup_printf (_("Sorry, but the image at %s couldn't be installed as an emblem."), property_browser->details->image_path);
-				nautilus_error_dialog (message, _("Couldn't install emblem"), GTK_WINDOW (property_browser));
+				nautilus_show_error_dialog (message, _("Couldn't install emblem"), GTK_WINDOW (property_browser));
 				g_free (message);
 			} else {
 				emit_emblems_changed_signal ();	

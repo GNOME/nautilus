@@ -3698,7 +3698,7 @@ get_description (NautilusFile *file)
 			     "or isn't being found for some other reason."));
 	} else {
 		g_warning (_("No description found for mime type \"%s\" (file is \"%s\"), "
-			     "tell sullivan@eazel.com"),
+			     "tell aaron@eazel.com"),
 			   mime_type,
 			   file->details->relative_uri);
 	}

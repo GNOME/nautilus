@@ -651,7 +651,7 @@ handle_unreadable_location (NautilusWindow *window, const char *location)
 		file_name = nautilus_file_get_name (file);
         	message = g_strdup_printf (_("You do not have the permissions necessary to view \"%s\"."), file_name);
                 g_free (file_name);
-                nautilus_error_dialog (message, _("Inadequate Permissions"), GTK_WINDOW (window));
+                nautilus_show_error_dialog (message, _("Inadequate Permissions"), GTK_WINDOW (window));
                 g_free (message);
 	}
 
@@ -769,7 +769,7 @@ report_content_view_failure_to_user_internal (NautilusWindow *window,
 
 	label = view_frame_get_label (view_frame);
 	message = g_strdup_printf (message, label);
-	nautilus_error_dialog (message, _("View Failed"), GTK_WINDOW (window));
+	nautilus_show_error_dialog (message, _("View Failed"), GTK_WINDOW (window));
 	g_free (label);
 }
 
@@ -878,7 +878,7 @@ report_sidebar_panel_failure_to_user (NautilusWindow *window, NautilusViewFrame 
                          label);
         }
 
-	nautilus_error_dialog (message, _("Sidebar Panel Failed"), GTK_WINDOW (window));
+	nautilus_show_error_dialog (message, _("Sidebar Panel Failed"), GTK_WINDOW (window));
 
 	g_free (label);
 	g_free (message);
@@ -1311,7 +1311,7 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                  * happens when a new window cannot display its initial URI. 
                  */
 
-                dialog = nautilus_error_dialog (error_message, dialog_title, NULL);
+                dialog = nautilus_show_error_dialog (error_message, dialog_title, NULL);
                 
 		/* if this is the only window, we don't want to quit, so we redirect it to home */
 		if (just_one_window ()) {
@@ -1336,7 +1336,7 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
         } else {
                 /* Clean up state of already-showing window */
                 nautilus_window_allow_stop (window, FALSE);
-                nautilus_error_dialog (error_message, dialog_title, GTK_WINDOW (window));
+                nautilus_show_error_dialog (error_message, dialog_title, GTK_WINDOW (window));
 
                 /* Leave the location bar showing the bad location that the user
                  * typed (or maybe achieved by dragging or something). Many times

@@ -1,3 +1,107 @@
+2001-01-29  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 4427 (Should not execute text files by default).
+
+	Now it asks whether to run or display executable text files.
+	Advanced users can set a new preference.
+
+	* libnautilus-extensions/nautilus-stock-dialogs.h:
+	* libnautilus-extensions/nautilus-stock-dialogs.c:
+	(create_message_box): New bottleneck function, contains former
+	guts of show_message_box but doesn't call gtk_widget_show.
+	(show_message_box): Now just a simple wrapper for 
+	calling create_message_box and showing the result.
+	(nautilus_show_info_dialog), (nautilus_show_warning_dialog), 
+	(nautilus_show_error_dialog), (nautilus_show_yes_no_dialog), 
+	(nautilus_show_error_dialog_with_details):
+	Renamed to add verb "show" to names.
+	(nautilus_run_simple_dialog): Renamed to add verb "run" to name.
+	(nautilus_create_question_dialog): New public function, does
+	not show the dialog yet so caller can add more buttons or
+	whatever before showing.
+
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_descriptions),
+	(global_preferences_install_defaults),
+	(global_preferences_install_visibility),
+	(global_preferences_create_dialog): Add new preference for
+	what to do when an executable text file is activated. It
+	defaults to "Ask" and is visible only at Advanced level.
+
+	* libnautilus-extensions/nautilus-file-private.h:
+	* libnautilus-extensions/nautilus-file.h: Moved
+	nautilus_file_contains_text into public header.
+	
+	* src/file-manager/fm-directory-view.c:
+	(get_executable_text_file_action): New function, uses preference
+	and dialog (if necessary) to determine how to handle activating
+	an executable text file.
+	(activate_callback): Now handles executable text files specially
+	by using get_executable_text_file_action. Restructured the control
+	flow a little.
+
+	* components/music/nautilus-music-view.c: (set_album_cover),
+	(play_current_file), (nautilus_music_view_update):
+	* components/rpmview/nautilus-rpm-view-install.c:
+	(nautilus_rpm_view_install_done):
+	* components/services/summary/nautilus-view/nautilus-summary-dialogs.c: 
+	(nautilus_summary_login_failure_dialog),
+	(generate_error_dialog):
+	* components/text/nautilus-text-view.c: (file_read_callback):
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(confirm_empty_trash),
+	(handle_transfer_vfs_error), (handle_transfer_overwrite),
+	(nautilus_file_operations_copy_move),
+	(handle_new_folder_vfs_error),
+	(nautilus_file_operations_move_to_trash):
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(confirm_switch_to_manual_layout):
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(nautilus_program_chooser_show_no_choices_message):
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	(nautilus_launch_application):
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(display_mount_status):
+	* src/file-manager/fm-desktop-icon-view.c:
+	(icon_view_create_nautilus_links):
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_confirm_multiple_windows),
+	(real_file_limit_reached), (fm_directory_view_confirm_deletion),
+	(confirm_delete_from_trash), (report_broken_symbolic_link),
+	* src/file-manager/fm-error-reporting.c:
+	(fm_report_error_renaming_file), (fm_report_error_setting_group),
+	(fm_report_error_setting_owner),
+	(fm_report_error_setting_permissions):
+	* src/file-manager/fm-properties-window.c: (set_custom_image):
+	* src/file-manager/fm-search-list-view.c: (load_location_callback),
+	(load_error_callback), (display_indexed_search_problems_dialog),
+	(real_file_limit_reached):
+	* src/file-manager/nautilus-indexing-info.c:
+	(update_file_index_callback),
+	(show_search_service_not_available_dialog):
+	* src/nautilus-application.c: (check_required_directories),
+	(nautilus_application_startup):
+	* src/nautilus-location-bar.c: (drag_data_received_callback):
+	* src/nautilus-property-browser.c: (remove_pattern),
+	(remove_emblem), (emblem_image_file_changed),
+	(add_pattern_to_browser), (add_color_to_browser),
+	(emblem_dialog_clicked):
+	* src/nautilus-sidebar.c: (receive_dropped_uri_list):
+	* src/nautilus-theme-selector.c: (add_theme_to_icons),
+	(theme_select_row_callback):
+	* src/nautilus-window-manage-views.c: (handle_unreadable_location),
+	(report_content_view_failure_to_user_internal),
+	(report_sidebar_panel_failure_to_user),
+	(nautilus_window_end_location_change_callback):
+	* src/nautilus-window-menus.c: (forget_history_if_confirmed),
+	(show_bogus_bookmark_window): Updated for dialog API name changes.
+
+	* libnautilus-extensions/nautilus-file.c: (get_description):
+	Lucky Aaron gets missing mime description complaints now.
+
 2001-01-29  Michael Engber  <engber@eazel.com>
 
 	* libnautilus-extensions/nautilus-background.c:
@@ -256,6 +360,7 @@ Fri Jan 26 23:58:42 2001  George Lebl <jirka@5z.com>
 
 	* libnautilus-extensions/nautilus-glib-extensions.c:
 	Correct spelling and naming error in a comment
+	
 2001-01-25  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

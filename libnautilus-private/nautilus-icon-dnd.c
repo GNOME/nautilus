@@ -740,10 +740,10 @@ confirm_switch_to_manual_layout (NautilusIconContainer *container)
 		}
 	}
 
-	dialog = nautilus_yes_no_dialog (message, _("Switch to Manual Layout?"),
-					 _("Switch"), GNOME_STOCK_BUTTON_CANCEL,
-					 GTK_WINDOW (gtk_widget_get_ancestor 
-					 	(GTK_WIDGET (container), GTK_TYPE_WINDOW)));
+	dialog = nautilus_show_yes_no_dialog (message, _("Switch to Manual Layout?"),
+					      _("Switch"), GNOME_STOCK_BUTTON_CANCEL,
+					      GTK_WINDOW (gtk_widget_get_ancestor 
+					 	    (GTK_WIDGET (container), GTK_TYPE_WINDOW)));
 
 	return gnome_dialog_run (dialog) == GNOME_OK;
 }

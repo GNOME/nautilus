@@ -918,7 +918,7 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 
 		if (error_location == ERROR_LOCATION_TARGET) {
 			/* We can't continue, just tell the user. */
-			nautilus_simple_dialog (parent_for_error_dialog (transfer_info),
+			nautilus_run_simple_dialog (parent_for_error_dialog (transfer_info),
 				TRUE, text, dialog_title, _("Stop"), NULL);
 			error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 
@@ -931,7 +931,7 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 			 * in the moved/copied/deleted hierarchy, we can probably
 			 * continue. Allow the user to skip.
 			 */
-			error_dialog_button_pressed = nautilus_simple_dialog
+			error_dialog_button_pressed = nautilus_run_simple_dialog
 				(parent_for_error_dialog (transfer_info), TRUE, text, 
 				dialog_title,
 				 _("Skip"), _("Stop"), NULL);
@@ -950,7 +950,7 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 								
 		} else {
 			/* Generic error, offer to retry and skip. */
-			error_dialog_button_pressed = nautilus_simple_dialog
+			error_dialog_button_pressed = nautilus_run_simple_dialog
 				(parent_for_error_dialog (transfer_info), TRUE, text, 
 				 dialog_title,
 				 _("Skip"), _("Retry"), _("Stop"), NULL);
@@ -1044,7 +1044,7 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 						formatted_name, formatted_name);
 		}
 		
-		nautilus_simple_dialog (parent_for_error_dialog (transfer_info), TRUE, text,
+		nautilus_run_simple_dialog (parent_for_error_dialog (transfer_info), TRUE, text,
 					_("Unable to replace file."), _("OK"), NULL, NULL);
 
 		g_free (text);
@@ -1064,7 +1064,7 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 		/* we are going to only get one duplicate alert, don't offer
 		 * Replace All
 		 */
-		result = nautilus_simple_dialog
+		result = nautilus_run_simple_dialog
 			(parent_for_error_dialog (transfer_info), TRUE, text, 
 			 _("Conflict while copying"),
 			 _("Replace"), _("Skip"), NULL);
@@ -1078,7 +1078,7 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 			return GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP;
 		}
 	} else {
-		result = nautilus_simple_dialog
+		result = nautilus_run_simple_dialog
 			(parent_for_error_dialog (transfer_info), TRUE, text, 
 			 _("Conflict while copying"),
 			 _("Replace All"), _("Replace"), _("Skip"), NULL);
@@ -1823,7 +1823,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	if ((move_options & GNOME_VFS_XFER_REMOVESOURCE) == 0) {
 		/* don't allow copying into Trash */
 		if (check_target_directory_is_or_in_trash (trash_dir_uri, target_dir_uri)) {
-			nautilus_simple_dialog
+			nautilus_run_simple_dialog
 				(parent_view, 
 				 FALSE,
 				 _("You cannot copy items into the Trash."), 
@@ -1849,7 +1849,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 				 */
 			    	is_desktop_trash_link = vfs_uri_is_special_link (uri);
 
-				nautilus_simple_dialog
+				nautilus_run_simple_dialog
 					(parent_view, 
 					 FALSE,
 
@@ -1876,7 +1876,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 			if ((move_options & GNOME_VFS_XFER_LINK_ITEMS) == 0
 				&& (gnome_vfs_uri_equal (uri, target_dir_uri)
 					|| gnome_vfs_uri_is_parent (uri, target_dir_uri, TRUE))) {
-				nautilus_simple_dialog
+				nautilus_run_simple_dialog
 					(parent_view, 
 					 FALSE,
 					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
@@ -1891,7 +1891,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 				break;
 			}
 			if (gnome_vfs_uri_is_parent (target_dir_uri, uri, FALSE)) {
-				nautilus_simple_dialog
+				nautilus_run_simple_dialog
 					(parent_view, 
 					 FALSE,
 					 ((move_options & GNOME_VFS_XFER_LINK_ITEMS) != 0) 
@@ -1964,8 +1964,8 @@ handle_new_folder_vfs_error (const GnomeVFSXferProgressInfo *progress_info, NewF
 						gnome_vfs_result_to_string(progress_info->vfs_status));
 	}
 	
-	nautilus_error_dialog (error_string, _("Error creating new folder"),
-			       GTK_WINDOW (state->parent_view));
+	nautilus_show_error_dialog (error_string, _("Error creating new folder"),
+				    GTK_WINDOW (state->parent_view));
 	
 	g_free (error_string_to_free);
 	
@@ -2113,7 +2113,7 @@ nautilus_file_operations_move_to_trash (const GList *item_uris,
 		target_uri_list = g_list_prepend (target_uri_list, append_basename (trash_dir_uri, source_uri));
 		
 		if (gnome_vfs_uri_equal (source_uri, trash_dir_uri)) {
-			nautilus_simple_dialog
+			nautilus_run_simple_dialog
 				(parent_view, 
 				 FALSE,
 				 _("The Trash must remain on the desktop."), 
@@ -2125,7 +2125,7 @@ nautilus_file_operations_move_to_trash (const GList *item_uris,
 			text = g_strdup_printf
 				(_("You cannot throw \"%s\" into the Trash."),
 				 item_name);
-			nautilus_simple_dialog
+			nautilus_run_simple_dialog
 				(parent_view, FALSE, text,
 				 _("Error Moving to Trash"),
 				 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
@@ -2269,7 +2269,7 @@ confirm_empty_trash (GtkWidget *parent_view)
 	
 	parent_window = GTK_WINDOW (gtk_widget_get_toplevel (parent_view));
 
-	dialog = nautilus_yes_no_dialog (
+	dialog = nautilus_show_yes_no_dialog (
 		_("Are you sure you want to permanently delete "
 		  "all of the items in the trash?"),
 		_("Delete Trash Contents?"),

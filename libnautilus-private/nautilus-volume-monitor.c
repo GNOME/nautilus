@@ -1256,7 +1256,8 @@ display_mount_status (gpointer callback_data)
 {
 	MountStatusInfo *info = callback_data;
 		
-	nautilus_error_dialog_with_details (info->message, info->title, info->detailed_message, NULL);
+	nautilus_show_error_dialog_with_details 
+		(info->message, info->title, info->detailed_message, NULL);
 
 	g_free (info->message);
 	g_free (info->detailed_message);

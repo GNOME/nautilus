@@ -109,6 +109,25 @@ global_preferences_install_descriptions (void)
 						 _("Activate items with a double click"),
 						 NAUTILUS_CLICK_POLICY_DOUBLE);
 	
+	/* Click activation type */
+	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
+					      _("Activating Executable Text Files"));
+	
+	nautilus_preferences_enumeration_insert (NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
+						 _("launch"),
+						 _("Always execute"),
+						 NAUTILUS_EXECUTABLE_TEXT_LAUNCH);
+	
+	nautilus_preferences_enumeration_insert (NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
+						 _("display"),
+						 _("Always display"),
+						 NAUTILUS_EXECUTABLE_TEXT_DISPLAY);
+	
+	nautilus_preferences_enumeration_insert (NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
+						 _("ask"),
+						 _("Ask each time"),
+						 NAUTILUS_EXECUTABLE_TEXT_ASK);
+	
 	/*
 	 * Speed tradeoffs
 	 */
@@ -241,6 +260,10 @@ global_preferences_install_defaults (void)
 	nautilus_preferences_default_set_integer (NAUTILUS_PREFERENCES_CLICK_POLICY,
 						  NAUTILUS_USER_LEVEL_NOVICE,
 						  NAUTILUS_CLICK_POLICY_DOUBLE);
+	
+	nautilus_preferences_default_set_integer (NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
+						  NAUTILUS_USER_LEVEL_NOVICE,
+						  NAUTILUS_EXECUTABLE_TEXT_ASK);
 	
 	nautilus_preferences_default_set_string (NAUTILUS_PREFERENCES_THEME,
 						 NAUTILUS_USER_LEVEL_NOVICE,
@@ -384,6 +407,9 @@ global_preferences_install_visibility (void)
 						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
 
 	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
+						     NAUTILUS_USER_LEVEL_HACKER);
+
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
 						     NAUTILUS_USER_LEVEL_HACKER);
 
 	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
@@ -575,6 +601,13 @@ global_preferences_create_dialog (void)
 							 3,
 							 NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane), _("Activating Executable Text Files"));
+	
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
+							 4,
+							 NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
+							 NAUTILUS_PREFERENCE_ITEM_ENUM);
 
 	/*
 	 * Search Settings 

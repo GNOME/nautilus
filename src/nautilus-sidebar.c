@@ -651,7 +651,7 @@ receive_dropped_uri_list (NautilusSidebar *sidebar,
 		/* handle images dropped on the logo specially */
 		
 		if (!exactly_one) {
-			nautilus_error_dialog (
+			nautilus_show_error_dialog (
 				_("You can't assign more than one custom icon at a time! "
 				  "Please drag just one image to set a custom icon."), 
 				_("More Than One Image"),
@@ -672,14 +672,14 @@ receive_dropped_uri_list (NautilusSidebar *sidebar,
 			}
 		} else {	
 			if (nautilus_is_remote_uri (uris[0])) {
-				nautilus_error_dialog (
+				nautilus_show_error_dialog (
 					_("The file that you dropped is not local.  "
 					  "You can only use local images as custom icons."), 
 					_("Local Images Only"),
 					window);
 			
 			} else {
-				nautilus_error_dialog (
+				nautilus_show_error_dialog (
 					_("The file that you dropped is not an image.  "
 					  "You can only use local images as custom icons."),
 					_("Images Only"),

@@ -311,11 +311,11 @@ forget_history_if_confirmed (NautilusWindow *window)
 				     "which locations you have visited?"));
 	}
 					   
-	dialog = nautilus_yes_no_dialog (prompt,
-					 _("Forget History?"),
-					 _("Forget"),
-					 GNOME_STOCK_BUTTON_CANCEL,
-					 GTK_WINDOW (window));
+	dialog = nautilus_show_yes_no_dialog (prompt,
+					      _("Forget History?"),
+					      _("Forget"),
+					      GNOME_STOCK_BUTTON_CANCEL,
+					      GTK_WINDOW (window));
 	g_free (prompt);					 
 
 	gtk_signal_connect
@@ -717,11 +717,11 @@ show_bogus_bookmark_window (BookmarkHolder *holder)
 		prompt = g_strdup_printf (_("The location \"%s\" does not exist. Do you "
 					    "want to remove any bookmarks with this "
 					    "location from your list?"), uri_for_display);
-		dialog = nautilus_yes_no_dialog (prompt,
-						 _("Bookmark for Nonexistent Location"),
-						 _("Remove"),
-						 GNOME_STOCK_BUTTON_CANCEL,
-						 GTK_WINDOW (holder->window));
+		dialog = nautilus_show_yes_no_dialog (prompt,
+						      _("Bookmark for Nonexistent Location"),
+						      _("Remove"),
+						      GNOME_STOCK_BUTTON_CANCEL,
+						      GTK_WINDOW (holder->window));
 
 		nautilus_gtk_signal_connect_free_data
 			(GTK_OBJECT (nautilus_gnome_dialog_get_button_by_index
@@ -733,7 +733,7 @@ show_bogus_bookmark_window (BookmarkHolder *holder)
 		gnome_dialog_set_default (dialog, GNOME_CANCEL);
 	} else {
 		prompt = g_strdup_printf (_("The location \"%s\" no longer exists."), uri_for_display);
-		dialog = nautilus_info_dialog (prompt, _("Go to Nonexistent Location"), GTK_WINDOW (holder->window));
+		dialog = nautilus_show_info_dialog (prompt, _("Go to Nonexistent Location"), GTK_WINDOW (holder->window));
 	}
 
 	g_free (uri);

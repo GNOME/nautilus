@@ -2245,7 +2245,7 @@ set_custom_image (GtkWidget *widget, NautilusFile *file)
 	
 	if (!is_image) {
 		char *message = g_strdup_printf (_("Sorry, but '%s' is not a usable image file!"), path_name);
-		nautilus_error_dialog (message, _("Not an Image"), NULL);
+		nautilus_show_error_dialog (message, _("Not an Image"), NULL);
 		g_free (message);
 		g_free (path_name);
 		return;

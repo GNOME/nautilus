@@ -90,7 +90,7 @@ fm_report_error_renaming_file (NautilusFile *file,
 
 	g_free (original_name);
 
-	nautilus_error_dialog (message, _("Renaming Error"), NULL);
+	nautilus_show_error_dialog (message, _("Renaming Error"), NULL);
 	g_free (message);
 }
 
@@ -124,7 +124,7 @@ fm_report_error_setting_group (NautilusFile *file,
 		g_free (file_name);
 	}
 
-	nautilus_error_dialog (message, _("Error Setting Group"), NULL);
+	nautilus_show_error_dialog (message, _("Error Setting Group"), NULL);
 
 	g_free (file_name);
 	g_free (message);
@@ -154,7 +154,7 @@ fm_report_error_setting_owner (NautilusFile *file,
 		message = g_strdup_printf (_("Sorry, couldn't change the owner of \"%s\"."), file_name);
 	}
 
-	nautilus_error_dialog (message, _("Error Setting Owner"), NULL);
+	nautilus_show_error_dialog (message, _("Error Setting Owner"), NULL);
 
 	g_free (file_name);
 	g_free (message);
@@ -184,7 +184,7 @@ fm_report_error_setting_permissions (NautilusFile *file,
 		message = g_strdup_printf (_("Sorry, couldn't change the permissions of \"%s\"."), file_name);
 	}
 
-	nautilus_error_dialog (message, _("Error Setting Permissions"), NULL);
+	nautilus_show_error_dialog (message, _("Error Setting Permissions"), NULL);
 
 	g_free (file_name);
 	g_free (message);

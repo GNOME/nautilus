@@ -249,10 +249,10 @@ nautilus_rpm_view_install_done (EazelInstallCallback *service,
 		window = gtk_widget_get_toplevel (GTK_WIDGET (rpm_view));
 		g_assert (window);
 		g_assert (GTK_IS_WINDOW (window));
-		d = nautilus_error_dialog_with_details (terse, 
-							dialog_title,
-							detailed,
-							GTK_WINDOW (window));
+		d = nautilus_show_error_dialog_with_details (terse, 
+							     dialog_title,
+							     detailed,
+							     GTK_WINDOW (window));
 							
 		/* gnome_dialog_run_and_close (d); */
 		g_free (terse);

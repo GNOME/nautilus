@@ -275,7 +275,7 @@ check_required_directories (NautilusApplication *application)
 							"set permissions such that Nautilus can create them.", dir_list_concatenated);
 		}
 		
-		dialog = nautilus_error_dialog (error_string, dialog_title, NULL);
+		dialog = nautilus_show_error_dialog (error_string, dialog_title, NULL);
 		/* We need the main event loop so the user has a chance to see the dialog. */
 		nautilus_main_event_loop_register (GTK_OBJECT (dialog));
 
@@ -438,7 +438,7 @@ nautilus_application_startup (NautilusApplication *application,
 		}
 
 		if (message != NULL) {
-			dialog = nautilus_error_dialog_with_details (message, NULL, detailed_message, NULL);
+			dialog = nautilus_show_error_dialog_with_details (message, NULL, detailed_message, NULL);
 			/* We need the main event loop so the user has a chance to see the dialog. */
 			nautilus_main_event_loop_register (GTK_OBJECT (dialog));
 			goto out;

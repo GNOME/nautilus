@@ -68,6 +68,9 @@ BEGIN_GNOME_DECLS
 /* Single/Double click preference  */
 #define NAUTILUS_PREFERENCES_CLICK_POLICY			"preferences/click_policy"
 
+/* Activating executable text files */
+#define NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION		"preferences/executable_text_activation"
+
 /* Smooth graphics mode (smoother but slower) */
 #define NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE		"preferences/smooth_graphics_mode"
 
@@ -97,6 +100,13 @@ enum
 {
 	NAUTILUS_CLICK_POLICY_SINGLE,
 	NAUTILUS_CLICK_POLICY_DOUBLE
+};
+
+enum
+{
+	NAUTILUS_EXECUTABLE_TEXT_LAUNCH,
+	NAUTILUS_EXECUTABLE_TEXT_DISPLAY,
+	NAUTILUS_EXECUTABLE_TEXT_ASK
 };
 
 typedef enum

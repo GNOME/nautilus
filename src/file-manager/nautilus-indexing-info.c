@@ -105,7 +105,7 @@ update_file_index_callback (GtkWidget *widget, gpointer data)
 	}
 
 	if (error != NULL) {
-		nautilus_error_dialog (error, _("Error While Reindexing"), NULL);
+		nautilus_show_error_dialog (error, _("Error While Reindexing"), NULL);
 	}
 }
 
@@ -251,9 +251,9 @@ show_indexing_info_dialog (void)
 static void
 show_search_service_not_available_dialog (void)
 {
-        nautilus_error_dialog (_("Sorry, but the medusa search service is not available."),
-                               _("Search Service Not Available"),
-                               NULL);
+        nautilus_show_error_dialog (_("Sorry, but the medusa search service is not available."),
+                                    _("Search Service Not Available"),
+                                    NULL);
 }
 
 

@@ -1455,7 +1455,7 @@ nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType action_
 				  "for which file types with the \"File Types and "
 				  "Programs\" part of the GNOME Control Center. Do "
 				  "you want to go there now?", unavailable_message);
-	dialog = nautilus_yes_no_dialog 
+	dialog = nautilus_show_yes_no_dialog 
 		(prompt, dialog_title, GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, parent_window);
 
 	gnome_dialog_button_connect (dialog, GNOME_OK, launch_mime_capplet, NULL);

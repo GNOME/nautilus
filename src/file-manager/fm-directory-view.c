@@ -171,6 +171,12 @@ typedef enum {
 	FORCE_NEW_WINDOW
 } WindowChoice;
 
+typedef enum {
+	ACTIVATION_ACTION_LAUNCH,
+	ACTIVATION_ACTION_DISPLAY,
+	ACTIVATION_ACTION_DO_NOTHING
+} ActivationAction;
+
 typedef struct {
 	FMDirectoryView *view;
 	NautilusFile *file;
@@ -465,10 +471,10 @@ fm_directory_view_confirm_multiple_windows (FMDirectoryView *view, int count)
 	prompt = g_strdup_printf (_("This will open %d separate windows. "
 				    "Are you sure you want to do this?"), count);
 	title = g_strdup_printf (_("Open %d Windows?"), count);
-	dialog = nautilus_yes_no_dialog (prompt, title, 
-					 GNOME_STOCK_BUTTON_OK, 
-					 GNOME_STOCK_BUTTON_CANCEL, 
-					 fm_directory_view_get_containing_window (view));
+	dialog = nautilus_show_yes_no_dialog (prompt, title, 
+					      GNOME_STOCK_BUTTON_OK, 
+					      GNOME_STOCK_BUTTON_CANCEL, 
+					      fm_directory_view_get_containing_window (view));
 	g_free (prompt);
 	g_free (title);
 
@@ -1414,9 +1420,9 @@ real_file_limit_reached (FMDirectoryView *view)
 			           directory_name);
 	g_free (directory_name);
 
-	dialog = nautilus_warning_dialog (message,
-					  _("Too Many Files"),
-					  fm_directory_view_get_containing_window (view));
+	dialog = nautilus_show_warning_dialog (message,
+					       _("Too Many Files"),
+					       fm_directory_view_get_containing_window (view));
 	g_free (message);
 }
 
@@ -2636,7 +2642,7 @@ fm_directory_view_confirm_deletion (FMDirectoryView *view, GList *uris, gboolean
 		}
 	}
 
-	dialog = nautilus_yes_no_dialog (
+	dialog = nautilus_show_yes_no_dialog (
 		prompt,
 		_("Delete Immediately?"),
 		_("Delete"),
@@ -2677,7 +2683,7 @@ confirm_delete_from_trash (FMDirectoryView *view, GList *uris)
 		  			    "the %d selected items from the trash?"), uri_count);
 	}
 
-	dialog = nautilus_yes_no_dialog (
+	dialog = nautilus_show_yes_no_dialog (
 		prompt,
 		_("Delete From Trash?"),
 		_("Delete"),
@@ -3438,11 +3444,11 @@ report_broken_symbolic_link (FMDirectoryView *view, NautilusFile *file)
 					  target_path);
 	}
 
-	dialog = nautilus_yes_no_dialog (prompt,
-					 _("Broken Link"),
-					 _("Throw Away"),
-					 GNOME_STOCK_BUTTON_CANCEL,
-					 fm_directory_view_get_containing_window (view));
+	dialog = nautilus_show_yes_no_dialog (prompt,
+				  	      _("Broken Link"),
+					      _("Throw Away"),
+					      GNOME_STOCK_BUTTON_CANCEL,
+					      fm_directory_view_get_containing_window (view));
 
 	gnome_dialog_set_default (dialog, GNOME_CANCEL);
 
@@ -3465,6 +3471,60 @@ report_broken_symbolic_link (FMDirectoryView *view, NautilusFile *file)
 	g_free (prompt);
 }
 
+static ActivationAction
+get_executable_text_file_action (FMDirectoryView *view, NautilusFile *file)
+{
+	GnomeDialog *dialog;
+	char *file_name;
+	char *prompt;
+	int preferences_value;
+
+	g_assert (nautilus_file_contains_text (file));
+
+	preferences_value = nautilus_preferences_get_integer 
+		(NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION);
+	switch (preferences_value) {
+	case NAUTILUS_EXECUTABLE_TEXT_LAUNCH:
+		return ACTIVATION_ACTION_LAUNCH;
+	case NAUTILUS_EXECUTABLE_TEXT_DISPLAY:
+		return ACTIVATION_ACTION_DISPLAY;
+	case NAUTILUS_EXECUTABLE_TEXT_ASK:
+		break;
+	default:
+		/* Complain non-fatally, since preference data can't be trusted */
+		g_warning ("Unknown value %d for NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION",
+			   preferences_value);
+		
+	}
+
+
+	file_name = nautilus_file_get_name (file);
+	prompt = g_strdup_printf (_("\"%s\" is an executable text file. "
+				    "Do you want to run it, or display its contents?"),
+				  file_name);
+	g_free (file_name);
+
+	dialog = nautilus_create_question_dialog (prompt,
+					 	  _("Run or Display?"),
+					 	  _("Run"),
+					 	  _("Display"),
+					 	  fm_directory_view_get_containing_window (view));
+
+	gnome_dialog_append_button (dialog, _("Cancel"));
+	gtk_widget_show (GTK_WIDGET (dialog));
+	
+	g_free (prompt);
+	
+	switch (gnome_dialog_run (dialog)) {
+	case 0:
+		return ACTIVATION_ACTION_LAUNCH;
+	case 1:
+		return ACTIVATION_ACTION_DISPLAY;
+	default:
+		return ACTIVATION_ACTION_DO_NOTHING;
+	}
+}
+
 static void
 activate_callback (NautilusFile *file, gpointer callback_data)
 {
@@ -3473,7 +3533,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 	char *uri, *command, *executable_path, *quoted_path;
 	GnomeVFSMimeActionType action_type;
 	GnomeVFSMimeApplication *application;
-	gboolean performed_special_handling;
+	ActivationAction action;
 	
 	parameters = callback_data;
 
@@ -3483,7 +3543,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 
 	uri = nautilus_file_get_activation_uri (file);
 
-	performed_special_handling = FALSE;
+	action = ACTIVATION_ACTION_DISPLAY;
 
 	/* Note that we check for FILE_TYPE_SYMBOLIC_LINK only here,
 	 * not specifically for broken-ness, because the file type
@@ -3491,14 +3551,14 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 	 */
 	if (nautilus_file_is_broken_symbolic_link (file)) {
 		report_broken_symbolic_link (view, file);
-		performed_special_handling = TRUE;
+		action = ACTIVATION_ACTION_DO_NOTHING;
 	} else if (nautilus_istr_has_prefix (uri, NAUTILUS_COMMAND_SPECIFIER)) {
 		/* don't allow command execution from remote uris to partially mitigate
 		 * the security risk of executing arbitrary commands. */	
 		if (!nautilus_file_is_local (file)) {
-			nautilus_error_dialog (_("Sorry, but you can't execute commands from a remote site due to security considerations."), 
-					       _("Can't execute remote links"), NULL);
-			performed_special_handling = TRUE;
+			nautilus_show_error_dialog (_("Sorry, but you can't execute commands from a remote site due to security considerations."), 
+						    _("Can't execute remote links"), NULL);
+			action = ACTIVATION_ACTION_DO_NOTHING;
 		} else {
 			/* as an additional security precaution, we only execute commands without
 			 * any parameters, which is enforced by using fork/execlp instead of system
@@ -3506,9 +3566,14 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 			g_assert (strncmp (uri, NAUTILUS_COMMAND_SPECIFIER, sizeof (NAUTILUS_COMMAND_SPECIFIER) - 1) == 0);
 			command = uri + sizeof (NAUTILUS_COMMAND_SPECIFIER) - 1;
 			nautilus_gnome_shell_execute (command);
-			performed_special_handling = TRUE;
+			action = ACTIVATION_ACTION_DO_NOTHING;
 		}
-	} else if (file_is_launchable (file)) {
+	}
+
+	if (action != ACTIVATION_ACTION_DO_NOTHING && file_is_launchable (file)) {
+
+		action = ACTIVATION_ACTION_LAUNCH;
+		
 		/* FIXME bugzilla.eazel.com 2391: This should check if
 		 * the activation URI points to something launchable,
 		 * not the original file. Also, for symbolic links we
@@ -3522,19 +3587,25 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 		 */
 		executable_path = gnome_vfs_get_local_path_from_uri (uri);
 
-		/* Non-local executables don't get launched. They fall through
-		 * and act like non-executables.
-		 */
-		if (executable_path != NULL) {
+		/* Non-local executables don't get launched. They act like non-executables. */
+		if (executable_path == NULL) {
+			action = ACTIVATION_ACTION_DISPLAY;
+		} else if (nautilus_file_contains_text (file)) {
+			/* Special case for executable text files, since it might be
+			 * dangerous & unexpected to launch these.
+			 */
+			action = get_executable_text_file_action (view, file);
+		}
+
+		if (action == ACTIVATION_ACTION_LAUNCH) {
 			quoted_path = nautilus_shell_quote (executable_path);
 			nautilus_launch_application_from_command (quoted_path, NULL, FALSE);
 			g_free (executable_path);
 			g_free (quoted_path);
-			performed_special_handling = TRUE;
 		}
 	}
 
-	if (!performed_special_handling) {
+	if (action == ACTIVATION_ACTION_DISPLAY) {
 		action_type = nautilus_mime_get_default_action_type_for_file (file);
 		application = nautilus_mime_get_default_application_for_file (file);
 
