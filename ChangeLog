@@ -1,3 +1,26 @@
+2001-12-08  Michael Meeks  <michael@ximian.com>
+
+	* components/tree/nautilus-tree-view.c
+	(nautilus_tree_view_init): unroll control creation,
+	connect to "activate" signal handler not map / unmap
+	on no-window widget GtkScrolledWindow.
+	(tree_map_callback, tree_unmap_callback): kill.
+	(tree_activate_callback): impl.
+
+	* components/tree/libmain.c
+	(BonoboActivation_Plugin_info) ->
+	(Bonobo_Plugin_info).
+
+	* components/tree/Makefile.am: setup ldflags
+	correctly, and a LIBADD so we can activate it
+	independantly.
+
+	* components/throbber/main.c (main): fix for
+	bonobo-activation-server race condition.
+
+	* libnautilus-private/nautilus-marshal.list:
+	add VOID:STRING,STRING
+
 2001-12-06  Michael Meeks  <michael@ximian.com>
 
 	* libnautilus/nautilus-view-standard-main.c

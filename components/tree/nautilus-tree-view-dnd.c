@@ -22,12 +22,10 @@
  *       Mathieu Lacage <mathieu@eazel.com>
  */
 
-/* nautilus-tree-view-dnd.c: dnd code for the tree view.
- */
+/* nautilus-tree-view-dnd.c: dnd code for the tree view. */
 
 #include <config.h>
-#include "nautilus-tree-view-dnd.h"
-
+#include <string.h>
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkscrolledwindow.h>
@@ -38,6 +36,8 @@
 #include <libnautilus-private/nautilus-file.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
+
+#include "nautilus-tree-view-dnd.h"
 
 /* This constant is zero because right now it does not seem we need
    extra delay on horizontal-only auto-scroll. However, it's left in
@@ -296,8 +296,6 @@ nautilus_tree_view_drag_begin (GtkWidget *widget, GdkDragContext *context,
 	nautilus_tree_view_set_dnd_icon (tree_view, context);
 }
 
-
-
 static void
 nautilus_tree_view_drag_end (GtkWidget *widget, GdkDragContext *context,
 			     gpointer user_data)
@@ -306,7 +304,6 @@ nautilus_tree_view_drag_end (GtkWidget *widget, GdkDragContext *context,
 				      "drag_end");
 
 }
-
 
 static void
 nautilus_tree_view_drag_leave (GtkWidget *widget,
@@ -437,7 +434,6 @@ nautilus_tree_view_drag_drop (GtkWidget *widget,
 	return TRUE;
 }
 
-
 static void 
 nautilus_tree_view_drag_data_received (GtkWidget *widget,
 				       GdkDragContext *context,
@@ -499,12 +495,12 @@ nautilus_tree_view_drag_data_received (GtkWidget *widget,
 				      "drag_data_received");
 }
 
-
-static void nautilus_tree_view_drag_data_get (GtkWidget *widget,
-					      GdkDragContext *context,
-					      GtkSelectionData *data,
-					      guint info, guint time,
-					      gpointer user_data)
+static void
+nautilus_tree_view_drag_data_get (GtkWidget *widget,
+				  GdkDragContext *context,
+				  GtkSelectionData *data,
+				  guint info, guint time,
+				  gpointer user_data)
 {
 	NautilusTreeView *tree_view;
 	char *uri, *selection_string;
@@ -520,7 +516,8 @@ static void nautilus_tree_view_drag_data_get (GtkWidget *widget,
 
 	gtk_selection_data_set (data,
 				data->target,
-				8, selection_string, strlen(selection_string));
+				8, selection_string,
+				strlen (selection_string));
 	g_free (uri);
 
 	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget),
@@ -528,26 +525,9 @@ static void nautilus_tree_view_drag_data_get (GtkWidget *widget,
 
 }
 
-
-
-
-
-
-
-
-
 /* --------------------------------------------------------------
-   standard gtk events: press/release/motion. used to start drags 
-   --------------------------------------------------------------
-*/
-
-
-
-
-
-
-
-
+ *   standard gtk events: press/release/motion. used to start drags 
+ * -------------------------------------------------------------- */
 
 static int 
 nautilus_tree_view_button_press (GtkWidget *widget, GdkEventButton *event)
@@ -698,8 +678,6 @@ nautilus_tree_view_button_release (GtkWidget *widget, GdkEventButton *event)
 
 }
 
-
-
 static int
 nautilus_tree_view_motion_notify (GtkWidget *widget, GdkEventButton *event)
 {
@@ -748,29 +726,9 @@ nautilus_tree_view_motion_notify (GtkWidget *widget, GdkEventButton *event)
 	return TRUE;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* -----------------------------------------------------------------------
-   helper functions
-   -----------------------------------------------------------------------
-*/
-
+ *   helper functions
+ * ----------------------------------------------------------------------- */
 
 static void 
 nautilus_tree_view_set_dnd_icon (NautilusTreeView *tree_view, GdkDragContext *context)
@@ -805,8 +763,6 @@ nautilus_tree_view_set_dnd_icon (NautilusTreeView *tree_view, GdkDragContext *co
 #endif
 }
 
-
-
 /* returns if it was expanded or not */
 static gboolean
 nautilus_tree_view_collapse_node (EelCTree *tree, EelCTreeNode *node)
@@ -831,7 +787,6 @@ nautilus_tree_view_collapse_node (EelCTree *tree, EelCTreeNode *node)
 
 	return is_expanded;
 }
-
 
 static void
 nautilus_tree_view_expand_or_collapse_row (EelCTree *tree, int row)
@@ -889,8 +844,6 @@ nautilus_tree_view_move_copy_files (NautilusTreeView *tree_view,
 	g_list_free (source_uris);
 }
 
-
-
 static char *
 nautilus_tree_view_find_drop_target (NautilusTreeView *tree_view,
 				     int x, int y)
@@ -922,7 +875,6 @@ nautilus_tree_view_find_drop_target (NautilusTreeView *tree_view,
 	return target_uri;
 }
 
-
 static gboolean
 nautilus_tree_view_is_tree_node_directory (NautilusTreeView *tree_view,
 					   EelCTreeNode *node) 
@@ -939,8 +891,6 @@ nautilus_tree_view_is_tree_node_directory (NautilusTreeView *tree_view,
 	
 	return is_directory;
 }
-
-
 
 static EelCTreeNode *
 nautilus_tree_view_tree_node_at (NautilusTreeView *tree_view,
@@ -986,7 +936,6 @@ nautilus_tree_view_item_at (NautilusTreeView *tree_view,
 	return nautilus_file_get_uri (nautilus_tree_view_node_to_file (tree_view, node));
 }
 
-
 /**
  * nautilus_tree_view_get_drag_uri:
  * @tree_view: a %NautilusTreeView.
@@ -1018,15 +967,9 @@ nautilus_tree_view_ensure_drag_data (NautilusTreeView *tree_view,
 	}
 }
 
-
-
-
-
-
 /***********************************************************************
  * scrolling helper code. stolen and modified from nautilus-icon-dnd.c *
  ***********************************************************************/
-
 
 static gboolean
 ready_to_start_scrolling (EelDragInfo *drag_info,
@@ -1063,7 +1006,6 @@ auto_scroll_timeout_callback (gpointer data)
 	return TRUE;
 }
 	
-
 static void
 nautilus_tree_view_start_auto_scroll (NautilusTreeView *tree_view)
 {
@@ -1074,7 +1016,6 @@ nautilus_tree_view_start_auto_scroll (NautilusTreeView *tree_view)
 					auto_scroll_timeout_callback,
 					tree_view);
 }
-
 
 static void
 nautilus_tree_view_stop_auto_scroll (NautilusTreeView *tree_view)
@@ -1096,7 +1037,6 @@ nautilus_tree_view_real_scroll (NautilusTreeView *tree_view, float delta_x, floa
 	eel_gtk_adjustment_set_value (vadj, vadj->value + delta_y);
 }
 
-
 /******************************************
  * Handle the data dropped on the tree view 
  ******************************************/
@@ -1113,7 +1053,8 @@ nautilus_tree_view_get_drop_action (NautilusTreeView *tree_view,
 
 	drag_info = NAUTILUS_TREE_VIEW (tree_view)->details->dnd->drag_info;
 
-	/* FIXME bugzilla.gnome.org 42569: Too much code copied from nautilus-icon-dnd.c. Need to share more. */
+	/* FIXME bugzilla.gnome.org 42569: Too much code copied from
+	 * nautilus-icon-dnd.c. Need to share more. */
 
 	if (!drag_info->got_drop_data_type) {
 		/* drag_data_received didn't get called yet */
@@ -1162,18 +1103,16 @@ nautilus_tree_view_collapse_all (NautilusTreeView *tree_view,
 
 	list = tree_view->details->dnd->expanded_nodes;
 	
-
 	for (temp_list = list; temp_list != NULL; temp_list = temp_list->next) {
 		EelCTreeNode *expanded_node;
 		expanded_node = (EelCTreeNode *) temp_list->data;
 		if (!eel_ctree_is_ancestor (EEL_CTREE (tree_view->details->tree), 
-						 expanded_node, current_node)) {
+					    expanded_node, current_node)) {
 			nautilus_tree_view_collapse_node (EEL_CTREE (tree_view->details->tree), 
 							  expanded_node);
 		}
 	}
 }
-
 
 static void
 nautilus_tree_view_receive_dropped_icons (NautilusTreeView *view,
@@ -1228,8 +1167,6 @@ nautilus_tree_view_receive_dropped_icons (NautilusTreeView *view,
 	}
 }
 
-
-
 static void
 nautilus_tree_view_drag_destroy (NautilusTreeView *tree_view)
 {
@@ -1247,10 +1184,8 @@ nautilus_tree_view_drag_destroy (NautilusTreeView *tree_view)
 	nautilus_tree_view_stop_auto_scroll (tree_view);
 
 	/* remove prelighting */
-	eel_ctree_set_prelight (EEL_CTREE (tree_view->details->tree), 
-				     -1);
+	eel_ctree_set_prelight (EEL_CTREE (tree_view->details->tree), -1);
 }
-
 
 static void
 nautilus_tree_view_drag_destroy_real (NautilusTreeView *tree_view)

@@ -97,19 +97,22 @@ main (int argc, char *argv[])
 	registration_id = bonobo_activation_make_registration_id ("OAFIID:nautilus_throbber_factory", g_getenv ("DISPLAY"));
 #endif
 	factory = bonobo_generic_factory_new ("OAFIID:nautilus_throbber_factory", 
-						    throbber_make_object,
-						    NULL);
+					      throbber_make_object,
+					      NULL);
 
 #ifdef GNOME2_CONVERSION_COMPLETE
 	g_free (registration_id);
 #endif
 
-	bonobo_activate ();
-	do {
-		gtk_main ();
-	} while (object_count > 0);
+	if (factory != NULL) {
+		bonobo_activate ();
+		do {
+			gtk_main ();
+		} while (object_count > 0);
+		
+		bonobo_object_unref (BONOBO_OBJECT (factory));
+	}
 
-	bonobo_object_unref (BONOBO_OBJECT (factory));
 	gnome_vfs_shutdown ();
 
 	return EXIT_SUCCESS;

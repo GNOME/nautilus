@@ -1004,38 +1004,33 @@ create_tree (NautilusTreeView *view)
 }
 
 static void
-tree_map_callback (GtkWidget *widget,
-		   gpointer callback_data)
+tree_activate_callback (BonoboControl *control,
+			gboolean       activating,
+			gpointer       user_data)
 {
 	NautilusTreeView *view;
 
-	view = NAUTILUS_TREE_VIEW (callback_data);
-	g_assert (widget == view->details->scrolled_window);
+	view = NAUTILUS_TREE_VIEW (user_data);
+	g_assert (view != NULL);
 
-	if (view->details->tree == NULL) {
-		create_tree (view);
+	if (activating) {
+		if (view->details->tree == NULL) {
+			create_tree (view);
+		}
+		nautilus_tree_model_set_defer_notifications (view->details->model, FALSE);
+		schedule_pending_idle_callback (view);
+		expand_uri_sequence_and_select_end (view);
+	} else {
+		nautilus_tree_model_set_defer_notifications (view->details->model, TRUE);
+		unschedule_pending_idle_callback (view);
 	}
-	nautilus_tree_model_set_defer_notifications (view->details->model, FALSE);
-	schedule_pending_idle_callback (view);
-	expand_uri_sequence_and_select_end (view);
-}
-
-static void
-tree_unmap_callback (GtkWidget *widget,
-		     gpointer callback_data)
-{
-	NautilusTreeView *view;
-
-	view = NAUTILUS_TREE_VIEW (callback_data);
-	g_assert (widget == view->details->scrolled_window);
-
-	nautilus_tree_model_set_defer_notifications (view->details->model, TRUE);
-	unschedule_pending_idle_callback (view);
 }
 
 static void
 nautilus_tree_view_init (NautilusTreeView *view)
 {
+	BonoboControl *control;
+
 	view->details = g_new0 (NautilusTreeViewDetails, 1);
 
 	/* Obtain the filtering preferences */
@@ -1049,29 +1044,23 @@ nautilus_tree_view_init (NautilusTreeView *view)
 		! eel_preferences_get_boolean (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES);
 
 	g_signal_connect (view,
-			    "load_location",
-			    G_CALLBACK (tree_load_location_callback),
-			    view);
+			  "load_location",
+			  G_CALLBACK (tree_load_location_callback),
+			  view);
 
 	view->details->scrolled_window = gtk_scrolled_window_new (NULL, NULL);
-	
+
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (view->details->scrolled_window), 
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
 						
 	gtk_widget_show (view->details->scrolled_window);
 
-	nautilus_view_construct (NAUTILUS_VIEW (view),
-				 view->details->scrolled_window);
+	control = bonobo_control_new (view->details->scrolled_window);
+	nautilus_view_construct_from_bonobo_control (NAUTILUS_VIEW (view), control);
 
-	g_signal_connect (view->details->scrolled_window,
-			    "map",
-			    G_CALLBACK (tree_map_callback),
-			    view);
-	g_signal_connect (view->details->scrolled_window,
-			    "unmap",
-			    G_CALLBACK (tree_unmap_callback),
-			    view);
+	g_signal_connect (control, "activate",
+			  G_CALLBACK (tree_activate_callback), view);
 }
 
 static void
@@ -1387,6 +1376,8 @@ tree_load_location_callback (NautilusView *nautilus_view,
 			     NautilusTreeView *view)
 {
 	g_assert (nautilus_view == NAUTILUS_VIEW (view));
+
+	g_warning ("Load tree!");
 	
 	nautilus_view_report_load_complete (nautilus_view);
 

@@ -34,6 +34,15 @@ libnautilus_tree_view_la_SOURCES =         \
 	libmain.c                          \
 	$(NULL)
 
+libnautilus_tree_view_la_LDFLAGS =         \
+	-module -avoid-version
+
+libnautilus_tree_view_la_LIBADD =          \
+	$(top_builddir)/libnautilus/libnautilus.la	\
+	$(top_builddir)/libnautilus-private/libnautilus-private.la \
+	$(COMPONENT_LIBS)
+	$(NULL)
+
 serverdir = $(libdir)/bonobo/servers
 server_in_files = Nautilus_View_tree.server.in
 server_DATA = $(server_in_files:.server.in=.server)

@@ -24,17 +24,19 @@
 /* nautilus-tree-model.c - model for the tree view */
 
 #include <config.h>
-#include "nautilus-tree-model.h"
+#include <stdio.h>
+#include <string.h>
 
-#include "nautilus-tree-node-private.h"
 #include <gtk/gtksignal.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <libnautilus-private/nautilus-marshal.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-macros.h>
-#include <stdio.h>
-#include <string.h>
+
+#include "nautilus-tree-model.h"
+#include "nautilus-tree-node-private.h"
 
 enum {
 	NODE_CHANGED,
@@ -130,7 +132,7 @@ nautilus_tree_model_class_init (gpointer klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusTreeModelClass, node_removed),
 		              NULL, NULL,
-			      gtk_marshal_VOID__STRING_STRING,
+			      nautilus_marshal_VOID__STRING_STRING,
 		              G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
 
 	signals[DONE_LOADING_CHILDREN] =

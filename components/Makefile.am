@@ -8,6 +8,7 @@ SUBDIRS = 					\
 	notes 					\
 	sample 					\
 	throbber 				\
+	tree 					\
 	$(NULL)
 
 XXX=
@@ -16,5 +17,4 @@ XXX=
 	loser 					\
 	music 					\
 	text 					\
-	tree 					\
 	$(NULL)
