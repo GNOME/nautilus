@@ -30,8 +30,8 @@
 #include <gnome-xml/parser.h>
 #include <gnome-xml/tree.h>
 
-xmlDoc* create_configuration_metafile(void);
-xmlDoc* synchronize_configuration_metafile(void);
-xmlDoc* update_configuration_metafile(void);
+xmlDocPtr create_configuration_metafile (void);
+xmlDocPtr synchronize_configuration_metafile (void);
+xmlDocPtr update_configuration_metafile (void);
 
 #endif /* __NAUTILUS_ZOOM_CONTROL_H__ */

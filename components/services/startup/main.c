@@ -24,18 +24,16 @@
    content view component. */
 
 #include <config.h>
-
-#include "nautilus-service-startup-view.h"
-
 #include <gnome.h>
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
+#include "nautilus-service-startup-view.h"
 
-static int object_count = 0;
+static int object_count =0;
 
 static void
-services_object_destroyed(GtkObject *obj)
-{
+services_object_destroyed (GtkObject *obj) {
+
 	puts ("destroying object.");
 	object_count--;
 	if (object_count <= 0) {
@@ -43,20 +41,19 @@ services_object_destroyed(GtkObject *obj)
 	}
 }
 
-static BonoboObject *
-services_make_object (BonoboGenericFactory *factory, 
-		    const char *goad_id, 
-		    void *closure)
-{
-	NautilusServicesContentView *view;
-	NautilusViewFrame *view_frame;
+static BonoboObject*
+services_make_object (BonoboGenericFactory* factory, 
+                      const char* goad_id,
+                      void* closure) {
+
+	NautilusServicesContentView* view;
+	NautilusViewFrame* view_frame;
 
 	puts ("Trying to create object.");
 
 	if (strcmp (goad_id, "OAFIID:nautilus_service_startup_view:a8f1b0ef-a39f-4f92-84bc-1704f0321a82")) {
 		return NULL;
 	}
-	
 
 	view = NAUTILUS_SERVICE_STARTUP_VIEW (gtk_object_new (NAUTILUS_TYPE_SERVICE_STARTUP_VIEW, NULL));
 
@@ -71,17 +68,18 @@ services_make_object (BonoboGenericFactory *factory,
 	return BONOBO_OBJECT (view_frame);
 }
 
-int main(int argc, char *argv[])
-{
-	BonoboGenericFactory *factory;
+int
+main (int argc, char *argv[]) {
+
+	BonoboGenericFactory* factory;
 	CORBA_ORB orb;
 	CORBA_Environment ev;
 	
-	CORBA_exception_init(&ev);
+	CORBA_exception_init (&ev);
 	
-        gnome_init_with_popt_table("nautilus-service-startup-view", VERSION, 
-				   argc, argv,
-				   oaf_popt_options, 0, NULL); 
+        gnome_init_with_popt_table ("nautilus-service-startup-view", VERSION, 
+                                    argc, argv,
+                                    oaf_popt_options, 0, NULL);
 
 	orb = oaf_init (argc, argv);
 	
@@ -91,6 +89,6 @@ int main(int argc, char *argv[])
 	do {
 		bonobo_main ();
 	} while (object_count > 0);
-	
+
 	return 0;
 }

@@ -31,14 +31,14 @@
 #include <libnautilus/nautilus-content-view-frame.h>
 #include <gtk/gtk.h>
 
-typedef struct _NautilusServicesContentView      NautilusServicesContentView;
+typedef struct _NautilusServicesContentView NautilusServicesContentView;
 typedef struct _NautilusServicesContentViewClass NautilusServicesContentViewClass;
 
-#define NAUTILUS_TYPE_SERVICE_STARTUP_VIEW	      (nautilus_service_startup_view_get_type ())
-#define NAUTILUS_SERVICE_STARTUP_VIEW(obj)	      (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SERVICE_STARTUP_VIEW, NautilusServicesContentView))
-#define NAUTILUS_SERVICE_STARTUP_VIEW_CLASS(klass)     (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SERVICE_STARTUP_VIEW, NautilusServicesContentViewClass))
-#define NAUTILUS_IS_SERVICE_STARTUP_VIEW(obj)	      (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_SERVICE_STARTUP_VIEW))
-#define NAUTILUS_IS_SERVICE_STARTUP_VIEW_CLASS(klass)  (GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_SERVICE_STARTUP_VIEW))
+#define NAUTILUS_TYPE_SERVICE_STARTUP_VIEW (nautilus_service_startup_view_get_type ())
+#define NAUTILUS_SERVICE_STARTUP_VIEW(obj) (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SERVICE_STARTUP_VIEW, NautilusServicesContentView))
+#define NAUTILUS_SERVICE_STARTUP_VIEW_CLASS (klass) (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SERVICE_STARTUP_VIEW, NautilusServicesContentViewClass))
+#define NAUTILUS_IS_SERVICE_STARTUP_VIEW (obj) (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_SERVICE_STARTUP_VIEW))
+#define NAUTILUS_IS_SERVICE_STARTUP_VIEW_CLASS (klass) (GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_SERVICE_STARTUP_VIEW))
 
 typedef struct _NautilusServicesContentViewDetails NautilusServicesContentViewDetails;
 
@@ -51,17 +51,13 @@ struct _NautilusServicesContentViewClass {
 	GtkVBoxClass parent_class;
 };
 
-
-
 /* GtkObject support */
-GtkType                   nautilus_service_startup_view_get_type                      (void);
+GtkType nautilus_service_startup_view_get_type (void);
 
 /* Component embedding support */
-NautilusContentViewFrame *nautilus_service_startup_view_get_view_frame                (NautilusServicesContentView *view);
+NautilusContentViewFrame* nautilus_service_startup_view_get_view_frame (NautilusServicesContentView* view);
 
 /* URI handling */
-void                      nautilus_service_startup_view_load_uri                      (NautilusServicesContentView *view,
-										      const char                *uri);
-
+void nautilus_service_startup_view_load_uri (NautilusServicesContentView* view, const char* uri);
 
 #endif /* NAUTILUS_SERVICE_STARTUP_VIEW_H */

@@ -40,7 +40,6 @@ eazel_install_SOURCES =		        	\
 	$(NULL)
 
 eazel_install_LDFLAGS =	\
-	-lgnet \
 	$(GCONF_LIBS) \
 	$(GNOMEUI_LIBS)	\
 	$(OAF_LIBS) \
