@@ -1,3 +1,13 @@
+2002-06-17  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-icon-container.c:
+	(find_open_grid_space), (mark_icon_location_in_grid): Add
+	DESKTOP_PAD_[HORIZONTAL,VERTICAL] to width and height to avoid new
+	icons from being placed too closely to other icons, and don't
+	place an icon partially outside of the grid.
+	(lay_down_icons_tblr): Wrap before placing the icon if necessary,
+	and reset max_width when moving to a new column.
+
 2002-06-14  Damon Chaplin  <damon@ximian.com>
 
 	* src/nautilus-preferences-dialog.c (preferences_show_help): new

@@ -961,23 +961,20 @@ find_open_grid_space (NautilusIcon *icon, int **icon_grid, int num_rows,
 	
 	/* Get icon dimensions */
 	icon_get_bounding_box (icon, &x1, &y1, &x2, &y2);
-	width = x2 - x1;
-	height = y2 - y1;
+
+	width = (x2 - x1) + DESKTOP_PAD_HORIZONTAL;
+	height = (y2 - y1) + DESKTOP_PAD_VERTICAL;
 
 	/* Convert to grid coordinates */
 	qwidth = ceil (width / CELL_SIZE);
 	qheight = ceil (height / CELL_SIZE);
 
-	if (row + qwidth > num_rows) {
-		qwidth = num_rows;
-	} else {
-		qwidth += row;	
+	if ((row + qwidth > num_rows) || (column + qheight > num_columns)) {
+		return FALSE;
 	}
-	if (column + qheight > num_columns) {
-		qheight = num_columns;
-	} else {
-		qheight += column;
-	}
+
+	qwidth += row;	
+	qheight += column;
 	
 	for (row_index = row; row_index < qwidth; row_index++) {
 		for (column_index = column; column_index < qheight; column_index++) {
@@ -1038,8 +1035,9 @@ mark_icon_location_in_grid (NautilusIcon *icon, int **icon_grid, int num_rows, i
 	int grid_width, grid_height;
 
 	icon_get_bounding_box (icon, &x1, &y1, &x2, &y2);
-	width = x2 - x1;
-	height = y2 - y1;
+
+	width = (x2 - x1) + DESKTOP_PAD_HORIZONTAL;
+	height = (y2 - y1) + DESKTOP_PAD_VERTICAL;
 
 	/* Convert x and y to our quantized grid value */
 	qx = icon->x / CELL_SIZE;
@@ -1179,22 +1177,25 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 		for (p = icons; p != NULL; p = p->next) {
 			icon = p->data;
 			icon_get_bounding_box (icon, &x1, &y1, &x2, &y2);
-			icon_set_position (icon, x, y);
-			
+
 			icon_width = x2 - x1;
 			icon_height = y2 - y1;
-			y += icon_height + 10;
+
+			/* Check and see if we need to move to a new column */
+			if (y > height - icon_height) {
+				x += max_width + DESKTOP_PAD_VERTICAL;
+				y = DESKTOP_PAD_VERTICAL;
+				max_width = 0;
+			}
+
+			icon_set_position (icon, x, y);
 
 			/* Check for increase in column width */
 			if (max_width < icon_width) {
 				max_width = icon_width;
 			}
-			
-			/* Check and see if we need to move to a new column */
-			if (y > height - icon_height) {
-				x += max_width + DESKTOP_PAD_VERTICAL;
-				y = DESKTOP_PAD_VERTICAL;
-			}
+
+			y += icon_height + DESKTOP_PAD_VERTICAL;
 		}
 	}
 
