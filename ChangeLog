@@ -1,3 +1,42 @@
+2000-12-19  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 2292 (no way to cancel opening a Properties window,
+	which could wait forever checking if a file is a directory). 
+	Now there's a hashtable of pending files, which is used to 
+	avoid trying to show the same window twice and to cancel 
+	showing a window. 
+
+	* src/file-manager/fm-properties-window.c:
+	(cancel_create_properties_window_callback): New function, used
+	by timed-wait mechanism to give up on not-yet-appearing
+	properties window.
+	(remove_pending_file): New helper function, removes pending
+	file from hashtable and stops timed-wait.
+	(pending_file_succeeded): New helper function called when
+	the wait for info is over and the window can be created.
+	(create_properties_window_callback): call pending_file_succeeded
+	before doing anything else.
+	(directory_view_destroyed_callback): New function, used to
+	cancel timed-wait if the directory view is destroyed before
+	the properties window has appeared.
+	(fm_properties_window_present): Create pending_files hashtable;
+	do nothing if we're already waiting for a properties window
+	for this file; add file to pending_files; wire up
+	directory_view_destroyed_callback; start timed-wait before
+	using call_when_ready to determine if file is a directory;
+	use nautilus_g_hash_table_new_free_at_exit to help catch
+	leaks.
+
+
+	Added a couple more bonobo_ui_component_freeze/thaw pairs,
+	though they have only a very small measured effect here.
+
+	* src/file-manager/fm-icon-view.c: (update_layout_menus),
+	(fm_icon_view_merge_menus): Add freeze/thaw pairs around
+	multiple bonobo-ui operations.
+
 2000-12-19  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

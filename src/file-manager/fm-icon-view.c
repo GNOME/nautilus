@@ -533,6 +533,8 @@ update_layout_menus (FMIconView *view)
 
 	is_auto_layout = fm_icon_view_using_auto_layout (view);
 
+	bonobo_ui_component_freeze (view->details->ui, NULL);
+
 	if (fm_icon_view_supports_auto_layout (view)) {
 		/* Mark sort criterion. */
 		path = g_strconcat (COMMAND_PREFIX,
@@ -561,6 +563,8 @@ update_layout_menus (FMIconView *view)
 	/* Clean Up is only relevant for manual layout */
 	nautilus_bonobo_set_sensitive
 		(view->details->ui, COMMAND_CLEAN_UP, !is_auto_layout);	
+
+	bonobo_ui_component_thaw (view->details->ui, NULL);
 }
 
 
@@ -1153,6 +1157,8 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 	bonobo_ui_component_add_listener (icon_view->details->ui, ID_SORT_REVERSED, sort_reversed_state_changed_callback, view);
 	icon_view->details->menus_ready = TRUE;
 
+	bonobo_ui_component_freeze (icon_view->details->ui, NULL);
+	
 	/* Do one-time state-setting here; context-dependent state-setting
 	 * is done in update_menus.
 	 */
@@ -1162,6 +1168,8 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 	}
 
 	update_layout_menus (icon_view);
+
+	bonobo_ui_component_thaw (icon_view->details->ui, NULL);
 }
 
 static void

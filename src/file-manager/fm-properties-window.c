@@ -62,6 +62,7 @@
 #include <string.h>
 
 static GHashTable *windows;
+static GHashTable *pending_files;
 
 struct FMPropertiesWindowDetails {
 	NautilusFile *file;
@@ -131,8 +132,12 @@ static void	  real_destroy 		     		     (GtkObject 	      *object);
 static void	  real_shutdown	     		     	     (GtkObject 	      *object);
 static void       fm_properties_window_initialize_class      (FMPropertiesWindowClass *class);
 static void       fm_properties_window_initialize            (FMPropertiesWindow      *window);
+static void	  create_properties_window_callback 	     (NautilusFile 	      *file, 
+							      gpointer 		       data);
 static void 	  cancel_group_change_callback 		     (gpointer 		       callback_data);
 static void 	  cancel_owner_change_callback 		     (gpointer 		       callback_data);
+static void	  directory_view_destroyed_callback 	     (FMDirectoryView 	      *view, 
+							      gpointer 		       callback_data);
 static void	  select_image_button_callback		     (GtkWidget 	      *widget,
 							      NautilusFile 	      *file);
 static void	  remove_image_button_callback		     (GtkWidget 	      *widget,
@@ -1925,11 +1930,48 @@ get_and_ref_file_to_display (NautilusFile *file)
 }
 
 static void
+cancel_create_properties_window_callback (gpointer callback_data)
+{
+	NautilusFile *file;
+	FMDirectoryView *view;
+
+	file = NAUTILUS_FILE (callback_data);
+	view = g_hash_table_lookup (pending_files, file);
+	g_assert (view != NULL);
+	
+	nautilus_file_cancel_call_when_ready (file, create_properties_window_callback, view);
+	g_hash_table_remove (pending_files, file);
+	nautilus_file_unref (file);
+}
+
+static void
+remove_pending_file (NautilusFile *file)
+{
+	g_hash_table_remove (pending_files, file);
+	nautilus_timed_wait_stop (cancel_create_properties_window_callback, file);
+}
+
+static void
+pending_file_succeeded (NautilusFile *file)
+{
+	FMDirectoryView *view;
+
+	view = g_hash_table_lookup (pending_files, file);
+	gtk_signal_disconnect_by_func (GTK_OBJECT (view),
+				       directory_view_destroyed_callback,
+				       file);
+	remove_pending_file (file);
+				       
+}
+
+static void
 create_properties_window_callback (NautilusFile *file, gpointer data)
 {
 	FMPropertiesWindow *new_window;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (data));
+
+	pending_file_succeeded (file);
 
 	new_window = create_properties_window (file);
 	g_hash_table_insert (windows, file, new_window);
@@ -1943,24 +1985,41 @@ create_properties_window_callback (NautilusFile *file, gpointer data)
 	nautilus_gtk_window_present (GTK_WINDOW (new_window));
 }
 
+static void
+directory_view_destroyed_callback (FMDirectoryView *view, gpointer callback_data)
+{
+	NautilusFile *file;
+
+	file = NAUTILUS_FILE (callback_data);
+	remove_pending_file (file);
+	nautilus_file_unref (file);
+}
+
 void
 fm_properties_window_present (NautilusFile *file, FMDirectoryView *directory_view)
 {
 	GtkWindow *existing_window;
+	GtkWidget *parent_window;
 	NautilusFile *file_to_display;
 	GList attribute_list;
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (directory_view));
 
-	/* Create the hash table first time through. */
+	/* Create the hash tables first time through. */
 	if (windows == NULL) {
-		windows = g_hash_table_new (g_direct_hash, g_direct_equal);
+		windows = nautilus_g_hash_table_new_free_at_exit (
+			g_direct_hash, g_direct_equal, "Property windows");
 	}
-
+	
+	if (pending_files == NULL) {
+		pending_files = nautilus_g_hash_table_new_free_at_exit (
+			g_direct_hash, g_direct_equal, "pending Property window files");
+	}
+	
 	file_to_display = get_and_ref_file_to_display (file);
 
-	/* Look to see if object is already in the hash table. */
+	/* Look to see if there's already a window for this file. */
 	existing_window = g_hash_table_lookup (windows, file_to_display);
 	if (existing_window != NULL) {
 		nautilus_file_unref (file_to_display);
@@ -1968,7 +2027,27 @@ fm_properties_window_present (NautilusFile *file, FMDirectoryView *directory_vie
 		return;
 	}
 
+	/* Look to see if we're already waiting for a window for this file. */
+	if (g_hash_table_lookup (pending_files, file_to_display) != NULL) {
+		nautilus_file_unref (file_to_display);
+		return;
+	}
+
 	/* Wait until we can tell whether it's a directory before showing. */
+	
+	g_hash_table_insert (pending_files, file_to_display, directory_view);
+	gtk_signal_connect (GTK_OBJECT (directory_view),
+			    "destroy",
+			    directory_view_destroyed_callback,
+			    file_to_display);
+
+	parent_window = gtk_widget_get_ancestor (GTK_WIDGET (directory_view), GTK_TYPE_WINDOW);
+	nautilus_timed_wait_start
+		(cancel_create_properties_window_callback,
+		 file_to_display,
+		 _("Cancel Showing Properties Window??"),
+		 _("Creating Properties window"),
+		 parent_window == NULL ? NULL : GTK_WINDOW (parent_window));
 	attribute_list.data = NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY;
 	attribute_list.next = NULL;
 	attribute_list.prev = NULL;
