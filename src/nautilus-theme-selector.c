@@ -334,13 +334,37 @@ nautilus_theme_selector_delete_event_callback (GtkWidget *widget,
 }
 
 
+static char *
+uri_get_basename (const char *uri)
+{
+	GnomeVFSURI *vfs_uri;
+	char *escaped_name, *name;
+
+	/* Make VFS version of URI. */
+	vfs_uri = gnome_vfs_uri_new (uri);
+	if (vfs_uri == NULL) {
+		return NULL;
+	}
+
+	/* Extract name part. */
+	escaped_name = gnome_vfs_uri_extract_short_path_name (vfs_uri);
+	gnome_vfs_uri_unref (vfs_uri);
+	name = gnome_vfs_unescape_string (escaped_name, NULL);
+	g_free (escaped_name);
+
+	return name;
+}
+
 /* callback to add a newly selected theme to the user's theme collection */
 static void
 add_theme_to_icons (GtkWidget *widget, gpointer *data)
 {
-	char *theme_path;
+	char *theme_path, *theme_name, *temp_path;
+	char *theme_destination_path, *xml_path;
+	char *user_directory, *directory_path;
 	NautilusThemeSelector *theme_selector;
-	
+	GnomeVFSResult result;
+		
 	theme_selector = NAUTILUS_THEME_SELECTOR (data);
 	theme_path = g_strdup (gtk_file_selection_get_filename (GTK_FILE_SELECTION (theme_selector->details->dialog)));
 
@@ -348,10 +372,54 @@ add_theme_to_icons (GtkWidget *widget, gpointer *data)
 	gtk_widget_destroy (theme_selector->details->dialog);
 	theme_selector->details->dialog = NULL;
 		
-	/* make sure it's a valid theme directory */
-	/* copy the theme directory into ~/.nautilus/themes */
-	g_message ("adding theme from %s", theme_path);
+	/* make sure it's a valid theme directory  - check for xml file */
+	theme_name = uri_get_basename (theme_path);
 	
+	temp_path = nautilus_make_path (theme_path, theme_name);
+	xml_path = g_strconcat (temp_path, ".xml", NULL);
+	g_free (temp_path);
+	
+	if (!g_file_exists (xml_path)) {
+		char *message = g_strdup_printf (_("Sorry, but %s is not a valid theme directory."), theme_path);
+		nautilus_error_dialog (message, _("Couldn't add theme"), GTK_WINDOW (theme_selector));
+		g_free (message);
+	} else {
+		/* copy the theme directory into ~/.nautilus/themes.  First, create the themes directory if it doesn't exist */
+		user_directory = nautilus_get_user_directory ();
+
+		directory_path = nautilus_make_path (user_directory, "themes");
+		g_free (user_directory);
+	
+		if (!g_file_exists (directory_path)) {
+			result = gnome_vfs_make_directory (directory_path,
+					  	GNOME_VFS_PERM_USER_ALL
+					  	| GNOME_VFS_PERM_GROUP_ALL
+					  	| GNOME_VFS_PERM_OTHER_READ);
+		}
+
+		theme_destination_path = nautilus_make_path (directory_path, theme_name);		
+		g_free(directory_path);
+			
+		/* copy the new theme into the themes directory */
+		if (result == GNOME_VFS_OK) {
+			result = nautilus_copy_uri_simple (theme_path, theme_destination_path);
+		}
+		
+		g_free (theme_destination_path);
+		
+		if (result != GNOME_VFS_OK) {
+			char *message = g_strdup_printf (_("Sorry, but the theme %s couldn't be installed."), theme_path);
+			nautilus_error_dialog (message, _("Couldn't install theme"), GTK_WINDOW (theme_selector));
+			g_free (message);
+		
+		} else {	
+			/* update the theme selector display */
+			populate_list_with_themes (theme_selector);		
+		}
+	}
+			
+	g_free (xml_path);
+	g_free (theme_name);
 	g_free (theme_path);
 }
 
@@ -492,7 +560,7 @@ has_image_file(const char *path_uri, const char *dir_name, const char *image_fil
 
 /* derive the theme description from the theme name by reading its xml file */
 static char*
-make_theme_description (const char *theme_name)
+make_theme_description (const char *theme_name, const char *theme_path_uri)
 {
 	char *theme_file_name, *theme_path;
 	char *description_result, *temp_str;
@@ -502,14 +570,8 @@ make_theme_description (const char *theme_name)
 	description_result = NULL;
 	
 	theme_file_name = g_strdup_printf ("%s.xml", theme_name);	
-	if (!nautilus_strcmp (theme_name, "default")) {
-		theme_path = nautilus_pixmap_file (theme_file_name);
-	} else {
-		temp_str = g_strdup_printf ("%s/%s", theme_name, theme_file_name);
-		theme_path = nautilus_pixmap_file (temp_str);
-		g_free (temp_str);
-	}
-	
+	theme_path = nautilus_make_path (theme_path_uri, theme_file_name);
+		
 	if (theme_path) {
 		/* read the xml document */
 		theme_document = xmlParseFile(theme_path);
@@ -588,7 +650,7 @@ add_theme (NautilusThemeSelector *theme_selector, const char *theme_path_uri, co
 	
 	clist_entry[0] = NULL;
 	clist_entry[1] = g_strdup (theme_name);
-	clist_entry[2] = make_theme_description (theme_name);
+	clist_entry[2] = make_theme_description (theme_name, theme_path_uri);
 	
 	gtk_clist_append (GTK_CLIST(theme_selector->details->theme_list), clist_entry);
 	
@@ -605,20 +667,62 @@ add_theme (NautilusThemeSelector *theme_selector, const char *theme_path_uri, co
 	gdk_pixmap_unref (pixmap);
 	gdk_bitmap_unref (mask);
 }
+
+/* utility routine to populate by iterating through the passed-in directory */
+static int
+populate_list_with_themes_from_directory (NautilusThemeSelector *theme_selector, const char *directory_uri, int *index)
+{
+	int selected_index;
+	char *theme_uri, *current_theme;
+	GnomeVFSResult result;
+	GnomeVFSFileInfo *current_file_info;
+	GnomeVFSDirectoryList *list;
+	
+	selected_index = -1;
+				
+	result = gnome_vfs_directory_list_load (&list, directory_uri,
+					       GNOME_VFS_FILE_INFO_DEFAULT, NULL);
+	if (result != GNOME_VFS_OK) {
+		return -1;
+	}
+
+	current_theme = nautilus_theme_get_theme();
+
+	/* interate through the directory for each file */
+	current_file_info = gnome_vfs_directory_list_first(list);
+	while (current_file_info != NULL) {
+		if ((current_file_info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) && (current_file_info->name[0] != '.')) {
+			if (has_image_file (directory_uri, current_file_info->name, "i-directory" )) {
+				if (!nautilus_strcmp (current_theme, current_file_info->name)) {
+					selected_index = *index;
+				}
+				theme_uri = nautilus_make_path (directory_uri, current_file_info->name);
+				add_theme (theme_selector, theme_uri, current_file_info->name, current_theme, *index);
+				g_free (theme_uri);
+				*index += 1;
+			}
+		}
+			
+		current_file_info = gnome_vfs_directory_list_next (list);
+	}
+
+	gnome_vfs_directory_list_destroy (list);	
+	g_free (current_theme);
+	return selected_index;
+}
+
  
 /* populate the list view with the available themes, glean by iterating  */
 static void
 populate_list_with_themes (NautilusThemeSelector *theme_selector)
 {
-	int index, selected_index;
-	char *current_theme, *pixmap_directory, *directory_uri;
-	GnomeVFSResult result;
-	GnomeVFSFileInfo *current_file_info;
-	GnomeVFSDirectoryList *list;
-		
-	/* get the current theme */
-	current_theme = nautilus_theme_get_theme();
-
+	int index, selected_index, alt_selected_index;
+	char *pixmap_directory, *directory_uri, *user_directory;
+	char *current_theme;
+	
+	/* first, clear out the list */
+	gtk_clist_clear (GTK_CLIST (theme_selector->details->theme_list));
+	
 	/* allocate the colors for the rows */
 	
 	gdk_color_parse ("rgb:FF/FF/FF", &theme_selector->details->main_row_color);
@@ -632,49 +736,36 @@ populate_list_with_themes (NautilusThemeSelector *theme_selector)
 	/* iterate the pixmap directory to find other installed themes */	
 	pixmap_directory = nautilus_get_pixmap_directory ();
 	directory_uri = gnome_vfs_get_uri_from_local_path (pixmap_directory);
-
-	index = 0;
-	selected_index = -1;
 	
 	/* add a theme element for the default theme */
+	current_theme = nautilus_theme_get_theme();	
+	index = 0;
+
 	add_theme (theme_selector, pixmap_directory, "default", current_theme, index++);
-
-	/* get the uri for the images directory */
 	g_free (pixmap_directory);
-			
-	result = gnome_vfs_directory_list_load (&list, directory_uri,
-					       GNOME_VFS_FILE_INFO_DEFAULT, NULL);
-	if (result != GNOME_VFS_OK) {
-		g_free (directory_uri);
-		g_free (current_theme);
-		return;
+	g_free (current_theme);
+	
+	/* process the built-in themes */
+	selected_index = populate_list_with_themes_from_directory (theme_selector, directory_uri, &index);
+	g_free (directory_uri);
+	
+	/* now process the user-added themes */
+	
+	user_directory = nautilus_get_user_directory ();
+	directory_uri = nautilus_make_path (user_directory, "themes");
+	g_free (user_directory);
+	
+	alt_selected_index = populate_list_with_themes_from_directory (theme_selector, directory_uri, &index);
+	g_free (directory_uri);
+	
+	if (selected_index == -1) {
+		selected_index = alt_selected_index;
 	}
-
-	/* interate through the directory for each file */
-	current_file_info = gnome_vfs_directory_list_first(list);
-	while (current_file_info != NULL) {
-		if ((current_file_info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) && (current_file_info->name[0] != '.')) {
-			if (has_image_file (directory_uri, current_file_info->name, "i-directory" )) {
-				if (!nautilus_strcmp (current_theme, current_file_info->name)) {
-					selected_index = index;
-				}
-				add_theme (theme_selector, directory_uri, current_file_info->name, current_theme, index);
-				index += 1;
-			}
-		}
-			
-		current_file_info = gnome_vfs_directory_list_next (list);
-	}
-
+	
 	/* select the appropriate row, and make sure it's visible on the screen */	
 	if (selected_index >= 0) {
 		theme_selector->details->selected_row = selected_index;
 		gtk_clist_select_row (GTK_CLIST(theme_selector->details->theme_list), selected_index, 0);
 		gtk_clist_moveto (GTK_CLIST(theme_selector->details->theme_list), selected_index, 0, 0.0, 0.0);		
 	}
-	
-	g_free (directory_uri);
-	g_free (current_theme);
-	gnome_vfs_directory_list_destroy (list);	
-
 }

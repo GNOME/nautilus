@@ -232,7 +232,8 @@ nautilus_theme_get_image_path (const char *image_name)
 GdkPixbuf *
 nautilus_theme_make_selector (const char *theme_name)
 {
-	char *pixbuf_file, *temp_str ;
+	char *pixbuf_file, *temp_str;
+	char *user_directory, *directory_uri;
 	GdkPixbuf *pixbuf;
 	
 	/* first, see if we can find an explicit preview */
@@ -243,14 +244,28 @@ nautilus_theme_make_selector (const char *theme_name)
 	}
 	
 	pixbuf_file = nautilus_pixmap_file(temp_str);
-	g_free (temp_str);
 	if (pixbuf_file != NULL) {
 		pixbuf = gdk_pixbuf_new_from_file (pixbuf_file);
 		g_free (pixbuf_file);
 		return pixbuf;
+	} else {
+		/* try the user directory */
+		user_directory = nautilus_get_user_directory ();
+		directory_uri = nautilus_make_path (user_directory, "themes");
+		pixbuf_file = nautilus_make_path (directory_uri, temp_str);
+		
+		g_free (user_directory);
+		g_free (directory_uri);
+		
+		if (g_file_exists (pixbuf_file)) {
+			pixbuf = gdk_pixbuf_new_from_file (pixbuf_file);
+			g_free (pixbuf_file);
+			return pixbuf;
+		}
 	}
 	
-	/* now look for a directory */	
+	/* couldn't find a custom one, so try for a directory */	
+	g_free (temp_str);
 	temp_str = g_strdup_printf ("%s/%s", theme_name, "i-directory.png");
 	pixbuf_file = nautilus_pixmap_file(temp_str);
 	g_free (temp_str);
@@ -262,6 +277,24 @@ nautilus_theme_make_selector (const char *theme_name)
 		if (pixbuf_file == NULL) {
 			pixbuf_file = nautilus_pixmap_file ("i-directory.png");
 		}	
+	}
+	
+	/* try the user directory if necessary */
+	if (pixbuf_file == NULL) {
+		user_directory = nautilus_get_user_directory ();
+		directory_uri = nautilus_make_path (user_directory, "themes");
+		temp_str = g_strdup_printf ("%s/i-directory.png", theme_name);
+		pixbuf_file = nautilus_make_path (directory_uri, temp_str);
+		
+		g_free (user_directory);
+		g_free (directory_uri);
+		g_free (temp_str);
+		
+		if (g_file_exists (pixbuf_file)) {
+			pixbuf = gdk_pixbuf_new_from_file (pixbuf_file);
+			g_free (pixbuf_file);
+			return pixbuf;
+		}
 	}
 	
 	/* if we can't find anything, return NULL */

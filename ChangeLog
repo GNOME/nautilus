@@ -1,3 +1,19 @@
+2000-09-25  Andy Hertzfeld  <andy@eazel.com>
+
+	work toward completing user added themes; it's almost done
+	now except for making the icon factory aware of user-added themes
+	
+	* src/nautilus-theme-selector.c: (uri_get_basename),
+	(add_theme_to_icons), (make_theme_description), (add_theme),
+	(populate_list_with_themes_from_directory),
+	(populate_list_with_themes):
+	made the theme selector install themes properly, and made it
+	reflect themes that were installed in the user space
+	
+	* libnautilus-extensions/nautilus-theme.c:
+	(nautilus_theme_make_selector):
+	made it look in both theme spaces to retrieve an icons.
+
 2000-09-24  Andy Hertzfeld  <andy@eazel.com>
 	
 	* src/nautilus-throbber.c: (get_throbber_dimensions),
