@@ -1,3 +1,12 @@
+2001-01-18  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-thumbnails.c:
+	(check_for_thumbnails):
+	Fix a crash that was blocking Eli -- a close was being called
+	without checking the result of a previous create.
+	This will need more work, just wanted to do a quick fix to
+	unblock Eli.
+
 2001-01-18  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/command-line/eazel-alt-install-corba.

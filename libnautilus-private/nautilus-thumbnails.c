@@ -487,7 +487,11 @@ check_for_thumbnails (void)
 			invalid_uri = make_invalid_thumbnail_uri (current_thumbnail);
 			result = gnome_vfs_create (&handle, invalid_uri, GNOME_VFS_OPEN_WRITE,
 						   FALSE, THUMBNAIL_PLACEHOLDER_PERMISSIONS);
-			gnome_vfs_close (handle);
+
+			if (result == GNOME_VFS_OK) {
+				gnome_vfs_close (handle);
+			}
+			
 			g_free (invalid_uri);
 		}
 		
