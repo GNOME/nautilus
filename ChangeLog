@@ -1,3 +1,9 @@
+2000-05-21  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/music/nautilus-music-view.c: (get_song_text):
+	fixed a crash in the music view due to uninitialized variables that occured when
+	the album name was not present.
+	
 2000-05-21  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/install/command-line/Makefile.am:

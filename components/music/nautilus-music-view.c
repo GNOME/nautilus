@@ -300,6 +300,10 @@ static char *
 get_song_text (NautilusMusicView *music_view, int row)
 {
 	char *song_text, *song_name, *album_name, *year;
+	
+	album_name = NULL;
+	year = NULL;
+	
 	gtk_clist_get_text (GTK_CLIST(music_view->details->song_list), row, 1, &song_name);
 	gtk_clist_get_text (GTK_CLIST(music_view->details->song_list), row, 3, &year);
 	gtk_clist_get_text (GTK_CLIST(music_view->details->song_list), row, 6, &album_name);
