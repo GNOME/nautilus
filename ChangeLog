@@ -1,3 +1,17 @@
+2000-11-01  Mathieu Lacage  <mathieu@eazel.com>
+
+	This is completely useless but I needed a break from "usefull"
+	bugs.
+	* applets/launcher/nautilus-launcher-applet.c: (image_leave_event),
+	(image_button_press_event), (image_button_release_event), (main):
+	Add an event handler for release event to make sure we launch 
+	nautilus only if you release the cursor without leaving the icon.
+	Add an offset when you click to give the user feedback about what 
+	he is doing.
+	* libnautilus-extensions/nautilus-image.c: (render_buffer_pixbuf):
+	Fix offset problem when drawing image: the offset was not taken
+	into account in the calculation of the x and y coordinates.
+
 2000-10-31  Robey Pointer  <robey@eazel.com>
 
 	* nautilus-installer/src/Makefile:

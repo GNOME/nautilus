@@ -338,12 +338,16 @@ render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
 			x = - (width - widget->allocation.width) / 2;
 		}
 
+		x =+ horizontal_offset;
+
 		if (height <= widget->allocation.height) {
 			y = (widget->allocation.height - height) / 2;
 		}
 		else {
 			y = - (height - widget->allocation.height) / 2;
 		}
+
+		y =+ vertical_offset;
 
 		gdk_pixbuf_composite (image->detail->pixbuf,
 				      buffer, 
