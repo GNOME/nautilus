@@ -477,8 +477,11 @@ nautilus_tree_model_get_node (NautilusTreeModel *model,
 	node = g_hash_table_lookup (model->details->file_to_node_map, file);
 
 	if (node == NULL) {
-		g_print ("Failed to get node for %s (0x%x)\n", uri, (unsigned) file);
-
+		g_print ("You've run into an intermittent tree view bug.\n");
+		g_print ("Running Nautilus again will probably not hit this bug.\n");
+		g_print ("The tree view didn't have a node for %s (0x%x)\n", uri, (unsigned) file);
+		g_print ("The tree view had the following nodes:\n\n");
+		nautilus_tree_model_dump_files (model);
 	}
 
 	nautilus_file_unref (file);
@@ -501,7 +504,7 @@ dump_one_file_node (gpointer key, gpointer value, gpointer user_data)
 	file_number = (guint *)user_data;
 	uri = nautilus_file_get_uri (NAUTILUS_FILE (key));
 
-	g_print ("%d: %s|(0x%x)\n", ++(*file_number), uri, (unsigned) key);
+	g_print ("%d: %s (0x%x)|\n", ++(*file_number), uri, (unsigned) key);
 	
 	g_free (uri);
 }
