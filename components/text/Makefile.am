@@ -34,3 +34,4 @@ $(server_in_files:.server.in.in=.server.in): $(server_in_files)
 @INTLTOOL_SERVER_RULE@
 
 EXTRA_DIST = $(server_in_files) $(nautilus_text_view_SOURCES)
+CLEANFILES = $(server_DATA) $(server_DATA).in
