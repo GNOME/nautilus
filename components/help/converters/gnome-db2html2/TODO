@@ -2,14 +2,7 @@ List of things I know I need to do:
 -----------------------------------
 
 Store the id of the sect with the title of the graphic so that I can get
-xref correctly - (Ali: I looked at this item and there seems no point in doing
-this. We can only examine graphics in the /CURRENT/ sect-id (the one specified
-on the command-line) using the pre-parser. This means we cannot properly xref
-figure's outside the current sect)
+xref correctly.
 
-Store sect level so we can do <H2>/<H3> correctly for section headers - This
-appears to be done (if this is meant for the table of contents) 
-
-Implement variablelist
-
-Switch to a DOM based parser.
+Switch to a DOM based parser (not possible until we switch to a DOM based
+parser and/or we switch to libxml 2.2.x)

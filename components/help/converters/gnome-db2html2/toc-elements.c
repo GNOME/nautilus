@@ -147,6 +147,12 @@ ElementInfo toc_elements[] = {
 	{ GLOSSSEEALSO, "glossseealso", NULL, NULL, NULL},
 	{ EXAMPLE, "example", NULL, NULL, NULL},
 	{ VARLISTENTRY, "varlistentry", NULL, NULL, NULL},
+	{ STREET, "street", NULL, NULL, NULL},
+	{ CITY, "city", NULL, NULL, NULL},
+	{ COUNTRY, "country", NULL, NULL, NULL},
+	{ STATE, "state", NULL, NULL, NULL},
+	{ POSTCODE, "postcode", NULL, NULL, NULL},
+	{ LITERALLAYOUT, "literallayout", NULL, NULL, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 

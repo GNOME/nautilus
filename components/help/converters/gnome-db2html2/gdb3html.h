@@ -128,7 +128,13 @@ typedef enum ElementIndex {
 	GLOSSSEEALSO, /* 115 */
 	EXAMPLE,
 	VARLISTENTRY,
-	UNDEFINED /* 118 */
+	STREET,
+	CITY,
+	COUNTRY, /* 120 */
+	STATE,
+	POSTCODE,
+	LITERALLAYOUT,
+	UNDEFINED /* 124 */
 } ElementIndex;
 
 typedef struct _ElementInfo ElementInfo;
@@ -181,6 +187,7 @@ struct _Context {
 	gboolean empty_element; /* This is to determine if the element is
 				   empty or not */
 	gboolean in_glossterm;
+	gboolean start_address_character;
 	DocType doctype;
 	GSList *footnotes;
 	xmlParserCtxtPtr ParserCtxt;

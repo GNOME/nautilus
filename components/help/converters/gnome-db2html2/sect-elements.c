@@ -26,7 +26,7 @@ ElementInfo sect_elements[] = {
 	{ AFFILIATION, "affiliation", NULL, NULL, NULL},
 	{ EMAIL, "email", NULL, NULL, (charactersSAXFunc) sect_email_characters },
 	{ ORGNAME, "orgname", NULL, NULL, (charactersSAXFunc) sect_author_characters },
-	{ ADDRESS, "address", NULL, NULL, (charactersSAXFunc) sect_write_characters},
+	{ ADDRESS, "address", (startElementSAXFunc) sect_address_start_element, (endElementSAXFunc) sect_address_end_element, (charactersSAXFunc) sect_address_characters},
 	{ COPYRIGHT, "copyright", NULL, NULL, NULL},
 	{ YEAR, "year", NULL, NULL, (charactersSAXFunc) sect_copyright_characters},
 	{ HOLDER, "holder", NULL, NULL, (charactersSAXFunc) sect_copyright_characters},
@@ -123,6 +123,12 @@ ElementInfo sect_elements[] = {
 	{ GLOSSSEEALSO, "glossseealso", (startElementSAXFunc) sect_glossseealso_start_element, NULL, NULL },
 	{ EXAMPLE, "example", NULL, NULL, NULL },
 	{ VARLISTENTRY, "varlistentry", (startElementSAXFunc) sect_varlistentry_start_element, (endElementSAXFunc) sect_varlistentry_end_element, NULL },
+	{ STREET, "street", (startElementSAXFunc) sect_street_start_element, NULL, (charactersSAXFunc) sect_write_characters },
+	{ CITY, "city", (startElementSAXFunc) sect_city_start_element, NULL, (charactersSAXFunc) sect_write_characters },
+	{ COUNTRY, "country", (startElementSAXFunc) sect_country_start_element, NULL, (charactersSAXFunc) sect_write_characters },
+	{ STATE, "state", NULL, NULL, (charactersSAXFunc) sect_write_characters },
+	{ POSTCODE, "postcode", NULL, NULL, (charactersSAXFunc) sect_write_characters },
+	{ LITERALLAYOUT, "literallayout", (startElementSAXFunc) sect_literallayout_start_element, (endElementSAXFunc) sect_literallayout_end_element, (charactersSAXFunc) sect_write_characters },
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -2160,8 +2166,8 @@ sect_glossseealso_start_element (Context *context, const gchar *name, const xmlC
 
 void
 sect_varlistentry_start_element (Context *context,
-			     const gchar *name,
-			     const xmlChar **atrs)
+			     	 const gchar *name,
+			     	 const xmlChar **atrs)
 {
 	if (!IS_IN_SECT (context))
 		return;
@@ -2171,10 +2177,90 @@ sect_varlistentry_start_element (Context *context,
 
 void
 sect_varlistentry_end_element (Context *context,
-			   const gchar *name)
+			       const gchar *name)
 {
 	if (!IS_IN_SECT (context))
 		return;
 
 	sect_print (context, "</LI>");
 }
+
+void
+sect_address_characters (Context *context,
+			 const char *chars,
+			 int len)
+{
+	gchar *temp;
+
+	if (!IS_IN_SECT (context))
+		return;
+		
+	if (context->start_address_character == TRUE) {
+		g_print ("<BR>&nbsp;&nbsp;&nbsp;");
+		context->start_address_character = FALSE;
+	}
+	
+	temp = g_strndup (chars, len);
+	sect_print (context, temp);
+	g_free (temp);
+}
+void
+sect_address_start_element (Context *context,
+			    const gchar *name,
+			    const xmlChar **atrs)
+{
+	context->start_address_character = TRUE;
+}
+
+void
+sect_address_end_element (Context *context,
+			  const gchar *name)
+{
+	context->start_address_character = FALSE;
+}
+
+void
+sect_street_start_element (Context *context,
+			   const gchar *name,
+			   const xmlChar **atrs)
+{
+	sect_print (context, "<BR>&nbsp;&nbsp;&nbsp;");
+}
+
+void
+sect_city_start_element (Context *context,
+			 const gchar *name,
+			 const xmlChar **atrs)
+{
+	sect_print (context, "<BR>&nbsp;&nbsp;&nbsp;");
+}
+
+void
+sect_country_start_element (Context *context,
+			    const gchar *name,
+			    const xmlChar **atrs)
+{
+	sect_print (context, "<BR>&nbsp;&nbsp;&nbsp;");
+}
+
+void
+sect_literallayout_start_element (Context *context,
+			     	  const gchar *name,
+			     	  const xmlChar **atrs)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "<PRE>");
+}
+
+void
+sect_literallayout_end_element (Context *context,
+			   	const gchar *name)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "</PRE>");
+}
+

@@ -133,4 +133,12 @@ void sect_glossseealso_start_element (Context *context, const gchar *name, const
 void sect_glossee_end_element (Context *context, const gchar *name);
 void sect_varlistentry_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 void sect_varlistentry_end_element (Context *context, const gchar *name);
+void sect_address_characters (Context *context, const char *chars, int len);
+void sect_address_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+void sect_address_end_element (Context *context, const gchar *name);
+void sect_street_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+void sect_city_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+void sect_country_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+void sect_literallayout_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+void sect_literallayout_end_element (Context *context, const gchar *name);
 #endif

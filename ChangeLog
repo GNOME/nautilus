@@ -1,3 +1,38 @@
+2000-12-25  Ali Abdin  <aliabdin@aucegypt.edu>
+
+        Handle the <address> tag properly (including <street>, <city>,
+        <country>, <postcode>, and <state>) - Fixes bug #2176
+
+        Support the <literallayout> tag - Fixes bug #5341
+
+        These patches contributed by John Fleck <jfleck@inkstain.net>
+
+        Happy Eid and Merry Christmas!
+
+        * components/help/converters/gnome-db2html2/gdb3html.h:
+        * components/help/converters/gnome-db2html2/sect-elements.[ch]:
+        * components/help/converters/gnome-db2html2/sect-preparse.c:
+        * components/help/converters/gnome-db2html2/toc-elements.c:
+        (sect_literallayout_start_element),
+        (sect_literallayout_end_element):
+        New functions to for LITERALLAYOUT tag support.
+        (sect_country_start_element),
+        (sect_city_start_element),
+        (sect_street_start_element),
+        (sect_address_end_element),
+        (sect_address_start_element),
+        (sect_address_characters):
+        New functions to handle the ADDRESS/STREET/CITY/COUNTRY tags properly
+
+        * components/help/converters/gnome-db2html2/ASSUMPTIONS:
+        Removed an erroneous entry
+
+        * components/help/converters/gnome-db2html2/TODO:
+        Updated
+
+        * components/help/converters/gnome-db2html2/AUTHORS:
+        Added John Fleck (jfleck@inkstain.net)
+
 2000-12-25  Gene Z. Ragan  <gzr@eazel.com>
 	
 	* src/file-manager/fm-desktop-icon-view.c:
