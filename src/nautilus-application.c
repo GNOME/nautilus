@@ -199,11 +199,6 @@ nautilus_application_initialize (NautilusApplication *application)
 			    "volume_unmounted",
 			    volume_unmounted_callback,
 			    application);
-
-	/* monitor the desktop preference */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_DESKTOP,
-					   desktop_changed_callback,
-					   application);	
 }
 
 NautilusApplication *
@@ -221,10 +216,6 @@ nautilus_application_destroy (GtkObject *object)
 
 	nautilus_bookmarks_exiting ();
 	
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_DESKTOP,
-					      desktop_changed_callback,
-					      application);
-
 	bonobo_object_unref (BONOBO_OBJECT (application->undo_manager));
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
@@ -462,6 +453,12 @@ nautilus_application_startup (NautilusApplication *application,
 		if (start_desktop) {
 			Nautilus_Shell_start_desktop (shell, &ev);
 		}
+		
+		/* Monitor the preference to show or hide the desktop */
+		nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_SHOW_DESKTOP,
+							       desktop_changed_callback,
+							       application,
+							       GTK_OBJECT (application));
 
 		/* CORBA C mapping doesn't allow NULL to be passed
 		   for string parameters */

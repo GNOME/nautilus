@@ -1,3 +1,17 @@
+2001-01-22  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fix bug 5914 - First run of Nautilus on clean system crashes.
+	
+	* src/nautilus-application.c: (nautilus_application_initialize),
+	(nautilus_application_destroy), (nautilus_application_startup):
+	Add the preference callback for show_desktop much later in the
+	initialization of the Nautilus Application.  Otherwise, the first
+	time druid triggers prefernece changes that cause the desktop to
+	turn on in the middle of the first time druid being presented to
+	the user.
+	
 2001-01-22  Rebecca Schulman  <rebecka@eazel.com>
 
 	* libnautilus-extensions/nautilus-search-uri.c:
