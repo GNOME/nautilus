@@ -134,7 +134,7 @@ caption_table_destroy (GtkObject *object)
 		(*GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
-/* FIXME: This should be public for the widget to be useful */
+/* FIXME bugzilla.eazel.com 679: This should be public for the widget to be useful */
 static void
 caption_table_resize (NautilusCaptionTable	*caption_table,
 		      guint			num_rows)
@@ -162,7 +162,7 @@ caption_table_resize (NautilusCaptionTable	*caption_table,
 		guint new_size = caption_table->detail->num_rows;
 		guint realloc_size = sizeof(GtkWidget *) * new_size;
 		
-		/* FIXME: Use a GList for this */
+		/* FIXME bugzilla.eazel.com 680: Use a GList for this */
 		caption_table->detail->labels = (GtkWidget**) g_realloc (caption_table->detail->labels,
 									 realloc_size);
 

@@ -44,6 +44,9 @@ if (!@ARGV)
     $skip_files{"./macros/gnome-fileutils.m4"} = 1;
     $skip_files{"./macros/gnome-objc-checks.m4"} = 1;
     $skip_files{"./macros/gnome-vfs.m4"} = 1;
+    $skip_files{"./src/file-manager/desktop-canvas.c"} = 1;
+    $skip_files{"./src/file-manager/desktop-layout.c"} = 1;
+    $skip_files{"./src/file-manager/desktop-window.c"} = 1;
   }
 
 # locate all of the target lines

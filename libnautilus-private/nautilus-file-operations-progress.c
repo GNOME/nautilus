@@ -27,7 +27,7 @@
 #include <gnome.h>
 
 
-#define DIALOG_WIDTH 350	/* FIXME? */
+#define DIALOG_WIDTH 350	/* FIXME bugzilla.eazel.com 675: ? */
 
 
 static GnomeDialogClass *parent_class;

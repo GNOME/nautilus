@@ -818,7 +818,7 @@ nautilus_preferences_initialize (int argc, char **argv)
 	{
 		g_assert (error != NULL);
 
-		/* FIXME: Need better error reporting here */
+		/* FIXME bugzilla.eazel.com 672: Need better error reporting here */
 		g_warning ("GConf init failed:\n  %s", error->str);
 		
 		gconf_error_destroy (error);

@@ -1,3 +1,20 @@
+2000-04-26  John Sullivan  <sullivan@eazel.com>
+
+	More FIXME-to-bug work.
+	
+	* check-FIXME.pl: Added the three desktop-drawing files
+	that aren't included in the build to the list of files
+	in which to ignore FIXMEs.
+	
+	* nautilus-widgets/nautilus-caption-table.c,
+	* nautilus-widgets/nautilus-preferences-group.c,
+	* nautilus-widgets/nautilus-preferences.c,
+	* src/file-manager/dfos-xfer-progress-dialog.c,
+	* src/file-manager/dfos-xfer.c:
+
+	Wrote bug reports for all FIXMEs in these files. Down to 
+	54 in Nautilus with no bug report.
+
 2000-04-26  Andy Hertzfeld <andy@eazel.com>
 
 	fixed bug #603, set index panel background image via drag and drop

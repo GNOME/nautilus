@@ -209,7 +209,6 @@ nautilus_preferences_group_add_item (NautilusPreferencesGroup		*group,
 
 	g_return_val_if_fail (preference_name != NULL, NULL);
 
-	/* FIXME: The following cast needs to be fixed */
 	preference = nautilus_preferences_get_preference (preference_name);
 
 	g_assert (preference != NULL);

@@ -154,7 +154,7 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 		return TRUE;
 
 	case GNOME_VFS_XFER_PHASE_FILECOMPLETED:
-		/* FIXME? */
+		/* FIXME bugzilla.eazel.com 676: ? */
 		return TRUE;
 		
 	case GNOME_VFS_XFER_PHASE_COMPLETED:
@@ -369,7 +369,7 @@ dfos_xfer (DFOS *dfos,
 					   gnome_vfs_result_to_string (result));
 
 
-		/* FIXME: signals and all that.  */
+		/* FIXME bugzilla.eazel.com 677: signals and all that.  */
 		dialog = gnome_error_dialog (message);
 
 		gtk_widget_show (dialog);
@@ -526,7 +526,7 @@ fs_move_to_trash (const GList *item_uris, GtkWidget *parent_view)
 	source_dir_uri = NULL;
 	trash_dir_uri = NULL;
 	
-	/* FIXME:
+	/* FIXME bugzilla.eazel.com 678:
 	 * Separate items that can be moved to trash and ones that can't.
 	 * For the ones that cannot, ask the user if they want to delete the files
 	 * on the spot.
@@ -575,7 +575,7 @@ fs_empty_trash (GtkWidget *parent_view)
 	GnomeVFSResult result;
 	XferInfo *xfer_info;
 
-	/* FIXME:
+	/* FIXME bugzilla.eazel.com 638:
 	 * add the different trash directories from the different volumes
 	 */
 
