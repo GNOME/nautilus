@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 10:55+0200\n"
-"PO-Revision-Date: 2004-08-19 20:03-0400\n"
+"POT-Creation-Date: 2004-09-26 11:25-0400\n"
+"PO-Revision-Date: 2004-09-26 20:03-0400\n"
 "Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: English/Canada <adamw@FreeBSD.org>\n"
 "MIME-Version: 1.0\n"
@@ -1195,7 +1195,7 @@ msgstr "Desktop trash icon name"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
 msgid "Enable 'special' flags in file preferences dialog"
-msgstr "Enable 'special' flags in file preferences dialog"
+msgstr "Enable 'special' flags in file preferences dialogue"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
 msgid "Enables the classic Nautilus behavior, where all windows are browsers"
@@ -1269,7 +1269,7 @@ msgid ""
 "options of a file in the file preferences dialog."
 msgstr ""
 "If set to true, then Nautilus lets you edit some of the more esoteric "
-"options of a file in the file preferences dialog."
+"options of a file in the file preferences dialogue."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
 msgid ""
@@ -1648,7 +1648,7 @@ msgid ""
 msgstr ""
 "What to do with executable text files when they are activated (single or "
 "double clicked). Possible values are \"launch\" to launch them as programs, "
-"\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
+"\"ask\" to ask what to do via a dialogue, and \"display\" to display them as "
 "text files."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:97
@@ -2135,7 +2135,7 @@ msgstr "link to %s"
 msgid "link (broken)"
 msgstr "link (broken)"
 
-#: libnautilus-private/nautilus-file.c:6173
+#: libnautilus-private/nautilus-file.c:6174
 #: libnautilus-private/nautilus-global-preferences.c:546
 #: libnautilus-private/nautilus-trash-directory.c:343
 msgid "Trash"
@@ -3541,10 +3541,6 @@ msgstr "%s, Free space: %s"
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
 
-#. Note that the number of items actually displayed varies somewhat due
-#. * to the way files are collected in batches. So you can't assume that
-#. * no more than the constant limit are displayed.
-#.
 #: src/file-manager/fm-directory-view.c:1971
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
@@ -3645,12 +3641,12 @@ msgstr "_Display"
 msgid "_Run"
 msgstr "_Run"
 
-#: src/file-manager/fm-directory-view.c:4126
+#: src/file-manager/fm-directory-view.c:4128
 #, c-format
 msgid "Cannot open %s"
 msgstr "Cannot open %s"
 
-#: src/file-manager/fm-directory-view.c:4129
+#: src/file-manager/fm-directory-view.c:4131
 #, c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents "
@@ -3671,21 +3667,21 @@ msgstr ""
 "extension for \"%s\", then open the file normally. Alternatively, use the "
 "Open With menu to choose a specific application for the file. "
 
-#: src/file-manager/fm-directory-view.c:4515
+#: src/file-manager/fm-directory-view.c:4517
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Run \"%s\" on any selected items"
 
-#: src/file-manager/fm-directory-view.c:4749
+#: src/file-manager/fm-directory-view.c:4751
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Create Document from template \"%s\""
 
-#: src/file-manager/fm-directory-view.c:4933
+#: src/file-manager/fm-directory-view.c:4935
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "All executable files in this folder will appear in the Scripts menu."
 
-#: src/file-manager/fm-directory-view.c:4935
+#: src/file-manager/fm-directory-view.c:4937
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -3693,11 +3689,11 @@ msgstr ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 
-#: src/file-manager/fm-directory-view.c:4937
+#: src/file-manager/fm-directory-view.c:4939
 msgid "About Scripts"
 msgstr "About Scripts"
 
-#: src/file-manager/fm-directory-view.c:4938
+#: src/file-manager/fm-directory-view.c:4940
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -3737,19 +3733,19 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
 
-#: src/file-manager/fm-directory-view.c:5069
+#: src/file-manager/fm-directory-view.c:5071
 #: src/file-manager/fm-tree-view.c:788
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "\"%s\" will be moved if you select the Paste Files command"
 
-#: src/file-manager/fm-directory-view.c:5073
+#: src/file-manager/fm-directory-view.c:5075
 #: src/file-manager/fm-tree-view.c:792
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\" will be copied if you select the Paste Files command"
 
-#: src/file-manager/fm-directory-view.c:5080
+#: src/file-manager/fm-directory-view.c:5082
 #, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
@@ -3760,7 +3756,7 @@ msgstr[0] ""
 msgstr[1] ""
 "The %d selected items will be moved if you select the Paste Files command"
 
-#: src/file-manager/fm-directory-view.c:5087
+#: src/file-manager/fm-directory-view.c:5089
 #, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
@@ -3771,58 +3767,58 @@ msgstr[0] ""
 msgstr[1] ""
 "The %d selected items will be copied if you select the Paste Files command"
 
-#: src/file-manager/fm-directory-view.c:5169
+#: src/file-manager/fm-directory-view.c:5171
 #: src/file-manager/fm-tree-view.c:868
 msgid "There is nothing on the clipboard to paste."
 msgstr "There is nothing on the clipboard to paste."
 
-#: src/file-manager/fm-directory-view.c:5272
-#: src/file-manager/fm-directory-view.c:6507
+#: src/file-manager/fm-directory-view.c:5279
+#: src/file-manager/fm-directory-view.c:6515
 msgid "Mount Error"
 msgstr "Mount Error"
 
-#: src/file-manager/fm-directory-view.c:5334
+#: src/file-manager/fm-directory-view.c:5341
 msgid "Eject Error"
 msgstr "Eject Error"
 
-#: src/file-manager/fm-directory-view.c:5337
+#: src/file-manager/fm-directory-view.c:5344
 msgid "Unmount Error"
 msgstr "Unmount Error"
 
-#: src/file-manager/fm-directory-view.c:5461
+#: src/file-manager/fm-directory-view.c:5468
 #, c-format
 msgid "Connect to Server %s"
 msgstr "Connect to Server %s"
 
-#: src/file-manager/fm-directory-view.c:5466
+#: src/file-manager/fm-directory-view.c:5473
 msgid "_Connect"
 msgstr "_Connect"
 
-#: src/file-manager/fm-directory-view.c:5480
+#: src/file-manager/fm-directory-view.c:5487
 msgid "Link _name:"
 msgstr "Link _name:"
 
-#: src/file-manager/fm-directory-view.c:5792
+#: src/file-manager/fm-directory-view.c:5800
 msgid "E_ject"
 msgstr "E_ject"
 
-#: src/file-manager/fm-directory-view.c:5792
+#: src/file-manager/fm-directory-view.c:5800
 #: src/file-manager/nautilus-directory-view-ui.xml.h:66
 msgid "_Unmount Volume"
 msgstr "_Unmount Volume"
 
-#: src/file-manager/fm-directory-view.c:5936
+#: src/file-manager/fm-directory-view.c:5944
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "_Open with \"%s\""
 
-#: src/file-manager/fm-directory-view.c:5948
+#: src/file-manager/fm-directory-view.c:5956
 #: src/file-manager/nautilus-directory-view-ui.xml.h:59
 msgid "_Open"
 msgstr "_Open"
 
 #. add the "open in new window" menu item
-#: src/file-manager/fm-directory-view.c:5957
+#: src/file-manager/fm-directory-view.c:5965
 #: src/file-manager/fm-tree-view.c:960
 #, c-format
 msgid "Open in New Window"
@@ -3830,93 +3826,93 @@ msgid_plural "Open in %d New Windows"
 msgstr[0] "Open in New Window"
 msgstr[1] "Open in %d New Windows"
 
-#: src/file-manager/fm-directory-view.c:5964
+#: src/file-manager/fm-directory-view.c:5972
 msgid "Browse Folder"
 msgstr "Browse Folder"
 
-#: src/file-manager/fm-directory-view.c:5966
+#: src/file-manager/fm-directory-view.c:5974
 msgid "Browse Folders"
 msgstr "Browse Folders"
 
-#: src/file-manager/fm-directory-view.c:5989
+#: src/file-manager/fm-directory-view.c:5997
 msgid "_Delete from Trash"
 msgstr "_Delete from Trash"
 
-#: src/file-manager/fm-directory-view.c:5991
+#: src/file-manager/fm-directory-view.c:5999
 msgid "Delete all selected items permanently"
 msgstr "Delete all selected items permanently"
 
-#: src/file-manager/fm-directory-view.c:5994
-#: src/file-manager/fm-directory-view.c:6339
+#: src/file-manager/fm-directory-view.c:6002
+#: src/file-manager/fm-directory-view.c:6347
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Mo_ve to Trash"
 msgstr "Mo_ve to Trash"
 
-#: src/file-manager/fm-directory-view.c:5996
+#: src/file-manager/fm-directory-view.c:6004
 #: src/file-manager/nautilus-directory-view-ui.xml.h:24
 msgid "Move each selected item to the Trash"
 msgstr "Move each selected item to the Trash"
 
-#: src/file-manager/fm-directory-view.c:6020
+#: src/file-manager/fm-directory-view.c:6028
 #: src/file-manager/nautilus-directory-view-ui.xml.h:54
 msgid "_Delete"
 msgstr "_Delete"
 
-#: src/file-manager/fm-directory-view.c:6040
+#: src/file-manager/fm-directory-view.c:6048
 msgid "Ma_ke Links"
 msgstr "Ma_ke Links"
 
-#: src/file-manager/fm-directory-view.c:6041
+#: src/file-manager/fm-directory-view.c:6049
 #: src/file-manager/nautilus-directory-view-ui.xml.h:19
 msgid "Ma_ke Link"
 msgstr "Ma_ke Link"
 
-#: src/file-manager/fm-directory-view.c:6054
+#: src/file-manager/fm-directory-view.c:6062
 #: src/file-manager/nautilus-directory-view-ui.xml.h:56
 msgid "_Empty Trash"
 msgstr "_Empty Trash"
 
-#: src/file-manager/fm-directory-view.c:6070
+#: src/file-manager/fm-directory-view.c:6078
 msgid "Cu_t File"
 msgstr "Cu_t File"
 
-#: src/file-manager/fm-directory-view.c:6071
+#: src/file-manager/fm-directory-view.c:6079
 #: src/file-manager/nautilus-directory-view-ui.xml.h:11
 msgid "Cu_t Files"
 msgstr "Cu_t Files"
 
-#: src/file-manager/fm-directory-view.c:6080
+#: src/file-manager/fm-directory-view.c:6088
 msgid "_Copy File"
 msgstr "_Copy File"
 
-#: src/file-manager/fm-directory-view.c:6081
+#: src/file-manager/fm-directory-view.c:6089
 #: src/file-manager/nautilus-directory-view-ui.xml.h:53
 msgid "_Copy Files"
 msgstr "_Copy Files"
 
-#: src/file-manager/fm-directory-view.c:6330
+#: src/file-manager/fm-directory-view.c:6338
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr "The link is broken, do you want to move it to the Trash?"
 
-#: src/file-manager/fm-directory-view.c:6332
+#: src/file-manager/fm-directory-view.c:6340
 msgid "This link can't be used, because it has no target."
 msgstr "This link can't be used, because it has no target."
 
-#: src/file-manager/fm-directory-view.c:6334
+#: src/file-manager/fm-directory-view.c:6342
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "This link can't be used, because its target \"%s\" doesn't exist."
 
-#: src/file-manager/fm-directory-view.c:6339
+#: src/file-manager/fm-directory-view.c:6347
 msgid "Broken Link"
 msgstr "Broken Link"
 
-#: src/file-manager/fm-directory-view.c:6643
+#: src/file-manager/fm-directory-view.c:6651
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Opening \"%s\"."
 
-#: src/file-manager/fm-directory-view.c:6650
+#: src/file-manager/fm-directory-view.c:6658
 msgid "Cancel Open?"
 msgstr "Cancel Open?"
 
@@ -4886,16 +4882,6 @@ msgstr ""
 msgid "Migrated Old Desktop"
 msgstr "Migrated Old Desktop"
 
-#. Can't register myself due to trouble locating the
-#. * Nautilus_Shell.server file. This has happened when you
-#. * launch Nautilus with an LD_LIBRARY_PATH that
-#. * doesn't include the directory containing the oaf
-#. * library. It could also happen if the
-#. * Nautilus_Shell.server file was not present for some
-#. * reason. Sometimes killing oafd and gconfd fixes
-#. * this problem but we don't exactly understand why,
-#. * since neither of the above causes explain it.
-#.
 #: src/nautilus-application.c:506
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
@@ -4906,7 +4892,6 @@ msgstr ""
 "console may fix the problem. If not, you can try rebooting the computer or "
 "installing Nautilus again."
 
-#. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
 #: src/nautilus-application.c:512
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
@@ -5473,7 +5458,7 @@ msgid ""
 "dialog)."
 msgstr ""
 "Do not manage the desktop (ignore the preference set in the preferences "
-"dialog)."
+"dialogue)."
 
 #: src/nautilus-main.c:197
 msgid "open a browser window."
@@ -6479,152 +6464,3 @@ msgstr "Network Servers"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "View your network servers in the Nautilus file manager"
-
-#~ msgid "There was an error displaying help: %s"
-#~ msgstr "There was an error displaying help: %s"
-
-#~ msgid "not in menu"
-#~ msgstr "not in menu"
-
-#~ msgid "in menu for this file"
-#~ msgstr "in menu for this file"
-
-#~ msgid "in menu for \"%s\""
-#~ msgstr "in menu for \"%s\""
-
-#~ msgid "default for this file"
-#~ msgstr "default for this file"
-
-#~ msgid "default for \"%s\""
-#~ msgstr "default for \"%s\""
-
-#~ msgid "Is not in the menu for \"%s\" items."
-#~ msgstr "Is not in the menu for \"%s\" items."
-
-#~ msgid "Is in the menu for \"%s\"."
-#~ msgstr "Is in the menu for \"%s\"."
-
-#~ msgid "Is in the menu for \"%s\" items."
-#~ msgstr "Is in the menu for \"%s\" items."
-
-#~ msgid "Is in the menu for all \"%s\" items."
-#~ msgstr "Is in the menu for all \"%s\" items."
-
-#~ msgid "Is the default for \"%s\"."
-#~ msgstr "Is the default for \"%s\"."
-
-#~ msgid "Is the default for \"%s\" items."
-#~ msgstr "Is the default for \"%s\" items."
-
-#~ msgid "Is the default for all \"%s\" items."
-#~ msgstr "Is the default for all \"%s\" items."
-
-#~ msgid "Modify \"%s\""
-#~ msgstr "Modify \"%s\""
-
-#~ msgid "Include in the menu for \"%s\" items"
-#~ msgstr "Include in the menu for \"%s\" items"
-
-#~ msgid "Use as default for \"%s\" items"
-#~ msgstr "Use as default for \"%s\" items"
-
-#~ msgid "Include in the menu for \"%s\" only"
-#~ msgstr "Include in the menu for \"%s\" only"
-
-#~ msgid "Use as default for \"%s\" only"
-#~ msgstr "Use as default for \"%s\" only"
-
-#~ msgid "Don't include in the menu for \"%s\" items"
-#~ msgstr "Don't include in the menu for \"%s\" items"
-
-#~ msgid "Status"
-#~ msgstr "Status"
-
-#~ msgid "Done"
-#~ msgstr "Done"
-
-#~ msgid "_Modify..."
-#~ msgstr "_Modify..."
-
-#~ msgid "File Types and Programs"
-#~ msgstr "File Types and Programs"
-
-#~ msgid "_Go There"
-#~ msgstr "_Go There"
-
-#~ msgid ""
-#~ "You can configure which programs are offered for which file types in the "
-#~ "File Types and Programs dialog."
-#~ msgstr ""
-#~ "You can configure which programs are offered for which file types in the "
-#~ "File Types and Programs dialog."
-
-#~ msgid "Open with Other Application"
-#~ msgstr "Open with Other Application"
-
-#~ msgid "Choose an application with which to open \"%s\":"
-#~ msgstr "Choose an application with which to open \"%s\":"
-
-#~ msgid "Open with Other Viewer"
-#~ msgstr "Open with Other Viewer"
-
-#~ msgid "Choose a view for \"%s\":"
-#~ msgstr "Choose a view for \"%s\":"
-
-#~ msgid "No viewers are available for \"%s\"."
-#~ msgstr "No viewers are available for \"%s\"."
-
-#~ msgid "No Viewers Available"
-#~ msgstr "No Viewers Available"
-
-#~ msgid "There is no application associated with \"%s\"."
-#~ msgstr "There is no application associated with \"%s\"."
-
-#~ msgid "No Application Associated"
-#~ msgstr "No Application Associated"
-
-#~ msgid "There is no action associated with \"%s\"."
-#~ msgstr "There is no action associated with \"%s\"."
-
-#~ msgid "No Action Associated"
-#~ msgstr "No Action Associated"
-
-#~ msgid ""
-#~ "You can configure GNOME to associate applications with file types. Do you "
-#~ "want to associate an application with this file type now?"
-#~ msgstr ""
-#~ "You can configure GNOME to associate applications with file types. Do you "
-#~ "want to associate an application with this file type now?"
-
-#~ msgid "_Associate Application"
-#~ msgstr "_Associate Application"
-
-#~ msgid "The viewer associated with \"%s\" is invalid."
-#~ msgstr "The viewer associated with \"%s\" is invalid."
-
-#~ msgid "Invalid Viewer Associated"
-#~ msgstr "Invalid Viewer Associated"
-
-#~ msgid "The application associated with \"%s\" is invalid."
-#~ msgstr "The application associated with \"%s\" is invalid."
-
-#~ msgid "Invalid Application Associated"
-#~ msgstr "Invalid Application Associated"
-
-#~ msgid "The action associated with \"%s\" is invalid."
-#~ msgstr "The action associated with \"%s\" is invalid."
-
-#~ msgid "Invalid Action Associated"
-#~ msgstr "Invalid Action Associated"
-
-#~ msgid ""
-#~ "You can configure GNOME to associate a different application or viewer "
-#~ "with this file type. Do you want to associate an application or viewer "
-#~ "with this file type now?"
-#~ msgstr ""
-#~ "You can configure GNOME to associate a different application or viewer "
-#~ "with this file type. Do you want to associate an application or viewer "
-#~ "with this file type now?"
-
-#~ msgid "_Associate Action"
-#~ msgstr "_Associate Action"
