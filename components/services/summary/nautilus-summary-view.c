@@ -810,7 +810,7 @@ summary_fetch_callback (GnomeVFSResult result,
 		nautilus_summary_show_error_dialog 
 			(view, _("Unable to get services data from Eazel's server. "
 				 "The server might be unavailable right now, "
-				 "or your computer might be configured incorrectly."
+				 "or your computer might be configured incorrectly. "
 				 "Please contact support@eazel.com."));
 		return;
 	} 
@@ -849,7 +849,7 @@ redirect_fetch_callback (GnomeVFSResult result,
 		nautilus_summary_show_error_dialog 
 			(view, _("Unable to connect to Eazel's server. "
 				 "The server might be unavailable right now, "
-				 "or your computer might be configured incorrectly."
+				 "or your computer might be configured incorrectly. "
 				 "You could try again later."));
 		return;
 	} 
