@@ -64,8 +64,8 @@ echo "no" | gettextize --copy --force
 echo "Running libtoolize"
 libtoolize --copy --force
 
-if test -n "$GNOME2_PATH"; then
-	ACLOCAL_FLAGS="-I $GNOME2_PATH/share/aclocal $ACLOCAL_FLAGS"
+if test -z "$GNOME_INTERFACE_VERSION"; then
+	ACLOCAL_FLAGS="-I hack-macros $ACLOCAL_FLAGS"
 fi
 
 aclocal $ACLOCAL_FLAGS
