@@ -98,6 +98,12 @@ ElementInfo sect_elements[] = {
 	{ SIMPLELIST, "simplelist", (startElementSAXFunc) sect_table_without_border_start_element, (endElementSAXFunc) sect_table_end_element, NULL},
 	{ MEMBER, "member", (startElementSAXFunc) sect_member_start_element, (endElementSAXFunc) sect_member_end_element, (charactersSAXFunc) sect_write_characters},
 	{ MOUSEBUTTON, "mousebutton", NULL, NULL, (charactersSAXFunc) sect_write_characters},
+	{ SUPERSCRIPT, "superscript", (startElementSAXFunc) sect_sup_start_element, (endElementSAXFunc) sect_sup_end_element, (charactersSAXFunc) sect_write_characters},
+	{ SYSTEMITEM, "systemitem", NULL, NULL, (charactersSAXFunc) sect_write_characters},
+	{ VARNAME, "varname", (startElementSAXFunc) sect_tt_start_element, (endElementSAXFunc) sect_tt_end_element, (charactersSAXFunc) sect_write_characters},
+	{ BLOCKQUOTE, "blockquote", (startElementSAXFunc) sect_blockquote_start_element, (endElementSAXFunc) sect_blockquote_end_element, (charactersSAXFunc) sect_write_characters},
+	{ QUOTE, "quote", (startElementSAXFunc) sect_quote_start_element, (endElementSAXFunc) sect_quote_end_element, NULL},
+	{ OPTION, "option", (startElementSAXFunc) sect_tt_start_element, (endElementSAXFunc) sect_tt_end_element, (charactersSAXFunc) sect_write_characters},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -1507,6 +1513,7 @@ sect_informaltable_end_element (Context *context,
 {
 	if (!IS_IN_SECT (context))
 		return;
+	
 	sect_print (context, "</TABLE>\n");
 }
 
@@ -1695,4 +1702,66 @@ sect_member_end_element (Context *context,
 		return;
 	
 	sect_print (context, "</TD></TR>\n");
+}
+
+void
+sect_sup_start_element (Context *context,
+			const char *name,
+			const xmlChar **atrs)
+{
+	if (!IS_IN_SECT (context))
+		return;
+	
+	sect_print (context, "<SUP>");
+}
+
+void
+sect_sup_end_element (Context *context,
+		      const char *name)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "</SUP>");
+}
+
+void
+sect_quote_start_element (Context *context,
+		       	  const char *name,
+		       	  const xmlChar **atrs)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "\"");
+}
+
+void sect_quote_end_element (Context *context,
+			     const char *name)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "\"");
+}
+
+void
+sect_blockquote_start_element (Context *context,
+			       const char *name,
+			       const xmlChar **atrs)
+{
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "<BLOCKQUOTE>");
+}
+
+void
+sect_blockquote_end_element (Context *context,
+			     const char *name)
+{
+	if (!IS_IN_SECT (context))
+		return;
+	
+	sect_print (context, "</BLOCKQUOTE>\n");
 }

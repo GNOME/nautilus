@@ -82,6 +82,7 @@ ElementInfo sect_preparse[] = {
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
+
 static void
 sect_preparse_sect_start_element (Context *context,
 				  const gchar *name,
@@ -90,6 +91,15 @@ sect_preparse_sect_start_element (Context *context,
 	gchar **atrs_ptr;
 
 	g_return_if_fail (strlen (name) >= 5);
+
+	switch (name[4]) {
+	case '1':
+		sect1_start_element (context, name, atrs);
+		break;
+	default:
+		break;
+	}
+	
 	atrs_ptr = (gchar **) atrs;
 	while (atrs_ptr && *atrs_ptr) {
 		if (!g_strcasecmp (*atrs_ptr, "id")) {

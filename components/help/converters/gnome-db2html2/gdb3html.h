@@ -103,7 +103,13 @@ typedef enum ElementIndex {
 	SIMPLELIST,
 	MEMBER,
 	MOUSEBUTTON,
-	UNDEFINED /* 94 */
+	SUPERSCRIPT,
+	SYSTEMITEM, /* 95 */
+	VARNAME,
+	BLOCKQUOTE,
+	QUOTE,
+	OPTION,	
+	UNDEFINED /* 100 */
 } ElementIndex;
 
 typedef struct _ElementInfo ElementInfo;
@@ -130,6 +136,7 @@ struct _Context {
 	GList *stack;
 	gpointer data;
 	GHashTable *figure_data;
+	GList *sect1id_stack;
 
 	/* determine the "depth" that the current section is on.
 	 * only applies to section */
@@ -180,6 +187,7 @@ void para_start_element (Context *context, const gchar *name, const xmlChar **at
 void para_end_element (Context *context, const gchar *name);
 void ulink_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 void ulink_end_element (Context *context, const gchar *name);
+void sect1_start_element (Context *context, const char *name, const xmlChar **atrs);
 StackElement *find_first_element (Context *context, GSList *args);
 ElementIndex find_first_parent (Context *context, GSList *args);
 

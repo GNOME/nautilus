@@ -116,4 +116,10 @@ void sect_tbody_end_element (Context *context, const char *name);
 void sect_country_characters (Context *context, const char *chars, int len);
 void sect_member_start_element (Context *context, const char *chars, const xmlChar **atrs);
 void sect_member_end_element (Context *context, const char *name);
+void sect_quote_start_element (Context *context, const char *name, const xmlChar **atrs);
+void sect_quote_end_element (Context *context, const char *name);
+void sect_sup_start_element (Context *context, const char *name, const xmlChar **atrs);
+void sect_sup_end_element (Context *context, const char *name);
+void sect_blockquote_start_element (Context *context, const char *name, const xmlChar **atrs);
+void sect_blockquote_end_element (Context *context, const char *name);
 #endif

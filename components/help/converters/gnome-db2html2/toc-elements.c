@@ -128,6 +128,7 @@ toc_sect_start_element (Context *context,
 
 	switch (name[4]) {
 	case '1':
+		sect1_start_element (context, name, atrs);
 		context->sect1++;
 		context->sect2 = 0;
 		context->sect3 = 0;

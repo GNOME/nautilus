@@ -1,3 +1,39 @@
+2000-08-30  Ali Abdin  <aliabdin@aucegypt.edu>
+
+        New tags to fix the following bugs: #2383, #2384, #2386, #2387,
+         #2382, #2523
+
+        Also add in a first cut at Navigation Links (Bug #2201)
+
+        * components/help/converters/gnome-db2html2/gdb3html.h:
+        Add the following tags: superscript, systemitem, varname, option,
+        quote, blockquote - Fixes bug #2383, #2384, #2386, #2387, #2382, #2523
+        Add a sect1id_stack GList to the Context struct
+
+        * components/help/converters/gnome-db2html2/sect-elements.[ch]:
+        (sect_blockquote_start_element),
+        (sect_blockquote_end_element),
+        (sect_quote_start_element),
+        (sect_quote_end_element),
+        (sect_sup_start_element),
+        (sect_sup_end_element): New functions to handle some of the new tags
+
+        * components/help/converters/gnome-db2html2/gdb3html.c:
+        (find_first_element): Remove inadvertant debug check-in
+        (sect_footer),
+        (print_footer): New functions to handle the output of a footer
+        (sect1_start_element): New 'shared' function that builds a GList of
+        sect1 id's
+        (article_end_element): No longer print out </HTML> or </BODY> as that
+        should be handled by the footer
+        (parse_file): Modify to print out the footer
+
+        * components/help/converters/gnome-db2html2/toc-elements.c:
+        * components/help/converters/gnome-db2html2/sect-preparse.c:
+        (sect_preparse_sect_start_element): Make a call to the
+        sect1_start_element function when we encounter a sect1 tag
+        (toc_sect_start_element): ditto
+
 2000-08-30  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	README: added requirement of GCONF_0_8 tag

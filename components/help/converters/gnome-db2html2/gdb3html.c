@@ -10,6 +10,28 @@
 #define ERROR_OUTPUT
 #endif
 
+/* Generic Function. Used by toc_elements and sect_preparse */
+
+void
+sect1_start_element (Context *context,
+		     const char *name,
+		     const xmlChar **atrs)
+{
+	char **atrs_ptr;
+	
+	atrs_ptr = (char **) atrs;
+	while (atrs_ptr &&  *atrs_ptr) {
+		if (g_strcasecmp (*atrs_ptr, "id") == 0) {
+			atrs_ptr++;
+			context->sect1id_stack =
+				g_list_prepend (context->sect1id_stack, g_strdup (*atrs_ptr));
+			break;
+		}
+		atrs_ptr += 2;
+	}
+}
+
+
 /* Generic functions.  Used by both elements and toc_elements */
 void
 article_start_element (Context *context, const gchar *name, const xmlChar **atrs)
@@ -20,7 +42,8 @@ article_start_element (Context *context, const gchar *name, const xmlChar **atrs
 void
 article_end_element (Context *context, const gchar *name)
 {
-	g_print ("</BODY>\n</HTML>\n");
+	/* This should now be covered by the print_footer function */
+	/* g_print ("</BODY>\n</HTML>\n"); */
 }
 
 void
@@ -126,7 +149,6 @@ find_first_element (Context *context, GSList *args)
 
 	for (ptr = context->stack; ptr; ptr = ptr->next) {
 		for (element_ptr = args; element_ptr; element_ptr = element_ptr->next) {
-//			g_print ("We are comparing %s with %d\n", ((StackElement*) ptr->data)->info->name, GPOINTER_TO_INT (element_ptr->data));
 			if (((StackElement*) ptr->data)->info &&
 			    ((StackElement*) ptr->data)->info->index == GPOINTER_TO_INT (element_ptr->data))
 				return (StackElement *) ptr->data;
@@ -554,10 +576,80 @@ xml_parse_document (gchar *filename)
 	return (ret);
 }
 
+static void
+print_footer (Context *context, const char *prev, const char *next, gboolean with_home)
+{
+	g_print ("\n<HR ALIGN=\"LEFT\" WIDTH=\"100%%\">\n");
+	g_print ("<TABLE WIDTH=\"100%%\" BORDER=\"0\" CELLPADDING=\"0\" CELLSPACING=\"0\">\n");
+
+	g_print ("<TR>\n<TD WIDTH=\"33%%\" ALIGN=\"LEFT\" VALIGN=\"TOP\">");
+	if (prev == NULL) {
+		g_print ("&nbsp;");
+	} else {
+		g_print ("<A HREF=\"help:%s?%s\">&#60;&#60;&#60; Previous</A>", context->base_file, prev);
+	}
+
+	g_print ("</TD>\n<TD WIDTH=\"34%%\" ALIGN=\"CENTER\" VALIGN=\"TOP\">");
+	if (with_home == FALSE) {
+		g_print ("&nbsp;");
+	} else {
+		g_print ("<A HREF=\"help:%s\">Home</A>", context->base_file);
+	}
+
+	g_print ("</TD>\n<TD WIDTH=\"33%%\" ALIGN=\"RIGHT\" VALIGN=\"TOP\">");
+	if (next == NULL) {
+		g_print ("&nbsp;");
+	} else {
+		g_print ("<A HREF=\"help:%s?%s\">Next &#62;&#62;&#62;</A>", context->base_file, next);
+	}
+
+	g_print ("</TD>\n</TR></TABLE>\n");
+	g_print ("</BODY>\n</HTML>\n");
+}
+
+static void
+sect_footer (Context *context, const char *section)
+{
+	GList *tmp;
+	GList *tmp_next;
+	GList *tmp_prev;
+	char *tmp_next_data;
+	char *tmp_prev_data;
+
+	if (context->sect1id_stack == NULL) {
+		return;
+	}
+
+	tmp = context->sect1id_stack;
+	while (tmp != NULL) {
+		if (g_strcasecmp ((char *)tmp->data, section) == 0) {
+			/* Yes this below is correct because we are using a 'stack' */
+			tmp_next = g_list_previous (tmp);
+			tmp_prev = g_list_next (tmp);
+			
+			if (tmp_next == NULL) {
+				tmp_next_data = NULL;
+			} else {
+				tmp_next_data = tmp_next->data;
+			}
+
+			if (tmp_prev == NULL) {
+				tmp_prev_data = NULL;
+			} else {
+				tmp_prev_data = tmp_prev->data;
+			}
+			
+			print_footer (context ,(char *) tmp_prev_data, (char *) tmp_next_data, TRUE);
+			break;
+		}
+		tmp = g_list_next (tmp);
+	}	
+}
 
 static void
 parse_file (gchar *filename, gchar *section)
 {
+	GList *tmp;
 	Context *context = g_new0 (Context, 1);
 	
 	context->ParserCtxt = xmlNewParserCtxt ();
@@ -570,6 +662,7 @@ parse_file (gchar *filename, gchar *section)
 	context->ParserCtxt->version = xmlStrdup ("1.0"); 
 	context->ParserCtxt->myDoc = xml_parse_document (filename);
 	xmlSubstituteEntitiesDefault (1);
+	//context->sect1id_stack = NULL;
 
 	if (section) {
 		context->target_section = g_strdup (section);
@@ -584,6 +677,7 @@ parse_file (gchar *filename, gchar *section)
 		if (xmlSAXUserParseFile (&parser, context, context->base_file) < 0) {
 			g_error ("error");
 		};
+		sect_footer (context, section);
 	} else {
 		context->elements = toc_elements;
 		context->data = toc_init_data ();
@@ -591,6 +685,10 @@ parse_file (gchar *filename, gchar *section)
 		if (xmlSAXUserParseFile (&parser, context, context->base_file) < 0) {
 			g_error ("error");
 		};
+		tmp = g_list_last (context->sect1id_stack);
+		if (tmp != NULL) {
+			print_footer (context, NULL, tmp->data,FALSE);
+		}
 	}
 }
 
