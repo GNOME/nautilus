@@ -8,7 +8,8 @@ INCLUDES = 						\
 	-I$(top_builddir)/libnautilus 			\
 	-I$(top_srcdir)/cut-n-paste-code 		\
 	$(GNOME_CFLAGS) 				\
-	$(BONOBO_CFLAGS) 				\
+	$(BONOBOX_CFLAGS) 				\
+	$(BONOBO_PRINT_CFLAGS) 				\
 	$(OAF_CFLAGS) 					\
 	$(GHTTP_CFLAGS) 				\
 	$(VFS_CFLAGS) 					\
@@ -28,7 +29,8 @@ libnautilus_extensions_la_LDFLAGS=	\
 	$(GNOME_LIBS) 			\
 	$(GNOMECANVASPIXBUF_LIBS)	\
 	$(OAF_LIBS) 			\
-	$(BONOBO_LIBS) 			\
+	$(BONOBOX_LIBS) 		\
+	$(BONOBO_PRINT_LIBS) 		\
 	$(GHTTP_LIBS) 			\
 	$(VFS_LIBS) 			\
 	$(XML_LIBS) 			\

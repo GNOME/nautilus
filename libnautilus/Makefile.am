@@ -4,7 +4,7 @@ lib_LTLIBRARIES=libnautilus.la
 
 INCLUDES=-I$(top_srcdir) -I$(top_builddir) -I. \
 	$(GNOME_CFLAGS) \
-	$(BONOBO_CFLAGS) \
+	$(BONOBOX_CFLAGS) \
 	$(OAF_CFLAGS) \
 	$(VFS_CFLAGS) \
 	$(XML_CFLAGS) \
@@ -13,7 +13,7 @@ INCLUDES=-I$(top_srcdir) -I$(top_builddir) -I. \
 libnautilus_la_LDFLAGS=\
 	$(GNOME_LIBS) \
 	$(OAF_LIBS) \
-	$(BONOBO_LIBS) \
+	$(BONOBOX_LIBS) \
 	$(VFS_LIBS) \
 	$(XML_LIBS) \
 	$(LIBPNG)
