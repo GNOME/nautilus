@@ -5,6 +5,7 @@ lib_LTLIBRARIES=libnautilus-extensions.la
 INCLUDES = \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
+	-I$(top_builddir)/cut-n-paste-code \
 	$(GNOME_CFLAGS) \
 	$(BONOBO_CFLAGS) \
 	$(OAF_CFLAGS) \
@@ -18,6 +19,9 @@ INCLUDES = \
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
 	$(NULL)
 
+#	$(top_builddir)/libnautilus/libnautilus.la
+#	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la
+
 libnautilus_extensions_la_LDFLAGS=\
 	$(GNOME_LIBS) \
 	$(OAF_LIBS) \
@@ -27,7 +31,7 @@ libnautilus_extensions_la_LDFLAGS=\
 	$(VFS_LIBS) \
 	$(XML_LIBS) \
 	$(LIBPNG) \
-	$(top_src_dir)/libnautilus/.libs/libnautilus.so
+	$(NULL)
 
 libnautilus_extensionsincludedir=$(includedir)/libnautilus-extensions
 
@@ -59,6 +63,7 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-gnome-extensions.c		\
 	nautilus-graphic-effects.c		\
 	nautilus-gtk-extensions.c		\
+	nautilus-horizontal-splitter.c		\
 	nautilus-icon-canvas-item.c       	\
 	nautilus-icon-container.c		\
 	nautilus-icon-dnd.c			\
@@ -135,6 +140,7 @@ noinst_HEADERS =				\
 	nautilus-graphic-effects.h		\
 	nautilus-gtk-extensions.h		\
 	nautilus-gtk-macros.h			\
+	nautilus-horizontal-splitter.h		\
 	nautilus-icon-canvas-item.h		\
 	nautilus-icon-container.h		\
 	nautilus-icon-dnd.h			\
@@ -170,8 +176,8 @@ noinst_HEADERS =				\
 	nautilus-string.h			\
 	nautilus-text-caption.h			\
 	nautilus-undo-context.h			\
-	nautilus-undo-signal-handlers.h		\
 	nautilus-undo-manager.h			\
+	nautilus-undo-signal-handlers.h		\
 	nautilus-user-level-manager.h		\
 	nautilus-view-identifier.h		\
 	nautilus-xml-extensions.h		\

@@ -53,6 +53,7 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-mini-icon.h>
 #include <libnautilus-extensions/nautilus-generous-bin.h>
+#include <libnautilus-extensions/nautilus-horizontal-splitter.h>
 #include <libnautilus/nautilus-undo.h>
 #include "nautilus-zoom-control.h"
 #include <ctype.h>
@@ -318,14 +319,14 @@ nautilus_window_constructed (NautilusWindow *window)
 		/* FIXME bugzilla.eazel.com 1244: Hard-wired size here? */
 		gtk_window_set_default_size (GTK_WINDOW (window), 650, 400);
 
-		window->content_hbox = gtk_hpaned_new ();
+		window->content_hbox = nautilus_horizontal_splitter_new ();
 
 		/* FIXME bugzilla.eazel.com 1245: No constant for the default? */
 		/* FIXME bugzilla.eazel.com 1245: Saved in pixels instead of in %? */
 		/* FIXME bugzilla.eazel.com 1245: No reality check on the value? */
 		/* FIXME bugzilla.eazel.com 1245: get_enum? why not get_integer? */
 		sidebar_width = nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_SIDEBAR_WIDTH, 148);
-		gtk_paned_set_position (GTK_PANED (window->content_hbox), sidebar_width);
+		e_paned_set_position (E_PANED (window->content_hbox), sidebar_width);
 	}
 	
 	gnome_app_set_contents (app, window->content_hbox);
@@ -346,7 +347,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	 * for the desktop window.
 	 */
         if (!NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-		gtk_paned_pack1 (GTK_PANED(window->content_hbox), temp_frame, FALSE, FALSE);
+		e_paned_pack1 (E_PANED(window->content_hbox), temp_frame, FALSE, FALSE);
 	}
 	
 	gtk_widget_show_all (window->content_hbox);
@@ -1170,13 +1171,13 @@ nautilus_window_real_set_content_view (NautilusWindow *window, NautilusViewFrame
 		 * We should use inheritance instead of these special cases
 		 * for the desktop window.
 		 */
-		if (!GTK_IS_PANED (window->content_hbox)) {
+		if (!E_IS_PANED (window->content_hbox)) {
 			gtk_container_add (GTK_CONTAINER (window->content_hbox),
 					   GTK_WIDGET (new_view));
 		} else {
-			gtk_paned_pack2 (GTK_PANED (window->content_hbox),
-					 GTK_WIDGET (new_view),
-					 TRUE, FALSE);
+			e_paned_pack2 (E_PANED (window->content_hbox),
+				       GTK_WIDGET (new_view),
+				       TRUE, FALSE);
 		}
 	}
 
