@@ -1,3 +1,66 @@
+2002-03-06  Michael Meeks  <michael@ximian.com>
+
+	* src/file-manager/fm-icon-view.c
+	(fm_icon_view_update_menus): don't try to set properties
+	on a remote container that is being / has been torn down.
+
+	* libnautilus-private/nautilus-global-preferences.c
+	(default_icon_view_sort_order_or_manual_layout_changed_callback),
+	(nautilus_global_preferences_set_default_folder_viewer),
+	(default_folder_viewer_changed_callback): upd. for enum code.
+
+	* libnautilus-private/nautilus-icon-canvas-item.c
+	(nautilus_icon_canvas_item_class_init): use
+	eel_preferences_add_auto_enum instead of auto_int.
+
+	* src/file-manager/fm-list-view.c
+	(fm_list_view_class_init): ditto.
+
+	* src/file-manager/fm-icon-view.c
+	(get_default_sort_order, get_default_zoom_level_font_size), 
+	(get_default_zoom_level, fm_icon_view_init): ditto.
+
+	* libnautilus-private/nautilus-thumbnails.c
+	(prefer_global_thumbnails_location): ditto.
+
+	* libnautilus-private/nautilus-icon-factory.c
+	(should_display_image_file_as_itself): ditto.
+
+	* libnautilus-private/nautilus-icon-container.c
+	(nautilus_icon_container_class_init): ditto.
+
+2002-03-05  Michael Meeks  <michael@ximian.com>
+
+	* components/music/nautilus-music-view.c
+	(nautilus_music_view_init): use
+	eel_preferences_get_enum instead of get_integer
+
+	* src/nautilus-switchable-search-bar.c
+	(nautilus_search_uri_to_search_bar_mode),
+	(nautilus_switchable_search_bar_new): ditto.
+
+	* src/file-manager/fm-icon-view.c
+	(fm_icon_view_update_click_mode): ditto.
+
+	* src/file-manager/fm-directory-view.c
+	(get_executable_text_file_action): ditto.
+
+	* libnautilus-private/nautilus-metafile.c
+	(can_use_public_metafile): ditto.
+
+	* libnautilus-private/nautilus-file.c
+	(show_directory_item_count_changed_callback),
+	(show_text_in_icons_changed_callback): use get_enum
+
+	* libnautilus-private/nautilus-global-preferences.c
+	(preference_defaults): add the PREFERENCE_ENUM type
+	and make this a string, as GConf expects.
+
+	* configure.in: add the GConf magic.
+
+	* libnautilus-private/Makefile.am (schemadir):
+	add schema installation bits.
+
 2002-03-06  Alexander Larsson  <alla@lysator.liu.se>
 
 	* nautilus-icon-private.h: (NautilusIconContainerDetails):

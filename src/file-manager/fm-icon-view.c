@@ -593,8 +593,8 @@ get_default_sort_order (void)
 
 	if (auto_storaged_added == FALSE) {
 		auto_storaged_added = TRUE;
-		eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
-						       (int *) &default_sort_order);
+		eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
+					       (int *) &default_sort_order);
 	}
 
 	return CLAMP (default_sort_order, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME, NAUTILUS_FILE_SORT_BY_EMBLEMS);
@@ -911,8 +911,8 @@ get_default_zoom_level (void)
 
 	if (!auto_storage_added) {
 		auto_storage_added = TRUE;
-		eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
-						       (int *) &default_zoom_level);
+		eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
+					       (int *) &default_zoom_level);
 	}
 
 	return CLAMP (default_zoom_level, NAUTILUS_ZOOM_LEVEL_SMALLEST, NAUTILUS_ZOOM_LEVEL_LARGEST);
@@ -1374,8 +1374,14 @@ fm_icon_view_update_menus (FMDirectoryView *view)
 	if (!icon_view->details->menus_ready) {
 		return;
 	}
-	
+
 	EEL_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
+
+	/* don't update if we have no remote BonoboUIContainer */
+	if (bonobo_ui_component_get_container (icon_view->details->ui)
+	    == CORBA_OBJECT_NIL) {
+		return;
+	}
 
         selection = fm_directory_view_get_selection (view);
         selection_count = g_list_length (selection);
@@ -2347,8 +2353,8 @@ get_default_zoom_level_font_size (void)
 
 	if (auto_storaged_added == FALSE) {
 		auto_storaged_added = TRUE;
-		eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
-						       &default_zoom_level_font_size);
+		eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
+					       &default_zoom_level_font_size);
 	}
 
 	return default_zoom_level_font_size;
@@ -2413,8 +2419,7 @@ fm_icon_view_update_click_mode (FMIconView *icon_view)
 	icon_container = get_icon_container (icon_view);
 	g_assert (icon_container != NULL);
 
-	click_mode = eel_preferences_get_integer (NAUTILUS_PREFERENCES_CLICK_POLICY);
-
+	click_mode = eel_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY);
 
 	nautilus_icon_container_set_single_click_mode (icon_container,
 						       click_mode == NAUTILUS_CLICK_POLICY_SINGLE);
@@ -2740,8 +2745,8 @@ fm_icon_view_init (FMIconView *icon_view)
 	create_icon_container (icon_view);
 
 	if (!setup_sound_preview) {
-		eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_PREVIEW_SOUND,
-						  &preview_sound_auto_value);
+		eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_PREVIEW_SOUND,
+					       &preview_sound_auto_value);
 		setup_sound_preview = TRUE;
 	}
 

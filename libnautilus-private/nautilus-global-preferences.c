@@ -161,11 +161,11 @@ static EelEnumerationEntry executable_text_activation_enum_entries[] = {
 };
 
 static EelEnumerationEntry search_bar_type_enum_entries[] = {
-	{ N_("search by text"),
+	{ "search by text",
 	  N_("Search for files by file name only"),
 	  NAUTILUS_SIMPLE_SEARCH_BAR
 	},
-	{ N_("search by text and properties"),
+	{ "search by text and properties",
 	  N_("Search for files by file name and file properties"),
 	  NAUTILUS_COMPLEX_SEARCH_BAR
 	},
@@ -320,8 +320,8 @@ static const PreferenceDefault preference_defaults[] = {
 	  GINT_TO_POINTER (FALSE)
 	},
 	{ NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
-	  PREFERENCE_INTEGER,
-	  GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY),
+	  PREFERENCE_STRING,
+	  "local_only",
 	  NULL, NULL,
 	  "speed_tradeoff"
 	},
@@ -331,14 +331,14 @@ static const PreferenceDefault preference_defaults[] = {
 	 * we should change this default to ALWAYS.
 	 */
 	{ NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
-	  PREFERENCE_INTEGER,
-	  GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY),
+	  PREFERENCE_STRING,
+	  "local_only",
 	  NULL, NULL,
 	  "speed_tradeoff"
 	},
 	{ NAUTILUS_PREFERENCES_CLICK_POLICY,
-	  PREFERENCE_INTEGER,
-	  GINT_TO_POINTER (NAUTILUS_CLICK_POLICY_DOUBLE),
+	  PREFERENCE_STRING,
+	  "double",
 	  NULL, NULL,
 	  "click_policy"
 	},
@@ -353,8 +353,8 @@ static const PreferenceDefault preference_defaults[] = {
 	  NULL, NULL, NULL
 	},
 	{ NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
-	  PREFERENCE_INTEGER,
-	  GINT_TO_POINTER (NAUTILUS_EXECUTABLE_TEXT_ASK),
+	  PREFERENCE_STRING,
+	  "ask",
 	  NULL, NULL,
 	  "executable_text_activation"
 	},
@@ -363,26 +363,26 @@ static const PreferenceDefault preference_defaults[] = {
 	  "default"
 	},
 	{ NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
-	  PREFERENCE_INTEGER,
-	  GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY),
+	  PREFERENCE_STRING,
+	  "local_only",
 	  NULL, NULL,
 	  "speed_tradeoff"
 	},
 	{ NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
-	  PREFERENCE_INTEGER,
-	  GINT_TO_POINTER (3145728),
+	  PREFERENCE_STRING,
+	  "3145728",
 	  NULL, NULL,
 	  "file_size"
 	},
 	{ NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA,
-	  PREFERENCE_INTEGER,
-	  GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY),
+	  PREFERENCE_STRING,
+	  "local_only",
 	  NULL, NULL,
 	  "speed_tradeoff"
 	},
 	{ NAUTILUS_PREFERENCES_PREVIEW_SOUND,
-	  PREFERENCE_INTEGER,
-	  GINT_TO_POINTER (NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY),
+	  PREFERENCE_STRING,
+	  "local_only",
 	  NULL, NULL,
 	  "speed_tradeoff"
 	},
@@ -407,8 +407,8 @@ static const PreferenceDefault preference_defaults[] = {
 	  GINT_TO_POINTER (FALSE)
 	},
 	{ NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
-	  PREFERENCE_INTEGER,
-	  GINT_TO_POINTER (NAUTILUS_SIMPLE_SEARCH_BAR),
+	  PREFERENCE_STRING,
+	  "search_by_text",
 	  NULL, NULL,
 	  "search_bar_type"
 	},
@@ -482,8 +482,8 @@ static const PreferenceDefault preference_defaults[] = {
 	  NULL, default_font_callback, g_free
 	},
 	{ NAUTILUS_PREFERENCES_DEFAULT_FONT_SIZE,
-	  PREFERENCE_INTEGER,
-	  GINT_TO_POINTER (12),
+	  PREFERENCE_STRING,
+	  "12",
 	  NULL, NULL,
 	  "standard_font_size"
 	},
@@ -495,20 +495,20 @@ static const PreferenceDefault preference_defaults[] = {
 	  NULL, default_font_callback, g_free
 	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
-	  PREFERENCE_INTEGER,
-	  GINT_TO_POINTER (12),
+	  PREFERENCE_STRING,
+	  "12",
 	  NULL, NULL,
 	  "standard_font_size"
 	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
-	  PREFERENCE_INTEGER,
-	  GINT_TO_POINTER (NAUTILUS_FILE_SORT_BY_DISPLAY_NAME),
+	  PREFERENCE_STRING,
+	  "name",
 	  NULL, NULL,
 	  "default_icon_view_sort_order"
 	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT,
-	  PREFERENCE_INTEGER,
-	  GINT_TO_POINTER (NAUTILUS_FILE_SORT_BY_DISPLAY_NAME),
+	  PREFERENCE_STRING,
+	  "name",
 	  NULL, NULL,
 	  "default_icon_view_sort_order"
 	},
@@ -525,8 +525,8 @@ static const PreferenceDefault preference_defaults[] = {
 	  GINT_TO_POINTER (FALSE)
 	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
-	  PREFERENCE_INTEGER,
-	  GINT_TO_POINTER (NAUTILUS_ZOOM_LEVEL_STANDARD),
+	  PREFERENCE_STRING,
+	  "standard",
 	  NULL, NULL,
 	  "default_zoom_level"
 	},
@@ -537,14 +537,14 @@ static const PreferenceDefault preference_defaults[] = {
 	  NULL, default_font_callback, g_free
 	},
 	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
-	  PREFERENCE_INTEGER,
-	  GINT_TO_POINTER (12),
+	  PREFERENCE_STRING,
+	  "12",
 	  NULL, NULL,
 	  "standard_font_size"
 	},
 	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
-	  PREFERENCE_INTEGER,
-	  GINT_TO_POINTER (NAUTILUS_FILE_SORT_BY_DISPLAY_NAME),
+	  PREFERENCE_STRING,
+	  "name",
 	  NULL, NULL,
 	  "default_list_view_sort_order"
 	},
@@ -553,8 +553,8 @@ static const PreferenceDefault preference_defaults[] = {
 	  GINT_TO_POINTER (FALSE)
 	},
 	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
-	  PREFERENCE_INTEGER,
-	  GINT_TO_POINTER (NAUTILUS_ZOOM_LEVEL_SMALLER),
+	  PREFERENCE_STRING,
+	  "smaller",
 	  NULL, NULL,
 	  "default_zoom_level"
 	},
@@ -616,7 +616,7 @@ global_preferences_register_enumerations (void)
 	/* Set the enumeration ids for preferences that need them */
 	for (i = 0; preference_defaults[i].name != NULL; i++) {
 		if (eel_strlen (preference_defaults[i].enumeration_id) > 0) {
-			g_assert (preference_defaults[i].type == PREFERENCE_INTEGER
+			g_assert (preference_defaults[i].type == PREFERENCE_STRING
 				  || preference_defaults[i].type == PREFERENCE_STRING_LIST);
 			eel_preferences_set_enumeration_id (preference_defaults[i].name,
 							    preference_defaults[i].enumeration_id);
@@ -766,7 +766,7 @@ default_folder_viewer_changed_callback (gpointer callback_data)
 	g_assert (callback_data == NULL);
 
 	preference_value = 
-		eel_preferences_get_integer (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER);
+		eel_preferences_get_enum (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER);
 
 	if (preference_value == NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW) {
 		viewer_iid = NAUTILUS_LIST_VIEW_IID;
@@ -798,8 +798,8 @@ nautilus_global_preferences_set_default_folder_viewer (const char *iid)
 		return;		
 	}
 	
-	eel_preferences_set_integer (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
-				     viewer_preference);
+	eel_preferences_set_enum (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
+				  viewer_preference);
 }
 
 /* The icon view uses 2 variables to store the sort order and
@@ -816,7 +816,7 @@ default_icon_view_sort_order_or_manual_layout_changed_callback (gpointer callbac
  	int default_sort_order;
 
  	default_sort_order_or_manual_layout = 
- 		eel_preferences_get_integer (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT);
+ 		eel_preferences_get_enum (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT);
 
 	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT,
 				     default_sort_order_or_manual_layout == PREFERENCES_SORT_ORDER_MANUALLY);
@@ -827,8 +827,8 @@ default_icon_view_sort_order_or_manual_layout_changed_callback (gpointer callbac
 		g_return_if_fail (default_sort_order >= NAUTILUS_FILE_SORT_BY_DISPLAY_NAME);
 		g_return_if_fail (default_sort_order <= NAUTILUS_FILE_SORT_BY_EMBLEMS);
 
-		eel_preferences_set_integer (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
-					     default_sort_order);
+		eel_preferences_set_enum (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
+					  default_sort_order);
 	}
 }
 

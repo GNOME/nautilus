@@ -1746,6 +1746,6 @@ nautilus_icon_canvas_item_class_init (NautilusIconCanvasItemClass *class)
 	item_class->bounds = nautilus_icon_canvas_item_bounds;
 	item_class->event = nautilus_icon_canvas_item_event;
 
-	eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_CLICK_POLICY,
-					  &click_policy_auto_value);
+	eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
+				       &click_policy_auto_value);
 }

@@ -472,8 +472,8 @@ fm_list_view_class_init (FMListViewClass *class)
 	fm_directory_view_class->set_selection = fm_list_view_set_selection;
 	fm_directory_view_class->sort_directories_first_changed = fm_list_view_sort_directories_first_changed;
 	
-	eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
-					  (int *) &default_sort_order_auto_value);
+	eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
+				       (int *) &default_sort_order_auto_value);
 	eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
 					  &default_sort_reversed_auto_value);
 }

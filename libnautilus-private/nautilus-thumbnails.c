@@ -104,8 +104,8 @@ prefer_global_thumbnails_location (const char *image_uri)
 	static gboolean public_metadata_preference_registered;
 
 	if (!public_metadata_preference_registered) {
-		eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA,
-						  &public_metadata_preference);
+		eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA,
+					       &public_metadata_preference);
 		public_metadata_preference_registered = TRUE;
 	}
 

@@ -4566,7 +4566,7 @@ get_executable_text_file_action (FMDirectoryView *view, NautilusFile *file)
 
 	g_assert (nautilus_file_contains_text (file));
 
-	preferences_value = eel_preferences_get_integer 
+	preferences_value = eel_preferences_get_enum 
 		(NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION);
 	switch (preferences_value) {
 	case NAUTILUS_EXECUTABLE_TEXT_LAUNCH:

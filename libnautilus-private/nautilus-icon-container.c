@@ -3296,8 +3296,8 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 
 	stipple = gdk_bitmap_create_from_data (NULL, stipple_bits, 2, 2);
 
-	eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_CLICK_POLICY,
-					  &click_policy_auto_value);
+	eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
+				       &click_policy_auto_value);
 }
 
 static gboolean

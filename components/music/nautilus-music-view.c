@@ -487,7 +487,7 @@ nautilus_music_view_init (NautilusMusicView *music_view)
         gtk_widget_show (music_view->details->tree_view);
 
 	font_name = eel_preferences_get (NAUTILUS_PREFERENCES_LIST_VIEW_FONT);
-	standard_font_size = eel_preferences_get_integer (
+	standard_font_size = eel_preferences_get_enum (
                 NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE);
         
 #ifdef GNOME2_CONVERSION_COMPLETE

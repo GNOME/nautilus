@@ -179,10 +179,23 @@ nautilus-marshal-guts.c: nautilus-marshal.list $(GLIB_GENMARSHAL)
 
 $(libnautilus_private_la_OBJECTS): nautilus_metafile_server_idl_stamp $(marshal_sources)
 
+schemadir   = $(GCONF_SCHEMA_FILE_DIR)
+schema_DATA = nautilus.schemas
+
+# don't do this if we are building in eg. rpm
+install-data-local:
+	if test -z "$(DESTDIR)" ; then \
+		for p in $(schema_DATA) ; do \
+			GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(srcdir)/$$p; \
+		done \
+	fi
+
+
 EXTRA_DIST = 				\
 	$(fsattributes_DATA)		\
 	nautilus-metafile-server.idl	\
 	nautilus-marshal.list		\
+	$(schema_DATA)			\
 	$(NULL)
 
 CLEANFILES = \

@@ -1078,8 +1078,8 @@ should_display_image_file_as_itself (NautilusFile *file)
 	static gboolean show_thumbnail_auto_value_registered;
 
 	if (!show_thumbnail_auto_value_registered) {
-		eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
-						  &show_thumbnails_auto_value);
+		eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
+					       &show_thumbnails_auto_value);
 		show_thumbnail_auto_value_registered = TRUE;
 	}
 	

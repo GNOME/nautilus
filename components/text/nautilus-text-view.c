@@ -443,7 +443,7 @@ nautilus_text_view_update_font (NautilusTextView *text_view)
 	GdkFont *font;
 	int font_size;
 
-	font_size = eel_preferences_get_integer (NAUTILUS_PREFERENCES_TEXT_VIEW_STANDARD_FONT_SIZE);
+	font_size = eel_preferences_get_enum (NAUTILUS_PREFERENCES_TEXT_VIEW_STANDARD_FONT_SIZE);
 
 	font_size += text_view_font_size_deltas[text_view->details->zoom_index];
 

@@ -306,6 +306,18 @@ dnl libbackground
 PKG_CHECK_MODULES(CAPPLET, "gtk+-2.0 gconf-2.0 libgnomeui-2.0 libbonoboui-2.0")
 dnl ==========================================================================
 
+dnl ==============================================
+dnl Special GConf section 
+dnl ==============================================
+
+AC_PATH_PROG(GCONFTOOL, gconftool-2, no)
+
+if test x"$GCONFTOOL" = xno; then
+  AC_MSG_ERROR([gconftool-2 executable not found in your path - should be installed with GConf])
+fi
+
+AM_GCONF_SOURCE_2
+
 AC_OUTPUT([
 Makefile
 components/Makefile
