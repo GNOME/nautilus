@@ -57,6 +57,9 @@
 #define NAUTILUS_DND_TEXT_PLAIN_TYPE 	  "text/plain"
 #define NAUTILUS_DND_URL_TYPE		  "_NETSCAPE_URL"
 
+#define LOCATION_LABEL _("Location:")
+#define GO_TO_LABEL    _("Go To:")
+
 enum {
 	NAUTILUS_DND_MC_DESKTOP_ICON,
 	NAUTILUS_DND_URI_LIST,
@@ -197,6 +200,25 @@ drag_data_get_callback (GtkWidget *widget,
 		g_assert_not_reached ();
 	}
 	g_free (entry_text);
+}
+
+/* routine that determines the usize for the label widget as larger
+   then the size of the largest string and then sets it to that so
+   that we don't have localization problems. see
+   gtk_label_finalize_lines in gtklabel.c (line 618) for the code that
+   we are imitating here. */
+
+static void
+style_set_handler (GtkWidget *widget, GtkStyle *previous_style)
+{
+	int width;
+
+	width = gdk_string_width (widget->style->font, GO_TO_LABEL);
+	width = MAX (width, gdk_string_width (widget->style->font, LOCATION_LABEL));
+
+	width += 2 * GTK_MISC (widget)->xpad;
+	
+	gtk_widget_set_usize (widget, width, -1);
 }
 
 /* utility routine to determine the string to expand to.  If we don't have anything yet, accept
@@ -444,10 +466,12 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 	event_box = gtk_event_box_new ();
 	gtk_container_set_border_width (GTK_CONTAINER (event_box),
 					GNOME_PAD_SMALL);
-	label = gtk_label_new (_("Location:"));
+	label = gtk_label_new (LOCATION_LABEL);
 	gtk_container_add   (GTK_CONTAINER (event_box), label);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
-
+	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
+	gtk_signal_connect (GTK_OBJECT (label), "style_set", 
+			    style_set_handler, NULL);
 
 	gtk_box_pack_start  (GTK_BOX (hbox), event_box, FALSE, TRUE,
 			     GNOME_PAD_SMALL);
@@ -582,12 +606,9 @@ nautilus_location_bar_update_label (NautilusLocationBar *bar)
 	current_location = nautilus_make_uri_from_input (current_text);
 	
 	if (nautilus_uris_match (bar->last_location, current_location)) {
-		gtk_label_set_text (GTK_LABEL (bar->label), _("Location:"));
+		gtk_label_set_text (GTK_LABEL (bar->label), LOCATION_LABEL);
 	} else {		 
-		/* FIXME bugzilla.eazel.com 5047: Use of spaces here to line up Go To with
-		 * Location is fragile and hard to translate.
-		 */
-		gtk_label_set_text (GTK_LABEL (bar->label), _("   Go To:"));
+		gtk_label_set_text (GTK_LABEL (bar->label), GO_TO_LABEL);
 	}	
 	g_free (current_location);
 }

@@ -1,3 +1,22 @@
+2000-12-12  Arik Devens  <arik@gnome.org>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+	
+	Fixed bug 5047 ("Using spaces in the location bar label for
+	alignment is fragile and not necessarily internationalizable") by
+	adding code to usize and align the label widget to be both the
+	right size and proper alignment no matter what language we are in.
+	
+	* src/nautilus-location-bar.c: Added #defines for Location: and Go
+	To: so they only need to be translated once.
+	(style_set_handler): New function to set the label's usize to the
+	larger of the two strings plus padding so that it doesn't resize.
+	(nautilus_location_bar_initialize): Added gtk_misc_set_alignment
+	to the label widget (probably don't need it but it can't hurt) and
+	also hooked up the style_set_handler to the label widget.
+	(nautilus_location_bar_update_label): Removed comments about
+	fixing bug 5047.
+
 2000-12-12  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>
