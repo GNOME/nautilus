@@ -97,6 +97,7 @@ main (int argc, char *argv[])
 {
 	CORBA_ORB orb;
 	BonoboGenericFactory *factory;
+	char *registration_id;
 
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
 		nautilus_make_warnings_and_criticals_stop_in_debugger
@@ -113,7 +114,12 @@ main (int argc, char *argv[])
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
 	/* Create the factory. */
-	factory = bonobo_generic_factory_new_multi (META_FACTORY_IID, adapter_factory_make_object, NULL);
+
+	registration_id = oaf_make_registration_id (META_FACTORY_IID, g_getenv ("DISPLAY"));
+
+	factory = bonobo_generic_factory_new_multi (registration_id, adapter_factory_make_object, NULL);
+
+	g_free (registration_id);
 	
 	/* Loop until we have no more objects. */
 	do {

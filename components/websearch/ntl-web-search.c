@@ -217,6 +217,7 @@ int main(int argc, char *argv[])
 {
   BonoboGenericFactory *factory;
   CORBA_ORB orb;
+  char *registration_id;
 
   /* Initialize gettext support */
 #ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
@@ -232,7 +233,10 @@ int main(int argc, char *argv[])
 
   bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
-  factory = bonobo_generic_factory_new_multi("OAFIID:ntl_websearch_view_factory:c69658b2-732c-4a04-a493-4efe57051291", make_obj, NULL);
+
+  registration_id = oaf_make_registration_id ("OAFIID:ntl_websearch_view_factory:c69658b2-732c-4a04-a493-4efe57051291", g_getenv ("DISPLAY"));
+  factory = bonobo_generic_factory_new_multi (registration_id, make_obj, NULL);
+  g_free (registration_id);
 
   do {
     bonobo_main();

@@ -94,6 +94,7 @@ main (int argc, char *argv[])
 {
 	CORBA_ORB orb;
 	BonoboGenericFactory *factory;
+	char *registration_id;
 
 	/* Initialize libraries. */
         gnome_init_with_popt_table ("nautilus-sample-content-view", VERSION, 
@@ -102,8 +103,14 @@ main (int argc, char *argv[])
 	orb = oaf_init (argc, argv);
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
+
 	/* Create the factory. */
-	factory = bonobo_generic_factory_new_multi (FACTORY_IID, sample_make_object, NULL);
+        registration_id = oaf_make_registration_id (FACTORY_IID, getenv ("DISPLAY"));
+	factory = bonobo_generic_factory_new_multi (registration_id, 
+						    sample_make_object,
+						    NULL);
+	g_free (registration_id);
+
 	
 	/* Loop until we have no more objects. */
 	do {

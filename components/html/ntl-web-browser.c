@@ -596,8 +596,9 @@ int main(int argc, char *argv[])
   BonoboGenericFactory *factory;
   CORBA_ORB orb;
   GConfError *error = NULL;
+  char *registration_id;
 
-  if (g_getenv("NAUTILUS_DEBUG") != NULL)
+  if (g_getenv ("NAUTILUS_DEBUG") != NULL)
     nautilus_make_warnings_and_criticals_stop_in_debugger
       (G_LOG_DOMAIN, g_log_domain_glib, "Gdk", "Gtk", "GnomeVFS", "GnomeUI", "Bonobo", 
        "Nautilus-HTML", "gtkhtml", NULL);
@@ -609,17 +610,17 @@ int main(int argc, char *argv[])
   textdomain (PACKAGE);
 #endif
 	
-  gnome_init_with_popt_table("ntl-web-browser", _VERSION, 
-			     argc, argv,
-			     oaf_popt_options, 0, NULL); 
+  gnome_init_with_popt_table ("ntl-web-browser", _VERSION, 
+			      argc, argv,
+			      oaf_popt_options, 0, NULL); 
   
   orb = oaf_init (argc, argv);
   /* Init the GConf library.*/
   gconf_init (argc, argv, &error);
   if (error != NULL) {
-	g_warning(_("GConf init failed:\n  %s"), error->str);
-	gconf_error_destroy(error);
-	error = NULL;
+    g_warning (_("GConf init failed:\n  %s"), error->str);
+    gconf_error_destroy (error);
+    error = NULL;
   }
 
   gnome_vfs_init();
@@ -627,13 +628,18 @@ int main(int argc, char *argv[])
   glibwww_init("ntl-web-browser", _VERSION);
   HTNet_addAfter(request_terminator, NULL, NULL, HT_ALL, HT_FILTER_LAST);
   bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
+  
+  registration_id = oaf_make_registration_id ("OAFIID:ntl_web_browser_factory:e553fd3e-101d-445d-ae53-a3a59e77fcc9", getenv ("DISPLAY"));
+  factory = bonobo_generic_factory_new_multi (registration_id, 
+					      make_obj,
+					      NULL);
+  g_free (registration_id);
 
-  factory = bonobo_generic_factory_new_multi("OAFIID:ntl_web_browser_factory:e553fd3e-101d-445d-ae53-a3a59e77fcc9", 
-					     make_obj, NULL);
+
 
   do {
-    bonobo_main();
-  } while(object_count > 0);
+    bonobo_main ();
+  } while (object_count > 0);
 
   return 0;
 }

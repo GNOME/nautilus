@@ -672,9 +672,15 @@ bonobo_object_factory (BonoboGenericFactory *this, const char *oaf_iid, void *da
 static void
 init_bonobo_image_generic_factory (void)
 {
+        char *registration_id;
+
+	registration_id = oaf_make_registration_id ("OAFIID:nautilus_image_view_factory:61ea9ab1-e4b4-4da8-8f54-61cf6f33c4f6", g_getenv ("DISPLAY"));
+
 	image_factory = bonobo_generic_factory_new_multi 
-		("OAFIID:nautilus_image_view_factory:61ea9ab1-e4b4-4da8-8f54-61cf6f33c4f6",
+		(registration_id,
 		 bonobo_object_factory, NULL);
+
+	g_free (registration_id);
 }
 
 static void

@@ -73,6 +73,8 @@ main (int argc, char *argv[])
 
 	BonoboGenericFactory	*factory;
 	CORBA_ORB		orb;
+	char *registration_id;
+
 	
 #ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
@@ -86,7 +88,13 @@ main (int argc, char *argv[])
 	orb = oaf_init (argc, argv);
 	
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
-	factory = bonobo_generic_factory_new_multi ("OAFIID:nautilus_inventory_view_factory:400ef0a5-352a-4e98-bf96-83e728c462cf", inventory_make_object, NULL);
+
+        registration_id = oaf_make_registration_id ("OAFIID:nautilus_inventory_view_factory:400ef0a5-352a-4e98-bf96-83e728c462cf", getenv ("DISPLAY"));
+	factory = bonobo_generic_factory_new_multi (registration_id, 
+						    inventory_make_object,
+						    NULL);
+	g_free (registration_id);
+
 	
 	do {
 		bonobo_main ();

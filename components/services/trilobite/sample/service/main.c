@@ -107,6 +107,7 @@ trilobite_sample_service_factory (BonoboGenericFactory *this_factory,
 int main(int argc, char *argv[]) {
 
 	GData *data;
+	char *registration_id;
 
 #ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
@@ -121,9 +122,13 @@ int main(int argc, char *argv[]) {
 	}
 	g_datalist_clear (&data);
 
-	factory = bonobo_generic_factory_new_multi (OAF_ID_FACTORY, 
+        registration_id = oaf_make_registration_id (OAF_ID_FACTORY, getenv ("DISPLAY"));
+
+	factory = bonobo_generic_factory_new_multi (registration_id, 
 						    trilobite_sample_service_factory,
 						    NULL);
+
+	g_free (registration_id);
 	
 	if (factory == NULL) {
 		g_error ("Could not register factory");

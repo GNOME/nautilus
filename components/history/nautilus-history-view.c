@@ -308,6 +308,7 @@ main (int argc, char *argv[])
 {
 	BonoboGenericFactory *factory;
 	CORBA_ORB orb;
+	char *registration_id;
 
 	gnome_init_with_popt_table ("nautilus-history-view", VERSION, 
 				    argc, argv,
@@ -316,7 +317,11 @@ main (int argc, char *argv[])
 	bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 	gnome_vfs_init ();
 
-	factory = bonobo_generic_factory_new_multi ("OAFIID:nautilus_history_view_factory:912d6634-d18f-40b6-bb83-bdfe16f1d15e", make_obj, NULL);
+	registration_id = oaf_make_registration_id ("OAFIID:nautilus_history_view_factory:912d6634-d18f-40b6-bb83-bdfe16f1d15e", g_getenv ("DISPLAY"));
+
+	factory = bonobo_generic_factory_new_multi (registration_id, make_obj, NULL);
+
+	g_free (registration_id);
 
 	do {
 		bonobo_main();

@@ -68,6 +68,7 @@ int main(int argc, char *argv[])
 {
 	BonoboGenericFactory *factory;
 	CORBA_ORB orb;
+	char *registration_id;
 	
 	/* Initialize gettext support */
 #ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
@@ -87,8 +88,12 @@ int main(int argc, char *argv[])
 	g_thread_init (NULL);
 	gnome_vfs_init ();
 	
-	factory = bonobo_generic_factory_new_multi ("OAFIID:nautilus_rpm_view_factory:5986d6a5-8840-44ea-84a1-e7f052bd85cf", 
-						    rpm_view_make_object, NULL);
+        registration_id = oaf_make_registration_id ("OAFIID:nautilus_rpm_view_factory:5986d6a5-8840-44ea-84a1-e7f052bd85cf", getenv ("DISPLAY"));
+	factory = bonobo_generic_factory_new_multi (registration_id, 
+						    rpm_view_make_object,
+						    NULL);
+	g_free (registration_id);
+
 	
 	do {
 		bonobo_main ();

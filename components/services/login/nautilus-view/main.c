@@ -70,9 +70,10 @@ login_make_object (BonoboGenericFactory	*factory,
 int
 main (int argc, char *argv[])
 {
-
 	BonoboGenericFactory	*factory;
 	CORBA_ORB		orb;
+	char *registration_id;
+
 
 #ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
@@ -86,7 +87,12 @@ main (int argc, char *argv[])
 	orb = oaf_init (argc, argv);
 	
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
-	factory = bonobo_generic_factory_new_multi ("OAFIID:nautilus_login_view_factory:a2839e69-53ae-47b8-b797-3e9335bacf22", login_make_object, NULL);
+
+        registration_id = oaf_make_registration_id ("OAFIID:nautilus_login_view_factory:a2839e69-53ae-47b8-b797-3e9335bacf22", getenv ("DISPLAY"));
+	factory = bonobo_generic_factory_new_multi (registration_id, 
+						    login_make_object,
+						    NULL);
+	g_free (registration_id);
 	
 	do {
 		bonobo_main ();

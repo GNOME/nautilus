@@ -77,6 +77,7 @@ int main(int argc, char *argv[])
 	BonoboGenericFactory *factory;
 	CORBA_ORB orb;
 	CORBA_Environment ev;
+	char *registration_id;
 
 	CORBA_exception_init(&ev);
 
@@ -102,7 +103,13 @@ int main(int argc, char *argv[])
     	glade_gnome_init();
 #endif /* 0 */
 
-	factory = bonobo_generic_factory_new_multi (OAFIID_TRILOBITE_EAZEL_TIME_VIEW_FACTORY, sample_make_object, NULL);
+
+        registration_id = oaf_make_registration_id (OAFIID_TRILOBITE_EAZEL_TIME_VIEW_FACTORY, getenv ("DISPLAY"));
+	factory = bonobo_generic_factory_new_multi (registration_id, 
+						    sample_make_object,
+						    NULL);
+	g_free (registration_id);
+
 		
 	g_message ("About to do main loop.");        
 

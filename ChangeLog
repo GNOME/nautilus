@@ -1,3 +1,37 @@
+2000-09-22  Maciej Stachowiak  <mjs@eazel.com>
+
+	Register all the below components per display. I didn't make
+	nautilus per-display yet (to avoid dealing with the locking
+	issues, etc). I also did not change the services components that
+	appear to be non-gui to operate per-display.
+
+	I believe this fixes bugs 3033 and 2237.
+
+	* components/adapter/main.c: (main):
+	* components/hardware/main.c: (main):
+	* components/help/hyperbola-main.c: (main):
+	* components/history/nautilus-history-view.c: (main):
+	* components/html/ntl-web-browser.c: (main):
+	* components/image-viewer/nautilus-image-view.c:
+	(init_bonobo_image_generic_factory):
+	* components/loser/content/main.c: (main):
+	* components/loser/sidebar/main.c: (main):
+	* components/mozilla/main.c: (main):
+	* components/music/main.c: (main):
+	* components/notes/nautilus-notes.c: (main):
+	* components/rpmview/main.c: (main):
+	* components/sample/main.c: (main):
+	* components/services/install/nautilus-view/main.c: (main):
+	* components/services/inventory/nautilus-view/main.c: (main):
+	* components/services/login/nautilus-view/main.c: (main):
+	* components/services/summary/nautilus-view/main.c: (main):
+	* components/services/time/nautilus-view/main.c: (main):
+	* components/services/trilobite/sample/service/main.c: (main):
+	* components/shell/shell.c: (shell_factory_init):
+	* components/tree/main.c: (main):
+	* components/websearch/ntl-web-search.c: (main): Register each of 
+	these per-display.
+
 2000-09-22  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-gdk-extensions.c:

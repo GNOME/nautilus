@@ -34,13 +34,15 @@ void
 shell_factory_init (void)
 {
     static BonoboGenericFactory *xterm_factory = NULL;
+    char *registration_id;
 
     if (xterm_factory != NULL)
 	return;
 
-    xterm_factory = bonobo_generic_factory_new
-	("OAFIID:shell_factory:10a7d344-c4cd-402f-9e05-bd591bbc5618",
-	 shell_factory, NULL);
+    registration_id = oaf_make_registration_id (, g_getenv ("DISPLAY"));
+    factory = bonobo_generic_factory_new_multi "OAFIID:shell_factory:10a7d344-c4cd-402f-9e05-bd591bbc5618", shell_factory, NULL);
+    g_free (registration_id);
+
 
     if (xterm_factory == NULL)
 	g_error ("I could not register a Factory.");

@@ -74,6 +74,7 @@ int main(int argc, char *argv[])
 	BonoboGenericFactory *factory;
 	CORBA_ORB orb;
 	CORBA_Environment ev;
+	char *registration_id;
 
 	CORBA_exception_init(&ev);
 
@@ -89,7 +90,13 @@ int main(int argc, char *argv[])
 
 	nautilus_sidebar_loser_maybe_fail ("post-init");
 
-	factory = bonobo_generic_factory_new_multi ("OAFIID:nautilus_sidebar_loser_factory:5d9aadfa-a8a4-4ec0-8332-d6f806c211fa", loser_make_object, NULL);
+
+        registration_id = oaf_make_registration_id ("OAFIID:nautilus_sidebar_loser_factory:5d9aadfa-a8a4-4ec0-8332-d6f806c211fa", getenv ("DISPLAY"));
+	factory = bonobo_generic_factory_new_multi (registration_id, 
+						    loser_make_object,
+						    NULL);
+	g_free (registration_id);
+
 
 	nautilus_sidebar_loser_maybe_fail ("post-factory-init");
 

@@ -44,6 +44,8 @@ main(int argc, char *argv[])
 {
   BonoboGenericFactory *factory;
   CORBA_ORB orb;
+  char *registration_id;
+
 
   /* Initialize gettext support */
 #ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
@@ -51,20 +53,21 @@ main(int argc, char *argv[])
   textdomain (PACKAGE);
 #endif	
 
-  gnome_init_with_popt_table("hyperbola", VERSION, 
-			     argc, argv,
-			     oaf_popt_options, 0, NULL); 
+  gnome_init_with_popt_table ("hyperbola", VERSION, 
+			      argc, argv,
+			      oaf_popt_options, 0, NULL); 
   
   orb = oaf_init (argc, argv);
 
-
   bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
-  factory = bonobo_generic_factory_new_multi("OAFIID:hyperbola_factory:02b54c63-101b-4b27-a285-f99ed332ecdb", make_obj, NULL);
+  registration_id = oaf_make_registration_id ("OAFIID:hyperbola_factory:02b54c63-101b-4b27-a285-f99ed332ecdb", g_getenv ("DISPLAY"));
+  factory = bonobo_generic_factory_new_multi (registration_id, make_obj, NULL);
+  g_free (registration_id);
 
   do {
-    bonobo_main();
-  } while(object_count > 0);
+    bonobo_main ();
+  } while (object_count > 0);
 
   return 0;
 }

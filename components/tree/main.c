@@ -81,6 +81,7 @@ main (int argc, char *argv[])
 {
 	CORBA_ORB orb;
 	BonoboGenericFactory *factory;
+	char *registration_id;
 
 	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
 	 * Unfortunately, this has to be done explicitly for each domain.
@@ -110,9 +111,11 @@ main (int argc, char *argv[])
 	
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
-	factory = bonobo_generic_factory_new_multi
-		(TREE_VIEW_FACTORY_IID,
-		 tree_exe_make_object, NULL);
+	registration_id = oaf_make_registration_id (TREE_VIEW_FACTORY_IID, g_getenv ("DISPLAY"));
+
+	factory = bonobo_generic_factory_new_multi (registration_id, tree_exe_make_object, NULL);
+
+	g_free (registration_id);
 		
 	do {
 		bonobo_main ();

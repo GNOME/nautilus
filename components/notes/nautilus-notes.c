@@ -191,6 +191,7 @@ main(int argc, char *argv[])
 {
         BonoboGenericFactory *factory;
         CORBA_ORB orb;
+        char *registration_id;
 
 	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
 	 * Unfortunately, this has to be done explicitly for each domain.
@@ -219,9 +220,13 @@ main(int argc, char *argv[])
         g_thread_init (NULL);
         gnome_vfs_init ();
         
+        registration_id = oaf_make_registration_id ("OAFIID:nautilus_notes_view_factory:4b39e388-3ca2-4d68-9f3d-c137ee62d5b0", getenv ("DISPLAY"));
+
         factory = bonobo_generic_factory_new_multi
-                ("OAFIID:nautilus_notes_view_factory:4b39e388-3ca2-4d68-9f3d-c137ee62d5b0",
+                (registration_id,
                  make_notes_view, NULL);
+
+        g_free (registration_id);
 
         do {
                 bonobo_main();

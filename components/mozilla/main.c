@@ -82,6 +82,8 @@ main (int argc, char *argv[])
 {
 	BonoboGenericFactory *factory;
 	CORBA_ORB orb;
+	char *registration_id;
+
 
 	if (!mozilla_check_environment ()) {
 		g_print ("There is no reasonable default for MOZILLA_FIVE_HOME.  You lose.\n");
@@ -95,7 +97,13 @@ main (int argc, char *argv[])
 	orb = oaf_init (argc, argv);
 	
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
-	factory = bonobo_generic_factory_new_multi ("OAFIID:nautilus_mozilla_content_view_factory:020a0285-6b96-4685-84a1-4a56eb6baa2b", mozilla_make_object, NULL);
+
+
+        registration_id = oaf_make_registration_id ("OAFIID:nautilus_mozilla_content_view_factory:020a0285-6b96-4685-84a1-4a56eb6baa2b", getenv ("DISPLAY"));
+	factory = bonobo_generic_factory_new_multi (registration_id, 
+						    mozilla_make_object,
+						    NULL);
+	g_free (registration_id);
 
 	gnome_vfs_init ();
 
