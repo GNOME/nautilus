@@ -2025,19 +2025,19 @@ msgstr "機能/ファイルを持つパッケージを検索"
 
 #: components/services/install/command-line/eazel-test-softcat.c:51
 msgid "Lookup package with a specific version"
-msgstr "特定のバージョンパッケージを検索"
+msgstr "特定のバージョンのパッケージを検索"
 
 #: components/services/install/command-line/eazel-test-softcat.c:52
 msgid "(with --version) Use >= comparison"
-msgstr ""
+msgstr "(--versionで) >= による比較を使う"
 
 #: components/services/install/command-line/eazel-test-softcat.c:53
 msgid "use check function (for debugging)"
-msgstr ""
+msgstr "チェック関数を使う(デバッグ用)"
 
 #: components/services/install/command-line/eazel-test-softcat.c:54
 msgid "Show detailed sub-package info"
-msgstr ""
+msgstr "サブパッケージの詳しい情報を表示"
 
 #: components/services/install/lib/eazel-install-logic2.c:139
 msgid "Failed to lock the downloaded file"
@@ -2046,7 +2046,7 @@ msgstr "ダウンロードしたファイルのロックに失敗しました"
 #: components/services/install/lib/eazel-install-logic2.c:156
 #, c-format
 msgid "MD5 mismatch, package %s may be compromised"
-msgstr ""
+msgstr "MD5の不一致、パッケージ%sは置き換わっているかもしれません"
 
 #: components/services/install/lib/eazel-install-logic2.c:441
 #, c-format
@@ -2096,11 +2096,13 @@ msgstr "設定ファイルから URLType を設定できませんでした!"
 #: components/services/install/lib/eazel-install-object.c:701
 msgid "Transactions are not stored, could not find home dir"
 msgstr ""
+"トランザクションは保存されていません、ホームディレクトリを"
+"発見できませんでした"
 
 #: components/services/install/lib/eazel-install-object.c:729
 #, c-format
 msgid "Transactions are stored in %s"
-msgstr ""
+msgstr "トランザクションは%sに保存されています"
 
 #: components/services/install/lib/eazel-install-object.c:986
 msgid "Getting package list from remote server ...\n"
@@ -2148,7 +2150,7 @@ msgstr "%s はソースパッケージですが，まだサポートしていません"
 #: components/services/install/lib/eazel-install-problem.c:155
 #, c-format
 msgid "%s had a file conflict with %s which %s required"
-msgstr ""
+msgstr "%sは、%sと衝突していて%sを必要としています"
 
 #: components/services/install/lib/eazel-install-problem.c:160
 #, c-format
@@ -2174,17 +2176,17 @@ msgstr "%s は %s を壊すかもしれません"
 #: components/services/install/lib/eazel-install-problem.c:187
 #, c-format
 msgid "%s is damaged"
-msgstr ""
+msgstr "%sは壊れています"
 
 #: components/services/install/lib/eazel-install-problem.c:192
 #, c-format
 msgid "%s requires %s, which could not be found on the server"
-msgstr ""
+msgstr "%sが必要とする%sは、サーバには見つかりませんでした"
 
 #: components/services/install/lib/eazel-install-problem.c:196
 #, c-format
 msgid "%s could not be found on the server"
-msgstr ""
+msgstr "%sはサーバには見つかりませんでした"
 
 #: components/services/install/lib/eazel-install-problem.c:204
 #: components/services/install/lib/eazel-install-problem.c:337
@@ -2195,12 +2197,14 @@ msgstr "%s はすでにインストールされています"
 #: components/services/install/lib/eazel-install-problem.c:235
 #, c-format
 msgid "%s, which is newer, is already installed and downgrade is not enabled"
-msgstr ""
+msgstr "%sはより新しいものですが、すでにインストールされていてダウングレード"
+"できません"
 
 #: components/services/install/lib/eazel-install-problem.c:239
 #, c-format
 msgid "%s, which is older, is already installed and upgrade is not enabled"
-msgstr ""
+msgstr "%sはより古いものですが、すでにインストールされていてアップグレード"
+"することはできません"
 
 #: components/services/install/lib/eazel-install-problem.c:320
 #: components/services/install/lib/eazel-install-problem.c:323
@@ -2218,14 +2222,14 @@ msgstr "%s はインストールされていません"
 #: components/services/install/lib/eazel-install-problem.c:879
 #, c-format
 msgid "Check for a new version of %s"
-msgstr ""
+msgstr "%sの新バージョンをチェック"
 
 #. TRANSLATORS : This string is a solution to a dependency problem,
 #. both %s's are package names or filenames
 #: components/services/install/lib/eazel-install-problem.c:890
 #, c-format
 msgid "Install both %s and %s"
-msgstr ""
+msgstr "%sと%sを両方インストール"
 
 #. TRANSLATORS : This string is a solution to a dependency problem,
 #. %s is a package name or filename
@@ -2240,16 +2244,16 @@ msgstr "システムから %s を削除します"
 #: components/services/install/lib/eazel-install-problem.c:918
 #, c-format
 msgid "Force the removal of %s from your system"
-msgstr ""
+msgstr "%sをシステムから強制的に削除"
 
 #. TRANSLATORS : This string is a solution to a dependency problem
 #: components/services/install/lib/eazel-install-problem.c:926
 msgid "Package database has an inconsistency"
-msgstr ""
+msgstr "パッケージデータベースに整合のとれていないところがあります"
 
 #: components/services/install/lib/eazel-install-problem.c:974
 msgid "Continue with force"
-msgstr ""
+msgstr "強制的に進む"
 
 #: components/services/install/lib/eazel-install-problem.c:980
 msgid "Allow downgrade"
@@ -2334,12 +2338,12 @@ msgstr "%s の URL を取得できませんでした"
 
 #: components/services/install/lib/eazel-install-protocols.c:657
 msgid "Downloaded package does not have the correct name"
-msgstr ""
+msgstr "ダウンロード下パッケージには正しい名前がありません"
 
 #: components/services/install/lib/eazel-install-protocols.c:658
 #, c-format
 msgid "Package %s should have had name %s"
-msgstr ""
+msgstr "パッケージ %sは %sという名前であるはずです"
 
 #: components/services/install/lib/eazel-install-protocols.c:686
 msgid "File download failed"
@@ -2562,67 +2566,67 @@ msgstr "インストールサービスのファクトリ"
 
 #: components/services/inventory/eazel-inventory-client.c:66
 msgid "Enable inventory upload."
-msgstr ""
+msgstr "インベントリアップロードを有効にします。"
 
 #: components/services/inventory/eazel-inventory-client.c:68
 msgid "Disable inventory upload."
-msgstr ""
+msgstr "インベントリアップロードを無効にします。"
 
 #: components/services/inventory/eazel-inventory-client.c:69
 msgid "Enable warning before each upload."
-msgstr ""
+msgstr "アップロードされる前の警告を有効にします。"
 
 #: components/services/inventory/eazel-inventory-client.c:70
 msgid "Disable warning before each upload."
-msgstr ""
+msgstr "アップロードされる前の警告を無効にします。"
 
 #: components/services/inventory/eazel-inventory-client.c:71
 msgid "Set machine name."
-msgstr ""
+msgstr "マシン名の設定。"
 
 #: components/services/inventory/eazel-inventory-client.c:72
 msgid "Display information about current inventory settings."
-msgstr ""
+msgstr "現在のインベントリ設定についての情報を表示します。"
 
 #: components/services/inventory/eazel-inventory-client.c:73
 msgid "Upload inventory now, if not up to date."
-msgstr ""
+msgstr "インベントリが更新されていなければ、すぐにアップロードします。"
 
 #: components/services/inventory/eazel-inventory-service.c:233
 msgid "User isn't logged into ammonite yet.\n"
-msgstr ""
+msgstr "ユーザはammoniteにまだログインしていません。\n"
 
 #: components/services/inventory/eazel-inventory-service.c:236
 msgid "The supplied URL was bad.\n"
-msgstr ""
+msgstr "指定されたURLは正しくありません。\n"
 
 #: components/services/inventory/eazel-inventory-service.c:239
 msgid "A CORBA error occured.\n"
-msgstr ""
+msgstr "CORBAエラーが発生しました。\n"
 
 #: components/services/inventory/eazel-inventory-service.c:242
 msgid "Ammonite returned an error translating the url.\n"
-msgstr ""
+msgstr "AmmoniteはURLの変換でエラーを返しました。\n"
 
 #: components/services/inventory/eazel-inventory-service.c:263
 msgid "Can't post !"
-msgstr ""
+msgstr "送信できません!"
 
 #: components/services/inventory/eazel-inventory-service.c:276
 msgid "can't open tempory file hell\n"
-msgstr ""
+msgstr "一時ファイルを開けません\n"
 
 #: components/services/inventory/eazel-inventory-service.c:296
 msgid "Can't set body !"
-msgstr ""
+msgstr "本体をセットできません!"
 
 #: components/services/inventory/Trilobite_Service_inventory.oaf.in.h:1
 msgid "Factory for the inventory service"
-msgstr ""
+msgstr "インベントリサービスのファクトリ"
 
 #: components/services/inventory/Trilobite_Service_inventory.oaf.in.h:2
 msgid "Inventory"
-msgstr ""
+msgstr "インベントリ"
 
 #: components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:1
 msgid "Nautilus Inventory view"
@@ -2638,7 +2642,7 @@ msgstr "Nautilus システムインベントリコンポーネントのファクトリ"
 
 #: components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:4
 msgid "System Inventory"
-msgstr ""
+msgstr "システムインベントリ"
 
 #: components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:5
 msgid "System inventory view component"
