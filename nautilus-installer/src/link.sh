@@ -110,7 +110,7 @@ if test "x$FULL" = "xyes"; then
 fi
 
 make clean && \
-make CFLAGS="$OG_FLAG $WARN_FLAG -DNO_TEXT_BOX -DBUILD_DATE=\\\"${BUILD_DATE}\\\"" LDFLAGS="-static" && \
+make CFLAGS="$OG_FLAG $WARN_FLAG -DBUILD_DATE=\\\"${BUILD_DATE}\\\" -DRPM_MAJOR=${RPM_MAJOR}" LDFLAGS="-static" && \
 gcc -static $OG_FLAG $WARN_FLAG -o eazel-installer \
 main.o callbacks.o installer.o proxy.o package-tree.o gtk-hackery.o			\
 ../../components/services/install/lib/libeazelinstall_minimal.a 			\
@@ -153,11 +153,11 @@ if test "$1" = "push" -a $? = 0; then
     if test "$USER" = "robey"; then
         cp eazel-installer.sh /h/public/bin/
 	# make it so anyone can write a new one in
-	chmod 777 /h/public/bin/eazel-installer.sh
+	chmod 777 /h/public/bin/eazel-installer-rpm${RPM_MAJOR}.sh
     else
         echo "You are not Robey, therefore you are lame.  Enter your password."
 	chmod 777 ./eazel-installer.sh
-        scp ./eazel-installer.sh odin.eazel.com:/h/public/bin/
+        scp ./eazel-installer.sh odin.eazel.com:/h/public/bin/eazel-installer-rpm${RPM_MAJOR}.sh
     fi
 fi
 

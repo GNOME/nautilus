@@ -78,6 +78,7 @@ struct _EazelInstaller
 	gboolean debug, output;
 	gboolean test;
 	gboolean uninstalling;
+	gboolean downloaded_anything;
 
 	unsigned long total_bytes_downloaded;
 	unsigned long last_KB;

@@ -1,3 +1,33 @@
+2001-02-12  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-protocols.c:
+	(gnome_vfs_fetch_remote_file):
+
+	Erase the package if it didn't finish downloading.
+	
+	* components/services/trilobite/libtrilobite/trilobite-core-messagi
+	ng.c:
+
+	Add <string.h> header for RH7.
+	
+	* nautilus-installer/src/callbacks.c: (druid_cancel),
+	(druid_delete), (druid_finish):
+	* nautilus-installer/src/main.c: (main):
+
+	Clean up object unref'ing to quiet up the install lib's memory
+	checker.  Don't hook up with the session manager.
+	
+	* nautilus-installer/src/installer.c: (eazel_download_progress),
+	(eazel_install_preflight), (check_system),
+	(eazel_installer_finalize), (eazel_installer_set_default_texts),
+	(eazel_installer_initialize):
+	* nautilus-installer/src/installer.h:
+	* nautilus-installer/src/link.sh:
+
+	Change the no-RH7 message into RH6 and RH7 specific messages, so
+	we can build one installer for each platform.  Don't ask to delete
+	files if none were downloaded.
+	
 2001-02-12  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>

@@ -411,6 +411,7 @@ gnome_vfs_fetch_remote_file (EazelInstall *service,
 		rename (target_file_premove, target_file);
 	} else {
 		trilobite_debug ("File download failed");
+		unlink (target_file_premove);
 		if (result == GNOME_VFS_ERROR_BAD_PARAMETERS) {
 			trilobite_debug ("gnome_vfs_xfer_uri returned BAD_PARAMETERS");
 		}

@@ -130,9 +130,12 @@ static const char untranslated_error_untested_RPM_based_system[] =
 	   "RPM-based Linux distribution. I'll try anyways, but\n"\
 	   "it will most likely not work.");
 static const char untranslated_error_untested_RPM_based_system_title[]= N_("Unsupported distribution");
-static const char untranslated_error_Red_Hat_7_not_supported[] =
-	N_("Sorry, but this preview installer won't work for Red Hat\n"
-	   "Linux 7.x systems.");
+static const char untranslated_error_RedHat_6_only[] =
+	N_("Sorry, but this is the installer for RedHat 6.\n" \
+	   "You need to download the installer for RedHat 7.");
+static const char untranslated_error_RedHat_7_only[] = 
+	N_("Sorry, but this is the installer for RedHat 7.\n" \
+	   "You need to download the installer for RedHat 6.");
 
 #define ERROR_NEED_TO_SET_PROXY _(untranslated_error_need_to_set_proxy)
 #define D_WAIT_LABEL _(untranslated_wait_label)
@@ -148,14 +151,16 @@ static const char untranslated_error_Red_Hat_7_not_supported[] =
 #define D_ERROR_NON_RPM_BASED_SYSTEM _(untranslated_error_non_RPM_based_system)
 #define D_ERROR_UNTESTED_RPM_BASED_SYSTEM_TEXT _(untranslated_error_untested_RPM_based_system)
 #define D_ERROR_UNTESTED_RPM_BASED_SYSTEM_TITLE _(untranslated_error_untested_RPM_based_system_title)
-#define D_ERROR_RED_HAT_7_NOT_SUPPORTED _(untranslated_error_Red_Hat_7_not_supported)
+#define D_ERROR_REDHAT_6_ONLY _(untranslated_error_RedHat_6_only)
+#define D_ERROR_REDHAT_7_ONLY _(untranslated_error_RedHat_7_only)
 
 #define NAUTILUS_INSTALLER_RELEASE
 #undef THAT_DAMN_CHECKBOX
 
 enum {
 	ERROR_RPM_4_NOT_SUPPORTED,
-	ERROR_RED_HAT_7_NOT_SUPPORTED,
+	ERROR_REDHAT_6_ONLY,
+	ERROR_REDHAT_7_ONLY,
 	ERROR_NON_RPM_BASED_SYSTEM,
 
 	ERROR_UNTESTED_RPM_BASED_SYSTEM_TITLE,
@@ -875,6 +880,7 @@ eazel_download_progress (EazelInstall *service,
 		gtk_label_set_text (GTK_LABEL (label_single), temp); 
 		g_free (temp);
 		installer->last_KB = 0;
+		installer->downloaded_anything = TRUE;
 	}
 
 	gtk_progress_set_value (GTK_PROGRESS (progress_single), (float)amount);
@@ -1159,6 +1165,7 @@ eazel_install_preflight (EazelInstall *service,
 	log_debug ("PREFLIGHT: %s", temp);
 	g_free (temp);
 
+	installer->downloaded_anything = TRUE;
 	installer->total_packages = num_packages;
 	installer->total_size = total_size;
 	installer->total_mb = total_mb;
@@ -1515,11 +1522,22 @@ check_system (EazelInstaller *installer)
 					    "");
 			return FALSE;
 		}
+#if RPM_MAJOR == 3
 	} else if (dist.version_major == 7) {
-			jump_to_error_page (installer, NULL,
-					    text_labels [ERROR_RED_HAT_7_NOT_SUPPORTED],
-					    "");
-			return FALSE;
+		jump_to_error_page (installer, NULL, text_labels [ERROR_REDHAT_6_ONLY], "");
+		return FALSE;
+#else
+#if RPM_MAJOR == 4
+	} else if (dist.version_major == 6) {
+		jump_to_error_page (installer, NULL, text_labels [ERROR_REDHAT_7_ONLY], "");
+		return FALSE;
+#else
+	} else {
+		insert_info_page (installer,
+				  text_labels [ERROR_UNTESTED_RPM_BASED_SYSTEM_TITLE],
+				  text_labels [ERROR_UNTESTED_RPM_BASED_SYSTEM_TEXT]);
+#endif
+#endif
 	}
 
 	return TRUE;
@@ -1685,7 +1703,12 @@ eazel_installer_finalize (GtkObject *object)
 	}
 	g_list_foreach (installer->categories, (GFunc)categorydata_destroy_foreach, NULL);
 	g_list_free (installer->categories);
-	eazel_install_unref (GTK_OBJECT (installer->service));
+	if (installer->service != NULL) {
+		gtk_object_unref (GTK_OBJECT (installer->service));
+	}
+	if (installer->problem != NULL) {
+		gtk_object_unref (GTK_OBJECT (installer->problem));
+	}
 	g_free (installer->tmpdir);
 
 	/* Call parents destroy */
@@ -1719,7 +1742,8 @@ eazel_installer_set_default_texts (EazelInstaller *installer)
 	text_labels [ERROR_UNTESTED_RPM_BASED_SYSTEM_TEXT] = g_strdup (D_ERROR_UNTESTED_RPM_BASED_SYSTEM_TEXT);
 	text_labels [ERROR_NON_RPM_BASED_SYSTEM] = g_strdup (D_ERROR_NON_RPM_BASED_SYSTEM);
 	text_labels [ERROR_RPM_4_NOT_SUPPORTED] = g_strdup (D_ERROR_RPM_4_NOT_SUPPORTED);
-	text_labels [ERROR_RED_HAT_7_NOT_SUPPORTED] = g_strdup (D_ERROR_RED_HAT_7_NOT_SUPPORTED);
+	text_labels [ERROR_REDHAT_6_ONLY] = g_strdup (D_ERROR_REDHAT_6_ONLY);
+	text_labels [ERROR_REDHAT_7_ONLY] = g_strdup (D_ERROR_REDHAT_7_ONLY);
 	text_labels [WAIT_LABEL] = g_strdup (D_WAIT_LABEL);
 	text_labels [WAIT_LABEL_2] = g_strdup (D_WAIT_LABEL_2);
 	text_labels [ERROR_LABEL] = g_strdup (D_ERROR_LABEL);
@@ -2092,6 +2116,7 @@ eazel_installer_initialize (EazelInstaller *object)
 	installer->uninstalling = FALSE;
 	installer->packages_possible_broken = NULL;
 	package_destination = g_strdup_printf ("%s/%s", installer->tmpdir, PACKAGE_LIST);
+	installer->downloaded_anything = FALSE;
 
 	eazel_installer_setup_texts (installer, tmpdir);
 	installer->window = create_window (installer);

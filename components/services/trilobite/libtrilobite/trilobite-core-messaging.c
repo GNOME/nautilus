@@ -24,6 +24,7 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <stdarg.h>
+#include <string.h>
 #include "trilobite-core-utils.h"
 #include "trilobite-core-messaging.h"
 

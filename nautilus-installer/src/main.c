@@ -152,6 +152,9 @@ main (int argc, char *argv[])
 		exit (0);
 	}
 
+	/* Disable session manager connection */
+	gnome_client_disable_master_connection ();
+
 	gnome_init_with_popt_table ("eazel-installer", VERSION, argc, argv, options, 0, NULL);
 
 	signal (SIGSEGV, segv_handler);
@@ -198,10 +201,7 @@ main (int argc, char *argv[])
 
 	gtk_main ();
 
-	gtk_object_unref (GTK_OBJECT (installer->service));
-	gtk_object_unref (GTK_OBJECT (installer->problem));
-
-	printf ("Exiting\n");
+	gtk_object_unref (GTK_OBJECT (installer));
 	g_mem_profile ();
 	return 0;
 }
