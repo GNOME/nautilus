@@ -1,3 +1,23 @@
+2000-06-01  Darin Adler  <darin@eazel.com>
+
+	* components/services/startup/nautilus-view/nautilus-service-startup-view.c:
+	(gather_config_button_cb), (register_button_cb):
+	Fixed callers that were using the escape and unescape calls from
+	gnome-vfs. My guess is that these callers don't want exactly what
+	they are getting, but at least this makes it compile.
+
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_request_location_change):
+	There was code here to just unescape. This is not a good idea,
+	since it will turn good URIs into bad URIs. On the other hand, we
+	may need to do something for basic characters like %20 for better
+	readability.
+
+	* nautilus-widgets/nautilus-user-level-manager.c:
+	(user_level_manager_new),
+	(nautilus_user_level_manager_get_user_level):
+	Added some FIXMEs.
+	
 2000-06-01  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus-extensions/nautilus-program-chooser.c:

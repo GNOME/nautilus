@@ -104,7 +104,7 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusUserLevelManager, nautilus_user_level
 
 /* Create the icon factory. */
 static NautilusUserLevelManager *
-user_level_manager_new ()
+user_level_manager_new (void)
 {
         NautilusUserLevelManager *manager;
         guint			 i;
@@ -306,6 +306,10 @@ nautilus_user_level_manager_get_user_level (void)
 	gint			 index;
 
 	user_level_string = gconf_get_user_level_string ();
+	/* FIXME: Asserting based on something that's read from GConf
+	 * seems like a bad idea. It means we core dump if
+	 * something's wrong.
+	 */
 	g_assert (user_level_string != NULL);
 
 	index = nautilus_string_list_get_index_for_string (manager->user_level_names,
@@ -313,6 +317,10 @@ nautilus_user_level_manager_get_user_level (void)
 
 	g_free (user_level_string);
 
+	/* FIXME: Asserting based on something that's read from GConf
+	 * seems like a bad idea. It means we core dump if
+	 * something's wrong.
+	 */
 	g_assert (index != NAUTILUS_STRING_LIST_NOT_FOUND);
 
 	return (guint) index;

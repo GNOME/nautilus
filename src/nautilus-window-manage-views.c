@@ -657,8 +657,6 @@ nautilus_window_request_location_change (NautilusWindow *window,
         NautilusWindow *new_window;
         gboolean create_new_window;
 
-	loc->requested_uri = gnome_vfs_unescape_string (loc->requested_uri);
-
         if (handle_unreadable_location (window, loc->requested_uri)) {
 		return;
         }
