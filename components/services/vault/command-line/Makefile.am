@@ -17,6 +17,10 @@ INCLUDES =								\
 bin_PROGRAMS =								\
 	eazel-vault
 
+noinst_HEADERS = \
+	vault-operations.h	\
+	$(NULL)
+
 eazel_vault_SOURCES =							\
 	main.c								\
 	vault-operations.c						\
