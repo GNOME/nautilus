@@ -29,6 +29,7 @@
  */
 
 #define nopeDEBUG_ramiro 1
+#define nopeDEBUG_mfleming 1
 
 #include <config.h>
 #include "nautilus-mozilla-content-view.h"
@@ -57,9 +58,6 @@ struct NautilusMozillaContentViewDetails {
 	GdkCursor			 *busy_cursor;
 	gboolean                          got_called_by_nautilus;
 };
-
-static const char PROXY_KEY[] = "/system/gnome-vfs/http-proxy";
-static const char USE_PROXY_KEY[] = "/system/gnome-vfs/use-http-proxy";
 
 static void     nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass *klass);
 static void     nautilus_mozilla_content_view_initialize       (NautilusMozillaContentView      *view);
@@ -115,6 +113,7 @@ static  gint    mozilla_dom_mouse_click_callback               (GtkMozEmbed     
 static void     mozilla_content_view_set_busy_cursor           (NautilusMozillaContentView      *view);
 static void     mozilla_content_view_clear_busy_cursor         (NautilusMozillaContentView      *view);
 static gboolean mozilla_is_uri_handled_by_nautilus             (const char                      *uri);
+static gboolean mozilla_is_uri_handled_by_mozilla              (const char                      *uri);
 
 static GtkVBoxClass *parent_class = NULL;
 
@@ -173,6 +172,8 @@ mozilla_content_view_set_proxy_preferences (NautilusMozillaContentView *view)
 {
 	GConfClient *gconf_client;
 	char *proxy_string = NULL;
+	static const char PROXY_KEY[] = "/system/gnome-vfs/http-proxy";
+	static const char USE_PROXY_KEY[] = "/system/gnome-vfs/use-http-proxy";
 	
         g_return_if_fail (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (view));
 	
@@ -476,16 +477,16 @@ nautilus_mozilla_content_view_load_uri (NautilusMozillaContentView	*view,
 #ifdef DEBUG_ramiro
 	g_print ("nautilus_mozilla_content_view_load_uri (%s)\n", view->details->uri);
 #endif
-	/* If the request is http, pass the uri to the mozilla component.  Otherwise, stream the data
-	 * into mozilla.
+	/* If the request can be handled by mozilla, pass the uri as is.  Otherwise,
+	 * use gnome-vfs to open the uri and later stream the data into the gtkmozembed
+	 * widget.
 	 */
-	if (strncmp (uri, "http:", 5) == 0) {
+	if (mozilla_is_uri_handled_by_mozilla (uri)) {
 		gtk_moz_embed_load_url (GTK_MOZ_EMBED (view->details->mozilla), view->details->uri);
 	} else {
 		nautilus_view_report_load_underway (view->details->nautilus_view);
 		gnome_vfs_async_open (&async_handle, uri, GNOME_VFS_OPEN_READ, mozilla_vfs_callback, view);	
 	}
-
 }
 
 static void
@@ -522,6 +523,8 @@ mozilla_load_location_callback (NautilusView *nautilus_view,
 				NautilusMozillaContentView *view)
 {
 	g_assert (nautilus_view == view->details->nautilus_view);
+
+	/* g_print ("%s(%s)\n", __FUNCTION__, location); */
 	
 	nautilus_view_report_load_underway (nautilus_view);
 	nautilus_mozilla_content_view_load_uri (view, location);
@@ -677,9 +680,11 @@ mozilla_uris_differ_only_by_fragment_identifier (const char *uri1, const char *u
 		ret = (strncasecmp (uri1, uri2, uri1_hash - uri1) == 0);
 	}
 
+#ifdef DEBUG_ramiro
 	 if (ret) {
 	 	g_print("%s: returning TRUE for URI's '%s' and '%s'\n", __FUNCTION__, uri1, uri2);
 	 }
+#endif
 	
 	return ret;
 }
@@ -913,16 +918,23 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 #endif
 
 	if (mozilla_events_is_in_form_POST_submit (dom_event)) {
+#ifdef DEBUG_mfleming
 		g_print ("%s: is a POST submit\n", __FUNCTION__);
-		/*blatant lie*/
+#endif
+		
+		/* So that the post event can be properly submitted without
+		 * the Nautilus shell history/navigation framework breaking
+		 * its context, we use a hack.  The hack is to lie Nautilus
+		 * that the POST event was instigated by Nautilus.  Nautilus
+		 * will the call our load_location() away without having 
+		 * gnome-vfs try and do the post and thus spoling it.
+		 */
 		view->details->got_called_by_nautilus = TRUE;
 	} else {
-		g_print ("%s: is NOT a POST submit\n", __FUNCTION__);
-
 		href = mozilla_events_get_href_for_mouse_event (dom_event);
 
 		/* 
-		 * The return value over here needs to be psychoanlized some.
+		 * The return value over here needs to be psycho-analyzed some.
 		 * In theory, a return value of NS_OK, which is 0 (yes, zero)
 		 * in the Mozilla universe means that the dom event got handled
 		 *
@@ -930,9 +942,9 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 		 */
 
 		if (href && mozilla_is_uri_handled_by_nautilus (href)) {
-	#ifdef DEBUG_ramiro
+#ifdef DEBUG_ramiro
 			g_print ("%s() href = %s\n", __FUNCTION__, href);
-	#endif
+#endif
 			bonobo_object_ref (BONOBO_OBJECT (view->details->nautilus_view));
 			nautilus_view_open_location (view->details->nautilus_view, href);
 			bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
@@ -946,6 +958,27 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 }
 #endif /* MOZILLA_MILESTONE >= 18 */
 
+static gboolean
+is_string_in_string_list (const char *string, const char *string_list[], guint num_strings)
+{
+	guint i;
+
+	g_return_val_if_fail (string != NULL, FALSE);
+	g_return_val_if_fail (string_list != NULL, FALSE);
+	g_return_val_if_fail (num_strings > 0, FALSE);
+	
+	for (i = 0; i < num_strings; i++) {
+		g_assert (string_list[i] != NULL);
+		if (strlen (string) >= strlen (string_list[i]) 
+		    && (strncmp (string, string_list[i], strlen (string_list[i])) == 0)) {
+			return TRUE;
+		}
+	}
+	
+	return FALSE;
+}
+
+
 /*
  * The issue here is that mozilla handles some protocols "natively" just as nautilus
  * does thanks to gnome-vfs magic.
@@ -956,36 +989,45 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
  * We use this feature to abort uri loads for the following protocol(s):
  *
  */
-static char *handled_by_nautilus[] =
-{
-	"ftp",
-	"eazel",
-	"eazel",
-	"eazel-install",
-	"eazel-pw",
-	"eazel-services",
-	"man",
-	"info",
-	"help"
-};
-
-#define num_handled_by_nautilus (sizeof (handled_by_nautilus) / sizeof ((handled_by_nautilus)[0]))
-
 static gboolean
 mozilla_is_uri_handled_by_nautilus (const char *uri)
 {
-	guint i;
+	static const char *handled_by_nautilus[] =
+	{
+		"ftp",
+		"eazel",
+		"eazel-install",
+		"eazel-pw",
+		"eazel-services",
+		"man",
+		"info",
+		"help"
+	};
 
-	g_return_val_if_fail (uri != NULL, TRUE);
+	g_return_val_if_fail (uri != NULL, FALSE);
 	
-	for (i = 0; i < num_handled_by_nautilus; i++) {
-		if (strlen (uri) >= strlen (handled_by_nautilus[i]) 
-		    && (strncmp (uri, handled_by_nautilus[i], strlen (handled_by_nautilus[i])) == 0)) {
-			return TRUE;
-		}
-	}
-	
-	return FALSE;
+	return is_string_in_string_list (uri,
+					 handled_by_nautilus, 
+					 sizeof (handled_by_nautilus) / sizeof ((handled_by_nautilus)[0]));
+}
+
+/*
+ * Conversly, this a list of protocols handled by mozilla.  The strategy is to check 
+ * uris for these protocols and pass them through to mozilla as as.  For other uris,
+ * we try to use gnome-vfs and later stream the information into the gtkmozembed 
+ * widget.  For example, this is how the man: protocol works.
+ */
+static gboolean
+mozilla_is_uri_handled_by_mozilla (const char *uri)
+{
+	static const char *handled_by_mozilla[] =
+	{
+		"http"
+	};
+
+	return is_string_in_string_list (uri,
+					 handled_by_mozilla, 
+					 sizeof (handled_by_mozilla) / sizeof ((handled_by_mozilla)[0]));
 }
 
 GtkType

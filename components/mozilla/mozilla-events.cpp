@@ -124,16 +124,9 @@ mozilla_events_get_href_for_mouse_event (gpointer mouse_event)
 		
 		// Test if we're at the top of the document
 		if (!parentNode) {
-#ifdef DEBUG_ramiro
-			g_print ("dont got no parent\n");
-#endif
 			node = nsnull;
 			break;
 		}
-		
-#ifdef DEBUG_ramiro
-		g_print ("looking at the parent\n");
-#endif
 		
 		node = parentNode;
 

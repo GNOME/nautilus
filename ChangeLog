@@ -1,5 +1,19 @@
 2000-10-10  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* components/mozilla/mozilla-events.cpp:
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(mozilla_content_view_set_proxy_preferences),
+	(nautilus_mozilla_content_view_load_uri),
+	(mozilla_load_location_callback),
+	(mozilla_uris_differ_only_by_fragment_identifier),
+	(mozilla_dom_mouse_click_callback), (is_string_in_string_list),
+	(mozilla_is_uri_handled_by_nautilus),
+	(mozilla_is_uri_handled_by_mozilla):
+	Cleanup the way special protocols are handled.  Cleanup debug
+	spewage.
+	
+2000-10-10  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* components/mozilla/nautilus-mozilla-content-view.c:
 	(handle_gconf_error), (mozilla_content_view_set_proxy_preferences),
 	(mozilla_content_view_one_time_happenings),
