@@ -280,17 +280,6 @@ parent_for_error_dialog (TransferInfo *transfer_info)
 }
 
 static void
-transfer_dialog_clicked_callback (NautilusFileOperationsProgress *dialog,
-				  int button_number,
-				  gpointer data)
-{
-	TransferInfo *info;
-
-	info = (TransferInfo *) data;
-	info->cancelled = TRUE;
-}
-
-static void
 fit_rect_on_screen (GdkRectangle *rect)
 {
 	if (rect->x + rect->width > gdk_screen_width ()) {
@@ -343,15 +332,12 @@ center_dialog_over_window (GtkWindow *window, GtkWindow *over)
 	center_dialog_over_rect (window, rect);
 }
 
-
 static gboolean
 handle_close_callback (GnomeDialog *dialog, TransferInfo *tranfer_info)
 {
 	tranfer_info->cancelled = TRUE;
-	       	
 	return FALSE;
 }
-
 
 static void
 create_transfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
@@ -366,14 +352,17 @@ create_transfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
 	transfer_info->progress_dialog = nautilus_file_operations_progress_new 
 		(transfer_info->operation_title, "", "", "", 0, 0);
 
+	/* Treat clicking on the close box or use of the escape key
+	 * the same as clicking cancel.
+	 */
 	gtk_signal_connect (GTK_OBJECT (transfer_info->progress_dialog),
 			    "clicked",
-			    GTK_SIGNAL_FUNC (transfer_dialog_clicked_callback),
+			    GTK_SIGNAL_FUNC (gnome_dialog_close),
+			    NULL);
+	gtk_signal_connect (GTK_OBJECT (transfer_info->progress_dialog),
+			    "close",
+			    GTK_SIGNAL_FUNC (handle_close_callback),
 			    transfer_info);
-
-	/* Capture clicking on the close box or use of the escape key */
-	gtk_signal_connect (GTK_OBJECT (transfer_info->progress_dialog), "close",
-                           (GtkSignalFunc) handle_close_callback, transfer_info);
 
 	gtk_widget_show (GTK_WIDGET (transfer_info->progress_dialog));
 
@@ -524,10 +513,8 @@ handle_transfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 	case GNOME_VFS_XFER_PHASE_OPENSOURCE:
 	case GNOME_VFS_XFER_PHASE_OPENTARGET:
 		/* fall through */
-
 	case GNOME_VFS_XFER_PHASE_COPYING:
 		if (transfer_info->progress_dialog != NULL) {
-				
 			if (progress_info->bytes_copied == 0) {
 				progress_dialog_set_to_from_item_text
 					(transfer_info->progress_dialog,

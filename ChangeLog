@@ -1,3 +1,27 @@
+2001-04-13  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-operations-progress.c:
+	(nautilus_file_operations_progress_done): Remove code that fills
+	the progress bar to the end. The callback from gnome-vfs now takes
+	care of this (need the new gnome-vfs with bug fixes).
+	
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(handle_close_callback), (create_transfer_dialog): Handle the
+	cancel button in a cleaner way. Just make it close the dialog and
+	fall into the code already there to handle cases where the dialog
+	is closed directly.
+	
+	* src/file-manager/fm-icon-view.c: (get_default_zoom_level): Fixed
+	a strangely named variable.
+	(fm_icon_view_begin_loading): Don't set the zoom level if the view
+	does not support zooming (desktop view anyone?).
+	(default_zoom_level_changed_callback): Don't set the zoom level if
+	the view does not support zooming (desktop view anyone?).
+	
+	* src/nautilus-window.c: (handle_view_as_item_from_bonobo_menu):
+	Use eel_strcmp, because the container path can be NULL in some
+	cases.
+
 2001-04-13  Pavel Cisler  <pavel@eazel.com>
 
 	* src/file-manager/fm-list-view.c: (real_get_link_column),

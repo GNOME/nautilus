@@ -99,7 +99,8 @@ nautilus_file_operations_progress_update (NautilusFileOperationsProgress *progre
 
 	gtk_progress_configure (GTK_PROGRESS (progress->details->progress_bar),
 				progress->details->bytes_copied,
-				0.0, progress->details->bytes_total);
+				0.0,
+				progress->details->bytes_total);
 }
 
 static void
@@ -359,7 +360,8 @@ nautilus_file_operations_progress_new_file (NautilusFileOperationsProgress *prog
 			(EEL_ELLIPSIZING_LABEL (progress->details->item_name),
 			 item_name);
 
-		progress_count = g_strdup_printf (_("%ld of %ld"), file_index, 
+		progress_count = g_strdup_printf (_("%ld of %ld"),
+						  file_index, 
 						  progress->details->files_total);
 		gtk_label_set_text (GTK_LABEL (progress->details->progress_count_label), progress_count);
 		g_free (progress_count);
@@ -434,10 +436,8 @@ nautilus_file_operations_progress_done (NautilusFileOperationsProgress *progress
 		return;
 	}
 	
-	/* Make dialog look "done". */
+	/* No cancel button once the operation is done. */
 	gnome_dialog_set_sensitive (GNOME_DIALOG (progress), 0, FALSE);
-	gtk_progress_configure (GTK_PROGRESS (progress->details->progress_bar),
-				1.0, 0.0, 1.0);
 
 	progress->details->delayed_close_timeout_id = gtk_timeout_add
 		(MINIMUM_TIME_UP - time_up,

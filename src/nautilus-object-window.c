@@ -1129,11 +1129,11 @@ handle_view_as_item_from_bonobo_menu (NautilusWindow *window, const char *id)
 
 	container_path = nautilus_bonobo_get_numbered_menu_item_container_path_from_command (id);
 
-	if (strcmp (container_path, NAUTILUS_MENU_PATH_SHORT_LIST_PLACEHOLDER) == 0) {
+	if (eel_strcmp (container_path, NAUTILUS_MENU_PATH_SHORT_LIST_PLACEHOLDER) == 0) {
 		activate_nth_short_list_item 
 			(window,
 			 nautilus_bonobo_get_numbered_menu_item_index_from_command (id));
-	} else if (strcmp (container_path, NAUTILUS_MENU_PATH_EXTRA_VIEWER_PLACEHOLDER) == 0) {
+	} else if (eel_strcmp (container_path, NAUTILUS_MENU_PATH_EXTRA_VIEWER_PLACEHOLDER) == 0) {
 		g_return_if_fail 
 			(nautilus_bonobo_get_numbered_menu_item_index_from_command (id) == 0);
 		activate_extra_viewer (window);
