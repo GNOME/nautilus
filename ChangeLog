@@ -1,3 +1,16 @@
+2002-10-31  Anders Carlsson  <andersca@gnu.org>
+
+	* configure.in: Require gtk+ 2.1.1
+
+	* libnautilus-private/nautilus-directory-background.c:
+	(screen_size_changed), (remove_connection),
+	(desktop_background_realized):
+	* src/nautilus-desktop-window.c:
+	(nautilus_desktop_window_screen_size_changed), (unrealize),
+	(realize):
+	Add support for the size_changed signal so that the desktop
+	window will resize correctly.
+	
 2002-10-26  Thomas Vander Stichele <thomas@apestaart.org>
 
   	* components/sample/Nautilus_View_sample.server.in.in:

@@ -79,6 +79,21 @@ nautilus_desktop_window_update_directory (NautilusDesktopWindow *window)
 	g_free (desktop_directory_uri);
 }
 
+static void
+nautilus_desktop_window_screen_size_changed (GdkScreen             *screen,
+					     NautilusDesktopWindow *window)
+{
+	int width_request, height_request;
+
+	width_request = gdk_screen_get_width (screen);
+	height_request = gdk_screen_get_height (screen);
+	
+	g_object_set (window,
+		      "width_request", width_request,
+		      "height_request", height_request,
+		      NULL);
+}
+
 NautilusDesktopWindow *
 nautilus_desktop_window_new (NautilusApplication *application,
 			     GdkScreen           *screen)
@@ -265,6 +280,10 @@ unrealize (GtkWidget *widget)
 	gdk_property_delete (root_window,
 			     gdk_atom_intern ("NAUTILUS_DESKTOP_WINDOW_ID", TRUE));
 
+	g_signal_handlers_disconnect_by_func (gtk_window_get_screen (GTK_WINDOW (window)),
+					      G_CALLBACK (nautilus_desktop_window_screen_size_changed),
+					      window);
+		
 	GTK_WIDGET_CLASS (parent_class)->unrealize (widget);
 }
 
@@ -319,6 +338,9 @@ realize (GtkWidget *widget)
 	set_wmspec_desktop_hint (widget->window);
 
 	set_desktop_window_id (window, widget->window);
+
+	g_signal_connect (gtk_window_get_screen (GTK_WINDOW (window)), "size_changed",
+			  G_CALLBACK (nautilus_desktop_window_screen_size_changed), window);
 }
 
 static void

@@ -28,6 +28,7 @@
 #include "nautilus-directory-background.h"
 
 #include <eel/eel-gdk-extensions.h>
+#include <eel/eel-gtk-extensions.h>
 #include <eel/eel-background.h>
 #include "nautilus-global-preferences.h"
 #include "nautilus-metadata.h"
@@ -64,6 +65,25 @@ static gboolean nautilus_file_background_matches_default_settings (
 			EelBackgroundImagePlacement placement, EelBackgroundImagePlacement default_placement);
 
 static void
+screen_size_changed (GdkScreen *screen, NautilusIconContainer *icon_container)
+{
+        EelBackground *background;
+        
+        background = eel_get_widget_background (GTK_WIDGET (icon_container));
+
+	nautilus_file_update_desktop_pixmaps (background);        
+}
+
+static void
+remove_connection (NautilusIconContainer *icon_container, GdkScreen *screen)
+{
+        g_signal_handlers_disconnect_by_func
+                (screen,
+                 G_CALLBACK (screen_size_changed),
+                 icon_container);
+}
+
+static void
 desktop_background_realized (NautilusIconContainer *icon_container, void *disconnect_signal)
 {
 	EelBackground *background;
@@ -84,6 +104,11 @@ desktop_background_realized (NautilusIconContainer *icon_container, void *discon
 			   gtk_widget_get_screen (GTK_WIDGET (icon_container)));
 
 	nautilus_file_update_desktop_pixmaps (background);
+
+        g_signal_connect (gtk_widget_get_screen (GTK_WIDGET (icon_container)), "size_changed",
+                          G_CALLBACK (screen_size_changed), icon_container);
+        g_signal_connect (icon_container, "unrealize", G_CALLBACK (remove_connection), 
+                          gtk_widget_get_screen (GTK_WIDGET (icon_container)));
 }
 
 void
