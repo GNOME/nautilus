@@ -1,3 +1,37 @@
+2000-04-26  Pavel Cisler  <pavel@eazel.com>
+
+	* src/file-manager/fm-directory-view.c
+	* src/file-manager/fm-directory-view.h:
+	(bonobo_menu_open_in_new_window_cb), (bonobo_menu_delete_cb),
+	(bonobo_menu_duplicate_cb), (fm_directory_view_get_model),
+	(fm_directory_view_delete_with_confirm), (append_uri_one),
+	(fm_directory_duplicate_selection), (compute_menu_item_info),
+	(fm_directory_view_real_append_selection_),
+	(fm_directory_view_real_merge_menus),
+	(fm_directory_view_real_update_menus), (free_file_by_uri_map),
+	(fm_directory_view_get_context_menu_index):
+	Added "Move to Trash" and "Empty Trash" menu items.
+	Disabled the existing Delete code (I'll scavenge it later to implement
+	Delete as a fallback.)
+	
+	* src/file-manager/dfos-xfer.h:
+	* src/file-manager/dfos-xfer.c (file_operation_alert), (fs_xfer),
+	(get_parent_make_name_list), (fs_move_to_trash):
+	Add move to trash and empty trash calls.
+
+
+	* libnautilus-extensions/nautilus-file-changes-queue.c
+	(nautilus_file_changes_queue_get_change),
+	(nautilus_file_changes_consume_changes):
+	Fix a problem with nautilus_file_changes_consume_changes getting called
+	when there is no change allocated yet.
+
+	* libnautilus-extensions/nautilus-directory.c
+	(nautilus_directory_notify_files_added),
+	(nautilus_directory_notify_files_removed),
+	(nautilus_directory_notify_files_moved):
+	Got rid of old debugging code.
+
 2000-04-26  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* nautilus-clean.sh: Give this thing a -q flag to quiet down noise.
@@ -650,8 +684,6 @@
 	* libnautilus-extensions/nautilus-directory.c:
 	(nautilus_directory_notify_files_moved):
 
-	a b c d e f a b c d e f a b c d e f a b c d e f a b c d e f a b cd
-	d d e f a b c d e f a b c d e f
 	Darin helped me finish implementing the missing parts of the call,
 	including updating the reference to the new directory object,
 	updating the file info structure to match the file's new location.

@@ -42,6 +42,11 @@ void fs_xfer   (const GList *item_uris,
 		int copy_action,
 		GtkWidget *parent_view);
 
+void fs_move_to_trash (const GList *item_uris,
+		       GtkWidget *parent_view);
+
+void fs_empty_trash (GtkWidget *parent_view);
+
 int file_operation_alert (GtkWidget *parent_view, 
 			  const char *text, 
 			  const char *title,

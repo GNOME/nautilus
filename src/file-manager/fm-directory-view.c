@@ -104,16 +104,19 @@ struct FMDirectoryViewDetails
 };
 
 /* forward declarations */
-static void           delete_cb                                                   (GtkMenuItem              *item,
-										   GList                    *files);
+
 static int            display_selection_info_idle_cb                              (gpointer                  data);
 static void           display_selection_info                                      (FMDirectoryView          *view);
 static void           fm_directory_view_initialize_class                          (FMDirectoryViewClass     *klass);
 static void           fm_directory_view_initialize                                (FMDirectoryView          *view);
+#if 0
 static void           fm_directory_view_delete_with_confirm                       (FMDirectoryView          *view,
 										   GList                    *files);
-static void           fm_directory_duplicate_selection                            (FMDirectoryView          *view,
+#endif
+static void           fm_directory_view_duplicate_selection                       (FMDirectoryView          *view,
 										   GList                    *files);
+static void	      fm_directory_view_trash_selection				  (FMDirectoryView	    *view, 
+										   GList 		    *files);
 static void           fm_directory_view_destroy                                   (GtkObject                *object);
 static void           fm_directory_view_activate_file_internal                    (FMDirectoryView          *view,
 										   NautilusFile             *file,
@@ -319,6 +322,28 @@ bonobo_menu_open_in_new_window_cb (BonoboUIHandler *ui_handler, gpointer user_da
 }
 
 static void
+bonobo_menu_move_to_trash_cb (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
+{
+        FMDirectoryView *view;
+        GList *selection;
+        
+        g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+
+        view = FM_DIRECTORY_VIEW (user_data);
+	selection = fm_directory_view_get_selection (view);
+
+        /* UI should have prevented this from being called unless at least
+         * one item is selected.
+         */
+        g_assert (g_list_length(selection) > 0);
+
+        fm_directory_view_trash_selection (view, selection);
+
+        nautilus_file_list_free (selection);
+}
+
+#if 0
+static void
 bonobo_menu_delete_cb (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
 {
         FMDirectoryView *view;
@@ -338,6 +363,7 @@ bonobo_menu_delete_cb (BonoboUIHandler *ui_handler, gpointer user_data, const ch
 
         nautilus_file_list_free (selection);
 }
+#endif
 
 static void
 bonobo_menu_duplicate_cb (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
@@ -355,9 +381,17 @@ bonobo_menu_duplicate_cb (BonoboUIHandler *ui_handler, gpointer user_data, const
          */
         g_assert (g_list_length(selection) > 0);
 
-        fm_directory_duplicate_selection (view, selection);
+        fm_directory_view_duplicate_selection (view, selection);
 
         nautilus_file_list_free (selection);
+}
+
+static void
+bonobo_menu_empty_trash_cb (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
+{                
+        g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+
+	fs_empty_trash (GTK_WIDGET (FM_DIRECTORY_VIEW (user_data)));
 }
 
 static void
@@ -1243,34 +1277,10 @@ fm_directory_view_get_model (FMDirectoryView *view)
 	return view->details->model;
 }
 
-/* handle the delete command */
-/* FIXME: need to handle errors better, and provide feedback for long deletes */
-static void
-delete_one (gpointer data, gpointer user_data)
-{
-	NautilusFile *file;
-	GtkWidget *error_box;
-	char *text_uri, *message;
-	
-	g_assert (NAUTILUS_IS_FILE (data));
-	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
-	
-	file = NAUTILUS_FILE (data);
-		
-	nautilus_file_delete (file);	
-	
-	/* report errors if necessary */
-	if (!nautilus_file_is_gone (file)) {
-		text_uri = nautilus_file_get_uri (file);
-		message = g_strdup_printf (_("Sorry, but %s could not be deleted"),
-					   text_uri);
-		g_free (text_uri);
-		error_box = gnome_message_box_new (message, GNOME_MESSAGE_BOX_WARNING,
-						   GNOME_STOCK_BUTTON_OK, NULL);
-		g_free (message);
-	}
-}
-
+#if 0
+/* FIXME:
+ * Delete should be used in directories that don't support moving to Trash
+ */
 static gboolean
 confirm_delete (FMDirectoryView *directory_view, GList *files)
 {
@@ -1339,6 +1349,7 @@ fm_directory_view_delete_with_confirm (FMDirectoryView *view, GList *files)
 	        g_list_foreach (files, delete_one, view);    
 	}
 }
+#endif
 
 static void
 append_uri_one (gpointer data, gpointer user_data)
@@ -1354,7 +1365,7 @@ append_uri_one (gpointer data, gpointer user_data)
 }
 
 static void
-fm_directory_duplicate_selection (FMDirectoryView *view, GList *files)
+fm_directory_view_duplicate_selection (FMDirectoryView *view, GList *files)
 {
 	GList *uris;
 
@@ -1373,17 +1384,36 @@ fm_directory_duplicate_selection (FMDirectoryView *view, GList *files)
 }
 
 static void
-delete_cb (GtkMenuItem *item, GList *files)
+fm_directory_view_trash_selection (FMDirectoryView *view, GList *files)
 {
-        fm_directory_view_delete_with_confirm
-		(FM_DIRECTORY_VIEW (gtk_object_get_data (GTK_OBJECT (item), "directory_view")), 
-		 files);
+	GList *uris;
+
+        g_assert (FM_IS_DIRECTORY_VIEW (view));
+        g_assert (g_list_length (files) > 0);
+
+	uris = NULL;
+	/* create a list of URIs */
+	g_list_foreach (files, append_uri_one, &uris);    
+
+        g_assert (g_list_length (uris) == g_list_length (files));
+
+        
+	fs_move_to_trash (uris, GTK_WIDGET (view));
+	nautilus_g_list_free_deep (uris);
 }
 
 static void
 duplicate_cb (GtkMenuItem *item, GList *files)
 {
-        fm_directory_duplicate_selection
+        fm_directory_view_duplicate_selection
+		(FM_DIRECTORY_VIEW (gtk_object_get_data (GTK_OBJECT (item), "directory_view")), 
+		 files);
+}
+
+static void
+trash_cb (GtkMenuItem *item, GList *files)
+{
+        fm_directory_view_trash_selection
 		(FM_DIRECTORY_VIEW (gtk_object_get_data (GTK_OBJECT (item), "directory_view")), 
 		 files);
 }
@@ -1492,8 +1522,16 @@ compute_menu_item_info (const char *path,
 			name = g_strdup_printf (_("Open in %d _New Windows"), selection_length);
 		}
 		*return_sensitivity = selection_length > 0;
+#if 0
+/* FIXME:
+ * Delete should be used in directories that don't support moving to Trash
+ */
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_DELETE) == 0) {
 		name = g_strdup (_("_Delete..."));
+		*return_sensitivity = selection_length > 0;
+#endif
+	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_TRASH) == 0) {
+		name = g_strdup (_("_Move to Trash"));
 		*return_sensitivity = selection_length > 0;
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE) == 0) {
 		name = g_strdup (_("_Duplicate"));
@@ -1501,6 +1539,12 @@ compute_menu_item_info (const char *path,
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_SET_PROPERTIES) == 0) {
 		name = g_strdup (_("Set _Properties..."));
 		*return_sensitivity = selection_length > 0;
+/*
+ FIXME:
+	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH) == 0) {
+		name = g_strdup (_("_Empty Trash"));
+		*return_sensitivity = trash is not empty;
+*/
         } else {
                 g_assert_not_reached ();
         }
@@ -1558,7 +1602,7 @@ fm_directory_view_real_append_selection_context_menu_items (FMDirectoryView *vie
 	append_selection_menu_item (view, menu, files,
 				    FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW, open_in_new_window_cb);
 	append_selection_menu_item (view, menu, files,
-				    FM_DIRECTORY_VIEW_MENU_PATH_DELETE, delete_cb);
+				    FM_DIRECTORY_VIEW_MENU_PATH_TRASH, trash_cb);
 	append_selection_menu_item (view, menu, files,
 				    FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE, duplicate_cb);
 	append_selection_menu_item (view, menu, files,
@@ -1613,6 +1657,10 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
                                          0,
                                          bonobo_menu_open_properties_window_cb,
                                          view);
+#if 0
+/* FIXME:
+ * Delete should be used in directories that don't support moving to Trash
+ */
         bonobo_ui_handler_menu_new_item (ui_handler,
                                          FM_DIRECTORY_VIEW_MENU_PATH_DELETE,
                                          _("Delete..."),
@@ -1624,6 +1672,18 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
                                          0,
                                          bonobo_menu_delete_cb,
                                          view);
+#endif
+        bonobo_ui_handler_menu_new_item (ui_handler,
+                                         FM_DIRECTORY_VIEW_MENU_PATH_TRASH,
+                                         _("Move to Trash"),
+                                         _("Move all selected items to Trash"),
+                                         bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_CLOSE) + 3,
+                                         BONOBO_UI_HANDLER_PIXMAP_NONE,
+                                         NULL,
+                                         'T',
+                                         GDK_CONTROL_MASK,
+                                         bonobo_menu_move_to_trash_cb,
+                                         view);
         bonobo_ui_handler_menu_new_item (ui_handler,
                                          FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE,
                                          _("Duplicate"),
@@ -1634,6 +1694,17 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
                                          'D',
                                          GDK_CONTROL_MASK,
                                          bonobo_menu_duplicate_cb,
+                                         view);
+        bonobo_ui_handler_menu_new_item (ui_handler,
+                                         FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH,
+                                         _("Empty Trash"),
+                                         _("Empty the Trash folder"),
+                                         bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_CLOSE) + 5,
+                                         BONOBO_UI_HANDLER_PIXMAP_NONE,
+                                         NULL,
+                                         0,
+                                         0,
+                                         bonobo_menu_empty_trash_cb,
                                          view);
         bonobo_ui_handler_menu_new_item (ui_handler,
                                          FM_DIRECTORY_VIEW_MENU_PATH_SELECT_ALL,
@@ -1674,9 +1745,21 @@ fm_directory_view_real_update_menus (FMDirectoryView *view)
 
 	update_one_menu_item (handler, FM_DIRECTORY_VIEW_MENU_PATH_OPEN, count);
 	update_one_menu_item (handler, FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW, count);
+#if 0
+/* FIXME:
+ * Delete should be used in directories that don't support moving to Trash
+ */
 	update_one_menu_item (handler, FM_DIRECTORY_VIEW_MENU_PATH_DELETE, count);
+#endif
+	update_one_menu_item (handler, FM_DIRECTORY_VIEW_MENU_PATH_TRASH, count);
 	update_one_menu_item (handler, FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE, count);
 	update_one_menu_item (handler, FM_DIRECTORY_VIEW_MENU_PATH_SET_PROPERTIES, count);
+#if 0
+/* FIXME:
+ * Empty Trash should be enabled only if Trash is not empty
+ */
+	update_one_menu_item (handler, FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH, count);
+#endif
 }
 
 static GtkMenu *
@@ -2228,7 +2311,7 @@ free_file_by_uri_map (FMDirectoryView *view)
  * 
  * Return index of menu item in context menu.  This function only
  * works if it is referring to the context menu that is displayed
- * when it is brought up in responze to a click on an icon item.
+ * when it is brought up in response to a click on an icon item.
  * Return -1 if item is not found
  * 
  * @menu_name: Item index to be returned.
@@ -2242,7 +2325,14 @@ fm_directory_view_get_context_menu_index(const char *menu_name)
 		return 0;
 	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW, menu_name) == 0) {
 		return 1;
+#if 0
+/* FIXME:
+ * Delete should be used in directories that don't support moving to Trash
+ */
 	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_DELETE, menu_name) == 0) {
+		return 2;
+#endif
+	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_TRASH, menu_name) == 0) {
 		return 2;
 	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE, menu_name) == 0) {
 		return 3;
@@ -2250,6 +2340,8 @@ fm_directory_view_get_context_menu_index(const char *menu_name)
 		return 4;
 	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_SET_PROPERTIES, menu_name) == 0) {
 		return 5;
+	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH, menu_name) == 0) {
+		return 6;
 	} else {
 		/* No match found */
 		return -1;

@@ -867,10 +867,6 @@ nautilus_directory_notify_files_added (GList *uris)
 	for (p = uris; p != NULL; p = p->next) {
 		uri = (const char *) p->data;
 
-#ifdef COPY_NOTIFY_TESTING
-		g_message ("added %s", uri);
-#endif
-
 		/* See if the directory is already known. */
 		directory = get_parent_directory_if_exists (uri);
 		if (directory == NULL) {
@@ -943,10 +939,6 @@ nautilus_directory_notify_files_removed (GList *uris)
 	for (p = uris; p != NULL; p = p->next) {
 		uri = (const char *) p->data;
 
-#ifdef COPY_NOTIFY_TESTING
-		g_message ("removed %s", p->data);
-#endif
-
 		/* Find the file. */
 		file = get_file_if_exists (uri);
 		if (file == NULL) {
@@ -986,10 +978,6 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 
 	for (p = uri_pairs; p != NULL; p = p->next) {
 		pair = p->data;
-
-#ifdef COPY_NOTIFY_TESTING
-		g_message ("moved %s to %s", pair->from_uri, pair->to_uri);
-#endif
 
 		/* Move an existing file. */
 		file = get_file_if_exists (pair->from_uri);

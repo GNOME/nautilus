@@ -26,8 +26,11 @@
 #include <config.h>
 
 #include <gnome.h>
+#include <libgnomevfs/gnome-vfs-find-directory.h>
+
 #include "dfos-xfer.h"
 #include "libnautilus-extensions/nautilus-file-changes-queue.h"
+#include "libnautilus-extensions/nautilus-glib-extensions.h"
 #include "fm-directory-view.h"
 
 
@@ -413,6 +416,26 @@ file_operation_alert (GtkWidget *parent_view, const char *text,
         return gnome_dialog_run (GNOME_DIALOG (dialog));
 }
 
+static void
+get_parent_make_name_list (const GList *item_uris, GnomeVFSURI **source_dir_uri,
+	GList **item_names)
+{
+	const GList *p;
+	/* convert URI list to a source parent URI and a list of names */
+	for (p = item_uris; p != NULL; p = p->next) {
+		GnomeVFSURI *item_uri;
+		const gchar *item_name;
+		
+		item_uri = gnome_vfs_uri_new (p->data);
+		item_name = gnome_vfs_uri_get_basename (item_uri);
+		*item_names = g_list_prepend (*item_names, g_strdup (item_name));
+		if (*source_dir_uri == NULL)
+			*source_dir_uri = gnome_vfs_uri_get_parent (item_uri);
+
+		gnome_vfs_uri_unref (item_uri);
+	}
+}
+
 void
 fs_xfer (const GList *item_uris,
 	 const GdkPoint *relative_item_points,
@@ -420,10 +443,9 @@ fs_xfer (const GList *item_uris,
 	 int copy_action,
 	 GtkWidget *view)
 {
-	const GList *p;
 	GList *item_names;
 	GnomeVFSXferOptions move_options;
-	gchar *source_dir;
+	char *source_dir;
 	GnomeVFSURI *source_dir_uri;
 	GnomeVFSURI *target_dir_uri;
 	XferInfo *xfer_info;
@@ -434,20 +456,7 @@ fs_xfer (const GList *item_uris,
 	item_names = NULL;
 	source_dir_uri = NULL;
 
-
-	/* convert URI list to a source parent URI and a list of names */
-	for (p = item_uris; p != NULL; p = p->next) {
-		GnomeVFSURI *item_uri;
-		const gchar *item_name;
-		
-		item_uri = gnome_vfs_uri_new (p->data);
-		item_name = gnome_vfs_uri_get_basename (item_uri);
-		item_names = g_list_append (item_names, g_strdup (item_name));
-		if (source_dir_uri == NULL)
-			source_dir_uri = gnome_vfs_uri_get_parent (item_uri);
-
-		gnome_vfs_uri_unref (item_uri);
-	}
+	get_parent_make_name_list (item_uris, &source_dir_uri, &item_names);
 
 	source_dir = gnome_vfs_uri_to_string (source_dir_uri, GNOME_VFS_URI_HIDE_NONE);
 	if (target_dir != NULL) {
@@ -492,10 +501,117 @@ fs_xfer (const GList *item_uris,
 	      		      &update_xfer_callback, xfer_info,
 	      		      &sync_xfer_callback, xfer_info);
 
-	if (!target_dir)
+	if (target_dir != NULL)
 		g_free ((char *)target_dir_uri_text);
 
 	gnome_vfs_uri_unref (target_dir_uri);
 	gnome_vfs_uri_unref (source_dir_uri);
 	g_free (source_dir);
+}
+
+void 
+fs_move_to_trash (const GList *item_uris, GtkWidget *parent_view)
+{
+	GList *item_names;
+	GnomeVFSURI *source_dir_uri;
+	GnomeVFSURI *trash_dir_uri;
+	char *source_dir;
+	char *trash_dir_uri_text;
+	GnomeVFSResult result;
+	XferInfo *xfer_info;
+
+	g_assert (item_uris != NULL);
+	
+	item_names = NULL;
+	source_dir_uri = NULL;
+	trash_dir_uri = NULL;
+	
+	/* FIXME:
+	 * Separate items that can be moved to trash and ones that can't.
+	 * For the ones that cannot, ask the user if they want to delete the files
+	 * on the spot.
+	 */
+	get_parent_make_name_list (item_uris, &source_dir_uri, &item_names);
+	source_dir = gnome_vfs_uri_to_string (source_dir_uri, GNOME_VFS_URI_HIDE_NONE);
+
+	result = gnome_vfs_find_directory (source_dir_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
+		&trash_dir_uri, TRUE, 0777);
+
+	if (result == GNOME_VFS_OK) {
+		g_assert (trash_dir_uri != NULL);
+
+		trash_dir_uri_text = gnome_vfs_uri_to_string (trash_dir_uri, 
+							      GNOME_VFS_URI_HIDE_NONE);
+		/* set up the move parameters */
+		xfer_info = g_new (XferInfo, 1);
+		xfer_info->parent_view = parent_view;
+		xfer_info->progress_dialog = NULL;
+
+		xfer_info->operation_name = _("Moving to Trash");
+		xfer_info->preparation_name =_("Preparing to Move to Trash...");
+		xfer_info->error_mode = GNOME_VFS_XFER_ERROR_MODE_QUERY;
+		xfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE;
+		
+		gnome_vfs_async_xfer (&xfer_info->handle, source_dir, item_names,
+		      		      trash_dir_uri_text, NULL,
+		      		      GNOME_VFS_XFER_REMOVESOURCE | GNOME_VFS_XFER_USE_UNIQUE_NAMES,
+		      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
+		      		      GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
+		      		      &update_xfer_callback, xfer_info,
+		      		      &sync_xfer_callback, xfer_info);
+
+		g_free (trash_dir_uri_text);
+	}
+
+	gnome_vfs_uri_unref (trash_dir_uri);
+	gnome_vfs_uri_unref (source_dir_uri);
+	g_free (source_dir);
+}
+
+void 
+fs_empty_trash (GtkWidget *parent_view)
+{
+	GnomeVFSURI *trash_dir_uri;
+	GnomeVFSResult result;
+	XferInfo *xfer_info;
+
+	/* FIXME:
+	 * add the different trash directories from the different volumes
+	 */
+
+	result = gnome_vfs_find_directory (NULL, GNOME_VFS_DIRECTORY_KIND_TRASH,
+		&trash_dir_uri, TRUE, 0777);
+
+	if (result == GNOME_VFS_OK) {
+		GList *trash_dir_list;
+		char *trash_dir_name;
+		trash_dir_list = NULL;
+
+		g_assert (trash_dir_uri != NULL);
+
+		/* set up the move parameters */
+		xfer_info = g_new (XferInfo, 1);
+		xfer_info->parent_view = parent_view;
+		xfer_info->progress_dialog = NULL;
+
+		xfer_info->operation_name = _("Emptying the Trash");
+		xfer_info->preparation_name =_("Preparing to Empty to Trash...");
+		xfer_info->error_mode = GNOME_VFS_XFER_ERROR_MODE_QUERY;
+		xfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE;
+
+		trash_dir_name = gnome_vfs_uri_to_string (trash_dir_uri, 
+							  GNOME_VFS_URI_HIDE_NONE);
+		trash_dir_list = g_list_append (trash_dir_list, trash_dir_name);
+		gnome_vfs_async_xfer (&xfer_info->handle, NULL, trash_dir_list,
+		      		      NULL, NULL,
+		      		      GNOME_VFS_XFER_REMOVESOURCE,
+		      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
+		      		      GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
+		      		      &update_xfer_callback, xfer_info,
+		      		      &sync_xfer_callback, xfer_info);
+
+		nautilus_g_list_free_deep (trash_dir_list);
+	}
+
+	gnome_vfs_uri_unref (trash_dir_uri);
 }

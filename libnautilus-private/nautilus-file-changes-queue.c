@@ -156,6 +156,8 @@ nautilus_file_changes_queue_get_change (NautilusFileChangesQueue *queue)
 {
 	GList *new_tail;
 	NautilusFileChange *result;
+
+	g_assert(queue);
 	
 	/* dequeue the tail item while locking down the list */
 	MUTEX_LOCK (queue->details->mutex);
@@ -211,12 +213,17 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 	URIPair *pair;
 	int kind;
 	int chunk_count;
+	NautilusFileChangesQueue *queue;
+
 
 	additions = NULL;
 	deletions = NULL;
 	moves = NULL;
 	kind = CHANGE_FILE_INITIAL;
 
+	queue = nautilus_file_changes_queue_get();
+	g_assert (queue);
+		
 	/* Consume changes from the queue, stuffing them into one of three lists,
 	 * keep doing it while the changes are of the same kind, then send them off.
 	 * This is to ensure that the changes get sent off in the same order that they 
