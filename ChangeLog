@@ -1,3 +1,14 @@
+2000-05-19  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize), (get_song_text),
+	(music_view_set_selected_song_title), (selection_callback),
+	(sort_by_bitrate), (sort_song_list), (add_play_controls),
+	(nautilus_music_view_update_from_uri):
+	fixed bug where sorting by time was wrong because I added the bitrate column,
+	added sorting by bitrate,
+	more work on the play controls, but they don't actually play yet
+	
 2000-05-18  Eskil Heyn Olsen  <eskil@eazel.om>
 
 	* components/services/trilobite/sample/command-line/Makefile.am:
