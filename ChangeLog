@@ -1,3 +1,11 @@
+2001-03-21  Rebecca Schulman  <rebecka@eazel.com>
+	Commit patch from Gianni Tedesco <gianni@ecsc.co.uk>
+
+	* libnautilus-extensions/nautilus-medusa-support.c:
+	(nautilus_medusa_check_cron_is_enabled):
+	Fix possible infinite loop in the case where
+	parts of proc may not be readable.
+
 2001-03-21  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	This implements feature for bug 6960 - queries to softcat are now
@@ -60,6 +68,7 @@
 	(corba_packagedatastruct_fill_from_packagedata):
 	s/DistributionInfo/TrilobiteDistributionInfo/	
 
+>>>>>>> 1.4259
 2001-03-21  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>

@@ -113,6 +113,7 @@ nautilus_medusa_check_cron_is_enabled (void)
 			g_free (stat_file_name);
 
 			if (stat_file == NULL) {
+				file = readdir (proc_directory);
 				continue;
 			}
 
