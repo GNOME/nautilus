@@ -1,3 +1,43 @@
+2000-11-22  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/lib/Makefile.am:
+	* components/services/install/lib/eazel-package-system-private.h:
+	* components/services/install/lib/eazel-package-system.c:
+	(eazel_package_system_finalize), (eazel_package_system_unref),
+	(eazel_package_system_class_initialize),
+	(eazel_package_system_initialize), (eazel_package_system_get_type),
+	(eazel_package_system_new):
+	* components/services/install/lib/eazel-package-system.h:
+	* components/services/install/lib/eazel-softcat-private.h:
+	* components/services/install/lib/eazel-softcat.c:
+	(eazel_softcat_finalize), (eazel_softcat_unref),
+	(eazel_softcat_class_initialize), (eazel_softcat_initialize),
+	(eazel_softcat_get_type), (eazel_softcat_new):
+	* components/services/install/lib/eazel-softcat.h:
+	The first parts of the upcoming big rewrite of libeazelinstall.
+	
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_install_packages):
+	Always set_uninstall(FALSE) in install.
+	
+	* components/services/install/lib/eazel-install-problem.c:
+	(eazel_install_problem_case_to_string),
+	(eazel_install_problem_handle_cases):
+	Removed debug output and moved the translation comments back to
+	right before the i18n strings.
+	Also copy the install_categories and uninstall_categories, to not
+	corrupt the callers category lists.
+	
+	* nautilus-installer/src/Makefile:
+	Yes.
+	* nautilus-installer/src/installer.c: (start_over),
+	(start_over_callback_druid), (dont_start_over_callback),
+	(create_what_to_do_page), (jump_to_retry_page),
+	(eazel_installer_do_install), (eazel_installer_setup_texts):
+	Fixing 4841
+	* nautilus-installer/src/installer.h:
+	Removed some old cruft.
+
 2000-11-22  Andy Hertzfeld  <andy@eazel.com>
 
 `	* libnautilus-extensions/nautilus-image.h:
