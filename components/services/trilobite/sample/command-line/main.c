@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
 	Trilobite_Eazel_Sample sample_service; 
 
 	CORBA_exception_init (&ev);
-	gnome_init_with_popt_table ("trilobite-eazel-sample-service-cli", "1.0",argc, argv, oaf_popt_options, 0, NULL);
+	gnome_init_with_popt_table ("trilobite-eazel-sample-client", "1.0",argc, argv, oaf_popt_options, 0, NULL);
 	orb = oaf_init (argc, argv);
 
 	if (bonobo_init (NULL, NULL, NULL) == FALSE) {
