@@ -257,7 +257,7 @@ get_RAM_description (void)
 	temp_str[strlen(temp_str) - 3] = '\0';
 
         /* FIXME bugzilla.eazel.com 2398: Would 1024 give a better result? */
-        num_str = gnome_vfs_format_file_size_for_display (1000 * atoi (temp_str));
+        num_str = gnome_vfs_format_file_size_for_display (1024 * atoi (temp_str));
 	
 	g_string_append(string_data, num_str);
 	g_string_append(string_data, " RAM");
@@ -270,6 +270,65 @@ get_RAM_description (void)
 
 	return result;
 }
+
+static char*
+get_IDE_description(char *device)
+{
+        char *temp_str, *num_str, *result;
+        GString* string_data = g_string_new("");
+        char *proc_file;
+
+        /* Read model information string */
+        proc_file = g_strdup_printf("%s/model", device);
+        temp_str = read_proc_info(proc_file);
+        temp_str[strlen(temp_str) - 1] = '\0';
+        g_string_append(string_data, temp_str);
+        g_free(temp_str);
+        g_free(proc_file);
+        
+        /* Read media type */
+        proc_file = g_strdup_printf("%s/media", device);
+        temp_str = read_proc_info(proc_file);
+        g_free(proc_file);
+        
+        /* If a hard disk, get the size */
+        if(!strcmp(temp_str, "disk\n")) {
+                unsigned long capacity;
+
+                g_free(temp_str);
+
+                proc_file = g_strdup_printf("%s/capacity", device);
+                temp_str = read_proc_info(proc_file);
+                temp_str[strlen(temp_str) - 1] = '\0';
+
+                /* NOTE: this should be 
+                   capacity = strtoul (...)
+                   num_str = gnome_vfs_format_file_size_for_display (512 * capacity);
+                   
+                   (512 bytes pr sector)
+                   but 512 * 23579136 (numsectors) = 12072517632 > unsigned long,
+                   which is the type that gnome_vfs uses */
+                /* This converts & calcs the sectors into MB's */
+                capacity = 512 * (strtoul (temp_str, NULL, 10) / (1024 * 1024));
+                if (capacity > 1024) {
+                        num_str = g_strdup_printf ("%lu GB", capacity / 1024);
+                } else {
+                        num_str = g_strdup_printf ("%lu MB", capacity);
+                }
+                g_string_append(string_data, "\n");
+                g_string_append(string_data, num_str);
+                g_free(temp_str);
+                g_free(proc_file);
+        } else {
+                g_free(temp_str);
+        }
+        
+        result = strdup(string_data->str);
+        g_string_free(string_data, TRUE);
+        
+        return result;
+}
+
 
 /* shared utility to allocate a title for a form */
 
@@ -313,6 +372,9 @@ static void setup_overview_form(NautilusHardwareView *view)
 	GtkWidget *temp_widget, *temp_box;
 	GtkWidget *container_box;
 	int cpunum = 0;
+        DIR *directory;
+        struct dirent* entry;
+        char *device, *proc_file, *ide_media;
 	
 	/* allocate a vbox as the container */	
 	view->details->form = gtk_vbox_new(FALSE,0);
@@ -329,6 +391,49 @@ static void setup_overview_form(NautilusHardwareView *view)
 	gtk_box_pack_start (GTK_BOX (view->details->form), container_box, 0, 0, 2);	
 	gtk_widget_show (GTK_WIDGET(container_box));
 
+        /* Set up ide devices : by Shane Butler <shane_b@bigfoot.com> */
+        /* Open the ide devices directory */
+        if((directory = opendir("/proc/ide/")) != NULL) {
+                while((entry = readdir(directory)) != NULL) {
+                        /* Scan though each entry for actual device dirs */
+                        if(!strncmp(entry->d_name, "hd", 2)) {
+                                temp_box = gtk_vbox_new(FALSE, 4);
+                                gtk_box_pack_start (GTK_BOX (container_box), temp_box, 0, 0, 24);
+                                gtk_widget_show(temp_box);
+                                
+                                device = g_strdup_printf("ide/%s", entry->d_name);
+                                
+                                proc_file = g_strdup_printf("%s/media", device);
+                                ide_media = read_proc_info(proc_file);
+                                g_free(proc_file);
+                                
+                                /* Set the icon depending on the type of device */
+                                if(!strcmp(ide_media, "disk\n")) {
+                                        file_name = nautilus_pixmap_file("i-blockdev.png");
+                                } else if(!strcmp(ide_media, "cdrom\n")) {
+                                        file_name = nautilus_pixmap_file("i-cdrom.png");
+                                } else {
+                                        /* some other device ... still set an icon */
+                                        file_name = nautilus_pixmap_file("i-blockdev.png");
+                                }
+                                temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file(file_name));
+                                gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0);
+                                gtk_widget_show(temp_widget);
+                                g_free(file_name);
+                                g_free(ide_media);
+                                
+                                temp_text = get_IDE_description(device);
+                                temp_widget = gtk_label_new(temp_text);
+                                g_free(temp_text);
+                                gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0);
+                                gtk_widget_show(temp_widget);
+                                
+                                g_free(device);
+                        }
+                }
+                closedir(directory);
+        }
+   
 	while( (temp_text = get_CPU_description(cpunum)) != NULL ) {
 		temp_box = gtk_vbox_new(FALSE, 4);
 		gtk_box_pack_start (GTK_BOX (container_box), temp_box, 0, 0, 24);	
@@ -415,6 +520,30 @@ static void setup_RAM_form(NautilusHardwareView *view)
  	gtk_widget_show (temp_widget);
 }
 
+/* set up the widgetry for the IDE page */
+
+static void setup_IDE_form(NautilusHardwareView *view)
+{
+        char *message;
+        GtkWidget *temp_widget;
+        
+        /* allocate a vbox as the container */  
+        view->details->form = gtk_vbox_new(FALSE,0);
+        gtk_container_add (GTK_CONTAINER (view), view->details->form);  
+        gtk_widget_show(view->details->form);
+        
+        /* set up the title */  
+        setup_form_title(view, NULL, "IDE");
+        
+        message = "This is a placeholder for the IDE page.";
+        temp_widget = gtk_label_new (message);
+        gtk_label_set_line_wrap(GTK_LABEL(temp_widget), TRUE);
+        
+        gtk_box_pack_start(GTK_BOX(view->details->form), temp_widget, 0, 0, 12);            
+        gtk_widget_show (temp_widget);
+}
+
+
 /* utility for checking uri */
 static gboolean is_location(char *document_str, const char *place_str)
 {
@@ -442,14 +571,17 @@ nautilus_hardware_view_load_uri (NautilusHardwareView *view, const char *uri)
 	document_name = strchr(uri, ':');
 	
 	/* load the appropriate form, based on the uri and the registration state */
-	if (is_location(document_name, "overview"))
+	if (is_location(document_name, "overview")) {
 		setup_overview_form(view);
-	else if (is_location(document_name, "CPU"))
+	} else if (is_location(document_name, "CPU")) {
 		setup_CPU_form(view);
-	else if (is_location(document_name, "RAM"))
+	} else if (is_location(document_name, "RAM")) {
 		setup_RAM_form(view);
-	else
+        } else if (is_location(document_name, "IDE")) {
+                setup_IDE_form(view);
+	} else {
 		setup_overview_form(view); /* if we don't understand it, go to the overview */
+        }
 }
 
 static void

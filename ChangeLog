@@ -1,3 +1,13 @@
+2000-09-02  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/hardware/nautilus-hardware-view.c:
+	(get_RAM_description), (get_IDE_description),
+	(setup_overview_form), (setup_IDE_form),
+	(nautilus_hardware_view_load_uri):
+	Added Shane Butlers <sbutle@deakin.edu.au> patch for showing IDE
+	devices in the hardware overview. Also fixed the size display
+	problem (unsigned long overflow).
+	
 Sat Sep 02 02:56:48 2000  George Lebl <jirka@5z.com>
 
 	* libnautilus-extensions/nautilus-icon-canvas-item.c (map_pixbuf),
