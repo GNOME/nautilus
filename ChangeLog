@@ -1,3 +1,9 @@
+Mon Aug 07 05:00:55 2000  George Lebl <jirka@5z.com>
+
+	* libnautilus-extentions/nautilus-list.c (nautilus_list_draw):
+	  Call gtk_widget_draw on the title widget.  This fixes the problem
+	  where the widget is not drawn when the list view is first selected.
+
 Mon Aug 07 00:31:50 2000  George Lebl <jirka@5z.com>
 
 	* libnautilus-extensions/nautilus-glib-extensions.c

@@ -2289,11 +2289,13 @@ static void
 nautilus_list_draw (GtkWidget *widget, GdkRectangle *area)
 {
 	GtkCList *clist;
+	NautilusList *list;
 	
 	g_assert (NAUTILUS_IS_LIST (widget));
 	g_assert (area != NULL);
 
 	clist = GTK_CLIST (widget);
+	list = NAUTILUS_LIST (widget);
 
 	nautilus_list_setup_style_colors (NAUTILUS_LIST (widget));
 
@@ -2315,6 +2317,16 @@ nautilus_list_draw (GtkWidget *widget, GdkRectangle *area)
 				clist->column_title_area.height);
 
 		draw_rows (clist, area);
+
+		/* Draw the title if it exists */
+		if (list->details->title) {
+			GdkRectangle draw_area;
+
+			if (gtk_widget_intersect (list->details->title,
+						  area, &draw_area)) {
+				gtk_widget_draw (list->details->title, &draw_area);
+			}
+		}
 	}
 }
 
