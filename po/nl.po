@@ -13,7 +13,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2003-06-10 16:17-0400\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-06-21 04:59+0200\n"
 "PO-Revision-Date: 2003-06-05 15:17+0100\n"
 "Last-Translator: Reinout van Schouwen <reinout@cs.vu.nl>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
@@ -391,11 +392,11 @@ msgstr "Nautilus boomweergave"
 msgid "Tree"
 msgstr "Boom"
 
-#: components/tree/nautilus-tree-model.c:1065
+#: components/tree/nautilus-tree-model.c:1067
 msgid "(Empty)"
 msgstr "(Leeg)"
 
-#: components/tree/nautilus-tree-model.c:1065
+#: components/tree/nautilus-tree-model.c:1067
 msgid "Loading..."
 msgstr "Bezig te laden..."
 
@@ -3279,47 +3280,47 @@ msgstr "geen"
 msgid "%s's Home"
 msgstr "%s's persoonlijke map"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2092
+#: libnautilus-private/nautilus-icon-canvas-item.c:2108
 msgid "file icon"
 msgstr "bestandspictogram"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2465
+#: libnautilus-private/nautilus-icon-canvas-item.c:2481
 msgid "editable text"
 msgstr "bewerkbare tekst"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2466
+#: libnautilus-private/nautilus-icon-canvas-item.c:2482
 msgid "the editable label"
 msgstr "het bewerkbare label"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2473
+#: libnautilus-private/nautilus-icon-canvas-item.c:2489
 msgid "additional text"
 msgstr "aanvullende tekst"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2474
+#: libnautilus-private/nautilus-icon-canvas-item.c:2490
 msgid "some more text"
 msgstr "wat meer tekst"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2481
+#: libnautilus-private/nautilus-icon-canvas-item.c:2497
 msgid "highlighted for selection"
 msgstr "gemarkeerd voor selectie"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2482
+#: libnautilus-private/nautilus-icon-canvas-item.c:2498
 msgid "whether we are highlighted for a selection"
 msgstr "of we gemarkeerd voor selectie zijn"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2489
+#: libnautilus-private/nautilus-icon-canvas-item.c:2505
 msgid "highlighted as keyboard focus"
 msgstr "gemarkeerd als toetsenbordfocus"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2490
+#: libnautilus-private/nautilus-icon-canvas-item.c:2506
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "of we gemarkeerd zijn om de toetsenbordfocus terug te geven"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2498
+#: libnautilus-private/nautilus-icon-canvas-item.c:2514
 msgid "highlighted for drop"
 msgstr "gemarkeerd voor loslaten"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2499
+#: libnautilus-private/nautilus-icon-canvas-item.c:2515
 msgid "whether we are highlighted for a D&D drop"
 msgstr "of we gemarkeerd zijn voor sleepactie loslaten"
 
@@ -3709,7 +3710,7 @@ msgstr ""
 msgid "Associate Action"
 msgstr "Actie associëren"
 
-#: libnautilus-private/nautilus-program-choosing.c:495
+#: libnautilus-private/nautilus-program-choosing.c:504
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
@@ -3718,7 +3719,7 @@ msgstr ""
 "\"%s\" kan \"%s\" niet openen, want \"%s\" kan bestanden op \"%s\" niet "
 "benaderen.  Wilt u een ander programma kiezen?"
 
-#: libnautilus-private/nautilus-program-choosing.c:500
+#: libnautilus-private/nautilus-program-choosing.c:509
 #, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
@@ -3727,12 +3728,12 @@ msgstr ""
 "De standaardactie kan \"%s\" niet openen, omdat het bestanden op \"%s\" niet "
 "kan benaderen.  Wenst u een andere actie te kiezen?"
 
-#: libnautilus-private/nautilus-program-choosing.c:506
-#: libnautilus-private/nautilus-program-choosing.c:537
+#: libnautilus-private/nautilus-program-choosing.c:515
+#: libnautilus-private/nautilus-program-choosing.c:546
 msgid "Can't Open Location"
 msgstr "Kan locatie niet openen"
 
-#: libnautilus-private/nautilus-program-choosing.c:525
+#: libnautilus-private/nautilus-program-choosing.c:534
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
@@ -3744,7 +3745,7 @@ msgstr ""
 "openen. Wellicht kunt u het bestand wel openen als u het naar uw computer "
 "kopiëert."
 
-#: libnautilus-private/nautilus-program-choosing.c:531
+#: libnautilus-private/nautilus-program-choosing.c:540
 #, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
@@ -3756,7 +3757,13 @@ msgstr ""
 "bekijken. Wellicht kunt u het bestand wel openen als u het naar uw computer "
 "kopiëert."
 
-#: libnautilus-private/nautilus-program-choosing.c:801
+#: libnautilus-private/nautilus-program-choosing.c:800
+#: libnautilus-private/nautilus-program-choosing.c:1017
+#, fuzzy, c-format
+msgid "Opening %s"
+msgstr "Bezig met openenen: \"%s\""
+
+#: libnautilus-private/nautilus-program-choosing.c:1161
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
@@ -3764,12 +3771,12 @@ msgstr ""
 "Sorry, om veiligheidsredenen kunt u geen opdrachten vanaf een locatie op "
 "afstand uitvoeren."
 
-#: libnautilus-private/nautilus-program-choosing.c:803
+#: libnautilus-private/nautilus-program-choosing.c:1163
 msgid "Can't execute remote links"
 msgstr "Kan verwijzingen op afstand niet uitvoeren"
 
-#: libnautilus-private/nautilus-program-choosing.c:813
-#: libnautilus-private/nautilus-program-choosing.c:879
+#: libnautilus-private/nautilus-program-choosing.c:1173
+#: libnautilus-private/nautilus-program-choosing.c:1239
 msgid ""
 "There was an error launching the application.\n"
 "\n"
@@ -3779,12 +3786,12 @@ msgstr ""
 "\n"
 "Details:"
 
-#: libnautilus-private/nautilus-program-choosing.c:817
-#: libnautilus-private/nautilus-program-choosing.c:883
+#: libnautilus-private/nautilus-program-choosing.c:1177
+#: libnautilus-private/nautilus-program-choosing.c:1243
 msgid "Error launching application"
 msgstr "Er is een fout opgetreden bij het starten van de toepassing"
 
-#: libnautilus-private/nautilus-program-choosing.c:845
+#: libnautilus-private/nautilus-program-choosing.c:1205
 msgid ""
 "This drop target only supports local files.\n"
 "\n"
@@ -3795,12 +3802,12 @@ msgstr ""
 "Om niet-lokale bestanden te openen, moet u ze naar een lokale map kopiëren "
 "en ze opnieuw slepen."
 
-#: libnautilus-private/nautilus-program-choosing.c:848
-#: libnautilus-private/nautilus-program-choosing.c:860
+#: libnautilus-private/nautilus-program-choosing.c:1208
+#: libnautilus-private/nautilus-program-choosing.c:1220
 msgid "Drop target only supports local files"
 msgstr "Sleepdoel accepteert alleen lokale bestanden"
 
-#: libnautilus-private/nautilus-program-choosing.c:857
+#: libnautilus-private/nautilus-program-choosing.c:1217
 msgid ""
 "This drop target only supports local files.\n"
 "\n"
@@ -4672,7 +4679,7 @@ msgstr "Verplaats alle geselecteerde items naar de Prullenbak"
 #: src/file-manager/fm-directory-view.c:4792
 #: src/file-manager/nautilus-directory-view-ui.xml.h:38
 msgid "_Delete"
-msgstr "Verwij_deren"
+msgstr "_Verwijderen"
 
 #: src/file-manager/fm-directory-view.c:4812
 msgid "Ma_ke Links"
@@ -4964,21 +4971,21 @@ msgstr "Fout bij slepen en neerzetten"
 msgid "An invalid drag type was used."
 msgstr "Een ongeldig sleeptype werd gebruikt."
 
-#: src/file-manager/fm-list-view.c:729
+#: src/file-manager/fm-list-view.c:731
 msgid "File name"
 msgstr "Bestandsnaam"
 
-#: src/file-manager/fm-list-view.c:753
+#: src/file-manager/fm-list-view.c:755
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Grootte"
 
-#: src/file-manager/fm-list-view.c:764
+#: src/file-manager/fm-list-view.c:766
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Type"
 
-#: src/file-manager/fm-list-view.c:775
+#: src/file-manager/fm-list-view.c:777
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Wijzigingsdatum"
@@ -5026,9 +5033,8 @@ msgid "Images Only"
 msgstr "Alleen afbeeldingen"
 
 #: src/file-manager/fm-properties-window.c:893
-#, fuzzy
 msgid "Properties"
-msgstr "_Eigenschappen"
+msgstr "Eigenschappen"
 
 #: src/file-manager/fm-properties-window.c:896
 #, c-format
@@ -5263,7 +5269,7 @@ msgstr "Eigenschappenvenster annuleren?"
 msgid "Creating Properties window"
 msgstr "Bezig met aanmaken eigenschappenvenster"
 
-#: src/file-manager/fm-properties-window.c:3716
+#: src/file-manager/fm-properties-window.c:3717
 msgid "Select an icon"
 msgstr "Kies een pictogram"
 
@@ -7077,7 +7083,7 @@ msgstr "_Boven"
 
 #: src/nautilus-shell-ui.xml.h:88
 msgid "_View"
-msgstr "B_eeld"
+msgstr "Beel_d"
 
 #: src/nautilus-shell-ui.xml.h:89
 msgid "_View as..."
@@ -7406,36 +7412,3 @@ msgstr "Netwerkservers"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Uw netwerkservers weergeven met Nautilus bestandsbeheer"
-
-#~ msgid "Your HTTP Proxy requires you to log in.\n"
-#~ msgstr "Inloggen bij je HTTPProxy is vereist.\n"
-
-#~ msgid ""
-#~ "You must log in to access \"%s\".\n"
-#~ "\n"
-#~ "%s"
-#~ msgstr ""
-#~ "U moet inloggen om toegang te krijgen tot \"%s\".\n"
-#~ "\n"
-#~ "%s"
-
-#~ msgid "Your password will be transmitted unencrypted."
-#~ msgstr "Uw wachtwoord wirdt ongecodeerd verzonden"
-
-#~ msgid "Your password will be transmitted encrypted."
-#~ msgstr "Uw wachtwoord wordt gecodeerd verzonden"
-
-#~ msgid "Authentication Required"
-#~ msgstr "Aanmelding vereist"
-
-#~ msgid "The Trash must remain on the desktop."
-#~ msgstr "De Prullenbak moet op het werkblad blijven."
-
-#~ msgid "You cannot copy the Trash."
-#~ msgstr "U kunt de Prullenbak niet kopiëren."
-
-#~ msgid "Copy Text"
-#~ msgstr "Tekst kopiëren"
-
-#~ msgid "Copy selected text to the clipboard"
-#~ msgstr "De geselecteerde tekst naar het klembord kopiëren"
