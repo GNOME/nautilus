@@ -50,12 +50,8 @@ struct _NautilusServiceStartupViewDetails {
 	GtkWidget	*form;
 	GtkWidget	*form_title;
 	GtkWidget	*progress_bar;
-	int		timer;
 	GtkWidget	*feedback_text;
 };
-
-int timer = 0;
-int counter = 0;
 
 #define SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR  "rgb:0000/6666/6666"
 #define SERVICE_DOMAIN_NAME		       "testmachine.eazel.com"
@@ -73,9 +69,10 @@ static gboolean	is_location					(char 					*document_str,
 								 const char				*place_str);
 static void	generate_form_title				(NautilusServiceStartupView		*view,
 								 const char				*title_text);
-int		progress_timeout_cb				(gpointer				data);
 static void	go_to_uri					(NautilusServiceStartupView		*view,
 								 char					*uri);
+static void	show_feedback					(NautilusServiceStartupView			*view,
+								 char					*error_message);
 
 /* create the startup view */
 
@@ -87,6 +84,7 @@ generate_startup_form (NautilusServiceStartupView	*view) {
 	char		*file_name;
 	GtkWidget	*align;
 	GtkAdjustment	*adjust;
+	int		counter;
 
 	/* allocate the parent box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
@@ -97,13 +95,13 @@ generate_startup_form (NautilusServiceStartupView	*view) {
 	generate_form_title (view, "Welcome, your services are loading! ");
 
 	/* create a fill space box */
-	temp_box = gtk_hbox_new (FALSE, 4);
+	temp_box = gtk_hbox_new (TRUE, 30);
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, 0, 0, 12);
 	gtk_widget_show (temp_box);
 
 	/* Add the watch icon */
 	temp_box = gtk_hbox_new (TRUE, 0);
-	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, 0, 0, 4);
+	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, 0, 0, 40);
 	gtk_widget_show (temp_box);
 	file_name = nautilus_pixmap_file ("service-watch.png");
 	temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
@@ -113,7 +111,7 @@ generate_startup_form (NautilusServiceStartupView	*view) {
 
 	/* Add a label for error status messages */
 	view->details->feedback_text = gtk_label_new ("");
-	gtk_box_pack_end (GTK_BOX (view->details->form), view->details->feedback_text, 0, 0, 8);
+	gtk_box_pack_end (GTK_BOX (view->details->form), view->details->feedback_text, 0, 0, 15);
 
 	/* Create a center alignment object */
 	align = gtk_alignment_new (0.5, 0.5, 0, 0);
@@ -125,29 +123,33 @@ generate_startup_form (NautilusServiceStartupView	*view) {
 	view->details->progress_bar = gtk_progress_bar_new_with_adjustment (adjust);
 	gtk_container_add (GTK_CONTAINER (align), view->details->progress_bar);
 	gtk_widget_show (view->details->progress_bar);
-	timer = gtk_timeout_add (100, progress_timeout_cb, view->details->progress_bar);
-	g_print ("%d\n", timer);
 
-}
-
-/* update the value of the progress bar */
-int
-progress_timeout_cb (gpointer	data) {
-
-	for (counter = 0; counter != 10001; counter++) {
+	/* bogus progress loop */
+	for (counter = 0; counter <= 20000; counter++) {
 		float value;
 
-		value = (float) counter / 10000;
+		value = (float) counter / 20000;
 
-		gtk_progress_set_percentage (GTK_PROGRESS (data), value);
+		if (counter == 1) {
+			show_feedback (view, "Initializing eazel-proxy ...");
+		}
+		if (counter == 5000) {
+			show_feedback (view, "Contacting www.eazel.com ...");
+		}
+		if (counter == 10000) {
+			show_feedback (view, "Authenticating user anonymous ...");
+		}
+		if (counter == 15000) {
+			show_feedback (view, "Retreiving services list ...");
+		}
+
+		gtk_progress_bar_update (GTK_PROGRESS_BAR (view->details->progress_bar), value);
 		while (gtk_events_pending ()) {
 			gtk_main_iteration ();
 		}
-		if (counter == 1000) {
-			gtk_timeout_remove (timer);
-		}
 	}
-	return 1;
+	go_to_uri (view, "eazel:summary");
+
 }
 
 /* utility routine to go to another uri */
@@ -158,6 +160,16 @@ go_to_uri (NautilusServiceStartupView	*view, char	*uri) {
   	nautilus_view_open_location (view->details->nautilus_view, uri);
 
 }
+
+/* utility routine to show an error message */
+static void
+show_feedback (NautilusServiceStartupView        *view, char     *error_message) {
+
+	gtk_label_set_text (GTK_LABEL (view->details->feedback_text), error_message);
+	gtk_widget_show (view->details->feedback_text);
+
+}
+
 
 /* shared utility to allocate a title for a form */
 
@@ -174,18 +186,18 @@ generate_form_title (NautilusServiceStartupView	*view,
 	
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_container, 0, 0, 4);	
 	gtk_widget_show (temp_container);
-	
- 	file_name = nautilus_pixmap_file ("eazel-cloud-logo.png");
-  	temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
+
+	file_name = nautilus_pixmap_file ("eazel-cloud-logo.png");
+	temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
 	gtk_box_pack_start (GTK_BOX(temp_container), temp_widget, 0, 0, 8);		
-  	gtk_widget_show (temp_widget);
-  	g_free (file_name);
+	gtk_widget_show (temp_widget);
+	g_free (file_name);
 
- 	view->details->form_title = gtk_label_new (title_text);
+	view->details->form_title = gtk_label_new (title_text);
 
-        font = nautilus_font_factory_get_font_from_preferences (20);
+	font = nautilus_font_factory_get_font_from_preferences (20);
 	nautilus_gtk_widget_set_font (view->details->form_title, font);
-        gdk_font_unref (font);
+	gdk_font_unref (font);
 
 	gtk_box_pack_end (GTK_BOX (temp_container), view->details->form_title, 0, 0, 8);			 	
 	gtk_widget_show (view->details->form_title);
@@ -300,9 +312,10 @@ nautilus_service_startup_view_load_uri (NautilusServiceStartupView	*view,
 static void
 service_load_location_callback (NautilusView			*view,
 				const char			*location,
-				NautilusServiceStartupView	*services)
-{
+				NautilusServiceStartupView	*services) {
+
 	nautilus_view_report_load_underway (services->details->nautilus_view);
 	nautilus_service_startup_view_load_uri (services, location);
 	nautilus_view_report_load_complete (services->details->nautilus_view);
 }
+
