@@ -32,6 +32,10 @@ gboolean	nautilus_link_set_install (const char *directory_path,
 				    	const char *link_set_name);
 void		nautilus_link_set_remove  (const char *directory_path,
 				    	const char *link_set_name);
-GtkWindow	*nautilus_link_set_configure_window(const char *directory_path);
+gboolean	nautilus_link_set_is_installed (const char *directory_path, 
+					const char *link_set_name);
+
+GtkWindow	*nautilus_link_set_configure_window (const char *directory_path, 
+							GtkWindow *window);
 
 #endif /* NAUTILUS_LINK_SET_H */

@@ -32,6 +32,7 @@
 
 #include <libgnomevfs/gnome-vfs.h>
 #include <gtk/gtkwindow.h>
+#include <gtk/gtktogglebutton.h>
 
 #include "nautilus-file.h"
 #include "nautilus-link.h"
@@ -41,6 +42,19 @@
 #include "nautilus-glib-extensions.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-preferences.h"
+
+/* utility routine to build the link set path name */
+
+static char *
+link_set_path_name(const char *directory_path, const char *name)
+{
+	const char *path_start;
+	if (nautilus_str_has_prefix(directory_path, "file://"))
+		path_start = directory_path + 7;
+	else
+		path_start = directory_path;
+	return g_strdup_printf ("%s/%s.link", path_start, name);
+}
 
 /* routine to create a new .link file in the specified directory */
 static gboolean
@@ -62,7 +76,7 @@ create_new_link (const char *directory_path, const char *name, const char *image
 	xmlSetProp (root_node, "LINK", uri);
 	
 	/* all done, so save the xml document as a link file */
-	file_name = g_strdup_printf ("%s/%s.link", directory_path, name);
+	file_name = link_set_path_name(directory_path, name);
 	result = xmlSaveFile (file_name, output_document);
 	g_free (file_name);
 	
@@ -114,13 +128,13 @@ nautilus_link_set_install (const char *directory_path, const char *link_set_name
 
 	/* load and parse the link set document */
 	document = get_link_set_document(link_set_name);
-
+	
 	if (document == NULL) {
+		g_warning("couldnt load %s", link_set_name);
 		return FALSE;
 	}
 	
-	/* loop through the entries, generating .link files, or incrementing the
-	   reference count if it's already there */
+	/* loop through the entries, generating .link files */
 	
 	for (node = nautilus_xml_get_children (xmlDocGetRootElement (document));
 	     node != NULL; node = node->next) {
@@ -149,6 +163,41 @@ nautilus_link_set_install (const char *directory_path, const char *link_set_name
 	return TRUE;
 }
 
+/* test to see if a link set is installed.  Return TRUE if all of the members are installed, false otherwise */
+
+gboolean
+nautilus_link_set_is_installed (const char *directory_path, const char *link_set_name)
+{
+	xmlDocPtr document;
+	xmlNodePtr node;
+	char *link_name, *file_name;	
+
+	/* load and parse the link set document */
+	document = get_link_set_document(link_set_name);
+	
+	if (document == NULL) {
+		g_warning("couldnt load %s", link_set_name);
+		return FALSE;
+	}
+	
+	/* loop through the entries, testing to see if any are present */
+	for (node = nautilus_xml_get_children (xmlDocGetRootElement (document));
+	     node != NULL; node = node->next) {
+		if (strcmp (node->name, "link") == 0) {
+			link_name = xmlGetProp (node, "name");
+			file_name = link_set_path_name(directory_path, link_name);
+			if (!g_file_exists(file_name)) {
+				g_free(file_name);
+				return FALSE;
+			}
+			g_free(file_name);
+		}
+	}
+	
+	xmlFreeDoc (document);
+	return TRUE;
+}
+
 /* remove a link set from the specified directory */
 void
 nautilus_link_set_remove (const char *directory_path, const char *link_set_name)
@@ -159,9 +208,11 @@ nautilus_link_set_remove (const char *directory_path, const char *link_set_name)
 	
 	document = get_link_set_document(link_set_name);
 
-	if (document == NULL)
+	if (document == NULL) {	
+		g_message("couldnt load %s", link_set_name);
 		return;
- 
+	}
+	
 	/* loop through the entries in the xml file, formulating the names of the link files and
 	   deleting them or decrementing their reference count */
 	for (node = nautilus_xml_get_children (xmlDocGetRootElement (document));
@@ -169,7 +220,7 @@ nautilus_link_set_remove (const char *directory_path, const char *link_set_name)
 		if (strcmp (node->name, "link") == 0) {
 			link_name = xmlGetProp (node, "name");
 			/* formulate the link file path name */
-			file_name = g_strdup_printf ("%s/%s.link", directory_path, link_name);		
+			file_name = link_set_path_name(directory_path, link_name); 
 			/* delete the file */
 			unlink(file_name);
 			g_free(link_name);
@@ -179,14 +230,75 @@ nautilus_link_set_remove (const char *directory_path, const char *link_set_name)
 	xmlFreeDoc (document);
 }
 
+/* handle the check box toggling */
+static void
+link_set_check_box_toggled (GtkToggleButton *button, GtkWindow *window_to_update)
+{
+	char *path, *name;
+	
+	path = gtk_object_get_data (GTK_OBJECT (button), "nautilus_directory_path");
+	name = gtk_object_get_data (GTK_OBJECT (button), "nautilus_link_set_name");
+	
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button)))
+		nautilus_link_set_install(path, name);
+	else
+		nautilus_link_set_remove(path, name);	
+
+	/* tellthe associated window to reload in order to display the new links (or lack thereof) */	
+	/* coming soon... */
+}
+
 /* utility to make a link set checkbox that installs and removes it's corresponding
    link set when toggled */
 
 static void
-make_link_set_check_box(const char *directory_path, GtkWidget *checkbox_table, int index, char *name)
+make_link_set_check_box(const char *directory_path, GtkWidget *checkbox_table, 
+			int index, char *name, GtkWindow *window)
 {
-	/* not yet implemented, coming soon */
-	g_message("make check box for directory %s, name %s", directory_path, name);
+	GtkWidget *checkbox, *label;
+	
+	/* add a checkbox and a label */
+		
+	checkbox = gtk_check_button_new ();				
+	gtk_widget_show(checkbox);
+	
+	label = gtk_label_new (name);
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_widget_show(label);
+		
+	gtk_container_add (GTK_CONTAINER (checkbox), label);
+	gtk_widget_show(checkbox);
+
+	/* Set initial state of checkbox. */
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox), nautilus_link_set_is_installed(directory_path, name));
+			
+	/* Attach the parameters and a signal handler. */
+	gtk_object_set_data_full (GTK_OBJECT (checkbox),
+				     "nautilus_directory_path",
+				     g_strdup (directory_path),
+				     (GtkDestroyNotify) g_free);
+				     
+	gtk_object_set_data_full (GTK_OBJECT (checkbox),
+					  "nautilus_link_set_name",
+					  g_strdup(name),
+					  (GtkDestroyNotify) g_free);
+		
+	gtk_signal_connect (GTK_OBJECT (checkbox),
+				    "toggled",
+				    link_set_check_box_toggled,
+				    window);
+
+
+	/* attach the checkbox to the table */
+	if (index % 2) {
+			gtk_table_attach_defaults (GTK_TABLE (checkbox_table), checkbox,
+					  	   0, 1,
+					  	   index >> 1, (index >> 1) + 1);
+		} else {
+			gtk_table_attach_defaults (GTK_TABLE (checkbox_table), checkbox,
+						   1, 2,
+					  	   index >> 1, (index >> 1) + 1);
+		}
 }
 
 /* utility routine t o return a list of link set names by iterating the link set directory */
@@ -234,9 +346,9 @@ get_link_set_names()
 
 /* create a window used to configure the link sets in the passed in directory */
 GtkWindow *
-nautilus_link_set_configure_window(const char *directory_path)
+nautilus_link_set_configure_window(const char *directory_path, GtkWindow *window_to_update)
 {
-	char *title;
+	char *title, *temp_str;
 	int link_set_count, index;
 	GtkWindow *window;
 	GtkWidget *checkbox_table, *scrolled_window;
@@ -245,8 +357,10 @@ nautilus_link_set_configure_window(const char *directory_path)
 	/* Create the window. */
 	window = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
   	gtk_container_set_border_width (GTK_CONTAINER (window), GNOME_PAD);
-  	gtk_window_set_policy (window, FALSE, FALSE, FALSE);
-
+ 	/*
+ 	gtk_widget_set_usize(GTK_WIDGET(window), 240, 160);
+ 	*/
+ 		
 	/* set the window title */
 	title = g_strdup_printf (_("Linksets for %s"), directory_path);
   	gtk_window_set_title (window, title);
@@ -274,13 +388,17 @@ nautilus_link_set_configure_window(const char *directory_path)
 	index = 0;
 	for (current_link_set = link_set_names; current_link_set != NULL; 
 		current_link_set = current_link_set->next) {
-			make_link_set_check_box(directory_path, checkbox_table, 
-						index++, (char*) current_link_set->data);	
+			temp_str = (char *) current_link_set->data;
+			if ((temp_str[0] != '.') && (temp_str[0] != '\0'))
+				make_link_set_check_box(directory_path, checkbox_table, 
+						index++, temp_str, window_to_update);	
 	}
 	
 	/* clean up and we're done */
 	
 	nautilus_g_list_free_deep (link_set_names);
+	
+	gtk_widget_show(GTK_WIDGET(window));
 	return window;	
 }
 

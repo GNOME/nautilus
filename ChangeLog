@@ -1,3 +1,22 @@
+2000-06-11  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-link-set.c,h: (link_set_path_name),
+	(create_new_link), (nautilus_link_set_install),
+	(nautilus_link_set_is_installed), (nautilus_link_set_remove),
+	(link_set_check_box_toggled), (make_link_set_check_box),
+	(nautilus_link_set_configure_window):
+	made link set install and remove really work, and added a link set configuration
+	window to install and remove link sets.  This is working now but not quite finished.
+	* libnautilus-extensions/nautilus-metadata.h:
+	added NAUTILUS_METADATA_SIDEBAR_BUTTONS
+	* src/nautilus-sidebar.c: (metadata_button_callback),
+	(add_buttons_from_metadata), (nautilus_sidebar_update_buttons):
+	added mechanism for command buttons to be specified by directory metadata.
+	* data/top/Makefile.am:
+	* data/top/.nautilus-metafile.xml:
+	added pre-built metafile to novice home directory, so it could specify command buttons
+	and have better control over defaults
+
 2000-06-10  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-factory.c:

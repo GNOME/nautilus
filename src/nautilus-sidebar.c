@@ -41,6 +41,7 @@
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-keep-last-vertical-box.h>
+#include <libnautilus-extensions/nautilus-link-set.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-program-choosing.h>
 #include <libnautilus-extensions/nautilus-string.h>
@@ -728,6 +729,22 @@ command_button_callback (GtkWidget *button, char *command_str)
 	nautilus_launch_application (command_str, sidebar->details->uri);	
 }
 
+/* interpret commands for buttons specified by metadata. Handle some built-in ones explicitly, or fork
+   a shell to handle general ones */
+/* for now, we only handle a few built in commands */
+static void
+metadata_button_callback (GtkWidget *button, char *command_str)
+{
+	GtkWindow *window;
+	NautilusSidebar *sidebar;
+	
+	sidebar = NAUTILUS_SIDEBAR (gtk_object_get_user_data (GTK_OBJECT (button)));
+	if (!strcmp(command_str, "#linksets")) {
+		window = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (sidebar)));
+		nautilus_link_set_configure_window(sidebar->details->uri, window);
+	}
+}
+
 static void
 nautilus_sidebar_chose_application_callback (GnomeVFSMimeApplication *application,
 					     gpointer callback_data)
@@ -809,6 +826,56 @@ add_command_buttons (NautilusSidebar *sidebar, GList *application_list)
 			    temp_button, FALSE, FALSE, 0);
 }
 
+/* utility to construct command buttons for the sidebar from the passed in metadata string */
+
+static void
+add_buttons_from_metadata(NautilusSidebar *sidebar, const char *button_data)
+{
+	char **terms;
+	char *current_term, *temp_str;
+	char *button_name, *command_string;
+	const char *term;
+	int index;
+	GtkWidget *temp_button;
+	
+	/* split the button specification into a set of terms */	
+	button_name = NULL;
+	terms = g_strsplit (button_data, ";", 0);	
+	
+	/* for each term, either create a button or attach a property to one */
+	for (index = 0; (term = terms[index]) != NULL; index++) {
+		current_term = g_strdup(term);
+		temp_str = strchr(current_term, '=');
+		if (temp_str) {
+			*temp_str = '\0';
+			if (!g_strcasecmp(current_term, "button")) {
+				button_name = g_strdup(temp_str + 1);
+			} else if (!g_strcasecmp(current_term, "script")) {
+			        if (button_name != NULL) {
+			        	temp_button = gtk_button_new_with_label (button_name);		    
+					gtk_box_pack_start (GTK_BOX (sidebar->details->button_box), 
+						    temp_button, 
+						    FALSE, FALSE, 
+						    0);
+					sidebar->details->has_buttons = TRUE;
+
+					command_string = g_strdup(temp_str + 1);		
+					g_free(button_name);
+
+					nautilus_gtk_signal_connect_free_data 
+						(GTK_OBJECT (temp_button), "clicked",
+					 	GTK_SIGNAL_FUNC (metadata_button_callback), command_string);
+		                	gtk_object_set_user_data (GTK_OBJECT (temp_button), sidebar);
+				
+					gtk_widget_show (temp_button);			
+				}
+			}
+		}
+		g_free(current_term);
+	}	
+	g_strfreev (terms);
+}
+
 /**
  * nautilus_sidebar_update_buttons:
  * 
@@ -817,6 +884,7 @@ add_command_buttons (NautilusSidebar *sidebar, GList *application_list)
 void
 nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 {
+	char *button_data;
 	GList *short_application_list;
 	
 	/* dispose of any existing buttons */
@@ -826,6 +894,16 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 		make_button_box (sidebar);
 	}
 
+	/* create buttons from directory metadata if necessary */
+	
+	button_data = nautilus_directory_get_metadata (sidebar->details->directory,
+				NAUTILUS_METADATA_KEY_SIDEBAR_BUTTONS,
+				NULL);
+	if (button_data) {
+		add_buttons_from_metadata(sidebar, button_data);
+		g_free(button_data);
+	}
+	
 	/* Make buttons for each item in short list + "Open with..." catchall,
 	 * unless there aren't any applications at all in complete list. 
 	 */
