@@ -438,6 +438,16 @@ preflight_check (EazelInstallCallback *cb,
 	return TRUE;
 }
 
+/* and screw transactions */
+static gboolean
+save_transaction (EazelInstallCallback *cb, 
+		  EazelInstallCallbackOperation op,
+		  const GList *packages, 
+		  void *unused)
+{
+	return FALSE;
+}
+
 static void
 nautilus_rpm_view_set_server (NautilusRPMView *rpm_view,
 			      EazelInstallCallback *cb,
@@ -500,6 +510,7 @@ nautilus_rpm_view_install_package_callback (GtkWidget *widget,
 	gtk_signal_connect (GTK_OBJECT (cb), "download_failed", nautilus_rpm_view_download_failed, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "done", nautilus_rpm_view_install_done, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "preflight_check", GTK_SIGNAL_FUNC (preflight_check), NULL);
+	gtk_signal_connect (GTK_OBJECT (cb), "save_transaction", GTK_SIGNAL_FUNC (save_transaction), NULL);
 
 	eazel_install_callback_install_packages (cb, categories, NULL, &ev);
 
@@ -544,6 +555,7 @@ nautilus_rpm_view_uninstall_package_callback (GtkWidget *widget,
 	gtk_signal_connect (GTK_OBJECT (cb), "done", nautilus_rpm_view_install_done, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "delete_files", GTK_SIGNAL_FUNC (delete_files), NULL);
 	gtk_signal_connect (GTK_OBJECT (cb), "preflight_check", GTK_SIGNAL_FUNC (preflight_check), NULL);
+	gtk_signal_connect (GTK_OBJECT (cb), "save_transaction", GTK_SIGNAL_FUNC (save_transaction), NULL);
 	
 	eazel_install_callback_uninstall_packages (cb, categories, NULL, &ev);
 	/* Leak the categories here */

@@ -1075,15 +1075,17 @@ is_satisfied_features (EazelInstall *service,
 #endif
 				result = FALSE;
 
-/* FIXME: forseti.eazel.com: 1129
-   This is a workaround for a softcat bug. When bug 1129
-   is closed, remove this evilness */
+/*    This is a workaround for a softcat bug "speciality, where packagedependencies
+      with no sense are reported as a <FEATURE>foo</FEATURE>. When bug 1129
+      is closed, remove this evilness */
 #if PATCH_FOR_SOFTCAT_BUG
 				if (eazel_package_system_is_installed (service->private->package_system,
 								       service->private->cur_root,
 								       f, NULL, NULL,
 								       EAZEL_SOFTCAT_SENSE_ANY)) {
+#if EI2_DEBUG & 0x4
 					trilobite_debug ("\t -> but a package called %s exists", f);
+#endif
 					result = TRUE;
 				}
 #endif
@@ -2448,8 +2450,10 @@ execute (EazelInstall *service,
 	}
 
 	if (service->private->failed_packages == NULL) {
-		eazel_install_save_transaction_report (service);
 		result = TRUE;
+		if (eazel_install_emit_save_transaction (service, packages) == TRUE) {
+			eazel_install_save_transaction_report (service);
+		}
 	} 
 
 	eazel_install_init_transaction (service);
@@ -2559,6 +2563,8 @@ get_packages_with_mod_flag (GList *packages,
 			res = g_list_concat (res, 
 					     get_packages_with_mod_flag (pack->modifies, mod));
 		}
+
+		pack->modify_status = PACKAGE_MOD_UNTOUCHED;
 	}
 	return res;
 }

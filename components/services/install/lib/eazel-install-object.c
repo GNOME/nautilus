@@ -62,6 +62,7 @@ enum {
 
 	DOWNLOAD_PROGRESS,
 	PREFLIGHT_CHECK,
+	SAVE_TRANSACTION,
 	INSTALL_PROGRESS,
 	UNINSTALL_PROGRESS,
 	DOWNLOAD_FAILED,
@@ -134,6 +135,8 @@ gboolean  eazel_install_emit_preflight_check_default (EazelInstall *service,
 						      GList *packages,
 						      int total_bytes,
 						      int total_packages);
+gboolean  eazel_install_emit_save_transaction_default (EazelInstall *service, 
+						      GList *packages);
 void  eazel_install_emit_download_failed_default (EazelInstall *service,
 						  const PackageData *package);
 void eazel_install_emit_md5_check_failed_default (EazelInstall *service,
@@ -485,6 +488,13 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				GTK_SIGNAL_OFFSET (EazelInstallClass, preflight_check),
 				gtk_marshal_BOOL__POINTER_INT_INT,
 				GTK_TYPE_BOOL, 3, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT);
+	signals[SAVE_TRANSACTION] = 
+		gtk_signal_new ("save_transaction",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (EazelInstallClass, save_transaction),
+				gtk_marshal_BOOL__POINTER,
+				GTK_TYPE_BOOL, 1, GTK_TYPE_POINTER);
 	signals[INSTALL_PROGRESS] = 
 		gtk_signal_new ("install_progress",
 				GTK_RUN_LAST,
@@ -560,6 +570,7 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 	klass->uninstall_failed = NULL;
 	klass->dependency_check = NULL;
 	klass->preflight_check = NULL;
+	klass->save_transaction = NULL;
 #else
 	klass->file_conflict_check = eazel_install_emit_file_conflict_check_default;
 	klass->file_uniqueness_check = eazel_install_emit_file_uniqueness_check_default;
@@ -573,6 +584,7 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 	klass->uninstall_failed = eazel_install_emit_uninstall_failed_default;
 	klass->dependency_check = eazel_install_emit_dependency_check_default;
 	klass->preflight_check = eazel_install_emit_preflight_check_default;
+	klass->save_transaction = eazel_install_emit_save_transaction_default;
 #endif
 	klass->done = eazel_install_emit_done_default;
 
@@ -1215,11 +1227,11 @@ eazel_install_install_packages (EazelInstall *service,
 		result = EAZEL_INSTALL_NOTHING;
 	}
 
+	eazel_install_emit_done (service, result & EAZEL_INSTALL_INSTALL_OK);
+		
 #ifndef EAZEL_INSTALL_SLIM
 	bonobo_object_unref (BONOBO_OBJECT (service));
 #endif /* EAZEL_INSTALL_SLIM */
-
-	eazel_install_emit_done (service, result & EAZEL_INSTALL_INSTALL_OK);
 }
 
 void 
@@ -1251,6 +1263,7 @@ eazel_install_uninstall_packages (EazelInstall *service, GList *categories, cons
 	if (result == EAZEL_INSTALL_NOTHING) {
 		g_warning (_("Uninstall failed"));
 	} 
+
 	eazel_install_emit_done (service, result & EAZEL_INSTALL_UNINSTALL_OK);
 }
 
@@ -1276,6 +1289,7 @@ eazel_install_revert_transaction_from_xmlstring (EazelInstall *service,
 		result = EAZEL_INSTALL_NOTHING;
 	} 
 	service->private->revert = FALSE;
+
 	eazel_install_emit_done (service, result & EAZEL_INSTALL_REVERSION_OK);
 }
 
@@ -1724,6 +1738,62 @@ eazel_install_emit_preflight_check_default (EazelInstall *service,
 	return (gboolean)result;
 #else /* EAZEL_INSTALL_NO_CORBA */
 	return TRUE;
+#endif /* EAZEL_INSTALL_NO_CORBA */
+} 
+
+gboolean
+eazel_install_emit_save_transaction (EazelInstall *service, 
+				     GList *packages)
+{
+	gboolean result;
+
+	EAZEL_INSTALL_SANITY_VAL(service, FALSE);
+
+	gtk_signal_emit (GTK_OBJECT (service), 
+			 signals[SAVE_TRANSACTION], 
+			 packages,
+			 &result);
+
+	return result;
+}
+
+gboolean
+eazel_install_emit_save_transaction_default (EazelInstall *service, 
+					     GList *packages)
+{
+#ifndef EAZEL_INSTALL_NO_CORBA
+	CORBA_Environment ev;
+	CORBA_boolean result = FALSE;
+	GNOME_Trilobite_Eazel_PackageDataStructList *package_tree;
+	GNOME_Trilobite_Eazel_Operation corba_op;
+
+	CORBA_exception_init (&ev);
+	EAZEL_INSTALL_SANITY_VAL (service, FALSE);
+
+	if (service->private->revert) {
+		corba_op = GNOME_Trilobite_Eazel_OPERATION_REVERT;
+	} else if (eazel_install_get_uninstall (service)==TRUE) {
+		corba_op = GNOME_Trilobite_Eazel_OPERATION_UNINSTALL;		
+	} else {
+		corba_op = GNOME_Trilobite_Eazel_OPERATION_INSTALL;
+	} 
+
+	if (service->callback != CORBA_OBJECT_NIL) {
+		package_tree = corba_packagedatastructlist_from_packagedata_tree (packages);
+		result = GNOME_Trilobite_Eazel_InstallCallback_save_transaction (service->callback, 
+										 corba_op,
+										 package_tree,
+										 &ev);
+		if (ev._major != CORBA_NO_EXCEPTION) {
+			/* abort on corba failure */
+			result = FALSE;
+		}
+		CORBA_free (package_tree);
+	} 
+	CORBA_exception_free (&ev);
+	return (gboolean)result;
+#else /* EAZEL_INSTALL_NO_CORBA */
+	return FALSE;
 #endif /* EAZEL_INSTALL_NO_CORBA */
 } 
 

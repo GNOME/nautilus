@@ -84,6 +84,16 @@ nautilus_service_install_conflict_check (EazelInstallCallback *cb, const Package
 }
 
 gboolean
+nautilus_service_install_save_transaction (EazelInstallCallback *service, 
+                                           EazelInstallCallbackOperation op,
+                                           const GList *packages,
+                                           NautilusServiceInstallView *view) 
+{
+        return FALSE;
+}
+
+
+gboolean
 nautilus_service_install_preflight_check (EazelInstallCallback *cb, 
 					  EazelInstallCallbackOperation op,
 					  const GList *packages,

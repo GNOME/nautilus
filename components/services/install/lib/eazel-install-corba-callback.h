@@ -63,6 +63,12 @@ struct _EazelInstallCallbackClass
 				     int total_size, 
 				     int num_packages);
 
+	/* Called after (un)install progress and done, only if
+	   result is good */
+	gboolean (*save_transaction) (EazelInstallCallback *service, 
+				      EazelInstallCallbackOperation op,
+				      const GList *packages);
+
 	/* Called during install of a package */
 	void (*install_progress)  (EazelInstallCallback *service, 
 				   const PackageData *pack, 

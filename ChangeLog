@@ -1,3 +1,64 @@
+2001-03-01  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	reviewed by: Robey Pointer  <robey@eazel.com> who sighed heavily
+	and went back to today batch of installer bugs...
+
+	This fixes bug 7196.
+	
+	* components/rpmview/nautilus-rpm-view-install.c:
+	(save_transaction), (nautilus_rpm_view_install_package_callback),
+	(nautilus_rpm_view_uninstall_package_callback):
+	Added a save_transaction callback that returns FALSE.
+	Setup the save_transaction callback signals.
+	
+	* components/services/install-view/callbacks.h:
+	* components/services/install-view/callbacks.c:
+	(nautilus_service_install_save_transaction):
+	Added a save_transaction callback that returns FALSE.
+	
+	* components/services/install-view/nautilus-service-install-view.c:
+	(nautilus_service_install_view_update_from_uri_finish):
+	Setup the save_transaction callback signals.
+
+	* components/services/install-view/forms.c:
+	Reverted the " " to "" since bug 7198 was fixed.
+	
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (eazel_save_transaction_signal), (main):
+	Added a save_transaction callback that asks the user y/n.
+	Fixed I18N comment
+	
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	Added the save_transaction callback.
+	
+	* components/services/install/lib/eazel-install-corba-callback.h:
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(impl_save_transaction), (eazel_install_callback_get_epv),
+	(eazel_install_callback_class_initialize):
+	Added the save_transaction callback.
+	Added missing g_list_free's
+
+	* components/services/install/lib/eazel-install-logic2.c:
+	(is_satisfied_features), (execute), (get_packages_with_mod_flag):
+	Changed a comment.
+	Call emit_save_transaction prior to saving transaction.
+	
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_class_initialize), (eazel_install_install_packages),
+	(eazel_install_uninstall_packages),
+	(eazel_install_revert_transaction_from_xmlstring),
+	(eazel_install_emit_preflight_check_default),
+	(eazel_install_emit_save_transaction),
+	(eazel_install_emit_save_transaction_default):
+	All the insane code to setup the save_transaction thingy.
+	
+	* components/services/install/lib/eazel-package-system-types.h:
+	* components/services/install/lib/eazel-package-system-types.c:
+	(eazel_install_gtk_marshal_BOOL__ENUM_POINTER):
+	And a special handcarved from a raw metal ore gtk marshal function
+	for the save_transaction signal.
+	
 2001-03-01  Eric Fischer  <eric@eazel.com>
 
 	reviewed by: Arik Devens <arik@eazel.com>

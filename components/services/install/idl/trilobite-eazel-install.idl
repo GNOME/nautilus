@@ -192,6 +192,11 @@ module Trilobite {
 						 in PackageDataStructList package_tree,
 						 in long total_size, 
 						 in long num_packages);
+
+                        /* On a successfull operation, this is called and should
+                           return TRUE if a transaction log should be kept */
+                        boolean save_transaction (in Operation op,
+                                                  in PackageDataStructList package_tree);
 			
 			/* Called during (un)installation of a package */
 			oneway void install_progress (in PackageDataStruct package, 

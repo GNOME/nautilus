@@ -434,6 +434,10 @@ void eazel_install_gtk_marshal_BOOL__ENUM_POINTER_INT_INT (GtkObject * object,
 							   GtkSignalFunc func,
 							   gpointer func_data, GtkArg * args);
 
+void eazel_install_gtk_marshal_BOOL__ENUM_POINTER (GtkObject * object,
+                                                   GtkSignalFunc func,
+                                                   gpointer func_data, GtkArg * args);
+
 char *packagedata_dump_tree (const GList *packlst, int indent_level);
 char *packagedata_dump (const PackageData *package, gboolean deep);
 

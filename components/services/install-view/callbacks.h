@@ -35,6 +35,10 @@ gboolean nautilus_service_install_preflight_check (EazelInstallCallback *cb,
                                                    int total_bytes, 
                                                    int total_packages,
                                                    NautilusServiceInstallView *view);
+gboolean nautilus_service_install_save_transaction (EazelInstallCallback *cb, 
+						    EazelInstallCallbackOperation op,
+						    const GList *packages,
+						    NautilusServiceInstallView *view);
 void nautilus_service_install_download_progress (EazelInstallCallback *cb, const PackageData *pack,
                                                  int amount, int total,
                                                  NautilusServiceInstallView *view);

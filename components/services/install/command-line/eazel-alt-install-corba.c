@@ -615,6 +615,41 @@ eazel_preflight_check_signal (EazelInstallCallback *service,
 	return TRUE;
 }
 
+static gboolean
+eazel_save_transaction_signal (EazelInstallCallback *service, 
+			       EazelInstallCallbackOperation op,
+			       const GList *packages,
+			       gpointer unused) 
+{	
+	char answer[128];
+	gboolean result = FALSE;
+	
+	if (arg_machine) { return TRUE; }
+
+	/* I18N note: the (y/n) is translateable. There is later a 1 character
+	   string with the context "y" which is the "yes" indicator.
+	   If you eg. translate this to Danish : "Fortsæt (j/n) " and
+	   translated the "y" later to "j", da_DK users can respond with
+	   "j" "ja" "JA" etc. */
+	printf (_("Save transaction report ? (y/n) "));
+	fflush (stdout);
+	if (arg_batch) {			
+		fprintf (stdout, "%s\n", arg_batch);
+		strcpy (answer, arg_batch);
+	} else {
+		fgets (answer, 10, stdin);
+	}
+	/* I18N note: y is the letter for the word Yes. This is
+	   used in the response for a yes/no questions. Your translation
+	   must be 1 character only. */
+	if (strncasecmp (answer, _("y"), 1)==0) {
+		fflush (stdout);
+		result = TRUE;
+	}
+
+	return result;
+}
+
 static void
 dep_check (EazelInstallCallback *service,
 	   const PackageData *package,
@@ -905,6 +940,9 @@ int main(int argc, char *argv[]) {
 			    NULL);
 	gtk_signal_connect (GTK_OBJECT (cb), "preflight_check", 
 			    GTK_SIGNAL_FUNC (eazel_preflight_check_signal), 
+			    NULL);
+	gtk_signal_connect (GTK_OBJECT (cb), "save_transaction", 
+			    GTK_SIGNAL_FUNC (eazel_save_transaction_signal), 
 			    NULL);
 	gtk_signal_connect (GTK_OBJECT (cb), "install_progress", 
 			    GTK_SIGNAL_FUNC (eazel_install_progress_signal), 

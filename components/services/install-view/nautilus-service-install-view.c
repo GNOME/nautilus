@@ -687,6 +687,8 @@ nautilus_service_install_view_update_from_uri_finish (NautilusServiceInstallView
 			    GTK_SIGNAL_FUNC (nautilus_service_install_conflict_check), view);
 	gtk_signal_connect (GTK_OBJECT (view->details->installer), "preflight_check",
 			    GTK_SIGNAL_FUNC (nautilus_service_install_preflight_check), view);
+        gtk_signal_connect (GTK_OBJECT (view->details->installer), "save_transaction", 
+                            GTK_SIGNAL_FUNC (nautilus_service_install_save_transaction), view);        
 	gtk_signal_connect (GTK_OBJECT (view->details->installer), "download_progress",
 			    GTK_SIGNAL_FUNC (nautilus_service_install_download_progress), view);
 	gtk_signal_connect (GTK_OBJECT (view->details->installer), "download_failed",

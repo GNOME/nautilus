@@ -82,6 +82,8 @@ struct _EazelInstallClass
 				     GList *packages,
 				     int total_bytes, 
 				     int total_packages);
+	gboolean (*save_transaction) (EazelInstall *service, 
+				      GList *packages);
 
 	void (*install_progress)  (EazelInstall *service, 
 				   const PackageData *pack, 
@@ -175,6 +177,8 @@ void eazel_install_emit_download_progress         (EazelInstall *service,
 						   int total);
 gboolean eazel_install_emit_preflight_check     (EazelInstall *service, 
 						 GList *packages);
+gboolean eazel_install_emit_save_transaction     (EazelInstall *service, 
+						  GList *packages);
 void eazel_install_emit_download_failed           (EazelInstall *service, 
 						   const PackageData *package);
 void eazel_install_emit_md5_check_failed          (EazelInstall *service, 

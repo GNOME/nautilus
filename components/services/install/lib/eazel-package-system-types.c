@@ -1295,6 +1295,25 @@ eazel_install_gtk_marshal_BOOL__ENUM_POINTER_INT_INT (GtkObject * object,
 			  func_data);
 }
 
+typedef gboolean (*GtkSignal_BOOL__ENUM_POINTER) (GtkObject * object,
+						  gint arg1,
+						  gpointer arg2,
+						  gpointer user_data);
+void
+eazel_install_gtk_marshal_BOOL__ENUM_POINTER (GtkObject * object,
+					      GtkSignalFunc func,
+					      gpointer func_data, GtkArg * args)
+{
+  GtkSignal_BOOL__ENUM_POINTER rfunc;
+  gboolean *return_val;
+  return_val = GTK_RETLOC_BOOL (args[2]);
+  rfunc = (GtkSignal_BOOL__ENUM_POINTER) func;
+  *return_val = (*rfunc) (object,
+			  GTK_VALUE_ENUM (args[0]),
+			  GTK_VALUE_POINTER (args[1]), 
+			  func_data);
+}
+
 
 /* useful debugging tool: dump out a concise package tree, with dep/modifies chains shown */
 

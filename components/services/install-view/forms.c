@@ -324,7 +324,7 @@ generate_install_form (NautilusServiceInstallView *view)
 	 * shows "progress" over the 2nd column of the message box.  it's just too hard to get
 	 * it aligned currently.
 	 */
-	view->details->middle_title = eazel_services_header_middle_new (_("Messages"), " ");
+	view->details->middle_title = eazel_services_header_middle_new (_("Messages"), "");
         gtk_box_pack_end (GTK_BOX (view->details->form), view->details->middle_title, FALSE, FALSE, 0);
 	/* don't show the progress header until there's still to go there */
 
