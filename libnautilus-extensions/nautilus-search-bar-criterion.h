@@ -74,7 +74,9 @@ void                               nautilus_search_bar_criterion_set_callback   
    We need toi build the serach uri from the different criterions.
    Each criterion returns the part of the search uri it represents 
 */
-char *                              nautilus_search_bar_criterion_get_location     (NautilusSearchBarCriterion *criterion);
+char *                             nautilus_search_bar_criterion_get_location     (NautilusSearchBarCriterion *criterion);
+
+char *                             nautilus_search_bar_criterion_human_from_uri   (const char *location_uri);
 
 void                               nautilus_search_bar_criterion_show             (NautilusSearchBarCriterion *criterion);
 void                               nautilus_search_bar_criterion_hide             (NautilusSearchBarCriterion *criterion);

@@ -59,6 +59,7 @@ typedef enum {
 #define EMBLEM_NAME_SYMBOLIC_LINK "symbolic-link"
 #define EMBLEM_NAME_CANT_READ "noread"
 #define EMBLEM_NAME_CANT_WRITE "nowrite"
+#define EMBLEM_NAME_TRASH "trash"
 
 enum {
 	CHANGED,
@@ -3086,7 +3087,13 @@ nautilus_file_get_emblem_names (NautilusFile *file)
 		names = g_list_prepend 
 			(names, g_strdup (EMBLEM_NAME_SYMBOLIC_LINK));
 	}
-
+	
+	if (nautilus_file_is_search_result (file)
+	    && nautilus_file_is_in_trash (file)) {
+		names = g_list_prepend 
+			(names, g_strdup (EMBLEM_NAME_TRASH));
+	}
+	
 	return names;
 }
 
@@ -3198,6 +3205,54 @@ nautilus_file_is_directory (NautilusFile *file)
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
 	return nautilus_file_get_file_type (file) == GNOME_VFS_FILE_TYPE_DIRECTORY;
+}
+
+/**
+ * nautilus_file_is_in_trash
+ * 
+ * Check if this file is a file in trash.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: TRUE if @file is in a trash.
+ * 
+ **/
+
+gboolean
+nautilus_file_is_in_trash (NautilusFile *file)
+{
+	GnomeVFSURI *file_uri, *trash_dir_uri;
+	char * uri;
+	gboolean result;
+
+	if (file == NULL) {
+		return FALSE;
+	}
+		
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+	uri = nautilus_file_get_activation_uri (file);
+	if (uri == NULL) {
+		/* we don't have loaded the data yet. */
+		return FALSE;
+	}
+
+	file_uri = gnome_vfs_uri_new (uri);
+
+	result = gnome_vfs_find_directory (file_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
+					   &trash_dir_uri, TRUE, 0777) == GNOME_VFS_OK;
+
+        if (result) {
+		result = (gnome_vfs_uri_equal (trash_dir_uri, file_uri)
+			  || gnome_vfs_uri_is_parent (trash_dir_uri, file_uri, TRUE));
+        }
+
+	if (trash_dir_uri) {
+		gnome_vfs_uri_unref (trash_dir_uri);
+        }
+        gnome_vfs_uri_unref (file_uri);
+
+
+	return result;
 }
 
 /**

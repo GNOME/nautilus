@@ -42,9 +42,13 @@ static char * nautilus_simple_search_criteria_to_search_uri      (const char    
 static void  nautilus_simple_search_bar_initialize_class         (NautilusSimpleSearchBarClass *class);
 static void  nautilus_simple_search_bar_initialize               (NautilusSimpleSearchBar      *bar);
 
+
+
+
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSimpleSearchBar,
 				   nautilus_simple_search_bar,
 				   NAUTILUS_TYPE_SEARCH_BAR)
+
 
 static void
 nautilus_simple_search_bar_initialize_class (NautilusSimpleSearchBarClass *klass)
