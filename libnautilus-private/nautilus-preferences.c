@@ -1147,6 +1147,71 @@ nautilus_preferences_add_callback_while_alive (const char *name,
 			    data);
 }
 
+static GList *remove_list = NULL;
+
+static void
+preferences_while_process_running_remover (void)
+{
+	GList *iterator;
+
+	for (iterator = remove_list; iterator != NULL; iterator = iterator->next) {
+		WhileAliveData *data;
+		
+		data = iterator->data;
+		g_assert (data != NULL);
+
+		nautilus_preferences_remove_callback (data->name,
+						      data->callback,
+						      data->callback_data);
+
+		g_free (data->name);
+		g_free (data);
+	}
+
+	g_list_free (remove_list);
+	remove_list = NULL;
+}
+
+/*
+ * nautilus_preferences_add_callback_while_process_is_running:
+ *
+ * @name: Preference name.
+ * @callback: Callback function.
+ * @callback_data: Data for callback function.
+ *
+ * Add a preference callback for the duration of the currently
+ * running process.  The callback will be automatically removed
+ * at exit time.  This is useful for preference values that need
+ * to be stored be stored statically
+ */
+void
+nautilus_preferences_add_callback_while_process_is_running (const char *name,
+							    NautilusPreferencesCallback callback,
+							    gpointer callback_data)
+{
+	static gboolean while_process_running_remover_installed = FALSE;
+	WhileAliveData *data;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (callback != NULL);
+
+	/* Setup the at exit disconnector once */
+	if (while_process_running_remover_installed == FALSE) {
+		g_atexit (preferences_while_process_running_remover);
+		while_process_running_remover_installed = TRUE;
+	}
+
+	data = g_new (WhileAliveData, 1);
+	data->name = g_strdup (name);
+	data->callback = callback;
+	data->callback_data = callback_data;
+	
+	nautilus_preferences_add_callback (name, callback, callback_data);
+
+	remove_list = g_list_append (remove_list, data);
+}
+
+
 void
 nautilus_preferences_remove_callback (const char *name,
 				      NautilusPreferencesCallback callback,

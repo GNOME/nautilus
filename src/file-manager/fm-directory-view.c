@@ -3120,21 +3120,39 @@ real_merge_menus (FMDirectoryView *view)
 	}
 }
 
+static gboolean confirm_trash = TRUE;
+
+static void
+confirm_trash_changed_callback (gpointer callback_data)
+{
+	confirm_trash = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH);
+}
+
 static void
 real_update_menus (FMDirectoryView *view)
 {
+	static gboolean confirm_trash_changed_callback_installed = FALSE;
 	GList *selection;
 	gint selection_count;
 	char *label_with_underscore;
-	gboolean confirm_trash;
 	gboolean selection_contains_special_link;
 	gboolean can_create_files;
 	NautilusBackground *background;
 	
 	selection = fm_directory_view_get_selection (view);
 	selection_count = g_list_length (selection);
+
+	/* Add the callback once for the life of our process */
+	if (confirm_trash_changed_callback_installed == FALSE) {
+		nautilus_preferences_add_callback_while_process_is_running (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
+									    confirm_trash_changed_callback,
+									    NULL);
+		confirm_trash_changed_callback_installed = TRUE;
+		
+		/* Peek for the first time */
+		confirm_trash_changed_callback (NULL);
+	}
 	
-	confirm_trash = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH);
 	selection_contains_special_link = special_link_in_selection (view);
 	can_create_files = fm_directory_view_supports_creating_files (view);
 

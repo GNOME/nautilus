@@ -47,80 +47,83 @@ typedef void (*NautilusPreferencesCallback) (gpointer callback_data);
 #define NAUTILUS_USER_LEVEL_INTERMEDIATE	1
 #define NAUTILUS_USER_LEVEL_HACKER		2
 
-char *   nautilus_preferences_get_user_level_name_for_display (int                          user_level);
-char *   nautilus_preferences_get_user_level_name_for_storage (int                          user_level);
-int      nautilus_preferences_get_user_level                  (void);
-void     nautilus_preferences_set_user_level                  (int                          user_level);
+char *   nautilus_preferences_get_user_level_name_for_display       (int                          user_level);
+char *   nautilus_preferences_get_user_level_name_for_storage       (int                          user_level);
+int      nautilus_preferences_get_user_level                        (void);
+void     nautilus_preferences_set_user_level                        (int                          user_level);
 
 /* Preferences getters and setters */
-gboolean nautilus_preferences_get_boolean                     (const char                  *name);
-void     nautilus_preferences_set_boolean                     (const char                  *name,
-							       gboolean                     boolean_value);
-int      nautilus_preferences_get_integer                     (const char                  *name);
-void     nautilus_preferences_set_integer                     (const char                  *name,
-							       int                          int_value);
-char *   nautilus_preferences_get                             (const char                  *name);
-void     nautilus_preferences_set                             (const char                  *name,
-							       const char                  *string_value);
-GSList * nautilus_preferences_get_string_list                 (const char                  *name);
-void     nautilus_preferences_set_string_list                 (const char                  *name,
-							       GSList                      *string_list_value);
+gboolean nautilus_preferences_get_boolean                           (const char                  *name);
+void     nautilus_preferences_set_boolean                           (const char                  *name,
+								     gboolean                     boolean_value);
+int      nautilus_preferences_get_integer                           (const char                  *name);
+void     nautilus_preferences_set_integer                           (const char                  *name,
+								     int                          int_value);
+char *   nautilus_preferences_get                                   (const char                  *name);
+void     nautilus_preferences_set                                   (const char                  *name,
+								     const char                  *string_value);
+GSList * nautilus_preferences_get_string_list                       (const char                  *name);
+void     nautilus_preferences_set_string_list                       (const char                  *name,
+								     GSList                      *string_list_value);
 
 /* Default values getters and setters */
-gboolean nautilus_preferences_default_get_boolean             (const char                  *name,
-							       int                          user_level);
-void     nautilus_preferences_default_set_boolean             (const char                  *name,
-							       int                          user_level,
-							       gboolean                     boolean_value);
-int      nautilus_preferences_default_get_integer             (const char                  *name,
-							       int                          user_level);
-void     nautilus_preferences_default_set_integer             (const char                  *name,
-							       int                          user_level,
-							       int                          int_value);
-char *   nautilus_preferences_default_get_string              (const char                  *name,
-							       int                          user_level);
-void     nautilus_preferences_default_set_string              (const char                  *name,
-							       int                          user_level,
-							       const char                  *string_value);
-GSList * nautilus_preferences_default_get_string_list         (const char                  *name,
-							       int                          user_level);
-void     nautilus_preferences_default_set_string_list         (const char                  *name,
-							       int                          user_level,
-							       GSList                      *string_list_value);
+gboolean nautilus_preferences_default_get_boolean                   (const char                  *name,
+								     int                          user_level);
+void     nautilus_preferences_default_set_boolean                   (const char                  *name,
+								     int                          user_level,
+								     gboolean                     boolean_value);
+int      nautilus_preferences_default_get_integer                   (const char                  *name,
+								     int                          user_level);
+void     nautilus_preferences_default_set_integer                   (const char                  *name,
+								     int                          user_level,
+								     int                          int_value);
+char *   nautilus_preferences_default_get_string                    (const char                  *name,
+								     int                          user_level);
+void     nautilus_preferences_default_set_string                    (const char                  *name,
+								     int                          user_level,
+								     const char                  *string_value);
+GSList * nautilus_preferences_default_get_string_list               (const char                  *name,
+								     int                          user_level);
+void     nautilus_preferences_default_set_string_list               (const char                  *name,
+								     int                          user_level,
+								     GSList                      *string_list_value);
 /* Callbacks */
-void     nautilus_preferences_add_callback                    (const char                  *name,
-							       NautilusPreferencesCallback  callback,
-							       gpointer                     callback_data);
-void     nautilus_preferences_add_callback_while_alive        (const char                  *name,
-							       NautilusPreferencesCallback  callback,
-							       gpointer                     callback_data,
-							       GtkObject                   *alive_object);
-void     nautilus_preferences_remove_callback                 (const char                  *name,
-							       NautilusPreferencesCallback  callback,
-							       gpointer                     callback_data);
+void     nautilus_preferences_add_callback                          (const char                  *name,
+								     NautilusPreferencesCallback  callback,
+								     gpointer                     callback_data);
+void     nautilus_preferences_add_callback_while_alive              (const char                  *name,
+								     NautilusPreferencesCallback  callback,
+								     gpointer                     callback_data,
+								     GtkObject                   *alive_object);
+void     nautilus_preferences_add_callback_while_process_is_running (const char                  *name,
+								     NautilusPreferencesCallback  callback,
+								     gpointer                     callback_data);
+void     nautilus_preferences_remove_callback                       (const char                  *name,
+								     NautilusPreferencesCallback  callback,
+								     gpointer                     callback_data);
 
 /* Preferences attributes */
-int      nautilus_preferences_get_visible_user_level          (const char                  *name);
-void     nautilus_preferences_set_visible_user_level          (const char                  *name,
-							       int                          visible_user_level);
-char *   nautilus_preferences_get_description                 (const char                  *name);
-void     nautilus_preferences_set_description                 (const char                  *name,
-							       const char                  *description);
+int      nautilus_preferences_get_visible_user_level                (const char                  *name);
+void     nautilus_preferences_set_visible_user_level                (const char                  *name,
+								     int                          visible_user_level);
+char *   nautilus_preferences_get_description                       (const char                  *name);
+void     nautilus_preferences_set_description                       (const char                  *name,
+								     const char                  *description);
 
 /* Enumerations */
-void     nautilus_preferences_enumeration_insert              (const char                  *name,
-							       const char                  *entry,
-							       const char                  *description,
-							       int                          value);
-char *   nautilus_preferences_enumeration_get_nth_entry       (const char                  *name,
-							       guint                        n);
-char *   nautilus_preferences_enumeration_get_nth_description (const char                  *name,
-							       guint                        n);
-int      nautilus_preferences_enumeration_get_nth_value       (const char                  *name,
-							       guint                        n);
-guint    nautilus_preferences_enumeration_get_num_entries     (const char                  *name);
-gboolean nautilus_preferences_monitor_directory               (const char                  *directory);
-gboolean nautilus_preferences_is_visible                      (const char                  *name);
+void     nautilus_preferences_enumeration_insert                    (const char                  *name,
+								     const char                  *entry,
+								     const char                  *description,
+								     int                          value);
+char *   nautilus_preferences_enumeration_get_nth_entry             (const char                  *name,
+								     guint                        n);
+char *   nautilus_preferences_enumeration_get_nth_description       (const char                  *name,
+								     guint                        n);
+int      nautilus_preferences_enumeration_get_nth_value             (const char                  *name,
+								     guint                        n);
+guint    nautilus_preferences_enumeration_get_num_entries           (const char                  *name);
+gboolean nautilus_preferences_monitor_directory                     (const char                  *directory);
+gboolean nautilus_preferences_is_visible                            (const char                  *name);
 
 END_GNOME_DECLS
 

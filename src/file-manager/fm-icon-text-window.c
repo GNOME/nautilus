@@ -394,16 +394,43 @@ fm_icon_text_window_get_or_create (void)
 	return GTK_WINDOW (icon_text_window);
 }
 
+/* This string will leak at exit time */
+static char *icon_captions = NULL;
+
+static void
+icon_captions_changed_callback (gpointer callback_data)
+{
+	char *new_icon_captions = NULL;
+	
+	g_free (icon_captions);
+	
+	new_icon_captions = nautilus_preferences_get (NAUTILUS_PREFERENCES_ICON_CAPTIONS);
+	
+	if (attribute_names_string_is_good (new_icon_captions)) {
+		icon_captions = new_icon_captions;
+		return;
+	}
+
+	g_free (new_icon_captions);
+
+	icon_captions = g_strdup (DEFAULT_ATTRIBUTE_NAMES);
+}
+
 char *
 fm_get_text_attribute_names_preference_or_default (void)
 {
-	char *preference;
+	static gboolean icon_captions_callback_added = FALSE;
 
-	preference = nautilus_preferences_get (NAUTILUS_PREFERENCES_ICON_CAPTIONS);
-	if (preference && attribute_names_string_is_good (preference)) {
-		return preference;
+	/* Add the callback once for the life of our process */
+	if (icon_captions_callback_added == FALSE) {
+		nautilus_preferences_add_callback_while_process_is_running (NAUTILUS_PREFERENCES_ICON_CAPTIONS,
+									    icon_captions_changed_callback,
+									    NULL);
+		icon_captions_callback_added = TRUE;
+
+		/* Peek for the first time */
+		icon_captions_changed_callback (NULL);
 	}
-	if (preference)
-		g_free (preference);
-	return g_strdup (DEFAULT_ATTRIBUTE_NAMES);
+
+	return g_strdup (icon_captions);
 }

@@ -1,3 +1,39 @@
+2001-01-26  Ramiro Estrugo  <ramiro@eazel.com>
+
+        reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+	* icons/crux_eggplant/Makefile:
+	Remove generated file.
+	
+	* libnautilus-extensions/nautilus-preferences.c:
+	(preferences_while_process_running_remover),
+	(nautilus_preferences_add_callback_while_process_is_running):
+	* libnautilus-extensions/nautilus-preferences.h:
+	New function to add a callback for the duration of the process.
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(show_hidden_files_changed_callback),
+	(show_backup_files_changed_callback),
+	(get_filter_options_for_directory_count):
+	* libnautilus-extensions/nautilus-file.c:
+	(show_text_in_icons_changed_callback),
+	(nautilus_file_should_get_top_left_text):
+	* libnautilus-extensions/nautilus-theme.c:
+	(theme_changed_callback), (nautilus_theme_get_theme),
+	(nautilus_theme_get_theme_data), (nautilus_theme_get_image_path):
+	* src/file-manager/fm-directory-view.c:
+	(confirm_trash_changed_callback), (real_update_menus):
+	* src/file-manager/fm-icon-text-window.c:
+	(icon_captions_changed_callback),
+	(fm_get_text_attribute_names_preference_or_default):
+	Use preference callbacks to speed things up.  Makes a significant
+	difference when called a bazillion times, like when browsing
+	/usr/bin.  This is a band aid fix for pr3.  For 1.0, we'll fix the
+	bottleneck directly in the preferences internals.
+
+	Pavel measured it as cutting down the time to load /usr/bin at 30
+	seconds, down from 2 minutes!
+	
 2001-01-25  Maciej Stachowiak  <mjs@eazel.com>
 
 	* src/nautilus-window-manage-views.c

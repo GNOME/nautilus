@@ -1147,18 +1147,57 @@ set_file_unconfirmed (NautilusFile *file, gboolean unconfirmed)
 	}
 }
 
+static gboolean show_hidden_files = TRUE;
+static gboolean show_backup_files = TRUE;
+
+static void
+show_hidden_files_changed_callback (gpointer callback_data)
+{
+	show_hidden_files = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
+}
+
+static void
+show_backup_files_changed_callback (gpointer callback_data)
+{
+	show_backup_files = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES);
+}
+
 static GnomeVFSDirectoryFilterOptions
 get_filter_options_for_directory_count (void)
 {
+	static gboolean show_hidden_files_changed_callback_installed = FALSE;
+	static gboolean show_backup_files_changed_callback_installed = FALSE;
 	GnomeVFSDirectoryFilterOptions filter_options;
 	
 	filter_options = GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR
 		| GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR;
+
+	/* Add the callback once for the life of our process */
+	if (show_hidden_files_changed_callback_installed == FALSE) {
+		nautilus_preferences_add_callback_while_process_is_running (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+									    show_hidden_files_changed_callback,
+									    NULL);
+		show_hidden_files_changed_callback_installed = TRUE;
+		
+		/* Peek for the first time */
+		show_hidden_files_changed_callback (NULL);
+	}
+
+	/* Add the callback once for the life of our process */
+	if (show_backup_files_changed_callback_installed == FALSE) {
+		nautilus_preferences_add_callback_while_process_is_running (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
+									    show_backup_files_changed_callback,
+									    NULL);
+		show_backup_files_changed_callback_installed = TRUE;
+		
+		/* Peek for the first time */
+		show_backup_files_changed_callback (NULL);
+	}
 	
-	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES)) {
+	if (!show_hidden_files) {
 		filter_options |= GNOME_VFS_DIRECTORY_FILTER_NODOTFILES;
 	}
-	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES)) {
+	if (!show_backup_files) {
 		filter_options |= GNOME_VFS_DIRECTORY_FILTER_NOBACKUPFILES;
 	}
 

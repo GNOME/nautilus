@@ -1050,24 +1050,41 @@ nautilus_file_is_local (NautilusFile *file)
 	return nautilus_directory_is_local (file->details->directory);
 }
 
+static NautilusSpeedTradeoffValue show_text_in_icons;
+
+static void
+show_text_in_icons_changed_callback (gpointer callback_data)
+{
+	show_text_in_icons = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS);
+}
+
 gboolean
 nautilus_file_should_get_top_left_text (NautilusFile *file)
 {
-	NautilusSpeedTradeoffValue preference_value;
+	static gboolean show_text_in_icons_callback_added = FALSE;
 	
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-	preference_value = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS);
+	/* Add the callback once for the life of our process */
+	if (show_text_in_icons_callback_added == FALSE) {
+		nautilus_preferences_add_callback_while_process_is_running (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
+									    show_text_in_icons_changed_callback,
+									    NULL);
+		show_text_in_icons_callback_added = TRUE;
 
-	if (preference_value == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
+		/* Peek for the first time */
+		show_text_in_icons_changed_callback (NULL);
+	}
+	
+	if (show_text_in_icons == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
 		return TRUE;
 	}
 	
-	if (preference_value == NAUTILUS_SPEED_TRADEOFF_NEVER) {
+	if (show_text_in_icons == NAUTILUS_SPEED_TRADEOFF_NEVER) {
 		return FALSE;
 	}
 
-	g_assert (preference_value == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
+	g_assert (show_text_in_icons == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
 	return nautilus_file_is_local (file);
 }
 
