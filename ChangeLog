@@ -1,3 +1,27 @@
+2000-05-16  Andy Hertzfeld  <andy@eazel.com>
+
+	started work on cleaning up the music view, but it's still in an interim state.
+	
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize),
+	(nautilus_music_view_background_changed),
+	(nautilus_music_view_set_up_background),
+	(nautilus_music_view_update_from_uri),
+	(nautilus_music_view_drag_data_received):
+	made the view sizing more dynamic, made it receive colors and backgrounds
+	
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	(nautilus_gdk_pixbuf_render_to_drawable_tiled),
+	(nautilus_gdk_pixbuf_scale_to_fit):
+	added new nautilus_gdk_pixbuf_scale_to_fit routine, adapted from the property browser
+	since I need it in the Music view
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h:
+	added new routine
+	* src/nautilus-property-browser.c: (make_drag_image),
+	(set_emblem_image_from_file),
+	(make_properties_from_directory_path):
+	made them use nautilus_gdk_pixbuf_scale_to_fit
+	
 2000-05-15  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-canvas-item.c:

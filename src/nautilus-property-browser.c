@@ -41,6 +41,7 @@
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
@@ -415,38 +416,6 @@ ensure_uri_is_image(const char *uri)
 	return is_image;
 }
 
-/* utility routine to scale the passed-in pixbuf to be smaller than the maximum allowed size, if necessary */
-
-static GdkPixbuf *
-scale_pixbuf_to_fit (GdkPixbuf *pixbuf)
-{
-	double scale_factor;
-	double h_scale = 1.0;
-	double v_scale = 1.0;
-
-	int width  = gdk_pixbuf_get_width(pixbuf);
-	int height = gdk_pixbuf_get_height(pixbuf);
-	
-	if (width > MAX_ICON_WIDTH) {
-		h_scale = MAX_ICON_WIDTH / (double) width;
-	}
-	if (height > MAX_ICON_HEIGHT) {
-		v_scale = MAX_ICON_HEIGHT  / (double) height;
-	}
-	scale_factor = MIN (h_scale, v_scale);
-	
-	if (scale_factor < 1.0) {
-		GdkPixbuf *scaled_pixbuf;
-		int scaled_width  = floor(width * scale_factor + .5);
-		int scaled_height = floor(height * scale_factor + .5);
-				
-		scaled_pixbuf = gdk_pixbuf_scale_simple (pixbuf, scaled_width, scaled_height, GDK_INTERP_BILINEAR);	
-		gdk_pixbuf_unref (pixbuf);
-		pixbuf = scaled_pixbuf;
-	}
-	return pixbuf;
-}
-
 /* create the appropriate pixbuf for the passed in file */
 static GdkPixbuf*
 make_drag_image(NautilusPropertyBrowser *property_browser, const char* file_name)
@@ -463,7 +432,8 @@ make_drag_image(NautilusPropertyBrowser *property_browser, const char* file_name
 						   property_browser->details->category, file_name);	
 	}
 	
-	pixbuf = scale_pixbuf_to_fit(gdk_pixbuf_new_from_file(image_file_name));			
+	pixbuf = nautilus_gdk_pixbuf_scale_to_fit(gdk_pixbuf_new_from_file(image_file_name),
+							MAX_ICON_WIDTH, MAX_ICON_HEIGHT);			
 
 	g_free(image_file_name);
 	g_free(temp_str);
@@ -661,7 +631,7 @@ set_emblem_image_from_file(NautilusPropertyBrowser *property_browser)
 	GdkBitmap *mask;
 
 	pixbuf = gdk_pixbuf_new_from_file (property_browser->details->image_path);			
-	pixbuf = scale_pixbuf_to_fit (pixbuf);			
+	pixbuf = nautilus_gdk_pixbuf_scale_to_fit (pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);			
     	gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
 	gdk_pixbuf_unref (pixbuf);
 	
@@ -1194,7 +1164,7 @@ make_properties_from_directory_path(NautilusPropertyBrowser *property_browser, c
 			pixbuf = gdk_pixbuf_new_from_file(image_file_name);
 			g_free(image_file_name);
 			
-			pixbuf = scale_pixbuf_to_fit(pixbuf);
+			pixbuf = nautilus_gdk_pixbuf_scale_to_fit(pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);
 				
 			/* make a pixmap and mask to pass to the widget */
       			gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);

@@ -23,6 +23,7 @@
 */
 
 #include <config.h>
+#include <math.h>
 #include "nautilus-gdk-pixbuf-extensions.h"
 
 #include <gdk-pixbuf/gdk-pixbuf-loader.h>
@@ -314,4 +315,38 @@ nautilus_gdk_pixbuf_render_to_drawable_tiled (GdkPixbuf *pixbuf,
 						       dither, x_dither, y_dither);
 		}
 	}
+}
+
+/* scale the passed in pixbuf to conform to the passed-in maximum width and height */
+/* utility routine to scale the passed-in pixbuf to be smaller than the maximum allowed size, if necessary */
+GdkPixbuf *
+nautilus_gdk_pixbuf_scale_to_fit (GdkPixbuf *pixbuf, int max_width, int max_height)
+{
+	double scale_factor;
+	double h_scale = 1.0;
+	double v_scale = 1.0;
+
+	int width  = gdk_pixbuf_get_width(pixbuf);
+	int height = gdk_pixbuf_get_height(pixbuf);
+	
+	if (width > max_width) {
+		h_scale = max_width / (double) width;
+	}
+	if (height > max_height) {
+		v_scale = max_height  / (double) height;
+	}
+	scale_factor = MIN (h_scale, v_scale);
+	
+	if (scale_factor < 1.0) {
+		GdkPixbuf *scaled_pixbuf;
+		/* the width and scale factor are always > 0, so it's OK to round by adding here */
+		int scaled_width  = floor(width * scale_factor + .5);
+		int scaled_height = floor(height * scale_factor + .5);
+				
+		scaled_pixbuf = gdk_pixbuf_scale_simple (pixbuf, scaled_width, scaled_height, GDK_INTERP_BILINEAR);	
+		gdk_pixbuf_unref (pixbuf);
+		pixbuf = scaled_pixbuf;
+	}
+	
+	return pixbuf;
 }

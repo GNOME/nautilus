@@ -52,6 +52,8 @@ struct _NautilusMusicViewDetails {
         char *uri;
         NautilusContentViewFrame *view_frame;
         
+        int background_connection;
+        
         GtkVBox *album_container;
         GtkWidget *album_title;
         GtkWidget *song_list;
@@ -72,15 +74,19 @@ typedef struct {
 
 enum {
 	TARGET_URI_LIST,
-	TARGET_COLOR,
+	TARGET_COLOR,  
+	TARGET_BGIMAGE,
         TARGET_GNOME_URI_LIST
 };
 
 static GtkTargetEntry music_dnd_target_table[] = {
 	{ "text/uri-list",  0, TARGET_URI_LIST },
 	{ "application/x-color", 0, TARGET_COLOR },
+	{ "property/bgimage", 0, TARGET_BGIMAGE },
 	{ "special/x-gnome-icon-list",  0, TARGET_GNOME_URI_LIST }
 };
+
+#define DEFAULT_BACKGROUND_COLOR  "rgb:DDDD/DDDD/BBBB"
 
 static void nautilus_music_view_drag_data_received     (GtkWidget                *widget,
                                                         GdkDragContext           *context,
@@ -121,8 +127,8 @@ static void
 nautilus_music_view_initialize (NautilusMusicView *music_view)
 {
 	char *file_name;
-	GtkWidget *song_box, *scrollwindow;
-	char *titles[] = {_("Track"), _("Title"), _("Artist"), _("Time")};
+	GtkWidget *control_box, *scrollwindow;
+	char *titles[] = {_("#"), _("Title"), _("Artist"), _("Time")};
 	
 	music_view->details = g_new0 (NautilusMusicViewDetails, 1);
 
@@ -137,6 +143,8 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	
 	music_view->details->album_container = GTK_VBOX (gtk_vbox_new (FALSE, 0));
 	gtk_container_add (GTK_CONTAINER (music_view), GTK_WIDGET (music_view->details->album_container));
+	gtk_container_set_border_width (GTK_CONTAINER (music_view), 4);
+	
 	gtk_widget_show (GTK_WIDGET (music_view->details->album_container));
 	
 	/* allocate a widget for the album title */
@@ -145,43 +153,44 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
         /* FIXME bugzilla.eazel.com 667: don't use hardwired font like this */
 	nautilus_gtk_widget_set_font_by_name (music_view->details->album_title,
                                               "-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*"); ;
-	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), music_view->details->album_title, 0, 0, 0);	
+	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), music_view->details->album_title, 0, 0, 2);	
 	gtk_widget_show (music_view->details->album_title);
 	
-	/* allocate an hbox to hold the optional album cover and the song list */
-	
-	song_box = gtk_hbox_new (FALSE, 4);
-	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), song_box, 0, 0, 2);	
-	gtk_widget_show (song_box);
-	
-	/* allocate a placeholder widget for the album cover, but don't show it yet */
-  	file_name = gnome_pixmap_file ("nautilus/i-directory.png");
-  	music_view->details->album_image = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
-	gtk_box_pack_start(GTK_BOX(song_box), music_view->details->album_image, 0, 0, 0);		
-  	g_free (file_name);
-	
-	/* allocate a widget to hold the song list */
+	/* allocate a list widget to hold the song list */
 
 	music_view->details->song_list = gtk_clist_new_with_titles (4, titles);
 		
-	gtk_clist_set_column_width (GTK_CLIST (music_view->details->song_list), 0, 32);
-	gtk_clist_set_column_width (GTK_CLIST (music_view->details->song_list), 1, 172);
-	gtk_clist_set_column_width (GTK_CLIST (music_view->details->song_list), 2, 96);
-	gtk_clist_set_column_width (GTK_CLIST (music_view->details->song_list), 3, 42);
+	gtk_clist_set_column_width (GTK_CLIST (music_view->details->song_list), 0, 24);
+	gtk_clist_set_column_width (GTK_CLIST (music_view->details->song_list), 1, 240);
+	gtk_clist_set_column_width (GTK_CLIST (music_view->details->song_list), 2, 120);
+	gtk_clist_set_column_width (GTK_CLIST (music_view->details->song_list), 3, 48);
  	
  	gtk_signal_connect (GTK_OBJECT (music_view->details->song_list),
                             "select_row", GTK_SIGNAL_FUNC (selection_callback), NULL);
  
 	scrollwindow = gtk_scrolled_window_new (NULL, gtk_clist_get_vadjustment (GTK_CLIST (music_view->details->song_list)));
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);   
-	gtk_widget_set_usize (scrollwindow, 384, 232);
 	gtk_container_add (GTK_CONTAINER (scrollwindow), music_view->details->song_list);	
 	gtk_clist_set_selection_mode (GTK_CLIST (music_view->details->song_list), GTK_SELECTION_BROWSE);
 
-	gtk_box_pack_start (GTK_BOX (song_box), scrollwindow, 0, 0, 4);	
+	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), scrollwindow, FALSE, FALSE, 8);	
 	gtk_widget_show (music_view->details->song_list);
 	gtk_widget_show (scrollwindow);
 
+	/* make an hbox to hold the optional cover and other controls */
+	
+	control_box = gtk_hbox_new (FALSE, 4);
+	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), control_box, TRUE, TRUE, 4);	
+	gtk_widget_show (control_box);
+	
+	/* allocate a placeholder widget for the album cover, but don't show it yet */
+  	file_name = gnome_pixmap_file ("nautilus/i-directory.png");
+  	music_view->details->album_image = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
+	gtk_box_pack_start(GTK_BOX(control_box), music_view->details->album_image, 0, 0, 0);		
+  	g_free (file_name);
+
+	/* coming soon: allocate the play controls */
+	
 	/* prepare ourselves to receive dropped objects */
 	gtk_drag_dest_set (GTK_WIDGET (music_view),
 			   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
@@ -396,6 +405,73 @@ determine_attribute (GList *song_list, gboolean is_artist)
                 return NULL;
 }
 
+/* handle the "background changed" signal */
+
+static void
+nautilus_music_view_background_changed (NautilusMusicView *music_view)
+{
+	NautilusDirectory *directory;
+	NautilusBackground *background;
+	char *color_spec, *image;
+		
+	directory = nautilus_directory_get (music_view->details->uri);
+	background = nautilus_get_widget_background (GTK_WIDGET (music_view));
+	
+	color_spec = nautilus_background_get_color (background);
+	nautilus_directory_set_metadata (directory,
+					 NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_COLOR,
+					 DEFAULT_BACKGROUND_COLOR,
+					 color_spec);	
+	g_free (color_spec);
+
+	
+	image = nautilus_background_get_tile_image_uri (background);
+	nautilus_directory_set_metadata (directory,
+					 NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_IMAGE,
+					 NULL,
+					 image);	
+	g_free (image);
+	nautilus_directory_unref(directory);
+}
+
+/* set up the background of the music view from the metadata associated with the uri */
+
+static void
+nautilus_music_view_set_up_background (NautilusMusicView *music_view, const char *uri)
+{
+	NautilusDirectory *directory;
+	NautilusBackground *background;
+	char *background_color;
+	char *background_image;
+	
+	directory = nautilus_directory_get (music_view->details->uri);
+	
+	/* Connect the background changed signal to code that writes the color. */
+	background = nautilus_get_widget_background (GTK_WIDGET (music_view));
+        if (music_view->details->background_connection == 0) {
+		music_view->details->background_connection =
+			gtk_signal_connect_object (GTK_OBJECT (background),
+						   "changed",
+						   nautilus_music_view_background_changed,
+						   GTK_OBJECT (music_view));
+	}
+
+	/* Set up the background color and image from the metadata. */
+	background_color = nautilus_directory_get_metadata (directory,
+							    NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_COLOR,
+							    DEFAULT_BACKGROUND_COLOR);
+	background_image = nautilus_directory_get_metadata (directory,
+							    NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_IMAGE,
+							    NULL);
+	nautilus_directory_unref(directory);
+	
+	nautilus_background_set_color (background, background_color);	
+	g_free (background_color);
+	
+	nautilus_background_set_tile_image_uri (background, background_image);
+	g_free (background_image);
+}
+
 /* here's where we do most of the real work of populating the view with info from the new uri */
 /* FIXME bugzilla.eazel.com 722: need to use gnome-vfs for iterating the directory */
 
@@ -413,6 +489,9 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	int file_index = 1;
 	int track_index = 0;
 
+	/* set up the background from the metadata */	
+	nautilus_music_view_set_up_background(music_view, uri);
+	
 	/* iterate through the directory, collecting mp3 files and extracting id3 data if present */
 	/* soon we'll use gnomevfs, but at first just the standard unix stuff */
 	
@@ -498,11 +577,7 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	} else {
 		gtk_widget_hide (music_view->details->album_image);
         }
-	
-	/* set up background color */
-	nautilus_connect_background_to_directory_metadata_by_uri
-                (GTK_WIDGET (music_view), music_view->details->uri);
-	
+		
 	/* determine the album title/artist line */
 	
 	if (music_view->details->album_title) {
@@ -568,14 +643,17 @@ music_view_notify_location_change_callback (NautilusContentViewFrame *view,
 	nautilus_view_frame_request_progress_change (NAUTILUS_VIEW_FRAME (music_view->details->view_frame), &progress);
 }
 
-/* handle drag and drop */
-
+/* handle receiving dropped objects */
 static void  
 nautilus_music_view_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 					 int x, int y,
 					 GtkSelectionData *selection_data, guint info, guint time)
 {
+	char **uris;
+
 	g_return_if_fail (NAUTILUS_IS_MUSIC_VIEW (widget));
+
+	uris = g_strsplit (selection_data->data, "\r\n", 0);
 
 	switch (info) {
         case TARGET_GNOME_URI_LIST:
@@ -589,9 +667,17 @@ nautilus_music_view_drag_data_received (GtkWidget *widget, GdkDragContext *conte
                 nautilus_background_receive_dropped_color (nautilus_get_widget_background (widget),
                                                            widget, x, y, selection_data);
                 break;
-                
+  
+  	case TARGET_BGIMAGE:
+		nautilus_background_set_tile_image_uri
+			(nautilus_get_widget_background (widget),
+		 	uris[0]);
+
+  		break;              
         default:
                 g_warning ("unknown drop type");
                 break;
         }
+	
+	g_strfreev (uris);
 }
