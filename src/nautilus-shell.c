@@ -200,7 +200,7 @@ display_caveat (GtkWindow *parent_window)
 	}
 
   	text = nautilus_label_new
-		(_("Thank you for your interest in Nautilus Preview Release 2.\n "
+		(_("Thank you for your interest in Nautilus.\n "
 		   "\n"
 		   "As with any software under development, you should exercise caution when "
 		   "using Nautilus.  Eazel does not provide any guarantee that it will work "

@@ -341,7 +341,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	/* CORBA and Bonobo setup, which must be done before the location bar setup */
 	window->details->ui_container = bonobo_ui_container_new ();
 	bonobo_ui_container_set_win (window->details->ui_container,
-				     BONOBO_WINDOW(window));
+				     BONOBO_WINDOW (window));
 
 	/* Load the user interface from the XML file. */
 	window->details->shell_ui = bonobo_ui_component_new ("Nautilus Shell");
@@ -420,7 +420,7 @@ nautilus_window_constructed (NautilusWindow *window)
 		e_paned_set_position (E_PANED (window->content_hbox), sidebar_width);
 	}
 	gtk_widget_show (window->content_hbox);
-	bonobo_window_set_contents (BONOBO_WINDOW(window), window->content_hbox);
+	bonobo_window_set_contents (BONOBO_WINDOW (window), window->content_hbox);
 	
 	/* set up the index panel */
 	
@@ -496,8 +496,8 @@ nautilus_window_set_arg (GtkObject *object,
 		if (GTK_VALUE_STRING (*arg) == NULL) {
 			return;
 		}
-		old_name = bonobo_window_get_name (BONOBO_WINDOW(object));
-		bonobo_window_set_name (BONOBO_WINDOW(object), GTK_VALUE_STRING (*arg));
+		old_name = bonobo_window_get_name (BONOBO_WINDOW (object));
+		bonobo_window_set_name (BONOBO_WINDOW (object), GTK_VALUE_STRING (*arg));
 		/* This hack of using the time when the name first
 		 * goes non-NULL to be window-constructed time is
 		 * completely lame. But it works, so for now we leave
@@ -521,7 +521,7 @@ nautilus_window_get_arg (GtkObject *object,
 {
 	switch(arg_id) {
 	case ARG_APP_ID:
-		GTK_VALUE_STRING (*arg) = bonobo_window_get_name (BONOBO_WINDOW(object));
+		GTK_VALUE_STRING (*arg) = bonobo_window_get_name (BONOBO_WINDOW (object));
 		break;
 	case ARG_APP:
 		GTK_VALUE_OBJECT (*arg) = GTK_OBJECT (NAUTILUS_WINDOW (object)->application);
@@ -1420,8 +1420,8 @@ nautilus_window_set_content_view_widget (NautilusWindow *window,
 	}
 
 	/* Here's an explicit check for a problem that happens all too often. */
-	if (bonobo_window_xml_node_exists (BONOBO_WINDOW(window),
-					"/menu/File/Open Placeholder/Open")) {
+	if (bonobo_window_xml_node_exists (BONOBO_WINDOW (window),
+					   "/menu/File/Open Placeholder/Open")) {
 		g_warning ("There's a lingering Open menu item. "
 			   "This usually means a new Bonobo bug.");
 	}

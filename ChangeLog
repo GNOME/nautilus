@@ -1,3 +1,14 @@
+2000-11-03  Darin Adler  <darin@eazel.com>
+
+	* src/nautilus-shell.c: (display_caveat): Lets call the main
+	branch "Nautilus", not "Nautilus Preview Release 2". Later we
+	should change the caveat for cvs to be worded differently too.
+
+	* src/nautilus-window.c: (nautilus_window_constructed),
+	(nautilus_window_set_arg), (nautilus_window_get_arg),
+	(nautilus_window_set_content_view_widget): Fixed spaces removed
+	by the script (forgot to save this file before committing before).
+
 2000-11-03  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* Makefile.am:
