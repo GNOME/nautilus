@@ -424,9 +424,13 @@ nautilus_mime_get_short_list_applications_for_uri (const char *uri)
 
 	nautilus_directory_wait_for_metadata (directory);
 	metadata_application_add_ids = nautilus_directory_get_metadata_list 
-		(directory, NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_ADD, NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
+		(directory,
+		 NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_ADD,
+		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
 	metadata_application_remove_ids = nautilus_directory_get_metadata_list 
-		(directory, NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_REMOVE, NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
+		(directory,
+		 NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_REMOVE,
+		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
 	nautilus_directory_unref (directory);
 
 	mime_type = get_mime_type_from_uri (uri);
@@ -495,9 +499,13 @@ nautilus_mime_get_short_list_components_for_uri (const char *uri)
 	g_list_free (attributes);
 
 	metadata_component_add_ids = nautilus_directory_get_metadata_list 
-		(directory, NAUTILUS_METADATA_KEY_SHORT_LIST_COMPONENT_ADD, NAUTILUS_METADATA_SUBKEY_COMPONENT_IID);
+		(directory,
+		 NAUTILUS_METADATA_KEY_SHORT_LIST_COMPONENT_ADD,
+		 NAUTILUS_METADATA_SUBKEY_COMPONENT_IID);
 	metadata_component_remove_ids = nautilus_directory_get_metadata_list 
-		(directory, NAUTILUS_METADATA_KEY_SHORT_LIST_COMPONENT_REMOVE, NAUTILUS_METADATA_SUBKEY_COMPONENT_IID);
+		(directory,
+		 NAUTILUS_METADATA_KEY_SHORT_LIST_COMPONENT_REMOVE,
+		 NAUTILUS_METADATA_SUBKEY_COMPONENT_IID);
 	nautilus_directory_unref (directory);
 
 	mime_type = get_mime_type_from_uri (uri);
@@ -586,7 +594,9 @@ nautilus_mime_get_all_applications_for_uri (const char *uri)
 
 	nautilus_directory_wait_for_metadata (directory);
 	metadata_application_ids = nautilus_directory_get_metadata_list 
-		(directory, NAUTILUS_METADATA_KEY_EXPLICIT_APPLICATION, NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
+		(directory,
+		 NAUTILUS_METADATA_KEY_EXPLICIT_APPLICATION,
+		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
 	nautilus_directory_unref (directory);
 
 	mime_type = get_mime_type_from_uri (uri);
@@ -779,9 +789,15 @@ nautilus_mime_set_short_list_applications_for_uri (const char *uri,
 
 	nautilus_directory_wait_for_metadata (directory);
 	nautilus_directory_set_metadata_list 
-		(directory, NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_ADD, NAUTILUS_METADATA_SUBKEY_APPLICATION_ID, add_list);
+		(directory,
+		 NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_ADD,
+		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID,
+		 add_list);
 	nautilus_directory_set_metadata_list 
-		(directory, NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_REMOVE, NAUTILUS_METADATA_SUBKEY_APPLICATION_ID, remove_list);
+		(directory,
+		 NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_REMOVE,
+		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID,
+		 remove_list);
 	nautilus_directory_unref (directory);	
 
 	/* FIXME bugzilla.eazel.com 1269: 
@@ -823,9 +839,15 @@ nautilus_mime_set_short_list_components_for_uri (const char *uri,
 
 	nautilus_directory_wait_for_metadata (directory);
 	nautilus_directory_set_metadata_list 
-		(directory, NAUTILUS_METADATA_KEY_SHORT_LIST_COMPONENT_ADD, NAUTILUS_METADATA_SUBKEY_COMPONENT_IID, add_list);
+		(directory,
+		 NAUTILUS_METADATA_KEY_SHORT_LIST_COMPONENT_ADD,
+		 NAUTILUS_METADATA_SUBKEY_COMPONENT_IID,
+		 add_list);
 	nautilus_directory_set_metadata_list 
-		(directory, NAUTILUS_METADATA_KEY_SHORT_LIST_COMPONENT_REMOVE, NAUTILUS_METADATA_SUBKEY_COMPONENT_IID, remove_list);
+		(directory,
+		 NAUTILUS_METADATA_KEY_SHORT_LIST_COMPONENT_REMOVE,
+		 NAUTILUS_METADATA_SUBKEY_COMPONENT_IID,
+		 remove_list);
 	nautilus_directory_unref (directory);	
 
 	/* FIXME bugzilla.eazel.com 1269: 
@@ -1064,7 +1086,9 @@ get_explicit_content_view_iids_from_metafile (NautilusDirectory *directory)
 {
         if (directory != NULL) {
                 return nautilus_directory_get_metadata_list 
-                        (directory, NAUTILUS_METADATA_KEY_EXPLICIT_COMPONENT, NAUTILUS_METADATA_SUBKEY_COMPONENT_IID);
+                        (directory,
+			 NAUTILUS_METADATA_KEY_EXPLICIT_COMPONENT,
+			 NAUTILUS_METADATA_SUBKEY_COMPONENT_IID);
         } else {
 		return NULL;
 	}
@@ -1457,42 +1481,34 @@ get_mime_type_from_uri (const char *text_uri)
         GnomeVFSURI *vfs_uri;
 	GnomeVFSFileInfo *file_info;
 	GnomeVFSResult result;
-        const char *ctype;
 	char *type;
-
-	if (text_uri == NULL) {
-		return NULL;
-	}
 
 	type = NULL;
 
-	/* FIXME bugzilla.eazel.com 1263: 
-	   A better way would be to get this info using
-	   NautilusFile or NautilusDirectory or something, having
-	   previously ensured that the info has been computed
-	   async. */
-
-        vfs_uri = gnome_vfs_uri_new (text_uri);
-
-	if (vfs_uri != NULL) {
-		file_info = gnome_vfs_file_info_new ();
+	if (text_uri != NULL) {
+		/* FIXME bugzilla.eazel.com 1263: 
+		   A better way would be to get this info using
+		   NautilusFile or NautilusDirectory or something, having
+		   previously ensured that the info has been computed
+		   async. */
 		
-		result = gnome_vfs_get_file_info_uri (vfs_uri, file_info,
-						      GNOME_VFS_FILE_INFO_GET_MIME_TYPE
-						      | GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
-		if (result == GNOME_VFS_OK) {
-			ctype = gnome_vfs_file_info_get_mime_type (file_info);
+		vfs_uri = gnome_vfs_uri_new (text_uri);
+		
+		if (vfs_uri != NULL) {
+			file_info = gnome_vfs_file_info_new ();
 			
-			if (ctype != NULL) {
-				type = g_strdup (ctype);
+			result = gnome_vfs_get_file_info_uri (vfs_uri, file_info,
+							      GNOME_VFS_FILE_INFO_GET_MIME_TYPE
+							      | GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
+			if (result == GNOME_VFS_OK) {
+				type = g_strdup (gnome_vfs_file_info_get_mime_type (file_info));
+				gnome_vfs_file_info_unref (file_info);
+				gnome_vfs_uri_unref (vfs_uri);
 			}
-			
-			gnome_vfs_file_info_unref (file_info);
-			gnome_vfs_uri_unref (vfs_uri);
-		} 
+		}
 	}
 
-	return type;
+	return type == NULL ? g_strdup ("application/octet-stream") : type;
 }
 
 static int

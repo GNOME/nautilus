@@ -42,9 +42,6 @@
           information available from other means.
 */
 
-typedef struct NautilusDirectory NautilusDirectory;
-typedef struct NautilusDirectoryClass NautilusDirectoryClass;
-
 #define NAUTILUS_TYPE_DIRECTORY \
 	(nautilus_directory_get_type ())
 #define NAUTILUS_DIRECTORY(obj) \
@@ -62,9 +59,77 @@ typedef struct NautilusDirectoryClass NautilusDirectoryClass;
 typedef struct NautilusFile NautilusFile;
 #endif
 
+typedef struct NautilusDirectoryDetails NautilusDirectoryDetails;
+
+typedef struct
+{
+	GtkObject object;
+	NautilusDirectoryDetails *details;
+} NautilusDirectory;
+
 typedef void (*NautilusDirectoryCallback) (NautilusDirectory *directory,
 					   GList             *files,
 					   gpointer           callback_data);
+
+typedef struct
+{
+	GtkObjectClass parent_class;
+
+	/*** Notification signals for clients to connect to. ***/
+
+	/* The files_added signal is emitted as the directory model 
+	 * discovers new files.
+	 */
+	void     (* files_added)         (NautilusDirectory          *directory,
+					  GList                      *added_files);
+
+	/* The files_changed signal is emitted as changes occur to
+	 * existing files that are noticed by the synchronization framework,
+	 * including when an old file has been deleted. When an old file
+	 * has been deleted, this is the last chance to forget about these
+	 * file objects, which are about to be unref'd. Use a call to
+	 * nautilus_file_is_gone () to test for this case.
+	 */
+	void     (* files_changed)       (NautilusDirectory         *directory,
+					  GList                     *changed_files);
+
+	/* The metadata_changed signal is emitted when changes to the metadata
+	 * for the directory itself are made. Changes to file metadata just
+	 * result in calls to files_changed.
+	 */
+	void     (* metadata_changed)    (NautilusDirectory         *directory);
+
+	/* The done_loading signal is emitted when a directory load
+	 * request completes. This is needed because, at least in the
+	 * case where the directory is empty, the caller will receive
+	 * no kind of notification at all when a directory load
+	 * initiated by `nautilus_directory_file_monitor_add' completes.
+	 */
+	void     (* done_loading)        (NautilusDirectory         *directory);
+
+	/*** Virtual functions for subclasses to override. ***/
+	gboolean (* contains_file)       (NautilusDirectory         *directory,
+					  NautilusFile              *file);
+	void     (* call_when_ready)     (NautilusDirectory         *directory,
+					  GList                     *file_attributes,
+					  gboolean                   wait_for_metadata,
+					  NautilusDirectoryCallback  callback,
+					  gpointer                   callback_data);
+	void     (* cancel_callback)     (NautilusDirectory         *directory,
+					  NautilusDirectoryCallback  callback,
+					  gpointer                   callback_data);
+	void     (* file_monitor_add)    (NautilusDirectory          *directory,
+					  gconstpointer              client,
+					  GList                     *monitor_attributes,
+					  gboolean                   monitor_metadata,
+					  gboolean                   force_reload,
+					  NautilusDirectoryCallback  initial_files_callback,
+					  gpointer                   callback_data);
+	void     (* file_monitor_remove) (NautilusDirectory         *directory,
+					  gconstpointer              client);
+	gboolean (* are_all_files_seen)  (NautilusDirectory         *directory);
+	gboolean (* is_not_empty)        (NautilusDirectory         *directory);
+} NautilusDirectoryClass;
 
 /* Basic GtkObject requirements. */
 GtkType            nautilus_directory_get_type             (void);
@@ -152,68 +217,12 @@ void               nautilus_directory_file_monitor_remove  (NautilusDirectory   
  */
 gboolean           nautilus_directory_are_all_files_seen   (NautilusDirectory         *directory);
 
-/* Return true if the directory metadata has been loaded.
- * Until this is true, get_metadata calls will return defaults.
- * (We could have another way to indicate "don't know".)
- */
-gboolean           nautilus_directory_metadata_loaded      (NautilusDirectory         *directory);
-
 /* Return true if the directory is local. */
 gboolean           nautilus_directory_is_local             (NautilusDirectory         *directory);
 
-gboolean           nautilus_directory_is_search_directory  (NautilusDirectory         *directory);
-
-/* Return false if directory contains anything besides a nautilus metafile.
- * Only valid if directory is monitored.
- * Used by the Trash monitor
+/* Return false if directory contains anything besides a Nautilus metafile.
+ * Only valid if directory is monitored. Used by the Trash monitor.
  */
 gboolean	   nautilus_directory_is_not_empty	   (NautilusDirectory	      *directory);
-
-typedef struct NautilusDirectoryDetails NautilusDirectoryDetails;
-
-struct NautilusDirectory
-{
-	GtkObject object;
-	NautilusDirectoryDetails *details;
-};
-
-struct NautilusDirectoryClass
-{
-	GtkObjectClass parent_class;
-
-	/*** Notification signals for clients to connect to. ***/
-
-	/* The files_added signal is emitted as the directory model 
-	 * discovers new files.
-	 */
-	void   (* files_added)      (NautilusDirectory        *directory,
-				     GList                    *added_files);
-
-	/* The files_changed signal is emitted as changes occur to
-	 * existing files that are noticed by the synchronization framework,
-	 * including when an old file has been deleted. When an old file
-	 * has been deleted, this is the last chance to forget about these
-	 * file objects, which are about to be unref'd. Use a call to
-	 * nautilus_file_is_gone () to test for this case.
-	 */
-	void   (* files_changed)    (NautilusDirectory       *directory,
-				     GList                   *changed_files);
-
-	/* The metadata_changed signal is emitted when changes to the metadata
-	 * for the directory itself are made. Changes to file metadata just
-	 * result in calls to files_changed.
-	 */
-	void   (* metadata_changed) (NautilusDirectory       *directory);
-
-
-	/* The done_loading signal is emitted when a directory load
-	 * request completes. This is needed because, at least in the
-	 * case where the directory is empty, the caller will receive
-	 * no kind of notification at all when a directory load
-	 * initiated by `nautilus_directory_file_monitor_add' completes.
-	 */
-
-	void   (* done_loading) (NautilusDirectory       *directory);
-};
 
 #endif /* NAUTILUS_DIRECTORY_H */

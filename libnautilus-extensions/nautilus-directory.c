@@ -33,6 +33,8 @@
 #include "nautilus-gtk-macros.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-string.h"
+#include "nautilus-trash-directory.h"
+#include "nautilus-vfs-directory.h"
 #include <ctype.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
@@ -60,7 +62,6 @@ static guint signals[LAST_SIGNAL];
 
 static GHashTable *directories;
 
-static GnomeVFSURI *      construct_private_metafile_uri      (GnomeVFSURI *uri);
 static void               nautilus_directory_destroy          (GtkObject   *object);
 static void               nautilus_directory_initialize       (gpointer     object,
 							       gpointer     klass);
@@ -166,16 +167,20 @@ nautilus_directory_destroy (GtkObject *object)
 		nautilus_g_list_free_deep (directory->details->monitor_list);
 	}
 
-	g_hash_table_remove (directories, directory->details->uri_text);
+	g_hash_table_remove (directories, directory->details->uri);
 
 	if (directory->details->dequeue_pending_idle_id != 0) {
 		gtk_idle_remove (directory->details->dequeue_pending_idle_id);
 	}
  
-	g_free (directory->details->uri_text);
-	gnome_vfs_uri_unref (directory->details->uri);
-	gnome_vfs_uri_unref (directory->details->private_metafile_uri);
-	gnome_vfs_uri_unref (directory->details->public_metafile_uri);
+	g_free (directory->details->uri);
+	gnome_vfs_uri_unref (directory->details->private_metafile_vfs_uri);
+	if (directory->details->vfs_uri != NULL) {
+	    gnome_vfs_uri_unref (directory->details->vfs_uri);
+	}
+	if (directory->details->public_metafile_vfs_uri != NULL) {
+		gnome_vfs_uri_unref (directory->details->public_metafile_vfs_uri);
+	}
 	g_assert (directory->details->files == NULL);
 	nautilus_directory_metafile_destroy (directory);
 	g_assert (directory->details->directory_load_in_progress == NULL);
@@ -194,6 +199,14 @@ make_uri_canonical (const char *uri)
 {
 	size_t length;
 	char *canonical_uri, *old_uri, *with_slashes, *p;
+
+	/* Convert "gnome-trash:<anything>" and "trash:<anything>" to
+	 * "gnome-trash:<anything>".
+	 */
+	if (nautilus_istr_has_prefix (uri, "trash:")
+	    || nautilus_istr_has_prefix (uri, "gnome-trash:")) {
+		return g_strdup ("gnome-trash:");
+	}
 
 	/* FIXME bugzilla.eazel.com 648: 
 	 * This currently ignores the issue of two uris that are not identical but point
@@ -317,11 +330,11 @@ nautilus_directory_get_internal (const char *uri, gboolean create)
 			return NULL;
 		}
 
-		g_assert (strcmp (directory->details->uri_text, canonical_uri) == 0);
+		g_assert (strcmp (directory->details->uri, canonical_uri) == 0);
 
 		/* Put it in the hash table. */
 		g_hash_table_insert (directories,
-				     directory->details->uri_text,
+				     directory->details->uri,
 				     directory);
 	}
 
@@ -347,7 +360,7 @@ nautilus_directory_get_uri (NautilusDirectory *directory)
 {
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 
-	return g_strdup (directory->details->uri_text);
+	return g_strdup (directory->details->uri);
 }
 
 static GnomeVFSResult
@@ -387,21 +400,21 @@ nautilus_make_directory_and_parents (GnomeVFSURI *uri, guint permissions)
 }
 
 static GnomeVFSURI *
-construct_private_metafile_uri (GnomeVFSURI *uri)
+construct_private_metafile_uri (const char *uri)
 {
 	GnomeVFSResult result;
-	GnomeVFSURI *nautilus_directory_uri, *metafiles_directory_uri, *alternate_uri;
-	char *uri_as_string, *escaped_uri, *file_name;
 	char *user_directory;
+	GnomeVFSURI *user_directory_uri, *metafiles_directory_uri, *alternate_uri;
+	char *escaped_uri, *file_name;
 
 	/* Ensure that the metafiles directory exists. */
 	user_directory = nautilus_get_user_directory ();
-	nautilus_directory_uri = gnome_vfs_uri_new (user_directory);
+	user_directory_uri = gnome_vfs_uri_new (user_directory);
 	g_free (user_directory);
 
-	metafiles_directory_uri = gnome_vfs_uri_append_file_name (nautilus_directory_uri,
+	metafiles_directory_uri = gnome_vfs_uri_append_file_name (user_directory_uri,
 								  METAFILES_DIRECTORY_NAME);
-	gnome_vfs_uri_unref (nautilus_directory_uri);
+	gnome_vfs_uri_unref (user_directory_uri);
 	result = nautilus_make_directory_and_parents (metafiles_directory_uri,
 						      METAFILES_DIRECTORY_PERMISSIONS);
 	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_FILE_EXISTS) {
@@ -410,9 +423,7 @@ construct_private_metafile_uri (GnomeVFSURI *uri)
 	}
 
 	/* Construct a file name from the URI. */
-	uri_as_string = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
-	escaped_uri = nautilus_str_escape_slashes (uri_as_string);
-	g_free (uri_as_string);
+	escaped_uri = nautilus_str_escape_slashes (uri);
 	file_name = g_strconcat (escaped_uri, ".xml", NULL);
 	g_free (escaped_uri);
 
@@ -425,27 +436,27 @@ construct_private_metafile_uri (GnomeVFSURI *uri)
 }
 
 static NautilusDirectory *
-nautilus_directory_new (const char* uri)
+nautilus_directory_new (const char *uri)
 {
 	NautilusDirectory *directory;
 	GnomeVFSURI *vfs_uri;
-	GnomeVFSURI *private_metafile_uri;
-	GnomeVFSURI *public_metafile_uri;
 
-	vfs_uri = gnome_vfs_uri_new (uri);
-	if (vfs_uri == NULL) {
-		return NULL;
+	g_assert (uri != NULL);
+
+	if (strcmp (uri, "gnome-trash:") == 0) {
+		directory = NAUTILUS_DIRECTORY (gtk_type_new (NAUTILUS_TYPE_TRASH_DIRECTORY));
+	} else {
+		directory = NAUTILUS_DIRECTORY (gtk_type_new (NAUTILUS_TYPE_VFS_DIRECTORY));
 	}
 
-	private_metafile_uri = construct_private_metafile_uri (vfs_uri);
-	public_metafile_uri = gnome_vfs_uri_append_file_name (vfs_uri, METAFILE_NAME);
+	directory->details->uri = g_strdup (uri);
+	directory->details->private_metafile_vfs_uri = construct_private_metafile_uri (uri);
 
-	directory = gtk_type_new (NAUTILUS_TYPE_DIRECTORY);
+	vfs_uri = gnome_vfs_uri_new (uri);
 
-	directory->details->uri_text = g_strdup (uri);
-	directory->details->uri = vfs_uri;
-	directory->details->private_metafile_uri = private_metafile_uri;
-	directory->details->public_metafile_uri = public_metafile_uri;
+	directory->details->vfs_uri = vfs_uri;
+	directory->details->public_metafile_vfs_uri = vfs_uri == NULL ? NULL
+		: gnome_vfs_uri_append_file_name (vfs_uri, METAFILE_NAME);
 
 	return directory;
 }
@@ -455,53 +466,10 @@ nautilus_directory_is_local (NautilusDirectory *directory)
 {
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
 	
-	return gnome_vfs_uri_is_local (directory->details->uri);
-}
-
-/* FIXME: I think this should be named _is_virtual_directory. */
-gboolean
-nautilus_directory_is_search_directory (NautilusDirectory *directory)
-{
-	if (directory == NULL) {
-		return FALSE;
+	if (directory->details->vfs_uri == NULL) {
+		return TRUE;
 	}
-
-	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
-
-	/* Two hard-coded schemes for now. */
-	/* FIXME: Later we gnome-vfs will tell us somehow that this is
-	 * a virtual directory.
-	 */
-	return nautilus_istr_has_prefix (directory->details->uri_text, "search:")
-		|| nautilus_istr_has_prefix (directory->details->uri_text, "gnome-search:");
-
-#if 0
-	GnomeVFSFileInfo *info;
-	gboolean is_search_directory;
-	GnomeVFSResult result;
-
-	info = gnome_vfs_file_info_new ();
-
-	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
-	
-	/* FIXME bugzilla.eazel.com 1263: We can't just do sync. I/O
-	 * here! The model is that get_ functions in
-	 * NautilusDirectory/File are supposed to do no I/O. The
-	 * aforementioned bug talks about this a bit.
-	 */
-	/* FIXME bugzilla.eazel.com 1263: Should make use of some sort
-	 * of NautilusDirectory cover for getting the mime type.
-	 */
-	result = gnome_vfs_get_file_info_uri (directory->details->uri, 
-					      info,
-					      GNOME_VFS_FILE_INFO_GET_MIME_TYPE);
-	is_search_directory = result == GNOME_VFS_OK &&
-		nautilus_strcasecmp (info->mime_type, "x-directory/search") == 0;
-	
-	gnome_vfs_file_info_unref (info);
-
-	return is_search_directory;
-#endif
+	return gnome_vfs_uri_is_local (directory->details->vfs_uri);
 }
 
 gboolean
@@ -575,7 +543,6 @@ nautilus_directory_emit_done_loading (NautilusDirectory *directory)
 	gtk_signal_emit (GTK_OBJECT (directory),
 			 signals[DONE_LOADING]);
 }
-
 
 static char *
 uri_get_directory_part (const char *uri)
@@ -1016,7 +983,7 @@ any_non_metafile_item (gconstpointer item, gconstpointer callback_data)
 gboolean
 nautilus_directory_is_not_empty (NautilusDirectory *directory)
 {
-	char *public_metafile_uri_string;
+	char *public_metafile_uri;
 	gboolean not_empty;
 	
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
@@ -1024,16 +991,20 @@ nautilus_directory_is_not_empty (NautilusDirectory *directory)
 	/* Directory must be monitored for this call to be correct. */
 	g_return_val_if_fail (nautilus_directory_is_file_list_monitored (directory), FALSE);
 
-	public_metafile_uri_string = gnome_vfs_uri_to_string
-		(directory->details->public_metafile_uri,
-		 GNOME_VFS_URI_HIDE_NONE);
-
-	/* Return TRUE if the directory contains anything besides a metafile. */
-	not_empty = g_list_find_custom (directory->details->files,
-					public_metafile_uri_string,
-					any_non_metafile_item) != NULL;
-
-	g_free (public_metafile_uri_string);
+	if (directory->details->public_metafile_vfs_uri == NULL) {
+		not_empty = directory->details->files != NULL;
+	} else {
+		public_metafile_uri = gnome_vfs_uri_to_string
+			(directory->details->public_metafile_vfs_uri,
+			 GNOME_VFS_URI_HIDE_NONE);
+		
+		/* Return TRUE if the directory contains anything besides a metafile. */
+		not_empty = g_list_find_custom (directory->details->files,
+						public_metafile_uri,
+						any_non_metafile_item) != NULL;
+		
+		g_free (public_metafile_uri);
+	}
 
 	return not_empty;
 }
@@ -1194,6 +1165,7 @@ nautilus_self_check_directory (void)
 	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical (""), "file:");
 	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical ("file:/"), "file:///");
 	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical ("file:///"), "file:///");
+	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical ("TRASH:XXX"), "gnome-trash:");
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

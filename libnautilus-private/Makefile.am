@@ -98,6 +98,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-string-picker.c		\
 	nautilus-string.c			\
 	nautilus-text-caption.c			\
+	nautilus-trash-directory.c		\
 	nautilus-theme.c			\
 	nautilus-undo-context.c			\
 	nautilus-undo-manager.c			\
@@ -105,6 +106,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-user-level-manager.c		\
 	nautilus-view-identifier.c		\
 	nautilus-volume-monitor.c		\
+	nautilus-vfs-directory.c		\
 	nautilus-xml-extensions.c		\
 	$(NULL)
 
@@ -115,22 +117,23 @@ noinst_HEADERS =				\
 	nautilus-background.h			\
 	nautilus-bonobo-extensions.h		\
 	nautilus-bookmark.h			\
-	nautilus-caption-table.h		\
 	nautilus-caption.h			\
+	nautilus-caption-table.h		\
+	nautilus-cdrom-extensions.h		\
 	nautilus-debug.h			\
 	nautilus-default-file-icon.h		\
 	nautilus-directory-background.h		\
+	nautilus-directory.h			\
 	nautilus-directory-metafile.h		\
 	nautilus-directory-notify.h		\
 	nautilus-directory-private.h		\
-	nautilus-directory.h			\
 	nautilus-drag.h				\
 	nautilus-entry.h			\
 	nautilus-file-attributes.h		\
 	nautilus-file-changes-queue.h		\
+	nautilus-file.h				\
 	nautilus-file-private.h			\
 	nautilus-file-utilities.h		\
-	nautilus-file.h				\
 	nautilus-font-factory.h			\
 	nautilus-gdk-extensions.h		\
 	nautilus-gdk-pixbuf-extensions.h	\
@@ -149,10 +152,11 @@ noinst_HEADERS =				\
 	nautilus-icon-private.h			\
 	nautilus-icon-text-item.h		\
 	nautilus-image.h			\
+	nautilus-iso9660.h			\
 	nautilus-keep-last-vertical-box.h	\
 	nautilus-lib-self-check-functions.h	\
-	nautilus-link-set.h			\
 	nautilus-link.h				\
+	nautilus-link-set.h			\
 	nautilus-list-column-title.h		\
 	nautilus-list.h                         \
 	nautilus-metadata.h			\
@@ -162,28 +166,28 @@ noinst_HEADERS =				\
 	nautilus-preferences-box.h		\
 	nautilus-preferences-dialog.h		\
 	nautilus-preferences-group.h		\
+	nautilus-preferences.h			\
 	nautilus-preferences-item.h		\
 	nautilus-preferences-pane.h		\
-	nautilus-preferences.h			\
 	nautilus-program-chooser.h		\
 	nautilus-program-choosing.h		\
 	nautilus-radio-button-group.h		\
 	nautilus-search-bar-criterion.h		\
+	nautilus-search-bar-criterion-private.h	\
 	nautilus-self-checks.h			\
 	nautilus-stock-dialogs.h		\
+	nautilus-string.h			\
 	nautilus-string-list.h			\
 	nautilus-string-picker.h		\
-	nautilus-string.h			\
 	nautilus-text-caption.h			\
 	nautilus-theme.h			\
+	nautilus-trash-directory.h		\
 	nautilus-undo-context.h			\
 	nautilus-undo-manager.h			\
 	nautilus-undo-signal-handlers.h		\
 	nautilus-user-level-manager.h		\
+	nautilus-vfs-directory.h		\
 	nautilus-view-identifier.h		\
-	nautilus-xml-extensions.h		\
-	nautilus-cdrom-extensions.h		\
-	nautilus-iso9660.h			\
-	nautilus-search-bar-criterion-private.h	\
 	nautilus-volume-monitor.h		\
+	nautilus-xml-extensions.h		\
 	$(NULL)

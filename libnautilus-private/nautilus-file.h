@@ -142,10 +142,6 @@ GList *                 nautilus_file_get_emblem_names          (NautilusFile   
 char *                  nautilus_file_get_top_left_text         (NautilusFile                  *file);
 
 
-/* Attributes that behave specially for search results */
-gboolean                nautilus_file_is_search_result          (NautilusFile                  *file);
-char *                  nautilus_file_get_real_name             (NautilusFile                  *file);
-
 /* Permissions. */
 gboolean                nautilus_file_can_get_permissions       (NautilusFile                  *file);
 gboolean                nautilus_file_can_set_permissions       (NautilusFile                  *file);

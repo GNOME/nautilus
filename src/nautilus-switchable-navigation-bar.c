@@ -27,22 +27,18 @@
  * that can switch between the location bar and the search bar.
  */
 
-
 #include <config.h>
 #include "nautilus-switchable-navigation-bar.h"
+
 #include "nautilus-switchable-search-bar.h"
-
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
-
 #include <gtk/gtklabel.h>
 #include <gtk/gtksignal.h>
-
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
-
+#include <libnautilus-extensions/nautilus-string.h>
 #include <stdio.h>
-
 
 enum {
 	MODE_CHANGED,
@@ -168,7 +164,6 @@ nautilus_switchable_navigation_bar_set_location (NautilusNavigationBar *navigati
 						 const char *location)
 {
 	NautilusSwitchableNavigationBar *bar;
-	NautilusDirectory *directory;
 
 	bar = NAUTILUS_SWITCHABLE_NAVIGATION_BAR (navigation_bar);
 
@@ -181,8 +176,8 @@ nautilus_switchable_navigation_bar_set_location (NautilusNavigationBar *navigati
 					      location);
 	
 	/* Toggle the search button on and off appropriately */
-	directory = nautilus_directory_get (location);
-	if (nautilus_directory_is_search_directory (directory)) {
+	if (nautilus_istr_has_prefix (location, "search:")
+	    || nautilus_istr_has_prefix (location, "gnome-search:")) {
 		nautilus_switchable_navigation_bar_set_mode
 			(bar, NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH);
 	}
@@ -190,6 +185,4 @@ nautilus_switchable_navigation_bar_set_location (NautilusNavigationBar *navigati
 		nautilus_switchable_navigation_bar_set_mode
 			(bar, NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION);
 	}
-
-	nautilus_directory_unref (directory);
 }

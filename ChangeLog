@@ -1,3 +1,72 @@
+2000-08-14  Darin Adler  <darin@eazel.com>
+
+	More prep work for the trash directory.
+	
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-trash-directory.c:
+	(nautilus_trash_directory_initialize_class),
+	(nautilus_trash_directory_initialize),
+	(nautilus_trash_directory_destroy):
+	* libnautilus-extensions/nautilus-trash-directory.h:
+	* libnautilus-extensions/nautilus-vfs-directory.c:
+	(nautilus_vfs_directory_initialize_class),
+	(nautilus_vfs_directory_initialize),
+	(nautilus_vfs_directory_destroy):
+	* libnautilus-extensions/nautilus-vfs-directory.h:
+	Add subclasses for the trash and for general VFS directories.
+	Using refactoring techniques to move code down into these
+	subclasses. This is not intended to be a general framework,
+	but should be good enough to handle both these cases.
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(can_use_public_metafile), (metafile_read_check_for_directory),
+	(metafile_read_failed), (metafile_read_start), (allow_metafile),
+	(metafile_write_success_close_callback),
+	(nautilus_metafile_write_start), (start_monitoring_file_list),
+	(get_corresponding_file), (start_getting_file_info):
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_destroy), (make_uri_canonical),
+	(nautilus_directory_get_internal), (nautilus_directory_get_uri),
+	(construct_private_metafile_uri), (nautilus_directory_new),
+	(nautilus_directory_is_local), (nautilus_directory_is_not_empty),
+	(nautilus_self_check_directory):
+	* libnautilus-extensions/nautilus-directory.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_internal), (nautilus_file_rename),
+	(nautilus_file_get_gnome_vfs_uri), (nautilus_file_matches_uri),
+	(nautilus_file_compare_by_name),
+	(nautilus_file_compare_by_directory_name),
+	(nautilus_file_compare_for_sort), (nautilus_file_get_uri),
+	(nautilus_file_set_permissions),
+	(nautilus_file_get_string_attribute),
+	(nautilus_file_get_mime_type), (nautilus_file_is_in_trash),
+	(nautilus_file_contains_text), (nautilus_file_get_directory_name),
+	(nautilus_file_mark_gone), (nautilus_file_changed):
+	* libnautilus-extensions/nautilus-file.h:
+	Add code to handle case of directory that can't be handled by
+	gnome-vfs. Mostly some NULL checks. Also renamed fields to make
+	it clear that the text URI is the "real" one. Added code to
+	handle the "gnome-trash:" and "trash:" schemes specially in the
+	code to make URIs canonical.
+	
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(get_mime_type_from_uri): Return "application/octet-stream"
+	instead of NULL for unknown MIME type.
+	
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_display_selection_info): Eliminated the
+	nautilus_file_get_real_name call.
+	* src/nautilus-switchable-navigation-bar.c:
+	(nautilus_switchable_navigation_bar_set_location): Eliminated
+	the nautilus_directory_is_search_directory call.
+	
+	* src/file-manager/fm-search-list-view.c: (real_adding_file):
+	Fixed formatting mistake.
+	
+	* src/nautilus-view-frame.c: (set_up_for_new_location): Emit
+	the title_changed signal for each change in location.
+
 2000-08-14  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c:

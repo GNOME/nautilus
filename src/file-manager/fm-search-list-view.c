@@ -366,7 +366,8 @@ real_adding_file (FMListView *view, NautilusFile *file)
 	 */
 	attributes = nautilus_icon_factory_get_required_file_attributes ();		
 	attributes = g_list_prepend (attributes,
-				     NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);	nautilus_file_monitor_add (file, view, attributes, TRUE);
+				     NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
+	nautilus_file_monitor_add (file, view, attributes, TRUE);
 	g_list_free (attributes);
 }
 

@@ -395,6 +395,7 @@ set_up_for_new_location (NautilusViewFrame *view)
 {
 	g_free (view->details->title);
 	view->details->title = NULL;
+	gtk_signal_emit (GTK_OBJECT (view), signals[TITLE_CHANGED]);
 }
 
 void

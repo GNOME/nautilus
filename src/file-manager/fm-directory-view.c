@@ -1013,7 +1013,7 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 		}
 
 		if (first_item_name == NULL) {
-			first_item_name = nautilus_file_get_real_name (file);
+			first_item_name = nautilus_file_get_name (file);
 		}
 	}
 	

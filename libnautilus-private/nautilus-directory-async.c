@@ -197,6 +197,10 @@ can_use_public_metafile (NautilusDirectory *directory)
 	
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
 
+	if (directory->details->public_metafile_vfs_uri == NULL) {
+		return FALSE;
+	}
+
 	preference_value = nautilus_preferences_get_enum
 		(NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA,
 		 NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
@@ -270,9 +274,15 @@ static void
 metafile_read_check_for_directory (NautilusDirectory *directory)
 {
 	GList fake_list;
+	
+	/* We only get here if the public metafile is in question,
+	 * which in turn only happens if the URI is one that gnome-vfs
+	 * can handle.
+	 */
+	g_assert (directory->details->vfs_uri != NULL);
 
 	/* We have to do a get_info call to check if this a directory. */
-	fake_list.data = directory->details->uri;
+	fake_list.data = directory->details->vfs_uri;
 	fake_list.next = NULL;
 	fake_list.prev = NULL;
 	gnome_vfs_async_get_file_info
@@ -301,7 +311,7 @@ metafile_read_failed (NautilusDirectory *directory)
 		 */
 
 		/* First, check if we already know if it a directory. */
-		file = nautilus_file_get (directory->details->uri_text);
+		file = nautilus_file_get (directory->details->uri);
 		if (file == NULL || file->details->is_gone) {
 			need_directory_check = FALSE;
 			is_directory = FALSE;
@@ -374,8 +384,8 @@ metafile_read_start (NautilusDirectory *directory)
 
 	text_uri = gnome_vfs_uri_to_string
 		(directory->details->metafile_read_state->use_public_metafile
-		 ? directory->details->public_metafile_uri
-		 : directory->details->private_metafile_uri,
+		 ? directory->details->public_metafile_vfs_uri
+		 : directory->details->private_metafile_vfs_uri,
 		 GNOME_VFS_URI_HIDE_NONE);
 
 	directory->details->metafile_read_state->handle = nautilus_read_entire_file_async
@@ -387,15 +397,15 @@ metafile_read_start (NautilusDirectory *directory)
 static gboolean
 allow_metafile (NautilusDirectory *directory)
 {
-	const char *scheme;
+	const char *uri;
+
+	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
 	/* Note that this inhibits both reading and writing metadata
 	 * completely. In the future we may want to inhibit writing to
 	 * the real directory while allowing parallel-directory
 	 * metadata.
 	 */
-
-	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
 	/* For now, hard-code these schemes. Perhaps we should
 	 * hardcode the schemes that are good for metadata instead of
@@ -405,13 +415,13 @@ allow_metafile (NautilusDirectory *directory)
 	 * better way can wait until we have support for metadata
 	 * access inside gnome-vfs.
 	 */
-	scheme = gnome_vfs_uri_get_scheme (directory->details->uri);
-	if (nautilus_strcasecmp (scheme, "info") == 0
-	    || nautilus_strcasecmp (scheme, "help") == 0
-	    || nautilus_strcasecmp (scheme, "man") == 0
-	    || nautilus_strcasecmp (scheme, "pipe") == 0
-	    || nautilus_strcasecmp (scheme, "search") == 0
-	    || nautilus_strcasecmp (scheme, "gnome-search") == 0) {
+	uri = directory->details->uri;
+	if (nautilus_istr_has_prefix (uri, "info:")
+	    || nautilus_istr_has_prefix (uri, "help:")
+	    || nautilus_istr_has_prefix (uri, "man:")
+	    || nautilus_istr_has_prefix (uri, "pipe:")
+	    || nautilus_istr_has_prefix (uri, "search:")
+	    || nautilus_istr_has_prefix (uri, "gnome-search:")) {
 		return FALSE;
 	}
 	
@@ -498,7 +508,7 @@ metafile_write_success_close_callback (GnomeVFSAsyncHandle *handle,
 		/* A synchronous unlink is OK here because the private
 		 * metafiles are local, so an unlink is very fast.
 		 */
-		gnome_vfs_unlink_from_uri (directory->details->private_metafile_uri);
+		gnome_vfs_unlink_from_uri (directory->details->private_metafile_vfs_uri);
 	}
 
 	metafile_write_done (directory);
@@ -561,8 +571,8 @@ nautilus_metafile_write_start (NautilusDirectory *directory)
 	gnome_vfs_async_create_uri
 		(&directory->details->metafile_write_state->handle,
 		 directory->details->metafile_write_state->use_public_metafile
-		 ? directory->details->public_metafile_uri
-		 : directory->details->private_metafile_uri,
+		 ? directory->details->public_metafile_vfs_uri
+		 : directory->details->private_metafile_vfs_uri,
 		 GNOME_VFS_OPEN_WRITE, FALSE, METAFILE_PERMISSIONS,
 		 metafile_write_create_callback, directory);
 }
@@ -1605,13 +1615,13 @@ start_monitoring_file_list (NautilusDirectory *directory)
 
 	mark_all_files_unconfirmed (directory);
 
-	g_assert (directory->details->uri_text != NULL);
+	g_assert (directory->details->uri != NULL);
 	directory->details->directory_load_list_last_handled
 		= GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
 	
 	gnome_vfs_async_load_directory
 		(&directory->details->directory_load_in_progress, /* handle */
-		 directory->details->uri_text,                    /* uri */
+		 directory->details->uri,                         /* uri */
 		 (GNOME_VFS_FILE_INFO_GET_MIME_TYPE	          /* options */
 		  | GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
 		 NULL, 					          /* sort_rules */
@@ -1650,7 +1660,7 @@ get_corresponding_file (NautilusDirectory *directory)
 		return file;
 	}
 
-	return nautilus_file_get_existing (directory->details->uri_text);
+	return nautilus_file_get_existing (directory->details->uri);
 }
 
 void
@@ -2199,15 +2209,24 @@ start_getting_file_info (NautilusDirectory *directory)
 	}
 
 	/* Figure out which file to get file info for. */
-	file = select_needy_file (directory, lacks_info, wants_info);
-	if (file == NULL) {
-		return;
-	}
+	do {
+		file = select_needy_file (directory, lacks_info, wants_info);
+		if (file == NULL) {
+			return;
+		}
+		
+		uri = nautilus_file_get_uri (file);
+		vfs_uri = gnome_vfs_uri_new (uri);
+		g_free (uri);
+		
+		if (vfs_uri == NULL) {
+			file->details->get_info_failed = TRUE;
+			start_getting_file_info (directory);
+		}
+	} while (vfs_uri == NULL);
 
+	/* Found one we need to get the info for. */
 	directory->details->get_info_file = file;
-	uri = nautilus_file_get_uri (file);
-	vfs_uri = gnome_vfs_uri_new (uri);
-	g_free (uri);
 	fake_list.data = vfs_uri;
 	fake_list.prev = NULL;
 	fake_list.next = NULL;

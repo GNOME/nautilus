@@ -41,10 +41,10 @@ typedef struct TopLeftTextReadState TopLeftTextReadState;
 struct NautilusDirectoryDetails
 {
 	/* The location. */
-	char *uri_text;
-	GnomeVFSURI *uri;
-	GnomeVFSURI *private_metafile_uri;
-	GnomeVFSURI *public_metafile_uri;
+	char *uri;
+	GnomeVFSURI *vfs_uri;
+	GnomeVFSURI *private_metafile_vfs_uri;
+	GnomeVFSURI *public_metafile_vfs_uri;
 
 	/* The file objects. */
 	NautilusFile *as_file;
