@@ -1139,7 +1139,7 @@ load_icon_file (const char    *filename,
 				width = gdk_pixbuf_get_width (pixbuf); 
 				height = gdk_pixbuf_get_height (pixbuf);
 				size = MAX (width, height);
-                                if (size > NAUTILUS_ICON_SIZE_THUMBNAIL) {
+                                if (size > NAUTILUS_ICON_SIZE_THUMBNAIL && !gdk_pixbuf_get_has_alpha(pixbuf)) {
                                         add_frame=TRUE;
                                 }
                                 if (size >  nominal_size * NAUTILUS_ICON_SIZE_THUMBNAIL / NAUTILUS_ICON_SIZE_STANDARD) {
