@@ -41,6 +41,7 @@ noinst_PROGRAMS =\
 	test-nautilus-label 		\
 	test-nautilus-label-background	\
 	test-nautilus-label-flavorful	\
+	test-nautilus-label-offset	\
 	test-nautilus-label-scrolled	\
 	test-nautilus-label-simple	\
 	test-nautilus-label-wrapped	\
@@ -66,6 +67,7 @@ test_nautilus_image_tile_SOURCES = test-nautilus-image-tile.c test.c
 test_nautilus_label_SOURCES = test-nautilus-label.c
 test_nautilus_label_background_SOURCES = test-nautilus-label-background.c test.c
 test_nautilus_label_flavorful_SOURCES = test-nautilus-label-flavorful.c
+test_nautilus_label_offset_SOURCES = test-nautilus-label-offset.c test.c
 test_nautilus_label_scrolled_SOURCES = test-nautilus-label-scrolled.c test.c
 test_nautilus_label_simple_SOURCES = test-nautilus-label-simple.c
 test_nautilus_label_wrapped_SOURCES = test-nautilus-label-wrapped.c

@@ -4,6 +4,7 @@
 
 #include <config.h>
 #include <gtk/gtk.h>
+#include <gnome.h>
 #include <libgnomevfs/gnome-vfs-init.h>
 
 #include <libnautilus-extensions/nautilus-art-extensions.h>
@@ -14,6 +15,7 @@
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-image-with-background.h>
 #include <libnautilus-extensions/nautilus-image.h>
@@ -21,6 +23,7 @@
 #include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-string-list.h>
 #include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-file-utilities.h>
 
 void       test_init                            (int          *argc,
 						 char       ***argv);
