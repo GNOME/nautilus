@@ -252,6 +252,8 @@ main (int argc, char *argv[])
 	
 	bonobo_activate (); /* do now since we need it before main loop */
 
+	application = NULL;
+ 
 	/* Do either the self-check or the real work. */
 	if (perform_self_check) {
 #ifndef NAUTILUS_OMIT_SELF_CHECK
@@ -279,12 +281,19 @@ main (int argc, char *argv[])
 		if (is_event_loop_needed ()) {
 			gtk_main ();
 		}
-		bonobo_object_unref (application);
 	}
 
 	poptFreeContext (popt_context);
 
 	gnome_vfs_shutdown ();
+
+	/* This has to be done after gnome_vfs_shutdown, because shutdown
+	 * can call pending completion callbacks which reference application.
+	 */
+	if (application != NULL) {
+		bonobo_object_unref (application);
+	}
+
 	eel_debug_shut_down ();
 	bonobo_ui_debug_shutdown ();
 

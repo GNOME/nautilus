@@ -1,3 +1,9 @@
+2003-09-18  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-main.c (main):
+	Call gnome_vfs_shutdown before unreffing application to
+	avoid crashes on shutdown.
+
 2003-09-16  Alexander Larsson  <alexl@redhat.com>
 
 	* cut-n-paste-code/gsequence/gsequence.c:
