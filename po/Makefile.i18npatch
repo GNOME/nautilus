@@ -1,5 +1,5 @@
---- Makefile.in.in.clean	Sat Oct 28 15:31:52 2000
-+++ Makefile.in.in	Sat Oct 28 16:11:18 2000
+--- Makefile.in.in.clean	Thu Nov  9 11:09:02 2000
++++ Makefile.in.in	Thu Nov  9 12:21:17 2000
 @@ -33,7 +33,9 @@
  GMSGFMT = PATH=../src:$$PATH @GMSGFMT@
  MSGFMT = @MSGFMT@
@@ -42,9 +42,8 @@
 +	  cp $$lang.po $$lang.old.po; \
  	  echo "$$lang:"; \
 -	  if $(MSGMERGE) $$lang.old.po $(PACKAGE).pot -o $$lang.po; then \
--	    rm -f $$lang.old.po; \
 +	  if $(MSGMERGE) $$lang; then \
-+	  rm -f $$lang.old.po; \
+ 	    rm -f $$lang.old.po; \
  	  else \
  	    echo "msgmerge for $$cat failed!"; \
 -	    rm -f $$lang.po; \
@@ -53,8 +52,9 @@
  	done
  
 -POTFILES: POTFILES.in
-+headers:
++headers: POTFILES.in
 +	$(GENHEAD)
++	touch headers
 +
 +POTFILES: POTFILES.in headers
  	( if test 'x$(srcdir)' != 'x.'; then \
