@@ -96,12 +96,13 @@ struct NautilusMozillaContentViewDetails {
 	/* For async NautilusView messages */
 	char		*pending_title;		/*for set_title*/
 	char		*pending_report_uri;	/*for report_location_change*/
-	char		*pending_open_uri;	/*for location_change*/
 	char		*pending_link_message;	/*for report_status*/
 	double		pending_load_progress;	/*for load_progress*/
+	char		*pending_open_uri;	/*for open_location*/
 
 	gboolean	is_pending_set_title :1;
 	gboolean	is_pending_report_load_failed :1;
+	gboolean	is_pending_report_load_underway :1;
 	gboolean	is_pending_report_load_complete :1;
 	gboolean	is_pending_report_location_change :1;
 	gboolean	is_pending_report_status :1;
@@ -145,6 +146,9 @@ static void	mozilla_location_callback 			(GtkMozEmbed			*mozilla,
 static void	mozilla_net_state_callback 			(GtkMozEmbed			*mozilla,
 								 gint				state_flags,
 								 guint				status_flags,
+								 gpointer			user_data);
+
+static void	mozilla_net_start_callback			(GtkMozEmbed			*mozilla,
 								 gpointer			user_data);
 
 static void	mozilla_net_stop_callback			(GtkMozEmbed			*mozilla,
@@ -223,19 +227,22 @@ static char *	eazel_services_scheme_from_http			(NautilusMozillaContentView	*vie
 
 static void	async_set_title 				(NautilusMozillaContentView 	*view,
 								 const char 			*title);
+static void	async_report_load_failed 			(NautilusMozillaContentView 	*view);
+
+static void	async_report_load_underway 			(NautilusMozillaContentView 	*view);
+
+static void	async_report_load_complete 			(NautilusMozillaContentView 	*view);
+
 static void 	async_report_location_change			(NautilusMozillaContentView	*view,
 								 const char 			*report_uri);
 static void 	async_report_status	 			(NautilusMozillaContentView	*view,
 								 const char 			*link_message);
-static void 	async_open_location	 			(NautilusMozillaContentView	*view,
-								 const char 			*open_uri);
-
-static void	async_report_load_failed 			(NautilusMozillaContentView 	*view);
-
-static void	async_report_load_complete 			(NautilusMozillaContentView 	*view);
 
 static void	async_report_load_progress 			(NautilusMozillaContentView 	*view,
 								 double 			load_progress);
+
+static void 	async_open_location	 			(NautilusMozillaContentView	*view,
+								 const char 			*open_uri);
 
 
 /* BonoboControl callbacks */
@@ -318,6 +325,12 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 	gtk_signal_connect_while_alive (GTK_OBJECT (view->details->mozilla), 
 					"net_state",
 					GTK_SIGNAL_FUNC (mozilla_net_state_callback),
+					view,
+					GTK_OBJECT (view->details->mozilla));
+
+	gtk_signal_connect_while_alive (GTK_OBJECT (view->details->mozilla), 
+					"net_start",
+					GTK_SIGNAL_FUNC (mozilla_net_start_callback),
 					view,
 					GTK_OBJECT (view->details->mozilla));
 
@@ -726,6 +739,16 @@ mozilla_location_callback (GtkMozEmbed *mozilla, gpointer user_data)
 
 	DEBUG_MSG (("=%s : current='%s' new='%s'\n", __FUNCTION__, view->details->uri, new_location_translated));
 
+	/* FIXME bugzilla.eazel.com 6736
+	 * Often times, we get a location callback with the uri being ex "http://www.eazel.com/"
+	 * when the current uri is "http://www.eazel.com".  this causes report_location_change
+	 * to fire and the throbber to cut out early.
+	 * 
+	 * The best thing here (since there may be other URI comparison/cononicalization
+	 * rules that differ between nautilus and mozilla) might be just to keep track
+	 * of whether the throbber should be spinnig and go call report_load_underway immediately
+	 */ 
+
 	if (view->details->uri == NULL || !uris_identical (new_location_translated, view->details->uri)) {
 		update_nautilus_uri (view, new_location_translated);
 	} else {
@@ -814,6 +837,23 @@ mozilla_net_state_callback (GtkMozEmbed	*mozilla,
 }
 
 static void
+mozilla_net_start_callback (GtkMozEmbed 	*mozilla,
+			    gpointer		user_data)
+{
+ 	NautilusMozillaContentView	*view;
+
+	DEBUG_MSG (("+%s\n", __FUNCTION__));
+
+	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
+
+	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla));
+
+	async_report_load_underway (view);
+
+	DEBUG_MSG (("-%s\n", __FUNCTION__));
+}
+
+static void
 mozilla_net_stop_callback (GtkMozEmbed 	*mozilla,
 			   gpointer	user_data)
 {
@@ -824,8 +864,6 @@ mozilla_net_stop_callback (GtkMozEmbed 	*mozilla,
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
 
 	g_assert (GTK_MOZ_EMBED (mozilla) == view->details->mozilla);
-
-	DEBUG_MSG (("gtkembedmoz signal: 'net_stop'\n"));
 
 	async_report_load_complete (view);
 
@@ -932,12 +970,12 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
  	NautilusMozillaContentView	*view;
 	char				*href;
 	char 				*href_full;
-	char 				*href_translated;
+	char 				*href_mozilla;
 	gint				ret;
 
 	href = NULL;
 	href_full = NULL;
-	href_translated = NULL;
+	href_mozilla = NULL;
 	ret = NS_DOM_EVENT_IGNORED;
 
 	g_return_val_if_fail (GTK_IS_MOZ_EMBED (mozilla), NS_DOM_EVENT_IGNORED);
@@ -957,39 +995,85 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 	href = mozilla_events_get_href_for_event (dom_event);
 
 	if (href != NULL) {
+
+		/*
+		 * What's up with these translations?
+		 * mozilla_to_nautilus translates http://localhost:160xx -> eazel-services:///
+		 * nautilus_to_mozilla translates eazel--services -> http://localhost:160xx
+		 * 
+		 * Case 0)
+		 *  "href" is a full normal HTTP uri
+		 *  href_full is identical to href
+		 *  Both the mozilla and nautilus versions of the href are identical
+		 *  We let the navigate continue w/o interrupting
+		 *
+		 * Case 1)
+		 *  "href" is a partial URI inside a normal HTTP page
+		 *  href_full is the full version of the uri
+		 *  Like in case 0,
+		 *  Both the mozilla and nautilus versions of the href are identical
+		 *  We let the navigate continue w/o interrupting
+		 *
+		 * Case 2)
+		 *   "href" is a relative link inside an eazel-services page
+		 *   href_full is "eazel-services:///<whatever>"
+		 *   href_mozilla is "http://localhost:160xx/<whatever>"
+		 *   We unnecessarally interrupt the navigate
+		 * 
+		 * Case 3)
+		 *   "href" is a full eazel-services: URI
+		 *   href_full is "eazel-services:///<whatever>"
+		 *   href_mozilla is "http://localhost:160xx/<whatever>"
+		 *   We need to interrupt the navigate to translate.  It's the
+		 *   same case as case (2) in the if statement below
+		 *
+		 * It's not actually feasible to get an http://localhost:160xx
+		 * as href_full here, so we don't handle the case where
+		 * href_full needs to be converted to a "nautilus" URI
+		 */
 	
 		href_full = make_full_uri_from_relative (view->details->uri, href);
-		href_translated = translate_uri_mozilla_to_nautilus (view, href_full);
+		href_mozilla = translate_uri_nautilus_to_mozilla (view, href_full);
 
-		DEBUG_MSG (("=%s href='%s' full='%s' xlate='%s'\n", __FUNCTION__, href, href_full, href_translated));
+		DEBUG_MSG (("=%s href='%s' full='%s' xlate='%s'\n", __FUNCTION__, href, href_full, href_mozilla));
 
-		if (href[0] == '#') {
+		if (href_mozilla == NULL) {
+			/* An eazel-services URL when the user isn't logged in.
+			 * Right now, we report a load error.  But we
+			 * could tell ammonite to prompt for login
+			 */
+			async_report_load_failed (view);
+			ret = NS_DOM_EVENT_CONSUMED;
+		} else if (href[0] == '#') {
 			/* a navigation to an anchor within the same page, let it pass */
 			ret = NS_DOM_EVENT_IGNORED;
 		} else if (0 == strncmp (href, "javascript:", strlen ("javascript:"))) {
 			/* This is a bullshit javascript uri, let it pass */
 			ret = NS_DOM_EVENT_IGNORED;			
-		} else if (should_uri_navigate_bypass_nautilus (href_translated)) {
-			if (should_mozilla_load_uri_directly (href_translated) 
-			    && 0 == strcmp (href_full, href_translated)) {
+		} else if (should_uri_navigate_bypass_nautilus (href_full)) {
+			if (should_mozilla_load_uri_directly (href_full) 
+			    && 0 == strcmp (href_full, href_mozilla)) {
 				/* If the URI doesn't need to be translated and we can load it directly,
 				 * then just keep going...report_location_change will happen in the
 				 * mozilla_location_callback.
 				 */
+				/* This is cases (0) and (1) above */
 				DEBUG_MSG (("=%s : allowing navigate to continue\n", __FUNCTION__));
 				ret = NS_DOM_EVENT_IGNORED;
 			} else {
 				/* Otherwise, cancel the current navigation and do it ourselves */
+				/* This is cases (2) and (3) above */
 				DEBUG_MSG (("=%s : handling navigate ourselves\n", __FUNCTION__));
 
-				update_nautilus_uri (view, href_translated);
-				navigate_mozilla_to_nautilus_uri (view, href_translated);
+				navigate_mozilla_to_nautilus_uri (view, href_full);
+				update_nautilus_uri (view, href_full);
+
 				ret = NS_DOM_EVENT_CONSUMED;
 			}
 		} else {
 			/* With some schemes, navigation needs to be funneled through nautilus. */
 			DEBUG_MSG (("=%s : funnelling navigation through nautilus\n", __FUNCTION__));
-			async_open_location (view, href_translated);
+			async_open_location (view, href_full);
 
 			ret = NS_DOM_EVENT_CONSUMED;
 		}
@@ -997,7 +1081,7 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 		DEBUG_MSG (("=%s no href, ignoring\n", __FUNCTION__));
 	}
 
-	g_free (href_translated);
+	g_free (href_mozilla);
 	g_free (href_full);
 	g_free (href);
 
@@ -1027,8 +1111,9 @@ vfs_open_callback (GnomeVFSAsyncHandle *handle, GnomeVFSResult result, gpointer 
 	if (result != GNOME_VFS_OK)
 	{
 		DEBUG_MSG ((">nautilus_view_report_load_failed\n"));
-		nautilus_view_report_load_failed (view->details->nautilus_view);
 		gtk_moz_embed_close_stream (view->details->mozilla);
+		/* NOTE: the view may go away after a call to report_load_failed */
+		nautilus_view_report_load_failed (view->details->nautilus_view);
 	} else {
 		if (view->details->vfs_read_buffer == NULL) {
 			view->details->vfs_read_buffer = g_malloc (VFS_READ_BUFFER_SIZE);
@@ -1212,8 +1297,6 @@ error:
 static void
 update_nautilus_uri (NautilusMozillaContentView *view, const char *nautilus_uri)
 {
-	cancel_pending_vfs_operation (view);
-
 	g_free (view->details->uri);
 	view->details->uri = g_strdup (nautilus_uri);
 
@@ -1348,7 +1431,14 @@ make_full_uri_from_relative (const char *base_uri, const char *uri)
 		size_t base_uri_length;
 		char *separator;
 
-		mutable_base_uri = g_strdup (base_uri);
+		/* We may need one extra character
+		 * to append a "/" to uri's that have no "/"
+		 * (such as help:)
+		 */
+
+		mutable_base_uri = g_malloc(strlen(base_uri)+2);
+		strcpy (mutable_base_uri, base_uri);
+		
 		uri_current = mutable_uri = g_strdup (uri);
 
 		/* Chew off Fragment and Query from the base_url */
@@ -1508,6 +1598,10 @@ test_make_full_uri_from_relative (void)
 	TEST_PARTIAL ("g/..", "http://a/b/c/");
 	TEST_PARTIAL ("g/../", "http://a/b/c/");
 	TEST_PARTIAL ("g/../g", "http://a/b/c/g");
+
+	base_uri = "help:control-center";
+
+	TEST_PARTIAL ("index.html#gnomecc-intro", "help:control-center/index.html#gnomecc-intro");
 
 	return success;
 }
@@ -1756,6 +1850,25 @@ eazel_services_scheme_from_http	(NautilusMozillaContentView	*view,
  * calls below
  */ 
 
+#define DISPATCH_NOARG_TMPL(FUNCNAME) \
+	static int /* GtkFunction */								\
+	dispatch_##FUNCNAME (gpointer data)							\
+	{											\
+		NautilusMozillaContentView *view;						\
+												\
+		view = NAUTILUS_MOZILLA_CONTENT_VIEW (data);					\
+												\
+		view->details->is_pending_##FUNCNAME = FALSE;					\
+												\
+		if (!GTK_OBJECT_DESTROYED (view)) {						\
+			DEBUG_MSG ((">>nautilus_view_" #FUNCNAME "\n")); 			\
+			nautilus_view_##FUNCNAME (view->details->nautilus_view); 		\
+		}										\
+		gtk_object_unref (GTK_OBJECT (view));						\
+												\
+		return 0;									\
+	}
+
 #define DISPATCH_STRING_TMPL(FUNCNAME, REALFUNCNAME, ARGNAME) \
 	static int /* GtkFunction */								\
 	dispatch_##FUNCNAME (gpointer data)							\
@@ -1777,13 +1890,37 @@ eazel_services_scheme_from_http	(NautilusMozillaContentView	*view,
 		return 0;									\
 	}
 
+#define DISPATCH_STRING_NO_DEBUG_TMPL(FUNCNAME, REALFUNCNAME, ARGNAME) \
+	static int /* GtkFunction */								\
+	dispatch_##FUNCNAME (gpointer data)							\
+	{											\
+		NautilusMozillaContentView *view;						\
+												\
+		view = NAUTILUS_MOZILLA_CONTENT_VIEW (data);					\
+												\
+		view->details->is_pending_##FUNCNAME = FALSE;					\
+												\
+		if (!GTK_OBJECT_DESTROYED (view)) {						\
+			nautilus_view_##REALFUNCNAME (view->details->nautilus_view, view->details->pending_##ARGNAME); \
+			g_free (view->details->pending_##ARGNAME);				\
+			view->details->pending_##ARGNAME = NULL;				\
+		}										\
+		gtk_object_unref (GTK_OBJECT (view));						\
+												\
+		return 0;									\
+	}
+
+DISPATCH_NOARG_TMPL (report_load_failed)
+
+DISPATCH_NOARG_TMPL (report_load_underway)
+
+DISPATCH_NOARG_TMPL (report_load_complete)
+
 DISPATCH_STRING_TMPL (set_title, set_title, title)
 
-DISPATCH_STRING_TMPL (report_status, report_status, link_message)
+DISPATCH_STRING_NO_DEBUG_TMPL (report_status, report_status, link_message)
 
 DISPATCH_STRING_TMPL (open_location, open_location_in_this_window, open_uri)
-
-/* NOTE: This calls report_load_underway as well to start the throbber throbbing */
 
 static int /* GtkFunction */
 dispatch_report_location_change (gpointer data)
@@ -1796,49 +1933,10 @@ dispatch_report_location_change (gpointer data)
 
 	if (!GTK_OBJECT_DESTROYED (view)) {
 		nautilus_view_report_location_change (view->details->nautilus_view, view->details->pending_report_uri, NULL, view->details->pending_report_uri);
-		nautilus_view_report_load_underway (view->details->nautilus_view);
 		DEBUG_MSG ((">>nautilus_view_report_location_change\n"));
 
 		g_free (view->details->pending_report_uri);
 		view->details->pending_report_uri = NULL;
-	}
-
-	gtk_object_unref (GTK_OBJECT (view));
-
-	return 0;
-}
-
-static int /* GtkFunction */
-dispatch_report_load_failed (gpointer data)
-{
-	NautilusMozillaContentView *view;
-
-	view = NAUTILUS_MOZILLA_CONTENT_VIEW (data);
-
-	view->details->is_pending_report_load_failed = FALSE;
-
-	if (!GTK_OBJECT_DESTROYED (view)) {
-		DEBUG_MSG ((">>nautilus_view_report_load_failed\n"));
-		nautilus_view_report_load_failed (view->details->nautilus_view);
-	}
-
-	gtk_object_unref (GTK_OBJECT (view));
-
-	return 0;
-}
-
-static int /* GtkFunction */
-dispatch_report_load_complete (gpointer data)
-{
-	NautilusMozillaContentView *view;
-
-	view = NAUTILUS_MOZILLA_CONTENT_VIEW (data);
-
-	view->details->is_pending_report_load_complete = FALSE;
-
-	if (!GTK_OBJECT_DESTROYED (view)) {
-		DEBUG_MSG ((">>nautilus_view_report_load_complete\n"));
-		nautilus_view_report_load_complete (view->details->nautilus_view);
 	}
 
 	gtk_object_unref (GTK_OBJECT (view));
@@ -1874,6 +1972,19 @@ dispatch_report_load_progress (gpointer data)
  * to ensure the object is still valid
  */
 
+#define ASYNC_NOARG_WRAPPER_TMPL(FUNCNAME)  \
+	static void									\
+	async_##FUNCNAME (NautilusMozillaContentView *view)	\
+	{										\
+		DEBUG_MSG (("~" #FUNCNAME "\n")); 					\
+											\
+		if (!view->details->is_pending_##FUNCNAME) {				\
+			view->details->is_pending_##FUNCNAME = TRUE;			\
+			gtk_object_ref (GTK_OBJECT (view));				\
+			gtk_timeout_add (0, dispatch_##FUNCNAME, view);			\
+		}									\
+	}
+
 #define ASYNC_STRING_WRAPPER_TMPL(FUNCNAME, ARGNAME)  \
 	static void									\
 	async_##FUNCNAME (NautilusMozillaContentView *view, const char *ARGNAME)	\
@@ -1890,40 +2001,33 @@ dispatch_report_load_progress (gpointer data)
 		}									\
 	}
 
+#define ASYNC_STRING_WRAPPER_NO_DEBUG_TMPL(FUNCNAME, ARGNAME)  \
+	static void									\
+	async_##FUNCNAME (NautilusMozillaContentView *view, const char *ARGNAME)	\
+	{										\
+		g_free (view->details->pending_##ARGNAME);				\
+		view->details->pending_##ARGNAME = g_strdup (ARGNAME);			\
+											\
+		if (!view->details->is_pending_##FUNCNAME) {				\
+			view->details->is_pending_##FUNCNAME = TRUE;			\
+			gtk_object_ref (GTK_OBJECT (view));				\
+			gtk_timeout_add (0, dispatch_##FUNCNAME, view);			\
+		}									\
+	}
+
+ASYNC_NOARG_WRAPPER_TMPL (report_load_failed)
+
+ASYNC_NOARG_WRAPPER_TMPL (report_load_underway)
+
+ASYNC_NOARG_WRAPPER_TMPL (report_load_complete)
 
 ASYNC_STRING_WRAPPER_TMPL (set_title, title)
 
-/* NOTE:  dispatch_report_location_change calls report_load_underway as
- * well to start the throbber throbbing
- */
-
 ASYNC_STRING_WRAPPER_TMPL (report_location_change, report_uri)
 
-ASYNC_STRING_WRAPPER_TMPL (report_status, link_message)
+ASYNC_STRING_WRAPPER_NO_DEBUG_TMPL (report_status, link_message)
 
 ASYNC_STRING_WRAPPER_TMPL (open_location, open_uri)
-
-static void
-async_report_load_failed (NautilusMozillaContentView *view)
-{
-	if (!view->details->is_pending_report_load_failed) {
-		DEBUG_MSG (("~report_load_failed\n"));
-		view->details->is_pending_report_load_failed = TRUE;
-		gtk_object_ref (GTK_OBJECT (view));
-		gtk_timeout_add (0, dispatch_report_load_failed, view);
-	}
-}
-
-static void
-async_report_load_complete (NautilusMozillaContentView *view)
-{
-	if (!view->details->is_pending_report_load_complete) {
-		DEBUG_MSG (("~report_load_complete\n"));
-		view->details->is_pending_report_load_complete = TRUE;
-		gtk_object_ref (GTK_OBJECT (view));
-		gtk_timeout_add (0, dispatch_report_load_complete, view);
-	}
-}
 
 static void
 async_report_load_progress (NautilusMozillaContentView *view, double load_progress)

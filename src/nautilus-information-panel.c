@@ -1262,11 +1262,13 @@ add_command_buttons (NautilusSidebar *sidebar, GList *application_list)
 		 * somehow. We can do a search and replace on the "%s"
 		 * part instead, which should work.
 		 */
-		if (nautilus_is_remote_uri (sidebar->details->uri)) {
+
+		/* Get the local path, if there is one */
+		file_path = gnome_vfs_get_local_path_from_uri (sidebar->details->uri);
+		if (file_path == NULL) {
 			file_path = g_strdup (sidebar->details->uri);
-		} else {
-			file_path = gnome_vfs_get_local_path_from_uri (sidebar->details->uri);
-		}
+		} 
+
 		temp_str = nautilus_shell_quote (file_path);		
 		id_string = g_strdup_printf (application->id, temp_str); 		
 		g_free (file_path);

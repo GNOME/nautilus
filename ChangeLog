@@ -1,3 +1,46 @@
+2001-02-17  Michael K. Fleming  <mfleming@eazel.com>
+
+	reviewed by: <ramiro@eazel.com>
+
+	Misc Mozilla changes.
+
+	Bug 6542 -- Throbber keeps spinning
+	Pages without network activity would never report_load_complete.  Switched
+	to using net_start and net_stop to control throbber like galeon (didn't
+	I do this before?).  Note that bug 6736 means the throbber might
+	cut out early.  Oh well, the stop button isn't really hooked up anyway.
+
+	Bug 6544 -- Crash while navigating help
+
+	Caused by make_full_uri_from_relative going beyond a buffer.  Also added
+	test case.
+
+	Also fixed up logic in mozilla_dom_mouse_click_callback related to
+	translating URI's that we know how to handle ourself but can't
+	be handled by mozilla directly without intervention (eg, eazel-services,
+	help URI's)
+
+	Also removed mistaken cancel_pending_vfs_operation in update_nautilus_uri
+
+	Also did some cleanup/rearranging of the async nautilus_view wrappers
+
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(nautilus_mozilla_content_view_initialize),
+	(mozilla_location_callback), (mozilla_net_start_callback),
+	(mozilla_net_stop_callback), (mozilla_dom_mouse_click_callback),
+	(vfs_open_callback), (update_nautilus_uri),
+	(make_full_uri_from_relative), (test_make_full_uri_from_relative),
+	(dispatch_report_location_change):
+
+	* src/nautilus-sidebar.c: (add_command_buttons):
+
+	Fixed improper assumtion that nautilus_file_is_local being TRUE
+	means gnome_vfs_get_local_path will return a file path.  The "local"
+	concept seems to apply to expected latancy, not URI schemes.  This
+	was causing assertion failures when browsing to help: schemes (as
+	noted in the comments to bug 6544)
+	
+
 2001-02-17  Richard Boulton <richard@tartarus.org>
 
 	reviewed by: Ali Abdin <aliabdin@aucegypt.edu>
