@@ -65,6 +65,7 @@ static void        free_key                                      (gpointer      
 								  gpointer                 value, 
 								  gpointer                 user_data);
 static void        mime_type_hash_table_destroy                  (GHashTable              *table);
+static gboolean    server_has_content_requirements               (OAF_ServerInfo          *server);
 static gboolean    server_matches_content_requirements           (OAF_ServerInfo          *server, 
 								  GHashTable              *type_table, 
 								  GList                   *explicit_iids);
@@ -728,8 +729,53 @@ nautilus_mime_has_any_applications_for_file (NautilusFile      *file)
 	return result;
 }
 
+gboolean
+nautilus_mime_actions_file_needs_full_file_attributes (NautilusFile *file)
+{
+	char *mime_type;
+	char *uri_scheme;
+	GList *info_list;
+	GList *explicit_iids;
+	GList *p;
+	CORBA_Environment ev;
+	gboolean needs_full_attributes;
+
+	g_return_val_if_fail (nautilus_mime_actions_check_if_minimum_attributes_ready (file), 
+			      FALSE);
+
+	if (!nautilus_file_is_directory (file)) {
+		return FALSE;
+	}
+
+	CORBA_exception_init (&ev);
+
+	uri_scheme = nautilus_file_get_uri_scheme (file);
+
+	mime_type = nautilus_file_get_mime_type (file);
+
+	explicit_iids = get_explicit_content_view_iids_from_metafile (file); 
+
+	info_list = nautilus_do_component_query (mime_type, uri_scheme, NULL, TRUE,
+						 explicit_iids, NULL, NULL, &ev);
+	
+	needs_full_attributes = FALSE;
+
+	for (p = info_list; p != NULL; p = p->next) {
+		needs_full_attributes |= server_has_content_requirements ((OAF_ServerInfo *) (p->data));
+	}
+	
+	gnome_vfs_mime_component_list_free (info_list);
+	nautilus_g_list_free_deep (explicit_iids);
+	g_free (uri_scheme);
+	g_free (mime_type);
+	CORBA_exception_free (&ev);
+
+	return needs_full_attributes;
+}
+
+
 GList *
-nautilus_mime_get_all_components_for_file (NautilusFile      *file)
+nautilus_mime_get_all_components_for_file (NautilusFile *file)
 {
 	char *mime_type;
 	char *uri_scheme;
@@ -756,6 +802,9 @@ nautilus_mime_get_all_components_for_file (NautilusFile      *file)
 	info_list = nautilus_do_component_query (mime_type, uri_scheme, item_mime_types, FALSE,
 						 explicit_iids, NULL, NULL, &ev);
 	
+	nautilus_g_list_free_deep (explicit_iids);
+	nautilus_g_list_free_deep (item_mime_types);
+
 	g_free (uri_scheme);
 	g_free (mime_type);
 	CORBA_exception_free (&ev);
@@ -1429,6 +1478,22 @@ mime_type_hash_table_destroy (GHashTable *table)
         g_hash_table_destroy (table);
 }
 
+
+
+static gboolean
+server_has_content_requirements (OAF_ServerInfo *server)
+{
+        OAF_Property *prop;
+	
+        prop = oaf_server_info_prop_find (server, "nautilus:required_directory_content_mime_types");
+
+        if (prop == NULL || prop->v._d != OAF_P_STRINGV) {
+                return FALSE;
+        } else {
+		return TRUE;
+	}
+}
+
 static gboolean
 server_matches_content_requirements (OAF_ServerInfo *server, 
 				     GHashTable     *type_table, 
@@ -1443,11 +1508,11 @@ server_matches_content_requirements (OAF_ServerInfo *server,
                 return TRUE;
         }
 
-        prop = oaf_server_info_prop_find (server, "nautilus:required_directory_content_mime_types");
-
-        if (prop == NULL || prop->v._d != OAF_P_STRINGV) {
+        if (!server_has_content_requirements (server)) {
                 return TRUE;
         } else {
+        prop = oaf_server_info_prop_find (server, "nautilus:required_directory_content_mime_types");
+
                 types = prop->v._u.value_stringv;
 
                 for (i = 0; i < types._length; i++) {

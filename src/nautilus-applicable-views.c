@@ -104,18 +104,22 @@ get_nautilus_navigation_result_from_gnome_vfs_result (GnomeVFSResult gnome_vfs_r
         }
 }
 
-static void
-got_file_info_callback (NautilusFile *file,
-                        gpointer data)
+
+
+
+static gboolean
+got_file_info_callback_common (NautilusFile *file,
+                               gpointer data,
+                               gboolean final)
 {
         GnomeVFSResult vfs_result_code;
         NautilusNavigationInfo *info;
         NautilusNavigationResult result_code;
         NautilusViewIdentifier *default_id;
         OAF_ServerInfo *default_component;
-
+        
         info = (NautilusNavigationInfo *) data;
-
+        
         g_assert (info->file == file);
         result_code = NAUTILUS_NAVIGATION_RESULT_UNDEFINED;
 	default_id = NULL;
@@ -123,13 +127,13 @@ got_file_info_callback (NautilusFile *file,
         
         /* Get the result. */
         vfs_result_code = nautilus_file_get_file_info_result (file);
-
+        
         if (vfs_result_code != GNOME_VFS_OK
             && vfs_result_code != GNOME_VFS_ERROR_NOT_SUPPORTED
             && vfs_result_code != GNOME_VFS_ERROR_INVALID_URI) {
                 goto out;
         }
-
+        
         default_component = nautilus_mime_get_default_component_for_file (info->file);
         if (default_component != NULL) {
         	default_id = nautilus_view_identifier_new_from_content_view (default_component);
@@ -139,7 +143,7 @@ got_file_info_callback (NautilusFile *file,
 #ifdef DEBUG_MJS
         printf ("XXXXXX - default_id: %s (%s)\n", default_id->iid, default_id->name);
 #endif
-
+        
         /* If no components found at all - if there are any, there will be a default. */
         if (default_id != NULL) {
                 vfs_result_code = GNOME_VFS_OK;
@@ -165,7 +169,51 @@ got_file_info_callback (NautilusFile *file,
  	if (result_code == NAUTILUS_NAVIGATION_RESULT_UNDEFINED) {
                 result_code = get_nautilus_navigation_result_from_gnome_vfs_result (vfs_result_code);
  	}
-        (* info->callback) (result_code, info, info->callback_data);
+
+        (* info->callback) (result_code, info, 
+                            final || result_code != NAUTILUS_NAVIGATION_RESULT_OK, 
+                            info->callback_data);
+
+        return (result_code == NAUTILUS_NAVIGATION_RESULT_OK);
+}
+
+
+static void
+got_full_file_info_callback (NautilusFile *file,
+                             gpointer data)
+{
+        got_file_info_callback_common (file, data, TRUE);
+}
+
+static void
+got_minimum_file_info_callback (NautilusFile *file,
+                                gpointer data)
+{
+        GList *attributes;
+        NautilusNavigationInfo *info;
+        
+        info = (NautilusNavigationInfo *) data;
+
+        /* We start monitoring files here so we get a single load of
+         * the directory instead of multiple ones. The concept is that
+         * our load of the directory is shared both with the
+         * possible call_when_ready below and with other stuff needed by
+         * components.
+         */
+        nautilus_directory_file_monitor_add (info->directory, info,
+                                             NULL, FALSE);
+        
+        if (nautilus_mime_actions_file_needs_full_file_attributes (file)) {
+                if (got_file_info_callback_common (file, data, FALSE)) {
+                        attributes = nautilus_mime_actions_get_full_file_attributes ();
+                        nautilus_file_call_when_ready (file, attributes,
+                                                       got_full_file_info_callback, data);
+                        g_list_free (attributes);
+
+                }
+        } else {
+                got_file_info_callback_common (file, data, TRUE);
+        }
 }
 
         
@@ -193,19 +241,10 @@ nautilus_navigation_info_new (const char *location,
         info->file = nautilus_file_get (location);
         info->directory = nautilus_directory_get (location);
 
-        /* We start monitoring files here so we get a single load of
-         * the directory instead of multiple ones. The concept is that
-         * our load of the directory is shared both with the
-         * call_when_ready below and with other stuff needed by
-         * components.
-         */
-        nautilus_directory_file_monitor_add (info->directory, info,
-                                             NULL, FALSE);
-        
         /* Arrange for all the file attributes we will need. */
-        attributes = nautilus_mime_actions_get_full_file_attributes ();
+        attributes = nautilus_mime_actions_get_minimum_file_attributes ();
         nautilus_file_call_when_ready (info->file, attributes,
-                                       got_file_info_callback, info);
+                                       got_minimum_file_info_callback, info);
         g_list_free (attributes);
         
         return info;
@@ -222,7 +261,10 @@ nautilus_navigation_info_cancel (NautilusNavigationInfo *info)
         }
 
         nautilus_file_cancel_call_when_ready
-                (info->file, got_file_info_callback, info);
+                (info->file, got_minimum_file_info_callback, info);
+
+        nautilus_file_cancel_call_when_ready
+                (info->file, got_full_file_info_callback, info);
 
         nautilus_directory_file_monitor_remove
                 (info->directory, info);

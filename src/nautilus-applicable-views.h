@@ -56,6 +56,7 @@ typedef enum {
 
 typedef void (*NautilusNavigationCallback) (NautilusNavigationResult result,
                                             NautilusNavigationInfo  *info,
+                                            gboolean                 final,
                                             gpointer                 callback_data);
 
 NautilusNavigationInfo *nautilus_navigation_info_new                    (const char                 *location,

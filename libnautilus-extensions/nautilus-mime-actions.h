@@ -33,8 +33,9 @@
 GList                   *nautilus_mime_actions_get_minimum_file_attributes         (void);
 GList                   *nautilus_mime_actions_get_full_file_attributes            (void);
 
-void                    nautilus_mime_actions_wait_for_full_file_attributes        (NautilusFile           *file);
+void                     nautilus_mime_actions_wait_for_full_file_attributes       (NautilusFile           *file);
 
+gboolean                 nautilus_mime_actions_file_needs_full_file_attributes     (NautilusFile           *file);
 
 GnomeVFSMimeActionType   nautilus_mime_get_default_action_type_for_file            (NautilusFile           *file);
 GnomeVFSMimeAction *     nautilus_mime_get_default_action_for_file                 (NautilusFile           *file);

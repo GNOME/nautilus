@@ -1065,6 +1065,7 @@ position_and_show_window_callback (NautilusFile *file,
 static void
 nautilus_window_end_location_change_callback (NautilusNavigationResult result_code,
                                               NautilusNavigationInfo *navigation_info,
+                                              gboolean final,
                                               gpointer data)
 {
         NautilusWindow *window;
@@ -1079,6 +1080,10 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
  	GnomeDialog *dialog;
         GList *attributes;
        
+        if (!final) {
+                return;
+        }
+
         g_assert (navigation_info != NULL);
         
         window = NAUTILUS_WINDOW (data);
