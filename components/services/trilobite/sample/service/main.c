@@ -105,15 +105,20 @@ trilobite_sample_service_factory (BonoboGenericFactory *this_factory,
 
 int main(int argc, char *argv[]) {
 
+	GData *data;
+
 #ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
 #endif
 
-	if (trilobite_init ("trilobite-sample-service", "0.1", "/tmp/trilobite.log", argc, argv, NULL) == FALSE) {
+	g_datalist_init (&data);
+	g_datalist_set_data (&data, "debug", (void *)1);
+	if (trilobite_init ("trilobite-sample-service", "0.1", "/tmp/trilobite.log", argc, argv, data) == FALSE) {
 		g_error ("Could not initialize trilobite. :(");
 		exit (1);
 	}
+	g_datalist_clear (&data);
 
 	factory = bonobo_generic_factory_new_multi (OAF_ID_FACTORY, 
 						    trilobite_sample_service_factory,

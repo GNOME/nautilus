@@ -1,3 +1,27 @@
+2000-07-19  Robey Pointer  <robey@eazel.com>
+
+	* components/services/trilobite/libtrilobite/libtrilobite.h:
+	*
+	components/services/trilobite/libtrilobite/trilobite-core-utils.c:
+	(trilobite_add_log), (trilobite_init):
+	*
+	components/services/trilobite/libtrilobite/trilobite-core-utils.h:
+	*
+	components/services/trilobite/libtrilobite/trilobite-root-client.c:
+	(trilobite_root_client_unref), (trilobite_root_client_initialize):
+	*
+	components/services/trilobite/libtrilobite/trilobite-root-helper.c:
+	(trilobite_root_helper_destroy),
+	(trilobite_root_helper_initialize), (eazel_helper_start),
+	(eazel_helper_password), (trilobite_root_helper_start),
+	(trilobite_root_helper_run_program):
+	* components/services/trilobite/sample/service/main.c: (main):
+
+	Add "debug" option to trilobite_init().  If debug mode is on,
+	the trilobite_debug() macro will be the debug equivalent of
+	g_message().  Added debugging log messages to the root-helper
+	stuff.
+
 2000-07-19  Gene Z. Ragan  <gzr@eazel.com>
 
 	* src/nautilus-window.c: (nautilus_window_initialize_class),

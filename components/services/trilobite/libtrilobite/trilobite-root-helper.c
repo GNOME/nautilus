@@ -75,7 +75,7 @@ trilobite_root_helper_destroy (GtkObject *object)
 
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (TRILOBITE_IS_ROOT_HELPER (object));
-	g_message ("<-- trilobite_root_helper");
+	trilobite_debug ("<-- trilobite_root_helper");
 
 	root_helper = TRILOBITE_ROOT_HELPER (object);
 
@@ -115,7 +115,7 @@ trilobite_root_helper_initialize (TrilobiteRootHelper *object)
 
 	g_assert (object != NULL);
 	g_assert (TRILOBITE_IS_ROOT_HELPER (object));
-	g_message ("--> trilobite_root_helper");
+	trilobite_debug ("--> trilobite_root_helper");
 
 	root_helper = TRILOBITE_ROOT_HELPER (object);
 	root_helper->state = TRILOBITE_ROOT_HELPER_STATE_NEW;
@@ -218,6 +218,7 @@ eazel_helper_start (int *pipe_stdin, int *pipe_stdout)
 	pipe_argv[2] = EAZEL_HELPER;
 	pipe_argv[3] = NULL;
 	if (trilobite_pexec (USERHELPER_PATH, pipe_argv, pipe_stdin, pipe_stdout, &useless_stderr) != 0) {
+		trilobite_debug ("roothelper: system userhelper utility not found");
 		return TRILOBITE_ROOT_HELPER_NO_USERHELPER;
 	}
 	close (useless_stderr);
@@ -227,6 +228,7 @@ eazel_helper_start (int *pipe_stdin, int *pipe_stdout)
 	/* if the first thing from the pipe is a "2", we need the root password */
 	buffer[0] = eazel_helper_response (*pipe_stdout);
 	if (buffer[0] == '\0') {
+		trilobite_debug ("roothelper: userhelper died");
 		err = TRILOBITE_ROOT_HELPER_NO_USERHELPER;
 		goto give_up;
 	} else if (buffer[0] == '2') {
@@ -274,14 +276,17 @@ eazel_helper_password (int pipe_stdin, int pipe_stdout, const char *password)
 	while (1) {
 		buffer[0] = eazel_helper_response (pipe_stdout);
 		if (buffer[0] == '\0') {
+			trilobite_debug ("roothelper: userhelper closed pipe");
 			err = TRILOBITE_ROOT_HELPER_LOST_PIPE;
 			goto give_up;
 		} else if (buffer[0] == '2') {
+			trilobite_debug ("roothelper: bad password");
 			err = TRILOBITE_ROOT_HELPER_BAD_PASSWORD;
 			goto give_up;
 		} else if (buffer[0] == '5') {
 			/* sometimes a leftover status message from the last stage */
 			/* read 2 chars, then continue */
+			trilobite_debug ("roothelper: cleaning up userhelper spam (ok)");
 			eazel_helper_response (pipe_stdout);
 			eazel_helper_response (pipe_stdout);
 			continue;
@@ -349,6 +354,7 @@ trilobite_root_helper_start (TrilobiteRootHelper *root_helper)
 	}
 
 	/* now emit a signal and get the password */
+	trilobite_debug ("roothelper: asking for password");
 	gtk_signal_emit (GTK_OBJECT (root_helper), root_helper_signals[NEED_PASSWORD], &password);
 	if (password == NULL) {
 		/* bummer.  nobody caught the signal. */
@@ -412,6 +418,7 @@ trilobite_root_helper_run_program (TrilobiteRootHelper *root_helper, const char 
 		len = strlen ((char *)item->data);
 		if ((write (root_helper->pipe_stdin, (char *)item->data, len) < len) ||
 		    (write (root_helper->pipe_stdin, "\n", 1) < 1)) {
+			trilobite_debug ("roothelper: eazel-helper closed pipe before i was done");
 			goto bail;
 		}
 	}

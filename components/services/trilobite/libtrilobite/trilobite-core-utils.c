@@ -132,6 +132,9 @@ close_and_give_up:
 }
 
 
+static FILE *saved_logf = NULL;
+static int do_debug_log = 0;
+
 /* handler for trapping g_log/g_warning/g_error/g_message stuff, and sending it to
  * a standard logfile.
  */
@@ -141,7 +144,13 @@ trilobite_add_log (const char *domain, GLogLevelFlags flags, const char *message
 	char *prefix;
 	g_assert (logf != NULL);
 
-	if (flags & G_LOG_LEVEL_MESSAGE) {
+	if (flags & G_LOG_LEVEL_DEBUG) {
+		if (do_debug_log) {
+			prefix = "/// debug:";
+		} else {
+			return;
+		}
+	} else if (flags & G_LOG_LEVEL_MESSAGE) {
 		prefix = "---";
 	} else if (flags & G_LOG_LEVEL_WARNING) {
 		prefix = "*** warning:";
@@ -154,9 +163,6 @@ trilobite_add_log (const char *domain, GLogLevelFlags flags, const char *message
 	fprintf (logf, "%s %s\n", prefix, message);
 	fflush (logf);
 }
-
-
-static FILE *saved_logf = NULL;
 
 static void
 trilobite_close_log (void)
@@ -195,10 +201,12 @@ trilobite_init (const char *service_name, const char *version_name, const char *
 	if (log_filename != NULL) {
 		logf = fopen (log_filename, "wt");
 		if (logf != NULL) {
-			g_log_set_handler (service_name, G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_WARNING | G_LOG_LEVEL_ERROR,
+			g_log_set_handler (service_name, G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_WARNING |
+					   G_LOG_LEVEL_ERROR | G_LOG_LEVEL_DEBUG,
 					   (GLogFunc)trilobite_add_log, logf);
 			/* send libtrilobite messages there, too */
-			g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_WARNING | G_LOG_LEVEL_ERROR,
+			g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_WARNING |
+					   G_LOG_LEVEL_ERROR | G_LOG_LEVEL_DEBUG,
 					   (GLogFunc)trilobite_add_log, logf);
 		} else {
 			g_warning (_("Can't write logfile %s -- using default log handler"), log_filename);
@@ -206,6 +214,11 @@ trilobite_init (const char *service_name, const char *version_name, const char *
 	}
 
 	g_atexit (trilobite_close_log);
+
+	if (g_datalist_get_data (&options, "debug") != NULL) {
+		/* debug mode on */
+		do_debug_log = 1;
+	}
 
 	return TRUE;
 

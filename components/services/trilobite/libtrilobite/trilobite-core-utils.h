@@ -31,6 +31,9 @@
 #ifndef TRILOBITE_CORE_UTILS_H
 #define TRILOBITE_CORE_UTILS_H
 
+#define trilobite_debug(format, args...) \
+	g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, format, ##args)
+
 int trilobite_pexec (const char *path, char * const argv[], int *stdin_fd, int *stdout_fd, int *stderr_fd);
 gboolean trilobite_init (const char *service_name, const char *version_name, const char *log_filename,
 			 int argc, char **argv, GData *options);
