@@ -23,10 +23,10 @@
 */
 
 /* The following functions accept gtk/gdk structures and
- * return their bounds/frames as ArtIRects, where:
+ * return their bounds and dimensions, where:
  *
  * bounds: The (x,y) and (width, height) of something.
- * frame: The (width, height) of something.
+ * dimensions: The (width, height) of something.
  *
  * These are very useful in code that uses libart functions
  * to do operations on ArtIRects (such as intersection)
@@ -41,15 +41,27 @@
 
 BEGIN_GNOME_DECLS
 
-GdkRectangle nautilus_gdk_rectangle_assign_irect                  (const ArtIRect     *irect);
-ArtIRect     nautilus_irect_assign_gdk_rectangle                  (const GdkRectangle *gdk_rectangle);
-ArtIRect     nautilus_irect_screen_get_frame                      (void);
-ArtIRect     nautilus_irect_gdk_window_get_bounds                 (const GdkWindow    *gdk_window);
-ArtIRect     nautilus_irect_gdk_window_get_screen_relative_bounds (const GdkWindow    *gdk_window);
-ArtIRect     nautilus_irect_gtk_widget_get_bounds                 (const GtkWidget    *gtk_widget);
-ArtIRect     nautilus_irect_gtk_widget_get_frame                  (const GtkWidget    *gtk_widget);
-ArtIRect     nautilus_irect_gdk_window_clip_dirty_area_to_screen  (const GdkWindow    *gdk_window,
+/* Convert between GdkRectangle and ArtIRect and back */
+GdkRectangle       nautilus_art_irect_to_gdk_rectangle            (const ArtIRect     *irect);
+ArtIRect           nautilus_gdk_rectangle_to_art_irect            (const GdkRectangle *gdk_rectangle);
+NautilusDimensions nautilus_screen_get_dimensions                 (void);
+
+/* GdkWindow parent-relative bounds */
+ArtIRect           nautilus_gdk_window_get_bounds                 (const GdkWindow    *gdk_window);
+
+/* GdkWindow dimensions */
+NautilusDimensions nautilus_gdk_window_get_dimensions             (const GdkWindow    *gdk_window);
+
+/* GdkWindow screen parent-relative bounds */
+ArtIRect           nautilus_gdk_window_get_screen_relative_bounds (const GdkWindow    *gdk_window);
+
+/* Clip a dirty area (from exposures) to the on screen parts of a GdkWindow */
+ArtIRect           nautilus_gdk_window_clip_dirty_area_to_screen  (const GdkWindow    *gdk_window,
 								   const ArtIRect     *dirty_area);
+
+/* GtkWidget bounds and dimensions */
+ArtIRect           nautilus_gtk_widget_get_bounds                 (const GtkWidget    *gtk_widget);
+NautilusDimensions nautilus_gtk_widget_get_dimensions             (const GtkWidget    *gtk_widget);
 
 END_GNOME_DECLS
 

@@ -1,3 +1,178 @@
+2001-02-15  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+                     Except for the self checks code.
+	
+	Change code that used a ArtIRect as a "frame" to use
+	NautilusDimensions instead.  Change all foo_frame functions to
+	foo_dimensions.
+
+	* libnautilus-extensions/nautilus-art-extensions.h:
+	Add a new structure to represent dimensions using signed integers.
+	Retire nautilus_art_ipoint_assign.
+	* libnautilus-extensions/nautilus-art-extensions.c:
+	(nautilus_dimensions_empty): New function to check for empty
+	dimensions.
+	(nautilus_art_irect_assign_dimensions): New function to assign
+	dimensions to a rectangle.
+	(nautilus_self_check_art_extensions): New self checks.
+
+	* libnautilus-extensions/nautilus-art-gtk-extensions.h:
+	* libnautilus-extensions/nautilus-art-gtk-extensions.c:
+	(nautilus_gdk_rectangle_to_art_irect),
+	(nautilus_screen_get_dimensions), (nautilus_gdk_window_get_bounds),
+	(nautilus_gdk_window_get_screen_relative_bounds),
+	(nautilus_gtk_widget_get_bounds),
+	(nautilus_gtk_widget_get_dimensions),
+	(nautilus_gdk_window_clip_dirty_area_to_screen),
+	(nautilus_art_irect_to_gdk_rectangle),
+	(nautilus_gdk_window_get_dimensions): New function to get
+	the dimensions of a GdkWindow.
+	Update for frame to dimensions changes.  Change functions names to
+	lose the "irect" sub-prefix.
+
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h:
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	(nautilus_gdk_pixbuf_get_dimensions),
+	(nautilus_gdk_pixbuf_fill_rectangle_with_color),
+	(nautilus_gdk_pixbuf_draw_to_drawable),
+	(nautilus_gdk_pixbuf_draw_to_pixbuf),
+	(nautilus_gdk_pixbuf_draw_to_pixbuf_alpha),
+	(nautilus_gdk_pixbuf_new_from_pixbuf_sub_area),
+	(pixbuf_draw_tiled), (nautilus_gdk_pixbuf_draw_to_pixbuf_tiled),
+	(nautilus_gdk_pixbuf_draw_to_drawable_tiled),
+	(nautilus_gdk_pixbuf_intersect): New functions 
+	(nautilus_self_check_gdk_pixbuf_extensions): New self checks.
+	Update for frame vs dimenensions changes.  Simplify clipping code
+	by using nautilus_gdk_pixbuf_intersect.  Move
+	nautilus_gdk_window_get_dimensions to
+	nautilus_gdk_window_get_dimensions in art-gtk-extensions.
+
+	* libnautilus-extensions/nautilus-debug-drawing.c:
+	(debug_pixbuf_viewer_size_request),
+	(nautilus_debug_pixbuf_draw_point),
+	(nautilus_debug_pixbuf_draw_rectangle),
+	(nautilus_debug_pixbuf_draw_rectangle_inset):
+	Update for frame vs dimenensions changes.
+
+	* libnautilus-extensions/nautilus-clickable-image.c:
+	(label_handle_motion):
+	Update for art-gtk extensions changes.
+	
+	* libnautilus-extensions/nautilus-glyph.h:
+	* libnautilus-extensions/nautilus-glyph.c: (nautilus_glyph_new):
+	Change order of parameters to match NautilusScalalbleFont.
+	(nautilus_glyph_get_dimensions), (nautilus_glyph_draw_to_pixbuf):
+	Update for frame vs dimenensions changes.
+
+	* libnautilus-extensions/nautilus-lib-self-check-functions.h:
+	New declaration for art_extensions and gdk_pixbuf_extensions.
+	
+	* libnautilus-extensions/nautilus-self-checks.c:
+	(nautilus_check_rectangle_result),
+	(nautilus_check_dimensions_result):
+	* libnautilus-extensions/nautilus-self-checks.h:
+	Add support for checking functions that return rectangles and
+	dimensions.
+	
+	* libnautilus-extensions/nautilus-scalable-font.h:
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(nautilus_scalable_font_measure_text): Return
+	NautilusDimensions instead of using pointer parameters.
+	(nautilus_scalable_font_text_width): Simplify by calling
+	scalable_font_measure_text.
+	(nautilus_scalable_font_draw_text),
+	(nautilus_scalable_font_measure_text_lines),
+	(nautilus_scalable_font_draw_text_lines_with_dimensions),
+	(nautilus_scalable_font_draw_text_lines):
+	Update for frame vs dimenensions changes.  Use NautilusDimensions
+	arrays instead of individial width and height arrays.  Change all
+	function signatures to pass in only a font_size instead of both
+	font_width and font_height.  Simplifies using these a bit.
+	(nautilus_scalable_font_largest_fitting_font_size): Fix bug where
+	we were always using the wrong font size to compute the largest
+	fitting font.
+	
+	* libnautilus-extensions/nautilus-icon-factory.c: (embed_text):
+	Update for scalable font font_size api changes.
+	
+	* libnautilus-extensions/nautilus-image-table.c:
+	(image_table_clear_dirty_areas):
+	Update for frame vs dimenensions changes.
+
+	* libnautilus-extensions/nautilus-image.c:
+	(nautilus_image_size_request), (image_get_pixbuf_dimensions),
+	(image_get_pixbuf_bounds), (image_get_tile_dimensions):
+	Update for frame vs dimenensions changes.
+
+	* libnautilus-extensions/nautilus-label.h:
+	* libnautilus-extensions/nautilus-label.c:
+	(nautilus_label_initialize_class), (nautilus_label_set_arg),
+	(nautilus_label_get_arg), (nautilus_label_size_request),
+	(nautilus_label_size_allocate), (label_composite_pixbuf_callback),
+	(label_draw_text_to_pixbuf): Fix a type.  Was using [x,x] instead
+	of [x,y] to render the string.
+	(label_get_text_dimensions), (label_get_text_bounds),
+	(label_get_tile_dimensions), (label_line_geometries_clear),
+	(label_line_geometries_recompute),
+	Update for frame vs dimenensions changes.  Make the
+	'smooth_line_wrap' attribute an int instead of a guint.  Use an
+	array of NautilusDimensions to store text lines geometries instead
+	of separete width and height arrays.
+	(label_get_default_line_wrap_width),
+	(nautilus_label_set_smooth_line_wrap_width),
+	(nautilus_label_get_smooth_line_wrap_width):
+	Change signature to return an int instead of a guint.
+	
+	* libnautilus-extensions/nautilus-labeled-image.c:
+	(nautilus_labeled_image_size_request),
+	(labeled_image_get_image_dimensions),
+	(labeled_image_get_label_dimensions),
+	(labeled_image_get_image_bounds_fill),
+	(nautilus_labeled_image_get_image_bounds),
+	(labeled_image_get_label_bounds_fill),
+	(nautilus_labeled_image_get_label_bounds),
+	(labeled_image_get_content_dimensions),
+	(labeled_image_get_content_bounds):
+	Update for frame vs dimenensions changes.
+
+	* libnautilus-extensions/nautilus-smooth-widget.h:
+	* libnautilus-extensions/nautilus-smooth-widget.c:
+	(smooth_widget_paint_tile_transparent),
+	(nautilus_smooth_widget_get_preferred_dimensions):
+	Update for frame vs dimenensions changes.
+
+	* libnautilus-extensions/nautilus-tabs.c: (measure_tab_name),
+	(draw_tab_label):
+	Update for font api changes.
+	
+	* libnautilus-extensions/nautilus-text-layout.c:
+	(nautilus_text_layout_new), (nautilus_text_layout_paint):
+	Update for frame vs dimenensions changes.
+
+	* libnautilus-extensions/nautilus-wrap-table.c:
+	(nautilus_wrap_table_size_request), (wrap_table_layout),
+	(wrap_table_art_irect_max_dimensions),
+	(wrap_table_get_max_child_dimensions),
+	(wrap_table_get_content_dimensions):
+	Update for frame vs dimenensions changes.
+
+	* src/nautilus-about.c: (draw_aa_string):
+	Update for frame vs dimenensions changes.
+
+	* src/nautilus-sidebar-tabs.c: (draw_one_tab_plain),
+	(draw_one_tab_themed), (get_tab_width):
+	Update for frame vs dimenensions changes.
+
+	* test/test-nautilus-font-simple.c: (main):
+	* test/test-nautilus-font.c: (main):
+	* test/test-nautilus-glyph-simple.c: (glyph_new):
+	* test/test-nautilus-glyph.c: (glyph_new), (main):
+	* test/test-nautilus-pixbuf-tile.c:
+	* test/test.c: (test_pixbuf_draw_rectangle_tiled):
+	Update test for frame vs dimenensions changes and font api
+	changes.
+
 2001-02-14  Mike Fleming  <mfleming@eazel.com>
 
 	* components/mozilla/mozilla-preferences.cpp:

@@ -54,9 +54,9 @@ struct NautilusGlyph
  */
 NautilusGlyph *
 nautilus_glyph_new (const NautilusScalableFont *font,
+		    guint font_size,
 		    const char *text,
-		    guint text_length,
-		    guint font_size)
+		    guint text_length)
 {
 	NautilusGlyph *glyph;
 	RsvgFTGlyph *rsvg_glyph;
@@ -133,25 +133,23 @@ nautilus_glyph_get_height (const NautilusGlyph *glyph)
 }
 
 /**
- * nautilus_glyph_get_frame:
+ * nautilus_glyph_get_dimensions:
  * @glyph: A NautilusGlyph.
  *
- * Returns: An ArtIRect representing the frame occupied by the glyph.
+ * Returns: An ArtIRect representing the dimensions occupied by the glyph.
  */
-ArtIRect
-nautilus_glyph_get_frame (const NautilusGlyph *glyph)
+NautilusDimensions
+nautilus_glyph_get_dimensions (const NautilusGlyph *glyph)
 {
-	ArtIRect glyph_frame;
+	NautilusDimensions glyph_dimensions;
 
-	g_return_val_if_fail (glyph != NULL, NAUTILUS_ART_IRECT_EMPTY);
-	g_return_val_if_fail (glyph->rsvg_glyph != NULL, NAUTILUS_ART_IRECT_EMPTY);
+	g_return_val_if_fail (glyph != NULL, NAUTILUS_DIMENSIONS_EMPTY);
+	g_return_val_if_fail (glyph->rsvg_glyph != NULL, NAUTILUS_DIMENSIONS_EMPTY);
 
-	glyph_frame.x0 = 0;
-	glyph_frame.y0 = 0;
-	glyph_frame.x1 = glyph->rsvg_glyph->width;
-	glyph_frame.y1 = glyph->rsvg_glyph->height;
+	glyph_dimensions.width = glyph->rsvg_glyph->width;
+	glyph_dimensions.height = glyph->rsvg_glyph->height;
 
-	return glyph_frame;
+	return glyph_dimensions;
 }
 
 /* FIXME bugzilla.eazel.com xxxx: We should really use libart
@@ -213,13 +211,12 @@ nautilus_glyph_draw_to_pixbuf (const NautilusGlyph *glyph,
  	guchar *pixbuf_pixels;
  	guint pixbuf_pixel_offset;
  	gboolean pixbuf_has_alpha;
-	ArtIRect pixbuf_frame;
-	ArtIRect pixbuf_clip_area;
+	ArtIRect target;
 	guchar *pixbuf_x_offset;
 	guchar *pixbuf_y_offset;
 	int glyph_rowstride;
 	const guchar *glyph_buffer;
-	ArtIRect glyph_frame;
+	NautilusDimensions glyph_dimensions;
 	ArtIRect glyph_bounds;
 	const guchar *glyph_x_offset;
 	const guchar *glyph_y_offset;
@@ -239,33 +236,20 @@ nautilus_glyph_draw_to_pixbuf (const NautilusGlyph *glyph,
 	g_return_if_fail (glyph->rsvg_glyph->height > 0);
 	g_return_if_fail (glyph->rsvg_glyph->rowstride > 0);
 	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (pixbuf));
+	g_return_if_fail (destination_x >= 0 && destination_x < gdk_pixbuf_get_width (pixbuf));
+	g_return_if_fail (destination_y >= 0 && destination_y < gdk_pixbuf_get_height (pixbuf));
 	/* FIXME bugzilla.eazel.com xxxx: We currently dont handle opacities
 	 * other than 0xFF.
 	 */
 	g_return_if_fail (opacity == NAUTILUS_OPACITY_FULLY_OPAQUE);
-	
-	pixbuf_frame = nautilus_gdk_pixbuf_get_frame (pixbuf);
 
-	/* Make sure destination coordinates lie within the pixbuf */
-	g_return_if_fail (destination_x >= 0 && destination_x <= pixbuf_frame.x1);
-	g_return_if_fail (destination_y >= 0 && destination_y <= pixbuf_frame.y1);
-
-	/* If a clip area is given, make sure its not empty */
-	if (clip_area != NULL) {
-		g_return_if_fail (clip_area != NULL);
-		g_return_if_fail (!art_irect_empty (clip_area));
-		
-		/* Clip the clip_area to the pixbuf's area;  bail of no work */
-		art_irect_intersect (&pixbuf_clip_area, clip_area, &pixbuf_frame);
-		if (art_irect_empty (&pixbuf_clip_area)) {
-			return;
-		}
-	/* If no clip area is given, use the whole pixbuf */
-	} else {
-		pixbuf_clip_area = pixbuf_frame;
+	/* Clip the pixbuf to the clip area; bail if no work  */
+	target = nautilus_gdk_pixbuf_intersect (pixbuf, 0, 0, clip_area);
+	if (art_irect_empty (&target)) {
+		return;
 	}
-
-	glyph_frame = nautilus_glyph_get_frame (glyph);
+		
+	glyph_dimensions = nautilus_glyph_get_dimensions (glyph);
 	glyph_rowstride = glyph->rsvg_glyph->rowstride;
 	glyph_buffer = glyph->rsvg_glyph->buf;
 
@@ -278,15 +262,15 @@ nautilus_glyph_draw_to_pixbuf (const NautilusGlyph *glyph,
 	nautilus_art_irect_assign (&glyph_bounds,
 				   destination_x,
 				   destination_y,
-				   glyph_frame.x1,
-				   glyph_frame.y1);
+				   glyph_dimensions.width,
+				   glyph_dimensions.height);
 
 	/*
 	 * Determine the actual render area.  The render area is 
 	 * the area of the glyph bounds that lies within the pixbuf
 	 * clip area;  bail if no work.
 	 */
-	art_irect_intersect (&render_area, &pixbuf_clip_area, &glyph_bounds);
+	art_irect_intersect (&render_area, &target, &glyph_bounds);
 	if (art_irect_empty (&render_area)) {
  		return;
  	}
@@ -294,10 +278,10 @@ nautilus_glyph_draw_to_pixbuf (const NautilusGlyph *glyph,
 	/* Debug code to be yanked real soon */
 	if (0) nautilus_debug_pixbuf_draw_rectangle_inset (pixbuf,
 							   FALSE,
-							   pixbuf_clip_area.x0,
-							   pixbuf_clip_area.y0,
-							   pixbuf_clip_area.x1,
-							   pixbuf_clip_area.y1,
+							   target.x0,
+							   target.y0,
+							   target.x1,
+							   target.y1,
 							   NAUTILUS_RGBA_COLOR_OPAQUE_GREEN,
 							   NAUTILUS_OPACITY_FULLY_OPAQUE,
 							   0);
@@ -358,12 +342,12 @@ nautilus_glyph_draw_to_pixbuf (const NautilusGlyph *glyph,
 	 */
 
 	/* Iterate vertically */
-	for (y = render_area.y0 ; y <= render_area.y1; y++) {
+	for (y = render_area.y0 ; y < render_area.y1; y++) {
 		pixbuf_x_offset = pixbuf_y_offset;
 		glyph_x_offset = glyph_y_offset;
 		
 		/* Iterate horizontally */
-		for (x = render_area.x0 ; x <= render_area.x1; x++) {
+		for (x = render_area.x0 ; x < render_area.x1; x++) {
 			const guchar point_opacity = *glyph_x_offset;
 
 			/* Optimize the common fully opaque case */

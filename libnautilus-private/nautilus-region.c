@@ -68,7 +68,7 @@ gdk_region_new_from_irect (const ArtIRect *art_rect)
 
 	g_return_val_if_fail (art_rect != NULL, NULL);
 	
-	gdk_rect = nautilus_gdk_rectangle_assign_irect (art_rect);
+	gdk_rect = nautilus_art_irect_to_gdk_rectangle (art_rect);
 	empty_region = gdk_region_new ();
 	region = gdk_region_union_with_rect (empty_region, &gdk_rect);
 	gdk_region_destroy (empty_region);

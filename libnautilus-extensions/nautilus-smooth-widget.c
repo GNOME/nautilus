@@ -385,7 +385,7 @@ smooth_widget_paint_tile_transparent (GtkWidget *widget,
 				      const NautilusArtIPoint *tile_origin,
 				      const ArtIRect *dirty_area)
 {
-	ArtIRect buffer_frame;
+	NautilusDimensions buffer_dimensions;
  	ArtIRect tile_dirty_area;
 	ArtIRect tile_area;
 	GdkPixbuf *buffer;
@@ -416,9 +416,9 @@ smooth_widget_paint_tile_transparent (GtkWidget *widget,
 
 	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (buffer));
 	
-	buffer_frame = nautilus_gdk_pixbuf_get_frame (buffer);
+	buffer_dimensions = nautilus_gdk_pixbuf_get_dimensions (buffer);
 	
-	nautilus_art_irect_assign (&tile_area, 0, 0, buffer_frame.x1, buffer_frame.y1);
+	nautilus_art_irect_assign (&tile_area, 0, 0, buffer_dimensions.width, buffer_dimensions.height);
 
 	/* Composite the tile into the buffer */	
 	nautilus_gdk_pixbuf_draw_to_pixbuf_tiled (tile_pixbuf,
@@ -948,50 +948,47 @@ nautilus_smooth_widget_get_tile_bounds (const GtkWidget *widget,
 	}
 
 	/* Clip the tile bounds to the widget bounds */
-	bounds = nautilus_irect_gtk_widget_get_bounds (widget);
+	bounds = nautilus_gtk_widget_get_bounds (widget);
 	art_irect_intersect (&clipped_tile_bounds, &tile_bounds, &bounds);
 
 	return tile_bounds;
 }
 
-ArtIRect
-nautilus_smooth_widget_get_preferred_frame (const GtkWidget *widget,
-					    const ArtIRect *content_frame,
-					    const ArtIRect *tile_frame,
-					    int tile_width,
-					    int tile_height)
+NautilusDimensions
+nautilus_smooth_widget_get_preferred_dimensions (const GtkWidget *widget,
+						 const NautilusDimensions *content_dimensions,
+						 const NautilusDimensions *tile_dimensions,
+						 int tile_width,
+						 int tile_height)
 {
-	ArtIRect preferred_frame;
+	NautilusDimensions preferred_dimensions;
 
-	g_return_val_if_fail (widget_is_smooth (widget), NAUTILUS_ART_IRECT_EMPTY);
-	g_return_val_if_fail (content_frame != NULL, NAUTILUS_ART_IRECT_EMPTY);
-	g_return_val_if_fail (tile_frame != NULL, NAUTILUS_ART_IRECT_EMPTY);
-	g_return_val_if_fail (tile_width >= NAUTILUS_SMOOTH_TILE_EXTENT_ONE_STEP, NAUTILUS_ART_IRECT_EMPTY);
-	g_return_val_if_fail (tile_height >= NAUTILUS_SMOOTH_TILE_EXTENT_ONE_STEP, NAUTILUS_ART_IRECT_EMPTY);
+	g_return_val_if_fail (widget_is_smooth (widget), NAUTILUS_DIMENSIONS_EMPTY);
+	g_return_val_if_fail (content_dimensions != NULL, NAUTILUS_DIMENSIONS_EMPTY);
+	g_return_val_if_fail (tile_dimensions != NULL, NAUTILUS_DIMENSIONS_EMPTY);
+	g_return_val_if_fail (tile_width >= NAUTILUS_SMOOTH_TILE_EXTENT_ONE_STEP, NAUTILUS_DIMENSIONS_EMPTY);
+	g_return_val_if_fail (tile_height >= NAUTILUS_SMOOTH_TILE_EXTENT_ONE_STEP, NAUTILUS_DIMENSIONS_EMPTY);
 	
 	if (tile_width == NAUTILUS_SMOOTH_TILE_EXTENT_ONE_STEP) {
-		tile_width = tile_frame->x1;
+		tile_width = tile_dimensions->width;
 	} else {
 		tile_width = 0;
 	}
 
 	if (tile_height == NAUTILUS_SMOOTH_TILE_EXTENT_ONE_STEP) {
-		tile_height = tile_frame->y1;
+		tile_height = tile_dimensions->height;
 	} else {
 		tile_height = 0;
 	}
 	
-	nautilus_art_irect_assign (&preferred_frame,
-				   0,
-				   0,
-				   MAX (content_frame->x1, tile_width) + (2 * GTK_MISC (widget)->xpad),
-				   MAX (content_frame->y1, tile_height) + (2 * GTK_MISC (widget)->ypad));
+	preferred_dimensions.width = MAX (content_dimensions->width, tile_width) + (2 * GTK_MISC (widget)->xpad);
+	preferred_dimensions.height = MAX (content_dimensions->height, tile_height) + (2 * GTK_MISC (widget)->ypad);
 
-	/* Make sure the frame is not zero.  Gtk goes berserk with zero size widget */
-	preferred_frame.x1 = MAX (preferred_frame.x1, 2);
-	preferred_frame.y1 = MAX (preferred_frame.y1, 2);
+	/* Make sure the dimensions is not zero.  Gtk goes berserk with zero size widget */
+	preferred_dimensions.width = MAX (preferred_dimensions.width, 2);
+	preferred_dimensions.height = MAX (preferred_dimensions.height, 2);
 
-	return preferred_frame;
+	return preferred_dimensions;
 }
 
 void

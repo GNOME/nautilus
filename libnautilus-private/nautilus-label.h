@@ -88,8 +88,8 @@ void                         nautilus_label_set_smooth_drop_shadow_color   (Naut
 									    guint32                       color);
 guint32                      nautilus_label_get_smooth_drop_shadow_color   (const NautilusLabel          *label);
 void                         nautilus_label_set_smooth_line_wrap_width     (NautilusLabel                *label,
-									    guint                         line_wrap_width);
-guint                        nautilus_label_get_smooth_line_wrap_width     (const NautilusLabel          *label);
+									    int                           line_wrap_width);
+int                          nautilus_label_get_smooth_line_wrap_width     (const NautilusLabel          *label);
 void                         nautilus_label_set_text                       (NautilusLabel                *label,
 									    const char                   *text);
 char*                        nautilus_label_get_text                       (const NautilusLabel          *label);

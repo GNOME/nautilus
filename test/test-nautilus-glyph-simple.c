@@ -19,7 +19,7 @@ glyph_new (const char *text, int font_size)
 	font = nautilus_scalable_font_get_default_font ();
 	g_return_val_if_fail (font != NULL, NULL);
 	
-	glyph = nautilus_glyph_new (font, text, strlen (text), font_size);
+	glyph = nautilus_glyph_new (font, font_size, text, strlen (text));
 	g_return_val_if_fail (glyph != NULL, NULL);
 
 	gtk_object_unref (GTK_OBJECT (font));

@@ -240,13 +240,13 @@ draw_aa_string (NautilusScalableFont *font,
 		nautilus_scalable_font_draw_text (font, pixbuf,
 						  x_pos + shadow_offset, y_pos + shadow_offset,
 						  NULL,
-						  font_size, font_size,
+						  font_size,
 						  text, strlen (text),
 						  shadow_color, NAUTILUS_OPACITY_FULLY_OPAQUE);	
 	}
 	
 	nautilus_scalable_font_draw_text (font, pixbuf, x_pos, y_pos, NULL,
-					  font_size, font_size,
+					  font_size,
 					  text, strlen (text), color, NAUTILUS_OPACITY_FULLY_OPAQUE);
 }
 

@@ -78,45 +78,45 @@ struct _NautilusLabeledImageDetails
 };
 
 /* GtkObjectClass methods */
-static void     nautilus_labeled_image_initialize_class (NautilusLabeledImageClass  *labeled_image_class);
-static void     nautilus_labeled_image_initialize       (NautilusLabeledImage       *image);
-static void     nautilus_labeled_image_destroy          (GtkObject                  *object);
-static void     nautilus_labeled_image_set_arg          (GtkObject                  *object,
-							 GtkArg                     *arg,
-							 guint                       arg_id);
-static void     nautilus_labeled_image_get_arg          (GtkObject                  *object,
-							 GtkArg                     *arg,
-							 guint                       arg_id);
+static void               nautilus_labeled_image_initialize_class (NautilusLabeledImageClass  *labeled_image_class);
+static void               nautilus_labeled_image_initialize       (NautilusLabeledImage       *image);
+static void               nautilus_labeled_image_destroy          (GtkObject                  *object);
+static void               nautilus_labeled_image_set_arg          (GtkObject                  *object,
+								   GtkArg                     *arg,
+								   guint                       arg_id);
+static void               nautilus_labeled_image_get_arg          (GtkObject                  *object,
+								   GtkArg                     *arg,
+								   guint                       arg_id);
 /* GtkWidgetClass methods */
-static void     nautilus_labeled_image_size_request     (GtkWidget                  *widget,
-							 GtkRequisition             *requisition);
-static int      nautilus_labeled_image_expose_event     (GtkWidget                  *widget,
-							 GdkEventExpose             *event);
-static void     nautilus_labeled_image_size_allocate    (GtkWidget                  *widget,
-							 GtkAllocation              *allocation);
-static void     nautilus_labeled_image_map              (GtkWidget                  *widget);
-static void     nautilus_labeled_image_unmap            (GtkWidget                  *widget);
+static void               nautilus_labeled_image_size_request     (GtkWidget                  *widget,
+								   GtkRequisition             *requisition);
+static int                nautilus_labeled_image_expose_event     (GtkWidget                  *widget,
+								   GdkEventExpose             *event);
+static void               nautilus_labeled_image_size_allocate    (GtkWidget                  *widget,
+								   GtkAllocation              *allocation);
+static void               nautilus_labeled_image_map              (GtkWidget                  *widget);
+static void               nautilus_labeled_image_unmap            (GtkWidget                  *widget);
 
 /* GtkContainerClass methods */
-static void     nautilus_labeled_image_add              (GtkContainer               *container,
-							 GtkWidget                  *widget);
-static void     nautilus_labeled_image_remove           (GtkContainer               *container,
-							 GtkWidget                  *widget);
-static void     nautilus_labeled_image_forall           (GtkContainer               *container,
-							 gboolean                    include_internals,
-							 GtkCallback                 callback,
-							 gpointer                    callback_data);
+static void               nautilus_labeled_image_add              (GtkContainer               *container,
+								   GtkWidget                  *widget);
+static void               nautilus_labeled_image_remove           (GtkContainer               *container,
+								   GtkWidget                  *widget);
+static void               nautilus_labeled_image_forall           (GtkContainer               *container,
+								   gboolean                    include_internals,
+								   GtkCallback                 callback,
+								   gpointer                    callback_data);
 
 /* Private NautilusLabeledImage methods */
-static ArtIRect labeled_image_get_image_frame           (const NautilusLabeledImage *labeled_image);
-static ArtIRect labeled_image_get_label_frame           (const NautilusLabeledImage *labeled_image);
-static void     labeled_image_ensure_label              (NautilusLabeledImage       *labeled_image);
-static void     labeled_image_ensure_image              (NautilusLabeledImage       *labeled_image);
-static ArtIRect labeled_image_get_content_bounds        (const NautilusLabeledImage *labeled_image);
-static ArtIRect labeled_image_get_content_frame         (const NautilusLabeledImage *labeled_image);
-static void     labeled_image_update_alignments         (NautilusLabeledImage       *labeled_image);
-static gboolean labeled_image_show_label                (const NautilusLabeledImage *labeled_image);
-static gboolean labeled_image_show_image                (const NautilusLabeledImage *labeled_image);
+static NautilusDimensions labeled_image_get_image_dimensions      (const NautilusLabeledImage *labeled_image);
+static NautilusDimensions labeled_image_get_label_dimensions      (const NautilusLabeledImage *labeled_image);
+static void               labeled_image_ensure_label              (NautilusLabeledImage       *labeled_image);
+static void               labeled_image_ensure_image              (NautilusLabeledImage       *labeled_image);
+static ArtIRect           labeled_image_get_content_bounds        (const NautilusLabeledImage *labeled_image);
+static NautilusDimensions labeled_image_get_content_dimensions    (const NautilusLabeledImage *labeled_image);
+static void               labeled_image_update_alignments         (NautilusLabeledImage       *labeled_image);
+static gboolean           labeled_image_show_label                (const NautilusLabeledImage *labeled_image);
+static gboolean           labeled_image_show_image                (const NautilusLabeledImage *labeled_image);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusLabeledImage, nautilus_labeled_image, GTK_TYPE_CONTAINER)
 
@@ -354,21 +354,21 @@ nautilus_labeled_image_size_request (GtkWidget *widget,
 				     GtkRequisition *requisition)
 {
 	NautilusLabeledImage *labeled_image;
- 	ArtIRect content_frame;
+ 	NautilusDimensions content_dimensions;
 
  	g_return_if_fail (NAUTILUS_IS_LABELED_IMAGE (widget));
  	g_return_if_fail (requisition != NULL);
 
   	labeled_image = NAUTILUS_LABELED_IMAGE (widget);
 	
- 	content_frame = labeled_image_get_content_frame (labeled_image);
+ 	content_dimensions = labeled_image_get_content_dimensions (labeled_image);
 
 	requisition->width = 
-		MAX (1, content_frame.x1) +
+		MAX (1, content_dimensions.width) +
 		2 * labeled_image->details->x_padding;
 
 	requisition->height = 
-		MAX (1, content_frame.y1) +
+		MAX (1, content_dimensions.height) +
 		2 * labeled_image->details->y_padding;
 }
 
@@ -583,68 +583,64 @@ nautilus_labeled_image_forall (GtkContainer *container,
 }
 
 /* Private NautilusLabeledImage methods */
-static ArtIRect
-labeled_image_get_image_frame (const NautilusLabeledImage *labeled_image)
+static NautilusDimensions
+labeled_image_get_image_dimensions (const NautilusLabeledImage *labeled_image)
 {
-	ArtIRect image_frame;
+	NautilusDimensions image_dimensions;
 	GtkRequisition image_requisition;	
 
-	g_return_val_if_fail (NAUTILUS_IS_LABELED_IMAGE (labeled_image), NAUTILUS_ART_IRECT_EMPTY);
+	g_return_val_if_fail (NAUTILUS_IS_LABELED_IMAGE (labeled_image), NAUTILUS_DIMENSIONS_EMPTY);
 
 	if (!labeled_image_show_image (labeled_image)) {
-		return NAUTILUS_ART_IRECT_EMPTY;
+		return NAUTILUS_DIMENSIONS_EMPTY;
 	}
-
+	
 	gtk_widget_size_request (labeled_image->details->image, &image_requisition);
 
-	image_frame.x0 = 0;
-	image_frame.y0 = 0;
-	image_frame.x1 = (int) image_requisition.width;
-	image_frame.y1 = (int) image_requisition.height;
+	image_dimensions.width = (int) image_requisition.width;
+	image_dimensions.height = (int) image_requisition.height;
 
-	return image_frame;
+	return image_dimensions;
 }
 
-static ArtIRect
-labeled_image_get_label_frame (const NautilusLabeledImage *labeled_image)
+static NautilusDimensions
+labeled_image_get_label_dimensions (const NautilusLabeledImage *labeled_image)
 {
-	ArtIRect label_frame;
+	NautilusDimensions label_dimensions;
 	GtkRequisition label_requisition;	
 
-	g_return_val_if_fail (NAUTILUS_IS_LABELED_IMAGE (labeled_image), NAUTILUS_ART_IRECT_EMPTY);
+	g_return_val_if_fail (NAUTILUS_IS_LABELED_IMAGE (labeled_image), NAUTILUS_DIMENSIONS_EMPTY);
 
 	if (!labeled_image_show_label (labeled_image)) {
-		return NAUTILUS_ART_IRECT_EMPTY;
+		return NAUTILUS_DIMENSIONS_EMPTY;
 	}
-
+	
 	gtk_widget_size_request (labeled_image->details->label, &label_requisition);
 	
-	label_frame.x0 = 0;
-	label_frame.y0 = 0;
-	label_frame.x1 = (int) label_requisition.width;
-	label_frame.y1 = (int) label_requisition.height;
+	label_dimensions.width = (int) label_requisition.width;
+	label_dimensions.height = (int) label_requisition.height;
 
-	return label_frame;
+	return label_dimensions;
 }
 
 static ArtIRect
 labeled_image_get_image_bounds_fill (const NautilusLabeledImage *labeled_image)
 {
 	ArtIRect image_bounds;
-	ArtIRect image_frame;
+	NautilusDimensions image_dimensions;
 	ArtIRect content_bounds;
 	ArtIRect bounds;
 
 	g_return_val_if_fail (NAUTILUS_IS_LABELED_IMAGE (labeled_image), NAUTILUS_ART_IRECT_EMPTY);
 
-	image_frame = labeled_image_get_image_frame (labeled_image);
+	image_dimensions = labeled_image_get_image_dimensions (labeled_image);
 
-	if (art_irect_empty (&image_frame)) {
+	if (nautilus_dimensions_empty (&image_dimensions)) {
 		return NAUTILUS_ART_IRECT_EMPTY;
 	}
 
 	content_bounds = labeled_image_get_content_bounds (labeled_image);
-	bounds = nautilus_irect_gtk_widget_get_bounds (GTK_WIDGET (labeled_image));
+	bounds = nautilus_gtk_widget_get_bounds (GTK_WIDGET (labeled_image));
 	
 	if (!labeled_image_show_label (labeled_image)) {
 		image_bounds = bounds;
@@ -652,7 +648,7 @@ labeled_image_get_image_bounds_fill (const NautilusLabeledImage *labeled_image)
 		switch (labeled_image->details->label_position) {
 		case GTK_POS_LEFT:
 			image_bounds.y0 = bounds.y0;
-			image_bounds.x0 = content_bounds.x1 - image_frame.x1;
+			image_bounds.x0 = content_bounds.x1 - image_dimensions.width;
 			image_bounds.y1 = bounds.y1;
 			image_bounds.x1 = bounds.x1;
 			break;
@@ -661,12 +657,12 @@ labeled_image_get_image_bounds_fill (const NautilusLabeledImage *labeled_image)
 			image_bounds.y0 = bounds.y0;
 			image_bounds.x0 = bounds.x0;
 			image_bounds.y1 = bounds.y1;
-			image_bounds.x1 = content_bounds.x0 + image_frame.x1;
+			image_bounds.x1 = content_bounds.x0 + image_dimensions.width;
 			break;
 
 		case GTK_POS_TOP:
 			image_bounds.x0 = bounds.x0;
-			image_bounds.y0 = content_bounds.y1 - image_frame.y1;
+			image_bounds.y0 = content_bounds.y1 - image_dimensions.height;
 			image_bounds.x1 = bounds.x1;
 			image_bounds.y1 = bounds.y1;
 			break;
@@ -675,7 +671,7 @@ labeled_image_get_image_bounds_fill (const NautilusLabeledImage *labeled_image)
 			image_bounds.x0 = bounds.x0;
 			image_bounds.y0 = bounds.y0;
 			image_bounds.x1 = bounds.x1;
-			image_bounds.y1 = content_bounds.y0 + image_frame.y1;
+			image_bounds.y1 = content_bounds.y0 + image_dimensions.height;
 			break;
 		}
 	}
@@ -686,7 +682,7 @@ labeled_image_get_image_bounds_fill (const NautilusLabeledImage *labeled_image)
 ArtIRect
 nautilus_labeled_image_get_image_bounds (const NautilusLabeledImage *labeled_image)
 {
-	ArtIRect image_frame;
+	NautilusDimensions image_dimensions;
 	ArtIRect image_bounds;
 	ArtIRect content_bounds;
 
@@ -696,9 +692,9 @@ nautilus_labeled_image_get_image_bounds (const NautilusLabeledImage *labeled_ima
 		return labeled_image_get_image_bounds_fill (labeled_image);
 	}
 
-	image_frame = labeled_image_get_image_frame (labeled_image);
+	image_dimensions = labeled_image_get_image_dimensions (labeled_image);
 
-	if (art_irect_empty (&image_frame)) {
+	if (nautilus_dimensions_empty (&image_dimensions)) {
 		return NAUTILUS_ART_IRECT_EMPTY;
 	}
 
@@ -707,44 +703,44 @@ nautilus_labeled_image_get_image_bounds (const NautilusLabeledImage *labeled_ima
 	if (!labeled_image_show_label (labeled_image)) {
 		image_bounds.x0 = 
 			content_bounds.x0 +
-			(nautilus_art_irect_get_width (&content_bounds) - image_frame.x1) / 2;
+			(nautilus_art_irect_get_width (&content_bounds) - image_dimensions.width) / 2;
 		image_bounds.y0 = 
 			content_bounds.y0 +
-			(nautilus_art_irect_get_height (&content_bounds) - image_frame.y1) / 2;
+			(nautilus_art_irect_get_height (&content_bounds) - image_dimensions.height) / 2;
 	} else {
 		switch (labeled_image->details->label_position) {
 		case GTK_POS_LEFT:
-			image_bounds.x0 = content_bounds.x1 - image_frame.x1;
+			image_bounds.x0 = content_bounds.x1 - image_dimensions.width;
 			image_bounds.y0 = 
 				content_bounds.y0 +
-				(nautilus_art_irect_get_height (&content_bounds) - image_frame.y1) / 2;
+				(nautilus_art_irect_get_height (&content_bounds) - image_dimensions.height) / 2;
 			break;
 
 		case GTK_POS_RIGHT:
 			image_bounds.x0 = content_bounds.x0;
 			image_bounds.y0 = 
 				content_bounds.y0 +
-				(nautilus_art_irect_get_height (&content_bounds) - image_frame.y1) / 2;
+				(nautilus_art_irect_get_height (&content_bounds) - image_dimensions.height) / 2;
 			break;
 
 		case GTK_POS_TOP:
 			image_bounds.x0 = 
 				content_bounds.x0 +
-				(nautilus_art_irect_get_width (&content_bounds) - image_frame.x1) / 2;
-			image_bounds.y0 = content_bounds.y1 - image_frame.y1;
+				(nautilus_art_irect_get_width (&content_bounds) - image_dimensions.width) / 2;
+			image_bounds.y0 = content_bounds.y1 - image_dimensions.height;
 			break;
 
 		case GTK_POS_BOTTOM:
 			image_bounds.x0 = 
 				content_bounds.x0 +
-				(nautilus_art_irect_get_width (&content_bounds) - image_frame.x1) / 2;
+				(nautilus_art_irect_get_width (&content_bounds) - image_dimensions.width) / 2;
 			image_bounds.y0 = content_bounds.y0;
 			break;
 		}
 	}
 	
-	image_bounds.x1 = image_bounds.x0 + image_frame.x1;
-	image_bounds.y1 = image_bounds.y0 + image_frame.y1;
+	image_bounds.x1 = image_bounds.x0 + image_dimensions.width;
+	image_bounds.y1 = image_bounds.y0 + image_dimensions.height;
 
 	return image_bounds;
 }
@@ -753,20 +749,20 @@ static ArtIRect
 labeled_image_get_label_bounds_fill (const NautilusLabeledImage *labeled_image)
 {
 	ArtIRect label_bounds;
-	ArtIRect label_frame;
+	NautilusDimensions label_dimensions;
 	ArtIRect content_bounds;
 	ArtIRect bounds;
 
 	g_return_val_if_fail (NAUTILUS_IS_LABELED_IMAGE (labeled_image), NAUTILUS_ART_IRECT_EMPTY);
 
-	label_frame = labeled_image_get_label_frame (labeled_image);
+	label_dimensions = labeled_image_get_label_dimensions (labeled_image);
 
-	if (art_irect_empty (&label_frame)) {
+	if (nautilus_dimensions_empty (&label_dimensions)) {
 		return NAUTILUS_ART_IRECT_EMPTY;
 	}
 
 	content_bounds = labeled_image_get_content_bounds (labeled_image);
-	bounds = nautilus_irect_gtk_widget_get_bounds (GTK_WIDGET (labeled_image));
+	bounds = nautilus_gtk_widget_get_bounds (GTK_WIDGET (labeled_image));
 
 	/* Only the label is shown */
 	if (!labeled_image_show_image (labeled_image)) {
@@ -778,12 +774,12 @@ labeled_image_get_label_bounds_fill (const NautilusLabeledImage *labeled_image)
 			label_bounds.y0 = bounds.y0;
 			label_bounds.x0 = bounds.x0;
 			label_bounds.y1 = bounds.y1;
-			label_bounds.x1 = content_bounds.x0 + label_frame.x1;
+			label_bounds.x1 = content_bounds.x0 + label_dimensions.width;
 			break;
 
 		case GTK_POS_RIGHT:
 			label_bounds.y0 = bounds.y0;
-			label_bounds.x0 = content_bounds.x1 - label_frame.x1;
+			label_bounds.x0 = content_bounds.x1 - label_dimensions.width;
 			label_bounds.y1 = bounds.y1;
 			label_bounds.x1 = bounds.x1;
 			break;
@@ -792,12 +788,12 @@ labeled_image_get_label_bounds_fill (const NautilusLabeledImage *labeled_image)
 			label_bounds.x0 = bounds.x0;
 			label_bounds.y0 = bounds.y0;
 			label_bounds.x1 = bounds.x1;
-			label_bounds.y1 = content_bounds.y0 + label_frame.y1;
+			label_bounds.y1 = content_bounds.y0 + label_dimensions.height;
 			break;
 
 		case GTK_POS_BOTTOM:
 			label_bounds.x0 = bounds.x0;
-			label_bounds.y0 = content_bounds.y1 - label_frame.y1;
+			label_bounds.y0 = content_bounds.y1 - label_dimensions.height;
 			label_bounds.x1 = bounds.x1;
 			label_bounds.y1 = bounds.y1;
 			break;
@@ -811,7 +807,7 @@ ArtIRect
 nautilus_labeled_image_get_label_bounds (const NautilusLabeledImage *labeled_image)
 {
 	ArtIRect label_bounds;
-	ArtIRect label_frame;
+	NautilusDimensions label_dimensions;
 	ArtIRect content_bounds;
 
 	g_return_val_if_fail (NAUTILUS_IS_LABELED_IMAGE (labeled_image), NAUTILUS_ART_IRECT_EMPTY);
@@ -820,9 +816,9 @@ nautilus_labeled_image_get_label_bounds (const NautilusLabeledImage *labeled_ima
 		return labeled_image_get_label_bounds_fill (labeled_image);
 	}
 
-	label_frame = labeled_image_get_label_frame (labeled_image);
+	label_dimensions = labeled_image_get_label_dimensions (labeled_image);
 
-	if (art_irect_empty (&label_frame)) {
+	if (nautilus_dimensions_empty (&label_dimensions)) {
 		return NAUTILUS_ART_IRECT_EMPTY;
 	}
 
@@ -832,10 +828,10 @@ nautilus_labeled_image_get_label_bounds (const NautilusLabeledImage *labeled_ima
 	if (!labeled_image_show_image (labeled_image)) {
 		label_bounds.x0 = 
 			content_bounds.x0 +
-			(nautilus_art_irect_get_width (&content_bounds) - label_frame.x1) / 2;
+			(nautilus_art_irect_get_width (&content_bounds) - label_dimensions.width) / 2;
 		label_bounds.y0 = 
 			content_bounds.y0 +
-			(nautilus_art_irect_get_height (&content_bounds) - label_frame.y1) / 2;
+			(nautilus_art_irect_get_height (&content_bounds) - label_dimensions.height) / 2;
 	/* Both label and image are shown */
 	} else {
 		switch (labeled_image->details->label_position) {
@@ -843,34 +839,34 @@ nautilus_labeled_image_get_label_bounds (const NautilusLabeledImage *labeled_ima
 			label_bounds.x0 = content_bounds.x0;
 			label_bounds.y0 = 
 				content_bounds.y0 +
-				(nautilus_art_irect_get_height (&content_bounds) - label_frame.y1) / 2;
+				(nautilus_art_irect_get_height (&content_bounds) - label_dimensions.height) / 2;
 			break;
 
 		case GTK_POS_RIGHT:
-			label_bounds.x0 = content_bounds.x1 - label_frame.x1;
+			label_bounds.x0 = content_bounds.x1 - label_dimensions.width;
 			label_bounds.y0 = 
 				content_bounds.y0 +
-				(nautilus_art_irect_get_height (&content_bounds) - label_frame.y1) / 2;
+				(nautilus_art_irect_get_height (&content_bounds) - label_dimensions.height) / 2;
 			break;
 
 		case GTK_POS_TOP:
 			label_bounds.x0 = 
 				content_bounds.x0 +
-				(nautilus_art_irect_get_width (&content_bounds) - label_frame.x1) / 2;
+				(nautilus_art_irect_get_width (&content_bounds) - label_dimensions.width) / 2;
 			label_bounds.y0 = content_bounds.y0;
 			break;
 
 		case GTK_POS_BOTTOM:
 			label_bounds.x0 = 
 				content_bounds.x0 +
-				(nautilus_art_irect_get_width (&content_bounds) - label_frame.x1) / 2;
-			label_bounds.y0 = content_bounds.y1 - label_frame.y1;
+				(nautilus_art_irect_get_width (&content_bounds) - label_dimensions.width) / 2;
+			label_bounds.y0 = content_bounds.y1 - label_dimensions.height;
 			break;
 		}
 	}
 	
-	label_bounds.x1 = label_bounds.x0 + label_frame.x1;
-	label_bounds.y1 = label_bounds.y0 + label_frame.y1;
+	label_bounds.x1 = label_bounds.x0 + label_dimensions.width;
+	label_bounds.y1 = label_bounds.y0 + label_dimensions.height;
 
 	return label_bounds;
 }
@@ -969,64 +965,67 @@ labeled_image_update_alignments (NautilusLabeledImage *labeled_image)
 	}
 }
 
-static ArtIRect
-labeled_image_get_content_frame (const NautilusLabeledImage *labeled_image)
+static NautilusDimensions
+labeled_image_get_content_dimensions (const NautilusLabeledImage *labeled_image)
 {
-	ArtIRect image_frame;
-	ArtIRect label_frame;
-	ArtIRect content_frame;
+	NautilusDimensions image_dimensions;
+	NautilusDimensions label_dimensions;
+	NautilusDimensions content_dimensions;
 
-	g_return_val_if_fail (NAUTILUS_IS_LABELED_IMAGE (labeled_image), NAUTILUS_ART_IRECT_EMPTY);
+	g_return_val_if_fail (NAUTILUS_IS_LABELED_IMAGE (labeled_image), NAUTILUS_DIMENSIONS_EMPTY);
 
-	image_frame = labeled_image_get_image_frame (labeled_image);
-	label_frame = labeled_image_get_label_frame (labeled_image);
+	image_dimensions = labeled_image_get_image_dimensions (labeled_image);
+	label_dimensions = labeled_image_get_label_dimensions (labeled_image);
 
-	content_frame = NAUTILUS_ART_IRECT_EMPTY;
+	content_dimensions = NAUTILUS_DIMENSIONS_EMPTY;
 
 	/* Both shown */
-	if (!art_irect_empty (&image_frame) && !art_irect_empty (&label_frame)) {
-		content_frame.x1 = image_frame.x1 + labeled_image->details->spacing + label_frame.x1;
+	if (!nautilus_dimensions_empty (&image_dimensions) && !nautilus_dimensions_empty (&label_dimensions)) {
+		content_dimensions.width = 
+			image_dimensions.width + labeled_image->details->spacing + label_dimensions.width;
 		switch (labeled_image->details->label_position) {
 		case GTK_POS_LEFT:
 		case GTK_POS_RIGHT:
-			content_frame.x1 = image_frame.x1 + labeled_image->details->spacing + label_frame.x1;
-			content_frame.y1 = MAX (image_frame.y1, label_frame.y1);
+			content_dimensions.width = 
+				image_dimensions.width + labeled_image->details->spacing + label_dimensions.width;
+			content_dimensions.height = MAX (image_dimensions.height, label_dimensions.height);
 			break;
 
 		case GTK_POS_TOP:
 		case GTK_POS_BOTTOM:
-			content_frame.x1 = MAX (image_frame.x1, label_frame.x1);
-			content_frame.y1 = image_frame.y1 + labeled_image->details->spacing + label_frame.y1;
+			content_dimensions.width = MAX (image_dimensions.width, label_dimensions.width);
+			content_dimensions.height = 
+				image_dimensions.height + labeled_image->details->spacing + label_dimensions.height;
 			break;
 		}
 	/* Only image shown */
-	} else if (!art_irect_empty (&image_frame)) {
-		content_frame.x1 = image_frame.x1;
-		content_frame.y1 = image_frame.y1;
+	} else if (!nautilus_dimensions_empty (&image_dimensions)) {
+		content_dimensions.width = image_dimensions.width;
+		content_dimensions.height = image_dimensions.height;
 	/* Only label shown */
 	} else {
-		content_frame.x1 = label_frame.x1;
-		content_frame.y1 = label_frame.y1;
+		content_dimensions.width = label_dimensions.width;
+		content_dimensions.height = label_dimensions.height;
 	}
 
-	return content_frame;
+	return content_dimensions;
 }
 
 static ArtIRect
 labeled_image_get_content_bounds (const NautilusLabeledImage *labeled_image)
 {
-	ArtIRect content_frame;
+	NautilusDimensions content_dimensions;
 	ArtIRect content_bounds;
 	ArtIRect bounds;
 
 	g_return_val_if_fail (NAUTILUS_IS_LABELED_IMAGE (labeled_image), NAUTILUS_ART_IRECT_EMPTY);
 
-	bounds = nautilus_irect_gtk_widget_get_bounds (GTK_WIDGET (labeled_image));
+	bounds = nautilus_gtk_widget_get_bounds (GTK_WIDGET (labeled_image));
 
-	content_frame = labeled_image_get_content_frame (labeled_image);
+	content_dimensions = labeled_image_get_content_dimensions (labeled_image);
 	content_bounds = nautilus_art_irect_align (&bounds,
-						   content_frame.x1,
-						   content_frame.y1,
+						   content_dimensions.width,
+						   content_dimensions.height,
 						   labeled_image->details->x_alignment,
 						   labeled_image->details->y_alignment);
 
@@ -1647,7 +1646,7 @@ button_leave_callback (GtkWidget *widget,
 		const int fudge = 4;
 		ArtIRect bounds;
 
-		bounds = nautilus_irect_gtk_widget_get_bounds (widget);
+		bounds = nautilus_gtk_widget_get_bounds (widget);
 		
 		bounds.x0 -= fudge;
 		bounds.y0 -= fudge;

@@ -44,6 +44,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libgnome/gnome-defs.h>
 #include <libnautilus-extensions/nautilus-string-list.h>
+#include <libnautilus-extensions/nautilus-art-extensions.h>
 #include <libart_lgpl/art_rect.h>
 
 BEGIN_GNOME_DECLS
@@ -77,16 +78,12 @@ NautilusScalableFont  *nautilus_scalable_font_new                             (c
 									       const char                  *weight,
 									       const char                  *slant,
 									       const char                  *set_width);
-void                   nautilus_scalable_font_measure_text                    (const NautilusScalableFont  *font,
-									       int                          font_width,
-									       int                          font_height,
+NautilusDimensions     nautilus_scalable_font_measure_text                    (const NautilusScalableFont  *font,
+									       int                          font_size,
 									       const char                  *text,
-									       guint                        text_length,
-									       int                         *text_width_out,
-									       int                         *text_height_out);
+									       guint                        text_length);
 int                    nautilus_scalable_font_text_width                      (const NautilusScalableFont  *font,
-									       int                          font_width,
-									       int                          font_height,
+									       int                          font_size,
 									       const char                  *text,
 									       guint                        text_length);
 void                   nautilus_scalable_font_draw_text                       (const NautilusScalableFont  *font,
@@ -94,20 +91,17 @@ void                   nautilus_scalable_font_draw_text                       (c
 									       int                          x,
 									       int                          y,
 									       const ArtIRect              *clip_area,
-									       int                          font_width,
-									       int                          font_height,
+									       int                          font_size,
 									       const char                  *text,
 									       guint                        text_length,
 									       guint32                      color,
 									       int                          opacity);
 void                   nautilus_scalable_font_measure_text_lines              (const NautilusScalableFont  *font,
-									       int                          font_width,
-									       int                          font_height,
+									       int                          font_size,
 									       const char                  *text,
 									       guint                        num_text_lines,
 									       double                       empty_line_height,
-									       int                          text_line_widths[],
-									       int                          text_line_heights[],
+									       NautilusDimensions           text_line_dimensions[],
 									       int                         *max_width_out,
 									       int                         *total_height_out);
 void                   nautilus_scalable_font_draw_text_lines_with_dimensions (const NautilusScalableFont  *font,
@@ -115,12 +109,10 @@ void                   nautilus_scalable_font_draw_text_lines_with_dimensions (c
 									       int                          x,
 									       int                          y,
 									       const ArtIRect              *clip_area,
-									       int                          font_width,
-									       int                          font_height,
+									       int                          font_size,
 									       const char                  *text,
 									       guint                        num_text_lines,
-									       const int                   *text_line_widths,
-									       const int                   *text_line_heights,
+									       const NautilusDimensions    *text_line_dimensions,
 									       GtkJustification             justification,
 									       int                          line_offset,
 									       double                       empty_line_height,
@@ -131,8 +123,7 @@ void                   nautilus_scalable_font_draw_text_lines                 (c
 									       int                          x,
 									       int                          y,
 									       const ArtIRect              *clip_area,
-									       int                          font_width,
-									       int                          font_height,
+									       int                          font_size,
 									       const char                  *text,
 									       GtkJustification             justification,
 									       int                          line_offset,

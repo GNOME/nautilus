@@ -119,19 +119,19 @@ static void
 debug_pixbuf_viewer_size_request (GtkWidget *widget, GtkRequisition *requisition)
 {
 	DebugPixbufViewer *viewer;
-	ArtIRect frame;
+	NautilusDimensions dimensions;
 
 	g_return_if_fail (DEBUG_IS_PIXBUF_VIEWER (widget));
 	g_return_if_fail (requisition != NULL);
 	
 	viewer = DEBUG_PIXBUF_VIEWER (widget);
 
-	frame = (viewer->pixbuf != NULL) ?
-		nautilus_gdk_pixbuf_get_frame (viewer->pixbuf) :
-		NAUTILUS_ART_IRECT_EMPTY;
+	dimensions = (viewer->pixbuf != NULL) ?
+		nautilus_gdk_pixbuf_get_dimensions (viewer->pixbuf) :
+		NAUTILUS_DIMENSIONS_EMPTY;
 	
-   	requisition->width = MAX (2, frame.x1);
-   	requisition->height = MAX (2, frame.y1);
+   	requisition->width = MAX (2, dimensions.width);
+   	requisition->height = MAX (2, dimensions.height);
 }
 
 static int
@@ -159,8 +159,8 @@ debug_pixbuf_viewer_expose_event (GtkWidget *widget, GdkEventExpose *event)
 	bounds.y1 = bounds.y0 + gdk_pixbuf_get_height (viewer->pixbuf);
 	
 	/* Clip the dirty area to the screen; bail if no work to do */
-	dirty_area = nautilus_irect_assign_gdk_rectangle (&event->area);
-	clipped_dirty_area = nautilus_irect_gdk_window_clip_dirty_area_to_screen (event->window,
+	dirty_area = nautilus_gdk_rectangle_to_art_irect (&event->area);
+	clipped_dirty_area = nautilus_gdk_window_clip_dirty_area_to_screen (event->window,
 										  &dirty_area);
 	if (!art_irect_empty (&clipped_dirty_area)) {
 		ArtIRect clipped_bounds;
@@ -363,7 +363,7 @@ nautilus_debug_pixbuf_draw_point (GdkPixbuf *pixbuf,
 				  guint32 color,
 				  int opacity)
 {
-	ArtIRect frame;
+	NautilusDimensions dimensions;
 	guchar *pixels;
 	gboolean has_alpha;
 	guint pixel_offset;
@@ -378,10 +378,10 @@ nautilus_debug_pixbuf_draw_point (GdkPixbuf *pixbuf,
 	g_return_if_fail (opacity >= NAUTILUS_OPACITY_FULLY_TRANSPARENT);
 	g_return_if_fail (opacity <= NAUTILUS_OPACITY_FULLY_OPAQUE);
 
-	frame = nautilus_gdk_pixbuf_get_frame (pixbuf);
+	dimensions = nautilus_gdk_pixbuf_get_dimensions (pixbuf);
 
-	g_return_if_fail (x >= 0 && x < frame.x1);
-	g_return_if_fail (y >= 0 && y < frame.y1);
+	g_return_if_fail (x >= 0 && x < dimensions.width);
+	g_return_if_fail (y >= 0 && y < dimensions.height);
 
 	pixels = gdk_pixbuf_get_pixels (pixbuf);
 	rowstride = gdk_pixbuf_get_rowstride (pixbuf);
@@ -414,7 +414,7 @@ nautilus_debug_pixbuf_draw_rectangle (GdkPixbuf *pixbuf,
 				      guint32 color,
 				      int opacity)
 {
-	ArtIRect frame;
+	NautilusDimensions dimensions;
 	int x;
 	int y;
 
@@ -422,7 +422,7 @@ nautilus_debug_pixbuf_draw_rectangle (GdkPixbuf *pixbuf,
 	g_return_if_fail (opacity >= NAUTILUS_OPACITY_FULLY_TRANSPARENT);
 	g_return_if_fail (opacity <= NAUTILUS_OPACITY_FULLY_OPAQUE);
 
-	frame = nautilus_gdk_pixbuf_get_frame (pixbuf);
+	dimensions = nautilus_gdk_pixbuf_get_dimensions (pixbuf);
 
 	if (x0 == -1) {
 		x0 = 0;
@@ -433,19 +433,19 @@ nautilus_debug_pixbuf_draw_rectangle (GdkPixbuf *pixbuf,
 	}
 
 	if (x1 == -1) {
-		x1 = frame.x1 - 1;
+		x1 = dimensions.width - 1;
 	}
 
 	if (y1 == -1) {
-		y1 = frame.y1 - 1;
+		y1 = dimensions.height - 1;
 	}
 
 	g_return_if_fail (x1 > x0);
 	g_return_if_fail (y1 > y0);
-	g_return_if_fail (x0 >= 0 && x0 < frame.x1);
-	g_return_if_fail (y0 >= 0 && y0 < frame.y1);
-	g_return_if_fail (x1 >= 0 && x1 < frame.x1);
-	g_return_if_fail (y1 >= 0 && y1 < frame.y1);
+	g_return_if_fail (x0 >= 0 && x0 < dimensions.width);
+	g_return_if_fail (y0 >= 0 && y0 < dimensions.height);
+	g_return_if_fail (x1 >= 0 && x1 < dimensions.width);
+	g_return_if_fail (y1 >= 0 && y1 < dimensions.height);
 
 	if (filled) {
 		for (y = y0; y <= y1; y++) {
@@ -479,13 +479,13 @@ nautilus_debug_pixbuf_draw_rectangle_inset (GdkPixbuf *pixbuf,
 					    int opacity,
 					    int inset)
 {
-	ArtIRect frame;
+	NautilusDimensions dimensions;
 	
 	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (pixbuf));
 	g_return_if_fail (opacity >= NAUTILUS_OPACITY_FULLY_TRANSPARENT);
 	g_return_if_fail (opacity <= NAUTILUS_OPACITY_FULLY_OPAQUE);
 
-	frame = nautilus_gdk_pixbuf_get_frame (pixbuf);
+	dimensions = nautilus_gdk_pixbuf_get_dimensions (pixbuf);
 
 	if (x0 == -1) {
 		x0 = 0;
@@ -496,11 +496,11 @@ nautilus_debug_pixbuf_draw_rectangle_inset (GdkPixbuf *pixbuf,
 	}
 
 	if (x1 == -1) {
-		x1 = frame.x1 - 1;
+		x1 = dimensions.width - 1;
 	}
 
 	if (y1 == -1) {
-		y1 = frame.y1 - 1;
+		y1 = dimensions.height - 1;
 	}
 
 	x0 += inset;

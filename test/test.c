@@ -333,7 +333,9 @@ test_pixbuf_draw_rectangle_tiled (GdkPixbuf *pixbuf,
  	g_return_if_fail (tile_pixbuf != NULL);
 
 	if (x0 == -1 && y0 == -1 && x1 == -1 && y1 == -1) {
-		area = nautilus_gdk_pixbuf_get_frame (pixbuf);
+		NautilusDimensions dimensions;
+		dimensions = nautilus_gdk_pixbuf_get_dimensions (pixbuf);
+		area = nautilus_art_irect_assign_dimensions (0, 0, &dimensions);
 	} else {
 		g_return_if_fail (x0 >= 0);
 		g_return_if_fail (y0 >= 0);

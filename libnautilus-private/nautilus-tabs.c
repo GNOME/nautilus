@@ -481,15 +481,10 @@ allocate_cleared_pixbuf (int width, int height)
 static int
 measure_tab_name (NautilusTabs *tabs, const char *tab_name)
 {
-	int name_width, name_height;
-	nautilus_scalable_font_measure_text (tabs->details->tab_font,
-					     tabs->details->font_size,
-					     tabs->details->font_size,
-					     tab_name,
-					     strlen (tab_name),
-					     &name_width, 
-					     &name_height);
-	return name_width;
+	return nautilus_scalable_font_text_width (tabs->details->tab_font,
+						  tabs->details->font_size,
+						  tab_name,
+						  strlen (tab_name));
 }
 
 /* utility to draw the tab label */
@@ -505,7 +500,7 @@ draw_tab_label (NautilusTabs *tabs, GdkPixbuf *tab_pixbuf, int x_pos, const char
 	nautilus_scalable_font_draw_text (tabs->details->tab_font, tab_pixbuf, 
 					  text_x, text_y,
 					  NULL,
-					  tabs->details->font_size, tabs->details->font_size,
+					  tabs->details->font_size,
 					  label, strlen (label),
 					  NAUTILUS_RGB_COLOR_BLACK, NAUTILUS_OPACITY_FULLY_OPAQUE);
 	text_x -= 1;
@@ -524,7 +519,7 @@ draw_tab_label (NautilusTabs *tabs, GdkPixbuf *tab_pixbuf, int x_pos, const char
 	nautilus_scalable_font_draw_text (tabs->details->tab_font, tab_pixbuf,
 					  text_x, text_y,
 					  NULL,
-					  tabs->details->font_size, tabs->details->font_size,
+					  tabs->details->font_size,
 					  label, strlen (label),
 					  text_color,
 					  NAUTILUS_OPACITY_FULLY_OPAQUE);

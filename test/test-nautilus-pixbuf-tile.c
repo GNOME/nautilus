@@ -38,7 +38,7 @@ pixbuf_drawing_area_expose_event (GtkWidget *widget,
 						  NAUTILUS_OPACITY_FULLY_OPAQUE,
 						  GDK_INTERP_NEAREST);
 
-	dest = nautilus_irect_gtk_widget_get_bounds (widget);
+	dest = nautilus_gtk_widget_get_bounds (widget);
 	nautilus_gdk_pixbuf_draw_to_drawable (buffer,
 					      widget->window,
 					      widget->style->white_gc,
@@ -76,7 +76,7 @@ drawable_drawing_area_expose_event (GtkWidget *widget,
 		g_assert (tile != NULL);
 	}
 
-	dest = nautilus_irect_gtk_widget_get_bounds (widget);
+	dest = nautilus_gtk_widget_get_bounds (widget);
 	nautilus_gdk_pixbuf_draw_to_drawable_tiled (tile,
 						    widget->window,
 						    widget->style->white_gc,

@@ -57,48 +57,48 @@ struct NautilusWrapTableDetails
 };
 
 /* GtkObjectClass methods */
-static void              nautilus_wrap_table_initialize_class (NautilusWrapTableClass  *wrap_table_class);
-static void              nautilus_wrap_table_initialize       (NautilusWrapTable       *wrap);
-static void              nautilus_wrap_table_destroy          (GtkObject               *object);
-static void              nautilus_wrap_table_set_arg          (GtkObject               *object,
-							       GtkArg                  *arg,
-							       guint                    arg_id);
-static void              nautilus_wrap_table_get_arg          (GtkObject               *object,
-							       GtkArg                  *arg,
-							       guint                    arg_id);
+static void               nautilus_wrap_table_initialize_class (NautilusWrapTableClass   *wrap_table_class);
+static void               nautilus_wrap_table_initialize       (NautilusWrapTable        *wrap);
+static void               nautilus_wrap_table_destroy          (GtkObject                *object);
+static void               nautilus_wrap_table_set_arg          (GtkObject                *object,
+								GtkArg                   *arg,
+								guint                     arg_id);
+static void               nautilus_wrap_table_get_arg          (GtkObject                *object,
+								GtkArg                   *arg,
+								guint                     arg_id);
 /* GtkWidgetClass methods */
-static void              nautilus_wrap_table_size_request     (GtkWidget               *widget,
-							       GtkRequisition          *requisition);
-static int               nautilus_wrap_table_expose_event     (GtkWidget               *widget,
-							       GdkEventExpose          *event);
-static void              nautilus_wrap_table_size_allocate    (GtkWidget               *widget,
-							       GtkAllocation           *allocation);
-static void              nautilus_wrap_table_map              (GtkWidget               *widget);
-static void              nautilus_wrap_table_unmap            (GtkWidget               *widget);
+static void               nautilus_wrap_table_size_request     (GtkWidget                *widget,
+								GtkRequisition           *requisition);
+static int                nautilus_wrap_table_expose_event     (GtkWidget                *widget,
+								GdkEventExpose           *event);
+static void               nautilus_wrap_table_size_allocate    (GtkWidget                *widget,
+								GtkAllocation            *allocation);
+static void               nautilus_wrap_table_map              (GtkWidget                *widget);
+static void               nautilus_wrap_table_unmap            (GtkWidget                *widget);
 
 /* GtkContainerClass methods */
-static void              nautilus_wrap_table_add              (GtkContainer            *container,
-							       GtkWidget               *widget);
-static void              nautilus_wrap_table_remove           (GtkContainer            *container,
-							       GtkWidget               *widget);
-static void              nautilus_wrap_table_forall           (GtkContainer            *container,
-							       gboolean                 include_internals,
-							       GtkCallback              callback,
-							       gpointer                 callback_data);
-static GtkType           nautilus_wrap_table_child_type       (GtkContainer            *container);
+static void               nautilus_wrap_table_add              (GtkContainer             *container,
+								GtkWidget                *widget);
+static void               nautilus_wrap_table_remove           (GtkContainer             *container,
+								GtkWidget                *widget);
+static void               nautilus_wrap_table_forall           (GtkContainer             *container,
+								gboolean                  include_internals,
+								GtkCallback               callback,
+								gpointer                  callback_data);
+static GtkType            nautilus_wrap_table_child_type       (GtkContainer             *container);
 
 
 /* Private NautilusWrapTable methods */
-static ArtIRect          wrap_table_art_irect_max_frame       (const ArtIRect          *one,
-							       const ArtIRect          *two);
-static ArtIRect          wrap_table_get_max_child_frame       (const NautilusWrapTable *wrap_table);
-static ArtIRect          wrap_table_get_content_frame         (const NautilusWrapTable *wrap_table);
-static ArtIRect          wrap_table_get_content_bounds        (const NautilusWrapTable *wrap_table);
-static NautilusArtIPoint wrap_table_get_scroll_offset         (const NautilusWrapTable *wrap_table);
-static GtkWidget *       wrap_table_find_child_at_point       (const NautilusWrapTable *wrap_table,
-							       int                      x,
-							       int                      y);
-static void              wrap_table_layout                    (NautilusWrapTable       *wrap_table);
+static NautilusDimensions wrap_table_art_irect_max_dimensions  (const NautilusDimensions *one,
+								const NautilusDimensions *two);
+static NautilusDimensions wrap_table_get_max_child_dimensions  (const NautilusWrapTable  *wrap_table);
+static NautilusDimensions wrap_table_get_content_dimensions    (const NautilusWrapTable  *wrap_table);
+static ArtIRect           wrap_table_get_content_bounds        (const NautilusWrapTable  *wrap_table);
+static NautilusArtIPoint  wrap_table_get_scroll_offset         (const NautilusWrapTable  *wrap_table);
+static GtkWidget *        wrap_table_find_child_at_point       (const NautilusWrapTable  *wrap_table,
+								int                       x,
+								int                       y);
+static void               wrap_table_layout                    (NautilusWrapTable        *wrap_table);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusWrapTable, nautilus_wrap_table, GTK_TYPE_CONTAINER)
 
@@ -265,18 +265,18 @@ nautilus_wrap_table_size_request (GtkWidget *widget,
 				  GtkRequisition *requisition)
 {
 	NautilusWrapTable *wrap_table;
-	ArtIRect content_frame;
+	NautilusDimensions content_dimensions;
 
  	g_return_if_fail (NAUTILUS_IS_WRAP_TABLE (widget));
  	g_return_if_fail (requisition != NULL);
 
   	wrap_table = NAUTILUS_WRAP_TABLE (widget);
 
-	content_frame = wrap_table_get_content_frame (wrap_table);
+	content_dimensions = wrap_table_get_content_dimensions (wrap_table);
 
 	/* The -1 tells Satan to use as much space as is available */
 	requisition->width = -1;
-	requisition->height = content_frame.y1 + GTK_CONTAINER (widget)->border_width * 2;
+	requisition->height = content_dimensions.height + GTK_CONTAINER (widget)->border_width * 2;
 }
 
 static void
@@ -456,12 +456,12 @@ wrap_table_layout (NautilusWrapTable *wrap_table)
 {
 	GList *iterator;
 	NautilusArtIPoint pos;
-	ArtIRect max_child_frame;
+	NautilusDimensions max_child_dimensions;
 	ArtIRect content_bounds;
 
  	g_return_if_fail (NAUTILUS_IS_WRAP_TABLE (wrap_table));
 
-	max_child_frame = wrap_table_get_max_child_frame (wrap_table);
+	max_child_dimensions = wrap_table_get_max_child_dimensions (wrap_table);
 	content_bounds = wrap_table_get_content_bounds (wrap_table);
 	pos.x = content_bounds.x0;
 	pos.y = content_bounds.y0;
@@ -477,16 +477,16 @@ wrap_table_layout (NautilusWrapTable *wrap_table)
 			if (wrap_table->details->homogeneous) {
 				item_allocation.x = pos.x;
 				item_allocation.y = pos.y;
-				item_allocation.width = max_child_frame.x1;
-				item_allocation.height = max_child_frame.y1;
+				item_allocation.width = max_child_dimensions.width;
+				item_allocation.height = max_child_dimensions.height;
 				
-				if ((pos.x + max_child_frame.x1) > content_bounds.x1) {
-					pos.x = content_bounds.x0 + wrap_table->details->x_spacing + max_child_frame.x1;
-					pos.y += (max_child_frame.y1 + wrap_table->details->y_spacing);
+				if ((pos.x + max_child_dimensions.width) > content_bounds.x1) {
+					pos.x = content_bounds.x0 + wrap_table->details->x_spacing + max_child_dimensions.width;
+					pos.y += (max_child_dimensions.height + wrap_table->details->y_spacing);
 					item_allocation.x = content_bounds.x0;
 					item_allocation.y = pos.y;
 				} else {
-					pos.x += (wrap_table->details->x_spacing + max_child_frame.x1);
+					pos.x += (wrap_table->details->x_spacing + max_child_dimensions.width);
 				}
 			} else {
 				GtkRequisition item_requisition;
@@ -498,34 +498,34 @@ wrap_table_layout (NautilusWrapTable *wrap_table)
 				item_allocation.width = item_requisition.width;
 				item_allocation.height = item_requisition.height;
 				
-				g_assert (item_allocation.width <= max_child_frame.x1);
-				g_assert (item_allocation.height <= max_child_frame.y1);
+				g_assert (item_allocation.width <= max_child_dimensions.width);
+				g_assert (item_allocation.height <= max_child_dimensions.height);
 				
-				if ((pos.x + max_child_frame.x1) > content_bounds.x1) {
-					pos.x = content_bounds.x0 + wrap_table->details->x_spacing + max_child_frame.x1;
-					pos.y += (max_child_frame.y1 + wrap_table->details->y_spacing);
+				if ((pos.x + max_child_dimensions.width) > content_bounds.x1) {
+					pos.x = content_bounds.x0 + wrap_table->details->x_spacing + max_child_dimensions.width;
+					pos.y += (max_child_dimensions.height + wrap_table->details->y_spacing);
 					item_allocation.x = content_bounds.x0;
 					item_allocation.y = pos.y;
 				} else {
-					pos.x += (wrap_table->details->x_spacing + max_child_frame.x1);
+					pos.x += (wrap_table->details->x_spacing + max_child_dimensions.width);
 				}
 				
 				switch (wrap_table->details->x_justification) {
 				case NAUTILUS_JUSTIFICATION_MIDDLE:
-					item_allocation.x += (max_child_frame.x1 - (int) item_allocation.width) / 2;
+					item_allocation.x += (max_child_dimensions.width - (int) item_allocation.width) / 2;
 					break;
 				case NAUTILUS_JUSTIFICATION_END:
-					item_allocation.x += (max_child_frame.x1 - (int) item_allocation.width);
+					item_allocation.x += (max_child_dimensions.width - (int) item_allocation.width);
 					break;
 				default:
 				}
 				
 				switch (wrap_table->details->y_justification) {
 				case NAUTILUS_JUSTIFICATION_MIDDLE:
-					item_allocation.y += (max_child_frame.y1 - (int) item_allocation.height) / 2;
+					item_allocation.y += (max_child_dimensions.height - (int) item_allocation.height) / 2;
 					break;
 				case NAUTILUS_JUSTIFICATION_END:
-					item_allocation.y += (max_child_frame.y1 - (int) item_allocation.height);
+					item_allocation.y += (max_child_dimensions.height - (int) item_allocation.height);
 					break;
 				default:
 				}
@@ -536,36 +536,30 @@ wrap_table_layout (NautilusWrapTable *wrap_table)
 	}
 }
 
-static ArtIRect
-wrap_table_art_irect_max_frame (const ArtIRect *one,
-			  const ArtIRect *two)
+static NautilusDimensions
+wrap_table_art_irect_max_dimensions (const NautilusDimensions *one,
+				     const NautilusDimensions *two)
 {
-	ArtIRect max;
+	NautilusDimensions max_dimensions;
 
-	g_return_val_if_fail (one != NULL, NAUTILUS_ART_IRECT_EMPTY);
-	g_return_val_if_fail (two != NULL, NAUTILUS_ART_IRECT_EMPTY);
-	g_return_val_if_fail (one->x0 == 0, NAUTILUS_ART_IRECT_EMPTY);
-	g_return_val_if_fail (one->y0 == 0, NAUTILUS_ART_IRECT_EMPTY);
-	g_return_val_if_fail (two->x0 == 0, NAUTILUS_ART_IRECT_EMPTY);
-	g_return_val_if_fail (two->y0 == 0, NAUTILUS_ART_IRECT_EMPTY);
+	g_return_val_if_fail (one != NULL, NAUTILUS_DIMENSIONS_EMPTY);
+	g_return_val_if_fail (two != NULL, NAUTILUS_DIMENSIONS_EMPTY);
 
-	max.x0 = 0;
-	max.y0 = 0;
-	max.x1 = MAX (one->x1, two->x1);
-	max.y1 = MAX (one->y1, two->y1);
+	max_dimensions.width = MAX (one->width, two->width);
+	max_dimensions.height = MAX (one->height, two->height);
 
-	return max;
+	return max_dimensions;
 }
 
-static ArtIRect
-wrap_table_get_max_child_frame (const NautilusWrapTable *wrap_table)
+static NautilusDimensions
+wrap_table_get_max_child_dimensions (const NautilusWrapTable *wrap_table)
 {
-	ArtIRect max;
+	NautilusDimensions max_dimensions;
 	GList *iterator;
 
-  	g_return_val_if_fail (NAUTILUS_IS_WRAP_TABLE (wrap_table), NAUTILUS_ART_IRECT_EMPTY);
+  	g_return_val_if_fail (NAUTILUS_IS_WRAP_TABLE (wrap_table), NAUTILUS_DIMENSIONS_EMPTY);
 
-	max = NAUTILUS_ART_IRECT_EMPTY;
+	max_dimensions = NAUTILUS_DIMENSIONS_EMPTY;
 
 	for (iterator = wrap_table->details->items; iterator; iterator = iterator->next) {
 		GtkWidget *child;
@@ -574,20 +568,18 @@ wrap_table_get_max_child_frame (const NautilusWrapTable *wrap_table)
 		
 		if (GTK_WIDGET_VISIBLE (child)) {
  			GtkRequisition child_requisition;
-			ArtIRect child_frame;
+			NautilusDimensions child_dimensions;
 
  			gtk_widget_size_request (child, &child_requisition);
 
-			child_frame.x0 = 0;
-			child_frame.y0 = 0;
-			child_frame.x1 = child_requisition.width;
-			child_frame.y1 = child_requisition.height;
+			child_dimensions.width = (int) child_requisition.width;
+			child_dimensions.height = (int) child_requisition.height;
 
-			max = wrap_table_art_irect_max_frame (&child_frame, &max);
+			max_dimensions = wrap_table_art_irect_max_dimensions (&child_dimensions, &max_dimensions);
 		}
 	}
 
-	return max;
+	return max_dimensions;
 }
 
 static int
@@ -607,33 +599,33 @@ wrap_table_get_num_fitting (int available,
 	return num;
 }
 
-static ArtIRect
-wrap_table_get_content_frame (const NautilusWrapTable *wrap_table)
+static NautilusDimensions
+wrap_table_get_content_dimensions (const NautilusWrapTable *wrap_table)
 {
-	ArtIRect content_frame;
+	NautilusDimensions content_dimensions;
 	guint num_children;
 
-  	g_return_val_if_fail (NAUTILUS_IS_WRAP_TABLE (wrap_table), NAUTILUS_ART_IRECT_EMPTY);
+  	g_return_val_if_fail (NAUTILUS_IS_WRAP_TABLE (wrap_table), NAUTILUS_DIMENSIONS_EMPTY);
 
-	content_frame = NAUTILUS_ART_IRECT_EMPTY;
+	content_dimensions = NAUTILUS_DIMENSIONS_EMPTY;
 	
 	num_children = g_list_length (wrap_table->details->items);
 
 	if (num_children > 0) {
-		ArtIRect max_child_frame;
-		ArtIRect frame;
+		NautilusDimensions max_child_dimensions;
+		NautilusDimensions dimensions;
 		int num_cols;
 		int num_rows;
 
-		frame = nautilus_irect_gtk_widget_get_frame (GTK_WIDGET (wrap_table));
-		max_child_frame = wrap_table_get_max_child_frame (wrap_table);
+		dimensions = nautilus_gtk_widget_get_dimensions (GTK_WIDGET (wrap_table));
+		max_child_dimensions = wrap_table_get_max_child_dimensions (wrap_table);
 
-		max_child_frame.x1 = MAX (max_child_frame.x1, 1);
-		max_child_frame.y1 = MAX (max_child_frame.y1, 1);
+		max_child_dimensions.width = MAX (max_child_dimensions.width, 1);
+		max_child_dimensions.height = MAX (max_child_dimensions.height, 1);
 
-		num_cols = wrap_table_get_num_fitting (frame.x1,
+		num_cols = wrap_table_get_num_fitting (dimensions.width,
 						       wrap_table->details->x_spacing,
-						       max_child_frame.x1);
+						       max_child_dimensions.width);
 		num_rows = num_children / num_cols;
 		num_rows = MAX (num_rows, 1);
 		
@@ -641,11 +633,11 @@ wrap_table_get_content_frame (const NautilusWrapTable *wrap_table)
 			num_rows++;
 		}
 		
-		content_frame.x1 = frame.x1;
-		content_frame.y1 = num_rows * max_child_frame.y1;
+		content_dimensions.width = dimensions.width;
+		content_dimensions.height = num_rows * max_child_dimensions.height;
 	}
 
-	return content_frame;
+	return content_dimensions;
 }
 
 static ArtIRect
@@ -655,7 +647,7 @@ wrap_table_get_content_bounds (const NautilusWrapTable *wrap_table)
 
   	g_return_val_if_fail (NAUTILUS_IS_WRAP_TABLE (wrap_table), NAUTILUS_ART_IRECT_EMPTY);
 
-	content_bounds = nautilus_irect_gtk_widget_get_bounds (GTK_WIDGET (wrap_table));
+	content_bounds = nautilus_gtk_widget_get_bounds (GTK_WIDGET (wrap_table));
 
 	content_bounds.x0 += GTK_CONTAINER (wrap_table)->border_width;
 	content_bounds.y0 += GTK_CONTAINER (wrap_table)->border_width;
@@ -707,7 +699,7 @@ wrap_table_find_child_at_point (const NautilusWrapTable *wrap_table,
 		if (GTK_WIDGET_VISIBLE (child)) {
 			ArtIRect child_bounds;
 
-			child_bounds = nautilus_irect_gtk_widget_get_bounds (child);
+			child_bounds = nautilus_gtk_widget_get_bounds (child);
  			
 			if (nautilus_art_irect_contains_point (&child_bounds, x, y)) {
 				return child;

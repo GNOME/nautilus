@@ -45,6 +45,8 @@ void nautilus_run_lib_self_checks (void);
 	macro (nautilus_self_check_preferences) \
 	macro (nautilus_self_check_scalable_font) \
 	macro (nautilus_self_check_string_map) \
+	macro (nautilus_self_check_art_extensions) \
+	macro (nautilus_self_check_gdk_pixbuf_extensions) \
 	macro (nautilus_self_check_glib_extensions) \
 	macro (nautilus_self_check_gdk_extensions) \
 	macro (nautilus_self_check_gdk_font_extensions) \

@@ -29,26 +29,27 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libart_lgpl/art_rect.h>
 #include <libnautilus-extensions/nautilus-scalable-font.h>
+#include <libnautilus-extensions/nautilus-art-extensions.h>
 
 BEGIN_GNOME_DECLS
 
 typedef struct NautilusGlyph NautilusGlyph;
 
-NautilusGlyph *nautilus_glyph_new            (const NautilusScalableFont *font,
-					      const char                 *text,
-					      guint                       text_length,
-					      guint                       font_size);
-void           nautilus_glyph_free           (NautilusGlyph              *glyph);
-int            nautilus_glyph_get_width      (const NautilusGlyph        *glyph);
-int            nautilus_glyph_get_height     (const NautilusGlyph        *glyph);
-ArtIRect       nautilus_glyph_get_frame      (const NautilusGlyph        *glyph);
-void           nautilus_glyph_draw_to_pixbuf (const NautilusGlyph        *glyph,
-					      GdkPixbuf                  *pixbuf,
-					      int                         destination_x,
-					      int                         destination_y,
-					      const ArtIRect             *clip_area,
-					      guint32                     color,
-					      int                         opacity);
+NautilusGlyph *    nautilus_glyph_new            (const NautilusScalableFont *font,
+						  guint                       font_size,
+						  const char                 *text,
+						  guint                       text_length);
+void               nautilus_glyph_free           (NautilusGlyph              *glyph);
+int                nautilus_glyph_get_width      (const NautilusGlyph        *glyph);
+int                nautilus_glyph_get_height     (const NautilusGlyph        *glyph);
+NautilusDimensions nautilus_glyph_get_dimensions (const NautilusGlyph        *glyph);
+void               nautilus_glyph_draw_to_pixbuf (const NautilusGlyph        *glyph,
+						  GdkPixbuf                  *pixbuf,
+						  int                         destination_x,
+						  int                         destination_y,
+						  const ArtIRect             *clip_area,
+						  guint32                     color,
+						  int                         opacity);
 
 END_GNOME_DECLS
 

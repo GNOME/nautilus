@@ -31,7 +31,6 @@ main (int argc, char* argv[])
 					  100,
 					  NULL,
 					  80,
-					  80,
 					  "Something",
 					  strlen ("Something"),
 					  NAUTILUS_RGBA_COLOR_OPAQUE_BLUE,

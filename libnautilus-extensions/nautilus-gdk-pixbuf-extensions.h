@@ -163,7 +163,13 @@ GdkPixbuf *               nautilus_gdk_pixbuf_get_from_window_safe      (GdkWind
 /* Determine whether a pixbuf is valid or not */
 gboolean                  nautilus_gdk_pixbuf_is_valid                  (const GdkPixbuf            *pixbuf);
 
-/* Access the dimensions of a pixbuf as a ArtIRect frame. */
-ArtIRect                  nautilus_gdk_pixbuf_get_frame                 (const GdkPixbuf            *pixbuf);
+/* Access the dimensions of a pixbuf. */
+NautilusDimensions        nautilus_gdk_pixbuf_get_dimensions            (const GdkPixbuf            *pixbuf);
+
+/* Return the intersection of the pixbuf with the given rectangle. */
+ArtIRect                  nautilus_gdk_pixbuf_intersect                 (const GdkPixbuf            *pixbuf,
+									 int                         pixbuf_x,
+									 int                         pixbuf_y,
+									 const ArtIRect             *rectangle);
 
 #endif /* NAUTILUS_GDK_PIXBUF_EXTENSIONS_H */

@@ -401,7 +401,8 @@ image_table_clear_dirty_areas (NautilusImageTable *image_table)
 {
 	GtkWidget *widget;
 	NautilusRegion *region;
-	ArtIRect bounds;
+	NautilusDimensions dimensions;
+	ArtIRect whole_region;
 	GdkGC *gc;
 	
 	g_return_if_fail (NAUTILUS_IS_WRAP_TABLE (image_table));
@@ -409,10 +410,11 @@ image_table_clear_dirty_areas (NautilusImageTable *image_table)
 
 	widget = GTK_WIDGET (image_table);
 	
-	bounds = nautilus_irect_gtk_widget_get_frame (widget->parent);
+	dimensions = nautilus_gtk_widget_get_dimensions (widget->parent);
+	whole_region = nautilus_art_irect_assign_dimensions (0, 0, &dimensions);
 	region = nautilus_region_new ();
 	
-	nautilus_region_add_rectangle (region, &bounds);
+	nautilus_region_add_rectangle (region, &whole_region);
 
 	gc = image_table_peek_clear_gc (image_table);
 	
@@ -423,10 +425,10 @@ image_table_clear_dirty_areas (NautilusImageTable *image_table)
 	gdk_draw_rectangle (widget->window,
 			    gc,
 			    TRUE,
-			    bounds.x0,
-			    bounds.y0,
-			    bounds.x1 - bounds.x0,
-			    bounds.y1 - bounds.y0);
+			    0,
+			    0,
+			    dimensions.width,
+			    dimensions.height);
 	
 	nautilus_region_free (region);
 }
@@ -558,7 +560,7 @@ ancestor_leave_notify_event (GtkWidget *widget,
 	g_return_val_if_fail (NAUTILUS_IS_IMAGE_TABLE (event_data), FALSE);
 	g_return_val_if_fail (event != NULL, FALSE);
 
-	bounds = nautilus_irect_gtk_widget_get_bounds (GTK_WIDGET (event_data));
+	bounds = nautilus_gtk_widget_get_bounds (GTK_WIDGET (event_data));
 	
 	if (nautilus_art_irect_contains_point (&bounds, event->x, event->y)) {
 		x = event->x;

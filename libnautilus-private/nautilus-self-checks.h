@@ -26,6 +26,7 @@
 #define NAUTILUS_SELF_CHECKS_H
 
 #include <glib.h>
+#include <libnautilus-extensions/nautilus-art-extensions.h>
 
 #define NAUTILUS_CHECK_RESULT(type, expression, expected_value) \
 G_STMT_START { \
@@ -39,22 +40,37 @@ G_STMT_START { \
 	NAUTILUS_CHECK_RESULT(integer, expression, expected_value)
 #define NAUTILUS_CHECK_STRING_RESULT(expression, expected_value) \
 	NAUTILUS_CHECK_RESULT(string, expression, expected_value)
+#define NAUTILUS_CHECK_RECTANGLE_RESULT(expression, expected_x0, expected_y0, expected_x1, expected_y1) \
+G_STMT_START { \
+	nautilus_before_check (#expression, __FILE__, __LINE__); \
+	nautilus_check_rectangle_result (expression, expected_x0, expected_y0, expected_x1, expected_y1); \
+} G_STMT_END
+#define NAUTILUS_CHECK_DIMENSIONS_RESULT(expression, expected_width, expected_height) \
+G_STMT_START { \
+	nautilus_before_check (#expression, __FILE__, __LINE__); \
+	nautilus_check_dimensions_result (expression, expected_width, expected_height); \
+} G_STMT_END
 
 void nautilus_exit_if_self_checks_failed (void);
-
-void nautilus_before_check_function      (const char *name);
+void nautilus_before_check_function      (const char         *name);
 void nautilus_after_check_function       (void);
-
-void nautilus_before_check               (const char *expression,
-					  const char *file_name,
-					  int         line_number);
-
-void nautilus_check_boolean_result       (gboolean    result,
-					  gboolean    expected_value);
-void nautilus_check_integer_result       (long        result,
-					  long        expected_value);
-void nautilus_check_string_result        (char       *result,
-					  const char *expected_value);
+void nautilus_before_check               (const char         *expression,
+					  const char         *file_name,
+					  int                 line_number);
+void nautilus_check_boolean_result       (gboolean            result,
+					  gboolean            expected_value);
+void nautilus_check_integer_result       (long                result,
+					  long                expected_value);
+void nautilus_check_rectangle_result     (ArtIRect            result,
+					  int                 expected_x0,
+					  int                 expected_y0,
+					  int                 expected_x1,
+					  int                 expected_y1);
+void nautilus_check_dimensions_result    (NautilusDimensions  result,
+					  int                 expected_width,
+					  int                 expected_height);
+void nautilus_check_string_result        (char               *result,
+					  const char         *expected_value);
 
 #define NAUTILUS_SELF_CHECK_FUNCTION_PROTOTYPE(function) \
 	void function (void);

@@ -276,7 +276,7 @@ label_handle_motion (NautilusClickableImage *clickable_image,
 
 	g_return_if_fail (NAUTILUS_IS_CLICKABLE_IMAGE (clickable_image));
 	
-	bounds = nautilus_irect_gtk_widget_get_bounds (GTK_WIDGET (clickable_image));
+	bounds = nautilus_gtk_widget_get_bounds (GTK_WIDGET (clickable_image));
 	
 	if (nautilus_art_irect_contains_point (&bounds, x, y)) {
 		/* Inside */

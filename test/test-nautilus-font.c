@@ -16,16 +16,15 @@ main (int argc, char* argv[])
 	ArtIRect		multi_lines_area;
 
 	const char   *text = "\nLine Two\n\nLine Four\n\n\nLine Seven";
-	const guint  font_width = 48;
-	const guint  font_height = 48;
+	const guint  font_size = 48;
 	const guint  pixbuf_width = 500;
 	const guint  pixbuf_height = 700;
 	const guint  line_offset = 2;
-	const guint  empty_line_height = font_height;
+	const guint  empty_line_height = font_size;
 	const int    multi_line_x = 10;
 	const int    multi_line_y = 10;
 
-	g_print ("font_height = %d, empty_line_height = %d\n", font_height, empty_line_height);
+	g_print ("font_size = %d, empty_line_height = %d\n", font_size, empty_line_height);
 
 	gtk_init (&argc, &argv);
 	gdk_rgb_init ();
@@ -48,25 +47,21 @@ main (int argc, char* argv[])
 
 	/* Measure some text lines */
 	{
-		guint	num_text_lines;
-		guint	*text_line_widths;
-		guint	*text_line_heights;
-		guint	max_width_out;
-		guint	total_height_out;
-
+		guint num_text_lines;
+		NautilusDimensions *text_line_dimensions;
+		guint max_width_out;
+		guint total_height_out;
+		
 		num_text_lines = nautilus_str_count_characters (text, '\n') + 1;
 		
-		text_line_widths = g_new (guint, num_text_lines);
-		text_line_heights = g_new (guint, num_text_lines);
+		text_line_dimensions = g_new (NautilusDimensions, num_text_lines);
 		
 		nautilus_scalable_font_measure_text_lines (font,
-							   font_width,
-							   font_height,
+							   font_size,
 							   text,
 							   num_text_lines,
 							   empty_line_height,
-							   text_line_widths,
-							   text_line_heights,
+							   text_line_dimensions,
 							   &max_width_out,
 							   &total_height_out);
 
@@ -78,9 +73,7 @@ main (int argc, char* argv[])
 			 max_width_out,
 			 total_height_out);
 
-		
-		g_free (text_line_widths);
-		g_free (text_line_heights);
+		g_free (text_line_dimensions);
 	}
 
 	clip_area.x0 = 300;
@@ -121,8 +114,7 @@ main (int argc, char* argv[])
 						multi_line_x,
 						multi_line_y,
 						&whole_area,
-						font_width,
-						font_height,
+						font_size,
 						text,
 						GTK_JUSTIFY_LEFT,
 						line_offset,
@@ -142,7 +134,6 @@ main (int argc, char* argv[])
 					  clip_area.x0,
 					  clip_area.y0,
 					  NULL,
-					  80,
 					  80,
 					  "Something",
 					  strlen ("Something"),

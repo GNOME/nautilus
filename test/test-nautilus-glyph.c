@@ -19,37 +19,13 @@ glyph_new (const char *text, int font_size)
 	font = nautilus_scalable_font_get_default_font ();
 	g_return_val_if_fail (font != NULL, NULL);
 	
-	glyph = nautilus_glyph_new (font, text, strlen (text), font_size);
+	glyph = nautilus_glyph_new (font, font_size, text, strlen (text));
 	g_return_val_if_fail (glyph != NULL, NULL);
 
 	gtk_object_unref (GTK_OBJECT (font));
 
 	return glyph;
 }
-
-// static GdkPixbuf *
-// glyph_pixbuf_new (const char *text,
-// 		  int font_size,
-// 		  guint32 text_color)
-// {
-// 	NautilusGlyph *glyph;
-// 	GdkPixbuf *pixbuf;
-	
-// 	g_return_val_if_fail (text != NULL, NULL);
-// 	g_return_val_if_fail (text[0] != '\0', NULL);
-// 	g_return_val_if_fail (font_size >= 5, NULL);
-// 	g_return_val_if_fail (font_size <= 200, NULL);
-	
-// 	glyph = glyph_new (text, font_size);
-// 	g_return_val_if_fail (glyph != NULL, NULL);
-
-// 	pixbuf = nautilus_glyph_as_alpha_pixbuf (glyph, text_color);
-// 	g_return_val_if_fail (pixbuf != NULL, NULL);
-
-// 	nautilus_glyph_free (glyph);
-
-// 	return pixbuf;
-// }
 
 int 
 main (int argc, char* argv[])
@@ -130,7 +106,6 @@ main (int argc, char* argv[])
 						  x,
 						  y + font_size + 4,
 						  NULL,
-						  font_size,
 						  font_size,
 						  text,
 						  strlen (text),

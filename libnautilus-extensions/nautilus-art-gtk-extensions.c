@@ -27,7 +27,7 @@
 #include "nautilus-art-gtk-extensions.h"
 
 /**
- * nautilus_irect_assign_gdk_rectangle:
+ * nautilus_gdk_rectangle_to_art_irect:
  * @gdk_rectangle: The source GdkRectangle.
  *
  * Return value: An ArtIRect representation of the GdkRectangle.
@@ -38,7 +38,7 @@
  * in GtkWidget's. 
  */
 ArtIRect
-nautilus_irect_assign_gdk_rectangle (const GdkRectangle *gdk_rectangle)
+nautilus_gdk_rectangle_to_art_irect (const GdkRectangle *gdk_rectangle)
 {
 	ArtIRect irect;
 
@@ -53,29 +53,27 @@ nautilus_irect_assign_gdk_rectangle (const GdkRectangle *gdk_rectangle)
 }
 
 /**
- * nautilus_irect_screen_get_frame:
+ * nautilus_screen_get_dimensions:
  *
- * Return value: An ArtIRect representing the screen frame.
+ * Return value: The screen dimensions.
  *
  */
-ArtIRect
-nautilus_irect_screen_get_frame (void)
+NautilusDimensions
+nautilus_screen_get_dimensions (void)
 {
-	ArtIRect screen_frame;
+	NautilusDimensions screen_dimensions;
 
-	screen_frame.x0 = 0;
-	screen_frame.y0 = 0;
-	screen_frame.x1 = gdk_screen_width ();
-	screen_frame.y1 = gdk_screen_width ();
+	screen_dimensions.width = gdk_screen_width ();
+	screen_dimensions.height = gdk_screen_width ();
 	
-	g_assert (screen_frame.x1 > 0);
-	g_assert (screen_frame.y1 > 0);
+	g_assert (screen_dimensions.width > 0);
+	g_assert (screen_dimensions.height > 0);
 
-	return screen_frame;
+	return screen_dimensions;
 }
 
 /**
- * nautilus_irect_gdk_window_get_bounds:
+ * nautilus_gdk_window_get_bounds:
  * @gdk_window: The source GdkWindow.
  *
  * Return value: An ArtIRect representation of the given GdkWindow's geometry
@@ -83,7 +81,7 @@ nautilus_irect_screen_get_frame (void)
  *
  */
 ArtIRect
-nautilus_irect_gdk_window_get_bounds (const GdkWindow *gdk_window)
+nautilus_gdk_window_get_bounds (const GdkWindow *gdk_window)
 {
 	ArtIRect bounds;
 	int width;
@@ -101,7 +99,7 @@ nautilus_irect_gdk_window_get_bounds (const GdkWindow *gdk_window)
 }
 
 /**
- * nautilus_irect_gdk_window_get_bounds:
+ * nautilus_gdk_window_get_bounds:
  * @gdk_window: The source GdkWindow.
  *
  * Return value: An ArtIRect representation of the given GdkWindow's geometry
@@ -109,7 +107,7 @@ nautilus_irect_gdk_window_get_bounds (const GdkWindow *gdk_window)
  *
  */
 ArtIRect
-nautilus_irect_gdk_window_get_screen_relative_bounds (const GdkWindow *gdk_window)
+nautilus_gdk_window_get_screen_relative_bounds (const GdkWindow *gdk_window)
 {
 	ArtIRect screen_bounds;
 	int width;
@@ -132,7 +130,7 @@ nautilus_irect_gdk_window_get_screen_relative_bounds (const GdkWindow *gdk_windo
 }
 
 /**
- * nautilus_irect_gtk_widget_get_bounds:
+ * nautilus_gtk_widget_get_bounds:
  * @gtk_widget: The source GtkWidget.
  *
  * Return value: An ArtIRect representation of the given GtkWidget's geometry
@@ -140,7 +138,7 @@ nautilus_irect_gdk_window_get_screen_relative_bounds (const GdkWindow *gdk_windo
  *
  */
 ArtIRect
-nautilus_irect_gtk_widget_get_bounds (const GtkWidget *gtk_widget)
+nautilus_gtk_widget_get_bounds (const GtkWidget *gtk_widget)
 {
 	ArtIRect bounds;
 
@@ -156,30 +154,27 @@ nautilus_irect_gtk_widget_get_bounds (const GtkWidget *gtk_widget)
 }
 
 /**
- * nautilus_irect_gtk_widget_get_frame:
+ * nautilus_gtk_widget_get_dimensions:
  * @gtk_widget: The source GtkWidget.
  *
  * Return value: An ArtIRect representation of the given GtkWidget's dimensions.
  *
  */
-ArtIRect
-nautilus_irect_gtk_widget_get_frame (const GtkWidget *gtk_widget)
+NautilusDimensions
+nautilus_gtk_widget_get_dimensions (const GtkWidget *gtk_widget)
 {
-	ArtIRect frame;
+	NautilusDimensions dimensions;
 	
-	g_return_val_if_fail (GTK_IS_WIDGET (gtk_widget), NAUTILUS_ART_IRECT_EMPTY);
+	g_return_val_if_fail (GTK_IS_WIDGET (gtk_widget), NAUTILUS_DIMENSIONS_EMPTY);
 	
-	nautilus_art_irect_assign (&frame, 
-				   0,
-				   0,
-				   (int) gtk_widget->allocation.width,
-				   (int) gtk_widget->allocation.height);
+	dimensions.width = (int) gtk_widget->allocation.width;
+	dimensions.height = (int) gtk_widget->allocation.height;
 	
-	return frame;
+	return dimensions;
 }
 
 /**
- * nautilus_irect_gdk_window_clip_dirty_area_to_screen:
+ * nautilus_gdk_window_clip_dirty_area_to_screen:
  * @gdk_window: The GdkWindow that the damage occured on.
  * @dirty_area: The dirty area as an ArtIRect.
  *
@@ -189,11 +184,11 @@ nautilus_irect_gtk_widget_get_frame (const GtkWidget *gtk_widget)
  * It also ensures that any drawing that the widget does is actually onscreen.
  */
 ArtIRect
-nautilus_irect_gdk_window_clip_dirty_area_to_screen (const GdkWindow *gdk_window,
-						     const ArtIRect *dirty_area)
+nautilus_gdk_window_clip_dirty_area_to_screen (const GdkWindow *gdk_window,
+					       const ArtIRect *dirty_area)
 {
 	ArtIRect clipped;
-	ArtIRect screen_frame;
+	NautilusDimensions screen_dimensions;
 	ArtIRect bounds;
 	ArtIRect screen_relative_bounds;
 	int dirty_width;
@@ -208,9 +203,9 @@ nautilus_irect_gdk_window_clip_dirty_area_to_screen (const GdkWindow *gdk_window
 	g_return_val_if_fail (dirty_width > 0, NAUTILUS_ART_IRECT_EMPTY);
 	g_return_val_if_fail (dirty_height > 0, NAUTILUS_ART_IRECT_EMPTY);
 
-	screen_frame = nautilus_irect_screen_get_frame ();
-	bounds = nautilus_irect_gdk_window_get_bounds (gdk_window);
-	screen_relative_bounds = nautilus_irect_gdk_window_get_screen_relative_bounds (gdk_window);
+	screen_dimensions = nautilus_screen_get_dimensions ();
+	bounds = nautilus_gdk_window_get_bounds (gdk_window);
+	screen_relative_bounds = nautilus_gdk_window_get_screen_relative_bounds (gdk_window);
 	
 	/* Window is obscured by left edge of screen */
 	if ((screen_relative_bounds.x0 + dirty_area->x0) < 0) {
@@ -223,11 +218,11 @@ nautilus_irect_gdk_window_clip_dirty_area_to_screen (const GdkWindow *gdk_window
 	}
 	
 	/* Window is obscured by right edge of screen */
-	if (screen_relative_bounds.x1 > screen_frame.x1) {
+	if (screen_relative_bounds.x1 > screen_dimensions.width) {
  		int obscured_width;
 		
 		obscured_width = 
-			screen_relative_bounds.x0 + dirty_area->x0 + dirty_width - screen_frame.x1;
+			screen_relative_bounds.x0 + dirty_area->x0 + dirty_width - screen_dimensions.width;
 		
 		if (obscured_width > 0) {
 			clipped.x1 -= obscured_width;
@@ -245,11 +240,11 @@ nautilus_irect_gdk_window_clip_dirty_area_to_screen (const GdkWindow *gdk_window
 	}
 	
 	/* Window is obscured by bottom edge of screen */
-	if (screen_relative_bounds.y1 > screen_frame.y1) {
+	if (screen_relative_bounds.y1 > screen_dimensions.height) {
  		int obscured_height;
 		
 		obscured_height = 
-			screen_relative_bounds.y0 + dirty_area->y0 + dirty_height - screen_frame.y1;
+			screen_relative_bounds.y0 + dirty_area->y0 + dirty_height - screen_dimensions.height;
 		
 		if (obscured_height > 0) {
 			clipped.y1 -= obscured_height;
@@ -264,7 +259,7 @@ nautilus_irect_gdk_window_clip_dirty_area_to_screen (const GdkWindow *gdk_window
 }
 
 GdkRectangle
-nautilus_gdk_rectangle_assign_irect (const ArtIRect *irect)
+nautilus_art_irect_to_gdk_rectangle (const ArtIRect *irect)
 {
 	GdkRectangle gdk_rect;
 
@@ -282,3 +277,16 @@ nautilus_gdk_rectangle_assign_irect (const ArtIRect *irect)
 
 	return gdk_rect;
 }
+
+NautilusDimensions
+nautilus_gdk_window_get_dimensions (const GdkWindow *gdk_window)
+{
+	NautilusDimensions dimensions;
+	
+	g_return_val_if_fail (gdk_window != NULL, NAUTILUS_DIMENSIONS_EMPTY);
+
+	gdk_window_get_size ((GdkWindow *) gdk_window, &dimensions.width, &dimensions.height);
+
+	return dimensions;
+}
+

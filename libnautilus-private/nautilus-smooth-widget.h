@@ -84,33 +84,33 @@ typedef void (* NautilusSmoothCompositeCallback) (GtkWidget *widget,
 						  int opacity,
 						  gpointer callback_data);
 
-void     nautilus_smooth_widget_register            (GtkWidget                         *widget);
-void     nautilus_smooth_widget_paint               (GtkWidget                         *widget,
-						     GdkGC                             *gc,
-						     gboolean                           is_smooth,
-						     NautilusSmoothBackgroundMode       background_mode,
-						     guint32                            solid_background_color,
-						     const GdkPixbuf                   *tile_pixbuf,
-						     const ArtIRect                    *tile_bounds,
-						     int                                tile_opacity,
-						     NautilusSmoothTileMode             tile_mode_vertical,
-						     NautilusSmoothTileMode             tile_mode_horizontal,
-						     const ArtIRect                    *content_bounds,
-						     int                                content_opacity,
-						     const ArtIRect                    *dirty_area,
-						     NautilusSmoothPaintOpaqueCallback  paint_callback,
-						     NautilusSmoothCompositeCallback    composite_callback,
-						     gpointer                           callback_data);
-ArtIRect nautilus_smooth_widget_get_tile_bounds     (const GtkWidget                   *widget,
-						     const GdkPixbuf                   *tile_pixbuf,
-						     int                                tile_width,
-						     int                                tile_height);
-ArtIRect nautilus_smooth_widget_get_preferred_frame (const GtkWidget                   *widget,
-						     const ArtIRect                    *content_frame,
-						     const ArtIRect                    *tile_frame,
-						     int                                tile_width,
-						     int                                tile_height);
-void     nautilus_smooth_widget_register_type       (GtkType                            type);
+void               nautilus_smooth_widget_register                 (GtkWidget                         *widget);
+void               nautilus_smooth_widget_paint                    (GtkWidget                         *widget,
+								    GdkGC                             *gc,
+								    gboolean                           is_smooth,
+								    NautilusSmoothBackgroundMode       background_mode,
+								    guint32                            solid_background_color,
+								    const GdkPixbuf                   *tile_pixbuf,
+								    const ArtIRect                    *tile_bounds,
+								    int                                tile_opacity,
+								    NautilusSmoothTileMode             tile_mode_vertical,
+								    NautilusSmoothTileMode             tile_mode_horizontal,
+								    const ArtIRect                    *content_bounds,
+								    int                                content_opacity,
+								    const ArtIRect                    *dirty_area,
+								    NautilusSmoothPaintOpaqueCallback  paint_callback,
+								    NautilusSmoothCompositeCallback    composite_callback,
+								    gpointer                           callback_data);
+ArtIRect           nautilus_smooth_widget_get_tile_bounds          (const GtkWidget                   *widget,
+								    const GdkPixbuf                   *tile_pixbuf,
+								    int                                tile_width,
+								    int                                tile_height);
+NautilusDimensions nautilus_smooth_widget_get_preferred_dimensions (const GtkWidget                   *widget,
+								    const NautilusDimensions          *content_dimensions,
+								    const NautilusDimensions          *tile_dimensions,
+								    int                                tile_width,
+								    int                                tile_height);
+void               nautilus_smooth_widget_register_type            (GtkType                            type);
 
 END_GNOME_DECLS
 

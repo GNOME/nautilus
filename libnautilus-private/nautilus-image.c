@@ -86,30 +86,30 @@ struct _NautilusImageDetails
 };
 
 /* GtkObjectClass methods */
-static void     nautilus_image_initialize_class     (NautilusImageClass  *image_class);
-static void     nautilus_image_initialize           (NautilusImage       *image);
-static void     nautilus_image_destroy              (GtkObject           *object);
-static void     nautilus_image_set_arg              (GtkObject           *object,
-						     GtkArg              *arg,
-						     guint                arg_id);
-static void     nautilus_image_get_arg              (GtkObject           *object,
-						     GtkArg              *arg,
-						     guint                arg_id);
+static void               nautilus_image_initialize_class     (NautilusImageClass  *image_class);
+static void               nautilus_image_initialize           (NautilusImage       *image);
+static void               nautilus_image_destroy              (GtkObject           *object);
+static void               nautilus_image_set_arg              (GtkObject           *object,
+							       GtkArg              *arg,
+							       guint                arg_id);
+static void               nautilus_image_get_arg              (GtkObject           *object,
+							       GtkArg              *arg,
+							       guint                arg_id);
 /* GtkWidgetClass methods */
-static void     nautilus_image_size_request         (GtkWidget           *widget,
-						     GtkRequisition      *requisition);
-static int      nautilus_image_expose_event         (GtkWidget           *widget,
-						     GdkEventExpose      *event);
+static void               nautilus_image_size_request         (GtkWidget           *widget,
+							       GtkRequisition      *requisition);
+static int                nautilus_image_expose_event         (GtkWidget           *widget,
+							       GdkEventExpose      *event);
 
 /* NautilusImage signals */
-static void     nautilus_image_set_is_smooth_signal (GtkWidget           *widget,
-						     gboolean             is_smooth);
+static void               nautilus_image_set_is_smooth_signal (GtkWidget           *widget,
+							       gboolean             is_smooth);
 
 /* Private NautilusImage methods */
-static ArtIRect image_get_pixbuf_frame              (const NautilusImage *image);
-static ArtIRect image_get_pixbuf_bounds             (const NautilusImage *image);
-static ArtIRect image_get_tile_frame                (const NautilusImage *image);
-static gboolean image_is_smooth                     (const NautilusImage *image);
+static NautilusDimensions image_get_pixbuf_dimensions         (const NautilusImage *image);
+static ArtIRect           image_get_pixbuf_bounds             (const NautilusImage *image);
+static NautilusDimensions image_get_tile_dimensions           (const NautilusImage *image);
+static gboolean           image_is_smooth                     (const NautilusImage *image);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusImage, nautilus_image, GTK_TYPE_MISC)
 
@@ -364,24 +364,24 @@ nautilus_image_size_request (GtkWidget *widget,
 {
 	NautilusImage *image;
 
-	ArtIRect pixbuf_frame;
-	ArtIRect tile_frame;
-	ArtIRect preferred_frame;
-
+	NautilusDimensions pixbuf_dimensions;
+	NautilusDimensions tile_dimensions;
+	NautilusDimensions preferred_dimensions;
+	
 	g_return_if_fail (NAUTILUS_IS_IMAGE (widget));
 	g_return_if_fail (requisition != NULL);
-
+	
  	image = NAUTILUS_IMAGE (widget);
 	
-	pixbuf_frame = image_get_pixbuf_frame (image);
-	tile_frame = image_get_tile_frame (image);
-	preferred_frame = nautilus_smooth_widget_get_preferred_frame (widget,
-								      &pixbuf_frame,
-								      &tile_frame,
-								      image->details->tile_width,
-								      image->details->tile_height);
-   	requisition->width = preferred_frame.x1;
-   	requisition->height = preferred_frame.y1;
+	pixbuf_dimensions = image_get_pixbuf_dimensions (image);
+	tile_dimensions = image_get_tile_dimensions (image);
+	preferred_dimensions = nautilus_smooth_widget_get_preferred_dimensions (widget,
+										&pixbuf_dimensions,
+										&tile_dimensions,
+										image->details->tile_width,
+										image->details->tile_height);
+   	requisition->width = preferred_dimensions.width;
+   	requisition->height = preferred_dimensions.height;
 }
 
 static void
@@ -475,8 +475,8 @@ nautilus_image_expose_event (GtkWidget *widget,
 	}
 
 	/* Clip the dirty area to the screen */
-	dirty_area = nautilus_irect_assign_gdk_rectangle (&event->area);
-	screen_dirty_area = nautilus_irect_gdk_window_clip_dirty_area_to_screen (event->window,
+	dirty_area = nautilus_gdk_rectangle_to_art_irect (&event->area);
+	screen_dirty_area = nautilus_gdk_window_clip_dirty_area_to_screen (event->window,
 										 &dirty_area);
 	/* Nothing to do */
 	if (art_irect_empty (&screen_dirty_area)) {
@@ -515,68 +515,64 @@ nautilus_image_set_is_smooth_signal (GtkWidget *widget,
 }
 
 /* Private NautilusImage methods */
-static ArtIRect
-image_get_pixbuf_frame (const NautilusImage *image)
+static NautilusDimensions
+image_get_pixbuf_dimensions (const NautilusImage *image)
 {
-	ArtIRect pixbuf_frame;
+	NautilusDimensions pixbuf_dimensions;
 
-	g_return_val_if_fail (NAUTILUS_IS_IMAGE (image), NAUTILUS_ART_IRECT_EMPTY);
+	g_return_val_if_fail (NAUTILUS_IS_IMAGE (image), NAUTILUS_DIMENSIONS_EMPTY);
 
 	if (!image->details->pixbuf) {
-		return NAUTILUS_ART_IRECT_EMPTY;
+		return NAUTILUS_DIMENSIONS_EMPTY;
 	}
 
-	pixbuf_frame.x0 = 0;
-	pixbuf_frame.y0 = 0;
-	pixbuf_frame.x1 = gdk_pixbuf_get_width (image->details->pixbuf);
-	pixbuf_frame.y1 = gdk_pixbuf_get_height (image->details->pixbuf);
+	pixbuf_dimensions.width = gdk_pixbuf_get_width (image->details->pixbuf);
+	pixbuf_dimensions.height = gdk_pixbuf_get_height (image->details->pixbuf);
 
-	return pixbuf_frame;
+	return pixbuf_dimensions;
 }
 
 static ArtIRect
 image_get_pixbuf_bounds (const NautilusImage *image)
 {
-	ArtIRect pixbuf_frame;
+	NautilusDimensions pixbuf_dimensions;
 	ArtIRect pixbuf_bounds;
 	ArtIRect bounds;
 
 	g_return_val_if_fail (NAUTILUS_IS_IMAGE (image), NAUTILUS_ART_IRECT_EMPTY);
 
-	pixbuf_frame = image_get_pixbuf_frame (image);
+	pixbuf_dimensions = image_get_pixbuf_dimensions (image);
 
-	if (art_irect_empty (&pixbuf_frame)) {
+	if (nautilus_dimensions_empty (&pixbuf_dimensions)) {
 		return NAUTILUS_ART_IRECT_EMPTY;
 	}
 	
-	bounds = nautilus_irect_gtk_widget_get_bounds (GTK_WIDGET (image));
+	bounds = nautilus_gtk_widget_get_bounds (GTK_WIDGET (image));
 	
 	pixbuf_bounds = nautilus_art_irect_align (&bounds,
-						  pixbuf_frame.x1,
-						  pixbuf_frame.y1,
+						  pixbuf_dimensions.width,
+						  pixbuf_dimensions.height,
 						  GTK_MISC (image)->xalign,
 						  GTK_MISC (image)->yalign);
 
 	return pixbuf_bounds;
 }
 
-static ArtIRect
-image_get_tile_frame (const NautilusImage *image)
+static NautilusDimensions
+image_get_tile_dimensions (const NautilusImage *image)
 {
-	ArtIRect tile_frame;
+	NautilusDimensions tile_dimensions;
 
-	g_return_val_if_fail (NAUTILUS_IS_IMAGE (image), NAUTILUS_ART_IRECT_EMPTY);
+	g_return_val_if_fail (NAUTILUS_IS_IMAGE (image), NAUTILUS_DIMENSIONS_EMPTY);
 
 	if (!image->details->tile_pixbuf) {
-		return NAUTILUS_ART_IRECT_EMPTY;
+		return NAUTILUS_DIMENSIONS_EMPTY;
 	}
+	
+	tile_dimensions.width = gdk_pixbuf_get_width (image->details->tile_pixbuf);
+	tile_dimensions.height = gdk_pixbuf_get_height (image->details->tile_pixbuf);
 
-	tile_frame.x0 = 0;
-	tile_frame.y0 = 0;
-	tile_frame.x1 = gdk_pixbuf_get_width (image->details->tile_pixbuf);
-	tile_frame.y1 = gdk_pixbuf_get_height (image->details->tile_pixbuf);
-
-	return tile_frame;
+	return tile_dimensions;
 }
 
 gboolean

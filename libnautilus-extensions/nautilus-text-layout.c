@@ -153,7 +153,7 @@ nautilus_text_layout_new (const NautilusScalableFont *font,
 			if (word_end < row_end)
 				word_end++;
 
-			if (nautilus_scalable_font_text_width (font, font_size, font_size, text_iter, word_end - text_iter) > max_width) {
+			if (nautilus_scalable_font_text_width (font, font_size, text_iter, word_end - text_iter) > max_width) {
 				if (word_start == text_iter) {
 					if (confine) {
 						/* We must force-split the word.  Look for a proper
@@ -163,7 +163,7 @@ nautilus_text_layout_new (const NautilusScalableFont *font,
 						w_len = word_end - word_start;
 						
 						for (i = 1; i < w_len; i++) {
-							w = nautilus_scalable_font_text_width (font, font_size, font_size, word_start, i);
+							w = nautilus_scalable_font_text_width (font, font_size, word_start, i);
 							if (w > max_width) {
 								if (i == 1)
 									/* Shit, not even a single character fits */
@@ -180,7 +180,7 @@ nautilus_text_layout_new (const NautilusScalableFont *font,
 						row = g_new (NautilusTextLayoutRow, 1);
 						row->text = sub_text;
 						row->text_length = i - 1;
-						row->width = nautilus_scalable_font_text_width (font, font_size, font_size, 
+						row->width = nautilus_scalable_font_text_width (font, font_size, 
 												sub_text, 
 												strlen (sub_text));
 
@@ -198,7 +198,7 @@ nautilus_text_layout_new (const NautilusScalableFont *font,
 
 						continue;
 					} else
-						max_width = nautilus_scalable_font_text_width (font, font_size, font_size, word_start, word_end - word_start);
+						max_width = nautilus_scalable_font_text_width (font, font_size, word_start, word_end - word_start);
 
 					continue; /* Retry split */
 				} else {
@@ -232,7 +232,7 @@ nautilus_text_layout_new (const NautilusScalableFont *font,
 			row = g_new (NautilusTextLayoutRow, 1);
 			row->text = sub_text;
 			row->text_length = sub_len;
-			row->width = nautilus_scalable_font_text_width (font, font_size, font_size, sub_text, sub_len);
+			row->width = nautilus_scalable_font_text_width (font, font_size, sub_text, sub_len);
 
 			text_layout->rows = g_list_append (text_layout->rows, row);
 
@@ -317,7 +317,6 @@ nautilus_text_layout_paint (const NautilusTextLayout *text_layout,
 							  x + xpos,
 							  y,
 							  NULL,
-							  text_layout->font_size,
 							  text_layout->font_size,
 							  row->text,
 							  row->text_length,
