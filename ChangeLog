@@ -1,3 +1,12 @@
+2001-12-12  Darin Adler  <darin@bentspoon.com>
+
+	* src/file-manager/fm-directory-view.c: (real_update_menus):
+	Add a check for NULL that seems required. This change was
+	suggested by the backtrace in bug 66809, but it's not clear
+	if this really fixes anything.
+
+	* THANKS: Some thanks for some recent contributors.
+
 2001-12-10  Frederic Crozat  <fcrozat@mandrakesoft.com>
 
 	* components/help/hyperbola-filefmt.c:
