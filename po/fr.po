@@ -9,11 +9,11 @@
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus 2.7.92\n"
+"Project-Id-Version: nautilus 2.8.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 10:55+0200\n"
+"POT-Creation-Date: 2004-10-03 23:08+0200\n"
 "PO-Revision-Date: 2004-09-29 13:13+0200\n"
-"Last-Translator: Sébastien Bacher <seb128@debian.org>\n"
+"Last-Translator: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2179,7 +2179,7 @@ msgstr "lien vers %s"
 msgid "link (broken)"
 msgstr "lien (rompu)"
 
-#: libnautilus-private/nautilus-file.c:6173
+#: libnautilus-private/nautilus-file.c:6174
 #: libnautilus-private/nautilus-global-preferences.c:546
 #: libnautilus-private/nautilus-trash-directory.c:343
 msgid "Trash"
@@ -3077,43 +3077,43 @@ msgstr "24"
 msgid "%s's Home"
 msgstr "Dossier personnel de %s"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2803
+#: libnautilus-private/nautilus-icon-canvas-item.c:2808
 msgid "editable text"
 msgstr "texte éditable"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2804
+#: libnautilus-private/nautilus-icon-canvas-item.c:2809
 msgid "the editable label"
 msgstr "l'étiquette éditable"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2811
+#: libnautilus-private/nautilus-icon-canvas-item.c:2816
 msgid "additional text"
 msgstr "texte additionnel"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2812
+#: libnautilus-private/nautilus-icon-canvas-item.c:2817
 msgid "some more text"
 msgstr "encore plus de texte"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2819
+#: libnautilus-private/nautilus-icon-canvas-item.c:2824
 msgid "highlighted for selection"
 msgstr "Surligné pour sélection"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2820
+#: libnautilus-private/nautilus-icon-canvas-item.c:2825
 msgid "whether we are highlighted for a selection"
 msgstr "Si on est surligné pour une sélection"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2827
+#: libnautilus-private/nautilus-icon-canvas-item.c:2832
 msgid "highlighted as keyboard focus"
 msgstr "surligné pour le focus clavier"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2828
+#: libnautilus-private/nautilus-icon-canvas-item.c:2833
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "si on est surligné pour rendre le focus clavier"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2836
+#: libnautilus-private/nautilus-icon-canvas-item.c:2841
 msgid "highlighted for drop"
 msgstr "surligné pour déposer"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2837
+#: libnautilus-private/nautilus-icon-canvas-item.c:2842
 msgid "whether we are highlighted for a D&D drop"
 msgstr "si on est surligné pour un déposer de D&D"
 
@@ -3333,7 +3333,7 @@ msgstr ""
 "Vérifiez que l'orthographe ainsi que vos paramètres de proxy soient corrects."
 
 #: libnautilus-private/nautilus-program-choosing.c:619
-#: src/nautilus-connect-server-dialog.c:136
+#: src/nautilus-connect-server-dialog.c:137
 #: src/nautilus-window-manage-views.c:1341
 #, c-format
 msgid "\"%s\" is not a valid location."
@@ -3341,7 +3341,7 @@ msgstr "« %s » n'est pas un emplacement valide."
 
 #: libnautilus-private/nautilus-program-choosing.c:622
 #: libnautilus-private/nautilus-program-choosing.c:629
-#: src/nautilus-connect-server-dialog.c:138
+#: src/nautilus-connect-server-dialog.c:139
 #: src/nautilus-property-browser.c:1095
 #: src/nautilus-window-manage-views.c:1336
 #: src/nautilus-window-manage-views.c:1344
@@ -3600,10 +3600,6 @@ msgstr "%s, espace libre : %s"
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
 
-#. Note that the number of items actually displayed varies somewhat due
-#. * to the way files are collected in batches. So you can't assume that
-#. * no more than the constant limit are displayed.
-#.
 #: src/file-manager/fm-directory-view.c:1971
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
@@ -3711,12 +3707,12 @@ msgstr "_Afficher"
 msgid "_Run"
 msgstr "_Lancer"
 
-#: src/file-manager/fm-directory-view.c:4126
+#: src/file-manager/fm-directory-view.c:4128
 #, c-format
 msgid "Cannot open %s"
 msgstr "Impossible d'ouvrir %s"
 
-#: src/file-manager/fm-directory-view.c:4129
+#: src/file-manager/fm-directory-view.c:4131
 #, c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents "
@@ -3739,23 +3735,23 @@ msgstr ""
 "normalement. Sinon, utilisez le menu Ouvrir avec pour choisir une "
 "application particulière pour ce fichier."
 
-#: src/file-manager/fm-directory-view.c:4515
+#: src/file-manager/fm-directory-view.c:4517
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Utiliser « %s » sur tous les éléments sélectionnés"
 
-#: src/file-manager/fm-directory-view.c:4749
+#: src/file-manager/fm-directory-view.c:4751
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Créer un document à partir du modèle « %s »"
 
-#: src/file-manager/fm-directory-view.c:4933
+#: src/file-manager/fm-directory-view.c:4935
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
 "Tous les fichiers exécutables de ce dossier apparaîtront dans le menu "
 "Scripts."
 
-#: src/file-manager/fm-directory-view.c:4935
+#: src/file-manager/fm-directory-view.c:4937
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -3763,11 +3759,11 @@ msgstr ""
 "Si vous choisissez un script dans ce menu, il sera lancé avec les éléments "
 "sélectionnés en entrée."
 
-#: src/file-manager/fm-directory-view.c:4937
+#: src/file-manager/fm-directory-view.c:4939
 msgid "About Scripts"
 msgstr "À propos des scripts"
 
-#: src/file-manager/fm-directory-view.c:4938
+#: src/file-manager/fm-directory-view.c:4940
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -3810,21 +3806,21 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY : position et taille de la fenêtre courante"
 
-#: src/file-manager/fm-directory-view.c:5069
+#: src/file-manager/fm-directory-view.c:5071
 #: src/file-manager/fm-tree-view.c:788
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr ""
 "« %s » sera déplacé si vous choisissez la commande « Coller les fichiers »"
 
-#: src/file-manager/fm-directory-view.c:5073
+#: src/file-manager/fm-directory-view.c:5075
 #: src/file-manager/fm-tree-view.c:792
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr ""
 "« %s » sera copié si vous choisissez la commande « Coller les fichiers »"
 
-#: src/file-manager/fm-directory-view.c:5080
+#: src/file-manager/fm-directory-view.c:5082
 #, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
@@ -3837,7 +3833,7 @@ msgstr[1] ""
 "Les %d éléments sélectionnés seront déplacés si vous utilisez la commande "
 "« Coller les fichiers »"
 
-#: src/file-manager/fm-directory-view.c:5087
+#: src/file-manager/fm-directory-view.c:5089
 #, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
@@ -3850,58 +3846,58 @@ msgstr[1] ""
 "Les %d éléments sélectionnés seront copiés si vous choisissez la commande "
 "« Coller les fichiers »"
 
-#: src/file-manager/fm-directory-view.c:5169
+#: src/file-manager/fm-directory-view.c:5171
 #: src/file-manager/fm-tree-view.c:868
 msgid "There is nothing on the clipboard to paste."
 msgstr "Il n'y a rien a coller dans le presse-papiers."
 
-#: src/file-manager/fm-directory-view.c:5272
-#: src/file-manager/fm-directory-view.c:6507
+#: src/file-manager/fm-directory-view.c:5279
+#: src/file-manager/fm-directory-view.c:6520
 msgid "Mount Error"
 msgstr "Erreur de montage"
 
-#: src/file-manager/fm-directory-view.c:5334
+#: src/file-manager/fm-directory-view.c:5341
 msgid "Eject Error"
 msgstr "Erreur d'éjection"
 
-#: src/file-manager/fm-directory-view.c:5337
+#: src/file-manager/fm-directory-view.c:5344
 msgid "Unmount Error"
 msgstr "Erreur de démontage"
 
-#: src/file-manager/fm-directory-view.c:5461
+#: src/file-manager/fm-directory-view.c:5468
 #, c-format
 msgid "Connect to Server %s"
 msgstr "Connexion au serveur %s"
 
-#: src/file-manager/fm-directory-view.c:5466
+#: src/file-manager/fm-directory-view.c:5473
 msgid "_Connect"
 msgstr "C_onnecter"
 
-#: src/file-manager/fm-directory-view.c:5480
+#: src/file-manager/fm-directory-view.c:5487
 msgid "Link _name:"
 msgstr "_Nom du lien :"
 
-#: src/file-manager/fm-directory-view.c:5792
+#: src/file-manager/fm-directory-view.c:5800
 msgid "E_ject"
 msgstr "É_jecter"
 
-#: src/file-manager/fm-directory-view.c:5792
+#: src/file-manager/fm-directory-view.c:5800
 #: src/file-manager/nautilus-directory-view-ui.xml.h:66
 msgid "_Unmount Volume"
 msgstr "_Démonter le volume"
 
-#: src/file-manager/fm-directory-view.c:5936
+#: src/file-manager/fm-directory-view.c:5944
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "_Ouvrir avec « %s »"
 
-#: src/file-manager/fm-directory-view.c:5948
+#: src/file-manager/fm-directory-view.c:5956
 #: src/file-manager/nautilus-directory-view-ui.xml.h:59
 msgid "_Open"
 msgstr "_Ouvrir"
 
 #. add the "open in new window" menu item
-#: src/file-manager/fm-directory-view.c:5957
+#: src/file-manager/fm-directory-view.c:5965
 #: src/file-manager/fm-tree-view.c:960
 #, c-format
 msgid "Open in New Window"
@@ -3909,93 +3905,93 @@ msgid_plural "Open in %d New Windows"
 msgstr[0] "Ouvrir dans une nouvelle fenêtre"
 msgstr[1] "Ouvrir dans %d nouvelles fenêtres"
 
-#: src/file-manager/fm-directory-view.c:5964
+#: src/file-manager/fm-directory-view.c:5972
 msgid "Browse Folder"
 msgstr "Parcourir le dossier"
 
-#: src/file-manager/fm-directory-view.c:5966
+#: src/file-manager/fm-directory-view.c:5974
 msgid "Browse Folders"
 msgstr "Parcourir les dossiers"
 
-#: src/file-manager/fm-directory-view.c:5989
+#: src/file-manager/fm-directory-view.c:5997
 msgid "_Delete from Trash"
 msgstr "_Supprimer de la corbeille"
 
-#: src/file-manager/fm-directory-view.c:5991
+#: src/file-manager/fm-directory-view.c:5999
 msgid "Delete all selected items permanently"
 msgstr "Supprimer tous les éléments sélectionnés définitivement"
 
-#: src/file-manager/fm-directory-view.c:5994
-#: src/file-manager/fm-directory-view.c:6339
+#: src/file-manager/fm-directory-view.c:6002
+#: src/file-manager/fm-directory-view.c:6352
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Mo_ve to Trash"
 msgstr "_Mettre dans la corbeille"
 
-#: src/file-manager/fm-directory-view.c:5996
+#: src/file-manager/fm-directory-view.c:6004
 #: src/file-manager/nautilus-directory-view-ui.xml.h:24
 msgid "Move each selected item to the Trash"
 msgstr "Déplace chaque élément sélectionné dans la corbeille"
 
-#: src/file-manager/fm-directory-view.c:6020
+#: src/file-manager/fm-directory-view.c:6028
 #: src/file-manager/nautilus-directory-view-ui.xml.h:54
 msgid "_Delete"
 msgstr "_Supprimer"
 
-#: src/file-manager/fm-directory-view.c:6040
+#: src/file-manager/fm-directory-view.c:6048
 msgid "Ma_ke Links"
 msgstr "Créer des _liens"
 
-#: src/file-manager/fm-directory-view.c:6041
+#: src/file-manager/fm-directory-view.c:6049
 #: src/file-manager/nautilus-directory-view-ui.xml.h:19
 msgid "Ma_ke Link"
 msgstr "Créer un _lien"
 
-#: src/file-manager/fm-directory-view.c:6054
+#: src/file-manager/fm-directory-view.c:6062
 #: src/file-manager/nautilus-directory-view-ui.xml.h:56
 msgid "_Empty Trash"
 msgstr "_Vider la corbeille"
 
-#: src/file-manager/fm-directory-view.c:6070
+#: src/file-manager/fm-directory-view.c:6078
 msgid "Cu_t File"
 msgstr "Co_uper le fichier"
 
-#: src/file-manager/fm-directory-view.c:6071
+#: src/file-manager/fm-directory-view.c:6079
 #: src/file-manager/nautilus-directory-view-ui.xml.h:11
 msgid "Cu_t Files"
 msgstr "Co_uper les fichiers"
 
-#: src/file-manager/fm-directory-view.c:6080
+#: src/file-manager/fm-directory-view.c:6088
 msgid "_Copy File"
 msgstr "_Copier le fichier"
 
-#: src/file-manager/fm-directory-view.c:6081
+#: src/file-manager/fm-directory-view.c:6089
 #: src/file-manager/nautilus-directory-view-ui.xml.h:53
 msgid "_Copy Files"
 msgstr "_Copier les fichiers"
 
-#: src/file-manager/fm-directory-view.c:6330
+#: src/file-manager/fm-directory-view.c:6343
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr "Ce lien est cassé, voulez-vous le déplacer dans la corbeille ?"
 
-#: src/file-manager/fm-directory-view.c:6332
+#: src/file-manager/fm-directory-view.c:6345
 msgid "This link can't be used, because it has no target."
 msgstr "Ce lien ne peut être utilisé car il ne pointe sur rien."
 
-#: src/file-manager/fm-directory-view.c:6334
+#: src/file-manager/fm-directory-view.c:6347
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "Ce lien ne peut être utilisé, car sa cible « %s » n'existe pas."
 
-#: src/file-manager/fm-directory-view.c:6339
+#: src/file-manager/fm-directory-view.c:6352
 msgid "Broken Link"
 msgstr "Lien rompu"
 
-#: src/file-manager/fm-directory-view.c:6643
+#: src/file-manager/fm-directory-view.c:6656
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Ouverture de « %s »."
 
-#: src/file-manager/fm-directory-view.c:6650
+#: src/file-manager/fm-directory-view.c:6663
 msgid "Cancel Open?"
 msgstr "Annuler l'ouverture ?"
 
@@ -4993,16 +4989,6 @@ msgstr ""
 msgid "Migrated Old Desktop"
 msgstr "Migration de l'ancien bureau"
 
-#. Can't register myself due to trouble locating the
-#. * Nautilus_Shell.server file. This has happened when you
-#. * launch Nautilus with an LD_LIBRARY_PATH that
-#. * doesn't include the directory containing the oaf
-#. * library. It could also happen if the
-#. * Nautilus_Shell.server file was not present for some
-#. * reason. Sometimes killing oafd and gconfd fixes
-#. * this problem but we don't exactly understand why,
-#. * since neither of the above causes explain it.
-#.
 #: src/nautilus-application.c:506
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
@@ -5013,7 +4999,6 @@ msgstr ""
 "slay » depuis la console peut régler le problème. Sinon, vous pouvez essayer "
 "de redémarrer l'ordinateur ou d'installer Nautilus de nouveau."
 
-#. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
 #: src/nautilus-application.c:512
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
@@ -5129,97 +5114,97 @@ msgstr "<b>_Nom</b>"
 msgid "Edit Bookmarks"
 msgstr "Éditer les signets"
 
-#: src/nautilus-connect-server-dialog.c:139
-#: src/nautilus-connect-server-dialog.c:154
+#: src/nautilus-connect-server-dialog.c:140
+#: src/nautilus-connect-server-dialog.c:155
 msgid "Can't Connect to Server"
 msgstr "Impossible de se connecteur au serveur"
 
-#: src/nautilus-connect-server-dialog.c:152
+#: src/nautilus-connect-server-dialog.c:153
 msgid "You must enter a name for the server."
 msgstr "Vous devez entrer un nom pour le serveur."
 
-#: src/nautilus-connect-server-dialog.c:153
+#: src/nautilus-connect-server-dialog.c:154
 msgid "Please enter a name and try again."
 msgstr "Veuillez saisir un nom et essayez à nouveau."
 
-#: src/nautilus-connect-server-dialog.c:252 src/nautilus-window.c:1118
+#: src/nautilus-connect-server-dialog.c:266 src/nautilus-window.c:1118
 #, c-format
 msgid "%s on %s"
 msgstr "%s sur %s"
 
-#: src/nautilus-connect-server-dialog.c:380
+#: src/nautilus-connect-server-dialog.c:394
 msgid "_Location (URI):"
 msgstr "_Emplacement (URI) :"
 
-#: src/nautilus-connect-server-dialog.c:424
+#: src/nautilus-connect-server-dialog.c:438
 msgid "_Server:"
 msgstr "_Serveur :"
 
-#: src/nautilus-connect-server-dialog.c:443
+#: src/nautilus-connect-server-dialog.c:457
 msgid "Optional information:"
 msgstr "Informations optionnelles :"
 
-#: src/nautilus-connect-server-dialog.c:455
+#: src/nautilus-connect-server-dialog.c:469
 msgid "_Share:"
 msgstr "Par_tage :"
 
-#: src/nautilus-connect-server-dialog.c:476
+#: src/nautilus-connect-server-dialog.c:490
 msgid "_Port:"
 msgstr "_Port :"
 
-#: src/nautilus-connect-server-dialog.c:496
+#: src/nautilus-connect-server-dialog.c:510
 msgid "_Folder:"
 msgstr "_Dossier :"
 
-#: src/nautilus-connect-server-dialog.c:516
+#: src/nautilus-connect-server-dialog.c:530
 msgid "_User Name:"
 msgstr "Nom d'_utilisateur :"
 
-#: src/nautilus-connect-server-dialog.c:539
+#: src/nautilus-connect-server-dialog.c:553
 msgid "_Name to use for connection:"
 msgstr "_Nom à utiliser pour la connexion :"
 
-#: src/nautilus-connect-server-dialog.c:597
+#: src/nautilus-connect-server-dialog.c:611
 msgid "Connect to Server"
 msgstr "Connexion au serveur"
 
-#: src/nautilus-connect-server-dialog.c:614
+#: src/nautilus-connect-server-dialog.c:628
 msgid "Service _type:"
 msgstr "_Type de service :"
 
-#: src/nautilus-connect-server-dialog.c:623
+#: src/nautilus-connect-server-dialog.c:637
 msgid "SSH"
 msgstr "SSH"
 
-#: src/nautilus-connect-server-dialog.c:625
+#: src/nautilus-connect-server-dialog.c:639
 msgid "Public FTP"
-msgstr "FTP publique"
+msgstr "FTP public"
 
-#: src/nautilus-connect-server-dialog.c:627
+#: src/nautilus-connect-server-dialog.c:641
 msgid "FTP (with login)"
 msgstr "FTP (avec identification)"
 
-#: src/nautilus-connect-server-dialog.c:629
+#: src/nautilus-connect-server-dialog.c:643
 msgid "Windows share"
 msgstr "Partage Windows"
 
-#: src/nautilus-connect-server-dialog.c:631
+#: src/nautilus-connect-server-dialog.c:645
 msgid "WebDAV (HTTP)"
 msgstr "WebDAV (HTTP)"
 
-#: src/nautilus-connect-server-dialog.c:633
+#: src/nautilus-connect-server-dialog.c:647
 msgid "Secure WebDAV (HTTPS)"
-msgstr "WebDAW sécurisé (HTTPS)"
+msgstr "WebDAV sécurisé (HTTPS)"
 
-#: src/nautilus-connect-server-dialog.c:635
+#: src/nautilus-connect-server-dialog.c:649
 msgid "Custom Location"
 msgstr "Emplacement personnalisé :"
 
-#: src/nautilus-connect-server-dialog.c:685
+#: src/nautilus-connect-server-dialog.c:699
 msgid "Browse _Network"
 msgstr "Parcourir le _réseau"
 
-#: src/nautilus-connect-server-dialog.c:691
+#: src/nautilus-connect-server-dialog.c:705
 msgid "C_onnect"
 msgstr "C_onnecter"
 
