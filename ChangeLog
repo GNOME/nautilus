@@ -1,3 +1,31 @@
+2000-08-09  John Sullivan  <sullivan@eazel.com>
+
+	A little more work towards bug 1753 (search results should
+	start out sorted by search criteria) and a bug fix.
+
+	* libnautilus-extensions/nautilus-search-bar-criterion.h:
+	Make #define constants for the criteria parts of search URIs
+	(e.g. "file_name", "size", "content", etc.)
+
+	* libnautilus-extensions/nautilus-search-bar-criterion.c:
+	(get_name_location_for), (get_content_location_for),
+	(get_file_type_location_for), (get_size_location_for),
+	(get_emblem_location_for), (get_date_modified_location_for),
+	(get_owner_location_for): Use these constants when creating
+	the URI used by complex search bar.
+	* src/nautilus-simple-search-bar.c:
+	(nautilus_simple_search_criteria_to_search_uri):
+	Use these constants when creating the URI used by simple
+	search bar. Also added a FIXME about how the simple search
+	bar should be sharing the URI-generation code of the
+	complex search bar.
+
+	* src/nautilus-complex-search-bar.c: (criterion_callback):
+	Update sensitivity of "Find" button when user chooses
+	different criterion from menu. This fixes bug where switching
+	from an empty text-type value to a menu-type value would leave
+	the "Find" button insensitive.
+
 2000-08-09  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-sidebar-tabs.c: (nautilus_sidebar_tabs_hit_test),

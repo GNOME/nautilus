@@ -517,7 +517,7 @@ nautilus_search_bar_criterion_human_from_uri (const char *location_uri)
 static char *                              
 get_name_location_for (int relation_number, char *name_text)
 {
-	const char *possible_relations[] = { "contains",
+	const char *possible_relations[] = {"contains",
 					    "starts_with",
 					    "ends_with",
 					    "matches_glob",
@@ -526,7 +526,8 @@ get_name_location_for (int relation_number, char *name_text)
 	g_assert (relation_number >= 0);
 	g_assert (relation_number < 5);
 
-	return g_strdup_printf ("file_name %s %s", possible_relations[relation_number], 
+	return g_strdup_printf ("%s %s %s", NAUTILUS_SEARCH_URI_TEXT_NAME,
+				possible_relations[relation_number], 
 				name_text);
 	
 }
@@ -539,7 +540,8 @@ get_content_location_for (int relation_number, char *name_text)
 	
 	g_assert (relation_number == 0 || relation_number == 1);
 
-	return g_strdup_printf ("content %s %s", possible_relations[relation_number],
+	return g_strdup_printf ("%s %s %s", NAUTILUS_SEARCH_URI_TEXT_CONTENT, 
+				possible_relations[relation_number],
 				name_text);
 }
 
@@ -553,7 +555,8 @@ get_file_type_location_for (int relation_number,
 	g_assert (relation_number == 0 || relation_number == 1);
 	g_assert (value_number >= 0);
 	g_assert (value_number < 5);
-	return g_strdup_printf ("file_type %s %s", possible_relations[relation_number],
+	return g_strdup_printf ("%s %s %s", NAUTILUS_SEARCH_URI_TEXT_TYPE, 
+				possible_relations[relation_number],
 				possible_values[value_number]);
 }
 
@@ -566,7 +569,9 @@ get_size_location_for (int relation_number,
 	
 	g_assert (relation_number == 0 || relation_number == 1);
 	/* FIXME:  Need checks for appropriate size here */
-	return g_strdup_printf ("size %s %s", possible_relations[relation_number], size_text);
+	return g_strdup_printf ("%s %s %s", NAUTILUS_SEARCH_URI_TEXT_SIZE, 
+				possible_relations[relation_number], 
+				size_text);
 
 }
 
@@ -574,8 +579,8 @@ static char *
 get_emblem_location_for  (int relation_number,
 			  int value_number)
 {
-	/* FIXME */
-	return g_strdup ("");
+	/* FIXME: not yet implemented */
+	return g_strdup_printf ("%s ", NAUTILUS_SEARCH_URI_TEXT_EMBLEMS);
 }
 
 static char *                              
@@ -589,7 +594,8 @@ get_date_modified_location_for (int relation_number,
 	g_assert (value_number >= 0);
 	g_assert (value_number < 3);
 
-	return g_strdup_printf ("mod_time %s %s", possible_relations[relation_number],
+	return g_strdup_printf ("%s %s %s", NAUTILUS_SEARCH_URI_TEXT_DATE_MODIFIED,
+				possible_relations[relation_number],
 				possible_values[value_number]);
 
 }
@@ -600,7 +606,7 @@ get_owner_location_for (int relation_number,
 {
 	const char *possible_relations[] = { "is", "is not" };
 	g_assert (relation_number == 0 || relation_number == 1);
-	return g_strdup_printf ("owner %s %s", possible_relations[relation_number], owner_text);
+	return g_strdup_printf ("%s %s %s", NAUTILUS_SEARCH_URI_TEXT_OWNER, possible_relations[relation_number], owner_text);
 	
 }
 

@@ -43,6 +43,14 @@ typedef enum {
 	NAUTILUS_LAST_CRITERION
 } NautilusSearchBarCriterionType;
 
+/* These strings are used programatically; they must not be translated */
+#define NAUTILUS_SEARCH_URI_TEXT_NAME		"file_name"
+#define NAUTILUS_SEARCH_URI_TEXT_CONTENT	"content"
+#define NAUTILUS_SEARCH_URI_TEXT_TYPE		"file"
+#define NAUTILUS_SEARCH_URI_TEXT_SIZE		"size"
+#define NAUTILUS_SEARCH_URI_TEXT_EMBLEMS	"emblem"
+#define NAUTILUS_SEARCH_URI_TEXT_DATE_MODIFIED	"mod_time"
+#define NAUTILUS_SEARCH_URI_TEXT_OWNER		"owner"
 
 
 typedef struct NautilusSearchBarCriterionDetails NautilusSearchBarCriterionDetails;

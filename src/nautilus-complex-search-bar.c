@@ -110,6 +110,8 @@ static void criterion_callback (NautilusSearchBarCriterion *old_criterion,
 
 	attach_criterion_to_search_bar (bar, new_criterion, row + 1);
 
+	update_find_button_state (bar);
+
 }
 
 

@@ -28,6 +28,7 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-search-bar-criterion.h>
 
 struct NautilusSimpleSearchBarDetails {
 	GtkEntry *entry;
@@ -177,6 +178,11 @@ nautilus_simple_search_criteria_to_search_uri (const char *search_criteria)
 	char *escaped_fragment;
 	int length, i; 
 
+	/* FIXME: The logic here should be exactly the same as the logic for
+	 * a complex search-by-file-name. Currently the complex search doesn't
+	 * do the multi-word handling that this function does. They should use
+	 * the same code.
+	 */
 	g_return_val_if_fail (search_criteria != NULL, NULL);
 
 	words = g_strsplit (search_criteria, " ", strlen (search_criteria));
@@ -184,19 +190,21 @@ nautilus_simple_search_criteria_to_search_uri (const char *search_criteria)
 	length = strlen ("[file:///]");
 	/* Count total length */
 	for (i = 0; words[i] != NULL; i++) {
-		length += strlen (words[i]) + strlen ("file_name contains & ");
+		length += strlen (words[i]) + strlen (NAUTILUS_SEARCH_URI_TEXT_NAME) + strlen (" contains & ");
 	}
 	fragment = g_new0 (char, length + 1);
 	/* FIXME: this should eventually be: sprintf (fragment, "[file%%3A%%2F%%2F%%2F]"); */
 	sprintf (fragment, "[file:///]");
 	if (words[0] != NULL) {
 		for (i = 0; words[i+1] != NULL; i++) {
-			strcat (fragment, "file_name contains ");
+			strcat (fragment, NAUTILUS_SEARCH_URI_TEXT_NAME);
+			strcat (fragment, " contains ");
 			strcat (fragment, words[i]);
 			strcat (fragment, " & ");
 		}
-		strcat (fragment, "file_name contains ");
-			strcat (fragment, words[i]);
+		strcat (fragment, NAUTILUS_SEARCH_URI_TEXT_NAME);
+		strcat (fragment, " contains ");
+		strcat (fragment, words[i]);
 	}
 	g_strfreev (words);
 	escaped_fragment = gnome_vfs_escape_string (fragment);
