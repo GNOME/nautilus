@@ -1,4 +1,14 @@
-This is nautilus 2.7.4, the file manager for the Gnome 2 desktop.
+This is nautilus 2.7.92, the file manager for the Gnome 2 desktop.
+
+Major changes since 2.7.4 are:
+* Fix crash when transfer rate near zero
+* Fix crash when renaming in list view and changing directory
+* Fix double call of eel_preferences_remove_callback on shutdown
+* Use default folder view from gconf instead of now broken gnome-vfs mime setting
+* Some fixes to the handling of open with
+* Faster way to get the group list for a user
+* Don't make progress dialog on copy to desktop appear on all workspaces
+* Fix sort by size in computer view
 
 Major changes since 2.7.2 are:
 
