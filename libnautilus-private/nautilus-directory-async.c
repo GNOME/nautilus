@@ -592,7 +592,9 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 					 gconstpointer client,
 					 gboolean monitor_hidden_files,
 					 gboolean monitor_backup_files,
-					 GList *file_attributes)
+					 GList *file_attributes,
+					 NautilusDirectoryCallback callback,
+					 gpointer callback_data)
 {
 	Monitor *monitor;
 	GList *file_list;
@@ -615,17 +617,10 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 	directory->details->monitor_list =
 		g_list_prepend (directory->details->monitor_list, monitor);
 
-	/* Re-send the "files_added" signal for this set of files.
-	 * Old monitorers already know about them, but it's harmless
-	 * to hear about the same files again.
-	 */
-	if (file == NULL) {
+	if (callback != NULL) {
 		file_list = get_non_tentative_file_list (directory);
-		if (file_list != NULL) {
-			nautilus_directory_emit_files_added
-				(directory, file_list);
-			nautilus_file_list_free (file_list);
-		}
+		(* callback) (directory, file_list, callback_data);
+		nautilus_file_list_free (file_list);
 	}
 	
 	/* Start the "real" monitoring (FAM or whatever). */

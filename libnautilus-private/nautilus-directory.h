@@ -124,7 +124,9 @@ typedef struct
 					  gconstpointer              client,
 					  gboolean                   monitor_hidden_files,
 					  gboolean                   monitor_backup_files,
-					  GList                     *monitor_attributes);
+					  GList                     *monitor_attributes,
+					  NautilusDirectoryCallback  initial_files_callback,
+					  gpointer                   callback_data);
 	void     (* file_monitor_remove) (NautilusDirectory         *directory,
 					  gconstpointer              client);
 	void     (* force_reload)        (NautilusDirectory         *directory);
@@ -182,7 +184,9 @@ void               nautilus_directory_file_monitor_add         (NautilusDirector
 								gconstpointer              client,
 								gboolean                   monitor_hidden_files,
 								gboolean                   monitor_backup_files,
-								GList                     *attributes);
+								GList                     *attributes,
+								NautilusDirectoryCallback  initial_files_callback,
+								gpointer                   callback_data);
 void               nautilus_directory_file_monitor_remove      (NautilusDirectory         *directory,
 								gconstpointer              client);
 void               nautilus_directory_force_reload             (NautilusDirectory         *directory);

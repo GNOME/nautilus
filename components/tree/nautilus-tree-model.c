@@ -87,7 +87,7 @@ static void nautilus_tree_model_root_node_file_monitor           (NautilusFile  
 								  NautilusTreeModel *model);
 static void nautilus_tree_model_directory_files_changed_callback (NautilusDirectory *directory,
 								  GList             *added_files,
-								  NautilusTreeModel *model);
+								  gpointer           callback_data);
 static void nautilus_tree_model_directory_done_loading_callback  (NautilusDirectory *directory,
 								  NautilusTreeModel *model);
 
@@ -416,7 +416,9 @@ nautilus_tree_model_node_begin_monitoring_no_connect (NautilusTreeModel         
 	nautilus_directory_file_monitor_add (directory,
 					     model,
 					     TRUE, TRUE,
-					     monitor_attributes);
+					     monitor_attributes,
+					     nautilus_tree_model_directory_files_changed_callback,
+					     model);
 	g_list_free (monitor_attributes);
 }
 
@@ -428,10 +430,17 @@ nautilus_tree_model_node_begin_monitoring (NautilusTreeModel         *model,
 					   gboolean                   force_reload)
 {
 	NautilusDirectory *directory;
+
 	directory = nautilus_tree_node_get_directory (node);
 
-	/* we must connect to signals */
-	
+	node->details->done_loading_id = gtk_signal_connect 
+		(GTK_OBJECT (directory),
+		 "done_loading",
+		 nautilus_tree_model_directory_done_loading_callback,
+		 model);
+
+	nautilus_tree_model_node_begin_monitoring_no_connect (model, node, force_reload);
+
 	node->details->files_added_id = gtk_signal_connect 
 		(GTK_OBJECT (directory),
 		 "files_added",
@@ -442,15 +451,7 @@ nautilus_tree_model_node_begin_monitoring (NautilusTreeModel         *model,
 		(GTK_OBJECT (directory),
 		 "files_changed",
 		 nautilus_tree_model_directory_files_changed_callback,
-		 model);
-	
-	node->details->done_loading_id = gtk_signal_connect 
-		(GTK_OBJECT (directory),
-		 "done_loading",
-		 nautilus_tree_model_directory_done_loading_callback,
-		 model);
-
-	nautilus_tree_model_node_begin_monitoring_no_connect (model, node, force_reload);
+		 model);	
 }
 
 static void
@@ -942,15 +943,18 @@ add_file_to_hash (GHashTable *hash,
 }
 
 static void
-nautilus_tree_model_directory_files_changed_callback (NautilusDirectory        *directory,
-						      GList                    *changed_files,
-						      NautilusTreeModel        *model)
+nautilus_tree_model_directory_files_changed_callback (NautilusDirectory *directory,
+						      GList *changed_files,
+						      gpointer callback_data)
 {
-	GList *p;
+	NautilusTreeModel *model;
+	GList *node;
 	NautilusFile *file;
 
-	for (p = changed_files; p != NULL; p = p->next) {
-		file = NAUTILUS_FILE (p->data);
+	model = NAUTILUS_TREE_MODEL (callback_data);
+
+	for (node = changed_files; node != NULL; node = node->next) {
+		file = NAUTILUS_FILE (node->data);
 
 		if (model->details->changed_files != NULL) {
 			add_file_to_hash (model->details->changed_files, file);

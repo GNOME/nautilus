@@ -1444,7 +1444,9 @@ nautilus_directory_file_monitor_add (NautilusDirectory *directory,
 				     gconstpointer client,
 				     gboolean monitor_hidden_files,
 				     gboolean monitor_backup_files,
-				     GList *file_attributes)
+				     GList *file_attributes,
+				     NautilusDirectoryCallback callback,
+				     gpointer callback_data)
 {
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (client != NULL);
@@ -1454,7 +1456,8 @@ nautilus_directory_file_monitor_add (NautilusDirectory *directory,
 		 file_monitor_add, (directory, client,
 				    monitor_hidden_files,
 				    monitor_backup_files,
-				    file_attributes));
+				    file_attributes,
+				    callback, callback_data));
 }
 
 void
@@ -1538,7 +1541,7 @@ nautilus_self_check_directory (void)
 
 	nautilus_directory_file_monitor_add
 		(directory, &data_dummy,
-		 TRUE, TRUE, NULL);
+		 TRUE, TRUE, NULL, NULL, NULL);
 
 	got_metadata_flag = FALSE;
 

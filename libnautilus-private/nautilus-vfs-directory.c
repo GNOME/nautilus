@@ -107,7 +107,9 @@ vfs_file_monitor_add (NautilusDirectory *directory,
 		      gconstpointer client,
 		      gboolean monitor_hidden_files,
 		      gboolean monitor_backup_files,
-		      GList *file_attributes)
+		      GList *file_attributes,
+		      NautilusDirectoryCallback callback,
+		      gpointer callback_data)
 {
 	g_assert (NAUTILUS_IS_VFS_DIRECTORY (directory));
 	g_assert (client != NULL);
@@ -117,7 +119,8 @@ vfs_file_monitor_add (NautilusDirectory *directory,
 		 client,
 		 monitor_hidden_files,
 		 monitor_backup_files,
-		 file_attributes);
+		 file_attributes,
+		 callback, callback_data);
 }
 
 static void

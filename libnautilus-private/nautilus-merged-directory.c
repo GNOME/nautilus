@@ -286,17 +286,32 @@ merged_cancel_callback (NautilusDirectory *directory,
 	merged_callback_destroy (merged_callback);
 }
 
+static void
+build_merged_callback_list (NautilusDirectory *directory,
+			    GList *file_list,
+			    gpointer callback_data)
+{
+	GList **merged_list;
+
+	merged_list = callback_data;
+	*merged_list = g_list_concat (*merged_list,
+				      nautilus_file_list_copy (file_list));
+}
+
 /* Create a monitor on each of the directories in the list. */
 static void
 merged_file_monitor_add (NautilusDirectory *directory,
 			 gconstpointer client,
 			 gboolean monitor_hidden_files,
 			 gboolean monitor_backup_files,
-			 GList *file_attributes)
+			 GList *file_attributes,
+			 NautilusDirectoryCallback callback,
+			 gpointer callback_data)
 {
 	NautilusMergedDirectory *merged;
 	MergedMonitor *monitor;
 	GList *node;
+	GList *merged_callback_list;
 
 	merged = NAUTILUS_MERGED_DIRECTORY (directory);
 
@@ -318,12 +333,18 @@ merged_file_monitor_add (NautilusDirectory *directory,
 	monitor->monitor_attributes = eel_g_str_list_copy (file_attributes);
 	
 	/* Call through to the real directory add calls. */
+	merged_callback_list = NULL;
 	for (node = merged->details->directories; node != NULL; node = node->next) {
 		nautilus_directory_file_monitor_add
 			(node->data, monitor,
 			 monitor_hidden_files, monitor_backup_files,
-			 file_attributes);
+			 file_attributes,
+			 build_merged_callback_list, &merged_callback_list);
 	}
+	if (callback != NULL) {
+		(* callback) (directory, merged_callback_list, callback_data);
+	}
+	nautilus_file_list_free (merged_callback_list);
 }
 
 /* Remove the monitor from each of the directories in the list. */
@@ -423,17 +444,17 @@ merged_is_not_empty (NautilusDirectory *directory)
 static void
 forward_files_added_cover (NautilusDirectory *real_directory,
 			   GList *files,
-			   NautilusMergedDirectory *merged)
+			   gpointer callback_data)
 {
-	nautilus_directory_emit_files_added (NAUTILUS_DIRECTORY (merged), files);
+	nautilus_directory_emit_files_added (NAUTILUS_DIRECTORY (callback_data), files);
 }
 
 static void
 forward_files_changed_cover (NautilusDirectory *real_directory,
 			     GList *files,
-			     NautilusMergedDirectory *merged)
+			     gpointer callback_data)
 {
-	nautilus_directory_emit_files_changed (NAUTILUS_DIRECTORY (merged), files);
+	nautilus_directory_emit_files_changed (NAUTILUS_DIRECTORY (callback_data), files);
 }
 
 static void
@@ -459,7 +480,8 @@ monitor_add_directory (gpointer key,
 		(NAUTILUS_DIRECTORY (callback_data), monitor,
 		 monitor->monitor_hidden_files,
 		 monitor->monitor_backup_files,
-		 monitor->monitor_attributes);
+		 monitor->monitor_attributes,
+		 forward_files_added_cover, monitor->merged);
 }
 
 static void
@@ -478,15 +500,6 @@ merged_add_real_directory (NautilusMergedDirectory *merged,
 	merged->details->directories_not_done_loading = g_list_prepend
 		(merged->details->directories_not_done_loading, real_directory);
 
-	/* Connect signals. */
-	gtk_signal_connect (GTK_OBJECT (real_directory),
-			    "files_added",
-			    forward_files_added_cover,
-			    merged);
-	gtk_signal_connect (GTK_OBJECT (real_directory),
-			    "files_changed",
-			    forward_files_changed_cover,
-			    merged);
 	gtk_signal_connect (GTK_OBJECT (real_directory),
 			    "done_loading",
 			    done_loading_callback,
@@ -501,6 +514,15 @@ merged_add_real_directory (NautilusMergedDirectory *merged,
 			      monitor_add_directory,
 			      real_directory);
 	/* FIXME bugzilla.eazel.com 2541: Do we need to add the directory to callbacks too? */
+
+	gtk_signal_connect (GTK_OBJECT (real_directory),
+			    "files_added",
+			    forward_files_added_cover,
+			    merged);
+	gtk_signal_connect (GTK_OBJECT (real_directory),
+			    "files_changed",
+			    forward_files_changed_cover,
+			    merged);
 }
 
 void

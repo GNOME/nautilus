@@ -39,8 +39,8 @@ static void nautilus_vfs_file_initialize       (gpointer   object,
 static void nautilus_vfs_file_initialize_class (gpointer   klass);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusVFSFile,
-				   nautilus_vfs_file,
-				   NAUTILUS_TYPE_FILE)
+			      nautilus_vfs_file,
+			      NAUTILUS_TYPE_FILE)
 
 static void             
 vfs_file_monitor_add (NautilusFile *file,
@@ -49,7 +49,7 @@ vfs_file_monitor_add (NautilusFile *file,
 {
 	nautilus_directory_monitor_add_internal
 		(file->details->directory, file,
-		 client, TRUE, TRUE, attributes);
+		 client, TRUE, TRUE, attributes, NULL, NULL);
 }   
 			   
 static void

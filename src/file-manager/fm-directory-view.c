@@ -1122,7 +1122,8 @@ connect_script_handlers (FMDirectoryView *view)
 
 	nautilus_directory_file_monitor_add (view->details->scripts_directory,
 					     &view->details->scripts_directory,
-					     FALSE, FALSE, NULL);
+					     FALSE, FALSE, NULL,
+					     scripts_added_or_changed_callback, view);
 
     	view->details->scripts_added_handler_id = gtk_signal_connect
 		(GTK_OBJECT (view->details->scripts_directory),
@@ -4736,31 +4737,19 @@ finish_loading (FMDirectoryView *view)
 
 	/* Start loading. */
 
-	/* Connect handlers to see files as they are added. */
-    	view->details->files_added_handler_id = gtk_signal_connect
-		(GTK_OBJECT (view->details->model),
-		 "files_added",
-		 files_added_callback,
-		 view);
-	view->details->files_changed_handler_id = gtk_signal_connect
-		(GTK_OBJECT (view->details->model), 
-		 "files_changed",
-		 files_changed_callback,
-		 view);
+	/* Connect handlers to learn about loading progress. */
 	view->details->done_loading_handler_id = gtk_signal_connect
 		(GTK_OBJECT (view->details->model),
 		 "done_loading",
-		 done_loading_callback,
-		 view);
+		 done_loading_callback, view);
 	view->details->load_error_handler_id = gtk_signal_connect
 		(GTK_OBJECT (view->details->model),
 		 "load_error",
-		 load_error_callback,
-		 view);
+		 load_error_callback, view);
 
-	/* Monitor the things needed to get the right
-	 * icon. Also monitor a directory's item count because
-	 * the "size" attribute is based on that, and the file's metadata.
+	/* Monitor the things needed to get the right icon. Also
+	 * monitor a directory's item count because the "size"
+	 * attribute is based on that, and the file's metadata.
 	 */
 	attributes = nautilus_icon_factory_get_required_file_attributes ();
 	attributes = g_list_prepend (attributes,
@@ -4774,9 +4763,19 @@ finish_loading (FMDirectoryView *view)
 					     &view->details->model,
 					     view->details->show_hidden_files,
 					     view->details->show_backup_files,
-					     attributes);
+					     attributes,
+					     files_added_callback, view);
 
 	g_list_free (attributes);
+
+    	view->details->files_added_handler_id = gtk_signal_connect
+		(GTK_OBJECT (view->details->model),
+		 "files_added",
+		 files_added_callback, view);
+	view->details->files_changed_handler_id = gtk_signal_connect
+		(GTK_OBJECT (view->details->model), 
+		 "files_changed",
+		 files_changed_callback, view);
 }
 
 static void

@@ -325,7 +325,7 @@ e_paned_expose (GtkWidget      *widget,
 		  GdkEventExpose *event)
 {
   EPaned *paned;
-  GdkEventExpose child_event;
+  GdkEvent child_event;
 
   g_return_val_if_fail (widget != NULL, FALSE);
   g_return_val_if_fail (E_IS_PANED (widget), FALSE);
@@ -339,7 +339,6 @@ e_paned_expose (GtkWidget      *widget,
 	{
 	  if (e_paned_handle_shown(paned))
 	    {
-	      child_event = *event;
 	      event->area.x += paned->handle_xpos;
 	      event->area.y += paned->handle_ypos;
 	      gtk_widget_draw (widget, &event->area);
@@ -347,16 +346,16 @@ e_paned_expose (GtkWidget      *widget,
 	}
       else
 	{
-	  child_event = *event;
+	  child_event.expose = *event;
 	  if (paned->child1 &&
 	      GTK_WIDGET_NO_WINDOW (paned->child1) &&
-	      gtk_widget_intersect (paned->child1, &event->area, &child_event.area))
-	    gtk_widget_event (paned->child1, (GdkEvent *) &child_event);
+	      gtk_widget_intersect (paned->child1, &event->area, &child_event.expose.area))
+	    gtk_widget_event (paned->child1, &child_event);
 
 	  if (paned->child2 &&
 	      GTK_WIDGET_NO_WINDOW (paned->child2) &&
-	      gtk_widget_intersect (paned->child2, &event->area, &child_event.area))
-	    gtk_widget_event (paned->child2, (GdkEvent *) &child_event);
+	      gtk_widget_intersect (paned->child2, &event->area, &child_event.expose.area))
+	    gtk_widget_event (paned->child2, &child_event);
 	}
     }
 

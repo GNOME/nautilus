@@ -1,3 +1,44 @@
+2001-07-05  Darin Adler  <darin@bentspoon.com>
+
+	* configure.in: Bump version to 1.0.4.1
+
+	* cut-n-paste-code/widgets/e-paned/e-paned.c: (e_paned_expose):
+	Fix type cast that was causing Ben trouble compiling on Solaris.
+	
+	Take a cut at removing the problem where opening a new window
+	causes all the old windows to act as if all items were re-added.
+
+	* libnautilus-private/nautilus-directory.h:
+	* libnautilus-private/nautilus-directory.c:
+	(nautilus_directory_file_monitor_add),
+	(nautilus_self_check_directory):
+	* libnautilus-private/nautilus-directory-async.c:
+	(nautilus_directory_monitor_add_internal):
+	* libnautilus-private/nautilus-directory-private.h:
+	* libnautilus-private/nautilus-merged-directory.c:
+	(build_merged_callback_list), (merged_file_monitor_add),
+	(forward_files_added_cover), (forward_files_changed_cover),
+	(monitor_add_directory), (merged_add_real_directory):
+	* libnautilus-private/nautilus-trash-file.c: (real_monitor_add):
+	* libnautilus-private/nautilus-trash-monitor.c:
+	(nautilus_trash_monitor_initialize):
+	* libnautilus-private/nautilus-vfs-directory.c:
+	(vfs_file_monitor_add):
+	* libnautilus-private/nautilus-vfs-file.c: (vfs_file_monitor_add):
+	Change monitor_add to take a parameter for a callback function, and
+	call that instead of sending out a files_added message when someone
+	starts monitoring files.
+	
+	* components/tree/nautilus-tree-model.c:
+	(nautilus_tree_model_node_begin_monitoring_no_connect),
+	(nautilus_tree_model_node_begin_monitoring),
+	(nautilus_tree_model_directory_files_changed_callback):
+	* src/file-manager/fm-directory-view.c: (connect_script_handlers),
+	(finish_loading):
+	Pass in a callback function to monitor_add, and don't hook up the
+	files_added and files_changed signals until after the monitor is
+	added.
+	
 === Nautilus 1.0.4 ===
 	
 2001-07-05  Darin Adler  <darin@bentspoon.com>
