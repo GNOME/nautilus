@@ -56,6 +56,7 @@ GtkType              nautilus_application_get_type      (void);
 NautilusApplication *nautilus_application_new           (void);
 gboolean             nautilus_application_startup       (NautilusApplication *application,
 							 gboolean             kill_shell,
+							 gboolean	      restart_shell,
 							 gboolean             stop_desktop,
 							 gboolean             start_desktop,
 							 const char          *urls[]);

@@ -48,6 +48,7 @@ int
 main (int argc, char *argv[])
 {
 	gboolean kill_shell;
+	gboolean restart_shell;
 	gboolean stop_desktop;
 	gboolean start_desktop;
 	gboolean perform_self_check;
@@ -63,6 +64,7 @@ main (int argc, char *argv[])
 		{ "check", '\0', POPT_ARG_NONE, &perform_self_check, 0, N_("Perform high-speed self-check tests."), NULL },
 #endif
 		{ "quit", '\0', POPT_ARG_NONE, &kill_shell, 0, N_("Quit Nautilus."), NULL },
+		{ "restart", '\0', POPT_ARG_NONE, &restart_shell, 0, N_("Restart Nautilus."), NULL },
 		{ "stop-desktop", '\0', POPT_ARG_NONE, &stop_desktop, 0, N_("Don't draw background and icons on desktop."), NULL },
 		{ "start-desktop", '\0', POPT_ARG_NONE, &start_desktop, 0, N_("Draw background and icons on desktop."), NULL },
 		{ NULL, '\0', POPT_ARG_INCLUDE_TABLE, &oaf_popt_options, 0, NULL, NULL },
@@ -86,6 +88,7 @@ main (int argc, char *argv[])
 	
 	/* Initialize the services that we use. */
 	kill_shell		= FALSE;
+	restart_shell		= FALSE;
 	stop_desktop		= FALSE;
 	start_desktop		= FALSE;
 	perform_self_check	= FALSE;
@@ -115,14 +118,19 @@ main (int argc, char *argv[])
 
 		if (kill_shell && args != NULL) {
 			fprintf(stderr, _("nautilus: --quit cannot be used with URIs.\n"));
+		} else if (restart_shell && args != NULL) {
+			fprintf(stderr, _("nautilus: --restart cannot be used with URIs.\n"));
 		} else if (kill_shell && start_desktop) {
-			fprintf(stderr, _("nautiluls: --quit and --start-desktop cannot be used together.\n"));
+			fprintf(stderr, _("nautilus: --quit and --start-desktop cannot be used together.\n"));
+		} else if (restart_shell && start_desktop) {
+			fprintf(stderr, _("nautilus: --restart and --start-desktop cannot be used together.\n"));
 		} else if (stop_desktop && start_desktop) {
 			fprintf(stderr, _("nautiluls: --stop-desktop and --start-desktop cannot be used together.\n"));
 		} else {
 			application = nautilus_application_new ();
 			if (nautilus_application_startup (application,
 							  kill_shell,
+							  restart_shell,
 							  stop_desktop,
 							  start_desktop,
 							  args)) {
@@ -133,8 +141,23 @@ main (int argc, char *argv[])
 		poptFreeContext(popt_context);
 	}
 
-	
 	gnome_vfs_shutdown ();
+
+	/* if told to restart, exec() myself again */
+	if (getenv ("_NAUTILUS_RESTART")) {
+		char *my_path = argv[0];
+		char **argv_copy;
+		int i;
+
+		unsetenv ("_NAUTILUS_RESTART");
+		argv_copy = g_new0 (char *, argc+1);
+		for (i = 0; i < argc; i++) {
+			argv_copy[i] = argv[i];
+		}
+		argv_copy[argc] = NULL;
+
+		execvp(my_path, argv_copy);
+	}
 
 	return EXIT_SUCCESS;
 }

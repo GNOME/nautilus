@@ -292,6 +292,7 @@ nautilus_make_uri_list_from_strv (const char * const *strv)
 gboolean
 nautilus_application_startup (NautilusApplication *application,
 			      gboolean kill_shell,
+			      gboolean restart_shell,
 			      gboolean stop_desktop,
 			      gboolean start_desktop,
 			      const char *urls[])
@@ -411,6 +412,8 @@ nautilus_application_startup (NautilusApplication *application,
 
 	if (kill_shell) {
 		Nautilus_Shell_quit (shell, &ev);
+	} else if (restart_shell) {
+		Nautilus_Shell_restart (shell, &ev);
 	} else {
 		if (start_desktop) {
 			Nautilus_Shell_start_desktop (shell, &ev);

@@ -26,6 +26,7 @@
  */
 
 #include <config.h>
+#include <stdlib.h>
 #include "nautilus-shell.h"
 
 /* FIXME: This is a workaround for ORBit bug where including idl files
@@ -63,6 +64,8 @@ static void corba_stop_desktop              (PortableServer_Servant  servant,
 					     CORBA_Environment      *ev);
 static void corba_quit	                    (PortableServer_Servant  servant,
 					     CORBA_Environment      *ev);
+static void corba_restart                    (PortableServer_Servant  servant,
+					     CORBA_Environment      *ev);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusShell, nautilus_shell, BONOBO_OBJECT_TYPE)
 
@@ -81,6 +84,7 @@ nautilus_shell_get_epv (void)
 	epv.start_desktop = corba_start_desktop;
 	epv.stop_desktop = corba_stop_desktop;
 	epv.quit = corba_quit;
+	epv.restart = corba_restart;
 	return &epv;
 }
 
@@ -295,4 +299,14 @@ corba_quit (PortableServer_Servant servant,
 	if (gtk_main_level () > 0) {
 		gtk_main_quit ();
 	}
+}
+
+static void
+corba_restart (PortableServer_Servant servant,
+	       CORBA_Environment *ev)
+{
+	if (gtk_main_level () > 0) {
+		gtk_main_quit ();
+	}
+	setenv ("_NAUTILUS_RESTART", "yes", 1);
 }

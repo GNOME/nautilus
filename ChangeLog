@@ -1,3 +1,18 @@
+2000-08-25  Robey Pointer  <robey@eazel.com>
+
+	* src/nautilus-application.c: (nautilus_application_startup):
+	* src/nautilus-application.h:
+	* src/nautilus-first-time-druid.c: (druid_finished):
+	* src/nautilus-main.c: (main):
+	* src/nautilus-shell-interface.idl:
+	* src/nautilus-shell.c: (nautilus_shell_get_epv), (corba_quit),
+	(corba_restart):
+
+	Add corba 'restart' call to the IDL, and match it with
+	command-line option '--restart'.  On restart, Nautilus goes
+	through all the exit code, then does an exec() on itself instead
+	of exit().
+
 2000-08-25  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 1782 (File->Open after opening a folder crashes)
