@@ -37,8 +37,8 @@ extern "C" {
 #define IS_EAZEL_SOFTCAT(obj)        (GTK_CHECK_TYPE ((obj), TYPE_EAZEL_SOFTCAT))
 #define IS_EAZEL_SOFTCAT_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_EAZEL_SOFTCAT))
 
-typedef struct _EazelSoftCat EazelSoftCat
-typedef struct _EazelSoftCatClass EazelSoftCatClass
+typedef struct _EazelSoftCat EazelSoftCat;
+typedef struct _EazelSoftCatClass EazelSoftCatClass;
 
 typedef enum {
 	        EAZEL_SOFTCAT_FILL_FLAG_EVERYTHING = 0x0,
