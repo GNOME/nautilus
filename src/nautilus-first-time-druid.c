@@ -93,10 +93,6 @@ enum {
 
 #define NETSCAPE_PREFS_PATH "/.netscape/preferences.js"
 
-/* FIXME: this needs to use a custom URL */
-#define EAZEL_SERVICES_URL "http://services.eazel.com/services"
-
-
 /* globals */
 static NautilusApplication *save_application;
 
@@ -195,20 +191,6 @@ druid_set_first_time_file_flag (void)
 	g_free (druid_flag_file_name);
 }
 
-static gint
-create_services_link_callback (gpointer data)
-{
-	char *desktop_path;
-
-	/* Create default services icon on the desktop */
-	desktop_path = nautilus_get_desktop_directory ();
-	nautilus_link_local_create (desktop_path, _("Eazel Services"), "hand.png", 
-				    "eazel:", NULL, NAUTILUS_LINK_GENERIC);
-	g_free (desktop_path);
-
-	return FALSE;
-}
-
 static void
 druid_finished (GtkWidget *druid_page)
 {
@@ -243,13 +225,8 @@ druid_finished (GtkWidget *druid_page)
 	}
 
 	signup_uris[0] = eel_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
+	signup_uris[1] = NULL;
 
-	if (http_is_known_to_work) {
-		signup_uris[1] = EAZEL_SERVICES_URL;
-		signup_uris[2] = NULL;
-	} else {
-		signup_uris[1] = NULL;
-	}
 
 #ifdef TRANSITIONAL_NAUTILUS
 	/* Do the GMC to Nautilus Transition */
@@ -263,11 +240,6 @@ druid_finished (GtkWidget *druid_page)
 		gtk_idle_add (convert_gmc_desktop_icons, NULL);
 	}
 #endif
-
-	/* Arrange to create default services icon on the desktop. Do this
-	 * at idle time for the same reason as when converting gmc icons
-	 */
-	gtk_idle_add (create_services_link_callback, NULL);
 	
 	/* Time to start. Hooray! */
 	nautilus_application_startup (save_application, FALSE, FALSE, draw_desktop, 
