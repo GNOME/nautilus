@@ -1,16 +1,17 @@
 # nautilus ko.po
-# Young-Ho, Cha <ganadist@chollian.net>, 2000, 2001, 2002
+# Young-Ho Cha <ganadist@mizi.com>, 2000, 2001, 2002, 2004
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus 2.5.2\n"
-"POT-Creation-Date: 2003-12-29 12:11+0100\n"
-"PO-Revision-Date: 2003-11-26 13:59+0900\n"
+"Project-Id-Version: nautilus 2.5.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-01-10 14:43+0900\n"
+"PO-Revision-Date: 2004-01-10 14:47+0900\n"
 "Last-Translator: Young-Ho Cha <ganadist at mizi.com>\n"
 "Language-Team: GTP Korean <gnome-kr-translation@gnome.or.kr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -51,40 +52,32 @@ msgid "Nautilus Emblem view"
 msgstr "노틸러스 꼬리표 보기"
 
 #: components/emblem/nautilus-emblem-view.c:203
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't remove emblem with name '%s'."
-msgstr "꼬리표를 지울 수 없습니다"
+msgstr "'%s'이름을 가진 꼬리표를 지울 수 없습니다"
 
 #: components/emblem/nautilus-emblem-view.c:204
-#, fuzzy
 msgid ""
 "This is probably because the emblem is a permanent one, and not one you "
 "added yourself."
-msgstr ""
-"'%s'이름을 가진 꼬리표를 지울 수 없습니다. 사용자가 더한것이 아닌 것은 지울 "
-"수 없습니다."
+msgstr "사용자가 더한것이 아닌 것은 지울 수 없습니다."
 
 #: components/emblem/nautilus-emblem-view.c:205
-#, fuzzy
 msgid "Couldn't Remove Emblem"
 msgstr "꼬리표를 지울 수 없습니다"
 
 #: components/emblem/nautilus-emblem-view.c:239
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't rename emblem with name '%s'."
-msgstr "꼬리표의 이름을 바꿀 수 없습니다"
+msgstr "'%s' 이름을 가진 꼬리표의 이름을 바꿀 수 없습니다"
 
 #: components/emblem/nautilus-emblem-view.c:240
-#, fuzzy
 msgid ""
 "This is probably because the emblem is a permanent one, and not one that you "
 "added yourself."
-msgstr ""
-"'%s'이름을 가진 꼬리표의 이름을 바꿀 수 없습니다. 사용자가 더한것이 아닌 것"
-"은 이름을 바꿀 수 없습니다."
+msgstr "사용자가 더한것이 아닌 것은 이름을 바꿀 수 없습니다."
 
 #: components/emblem/nautilus-emblem-view.c:241
-#, fuzzy
 msgid "Couldn't Rename Emblem"
 msgstr "꼬리표의 이름을 바꿀 수 없습니다"
 
@@ -121,33 +114,28 @@ msgstr ""
 "때 쓰입니다."
 
 #: components/emblem/nautilus-emblem-view.c:742
-#, fuzzy
 msgid "Some of the files could not be added as emblems."
-msgstr ""
-"몇몇 파일을 꼬리표로 더할 수 없습니다. 올바른 그림파일이 아닌 것 같습니다."
+msgstr "몇몇 파일을 꼬리표로 더할 수 없습니다."
 
 #: components/emblem/nautilus-emblem-view.c:742
 #: components/emblem/nautilus-emblem-view.c:744
-#, fuzzy
 msgid "The emblems do not appear to be valid images."
-msgstr "파일 '%s'(이)가  올바른 그림파일이 아닌것 같습니다."
+msgstr "올바른 그림파일이 아니여서 꼬리표로 쓸 수 없습니다."
 
 #: components/emblem/nautilus-emblem-view.c:742
 #: components/emblem/nautilus-emblem-view.c:744
-#, fuzzy
 msgid "Couldn't Add Emblems"
 msgstr "꼬리표를 더할 수 없습니다"
 
 #: components/emblem/nautilus-emblem-view.c:744
-#, fuzzy
 msgid "None of the files could be added as emblems."
-msgstr "파일에 꼬리표를 더할 수 없습니다. 올바른 그림파일이 아닌 것 같습니다."
+msgstr "파일에 꼬리표를 붙일 수 업습니다."
 
 #: components/emblem/nautilus-emblem-view.c:765
 #: components/emblem/nautilus-emblem-view.c:790
 #: components/emblem/nautilus-emblem-view.c:840
 msgid "The emblem cannot be added."
-msgstr ""
+msgstr "꼬리표를 붙일 수 없습니다."
 
 #: components/emblem/nautilus-emblem-view.c:765
 msgid "The dragged text was not a valid file location."
@@ -156,7 +144,6 @@ msgstr "끌어 놓은 텍스트가 올바른 파일위치가 아닌것 같습니
 #: components/emblem/nautilus-emblem-view.c:765
 #: components/emblem/nautilus-emblem-view.c:790
 #: components/emblem/nautilus-emblem-view.c:840
-#, fuzzy
 msgid "Couldn't Add Emblem"
 msgstr "꼬리표를 더할 수 없습니다"
 
@@ -171,7 +158,7 @@ msgid "The dragged file does not appear to be a valid image."
 msgstr "끌어 놓은 파일이 올바른 그림파일이 아닌것 같습니다."
 
 #: components/emblem/nautilus-emblem-view.c:904 data/browser.xml.h:35
-#: src/nautilus-property-browser.c:1740
+#: src/nautilus-property-browser.c:1741
 msgid "Erase"
 msgstr "지우기"
 
@@ -232,7 +219,7 @@ msgid "Flash Fired"
 msgstr "플래시 켜짐"
 
 #: components/image_properties/nautilus-image-properties-view.c:200
-msgid "Focal Lenght"
+msgid "Focal Length"
 msgstr "초점 거리"
 
 #: components/image_properties/nautilus-image-properties-view.c:201
@@ -315,22 +302,6 @@ msgstr "클립보드에서 선택한 문자를 복사합니다"
 msgid "_Copy Text"
 msgstr "글자 복사(_C)"
 
-#: components/text/services/google.xml.h:1
-msgid "Search Google for Selected Text"
-msgstr "선택한 단어를 Google에서 찾기"
-
-#: components/text/services/google.xml.h:2
-msgid "Use Google to search the web for the selected text"
-msgstr "선택한 단어를 Google을 이용하여 web에서 찾아봅니다"
-
-#: components/text/services/webster.xml.h:1
-msgid "Look Up Selected Text in Dictionary"
-msgstr "선택한 단어 사전에서 찾기"
-
-#: components/text/services/webster.xml.h:2
-msgid "Look up the selected text in the Merriam-Webster dictionary"
-msgstr "선택한 단어를 Merriam-Webster사전에서 찾아봅니다"
-
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:1
 msgid "animation to indicate on-going activity"
 msgstr "활동중이라는 것을 알리는 움직임"
@@ -351,38 +322,6 @@ msgstr "진동 객체 팩토리"
 #: components/throbber/nautilus-throbber.c:588
 msgid "provides visual status"
 msgstr "그래픽 상태 보기"
-
-#: components/tree/Nautilus_View_tree.server.in.in.h:1
-msgid "Nautilus Tree side pane"
-msgstr "노틸러스 트리 가장자리 창"
-
-#: components/tree/Nautilus_View_tree.server.in.in.h:2
-msgid "Nautilus Tree view"
-msgstr "노틸러스 폴더 보기"
-
-#: components/tree/Nautilus_View_tree.server.in.in.h:3
-msgid "Tree"
-msgstr "폴더"
-
-#: components/tree/nautilus-tree-model.c:1136
-msgid "(Empty)"
-msgstr "(비어있음)"
-
-#: components/tree/nautilus-tree-model.c:1136
-msgid "Loading..."
-msgstr "읽는 중..."
-
-#: components/tree/nautilus-tree-view.c:529 nautilus-home.desktop.in.h:1
-msgid "Home Folder"
-msgstr "내 폴더"
-
-#: components/tree/nautilus-tree-view.c:531
-msgid "Filesystem"
-msgstr "파일시스템"
-
-#: components/tree/nautilus-tree-view.c:533
-msgid "Network Neighbourhood"
-msgstr "네트워크 환경"
 
 #: data/applications.desktop.in.h:1
 msgid "Applications"
@@ -1127,34 +1066,31 @@ msgid "Enable 'special' flags in file preferences dialog"
 msgstr "파일 기본 설정 대화상자에서 '특별' 플래그 사용"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
-#, fuzzy
 msgid ""
 "Filename for the default folder background. Only used if background_set is "
 "true."
 msgstr ""
-"기본 디렉토리 바탕의 파일이름. background_set이 참일 경우에만 사용됩니다."
+"기본 폴더의 바탕그림 파일이름. background_set이 참일 경우에만 사용됩니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
 msgid ""
 "Filename for the default side pane background. Only used if "
 "side_pane_background_set is true."
 msgstr ""
-"기본 가장자리 창 바탕의 파일이름. side_pane_background_set이 참일 경우에만 사"
-"용됩니다."
+"기본 가장자리 창의 바탕그림 파일이름. side_pane_background_set이 참일 경우에"
+"만 사용됩니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:26
-#, fuzzy
 msgid ""
 "Folders over this size will be truncated to around this size. The purpose of "
 "this is to avoid unintentionally blowing the heap and killing Nautilus on "
 "massive folders. A negative value denotes no limit. The limit is approximate "
 "due to the reading of folders chunk-wise."
 msgstr ""
-"이 크기를 넘어가는 크기의 디렉토리는 이 크기에 맞게 잘려질 것입니다. 이 설정"
-"의 목적은, 크기가 아주 큰 디렉토리를 열다가 힙을 모두 사용해 버려서 노틸러스"
-"가 죽어 버리는 일을 방지하기 위한 것입니다. 음수 값은 한계가 없음을 의미합니"
-"다. 이 값은 정확한 값이 아니라 근사값입니다 -- 디렉토리를 청크 단위로 읽기 때"
-"문입니다."
+"이 크기를 넘어가는 크기의 폴더는 이 크기에 맞게 잘려질 것입니다. 이 설정의 목"
+"적은, 크기가 아주 큰 폴더를 열다가 힙을 모두 사용해 버려서 노틸러스가 죽어 버"
+"리는 일을 방지하기 위한 것입니다. 음수 값은 한계가 없음을 의미합니다. 이 값"
+"은 정확한 값이 아니라 근사값입니다 -- 폴더를 청크 단위로 읽기 때문입니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:27
 msgid "Hide default bookmarks in the bookmark menu"
@@ -1165,13 +1101,12 @@ msgid "Home icon visible on desktop"
 msgstr "바탕화면에 홈 아이콘을 보입니다"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
-#, fuzzy
 msgid ""
 "If set to true, Nautilus will only show folders in the tree side pane. "
 "Otherwise it will show both folders and files."
 msgstr ""
-"참으로 설정하면, 폴더 가장자리 창에서 디렉토리만 보여줍니다. 아니면, 디렉토리"
-"와 파일을 모두 보여줍니다."
+"참으로 설정하면, 폴더 가장자리 창에서 폴더만 보여줍니다. 아니면, 폴더와 파일"
+"을 모두 보여줍니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
 msgid ""
@@ -1199,13 +1134,12 @@ msgstr ""
 "을 편집할 수 있습니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
-#, fuzzy
 msgid ""
 "If set to true, then Nautilus shows folders prior to showing files in the "
 "icon and list views."
 msgstr ""
-"참으로 설정하면, 노틸러스의 아이콘 뷰와 목록 뷰에서 디렉토리를 파일보다 먼저 "
-"보여 줍니다."
+"참으로 설정하면, 노틸러스의 아이콘 뷰와 목록 뷰에서 폴더를 파일보다 먼저 보"
+"여 줍니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
 msgid ""
@@ -1242,13 +1176,12 @@ msgstr ""
 "참으로 설정하면, 노틸러스의 책갈피 메뉴에서 사용자의 책갈피를 보여줍니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
-#, fuzzy
 msgid ""
 "If set to true, then Nautilus will use the user's home folder as the "
 "desktop. If it is false, then it will use ~/Desktop as the desktop."
 msgstr ""
-"참으로 설정하면, 노틸러스에서 사용자의 홈 디렉토리를 바탕화면으로 사용합니"
-"다. 거짓이면 ~/Desktop을 바탕화면으로 사용합니다."
+"참으로 설정하면, 노틸러스에서 사용자의 홈 폴더를 바탕화면으로 사용합니다. 거"
+"짓이면 ~/Desktop을 바탕화면으로 사용합니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
 msgid ""
@@ -1260,13 +1193,12 @@ msgstr ""
 "(~)로 끝나는 파일을 백업 파일로 취급합니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
-#, fuzzy
 msgid ""
 "If set to true, then hidden files are shown in the file manager. Hidden "
 "files are either dotfiles or are listed in the folder's .hidden file."
 msgstr ""
 "참으로 설정하면, 파일 관리자에서 숨겨진 파일들이 보입니다. 숨겨진 파일은 점으"
-"로 시작하는 파일이거나 디렉토리의 .hidden 파일 안에 목록에 들어 있습니다."
+"로 시작하는 파일이거나 폴더의 .hidden 파일 안에 목록에 들어 있습니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
 msgid ""
@@ -1283,11 +1215,10 @@ msgid ""
 msgstr "참으로 설정하면, 컴퓨터 아이콘을 데스크탑에 만듭니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
-#, fuzzy
 msgid ""
 "If this is set to true, an icon linking to the home folder will be put on "
 "the desktop."
-msgstr "참으로 설정하면, 홈 디렉토리 아이콘을 데스크탑에 만듭니다."
+msgstr "참으로 설정하면, 홈 폴더 아이콘을 데스크탑에 만듭니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
 msgid ""
@@ -1316,9 +1247,8 @@ msgstr ""
 "기 순서대로 정렬하면 오름차 순이 아니라 내림차 순으로 정렬합니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
-#, fuzzy
 msgid "If true, icons will be laid out tighter by default in new windows."
-msgstr "참이면, 새 창에서 아이콘이 기본적으로 빽빽하게 배치됩니다."
+msgstr "참이면, 새 창에서 아이콘이 기본적으로 빈틈없이 배치됩니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
 msgid ""
@@ -1344,9 +1274,8 @@ msgid "List of possible captions on icons"
 msgstr "아이콘의 표시가능 캡션 목록"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
-#, fuzzy
 msgid "Maximum handled files in a folder"
-msgstr "디렉토리 하나에서 처리할 최대 파일 개수"
+msgstr "폴더 하나에서 처리할 최대 파일 개수"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
 msgid "Maximum image size for thumbnailing"
@@ -1365,14 +1294,12 @@ msgid "Nautilus handles drawing the desktop"
 msgstr "노틸러스가 바탕화면 그리기를 담당합니다"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
-#, fuzzy
 msgid "Nautilus uses the users home folder as the desktop"
-msgstr "노틸러스에서 사용자의 홈 디렉토리를 바탕화면으로 사용합니다"
+msgstr "노틸러스에서 사용자의 홈 폴더를 바탕화면으로 사용합니다"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
-#, fuzzy
 msgid "Only show folders in the tree sidebar"
-msgstr "트리 가장자리 창에 디렉토리만 보여줍니다"
+msgstr "폴더보기 가장자리 창에 폴더만 보여줍니다"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
 msgid ""
@@ -1391,7 +1318,6 @@ msgid "Reverse sort order in new windows"
 msgstr "새 창에서 정렬 순서 거꾸로"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
-#, fuzzy
 msgid "Show folders first in windows"
 msgstr "창에서 폴더를 먼저 보여줍니다"
 
@@ -1428,7 +1354,6 @@ msgstr ""
 "\"이면 사운드 미리 듣기를 하지 않습니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
-#, fuzzy
 msgid ""
 "Speed tradeoff for when to show a preview of text file contents in the "
 "file's icon. If set to \"always\" then always show previews, even if the "
@@ -1442,7 +1367,6 @@ msgstr ""
 "면 미리 보기를 하지 않습니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
-#, fuzzy
 msgid ""
 "Speed tradeoff for when to show an image file as a thumbnail. If set to "
 "\"always\" then always thumbnail, even if the folder is on a remote server. "
@@ -1456,20 +1380,18 @@ msgstr ""
 "이콘을 사용합니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
-#, fuzzy
 msgid ""
 "Speed tradeoff for when to show the number of items in a folder. If set to "
 "\"always\" then always show item counts, even if the folder is on a remote "
 "server. If set to \"local_only\" then only show counts for local "
 "filesystems. If set to \"never\" then never bother to compute item counts."
 msgstr ""
-"디렉토리 안의 항목 개수를 보여줄 때 속도 트레이드오프. \"always\"로 설정되면 "
-"언제나 (원격 서버에 있을 경우에도) 항목 개수를 보여줍니다. \"local_only\"는 "
-"로컬 파일 시스템의 경우에만 항목 개수를 보여줍니다. \"never\"이면 항목 개수"
-"를 세어 보지 않습니다."
+"폴더 안의 항목 개수를 보여줄 때 속도 트레이드오프. \"always\"로 설정되면 언제"
+"나 (원격 서버에 있을 경우에도) 항목 개수를 보여줍니다. \"local_only\"는 로컬 "
+"파일 시스템의 경우에만 항목 개수를 보여줍니다. \"never\"이면 항목 개수를 세"
+"어 보지 않습니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
-#, fuzzy
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
@@ -1478,7 +1400,6 @@ msgstr ""
 "\"type\", \"modification_date\", \"emblems\"입니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
-#, fuzzy
 msgid ""
 "The default sort-order for the items in the list view. Possible values are "
 "\"name\", \"size\", \"type\", and \"modification_date\"."
@@ -1524,9 +1445,8 @@ msgid "Use manual layout in new windows"
 msgstr "새 창에서 수동 배치를 씁니다"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
-#, fuzzy
 msgid "Use tighter layout in new windows"
-msgstr "새 창에서 빽빽한 배치 사용"
+msgstr "새 창에서 빈틈없는 배치 사용"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
 msgid "What to do with executable text files when activated"
@@ -1553,7 +1473,6 @@ msgstr ""
 "됩니다.  가능한 값은 \"list_view\"와 \"icon_view\"입니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
-#, fuzzy
 msgid "When to show number of items in a folder"
 msgstr "언제 디렉토리 안에 항목의 개수를 보여줄 지"
 
@@ -1566,13 +1485,12 @@ msgid "When to show thumbnails of image files"
 msgstr "그림 파일의 썸네일을 보여줄 때"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
-#, fuzzy
 msgid "Whether a custom default folder background has been set."
-msgstr "사용자 지정 디렉토리 바탕을 설정할 지 여부."
+msgstr "사용자 지정 폴더 바탕그림을 설정할 지 여부."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:92
 msgid "Whether a custom default side pane background has been set."
-msgstr "사용자 지정 기본 가장자리 창 바탕을 설정할 지 여부."
+msgstr "사용자 지정 기본 가장자리 창 바탕그림을 설정할 지 여부."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:93
 msgid "Whether to ask for confirmation when moving files to trash"
@@ -1628,7 +1546,7 @@ msgstr "DVD 볼륨"
 
 #: libnautilus-private/filesystem-attributes.xml.h:8
 msgid "Enhanced DOS Volume"
-msgstr "고급 DOS 볼륨"
+msgstr "확장 도스 볼륨"
 
 #: libnautilus-private/filesystem-attributes.xml.h:9
 msgid "Ext2 Linux Volume"
@@ -1660,7 +1578,7 @@ msgstr "MacOS 볼륨"
 
 #: libnautilus-private/filesystem-attributes.xml.h:16
 msgid "Minix Volume"
-msgstr "미닉스 볼륨"
+msgstr "Minix 볼륨"
 
 #: libnautilus-private/filesystem-attributes.xml.h:17
 msgid "NFS Network Volume"
@@ -1668,7 +1586,7 @@ msgstr "NFS 네트워크 볼륨"
 
 #: libnautilus-private/filesystem-attributes.xml.h:18
 msgid "Pcfs Solaris Volume"
-msgstr "Pcfs 솔라리스 볼륨"
+msgstr "Pcfs Solaris 볼륨"
 
 #: libnautilus-private/filesystem-attributes.xml.h:19
 msgid "ReiserFS Linux Volume"
@@ -1676,11 +1594,11 @@ msgstr "ReiserFS 리눅스 볼륨"
 
 #: libnautilus-private/filesystem-attributes.xml.h:20
 msgid "Solaris/BSD Volume"
-msgstr "솔라리스/BSD 볼륨"
+msgstr "Solaris/BSD 볼륨"
 
 #: libnautilus-private/filesystem-attributes.xml.h:21
 msgid "SuperMount Volume"
-msgstr "수퍼마운트 볼륨"
+msgstr "SuperMount 볼륨"
 
 #: libnautilus-private/filesystem-attributes.xml.h:22
 msgid "System Volume"
@@ -1688,19 +1606,19 @@ msgstr "시스템 볼륨"
 
 #: libnautilus-private/filesystem-attributes.xml.h:23
 msgid "Udfs Solaris Volume"
-msgstr "Udfs 솔라리스 볼륨"
+msgstr "Udfs Solaris 볼륨"
 
 #: libnautilus-private/filesystem-attributes.xml.h:24
 msgid "Windows NT Volume"
-msgstr "윈도우즈 NT 볼륨"
+msgstr "Windows NT 볼륨"
 
 #: libnautilus-private/filesystem-attributes.xml.h:25
 msgid "Windows Shared Volume"
-msgstr "윈도우즈 공유 볼륨"
+msgstr "Windows 공유 볼륨"
 
 #: libnautilus-private/filesystem-attributes.xml.h:26
 msgid "Windows VFAT Volume"
-msgstr "윈도우즈 VFAT 볼륨"
+msgstr "Windows VFAT 볼륨"
 
 #: libnautilus-private/filesystem-attributes.xml.h:27
 msgid "XFS Linux Volume"
@@ -1725,26 +1643,21 @@ msgid "on the desktop"
 msgstr "바탕화면"
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:105
-#, fuzzy
 msgid "You cannot delete a volume icon."
-msgstr "볼륨을 지울 수 없습니다"
+msgstr "볼륨 아이콘을 지울 수 없습니다"
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:106
-#, fuzzy
 msgid ""
 "If you want to eject the volume, please use Eject in the right-click menu of "
 "the volume."
-msgstr ""
-"볼륨 아이콘은 지울 수 없습니다. 볼륨을 꺼내고 싶으면 볼륨에 오른쪽 클릭하십시"
-"오."
+msgstr "볼륨을 꺼내고 싶으면 볼륨에 오른쪽 클릭하십시오."
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:108
-#, fuzzy
 msgid "Can't Delete Volume"
 msgstr "볼륨을 지울 수 없습니다"
 
 #: libnautilus-private/nautilus-desktop-link.c:169
-#: libnautilus-private/nautilus-file.c:5739
+#: libnautilus-private/nautilus-file.c:5741
 #: libnautilus-private/nautilus-global-preferences.c:555
 #: libnautilus-private/nautilus-trash-directory.c:343
 msgid "Trash"
@@ -1784,7 +1697,7 @@ msgstr "이 폴더의 바탕그림으로 설정(_T)"
 #: libnautilus-private/nautilus-emblem-utils.c:257
 #: libnautilus-private/nautilus-emblem-utils.c:274
 msgid "The emblem cannot be installed."
-msgstr ""
+msgstr "꼬리표가 설치되지 않았습니다."
 
 #: libnautilus-private/nautilus-emblem-utils.c:198
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
@@ -1794,7 +1707,6 @@ msgstr "꼬리표에 사용될 키워드를 지정하여야 합니다."
 #: libnautilus-private/nautilus-emblem-utils.c:204
 #: libnautilus-private/nautilus-emblem-utils.c:259
 #: libnautilus-private/nautilus-emblem-utils.c:276
-#, fuzzy
 msgid "Couldn't Install Emblem"
 msgstr "꼬리표를 설치할 수 없습니다"
 
@@ -1803,20 +1715,19 @@ msgid ""
 "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr "꼬리표 키워드는 문자와 공백, 숫자만 포함할 수 있습니다."
 
+# c-format
 #. this really should never happen, as a user has no idea
 #. * what a keyword is, and people should be passing a unique
 #. * keyword to us anyway
 #.
 #: libnautilus-private/nautilus-emblem-utils.c:213
-#, fuzzy, c-format
+#, c-format
 msgid "Sorry, but there is already an emblem named \"%s\"."
-msgstr ""
-"\"%s\"(이)라는 이름은 이미 쓰이고 있는 꼬리표이름 입니다. 다른 이름을 사용하"
-"십시오."
+msgstr "\"%s\"(이)라는 이름은 이미 쓰이고 있는 꼬리표이름 입니다."
 
 #: libnautilus-private/nautilus-emblem-utils.c:214
 msgid "Please choose a different emblem name."
-msgstr ""
+msgstr "다른 이름을 사용하십시오."
 
 #: libnautilus-private/nautilus-emblem-utils.c:215
 msgid "Couldn't install emblem"
@@ -1830,7 +1741,7 @@ msgstr "사용자 꼬리표를 저장할 수 없습니다."
 msgid "Sorry, unable to save custom emblem name."
 msgstr "사용자 꼬리표 이름을 저장할 수 없습니다."
 
-#: libnautilus-private/nautilus-file-operations-progress.c:456
+#: libnautilus-private/nautilus-file-operations-progress.c:457
 #, c-format
 msgid "%ld of %ld"
 msgstr "%2$ld개 중 %1$ld개"
@@ -1845,952 +1756,635 @@ msgstr "발신:"
 msgid "To:"
 msgstr "수신:"
 
-#: libnautilus-private/nautilus-file-operations.c:549
-#: libnautilus-private/nautilus-file-operations.c:597
-#: libnautilus-private/nautilus-file-operations.c:612
+#: libnautilus-private/nautilus-file-operations.c:551
+#: libnautilus-private/nautilus-file-operations.c:599
+#: libnautilus-private/nautilus-file-operations.c:614
 msgid "Error while moving."
 msgstr "옮기는 중 오류"
 
-#: libnautilus-private/nautilus-file-operations.c:550
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-file-operations.c:552
+#, c-format
 msgid "\"%s\" cannot be moved because it is on a read-only disk."
-msgstr ""
-"옮기는 중 오류.\n"
-"\n"
-"읽기 전용디스크이기 때문에 \"%s\"을(를) 옮길 수 없습니다."
+msgstr "읽기 전용디스크이기 때문에 \"%s\"을(를) 옮길 수 없습니다."
 
-#: libnautilus-private/nautilus-file-operations.c:560
-#: libnautilus-private/nautilus-file-operations.c:566
+#: libnautilus-private/nautilus-file-operations.c:562
+#: libnautilus-private/nautilus-file-operations.c:568
 msgid "Error while deleting."
 msgstr "지우는 중 오류"
 
-#: libnautilus-private/nautilus-file-operations.c:561
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-file-operations.c:563
+#, c-format
 msgid ""
 "\"%s\" cannot be deleted because you do not have permissions to modify its "
 "parent folder."
-msgstr ""
-"옮기는 중 오류.\n"
-"\n"
-"부모 폴더를 수정할 수 있는 허가권을 기자고 있지 않기 때문에 \"%s\"을(를) 옮"
-"길 수 없습니다."
+msgstr "상위 폴더를 수정할 수 있는 허가권을 기자고 있지 않기 때문에 \"%s\"을(를) 옮길 수 없습니다."
 
-#: libnautilus-private/nautilus-file-operations.c:567
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-file-operations.c:569
+#, c-format
 msgid "\"%s\" cannot be deleted because it is on a read-only disk."
-msgstr ""
-"옮기는 중 오류.\n"
-"\n"
-"읽기 전용디스크이기 때문에 \"%s\"을(를) 옮길 수 없습니다."
+msgstr "읽기 전용디스크이기 때문에 \"%s\"을(를) 옮길 수 없습니다."
 
-#: libnautilus-private/nautilus-file-operations.c:598
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-file-operations.c:600
+#, c-format
 msgid ""
 "\"%s\" cannot be moved because you do not have permissions to change it or "
 "its parent folder."
-msgstr ""
-"옮기는 중 오류.\n"
-"\n"
-"부모 폴더나 그 자신을 수정할 수 있는 허가권을 기자고 있지 않기 때문에 \"%s"
-"\"을(를) 옮길 수 없습니다."
+msgstr "상위 폴더나 그 자신을 수정할 수 있는 허가권을 기자고 있지 않기 때문에 \"%s\"을(를) 옮길 수 없습니다."
 
-#: libnautilus-private/nautilus-file-operations.c:602
-#, fuzzy
+#: libnautilus-private/nautilus-file-operations.c:604
 msgid "Error while moving. "
-msgstr "옮기는 중 오류"
+msgstr "옮기는 중 오류. "
 
-#: libnautilus-private/nautilus-file-operations.c:603
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-file-operations.c:605
+#, c-format
 msgid ""
 "Cannot move \"%s\" because it or its parent folder are contained in the "
 "destination."
-msgstr ""
-"옮기는 중 오류.\n"
-"\n"
-"옮길 곳에 파일이나 파일의 부모 폴더에 포함되지 않기 때문에 \"%s\"을(를)옮길 "
-"수 없습니다."
+msgstr "옮길 곳에 파일이나 파일의 상위 폴더에 포함되지 않기 때문에 \"%s\"을(를)옮길 수 없습니다."
 
-#: libnautilus-private/nautilus-file-operations.c:613
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-file-operations.c:615
+#, c-format
 msgid ""
 "Cannot move \"%s\" to the trash because you do not have permissions to "
 "change it or its parent folder."
-msgstr ""
-"옮기는 중 오류.\n"
-"\n"
-"부모 폴더를 수정할 수 있는 허가권을 가지고 있지 않기 때문에 \"%s\"을(를) 휴지"
-"통으로 옮길 수 없습니다."
+msgstr "상위 폴더를 수정할 수 있는 허가권을 가지고 있지 않기 때문에 \"%s\"을(를) 휴지통으로 옮길 수 없습니다."
 
-#: libnautilus-private/nautilus-file-operations.c:635
+#: libnautilus-private/nautilus-file-operations.c:637
 msgid "Error while copying."
 msgstr "복사중 오류"
 
-#: libnautilus-private/nautilus-file-operations.c:636
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-file-operations.c:638
+#, c-format
 msgid "\"%s\" cannot be copied because you do not have permissions to read it."
 msgstr ""
-"복사중 오류.\n"
-"\n"
 "읽을 수 있는 허가권을 가지고 있지 않기 때문에 \"%s\"을(를) 복사할 수 없습니"
 "다."
 
-#: libnautilus-private/nautilus-file-operations.c:656
-#: libnautilus-private/nautilus-file-operations.c:677
-#: libnautilus-private/nautilus-file-operations.c:681
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-file-operations.c:658
+#: libnautilus-private/nautilus-file-operations.c:679
+#: libnautilus-private/nautilus-file-operations.c:683
+#, c-format
 msgid "Error while copying to \"%s\"."
-msgstr "복사중 오류"
+msgstr "\"%s\"(으)로 복사중 오류"
 
-#: libnautilus-private/nautilus-file-operations.c:657
-#: libnautilus-private/nautilus-file-operations.c:662
-#: libnautilus-private/nautilus-file-operations.c:666
-#, fuzzy
+#: libnautilus-private/nautilus-file-operations.c:659
+#: libnautilus-private/nautilus-file-operations.c:664
+#: libnautilus-private/nautilus-file-operations.c:668
 msgid "There is not enough space on the destination."
-msgstr ""
-"\"%s\"을(를) 옮기는 동안 오류.\n"
-"\n"
-"목표에 남은 공간이 없습니다."
+msgstr "목표에 남은 공간이 없습니다."
 
-#: libnautilus-private/nautilus-file-operations.c:661
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-file-operations.c:663
+#, c-format
 msgid "Error while moving to \"%s\"."
-msgstr "옮기는 중 오류"
+msgstr "\"%s\"(으)로 옮기는 중 오류."
 
-#: libnautilus-private/nautilus-file-operations.c:665
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-file-operations.c:667
+#, c-format
 msgid "Error while creating link in \"%s\"."
-msgstr "연결하는 중 오류"
+msgstr "\"%s\"에 따라가기 만드는 중 오류."
 
-#: libnautilus-private/nautilus-file-operations.c:678
-#: libnautilus-private/nautilus-file-operations.c:689
-#: libnautilus-private/nautilus-file-operations.c:700
-#, fuzzy
+#: libnautilus-private/nautilus-file-operations.c:680
+#: libnautilus-private/nautilus-file-operations.c:691
+#: libnautilus-private/nautilus-file-operations.c:702
 msgid "You do not have permissions to write to this folder."
-msgstr ""
-"\"%s\"을(를) 복사하는 중 오류.\n"
-"\n"
-"목표에 쓸 수 있는 허가권을 가지고 있지 않습니다."
+msgstr "목표에 쓸 수 있는 허가권을 가지고 있지 않습니다."
 
-#: libnautilus-private/nautilus-file-operations.c:682
-#: libnautilus-private/nautilus-file-operations.c:693
-#: libnautilus-private/nautilus-file-operations.c:704
-#, fuzzy
+#: libnautilus-private/nautilus-file-operations.c:684
+#: libnautilus-private/nautilus-file-operations.c:695
+#: libnautilus-private/nautilus-file-operations.c:706
 msgid "The destination disk is read-only."
-msgstr ""
-"항목을  \"%s\"(으)로 복사하는 중 오류.\n"
-"\n"
-"목표디스크는 읽기전용 입니다."
+msgstr "목표디스크는 읽기전용 입니다."
 
-#: libnautilus-private/nautilus-file-operations.c:688
-#: libnautilus-private/nautilus-file-operations.c:692
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-file-operations.c:690
+#: libnautilus-private/nautilus-file-operations.c:694
+#, c-format
 msgid "Error while moving items to \"%s\"."
-msgstr "옮기는 중 오류"
+msgstr "\"%s\"(으)로 항목을 옮기는 중 오류."
 
-#: libnautilus-private/nautilus-file-operations.c:699
-#: libnautilus-private/nautilus-file-operations.c:703
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-file-operations.c:701
+#: libnautilus-private/nautilus-file-operations.c:705
+#, c-format
 msgid "Error while creating links in \"%s\"."
-msgstr "연결하는 중 오류"
+msgstr "\"%s\"에 따라가기를 만드는 중 오류."
 
-#: libnautilus-private/nautilus-file-operations.c:731
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-file-operations.c:733
+#, c-format
 msgid "Error \"%s\" while copying \"%s\"."
-msgstr "복사중 오류"
+msgstr "\"%2$s\"(으)로 복사중 \"%1$s\" 오류."
 
-#: libnautilus-private/nautilus-file-operations.c:732
-#: libnautilus-private/nautilus-file-operations.c:736
-#: libnautilus-private/nautilus-file-operations.c:740
-#: libnautilus-private/nautilus-file-operations.c:746
-#: libnautilus-private/nautilus-file-operations.c:761
-#: libnautilus-private/nautilus-file-operations.c:765
-#: libnautilus-private/nautilus-file-operations.c:769
-#: libnautilus-private/nautilus-file-operations.c:775
-#, fuzzy
+#: libnautilus-private/nautilus-file-operations.c:734
+#: libnautilus-private/nautilus-file-operations.c:738
+#: libnautilus-private/nautilus-file-operations.c:742
+#: libnautilus-private/nautilus-file-operations.c:748
+#: libnautilus-private/nautilus-file-operations.c:763
+#: libnautilus-private/nautilus-file-operations.c:767
+#: libnautilus-private/nautilus-file-operations.c:771
+#: libnautilus-private/nautilus-file-operations.c:777
 msgid "Would you like to continue?"
-msgstr ""
-"옮기는 중 \"%s\"오류.\n"
-"\n"
-"계속 진행 하겠습니까?"
+msgstr "계속 진행 하겠습니까?"
 
-#: libnautilus-private/nautilus-file-operations.c:735
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-file-operations.c:737
+#, c-format
 msgid "Error \"%s\" while moving \"%s\"."
-msgstr "옮기는 중 오류"
+msgstr "\"%2$s\"(으)로 옮기는 중 \"%1$s\" 오류."
 
-#: libnautilus-private/nautilus-file-operations.c:739
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-file-operations.c:741
+#, c-format
 msgid "Error \"%s\" while creating a link to \"%s\"."
-msgstr ""
-"\"%2$s\"에 연결을 만드는 중 \"%1$s\"오류.\n"
-"\n"
-"계속 진행 하겠습니까?"
+msgstr "\"%2$s\"에 따라가기를 만드는 중 \"%1$s\"오류."
 
-#: libnautilus-private/nautilus-file-operations.c:745
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-file-operations.c:747
+#, c-format
 msgid "Error \"%s\" while deleting \"%s\"."
-msgstr "지우는 중 오류"
+msgstr "\"%2$s\"(을)를 지우는 중 \"%1$s\"오류."
 
-#: libnautilus-private/nautilus-file-operations.c:760
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-file-operations.c:762
+#, c-format
 msgid "Error \"%s\" while copying."
-msgstr "복사중 오류"
+msgstr "복사중 \"%s\" 오류."
 
-#: libnautilus-private/nautilus-file-operations.c:764
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-file-operations.c:766
+#, c-format
 msgid "Error \"%s\" while moving."
-msgstr "옮기는 중 오류"
+msgstr "옮기는 중 \"%s\" 오류."
 
-#: libnautilus-private/nautilus-file-operations.c:768
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-file-operations.c:770
+#, c-format
 msgid "Error \"%s\" while linking."
-msgstr "연결하는 중 오류"
+msgstr "따라가기를 만드는 중 \"%s\" 오류."
 
-#: libnautilus-private/nautilus-file-operations.c:774
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-file-operations.c:776
+#, c-format
 msgid "Error \"%s\" while deleting."
-msgstr "지우는 중 오류"
+msgstr "지우는 중 \"%s\" 오류."
 
-#: libnautilus-private/nautilus-file-operations.c:900
-#, fuzzy
+#: libnautilus-private/nautilus-file-operations.c:902
 msgid "Error While Copying"
-msgstr "복사중 오류"
+msgstr "복사중 오류."
 
-#: libnautilus-private/nautilus-file-operations.c:903
-#, fuzzy
+#: libnautilus-private/nautilus-file-operations.c:905
 msgid "Error While Moving"
-msgstr "옮기는 중 오류"
+msgstr "옮기는 중 오류."
 
-#: libnautilus-private/nautilus-file-operations.c:906
-#, fuzzy
+#: libnautilus-private/nautilus-file-operations.c:908
 msgid "Error While Linking"
-msgstr "연결하는 중 오류"
+msgstr "따라가기를 만드는 중 오류."
 
-#: libnautilus-private/nautilus-file-operations.c:911
-#, fuzzy
+#: libnautilus-private/nautilus-file-operations.c:913
 msgid "Error While Deleting"
-msgstr "지우는 중 오류"
+msgstr "지우는 중 오류."
 
-#: libnautilus-private/nautilus-file-operations.c:938
-#: libnautilus-private/nautilus-file-operations.c:959
-#: libnautilus-private/nautilus-file-operations.c:1069
-#: libnautilus-private/nautilus-file-operations.c:1088
-#, fuzzy
+#: libnautilus-private/nautilus-file-operations.c:940
+#: libnautilus-private/nautilus-file-operations.c:961
+#: libnautilus-private/nautilus-file-operations.c:1071
+#: libnautilus-private/nautilus-file-operations.c:1090
 msgid "_Skip"
-msgstr "건너뜀"
+msgstr "건너뜀(_S)"
 
-#: libnautilus-private/nautilus-file-operations.c:959
-#, fuzzy
+#: libnautilus-private/nautilus-file-operations.c:961
 msgid "_Retry"
-msgstr "재시도"
+msgstr "재시도(_R)"
 
-#: libnautilus-private/nautilus-file-operations.c:1025
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-file-operations.c:1027
+#, c-format
 msgid "Could not move \"%s\" to the new location."
-msgstr "지정된 행동을 완료하지 못함."
+msgstr "\"%s\"(을)를 새로운 위치로 옮길 수 없습니다."
 
-#: libnautilus-private/nautilus-file-operations.c:1028
-#, fuzzy
+#: libnautilus-private/nautilus-file-operations.c:1030
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to move the item, rename it and try again."
 msgstr ""
-"\"%s\"을(를) 새로운 위치로 옮길 수 없습니다, 그 이름은 이미 지우거나 바꿀 수 "
-"없는 특수한 항목이 쓰이고 있습니다.\n"
-"\n"
-"\"%s\"을(를) 옮기고 싶다면 이름을 바꾸고 다시 하여 보십시오."
+"그 이름은 이미 지우거나 바꿀 수 없는 특수한 항목이 쓰이고 있습니다.항목을 옮"
+"기고 싶다면 이름을 바꾸고 다시 하여 보십시오."
 
-#: libnautilus-private/nautilus-file-operations.c:1032
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-file-operations.c:1034
+#, c-format
 msgid "Could not copy \"%s\" to the new location."
-msgstr "지정된 행동을 완료하지 못함."
+msgstr "\"%s\"을(를) 새로운 위치로 복사할 수 없습니다."
 
-#: libnautilus-private/nautilus-file-operations.c:1035
-#, fuzzy
+#: libnautilus-private/nautilus-file-operations.c:1037
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to copy the item, rename it and try again."
 msgstr ""
-"\"%s\"을(를) 새로운 위치로 복사할 수 없습니다, 그 이름은 이미 지우거나 바꿀 "
-"수 없는 특수한 항목이 쓰이고 있습니다.\n"
-"\n"
-"\"%s\"을(를) 복사하고 싶다면 이름을 바꾸고 다시 시도하십시오."
+"그 이름은 이미 지우거나 바꿀 수 없는 특수한 항목이 쓰이고 있습니다.항목을 복"
+"사하고 싶다면 이름을 바꾸고 다시 시도하십시오."
 
-#: libnautilus-private/nautilus-file-operations.c:1041
-#, fuzzy
+#: libnautilus-private/nautilus-file-operations.c:1043
 msgid "Unable to Replace File"
-msgstr "파일을 바꿀 수 없음."
+msgstr "파일을 바꿀 수 없음"
 
-#: libnautilus-private/nautilus-file-operations.c:1054
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-file-operations.c:1056
+#, c-format
 msgid "The file \"%s\" already exists.  Would you like to replace it?"
-msgstr ""
-"\"%s\" 파일이 이미 존재합니다. \n"
-"\n"
-"파일을 바꾸시겠습니까?"
-
-#: libnautilus-private/nautilus-file-operations.c:1067
-#: libnautilus-private/nautilus-file-operations.c:1086
-msgid "If you replace an existing file, its contents will be overwritten."
-msgstr ""
-
-#: libnautilus-private/nautilus-file-operations.c:1068
-#: libnautilus-private/nautilus-file-operations.c:1087
-#, fuzzy
-msgid "Conflict While Copying"
-msgstr "복사 하는 중 충돌"
+msgstr "\"%s\" 파일이 이미 존재합니다. 파일을 바꾸시겠습니까?"
 
 #: libnautilus-private/nautilus-file-operations.c:1069
 #: libnautilus-private/nautilus-file-operations.c:1088
-#, fuzzy
-msgid "_Replace"
-msgstr "바꾸기"
+msgid "If you replace an existing file, its contents will be overwritten."
+msgstr "현재 있는 파일을 바꾼다면 내용을 덮어쓰게 됩니다."
 
-#: libnautilus-private/nautilus-file-operations.c:1088
-#, fuzzy
+#: libnautilus-private/nautilus-file-operations.c:1070
+#: libnautilus-private/nautilus-file-operations.c:1089
+msgid "Conflict While Copying"
+msgstr "복사 하는 중 충돌"
+
+#: libnautilus-private/nautilus-file-operations.c:1071
+#: libnautilus-private/nautilus-file-operations.c:1090
+msgid "_Replace"
+msgstr "바꾸기(_R)"
+
+#: libnautilus-private/nautilus-file-operations.c:1090
 msgid "Replace _All"
-msgstr "모두 바꾸기"
+msgstr "모두 바꾸기(_A)"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1146
-#: libnautilus-private/nautilus-file.c:4539
+#: libnautilus-private/nautilus-file-operations.c:1148
+#: libnautilus-private/nautilus-file.c:4540
 #, c-format
 msgid "link to %s"
-msgstr "%s(으)로 연결"
+msgstr "%s(으)로 따라가기 만들기"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1150
+#: libnautilus-private/nautilus-file-operations.c:1152
 #, c-format
 msgid "another link to %s"
-msgstr "%s(으)로 다른 연결"
+msgstr "%s(으)로 다른 따라가기 만들기"
 
 #. Localizers: Feel free to leave out the "st" suffix
 #. * if there's no way to do that nicely for a
 #. * particular language.
 #.
-#: libnautilus-private/nautilus-file-operations.c:1166
+#: libnautilus-private/nautilus-file-operations.c:1168
 #, c-format
 msgid "%dst link to %s"
-msgstr "%2$s(으)로 %1$d번째 연결"
+msgstr "%2$s(으)로 %1$d번째 따라가기 만들기"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1170
+#: libnautilus-private/nautilus-file-operations.c:1172
 #, c-format
 msgid "%dnd link to %s"
-msgstr "%2$s(으)로 %1$d번째 연결"
+msgstr "%2$s(으)로 %1$d번째 따라가기 만들기"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1174
+#: libnautilus-private/nautilus-file-operations.c:1176
 #, c-format
 msgid "%drd link to %s"
-msgstr "%2$s(으)로 %1$d번째 연결"
+msgstr "%2$s(으)로 %1$d번째 따라가기 만들기"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1178
+#: libnautilus-private/nautilus-file-operations.c:1180
 #, c-format
 msgid "%dth link to %s"
-msgstr "%2$s(으)로 %1$d번째 연결"
+msgstr "%2$s(으)로 %1$d번째 따라가기 만들기"
 
 #. Localizers:
 #. * Feel free to leave out the st, nd, rd and th suffix or
 #. * make some or all of them match.
 #.
 #. localizers: tag used to detect the first copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1199
-#: libnautilus-private/nautilus-file-operations.c:2589
+#: libnautilus-private/nautilus-file-operations.c:1201
 msgid " (copy)"
 msgstr " (사본)"
 
 #. localizers: tag used to detect the second copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1201
-#: libnautilus-private/nautilus-file-operations.c:2589
+#: libnautilus-private/nautilus-file-operations.c:1203
 msgid " (another copy)"
 msgstr " (또 다른 사본)"
 
 #. localizers: tag used to detect the x11th copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1204
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
-#: libnautilus-private/nautilus-file-operations.c:1218
+#: libnautilus-private/nautilus-file-operations.c:1210
+#: libnautilus-private/nautilus-file-operations.c:1220
 msgid "th copy)"
 msgstr "번째 사본)"
 
 #. localizers: tag used to detect the x1st copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1211
+#: libnautilus-private/nautilus-file-operations.c:1213
 msgid "st copy)"
 msgstr "번째 사본)"
 
 #. localizers: tag used to detect the x2nd copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1213
+#: libnautilus-private/nautilus-file-operations.c:1215
 msgid "nd copy)"
 msgstr "번째 사본)"
 
 #. localizers: tag used to detect the x3rd copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1215
+#: libnautilus-private/nautilus-file-operations.c:1217
 msgid "rd copy)"
 msgstr "번째 사본)"
 
 #. localizers: appended to first file copy
-#: libnautilus-private/nautilus-file-operations.c:1232
+#: libnautilus-private/nautilus-file-operations.c:1234
 #, c-format
 msgid "%s (copy)%s"
 msgstr "%s (사본)%s"
 
 #. localizers: appended to second file copy
-#: libnautilus-private/nautilus-file-operations.c:1234
+#: libnautilus-private/nautilus-file-operations.c:1236
 #, c-format
 msgid "%s (another copy)%s"
 msgstr "%s (또 다른 사본)%s"
 
 #. localizers: appended to x11th file copy
-#: libnautilus-private/nautilus-file-operations.c:1237
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
-#: libnautilus-private/nautilus-file-operations.c:1250
+#: libnautilus-private/nautilus-file-operations.c:1243
+#: libnautilus-private/nautilus-file-operations.c:1252
 #, c-format
 msgid "%s (%dth copy)%s"
 msgstr "%s (%d번째 사본)%s"
 
 #. localizers: appended to x1st file copy
-#: libnautilus-private/nautilus-file-operations.c:1244
+#: libnautilus-private/nautilus-file-operations.c:1246
 #, c-format
 msgid "%s (%dst copy)%s"
 msgstr "%s (%d번째 사본)%s"
 
 #. localizers: appended to x2nd file copy
-#: libnautilus-private/nautilus-file-operations.c:1246
+#: libnautilus-private/nautilus-file-operations.c:1248
 #, c-format
 msgid "%s (%dnd copy)%s"
 msgstr "%s (%d번째 사본)%s"
 
 #. localizers: appended to x3rd file copy
-#: libnautilus-private/nautilus-file-operations.c:1248
+#: libnautilus-private/nautilus-file-operations.c:1250
 #, c-format
 msgid "%s (%drd copy)%s"
 msgstr "%s (%d번째 사본)%s"
 
 #. localizers: opening parentheses to match the "th copy)" string
-#: libnautilus-private/nautilus-file-operations.c:1348
+#: libnautilus-private/nautilus-file-operations.c:1350
 msgid " ("
 msgstr " ("
 
 #. localizers: opening parentheses of the "th copy)" string
-#: libnautilus-private/nautilus-file-operations.c:1356
+#: libnautilus-private/nautilus-file-operations.c:1358
 #, c-format
 msgid " (%d"
 msgstr " (%d"
 
-#: libnautilus-private/nautilus-file-operations.c:1541
-#: libnautilus-private/nautilus-file-operations.c:2123
-#: libnautilus-private/nautilus-file-operations.c:2284
+#: libnautilus-private/nautilus-file-operations.c:1543
+#: libnautilus-private/nautilus-file-operations.c:2125
+#: libnautilus-private/nautilus-file-operations.c:2286
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "모르는 GnomeVFSXferProgressStatus %d"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1868
+#: libnautilus-private/nautilus-file-operations.c:1870
 msgid "Moving files to the Trash"
 msgstr "파일을 휴지통으로 보내는 중"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1870
+#: libnautilus-private/nautilus-file-operations.c:1872
 msgid "Files thrown out:"
 msgstr "파일 버림:"
 
 #. localizers: label prepended to the name of the current file moved
-#: libnautilus-private/nautilus-file-operations.c:1872
-#: libnautilus-private/nautilus-file-operations.c:1883
+#: libnautilus-private/nautilus-file-operations.c:1874
+#: libnautilus-private/nautilus-file-operations.c:1885
 msgid "Moving"
 msgstr "옮길 중"
 
-#: libnautilus-private/nautilus-file-operations.c:1873
+#: libnautilus-private/nautilus-file-operations.c:1875
 msgid "Preparing to Move to Trash..."
-msgstr "휴지통으로 보낼 준비 중"
+msgstr "휴지통으로 버릴 준비 중"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1879
+#: libnautilus-private/nautilus-file-operations.c:1881
 msgid "Moving files"
 msgstr "파일 옮기는 중"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1881
+#: libnautilus-private/nautilus-file-operations.c:1883
 msgid "Files moved:"
 msgstr "파일 옮겨졌음:"
 
-#: libnautilus-private/nautilus-file-operations.c:1884
+#: libnautilus-private/nautilus-file-operations.c:1886
 msgid "Preparing To Move..."
 msgstr "옮길 준비중"
 
-#: libnautilus-private/nautilus-file-operations.c:1885
+#: libnautilus-private/nautilus-file-operations.c:1887
 msgid "Finishing Move..."
 msgstr "옮김 완료"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1893
+#: libnautilus-private/nautilus-file-operations.c:1895
 msgid "Creating links to files"
 msgstr "파일 연결 작성중"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1895
+#: libnautilus-private/nautilus-file-operations.c:1897
 msgid "Files linked:"
 msgstr "파일 연결됨:"
 
 #. localizers: label prepended to the name of the current file linked
-#: libnautilus-private/nautilus-file-operations.c:1897
+#: libnautilus-private/nautilus-file-operations.c:1899
 msgid "Linking"
 msgstr "연결하는 중"
 
-#: libnautilus-private/nautilus-file-operations.c:1898
+#: libnautilus-private/nautilus-file-operations.c:1900
 msgid "Preparing to Create Links..."
 msgstr "연결할 준비 중"
 
-#: libnautilus-private/nautilus-file-operations.c:1899
+#: libnautilus-private/nautilus-file-operations.c:1901
 msgid "Finishing Creating Links..."
 msgstr "연결을 만들 완료"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1905
+#: libnautilus-private/nautilus-file-operations.c:1907
 msgid "Copying files"
 msgstr "파일 복사중"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1907
+#: libnautilus-private/nautilus-file-operations.c:1909
 msgid "Files copied:"
 msgstr "파일 복사됨:"
 
 #. localizers: label prepended to the name of the current file copied
-#: libnautilus-private/nautilus-file-operations.c:1909
+#: libnautilus-private/nautilus-file-operations.c:1911
 msgid "Copying"
 msgstr "복사중"
 
-#: libnautilus-private/nautilus-file-operations.c:1910
+#: libnautilus-private/nautilus-file-operations.c:1912
 msgid "Preparing To Copy..."
 msgstr "복사 준비중"
 
-#: libnautilus-private/nautilus-file-operations.c:1927
-#, fuzzy
+#: libnautilus-private/nautilus-file-operations.c:1929
 msgid "You cannot copy items into the trash."
 msgstr "선택한 항목을 휴지통으로 복사할 수 없습니다."
 
-#: libnautilus-private/nautilus-file-operations.c:1928
+#: libnautilus-private/nautilus-file-operations.c:1930
 msgid "Files and folders can only be moved into the trash."
-msgstr ""
+msgstr "파일과 폴더만 휴지통으로 버릴 수 있습니다."
 
-#: libnautilus-private/nautilus-file-operations.c:1952
+#: libnautilus-private/nautilus-file-operations.c:1954
 msgid "You cannot move this trash folder."
 msgstr "이 휴지통 폴더를 옮길 수 없습니다."
 
-#: libnautilus-private/nautilus-file-operations.c:1953
+#: libnautilus-private/nautilus-file-operations.c:1955
 msgid "You cannot copy this trash folder."
 msgstr "이 휴지통 폴더를 복사할 수 없습니다."
 
-#: libnautilus-private/nautilus-file-operations.c:1954
-msgid "A trash folder is used for storing items moved to the trash."
-msgstr ""
-
 #: libnautilus-private/nautilus-file-operations.c:1956
+msgid "A trash folder is used for storing items moved to the trash."
+msgstr "휴지통 폴더는 휴지통으로 버리는 항목을 저장하는데 쓰입니다."
+
+#: libnautilus-private/nautilus-file-operations.c:1958
 msgid "Can't Change Trash Location"
 msgstr "휴지통의 위치를 바꿀 수 없습니다"
 
-#: libnautilus-private/nautilus-file-operations.c:1957
+#: libnautilus-private/nautilus-file-operations.c:1959
 msgid "Can't Copy Trash"
 msgstr "휴지통을 복사할 수 없습니다."
 
-#: libnautilus-private/nautilus-file-operations.c:1981
+#: libnautilus-private/nautilus-file-operations.c:1983
 msgid "You cannot move a folder into itself."
 msgstr "폴더를 그 자신에게 옮길수 없습니다."
 
-#: libnautilus-private/nautilus-file-operations.c:1982
+#: libnautilus-private/nautilus-file-operations.c:1984
 msgid "You cannot copy a folder into itself."
 msgstr "폴더를 그 자신에게 복사할 수 없습니다."
 
-#: libnautilus-private/nautilus-file-operations.c:1983
-#, fuzzy
-msgid "The destination folder is inside the source folder."
-msgstr "이 폴더안에 새로운 빈 폴더를 만듭니다"
-
 #: libnautilus-private/nautilus-file-operations.c:1985
+msgid "The destination folder is inside the source folder."
+msgstr "목표 폴더가 원본 폴더 안에 있습니다."
+
+#: libnautilus-private/nautilus-file-operations.c:1987
 msgid "Can't Move Into Self"
 msgstr "자신으로 옮길 수 없습니다"
 
-#: libnautilus-private/nautilus-file-operations.c:1986
+#: libnautilus-private/nautilus-file-operations.c:1988
 msgid "Can't Copy Into Self"
 msgstr "자신으로 복사할 수 없습니다"
 
-#: libnautilus-private/nautilus-file-operations.c:1999
+#: libnautilus-private/nautilus-file-operations.c:2001
 msgid "You cannot copy a file over itself."
 msgstr "파일을 그 자신에게 복사할 수 없습니다."
 
-#: libnautilus-private/nautilus-file-operations.c:2000
+#: libnautilus-private/nautilus-file-operations.c:2002
 msgid "The destination and source are the same file."
-msgstr ""
+msgstr "원본과 목표가 같은 파일입니다."
 
-#: libnautilus-private/nautilus-file-operations.c:2001
+#: libnautilus-private/nautilus-file-operations.c:2003
 msgid "Can't Copy Over Self"
 msgstr "자신으로 복사할 수 없습니다"
 
-#: libnautilus-private/nautilus-file-operations.c:2053
-#: libnautilus-private/nautilus-file-operations.c:2187
-#, fuzzy
-msgid "You do not have permissions to write to the destination."
-msgstr ""
-"새 폴더를 만드는중 오류.\n"
-"\n"
-"목표에 쓰기 허가권을 가지고 있지 않습니다."
-
 #: libnautilus-private/nautilus-file-operations.c:2055
 #: libnautilus-private/nautilus-file-operations.c:2189
-#, fuzzy
-msgid "There is no space on the destination."
-msgstr ""
-"새 폴더를 만드는중 오류.\n"
-"\n"
-"목표에 남은 공간이 없습니다."
+msgid "You do not have permissions to write to the destination."
+msgstr "목표에 쓰기 허가권을 가지고 있지 않습니다."
 
 #: libnautilus-private/nautilus-file-operations.c:2057
+#: libnautilus-private/nautilus-file-operations.c:2191
+msgid "There is no space on the destination."
+msgstr "목표에 남은 공간이 없습니다."
+
+#: libnautilus-private/nautilus-file-operations.c:2059
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "새 폴더를 만드는데 \"%s\" 오류."
 
-#: libnautilus-private/nautilus-file-operations.c:2062
-#, fuzzy
+#: libnautilus-private/nautilus-file-operations.c:2064
 msgid "Error creating new folder."
-msgstr "새 폴더를 만드는중 오류"
+msgstr "새 폴더를 만드는중 오류."
 
-#: libnautilus-private/nautilus-file-operations.c:2062
-#, fuzzy
+#: libnautilus-private/nautilus-file-operations.c:2064
 msgid "Error Creating New Folder"
-msgstr "새 폴더를 만드는중 오류"
+msgstr "새 폴더를 만드는중 오류."
 
 #. localizers: the initial name of a new folder
-#: libnautilus-private/nautilus-file-operations.c:2151
+#: libnautilus-private/nautilus-file-operations.c:2153
 msgid "untitled folder"
 msgstr "이름없는 폴더"
 
-#: libnautilus-private/nautilus-file-operations.c:2191
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-file-operations.c:2193
+#, c-format
 msgid "Error \"%s\" creating new document."
-msgstr "새 폴더를 만드는데 \"%s\" 오류."
+msgstr "새 문서를 만드는데 \"%s\" 오류."
 
-#: libnautilus-private/nautilus-file-operations.c:2196
-#, fuzzy
+#: libnautilus-private/nautilus-file-operations.c:2198
 msgid "Error creating new document."
-msgstr "새 폴더를 만드는중 오류"
+msgstr "새 문서를 만드는중 오류"
 
-#: libnautilus-private/nautilus-file-operations.c:2196
-#, fuzzy
+#: libnautilus-private/nautilus-file-operations.c:2198
 msgid "Error Creating New Document"
-msgstr "새 폴더를 만드는중 오류"
+msgstr "새 문서를 만드는중 오류"
 
-#: libnautilus-private/nautilus-file-operations.c:2342
-#, fuzzy
+#: libnautilus-private/nautilus-file-operations.c:2344
 msgid "new file"
-msgstr "1 파일"
+msgstr "새 파일"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2414
+#: libnautilus-private/nautilus-file-operations.c:2416
 msgid "Deleting files"
 msgstr "파일 지우는중"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:2416
-#: libnautilus-private/nautilus-file-operations.c:2451
+#: libnautilus-private/nautilus-file-operations.c:2418
+#: libnautilus-private/nautilus-file-operations.c:2453
 msgid "Files deleted:"
 msgstr "파일 지워짐:"
 
 #. localizers: label prepended to the name of the current file deleted
-#: libnautilus-private/nautilus-file-operations.c:2418
-#: libnautilus-private/nautilus-file-operations.c:2453
+#: libnautilus-private/nautilus-file-operations.c:2420
+#: libnautilus-private/nautilus-file-operations.c:2455
 msgid "Deleting"
 msgstr "지우는중"
 
-#: libnautilus-private/nautilus-file-operations.c:2419
+#: libnautilus-private/nautilus-file-operations.c:2421
 msgid "Preparing to Delete files..."
 msgstr "파일을 지울 준비중"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2449
+#: libnautilus-private/nautilus-file-operations.c:2451
 msgid "Emptying the Trash"
 msgstr "휴지통 비우는중"
 
-#: libnautilus-private/nautilus-file-operations.c:2454
+#: libnautilus-private/nautilus-file-operations.c:2456
 msgid "Preparing to Empty the Trash..."
 msgstr "휴지통 비우기 준비중"
 
-#: libnautilus-private/nautilus-file-operations.c:2517
+#: libnautilus-private/nautilus-file-operations.c:2519
 msgid "Are you sure you want to empty all of the items from the trash?"
 msgstr "휴지통에 있는 모든 항목을 완전히 지우시겠습니까?"
 
-#: libnautilus-private/nautilus-file-operations.c:2531
+#: libnautilus-private/nautilus-file-operations.c:2533
 msgid "If you empty the trash, items will be permanently deleted."
 msgstr "휴지통을 비우면 항목들이 완전히 지워지게 됩니다."
 
-#: libnautilus-private/nautilus-file-operations.c:2543
+#: libnautilus-private/nautilus-file-operations.c:2545
 msgid "_Empty"
 msgstr "비우기(_E)"
 
-#: libnautilus-private/nautilus-file-operations.c:2590
-msgid "foo"
-msgstr "foo"
+#: libnautilus-private/nautilus-file-utilities.c:364
+#: libnautilus-private/nautilus-global-preferences.c:549
+#: nautilus-computer.desktop.in.h:1 src/nautilus-navigation-window-ui.xml.h:9
+msgid "Computer"
+msgstr "컴퓨터"
 
-#: libnautilus-private/nautilus-file-operations.c:2590
-#: libnautilus-private/nautilus-file-operations.c:2600
-msgid "foo (copy)"
-msgstr "foo (사본)"
+#: libnautilus-private/nautilus-file-utilities.c:366
+msgid "Network"
+msgstr "네트워크"
 
-#: libnautilus-private/nautilus-file-operations.c:2591
-msgid ".bashrc"
-msgstr ".bashrc"
+#: libnautilus-private/nautilus-file-utilities.c:368
+msgid "Fonts"
+msgstr "글꼴"
 
-#: libnautilus-private/nautilus-file-operations.c:2591
-msgid ".bashrc (copy)"
-msgstr ".bashrc (사본)"
+#: libnautilus-private/nautilus-file-utilities.c:370
+msgid "Themes"
+msgstr "테마"
 
-#: libnautilus-private/nautilus-file-operations.c:2592
-msgid ".foo.txt"
-msgstr ".foo.txt"
+#: libnautilus-private/nautilus-file-utilities.c:372
+msgid "CD Creator"
+msgstr "CD 만들기"
 
-#: libnautilus-private/nautilus-file-operations.c:2592
-msgid ".foo (copy).txt"
-msgstr ".foo (사본).txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2593
-msgid "foo foo"
-msgstr "foo foo"
-
-#: libnautilus-private/nautilus-file-operations.c:2593
-msgid "foo foo (copy)"
-msgstr "foo foo (사본)"
-
-#: libnautilus-private/nautilus-file-operations.c:2594
-msgid "foo.txt"
-msgstr "foo.txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2594
-#: libnautilus-private/nautilus-file-operations.c:2601
-msgid "foo (copy).txt"
-msgstr "foo (사본).txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2595
-msgid "foo foo.txt"
-msgstr "foo foo.txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2595
-#: libnautilus-private/nautilus-file-operations.c:2617
-msgid "foo foo (copy).txt"
-msgstr "foo foo (사본).txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2596
-msgid "foo foo.txt txt"
-msgstr "foo foo.txt txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2596
-msgid "foo foo (copy).txt txt"
-msgstr "foo foo (사본).txt txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2597
-msgid "foo...txt"
-msgstr "foo...txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2597
-msgid "foo.. (copy).txt"
-msgstr "foo.. (사본).txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2598
-msgid "foo..."
-msgstr "foo..."
-
-#: libnautilus-private/nautilus-file-operations.c:2598
-msgid "foo... (copy)"
-msgstr "foo... (사본)"
-
-#: libnautilus-private/nautilus-file-operations.c:2599
-msgid "foo. (copy)"
-msgstr "foo. (사본)"
-
-#: libnautilus-private/nautilus-file-operations.c:2599
-msgid "foo. (another copy)"
-msgstr "foo. (또 다른 사본)"
-
-#: libnautilus-private/nautilus-file-operations.c:2600
-#: libnautilus-private/nautilus-file-operations.c:2602
-msgid "foo (another copy)"
-msgstr "foo (또 다른 사본)"
-
-#: libnautilus-private/nautilus-file-operations.c:2601
-#: libnautilus-private/nautilus-file-operations.c:2603
-msgid "foo (another copy).txt"
-msgstr "foo (또 다른 사본).txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2602
-msgid "foo (3rd copy)"
-msgstr "foo (3번째 사본)"
-
-#: libnautilus-private/nautilus-file-operations.c:2603
-msgid "foo (3rd copy).txt"
-msgstr "foo (3번째 사본).txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2604
-msgid "foo foo (another copy).txt"
-msgstr "foo foo (또 다른 사본).txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2604
-msgid "foo foo (3rd copy).txt"
-msgstr "foo foo (세번째 사본).txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2605
-#: libnautilus-private/nautilus-file-operations.c:2622
-msgid "foo (13th copy)"
-msgstr "foo (13번째 사본)"
-
-#: libnautilus-private/nautilus-file-operations.c:2605
-msgid "foo (14th copy)"
-msgstr "foo (14번째 사본)"
-
-#: libnautilus-private/nautilus-file-operations.c:2606
-#: libnautilus-private/nautilus-file-operations.c:2623
-msgid "foo (13th copy).txt"
-msgstr "foo (13번째 사본).txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2606
-msgid "foo (14th copy).txt"
-msgstr "foo (14번째 사본).txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2607
-msgid "foo (21st copy)"
-msgstr "foo (21번째 사본)"
-
-#: libnautilus-private/nautilus-file-operations.c:2607
-#: libnautilus-private/nautilus-file-operations.c:2609
-msgid "foo (22nd copy)"
-msgstr "foo (22번째 사본)"
-
-#: libnautilus-private/nautilus-file-operations.c:2608
-msgid "foo (21st copy).txt"
-msgstr "foo (21번째 사본).txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2608
-#: libnautilus-private/nautilus-file-operations.c:2610
-msgid "foo (22nd copy).txt"
-msgstr "foo (22번째 사본).txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2609
-#: libnautilus-private/nautilus-file-operations.c:2611
-msgid "foo (23rd copy)"
-msgstr "foo (23번째 사본)"
-
-#: libnautilus-private/nautilus-file-operations.c:2610
-#: libnautilus-private/nautilus-file-operations.c:2612
-msgid "foo (23rd copy).txt"
-msgstr "foo (23번째 사본).txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2611
-#: libnautilus-private/nautilus-file-operations.c:2613
-msgid "foo (24th copy)"
-msgstr "foo (24번째 사본)"
-
-#: libnautilus-private/nautilus-file-operations.c:2612
-#: libnautilus-private/nautilus-file-operations.c:2614
-msgid "foo (24th copy).txt"
-msgstr "foo (24번째 사본).txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2613
-msgid "foo (25th copy)"
-msgstr "foo (25번째 사본)"
-
-#: libnautilus-private/nautilus-file-operations.c:2614
-msgid "foo (25th copy).txt"
-msgstr "foo (25번째 사본).txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2615
-msgid "foo foo (24th copy)"
-msgstr "foo foo (24번째 사본)"
-
-#: libnautilus-private/nautilus-file-operations.c:2615
-msgid "foo foo (25th copy)"
-msgstr "foo foo (25번째 사본)"
-
-#: libnautilus-private/nautilus-file-operations.c:2616
-msgid "foo foo (24th copy).txt"
-msgstr "foo foo (24번째 사본).txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2616
-msgid "foo foo (25th copy).txt"
-msgstr "foo foo (25번째 사본).txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2617
-msgid "foo foo (100000000000000th copy).txt"
-msgstr "foo foo (100000000000000번째 사본).txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2618
-msgid "foo (10th copy)"
-msgstr "foo (10번째 사본)"
-
-#: libnautilus-private/nautilus-file-operations.c:2618
-#: libnautilus-private/nautilus-file-operations.c:2620
-msgid "foo (11th copy)"
-msgstr "foo (11번째 사본)"
-
-#: libnautilus-private/nautilus-file-operations.c:2619
-msgid "foo (10th copy).txt"
-msgstr "foo (10번째 사본).txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2619
-#: libnautilus-private/nautilus-file-operations.c:2621
-msgid "foo (11th copy).txt"
-msgstr "foo (11번째 사본).txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2620
-#: libnautilus-private/nautilus-file-operations.c:2622
-msgid "foo (12th copy)"
-msgstr "foo (12번째 사본)"
-
-#: libnautilus-private/nautilus-file-operations.c:2621
-#: libnautilus-private/nautilus-file-operations.c:2623
-msgid "foo (12th copy).txt"
-msgstr "foo (12번째 사본).txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2624
-msgid "foo (110th copy)"
-msgstr "foo (110번째 사본)"
-
-#: libnautilus-private/nautilus-file-operations.c:2624
-msgid "foo (111th copy)"
-msgstr "foo (111번째 사본)"
-
-#: libnautilus-private/nautilus-file-operations.c:2625
-msgid "foo (110th copy).txt"
-msgstr "foo (110번째 사본).txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2625
-msgid "foo (111th copy).txt"
-msgstr "foo (111번째 사본).txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2626
-msgid "foo (122nd copy)"
-msgstr "foo (122번째 사본)"
-
-#: libnautilus-private/nautilus-file-operations.c:2626
-#: libnautilus-private/nautilus-file-operations.c:2628
-msgid "foo (123rd copy)"
-msgstr "foo (123번째 사본)"
-
-#: libnautilus-private/nautilus-file-operations.c:2627
-msgid "foo (122nd copy).txt"
-msgstr "foo (122번째 사본).txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2627
-#: libnautilus-private/nautilus-file-operations.c:2629
-msgid "foo (123rd copy).txt"
-msgstr "foo (123번째 사본).txt"
-
-#: libnautilus-private/nautilus-file-operations.c:2628
-msgid "foo (124th copy)"
-msgstr "foo (124번째 사본)"
-
-#: libnautilus-private/nautilus-file-operations.c:2629
-msgid "foo (124th copy).txt"
-msgstr "foo (124번째 사본).txt"
+#: libnautilus-private/nautilus-file-utilities.c:374
+msgid "Windows Network"
+msgstr "Windows 네트워크"
 
 #. Today, use special word.
 #. * strftime patterns preceeded with the widest
@@ -2807,64 +2401,64 @@ msgstr "foo (124번째 사본).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2765
-msgid "today at 00:00:00 PM"
-msgstr "오늘 00:00:00 오후"
-
 #: libnautilus-private/nautilus-file.c:2766
-msgid "today at %-I:%M:%S %p"
-msgstr "오늘 %-I:%M:%S %p"
+msgid "today at 00:00:00 PM"
+msgstr "오늘 오후 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2768
-msgid "today at 00:00 PM"
-msgstr "오늘 00:00 오후"
+#: libnautilus-private/nautilus-file.c:2767
+msgid "today at %-I:%M:%S %p"
+msgstr "오늘 %p %-I:%M:%S"
 
 #: libnautilus-private/nautilus-file.c:2769
-msgid "today at %-I:%M %p"
-msgstr "오늘 %-I:%M %p"
+msgid "today at 00:00 PM"
+msgstr "오늘 오후 00:00"
 
-#: libnautilus-private/nautilus-file.c:2771
-msgid "today, 00:00 PM"
-msgstr "오늘, 00:00 오후"
+#: libnautilus-private/nautilus-file.c:2770
+msgid "today at %-I:%M %p"
+msgstr "오늘 %p %-I:%M"
 
 #: libnautilus-private/nautilus-file.c:2772
-msgid "today, %-I:%M %p"
-msgstr "오늘, %-I:%M %p"
+msgid "today, 00:00 PM"
+msgstr "오늘, 오후 00:00"
 
-#: libnautilus-private/nautilus-file.c:2774
+#: libnautilus-private/nautilus-file.c:2773
+msgid "today, %-I:%M %p"
+msgstr "오늘, 오후 %-I:%M"
+
 #: libnautilus-private/nautilus-file.c:2775
+#: libnautilus-private/nautilus-file.c:2776
 msgid "today"
 msgstr "오늘"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2784
-msgid "yesterday at 00:00:00 PM"
-msgstr "어제 00:00:00 오후"
-
 #: libnautilus-private/nautilus-file.c:2785
-msgid "yesterday at %-I:%M:%S %p"
-msgstr "어제 %-I:%M:%S %p"
+msgid "yesterday at 00:00:00 PM"
+msgstr "어제 오후 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2787
-msgid "yesterday at 00:00 PM"
-msgstr "어제 00:00 오후"
+#: libnautilus-private/nautilus-file.c:2786
+msgid "yesterday at %-I:%M:%S %p"
+msgstr "어제 %p %-I:%M:%S"
 
 #: libnautilus-private/nautilus-file.c:2788
-msgid "yesterday at %-I:%M %p"
-msgstr "어제 %-I:%M %p"
+msgid "yesterday at 00:00 PM"
+msgstr "어제 오후 00:00"
 
-#: libnautilus-private/nautilus-file.c:2790
-msgid "yesterday, 00:00 PM"
-msgstr "어제, 00:00 오후"
+#: libnautilus-private/nautilus-file.c:2789
+msgid "yesterday at %-I:%M %p"
+msgstr "어제 %p %-I:%M"
 
 #: libnautilus-private/nautilus-file.c:2791
-msgid "yesterday, %-I:%M %p"
-msgstr "어제, %-I:%M %p"
+msgid "yesterday, 00:00 PM"
+msgstr "어제, 오후 00:00"
 
-#: libnautilus-private/nautilus-file.c:2793
+#: libnautilus-private/nautilus-file.c:2792
+msgid "yesterday, %-I:%M %p"
+msgstr "어제, %p %-I:%M"
+
 #: libnautilus-private/nautilus-file.c:2794
+#: libnautilus-private/nautilus-file.c:2795
 msgid "yesterday"
 msgstr "어제"
 
@@ -2873,133 +2467,133 @@ msgstr "어제"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2805
-msgid "Wednesday, September 00 0000 at 00:00:00 PM"
-msgstr "0000 구월 00 수요일 오후 00:00:00"
-
 #: libnautilus-private/nautilus-file.c:2806
-msgid "%A, %B %-d %Y at %-I:%M:%S %p"
-msgstr "%Y %B %-d %A %p %-I:%M:%S"
+msgid "Wednesday, September 00 0000 at 00:00:00 PM"
+msgstr "0000년 9월 00일 수요일 오후 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2808
+#: libnautilus-private/nautilus-file.c:2807
+msgid "%A, %B %-d %Y at %-I:%M:%S %p"
+msgstr "%Y년 %b %-d일 %A %p %-I:%M:%S"
+
+#: libnautilus-private/nautilus-file.c:2809
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "0000 10 00 월 오후 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2809
+#: libnautilus-private/nautilus-file.c:2810
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
-msgstr "%Y %b %-d %a  %p %-I:%M:%S"
+msgstr "%Y %m %-d %a  %p %-I:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2811
+#: libnautilus-private/nautilus-file.c:2812
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "0000 10 00 월 오후 00:00"
 
-#: libnautilus-private/nautilus-file.c:2812
+#: libnautilus-private/nautilus-file.c:2813
 msgid "%a, %b %-d %Y at %-I:%M %p"
-msgstr "%Y %b %-d %a %p %-I:%M"
+msgstr "%Y %m %-d %a  %p %-I:%M"
 
-#: libnautilus-private/nautilus-file.c:2814
+#: libnautilus-private/nautilus-file.c:2815
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "0000 10 00 오후 00:00"
 
-#: libnautilus-private/nautilus-file.c:2815
+#: libnautilus-private/nautilus-file.c:2816
 msgid "%b %-d %Y at %-I:%M %p"
-msgstr "%Y %b %-d %p %-I:%M"
+msgstr "%Y %m %-d %p %-I:%M"
 
-#: libnautilus-private/nautilus-file.c:2817
+#: libnautilus-private/nautilus-file.c:2818
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "0000 10 00, 오후 00:00"
 
-#: libnautilus-private/nautilus-file.c:2818
+#: libnautilus-private/nautilus-file.c:2819
 msgid "%b %-d %Y, %-I:%M %p"
-msgstr "%Y %b %-d, %p %-I:%M"
+msgstr "%Y %m %-d, %p %-I:%M"
 
-#: libnautilus-private/nautilus-file.c:2820
+#: libnautilus-private/nautilus-file.c:2821
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 오후 00:00"
 
-#: libnautilus-private/nautilus-file.c:2821
+#: libnautilus-private/nautilus-file.c:2822
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%y/%m/%-d, %p %-I:%M"
 
-#: libnautilus-private/nautilus-file.c:2823
+#: libnautilus-private/nautilus-file.c:2824
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-private/nautilus-file.c:2824
+#: libnautilus-private/nautilus-file.c:2825
 msgid "%m/%d/%y"
 msgstr "%y/%m/%d"
 
-#: libnautilus-private/nautilus-file.c:4119
+#: libnautilus-private/nautilus-file.c:4120
 msgid "0 items"
 msgstr "0 항목"
 
-#: libnautilus-private/nautilus-file.c:4119
+#: libnautilus-private/nautilus-file.c:4120
 msgid "0 folders"
 msgstr "0 폴더"
 
-#: libnautilus-private/nautilus-file.c:4120
+#: libnautilus-private/nautilus-file.c:4121
 msgid "0 files"
 msgstr "0 파일"
 
-#: libnautilus-private/nautilus-file.c:4124
+#: libnautilus-private/nautilus-file.c:4125
 msgid "1 item"
 msgstr "1 항목"
 
-#: libnautilus-private/nautilus-file.c:4124
+#: libnautilus-private/nautilus-file.c:4125
 msgid "1 folder"
 msgstr "1 폴더"
 
-#: libnautilus-private/nautilus-file.c:4125
+#: libnautilus-private/nautilus-file.c:4126
 msgid "1 file"
 msgstr "1 파일"
 
-#: libnautilus-private/nautilus-file.c:4128
+#: libnautilus-private/nautilus-file.c:4129
 #, c-format
 msgid "%u items"
 msgstr "%u 항목"
 
-#: libnautilus-private/nautilus-file.c:4128
+#: libnautilus-private/nautilus-file.c:4129
 #, c-format
 msgid "%u folders"
 msgstr "%u 폴더"
 
-#: libnautilus-private/nautilus-file.c:4129
+#: libnautilus-private/nautilus-file.c:4130
 #, c-format
 msgid "%u files"
 msgstr "%u 파일"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4441
-#: libnautilus-private/nautilus-file.c:4457
+#: libnautilus-private/nautilus-file.c:4442
+#: libnautilus-private/nautilus-file.c:4458
 msgid "? items"
 msgstr "? 항목"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4447
+#: libnautilus-private/nautilus-file.c:4448
 msgid "? bytes"
 msgstr "? 바이트"
 
-#: libnautilus-private/nautilus-file.c:4462
+#: libnautilus-private/nautilus-file.c:4463
 msgid "unknown type"
 msgstr "알 수 없는 형식"
 
-#: libnautilus-private/nautilus-file.c:4465
+#: libnautilus-private/nautilus-file.c:4466
 msgid "unknown MIME type"
 msgstr "알 수 없는 MIME 형식"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4471
+#: libnautilus-private/nautilus-file.c:4472
 #: src/file-manager/fm-properties-window.c:1152
 msgid "unknown"
 msgstr "알 수 없음"
 
-#: libnautilus-private/nautilus-file.c:4503
+#: libnautilus-private/nautilus-file.c:4504
 msgid "program"
 msgstr "프로그램"
 
-#: libnautilus-private/nautilus-file.c:4515
+#: libnautilus-private/nautilus-file.c:4516
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -3008,7 +2602,7 @@ msgstr ""
 "\"x-directory/normal\"에 대한 설명도 찾을 수 없습니다. 이것은 gnome-vfs.keys "
 "파일이 잘못된 위치에 있거나 다른 이유로 찾을 수 없다는것을 의미합니다."
 
-#: libnautilus-private/nautilus-file.c:4519
+#: libnautilus-private/nautilus-file.c:4520
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -3017,11 +2611,11 @@ msgstr ""
 "mime 형식 \"%s\"(파일은 \"%s\")에 대한 설명을 찾을 수 없습니다, gnome-vfs 메"
 "일링 리스트로 알려주십시오."
 
-#: libnautilus-private/nautilus-file.c:4533
+#: libnautilus-private/nautilus-file.c:4534
 msgid "link"
 msgstr "연결"
 
-#: libnautilus-private/nautilus-file.c:4553
+#: libnautilus-private/nautilus-file.c:4554
 msgid "link (broken)"
 msgstr "연결 (깨어짐)"
 
@@ -3148,7 +2742,7 @@ msgid "Icon View"
 msgstr "아이콘 보기"
 
 #: libnautilus-private/nautilus-global-preferences.c:179
-#: src/file-manager/fm-list-view.c:866
+#: src/file-manager/fm-list-view.c:872
 #: src/nautilus-file-management-properties.glade.h:51
 msgid "List View"
 msgstr "목록 보기"
@@ -3290,12 +2884,6 @@ msgstr "없음"
 msgid "%s's Home"
 msgstr "%s의 폴더"
 
-#: libnautilus-private/nautilus-global-preferences.c:549
-#: nautilus-computer.desktop.in.h:1 src/nautilus-navigation-window-ui.xml.h:9
-#: src/nautilus-window.c:1176
-msgid "Computer"
-msgstr "컴퓨터"
-
 #: libnautilus-private/nautilus-icon-canvas-item.c:2758
 msgid "editable text"
 msgstr "고칠 수 있는 텍스트"
@@ -3336,100 +2924,92 @@ msgstr "놓기에 강조"
 msgid "whether we are highlighted for a D&D drop"
 msgstr "끌어서 놓기에 강조를 합니다"
 
-#: libnautilus-private/nautilus-icon-container.c:2071
+#: libnautilus-private/nautilus-icon-container.c:2073
 msgid "The selection rectangle"
 msgstr "선택한 영역"
 
-#: libnautilus-private/nautilus-icon-container.c:4165
+#: libnautilus-private/nautilus-icon-container.c:4171
 msgid "Frame Text"
 msgstr "글자 테두리"
 
-#: libnautilus-private/nautilus-icon-container.c:4166
+#: libnautilus-private/nautilus-icon-container.c:4172
 msgid "Draw a frame around unselected text"
 msgstr "선택되지 않은 글자 주위에 테두리를 칩니다"
 
-#: libnautilus-private/nautilus-icon-container.c:4172
+#: libnautilus-private/nautilus-icon-container.c:4178
 msgid "Selection Box Color"
 msgstr "선택 상자 색상"
 
-#: libnautilus-private/nautilus-icon-container.c:4173
+#: libnautilus-private/nautilus-icon-container.c:4179
 msgid "Color of the selection box"
 msgstr "선택 상자의 색상"
 
-#: libnautilus-private/nautilus-icon-container.c:4178
+#: libnautilus-private/nautilus-icon-container.c:4184
 msgid "Selection Box Alpha"
 msgstr "선택 상자 투명도"
 
-#: libnautilus-private/nautilus-icon-container.c:4179
+#: libnautilus-private/nautilus-icon-container.c:4185
 msgid "Opacity of the selection box"
 msgstr "선택 상자의 투명도"
 
-#: libnautilus-private/nautilus-icon-container.c:4186
+#: libnautilus-private/nautilus-icon-container.c:4192
 msgid "Highlight Alpha"
 msgstr "강조 투명도"
 
-#: libnautilus-private/nautilus-icon-container.c:4187
+#: libnautilus-private/nautilus-icon-container.c:4193
 msgid "Opacity of the highlight for selected icons"
 msgstr "선택한 아이콘의 강조 투명도"
 
-#: libnautilus-private/nautilus-icon-container.c:4193
+#: libnautilus-private/nautilus-icon-container.c:4199
 msgid "Light Info Color"
 msgstr "밝은 정보 글씨색"
 
-#: libnautilus-private/nautilus-icon-container.c:4194
+#: libnautilus-private/nautilus-icon-container.c:4200
 msgid "Color used for information text against a dark background"
 msgstr "어두운 바탕에 어울리는 정보 글씨색"
 
-#: libnautilus-private/nautilus-icon-container.c:4199
+#: libnautilus-private/nautilus-icon-container.c:4205
 msgid "Dark Info Color"
 msgstr "어두운 정보 글씨색"
 
-#: libnautilus-private/nautilus-icon-container.c:4200
+#: libnautilus-private/nautilus-icon-container.c:4206
 msgid "Color used for information text against a light background"
 msgstr "밝은 바탕에 어울리는 정보 글씨색"
 
 #: libnautilus-private/nautilus-icon-dnd.c:732
-#, fuzzy
 msgid ""
 "Do you want to switch to manual layout and leave this item where you dropped "
 "it? This will clobber the stored manual layout."
 msgstr ""
-"이 폴더는 자동 배치를 씁니다. 수동 배치로 바꾸고 옮긴 항목을 그대로 두고 싶습"
-"니까?  이것은 저장된 수동 배치에 영향을 끼칠것입니다."
+"수동 배치로 바꾸고 옮긴 항목을 그대로 두고 싶습니까?  이것은 저장된 수동 배치"
+"에 영향을 끼칠것입니다."
 
 #: libnautilus-private/nautilus-icon-dnd.c:734
 #: libnautilus-private/nautilus-icon-dnd.c:738
 #: libnautilus-private/nautilus-icon-dnd.c:743
 #: libnautilus-private/nautilus-icon-dnd.c:746
 msgid "This folder uses automatic layout."
-msgstr ""
+msgstr "이 폴더는 자동으로 배치됩니다."
 
 #: libnautilus-private/nautilus-icon-dnd.c:736
-#, fuzzy
 msgid ""
 "Do you want to switch to manual layout and leave these items where you "
 "dropped them? This will clobber the stored manual layout."
 msgstr ""
-"이 폴더는 자동 배치를 씁니다. 수동 배치로 바꾸고 옮긴 항목을 그대로 두고 싶습"
-"니까? 이것은 저장된 수동 배치에 영향을 끼칠것입니다."
+"수동 배치로 바꾸고 옮긴 항목을 그대로 두고 싶습니까? 이것은 저장된 수동 배치"
+"에 영향을 끼칠것입니다."
 
 #: libnautilus-private/nautilus-icon-dnd.c:742
-#, fuzzy
 msgid ""
 "Do you want to switch to manual layout and leave this item where you dropped "
 "it?"
-msgstr ""
-"이 폴더는 자동 배치를 씁니다. 수동 배치로 바꾸고 옮긴 항목을 그대로 두고 싶습"
-"니까? "
+msgstr "수동 배치로 바꾸고 옮긴 항목을 그대로 두고 싶습니까? "
 
 #: libnautilus-private/nautilus-icon-dnd.c:745
-#, fuzzy
 msgid ""
 "Do you want to switch to manual layout and leave these items where you "
 "dropped them?"
-msgstr ""
-"이 폴더는 자동 배치를 씁니다. 수동 배치로 바꾸고 옮긴 항목을 그대로 두고 싶습"
-"니까? "
+msgstr "수동 배치로 바꾸고 옮긴 항목을 그대로 두고 싶습니까? "
 
 #: libnautilus-private/nautilus-icon-dnd.c:751
 msgid "Switch to Manual Layout?"
@@ -3666,20 +3246,16 @@ msgstr "연결된 액션이 없습니다"
 #. * (They can add applications though.)
 #.
 #: libnautilus-private/nautilus-program-chooser.c:1605
-#, fuzzy
 msgid ""
 "You can configure GNOME to associate applications with file types. Do you "
 "want to associate an application with this file type now?"
 msgstr ""
-"%s\n"
-"\n"
 "그놈에서 파일 형식과 응용 프로그램이 연결되도록 설정할 수 있습니다. 지금 이 "
 "파일 형식에 응용 프로그램을 연결하시겠습니까?"
 
 #: libnautilus-private/nautilus-program-chooser.c:1610
-#, fuzzy
 msgid "_Associate Application"
-msgstr "응용프로그램 연결"
+msgstr "응용프로그램 연결(_A)"
 
 #: libnautilus-private/nautilus-program-chooser.c:1639
 #, c-format
@@ -3709,50 +3285,43 @@ msgid "Invalid Action Associated"
 msgstr "연결된 액션이 잘못되었습니다"
 
 #: libnautilus-private/nautilus-program-chooser.c:1649
-#, fuzzy
 msgid ""
 "You can configure GNOME to associate a different application or viewer with "
 "this file type. Do you want to associate an application or viewer with this "
 "file type now?"
 msgstr ""
-"%s\n"
-"\n"
 "그놈 데스크탑에서 이 파일 형식과 응용 프로그램이나 뷰어를 연결하도록 설정할 "
 "수 있습니다. 지금 이 파일 형식에 응용 프로그램이나 뷰어를 연결하시겠습니까?"
 
 #: libnautilus-private/nautilus-program-chooser.c:1654
-#, fuzzy
 msgid "_Associate Action"
-msgstr "액션 연결"
+msgstr "액션 연결(_A)"
 
 #: libnautilus-private/nautilus-program-choosing.c:505
-#, fuzzy
 msgid "Open Failed, would you like to choose another application?"
-msgstr ""
-"\"%s\"이(가) \"%s\"을(를) 열 수 없습니다. \"%s\"이(가) \"%s\"위치에 있는 파일"
-"을 접근할 수 없습니다. 다른 응용프로그램을 선택하시겠습니까?"
+msgstr "열기가 실패하였습니다. 다른 응용프로그램을 선택하시겠습니까?"
 
 #: libnautilus-private/nautilus-program-choosing.c:506
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
 "locations."
 msgstr ""
 "\"%s\"이(가) \"%s\"을(를) 열 수 없습니다. \"%s\"이(가) \"%s\"위치에 있는 파일"
-"을 접근할 수 없습니다. 다른 응용프로그램을 선택하시겠습니까?"
+"을 접근할 수 없습니다."
 
 #: libnautilus-private/nautilus-program-choosing.c:511
 msgid "Open Failed, would you like to choose another action?"
-msgstr ""
+msgstr "열기가 실패하였습니다. 다른 액션을 선택하시겠습니까?"
 
 #: libnautilus-private/nautilus-program-choosing.c:512
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
 "locations."
 msgstr ""
 "기본 액션에서 \"%s\"을(를) 열 수 없습니다. \"%s\"위치에 있는 파일을 접근할 "
-"수 없습니다. 다른 액션을 선택하시겠습니까?"
+"수 없습니다."
 
 #: libnautilus-private/nautilus-program-choosing.c:519
 #: libnautilus-private/nautilus-program-choosing.c:552
@@ -3760,42 +3329,38 @@ msgid "Can't Open Location"
 msgstr "위치를 열 수 없습니다"
 
 #: libnautilus-private/nautilus-program-choosing.c:538
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\"."
 "locations."
 msgstr ""
 "\"%s\"이(가) \"%s\"을(를) 열 수 없습니다. \"%s\"이(가) \"%s\"위치에 있는 파일"
-"을 접근할 수 없습니다. 다른 응용프로그램을 선택하시겠습니까?"
+"을 접근할 수 없습니다."
 
 #: libnautilus-private/nautilus-program-choosing.c:541
-#, fuzzy
 msgid ""
 "No other applications are available to view this file.  If you copy this "
 "file onto your computer, you may be able to open it."
 msgstr ""
-"\"%s\"이(가) \"%s\"을(를) 열 수 없습니다. \"%s\"이(가) \"%s\"위치에 있는 파일"
-"을 접근할 수 없습니다. 이 파일을 볼 수 있는 다른 응용프로그램이 없습니다. 여"
-"러분의 컴퓨터로 파일을 복사하면, 열 수 있을 수도 있습니다."
+"이 파일을 볼 수 있는 다른 응용프로그램이 없습니다. 여러분의 컴퓨터로 파일을 "
+"복사하면, 열 수도 있습니다."
 
 #: libnautilus-private/nautilus-program-choosing.c:545
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\"."
 "locations."
 msgstr ""
 "기본 액션에서 \"%s\"을(를) 열 수 없습니다. \"%s\"위치에 있는 파일을 접근할 "
-"수 없습니다. 다른 액션을 선택하시겠습니까?"
+"수 없습니다."
 
 #: libnautilus-private/nautilus-program-choosing.c:547
-#, fuzzy
 msgid ""
 "No other actions are available to view this file.  If you copy this file "
 "onto your computer, you may be able to open it."
 msgstr ""
-"\"%s\"이(가) \"%s\"을(를) 열 수 없습니다. \"%s\"이(가) \"%s\"위치에 있는 파일"
-"을 접근할 수 없습니다. 이 파일을 볼 수 있는 다른 응용프로그램이 없습니다. 여"
-"러분의 컴퓨터로 파일을 복사하면, 열 수 있을 수도 있습니다."
+"이 파일을 볼 수 있는 다른 액션 이없습니다. 여러분의 컴퓨터로 파일을 복사하"
+"면, 열 수도 있습니다."
 
 #: libnautilus-private/nautilus-program-choosing.c:806
 #: libnautilus-private/nautilus-program-choosing.c:1023
@@ -3804,68 +3369,52 @@ msgid "Opening %s"
 msgstr "\"%s\"을(를) 여는 중"
 
 #: libnautilus-private/nautilus-program-choosing.c:1167
-#, fuzzy
 msgid "Sorry, but you can't execute commands from a remote site."
 msgstr "보안문제 때문에 원격사이트에서 명령을 실행할 수 없습니다"
 
 #: libnautilus-private/nautilus-program-choosing.c:1169
 msgid "This is disabled due to security considerations."
-msgstr ""
+msgstr "보안 문제때문에 불가능합니다."
 
 #: libnautilus-private/nautilus-program-choosing.c:1170
-#, fuzzy
 msgid "Can't Execute Remote Links"
-msgstr "원격 파일 %s 실행할 수 없음"
+msgstr "원격 따라가기를 실행할 수 없음"
 
 #: libnautilus-private/nautilus-program-choosing.c:1180
 #: libnautilus-private/nautilus-program-choosing.c:1246
 msgid "Details: "
-msgstr ""
+msgstr "자세히: "
 
 #: libnautilus-private/nautilus-program-choosing.c:1182
 #: libnautilus-private/nautilus-program-choosing.c:1248
-#, fuzzy
 msgid "There was an error launching the application."
-msgstr ""
-"응용 프로그램을 시작하는 데 오류가 발생했습니다.\n"
-"\n"
-"자세히: "
+msgstr "응용 프로그램을 시작하는 데 오류가 발생했습니다."
 
 #: libnautilus-private/nautilus-program-choosing.c:1184
 #: libnautilus-private/nautilus-program-choosing.c:1250
-#, fuzzy
 msgid "Error Launching Application"
 msgstr "응용 프로그램 시작 오류"
 
 #: libnautilus-private/nautilus-program-choosing.c:1212
 #: libnautilus-private/nautilus-program-choosing.c:1224
-#, fuzzy
 msgid "This drop target only supports local files."
 msgstr "끌어서 놓기는 로컬 파일시스템에서만 지원됩니다."
 
 #: libnautilus-private/nautilus-program-choosing.c:1213
-#, fuzzy
 msgid ""
 "To open non-local files copy them to a local folder and then drop them again."
-msgstr ""
-"끌어서 놓기는 로컬 파일시스템에서만 지원됩니다.\n"
-"\n"
-"로컬 파일이 아닌 파일은 로컬 폴더에 복사한 후 다시 끌어다 놓습니다."
+msgstr "로컬 파일이 아닌 파일은 로컬 폴더에 복사한 후 다시 끌어다 놓으십시오."
 
 #: libnautilus-private/nautilus-program-choosing.c:1215
 #: libnautilus-private/nautilus-program-choosing.c:1227
-#, fuzzy
 msgid "Drop Target Only Supports Local Files"
-msgstr "끌어서 놓기는 로컬 파일시스템에서만 지원됩니다."
+msgstr "끌어서 놓기는 로컬 파일시스템에서만 지원"
 
 #: libnautilus-private/nautilus-program-choosing.c:1225
-#, fuzzy
 msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
 msgstr ""
-"끌어서 놓기는 로컬 파일시스템에서만 지원됩니다.\n"
-"\n"
 "로컬 파일이 아닌 파일은 로컬 폴더에 복사한 후 다시 끌어다 놓습니다. 끌어다 놓"
 "은 로컬 파일은 이미 열려져 있습니다."
 
@@ -4192,6 +3741,10 @@ msgstr "파일 관리하는 방법을 바꿉니다"
 msgid "File Management"
 msgstr "파일 관리"
 
+#: nautilus-home.desktop.in.h:1 src/file-manager/fm-tree-view.c:1084
+msgid "Home Folder"
+msgstr "내 폴더"
+
 #: nautilus-home.desktop.in.h:2
 msgid "View your home folder in the Nautilus file manager"
 msgstr "노틸러스 파일 관리자로 내 폴더 보기"
@@ -4225,79 +3778,91 @@ msgid "List Viewer"
 msgstr "목록 보기 프로그램"
 
 #: src/Nautilus_shell.server.in.h:6
+msgid "Nautilus Tree View"
+msgstr "노틸러스 폴더 보기"
+
+#: src/Nautilus_shell.server.in.h:7
+msgid "Nautilus Tree side pane"
+msgstr "노틸러스 폴더 보기 가장자리 창"
+
+#: src/Nautilus_shell.server.in.h:8
 msgid "Nautilus factory"
 msgstr "노틸러스 팩토리"
 
-#: src/Nautilus_shell.server.in.h:7
+#: src/Nautilus_shell.server.in.h:9
 msgid "Nautilus file manager component that shows a scrollable list"
 msgstr "스크롤 할 수 있는 목록으로 보여주는 노틸러스 파일관리자 구성요소"
 
-#: src/Nautilus_shell.server.in.h:8
+#: src/Nautilus_shell.server.in.h:10
 msgid ""
 "Nautilus file manager component that shows a scrollable list for search "
 "results"
 msgstr ""
 "찾기 결과를 스크롤할 수 있는 목록으로 보여주는 노틸러스 파일관리자 구성요소"
 
-#: src/Nautilus_shell.server.in.h:9
+#: src/Nautilus_shell.server.in.h:11
 msgid "Nautilus file manager component that shows a two-dimensional icon space"
 msgstr "이차원의 아이콘 공간으로 보여주는 노틸러스 파일관리자 구성요소"
 
-#: src/Nautilus_shell.server.in.h:10
+#: src/Nautilus_shell.server.in.h:12
 msgid "Nautilus file manager component that shows icons on the desktop"
 msgstr "바탕화면에 아이콘을 보여주는 노틸러스 파일관리자 구성요소"
 
-#: src/Nautilus_shell.server.in.h:11
+#: src/Nautilus_shell.server.in.h:13
 msgid "Nautilus file manager desktop icon view"
 msgstr "노틸러스 파일관리자 바탕화면 아이콘 보기"
 
-#: src/Nautilus_shell.server.in.h:12
+#: src/Nautilus_shell.server.in.h:14
 msgid "Nautilus file manager icon view"
 msgstr "노틸러스 파일관리자 아이콘 보기"
 
-#: src/Nautilus_shell.server.in.h:13
+#: src/Nautilus_shell.server.in.h:15
 msgid "Nautilus file manager list view"
 msgstr "노틸러스 파일관리자 목록 보기"
 
-#: src/Nautilus_shell.server.in.h:14
+#: src/Nautilus_shell.server.in.h:16
 msgid "Nautilus file manager search results list view"
 msgstr "노틸러스 파일관리자 찾기 결과 목록 보기"
 
-#: src/Nautilus_shell.server.in.h:15
+#: src/Nautilus_shell.server.in.h:17
 msgid "Nautilus metafile factory"
 msgstr "노틸러스 메타파일 팩토리"
 
-#: src/Nautilus_shell.server.in.h:16
+#: src/Nautilus_shell.server.in.h:18
 msgid "Nautilus shell"
 msgstr "노틸러스 쉘"
 
-#: src/Nautilus_shell.server.in.h:17
+#: src/Nautilus_shell.server.in.h:19
 msgid ""
 "Nautilus shell operations that can be done from subsequent command-line "
 "invocations"
 msgstr "명령행 실행으로 일어나는 노틸러스 쉘 동작"
 
-#: src/Nautilus_shell.server.in.h:18
+#: src/Nautilus_shell.server.in.h:20
 msgid "Produces metafile objects for accessing Nautilus metadata"
 msgstr "노틸러스 메타데이터에 접근할 메타파일 개체를 만듭니다"
 
-#: src/Nautilus_shell.server.in.h:19
+#: src/Nautilus_shell.server.in.h:21
 msgid "Search List"
 msgstr "찾기 목록"
 
-#: src/Nautilus_shell.server.in.h:20
+#: src/Nautilus_shell.server.in.h:22
+msgid "Tree"
+msgstr "폴더"
+
+#: src/Nautilus_shell.server.in.h:23
 msgid "View as Icons"
 msgstr "아이콘으로 보기"
 
-#: src/Nautilus_shell.server.in.h:21
+#: src/Nautilus_shell.server.in.h:24
 msgid "View as List"
 msgstr "목록으로 보기"
 
-#: src/Nautilus_shell.server.in.h:22
+#: src/Nautilus_shell.server.in.h:25
 msgid "View as _Icons"
 msgstr "아이콘으로 보기(_I)"
 
-#: src/Nautilus_shell.server.in.h:23
+#: src/Nautilus_shell.server.in.h:26
 msgid "View as _List"
 msgstr "목록으로 보기(_L)"
 
@@ -4310,107 +3875,116 @@ msgstr "바탕"
 msgid "Empty Trash"
 msgstr "휴지통 비우기"
 
-#: src/file-manager/fm-directory-view.c:541
+#: src/file-manager/fm-directory-view.c:545
 #, c-format
 msgid "Open %d Windows?"
 msgstr "%d개의 창을 열기"
 
-#: src/file-manager/fm-directory-view.c:542
-#, fuzzy
+#: src/file-manager/fm-directory-view.c:546
 msgid "Are you sure you want to open all files?"
-msgstr "정말로 \"%s\"을(를) 완전히 지우시겠습니까?"
+msgstr "정말로 모든 파일을 열겠습니까?"
 
-#: src/file-manager/fm-directory-view.c:543 src/nautilus-location-bar.c:157
-#, fuzzy, c-format
+#: src/file-manager/fm-directory-view.c:547 src/nautilus-location-bar.c:156
+#, c-format
 msgid "This will open %d separate windows."
-msgstr "이것은 %d개의 나뉘어진 창에서 열릴것입니다. 정말로 이것을 열겠습니까?"
+msgstr "이것은 %d개의 나뉘어진 창에서 열릴 것입니다."
 
-#: src/file-manager/fm-directory-view.c:898
+#: src/file-manager/fm-directory-view.c:902
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "정말로 \"%s\"을(를) 완전히 지우시겠습니까?"
 
-#: src/file-manager/fm-directory-view.c:902
+#: src/file-manager/fm-directory-view.c:906
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected items?"
 msgstr "정말로 선택한 %d 항목을 완전히 지우시겠습니까?"
 
-#: src/file-manager/fm-directory-view.c:908
-#, fuzzy
+#: src/file-manager/fm-directory-view.c:912
 msgid "If you delete an item, it is permanently lost."
-msgstr "휴지통을 비우면 항목들이 완전히 지워지게 됩니다."
+msgstr "항목을 지우면 되살릴수 없습니다."
 
-#: src/file-manager/fm-directory-view.c:909
+#: src/file-manager/fm-directory-view.c:913
 msgid "Delete?"
 msgstr "지울까요?"
 
-#: src/file-manager/fm-directory-view.c:1048
+#: src/file-manager/fm-directory-view.c:1052
 msgid "Select Pattern"
 msgstr "파일이름 형태 선택"
 
-#: src/file-manager/fm-directory-view.c:1064
+#: src/file-manager/fm-directory-view.c:1068
 msgid "_Pattern:"
 msgstr "파일이름 형태(_P):"
 
-#: src/file-manager/fm-directory-view.c:1746
+#: src/file-manager/fm-directory-view.c:1751
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" 선택됨"
 
-#: src/file-manager/fm-directory-view.c:1748
+#: src/file-manager/fm-directory-view.c:1753
 msgid "1 folder selected"
 msgstr "1 폴더 선택됨"
 
-#: src/file-manager/fm-directory-view.c:1751
+#: src/file-manager/fm-directory-view.c:1756
 #, c-format
 msgid "%d folders selected"
 msgstr "%d 폴더 선택됨"
 
-#: src/file-manager/fm-directory-view.c:1758
+#: src/file-manager/fm-directory-view.c:1763
 msgid " (containing 0 items)"
 msgstr " (0 항목 포함)"
 
-#: src/file-manager/fm-directory-view.c:1760
+#: src/file-manager/fm-directory-view.c:1765
 msgid " (containing 1 item)"
 msgstr " (1 항목 포함)"
 
-#: src/file-manager/fm-directory-view.c:1762
+#: src/file-manager/fm-directory-view.c:1767
 #, c-format
 msgid " (containing %d items)"
 msgstr " (%d 항목 포함)"
 
-#: src/file-manager/fm-directory-view.c:1769
+#: src/file-manager/fm-directory-view.c:1774
 msgid " (containing a total of 0 items)"
 msgstr " (모두 0 항목 포함)"
 
-#: src/file-manager/fm-directory-view.c:1771
+#: src/file-manager/fm-directory-view.c:1776
 msgid " (containing a total of 1 item)"
 msgstr " (모두 1 항목 포함)"
 
-#: src/file-manager/fm-directory-view.c:1773
+#: src/file-manager/fm-directory-view.c:1778
 #, c-format
 msgid " (containing a total of %d items)"
 msgstr " (모두 %d 항목 포함)"
 
-#: src/file-manager/fm-directory-view.c:1786
+#: src/file-manager/fm-directory-view.c:1791
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" 선택됨 (%s)"
 
-#: src/file-manager/fm-directory-view.c:1790
+#: src/file-manager/fm-directory-view.c:1795
 #, c-format
 msgid "%d items selected (%s)"
 msgstr "%d 항목 선택됨 (%s)"
 
-#: src/file-manager/fm-directory-view.c:1797
+#: src/file-manager/fm-directory-view.c:1802
 #, c-format
 msgid "1 other item selected (%s)"
 msgstr "1 다른 항목 선택됨 (%s)"
 
-#: src/file-manager/fm-directory-view.c:1800
+#: src/file-manager/fm-directory-view.c:1805
 #, c-format
 msgid "%d other items selected (%s)"
 msgstr "%d 다른 항목 선택됨 (%s)"
+
+#: src/file-manager/fm-directory-view.c:1821
+#, c-format
+msgid "%u item"
+msgid_plural "%u items"
+msgstr[0] "%u 항목"
+
+#: src/file-manager/fm-directory-view.c:1825
+#, c-format
+msgid "%s, Free space: %s"
+msgstr "%s, 사용 가능한 공간: %s"
 
 #. This is marked for translation in case a localizer
 #. * needs to change ", " to something else. The comma
@@ -4419,7 +3993,7 @@ msgstr "%d 다른 항목 선택됨 (%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1829
+#: src/file-manager/fm-directory-view.c:1850
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -4428,131 +4002,123 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1954
-#, fuzzy, c-format
+#: src/file-manager/fm-directory-view.c:1975
+#, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr ""
-"폴더 \"%s\"은(는) 노틸러스가 처리할 수 있는것보다 더많은 파일을 포함하고 있습"
-"니다. 몇 파일들이 보여주지 않을수 있습니다."
+"\"%s\" 폴더는 노틸러스가 처리할 수 있는것보다 더 많은 파일을 포함하고 있습니"
+"다."
 
-#: src/file-manager/fm-directory-view.c:1960
+#: src/file-manager/fm-directory-view.c:1981
 msgid "Some files will not be displayed."
-msgstr ""
+msgstr "몇 파일들이 보여주지 않을수 있습니다."
 
-#: src/file-manager/fm-directory-view.c:1961
+#: src/file-manager/fm-directory-view.c:1982
 msgid "Too Many Files"
 msgstr "파일이 너무 많음"
 
-#: src/file-manager/fm-directory-view.c:3212
-#, fuzzy
+#: src/file-manager/fm-directory-view.c:3250
 msgid "Cannot move file to trash, do you want to delete immediately?"
-msgstr "\"%s\"은(는) 휴지통으로 보낼 수 없습니다. 지금 바로 지워버릴까요?"
+msgstr "파일을 휴지통으로 버릴 수 없습니다. 지금 바로 지워버릴까요?"
 
-#: src/file-manager/fm-directory-view.c:3213
+#: src/file-manager/fm-directory-view.c:3251
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
-msgstr ""
+msgstr "\"%s\" 파일을 휴지통으로 버릴 수 없습니다."
 
-#: src/file-manager/fm-directory-view.c:3217
-#, fuzzy
+#: src/file-manager/fm-directory-view.c:3255
 msgid "Cannot move items to trash, do you want to delete them immediately?"
-msgstr "\"%s\"은(는) 휴지통으로 보낼 수 없습니다. 지금 바로 지워버릴까요?"
+msgstr "항목을 휴지통으로 버릴 수 없습니다. 지금 바로 지워버릴까요?"
 
-#: src/file-manager/fm-directory-view.c:3220
-#, fuzzy
+#: src/file-manager/fm-directory-view.c:3258
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
-msgstr "\"%s\"은(는) 휴지통으로 보낼 수 없습니다. 지금 바로 지워버릴까요?"
+msgstr "몇몇 항목을 휴지통으로 버릴 수 없습니다. 지금 바로 지워버릴까요?"
 
-#: src/file-manager/fm-directory-view.c:3227
+#: src/file-manager/fm-directory-view.c:3265
 msgid "Delete Immediately?"
 msgstr "바로 지워버릴까요?"
 
-#: src/file-manager/fm-directory-view.c:3259
-#, fuzzy, c-format
+#: src/file-manager/fm-directory-view.c:3297
+#, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "휴지통에서 \"%s\"을(를) 완전히 지우시겠습니까?"
 
-#: src/file-manager/fm-directory-view.c:3263
-#, fuzzy, c-format
+#: src/file-manager/fm-directory-view.c:3301
+#, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
 msgstr "휴지통에서 %d의 선택한 항목을 완전히 지우시겠습니까?"
 
-#: src/file-manager/fm-directory-view.c:3268
-#, fuzzy
+#: src/file-manager/fm-directory-view.c:3306
 msgid "If you delete an item, it will be permanently lost."
 msgstr "휴지통을 비우면 항목들이 완전히 지워지게 됩니다."
 
-#: src/file-manager/fm-directory-view.c:3269
+#: src/file-manager/fm-directory-view.c:3307
 msgid "Delete From Trash?"
 msgstr "휴지통에서 지우겠습니까?"
 
-#: src/file-manager/fm-directory-view.c:3644
-#: src/file-manager/fm-directory-view.c:3686
+#: src/file-manager/fm-directory-view.c:3682
+#: src/file-manager/fm-directory-view.c:3724
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "선택한 항목을 열기 위해 \"%s\"을(를) 씁니다"
 
-#: src/file-manager/fm-directory-view.c:3762
+#: src/file-manager/fm-directory-view.c:3800
 #: src/file-manager/nautilus-directory-view-ui.xml.h:31
 msgid "Other _Application..."
 msgstr "다른 프로그램(_A)..."
 
-#: src/file-manager/fm-directory-view.c:3762
+#: src/file-manager/fm-directory-view.c:3800
 msgid "An _Application..."
 msgstr "응용프로그램(_A)..."
 
-#: src/file-manager/fm-directory-view.c:3784
+#: src/file-manager/fm-directory-view.c:3822
 #: src/file-manager/nautilus-directory-view-ui.xml.h:32
 msgid "Other _Viewer..."
 msgstr "다른 보기 프로그램(_V)..."
 
-#: src/file-manager/fm-directory-view.c:3784
+#: src/file-manager/fm-directory-view.c:3822
 msgid "A _Viewer..."
 msgstr "보기 프로그램(_V)..."
 
-#: src/file-manager/fm-directory-view.c:3877
+#: src/file-manager/fm-directory-view.c:3915
 #, c-format
 msgid "Could not complete specified action:  %s"
 msgstr "지정된 행동을 완료하지 못함: %s"
 
-#: src/file-manager/fm-directory-view.c:3901
+#: src/file-manager/fm-directory-view.c:3939
 msgid "Could not complete specified action."
 msgstr "지정된 행동을 완료하지 못함."
 
-#: src/file-manager/fm-directory-view.c:4410
+#: src/file-manager/fm-directory-view.c:4448
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "선택한 항목에 대해 \"%s\" 실행"
 
-#: src/file-manager/fm-directory-view.c:4644
+#: src/file-manager/fm-directory-view.c:4682
 #, c-format
 msgid "Create Document from template \"%s\""
-msgstr ""
+msgstr "\"%s\" 형식의 문서본을 이용하여 문서를 만듭니다."
 
-#: src/file-manager/fm-directory-view.c:4828
-#, fuzzy
+#: src/file-manager/fm-directory-view.c:4866
 msgid "All executable files in this folder will appear in the Scripts menu."
-msgstr ""
-"이 폴더의 모든 실행 파일은 혼잣말 메뉴에 나타날 것입니다. 메뉴에서 혼잣말을 "
-"선택하면 선택한 어떤 항목을 입력으로 하여 혼잣말을 실행할것 입니다."
+msgstr "이 폴더의 모든 실행 파일은 혼잣말 메뉴에 나타날 것입니다."
 
-#: src/file-manager/fm-directory-view.c:4830
-#, fuzzy
+#: src/file-manager/fm-directory-view.c:4868
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 msgstr ""
-"이 폴더의 모든 실행 파일은 혼잣말 메뉴에 나타날 것입니다. 메뉴에서 혼잣말을 "
-"선택하면 선택한 어떤 항목을 입력으로 하여 혼잣말을 실행할것 입니다."
+" 메뉴에서 혼잣말을 선택하면 선택한 어떤 항목을 입력으로 하여 혼잣말을 실행할 "
+"것입니다."
 
-#: src/file-manager/fm-directory-view.c:4832
+#: src/file-manager/fm-directory-view.c:4870
 msgid "About Scripts"
 msgstr "혼잣말은"
 
-#: src/file-manager/fm-directory-view.c:4833
+#: src/file-manager/fm-directory-view.c:4871
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4592,186 +4158,183 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: 현재 창의 위치와 크기"
 
-#: src/file-manager/fm-directory-view.c:4963
+#: src/file-manager/fm-directory-view.c:5001
+#: src/file-manager/fm-tree-view.c:786
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "\"%s\"은(는) 파일 붙이기 명령 선택할 때 옮길 것입니다."
 
-#: src/file-manager/fm-directory-view.c:4967
+#: src/file-manager/fm-directory-view.c:5005
+#: src/file-manager/fm-tree-view.c:790
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\"은(는) 파일 붙이기 명령 선택할 때 복사될 것입니다."
 
-#: src/file-manager/fm-directory-view.c:4974
+#: src/file-manager/fm-directory-view.c:5012
 #, c-format
 msgid ""
 "The %d selected items will be moved if you select the Paste Files command"
 msgstr "%d개의 선택된 항목이 파일 붙이기 명령 선택시 옮길 것입니다."
 
-#: src/file-manager/fm-directory-view.c:4978
+#: src/file-manager/fm-directory-view.c:5016
 #, c-format
 msgid ""
 "The %d selected items will be copied if you select the Paste Files command"
 msgstr "%d개의 선택된 항목이 파일 붙이기 명령 선택시 복사될 것입니다."
 
-#: src/file-manager/fm-directory-view.c:5057
+#: src/file-manager/fm-directory-view.c:5095
+#: src/file-manager/fm-tree-view.c:866
 msgid "There is nothing on the clipboard to paste."
 msgstr "클립보드에서 붙일 것이 없습니다."
 
-#: src/file-manager/fm-directory-view.c:5159
-#: src/file-manager/fm-directory-view.c:6063
+#: src/file-manager/fm-directory-view.c:5197
+#: src/file-manager/fm-directory-view.c:6142
 msgid "Mount Error"
 msgstr "마운트 오류"
 
-#: src/file-manager/fm-directory-view.c:5221
+#: src/file-manager/fm-directory-view.c:5259
 msgid "Unmount Error"
 msgstr "언마운트 오류"
 
-#: src/file-manager/fm-directory-view.c:5224
+#: src/file-manager/fm-directory-view.c:5262
 msgid "Eject Error"
 msgstr "꺼내기 오류"
 
-#: src/file-manager/fm-directory-view.c:5449
+#: src/file-manager/fm-directory-view.c:5487
 msgid "E_ject"
 msgstr "꺼내기(_J)"
 
-#: src/file-manager/fm-directory-view.c:5449
+#: src/file-manager/fm-directory-view.c:5487
 #: src/file-manager/nautilus-directory-view-ui.xml.h:64
 msgid "_Unmount Volume"
 msgstr "볼륨 마운트해제(_U)"
 
-#: src/file-manager/fm-directory-view.c:5529
+#. add the "open in new window" menu item
+#: src/file-manager/fm-directory-view.c:5567
+#: src/file-manager/fm-tree-view.c:958
 msgid "Open in New Window"
 msgstr "새 창에서 열기"
 
-#: src/file-manager/fm-directory-view.c:5531
+#: src/file-manager/fm-directory-view.c:5569
 #, c-format
 msgid "Open in %d New Windows"
 msgstr "%d개의 새 창에서 열기"
 
-#: src/file-manager/fm-directory-view.c:5536
+#: src/file-manager/fm-directory-view.c:5574
 msgid "Browse Folder"
 msgstr "폴더 찾아보기"
 
-#: src/file-manager/fm-directory-view.c:5538
+#: src/file-manager/fm-directory-view.c:5576
 msgid "Browse Folders"
 msgstr "폴더 찾아보기"
 
-#: src/file-manager/fm-directory-view.c:5561
+#: src/file-manager/fm-directory-view.c:5599
 msgid "_Delete from Trash"
 msgstr "휴지통에서 지우기(_D)"
 
-#: src/file-manager/fm-directory-view.c:5563
+#: src/file-manager/fm-directory-view.c:5601
 msgid "Delete all selected items permanently"
 msgstr "선택한 항목을 모두 지웁니다"
 
-#: src/file-manager/fm-directory-view.c:5566
-#: src/file-manager/fm-directory-view.c:5857
+#: src/file-manager/fm-directory-view.c:5604
+#: src/file-manager/fm-directory-view.c:5936
 #: src/file-manager/nautilus-directory-view-ui.xml.h:21
 msgid "Mo_ve to Trash"
 msgstr "휴지통으로 보내기(_M)"
 
-#: src/file-manager/fm-directory-view.c:5568
+#: src/file-manager/fm-directory-view.c:5606
 #: src/file-manager/nautilus-directory-view-ui.xml.h:23
 msgid "Move each selected item to the Trash"
 msgstr "각각 선택한 항목을 휴지통으로 보냅니다"
 
-#: src/file-manager/fm-directory-view.c:5592
+#: src/file-manager/fm-directory-view.c:5630
 #: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "_Delete"
 msgstr "지우기(_D)"
 
-#: src/file-manager/fm-directory-view.c:5612
+#: src/file-manager/fm-directory-view.c:5650
 msgid "Ma_ke Links"
 msgstr "따라가기 만들기(_K)"
 
-#: src/file-manager/fm-directory-view.c:5613
+#: src/file-manager/fm-directory-view.c:5651
 #: src/file-manager/nautilus-directory-view-ui.xml.h:19
 msgid "Ma_ke Link"
 msgstr "따라가기 만들기(_K)"
 
-#: src/file-manager/fm-directory-view.c:5626
+#: src/file-manager/fm-directory-view.c:5664
 #: src/file-manager/nautilus-directory-view-ui.xml.h:54
 msgid "_Empty Trash"
 msgstr "휴지통 비우기(_E)"
 
-#: src/file-manager/fm-directory-view.c:5642
+#: src/file-manager/fm-directory-view.c:5680
 msgid "Cu_t File"
 msgstr "파일 자르기(_T)"
 
-#: src/file-manager/fm-directory-view.c:5643
+#: src/file-manager/fm-directory-view.c:5681
 #: src/file-manager/nautilus-directory-view-ui.xml.h:11
 msgid "Cu_t Files"
 msgstr "파일 자르기(_T)"
 
-#: src/file-manager/fm-directory-view.c:5652
+#: src/file-manager/fm-directory-view.c:5690
 msgid "_Copy File"
 msgstr "파일 복사(_C)"
 
-#: src/file-manager/fm-directory-view.c:5653
+#: src/file-manager/fm-directory-view.c:5691
 #: src/file-manager/nautilus-directory-view-ui.xml.h:51
 msgid "_Copy Files"
 msgstr "파일 복사(_C)"
 
-#: src/file-manager/fm-directory-view.c:5848
-#, fuzzy
+#: src/file-manager/fm-directory-view.c:5927
 msgid "The link is borken, do you want to move it to the Trash?"
 msgstr ""
-"이 따라가기는 가르키는 파일이 없기 때문에 쓸 수 없습니다. 이 따라가기휴지통"
-"에 버리겠습니까?"
+"이 따라가기는 가르키는 파일이 없기 때문에 쓸 수 없습니다. 이 따라가기를 휴지"
+"통에 버리겠습니까?"
 
-#: src/file-manager/fm-directory-view.c:5850
-#, fuzzy
+#: src/file-manager/fm-directory-view.c:5929
 msgid "This link can't be used, because it has no target."
-msgstr ""
-"이 따라가기는 가르키는 파일이 없기 때문에 쓸 수 없습니다. 이 따라가기휴지통"
-"에 버리겠습니까?"
+msgstr "이 따라가기는 가르키는 파일이 없기 때문에 쓸 수 없습니다."
 
-#: src/file-manager/fm-directory-view.c:5852
-#, fuzzy, c-format
+#: src/file-manager/fm-directory-view.c:5931
+#, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
-msgstr ""
-"이 따라가기는 가르키는 파일 \"%s\"이(가) 없기 때문에 쓸 수 없습니다. 이 따라"
-"가기휴지통에 버리겠습니까?"
+msgstr "이 따라가기는 가르키는 파일 \"%s\"이(가) 없기 때문에 쓸 수 없습니다."
 
-#: src/file-manager/fm-directory-view.c:5857
+#: src/file-manager/fm-directory-view.c:5936
 msgid "Broken Link"
 msgstr "깨진 따라가기"
 
-#: src/file-manager/fm-directory-view.c:5915
-#, fuzzy, c-format
+#: src/file-manager/fm-directory-view.c:5994
+#, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
-msgstr ""
-"\"%s\"은(는) 실행할 수 있는 텍스트 파일입니다. 실행 할까요? 아니면 내용을 보"
-"시겠습니까?"
+msgstr "\"%s\"(을)를 실행 할까요? 아니면 내용을 보시겠습니까?"
 
-#: src/file-manager/fm-directory-view.c:5917
+#: src/file-manager/fm-directory-view.c:5996
 #, c-format
 msgid "\"%s\" is an executable text file."
-msgstr ""
+msgstr "\"%s\"(은)는 실행할 수 있는 텍스트 파일입니다."
 
-#: src/file-manager/fm-directory-view.c:5923
+#: src/file-manager/fm-directory-view.c:6002
 msgid "Run or Display?"
 msgstr "실행 또는 보기?"
 
-#: src/file-manager/fm-directory-view.c:5924
+#: src/file-manager/fm-directory-view.c:6003
 msgid "Run in _Terminal"
 msgstr "터미널에서 실행(_T)"
 
-#: src/file-manager/fm-directory-view.c:5925
+#: src/file-manager/fm-directory-view.c:6004
 msgid "_Display"
 msgstr "보기(_D)"
 
-#: src/file-manager/fm-directory-view.c:5928
+#: src/file-manager/fm-directory-view.c:6007
 msgid "_Run"
 msgstr "실행(_R)"
 
-#: src/file-manager/fm-directory-view.c:6196
-#, fuzzy, c-format
+#: src/file-manager/fm-directory-view.c:6275
+#, c-format
 msgid "Opening \"%s\"."
-msgstr "\"%s\"을(를) 여는중"
+msgstr "\"%s\"을(를) 여는 중."
 
-#: src/file-manager/fm-directory-view.c:6202
+#: src/file-manager/fm-directory-view.c:6281
 msgid "Cancel Open?"
 msgstr "열기를 취소할까요?"
 
@@ -4792,9 +4355,8 @@ msgid "Sorry, couldn't display all the contents of \"%s\"."
 msgstr "\"%s\"의 내용을 보일 수 없습니다."
 
 #: src/file-manager/fm-error-reporting.c:71
-#, fuzzy
 msgid "The folder contents could not be displayed."
-msgstr "\"%s\"의 허가권을 바꿀 수 없습니다."
+msgstr "폴더의 내용을 보일 수 없습니다."
 
 #: src/file-manager/fm-error-reporting.c:72
 msgid "Error Displaying Folder"
@@ -4843,9 +4405,8 @@ msgid "Sorry, couldn't rename \"%s\" to \"%s\"."
 msgstr "\"%s\"을(를) \"%s\"(으)로 바꾸지 못합니다."
 
 #: src/file-manager/fm-error-reporting.c:144
-#, fuzzy
 msgid "The item could not be renamed."
-msgstr "\"%s\"의 허가권을 바꿀 수 없습니다."
+msgstr "항목의 이름을 바꿀 수 없습니다."
 
 #: src/file-manager/fm-error-reporting.c:145
 msgid "Renaming Error"
@@ -4868,9 +4429,8 @@ msgid "Sorry, couldn't change the group of \"%s\"."
 msgstr "\"%s\"의 그룹을 바꿀 수 없습니다."
 
 #: src/file-manager/fm-error-reporting.c:181
-#, fuzzy
 msgid "The group could not be changed."
-msgstr "\"%s\"의 허가권을 바꿀 수 없습니다."
+msgstr "그룹을 바꿀 수 없습니다."
 
 #: src/file-manager/fm-error-reporting.c:181
 msgid "Error Setting Group"
@@ -4887,9 +4447,8 @@ msgid "Sorry, couldn't change the owner of \"%s\"."
 msgstr "\"%s\"의 소유주를 바꿀 수 없습니다."
 
 #: src/file-manager/fm-error-reporting.c:213
-#, fuzzy
 msgid "The owner could not be changed."
-msgstr "\"%s\"의 허가권을 바꿀 수 없습니다."
+msgstr "소유주를 바꿀 수 없습니다."
 
 #: src/file-manager/fm-error-reporting.c:213
 msgid "Error Setting Owner"
@@ -4907,9 +4466,8 @@ msgid "Sorry, couldn't change the permissions of \"%s\"."
 msgstr "\"%s\"의 허가권을 바꿀 수 없습니다."
 
 #: src/file-manager/fm-error-reporting.c:245
-#, fuzzy
 msgid "The permissions could not be changed."
-msgstr "\"%s\"의 허가권을 바꿀 수 없습니다."
+msgstr "허가권을 바꿀 수 없습니다."
 
 #: src/file-manager/fm-error-reporting.c:246
 msgid "Error Setting Permissions"
@@ -4969,72 +4527,63 @@ msgstr "꼬리표순 정렬(_E)"
 msgid "Keep icons sorted by emblems in rows"
 msgstr "꼬리표순으로 아이콘을 정렬합니다"
 
-#: src/file-manager/fm-icon-view.c:1605
+#: src/file-manager/fm-icon-view.c:1632
 #: src/file-manager/nautilus-icon-view-ui.xml.h:20
 msgid "Restore Icons' Original Si_zes"
 msgstr "아이콘을 원래크기로 되돌리기(_Z)"
 
-#: src/file-manager/fm-icon-view.c:1606
+#: src/file-manager/fm-icon-view.c:1633
 msgid "Restore Icon's Original Si_ze"
 msgstr "원래 크기의 아이콘으로 되돌리기(_Z)"
 
-#: src/file-manager/fm-icon-view.c:1962
+#: src/file-manager/fm-icon-view.c:1989
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "\"%s\"을(를) 가르킴"
 
-#: src/file-manager/fm-icon-view.c:2545 src/file-manager/fm-icon-view.c:2569
-#, fuzzy
+#: src/file-manager/fm-icon-view.c:2572 src/file-manager/fm-icon-view.c:2596
 msgid "Drag and drop is not supported."
-msgstr "끌어서 놓기는 로컬 파일시스템에서만 지원됩니다."
+msgstr "끌어서 놓기는 지원되지 않습니다.."
 
-#: src/file-manager/fm-icon-view.c:2546
-#, fuzzy
+#: src/file-manager/fm-icon-view.c:2573
 msgid "Drag and drop is only supported on local file systems."
 msgstr "끌어서 놓기는 로컬 파일시스템에서만 지원됩니다."
 
-#: src/file-manager/fm-icon-view.c:2547 src/file-manager/fm-icon-view.c:2571
-#, fuzzy
+#: src/file-manager/fm-icon-view.c:2574 src/file-manager/fm-icon-view.c:2598
 msgid "Drag and Drop Error"
 msgstr "끌어서 놓기 오류"
 
-#: src/file-manager/fm-icon-view.c:2570
+#: src/file-manager/fm-icon-view.c:2597
 msgid "An invalid drag type was used."
 msgstr "잘못된 끌기형식이 쓰였습니다."
 
-#: src/file-manager/fm-list-view.c:808
+#: src/file-manager/fm-list-view.c:813
 msgid "File name"
 msgstr "파일 이름"
 
-#: src/file-manager/fm-list-view.c:832
+#: src/file-manager/fm-list-view.c:838
 #: src/file-manager/fm-search-list-view.c:519
 msgid "Size"
 msgstr "크기"
 
-#: src/file-manager/fm-list-view.c:843
+#: src/file-manager/fm-list-view.c:849
 #: src/file-manager/fm-search-list-view.c:525
 msgid "Type"
 msgstr "형식"
 
-#: src/file-manager/fm-list-view.c:854
+#: src/file-manager/fm-list-view.c:860
 #: src/file-manager/fm-search-list-view.c:531
 msgid "Date Modified"
 msgstr "내용이 바뀐 날짜"
 
 #: src/file-manager/fm-properties-window.c:482
-#, fuzzy
 msgid "You can't assign more than one custom icon at a time!"
-msgstr ""
-"한번에 하나 이상의 사용자 아이콘을 할당할 수 없습니다. 사용자 아이콘으로 하나"
-"의 그림만 끌어 놓으십시오."
+msgstr "한번에 하나 이상의 사용자 아이콘을 할당할 수 없습니다."
 
 #: src/file-manager/fm-properties-window.c:483
 #: src/nautilus-information-panel.c:507
-#, fuzzy
 msgid "Please drag just one image to set a custom icon."
-msgstr ""
-"한번에 하나 이상의 사용자 아이콘을 할당할 수 없습니다. 사용자 아이콘으로 하나"
-"의 그림만 끌어 놓으십시오."
+msgstr "사용자 아이콘으로 하나 의 그림만 끌어 놓으십시오."
 
 #: src/file-manager/fm-properties-window.c:484
 #: src/nautilus-information-panel.c:508
@@ -5043,20 +4592,14 @@ msgstr "하나 이상의 그림"
 
 #: src/file-manager/fm-properties-window.c:493
 #: src/nautilus-information-panel.c:527
-#, fuzzy
 msgid "The file that you dropped is not local."
-msgstr ""
-"끌어 놓은 파일이 로컬에 있지 않습니다. 로컬에 있는 그림으로만 사용자 아이콘으"
-"로 쓸 수 있습니다"
+msgstr "끌어 놓은 파일이 로컬에 있지 않습니다."
 
 #: src/file-manager/fm-properties-window.c:494
 #: src/file-manager/fm-properties-window.c:501
 #: src/nautilus-information-panel.c:528
-#, fuzzy
 msgid "You can only use local images as custom icons."
-msgstr ""
-"끌어 놓은 파일이 로컬에 있지 않습니다. 로컬에 있는 그림으로만 사용자 아이콘으"
-"로 쓸 수 있습니다"
+msgstr "로컬에 있는 그림으로만 사용자 아이콘으로 쓸 수 있습니다"
 
 #: src/file-manager/fm-properties-window.c:495
 #: src/nautilus-information-panel.c:529
@@ -5065,11 +4608,8 @@ msgstr "로컬에 있는 그림파일"
 
 #: src/file-manager/fm-properties-window.c:500
 #: src/nautilus-information-panel.c:534
-#, fuzzy
 msgid "The file that you dropped is not an image."
-msgstr ""
-"끌어 놓은 파일이 로컬에 있지 않습니다. 로컬에 있는 그림으로만 사용자 아이콘으"
-"로 쓸 수 있습니다"
+msgstr "끌어놓은 파일은 그림이 아닙니다."
 
 #: src/file-manager/fm-properties-window.c:502
 #: src/nautilus-information-panel.c:536
@@ -5077,6 +4617,7 @@ msgid "Images Only"
 msgstr "그림파일"
 
 #: src/file-manager/fm-properties-window.c:919
+#: src/file-manager/fm-tree-view.c:1051
 msgid "Properties"
 msgstr "등록 정보"
 
@@ -5090,7 +4631,6 @@ msgid "Cancel Group Change?"
 msgstr "그룹 바꾸기 취소?"
 
 #: src/file-manager/fm-properties-window.c:1384
-#, fuzzy
 msgid "Changing group."
 msgstr "그룹 바꾸는 중"
 
@@ -5099,7 +4639,6 @@ msgid "Cancel Owner Change?"
 msgstr "소유주 바꾸기 취소?"
 
 #: src/file-manager/fm-properties-window.c:1546
-#, fuzzy
 msgid "Changing owner."
 msgstr "소유주 바꾸는 중"
 
@@ -5144,7 +4683,7 @@ msgid "_Names:"
 msgstr "이름(_N):"
 
 #: src/file-manager/fm-properties-window.c:2214
-#: src/nautilus-connect-server-dialog.c:187
+#: src/nautilus-connect-server-dialog.c:190
 msgid "_Name:"
 msgstr "이름(_N):"
 
@@ -5173,8 +4712,7 @@ msgstr "--"
 msgid "Size:"
 msgstr "크기:"
 
-#: src/file-manager/fm-properties-window.c:2279 src/nautilus-location-bar.c:61
-#: src/nautilus-location-dialog.c:144
+#: src/file-manager/fm-properties-window.c:2279 src/nautilus-location-bar.c:60
 msgid "Location:"
 msgstr "위치:"
 
@@ -5296,12 +4834,10 @@ msgid "The permissions of the selected file could not be determined."
 msgstr "선택한 파일의 접근 권한을 바꿀 수 없습니다."
 
 #: src/file-manager/fm-properties-window.c:3348
-#, fuzzy
 msgid "There was an error displaying help."
-msgstr "도움말을 보이는 중 오류가 발생했습니다: %s"
+msgstr "도움말을 보이는 중 오류가 발생했습니다."
 
 #: src/file-manager/fm-properties-window.c:3348
-#, fuzzy
 msgid "Couldn't Show Help"
 msgstr "도움말을 보여줄 수 없습니다"
 
@@ -5310,7 +4846,6 @@ msgid "Cancel Showing Properties Window?"
 msgstr "등록 정보창 보기를 취소할까요?"
 
 #: src/file-manager/fm-properties-window.c:3685
-#, fuzzy
 msgid "Creating Properties window."
 msgstr "등록 정보창 만들기"
 
@@ -5332,13 +4867,12 @@ msgid "Search Results"
 msgstr "찾기 결과"
 
 #: src/file-manager/fm-search-list-view.c:166
-#, fuzzy
 msgid "Sorry, but the Medusa search service is not available."
 msgstr "메두사 찾기 서비스가 가능하지 않습니다"
 
 #: src/file-manager/fm-search-list-view.c:167
 msgid "Medusa is not installed."
-msgstr ""
+msgstr "메두사가 설치되지 않았습니다."
 
 #: src/file-manager/fm-search-list-view.c:168
 #: src/file-manager/nautilus-indexing-info.c:301
@@ -5346,113 +4880,91 @@ msgid "Search Service Not Available"
 msgstr "찾기 서비스가 가능하지 않습니다"
 
 #: src/file-manager/fm-search-list-view.c:190
-#, fuzzy
 msgid ""
 "The search you have selected is newer than the index on your system.  The "
 "search will return no results right now."
 msgstr ""
 "선택한 찾기는 시스템의 색인보다 더 새것입니다. 찾기 현재 결과를 출력할 수  없"
-"습니다. 루트 사용자로 명령행에서 \"medusa-indexd\"를 실행 시켜서 새로운 색인"
-"을 만들 수 있습니다."
+"습니다."
 
 #: src/file-manager/fm-search-list-view.c:194
 #: src/file-manager/fm-search-list-view.c:213
-#, fuzzy
 msgid ""
 "You can create a new index by running \"medusa-indexd\" as root on the "
 "command line."
 msgstr ""
-"찾기 중 파일 시스템 색인을 열 수 없습니다. 색인이 없거나 손상 되었을 것 입니"
-"다. 루트 사용자로 명령행에서 \"medusa-indexd\"를 실행 시켜서 새로운색인을 만"
-"들 수 있습니다."
+"루트 사용자로 명령행에서 \"medusa-indexd\"를 실행 시켜서 새로운 색인을 만들 "
+"수 있습니다."
 
 #: src/file-manager/fm-search-list-view.c:197
-#, fuzzy
 msgid "Search For Items That Are Too New"
-msgstr "찾으려는 항목이 너무 새거임"
+msgstr "찾으려는 항목이 너무 새것임"
 
 #: src/file-manager/fm-search-list-view.c:201
-#, fuzzy
 msgid "Every indexed file on your computer matches the criteria you selected. "
-msgstr ""
-"컴퓨터에서 색인화된 모든 파일은 당신이 선택한 기준에 일치합니다. 당신이선택한"
-"것의 맞춤법을 검사할 수도 있고 결과에 부족한 기준을 더할 수도 있습니다."
+msgstr "컴퓨터에서 색인화된 모든 파일은 당신이 선택한 기준에 일치합니다."
 
 #: src/file-manager/fm-search-list-view.c:203
-#, fuzzy
 msgid ""
 "You can check the spelling on your selections or add more criteria to narrow "
 "your results."
 msgstr ""
-"컴퓨터에서 색인화된 모든 파일은 당신이 선택한 기준에 일치합니다. 당신이선택한"
-"것의 맞춤법을 검사할 수도 있고 결과에 부족한 기준을 더할 수도 있습니다."
+"당신이 선택한 것의 맞춤법을 검사할 수도 있고 결과에 부족한 기준을 더할 수도 "
+"있습니다."
 
 #: src/file-manager/fm-search-list-view.c:205
 #: src/file-manager/fm-search-list-view.c:223
-#, fuzzy
 msgid "Error During Search"
 msgstr "찾는 중 오류"
 
 #. FIXME: This dialog does not get shown because a slow search
 #. will be performed and will not return an error.
 #: src/file-manager/fm-search-list-view.c:211
-#, fuzzy
 msgid ""
 "Find cannot open your file system index.  Your index may be missing or "
 "corrupt."
 msgstr ""
 "찾기 중 파일 시스템 색인을 열 수 없습니다. 색인이 없거나 손상 되었을 것 입니"
-"다. 루트 사용자로 명령행에서 \"medusa-indexd\"를 실행 시켜서 새로운색인을 만"
-"들 수 있습니다."
+"다."
 
 #: src/file-manager/fm-search-list-view.c:215
-#, fuzzy
 msgid "Error Reading File Index"
 msgstr "파일 색인을 읽는중 오류"
 
 #: src/file-manager/fm-search-list-view.c:221
-#, fuzzy
 msgid "An error occurred while loading this search's contents."
-msgstr "찾기 내용을 읽는동안 오류가 발생하였습니다: %s"
+msgstr "찾기 내용을 읽는동안 오류가 발생하였습니다."
 
 #: src/file-manager/fm-search-list-view.c:240
-#, fuzzy
 msgid ""
 "To do a fast search, Find requires an index of the files on your system."
 msgstr ""
-"내용 찾기를 위하여, 찾기는 여러분의 시스템의 파일 색인을 필요로 합니다. 하지"
-"만 지금 색인에 접근할 수 없습니다. "
+"빠른 찾기를 위하여, 찾기는 여러분의 시스템의 파일 색인을 필요로 합니다."
 
 #: src/file-manager/fm-search-list-view.c:242
-#, fuzzy
 msgid ""
 "To do a content search, Find requires an index of the files on your system."
 msgstr ""
-"내용 찾기를 위하여, 찾기는 여러분의 시스템의 파일 색인을 필요로 합니다. 하지"
-"만 지금 색인에 접근할 수 없습니다. "
+"내용 찾기를 위하여, 찾기는 여러분의 시스템의 파일 색인을 필요로 합니다."
 
 #: src/file-manager/fm-search-list-view.c:245
-#, fuzzy
 msgid ""
 "Find can't access your index right now so a slower search will be performed "
 "that doesn't use the index."
 msgstr ""
-"빠른 찾기를 위하여, 찾기는 여러분의 시스템의 파일 색인을 필요로 합니다. 바로 "
-"색인에 접근할 수 없으면 색인을 쓸 수 없는 느린 찾기가 수행될것 입니다."
+"바로 색인에 접근할 수 없으면 색인을 쓸 수 없는 느린 찾기가 수행될것 입니다."
 
 #: src/file-manager/fm-search-list-view.c:248
 msgid "Find can't access your index right now."
-msgstr ""
+msgstr "바로 색인에 접근할 수 없습니다."
 
 #: src/file-manager/fm-search-list-view.c:250
-#, fuzzy
 msgid "Fast Searches Are Not Available"
 msgstr "빨리 찾기가 가능하지 않습니다"
 
 #: src/file-manager/fm-search-list-view.c:251
 #: src/file-manager/fm-search-list-view.c:285
 #: src/file-manager/fm-search-list-view.c:312
-#, fuzzy
 msgid "Content Searches Are Not Available"
 msgstr "내용 찾기가 가능하지 않습니다"
 
@@ -5471,82 +4983,69 @@ msgstr ""
 "medusa-searchd"
 
 #: src/file-manager/fm-search-list-view.c:269
-#, fuzzy
 msgid ""
 "To do a fast search, Find requires an index of the files on your system.  "
 "Your computer is currently creating that index."
 msgstr ""
 "빠른 찾기를 하기 위해, 찾기는 여러분의 컴퓨터의 파일 색인을 필요로 합니다. 여"
-"러분의 컴퓨터는 지금 색인을 만들고 있습니다. 따라서 색인을 쓸 찾기는 할 수 없"
-"으므로, 이 찾기는 몇분이 걸릴것입니다."
+"러분의 컴퓨터는 지금 색인을 만들고 있습니다."
 
 #: src/file-manager/fm-search-list-view.c:273
-#, fuzzy
 msgid ""
 "To do a content search, Find requires an index of the content on your "
 "system.  Your computer is currently creating that index."
 msgstr ""
 "내용 찾기를 하기 위해, 찾기는 여러분의 컴퓨터의 내용 색인을 필요로 합니다. 여"
-"러분의 컴퓨터는 지금 색인을 만들고 있습니다. 내용 찾기는 색인이 완료되면 쓸 "
-"수 있습니다."
+"러분의 컴퓨터는 지금 색인을 만들고 있습니다."
 
 #: src/file-manager/fm-search-list-view.c:278
 msgid "Because Find cannot use an index, this search may take several minutes."
-msgstr ""
+msgstr "색인을 쓸 찾기는 할 수 없으므로, 이 찾기는 몇분이 걸릴것입니다."
 
 #: src/file-manager/fm-search-list-view.c:281
 msgid "Content searches will be available when the index is complete."
-msgstr ""
+msgstr "내용 찾기는 색인이 완료되면 쓸 수 있습니다."
 
 #: src/file-manager/fm-search-list-view.c:284
 #: src/file-manager/fm-search-list-view.c:311
-#, fuzzy
 msgid "Indexed Searches Are Not Available"
 msgstr "색인 찾기가 가능하지 않습니다"
 
 #: src/file-manager/fm-search-list-view.c:293
-#, fuzzy
 msgid ""
 "To do a fast search, Find requires an index of the files on your system.  No "
 "index is available right now."
 msgstr ""
-"내용 찾기를 위하여, 찾기는 여러분의 시스템의 파일 색인을 필요로 합니다. 하지"
+"빠른 찾기를 위하여, 찾기는 여러분의 시스템의 파일 색인을 필요로 합니다. 하지"
 "만 지금 색인에 접근할 수 없습니다. "
 
 #: src/file-manager/fm-search-list-view.c:296
-#, fuzzy
 msgid ""
 "To do a content search, Find requires an index of the content on your "
 "system.  No index is available right now."
 msgstr ""
-"내용 찾기를 위하여, 찾기는 여러분의 시스템의 파일 색인을 필요로 합니다. 하지"
+"내용 찾기를 위하여, 찾기는 여러분의 시스템의 내용 색인을 필요로 합니다. 하지"
 "만 지금 색인에 접근할 수 없습니다. "
 
 #: src/file-manager/fm-search-list-view.c:300
-#, fuzzy
 msgid ""
 "You can create an index by running \"medusa-indexd\" as root on the command "
 "line.  Until a complete index is available, searches will take several "
 "minutes."
 msgstr ""
-"빠른 찾기를 하기 위해, 찾기는 여러분의 컴퓨터의 파일 색인을 필요로 합니다. 하"
-"지만 지금은 색인이 없습니다. root로 \"medusa-indexd\"를 실행함으로서 색인을 "
-"만들 수 있습니다. 완전한 색인이 사용가능할 때 까지는 찾는데 몇분이 걸릴 것입"
-"니다."
+"root 사용자로 \"medusa-indexd\"를 실행함으로서 색인을 만들 수 있습니다. 완전"
+"한 색인이 사용가능할 때 까지는 찾는데 몇분이 걸릴 것입니다."
 
 #: src/file-manager/fm-search-list-view.c:305
-#, fuzzy
 msgid ""
 "You can create an index by running \"medusa-indexd\" as root on the command "
 "line.  Until a complete index is available, content searches cannot be "
 "performed."
 msgstr ""
-"내용 찾기를 위하여, 찾기는 시스템의 내용 색인을 필요로 합니다. 하지만 지금은 "
-"색인이 없습니다. root로 \"medusa-indexd\"를 실행해서 색인을 만들 수 있습니"
-"다. 완전한 색인이 사용가능할 때 까지는 내용 찾기는 할 수 없습니다."
+"root사용자로 \"medusa-indexd\"를 실행해서 색인을 만들 수 있습니다. 완전한 색"
+"인이 사용가능할 때 까지는 내용 찾기는 할 수 없습니다."
 
 #: src/file-manager/fm-search-list-view.c:329
-#, fuzzy
 msgid "Fast searches are not enabled on your computer."
 msgstr "빨리 찾기가 활성화되어 있지 않습니다"
 
@@ -5562,7 +5061,6 @@ msgstr ""
 "다. "
 
 #: src/file-manager/fm-search-list-view.c:334
-#, fuzzy
 msgid "Fast Searches Not Enabled"
 msgstr "빨리 찾기가 가능하지 않습니다"
 
@@ -5596,22 +5094,57 @@ msgstr "%d개의 항목을 새 창에서 보기"
 #. * no more than the constant limit are displayed.
 #.
 #: src/file-manager/fm-search-list-view.c:691
-#, fuzzy
 msgid "Nautilus found more search results than it can display."
-msgstr ""
-"노틸러스는 보여주는것보다 더 많은 결과를 발견하였습니다. 몇몇 일치하는 항목"
-"이 보여주지 않을수 있습니다."
+msgstr "노틸러스는 보여주는것보다 더 많은 결과를 발견하였습니다."
 
 #: src/file-manager/fm-search-list-view.c:692
-#, fuzzy
 msgid "Some matching items will not be displayed. "
-msgstr ""
-"노틸러스는 보여주는것보다 더 많은 결과를 발견하였습니다. 몇몇 일치하는 항목"
-"이 보여주지 않을수 있습니다."
+msgstr "몇몇 일치하는 항목이 보여주지 않을수 있습니다."
 
 #: src/file-manager/fm-search-list-view.c:693
 msgid "Too Many Matches"
 msgstr "너무 많은 결과"
+
+#: src/file-manager/fm-tree-model.c:1199
+msgid "(Empty)"
+msgstr "(비어있음)"
+
+#: src/file-manager/fm-tree-model.c:1199
+msgid "Loading..."
+msgstr "읽는 중..."
+
+#: src/file-manager/fm-tree-view.c:947
+msgid "Open"
+msgstr "열기"
+
+#. add the "create folder" menu item
+#: src/file-manager/fm-tree-view.c:971
+msgid "Create Folder"
+msgstr "폴더 만들기"
+
+#: src/file-manager/fm-tree-view.c:987
+msgid "Cut Folder"
+msgstr "폴더 자르기"
+
+#: src/file-manager/fm-tree-view.c:1001
+msgid "Copy Folder"
+msgstr "폴더 복사"
+
+#: src/file-manager/fm-tree-view.c:1015
+msgid "Paste Files into Folder"
+msgstr "파일을 폴더에 붙여 넣기"
+
+#: src/file-manager/fm-tree-view.c:1033
+msgid "Move to Trash"
+msgstr "휴지통으로 보내기"
+
+#: src/file-manager/fm-tree-view.c:1086
+msgid "Filesystem"
+msgstr "파일시스템"
+
+#: src/file-manager/fm-tree-view.c:1088
+msgid "Network Neighbourhood"
+msgstr "네트워크 환경"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:1
 msgid "Change Desktop _Background"
@@ -5669,18 +5202,16 @@ msgid "Choose another viewer with which to view the selected item"
 msgstr "선택한 항목을 볼 다른 보기 프로그램을 선택합니다"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:5
-#, fuzzy
 msgid "Create _Document"
-msgstr "폴더 만들기"
+msgstr "문서 만들기(_D)"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:6
 msgid "Create _Folder"
-msgstr "폴더 만들기"
+msgstr "폴더 만들기(_F)"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:7
-#, fuzzy
 msgid "Create a new empty file inside this folder"
-msgstr "이 폴더안에 새로운 빈 폴더를 만듭니다"
+msgstr "이 폴더안에 새로운 빈 파일을 만듭니다"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:8
 msgid "Create a new empty folder inside this folder"
@@ -5737,7 +5268,7 @@ msgstr ""
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "No templates Installed"
-msgstr ""
+msgstr "문서 본이 설치되지 않았습니다"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:27
 msgid "Open Wit_h"
@@ -5824,9 +5355,8 @@ msgid "View or modify the properties of each selected item"
 msgstr "각각 선택한 항목의 등록 정보를 보거나 고칩니다"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:53
-#, fuzzy
 msgid "_Empty File"
-msgstr "파일 복사(_C)"
+msgstr "빈 파일(_E)"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:55
 msgid "_Format"
@@ -5946,7 +5476,7 @@ msgid "Indexing is %d%% complete."
 msgstr "색인 만들기 %d%% 완료."
 
 #: src/file-manager/nautilus-indexing-info.c:165
-#, fuzzy, c-format
+#, c-format
 msgid "Your files were last indexed at %s."
 msgstr "마지막으로 색인화된것은 %s 입니다"
 
@@ -5964,12 +5494,10 @@ msgid "Indexing Status"
 msgstr "색인 상황"
 
 #: src/file-manager/nautilus-indexing-info.c:197
-#, fuzzy
 msgid "Your files are currently being indexed."
-msgstr "마지막으로 색인화된것은 %s 입니다"
+msgstr "파일 색인을 만들고 있습니다."
 
 #: src/file-manager/nautilus-indexing-info.c:198
-#, fuzzy
 msgid ""
 "Once a day your files and text content are indexed so your searches are fast."
 msgstr ""
@@ -5991,7 +5519,7 @@ msgstr ""
 
 #: src/file-manager/nautilus-indexing-info.c:262
 msgid "No Index of Files"
-msgstr ""
+msgstr "파일 색인이 없음"
 
 #: src/file-manager/nautilus-indexing-info.c:299
 msgid "Sorry, but the medusa search service is not available."
@@ -5999,7 +5527,7 @@ msgstr "메두사 찾기 서비스가 가능하지 않습니다"
 
 #: src/file-manager/nautilus-indexing-info.c:300
 msgid "Please verify medusa has been setup correctly."
-msgstr ""
+msgstr "메두사의 설정이 올바른지 확인하십시오."
 
 #: src/file-manager/nautilus-indexing-info.c:315
 msgid "%I:%M %p, %x"
@@ -6025,66 +5553,57 @@ msgstr "인덱싱 상황 보기(_I)"
 msgid "Show status of indexing used when searching"
 msgstr "찾는 중에 사용되는 인덱싱의 상황을 보기"
 
-#: src/nautilus-application.c:256
-msgid "Couldn't Create Required Folder"
-msgstr "필요로 하는 폴더를 만들 수 없습니다"
-
-#: src/nautilus-application.c:257
-#, fuzzy, c-format
-msgid "Nautilus could not create the required folder \"%s\"."
-msgstr "필요로 하는 폴더를 만들 수 없습니다"
-
-#: src/nautilus-application.c:259
-#, fuzzy
-msgid ""
-"Before running Nautilus, please create the following folder, or set "
-"permissions such that Nautilus can create it."
-msgstr ""
-"노틸러스는 필요한 폴더인 \"%s\"을(를) 만들 수 없습니다. 노틸러스를 실행하기 "
-"전에 이 폴더를 만들거나 노틸러스가 만들 수 있도록 허가권을 설정하십시오."
-
 #: src/nautilus-application.c:262
-msgid "Couldn't Create Required Folders"
+msgid "Couldn't Create Required Folder"
 msgstr "필요로 하는 폴더를 만들 수 없습니다"
 
 #: src/nautilus-application.c:263
 #, c-format
-msgid "Nautilus could not create the following required folders: %s."
-msgstr ""
+msgid "Nautilus could not create the required folder \"%s\"."
+msgstr "필요로 하는 폴더 \"%s\"(을)를 만들 수 없습니다"
 
 #: src/nautilus-application.c:265
-#, fuzzy
+msgid ""
+"Before running Nautilus, please create the following folder, or set "
+"permissions such that Nautilus can create it."
+msgstr ""
+"노틸러스를 실행하기 전에 이 폴더를 만들거나 노틸러스가 만들 수 있도록 허가권"
+"을 설정하십시오."
+
+#: src/nautilus-application.c:268
+msgid "Couldn't Create Required Folders"
+msgstr "필요로 하는 폴더를 만들 수 없습니다"
+
+#: src/nautilus-application.c:269
+#, c-format
+msgid "Nautilus could not create the following required folders: %s."
+msgstr "노틸러스가 필요로 하는 폴더를 만들 수 없습니다: %s."
+
+#: src/nautilus-application.c:271
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
 msgstr ""
-"노틸러스가 필요로 하는 폴더를 만들 수 없습니다:\n"
-"\n"
-"%s\n"
-"\n"
-"노틸러스를 실행하기 전에 이 폴더를 만들거나 만들 수 있도록 허가권을설정하십시"
-"오."
+"노틸러스를 실행하기 전에 이 폴더를 만들거나 만들 수 있도록 허가권을 설정하십"
+"시오."
 
-#: src/nautilus-application.c:333
+#: src/nautilus-application.c:339
 msgid "Link To Old Desktop"
-msgstr "옛날 바탕화면으로 링크"
+msgstr "옛날 바탕화면으로 연결"
 
-#: src/nautilus-application.c:349
+#: src/nautilus-application.c:355
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
-msgstr ""
+msgstr "\"옛날 바탕화면으로 연결\"라는 따라가기를 바탕화면에 만듭니다."
 
-#: src/nautilus-application.c:350
-#, fuzzy
+#: src/nautilus-application.c:356
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
 msgstr ""
-"그놈 2.4에서 바탕화면 디렉토리가 바뀌었습니다. \"옛날 바탕화면으로 링크\"라"
-"는 링크가 바탕화면에 만들어 졌습니다. 이 링크를 열어서 옛날 파일들을 옮겨 온 "
-"다음, 링크를 지울 수 있습니다."
+"그놈 2.4에서 바탕화면 디렉토리가 바뀌었습니다. 이 따라가기를 열어서 옛날 파일"
+"들을 옮겨 온 다음, 따라가기를 지우십시오."
 
-#: src/nautilus-application.c:352
-#, fuzzy
+#: src/nautilus-application.c:358
 msgid "Migrated Old Desktop"
 msgstr "옛날 바탕화면에서 바꾸기"
 
@@ -6098,7 +5617,7 @@ msgstr "옛날 바탕화면에서 바꾸기"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:521
+#: src/nautilus-application.c:527
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -6108,7 +5627,7 @@ msgstr ""
 "\"를 실행하십시오. 아니면 컴퓨터를 재시작 하거나 노틸러스를 재설치 하십시오."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:527
+#: src/nautilus-application.c:533
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -6154,12 +5673,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:557 src/nautilus-application.c:575
-#: src/nautilus-application.c:582
+#: src/nautilus-application.c:563 src/nautilus-application.c:581
+#: src/nautilus-application.c:588
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "예상하지 못한 오류로 인해 현재 노틸러스를 사용할 수 없습니다."
 
-#: src/nautilus-application.c:558
+#: src/nautilus-application.c:564
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -6167,7 +5686,7 @@ msgstr ""
 "파일관리자 보기 서버에 등록하기를 시도하는 중 OAF로 인한 예상하지 못한오류로 "
 "인해 현재 노틸러스를 사용할 수 없습니다."
 
-#: src/nautilus-application.c:576
+#: src/nautilus-application.c:582
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -6177,7 +5696,7 @@ msgstr ""
 "노틸러스를 사용할 수 없습니다. bonobo-activation-server를 강제로 종료하고 노"
 "틸러스를재시작 하면문제가 해결될수 있습니다."
 
-#: src/nautilus-application.c:583
+#: src/nautilus-application.c:589
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -6189,7 +5708,7 @@ msgstr ""
 
 #: src/nautilus-bookmarks-window.c:146
 #: src/nautilus-file-management-properties.c:237
-#: src/nautilus-property-browser.c:1455 src/nautilus-window-menus.c:643
+#: src/nautilus-property-browser.c:1456 src/nautilus-window-menus.c:643
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -6232,47 +5751,42 @@ msgid "Find Them!"
 msgstr "찾기!"
 
 #: src/nautilus-connect-server-dialog.c:86
-#, fuzzy
 msgid "You must enter a name for the server."
 msgstr "서버의 이름을 입력하여야 합니다"
 
 #: src/nautilus-connect-server-dialog.c:87
 msgid "Please enter a name and try again."
-msgstr ""
+msgstr "이름을 입력하고 다시 시도하십시오."
 
 #: src/nautilus-connect-server-dialog.c:88
 #: src/nautilus-connect-server-dialog.c:104
-#, fuzzy
 msgid "Can't Connect to Server"
 msgstr "서버에 연결할 수 없습니다"
 
 #: src/nautilus-connect-server-dialog.c:101
-#: src/nautilus-window-manage-views.c:1250
-#, fuzzy, c-format
+#: src/nautilus-window-manage-views.c:1263
+#, c-format
 msgid "\"%s\" is not a valid location."
-msgstr "\"%s\"은(는) 올바른 테마 폴더가 아닙니다."
+msgstr "\"%s\"은(는) 올바른 위치가 아닙니다."
 
 #: src/nautilus-connect-server-dialog.c:103
-#: src/nautilus-property-browser.c:1105
-#: src/nautilus-window-manage-views.c:1245
-#: src/nautilus-window-manage-views.c:1253
-#, fuzzy
+#: src/nautilus-property-browser.c:1106
+#: src/nautilus-window-manage-views.c:1258
+#: src/nautilus-window-manage-views.c:1266
 msgid "Please check the spelling and try again."
-msgstr ""
-"\"%s\"을(를) 찾을 수 없습니다. 정확히 입력하였는지 확인하시고 다시 시도 해보"
-"십시오."
+msgstr "정확히 입력하였는지 확인하시고 다시 시도 해보십시오."
 
 #: src/nautilus-connect-server-dialog.c:176
 msgid "Connect to Server"
 msgstr "서버에 연결"
 
-#: src/nautilus-connect-server-dialog.c:205
+#: src/nautilus-connect-server-dialog.c:209 src/nautilus-location-dialog.c:147
 msgid "_Location:"
 msgstr "위치(_L):"
 
-#: src/nautilus-connect-server-dialog.c:230
-msgid "Connect"
-msgstr "연결"
+#: src/nautilus-connect-server-dialog.c:235
+msgid "C_onnect"
+msgstr "연결(_O)"
 
 #: src/nautilus-desktop-window.c:356
 msgid "Desktop"
@@ -6471,18 +5985,12 @@ msgstr ""
 "마법사를 다시 실행하려면 이 파일을 수동으로 지워주십시오.\n"
 
 #: src/nautilus-information-panel.c:506
-#, fuzzy
 msgid "You can't assign more than one custom icon at a time."
-msgstr ""
-"한번에 하나 이상의 사용자 아이콘을 할당할 수 없습니다. 사용자 아이콘으로 하나"
-"의 그림만 끌어 놓으십시오."
+msgstr "한번에 하나 이상의 사용자 아이콘을 할당할 수 없습니다."
 
 #: src/nautilus-information-panel.c:535
-#, fuzzy
 msgid "You can only use images as custom icons."
-msgstr ""
-"끌어 놓은 파일이 로컬에 있지 않습니다. 로컬에 있는 그림으로만 사용자 아이콘으"
-"로 쓸 수 있습니다"
+msgstr "그림파일만 사용자 아이콘으로 쓸 수 있습니다"
 
 #: src/nautilus-information-panel.c:882
 #, c-format
@@ -6495,14 +6003,10 @@ msgid "Open with..."
 msgstr "다른 프로그램으로 열기..."
 
 #: src/nautilus-information-panel.c:993 src/nautilus-window.c:485
-#, fuzzy
 msgid "Unable to launch the cd burner application."
-msgstr ""
-"CD 굽기 프로그램을 실행할 수 없습니다:\n"
-"%s"
+msgstr "CD 굽기 프로그램을 실행할 수 없습니다."
 
 #: src/nautilus-information-panel.c:994 src/nautilus-window.c:486
-#, fuzzy
 msgid "Can't Launch CD Burner"
 msgstr "CD 굽기를 실행할 수 없습니다"
 
@@ -6516,16 +6020,16 @@ msgstr "휴지통 비우기(_T)"
 msgid "_Write contents to CD"
 msgstr "내용을 CD에 쓰기(_W)"
 
-#: src/nautilus-location-bar.c:62
+#: src/nautilus-location-bar.c:61
 msgid "Go To:"
 msgstr "가기:"
 
-#: src/nautilus-location-bar.c:155
-#, fuzzy, c-format
+#: src/nautilus-location-bar.c:154
+#, c-format
 msgid "Do you want to view %d locations?"
-msgstr "분리된 창에서 %d 위치를 보기를 원합니까?"
+msgstr "%d개의 위치를 보기를 원합니까?"
 
-#: src/nautilus-location-bar.c:167
+#: src/nautilus-location-bar.c:166
 msgid "View in Multiple Windows?"
 msgstr "다중 창으로 보기?"
 
@@ -6573,7 +6077,7 @@ msgid "File Manager"
 msgstr "파일 관리자"
 
 #. Set initial window title
-#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:272
+#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:280
 #: src/nautilus-window-menus.c:603 src/nautilus-window.c:174
 msgid "Nautilus"
 msgstr "노틸러스"
@@ -6602,38 +6106,33 @@ msgstr "노틸러스: --geometry는 하나이상의  URI와 같이 사용할 수
 #. * implemented this feature so I could use this joke.
 #.
 #: src/nautilus-navigation-window-menus.c:187
-#, fuzzy
 msgid "Are you sure you want to forget history?"
-msgstr "정말로 \"%s\"을(를) 완전히 지우시겠습니까?"
+msgstr "방문 기록을 지우시겠습니까?"
 
 #: src/nautilus-navigation-window-menus.c:188
-#, fuzzy
 msgid "If you do, you will be doomed to repeat it."
-msgstr "방문 기록을 지우시겠습니까? 그렇다면 되풀이 하지 않기를 빕니다"
+msgstr "그렇다면 되풀이 하지 않기를 빕니다"
 
 #: src/nautilus-navigation-window-menus.c:190
 msgid "Are you sure you want to clear the list of locations you have visited?"
 msgstr "정말로 노틸러스로 방문하였던 위치들을 지우시겠습니까?"
 
 #: src/nautilus-navigation-window-menus.c:192
-#, fuzzy
 msgid "If you clear the list of locations, they will be permanently deleted."
-msgstr "휴지통을 비우면 항목들이 완전히 지워지게 됩니다."
+msgstr "위치 목록을 비우면 완전히 지워지게 됩니다."
 
 #: src/nautilus-navigation-window-menus.c:198
 msgid "Clear History"
 msgstr "방문기록 지우기"
 
 #: src/nautilus-navigation-window-menus.c:427
-#, fuzzy
 msgid ""
 "Do you want to remove any bookmarks with the non-existing location from your "
 "list?"
-msgstr ""
-"\"%s\"위치가 없습니다. 목록에서 이 위치를 가진 책갈피를 지우시겠습니까?"
+msgstr "목록에서 없는 위치의 책갈피를 지우시겠습니까?"
 
 #: src/nautilus-navigation-window-menus.c:429
-#, fuzzy, c-format
+#, c-format
 msgid "The location \"%s\" does not exist."
 msgstr "\"%s\"위치가 더이상 없습니다."
 
@@ -6696,9 +6195,8 @@ msgstr "앞으로"
 
 #: src/nautilus-navigation-window-ui.xml.h:14
 #: src/nautilus-spatial-window-ui.xml.h:6
-#, fuzzy
 msgid "Go to templates folder"
-msgstr "휴지통 폴더로 갑니다"
+msgstr "문서본 폴더로 갑니다"
 
 #: src/nautilus-navigation-window-ui.xml.h:15
 msgid "Go to the next visited location"
@@ -6794,7 +6292,7 @@ msgstr "가장자리 창(_S)"
 #: src/nautilus-navigation-window-ui.xml.h:37
 #: src/nautilus-spatial-window-ui.xml.h:15
 msgid "_Templates"
-msgstr ""
+msgstr "문서 본(_T)"
 
 #: src/nautilus-navigation-window-ui.xml.h:38
 #: src/nautilus-spatial-window-ui.xml.h:16
@@ -6809,52 +6307,46 @@ msgstr "위로(_U)"
 msgid "_View"
 msgstr "보기(_V)"
 
-#: src/nautilus-navigation-window.c:338
+#: src/nautilus-navigation-window.c:337
 msgid "Information"
 msgstr "정보"
 
 #. Add "View as..." extra bonus choice.
-#: src/nautilus-navigation-window.c:702 src/nautilus-shell-ui.xml.h:27
+#: src/nautilus-navigation-window.c:701 src/nautilus-shell-ui.xml.h:27
 msgid "View as..."
 msgstr "...로서 보기"
 
-#: src/nautilus-navigation-window.c:734
+#: src/nautilus-navigation-window.c:733
 #, c-format
 msgid "File Browser: %s"
 msgstr "파일 찾아보기: %s"
 
-#: src/nautilus-navigation-window.c:1105
-#, fuzzy
+#: src/nautilus-navigation-window.c:1104
 msgid "One of the side panels encountered an error and can't continue."
-msgstr ""
-"가장자리 패널 중 하나가 오류를 발생하여 계속할 수 없습니다.불행하게도 어느것 "
-"인지 알 수 없습니다."
+msgstr "가장자리 패널 중 하나가 오류를 발생하여 계속할 수 없습니다."
 
-#: src/nautilus-navigation-window.c:1106
+#: src/nautilus-navigation-window.c:1105
 msgid "Unfortunately I couldn't tell which one."
-msgstr ""
+msgstr "불행하게도 어느 것인지 알 수 없습니다."
+
+#: src/nautilus-navigation-window.c:1108
+#, c-format
+msgid "The %s side panel encountered an error and can't continue."
+msgstr "%s 보기가 시작할 때 오류가 발생해서 계속 할 수 없습니다."
 
 #: src/nautilus-navigation-window.c:1109
-#, fuzzy, c-format
-msgid "The %s side panel encountered an error and can't continue."
-msgstr "%s 보기가 시작할 때 오류가 발생하였습니다."
-
-#: src/nautilus-navigation-window.c:1110
-#, fuzzy
 msgid "If this keeps happening, you might want to turn this panel off."
-msgstr ""
-"%s 가장자리 패널이 오류를 발생하여 계속할 수 없습니다. 계속 발생된다면 이 패"
-"널을 꺼두는 편이 좋습니다."
+msgstr "계속 발생된다면 이 가장자리 창을 꺼두는 편이 좋습니다."
 
-#: src/nautilus-navigation-window.c:1113
+#: src/nautilus-navigation-window.c:1112
 msgid "Side Panel Failed"
-msgstr "가장자리 패널 실패"
+msgstr "가장자리 창 실패"
 
-#: src/nautilus-navigation-window.c:1244
+#: src/nautilus-navigation-window.c:1243
 msgid "Side Pane"
 msgstr "가장자리 창"
 
-#: src/nautilus-navigation-window.c:1246
+#: src/nautilus-navigation-window.c:1245
 msgid "Contains a side pane view"
 msgstr "가장자리 창 보기를 포함합니다"
 
@@ -6883,185 +6375,180 @@ msgstr "지우기(_R)..."
 msgid "_Add new..."
 msgstr "새 것 더하기(_A)..."
 
-#: src/nautilus-property-browser.c:913
+#: src/nautilus-property-browser.c:914
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
 msgstr "반복 무늬 %s은(는) 지울 수 없습니다."
 
-#: src/nautilus-property-browser.c:914
-msgid "Check that you have permission to delete the pattern."
-msgstr ""
-
 #: src/nautilus-property-browser.c:915
-#, fuzzy
+msgid "Check that you have permission to delete the pattern."
+msgstr "반복무늬를 지울 수 있는 허가권이 있는지 확인하십시오."
+
+#: src/nautilus-property-browser.c:916
 msgid "Couldn't Delete Pattern"
 msgstr "반복무늬를 지울 수 없습니다"
 
-#: src/nautilus-property-browser.c:943
+#: src/nautilus-property-browser.c:944
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
 msgstr "꼬리표 %s을(를) 지울 수 없습니다."
 
-#: src/nautilus-property-browser.c:944
-msgid "Check that you have permission to delete the emblem."
-msgstr ""
-
 #: src/nautilus-property-browser.c:945
-#, fuzzy
+msgid "Check that you have permission to delete the emblem."
+msgstr "꼬리표를 지울 수 있는 허가권이 있는지 확인하십시오."
+
+#: src/nautilus-property-browser.c:946
 msgid "Couldn't Delete Emblem"
 msgstr "꼬리표를 지울 수 없습니다"
 
-#: src/nautilus-property-browser.c:983
+#: src/nautilus-property-browser.c:984
 msgid "Create a New Emblem:"
 msgstr "새 꼬리표를 만듭니다"
 
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:996
+#: src/nautilus-property-browser.c:997
 msgid "_Keyword:"
 msgstr "키워드(_K):"
 
 #. set up a gnome icon entry to pick the image file
-#: src/nautilus-property-browser.c:1014
+#: src/nautilus-property-browser.c:1015
 msgid "_Image:"
 msgstr "그림(_I):"
 
-#: src/nautilus-property-browser.c:1018
+#: src/nautilus-property-browser.c:1019
 msgid "Select an image file for the new emblem:"
 msgstr "새 꼬리표로 사용할 그림 파일 선택:"
 
-#: src/nautilus-property-browser.c:1042
+#: src/nautilus-property-browser.c:1043
 msgid "Create a New Color:"
 msgstr "새 색상을 만듭니다"
 
 #. make the name label and field
-#: src/nautilus-property-browser.c:1056
+#: src/nautilus-property-browser.c:1057
 msgid "Color _name:"
 msgstr "색상 이름(_N):"
 
-#: src/nautilus-property-browser.c:1072
+#: src/nautilus-property-browser.c:1073
 msgid "Color _value:"
 msgstr "색상 값(_V):"
 
-#: src/nautilus-property-browser.c:1104
+#: src/nautilus-property-browser.c:1105
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
 msgstr "\"%s\"은(는) 올바른 테마 폴더가 아닙니다."
 
-#: src/nautilus-property-browser.c:1107
+#: src/nautilus-property-browser.c:1108
 msgid "Sorry, but you did not supply a valid file name."
 msgstr "\"%s\"은(는) 올바른 파일 이름가 아닙니다."
 
-#: src/nautilus-property-browser.c:1108
+#: src/nautilus-property-browser.c:1109
 msgid "Please try again."
-msgstr ""
+msgstr "다시 시도하십시오."
 
-#: src/nautilus-property-browser.c:1110 src/nautilus-property-browser.c:1155
-#, fuzzy
+#: src/nautilus-property-browser.c:1111 src/nautilus-property-browser.c:1156
 msgid "Couldn't Install Pattern"
 msgstr "반복무늬를 설치할 수 없습니다"
 
-#: src/nautilus-property-browser.c:1121
+#: src/nautilus-property-browser.c:1122
 msgid "Sorry, but you can't replace the reset image."
 msgstr "초기화할 그림을 바꿀 수 없습니다."
 
-#: src/nautilus-property-browser.c:1122
+#: src/nautilus-property-browser.c:1123
 msgid "Reset is a special image that cannot be deleted."
-msgstr ""
+msgstr "초기화는 지울 수 없는 특별한 그림입니다."
 
-#: src/nautilus-property-browser.c:1123 src/nautilus-property-browser.c:1327
-#: src/nautilus-property-browser.c:1343
+#: src/nautilus-property-browser.c:1124 src/nautilus-property-browser.c:1328
+#: src/nautilus-property-browser.c:1344
 msgid "Not an Image"
 msgstr "그림이 아님"
 
-#: src/nautilus-property-browser.c:1154
+#: src/nautilus-property-browser.c:1155
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "반복무늬 %s은(는) 설치할 수 없습니다."
 
-#: src/nautilus-property-browser.c:1174
+#: src/nautilus-property-browser.c:1175
 msgid "Select an image file to add as a pattern"
 msgstr "무늬에 더할 그림파일을 선택하십시오"
 
-#: src/nautilus-property-browser.c:1235
-msgid "The color cannot be installed."
-msgstr ""
-
 #: src/nautilus-property-browser.c:1236
+msgid "The color cannot be installed."
+msgstr "색상을 설치할 수 없습니다."
+
+#: src/nautilus-property-browser.c:1237
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "새 색상에 대해 이름을 지정하여야 합니다."
 
-#: src/nautilus-property-browser.c:1237
-#, fuzzy
+#: src/nautilus-property-browser.c:1238
 msgid "Couldn't Install Color"
 msgstr "색상를 설치할 수 없습니다"
 
-#: src/nautilus-property-browser.c:1289
+#: src/nautilus-property-browser.c:1290
 msgid "Select a color to add"
 msgstr "더할 색상을 선택하십시오"
 
-#: src/nautilus-property-browser.c:1326 src/nautilus-property-browser.c:1342
-#, fuzzy, c-format
-msgid "Sorry, but \"%s\" is not a usable image file."
-msgstr "'%s'은(는) 사용할 수 있는 그림 파일이 아닙니다!"
-
 #: src/nautilus-property-browser.c:1327 src/nautilus-property-browser.c:1343
-#, fuzzy
-msgid "The file is not an image."
-msgstr "파일 '%s'(이)가  올바른 그림파일이 아닌것 같습니다."
+#, c-format
+msgid "Sorry, but \"%s\" is not a usable image file."
+msgstr "\"%s\"은(는) 사용할 수 있는 그림 파일이 아닙니다!"
 
-#: src/nautilus-property-browser.c:2050
+#: src/nautilus-property-browser.c:1328 src/nautilus-property-browser.c:1344
+msgid "The file is not an image."
+msgstr "파일은 올바른 그림파일이 아닙니다."
+
+#: src/nautilus-property-browser.c:2051
 msgid "Select a Category:"
 msgstr "분류 선택:"
 
-#: src/nautilus-property-browser.c:2059
+#: src/nautilus-property-browser.c:2060
 msgid "C_ancel Remove"
 msgstr "지우기 취소(_A)"
 
-#: src/nautilus-property-browser.c:2065
+#: src/nautilus-property-browser.c:2066
 msgid "_Add a New Pattern..."
 msgstr "새 무늬 더하기(_A)..."
 
-#: src/nautilus-property-browser.c:2068
+#: src/nautilus-property-browser.c:2069
 msgid "_Add a New Color..."
 msgstr "새 색상 더하기(_A)..."
 
-#: src/nautilus-property-browser.c:2071
+#: src/nautilus-property-browser.c:2072
 msgid "_Add a New Emblem..."
 msgstr "새 꼬리표 더하기(_A)..."
 
-#: src/nautilus-property-browser.c:2094
+#: src/nautilus-property-browser.c:2095
 msgid "Click on a pattern to remove it"
 msgstr "무늬를 지울려면 클릭하십시오"
 
-#: src/nautilus-property-browser.c:2097
+#: src/nautilus-property-browser.c:2098
 msgid "Click on a color to remove it"
 msgstr "색상을 지우려면 클릭하십시오"
 
-#: src/nautilus-property-browser.c:2100
+#: src/nautilus-property-browser.c:2101
 msgid "Click on an emblem to remove it"
 msgstr "꼬리표를 지우려면 클릭하십시오"
 
-#: src/nautilus-property-browser.c:2109
+#: src/nautilus-property-browser.c:2110
 msgid "Patterns:"
 msgstr "무늬:"
 
-#: src/nautilus-property-browser.c:2112
+#: src/nautilus-property-browser.c:2113
 msgid "Colors:"
 msgstr "색상:"
 
-#: src/nautilus-property-browser.c:2115
+#: src/nautilus-property-browser.c:2116
 msgid "Emblems:"
 msgstr "꼬리표:"
 
-#: src/nautilus-property-browser.c:2135
+#: src/nautilus-property-browser.c:2136
 msgid "_Remove a Pattern..."
 msgstr "무늬 지우기(_R)..."
 
-#: src/nautilus-property-browser.c:2138
+#: src/nautilus-property-browser.c:2139
 msgid "_Remove a Color..."
 msgstr "색상 지우기(_R)..."
 
-#: src/nautilus-property-browser.c:2141
+#: src/nautilus-property-browser.c:2142
 msgid "_Remove an Emblem..."
 msgstr "꼬리표 지우기(_R)..."
 
@@ -7447,14 +6934,12 @@ msgid "CD _Creator"
 msgstr "CD 만들기(_C)"
 
 #: src/nautilus-spatial-window-ui.xml.h:2
-#, fuzzy
 msgid "Close P_arent Folders"
-msgstr "모든 부모 폴더 닫기(_A)"
+msgstr "모든 상위 폴더 닫기(_P)"
 
 #: src/nautilus-spatial-window-ui.xml.h:3
-#, fuzzy
 msgid "Close this folder's parents"
-msgstr "가장자리 창 닫기"
+msgstr "이 폴더의 상위 폴더를 닫습니다"
 
 #: src/nautilus-spatial-window-ui.xml.h:5
 msgid "Go to Computer"
@@ -7469,12 +6954,12 @@ msgid "Open _Location..."
 msgstr "위치 열기(_L)..."
 
 #: src/nautilus-spatial-window-ui.xml.h:10
-msgid "Open _Pa_rent"
-msgstr "부모 폴더 열기(_P)"
+msgid "Open _Parent"
+msgstr "상위 폴더 열기(_P)"
 
 #: src/nautilus-spatial-window-ui.xml.h:11
 msgid "Open the parent folder"
-msgstr "부모 폴더를 엽니다"
+msgstr "상위 폴더를 엽니다"
 
 #: src/nautilus-spatial-window-ui.xml.h:14
 msgid "_Places"
@@ -7500,146 +6985,130 @@ msgstr "현재 선택"
 msgid "the type of window the view is embedded in"
 msgstr "창안에 포함된 형식"
 
-#: src/nautilus-window-manage-views.c:817
+#: src/nautilus-window-manage-views.c:830
 msgid "View Failed"
 msgstr "보기 실패"
 
-#: src/nautilus-window-manage-views.c:828
-#, fuzzy, c-format
+#: src/nautilus-window-manage-views.c:841
+#, c-format
 msgid "The %s view encountered an error and can't continue."
-msgstr "%s 보기가 시작할 때 오류가 발생하였습니다."
+msgstr "%s 보기가 시작할 때 오류가 발생해서 계속할 수 없습니다."
 
-#: src/nautilus-window-manage-views.c:829
-#, fuzzy
+#: src/nautilus-window-manage-views.c:842
 msgid "You can choose another view or go to a different location."
-msgstr ""
-"%s 보기가  오류를 발생하여 계속할 수 없습니다. 계속 발생된다면 다른 보기를 선"
-"택하거나 다른 위치로 갈 수 있습니다."
+msgstr "다른 보기를 선택하거나 다른 위치로 갈 수 있습니다."
 
-#: src/nautilus-window-manage-views.c:839
+#: src/nautilus-window-manage-views.c:852
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "%s 보기가 시작할 때 오류가 발생하였습니다."
 
-#: src/nautilus-window-manage-views.c:840
-#, fuzzy
+#: src/nautilus-window-manage-views.c:853
 msgid "The location cannot be displayed with this viewer."
-msgstr "이 창에 연결된 노틸러스 응용프로그램."
+msgstr "이 보기 프로그램에서 위치를 보여줄 수 없습니다."
 
-#: src/nautilus-window-manage-views.c:987
+#: src/nautilus-window-manage-views.c:1000
 msgid "Content View"
 msgstr "내용보기 프로그램"
 
-#: src/nautilus-window-manage-views.c:988
+#: src/nautilus-window-manage-views.c:1001
 msgid "View of the current file or folder"
 msgstr "현재 파일이나 폴더를 보여줍니다"
 
-#: src/nautilus-window-manage-views.c:1242
-#, fuzzy, c-format
+#: src/nautilus-window-manage-views.c:1255
+#, c-format
 msgid "Couldn't find \"%s\"."
-msgstr "꼬리표를 더할 수 없습니다"
+msgstr "\"%s\"(을)를 찾을 수 없습니다."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1266
-#: src/nautilus-window-manage-views.c:1276
-#: src/nautilus-window-manage-views.c:1290
-#: src/nautilus-window-manage-views.c:1298
-#: src/nautilus-window-manage-views.c:1304
-#: src/nautilus-window-manage-views.c:1324
-#, fuzzy, c-format
-msgid "Couldn't display \"%s\"."
-msgstr "노틸러스가 \"%s\"을(를) 보여 줄 수 없습니다."
-
-#: src/nautilus-window-manage-views.c:1269
-#, fuzzy
-msgid "Nautilus cannot determine what type of file it is."
-msgstr ""
-"\"%s\"을(를) 보여 줄 수 없습니다. 어떤 형식의 파일인지 결정할 수 없습니다"
-
 #: src/nautilus-window-manage-views.c:1279
-#, fuzzy
-msgid "Nautilus has no installed viewer capable of displaying the file."
-msgstr "\"%s\"을(를) 보여 줄 수 있는 보기 프로그램이 설치되어 있지 않았습니다."
+#: src/nautilus-window-manage-views.c:1289
+#: src/nautilus-window-manage-views.c:1303
+#: src/nautilus-window-manage-views.c:1311
+#: src/nautilus-window-manage-views.c:1317
+#: src/nautilus-window-manage-views.c:1337
+#, c-format
+msgid "Couldn't display \"%s\"."
+msgstr "\"%s\"을(를) 보여 줄 수 없습니다."
+
+#: src/nautilus-window-manage-views.c:1282
+msgid "Nautilus cannot determine what type of file it is."
+msgstr "어떤 형식의 파일인지 결정할 수 없습니다"
 
 #: src/nautilus-window-manage-views.c:1292
-#, fuzzy, c-format
+msgid "Nautilus has no installed viewer capable of displaying the file."
+msgstr ""
+"노틸러스에 파일을 보여 줄 수 있는 보기 프로그램이 설치되어 있지 않았습니다."
+
+#: src/nautilus-window-manage-views.c:1305
+#, c-format
 msgid "Nautilus cannot handle %s: locations."
-msgstr ""
-"\"%s\"을(를) 보여 줄 수 없습니다. %s: 형식의 위치를 처리할 수 없습니다."
+msgstr "%s: 형식의 위치를 처리할 수 없습니다."
 
-#: src/nautilus-window-manage-views.c:1300
-#, fuzzy
+#: src/nautilus-window-manage-views.c:1313
 msgid "The attempt to log in failed."
-msgstr "\"%s\"을(를) 보여 줄 수 없습니다. 로그인 시도가 실패하였습니다.."
-
-#: src/nautilus-window-manage-views.c:1306
-msgid "Access was denied."
-msgstr ""
-
-#: src/nautilus-window-manage-views.c:1316
-#, fuzzy, c-format
-msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
-msgstr "접근이 거부되어 \"%s\"을(를) 보여 줄 수 없습니다."
+msgstr "로그인 시도가 실패하였습니다."
 
 #: src/nautilus-window-manage-views.c:1319
-#, fuzzy
+msgid "Access was denied."
+msgstr "접근이 거부되었습니다."
+
+#: src/nautilus-window-manage-views.c:1329
+#, c-format
+msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
+msgstr "\"%2$s\"호스트를 찾을 수 없어서 \"%1$s\"(을)를 보여줄 수 없습니다."
+
+#: src/nautilus-window-manage-views.c:1332
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
-msgstr ""
-"\"%s\"을(를) 보여 줄 수 없는 데, 그것은 \"%s\" 호스트를 찾을 수 없기 때문입니"
-"다. 맞춤법이 올바르고 프록시 설정이 올바른지 확인하십시오."
+msgstr "맞춤법이 올바르고 프록시 설정이 올바른지 확인하십시오."
 
-#: src/nautilus-window-manage-views.c:1326
-#, fuzzy
+#: src/nautilus-window-manage-views.c:1339
 msgid "Check that your proxy settings are correct."
-msgstr "\"%s\"을(를) 보여 줄 수 없습니다. 프록시 설정이 올바른지 확인하십시오."
+msgstr "프록시 설정이 올바른지 확인하십시오."
 
-#: src/nautilus-window-manage-views.c:1331
-#, fuzzy, c-format
+#: src/nautilus-window-manage-views.c:1344
+#, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
 "browser."
 msgstr ""
-"\"%s\"을(를) 보여 줄 수 없습니다. %s: 형식의 위치를 처리할 수 없습니다."
+"\"%s\"을(를) 보여 줄 수 없습니다. 노틸러스가 SMB 마스터 브라우저에 연결할 수 "
+"없습니다."
 
-#: src/nautilus-window-manage-views.c:1334
+#: src/nautilus-window-manage-views.c:1347
 msgid "Check that an SMB server is running in the local network."
-msgstr ""
+msgstr "SMB서버가 로컬네트워크에서 실행되고 있는지 확인하십시오."
 
-#: src/nautilus-window-manage-views.c:1344
-#, fuzzy
+#: src/nautilus-window-manage-views.c:1357
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running."
 msgstr ""
 "찾기가 지금 바로 실행할 수 없습니다, 색인이 없거나 찾기 서비스가 실행되고있"
-"지 않기 때문입니다. 메두사 찾기 서비스를 시작하고, 색인이 없다면 메두사인덱서"
-"를 실행하십시오."
+"지 않기 때문입니다."
 
-#: src/nautilus-window-manage-views.c:1347
-#, fuzzy
+#: src/nautilus-window-manage-views.c:1360
 msgid ""
 "Be sure that you have started the Medusa search service, and if you don't "
 "have an index, that the Medusa indexer is running."
 msgstr ""
-"찾기가 지금 바로 실행할 수 없습니다, 색인이 없거나 찾기 서비스가 실행되고있"
-"지 않기 때문입니다. 메두사 찾기 서비스를 시작하고, 색인이 없다면 메두사인덱서"
-"를 실행하십시오."
+"메두사 찾기 서비스를 시작하고, 색인이 없다면 메두사인덱서를 실행하십시오."
 
-#: src/nautilus-window-manage-views.c:1349
+#: src/nautilus-window-manage-views.c:1362
 msgid "Searching Unavailable"
 msgstr "찾기를 할 수 없음"
 
-#: src/nautilus-window-manage-views.c:1354
+#: src/nautilus-window-manage-views.c:1367
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "노틸러스가 \"%s\"을(를) 보여 줄 수 없습니다."
 
-#: src/nautilus-window-manage-views.c:1356
+#: src/nautilus-window-manage-views.c:1369
 msgid "Please select another viewer and try again."
-msgstr ""
+msgstr "다른 보기 프로그램을 선택하고 다시 시도하십시오."
 
-#: src/nautilus-window-manage-views.c:1360
+#: src/nautilus-window-manage-views.c:1373
 msgid "Can't Display Location"
 msgstr "위치를 보여 줄 수 없습니다"
 
@@ -7661,7 +7130,7 @@ msgstr "Copyright (C) 1999-2001 Eazel, Inc."
 #.
 #: src/nautilus-window-menus.c:600 src/nautilus-window-menus.c:601
 msgid "Translator Credits"
-msgstr "차영호 <ganadist@mizi.com>"
+msgstr "차영호 <ganadist at mizi.com>"
 
 #: src/nautilus-window-menus.c:606
 msgid ""
@@ -7684,35 +7153,19 @@ msgstr "페이지 앞으로"
 msgid "Display this location with \"%s\""
 msgstr "이 위치를 \"%s\"(으)로 보여줍니다"
 
-#: src/nautilus-window.c:1178
-msgid "Network"
-msgstr "네트워크"
-
-#: src/nautilus-window.c:1180
-msgid "Fonts"
-msgstr "글꼴"
-
-#: src/nautilus-window.c:1182
-msgid "Themes"
-msgstr ""
-
-#: src/nautilus-window.c:1184
-msgid "CD Creator"
-msgstr "CD 만들기"
-
-#: src/nautilus-window.c:1624
+#: src/nautilus-window.c:1638
 msgid "Application ID"
 msgstr "응용 프로그램 ID"
 
-#: src/nautilus-window.c:1625
+#: src/nautilus-window.c:1639
 msgid "The application ID of the window."
 msgstr "창의 응용프로그램 ID"
 
-#: src/nautilus-window.c:1631
+#: src/nautilus-window.c:1645
 msgid "Application"
 msgstr "응용 프로그램"
 
-#: src/nautilus-window.c:1632
+#: src/nautilus-window.c:1646
 msgid "The NautilusApplication associated with this window."
 msgstr "이 창에 연결된 노틸러스 응용프로그램."
 
@@ -7747,336 +7200,3 @@ msgstr "네트워크 서버"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "노틸러스 파일 관리자에서 네트워크 서버를 봅니다"
-
-#~ msgid "Factory for hardware view"
-#~ msgstr "하드웨어 보기용 팩토리"
-
-#~ msgid "Hardware Viewer"
-#~ msgstr "하드웨어 Viewer"
-
-#~ msgid "Hardware view"
-#~ msgstr "하드웨어 보기"
-
-#~ msgid "View as Hardware"
-#~ msgstr "하드웨어로 보기"
-
-#~ msgid "hardware view"
-#~ msgstr "하드웨어 보기"
-
-#~ msgid "name of icon for the hardware view"
-#~ msgstr "하드웨어 보기를 위한 아이콘 이름"
-
-#~ msgid "summary of hardware info"
-#~ msgstr "하드웨어 정보 요약"
-
-#~ msgid ""
-#~ "%s CPU\n"
-#~ "%s MHz\n"
-#~ "%s K cache size"
-#~ msgstr ""
-#~ "%s CPU\n"
-#~ "%s MHz\n"
-#~ "%s K cache 크기"
-
-#~ msgid "%lu GB RAM"
-#~ msgstr "%lu GB 램"
-
-#~ msgid "%lu MB RAM"
-#~ msgstr "%lu MB 램"
-
-#~ msgid "%lu GB"
-#~ msgstr "%lu GB"
-
-#~ msgid "%lu MB"
-#~ msgstr "%lu MB"
-
-#~ msgid "Uptime is %d days, %d hours, %d minutes"
-#~ msgstr "%d 일, %d 시간, %d 분 동안 가동되고 있습니다"
-
-#~ msgid "Hardware Overview"
-#~ msgstr "하드웨어 대략보기"
-
-#~ msgid "This is a placeholder for the CPU page."
-#~ msgstr "이곳에 CPU 페이지를 배치합니다."
-
-#~ msgid "This is a placeholder for the RAM page."
-#~ msgstr "이곳에 RAM 페이지를 배치합니다."
-
-#~ msgid "This is a placeholder for the IDE page."
-#~ msgstr "이곳에 IDE 페이지를 배치합니다."
-
-#~ msgid ""
-#~ "Error while copying to \"%s\".\n"
-#~ "\n"
-#~ "There is not enough space on the destination."
-#~ msgstr ""
-#~ "\"%s\"을(를) 복사하는 중 오류.\n"
-#~ "\n"
-#~ "목표에 남은 공간이 없습니다."
-
-#~ msgid ""
-#~ "Error while creating link in \"%s\".\n"
-#~ "\n"
-#~ "There is not enough space on the destination."
-#~ msgstr ""
-#~ "\"%s\"을(를) 연결하는동안 오류.\n"
-#~ "\n"
-#~ "목표에 남은 공간이 없습니다."
-
-#~ msgid ""
-#~ "Error while moving items to \"%s\".\n"
-#~ "\n"
-#~ "You do not have permissions to write to this folder."
-#~ msgstr ""
-#~ "항목들을 \"%s\"(으)로 옮기는 중 오류.\n"
-#~ "\n"
-#~ "이 폴더에 쓸 수 있는 허가권을 가지고 있지 않습니다."
-
-#~ msgid ""
-#~ "Error while moving items to \"%s\".\n"
-#~ "\n"
-#~ "The destination disk is read-only."
-#~ msgstr ""
-#~ "항목들을 \"%s\"(으)로 옮기는 중 오류.\n"
-#~ "\n"
-#~ "목표디스크가 읽기 전용입니다."
-
-#~ msgid ""
-#~ "Error while creating links in \"%s\".\n"
-#~ "\n"
-#~ "You do not have permissions to write to this folder."
-#~ msgstr ""
-#~ "\"%s\"에 연결을 만드는 중 오류.\n"
-#~ "\n"
-#~ "이 폴더에 쓸 수 있는 허가권을 가지고 있지 않습니다."
-
-#~ msgid ""
-#~ "Error while creating links in \"%s\".\n"
-#~ "\n"
-#~ "The destination disk is read-only."
-#~ msgstr ""
-#~ "\"%s\"에 연결을 만드는동안 오류.\n"
-#~ "\n"
-#~ "목표디스크가 읽기 전용입니다."
-
-#~ msgid ""
-#~ "Error \"%s\" while copying \"%s\".\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "\"%2$s\"을(를) 복사하는 중 \"%1$s\"오류.\n"
-#~ "\n"
-#~ "계속 진행 하겠습니까?"
-
-#~ msgid ""
-#~ "Error \"%s\" while moving \"%s\".\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "\"%2$s\"을(를) 옮기는 중 \"%1$s\"오류.\n"
-#~ "\n"
-#~ "계속 진행 하겠습니까?"
-
-#~ msgid ""
-#~ "Error \"%s\" while deleting \"%s\".\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "\"%2$s\"을(를) 지우는 중 \"%1$s\"오류.\n"
-#~ "\n"
-#~ "계속 진행 하겠습니까?"
-
-#~ msgid ""
-#~ "Error \"%s\" while copying.\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "복사하는 중 \"%s\"오류.\n"
-#~ "\n"
-#~ "계속 진행 하겠습니까?"
-
-#~ msgid ""
-#~ "Error \"%s\" while linking.\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "연결하는 동안 \"%s\"오류.\n"
-#~ "\n"
-#~ "계속 진행 하겠습니까?"
-
-#~ msgid ""
-#~ "Error \"%s\" while deleting.\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "지우는 중 \"%s\"오류.\n"
-#~ "\n"
-#~ "계속 진행 하겠습니까?"
-
-#~ msgid "Can't Copy to Trash"
-#~ msgstr "휴지통으로 복사할 수 없습니다."
-
-#~ msgid ""
-#~ "The default action can't open \"%s\" because it can't access files at \"%s"
-#~ "\" locations.  No other actions are available to view this file.  If you "
-#~ "copy this file onto your computer, you may be able to open it."
-#~ msgstr ""
-#~ "기본 액션에서 \"%s\"을(를) 열 수 없습니다. \"%s\"위치에 있는 파일을 접근"
-#~ "할 수 없습니다. 이 파일을 볼 수 있는 다른 액션이 없습니다. 여러분의 컴퓨터"
-#~ "로 파일을 복사하면, 열 수 있을 수도 있습니다."
-
-#~ msgid "Searching Disks"
-#~ msgstr "디스크 찾기"
-
-#~ msgid "Nautilus is searching your disks for trash folders."
-#~ msgstr "노틸러스가 휴지통 폴더를 찾는 중입니다."
-
-#~ msgid ""
-#~ "The %d selected items cannot be moved to the Trash. Do you want to delete "
-#~ "them immediately?"
-#~ msgstr ""
-#~ "%d개의 선택된 항목은 휴지통으로 보낼 수 없습니다. 지금 바로 지워버릴까요?"
-
-#~ msgid ""
-#~ "%d of the selected items cannot be moved to the Trash. Do you want to "
-#~ "delete those %d items immediately?"
-#~ msgstr ""
-#~ "%d개의 선택된 항목은 휴지통으로 보낼 수 없습니다. 지금 바로 그 %d개의 항목"
-#~ "을 지워버릴까요?"
-
-#~ msgid ""
-#~ "The file that you dropped is not an image.  You can only use local images "
-#~ "as custom icons."
-#~ msgstr ""
-#~ "끌어 놓은 파일은 그림파일이 아닙니다. 로컬에 있는 그림으로만 사용자 아이콘"
-#~ "으로 쓸 수 있습니다"
-
-#~ msgid ""
-#~ "Sorry, but the Medusa search service is not available because it is not "
-#~ "installed."
-#~ msgstr "메두사 찾기 서비스가 설치되지 않았기 때문에 가능하지 않습니다"
-
-#~ msgid ""
-#~ "Once a day your files and text content are indexed so your searches are "
-#~ "fast.  Your files are currently being indexed."
-#~ msgstr ""
-#~ "하루에 한번씩 여러분의 파일과 텍스트 내용이 색인화 되어서 찾기가 빨라집니"
-#~ "다. 파일이 현재 색인화 되고 있습니다."
-
-#~ msgid ""
-#~ "\"%s\" is not a valid location. Please check the spelling and try again."
-#~ msgstr ""
-#~ "\"%s\"은(는) 올바른 위치가 아닙니다.\n"
-#~ "정확히 입력하였는지 확인하시고 다시 시도 해보십시오."
-
-#~ msgid ""
-#~ "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
-#~ "browser.\n"
-#~ "Check that an SMB server is running in the local network."
-#~ msgstr ""
-#~ "\"%s\"을(를) 보여 줄 수 없습니다. 노틸러스가 SMB 마스터 브라우저에 연결할 "
-#~ "수 없습니다.\n"
-#~ "로컬 네트워크에서 SMB서버가 실행되고 있는지 확인하삽시오."
-
-#~ msgid "file icon"
-#~ msgstr "파일 아이콘"
-
-#~ msgid "Name:"
-#~ msgstr "이름(_N):"
-
-#~ msgid "Unknown"
-#~ msgstr "알 수 없음"
-
-#~ msgid "Floppy"
-#~ msgstr "플로피"
-
-#~ msgid "CD-ROM"
-#~ msgstr "CD-ROM"
-
-#~ msgid "Zip Drive"
-#~ msgstr "집 드라이브"
-
-#~ msgid "Audio CD"
-#~ msgstr "음악 CD"
-
-#~ msgid "Root Volume"
-#~ msgstr "루트 볼륨"
-
-#~ msgid ""
-#~ "Nautilus was unable to mount the floppy drive. There is probably no "
-#~ "floppy in the drive."
-#~ msgstr ""
-#~ "노틸러스가 플로피 드라이브를 마운트 할 수 없습니다. 아마도 플로피 드라이브"
-#~ "에 디스크가 없는것 같습니다."
-
-#~ msgid ""
-#~ "Nautilus was unable to mount the volume. There is probably no media in "
-#~ "the device."
-#~ msgstr ""
-#~ "노틸러스가 볼륨을 마운트 할 수 없습니다. 아마도 장치에 매체가 없는것 같습"
-#~ "니다."
-
-#~ msgid ""
-#~ "Nautilus was unable to mount the floppy drive. The floppy is probably in "
-#~ "a format that cannot be mounted."
-#~ msgstr ""
-#~ "노틸러스가 선택한 플로피 드라이브를 마운트 할 수 없습니다. 아마도 플로피"
-#~ "가 마운트 할 수 없는 형식으로 되어 있습니다."
-
-#~ msgid ""
-#~ "Nautilus was unable to mount the selected volume. The volume is probably "
-#~ "in a format that cannot be mounted."
-#~ msgstr ""
-#~ "노틸러스가 선택한 볼륨을 마운트 할 수 없습니다. 아마도 볼륨이 마운트 할 "
-#~ "수 없는 형식으로 되어 있습니다."
-
-#~ msgid "Nautilus was unable to mount the selected floppy drive."
-#~ msgstr "노틸러스가 선택한 플로피 드라이브를 마운트 할 수 없습니다."
-
-#~ msgid "Nautilus was unable to mount the selected volume."
-#~ msgstr "노틸러스가 선택한 볼륨을 마운트 할 수 없습니다"
-
-#~ msgid "Nautilus was unable to unmount the selected volume."
-#~ msgstr "노틸러스가 선택한 볼륨을 언마운트 할 수 없습니다."
-
-#~ msgid "ISO 9660 Volume"
-#~ msgstr "ISO 9660 볼륨"
-
-#~ msgid "Error executing utility program '%s': %s"
-#~ msgstr "유틸리티 프로그램 '%s' 실행중 오류: %s"
-
-#~ msgid "Dis_ks"
-#~ msgstr "디스크(_K)"
-
-#~ msgid "Mount or unmount disks"
-#~ msgstr "디스크를 마운트/언마운트"
-
-#~ msgid "Open _in This Window"
-#~ msgstr "이 창에서 열기(_I)"
-
-#~ msgid "_Open activated item in a new window"
-#~ msgstr "활성화 된 항목을 새 창에서 열기(_O)"
-
-#~ msgid "Change the visibility of this window's toolbar"
-#~ msgstr "창의 도구 모음의 보기여부를 바꿉니다"
-
-#~ msgid "Go to the Start Here folder"
-#~ msgstr "시작 메뉴로 갑니다"
-
-#~ msgid "Open New _Window"
-#~ msgstr "새 창 열기(_W)"
-
-#~ msgid "Open another Nautilus window for the displayed location"
-#~ msgstr "보이는 위치를 다른 노틸러스창에서 엽니다"
-
-#~ msgid "_Find"
-#~ msgstr "찾기(_F)"
-
-#~ msgid "_Start Here"
-#~ msgstr "시작 메뉴(_S)"
-
-#~ msgid "_Toolbar"
-#~ msgstr "도구 모음(_T)"
-
-#~ msgid "Go to Nonexistent Location"
-#~ msgstr "없는 위치로 가기"
