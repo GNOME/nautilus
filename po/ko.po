@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: nautilus 2.5.6\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-01-31 01:31+0900\n"
-"PO-Revision-Date: 2004-01-30 17:25+0900\n"
+"PO-Revision-Date: 2004-02-08 01:54+0900\n"
 "Last-Translator: Young-Ho Cha <ganadist at mizi.com>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
@@ -253,11 +253,11 @@ msgstr "그림 정보를 읽어들이기 실패했습니다"
 
 #: components/image_properties/nautilus-image-properties-view.c:425
 msgid "loading..."
-msgstr "읽는 중..."
+msgstr "읽어들이는 중입니다..."
 
 #: components/image_properties/nautilus-image-properties-view.c:441
 msgid "URI currently displayed"
-msgstr "지금 보이는 URI"
+msgstr "현재 표시중인 URI"
 
 #: components/notes/Nautilus_View_notes.server.in.in.h:1
 msgid "Notes"
@@ -277,33 +277,33 @@ msgstr "텍스트 보기용 팩토리"
 
 #: components/text/Nautilus_View_text.server.in.in.h:2
 msgid "Text"
-msgstr "글자"
+msgstr "텍스트"
 
 #: components/text/Nautilus_View_text.server.in.in.h:3
 msgid "Text Viewer"
-msgstr "글자 보기 프로그램"
+msgstr "텍스트 보기 프로그램"
 
 #: components/text/Nautilus_View_text.server.in.in.h:4
 msgid "Text view"
-msgstr "글자 보기"
+msgstr "텍스트 보기"
 
 #: components/text/Nautilus_View_text.server.in.in.h:5
 msgid "Text view factory"
-msgstr "글자 보기 팩토리"
+msgstr "텍스트 보기 팩토리"
 
 #: components/text/Nautilus_View_text.server.in.in.h:6
 msgid "View as Text"
-msgstr "글자로 보기"
+msgstr "텍스트로 보기"
 
 #: components/text/nautilus-text-view-ui.xml.h:1
 #: libnautilus/nautilus-clipboard-ui.xml.h:2
 msgid "Copy the selected text to the clipboard"
-msgstr "클립보드에서 선택한 문자를 복사합니다"
+msgstr "선택한 텍스트를 클립보드로 복사합니다"
 
 #: components/text/nautilus-text-view-ui.xml.h:2
 #: libnautilus/nautilus-clipboard-ui.xml.h:10 src/nautilus-shell-ui.xml.h:35
 msgid "_Copy Text"
-msgstr "글자 복사(_C)"
+msgstr "텍스트 복사(_C)"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:1
 msgid "animation to indicate on-going activity"
@@ -328,7 +328,7 @@ msgstr "그래픽 상태 보기"
 
 #: data/applications.desktop.in.h:1
 msgid "Applications"
-msgstr "응용 프로그램"
+msgstr "프로그램"
 
 #: data/applications.desktop.in.h:2
 msgid "Browse available software"
@@ -448,7 +448,7 @@ msgstr "점"
 
 #: data/browser.xml.h:29
 msgid "Draft"
-msgstr "초고"
+msgstr "초안"
 
 #: data/browser.xml.h:30
 msgid "Drag a color to an object to change it to that color"
@@ -580,7 +580,7 @@ msgstr "암흑"
 
 #: data/browser.xml.h:63
 msgid "Orange"
-msgstr "오렌지"
+msgstr "주황색"
 
 #: data/browser.xml.h:64
 msgid "Package"
@@ -704,7 +704,7 @@ msgstr "사용자 환경을 설정합니다"
 
 #: data/preferences.desktop.in.h:2
 msgid "Desktop Preferences"
-msgstr "바탕환경 설정"
+msgstr "바탕 화면 기본 설정"
 
 #: data/serverconfig.desktop.in.h:1
 msgid "Configure network services (web server, DNS server, etc.)"
@@ -785,7 +785,7 @@ msgstr "하드웨어"
 
 #: data/static_bookmarks.xml.h:16
 msgid "International"
-msgstr "국제화"
+msgstr "국제"
 
 #: data/static_bookmarks.xml.h:17
 msgid "Linux Documentation Project"
@@ -953,7 +953,7 @@ msgstr "이 테마는 현실감 있는 사진 폴더를 씁니다."
 
 #: libbackground/preview-file-selection.c:207
 msgid "Can't find an hbox, using a normal file selection"
-msgstr "hbox를 찾을 수 없습니다, 보통 파일 선택으로 씁니다"
+msgstr "hbox를 찾을 수 없습니다. 보통 파일 선택을 사용합니다"
 
 #: libbackground/preview-file-selection.c:212
 #: src/nautilus-file-management-properties.glade.h:58
@@ -1001,7 +1001,7 @@ msgstr "사용자에게 표시할 열 설명"
 
 #: libnautilus-extension/nautilus-column.c:204
 msgid "xalign"
-msgstr "가로정렬"
+msgstr "가로 정렬"
 
 #: libnautilus-extension/nautilus-column.c:205
 msgid "The x-alignment of the column"
@@ -1070,11 +1070,7 @@ msgid ""
 "are: \"size\", \"type\", \"date_modified\", \"date_changed\", \"date_accessed"
 "\", \"owner\", \"group\", \"permissions\", \"octal_permissions\" and "
 "\"mime_type\"."
-msgstr ""
-"아이콘 뷰와 바탕화면에서 아이콘 밑에 들어갈 캡션 목록. 실제 캡션의 개수는 확"
-"대 수준에 따라 다릅니다. 가능한 값은: \"size\", \"type\", \"date_modified\", "
-"\"date_changed\", \"date_accessed\", \"owner\", \"group\", \"permissions\", "
-"\"octal_permissions\" 그리고 \"mime_type\"."
+msgstr "아이콘 뷰와 바탕 화면에서 아이콘 밑에 들어갈 캡션 목록. 실제 캡션의 개수는 확대 수준에 따라 다릅니다. 가능한 값은: \"size\", \"type\", \"date_modified\", \"date_changed\", \"date_accessed\", \"owner\", \"group\", \"permissions\", \"octal_permissions\" 그리고 \"mime_type\"."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:2
 msgid "Add Nautilus to session"
@@ -1086,7 +1082,7 @@ msgstr "파일을 열 때다 새 창을 엽니다"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:4
 msgid "Computer icon visible on desktop"
-msgstr "바탕화면에 컴퓨터 아이콘을 보입니다"
+msgstr "바탕 화면에 컴퓨터 아이콘을 보입니다"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:5
 msgid "Criteria for search bar searching"
@@ -1173,15 +1169,15 @@ msgstr "목록 보기의 기본 확대 수준입니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
 msgid "Desktop font"
-msgstr "바탕화면 글꼴"
+msgstr "바탕 화면 글꼴"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
 msgid "Desktop home icon name"
-msgstr "바탕화면 홈 아이콘 이름"
+msgstr "바탕 화면 홈 아이콘 이름"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:26
 msgid "Desktop trash icon name"
-msgstr "바탕화면 휴지통 아이콘 이름"
+msgstr "바탕 화면 휴지통 아이콘 이름"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:27
 msgid "Enable 'special' flags in file preferences dialog"
@@ -1220,7 +1216,7 @@ msgstr "책갈피 메뉴에서 기본 책갈피를 감춥니다"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:32
 msgid "Home icon visible on desktop"
-msgstr "바탕화면에 홈 아이콘을 보입니다"
+msgstr "바탕 화면에 홈 아이콘을 보입니다"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:33
 msgid ""
@@ -1279,7 +1275,7 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
 msgid "If set to true, then Nautilus will draw the icons on the desktop."
-msgstr "참으로 설정하면, 노틸러스가 바탕화면의 아이콘을 그립니다."
+msgstr "참으로 설정하면, 노틸러스가 바탕 화면의 아이콘을 그립니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
 msgid ""
@@ -1301,9 +1297,7 @@ msgstr ""
 msgid ""
 "If set to true, then Nautilus will use the user's home folder as the "
 "desktop. If it is false, then it will use ~/Desktop as the desktop."
-msgstr ""
-"참으로 설정하면, 노틸러스에서 사용자의 홈 폴더를 바탕화면으로 사용합니다. 거"
-"짓이면 ~/Desktop을 바탕화면으로 사용합니다."
+msgstr "참으로 설정하면, 노틸러스에서 사용자의 홈 폴더를 바탕 화면으로 사용합니다. 거짓이면 ~/Desktop을 바탕 화면으로 사용합니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
 msgid ""
@@ -1413,11 +1407,11 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
 msgid "Nautilus handles drawing the desktop"
-msgstr "노틸러스가 바탕화면 그리기를 담당합니다"
+msgstr "노틸러스가 바탕 화면 그리기를 담당합니다"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
 msgid "Nautilus uses the users home folder as the desktop"
-msgstr "노틸러스에서 사용자의 홈 폴더를 바탕화면으로 사용합니다"
+msgstr "노틸러스에서 사용자의 홈 폴더를 바탕 화면으로 사용합니다"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
 msgid "Only show folders in the tree sidebar"
@@ -1545,18 +1539,17 @@ msgstr "새로 연 창에서 가장자리 창 뷰를 보입니다."
 msgid ""
 "This name can be set if you want a custom name for the home icon on the "
 "desktop."
-msgstr "바탕화면의 홈 아이콘의 이름을 직접 지정하려면 여기서 설정하면 됩니다."
+msgstr "바탕 화면의 홈 아이콘의 이름을 직접 지정하려면 여기서 설정하면 됩니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
-msgstr ""
-"바탕화면의 휴지통 아이콘의 이름을 직접 지정하려면 여기서 설정하면 됩니다."
+msgstr "바탕 화면의 휴지통 아이콘의 이름을 직접 지정하려면 여기서 설정하면 됩니다."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
 msgid "Trash icon visible on desktop"
-msgstr "바탕화면에 휴지통을 보여줍니다"
+msgstr "바탕 화면에 휴지통을 보여줍니다"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
 msgid "Type of click used to launch/open files"
@@ -1648,7 +1641,7 @@ msgstr "AFS 네트워크 볼륨"
 
 #: libnautilus-private/filesystem-attributes.xml.h:3
 msgid "Auto-detected Volume"
-msgstr "자동인식 볼륨"
+msgstr "자동 감지 볼륨"
 
 #: libnautilus-private/filesystem-attributes.xml.h:4
 msgid "CD Digital Audio"
@@ -1692,7 +1685,7 @@ msgstr "JFS 볼륨"
 
 #: libnautilus-private/filesystem-attributes.xml.h:14
 msgid "MSDOS Volume"
-msgstr "MSDOS 볼륨"
+msgstr "MS도스 볼륨"
 
 #: libnautilus-private/filesystem-attributes.xml.h:15
 msgid "MacOS Volume"
@@ -1752,7 +1745,7 @@ msgstr "XIAFS 볼륨"
 
 #: libnautilus-private/filesystem-attributes.xml.h:29
 msgid "Xenix Volume"
-msgstr "제닉스 볼륨"
+msgstr "Xenix 볼륨"
 
 #: libnautilus-private/nautilus-column-utilities.c:44
 msgid "The name and icon of the file."
@@ -1842,7 +1835,7 @@ msgstr "다시 초기화"
 #: libnautilus-private/nautilus-desktop-icon-file.c:163
 #: libnautilus-private/nautilus-trash-file.c:690
 msgid "on the desktop"
-msgstr "바탕화면"
+msgstr "바탕 화면"
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:105
 msgid "You cannot delete a volume icon."
@@ -1879,7 +1872,7 @@ msgstr "여기에 바로 가기 만들기(_L)"
 
 #: libnautilus-private/nautilus-dnd.c:630
 msgid "Set as _Background"
-msgstr "바탕그림으로 설정(_B)"
+msgstr "바탕 화면으로 설정(_B)"
 
 #: libnautilus-private/nautilus-dnd.c:639
 #: libnautilus-private/nautilus-dnd.c:694
@@ -1951,12 +1944,12 @@ msgstr "%2$ld개 중 %1$ld개"
 #. "From" dialog label, source path gets placed next to it in the dialog
 #: libnautilus-private/nautilus-file-operations.c:350
 msgid "From:"
-msgstr "원본 위치:"
+msgstr "어디에서:"
 
 #. "To" dialog label, source path gets placed next to it in the dialog
 #: libnautilus-private/nautilus-file-operations.c:365
 msgid "To:"
-msgstr "수신:"
+msgstr "어디로:"
 
 #: libnautilus-private/nautilus-file-operations.c:551
 #: libnautilus-private/nautilus-file-operations.c:599
@@ -2149,11 +2142,11 @@ msgstr "지우는 중 오류."
 #: libnautilus-private/nautilus-file-operations.c:1071
 #: libnautilus-private/nautilus-file-operations.c:1090
 msgid "_Skip"
-msgstr "건너뜀(_S)"
+msgstr "건너 뛰기(_S)"
 
 #: libnautilus-private/nautilus-file-operations.c:961
 msgid "_Retry"
-msgstr "재시도(_R)"
+msgstr "다시 시도(_R)"
 
 #: libnautilus-private/nautilus-file-operations.c:1027
 #, c-format
@@ -2214,13 +2207,13 @@ msgstr "모두 바꾸기(_A)"
 #: libnautilus-private/nautilus-file.c:4690
 #, c-format
 msgid "link to %s"
-msgstr "%s(으)로 바로 가기"
+msgstr "%s에 바로 가기"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1152
 #, c-format
 msgid "another link to %s"
-msgstr "다른 %s(으)로 바로 가기"
+msgstr "%s에 또다른 바로 가기"
 
 #. Localizers: Feel free to leave out the "st" suffix
 #. * if there's no way to do that nicely for a
@@ -2229,25 +2222,25 @@ msgstr "다른 %s(으)로 바로 가기"
 #: libnautilus-private/nautilus-file-operations.c:1168
 #, c-format
 msgid "%dst link to %s"
-msgstr "%2$s(으)로 %1$d번째 바로 가기"
+msgstr "%2$s에 %1$d번째 바로 가기"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1172
 #, c-format
 msgid "%dnd link to %s"
-msgstr "%2$s(으)로 %1$d번째 바로 가기"
+msgstr "%2$s에 %1$d번째 바로 가기"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1176
 #, c-format
 msgid "%drd link to %s"
-msgstr "%2$s(으)로 %1$d번째 바로 가기"
+msgstr "%2$s에 %1$d번째 바로 가기"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1180
 #, c-format
 msgid "%dth link to %s"
-msgstr "%2$s(으)로 %1$d번째 바로 가기"
+msgstr "%2$s에 %1$d번째 바로 가기"
 
 #. Localizers:
 #. * Feel free to leave out the st, nd, rd and th suffix or
@@ -2691,19 +2684,19 @@ msgstr "%Y년 %b %-d일 %A %p %-I:%M:%S"
 
 #: libnautilus-private/nautilus-file.c:2941
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
-msgstr "0000 10 00 월 오후 00:00:00"
+msgstr "0000년 10월 00일 (월) 오후 00:00:00"
 
 #: libnautilus-private/nautilus-file.c:2942
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
-msgstr "%Y년 %b %-d일 %a  %p %-I:%M:%S"
+msgstr "%Y년 %b %-d일 (%a)  %p %-I:%M:%S"
 
 #: libnautilus-private/nautilus-file.c:2944
 msgid "Mon, Oct 00 0000 at 00:00 PM"
-msgstr "0000 10 00 월 오후 00:00"
+msgstr "0000년 10월 00일 (월) 오후 00:00"
 
 #: libnautilus-private/nautilus-file.c:2945
 msgid "%a, %b %-d %Y at %-I:%M %p"
-msgstr "%Y년 %b %-d일 %a  %p %-I:%M"
+msgstr "%Y년 %b %-d일 (%a)  %p %-I:%M"
 
 #: libnautilus-private/nautilus-file.c:2947
 msgid "Oct 00 0000 at 00:00 PM"
@@ -3197,7 +3190,7 @@ msgstr ""
 #: libnautilus-private/nautilus-program-chooser.c:193
 #, c-format
 msgid "There was an error displaying help: %s"
-msgstr "도움말을 보이는 중 오류가 발생했습니다: %s"
+msgstr "도움말을 보여주는 데 오류가 발생했습니다: %s"
 
 #: libnautilus-private/nautilus-program-chooser.c:333
 msgid "not in menu"
@@ -3492,7 +3485,7 @@ msgstr ""
 #: libnautilus-private/nautilus-program-choosing.c:1047
 #, c-format
 msgid "Opening %s"
-msgstr "\"%s\"을(를) 여는 중"
+msgstr "%s 여는 중입니다"
 
 #: libnautilus-private/nautilus-program-choosing.c:1191
 msgid "Sorry, but you can't execute commands from a remote site."
@@ -3845,7 +3838,7 @@ msgstr "클립보드에 선택된 문자를 기록하지 않고 지웁니다"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:8 src/nautilus-shell-ui.xml.h:19
 msgid "Select _All"
-msgstr "전체 선택(_A)"
+msgstr "모두 선택(_A)"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:9
 msgid "Select all the text in a text field"
@@ -3932,11 +3925,11 @@ msgstr "이차원의 아이콘 공간으로 보여주는 노틸러스 파일관�
 
 #: src/Nautilus_shell.server.in.h:12
 msgid "Nautilus file manager component that shows icons on the desktop"
-msgstr "바탕화면에 아이콘을 보여주는 노틸러스 파일관리자 구성요소"
+msgstr "바탕 화면에 아이콘을 보여주는 노틸러스 파일관리자 구성요소"
 
 #: src/Nautilus_shell.server.in.h:13
 msgid "Nautilus file manager desktop icon view"
-msgstr "노틸러스 파일관리자 바탕화면 아이콘 보기"
+msgstr "노틸러스 파일관리자 바탕 화면 아이콘 보기"
 
 #: src/Nautilus_shell.server.in.h:14
 msgid "Nautilus file manager icon view"
@@ -4048,11 +4041,11 @@ msgstr "지우시겠습니까?"
 
 #: src/file-manager/fm-directory-view.c:1037
 msgid "Select Pattern"
-msgstr "파일이름 형태 선택"
+msgstr "파일이름 패턴 선택"
 
 #: src/file-manager/fm-directory-view.c:1053
 msgid "_Pattern:"
-msgstr "파일이름 형태(_P):"
+msgstr "파일이름 패턴(_P):"
 
 #: src/file-manager/fm-directory-view.c:1738
 #, c-format
@@ -4318,8 +4311,7 @@ msgstr "볼륨 마운트해제(_U)"
 #, c-format
 msgid "Open in New Window"
 msgid_plural "Open in %d New Windows"
-msgstr[0] "새 창 에서 열기"
-msgstr[1] "새 창 %d개에서 열기"
+msgstr[0] "새 창 %d개에서 열기"
 
 #: src/file-manager/fm-directory-view.c:5204
 msgid "Browse Folder"
@@ -4341,7 +4333,7 @@ msgstr "선택한 항목을 모두 지웁니다"
 #: src/file-manager/fm-directory-view.c:5588
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Mo_ve to Trash"
-msgstr "휴지통에 버리기(_M)"
+msgstr "휴지통에 버리기(_V)"
 
 #: src/file-manager/fm-directory-view.c:5236
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
@@ -4583,21 +4575,21 @@ msgstr "이름 바꾸기를 취소하시겠습니까?"
 
 #: src/file-manager/fm-icon-view.c:161
 msgid "by _Name"
-msgstr "이름순 정렬(_N)"
+msgstr "이름 순서(_N)"
 
 #: src/file-manager/fm-icon-view.c:162
 #: src/file-manager/nautilus-icon-view-ui.xml.h:13
 msgid "Keep icons sorted by name in rows"
-msgstr "이름순으로 아이콘을 정렬합니다"
+msgstr "이름 순서로 아이콘을 정렬합니다"
 
 #: src/file-manager/fm-icon-view.c:168
 msgid "by _Size"
-msgstr "크기순 정렬(_S)"
+msgstr "크기 순서(_S)"
 
 #: src/file-manager/fm-icon-view.c:169
 #: src/file-manager/nautilus-icon-view-ui.xml.h:14
 msgid "Keep icons sorted by size in rows"
-msgstr "크기순으로 아이콘을 정렬합니다"
+msgstr "크기 순서로 아이콘을 정렬합니다"
 
 #: src/file-manager/fm-icon-view.c:175
 msgid "by _Type"
@@ -4610,21 +4602,21 @@ msgstr "파일형식순으로 아이콘을 정렬합니다"
 
 #: src/file-manager/fm-icon-view.c:182
 msgid "by Modification _Date"
-msgstr "내용이 바뀐 날짜순 정렬(_D)"
+msgstr "바뀐 날짜 순서(_D)"
 
 #: src/file-manager/fm-icon-view.c:183
 #: src/file-manager/nautilus-icon-view-ui.xml.h:12
 msgid "Keep icons sorted by modification date in rows"
-msgstr "내용이 바뀐 날짜순으로 아이콘을 정렬합니다"
+msgstr "바뀐 날짜 순서로 아이콘을 정렬합니다"
 
 #: src/file-manager/fm-icon-view.c:189
 msgid "by _Emblems"
-msgstr "꼬리표순 정렬(_E)"
+msgstr "꼬리표 순서(_E)"
 
 #: src/file-manager/fm-icon-view.c:190
 #: src/file-manager/nautilus-icon-view-ui.xml.h:11
 msgid "Keep icons sorted by emblems in rows"
-msgstr "꼬리표순으로 아이콘을 정렬합니다"
+msgstr "꼬리표 순서로 아이콘을 정렬합니다"
 
 #: src/file-manager/fm-icon-view.c:1632
 #: src/file-manager/nautilus-icon-view-ui.xml.h:20
@@ -4822,7 +4814,7 @@ msgstr "MIME 형식:"
 
 #: src/file-manager/fm-properties-window.c:2305
 msgid "Modified:"
-msgstr "내용이 바뀐 날짜:"
+msgstr "바뀐 날짜:"
 
 #: src/file-manager/fm-properties-window.c:2311
 msgid "Accessed:"
@@ -4919,7 +4911,7 @@ msgstr "선택한 파일의 접근 권한을 바꿀 수 없습니다."
 
 #: src/file-manager/fm-properties-window.c:3186
 msgid "There was an error displaying help."
-msgstr "도움말을 보이는 중 오류가 발생했습니다."
+msgstr "도움말을 보여주는 데 오류가 발생했습니다."
 
 #: src/file-manager/fm-properties-window.c:3186
 msgid "Couldn't Show Help"
@@ -5183,7 +5175,7 @@ msgstr "너무 많은 결과"
 
 #: src/file-manager/fm-tree-model.c:1199
 msgid "(Empty)"
-msgstr "(비어있음)"
+msgstr "(비었음)"
 
 #: src/file-manager/fm-tree-model.c:1199
 msgid "Loading..."
@@ -5212,7 +5204,7 @@ msgstr "파일을 폴더에 붙여 넣기"
 
 #: src/file-manager/fm-tree-view.c:1033
 msgid "Move to Trash"
-msgstr "휴지통으로 보내기"
+msgstr "휴지통으로 옮기기"
 
 #: src/file-manager/fm-tree-view.c:1086
 msgid "Filesystem"
@@ -5224,7 +5216,7 @@ msgstr "네트워크 환경"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:1
 msgid "Change Desktop _Background"
-msgstr "바탕화면 바꾸기(_B)"
+msgstr "바탕 화면 바꾸기(_B)"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:2
 #: src/file-manager/nautilus-directory-view-ui.xml.h:3
@@ -5252,7 +5244,7 @@ msgstr "새 그놈 터미널 창을 엽니다"
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:8
 msgid ""
 "Show a window that lets you set your desktop background's pattern or color"
-msgstr "바탕화면의 무늬나 색을 설정할 수 있는 창을 보입니다"
+msgstr "바탕 화면의 무늬나 색을 설정할 수 있는 창을 보입니다"
 
 #. add the reset background item, possibly disabled
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:9
@@ -5263,7 +5255,7 @@ msgstr "기본 바탕색 사용(_D)"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:10
 msgid "Use the default desktop background"
-msgstr "기본 바탕화면을 사용합니다"
+msgstr "기본 바탕 화면을 사용합니다"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:1
 msgid "Choose a program with which to open the selected item"
@@ -5420,7 +5412,7 @@ msgstr "선택한 볼륨을 마운트 해제합니다"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:47
 msgid "Use the default background for this location"
-msgstr "이 위치의 기본 바탕화면을 사용합니다"
+msgstr "이 위치의 기본 바탕 화면을 사용합니다"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:48
 msgid "View or modify the properties of each selected item"
@@ -5476,23 +5468,23 @@ msgstr "내용이 바뀐 날짜순 정렬(_D)"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:3
 msgid "By _Emblems"
-msgstr "꼬리표순 정렬(_E)"
+msgstr "꼬리표 순서(_E)"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:4
 msgid "By _Name"
-msgstr "이름순 정렬(_N)"
+msgstr "이름 순서(_N)"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:5
 msgid "By _Size"
-msgstr "크기순 정렬(_S)"
+msgstr "크기 순서(_S)"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:6
 msgid "By _Type"
-msgstr "형식순 정렬(_T)"
+msgstr "형식 순서(_T)"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:7
 msgid "Clean _Up by Name"
-msgstr "이름순으로 정리(_U)"
+msgstr "이름 순서로 정리(_U)"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:8
 msgid "Compact _Layout"
@@ -5668,23 +5660,21 @@ msgstr ""
 
 #: src/nautilus-application.c:341
 msgid "Link To Old Desktop"
-msgstr "옛날 바탕화면으로 연결"
+msgstr "옛날 바탕 화면에 연결"
 
 #: src/nautilus-application.c:357
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
-msgstr "\"옛날 바탕화면으로 연결\"라는 바로 가기를 바탕화면에 만듭니다."
+msgstr "\"옛날 바탕 화면에 연결\"라는 바로 가기를 바탕 화면에 만듭니다."
 
 #: src/nautilus-application.c:358
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
-msgstr ""
-"그놈 2.4에서 바탕화면 디렉토리가 바뀌었습니다. 이 바로 가기를 열어서 옛날 파"
-"일들을 옮겨 온 다음, 바로 가기를 지우십시오."
+msgstr "그놈 2.4에서 바탕 화면 디렉토리가 바뀌었습니다. 이 바로 가기를 열어서 옛날 파일들을 옮겨 온 다음, 바로 가기를 지우십시오."
 
 #: src/nautilus-application.c:360
 msgid "Migrated Old Desktop"
-msgstr "옛날 바탕화면에서 바꾸기"
+msgstr "옛날 바탕 화면에서 옮겨 오기"
 
 #. Can't register myself due to trouble locating the
 #. * Nautilus_Shell.server file. This has happened when you
@@ -5877,7 +5867,7 @@ msgstr "연결(_O)"
 
 #: src/nautilus-desktop-window.c:356
 msgid "Desktop"
-msgstr "바탕화면"
+msgstr "바탕 화면"
 
 #: src/nautilus-file-management-properties.c:307
 msgid "None"
@@ -6009,7 +5999,7 @@ msgstr "MIME 형식"
 
 #: src/nautilus-file-management-properties.glade.h:57
 msgid "Never"
-msgstr "전혀"
+msgstr "전혀 사용하지 않기"
 
 #: src/nautilus-file-management-properties.glade.h:59
 msgid "Preview _sound files:"
@@ -6179,7 +6169,7 @@ msgstr "다중 창으로 보기?"
 
 #: src/nautilus-location-dialog.c:137
 msgid "Open Location"
-msgstr "위치를 엽니다"
+msgstr "위치 열기"
 
 #: src/nautilus-location-dialog.c:147
 msgid "_Location:"
@@ -6191,11 +6181,11 @@ msgstr "고속 자기 검사 수행."
 
 #: src/nautilus-main.c:191
 msgid "Create the initial window with the given geometry."
-msgstr "초기화 창을 주어진 위치에서 만듭니다."
+msgstr "주어진 위치와 크기에 따라 맨 처음 창을 만듭니다."
 
 #: src/nautilus-main.c:191
 msgid "GEOMETRY"
-msgstr "위치"
+msgstr "<크기및위치>"
 
 #: src/nautilus-main.c:193
 msgid "Only create windows for explicitly specified URIs."
@@ -6205,8 +6195,7 @@ msgstr "정확하게 지정된 URI에 대해서만 창을 만듭니다."
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
-msgstr ""
-"바탕화면을 관리하지 않습니다 (기본 설정 대화상자의 설정을 무시 합니다)."
+msgstr "바탕 화면을 관리하지 않습니다 (기본 설정 대화상자의 설정을 무시 합니다)."
 
 #: src/nautilus-main.c:197
 msgid "open a browser window."
@@ -6381,7 +6370,7 @@ msgstr "상태 표시줄(_A)"
 
 #: src/nautilus-navigation-window-ui.xml.h:23
 msgid "Stop"
-msgstr "멈추기"
+msgstr "중지"
 
 #: src/nautilus-navigation-window-ui.xml.h:24
 msgid "Up"
@@ -6458,7 +6447,7 @@ msgstr "정보"
 #. Add "View as..." extra bonus choice.
 #: src/nautilus-navigation-window.c:701 src/nautilus-shell-ui.xml.h:27
 msgid "View as..."
-msgstr "...로서 보기"
+msgstr "다른 프로그램으로 보기..."
 
 #: src/nautilus-navigation-window.c:733
 #, c-format
@@ -6934,7 +6923,7 @@ msgstr "내 폴더 위치로 갑니다"
 
 #: src/nautilus-shell-ui.xml.h:13
 msgid "Go up one level"
-msgstr "한단계 위로 갑니다"
+msgstr "한 단계 위로 갑니다"
 
 #: src/nautilus-shell-ui.xml.h:14
 msgid "Normal Si_ze"
@@ -7054,7 +7043,7 @@ msgstr "실행 취소(_U)"
 
 #: src/nautilus-shell-ui.xml.h:49
 msgid "_View as..."
-msgstr "...로서 보기(_V)"
+msgstr "다른 프로그램으로 보기(_V)..."
 
 #: src/nautilus-side-pane.c:395
 msgid "Close the side pane"
@@ -7291,15 +7280,15 @@ msgstr "이 위치를 \"%s\"(으)로 보여줍니다"
 
 #: src/nautilus-window.c:1606
 msgid "Application ID"
-msgstr "응용 프로그램 ID"
+msgstr "프로그램 ID"
 
 #: src/nautilus-window.c:1607
 msgid "The application ID of the window."
-msgstr "창의 응용프로그램 ID."
+msgstr "창의 프로그램 ID."
 
 #: src/nautilus-window.c:1613
 msgid "Application"
-msgstr "응용 프로그램"
+msgstr "프로그램"
 
 #: src/nautilus-window.c:1614
 msgid "The NautilusApplication associated with this window."
@@ -7323,7 +7312,7 @@ msgstr "창 크기에 맞춥니다"
 
 #: src/nautilus-zoom-control.c:796
 msgid "Zoom"
-msgstr "확대"
+msgstr "확대/축소"
 
 #: src/nautilus-zoom-control.c:802
 msgid "Set the zoom level of the current view"
