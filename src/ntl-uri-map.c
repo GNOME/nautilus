@@ -28,11 +28,20 @@
 #include "ntl-uri-map.h"
 #include "ntl-prefs.h"
 
+#include <libnautilus/nautilus-directory.h>
+#include <libnautilus/nautilus-metadata.h>
+
 #include <libgnorba/gnorba.h>
 #include <sys/types.h>
 #include <dirent.h>
 #include <limits.h>
 #include <ctype.h>
+
+/* forward declarations */
+
+static void add_components_from_metadata(NautilusNavigationInfo *navinfo);
+
+/* Nautilus View Identifiers associate a component name with a user displayable name */
 
 static NautilusViewIdentifier *
 nautilus_view_identifier_new (const char *iid, const char *name)
@@ -181,6 +190,12 @@ my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
       navinfo->content_identifiers = g_slist_append (
                                                      navinfo->content_identifiers, 
                                                      nautilus_view_identifier_new ("ntl_file_manager_list_view", "List"));
+       
+      /* besides the information in OAF/GConf, we also want to offer components that are specifically refered to in the metadata,
+      so we ask the metadata for content views here and add them accordingly.  */      
+	   
+	/* FIXME:  for now, we just do this for directories but it should apply to all places with available metadata */
+	add_components_from_metadata(navinfo);
     }
   else
     {
@@ -193,12 +208,48 @@ my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
 
   navinfo->content_identifiers = g_slist_append (navinfo->content_identifiers, 
                                                  nautilus_view_identifier_new ("nautilus_sample_content_view", "Sample"));
-
+  
   g_slist_foreach(nautilus_prefs.global_meta_views, nautilus_navinfo_append_globals, &navinfo->meta_iids);
 
  out:
   notify_ready(navinfo, notify_ready_data);
 }
+
+/* The following routine uses metadata associated with the current url to add content view components specified in the metadata */
+/* the content views are specified in the string as "componentname1:label1\ncomponentname2:label2\n..." */
+
+static void
+add_components_from_metadata(NautilusNavigationInfo *navinfo)
+{
+	NautilusDirectory *directory = nautilus_directory_get(navinfo->navinfo.requested_uri);
+	gchar *content_views = nautilus_directory_get_metadata(directory, NAUTILUS_CONTENT_VIEWS_METADATA_KEY, NULL);
+	
+	if (content_views) {
+		char **pieces;
+		const char *component_str;
+		gchar *colon_pos;
+		gint index;
+	 	pieces = g_strsplit (content_views, "\n", 0);
+	 	for (index = 0; (component_str = pieces[index]) != NULL; index++) {
+			/* break the component string into the name and label */
+			colon_pos = strchr(component_str, ':');
+			if (colon_pos) {
+				*colon_pos++ = '\0';
+				
+				/* add it to the list */
+				navinfo->content_identifiers = g_slist_append (navinfo->content_identifiers, 
+								nautilus_view_identifier_new (component_str, colon_pos));				
+			}			
+	 	}
+	 	g_strfreev (pieces);	 	 		 	
+	 	g_free(content_views); 	
+	}
+	   
+	gtk_object_unref(GTK_OBJECT(directory));
+}
+
+
+/* navinfo stuff */
 
 void
 nautilus_navinfo_init(void)
