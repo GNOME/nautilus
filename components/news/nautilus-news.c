@@ -116,6 +116,7 @@ typedef struct {
 	int remove_selection_index;
 	
 	int line_width;
+	int display_height;
 	int max_item_count;
 	uint update_interval;
 	
@@ -167,8 +168,9 @@ typedef struct {
 	time_t last_update;
 	
 	gboolean is_open;	
-	gboolean is_showing;
+	gboolean is_showing;	
 	
+	gboolean initial_load_flag;
 	gboolean channel_changed;
 	gboolean update_in_progress;
 } RSSChannelData;
@@ -182,13 +184,13 @@ typedef struct {
 #define LOGO_LEFT_OFFSET 15
 #define INITIAL_Y_OFFSET 2
 #define ITEM_POSITION 31
-#define RIGHT_ITEM_MARGIN 4
+#define RIGHT_ITEM_MARGIN 8
+#define EMPTY_MESSAGE_MARGIN 12
 #define ITEM_FONT_SIZE 11
 #define TIME_FONT_SIZE 9
 #define TIME_MARGIN_OFFSET 2
 #define TITLE_FONT_SIZE 18
 #define MINIMUM_DRAW_SIZE 16
-#define EMPTY_MESSAGE_WIDTH 100
 #define NEWS_BACKGROUND_RGBA 0xFFFFFFFF
 
 /* special prelight values for logo and triangle */
@@ -217,6 +219,7 @@ nautilus_news_make_new_channel (News *news_data,
 				gboolean is_open,
 				gboolean is_showing);
 
+/* property bag property access routines */
 static void
 get_bonobo_properties (BonoboPropertyBag *bag,
 			BonoboArg *arg,
@@ -281,7 +284,9 @@ set_bonobo_properties (BonoboPropertyBag *bag,
 	}
 }
 
-
+/* do_destroy is invoked when the nautilus view is destroyed to deallocate the resources used
+ * by the news panel
+ */
 static void
 do_destroy (GtkObject *obj, News *news)
 {
@@ -1190,7 +1195,7 @@ has_matching_uri (GList *items, const char *target_uri)
 	if (target_uri == NULL) {
 		return FALSE;
 	}
-	
+
 	mapped_target_uri = gnome_vfs_make_uri_canonical (target_uri);
 	
 	current_item = items;
@@ -1220,10 +1225,9 @@ mark_new_items (RSSChannelData *channel_data, GList *old_items)
 	
 	current_item = channel_data->items;
 	changed_count = 0;
-	while (current_item != NULL) {
-	
+	while (current_item != NULL) {	
 		item_data = (RSSItemData*) current_item->data;
-		if (!has_matching_uri (old_items, item_data->item_url)) {
+		if (!has_matching_uri (old_items, item_data->item_url) && !channel_data->initial_load_flag) {
 			item_data->new_item = TRUE;	
 			channel_data->channel_changed = TRUE;
 			nautilus_news_set_news_changed (channel_data->owner, TRUE);
@@ -1457,8 +1461,9 @@ rss_read_done_callback (GnomeVFSResult result,
 	eel_g_list_free_deep_custom (old_items, (GFunc) free_rss_data_item, NULL);
 	xmlFreeDoc (rss_document);
 	channel_data->update_in_progress = FALSE;
+	channel_data->initial_load_flag = FALSE;
 	
-	/* update the size of the display aread to reflect the new content and
+	/* update the size of the display area to reflect the new content and
 	 * schedule a redraw.
 	 */
 	if (changed_count > 0) {
@@ -1503,6 +1508,7 @@ nautilus_news_make_new_channel (News *news_data,
  	channel_data->prelight_index = -1;
 	channel_data->is_open = is_open;
 	channel_data->is_showing = is_showing;
+	channel_data->initial_load_flag = TRUE;
 	
 	if (channel_data->is_showing) {
  		nautilus_news_load_channel (news_data, channel_data);
@@ -1644,7 +1650,7 @@ static char *
 news_get_indicator_image (News *news_data)
 {
 	if (news_data->news_changed) {
-		return g_strdup ("news_bullet.png");
+		return g_strdup ("changed_bullet.png");
 	}
 	return NULL;
 }
@@ -1770,6 +1776,7 @@ configure_button_clicked (GtkWidget *widget, News *news)
 	if (!news->configure_mode) {
 		/* when exiting configure mode, update everything */		
 		nautilus_news_save_channel_state (news);		
+		update_size_and_redraw (news);
 		check_for_updates (news);
 	}
 }
@@ -2093,15 +2100,29 @@ add_channels_to_lists (News* news_data)
 	xmlFreeDoc (channel_doc);
 }
 
+/* when the empty message is resized, adjust its wrap width */
+static void
+empty_message_size_allocate (GtkWidget *widget, GtkAllocation *allocation, News *news_data)
+{
+	eel_label_set_smooth_line_wrap_width (EEL_LABEL (widget), allocation->width - 2*EMPTY_MESSAGE_MARGIN);
+}
+
 /* handle resizing the news display by recalculating our size if necessary */
 static void
-nautilus_news_size_allocate (GtkWidget *widget, GtkAllocation *allocation, News *news_data)
-{	
-	news_data->line_width = news_data->news_display->allocation.width - ITEM_POSITION; 
-	if (news_data->line_width > 0) {
+news_display_size_allocate (GtkWidget *widget, GtkAllocation *allocation, News *news_data)
+{
+	int old_line_width, old_height;
+	old_line_width = news_data->line_width;
+	old_height = news_data->display_height;
+	
+	news_data->line_width = allocation->width - ITEM_POSITION; 
+	news_data->display_height = allocation->height; 
+	
+	if (old_line_width != news_data->line_width || old_height != news_data->display_height) {
 		update_size_and_redraw (news_data);
 	}
 }
+
 
 /* code-saving utility to allocate a left-justified anti-aliased label */
 static GtkWidget *
@@ -2303,10 +2324,10 @@ set_up_main_widgets (News *news, GtkWidget *container)
  	news->news_display_scrolled_window = scrolled_window;
 	
 	/* add the empty message */
-	news->empty_message = eel_label_new (_("Click the \'Select Sites\' button to select websites to view their current headlines here."));
+	news->empty_message = eel_label_new (_("The News panel displays current headlines from your favorite websites.  Click the \'Select Sites\' button to select the sites to display."));
 	eel_label_set_smooth_font_size (EEL_LABEL (news->empty_message), 14);
+	eel_label_set_justify (EEL_LABEL (news->empty_message), GTK_JUSTIFY_LEFT);
 	eel_label_set_wrap (EEL_LABEL (news->empty_message), TRUE);	
-	eel_label_set_smooth_line_wrap_width (EEL_LABEL (news->empty_message), EMPTY_MESSAGE_WIDTH);
 
 	gtk_box_pack_start (GTK_BOX (news->main_box), news->empty_message, TRUE,
 		TRUE, 0);
@@ -2376,7 +2397,8 @@ make_news_view (const char *iid, gpointer callback_data)
 	news->timer_task = gtk_timeout_add (10000, check_for_updates, news);
 
 	/* arrange for notification when we're resized */
-	gtk_signal_connect (GTK_OBJECT (main_container), "size_allocate", nautilus_news_size_allocate, news);
+	gtk_signal_connect (GTK_OBJECT (news->news_display), "size_allocate", news_display_size_allocate, news);
+	gtk_signal_connect (GTK_OBJECT (news->empty_message), "size_allocate", empty_message_size_allocate, news);
 		
 	/* Create the nautilus view CORBA object. */
         news->view = nautilus_view_new (main_container);
@@ -2396,7 +2418,7 @@ make_news_view (const char *iid, gpointer callback_data)
 	nautilus_news_clear_changed_flags (news);
  	
         /* read the channel definition file and start loading the channels */
-        read_channel_list (news);
+	read_channel_list (news);
  
  	/* populate the configuration list */
 	add_channels_to_lists (news);
