@@ -1,16 +1,20 @@
 2001-01-19  John Sullivan  <sullivan@eazel.com>
 
-	reviewed by: <delete if not using a buddy>
+	Fixed bug 1404 (Preferences panes should be in some
+	sensible order)
 
 	* libnautilus-extensions/nautilus-global-preferences.c:
-	(global_preferences_install_visibility):
+	(global_preferences_create_dialog): Reordered panes to
+	match Arlo's simplest-to-least-simple design.
 
 2001-01-19  John Sullivan  <sullivan@eazel.com>
 
-	reviewed by: <delete if not using a buddy>
+	Fixed bug 5830 ("Show only folders in tree" shown at
+	wrong user level)
 
 	* libnautilus-extensions/nautilus-global-preferences.c:
-	(global_preferences_install_defaults):
+	(global_preferences_install_visibility): Made it visible
+	starting at intermediate level.
 
 2001-01-19  John Sullivan  <sullivan@eazel.com>
 
