@@ -1,5 +1,9 @@
 2001-07-31  Havoc Pennington  <hp@redhat.com>
 
+	* libnautilus-private/nautilus-file.c (nautilus_file_get_name):
+	get_text, not get_additional_text, for .directory files. fixes
+	sidebar names hopefully.
+
 	* libnautilus-private/nautilus-volume-monitor.c (get_mount_list):
 	/proc/mounts mtime never changes, so stat /etc/mtab.
 

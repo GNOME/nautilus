@@ -2254,7 +2254,7 @@ nautilus_file_get_name (NautilusFile *file)
 		dot_dir_uri = nautilus_make_path (file_uri, ".directory");
 		g_free (file_uri);
 		
-		name = nautilus_link_impl_desktop_local_get_additional_text (dot_dir_uri);
+		name = nautilus_link_impl_desktop_local_get_text (dot_dir_uri);
 		g_free (dot_dir_uri);
 
 		if (name != NULL)
