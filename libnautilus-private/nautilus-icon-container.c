@@ -34,6 +34,7 @@
 #include "nautilus-marshal.h"
 #include "nautilus-theme.h"
 #include <eel/eel-background.h>
+#include <eel/eel-canvas-rect.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
@@ -304,7 +305,35 @@ icon_set_size (NautilusIconContainer *container,
 static void
 icon_raise (NautilusIcon *icon)
 {
-	gnome_canvas_item_raise_to_top (GNOME_CANVAS_ITEM (icon->item));
+	NautilusIconContainer *container;
+	NautilusIconRubberbandInfo *band_info;
+	GnomeCanvasItem *item;
+	GnomeCanvasGroup *parent;
+	GList *link;
+	int len;
+	
+	item = GNOME_CANVAS_ITEM (icon->item);
+	container = NAUTILUS_ICON_CONTAINER (item->canvas);
+	band_info = &container->details->rubberband_info;
+	
+	if (band_info->selection_rectangle) {
+		/* Don't raise items past the selection_rectangle */
+		if (!item->parent)
+			return;
+
+		parent = GNOME_CANVAS_GROUP (item->parent);
+		link = g_list_find (parent->item_list, item);
+		g_assert (link != NULL);
+
+		len = g_list_length (link);
+		if (len > 2) {
+			gnome_canvas_item_raise (item, len - 2);
+		} else if (len == 1) {
+			gnome_canvas_item_lower (item, 1);
+		}
+	} else {
+		gnome_canvas_item_raise_to_top (item);
+	}
 }
 
 static void
@@ -1430,7 +1459,8 @@ rubberband_timeout_callback (gpointer data)
 	band_info = &container->details->rubberband_info;
 
 	g_assert (band_info->timer_id != 0);
-	g_assert (GNOME_IS_CANVAS_RECT (band_info->selection_rectangle));
+	g_assert (GNOME_IS_CANVAS_RECT (band_info->selection_rectangle) ||
+		  EEL_IS_CANVAS_RECT (band_info->selection_rectangle));
 
 	gdk_window_get_pointer (widget->window, &x, &y, NULL);
 	gdk_window_get_pointer (GTK_LAYOUT (widget)->bin_window, &bin_x, &bin_y, NULL);
@@ -1504,8 +1534,6 @@ rubberband_timeout_callback (gpointer data)
 			   &band_info->prev_rect,
 			   &selection_rect);
 	
-	gnome_canvas_item_raise_to_top (band_info->selection_rectangle);
-	
 	band_info->prev_x = x;
 	band_info->prev_y = y;
 
@@ -1522,6 +1550,7 @@ start_rubberbanding (NautilusIconContainer *container,
 	NautilusIconRubberbandInfo *band_info;
 	uint fill_color, outline_color;
 	char *fill_color_str;
+	char *endp;
 	GList *p;
 
 	details = container->details;
@@ -1551,8 +1580,10 @@ start_rubberbanding (NautilusIconContainer *container,
 		if (fill_color_str == NULL) {
 			fill_color = 0x77BBDD40;
 		} else {
-			fill_color = strtoul (fill_color_str, NULL, 0);
-			/* FIXME: Need error handling here. */
+			fill_color = strtoul (fill_color_str, &endp, 0);
+			if (endp == fill_color_str) {
+				fill_color = 0x77BBDD40;
+			}
 			g_free (fill_color_str);
 		}
 		
@@ -1572,27 +1603,31 @@ start_rubberbanding (NautilusIconContainer *container,
 			 NULL);
 	
 	} else {
-		fill_color_str = nautilus_theme_get_theme_data ("directory", "selection_box_color");
+		fill_color_str = nautilus_theme_get_theme_data ("directory", "selection_box_color_rgba");
 		if (fill_color_str == NULL) {
-			fill_color_str = g_strdup ("#77BBDD");
+			fill_color = 0x77BBDD40;
+		} else {
+			fill_color = strtoul (fill_color_str, NULL, 0);
+			/* FIXME: Need error handling here. */
+			g_free (fill_color_str);
 		}
+		
+		outline_color = fill_color | 255;
 
 		band_info->selection_rectangle = gnome_canvas_item_new
 			(gnome_canvas_root
 			 (GNOME_CANVAS (container)),
-			 GNOME_TYPE_CANVAS_RECT,
+			 EEL_TYPE_CANVAS_RECT,
 			 "x1", band_info->start_x,
 			 "y1", band_info->start_y,
 			 "x2", band_info->start_x,
 			 "y2", band_info->start_y,
-			 "fill_color", fill_color_str,
-			 "fill_stipple", stipple,
-			 "outline_color", fill_color_str,
+			 "fill_color_rgba", fill_color,
+			 "outline_color_rgba", outline_color,
 			 "width_pixels", 1,
 			 NULL);
-		g_free (fill_color_str);
 	}
-	
+
 	band_info->prev_x = event->x;
 	band_info->prev_y = event->y;
 
@@ -3976,6 +4011,9 @@ nautilus_icon_container_add (NautilusIconContainer *container,
 	gnome_canvas_item_hide (GNOME_CANVAS_ITEM (icon->item));
 	icon->item->user_data = icon;
 
+	/* Make sure the icon is under the selection_rectangle */
+	icon_raise (icon);
+	
 	/* Put it on both lists. */
 	details->icons = g_list_prepend (details->icons, icon);
 	details->new_icons = g_list_prepend (details->new_icons, icon);

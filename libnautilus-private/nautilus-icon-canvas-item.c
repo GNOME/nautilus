@@ -138,6 +138,7 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
+static  gboolean antialias_selection_rectangle = TRUE;
 static	guint32 highlight_background_color = EEL_RGBA_COLOR_PACK (0x00, 0x00, 0x00, 0xFF);
 static	guint32 highlight_text_color	   = EEL_RGBA_COLOR_PACK (0xFF, 0xFF, 0xFF, 0xFF);
 static  guint32 highlight_text_info_color  = EEL_RGBA_COLOR_PACK (0xCC, 0xCC, 0xCC, 0xFF);
@@ -189,7 +190,10 @@ static gboolean hit_test_stretch_handle              (NautilusIconCanvasItem    
 						      ArtIRect                       canvas_rect);
 static gboolean icon_canvas_item_is_smooth           (const NautilusIconCanvasItem  *icon_item);
 
-static void     update_label_layouts                 (NautilusIconCanvasItem *item);
+static void     update_label_layouts                 (NautilusIconCanvasItem        *item);
+static void     clear_rounded_corners                (GdkPixbuf                     *destination_pixbuf,
+						      GdkPixbuf                     *corner_pixbuf,
+						      int                            corner_size);
 
 EEL_CLASS_BOILERPLATE (NautilusIconCanvasItem,
 		       nautilus_icon_canvas_item,
@@ -573,8 +577,10 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 			    int icon_bottom)
 {
 	NautilusIconCanvasItemDetails *details;
+	NautilusIconContainer *container;
 	guint width_so_far, height_so_far;
 	GnomeCanvasItem *canvas_item;
+	GdkPixbuf *text_pixbuf;
 	PangoLayout *layout;
 	guint32 label_color;
 	int layout_width, layout_height;
@@ -633,14 +639,32 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	max_text_width = floor (nautilus_icon_canvas_item_get_max_text_width (item));
 				
 	/* if the icon is highlighted, do some set-up */
-	if (needs_highlight && drawable != NULL && !details->is_renaming) {
-		gdk_rgb_gc_set_foreground (gc, highlight_background_color);
-				
-		gdk_draw_rectangle
-			(drawable, GTK_WIDGET (GNOME_CANVAS_ITEM (item)->canvas)->style->black_gc, TRUE,
-			 icon_left + (icon_width - details->text_width) / 2,
-			 icon_bottom,
-			 details->text_width, details->text_height);
+	if (needs_highlight && drawable != NULL && !details->is_renaming &&
+	    details->text_width > 0 && details->text_height > 0) {
+		if (antialias_selection_rectangle) {
+			text_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
+						      TRUE,
+						      8,
+						      details->text_width,
+						      details->text_height);
+			container = NAUTILUS_ICON_CONTAINER (GNOME_CANVAS_ITEM (item)->canvas);	
+			eel_gdk_pixbuf_fill_rectangle_with_color (text_pixbuf,
+								  eel_gdk_pixbuf_whole_pixbuf,
+								  container->details->highlight_color);
+			clear_rounded_corners (text_pixbuf, container->details->highlight_frame, 5);
+			draw_pixbuf (text_pixbuf, drawable, 
+				     icon_left + (icon_width - details->text_width) / 2,
+				     icon_bottom);
+			g_object_unref (text_pixbuf);
+		} else {
+			gdk_rgb_gc_set_foreground (gc, highlight_background_color);
+			
+			gdk_draw_rectangle
+				(drawable, GTK_WIDGET (GNOME_CANVAS_ITEM (item)->canvas)->style->black_gc, TRUE,
+				 icon_left + (icon_width - details->text_width) / 2,
+				 icon_bottom,
+				 details->text_width, details->text_height);
+		}
 		
 	}	
 
@@ -695,8 +719,14 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 
 	}
 	
-	/* add slop used for highlighting, even if we're not highlighting now */
-	width_so_far += 4;
+	if (antialias_selection_rectangle) {
+		/* add some extra space for highlighting even when we don't highlight so things won't move */
+		height_so_far += 2; /* extra slop for nicer highlighting */	
+		width_so_far += 8;  /* account for emboldening, plus extra to make it look nicer */
+	} else {
+		/* add slop used for highlighting, even if we're not highlighting now */
+		width_so_far += 4;
+	}
 
 	if (drawable != NULL) {
 		/* Current calculations should match what we measured before drawing.
@@ -1258,10 +1288,26 @@ draw_label_layout (NautilusIconCanvasItem *item,
 	if (item->details->is_renaming) {
 		return;
 	}
-	
-	gdk_draw_layout (drawable, gc,
-			 x, y,
-			 layout);
+
+	if (!highlight || !antialias_selection_rectangle) {
+		gdk_draw_layout (drawable, gc,
+				 x, y,
+				 layout);
+	} else {
+		/* draw a shadow in black */
+		gdk_draw_layout (drawable,
+				 GTK_WIDGET (GNOME_CANVAS_ITEM (item)->canvas)->style->black_gc,
+				 x + 2, y + 1,
+				 layout);
+		
+		/* draw smeared-wide text to "embolden" */
+		gdk_draw_layout (drawable, gc,
+				 x, y,
+				 layout);
+		gdk_draw_layout (drawable, gc,
+				 x+1, y,
+				 layout);
+	}
 }
 
 static void
