@@ -23,19 +23,11 @@ libnautilus_extensions_la_LDFLAGS=\
 
 fsextension_idl_sources = 	\
 	fsextension-stubs.c 	\
-	fsextension-skels.c 	\
+	fsextension-skels.c 	\ 
 	fsextension-common.c 	\
 	fsextension.h
-
-nautilus_undo_manager_component_idl_sources = 	 \
-	nautilus-undo-manager-component-stubs.c  \
-	nautilus-undo-manager-component-skels.c  \
-	nautilus-undo-manager-component-common.c \
-	nautilus-undo-manager-component.h
 	
-BUILT_SOURCES = \
-	$(fsextension_idl_sources) \
-	$(nautilus_undo_manager_component_idl_sources)
+BUILT_SOURCES = $(fsextension_idl_sources)
 
 libnautilus_extensionsincludedir=$(includedir)/libnautilus-extensions
 
@@ -45,9 +37,6 @@ libnautilus_extensionsinclude_HEADERS=		\
 	nautilus-icon-canvas-item.h		\
 	nautilus-icon-dnd.h			\
 	nautilus-icon-grid.h			\
-	nautilus-undo-manager.h			\
-	nautilus-undo-transaction.h		\
-	nautilus-undoable.h			\
 	bonobo-stream-vfs.h			\
 	gtkscrollframe.h			\
 	libnautilus-extensions.h		\
@@ -81,14 +70,10 @@ libnautilus_extensionsinclude_HEADERS=		\
 	nautilus-self-checks.h			\
 	nautilus-string-list.h			\
 	nautilus-string.h			\
-	nautilus-undo-manager.h			\
-	nautilus-undo-transaction.h		\
-	nautilus-undoable.c			\
 	nautilus-xml-extensions.h		\
 	$(NULL)
 
-libnautilus_extensions_la_SOURCES = \
-	nautilus-undo-manager-private.h		\
+libnautilus_extensions_la_SOURCES = \	
 	nautilus-file-changes-queue-private.h	\
 	nautilus-icon-private.h			\
 	nautilus-file-private.h			\
@@ -131,24 +116,15 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-self-checks.c			\
 	nautilus-string-list.c			\
 	nautilus-string.c			\
-	nautilus-undo-manager.c			\
-	nautilus-undo-transaction.c		\
-	nautilus-undoable.c			\
 	nautilus-xml-extensions.c		\
-	$(fsextension_idl_sources)		\
-	$(nautilus_undo_manager_component_idl_sources) \
+	$(fsextension_idl_sources)		\	
 	$(NULL)
 
 $(fsextension_idl_sources): fsextension_idl_stamp
 fsextension_idl_stamp: $(top_srcdir)/idl/fsextension.idl
 	orbit-idl -I${datadir}/idl `gnome-config --cflags idl` $(top_srcdir)/idl/fsextension.idl
 	touch fsextension_idl_stamp
-
-$(nautilus_undo_manager_component_idl_sources): nautilus_undo_manager_component_idl_stamp
-nautilus_undo_manager_component_idl_stamp: nautilus-undo-manager-component.idl
-	orbit-idl -I${datadir}/idl `gnome-config --cflags idl` $(srcdir)/nautilus-undo-manager-component.idl
-	touch nautilus_undo_manager_component_idl_stamp
 	
-CLEANFILES = fsextension_idl_stamp nautilus_undo_manager_component_idl_stamp
+CLEANFILES = fsextension_idl_stamp
 
 EXTRA_DIST = $(top_srcdir)/idl/fsextension.idl $(top_srcdir)/idl/GNOME_Desktop_FileOperationService.idl

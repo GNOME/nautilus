@@ -1,12 +1,23 @@
 /* -*- Mode: IDL; tab-width: 8; indent-tabs-mode: 8; c-basic-offset: 8 -*- */
 
+#ifndef _NAUTILUS_VIEW_COMPONENT_IDL_INCLUDED_
+#define _NAUTILUS_VIEW_COMPONENT_IDL_INCLUDED_
 
 #include <gnome-factory.idl>
 #include <Bonobo.idl>
-#include "../libnautilus-extensions/nautilus-undo-manager-component.idl"
+
+#if !defined(__BONOBO_COMPILATION) && defined(__ORBIT_IDL__)
+#pragma inhibit push
+#endif
+
+#include "nautilus-undo-manager-component.idl"
+
+#if !defined(__BONOBO_COMPILATION) && defined(__ORBIT_IDL__)
+#pragma inhibit pop
+#endif
 
 %{
-#pragma include_defs "libnautilus-extensions/nautilus-undo-manager-component.h"
+#pragma include_defs "libnautilus/nautilus-undo-manager-component.h"
 %}
 
 module Nautilus {
@@ -114,3 +125,4 @@ module Nautilus {
 	};
 };
 
+#endif /* _NAUTILUS_VIEW_COMPONENT_IDL_INCLUDED_ */

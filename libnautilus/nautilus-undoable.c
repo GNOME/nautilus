@@ -29,9 +29,9 @@
 #include <gtk/gtkmain.h>
 #include <glib.h>
 
-#include "nautilus-gnome-extensions.h"
-#include "nautilus-gtk-extensions.h"
-#include "nautilus-gtk-macros.h"
+#include <libnautilus-extensions/nautilus-gnome-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include "nautilus-undo-manager.h"
 
 enum {

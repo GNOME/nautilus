@@ -26,7 +26,7 @@
 #define NAUTILUS_UNDO_MANAGER_H
 
 #include <bonobo/bonobo-object.h>
-#include <libnautilus-extensions/nautilus-undo-manager-component.h>
+#include <libnautilus/nautilus-undo-manager-component.h>
 #include <bonobo/bonobo-persist.h>
 #include "nautilus-undo-transaction.h"
 

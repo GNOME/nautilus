@@ -1,3 +1,26 @@
+2000-05-10  Gene Z. Ragan  <gzr@eazel.com>
+
+	*libnautilus/nautilus-undo-manager-component.idl
+	*libnautilus/nautilus-undo-manager-private.h
+	*libnautilus/nautilus-undo-manager.c
+	*libnautilus/nautilus-undo-manager.h
+	*libnautilus/nautilus-undo-transaction.c
+	*libnautilus/nautilus-undo-transaction.h
+	*libnautilus/nautilus-undoable.c
+	*libnautilus/nautilus-undoable.h
+
+	Moved files to libnautilus so IDL comiplation would work properly
+	and at the suggestion of mjs.
+
+	*libnautilus-extensions/Makefile.am
+	Removed undo files.
+
+	*libnautilus/Makefile.am
+	Added undo files.
+
+	*libnautilus/nautilus-undo-manager-component.idl
+	Additional fixes so a clean build would occuer properly.
+	
 2000-05-10  J Shane Culpepper  <pepper@eazel.com>
 
 	*libnautilus-extensions/nautilus-undo-manger-component.idl

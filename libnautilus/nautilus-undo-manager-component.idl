@@ -1,14 +1,11 @@
 /* -*- Mode: IDL; tab-width: 8; indent-tabs-mode: 8; c-basic-offset: 8 -*- */
 
-#include <gnome-factory.idl>
-#include <Bonobo.idl>
 
 #ifndef _NAUTUILUS_UNDO_MANAGER_IDL_INCLUDED_
 #define _NAUTUILUS_UNDO_MANAGER_IDL_INCLUDED_
 
-#if !defined(__BONOBO_COMPILATION) && defined(__ORBIT_IDL__)
-#pragma inhibit push
-#endif
+#include <gnome-factory.idl>
+#include <Bonobo.idl>
 
 module Nautilus {
 
@@ -17,9 +14,5 @@ module Nautilus {
 		boolean end_transaction	();
 	};
 };
-
-#if !defined(__BONOBO_COMPILATION) && defined(__ORBIT_IDL__)
-#pragma inhibit pop
-#endif
 
 #endif /* _NAUTUILUS_UNDO_MANAGER_IDL_INCLUDED_ */
