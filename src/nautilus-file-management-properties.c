@@ -58,10 +58,8 @@
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TRASH_CONFIRM_WIDGET "trash_confirm_checkbutton"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TRASH_DELETE_WIDGET "trash_delete_checkbutton"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_OPEN_NEW_WINDOW_WIDGET "new_window_checkbutton"
-#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_MANUAL_LAYOUT_WIDGET "manual_layout_checkbutton"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SHOW_HIDDEN_WIDGET "hidden_files_checkbutton"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TREE_VIEW_FOLDERS_WIDGET "treeview_folders_checkbutton"
-#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_REVERSE_WIDGET "sort_reverse_checkbutton"
 
 /* int enums */
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_THUMBNAIL_LIMIT_WIDGET "preview_image_size_optionmenu"
@@ -330,9 +328,6 @@ nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog, GtkWindo
 					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_OPEN_NEW_WINDOW_WIDGET,
 					    NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW);
 	eel_preferences_glade_connect_bool (xml_dialog,
-					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_MANUAL_LAYOUT_WIDGET,
-					    NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT);
-	eel_preferences_glade_connect_bool (xml_dialog,
 					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SHOW_HIDDEN_WIDGET,
 					    NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
 	eel_preferences_glade_connect_bool_slave (xml_dialog,
@@ -341,13 +336,6 @@ nautilus_file_management_properties_dialog_setup (GladeXML *xml_dialog, GtkWindo
 	eel_preferences_glade_connect_bool (xml_dialog,
 					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_TREE_VIEW_FOLDERS_WIDGET,
 					    NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES);
-	eel_preferences_glade_connect_bool (xml_dialog,
-					    NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_REVERSE_WIDGET,
-					    NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER);
-	eel_preferences_glade_connect_bool_slave (xml_dialog,
-						  NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_REVERSE_WIDGET,
-						  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER);
-
 	eel_preferences_glade_connect_string_enum_option_menu (xml_dialog,
 							       NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DEFAULT_VIEW_WIDGET,
 							       NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
