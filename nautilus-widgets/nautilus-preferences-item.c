@@ -46,19 +46,19 @@ enum
 
 static const guint PREFERENCES_ITEM_TITLE_SPACING = 4;
 static const guint PREFERENCES_ITEM_FRAME_BORDER_WIDTH = 6;
+static const gint PREFERENCES_ITEM_UNDEFINED_ITEM = -1;
 
 struct _NautilusPreferencesItemDetails
 {
-	gchar				*pref_name;
+	gchar				*preference_name;
 	NautilusPreferencesItemType	item_type;
 	GtkWidget			*child;
-	GtkObject			*prefs;
+	NautilusPreferences		*preferences;
 };
 
 /* NautilusPreferencesItemClass methods */
 static void nautilus_preferences_item_initialize_class (NautilusPreferencesItemClass *klass);
 static void nautilus_preferences_item_initialize       (NautilusPreferencesItem      *preferences_item);
-
 
 
 /* GtkObjectClass methods */
@@ -71,24 +71,24 @@ static void preferences_item_get_arg                   (GtkObject               
 							guint                         arg_id);
 
 /* Private stuff */
-static void        preferences_item_construct          (NautilusPreferencesItem      *item,
-							GtkObject                    *prefs,
-							const gchar                  *pref_name,
+static void preferences_item_construct                 (NautilusPreferencesItem      *item,
+							NautilusPreferences    *preferences,
+							const gchar                  *preference_name,
 							NautilusPreferencesItemType   item_type);
-static void preferences_item_create_enum (NautilusPreferencesItem		*item,
-					  const NautilusPreferencesInfo	*pref_info);
-static void preferences_item_create_boolean (NautilusPreferencesItem		*item,
-					  const NautilusPreferencesInfo	*pref_info);
-
-static void enum_radio_group_changed_cb (GtkWidget *button_group, GtkWidget * button, gpointer user_data);
-static void boolean_button_toggled_cb (GtkWidget *button_group, gpointer user_data);
+static void preferences_item_create_enum               (NautilusPreferencesItem      *item,
+							const NautilusPreference     *prefrence);
+static void preferences_item_create_boolean            (NautilusPreferencesItem      *item,
+							const NautilusPreference     *prefrence);
+static void enum_radio_group_changed_cb                (GtkWidget                    *button_group,
+							GtkWidget                    *button,
+							gpointer                      user_data);
+static void boolean_button_toggled_cb                  (GtkWidget                    *button_group,
+							gpointer                      user_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPreferencesItem, nautilus_preferences_item, GTK_TYPE_VBOX)
 
-/*
- * NautilusPreferencesItemClass methods
- */
-	static void
+/* NautilusPreferencesItemClass methods */
+static void
 nautilus_preferences_item_initialize_class (NautilusPreferencesItemClass *preferences_item_class)
 {
 	GtkObjectClass *object_class;
@@ -126,15 +126,13 @@ nautilus_preferences_item_initialize (NautilusPreferencesItem *item)
 {
 	item->details = g_new (NautilusPreferencesItemDetails, 1);
 
-	item->details->pref_name = NULL;
-	item->details->item_type = -1;
+	item->details->preference_name = NULL;
+	item->details->item_type = PREFERENCES_ITEM_UNDEFINED_ITEM;
 	item->details->child = NULL;
-	item->details->prefs = NULL;
+	item->details->preferences = NULL;
 }
 
-/*
- * GtkObjectClass methods
- */
+/* GtkObjectClass methods */
 static void
 preferences_item_destroy (GtkObject *object)
 {
@@ -145,10 +143,13 @@ preferences_item_destroy (GtkObject *object)
 	
 	item = NAUTILUS_PREFERENCES_ITEM (object);
 
-	if (item->details->pref_name)
+	if (item->details->preference_name)
 	{
-		g_free (item->details->pref_name);
+		g_free (item->details->preference_name);
 	}
+
+	if (item->details->preferences)
+		gtk_object_unref (GTK_OBJECT (item->details->preferences));
 
 	g_free (item->details);
 	
@@ -160,7 +161,7 @@ preferences_item_destroy (GtkObject *object)
 static void
 preferences_item_set_arg (GtkObject	*object,
 			  GtkArg	*arg,
-			  guint	arg_id)
+			  guint		arg_id)
 {
 	NautilusPreferencesItem * item;
 	
@@ -205,7 +206,7 @@ preferences_item_set_arg (GtkObject	*object,
 static void
 preferences_item_get_arg (GtkObject	*object,
 			  GtkArg	*arg,
-			  guint	arg_id)
+			  guint		arg_id)
 {
 	NautilusPreferencesItem * item;
 	
@@ -230,37 +231,48 @@ preferences_item_get_arg (GtkObject	*object,
  */
 static void
 preferences_item_construct (NautilusPreferencesItem	*item,
-			    GtkObject			*prefs,
-			    const gchar			*pref_name,
+			    NautilusPreferences	*preferences,
+			    const gchar			*preference_name,
 			    NautilusPreferencesItemType	item_type)
 {
-	const NautilusPreferencesInfo	*pref_info;
+	const NautilusPreference	*preference;
 
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (prefs != NULL);
-	g_return_if_fail (pref_name != NULL);
-	g_return_if_fail (item_type != -1);
+	g_assert (item != NULL);
 
-	g_return_if_fail (item->details->child == NULL);
+	g_assert (preferences != NULL);
+	g_assert (NAUTILUS_IS_PREFERENCES (preferences));
 
-	item->details->prefs = prefs;
-	item->details->pref_name = g_strdup (pref_name);
+	g_assert (preference_name != NULL);
+	g_assert (item_type != PREFERENCES_ITEM_UNDEFINED_ITEM);
 
-	pref_info = nautilus_preferences_get_info (NAUTILUS_PREFERENCES (item->details->prefs),
-						   item->details->pref_name);
+	g_assert (item->details->child == NULL);
+
+	g_assert (item->details->preference_name == NULL);
 	
-	g_assert (pref_info != NULL);
+	item->details->preference_name = g_strdup (preference_name);
 
+	item->details->preferences = preferences;
+	
+	gtk_object_ref (GTK_OBJECT (item->details->preferences));
+	
+	preference = nautilus_preferences_get_preference (preferences,
+							  item->details->preference_name);
+	
+	g_assert (preference != NULL);
+
+	/* Create the child widget according to the item type */
 	switch (item_type)
 	{
 	case NAUTILUS_PREFERENCE_ITEM_BOOLEAN:
-		preferences_item_create_boolean (item, pref_info);
+		preferences_item_create_boolean (item, preference);
 		break;
-
+		
 	case NAUTILUS_PREFERENCE_ITEM_ENUM:
-		preferences_item_create_enum (item, pref_info);
+		preferences_item_create_enum (item, preference);
 		break;
 	}
+
+	gtk_object_unref (GTK_OBJECT (preference));
 
 	g_assert (item->details->child != NULL);
 
@@ -274,37 +286,37 @@ preferences_item_construct (NautilusPreferencesItem	*item,
 }
 
 static void
-preferences_item_create_enum (NautilusPreferencesItem		*item,
-			      const NautilusPreferencesInfo	*pref_info)
+preferences_item_create_enum (NautilusPreferencesItem	*item,
+			      const NautilusPreference	*preference)
 {
-	NautilusPreferencesEnumData	*enum_info;
-	guint				i;
-	gint				value;
+	guint	i;
+	gint	value;
 
 	g_assert (item != NULL);
-	g_assert (pref_info != NULL);
+	g_assert (preference != NULL);
 
-	g_assert (item->details->prefs != NULL);
-	g_assert (item->details->pref_name != NULL);
+	g_assert (item->details->preference_name != NULL);
 
 	item->details->child = nautilus_radio_button_group_new ();
 		
-	enum_info = (NautilusPreferencesEnumData *) pref_info->data;
+ 	value = nautilus_preferences_get_enum (item->details->preferences, 
+					       item->details->preference_name, 
+					       0);
 	
-	g_assert (enum_info != NULL);
-
-	value = nautilus_preferences_get_enum (NAUTILUS_PREFERENCES (item->details->prefs),
-					       item->details->pref_name);
-	
-	for (i = 0; i < enum_info->num_entries; i++)
-	{
-		nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (item->details->child),
-						    enum_info->enum_descriptions[i]);
+	for (i = 0; i < nautilus_preference_enum_get_num_entries (preference); i++) {
+		char *description;
 		
-		if (i == value)
-		{
+		description = nautilus_preference_enum_get_nth_entry_description (preference, i);
+
+		g_assert (description != NULL);
+
+		nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (item->details->child),
+						    description);
+
+		g_free (description);
+		
+		if (i == value) {
 			nautilus_radio_button_group_set_active_index (NAUTILUS_RADIO_BUTTON_GROUP (item->details->child), i);
-			
 		}
 	}
 	
@@ -316,48 +328,54 @@ preferences_item_create_enum (NautilusPreferencesItem		*item,
 
 static void
 preferences_item_create_boolean (NautilusPreferencesItem	*item,
-				 const NautilusPreferencesInfo	*pref_info)
+				 const NautilusPreference	*preference)
 {
-	gboolean value;
+	gboolean	value;
+	char		*description;
 
 	g_assert (item != NULL);
-	g_assert (pref_info != NULL);
+	g_assert (preference != NULL);
 
-	g_assert (item->details->prefs != NULL);
-	g_assert (item->details->pref_name != NULL);
+	g_assert (item->details->preference_name != NULL);
+	description = nautilus_preference_get_description (preference);
 
-	g_assert (pref_info->description != NULL);
+	g_assert (description != NULL);
 
-	item->details->child = gtk_check_button_new_with_label (pref_info->description);
+	item->details->child = gtk_check_button_new_with_label (description);
 
-	value = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES (item->details->prefs),
-						  item->details->pref_name);
+	g_free (description);
+
+	value = nautilus_preferences_get_boolean (item->details->preferences,
+						  item->details->preference_name,
+						  FALSE);
 
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (item->details->child), value);
 				      
-
 	gtk_signal_connect (GTK_OBJECT (item->details->child),
 			    "toggled",
 			    GTK_SIGNAL_FUNC (boolean_button_toggled_cb),
 			    (gpointer) item);
 }
 
-/*
- * NautilusPreferencesItem public methods
- */
+/* NautilusPreferencesItem public methods */
 GtkWidget *
-nautilus_preferences_item_new (GtkObject		*prefs,
-			       const gchar		*pref_name,
+nautilus_preferences_item_new (const NautilusPreferences	*preferences,
+			       const gchar			*preference_name,
 			       NautilusPreferencesItemType	item_type)
 {
 	NautilusPreferencesItem * item;
 
-	g_return_val_if_fail (prefs != NULL, NULL);
-	g_return_val_if_fail (pref_name != NULL, NULL);
+	g_return_val_if_fail (preferences != NULL, NULL);
+	g_return_val_if_fail (preference_name != NULL, NULL);
 
 	item = gtk_type_new (nautilus_preferences_item_get_type ());
 
-	preferences_item_construct (item, prefs, pref_name, item_type);
+	/* Cast away the constness so that the preferences object can be
+	 * refed in this object. */
+	preferences_item_construct (item,
+				    (NautilusPreferences *) preferences, 
+				    preference_name, 
+				    item_type);
 
 	return GTK_WIDGET (item);
 }
@@ -373,8 +391,8 @@ enum_radio_group_changed_cb (GtkWidget *buttons, GtkWidget * button, gpointer us
 
 	i = nautilus_radio_button_group_get_active_index (NAUTILUS_RADIO_BUTTON_GROUP (buttons));
 
-	nautilus_preferences_set_enum (NAUTILUS_PREFERENCES (item->details->prefs),
-				       item->details->pref_name,
+	nautilus_preferences_set_enum (NAUTILUS_PREFERENCES (item->details->preferences),
+				       item->details->preference_name,
 				       i);
 }
 
@@ -388,7 +406,7 @@ boolean_button_toggled_cb (GtkWidget *button, gpointer user_data)
 
 	active_state = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
 
-	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES (item->details->prefs),
-					  item->details->pref_name,
+	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES (item->details->preferences),
+					  item->details->preference_name,
 					  active_state);
 }

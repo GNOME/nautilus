@@ -218,6 +218,14 @@ nautilus_app_class_init (NautilusAppClass *klass)
   object_class->destroy = nautilus_app_destroy;
 
   app_parent_class = gtk_type_class (gtk_object_get_type ());
+
+	/*
+	 * Startup preferences.  This call is needed so that preferences have
+	 * decent defaults.  Not calling this function would cause some
+	 * preferences to have "not nice" defaults.  Things would still work
+	 * because it is legal to use nautilus preferences implicitly. 
+	 */
+	nautilus_global_preferences_startup ();
 }
 
 static void
@@ -242,8 +250,14 @@ nautilus_app_new      (void)
 static void
 nautilus_app_destroy(GtkObject *object)
 {
-  /* Do those things that gotta be done just once before quitting */
-  nautilus_global_preferences_shutdown ();
+	/*
+	 * Shutdown preferences.  This is needed so that the global preferences
+	 * obejct and all its allocations are freed.  Not calling this function
+	 * would have NOT cause the user to lose preferences.  The only effect
+	 * would be to leak those objects - which would be collected at exit()
+	 * time anyway, but it adds noice to memory profile tool runs. 
+	 */
+	nautilus_global_preferences_shutdown ();
 
   nautilus_bookmarks_exiting();
   GTK_OBJECT_CLASS(app_parent_class)->destroy(object);

@@ -57,15 +57,20 @@ struct _NautilusPreferencesPaneClass
 	void (*construct) (NautilusPreferencesPane *prefs_pane, GtkWidget *box);
 };
 
-GtkType    nautilus_preferences_pane_get_type        (void);
-GtkWidget* nautilus_preferences_pane_new             (const gchar       *pane_title,
-						      const gchar       *pane_description);
-void       nautilus_preferences_pane_set_title       (NautilusPreferencesPane *prefs_pane,
-						      const gchar       *pane_title);
-void       nautilus_preferences_pane_set_description (NautilusPreferencesPane *prefs_pane,
-						      const gchar       *pane_description);
-void       nautilus_preferences_pane_add_group       (NautilusPreferencesPane *prefs_pane,
-						      GtkWidget         *prefs_group);
+GtkType    nautilus_preferences_pane_get_type              (void);
+GtkWidget* nautilus_preferences_pane_new                   (const gchar                 *pane_title,
+							    const gchar                 *pane_description);
+void       nautilus_preferences_pane_set_title             (NautilusPreferencesPane     *prefs_pane,
+							    const gchar                 *pane_title);
+void       nautilus_preferences_pane_set_description       (NautilusPreferencesPane     *prefs_pane,
+							    const gchar                 *pane_description);
+GtkWidget *nautilus_preferences_pane_add_group             (NautilusPreferencesPane     *prefs_pane,
+							    const char                  *group_title);
+GtkWidget *nautilus_preferences_pane_add_item_to_nth_group (NautilusPreferencesPane     *prefs_pane,
+							    guint                        n,
+							    const NautilusPreferences   *preferences,
+							    const char                  *preference_name,
+							    NautilusPreferencesItemType  item_type);
 
 BEGIN_GNOME_DECLS
 

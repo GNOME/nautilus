@@ -7,33 +7,35 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 
-static void test_radio_group (void);
-static void test_preferences_group (void);
-static void test_preferences_item (void);
+static void                 test_radio_group          (void);
+static void                 test_preferences_group    (NautilusPreferences *preferences);
+static void                 test_preferences_item     (void);
+static void                 test_radio_changed_signal (GtkWidget           *button_group,
+						       gpointer             user_data);
+static NautilusPreferences *create_global_preferences (void);
+GtkWidget *                 create_enum_item          (const char          *preference_name);
+GtkWidget *                 create_bool_item          (const char          *preference_name);
 
+static NautilusPreferences * global_preferences = NULL;
 
-static void test_radio_changed_signal (GtkWidget *button_group, gpointer user_data);
+enum
+{
+	FRUIT_APPLE,
+	FRUIT_ORANGE,
+	FRUIT_BANNANA
+};
 
-static GtkObject *
-create_dummy_prefs (void);
-
-GtkWidget *
-create_enum_item (void);
-
-GtkWidget *
-create_bool_item (void);
-
-static GtkObject * dummy_prefs = NULL;
+static const char FRUIT_PREFERENCE[] = "/a/very/fruity/path";
 
 int
 main (int argc, char * argv[])
 {
 	gtk_init (&argc, &argv);
 
-	dummy_prefs = create_dummy_prefs ();
+	global_preferences = create_global_preferences ();
 	
 	test_radio_group ();
-	test_preferences_group ();
+	test_preferences_group (global_preferences);
 	test_preferences_item ();
 		
 	gtk_main ();
@@ -76,7 +78,7 @@ test_preferences_item (void)
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 
-	item = create_enum_item ();
+	item = create_enum_item (FRUIT_PREFERENCE);
 
 	gtk_container_add (GTK_CONTAINER (window), item);
 
@@ -86,24 +88,20 @@ test_preferences_item (void)
 }
 
 static void
-test_preferences_group (void)
+test_preferences_group (NautilusPreferences *preferences)
 {
 	GtkWidget * window;
 	GtkWidget * group;
 
-	GtkWidget * item;
-
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	
 	group = nautilus_preferences_group_new ("A group");
-
-	item = create_enum_item ();
-
-	nautilus_preferences_group_add (NAUTILUS_PREFERENCES_GROUP (group),
-					item);
-
-	gtk_widget_show (item);
-
+	
+	nautilus_preferences_group_add_item (NAUTILUS_PREFERENCES_GROUP (group),
+					     preferences,
+					     FRUIT_PREFERENCE,
+					     NAUTILUS_PREFERENCE_ITEM_ENUM);
+	
 	gtk_container_add (GTK_CONTAINER (window), group);
 
 	gtk_widget_show (group);
@@ -122,107 +120,55 @@ test_radio_changed_signal (GtkWidget *buttons, gpointer user_data)
 }
 
 GtkWidget *
-create_enum_item (void)
+create_enum_item (const char *preference_name)
 {
-	GtkWidget * item;
-
-	item = nautilus_preferences_item_new (dummy_prefs,
-					      "user_level",
-					      NAUTILUS_PREFERENCE_ENUM);
-	
-	return item;
+ 	return nautilus_preferences_item_new (global_preferences,
+ 					      preference_name,
+ 					      NAUTILUS_PREFERENCE_ITEM_ENUM);
 }
 
-GtkWidget *
-create_bool_item (void)
-{
-	GtkWidget * item;
+// GtkWidget *
+// create_bool_item (const char *preference_name)
+// {
+// 	return nautilus_preferences_item_new (global_preferences,
+// 					      preference_name,
+// 					      NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+// }
 
-	item = nautilus_preferences_item_new (dummy_prefs,
-					      "foo",
-					      NAUTILUS_PREFERENCE_BOOLEAN);
+static NautilusPreferences *
+create_global_preferences (void)
+{
+	NautilusPreferences *preferences;
 	
-	return item;
-}
+	preferences = NAUTILUS_PREFERENCES (nautilus_preferences_new ("dummy"));
 
-static const gchar * prefs_global_user_level_names[] =
-{
-	"novice",
-	"intermediate",
-	"hacker",
-	"ettore"
-};
+	nautilus_preferences_set_info (NAUTILUS_PREFERENCES (preferences),
+				       FRUIT_PREFERENCE,
+				       "Fruits",
+				       NAUTILUS_PREFERENCE_ENUM,
+				       (gconstpointer) FRUIT_ORANGE);
 
-static const gchar * prefs_global_user_level_descriptions[] =
-{
-	"Novice",
-	"Intermediate",
-	"Hacker",
-	"Ettore"
-};
+	nautilus_preferences_enum_add_entry (NAUTILUS_PREFERENCES (preferences),
+					     FRUIT_PREFERENCE,
+					     "apple",
+					     "Apple",
+					     FRUIT_APPLE);
 
-static const gint prefs_global_user_level_values[] =
-{
-	0,
-	1,
-	2,
-	3
-};
+	nautilus_preferences_enum_add_entry (NAUTILUS_PREFERENCES (preferences),
+					     FRUIT_PREFERENCE,
+					     "orange",
+					     "Orange",
+					     FRUIT_ORANGE);
 
-static NautilusPreferencesEnumData prefs_global_user_level_data =
-{
-	prefs_global_user_level_names,
-	prefs_global_user_level_descriptions,
-	prefs_global_user_level_values,
-	4
-};
+	nautilus_preferences_enum_add_entry (NAUTILUS_PREFERENCES (preferences),
+					     FRUIT_PREFERENCE,
+					     "bannana",
+					     "Bannana",
+					     FRUIT_BANNANA);
 
-static NautilusPreferencesInfo prefs_global_static_pref_info[] =
-{
-	{
-		"user_level",
-		"User Level",
-		GTK_TYPE_ENUM,
-		FALSE,
-		(gpointer) &prefs_global_user_level_data
-	},
-	{
-		"foo",
-		"Create new window for each new page",
-		GTK_TYPE_BOOL,
-		FALSE,
-		NULL
-	},
-	{
-		"bar",
-		"Do not open more than one window with the same page",
-		GTK_TYPE_BOOL,
-		FALSE,
-		NULL
-	},
-};
+	nautilus_preferences_set_enum (NAUTILUS_PREFERENCES (preferences),
+				       FRUIT_PREFERENCE,
+				       FRUIT_BANNANA);
 
-static GtkObject *
-create_dummy_prefs (void)
-{
-	GtkObject * dummy_prefs;
-	guint i;
-
-	dummy_prefs = nautilus_preferences_new ("dummy");
-
-	/* Register the static prefs */
-	for (i = 0; i < 3; i++)	{
-		nautilus_preferences_set_info (NAUTILUS_PREFERENCES (dummy_prefs),
-					       prefs_global_static_pref_info[i].name,
-					       prefs_global_static_pref_info[i].description,
-					       prefs_global_static_pref_info[i].type,
-					       prefs_global_static_pref_info[i].default_value,
-					       prefs_global_static_pref_info[i].data);
-	}
-	
-	nautilus_preferences_set_enum (NAUTILUS_PREFERENCES (dummy_prefs),
-				       "user_level",
-				       2);
-
-	return dummy_prefs;
+	return preferences;
 }

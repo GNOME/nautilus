@@ -234,17 +234,18 @@ use_eazel_theme_icons_cb (GtkCheckMenuItem *item, gpointer user_data)
 	char *current_theme;
 	char *new_theme;
 
-	current_theme = nautilus_preferences_get_string (nautilus_preferences_get_global_preferences (),
-					       	 	 NAUTILUS_PREFERENCES_ICON_THEME);	
+	current_theme = nautilus_preferences_get (nautilus_preferences_get_global_preferences (),
+						  NAUTILUS_PREFERENCES_ICON_THEME,
+						  "default");	
 	if (nautilus_strcmp (current_theme, "eazel") == 0) {
 		new_theme = "default";
 	} else {
 		new_theme = "eazel";
 	}
 
-	nautilus_preferences_set_string (nautilus_preferences_get_global_preferences (),
-					 NAUTILUS_PREFERENCES_ICON_THEME,
-					 new_theme);
+	nautilus_preferences_set (nautilus_preferences_get_global_preferences (),
+				  NAUTILUS_PREFERENCES_ICON_THEME,
+				  new_theme);
 	
 	g_free (current_theme);
 }
@@ -711,7 +712,8 @@ update_eazel_theme_menu_item (NautilusWindow *window)
 	nautilus_bonobo_ui_handler_menu_set_toggle_appearance (
 		window->uih,
 		"/Settings/Use Eazel Theme Icons",
-		nautilus_eat_strcmp (nautilus_preferences_get_string (nautilus_preferences_get_global_preferences (),
-								      NAUTILUS_PREFERENCES_ICON_THEME), 
+		nautilus_eat_strcmp (nautilus_preferences_get (nautilus_preferences_get_global_preferences (),
+							       NAUTILUS_PREFERENCES_ICON_THEME,
+							       "default"), 
 				     "eazel") == 0);
 }

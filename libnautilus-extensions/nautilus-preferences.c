@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* nautilus-prefs.h - Preference peek/poke/notify object implementation.
+/* nautilus-preferences.h - Preference peek/poke/notify object implementation.
 
    Copyright (C) 1999, 2000 Eazel, Inc.
 
@@ -38,7 +38,7 @@ static const char PREFERENCES_GLOBAL_DOMAIN[] = "Nautilus::Global";
  * (a string).  The  hash value is a pointer of the following struct:
  */
 typedef struct {
-	NautilusPreferencesInfo	info;
+	NautilusPreference	*preference;
 	gpointer		value;
 	GList			*callback_list;
 } PrefHashNode;
@@ -47,12 +47,12 @@ typedef struct {
  * PrefCallbackInfo:
  *
  * A structure to manage callback lists.  A callback list is a GList.
- * The user_data in each list node is a pointer to the following 
+ * The callback_data in each list node is a pointer to the following 
  * struct:
  */
 typedef struct {
 	NautilusPreferencesCallback	callback_proc;
-	gpointer			user_data;
+	gpointer			callback_data;
 	const PrefHashNode		*hash_node;
 } PrefCallbackInfo;
 
@@ -76,50 +76,52 @@ static void              nautilus_preferences_destroy                 (GtkObject
 /* PrefHashNode functions */
 static PrefHashNode *    pref_hash_node_alloc                         (char                        *name,
 								       char                        *description,
-								       NautilusPreferencesType      type,
+								       NautilusPreferenceType      type,
 								       gconstpointer                default_value,
 								       gpointer                     data);
 static void              pref_hash_node_free                          (PrefHashNode                *pref_hash_node);
 static void              pref_hash_node_free_func                     (gpointer                     key,
 								       gpointer                     value,
-								       gpointer                     user_data);
+								       gpointer                     callback_data);
 
 /* PrefCallbackInfo functions */
 static PrefCallbackInfo *pref_callback_info_alloc                     (NautilusPreferencesCallback  callback_proc,
-								       gpointer                     user_data,
+								       gpointer                     callback_data,
 								       const PrefHashNode          *hash_node);
 static void              pref_callback_info_free                      (PrefCallbackInfo            *pref_hash_node);
 static void              pref_callback_info_free_func                 (gpointer                     data,
-								       gpointer                     user_data);
+								       gpointer                     callback_data);
 static void              pref_callback_info_invoke_func               (gpointer                     data,
-								       gpointer                     user_data);
+								       gpointer                     callback_data);
 static void              pref_hash_node_add_callback                  (PrefHashNode                *pref_hash_node,
 								       NautilusPreferencesCallback  callback_proc,
-								       gpointer                     user_data);
+								       gpointer                     callback_data);
 static void              pref_hash_node_remove_callback               (PrefHashNode                *pref_hash_node,
 								       NautilusPreferencesCallback  callback_proc,
-								       gpointer                     user_data);
+								       gpointer                     callback_data);
 /* Private stuff */
 static void              preference_set                               (NautilusPreferences         *preferences,
 								       const char                  *name,
-								       NautilusPreferencesType      type,
+								       NautilusPreferenceType      type,
 								       gconstpointer                value);
-static void              preference_get                               (NautilusPreferences         *preferences,
+static void              preference_get                               (const NautilusPreferences         *preferences,
 								       const char                  *name,
-								       NautilusPreferencesType      type,
+								       NautilusPreferenceType      type,
+								       gconstpointer		   default_value,
 								       gconstpointer               *value_out);
-PrefHashNode *           prefs_hash_lookup                            (NautilusPreferences         *preferences,
+PrefHashNode *           prefs_hash_lookup                            (const NautilusPreferences         *preferences,
 								       const char                  *name);
 PrefHashNode *           prefs_hash_lookup_with_implicit_registration (NautilusPreferences         *preferences,
 								       const char                  *pref_name,
-								       NautilusPreferencesType      pref_type);
+								       NautilusPreferenceType      pref_type,
+								       gconstpointer                default_value);
 static char *            gnome_config_make_string                     (char                        *name,
-								       NautilusPreferencesType      type,
+								       NautilusPreferenceType      type,
 								       gconstpointer                default_value);
 static void              preferences_register                         (NautilusPreferences         *preferences,
 								       char                        *name,
 								       char                        *description,
-								       NautilusPreferencesType      type,
+								       NautilusPreferenceType      type,
 								       gconstpointer                default_value,
 								       gpointer                     data);
 
@@ -206,7 +208,7 @@ nautilus_preferences_destroy (GtkObject *object)
 static PrefHashNode *
 pref_hash_node_alloc (char			*name,
 		      char			*description,
-		      NautilusPreferencesType	type,
+		      NautilusPreferenceType	type,
 		      gconstpointer		default_value,
 		      gpointer			data)
 {
@@ -216,11 +218,14 @@ pref_hash_node_alloc (char			*name,
 
 	pref_hash_node = g_new (PrefHashNode, 1);
 
-	pref_hash_node->info.name = g_strdup (name);
-	pref_hash_node->info.description = description ? g_strdup (description) : NULL;
-	pref_hash_node->info.type = type;
-	pref_hash_node->info.default_value = default_value;
-	pref_hash_node->info.data = data;
+ 	pref_hash_node->preference = NAUTILUS_PREFERENCE (nautilus_preference_new_from_type (name, type));
+
+ 	g_assert (pref_hash_node->preference != NULL);
+
+	if (description)
+		nautilus_preference_set_description (pref_hash_node->preference, description);
+
+	nautilus_preference_any_set_default_value (pref_hash_node->preference, (gpointer) default_value);
 
 	pref_hash_node->value = (gpointer) default_value;
 	pref_hash_node->callback_list = NULL;
@@ -239,22 +244,14 @@ pref_hash_node_free (PrefHashNode *pref_hash_node)
 {
 	g_assert (pref_hash_node != NULL);
 
-	g_assert (pref_hash_node->info.name != NULL);
-	g_assert (pref_hash_node->info.description != NULL);
+	g_assert (pref_hash_node->preference != NULL);
 
 	g_list_foreach (pref_hash_node->callback_list,
 			pref_callback_info_free_func,
 			NULL);
 	
-	g_free (pref_hash_node->info.name);
-
-	if (pref_hash_node->info.description)
-		g_free (pref_hash_node->info.description);
-
-	pref_hash_node->info.name = NULL;
-	pref_hash_node->info.type = GTK_TYPE_INVALID;
-	pref_hash_node->info.default_value = NULL;
-	pref_hash_node->info.data = NULL;
+	gtk_object_unref (GTK_OBJECT (pref_hash_node->preference));
+	pref_hash_node->preference = NULL;
 
 	pref_hash_node->callback_list = NULL;
 	pref_hash_node->value = NULL;
@@ -269,12 +266,12 @@ pref_hash_node_free (PrefHashNode *pref_hash_node)
  * the pref value changes.
  * @pref_hash_node: The hash node.
  * @callback_proc: The user supplied callback.
- * @user_data: The user supplied closure.
+ * @callback_data: The user supplied closure.
  **/
 static void
 pref_hash_node_add_callback (PrefHashNode			*pref_hash_node,
 			     NautilusPreferencesCallback	callback_proc,
-			     gpointer				user_data)
+			     gpointer				callback_data)
 {
 	PrefCallbackInfo * pref_callback_info;
 
@@ -283,7 +280,7 @@ pref_hash_node_add_callback (PrefHashNode			*pref_hash_node,
 	g_assert (callback_proc != NULL);
 
 	pref_callback_info = pref_callback_info_alloc (callback_proc, 
-						       user_data,
+						       callback_data,
 						       pref_hash_node);
 
 	g_assert (pref_callback_info != NULL);
@@ -295,16 +292,16 @@ pref_hash_node_add_callback (PrefHashNode			*pref_hash_node,
 /**
  * pref_hash_node_remove_callback
  *
- * remove a callback from a pref node.  Both the callback and the user_data must
+ * remove a callback from a pref node.  Both the callback and the callback_data must
  * match in order for a callback to be removed from the node.
  * @pref_hash_node: The hash node.
  * @callback_proc: The user supplied callback.
- * @user_data: The user supplied closure.
+ * @callback_data: The user supplied closure.
  **/
 static void
 pref_hash_node_remove_callback (PrefHashNode			*pref_hash_node,
 				NautilusPreferencesCallback	callback_proc,
-				gpointer			user_data)
+				gpointer			callback_data)
 {
 	GList		 *new_list;
 	GList		 *iterator;
@@ -323,7 +320,7 @@ pref_hash_node_remove_callback (PrefHashNode			*pref_hash_node,
 		g_assert (callback_info != NULL);
 
 		if (callback_info->callback_proc == callback_proc &&
-		    callback_info->user_data == user_data) {
+		    callback_info->callback_data == callback_data) {
 
 			pref_hash_node->callback_list = 
 				g_list_remove (pref_hash_node->callback_list, 
@@ -341,12 +338,12 @@ pref_hash_node_remove_callback (PrefHashNode			*pref_hash_node,
  * g_hash_table_foreach ()
  * @key: The hash key privately maintained by the GHashTable.
  * @value: The hash value privately maintained by the GHashTable.
- * @user_data: The user_data privately maintained by the GHashTable.
+ * @callback_data: The callback_data privately maintained by the GHashTable.
  **/
 static void
 pref_hash_node_free_func (gpointer key,
 			  gpointer value,
-			  gpointer user_data)
+			  gpointer callback_data)
 {
 	PrefHashNode *pref_hash_node;
 
@@ -364,14 +361,14 @@ pref_hash_node_free_func (gpointer key,
  * structures are used as nodes for the callbac_list member of pref hash table
  * nodes.
  * @callback_proc: The callback.
- * @user_data: The user data.
+ * @callback_data: The user data.
  * @hash_node: The hash table node this callback belongs to.
  *
  * Return value: A newly allocated node.
  **/
 static PrefCallbackInfo *
 pref_callback_info_alloc (NautilusPreferencesCallback	callback_proc,
-			  gpointer			user_data,
+			  gpointer			callback_data,
 			  const PrefHashNode		*hash_node)
 {
 	PrefCallbackInfo * pref_callback_info;
@@ -381,7 +378,7 @@ pref_callback_info_alloc (NautilusPreferencesCallback	callback_proc,
 	pref_callback_info = g_new (PrefCallbackInfo, 1);
 
 	pref_callback_info->callback_proc = callback_proc;
-	pref_callback_info->user_data = user_data;
+	pref_callback_info->callback_data = callback_data;
 	pref_callback_info->hash_node = hash_node;
 
 	return pref_callback_info;
@@ -399,7 +396,7 @@ pref_callback_info_free (PrefCallbackInfo *pref_callback_info)
 	g_assert (pref_callback_info != NULL);
 
 	pref_callback_info->callback_proc = NULL;
-	pref_callback_info->user_data = NULL;
+	pref_callback_info->callback_data = NULL;
 
 	g_free (pref_callback_info);
 }
@@ -410,11 +407,11 @@ pref_callback_info_free (PrefCallbackInfo *pref_callback_info)
  * A function that frees a callback info struct.  It is meant to be fed to 
  * g_list_foreach ()
  * @data: The list data privately maintained by the GList.
- * @user_data: The user_data privately maintained by the GList.
+ * @callback_data: The callback_data privately maintained by the GList.
  **/
 static void
 pref_callback_info_free_func (gpointer	data,
-			      gpointer	user_data)
+			      gpointer	callback_data)
 {
 	PrefCallbackInfo *pref_callback_info;
 
@@ -431,14 +428,15 @@ pref_callback_info_free_func (gpointer	data,
  * A function that invokes a callback from the given struct.  It is meant to be fed to 
  * g_list_foreach ()
  * @data: The list data privately maintained by the GList.
- * @user_data: The user_data privately maintained by the GList.
+ * @callback_data: The callback_data privately maintained by the GList.
  **/
 static void
 pref_callback_info_invoke_func (gpointer	data,
-				gpointer	user_data)
+				gpointer	callback_data)
 {
  	NautilusPreferences     *preferences;
-	PrefCallbackInfo *pref_callback_info;
+	PrefCallbackInfo	*pref_callback_info;
+	char			*preference_name;
 
 	pref_callback_info = (PrefCallbackInfo *) data;
 
@@ -446,18 +444,23 @@ pref_callback_info_invoke_func (gpointer	data,
 
 	g_assert (pref_callback_info->callback_proc != NULL);
 
- 	preferences = (NautilusPreferences *) user_data;
+ 	preferences = (NautilusPreferences *) callback_data;
+
+	preference_name = nautilus_preference_get_name (pref_callback_info->hash_node->preference);
+
+	g_assert (preference_name != NULL);
 
  	(* pref_callback_info->callback_proc) (preferences,
-					       pref_callback_info->hash_node->info.name,
-					       pref_callback_info->hash_node->value,
-					       pref_callback_info->user_data);
+					       preference_name,
+					       pref_callback_info->callback_data);
+
+	g_free (preference_name);
 }
 
 static void
 preference_set (NautilusPreferences	*preferences,
 		const char		*name,
-		NautilusPreferencesType	type,
+		NautilusPreferenceType	type,
 		gconstpointer		value)
 {
 	PrefHashNode * pref_hash_node;
@@ -465,13 +468,13 @@ preference_set (NautilusPreferences	*preferences,
 	g_assert (NAUTILUS_IS_PREFERENCES (preferences));
 	g_assert (name != NULL);
 
-	pref_hash_node = prefs_hash_lookup_with_implicit_registration (preferences, name, type);
+	pref_hash_node = prefs_hash_lookup_with_implicit_registration (preferences, name, type, NULL);
 
 	g_assert (pref_hash_node != NULL);
+	g_assert (pref_hash_node->preference != NULL);
 
 	/* gnome-config for now ; in the future gconf */
-	switch (pref_hash_node->info.type) {
-
+	switch (nautilus_preference_get_preference_type (pref_hash_node->preference)) {
 	case NAUTILUS_PREFERENCE_BOOLEAN:
 		pref_hash_node->value = (gpointer) value;
 		gnome_config_set_bool (name, GPOINTER_TO_INT (value));
@@ -502,9 +505,10 @@ preference_set (NautilusPreferences	*preferences,
 }
 
 static void
-preference_get (NautilusPreferences	*preferences,
+preference_get (const NautilusPreferences	*preferences,
 		const char		*name,
-		NautilusPreferencesType	type,
+		NautilusPreferenceType	type,
+		gconstpointer		default_value,
 		gconstpointer		*value_out)
 {
 	PrefHashNode *pref_hash_node;
@@ -513,7 +517,11 @@ preference_get (NautilusPreferences	*preferences,
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (value_out != NULL);
 
-	pref_hash_node = prefs_hash_lookup_with_implicit_registration (preferences, name, type);
+	/* Because if implicit registration, its a lie that 'preferences' is truly const
+	 * in this function.  Its actually mutable because of the implicit registration
+	 * side effect. */
+	pref_hash_node = prefs_hash_lookup_with_implicit_registration ((NautilusPreferences *) preferences, 
+								       name, type, default_value);
 
 	g_assert (pref_hash_node != NULL);
 
@@ -539,7 +547,7 @@ static void
 preferences_register (NautilusPreferences	*preferences,
 		      char			*name,
 		      char			*description,
-		      NautilusPreferencesType	type,
+		      NautilusPreferenceType	type,
 		      gconstpointer		default_value,
 		      gpointer			data)
 {
@@ -567,9 +575,10 @@ preferences_register (NautilusPreferences	*preferences,
 	gnome_config_string = gnome_config_make_string (name, type, default_value);
 
 	g_assert (gnome_config_string != NULL);
+	g_assert (pref_hash_node->preference != NULL);
 
 	/* gnome-config for now; in the future gconf */
-	switch (pref_hash_node->info.type) {
+	switch (nautilus_preference_get_preference_type (pref_hash_node->preference)) {
 	case NAUTILUS_PREFERENCE_BOOLEAN:
 		pref_hash_node->value = GINT_TO_POINTER (gnome_config_get_bool (gnome_config_string));
 		break;
@@ -604,7 +613,7 @@ preferences_register (NautilusPreferences	*preferences,
  **/
 static char *
 gnome_config_make_string (char				*name,
-			  NautilusPreferencesType	type,
+			  NautilusPreferenceType	type,
 			  gconstpointer			default_value)
 {
 	char * rv = NULL;
@@ -650,9 +659,19 @@ gnome_config_make_string (char				*name,
 	return rv;
 }
 
-const NautilusPreferencesInfo *
-nautilus_preferences_get_info (NautilusPreferences   *preferences,
-			       const char            *name)
+/**
+ * nautilus_preferences_get_preference
+ *
+ * Search for a named preference in the given preferences and return it.
+ * @preferences: The preferences to search
+ *
+ * Return value: A referenced pointer to the preference object that corresponds
+ * to the given preference name.  The caller should gtk_object_unref() the return
+ * value of this function.
+ **/
+NautilusPreference *
+nautilus_preferences_get_preference (const NautilusPreferences   *preferences,
+				     const char            *name)
 {
 	PrefHashNode * pref_hash_node;
 
@@ -663,35 +682,33 @@ nautilus_preferences_get_info (NautilusPreferences   *preferences,
 	
 	g_assert (pref_hash_node != NULL);
 
-	return &pref_hash_node->info;
+	gtk_object_ref (GTK_OBJECT (pref_hash_node->preference));
+
+	return pref_hash_node->preference;
 }
 
 void
 nautilus_preferences_set_info (NautilusPreferences	*preferences,
 			       const char		*name,
 			       const char		*description,
-			       NautilusPreferencesType	type,
-			       gconstpointer		default_value,
-			       gpointer			data)
+			       NautilusPreferenceType	type,
+			       gconstpointer		default_value)
 {
 	PrefHashNode *pref_hash_node;
 
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES (preferences));
 	g_return_if_fail (name != NULL);
 
-	pref_hash_node = prefs_hash_lookup_with_implicit_registration (preferences, name, type);
+	pref_hash_node = prefs_hash_lookup_with_implicit_registration (preferences, name, type, default_value);
 	
 	g_assert (pref_hash_node != NULL);
+	g_assert (pref_hash_node->preference != NULL);
 
-	pref_hash_node->info.default_value = default_value;
+	nautilus_preference_any_set_default_value (pref_hash_node->preference, default_value);
 
-	if (pref_hash_node->info.description)
-		g_free (pref_hash_node->info.description);
-
-	pref_hash_node->info.description = g_strdup (description);
-
-	pref_hash_node->info.data = data;
-
+	if (description)
+		nautilus_preference_set_description (pref_hash_node->preference, description);
+		
 	if (!pref_hash_node->value)
 		preference_set (preferences,
 				name,
@@ -699,8 +716,34 @@ nautilus_preferences_set_info (NautilusPreferences	*preferences,
 				default_value);
 }
 
+void
+nautilus_preferences_enum_add_entry (NautilusPreferences	*preferences,
+				     const char			*name,
+				     const char			*entry_name,
+				     const char			*entry_description,
+				     int			entry_value)
+{
+	PrefHashNode *pref_hash_node;
+	
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES (preferences));
+	g_return_if_fail (name != NULL);
+	
+	pref_hash_node = prefs_hash_lookup_with_implicit_registration (preferences, name, NAUTILUS_PREFERENCE_ENUM, NULL);
+	
+	g_assert (pref_hash_node != NULL);
+	g_assert (pref_hash_node->preference != NULL);
+
+	g_assert (nautilus_preference_get_preference_type (pref_hash_node->preference) == NAUTILUS_PREFERENCE_ENUM);
+
+	nautilus_preference_enum_add_entry (pref_hash_node->preference,
+					    entry_name,
+					    entry_description,
+					    entry_value);
+
+}
+
 PrefHashNode *
-prefs_hash_lookup (NautilusPreferences	*preferences,
+prefs_hash_lookup (const NautilusPreferences	*preferences,
 		   const char           *name)
 {
 	gpointer hash_value;
@@ -717,7 +760,8 @@ prefs_hash_lookup (NautilusPreferences	*preferences,
 PrefHashNode *
 prefs_hash_lookup_with_implicit_registration (NautilusPreferences	*preferences,
 					      const char		*name,
-					      NautilusPreferencesType   type)
+					      NautilusPreferenceType	type,
+					      gconstpointer             default_value)
 {
 	PrefHashNode * hash_node;
 
@@ -731,7 +775,7 @@ prefs_hash_lookup_with_implicit_registration (NautilusPreferences	*preferences,
 				      (char *) name,
 				      "Unspecified Description",
 				      type,						   
-				      (gconstpointer) 0,					   
+				      default_value,
 				      (gpointer) NULL);
 		
 		hash_node = prefs_hash_lookup (preferences, name);
@@ -746,7 +790,7 @@ gboolean
 nautilus_preferences_add_boolean_callback (NautilusPreferences		*preferences,
 					   const char			*name,
 					   NautilusPreferencesCallback	callback_proc,
-					   gpointer			user_data)
+					   gpointer			callback_data)
 {
 	PrefHashNode *pref_hash_node;
 
@@ -754,7 +798,7 @@ nautilus_preferences_add_boolean_callback (NautilusPreferences		*preferences,
 	g_return_val_if_fail (name != NULL, FALSE);
 	g_return_val_if_fail (callback_proc != NULL, FALSE);
 
-	pref_hash_node = prefs_hash_lookup_with_implicit_registration (preferences, name, NAUTILUS_PREFERENCE_BOOLEAN);
+	pref_hash_node = prefs_hash_lookup_with_implicit_registration (preferences, name, NAUTILUS_PREFERENCE_BOOLEAN, NULL);
 
 	if (pref_hash_node == NULL) {
 		g_warning ("trying to add a callback for an unregistered preference");
@@ -763,7 +807,7 @@ nautilus_preferences_add_boolean_callback (NautilusPreferences		*preferences,
 
 	pref_hash_node_add_callback (pref_hash_node,
 				     callback_proc,
-				     user_data);
+				     callback_data);
 
 	return TRUE;
 }					
@@ -772,7 +816,7 @@ gboolean
 nautilus_preferences_add_enum_callback (NautilusPreferences		*preferences,
 					const char			*name,
 					NautilusPreferencesCallback	callback_proc,
-					gpointer			user_data)
+					gpointer			callback_data)
 {
 	PrefHashNode *pref_hash_node;
 
@@ -780,7 +824,7 @@ nautilus_preferences_add_enum_callback (NautilusPreferences		*preferences,
 	g_return_val_if_fail (name != NULL, FALSE);
 	g_return_val_if_fail (callback_proc != NULL, FALSE);
 
-	pref_hash_node = prefs_hash_lookup_with_implicit_registration (preferences, name, NAUTILUS_PREFERENCE_ENUM);
+	pref_hash_node = prefs_hash_lookup_with_implicit_registration (preferences, name, NAUTILUS_PREFERENCE_ENUM, NULL);
 
 	if (pref_hash_node == NULL) {
 		g_warning ("trying to add a callback for an unregistered preference");
@@ -789,7 +833,7 @@ nautilus_preferences_add_enum_callback (NautilusPreferences		*preferences,
 
 	pref_hash_node_add_callback (pref_hash_node,
 				     callback_proc,
-				     user_data);
+				     callback_data);
 
 	return TRUE;
 }
@@ -798,7 +842,7 @@ gboolean
 nautilus_preferences_add_string_callback (NautilusPreferences		*preferences,
 					  const char			*name,
 					  NautilusPreferencesCallback	callback_proc,
-					  gpointer			user_data)
+					  gpointer			callback_data)
 {
 	PrefHashNode *pref_hash_node;
 
@@ -806,7 +850,7 @@ nautilus_preferences_add_string_callback (NautilusPreferences		*preferences,
 	g_return_val_if_fail (name != NULL, FALSE);
 	g_return_val_if_fail (callback_proc != NULL, FALSE);
 
-	pref_hash_node = prefs_hash_lookup_with_implicit_registration (preferences, name, NAUTILUS_PREFERENCE_STRING);
+	pref_hash_node = prefs_hash_lookup_with_implicit_registration (preferences, name, NAUTILUS_PREFERENCE_STRING, NULL);
 
 	if (pref_hash_node == NULL) {
 		g_warning ("trying to add a callback for an unregistered preference");
@@ -815,7 +859,7 @@ nautilus_preferences_add_string_callback (NautilusPreferences		*preferences,
 
 	pref_hash_node_add_callback (pref_hash_node,
 				     callback_proc,
-				     user_data);
+				     callback_data);
 
 	return TRUE;
 }
@@ -824,7 +868,7 @@ gboolean
 nautilus_preferences_remove_callback (NautilusPreferences	   *preferences,
 				      const char		   *name,
 				      NautilusPreferencesCallback  callback_proc,
-				      gpointer			   user_data)
+				      gpointer			   callback_data)
 {
 	PrefHashNode *pref_hash_node;
 
@@ -840,7 +884,7 @@ nautilus_preferences_remove_callback (NautilusPreferences	   *preferences,
 
 	pref_hash_node_remove_callback (pref_hash_node,
 					callback_proc,
-					user_data);
+					callback_data);
 
 	return TRUE;
 }
@@ -860,8 +904,9 @@ nautilus_preferences_set_boolean (NautilusPreferences     *preferences,
 }
 
 gboolean
-nautilus_preferences_get_boolean (NautilusPreferences  *preferences,
-				  const char    *name)
+nautilus_preferences_get_boolean (const NautilusPreferences	*preferences,
+				  const char		*name,
+				  gboolean		default_value)
 {
 	gconstpointer value;
 
@@ -871,6 +916,7 @@ nautilus_preferences_get_boolean (NautilusPreferences  *preferences,
 	preference_get (preferences,
 			name,
 			NAUTILUS_PREFERENCE_BOOLEAN,
+			(gconstpointer) default_value,
 			&value);
 
 	return GPOINTER_TO_INT (value);
@@ -891,8 +937,9 @@ nautilus_preferences_set_enum (NautilusPreferences	*preferences,
 }
 
 int
-nautilus_preferences_get_enum (NautilusPreferences  *preferences,
-			       const char    *name)
+nautilus_preferences_get_enum (const NautilusPreferences	*preferences,
+			       const char		*name,
+			       int			default_value)
 {
 	gconstpointer value;
 	
@@ -902,15 +949,16 @@ nautilus_preferences_get_enum (NautilusPreferences  *preferences,
 	preference_get (preferences,
 			name,
 			NAUTILUS_PREFERENCE_ENUM,
+			(gconstpointer) default_value,
 			&value);
 	
 	return GPOINTER_TO_INT (value);
 }
 
 void
-nautilus_preferences_set_string (NautilusPreferences *preferences,
-				 const char *name,
-				 const char *value)
+nautilus_preferences_set (NautilusPreferences *preferences,
+			  const char *name,
+			  const char *value)
 {
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES (preferences));
 	g_return_if_fail (name != NULL);
@@ -923,8 +971,9 @@ nautilus_preferences_set_string (NautilusPreferences *preferences,
 }
 
 char *
-nautilus_preferences_get_string (NautilusPreferences *preferences,
-				 const char *name)
+nautilus_preferences_get (const NautilusPreferences	*preferences,
+			  const char		*name,
+			  const char		*default_value)
 {
 	gconstpointer value;
 
@@ -934,6 +983,7 @@ nautilus_preferences_get_string (NautilusPreferences *preferences,
 	preference_get (preferences,
 			name,
 			NAUTILUS_PREFERENCE_STRING,
+			(gconstpointer) default_value,
 			&value);
 	
 	return g_strdup (value);

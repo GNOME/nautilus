@@ -39,6 +39,7 @@ enum
 };
 
 static const guint PREFS_PANE_GROUPS_BOX_TOP_OFFSET = 0;
+static const guint PREFS_PANE_IN_BETWEEN_OFFSET = 4;
 
 struct _NautilusPreferencesPaneDetails
 {
@@ -51,7 +52,7 @@ struct _NautilusPreferencesPaneDetails
 
 	gboolean	show_title;
 
-	GSList		*groups;
+	GList		*groups;
 };
 
 typedef void (*GnomeBoxSignal1) (GtkObject* object,
@@ -119,7 +120,7 @@ nautilus_preferences_pane_destroy(GtkObject* object)
 
 	if (prefs_pane->details->groups)
 	{
-		g_slist_free (prefs_pane->details->groups);
+		g_list_free (prefs_pane->details->groups);
 	}
 
 	g_free (prefs_pane->details);
@@ -149,8 +150,6 @@ prefs_pane_construct (NautilusPreferencesPane *prefs_pane,
 	g_assert (prefs_pane->details->groups_box == NULL);
 	g_assert (prefs_pane->details->title_frame == NULL);
 	g_assert (prefs_pane->details->groups == NULL);
-
-	prefs_pane->details->groups = g_slist_alloc ();
 
 	if (prefs_pane->details->show_title)
 	{
@@ -217,7 +216,7 @@ prefs_pane_construct (NautilusPreferencesPane *prefs_pane,
  */
 GtkWidget*
 nautilus_preferences_pane_new (const gchar *pane_title,
-			 const gchar *pane_description)
+			       const gchar *pane_description)
 {
 	NautilusPreferencesPane *prefs_pane;
 
@@ -233,7 +232,7 @@ nautilus_preferences_pane_new (const gchar *pane_title,
 
 void
 nautilus_preferences_pane_set_title (NautilusPreferencesPane *prefs_pane,
-			       const gchar	 *pane_title)
+				     const gchar	 *pane_title)
 {
 	g_return_if_fail (prefs_pane != NULL);
 	g_return_if_fail (NAUTILUS_IS_PREFS_PANE (prefs_pane));
@@ -246,7 +245,7 @@ nautilus_preferences_pane_set_title (NautilusPreferencesPane *prefs_pane,
 
 void
 nautilus_preferences_pane_set_description (NautilusPreferencesPane *prefs_pane,
-				     const gchar	 *pane_description)
+					   const gchar	 *pane_description)
 {
 	g_return_if_fail (prefs_pane != NULL);
 	g_return_if_fail (NAUTILUS_IS_PREFS_PANE (prefs_pane));
@@ -257,18 +256,75 @@ nautilus_preferences_pane_set_description (NautilusPreferencesPane *prefs_pane,
 			    pane_description);
 }
 
-void
+GtkWidget *
 nautilus_preferences_pane_add_group (NautilusPreferencesPane	*prefs_pane,
-			       GtkWidget		*prefs_group)
+				     const char			*group_title)
 {
-	g_return_if_fail (prefs_pane != NULL);
-	g_return_if_fail (NAUTILUS_IS_PREFS_PANE (prefs_pane));
-	g_return_if_fail (prefs_group != NULL);
+	GtkWidget *group;
 
+	g_return_val_if_fail (prefs_pane != NULL, NULL);
+	g_return_val_if_fail (NAUTILUS_IS_PREFS_PANE (prefs_pane), NULL);
+	g_return_val_if_fail (group_title != NULL, NULL);
+
+	group = nautilus_preferences_group_new (group_title);
+
+	prefs_pane->details->groups = g_list_append (prefs_pane->details->groups,
+						     (gpointer) group);
+	
 	gtk_box_pack_start (GTK_BOX (prefs_pane->details->groups_box),
-			    prefs_group,
+			    group,
 			    TRUE,
 			    TRUE,
-			    0);
+			    PREFS_PANE_IN_BETWEEN_OFFSET);
+
+	gtk_widget_show (group);
+
+	return group;
 }
+
+GtkWidget *
+nautilus_preferences_pane_add_item_to_nth_group (NautilusPreferencesPane	*prefs_pane,
+						 guint				n,
+						 const NautilusPreferences	*preferences,
+						 const char			*preference_name,
+						 NautilusPreferencesItemType	item_type)
+{
+	GtkWidget *item;
+	GtkWidget *group;
+
+	g_return_val_if_fail (prefs_pane != NULL, NULL);
+	g_return_val_if_fail (NAUTILUS_IS_PREFS_PANE (prefs_pane), NULL);
+
+	g_return_val_if_fail (preferences != NULL, NULL);
+	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES (preferences), NULL);
+
+	g_return_val_if_fail (preference_name != NULL, NULL);
+
+	if (!prefs_pane->details->groups) {
+		g_warning ("nautilus_preferences_pane_add_item_to_nth_group () There are no groups!");
+
+		return NULL;
+	}
+
+	if (n >= g_list_length (prefs_pane->details->groups)) {
+		g_warning ("nautilus_preferences_pane_add_item_to_nth_group (n = %d) n is out of bounds!", n);
+
+		return NULL;
+	}
+
+	g_assert (g_list_nth_data (prefs_pane->details->groups, n) != NULL);
+	g_assert (GTK_IS_WIDGET (g_list_nth_data (prefs_pane->details->groups, n)));
+
+	group = GTK_WIDGET (g_list_nth_data (prefs_pane->details->groups, n));
+
+	item = nautilus_preferences_group_add_item (NAUTILUS_PREFERENCES_GROUP (group),
+						    preferences,
+						    preference_name,
+						    item_type);
+
+	g_assert (item != NULL);
+
+	return item;
+}
+
 

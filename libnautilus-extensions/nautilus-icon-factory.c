@@ -79,6 +79,8 @@ static const char *icon_file_name_suffixes[] =
 
 #define EMBLEM_NAME_PREFIX              "emblem-"
 
+#define DEFAULT_ICON_THEME		"default"
+
 /* This used to be called ICON_CACHE_MAX_ENTRIES, but it's misleading
  * to call it that, since we can have any number of entries in the
  * cache if the caller keeps the pixbuf around (we only get rid of
@@ -185,7 +187,6 @@ typedef struct {
 
 static void                  icon_theme_changed_callback             (NautilusPreferences      *preferences,
 								      const char               *name,
-								      gconstpointer             value,
 								      gpointer                  user_data);
 static GtkType               nautilus_icon_factory_get_type          (void);
 static void                  nautilus_icon_factory_initialize_class  (NautilusIconFactoryClass *class);
@@ -224,27 +225,9 @@ nautilus_get_current_icon_factory (void)
         if (global_icon_factory == NULL) {
 		char *theme_preference;
 
-		theme_preference
-			= nautilus_preferences_get_string (nautilus_preferences_get_global_preferences (),
-					       	 	   NAUTILUS_PREFERENCES_ICON_THEME);
-
-		if (theme_preference == NULL) {
-			/* Set the default icon theme.
-			 *
-			 * We might want to change things such that no default has to be installed
-			 * for this preference.  If so, then the code that fetches the preference
-			 * would have to deal with either a NULL return value (or "").
-			 */
-			nautilus_preferences_set_info (nautilus_preferences_get_global_preferences (),
-						       NAUTILUS_PREFERENCES_ICON_THEME,
-						       NULL,
-						       NAUTILUS_PREFERENCE_STRING,
-						       "default",
-						       NULL);
-			theme_preference
-				= nautilus_preferences_get_string (nautilus_preferences_get_global_preferences (),
-						       	 	   NAUTILUS_PREFERENCES_ICON_THEME);
-		}
+		theme_preference = nautilus_preferences_get (nautilus_preferences_get_global_preferences (),
+							     NAUTILUS_PREFERENCES_ICON_THEME,
+							     DEFAULT_ICON_THEME);
 		g_assert (theme_preference != NULL);
 
                 global_icon_factory = nautilus_icon_factory_new (theme_preference);
@@ -653,17 +636,25 @@ get_icon_file_path (const char *name, const char* modifier, guint size_in_pixels
 }
 
 static void
-icon_theme_changed_callback (NautilusPreferences *preferences,
-         		     const char *name,
-         		     gconstpointer value,
-         		     gpointer user_data)
+icon_theme_changed_callback (NautilusPreferences	*preferences,
+         		     const char			*name,
+         		     gpointer			user_data)
 {
+	char *theme_preference;
+
 	g_assert (NAUTILUS_IS_PREFERENCES (preferences));
 	g_assert (strcmp (name, NAUTILUS_PREFERENCES_ICON_THEME) == 0);
-	g_assert (value != NULL);
 	g_assert (user_data == NULL);
+	
+	theme_preference = nautilus_preferences_get (nautilus_preferences_get_global_preferences (),
+						     NAUTILUS_PREFERENCES_ICON_THEME,
+						     DEFAULT_ICON_THEME);
 
-	nautilus_icon_factory_set_theme ((char *) value);
+	g_assert (theme_preference != NULL);
+
+	nautilus_icon_factory_set_theme (theme_preference);
+
+	g_free (theme_preference);
 }
 
 /* Get or create a scalable icon. */

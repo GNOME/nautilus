@@ -25,6 +25,7 @@ libnautilus_widgets_la_LDFLAGS=\
 libnautilus_widgetsincludedir=$(includedir)/nautilus-widgets
 
 libnautilus_widgetsinclude_HEADERS =\
+	nautilus-preference.h \
 	nautilus-preferences-box.h \
 	nautilus-preferences-dialog.h \
 	nautilus-preferences-group.h \
@@ -35,6 +36,7 @@ libnautilus_widgetsinclude_HEADERS =\
 	$(NULL)
 
 libnautilus_widgets_la_SOURCES =\
+	nautilus-preference.c \
 	nautilus-preferences-box.c \
 	nautilus-preferences-dialog.c \
 	nautilus-preferences-group.c \
@@ -42,10 +44,17 @@ libnautilus_widgets_la_SOURCES =\
 	nautilus-preferences-pane.c \
 	nautilus-preferences.c \
 	nautilus-radio-button-group.c \
+	nautilus-widgets-self-check-functions.c \
 	$(NULL)
 
 test_nautilus_widgets_SOURCES =\
 	test-nautilus-widgets.c \
+	$(NULL)
+
+test_nautilus_widgets_LDADD =\
+	../nautilus-widgets/libnautilus-widgets.la \
+	../libnautilus-extensions/libnautilus-extensions.la \
+	../librsvg/librsvg.la \
 	$(NULL)
 
 #test_preferences_SOURCES =\

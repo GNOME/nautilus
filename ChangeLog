@@ -1,5 +1,182 @@
 2000-04-18  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* nautilus-widgets/nautilus-preferences.c,
+	  nautilus-widgets/nautilus-preferences.h: Dont expose the
+	preference/enum info structure.  Remove these and use the
+	NautilusPreference object instead to describe preferences.
+
+	Add usage of default values to get_* api.  So now callers can
+	provide a default which will be given back to them if no default
+	exists for the preference.  For example, no default will exists
+	for the preference when it was implicitly pulled out of someone's
+	ass.
+
+	The callback function no longer passes along the value.  Instead
+	the caller is expected to use the get_ functions.
+
+	Rename nautilus_preferences_{get,set}_string() to
+	nautilus_preferences_{get,set}.  This matches the
+	NautilusDirectory metadata api which uses strings for metadata by
+	default.
+
+	Also constify the get functions.
+	
+	(nautilus_preferneces_get_info): Changed to 
+	(nautilus_preferneces_get_preference) which returns a referenced
+	pointer to the preference description object.  Prehaps this could
+	have a better name.
+
+	(nautilus_preferences_enum_add_entry): New function to add entries
+	to enumerated preferences.
+
+	* nautilus-widgets/nautilus-preferences-group.c,
+	  nautilus-widgets/nautilus-preferences-group.h:
+	(nautilus_preferences_group_add): retire
+
+	(nautilus_preferences_group_add_item): New function that does all
+	the work of creating an item based on a given item_type.
+
+	* nautilus-widgets/nautilus-preferences-item.c,
+	  nautilus-widgets/nautilus-preferences-item.h:
+
+	Use NautilusPreferences directly instead of GtkObject.
+
+	Ref/unref the preference object properly.
+
+	Use more consistent identifiers.  Fix some stupid style things.
+
+	Update for NautilusPreference usage (instead of the info struct
+	hack). 
+
+	*  nautilus-widgets/nautilus-preferences-pane.c,
+	   nautilus-widgets/nautilus-preferences-pane.h:
+	(nautilus_preferences_pane_add_item_to_nth_group) : New function
+	to do all the work of adding and managing an item based on a given
+	type.
+	
+	*  nautilus-widgets/test-nautilus-widgets.c: Update for all the
+	api changes.
+
+ 	* nautilus-widgets/Makefile.am: Add building of
+	nautilus-preference.[ch] and the self test driver.
+
+
+	* libnautilus-extensions/nautilus-global-preferences.c,
+	  libnautilus-extensions/nautilus-global-preferences.h:
+
+	Add CLICK_ACTIVATION_TYPE preferences.  Add HOME_URI
+	preference.  Add SHOW_HIDDEN_FILES preference.
+
+	Make all the user level stuff private.  Dont expose either the
+	user level preference or the user level values at all.  Instead,
+	track user level changes in a callback and set appropiate
+	preferences.  
+
+	(nautilus_global_preferences_startup): Hook to make the above work
+	properly.
+	
+	Cleanup the creation of the preferences dialog.
+
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(icon_theme_changed_callback): Preference changed callback no
+	longer passes in the value.  Value needs to be manually fetched.
+
+	(nautilus_get_current_icon_factory): No need to call
+	nautilus_preferences_set_info.  Instead give
+	nautilus_preferences_get a default value.  This way, we can always
+	get something reasonable back.
+
+
+	* src/nautilus-window-menus.c:
+	(use_eazel_theme_icons_cb): Update for pref api changes.  Feed the
+	get function a default value.
+
+	* src/ntl-app.c:
+	(nautilus_app_class_init): Call
+	nautilus_global_preferences_startup so that user level callbacks
+	and such that preferences exposed in the ui have nice defaults.
+	
+	* src/ntl-main.c:
+	(main): Add nautilus-widgets self checks.
+
+	* src/ntl-uri-map.c:
+	(add_meta_view_iids_from_preferences): Feed the pref api function
+	a default value. 
+
+	* src/ntl-window-state.c:
+	(nautilus_window_set_initial_state): User level is no longer
+	publicly exposed over here.  Determine the home uri, instead by
+	fetching the HOME_URI preference.
+
+	* src/file-manager/fm-directory-view.c:
+	(use_new_window_changed_callback): Retired.  Instead check
+	preference when needed.  There really is not need to go to the
+	trouble of installing a callback.  Its just as easy and not
+	slow to check directly.  Also, retire the 'use_new_window' member.
+
+	(user_level_changed_callback): Retired.  User level no longer
+	publically exposed.
+
+	(show_hidden_files_changed_callback):  Check SHOW_HIDDEN_FILES
+	preference to determine if hidden files should be filtered.
+
+	Add a 'show_hidden_files' member that keeps track of changes in
+	this preference.
+
+	(fm_directory_view_initialize): Initialize 'show_hidden_files'.
+	Update for callback name change.
+
+	(nautilus_preferences_remove_callback): Remove uneeded unregister
+	call for retired use_new_window callback.
+
+	(queue_pending_files): Do hidden file filtering based on
+	'show_hidden_files' instead of using the user level.
+
+	(fm_directory_view_activate_file): Check USE_NEW_WINDOW preference
+	to determine if a new window is requested.
+
+	*  src/file-manager/fm-icon-text-window.c:
+	Include fm-icon-virw.h and use
+	DEFAULT_ICON_VIEW_TEXT_ATTRIBUTE_NAMES from it instead of
+	ATTRIBUTE_NAMES_DEFAULT.  This makes sure the default is not out
+	of whack.  This define should probably be placed in a better place.
+	
+	(synch_menus_with_preference),
+	(changed_attributes_option_menu_cb): Update for preference api changes.
+	
+	(preference_changed_callback): Rename to
+	icon_view_text_attribute_changed_callback for clarity.
+
+	(icon_view_text_attribute_changed_callback): Value no longer
+	passed into callback.  Need to check preferences manually.  
+	
+	* src/file-manager/fm-icon-view.h:
+	Add DEFAULT_ICON_VIEW_TEXT_ATTRIBUTE_NAMES to share with
+	fm-icon-text-window.
+	
+	* src/file-manager/fm-icon-view.c:
+	(fm_icon_view_icon_text_changed_callback): Update for preference
+	api changes.
+
+	Minor anal style formatting of the private prototypes.
+
+	(fm_icon_view_initialize_class): Yank
+	nautilus_preferences_set_info call.  No longer needed for there to
+	be proper defaults.  
+
+	(text_attribute_names_changed_callback): Value no longer
+	passed into callback.  Need to check preferences manually.  Also,
+	feed the get function a reasonable default.
+
+	* components/help/Makefile.am: Needs to link with
+	libnautilus-extensions. 
+	
+	* components/websearch/Makefile.am: Needs to link with
+	libnautilus-extensions. 
+	
+2000-04-18  Ramiro Estrugo  <ramiro@eazel.com>
+
 	*  libnautilus-extensions/nautilus-string-list.c,
 	   libnautilus/nautilus-string-list.h: Dumb underscore fix the struct tags.
 

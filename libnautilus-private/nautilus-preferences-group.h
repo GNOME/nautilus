@@ -28,6 +28,9 @@
 #include <gtk/gtkframe.h>
 #include <gnome.h>
 
+#include <nautilus-widgets/nautilus-preferences.h>
+#include <nautilus-widgets/nautilus-preferences-item.h>
+
 BEGIN_GNOME_DECLS
 
 #define NAUTILUS_TYPE_PREFERENCES_GROUP            (nautilus_preferences_group_get_type ())
@@ -55,9 +58,11 @@ struct _NautilusPreferencesGroupClass
 };
 
 GtkType    nautilus_preferences_group_get_type (void);
-GtkWidget* nautilus_preferences_group_new      (const gchar              *title);
-void       nautilus_preferences_group_add      (NautilusPreferencesGroup *preferences_group,
-						GtkWidget                *item);
+GtkWidget* nautilus_preferences_group_new      (const gchar                 *title);
+GtkWidget* nautilus_preferences_group_add_item (NautilusPreferencesGroup    *group,
+						const NautilusPreferences   *preferences,
+						const char                  *preference_name,
+						NautilusPreferencesItemType  item_type);
 
 BEGIN_GNOME_DECLS
 

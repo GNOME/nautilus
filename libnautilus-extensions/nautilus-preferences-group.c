@@ -194,18 +194,43 @@ nautilus_preferences_group_new (const gchar *title)
 	return GTK_WIDGET (group);
 }
 
-void
-nautilus_preferences_group_add (NautilusPreferencesGroup *group,
-				GtkWidget		 *item)
+GtkWidget *
+nautilus_preferences_group_add_item (NautilusPreferencesGroup		*group,
+				     const NautilusPreferences		*preferences,
+				     const char				*preference_name,
+				     NautilusPreferencesItemType	item_type)
 {
-	g_return_if_fail (group != NULL);
-	g_return_if_fail (NAUTILUS_IS_PREFERENCES_GROUP (group));
-	g_return_if_fail (item != NULL);
+	GtkWidget			*item;
+	NautilusPreference		*preference;
 
+	g_return_val_if_fail (group != NULL, NULL);
+	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_GROUP (group), NULL);
+
+	g_return_val_if_fail (preferences != NULL, NULL);
+	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES (preferences), NULL);
+
+	g_return_val_if_fail (preference_name != NULL, NULL);
+
+	/* FIXME: The following cast needs to be fixed */
+	preference = nautilus_preferences_get_preference ((NautilusPreferences *) preferences, preference_name);
+
+	g_assert (preference != NULL);
+
+	gtk_object_unref (GTK_OBJECT (preference));
+
+	preference = NULL;
+
+	item = nautilus_preferences_item_new (preferences,
+					      preference_name,
+					      item_type);
+	
 	gtk_box_pack_start (GTK_BOX (group->details->content_box),
 			    item,
 			    TRUE,
 			    TRUE,
 			    0);
-}
 
+	gtk_widget_show (item);
+
+	return item;
+}

@@ -31,12 +31,15 @@
 
 BEGIN_GNOME_DECLS
 
-/* User level */
-#define NAUTILUS_PREFERENCES_USER_LEVEL				"/nautilus/preferences/user_level"
-
 /* Window options */
 #define NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW			"/nautilus/preferences/window_always_new"
 #define NAUTILUS_PREFERENCES_WINDOW_SEARCH_EXISTING		"/nautilus/preferences/window_search_existing"
+
+/* Show hidden files  */
+#define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES  		"/nautilus/preferences/show_hidden_files"
+
+/* Home URI  */
+#define NAUTILUS_PREFERENCES_HOME_URI                 		"/nautilus/preferences/home_uri"
 
 /* Wellknown meta views */
 #define NAUTILUS_PREFERENCES_META_VIEWS_SHOW_ANNOTATIONS	"/nautilus/metaviews/ntl_notes_view"
@@ -50,13 +53,16 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES	"/nautilus/icon_view/text_attribute_names"
 #define NAUTILUS_PREFERENCES_ICON_THEME				"/nautilus/preferences/icon_theme"
 
+/* Single/Double click preference  */
+#define NAUTILUS_PREFERENCES_CLICK_ACTIVATION_TYPE		"/nautilus/preferences/click_activation_type"
+
 enum
 {
-	NAUTILUS_USER_LEVEL_NOVICE,
-	NAUTILUS_USER_LEVEL_INTERMEDIATE,
-	NAUTILUS_USER_LEVEL_HACKER
+	NAUTILUS_CLICK_ACTIVATION_SINGLE,
+	NAUTILUS_CLICK_ACTIVATION_DOUBLE
 };
 
+void                      nautilus_global_preferences_startup            (void);
 void                      nautilus_global_preferences_shutdown           (void);
 void                      nautilus_global_preferences_show_dialog        (void);
 const NautilusStringList *nautilus_global_preferences_get_meta_view_iids (void);

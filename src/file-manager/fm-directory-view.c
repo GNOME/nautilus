@@ -109,8 +109,7 @@ struct FMDirectoryViewDetails
 
 	gboolean loading;
 
-	gint user_level;
-	gboolean use_new_window;
+	gboolean show_hidden_files;
 };
 
 /* forward declarations */
@@ -122,8 +121,8 @@ static void           fm_directory_view_initialize_class                        
 static void           fm_directory_view_initialize                                (FMDirectoryView          *view);
 static void           fm_directory_view_delete_with_confirm                       (FMDirectoryView          *view,
 										   GList                    *files);
-static void	      fm_directory_duplicate_selection 				  (FMDirectoryView 	    *view, 
-										   GList 		    *files);
+static void           fm_directory_duplicate_selection                            (FMDirectoryView          *view,
+										   GList                    *files);
 static void           fm_directory_view_destroy                                   (GtkObject                *object);
 static void           fm_directory_view_activate_file_internal                    (FMDirectoryView          *view,
 										   NautilusFile             *file,
@@ -173,13 +172,8 @@ static void           schedule_timeout_display_of_pending_files                 
 static void           unschedule_timeout_display_of_pending_files                 (FMDirectoryView          *view);
 static void           unschedule_display_of_pending_files                         (FMDirectoryView          *view);
 static void           disconnect_model_handlers                                   (FMDirectoryView          *view);
-static void           user_level_changed_callback                                 (NautilusPreferences      *preferences,
+static void           show_hidden_files_changed_callback                          (NautilusPreferences      *preferences,
 										   const char               *name,
-										   gconstpointer             value,
-										   gpointer                  user_data);
-static void           use_new_window_changed_callback                             (NautilusPreferences      *preferences,
-										   const char               *name,
-										   gconstpointer             value,
 										   gpointer                  user_data);
 static void           add_nautilus_file_to_uri_map                                (FMDirectoryView          *preferences,
 										   NautilusFile             *file);
@@ -483,25 +477,16 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 	gtk_widget_show (GTK_WIDGET (directory_view));
 
 	/* Obtain the user level for filtering */
-	directory_view->details->user_level = 
+	directory_view->details->show_hidden_files = 
 		nautilus_preferences_get_enum (nautilus_preferences_get_global_preferences (),
-					       NAUTILUS_PREFERENCES_USER_LEVEL);
+					       NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+					       FALSE);
 
-	/* Keep track of subsequent user level changes so that we dont have to query
-	 * preferences continually */
-	nautilus_preferences_add_enum_callback (nautilus_preferences_get_global_preferences (),
-						NAUTILUS_PREFERENCES_USER_LEVEL,
-						user_level_changed_callback,
-						directory_view);
-
-	directory_view->details->use_new_window =
-		nautilus_preferences_get_boolean (nautilus_preferences_get_global_preferences (),
-						  NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW);
-
+	/* Keep track of changes in this pref to filter files accordingly. */
 	nautilus_preferences_add_boolean_callback (nautilus_preferences_get_global_preferences (),
-						   NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
-						   use_new_window_changed_callback,
-						   directory_view);	
+						   NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+						   show_hidden_files_changed_callback,
+						   directory_view);
 }
 
 static void
@@ -512,12 +497,8 @@ fm_directory_view_destroy (GtkObject *object)
 	view = FM_DIRECTORY_VIEW (object);
 
 	nautilus_preferences_remove_callback (nautilus_preferences_get_global_preferences (),
-					      NAUTILUS_PREFERENCES_USER_LEVEL,
-					      user_level_changed_callback,
-					      view);
-	nautilus_preferences_remove_callback (nautilus_preferences_get_global_preferences (),
-					      NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
-					      use_new_window_changed_callback,
+					      NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+					      show_hidden_files_changed_callback,
 					      view);
 	
 	if (view->details->model != NULL) {
@@ -1058,11 +1039,9 @@ queue_pending_files (FMDirectoryView *view,
 	GList *filtered_files = NULL;
 	GList *files_iterator;
 
-	/* Filter out files according to the user level */
-	switch (view->details->user_level) {
-	case NAUTILUS_USER_LEVEL_NOVICE:
-	case NAUTILUS_USER_LEVEL_INTERMEDIATE: 
-
+	/* Filter out hidden files if needed */
+	if (!view->details->show_hidden_files)
+	{
 		/* FIXME: Eventually this should become a generic filtering thingy. */
 		for (files_iterator = files; 
 		     files_iterator != NULL; 
@@ -1086,14 +1065,8 @@ queue_pending_files (FMDirectoryView *view,
 		}
 		
 		files = filtered_files;
-
-		break;
-		
-	case NAUTILUS_USER_LEVEL_HACKER:
-	default:
-		break;
 	}
-	
+
 	/* Put the files on the pending list if there are any. */
 	if (files != NULL) {
 		nautilus_file_list_ref (files);
@@ -1911,9 +1884,15 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 				 NautilusFile *file,
 				 gboolean request_new_window)
 {
+	gboolean use_new_window_preference;
+
+	use_new_window_preference = nautilus_preferences_get_boolean (nautilus_preferences_get_global_preferences (),
+								      NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
+								      FALSE);
+
 	fm_directory_view_activate_file_internal (view,
 						  file,
-						  request_new_window || view->details->use_new_window);
+						  request_new_window || use_new_window_preference);
 }
 
 /**
@@ -2141,35 +2120,24 @@ fm_directory_view_update_menus (FMDirectoryView *view)
 }
 
 static void
-use_new_window_changed_callback (NautilusPreferences *preferences,
-			         const char *name,
-			         gconstpointer value,
-			         gpointer user_data)
-{
-	g_assert (NAUTILUS_IS_PREFERENCES (preferences));
-	g_assert (strcmp (name, NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW) == 0);
-	g_assert (GPOINTER_TO_INT (value) == FALSE || GPOINTER_TO_INT (value) == TRUE);
-	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
-
-	FM_DIRECTORY_VIEW (user_data)->details->use_new_window = GPOINTER_TO_INT (value);
-}
-
-static void
-user_level_changed_callback (NautilusPreferences *preferences,
-			     const char *name,
-			     gconstpointer value,
-			     gpointer user_data)
+show_hidden_files_changed_callback (NautilusPreferences	*preferences,
+				    const char		*name,
+				    gpointer		user_data)
 {
 	FMDirectoryView *directory_view;
 	char *same_uri;
 
 	g_assert (NAUTILUS_IS_PREFERENCES (preferences));
-	g_assert (strcmp (name, NAUTILUS_PREFERENCES_USER_LEVEL) == 0);
+	g_assert (name != NULL);
+	g_assert (strcmp (name, NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES) == 0);
 	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
 
 	directory_view = FM_DIRECTORY_VIEW (user_data);
 
-	directory_view->details->user_level = GPOINTER_TO_INT (value);
+	directory_view->details->show_hidden_files = 
+		nautilus_preferences_get_boolean (preferences,
+						  NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+						  FALSE);
 
 	/* Reload the current uri so that the filtering changes take place. */
 	if (directory_view->details->model != NULL) {

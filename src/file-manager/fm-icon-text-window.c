@@ -25,6 +25,7 @@
 
 #include <config.h>
 #include "fm-icon-text-window.h"
+#include "fm-icon-view.h"
 
 #include <gtk/gtkaccellabel.h>
 #include <gtk/gtkhbox.h>
@@ -79,8 +80,6 @@ static char * attribute_labels[] = {
 	N_("MIME type"),
 	NULL
 };
-
-#define ATTRIBUTE_NAMES_DEFAULT "size|date_modified|type"
 
 static int
 get_attribute_index_from_option_menu (GtkOptionMenu *option_menu)
@@ -147,13 +146,13 @@ synch_menus_with_preference (void)
 	char **text_array;
 
 	if (attribute_names_preference == NULL) {
-		preference = nautilus_preferences_get_string
-			(nautilus_preferences_get_global_preferences (),
-			 NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES);
+		preference = nautilus_preferences_get (nautilus_preferences_get_global_preferences (),
+						       NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
+						       DEFAULT_ICON_VIEW_TEXT_ATTRIBUTE_NAMES);
 		if (attribute_names_string_is_good (preference)) {
 			set_preference_string (preference);
 		} else {
-			set_preference_string (ATTRIBUTE_NAMES_DEFAULT);
+			set_preference_string (DEFAULT_ICON_VIEW_TEXT_ATTRIBUTE_NAMES);
 		}
 	}
 
@@ -170,18 +169,27 @@ synch_menus_with_preference (void)
 }
 
 static void
-preference_changed_callback (NautilusPreferences *preferences,
-         		     const char *name,
-         		     gconstpointer value,
-         		     gpointer user_data)
+icon_view_text_attribute_changed_callback (NautilusPreferences	*preferences,
+					   const char		*name,
+					   gpointer		user_data)
 
 {
+	char *text_attribute_names;
+
 	g_assert (NAUTILUS_IS_PREFERENCES (preferences));
 	g_assert (strcmp (name, NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES) == 0);
-	g_assert (value != NULL);
 	g_assert (user_data == NULL);
+	
+	text_attribute_names = nautilus_preferences_get (nautilus_preferences_get_global_preferences (),
+							 NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
+							 NULL);
 
-	set_preference_string (value);
+	g_assert (text_attribute_names != NULL);
+
+	set_preference_string (text_attribute_names);
+
+	g_free (text_attribute_names);
+
 	synch_menus_with_preference ();
 }
 
@@ -219,9 +227,9 @@ changed_attributes_option_menu_cb (GtkMenuItem *menu_item, gpointer user_data)
 
 	attribute_names_string = g_strjoinv ("|", attribute_names_array);
 
-	nautilus_preferences_set_string (nautilus_preferences_get_global_preferences (),
-					 NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
-					 attribute_names_string);
+	nautilus_preferences_set (nautilus_preferences_get_global_preferences (),
+				  NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
+				  attribute_names_string);
 
 	g_free (attribute_names_string);
 	g_strfreev (attribute_names_array);
@@ -319,7 +327,7 @@ create_icon_text_window (void)
 
 	nautilus_preferences_add_string_callback (nautilus_preferences_get_global_preferences (),
 						  NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
-						  preference_changed_callback,
+						  icon_view_text_attribute_changed_callback,
 						  NULL);
 
 	gtk_signal_connect (GTK_OBJECT (window), "delete_event",
@@ -388,7 +396,7 @@ fm_icon_text_window_destroy_cb (GtkObject *object,
 {
 	nautilus_preferences_remove_callback (nautilus_preferences_get_global_preferences (),
 					      NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
-					      preference_changed_callback,
+					      icon_view_text_attribute_changed_callback,
 					      NULL);
 }
 

@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* nautilus-prefs.h - Preference peek/poke/notify object interface.
+/* nautilus-preferences.h - Preference peek/poke/notify object interface.
 
    Copyright (C) 1999, 2000 Eazel, Inc.
 
@@ -28,6 +28,8 @@
 #include <gtk/gtkobject.h>
 #include <libgnome/gnome-defs.h>
 
+#include <nautilus-widgets/nautilus-preference.h>
+
 BEGIN_GNOME_DECLS
 
 #define NAUTILUS_TYPE_PREFERENCES            (nautilus_preferences_get_type ())
@@ -47,90 +49,68 @@ struct NautilusPreferences
 };
 
 /*
- * NautilusPreferencesType:
- *
- * The types of supported preferences.
- */
-typedef enum
-{
-	NAUTILUS_PREFERENCE_BOOLEAN,
-	NAUTILUS_PREFERENCE_ENUM,
-	NAUTILUS_PREFERENCE_STRING
-} NautilusPreferencesType;
-
-/*
  * A callback which you can register to to be notified when a particular
  * preference changes.
  */
 typedef void (*NautilusPreferencesCallback) (NautilusPreferences    *preferences,
 					     const char             *name, 
-					     gconstpointer           value,
-					     gpointer                user_data);
+					     gpointer                callback_data);
 
 struct NautilusPreferencesClass
 {
 	GtkObjectClass object_class;
 };
 
-typedef struct
-{
-	char			*name;
-	char			*description;
-	NautilusPreferencesType	 type;
-	gconstpointer		 default_value;
-	gpointer		 data;
-} NautilusPreferencesInfo;
+GtkType              nautilus_preferences_get_type               (void);
+GtkObject *          nautilus_preferences_new                    (const char                  *domain);
+NautilusPreference * nautilus_preferences_get_preference         (const NautilusPreferences         *preferences,
+								  const char                  *name);
+void                 nautilus_preferences_set_info               (NautilusPreferences         *preferences,
+								  const char                  *name,
+								  const char                  *description,
+								  NautilusPreferenceType       type,
+								  gconstpointer                default_value);
+void                 nautilus_preferences_enum_add_entry         (NautilusPreferences         *preferences,
+								  const char                  *name,
+								  const char                  *entry_name,
+								  const char                  *entry_description,
+								  int                          entry_value);
+gboolean             nautilus_preferences_add_enum_callback      (NautilusPreferences         *preferences,
+								  const char                  *name,
+								  NautilusPreferencesCallback  callback,
+								  gpointer                     callback_data);
+gboolean             nautilus_preferences_add_boolean_callback   (NautilusPreferences         *preferences,
+								  const char                  *name,
+								  NautilusPreferencesCallback  callback,
+								  gpointer                     callback_data);
+gboolean             nautilus_preferences_add_string_callback    (NautilusPreferences         *preferences,
+								  const char                  *name,
+								  NautilusPreferencesCallback  callback,
+								  gpointer                     callback_data);
+gboolean             nautilus_preferences_remove_callback        (NautilusPreferences         *preferences,
+								  const char                  *name,
+								  NautilusPreferencesCallback  callback,
+								  gpointer                     callback_data);
+void                 nautilus_preferences_set_boolean            (NautilusPreferences         *preferences,
+								  const char                  *name,
+								  gboolean                     value);
+gboolean             nautilus_preferences_get_boolean            (const NautilusPreferences         *preferences,
+								  const char                  *name,
+								  gboolean		      default_value);
+void                 nautilus_preferences_set_enum               (NautilusPreferences         *preferences,
+								  const char                  *name,
+								  int                          value);
+int                  nautilus_preferences_get_enum               (const NautilusPreferences         *preferences,
+								  const char                  *name,
+								  int			      default_value);
+void                 nautilus_preferences_set                    (NautilusPreferences         *preferences,
+								  const char                  *name,
+								  const char                  *value);
+char *               nautilus_preferences_get                    (const NautilusPreferences         *preferences,
+								  const char                  *name,
+								  const gchar		      *default_value);
+NautilusPreferences *nautilus_preferences_get_global_preferences (void);
 
-typedef struct
-{
-	const char * const *enum_names;
-	const char * const *enum_descriptions;
-	const int	   *enum_values;
-	guint		    num_entries;
-} NautilusPreferencesEnumData;
-
-GtkType                        nautilus_preferences_get_type               (void);
-GtkObject *                    nautilus_preferences_new                    (const char                  *domain);
-const NautilusPreferencesInfo *nautilus_preferences_get_info               (NautilusPreferences         *preferences,
-									    const char                  *name);
-void                           nautilus_preferences_set_info               (NautilusPreferences         *preferences,
-									    const char                  *name,
-									    const char                  *description,
-									    NautilusPreferencesType	type,
-									    gconstpointer               default_value,
-									    gpointer			data);
-gboolean                       nautilus_preferences_add_enum_callback      (NautilusPreferences         *preferences,
-									    const char                  *name,
-									    NautilusPreferencesCallback  callback,
-									    gpointer                     user_data);
-gboolean                       nautilus_preferences_add_boolean_callback   (NautilusPreferences         *preferences,
-									    const char                  *name,
-									    NautilusPreferencesCallback  callback,
-									    gpointer                     user_data);
-gboolean                       nautilus_preferences_add_string_callback    (NautilusPreferences         *preferences,
-									    const char                  *name,
-									    NautilusPreferencesCallback  callback,
-									    gpointer                     user_data);
-gboolean                       nautilus_preferences_remove_callback        (NautilusPreferences         *preferences,
-									    const char                  *name,
-									    NautilusPreferencesCallback  callback,
-									    gpointer                     user_data);
-void                           nautilus_preferences_set_boolean            (NautilusPreferences         *preferences,
-									    const char                  *name,
-									    gboolean                     value);
-gboolean                       nautilus_preferences_get_boolean            (NautilusPreferences         *preferences,
-									    const char                  *name);
-void                           nautilus_preferences_set_enum               (NautilusPreferences         *preferences,
-									    const char                  *name,
-									    int                          value);
-int                            nautilus_preferences_get_enum               (NautilusPreferences         *preferences,
-									    const char                  *name);
-void                           nautilus_preferences_set_string             (NautilusPreferences         *preferences,
-									    const char                  *name,
-									    const char                  *value);
-char *                         nautilus_preferences_get_string             (NautilusPreferences         *preferences,
-									    const char                  *name);
-NautilusPreferences *          nautilus_preferences_get_global_preferences (void);
 
 BEGIN_GNOME_DECLS
 

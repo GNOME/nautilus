@@ -37,35 +37,19 @@ nautilus_window_set_initial_state (NautilusWindow *window, const char *initial_u
 	}
 	else
 	{
-		GString		*path_name;
-		gint		user_level;
-		const char	*user_top_directory;
+		char *home_uri;
+		char *default_home_uri = g_strdup_printf ("file://%s", g_get_home_dir());
 
-		path_name = g_string_new ("file://");
-		
-		user_level = nautilus_preferences_get_enum (nautilus_preferences_get_global_preferences (),
-							    NAUTILUS_PREFERENCES_USER_LEVEL);
+		home_uri = nautilus_preferences_get (nautilus_preferences_get_global_preferences (),
+						     NAUTILUS_PREFERENCES_HOME_URI,
+						     default_home_uri);
 
-		switch (user_level)
-		{
-		case NAUTILUS_USER_LEVEL_NOVICE:
-			
-			user_top_directory = nautilus_user_top_directory ();
-			
-			g_string_append (path_name, user_top_directory);
+		g_assert (home_uri != NULL);
 
-			break;
+		nautilus_window_goto_uri (window, home_uri);
 
-		case NAUTILUS_USER_LEVEL_INTERMEDIATE:
-		case NAUTILUS_USER_LEVEL_HACKER:
-		default:
-			g_string_append (path_name, g_get_home_dir ());
-			break;
-		}
-		
-		nautilus_window_goto_uri (window, path_name->str);
-
-		g_string_free (path_name, TRUE);
+		g_free (home_uri);
+		g_free (default_home_uri);
 	}
 }
 

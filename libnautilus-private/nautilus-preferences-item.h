@@ -69,9 +69,10 @@ typedef enum
 } NautilusPreferencesItemType;
 
 GtkType    nautilus_preferences_item_get_type (void);
-GtkWidget* nautilus_preferences_item_new      (GtkObject                   *prefs,
-					       const gchar                 *pref_name,
+GtkWidget* nautilus_preferences_item_new      (const NautilusPreferences   *preferences,
+					       const gchar                 *preference_name,
 					       NautilusPreferencesItemType  item_type);
+
 
 BEGIN_GNOME_DECLS
 
