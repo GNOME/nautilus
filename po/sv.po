@@ -1,8 +1,8 @@
 # Swedish translation of Nautilus.
-# Copyright (C) 2000 Free Software Foundation, Inc.
+# Copyright (C) 2000,2001 Free Software Foundation, Inc.
 # Andreas Hyden <a.hyden@cyberpoint.se>, 2000.
 # Richard Hult <rhult@hem.passagen.se>, 2000.
-# Christian Rose <menthos@menthos.com>, 2000.
+# Christian Rose <menthos@menthos.com>, 2000-2001.
 #
 # $Id$
 #
@@ -20,8 +20,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2001-01-03 00:19+0100\n"
-"PO-Revision-Date: 2001-01-03 00:20+0100\n"
+"POT-Creation-Date: 2001-01-04 08:50+0100\n"
+"PO-Revision-Date: 2001-01-04 09:00+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -32,21 +32,41 @@ msgstr ""
 msgid "Can't create nautilus-launcher-applet!"
 msgstr "Kan inte skapa nautilus-startar-applet!"
 
-#: components/hardware/nautilus-hardware-view.c:242
+#: components/hardware/nautilus-hardware-view.c:235
 #, c-format
 msgid ""
 "%s CPU\n"
 "%s MHz\n"
 "%s cache size"
 msgstr ""
-"CPU: %s\n"
+"Processor: %s\n"
 "%s MHz\n"
 "Cachestorlek: %s"
 
-#: components/hardware/nautilus-hardware-view.c:278
+#: components/hardware/nautilus-hardware-view.c:269
 #, c-format
-msgid "%s RAM"
-msgstr "%s RAM"
+msgid "%lu GB RAM"
+msgstr "%lu GB RAM"
+
+#: components/hardware/nautilus-hardware-view.c:271
+#, c-format
+msgid "%lu MB RAM"
+msgstr "%lu MB RAM"
+
+#: components/hardware/nautilus-hardware-view.c:329
+#, c-format
+msgid "%lu GB"
+msgstr "%lu GB"
+
+#: components/hardware/nautilus-hardware-view.c:331
+#, c-format
+msgid "%lu MB"
+msgstr "%lu MB"
+
+#. set up the title
+#: components/hardware/nautilus-hardware-view.c:412
+msgid "Hardware Overview"
+msgstr "Hårdvaruöversikt"
 
 #: components/help/converters/gnome-db2html2/gdb3html.c:708
 #: components/music/nautilus-music-view.c:1563
@@ -253,7 +273,7 @@ msgstr " (se \""
 msgid " (see also \""
 msgstr " (se även \""
 
-#: components/image-viewer/nautilus-image-view.c:825
+#: components/image-viewer/nautilus-image-view.c:829
 msgid "I could not initialize Bonobo"
 msgstr "Jag kunde inte initiera Bonobo"
 
@@ -999,8 +1019,8 @@ msgstr "Tyvärr, \"%s\" är inte en användbar bildfil."
 
 #: components/music/nautilus-music-view.c:703
 #: src/file-manager/fm-properties-window.c:2174
-#: src/nautilus-property-browser.c:998 src/nautilus-property-browser.c:1135
-#: src/nautilus-property-browser.c:1403
+#: src/nautilus-property-browser.c:1002 src/nautilus-property-browser.c:1139
+#: src/nautilus-property-browser.c:1407
 msgid "Not an Image"
 msgstr "Inte en bild"
 
@@ -2262,7 +2282,7 @@ msgstr "Aktuella uppdateringar"
 msgid "Version %s"
 msgstr "Version %s"
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:891
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:890
 msgid ""
 "Unable to connect to Eazel's server. The server might be unavailable right "
 "now, or your computer might be configured incorrectly.You could try again "
@@ -2271,7 +2291,7 @@ msgstr ""
 "Kunde inte ansluta till Eazels server. Servern kan vara otillgänglig just nu "
 "eller så kan din dator vara felkonfigurerad. Du kan försöka igen senare."
 
-#: components/services/summary/nautilus-view/nautilus-summary-view.c:909
+#: components/services/summary/nautilus-view/nautilus-summary-view.c:908
 msgid ""
 "Found problem with data on Eazel servers. Please contact support@eazel.com."
 msgstr ""
@@ -2308,11 +2328,11 @@ msgstr "Tiden skiljer sig med %d, maximalt tillåten skillnad är %d"
 msgid "Could not read time-service config from %s"
 msgstr "Kunde inte läsa konfigurationen för tidstjänsten från %s"
 
-#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:192
+#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:195
 msgid "Could not initialize Bonobo"
 msgstr "Kunde inte initiera Bonobo"
 
-#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:207
+#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:210
 #, c-format
 msgid "Can't write logfile %s -- using default log handler"
 msgstr "Kunde inte skriva loggfilen %s -- använder standardlogghanteraren"
@@ -2509,7 +2529,7 @@ msgid "Desktop"
 msgstr "Skrivbord"
 
 #: libnautilus-extensions/nautilus-file.c:4699
-#: libnautilus-extensions/nautilus-trash-directory.c:261
+#: libnautilus-extensions/nautilus-trash-directory.c:260
 #: po/tmp/desktop.xml.h:2 src/file-manager/fm-desktop-icon-view.c:65
 msgid "Trash"
 msgstr "Papperskorg"
@@ -3678,6 +3698,23 @@ msgstr "fast bredd"
 msgid "Font"
 msgstr "Typsnitt"
 
+#. localizers: These strings are part of the strftime
+#. * self-check code and must be changed to match what strtfime
+#. * yields -- usually just omitting the AM part is all that's
+#. * needed.
+#.
+#: libnautilus-extensions/nautilus-glib-extensions.c:1176
+msgid "01/01/00, 01:00 AM"
+msgstr "01/01/00, 01:00"
+
+#: libnautilus-extensions/nautilus-glib-extensions.c:1177
+msgid "1/1/00, 1:00 AM"
+msgstr "1/1/00, 1:00"
+
+#: libnautilus-extensions/nautilus-glib-extensions.c:1178
+msgid " 1/ 1/00,  1:00 AM"
+msgstr " 1/ 1/00,  1:00"
+
 #. Constants
 #: libnautilus-extensions/nautilus-global-preferences.c:44
 msgid "Nautilus Preferences"
@@ -3972,7 +4009,7 @@ msgid "Don't include the built-in bookmarks"
 msgstr "Inkludera inte de inbyggda bokmärkena"
 
 #. The list of characters that cause line breaks can be localized.
-#: libnautilus-extensions/nautilus-icon-canvas-item.c:66
+#: libnautilus-extensions/nautilus-icon-canvas-item.c:67
 #: libnautilus-extensions/nautilus-label.c:180
 msgid " -_,;.?/&"
 msgstr " -_,;.?/&"
@@ -4059,7 +4096,7 @@ msgid "Prefs Box"
 msgstr "Inställningsfönster"
 
 #: libnautilus-extensions/nautilus-program-chooser.c:186
-#: src/nautilus-window.c:865 src/nautilus-window.c:1101
+#: src/nautilus-window.c:820 src/nautilus-window.c:1056
 #, c-format
 msgid "View as %s"
 msgstr "Visa som %s"
@@ -4193,7 +4230,7 @@ msgid "Choose"
 msgstr "Välj"
 
 #: libnautilus-extensions/nautilus-program-chooser.c:1231
-#: src/nautilus-property-browser.c:366
+#: src/nautilus-property-browser.c:367
 msgid "Done"
 msgstr "Klar"
 
@@ -4713,28 +4750,28 @@ msgstr "_Klipp ut text"
 msgid "_Paste Text"
 msgstr "K_listra in text"
 
-#: src/file-manager/fm-desktop-icon-view.c:602
-#: src/file-manager/fm-desktop-icon-view.c:607
+#: src/file-manager/fm-desktop-icon-view.c:610
+#: src/file-manager/fm-desktop-icon-view.c:615
 #, c-format
 msgid "Link to %s"
 msgstr "Länk till %s"
 
-#: src/file-manager/fm-desktop-icon-view.c:604
+#: src/file-manager/fm-desktop-icon-view.c:612
 msgid "Link to Unknown"
 msgstr "Länk till okänd"
 
-#: src/file-manager/fm-desktop-icon-view.c:703
+#: src/file-manager/fm-desktop-icon-view.c:711
 #, c-format
 msgid "%s's Home"
 msgstr "%ss hem"
 
-#: src/file-manager/fm-desktop-icon-view.c:991
+#: src/file-manager/fm-desktop-icon-view.c:999
 msgid "Empty Trash..."
 msgstr "Töm papperskorgen..."
 
 #: po/tmp/nautilus-desktop-icon-view-ui.xml.h:4
 #: po/tmp/nautilus-directory-view-ui.xml.h:11
-#: src/file-manager/fm-desktop-icon-view.c:993
+#: src/file-manager/fm-desktop-icon-view.c:1001
 msgid "Empty Trash"
 msgstr "Töm papperskorgen"
 
@@ -5370,8 +5407,8 @@ msgid "Creating Properties window"
 msgstr "Skapar fönstret Egenskaper"
 
 #: src/file-manager/fm-properties-window.c:2173
-#: src/nautilus-property-browser.c:996 src/nautilus-property-browser.c:1134
-#: src/nautilus-property-browser.c:1402
+#: src/nautilus-property-browser.c:1000 src/nautilus-property-browser.c:1138
+#: src/nautilus-property-browser.c:1406
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Tyvärr, \"%s\" är inte en användbar bildfil!"
@@ -6250,105 +6287,105 @@ msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry kan inte användas med mer än en URI.\n"
 
 #. set the title and standard close accelerator
-#: src/nautilus-property-browser.c:258
+#: src/nautilus-property-browser.c:259
 msgid "Backgrounds and Emblems"
 msgstr "Bakgrunder och emblem"
 
 #. add the title label
-#: src/nautilus-property-browser.c:329 src/nautilus-property-browser.c:2145
+#: src/nautilus-property-browser.c:330 src/nautilus-property-browser.c:2149
 msgid "Select A Category:"
 msgstr "Välj en kategori:"
 
-#: src/nautilus-property-browser.c:376
+#: src/nautilus-property-browser.c:377
 msgid "Add new..."
 msgstr "Lägg till ny..."
 
-#: src/nautilus-property-browser.c:390
+#: src/nautilus-property-browser.c:391
 msgid "Remove..."
 msgstr "Ta bort..."
 
-#: src/nautilus-property-browser.c:893
+#: src/nautilus-property-browser.c:897
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
 msgstr "Tyvärr, mönstret %s kunde inte tas bort."
 
-#: src/nautilus-property-browser.c:894 src/nautilus-property-browser.c:923
+#: src/nautilus-property-browser.c:898 src/nautilus-property-browser.c:927
 msgid "Couldn't delete pattern"
 msgstr "Kunde inte ta bort mönster"
 
-#: src/nautilus-property-browser.c:922
+#: src/nautilus-property-browser.c:926
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
 msgstr "Tyvärr, emblemet %s kunde inte tas bort."
 
-#: src/nautilus-property-browser.c:1023
+#: src/nautilus-property-browser.c:1027
 msgid "Create a New Emblem:"
 msgstr "Skapa ett nytt emblem:"
 
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:1028
+#: src/nautilus-property-browser.c:1032
 msgid "Keyword:"
 msgstr "Nyckelord:"
 
 #. set up a gnome file entry to pick the image file
-#: src/nautilus-property-browser.c:1045
+#: src/nautilus-property-browser.c:1049
 msgid "Select an image file for the new emblem:"
 msgstr "Välj en bildfil för det nya emblemet:"
 
-#: src/nautilus-property-browser.c:1073
+#: src/nautilus-property-browser.c:1077
 msgid "Create a New Color:"
 msgstr "Skapa en ny färg:"
 
 #. make the name label and field
-#: src/nautilus-property-browser.c:1078
+#: src/nautilus-property-browser.c:1082
 msgid "Color name:"
 msgstr "Färgnamn:"
 
-#: src/nautilus-property-browser.c:1089
+#: src/nautilus-property-browser.c:1093
 msgid "Color value:"
 msgstr "Färgvärde:"
 
-#: src/nautilus-property-browser.c:1163
+#: src/nautilus-property-browser.c:1167
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "Tyvärr, mönstret %s kunde inte installeras."
 
-#: src/nautilus-property-browser.c:1164
+#: src/nautilus-property-browser.c:1168
 msgid "Couldn't install pattern"
 msgstr "Kunde inte installera mönster"
 
-#: src/nautilus-property-browser.c:1189
+#: src/nautilus-property-browser.c:1193
 msgid "Select an image file to add as a pattern:"
 msgstr "Välj en bildfil att lägga till som mönster:"
 
-#: src/nautilus-property-browser.c:1261
+#: src/nautilus-property-browser.c:1265
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Tyvärr, du måste ange ett icke-tomt namn för det nya emblemet."
 
-#: src/nautilus-property-browser.c:1262
+#: src/nautilus-property-browser.c:1266
 msgid "Couldn't install color"
 msgstr "Kunde inte installera färg"
 
-#: src/nautilus-property-browser.c:1319
+#: src/nautilus-property-browser.c:1323
 msgid "Select a color to add:"
 msgstr "Välj en färg att lägga till:"
 
-#: src/nautilus-property-browser.c:1420
+#: src/nautilus-property-browser.c:1424
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
 msgstr "Tyvärr, du måste ange ett icke-tomt nyckelord för det nya emblemet."
 
-#: src/nautilus-property-browser.c:1421 src/nautilus-property-browser.c:1424
-#: src/nautilus-property-browser.c:1428 src/nautilus-property-browser.c:1457
+#: src/nautilus-property-browser.c:1425 src/nautilus-property-browser.c:1428
+#: src/nautilus-property-browser.c:1432 src/nautilus-property-browser.c:1461
 msgid "Couldn't install emblem"
 msgstr "Kunde inte installera emblem"
 
-#: src/nautilus-property-browser.c:1423
+#: src/nautilus-property-browser.c:1427
 msgid ""
 "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
 "Tyvärr, emblemnyckelord kan bara innehålla bokstäver, blanksteg och siffror."
 
-#: src/nautilus-property-browser.c:1426
+#: src/nautilus-property-browser.c:1430
 #, c-format
 msgid ""
 "Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
@@ -6357,60 +6394,60 @@ msgstr ""
 "Tyvärr, namnet \"%s\" är ett redan existerande nyckelord. Var vänlig och "
 "välj ett annat namn på det."
 
-#: src/nautilus-property-browser.c:1456
+#: src/nautilus-property-browser.c:1460
 #, c-format
 msgid "Sorry, but the image at %s couldn't be installed as an emblem."
 msgstr "Tyvärr, bilden på %s kunde inte installeras som ett emblem."
 
-#: src/nautilus-property-browser.c:2153 src/nautilus-theme-selector.c:482
+#: src/nautilus-property-browser.c:2157 src/nautilus-theme-selector.c:482
 msgid "Cancel Remove"
 msgstr "Avbryt borttagning"
 
-#: src/nautilus-property-browser.c:2157
+#: src/nautilus-property-browser.c:2161
 msgid "Add a new pattern"
 msgstr "Lägg till ett nytt mönster"
 
-#: src/nautilus-property-browser.c:2160
+#: src/nautilus-property-browser.c:2164
 msgid "Add a new color"
 msgstr "Lägg till en ny färg"
 
-#: src/nautilus-property-browser.c:2163
+#: src/nautilus-property-browser.c:2167
 msgid "Add a new emblem"
 msgstr "Lägg till ett nytt emblem"
 
-#: src/nautilus-property-browser.c:2186
+#: src/nautilus-property-browser.c:2190
 msgid "Click on a pattern to remove it"
 msgstr "Klicka på ett mönster för att ta bort det"
 
-#: src/nautilus-property-browser.c:2189
+#: src/nautilus-property-browser.c:2193
 msgid "Click on a color to remove it"
 msgstr "Klicka på en färg för att ta bort den"
 
-#: src/nautilus-property-browser.c:2192
+#: src/nautilus-property-browser.c:2196
 msgid "Click on an emblem to remove it"
 msgstr "Klicka på ett emblem för att ta bort det"
 
-#: src/nautilus-property-browser.c:2201
+#: src/nautilus-property-browser.c:2205
 msgid "Patterns:"
 msgstr "Mönster:"
 
-#: src/nautilus-property-browser.c:2204
+#: src/nautilus-property-browser.c:2208
 msgid "Colors:"
 msgstr "Färger:"
 
-#: src/nautilus-property-browser.c:2207
+#: src/nautilus-property-browser.c:2211
 msgid "Emblems:"
 msgstr "Emblem:"
 
-#: src/nautilus-property-browser.c:2225
+#: src/nautilus-property-browser.c:2229
 msgid "Remove a pattern"
 msgstr "Ta bort ett mönster"
 
-#: src/nautilus-property-browser.c:2228
+#: src/nautilus-property-browser.c:2232
 msgid "Remove a color"
 msgstr "Ta bort en färg"
 
-#: src/nautilus-property-browser.c:2231
+#: src/nautilus-property-browser.c:2235
 msgid "Remove an emblem"
 msgstr "Ta bort ett emblem"
 
@@ -6888,7 +6925,7 @@ msgstr "_Redigera bokmärken..."
 msgid "_Feedback..."
 msgstr "_Feedback..."
 
-#: po/tmp/nautilus-shell-ui.xml.h:79 src/nautilus-window-menus.c:1319
+#: po/tmp/nautilus-shell-ui.xml.h:79 src/nautilus-window-menus.c:1318
 msgid "_Find"
 msgstr "_Sök"
 
@@ -7383,7 +7420,7 @@ msgstr "Gå till ickeexisterande plats"
 msgid "Go to the location specified by this bookmark"
 msgstr "Gå till platsen som detta bokmärke anger"
 
-#: src/nautilus-window-menus.c:1318
+#: src/nautilus-window-menus.c:1317
 msgid "_Browse"
 msgstr "_Bläddra"
 
@@ -7391,7 +7428,7 @@ msgstr "_Bläddra"
 #. * dialog. %s will be replaced with the name of a user level
 #. * ("Beginner", "Intermediate", or "Advanced").
 #.
-#: src/nautilus-window-menus.c:1510
+#: src/nautilus-window-menus.c:1509
 #, c-format
 msgid "Edit %s Settings"
 msgstr "Ändra inställningar för %s..."
@@ -7401,7 +7438,7 @@ msgstr "Ändra inställningar för %s..."
 #. * the name of a user level ("Beginner", "Intermediate", or
 #. * "Advanced").
 #.
-#: src/nautilus-window-menus.c:1532
+#: src/nautilus-window-menus.c:1531
 #, c-format
 msgid "Edit %s Settings..."
 msgstr "Ändra inställningar för %s..."
@@ -7415,11 +7452,11 @@ msgid "Forward"
 msgstr "Framåt"
 
 #. Add "View as Other..." extra bonus choice.
-#: src/nautilus-window.c:1123
+#: src/nautilus-window.c:1078
 msgid "View as Other..."
 msgstr "Visa som annat...."
 
-#: src/nautilus-window.c:1483
+#: src/nautilus-window.c:1438
 msgid "Close"
 msgstr "Stäng"
 
