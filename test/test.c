@@ -12,7 +12,7 @@ test_init (int *argc,
 	gnome_vfs_init ();
 
 	eel_make_warnings_and_criticals_stop_in_debugger
-		(G_LOG_DOMAIN, g_log_domain_glib,
+		(G_LOG_DOMAIN,
 		 "Bonobo",
 		 "Gdk",
 		 "GnomeUI",
@@ -142,7 +142,6 @@ test_pixbuf_new_named (const char *name, float scale)
 
 GtkWidget *
 test_image_new (const char *pixbuf_name,
-		const char *tile_name,
 		float scale,
 		gboolean with_background)
 {
@@ -165,23 +164,11 @@ test_image_new (const char *pixbuf_name,
 		}
 	}
 
-	if (tile_name != NULL) {
-		GdkPixbuf *tile_pixbuf;
-
-		tile_pixbuf = test_pixbuf_new_named (tile_name, 1.0);
-
-		if (tile_pixbuf != NULL) {
-			eel_image_set_tile_pixbuf (EEL_IMAGE (image), tile_pixbuf);
-			g_object_unref (G_OBJECT (tile_pixbuf));
-		}
-	}
-
 	return image;
 }
 
 GtkWidget *
 test_label_new (const char *text,
-		const char *tile_name,
 		gboolean with_background,
 		int num_sizes_larger)
 {
@@ -201,17 +188,6 @@ test_label_new (const char *text,
 		eel_label_make_smaller (EEL_LABEL (label), ABS (num_sizes_larger));
 	} else if (num_sizes_larger > 0) {
 		eel_label_make_larger (EEL_LABEL (label), num_sizes_larger);
-	}
-
-	if (tile_name != NULL) {
-		GdkPixbuf *tile_pixbuf;
-
-		tile_pixbuf = test_pixbuf_new_named (tile_name, 1.0);
-
-		if (tile_pixbuf != NULL) {
-			eel_label_set_tile_pixbuf (EEL_LABEL (label), tile_pixbuf);
-			g_object_unref (G_OBJECT (tile_pixbuf));
-		}
 	}
 
 	return label;

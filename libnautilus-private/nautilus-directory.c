@@ -63,8 +63,9 @@ static guint signals[LAST_SIGNAL];
 
 static GHashTable *directories;
 
-static void               nautilus_directory_destroy          (GtkObject              *object);
-static void               nautilus_directory_init       (gpointer                object,
+static void               nautilus_directory_finalize         (GObject                *object);
+static void               nautilus_directory_dispose          (GObject                *object);
+static void               nautilus_directory_init             (gpointer                object,
 							       gpointer                klass);
 static void               nautilus_directory_class_init (NautilusDirectoryClass *klass);
 static NautilusDirectory *nautilus_directory_new              (const char             *uri);
@@ -73,17 +74,18 @@ static void               set_directory_uri                   (NautilusDirectory
 							       const char             *new_uri);
 
 EEL_CLASS_BOILERPLATE (NautilusDirectory,
-				   nautilus_directory,
-				   GTK_TYPE_OBJECT)
+		       nautilus_directory,
+		       GTK_TYPE_OBJECT)
 
 static void
 nautilus_directory_class_init (NautilusDirectoryClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 
-	object_class = GTK_OBJECT_CLASS (klass);
+	object_class = G_OBJECT_CLASS (klass);
 	
-	object_class->destroy = nautilus_directory_destroy;
+	object_class->finalize = nautilus_directory_finalize;
+	object_class->dispose  = nautilus_directory_dispose;
 
 	signals[FILES_ADDED] =
 		g_signal_new ("files_added",
@@ -160,11 +162,13 @@ nautilus_directory_unref (NautilusDirectory *directory)
 }
 
 static void
-nautilus_directory_destroy (GtkObject *object)
+nautilus_directory_dispose (GObject *object)
 {
 	NautilusDirectory *directory;
 
 	directory = NAUTILUS_DIRECTORY (object);
+
+	g_hash_table_remove (directories, directory->details->uri);
 
 	nautilus_directory_cancel (directory);
 	g_assert (directory->details->count_in_progress == NULL);
@@ -173,32 +177,49 @@ nautilus_directory_destroy (GtkObject *object)
 	if (directory->details->monitor_list != NULL) {
 		g_warning ("destroying a NautilusDirectory while it's being monitored");
 		eel_g_list_free_deep (directory->details->monitor_list);
+		directory->details->monitor_list = NULL;
 	}
 
 	if (directory->details->monitor != NULL) {
 		nautilus_monitor_cancel (directory->details->monitor);
+		directory->details->monitor = NULL;
 	}
 
 	if (directory->details->metafile_monitor != NULL) {
 		nautilus_directory_unregister_metadata_monitor (directory);
+		directory->details->metafile_monitor = NULL;
 	}
 
-	if (directory->details->metafile_corba_object != CORBA_OBJECT_NIL) {
-		bonobo_object_release_unref (directory->details->metafile_corba_object, NULL);
-	}
-
-	g_hash_table_remove (directories, directory->details->uri);
+	directory->details->metafile_corba_object =
+		bonobo_object_release_unref (
+			directory->details->metafile_corba_object, NULL);
 
 	if (directory->details->dequeue_pending_idle_id != 0) {
 		gtk_idle_remove (directory->details->dequeue_pending_idle_id);
+		directory->details->dequeue_pending_idle_id = 0;
 	}
  
 	g_free (directory->details->uri);
+	directory->details->uri = NULL;
+
 	if (directory->details->vfs_uri != NULL) {
 		gnome_vfs_uri_unref (directory->details->vfs_uri);
+		directory->details->vfs_uri = NULL;
 	}
+
+	EEL_CALL_PARENT (G_OBJECT_CLASS, dispose, (object));
+}
+
+static void
+nautilus_directory_finalize (GObject *object)
+{
+	NautilusDirectory *directory;
+
+	directory = NAUTILUS_DIRECTORY (object);
+
 	g_assert (directory->details->file_list == NULL);
 	g_hash_table_destroy (directory->details->file_hash);
+
 	nautilus_file_queue_destroy (directory->details->high_priority_queue);
 	nautilus_file_queue_destroy (directory->details->low_priority_queue);
 	nautilus_idle_queue_destroy (directory->details->idle_queue);
@@ -209,7 +230,7 @@ nautilus_directory_destroy (GtkObject *object)
 
 	g_free (directory->details);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 static void

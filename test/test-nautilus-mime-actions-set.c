@@ -110,13 +110,8 @@ main (int argc, char **argv)
 	NautilusFile *file;
 	GList *attributes;
 
-	gnomelib_register_popt_table (bonobo_activation_popt_options, bonobo_activation_get_popt_table_name ());
-	bonobo_activation_init (argc, argv);
-
-	g_thread_init (NULL);
-	gnome_vfs_init ();
-	gnome_init ("test-nautilus-mime-actions-set", "0.0",
-		    argc, argv);
+	gnome_program_init ("test-nautilus-mime-actions-set", "0.0",
+			    LIBGNOMEUI_MODULE, argc, argv, NULL);
 
 	if (argc < 3) {
 		usage (argv[0]);

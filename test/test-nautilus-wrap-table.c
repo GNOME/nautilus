@@ -79,10 +79,10 @@ main (int argc, char* argv[])
 		g_object_unref (G_OBJECT (pixbuf));
 
 		/* Attach parameters and signal handler. */
-		g_object_set_data (G_OBJECT (button),
-					  "nautilus_property_name",
-					  emblem_name,
-					  g_free);
+		g_object_set_data_full (G_OBJECT (button),
+					"nautilus_property_name",
+					emblem_name,
+					(GDestroyNotify) g_free);
 				     
 		gtk_container_add (GTK_CONTAINER (emblems_table), button);
 	}

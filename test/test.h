@@ -43,11 +43,9 @@ void       test_gtk_widget_set_background_color (GtkWidget                   *wi
 GdkPixbuf *test_pixbuf_new_named                (const char                  *name,
 						 float                        scale);
 GtkWidget *test_image_new                       (const char                  *pixbuf_name,
-						 const char                  *tile_name,
 						 float                        scale,
 						 gboolean                     with_background);
 GtkWidget *test_label_new                       (const char                  *text,
-						 const char                  *tile_name,
 						 gboolean                     with_background,
 						 int                          num_sizes_larger);
 void       test_pixbuf_draw_rectangle_tiled     (GdkPixbuf                   *pixbuf,

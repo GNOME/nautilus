@@ -1,7 +1,7 @@
 #include <config.h>
 
 #include <gtk/gtk.h>
-#include <libgnome/gnome-init.h>
+#include <libgnomeui/libgnomeui.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 
 static void
@@ -35,7 +35,8 @@ main (int argc, char * argv[])
 	GtkWidget *window;
 	GtkWidget *button;
 	
-	gnome_init ("foo", "bar", argc, argv);
+	gnome_program_init ("test-nautilus-smooth-graphics", "1.0", 
+			    LIBGNOMEUI_MODULE, argc, argv, NULL);
 
 	nautilus_global_preferences_init ();
 

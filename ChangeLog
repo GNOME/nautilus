@@ -1,5 +1,30 @@
 2001-11-21  Michael Meeks  <michael@ximian.com>
 
+	* test/test-nautilus-wrap-table.c (main): fix.
+
+	* test/test-nautilus-mime-actions.c (main): upd. init.
+
+	* test/test.c (test_init): upd.
+	(test_label_new): kill tile_pixbuf support.
+	(test_image_new): ditto.
+
+	* test/test-nautilus-async-activation.c (main): upd.
+
+	* test/Makefile.am: add CORE_CFLAGS, update LDADD.
+
+	* libnautilus-private/nautilus-directory.c
+	(nautilus_directory_destroy): rename to
+	(nautilus_directory_dispose): this, but leave as a
+	gtk object for now, double emission protect, move
+	removal from directories list to head & split into:
+	(nautilus_directory_finalize): here.
+
+	* libnautilus-private/nautilus-directory-async.c
+	(nautilus_directory_async_state_changed): fully remove
+	GTK_OBJECT_DESTROYED check.
+
+2001-11-21  Michael Meeks  <michael@ximian.com>
+
 	* src/nautilus-main.c (main): kill g_log_domain_glib.
 
 	* components/news/nautilus-news.c (main): ditto.

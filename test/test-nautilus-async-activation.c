@@ -26,9 +26,7 @@
 
 #include <gtk/gtk.h>
 #include <libnautilus-private/nautilus-bonobo-extensions.h>
-#include <bonobo/bonobo-widget.h>
-#include <bonobo/bonobo-main.h>
-#include <liboaf/oaf-mainloop.h>
+#include <libbonoboui.h>
 
 #define IID "OAFIID:bonobo_calculator:fab8c2a7-9576-437c-aa3a-a8617408970f"
 
@@ -60,15 +58,12 @@ main (int argc, char *argv[])
 	GtkWidget *window;
 	NautilusBonoboActivationHandle *handle;
 
-	gtk_init (&argc, &argv);
-	bonobo_activation_init (argc, argv);
-	bonobo_init (bonobo_orb (), 
-		     bonobo_poa (), 
-		     bonobo_poa_manager ());
+	bonobo_ui_init ("test-nautilus-activation-async",
+			"1.0", &argc, argv);
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	g_signal_connect (window, "destroy",
-			    gtk_main_quit, NULL);
+			  gtk_main_quit, NULL);
 	gtk_widget_show_all (GTK_WIDGET (window));
 	
 	
