@@ -1,3 +1,18 @@
+2000-06-14  Rebecka Schulman  <rebecka@eazel.com
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog),
+	(global_preferences_register_for_ui):
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	Added search preferences to the preferences dialog
+	
+	* libnautilus-extensions/nautilus-search-async.c:
+	(nautilus_async_medusa_search), (request_search),
+	(search_results_received_callback):
+	changed the result getting implementation to use 
+	g_io_channel_watch, which emits a signal when
+	results arrive at the socket
+
 2000-06-14  Maciej Stachowiak  <mjs@eazel.com>
 
 	Task 1057: Terminal-based programs should open into a new terminal window
