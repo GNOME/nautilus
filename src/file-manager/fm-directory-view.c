@@ -4190,7 +4190,7 @@ clipboard_targets_received (GtkClipboard     *clipboard,
 
 	view = FM_DIRECTORY_VIEW (user_data);
 	can_paste = FALSE;
-	
+
 	if (gtk_selection_data_get_targets (selection_data, &targets, &n_targets)) {
 		for (i=0; i < n_targets; i++) {
 			if (targets[i] == copied_files_atom) {
@@ -4201,9 +4201,11 @@ clipboard_targets_received (GtkClipboard     *clipboard,
 		g_free (targets);
 	}
 
-	nautilus_bonobo_set_sensitive (view->details->ui,
-				       FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES,
-				       can_paste);
+	if (view->details->ui != NULL)
+		nautilus_bonobo_set_sensitive (view->details->ui,
+					       FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES,
+					       can_paste);
+	g_object_unref (view);
 }
 
 static void
@@ -4410,6 +4412,7 @@ real_update_menus (FMDirectoryView *view)
 					       FALSE);
 	} else {
 		/* Ask the clipboard */
+		g_object_ref (view); /* Need to keep the object alive until we get the reply */
 		gtk_clipboard_request_contents (gtk_clipboard_get (GDK_SELECTION_CLIPBOARD),
 						gdk_atom_intern ("TARGETS", FALSE),
 						clipboard_targets_received,

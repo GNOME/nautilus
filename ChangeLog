@@ -1,3 +1,10 @@
+2002-05-12  Alexander Larsson  <alla@lysator.liu.se>
+
+	* src/file-manager/fm-directory-view.c
+	(clipboard_targets_received, real_update_menus):
+	Make sure to keep a ref to the view until we got the response.
+	Handle the case the detail->ui was destroyed (it's a weak ref).
+
 2002-05-10  Dave Camp  <dave@ximian.com>
 
 	* src/file-manager/fm-directory-view.c (process_new_files): Handle
