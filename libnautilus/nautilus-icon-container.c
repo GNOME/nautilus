@@ -1149,15 +1149,15 @@ keyboard_move_to (NautilusIconContainer *container,
 	}
 
 	if ((event->state & GDK_CONTROL_MASK) != 0) {
+		/* Move the keyboard focus. */
+		set_keyboard_focus (container, icon);
+	} else {
 		/* Select icons and get rid of the special keyboard focus. */
 		clear_keyboard_focus (container);
 		if (select_one_unselect_others (container, icon)) {
 			gtk_signal_emit (GTK_OBJECT (container),
 					 signals[SELECTION_CHANGED]);
 		}
-	} else {
-		/* Move the keyboard focus. */
-		set_keyboard_focus (container, icon);
 	}
 	schedule_keyboard_icon_reveal (container, icon);
 }
