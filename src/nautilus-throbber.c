@@ -57,19 +57,20 @@ struct NautilusThrobberDetails {
 	int	timer_task;
 };
 
-static void     nautilus_throbber_initialize_class	(NautilusThrobberClass *klass);
-static void     nautilus_throbber_initialize		(NautilusThrobber *throbber);
-static void	nautilus_throbber_destroy		(GtkObject *object);
-static void     nautilus_throbber_draw			(GtkWidget *widget, 
-							 GdkRectangle *box);
-static int      nautilus_throbber_expose 		(GtkWidget *widget, 
-							 GdkEventExpose *event);
-static gboolean nautilus_throbber_button_press_event	(GtkWidget *widget, 
-							 GdkEventButton *event);
-static void	nautilus_throbber_load_images		(NautilusThrobber *throbber);
-static void	nautilus_throbber_unload_images		(NautilusThrobber *throbber);
-static void	nautilus_throbber_theme_changed 	(gpointer user_data);
-static void	nautilus_throbber_size_allocate		(GtkWidget *widget, GtkAllocation *allocation);
+static void     nautilus_throbber_initialize_class	 (NautilusThrobberClass *klass);
+static void     nautilus_throbber_initialize		 (NautilusThrobber *throbber);
+static void	nautilus_throbber_destroy		 (GtkObject *object);
+static void     nautilus_throbber_draw			 (GtkWidget *widget, 
+							  GdkRectangle *box);
+static int      nautilus_throbber_expose 		 (GtkWidget *widget, 
+							  GdkEventExpose *event);
+static gboolean nautilus_throbber_button_press_event	 (GtkWidget *widget, 
+							  GdkEventButton *event);
+static void	nautilus_throbber_load_images		 (NautilusThrobber *throbber);
+static void	nautilus_throbber_unload_images		 (NautilusThrobber *throbber);
+static void	nautilus_throbber_theme_changed 	 (gpointer user_data);
+static void	nautilus_throbber_size_allocate		 (GtkWidget *widget, GtkAllocation *allocation);
+static void     nautilus_throbber_remove_update_callback (NautilusThrobber *throbber);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusThrobber, nautilus_throbber, GTK_TYPE_EVENT_BOX)
 
@@ -90,6 +91,8 @@ nautilus_throbber_initialize_class (NautilusThrobberClass *throbber_class)
 static void 
 nautilus_throbber_destroy (GtkObject *object)
 {
+	nautilus_throbber_remove_update_callback (NAUTILUS_THROBBER (object));
+	
 	nautilus_throbber_unload_images (NAUTILUS_THROBBER (object));
 
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
@@ -284,13 +287,19 @@ nautilus_throbber_start (NautilusThrobber *throbber)
 	throbber->details->timer_task = gtk_timeout_add (100, (GtkFunction) bump_throbber_frame, throbber);
 }
 
-void
-nautilus_throbber_stop (NautilusThrobber *throbber)
+static void
+nautilus_throbber_remove_update_callback (NautilusThrobber *throbber)
 {
 	if (throbber->details->timer_task != -1)
 		gtk_timeout_remove(throbber->details->timer_task);
 	
 	throbber->details->timer_task = -1;
+}
+
+void
+nautilus_throbber_stop (NautilusThrobber *throbber)
+{
+	nautilus_throbber_remove_update_callback (throbber);
 	gtk_widget_queue_draw (GTK_WIDGET (throbber));
 
 }

@@ -1,3 +1,11 @@
+2000-09-12  Pavel Cisler <pavel@eazel.com>
+
+	* src/nautilus-throbber.c: (nautilus_throbber_destroy),
+	(nautilus_throbber_remove_update_callback),
+	(nautilus_throbber_stop):
+	Fix a bug in the throbber that I ran into -- the timeout callback was
+	being called after the throbber got destroyed.
+
 2000-09-12  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 884 (Long URI in Go menu doesn't get cut off)
