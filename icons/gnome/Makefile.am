@@ -39,7 +39,6 @@ gnome_DATA =				\
 	i-stalled.png			\
 	linux-penguin.png		\
 	rpm-directory.png		\
-	SearchWeb.png			\
 	theme_preview.png		\
 	trash-empty-192.png		\
 	trash-empty-accept-192.png	\

@@ -1,3 +1,28 @@
+2002-03-01  Darin Adler  <darin@bentspoon.com>
+
+	* src/nautilus-window-toolbars.c: (set_up_toolbar_images):
+	Remove unneeded code to set icon for the deleted Web Search button.
+	* icons/SearchWeb.png: Remove.
+	* icons/crux_eggplant/SearchWeb.png: Remove.
+	* icons/crux_teal/SearchWeb.png: Remove.
+	* icons/default/SearchWeb.png: Remove.
+	* icons/gnome/SearchWeb.png: Remove.
+	* icons/search_results.png: Remove.
+	* icons/services-rpm-72.png: Remove.
+
+	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_theme_changed): Use text-selection-frame.png,
+	not text-selection-frame-aa.png.
+	* icons/text-selection-frame-aa.png: Rename to remove -aa.
+	* icons/text-selection-frame.png: New home for the file.
+
+	* icons/Makefile.am:
+	* icons/crux_eggplant/Makefile.am:
+	* icons/crux_teal/Makefile.am:
+	* icons/default/Makefile.am:
+	* icons/gnome/Makefile.am:
+	Update as needed for changes above.
+
 2002-03-01  Alexander Larsson  <alla@lysator.liu.se>
 
 	* libnautilus-private/nautilus-icon-dnd.c (nautilus_icon_dnd_begin_drag):

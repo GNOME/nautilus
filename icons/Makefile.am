@@ -21,7 +21,6 @@ icon_DATA =\
 	Search.png \
 	Stop.png \
 	Up.png \
-	SearchWeb.png \
 	audio.png \
 	backgrounds.png \
 	chit_frame.png \
@@ -33,9 +32,8 @@ icon_DATA =\
 	nautilus-mini-logo.png \
 	note-indicator.png \
 	number_strip.png \
-	services-rpm-72.png \
 	side_bar_image.png \
-	text-selection-frame-aa.png \
+	text-selection-frame.png \
 	thumbnail_frame.png \
 	zoom_body.png \
 	$(NULL)

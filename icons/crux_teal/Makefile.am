@@ -10,7 +10,6 @@ crux_teal_DATA =	\
 	Refresh.png	\
 	Home.png	\
 	Search.png	\
-	SearchWeb.png	\
 	Stop.png	\
 	decrement.png		\
 	decrement-i.png		\

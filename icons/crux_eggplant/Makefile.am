@@ -10,7 +10,6 @@ crux_eggplant_DATA =				\
 	Refresh.png				\
 	Home.png				\
 	Search.png				\
-	SearchWeb.png				\
 	Stop.png				\
 	decrement.png				\
 	decrement-i.png				\

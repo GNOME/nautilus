@@ -296,7 +296,6 @@ set_up_toolbar_images (NautilusWindow *window)
 	set_up_standard_bonobo_button (window, "/Toolbar/Home", "Home", GTK_STOCK_HOME);
 	set_up_standard_bonobo_button (window, "/Toolbar/Reload", "Refresh", GTK_STOCK_REFRESH);
 	set_up_standard_bonobo_button (window, "/Toolbar/Toggle Find Mode", "Search", GTK_STOCK_FIND);
-	set_up_standard_bonobo_button (window, "/Toolbar/Go to Web Search", "SearchWeb", NULL);
 	set_up_standard_bonobo_button (window, "/Toolbar/Stop", "Stop", GTK_STOCK_STOP);
 
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);

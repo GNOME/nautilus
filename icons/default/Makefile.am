@@ -10,7 +10,6 @@ icon_DATA =\
 	Search.png \
 	Stop.png \
 	Up.png \
-	SearchWeb.png \
 	decrement.png \
 	default.xml \
 	desktop-home.png \
