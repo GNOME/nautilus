@@ -276,6 +276,8 @@ struct FMDirectoryViewClass {
 	void	(* image_display_policy_changed)   (FMDirectoryView *view);
 	void	(* click_policy_changed)	   (FMDirectoryView *view);
 	void	(* sort_directories_first_changed) (FMDirectoryView *view);
+
+	void	(* emblems_changed)                (FMDirectoryView *view);
 };
 
 /* GtkObject support */
@@ -346,11 +348,11 @@ void                fm_directory_view_queue_file_change                (FMDirect
 void                fm_directory_view_notify_selection_changed         (FMDirectoryView  *view);
 Bonobo_UIContainer  fm_directory_view_get_bonobo_ui_container          (FMDirectoryView  *view);
 BonoboControl *     fm_directory_view_get_bonobo_control               (FMDirectoryView  *view);
-EelStringList *fm_directory_view_get_emblem_names_to_exclude      (FMDirectoryView  *view);
+EelStringList *     fm_directory_view_get_emblem_names_to_exclude      (FMDirectoryView  *view);
 NautilusDirectory  *fm_directory_view_get_model                        (FMDirectoryView  *view);
 GtkWindow	   *fm_directory_view_get_containing_window	       (FMDirectoryView  *view);
 NautilusFile       *fm_directory_view_get_directory_as_file            (FMDirectoryView  *view);
-EelBackground *fm_directory_view_get_background                   (FMDirectoryView  *view);
+EelBackground *     fm_directory_view_get_background                   (FMDirectoryView  *view);
 void                fm_directory_view_pop_up_background_context_menu   (FMDirectoryView  *view,
 									GdkEventButton   *event);
 void                fm_directory_view_pop_up_selection_context_menu    (FMDirectoryView  *view,

@@ -1,3 +1,32 @@
+2002-03-06  Alexander Larsson  <alla@lysator.liu.se>
+
+	(merges from stable):
+	
+	* libnautilus-private/nautilus-monitor.c:
+	(process_fam_notifications): Tweak comment.
+	
+	* src/nautilus-window-manage-views.c:
+	(cancel_viewed_file_changed_callback), (update_for_new_location):
+	Monitor the existence of the currently viewed file, so we notice
+	when the file is deleted.
+
+        * src/file-manager/fm-directory-view.h:
+	Add emblems_changes method.
+
+        * src/file-manager/fm-directory-view.c:
+	(file_changed_callback): Call emblems_changed.
+	(fm_directory_view_add_relative_emblems_to_exclude,
+	real_get_emblem_names_to_exclude):
+	exclude non-writable emblems if directory is not
+	writable.
+	
+	* src/file-manager/fm-icon-view.c:
+	Implement emblem_changes.
+	
+	* src/file-manager/fm-list-view.c:
+	Add GNOME2_CONVERSION_COMPLETE where the emblem icon
+	update is needed.
+
 2002-03-06  Darin Adler  <darin@bentspoon.com>
 
 	* src/file-manager/fm-list-model.c: (fm_list_model_remove_file):

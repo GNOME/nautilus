@@ -443,6 +443,19 @@ fm_list_view_finalize (GObject *object)
 }
 
 static void
+fm_list_view_emblems_changed (FMDirectoryView *directory_view)
+{
+	g_assert (FM_IS_LIST_VIEW (directory_view));
+
+#if GNOME2_CONVERSION_COMPLETE
+	/* FIXME: This needs to update the emblems of the icons, since
+	 * relative emblems may have changed.
+	 */
+#endif
+}
+
+
+static void
 fm_list_view_class_init (FMListViewClass *class)
 {
 	FMDirectoryViewClass *fm_directory_view_class;
@@ -470,6 +483,7 @@ fm_list_view_class_init (FMListViewClass *class)
 	fm_directory_view_class->remove_file = fm_list_view_remove_file;
 	fm_directory_view_class->select_all = fm_list_view_select_all;
 	fm_directory_view_class->set_selection = fm_list_view_set_selection;
+        fm_directory_view_class->emblems_changed = fm_list_view_emblems_changed;
 	fm_directory_view_class->sort_directories_first_changed = fm_list_view_sort_directories_first_changed;
 	
 	eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,

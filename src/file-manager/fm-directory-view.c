@@ -4852,7 +4852,14 @@ fm_directory_view_activate_files (FMDirectoryView *view,
 static void
 file_changed_callback (NautilusFile *file, gpointer callback_data)
 {
-	schedule_update_menus (FM_DIRECTORY_VIEW (callback_data));
+	FMDirectoryView *view = FM_DIRECTORY_VIEW (callback_data);
+	
+	schedule_update_menus (view);
+
+	/* We might have different capabilities, so we need to update
+	   relative icon emblems . (Writeable etc) */
+	EEL_CALL_METHOD
+		(FM_DIRECTORY_VIEW_CLASS, view, emblems_changed, (view));
 }
 
 /**
@@ -4917,7 +4924,7 @@ load_directory (FMDirectoryView *view,
 	g_list_free (attributes);
 
 	/* If capabilities change, then we need to update the menus
-	 * because of New Folder.
+	 * because of New Folder, and relative emblems.
 	 */
 	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_CAPABILITIES);
 	nautilus_file_monitor_add (view->details->directory_as_file,
@@ -5047,12 +5054,28 @@ fm_directory_view_get_emblem_names_to_exclude (FMDirectoryView *view)
 		 get_emblem_names_to_exclude, (view));
 }
 
+static void
+fm_directory_view_add_relative_emblems_to_exclude (FMDirectoryView *view,
+						   EelStringList *list)
+{
+	if (!nautilus_file_can_write (view->details->directory_as_file)) {
+		eel_string_list_prepend (list, NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE);
+		eel_string_list_remove_duplicates (list);
+	}
+}
+
 static EelStringList *
 real_get_emblem_names_to_exclude (FMDirectoryView *view)
 {
+	EelStringList *list;
+	
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
-	return eel_string_list_new_from_string (NAUTILUS_FILE_EMBLEM_NAME_TRASH, TRUE);
+	list = eel_string_list_new_from_string (NAUTILUS_FILE_EMBLEM_NAME_TRASH, TRUE);
+
+	fm_directory_view_add_relative_emblems_to_exclude (view, list);
+
+	return list;
 }
 
 /**

@@ -536,10 +536,14 @@ viewed_file_changed_callback (NautilusFile *file,
 static void
 cancel_viewed_file_changed_callback (NautilusWindow *window)
 {
-        if (window->details->viewed_file != NULL) {
-                g_signal_handlers_disconnect_by_func (window->details->viewed_file,
+        NautilusFile *file;
+
+        file = window->details->viewed_file;
+        if (file != NULL) {
+                g_signal_handlers_disconnect_by_func (G_OBJECT (file),
                                                       G_CALLBACK (viewed_file_changed_callback),
                                                       window);
+                nautilus_file_monitor_remove (file, &window->details->viewed_file);
         }
 }
 
@@ -594,10 +598,10 @@ update_for_new_location (NautilusWindow *window)
         file = nautilus_file_get (window->details->location);
         nautilus_window_set_viewed_file (window, file);
         window->details->viewed_file_seen = !nautilus_file_is_not_yet_confirmed (file);
-        g_signal_connect (file,
-                            "changed",
-                            G_CALLBACK (viewed_file_changed_callback),
-                            window);
+        nautilus_file_monitor_add (file, &window->details->viewed_file, NULL);
+        g_signal_connect (file, "changed",
+                          G_CALLBACK (viewed_file_changed_callback),
+                          window);
         nautilus_file_unref (file);
         
         /* Check if we can go up. */

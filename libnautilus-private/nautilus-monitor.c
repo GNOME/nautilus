@@ -213,9 +213,9 @@ process_fam_notifications (GIOChannel *channel,
                 case FAMMoved:
 			/* FAMMoved doesn't need to be handled because
 			 * FAM never seems to generate this event on
-			 * Linux systems (w/ or w/o IMON). Instead it
-			 * generates a FAMDeleted followed by a
-			 * FAMCreated.
+			 * Linux systems (with or without kernel
+			 * support). Instead it generates a FAMDeleted
+			 * followed by a FAMCreated.
 			 */
 			g_warning ("unexpected FAMMoved notification");
 			break;
